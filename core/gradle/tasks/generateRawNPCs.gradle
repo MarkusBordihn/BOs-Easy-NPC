@@ -9,8 +9,7 @@ task generateRawNPCs {
           className: "AllayRaw",
           baseClass: "Allay",
           modelType: "ALLAY",
-          variant  : "DEFAULT",
-          variants : "DEFAULT, LAVA, GRASSLAND, WATER"
+          variant  : "SkinVariantType.ALLAY.ALLAY"
       ],
       [
           id       : "bogged_raw",
@@ -18,8 +17,7 @@ task generateRawNPCs {
           className: "BoggedRaw",
           baseClass: "Bogged",
           modelType: "ZOMBIE",
-          variant  : "DEFAULT",
-          variants : "DEFAULT"
+          variant  : "SkinVariantType.ZOMBIE.BOGGED"
       ],
       [
           id       : "cat_raw",
@@ -27,8 +25,7 @@ task generateRawNPCs {
           className: "CatRaw",
           baseClass: "Cat",
           modelType: "FELINE",
-          variant  : "BLACK",
-          variants : "ALL_BLACK, BLACK, BRITISH_SHORTHAIR, CALICO, JELLIE, OCELOT, PERSIAN, RAGDOLL, RED, SIAMESE, TABBY, WHITE"
+          variant  : "SkinVariantType.CAT.BLACK"
       ],
       [
           id       : "creeper_raw",
@@ -36,8 +33,7 @@ task generateRawNPCs {
           className: "CreeperRaw",
           baseClass: "Creeper",
           modelType: "CREEPER",
-          variant  : "DEFAULT",
-          variants : "DEFAULT, CHARGED"
+          variant  : "SkinVariantType.CREEPER.CREEPER"
       ],
       [
           id       : "chicken_raw",
@@ -45,8 +41,7 @@ task generateRawNPCs {
           className: "ChickenRaw",
           baseClass: "Chicken",
           modelType: "AVIAN",
-          variant  : "WHITE",
-          variants : "WHITE"
+          variant  : "SkinVariantType.CHICKEN.WHITE"
       ],
       [
           id       : "drowned_raw",
@@ -54,8 +49,7 @@ task generateRawNPCs {
           className: "DrownedRaw",
           baseClass: "Drowned",
           modelType: "ZOMBIE",
-          variant  : "DEFAULT",
-          variants : "DEFAULT"
+          variant  : "SkinVariantType.ZOMBIE.DROWNED"
       ],
       [
           id       : "enderman_raw",
@@ -63,8 +57,7 @@ task generateRawNPCs {
           className: "EnderManRaw",
           baseClass: "EnderMan",
           modelType: "HUMANOID",
-          variant  : "DEFAULT",
-          variants : "DEFAULT"
+          variant  : "SkinVariantType.ENDER_MAN.ENDERMAN"
       ],
       [
           id       : "evoker_raw",
@@ -72,8 +65,7 @@ task generateRawNPCs {
           className: "EvokerRaw",
           baseClass: "Evoker",
           modelType: "ILLAGER",
-          variant  : "EVOKER",
-          variants : "EVOKER, EVOKER_CROSSED_ARMS"
+          variant  : "SkinVariantType.ILLAGER.EVOKER"
       ],
       [
           id       : "fox_raw",
@@ -81,8 +73,7 @@ task generateRawNPCs {
           className: "FoxRaw",
           baseClass: "Fox",
           modelType: "CANINE",
-          variant  : "RED",
-          variants : "RED, SNOW"
+          variant  : "SkinVariantType.FOX.RED"
       ],
       [
           id       : "horse_raw",
@@ -90,8 +81,7 @@ task generateRawNPCs {
           className: "HorseRaw",
           baseClass: "Horse",
           modelType: "EQUINE",
-          variant  : "WHITE",
-          variants : "WHITE, WHITE_SADDLED, CREAMY, CREAMY_SADDLED, CHESTNUT, CHESTNUT_SADDLED, BROWN, BROWN_SADDLED, BLACK, BLACK_SADDLED, GRAY, GRAY_SADDLED, DARKBROWN, DARKBROWN_SADDLED, SKELETON, SKELETON_SADDLED, ZOMBIE, ZOMBIE_SADDLED, DONKEY, DONKEY_SADDLED, MULE, MULE_SADDLED"
+          variant  : "SkinVariantType.HORSE.WHITE"
       ],
       [
           id       : "iron_golem_raw",
@@ -99,8 +89,7 @@ task generateRawNPCs {
           className: "IronGolemRaw",
           baseClass: "IronGolem",
           modelType: "GOLEM",
-          variant  : "IRON_GOLEM",
-          variants : "IRON_GOLEM, IRON_GOLEM_CRACKINESS_HIGH, IRON_GOLEM_CRACKINESS_MEDIUM, IRON_GOLEM_CRACKINESS_LOW"
+          variant  : "SkinVariantType.IRON_GOLEM.IRON_GOLEM"
       ],
       [
           id       : "illusioner_raw",
@@ -108,8 +97,7 @@ task generateRawNPCs {
           className: "IllusionerRaw",
           baseClass: "Illusioner",
           modelType: "ILLAGER",
-          variant  : "ILLUSIONER",
-          variants : "ILLUSIONER, ILLUSIONER_CROSSED_ARMS"
+          variant  : "SkinVariantType.ILLAGER.ILLUSIONER"
       ],
       [
           id       : "pathfinder_mob_raw",
@@ -118,8 +106,7 @@ task generateRawNPCs {
           baseClass: "PathfinderMob",
           skinModel: "HUMANOID",
           modelType: "HUMANOID",
-          variant  : "DEFAULT",
-          variants : "DEFAULT"
+          variant  : "SkinVariantType.HUMANOID.STEVE"
       ],
       [
           id       : "humanoid_raw",
@@ -128,8 +115,7 @@ task generateRawNPCs {
           baseClass: "PathfinderMob",
           skinModel: "HUMANOID",
           modelType: "HUMANOID",
-          variant  : "STEVE",
-          variants : "STEVE, ALEX, ARI, EFE, KAI, MAKENA, NOOR, SUNNY, ZURI"
+          variant  : "SkinVariantType.HUMANOID.STEVE"
       ],
       [
           id       : "humanoid_slim_raw",
@@ -138,8 +124,7 @@ task generateRawNPCs {
           baseClass: "PathfinderMob",
           skinModel: "HUMANOID_SLIM",
           modelType: "HUMANOID",
-          variant  : "ALEX",
-          variants : "STEVE, ALEX, ARI, EFE, KAI, MAKENA, NOOR, SUNNY, ZURI"
+          variant  : "SkinVariantType.HUMANOID_SLIM.ALEX"
       ],
       [
           id       : "pillager_raw",
@@ -147,8 +132,7 @@ task generateRawNPCs {
           className: "PillagerRaw",
           baseClass: "Pillager",
           modelType: "ILLAGER",
-          variant  : "PILLAGER",
-          variants : "PILLAGER"
+          variant  : "SkinVariantType.ILLAGER.PILLAGER"
       ],
       [
           id       : "pig_raw",
@@ -156,8 +140,7 @@ task generateRawNPCs {
           className: "PigRaw",
           baseClass: "Pig",
           modelType: "QUADRUPED",
-          variant  : "DEFAULT",
-          variants : "DEFAULT, SPOTTED"
+          variant  : "SkinVariantType.PIG.PIG"
       ],
       [
           id       : "piglin_raw",
@@ -165,8 +148,7 @@ task generateRawNPCs {
           className: "PiglinRaw",
           baseClass: "Piglin",
           modelType: "HUMANOID",
-          variant  : "PIGLIN",
-          variants : "PIGLIN, PIGLIN_BRUTE, ZOMBIFIED_PIGLIN"
+          variant  : "SkinVariantType.PIGLIN.PIGLIN"
       ],
       [
           id       : "piglin_brute_raw",
@@ -174,8 +156,7 @@ task generateRawNPCs {
           className: "PiglinBruteRaw",
           baseClass: "PiglinBrute",
           modelType: "HUMANOID",
-          variant  : "DEFAULT",
-          variants : "DEFAULT"
+          variant  : "SkinVariantType.PIGLIN.PIGLIN_BRUTE"
       ],
       [
           id       : "zombified_piglin_raw",
@@ -183,8 +164,7 @@ task generateRawNPCs {
           className: "ZombifiedPiglinRaw",
           baseClass: "ZombifiedPiglin",
           modelType: "HUMANOID",
-          variant  : "DEFAULT",
-          variants : "DEFAULT"
+          variant  : "SkinVariantType.PIGLIN.ZOMBIFIED_PIGLIN"
       ],
       [
           id       : "skeleton_raw",
@@ -192,8 +172,7 @@ task generateRawNPCs {
           className: "SkeletonRaw",
           baseClass: "Skeleton",
           modelType: "HUMANOID",
-          variant  : "DEFAULT",
-          variants : "DEFAULT"
+          variant  : "SkinVariantType.SKELETON.SKELETON"
       ],
       [
           id       : "stray_raw",
@@ -202,8 +181,7 @@ task generateRawNPCs {
           baseClass: "Stray",
           skinModel: "STRAY",
           modelType: "ZOMBIE",
-          variant  : "DEFAULT",
-          variants : "DEFAULT"
+          variant  : "SkinVariantType.SKELETON.STRAY"
       ],
       [
           id       : "wither_skeleton_raw",
@@ -212,8 +190,7 @@ task generateRawNPCs {
           baseClass: "WitherSkeleton",
           skinModel: "WITHER_SKELETON",
           modelType: "ZOMBIE",
-          variant  : "DEFAULT",
-          variants : "DEFAULT"
+          variant  : "SkinVariantType.SKELETON.WITHER_SKELETON"
       ],
       [
           id       : "spider_raw",
@@ -222,8 +199,7 @@ task generateRawNPCs {
           baseClass: "Spider",
           skinModel: "SPIDER",
           modelType: "SPIDER",
-          variant  : "SPIDER",
-          variants : "CAVE_SPIDER, SPIDER"
+          variant  : "SkinVariantType.SPIDER.SPIDER"
       ],
       [
           id       : "vex_raw",
@@ -231,8 +207,7 @@ task generateRawNPCs {
           className: "VexRaw",
           baseClass: "Vex",
           modelType: "PIXIE",
-          variant  : "DEFAULT",
-          variants : "DEFAULT, CHARGED"
+          variant  : "SkinVariantType.VEX.VEX"
       ],
       [
           id       : "villager_raw",
@@ -240,15 +215,7 @@ task generateRawNPCs {
           className: "VillagerRaw",
           baseClass: "Villager",
           modelType: "VILLAGER",
-          variant  : "DEFAULT_NITWIT",
-          variants : "DEFAULT_ARMORER, DEFAULT_BUTCHER, DEFAULT_CARTOGRAPHER, DEFAULT_CLERIC, DEFAULT_FARMER, DEFAULT_FISHERMAN, DEFAULT_FLETCHER, DEFAULT_LEATHERWORKER, DEFAULT_LIBRARIAN, DEFAULT_MASON, DEFAULT_NITWIT, DEFAULT_SHEPHERD, DEFAULT_TOOLSMITH, DEFAULT_WEAPONSMITH, " +
-              "DESERT_ARMORER, DESERT_BUTCHER, DESERT_CARTOGRAPHER, DESERT_CLERIC, DESERT_FARMER, DESERT_FISHERMAN, DESERT_FLETCHER, DESERT_LEATHERWORKER, DESERT_LIBRARIAN, DESERT_MASON, DESERT_NITWIT, DESERT_SHEPHERD, DESERT_TOOLSMITH, DESERT_WEAPONSMITH, " +
-              "JUNGLE_ARMORER, JUNGLE_BUTCHER, JUNGLE_CARTOGRAPHER, JUNGLE_CLERIC, JUNGLE_FARMER, JUNGLE_FISHERMAN, JUNGLE_FLETCHER, JUNGLE_LEATHERWORKER, JUNGLE_LIBRARIAN, JUNGLE_MASON, JUNGLE_NITWIT, JUNGLE_SHEPHERD, JUNGLE_TOOLSMITH, JUNGLE_WEAPONSMITH, " +
-              "PLAINS_ARMORER, PLAINS_BUTCHER, PLAINS_CARTOGRAPHER, PLAINS_CLERIC, PLAINS_FARMER, PLAINS_FISHERMAN, PLAINS_FLETCHER, PLAINS_LEATHERWORKER, PLAINS_LIBRARIAN, PLAINS_MASON, PLAINS_NITWIT, PLAINS_SHEPHERD, PLAINS_TOOLSMITH, PLAINS_WEAPONSMITH, " +
-              "SAVANNA_ARMORER, SAVANNA_BUTCHER, SAVANNA_CARTOGRAPHER, SAVANNA_CLERIC, SAVANNA_FARMER, SAVANNA_FISHERMAN, SAVANNA_FLETCHER, SAVANNA_LEATHERWORKER, SAVANNA_LIBRARIAN, SAVANNA_MASON, SAVANNA_NITWIT, SAVANNA_SHEPHERD, SAVANNA_TOOLSMITH, SAVANNA_WEAPONSMITH, " +
-              "SNOW_ARMORER, SNOW_BUTCHER, SNOW_CARTOGRAPHER, SNOW_CLERIC, SNOW_FARMER, SNOW_FISHERMAN, SNOW_FLETCHER, SNOW_LEATHERWORKER, SNOW_LIBRARIAN, SNOW_MASON, SNOW_NITWIT, SNOW_SHEPHERD, SNOW_TOOLSMITH, SNOW_WEAPONSMITH, " +
-              "SWAMP_ARMORER, SWAMP_BUTCHER, SWAMP_CARTOGRAPHER, SWAMP_CLERIC, SWAMP_FARMER, SWAMP_FISHERMAN, SWAMP_FLETCHER, SWAMP_LEATHERWORKER, SWAMP_LIBRARIAN, SWAMP_MASON, SWAMP_NITWIT, SWAMP_SHEPHERD, SWAMP_TOOLSMITH, SWAMP_WEAPONSMITH, " +
-              "TAIGA_ARMORER, TAIGA_BUTCHER, TAIGA_CARTOGRAPHER, TAIGA_CLERIC, TAIGA_FARMER, TAIGA_FISHERMAN, TAIGA_FLETCHER, TAIGA_LEATHERWORKER, TAIGA_LIBRARIAN, TAIGA_MASON, TAIGA_NITWIT, TAIGA_SHEPHERD, TAIGA_TOOLSMITH, TAIGA_WEAPONSMITH"
+          variant  : "SkinVariantType.VILLAGER.DEFAULT_NITWIT"
       ],
       [
           id       : "vindicator_raw",
@@ -256,8 +223,7 @@ task generateRawNPCs {
           className: "VindicatorRaw",
           baseClass: "Vindicator",
           modelType: "ILLAGER",
-          variant  : "VINDICATOR",
-          variants : "VINDICATOR, VINDICATOR_CROSSED_ARMS"
+          variant  : "SkinVariantType.ILLAGER.VINDICATOR"
       ],
       [
           id       : "wolf_raw",
@@ -265,8 +231,7 @@ task generateRawNPCs {
           className: "WolfRaw",
           baseClass: "Wolf",
           modelType: "QUADRUPED",
-          variant  : "DEFAULT",
-          variants : "DEFAULT, TAMED, ANGRY"
+          variant  : "SkinVariantType.WOLF.WOLF"
       ],
       [
           id       : "witch_raw",
@@ -274,8 +239,7 @@ task generateRawNPCs {
           className: "WitchRaw",
           baseClass: "Witch",
           modelType: "VILLAGER",
-          variant  : "DEFAULT",
-          variants : "DEFAULT"
+          variant  : "SkinVariantType.WITCH.WITCH"
       ],
       [
           id       : "zombie_raw",
@@ -283,8 +247,7 @@ task generateRawNPCs {
           className: "ZombieRaw",
           baseClass: "Zombie",
           modelType: "ZOMBIE",
-          variant  : "ZOMBIE",
-          variants : "HUSK, ZOMBIE"
+          variant  : "SkinVariantType.ZOMBIE.ZOMBIE"
       ],
       [
           id       : "husk_raw",
@@ -292,8 +255,7 @@ task generateRawNPCs {
           className: "HuskRaw",
           baseClass: "Husk",
           modelType: "ZOMBIE",
-          variant  : "DEFAULT",
-          variants : "DEFAULT"
+          variant  : "SkinVariantType.ZOMBIE.HUSK"
       ],
       [
           id       : "zombie_villager_raw",
@@ -301,8 +263,7 @@ task generateRawNPCs {
           className: "ZombieVillagerRaw",
           baseClass: "ZombieVillager",
           modelType: "ZOMBIE",
-          variant  : "DEFAULT",
-          variants : "DEFAULT, DESERT_ARMORER, DESERT_BUTCHER, DESERT_CARTOGRAPHER, DESERT_CLERIC, DESERT_FARMER, DESERT_FISHERMAN, DESERT_FLETCHER, DESERT_LEATHERWORKER, DESERT_LIBRARIAN, DESERT_MASON, DESERT_NITWIT, DESERT_SHEPHERD, DESERT_TOOLSMITH, DESERT_WEAPONSMITH, JUNGLE_ARMORER, JUNGLE_BUTCHER, JUNGLE_CARTOGRAPHER, JUNGLE_CLERIC, JUNGLE_FARMER, JUNGLE_FISHERMAN, JUNGLE_FLETCHER, JUNGLE_LEATHERWORKER, JUNGLE_LIBRARIAN, JUNGLE_MASON, JUNGLE_NITWIT, JUNGLE_SHEPHERD, JUNGLE_TOOLSMITH, JUNGLE_WEAPONSMITH, PLAINS_ARMORER, PLAINS_BUTCHER, PLAINS_CARTOGRAPHER, PLAINS_CLERIC, PLAINS_FARMER, PLAINS_FISHERMAN, PLAINS_FLETCHER, PLAINS_LEATHERWORKER, PLAINS_LIBRARIAN, PLAINS_MASON, PLAINS_NITWIT, PLAINS_SHEPHERD, PLAINS_TOOLSMITH, PLAINS_WEAPONSMITH, SAVANNA_ARMORER, SAVANNA_BUTCHER, SAVANNA_CARTOGRAPHER, SAVANNA_CLERIC, SAVANNA_FARMER, SAVANNA_FISHERMAN, SAVANNA_FLETCHER, SAVANNA_LEATHERWORKER, SAVANNA_LIBRARIAN, SAVANNA_MASON, SAVANNA_NITWIT, SAVANNA_SHEPHERD, SAVANNA_TOOLSMITH, SAVANNA_WEAPONSMITH, SNOW_ARMORER, SNOW_BUTCHER, SNOW_CARTOGRAPHER, SNOW_CLERIC, SNOW_FARMER, SNOW_FISHERMAN, SNOW_FLETCHER, SNOW_LEATHERWORKER, SNOW_LIBRARIAN, SNOW_MASON, SNOW_NITWIT, SNOW_SHEPHERD, SNOW_TOOLSMITH, SNOW_WEAPONSMITH, SWAMP_ARMORER, SWAMP_BUTCHER, SWAMP_CARTOGRAPHER, SWAMP_CLERIC, SWAMP_FARMER, SWAMP_FISHERMAN, SWAMP_FLETCHER, SWAMP_LEATHERWORKER, SWAMP_LIBRARIAN, SWAMP_MASON, SWAMP_NITWIT, SWAMP_SHEPHERD, SWAMP_TOOLSMITH, SWAMP_WEAPONSMITH, TAIGA_ARMORER, TAIGA_BUTCHER, TAIGA_CARTOGRAPHER, TAIGA_CLERIC, TAIGA_FARMER, TAIGA_FISHERMAN, TAIGA_FLETCHER, TAIGA_LEATHERWORKER, TAIGA_LIBRARIAN, TAIGA_MASON, TAIGA_NITWIT, TAIGA_SHEPHERD, TAIGA_TOOLSMITH, TAIGA_WEAPONSMITH"
+          variant  : "SkinVariantType.ZOMBIE_VILLAGER.ZOMBIE_VILLAGER"
       ],
   ]
 
@@ -333,8 +294,9 @@ task generateRawNPCs {
           .replaceAll("\\bZombie\\b", npcClass.baseClass)
           .replace("SkinModel.ZOMBIE", "SkinModel." + (npcClass.skinModel ?: toUpperSnakeCase(npcClass.baseClass)))
           .replace("ModelType.ZOMBIE", "ModelType." + (npcClass.modelType ?: toUpperSnakeCase(npcClass.baseClass)))
-          .replace("VariantType.DEFAULT_VARIANT", "VariantType." + npcClass.variant)
-          .replace("DEFAULT_VARIANT", npcClass.variants)
+          .replace("SkinVariantType.ZOMBIE.ZOMBIE", npcClass.variant)
+          .replace("SkinVariantType.ZOMBIE.values()", npcClass.variant.replaceAll(/\.[^.]+$/, "") + ".values()")
+          .replace("SkinVariantType.ZOMBIE.valueOf(", npcClass.variant.replaceAll(/\.[^.]+$/, "") + ".valueOf(")
           .replace("// TEMPLATE_INSERT:IMPORTS", loadImports(npcClass.className))
           .replace("// TEMPLATE_INSERT:METHODS", loadMethods(npcClass.className))
 

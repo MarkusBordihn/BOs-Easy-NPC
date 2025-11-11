@@ -42,12 +42,12 @@ public class DebugCommand extends Command {
         .then(
             Commands.literal("log")
                 .then(
-                    Commands.argument("enable", BoolArgumentType.bool())
+                    Commands.argument(ENABLE_ARG, BoolArgumentType.bool())
                         .executes(
                             context ->
                                 setDebug(
                                     context.getSource(),
-                                    BoolArgumentType.getBool(context, "enable")))))
+                                    BoolArgumentType.getBool(context, ENABLE_ARG)))))
         .then(
             Commands.literal("info")
                 .then(

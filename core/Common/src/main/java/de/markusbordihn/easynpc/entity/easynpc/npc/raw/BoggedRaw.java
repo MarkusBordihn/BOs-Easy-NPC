@@ -28,6 +28,7 @@ import de.markusbordihn.easynpc.data.model.ModelType;
 import de.markusbordihn.easynpc.data.scale.CustomScale;
 import de.markusbordihn.easynpc.data.server.ServerEntityData;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
+import de.markusbordihn.easynpc.data.skin.SkinVariantType;
 import de.markusbordihn.easynpc.data.status.StatusDataType;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.data.synched.SynchedEntityData;
@@ -516,26 +517,26 @@ public class BoggedRaw extends Bogged implements EasyNPCBase<Bogged> {
   }
 
   @Override
-  public Enum<?>[] getVariantTypes() {
-    return VariantType.values();
-  }
-
-  @Override
-  public Enum<?> getDefaultVariantType() {
-    return VariantType.DEFAULT;
-  }
-
-  @Override
   public ModelType getModelType() {
     return ModelType.ZOMBIE;
   }
 
   @Override
-  public Enum<?> getVariantType(String name) {
+  public Enum<?>[] getSkinVariantTypes() {
+    return SkinVariantType.ZOMBIE.values();
+  }
+
+  @Override
+  public Enum<?> getDefaultSkinVariantType() {
+    return SkinVariantType.ZOMBIE.BOGGED;
+  }
+
+  @Override
+  public Enum<?> getSkinVariantType(String name) {
     try {
-      return VariantType.valueOf(name);
+      return SkinVariantType.ZOMBIE.valueOf(name);
     } catch (IllegalArgumentException e) {
-      return getDefaultVariantType();
+      return getDefaultSkinVariantType();
     }
   }
 
@@ -591,9 +592,5 @@ public class BoggedRaw extends Bogged implements EasyNPCBase<Bogged> {
   @Override
   public boolean isCustomNameVisible() {
     return VisibilityHandler.handleIsCustomNameVisible(this, super.isCustomNameVisible());
-  }
-
-  public enum VariantType {
-    DEFAULT
   }
 }

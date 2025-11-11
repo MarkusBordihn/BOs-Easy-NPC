@@ -82,7 +82,7 @@ public class EntityConfigScreenRenderer extends EntityScreenRenderer {
 
     VariantDataCapable<?> variantData = easyNPC.getEasyNPCVariantData();
     if (variantData != null && overrides.variant() != null) {
-      variantData.setVariantType(overrides.variant());
+      variantData.setSkinVariantType(overrides.variant());
     }
 
     ProfessionDataCapable<?> professionData = easyNPC.getEasyNPCProfessionData();
@@ -109,7 +109,7 @@ public class EntityConfigScreenRenderer extends EntityScreenRenderer {
 
     VariantDataCapable<?> variantData = easyNPC.getEasyNPCVariantData();
     if (variantData != null && backupState.variantType != null) {
-      variantData.setVariantType(backupState.variantType);
+      variantData.setSkinVariantType(backupState.variantType);
     }
 
     ProfessionDataCapable<?> professionData = easyNPC.getEasyNPCProfessionData();
@@ -137,7 +137,7 @@ public class EntityConfigScreenRenderer extends EntityScreenRenderer {
       SkinDataCapable<?> skinData = easyNPC.getEasyNPCSkinData();
       this.skinDataEntry = skinData != null ? skinData.getSkinDataEntry() : null;
       VariantDataCapable<?> variantData = easyNPC.getEasyNPCVariantData();
-      this.variantType = variantData != null ? variantData.getVariantType() : null;
+      this.variantType = variantData != null ? variantData.getSkinVariantType() : null;
       ProfessionDataCapable<?> professionData = easyNPC.getEasyNPCProfessionData();
       this.profession = professionData != null ? professionData.getProfession() : null;
     }

@@ -1,5 +1,5 @@
   @Override
-  public void handleVariantTypeChange(Enum<?> variant) {
+  public void handleSkinVariantTypeChange(Enum<?> variant) {
     VillagerData villagerData = this.getVillagerData();
 
     // Update profession if available

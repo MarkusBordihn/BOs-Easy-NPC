@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.npc.standard;
 
+import de.markusbordihn.easynpc.data.skin.SkinVariantType;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.sound.SoundType;
 import de.markusbordihn.easynpc.entity.easynpc.npc.raw.WitchRaw;
@@ -37,7 +38,7 @@ public class WitchNPC extends WitchRaw implements StandardEasyNPC<WitchRaw> {
   public static final String ID = "witch";
 
   public WitchNPC(EntityType<? extends Witch> entityType, Level level) {
-    this(entityType, level, VariantType.DEFAULT);
+    this(entityType, level, SkinVariantType.WITCH.WITCH);
   }
 
   public WitchNPC(EntityType<? extends Witch> entityType, Level level, Enum<?> variantType) {

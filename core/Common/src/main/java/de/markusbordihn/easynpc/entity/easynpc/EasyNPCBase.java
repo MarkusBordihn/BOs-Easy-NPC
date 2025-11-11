@@ -103,7 +103,7 @@ public interface EasyNPCBase<E extends PathfinderMob>
     log.info("Register default variant for {} with variant {} ...", this, variant);
     VariantDataCapable<E> variantData = getEasyNPCVariantData();
     if (variantData != null) {
-      variantData.setVariantType(variant);
+      variantData.setSkinVariantType(variant);
     }
     SoundDataCapable<E> soundData = getEasyNPCSoundData();
     if (soundData != null) {

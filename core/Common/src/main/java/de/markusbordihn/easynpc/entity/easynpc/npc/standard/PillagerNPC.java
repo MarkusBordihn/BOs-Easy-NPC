@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.npc.standard;
 
+import de.markusbordihn.easynpc.data.skin.SkinVariantType;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.sound.SoundType;
 import de.markusbordihn.easynpc.entity.easynpc.npc.raw.PillagerRaw;
@@ -37,7 +38,7 @@ public class PillagerNPC extends PillagerRaw implements StandardEasyNPC<Pillager
   public static final String ID = "pillager";
 
   public PillagerNPC(EntityType<? extends Pillager> entityType, Level level) {
-    super(entityType, level, VariantType.PILLAGER);
+    super(entityType, level, SkinVariantType.ILLAGER.PILLAGER);
   }
 
   public PillagerNPC(EntityType<? extends Pillager> entityType, Level level, Enum<?> variant) {
