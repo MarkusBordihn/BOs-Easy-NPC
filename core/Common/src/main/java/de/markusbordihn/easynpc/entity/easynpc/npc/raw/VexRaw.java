@@ -28,6 +28,7 @@ import de.markusbordihn.easynpc.data.model.ModelType;
 import de.markusbordihn.easynpc.data.scale.CustomScale;
 import de.markusbordihn.easynpc.data.server.ServerEntityData;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
+import de.markusbordihn.easynpc.data.skin.SkinVariantType;
 import de.markusbordihn.easynpc.data.status.StatusDataType;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.data.synched.SynchedEntityData;
@@ -516,26 +517,26 @@ public class VexRaw extends Vex implements EasyNPCBase<Vex> {
   }
 
   @Override
-  public Enum<?>[] getVariantTypes() {
-    return VariantType.values();
-  }
-
-  @Override
-  public Enum<?> getDefaultVariantType() {
-    return VariantType.DEFAULT;
-  }
-
-  @Override
   public ModelType getModelType() {
     return ModelType.PIXIE;
   }
 
   @Override
-  public Enum<?> getVariantType(String name) {
+  public Enum<?>[] getSkinVariantTypes() {
+    return SkinVariantType.VEX.values();
+  }
+
+  @Override
+  public Enum<?> getDefaultSkinVariantType() {
+    return SkinVariantType.VEX.VEX;
+  }
+
+  @Override
+  public Enum<?> getSkinVariantType(String name) {
     try {
-      return VariantType.valueOf(name);
+      return SkinVariantType.VEX.valueOf(name);
     } catch (IllegalArgumentException e) {
-      return getDefaultVariantType();
+      return getDefaultSkinVariantType();
     }
   }
 
@@ -591,10 +592,5 @@ public class VexRaw extends Vex implements EasyNPCBase<Vex> {
   @Override
   public boolean isCustomNameVisible() {
     return VisibilityHandler.handleIsCustomNameVisible(this, super.isCustomNameVisible());
-  }
-
-  public enum VariantType {
-    DEFAULT,
-    CHARGED
   }
 }

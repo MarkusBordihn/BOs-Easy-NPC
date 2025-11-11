@@ -48,7 +48,7 @@ public class FollowObjective extends Command {
                     context ->
                         setFollowOwner(
                             context.getSource(),
-                            EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARGUMENT))))
+                            EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG))))
         .then(
             Commands.literal(ObjectiveType.FOLLOW_PLAYER.getFriendlyName())
                 .then(
@@ -57,8 +57,7 @@ public class FollowObjective extends Command {
                             context ->
                                 setFollowPlayer(
                                     context.getSource(),
-                                    EasyNPCArgument.getEntityWithAccess(
-                                        context, NPC_TARGET_ARGUMENT),
+                                    EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG),
                                     EntityArgument.getPlayer(context, "player")))))
         .then(
             Commands.literal(ObjectiveType.FOLLOW_ENTITY_BY_UUID.getFriendlyName())
@@ -68,8 +67,7 @@ public class FollowObjective extends Command {
                             context ->
                                 setFollowEntity(
                                     context.getSource(),
-                                    EasyNPCArgument.getEntityWithAccess(
-                                        context, NPC_TARGET_ARGUMENT),
+                                    EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG),
                                     EntityArgument.getEntity(context, "entity")))));
   }
 
@@ -79,7 +77,7 @@ public class FollowObjective extends Command {
             context ->
                 list(
                     context.getSource(),
-                    EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARGUMENT)));
+                    EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG)));
   }
 
   public static ArgumentBuilder<CommandSourceStack, ?> registerRemove() {
@@ -90,7 +88,7 @@ public class FollowObjective extends Command {
                     context ->
                         removeFollowObjective(
                             context.getSource(),
-                            EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARGUMENT),
+                            EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG),
                             ObjectiveType.FOLLOW_OWNER)))
         .then(
             Commands.literal(ObjectiveType.FOLLOW_PLAYER.getFriendlyName())
@@ -98,7 +96,7 @@ public class FollowObjective extends Command {
                     context ->
                         removeFollowObjective(
                             context.getSource(),
-                            EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARGUMENT),
+                            EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG),
                             ObjectiveType.FOLLOW_PLAYER)))
         .then(
             Commands.literal(ObjectiveType.FOLLOW_ENTITY_BY_UUID.getFriendlyName())
@@ -106,7 +104,7 @@ public class FollowObjective extends Command {
                     context ->
                         removeFollowObjective(
                             context.getSource(),
-                            EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARGUMENT),
+                            EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG),
                             ObjectiveType.FOLLOW_ENTITY_BY_UUID)));
   }
 

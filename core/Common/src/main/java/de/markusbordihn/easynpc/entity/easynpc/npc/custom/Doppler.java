@@ -33,7 +33,7 @@ public class Doppler extends PathfinderMobRaw {
   public static final String ID = "doppler";
 
   public Doppler(EntityType<? extends PathfinderMob> entityType, Level level) {
-    this(entityType, level, VariantType.DEFAULT);
+    this(entityType, level, VariantType.DOPPLER);
   }
 
   public Doppler(EntityType<? extends PathfinderMob> entityType, Level level, Enum<?> variant) {
@@ -64,25 +64,25 @@ public class Doppler extends PathfinderMobRaw {
   }
 
   @Override
-  public Enum<?>[] getVariantTypes() {
+  public Enum<?>[] getSkinVariantTypes() {
     return VariantType.values();
   }
 
   @Override
-  public Enum<?> getDefaultVariantType() {
-    return VariantType.DEFAULT;
+  public Enum<?> getDefaultSkinVariantType() {
+    return VariantType.DOPPLER;
   }
 
   @Override
-  public Enum<?> getVariantType(String name) {
+  public Enum<?> getSkinVariantType(String name) {
     try {
       return VariantType.valueOf(name);
     } catch (IllegalArgumentException e) {
-      return getDefaultVariantType();
+      return getDefaultSkinVariantType();
     }
   }
 
   public enum VariantType {
-    DEFAULT,
+    DOPPLER,
   }
 }

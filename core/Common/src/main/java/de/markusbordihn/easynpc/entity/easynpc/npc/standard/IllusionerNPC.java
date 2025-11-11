@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.npc.standard;
 
+import de.markusbordihn.easynpc.data.skin.SkinVariantType;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.sound.SoundType;
 import de.markusbordihn.easynpc.entity.easynpc.npc.raw.IllusionerRaw;
@@ -37,7 +38,7 @@ public class IllusionerNPC extends IllusionerRaw implements StandardEasyNPC<Illu
   public static final String ID = "illusioner";
 
   public IllusionerNPC(EntityType<? extends Illusioner> entityType, Level level) {
-    super(entityType, level, VariantType.ILLUSIONER);
+    super(entityType, level, SkinVariantType.ILLAGER.ILLUSIONER);
   }
 
   public IllusionerNPC(EntityType<? extends Illusioner> entityType, Level level, Enum<?> variant) {

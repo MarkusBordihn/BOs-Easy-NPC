@@ -46,16 +46,17 @@ public class SkinCommand extends Command {
                             commandSourceStack ->
                                 commandSourceStack.hasPermission(Commands.LEVEL_ALL))
                         .then(
-                            Commands.argument(NPC_TARGET_ARGUMENT, EasyNPCArgument.npc())
+                            Commands.argument(NPC_TARGET_ARG, EasyNPCArgument.npc())
                                 .then(
-                                    Commands.argument("variant", StringArgumentType.word())
+                                    Commands.argument(VARIANT_ARG, StringArgumentType.word())
                                         .suggests(
                                             (context, builder) -> {
                                               EasyNPC<?> easyNPC =
                                                   EasyNPCArgument.getEntityWithAccess(
-                                                      context, NPC_TARGET_ARGUMENT);
+                                                      context, NPC_TARGET_ARG);
                                               if (easyNPC instanceof EasyNPCBase<?> easyNPCBase) {
-                                                Enum<?>[] variants = easyNPCBase.getVariantTypes();
+                                                Enum<?>[] variants =
+                                                    easyNPCBase.getSkinVariantTypes();
                                                 for (Enum<?> variant : variants) {
                                                   builder.suggest(variant.name());
                                                 }
@@ -67,21 +68,20 @@ public class SkinCommand extends Command {
                                                 setDefaultSkinVariant(
                                                     context.getSource(),
                                                     EasyNPCArgument.getEntityWithAccess(
-                                                        context, NPC_TARGET_ARGUMENT),
+                                                        context, NPC_TARGET_ARG),
                                                     StringArgumentType.getString(
-                                                        context, "variant")))))))
+                                                        context, VARIANT_ARG)))))))
         .then(
             Commands.literal("layer")
                 .requires(
                     commandSourceStack -> commandSourceStack.hasPermission(Commands.LEVEL_ALL))
                 .then(
-                    Commands.argument(NPC_TARGET_ARGUMENT, EasyNPCArgument.npc())
+                    Commands.argument(NPC_TARGET_ARG, EasyNPCArgument.npc())
                         .executes(
                             context ->
                                 getLayerStatus(
                                     context.getSource(),
-                                    EasyNPCArgument.getEntityWithAccess(
-                                        context, NPC_TARGET_ARGUMENT)))
+                                    EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG)))
                         .then(
                             Commands.literal("disable")
                                 .executes(
@@ -89,7 +89,7 @@ public class SkinCommand extends Command {
                                         disableLayers(
                                             context.getSource(),
                                             EasyNPCArgument.getEntityWithAccess(
-                                                context, NPC_TARGET_ARGUMENT))))
+                                                context, NPC_TARGET_ARG))))
                         .then(
                             Commands.literal("enable")
                                 .executes(
@@ -97,7 +97,7 @@ public class SkinCommand extends Command {
                                         enableLayers(
                                             context.getSource(),
                                             EasyNPCArgument.getEntityWithAccess(
-                                                context, NPC_TARGET_ARGUMENT))))));
+                                                context, NPC_TARGET_ARG))))));
   }
 
   private static int setDefaultSkinVariant(

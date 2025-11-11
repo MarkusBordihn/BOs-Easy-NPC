@@ -46,14 +46,13 @@ public class AttackObjective extends Command {
                             context ->
                                 removeAttackTargetObjective(
                                     context.getSource(),
-                                    EasyNPCArgument.getEntityWithAccess(
-                                        context, NPC_TARGET_ARGUMENT),
+                                    EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG),
                                     StringArgumentType.getString(context, TARGET_ARGUMENT)))))
         .executes(
             context ->
                 remove(
                     context.getSource(),
-                    EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARGUMENT)));
+                    EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG)));
   }
 
   public static ArgumentBuilder<CommandSourceStack, ?> registerList() {
@@ -64,12 +63,12 @@ public class AttackObjective extends Command {
                     context ->
                         list(
                             context.getSource(),
-                            EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARGUMENT))))
+                            EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG))))
         .executes(
             context ->
                 list(
                     context.getSource(),
-                    EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARGUMENT)));
+                    EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG)));
   }
 
   public static ArgumentBuilder<CommandSourceStack, ?> registerSet() {
@@ -83,14 +82,13 @@ public class AttackObjective extends Command {
                             context ->
                                 setAttackTargetObjective(
                                     context.getSource(),
-                                    EasyNPCArgument.getEntityWithAccess(
-                                        context, NPC_TARGET_ARGUMENT),
+                                    EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG),
                                     StringArgumentType.getString(context, TARGET_ARGUMENT)))))
         .executes(
             context ->
                 set(
                     context.getSource(),
-                    EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARGUMENT)));
+                    EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG)));
   }
 
   public static int remove(CommandSourceStack context, EasyNPC<?> easyNPC) {

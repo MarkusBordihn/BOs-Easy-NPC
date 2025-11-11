@@ -20,8 +20,8 @@
 package de.markusbordihn.easynpc.client.renderer.entity.raw;
 
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
+import de.markusbordihn.easynpc.data.skin.SkinVariantType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.npc.raw.ZombieVillagerRaw.VariantType;
 import java.util.EnumMap;
 import java.util.Map;
 import net.minecraft.Util;
@@ -33,17 +33,18 @@ import net.minecraft.resources.ResourceLocation;
 public class ZombieVillagerRawRenderer extends ZombieVillagerRenderer
     implements EasyNPCEntityRenderer {
 
-  protected static final Map<VariantType, ResourceLocation> TEXTURE_BY_VARIANT_TYPE =
-      Util.make(
-          new EnumMap<>(VariantType.class),
-          map ->
-              map.put(
-                  VariantType.DEFAULT,
-                  ResourceLocation.fromNamespaceAndPath(
-                      ResourceLocation.DEFAULT_NAMESPACE,
-                      "textures/entity/zombie_villager/zombie_villager.png")));
+  protected static final Map<SkinVariantType.ZOMBIE_VILLAGER, ResourceLocation>
+      TEXTURE_BY_VARIANT_TYPE =
+          Util.make(
+              new EnumMap<>(SkinVariantType.ZOMBIE_VILLAGER.class),
+              map ->
+                  map.put(
+                      SkinVariantType.ZOMBIE_VILLAGER.ZOMBIE_VILLAGER,
+                      ResourceLocation.fromNamespaceAndPath(
+                          ResourceLocation.DEFAULT_NAMESPACE,
+                          "textures/entity/zombie_villager/zombie_villager.png")));
   protected static final ResourceLocation DEFAULT_TEXTURE =
-      TEXTURE_BY_VARIANT_TYPE.get(VariantType.DEFAULT);
+      TEXTURE_BY_VARIANT_TYPE.get(SkinVariantType.ZOMBIE_VILLAGER.ZOMBIE_VILLAGER);
 
   public ZombieVillagerRawRenderer(EntityRendererProvider.Context context) {
     super(context);
