@@ -20,8 +20,8 @@
 package de.markusbordihn.easynpc.client.renderer.entity.raw;
 
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
+import de.markusbordihn.easynpc.data.skin.SkinVariantType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.npc.raw.EvokerRaw.VariantType;
 import java.util.EnumMap;
 import java.util.Map;
 import net.minecraft.Util;
@@ -34,21 +34,21 @@ import net.minecraft.world.entity.monster.SpellcasterIllager;
 public class EvokerRawRenderer<T extends SpellcasterIllager> extends EvokerRenderer<T>
     implements EasyNPCEntityRenderer {
 
-  protected static final Map<VariantType, ResourceLocation> TEXTURE_BY_VARIANT_TYPE =
+  protected static final Map<SkinVariantType.ILLAGER, ResourceLocation> TEXTURE_BY_VARIANT_TYPE =
       Util.make(
-          new EnumMap<>(VariantType.class),
+          new EnumMap<>(SkinVariantType.ILLAGER.class),
           map -> {
             map.put(
-                VariantType.EVOKER,
+                SkinVariantType.ILLAGER.EVOKER,
                 ResourceLocation.fromNamespaceAndPath(
                     ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/illager/evoker.png"));
             map.put(
-                VariantType.EVOKER_CROSSED_ARMS,
+                SkinVariantType.ILLAGER.EVOKER_CROSSED_ARMS,
                 ResourceLocation.fromNamespaceAndPath(
                     ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/illager/evoker.png"));
           });
   protected static final ResourceLocation DEFAULT_TEXTURE =
-      TEXTURE_BY_VARIANT_TYPE.get(VariantType.EVOKER);
+      TEXTURE_BY_VARIANT_TYPE.get(SkinVariantType.ILLAGER.EVOKER);
 
   public EvokerRawRenderer(EntityRendererProvider.Context context) {
     super(context);

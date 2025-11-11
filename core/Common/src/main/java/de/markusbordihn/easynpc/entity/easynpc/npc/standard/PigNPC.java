@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.npc.standard;
 
+import de.markusbordihn.easynpc.data.skin.SkinVariantType;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.sound.SoundType;
 import de.markusbordihn.easynpc.entity.easynpc.npc.raw.PigRaw;
@@ -37,7 +38,7 @@ public class PigNPC extends PigRaw implements StandardEasyNPC<PigRaw> {
   public static final String ID = "pig";
 
   public PigNPC(EntityType<? extends Pig> entityType, Level level) {
-    this(entityType, level, VariantType.DEFAULT);
+    this(entityType, level, SkinVariantType.PIG.PIG);
   }
 
   public PigNPC(EntityType<? extends Pig> entityType, Level level, Enum<?> variantType) {

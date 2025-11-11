@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.npc.standard;
 
+import de.markusbordihn.easynpc.data.skin.SkinVariantType;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.sound.SoundType;
 import de.markusbordihn.easynpc.entity.easynpc.npc.raw.CatRaw;
@@ -37,7 +38,7 @@ public class CatNPC extends CatRaw implements StandardEasyNPC<CatRaw> {
   public static final String ID = "cat";
 
   public CatNPC(EntityType<? extends Cat> entityType, Level level) {
-    this(entityType, level, VariantType.BLACK);
+    this(entityType, level, SkinVariantType.CAT.BLACK);
   }
 
   public CatNPC(EntityType<? extends Cat> entityType, Level level, Enum<?> variantType) {

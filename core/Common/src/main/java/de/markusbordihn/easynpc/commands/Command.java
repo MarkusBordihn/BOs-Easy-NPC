@@ -32,8 +32,30 @@ public class Command {
 
   public static final int FAILURE = 0;
   public static final int SINGLE_SUCCESS = 1;
-  public static final String NPC_TARGET_ARGUMENT = "npc_target";
-  public static final String NPC_TARGETS_ARGUMENT = "npc_targets";
+  public static final String COLOR_ARG = "color";
+  public static final String DIALOG_ARG = "dialog";
+  public static final String ENABLE_ARG = "enable";
+  public static final String ENTITY_ARG = "entity";
+  public static final String ITEM_ARG = "item";
+  public static final String MODEL_PART_ARG = "modelPart";
+  public static final String NAME_ARG = "name";
+  public static final String NPC_TARGET_ARG = "npc_target";
+  public static final String NPC_TARGETS_ARG = "npc_targets";
+  public static final String PARAMETER_ARG = "parameter";
+  public static final String PLAYER_ARG = "player";
+  public static final String POSITION_ARG = "position";
+  public static final String SCALE_ARG = "scale";
+  public static final String SLOT_ARG = "slot";
+  public static final String SOUND_ARG = "sound";
+  public static final String TARGET_ARG = "target";
+  public static final String TYPE_ARG = "type";
+  public static final String VALUE_ARG = "value";
+  public static final String VARIANT_ARG = "variant";
+  public static final String VISIBILITY_ARG = "visibility";
+  public static final String X_ARG = "x";
+  public static final String Y_ARG = "y";
+  public static final String YAW_ARG = "yaw";
+  public static final String Z_ARG = "z";
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   protected Command() {}

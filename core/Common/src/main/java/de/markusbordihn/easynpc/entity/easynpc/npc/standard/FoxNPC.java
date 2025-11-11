@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.npc.standard;
 
+import de.markusbordihn.easynpc.data.skin.SkinVariantType;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.sound.SoundType;
 import de.markusbordihn.easynpc.entity.easynpc.npc.raw.FoxRaw;
@@ -37,7 +38,7 @@ public class FoxNPC extends FoxRaw implements StandardEasyNPC<FoxRaw> {
   public static final String ID = "fox";
 
   public FoxNPC(EntityType<? extends Fox> entityType, Level level) {
-    this(entityType, level, VariantType.RED);
+    this(entityType, level, SkinVariantType.FOX.RED);
   }
 
   public FoxNPC(EntityType<? extends Fox> entityType, Level level, Enum<?> variantType) {

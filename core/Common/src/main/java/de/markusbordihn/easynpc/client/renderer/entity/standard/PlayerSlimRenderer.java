@@ -1,6 +1,8 @@
 package de.markusbordihn.easynpc.client.renderer.entity.standard;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.client.texture.VariantTextureManager;
+import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.HumanoidSlimNPC.VariantType;
 import java.util.EnumMap;
@@ -50,6 +52,10 @@ public class PlayerSlimRenderer extends PlayerRenderer {
           });
   protected static final ResourceLocation DEFAULT_TEXTURE =
       TEXTURE_BY_VARIANT_TYPE.get(VariantType.ALEX);
+
+  static {
+    VariantTextureManager.registerVariantTextures(SkinModel.HUMANOID_SLIM, TEXTURE_BY_VARIANT_TYPE);
+  }
 
   public PlayerSlimRenderer(EntityRendererProvider.Context context) {
     super(context, true);

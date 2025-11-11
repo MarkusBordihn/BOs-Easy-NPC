@@ -173,7 +173,8 @@ public interface SoundDataCapable<E extends PathfinderMob> extends EasyNPC<E> {
       VariantDataCapable<E> variantData = this.getEasyNPCVariantData();
       SoundDataSet defaultSoundDataSet =
           this.getDefaultSoundDataSet(
-              new SoundDataSet(), variantData != null ? variantData.getVariantType().name() : "");
+              new SoundDataSet(),
+              variantData != null ? variantData.getSkinVariantType().name() : "");
       defaultSoundDataSet.save(soundDataTag);
     }
 

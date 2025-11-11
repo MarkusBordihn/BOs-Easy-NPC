@@ -54,7 +54,7 @@ public class SkinHandler {
     if (skinDataEntry.type() == SkinType.DEFAULT && !skinDataEntry.name().isEmpty()) {
       VariantDataCapable<?> variantData = skinData.getEasyNPCVariantData();
       if (variantData != null) {
-        variantData.setVariantType(skinDataEntry.name());
+        variantData.setSkinVariantType(skinDataEntry.name());
       }
     }
 
