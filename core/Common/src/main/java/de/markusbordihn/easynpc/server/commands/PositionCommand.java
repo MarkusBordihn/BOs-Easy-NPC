@@ -25,14 +25,13 @@ public class PositionCommand extends Command {
     return Commands.literal("position")
         .requires(cs -> cs.hasPermission(Commands.LEVEL_ALL))
         .then(
-            Commands.argument(NPC_TARGETS_ARGUMENT, EasyNPCArgument.npc())
+            Commands.argument(NPC_TARGETS_ARG, EasyNPCArgument.npc())
                 .then(
-                    Commands.argument("modelPart", StringArgumentType.word())
+                    Commands.argument(MODEL_PART_ARG, StringArgumentType.word())
                         .suggests(
                             (context, builder) -> {
                               EasyNPC<?> easyNPC =
-                                  EasyNPCArgument.getEntityWithAccess(
-                                      context, NPC_TARGETS_ARGUMENT);
+                                  EasyNPCArgument.getEntityWithAccess(context, NPC_TARGETS_ARG);
                               if (easyNPC != null) {
                                 ModelDataCapable<?> modelData = easyNPC.getEasyNPCModelData();
                                 for (ModelPartType partType :
@@ -43,23 +42,27 @@ public class PositionCommand extends Command {
                               return builder.buildFuture();
                             })
                         .then(
-                            Commands.argument("x", FloatArgumentType.floatArg(-3.0F, 3.0F))
+                            Commands.argument(X_ARG, FloatArgumentType.floatArg(-3.0F, 3.0F))
                                 .then(
-                                    Commands.argument("y", FloatArgumentType.floatArg(-3.0F, 3.0F))
+                                    Commands.argument(
+                                            Y_ARG, FloatArgumentType.floatArg(-3.0F, 3.0F))
                                         .then(
                                             Commands.argument(
-                                                    "z", FloatArgumentType.floatArg(-3.0F, 3.0F))
+                                                    Z_ARG, FloatArgumentType.floatArg(-3.0F, 3.0F))
                                                 .executes(
                                                     context -> {
                                                       String partString =
                                                           StringArgumentType.getString(
-                                                              context, "modelPart");
+                                                              context, MODEL_PART_ARG);
                                                       float x =
-                                                          FloatArgumentType.getFloat(context, "x");
+                                                          FloatArgumentType.getFloat(
+                                                              context, X_ARG);
                                                       float y =
-                                                          FloatArgumentType.getFloat(context, "y");
+                                                          FloatArgumentType.getFloat(
+                                                              context, Y_ARG);
                                                       float z =
-                                                          FloatArgumentType.getFloat(context, "z");
+                                                          FloatArgumentType.getFloat(
+                                                              context, Z_ARG);
 
                                                       ModelPartType modelPartType =
                                                           ModelPartType.get(partString);
@@ -70,7 +73,7 @@ public class PositionCommand extends Command {
                                                       }
                                                       Collection<? extends EasyNPC<?>> easyNPCs =
                                                           EasyNPCArgument.getEntitiesWithAccess(
-                                                              context, NPC_TARGETS_ARGUMENT);
+                                                              context, NPC_TARGETS_ARG);
 
                                                       return moveModelPart(
                                                           context.getSource(),

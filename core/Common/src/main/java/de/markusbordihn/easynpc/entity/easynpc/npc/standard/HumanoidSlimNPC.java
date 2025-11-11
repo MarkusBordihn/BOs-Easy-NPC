@@ -65,21 +65,21 @@ public class HumanoidSlimNPC extends PathfinderMobRaw implements StandardEasyNPC
   }
 
   @Override
-  public Enum<?>[] getVariantTypes() {
+  public Enum<?>[] getSkinVariantTypes() {
     return VariantType.values();
   }
 
   @Override
-  public Enum<?> getDefaultVariantType() {
+  public Enum<?> getDefaultSkinVariantType() {
     return VariantType.ALEX;
   }
 
   @Override
-  public Enum<?> getVariantType(String name) {
+  public Enum<?> getSkinVariantType(String name) {
     try {
       return VariantType.valueOf(name);
     } catch (IllegalArgumentException e) {
-      return getDefaultVariantType();
+      return getDefaultSkinVariantType();
     }
   }
 

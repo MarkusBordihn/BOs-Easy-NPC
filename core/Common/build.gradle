@@ -25,6 +25,10 @@ dependencies {
 
 apply from: "$projectDir/../gradle/tasks/generateRawNPCs.gradle"
 
+tasks.named('compileJava') {
+  dependsOn tasks.named('generateRawNPCs')
+}
+
 processResources {
 
   def buildProps = project.properties.clone()

@@ -20,8 +20,8 @@
 package de.markusbordihn.easynpc.client.renderer.entity.raw;
 
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
+import de.markusbordihn.easynpc.data.skin.SkinVariantType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.npc.raw.IllusionerRaw.VariantType;
 import java.util.EnumMap;
 import java.util.Map;
 import net.minecraft.Util;
@@ -32,21 +32,21 @@ import net.minecraft.world.entity.monster.Illusioner;
 
 public class IllusionerRawRenderer extends IllusionerRenderer implements EasyNPCEntityRenderer {
 
-  protected static final Map<VariantType, ResourceLocation> TEXTURE_BY_VARIANT_TYPE =
+  protected static final Map<SkinVariantType.ILLAGER, ResourceLocation> TEXTURE_BY_VARIANT_TYPE =
       Util.make(
-          new EnumMap<>(VariantType.class),
+          new EnumMap<>(SkinVariantType.ILLAGER.class),
           map -> {
             map.put(
-                VariantType.ILLUSIONER,
+                SkinVariantType.ILLAGER.ILLUSIONER,
                 new ResourceLocation(
                     ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/illager/illusioner.png"));
             map.put(
-                VariantType.ILLUSIONER_CROSSED_ARMS,
+                SkinVariantType.ILLAGER.ILLUSIONER_CROSSED_ARMS,
                 new ResourceLocation(
                     ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/illager/illusioner.png"));
           });
   protected static final ResourceLocation DEFAULT_TEXTURE =
-      TEXTURE_BY_VARIANT_TYPE.get(VariantType.ILLUSIONER);
+      TEXTURE_BY_VARIANT_TYPE.get(SkinVariantType.ILLAGER.ILLUSIONER);
 
   public IllusionerRawRenderer(EntityRendererProvider.Context context) {
     super(context);

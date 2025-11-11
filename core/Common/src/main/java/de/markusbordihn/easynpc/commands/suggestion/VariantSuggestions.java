@@ -44,6 +44,6 @@ public class VariantSuggestions {
     if (variantData == null) {
       return SharedSuggestionProvider.suggest(new String[0], build);
     }
-    return SharedSuggestionProvider.suggest(variantData.getVariantTypeNames(), build);
+    return SharedSuggestionProvider.suggest(variantData.getSkinVariantTypeNames(), build);
   }
 }

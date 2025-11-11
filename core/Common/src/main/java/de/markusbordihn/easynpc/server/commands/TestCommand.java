@@ -61,7 +61,7 @@ public class TestCommand extends Command {
                             context ->
                                 spawnAllEntities(context.getSource(), ModRawEntityType.class))
                         .then(
-                            Commands.argument("type", StringArgumentType.word())
+                            Commands.argument(TYPE_ARG, StringArgumentType.word())
                                 .suggests(
                                     (context, builder) -> {
                                       for (ModRawEntityType type : ModRawEntityType.values()) {
@@ -72,7 +72,7 @@ public class TestCommand extends Command {
                                 .executes(
                                     context -> {
                                       String input =
-                                          StringArgumentType.getString(context, "type")
+                                          StringArgumentType.getString(context, TYPE_ARG)
                                               .toUpperCase();
                                       ModRawEntityType type;
                                       try {
@@ -90,7 +90,7 @@ public class TestCommand extends Command {
                             context ->
                                 spawnAllEntities(context.getSource(), ModNPCEntityType.class))
                         .then(
-                            Commands.argument("type", StringArgumentType.word())
+                            Commands.argument(TYPE_ARG, StringArgumentType.word())
                                 .suggests(
                                     (context, builder) -> {
                                       for (ModNPCEntityType type : ModNPCEntityType.values()) {
@@ -101,7 +101,7 @@ public class TestCommand extends Command {
                                 .executes(
                                     context -> {
                                       String input =
-                                          StringArgumentType.getString(context, "type")
+                                          StringArgumentType.getString(context, TYPE_ARG)
                                               .toUpperCase();
                                       ModNPCEntityType type;
                                       try {
@@ -119,7 +119,7 @@ public class TestCommand extends Command {
                             context ->
                                 spawnAllEntities(context.getSource(), ModCustomEntityType.class))
                         .then(
-                            Commands.argument("type", StringArgumentType.word())
+                            Commands.argument(TYPE_ARG, StringArgumentType.word())
                                 .suggests(
                                     (context, builder) -> {
                                       for (ModCustomEntityType type :
@@ -131,7 +131,7 @@ public class TestCommand extends Command {
                                 .executes(
                                     context -> {
                                       String input =
-                                          StringArgumentType.getString(context, "type")
+                                          StringArgumentType.getString(context, TYPE_ARG)
                                               .toUpperCase();
                                       ModCustomEntityType type;
                                       try {

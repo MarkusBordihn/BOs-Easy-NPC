@@ -20,8 +20,8 @@
 package de.markusbordihn.easynpc.client.renderer.entity.raw;
 
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
+import de.markusbordihn.easynpc.data.skin.SkinVariantType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.npc.raw.HorseRaw.VariantType;
 import java.util.EnumMap;
 import java.util.Map;
 import net.minecraft.Util;
@@ -37,108 +37,108 @@ import net.minecraft.world.entity.animal.horse.Horse;
 public class HorseRawRenderer extends AbstractHorseRenderer<Horse, HorseModel<Horse>>
     implements EasyNPCEntityRenderer {
 
-  protected static final Map<VariantType, ResourceLocation> TEXTURE_BY_VARIANT_TYPE =
+  protected static final Map<SkinVariantType.HORSE, ResourceLocation> TEXTURE_BY_VARIANT_TYPE =
       Util.make(
-          new EnumMap<>(VariantType.class),
+          new EnumMap<>(SkinVariantType.HORSE.class),
           map -> {
             map.put(
-                VariantType.WHITE,
+                SkinVariantType.HORSE.WHITE,
                 new ResourceLocation(
                     ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/horse/horse_white.png"));
             map.put(
-                VariantType.WHITE_SADDLED,
+                SkinVariantType.HORSE.WHITE_SADDLED,
                 new ResourceLocation(
                     ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/horse/horse_white.png"));
             map.put(
-                VariantType.CREAMY,
+                SkinVariantType.HORSE.CREAMY,
                 new ResourceLocation(
                     ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/horse/horse_creamy.png"));
             map.put(
-                VariantType.CREAMY_SADDLED,
+                SkinVariantType.HORSE.CREAMY_SADDLED,
                 new ResourceLocation(
                     ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/horse/horse_creamy.png"));
             map.put(
-                VariantType.CHESTNUT,
+                SkinVariantType.HORSE.CHESTNUT,
                 new ResourceLocation(
                     ResourceLocation.DEFAULT_NAMESPACE,
                     "textures/entity/horse/horse_chestnut.png"));
             map.put(
-                VariantType.CHESTNUT_SADDLED,
+                SkinVariantType.HORSE.CHESTNUT_SADDLED,
                 new ResourceLocation(
                     ResourceLocation.DEFAULT_NAMESPACE,
                     "textures/entity/horse/horse_chestnut.png"));
             map.put(
-                VariantType.BROWN,
+                SkinVariantType.HORSE.BROWN,
                 new ResourceLocation(
                     ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/horse/horse_brown.png"));
             map.put(
-                VariantType.BROWN_SADDLED,
+                SkinVariantType.HORSE.BROWN_SADDLED,
                 new ResourceLocation(
                     ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/horse/horse_brown.png"));
             map.put(
-                VariantType.BLACK,
+                SkinVariantType.HORSE.BLACK,
                 new ResourceLocation(
                     ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/horse/horse_black.png"));
             map.put(
-                VariantType.BLACK_SADDLED,
+                SkinVariantType.HORSE.BLACK_SADDLED,
                 new ResourceLocation(
                     ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/horse/horse_black.png"));
             map.put(
-                VariantType.GRAY,
+                SkinVariantType.HORSE.GRAY,
                 new ResourceLocation(
                     ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/horse/horse_gray.png"));
             map.put(
-                VariantType.GRAY_SADDLED,
+                SkinVariantType.HORSE.GRAY_SADDLED,
                 new ResourceLocation(
                     ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/horse/horse_gray.png"));
             map.put(
-                VariantType.DARKBROWN,
+                SkinVariantType.HORSE.DARKBROWN,
                 new ResourceLocation(
                     ResourceLocation.DEFAULT_NAMESPACE,
                     "textures/entity/horse/horse_darkbrown.png"));
             map.put(
-                VariantType.DARKBROWN_SADDLED,
+                SkinVariantType.HORSE.DARKBROWN_SADDLED,
                 new ResourceLocation(
                     ResourceLocation.DEFAULT_NAMESPACE,
                     "textures/entity/horse/horse_darkbrown.png"));
             map.put(
-                VariantType.ZOMBIE,
+                SkinVariantType.HORSE.ZOMBIE,
                 new ResourceLocation(
                     ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/horse/horse_zombie.png"));
             map.put(
-                VariantType.ZOMBIE_SADDLED,
+                SkinVariantType.HORSE.ZOMBIE_SADDLED,
                 new ResourceLocation(
                     ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/horse/horse_zombie.png"));
             map.put(
-                VariantType.SKELETON,
+                SkinVariantType.HORSE.SKELETON,
                 new ResourceLocation(
                     ResourceLocation.DEFAULT_NAMESPACE,
                     "textures/entity/horse/horse_skeleton.png"));
             map.put(
-                VariantType.SKELETON_SADDLED,
+                SkinVariantType.HORSE.SKELETON_SADDLED,
                 new ResourceLocation(
                     ResourceLocation.DEFAULT_NAMESPACE,
                     "textures/entity/horse/horse_skeleton.png"));
             map.put(
-                VariantType.DONKEY,
+                SkinVariantType.HORSE.DONKEY,
                 new ResourceLocation(
                     ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/horse/donkey.png"));
             map.put(
-                VariantType.DONKEY_SADDLED,
+                SkinVariantType.HORSE.DONKEY_SADDLED,
                 new ResourceLocation(
                     ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/horse/donkey.png"));
             map.put(
-                VariantType.MULE,
+                SkinVariantType.HORSE.MULE,
                 new ResourceLocation(
                     ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/horse/mule.png"));
             map.put(
-                VariantType.MULE_SADDLED,
+                SkinVariantType.HORSE.MULE_SADDLED,
                 new ResourceLocation(
                     ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/horse/mule.png"));
           });
 
   protected static final ResourceLocation DEFAULT_TEXTURE =
-      TEXTURE_BY_VARIANT_TYPE.get(VariantType.WHITE);
+      TEXTURE_BY_VARIANT_TYPE.get(SkinVariantType.HORSE.WHITE);
 
   public HorseRawRenderer(EntityRendererProvider.Context context) {
     super(context, new HorseModel<>(context.bakeLayer(ModelLayers.HORSE)), 1.1F);

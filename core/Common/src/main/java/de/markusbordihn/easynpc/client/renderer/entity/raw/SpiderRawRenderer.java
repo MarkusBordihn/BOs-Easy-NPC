@@ -19,10 +19,9 @@
 
 package de.markusbordihn.easynpc.client.renderer.entity.raw;
 
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
+import de.markusbordihn.easynpc.data.skin.SkinVariantType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.npc.raw.SpiderRaw.VariantType;
 import java.util.EnumMap;
 import java.util.Map;
 import net.minecraft.Util;
@@ -30,27 +29,24 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.SpiderRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.monster.Spider;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class SpiderRawRenderer extends SpiderRenderer<Spider> implements EasyNPCEntityRenderer {
 
-  protected static final Map<VariantType, ResourceLocation> TEXTURE_BY_VARIANT_TYPE =
+  protected static final Map<SkinVariantType.SPIDER, ResourceLocation> TEXTURE_BY_VARIANT_TYPE =
       Util.make(
-          new EnumMap<>(VariantType.class),
+          new EnumMap<>(SkinVariantType.SPIDER.class),
           map -> {
             map.put(
-                VariantType.CAVE_SPIDER,
+                SkinVariantType.SPIDER.CAVE_SPIDER,
                 new ResourceLocation(
                     ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/spider/cave_spider.png"));
             map.put(
-                VariantType.SPIDER,
+                SkinVariantType.SPIDER.SPIDER,
                 new ResourceLocation(
                     ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/spider/spider.png"));
           });
   protected static final ResourceLocation DEFAULT_TEXTURE =
-      TEXTURE_BY_VARIANT_TYPE.get(VariantType.SPIDER);
-  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+      TEXTURE_BY_VARIANT_TYPE.get(SkinVariantType.SPIDER.SPIDER);
 
   public SpiderRawRenderer(EntityRendererProvider.Context context) {
     super(context);

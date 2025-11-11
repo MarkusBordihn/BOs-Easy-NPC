@@ -4,6 +4,8 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
 import de.markusbordihn.easynpc.client.texture.CustomTextureManager;
 import de.markusbordihn.easynpc.client.texture.RemoteTextureManager;
+import de.markusbordihn.easynpc.client.texture.VariantTextureManager;
+import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.HumanoidNPC.VariantType;
@@ -82,6 +84,10 @@ public class PlayerRenderer<T extends PathfinderMob> extends LivingEntityRendere
           });
   protected static final ResourceLocation DEFAULT_TEXTURE =
       TEXTURE_BY_VARIANT_TYPE.get(VariantType.STEVE);
+
+  static {
+    VariantTextureManager.registerVariantTextures(SkinModel.HUMANOID, TEXTURE_BY_VARIANT_TYPE);
+  }
 
   public PlayerRenderer(EntityRendererProvider.Context context) {
     this(context, false);

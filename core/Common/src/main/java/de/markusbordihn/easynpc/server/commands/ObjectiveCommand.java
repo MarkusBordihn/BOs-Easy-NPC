@@ -35,7 +35,7 @@ public class ObjectiveCommand extends Command {
     return Commands.literal("objective")
         .requires(commandSourceStack -> commandSourceStack.hasPermission(Commands.LEVEL_ALL))
         .then(
-            Commands.argument(NPC_TARGET_ARGUMENT, EasyNPCArgument.npc())
+            Commands.argument(NPC_TARGET_ARG, EasyNPCArgument.npc())
                 .then(
                     Commands.literal("list")
                         .then(AttackObjective.registerList())

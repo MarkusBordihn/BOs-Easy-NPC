@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.npc.standard;
 
+import de.markusbordihn.easynpc.data.skin.SkinVariantType;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.sound.SoundType;
 import de.markusbordihn.easynpc.entity.easynpc.npc.raw.ZombieVillagerRaw;
@@ -41,7 +42,7 @@ public class ZombieVillagerNPC extends ZombieVillagerRaw
   public static final String ID = "zombie_villager";
 
   public ZombieVillagerNPC(EntityType<? extends ZombieVillager> entityType, Level level) {
-    this(entityType, level, VariantType.DEFAULT);
+    this(entityType, level, SkinVariantType.ZOMBIE_VILLAGER.ZOMBIE_VILLAGER);
   }
 
   public ZombieVillagerNPC(
@@ -74,7 +75,7 @@ public class ZombieVillagerNPC extends ZombieVillagerRaw
       return TextUtils.removeAction(component);
     }
     Component professionName = getProfessionName();
-    Component variantName = getVariantTypeName();
+    Component variantName = getSkinVariantTypeName();
     return TextComponent.getText(variantName.getString() + " (" + professionName.getString() + ")");
   }
 

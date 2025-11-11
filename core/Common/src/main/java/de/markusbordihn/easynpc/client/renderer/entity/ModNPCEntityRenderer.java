@@ -78,7 +78,7 @@ public enum ModNPCEntityRenderer {
   PIGLIN(ModNPCEntityType.PIGLIN, () -> PiglinRawRenderer::new),
   PILLAGER(ModNPCEntityType.PILLAGER, () -> PillagerRawRenderer::new),
   SKELETON(ModNPCEntityType.SKELETON, () -> SkeletonRawRenderer::new),
-  SPIDER_CAVE(ModNPCEntityType.SPIDER_CAVE, () -> SpiderRawRenderer::new),
+  CAVE_SPIDER(ModNPCEntityType.CAVE_SPIDER, () -> SpiderRawRenderer::new),
   SPIDER(ModNPCEntityType.SPIDER, () -> SpiderRawRenderer::new),
   STRAY(ModNPCEntityType.STRAY, () -> StrayRawRenderer::new),
   VEX(ModNPCEntityType.VEX, () -> VexRawRenderer::new),

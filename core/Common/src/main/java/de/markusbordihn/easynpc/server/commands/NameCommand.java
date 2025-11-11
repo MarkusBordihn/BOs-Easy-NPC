@@ -43,80 +43,82 @@ public class NameCommand extends Command {
         .then(
             Commands.literal("set")
                 .then(
-                    Commands.argument(NPC_TARGET_ARGUMENT, EasyNPCArgument.npc())
+                    Commands.argument(NPC_TARGET_ARG, EasyNPCArgument.npc())
                         .then(
-                            Commands.argument("name", StringArgumentType.string())
+                            Commands.argument(NAME_ARG, StringArgumentType.string())
                                 .executes(
                                     context ->
                                         setName(
                                             context.getSource(),
                                             EasyNPCArgument.getEntityWithAccess(
-                                                context, NPC_TARGET_ARGUMENT),
-                                            StringArgumentType.getString(context, "name")))
+                                                context, NPC_TARGET_ARG),
+                                            StringArgumentType.getString(context, NAME_ARG)))
                                 .then(
-                                    Commands.argument("color", StringArgumentType.word())
+                                    Commands.argument(COLOR_ARG, StringArgumentType.word())
                                         .suggests(ColorSuggestions.INSTANCE)
                                         .executes(
                                             context ->
                                                 setNameWithColor(
                                                     context.getSource(),
                                                     EasyNPCArgument.getEntityWithAccess(
-                                                        context, NPC_TARGET_ARGUMENT),
-                                                    StringArgumentType.getString(context, "name"),
-                                                    StringArgumentType.getString(context, "color")))
+                                                        context, NPC_TARGET_ARG),
+                                                    StringArgumentType.getString(context, NAME_ARG),
+                                                    StringArgumentType.getString(
+                                                        context, COLOR_ARG)))
                                         .then(
                                             Commands.argument(
-                                                    "visibility", StringArgumentType.word())
+                                                    VISIBILITY_ARG, StringArgumentType.word())
                                                 .suggests(NameVisibilitySuggestions.INSTANCE)
                                                 .executes(
                                                     context ->
                                                         setNameWithColorAndVisibility(
                                                             context.getSource(),
                                                             EasyNPCArgument.getEntityWithAccess(
-                                                                context, NPC_TARGET_ARGUMENT),
+                                                                context, NPC_TARGET_ARG),
                                                             StringArgumentType.getString(
-                                                                context, "name"),
+                                                                context, NAME_ARG),
                                                             StringArgumentType.getString(
-                                                                context, "color"),
+                                                                context, COLOR_ARG),
                                                             StringArgumentType.getString(
-                                                                context, "visibility"))))))))
+                                                                context, VISIBILITY_ARG))))))))
         .then(
             Commands.literal("color")
                 .then(
-                    Commands.argument(NPC_TARGET_ARGUMENT, EasyNPCArgument.npc())
+                    Commands.argument(NPC_TARGET_ARG, EasyNPCArgument.npc())
                         .then(
-                            Commands.argument("color", StringArgumentType.word())
+                            Commands.argument(COLOR_ARG, StringArgumentType.word())
                                 .suggests(ColorSuggestions.INSTANCE)
                                 .executes(
                                     context ->
                                         setNameColor(
                                             context.getSource(),
                                             EasyNPCArgument.getEntityWithAccess(
-                                                context, NPC_TARGET_ARGUMENT),
-                                            StringArgumentType.getString(context, "color"))))))
+                                                context, NPC_TARGET_ARG),
+                                            StringArgumentType.getString(context, COLOR_ARG))))))
         .then(
             Commands.literal("visibility")
                 .then(
-                    Commands.argument(NPC_TARGET_ARGUMENT, EasyNPCArgument.npc())
+                    Commands.argument(NPC_TARGET_ARG, EasyNPCArgument.npc())
                         .then(
-                            Commands.argument("visibility", StringArgumentType.word())
+                            Commands.argument(VISIBILITY_ARG, StringArgumentType.word())
                                 .suggests(NameVisibilitySuggestions.INSTANCE)
                                 .executes(
                                     context ->
                                         setNameVisibility(
                                             context.getSource(),
                                             EasyNPCArgument.getEntityWithAccess(
-                                                context, NPC_TARGET_ARGUMENT),
-                                            StringArgumentType.getString(context, "visibility"))))))
+                                                context, NPC_TARGET_ARG),
+                                            StringArgumentType.getString(
+                                                context, VISIBILITY_ARG))))))
         .then(
             Commands.literal("clear")
                 .then(
-                    Commands.argument(NPC_TARGET_ARGUMENT, EasyNPCArgument.npc())
+                    Commands.argument(NPC_TARGET_ARG, EasyNPCArgument.npc())
                         .executes(
                             context ->
                                 clearName(
                                     context.getSource(),
-                                    EasyNPCArgument.getEntity(context, NPC_TARGET_ARGUMENT)))));
+                                    EasyNPCArgument.getEntity(context, NPC_TARGET_ARG)))));
   }
 
   private static int setName(CommandSourceStack context, EasyNPC<?> easyNPC, String name) {

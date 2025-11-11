@@ -65,11 +65,11 @@ public class DefaultSkinConfigurationScreen<T extends ConfigurationMenu>
 
     for (int i = skinStartIndex; i < this.numOfSkins && i < skinStartIndex + maxSkinsPerPage; i++) {
       int variantIndex = i;
-      if (variantIndex >= variantData.getVariantTypes().length) {
-        variantIndex = variantIndex % variantData.getVariantTypes().length;
+      if (variantIndex >= variantData.getSkinVariantTypes().length) {
+        variantIndex = variantIndex % variantData.getSkinVariantTypes().length;
       }
 
-      Enum<?> variant = variantData.getVariantTypes()[variantIndex];
+      Enum<?> variant = variantData.getSkinVariantTypes()[variantIndex];
       int left =
           this.leftPos
               + (skinPosition > 4 ? -(SKIN_PREVIEW_WIDTH * 4) - 28 : 32)
@@ -149,7 +149,7 @@ public class DefaultSkinConfigurationScreen<T extends ConfigurationMenu>
     ProfessionDataCapable<?> professionData = this.getEasyNPC().getEasyNPCProfessionData();
     skinButton.active =
         !(skinData.getSkinType() == SkinType.DEFAULT
-            && variantData.getVariantType().equals(variantType)
+            && variantData.getSkinVariantType().equals(variantType)
             && (profession == null || professionData.getProfession().equals(profession)));
 
     EntityConfigScreenRenderer.renderEntity(
@@ -181,7 +181,7 @@ public class DefaultSkinConfigurationScreen<T extends ConfigurationMenu>
     ProfessionDataCapable<?> professionData = this.getEasyNPC().getEasyNPCProfessionData();
     this.numOfProfessions =
         professionData.hasProfessions() ? professionData.getProfessions().length : 0;
-    this.numOfVariants = variantData.getVariantTypes().length;
+    this.numOfVariants = variantData.getSkinVariantTypes().length;
     this.numOfSkins = this.numOfVariants;
 
     log.debug("Found {} predefined variant combinations.", this.numOfSkins);

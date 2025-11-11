@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.data;
 
+import de.markusbordihn.easynpc.data.skin.SkinVariantType;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.utils.TextUtils;
@@ -48,51 +49,51 @@ public interface VariantDataCapable<T extends PathfinderMob> extends EasyNPC<T> 
         SynchedEntityData.defineId(entityClass, EntityDataSerializers.STRING));
   }
 
-  default Enum<?> getDefaultVariantType() {
-    return VariantType.STEVE;
+  default Enum<?> getDefaultSkinVariantType() {
+    return SkinVariantType.HUMANOID.STEVE;
   }
 
-  default Enum<?> getVariantType() {
-    return getVariantType(getSynchedEntityData(SynchedDataIndex.VARIANT_TYPE));
+  default Enum<?> getSkinVariantType() {
+    return getSkinVariantType(getSynchedEntityData(SynchedDataIndex.VARIANT_TYPE));
   }
 
-  default void setVariantType(Enum<?> variant) {
+  default void setSkinVariantType(Enum<?> variant) {
     setSynchedEntityData(SynchedDataIndex.VARIANT_TYPE, variant != null ? variant.name() : "");
-    handleVariantTypeChange(variant);
+    handleSkinVariantTypeChange(variant);
   }
 
-  default void setVariantType(String name) {
-    Enum<?> variantType = getVariantType(name);
+  default void setSkinVariantType(String name) {
+    Enum<?> variantType = getSkinVariantType(name);
     if (variantType != null) {
-      setVariantType(variantType);
+      setSkinVariantType(variantType);
     } else {
       log.error("Unknown variant {} for {}", name, this);
     }
   }
 
-  default void handleVariantTypeChange(Enum<?> variant) {
+  default void handleSkinVariantTypeChange(Enum<?> variant) {
     // Handle variant change if needed.
   }
 
-  default Enum<?> getVariantType(String name) {
-    return VariantType.valueOf(name);
+  default Enum<?> getSkinVariantType(String name) {
+    return SkinVariantType.HUMANOID.valueOf(name);
   }
 
-  default Enum<?>[] getVariantTypes() {
-    return VariantType.values();
+  default Enum<?>[] getSkinVariantTypes() {
+    return SkinVariantType.HUMANOID.values();
   }
 
-  default Stream<String> getVariantTypeNames() {
-    return Stream.of(getVariantTypes()).map(Enum::name);
+  default Stream<String> getSkinVariantTypeNames() {
+    return Stream.of(getSkinVariantTypes()).map(Enum::name);
   }
 
-  default Component getVariantTypeName() {
-    Enum<?> variant = getVariantType();
+  default Component getSkinVariantTypeName() {
+    Enum<?> variant = getSkinVariantType();
     return variant != null ? TextUtils.normalizeName(variant.name()) : getEntityTypeName();
   }
 
   default boolean hasVariantTypeCrossedArms() {
-    return this.hasVariantTypeCrossedArms(getVariantType());
+    return this.hasVariantTypeCrossedArms(getSkinVariantType());
   }
 
   default boolean hasVariantTypeCrossedArms(Enum<?> variant) {
@@ -100,7 +101,7 @@ public interface VariantDataCapable<T extends PathfinderMob> extends EasyNPC<T> 
   }
 
   default boolean hasVariantTypeSaddled() {
-    return this.hasVariantTypeSaddled(getVariantType());
+    return this.hasVariantTypeSaddled(getSkinVariantType());
   }
 
   default boolean hasVariantTypeSaddled(Enum<?> variant) {
@@ -128,12 +129,12 @@ public interface VariantDataCapable<T extends PathfinderMob> extends EasyNPC<T> 
   }
 
   default void defineSynchedVariantData() {
-    defineSynchedEntityData(SynchedDataIndex.VARIANT_TYPE, getDefaultVariantType().name());
+    defineSynchedEntityData(SynchedDataIndex.VARIANT_TYPE, getDefaultSkinVariantType().name());
   }
 
   default void addAdditionalVariantData(CompoundTag compoundTag) {
-    if (this.getVariantType() != null) {
-      compoundTag.putString(EASY_NPC_DATA_VARIANT_TYPE_TAG, this.getVariantType().name());
+    if (this.getSkinVariantType() != null) {
+      compoundTag.putString(EASY_NPC_DATA_VARIANT_TYPE_TAG, this.getSkinVariantType().name());
     }
   }
 
@@ -141,13 +142,8 @@ public interface VariantDataCapable<T extends PathfinderMob> extends EasyNPC<T> 
     if (compoundTag.contains(EASY_NPC_DATA_VARIANT_TYPE_TAG)) {
       String variantType = compoundTag.getString(EASY_NPC_DATA_VARIANT_TYPE_TAG);
       if (!variantType.isEmpty()) {
-        this.setVariantType(this.getVariantType(variantType));
+        this.setSkinVariantType(this.getSkinVariantType(variantType));
       }
     }
-  }
-
-  enum VariantType {
-    STEVE,
-    ALEX
   }
 }

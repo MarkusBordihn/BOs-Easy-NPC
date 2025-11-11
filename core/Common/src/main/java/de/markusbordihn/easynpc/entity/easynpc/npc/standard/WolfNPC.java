@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.npc.standard;
 
+import de.markusbordihn.easynpc.data.skin.SkinVariantType;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.sound.SoundType;
 import de.markusbordihn.easynpc.entity.easynpc.npc.raw.WolfRaw;
@@ -37,7 +38,7 @@ public class WolfNPC extends WolfRaw implements StandardEasyNPC<WolfRaw> {
   public static final String ID = "wolf";
 
   public WolfNPC(EntityType<? extends Wolf> entityType, Level level) {
-    this(entityType, level, VariantType.DEFAULT);
+    this(entityType, level, SkinVariantType.WOLF.WOLF);
   }
 
   public WolfNPC(EntityType<? extends Wolf> entityType, Level level, Enum<?> variantType) {

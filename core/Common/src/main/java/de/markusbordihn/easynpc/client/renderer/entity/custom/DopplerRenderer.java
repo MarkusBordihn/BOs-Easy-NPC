@@ -7,9 +7,9 @@ import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
 import de.markusbordihn.easynpc.client.renderer.manager.EntityTypeManager;
 import de.markusbordihn.easynpc.client.renderer.manager.RendererManager;
 import de.markusbordihn.easynpc.data.render.RenderType;
+import de.markusbordihn.easynpc.data.skin.SkinVariantType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.RenderDataCapable;
-import de.markusbordihn.easynpc.entity.easynpc.npc.custom.Doppler.VariantType;
 import java.util.EnumMap;
 import java.util.Map;
 import net.minecraft.Util;
@@ -29,15 +29,15 @@ import org.apache.logging.log4j.Logger;
 public class DopplerRenderer<E extends PathfinderMob>
     extends HumanoidMobRenderer<E, DopplerModel<E>> implements EasyNPCEntityRenderer {
 
-  protected static final Map<VariantType, ResourceLocation> TEXTURE_BY_VARIANT_TYPE =
+  protected static final Map<SkinVariantType.DOPPLER, ResourceLocation> TEXTURE_BY_VARIANT_TYPE =
       Util.make(
-          new EnumMap<>(VariantType.class),
+          new EnumMap<>(SkinVariantType.DOPPLER.class),
           map ->
               map.put(
-                  VariantType.DEFAULT,
+                  SkinVariantType.DOPPLER.DOPPLER,
                   new ResourceLocation(Constants.MOD_ID, "textures/entity/doppler/doppler.png")));
   protected static final ResourceLocation DEFAULT_TEXTURE =
-      TEXTURE_BY_VARIANT_TYPE.get(VariantType.DEFAULT);
+      TEXTURE_BY_VARIANT_TYPE.get(SkinVariantType.DOPPLER.DOPPLER);
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   public DopplerRenderer(

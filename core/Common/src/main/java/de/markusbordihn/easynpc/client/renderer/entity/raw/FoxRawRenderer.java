@@ -20,8 +20,8 @@
 package de.markusbordihn.easynpc.client.renderer.entity.raw;
 
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
+import de.markusbordihn.easynpc.data.skin.SkinVariantType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.npc.raw.FoxRaw.VariantType;
 import java.util.EnumMap;
 import java.util.Map;
 import net.minecraft.Util;
@@ -32,21 +32,21 @@ import net.minecraft.world.entity.animal.Fox;
 
 public class FoxRawRenderer extends FoxRenderer implements EasyNPCEntityRenderer {
 
-  protected static final Map<VariantType, ResourceLocation> TEXTURE_BY_VARIANT_TYPE =
+  protected static final Map<SkinVariantType.FOX, ResourceLocation> TEXTURE_BY_VARIANT_TYPE =
       Util.make(
-          new EnumMap<>(VariantType.class),
+          new EnumMap<>(SkinVariantType.FOX.class),
           map -> {
             map.put(
-                VariantType.RED,
+                SkinVariantType.FOX.RED,
                 new ResourceLocation(
                     ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/fox/fox.png"));
             map.put(
-                VariantType.SNOW,
+                SkinVariantType.FOX.SNOW,
                 new ResourceLocation(
                     ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/fox/snow_fox.png"));
           });
   protected static final ResourceLocation DEFAULT_TEXTURE =
-      TEXTURE_BY_VARIANT_TYPE.get(VariantType.RED);
+      TEXTURE_BY_VARIANT_TYPE.get(SkinVariantType.FOX.RED);
 
   public FoxRawRenderer(EntityRendererProvider.Context context) {
     super(context);

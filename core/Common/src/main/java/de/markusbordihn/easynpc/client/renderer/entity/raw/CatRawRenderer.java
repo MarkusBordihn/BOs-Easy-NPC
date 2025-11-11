@@ -20,8 +20,8 @@
 package de.markusbordihn.easynpc.client.renderer.entity.raw;
 
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
+import de.markusbordihn.easynpc.data.skin.SkinVariantType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.npc.raw.CatRaw.VariantType;
 import java.util.EnumMap;
 import java.util.Map;
 import net.minecraft.Util;
@@ -32,62 +32,62 @@ import net.minecraft.world.entity.animal.Cat;
 
 public class CatRawRenderer extends CatRenderer implements EasyNPCEntityRenderer {
 
-  protected static final Map<VariantType, ResourceLocation> TEXTURE_BY_VARIANT_TYPE =
+  protected static final Map<SkinVariantType.CAT, ResourceLocation> TEXTURE_BY_VARIANT_TYPE =
       Util.make(
-          new EnumMap<>(VariantType.class),
+          new EnumMap<>(SkinVariantType.CAT.class),
           map -> {
             map.put(
-                VariantType.ALL_BLACK,
+                SkinVariantType.CAT.ALL_BLACK,
                 new ResourceLocation(
                     ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/cat/all_black.png"));
             map.put(
-                VariantType.BLACK,
+                SkinVariantType.CAT.BLACK,
                 new ResourceLocation(
                     ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/cat/black.png"));
             map.put(
-                VariantType.BRITISH_SHORTHAIR,
+                SkinVariantType.CAT.BRITISH_SHORTHAIR,
                 new ResourceLocation(
                     ResourceLocation.DEFAULT_NAMESPACE,
                     "textures/entity/cat/british_shorthair.png"));
             map.put(
-                VariantType.CALICO,
+                SkinVariantType.CAT.CALICO,
                 new ResourceLocation(
                     ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/cat/calico.png"));
             map.put(
-                VariantType.JELLIE,
+                SkinVariantType.CAT.JELLIE,
                 new ResourceLocation(
                     ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/cat/jellie.png"));
             map.put(
-                VariantType.OCELOT,
+                SkinVariantType.CAT.OCELOT,
                 new ResourceLocation(
                     ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/cat/ocelot.png"));
             map.put(
-                VariantType.PERSIAN,
+                SkinVariantType.CAT.PERSIAN,
                 new ResourceLocation(
                     ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/cat/persian.png"));
             map.put(
-                VariantType.RAGDOLL,
+                SkinVariantType.CAT.RAGDOLL,
                 new ResourceLocation(
                     ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/cat/ragdoll.png"));
             map.put(
-                VariantType.RED,
+                SkinVariantType.CAT.RED,
                 new ResourceLocation(
                     ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/cat/red.png"));
             map.put(
-                VariantType.SIAMESE,
+                SkinVariantType.CAT.SIAMESE,
                 new ResourceLocation(
                     ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/cat/siamese.png"));
             map.put(
-                VariantType.TABBY,
+                SkinVariantType.CAT.TABBY,
                 new ResourceLocation(
                     ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/cat/tabby.png"));
             map.put(
-                VariantType.WHITE,
+                SkinVariantType.CAT.WHITE,
                 new ResourceLocation(
                     ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/cat/white.png"));
           });
   protected static final ResourceLocation DEFAULT_TEXTURE =
-      TEXTURE_BY_VARIANT_TYPE.get(VariantType.BLACK);
+      TEXTURE_BY_VARIANT_TYPE.get(SkinVariantType.CAT.BLACK);
 
   public CatRawRenderer(EntityRendererProvider.Context context) {
     super(context);

@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.npc.standard;
 
+import de.markusbordihn.easynpc.data.skin.SkinVariantType;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.sound.SoundType;
 import de.markusbordihn.easynpc.entity.easynpc.npc.raw.SpiderRaw;
@@ -35,10 +36,10 @@ import net.minecraft.world.phys.Vec3;
 public class SpiderNPC extends SpiderRaw implements StandardEasyNPC<SpiderRaw> {
 
   public static final String ID = "spider";
-  public static final String ID_CAVE_SPIDER = "cave_spider";
+  public static final String CAVE_SPIDER_ID = "cave_spider";
 
   public SpiderNPC(EntityType<? extends Spider> entityType, Level level) {
-    this(entityType, level, VariantType.SPIDER);
+    this(entityType, level, SkinVariantType.SPIDER.SPIDER);
   }
 
   public SpiderNPC(EntityType<? extends Spider> entityType, Level level, Enum<?> variantType) {
@@ -70,15 +71,9 @@ public class SpiderNPC extends SpiderRaw implements StandardEasyNPC<SpiderRaw> {
 
   @Override
   public SoundDataSet getDefaultSoundDataSet(SoundDataSet soundDataSet, String variantName) {
-    VariantType soundVariant = VariantType.valueOf(variantName);
+    SkinVariantType.SPIDER soundVariant = SkinVariantType.SPIDER.valueOf(variantName);
     switch (soundVariant) {
-      case CAVE_SPIDER:
-        soundDataSet.addDefaultSound(SoundType.AMBIENT, SoundEvents.SPIDER_AMBIENT);
-        soundDataSet.addDefaultSound(SoundType.HURT, SoundEvents.SPIDER_HURT);
-        soundDataSet.addDefaultSound(SoundType.DEATH, SoundEvents.SPIDER_DEATH);
-        soundDataSet.addDefaultSound(SoundType.STEP, SoundEvents.SPIDER_STEP);
-        break;
-      case SPIDER:
+      case CAVE_SPIDER, SPIDER:
       default:
         soundDataSet.addDefaultSound(SoundType.AMBIENT, SoundEvents.SPIDER_AMBIENT);
         soundDataSet.addDefaultSound(SoundType.HURT, SoundEvents.SPIDER_HURT);

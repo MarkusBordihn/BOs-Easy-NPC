@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.entity;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.data.skin.SkinVariantType;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.AllayNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.CatNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.ChickenNPC;
@@ -135,7 +136,7 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
       HorseNPC.ID_SKELETON,
       EntityType.Builder.of(
               (EntityType<HorseNPC> type, Level level) ->
-                  new HorseNPC(type, level, HorseNPC.VariantType.SKELETON),
+                  new HorseNPC(type, level, SkinVariantType.HORSE.SKELETON),
               MobCategory.MONSTER)
           .sized(1.4F, 1.6F)
           .clientTrackingRange(12),
@@ -144,7 +145,7 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
       HorseNPC.ID_ZOMBIE,
       EntityType.Builder.of(
               (EntityType<HorseNPC> type, Level level) ->
-                  new HorseNPC(type, level, HorseNPC.VariantType.ZOMBIE),
+                  new HorseNPC(type, level, SkinVariantType.HORSE.ZOMBIE),
               MobCategory.MONSTER)
           .sized(1.4F, 1.6F)
           .clientTrackingRange(12),
@@ -254,11 +255,11 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
           .sized(1.4F, 0.9F)
           .clientTrackingRange(12),
       SpiderNPC::createAttributes),
-  SPIDER_CAVE(
-      SpiderNPC.ID_CAVE_SPIDER,
+  CAVE_SPIDER(
+      SpiderNPC.CAVE_SPIDER_ID,
       EntityType.Builder.of(
               (EntityType<SpiderNPC> type, Level level) ->
-                  new SpiderNPC(type, level, SpiderNPC.VariantType.CAVE_SPIDER),
+                  new SpiderNPC(type, level, SkinVariantType.SPIDER.CAVE_SPIDER),
               MobCategory.MONSTER)
           .sized(0.7F, 0.5F)
           .clientTrackingRange(12),

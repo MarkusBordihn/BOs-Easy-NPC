@@ -48,36 +48,36 @@ public class RenderCommand extends Command {
                             commandSourceStack ->
                                 commandSourceStack.hasPermission(Commands.LEVEL_ALL))
                         .then(
-                            Commands.argument(NPC_TARGET_ARGUMENT, EasyNPCArgument.npc())
+                            Commands.argument(NPC_TARGET_ARG, EasyNPCArgument.npc())
                                 .then(
-                                    Commands.argument("type", StringArgumentType.string())
+                                    Commands.argument(TYPE_ARG, StringArgumentType.string())
                                         .suggests(RenderTypeSuggestions::suggest)
                                         .executes(
                                             context ->
                                                 setRenderType(
                                                     context.getSource(),
                                                     EasyNPCArgument.getEntityWithAccess(
-                                                        context, NPC_TARGET_ARGUMENT),
+                                                        context, NPC_TARGET_ARG),
                                                     RenderType.get(
                                                         StringArgumentType.getString(
-                                                            context, "type")))))))
+                                                            context, TYPE_ARG)))))))
                 .then(
                     Commands.literal("entity")
                         .requires(
                             commandSourceStack ->
                                 commandSourceStack.hasPermission(Commands.LEVEL_ALL))
                         .then(
-                            Commands.argument(NPC_TARGET_ARGUMENT, EasyNPCArgument.npc())
+                            Commands.argument(NPC_TARGET_ARG, EasyNPCArgument.npc())
                                 .then(
-                                    Commands.argument("entity", EntityTypeArgument.entityType())
+                                    Commands.argument(ENTITY_ARG, EntityTypeArgument.entityType())
                                         .executes(
                                             context ->
                                                 setRenderEntityType(
                                                     context.getSource(),
                                                     EasyNPCArgument.getEntityWithAccess(
-                                                        context, NPC_TARGET_ARGUMENT),
+                                                        context, NPC_TARGET_ARG),
                                                     EntityTypeArgument.getEntityType(
-                                                        context, "entity")))))));
+                                                        context, ENTITY_ARG)))))));
   }
 
   private static int setRenderType(

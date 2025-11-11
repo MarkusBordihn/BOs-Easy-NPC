@@ -67,13 +67,13 @@ public class PresetCommand extends Command {
                 .then(
                     Commands.literal(LOCAL_ARG)
                         .then(
-                            Commands.argument(NPC_TARGET_ARGUMENT, EasyNPCArgument.npc())
+                            Commands.argument(NPC_TARGET_ARG, EasyNPCArgument.npc())
                                 .executes(
                                     context ->
                                         exportLocalPreset(
                                             context.getSource(),
                                             EasyNPCArgument.getEntityWithAccess(
-                                                context, NPC_TARGET_ARGUMENT),
+                                                context, NPC_TARGET_ARG),
                                             null))
                                 .then(
                                     Commands.argument(NAME_ARG, StringArgumentType.string())
@@ -82,19 +82,19 @@ public class PresetCommand extends Command {
                                                 exportLocalPreset(
                                                     context.getSource(),
                                                     EasyNPCArgument.getEntityWithAccess(
-                                                        context, NPC_TARGET_ARGUMENT),
+                                                        context, NPC_TARGET_ARG),
                                                     StringArgumentType.getString(
                                                         context, NAME_ARG))))))
                 .then(
                     Commands.literal(CUSTOM_ARG)
                         .then(
-                            Commands.argument(NPC_TARGET_ARGUMENT, EasyNPCArgument.npc())
+                            Commands.argument(NPC_TARGET_ARG, EasyNPCArgument.npc())
                                 .executes(
                                     context ->
                                         exportCustomPreset(
                                             context.getSource(),
                                             EasyNPCArgument.getEntityWithAccess(
-                                                context, NPC_TARGET_ARGUMENT),
+                                                context, NPC_TARGET_ARG),
                                             null))
                                 .then(
                                     Commands.argument(NAME_ARG, StringArgumentType.string())
@@ -103,19 +103,19 @@ public class PresetCommand extends Command {
                                                 exportCustomPreset(
                                                     context.getSource(),
                                                     EasyNPCArgument.getEntityWithAccess(
-                                                        context, NPC_TARGET_ARGUMENT),
+                                                        context, NPC_TARGET_ARG),
                                                     StringArgumentType.getString(
                                                         context, NAME_ARG))))))
                 .then(
                     Commands.literal(WORLD_ARG)
                         .then(
-                            Commands.argument(NPC_TARGET_ARGUMENT, EasyNPCArgument.npc())
+                            Commands.argument(NPC_TARGET_ARG, EasyNPCArgument.npc())
                                 .executes(
                                     context ->
                                         exportWorldPreset(
                                             context.getSource(),
                                             EasyNPCArgument.getEntityWithAccess(
-                                                context, NPC_TARGET_ARGUMENT),
+                                                context, NPC_TARGET_ARG),
                                             null))
                                 .then(
                                     Commands.argument(NAME_ARG, StringArgumentType.string())
@@ -124,7 +124,7 @@ public class PresetCommand extends Command {
                                                 exportWorldPreset(
                                                     context.getSource(),
                                                     EasyNPCArgument.getEntityWithAccess(
-                                                        context, NPC_TARGET_ARGUMENT),
+                                                        context, NPC_TARGET_ARG),
                                                     StringArgumentType.getString(
                                                         context, NAME_ARG)))))))
         .then(
@@ -438,7 +438,7 @@ public class PresetCommand extends Command {
                             Commands.argument(PRESET_ARG, ResourceLocationArgument.id())
                                 .suggests(PresetSuggestions::suggestCustom)
                                 .then(
-                                    Commands.argument("player", EntityArgument.player())
+                                    Commands.argument(PLAYER_ARG, EntityArgument.player())
                                         .then(
                                             Commands.argument(LOCATION_ARG, Vec3Argument.vec3())
                                                 .executes(
@@ -454,7 +454,7 @@ public class PresetCommand extends Command {
                                                               context.getSource()),
                                                           UUID.randomUUID(),
                                                           EntityArgument.getPlayer(
-                                                              context, "player"));
+                                                              context, PLAYER_ARG));
                                                     })))))
                 .then(
                     Commands.literal(DATA_ARG)
@@ -462,7 +462,7 @@ public class PresetCommand extends Command {
                             Commands.argument(PRESET_ARG, ResourceLocationArgument.id())
                                 .suggests(PresetSuggestions::suggestData)
                                 .then(
-                                    Commands.argument("player", EntityArgument.player())
+                                    Commands.argument(PLAYER_ARG, EntityArgument.player())
                                         .then(
                                             Commands.argument(LOCATION_ARG, Vec3Argument.vec3())
                                                 .executes(
@@ -478,7 +478,7 @@ public class PresetCommand extends Command {
                                                               context.getSource()),
                                                           UUID.randomUUID(),
                                                           EntityArgument.getPlayer(
-                                                              context, "player"));
+                                                              context, PLAYER_ARG));
                                                     })))))
                 .then(
                     Commands.literal(DEFAULT_ARG)
@@ -486,7 +486,7 @@ public class PresetCommand extends Command {
                             Commands.argument(PRESET_ARG, ResourceLocationArgument.id())
                                 .suggests(PresetSuggestions::suggestDefault)
                                 .then(
-                                    Commands.argument("player", EntityArgument.player())
+                                    Commands.argument(PLAYER_ARG, EntityArgument.player())
                                         .then(
                                             Commands.argument(LOCATION_ARG, Vec3Argument.vec3())
                                                 .executes(
@@ -502,7 +502,7 @@ public class PresetCommand extends Command {
                                                               context.getSource()),
                                                           UUID.randomUUID(),
                                                           EntityArgument.getPlayer(
-                                                              context, "player"));
+                                                              context, PLAYER_ARG));
                                                     })))))
                 .then(
                     Commands.literal(WORLD_ARG)
@@ -510,7 +510,7 @@ public class PresetCommand extends Command {
                             Commands.argument(PRESET_ARG, ResourceLocationArgument.id())
                                 .suggests(PresetSuggestions::suggestWorld)
                                 .then(
-                                    Commands.argument("player", EntityArgument.player())
+                                    Commands.argument(PLAYER_ARG, EntityArgument.player())
                                         .then(
                                             Commands.argument(LOCATION_ARG, Vec3Argument.vec3())
                                                 .executes(
@@ -526,7 +526,7 @@ public class PresetCommand extends Command {
                                                               context.getSource()),
                                                           UUID.randomUUID(),
                                                           EntityArgument.getPlayer(
-                                                              context, "player"));
+                                                              context, PLAYER_ARG));
                                                     }))))));
   }
 

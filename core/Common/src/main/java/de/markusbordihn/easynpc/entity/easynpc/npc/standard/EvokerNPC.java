@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.npc.standard;
 
+import de.markusbordihn.easynpc.data.skin.SkinVariantType;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.sound.SoundType;
 import de.markusbordihn.easynpc.entity.easynpc.npc.raw.EvokerRaw;
@@ -37,7 +38,7 @@ public class EvokerNPC extends EvokerRaw implements StandardEasyNPC<EvokerRaw> {
   public static final String ID = "evoker";
 
   public EvokerNPC(EntityType<? extends Evoker> entityType, Level level) {
-    super(entityType, level, VariantType.EVOKER);
+    super(entityType, level, SkinVariantType.ILLAGER.EVOKER);
   }
 
   public EvokerNPC(EntityType<? extends Evoker> entityType, Level level, Enum<?> variant) {
