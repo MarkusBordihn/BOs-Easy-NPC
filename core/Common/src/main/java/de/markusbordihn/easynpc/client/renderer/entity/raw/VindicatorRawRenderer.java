@@ -20,8 +20,8 @@
 package de.markusbordihn.easynpc.client.renderer.entity.raw;
 
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
+import de.markusbordihn.easynpc.data.skin.SkinVariantType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.npc.raw.VindicatorRaw.VariantType;
 import java.util.EnumMap;
 import java.util.Map;
 import net.minecraft.Util;
@@ -32,21 +32,21 @@ import net.minecraft.resources.ResourceLocation;
 
 public class VindicatorRawRenderer extends VindicatorRenderer implements EasyNPCEntityRenderer {
 
-  protected static final Map<VariantType, ResourceLocation> TEXTURE_BY_VARIANT_TYPE =
+  protected static final Map<SkinVariantType.ILLAGER, ResourceLocation> TEXTURE_BY_VARIANT_TYPE =
       Util.make(
-          new EnumMap<>(VariantType.class),
+          new EnumMap<>(SkinVariantType.ILLAGER.class),
           map -> {
             map.put(
-                VariantType.VINDICATOR,
+                SkinVariantType.ILLAGER.VINDICATOR,
                 ResourceLocation.fromNamespaceAndPath(
                     ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/illager/vindicator.png"));
             map.put(
-                VariantType.VINDICATOR_CROSSED_ARMS,
+                SkinVariantType.ILLAGER.VINDICATOR_CROSSED_ARMS,
                 ResourceLocation.fromNamespaceAndPath(
                     ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/illager/vindicator.png"));
           });
   protected static final ResourceLocation DEFAULT_TEXTURE =
-      TEXTURE_BY_VARIANT_TYPE.get(VariantType.VINDICATOR);
+      TEXTURE_BY_VARIANT_TYPE.get(SkinVariantType.ILLAGER.VINDICATOR);
 
   public VindicatorRawRenderer(EntityRendererProvider.Context context) {
     super(context);

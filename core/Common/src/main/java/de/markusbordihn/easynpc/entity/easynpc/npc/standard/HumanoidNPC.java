@@ -59,21 +59,21 @@ public class HumanoidNPC extends PathfinderMobRaw implements StandardEasyNPC<Pat
   }
 
   @Override
-  public Enum<?>[] getVariantTypes() {
+  public Enum<?>[] getSkinVariantTypes() {
     return VariantType.values();
   }
 
   @Override
-  public Enum<?> getDefaultVariantType() {
+  public Enum<?> getDefaultSkinVariantType() {
     return VariantType.STEVE;
   }
 
   @Override
-  public Enum<?> getVariantType(String name) {
+  public Enum<?> getSkinVariantType(String name) {
     try {
       return VariantType.valueOf(name);
     } catch (IllegalArgumentException e) {
-      return getDefaultVariantType();
+      return getDefaultSkinVariantType();
     }
   }
 

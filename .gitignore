@@ -35,6 +35,9 @@ forge*changelog.txt
 # Template placeholder files
 put_your_*_here
 
+# Raw NPC Types (auto-generated)
+/core/Common/src/main/java/de/markusbordihn/easynpc/entity/easynpc/npc/raw/*Raw.java
+
 # Other
 .DS_Store
 generated

@@ -49,9 +49,9 @@ public class SpawnerCommand extends Command {
             Commands.literal("set")
                 .requires(cs -> cs.hasPermission(Commands.LEVEL_GAMEMASTERS))
                 .then(
-                    Commands.argument("target", BlockPosArgument.blockPos())
+                    Commands.argument(TARGET_ARG, BlockPosArgument.blockPos())
                         .then(
-                            Commands.argument("parameter", StringArgumentType.string())
+                            Commands.argument(PARAMETER_ARG, StringArgumentType.string())
                                 .suggests(
                                     (context, builder) ->
                                         SharedSuggestionProvider.suggest(
@@ -65,17 +65,18 @@ public class SpawnerCommand extends Command {
                                                 "SpawnRange"),
                                             builder))
                                 .then(
-                                    Commands.argument("value", IntegerArgumentType.integer(0, 1000))
+                                    Commands.argument(
+                                            VALUE_ARG, IntegerArgumentType.integer(0, 1000))
                                         .executes(
                                             context ->
                                                 setSpawnerValue(
                                                     context.getSource(),
                                                     BlockPosArgument.getLoadedBlockPos(
-                                                        context, "target"),
+                                                        context, TARGET_ARG),
                                                     StringArgumentType.getString(
-                                                        context, "parameter"),
+                                                        context, PARAMETER_ARG),
                                                     IntegerArgumentType.getInteger(
-                                                        context, "value")))))));
+                                                        context, VALUE_ARG)))))));
   }
 
   private static int setSpawnerValue(

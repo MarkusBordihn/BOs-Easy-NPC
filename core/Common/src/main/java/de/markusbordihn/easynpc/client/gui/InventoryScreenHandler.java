@@ -186,7 +186,7 @@ public class InventoryScreenHandler {
       if (skinData.getSkinType() == SkinType.DEFAULT) {
         ResourceLocation textureLocation =
             PlayerRenderer.TEXTURE_BY_VARIANT_TYPE.getOrDefault(
-                easyNPC.getEasyNPCVariantData().getVariantType(), playerRenderState.skin.texture());
+                easyNPC.getEasyNPCVariantData().getSkinVariantType(), playerRenderState.skin.texture());
         cumstomPlayerRenderState.skin =
             new PlayerSkin(textureLocation, null, null, null, playerSkinModel, false);
       } else if (skinData.getSkinType() == SkinType.CUSTOM) {

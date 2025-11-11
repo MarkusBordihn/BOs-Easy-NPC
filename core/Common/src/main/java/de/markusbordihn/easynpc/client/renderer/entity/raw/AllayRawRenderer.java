@@ -21,8 +21,8 @@ package de.markusbordihn.easynpc.client.renderer.entity.raw;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
+import de.markusbordihn.easynpc.data.skin.SkinVariantType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.npc.raw.AllayRaw.VariantType;
 import java.util.EnumMap;
 import java.util.Map;
 import net.minecraft.Util;
@@ -33,25 +33,25 @@ import net.minecraft.resources.ResourceLocation;
 
 public class AllayRawRenderer extends AllayRenderer implements EasyNPCEntityRenderer {
 
-  protected static final Map<VariantType, ResourceLocation> TEXTURE_BY_VARIANT_TYPE =
+  protected static final Map<SkinVariantType.ALLAY, ResourceLocation> TEXTURE_BY_VARIANT_TYPE =
       Util.make(
-          new EnumMap<>(VariantType.class),
+          new EnumMap<>(SkinVariantType.ALLAY.class),
           map -> {
             map.put(
-                VariantType.LAVA,
+                SkinVariantType.ALLAY.LAVA,
                 ResourceLocation.fromNamespaceAndPath(
                     Constants.MOD_ID, "textures/entity/allay/allay_lava.png"));
             map.put(
-                VariantType.GRASSLAND,
+                SkinVariantType.ALLAY.GRASSLAND,
                 ResourceLocation.fromNamespaceAndPath(
                     Constants.MOD_ID, "textures/entity/allay/allay_grassland.png"));
             map.put(
-                VariantType.WATER,
+                SkinVariantType.ALLAY.WATER,
                 ResourceLocation.fromNamespaceAndPath(
                     Constants.MOD_ID, "textures/entity/allay/allay_water.png"));
           });
   protected static final ResourceLocation DEFAULT_TEXTURE =
-      TEXTURE_BY_VARIANT_TYPE.get(VariantType.WATER);
+      TEXTURE_BY_VARIANT_TYPE.get(SkinVariantType.ALLAY.WATER);
 
   public AllayRawRenderer(EntityRendererProvider.Context context) {
     super(context);

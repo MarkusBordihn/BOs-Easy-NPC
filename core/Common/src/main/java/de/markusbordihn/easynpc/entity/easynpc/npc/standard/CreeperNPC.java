@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.npc.standard;
 
+import de.markusbordihn.easynpc.data.skin.SkinVariantType;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.sound.SoundType;
 import de.markusbordihn.easynpc.entity.easynpc.npc.raw.CreeperRaw;
@@ -37,7 +38,7 @@ public class CreeperNPC extends CreeperRaw implements StandardEasyNPC<CreeperRaw
   public static final String ID = "creeper";
 
   public CreeperNPC(EntityType<? extends Creeper> entityType, Level level) {
-    this(entityType, level, VariantType.DEFAULT);
+    this(entityType, level, SkinVariantType.CREEPER.CREEPER);
   }
 
   public CreeperNPC(EntityType<? extends Creeper> entityType, Level level, Enum<?> variantType) {
@@ -72,9 +73,9 @@ public class CreeperNPC extends CreeperRaw implements StandardEasyNPC<CreeperRaw
 
   @Override
   public boolean isIgnited() {
-    if (getVariantType() == VariantType.DEFAULT) {
+    if (getSkinVariantType() == SkinVariantType.CREEPER.CREEPER) {
       return false;
-    } else if (getVariantType() == VariantType.CHARGED) {
+    } else if (getSkinVariantType() == SkinVariantType.CREEPER.CHARGED) {
       return true;
     }
     return super.isIgnited();

@@ -31,6 +31,7 @@ import de.markusbordihn.easynpc.entity.easynpc.data.SoundDataCapable;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.ResourceLocationArgument;
+import net.minecraft.commands.synchronization.SuggestionProviders;
 import net.minecraft.resources.ResourceLocation;
 
 public class SoundCommand extends Command {
@@ -43,19 +44,19 @@ public class SoundCommand extends Command {
         .then(
             Commands.literal("set")
                 .then(
-                    Commands.argument(NPC_TARGET_ARGUMENT, EasyNPCArgument.npc())
+                    Commands.argument(NPC_TARGET_ARG, EasyNPCArgument.npc())
                         .then(
-                            Commands.argument("type", StringArgumentType.string())
+                            Commands.argument(TYPE_ARG, StringArgumentType.string())
                                 .suggests(SoundTypeSuggestions::suggest)
                                 .then(
-                                    Commands.argument("sound", ResourceLocationArgument.id())
-                                        // .suggests(SuggestionProviders.AVAILABLE_SOUNDS)
+                                    Commands.argument(SOUND_ARG, ResourceLocationArgument.id())
+                                        .suggests(SuggestionProviders.cast(SuggestionProviders.AVAILABLE_SOUNDS))
                                         .executes(
                                             context ->
                                                 setSoundType(
                                                     context.getSource(),
                                                     EasyNPCArgument.getEntityWithAccess(
-                                                        context, NPC_TARGET_ARGUMENT),
+                                                        context, NPC_TARGET_ARG),
                                                     SoundType.get(
                                                         StringArgumentType.getString(
                                                             context, "type")),

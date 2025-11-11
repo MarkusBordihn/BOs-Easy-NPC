@@ -40,38 +40,38 @@ public class TradingCommand extends Command {
                     commandSourceStack ->
                         commandSourceStack.hasPermission(Commands.LEVEL_GAMEMASTERS))
                 .then(
-                    Commands.argument(NPC_TARGET_ARGUMENT, EasyNPCArgument.npc())
+                    Commands.argument(NPC_TARGET_ARG, EasyNPCArgument.npc())
                         .executes(
                             context -> {
                               ServerPlayer serverPlayer =
                                   context.getSource().getPlayerOrException();
                               return open(
                                   context.getSource(),
-                                  EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARGUMENT),
+                                  EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG),
                                   serverPlayer);
                             })
                         .then(
-                            Commands.argument("player", EntityArgument.player())
+                            Commands.argument(PLAYER_ARG, EntityArgument.player())
                                 .executes(
                                     context ->
                                         open(
                                             context.getSource(),
                                             EasyNPCArgument.getEntityWithAccess(
-                                                context, NPC_TARGET_ARGUMENT),
-                                            EntityArgument.getPlayer(context, "player"))))))
+                                                context, NPC_TARGET_ARG),
+                                            EntityArgument.getPlayer(context, PLAYER_ARG))))))
         .then(
             Commands.literal("reset")
                 .requires(
                     commandSourceStack ->
                         commandSourceStack.hasPermission(Commands.LEVEL_GAMEMASTERS))
                 .then(
-                    Commands.argument(NPC_TARGET_ARGUMENT, EasyNPCArgument.npc())
+                    Commands.argument(NPC_TARGET_ARG, EasyNPCArgument.npc())
                         .executes(
                             context ->
                                 reset(
                                     context.getSource(),
                                     EasyNPCArgument.getEntityWithAccess(
-                                        context, NPC_TARGET_ARGUMENT)))));
+                                        context, NPC_TARGET_ARG)))));
   }
 
   private static int reset(CommandSourceStack context, EasyNPC<?> easyNPC) {

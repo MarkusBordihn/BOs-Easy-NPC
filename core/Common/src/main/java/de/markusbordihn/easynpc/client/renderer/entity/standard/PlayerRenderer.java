@@ -2,6 +2,8 @@ package de.markusbordihn.easynpc.client.renderer.entity.standard;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
+import de.markusbordihn.easynpc.client.texture.VariantTextureManager;
+import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.HumanoidNPC.VariantType;
 import java.util.EnumMap;
@@ -76,6 +78,10 @@ public class PlayerRenderer
           });
   protected static final ResourceLocation DEFAULT_TEXTURE =
       TEXTURE_BY_VARIANT_TYPE.get(VariantType.STEVE);
+
+  static {
+    VariantTextureManager.registerVariantTextures(SkinModel.HUMANOID, TEXTURE_BY_VARIANT_TYPE);
+  }
 
   public PlayerRenderer(EntityRendererProvider.Context context) {
     this(context, false);
