@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.data.configuration;
 
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Set;
 
@@ -27,7 +28,8 @@ public record ConfigurationData(Set<ConfigurationType> enabledTypes) {
   private static final Set<ConfigurationType> ALL_TYPES = EnumSet.allOf(ConfigurationType.class);
 
   public static final ConfigurationData STANDARD =
-      new ConfigurationData(exclude(ALL_TYPES, ConfigurationType.PLAYER_SKIN));
+      new ConfigurationData(
+          exclude(ALL_TYPES, ConfigurationType.PLAYER_SKIN, ConfigurationType.CUSTOM_MODEL));
 
   public static final ConfigurationData RAW =
       new ConfigurationData(
@@ -37,8 +39,7 @@ public record ConfigurationData(Set<ConfigurationType> enabledTypes) {
               ConfigurationType.ATTACK_OBJECTIVE,
               ConfigurationType.FOLLOW_OBJECTIVE,
               ConfigurationType.LOOK_OBJECTIVE,
-              ConfigurationType.DEFAULT_MODEL,
-              ConfigurationType.CUSTOM_MODEL));
+              ConfigurationType.DEFAULT_MODEL));
 
   public static final ConfigurationData EPIC_FIGHT =
       new ConfigurationData(
@@ -54,25 +55,29 @@ public record ConfigurationData(Set<ConfigurationType> enabledTypes) {
               ConfigurationType.LOOK_OBJECTIVE,
               ConfigurationType.SCALING,
               ConfigurationType.DEFAULT_ROTATION,
-              ConfigurationType.DEFAULT_MODEL,
-              ConfigurationType.CUSTOM_MODEL));
+              ConfigurationType.DEFAULT_MODEL));
+
   public static final ConfigurationData DOPPLER =
       new ConfigurationData(
-          exclude(
-              STANDARD.enabledTypes(),
-              ConfigurationType.ADVANCED_POSE,
-              ConfigurationType.BASIC_POSE,
-              ConfigurationType.DEFAULT_POSE,
-              ConfigurationType.POSE,
-              ConfigurationType.SKIN,
-              ConfigurationType.DEFAULT_SKIN,
-              ConfigurationType.CUSTOM_SKIN,
-              ConfigurationType.PLAYER_SKIN,
-              ConfigurationType.URL_SKIN,
-              ConfigurationType.NONE_SKIN,
-              ConfigurationType.SCALING,
-              ConfigurationType.DEFAULT_ROTATION));
-  public static final ConfigurationData HUMANOID = new ConfigurationData(EnumSet.copyOf(ALL_TYPES));
+          include(
+              exclude(
+                  STANDARD.enabledTypes(),
+                  ConfigurationType.ADVANCED_POSE,
+                  ConfigurationType.BASIC_POSE,
+                  ConfigurationType.DEFAULT_POSE,
+                  ConfigurationType.POSE,
+                  ConfigurationType.SKIN,
+                  ConfigurationType.DEFAULT_SKIN,
+                  ConfigurationType.CUSTOM_SKIN,
+                  ConfigurationType.PLAYER_SKIN,
+                  ConfigurationType.URL_SKIN,
+                  ConfigurationType.NONE_SKIN,
+                  ConfigurationType.SCALING,
+                  ConfigurationType.DEFAULT_ROTATION),
+              ConfigurationType.CUSTOM_MODEL));
+
+  public static final ConfigurationData HUMANOID =
+      new ConfigurationData(exclude(STANDARD.enabledTypes(), ConfigurationType.CUSTOM_MODEL));
 
   private static EnumSet<ConfigurationType> exclude(
       Set<ConfigurationType> base, ConfigurationType... types) {
@@ -80,6 +85,13 @@ public record ConfigurationData(Set<ConfigurationType> enabledTypes) {
     for (ConfigurationType type : types) {
       result.remove(type);
     }
+    return result;
+  }
+
+  private static EnumSet<ConfigurationType> include(
+      Set<ConfigurationType> base, ConfigurationType... types) {
+    EnumSet<ConfigurationType> result = EnumSet.copyOf(base);
+    Collections.addAll(result, types);
     return result;
   }
 

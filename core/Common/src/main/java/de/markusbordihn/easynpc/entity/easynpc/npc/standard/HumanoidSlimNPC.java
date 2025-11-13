@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.entity.easynpc.npc.standard;
 
 import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
+import de.markusbordihn.easynpc.data.skin.variant.HumanoidSlimSkinVariant;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.sound.SoundType;
 import de.markusbordihn.easynpc.entity.easynpc.npc.raw.PathfinderMobRaw;
@@ -37,7 +38,7 @@ public class HumanoidSlimNPC extends PathfinderMobRaw implements StandardEasyNPC
   public static final String ID = "humanoid_slim";
 
   public HumanoidSlimNPC(EntityType<? extends PathfinderMob> entityType, Level level) {
-    this(entityType, level, VariantType.ALEX);
+    this(entityType, level, HumanoidSlimSkinVariant.ALEX);
   }
 
   public HumanoidSlimNPC(
@@ -66,18 +67,18 @@ public class HumanoidSlimNPC extends PathfinderMobRaw implements StandardEasyNPC
 
   @Override
   public Enum<?>[] getSkinVariantTypes() {
-    return VariantType.values();
+    return HumanoidSlimSkinVariant.values();
   }
 
   @Override
   public Enum<?> getDefaultSkinVariantType() {
-    return VariantType.ALEX;
+    return HumanoidSlimSkinVariant.ALEX;
   }
 
   @Override
   public Enum<?> getSkinVariantType(String name) {
     try {
-      return VariantType.valueOf(name);
+      return HumanoidSlimSkinVariant.valueOf(name);
     } catch (IllegalArgumentException e) {
       return getDefaultSkinVariantType();
     }
@@ -102,18 +103,5 @@ public class HumanoidSlimNPC extends PathfinderMobRaw implements StandardEasyNPC
     soundDataSet.addDefaultSound(SoundType.TRADE_YES, SoundEvents.VILLAGER_YES);
     soundDataSet.addDefaultSound(SoundType.TRADE_NO, SoundEvents.VILLAGER_NO);
     return soundDataSet;
-  }
-
-  public enum VariantType {
-    ALEX,
-    ARI,
-    EFE,
-    KAI,
-    MAKENA,
-    NOOR,
-    STEVE,
-    SUNNY,
-    ZURI,
-    KAWORRU
   }
 }

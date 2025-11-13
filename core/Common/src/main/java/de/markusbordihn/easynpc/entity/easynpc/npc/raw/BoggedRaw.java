@@ -28,7 +28,7 @@ import de.markusbordihn.easynpc.data.model.ModelType;
 import de.markusbordihn.easynpc.data.scale.CustomScale;
 import de.markusbordihn.easynpc.data.server.ServerEntityData;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
-import de.markusbordihn.easynpc.data.skin.SkinVariantType;
+import de.markusbordihn.easynpc.data.skin.variant.SkeletonSkinVariant;
 import de.markusbordihn.easynpc.data.status.StatusDataType;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.data.synched.SynchedEntityData;
@@ -511,18 +511,18 @@ public class BoggedRaw extends Bogged implements EasyNPCBase<Bogged> {
 
   @Override
   public Enum<?>[] getSkinVariantTypes() {
-    return SkinVariantType.ZOMBIE.values();
+    return SkeletonSkinVariant.values();
   }
 
   @Override
   public Enum<?> getDefaultSkinVariantType() {
-    return SkinVariantType.ZOMBIE.BOGGED;
+    return SkeletonSkinVariant.BOGGED;
   }
 
   @Override
   public Enum<?> getSkinVariantType(String name) {
     try {
-      return SkinVariantType.ZOMBIE.valueOf(name);
+      return SkeletonSkinVariant.valueOf(name);
     } catch (IllegalArgumentException e) {
       return getDefaultSkinVariantType();
     }

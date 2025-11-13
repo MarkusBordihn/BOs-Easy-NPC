@@ -9,7 +9,7 @@ task generateRawNPCs {
           className: "AllayRaw",
           baseClass: "Allay",
           modelType: "ALLAY",
-          variant  : "SkinVariantType.ALLAY.ALLAY"
+          variant  : "AllaySkinVariant.ALLAY"
       ],
       [
           id       : "bogged_raw",
@@ -17,7 +17,7 @@ task generateRawNPCs {
           className: "BoggedRaw",
           baseClass: "Bogged",
           modelType: "ZOMBIE",
-          variant  : "SkinVariantType.ZOMBIE.BOGGED"
+          variant  : "SkeletonSkinVariant.BOGGED"
       ],
       [
           id       : "cat_raw",
@@ -25,7 +25,7 @@ task generateRawNPCs {
           className: "CatRaw",
           baseClass: "Cat",
           modelType: "FELINE",
-          variant  : "SkinVariantType.CAT.BLACK"
+          variant  : "CatSkinVariant.BLACK"
       ],
       [
           id       : "creeper_raw",
@@ -33,7 +33,7 @@ task generateRawNPCs {
           className: "CreeperRaw",
           baseClass: "Creeper",
           modelType: "CREEPER",
-          variant  : "SkinVariantType.CREEPER.CREEPER"
+          variant  : "CreeperSkinVariant.CREEPER"
       ],
       [
           id       : "chicken_raw",
@@ -41,7 +41,7 @@ task generateRawNPCs {
           className: "ChickenRaw",
           baseClass: "Chicken",
           modelType: "AVIAN",
-          variant  : "SkinVariantType.CHICKEN.WHITE"
+          variant  : "ChickenSkinVariant.WHITE"
       ],
       [
           id       : "drowned_raw",
@@ -49,7 +49,7 @@ task generateRawNPCs {
           className: "DrownedRaw",
           baseClass: "Drowned",
           modelType: "ZOMBIE",
-          variant  : "SkinVariantType.ZOMBIE.DROWNED"
+          variant  : "ZombieSkinVariant.DROWNED"
       ],
       [
           id       : "enderman_raw",
@@ -57,7 +57,7 @@ task generateRawNPCs {
           className: "EnderManRaw",
           baseClass: "EnderMan",
           modelType: "HUMANOID",
-          variant  : "SkinVariantType.ENDER_MAN.ENDERMAN"
+          variant  : "EnderManSkinVariant.ENDERMAN"
       ],
       [
           id       : "evoker_raw",
@@ -65,7 +65,7 @@ task generateRawNPCs {
           className: "EvokerRaw",
           baseClass: "Evoker",
           modelType: "ILLAGER",
-          variant  : "SkinVariantType.ILLAGER.EVOKER"
+          variant  : "IllagerSkinVariant.EVOKER"
       ],
       [
           id       : "fox_raw",
@@ -73,7 +73,7 @@ task generateRawNPCs {
           className: "FoxRaw",
           baseClass: "Fox",
           modelType: "CANINE",
-          variant  : "SkinVariantType.FOX.RED"
+          variant  : "FoxSkinVariant.RED"
       ],
       [
           id       : "horse_raw",
@@ -81,7 +81,7 @@ task generateRawNPCs {
           className: "HorseRaw",
           baseClass: "Horse",
           modelType: "EQUINE",
-          variant  : "SkinVariantType.HORSE.WHITE"
+          variant  : "HorseSkinVariant.WHITE"
       ],
       [
           id       : "iron_golem_raw",
@@ -89,7 +89,7 @@ task generateRawNPCs {
           className: "IronGolemRaw",
           baseClass: "IronGolem",
           modelType: "GOLEM",
-          variant  : "SkinVariantType.IRON_GOLEM.IRON_GOLEM"
+          variant  : "IronGolemSkinVariant.IRON_GOLEM"
       ],
       [
           id       : "illusioner_raw",
@@ -97,7 +97,7 @@ task generateRawNPCs {
           className: "IllusionerRaw",
           baseClass: "Illusioner",
           modelType: "ILLAGER",
-          variant  : "SkinVariantType.ILLAGER.ILLUSIONER"
+          variant  : "IllagerSkinVariant.ILLUSIONER"
       ],
       [
           id       : "pathfinder_mob_raw",
@@ -106,7 +106,7 @@ task generateRawNPCs {
           baseClass: "PathfinderMob",
           skinModel: "HUMANOID",
           modelType: "HUMANOID",
-          variant  : "SkinVariantType.HUMANOID.STEVE"
+          variant  : "HumanoidSkinVariant.STEVE"
       ],
       [
           id       : "humanoid_raw",
@@ -115,7 +115,7 @@ task generateRawNPCs {
           baseClass: "PathfinderMob",
           skinModel: "HUMANOID",
           modelType: "HUMANOID",
-          variant  : "SkinVariantType.HUMANOID.STEVE"
+          variant  : "HumanoidSkinVariant.STEVE"
       ],
       [
           id       : "humanoid_slim_raw",
@@ -124,7 +124,7 @@ task generateRawNPCs {
           baseClass: "PathfinderMob",
           skinModel: "HUMANOID_SLIM",
           modelType: "HUMANOID",
-          variant  : "SkinVariantType.HUMANOID_SLIM.ALEX"
+          variant  : "HumanoidSlimSkinVariant.ALEX"
       ],
       [
           id       : "pillager_raw",
@@ -132,7 +132,7 @@ task generateRawNPCs {
           className: "PillagerRaw",
           baseClass: "Pillager",
           modelType: "ILLAGER",
-          variant  : "SkinVariantType.ILLAGER.PILLAGER"
+          variant  : "IllagerSkinVariant.PILLAGER"
       ],
       [
           id       : "pig_raw",
@@ -140,7 +140,7 @@ task generateRawNPCs {
           className: "PigRaw",
           baseClass: "Pig",
           modelType: "QUADRUPED",
-          variant  : "SkinVariantType.PIG.PIG"
+          variant  : "PigSkinVariant.PIG"
       ],
       [
           id       : "piglin_raw",
@@ -148,7 +148,7 @@ task generateRawNPCs {
           className: "PiglinRaw",
           baseClass: "Piglin",
           modelType: "HUMANOID",
-          variant  : "SkinVariantType.PIGLIN.PIGLIN"
+          variant  : "PiglinSkinVariant.PIGLIN"
       ],
       [
           id       : "piglin_brute_raw",
@@ -156,7 +156,7 @@ task generateRawNPCs {
           className: "PiglinBruteRaw",
           baseClass: "PiglinBrute",
           modelType: "HUMANOID",
-          variant  : "SkinVariantType.PIGLIN.PIGLIN_BRUTE"
+          variant  : "PiglinSkinVariant.PIGLIN_BRUTE"
       ],
       [
           id       : "zombified_piglin_raw",
@@ -164,7 +164,7 @@ task generateRawNPCs {
           className: "ZombifiedPiglinRaw",
           baseClass: "ZombifiedPiglin",
           modelType: "HUMANOID",
-          variant  : "SkinVariantType.PIGLIN.ZOMBIFIED_PIGLIN"
+          variant  : "PiglinSkinVariant.ZOMBIFIED_PIGLIN"
       ],
       [
           id       : "skeleton_raw",
@@ -172,7 +172,7 @@ task generateRawNPCs {
           className: "SkeletonRaw",
           baseClass: "Skeleton",
           modelType: "HUMANOID",
-          variant  : "SkinVariantType.SKELETON.SKELETON"
+          variant  : "SkeletonSkinVariant.SKELETON"
       ],
       [
           id       : "stray_raw",
@@ -181,7 +181,7 @@ task generateRawNPCs {
           baseClass: "Stray",
           skinModel: "STRAY",
           modelType: "ZOMBIE",
-          variant  : "SkinVariantType.SKELETON.STRAY"
+          variant  : "SkeletonSkinVariant.STRAY"
       ],
       [
           id       : "wither_skeleton_raw",
@@ -190,7 +190,7 @@ task generateRawNPCs {
           baseClass: "WitherSkeleton",
           skinModel: "WITHER_SKELETON",
           modelType: "ZOMBIE",
-          variant  : "SkinVariantType.SKELETON.WITHER_SKELETON"
+          variant  : "SkeletonSkinVariant.WITHER_SKELETON"
       ],
       [
           id       : "spider_raw",
@@ -199,7 +199,7 @@ task generateRawNPCs {
           baseClass: "Spider",
           skinModel: "SPIDER",
           modelType: "SPIDER",
-          variant  : "SkinVariantType.SPIDER.SPIDER"
+          variant  : "SpiderSkinVariant.SPIDER"
       ],
       [
           id       : "vex_raw",
@@ -207,7 +207,7 @@ task generateRawNPCs {
           className: "VexRaw",
           baseClass: "Vex",
           modelType: "PIXIE",
-          variant  : "SkinVariantType.VEX.VEX"
+          variant  : "VexSkinVariant.VEX"
       ],
       [
           id       : "villager_raw",
@@ -215,7 +215,7 @@ task generateRawNPCs {
           className: "VillagerRaw",
           baseClass: "Villager",
           modelType: "VILLAGER",
-          variant  : "SkinVariantType.VILLAGER.DEFAULT_NITWIT"
+          variant  : "VillagerSkinVariant.DEFAULT_NITWIT"
       ],
       [
           id       : "vindicator_raw",
@@ -223,7 +223,7 @@ task generateRawNPCs {
           className: "VindicatorRaw",
           baseClass: "Vindicator",
           modelType: "ILLAGER",
-          variant  : "SkinVariantType.ILLAGER.VINDICATOR"
+          variant  : "IllagerSkinVariant.VINDICATOR"
       ],
       [
           id       : "wolf_raw",
@@ -231,7 +231,7 @@ task generateRawNPCs {
           className: "WolfRaw",
           baseClass: "Wolf",
           modelType: "QUADRUPED",
-          variant  : "SkinVariantType.WOLF.WOLF"
+          variant  : "WolfSkinVariant.WOLF"
       ],
       [
           id       : "witch_raw",
@@ -239,7 +239,7 @@ task generateRawNPCs {
           className: "WitchRaw",
           baseClass: "Witch",
           modelType: "VILLAGER",
-          variant  : "SkinVariantType.WITCH.WITCH"
+          variant  : "WitchSkinVariant.WITCH"
       ],
       [
           id       : "zombie_raw",
@@ -247,7 +247,7 @@ task generateRawNPCs {
           className: "ZombieRaw",
           baseClass: "Zombie",
           modelType: "ZOMBIE",
-          variant  : "SkinVariantType.ZOMBIE.ZOMBIE"
+          variant  : "ZombieSkinVariant.ZOMBIE"
       ],
       [
           id       : "husk_raw",
@@ -255,7 +255,7 @@ task generateRawNPCs {
           className: "HuskRaw",
           baseClass: "Husk",
           modelType: "ZOMBIE",
-          variant  : "SkinVariantType.ZOMBIE.HUSK"
+          variant  : "ZombieSkinVariant.HUSK"
       ],
       [
           id       : "zombie_villager_raw",
@@ -263,7 +263,7 @@ task generateRawNPCs {
           className: "ZombieVillagerRaw",
           baseClass: "ZombieVillager",
           modelType: "ZOMBIE",
-          variant  : "SkinVariantType.ZOMBIE_VILLAGER.ZOMBIE_VILLAGER"
+          variant  : "ZombieVillagerSkinVariant.ZOMBIE_VILLAGER"
       ],
   ]
 
@@ -289,14 +289,15 @@ task generateRawNPCs {
       def outputFile = new File(outputDir, npcClass.className + ".java")
       def content = templateFile.text
           .replace("import net.minecraft.world.entity.monster.Zombie;", "import " + npcClass.class + ";")
+          .replace("import de.markusbordihn.easynpc.data.skin.variant.ZombieSkinVariant;", "import de.markusbordihn.easynpc.data.skin.variant." + npcClass.variant.replaceAll(/\.[^.]+$/, "") + ";")
           .replace("npc_raw_template", npcClass.id)
           .replace("NPCRawTemplate", npcClass.className)
           .replaceAll("\\bZombie\\b", npcClass.baseClass)
           .replace("SkinModel.ZOMBIE", "SkinModel." + (npcClass.skinModel ?: toUpperSnakeCase(npcClass.baseClass)))
           .replace("ModelType.ZOMBIE", "ModelType." + (npcClass.modelType ?: toUpperSnakeCase(npcClass.baseClass)))
-          .replace("SkinVariantType.ZOMBIE.ZOMBIE", npcClass.variant)
-          .replace("SkinVariantType.ZOMBIE.values()", npcClass.variant.replaceAll(/\.[^.]+$/, "") + ".values()")
-          .replace("SkinVariantType.ZOMBIE.valueOf(", npcClass.variant.replaceAll(/\.[^.]+$/, "") + ".valueOf(")
+          .replace("ZombieSkinVariant.ZOMBIE", npcClass.variant)
+          .replace("ZombieSkinVariant.values()", npcClass.variant.replaceAll(/\.[^.]+$/, "") + ".values()")
+          .replace("ZombieSkinVariant.valueOf(", npcClass.variant.replaceAll(/\.[^.]+$/, "") + ".valueOf(")
           .replace("// TEMPLATE_INSERT:IMPORTS", loadImports(npcClass.className))
           .replace("// TEMPLATE_INSERT:METHODS", loadMethods(npcClass.className))
 

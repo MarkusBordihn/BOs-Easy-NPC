@@ -19,7 +19,7 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.data;
 
-import de.markusbordihn.easynpc.data.skin.SkinVariantType;
+import de.markusbordihn.easynpc.data.skin.variant.HumanoidSkinVariant;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.utils.TextUtils;
@@ -51,7 +51,7 @@ public interface VariantDataCapable<T extends PathfinderMob> extends EasyNPC<T> 
   }
 
   default Enum<?> getDefaultSkinVariantType() {
-    return SkinVariantType.HUMANOID.STEVE;
+    return HumanoidSkinVariant.STEVE;
   }
 
   default Enum<?> getSkinVariantType() {
@@ -77,11 +77,11 @@ public interface VariantDataCapable<T extends PathfinderMob> extends EasyNPC<T> 
   }
 
   default Enum<?> getSkinVariantType(String name) {
-    return SkinVariantType.HUMANOID.valueOf(name);
+    return HumanoidSkinVariant.valueOf(name);
   }
 
   default Enum<?>[] getSkinVariantTypes() {
-    return SkinVariantType.HUMANOID.values();
+    return HumanoidSkinVariant.values();
   }
 
   default Stream<String> getSkinVariantTypeNames() {

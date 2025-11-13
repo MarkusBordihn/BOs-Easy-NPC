@@ -28,7 +28,7 @@ import de.markusbordihn.easynpc.data.model.ModelType;
 import de.markusbordihn.easynpc.data.scale.CustomScale;
 import de.markusbordihn.easynpc.data.server.ServerEntityData;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
-import de.markusbordihn.easynpc.data.skin.SkinVariantType;
+import de.markusbordihn.easynpc.data.skin.variant.VexSkinVariant;
 import de.markusbordihn.easynpc.data.status.StatusDataType;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.data.synched.SynchedEntityData;
@@ -511,18 +511,18 @@ public class VexRaw extends Vex implements EasyNPCBase<Vex> {
 
   @Override
   public Enum<?>[] getSkinVariantTypes() {
-    return SkinVariantType.VEX.values();
+    return VexSkinVariant.values();
   }
 
   @Override
   public Enum<?> getDefaultSkinVariantType() {
-    return SkinVariantType.VEX.VEX;
+    return VexSkinVariant.VEX;
   }
 
   @Override
   public Enum<?> getSkinVariantType(String name) {
     try {
-      return SkinVariantType.VEX.valueOf(name);
+      return VexSkinVariant.valueOf(name);
     } catch (IllegalArgumentException e) {
       return getDefaultSkinVariantType();
     }
