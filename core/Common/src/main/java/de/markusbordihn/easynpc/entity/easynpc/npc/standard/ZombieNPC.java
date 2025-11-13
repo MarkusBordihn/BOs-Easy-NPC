@@ -19,7 +19,7 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.npc.standard;
 
-import de.markusbordihn.easynpc.data.skin.SkinVariantType;
+import de.markusbordihn.easynpc.data.skin.variant.ZombieSkinVariant;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.sound.SoundType;
 import de.markusbordihn.easynpc.entity.easynpc.npc.raw.ZombieRaw;
@@ -39,7 +39,7 @@ public class ZombieNPC extends ZombieRaw implements StandardEasyNPC<ZombieRaw> {
   public static final String ID_HUSK = "husk";
 
   public ZombieNPC(EntityType<? extends Zombie> entityType, Level level) {
-    this(entityType, level, SkinVariantType.ZOMBIE.ZOMBIE);
+    this(entityType, level, ZombieSkinVariant.ZOMBIE);
   }
 
   public ZombieNPC(EntityType<? extends Zombie> entityType, Level level, Enum<?> variantType) {
@@ -72,7 +72,7 @@ public class ZombieNPC extends ZombieRaw implements StandardEasyNPC<ZombieRaw> {
 
   @Override
   public SoundDataSet getDefaultSoundDataSet(SoundDataSet soundDataSet, String variantName) {
-    SkinVariantType.ZOMBIE soundVariant = SkinVariantType.ZOMBIE.valueOf(variantName);
+    ZombieSkinVariant soundVariant = ZombieSkinVariant.valueOf(variantName);
     switch (soundVariant) {
       case HUSK:
         soundDataSet.addDefaultSound(SoundType.AMBIENT, SoundEvents.HUSK_AMBIENT);

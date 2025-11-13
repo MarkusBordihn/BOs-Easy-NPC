@@ -20,7 +20,7 @@
 package de.markusbordihn.easynpc.entity.easynpc.npc.standard;
 
 import com.google.common.collect.ImmutableList;
-import de.markusbordihn.easynpc.data.skin.SkinVariantType;
+import de.markusbordihn.easynpc.data.skin.variant.PiglinSkinVariant;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.sound.SoundType;
 import de.markusbordihn.easynpc.entity.easynpc.npc.raw.PiglinRaw;
@@ -50,7 +50,7 @@ public class PiglinNPC extends PiglinRaw implements StandardEasyNPC<PiglinRaw> {
           MemoryModuleType.DANCING);
 
   public PiglinNPC(EntityType<? extends Piglin> entityType, Level level) {
-    this(entityType, level, SkinVariantType.PIGLIN.PIGLIN);
+    this(entityType, level, PiglinSkinVariant.PIGLIN);
   }
 
   public PiglinNPC(EntityType<? extends Piglin> entityType, Level level, Enum<?> variantType) {
@@ -73,7 +73,7 @@ public class PiglinNPC extends PiglinRaw implements StandardEasyNPC<PiglinRaw> {
 
   @Override
   public SoundDataSet getDefaultSoundDataSet(SoundDataSet soundDataSet, String variantName) {
-    SkinVariantType.PIGLIN soundVariant = SkinVariantType.PIGLIN.valueOf(variantName);
+    PiglinSkinVariant soundVariant = PiglinSkinVariant.valueOf(variantName);
     switch (soundVariant) {
       case PIGLIN_BRUTE:
         soundDataSet.addDefaultSound(SoundType.AMBIENT, SoundEvents.PIGLIN_BRUTE_AMBIENT);
