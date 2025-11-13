@@ -19,7 +19,7 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.npc.standard;
 
-import de.markusbordihn.easynpc.data.skin.SkinVariantType;
+import de.markusbordihn.easynpc.data.skin.variant.IllagerSkinVariant;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.sound.SoundType;
 import de.markusbordihn.easynpc.entity.easynpc.npc.raw.VindicatorRaw;
@@ -38,7 +38,7 @@ public class VindicatorNPC extends VindicatorRaw implements StandardEasyNPC<Vind
   public static final String ID = "vindicator";
 
   public VindicatorNPC(EntityType<? extends Vindicator> entityType, Level level) {
-    super(entityType, level, SkinVariantType.ILLAGER.VINDICATOR);
+    super(entityType, level, IllagerSkinVariant.VINDICATOR);
   }
 
   public VindicatorNPC(EntityType<? extends Vindicator> entityType, Level level, Enum<?> variant) {

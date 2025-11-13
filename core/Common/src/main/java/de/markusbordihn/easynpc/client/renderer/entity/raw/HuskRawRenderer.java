@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.client.renderer.entity.raw;
 
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
+import de.markusbordihn.easynpc.data.skin.variant.ZombieSkinVariant;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.ZombieRenderer;
@@ -29,7 +30,7 @@ import net.minecraft.world.entity.monster.Zombie;
 public class HuskRawRenderer extends ZombieRenderer implements EasyNPCEntityRenderer {
 
   protected static final ResourceLocation DEFAULT_TEXTURE =
-      new ResourceLocation(ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/zombie/husk.png");
+      ZombieSkinVariant.HUSK.getTextureLocation();
 
   public HuskRawRenderer(EntityRendererProvider.Context context) {
     super(context);
@@ -45,11 +46,6 @@ public class HuskRawRenderer extends ZombieRenderer implements EasyNPCEntityRend
 
   @Override
   public ResourceLocation getDefaultTexture() {
-    return DEFAULT_TEXTURE;
-  }
-
-  @Override
-  public ResourceLocation getTextureByVariant(Enum<?> variantType) {
     return DEFAULT_TEXTURE;
   }
 }

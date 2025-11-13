@@ -19,44 +19,18 @@
 
 package de.markusbordihn.easynpc.client.renderer.entity.raw;
 
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
-import de.markusbordihn.easynpc.client.texture.VariantTextureManager;
-import de.markusbordihn.easynpc.data.skin.SkinModel;
-import de.markusbordihn.easynpc.data.skin.SkinVariantType;
+import de.markusbordihn.easynpc.data.skin.variant.ZombieSkinVariant;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import java.util.EnumMap;
-import java.util.Map;
-import net.minecraft.Util;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.ZombieRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.monster.Zombie;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class ZombieRawRenderer extends ZombieRenderer implements EasyNPCEntityRenderer {
 
-  protected static final Map<SkinVariantType.ZOMBIE, ResourceLocation> TEXTURE_BY_VARIANT_TYPE =
-      Util.make(
-          new EnumMap<>(SkinVariantType.ZOMBIE.class),
-          map -> {
-            map.put(
-                SkinVariantType.ZOMBIE.HUSK,
-                new ResourceLocation(
-                    ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/zombie/husk.png"));
-            map.put(
-                SkinVariantType.ZOMBIE.ZOMBIE,
-                new ResourceLocation(
-                    ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/zombie/zombie.png"));
-          });
   protected static final ResourceLocation DEFAULT_TEXTURE =
-      TEXTURE_BY_VARIANT_TYPE.get(SkinVariantType.ZOMBIE.ZOMBIE);
-  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-
-  static {
-    VariantTextureManager.registerVariantTextures(SkinModel.ZOMBIE, TEXTURE_BY_VARIANT_TYPE);
-  }
+      ZombieSkinVariant.ZOMBIE.getTextureLocation();
 
   public ZombieRawRenderer(EntityRendererProvider.Context context) {
     super(context);
@@ -73,10 +47,5 @@ public class ZombieRawRenderer extends ZombieRenderer implements EasyNPCEntityRe
   @Override
   public ResourceLocation getDefaultTexture() {
     return DEFAULT_TEXTURE;
-  }
-
-  @Override
-  public ResourceLocation getTextureByVariant(Enum<?> variantType) {
-    return TEXTURE_BY_VARIANT_TYPE.getOrDefault(variantType, DEFAULT_TEXTURE);
   }
 }

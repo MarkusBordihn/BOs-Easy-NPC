@@ -20,11 +20,8 @@
 package de.markusbordihn.easynpc.client.renderer.entity.raw;
 
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
-import de.markusbordihn.easynpc.data.skin.SkinVariantType;
+import de.markusbordihn.easynpc.data.skin.variant.ChickenSkinVariant;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import java.util.EnumMap;
-import java.util.Map;
-import net.minecraft.Util;
 import net.minecraft.client.renderer.entity.ChickenRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
@@ -32,15 +29,8 @@ import net.minecraft.world.entity.animal.Chicken;
 
 public class ChickenRawRenderer extends ChickenRenderer implements EasyNPCEntityRenderer {
 
-  protected static final Map<SkinVariantType.CHICKEN, ResourceLocation> TEXTURE_BY_VARIANT_TYPE =
-      Util.make(
-          new EnumMap<>(SkinVariantType.CHICKEN.class),
-          map ->
-              map.put(
-                  SkinVariantType.CHICKEN.WHITE,
-                  new ResourceLocation("textures/entity/chicken.png")));
   protected static final ResourceLocation DEFAULT_TEXTURE =
-      TEXTURE_BY_VARIANT_TYPE.get(SkinVariantType.CHICKEN.WHITE);
+      ChickenSkinVariant.WHITE.getTextureLocation();
 
   public ChickenRawRenderer(EntityRendererProvider.Context context) {
     super(context);
@@ -57,10 +47,5 @@ public class ChickenRawRenderer extends ChickenRenderer implements EasyNPCEntity
   @Override
   public ResourceLocation getDefaultTexture() {
     return DEFAULT_TEXTURE;
-  }
-
-  @Override
-  public ResourceLocation getTextureByVariant(Enum<?> variantType) {
-    return TEXTURE_BY_VARIANT_TYPE.getOrDefault(variantType, DEFAULT_TEXTURE);
   }
 }

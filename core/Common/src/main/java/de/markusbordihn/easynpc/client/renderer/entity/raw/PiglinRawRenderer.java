@@ -20,11 +20,8 @@
 package de.markusbordihn.easynpc.client.renderer.entity.raw;
 
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
-import de.markusbordihn.easynpc.data.skin.SkinVariantType;
+import de.markusbordihn.easynpc.data.skin.variant.PiglinSkinVariant;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import java.util.EnumMap;
-import java.util.Map;
-import net.minecraft.Util;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.PiglinRenderer;
@@ -33,27 +30,8 @@ import net.minecraft.world.entity.Mob;
 
 public class PiglinRawRenderer extends PiglinRenderer implements EasyNPCEntityRenderer {
 
-  protected static final Map<SkinVariantType.PIGLIN, ResourceLocation> TEXTURE_BY_VARIANT_TYPE =
-      Util.make(
-          new EnumMap<>(SkinVariantType.PIGLIN.class),
-          map -> {
-            map.put(
-                SkinVariantType.PIGLIN.PIGLIN,
-                new ResourceLocation(
-                    ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/piglin/piglin.png"));
-            map.put(
-                SkinVariantType.PIGLIN.PIGLIN_BRUTE,
-                new ResourceLocation(
-                    ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/piglin/piglin_brute.png"));
-            map.put(
-                SkinVariantType.PIGLIN.ZOMBIFIED_PIGLIN,
-                new ResourceLocation(
-                    ResourceLocation.DEFAULT_NAMESPACE,
-                    "textures/entity/piglin/zombified_piglin.png"));
-          });
-
   protected static final ResourceLocation DEFAULT_TEXTURE =
-      TEXTURE_BY_VARIANT_TYPE.get(SkinVariantType.PIGLIN.PIGLIN);
+      PiglinSkinVariant.PIGLIN.getTextureLocation();
 
   public PiglinRawRenderer(EntityRendererProvider.Context context) {
     super(
@@ -69,16 +47,11 @@ public class PiglinRawRenderer extends PiglinRenderer implements EasyNPCEntityRe
     if (entity instanceof EasyNPC<?> easyNPC) {
       return getEntityTexture(easyNPC);
     }
-    return TEXTURE_BY_VARIANT_TYPE.get(SkinVariantType.PIGLIN.PIGLIN);
+    return DEFAULT_TEXTURE;
   }
 
   @Override
   public ResourceLocation getDefaultTexture() {
     return DEFAULT_TEXTURE;
-  }
-
-  @Override
-  public ResourceLocation getTextureByVariant(Enum<?> variantType) {
-    return TEXTURE_BY_VARIANT_TYPE.getOrDefault(variantType, DEFAULT_TEXTURE);
   }
 }
