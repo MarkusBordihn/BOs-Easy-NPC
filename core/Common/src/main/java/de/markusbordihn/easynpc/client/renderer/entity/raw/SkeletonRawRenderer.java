@@ -20,11 +20,8 @@
 package de.markusbordihn.easynpc.client.renderer.entity.raw;
 
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
-import de.markusbordihn.easynpc.data.skin.SkinVariantType;
+import de.markusbordihn.easynpc.data.skin.variant.SkeletonSkinVariant;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import java.util.EnumMap;
-import java.util.Map;
-import net.minecraft.Util;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.SkeletonRenderer;
 import net.minecraft.client.renderer.entity.state.SkeletonRenderState;
@@ -32,17 +29,8 @@ import net.minecraft.resources.ResourceLocation;
 
 public class SkeletonRawRenderer extends SkeletonRenderer implements EasyNPCEntityRenderer {
 
-  protected static final Map<SkinVariantType.SKELETON, ResourceLocation> TEXTURE_BY_VARIANT_TYPE =
-      Util.make(
-          new EnumMap<>(SkinVariantType.SKELETON.class),
-          map -> {
-            map.put(
-                SkinVariantType.SKELETON.SKELETON,
-                ResourceLocation.fromNamespaceAndPath(
-                    ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/skeleton/skeleton.png"));
-          });
   protected static final ResourceLocation DEFAULT_TEXTURE =
-      TEXTURE_BY_VARIANT_TYPE.get(SkinVariantType.SKELETON.SKELETON);
+      SkeletonSkinVariant.SKELETON.getTextureLocation();
 
   public SkeletonRawRenderer(EntityRendererProvider.Context context) {
     super(context);
@@ -60,10 +48,5 @@ public class SkeletonRawRenderer extends SkeletonRenderer implements EasyNPCEnti
   @Override
   public ResourceLocation getDefaultTexture() {
     return DEFAULT_TEXTURE;
-  }
-
-  @Override
-  public ResourceLocation getTextureByVariant(Enum<?> variantType) {
-    return TEXTURE_BY_VARIANT_TYPE.getOrDefault(variantType, DEFAULT_TEXTURE);
   }
 }

@@ -19,7 +19,7 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.npc.standard;
 
-import de.markusbordihn.easynpc.data.skin.SkinVariantType;
+import de.markusbordihn.easynpc.data.skin.variant.SpiderSkinVariant;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.sound.SoundType;
 import de.markusbordihn.easynpc.entity.easynpc.npc.raw.SpiderRaw;
@@ -39,7 +39,7 @@ public class SpiderNPC extends SpiderRaw implements StandardEasyNPC<SpiderRaw> {
   public static final String CAVE_SPIDER_ID = "cave_spider";
 
   public SpiderNPC(EntityType<? extends Spider> entityType, Level level) {
-    this(entityType, level, SkinVariantType.SPIDER.SPIDER);
+    this(entityType, level, SpiderSkinVariant.SPIDER);
   }
 
   public SpiderNPC(EntityType<? extends Spider> entityType, Level level, Enum<?> variantType) {
@@ -71,7 +71,7 @@ public class SpiderNPC extends SpiderRaw implements StandardEasyNPC<SpiderRaw> {
 
   @Override
   public SoundDataSet getDefaultSoundDataSet(SoundDataSet soundDataSet, String variantName) {
-    SkinVariantType.SPIDER soundVariant = SkinVariantType.SPIDER.valueOf(variantName);
+    SpiderSkinVariant soundVariant = SpiderSkinVariant.valueOf(variantName);
     switch (soundVariant) {
       case CAVE_SPIDER, SPIDER:
       default:

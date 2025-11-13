@@ -50,7 +50,9 @@ public class SoundCommand extends Command {
                                 .suggests(SoundTypeSuggestions::suggest)
                                 .then(
                                     Commands.argument(SOUND_ARG, ResourceLocationArgument.id())
-                                        .suggests(SuggestionProviders.cast(SuggestionProviders.AVAILABLE_SOUNDS))
+                                        .suggests(
+                                            SuggestionProviders.cast(
+                                                SuggestionProviders.AVAILABLE_SOUNDS))
                                         .executes(
                                             context ->
                                                 setSoundType(

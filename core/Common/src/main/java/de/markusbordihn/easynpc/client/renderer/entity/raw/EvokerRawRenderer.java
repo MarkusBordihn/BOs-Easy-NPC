@@ -20,11 +20,8 @@
 package de.markusbordihn.easynpc.client.renderer.entity.raw;
 
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
-import de.markusbordihn.easynpc.data.skin.SkinVariantType;
+import de.markusbordihn.easynpc.data.skin.variant.IllagerSkinVariant;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import java.util.EnumMap;
-import java.util.Map;
-import net.minecraft.Util;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.EvokerRenderer;
 import net.minecraft.client.renderer.entity.state.EvokerRenderState;
@@ -34,21 +31,8 @@ import net.minecraft.world.entity.monster.SpellcasterIllager;
 public class EvokerRawRenderer<T extends SpellcasterIllager> extends EvokerRenderer<T>
     implements EasyNPCEntityRenderer {
 
-  protected static final Map<SkinVariantType.ILLAGER, ResourceLocation> TEXTURE_BY_VARIANT_TYPE =
-      Util.make(
-          new EnumMap<>(SkinVariantType.ILLAGER.class),
-          map -> {
-            map.put(
-                SkinVariantType.ILLAGER.EVOKER,
-                ResourceLocation.fromNamespaceAndPath(
-                    ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/illager/evoker.png"));
-            map.put(
-                SkinVariantType.ILLAGER.EVOKER_CROSSED_ARMS,
-                ResourceLocation.fromNamespaceAndPath(
-                    ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/illager/evoker.png"));
-          });
   protected static final ResourceLocation DEFAULT_TEXTURE =
-      TEXTURE_BY_VARIANT_TYPE.get(SkinVariantType.ILLAGER.EVOKER);
+      IllagerSkinVariant.EVOKER.getTextureLocation();
 
   public EvokerRawRenderer(EntityRendererProvider.Context context) {
     super(context);
@@ -66,10 +50,5 @@ public class EvokerRawRenderer<T extends SpellcasterIllager> extends EvokerRende
   @Override
   public ResourceLocation getDefaultTexture() {
     return DEFAULT_TEXTURE;
-  }
-
-  @Override
-  public ResourceLocation getTextureByVariant(Enum<?> variantType) {
-    return TEXTURE_BY_VARIANT_TYPE.getOrDefault(variantType, DEFAULT_TEXTURE);
   }
 }
