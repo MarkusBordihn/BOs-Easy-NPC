@@ -19,7 +19,7 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.npc.standard;
 
-import de.markusbordihn.easynpc.data.skin.SkinVariantType;
+import de.markusbordihn.easynpc.data.skin.variant.SkeletonSkinVariant;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.sound.SoundType;
 import de.markusbordihn.easynpc.entity.easynpc.npc.raw.SkeletonRaw;
@@ -38,7 +38,7 @@ public class SkeletonNPC extends SkeletonRaw implements StandardEasyNPC<Skeleton
   public static final String ID = "skeleton";
 
   public SkeletonNPC(EntityType<? extends Skeleton> entityType, Level level) {
-    this(entityType, level, SkinVariantType.SKELETON.SKELETON);
+    this(entityType, level, SkeletonSkinVariant.SKELETON);
   }
 
   public SkeletonNPC(EntityType<? extends Skeleton> entityType, Level level, Enum<?> variantType) {

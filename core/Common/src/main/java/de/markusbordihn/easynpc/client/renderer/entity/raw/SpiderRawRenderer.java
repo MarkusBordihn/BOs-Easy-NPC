@@ -20,11 +20,8 @@
 package de.markusbordihn.easynpc.client.renderer.entity.raw;
 
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
-import de.markusbordihn.easynpc.data.skin.SkinVariantType;
+import de.markusbordihn.easynpc.data.skin.variant.SpiderSkinVariant;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import java.util.EnumMap;
-import java.util.Map;
-import net.minecraft.Util;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.SpiderRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
@@ -32,21 +29,8 @@ import net.minecraft.resources.ResourceLocation;
 
 public class SpiderRawRenderer extends SpiderRenderer implements EasyNPCEntityRenderer {
 
-  protected static final Map<SkinVariantType.SPIDER, ResourceLocation> TEXTURE_BY_VARIANT_TYPE =
-      Util.make(
-          new EnumMap<>(SkinVariantType.SPIDER.class),
-          map -> {
-            map.put(
-                SkinVariantType.SPIDER.CAVE_SPIDER,
-                ResourceLocation.fromNamespaceAndPath(
-                    ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/spider/cave_spider.png"));
-            map.put(
-                SkinVariantType.SPIDER.SPIDER,
-                ResourceLocation.fromNamespaceAndPath(
-                    ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/spider/spider.png"));
-          });
   protected static final ResourceLocation DEFAULT_TEXTURE =
-      TEXTURE_BY_VARIANT_TYPE.get(SkinVariantType.SPIDER.SPIDER);
+      SpiderSkinVariant.SPIDER.getTextureLocation();
 
   public SpiderRawRenderer(EntityRendererProvider.Context context) {
     super(context);
@@ -64,10 +48,5 @@ public class SpiderRawRenderer extends SpiderRenderer implements EasyNPCEntityRe
   @Override
   public ResourceLocation getDefaultTexture() {
     return DEFAULT_TEXTURE;
-  }
-
-  @Override
-  public ResourceLocation getTextureByVariant(Enum<?> variantType) {
-    return TEXTURE_BY_VARIANT_TYPE.getOrDefault(variantType, DEFAULT_TEXTURE);
   }
 }

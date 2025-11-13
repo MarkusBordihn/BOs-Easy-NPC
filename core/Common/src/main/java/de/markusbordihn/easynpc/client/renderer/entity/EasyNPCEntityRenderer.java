@@ -24,6 +24,7 @@ import de.markusbordihn.easynpc.client.renderer.entity.state.EasyNPCRenderStateE
 import de.markusbordihn.easynpc.client.texture.CustomTextureManager;
 import de.markusbordihn.easynpc.client.texture.PlayerTextureManager;
 import de.markusbordihn.easynpc.client.texture.RemoteTextureManager;
+import de.markusbordihn.easynpc.data.skin.VariantTexture;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
 import java.util.function.Supplier;
@@ -32,13 +33,18 @@ import net.minecraft.resources.ResourceLocation;
 
 public interface EasyNPCEntityRenderer {
 
+  ResourceLocation getDefaultTexture();
+
   default boolean hasEasyNPCRenderState(LivingEntityRenderState livingEntityRenderState) {
     return livingEntityRenderState instanceof EasyNPCRenderStateExtension;
   }
 
-  ResourceLocation getTextureByVariant(final Enum<?> variant);
-
-  ResourceLocation getDefaultTexture();
+  default ResourceLocation getTextureByVariant(final Enum<?> variant) {
+    if (variant instanceof VariantTexture variantTexture) {
+      return variantTexture.getTextureLocation();
+    }
+    return getDefaultTexture();
+  }
 
   default ResourceLocation getCustomTexture(final SkinDataCapable<?> entity) {
     return CustomTextureManager.getOrCreateTextureWithDefault(entity, getDefaultTexture());

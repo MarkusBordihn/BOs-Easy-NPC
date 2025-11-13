@@ -19,13 +19,9 @@
 
 package de.markusbordihn.easynpc.client.renderer.entity.raw;
 
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
-import de.markusbordihn.easynpc.data.skin.SkinVariantType;
+import de.markusbordihn.easynpc.data.skin.variant.AllaySkinVariant;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import java.util.EnumMap;
-import java.util.Map;
-import net.minecraft.Util;
 import net.minecraft.client.renderer.entity.AllayRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.state.AllayRenderState;
@@ -33,25 +29,8 @@ import net.minecraft.resources.ResourceLocation;
 
 public class AllayRawRenderer extends AllayRenderer implements EasyNPCEntityRenderer {
 
-  protected static final Map<SkinVariantType.ALLAY, ResourceLocation> TEXTURE_BY_VARIANT_TYPE =
-      Util.make(
-          new EnumMap<>(SkinVariantType.ALLAY.class),
-          map -> {
-            map.put(
-                SkinVariantType.ALLAY.LAVA,
-                ResourceLocation.fromNamespaceAndPath(
-                    Constants.MOD_ID, "textures/entity/allay/allay_lava.png"));
-            map.put(
-                SkinVariantType.ALLAY.GRASSLAND,
-                ResourceLocation.fromNamespaceAndPath(
-                    Constants.MOD_ID, "textures/entity/allay/allay_grassland.png"));
-            map.put(
-                SkinVariantType.ALLAY.WATER,
-                ResourceLocation.fromNamespaceAndPath(
-                    Constants.MOD_ID, "textures/entity/allay/allay_water.png"));
-          });
   protected static final ResourceLocation DEFAULT_TEXTURE =
-      TEXTURE_BY_VARIANT_TYPE.get(SkinVariantType.ALLAY.WATER);
+      AllaySkinVariant.WATER.getTextureLocation();
 
   public AllayRawRenderer(EntityRendererProvider.Context context) {
     super(context);
@@ -69,10 +48,5 @@ public class AllayRawRenderer extends AllayRenderer implements EasyNPCEntityRend
   @Override
   public ResourceLocation getDefaultTexture() {
     return DEFAULT_TEXTURE;
-  }
-
-  @Override
-  public ResourceLocation getTextureByVariant(Enum<?> variantType) {
-    return TEXTURE_BY_VARIANT_TYPE.getOrDefault(variantType, DEFAULT_TEXTURE);
   }
 }
