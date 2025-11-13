@@ -7,12 +7,9 @@ import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
 import de.markusbordihn.easynpc.client.renderer.manager.EntityTypeManager;
 import de.markusbordihn.easynpc.client.renderer.manager.RendererManager;
 import de.markusbordihn.easynpc.data.render.RenderType;
-import de.markusbordihn.easynpc.data.skin.SkinVariantType;
+import de.markusbordihn.easynpc.data.skin.variant.DopplerSkinVariant;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.RenderDataCapable;
-import java.util.EnumMap;
-import java.util.Map;
-import net.minecraft.Util;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -29,15 +26,8 @@ import org.apache.logging.log4j.Logger;
 public class DopplerRenderer<E extends PathfinderMob>
     extends HumanoidMobRenderer<E, DopplerModel<E>> implements EasyNPCEntityRenderer {
 
-  protected static final Map<SkinVariantType.DOPPLER, ResourceLocation> TEXTURE_BY_VARIANT_TYPE =
-      Util.make(
-          new EnumMap<>(SkinVariantType.DOPPLER.class),
-          map ->
-              map.put(
-                  SkinVariantType.DOPPLER.DOPPLER,
-                  ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "textures/entity/doppler/doppler.png")));
   protected static final ResourceLocation DEFAULT_TEXTURE =
-      TEXTURE_BY_VARIANT_TYPE.get(SkinVariantType.DOPPLER.DOPPLER);
+      DopplerSkinVariant.DOPPLER.getTextureLocation();
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   public DopplerRenderer(
@@ -133,11 +123,6 @@ public class DopplerRenderer<E extends PathfinderMob>
   @Override
   public ResourceLocation getDefaultTexture() {
     return DEFAULT_TEXTURE;
-  }
-
-  @Override
-  public ResourceLocation getTextureByVariant(Enum<?> variantType) {
-    return TEXTURE_BY_VARIANT_TYPE.getOrDefault(variantType, DEFAULT_TEXTURE);
   }
 
   @Override

@@ -20,7 +20,7 @@
 package de.markusbordihn.easynpc.entity.easynpc.npc.custom;
 
 import de.markusbordihn.easynpc.data.skin.SkinModel;
-import de.markusbordihn.easynpc.data.skin.SkinVariantType;
+import de.markusbordihn.easynpc.data.skin.variant.OrcSkinVariant;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.sound.SoundType;
 import de.markusbordihn.easynpc.entity.easynpc.npc.raw.PathfinderMobRaw;
@@ -38,7 +38,7 @@ public class Orc extends PathfinderMobRaw {
   public static final String ID_WARRIOR = "orc_warrior";
 
   public Orc(EntityType<? extends PathfinderMob> entityType, Level level) {
-    this(entityType, level, SkinVariantType.ORC.ORC);
+    this(entityType, level, OrcSkinVariant.ORC);
   }
 
   public Orc(EntityType<? extends PathfinderMob> entityType, Level level, Enum<?> variantType) {
@@ -65,18 +65,18 @@ public class Orc extends PathfinderMobRaw {
 
   @Override
   public Enum<?>[] getSkinVariantTypes() {
-    return SkinVariantType.ORC.values();
+    return OrcSkinVariant.values();
   }
 
   @Override
   public Enum<?> getDefaultSkinVariantType() {
-    return SkinVariantType.ORC.ORC;
+    return OrcSkinVariant.ORC;
   }
 
   @Override
   public Enum<?> getSkinVariantType(String name) {
     try {
-      return SkinVariantType.ORC.valueOf(name);
+      return OrcSkinVariant.valueOf(name);
     } catch (IllegalArgumentException e) {
       return getDefaultSkinVariantType();
     }

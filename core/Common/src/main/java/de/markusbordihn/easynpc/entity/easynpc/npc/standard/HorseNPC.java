@@ -20,7 +20,7 @@
 package de.markusbordihn.easynpc.entity.easynpc.npc.standard;
 
 import de.markusbordihn.easynpc.data.skin.SkinModel;
-import de.markusbordihn.easynpc.data.skin.SkinVariantType;
+import de.markusbordihn.easynpc.data.skin.variant.HorseSkinVariant;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.sound.SoundType;
 import de.markusbordihn.easynpc.entity.easynpc.npc.raw.HorseRaw;
@@ -41,7 +41,7 @@ public class HorseNPC extends HorseRaw implements StandardEasyNPC<HorseRaw> {
   public static final String ID_ZOMBIE = "horse_zombie";
 
   public HorseNPC(EntityType<? extends Horse> entityType, Level level) {
-    this(entityType, level, SkinVariantType.HORSE.WHITE);
+    this(entityType, level, HorseSkinVariant.WHITE);
   }
 
   public HorseNPC(EntityType<? extends Horse> entityType, Level level, Enum<?> variantType) {

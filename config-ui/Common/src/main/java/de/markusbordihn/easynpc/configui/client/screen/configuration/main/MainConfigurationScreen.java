@@ -50,6 +50,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.ConfirmScreen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.CommonComponents;
@@ -433,13 +434,10 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
                       break;
                   }
                 }));
-    changeModelButton.active =
-        this.supportsConfigurationType(ConfigurationType.DEFAULT_MODEL)
-            || this.supportsConfigurationType(ConfigurationType.CUSTOM_MODEL);
-
+    changeModelButton.active = this.supportsConfigurationType(ConfigurationType.CUSTOM_MODEL);
     if (!changeModelButton.active) {
       changeModelButton.setTooltip(
-          net.minecraft.client.gui.components.Tooltip.create(
+          Tooltip.create(
               TextComponent.getTranslatedConfigText("change_model.tooltip.only_doppler")));
     }
   }

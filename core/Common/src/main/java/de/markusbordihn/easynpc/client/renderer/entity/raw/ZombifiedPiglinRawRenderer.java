@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.client.renderer.entity.raw;
 
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
+import de.markusbordihn.easynpc.data.skin.variant.PiglinSkinVariant;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -30,8 +31,7 @@ import net.minecraft.world.entity.Mob;
 public class ZombifiedPiglinRawRenderer extends PiglinRenderer implements EasyNPCEntityRenderer {
 
   protected static final ResourceLocation DEFAULT_TEXTURE =
-      ResourceLocation.fromNamespaceAndPath(
-          ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/piglin/zombified_piglin.png");
+      PiglinSkinVariant.ZOMBIFIED_PIGLIN.getTextureLocation();
 
   public ZombifiedPiglinRawRenderer(EntityRendererProvider.Context context) {
     super(
@@ -52,11 +52,6 @@ public class ZombifiedPiglinRawRenderer extends PiglinRenderer implements EasyNP
 
   @Override
   public ResourceLocation getDefaultTexture() {
-    return DEFAULT_TEXTURE;
-  }
-
-  @Override
-  public ResourceLocation getTextureByVariant(Enum<?> variantType) {
     return DEFAULT_TEXTURE;
   }
 }

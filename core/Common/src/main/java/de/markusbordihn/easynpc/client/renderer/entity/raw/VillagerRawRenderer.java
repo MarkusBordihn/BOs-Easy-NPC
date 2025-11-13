@@ -48,9 +48,4 @@ public class VillagerRawRenderer extends VillagerRenderer implements EasyNPCEnti
   public ResourceLocation getDefaultTexture() {
     return DEFAULT_TEXTURE;
   }
-
-  @Override
-  public ResourceLocation getTextureByVariant(Enum<?> variant) {
-    return DEFAULT_TEXTURE;
-  }
 }

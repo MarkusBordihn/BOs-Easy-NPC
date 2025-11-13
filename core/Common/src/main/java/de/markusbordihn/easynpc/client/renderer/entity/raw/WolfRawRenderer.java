@@ -20,11 +20,8 @@
 package de.markusbordihn.easynpc.client.renderer.entity.raw;
 
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
-import de.markusbordihn.easynpc.data.skin.SkinVariantType;
+import de.markusbordihn.easynpc.data.skin.variant.WolfSkinVariant;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import java.util.EnumMap;
-import java.util.Map;
-import net.minecraft.Util;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.WolfRenderer;
 import net.minecraft.resources.ResourceLocation;
@@ -32,25 +29,8 @@ import net.minecraft.world.entity.animal.Wolf;
 
 public class WolfRawRenderer extends WolfRenderer implements EasyNPCEntityRenderer {
 
-  protected static final Map<SkinVariantType.WOLF, ResourceLocation> TEXTURE_BY_VARIANT_TYPE =
-      Util.make(
-          new EnumMap<>(SkinVariantType.WOLF.class),
-          map -> {
-            map.put(
-                SkinVariantType.WOLF.WOLF,
-                ResourceLocation.fromNamespaceAndPath(
-                    ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/wolf/wolf.png"));
-            map.put(
-                SkinVariantType.WOLF.ANGRY,
-                ResourceLocation.fromNamespaceAndPath(
-                    ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/wolf/wolf_angry.png"));
-            map.put(
-                SkinVariantType.WOLF.TAMED,
-                ResourceLocation.fromNamespaceAndPath(
-                    ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/wolf/wolf_tame.png"));
-          });
   protected static final ResourceLocation DEFAULT_TEXTURE =
-      TEXTURE_BY_VARIANT_TYPE.get(SkinVariantType.WOLF.WOLF);
+      WolfSkinVariant.WOLF.getTextureLocation();
 
   public WolfRawRenderer(EntityRendererProvider.Context context) {
     super(context);
@@ -67,10 +47,5 @@ public class WolfRawRenderer extends WolfRenderer implements EasyNPCEntityRender
   @Override
   public ResourceLocation getDefaultTexture() {
     return DEFAULT_TEXTURE;
-  }
-
-  @Override
-  public ResourceLocation getTextureByVariant(Enum<?> variantType) {
-    return TEXTURE_BY_VARIANT_TYPE.getOrDefault(variantType, DEFAULT_TEXTURE);
   }
 }

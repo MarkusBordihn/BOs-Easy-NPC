@@ -20,11 +20,8 @@
 package de.markusbordihn.easynpc.client.renderer.entity.raw;
 
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
-import de.markusbordihn.easynpc.data.skin.SkinVariantType;
+import de.markusbordihn.easynpc.data.skin.variant.CatSkinVariant;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import java.util.EnumMap;
-import java.util.Map;
-import net.minecraft.Util;
 import net.minecraft.client.renderer.entity.CatRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
@@ -32,62 +29,8 @@ import net.minecraft.world.entity.animal.Cat;
 
 public class CatRawRenderer extends CatRenderer implements EasyNPCEntityRenderer {
 
-  protected static final Map<SkinVariantType.CAT, ResourceLocation> TEXTURE_BY_VARIANT_TYPE =
-      Util.make(
-          new EnumMap<>(SkinVariantType.CAT.class),
-          map -> {
-            map.put(
-                SkinVariantType.CAT.ALL_BLACK,
-                ResourceLocation.fromNamespaceAndPath(
-                    ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/cat/all_black.png"));
-            map.put(
-                SkinVariantType.CAT.BLACK,
-                ResourceLocation.fromNamespaceAndPath(
-                    ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/cat/black.png"));
-            map.put(
-                SkinVariantType.CAT.BRITISH_SHORTHAIR,
-                ResourceLocation.fromNamespaceAndPath(
-                    ResourceLocation.DEFAULT_NAMESPACE,
-                    "textures/entity/cat/british_shorthair.png"));
-            map.put(
-                SkinVariantType.CAT.CALICO,
-                ResourceLocation.fromNamespaceAndPath(
-                    ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/cat/calico.png"));
-            map.put(
-                SkinVariantType.CAT.JELLIE,
-                ResourceLocation.fromNamespaceAndPath(
-                    ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/cat/jellie.png"));
-            map.put(
-                SkinVariantType.CAT.OCELOT,
-                ResourceLocation.fromNamespaceAndPath(
-                    ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/cat/ocelot.png"));
-            map.put(
-                SkinVariantType.CAT.PERSIAN,
-                ResourceLocation.fromNamespaceAndPath(
-                    ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/cat/persian.png"));
-            map.put(
-                SkinVariantType.CAT.RAGDOLL,
-                ResourceLocation.fromNamespaceAndPath(
-                    ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/cat/ragdoll.png"));
-            map.put(
-                SkinVariantType.CAT.RED,
-                ResourceLocation.fromNamespaceAndPath(
-                    ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/cat/red.png"));
-            map.put(
-                SkinVariantType.CAT.SIAMESE,
-                ResourceLocation.fromNamespaceAndPath(
-                    ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/cat/siamese.png"));
-            map.put(
-                SkinVariantType.CAT.TABBY,
-                ResourceLocation.fromNamespaceAndPath(
-                    ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/cat/tabby.png"));
-            map.put(
-                SkinVariantType.CAT.WHITE,
-                ResourceLocation.fromNamespaceAndPath(
-                    ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/cat/white.png"));
-          });
   protected static final ResourceLocation DEFAULT_TEXTURE =
-      TEXTURE_BY_VARIANT_TYPE.get(SkinVariantType.CAT.BLACK);
+      CatSkinVariant.BLACK.getTextureLocation();
 
   public CatRawRenderer(EntityRendererProvider.Context context) {
     super(context);
@@ -104,10 +47,5 @@ public class CatRawRenderer extends CatRenderer implements EasyNPCEntityRenderer
   @Override
   public ResourceLocation getDefaultTexture() {
     return DEFAULT_TEXTURE;
-  }
-
-  @Override
-  public ResourceLocation getTextureByVariant(Enum<?> variantType) {
-    return TEXTURE_BY_VARIANT_TYPE.getOrDefault(variantType, DEFAULT_TEXTURE);
   }
 }

@@ -20,7 +20,7 @@
 package de.markusbordihn.easynpc.entity.easynpc.npc.standard;
 
 import com.google.common.collect.ImmutableList;
-import de.markusbordihn.easynpc.data.skin.SkinVariantType;
+import de.markusbordihn.easynpc.data.skin.variant.VillagerSkinVariant;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.sound.SoundType;
 import de.markusbordihn.easynpc.entity.easynpc.npc.raw.VillagerRaw;
@@ -77,7 +77,7 @@ public class VillagerNPC extends VillagerRaw implements StandardEasyNPC<Villager
           SensorType.VILLAGER_HOSTILES);
 
   public VillagerNPC(EntityType<? extends Villager> entityType, Level level) {
-    this(entityType, level, SkinVariantType.VILLAGER.PLAINS_NITWIT);
+    this(entityType, level, VillagerSkinVariant.PLAINS_NITWIT);
   }
 
   public VillagerNPC(EntityType<? extends Villager> entityType, Level level, Enum<?> variantType) {

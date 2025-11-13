@@ -20,11 +20,8 @@
 package de.markusbordihn.easynpc.client.renderer.entity.raw;
 
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
-import de.markusbordihn.easynpc.data.skin.SkinVariantType;
+import de.markusbordihn.easynpc.data.skin.variant.IronGolemSkinVariant;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import java.util.EnumMap;
-import java.util.Map;
-import net.minecraft.Util;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.IronGolemRenderer;
 import net.minecraft.resources.ResourceLocation;
@@ -32,33 +29,8 @@ import net.minecraft.world.entity.animal.IronGolem;
 
 public class IronGolemRawRenderer extends IronGolemRenderer implements EasyNPCEntityRenderer {
 
-  protected static final Map<SkinVariantType.IRON_GOLEM, ResourceLocation> TEXTURE_BY_VARIANT_TYPE =
-      Util.make(
-          new EnumMap<>(SkinVariantType.IRON_GOLEM.class),
-          map -> {
-            map.put(
-                SkinVariantType.IRON_GOLEM.IRON_GOLEM,
-                ResourceLocation.fromNamespaceAndPath(
-                    ResourceLocation.DEFAULT_NAMESPACE,
-                    "textures/entity/iron_golem/iron_golem.png"));
-            map.put(
-                SkinVariantType.IRON_GOLEM.IRON_GOLEM_CRACKINESS_LOW,
-                ResourceLocation.fromNamespaceAndPath(
-                    ResourceLocation.DEFAULT_NAMESPACE,
-                    "textures/entity/iron_golem/iron_golem.png"));
-            map.put(
-                SkinVariantType.IRON_GOLEM.IRON_GOLEM_CRACKINESS_MEDIUM,
-                ResourceLocation.fromNamespaceAndPath(
-                    ResourceLocation.DEFAULT_NAMESPACE,
-                    "textures/entity/iron_golem/iron_golem.png"));
-            map.put(
-                SkinVariantType.IRON_GOLEM.IRON_GOLEM_CRACKINESS_HIGH,
-                ResourceLocation.fromNamespaceAndPath(
-                    ResourceLocation.DEFAULT_NAMESPACE,
-                    "textures/entity/iron_golem/iron_golem.png"));
-          });
   protected static final ResourceLocation DEFAULT_TEXTURE =
-      TEXTURE_BY_VARIANT_TYPE.get(SkinVariantType.IRON_GOLEM.IRON_GOLEM);
+      IronGolemSkinVariant.IRON_GOLEM.getTextureLocation();
 
   public IronGolemRawRenderer(EntityRendererProvider.Context context) {
     super(context);
@@ -75,10 +47,5 @@ public class IronGolemRawRenderer extends IronGolemRenderer implements EasyNPCEn
   @Override
   public ResourceLocation getDefaultTexture() {
     return DEFAULT_TEXTURE;
-  }
-
-  @Override
-  public ResourceLocation getTextureByVariant(Enum<?> variantType) {
-    return TEXTURE_BY_VARIANT_TYPE.getOrDefault(variantType, DEFAULT_TEXTURE);
   }
 }

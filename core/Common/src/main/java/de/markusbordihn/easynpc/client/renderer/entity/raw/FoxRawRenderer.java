@@ -20,11 +20,8 @@
 package de.markusbordihn.easynpc.client.renderer.entity.raw;
 
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
-import de.markusbordihn.easynpc.data.skin.SkinVariantType;
+import de.markusbordihn.easynpc.data.skin.variant.FoxSkinVariant;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import java.util.EnumMap;
-import java.util.Map;
-import net.minecraft.Util;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.FoxRenderer;
 import net.minecraft.resources.ResourceLocation;
@@ -32,21 +29,7 @@ import net.minecraft.world.entity.animal.Fox;
 
 public class FoxRawRenderer extends FoxRenderer implements EasyNPCEntityRenderer {
 
-  protected static final Map<SkinVariantType.FOX, ResourceLocation> TEXTURE_BY_VARIANT_TYPE =
-      Util.make(
-          new EnumMap<>(SkinVariantType.FOX.class),
-          map -> {
-            map.put(
-                SkinVariantType.FOX.RED,
-                ResourceLocation.fromNamespaceAndPath(
-                    ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/fox/fox.png"));
-            map.put(
-                SkinVariantType.FOX.SNOW,
-                ResourceLocation.fromNamespaceAndPath(
-                    ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/fox/snow_fox.png"));
-          });
-  protected static final ResourceLocation DEFAULT_TEXTURE =
-      TEXTURE_BY_VARIANT_TYPE.get(SkinVariantType.FOX.RED);
+  protected static final ResourceLocation DEFAULT_TEXTURE = FoxSkinVariant.RED.getTextureLocation();
 
   public FoxRawRenderer(EntityRendererProvider.Context context) {
     super(context);
@@ -63,10 +46,5 @@ public class FoxRawRenderer extends FoxRenderer implements EasyNPCEntityRenderer
   @Override
   public ResourceLocation getDefaultTexture() {
     return DEFAULT_TEXTURE;
-  }
-
-  @Override
-  public ResourceLocation getTextureByVariant(Enum<?> variantType) {
-    return TEXTURE_BY_VARIANT_TYPE.getOrDefault(variantType, DEFAULT_TEXTURE);
   }
 }

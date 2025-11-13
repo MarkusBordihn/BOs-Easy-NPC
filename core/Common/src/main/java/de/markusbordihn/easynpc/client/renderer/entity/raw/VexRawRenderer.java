@@ -20,11 +20,8 @@
 package de.markusbordihn.easynpc.client.renderer.entity.raw;
 
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
-import de.markusbordihn.easynpc.data.skin.SkinVariantType;
+import de.markusbordihn.easynpc.data.skin.variant.VexSkinVariant;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import java.util.EnumMap;
-import java.util.Map;
-import net.minecraft.Util;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.VexRenderer;
 import net.minecraft.resources.ResourceLocation;
@@ -32,22 +29,7 @@ import net.minecraft.world.entity.monster.Vex;
 
 public class VexRawRenderer extends VexRenderer implements EasyNPCEntityRenderer {
 
-  protected static final Map<SkinVariantType.VEX, ResourceLocation> TEXTURE_BY_VARIANT_TYPE =
-      Util.make(
-          new EnumMap<>(SkinVariantType.VEX.class),
-          map -> {
-            map.put(
-                SkinVariantType.VEX.VEX,
-                ResourceLocation.fromNamespaceAndPath(
-                    ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/illager/vex.png"));
-            map.put(
-                SkinVariantType.VEX.CHARGED,
-                ResourceLocation.fromNamespaceAndPath(
-                    ResourceLocation.DEFAULT_NAMESPACE,
-                    "textures/entity/illager/vex_charging.png"));
-          });
-  protected static final ResourceLocation DEFAULT_TEXTURE =
-      TEXTURE_BY_VARIANT_TYPE.get(SkinVariantType.VEX.VEX);
+  protected static final ResourceLocation DEFAULT_TEXTURE = VexSkinVariant.VEX.getTextureLocation();
 
   public VexRawRenderer(EntityRendererProvider.Context context) {
     super(context);
@@ -64,10 +46,5 @@ public class VexRawRenderer extends VexRenderer implements EasyNPCEntityRenderer
   @Override
   public ResourceLocation getDefaultTexture() {
     return DEFAULT_TEXTURE;
-  }
-
-  @Override
-  public ResourceLocation getTextureByVariant(Enum<?> variantType) {
-    return TEXTURE_BY_VARIANT_TYPE.getOrDefault(variantType, DEFAULT_TEXTURE);
   }
 }

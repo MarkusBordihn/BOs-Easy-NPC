@@ -20,7 +20,7 @@
 package de.markusbordihn.easynpc.entity;
 
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.data.skin.SkinVariantType;
+import de.markusbordihn.easynpc.data.skin.variant.OrcSkinVariant;
 import de.markusbordihn.easynpc.entity.easynpc.npc.custom.Doppler;
 import de.markusbordihn.easynpc.entity.easynpc.npc.custom.Fairy;
 import de.markusbordihn.easynpc.entity.easynpc.npc.custom.Orc;
@@ -60,7 +60,7 @@ public enum ModCustomEntityType implements ModEntityTypeProvider {
       Orc.ID_WARRIOR,
       EntityType.Builder.of(
               (EntityType<Orc> type, Level level) ->
-                  new Orc(type, level, SkinVariantType.ORC.ORC_WARRIOR),
+                  new Orc(type, level, OrcSkinVariant.ORC_WARRIOR),
               MobCategory.MISC)
           .sized(0.6F, 1.95F)
           .clientTrackingRange(12),

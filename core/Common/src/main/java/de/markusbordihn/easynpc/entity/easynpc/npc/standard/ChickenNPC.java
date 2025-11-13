@@ -19,7 +19,7 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.npc.standard;
 
-import de.markusbordihn.easynpc.data.skin.SkinVariantType;
+import de.markusbordihn.easynpc.data.skin.variant.ChickenSkinVariant;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.sound.SoundType;
 import de.markusbordihn.easynpc.entity.easynpc.npc.raw.ChickenRaw;
@@ -38,7 +38,7 @@ public class ChickenNPC extends ChickenRaw implements StandardEasyNPC<ChickenRaw
   public static final String ID = "chicken";
 
   public ChickenNPC(EntityType<? extends Chicken> entityType, Level level) {
-    this(entityType, level, SkinVariantType.CHICKEN.WHITE);
+    this(entityType, level, ChickenSkinVariant.WHITE);
   }
 
   public ChickenNPC(EntityType<? extends Chicken> entityType, Level level, Enum<?> variantType) {

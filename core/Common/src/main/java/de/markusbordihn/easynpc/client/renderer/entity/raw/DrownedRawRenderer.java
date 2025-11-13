@@ -20,11 +20,8 @@
 package de.markusbordihn.easynpc.client.renderer.entity.raw;
 
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
-import de.markusbordihn.easynpc.data.skin.SkinVariantType;
+import de.markusbordihn.easynpc.data.skin.variant.ZombieSkinVariant;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import java.util.EnumMap;
-import java.util.Map;
-import net.minecraft.Util;
 import net.minecraft.client.renderer.entity.DrownedRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
@@ -32,16 +29,8 @@ import net.minecraft.world.entity.monster.Drowned;
 
 public class DrownedRawRenderer extends DrownedRenderer implements EasyNPCEntityRenderer {
 
-  protected static final Map<SkinVariantType.ZOMBIE, ResourceLocation> TEXTURE_BY_VARIANT_TYPE =
-      Util.make(
-          new EnumMap<>(SkinVariantType.ZOMBIE.class),
-          map ->
-              map.put(
-                  SkinVariantType.ZOMBIE.DROWNED,
-                  ResourceLocation.fromNamespaceAndPath(
-                      ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/zombie/drowned.png")));
   protected static final ResourceLocation DEFAULT_TEXTURE =
-      TEXTURE_BY_VARIANT_TYPE.get(SkinVariantType.ZOMBIE.DROWNED);
+      ZombieSkinVariant.DROWNED.getTextureLocation();
 
   public DrownedRawRenderer(EntityRendererProvider.Context context) {
     super(context);
@@ -58,10 +47,5 @@ public class DrownedRawRenderer extends DrownedRenderer implements EasyNPCEntity
   @Override
   public ResourceLocation getDefaultTexture() {
     return DEFAULT_TEXTURE;
-  }
-
-  @Override
-  public ResourceLocation getTextureByVariant(Enum<?> variantType) {
-    return TEXTURE_BY_VARIANT_TYPE.getOrDefault(variantType, DEFAULT_TEXTURE);
   }
 }

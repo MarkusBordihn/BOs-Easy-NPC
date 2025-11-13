@@ -19,17 +19,13 @@
 
 package de.markusbordihn.easynpc.client.renderer.entity.custom;
 
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.model.custom.OrcModel;
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
 import de.markusbordihn.easynpc.client.texture.CustomTextureManager;
 import de.markusbordihn.easynpc.client.texture.RemoteTextureManager;
-import de.markusbordihn.easynpc.data.skin.SkinVariantType;
+import de.markusbordihn.easynpc.data.skin.variant.OrcSkinVariant;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.npc.custom.Orc;
-import java.util.EnumMap;
-import java.util.Map;
-import net.minecraft.Util;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.HumanoidMobRenderer;
@@ -38,19 +34,7 @@ import net.minecraft.resources.ResourceLocation;
 public class OrcRenderer<E extends Orc> extends HumanoidMobRenderer<E, OrcModel<E>>
     implements EasyNPCEntityRenderer {
 
-  protected static final Map<SkinVariantType.ORC, ResourceLocation> TEXTURE_BY_VARIANT_TYPE =
-      Util.make(
-          new EnumMap<>(SkinVariantType.ORC.class),
-          map -> {
-            map.put(
-                SkinVariantType.ORC.ORC,
-                ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "textures/entity/orc/orc_default.png"));
-            map.put(
-                SkinVariantType.ORC.ORC_WARRIOR,
-                ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "textures/entity/orc/orc_warrior.png"));
-          });
-  protected static final ResourceLocation DEFAULT_TEXTURE =
-      TEXTURE_BY_VARIANT_TYPE.get(SkinVariantType.ORC.ORC);
+  protected static final ResourceLocation DEFAULT_TEXTURE = OrcSkinVariant.ORC.getTextureLocation();
 
   public OrcRenderer(
       EntityRendererProvider.Context context, ModelLayerLocation modelLayerLocation) {
@@ -72,10 +56,5 @@ public class OrcRenderer<E extends Orc> extends HumanoidMobRenderer<E, OrcModel<
 
   public ResourceLocation getRemoteTexture(SkinDataCapable<?> entity) {
     return RemoteTextureManager.getOrCreateTextureWithDefault(entity, getDefaultTexture());
-  }
-
-  @Override
-  public ResourceLocation getTextureByVariant(Enum<?> variantType) {
-    return TEXTURE_BY_VARIANT_TYPE.getOrDefault(variantType, DEFAULT_TEXTURE);
   }
 }
