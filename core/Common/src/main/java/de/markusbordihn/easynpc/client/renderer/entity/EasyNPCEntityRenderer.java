@@ -19,12 +19,8 @@
 
 package de.markusbordihn.easynpc.client.renderer.entity;
 
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.renderer.entity.state.EasyNPCRenderStateExtension;
-import de.markusbordihn.easynpc.client.texture.CustomTextureManager;
-import de.markusbordihn.easynpc.client.texture.PlayerTextureManager;
-import de.markusbordihn.easynpc.client.texture.RemoteTextureManager;
-import de.markusbordihn.easynpc.data.skin.VariantTexture;
+import de.markusbordihn.easynpc.client.texture.LivingEntityTextureManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
 import java.util.function.Supplier;
@@ -35,62 +31,49 @@ public interface EasyNPCEntityRenderer {
 
   ResourceLocation getDefaultTexture();
 
+  default boolean supportsPlayerSkins() {
+    return false;
+  }
+
   default boolean hasEasyNPCRenderState(LivingEntityRenderState livingEntityRenderState) {
     return livingEntityRenderState instanceof EasyNPCRenderStateExtension;
   }
 
   default ResourceLocation getTextureByVariant(final Enum<?> variant) {
-    if (variant instanceof VariantTexture variantTexture) {
-      return variantTexture.getTextureLocation();
-    }
-    return getDefaultTexture();
+    return LivingEntityTextureManager.getTextureByVariant(variant, getDefaultTexture());
   }
 
   default ResourceLocation getCustomTexture(final SkinDataCapable<?> entity) {
-    return CustomTextureManager.getOrCreateTextureWithDefault(entity, getDefaultTexture());
+    return LivingEntityTextureManager.getCustomTexture(entity, getDefaultTexture());
   }
 
   default ResourceLocation getPlayerTexture(final SkinDataCapable<?> entity) {
-    return PlayerTextureManager.getOrCreateTextureWithDefault(entity, getDefaultTexture());
+    return LivingEntityTextureManager.getPlayerTexture(entity, getDefaultTexture());
   }
 
   default ResourceLocation getRemoteTexture(final SkinDataCapable<?> entity) {
-    return RemoteTextureManager.getOrCreateTextureWithDefault(entity, getDefaultTexture());
+    return LivingEntityTextureManager.getRemoteTexture(entity, getDefaultTexture());
   }
 
   default EasyNPC<?> getEasyNPC(final LivingEntityRenderState livingEntityRenderState) {
     return EasyNPCLivingEntityRenderer.getEasyNPC(livingEntityRenderState);
   }
 
+  default ResourceLocation getTextureFromRenderState(final LivingEntityRenderState renderState) {
+    return EasyNPCLivingEntityRenderer.getTexture(renderState, getDefaultTexture());
+  }
+
   default ResourceLocation getEntityTexture(final EasyNPC<?> easyNPC) {
-    SkinDataCapable<?> skinData = easyNPC.getEasyNPCSkinData();
-    return switch (skinData.getSkinType()) {
-      case NONE -> Constants.BLANK_ENTITY_TEXTURE;
-      case CUSTOM -> getCustomTexture(skinData);
-      case SECURE_REMOTE_URL, INSECURE_REMOTE_URL -> getRemoteTexture(skinData);
-      default -> getTextureByVariant(easyNPC.getEasyNPCVariantData().getSkinVariantType());
-    };
+    return LivingEntityTextureManager.getEntityTexture(easyNPC, getDefaultTexture());
   }
 
   default ResourceLocation getEntityPlayerTexture(final EasyNPC<?> easyNPC) {
-    SkinDataCapable<?> skinData = easyNPC.getEasyNPCSkinData();
-    return switch (skinData.getSkinType()) {
-      case NONE -> Constants.BLANK_ENTITY_TEXTURE;
-      case CUSTOM -> getCustomTexture(skinData);
-      case PLAYER_SKIN -> getPlayerTexture(skinData);
-      case SECURE_REMOTE_URL, INSECURE_REMOTE_URL -> getRemoteTexture(skinData);
-      default -> getTextureByVariant(easyNPC.getEasyNPCVariantData().getSkinVariantType());
-    };
+    return LivingEntityTextureManager.getEntityPlayerTexture(easyNPC, getDefaultTexture());
   }
 
   default ResourceLocation getEntityTextureWithDefaultCallback(
       final EasyNPC<?> easyNPC, final Supplier<ResourceLocation> defaultTextureSupplier) {
-    SkinDataCapable<?> skinData = easyNPC.getEasyNPCSkinData();
-    return switch (skinData.getSkinType()) {
-      case NONE -> Constants.BLANK_ENTITY_TEXTURE;
-      case CUSTOM -> getCustomTexture(skinData);
-      case SECURE_REMOTE_URL, INSECURE_REMOTE_URL -> getRemoteTexture(skinData);
-      default -> defaultTextureSupplier.get();
-    };
+    return LivingEntityTextureManager.getEntityTextureWithDefaultCallback(
+        easyNPC, getDefaultTexture(), defaultTextureSupplier);
   }
 }

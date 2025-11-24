@@ -21,7 +21,6 @@ package de.markusbordihn.easynpc.client.renderer.entity.raw;
 
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
 import de.markusbordihn.easynpc.data.skin.variant.ZombieSkinVariant;
-import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.ZombieRenderer;
 import net.minecraft.client.renderer.entity.state.ZombieRenderState;
@@ -38,11 +37,7 @@ public class HuskRawRenderer extends ZombieRenderer implements EasyNPCEntityRend
 
   @Override
   public ResourceLocation getTextureLocation(ZombieRenderState renderState) {
-    EasyNPC<?> easyNPC = getEasyNPC(renderState);
-    if (easyNPC != null) {
-      return getEntityTexture(easyNPC);
-    }
-    return DEFAULT_TEXTURE;
+    return getTextureFromRenderState(renderState);
   }
 
   @Override

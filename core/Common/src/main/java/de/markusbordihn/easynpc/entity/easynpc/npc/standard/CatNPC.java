@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.npc.standard;
 
+import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
 import de.markusbordihn.easynpc.data.skin.variant.CatSkinVariant;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.sound.SoundType;
@@ -64,6 +65,11 @@ public class CatNPC extends CatRaw implements StandardEasyNPC<CatRaw> {
   @Override
   public boolean canUseOffHand() {
     return false;
+  }
+
+  @Override
+  public ConfigurationData getConfigurationData() {
+    return ConfigurationData.STANDARD;
   }
 
   @Override

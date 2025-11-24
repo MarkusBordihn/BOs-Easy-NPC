@@ -21,7 +21,6 @@ package de.markusbordihn.easynpc.client.renderer.entity.raw;
 
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
 import de.markusbordihn.easynpc.data.skin.variant.WolfSkinVariant;
-import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.WolfRenderer;
 import net.minecraft.client.renderer.entity.state.WolfRenderState;
@@ -38,11 +37,7 @@ public class WolfRawRenderer extends WolfRenderer implements EasyNPCEntityRender
 
   @Override
   public ResourceLocation getTextureLocation(WolfRenderState renderState) {
-    EasyNPC<?> easyNPC = getEasyNPC(renderState);
-    if (easyNPC != null) {
-      return getEntityTexture(easyNPC);
-    }
-    return DEFAULT_TEXTURE;
+    return getTextureFromRenderState(renderState);
   }
 
   @Override

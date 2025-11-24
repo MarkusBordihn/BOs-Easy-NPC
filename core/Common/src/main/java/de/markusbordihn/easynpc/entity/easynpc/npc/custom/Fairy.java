@@ -19,8 +19,10 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.npc.custom;
 
+import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
 import de.markusbordihn.easynpc.data.scale.CustomScale;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
+import de.markusbordihn.easynpc.data.skin.variant.FairySkinVariant;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.sound.SoundType;
 import de.markusbordihn.easynpc.entity.easynpc.npc.raw.PathfinderMobRaw;
@@ -33,7 +35,6 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.FlyingMoveControl;
 import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
-import net.minecraft.world.entity.animal.Parrot.Variant;
 import net.minecraft.world.level.Level;
 
 public class Fairy extends PathfinderMobRaw {
@@ -43,7 +44,7 @@ public class Fairy extends PathfinderMobRaw {
   private static final CustomScale DEFAULT_SCALE = new CustomScale(0.4f);
 
   public Fairy(EntityType<? extends PathfinderMob> entityType, Level level) {
-    this(entityType, level, Variant.GREEN);
+    this(entityType, level, FairySkinVariant.GREEN);
   }
 
   public Fairy(EntityType<? extends PathfinderMob> entityType, Level level, Enum<?> variantType) {
@@ -71,6 +72,11 @@ public class Fairy extends PathfinderMobRaw {
   }
 
   @Override
+  public ConfigurationData getConfigurationData() {
+    return ConfigurationData.STANDARD;
+  }
+
+  @Override
   public CustomScale getDefaultModelScale() {
     return DEFAULT_SCALE;
   }
@@ -87,18 +93,18 @@ public class Fairy extends PathfinderMobRaw {
 
   @Override
   public Enum<?>[] getSkinVariantTypes() {
-    return VariantType.values();
+    return FairySkinVariant.values();
   }
 
   @Override
   public Enum<?> getDefaultSkinVariantType() {
-    return VariantType.GREEN;
+    return FairySkinVariant.GREEN;
   }
 
   @Override
   public Enum<?> getSkinVariantType(String name) {
     try {
-      return VariantType.valueOf(name);
+      return FairySkinVariant.valueOf(name);
     } catch (IllegalArgumentException e) {
       return getDefaultSkinVariantType();
     }
@@ -129,11 +135,5 @@ public class Fairy extends PathfinderMobRaw {
     soundDataSet.addSound(SoundType.TRADE_YES, SoundEvents.VILLAGER_YES);
     soundDataSet.addSound(SoundType.TRADE_NO, SoundEvents.VILLAGER_NO);
     return soundDataSet;
-  }
-
-  public enum VariantType {
-    GREEN,
-    RED,
-    BLUE
   }
 }

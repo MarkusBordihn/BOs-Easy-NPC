@@ -56,13 +56,16 @@ public record CustomPosition(float x, float y, float z) {
 
   public CustomPosition(ListTag listTag) {
     this(
-        listTag.getFloat(0).orElse(0.0f),
-        listTag.getFloat(1).orElse(0.0f),
-        listTag.getFloat(2).orElse(0.0f));
+        listTag != null && listTag.size() > 0 ? listTag.getFloat(0).orElse(0.0f) : 0f,
+        listTag != null && listTag.size() > 1 ? listTag.getFloat(1).orElse(0.0f) : 0f,
+        listTag != null && listTag.size() > 2 ? listTag.getFloat(2).orElse(0.0f) : 0f);
   }
 
   public CustomPosition(List<Float> list) {
-    this(list.get(0), list.get(1), list.get(2));
+    this(
+        list != null && list.size() > 0 ? list.get(0) : 0f,
+        list != null && list.size() > 1 ? list.get(1) : 0f,
+        list != null && list.size() > 2 ? list.get(2) : 0f);
   }
 
   public ListTag save() {
