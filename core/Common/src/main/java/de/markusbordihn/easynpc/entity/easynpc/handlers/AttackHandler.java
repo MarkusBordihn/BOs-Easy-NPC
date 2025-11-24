@@ -46,6 +46,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ProjectileWeaponItem;
 import net.minecraft.world.item.component.ChargedProjectiles;
+import net.minecraft.world.level.ItemLike;
 
 public class AttackHandler {
 
@@ -185,7 +186,11 @@ public class AttackHandler {
     ItemStack itemStackWeapon = livingEntity.getItemInHand(getBowHoldingHand(livingEntity));
     ItemStack itemStackProjectile = livingEntity.getProjectile(itemStackWeapon);
     AbstractArrow abstractArrow =
-        getArrow(livingEntity, itemStackWeapon, itemStackProjectile, damage);
+        getArrow(
+            livingEntity,
+            itemStackWeapon,
+            itemStackProjectile.isEmpty() ? new ItemStack(Items.ARROW) : itemStackProjectile,
+            damage);
     if (isBowWeapon(livingEntity.getMainHandItem())) {
       double targetX = livingEntityTarget.getX() - livingEntity.getX();
       double targetY = livingEntityTarget.getY(0.3333333333333333D) - abstractArrow.getY();
@@ -210,7 +215,11 @@ public class AttackHandler {
       ItemStack itemStackWeapon,
       ItemStack itemStackProjectile,
       float damage) {
-    return ProjectileUtil.getMobArrow(livingEntity, itemStackProjectile, damage, itemStackWeapon);
+    return ProjectileUtil.getMobArrow(
+        livingEntity,
+        itemStackProjectile.isEmpty() ? new ItemStack(Items.ARROW) : itemStackProjectile,
+        damage,
+        itemStackWeapon);
   }
 
   public static AbstractArrow getBullet(
@@ -221,7 +230,12 @@ public class AttackHandler {
     return item.map(
             itemReference ->
                 ProjectileUtil.getMobArrow(
-                    livingEntity, new ItemStack(itemReference), damage, itemStackWeapon))
+                    livingEntity,
+                    itemReference != null && itemReference.value() != Items.AIR
+                        ? new ItemStack(itemReference)
+                        : new ItemStack(Items.ARROW),
+                    damage,
+                    itemStackWeapon))
         .orElseGet(
             () ->
                 ProjectileUtil.getMobArrow(
