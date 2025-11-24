@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.npc.custom;
 
+import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.data.skin.variant.OrcSkinVariant;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
@@ -56,6 +57,11 @@ public class Orc extends PathfinderMobRaw {
         .add(Attributes.ATTACK_SPEED, 0.0D)
         .add(Attributes.ARMOR, 0.0D)
         .add(Attributes.ARMOR_TOUGHNESS, 0.0D);
+  }
+
+  @Override
+  public ConfigurationData getConfigurationData() {
+    return ConfigurationData.STANDARD;
   }
 
   @Override

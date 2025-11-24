@@ -22,7 +22,6 @@ package de.markusbordihn.easynpc.client.renderer.entity.custom;
 import de.markusbordihn.easynpc.client.model.custom.OrcModel;
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
 import de.markusbordihn.easynpc.data.skin.variant.OrcSkinVariant;
-import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.custom.Orc;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -43,11 +42,7 @@ public class OrcRenderer
 
   @Override
   public ResourceLocation getTextureLocation(HumanoidRenderState renderState) {
-    EasyNPC<?> easyNPC = getEasyNPC(renderState);
-    if (easyNPC != null) {
-      return getEntityTexture(easyNPC);
-    }
-    return DEFAULT_TEXTURE;
+    return getTextureFromRenderState(renderState);
   }
 
   @Override

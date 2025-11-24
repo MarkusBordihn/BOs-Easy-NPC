@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.npc.standard;
 
+import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.sound.SoundType;
 import de.markusbordihn.easynpc.entity.easynpc.npc.raw.HuskRaw;
@@ -62,6 +63,11 @@ public class HuskNPC extends HuskRaw implements StandardEasyNPC<HuskRaw> {
   @Override
   public boolean canUseArmor() {
     return true;
+  }
+
+  @Override
+  public ConfigurationData getConfigurationData() {
+    return ConfigurationData.STANDARD;
   }
 
   @Override

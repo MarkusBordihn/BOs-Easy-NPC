@@ -44,6 +44,10 @@ public class EasyNPCLivingEntityRendererMixin {
     if (livingEntity instanceof EasyNPC<?> easyNPC
         && renderState instanceof EasyNPCRenderStateExtension renderStateExtension) {
       renderStateExtension.setEasyNpcUUID(easyNPC.getEntityUUID());
+
+      // Extract and cache the texture in the render state
+      EasyNPCLivingEntityRenderer.extractAndCacheTexture(
+          easyNPC, renderStateExtension, (LivingEntityRenderer<?, ?, ?>) (Object) this);
     }
   }
 

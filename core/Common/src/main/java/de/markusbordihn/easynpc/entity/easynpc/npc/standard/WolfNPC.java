@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.npc.standard;
 
+import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
 import de.markusbordihn.easynpc.data.skin.variant.WolfSkinVariant;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.sound.SoundType;
@@ -69,6 +70,11 @@ public class WolfNPC extends WolfRaw implements StandardEasyNPC<WolfRaw> {
   @Override
   public int getEntityDialogTop() {
     return -37;
+  }
+
+  @Override
+  public ConfigurationData getConfigurationData() {
+    return ConfigurationData.STANDARD;
   }
 
   @Override

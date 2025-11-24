@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.npc.standard;
 
+import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
 import de.markusbordihn.easynpc.data.skin.variant.ZombieVillagerSkinVariant;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.sound.SoundType;
@@ -82,6 +83,11 @@ public class ZombieVillagerNPC extends ZombieVillagerRaw
   @Override
   public boolean hasProfessions() {
     return true;
+  }
+
+  @Override
+  public ConfigurationData getConfigurationData() {
+    return ConfigurationData.STANDARD;
   }
 
   @Override

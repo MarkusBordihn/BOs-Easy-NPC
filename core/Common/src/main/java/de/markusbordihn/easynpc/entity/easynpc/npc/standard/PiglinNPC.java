@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.entity.easynpc.npc.standard;
 
 import com.google.common.collect.ImmutableList;
+import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
 import de.markusbordihn.easynpc.data.skin.variant.PiglinSkinVariant;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.sound.SoundType;
@@ -69,6 +70,11 @@ public class PiglinNPC extends PiglinRaw implements StandardEasyNPC<PiglinRaw> {
         .add(Attributes.MAX_HEALTH, 20.0D)
         .add(Attributes.MOVEMENT_SPEED, 0.5F)
         .add(Attributes.SPAWN_REINFORCEMENTS_CHANCE, 0.0D);
+  }
+
+  @Override
+  public ConfigurationData getConfigurationData() {
+    return ConfigurationData.STANDARD;
   }
 
   @Override

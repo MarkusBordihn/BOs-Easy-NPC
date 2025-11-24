@@ -21,7 +21,6 @@ package de.markusbordihn.easynpc.client.renderer.entity.raw;
 
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
 import de.markusbordihn.easynpc.data.skin.variant.PiglinSkinVariant;
-import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -65,13 +64,14 @@ public class PiglinRawRenderer extends PiglinRenderer implements EasyNPCEntityRe
 
   @Override
   public ResourceLocation getTextureLocation(PiglinRenderState renderState) {
-    EasyNPC<?> easyNPC = getEasyNPC(renderState);
-    if (easyNPC != null) {
-      return getEntityTexture(easyNPC);
+    ResourceLocation texture = getTextureFromRenderState(renderState);
+    // Fallback to original logic if no cached texture available
+    if (texture == DEFAULT_TEXTURE) {
+      return renderState.isBrute
+          ? PiglinSkinVariant.PIGLIN_BRUTE.getTextureLocation()
+          : PiglinSkinVariant.PIGLIN.getTextureLocation();
     }
-    return renderState.isBrute
-        ? PiglinSkinVariant.PIGLIN_BRUTE.getTextureLocation()
-        : PiglinSkinVariant.PIGLIN.getTextureLocation();
+    return texture;
   }
 
   @Override

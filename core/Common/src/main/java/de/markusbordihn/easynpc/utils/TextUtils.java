@@ -86,7 +86,7 @@ public class TextUtils {
     StringBuilder stringBuilder = new StringBuilder();
     boolean nextUpperCase = false;
     for (char character : text.toCharArray()) {
-      if (character == '_' || character == ' ') {
+      if (character == '_' || character == ' ' || character == '-') {
         nextUpperCase = true;
       } else if (nextUpperCase) {
         stringBuilder.append(Character.toUpperCase(character));
