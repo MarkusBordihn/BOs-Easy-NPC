@@ -2,7 +2,6 @@ package de.markusbordihn.easynpc.client.renderer.entity.standard;
 
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
 import de.markusbordihn.easynpc.data.skin.variant.HumanoidSkinVariant;
-import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import net.minecraft.client.model.HumanoidArmorModel;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.model.geom.ModelLayers;
@@ -51,15 +50,16 @@ public class PlayerRenderer
 
   @Override
   public ResourceLocation getTextureLocation(PlayerRenderState renderState) {
-    EasyNPC<?> easyNPC = getEasyNPC(renderState);
-    if (easyNPC != null) {
-      return getEntityPlayerTexture(easyNPC);
-    }
-    return DEFAULT_TEXTURE;
+    return getTextureFromRenderState(renderState);
   }
 
   @Override
   public ResourceLocation getDefaultTexture() {
     return DEFAULT_TEXTURE;
+  }
+
+  @Override
+  public boolean supportsPlayerSkins() {
+    return true;
   }
 }

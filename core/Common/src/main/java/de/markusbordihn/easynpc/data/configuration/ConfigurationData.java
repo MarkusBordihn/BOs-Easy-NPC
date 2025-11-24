@@ -77,7 +77,7 @@ public record ConfigurationData(Set<ConfigurationType> enabledTypes) {
               ConfigurationType.CUSTOM_MODEL));
 
   public static final ConfigurationData HUMANOID =
-      new ConfigurationData(exclude(STANDARD.enabledTypes(), ConfigurationType.CUSTOM_MODEL));
+      new ConfigurationData(exclude(ALL_TYPES, ConfigurationType.CUSTOM_MODEL));
 
   private static EnumSet<ConfigurationType> exclude(
       Set<ConfigurationType> base, ConfigurationType... types) {

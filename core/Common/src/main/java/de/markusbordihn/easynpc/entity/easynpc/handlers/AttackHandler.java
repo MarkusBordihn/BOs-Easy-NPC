@@ -46,7 +46,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ProjectileWeaponItem;
 import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.component.ChargedProjectiles;
-import net.minecraft.world.level.ItemLike;
 
 public class AttackHandler {
 

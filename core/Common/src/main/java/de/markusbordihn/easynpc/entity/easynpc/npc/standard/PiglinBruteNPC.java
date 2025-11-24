@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.entity.easynpc.npc.standard;
 
 import com.google.common.collect.ImmutableList;
+import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.sound.SoundType;
 import de.markusbordihn.easynpc.entity.easynpc.npc.raw.PiglinBruteRaw;
@@ -73,6 +74,11 @@ public class PiglinBruteNPC extends PiglinBruteRaw implements StandardEasyNPC<Pi
         .add(Attributes.MAX_HEALTH, 20.0D)
         .add(Attributes.MOVEMENT_SPEED, 0.5F)
         .add(Attributes.SPAWN_REINFORCEMENTS_CHANCE, 0.0D);
+  }
+
+  @Override
+  public ConfigurationData getConfigurationData() {
+    return ConfigurationData.STANDARD;
   }
 
   @Override

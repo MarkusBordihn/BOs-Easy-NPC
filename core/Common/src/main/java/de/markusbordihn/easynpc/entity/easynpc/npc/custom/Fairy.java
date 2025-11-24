@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.npc.custom;
 
+import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
 import de.markusbordihn.easynpc.data.scale.CustomScale;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
@@ -68,6 +69,11 @@ public class Fairy extends PathfinderMobRaw {
   @Override
   protected PathNavigation createNavigation(Level level) {
     return new FlyingPathNavigation(this, level);
+  }
+
+  @Override
+  public ConfigurationData getConfigurationData() {
+    return ConfigurationData.STANDARD;
   }
 
   @Override

@@ -1,6 +1,7 @@
 package de.markusbordihn.easynpc.utils;
 
 import de.markusbordihn.easynpc.Constants;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BaseSpawner;
@@ -17,9 +18,12 @@ public class SpawnerUtils {
       BaseSpawner spawner, LevelAccessor level, BlockPos blockPos, SpawnData spawnData) {
     try {
       Method method = findSetNextSpawnDataMethod();
+      if (method == null) {
+        return false;
+      }
       method.invoke(spawner, level, blockPos, spawnData);
       return true;
-    } catch (Exception e) {
+    } catch (IllegalAccessException | InvocationTargetException e) {
       log.error(
           "Failed to call setNextSpawnData for {} at {} with {}", spawner, blockPos, spawnData, e);
     }
@@ -27,16 +31,20 @@ public class SpawnerUtils {
   }
 
   private static Method findSetNextSpawnDataMethod() {
-    for (Method method : BaseSpawner.class.getDeclaredMethods()) {
-      Class<?>[] params = method.getParameterTypes();
-      if (params.length == 3
-          && LevelAccessor.class.isAssignableFrom(params[0])
-          && BlockPos.class.isAssignableFrom(params[1])
-          && SpawnData.class.isAssignableFrom(params[2])) {
+    try {
+      for (Method method : BaseSpawner.class.getDeclaredMethods()) {
+        Class<?>[] params = method.getParameterTypes();
+        if (params.length == 3
+            && LevelAccessor.class.isAssignableFrom(params[0])
+            && BlockPos.class.isAssignableFrom(params[1])
+            && SpawnData.class.isAssignableFrom(params[2])) {
 
-        method.setAccessible(true); // Zugriff erlauben
-        return method;
+          method.setAccessible(true);
+          return method;
+        }
       }
+    } catch (SecurityException e) {
+      log.error("Security exception while accessing BaseSpawner methods", e);
     }
     log.error("Could not find method setNextSpawnData(LevelAccessor, BlockPos, SpawnData)");
     return null;

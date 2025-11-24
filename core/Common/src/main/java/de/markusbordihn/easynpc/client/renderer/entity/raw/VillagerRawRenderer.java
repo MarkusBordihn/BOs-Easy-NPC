@@ -20,7 +20,6 @@
 package de.markusbordihn.easynpc.client.renderer.entity.raw;
 
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
-import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.VillagerRenderer;
 import net.minecraft.client.renderer.entity.state.VillagerRenderState;
@@ -38,12 +37,12 @@ public class VillagerRawRenderer extends VillagerRenderer implements EasyNPCEnti
 
   @Override
   public ResourceLocation getTextureLocation(VillagerRenderState renderState) {
-    EasyNPC<?> easyNPC = getEasyNPC(renderState);
-    if (easyNPC != null) {
-      return getEntityTextureWithDefaultCallback(
-          easyNPC, () -> super.getTextureLocation(renderState));
+    ResourceLocation texture = getTextureFromRenderState(renderState);
+    // Fallback to original logic if no cached texture available
+    if (texture == DEFAULT_TEXTURE) {
+      return super.getTextureLocation(renderState);
     }
-    return super.getTextureLocation(renderState);
+    return texture;
   }
 
   @Override
