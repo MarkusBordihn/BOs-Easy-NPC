@@ -69,11 +69,65 @@ public interface TradingDataCapable<E extends PathfinderMob> extends EasyNPC<E>,
   private static ItemCost getItemCost(ItemStack itemStack) {
     return new ItemCost(
         itemStack.isEmpty() ? ItemStack.EMPTY.getItem() : itemStack.getItem(),
-        itemStack.getCount());
+        itemStack.getCount() > 0 ? itemStack.getCount() : 1);
   }
 
   private static Optional<ItemCost> getOptionalItemCost(ItemStack itemStack) {
     return itemStack.isEmpty() ? Optional.empty() : Optional.of(getItemCost(itemStack));
+  }
+
+  private static MerchantOffers sanitizeTradingOffers(MerchantOffers offers) {
+    if (offers == null || offers.isEmpty()) {
+      return offers;
+    }
+    MerchantOffers sanitized = new MerchantOffers();
+    int filteredCount = 0;
+    for (MerchantOffer offer : offers) {
+      if (offer == null || offer.getResult().isEmpty() || offer.getResult().getCount() <= 0) {
+        filteredCount++;
+        continue;
+      }
+      ItemStack costA = offer.getBaseCostA();
+      ItemStack costB = offer.getCostB();
+
+      boolean costAValid = !costA.isEmpty() && costA.getCount() > 0;
+      boolean costBValid = !costB.isEmpty() && costB.getCount() > 0;
+
+      if (!costAValid && !costBValid) {
+        filteredCount++;
+        continue;
+      }
+
+      if (!costAValid && costBValid) {
+        sanitized.add(
+            new MerchantOffer(
+                getItemCost(costB),
+                Optional.empty(),
+                offer.getResult(),
+                offer.getUses(),
+                offer.getMaxUses(),
+                offer.getXp(),
+                offer.getPriceMultiplier(),
+                offer.getDemand()));
+      } else if (costAValid && costBValid) {
+        sanitized.add(offer);
+      } else if (costAValid) {
+        sanitized.add(
+            new MerchantOffer(
+                getItemCost(costA),
+                Optional.empty(),
+                offer.getResult(),
+                offer.getUses(),
+                offer.getMaxUses(),
+                offer.getXp(),
+                offer.getPriceMultiplier(),
+                offer.getDemand()));
+      }
+    }
+    if (filteredCount > 0) {
+      log.warn("Sanitized {} invalid trade(s) to prevent crash", filteredCount);
+    }
+    return sanitized;
   }
 
   Player getTradingPlayer();
@@ -102,15 +156,7 @@ public interface TradingDataCapable<E extends PathfinderMob> extends EasyNPC<E>,
     if (tradingDataSet.isType(TradingType.BASIC)
         || tradingDataSet.isType(TradingType.ADVANCED)
         || tradingDataSet.isType(TradingType.CUSTOM)) {
-      // Create a copy of the offers to avoid side effects.
-      merchantOffers = this.getTradingOffers().copy();
-    }
-    if (!merchantOffers.isEmpty()) {
-      // Filter out offers which are missing item a, item b or result item.
-      merchantOffers.removeIf(
-          merchantOffer ->
-              (merchantOffer.getBaseCostA().isEmpty() && merchantOffer.getCostB().isEmpty())
-                  || merchantOffer.getResult().isEmpty());
+      merchantOffers = sanitizeTradingOffers(this.getTradingOffers().copy());
     }
     this.setMerchantTradingOffers(merchantOffers);
   }
@@ -316,7 +362,6 @@ public interface TradingDataCapable<E extends PathfinderMob> extends EasyNPC<E>,
   }
 
   default void addAdditionalTradingData(ValueOutput valueOutput) {
-    // Save custom trading data set
     CompoundTag tradingDataTag = new CompoundTag();
     TradingDataSet tradingDataSet = this.getTradingDataSet();
     if (tradingDataSet != null) {
@@ -324,10 +369,9 @@ public interface TradingDataCapable<E extends PathfinderMob> extends EasyNPC<E>,
     }
     valueOutput.store(DATA_TRADING_DATA_TAG, CompoundTag.CODEC, tradingDataTag);
 
-    // Store vanilla trading data
     MerchantOffers merchantOffers = getTradingOffers();
     if (merchantOffers != null && !merchantOffers.isEmpty()) {
-      valueOutput.store(DATA_OFFERS_TAG, MerchantOffers.CODEC, merchantOffers);
+      valueOutput.store(DATA_OFFERS_TAG, MerchantOffers.CODEC, sanitizeTradingOffers(merchantOffers.copy()));
     }
   }
 
