@@ -44,6 +44,7 @@ generated
 *.bak
 *.clip
 *.log
+*.log.gz
 *.patch.txt
 *.stackdump
 *.hprof

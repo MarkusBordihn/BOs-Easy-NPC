@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.entity.easynpc.npc.standard;
 
 import com.google.common.collect.ImmutableList;
+import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
 import de.markusbordihn.easynpc.data.skin.variant.VillagerSkinVariant;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.sound.SoundType;
@@ -123,6 +124,11 @@ public class VillagerNPC extends VillagerRaw implements StandardEasyNPC<Villager
   @Override
   public boolean hasProfessions() {
     return true;
+  }
+
+  @Override
+  public ConfigurationData getConfigurationData() {
+    return ConfigurationData.STANDARD;
   }
 
   @Override
