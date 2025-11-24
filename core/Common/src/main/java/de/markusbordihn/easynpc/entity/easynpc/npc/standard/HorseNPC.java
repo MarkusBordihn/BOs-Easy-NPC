@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.npc.standard;
 
+import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.data.skin.variant.HorseSkinVariant;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
@@ -70,6 +71,11 @@ public class HorseNPC extends HorseRaw implements StandardEasyNPC<HorseRaw> {
   @Override
   public boolean canUseMainHand() {
     return false;
+  }
+
+  @Override
+  public ConfigurationData getConfigurationData() {
+    return ConfigurationData.STANDARD;
   }
 
   @Override

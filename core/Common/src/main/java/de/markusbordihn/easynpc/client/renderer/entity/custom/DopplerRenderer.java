@@ -152,11 +152,7 @@ public class DopplerRenderer
 
   @Override
   public ResourceLocation getTextureLocation(HumanoidRenderState renderState) {
-    EasyNPC<?> easyNPC = getEasyNPC(renderState);
-    if (easyNPC != null) {
-      return getEntityTexture(easyNPC);
-    }
-    return DEFAULT_TEXTURE;
+    return getTextureFromRenderState(renderState);
   }
 
   @Override

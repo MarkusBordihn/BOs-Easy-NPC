@@ -24,9 +24,9 @@ runs {
   }
 
   client2 {
-    configure('client')
+    runType('client')
     workingDirectory project.file('runs/client2')
-    programArguments.addAll '--username', 'guest_player'
+    arguments.addAll '--username', 'guest_player'
   }
 
   server {
@@ -39,7 +39,7 @@ runs {
   }
 
   clientData {
-    programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
+    arguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
   }
 }
 
@@ -52,8 +52,9 @@ dependencies {
   implementation project(":Common")
 
   // Test dependencies
-  testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.1'
-  testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.7.1'
+  testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.1'
+  testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.1'
+  testImplementation 'org.junit.jupiter:junit-jupiter-params:5.10.1'
 
   // Additional helpful Mods for development (runtime dependency)
   if (project.hasProperty('neoforge_jei_mod') && project.neoforge_jei_mod) {
