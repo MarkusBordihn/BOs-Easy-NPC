@@ -40,11 +40,18 @@ public record CustomRotation(float x, float y, float z, boolean locked) {
 
   public CustomRotation(ListTag listTag) {
     this(
-        listTag.getFloat(0), listTag.getFloat(1), listTag.getFloat(2), listTag.getFloat(3) == 1.0F);
+        listTag != null && listTag.size() > 0 ? listTag.getFloat(0) : 0f,
+        listTag != null && listTag.size() > 1 ? listTag.getFloat(1) : 0f,
+        listTag != null && listTag.size() > 2 ? listTag.getFloat(2) : 0f,
+        listTag != null && listTag.size() > 3 && listTag.getFloat(3) == 1.0F);
   }
 
   public CustomRotation(List<Float> list) {
-    this(list.get(0), list.get(1), list.get(2), list.get(3) == 1.0F);
+    this(
+        list != null && list.size() > 0 ? list.get(0) : 0f,
+        list != null && list.size() > 1 ? list.get(1) : 0f,
+        list != null && list.size() > 2 ? list.get(2) : 0f,
+        list != null && list.size() > 3 && list.get(3) == 1.0F);
   }
 
   public static CustomRotation decode(FriendlyByteBuf buffer) {

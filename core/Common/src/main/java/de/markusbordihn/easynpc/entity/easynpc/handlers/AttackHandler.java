@@ -186,12 +186,16 @@ public class AttackHandler {
 
   public static AbstractArrow getArrow(
       LivingEntity livingEntity, ItemStack itemStack, float damage) {
-    return ProjectileUtil.getMobArrow(livingEntity, itemStack, damage);
+    return ProjectileUtil.getMobArrow(
+        livingEntity, itemStack.isEmpty() ? new ItemStack(Items.ARROW) : itemStack, damage);
   }
 
   public static AbstractArrow getBullet(LivingEntity livingEntity, float damage) {
     Item item = BuiltInRegistries.ITEM.get(new ResourceLocation(Constants.MOD_ID, "bullet"));
-    return ProjectileUtil.getMobArrow(livingEntity, new ItemStack(item), damage);
+    return ProjectileUtil.getMobArrow(
+        livingEntity,
+        item != null && item != Items.AIR ? new ItemStack(item) : new ItemStack(Items.ARROW),
+        damage);
   }
 
   public static boolean handleIsInvulnerableTo(

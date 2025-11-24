@@ -164,13 +164,13 @@ public class PoseManager {
 
       List<Float> position = bone.getPosition();
       CustomPosition customPosition =
-          position == null
+          position == null || position.size() < 3
               ? new CustomPosition(0, 0, 0)
               : new CustomPosition(position.get(0), position.get(1) * -1, position.get(2));
 
       List<Float> rotation = bone.getRotation();
       CustomRotation customRotation =
-          rotation == null
+          rotation == null || rotation.size() < 3
               ? new CustomRotation(0, 0, 0)
               : new CustomRotation(
                   rotation.get(0) * (float) Math.PI / 180.0f,

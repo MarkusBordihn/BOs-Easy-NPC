@@ -64,6 +64,60 @@ public interface TradingDataCapable<E extends PathfinderMob> extends EasyNPC<E>,
         SynchedEntityData.defineId(entityClass, EntityDataSerializersManager.MERCHANT_OFFERS));
   }
 
+  private static MerchantOffers sanitizeTradingOffers(MerchantOffers offers) {
+    if (offers == null || offers.isEmpty()) {
+      return offers;
+    }
+    MerchantOffers sanitized = new MerchantOffers();
+    int filteredCount = 0;
+    for (MerchantOffer offer : offers) {
+      if (offer == null || offer.getResult().isEmpty() || offer.getResult().getCount() <= 0) {
+        filteredCount++;
+        continue;
+      }
+      ItemStack costA = offer.getBaseCostA();
+      ItemStack costB = offer.getCostB();
+
+      boolean costAValid = !costA.isEmpty() && costA.getCount() > 0;
+      boolean costBValid = !costB.isEmpty() && costB.getCount() > 0;
+
+      if (!costAValid && !costBValid) {
+        filteredCount++;
+        continue;
+      }
+
+      if (!costAValid && costBValid) {
+        sanitized.add(
+            new MerchantOffer(
+                costB,
+                ItemStack.EMPTY,
+                offer.getResult(),
+                offer.getUses(),
+                offer.getMaxUses(),
+                offer.getXp(),
+                offer.getPriceMultiplier(),
+                offer.getDemand()));
+      } else if (costAValid && costBValid) {
+        sanitized.add(offer);
+      } else if (costAValid) {
+        sanitized.add(
+            new MerchantOffer(
+                costA,
+                ItemStack.EMPTY,
+                offer.getResult(),
+                offer.getUses(),
+                offer.getMaxUses(),
+                offer.getXp(),
+                offer.getPriceMultiplier(),
+                offer.getDemand()));
+      }
+    }
+    if (filteredCount > 0) {
+      log.warn("Sanitized {} invalid trade(s) to prevent crash", filteredCount);
+    }
+    return sanitized;
+  }
+
   Player getTradingPlayer();
 
   void setTradingPlayer(Player player);
@@ -94,11 +148,7 @@ public interface TradingDataCapable<E extends PathfinderMob> extends EasyNPC<E>,
       merchantOffers = new MerchantOffers(this.getTradingOffers().createTag());
     }
     if (!merchantOffers.isEmpty()) {
-      // Filter out offers which are missing item a, item b or result item.
-      merchantOffers.removeIf(
-          merchantOffer ->
-              (merchantOffer.getBaseCostA().isEmpty() && merchantOffer.getCostB().isEmpty())
-                  || merchantOffer.getResult().isEmpty());
+      merchantOffers = sanitizeTradingOffers(merchantOffers);
     }
     this.setMerchantTradingOffers(merchantOffers);
   }
@@ -336,8 +386,11 @@ public interface TradingDataCapable<E extends PathfinderMob> extends EasyNPC<E>,
       MerchantOffers merchantOffers =
           new MerchantOffers(tradingOffersTag.getCompound(DATA_TRADING_RECIPES_TAG));
       if (!merchantOffers.isEmpty()) {
-        log.info("Loading trading offers {} for {}", merchantOffers, this);
-        this.setTradingOffers(merchantOffers);
+        merchantOffers = sanitizeTradingOffers(merchantOffers);
+        if (!merchantOffers.isEmpty()) {
+          log.info("Loading trading offers {} for {}", merchantOffers, this);
+          this.setTradingOffers(merchantOffers);
+        }
       }
       return;
     }

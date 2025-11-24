@@ -21,6 +21,18 @@ minecraft {
 
 dependencies {
   compileOnly group: 'org.spongepowered', name: 'mixin', version: '0.8.7'
+
+  // JUnit 5 for unit testing
+  testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.1'
+  testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.1'
+  testImplementation 'org.junit.jupiter:junit-jupiter-params:5.10.1'
+}
+
+test {
+  useJUnitPlatform()
+  testLogging {
+    events "passed", "skipped", "failed"
+  }
 }
 
 apply from: "$projectDir/../gradle/tasks/generateRawNPCs.gradle"
