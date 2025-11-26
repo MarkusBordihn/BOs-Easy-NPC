@@ -227,24 +227,20 @@ public class InventoryScreenHandler {
       Quaternionf entityRotation,
       SkinDataCapable<?> skinData,
       EasyNPC<?> easyNPC) {
-
-    // Create living entity for rendering.
+    // Get entity renderer.
     LivingEntity livingEntity = easyNPC.getLivingEntity();
-
-    // Get entity renderer and render state.
     EntityRenderDispatcher entityRenderDispatcher =
         Minecraft.getInstance().getEntityRenderDispatcher();
     EntityRenderer<? super Entity, ?> entityRenderer =
         entityRenderDispatcher.getRenderer(livingEntity);
-    EntityRenderState entityRenderState = entityRenderer.createRenderState(livingEntity, 1.0F);
-    entityRenderState.hitboxesRenderState = null;
 
-    // Adjust player skin if needed.
-    if (entityRenderState instanceof PlayerRenderState playerRenderState) {
-      PlayerRenderState cumstomPlayerRenderState =
+    // Handle player renderer with custom skin - check render state type first.
+    EntityRenderState baseRenderState = entityRenderer.createRenderState(livingEntity, 1.0F);
+    if (baseRenderState instanceof PlayerRenderState playerRenderState) {
+      PlayerRenderState customPlayerRenderState =
           getCustomPlayerRenderState(entityRenderer, playerRenderState, skinData, easyNPC);
       guiGraphics.submitEntityRenderState(
-          cumstomPlayerRenderState,
+          customPlayerRenderState,
           scale,
           translation,
           rotation,
@@ -254,11 +250,16 @@ public class InventoryScreenHandler {
           right,
           bottom);
       return true;
-    } else if (entityRenderer instanceof HumanoidMobRenderer humanoidMobRenderer
-        && entityRenderState instanceof HumanoidRenderState humanoidRenderState) {
+    }
+
+    // Handle humanoid mob renderer - create fresh render state to avoid caching issues.
+    if (entityRenderer instanceof HumanoidMobRenderer
+        && baseRenderState instanceof HumanoidRenderState) {
       HumanoidRenderState customHumanoidRenderState =
           (HumanoidRenderState) entityRenderer.createRenderState();
-      humanoidMobRenderer.extractRenderState(easyNPC.getMob(), customHumanoidRenderState, 1.0F);
+      HumanoidMobRenderer humanoidRenderer = (HumanoidMobRenderer) entityRenderer;
+      humanoidRenderer.extractRenderState(easyNPC.getMob(), customHumanoidRenderState, 1.0F);
+      customHumanoidRenderState.hitboxesRenderState = null;
       guiGraphics.submitEntityRenderState(
           customHumanoidRenderState,
           scale,
@@ -272,8 +273,10 @@ public class InventoryScreenHandler {
       return true;
     }
 
+    // Fallback to default rendering.
+    baseRenderState.hitboxesRenderState = null;
     guiGraphics.submitEntityRenderState(
-        entityRenderState, scale, translation, rotation, entityRotation, left, top, right, bottom);
+        baseRenderState, scale, translation, rotation, entityRotation, left, top, right, bottom);
     return true;
   }
 }

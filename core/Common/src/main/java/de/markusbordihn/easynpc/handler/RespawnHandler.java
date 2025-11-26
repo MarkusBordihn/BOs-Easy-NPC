@@ -21,13 +21,14 @@ package de.markusbordihn.easynpc.handler;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.level.storage.TagValueInput;
 import net.minecraft.world.level.storage.TagValueOutput;
-import net.minecraft.world.level.storage.ValueInput;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -43,12 +44,13 @@ public class RespawnHandler {
       return false;
     }
 
-    // Save entity and entity type
+    // Save entity data using TagValueOutput
     TagValueOutput tagValueOutput = TagValueOutput.createWithoutContext(ProblemReporter.DISCARDING);
     easyNPC.getEntity().saveWithoutId(tagValueOutput);
+    CompoundTag compoundTag = tagValueOutput.buildResult();
     EntityType<?> entityType = easyNPC.getEntity().getType();
 
-    // Create new entity with compoundTag
+    // Create new entity with saved data
     Entity entity = entityType.create(serverLevel, EntitySpawnReason.TRIGGERED);
     if (entity == null) {
       log.error(
@@ -58,7 +60,9 @@ public class RespawnHandler {
           serverLevel);
       return false;
     }
-    entity.load((ValueInput) tagValueOutput);
+
+    // Load entity data using TagValueInput
+    entity.load(TagValueInput.create(ProblemReporter.DISCARDING, serverLevel.registryAccess(), compoundTag));
 
     // Remove old entity
     easyNPC.getEntity().discard();
