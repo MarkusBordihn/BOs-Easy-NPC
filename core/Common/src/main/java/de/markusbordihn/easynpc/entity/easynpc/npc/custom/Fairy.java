@@ -127,11 +127,6 @@ public class Fairy extends PathfinderMobRaw {
   public boolean canFly() {
     return true;
   }
-  
-  @Override
-  protected float getStandingEyeHeight(Pose pose, EntityDimensions dimensions) {
-    return dimensions.height * 0.85F;
-  }
 
   @Override
   public SoundDataSet getDefaultSoundDataSet(SoundDataSet soundDataSet, String variantName) {
