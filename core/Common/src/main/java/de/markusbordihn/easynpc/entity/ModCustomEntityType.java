@@ -46,7 +46,7 @@ public enum ModCustomEntityType implements ModEntityTypeProvider {
       Fairy.ID,
       EntityType.Builder.of(
               (EntityType<Fairy> type, Level level) -> new Fairy(type, level), MobCategory.MISC)
-          .sized(0.6F, 1.95F)
+          .sized(0.24F, 0.78F)
           .clientTrackingRange(12),
       Fairy::createAttributes),
   ORC(

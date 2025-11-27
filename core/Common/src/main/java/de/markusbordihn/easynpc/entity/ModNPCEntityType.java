@@ -68,7 +68,7 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
       EntityType.Builder.of(
               (EntityType<AllayNPC> type, Level level) -> new AllayNPC(type, level),
               MobCategory.MISC)
-          .sized(0.5F, 0.5F)
+          .sized(0.35F, 0.6F)
           .clientTrackingRange(12),
       AllayNPC::createAttributes),
   CAT(
