@@ -139,5 +139,6 @@ public class FairyModel<T extends LivingEntity> extends HumanoidModel<T> {
     this.leftWing.xRot = Constants.MATH_27DEG_TO_RAD;
     this.rightWing.xRot = Constants.MATH_27DEG_TO_RAD;
     this.rightWing.zRot = Constants.MATH_27DEG_TO_RAD;
+    this.leftLeg.visible = false;
   }
 }
