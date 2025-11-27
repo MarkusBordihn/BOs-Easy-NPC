@@ -65,7 +65,7 @@ public enum ModRawEntityType implements ModEntityTypeProvider {
       EntityType.Builder.of(
               (EntityType<AllayRaw> type, Level level) -> new AllayRaw(type, level),
               MobCategory.MISC)
-          .sized(0.6F, 0.9F)
+          .sized(0.35F, 0.6F)
           .clientTrackingRange(12),
       AllayRaw::createAttributes),
   BOGGED(
@@ -104,7 +104,7 @@ public enum ModRawEntityType implements ModEntityTypeProvider {
       EntityType.Builder.of(
               (EntityType<DrownedRaw> type, Level level) -> new DrownedRaw(type, level),
               MobCategory.MONSTER)
-          .sized(0.6F, 1.9F)
+          .sized(0.6F, 1.95F)
           .clientTrackingRange(12),
       DrownedRaw::createAttributes),
   FOX(
@@ -151,7 +151,7 @@ public enum ModRawEntityType implements ModEntityTypeProvider {
       EntityType.Builder.of(
               (EntityType<PiglinRaw> type, Level level) -> new PiglinRaw(type, level),
               MobCategory.MONSTER)
-          .sized(0.6F, 1.9F)
+          .sized(0.6F, 1.95F)
           .clientTrackingRange(12),
       PiglinRaw::createAttributes),
   PIGLIN_BRUTE(
@@ -159,7 +159,7 @@ public enum ModRawEntityType implements ModEntityTypeProvider {
       EntityType.Builder.of(
               (EntityType<PiglinBruteRaw> type, Level level) -> new PiglinBruteRaw(type, level),
               MobCategory.MONSTER)
-          .sized(0.6F, 1.9F)
+          .sized(0.6F, 1.95F)
           .clientTrackingRange(12),
       PiglinBruteRaw::createAttributes),
   ZOMBIFIED_PIGLIN(
@@ -168,7 +168,7 @@ public enum ModRawEntityType implements ModEntityTypeProvider {
               (EntityType<ZombifiedPiglinRaw> type, Level level) ->
                   new ZombifiedPiglinRaw(type, level),
               MobCategory.MONSTER)
-          .sized(0.6F, 1.9F)
+          .sized(0.6F, 1.95F)
           .clientTrackingRange(12),
       ZombifiedPiglinRaw::createAttributes),
   EVOKER(
@@ -199,7 +199,7 @@ public enum ModRawEntityType implements ModEntityTypeProvider {
       EntityType.Builder.of(
               (EntityType<SkeletonRaw> type, Level level) -> new SkeletonRaw(type, level),
               MobCategory.MONSTER)
-          .sized(0.6F, 1.99F)
+          .sized(0.6F, 1.95F)
           .clientTrackingRange(12),
       SkeletonRaw::createAttributes),
   STRAY(
@@ -207,7 +207,7 @@ public enum ModRawEntityType implements ModEntityTypeProvider {
       EntityType.Builder.of(
               (EntityType<StrayRaw> type, Level level) -> new StrayRaw(type, level),
               MobCategory.MONSTER)
-          .sized(0.6F, 1.99F)
+          .sized(0.6F, 1.95F)
           .clientTrackingRange(12),
       StrayRaw::createAttributes),
   WITHER_SKELETON(
