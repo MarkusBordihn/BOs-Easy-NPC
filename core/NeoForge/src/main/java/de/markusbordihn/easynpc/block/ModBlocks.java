@@ -122,8 +122,8 @@ public class ModBlocks {
               () ->
                   new BlockEntityType<>(
                       EasyNPCSpawnerBlockEntityWrapper::new,
-                      EASY_NPC_SPAWNER_DEFAULT.get(),
                       EASY_NPC_SPAWNER_BOSS.get(),
+                      EASY_NPC_SPAWNER_DEFAULT.get(),
                       EASY_NPC_SPAWNER_GROUP.get(),
                       EASY_NPC_SPAWNER_SINGLE.get()));
 }

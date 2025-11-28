@@ -17,8 +17,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.client.screen.components;
+package de.markusbordihn.easynpc.configui.client.screen.components;
 
+import de.markusbordihn.easynpc.client.screen.components.CustomButton;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.item.DyeColor;
 
@@ -49,16 +50,12 @@ public class ColorButton extends CustomButton {
   @Override
   public void renderButton(GuiGraphics guiGraphics, int left, int top, float partialTicks) {
     super.renderButton(guiGraphics, left, top, partialTicks);
-
-    int textColor = getColorValue();
-    if (textColor >= 0) {
-      guiGraphics.fill(
-          getX() + 2,
-          getY() + 2,
-          getX() + getWidth() - 2,
-          getY() + getHeight() - 2,
-          0xff000000 | textColor);
-    }
+    guiGraphics.fill(
+        getX() + 2,
+        getY() + 2,
+        getX() + getWidth() - 2,
+        getY() + getHeight() - 2,
+        0xFF000000 | getColorValue());
   }
 
   public DyeColor getColor() {
@@ -70,6 +67,6 @@ public class ColorButton extends CustomButton {
   }
 
   public int getColorValue() {
-    return this.color.getTextColor();
+    return this.color.getTextColor() & 0x00FFFFFF;
   }
 }

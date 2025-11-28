@@ -57,7 +57,9 @@ public class ReloadHandler {
 
     // Reload entity data using TagValueInput
     log.debug("Reloading NPC {} at position {}", easyNPC.getEntityUUID(), entity.position());
-    entity.load(TagValueInput.create(ProblemReporter.DISCARDING, serverLevel.registryAccess(), compoundTag));
+    entity.load(
+        TagValueInput.create(
+            ProblemReporter.DISCARDING, serverLevel.registryAccess(), compoundTag));
 
     // Force update visibility for all players
     entity.refreshDimensions();

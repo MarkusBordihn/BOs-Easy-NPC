@@ -70,10 +70,9 @@ public class EasyNPCSpawnerBlockEntity extends BlockEntity {
       BlockPos blockPos,
       BlockState blockState,
       EasyNPCSpawnerBlockEntity blockEntity) {
-    if (!blockEntity.spawner.hasEasyNPC()) {
-      return;
+    if (blockEntity.spawner != null) {
+      blockEntity.spawner.clientTick(level, blockPos);
     }
-    blockEntity.spawner.clientTick(level, blockPos);
   }
 
   public static void serverTick(
@@ -81,10 +80,9 @@ public class EasyNPCSpawnerBlockEntity extends BlockEntity {
       BlockPos blockPos,
       BlockState blockState,
       EasyNPCSpawnerBlockEntity blockEntity) {
-    if (!blockEntity.spawner.hasEasyNPC()) {
-      return;
+    if (blockEntity.spawner != null) {
+      blockEntity.spawner.serverTick((ServerLevel) level, blockPos);
     }
-    blockEntity.spawner.serverTick((ServerLevel) level, blockPos);
   }
 
   public SpawnerType getSpawnerType() {

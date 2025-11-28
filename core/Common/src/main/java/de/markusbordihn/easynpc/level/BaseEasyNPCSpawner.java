@@ -23,7 +23,6 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.spawner.SpawnerData;
 import de.markusbordihn.easynpc.data.spawner.SpawnerType;
 import de.markusbordihn.easynpc.entity.LivingEntityManager;
-import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.PresetDataCapable;
 import de.markusbordihn.easynpc.utils.CompoundTagUtils;
 import java.util.Optional;
@@ -57,18 +56,17 @@ public class BaseEasyNPCSpawner extends BaseSpawner {
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private final Random random = new Random();
   private final SpawnerType spawnerType;
-  private boolean isEasyNPC = false;
+  private boolean isEasyNPC;
   private double oSpin;
   private double spin;
   private Entity displayEntity;
-  private int maxNearbyEntities = 6;
-  private int maxSpawnDelay = 800;
-  private int minSpawnDelay = 200;
-  private int requiredPlayerRange = 16;
-  private int spawnCount = 4;
-  private int spawnDelay = 20;
-  private int spawnRange = 4;
-  private ResourceLocation entityResourceLocation;
+  private int maxNearbyEntities;
+  private int maxSpawnDelay;
+  private int minSpawnDelay;
+  private int requiredPlayerRange;
+  private int spawnCount;
+  private int spawnDelay;
+  private int spawnRange;
   private SpawnData nextSpawnData;
   private UUID easyNPCPresetUUID;
   private UUID easyNPCUUID;
@@ -76,13 +74,11 @@ public class BaseEasyNPCSpawner extends BaseSpawner {
   public BaseEasyNPCSpawner(SpawnerType spawnerType) {
     super();
     this.spawnerType = spawnerType;
-    TagValueOutput valueOutput = TagValueOutput.createWithoutContext(ProblemReporter.DISCARDING);
-    this.save(valueOutput);
-    CompoundTag compoundTag = valueOutput.buildResult();
+    this.nextSpawnData = new SpawnData();
+    this.spawnDelay = -1;
+    CompoundTag compoundTag = new CompoundTag();
     SpawnerData.setSpawnData(spawnerType, compoundTag);
     updateSpawnData(compoundTag);
-    ValueInput valueInput = TagValueInput.create(ProblemReporter.DISCARDING, null, compoundTag);
-    this.load(null, null, valueInput);
   }
 
   @Override
@@ -93,6 +89,8 @@ public class BaseEasyNPCSpawner extends BaseSpawner {
   @Override
   public void setNextSpawnData(Level level, BlockPos blockPos, SpawnData spawnData) {
     super.setNextSpawnData(level, blockPos, spawnData);
+    // Reset display entity when spawn data changes
+    this.displayEntity = null;
     if (level != null) {
       BlockState blockState = level.getBlockState(blockPos);
       level.sendBlockUpdated(blockPos, blockState, blockState, 4);
@@ -101,70 +99,46 @@ public class BaseEasyNPCSpawner extends BaseSpawner {
     this.save(valueOutput);
     CompoundTag compoundTag = valueOutput.buildResult();
     updateSpawnData(compoundTag);
+    log.debug("Updated spawn data for spawner at {} - isEasyNPC: {}", blockPos, this.isEasyNPC);
   }
 
   @Override
   public void clientTick(Level level, BlockPos blockPos) {
-    // Check if we have a valid EasyNPC entity
-    if (!hasEasyNPC()) {
-      return;
-    }
-
     if (!this.isNearPlayer(level, blockPos, this.requiredPlayerRange)) {
       this.oSpin = this.spin;
-      return;
-    }
-
-    if (this.maxNearbyEntities == 1) {
-      EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(this.easyNPCUUID);
-      if (easyNPC != null && easyNPC.getEntity().isAlive()) {
-        this.oSpin = this.spin;
-        return;
+    } else if (this.displayEntity != null) {
+      double x = blockPos.getX() + level.random.nextDouble();
+      double y = blockPos.getY() + level.random.nextDouble();
+      double z = blockPos.getZ() + level.random.nextDouble();
+      level.addParticle(ParticleTypes.SMOKE, x, y, z, 0.0F, 0.0F, 0.0F);
+      level.addParticle(ParticleTypes.FLAME, x, y, z, 0.0F, 0.0F, 0.0F);
+      if (this.spawnDelay > 0) {
+        --this.spawnDelay;
       }
-    }
-
-    if (this.easyNPCPresetUUID != null
-        && LivingEntityManager.getEntityCountByPresetUUID(this.easyNPCPresetUUID)
-            >= this.maxNearbyEntities) {
       this.oSpin = this.spin;
-      return;
+      this.spin = (this.spin + 1000.0 / (this.spawnDelay + 200.0)) % 360.0;
     }
-
-    double x = blockPos.getX() + level.random.nextDouble();
-    double y = blockPos.getY() + level.random.nextDouble();
-    double z = blockPos.getZ() + level.random.nextDouble();
-    level.addParticle(ParticleTypes.SMOKE, x, y, z, 0.0F, 0.0F, 0.0F);
-    level.addParticle(ParticleTypes.FLAME, x, y, z, 0.0F, 0.0F, 0.0F);
-    if (this.spawnDelay > 0) {
-      --this.spawnDelay;
-    }
-
-    this.oSpin = this.spin;
-    this.spin = (this.spin + 1000.0 / (this.spawnDelay + 200.0)) % 360.0;
   }
 
   @Override
   public void serverTick(ServerLevel serverLevel, BlockPos blockPos) {
-    // Check if we have a valid EasyNPC entity
-    if (!hasEasyNPC()) {
+    if (!this.isNearPlayer(serverLevel, blockPos, this.requiredPlayerRange)) {
       return;
     }
 
-    // Check if we are near a player
-    if (this.requiredPlayerRange > 0
-        && !this.isNearPlayer(serverLevel, blockPos, this.requiredPlayerRange)) {
-      return;
-    }
-
-    // Handle spawn delay
-    if (this.spawnDelay <= 0) {
+    if (this.spawnDelay == -1) {
       this.delay(serverLevel, blockPos);
-    } else {
+    }
+
+    if (this.spawnDelay > 0) {
       --this.spawnDelay;
       return;
     }
 
-    // If we have a single entity, and it is still alive, we don't need to spawn a new one.
+    if (!hasEasyNPC()) {
+      return;
+    }
+
     if (this.maxNearbyEntities == 1 && this.easyNPCUUID != null) {
       Entity entity = serverLevel.getEntity(this.easyNPCUUID);
       if (entity != null && entity.isAlive()) {
@@ -173,7 +147,6 @@ public class BaseEasyNPCSpawner extends BaseSpawner {
       }
     }
 
-    // If we have a multiple entities, we need to check the entities based on the preset UUID.
     if (this.easyNPCPresetUUID != null
         && LivingEntityManager.getEntityCountByPresetUUID(this.easyNPCPresetUUID)
             >= this.maxNearbyEntities) {
@@ -187,14 +160,21 @@ public class BaseEasyNPCSpawner extends BaseSpawner {
   @Override
   public Entity getOrCreateDisplayEntity(Level level, BlockPos blockPos) {
     if (this.displayEntity == null) {
+      CompoundTag compoundTag = this.nextSpawnData.getEntityToSpawn();
+      if (compoundTag.getString("id").isEmpty()) {
+        log.debug("No entity id in spawn data for spawner at {}", blockPos);
+        return null;
+      }
       this.displayEntity =
           EntityType.loadEntityRecursive(
-              this.nextSpawnData.getEntityToSpawn(),
-              level,
-              EntitySpawnReason.SPAWNER,
-              Function.identity());
+              compoundTag, level, EntitySpawnReason.SPAWNER, Function.identity());
+      if (this.displayEntity != null) {
+        log.debug(
+            "Created display entity {} for spawner at {}", this.displayEntity.getType(), blockPos);
+      } else {
+        log.warn("Failed to create display entity for spawner at {}", blockPos);
+      }
     }
-
     return this.displayEntity;
   }
 
@@ -226,19 +206,19 @@ public class BaseEasyNPCSpawner extends BaseSpawner {
 
     for (int i = 0; i < this.spawnCount; ++i) {
       CompoundTag entityTag = this.nextSpawnData.getEntityToSpawn();
-      ValueInput valueInput = TagValueInput.create(ProblemReporter.DISCARDING, null, entityTag);
+      ValueInput valueInput =
+          TagValueInput.create(ProblemReporter.DISCARDING, level.registryAccess(), entityTag);
       Optional<EntityType<?>> entityType = EntityType.by(valueInput);
       if (entityType.isEmpty()) {
         this.delay(level, pos);
         return;
       }
 
-      // Make sure UUID is removed if spawn of multiple entities is allowed.
+      // Remove UUID when spawning multiple entities to avoid duplicate UUIDs
       if (this.maxNearbyEntities > 1 && entityTag.contains("UUID")) {
         entityTag.remove("UUID");
       }
 
-      // Use the provided position or calculate a new one
       ListTag posList = entityTag.getListOrEmpty("Pos");
       int posSize = posList.size();
       double x =
@@ -258,7 +238,6 @@ public class BaseEasyNPCSpawner extends BaseSpawner {
                   + (level.random.nextDouble() - level.random.nextDouble()) * this.spawnRange
                   + 0.5;
 
-      // Check if the entity can be spawned at the given position or find an alternative position.
       if (!level.noCollision(entityType.get().getSpawnAABB(x, y, z))) {
         if (this.maxNearbyEntities > 1) {
           BlockPos possibleSpawnPositions =
@@ -355,15 +334,14 @@ public class BaseEasyNPCSpawner extends BaseSpawner {
   @Override
   public void load(Level level, BlockPos blockPos, ValueInput valueInput) {
     super.load(level, blockPos, valueInput);
-  }
-
-  public void loadFromCompoundTag(Level level, BlockPos blockPos, CompoundTag compoundTag) {
-    ValueInput valueInput = TagValueInput.create(ProblemReporter.DISCARDING, null, compoundTag);
-    load(level, blockPos, valueInput);
-    updateSpawnData(compoundTag);
+    this.displayEntity = null;
+    TagValueOutput valueOutput = TagValueOutput.createWithoutContext(ProblemReporter.DISCARDING);
+    this.save(valueOutput);
+    updateSpawnData(valueOutput.buildResult());
   }
 
   public void updateSpawnData(CompoundTag compoundTag) {
+    // Load spawner configuration from CompoundTag
     this.spawnDelay = SpawnerData.getDelay(compoundTag);
     this.minSpawnDelay = SpawnerData.getMinSpawnDelay(compoundTag);
     this.maxSpawnDelay = SpawnerData.getMaxSpawnDelay(compoundTag);
@@ -373,20 +351,20 @@ public class BaseEasyNPCSpawner extends BaseSpawner {
     this.spawnRange = SpawnerData.getSpawnRange(compoundTag);
     this.nextSpawnData = SpawnerData.getSpawnData(compoundTag);
 
-    // Reset easy NPC specific data
+    // Reset EasyNPC-specific data
     this.isEasyNPC = false;
     this.easyNPCUUID = null;
     this.easyNPCPresetUUID = null;
 
+    // Extract EasyNPC-specific fields from spawn data
     if (SpawnerData.hasSpawnData(compoundTag)) {
       CompoundTag spawnData = compoundTag.getCompoundOrEmpty(SpawnerData.SPAWN_DATA_TAG);
       if (spawnData.contains("entity")) {
         CompoundTag entityData = spawnData.getCompoundOrEmpty("entity");
-
         if (entityData.contains("id")) {
-          this.entityResourceLocation =
+          ResourceLocation entityId =
               ResourceLocation.tryParse(entityData.getString("id").orElse(""));
-          this.isEasyNPC = this.entityResourceLocation.getNamespace().equals(Constants.MOD_ID);
+          this.isEasyNPC = entityId != null && entityId.getNamespace().equals(Constants.MOD_ID);
         }
 
         if (entityData.contains("UUID")) {

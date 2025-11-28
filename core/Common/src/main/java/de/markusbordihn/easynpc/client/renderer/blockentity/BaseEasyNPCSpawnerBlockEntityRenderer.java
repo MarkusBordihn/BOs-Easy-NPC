@@ -22,20 +22,24 @@ package de.markusbordihn.easynpc.client.renderer.blockentity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import de.markusbordihn.easynpc.block.entity.EasyNPCSpawnerBlockEntity;
-import de.markusbordihn.easynpc.level.BaseEasyNPCSpawner;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.BaseSpawner;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
 public class BaseEasyNPCSpawnerBlockEntityRenderer<T extends EasyNPCSpawnerBlockEntity>
     implements BlockEntityRenderer<T> {
 
-  public BaseEasyNPCSpawnerBlockEntityRenderer(BlockEntityRendererProvider.Context context) {}
+  private final EntityRenderDispatcher entityRenderer;
+
+  public BaseEasyNPCSpawnerBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
+    this.entityRenderer = context.getEntityRenderer();
+  }
 
   @Override
   public void render(
@@ -46,40 +50,36 @@ public class BaseEasyNPCSpawnerBlockEntityRenderer<T extends EasyNPCSpawnerBlock
       int packedLight,
       int packedOverlay,
       Vec3 cameraPosition) {
-    // Check if the spawner has a valid entity and ignore non-valid entities.
+    Level level = baseEasyNPCSpawnerBlockEntity.getLevel();
+    if (level == null) {
+      return;
+    }
+
     BaseSpawner baseSpawner = baseEasyNPCSpawnerBlockEntity.getSpawner();
-    if (!(baseSpawner instanceof BaseEasyNPCSpawner baseEasyNPCSpawner)
-        || !baseEasyNPCSpawner.hasEasyNPC()) {
+    Entity entity =
+        baseSpawner.getOrCreateDisplayEntity(level, baseEasyNPCSpawnerBlockEntity.getBlockPos());
+    if (entity == null) {
       return;
     }
 
     poseStack.pushPose();
     poseStack.translate(0.5F, 0.0F, 0.5F);
-    Entity entity =
-        baseSpawner.getOrCreateDisplayEntity(
-            baseEasyNPCSpawnerBlockEntity.getLevel(), baseEasyNPCSpawnerBlockEntity.getBlockPos());
-    if (entity == null) {
-      poseStack.popPose();
-      return;
-    }
 
     float scale = 0.53125F;
     float maxDimension = Math.max(entity.getBbWidth(), entity.getBbHeight());
     if (maxDimension > 1.0F) {
       scale /= maxDimension;
     }
+
     poseStack.translate(0.0F, 0.4F, 0.0F);
     poseStack.mulPose(
         Axis.YP.rotationDegrees(
-            (float)
-                (Mth.lerp(partialTicks, baseEasyNPCSpawner.getoSpin(), baseEasyNPCSpawner.getSpin())
-                    * 10.0F)));
+            (float) Mth.lerp(partialTicks, baseSpawner.getoSpin(), baseSpawner.getSpin()) * 10.0F));
     poseStack.translate(0.0F, -0.2F, 0.0F);
     poseStack.mulPose(Axis.XP.rotationDegrees(-30.0F));
     poseStack.scale(scale, scale, scale);
-    Minecraft.getInstance()
-        .getEntityRenderDispatcher()
-        .render(entity, 0.0D, 0.0D, 0.0D, partialTicks, poseStack, bufferSource, packedLight);
+    this.entityRenderer.render(
+        entity, 0.0, 0.0, 0.0, partialTicks, poseStack, bufferSource, packedLight);
     poseStack.popPose();
   }
 }

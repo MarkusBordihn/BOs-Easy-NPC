@@ -19,7 +19,6 @@
 
 package de.markusbordihn.easynpc.configui.client.screen.configuration.main;
 
-import de.markusbordihn.easynpc.client.screen.components.ColorButton;
 import de.markusbordihn.easynpc.client.screen.components.CopyButton;
 import de.markusbordihn.easynpc.client.screen.components.DeleteButton;
 import de.markusbordihn.easynpc.client.screen.components.ReloadButton;
@@ -29,6 +28,7 @@ import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.client.screen.components.TextField;
 import de.markusbordihn.easynpc.configui.client.renderer.screen.EntityConfigScreenRenderer;
 import de.markusbordihn.easynpc.configui.client.screen.EntityGuiScaling;
+import de.markusbordihn.easynpc.configui.client.screen.components.ColorButton;
 import de.markusbordihn.easynpc.configui.client.screen.components.NameVisibilityToggleButton;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.ConfigurationScreen;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
@@ -80,7 +80,7 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
 
   private Button copyUUIDButton;
   private String formerName = "";
-  private int formerTextColor = 0xFFFFFF;
+  private int formerTextColor = 0;
   private NameVisibilityType formerNameVisibility = NameVisibilityType.ALWAYS;
   private EditBox nameBox;
   private ColorButton nameColorButton;
@@ -297,14 +297,18 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
     if (getEasyNPCEntity().hasCustomName()
         && getEasyNPCEntity().getCustomName().getStyle() != null
         && getEasyNPCEntity().getCustomName().getStyle().getColor() != null) {
-      int styleTextColor = getEasyNPCEntity().getCustomName().getStyle().getColor().getValue();
+      int styleTextColorRGB =
+          getEasyNPCEntity().getCustomName().getStyle().getColor().getValue() & 0x00FFFFFF;
       for (DyeColor dyeColor : DyeColor.values()) {
-        if (dyeColor.getTextColor() == styleTextColor) {
+        int dyeColorRGB = dyeColor.getTextColor() & 0x00FFFFFF;
+        if (dyeColorRGB == styleTextColorRGB) {
           this.nameColorButton.setColor(dyeColor);
-          this.formerTextColor = styleTextColor;
+          this.formerTextColor = styleTextColorRGB;
           break;
         }
       }
+    } else {
+      this.formerTextColor = this.nameColorButton.getColorValue();
     }
 
     // Name Visibility Button
@@ -518,10 +522,7 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
 
   private void saveName() {
     String name = this.nameBox.getValue();
-    int textColor = 0xFFFFFF;
-    if (this.nameColorButton != null) {
-      textColor = this.nameColorButton.getColorValue();
-    }
+    int textColor = this.nameColorButton.getColorValue();
     NameVisibilityType nameVisibility = this.nameVisibilityButton.getVisibilityType();
     NetworkMessageHandlerManager.getServerHandler()
         .changeName(getEasyNPC().getEntityUUID(), name, textColor, nameVisibility);

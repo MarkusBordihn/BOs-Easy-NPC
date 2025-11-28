@@ -62,7 +62,9 @@ public class RespawnHandler {
     }
 
     // Load entity data using TagValueInput
-    entity.load(TagValueInput.create(ProblemReporter.DISCARDING, serverLevel.registryAccess(), compoundTag));
+    entity.load(
+        TagValueInput.create(
+            ProblemReporter.DISCARDING, serverLevel.registryAccess(), compoundTag));
 
     // Remove old entity
     easyNPC.getEntity().discard();

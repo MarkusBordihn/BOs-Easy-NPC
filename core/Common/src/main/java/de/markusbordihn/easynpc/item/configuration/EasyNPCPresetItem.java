@@ -34,6 +34,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -46,7 +47,6 @@ import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
@@ -199,7 +199,11 @@ public class EasyNPCPresetItem extends Item {
     // Check for NPC Spawner Block
     if (blockEntity instanceof EasyNPCSpawnerBlockEntity easyNPCSpawnerBlockEntity) {
       BaseEasyNPCSpawner baseEasyNPCSpawner = easyNPCSpawnerBlockEntity.getSpawner();
-      SpawnData spawnData = new SpawnData(presetData.data(), Optional.empty(), Optional.empty());
+      // Add entity id to spawn data so getOrCreateDisplayEntity can load the entity
+      CompoundTag entityData = presetData.data().copy();
+      entityData.putString(
+          "id", BuiltInRegistries.ENTITY_TYPE.getKey(presetData.entityType()).toString());
+      SpawnData spawnData = new SpawnData(entityData, Optional.empty(), Optional.empty());
       log.debug(
           "Set spawn data {} for base NPC spawner {} at {}",
           spawnData,

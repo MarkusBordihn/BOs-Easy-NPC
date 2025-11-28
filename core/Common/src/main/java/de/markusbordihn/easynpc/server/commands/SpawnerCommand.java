@@ -101,7 +101,9 @@ public class SpawnerCommand extends Command {
     }
 
     // Load adjusted spawner data
-    ValueInput valueInput = TagValueInput.create(ProblemReporter.DISCARDING, null, compoundTag);
+    ValueInput valueInput =
+        TagValueInput.create(
+            ProblemReporter.DISCARDING, context.getLevel().registryAccess(), compoundTag);
     if (blockEntity instanceof SpawnerBlockEntity spawnerBlockEntity) {
       spawnerBlockEntity
           .getSpawner()

@@ -371,7 +371,8 @@ public interface TradingDataCapable<E extends PathfinderMob> extends EasyNPC<E>,
 
     MerchantOffers merchantOffers = getTradingOffers();
     if (merchantOffers != null && !merchantOffers.isEmpty()) {
-      valueOutput.store(DATA_OFFERS_TAG, MerchantOffers.CODEC, sanitizeTradingOffers(merchantOffers.copy()));
+      valueOutput.store(
+          DATA_OFFERS_TAG, MerchantOffers.CODEC, sanitizeTradingOffers(merchantOffers.copy()));
     }
   }
 
