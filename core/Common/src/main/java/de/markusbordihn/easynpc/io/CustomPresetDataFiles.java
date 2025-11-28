@@ -83,10 +83,14 @@ public class CustomPresetDataFiles {
 
   public static File getPresetFile(SkinModel skinModel, String fileName) {
     Path presetModelFolder = getPresetDataFolder(skinModel);
-    if (presetModelFolder != null && fileName != null && !fileName.isEmpty()) {
-      return presetModelFolder.resolve(DataFileHandler.getPresetFileName(fileName)).toFile();
+    if (presetModelFolder == null || fileName == null || fileName.isEmpty()) {
+      return null;
     }
-    return null;
+    String sanitizedFileName = DataFileHandler.getPresetFileName(fileName);
+    if (sanitizedFileName == null) {
+      return null;
+    }
+    return presetModelFolder.resolve(sanitizedFileName).toFile();
   }
 
   public static File getPresetFile(SkinModel skinModel, UUID uuid) {

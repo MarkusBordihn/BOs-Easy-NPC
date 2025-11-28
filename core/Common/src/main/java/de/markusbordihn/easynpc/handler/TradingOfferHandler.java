@@ -32,108 +32,91 @@ public class TradingOfferHandler {
 
   private TradingOfferHandler() {}
 
-  public static void setAdvancedTradingMaxUses(
-      TradingDataCapable<?> tradingData, int tradingOfferIndex, int maxUses) {
+  private static void updateTradingOffer(
+      TradingDataCapable<?> tradingData,
+      int tradingOfferIndex,
+      java.util.function.Function<MerchantOffer, MerchantOffer> updater) {
     MerchantOffers merchantOffers = tradingData.getTradingOffers();
     if (merchantOffers == null
         || merchantOffers.isEmpty()
-        || merchantOffers.size() <= tradingOfferIndex) {
+        || merchantOffers.size() <= tradingOfferIndex
+        || tradingOfferIndex < 0) {
       return;
     }
     MerchantOffer merchantOffer = merchantOffers.get(tradingOfferIndex);
     if (merchantOffer == null) {
       return;
     }
-    merchantOffers.set(
-        tradingOfferIndex,
-        new MerchantOffer(
-            merchantOffer.getBaseCostA(),
-            merchantOffer.getCostB(),
-            merchantOffer.getResult(),
-            0,
-            maxUses,
-            merchantOffer.getXp(),
-            merchantOffer.getPriceMultiplier(),
-            merchantOffer.getDemand()));
+    merchantOffers.set(tradingOfferIndex, updater.apply(merchantOffer));
     tradingData.setTradingOffers(merchantOffers);
+  }
+
+  public static void setAdvancedTradingMaxUses(
+      TradingDataCapable<?> tradingData, int tradingOfferIndex, int maxUses) {
+    updateTradingOffer(
+        tradingData,
+        tradingOfferIndex,
+        offer ->
+            new MerchantOffer(
+                offer.getBaseCostA(),
+                offer.getCostB(),
+                offer.getResult(),
+                0,
+                maxUses,
+                offer.getXp(),
+                offer.getPriceMultiplier(),
+                offer.getDemand()));
   }
 
   public static void setAdvancedTradingXp(
       TradingDataCapable<?> tradingData, int tradingOfferIndex, int xp) {
-    MerchantOffers merchantOffers = tradingData.getTradingOffers();
-    if (merchantOffers == null
-        || merchantOffers.isEmpty()
-        || merchantOffers.size() <= tradingOfferIndex) {
-      return;
-    }
-    MerchantOffer merchantOffer = merchantOffers.get(tradingOfferIndex);
-    if (merchantOffer == null) {
-      return;
-    }
-    merchantOffers.set(
+    updateTradingOffer(
+        tradingData,
         tradingOfferIndex,
-        new MerchantOffer(
-            merchantOffer.getBaseCostA(),
-            merchantOffer.getCostB(),
-            merchantOffer.getResult(),
-            merchantOffer.getUses(),
-            merchantOffer.getMaxUses(),
-            xp,
-            merchantOffer.getPriceMultiplier(),
-            merchantOffer.getDemand()));
-    tradingData.setTradingOffers(merchantOffers);
+        offer ->
+            new MerchantOffer(
+                offer.getBaseCostA(),
+                offer.getCostB(),
+                offer.getResult(),
+                offer.getUses(),
+                offer.getMaxUses(),
+                xp,
+                offer.getPriceMultiplier(),
+                offer.getDemand()));
   }
 
   public static void setAdvancedTradingPriceMultiplier(
       TradingDataCapable<?> tradingData, int tradingOfferIndex, float priceMultiplier) {
-    MerchantOffers merchantOffers = tradingData.getTradingOffers();
-    if (merchantOffers == null
-        || merchantOffers.isEmpty()
-        || merchantOffers.size() <= tradingOfferIndex) {
-      return;
-    }
-    MerchantOffer merchantOffer = merchantOffers.get(tradingOfferIndex);
-    if (merchantOffer == null) {
-      return;
-    }
-    merchantOffers.set(
+    updateTradingOffer(
+        tradingData,
         tradingOfferIndex,
-        new MerchantOffer(
-            merchantOffer.getBaseCostA(),
-            merchantOffer.getCostB(),
-            merchantOffer.getResult(),
-            merchantOffer.getUses(),
-            merchantOffer.getMaxUses(),
-            merchantOffer.getXp(),
-            priceMultiplier,
-            merchantOffer.getDemand()));
-    tradingData.setTradingOffers(merchantOffers);
+        offer ->
+            new MerchantOffer(
+                offer.getBaseCostA(),
+                offer.getCostB(),
+                offer.getResult(),
+                offer.getUses(),
+                offer.getMaxUses(),
+                offer.getXp(),
+                priceMultiplier,
+                offer.getDemand()));
   }
 
   public static void setAdvancedTradingDemand(
       TradingDataCapable<?> tradingData, int tradingOfferIndex, int demand) {
-    MerchantOffers merchantOffers = tradingData.getTradingOffers();
-    if (merchantOffers == null
-        || merchantOffers.isEmpty()
-        || merchantOffers.size() <= tradingOfferIndex) {
-      return;
-    }
-    MerchantOffer merchantOffer = merchantOffers.get(tradingOfferIndex);
-    if (merchantOffer == null) {
-      return;
-    }
-    merchantOffers.set(
+    updateTradingOffer(
+        tradingData,
         tradingOfferIndex,
-        new MerchantOffer(
-            merchantOffer.getBaseCostA(),
-            merchantOffer.getCostB(),
-            merchantOffer.getResult(),
-            merchantOffer.getUses(),
-            merchantOffer.getMaxUses(),
-            merchantOffer.getXp(),
-            merchantOffer.getPriceMultiplier(),
-            demand));
-    tradingData.setTradingOffers(merchantOffers);
+        offer ->
+            new MerchantOffer(
+                offer.getBaseCostA(),
+                offer.getCostB(),
+                offer.getResult(),
+                offer.getUses(),
+                offer.getMaxUses(),
+                offer.getXp(),
+                offer.getPriceMultiplier(),
+                demand));
   }
 
   public static void updateBasicTradingOffers(TradingDataCapable<?> tradingData) {

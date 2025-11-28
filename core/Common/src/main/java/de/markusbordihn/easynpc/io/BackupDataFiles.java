@@ -21,7 +21,9 @@ package de.markusbordihn.easynpc.io;
 
 import de.markusbordihn.easynpc.Constants;
 import java.nio.file.Path;
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
@@ -30,6 +32,7 @@ import org.apache.logging.log4j.Logger;
 public class BackupDataFiles {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+  private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
   public static void registerBackupData() {
     // Prepare backup data folder
@@ -46,15 +49,14 @@ public class BackupDataFiles {
   }
 
   public static Path getBackupDataFolder() {
-    String currentDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
-    return DataFileHandler.getOrCreateBackupFolder(currentDate);
+    return DataFileHandler.getOrCreateBackupFolder(DATE_FORMATTER.format(LocalDate.now()));
   }
 
   public static Path getBackupFile(UUID uuid, Date date) {
-    String dateString = new SimpleDateFormat("yyyy-MM-dd").format(date);
+    LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+    String dateString = DATE_FORMATTER.format(localDate);
     String backupFileName = String.format("%s_%s.backup.npc.nbt", dateString, uuid);
-    Path backupDataFolder =
-        DataFileHandler.getOrCreateBackupFolder(new SimpleDateFormat("yyyy-MM-dd").format(date));
+    Path backupDataFolder = DataFileHandler.getOrCreateBackupFolder(dateString);
     return backupDataFolder != null ? backupDataFolder.resolve(backupFileName) : null;
   }
 }

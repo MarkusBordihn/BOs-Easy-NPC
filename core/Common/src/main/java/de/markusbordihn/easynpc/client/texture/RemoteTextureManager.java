@@ -27,10 +27,11 @@ import de.markusbordihn.easynpc.io.RemoteSkinDataFiles;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import java.io.File;
 import java.nio.file.Path;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
@@ -41,9 +42,11 @@ import org.apache.logging.log4j.Logger;
 public class RemoteTextureManager {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-  private static final HashMap<TextureModelKey, ResourceLocation> textureCache = new HashMap<>();
-  private static final HashMap<TextureModelKey, SkinType> textureSkinTypeCache = new HashMap<>();
-  private static final HashMap<TextureModelKey, String> textureSkinURLCache = new HashMap<>();
+  private static final Map<TextureModelKey, ResourceLocation> textureCache =
+      new ConcurrentHashMap<>();
+  private static final Map<TextureModelKey, SkinType> textureSkinTypeCache =
+      new ConcurrentHashMap<>();
+  private static final Map<TextureModelKey, String> textureSkinURLCache = new ConcurrentHashMap<>();
   private static final HashSet<UUID> textureReloadProtection = new HashSet<>();
   private static final String LOG_PREFIX = "[Remote Texture Manager] ";
 
@@ -164,5 +167,12 @@ public class RemoteTextureManager {
     if (resourceLocation != null) {
       textureCache.put(textureModelKey, resourceLocation);
     }
+  }
+
+  public static void clearTextureCache() {
+    textureReloadProtection.clear();
+    textureCache.clear();
+    textureSkinTypeCache.clear();
+    textureSkinURLCache.clear();
   }
 }

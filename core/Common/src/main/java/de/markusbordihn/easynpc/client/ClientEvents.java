@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.client;
 
 import de.markusbordihn.easynpc.client.renderer.manager.EntityTypeManager;
+import de.markusbordihn.easynpc.data.dialog.DialogDataManager;
 import de.markusbordihn.easynpc.io.DataFileHandler;
 import net.minecraft.client.Minecraft;
 
@@ -28,10 +29,28 @@ public class ClientEvents {
   private ClientEvents() {}
 
   public static void handleClientStartedEvent(Minecraft client) {
-    // Prepare custom data directory for client.
     DataFileHandler.registerClientDataFiles();
-
-    // Register entity type manager for server.
     EntityTypeManager.register();
+  }
+
+  public static void handleWorldUnloadEvent() {
+    DialogDataManager.clearDialogDataSets();
+    clearTextureCaches();
+  }
+
+  private static void clearTextureCaches() {
+    try {
+      Class.forName("de.markusbordihn.easynpc.client.texture.CustomTextureManager")
+          .getMethod("clearTextureCache")
+          .invoke(null);
+      Class.forName("de.markusbordihn.easynpc.client.texture.RemoteTextureManager")
+          .getMethod("clearTextureCache")
+          .invoke(null);
+      Class.forName("de.markusbordihn.easynpc.client.texture.PlayerTextureManager")
+          .getMethod("clearTextureCache")
+          .invoke(null);
+    } catch (Exception e) {
+      // Ignore - texture managers might not be loaded yet
+    }
   }
 }

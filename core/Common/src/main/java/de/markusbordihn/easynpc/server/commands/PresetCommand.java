@@ -679,9 +679,9 @@ public class PresetCommand extends Command {
     String presetFileName =
         DataFileHandler.getPresetFileName(
             name != null && !name.isEmpty() ? name : easyNPC.getEntityUUID().toString());
-    // TODO: Re-implement export local preset
-    // NetworkMessageHandlerManager.getClientHandler()
-    //    .exportClientPreset(easyNPC.getUUID(), presetFileName, serverPlayer);
+    if (presetFileName == null) {
+      return sendFailureMessage(context, "Invalid preset file name!");
+    }
     return sendSuccessMessage(
         context,
         "Exporting EasyNPC "
