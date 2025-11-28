@@ -8,25 +8,35 @@ For the full changelog, please go to the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
-### 6.0.x (Experimental) ✨
+### 6.1.0 ✨
 
-This is still an experimental release, please backup your worlds and NPCs before using it.
+This is a major release. Please back up your worlds and NPC data before updating.
+This version contains many improvements, optimizations, and internal changes that
+are **not fully compatible** with earlier releases.
 
-⚠️ It's very likely that there will be breaking changes with NPCs and their configurations from
-between versions! ⚠️
+⚠️ Breaking changes
 
-📝 Note:
-Easy NPC is now split into two separate mods:
+- Existing NPCs and their configuration data from versions before 6.1.0 may not
+  load correctly or may require manual adjustments.
+- Internal data formats and some behaviors have been refactored to support new use-cases.
 
-* **Easy NPC: Core** A lightweight mod for developing NPCs with minimal dependencies.
-* **Easy NPC: Configuration UI** A standalone mod providing the configuration interface for NPCs.
+🧩 New modular structure
 
-🎯 Why the change?
+Easy NPC is now split into three separate mods:
 
-* Developers and Modpacks can now include just the Core mod for a leaner setup.
-* Faster loading times and less memory usage and faster development cycles.
+- **Easy NPC** – Bundle that includes both Core and Configuration UI for a
+  plug‑and‑play experience.
+- **Easy NPC: Core** – Lightweight runtime and logic for NPCs, with minimal
+  dependencies. Intended for servers, modpacks, and developers.
+- **Easy NPC: Configuration UI** – Standalone configuration interface for
+  creating and editing NPCs. Can be installed on clients that need the UI.
 
-⚙️ Enjoy more flexibility and customization! 💡
+🎯 Why this change?
+
+- Allows servers and modpacks to ship only the **Core** mod on the server side
+  for a leaner setup.
+- Reduces memory usage and load times when the UI is not required everywhere.
+- Makes development and testing faster by separating UI and core logic.
 
 [history]: https://github.com/MarkusBordihn/BOs-Easy-NPC/commits/
 

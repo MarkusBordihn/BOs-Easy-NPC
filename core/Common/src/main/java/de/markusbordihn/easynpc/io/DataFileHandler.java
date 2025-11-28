@@ -62,7 +62,13 @@ public class DataFileHandler {
   }
 
   public static String getPresetFileName(String fileName) {
+    if (fileName == null || fileName.isEmpty()) {
+      return null;
+    }
     String result = fileName.replaceAll("[^a-zA-Z0-9/._-]", "").replace("..", "").replace("/", "_");
+    if (result.isEmpty() || !VALID_PRESET_FILENAME_PATTERN.matcher(result).matches()) {
+      return null;
+    }
     return result.endsWith(Constants.NPC_NBT_SUFFIX) ? result : result + Constants.NPC_NBT_SUFFIX;
   }
 
