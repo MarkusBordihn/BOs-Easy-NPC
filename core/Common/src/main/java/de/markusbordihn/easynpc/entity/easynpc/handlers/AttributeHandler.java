@@ -30,26 +30,34 @@ public interface AttributeHandler<E extends PathfinderMob> extends EasyNPC<E> {
 
   default void checkAttributeActions() {
     this.getProfiler().push("npcCheckAttributeActions");
+    try {
+      // Validate attribute data and mob entity.
+      Mob mob = this.getMob();
+      AttributeDataCapable<?> attributeData = this.getEasyNPCAttributeData();
+      if (attributeData == null || mob == null || mob.isDeadOrDying()) {
+        return;
+      }
 
-    // Validate attribute data and mob entity.
-    Mob mob = this.getMob();
-    AttributeDataCapable<?> attributeData = this.getEasyNPCAttributeData();
-    if (attributeData == null || mob == null || mob.isDeadOrDying()) {
-      return;
+      // Check entity attributes.
+      EntityAttributes entityAttributes = attributeData.getEntityAttributes();
+      if (entityAttributes == null) {
+        return;
+      }
+
+      // Handle combat relevant attributes.
+      CombatAttributes combatAttributes = entityAttributes.getCombatAttributes();
+      if (combatAttributes == null || combatAttributes.healthRegeneration() <= 0) {
+        return;
+      }
+
+      if (mob.getHealth() < mob.getMaxHealth()) {
+        mob.setHealth(
+            (float)
+                Math.min(
+                    mob.getMaxHealth(), mob.getHealth() + combatAttributes.healthRegeneration()));
+      }
+    } finally {
+      this.getProfiler().pop();
     }
-
-    // Check entity attributes.
-    EntityAttributes entityAttributes = attributeData.getEntityAttributes();
-
-    // Handle combat relevant attributes.
-    CombatAttributes combatAttributes = entityAttributes.getCombatAttributes();
-    if (combatAttributes.healthRegeneration() > 0 && mob.getHealth() < mob.getMaxHealth()) {
-      mob.setHealth(
-          (float)
-              Math.min(
-                  mob.getMaxHealth(), mob.getHealth() + combatAttributes.healthRegeneration()));
-    }
-
-    this.getProfiler().pop();
   }
 }

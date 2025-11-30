@@ -59,11 +59,9 @@ public class LivingEntityManager {
     // Add Easy NPC to preset map if available.
     PresetDataCapable<?> presetData = easyNPC.getEasyNPCPresetData();
     if (presetData != null && presetData.hasPresetUUID()) {
-      UUID presetUUID = presetData.getPresetUUID();
-      Set<EasyNPC<?>> easyNPCSet =
-          presetMap.getOrDefault(presetUUID, ConcurrentHashMap.newKeySet());
-      easyNPCSet.add(easyNPC);
-      presetMap.put(presetUUID, easyNPCSet);
+      presetMap
+          .computeIfAbsent(presetData.getPresetUUID(), k -> ConcurrentHashMap.newKeySet())
+          .add(easyNPC);
     }
 
     // Client side could stop here.
@@ -87,11 +85,12 @@ public class LivingEntityManager {
     PresetDataCapable<?> presetData = easyNPC.getEasyNPCPresetData();
     if (presetData != null && presetData.hasPresetUUID()) {
       UUID presetUUID = presetData.getPresetUUID();
-      Set<EasyNPC<?>> easyNPCSet =
-          presetMap.getOrDefault(presetUUID, ConcurrentHashMap.newKeySet());
-      if (easyNPCSet.remove(easyNPC)) {
-        presetMap.put(presetUUID, easyNPCSet);
-      }
+      presetMap.computeIfPresent(
+          presetUUID,
+          (k, set) -> {
+            set.remove(easyNPC);
+            return set.isEmpty() ? null : set;
+          });
     }
 
     // Client side could stop here.

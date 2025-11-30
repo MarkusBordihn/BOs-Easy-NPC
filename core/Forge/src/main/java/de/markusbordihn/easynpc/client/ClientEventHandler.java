@@ -27,6 +27,7 @@ import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.network.ServerNetworkMessageHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.eventbus.api.listener.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -47,6 +48,11 @@ public class ClientEventHandler {
           // Register screens
           ClientScreens.registerScreens(event);
         });
+  }
+
+  @SubscribeEvent
+  public static void onPlayerLoggedOut(ClientPlayerNetworkEvent.LoggingOut event) {
+    ClientEvents.handleWorldUnloadEvent();
   }
 
   @SubscribeEvent
