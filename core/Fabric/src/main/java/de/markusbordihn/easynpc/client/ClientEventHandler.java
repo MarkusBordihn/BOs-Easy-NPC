@@ -20,7 +20,9 @@
 package de.markusbordihn.easynpc.client;
 
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientPacketListener;
 
 public class ClientEventHandler {
 
@@ -28,9 +30,14 @@ public class ClientEventHandler {
 
   public static void registerClientEvents() {
     ClientLifecycleEvents.CLIENT_STARTED.register(ClientEventHandler::registerClientStarted);
+    ClientPlayConnectionEvents.DISCONNECT.register(ClientEventHandler::onDisconnect);
   }
 
   public static void registerClientStarted(Minecraft client) {
     ClientEvents.handleClientStartedEvent(client);
+  }
+
+  public static void onDisconnect(ClientPacketListener handler, Minecraft client) {
+    ClientEvents.handleWorldUnloadEvent();
   }
 }
