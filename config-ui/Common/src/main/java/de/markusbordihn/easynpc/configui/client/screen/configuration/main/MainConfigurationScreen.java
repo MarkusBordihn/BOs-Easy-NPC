@@ -19,7 +19,6 @@
 
 package de.markusbordihn.easynpc.configui.client.screen.configuration.main;
 
-import de.markusbordihn.easynpc.client.screen.components.ColorButton;
 import de.markusbordihn.easynpc.client.screen.components.CopyButton;
 import de.markusbordihn.easynpc.client.screen.components.DeleteButton;
 import de.markusbordihn.easynpc.client.screen.components.ReloadButton;
@@ -29,6 +28,7 @@ import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.client.screen.components.TextField;
 import de.markusbordihn.easynpc.configui.client.renderer.screen.EntityConfigScreenRenderer;
 import de.markusbordihn.easynpc.configui.client.screen.EntityGuiScaling;
+import de.markusbordihn.easynpc.configui.client.screen.components.ColorButton;
 import de.markusbordihn.easynpc.configui.client.screen.components.NameVisibilityToggleButton;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.ConfigurationScreen;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;

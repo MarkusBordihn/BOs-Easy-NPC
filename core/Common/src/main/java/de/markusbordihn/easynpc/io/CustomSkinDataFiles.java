@@ -100,10 +100,12 @@ public class CustomSkinDataFiles {
       if (skinModelFolder != null
           && skinModelFolder.toFile().exists()
           && skinModelFolder.toFile().isDirectory()) {
-        try (Stream<Path> skinPaths = Files.walk(skinModelFolder)) {
+        try (Stream<Path> skinPaths = Files.walk(skinModelFolder, 5)) {
           skinPaths
-              .filter(
-                  skinPath -> Files.isRegularFile(skinPath) && skinPath.toString().endsWith(".png"))
+              .filter(Files::isRegularFile)
+              .filter(Files::isReadable)
+              .filter(skinPath -> !Files.isSymbolicLink(skinPath))
+              .filter(skinPath -> skinPath.toString().endsWith(".png"))
               .forEach(
                   skinPath -> CustomTextureManager.registerTexture(skinModel, skinPath.toFile()));
         } catch (IOException e) {

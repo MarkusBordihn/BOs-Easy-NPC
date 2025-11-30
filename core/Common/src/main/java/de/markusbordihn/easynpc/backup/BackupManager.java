@@ -82,19 +82,17 @@ public class BackupManager {
               // Get backup file path.
               Path backupFilePath = BackupDataFiles.getBackupFile(uuid, currentDate);
               if (backupFilePath == null) {
-                log.warn("{} [Error] Backup file path for {} is null.", LOG_PREFIX, easyNPC);
+                log.error("{} Backup file path for {} is null.", LOG_PREFIX, easyNPC);
                 return;
               }
 
               // Create preset files for the NPC.
               File backupFile = backupFilePath.toFile();
-              if (backupFile.exists()) {
-                log.debug(
-                    "{} [Overwrite] Backup file {} for {} ...", LOG_PREFIX, backupFile, easyNPC);
+              if (PresetHandler.exportPreset(easyNPC, backupFile)) {
+                lastNPCBackupTime.put(uuid, System.currentTimeMillis());
               } else {
-                log.debug("{} [Create] Backup file {} for {} ...", LOG_PREFIX, backupFile, easyNPC);
+                log.error("{} Backup failed for {}", LOG_PREFIX, easyNPC);
               }
-              PresetHandler.exportPreset(easyNPC, backupFile);
             });
   }
 }

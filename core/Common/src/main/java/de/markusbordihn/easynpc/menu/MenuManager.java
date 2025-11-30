@@ -93,7 +93,6 @@ public class MenuManager {
       return;
     }
 
-    // Open the menu for the player
     log.info(
         "Opening menu {} for npc {} and player {} with {}",
         menuId,
@@ -108,11 +107,10 @@ public class MenuManager {
           dialogId.getAsInt(),
           menuProvider,
           serverPlayer);
-      removeMenu(menuId);
     } else {
-      log.error("Got invalid dialog ID for menu {}", menuId);
-      removeMenu(menuId);
+      log.error("Failed to open menu {} for {}", menuId, serverPlayer);
     }
+    removeMenu(menuId);
   }
 
   private static void removeMenu(UUID menuId) {

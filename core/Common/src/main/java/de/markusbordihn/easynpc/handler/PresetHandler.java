@@ -158,28 +158,34 @@ public class PresetHandler {
       }
     }
 
-    // Create new entity or re-use existing entity.
     Entity entity = entityType.create(serverLevel, EntitySpawnReason.SPAWN_ITEM_USE);
+    if (entity == null) {
+      log.error("[{}] Failed to create entity of type {}", serverLevel, entityType);
+      return false;
+    }
     if (!(entity instanceof EasyNPC<?> easyNPCEntity)) {
-      log.error(
-          "[{}] Error importing preset, invalid entity with type {}", serverLevel, entityType);
+      entity.discard();
+      log.error("[{}] Entity type {} is not an EasyNPC", serverLevel, entityType);
       return false;
     }
 
-    // Import preset data
     PresetDataCapable<?> presetData = easyNPCEntity.getEasyNPCPresetData();
     if (presetData == null) {
-      log.error(
-          "[{}] Error importing preset, no preset data available for {}",
-          serverLevel,
-          easyNPCEntity);
+      entity.discard();
+      log.error("[{}] No preset data available for {}", serverLevel, easyNPCEntity);
       return false;
     }
-    presetData.importPresetData(compoundTag);
 
-    // Spawn EasyNPC entity
-    if (!serverLevel.addFreshEntity(easyNPCEntity.getEntity())) {
-      log.error("[{}] Error spawning entity", easyNPCEntity);
+    try {
+      presetData.importPresetData(compoundTag);
+      if (!serverLevel.addFreshEntity(easyNPCEntity.getEntity())) {
+        entity.discard();
+        log.error("[{}] Error spawning entity", easyNPCEntity);
+        return false;
+      }
+    } catch (Exception e) {
+      entity.discard();
+      log.error("[{}] Error importing preset data", serverLevel, e);
       return false;
     }
 
@@ -247,11 +253,8 @@ public class PresetHandler {
       return false;
     }
 
-    try {
-      CompoundTag compoundTag =
-          NbtIo.readCompressed(
-              minecraftServer.getResourceManager().open(presetLocation),
-              NbtAccounter.unlimitedHeap());
+    try (var inputStream = minecraftServer.getResourceManager().open(presetLocation)) {
+      CompoundTag compoundTag = NbtIo.readCompressed(inputStream, NbtAccounter.unlimitedHeap());
       return importPreset(serverLevel, compoundTag, position, uuid, serverPlayer);
     } catch (IOException exception) {
       log.error("[{}] Error reading data preset file {}", serverLevel, presetLocation, exception);
@@ -279,11 +282,8 @@ public class PresetHandler {
       return false;
     }
 
-    try {
-      CompoundTag compoundTag =
-          NbtIo.readCompressed(
-              minecraftServer.getResourceManager().open(presetLocation),
-              NbtAccounter.unlimitedHeap());
+    try (var inputStream = minecraftServer.getResourceManager().open(presetLocation)) {
+      CompoundTag compoundTag = NbtIo.readCompressed(inputStream, NbtAccounter.unlimitedHeap());
       return importPreset(serverLevel, compoundTag, position, uuid, serverPlayer);
     } catch (IOException exception) {
       log.error(

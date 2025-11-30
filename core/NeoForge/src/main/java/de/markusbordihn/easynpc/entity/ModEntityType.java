@@ -21,7 +21,6 @@ package de.markusbordihn.easynpc.entity;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.compat.CompatConstants;
-import de.markusbordihn.easynpc.compat.epicfight.entity.EpicFightZombie;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -38,7 +37,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = Constants.MOD_ID)
 public class ModEntityType {
 
   public static final DeferredRegister<EntityType<?>> ENTITY_TYPES =
@@ -55,9 +54,6 @@ public class ModEntityType {
   public static final Map<EpicFightEntityType, DeferredHolder<EntityType<?>, EntityType<?>>>
       EPIC_FIGHT_TYPE = new EnumMap<>(EpicFightEntityType.class);
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-
-  // Optional: Epic Fight entities
-  public static DeferredHolder<EntityType<?>, EntityType<EpicFightZombie>> EPIC_FIGHT_ZOMBIE;
 
   static {
     // Raw entities (for modding only)

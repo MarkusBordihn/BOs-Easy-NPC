@@ -17,8 +17,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.client.screen.components;
+package de.markusbordihn.easynpc.configui.client.screen.components;
 
+import de.markusbordihn.easynpc.client.screen.components.CustomButton;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.item.DyeColor;
 

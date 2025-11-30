@@ -113,7 +113,7 @@ public class TradingDataSet {
         tradingData.contains(DATA_TRADING_LAST_RESET_TAG)
             ? tradingData.getLong(DATA_TRADING_LAST_RESET_TAG)
             : System.currentTimeMillis();
-    this.tradingType = TradingType.valueOf(tradingData.getString(DATA_TYPE_TAG));
+    this.tradingType = TradingType.get(tradingData.getString(DATA_TYPE_TAG));
   }
 
   public CompoundTag save(CompoundTag compoundTag) {
