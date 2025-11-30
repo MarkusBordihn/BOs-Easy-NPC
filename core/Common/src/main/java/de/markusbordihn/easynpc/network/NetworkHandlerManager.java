@@ -35,8 +35,8 @@ public class NetworkHandlerManager {
 
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  private static NetworkHandlerInterface networkHandler;
-  private static NetworkHandlerManagerType networkHandlerManagerType =
+  private static volatile NetworkHandlerInterface networkHandler;
+  private static volatile NetworkHandlerManagerType networkHandlerManagerType =
       NetworkHandlerManagerType.BOTH;
 
   private NetworkHandlerManager() {}

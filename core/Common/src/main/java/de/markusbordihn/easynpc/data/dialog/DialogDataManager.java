@@ -40,4 +40,12 @@ public class DialogDataManager {
   public static void addDialogDataSet(UUID uuid, DialogDataSet dialogDataSet) {
     dialogDataSets.put(uuid, dialogDataSet);
   }
+
+  public static void removeDialogDataSet(UUID uuid) {
+    dialogDataSets.remove(uuid);
+  }
+
+  public static void clearDialogDataSets() {
+    dialogDataSets.clear();
+  }
 }
