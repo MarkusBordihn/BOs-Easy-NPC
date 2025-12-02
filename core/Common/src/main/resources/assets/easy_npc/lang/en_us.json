@@ -1,8 +1,8 @@
 {
-  "block.easy_npc.boss_spawner": "EasyNPC Boss Spawner",
-  "block.easy_npc.default_spawner": "EasyNPC Default Spawner",
-  "block.easy_npc.group_spawner": "EasyNPC Group Spawner",
-  "block.easy_npc.single_spawner": "EasyNPC Single Spawner",
+  "item.easy_npc.boss_spawner": "EasyNPC Boss Spawner",
+  "item.easy_npc.default_spawner": "EasyNPC Default Spawner",
+  "item.easy_npc.group_spawner": "EasyNPC Group Spawner",
+  "item.easy_npc.single_spawner": "EasyNPC Single Spawner",
   "entity.easy_npc.allay": "Allay",
   "entity.easy_npc.bogged": "Bogged",
   "entity.easy_npc.cat": "Cat",
