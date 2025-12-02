@@ -1,8 +1,8 @@
 {
-  "block.easy_npc.boss_spawner": "EasyNPC Boss Spawner",
-  "block.easy_npc.default_spawner": "EasyNPC Standard Spawner",
-  "block.easy_npc.group_spawner": "EasyNPC Gruppen Spawner",
-  "block.easy_npc.single_spawner": "EasyNPC Einzel Spawner",
+  "item.easy_npc.boss_spawner": "EasyNPC Boss Spawner",
+  "item.easy_npc.default_spawner": "EasyNPC Standard Spawner",
+  "item.easy_npc.group_spawner": "EasyNPC Gruppen Spawner",
+  "item.easy_npc.single_spawner": "EasyNPC Einzel Spawner",
   "entity.easy_npc.allay": "Allay",
   "entity.easy_npc.bogged": "Versumpfter",
   "entity.easy_npc.cat": "Katze",
