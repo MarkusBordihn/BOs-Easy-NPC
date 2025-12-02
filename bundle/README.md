@@ -1,4 +1,4 @@
-# 🗣 Easy NPC Bundle (1.20.1)
+# 🗣 Easy NPC Bundle (1.20.5)
 
 The _Easy NPC Bundle_ is a comprehensive package that combines the core _Easy NPC_ mod with the
 _Easy NPC: Config UI_ extension into a single, convenient installation.
