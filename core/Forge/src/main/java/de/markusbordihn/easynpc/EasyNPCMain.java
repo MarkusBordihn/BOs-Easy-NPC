@@ -42,6 +42,8 @@ import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
 import java.util.Optional;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.server.ServerStartedEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
@@ -119,6 +121,16 @@ public class EasyNPCMain {
                   NetworkHandlerManager.registerNetworkMessages(NetworkHandlerManagerType.BOTH);
                 }));
     NetworkMessageHandlerManager.registerClientHandler(new ClientNetworkMessageHandler());
+
+    // GameTest server auto-shutdown for failsafe testing
+    MinecraftForge.EVENT_BUS.addListener(
+        (ServerStartedEvent event) -> {
+          String enabledGameTests = System.getProperty("forge.enabledGameTestNamespaces");
+          if (enabledGameTests != null && !enabledGameTests.isEmpty()) {
+            log.info("GameTest server started successfully. Shutting down...");
+            event.getServer().halt(false);
+          }
+        });
 
     // Initialize the client mod initializer
     DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> new EasyNPCClient(modEventBus));
