@@ -1,8 +1,8 @@
 {
-  "block.easy_npc.boss_spawner": "Спавнер Босса EasyNPC",
-  "block.easy_npc.default_spawner": "Стандартный Спавнер EasyNPC",
-  "block.easy_npc.group_spawner": "Групповой Спавнер EasyNPC",
-  "block.easy_npc.single_spawner": "Одиночный Спавнер EasyNPC",
+  "item.easy_npc.boss_spawner": "Спавнер Босса EasyNPC",
+  "item.easy_npc.default_spawner": "Стандартный Спавнер EasyNPC",
+  "item.easy_npc.group_spawner": "Групповой Спавнер EasyNPC",
+  "item.easy_npc.single_spawner": "Одиночный Спавнер EasyNPC",
   "entity.easy_npc.allay": "Тихоня",
   "entity.easy_npc.cat": "Кошка",
   "entity.easy_npc.chicken": "Курица",

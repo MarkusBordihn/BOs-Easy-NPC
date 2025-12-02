@@ -1,8 +1,8 @@
 {
-  "block.easy_npc.boss_spawner": "Gerador de Chefe EasyNPC",
-  "block.easy_npc.default_spawner": "Gerador Padrão EasyNPC",
-  "block.easy_npc.group_spawner": "Gerador de Grupo EasyNPC",
-  "block.easy_npc.single_spawner": "Gerador Único EasyNPC",
+  "item.easy_npc.boss_spawner": "Gerador de Chefe EasyNPC",
+  "item.easy_npc.default_spawner": "Gerador Padrão EasyNPC",
+  "item.easy_npc.group_spawner": "Gerador de Grupo EasyNPC",
+  "item.easy_npc.single_spawner": "Gerador Único EasyNPC",
   "entity.easy_npc.allay": "Allay",
   "entity.easy_npc.cat": "Gato",
   "entity.easy_npc.chicken": "Galinha",
