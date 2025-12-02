@@ -1,8 +1,8 @@
 {
-  "block.easy_npc.boss_spawner": "EasyNPC Boss刷怪笼",
-  "block.easy_npc.default_spawner": "EasyNPC 默认刷怪笼",
-  "block.easy_npc.group_spawner": "EasyNPC 组刷怪笼",
-  "block.easy_npc.single_spawner": "EasyNPC 单刷怪笼",
+  "item.easy_npc.boss_spawner": "EasyNPC Boss刷怪笼",
+  "item.easy_npc.default_spawner": "EasyNPC 默认刷怪笼",
+  "item.easy_npc.group_spawner": "EasyNPC 组刷怪笼",
+  "item.easy_npc.single_spawner": "EasyNPC 单刷怪笼",
   "entity.easy_npc.allay": "悦灵",
   "entity.easy_npc.cat": "猫",
   "entity.easy_npc.chicken": "鸡",

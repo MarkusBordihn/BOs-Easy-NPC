@@ -1,8 +1,8 @@
 {
-  "block.easy_npc.boss_spawner": "EasyNPC 首領生怪磚",
-  "block.easy_npc.default_spawner": "EasyNPC 預設生怪磚",
-  "block.easy_npc.group_spawner": "EasyNPC 群組生怪磚",
-  "block.easy_npc.single_spawner": "EasyNPC 單一生怪磚",
+  "item.easy_npc.boss_spawner": "EasyNPC 首領生怪磚",
+  "item.easy_npc.default_spawner": "EasyNPC 預設生怪磚",
+  "item.easy_npc.group_spawner": "EasyNPC 群組生怪磚",
+  "item.easy_npc.single_spawner": "EasyNPC 單一生怪磚",
   "entity.easy_npc.allay": "悅靈",
   "entity.easy_npc.cat": "貓",
   "entity.easy_npc.chicken": "雞",
