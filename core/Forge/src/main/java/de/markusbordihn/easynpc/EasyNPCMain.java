@@ -126,8 +126,9 @@ public class EasyNPCMain {
     MinecraftForge.EVENT_BUS.addListener(
         (ServerStartedEvent event) -> {
           String enabledGameTests = System.getProperty("forge.enabledGameTestNamespaces");
-          if (enabledGameTests != null && !enabledGameTests.isEmpty()) {
-            log.info("GameTest server started successfully. Shutting down...");
+          if (enabledGameTests != null && enabledGameTests.contains(Constants.MOD_ID)) {
+            log.info(
+                "GameTest server started successfully for {}. Shutting down...", Constants.MOD_ID);
             event.getServer().halt(false);
           }
         });

@@ -49,8 +49,8 @@ public class ConfigUIMain {
 
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  public ConfigUIMain() {
-    final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+  public ConfigUIMain(FMLJavaModLoadingContext context) {
+    IEventBus modEventBus = context.getModEventBus();
 
     log.info("Initializing {} (Forge) ...", Constants.MOD_NAME);
 
@@ -86,12 +86,12 @@ public class ConfigUIMain {
                 }));
     NetworkMessageHandlerManager.registerClientHandler(new ClientNetworkMessageHandler());
 
-    // GameTest server auto-shutdown for failsafe testing
     MinecraftForge.EVENT_BUS.addListener(
         (ServerStartedEvent event) -> {
           String enabledGameTests = System.getProperty("forge.enabledGameTestNamespaces");
-          if (enabledGameTests != null && !enabledGameTests.isEmpty()) {
-            log.info("GameTest server started successfully. Shutting down...");
+          if (enabledGameTests != null && enabledGameTests.contains(Constants.MOD_ID)) {
+            log.info(
+                "GameTest server started successfully for {}. Shutting down...", Constants.MOD_ID);
             event.getServer().halt(false);
           }
         });
