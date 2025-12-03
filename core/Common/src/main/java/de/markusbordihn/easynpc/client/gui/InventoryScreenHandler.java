@@ -37,15 +37,21 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.HumanoidMobRenderer;
+import net.minecraft.client.renderer.entity.VillagerRenderer;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.client.renderer.entity.state.PlayerRenderState;
+import net.minecraft.client.renderer.entity.state.VillagerRenderState;
+import net.minecraft.client.renderer.entity.state.ZombieVillagerRenderState;
 import net.minecraft.client.resources.PlayerSkin;
 import net.minecraft.client.resources.PlayerSkin.Model;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.monster.ZombieVillager;
+import net.minecraft.world.entity.npc.Villager;
+import net.minecraft.world.entity.npc.VillagerData;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
@@ -241,6 +247,50 @@ public class InventoryScreenHandler {
           getCustomPlayerRenderState(entityRenderer, playerRenderState, skinData, easyNPC);
       guiGraphics.submitEntityRenderState(
           customPlayerRenderState,
+          scale,
+          translation,
+          rotation,
+          entityRotation,
+          left,
+          top,
+          right,
+          bottom);
+      return true;
+    }
+
+    // Handle villager renderer - create fresh render state to avoid caching issues.
+    if (baseRenderState instanceof VillagerRenderState && livingEntity instanceof Villager) {
+      VillagerRenderState customVillagerRenderState =
+          (VillagerRenderState) entityRenderer.createRenderState();
+      VillagerRenderer villagerRenderer =
+          (VillagerRenderer) (EntityRenderer<? super Villager, ?>) entityRenderer;
+      villagerRenderer.extractRenderState((Villager) livingEntity, customVillagerRenderState, 1.0F);
+      customVillagerRenderState.hitboxesRenderState = null;
+      guiGraphics.submitEntityRenderState(
+          customVillagerRenderState,
+          scale,
+          translation,
+          rotation,
+          entityRotation,
+          left,
+          top,
+          right,
+          bottom);
+      return true;
+    }
+
+    // Handle zombie villager renderer - create fresh render state to avoid caching issues.
+    if (baseRenderState instanceof ZombieVillagerRenderState
+        && livingEntity instanceof ZombieVillager) {
+      ZombieVillagerRenderState customZombieVillagerRenderState =
+          (ZombieVillagerRenderState) entityRenderer.createRenderState();
+      // Override villagerData with current entity data to show correct type and profession
+      VillagerData zombieVillagerData = ((ZombieVillager) livingEntity).getVillagerData();
+      customZombieVillagerRenderState.villagerData = zombieVillagerData;
+
+      customZombieVillagerRenderState.hitboxesRenderState = null;
+      guiGraphics.submitEntityRenderState(
+          customZombieVillagerRenderState,
           scale,
           translation,
           rotation,

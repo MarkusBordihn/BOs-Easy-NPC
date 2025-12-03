@@ -113,7 +113,11 @@ public interface VariantDataCapable<T extends PathfinderMob> extends EasyNPC<T> 
   default Holder<VillagerProfession> getVillagerProfession(Enum<?> variantType) {
     String name = variantType.name().toLowerCase(Locale.ROOT);
     for (VillagerProfession profession : BuiltInRegistries.VILLAGER_PROFESSION) {
-      if (name.endsWith(profession.name().getString().toLowerCase(Locale.ROOT))) {
+      if (name.endsWith(
+          BuiltInRegistries.VILLAGER_PROFESSION
+              .getKey(profession)
+              .getPath()
+              .toLowerCase(Locale.ROOT))) {
         return BuiltInRegistries.VILLAGER_PROFESSION.wrapAsHolder(profession);
       }
     }
@@ -123,7 +127,11 @@ public interface VariantDataCapable<T extends PathfinderMob> extends EasyNPC<T> 
   default Holder<VillagerType> getVillagerType(Enum<?> variantType) {
     String name = variantType.name().toLowerCase(Locale.ROOT);
     for (VillagerType villagerType : BuiltInRegistries.VILLAGER_TYPE) {
-      if (name.startsWith(villagerType.toString().toLowerCase(Locale.ROOT))) {
+      if (name.startsWith(
+          BuiltInRegistries.VILLAGER_TYPE
+              .getKey(villagerType)
+              .getPath()
+              .toLowerCase(Locale.ROOT))) {
         return BuiltInRegistries.VILLAGER_TYPE.wrapAsHolder(villagerType);
       }
     }
