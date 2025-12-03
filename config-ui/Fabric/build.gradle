@@ -70,6 +70,7 @@ tasks.withType(JavaCompile).configureEach {
 processResources {
   from project(":Common").sourceSets.main.resources
   inputs.property "version", project.version
+  duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 
   filesMatching("fabric.mod.json") {
     expand "version": project.version
