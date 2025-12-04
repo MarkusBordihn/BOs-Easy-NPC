@@ -19,8 +19,6 @@
 
 package de.markusbordihn.easynpc;
 
-import cpw.mods.modlauncher.Launcher;
-import cpw.mods.modlauncher.api.IEnvironment;
 import de.markusbordihn.easynpc.block.ModBlocks;
 import de.markusbordihn.easynpc.commands.ModArgumentTypes;
 import de.markusbordihn.easynpc.compat.CompatHandler;
@@ -40,7 +38,6 @@ import de.markusbordihn.easynpc.network.NetworkHandlerManager;
 import de.markusbordihn.easynpc.network.NetworkHandlerManagerType;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.network.syncher.ModEntityDataSerializers;
-import java.util.Optional;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
@@ -60,11 +57,7 @@ public class EasyNPCMain {
     log.info("Initializing {} (NeoForge) ...", Constants.MOD_NAME);
 
     log.info("{} Debug Manager ...", Constants.LOG_REGISTER_PREFIX);
-    Optional<String> version =
-        Launcher.INSTANCE.environment().getProperty(IEnvironment.Keys.VERSION.get());
-    if (version.isPresent() && "MOD_DEV".equals(version.get())) {
-      DebugManager.setDevelopmentEnvironment(true);
-    }
+    DebugManager.setDevelopmentEnvironment(!FMLEnvironment.isProduction());
     DebugManager.checkForDebugLogging(Constants.LOG_NAME);
 
     log.info("{} Constants ...", Constants.LOG_REGISTER_PREFIX);
@@ -72,7 +65,7 @@ public class EasyNPCMain {
     Constants.CONFIG_DIR = FMLPaths.CONFIGDIR.get();
 
     log.info("{} Configuration ...", Constants.LOG_REGISTER_PREFIX);
-    Config.register(FMLEnvironment.dist == Dist.DEDICATED_SERVER);
+    Config.register(FMLEnvironment.getDist() == Dist.DEDICATED_SERVER);
 
     log.info("{} Common Data Files ...", Constants.LOG_REGISTER_PREFIX);
     DataFileHandler.registerCommonDataFiles();
@@ -115,10 +108,5 @@ public class EasyNPCMain {
           NetworkHandlerManager.registerNetworkMessages(NetworkHandlerManagerType.BOTH);
         });
     NetworkMessageHandlerManager.registerClientHandler(new ClientNetworkMessageHandler());
-
-    // Initialize the client mod initializer
-    if (FMLEnvironment.dist == Dist.CLIENT) {
-      new EasyNPCClient(modEventBus, modContainer);
-    }
   }
 }

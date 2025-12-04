@@ -24,7 +24,7 @@ import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCLivingEntityRender
 import de.markusbordihn.easynpc.client.renderer.entity.state.EasyNPCRenderStateExtension;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.layers.VillagerProfessionLayer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import org.spongepowered.asm.mixin.Mixin;
@@ -37,12 +37,12 @@ public class VillagerProfessionLayerMixin {
 
   @Inject(
       method =
-          "render(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;ILnet/minecraft/client/renderer/entity/state/LivingEntityRenderState;FF)V",
+          "submit(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;ILnet/minecraft/client/renderer/entity/state/LivingEntityRenderState;FF)V",
       at = @At("HEAD"),
       cancellable = true)
-  private void onRenderProfessionLayer(
+  private void onSubmitProfessionLayer(
       PoseStack poseStack,
-      MultiBufferSource multiBufferSource,
+      SubmitNodeCollector submitNodeCollector,
       int packedLight,
       LivingEntityRenderState renderState,
       float partialTick,

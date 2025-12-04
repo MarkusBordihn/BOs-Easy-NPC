@@ -29,6 +29,9 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 
 public class RangeSliderButton extends AbstractWidget {
@@ -377,33 +380,33 @@ public class RangeSliderButton extends AbstractWidget {
   }
 
   @Override
-  public boolean mouseClicked(double mouseX, double mouseY, int button) {
-    if (sliderButton.visible && sliderButton.mouseClicked(mouseX, mouseY, button)) {
+  public boolean mouseClicked(MouseButtonEvent mouseButtonEvent, boolean doubleClick) {
+    if (sliderButton.visible && sliderButton.mouseClicked(mouseButtonEvent, doubleClick)) {
       return true;
     }
-    if (textField.visible && textField.mouseClicked(mouseX, mouseY, button)) {
+    if (textField.visible && textField.mouseClicked(mouseButtonEvent, doubleClick)) {
       textField.setFocused(true);
       return true;
     }
 
-    textButtonDecrease.mouseClicked(mouseX, mouseY, button);
-    textButtonIncrease.mouseClicked(mouseX, mouseY, button);
-    textButtonReset.mouseClicked(mouseX, mouseY, button);
+    textButtonDecrease.mouseClicked(mouseButtonEvent, doubleClick);
+    textButtonIncrease.mouseClicked(mouseButtonEvent, doubleClick);
+    textButtonReset.mouseClicked(mouseButtonEvent, doubleClick);
 
     if (textButtonEdit.visible) {
-      textButtonEdit.mouseClicked(mouseX, mouseY, button);
+      textButtonEdit.mouseClicked(mouseButtonEvent, doubleClick);
     } else if (textButtonDone.visible) {
-      textButtonDone.mouseClicked(mouseX, mouseY, button);
+      textButtonDone.mouseClicked(mouseButtonEvent, doubleClick);
     }
-    return super.mouseClicked(mouseX, mouseY, button);
+    return super.mouseClicked(mouseButtonEvent, doubleClick);
   }
 
   @Override
-  public boolean mouseReleased(double mouseX, double mouseY, int button) {
+  public boolean mouseReleased(MouseButtonEvent mouseButtonEvent) {
     if (textField.visible) {
-      textField.mouseReleased(mouseX, mouseY, button);
+      textField.mouseReleased(mouseButtonEvent);
     }
-    return super.mouseReleased(mouseX, mouseY, button);
+    return super.mouseReleased(mouseButtonEvent);
   }
 
   @Override
@@ -417,28 +420,29 @@ public class RangeSliderButton extends AbstractWidget {
   }
 
   @Override
-  public void onDrag(double mouseX, double mouseY, double deltaX, double deltaY) {
-    if (sliderButton.visible && sliderButton.isMouseOver(mouseX, mouseY)) {
-      sliderButton.triggerOnDrag(mouseX, mouseY, deltaX, deltaY);
+  public void onDrag(MouseButtonEvent mouseButtonEvent, double deltaX, double deltaY) {
+    if (sliderButton.visible
+        && sliderButton.isMouseOver(mouseButtonEvent.x(), mouseButtonEvent.y())) {
+      sliderButton.triggerOnDrag(mouseButtonEvent, deltaX, deltaY);
     }
   }
 
   @Override
-  public boolean charTyped(char character, int keyCode) {
+  public boolean charTyped(CharacterEvent characterEvent) {
     if (sliderButton.visible) {
-      return sliderButton.charTyped(character, keyCode);
+      return sliderButton.charTyped(characterEvent);
     } else if (textField.visible) {
-      return textField.charTyped(character, keyCode);
+      return textField.charTyped(characterEvent);
     }
     return false;
   }
 
   @Override
-  public boolean keyPressed(int keyCode, int unused1, int unused2) {
+  public boolean keyPressed(KeyEvent keyEvent) {
     if (sliderButton.visible) {
-      return sliderButton.keyPressed(keyCode, unused1, unused2);
+      return sliderButton.keyPressed(keyEvent);
     } else if (textField.visible) {
-      return textField.keyPressed(keyCode, unused1, unused2);
+      return textField.keyPressed(keyEvent);
     }
     return false;
   }

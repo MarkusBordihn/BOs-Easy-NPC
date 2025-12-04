@@ -25,6 +25,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.input.MouseButtonEvent;
 
 public class UpDownButton extends AbstractWidget {
 
@@ -86,11 +87,11 @@ public class UpDownButton extends AbstractWidget {
   }
 
   @Override
-  public boolean mouseClicked(double mouseX, double mouseY, int button) {
-    if (this.upButton != null && this.upButton.mouseClicked(mouseX, mouseY, button)) {
+  public boolean mouseClicked(MouseButtonEvent mouseButtonEvent, boolean doubleClick) {
+    if (this.upButton != null && this.upButton.mouseClicked(mouseButtonEvent, doubleClick)) {
       return true;
     }
-    return this.downButton != null && this.downButton.mouseClicked(mouseX, mouseY, button);
+    return this.downButton != null && this.downButton.mouseClicked(mouseButtonEvent, doubleClick);
   }
 
   @Override

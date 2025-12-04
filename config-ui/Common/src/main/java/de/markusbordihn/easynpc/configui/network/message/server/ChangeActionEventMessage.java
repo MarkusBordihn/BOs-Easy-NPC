@@ -33,6 +33,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.players.NameAndId;
 
 public record ChangeActionEventMessage(
     UUID uuid, ActionEventType actionEventType, ActionDataSet actionDataSet)
@@ -81,10 +82,11 @@ public record ChangeActionEventMessage(
 
     // Get Permission level for corresponding action.
     int permissionLevel = 0;
-    MinecraftServer minecraftServer = serverPlayer.getServer();
+    MinecraftServer minecraftServer = serverPlayer.level().getServer();
     ActionEventDataCapable<?> actionEventData = easyNPC.getEasyNPCActionEventData();
     if (minecraftServer != null) {
-      permissionLevel = minecraftServer.getProfilePermissions(serverPlayer.getGameProfile());
+      permissionLevel =
+          minecraftServer.getProfilePermissions(new NameAndId(serverPlayer.getGameProfile()));
       log.debug(
           "Set action owner permission level {} for {} from {}",
           permissionLevel,

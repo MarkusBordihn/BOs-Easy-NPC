@@ -36,6 +36,8 @@ public class CommonHooksMixin {
       remap = false)
   private static void disableEntityDataVerification(
       Class<? extends Entity> entityClass, Class<?> callingClass, CallbackInfo ci) {
-    ci.cancel();
+    if (entityClass.getName().startsWith("de.markusbordihn.easynpc")) {
+      ci.cancel();
+    }
   }
 }

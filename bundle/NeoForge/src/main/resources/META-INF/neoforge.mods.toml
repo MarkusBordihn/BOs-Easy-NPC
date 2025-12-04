@@ -24,14 +24,14 @@ Users only need to install this single file to get both mods.
 [[dependencies.easy_npc_bundle]]
 modId = "neoforge"
 type = "required"
-versionRange = "[21.8.0,)"
+versionRange = "[21.10.0,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.easy_npc_bundle]]
 modId = "minecraft"
 type = "required"
-versionRange = "[1.21.8,1.22)"
+versionRange = "[1.21.10,1.22)"
 ordering = "NONE"
 side = "BOTH"
 

@@ -39,7 +39,7 @@ public class ServerEntityData {
   private final boolean isClientSide;
 
   public ServerEntityData(Entity entity) {
-    this.isClientSide = entity != null && entity.level().isClientSide;
+    this.isClientSide = entity != null && entity.level().isClientSide();
   }
 
   /*

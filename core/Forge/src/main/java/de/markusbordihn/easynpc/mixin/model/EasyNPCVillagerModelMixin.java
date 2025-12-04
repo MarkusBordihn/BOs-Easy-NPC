@@ -38,7 +38,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class EasyNPCVillagerModelMixin<T extends VillagerRenderState> {
 
   @Shadow @Final private ModelPart head;
-  @Shadow @Final private ModelPart hat;
+  @Shadow @Final private ModelPart arms;
   @Shadow @Final private ModelPart rightLeg;
   @Shadow @Final private ModelPart leftLeg;
 
@@ -48,10 +48,10 @@ public class EasyNPCVillagerModelMixin<T extends VillagerRenderState> {
   private void easyNpcModel(ModelPart modelPart, CallbackInfo callbackInfo) {
     this.easyNPC$modelManager =
         new EasyNPCModelManager(modelPart)
-            .defineModelPart(ModelPartType.HAT, this.hat)
+            .defineModelPart(ModelPartType.HAT, "hat")
             .defineModelPart(ModelPartType.HEAD, this.head)
             .defineModelPart(ModelPartType.BODY, "body")
-            .defineModelPart(ModelPartType.ARMS, "arms")
+            .defineModelPart(ModelPartType.ARMS, this.arms)
             .defineModelPart(ModelPartType.RIGHT_LEG, this.rightLeg)
             .defineModelPart(ModelPartType.LEFT_LEG, this.leftLeg);
   }

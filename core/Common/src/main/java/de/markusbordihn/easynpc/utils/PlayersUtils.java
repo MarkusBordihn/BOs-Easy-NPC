@@ -24,7 +24,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
-import com.mojang.authlib.GameProfile;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.validator.NameValidator;
 import java.io.IOException;
@@ -36,7 +35,8 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.players.GameProfileCache;
+import net.minecraft.server.players.NameAndId;
+import net.minecraft.server.players.UserNameToIdResolver;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -54,46 +54,39 @@ public class PlayersUtils {
 
   protected PlayersUtils() {}
 
-  public static Optional<GameProfile> getGameProfile(MinecraftServer server, String username) {
-    if (server == null || username == null || username.isEmpty()) {
-      return Optional.empty();
-    }
-    final GameProfileCache gameProfileCache = server.getProfileCache();
-    return gameProfileCache.get(username);
-  }
-
   public static UUID getUserUUID(MinecraftServer server, String username) {
-    // Check if username is already a valid UUID.
-    UUID uuid = getUUIDfromString(username);
-    if (uuid != null) {
-      return uuid;
-    }
-
-    return PlayersUtils.getGameProfile(server, username)
-        .map(GameProfile::getId)
-        .map(UUID::toString)
-        .map(PlayersUtils::getUUIDfromString)
-        .orElse(null);
-  }
-
-  public static UUID getUUIDfromString(String uuidString) {
-    try {
-      return UUID.fromString(uuidString);
-    } catch (IllegalArgumentException exception) {
-      // Ignore the case where string is not valid UUID
-    }
-    return null;
-  }
-
-  public static UUID getUserUUID(String username) {
     if (username == null || username.isEmpty() || !NameValidator.isValidPlayerName(username)) {
       log.error("Unable to get user UUID with invalid username: {}", username);
       return null;
     }
 
+    UUID uuid = getUUIDfromString(username);
+    if (uuid != null) {
+      return uuid;
+    }
+
+    if (server != null) {
+      try {
+        UserNameToIdResolver userNameToIdResolver = server.services().nameToIdCache();
+        Optional<NameAndId> optionalNameAndId = userNameToIdResolver.get(username);
+        if (optionalNameAndId.isPresent()) {
+          UUID serverUUID = optionalNameAndId.get().id();
+          log.debug("Found user {} with UUID {} from server cache", username, serverUUID);
+          userUUIDCache.put(username, serverUUID);
+          return serverUUID;
+        }
+      } catch (Exception e) {
+        log.debug("Unable to get UUID from server cache for {}: {}", username, e.getMessage());
+      }
+    }
+
     // Check cache for already known or failed usernames.
     if (userUUIDCache.containsKey(username)) {
-      return userUUIDCache.get(username);
+      UUID cachedUUID = userUUIDCache.get(username);
+      if (cachedUUID != null) {
+        log.debug("Found user {} with UUID {} from local cache", username, cachedUUID);
+      }
+      return cachedUUID;
     }
 
     // Get user UUID over API.
@@ -106,6 +99,7 @@ public class PlayersUtils {
       // Verify UUID string
       if (uuidString == null || uuidString.isEmpty()) {
         log.error("Unable to get user UUID with invalid response: {}", json);
+        userUUIDCache.put(username, null);
         return null;
       }
 
@@ -113,14 +107,26 @@ public class PlayersUtils {
       String formattedUUID =
           uuidString.replaceFirst("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})", "$1-$2-$3-$4-$5");
       UUID userUUID = UUID.fromString(formattedUUID);
-      log.debug("Found user {} with UUID {} ...", username, userUUID);
+      log.debug("Found user {} with UUID {} from online API", username, userUUID);
       userUUIDCache.put(username, userUUID);
       return userUUID;
     } catch (IOException e) {
-      log.error("Unable to get UUID from user {}:", username, e);
+      log.error("Unable to get UUID from user {}: {}", username, e.getMessage());
       userUUIDCache.put(username, null);
       return null;
     }
+  }
+
+  public static UUID getUUIDfromString(String uuidString) {
+    try {
+      return UUID.fromString(uuidString);
+    } catch (IllegalArgumentException exception) {
+      return null;
+    }
+  }
+
+  public static UUID getUserUUID(String username) {
+    return getUserUUID(null, username);
   }
 
   public static String getUserTexture(UUID userUUID) {

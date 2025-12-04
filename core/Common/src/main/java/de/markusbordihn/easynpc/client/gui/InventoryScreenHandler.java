@@ -21,17 +21,11 @@ package de.markusbordihn.easynpc.client.gui;
 
 import de.markusbordihn.easynpc.client.renderer.manager.EntityTypeManager;
 import de.markusbordihn.easynpc.client.renderer.manager.RendererManager;
-import de.markusbordihn.easynpc.client.texture.CustomTextureManager;
-import de.markusbordihn.easynpc.client.texture.PlayerTextureManager;
-import de.markusbordihn.easynpc.client.texture.RemoteTextureManager;
 import de.markusbordihn.easynpc.data.render.RenderType;
-import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.data.skin.SkinType;
-import de.markusbordihn.easynpc.data.skin.VariantTexture;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.RenderDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
-import de.markusbordihn.easynpc.entity.easynpc.data.VariantDataCapable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
@@ -40,11 +34,8 @@ import net.minecraft.client.renderer.entity.HumanoidMobRenderer;
 import net.minecraft.client.renderer.entity.VillagerRenderer;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
-import net.minecraft.client.renderer.entity.state.PlayerRenderState;
 import net.minecraft.client.renderer.entity.state.VillagerRenderState;
 import net.minecraft.client.renderer.entity.state.ZombieVillagerRenderState;
-import net.minecraft.client.resources.PlayerSkin;
-import net.minecraft.client.resources.PlayerSkin.Model;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -152,75 +143,6 @@ public class InventoryScreenHandler {
     return true;
   }
 
-  public static PlayerRenderState getCustomPlayerRenderState(
-      EntityRenderer<? super Entity, ?> entityRenderer,
-      PlayerRenderState playerRenderState,
-      SkinDataCapable<?> skinData,
-      EasyNPC<?> easyNPC) {
-    PlayerRenderState cumstomPlayerRenderState =
-        (PlayerRenderState) entityRenderer.createRenderState();
-    cumstomPlayerRenderState.scale = playerRenderState.scale;
-    cumstomPlayerRenderState.mainArm = playerRenderState.mainArm;
-    cumstomPlayerRenderState.x = playerRenderState.x;
-    cumstomPlayerRenderState.y = playerRenderState.y;
-    cumstomPlayerRenderState.z = playerRenderState.z;
-    cumstomPlayerRenderState.bodyRot = playerRenderState.bodyRot;
-
-    Model playerSkinModel =
-        skinData.getSkinModel() == SkinModel.HUMANOID_SLIM ? Model.SLIM : Model.WIDE;
-    if (skinData.getSkinType() == SkinType.NONE) {
-      return cumstomPlayerRenderState;
-    } else if (skinData.getSkinType() == SkinType.DEFAULT) {
-      VariantDataCapable<?> variantData = easyNPC.getEasyNPCVariantData();
-      if (variantData.getSkinVariantType() instanceof VariantTexture variantTexture) {
-        cumstomPlayerRenderState.skin =
-            new PlayerSkin(
-                variantTexture.getTextureLocation(), null, null, null, playerSkinModel, false);
-      }
-    } else if (skinData.getSkinType() == SkinType.CUSTOM) {
-      cumstomPlayerRenderState.skin =
-          new PlayerSkin(
-              CustomTextureManager.getOrCreateTextureWithDefault(
-                  skinData, playerRenderState.skin.texture()),
-              null,
-              null,
-              null,
-              playerSkinModel,
-              false);
-    } else if (skinData.getSkinType() == SkinType.PLAYER_SKIN) {
-      cumstomPlayerRenderState.skin =
-          new PlayerSkin(
-              PlayerTextureManager.getOrCreateTextureWithDefault(
-                  skinData, playerRenderState.skin.texture()),
-              null,
-              null,
-              null,
-              playerSkinModel,
-              false);
-    } else if (skinData.getSkinType() == SkinType.INSECURE_REMOTE_URL) {
-      cumstomPlayerRenderState.skin =
-          new PlayerSkin(
-              RemoteTextureManager.getOrCreateTextureWithDefault(
-                  skinData, playerRenderState.skin.texture()),
-              skinData.getSkinURL(),
-              null,
-              null,
-              playerSkinModel,
-              false);
-    } else if (skinData.getSkinType() == SkinType.SECURE_REMOTE_URL) {
-      cumstomPlayerRenderState.skin =
-          new PlayerSkin(
-              RemoteTextureManager.getOrCreateTextureWithDefault(
-                  skinData, playerRenderState.skin.texture()),
-              skinData.getSkinURL(),
-              null,
-              null,
-              playerSkinModel,
-              true);
-    }
-    return cumstomPlayerRenderState;
-  }
-
   public static boolean renderSkinEntityInInventory(
       GuiGraphics guiGraphics,
       int left,
@@ -240,13 +162,11 @@ public class InventoryScreenHandler {
     EntityRenderer<? super Entity, ?> entityRenderer =
         entityRenderDispatcher.getRenderer(livingEntity);
 
-    // Handle player renderer with custom skin - check render state type first.
+    // Handle player renderer with custom skin.
     EntityRenderState baseRenderState = entityRenderer.createRenderState(livingEntity, 1.0F);
-    if (baseRenderState instanceof PlayerRenderState playerRenderState) {
-      PlayerRenderState customPlayerRenderState =
-          getCustomPlayerRenderState(entityRenderer, playerRenderState, skinData, easyNPC);
+    if (baseRenderState instanceof HumanoidRenderState humanoidRenderState) {
       guiGraphics.submitEntityRenderState(
-          customPlayerRenderState,
+          humanoidRenderState,
           scale,
           translation,
           rotation,

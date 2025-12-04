@@ -37,10 +37,8 @@ public class ZombifiedPiglinRawRenderer extends PiglinRenderer implements EasyNP
         context,
         ModelLayers.PIGLIN,
         ModelLayers.PIGLIN_BABY,
-        ModelLayers.PIGLIN_INNER_ARMOR,
-        ModelLayers.PIGLIN_OUTER_ARMOR,
-        ModelLayers.PIGLIN_BABY_INNER_ARMOR,
-        ModelLayers.PIGLIN_BABY_OUTER_ARMOR);
+        ModelLayers.ZOMBIFIED_PIGLIN_ARMOR,
+        ModelLayers.ZOMBIFIED_PIGLIN_BABY_ARMOR);
   }
 
   @Override

@@ -29,7 +29,6 @@ import java.util.EnumMap;
 import java.util.Optional;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
@@ -60,7 +59,7 @@ public interface TradingDataCapable<E extends PathfinderMob> extends EasyNPC<E>,
         SynchedEntityData.defineId(entityClass, EntityDataSerializersManager.TRADING_DATA_SET));
     map.put(
         SynchedDataIndex.TRADING_INVENTORY,
-        SynchedEntityData.defineId(entityClass, EntityDataSerializers.COMPOUND_TAG));
+        SynchedEntityData.defineId(entityClass, EntityDataSerializersManager.COMPOUND_TAG));
     map.put(
         SynchedDataIndex.TRADING_MERCHANT_OFFERS,
         SynchedEntityData.defineId(entityClass, EntityDataSerializersManager.MERCHANT_OFFERS));

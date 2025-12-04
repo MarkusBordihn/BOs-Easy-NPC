@@ -148,7 +148,7 @@ public class ConfigurationMenuHandler {
     switch (configurationType) {
       case DEFAULT_PRESET_IMPORT -> {
         Set<ResourceLocation> defaultPresets =
-            DefaultPresetDataFiles.getPresetResourceLocations(serverPlayer.getServer())
+            DefaultPresetDataFiles.getPresetResourceLocations(serverPlayer.level().getServer())
                 .collect(Collectors.toSet());
         additionalSyncData.put(
             "DefaultPresets", CompoundTagUtils.writeResourceLocations(defaultPresets));

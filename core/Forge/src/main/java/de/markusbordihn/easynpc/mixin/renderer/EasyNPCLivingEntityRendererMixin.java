@@ -23,9 +23,9 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCLivingEntityRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.state.EasyNPCRenderStateExtension;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
+import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.world.entity.LivingEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -35,7 +35,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(LivingEntityRenderer.class)
 public class EasyNPCLivingEntityRendererMixin {
 
-  @Inject(method = "extractRenderState", at = @At("TAIL"))
+  @Inject(
+      method =
+          "extractRenderState(Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/client/renderer/entity/state/LivingEntityRenderState;F)V",
+      at = @At("TAIL"))
   private void injectEasyNpcUUID(
       LivingEntity livingEntity,
       LivingEntityRenderState renderState,
@@ -51,35 +54,39 @@ public class EasyNPCLivingEntityRendererMixin {
     }
   }
 
-  @Inject(method = "render", at = @At("HEAD"))
+  @Inject(
+      method =
+          "submit(Lnet/minecraft/client/renderer/entity/state/LivingEntityRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/renderer/state/CameraRenderState;)V",
+      at = @At("HEAD"))
   private void onRenderStart(
       LivingEntityRenderState renderState,
       PoseStack poseStack,
-      MultiBufferSource bufferSource,
-      int packedLight,
+      net.minecraft.client.renderer.SubmitNodeCollector submitNodeCollector,
+      CameraRenderState cameraRenderState,
       CallbackInfo ci) {
-    if (renderState instanceof EasyNPCRenderStateExtension renderStateExtension) {
-      EasyNPCLivingEntityRenderer.handleRenderStart(
-          renderState, poseStack, bufferSource, packedLight);
+    if (renderState instanceof EasyNPCRenderStateExtension) {
+      EasyNPCLivingEntityRenderer.handleRenderStart(renderState, poseStack, null, 0);
     }
   }
 
-  @Inject(method = "render", at = @At("TAIL"))
+  @Inject(
+      method =
+          "submit(Lnet/minecraft/client/renderer/entity/state/LivingEntityRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/renderer/state/CameraRenderState;)V",
+      at = @At("TAIL"))
   private void onRenderEnd(
       LivingEntityRenderState renderState,
       PoseStack poseStack,
-      MultiBufferSource bufferSource,
-      int packedLight,
+      net.minecraft.client.renderer.SubmitNodeCollector submitNodeCollector,
+      CameraRenderState cameraRenderState,
       CallbackInfo ci) {
-    if (renderState instanceof EasyNPCRenderStateExtension renderStateExtension) {
-      EasyNPCLivingEntityRenderer.handleRenderEnd(
-          renderState, poseStack, bufferSource, packedLight);
+    if (renderState instanceof EasyNPCRenderStateExtension) {
+      EasyNPCLivingEntityRenderer.handleRenderEnd(renderState, poseStack, null, 0);
     }
   }
 
   @Inject(method = "scale", at = @At("HEAD"))
   private void onScale(LivingEntityRenderState renderState, PoseStack poseStack, CallbackInfo ci) {
-    if (renderState instanceof EasyNPCRenderStateExtension renderStateExtension) {
+    if (renderState instanceof EasyNPCRenderStateExtension) {
       EasyNPCLivingEntityRenderer.handleScale(renderState, poseStack);
     }
   }

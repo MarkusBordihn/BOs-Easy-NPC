@@ -73,7 +73,7 @@ public class AdvancedTradingConfigurationMenu extends TradingConfigurationMenu {
     this.tradingContainer = tradingContainer;
 
     // Restructure Container from merchant offers.
-    if (!this.level.isClientSide) {
+    if (!this.level.isClientSide()) {
       MerchantOffers merchantOffers = this.getEasyNPC().getEasyNPCTradingData().getTradingOffers();
       if (merchantOffers != null) {
         for (int tradingOffer = 0;
@@ -153,7 +153,7 @@ public class AdvancedTradingConfigurationMenu extends TradingConfigurationMenu {
 
   @Override
   public void setTradingChanged() {
-    if (this.level.isClientSide) {
+    if (this.level.isClientSide()) {
       return;
     }
     TradingContainerHandler.setAdvancedTradingOffers(

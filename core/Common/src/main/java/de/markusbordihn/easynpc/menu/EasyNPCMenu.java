@@ -84,7 +84,7 @@ public class EasyNPCMenu extends AbstractContainerMenu {
 
     // Get easy NPC entity from screen data.
     this.easyNPC =
-        this.level.isClientSide
+        this.level.isClientSide()
             ? LivingEntityManager.getEasyNPCEntityByUUID(getNpcUUID())
             : LivingEntityManager.getEasyNPCEntityByUUID(getNpcUUID(), (ServerPlayer) player);
     if (this.easyNPC == null) {

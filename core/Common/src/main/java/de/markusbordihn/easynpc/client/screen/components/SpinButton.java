@@ -24,6 +24,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.input.MouseButtonEvent;
 
 public class SpinButton<T> extends CustomButton {
 
@@ -108,12 +109,12 @@ public class SpinButton<T> extends CustomButton {
   }
 
   @Override
-  public boolean mouseClicked(double mouseX, double mouseY, int button) {
-    if (this.nextButton.mouseClicked(mouseX, mouseY, button)
-        || this.previousButton.mouseClicked(mouseX, mouseY, button)) {
+  public boolean mouseClicked(MouseButtonEvent mouseButtonEvent, boolean doubleClick) {
+    if (this.nextButton.mouseClicked(mouseButtonEvent, doubleClick)
+        || this.previousButton.mouseClicked(mouseButtonEvent, doubleClick)) {
       return true;
     }
-    return this.textButton.mouseClicked(mouseX, mouseY, button);
+    return this.textButton.mouseClicked(mouseButtonEvent, doubleClick);
   }
 
   public interface OnChange {

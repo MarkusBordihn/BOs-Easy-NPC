@@ -37,10 +37,8 @@ public class PiglinBruteRawRenderer extends PiglinRenderer implements EasyNPCEnt
         context,
         ModelLayers.PIGLIN,
         ModelLayers.PIGLIN_BABY,
-        ModelLayers.PIGLIN_INNER_ARMOR,
-        ModelLayers.PIGLIN_OUTER_ARMOR,
-        ModelLayers.PIGLIN_BABY_INNER_ARMOR,
-        ModelLayers.PIGLIN_BABY_OUTER_ARMOR);
+        ModelLayers.PIGLIN_BRUTE_ARMOR,
+        ModelLayers.PIGLIN_BABY_ARMOR);
   }
 
   @Override

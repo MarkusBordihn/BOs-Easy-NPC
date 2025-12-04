@@ -2,7 +2,7 @@ package de.markusbordihn.easynpc.client.renderer.entity.standard;
 
 import de.markusbordihn.easynpc.data.skin.variant.HumanoidSlimSkinVariant;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.state.PlayerRenderState;
+import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.resources.ResourceLocation;
 
 public class PlayerSlimRenderer extends PlayerRenderer {
@@ -15,7 +15,7 @@ public class PlayerSlimRenderer extends PlayerRenderer {
   }
 
   @Override
-  public ResourceLocation getTextureLocation(PlayerRenderState renderState) {
+  public ResourceLocation getTextureLocation(HumanoidRenderState renderState) {
     return getTextureFromRenderState(renderState);
   }
 

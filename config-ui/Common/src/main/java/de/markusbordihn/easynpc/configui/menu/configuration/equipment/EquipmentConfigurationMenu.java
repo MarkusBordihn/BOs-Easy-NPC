@@ -155,7 +155,7 @@ public class EquipmentConfigurationMenu extends ConfigurationMenu {
   }
 
   public void loadHand() {
-    if (this.level.isClientSide) {
+    if (this.level.isClientSide()) {
       return;
     }
     log.debug(
@@ -170,14 +170,14 @@ public class EquipmentConfigurationMenu extends ConfigurationMenu {
   }
 
   public void setHandChanged(InteractionHand hand, ItemStack itemStack) {
-    if (this.level.isClientSide) {
+    if (this.level.isClientSide()) {
       return;
     }
     EquipmentHandler.setHandSlotItem(this.getEasyNPC(), hand, itemStack);
   }
 
   public void loadArmor() {
-    if (this.level.isClientSide) {
+    if (this.level.isClientSide()) {
       return;
     }
     log.debug(
@@ -198,7 +198,7 @@ public class EquipmentConfigurationMenu extends ConfigurationMenu {
   }
 
   public void setArmorChanged(EquipmentSlot equipmentSlot, int slot, ItemStack itemStack) {
-    if (this.level.isClientSide) {
+    if (this.level.isClientSide()) {
       return;
     }
     EquipmentHandler.setArmorSlotItem(this.getEasyNPC(), equipmentSlot, itemStack);

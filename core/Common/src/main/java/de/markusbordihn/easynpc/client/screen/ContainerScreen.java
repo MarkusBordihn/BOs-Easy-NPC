@@ -29,6 +29,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import org.apache.logging.log4j.LogManager;
@@ -119,7 +121,7 @@ public class ContainerScreen<T extends EasyNPCMenu> extends AbstractContainerScr
 
     // Set mouse position to former position, to avoid mouse jumps.
     if (formerMouseX > 0 && formerMouseY > 0) {
-      GLFW.glfwSetCursorPos(minecraftInstance.getWindow().getWindow(), formerMouseX, formerMouseY);
+      GLFW.glfwSetCursorPos(minecraftInstance.getWindow().handle(), formerMouseX, formerMouseY);
       resetFormerMousePosition();
     }
 
@@ -132,10 +134,10 @@ public class ContainerScreen<T extends EasyNPCMenu> extends AbstractContainerScr
   }
 
   @Override
-  public boolean mouseClicked(double mouseX, double mouseY, int button) {
+  public boolean mouseClicked(MouseButtonEvent mouseButtonEvent, boolean doubleClick) {
     setFormerMousePosition(
         Minecraft.getInstance().mouseHandler.xpos(), Minecraft.getInstance().mouseHandler.ypos());
-    return super.mouseClicked(mouseX, mouseY, button);
+    return super.mouseClicked(mouseButtonEvent, doubleClick);
   }
 
   @Override
@@ -166,9 +168,10 @@ public class ContainerScreen<T extends EasyNPCMenu> extends AbstractContainerScr
   }
 
   @Override
-  public boolean keyPressed(int keyCode, int unused1, int unused2) {
+  public boolean keyPressed(KeyEvent keyEvent) {
+    int keyCode = keyEvent.input();
     if (keyCode != 257 && keyCode != 335 && keyCode != 69 && keyCode != 73) {
-      return super.keyPressed(keyCode, unused1, unused2);
+      return super.keyPressed(keyEvent);
     }
     return keyCode == 257 || keyCode == 335 || keyCode == 73;
   }

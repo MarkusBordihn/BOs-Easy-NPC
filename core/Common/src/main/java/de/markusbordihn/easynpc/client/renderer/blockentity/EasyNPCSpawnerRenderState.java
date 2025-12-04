@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Markus Bordihn
+ * Copyright 2022 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,11 +17,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.mixin.model;
+package de.markusbordihn.easynpc.client.renderer.blockentity;
 
-import net.minecraft.client.model.PlayerModel;
-import net.minecraft.client.renderer.entity.state.PlayerRenderState;
-import org.spongepowered.asm.mixin.Mixin;
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
 
-@Mixin(PlayerModel.class)
-public class EasyNPCPlayerModelMixin<T extends PlayerRenderState> {}
+public class EasyNPCSpawnerRenderState extends BlockEntityRenderState {
+  public EntityRenderState entityRenderState;
+  public float spinInterpolated;
+  public float scale = 0.53125F;
+}

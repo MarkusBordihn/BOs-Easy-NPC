@@ -106,7 +106,7 @@ public interface ActionHandler<E extends PathfinderMob> extends EasyNPC<E> {
 
   static void executeEntityCommand(
       String command, Entity entity, int permissionLevel, boolean debug) {
-    MinecraftServer minecraftServer = entity.getServer();
+    MinecraftServer minecraftServer = entity.level().getServer();
     if (minecraftServer == null) {
       log.error("No Minecraft server found for entity {}", entity);
       return;
@@ -144,7 +144,7 @@ public interface ActionHandler<E extends PathfinderMob> extends EasyNPC<E> {
 
   static void executePlayerCommand(
       String command, ServerPlayer serverPlayer, int permissionLevel, boolean debug) {
-    MinecraftServer minecraftServer = serverPlayer.getServer();
+    MinecraftServer minecraftServer = serverPlayer.level().getServer();
     if (minecraftServer == null) {
       log.error("No Minecraft server found for player {}", serverPlayer);
       return;

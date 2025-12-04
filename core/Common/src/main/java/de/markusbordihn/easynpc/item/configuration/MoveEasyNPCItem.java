@@ -57,7 +57,7 @@ public class MoveEasyNPCItem extends Item {
   @Override
   public InteractionResult interactLivingEntity(
       ItemStack itemStack, Player player, LivingEntity livingEntity, InteractionHand hand) {
-    if (!player.level().isClientSide
+    if (!player.level().isClientSide()
         && livingEntity instanceof EasyNPC<?> easyNPC
         && player instanceof ServerPlayer serverPlayer
         && (serverPlayer.isCreative()
@@ -76,7 +76,7 @@ public class MoveEasyNPCItem extends Item {
       Level level,
       BlockPos blockPos,
       LivingEntity livingEntity) {
-    if (!level.isClientSide
+    if (!level.isClientSide()
         && livingEntity instanceof Player player
         && targetedLivingEntityMap.containsKey(player)) {
       LivingEntity targetedLivingEntity = targetedLivingEntityMap.get(player);

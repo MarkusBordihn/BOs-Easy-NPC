@@ -21,7 +21,6 @@ package de.markusbordihn.easynpc.client.renderer.entity.raw;
 
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
 import de.markusbordihn.easynpc.data.skin.variant.PiglinSkinVariant;
-import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.PiglinRenderer;
@@ -34,32 +33,12 @@ public class PiglinRawRenderer extends PiglinRenderer implements EasyNPCEntityRe
       PiglinSkinVariant.PIGLIN.getTextureLocation();
 
   public PiglinRawRenderer(EntityRendererProvider.Context context) {
-    this(
+    super(
         context,
         ModelLayers.PIGLIN,
         ModelLayers.PIGLIN_BABY,
-        ModelLayers.PIGLIN_INNER_ARMOR,
-        ModelLayers.PIGLIN_OUTER_ARMOR,
-        ModelLayers.PIGLIN_BABY_INNER_ARMOR,
-        ModelLayers.PIGLIN_BABY_OUTER_ARMOR);
-  }
-
-  public PiglinRawRenderer(
-      EntityRendererProvider.Context context,
-      ModelLayerLocation adultModelLocation,
-      ModelLayerLocation babyModelLocation,
-      ModelLayerLocation innerArmorModelLocation,
-      ModelLayerLocation outerArmorModelLocation,
-      ModelLayerLocation innerArmorModelBabyLocation,
-      ModelLayerLocation outerArmorModelBabyLocation) {
-    super(
-        context,
-        adultModelLocation,
-        babyModelLocation,
-        innerArmorModelLocation,
-        outerArmorModelLocation,
-        innerArmorModelBabyLocation,
-        outerArmorModelBabyLocation);
+        ModelLayers.PIGLIN_ARMOR,
+        ModelLayers.PIGLIN_BABY_ARMOR);
   }
 
   @Override

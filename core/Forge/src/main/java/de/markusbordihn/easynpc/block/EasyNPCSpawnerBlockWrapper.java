@@ -46,7 +46,7 @@ public class EasyNPCSpawnerBlockWrapper extends EasyNPCSpawnerBlock {
     return createTickerHelper(
         blockEntityType,
         ModBlocks.EASY_NPC_SPAWNER_ENTITY.get(),
-        level.isClientSide
+        level.isClientSide()
             ? EasyNPCSpawnerBlockEntity::clientTick
             : EasyNPCSpawnerBlockEntity::serverTick);
   }

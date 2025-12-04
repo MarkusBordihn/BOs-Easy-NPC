@@ -57,7 +57,7 @@ public class ModSpawnEggItem extends SpawnEggItem {
 
   public ModSpawnEggItem(
       Supplier<? extends EntityType<? extends Mob>> entityType, Properties properties) {
-    super(null, properties);
+    super(properties);
     this.typeSupplier = entityType;
   }
 

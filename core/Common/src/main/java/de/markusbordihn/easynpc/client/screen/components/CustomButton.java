@@ -26,6 +26,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.WidgetSprites;
+import net.minecraft.client.input.InputWithModifiers;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -79,9 +80,9 @@ public class CustomButton extends Button {
   }
 
   @Override
-  public void onPress() {
+  public void onPress(InputWithModifiers input) {
     if (this.onPress != null) {
-      super.onPress();
+      super.onPress(input);
     }
   }
 

@@ -26,12 +26,12 @@ import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.DisplayAttributeDataCapable;
 import de.markusbordihn.easynpc.utils.ItemUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -87,13 +87,12 @@ public class EasyNPCEntityRendererMixin<T extends Entity, S extends EntityRender
     }
   }
 
-  @Inject(method = "renderNameTag", at = @At("HEAD"), cancellable = true)
-  private void onRenderNameTag(
+  @Inject(method = "submitNameTag", at = @At("HEAD"), cancellable = true)
+  private void onSubmitNameTag(
       S renderState,
-      Component component,
       PoseStack poseStack,
-      MultiBufferSource multiBufferSource,
-      int i,
+      SubmitNodeCollector submitNodeCollector,
+      CameraRenderState cameraRenderState,
       CallbackInfo ci) {
     if (renderState instanceof EasyNPCRenderStateExtension renderStateExtension
         && !EasyNPCModel.renderEntityNameTag(renderStateExtension, poseStack)) {

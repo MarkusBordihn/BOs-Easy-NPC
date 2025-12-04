@@ -42,6 +42,7 @@ import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.UUID;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.world.item.trading.MerchantOffers;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -57,6 +58,10 @@ public class ModEntityDataSerializers {
       ACTION_EVENT_SET =
           ENTITY_DATA_SERIALIZERS.register(
               "action_event_set", () -> EntityDataSerializersManager.ACTION_EVENT_SET);
+  public static final DeferredHolder<EntityDataSerializer<?>, EntityDataSerializer<CompoundTag>>
+      COMPOUND_TAG =
+          ENTITY_DATA_SERIALIZERS.register(
+              "compound_tag", () -> EntityDataSerializersManager.COMPOUND_TAG);
   public static final DeferredHolder<EntityDataSerializer<?>, EntityDataSerializer<DialogDataSet>>
       DIALOG_DATA_SET =
           ENTITY_DATA_SERIALIZERS.register(

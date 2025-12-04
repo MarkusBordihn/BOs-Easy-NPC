@@ -184,7 +184,7 @@ public class BaseEasyNPCSpawner extends BaseSpawner {
   }
 
   @Override
-  public double getoSpin() {
+  public double getOSpin() {
     return this.oSpin;
   }
 

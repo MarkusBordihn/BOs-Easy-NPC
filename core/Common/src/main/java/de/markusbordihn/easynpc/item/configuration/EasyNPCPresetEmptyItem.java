@@ -103,7 +103,7 @@ public class EasyNPCPresetEmptyItem extends Item {
       }
     }
 
-    return level.isClientSide ? InteractionResult.SUCCESS : InteractionResult.CONSUME;
+    return level.isClientSide() ? InteractionResult.SUCCESS : InteractionResult.CONSUME;
   }
 
   private ItemStack createPresetItemStack(EasyNPC<?> easyNPC) {
@@ -165,7 +165,7 @@ public class EasyNPCPresetEmptyItem extends Item {
     Level level = useOnContext.getLevel();
 
     // Ignore client side
-    if (level.isClientSide) {
+    if (level.isClientSide()) {
       return InteractionResult.SUCCESS;
     }
 

@@ -26,16 +26,19 @@ import de.markusbordihn.easynpc.client.screen.ClientScreens;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.network.ServerNetworkMessageHandler;
 import de.markusbordihn.easynpc.tabs.ModTabs;
+import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.common.Mod;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+@Mod(value = Constants.MOD_ID, dist = Dist.CLIENT)
 public class EasyNPCClient {
 
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  public EasyNPCClient(IEventBus modEventBus, ModContainer modContainer) {
+  @SuppressWarnings("java:S1118")
+  public EasyNPCClient(IEventBus modEventBus) {
     log.info("{} Client events ...", Constants.LOG_REGISTER_PREFIX);
 
     modEventBus.addListener(ModModelLayer::registerEntityLayerDefinitions);

@@ -26,6 +26,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractSliderButton;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -265,8 +267,8 @@ public class SliderButton extends AbstractSliderButton {
     return this.visible;
   }
 
-  public void triggerOnDrag(double mouseX, double mouseY, double deltaX, double deltaY) {
-    this.onDrag(mouseX, mouseY, deltaX, deltaY);
+  public void triggerOnDrag(MouseButtonEvent mouseButtonEvent, double deltaX, double deltaY) {
+    this.onDrag(mouseButtonEvent, deltaX, deltaY);
   }
 
   @Override
@@ -291,7 +293,8 @@ public class SliderButton extends AbstractSliderButton {
   }
 
   @Override
-  public boolean keyPressed(int keyCode, int unused1, int unused2) {
+  public boolean keyPressed(KeyEvent keyEvent) {
+    int keyCode = keyEvent.input();
     if (keyCode == 263 || keyCode == 262) {
       float step = keyCode == 263 ? -1.0F : 1.0F;
       double incrementalSteps = step * this.getStepSize();

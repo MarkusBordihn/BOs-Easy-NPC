@@ -24,7 +24,7 @@ import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCLivingEntityRender
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
 import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;
 import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -43,11 +43,11 @@ public class HumanoidArmorLayerMixin<
 
   @Inject(
       method =
-          "render(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;ILnet/minecraft/client/renderer/entity/state/HumanoidRenderState;FF)V",
+          "submit(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;ILnet/minecraft/client/renderer/entity/state/HumanoidRenderState;FF)V",
       at = @At("HEAD"))
-  private void onRenderHead(
+  private void onSubmitHead(
       PoseStack poseStack,
-      MultiBufferSource multiBufferSource,
+      SubmitNodeCollector submitNodeCollector,
       int packedLight,
       S renderState,
       float yRot,
@@ -58,17 +58,15 @@ public class HumanoidArmorLayerMixin<
 
   @Inject(
       method =
-          "renderArmorPiece(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/entity/EquipmentSlot;ILnet/minecraft/client/model/HumanoidModel;Lnet/minecraft/client/renderer/entity/state/HumanoidRenderState;)V",
+          "renderArmorPiece(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/entity/EquipmentSlot;ILnet/minecraft/client/renderer/entity/state/HumanoidRenderState;)V",
       at = @At("HEAD"),
-      cancellable = true,
-      remap = false)
+      cancellable = true)
   private void onRenderArmorPiece(
       PoseStack poseStack,
-      MultiBufferSource multiBufferSource,
+      SubmitNodeCollector submitNodeCollector,
       ItemStack itemStack,
       EquipmentSlot equipmentSlot,
       int packedLight,
-      A humanoidModel,
       S renderState,
       CallbackInfo callbackInfo) {
 

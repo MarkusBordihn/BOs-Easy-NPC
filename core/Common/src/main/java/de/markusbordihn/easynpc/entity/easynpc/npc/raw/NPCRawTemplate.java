@@ -458,11 +458,6 @@ public class NPCRawTemplate extends Zombie implements EasyNPCBase<Zombie> {
   }
 
   @Override
-  protected boolean shouldDespawnInPeaceful() {
-    return false;
-  }
-
-  @Override
   public boolean removeWhenFarAway(double distance) {
     return false;
   }

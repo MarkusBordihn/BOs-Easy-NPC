@@ -51,6 +51,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
 import net.minecraft.core.UUIDUtil;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.world.item.trading.MerchantOffers;
@@ -66,6 +68,10 @@ public class EntityDataSerializersManager {
       defineSerializer(
           ActionEventSet.class.getSimpleName(),
           EntityDataSerializer.forValueType(ActionEventSet.STREAM_CODEC));
+  public static final EntityDataSerializer<CompoundTag> COMPOUND_TAG =
+      defineSerializer(
+          CompoundTag.class.getSimpleName(),
+          EntityDataSerializer.forValueType(ByteBufCodecs.COMPOUND_TAG));
   public static final EntityDataSerializer<DialogDataSet> DIALOG_DATA_SET =
       defineSerializer(
           DialogDataSet.class.getSimpleName(),

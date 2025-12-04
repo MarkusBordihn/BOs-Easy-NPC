@@ -27,7 +27,9 @@ import de.markusbordihn.easynpc.entity.easynpc.data.OwnerDataCapable;
 import java.util.UUID;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.players.NameAndId;
 import net.minecraft.world.entity.Entity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -125,10 +127,11 @@ public class AccessManager {
     }
 
     // Check if player has permission to access the entity.
+    MinecraftServer server = serverPlayer.level().getServer();
     if (!serverPlayer.isCreative()
         && !easyNPC.getEasyNPCOwnerData().isNPCOwner(serverPlayer)
-        && serverPlayer.getServer() != null
-        && serverPlayer.getServer().getProfilePermissions(serverPlayer.getGameProfile())
+        && server != null
+        && server.getProfilePermissions(new NameAndId(serverPlayer.getGameProfile()))
             < Commands.LEVEL_GAMEMASTERS) {
       log.error("[{}:{}] Player has no permission to access {}!", uuid, serverPlayer, easyNPC);
       return null;

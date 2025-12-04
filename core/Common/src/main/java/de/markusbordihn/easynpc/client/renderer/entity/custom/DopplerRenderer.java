@@ -13,7 +13,7 @@ import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.RenderDataCapable;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.HumanoidMobRenderer;
@@ -21,6 +21,7 @@ import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
+import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -48,8 +49,8 @@ public class DopplerRenderer
       EntityModel<?> entityModel,
       HumanoidRenderState renderState,
       PoseStack poseStack,
-      MultiBufferSource buffer,
-      int packedLight) {
+      SubmitNodeCollector submitNodeCollector,
+      CameraRenderState cameraRenderState) {
 
     // We only take care of EasyNPC entities.
     if (!(entity instanceof EasyNPC<?> easyNPC)) {
@@ -106,7 +107,8 @@ public class DopplerRenderer
           extension.setEasyNpcUUID(easyNPC.getEntityUUID());
         }
 
-        livingEntityRenderer.render(livingEntityRenderState, poseStack, buffer, packedLight);
+        livingEntityRenderer.submit(
+            livingEntityRenderState, poseStack, submitNodeCollector, cameraRenderState);
         return true;
       } catch (Exception exception) {
         log.error(
@@ -131,7 +133,7 @@ public class DopplerRenderer
       try {
         RendererManager.copyCustomLivingEntityData(
             entity.getPathfinderMob(), customEntity, entityTypeName);
-        entityRenderer.render(entityRenderState, poseStack, buffer, packedLight);
+        entityRenderer.submit(entityRenderState, poseStack, submitNodeCollector, cameraRenderState);
         return true;
       } catch (Exception exception) {
         log.error(
@@ -161,16 +163,17 @@ public class DopplerRenderer
   }
 
   @Override
-  public void render(
+  public void submit(
       HumanoidRenderState renderState,
       PoseStack poseStack,
-      MultiBufferSource buffer,
-      int packedLight) {
+      SubmitNodeCollector submitNodeCollector,
+      CameraRenderState cameraRenderState) {
     EasyNPC<?> easyNPC = getEasyNPC(renderState);
-    if (renderEntity(easyNPC, this.getModel(), renderState, poseStack, buffer, packedLight)) {
+    if (renderEntity(
+        easyNPC, this.getModel(), renderState, poseStack, submitNodeCollector, cameraRenderState)) {
       return;
     }
 
-    super.render(renderState, poseStack, buffer, packedLight);
+    super.submit(renderState, poseStack, submitNodeCollector, cameraRenderState);
   }
 }

@@ -23,6 +23,7 @@ import de.markusbordihn.easynpc.Constants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -135,14 +136,15 @@ public class MultiStateToggleButton extends CustomButton {
   }
 
   @Override
-  public boolean mouseClicked(double x, double y, int button) {
+  public boolean mouseClicked(MouseButtonEvent mouseButtonEvent, boolean doubleClick) {
     if (!this.visible) {
       return false;
     }
-    if (this.isValidClickButton(button) && this.isMouseOver(x, y)) {
+    if (this.isValidClickButton(mouseButtonEvent.buttonInfo())
+        && this.isMouseOver(mouseButtonEvent.x(), mouseButtonEvent.y())) {
       this.playDownSound(Minecraft.getInstance().getSoundManager());
       cycleToNextState();
-      this.onClick(x, y);
+      this.onClick(mouseButtonEvent, doubleClick);
       return true;
     }
     return false;

@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.client.screen.components;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.input.MouseButtonEvent;
 
 public class SpriteToggleButton extends SpriteButton {
 
@@ -52,14 +53,15 @@ public class SpriteToggleButton extends SpriteButton {
   }
 
   @Override
-  public boolean mouseClicked(double x, double y, int button) {
+  public boolean mouseClicked(MouseButtonEvent mouseButtonEvent, boolean doubleClick) {
     if (!this.visible) {
       return false;
     }
-    if (this.isValidClickButton(button) && this.isMouseOver(x, y)) {
+    if (this.isValidClickButton(mouseButtonEvent.buttonInfo())
+        && this.isMouseOver(mouseButtonEvent.x(), mouseButtonEvent.y())) {
       this.playDownSound(Minecraft.getInstance().getSoundManager());
       this.active = !this.active;
-      this.onClick(x, y);
+      this.onClick(mouseButtonEvent, doubleClick);
       return true;
     }
     return false;

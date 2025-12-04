@@ -33,6 +33,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.players.NameAndId;
 
 public record SaveDialogButtonMessage(
     UUID uuid, UUID dialogId, UUID dialogButtonId, DialogButtonEntry dialogButtonEntry)
@@ -124,9 +125,10 @@ public record SaveDialogButtonMessage(
     // Re-check permission levels for dialog related actions.
     int currentPermissionLevel = actionEventData.getActionPermissionLevel();
     if (currentPermissionLevel == 0) {
-      MinecraftServer minecraftServer = serverPlayer.getServer();
+      MinecraftServer minecraftServer = serverPlayer.level().getServer();
       if (minecraftServer != null) {
-        int permissionLevel = minecraftServer.getProfilePermissions(serverPlayer.getGameProfile());
+        int permissionLevel =
+            minecraftServer.getProfilePermissions(new NameAndId(serverPlayer.getGameProfile()));
         if (permissionLevel > currentPermissionLevel) {
           log.debug(
               "Update owner permission level from {} to {} for {} from {}",

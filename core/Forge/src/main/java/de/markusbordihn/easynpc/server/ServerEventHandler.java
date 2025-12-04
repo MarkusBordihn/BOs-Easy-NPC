@@ -36,6 +36,6 @@ public class ServerEventHandler {
 
   @SubscribeEvent
   public static void onServerTick(ServerTickEvent.ServerTickEvent event) {
-    ServerEvents.handleServerTick(event.getServer());
+    ServerEvents.handleServerTick(event.server());
   }
 }

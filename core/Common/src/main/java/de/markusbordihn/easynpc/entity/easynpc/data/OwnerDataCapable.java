@@ -55,7 +55,7 @@ public interface OwnerDataCapable<T extends PathfinderMob> extends EasyNPC<T>, O
     if (uuid == null) {
       setSynchedEntityData(SynchedDataIndex.OWNER_UUID, Optional.empty());
     } else {
-      EntityReference<LivingEntity> entityReference = new EntityReference<>(uuid);
+      EntityReference<LivingEntity> entityReference = EntityReference.of(uuid);
       setSynchedEntityData(SynchedDataIndex.OWNER_UUID, Optional.of(entityReference));
     }
   }
