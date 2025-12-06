@@ -36,6 +36,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.client.gui.screens.ConfirmScreen;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -245,6 +246,11 @@ public class ImportPresetConfigurationScreen<T extends ConfigurationMenu>
     }
 
     @Override
+    protected void renderSelection(GuiGraphics guiGraphics, Entry entry, int color) {
+      // Do not render selection.
+    }
+
+    @Override
     protected void renderListSeparators(GuiGraphics guiGraphics) {
       // Do not render list separators.
     }
@@ -296,17 +302,11 @@ public class ImportPresetConfigurationScreen<T extends ConfigurationMenu>
         this.fileName = getPresetFileName(resourceLocation);
       }
 
-      public void render(
-          GuiGraphics guiGraphics,
-          int x,
-          int y,
-          int unused1,
-          int unused2,
-          int unused3,
-          int unused4,
-          int unused5,
-          boolean unused6,
-          float partialTicks) {
+      @Override
+      public void renderContent(
+          GuiGraphics guiGraphics, int mouseX, int mouseY, boolean isHovered, float partialTicks) {
+
+        int y = this.getY();
 
         // File Selection List Header
         int fileListTop = ImportPresetConfigurationScreen.this.topPos + 55;
@@ -344,8 +344,8 @@ public class ImportPresetConfigurationScreen<T extends ConfigurationMenu>
       }
 
       @Override
-      public boolean mouseClicked(double unused1, double unused2, int button) {
-        if (button == 0) {
+      public boolean mouseClicked(MouseButtonEvent mouseButtonEvent, boolean doubleClick) {
+        if (mouseButtonEvent.button() == 0) {
           this.select();
           return true;
         } else {

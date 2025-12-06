@@ -19,8 +19,6 @@
 
 package de.markusbordihn.easynpc.configui;
 
-import cpw.mods.modlauncher.Launcher;
-import cpw.mods.modlauncher.api.IEnvironment;
 import de.markusbordihn.easynpc.configui.debug.DebugManager;
 import de.markusbordihn.easynpc.configui.item.ModItems;
 import de.markusbordihn.easynpc.configui.menu.MenuHandler;
@@ -31,10 +29,10 @@ import de.markusbordihn.easynpc.configui.network.NetworkHandler;
 import de.markusbordihn.easynpc.configui.network.NetworkHandlerManager;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.network.NetworkHandlerManagerType;
-import java.util.Optional;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.fml.loading.FMLPaths;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import org.apache.logging.log4j.LogManager;
@@ -49,11 +47,7 @@ public class ConfigUIMain {
     log.info("Initializing {} (NeoForge) ...", Constants.MOD_NAME);
 
     log.info("{} Debug Manager ...", Constants.LOG_REGISTER_PREFIX);
-    Optional<String> version =
-        Launcher.INSTANCE.environment().getProperty(IEnvironment.Keys.VERSION.get());
-    if (version.isPresent() && "MOD_DEV".equals(version.get())) {
-      DebugManager.setDevelopmentEnvironment(true);
-    }
+    DebugManager.setDevelopmentEnvironment(!FMLEnvironment.isProduction());
     DebugManager.checkForDebugLogging(Constants.LOG_NAME);
 
     log.info("{} Constants ...", Constants.LOG_REGISTER_PREFIX);

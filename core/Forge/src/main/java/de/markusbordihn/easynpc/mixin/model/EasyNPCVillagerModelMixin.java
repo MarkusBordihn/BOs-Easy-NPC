@@ -48,7 +48,7 @@ public class EasyNPCVillagerModelMixin<T extends VillagerRenderState> {
   private void easyNpcModel(ModelPart modelPart, CallbackInfo callbackInfo) {
     this.easyNPC$modelManager =
         new EasyNPCModelManager(modelPart)
-            .defineModelPart(ModelPartType.HAT, "hat")
+            .defineModelPart(ModelPartType.HAT, this.head.getChild("hat"))
             .defineModelPart(ModelPartType.HEAD, this.head)
             .defineModelPart(ModelPartType.BODY, "body")
             .defineModelPart(ModelPartType.ARMS, this.arms)

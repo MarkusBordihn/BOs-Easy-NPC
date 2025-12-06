@@ -27,6 +27,7 @@ import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.menu.EasyNPCMenu;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.input.KeyEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -81,12 +82,12 @@ public class ConfigurationContainerScreen<T extends EasyNPCMenu> extends Contain
   }
 
   @Override
-  public boolean keyPressed(int keyCode, int unused1, int unused2) {
+  public boolean keyPressed(KeyEvent keyEvent) {
     // Capture ALT + left arrow key to navigate back to main screen
-    if (keyCode == 263 && hasAltDown()) {
+    if (keyEvent.key() == 263 && keyEvent.hasAltDown()) {
       showMainScreen();
       return true;
     }
-    return super.keyPressed(keyCode, unused1, unused2);
+    return super.keyPressed(keyEvent);
   }
 }

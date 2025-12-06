@@ -33,6 +33,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ObjectSelectionList;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 
 public class ActionDataListEntry extends ObjectSelectionList.Entry<ActionDataListEntry> {
@@ -51,6 +52,7 @@ public class ActionDataListEntry extends ObjectSelectionList.Entry<ActionDataLis
   private final EditButton editButton;
   private final DeleteButton deleteButton;
   private final UpDownButton upAndDownButton;
+  private int entryIndex = 0;
 
   public ActionDataListEntry(
       Minecraft minecraft,
@@ -114,32 +116,30 @@ public class ActionDataListEntry extends ObjectSelectionList.Entry<ActionDataLis
             });
   }
 
+  public void setEntryIndex(int index) {
+    this.entryIndex = index;
+  }
+
   @Override
   public Component getNarration() {
     return TextComponent.getText(this.actionDataType.name() + ":" + this.actionDataEntry.command());
   }
 
   @Override
-  public boolean mouseClicked(double mouseX, double mouseY, int button) {
-    super.mouseClicked(mouseX, mouseY, button);
-    this.upAndDownButton.mouseClicked(mouseX, mouseY, button);
-    this.editButton.mouseClicked(mouseX, mouseY, button);
-    this.deleteButton.mouseClicked(mouseX, mouseY, button);
-    return button == 0;
+  public boolean mouseClicked(MouseButtonEvent mouseButtonEvent, boolean doubleClick) {
+    super.mouseClicked(mouseButtonEvent, doubleClick);
+    this.upAndDownButton.mouseClicked(mouseButtonEvent, doubleClick);
+    this.editButton.mouseClicked(mouseButtonEvent, doubleClick);
+    this.deleteButton.mouseClicked(mouseButtonEvent, doubleClick);
+    return mouseButtonEvent.button() == 0;
   }
 
   @Override
-  public void render(
-      GuiGraphics guiGraphics,
-      int entryId,
-      int top,
-      int left,
-      int entryWidth,
-      int entryHeight,
-      int mouseX,
-      int mouseY,
-      boolean isSelected,
-      float partialTicks) {
+  public void renderContent(
+      GuiGraphics guiGraphics, int mouseX, int mouseY, boolean isHovered, float partialTicks) {
+
+    int top = this.getY();
+    int entryHeight = this.getHeight();
 
     // Draw separator line
     guiGraphics.fill(
@@ -151,7 +151,7 @@ public class ActionDataListEntry extends ObjectSelectionList.Entry<ActionDataLis
     Text.drawString(
         guiGraphics,
         this.font,
-        String.valueOf(entryId),
+        String.valueOf(this.entryIndex),
         fieldsLeft + ID_LEFT_POS + 2,
         top + 5,
         Constants.FONT_COLOR_BLACK);
@@ -188,8 +188,8 @@ public class ActionDataListEntry extends ObjectSelectionList.Entry<ActionDataLis
     // Up and down buttons
     this.upAndDownButton.render(guiGraphics, mouseX, mouseY, partialTicks);
     this.upAndDownButton.setY(top);
-    this.upAndDownButton.enableUpButton(entryId > 0);
-    this.upAndDownButton.enableDownButton(entryId < this.actionDateEntriesSize - 1);
+    this.upAndDownButton.enableUpButton(this.entryIndex > 0);
+    this.upAndDownButton.enableDownButton(this.entryIndex < this.actionDateEntriesSize - 1);
 
     // Edit and delete buttons
     this.editButton.render(guiGraphics, mouseX, mouseY, partialTicks);

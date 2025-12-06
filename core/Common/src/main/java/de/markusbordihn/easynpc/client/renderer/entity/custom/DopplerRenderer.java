@@ -102,7 +102,7 @@ public class DopplerRenderer
 
         // Create render state AFTER copying data
         LivingEntityRenderState livingEntityRenderState =
-            livingEntityRenderer.createRenderState(customEntity, 0);
+            livingEntityRenderer.createRenderState(customEntity, 1.0F);
         if (livingEntityRenderState instanceof EasyNPCRenderStateExtension extension) {
           extension.setEasyNpcUUID(easyNPC.getEntityUUID());
         }
@@ -125,7 +125,7 @@ public class DopplerRenderer
     EntityRenderer<Entity, EntityRenderState> entityRenderer =
         (EntityRenderer<Entity, EntityRenderState>)
             RendererManager.getEntityRenderer(renderEntityType, customEntity);
-    EntityRenderState entityRenderState = entityRenderer.createRenderState(customEntity, 0);
+    EntityRenderState entityRenderState = entityRenderer.createRenderState(customEntity, 1.0F);
     if (entityRenderState instanceof EasyNPCRenderStateExtension extension) {
       extension.setEasyNpcUUID(easyNPC.getEntityUUID());
     }

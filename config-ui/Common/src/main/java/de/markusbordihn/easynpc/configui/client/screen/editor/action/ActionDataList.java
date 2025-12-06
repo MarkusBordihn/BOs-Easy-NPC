@@ -49,8 +49,9 @@ class ActionDataList extends ObjectSelectionList<ActionDataListEntry> {
     // Add entries
     int topPos = top + 4;
     if (actionDataSet != null) {
+      int index = 0;
       for (ActionDataEntry actionDataEntry : actionDataSet.getEntries()) {
-        this.addEntry(
+        ActionDataListEntry entry =
             new ActionDataListEntry(
                 minecraft,
                 actionDataEntry,
@@ -60,14 +61,16 @@ class ActionDataList extends ObjectSelectionList<ActionDataListEntry> {
                 onUp,
                 onDown,
                 onEdit,
-                onRemove));
+                onRemove);
+        entry.setEntryIndex(index);
+        this.addEntry(entry);
+        index++;
       }
     }
   }
 
   @Override
-  protected void renderSelection(
-      GuiGraphics guiGraphics, int unused1, int unused2, int unused3, int unused4, int unused5) {
+  protected void renderSelection(GuiGraphics guiGraphics, ActionDataListEntry entry, int color) {
     // Do not render selection.
   }
 

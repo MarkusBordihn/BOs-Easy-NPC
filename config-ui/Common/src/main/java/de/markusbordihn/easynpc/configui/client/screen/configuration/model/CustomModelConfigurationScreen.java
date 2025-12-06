@@ -38,6 +38,7 @@ import java.util.Locale;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -105,14 +106,14 @@ public class CustomModelConfigurationScreen<T extends ConfigurationMenu>
   }
 
   @Override
-  public boolean mouseClicked(double mouseX, double mouseY, int button) {
+  public boolean mouseClicked(MouseButtonEvent mouseButtonEvent, boolean doubleClick) {
     // Make sure we pass the mouse click to the dynamically added buttons, if any.
     if (!customModelButtons.isEmpty()) {
       for (Button skinButton : customModelButtons) {
-        skinButton.mouseClicked(mouseX, mouseY, button);
+        skinButton.mouseClicked(mouseButtonEvent, doubleClick);
       }
     }
-    return super.mouseClicked(mouseX, mouseY, button);
+    return super.mouseClicked(mouseButtonEvent, doubleClick);
   }
 
   private void defineSkinNavigationButtons(

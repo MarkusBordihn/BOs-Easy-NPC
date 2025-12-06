@@ -36,6 +36,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -193,7 +194,9 @@ public class AdvancedDialogConfigurationScreen<T extends ConfigurationMenu>
 
     @Override
     protected void renderSelection(
-        GuiGraphics guiGraphics, int unused1, int unused2, int unused3, int unused4, int unused5) {
+        GuiGraphics guiGraphics,
+        AdvancedDialogConfigurationScreen<?>.DialogList.Entry entry,
+        int color) {
       // Do not render selection.
     }
 
@@ -255,26 +258,20 @@ public class AdvancedDialogConfigurationScreen<T extends ConfigurationMenu>
       }
 
       @Override
-      public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        super.mouseClicked(mouseX, mouseY, button);
-        this.copyLabelButton.mouseClicked(mouseX, mouseY, button);
-        this.editButton.mouseClicked(mouseX, mouseY, button);
-        this.textEditButton.mouseClicked(mouseX, mouseY, button);
-        return button == 0;
+      public boolean mouseClicked(MouseButtonEvent mouseButtonEvent, boolean doubleClick) {
+        super.mouseClicked(mouseButtonEvent, doubleClick);
+        this.copyLabelButton.mouseClicked(mouseButtonEvent, doubleClick);
+        this.editButton.mouseClicked(mouseButtonEvent, doubleClick);
+        this.textEditButton.mouseClicked(mouseButtonEvent, doubleClick);
+        return mouseButtonEvent.button() == 0;
       }
 
       @Override
-      public void render(
-          GuiGraphics guiGraphics,
-          int entryId,
-          int top,
-          int left,
-          int entryWidth,
-          int entryHeight,
-          int mouseX,
-          int mouseY,
-          boolean isSelected,
-          float partialTicks) {
+      public void renderContent(
+          GuiGraphics guiGraphics, int mouseX, int mouseY, boolean isHovered, float partialTicks) {
+
+        int top = this.getY();
+        int left = this.getX();
 
         // Position
         int leftPos = left - 75;

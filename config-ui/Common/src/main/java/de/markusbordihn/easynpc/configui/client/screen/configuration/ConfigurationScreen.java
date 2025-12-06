@@ -34,6 +34,7 @@ import java.util.Collections;
 import java.util.List;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.input.KeyEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Inventory;
@@ -120,13 +121,13 @@ public class ConfigurationScreen<T extends EasyNPCMenu> extends Screen<T> {
   }
 
   @Override
-  public boolean keyPressed(int keyCode, int unused1, int unused2) {
+  public boolean keyPressed(KeyEvent keyEvent) {
     // Capture ALT + left arrow key to navigate back to main screen
-    if (keyCode == 263 && hasAltDown()) {
+    if (keyEvent.key() == 263 && keyEvent.hasAltDown()) {
       showMainScreen();
       return true;
     }
-    return super.keyPressed(keyCode, unused1, unused2);
+    return super.keyPressed(keyEvent);
   }
 
   protected boolean supportsConfigurationType(ConfigurationType configurationType) {

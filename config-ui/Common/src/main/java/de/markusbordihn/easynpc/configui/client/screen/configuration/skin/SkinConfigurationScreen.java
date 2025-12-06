@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -187,14 +188,14 @@ public class SkinConfigurationScreen<T extends ConfigurationMenu> extends Config
   }
 
   @Override
-  public boolean mouseClicked(double mouseX, double mouseY, int button) {
+  public boolean mouseClicked(MouseButtonEvent mouseButtonEvent, boolean doubleClick) {
     // Make sure we pass the mouse click to the dynamically added buttons, if any.
     if (!skinButtons.isEmpty()) {
       for (Button skinButton : skinButtons) {
-        skinButton.mouseClicked(mouseX, mouseY, button);
+        skinButton.mouseClicked(mouseButtonEvent, doubleClick);
       }
     }
-    return super.mouseClicked(mouseX, mouseY, button);
+    return super.mouseClicked(mouseButtonEvent, doubleClick);
   }
 
   protected void defineSkinNavigationButtons() {

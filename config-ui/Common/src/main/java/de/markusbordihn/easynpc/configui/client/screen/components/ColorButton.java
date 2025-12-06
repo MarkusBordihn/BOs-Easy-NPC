@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.configui.client.screen.components;
 
 import de.markusbordihn.easynpc.client.screen.components.CustomButton;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.world.item.DyeColor;
 
 public class ColorButton extends CustomButton {
@@ -38,13 +39,13 @@ public class ColorButton extends CustomButton {
   }
 
   @Override
-  public void onClick(double x, double y) {
+  public void onClick(MouseButtonEvent mouseButtonEvent, boolean doubleClick) {
     int colorIndex = this.color.getId() + 1;
     if (colorIndex >= DyeColor.values().length) {
       colorIndex = 0;
     }
     this.color = DyeColor.byId(colorIndex);
-    super.onClick(x, y);
+    super.onClick(mouseButtonEvent, doubleClick);
   }
 
   @Override
