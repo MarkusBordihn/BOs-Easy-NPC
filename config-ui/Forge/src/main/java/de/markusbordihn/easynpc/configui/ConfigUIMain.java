@@ -21,16 +21,22 @@ package de.markusbordihn.easynpc.configui;
 
 import cpw.mods.modlauncher.Launcher;
 import cpw.mods.modlauncher.api.IEnvironment;
+import de.markusbordihn.easynpc.configui.commands.manager.CommandManager;
 import de.markusbordihn.easynpc.configui.debug.DebugManager;
 import de.markusbordihn.easynpc.configui.item.ModItems;
 import de.markusbordihn.easynpc.configui.menu.MenuHandler;
 import de.markusbordihn.easynpc.configui.menu.MenuManager;
 import de.markusbordihn.easynpc.configui.menu.ModMenuTypes;
 import de.markusbordihn.easynpc.configui.network.ClientNetworkMessageHandler;
+import de.markusbordihn.easynpc.configui.network.NetworkHandler;
+import de.markusbordihn.easynpc.configui.network.NetworkHandlerManager;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.network.NetworkHandlerManagerType;
 import java.util.Optional;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.bus.BusGroup;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
 import org.apache.logging.log4j.LogManager;
@@ -69,5 +75,21 @@ public class ConfigUIMain {
 
     log.info("{} Network Handler ...", Constants.LOG_REGISTER_PREFIX);
     NetworkMessageHandlerManager.registerClientHandler(new ClientNetworkMessageHandler());
+
+    FMLCommonSetupEvent.getBus(modBusGroup).addListener(this::commonSetup);
+
+    RegisterCommandsEvent.BUS.addListener(this::registerCommands);
+  }
+
+  private void commonSetup(final FMLCommonSetupEvent event) {
+    event.enqueueWork(
+        () -> {
+          NetworkHandlerManager.registerHandler(new NetworkHandler());
+          NetworkHandlerManager.registerNetworkMessages(NetworkHandlerManagerType.BOTH);
+        });
+  }
+
+  private void registerCommands(final RegisterCommandsEvent event) {
+    CommandManager.registerCommands(event.getDispatcher());
   }
 }

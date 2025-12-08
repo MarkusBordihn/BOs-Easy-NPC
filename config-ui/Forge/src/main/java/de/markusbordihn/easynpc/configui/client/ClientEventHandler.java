@@ -30,7 +30,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
+@EventBusSubscriber(modid = Constants.MOD_ID, value = Dist.CLIENT)
 public class ClientEventHandler {
 
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
@@ -39,13 +39,11 @@ public class ClientEventHandler {
   public static void onClientSetup(FMLClientSetupEvent event) {
     log.info("Initializing {} (Forge-Client) ...", Constants.MOD_NAME);
 
+    ClientScreens.registerScreens(event);
+
     event.enqueueWork(
         () -> {
-          // Set up networking
           NetworkMessageHandlerManager.registerServerHandler(new ServerNetworkMessageHandler());
-
-          // Register screens
-          ClientScreens.registerScreens(event);
         });
   }
 }

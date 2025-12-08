@@ -34,6 +34,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.registries.RegistryObject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -48,22 +49,25 @@ public class EntityRenderer {
 
     // Raw entities (for modding only)
     for (ModRawEntityRenderer renderer : ModRawEntityRenderer.values()) {
-      event.registerEntityRenderer(
-          ModEntityType.getEntityType(renderer.getEntityType()),
+      registerEntityRendererSafe(
+          event,
+          ModEntityType.RAW_TYPE.get(renderer.getEntityType()),
           context -> renderer.getRenderer().apply(context));
     }
 
     // Pre-defined NPCs
     for (ModNPCEntityRenderer renderer : ModNPCEntityRenderer.values()) {
-      event.registerEntityRenderer(
-          ModEntityType.getEntityType(renderer.getEntityType()),
+      registerEntityRendererSafe(
+          event,
+          ModEntityType.NPC_TYPE.get(renderer.getEntityType()),
           context -> renderer.getRenderer().apply(context));
     }
 
     // Custom NPCs
     for (ModCustomEntityRenderer renderer : ModCustomEntityRenderer.values()) {
-      event.registerEntityRenderer(
-          ModEntityType.getEntityType(renderer.getEntityType()),
+      registerEntityRendererSafe(
+          event,
+          ModEntityType.CUSTOM_TYPE.get(renderer.getEntityType()),
           context -> renderer.getRenderer().apply(context));
     }
 
@@ -81,10 +85,27 @@ public class EntityRenderer {
     // Register Epic Fight mod entity renderers
     if (CompatConstants.MOD_EPIC_FIGHT_LOADED) {
       for (ModEpicFightEntityRenderer renderer : ModEpicFightEntityRenderer.values()) {
-        event.registerEntityRenderer(
-            ModEntityType.getEntityType(renderer.getEntityType()),
+        registerEntityRendererSafe(
+            event,
+            ModEntityType.EPIC_FIGHT_TYPE.get(renderer.getEntityType()),
             context -> renderer.getRenderer().apply(context));
       }
+    }
+  }
+
+  @SuppressWarnings({"unchecked"})
+  private static <T extends Entity> void registerEntityRendererSafe(
+      EntityRenderersEvent.RegisterRenderers event,
+      RegistryObject<EntityType<?>> registryObject,
+      Function<EntityRendererProvider.Context, ?> rendererFactory) {
+    if (registryObject != null && registryObject.isPresent()) {
+      EntityRendererProvider<T> provider =
+          context ->
+              (net.minecraft.client.renderer.entity.EntityRenderer<T, ?>)
+                  rendererFactory.apply(context);
+      event.registerEntityRenderer((EntityType<T>) registryObject.get(), provider);
+    } else {
+      log.warn("Attempted to register renderer for null or absent RegistryObject");
     }
   }
 
@@ -108,19 +129,28 @@ public class EntityRenderer {
 
     // Try to find matching renderer from existing mod renderers
     for (ModRawEntityRenderer renderer : ModRawEntityRenderer.values()) {
-      if (ModEntityType.getEntityType(renderer.getEntityType()) == baseEntityType) {
+      var registryObject = ModEntityType.RAW_TYPE.get(renderer.getEntityType());
+      if (registryObject != null
+          && registryObject.isPresent()
+          && registryObject.get() == baseEntityType) {
         return renderer.getRenderer().apply(context);
       }
     }
 
     for (ModNPCEntityRenderer renderer : ModNPCEntityRenderer.values()) {
-      if (ModEntityType.getEntityType(renderer.getEntityType()) == baseEntityType) {
+      var registryObject = ModEntityType.NPC_TYPE.get(renderer.getEntityType());
+      if (registryObject != null
+          && registryObject.isPresent()
+          && registryObject.get() == baseEntityType) {
         return renderer.getRenderer().apply(context);
       }
     }
 
     for (ModCustomEntityRenderer renderer : ModCustomEntityRenderer.values()) {
-      if (ModEntityType.getEntityType(renderer.getEntityType()) == baseEntityType) {
+      var registryObject = ModEntityType.CUSTOM_TYPE.get(renderer.getEntityType());
+      if (registryObject != null
+          && registryObject.isPresent()
+          && registryObject.get() == baseEntityType) {
         return renderer.getRenderer().apply(context);
       }
     }

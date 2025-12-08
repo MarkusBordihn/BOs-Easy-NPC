@@ -22,12 +22,19 @@ package de.markusbordihn.easynpc;
 import cpw.mods.modlauncher.Launcher;
 import cpw.mods.modlauncher.api.IEnvironment;
 import de.markusbordihn.easynpc.block.ModBlocks;
+import de.markusbordihn.easynpc.client.ClientEvents;
+import de.markusbordihn.easynpc.client.model.ModModelLayer;
+import de.markusbordihn.easynpc.client.renderer.BlockEntityRenderer;
+import de.markusbordihn.easynpc.client.renderer.EntityRenderer;
+import de.markusbordihn.easynpc.client.screen.ClientScreens;
 import de.markusbordihn.easynpc.commands.ModArgumentTypes;
+import de.markusbordihn.easynpc.commands.manager.CommandManager;
 import de.markusbordihn.easynpc.compat.CompatHandler;
 import de.markusbordihn.easynpc.compat.CompatManager;
 import de.markusbordihn.easynpc.component.ModDataComponents;
 import de.markusbordihn.easynpc.config.Config;
 import de.markusbordihn.easynpc.debug.DebugManager;
+import de.markusbordihn.easynpc.entity.LivingEntityEvents;
 import de.markusbordihn.easynpc.entity.ModEntityType;
 import de.markusbordihn.easynpc.io.DataFileHandler;
 import de.markusbordihn.easynpc.item.ModItems;
@@ -35,13 +42,30 @@ import de.markusbordihn.easynpc.menu.MenuHandler;
 import de.markusbordihn.easynpc.menu.MenuManager;
 import de.markusbordihn.easynpc.menu.ModMenuTypes;
 import de.markusbordihn.easynpc.network.ClientNetworkMessageHandler;
+import de.markusbordihn.easynpc.network.NetworkHandler;
+import de.markusbordihn.easynpc.network.NetworkHandlerManager;
+import de.markusbordihn.easynpc.network.NetworkHandlerManagerType;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.network.ServerNetworkMessageHandler;
 import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
+import de.markusbordihn.easynpc.server.ServerEvents;
 import de.markusbordihn.easynpc.tabs.ModTabs;
 import java.util.Optional;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
+import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
+import net.minecraftforge.event.entity.EntityJoinLevelEvent;
+import net.minecraftforge.event.entity.EntityLeaveLevelEvent;
+import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.bus.BusGroup;
+import net.minecraftforge.eventbus.api.listener.Priority;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.fml.loading.FMLPaths;
@@ -111,5 +135,96 @@ public class EasyNPCMain {
 
     log.info("{} Creative Tabs ...", Constants.LOG_REGISTER_PREFIX);
     ModTabs.CREATIVE_TABS.register(modBusGroup);
+
+    // Register MOD bus events
+    FMLCommonSetupEvent.getBus(modBusGroup).addListener(this::commonSetup);
+    EntityAttributeCreationEvent.BUS.addListener(
+        ModEntityType::entityAttributeCreation);
+
+    // Register CLIENT MOD bus events (only on client side)
+    if (FMLEnvironment.dist == Dist.CLIENT) {
+      registerClientEvents(modBusGroup);
+    }
+
+    // Register GAME bus events
+    RegisterCommandsEvent.BUS.addListener(this::registerCommands);
+    ServerStartingEvent.BUS.addListener(this::onServerStarting);
+    TickEvent.ServerTickEvent.Post.BUS.addListener(this::onServerTick);
+    EntityJoinLevelEvent.BUS.addListener(Priority.HIGHEST, this::onEntityJoinLevel);
+    EntityLeaveLevelEvent.BUS.addListener(Priority.HIGHEST, this::onEntityLeaveLevel);
+
+    // Register CLIENT GAME bus events (only on client side)
+    if (FMLEnvironment.dist == Dist.CLIENT) {
+      registerClientGameEvents();
+    }
+  }
+
+  private void registerClientEvents(final BusGroup modBusGroup) {
+    log.info("{} Client MOD bus events ...", Constants.LOG_REGISTER_PREFIX);
+    FMLClientSetupEvent.getBus(modBusGroup).addListener(this::onClientSetup);
+    EntityRenderersEvent.RegisterRenderers.BUS.addListener(this::onRegisterRenderers);
+    EntityRenderersEvent.RegisterLayerDefinitions.BUS.addListener(this::onRegisterLayerDefinitions);
+  }
+
+  private void registerClientGameEvents() {
+    log.info("{} Client GAME bus events ...", Constants.LOG_REGISTER_PREFIX);
+    net.minecraftforge.client.event.ClientPlayerNetworkEvent.LoggingOut.BUS.addListener(
+        this::onPlayerLoggedOut);
+  }
+
+  private void commonSetup(final FMLCommonSetupEvent event) {
+    event.enqueueWork(
+        () -> {
+          NetworkHandlerManager.registerHandler(new NetworkHandler());
+          NetworkHandlerManager.registerNetworkMessages(NetworkHandlerManagerType.BOTH);
+        });
+  }
+
+  private void onClientSetup(final FMLClientSetupEvent event) {
+    ClientScreens.registerScreens(event);
+
+    event.enqueueWork(
+        () -> {
+          ClientEvents.handleClientStartedEvent(net.minecraft.client.Minecraft.getInstance());
+          NetworkMessageHandlerManager.registerServerHandler(new ServerNetworkMessageHandler());
+        });
+  }
+
+  private void onRegisterRenderers(final EntityRenderersEvent.RegisterRenderers event) {
+    EntityRenderer.register(event);
+    BlockEntityRenderer.register(event);
+  }
+
+  private void onRegisterLayerDefinitions(
+      final EntityRenderersEvent.RegisterLayerDefinitions event) {
+    ModModelLayer.registerEntityLayerDefinitions(event);
+  }
+
+  private void onPlayerLoggedOut(final ClientPlayerNetworkEvent.LoggingOut event) {
+    ClientEvents.handleWorldUnloadEvent();
+  }
+
+  private void registerCommands(final RegisterCommandsEvent event) {
+    CommandManager.registerCommands(event.getDispatcher(), event.getBuildContext());
+  }
+
+  private void onServerStarting(final ServerStartingEvent event) {
+    ServerEvents.handleServerStarting(event.getServer());
+  }
+
+  private void onServerTick(final TickEvent.ServerTickEvent event) {
+    ServerEvents.handleServerTick(event.server());
+  }
+
+  private void onEntityJoinLevel(final EntityJoinLevelEvent event) {
+    if (event.getEntity() instanceof LivingEntity livingEntity) {
+      LivingEntityEvents.handleLivingEntityJoinEvent(livingEntity);
+    }
+  }
+
+  private void onEntityLeaveLevel(final EntityLeaveLevelEvent event) {
+    if (event.getEntity() instanceof LivingEntity livingEntity) {
+      LivingEntityEvents.handleLivingEntityLeaveEvent(livingEntity);
+    }
   }
 }

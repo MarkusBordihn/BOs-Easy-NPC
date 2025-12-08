@@ -29,16 +29,12 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
-import net.minecraftforge.eventbus.api.listener.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ModEntityType {
 
   public static final DeferredRegister<EntityType<?>> ENTITY_TYPES =
@@ -144,7 +140,6 @@ public class ModEntityType {
     return (EntityType<T>) USER_DEFINED_TYPE.get(id).get();
   }
 
-  @SubscribeEvent
   public static void entityAttributeCreation(EntityAttributeCreationEvent event) {
 
     // Raw entities (for modding only)
@@ -286,7 +281,7 @@ public class ModEntityType {
         try {
           event.put(
               (EntityType<? extends LivingEntity>) entityType,
-              net.minecraft.world.entity.LivingEntity.createLivingAttributes().build());
+              LivingEntity.createLivingAttributes().build());
           log.warn(
               "Applied emergency fallback attributes for user-defined entity {} due to error",
               type.getId());
