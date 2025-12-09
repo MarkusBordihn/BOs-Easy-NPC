@@ -8,6 +8,15 @@ For the full changelog, please go to the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 6.1.1
+
+- Fixed #612 by re-validating entity types.
+- Fixed #610 by force sync of hat and head layers for specific models.
+- Fixed orc textures.
+- Improved custom model support and performance, by moving related logic into to client side only.
+- Improved caching of player to UUID mappings for player skins.
+- Limited change model commands and logic to Doppler NPCs only.
+
 ### 6.1.0 ✨
 
 This is a major release. Please back up your worlds and NPC data before updating.

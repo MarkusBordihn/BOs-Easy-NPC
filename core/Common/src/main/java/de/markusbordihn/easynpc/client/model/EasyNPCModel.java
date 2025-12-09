@@ -153,6 +153,15 @@ public class EasyNPCModel {
     return true;
   }
 
+  public static void setupAnimationEnd(
+      final EasyNPCRenderStateExtension extension, final EasyNPCModelManager modelManager) {
+    if (extension == null || modelManager == null) {
+      return;
+    }
+
+    setupArmPoses(extension, modelManager);
+  }
+
   public static void setupArmPoses(
       final EasyNPCRenderStateExtension extension, final EasyNPCModelManager modelManager) {
 

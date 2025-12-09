@@ -29,11 +29,11 @@ public class ClientEventHandler {
   private ClientEventHandler() {}
 
   public static void registerClientEvents() {
-    ClientLifecycleEvents.CLIENT_STARTED.register(ClientEventHandler::registerClientStarted);
+    ClientLifecycleEvents.CLIENT_STARTED.register(ClientEventHandler::onClientStarted);
     ClientPlayConnectionEvents.DISCONNECT.register(ClientEventHandler::onDisconnect);
   }
 
-  public static void registerClientStarted(Minecraft client) {
+  public static void onClientStarted(Minecraft client) {
     ClientEvents.handleClientStartedEvent(client);
   }
 
