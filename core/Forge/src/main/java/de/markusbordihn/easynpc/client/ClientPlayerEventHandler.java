@@ -17,11 +17,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.mixin.model;
+package de.markusbordihn.easynpc.client;
 
-import net.minecraft.client.model.PlayerModel;
-import net.minecraft.client.renderer.entity.state.PlayerRenderState;
-import org.spongepowered.asm.mixin.Mixin;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
-@Mixin(PlayerModel.class)
-public class EasyNPCPlayerModelMixin<T extends PlayerRenderState> {}
+@EventBusSubscriber(value = Dist.CLIENT)
+public class ClientPlayerEventHandler {
+
+  @SubscribeEvent
+  public static void onPlayerLoggedOut(ClientPlayerNetworkEvent.LoggingOut event) {
+    ClientEvents.handleWorldUnloadEvent();
+  }
+}

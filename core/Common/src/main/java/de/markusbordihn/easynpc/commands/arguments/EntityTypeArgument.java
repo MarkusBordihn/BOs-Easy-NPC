@@ -70,7 +70,7 @@ public class EntityTypeArgument implements ArgumentType<EntityType<? extends Ent
   public <S> CompletableFuture<Suggestions> listSuggestions(
       final CommandContext<S> context, final SuggestionsBuilder suggestionsBuilder) {
     Set<String> knownEntityTypes =
-        EntityTypeManager.getSupportedEntityTypes().stream()
+        EntityTypeManager.getUnknownAndSupportedEntityTypes().stream()
             .map(entityType -> BuiltInRegistries.ENTITY_TYPE.getKey(entityType).toString())
             .collect(Collectors.toSet());
     return SharedSuggestionProvider.suggest(knownEntityTypes, suggestionsBuilder);

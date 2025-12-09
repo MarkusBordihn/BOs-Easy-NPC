@@ -8,6 +8,10 @@ For the full changelog, please go to the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 6.1.1
+
+- Added Entity Type Validator to avoid issues with displaying custom models.
+
 ### 6.1.0 ✨
 
 This is a major release. Please back up your worlds and NPC data before updating.

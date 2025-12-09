@@ -63,7 +63,7 @@ public class EasyNPCWolfModelMixin<T extends WolfRenderState> {
       method = "setupAnim(Lnet/minecraft/client/renderer/entity/state/WolfRenderState;)V",
       at = @At("HEAD"),
       cancellable = true)
-  private void setupNpcAnim(T renderState, CallbackInfo callbackInfo) {
+  private void setupNpcAnimStart(T renderState, CallbackInfo callbackInfo) {
     if (renderState instanceof EasyNPCRenderStateExtension extension
         && EasyNPCModel.setupAnimationStart(extension, this.easyNPC$modelManager)) {
       callbackInfo.cancel();

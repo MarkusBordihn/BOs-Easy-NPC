@@ -72,7 +72,7 @@ public class EasyNPCHumanoidModelMixin<T extends HumanoidRenderState> {
       method = "setupAnim(Lnet/minecraft/client/renderer/entity/state/HumanoidRenderState;)V",
       at = @At("HEAD"),
       cancellable = true)
-  private void setupNpcAnim(T renderState, CallbackInfo callbackInfo) {
+  private void setupNpcAnimStart(T renderState, CallbackInfo callbackInfo) {
     if (renderState instanceof EasyNPCRenderStateExtension extension
         && EasyNPCModel.setupAnimationStart(extension, this.easyNPC$modelManager)) {
       callbackInfo.cancel();
@@ -82,9 +82,9 @@ public class EasyNPCHumanoidModelMixin<T extends HumanoidRenderState> {
   @Inject(
       method = "setupAnim(Lnet/minecraft/client/renderer/entity/state/HumanoidRenderState;)V",
       at = @At("TAIL"))
-  private void setupArmPoses(T renderState, CallbackInfo callbackInfo) {
+  private void setupNpcAnimEnd(T renderState, CallbackInfo callbackInfo) {
     if (renderState instanceof EasyNPCRenderStateExtension extension) {
-      EasyNPCModel.setupArmPoses(extension, this.easyNPC$modelManager);
+      EasyNPCModel.setupAnimationEnd(extension, this.easyNPC$modelManager);
     }
   }
 }
