@@ -54,46 +54,39 @@ public class PlayersUtils {
 
   protected PlayersUtils() {}
 
-  public static Optional<GameProfile> getGameProfile(MinecraftServer server, String username) {
-    if (server == null || username == null || username.isEmpty()) {
-      return Optional.empty();
-    }
-    final GameProfileCache gameProfileCache = server.getProfileCache();
-    return gameProfileCache.get(username);
-  }
-
   public static UUID getUserUUID(MinecraftServer server, String username) {
-    // Check if username is already a valid UUID.
-    UUID uuid = getUUIDfromString(username);
-    if (uuid != null) {
-      return uuid;
-    }
-
-    return PlayersUtils.getGameProfile(server, username)
-        .map(GameProfile::getId)
-        .map(UUID::toString)
-        .map(PlayersUtils::getUUIDfromString)
-        .orElse(null);
-  }
-
-  public static UUID getUUIDfromString(String uuidString) {
-    try {
-      return UUID.fromString(uuidString);
-    } catch (IllegalArgumentException exception) {
-      // Ignore the case where string is not valid UUID
-    }
-    return null;
-  }
-
-  public static UUID getUserUUID(String username) {
     if (username == null || username.isEmpty() || !NameValidator.isValidPlayerName(username)) {
       log.error("Unable to get user UUID with invalid username: {}", username);
       return null;
     }
 
+    UUID uuid = getUUIDfromString(username);
+    if (uuid != null) {
+      return uuid;
+    }
+
+    if (server != null) {
+      try {
+        GameProfileCache gameProfileCache = server.getProfileCache();
+        Optional<GameProfile> optionalGameProfile = gameProfileCache.get(username);
+        if (optionalGameProfile.isPresent()) {
+          UUID serverUUID = optionalGameProfile.get().getId();
+          log.debug("Found user {} with UUID {} from server cache", username, serverUUID);
+          userUUIDCache.put(username, serverUUID);
+          return serverUUID;
+        }
+      } catch (Exception e) {
+        log.debug("Unable to get UUID from server cache for {}: {}", username, e.getMessage());
+      }
+    }
+
     // Check cache for already known or failed usernames.
     if (userUUIDCache.containsKey(username)) {
-      return userUUIDCache.get(username);
+      UUID cachedUUID = userUUIDCache.get(username);
+      if (cachedUUID != null) {
+        log.debug("Found user {} with UUID {} from local cache", username, cachedUUID);
+      }
+      return cachedUUID;
     }
 
     // Get user UUID over API.
@@ -106,6 +99,7 @@ public class PlayersUtils {
       // Verify UUID string
       if (uuidString == null || uuidString.isEmpty()) {
         log.error("Unable to get user UUID with invalid response: {}", json);
+        userUUIDCache.put(username, null);
         return null;
       }
 
@@ -113,37 +107,45 @@ public class PlayersUtils {
       String formattedUUID =
           uuidString.replaceFirst("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})", "$1-$2-$3-$4-$5");
       UUID userUUID = UUID.fromString(formattedUUID);
-      log.debug("Found user {} with UUID {} ...", username, userUUID);
+      log.debug("Found user {} with UUID {} from online API", username, userUUID);
       userUUIDCache.put(username, userUUID);
       return userUUID;
     } catch (IOException e) {
-      log.error("Unable to get UUID from user {}:", username, e);
+      log.error("Unable to get UUID from user {}: {}", username, e.getMessage());
       userUUIDCache.put(username, null);
       return null;
     }
   }
 
+  public static UUID getUUIDfromString(String uuidString) {
+    try {
+      return UUID.fromString(uuidString);
+    } catch (IllegalArgumentException exception) {
+      return null;
+    }
+  }
+
+  public static UUID getUserUUID(String username) {
+    return getUserUUID(null, username);
+  }
+
   public static String getUserTexture(UUID userUUID) {
-    // Simple reload protected to avoid spamming the session server.
+    // Simple reload protected to avoid spawning to the session server.
     if (lastUserUUIDForUserTexture != null && lastUserUUIDForUserTexture.equals(userUUID)) {
-      log.debug("Ignoring duplicated user texture request for {}!", userUUID);
+      log.error("Ignore duplicated user texture request for {}!", userUUID);
       return null;
     }
     lastUserUUIDForUserTexture = userUUID;
 
     // Create sessions request and parse result, if any.
     String sessionURL = String.format(SESSION_PROFILE_URL, userUUID);
-    log.debug("Requesting player skin from session URL: {}", sessionURL);
     try {
       String data = IOUtils.toString(new URL(sessionURL), StandardCharsets.UTF_8);
       if (data == null || data.isEmpty()) {
         log.error("Unable to get user texture with {}", sessionURL);
         return null;
       }
-      log.debug("Received session response data for {}: {}", userUUID, data);
-      String textureUrl = getUserTextureFromSessionResponse(data);
-      log.debug("Parsed texture URL for {}: {}", userUUID, textureUrl);
-      return textureUrl;
+      return getUserTextureFromSessionResponse(data);
     } catch (IOException ioException) {
       log.error("Unable to get user texture with {}:", sessionURL, ioException);
       return null;

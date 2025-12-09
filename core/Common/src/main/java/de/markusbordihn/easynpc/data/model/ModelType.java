@@ -83,7 +83,8 @@ public enum ModelType {
           ModelPartType.RIGHT_ARM,
           ModelPartType.LEFT_ARM,
           ModelPartType.RIGHT_LEG,
-          ModelPartType.LEFT_LEG)),
+          ModelPartType.LEFT_LEG),
+      true),
   HUMANOID(
       EnumSet.of(
           ModelPartType.HEAD,
@@ -91,7 +92,8 @@ public enum ModelType {
           ModelPartType.RIGHT_ARM,
           ModelPartType.LEFT_ARM,
           ModelPartType.RIGHT_LEG,
-          ModelPartType.LEFT_LEG)),
+          ModelPartType.LEFT_LEG),
+      true),
   ILLAGER(
       EnumSet.of(
           ModelPartType.HEAD,
@@ -100,7 +102,8 @@ public enum ModelType {
           ModelPartType.RIGHT_ARM,
           ModelPartType.LEFT_ARM,
           ModelPartType.RIGHT_LEG,
-          ModelPartType.LEFT_LEG)),
+          ModelPartType.LEFT_LEG),
+      true),
   PIXIE(
       EnumSet.of(
           ModelPartType.HEAD,
@@ -132,14 +135,21 @@ public enum ModelType {
           ModelPartType.RIGHT_ARM,
           ModelPartType.LEFT_ARM,
           ModelPartType.RIGHT_LEG,
-          ModelPartType.LEFT_LEG));
+          ModelPartType.LEFT_LEG),
+      true);
 
   private static final int PRIMARY_LIMIT = 6;
 
   private final Set<ModelPartType> modelParts;
+  private final boolean requiresHatSync;
 
   ModelType(Set<ModelPartType> modelParts) {
+    this(modelParts, false);
+  }
+
+  ModelType(Set<ModelPartType> modelParts, boolean requiresHatSync) {
     this.modelParts = modelParts;
+    this.requiresHatSync = requiresHatSync;
   }
 
   public Set<ModelPartType> getModelParts() {
@@ -153,5 +163,9 @@ public enum ModelType {
           .collect(Collectors.toCollection(() -> EnumSet.noneOf(ModelPartType.class)));
     }
     return modelParts;
+  }
+
+  public boolean requiresHatSync() {
+    return this.requiresHatSync;
   }
 }

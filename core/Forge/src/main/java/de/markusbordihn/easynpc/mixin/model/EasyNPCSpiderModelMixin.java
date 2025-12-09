@@ -65,7 +65,7 @@ public class EasyNPCSpiderModelMixin<T extends Entity> {
       method = "setupAnim(Lnet/minecraft/world/entity/Entity;FFFFF)V",
       at = @At("HEAD"),
       cancellable = true)
-  private void setupNpcAnim(
+  private void setupNpcAnimStart(
       T entity,
       float limbSwing,
       float limbSwingAmount,

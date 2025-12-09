@@ -19,17 +19,16 @@
 
 package de.markusbordihn.easynpc.client;
 
-import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
-@EventBusSubscriber(value = Dist.CLIENT, bus = EventBusSubscriber.Bus.MOD)
-public class ClientEventHandler {
+@EventBusSubscriber(value = Dist.CLIENT)
+public class ClientPlayerEventHandler {
 
   @SubscribeEvent
-  public static void onClientSetup(FMLClientSetupEvent event) {
-    event.enqueueWork(() -> ClientEvents.handleClientStartedEvent(Minecraft.getInstance()));
+  public static void onPlayerLoggedOut(ClientPlayerNetworkEvent.LoggingOut event) {
+    ClientEvents.handleWorldUnloadEvent();
   }
 }

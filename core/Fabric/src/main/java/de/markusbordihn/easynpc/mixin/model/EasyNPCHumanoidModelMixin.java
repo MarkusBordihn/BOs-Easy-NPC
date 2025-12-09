@@ -72,7 +72,7 @@ public class EasyNPCHumanoidModelMixin<T extends LivingEntity> {
       method = "setupAnim(Lnet/minecraft/world/entity/LivingEntity;FFFFF)V",
       at = @At("HEAD"),
       cancellable = true)
-  private void setupNpcAnim(
+  private void setupNpcAnimStart(
       T livingEntity,
       float limbSwing,
       float limbSwingAmount,
@@ -87,7 +87,7 @@ public class EasyNPCHumanoidModelMixin<T extends LivingEntity> {
   }
 
   @Inject(method = "setupAnim(Lnet/minecraft/world/entity/LivingEntity;FFFFF)V", at = @At("TAIL"))
-  private void setupArmPoses(
+  private void setupNpcAnimEnd(
       T livingEntity,
       float limbSwing,
       float limbSwingAmount,
@@ -96,7 +96,7 @@ public class EasyNPCHumanoidModelMixin<T extends LivingEntity> {
       float headPitch,
       CallbackInfo callbackInfo) {
     if (livingEntity instanceof EasyNPC<?> easyNPC) {
-      EasyNPCModel.setupArmPoses(easyNPC, this.easyNPC$modelManager);
+      EasyNPCModel.setupAnimationEnd(easyNPC, this.easyNPC$modelManager);
     }
   }
 }

@@ -25,6 +25,7 @@ import de.markusbordihn.easynpc.client.screen.components.SkinSelectionButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.configui.Constants;
+import de.markusbordihn.easynpc.configui.client.renderer.manager.EntityTypeValidator;
 import de.markusbordihn.easynpc.configui.client.renderer.screen.EntityConfigScreenRenderer;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
@@ -84,6 +85,8 @@ public class CustomModelConfigurationScreen<T extends ConfigurationMenu>
             new SearchField(
                 this.font, this.contentLeftPos + 100, this.contentTopPos + 190, 100, 14));
     modelSearchField.setResponder(this::onSearchFieldChanged);
+
+    EntityTypeValidator.validateUnknownEntityTypes(this.minecraftInstance.level);
   }
 
   @Override
@@ -204,7 +207,7 @@ public class CustomModelConfigurationScreen<T extends ConfigurationMenu>
   protected void updateTick() {
     super.updateTick();
 
-    EntityTypeManager.updateUnknownEntityType(this.minecraftInstance.level);
+    EntityTypeValidator.validateUnknownEntityTypes(this.minecraftInstance.level);
   }
 
   private void renderCustomModels(GuiGraphics guiGraphics) {
@@ -216,7 +219,6 @@ public class CustomModelConfigurationScreen<T extends ConfigurationMenu>
     int skinPosition = 0;
     customModelButtons = new ArrayList<>();
 
-    // Get all supported and unknown entity types.
     List<EntityType<? extends Entity>> entityKeys =
         EntityTypeManager.getUnknownAndSupportedEntityTypes();
     if (this.searchFilter != null && !this.searchFilter.isEmpty()) {
@@ -230,24 +232,20 @@ public class CustomModelConfigurationScreen<T extends ConfigurationMenu>
     }
     this.numOfEntities = entityKeys.size();
 
-    // Check Skin buttons state, if number of skins changed.
     if (this.lastNumOfSkins != this.numOfEntities) {
       checkSkinNavigationButtonState();
       this.lastNumOfSkins = this.numOfEntities;
     }
 
-    // Render custom entity models for the current page.
     for (int index = skinStartIndex;
         index < this.numOfEntities && index < skinStartIndex + MAX_SKINS_PER_PAGE;
         index++) {
       int left = this.leftPos + 32 + (skinPosition * SKIN_PREVIEW_WIDTH);
       int top = this.topPos + 65 + positionTop;
 
-      // Render Skins
       EntityType<? extends Entity> entityType = entityKeys.get(index);
       this.renderCustomModelEntity(guiGraphics, left, top, entityType);
 
-      // Render skin name
       int topNamePos = Math.round((top - 76f) / SKIN_NAME_SCALING);
       int leftNamePos = Math.round((left - 21f) / SKIN_NAME_SCALING);
       guiGraphics.pose().pushPose();
@@ -276,7 +274,6 @@ public class CustomModelConfigurationScreen<T extends ConfigurationMenu>
 
   private void renderCustomModelEntity(
       GuiGraphics guiGraphics, int x, int y, EntityType<? extends Entity> entityType) {
-    // Create dynamically button for each skin variant.
     Button customModelButton =
         new SkinSelectionButton(
             x - 24,
@@ -285,13 +282,11 @@ public class CustomModelConfigurationScreen<T extends ConfigurationMenu>
                 NetworkMessageHandlerManager.getServerHandler()
                     .setRenderEntityType(this.getEasyNPCUUID(), entityType));
 
-    // Disable button for active skin.
     RenderDataCapable<?> renderData = this.getEasyNPC().getEasyNPCRenderData();
     RenderDataSet renderDataSet = renderData.getRenderDataSet();
     EntityType<?> currentEntityType = renderDataSet.getRenderEntityType();
     customModelButton.active = currentEntityType == null || !(currentEntityType.equals(entityType));
 
-    // Render skin entity with variant and profession.
     EntityConfigScreenRenderer.renderEntity(
         guiGraphics,
         this.getEasyNPC(),
@@ -329,5 +324,10 @@ public class CustomModelConfigurationScreen<T extends ConfigurationMenu>
     } else {
       this.searchFilter = "";
     }
+  }
+
+  @Override
+  public void onClose() {
+    super.onClose();
   }
 }

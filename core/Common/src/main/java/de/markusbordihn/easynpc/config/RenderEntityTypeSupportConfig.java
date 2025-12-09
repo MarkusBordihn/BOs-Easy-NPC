@@ -1128,7 +1128,26 @@ Render Entity Type Support Configuration
 
   public static void registerConfig() {
     registerConfigFile(CONFIG_FILE_NAME, CONFIG_FILE_HEADER);
+    initializeDefaultEntityTypes();
+    log.info(
+        "Initialized {} supported and {} unsupported entity types from defaults.",
+        supportedEntityTypes.size(),
+        unsupportedEntityTypes.size());
     parseConfigFile();
+    log.info(
+        "After config parsing: {} supported and {} unsupported entity types.",
+        supportedEntityTypes.size(),
+        unsupportedEntityTypes.size());
+  }
+
+  private static void initializeDefaultEntityTypes() {
+    // Initialize with known supported entity types
+    supportedEntityTypes.addAll(knownSupportedEntityTypes);
+    supportedEntityTypes.addAll(knownSupportedThirdPartyEntityTypes);
+
+    // Initialize with known unsupported entity types
+    unsupportedEntityTypes.addAll(knownUnsupportedEntityTypes);
+    unsupportedEntityTypes.addAll(knownUnsupportedThirdPartyEntityTypes);
   }
 
   public static void parseConfigFile() {
@@ -1136,7 +1155,7 @@ Render Entity Type Support Configuration
     Properties properties = readConfigFile(configFile);
     Properties unmodifiedProperties = (Properties) properties.clone();
 
-    // Parse known entity types and add them to the supported or unsupported list.
+    // Parse known entity types and update them based on configuration overrides.
     for (Set<String> entityTypes :
         List.of(
             knownUnsupportedEntityTypes,
@@ -1147,10 +1166,14 @@ Render Entity Type Support Configuration
           entityTypes == knownSupportedEntityTypes
               || entityTypes == knownSupportedThirdPartyEntityTypes;
       for (String entityType : entityTypes) {
-        if (parseConfigValue(properties, entityType, defaultValue)) {
-          addSupportedEntityType(entityType);
-        } else {
-          addUnsupportedEntityType(entityType);
+        boolean configuredValue = parseConfigValue(properties, entityType, defaultValue);
+        if (configuredValue != defaultValue) {
+          // Only update if configuration differs from default
+          if (configuredValue) {
+            addSupportedEntityType(entityType);
+          } else {
+            addUnsupportedEntityType(entityType);
+          }
         }
       }
     }
@@ -1192,6 +1215,14 @@ Render Entity Type Support Configuration
 
   public static boolean isUnsupportedEntityType(String entityType) {
     return unsupportedEntityTypes.contains(entityType);
+  }
+
+  public static Set<String> getSupportedEntityTypes() {
+    return new HashSet<>(supportedEntityTypes);
+  }
+
+  public static Set<String> getUnsupportedEntityTypes() {
+    return new HashSet<>(unsupportedEntityTypes);
   }
 
   private static boolean isKnownEntityType(String entityType) {
