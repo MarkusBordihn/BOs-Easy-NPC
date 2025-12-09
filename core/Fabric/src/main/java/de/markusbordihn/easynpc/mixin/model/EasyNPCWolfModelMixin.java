@@ -63,7 +63,7 @@ public class EasyNPCWolfModelMixin<T extends Wolf> {
       method = "setupAnim(Lnet/minecraft/world/entity/animal/Wolf;FFFFF)V",
       at = @At("HEAD"),
       cancellable = true)
-  private void setupNpcAnim(
+  private void setupNpcAnimStart(
       T entity,
       float limbSwing,
       float limbSwingAmount,

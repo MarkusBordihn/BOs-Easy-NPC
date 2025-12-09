@@ -51,57 +51,74 @@ public class EntityTypeManager {
       new ConcurrentHashMap<>();
   private static final Map<EntityType<? extends Entity>, String> entityTypeNameMap =
       new ConcurrentHashMap<>();
+  private static boolean isRegistered = false;
 
   private EntityTypeManager() {}
 
   public static void register() {
-    log.info("{} Register Entity Type Manager ...", Constants.LOG_REGISTER_PREFIX);
+    if (isRegistered) {
+      log.warn("{} Already registered, skipping.", LOG_PREFIX);
+      return;
+    }
 
-    // Add known supported entity types and exclude unsupported entity types.
-    BuiltInRegistries.ENTITY_TYPE.forEach(
-        entityType -> {
-          if (entityType == null) {
-            return;
-          }
+    log.info("{} Registering Entity Type Manager ...", Constants.LOG_REGISTER_PREFIX);
+    Set<String> configuredSupportedTypes = RenderEntityTypeSupportConfig.getSupportedEntityTypes();
+    Set<String> configuredUnsupportedTypes =
+        RenderEntityTypeSupportConfig.getUnsupportedEntityTypes();
+    if (configuredSupportedTypes.isEmpty() && configuredUnsupportedTypes.isEmpty()) {
+      log.error("{} Config appears to be empty! This may cause autocomplete issues.", LOG_PREFIX);
+    } else {
+      log.info(
+          "{} Config loaded with {} supported and {} unsupported entity types.",
+          LOG_PREFIX,
+          configuredSupportedTypes.size(),
+          configuredUnsupportedTypes.size());
+    }
 
-          // Exclude our own entity types and other unsupported entity types.
-          String entityTypeLocation = BuiltInRegistries.ENTITY_TYPE.getKey(entityType).toString();
-          if (entityTypeLocation.startsWith(Constants.MOD_ID)
-              || entityTypeLocation.startsWith("mythicmounts:")
-              || entityTypeLocation.endsWith("_arrow")
-              || entityTypeLocation.endsWith("_projectile")
-              || entityTypeLocation.endsWith("_thrown")
-              || entityTypeLocation.endsWith("_ball")
-              || entityTypeLocation.endsWith("_bullet")
-              || entityTypeLocation.endsWith("_fireball")
-              || entityTypeLocation.endsWith("_boat")
-              || entityTypeLocation.endsWith("_part")
-              || entityTypeLocation.endsWith("effect")
-              || entityTypeLocation.contains(":projectile")
-              || entityTypeLocation.contains("_attack")
-              || entityTypeLocation.contains("multi_part")
-              || entityTypeLocation.contains("effect_")
-              || entityTypeLocation.contains("flash_")
-              || entityTypeLocation.contains(":spell_")) {
-            return;
-          }
-          entityTypeNameMap.put(entityType, entityTypeLocation);
+    for (EntityType<?> entityType : BuiltInRegistries.ENTITY_TYPE) {
+      if (entityType == null) {
+        continue;
+      }
 
-          // Check if configuration covers the entity type to avoid expensive testing.
-          if (RenderEntityTypeSupportConfig.isSupportedEntityType(entityTypeLocation)) {
-            addSupportedEntityType(entityType);
-          } else if (RenderEntityTypeSupportConfig.isUnsupportedEntityType(entityTypeLocation)) {
-            addUnsupportedEntityType(entityType);
-          } else {
-            addUnknownEntityType(entityType);
-          }
-        });
+      String entityTypeLocation = BuiltInRegistries.ENTITY_TYPE.getKey(entityType).toString();
+      if (entityTypeLocation.startsWith(Constants.MOD_ID)
+          || entityTypeLocation.startsWith("mythicmounts:")
+          || entityTypeLocation.endsWith("_arrow")
+          || entityTypeLocation.endsWith("_projectile")
+          || entityTypeLocation.endsWith("_thrown")
+          || entityTypeLocation.endsWith("_ball")
+          || entityTypeLocation.endsWith("_bullet")
+          || entityTypeLocation.endsWith("_fireball")
+          || entityTypeLocation.endsWith("_boat")
+          || entityTypeLocation.endsWith("_part")
+          || entityTypeLocation.endsWith("effect")
+          || entityTypeLocation.contains(":projectile")
+          || entityTypeLocation.contains("_attack")
+          || entityTypeLocation.contains("multi_part")
+          || entityTypeLocation.contains("effect_")
+          || entityTypeLocation.contains("flash_")
+          || entityTypeLocation.contains(":spell_")) {
+        continue;
+      }
+
+      entityTypeNameMap.put(entityType, entityTypeLocation);
+
+      if (configuredSupportedTypes.contains(entityTypeLocation)) {
+        addSupportedEntityType(entityType);
+      } else if (configuredUnsupportedTypes.contains(entityTypeLocation)) {
+        addUnsupportedEntityType(entityType);
+      } else {
+        addUnknownEntityType(entityType);
+      }
+    }
 
     log.info(
         LOG_PREFIX + " Found {} supported, {} unsupported and {} unknown entity types.",
         supportedEntityTypes.size(),
         unsupportedEntityTypes.size(),
         unknownEntityTypes.size());
+
+    isRegistered = true;
   }
 
   public static void addSupportedEntityType(EntityType<?> entityType) {
@@ -165,22 +182,6 @@ public class EntityTypeManager {
     return scaleFactor;
   }
 
-  public static void updateUnknownEntityType(Level level) {
-    // Process unknown entity but only one of a time to avoid performance issues.
-    if (unknownEntityTypes.isEmpty()) {
-      return;
-    }
-
-    EntityType<? extends Entity> entityType = unknownEntityTypes.iterator().next();
-    if (entityType != null) {
-      checkEntityType(entityType, level);
-    }
-  }
-
-  public static boolean checkEntityType(EntityType<?> entityType, Level level) {
-    return getPathfinderMob(entityType, level) != null;
-  }
-
   public static PathfinderMob getPathfinderMob(EntityType<?> entityType, Level level) {
     if (entityType == null) {
       return null;
@@ -190,7 +191,6 @@ public class EntityTypeManager {
     PathfinderMob pathfinderMob = pathfinderMobMap.get(entityType);
     if (pathfinderMob != null) {
       if (pathfinderMob.isAlive()) {
-        // Update level if it has changed to avoid dimension issues.
         if (pathfinderMob.level() != level) {
           try {
             Field levelField = Entity.class.getDeclaredField("level");

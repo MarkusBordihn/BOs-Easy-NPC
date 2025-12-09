@@ -103,6 +103,15 @@ public class EasyNPCModel {
     }
   }
 
+  public static void setupAnimationEnd(
+      final EasyNPC<?> easyNPC, final EasyNPCModelManager modelManager) {
+    if (easyNPC == null || modelManager == null) {
+      return;
+    }
+
+    setupArmPoses(easyNPC, modelManager);
+  }
+
   public static void setupArmPoses(
       final EasyNPC<?> easyNPC, final EasyNPCModelManager modelManager) {
     if (easyNPC == null || modelManager == null) {
