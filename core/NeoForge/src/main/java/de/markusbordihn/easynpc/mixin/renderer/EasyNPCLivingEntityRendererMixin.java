@@ -50,7 +50,10 @@ public class EasyNPCLivingEntityRendererMixin {
 
       // Extract and cache the texture in the render state
       EasyNPCLivingEntityRenderer.extractAndCacheTexture(
-          easyNPC, renderStateExtension, (LivingEntityRenderer<?, ?, ?>) (Object) this);
+          easyNPC,
+          renderStateExtension,
+          renderState,
+          (LivingEntityRenderer<?, ?, ?>) (Object) this);
     }
   }
 
