@@ -25,8 +25,10 @@ import de.markusbordihn.easynpc.commands.Command;
 import de.markusbordihn.easynpc.commands.arguments.EasyNPCArgument;
 import de.markusbordihn.easynpc.commands.arguments.EntityTypeArgument;
 import de.markusbordihn.easynpc.commands.suggestion.RenderTypeSuggestions;
+import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
 import de.markusbordihn.easynpc.data.render.RenderType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.data.ConfigurationDataCapable;
 import de.markusbordihn.easynpc.handler.RenderHandler;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -62,7 +64,7 @@ public class RenderCommand extends Command {
                                                         StringArgumentType.getString(
                                                             context, TYPE_ARG)))))))
                 .then(
-                    Commands.literal("entity")
+                    Commands.literal("model")
                         .requires(
                             commandSourceStack ->
                                 commandSourceStack.hasPermission(Commands.LEVEL_ALL))
@@ -101,7 +103,13 @@ public class RenderCommand extends Command {
       return 0;
     }
 
-    // Set render entity.
+    if (!isDopplerNPC(easyNPC)) {
+      return sendFailureMessage(
+          context,
+          "Custom models can only be set on Doppler NPCs. Current NPC type: "
+              + easyNPC.getEntity().getType().getDescriptionId());
+    }
+
     if (!RenderHandler.setRenderEntity(easyNPC, entityType)) {
       return sendFailureMessage(
           context, "Failed to set render entity " + entityType + " for EasyNPC " + easyNPC);
@@ -110,5 +118,10 @@ public class RenderCommand extends Command {
     return sendSuccessMessage(
         context,
         "Set render entity " + entityType + " for EasyNPC with UUID " + easyNPC.getEntityUUID());
+  }
+
+  private static boolean isDopplerNPC(EasyNPC<?> easyNPC) {
+    return easyNPC instanceof ConfigurationDataCapable<?> configurable
+        && configurable.getConfigurationData() == ConfigurationData.DOPPLER;
   }
 }

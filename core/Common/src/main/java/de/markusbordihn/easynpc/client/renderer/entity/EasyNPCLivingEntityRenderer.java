@@ -97,6 +97,7 @@ public class EasyNPCLivingEntityRenderer {
   public static void extractAndCacheTexture(
       EasyNPC<?> easyNPC,
       EasyNPCRenderStateExtension renderStateExtension,
+      LivingEntityRenderState renderState,
       LivingEntityRenderer<?, ?, ?> renderer) {
     if (renderer instanceof EasyNPCEntityRenderer easyNPCRenderer) {
       ResourceLocation defaultTexture = easyNPCRenderer.getDefaultTexture();

@@ -63,8 +63,8 @@ subprojects {
   }
 }
 
-tasks.register('runAllGameTests') {
+tasks.register('allGameTests') {
   group = 'verification'
-  description = 'Runs both Fabric and Forge game tests.'
+  description = 'Runs Fabric, Forge and NeoForge game tests.'
   dependsOn ':Fabric:runGameTest', ':Forge:runGameTestServer', ':NeoForge:runGameTestServer'
 }
