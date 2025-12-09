@@ -17,28 +17,43 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.mixin;
+package de.markusbordihn.easynpc.configui.client.renderer.manager;
 
+import de.markusbordihn.easynpc.client.renderer.manager.EntityTypeManager;
+import java.util.ArrayList;
+import java.util.Set;
 import net.minecraft.world.entity.Entity;
-import net.neoforged.neoforge.common.CommonHooks;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.level.Level;
 
-@Mixin(value = CommonHooks.class, remap = false)
-public class CommonHooksMixin {
+public class EntityTypeValidator {
 
-  @Inject(
-      method = "verifyEntityDataAccessorRegistration",
-      at = @At("HEAD"),
-      cancellable = true,
-      remap = false)
-  private static void disableEntityDataVerification(
-      Class<? extends Entity> entityClass, Class<?> callingClass, CallbackInfo ci) {
-    if (entityClass != null
-        && entityClass.getName().startsWith("de.markusbordihn.easynpc.entity.easynpc")) {
-      ci.cancel();
+  private static final int DEFAULT_BATCH_SIZE = 20;
+
+  private EntityTypeValidator() {}
+
+  public static void validateUnknownEntityTypes(Level level) {
+    validateUnknownEntityTypes(level, DEFAULT_BATCH_SIZE);
+  }
+
+  public static void validateUnknownEntityTypes(Level level, int batchSize) {
+    Set<EntityType<? extends Entity>> unknownEntityTypes =
+        EntityTypeManager.getUnknownEntityTypes();
+
+    if (unknownEntityTypes.isEmpty()) {
+      return;
+    }
+
+    int processed = 0;
+    for (EntityType<? extends Entity> entityType : new ArrayList<>(unknownEntityTypes)) {
+      if (processed >= batchSize) {
+        break;
+      }
+
+      if (entityType != null) {
+        EntityTypeManager.getPathfinderMob(entityType, level);
+        processed++;
+      }
     }
   }
 }

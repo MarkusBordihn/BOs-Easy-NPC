@@ -1,0 +1,5 @@
+import java.util.Optional;
+import net.minecraft.core.Holder.Reference;
+import net.minecraft.world.entity.animal.CatVariant;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.core.registries.BuiltInRegistries;
