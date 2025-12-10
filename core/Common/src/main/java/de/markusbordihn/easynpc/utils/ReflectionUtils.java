@@ -20,11 +20,34 @@
 package de.markusbordihn.easynpc.utils;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.UUID;
 
 public class ReflectionUtils {
 
   private ReflectionUtils() {}
+
+  public static boolean invokeMethod(
+      Object object, final String[] methodNames, Class<?>[] parameterTypes, Object... args) {
+    for (String methodName : methodNames) {
+      if (invokeMethod(object, methodName, parameterTypes, args)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public static boolean invokeMethod(
+      Object object, final String methodName, Class<?>[] parameterTypes, Object... args) {
+    try {
+      Method method = object.getClass().getDeclaredMethod(methodName, parameterTypes);
+      method.setAccessible(true);
+      method.invoke(object, args);
+      return true;
+    } catch (Exception e) {
+      return false;
+    }
+  }
 
   public static boolean changeIntValueField(
       Object object, final String[] fieldNames, final int value) {
