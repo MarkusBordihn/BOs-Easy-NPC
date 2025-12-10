@@ -10,9 +10,11 @@ Check the [upgrade guide][upgrade_guide] for more information.
 
 ### 6.1.1
 
+- Fixed #615 by checking if item is equipped in one of the hands.
 - Fixed #612 by re-validating entity types.
 - Fixed #610 by force sync of hat and head layers for specific models.
 - Fixed orc textures.
+- Fixed cat variant handling for 1.21.5.
 - Improved custom model support and performance, by moving related logic into to client side only.
 - Improved caching of player to UUID mappings for player skins.
 - Limited change model commands and logic to Doppler NPCs only.
