@@ -1,6 +1,5 @@
 {
   "item.easy_npc_config_ui.easy_npc_wand": "Varita EasyNPC",
-  "itemGroup.easy_npc_config_ui.config_items": "EasyNPC - Configuración",
   "text.easy_npc.actionDataEditor": "Editor de Datos de Acción",
   "text.easy_npc.actionDataEditor.title": "Editor de Datos de Acción para %s",
   "text.easy_npc.actionDataEntryEditor": "Editor de Entrada de Datos de Acción",
@@ -315,13 +314,6 @@
   "text.easy_npc.config.yes_no_dialog": "Sí/No",
   "text.easy_npc.config.yes_no_dialog.title": "Diálogo Sí/No",
   "text.easy_npc.config.zombie_attack": "Ataque de Zombi",
-  "text.easy_npc.container.easy_npc_spawner_entity": "Generador de EasyNPC",
   "text.easy_npc.invalid_remote_image": "¡La imagen remota es inválida o no es accesible!\nPor favor, verifica la URL e inténtalo de nuevo.",
-  "text.easy_npc.item.easy_npc_preset": "► Haz clic derecho en un lugar vacío para generar el NPC.",
-  "text.easy_npc.item.easy_npc_preset_empty": "► Haz clic derecho en un NPC para guardar su configuración como un nuevo preset.",
-  "text.easy_npc.item.easy_npc_preset.custom_name": "Nombre: %s",
-  "text.easy_npc.item.easy_npc_preset.entity_type": "Tipo de Entidad: %s",
-  "text.easy_npc.item.easy_npc_wand": "La varita EasyNPC es una herramienta de configuración para Easy NPCs que permite una selección y configuración más fácil de los NPCs sin tener que apuntar directamente a ellos.",
-  "text.easy_npc.item.move_easy_npc": "Selecciona el EasyNPC con el botón izquierdo del ratón y muévelo con el botón derecho del ratón a la posición objetivo.",
-  "text.easy_npc.not_implemented": "¡Aún no implementado!"
+  "text.easy_npc_config_ui.item.easy_npc_wand": "La varita EasyNPC es una herramienta de configuración para Easy NPCs que permite una selección y configuración más fácil de los NPCs sin tener que apuntar directamente a ellos."
 }

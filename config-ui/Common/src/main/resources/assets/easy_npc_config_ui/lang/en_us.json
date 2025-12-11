@@ -1,6 +1,5 @@
 {
   "item.easy_npc_config_ui.easy_npc_wand": "EasyNPC Wand",
-  "itemGroup.easy_npc_config_ui.config_items": "EasyNPC - Config Items",
   "text.easy_npc.actionDataEditor": "ActionData Editor",
   "text.easy_npc.actionDataEditor.title": "ActionData Editor for %s",
   "text.easy_npc.actionDataEntryEditor": "ActionDataEntry Editor",
@@ -319,13 +318,6 @@
   "text.easy_npc.config.yes_no_dialog": "Yes/No",
   "text.easy_npc.config.yes_no_dialog.title": "Yes/No Dialog",
   "text.easy_npc.config.zombie_attack": "Zombie Attack",
-  "text.easy_npc.container.easy_npc_spawner_entity": "EasyNPC Spawner",
   "text.easy_npc.invalid_remote_image": "The remote image is invalid or not accessible!\nPleas check the URL and try again.",
-  "text.easy_npc.item.easy_npc_preset": "► Right click on empty place to spawn the NPC.",
-  "text.easy_npc.item.easy_npc_preset_empty": "► Right click on an NPC to save their settings as a new preset.",
-  "text.easy_npc.item.easy_npc_preset.custom_name": "Name: %s",
-  "text.easy_npc.item.easy_npc_preset.entity_type": "Entity Type: %s",
-  "text.easy_npc.item.easy_npc_wand": "The EasyNPC wand is a configuration tool for Easy NPCs that allows for easier selection and configuration of NPCs without having to directly target them.",
-  "text.easy_npc.item.move_easy_npc": "Select the EasyNPC with the right mouse button and move it with the left mouse button to the targeted position.",
-  "text.easy_npc.not_implemented": "Not implemented yet!"
+  "text.easy_npc_config_ui.item.easy_npc_wand": "The EasyNPC wand is a configuration tool for Easy NPCs that allows for easier selection and configuration of NPCs without having to directly target them."
 }
