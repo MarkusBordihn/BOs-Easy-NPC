@@ -181,7 +181,7 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T> {
                     .executeDialogButtonAction(
                         this.getEasyNPCUUID(), this.getDialogUUID(), buttonId);
               } else {
-                this.closeScreen();
+                this.onClose();
               }
             });
 
