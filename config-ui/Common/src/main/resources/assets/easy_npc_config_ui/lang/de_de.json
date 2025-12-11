@@ -1,7 +1,5 @@
 {
   "item.easy_npc_config_ui.easy_npc_wand": "EasyNPC Stab",
-  "itemGroup.easy_npc_config_ui.config_items": "EasyNPC - Konfigurationswerkzeuge",
-  "text.easy_npc_config_ui.item.easy_npc_wand": "Der Easy NPC-Zauberstab ist ein Konfigurationswerkzeug für EasyNPCs, das eine einfachere Auswahl und Konfiguration von NPCs ermöglicht, ohne dass sie direkt ausgewählt werden müssen.",
   "text.easy_npc.actionDataEditor": "ActionData Editor",
   "text.easy_npc.actionDataEditor.title": "ActionData Editor für %s",
   "text.easy_npc.actionDataEntryEditor": "ActionDataEntry Editor",
@@ -320,12 +318,6 @@
   "text.easy_npc.config.yes_no_dialog": "Ja/Nein",
   "text.easy_npc.config.yes_no_dialog.title": "Ja/Nein Dialog",
   "text.easy_npc.config.zombie_attack": "Zombie Angriff",
-  "text.easy_npc.container.easy_npc_spawner_entity": "EasyNPC Spawner",
   "text.easy_npc.invalid_remote_image": "Das entfernte Bild ist ungültig oder nicht zugänglich!\nBitte überprüfen Sie die URL und versuchen Sie es erneut.",
-  "text.easy_npc.item.easy_npc_preset": "► Rechtsklick auf leere Stelle, um den NPC zu spawnen.",
-  "text.easy_npc.item.easy_npc_preset_empty": "► Rechtsklick auf einen NPC, um dessen Einstellungen als neue Voreinstellung zu speichern.",
-  "text.easy_npc.item.easy_npc_preset.custom_name": "Name: %s",
-  "text.easy_npc.item.easy_npc_preset.entity_type": "Entitätstyp: %s",
-  "text.easy_npc.item.move_easy_npc": "Wählen den EasyNPC mit der rechten Maustaste aus und bewegen Ihn mit der linken Maustaste an die gewünschte Position.",
-  "text.easy_npc.not_implemented": "Noch nicht implementiert!"
+  "text.easy_npc_config_ui.item.easy_npc_wand": "Der Easy NPC-Zauberstab ist ein Konfigurationswerkzeug für EasyNPCs, das eine einfachere Auswahl und Konfiguration von NPCs ermöglicht, ohne dass sie direkt ausgewählt werden müssen."
 }

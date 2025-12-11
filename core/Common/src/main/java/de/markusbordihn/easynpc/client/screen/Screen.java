@@ -63,6 +63,7 @@ public class Screen<T extends EasyNPCMenu> extends net.minecraft.client.gui.scre
   protected int leftPos;
   protected int topPos;
   private int updateTicker = 0;
+  private boolean containerClosed = false;
 
   protected Screen(T menu, Inventory inventory, Component component) {
     this(menu, inventory, component, 318, 243);
@@ -116,13 +117,6 @@ public class Screen<T extends EasyNPCMenu> extends net.minecraft.client.gui.scre
     return false;
   }
 
-  public void closeScreen() {
-    if (this.minecraftInstance != null) {
-      this.minecraftInstance.setScreen(null);
-    }
-    this.onClose();
-  }
-
   @Override
   protected void init() {
     super.init();
@@ -148,7 +142,7 @@ public class Screen<T extends EasyNPCMenu> extends net.minecraft.client.gui.scre
     if (this.showCloseButton) {
       this.closeButton =
           this.addRenderableWidget(
-              new CloseButton(this.rightPos - 15, this.topPos + 4, onPress -> closeScreen()));
+              new CloseButton(this.rightPos - 15, this.topPos + 4, onPress -> onClose()));
     }
   }
 
@@ -210,7 +204,25 @@ public class Screen<T extends EasyNPCMenu> extends net.minecraft.client.gui.scre
   @Override
   public void onClose() {
     resetFormerMousePosition();
+    if (!containerClosed && this.minecraft != null && this.minecraft.player != null) {
+      this.containerClosed = true;
+      this.minecraft.player.closeContainer();
+    }
     super.onClose();
+  }
+
+  @Override
+  public void removed() {
+    if (!containerClosed
+        && this.minecraft != null
+        && this.minecraft.player != null
+        && !isSwitchingToAnotherEasyNPCScreen(this.minecraft.screen)) {
+      resetFormerMousePosition();
+      this.containerClosed = true;
+      this.minecraft.player.closeContainer();
+    }
+
+    super.removed();
   }
 
   @Override

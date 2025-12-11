@@ -1,7 +1,5 @@
 {
   "item.easy_npc_config_ui.easy_npc_wand": "EasyNPC魔杖",
-  "itemGroup.easy_npc_config_ui.config_items": "EasyNPC - 配置工具",
-  "text.easy_npc_config_ui.item.easy_npc_wand": "EasyNPC魔杖是EasyNPC的配置工具，可以更轻松地选择和配置 NPC，而无需直接针对他们.",
   "text.easy_npc.actionDataEditor": "ActionData 编辑器",
   "text.easy_npc.actionDataEditor.title": "ActionData 编辑器 for %s",
   "text.easy_npc.actionDataEntryEditor": "ActionDataEntry Editor",
@@ -318,12 +316,6 @@
   "text.easy_npc.config.yes_no_dialog": "是/否",
   "text.easy_npc.config.yes_no_dialog.title": "Yes/No 对话",
   "text.easy_npc.config.zombie_attack": "执行僵尸攻击模式",
-  "text.easy_npc.container.easy_npc_spawner_entity": "EasyNPC 刷怪笼",
   "text.easy_npc.invalid_remote_image": "远程镜像无效或无法访问!\n请检查 URL，然后重试.",
-  "text.easy_npc.item.easy_npc_preset": "► 右击地面以生成 NPC.",
-  "text.easy_npc.item.easy_npc_preset_empty": "► 右键NPC保存他们的设置作为预设.",
-  "text.easy_npc.item.easy_npc_preset.custom_name": "名称: %s",
-  "text.easy_npc.item.easy_npc_preset.entity_type": "实体类型: %s",
-  "text.easy_npc.item.move_easy_npc": "用左键选择EasyNPC，然后用右键将其移动到目标位置.",
-  "text.easy_npc.not_implemented": "尚未实施!"
+  "text.easy_npc_config_ui.item.easy_npc_wand": "EasyNPC魔杖是EasyNPC的配置工具，可以更轻松地选择和配置 NPC，而无需直接针对他们."
 }
