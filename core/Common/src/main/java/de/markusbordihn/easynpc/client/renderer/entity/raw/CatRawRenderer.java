@@ -25,6 +25,7 @@ import net.minecraft.client.renderer.entity.CatRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.state.CatRenderState;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.animal.Cat;
 
 public class CatRawRenderer extends CatRenderer implements EasyNPCEntityRenderer {
 
@@ -33,6 +34,12 @@ public class CatRawRenderer extends CatRenderer implements EasyNPCEntityRenderer
 
   public CatRawRenderer(EntityRendererProvider.Context context) {
     super(context);
+  }
+
+  @Override
+  public void extractRenderState(Cat cat, CatRenderState renderState, float partialTick) {
+    super.extractRenderState(cat, renderState, partialTick);
+    renderState.texture = this.getTextureLocation(renderState);
   }
 
   @Override

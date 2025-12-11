@@ -458,7 +458,7 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T> {
     }
     super.render(guiGraphics, x, y, partialTicks);
 
-    EntityScreenRenderer.renderEntity(
+    EntityScreenRenderer.renderEntityRaw(
         guiGraphics,
         this.getEasyNPC(),
         EntityRenderConfig.dialog(

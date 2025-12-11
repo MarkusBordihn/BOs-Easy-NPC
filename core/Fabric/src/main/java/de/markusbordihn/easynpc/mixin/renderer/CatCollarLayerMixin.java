@@ -23,7 +23,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCLivingEntityRenderer;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.layers.CatCollarLayer;
 import net.minecraft.client.renderer.entity.state.CatRenderState;
 import org.spongepowered.asm.mixin.Mixin;
@@ -36,12 +36,12 @@ public class CatCollarLayerMixin {
 
   @Inject(
       method =
-          "render(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;ILnet/minecraft/client/renderer/entity/state/CatRenderState;FF)V",
+          "submit(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;ILnet/minecraft/client/renderer/entity/state/CatRenderState;FF)V",
       at = @At("HEAD"),
       cancellable = true)
-  private void onRenderCatCollarLayer(
+  private void onSubmitCatCollarLayer(
       PoseStack poseStack,
-      MultiBufferSource multiBufferSource,
+      SubmitNodeCollector submitNodeCollector,
       int packedLight,
       CatRenderState renderState,
       float yRot,

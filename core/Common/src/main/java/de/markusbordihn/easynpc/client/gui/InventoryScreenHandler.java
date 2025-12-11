@@ -30,8 +30,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.CatRenderer;
 import net.minecraft.client.renderer.entity.HumanoidMobRenderer;
 import net.minecraft.client.renderer.entity.VillagerRenderer;
+import net.minecraft.client.renderer.entity.state.CatRenderState;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.client.renderer.entity.state.VillagerRenderState;
@@ -40,13 +42,23 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.animal.Cat;
 import net.minecraft.world.entity.monster.ZombieVillager;
 import net.minecraft.world.entity.npc.Villager;
-import net.minecraft.world.entity.npc.VillagerData;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
 public class InventoryScreenHandler {
+
+  private static final ThreadLocal<Boolean> BYPASS_MIXIN = ThreadLocal.withInitial(() -> false);
+
+  public static boolean isBypassMixin() {
+    return BYPASS_MIXIN.get();
+  }
+
+  public static void setBypassMixin(boolean bypass) {
+    BYPASS_MIXIN.set(bypass);
+  }
 
   public static boolean onRenderEntityInInventory(
       GuiGraphics guiGraphics,
@@ -60,8 +72,11 @@ public class InventoryScreenHandler {
       Quaternionf entityRotation,
       LivingEntity entity,
       EasyNPC<?> easyNPC) {
+    if (isBypassMixin()) {
+      return false;
+    }
 
-    // Get render data and render custom entity if available.
+    // Get render data and render custom entity if avaible.
     RenderDataCapable<?> renderData = easyNPC.getEasyNPCRenderData();
     if (renderData != null
         && renderData.getRenderDataSet() != null
@@ -178,6 +193,26 @@ public class InventoryScreenHandler {
       return true;
     }
 
+    // Handle cat renderer - create fresh render state to avoid caching issues.
+    if (baseRenderState instanceof CatRenderState && livingEntity instanceof Cat) {
+      CatRenderState customCatRenderState = (CatRenderState) entityRenderer.createRenderState();
+      CatRenderer catRenderer = (CatRenderer) (EntityRenderer<? super Cat, ?>) entityRenderer;
+      catRenderer.extractRenderState((Cat) livingEntity, customCatRenderState, 1.0F);
+      customCatRenderState.texture = catRenderer.getTextureLocation(customCatRenderState);
+      customCatRenderState.hitboxesRenderState = null;
+      guiGraphics.submitEntityRenderState(
+          customCatRenderState,
+          scale,
+          translation,
+          rotation,
+          entityRotation,
+          left,
+          top,
+          right,
+          bottom);
+      return true;
+    }
+
     // Handle villager renderer - create fresh render state to avoid caching issues.
     if (baseRenderState instanceof VillagerRenderState && livingEntity instanceof Villager) {
       VillagerRenderState customVillagerRenderState =
@@ -205,9 +240,8 @@ public class InventoryScreenHandler {
       ZombieVillagerRenderState customZombieVillagerRenderState =
           (ZombieVillagerRenderState) entityRenderer.createRenderState();
       // Override villagerData with current entity data to show correct type and profession
-      VillagerData zombieVillagerData = ((ZombieVillager) livingEntity).getVillagerData();
-      customZombieVillagerRenderState.villagerData = zombieVillagerData;
-
+      customZombieVillagerRenderState.villagerData =
+          ((ZombieVillager) livingEntity).getVillagerData();
       customZombieVillagerRenderState.hitboxesRenderState = null;
       guiGraphics.submitEntityRenderState(
           customZombieVillagerRenderState,
@@ -223,11 +257,10 @@ public class InventoryScreenHandler {
     }
 
     // Handle humanoid mob renderer - create fresh render state to avoid caching issues.
-    if (entityRenderer instanceof HumanoidMobRenderer
+    if (entityRenderer instanceof HumanoidMobRenderer humanoidRenderer
         && baseRenderState instanceof HumanoidRenderState) {
       HumanoidRenderState customHumanoidRenderState =
           (HumanoidRenderState) entityRenderer.createRenderState();
-      HumanoidMobRenderer humanoidRenderer = (HumanoidMobRenderer) entityRenderer;
       humanoidRenderer.extractRenderState(easyNPC.getMob(), customHumanoidRenderState, 1.0F);
       customHumanoidRenderState.hitboxesRenderState = null;
       guiGraphics.submitEntityRenderState(

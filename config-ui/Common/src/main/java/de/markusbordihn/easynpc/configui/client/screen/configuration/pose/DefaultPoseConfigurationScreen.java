@@ -182,7 +182,7 @@ public class DefaultPoseConfigurationScreen<T extends ConfigurationMenu>
     this.getEasyNPCEntity().setInvisible(false);
 
     // Render Entity
-    EntityConfigScreenRenderer.renderEntity(
+    EntityConfigScreenRenderer.renderEntityRaw(
         guiGraphics,
         this.getEasyNPC(),
         EntityRenderConfig.guiScaled(

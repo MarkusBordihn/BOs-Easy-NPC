@@ -55,6 +55,24 @@ public class EntityConfigScreenRenderer extends EntityScreenRenderer {
     restoreConfigState(easyNPC, backupState);
   }
 
+  public static void renderEntityRaw(
+      GuiGraphics guiGraphics,
+      EasyNPC<?> easyNPC,
+      EntityRenderConfig config,
+      float mouseX,
+      float mouseY) {
+    if (easyNPC == null || easyNPC.getLivingEntity() == null) {
+      return;
+    }
+
+    ConfigRenderState backupState = new ConfigRenderState(easyNPC);
+    applyConfigOverrides(easyNPC, config);
+
+    EntityScreenRenderer.renderEntityRaw(guiGraphics, easyNPC, config, mouseX, mouseY);
+
+    restoreConfigState(easyNPC, backupState);
+  }
+
   private static void applyConfigOverrides(EasyNPC<?> easyNPC, EntityRenderConfig config) {
     EntityRenderOverrides overrides = config.overrides();
 
