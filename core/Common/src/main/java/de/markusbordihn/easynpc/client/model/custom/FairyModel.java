@@ -134,5 +134,6 @@ public class FairyModel<S extends HumanoidRenderState> extends HumanoidModel<S> 
     this.leftWing.xRot = Constants.MATH_27DEG_TO_RAD;
     this.rightWing.xRot = Constants.MATH_27DEG_TO_RAD;
     this.rightWing.zRot = Constants.MATH_27DEG_TO_RAD;
+    this.leftLeg.visible = false;
   }
 }

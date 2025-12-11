@@ -123,7 +123,8 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
       return;
     }
 
-    EntityConfigScreenRenderer.renderEntity(
+    // Render Entity
+    EntityConfigScreenRenderer.renderEntityRaw(
         guiGraphics,
         getEasyNPC(),
         EntityRenderConfig.guiScaled(

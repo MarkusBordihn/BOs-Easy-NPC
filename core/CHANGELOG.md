@@ -15,9 +15,14 @@ Check the [upgrade guide][upgrade_guide] for more information.
 - Fixed #610 by force sync of hat and head layers for specific models.
 - Fixed orc textures.
 - Fixed cat variant handling for 1.21.5.
+- Fixed player render by adjusting render state `skin` field.
+- Fixed cat renderer by adjusting render state `texture` field.
+- Fixed position, scaling and rotation preview.
+- Fixed Fairy model.
 - Improved custom model support and performance, by moving related logic into to client side only.
 - Improved caching of player to UUID mappings for player skins.
 - Limited change model commands and logic to Doppler NPCs only.
+- Added renderEntityRaw method to render NPC as-it-is.
 
 ### 6.1.0 ✨
 

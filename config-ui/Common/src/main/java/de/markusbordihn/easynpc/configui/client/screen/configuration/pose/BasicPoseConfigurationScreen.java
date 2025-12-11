@@ -102,7 +102,7 @@ public class BasicPoseConfigurationScreen<T extends ConfigurationMenu>
     super.render(guiGraphics, x, y, partialTicks);
 
     // Avatar
-    EntityConfigScreenRenderer.renderEntity(
+    EntityConfigScreenRenderer.renderEntityRaw(
         guiGraphics,
         this.getEasyNPC(),
         EntityRenderConfig.customPose(

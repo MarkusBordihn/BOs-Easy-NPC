@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.client.renderer.screen;
 
+import de.markusbordihn.easynpc.client.gui.InventoryScreenHandler;
 import de.markusbordihn.easynpc.client.renderer.manager.RendererManager;
 import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.model.ModelPose;
@@ -98,6 +99,24 @@ public class EntityScreenRenderer {
     }
 
     restoreEntityState(easyNPC, backupState);
+  }
+
+  public static void renderEntityRaw(
+      GuiGraphics guiGraphics,
+      EasyNPC<?> easyNPC,
+      EntityRenderConfig config,
+      float mouseX,
+      float mouseY) {
+    if (easyNPC == null || easyNPC.getLivingEntity() == null) {
+      return;
+    }
+
+    try {
+      InventoryScreenHandler.setBypassMixin(true);
+      renderEntity(guiGraphics, easyNPC, config, mouseX, mouseY);
+    } finally {
+      InventoryScreenHandler.setBypassMixin(false);
+    }
   }
 
   protected static void applyRenderModifications(EasyNPC<?> easyNPC, EntityRenderConfig config) {
