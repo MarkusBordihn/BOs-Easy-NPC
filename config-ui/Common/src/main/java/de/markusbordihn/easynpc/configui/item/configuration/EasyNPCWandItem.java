@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.configui.item.configuration;
 
 import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.configui.menu.MenuManager;
+import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPCBase;
 import de.markusbordihn.easynpc.network.components.TextComponent;
@@ -76,10 +77,11 @@ public class EasyNPCWandItem extends Item {
   public void inventoryTick(
       ItemStack itemStack, ServerLevel serverLevel, Entity entity, EquipmentSlot equipmentSlot) {
     if (itemStack.is(this)
-        && entity instanceof Player player
+        && entity instanceof ServerPlayer serverPlayer
+        && !(serverPlayer.containerMenu instanceof ConfigurationMenu)
         && (equipmentSlot == EquipmentSlot.MAINHAND || equipmentSlot == EquipmentSlot.OFFHAND)
         && serverLevel.getGameTime() % 30 == 0) {
-      AABB searchArea = player.getBoundingBox().inflate(HIGHLIGHT_RADIUS);
+      AABB searchArea = serverPlayer.getBoundingBox().inflate(HIGHLIGHT_RADIUS);
       // Find all EasyNPC entities in the search area
       for (PathfinderMob pathfinderMob :
           serverLevel.getEntitiesOfClass(

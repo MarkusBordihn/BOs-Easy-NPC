@@ -21,10 +21,10 @@ package de.markusbordihn.easynpc.configui.tabs;
 
 import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.configui.item.ModItems;
-import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.chat.Component;
+import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -38,13 +38,10 @@ public class ModTabs {
 
     log.info("{} creative mod tabs ...", Constants.LOG_REGISTER_PREFIX);
 
-    Registry.register(
-        BuiltInRegistries.CREATIVE_MODE_TAB,
-        Constants.MOD_ID + ":config_items",
-        FabricItemGroup.builder()
-            .icon(() -> ModItems.EASY_NPC_WAND.asItem().getDefaultInstance())
-            .title(Component.translatable("itemGroup.easy_npc.config_items"))
-            .displayItems(new ConfigItems())
-            .build());
+    ItemGroupEvents.modifyEntriesEvent(
+            ResourceKey.create(
+                Registries.CREATIVE_MODE_TAB,
+                ResourceLocation.fromNamespaceAndPath("easy_npc", "config_items")))
+        .register(entries -> entries.accept(ModItems.EASY_NPC_WAND.asItem().getDefaultInstance()));
   }
 }

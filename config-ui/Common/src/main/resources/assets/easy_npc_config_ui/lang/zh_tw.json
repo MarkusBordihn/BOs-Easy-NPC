@@ -1,7 +1,5 @@
 {
   "item.easy_npc_config_ui.easy_npc_wand": "EasyNPC 魔杖",
-  "itemGroup.easy_npc_config_ui.config_items": "EasyNPC - 設定物品",
-  "text.easy_npc_config_ui.item.easy_npc_wand": "EasyNPC 魔杖是一個用於 EasyNPC 的設定工具，允許你更輕鬆地選擇和設定 NPC，而無需直接對準牠們。",
   "text.easy_npc.actionDataEditor": "動作資料編輯器",
   "text.easy_npc.actionDataEditor.title": "%s 的動作資料編輯器",
   "text.easy_npc.actionDataEntryEditor": "動作資料項目編輯器",
@@ -316,12 +314,6 @@
   "text.easy_npc.config.yes_no_dialog": "是／否",
   "text.easy_npc.config.yes_no_dialog.title": "是／否對話方塊",
   "text.easy_npc.config.zombie_attack": "殭屍攻擊",
-  "text.easy_npc.container.easy_npc_spawner_entity": "EasyNPC 生怪磚",
   "text.easy_npc.invalid_remote_image": "遠端圖片無效或無法存取！\n請檢查網址並重試。",
-  "text.easy_npc.item.easy_npc_preset": "► 右鍵點擊空位以生成 NPC。",
-  "text.easy_npc.item.easy_npc_preset_empty": "► 右鍵點擊 NPC 以將其設定儲存為新的預設。",
-  "text.easy_npc.item.easy_npc_preset.custom_name": "名稱：%s",
-  "text.easy_npc.item.easy_npc_preset.entity_type": "實體類型：%s",
-  "text.easy_npc.item.move_easy_npc": "使用滑鼠右鍵選擇 EasyNPC，然後使用滑鼠左鍵將其移動到目標位置。",
-  "text.easy_npc.not_implemented": "尚未實作！"
+  "text.easy_npc_config_ui.item.easy_npc_wand": "EasyNPC 魔杖是一個用於 EasyNPC 的設定工具，允許你更輕鬆地選擇和設定 NPC，而無需直接對準牠們。"
 }
