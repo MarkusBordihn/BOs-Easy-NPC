@@ -35,6 +35,7 @@ import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ConfigurationDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.OwnerDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
+import de.markusbordihn.easynpc.menu.ClientMenuManager;
 import java.util.UUID;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -145,6 +146,23 @@ public interface ScreenInterface {
 
   default boolean hasDialog() {
     return this.getDialogDataSet().hasDialog();
+  }
+
+  default boolean isSwitchingToAnotherEasyNPCScreen(
+      net.minecraft.client.gui.screens.Screen newScreen) {
+    // If newScreen is this screen or null, check if we have pending screen data.
+    if (newScreen == this || newScreen == null) {
+      ScreenData pendingScreenData = ClientMenuManager.getScreenData();
+      return pendingScreenData != null && this.getEasyNPCUUID().equals(pendingScreenData.uuid());
+    }
+
+    // Check if the new screen is an Easy NPC screen for the same NPC.
+    if (newScreen instanceof ScreenInterface
+        && this.getEasyNPCUUID().equals(((ScreenInterface) newScreen).getEasyNPCUUID())) {
+      return true;
+    }
+
+    return false;
   }
 
   default void renderDefaultScreenBg(GuiGraphics guiGraphics, int leftPos, int topPos) {

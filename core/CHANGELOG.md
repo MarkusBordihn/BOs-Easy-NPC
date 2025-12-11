@@ -8,6 +8,19 @@ For the full changelog, please go to the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 6.1.2
+
+- Fixed container and menu sync issues with missing close container packets.
+- Fixed close button not working in some cases.
+- Fixed jumping mouse cursor between screen transitions.
+- Fixed translation files and removed duplicate and deprecated entries.
+- Moved Easy NPC wand to existing core item tab instead of creating a new one.
+- Added cat pose support for different model parts (except tail).
+- Improved EasyNPCWand glowing effect performance by disabling it when not needed.
+- Improved custom entity detection by excluding non-living entities like displays, makers, throwns
+  and spawners.
+- Improved cat variant handling.
+
 ### 6.1.1
 
 - Fixed #615 by checking if item is equipped in one of the hands.
