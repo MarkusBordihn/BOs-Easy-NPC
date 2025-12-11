@@ -35,7 +35,7 @@ public class ConfigUIClient {
     log.info("Initializing {} (Forge-Client) ...", Constants.MOD_NAME);
 
     modEventBus.addListener(ClientScreens::registerScreens);
+    modEventBus.addListener(ModTabs::handleCreativeModeTabRegister);
     NetworkMessageHandlerManager.registerServerHandler(new ServerNetworkMessageHandler());
-    ModTabs.CREATIVE_TABS.register(modEventBus);
   }
 }

@@ -1,6 +1,5 @@
 {
-  "item._config_ui.easy_npc_wand": "Посох EasyNPC",
-  "itemGroup.easy_npc_config_ui.config_items": "EasyNPC - Настройки",
+  "item.easy_npc_config_ui.easy_npc_wand": "Посох EasyNPC",
   "text.easy_npc.actionDataEditor": "Редактор действий",
   "text.easy_npc.actionDataEditor.title": "Редактор действий для %s",
   "text.easy_npc.actionDataEntryEditor": "Редактор записи действий",
@@ -317,13 +316,6 @@
   "text.easy_npc.config.yes_no_dialog": "Да/Нет",
   "text.easy_npc.config.yes_no_dialog.title": "Диалог Да/Нет",
   "text.easy_npc.config.zombie_attack": "Атака зомби",
-  "text.easy_npc.container.easy_npc_spawner_entity": "Спавнер EasyNPC",
   "text.easy_npc.invalid_remote_image": "Удалённое изображение недействительно или недоступно!\nПожалуйста, проверьте URL и попробуйте снова.",
-  "text.easy_npc.item.easy_npc_preset": "► Щелкните правой кнопкой мыши по пустому месту, чтобы заспаунить NPC.",
-  "text.easy_npc.item.easy_npc_preset_empty": "► Щелкните правой кнопкой мыши по NPC, чтобы сохранить его настройки как новый шаблон.",
-  "text.easy_npc.item.easy_npc_preset.custom_name": "Имя: %s",
-  "text.easy_npc.item.easy_npc_preset.entity_type": "Тип сущности: %s",
-  "text.easy_npc.item.easy_npc_wand": "Посох EasyNPC — это инструмент настройки, который позволяет легче выбирать и настраивать NPC без необходимости их прямого выбора.",
-  "text.easy_npc.item.move_easy_npc": "Выберите EasyNPC правой кнопкой мыши и переместите его левой кнопкой мыши в нужное место.",
-  "text.easy_npc.not_implemented": "Ещё не реализовано!"
+  "text.easy_npc_config_ui.item.easy_npc_wand": "Посох EasyNPC — это инструмент настройки, который позволяет легче выбирать и настраивать NPC без необходимости их прямого выбора."
 }

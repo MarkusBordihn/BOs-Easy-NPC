@@ -4,11 +4,12 @@
   "package": "de.markusbordihn.easynpc.mixin",
   "compatibilityLevel": "JAVA_17",
   "client": [
+    "model.EasyNPCCatModelMixin",
     "model.EasyNPCHumanoidModelMixin",
     "model.EasyNPCSpiderModelMixin",
     "model.EasyNPCVillagerModelMixin",
     "model.EasyNPCWolfModelMixin",
-    "renderer.DrownedOuterLayerMixin",
+    "renderer.CatCollarLayerMixin",
     "renderer.EasyNPCEntityRendererMixin",
     "renderer.EasyNPCLivingEntityRendererMixin",
     "renderer.HumanoidArmorLayerMixin",

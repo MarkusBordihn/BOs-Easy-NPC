@@ -58,8 +58,10 @@ public interface VariantDataCapable<T extends PathfinderMob> extends EasyNPC<T> 
   }
 
   default void setSkinVariantType(Enum<?> variant) {
-    setSynchedEntityData(SynchedDataIndex.VARIANT_TYPE, variant != null ? variant.name() : "");
-    handleSkinVariantTypeChange(variant);
+    if (getSkinVariantType() != variant) {
+      setSynchedEntityData(SynchedDataIndex.VARIANT_TYPE, variant != null ? variant.name() : "");
+      handleSkinVariantTypeChange(variant);
+    }
   }
 
   default void setSkinVariantType(String name) {
