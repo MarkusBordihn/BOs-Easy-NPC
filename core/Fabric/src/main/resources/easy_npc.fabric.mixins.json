@@ -5,18 +5,19 @@
   "compatibilityLevel": "JAVA_21",
   "refmap": "easy_npc.refmap.json",
   "client": [
+    "model.EasyNPCFelineModelMixin",
     "model.EasyNPCHumanoidModelMixin",
     "model.EasyNPCSpiderModelMixin",
     "model.EasyNPCVillagerModelMixin",
     "model.EasyNPCWolfModelMixin",
     "renderer.CatCollarLayerMixin",
     "renderer.DrownedOuterLayerMixin",
+    "renderer.CatCollarLayerMixin",
     "renderer.EasyNPCEntityRendererMixin",
     "renderer.EasyNPCLivingEntityRendererMixin",
     "renderer.HumanoidArmorLayerMixin",
     "renderer.SkeletonClothingLayerMixin",
-    "renderer.VillagerProfessionLayerMixin",
-    "renderer.state.EasyNPCLivingEntityRenderStateMixin"
+    "renderer.VillagerProfessionLayerMixin"
   ],
   "mixins": [
     "entity.CreeperMixin",

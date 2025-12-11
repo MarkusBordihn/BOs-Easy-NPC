@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.configui.item.configuration;
 
 import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.configui.menu.MenuManager;
+import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPCBase;
 import de.markusbordihn.easynpc.network.components.TextComponent;
@@ -30,6 +31,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -74,13 +76,14 @@ public class EasyNPCWandItem extends Item {
       ItemStack itemStack, Level level, Entity entity, int slot, boolean selected) {
     // Only perform highlighting every 30 ticks (1.5 seconds) to reduce server load
     if (selected
-        && entity instanceof Player player
-        && !level.isClientSide
+        && level instanceof ServerLevel serverLevel
+        && entity instanceof ServerPlayer serverPlayer
+        && !(serverPlayer.containerMenu instanceof ConfigurationMenu)
         && level.getGameTime() % 30 == 0) {
-      AABB searchArea = player.getBoundingBox().inflate(HIGHLIGHT_RADIUS);
+      AABB searchArea = serverPlayer.getBoundingBox().inflate(HIGHLIGHT_RADIUS);
       // Find all EasyNPC entities in the search area
       for (PathfinderMob pathfinderMob :
-          level.getEntitiesOfClass(
+          serverLevel.getEntitiesOfClass(
               PathfinderMob.class,
               searchArea,
               mob -> mob.isAlive() && mob instanceof EasyNPCBase<?>)) {
