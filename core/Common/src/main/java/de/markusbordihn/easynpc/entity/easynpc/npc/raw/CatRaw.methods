@@ -12,12 +12,11 @@
           case BRITISH_SHORTHAIR -> CatVariant.BRITISH_SHORTHAIR;
           case CALICO -> CatVariant.CALICO;
           case JELLIE -> CatVariant.JELLIE;
-          case OCELOT -> CatVariant.TABBY;
+          case OCELOT, TABBY -> CatVariant.TABBY;
           case PERSIAN -> CatVariant.PERSIAN;
           case RAGDOLL -> CatVariant.RAGDOLL;
           case RED -> CatVariant.RED;
           case SIAMESE -> CatVariant.SIAMESE;
-          case TABBY -> CatVariant.TABBY;
           case WHITE -> CatVariant.WHITE;
         };
 
