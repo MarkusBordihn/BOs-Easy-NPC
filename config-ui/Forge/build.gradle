@@ -23,7 +23,6 @@ minecraft {
       workingDirectory project.file('run/client')
       property 'forge.logging.markers', 'REGISTRIES'
       property 'forge.logging.console.level', 'debug'
-      property 'forge.enabledGameTestNamespaces', "${project.mod_id}"
 
       mods {
         "${project.mod_id}" {
@@ -46,7 +45,6 @@ minecraft {
       workingDirectory project.file('run/server')
       property 'forge.logging.markers', 'REGISTRIES'
       property 'forge.logging.console.level', 'debug'
-      property 'forge.enabledGameTestNamespaces', "${project.mod_id}"
 
       mods {
         "${project.mod_id}" {
