@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.configui;
 import de.markusbordihn.easynpc.configui.client.screen.ClientScreens;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.configui.network.ServerNetworkMessageHandler;
+import de.markusbordihn.easynpc.configui.tabs.ModTabs;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;

@@ -22,15 +22,19 @@ import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.configui.item.ModItems;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
+import net.minecraftforge.eventbus.api.listener.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
 public class ModTabs {
 
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   protected ModTabs() {}
 
+  @SubscribeEvent
   public static void handleCreativeModeTabRegister(BuildCreativeModeTabContentsEvent event) {
     if (event
         .getTabKey()
