@@ -12,12 +12,12 @@
     "model.EasyNPCWolfModelMixin",
     "renderer.CatCollarLayerMixin",
     "renderer.DrownedOuterLayerMixin",
-    "renderer.CatCollarLayerMixin",
     "renderer.EasyNPCEntityRendererMixin",
     "renderer.EasyNPCLivingEntityRendererMixin",
     "renderer.HumanoidArmorLayerMixin",
     "renderer.SkeletonClothingLayerMixin",
-    "renderer.VillagerProfessionLayerMixin"
+    "renderer.VillagerProfessionLayerMixin",
+    "renderer.state.EasyNPCLivingEntityRenderStateMixin"
   ],
   "mixins": [
     "entity.CreeperMixin",
