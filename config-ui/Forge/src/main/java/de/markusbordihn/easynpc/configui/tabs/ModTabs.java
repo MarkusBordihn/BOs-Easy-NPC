@@ -32,7 +32,10 @@ public class ModTabs {
   protected ModTabs() {}
 
   public static void handleCreativeModeTabRegister(BuildCreativeModeTabContentsEvent event) {
-    if (event.getTabKey().location().equals(new ResourceLocation("easy_npc", "config_items"))) {
+    if (event
+        .getTabKey()
+        .location()
+        .equals(ResourceLocation.fromNamespaceAndPath("easy_npc", "config_items"))) {
       log.info("{} creative mod tabs ...", Constants.LOG_REGISTER_PREFIX);
       event.accept(ModItems.EASY_NPC_WAND.get());
     }

@@ -10,6 +10,7 @@
     "model.EasyNPCVillagerModelMixin",
     "model.EasyNPCWolfModelMixin",
     "renderer.CatCollarLayerMixin",
+    "renderer.DrownedOuterLayerMixin",
     "renderer.EasyNPCEntityRendererMixin",
     "renderer.EasyNPCLivingEntityRendererMixin",
     "renderer.HumanoidArmorLayerMixin",

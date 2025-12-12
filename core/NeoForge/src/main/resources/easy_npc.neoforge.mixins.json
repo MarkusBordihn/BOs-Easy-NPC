@@ -5,10 +5,12 @@
   "compatibilityLevel": "JAVA_21",
   "refmap": "easy_npc.refmap.json",
   "client": [
+    "model.EasyNPCCatModelMixin",
     "model.EasyNPCHumanoidModelMixin",
     "model.EasyNPCSpiderModelMixin",
     "model.EasyNPCVillagerModelMixin",
     "model.EasyNPCWolfModelMixin",
+    "renderer.CatCollarLayerMixin",
     "renderer.DrownedOuterLayerMixin",
     "renderer.EasyNPCEntityRendererMixin",
     "renderer.EasyNPCLivingEntityRendererMixin",

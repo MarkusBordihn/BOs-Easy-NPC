@@ -12,18 +12,17 @@
         case BRITISH_SHORTHAIR -> CatVariant.BRITISH_SHORTHAIR;
         case CALICO -> CatVariant.CALICO;
         case JELLIE -> CatVariant.JELLIE;
-        case OCELOT -> CatVariant.TABBY;
+        case OCELOT, TABBY -> CatVariant.TABBY;
         case PERSIAN -> CatVariant.PERSIAN;
         case RAGDOLL -> CatVariant.RAGDOLL;
         case RED -> CatVariant.RED;
         case SIAMESE -> CatVariant.SIAMESE;
-        case TABBY -> CatVariant.TABBY;
         case WHITE -> CatVariant.WHITE;
       };
 
     // Get the Holder from the registry and set it
-    CatVariant catVariantHolder =
-      BuiltInRegistries.CAT_VARIANT.get(catVariantKey);
+    Holder<CatVariant> catVariantHolder =
+        BuiltInRegistries.CAT_VARIANT.getHolder(catVariantKey).orElse(null);
     if (catVariantHolder != null) {
       this.setVariant(catVariantHolder);
     }

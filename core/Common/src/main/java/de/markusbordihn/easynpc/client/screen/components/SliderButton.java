@@ -302,13 +302,13 @@ public class SliderButton extends AbstractSliderButton {
   }
 
   @Override
-  public boolean mouseScrolled(double x, double y, double distance, double unused) {
+  public boolean mouseScrolled(double x, double y, double scrollAmount, double scrollDelta) {
     if (this.isHoveredOrFocused()) {
-      double incrementalSteps = distance * this.getStepSize();
+      double incrementalSteps = scrollDelta * this.getStepSize();
       this.setTargetValue(this.value + incrementalSteps);
+      return true;
     }
-
-    return true;
+    return false;
   }
 
   @Override
