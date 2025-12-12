@@ -38,7 +38,7 @@ public class ConfigUIClient {
   public ConfigUIClient(IEventBus modEventBus, ModContainer modContainer) {
     log.info("{} Client events ...", Constants.LOG_REGISTER_PREFIX);
     modEventBus.addListener(ClientScreens::registerScreens);
+    modEventBus.addListener(ModTabs::handleCreativeModeTabRegister);
     NetworkMessageHandlerManager.registerServerHandler(new ServerNetworkMessageHandler());
-    ModTabs.CREATIVE_TABS.register(modEventBus);
   }
 }

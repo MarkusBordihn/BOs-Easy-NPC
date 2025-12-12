@@ -20,25 +20,24 @@ package de.markusbordihn.easynpc.configui.tabs;
 
 import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.configui.item.ModItems;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.CreativeModeTab;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import net.neoforged.neoforge.registries.DeferredRegister;
+import net.minecraft.resources.ResourceLocation;
+import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ModTabs {
 
-  public static final DeferredRegister<CreativeModeTab> CREATIVE_TABS =
-      DeferredRegister.create(Registries.CREATIVE_MODE_TAB, Constants.MOD_ID);
-  public static final DeferredHolder<CreativeModeTab, CreativeModeTab> TAB_CONFIG_ITEMS =
-      CREATIVE_TABS.register(
-          "config_items",
-          () ->
-              CreativeModeTab.builder()
-                  .icon(() -> ModItems.EASY_NPC_WAND.get().getDefaultInstance())
-                  .displayItems(new ConfigItems())
-                  .title(Component.translatable("itemGroup.easy_npc.config_items"))
-                  .build());
+  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   protected ModTabs() {}
+
+  public static void handleCreativeModeTabRegister(BuildCreativeModeTabContentsEvent event) {
+    if (event
+        .getTabKey()
+        .location()
+        .equals(ResourceLocation.fromNamespaceAndPath("easy_npc", "config_items"))) {
+      log.info("{} creative mod tabs ...", Constants.LOG_REGISTER_PREFIX);
+      event.accept(ModItems.EASY_NPC_WAND.get());
+    }
+  }
 }
