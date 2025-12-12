@@ -31,8 +31,10 @@ import de.markusbordihn.easynpc.configui.network.ClientNetworkMessageHandler;
 import de.markusbordihn.easynpc.configui.network.NetworkHandler;
 import de.markusbordihn.easynpc.configui.network.NetworkHandlerManager;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.configui.tabs.ModTabs;
 import de.markusbordihn.easynpc.network.NetworkHandlerManagerType;
 import java.util.Optional;
+import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.bus.BusGroup;
 import net.minecraftforge.fml.common.Mod;
@@ -79,6 +81,13 @@ public class ConfigUIMain {
     FMLCommonSetupEvent.getBus(modBusGroup).addListener(this::commonSetup);
 
     RegisterCommandsEvent.BUS.addListener(this::registerCommands);
+
+    log.info("{} Creative Mode Tabs ...", Constants.LOG_REGISTER_PREFIX);
+    BuildCreativeModeTabContentsEvent.BUS.addListener(this::onBuildCreativeModeTabContentsEvent);
+  }
+
+  private void onBuildCreativeModeTabContentsEvent(final BuildCreativeModeTabContentsEvent event) {
+    ModTabs.handleCreativeModeTabRegister(event);
   }
 
   private void commonSetup(final FMLCommonSetupEvent event) {
