@@ -14,6 +14,7 @@ Check the [upgrade guide][upgrade_guide] for more information.
 - Fixed close button not working in some cases.
 - Fixed jumping mouse cursor between screen transitions.
 - Fixed translation files and removed duplicate and deprecated entries.
+- Fixed broken mouse wheel scrolling in some menus.
 - Moved Easy NPC wand to existing core item tab instead of creating a new one.
 - Added cat pose support for different model parts (except tail).
 - Improved EasyNPCWand glowing effect performance by disabling it when not needed.
