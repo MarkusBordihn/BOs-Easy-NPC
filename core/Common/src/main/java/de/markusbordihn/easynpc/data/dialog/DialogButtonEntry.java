@@ -20,12 +20,16 @@
 package de.markusbordihn.easynpc.data.dialog;
 
 import de.markusbordihn.easynpc.data.action.ActionDataSet;
+import de.markusbordihn.easynpc.data.condition.ConditionDataEntry;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import de.markusbordihn.easynpc.utils.TextUtils;
 import de.markusbordihn.easynpc.utils.UUIDUtils;
+import java.util.LinkedHashSet;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 
 public record DialogButtonEntry(
@@ -34,9 +38,11 @@ public record DialogButtonEntry(
     String label,
     DialogButtonType type,
     ActionDataSet actionDataSet,
+    Set<ConditionDataEntry> conditions,
     boolean isTranslationKey) {
 
   public static final String DATA_ACTIONS_TAG = "Actions";
+  public static final String DATA_CONDITIONS_TAG = "Conditions";
   public static final String DATA_BUTTON_NAME_TAG = "Name";
   public static final String DATA_LABEL_TAG = "Label";
   public static final String DATA_TYPE_TAG = "Type";
@@ -47,19 +53,29 @@ public record DialogButtonEntry(
         compoundTag.getString(DATA_BUTTON_NAME_TAG).orElse(""),
         compoundTag.getString(DATA_LABEL_TAG).orElse(""),
         DialogButtonType.get(compoundTag.getString(DATA_TYPE_TAG).orElse("")),
-        new ActionDataSet(compoundTag, DATA_ACTIONS_TAG));
+        new ActionDataSet(compoundTag, DATA_ACTIONS_TAG),
+        loadConditions(compoundTag));
   }
 
   public DialogButtonEntry(String name, String label, ActionDataSet actionDataSet) {
-    this(name, label, DialogButtonType.DEFAULT, actionDataSet);
+    this(name, label, DialogButtonType.DEFAULT, actionDataSet, new LinkedHashSet<>());
   }
 
   public DialogButtonEntry(String name, DialogButtonType type) {
-    this(name, null, type, new ActionDataSet());
+    this(name, null, type, new ActionDataSet(), new LinkedHashSet<>());
   }
 
   public DialogButtonEntry(
       String name, String label, DialogButtonType type, ActionDataSet actionDataSet) {
+    this(name, label, type, actionDataSet, new LinkedHashSet<>());
+  }
+
+  public DialogButtonEntry(
+      String name,
+      String label,
+      DialogButtonType type,
+      ActionDataSet actionDataSet,
+      Set<ConditionDataEntry> conditions) {
     this(
         UUIDUtils.textToUUID(
             label != null && !label.isEmpty() ? label : DialogUtils.generateButtonLabel(name)),
@@ -67,7 +83,22 @@ public record DialogButtonEntry(
         label != null && !label.isEmpty() ? label : DialogUtils.generateButtonLabel(name),
         type,
         actionDataSet != null ? actionDataSet : new ActionDataSet(),
+        conditions != null ? conditions : new LinkedHashSet<>(),
         TextUtils.isTranslationKey(name));
+  }
+
+  private static Set<ConditionDataEntry> loadConditions(CompoundTag compoundTag) {
+    Set<ConditionDataEntry> conditions = new LinkedHashSet<>();
+    if (compoundTag.contains(DATA_CONDITIONS_TAG)) {
+      ListTag conditionsList = compoundTag.getListOrEmpty(DATA_CONDITIONS_TAG);
+      for (int i = 0; i < conditionsList.size(); i++) {
+        ConditionDataEntry condition = new ConditionDataEntry(conditionsList.getCompoundOrEmpty(i));
+        if (condition.isValid()) {
+          conditions.add(condition);
+        }
+      }
+    }
+    return conditions;
   }
 
   public Component getButtonName(int maxLength) {
@@ -82,9 +113,19 @@ public record DialogButtonEntry(
     return actionDataSet != null && actionDataSet.hasActionData();
   }
 
+  public boolean hasConditions() {
+    return conditions != null && !conditions.isEmpty();
+  }
+
   public DialogButtonEntry withName(String name) {
     return new DialogButtonEntry(
-        this.id, name, this.label, this.type, this.actionDataSet, TextUtils.isTranslationKey(name));
+        this.id,
+        name,
+        this.label,
+        this.type,
+        this.actionDataSet,
+        this.conditions,
+        TextUtils.isTranslationKey(name));
   }
 
   public DialogButtonEntry withLabel(String label) {
@@ -94,6 +135,7 @@ public record DialogButtonEntry(
         label,
         this.type,
         this.actionDataSet,
+        this.conditions,
         this.isTranslationKey);
   }
 
@@ -104,6 +146,18 @@ public record DialogButtonEntry(
         this.label,
         this.type,
         actionDataSet != null ? actionDataSet : new ActionDataSet(),
+        this.conditions,
+        this.isTranslationKey);
+  }
+
+  public DialogButtonEntry withConditions(Set<ConditionDataEntry> conditions) {
+    return new DialogButtonEntry(
+        this.id,
+        this.name,
+        this.label,
+        this.type,
+        this.actionDataSet,
+        conditions != null ? conditions : new LinkedHashSet<>(),
         this.isTranslationKey);
   }
 
@@ -118,6 +172,19 @@ public record DialogButtonEntry(
 
     // Save action data
     this.actionDataSet.save(compoundTag, DATA_ACTIONS_TAG);
+
+    // Save conditions, if any.
+    if (this.conditions != null && !this.conditions.isEmpty()) {
+      ListTag conditionsList = new ListTag();
+      for (ConditionDataEntry condition : this.conditions) {
+        if (condition.isValid()) {
+          conditionsList.add(condition.createTag());
+        }
+      }
+      if (!conditionsList.isEmpty()) {
+        compoundTag.put(DATA_CONDITIONS_TAG, conditionsList);
+      }
+    }
 
     return compoundTag;
   }
@@ -140,6 +207,8 @@ public record DialogButtonEntry(
         + this.isTranslationKey
         + ", actionDataSet="
         + this.actionDataSet
+        + ", conditions="
+        + this.conditions
         + "]";
   }
 }

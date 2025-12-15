@@ -20,7 +20,9 @@
 package de.markusbordihn.easynpc.data.condition;
 
 public enum ConditionType {
-  NONE;
+  NONE,
+  SCOREBOARD,
+  ;
 
   public static ConditionType get(String conditionType) {
     if (conditionType == null || conditionType.isEmpty()) {
@@ -31,5 +33,26 @@ public enum ConditionType {
     } catch (IllegalArgumentException e) {
       return ConditionType.NONE;
     }
+  }
+
+  public boolean requiresName() {
+    return switch (this) {
+      case SCOREBOARD -> true;
+      default -> false;
+    };
+  }
+
+  public boolean requiresValue() {
+    return switch (this) {
+      case SCOREBOARD -> true;
+      default -> false;
+    };
+  }
+
+  public boolean requiresOperation() {
+    return switch (this) {
+      case SCOREBOARD -> true;
+      default -> false;
+    };
   }
 }

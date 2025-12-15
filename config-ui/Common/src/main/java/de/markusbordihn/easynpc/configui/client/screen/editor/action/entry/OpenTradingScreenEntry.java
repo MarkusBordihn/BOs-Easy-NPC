@@ -24,10 +24,10 @@ public class OpenTradingScreenEntry extends ActionEntryWidget {
 
   @Override
   public void render(GuiGraphics guiGraphics, int editorLeft, int editorTop) {
-    Text.drawString(
+    Text.drawConfigString(
         guiGraphics,
         this.font,
-        "Open Trading screen",
+        "action.open_trading_screen",
         editorLeft + 2,
         editorTop + 5,
         Constants.FONT_COLOR_DEFAULT);

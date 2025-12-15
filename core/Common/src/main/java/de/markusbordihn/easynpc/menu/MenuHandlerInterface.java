@@ -49,7 +49,8 @@ public interface MenuHandlerInterface {
     }
 
     // Additional data for specific configuration menu.
-    final ScreenData screenData = DialogMenuHandler.getScreenData(easyNPC, dialogId, pageIndex);
+    final ScreenData screenData =
+        DialogMenuHandler.getScreenData(easyNPC, dialogId, pageIndex, serverPlayer);
 
     // Get menu provider for configuration type and open configuration menu.
     final MenuProvider menuProvider =

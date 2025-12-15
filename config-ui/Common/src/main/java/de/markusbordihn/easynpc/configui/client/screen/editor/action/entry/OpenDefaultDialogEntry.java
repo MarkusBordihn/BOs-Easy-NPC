@@ -24,10 +24,10 @@ public class OpenDefaultDialogEntry extends ActionEntryWidget {
 
   @Override
   public void render(GuiGraphics guiGraphics, int editorLeft, int editorTop) {
-    Text.drawString(
+    Text.drawConfigString(
         guiGraphics,
         this.font,
-        "Open Default Dialog",
+        "action.open_default_dialog",
         editorLeft + 2,
         editorTop + 5,
         Constants.FONT_COLOR_DEFAULT);
