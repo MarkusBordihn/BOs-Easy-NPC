@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.handler;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.utils.CompoundTagUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.ProblemReporter;
@@ -65,6 +66,9 @@ public class RespawnHandler {
     entity.load(
         TagValueInput.create(
             ProblemReporter.DISCARDING, serverLevel.registryAccess(), compoundTag));
+
+    // Fix possible legacy custom name.
+    CompoundTagUtils.fixLegacyCustomName(entity, compoundTag);
 
     // Remove old entity
     easyNPC.getEntity().discard();

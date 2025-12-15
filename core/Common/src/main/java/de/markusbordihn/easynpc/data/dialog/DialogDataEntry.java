@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.data.dialog;
 
+import de.markusbordihn.easynpc.data.condition.ConditionDataEntry;
 import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -31,6 +32,7 @@ import net.minecraft.network.chat.Component;
 public final class DialogDataEntry {
 
   public static final String DATA_BUTTONS_TAG = "Buttons";
+  public static final String DATA_CONDITIONS_TAG = "Conditions";
   public static final String DATA_DIALOG_NAME = "Name";
   public static final String DATA_LABEL_TAG = "Label";
   public static final String DATA_TEXTS_TAG = "Texts";
@@ -38,6 +40,7 @@ public final class DialogDataEntry {
   public static final int MAX_DIALOG_LABEL_LENGTH = 32;
   private Set<DialogButtonEntry> dialogButtons = new LinkedHashSet<>();
   private Set<DialogTextData> dialogTexts = new LinkedHashSet<>();
+  private Set<ConditionDataEntry> conditions = new LinkedHashSet<>();
   private UUID id;
   private String label = "";
   private String name;
@@ -46,6 +49,7 @@ public final class DialogDataEntry {
     this.load(compoundTag);
   }
 
+  @SuppressWarnings("unused")
   public DialogDataEntry(String name) {
     this(null, name, "Dialog text", null);
   }
@@ -81,6 +85,7 @@ public final class DialogDataEntry {
     this.id = UUID.nameUUIDFromBytes(this.label.getBytes());
   }
 
+  @SuppressWarnings("unused")
   public String getLabel(int maxLength) {
     return this.label.length() > maxLength
         ? this.label.substring(0, maxLength - 1) + '…'
@@ -128,20 +133,36 @@ public final class DialogDataEntry {
     return DialogUtils.parseDialogText(getDialogText(), dialogMetaData);
   }
 
+  @SuppressWarnings("unused")
   public Set<DialogTextData> getDialogTexts() {
     return this.dialogTexts;
   }
 
+  @SuppressWarnings("unused")
   public void setDialogTexts(Set<DialogTextData> dialogTexts) {
-    this.dialogTexts = dialogTexts;
+    this.dialogTexts = dialogTexts != null ? dialogTexts : new LinkedHashSet<>();
   }
 
   public Set<DialogButtonEntry> getDialogButtons() {
     return this.dialogButtons;
   }
 
+  @SuppressWarnings("unused")
   public void setDialogButtons(Set<DialogButtonEntry> buttons) {
-    this.dialogButtons = buttons;
+    this.dialogButtons = buttons != null ? buttons : new LinkedHashSet<>();
+  }
+
+  public Set<ConditionDataEntry> getConditions() {
+    return this.conditions;
+  }
+
+  public void setConditions(Set<ConditionDataEntry> conditions) {
+    this.conditions = conditions != null ? conditions : new LinkedHashSet<>();
+  }
+
+  @SuppressWarnings("unused")
+  public boolean hasConditions() {
+    return this.conditions != null && !this.conditions.isEmpty();
   }
 
   public DialogButtonEntry getDialogButton(UUID dialogButtonId) {
@@ -153,6 +174,7 @@ public final class DialogDataEntry {
     return null;
   }
 
+  @SuppressWarnings("unused")
   public DialogButtonEntry getDialogButton(String label) {
     for (DialogButtonEntry button : this.dialogButtons) {
       if (button.label().equals(label)) {
@@ -162,6 +184,7 @@ public final class DialogDataEntry {
     return null;
   }
 
+  @SuppressWarnings("unused")
   public void setDialogButton(DialogButtonEntry dialogButtonEntry) {
     this.setDialogButton(dialogButtonEntry.id(), dialogButtonEntry);
   }
@@ -179,6 +202,7 @@ public final class DialogDataEntry {
     this.dialogButtons.add(dialogButtonEntry);
   }
 
+  @SuppressWarnings("unused")
   public boolean hasDialogButton(String label) {
     for (DialogButtonEntry button : this.dialogButtons) {
       if (button.label().equals(label)) {
@@ -244,6 +268,21 @@ public final class DialogDataEntry {
         }
       }
     }
+
+    // Load conditions, if available.
+    if (compoundTag.contains(DATA_CONDITIONS_TAG)) {
+      this.conditions.clear();
+      ListTag conditionsList = compoundTag.getListOrEmpty(DATA_CONDITIONS_TAG);
+      if (!conditionsList.isEmpty()) {
+        for (int i = 0; i < conditionsList.size(); i++) {
+          ConditionDataEntry conditionEntry =
+              new ConditionDataEntry(conditionsList.getCompoundOrEmpty(i));
+          if (conditionEntry.isValid()) {
+            this.conditions.add(conditionEntry);
+          }
+        }
+      }
+    }
   }
 
   public CompoundTag save(CompoundTag compoundTag) {
@@ -264,12 +303,25 @@ public final class DialogDataEntry {
     }
 
     // Save buttons, if any.
-    if (this.dialogButtons != null) {
+    if (this.dialogButtons != null && !this.dialogButtons.isEmpty()) {
       ListTag buttonsList = new ListTag();
       for (DialogButtonEntry button : this.dialogButtons) {
         buttonsList.add(button.write(new CompoundTag()));
       }
       compoundTag.put(DATA_BUTTONS_TAG, buttonsList);
+    }
+
+    // Save conditions, if any.
+    if (this.conditions != null && !this.conditions.isEmpty()) {
+      ListTag conditionsList = new ListTag();
+      for (ConditionDataEntry condition : this.conditions) {
+        if (condition.isValid()) {
+          conditionsList.add(condition.createTag());
+        }
+      }
+      if (!conditionsList.isEmpty()) {
+        compoundTag.put(DATA_CONDITIONS_TAG, conditionsList);
+      }
     }
 
     return compoundTag;
@@ -291,6 +343,8 @@ public final class DialogDataEntry {
         + this.dialogTexts
         + ", buttons="
         + this.dialogButtons
+        + ", conditions="
+        + this.conditions
         + "]";
   }
 }

@@ -8,6 +8,16 @@ For the full changelog, please go to the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 6.2.0
+
+- Fixed legacy custom name parsing.
+- Fixed string injection within dialogs.
+- Fixed missing translation for action types.
+- Added scoreboard action type to increase, decrease, set scoreboard values.
+- Added `@score(...)` NPC macro to display scoreboard values in the dialog.
+- Added additional unit tests.
+- Improved spin button with indicators and better usability.
+
 ### 6.1.2
 
 - Fixed container and menu sync issues with missing close container packets.

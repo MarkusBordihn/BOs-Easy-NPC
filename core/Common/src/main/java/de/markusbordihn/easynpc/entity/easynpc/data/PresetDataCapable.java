@@ -125,6 +125,9 @@ public interface PresetDataCapable<T extends PathfinderMob> extends EasyNPC<T> {
         TagValueInput.create(
             ProblemReporter.DISCARDING, getEntityLevel().registryAccess(), compoundTag);
     this.getEntity().load(valueInput);
+
+    // Fix possible legacy custom name.
+    CompoundTagUtils.fixLegacyCustomName(this.getEntity(), compoundTag);
   }
 
   default CompoundTag serializePresetData() {

@@ -147,6 +147,9 @@ public class EasyNPCPresetItem extends Item {
     entity.load(
         TagValueInput.create(ProblemReporter.DISCARDING, level.registryAccess(), entityData));
 
+    // Fix possible legacy custom name.
+    CompoundTagUtils.fixLegacyCustomName(entity, entityData);
+
     // Move entity to and spawn entity.
     entity.snapTo(blockPos.getX() + 0.5f, blockPos.getY(), blockPos.getZ() + 0.5f);
     if (level.addFreshEntity(entity)) {

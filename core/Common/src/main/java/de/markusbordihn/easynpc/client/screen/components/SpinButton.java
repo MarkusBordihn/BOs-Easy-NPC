@@ -20,7 +20,8 @@
 package de.markusbordihn.easynpc.client.screen.components;
 
 import de.markusbordihn.easynpc.network.components.TextComponent;
-import java.util.LinkedHashSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -31,73 +32,56 @@ public class SpinButton<T> extends CustomButton {
   private final TextButton previousButton;
   private final TextButton nextButton;
   private final TextButton textButton;
-  private final Set<T> values = new LinkedHashSet<>();
-  private final T defaultValue;
+  private final List<T> values;
   private final OnChange onChange;
-  private T currentValue;
+  private int currentIndex;
 
   public SpinButton(
       int x, int y, int width, int height, Set<T> values, T initialValue, OnChange onChange) {
     super(x, y, width, height);
-    this.values.addAll(values);
-    this.defaultValue = initialValue;
-    this.currentValue = initialValue;
+    this.values = new ArrayList<>(values);
+    this.currentIndex = Math.max(0, this.values.indexOf(initialValue));
     this.onChange = onChange;
 
-    int navigationButtonWidth = 10;
-    this.previousButton =
-        new TextButton(x, y, navigationButtonWidth, height, "<", this::changeToPreviousValue);
-    this.textButton =
-        new TextButton(x + navigationButtonWidth, y, width - 2 * navigationButtonWidth, height);
-    this.nextButton =
-        new TextButton(
-            x + width - navigationButtonWidth,
-            y,
-            navigationButtonWidth,
-            height,
-            ">",
-            this::changeToNextValue);
+    int navWidth = 10;
+    this.previousButton = new TextButton(x, y, navWidth, height, "<", this::previous);
+    this.textButton = new TextButton(x + navWidth, y, width - 2 * navWidth, height, "", this::next);
+    this.nextButton = new TextButton(x + width - navWidth, y, navWidth, height, ">", this::next);
+
+    updateButtonStates();
   }
 
-  private void changeToPreviousValue(Button button) {
-    T previousValue = null;
-    for (T value : this.values) {
-      if (value.equals(this.currentValue)) {
-        break;
-      }
-      previousValue = value;
-    }
-    if (previousValue != null) {
-      this.set(previousValue);
+  private void previous(Button button) {
+    if (this.currentIndex > 0) {
+      setIndex(this.currentIndex - 1);
     }
   }
 
-  private void changeToNextValue(Button button) {
-    T nextValue = null;
-    boolean found = false;
-    for (T value : this.values) {
-      if (found) {
-        nextValue = value;
-        break;
-      }
-      if (value.equals(this.currentValue)) {
-        found = true;
-      }
-    }
-    if (nextValue != null) {
-      this.set(nextValue);
+  private void next(Button button) {
+    if (this.currentIndex < this.values.size() - 1) {
+      setIndex(this.currentIndex + 1);
+    } else if (button == this.textButton && !this.values.isEmpty()) {
+      setIndex(0);
     }
   }
 
-  public void set(T value) {
-    this.currentValue = value;
+  private void setIndex(int index) {
+    this.currentIndex = index;
+    updateButtonStates();
     if (this.onChange != null) {
       this.onChange.onChange(this);
     }
   }
 
+  private void updateButtonStates() {
+    boolean hasValues = !this.values.isEmpty();
+    this.previousButton.active = hasValues && this.currentIndex > 0;
+    this.nextButton.active = hasValues && this.currentIndex < this.values.size() - 1;
+    this.textButton.active = hasValues;
+  }
+
   public T get() {
-    return this.currentValue;
+    return this.values.isEmpty() ? null : this.values.get(this.currentIndex);
   }
 
   @Override
@@ -105,13 +89,17 @@ public class SpinButton<T> extends CustomButton {
     this.previousButton.renderButton(guiGraphics, left, top, partialTicks);
     this.nextButton.renderButton(guiGraphics, left, top, partialTicks);
     this.textButton.renderButton(guiGraphics, left, top, partialTicks);
-    this.textButton.setMessage(TextComponent.getText(this.currentValue.toString()));
+
+    T value = get();
+    if (value != null) {
+      this.textButton.setMessage(TextComponent.getText(value.toString()));
+    }
   }
 
   @Override
   public boolean mouseClicked(MouseButtonEvent mouseButtonEvent, boolean doubleClick) {
     if (this.nextButton.mouseClicked(mouseButtonEvent, doubleClick)
-        || this.previousButton.mouseClicked(mouseButtonEvent, doubleClick)) {
+      || this.previousButton.mouseClicked(mouseButtonEvent, doubleClick)) {
       return true;
     }
     return this.textButton.mouseClicked(mouseButtonEvent, doubleClick);
