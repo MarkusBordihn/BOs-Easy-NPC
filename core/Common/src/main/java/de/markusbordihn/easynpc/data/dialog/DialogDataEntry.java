@@ -19,7 +19,6 @@
 
 package de.markusbordihn.easynpc.data.dialog;
 
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.condition.ConditionDataEntry;
 import java.util.LinkedHashSet;
 import java.util.Objects;
