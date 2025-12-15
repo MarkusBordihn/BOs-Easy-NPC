@@ -47,19 +47,19 @@ public class OpenNamedDialogEntry extends ActionEntryWidget {
 
   @Override
   public void render(GuiGraphics guiGraphics, int editorLeft, int editorTop) {
-    Text.drawString(
+    Text.drawConfigString(
         guiGraphics,
         this.font,
-        "Named Dialog",
+        "action.named_dialog",
         editorLeft + 2,
         editorTop + 5,
         Constants.FONT_COLOR_DEFAULT);
 
     if (this.showInvalidDialogName) {
-      Text.drawString(
+      Text.drawConfigString(
           guiGraphics,
           this.font,
-          "Invalid Dialog Name",
+          "action.invalid_dialog_name",
           editorLeft + 2,
           editorTop + 40,
           Constants.FONT_COLOR_RED);

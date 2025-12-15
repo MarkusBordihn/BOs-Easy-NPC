@@ -36,6 +36,7 @@ import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.Inter
 import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.OpenDefaultDialogEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.OpenNamedDialogEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.OpenTradingScreenEntry;
+import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.ScoreboardEntry;
 import de.markusbordihn.easynpc.configui.menu.editor.EditorMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.action.ActionDataEntry;
@@ -324,6 +325,10 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
       case OPEN_TRADING_SCREEN:
         this.actionEntryWidget =
             new OpenTradingScreenEntry(this.actionDataEntry, this.actionDataSet, this);
+        break;
+      case SCOREBOARD:
+        this.actionEntryWidget =
+            new ScoreboardEntry(this.actionDataEntry, this.actionDataSet, this);
         break;
       default:
         this.actionEntryWidget = null;

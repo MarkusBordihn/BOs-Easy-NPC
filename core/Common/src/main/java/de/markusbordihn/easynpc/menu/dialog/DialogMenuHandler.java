@@ -25,6 +25,7 @@ import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -61,7 +62,10 @@ public class DialogMenuHandler {
   }
 
   public static ScreenData getScreenData(
-      final EasyNPC<?> easyNPC, final UUID dialogId, final int pageIndex) {
+      final EasyNPC<?> easyNPC,
+      final UUID dialogId,
+      final int pageIndex,
+      final ServerPlayer serverPlayer) {
 
     // Get basic data for configuration menu.
     final UUID npcUUID = easyNPC.getEntityUUID();
@@ -69,7 +73,7 @@ public class DialogMenuHandler {
     // Additional data for specific configuration menu.
     final CompoundTag additionalSyncData = new CompoundTag();
     AdditionalScreenData.addActionEventSet(additionalSyncData, easyNPC);
-    AdditionalScreenData.addDialogDataSet(additionalSyncData, easyNPC);
+    AdditionalScreenData.addDialogDataSet(additionalSyncData, easyNPC, serverPlayer);
 
     return new ScreenData(npcUUID, dialogId, null, null, pageIndex, additionalSyncData);
   }
