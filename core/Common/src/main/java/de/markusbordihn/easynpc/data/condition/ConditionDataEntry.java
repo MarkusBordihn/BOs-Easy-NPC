@@ -19,25 +19,147 @@
 
 package de.markusbordihn.easynpc.data.condition;
 
+import de.markusbordihn.easynpc.utils.CompoundTagUtils;
+import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
 
-public record ConditionDataEntry(ConditionType conditionType) {
+public record ConditionDataEntry(
+    UUID id,
+    ConditionType conditionType,
+    ConditionOperationType operationType,
+    String name,
+    int value,
+    String stringValue) {
 
   public static final ConditionDataEntry EMPTY =
-      new ConditionDataEntry(de.markusbordihn.easynpc.data.condition.ConditionType.NONE);
+      new ConditionDataEntry(ConditionType.NONE, ConditionOperationType.NONE);
+  public static final String DATA_UUID_TAG = "UUID";
   public static final String DATA_TYPE_TAG = "Type";
+  public static final String DATA_OPERATION_TAG = "Operation";
+  public static final String DATA_NAME_TAG = "Name";
+  public static final String DATA_VALUE_TAG = "Value";
+  public static final String DATA_STRING_VALUE_TAG = "StringValue";
 
   public ConditionDataEntry(CompoundTag compoundTag) {
-    this(ConditionType.get(compoundTag.getString(DATA_TYPE_TAG).orElse("")));
+    this(
+        compoundTag.contains(DATA_UUID_TAG)
+            ? CompoundTagUtils.readUUID(compoundTag, DATA_UUID_TAG)
+            : UUID.randomUUID(),
+        ConditionType.get(compoundTag.getString(DATA_TYPE_TAG).orElse("")),
+        ConditionOperationType.get(compoundTag.getString(DATA_OPERATION_TAG).orElse("")),
+        compoundTag.getString(DATA_NAME_TAG).orElse(""),
+        compoundTag.getInt(DATA_VALUE_TAG).orElse(0),
+        compoundTag.getString(DATA_STRING_VALUE_TAG).orElse(""));
   }
 
-  public CompoundTag create(CompoundTag compoundTag) {
+  public ConditionDataEntry(ConditionType conditionType) {
+    this(conditionType, ConditionOperationType.NONE);
+  }
+
+  public ConditionDataEntry(ConditionType conditionType, ConditionOperationType operationType) {
+    this(UUID.randomUUID(), conditionType, operationType, "", 0, "");
+  }
+
+  public ConditionDataEntry(
+      ConditionType conditionType, ConditionOperationType operationType, String name, int value) {
+    this(UUID.randomUUID(), conditionType, operationType, name, value, "");
+  }
+
+  public UUID getId() {
+    return this.id;
+  }
+
+  public boolean hasName() {
+    return this.name != null && !this.name.isEmpty();
+  }
+
+  public boolean hasStringValue() {
+    return this.stringValue != null && !this.stringValue.isEmpty();
+  }
+
+  public boolean isValid() {
+    if (this.conditionType == ConditionType.NONE) {
+      return false;
+    }
+    return switch (this.conditionType) {
+      case SCOREBOARD ->
+          hasName()
+              && this.operationType != null
+              && this.operationType != ConditionOperationType.NONE;
+      default -> true;
+    };
+  }
+
+  public ConditionDataEntry withConditionType(ConditionType conditionType) {
+    return new ConditionDataEntry(
+        this.id, conditionType, this.operationType, this.name, this.value, this.stringValue);
+  }
+
+  public ConditionDataEntry withOperationType(ConditionOperationType operationType) {
+    return new ConditionDataEntry(
+        this.id, this.conditionType, operationType, this.name, this.value, this.stringValue);
+  }
+
+  public ConditionDataEntry withName(String name) {
+    return new ConditionDataEntry(
+        this.id, this.conditionType, this.operationType, name, this.value, this.stringValue);
+  }
+
+  public ConditionDataEntry withValue(int value) {
+    return new ConditionDataEntry(
+        this.id, this.conditionType, this.operationType, this.name, value, this.stringValue);
+  }
+
+  public ConditionDataEntry withStringValue(String stringValue) {
+    return new ConditionDataEntry(
+        this.id, this.conditionType, this.operationType, this.name, this.value, stringValue);
+  }
+
+  public ConditionDataEntry create(CompoundTag compoundTag) {
+    return new ConditionDataEntry(compoundTag);
+  }
+
+  public CompoundTag write(CompoundTag compoundTag) {
+    CompoundTagUtils.writeUUID(compoundTag, DATA_UUID_TAG, this.id);
     compoundTag.putString(DATA_TYPE_TAG, this.conditionType.name());
+
+    if (this.operationType != null && this.operationType != ConditionOperationType.NONE) {
+      compoundTag.putString(DATA_OPERATION_TAG, this.operationType.name());
+    }
+    if (hasName()) {
+      compoundTag.putString(DATA_NAME_TAG, this.name.trim());
+    }
+    if (this.value != 0) {
+      compoundTag.putInt(DATA_VALUE_TAG, this.value);
+    }
+    if (hasStringValue()) {
+      compoundTag.putString(DATA_STRING_VALUE_TAG, this.stringValue);
+    }
 
     return compoundTag;
   }
 
   public CompoundTag createTag() {
-    return this.create(new CompoundTag());
+    return this.write(new CompoundTag());
+  }
+
+  @Override
+  public String toString() {
+    return "ConditionDataEntry["
+        + "id="
+        + this.id
+        + ", type="
+        + this.conditionType
+        + ", operation="
+        + this.operationType
+        + ", name='"
+        + this.name
+        + "'"
+        + ", value="
+        + this.value
+        + ", stringValue='"
+        + this.stringValue
+        + "'"
+        + "]";
   }
 }

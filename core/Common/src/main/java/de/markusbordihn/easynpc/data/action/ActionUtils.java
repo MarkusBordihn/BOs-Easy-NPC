@@ -19,8 +19,12 @@
 
 package de.markusbordihn.easynpc.data.action;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.scores.Objective;
+import net.minecraft.world.scores.Scoreboard;
 
 public class ActionUtils {
 
@@ -33,6 +37,7 @@ public class ActionUtils {
   public static final String MACRO_NPC_UUID = "@npc-uuid";
   public static final String MACRO_SUCCESS_MESSAGE = "/success_message";
   public static final String MACRO_WARN_MESSAGE = "/warn_message";
+  private static final Pattern SCORE_PATTERN = Pattern.compile("@score\\(([a-zA-Z0-9_.-]+)\\)");
 
   private ActionUtils() {}
 
@@ -49,17 +54,17 @@ public class ActionUtils {
 
     // Handle specific short-cuts for commands.
     if (command.startsWith(MACRO_ERROR_MESSAGE)) {
-      output = output.replace(MACRO_ERROR_MESSAGE, "").replace("\"", "").trim();
-      output = COMMAND_DISPLAY_TITLE + output + "\",\"color\":\"dark_red\"}";
+      output = output.replace(MACRO_ERROR_MESSAGE, "").trim();
+      output = COMMAND_DISPLAY_TITLE + escapeJson(output) + "\",\"color\":\"dark_red\"}";
     } else if (command.startsWith(MACRO_WARN_MESSAGE)) {
-      output = output.replace(MACRO_WARN_MESSAGE, "").replace("\"", "").trim();
-      output = COMMAND_DISPLAY_TITLE + output + "\",\"color\":\"yellow\"}";
+      output = output.replace(MACRO_WARN_MESSAGE, "").trim();
+      output = COMMAND_DISPLAY_TITLE + escapeJson(output) + "\",\"color\":\"yellow\"}";
     } else if (command.startsWith(MACRO_INFO_MESSAGE)) {
-      output = output.replace(MACRO_INFO_MESSAGE, "").replace("\"", "").trim();
-      output = COMMAND_DISPLAY_TITLE + output + "\",\"color\":\"aqua\"}";
+      output = output.replace(MACRO_INFO_MESSAGE, "").trim();
+      output = COMMAND_DISPLAY_TITLE + escapeJson(output) + "\",\"color\":\"aqua\"}";
     } else if (command.startsWith(MACRO_SUCCESS_MESSAGE)) {
-      output = output.replace(MACRO_SUCCESS_MESSAGE, "").replace("\"", "").trim();
-      output = COMMAND_DISPLAY_TITLE + output + "\",\"color\":\"green\"}";
+      output = output.replace(MACRO_SUCCESS_MESSAGE, "").trim();
+      output = COMMAND_DISPLAY_TITLE + escapeJson(output) + "\",\"color\":\"green\"}";
     }
 
     // Replace NPC macros.
@@ -72,8 +77,41 @@ public class ActionUtils {
     if (player != null) {
       output = output.replace(MACRO_INITIATOR_UUID, player.getUUID().toString());
       output = output.replace(MACRO_INITIATOR, player.getName().getString());
+
+      Matcher matcher = SCORE_PATTERN.matcher(output);
+      StringBuilder sb = new StringBuilder();
+      while (matcher.find()) {
+        String objectiveName = matcher.group(1);
+        int score = getScoreboardValue(player, objectiveName);
+        matcher.appendReplacement(sb, Matcher.quoteReplacement(String.valueOf(score)));
+      }
+      matcher.appendTail(sb);
+      output = sb.toString();
     }
 
     return output;
+  }
+
+  private static int getScoreboardValue(ServerPlayer player, String objectiveName) {
+    if (objectiveName == null || objectiveName.isEmpty() || objectiveName.length() > 16) {
+      return 0;
+    }
+    Scoreboard scoreboard = player.getScoreboard();
+    Objective objective = scoreboard.getObjective(objectiveName);
+    if (objective != null) {
+      return scoreboard.getOrCreatePlayerScore(player, objective).get();
+    }
+    return 0;
+  }
+
+  private static String escapeJson(String text) {
+    if (text == null || text.isEmpty()) {
+      return text;
+    }
+    return text.replace("\\", "\\\\")
+        .replace("\"", "\\\"")
+        .replace("\n", "\\n")
+        .replace("\r", "\\r")
+        .replace("\t", "\\t");
   }
 }

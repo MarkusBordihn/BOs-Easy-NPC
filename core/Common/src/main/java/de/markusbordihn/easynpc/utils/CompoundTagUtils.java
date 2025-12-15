@@ -19,6 +19,9 @@
 
 package de.markusbordihn.easynpc.utils;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.scale.CustomScale;
 import java.util.HashSet;
@@ -29,7 +32,13 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.IntArrayTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class CompoundTagUtils {
 
@@ -38,6 +47,10 @@ public class CompoundTagUtils {
   public static final String Y_TAG = "Y";
   public static final String Z_TAG = "Z";
   public static final String UUID_TAG = "UUID";
+  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+  private static final String CUSTOM_NAME_TAG = "CustomName";
+  private static final String TEXT_TAG = "text";
+  private static final String COLOR_TAG = "color";
 
   private CompoundTagUtils() {}
 
@@ -170,5 +183,66 @@ public class CompoundTagUtils {
                   });
         });
     return resourceLocations;
+  }
+
+  public static Component parseLegacyCustomName(String customNameString) {
+    if (customNameString == null || !customNameString.startsWith("{")) {
+      return null;
+    }
+
+    try {
+      JsonElement jsonElement = JsonParser.parseString(customNameString);
+      if (!jsonElement.isJsonObject()) {
+        return null;
+      }
+
+      JsonObject jsonObject = jsonElement.getAsJsonObject();
+      if (!jsonObject.has(TEXT_TAG)) {
+        return null;
+      }
+
+      Component component = Component.literal(jsonObject.get(TEXT_TAG).getAsString());
+      if (jsonObject.has(COLOR_TAG)) {
+        TextColor textColor = parseColor(jsonObject.get(COLOR_TAG).getAsString());
+        if (textColor != null) {
+          component = component.copy().withStyle(Style.EMPTY.withColor(textColor));
+        }
+      }
+
+      return component;
+    } catch (Exception e) {
+      log.warn("Failed to parse legacy CustomName: {}", customNameString, e);
+      return null;
+    }
+  }
+
+  private static TextColor parseColor(String colorString) {
+    if (colorString == null || !colorString.startsWith("#")) {
+      return null;
+    }
+
+    try {
+      return TextColor.fromRgb(Integer.parseInt(colorString.substring(1), 16));
+    } catch (NumberFormatException e) {
+      log.warn("Failed to parse color: {}", colorString);
+      return null;
+    }
+  }
+
+  public static void fixLegacyCustomName(Entity entity, CompoundTag compoundTag) {
+    if (!compoundTag.contains(CUSTOM_NAME_TAG)) {
+      return;
+    }
+
+    try {
+      String customNameString = compoundTag.getString(CUSTOM_NAME_TAG).orElse("");
+      Component legacyName = parseLegacyCustomName(customNameString);
+      if (legacyName != null) {
+        entity.setCustomName(legacyName);
+        log.debug("Applied legacy CustomName '{}' to entity", customNameString);
+      }
+    } catch (Exception e) {
+      // Ignore if CustomName is in new format
+    }
   }
 }

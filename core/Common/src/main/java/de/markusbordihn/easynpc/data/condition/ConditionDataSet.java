@@ -19,8 +19,11 @@
 
 package de.markusbordihn.easynpc.data.condition;
 
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 
@@ -44,6 +47,77 @@ public class ConditionDataSet {
     return this.conditionDataEntries.size();
   }
 
+  public Set<ConditionDataEntry> getConditions() {
+    return new LinkedHashSet<>(this.conditionDataEntries);
+  }
+
+  public List<ConditionDataEntry> getConditionsList() {
+    return new ArrayList<>(this.conditionDataEntries);
+  }
+
+  public ConditionDataEntry getCondition(UUID id) {
+    for (ConditionDataEntry entry : this.conditionDataEntries) {
+      if (entry.getId().equals(id)) {
+        return entry;
+      }
+    }
+    return null;
+  }
+
+  public boolean hasCondition(UUID id) {
+    return getCondition(id) != null;
+  }
+
+  public void add(ConditionDataEntry conditionDataEntry) {
+    if (conditionDataEntry != null && conditionDataEntry.isValid()) {
+      remove(conditionDataEntry.getId());
+      this.conditionDataEntries.add(conditionDataEntry);
+    }
+  }
+
+  public boolean remove(UUID id) {
+    return this.conditionDataEntries.removeIf(entry -> entry.getId().equals(id));
+  }
+
+  public void update(ConditionDataEntry conditionDataEntry) {
+    if (conditionDataEntry != null && conditionDataEntry.isValid()) {
+      remove(conditionDataEntry.getId());
+      this.conditionDataEntries.add(conditionDataEntry);
+    }
+  }
+
+  public void clear() {
+    this.conditionDataEntries.clear();
+  }
+
+  public void moveUp(ConditionDataEntry conditionDataEntry) {
+    if (conditionDataEntry == null) {
+      return;
+    }
+    List<ConditionDataEntry> list = new ArrayList<>(this.conditionDataEntries);
+    int index = list.indexOf(conditionDataEntry);
+    if (index > 0) {
+      list.remove(index);
+      list.add(index - 1, conditionDataEntry);
+      this.conditionDataEntries.clear();
+      this.conditionDataEntries.addAll(list);
+    }
+  }
+
+  public void moveDown(ConditionDataEntry conditionDataEntry) {
+    if (conditionDataEntry == null) {
+      return;
+    }
+    List<ConditionDataEntry> list = new ArrayList<>(this.conditionDataEntries);
+    int index = list.indexOf(conditionDataEntry);
+    if (index >= 0 && index < list.size() - 1) {
+      list.remove(index);
+      list.add(index + 1, conditionDataEntry);
+      this.conditionDataEntries.clear();
+      this.conditionDataEntries.addAll(list);
+    }
+  }
+
   public void load(CompoundTag compoundTag) {
     if (compoundTag == null || !compoundTag.contains(CONDITION_DATA_SET_TAG)) {
       return;
@@ -56,28 +130,45 @@ public class ConditionDataSet {
     for (int i = 0; i < conditionDataEntriesTag.size(); i++) {
       CompoundTag conditionDataEntryTag = conditionDataEntriesTag.getCompoundOrEmpty(i);
       ConditionDataEntry conditionDataEntry = new ConditionDataEntry(conditionDataEntryTag);
-      this.conditionDataEntries.add(conditionDataEntry);
+      if (conditionDataEntry.isValid()) {
+        this.conditionDataEntries.add(conditionDataEntry);
+      }
     }
   }
 
   public CompoundTag save(CompoundTag compoundTag) {
+    return this.save(compoundTag, CONDITION_DATA_SET_TAG);
+  }
+
+  public CompoundTag save(CompoundTag compoundTag, String tag) {
+    if (isEmpty()) {
+      return compoundTag;
+    }
 
     // Save condition data entries
+    CompoundTag conditionDataSetTag = new CompoundTag();
     ListTag conditionDataEntriesTag = new ListTag();
     for (ConditionDataEntry conditionDataEntry : this.conditionDataEntries) {
-      if (conditionDataEntry == null) {
+      if (conditionDataEntry == null || !conditionDataEntry.isValid()) {
         continue;
       }
       conditionDataEntriesTag.add(conditionDataEntry.createTag());
     }
+
     if (!conditionDataEntriesTag.isEmpty()) {
-      compoundTag.put(CONDITION_DATA_SET_TAG, conditionDataEntriesTag);
+      conditionDataSetTag.put(CONDITION_DATA_SET_TAG, conditionDataEntriesTag);
+      compoundTag.put(tag, conditionDataSetTag);
     }
 
     return compoundTag;
   }
 
+  public boolean hasConditionData() {
+    return !isEmpty();
+  }
+
+  @Override
   public String toString() {
-    return this.conditionDataEntries.toString();
+    return "ConditionDataSet[size=" + size() + ", entries=" + this.conditionDataEntries + "]";
   }
 }

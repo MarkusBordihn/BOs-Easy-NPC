@@ -72,7 +72,10 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T> {
     this.dialogMetaData =
         new DialogMetaData(
             this.getEasyNPC().getLivingEntity(),
-            minecraftInstance != null ? minecraftInstance.player : null);
+            minecraftInstance != null ? minecraftInstance.player : null,
+            this.getAdditionalScreenData() != null
+                ? this.getAdditionalScreenData().getScoreboardData()
+                : null);
   }
 
   private static void setDialogScreenLayout(DialogScreenLayout dialogScreenLayout) {

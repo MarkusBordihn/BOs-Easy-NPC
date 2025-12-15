@@ -21,7 +21,6 @@ package de.markusbordihn.easynpc.configui;
 
 import de.markusbordihn.easynpc.configui.network.NetworkHandler;
 import de.markusbordihn.easynpc.configui.network.NetworkHandlerManager;
-import de.markusbordihn.easynpc.configui.tabs.ModTabs;
 import de.markusbordihn.easynpc.network.NetworkHandlerManagerType;
 import net.minecraftforge.eventbus.api.listener.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
