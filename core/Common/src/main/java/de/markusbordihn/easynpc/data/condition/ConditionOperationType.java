@@ -17,46 +17,49 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.data.action;
+package de.markusbordihn.easynpc.data.condition;
 
-import java.util.Locale;
-
-public enum ActionDataType {
+public enum ConditionOperationType {
   NONE,
-  COMMAND,
-  CLOSE_DIALOG(false),
-  INTERACT_BLOCK,
-  OPEN_TRADING_SCREEN(false),
-  OPEN_DEFAULT_DIALOG(false),
-  OPEN_NAMED_DIALOG,
-  SCOREBOARD;
+  EQUALS,
+  NOT_EQUALS,
+  GREATER_THAN,
+  GREATER_THAN_OR_EQUALS,
+  LESS_THAN,
+  LESS_THAN_OR_EQUALS;
 
-  private final boolean requiresArgument;
-
-  ActionDataType() {
-    this.requiresArgument = true;
-  }
-
-  ActionDataType(boolean requiresArgument) {
-    this.requiresArgument = requiresArgument;
-  }
-
-  public static ActionDataType get(String actionType) {
-    if (actionType == null || actionType.isEmpty()) {
-      return ActionDataType.NONE;
+  public static ConditionOperationType get(String operationType) {
+    if (operationType == null || operationType.isEmpty()) {
+      return ConditionOperationType.NONE;
     }
     try {
-      return ActionDataType.valueOf(actionType);
+      return ConditionOperationType.valueOf(operationType);
     } catch (IllegalArgumentException e) {
-      return ActionDataType.NONE;
+      return ConditionOperationType.NONE;
     }
   }
 
-  public boolean requiresArgument() {
-    return this.requiresArgument;
+  public String getSymbol() {
+    return switch (this) {
+      case EQUALS -> "==";
+      case NOT_EQUALS -> "!=";
+      case GREATER_THAN -> ">";
+      case GREATER_THAN_OR_EQUALS -> ">=";
+      case LESS_THAN -> "<";
+      case LESS_THAN_OR_EQUALS -> "<=";
+      default -> "";
+    };
   }
 
-  public String getId() {
-    return "actionDataType." + this.name().toLowerCase(Locale.ROOT);
+  public boolean evaluate(int value1, int value2) {
+    return switch (this) {
+      case EQUALS -> value1 == value2;
+      case NOT_EQUALS -> value1 != value2;
+      case GREATER_THAN -> value1 > value2;
+      case GREATER_THAN_OR_EQUALS -> value1 >= value2;
+      case LESS_THAN -> value1 < value2;
+      case LESS_THAN_OR_EQUALS -> value1 <= value2;
+      default -> false;
+    };
   }
 }

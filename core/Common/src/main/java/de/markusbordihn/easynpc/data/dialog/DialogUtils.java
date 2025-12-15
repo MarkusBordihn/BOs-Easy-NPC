@@ -22,12 +22,15 @@ package de.markusbordihn.easynpc.data.dialog;
 import de.markusbordihn.easynpc.data.action.ActionDataEntry;
 import de.markusbordihn.easynpc.data.action.ActionDataSet;
 import de.markusbordihn.easynpc.data.action.ActionDataType;
+import de.markusbordihn.easynpc.data.scoreboard.ScoreboardData;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import de.markusbordihn.easynpc.utils.TextFormattingCodes;
 import java.util.LinkedHashSet;
 import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import net.minecraft.client.gui.Font;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
@@ -37,6 +40,7 @@ public class DialogUtils {
 
   private static final String MACRO_NPC_STRING = "@npc";
   private static final String MACRO_INITIATOR_STRING = "@initiator";
+  private static final Pattern SCORE_PATTERN = Pattern.compile("@score\\(([a-zA-Z0-9_.-]+)\\)");
   private static final int MAX_DIALOG_LINE_LENGTH = 178;
   private static final int MAX_SMALL_BUTTON_NAME_LENGTH = 20;
 
@@ -47,10 +51,18 @@ public class DialogUtils {
       return component.getString();
     }
     return parseDialogText(
-        component.getString(), dialogMetaData.livingEntity(), dialogMetaData.player());
+        component.getString(),
+        dialogMetaData.livingEntity(),
+        dialogMetaData.player(),
+        dialogMetaData.scoreboardData());
   }
 
   public static String parseDialogText(String text, LivingEntity entity, Player player) {
+    return parseDialogText(text, entity, player, null);
+  }
+
+  public static String parseDialogText(
+      String text, LivingEntity entity, Player player, ScoreboardData scoreboardData) {
 
     // Handle dialog macros, if any.
     if (hasDialogMacros(text)) {
@@ -62,6 +74,18 @@ public class DialogUtils {
       // Replace player macros.
       if (player != null) {
         text = text.replace(MACRO_INITIATOR_STRING, player.getName().getString());
+
+        if (scoreboardData != null) {
+          Matcher matcher = SCORE_PATTERN.matcher(text);
+          StringBuilder sb = new StringBuilder();
+          while (matcher.find()) {
+            String objectiveName = matcher.group(1);
+            int score = scoreboardData.getScore(objectiveName);
+            matcher.appendReplacement(sb, Matcher.quoteReplacement(String.valueOf(score)));
+          }
+          matcher.appendTail(sb);
+          text = sb.toString();
+        }
       }
     }
 
@@ -81,7 +105,9 @@ public class DialogUtils {
   public static boolean hasDialogMacros(String text) {
     return text != null
         && !text.isEmpty()
-        && (text.contains(MACRO_NPC_STRING) || text.contains(MACRO_INITIATOR_STRING));
+        && (text.contains(MACRO_NPC_STRING)
+            || text.contains(MACRO_INITIATOR_STRING)
+            || text.contains("@score("));
   }
 
   public static String generateButtonLabel(String name) {

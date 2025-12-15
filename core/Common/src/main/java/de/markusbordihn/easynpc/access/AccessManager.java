@@ -43,6 +43,14 @@ public class AccessManager {
       return false;
     }
 
+    // Check if command source has gamemaster permissions (e.g., command blocks, console).
+    if (context.hasPermission(Commands.LEVEL_GAMEMASTERS)) {
+      log.debug(
+          "[Access allowed] Command source with gamemaster permissions accessing EasyNPC with UUID {}!",
+          uuid);
+      return true;
+    }
+
     // Check if server player is available and skip access check if not.
     try {
       ServerPlayer serverPlayer = context.getPlayerOrException();

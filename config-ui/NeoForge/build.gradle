@@ -69,7 +69,7 @@ dependencies {
   }
 
   // Test dependencies
-  runtimeOnly "curse.maven:create-328085:7178775"
+  // runtimeOnly "curse.maven:create-328085:7178775"
 }
 
 // NeoGradle compiles the game, but we don't want to add our common code to the game's code
