@@ -19,13 +19,25 @@
 
 package de.markusbordihn.easynpc.data.dialog;
 
+import de.markusbordihn.easynpc.data.scoreboard.ScoreboardData;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 
-public record DialogMetaData(LivingEntity livingEntity, Player player) {
+public record DialogMetaData(
+    LivingEntity livingEntity, Player player, ScoreboardData scoreboardData) {
+
+  public DialogMetaData(LivingEntity livingEntity, Player player) {
+    this(livingEntity, player, null);
+  }
 
   @Override
   public String toString() {
-    return "DialogMetaData [livingEntity=" + livingEntity + ", player=" + player + "]";
+    return "DialogMetaData [livingEntity="
+        + livingEntity
+        + ", player="
+        + player
+        + ", scoreboardData="
+        + scoreboardData
+        + "]";
   }
 }

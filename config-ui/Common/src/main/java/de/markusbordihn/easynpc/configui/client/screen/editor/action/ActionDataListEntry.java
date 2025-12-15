@@ -27,6 +27,7 @@ import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.data.action.ActionDataEntry;
 import de.markusbordihn.easynpc.data.action.ActionDataSet;
 import de.markusbordihn.easynpc.data.action.ActionDataType;
+import de.markusbordihn.easynpc.data.scoreboard.ScoreboardOperation;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import de.markusbordihn.easynpc.utils.TextUtils;
 import net.minecraft.client.Minecraft;
@@ -180,6 +181,16 @@ public class ActionDataListEntry extends ObjectSelectionList.Entry<ActionDataLis
           guiGraphics,
           this.font,
           TextUtils.limitString(this.actionDataEntry.blockPos().toString(), 16),
+          fieldsLeft + VALUE_LEFT_POS + 2,
+          top + 5,
+          Constants.FONT_COLOR_BLACK);
+    } else if (this.actionDataType == ActionDataType.SCOREBOARD) {
+      ScoreboardOperation operation =
+          ScoreboardOperation.fromCommand(this.actionDataEntry.command());
+      Text.drawConfigString(
+          guiGraphics,
+          this.font,
+          operation.getTranslationKey(),
           fieldsLeft + VALUE_LEFT_POS + 2,
           top + 5,
           Constants.FONT_COLOR_BLACK);
