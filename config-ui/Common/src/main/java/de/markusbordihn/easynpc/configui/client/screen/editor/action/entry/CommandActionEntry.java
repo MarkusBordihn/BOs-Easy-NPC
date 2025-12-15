@@ -55,10 +55,10 @@ public class CommandActionEntry extends ActionEntryWidget {
 
   @Override
   public void render(GuiGraphics guiGraphics, int editorLeft, int editorTop) {
-    Text.drawString(
+    Text.drawConfigString(
         guiGraphics,
         this.font,
-        "Action Command",
+        "action.command",
         editorLeft + 2,
         editorTop + 5,
         Constants.FONT_COLOR_DEFAULT);

@@ -70,8 +70,8 @@ class ActionUtilsTest {
   @DisplayName("Should handle message shortcuts with quotes correctly")
   void testParseAction_messageShortcutWithQuotes() {
     String result = ActionUtils.parseAction("/error_message \"Test\" Error", null, null);
-    assertTrue(result.contains("Test Error"));
-    assertFalse(result.contains("\"Test\""));
+    assertTrue(result.contains("Test"));
+    assertTrue(result.contains("\\\""));
   }
 
   @Test
@@ -142,5 +142,29 @@ class ActionUtilsTest {
     String result = ActionUtils.parseAction("/error_message   Test   ", null, null);
     assertTrue(result.contains("Test"));
     assertFalse(result.contains("   Test   "));
+  }
+
+  @Test
+  @DisplayName("Should keep @score macro when no player provided")
+  void testParseAction_scoreMacroWithoutPlayer() {
+    String command = "/say Your score is @score(kills)";
+    String result = ActionUtils.parseAction(command, null, null);
+    assertEquals(command, result);
+  }
+
+  @Test
+  @DisplayName("Should escape JSON special characters in message shortcuts")
+  void testParseAction_jsonEscaping() {
+    String result = ActionUtils.parseAction("/error_message Test\\nNew\"Line", null, null);
+    assertTrue(result.contains("\\\\"));
+    assertTrue(result.contains("\\\""));
+    assertTrue(result.contains("\\n"));
+  }
+
+  @Test
+  @DisplayName("Should handle backslashes in message shortcuts")
+  void testParseAction_backslashEscaping() {
+    String result = ActionUtils.parseAction("/info_message C:\\\\Path\\\\File", null, null);
+    assertTrue(result.contains("\\\\"));
   }
 }

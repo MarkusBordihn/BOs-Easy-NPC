@@ -23,12 +23,18 @@ import de.markusbordihn.easynpc.data.action.ActionEventSet;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
 import de.markusbordihn.easynpc.data.attribute.BaseAttributes;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
+import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
+import de.markusbordihn.easynpc.data.dialog.DialogTextData;
 import de.markusbordihn.easynpc.data.editor.EditorType;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataSet;
+import de.markusbordihn.easynpc.data.scoreboard.ScoreboardData;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import java.util.HashSet;
+import java.util.Set;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.server.level.ServerPlayer;
 
 public class AdditionalScreenData {
 
@@ -39,6 +45,7 @@ public class AdditionalScreenData {
   private static final String DIALOG_DATA_TAG = "DialogData";
   private static final String EDITOR_TYPE_TAG = "EditorType";
   private static final String OBJECTIVE_DATA_TAG = "ObjectiveData";
+  private static final String SCOREBOARD_DATA_TAG = "ScoreboardData";
 
   private final ActionEventSet actionEventSet;
   private final ActionEventType actionEventType;
@@ -48,6 +55,7 @@ public class AdditionalScreenData {
   private final DialogDataSet dialogDataSet;
   private final EditorType editorType;
   private final ObjectiveDataSet objectiveDataSet;
+  private final ScoreboardData scoreboardData;
 
   public AdditionalScreenData(CompoundTag compoundTag) {
     // Processing know data.
@@ -58,6 +66,7 @@ public class AdditionalScreenData {
     this.dialogDataSet = getDialogDataSet(compoundTag);
     this.editorType = getEditorType(compoundTag);
     this.objectiveDataSet = getObjectiveDataSet(compoundTag);
+    this.scoreboardData = getScoreboardData(compoundTag);
 
     // Store data and remove already processed data.
     this.data = compoundTag;
@@ -68,6 +77,7 @@ public class AdditionalScreenData {
     this.data.remove(DIALOG_DATA_TAG);
     this.data.remove(EDITOR_TYPE_TAG);
     this.data.remove(OBJECTIVE_DATA_TAG);
+    this.data.remove(SCOREBOARD_DATA_TAG);
   }
 
   public static void addActionEventType(CompoundTag compoundTag, ActionEventType actionEventType) {
@@ -200,6 +210,60 @@ public class AdditionalScreenData {
     return compoundTag != null && compoundTag.contains(OBJECTIVE_DATA_TAG);
   }
 
+  public static void addScoreboardData(CompoundTag compoundTag, ScoreboardData scoreboardData) {
+    if (compoundTag == null || scoreboardData == null) {
+      return;
+    }
+    compoundTag.put(SCOREBOARD_DATA_TAG, scoreboardData.createTag());
+  }
+
+  public static ScoreboardData getScoreboardData(CompoundTag compoundTag) {
+    if (!hasScoreboardData(compoundTag)) {
+      return new ScoreboardData();
+    }
+    return new ScoreboardData(compoundTag.getCompound(SCOREBOARD_DATA_TAG));
+  }
+
+  public static boolean hasScoreboardData(CompoundTag compoundTag) {
+    return compoundTag != null && compoundTag.contains(SCOREBOARD_DATA_TAG);
+  }
+
+  public static void addDialogDataSet(
+      CompoundTag compoundTag, EasyNPC<?> easyNPC, ServerPlayer serverPlayer) {
+    if (compoundTag == null || easyNPC == null || easyNPC.getEasyNPCDialogData() == null) {
+      return;
+    }
+
+    DialogDataSet dialogDataSet = easyNPC.getEasyNPCDialogData().getDialogDataSet();
+    compoundTag.put(DIALOG_DATA_TAG, dialogDataSet.createTag());
+    if (serverPlayer != null) {
+      Set<String> objectiveNames = extractObjectiveNamesFromDialogDataSet(dialogDataSet);
+      if (!objectiveNames.isEmpty()) {
+        ScoreboardData scoreboardData = new ScoreboardData(serverPlayer, objectiveNames);
+        addScoreboardData(compoundTag, scoreboardData);
+      }
+    }
+  }
+
+  private static Set<String> extractObjectiveNamesFromDialogDataSet(DialogDataSet dialogDataSet) {
+    Set<String> objectiveNames = new HashSet<>();
+    if (dialogDataSet == null || !dialogDataSet.hasDialog()) {
+      return objectiveNames;
+    }
+
+    for (DialogDataEntry dialogEntry : dialogDataSet.getDialogsByLabel()) {
+      if (dialogEntry != null && dialogEntry.getDialogTexts() != null) {
+        for (DialogTextData dialogTextData : dialogEntry.getDialogTexts()) {
+          if (dialogTextData != null && dialogTextData.text() != null) {
+            objectiveNames.addAll(ScoreboardData.parseScoreMacros(dialogTextData.text()));
+          }
+        }
+      }
+    }
+
+    return objectiveNames;
+  }
+
   public ActionEventType getActionEventType() {
     return this.actionEventType;
   }
@@ -248,5 +312,9 @@ public class AdditionalScreenData {
 
   public boolean hasDialogDataSet() {
     return this.dialogDataSet != null;
+  }
+
+  public ScoreboardData getScoreboardData() {
+    return this.scoreboardData;
   }
 }

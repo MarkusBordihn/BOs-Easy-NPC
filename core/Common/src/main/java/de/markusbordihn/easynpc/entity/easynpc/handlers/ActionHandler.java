@@ -19,8 +19,6 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.handlers;
 
-import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.ParseResults;
 import de.markusbordihn.easynpc.data.action.ActionDataEntry;
 import de.markusbordihn.easynpc.data.action.ActionDataSet;
 import de.markusbordihn.easynpc.data.action.ActionDataType;
@@ -29,19 +27,15 @@ import de.markusbordihn.easynpc.data.action.ActionGroup;
 import de.markusbordihn.easynpc.data.action.ActionManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventDataCapable;
-import de.markusbordihn.easynpc.entity.easynpc.data.DialogDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.TickerDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.TradingDataCapable;
-import java.util.HashSet;
+import de.markusbordihn.easynpc.entity.easynpc.handlers.action.ActionValidator;
+import de.markusbordihn.easynpc.entity.easynpc.handlers.action.executor.CommandActionExecutor;
+import de.markusbordihn.easynpc.entity.easynpc.handlers.action.executor.DialogActionExecutor;
+import de.markusbordihn.easynpc.entity.easynpc.handlers.action.executor.ScoreboardActionExecutor;
 import java.util.List;
-import java.util.Locale;
-import java.util.Set;
-import java.util.UUID;
-import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
@@ -55,131 +49,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 
 public interface ActionHandler<E extends PathfinderMob> extends EasyNPC<E> {
-
-  Set<String> BLOCKED_UNSAFE_NPC_COMMANDS =
-      new HashSet<>(
-          List.of(
-              "ban-ip",
-              "ban",
-              "banlist",
-              "debug",
-              "deop",
-              "difficulty",
-              "forceload",
-              "gamerule",
-              "kick",
-              "op",
-              "pardon",
-              "reload",
-              "save-all",
-              "save-off",
-              "save-on",
-              "setidletimeout",
-              "setworldspawn",
-              "stop",
-              "whitelist"));
-
-  private static boolean isBlockedUnsafeNPCCommand(String command) {
-    if (command == null || command.isBlank()) {
-      return false;
-    }
-    String cmd = command.trim();
-    if (cmd.startsWith("/")) {
-      cmd = cmd.substring(1);
-    }
-    String[] runParts = cmd.split("\\s+run\\s+");
-    String relevant = runParts[runParts.length - 1].trim();
-    if (relevant.startsWith("/")) {
-      relevant = relevant.substring(1);
-    }
-    String mainCmd = relevant.split(" ")[0].toLowerCase(Locale.ROOT);
-    return BLOCKED_UNSAFE_NPC_COMMANDS.contains(mainCmd);
-  }
-
-  private static boolean validateActionData(
-      ActionDataEntry actionDataEntry, ServerPlayer serverPlayer) {
-    return actionDataEntry != null
-        && serverPlayer != null
-        && actionDataEntry.isValidAndNotEmpty()
-        && !serverPlayer.level().isClientSide();
-  }
-
-  static void executeEntityCommand(
-      String command, Entity entity, int permissionLevel, boolean debug) {
-    MinecraftServer minecraftServer = entity.getServer();
-    if (minecraftServer == null) {
-      log.error("No Minecraft server found for entity {}", entity);
-      return;
-    }
-    if (isBlockedUnsafeNPCCommand(command)) {
-      log.warn(
-          "Blocked unsafe entity command {} for {} with permission level {}!",
-          command,
-          entity,
-          permissionLevel);
-      return;
-    }
-    if (command.startsWith("/")) {
-      command = command.substring(1);
-    }
-    log.debug(
-        "Execute Entity {} Command: \"{}\" with permission level {}",
-        entity,
-        command,
-        permissionLevel);
-    Commands commands = minecraftServer.getCommands();
-    CommandSourceStack commandSourceStack =
-        minecraftServer
-            .createCommandSourceStack()
-            .withEntity(entity)
-            .withPosition(entity.position())
-            .withRotation(entity.getRotationVector())
-            .withPermission(permissionLevel);
-    CommandDispatcher<CommandSourceStack> commandDispatcher = commands.getDispatcher();
-    ParseResults<CommandSourceStack> parseResults =
-        commandDispatcher.parse(
-            command, debug ? commandSourceStack : commandSourceStack.withSuppressedOutput());
-    commands.performCommand(parseResults, command);
-  }
-
-  static void executePlayerCommand(
-      String command, ServerPlayer serverPlayer, int permissionLevel, boolean debug) {
-    MinecraftServer minecraftServer = serverPlayer.getServer();
-    if (minecraftServer == null) {
-      log.error("No Minecraft server found for player {}", serverPlayer);
-      return;
-    }
-    if (isBlockedUnsafeNPCCommand(command)) {
-      log.warn(
-          "Blocked unsafe player command {} for {} with permission level {}!",
-          command,
-          serverPlayer,
-          permissionLevel);
-      return;
-    }
-    if (command.startsWith("/")) {
-      command = command.substring(1);
-    }
-    log.debug(
-        "Execute Player {} Command: \"{}\" with permission level {}",
-        serverPlayer,
-        command,
-        permissionLevel);
-    Commands commands = minecraftServer.getCommands();
-    CommandSourceStack commandSourceStack =
-        minecraftServer
-            .createCommandSourceStack()
-            .withEntity(serverPlayer)
-            .withPosition(serverPlayer.position())
-            .withRotation(serverPlayer.getRotationVector())
-            .withPermission(permissionLevel)
-            .withLevel(serverPlayer.serverLevel());
-    CommandDispatcher<CommandSourceStack> commandDispatcher = commands.getDispatcher();
-    ParseResults<CommandSourceStack> parseResults =
-        commandDispatcher.parse(
-            command, debug ? commandSourceStack : commandSourceStack.withSuppressedOutput());
-    commands.performCommand(parseResults, command);
-  }
 
   default List<? extends Player> getPlayersInRange(Double range) {
     Entity entity = this.getEntity();
@@ -387,7 +256,7 @@ public interface ActionHandler<E extends PathfinderMob> extends EasyNPC<E> {
   }
 
   default void executeAction(ActionDataEntry actionDataEntry, ServerPlayer serverPlayer) {
-    if (!validateActionData(actionDataEntry, serverPlayer)) {
+    if (!ActionValidator.validateActionData(actionDataEntry, serverPlayer)) {
       return;
     }
     switch (actionDataEntry.actionDataType()) {
@@ -395,9 +264,18 @@ public interface ActionHandler<E extends PathfinderMob> extends EasyNPC<E> {
         break;
       case COMMAND:
         if (actionDataEntry.executeAsUser()) {
-          this.executePlayerCommand(actionDataEntry, serverPlayer);
+          CommandActionExecutor.executeAsPlayer(
+              actionDataEntry,
+              serverPlayer,
+              this.getLivingEntity(),
+              this.getEasyNPCActionEventData());
         } else {
-          this.executeEntityCommand(actionDataEntry, serverPlayer);
+          CommandActionExecutor.executeAsEntity(
+              actionDataEntry,
+              serverPlayer,
+              this.getEntity(),
+              this.getLivingEntity(),
+              this.getEasyNPCActionEventData());
         }
         break;
       case CLOSE_DIALOG:
@@ -405,25 +283,33 @@ public interface ActionHandler<E extends PathfinderMob> extends EasyNPC<E> {
         break;
       case INTERACT_BLOCK:
         BlockPos blockPos = actionDataEntry.blockPos();
-        if (blockPos != null && !blockPos.equals(BlockPos.ZERO)) {
+        if (ActionValidator.validateBlockPos(blockPos)) {
           this.interactWithBlock(blockPos);
         } else {
           log.error("No block position found for action {}", actionDataEntry);
         }
         break;
       case OPEN_DEFAULT_DIALOG:
-        this.openDefaultDialog(actionDataEntry, serverPlayer);
+        DialogActionExecutor.openDefaultDialog(
+            actionDataEntry, serverPlayer, this.getEasyNPCDialogData());
         break;
       case OPEN_NAMED_DIALOG:
-        this.openNamedDialog(actionDataEntry, serverPlayer);
+        DialogActionExecutor.openNamedDialog(
+            actionDataEntry, serverPlayer, this.getEasyNPCDialogData());
         break;
       case OPEN_TRADING_SCREEN:
         TradingDataCapable<E> tradingData = this.getEasyNPCTradingData();
         if (tradingData != null) {
           tradingData.openTradingScreen(serverPlayer);
         } else {
-          log.error("No trading data found for action {}", actionDataEntry);
+          log.warn(
+              "Cannot execute OPEN_TRADING_SCREEN action for player {}: No trading data found in action {}",
+              serverPlayer.getName().getString(),
+              actionDataEntry);
         }
+        break;
+      case SCOREBOARD:
+        ScoreboardActionExecutor.execute(actionDataEntry, serverPlayer);
         break;
       default:
         log.warn(
@@ -432,99 +318,5 @@ public interface ActionHandler<E extends PathfinderMob> extends EasyNPC<E> {
             actionDataEntry);
         break;
     }
-  }
-
-  default void openDefaultDialog(ActionDataEntry actionDataEntry, ServerPlayer serverPlayer) {
-    if (!validateActionData(actionDataEntry, serverPlayer)) {
-      return;
-    }
-    DialogDataCapable<?> dialogData = this.getEasyNPCDialogData();
-    if (dialogData != null) {
-      dialogData.openDefaultDialog(serverPlayer);
-    } else {
-      log.error("No dialog data found for action {}", actionDataEntry);
-      serverPlayer.closeContainer();
-    }
-  }
-
-  default void openNamedDialog(ActionDataEntry actionDataEntry, ServerPlayer serverPlayer) {
-    if (!validateActionData(actionDataEntry, serverPlayer)) {
-      return;
-    }
-    String dialogLabel = actionDataEntry.command();
-    DialogDataCapable<?> dialogData = this.getEasyNPCDialogData();
-    if (dialogLabel != null
-        && !dialogLabel.isEmpty()
-        && dialogData != null
-        && dialogData.hasDialog(dialogLabel)) {
-      UUID dialogId = dialogData.getDialogId(dialogLabel);
-      dialogData.openDialog(serverPlayer, dialogId);
-    } else {
-      log.error("Unknown dialog label {} for action {}", dialogLabel, actionDataEntry);
-      serverPlayer.closeContainer();
-    }
-  }
-
-  default void executePlayerCommand(ActionDataEntry actionDataEntry, ServerPlayer serverPlayer) {
-    if (!validateActionData(actionDataEntry, serverPlayer)) {
-      return;
-    }
-    ActionEventDataCapable<E> actionEventData = this.getEasyNPCActionEventData();
-    if (actionEventData == null) {
-      log.error("No action event data found for action {}", actionDataEntry);
-      return;
-    }
-    int userPermissionLevel = actionDataEntry.permissionLevel();
-    if (userPermissionLevel > actionEventData.getActionPermissionLevel()) {
-      log.warn(
-          "User permission level {} is lower than action permission level {} for action {}",
-          actionEventData.getActionPermissionLevel(),
-          userPermissionLevel,
-          actionDataEntry);
-      userPermissionLevel = actionEventData.getActionPermissionLevel();
-    }
-
-    // Execute action as user with define permission level (default: 1).
-    log.debug(
-        "Try to execute action {} as user {} with user permission level {} of requested action permission level {} ...",
-        actionDataEntry,
-        serverPlayer,
-        userPermissionLevel,
-        actionDataEntry.permissionLevel());
-    executePlayerCommand(
-        actionDataEntry.getAction(this.getLivingEntity(), serverPlayer),
-        serverPlayer,
-        userPermissionLevel,
-        actionDataEntry.enableDebug());
-  }
-
-  default void executeEntityCommand(ActionDataEntry actionDataEntry, ServerPlayer serverPlayer) {
-    if (!validateActionData(actionDataEntry, serverPlayer)) {
-      return;
-    }
-    ActionEventDataCapable<E> actionEventData = this.getEasyNPCActionEventData();
-    if (actionEventData == null) {
-      log.error("No action event data found for action {}", actionDataEntry);
-      return;
-    }
-    int ownerPermissionLevel = actionEventData.getActionPermissionLevel();
-    if (ownerPermissionLevel > 3) {
-      ownerPermissionLevel = 3;
-    } else if (ownerPermissionLevel <= 0) {
-      ownerPermissionLevel = 1;
-    }
-
-    // Execute action as NPC entity with owner permission level.
-    log.debug(
-        "Try to execute action {} as entity {} with owner permission level {} of max. {} ...",
-        actionDataEntry,
-        this.getEntity(),
-        ownerPermissionLevel,
-        actionEventData.getActionPermissionLevel());
-    executeEntityCommand(
-        actionDataEntry.getAction(this.getLivingEntity(), serverPlayer),
-        this.getEntity(),
-        ownerPermissionLevel,
-        actionDataEntry.enableDebug());
   }
 }
