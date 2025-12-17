@@ -17,25 +17,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.configui.menu.configuration;
+package de.markusbordihn.easynpc.menu;
 
-import de.markusbordihn.easynpc.configui.menu.ConfigUIMenu;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.MenuType;
+import de.markusbordihn.easynpc.data.screen.AdditionalScreenDataInterface;
+import de.markusbordihn.easynpc.data.screen.ScreenData;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import java.util.UUID;
 
-public class ConfigurationMenu extends ConfigUIMenu {
+public interface ScreenMenuInterface<D extends AdditionalScreenDataInterface> {
 
-  public ConfigurationMenu(
-      final MenuType<?> menuType, final int containerId, final Inventory playerInventory) {
-    this(menuType, containerId, playerInventory, new CompoundTag());
-  }
+  UUID getNpcUUID();
 
-  public ConfigurationMenu(
-      final MenuType<?> menuType,
-      final int containerId,
-      final Inventory playerInventory,
-      final CompoundTag data) {
-    super(menuType, containerId, playerInventory, data);
-  }
+  EasyNPC<?> getEasyNPC();
+
+  ScreenData getScreenData();
+
+  D getAdditionalScreenData();
 }

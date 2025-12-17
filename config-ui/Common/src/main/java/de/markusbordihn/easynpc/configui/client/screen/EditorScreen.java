@@ -19,15 +19,17 @@
 
 package de.markusbordihn.easynpc.configui.client.screen;
 
-import de.markusbordihn.easynpc.client.screen.Screen;
-import de.markusbordihn.easynpc.menu.EasyNPCMenu;
+import de.markusbordihn.easynpc.configui.menu.ConfigUIMenu;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
-public class EditorScreen<T extends EasyNPCMenu> extends Screen<T> {
+public class EditorScreen<T extends ConfigUIMenu>
+    extends de.markusbordihn.easynpc.client.screen.Screen<
+        T, de.markusbordihn.easynpc.configui.data.screen.AdditionalScreenData>
+    implements ScreenInterface {
 
   protected final ClientLevel clientLevel;
   protected final LocalPlayer localPlayer;

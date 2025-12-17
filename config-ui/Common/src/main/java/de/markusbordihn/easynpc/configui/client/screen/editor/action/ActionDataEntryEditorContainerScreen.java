@@ -37,6 +37,7 @@ import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.OpenD
 import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.OpenNamedDialogEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.OpenTradingScreenEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.ScoreboardEntry;
+import de.markusbordihn.easynpc.configui.data.editor.EditorType;
 import de.markusbordihn.easynpc.configui.menu.editor.EditorMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.action.ActionDataEntry;
@@ -44,7 +45,6 @@ import de.markusbordihn.easynpc.data.action.ActionDataSet;
 import de.markusbordihn.easynpc.data.action.ActionDataType;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
-import de.markusbordihn.easynpc.data.editor.EditorType;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
