@@ -17,7 +17,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.data.editor;
+package de.markusbordihn.easynpc.configui.data.editor;
 
 import de.markusbordihn.easynpc.Constants;
 import java.util.Locale;

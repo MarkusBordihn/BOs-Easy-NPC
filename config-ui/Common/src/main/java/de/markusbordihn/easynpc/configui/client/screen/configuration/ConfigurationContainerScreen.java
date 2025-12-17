@@ -19,18 +19,18 @@
 
 package de.markusbordihn.easynpc.configui.client.screen.configuration;
 
-import de.markusbordihn.easynpc.client.screen.ContainerScreen;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
+import de.markusbordihn.easynpc.configui.client.screen.ContainerScreen;
+import de.markusbordihn.easynpc.configui.menu.ConfigUIMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
-import de.markusbordihn.easynpc.menu.EasyNPCMenu;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
-public class ConfigurationContainerScreen<T extends EasyNPCMenu> extends ContainerScreen<T> {
+public class ConfigurationContainerScreen<T extends ConfigUIMenu> extends ContainerScreen<T> {
 
   protected Button homeButton = null;
   protected int buttonLeftPos;

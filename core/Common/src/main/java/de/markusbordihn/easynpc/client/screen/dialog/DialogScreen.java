@@ -33,6 +33,7 @@ import de.markusbordihn.easynpc.data.dialog.DialogMetaData;
 import de.markusbordihn.easynpc.data.dialog.DialogScreenLayout;
 import de.markusbordihn.easynpc.data.dialog.DialogUtils;
 import de.markusbordihn.easynpc.data.render.EntityRenderConfig;
+import de.markusbordihn.easynpc.data.screen.AdditionalScreenData;
 import de.markusbordihn.easynpc.menu.dialog.DialogMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.network.components.TextComponent;
@@ -46,7 +47,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Inventory;
 
-public class DialogScreen<T extends DialogMenu> extends Screen<T> {
+public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScreenData> {
 
   private static final int BUTTON_WIDTH = 126;
   private static final int MIDDLE_BUTTON_WIDTH = 200;

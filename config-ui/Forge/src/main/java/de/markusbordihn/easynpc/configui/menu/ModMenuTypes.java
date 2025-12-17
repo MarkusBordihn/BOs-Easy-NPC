@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.configui.menu;
 
 import de.markusbordihn.easynpc.configui.Constants;
+import de.markusbordihn.easynpc.configui.data.editor.EditorType;
 import de.markusbordihn.easynpc.configui.menu.configuration.action.BasicActionConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.action.DialogActionConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.action.DistanceActionConfigurationMenuWrapper;
@@ -67,7 +68,6 @@ import de.markusbordihn.easynpc.configui.menu.editor.DialogButtonEditorMenuWrapp
 import de.markusbordihn.easynpc.configui.menu.editor.DialogEditorMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.editor.DialogTextEditorMenuWrapper;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
-import de.markusbordihn.easynpc.data.editor.EditorType;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.registries.DeferredRegister;

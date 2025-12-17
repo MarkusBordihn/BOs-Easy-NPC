@@ -17,14 +17,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.client.screen;
+package de.markusbordihn.easynpc.configui.client.screen;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.components.CloseButton;
-import de.markusbordihn.easynpc.data.screen.AdditionalScreenData;
+import de.markusbordihn.easynpc.configui.data.screen.AdditionalScreenData;
+import de.markusbordihn.easynpc.configui.menu.ConfigUIMenu;
 import de.markusbordihn.easynpc.data.screen.ScreenData;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.menu.EasyNPCMenu;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -35,10 +35,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.glfw.GLFW;
 
-public class ContainerScreen<T extends EasyNPCMenu> extends AbstractContainerScreen<T>
+public class ContainerScreen<T extends ConfigUIMenu> extends AbstractContainerScreen<T>
     implements ScreenInterface {
 
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+  public static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   protected static double formerMouseX = -1;
   protected static double formerMouseY = -1;
   protected final Minecraft minecraftInstance;
@@ -61,14 +61,9 @@ public class ContainerScreen<T extends EasyNPCMenu> extends AbstractContainerScr
       T menu, Inventory inventory, Component component, int width, int height) {
     super(menu, inventory, component);
 
-    // Set screen size
     this.imageWidth = width;
     this.imageHeight = height;
-
-    // Get menu and screen data
     this.menu = menu;
-
-    // Get Minecraft instance and network message handler
     this.minecraftInstance = Minecraft.getInstance();
   }
 

@@ -21,6 +21,8 @@ package de.markusbordihn.easynpc.configui.menu;
 
 import de.markusbordihn.easynpc.access.AccessManager;
 import de.markusbordihn.easynpc.configui.Constants;
+import de.markusbordihn.easynpc.configui.data.editor.EditorType;
+import de.markusbordihn.easynpc.configui.data.screen.AdditionalScreenData;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenuHandler;
 import de.markusbordihn.easynpc.configui.menu.editor.EditorMenu;
@@ -28,8 +30,6 @@ import de.markusbordihn.easynpc.configui.menu.editor.EditorMenuHandler;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationTypeHelper;
-import de.markusbordihn.easynpc.data.editor.EditorType;
-import de.markusbordihn.easynpc.data.screen.AdditionalScreenData;
 import de.markusbordihn.easynpc.data.screen.ScreenData;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import java.util.UUID;

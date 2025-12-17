@@ -20,10 +20,10 @@
 package de.markusbordihn.easynpc.configui.network.message.client;
 
 import de.markusbordihn.easynpc.configui.Constants;
+import de.markusbordihn.easynpc.configui.data.screen.AdditionalScreenData;
+import de.markusbordihn.easynpc.configui.menu.ClientConfigUIMenuManager;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.dialog.DialogDataManager;
-import de.markusbordihn.easynpc.data.screen.AdditionalScreenData;
-import de.markusbordihn.easynpc.menu.ClientMenuManager;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
@@ -66,11 +66,12 @@ public record OpenMenuCallbackMessage(UUID uuid, UUID menuId, CompoundTag data)
     }
 
     // Update menu data within the client menu manager
-    ClientMenuManager.setMenuData(menuId, data);
+    ClientConfigUIMenuManager.setMenuData(menuId, data);
 
     // Check if additional screen data is available and re-use some of the data.
-    if (ClientMenuManager.hasAdditionalScreenData()) {
-      AdditionalScreenData additionalScreenData = ClientMenuManager.getAdditionalScreenData();
+    if (ClientConfigUIMenuManager.hasAdditionalScreenData()) {
+      AdditionalScreenData additionalScreenData =
+          ClientConfigUIMenuManager.getAdditionalScreenData();
 
       // Store dialog data set if available.
       if (additionalScreenData.hasDialogDataSet()) {
