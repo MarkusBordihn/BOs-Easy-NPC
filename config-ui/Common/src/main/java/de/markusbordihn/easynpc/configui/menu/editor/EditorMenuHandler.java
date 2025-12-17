@@ -19,8 +19,8 @@
 
 package de.markusbordihn.easynpc.configui.menu.editor;
 
-import de.markusbordihn.easynpc.data.editor.EditorType;
-import de.markusbordihn.easynpc.data.screen.AdditionalScreenData;
+import de.markusbordihn.easynpc.configui.data.editor.EditorType;
+import de.markusbordihn.easynpc.configui.data.screen.AdditionalScreenData;
 import de.markusbordihn.easynpc.data.screen.ScreenData;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.network.components.TextComponent;
