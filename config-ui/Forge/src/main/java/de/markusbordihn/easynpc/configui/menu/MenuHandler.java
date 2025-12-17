@@ -19,10 +19,10 @@
 
 package de.markusbordihn.easynpc.configui.menu;
 
+import de.markusbordihn.easynpc.configui.data.editor.EditorType;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.menu.editor.EditorMenu;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
-import de.markusbordihn.easynpc.data.editor.EditorType;
 import java.util.EnumMap;
 import java.util.Map;
 import net.minecraft.world.inventory.MenuType;

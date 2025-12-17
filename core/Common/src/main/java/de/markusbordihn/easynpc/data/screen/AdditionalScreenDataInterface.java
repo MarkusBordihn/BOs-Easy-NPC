@@ -17,25 +17,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.configui.menu.configuration;
+package de.markusbordihn.easynpc.data.screen;
 
-import de.markusbordihn.easynpc.configui.menu.ConfigUIMenu;
+import de.markusbordihn.easynpc.data.action.ActionEventSet;
+import de.markusbordihn.easynpc.data.action.ActionEventType;
+import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
+import de.markusbordihn.easynpc.data.scoreboard.ScoreboardData;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.MenuType;
 
-public class ConfigurationMenu extends ConfigUIMenu {
+public interface AdditionalScreenDataInterface {
 
-  public ConfigurationMenu(
-      final MenuType<?> menuType, final int containerId, final Inventory playerInventory) {
-    this(menuType, containerId, playerInventory, new CompoundTag());
-  }
+  ActionEventSet getActionEventSet();
 
-  public ConfigurationMenu(
-      final MenuType<?> menuType,
-      final int containerId,
-      final Inventory playerInventory,
-      final CompoundTag data) {
-    super(menuType, containerId, playerInventory, data);
-  }
+  ActionEventType getActionEventType();
+
+  DialogDataSet getDialogDataSet();
+
+  ScoreboardData getScoreboardData();
+
+  CompoundTag getData();
+
+  boolean hasDialogDataSet();
 }

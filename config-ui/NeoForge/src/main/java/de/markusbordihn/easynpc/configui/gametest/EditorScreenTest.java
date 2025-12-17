@@ -20,8 +20,8 @@
 package de.markusbordihn.easynpc.configui.gametest;
 
 import de.markusbordihn.easynpc.configui.Constants;
+import de.markusbordihn.easynpc.configui.data.editor.EditorType;
 import de.markusbordihn.easynpc.configui.menu.ModMenuTypes;
-import de.markusbordihn.easynpc.data.editor.EditorType;
 import de.markusbordihn.easynpc.entity.ModEntityType;
 import de.markusbordihn.easynpc.entity.ModNPCEntityType;
 import net.minecraft.gametest.framework.GameTest;

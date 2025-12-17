@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.configui.network.message;
 
 import de.markusbordihn.easynpc.configui.Constants;
+import de.markusbordihn.easynpc.configui.data.editor.EditorType;
 import de.markusbordihn.easynpc.configui.network.NetworkHandlerManager;
 import de.markusbordihn.easynpc.configui.network.message.server.AddOrUpdateObjectiveMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeActionEventMessage;
@@ -76,7 +77,6 @@ import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.data.display.DisplayAttributeType;
 import de.markusbordihn.easynpc.data.display.NameVisibilityType;
-import de.markusbordihn.easynpc.data.editor.EditorType;
 import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataEntry;
 import de.markusbordihn.easynpc.data.position.CustomPosition;
