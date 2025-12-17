@@ -22,17 +22,14 @@ package de.markusbordihn.easynpc.client.screen;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.components.Graphics;
 import de.markusbordihn.easynpc.data.action.ActionEventSet;
-import de.markusbordihn.easynpc.data.attribute.BaseAttributes;
 import de.markusbordihn.easynpc.data.dialog.DialogButtonEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
-import de.markusbordihn.easynpc.data.objective.ObjectiveDataSet;
 import de.markusbordihn.easynpc.data.render.RenderDataSet;
-import de.markusbordihn.easynpc.data.screen.AdditionalScreenData;
+import de.markusbordihn.easynpc.data.screen.AdditionalScreenDataInterface;
 import de.markusbordihn.easynpc.data.screen.ScreenData;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.data.ConfigurationDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.OwnerDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
 import de.markusbordihn.easynpc.menu.ClientMenuManager;
@@ -42,13 +39,13 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 
-public interface ScreenInterface {
+public interface ScreenInterface<D extends AdditionalScreenDataInterface> {
 
   EasyNPC<?> getEasyNPC();
 
   ScreenData getScreenData();
 
-  AdditionalScreenData getAdditionalScreenData();
+  D getAdditionalScreenData();
 
   default UUID getEasyNPCUUID() {
     return this.getScreenData().uuid();
@@ -99,20 +96,8 @@ public interface ScreenInterface {
     return this.getAdditionalScreenData().getActionEventSet();
   }
 
-  default BaseAttributes getBaseAttributes() {
-    return this.getAdditionalScreenData().getBaseAttributes();
-  }
-
-  default ConfigurationDataCapable<?> getConfigurationData() {
-    return this.getEasyNPC().getEasyNPCConfigurationData();
-  }
-
   default DialogDataSet getDialogDataSet() {
     return this.getAdditionalScreenData().getDialogDataSet();
-  }
-
-  default ObjectiveDataSet getObjectiveDataSet() {
-    return this.getAdditionalScreenData().getObjectiveDataSet();
   }
 
   default RenderDataSet getRenderDataSet() {
@@ -150,15 +135,13 @@ public interface ScreenInterface {
 
   default boolean isSwitchingToAnotherEasyNPCScreen(
       net.minecraft.client.gui.screens.Screen newScreen) {
-    // If newScreen is this screen or null, check if we have pending screen data.
     if (newScreen == this || newScreen == null) {
       ScreenData pendingScreenData = ClientMenuManager.getScreenData();
       return pendingScreenData != null && this.getEasyNPCUUID().equals(pendingScreenData.uuid());
     }
 
-    // Check if the new screen is an Easy NPC screen for the same NPC.
-    if (newScreen instanceof ScreenInterface
-        && this.getEasyNPCUUID().equals(((ScreenInterface) newScreen).getEasyNPCUUID())) {
+    if (newScreen instanceof ScreenInterface<?> screenInterface
+        && this.getEasyNPCUUID().equals(screenInterface.getEasyNPCUUID())) {
       return true;
     }
 

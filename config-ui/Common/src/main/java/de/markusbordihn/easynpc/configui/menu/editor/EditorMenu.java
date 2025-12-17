@@ -19,12 +19,12 @@
 
 package de.markusbordihn.easynpc.configui.menu.editor;
 
-import de.markusbordihn.easynpc.menu.EasyNPCMenu;
+import de.markusbordihn.easynpc.configui.menu.ConfigUIMenu;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 
-public class EditorMenu extends EasyNPCMenu {
+public class EditorMenu extends ConfigUIMenu {
 
   public EditorMenu(
       final MenuType<?> menuType, final int containerId, final Inventory playerInventory) {

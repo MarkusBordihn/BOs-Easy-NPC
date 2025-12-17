@@ -19,10 +19,10 @@
 
 package de.markusbordihn.easynpc.configui.gametest;
 
+import de.markusbordihn.easynpc.configui.data.editor.EditorType;
 import de.markusbordihn.easynpc.configui.menu.MenuHandlerInterface;
 import de.markusbordihn.easynpc.configui.menu.MenuManager;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
-import de.markusbordihn.easynpc.data.editor.EditorType;
 import de.markusbordihn.easynpc.gametest.GameTestHelpers;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
