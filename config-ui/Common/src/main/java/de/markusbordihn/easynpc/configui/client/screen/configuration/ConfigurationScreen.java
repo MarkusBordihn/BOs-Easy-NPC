@@ -19,16 +19,17 @@
 
 package de.markusbordihn.easynpc.configui.client.screen.configuration;
 
-import de.markusbordihn.easynpc.client.screen.Screen;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
+import de.markusbordihn.easynpc.configui.client.screen.ScreenInterface;
+import de.markusbordihn.easynpc.configui.data.screen.AdditionalScreenData;
+import de.markusbordihn.easynpc.configui.menu.ConfigUIMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.data.render.RenderType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ConfigurationDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.RenderDataCapable;
-import de.markusbordihn.easynpc.menu.EasyNPCMenu;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import java.util.Collections;
 import java.util.List;
@@ -39,7 +40,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Inventory;
 
-public class ConfigurationScreen<T extends EasyNPCMenu> extends Screen<T> {
+public class ConfigurationScreen<T extends ConfigUIMenu>
+    extends de.markusbordihn.easynpc.client.screen.Screen<T, AdditionalScreenData>
+    implements ScreenInterface {
 
   protected Button homeButton = null;
   protected int buttonLeftPos;

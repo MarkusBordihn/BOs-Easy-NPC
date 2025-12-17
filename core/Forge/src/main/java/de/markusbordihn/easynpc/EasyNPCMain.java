@@ -138,8 +138,7 @@ public class EasyNPCMain {
 
     // Register MOD bus events
     FMLCommonSetupEvent.getBus(modBusGroup).addListener(this::commonSetup);
-    EntityAttributeCreationEvent.BUS.addListener(
-        ModEntityType::entityAttributeCreation);
+    EntityAttributeCreationEvent.BUS.addListener(ModEntityType::entityAttributeCreation);
 
     // Register CLIENT MOD bus events (only on client side)
     if (FMLEnvironment.dist == Dist.CLIENT) {

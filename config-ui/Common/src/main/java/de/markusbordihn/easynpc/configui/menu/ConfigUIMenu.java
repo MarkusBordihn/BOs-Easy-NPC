@@ -17,10 +17,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.menu;
+package de.markusbordihn.easynpc.configui.menu;
 
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.data.screen.AdditionalScreenData;
+import de.markusbordihn.easynpc.configui.data.screen.AdditionalScreenData;
 import de.markusbordihn.easynpc.data.screen.ScreenData;
 import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
@@ -37,8 +37,9 @@ import net.minecraft.world.level.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class EasyNPCMenu extends AbstractContainerMenu
-    implements ScreenMenuInterface<de.markusbordihn.easynpc.data.screen.AdditionalScreenData> {
+public class ConfigUIMenu extends AbstractContainerMenu
+    implements de.markusbordihn.easynpc.menu.ScreenMenuInterface<
+        de.markusbordihn.easynpc.configui.data.screen.AdditionalScreenData> {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
@@ -48,25 +49,25 @@ public class EasyNPCMenu extends AbstractContainerMenu
   protected final AdditionalScreenData additionalScreenData;
   protected final EasyNPC<?> easyNPC;
 
-  public EasyNPCMenu(
+  public ConfigUIMenu(
       final MenuType<?> menuType, final int containerId, final Inventory playerInventory) {
     this(menuType, containerId, playerInventory, new CompoundTag());
   }
 
-  public EasyNPCMenu(
+  public ConfigUIMenu(
       final MenuType<?> menuType,
       final int containerId,
       final Inventory playerInventory,
       final CompoundTag data) {
     super(menuType, containerId);
 
-    // Get player and level data.
     this.player = playerInventory.player;
     this.level = playerInventory.player.level();
 
-    // Get screen data, if available.
     this.screenData =
-        this.level.isClientSide() ? ClientMenuManager.getScreenData() : ScreenData.decode(data);
+        this.level.isClientSide()
+            ? ClientConfigUIMenuManager.getScreenData()
+            : ScreenData.decode(data);
     if (this.screenData == null) {
       log.error("Screen data is missing for menu {} with {}", menuType, data);
       this.additionalScreenData = null;
@@ -74,16 +75,14 @@ public class EasyNPCMenu extends AbstractContainerMenu
       return;
     }
 
-    // Check if additional screen data is available.
     this.additionalScreenData =
         this.level.isClientSide()
-            ? ClientMenuManager.getAdditionalScreenData()
+            ? ClientConfigUIMenuManager.getAdditionalScreenData()
             : new AdditionalScreenData(this.screenData.additionalData());
     if (this.additionalScreenData == null) {
-      log.warn("Additional screen data is missing  menu {} with {}", menuType, this.screenData);
+      log.warn("Additional screen data is missing menu {} with {}", menuType, this.screenData);
     }
 
-    // Get easy NPC entity from screen data.
     this.easyNPC =
         this.level.isClientSide()
             ? LivingEntityManager.getEasyNPCEntityByUUID(getNpcUUID())
@@ -119,7 +118,7 @@ public class EasyNPCMenu extends AbstractContainerMenu
 
   @Override
   public boolean stillValid(Player player) {
-    return player.isAlive() && !player.isSpectator();
+    return player.isAlive();
   }
 
   @Override
@@ -131,7 +130,6 @@ public class EasyNPCMenu extends AbstractContainerMenu
 
     ItemStack itemStack = slot.getItem();
 
-    // Store changes if itemStack is not empty.
     if (itemStack.isEmpty()) {
       slot.set(ItemStack.EMPTY);
     } else {

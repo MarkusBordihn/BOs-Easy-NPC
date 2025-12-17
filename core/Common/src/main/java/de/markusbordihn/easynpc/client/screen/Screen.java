@@ -22,10 +22,10 @@ package de.markusbordihn.easynpc.client.screen;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.components.CloseButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
-import de.markusbordihn.easynpc.data.screen.AdditionalScreenData;
+import de.markusbordihn.easynpc.data.screen.AdditionalScreenDataInterface;
 import de.markusbordihn.easynpc.data.screen.ScreenData;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.menu.EasyNPCMenu;
+import de.markusbordihn.easynpc.menu.ScreenMenuInterface;
 import java.util.UUID;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -35,12 +35,15 @@ import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.glfw.GLFW;
 
-public class Screen<T extends EasyNPCMenu> extends net.minecraft.client.gui.screens.Screen
-    implements MenuAccess<T>, ScreenInterface {
+public class Screen<
+        T extends AbstractContainerMenu & ScreenMenuInterface<D>,
+        D extends AdditionalScreenDataInterface>
+    extends net.minecraft.client.gui.screens.Screen implements MenuAccess<T>, ScreenInterface<D> {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private static final int UPDATE_TICKS = 8;
@@ -108,7 +111,7 @@ public class Screen<T extends EasyNPCMenu> extends net.minecraft.client.gui.scre
   }
 
   @Override
-  public AdditionalScreenData getAdditionalScreenData() {
+  public D getAdditionalScreenData() {
     return menu.getAdditionalScreenData();
   }
 

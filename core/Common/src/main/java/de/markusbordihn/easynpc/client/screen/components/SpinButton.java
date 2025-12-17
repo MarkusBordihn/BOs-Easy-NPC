@@ -99,7 +99,7 @@ public class SpinButton<T> extends CustomButton {
   @Override
   public boolean mouseClicked(MouseButtonEvent mouseButtonEvent, boolean doubleClick) {
     if (this.nextButton.mouseClicked(mouseButtonEvent, doubleClick)
-      || this.previousButton.mouseClicked(mouseButtonEvent, doubleClick)) {
+        || this.previousButton.mouseClicked(mouseButtonEvent, doubleClick)) {
       return true;
     }
     return this.textButton.mouseClicked(mouseButtonEvent, doubleClick);
