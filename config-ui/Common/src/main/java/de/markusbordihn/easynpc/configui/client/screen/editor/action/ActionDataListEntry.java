@@ -38,14 +38,30 @@ import net.minecraft.network.chat.Component;
 
 public class ActionDataListEntry extends ObjectSelectionList.Entry<ActionDataListEntry> {
 
+  // Column position constants
   public static final int ID_LEFT_POS = 0;
   public static final int TYPE_LEFT_POS = 22;
   public static final int VALUE_LEFT_POS = 130;
   public static final int OPTIONS_LEFT_POS = 230;
+
+  // Layout constants
+  private static final int ENTRY_HEIGHT = 21;
+  private static final int FIELD_LEFT_OFFSET = 5;
+  private static final int FIELD_TOP_OFFSET = 5;
+  private static final int COLUMN_SEPARATOR_WIDTH = 1;
+  private static final int COLUMN_SEPARATOR_OFFSET = 3;
+  private static final int BUTTON_SPACING = 2;
+  private static final int BUTTON_SIZE = 18;
+  private static final int VALUE_MAX_LENGTH = 16;
+  private static final int LIST_WIDTH = 309;
+
+  // Color constants
+  private static final int COLOR_SEPARATOR_LINE = 0xffaaaaaa;
+  private static final int COLOR_COLUMN_SEPARATOR = 0xff666666;
+
   private final Font font;
   private final int leftPos;
   private final int topPos;
-  private final int entryHeight = 21;
   private final ActionDataEntry actionDataEntry;
   private final ActionDataType actionDataType;
   private final int actionDateEntriesSize;
@@ -81,8 +97,8 @@ public class ActionDataListEntry extends ObjectSelectionList.Entry<ActionDataLis
         new UpDownButton(
             this.leftPos + OPTIONS_LEFT_POS + 4,
             this.topPos,
-            18,
-            18,
+            BUTTON_SIZE,
+            BUTTON_SIZE,
             onPress -> {
               if (onUp != null) {
                 onUp.changeOrder(actionDataEntry);
@@ -95,10 +111,10 @@ public class ActionDataListEntry extends ObjectSelectionList.Entry<ActionDataLis
             });
     this.editButton =
         new EditButton(
-            this.upAndDownButton.getX() + this.upAndDownButton.getWidth() + 2,
+            this.upAndDownButton.getX() + this.upAndDownButton.getWidth() + BUTTON_SPACING,
             this.topPos,
-            18,
-            18,
+            BUTTON_SIZE,
+            BUTTON_SIZE,
             onPress -> {
               if (onEdit != null) {
                 onEdit.edit(actionDataEntry);
@@ -106,7 +122,7 @@ public class ActionDataListEntry extends ObjectSelectionList.Entry<ActionDataLis
             });
     this.deleteButton =
         new DeleteButton(
-            this.editButton.getX() + this.editButton.getWidth() + 2,
+            this.editButton.getX() + this.editButton.getWidth() + BUTTON_SPACING,
             this.topPos,
             onPress -> {
               if (onRemove != null) {
@@ -144,9 +160,14 @@ public class ActionDataListEntry extends ObjectSelectionList.Entry<ActionDataLis
 
     // Draw separator line
     guiGraphics.fill(
-        this.leftPos, top + entryHeight + 2, this.leftPos + 309, top + entryHeight + 3, 0xffaaaaaa);
+        this.leftPos,
+        top + entryHeight + 2,
+        this.leftPos + LIST_WIDTH,
+        top + entryHeight + 3,
+        COLOR_SEPARATOR_LINE);
 
-    int fieldsLeft = this.leftPos + 5;
+    int fieldsLeft = this.leftPos + FIELD_LEFT_OFFSET;
+    int fieldTop = top + FIELD_TOP_OFFSET;
 
     // Action Entry ID
     Text.drawString(
@@ -154,7 +175,7 @@ public class ActionDataListEntry extends ObjectSelectionList.Entry<ActionDataLis
         this.font,
         String.valueOf(entryId),
         fieldsLeft + ID_LEFT_POS + 2,
-        top + 5,
+        fieldTop,
         Constants.FONT_COLOR_BLACK);
 
     // Action Type
@@ -163,38 +184,11 @@ public class ActionDataListEntry extends ObjectSelectionList.Entry<ActionDataLis
         this.font,
         this.actionDataType.getId(),
         fieldsLeft + TYPE_LEFT_POS + 2,
-        top + 5,
+        fieldTop,
         Constants.FONT_COLOR_BLACK);
 
     // Value preview
-    if (this.actionDataType == ActionDataType.COMMAND
-        || this.actionDataType == ActionDataType.OPEN_NAMED_DIALOG) {
-      Text.drawString(
-          guiGraphics,
-          this.font,
-          TextUtils.limitString(this.actionDataEntry.command(), 16),
-          fieldsLeft + VALUE_LEFT_POS + 2,
-          top + 5,
-          Constants.FONT_COLOR_BLACK);
-    } else if (this.actionDataType == ActionDataType.INTERACT_BLOCK) {
-      Text.drawString(
-          guiGraphics,
-          this.font,
-          TextUtils.limitString(this.actionDataEntry.blockPos().toString(), 16),
-          fieldsLeft + VALUE_LEFT_POS + 2,
-          top + 5,
-          Constants.FONT_COLOR_BLACK);
-    } else if (this.actionDataType == ActionDataType.SCOREBOARD) {
-      ScoreboardOperation operation =
-          ScoreboardOperation.fromCommand(this.actionDataEntry.command());
-      Text.drawConfigString(
-          guiGraphics,
-          this.font,
-          operation.getTranslationKey(),
-          fieldsLeft + VALUE_LEFT_POS + 2,
-          top + 5,
-          Constants.FONT_COLOR_BLACK);
-    }
+    renderValuePreview(guiGraphics, fieldsLeft, fieldTop);
 
     // Up and down buttons
     this.upAndDownButton.render(guiGraphics, mouseX, mouseY, partialTicks);
@@ -212,28 +206,59 @@ public class ActionDataListEntry extends ObjectSelectionList.Entry<ActionDataLis
     this.renderSeparatorLines(guiGraphics, top);
   }
 
+  private void renderValuePreview(GuiGraphics guiGraphics, int fieldsLeft, int fieldTop) {
+    if (this.actionDataType == ActionDataType.COMMAND
+        || this.actionDataType == ActionDataType.OPEN_NAMED_DIALOG) {
+      Text.drawString(
+          guiGraphics,
+          this.font,
+          TextUtils.limitString(this.actionDataEntry.command(), VALUE_MAX_LENGTH),
+          fieldsLeft + VALUE_LEFT_POS + 2,
+          fieldTop,
+          Constants.FONT_COLOR_BLACK);
+    } else if (this.actionDataType == ActionDataType.INTERACT_BLOCK) {
+      Text.drawString(
+          guiGraphics,
+          this.font,
+          TextUtils.limitString(this.actionDataEntry.blockPos().toString(), VALUE_MAX_LENGTH),
+          fieldsLeft + VALUE_LEFT_POS + 2,
+          fieldTop,
+          Constants.FONT_COLOR_BLACK);
+    } else if (this.actionDataType == ActionDataType.SCOREBOARD) {
+      ScoreboardOperation operation =
+          ScoreboardOperation.fromCommand(this.actionDataEntry.command());
+      Text.drawConfigString(
+          guiGraphics,
+          this.font,
+          operation.getTranslationKey(),
+          fieldsLeft + VALUE_LEFT_POS + 2,
+          fieldTop,
+          Constants.FONT_COLOR_BLACK);
+    }
+  }
+
   public void renderSeparatorLines(GuiGraphics guiGraphics, int top) {
     // Draw vertical separator line for headers
     int separatorTop = top - 1;
-    int separatorLeft = this.leftPos + 5;
+    int separatorLeft = this.leftPos + FIELD_LEFT_OFFSET;
     guiGraphics.fill(
-        separatorLeft + ActionDataListEntry.TYPE_LEFT_POS - 3,
+        separatorLeft + TYPE_LEFT_POS - COLUMN_SEPARATOR_OFFSET,
         separatorTop,
-        separatorLeft + ActionDataListEntry.TYPE_LEFT_POS - 2,
-        separatorTop + entryHeight,
-        0xff666666);
+        separatorLeft + TYPE_LEFT_POS - COLUMN_SEPARATOR_OFFSET + COLUMN_SEPARATOR_WIDTH,
+        separatorTop + ENTRY_HEIGHT,
+        COLOR_COLUMN_SEPARATOR);
     guiGraphics.fill(
-        separatorLeft + ActionDataListEntry.VALUE_LEFT_POS - 3,
+        separatorLeft + VALUE_LEFT_POS - COLUMN_SEPARATOR_OFFSET,
         separatorTop,
-        separatorLeft + ActionDataListEntry.VALUE_LEFT_POS - 2,
-        separatorTop + entryHeight,
-        0xff666666);
+        separatorLeft + VALUE_LEFT_POS - COLUMN_SEPARATOR_OFFSET + COLUMN_SEPARATOR_WIDTH,
+        separatorTop + ENTRY_HEIGHT,
+        COLOR_COLUMN_SEPARATOR);
     guiGraphics.fill(
-        separatorLeft + ActionDataListEntry.OPTIONS_LEFT_POS - 3,
+        separatorLeft + OPTIONS_LEFT_POS - COLUMN_SEPARATOR_OFFSET,
         separatorTop,
-        separatorLeft + ActionDataListEntry.OPTIONS_LEFT_POS - 2,
-        separatorTop + entryHeight,
-        0xff666666);
+        separatorLeft + OPTIONS_LEFT_POS - COLUMN_SEPARATOR_OFFSET + COLUMN_SEPARATOR_WIDTH,
+        separatorTop + ENTRY_HEIGHT,
+        COLOR_COLUMN_SEPARATOR);
   }
 
   public interface OnRemove {
