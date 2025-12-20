@@ -30,10 +30,12 @@ public record ScreenData(
     UUID dialogId,
     UUID dialogButtonId,
     UUID actionDataEntryId,
+    UUID conditionDataEntryId,
     int pageIndex,
     CompoundTag additionalData) {
 
   public static final String SCREEN_DATA_ACTION_DATA_ENTRY_ID_TAG = "ActionDataEntryId";
+  public static final String SCREEN_DATA_CONDITION_DATA_ENTRY_ID_TAG = "ConditionDataEntryId";
   public static final String SCREEN_DATA_ADDITIONAL_DATA_TAG = "AdditionalData";
   public static final String SCREEN_DATA_DIALOG_BUTTON_ID_TAG = "DialogButtonId";
   public static final String SCREEN_DATA_DIALOG_ID_TAG = "DialogId";
@@ -43,7 +45,7 @@ public record ScreenData(
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   public ScreenData(UUID uuid, UUID dialogId) {
-    this(uuid, dialogId, null, null, 0, new CompoundTag());
+    this(uuid, dialogId, null, null, null, 0, new CompoundTag());
   }
 
   public static boolean hasScreenData(CompoundTag compoundTag) {
@@ -69,12 +71,17 @@ public record ScreenData(
         screenDataTag.contains(SCREEN_DATA_ACTION_DATA_ENTRY_ID_TAG)
             ? screenDataTag.getUUID(SCREEN_DATA_ACTION_DATA_ENTRY_ID_TAG)
             : null;
+    UUID conditionDataEntryId =
+        screenDataTag.contains(SCREEN_DATA_CONDITION_DATA_ENTRY_ID_TAG)
+            ? screenDataTag.getUUID(SCREEN_DATA_CONDITION_DATA_ENTRY_ID_TAG)
+            : null;
     int pageIndex = screenDataTag.getInt(SCREEN_DATA_PAGE_INDEX_TAG);
     CompoundTag data =
         screenDataTag.contains(SCREEN_DATA_ADDITIONAL_DATA_TAG)
             ? screenDataTag.getCompound(SCREEN_DATA_ADDITIONAL_DATA_TAG)
             : new CompoundTag();
-    return new ScreenData(uuid, dialogID, dialogButtonId, actionDataEntryId, pageIndex, data);
+    return new ScreenData(
+        uuid, dialogID, dialogButtonId, actionDataEntryId, conditionDataEntryId, pageIndex, data);
   }
 
   public CompoundTag encode() {
@@ -88,6 +95,9 @@ public record ScreenData(
     }
     if (this.actionDataEntryId != null) {
       screenDataTag.putUUID(SCREEN_DATA_ACTION_DATA_ENTRY_ID_TAG, this.actionDataEntryId);
+    }
+    if (this.conditionDataEntryId != null) {
+      screenDataTag.putUUID(SCREEN_DATA_CONDITION_DATA_ENTRY_ID_TAG, this.conditionDataEntryId);
     }
     screenDataTag.putInt(SCREEN_DATA_PAGE_INDEX_TAG, this.pageIndex);
     if (this.additionalData != null) {

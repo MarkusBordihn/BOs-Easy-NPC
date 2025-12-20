@@ -64,6 +64,8 @@ import de.markusbordihn.easynpc.configui.menu.configuration.trading.CustomTradin
 import de.markusbordihn.easynpc.configui.menu.configuration.trading.NoneTradingConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.editor.ActionDataEditorMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.editor.ActionDataEntryEditorMenuWrapper;
+import de.markusbordihn.easynpc.configui.menu.editor.ConditionDataEditorMenuWrapper;
+import de.markusbordihn.easynpc.configui.menu.editor.ConditionDataEntryEditorMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.editor.DialogButtonEditorMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.editor.DialogEditorMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.editor.DialogTextEditorMenuWrapper;
@@ -91,18 +93,27 @@ public class ModMenuTypes {
               BuiltInRegistries.MENU,
               ConfigurationType.ABILITIES_ATTRIBUTE.getId(),
               new MenuType<>(AbilitiesAttributeConfigurationMenuWrapper::new, FeatureFlagSet.of()));
-
   public static final MenuType<ActionDataEditorMenuWrapper> ACTION_DATA_EDITOR_MENU =
       Registry.register(
           BuiltInRegistries.MENU,
           EditorType.ACTION_DATA.getId(),
           new MenuType<>(ActionDataEditorMenuWrapper::new, FeatureFlagSet.of()));
-
   public static final MenuType<ActionDataEntryEditorMenuWrapper> ACTION_DATA_ENTRY_EDITOR_MENU =
       Registry.register(
           BuiltInRegistries.MENU,
           EditorType.ACTION_DATA_ENTRY.getId(),
           new MenuType<>(ActionDataEntryEditorMenuWrapper::new, FeatureFlagSet.of()));
+  public static final MenuType<ConditionDataEditorMenuWrapper> CONDITION_DATA_EDITOR_MENU =
+      Registry.register(
+          BuiltInRegistries.MENU,
+          EditorType.CONDITION_DATA.getId(),
+          new MenuType<>(ConditionDataEditorMenuWrapper::new, FeatureFlagSet.of()));
+  public static final MenuType<ConditionDataEntryEditorMenuWrapper>
+      CONDITION_DATA_ENTRY_EDITOR_MENU =
+          Registry.register(
+              BuiltInRegistries.MENU,
+              EditorType.CONDITION_DATA_ENTRY.getId(),
+              new MenuType<>(ConditionDataEntryEditorMenuWrapper::new, FeatureFlagSet.of()));
   public static final MenuType<AdvancedDialogConfigurationMenuWrapper>
       ADVANCED_DIALOG_CONFIGURATION_MENU =
           Registry.register(

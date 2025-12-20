@@ -23,6 +23,7 @@ import de.markusbordihn.easynpc.configui.data.editor.EditorType;
 import de.markusbordihn.easynpc.configui.menu.MenuManager;
 import de.markusbordihn.easynpc.configui.menu.editor.EditorMenu;
 import de.markusbordihn.easynpc.configui.menu.editor.EditorMenuHandler;
+import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.data.dialog.DialogUtils;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
@@ -64,7 +65,11 @@ public class EditorScreenTestHelper {
             EditorMenuHandler.getScreenData(
                 editorType,
                 easyNPC,
-                dialogData.getDialogDataSet().getDefaultDialogId(),
+                dialogData.getDialogDataSet().getDialogsByLabel().stream()
+                    .findFirst()
+                    .map(DialogDataEntry::getId)
+                    .orElse(null),
+                null,
                 null,
                 null,
                 0,

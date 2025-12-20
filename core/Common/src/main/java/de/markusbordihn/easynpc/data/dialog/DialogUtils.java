@@ -172,8 +172,10 @@ public class DialogUtils {
 
     // Build dialog data set.
     DialogDataSet dialogDataSet = new DialogDataSet(DialogType.YES_NO);
-    dialogDataSet.addDefaultDialog(
-        new DialogDataEntry("question", "Question Dialog", dialogText, buttons));
+    DialogDataEntry questionDialog =
+        new DialogDataEntry("question", "Question Dialog", dialogText, buttons);
+    questionDialog.setPriority(DialogPriority.HIGH);
+    dialogDataSet.addDialog(questionDialog);
     dialogDataSet.addDialog(new DialogDataEntry("yes_answer", "Yes Dialog", yesDialogText));
     dialogDataSet.addDialog(new DialogDataEntry("no_answer", "No Dialog", noDialogText));
     return dialogDataSet;
