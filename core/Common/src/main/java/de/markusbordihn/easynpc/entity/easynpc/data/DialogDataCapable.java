@@ -105,9 +105,9 @@ public interface DialogDataCapable<T extends PathfinderMob> extends EasyNPC<T> {
   }
 
   default void openDefaultDialog(ServerPlayer serverPlayer) {
-    UUID uuid = getDialogDataSet().getDefaultDialogId();
-    if (uuid != null) {
-      this.openDialog(serverPlayer, uuid);
+    DialogDataEntry dialog = getDialogDataSet().getNextAvailableDialog(serverPlayer);
+    if (dialog != null) {
+      this.openDialog(serverPlayer, dialog.getId());
     }
   }
 

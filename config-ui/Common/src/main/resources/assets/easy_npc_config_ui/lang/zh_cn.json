@@ -153,6 +153,7 @@
   "text.easy_npc.config.is_pushable": "可被推动",
   "text.easy_npc.config.knockback_resistance": "击退抗性",
   "text.easy_npc.config.label_id": "标签/Id",
+  "text.easy_npc.config.dialog.priority": "优先级",
   "text.easy_npc.config.light_level": "亮度等级 (0-15)",
   "text.easy_npc.config.local": "本地",
   "text.easy_npc.config.local_preset_import.title": "本地预设导入",

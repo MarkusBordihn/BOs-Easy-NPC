@@ -17,19 +17,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.client.screen.components;
+package de.markusbordihn.easynpc.configui.client.screen.components;
 
-public class DialogButtonButton extends SpriteButton {
+import de.markusbordihn.easynpc.client.screen.components.SpriteButton;
 
-  public static final int DEFAULT_HEIGHT = 18;
+public class ActionsButton extends SpriteButton {
+
+  public static final int DEFAULT_HEIGHT = 16;
   public static final int SPRITE_HEIGHT = 12;
   public static final int SPRITE_OFFSET_X = 80;
-  public static final int SPRITE_OFFSET_Y = 54;
+  public static final int SPRITE_OFFSET_Y = 130;
   public static final int SPRITE_WIDTH = 12;
   public static final int SPRITE_X = 4;
   public static final int SPRITE_Y = 3;
 
-  public DialogButtonButton(int left, int top, int width, String label, OnPress onPress) {
+  public ActionsButton(int left, int top, int width, String label, OnPress onPress) {
     super(
         left,
         top,
