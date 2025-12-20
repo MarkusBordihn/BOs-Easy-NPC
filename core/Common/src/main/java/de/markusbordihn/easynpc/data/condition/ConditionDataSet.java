@@ -35,6 +35,12 @@ public class ConditionDataSet {
 
   public ConditionDataSet() {}
 
+  public ConditionDataSet(Set<ConditionDataEntry> conditionDataEntries) {
+    if (conditionDataEntries != null) {
+      this.conditionDataEntries.addAll(conditionDataEntries);
+    }
+  }
+
   public ConditionDataSet(CompoundTag compoundTag) {
     this.load(compoundTag);
   }

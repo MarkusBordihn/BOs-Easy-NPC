@@ -176,7 +176,7 @@ public class ConfigurationMenuHandler {
         // Do nothing
       }
     }
-    return new ScreenData(npcUUID, null, null, null, pageIndex, additionalSyncData);
+    return new ScreenData(npcUUID, null, null, null, null, pageIndex, additionalSyncData);
   }
 
   private static Component getConfigurationTitle(

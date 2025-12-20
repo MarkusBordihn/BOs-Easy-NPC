@@ -84,9 +84,12 @@ public class YesNoDialogConfigurationScreen<T extends ConfigurationMenu>
     // Question Text (copy from basic text if not set)
     this.questionDialogValue = questionDialogData == null ? "" : questionDialogData.getText();
     if (this.questionDialogValue.isEmpty()
-        && this.getDialogDataSet().getDefaultDialog() != null
         && this.getDialogDataSet().getType() == DialogType.BASIC) {
-      this.questionDialogValue = this.getDialogDataSet().getDefaultDialog().getText();
+      DialogDataEntry basicDialog =
+          this.getDialogDataSet().getDialogsByLabel().stream().findFirst().orElse(null);
+      if (basicDialog != null) {
+        this.questionDialogValue = basicDialog.getText();
+      }
     }
 
     // Save notification for buttons

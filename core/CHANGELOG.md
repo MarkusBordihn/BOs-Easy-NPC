@@ -8,6 +8,17 @@ For the full changelog, please go to the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 6.3.0
+
+- Refactored config ui specific components and removed them from the core mod.
+- Fixed dialog data by filtering dialog data before sending to the client.
+- Fixed dialog editor layout issues and improved usability.
+- Fixed missing default values for some dialog data fields.
+- Added dialog priority support to control the order of dialog execution.
+- Added condition support for dialog and scoreboard actions.
+- Added new NPC preset to for scoreboard and condition support.
+- Improved dialog button data format by removing redundant fields.
+
 ### 6.2.0
 
 - Fixed legacy custom name parsing.
