@@ -81,7 +81,7 @@ public record DialogButtonEntry(
             label != null && !label.isEmpty() ? label : DialogUtils.generateButtonLabel(name)),
         name,
         label != null && !label.isEmpty() ? label : DialogUtils.generateButtonLabel(name),
-        type,
+        type != null ? type : DialogButtonType.DEFAULT,
         actionDataSet != null ? actionDataSet : new ActionDataSet(),
         conditions != null ? conditions : new LinkedHashSet<>(),
         TextUtils.isTranslationKey(name));
@@ -163,7 +163,11 @@ public record DialogButtonEntry(
 
   public CompoundTag write(CompoundTag compoundTag) {
     compoundTag.putString(DATA_BUTTON_NAME_TAG, this.name.trim());
-    compoundTag.putString(DATA_TYPE_TAG, this.type.name());
+
+    // Only save type if it is different from default.
+    if (this.type != DialogButtonType.DEFAULT) {
+      compoundTag.putString(DATA_TYPE_TAG, this.type.name());
+    }
 
     // Only save label if it is different from auto-generated label.
     if (this.label != null && !Objects.equals(DialogUtils.generateButtonLabel(name), this.label)) {

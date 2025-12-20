@@ -23,34 +23,26 @@ import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
 
 public record ConditionDataEntry(
-    UUID id,
     ConditionType conditionType,
     ConditionOperationType operationType,
     String name,
     int value,
-    String stringValue) {
+    String text) {
 
   public static final ConditionDataEntry EMPTY =
       new ConditionDataEntry(ConditionType.NONE, ConditionOperationType.NONE);
-  public static final String DATA_UUID_TAG = "UUID";
   public static final String DATA_TYPE_TAG = "Type";
   public static final String DATA_OPERATION_TAG = "Operation";
   public static final String DATA_NAME_TAG = "Name";
   public static final String DATA_VALUE_TAG = "Value";
-  public static final String DATA_STRING_VALUE_TAG = "StringValue";
+  public static final String DATA_TEXT_TAG = "Text";
 
   public ConditionDataEntry(CompoundTag compoundTag) {
     this(
-        compoundTag.contains(DATA_UUID_TAG)
-            ? compoundTag.getUUID(DATA_UUID_TAG)
-            : UUID.randomUUID(),
         ConditionType.get(compoundTag.getString(DATA_TYPE_TAG)),
         ConditionOperationType.get(compoundTag.getString(DATA_OPERATION_TAG)),
         compoundTag.contains(DATA_NAME_TAG) ? compoundTag.getString(DATA_NAME_TAG) : "",
-        compoundTag.contains(DATA_VALUE_TAG) ? compoundTag.getInt(DATA_VALUE_TAG) : 0,
-        compoundTag.contains(DATA_STRING_VALUE_TAG)
-            ? compoundTag.getString(DATA_STRING_VALUE_TAG)
-            : "");
+        compoundTag.contains(DATA_VALUE_TAG) ? compoundTag.getInt(DATA_VALUE_TAG) : 0);
   }
 
   public ConditionDataEntry(ConditionType conditionType) {
@@ -58,16 +50,17 @@ public record ConditionDataEntry(
   }
 
   public ConditionDataEntry(ConditionType conditionType, ConditionOperationType operationType) {
-    this(UUID.randomUUID(), conditionType, operationType, "", 0, "");
+    this(conditionType, operationType, "", 0, "");
   }
 
   public ConditionDataEntry(
       ConditionType conditionType, ConditionOperationType operationType, String name, int value) {
-    this(UUID.randomUUID(), conditionType, operationType, name, value, "");
+    this(conditionType, operationType, name, value, "");
   }
 
   public UUID getId() {
-    return this.id;
+    String idString = DATA_TYPE_TAG + hashCode();
+    return UUID.nameUUIDFromBytes(idString.getBytes());
   }
 
   public boolean hasName() {
@@ -75,7 +68,7 @@ public record ConditionDataEntry(
   }
 
   public boolean hasStringValue() {
-    return this.stringValue != null && !this.stringValue.isEmpty();
+    return this.text != null && !this.text.isEmpty();
   }
 
   public boolean isValid() {
@@ -93,27 +86,27 @@ public record ConditionDataEntry(
 
   public ConditionDataEntry withConditionType(ConditionType conditionType) {
     return new ConditionDataEntry(
-        this.id, conditionType, this.operationType, this.name, this.value, this.stringValue);
+        conditionType, this.operationType, this.name, this.value, this.text);
   }
 
   public ConditionDataEntry withOperationType(ConditionOperationType operationType) {
     return new ConditionDataEntry(
-        this.id, this.conditionType, operationType, this.name, this.value, this.stringValue);
+        this.conditionType, operationType, this.name, this.value, this.text);
   }
 
   public ConditionDataEntry withName(String name) {
     return new ConditionDataEntry(
-        this.id, this.conditionType, this.operationType, name, this.value, this.stringValue);
+        this.conditionType, this.operationType, name, this.value, this.text);
   }
 
   public ConditionDataEntry withValue(int value) {
     return new ConditionDataEntry(
-        this.id, this.conditionType, this.operationType, this.name, value, this.stringValue);
+        this.conditionType, this.operationType, this.name, value, this.text);
   }
 
   public ConditionDataEntry withStringValue(String stringValue) {
     return new ConditionDataEntry(
-        this.id, this.conditionType, this.operationType, this.name, this.value, stringValue);
+        this.conditionType, this.operationType, this.name, this.value, stringValue);
   }
 
   public ConditionDataEntry create(CompoundTag compoundTag) {
@@ -121,7 +114,6 @@ public record ConditionDataEntry(
   }
 
   public CompoundTag write(CompoundTag compoundTag) {
-    compoundTag.putUUID(DATA_UUID_TAG, this.id);
     compoundTag.putString(DATA_TYPE_TAG, this.conditionType.name());
 
     if (this.operationType != null && this.operationType != ConditionOperationType.NONE) {
@@ -134,7 +126,7 @@ public record ConditionDataEntry(
       compoundTag.putInt(DATA_VALUE_TAG, this.value);
     }
     if (hasStringValue()) {
-      compoundTag.putString(DATA_STRING_VALUE_TAG, this.stringValue);
+      compoundTag.putString(DATA_TEXT_TAG, this.text);
     }
 
     return compoundTag;
@@ -145,10 +137,36 @@ public record ConditionDataEntry(
   }
 
   @Override
+  public boolean equals(Object object) {
+    if (this == object) {
+      return true;
+    }
+    if (object == null || getClass() != object.getClass()) {
+      return false;
+    }
+    ConditionDataEntry other = (ConditionDataEntry) object;
+    return this.conditionType == other.conditionType
+        && this.operationType == other.operationType
+        && this.name.equals(other.name)
+        && this.value == other.value
+        && this.text.equals(other.text);
+  }
+
+  @Override
+  public int hashCode() {
+    int result = conditionType.hashCode();
+    result = 31 * result + (operationType != null ? operationType.hashCode() : 0);
+    result = 31 * result + (name != null ? name.hashCode() : 0);
+    result = 31 * result + value;
+    result = 31 * result + (text != null ? text.hashCode() : 0);
+    return result;
+  }
+
+  @Override
   public String toString() {
     return "ConditionDataEntry["
         + "id="
-        + this.id
+        + getId()
         + ", type="
         + this.conditionType
         + ", operation="
@@ -158,8 +176,8 @@ public record ConditionDataEntry(
         + "'"
         + ", value="
         + this.value
-        + ", stringValue='"
-        + this.stringValue
+        + ", text='"
+        + this.text
         + "'"
         + "]";
   }

@@ -78,6 +78,7 @@ public class EditorMenuHandler {
       final UUID dialogId,
       final UUID dialogButtonId,
       final UUID actionDataEntryId,
+      final UUID conditionDataEntryId,
       final int pageIndex,
       CompoundTag additionalSyncData) {
 
@@ -92,12 +93,20 @@ public class EditorMenuHandler {
         AdditionalScreenData.addActionEventSet(additionalSyncData, easyNPC);
         AdditionalScreenData.addDialogDataSet(additionalSyncData, easyNPC);
       }
+      case CONDITION_DATA, CONDITION_DATA_ENTRY ->
+          AdditionalScreenData.addDialogDataSet(additionalSyncData, easyNPC);
       default -> {
         // Do nothing
       }
     }
     return new ScreenData(
-        npcUUID, dialogId, dialogButtonId, actionDataEntryId, pageIndex, additionalSyncData);
+        npcUUID,
+        dialogId,
+        dialogButtonId,
+        actionDataEntryId,
+        conditionDataEntryId,
+        pageIndex,
+        additionalSyncData);
   }
 
   private static Component getEditorTitle(final EditorType editorType, final EasyNPC<?> easyNPC) {

@@ -35,6 +35,7 @@ public final class DialogDataEntry {
   public static final String DATA_CONDITIONS_TAG = "Conditions";
   public static final String DATA_DIALOG_NAME = "Name";
   public static final String DATA_LABEL_TAG = "Label";
+  public static final String DATA_PRIORITY_TAG = "Priority";
   public static final String DATA_TEXTS_TAG = "Texts";
   public static final String DATA_TEXT_TAG = "Text";
   public static final int MAX_DIALOG_LABEL_LENGTH = 32;
@@ -44,6 +45,7 @@ public final class DialogDataEntry {
   private UUID id;
   private String label = "";
   private String name;
+  private int priority;
 
   public DialogDataEntry(CompoundTag compoundTag) {
     this.load(compoundTag);
@@ -69,6 +71,7 @@ public final class DialogDataEntry {
     this.name = name != null ? name.trim() : this.label;
     this.dialogButtons = dialogButtons != null ? dialogButtons : new LinkedHashSet<>();
     this.dialogTexts.add(new DialogTextData(text));
+    this.priority = DialogPriority.calculateDefaultPriority(this.label);
   }
 
   public UUID getId() {
@@ -160,9 +163,20 @@ public final class DialogDataEntry {
     this.conditions = conditions != null ? conditions : new LinkedHashSet<>();
   }
 
-  @SuppressWarnings("unused")
   public boolean hasConditions() {
     return this.conditions != null && !this.conditions.isEmpty();
+  }
+
+  public int getPriority() {
+    return this.priority;
+  }
+
+  public void setPriority(int priority) {
+    if (priority < DialogPriority.MANUAL_ONLY) {
+      this.priority = DialogPriority.MANUAL_ONLY;
+    } else {
+      this.priority = priority;
+    }
   }
 
   public DialogButtonEntry getDialogButton(UUID dialogButtonId) {
@@ -280,6 +294,11 @@ public final class DialogDataEntry {
         }
       }
     }
+
+    this.priority =
+        compoundTag.contains(DATA_PRIORITY_TAG)
+            ? compoundTag.getInt(DATA_PRIORITY_TAG)
+            : DialogPriority.calculateDefaultPriority(this.label);
   }
 
   public CompoundTag save(CompoundTag compoundTag) {
@@ -319,6 +338,11 @@ public final class DialogDataEntry {
       if (!conditionsList.isEmpty()) {
         compoundTag.put(DATA_CONDITIONS_TAG, conditionsList);
       }
+    }
+
+    int defaultPriority = DialogPriority.calculateDefaultPriority(this.label);
+    if (this.priority != defaultPriority) {
+      compoundTag.putInt(DATA_PRIORITY_TAG, this.priority);
     }
 
     return compoundTag;

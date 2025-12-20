@@ -63,6 +63,8 @@ import de.markusbordihn.easynpc.configui.client.screen.configuration.trading.Cus
 import de.markusbordihn.easynpc.configui.client.screen.configuration.trading.NoneTradingConfigurationContainerScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.editor.action.ActionDataEditorContainerScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.editor.action.ActionDataEntryEditorContainerScreenWrapper;
+import de.markusbordihn.easynpc.configui.client.screen.editor.condition.ConditionDataEditorContainerScreenWrapper;
+import de.markusbordihn.easynpc.configui.client.screen.editor.condition.ConditionDataEntryEditorContainerScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.editor.dialog.DialogButtonEditorScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.editor.dialog.DialogEditorScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.editor.dialog.DialogTextEditorScreenWrapper;
@@ -86,6 +88,11 @@ public class ClientScreens {
     MenuScreens.register(
         ModMenuTypes.ACTION_DATA_ENTRY_EDITOR_MENU,
         ActionDataEntryEditorContainerScreenWrapper::new);
+    MenuScreens.register(
+        ModMenuTypes.CONDITION_DATA_EDITOR_MENU, ConditionDataEditorContainerScreenWrapper::new);
+    MenuScreens.register(
+        ModMenuTypes.CONDITION_DATA_ENTRY_EDITOR_MENU,
+        ConditionDataEntryEditorContainerScreenWrapper::new);
     MenuScreens.register(
         ModMenuTypes.ADVANCED_DIALOG_CONFIGURATION_MENU,
         AdvancedDialogConfigurationScreenWrapper::new);
