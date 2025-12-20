@@ -110,6 +110,7 @@ public interface MenuHandlerInterface {
         dialogId,
         dialogButtonId,
         actionDataEntryId,
+        null,
         pageIndex,
         additionalSyncData);
   }
@@ -121,7 +122,15 @@ public interface MenuHandlerInterface {
       final UUID dialogId,
       final int pageIndex) {
     openEditorMenu(
-        editorType, serverPlayer, easyNPC, dialogId, null, null, pageIndex, new CompoundTag());
+        editorType,
+        serverPlayer,
+        easyNPC,
+        dialogId,
+        null,
+        null,
+        null,
+        pageIndex,
+        new CompoundTag());
   }
 
   default void openEditorMenu(
@@ -138,6 +147,7 @@ public interface MenuHandlerInterface {
         dialogId,
         dialogButtonId,
         null,
+        null,
         pageIndex,
         new CompoundTag());
   }
@@ -149,6 +159,7 @@ public interface MenuHandlerInterface {
       final UUID dialogId,
       final UUID dialogButtonId,
       final UUID actionDataEntryId,
+      final UUID conditionDataEntryId,
       final int pageIndex,
       CompoundTag additionalSyncData) {
 
@@ -172,6 +183,7 @@ public interface MenuHandlerInterface {
             dialogId,
             dialogButtonId,
             actionDataEntryId,
+            conditionDataEntryId,
             pageIndex,
             additionalSyncData);
 

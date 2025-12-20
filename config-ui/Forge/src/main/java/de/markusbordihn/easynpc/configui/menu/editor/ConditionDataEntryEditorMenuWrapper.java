@@ -17,38 +17,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.configui.data.editor;
+package de.markusbordihn.easynpc.configui.menu.editor;
 
-import de.markusbordihn.easynpc.Constants;
-import java.util.Locale;
-import net.minecraft.resources.ResourceLocation;
+import de.markusbordihn.easynpc.configui.menu.ModMenuTypes;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.player.Inventory;
 
-public enum EditorType {
-  NONE,
-  ACTION_DATA,
-  ACTION_DATA_ENTRY,
-  CONDITION_DATA,
-  CONDITION_DATA_ENTRY,
-  DIALOG,
-  DIALOG_BUTTON,
-  DIALOG_TEXT;
+public class ConditionDataEntryEditorMenuWrapper extends EditorMenu {
 
-  public static EditorType get(String editorType) {
-    if (editorType == null || editorType.isEmpty()) {
-      return EditorType.NONE;
-    }
-    try {
-      return EditorType.valueOf(editorType);
-    } catch (IllegalArgumentException e) {
-      return EditorType.NONE;
-    }
-  }
-
-  public ResourceLocation getId() {
-    return new ResourceLocation(Constants.MOD_ID, this.name().toLowerCase(Locale.ROOT) + "_editor");
-  }
-
-  public String getName() {
-    return this.name().toLowerCase(Locale.ROOT) + "_editor";
+  public ConditionDataEntryEditorMenuWrapper(
+      final int windowId,
+      final Inventory playerInventory,
+      @SuppressWarnings("unused") final FriendlyByteBuf buffer) {
+    super(ModMenuTypes.CONDITION_DATA_ENTRY_EDITOR_MENU.get(), windowId, playerInventory);
   }
 }

@@ -20,13 +20,13 @@
 package de.markusbordihn.easynpc.configui.client.screen.editor.dialog;
 
 import de.markusbordihn.easynpc.client.screen.components.CancelButton;
-import de.markusbordihn.easynpc.client.screen.components.DialogButton;
 import de.markusbordihn.easynpc.client.screen.components.SaveButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.client.screen.components.TextField;
 import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.configui.client.screen.EditorScreen;
+import de.markusbordihn.easynpc.configui.client.screen.components.DialogButton;
 import de.markusbordihn.easynpc.configui.menu.editor.EditorMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
@@ -82,7 +82,7 @@ public class DialogTextEditorScreen<T extends EditorMenu> extends EditorScreen<T
                 this.leftPos + 7,
                 this.topPos + 7,
                 10,
-                18,
+                16,
                 "<",
                 onPress ->
                     NetworkMessageHandlerManager.getServerHandler()

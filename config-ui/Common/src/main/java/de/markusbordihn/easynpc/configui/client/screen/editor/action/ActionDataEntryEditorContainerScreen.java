@@ -19,8 +19,6 @@
 
 package de.markusbordihn.easynpc.configui.client.screen.editor.action;
 
-import de.markusbordihn.easynpc.client.screen.components.ActionButton;
-import de.markusbordihn.easynpc.client.screen.components.ActionsButton;
 import de.markusbordihn.easynpc.client.screen.components.CancelButton;
 import de.markusbordihn.easynpc.client.screen.components.DeleteButton;
 import de.markusbordihn.easynpc.client.screen.components.SaveButton;
@@ -29,6 +27,8 @@ import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.configui.client.screen.EditorScreen;
+import de.markusbordihn.easynpc.configui.client.screen.components.ActionButton;
+import de.markusbordihn.easynpc.configui.client.screen.components.ActionsButton;
 import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.ActionEntryWidget;
 import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.CloseDialogEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.CommandActionEntry;
@@ -225,7 +225,7 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
                 this.leftPos + 3,
                 this.topPos + 3,
                 10,
-                18,
+                16,
                 "<",
                 onPress -> navigateToActionDataEditor()));
 

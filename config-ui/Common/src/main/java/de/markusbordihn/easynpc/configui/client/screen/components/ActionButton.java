@@ -17,38 +17,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.configui.data.editor;
+package de.markusbordihn.easynpc.configui.client.screen.components;
 
-import de.markusbordihn.easynpc.Constants;
-import java.util.Locale;
-import net.minecraft.resources.ResourceLocation;
+import de.markusbordihn.easynpc.client.screen.components.SpriteButton;
 
-public enum EditorType {
-  NONE,
-  ACTION_DATA,
-  ACTION_DATA_ENTRY,
-  CONDITION_DATA,
-  CONDITION_DATA_ENTRY,
-  DIALOG,
-  DIALOG_BUTTON,
-  DIALOG_TEXT;
+public class ActionButton extends SpriteButton {
 
-  public static EditorType get(String editorType) {
-    if (editorType == null || editorType.isEmpty()) {
-      return EditorType.NONE;
-    }
-    try {
-      return EditorType.valueOf(editorType);
-    } catch (IllegalArgumentException e) {
-      return EditorType.NONE;
-    }
-  }
+  public static final int DEFAULT_HEIGHT = 16;
+  public static final int SPRITE_HEIGHT = 12;
+  public static final int SPRITE_OFFSET_X = 80;
+  public static final int SPRITE_OFFSET_Y = 155;
+  public static final int SPRITE_WIDTH = 12;
+  public static final int SPRITE_X = 4;
+  public static final int SPRITE_Y = 3;
 
-  public ResourceLocation getId() {
-    return new ResourceLocation(Constants.MOD_ID, this.name().toLowerCase(Locale.ROOT) + "_editor");
-  }
-
-  public String getName() {
-    return this.name().toLowerCase(Locale.ROOT) + "_editor";
+  public ActionButton(int left, int top, int width, String label, OnPress onPress) {
+    super(
+        left,
+        top,
+        width,
+        DEFAULT_HEIGHT,
+        label,
+        SPRITE_X,
+        SPRITE_Y,
+        SPRITE_OFFSET_X,
+        SPRITE_OFFSET_Y,
+        SPRITE_WIDTH,
+        SPRITE_HEIGHT,
+        onPress);
   }
 }

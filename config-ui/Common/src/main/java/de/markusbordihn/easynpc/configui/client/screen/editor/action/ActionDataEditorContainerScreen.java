@@ -19,12 +19,12 @@
 
 package de.markusbordihn.easynpc.configui.client.screen.editor.action;
 
-import de.markusbordihn.easynpc.client.screen.components.ActionsButton;
 import de.markusbordihn.easynpc.client.screen.components.AddButton;
-import de.markusbordihn.easynpc.client.screen.components.DialogButtonButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.configui.Constants;
+import de.markusbordihn.easynpc.configui.client.screen.components.ActionsButton;
+import de.markusbordihn.easynpc.configui.client.screen.components.DialogButtonButton;
 import de.markusbordihn.easynpc.configui.data.editor.EditorType;
 import de.markusbordihn.easynpc.configui.menu.editor.EditorMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
@@ -47,7 +47,7 @@ public class ActionDataEditorContainerScreen<T extends EditorMenu>
   private static final int HOME_BUTTON_X_OFFSET = 3;
   private static final int HOME_BUTTON_Y_OFFSET = 3;
   private static final int HOME_BUTTON_WIDTH = 10;
-  private static final int HOME_BUTTON_HEIGHT = 18;
+  private static final int HOME_BUTTON_HEIGHT = 16;
   private static final int NAVIGATION_BUTTON_WIDTH = 140;
   private static final int LIST_X_OFFSET = 5;
   private static final int LIST_Y_START = 40;

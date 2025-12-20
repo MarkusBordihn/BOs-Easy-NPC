@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.data.dialog;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.data.condition.ConditionDataEntry;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -27,18 +28,17 @@ import java.util.Map;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.server.level.ServerPlayer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class DialogDataSet {
 
   public static final String DATA_DIALOG_DATA_SET_TAG = "DialogDataSet";
-  public static final String DATA_DIALOG_DEFAULT_TAG = "Default";
   public static final String DATA_TYPE_TAG = "Type";
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private final HashMap<String, DialogDataEntry> dialogByLabelMap = new HashMap<>();
   private final HashMap<UUID, DialogDataEntry> dialogByIdMap = new HashMap<>();
-  private String defaultDialogLabel = "default";
   private DialogType dialogType = DialogType.STANDARD;
 
   public DialogDataSet() {}
@@ -49,12 +49,6 @@ public class DialogDataSet {
 
   public DialogDataSet(CompoundTag compoundTag) {
     this.load(compoundTag);
-  }
-
-  public void addDefaultDialog(DialogDataEntry dialogData) {
-    if (this.addDialog(dialogData)) {
-      this.setDefaultDialog(dialogData);
-    }
   }
 
   public void setDialog(UUID dialogId, DialogDataEntry dialogData) {
@@ -176,64 +170,118 @@ public class DialogDataSet {
     return null;
   }
 
-  public DialogDataEntry getDefaultDialog() {
-    return this.dialogByLabelMap.getOrDefault(this.getDefaultDialogLabel(), null);
+  public DialogDataEntry getNextAvailableDialog(ServerPlayer serverPlayer) {
+    return dialogByIdMap.values().stream()
+        .filter(dialog -> dialog.getPriority() >= DialogPriority.FALLBACK)
+        .filter(dialog -> checkConditions(dialog, serverPlayer))
+        .sorted(
+            Comparator.comparingInt(DialogDataEntry::getPriority)
+                .reversed()
+                .thenComparing(Comparator.comparing(DialogDataEntry::getLabel)))
+        .findFirst()
+        .orElse(null);
   }
 
-  public void setDefaultDialog(UUID dialogId) {
-    DialogDataEntry dialogData = this.dialogByIdMap.getOrDefault(dialogId, null);
-    if (dialogData != null) {
-      this.defaultDialogLabel = dialogData.getLabel();
-    }
-  }
-
-  public void setDefaultDialog(DialogDataEntry dialogData) {
-    if (dialogData != null
-        && dialogData.getId() != null
-        && dialogData.getLabel() != null
-        && !dialogData.getText().isEmpty()) {
-      this.defaultDialogLabel = dialogData.getLabel();
-    }
-  }
-
-  public String getDefaultDialogLabel() {
-    // Return cached default dialog label if still available.
-    if (this.hasDialog(this.defaultDialogLabel)) {
-      return this.defaultDialogLabel;
-    } else {
-      this.defaultDialogLabel = null;
+  private boolean checkConditions(DialogDataEntry dialog, ServerPlayer serverPlayer) {
+    if (!dialog.hasConditions()) {
+      log.debug("Dialog {} has no conditions, allowing", dialog.getLabel());
+      return true;
     }
 
-    // Try common default dialog labels.
-    if (this.hasDialog("default")) {
-      this.defaultDialogLabel = "default";
-    } else if (this.hasDialog("start")) {
-      this.defaultDialogLabel = "start";
-    } else if (this.hasDialog("main")) {
-      this.defaultDialogLabel = "main";
-    }
-    if (this.defaultDialogLabel != null) {
-      return this.defaultDialogLabel;
+    if (serverPlayer == null) {
+      log.debug(
+          "Cannot check conditions for dialog {} without player context, allowing dialog by default",
+          dialog.getLabel());
+      return true;
     }
 
-    // Iterate over all dialogs and return the first valid dialog.
-    for (DialogDataEntry dialogData : this.dialogByLabelMap.values()) {
-      if (dialogData != null
-          && dialogData.getId() != null
-          && dialogData.getLabel() != null
-          && !dialogData.getLabel().isEmpty()
-          && !dialogData.getText().isEmpty()) {
-        this.defaultDialogLabel = dialogData.getLabel();
-        return this.defaultDialogLabel;
+    log.debug(
+        "Checking {} condition(s) for dialog {} and player {}",
+        dialog.getConditions().size(),
+        dialog.getLabel(),
+        serverPlayer.getName().getString());
+
+    for (ConditionDataEntry condition : dialog.getConditions()) {
+      if (!condition.isValid()) {
+        log.debug("Skipping invalid condition {} for dialog {}", condition, dialog.getLabel());
+        continue;
+      }
+
+      boolean conditionResult = evaluateCondition(condition, serverPlayer);
+      log.debug(
+          "Condition check for dialog {}: {} {} {} = {} (result: {})",
+          dialog.getLabel(),
+          condition.conditionType(),
+          condition.name(),
+          condition.operationType().getSymbol() + " " + condition.value(),
+          conditionResult ? "PASS" : "FAIL",
+          conditionResult);
+
+      if (!conditionResult) {
+        log.debug(
+            "Dialog {} rejected: condition not met ({} {} {} {})",
+            dialog.getLabel(),
+            condition.conditionType(),
+            condition.name(),
+            condition.operationType().getSymbol(),
+            condition.value());
+        return false;
       }
     }
 
-    return null;
+    log.debug("Dialog {} accepted: all conditions passed", dialog.getLabel());
+    return true;
   }
 
-  public UUID getDefaultDialogId() {
-    var dialogData = this.dialogByLabelMap.getOrDefault(this.getDefaultDialogLabel(), null);
-    return dialogData != null ? dialogData.getId() : null;
+  private boolean evaluateCondition(ConditionDataEntry condition, ServerPlayer serverPlayer) {
+    return switch (condition.conditionType()) {
+      case SCOREBOARD -> evaluateScoreboardCondition(condition, serverPlayer);
+      case NONE -> {
+        log.warn("Encountered NONE condition type, skipping");
+        yield true;
+      }
+    };
+  }
+
+  private boolean evaluateScoreboardCondition(
+      ConditionDataEntry condition, ServerPlayer serverPlayer) {
+    if (!condition.hasName()) {
+      log.warn("Scoreboard condition missing objective name");
+      return false;
+    }
+
+    try {
+      var scoreboard = serverPlayer.getScoreboard();
+      var objective = scoreboard.getObjective(condition.name());
+
+      if (objective == null) {
+        log.debug(
+            "Scoreboard objective '{}' not found for player {}, condition fails",
+            condition.name(),
+            serverPlayer.getName().getString());
+        return false;
+      }
+
+      var score = scoreboard.getOrCreatePlayerScore(serverPlayer.getScoreboardName(), objective);
+      int actualValue = score.getScore();
+      int expectedValue = condition.value();
+
+      boolean result = condition.operationType().evaluate(actualValue, expectedValue);
+
+      log.debug(
+          "Scoreboard check: {} (actual: {}) {} {} (expected: {}) = {}",
+          condition.name(),
+          actualValue,
+          condition.operationType().getSymbol(),
+          expectedValue,
+          expectedValue,
+          result);
+
+      return result;
+    } catch (Exception e) {
+      log.error("Error evaluating scoreboard condition for dialog: {}", condition, e);
+      return false;
+    }
   }
 
   public DialogType getType() {
@@ -258,20 +306,6 @@ public class DialogDataSet {
       CompoundTag dialogCompoundTag = dialogListTag.getCompound(i);
       DialogDataEntry dialogData = new DialogDataEntry(dialogCompoundTag);
       this.addDialog(dialogData);
-    }
-
-    // Load default dialog index
-    if (compoundTag.contains(DATA_DIALOG_DEFAULT_TAG)) {
-      String defaultDialogLabelData = compoundTag.getString(DATA_DIALOG_DEFAULT_TAG);
-      if (!defaultDialogLabelData.isEmpty()
-          && this.dialogByLabelMap.containsKey(defaultDialogLabelData)) {
-        this.defaultDialogLabel = defaultDialogLabelData;
-      } else {
-        log.warn(
-            "Invalid default dialog index `{}` found, will use {} instead!",
-            defaultDialogLabelData,
-            this.getDefaultDialogLabel());
-      }
     }
   }
 
@@ -302,13 +336,6 @@ public class DialogDataSet {
     }
     compoundTag.putString(DATA_TYPE_TAG, this.dialogType.name());
 
-    // Only save default dialog label if there is any.
-    if (this.defaultDialogLabel != null
-        && !this.defaultDialogLabel.isEmpty()
-        && this.hasDialog(this.defaultDialogLabel)) {
-      compoundTag.putString(DATA_DIALOG_DEFAULT_TAG, this.defaultDialogLabel);
-    }
-
     return compoundTag;
   }
 
@@ -318,12 +345,6 @@ public class DialogDataSet {
 
   @Override
   public String toString() {
-    return "DialogDataSet [type="
-        + this.dialogType
-        + ", default="
-        + this.defaultDialogLabel
-        + ", "
-        + this.dialogByLabelMap
-        + "]";
+    return "DialogDataSet [type=" + this.dialogType + ", " + this.dialogByLabelMap + "]";
   }
 }

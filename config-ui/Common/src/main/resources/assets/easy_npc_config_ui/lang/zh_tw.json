@@ -153,6 +153,7 @@
   "text.easy_npc.config.is_invulnerable": "無敵",
   "text.easy_npc.config.knockback_resistance": "擊退抗性",
   "text.easy_npc.config.label_id": "標籤／ID",
+  "text.easy_npc.config.dialog.priority": "優先順序",
   "text.easy_npc.config.light_level": "亮度等級 (0-15)",
   "text.easy_npc.config.local": "本地",
   "text.easy_npc.config.local_preset_import.title": "本地預設匯入",

@@ -153,6 +153,7 @@
   "text.easy_npc.config.is_invulnerable": "Неуязвимый",
   "text.easy_npc.config.knockback_resistance": "Сопротивление отбрасыванию",
   "text.easy_npc.config.label_id": "Метка/Id",
+  "text.easy_npc.config.dialog.priority": "Приоритет",
   "text.easy_npc.config.light_level": "Ур. освещения 0-15",
   "text.easy_npc.config.local": "Локально",
   "text.easy_npc.config.local_preset_import.title": "Импорт локального шаблона",
