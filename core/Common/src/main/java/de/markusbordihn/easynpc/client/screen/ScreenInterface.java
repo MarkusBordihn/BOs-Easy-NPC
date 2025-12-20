@@ -88,6 +88,10 @@ public interface ScreenInterface<D extends AdditionalScreenDataInterface> {
     return this.getScreenData().actionDataEntryId();
   }
 
+  default UUID getConditionDataEntryUUID() {
+    return this.getScreenData().conditionDataEntryId();
+  }
+
   default int getPageIndex() {
     return this.getScreenData().pageIndex();
   }
@@ -109,9 +113,11 @@ public interface ScreenInterface<D extends AdditionalScreenDataInterface> {
   }
 
   default DialogDataEntry getDialogData() {
-    return this.getScreenData().dialogId() != null
-        ? this.getDialogData(this.getScreenData().dialogId())
-        : this.getDialogDataSet().getDefaultDialog();
+    UUID dialogId = this.getScreenData().dialogId();
+    if (dialogId == null) {
+      return null;
+    }
+    return this.getDialogData(dialogId);
   }
 
   default DialogDataEntry getDialogData(UUID dialogUUID) {

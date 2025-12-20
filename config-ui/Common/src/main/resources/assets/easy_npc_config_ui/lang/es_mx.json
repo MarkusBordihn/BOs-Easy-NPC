@@ -153,6 +153,7 @@
   "text.easy_npc.config.is_pushable": "Empujable",
   "text.easy_npc.config.knockback_resistance": "Resistencia al retroceso",
   "text.easy_npc.config.label_id": "Etiqueta/ID",
+  "text.easy_npc.config.dialog.priority": "Prioridad",
   "text.easy_npc.config.light_level": "Nivel de Luz (0-15)",
   "text.easy_npc.config.local": "Local",
   "text.easy_npc.config.local_preset_import.title": "Importación de preajustes locales",

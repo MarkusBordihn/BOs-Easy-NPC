@@ -17,31 +17,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.client.screen.components;
+package de.markusbordihn.easynpc.configui.menu.editor;
 
-public class ActionButton extends SpriteButton {
+import de.markusbordihn.easynpc.configui.menu.ModMenuTypes;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.player.Inventory;
 
-  public static final int DEFAULT_HEIGHT = 18;
-  public static final int SPRITE_HEIGHT = 12;
-  public static final int SPRITE_OFFSET_X = 80;
-  public static final int SPRITE_OFFSET_Y = 155;
-  public static final int SPRITE_WIDTH = 12;
-  public static final int SPRITE_X = 4;
-  public static final int SPRITE_Y = 4;
+public class ConditionDataEditorMenuWrapper extends EditorMenu {
 
-  public ActionButton(int left, int top, int width, String label, OnPress onPress) {
-    super(
-        left,
-        top,
-        width,
-        DEFAULT_HEIGHT,
-        label,
-        SPRITE_X,
-        SPRITE_Y,
-        SPRITE_OFFSET_X,
-        SPRITE_OFFSET_Y,
-        SPRITE_WIDTH,
-        SPRITE_HEIGHT,
-        onPress);
+  public ConditionDataEditorMenuWrapper(
+      final int windowId,
+      final Inventory playerInventory,
+      @SuppressWarnings("unused") final FriendlyByteBuf buffer) {
+    super(ModMenuTypes.CONDITION_DATA_EDITOR_MENU.get(), windowId, playerInventory);
   }
 }

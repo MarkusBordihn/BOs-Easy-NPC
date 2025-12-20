@@ -19,12 +19,15 @@
 
 package de.markusbordihn.easynpc.server.commands;
 
+import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.datafixers.util.Pair;
 import de.markusbordihn.easynpc.commands.Command;
 import de.markusbordihn.easynpc.commands.arguments.DialogArgument;
 import de.markusbordihn.easynpc.commands.arguments.EasyNPCArgument;
+import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
+import de.markusbordihn.easynpc.data.dialog.DialogPriority;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import java.util.UUID;
 import net.minecraft.ChatFormatting;
@@ -43,19 +46,24 @@ public class DialogCommand extends Command {
         .then(
             Commands.literal("set")
                 .then(
-                    Commands.literal("default")
+                    Commands.literal("priority")
                         .then(
                             Commands.argument(NPC_TARGET_ARG, EasyNPCArgument.npc())
                                 .then(
                                     Commands.argument(DIALOG_ARG, DialogArgument.uuidOrLabel())
-                                        .executes(
-                                            context ->
-                                                setDefaultDialog(
-                                                    context.getSource(),
-                                                    EasyNPCArgument.getEntityWithAccess(
-                                                        context, NPC_TARGET_ARG),
-                                                    DialogArgument.getUuidOrLabel(
-                                                        context, DIALOG_ARG)))))))
+                                        .then(
+                                            Commands.argument(
+                                                    "priority", IntegerArgumentType.integer())
+                                                .executes(
+                                                    context ->
+                                                        setPriority(
+                                                            context.getSource(),
+                                                            EasyNPCArgument.getEntityWithAccess(
+                                                                context, NPC_TARGET_ARG),
+                                                            DialogArgument.getUuidOrLabel(
+                                                                context, DIALOG_ARG),
+                                                            IntegerArgumentType.getInteger(
+                                                                context, "priority"))))))))
         .then(
             Commands.literal("open")
                 .then(
@@ -91,19 +99,18 @@ public class DialogCommand extends Command {
                                     EntityArgument.getPlayer(context, PLAYER_ARG)))));
   }
 
-  public static int setDefaultDialog(
-      CommandSourceStack context, EasyNPC<?> easyNPC, Pair<UUID, String> dialogPair) {
+  public static int setPriority(
+      CommandSourceStack context, EasyNPC<?> easyNPC, Pair<UUID, String> dialogPair, int priority) {
     if (dialogPair.getFirst() != null) {
-      return setDefaultDialog(context, easyNPC, dialogPair.getFirst());
+      return setPriority(context, easyNPC, dialogPair.getFirst(), priority);
     } else if (dialogPair.getSecond() != null) {
-      return setDefaultDialog(context, easyNPC, dialogPair.getSecond());
+      return setPriority(context, easyNPC, dialogPair.getSecond(), priority);
     }
     return sendFailureMessage(context, "Invalid dialog UUID or label!");
   }
 
-  public static int setDefaultDialog(
-      CommandSourceStack context, EasyNPC<?> easyNPC, String dialogLabel) {
-    // Verify dialog label, if any
+  public static int setPriority(
+      CommandSourceStack context, EasyNPC<?> easyNPC, String dialogLabel, int priority) {
     if (!dialogLabel.isEmpty() && !easyNPC.getEasyNPCDialogData().hasDialog(dialogLabel)) {
       return sendFailureMessage(
           context,
@@ -113,24 +120,35 @@ public class DialogCommand extends Command {
               + easyNPC.getEntityUUID()
               + "!");
     }
-    return setDefaultDialog(
-        context, easyNPC, easyNPC.getEasyNPCDialogData().getDialogId(dialogLabel));
+    return setPriority(
+        context, easyNPC, easyNPC.getEasyNPCDialogData().getDialogId(dialogLabel), priority);
   }
 
-  public static int setDefaultDialog(
-      CommandSourceStack context, EasyNPC<?> easyNPC, UUID dialogUUID) {
+  public static int setPriority(
+      CommandSourceStack context, EasyNPC<?> easyNPC, UUID dialogUUID, int priority) {
 
-    // Verify dialog data
     if (easyNPC.getEasyNPCDialogData() == null
         || !easyNPC.getEasyNPCDialogData().hasDialog(dialogUUID)) {
       return sendFailureMessageNoDialogData(context, easyNPC);
     }
 
     DialogDataSet dialogDataSet = easyNPC.getEasyNPCDialogData().getDialogDataSet();
-    dialogDataSet.setDefaultDialog(dialogUUID);
+    DialogDataEntry dialog = dialogDataSet.getDialog(dialogUUID);
+    if (dialog != null) {
+      dialog.setPriority(priority);
+      return sendSuccessMessage(
+          context,
+          "► Set priority for dialog "
+              + dialog.getLabel()
+              + " to "
+              + priority
+              + " ("
+              + DialogPriority.getNameForPriority(priority)
+              + ")",
+          ChatFormatting.GREEN);
+    }
 
-    return sendSuccessMessage(
-        context, "► Set default dialog for " + easyNPC + " to " + dialogUUID, ChatFormatting.GREEN);
+    return sendFailureMessage(context, "Dialog not found!");
   }
 
   public static int openDialog(

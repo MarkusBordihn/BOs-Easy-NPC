@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.gametest;
 
+import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.data.screen.ScreenData;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
@@ -48,7 +49,10 @@ public class DialogScreenTestHelper {
             menuType,
             new ScreenData(
                 easyNPC.getEntityUUID(),
-                easyNPC.getEasyNPCDialogData().getDialogDataSet().getDefaultDialogId()));
+                easyNPC.getEasyNPCDialogData().getDialogDataSet().getDialogsByLabel().stream()
+                    .findFirst()
+                    .map(DialogDataEntry::getId)
+                    .orElse(null)));
     UUID menuId = MenuManager.registerMenu(easyNPC.getEntityUUID(), menuProvider, serverPlayer);
     MenuManager.openMenu(menuId, serverPlayer);
     return menuId;

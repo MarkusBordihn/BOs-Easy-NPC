@@ -25,6 +25,7 @@ import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextField;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.data.dialog.DialogType;
 import de.markusbordihn.easynpc.data.dialog.DialogUtils;
@@ -70,10 +71,14 @@ public class BasicDialogConfigurationScreen<T extends ConfigurationMenu>
     this.numberOfTextLines = this.textComponents.size();
 
     // Dialog
-    this.dialogValue =
-        this.hasDialog() && this.getDialogDataSet().getType() == DialogType.BASIC
-            ? this.getDialogDataSet().getDefaultDialog().getText()
-            : "";
+    this.dialogValue = "";
+    if (this.hasDialog() && this.getDialogDataSet().getType() == DialogType.BASIC) {
+      DialogDataEntry basicDialog =
+          this.getDialogDataSet().getDialogsByLabel().stream().findFirst().orElse(null);
+      if (basicDialog != null) {
+        this.dialogValue = basicDialog.getText();
+      }
+    }
     this.dialogBox = new TextField(this.font, this.contentLeftPos, this.topPos + 60, 300);
     this.dialogBox.setMaxLength(512);
     this.dialogBox.setValue(this.dialogValue);
