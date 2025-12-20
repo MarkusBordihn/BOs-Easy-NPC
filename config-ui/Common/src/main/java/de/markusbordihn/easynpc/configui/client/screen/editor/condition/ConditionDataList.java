@@ -41,7 +41,6 @@ class ConditionDataList extends ObjectSelectionList<ConditionDataListEntry> {
       OnEdit onEdit,
       OnRemove onRemove) {
     super(minecraft, width, height, top, entryHeight);
-    this.setRenderHeader(false, 0);
 
     // Add entries
     int topPos = top + 4;
