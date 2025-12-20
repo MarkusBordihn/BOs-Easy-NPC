@@ -25,6 +25,7 @@ import de.markusbordihn.easynpc.configui.menu.MenuManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.UUID;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -64,10 +65,10 @@ public record OpenConditionDataEditorMessage(UUID uuid, UUID dialogId)
             serverPlayer,
             easyNPC,
             this.dialogId,
-            de.markusbordihn.easynpc.Constants.EMPTY_UUID,
+            Constants.EMPTY_UUID,
             null,
             null,
             0,
-            new net.minecraft.nbt.CompoundTag());
+            new CompoundTag());
   }
 }

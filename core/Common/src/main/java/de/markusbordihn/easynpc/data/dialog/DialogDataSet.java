@@ -29,6 +29,8 @@ import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.scores.Objective;
+import net.minecraft.world.scores.Scoreboard;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -195,12 +197,6 @@ public class DialogDataSet {
       return true;
     }
 
-    log.debug(
-        "Checking {} condition(s) for dialog {} and player {}",
-        dialog.getConditions().size(),
-        dialog.getLabel(),
-        serverPlayer.getName().getString());
-
     for (ConditionDataEntry condition : dialog.getConditions()) {
       if (!condition.isValid()) {
         log.debug("Skipping invalid condition {} for dialog {}", condition, dialog.getLabel());
@@ -246,28 +242,29 @@ public class DialogDataSet {
   private boolean evaluateScoreboardCondition(
       ConditionDataEntry condition, ServerPlayer serverPlayer) {
     if (!condition.hasName()) {
-      log.warn("Scoreboard condition missing objective name");
+      log.warn("Scoreboard condition missing objective name!");
       return false;
     }
 
+    int actualValue = -1;
     try {
-      var scoreboard = serverPlayer.getScoreboard();
-      var objective = scoreboard.getObjective(condition.name());
-
+      Scoreboard scoreboard = serverPlayer.getScoreboard();
+      Objective objective = scoreboard.getObjective(condition.name());
       if (objective == null) {
         log.debug(
-            "Scoreboard objective '{}' not found for player {}, condition fails",
+            "Scoreboard objective '{}' not found for player {}, using default value -1",
             condition.name(),
             serverPlayer.getName().getString());
-        return false;
+      } else {
+        actualValue =
+            scoreboard
+                .getOrCreatePlayerScore(serverPlayer.getScoreboardName(), objective)
+                .getScore();
       }
 
-      var score = scoreboard.getOrCreatePlayerScore(serverPlayer.getScoreboardName(), objective);
-      int actualValue = score.getScore();
+      // Evaluate condition
       int expectedValue = condition.value();
-
       boolean result = condition.operationType().evaluate(actualValue, expectedValue);
-
       log.debug(
           "Scoreboard check: {} (actual: {}) {} {} (expected: {}) = {}",
           condition.name(),

@@ -197,7 +197,7 @@ public class AdvancedDialogConfigurationScreen<T extends ConfigurationMenu>
     DialogList() {
       super(
           AdvancedDialogConfigurationScreen.this.minecraft,
-          AdvancedDialogConfigurationScreen.this.width + 50,
+          AdvancedDialogConfigurationScreen.this.width + 60,
           AdvancedDialogConfigurationScreen.this.height - 60,
           AdvancedDialogConfigurationScreen.this.contentTopPos + 15,
           AdvancedDialogConfigurationScreen.this.contentTopPos + 195,
@@ -299,7 +299,7 @@ public class AdvancedDialogConfigurationScreen<T extends ConfigurationMenu>
           float partialTicks) {
 
         // Position
-        int leftPos = left - 75;
+        int leftPos = left - 80;
         int buttonWidth = 16;
 
         // Render edit button and tooltip
@@ -364,21 +364,21 @@ public class AdvancedDialogConfigurationScreen<T extends ConfigurationMenu>
         Text.drawString(
             guiGraphics,
             AdvancedDialogConfigurationScreen.this.font,
-            dialogData.getLabel(10),
+            dialogData.getLabel(14),
             Math.round((leftPos + COLUMN_LABEL_START - 4) / TEXT_SCALE),
             dialogDataTopPos,
             fontColor);
         Text.drawString(
             guiGraphics,
             AdvancedDialogConfigurationScreen.this.font,
-            dialogData.getName(12),
+            dialogData.getName(21),
             Math.round((leftPos + COLUMN_NAME_START - 2) / TEXT_SCALE),
             dialogDataTopPos,
             fontColor);
         Text.drawString(
             guiGraphics,
             AdvancedDialogConfigurationScreen.this.font,
-            dialogData.getText(12),
+            dialogData.getText(17),
             Math.round((leftPos + COLUMN_TEXT_START + 14) / TEXT_SCALE),
             dialogDataTopPos,
             fontColor);

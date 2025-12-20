@@ -71,10 +71,10 @@ public record OpenConditionDataEntryEditorMessage(
             serverPlayer,
             easyNPC,
             this.dialogId,
-            de.markusbordihn.easynpc.Constants.EMPTY_UUID,
+            Constants.EMPTY_UUID,
             null,
             this.conditionDataEntry.getId(),
             0,
-            new net.minecraft.nbt.CompoundTag());
+            new CompoundTag());
   }
 }

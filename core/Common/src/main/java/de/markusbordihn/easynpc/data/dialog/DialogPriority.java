@@ -35,15 +35,13 @@ public final class DialogPriority {
       return FALLBACK;
     }
 
-    String normalizedLabel = label.toLowerCase().trim();
-    if ("default".equals(normalizedLabel) || "start".equals(normalizedLabel)) {
-      return HIGH;
-    }
-    if ("main".equals(normalizedLabel)) {
-      return NORMAL;
-    }
-
-    return FALLBACK;
+    return switch (label.toLowerCase().trim()) {
+      case "default", "start", "welcome", "greeting", "intro", "introduction" -> HIGH;
+      case "main", "question", "help", "info", "information", "talk", "conversation" -> NORMAL;
+      case "bye", "goodbye", "farewell", "exit", "leave", "thanks", "thankyou", "idle", "random" ->
+          LOW;
+      default -> FALLBACK;
+    };
   }
 
   public static String getNameForPriority(int priority) {
