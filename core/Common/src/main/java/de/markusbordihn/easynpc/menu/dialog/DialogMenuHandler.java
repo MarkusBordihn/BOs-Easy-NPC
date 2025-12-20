@@ -75,6 +75,6 @@ public class DialogMenuHandler {
     AdditionalScreenData.addActionEventSet(additionalSyncData, easyNPC);
     AdditionalScreenData.addDialogDataSet(additionalSyncData, easyNPC, serverPlayer);
 
-    return new ScreenData(npcUUID, dialogId, null, null, pageIndex, additionalSyncData);
+    return new ScreenData(npcUUID, dialogId, null, null, null, pageIndex, additionalSyncData);
   }
 }

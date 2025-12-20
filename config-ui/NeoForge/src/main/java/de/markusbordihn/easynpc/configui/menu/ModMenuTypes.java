@@ -64,6 +64,8 @@ import de.markusbordihn.easynpc.configui.menu.configuration.trading.CustomTradin
 import de.markusbordihn.easynpc.configui.menu.configuration.trading.NoneTradingConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.editor.ActionDataEditorMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.editor.ActionDataEntryEditorMenuWrapper;
+import de.markusbordihn.easynpc.configui.menu.editor.ConditionDataEditorMenuWrapper;
+import de.markusbordihn.easynpc.configui.menu.editor.ConditionDataEntryEditorMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.editor.DialogButtonEditorMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.editor.DialogEditorMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.editor.DialogTextEditorMenuWrapper;
@@ -97,6 +99,16 @@ public class ModMenuTypes {
           MENU_TYPES.register(
               EditorType.ACTION_DATA_ENTRY.getName(),
               () -> IMenuTypeExtension.create(ActionDataEntryEditorMenuWrapper::new));
+  public static final DeferredHolder<MenuType<?>, MenuType<ConditionDataEditorMenuWrapper>>
+      CONDITION_DATA_EDITOR_MENU =
+          MENU_TYPES.register(
+              EditorType.CONDITION_DATA.getName(),
+              () -> IMenuTypeExtension.create(ConditionDataEditorMenuWrapper::new));
+  public static final DeferredHolder<MenuType<?>, MenuType<ConditionDataEntryEditorMenuWrapper>>
+      CONDITION_DATA_ENTRY_EDITOR_MENU =
+          MENU_TYPES.register(
+              EditorType.CONDITION_DATA_ENTRY.getName(),
+              () -> IMenuTypeExtension.create(ConditionDataEntryEditorMenuWrapper::new));
   public static final DeferredHolder<MenuType<?>, MenuType<AdvancedDialogConfigurationMenuWrapper>>
       ADVANCED_DIALOG_CONFIGURATION_MENU =
           MENU_TYPES.register(

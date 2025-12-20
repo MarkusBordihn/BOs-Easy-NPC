@@ -23,8 +23,6 @@ import de.markusbordihn.easynpc.client.screen.components.AddButton;
 import de.markusbordihn.easynpc.client.screen.components.CancelButton;
 import de.markusbordihn.easynpc.client.screen.components.Checkbox;
 import de.markusbordihn.easynpc.client.screen.components.DeleteButton;
-import de.markusbordihn.easynpc.client.screen.components.DialogButton;
-import de.markusbordihn.easynpc.client.screen.components.DialogButtonButton;
 import de.markusbordihn.easynpc.client.screen.components.SaveButton;
 import de.markusbordihn.easynpc.client.screen.components.SpriteButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
@@ -33,12 +31,14 @@ import de.markusbordihn.easynpc.client.screen.components.TextEditButton;
 import de.markusbordihn.easynpc.client.screen.components.TextField;
 import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.configui.client.screen.EditorScreen;
+import de.markusbordihn.easynpc.configui.client.screen.components.DialogButton;
+import de.markusbordihn.easynpc.configui.client.screen.components.DialogButtonButton;
+import de.markusbordihn.easynpc.configui.client.screen.components.DialogPriorityButton;
 import de.markusbordihn.easynpc.configui.menu.editor.EditorMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.data.dialog.DialogButtonEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
-import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.data.dialog.DialogUtils;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import java.util.Set;
@@ -55,6 +55,7 @@ public class DialogEditorScreen<T extends EditorMenu> extends EditorScreen<T> {
   private static final int MAX_NUMBER_OF_BUTTONS = 6;
   protected Button homeButton;
   protected Button dialogButton;
+  protected Button conditionsButton;
   protected Button dialogTextButton;
   protected Button addDialogButton;
   protected Button saveButton;
@@ -63,10 +64,11 @@ public class DialogEditorScreen<T extends EditorMenu> extends EditorScreen<T> {
   protected TextField dialogLabelTextField;
   protected Checkbox dialogLabelCheckbox;
   protected Button dialogNameToLabelButton;
-  protected Button makeDefaultDialogButton;
+  protected DialogPriorityButton dialogPriorityButton;
   protected TextField dialogNameTextField;
   private String dialogLabelValue = "";
   private String dialogNameValue = "";
+  private int dialogPriorityValue = 0;
 
   public DialogEditorScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
@@ -127,13 +129,33 @@ public class DialogEditorScreen<T extends EditorMenu> extends EditorScreen<T> {
           Constants.FONT_COLOR_BLACK);
     }
 
+    if (this.dialogPriorityButton != null) {
+      Text.drawConfigString(
+          guiGraphics,
+          this.font,
+          "dialog.priority",
+          leftPos + 10,
+          this.dialogPriorityButton.getY() + 4,
+          Constants.FONT_COLOR_BLACK);
+    }
+
+    if (this.conditionsButton != null) {
+      Text.drawConfigString(
+          guiGraphics,
+          this.font,
+          "dialog.conditions",
+          leftPos + 10,
+          this.conditionsButton.getY() + 4,
+          Constants.FONT_COLOR_BLACK);
+    }
+
     if (this.dialogTextButton != null) {
       Text.drawConfigString(
           guiGraphics,
           this.font,
           "dialog.text",
           leftPos + 10,
-          this.dialogTextButton.getY() - 13,
+          this.dialogTextButton.getY() - 12,
           Constants.FONT_COLOR_BLACK);
 
       Text.drawConfigString(
@@ -141,30 +163,16 @@ public class DialogEditorScreen<T extends EditorMenu> extends EditorScreen<T> {
           this.font,
           "dialog.buttons",
           leftPos + 10,
-          this.dialogTextButton.getY() + 27,
+          this.dialogTextButton.getY() + 25,
           Constants.FONT_COLOR_BLACK);
     }
   }
 
-  private void makeDefaultDialog() {
-    if (this.getDialogUUID().equals(this.getDialogDataSet().getDefaultDialogId())) {
-      return;
-    }
-
-    // Adjust existing dialog data set.
-    DialogDataSet dialogDataSet = this.getDialogDataSet();
-    dialogDataSet.setDefaultDialog(this.getDialogUUID());
-
-    // Save dialog data set.
-    NetworkMessageHandlerManager.getServerHandler()
-        .saveDialogSet(this.getEasyNPCUUID(), dialogDataSet);
-  }
-
   private void saveDialogData() {
-    // Check if something has changed, otherwise we don't need to save the dialog data.
     boolean hasChanged =
         !this.dialogNameTextField.getValue().equals(this.dialogNameValue)
-            || !this.dialogLabelTextField.getValue().equals(this.dialogLabelValue);
+            || !this.dialogLabelTextField.getValue().equals(this.dialogLabelValue)
+            || this.dialogPriorityButton.getPriority() != this.dialogPriorityValue;
     if (!hasChanged) {
       return;
     }
@@ -173,6 +181,7 @@ public class DialogEditorScreen<T extends EditorMenu> extends EditorScreen<T> {
     DialogDataEntry dialogDataEntry = this.getDialogData();
     dialogDataEntry.setName(this.dialogNameTextField.getValue());
     dialogDataEntry.setLabel(this.dialogLabelTextField.getValue());
+    dialogDataEntry.setPriority(this.dialogPriorityButton.getPriority());
 
     // Save dialog data
     NetworkMessageHandlerManager.getServerHandler()
@@ -190,40 +199,8 @@ public class DialogEditorScreen<T extends EditorMenu> extends EditorScreen<T> {
                 this.leftPos + 7,
                 this.topPos + 7,
                 10,
-                18,
+                16,
                 "<",
-                onPress -> this.openPreviousScreen()));
-
-    // Save Button
-    this.saveButton =
-        this.addRenderableWidget(
-            new SaveButton(
-                this.leftPos + 25,
-                this.bottomPos - 35,
-                85,
-                "save",
-                onPress -> {
-                  this.saveDialogData();
-                  this.openPreviousScreen();
-                }));
-
-    // Delete Button
-    this.deleteButton =
-        this.addRenderableWidget(
-            new DeleteButton(
-                this.saveButton.getX() + this.saveButton.getWidth() + 10,
-                this.bottomPos - 35,
-                85,
-                onPress -> this.deleteDialog()));
-
-    // Chancel Button
-    this.cancelButton =
-        this.addRenderableWidget(
-            new CancelButton(
-                this.deleteButton.getX() + this.deleteButton.getWidth() + 10,
-                this.bottomPos - 35,
-                85,
-                "cancel",
                 onPress -> this.openPreviousScreen()));
 
     // Dialog Data
@@ -243,7 +220,7 @@ public class DialogEditorScreen<T extends EditorMenu> extends EditorScreen<T> {
     // Dialog Name
     this.dialogNameValue = this.getDialogData().getName();
     this.dialogNameTextField =
-        new TextField(this.font, this.leftPos + 100, this.topPos + 30, 150, this.dialogNameValue);
+        new TextField(this.font, this.leftPos + 100, this.topPos + 28, 150, this.dialogNameValue);
     this.dialogNameTextField.setMaxLength(64);
     this.addRenderableWidget(this.dialogNameTextField);
 
@@ -268,28 +245,9 @@ public class DialogEditorScreen<T extends EditorMenu> extends EditorScreen<T> {
                   }
                 }));
 
-    // Make default Button
-    this.makeDefaultDialogButton =
-        this.addRenderableWidget(
-            new SpriteButton(
-                this.dialogNameToLabelButton.getX() + this.dialogNameToLabelButton.getWidth() + 1,
-                this.dialogNameToLabelButton.getY(),
-                30,
-                18,
-                2,
-                2,
-                92,
-                128,
-                25,
-                12,
-                onPress -> {
-                  this.makeDefaultDialog();
-                  this.refreshScreen();
-                }));
-
     // Dialog Label
     this.dialogLabelValue = dialogDataEntry.getLabel();
-    this.dialogLabelTextField = new TextField(this.font, this.leftPos + 100, this.topPos + 50, 100);
+    this.dialogLabelTextField = new TextField(this.font, this.leftPos + 100, this.topPos + 48, 100);
     this.dialogLabelTextField.setMaxLength(DialogDataEntry.MAX_DIALOG_LABEL_LENGTH);
     this.dialogLabelTextField.setValue(this.dialogLabelValue);
     this.dialogLabelTextField.setEditable(this.dialogLabelTextField.getValue().isEmpty());
@@ -305,13 +263,41 @@ public class DialogEditorScreen<T extends EditorMenu> extends EditorScreen<T> {
             checkbox -> this.dialogLabelTextField.setEditable(!checkbox.selected()));
     this.addRenderableWidget(this.dialogLabelCheckbox);
 
+    // Conditions Button
+    this.conditionsButton =
+        this.addRenderableWidget(
+            new DialogButton(
+                this.leftPos + 99,
+                this.topPos + 67,
+                140,
+                dialogDataEntry.hasConditions()
+                    ? "dialog.edit_conditions"
+                    : "dialog.create_conditions",
+                onPress -> {
+                  this.saveDialogData();
+                  NetworkMessageHandlerManager.getServerHandler()
+                      .openConditionDataEditor(this.getEasyNPCUUID(), this.getDialogUUID());
+                }));
+
+    // Dialog Priority
+    this.dialogPriorityValue = dialogDataEntry.getPriority();
+    this.dialogPriorityButton =
+        this.addRenderableWidget(
+            new DialogPriorityButton(
+                this.leftPos + 99,
+                this.topPos + 86,
+                110,
+                16,
+                this.dialogPriorityValue,
+                button -> {}));
+
     // Dialog Text
     this.dialogTextButton =
         this.addRenderableWidget(
             new TextEditButton(
                 this.leftPos + 7,
-                this.topPos + 105,
-                303,
+                this.topPos + 122,
+                315,
                 "dialog.edit_text",
                 onPress -> {
                   // Check if something has changed, to store the current dialog data before opening
@@ -323,6 +309,38 @@ public class DialogEditorScreen<T extends EditorMenu> extends EditorScreen<T> {
 
     // Dialog Buttons (max. 6 in two rows)
     this.defineDialogButtons(dialogDataEntry);
+
+    // Save Button
+    this.saveButton =
+        this.addRenderableWidget(
+            new SaveButton(
+                this.leftPos + 8,
+                this.bottomPos - 30,
+                130,
+                "save",
+                onPress -> {
+                  this.saveDialogData();
+                  this.openPreviousScreen();
+                }));
+
+    // Delete Button
+    this.deleteButton =
+        this.addRenderableWidget(
+            new DeleteButton(
+                this.saveButton.getX() + this.saveButton.getWidth() + 10,
+                this.bottomPos - 30,
+                85,
+                onPress -> this.deleteDialog()));
+
+    // Chancel Button
+    this.cancelButton =
+        this.addRenderableWidget(
+            new CancelButton(
+                this.deleteButton.getX() + this.deleteButton.getWidth() + 5,
+                this.bottomPos - 30,
+                85,
+                "cancel",
+                onPress -> this.openPreviousScreen()));
   }
 
   private void defineDialogButtons(DialogDataEntry dialogDataEntry) {
@@ -330,10 +348,10 @@ public class DialogEditorScreen<T extends EditorMenu> extends EditorScreen<T> {
     boolean smallButtons = dialogButtons.size() < 4;
     int buttonIndex = 0;
     int buttonBaseLeftPos = this.leftPos + 7;
-    int buttonTopPos = this.topPos + 145;
+    int buttonTopPos = this.topPos + 157;
     int buttonLeftPos = buttonBaseLeftPos;
     int buttonSpace = 3;
-    int buttonWidth = smallButtons ? 150 : 100;
+    int buttonWidth = smallButtons ? 156 : 103;
     int buttonMaxTextLength = smallButtons ? 22 : 14;
 
     for (DialogButtonEntry dialogButtonEntry : dialogButtons) {
@@ -341,7 +359,7 @@ public class DialogEditorScreen<T extends EditorMenu> extends EditorScreen<T> {
         break;
       }
       if ((smallButtons && buttonIndex == 2) || (!smallButtons && buttonIndex == 3)) {
-        buttonTopPos += 20;
+        buttonTopPos += 18;
         buttonLeftPos = buttonBaseLeftPos;
       }
       Button dialogActionButton =
@@ -366,8 +384,8 @@ public class DialogEditorScreen<T extends EditorMenu> extends EditorScreen<T> {
       this.addDialogButton =
           new AddButton(
               dialogButtons.size() < 5 && buttonIndex != 2 ? buttonLeftPos : buttonBaseLeftPos,
-              dialogButtons.size() < 5 && buttonIndex != 2 ? buttonTopPos : buttonTopPos + 20,
-              smallButtons ? buttonWidth : 150,
+              dialogButtons.size() < 5 && buttonIndex != 2 ? buttonTopPos : buttonTopPos + 18,
+              smallButtons ? buttonWidth : 208,
               "dialog.add_button",
               onPress -> {
                 // Check if something has changed, to store the current dialog data before opening
@@ -387,16 +405,12 @@ public class DialogEditorScreen<T extends EditorMenu> extends EditorScreen<T> {
     if (this.saveButton != null) {
       this.saveButton.active =
           !this.dialogNameTextField.getValue().equals(this.dialogNameValue)
-              || !this.dialogLabelTextField.getValue().equals(this.dialogLabelValue);
+              || !this.dialogLabelTextField.getValue().equals(this.dialogLabelValue)
+              || this.dialogPriorityButton.getPriority() != this.dialogPriorityValue;
     }
 
     if (this.dialogLabelCheckbox != null && this.dialogNameToLabelButton != null) {
       this.dialogNameToLabelButton.active = !this.dialogLabelCheckbox.selected();
-    }
-
-    if (this.makeDefaultDialogButton != null && this.getDialogDataSet() != null) {
-      this.makeDefaultDialogButton.active =
-          !this.getDialogUUID().equals(this.getDialogDataSet().getDefaultDialogId());
     }
   }
 
@@ -405,15 +419,9 @@ public class DialogEditorScreen<T extends EditorMenu> extends EditorScreen<T> {
     super.render(guiGraphics, x, y, partialTicks);
     this.renderEditLabels(guiGraphics);
 
-    // Render Tooltips
     if (this.dialogNameToLabelButton != null && this.dialogNameToLabelButton.isMouseOver(x, y)) {
       guiGraphics.renderTooltip(
           this.font, TextComponent.getTranslatedConfigText("name_to_label.tooltip"), x, y);
-    }
-
-    if (this.makeDefaultDialogButton != null && this.makeDefaultDialogButton.isMouseOver(x, y)) {
-      guiGraphics.renderTooltip(
-          this.font, TextComponent.getTranslatedConfigText("make_default.tooltip"), x, y);
     }
   }
 }
