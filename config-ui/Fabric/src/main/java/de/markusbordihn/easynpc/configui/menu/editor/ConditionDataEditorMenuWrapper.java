@@ -20,15 +20,11 @@
 package de.markusbordihn.easynpc.configui.menu.editor;
 
 import de.markusbordihn.easynpc.configui.menu.ModMenuTypes;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 
 public class ConditionDataEditorMenuWrapper extends EditorMenu {
 
-  public ConditionDataEditorMenuWrapper(
-      final int windowId,
-      final Inventory playerInventory,
-      @SuppressWarnings("unused") final FriendlyByteBuf buffer) {
+  public ConditionDataEditorMenuWrapper(final int windowId, final Inventory playerInventory) {
     super(ModMenuTypes.CONDITION_DATA_EDITOR_MENU, windowId, playerInventory);
   }
 }
