@@ -25,15 +25,16 @@ import de.markusbordihn.easynpc.client.screen.components.SaveButton;
 import de.markusbordihn.easynpc.client.screen.components.SpinButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
-import de.markusbordihn.easynpc.client.screen.components.TextField;
 import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.configui.client.screen.EditorScreen;
 import de.markusbordihn.easynpc.configui.client.screen.components.DialogButton;
+import de.markusbordihn.easynpc.configui.client.screen.editor.condition.entry.ConditionEntryWidget;
+import de.markusbordihn.easynpc.configui.client.screen.editor.condition.entry.ExecutionLimitConditionEntry;
+import de.markusbordihn.easynpc.configui.client.screen.editor.condition.entry.ScoreboardConditionEntry;
 import de.markusbordihn.easynpc.configui.menu.editor.EditorMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.condition.ConditionDataEntry;
 import de.markusbordihn.easynpc.data.condition.ConditionDataSet;
-import de.markusbordihn.easynpc.data.condition.ConditionOperationType;
 import de.markusbordihn.easynpc.data.condition.ConditionType;
 import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.network.components.TextComponent;
@@ -41,8 +42,12 @@ import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Renderable;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.screens.ConfirmScreen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -60,13 +65,9 @@ public class ConditionDataEntryEditorContainerScreen<T extends EditorMenu> exten
   protected Button cancelButton;
   protected Button deleteButton;
   protected Button conditionTypeButton;
-  protected Button operationTypeButton;
-  protected TextField nameTextField;
-  protected TextField valueTextField;
-  private ConditionOperationType operationType = ConditionOperationType.EQUALS;
-  private ConditionType conditionType = ConditionType.SCOREBOARD;
-  private String nameValue = "";
-  private int valueValue = 0;
+  protected int contentTop;
+  private ConditionEntryWidget conditionEntryWidget;
+  private ConditionType conditionType;
 
   public ConditionDataEntryEditorContainerScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
@@ -75,15 +76,10 @@ public class ConditionDataEntryEditorContainerScreen<T extends EditorMenu> exten
     // Condition Data Entry
     this.conditionDataEntryId = this.getConditionDataEntryUUID();
     this.conditionDataEntry = this.getConditionDataEntry();
-
-    // Initialize values from existing entry
-    if (this.conditionDataEntry != null
-        && this.conditionDataEntry.conditionType() != ConditionType.NONE) {
-      this.conditionType = this.conditionDataEntry.conditionType();
-      this.nameValue = this.conditionDataEntry.name();
-      this.valueValue = this.conditionDataEntry.value();
-      this.operationType = this.conditionDataEntry.operationType();
-    }
+    this.conditionType =
+        this.conditionDataEntry.conditionType() != ConditionType.NONE
+            ? this.conditionDataEntry.conditionType()
+            : ConditionType.SCOREBOARD;
   }
 
   private ConditionDataSet getConditionDataSet() {
@@ -116,37 +112,19 @@ public class ConditionDataEntryEditorContainerScreen<T extends EditorMenu> exten
     init();
   }
 
-  protected void changeOperationType(SpinButton<?> spinButton) {
-    this.operationType = (ConditionOperationType) spinButton.get();
-  }
-
   private void saveConditionDataEntry() {
     if (this.conditionDataSet == null) {
       return;
     }
 
-    // Parse value
-    int value = 0;
-    if (this.valueTextField != null) {
-      try {
-        value = Integer.parseInt(this.valueTextField.getValue());
-      } catch (NumberFormatException e) {
-        log.error("Invalid value: {}", this.valueTextField.getValue());
-      }
-    }
-
-    // Create new condition data entry (UUID is generated automatically based on content)
+    // Update or create new condition data entry
     ConditionDataEntry newConditionDataEntry =
-        new ConditionDataEntry(
-            this.conditionType,
-            this.operationType,
-            this.nameTextField != null ? this.nameTextField.getValue() : "",
-            value);
+        conditionEntryWidget != null
+            ? conditionEntryWidget.getConditionDataEntry()
+            : new ConditionDataEntry(this.conditionType);
+    this.conditionDataSet.put(this.conditionDataEntryId, newConditionDataEntry);
 
-    // Update condition data set
-    this.conditionDataSet.update(newConditionDataEntry);
-
-    // Save dialog with updated conditions
+    // Save updated condition data set
     DialogDataEntry dialogData = this.getDialogData();
     dialogData.setConditions(this.conditionDataSet.getConditions());
     NetworkMessageHandlerManager.getServerHandler()
@@ -185,6 +163,8 @@ public class ConditionDataEntryEditorContainerScreen<T extends EditorMenu> exten
   public void init() {
     super.init();
 
+    this.contentTop = this.topPos + 20;
+
     // Home Button
     this.homeButton =
         this.addRenderableWidget(
@@ -222,9 +202,9 @@ public class ConditionDataEntryEditorContainerScreen<T extends EditorMenu> exten
     this.conditionTypeButton =
         this.addRenderableWidget(
             new SpinButton<>(
-                this.leftPos + 120,
-                this.topPos + 50,
-                180,
+                this.leftPos + 133,
+                this.contentTop + 5,
+                160,
                 16,
                 Arrays.stream(ConditionType.values())
                     .filter(type -> type != ConditionType.NONE)
@@ -232,37 +212,6 @@ public class ConditionDataEntryEditorContainerScreen<T extends EditorMenu> exten
                     .collect(Collectors.toCollection(LinkedHashSet::new)),
                 this.conditionType,
                 this::changeConditionType));
-
-    // Scoreboard Name TextField (only visible for SCOREBOARD type)
-    this.nameTextField =
-        this.addRenderableWidget(
-            new TextField(
-                this.font, this.leftPos + 120, this.topPos + 75, 180, this.nameValue, 64));
-
-    // Operation Type SpinButton
-    this.operationTypeButton =
-        this.addRenderableWidget(
-            new SpinButton<>(
-                this.leftPos + 120,
-                this.topPos + 100,
-                180,
-                16,
-                Arrays.stream(ConditionOperationType.values())
-                    .sorted()
-                    .collect(Collectors.toCollection(LinkedHashSet::new)),
-                this.operationType,
-                this::changeOperationType));
-
-    // Value TextField
-    this.valueTextField =
-        this.addRenderableWidget(
-            new TextField(
-                this.font,
-                this.leftPos + 120,
-                this.topPos + 125,
-                180,
-                String.valueOf(this.valueValue),
-                10));
 
     // Save Button
     this.saveButton =
@@ -277,29 +226,67 @@ public class ConditionDataEntryEditorContainerScreen<T extends EditorMenu> exten
                   this.navigateToConditionDataEditor();
                 }));
 
+    // Delete Button
+    this.deleteButton =
+        this.addRenderableWidget(
+            new DeleteButton(
+                this.saveButton.getX() + this.saveButton.getWidth() + 10,
+                this.bottomPos - 35,
+                85,
+                onPress -> this.deleteConditionDataEntry()));
+
     // Cancel Button
     this.cancelButton =
         this.addRenderableWidget(
             new CancelButton(
-                this.saveButton.getX() + this.saveButton.getWidth() + 5,
+                this.deleteButton.getX() + this.deleteButton.getWidth() + 10,
                 this.bottomPos - 35,
                 85,
                 "cancel",
                 onPress -> this.navigateToConditionDataEditor()));
 
-    // Delete Button
-    this.deleteButton =
-        this.addRenderableWidget(
-            new DeleteButton(
-                this.cancelButton.getX() + this.cancelButton.getWidth() + 5,
-                this.bottomPos - 35,
-                85,
-                onPress -> this.deleteConditionDataEntry()));
+    // Handle edit options based on condition type
+    switch (this.conditionType) {
+      case SCOREBOARD:
+        this.conditionEntryWidget =
+            new ScoreboardConditionEntry(this.conditionDataEntry, this.conditionDataSet, this);
+        break;
+      case EXECUTION_LIMIT:
+        this.conditionEntryWidget =
+            new ExecutionLimitConditionEntry(this.conditionDataEntry, this.conditionDataSet, this);
+        break;
+      default:
+        this.conditionEntryWidget = null;
+        log.error("Unsupported condition type {}!", this.conditionType);
+    }
+
+    // Initialize condition entry widget
+    if (this.conditionEntryWidget != null) {
+      this.conditionEntryWidget.init(this.leftPos + 10, this.contentTop + 50);
+    }
+  }
+
+  public <W extends GuiEventListener & Renderable & NarratableEntry> W addConditionEntryWidget(
+      W widget) {
+    return this.addRenderableWidget(widget);
+  }
+
+  public Font getFont() {
+    return this.font;
   }
 
   @Override
   public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
     super.render(guiGraphics, x, y, partialTicks);
+
+    // Condition type label
+    Text.drawConfigString(
+        guiGraphics,
+        this.font,
+        "condition.type",
+        this.leftPos + 10,
+        this.topPos + 30,
+        Constants.FONT_COLOR_BLACK);
 
     // Help text
     Text.drawConfigString(
@@ -307,40 +294,11 @@ public class ConditionDataEntryEditorContainerScreen<T extends EditorMenu> exten
         this.font,
         "condition.help_text",
         this.leftPos + 10,
-        this.topPos + 30,
-        de.markusbordihn.easynpc.configui.Constants.FONT_COLOR_GRAY);
+        this.topPos + 50,
+        Constants.FONT_COLOR_GRAY);
 
-    // Render labels
-    Text.drawConfigString(
-        guiGraphics,
-        this.font,
-        "condition.type",
-        this.leftPos + 10,
-        this.topPos + 54,
-        de.markusbordihn.easynpc.configui.Constants.FONT_COLOR_BLACK);
-
-    Text.drawConfigString(
-        guiGraphics,
-        this.font,
-        "condition.scoreboard.name",
-        this.leftPos + 10,
-        this.topPos + 79,
-        de.markusbordihn.easynpc.configui.Constants.FONT_COLOR_BLACK);
-
-    Text.drawConfigString(
-        guiGraphics,
-        this.font,
-        "condition.scoreboard.operation",
-        this.leftPos + 10,
-        this.topPos + 104,
-        de.markusbordihn.easynpc.configui.Constants.FONT_COLOR_BLACK);
-
-    Text.drawConfigString(
-        guiGraphics,
-        this.font,
-        "condition.scoreboard.value",
-        this.leftPos + 10,
-        this.topPos + 129,
-        de.markusbordihn.easynpc.configui.Constants.FONT_COLOR_BLACK);
+    if (this.conditionEntryWidget != null) {
+      this.conditionEntryWidget.render(guiGraphics, this.leftPos + 10, this.contentTop + 50);
+    }
   }
 }

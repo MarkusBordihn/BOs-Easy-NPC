@@ -42,7 +42,8 @@ public record ConditionDataEntry(
         ConditionType.get(compoundTag.getString(DATA_TYPE_TAG).orElse("")),
         ConditionOperationType.get(compoundTag.getString(DATA_OPERATION_TAG).orElse("")),
         compoundTag.getString(DATA_NAME_TAG).orElse(""),
-        compoundTag.getInt(DATA_VALUE_TAG).orElse(0));
+        compoundTag.getInt(DATA_VALUE_TAG).orElse(0),
+        compoundTag.getString(DATA_TEXT_TAG).orElse(""));
   }
 
   public ConditionDataEntry(ConditionType conditionType) {
@@ -80,6 +81,7 @@ public record ConditionDataEntry(
           hasName()
               && this.operationType != null
               && this.operationType != ConditionOperationType.NONE;
+      case EXECUTION_LIMIT -> this.value > 0 && hasStringValue();
       default -> true;
     };
   }

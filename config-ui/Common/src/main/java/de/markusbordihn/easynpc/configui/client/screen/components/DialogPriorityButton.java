@@ -41,16 +41,17 @@ public class DialogPriorityButton extends SpinButton<DialogPriorityButton.Priori
     priorities.add(new PriorityValue(DialogPriority.NORMAL));
     priorities.add(new PriorityValue(DialogPriority.HIGH));
     priorities.add(new PriorityValue(DialogPriority.CRITICAL));
+    priorities.add(new PriorityValue(Integer.MAX_VALUE, true));
     return priorities;
   }
 
   private static PriorityValue findPresetOrCustom(int priority) {
     for (PriorityValue preset : getPresetPriorities()) {
-      if (preset.value == priority) {
+      if (!preset.isCustom && preset.value == priority) {
         return preset;
       }
     }
-    return new PriorityValue(priority);
+    return new PriorityValue(priority, true);
   }
 
   public int getPriority() {
@@ -58,28 +59,40 @@ public class DialogPriorityButton extends SpinButton<DialogPriorityButton.Priori
     return current != null ? current.value : DialogPriority.FALLBACK;
   }
 
+  public boolean isCustom() {
+    PriorityValue current = get();
+    return current != null && current.isCustom;
+  }
+
   public static class PriorityValue {
     public final int value;
+    public final boolean isCustom;
 
     public PriorityValue(int value) {
+      this(value, false);
+    }
+
+    public PriorityValue(int value, boolean isCustom) {
       this.value = value;
+      this.isCustom = isCustom;
     }
 
     @Override
     public String toString() {
-      return DialogPriority.getDisplayName(value);
+      return isCustom ? "Custom" : DialogPriority.getDisplayName(value);
     }
 
     @Override
     public boolean equals(Object obj) {
       if (this == obj) return true;
       if (!(obj instanceof PriorityValue other)) return false;
-      return value == other.value;
+      if (isCustom && other.isCustom) return true;
+      return !isCustom && !other.isCustom && value == other.value;
     }
 
     @Override
     public int hashCode() {
-      return Objects.hash(value);
+      return isCustom ? Integer.MAX_VALUE : Objects.hash(value);
     }
   }
 }
