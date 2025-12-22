@@ -62,6 +62,7 @@ import de.markusbordihn.easynpc.configui.network.message.server.RemoveDialogButt
 import de.markusbordihn.easynpc.configui.network.message.server.RemoveDialogMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.RemoveNPCMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.RemoveObjectiveMessage;
+import de.markusbordihn.easynpc.configui.network.message.server.ResetExecutionLimitMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.RespawnNPCMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.SaveDialogButtonMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.SaveDialogMessage;
@@ -335,6 +336,11 @@ public class NetworkHandlerManager {
         RemoveObjectiveMessage.MESSAGE_ID,
         RemoveObjectiveMessage.class,
         RemoveObjectiveMessage::create);
+
+    networkHandler.registerServerNetworkMessage(
+        ResetExecutionLimitMessage.MESSAGE_ID,
+        ResetExecutionLimitMessage.class,
+        ResetExecutionLimitMessage::create);
 
     networkHandler.registerServerNetworkMessage(
         RespawnNPCMessage.MESSAGE_ID, RespawnNPCMessage.class, RespawnNPCMessage::create);

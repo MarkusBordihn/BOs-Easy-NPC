@@ -34,7 +34,7 @@ public interface NetworkHandlerInterface {
 
   Logger log = LogManager.getLogger(Constants.LOG_NAME);
   String LOG_PREFIX = "[NetworkHandler]";
-  int PROTOCOL_VERSION = 23;
+  int PROTOCOL_VERSION = 24;
 
   <M extends NetworkMessageRecord> void registerClientNetworkMessageHandler(
       final ResourceLocation messageID,

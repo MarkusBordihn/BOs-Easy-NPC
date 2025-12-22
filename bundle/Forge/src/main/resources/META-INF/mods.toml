@@ -1,5 +1,5 @@
 modLoader = "javafml"
-loaderVersion = "[47,)"
+loaderVersion = "[47.4.10,)"
 license = "MIT"
 issueTrackerURL = "https://github.com/MarkusBordihn/BOs-Easy-NPC/issues"
 
@@ -31,7 +31,7 @@ side = "BOTH"
 [[dependencies.easy_npc_bundle]]
 modId = "minecraft"
 mandatory = true
-versionRange = "[1.20.1,1.21)"
+versionRange = "[1.20.1]"
 ordering = "NONE"
 side = "BOTH"
 

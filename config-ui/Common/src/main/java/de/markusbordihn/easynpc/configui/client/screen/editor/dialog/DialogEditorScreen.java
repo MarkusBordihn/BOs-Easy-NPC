@@ -65,6 +65,7 @@ public class DialogEditorScreen<T extends EditorMenu> extends EditorScreen<T> {
   protected Checkbox dialogLabelCheckbox;
   protected Button dialogNameToLabelButton;
   protected DialogPriorityButton dialogPriorityButton;
+  protected TextField dialogPriorityTextField;
   protected TextField dialogNameTextField;
   private String dialogLabelValue = "";
   private String dialogNameValue = "";
@@ -72,11 +73,6 @@ public class DialogEditorScreen<T extends EditorMenu> extends EditorScreen<T> {
 
   public DialogEditorScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
-  }
-
-  private void refreshScreen() {
-    NetworkMessageHandlerManager.getServerHandler()
-        .openDialogEditor(this.getEasyNPCUUID(), this.getDialogUUID());
   }
 
   private void openPreviousScreen() {
@@ -169,21 +165,27 @@ public class DialogEditorScreen<T extends EditorMenu> extends EditorScreen<T> {
   }
 
   private void saveDialogData() {
+    int currentPriority = this.dialogPriorityButton.getPriority();
+    if (this.dialogPriorityButton.isCustom() && this.dialogPriorityTextField != null) {
+      try {
+        currentPriority = Integer.parseInt(this.dialogPriorityTextField.getValue());
+      } catch (NumberFormatException ignored) {
+      }
+    }
+
     boolean hasChanged =
         !this.dialogNameTextField.getValue().equals(this.dialogNameValue)
             || !this.dialogLabelTextField.getValue().equals(this.dialogLabelValue)
-            || this.dialogPriorityButton.getPriority() != this.dialogPriorityValue;
+            || currentPriority != this.dialogPriorityValue;
     if (!hasChanged) {
       return;
     }
 
-    // Define new dialog data
     DialogDataEntry dialogDataEntry = this.getDialogData();
     dialogDataEntry.setName(this.dialogNameTextField.getValue());
     dialogDataEntry.setLabel(this.dialogLabelTextField.getValue());
-    dialogDataEntry.setPriority(this.dialogPriorityButton.getPriority());
+    dialogDataEntry.setPriority(currentPriority);
 
-    // Save dialog data
     NetworkMessageHandlerManager.getServerHandler()
         .saveDialog(this.getEasyNPCUUID(), this.getDialogUUID(), dialogDataEntry);
   }
@@ -289,7 +291,28 @@ public class DialogEditorScreen<T extends EditorMenu> extends EditorScreen<T> {
                 110,
                 16,
                 this.dialogPriorityValue,
-                button -> {}));
+                button -> {
+                  if (this.dialogPriorityTextField != null) {
+                    this.dialogPriorityTextField.setVisible(this.dialogPriorityButton.isCustom());
+                    if (this.dialogPriorityButton.isCustom()
+                        && this.dialogPriorityTextField.getValue().isEmpty()) {
+                      this.dialogPriorityTextField.setValue(
+                          String.valueOf(this.dialogPriorityValue));
+                    }
+                  }
+                }));
+
+    // Custom Priority TextField
+    this.dialogPriorityTextField =
+        new TextField(
+            this.font,
+            this.dialogPriorityButton.getX() + this.dialogPriorityButton.getWidth() + 2,
+            this.dialogPriorityButton.getY(),
+            30,
+            this.dialogPriorityButton.isCustom() ? String.valueOf(this.dialogPriorityValue) : "",
+            3);
+    this.dialogPriorityTextField.setVisible(this.dialogPriorityButton.isCustom());
+    this.addRenderableWidget(this.dialogPriorityTextField);
 
     // Dialog Text
     this.dialogTextButton =
@@ -403,10 +426,18 @@ public class DialogEditorScreen<T extends EditorMenu> extends EditorScreen<T> {
     super.updateTick();
 
     if (this.saveButton != null) {
+      int currentPriority = this.dialogPriorityButton.getPriority();
+      if (this.dialogPriorityButton.isCustom() && this.dialogPriorityTextField != null) {
+        try {
+          currentPriority = Integer.parseInt(this.dialogPriorityTextField.getValue());
+        } catch (NumberFormatException ignored) {
+        }
+      }
+
       this.saveButton.active =
           !this.dialogNameTextField.getValue().equals(this.dialogNameValue)
               || !this.dialogLabelTextField.getValue().equals(this.dialogLabelValue)
-              || this.dialogPriorityButton.getPriority() != this.dialogPriorityValue;
+              || currentPriority != this.dialogPriorityValue;
     }
 
     if (this.dialogLabelCheckbox != null && this.dialogNameToLabelButton != null) {

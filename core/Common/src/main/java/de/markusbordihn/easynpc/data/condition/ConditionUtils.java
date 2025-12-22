@@ -20,7 +20,10 @@
 package de.markusbordihn.easynpc.data.condition;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.data.execution.ExecutionInterval;
+import de.markusbordihn.easynpc.data.saveddata.ActionExecutionTracker;
 import java.util.Set;
+import java.util.UUID;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.scores.Objective;
 import net.minecraft.world.scores.Score;
@@ -36,30 +39,78 @@ public class ConditionUtils {
 
   public static boolean evaluateCondition(
       ConditionDataEntry conditionDataEntry, ServerPlayer player) {
+    return evaluateCondition(conditionDataEntry, player, null);
+  }
+
+  public static boolean evaluateCondition(
+      ConditionDataEntry conditionDataEntry, ServerPlayer player, UUID actionUUID) {
     if (conditionDataEntry == null || !conditionDataEntry.isValid() || player == null) {
       return false;
     }
 
     return switch (conditionDataEntry.conditionType()) {
       case SCOREBOARD -> evaluateScoreboardCondition(conditionDataEntry, player);
+      case EXECUTION_LIMIT -> evaluateExecutionLimit(conditionDataEntry, player, actionUUID);
       case NONE -> true;
     };
   }
 
   public static boolean evaluateConditions(
       Set<ConditionDataEntry> conditions, ServerPlayer player) {
+    return evaluateConditions(conditions, player, null);
+  }
+
+  public static boolean evaluateConditions(
+      Set<ConditionDataEntry> conditions, ServerPlayer player, UUID actionUUID) {
     if (conditions == null || conditions.isEmpty() || player == null) {
       return true;
     }
 
     for (ConditionDataEntry condition : conditions) {
-      if (!evaluateCondition(condition, player)) {
+      if (!evaluateCondition(condition, player, actionUUID)) {
         log.debug("Condition not met: {}", condition);
         return false;
       }
     }
 
     return true;
+  }
+
+  public static boolean evaluateExecutionLimit(
+      ConditionDataEntry conditionDataEntry, ServerPlayer player, UUID actionUUID) {
+    if (player == null || actionUUID == null) {
+      return false;
+    }
+
+    int limit = conditionDataEntry.value();
+    ExecutionInterval interval = ExecutionInterval.get(conditionDataEntry.text());
+    ActionExecutionTracker tracker = ActionExecutionTracker.get(player.serverLevel());
+
+    boolean canExecute = tracker.canExecute(player.getUUID(), actionUUID, limit, interval);
+
+    log.debug(
+        "Execution limit check for player {} action {}: limit={}, interval={}, canExecute={}",
+        player.getGameProfile().getName(),
+        actionUUID,
+        limit,
+        interval,
+        canExecute);
+
+    return canExecute;
+  }
+
+  public static void recordActionExecution(
+      ConditionDataEntry conditionDataEntry, ServerPlayer player, UUID actionUUID) {
+    if (conditionDataEntry == null
+        || conditionDataEntry.conditionType() != ConditionType.EXECUTION_LIMIT
+        || player == null
+        || actionUUID == null) {
+      return;
+    }
+
+    ExecutionInterval interval = ExecutionInterval.get(conditionDataEntry.text());
+    ActionExecutionTracker tracker = ActionExecutionTracker.get(player.serverLevel());
+    tracker.recordExecution(player.getUUID(), actionUUID, interval);
   }
 
   public static boolean evaluateScoreboardCondition(

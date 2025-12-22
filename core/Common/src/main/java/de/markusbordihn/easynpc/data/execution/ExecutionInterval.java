@@ -17,44 +17,41 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.data.condition;
+package de.markusbordihn.easynpc.data.execution;
 
-public enum ConditionType {
-  NONE(false, false, false),
-  SCOREBOARD(true, true, true),
-  EXECUTION_LIMIT(false, true, false),
-  ;
+public enum ExecutionInterval {
+  PER_MINUTE(60_000L),
+  PER_HOUR(3_600_000L),
+  PER_DAY(86_400_000L),
+  PER_WEEK(604_800_000L),
+  PER_MONTH(2_592_000_000L),
+  LIFETIME(Long.MAX_VALUE);
 
-  private final boolean requiresName;
-  private final boolean requiresValue;
-  private final boolean requiresOperation;
+  private final long milliseconds;
 
-  ConditionType(boolean requiresName, boolean requiresValue, boolean requiresOperation) {
-    this.requiresName = requiresName;
-    this.requiresValue = requiresValue;
-    this.requiresOperation = requiresOperation;
+  ExecutionInterval(long milliseconds) {
+    this.milliseconds = milliseconds;
   }
 
-  public static ConditionType get(String conditionType) {
-    if (conditionType == null || conditionType.isEmpty()) {
-      return ConditionType.NONE;
+  public static ExecutionInterval get(String name) {
+    if (name == null || name.isEmpty()) {
+      return PER_DAY;
     }
     try {
-      return ConditionType.valueOf(conditionType);
+      return ExecutionInterval.valueOf(name);
     } catch (IllegalArgumentException e) {
-      return ConditionType.NONE;
+      return PER_DAY;
     }
   }
 
-  public boolean requiresName() {
-    return requiresName;
+  public boolean hasIntervalPassed(long lastExecution) {
+    if (this == LIFETIME) {
+      return false;
+    }
+    return System.currentTimeMillis() - lastExecution >= this.milliseconds;
   }
 
-  public boolean requiresValue() {
-    return requiresValue;
-  }
-
-  public boolean requiresOperation() {
-    return requiresOperation;
+  public long getMilliseconds() {
+    return this.milliseconds;
   }
 }

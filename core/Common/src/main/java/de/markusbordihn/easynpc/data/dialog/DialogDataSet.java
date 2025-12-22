@@ -21,6 +21,8 @@ package de.markusbordihn.easynpc.data.dialog;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.condition.ConditionDataEntry;
+import de.markusbordihn.easynpc.data.condition.ConditionType;
+import de.markusbordihn.easynpc.data.condition.ConditionUtils;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -203,7 +205,7 @@ public class DialogDataSet {
         continue;
       }
 
-      boolean conditionResult = evaluateCondition(condition, serverPlayer);
+      boolean conditionResult = evaluateCondition(condition, serverPlayer, dialog.getId());
       log.debug(
           "Condition check for dialog {}: {} {} {} = {} (result: {})",
           dialog.getLabel(),
@@ -229,9 +231,23 @@ public class DialogDataSet {
     return true;
   }
 
-  private boolean evaluateCondition(ConditionDataEntry condition, ServerPlayer serverPlayer) {
+  public void recordDialogExecution(DialogDataEntry dialog, ServerPlayer serverPlayer) {
+    if (dialog == null || serverPlayer == null || !dialog.hasConditions()) {
+      return;
+    }
+
+    for (ConditionDataEntry condition : dialog.getConditions()) {
+      if (condition.conditionType() == ConditionType.EXECUTION_LIMIT && condition.isValid()) {
+        ConditionUtils.recordActionExecution(condition, serverPlayer, dialog.getId());
+      }
+    }
+  }
+
+  private boolean evaluateCondition(
+      ConditionDataEntry condition, ServerPlayer serverPlayer, UUID dialogId) {
     return switch (condition.conditionType()) {
       case SCOREBOARD -> evaluateScoreboardCondition(condition, serverPlayer);
+      case EXECUTION_LIMIT -> ConditionUtils.evaluateCondition(condition, serverPlayer, dialogId);
       case NONE -> {
         log.warn("Encountered NONE condition type, skipping");
         yield true;

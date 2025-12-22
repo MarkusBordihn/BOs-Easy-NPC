@@ -25,6 +25,8 @@ import de.markusbordihn.easynpc.data.action.ActionDataType;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
 import de.markusbordihn.easynpc.data.action.ActionGroup;
 import de.markusbordihn.easynpc.data.action.ActionManager;
+import de.markusbordihn.easynpc.data.condition.ConditionDataEntry;
+import de.markusbordihn.easynpc.data.condition.ConditionUtils;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.TickerDataCapable;
@@ -317,6 +319,10 @@ public interface ActionHandler<E extends PathfinderMob> extends EasyNPC<E> {
             actionDataEntry.actionDataType(),
             actionDataEntry);
         break;
+    }
+
+    for (ConditionDataEntry condition : actionDataEntry.conditionDataSet().getConditions()) {
+      ConditionUtils.recordActionExecution(condition, serverPlayer, actionDataEntry.getId());
     }
   }
 }

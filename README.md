@@ -74,6 +74,13 @@ are free and open-source!).
 Every bit helps me keep creating mods in my free time, covering software, services, and hardware
 costs.
 
+## 🧠 AI Assistance
+
+AI-assisted tools are used to improve documentation, translations, and repetitive code sections.
+This allows more time to be spent on feature development, maintenance, and long-term support.
+All technical concepts, gameplay logic, and final assets are created manually.
+See [AI ASSISTANCE](AI_ASSISTANCE.md) for full details.
+
 ## ⚖️ License
 
 The [MIT LICENSE](LICENSE.md) applies only to the code in this repository.
