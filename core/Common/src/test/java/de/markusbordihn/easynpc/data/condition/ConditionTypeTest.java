@@ -31,6 +31,7 @@ class ConditionTypeTest {
   @DisplayName("Should get ConditionType from string")
   void testGet() {
     assertEquals(ConditionType.SCOREBOARD, ConditionType.get("SCOREBOARD"));
+    assertEquals(ConditionType.EXECUTION_LIMIT, ConditionType.get("EXECUTION_LIMIT"));
     assertEquals(ConditionType.NONE, ConditionType.get("NONE"));
   }
 
@@ -46,6 +47,7 @@ class ConditionTypeTest {
   @DisplayName("Should check if name is required")
   void testRequiresName() {
     assertTrue(ConditionType.SCOREBOARD.requiresName());
+    assertFalse(ConditionType.EXECUTION_LIMIT.requiresName());
     assertFalse(ConditionType.NONE.requiresName());
   }
 
@@ -53,6 +55,7 @@ class ConditionTypeTest {
   @DisplayName("Should check if value is required")
   void testRequiresValue() {
     assertTrue(ConditionType.SCOREBOARD.requiresValue());
+    assertTrue(ConditionType.EXECUTION_LIMIT.requiresValue());
     assertFalse(ConditionType.NONE.requiresValue());
   }
 
@@ -60,6 +63,7 @@ class ConditionTypeTest {
   @DisplayName("Should check if operation is required")
   void testRequiresOperation() {
     assertTrue(ConditionType.SCOREBOARD.requiresOperation());
+    assertFalse(ConditionType.EXECUTION_LIMIT.requiresOperation());
     assertFalse(ConditionType.NONE.requiresOperation());
   }
 }

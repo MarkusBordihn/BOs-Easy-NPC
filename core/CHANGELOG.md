@@ -16,6 +16,7 @@ Check the [upgrade guide][upgrade_guide] for more information.
 - Fixed missing default values for some dialog data fields.
 - Added dialog priority support to control the order of dialog execution.
 - Added condition support for dialog and scoreboard actions.
+- Added frequency support for dialog to limit how often an dialog can be shown.
 - Added new NPC preset to for scoreboard and condition support.
 - Improved dialog button data format by removing redundant fields.
 
