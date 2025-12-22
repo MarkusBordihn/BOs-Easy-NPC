@@ -17,44 +17,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.data.condition;
+package de.markusbordihn.easynpc.data.execution;
 
-public enum ConditionType {
-  NONE(false, false, false),
-  SCOREBOARD(true, true, true),
-  EXECUTION_LIMIT(false, true, false),
-  ;
+import net.minecraft.nbt.CompoundTag;
 
-  private final boolean requiresName;
-  private final boolean requiresValue;
-  private final boolean requiresOperation;
+public record ExecutionData(int executionCount, long windowStartTime, long lastExecutionTime) {
 
-  ConditionType(boolean requiresName, boolean requiresValue, boolean requiresOperation) {
-    this.requiresName = requiresName;
-    this.requiresValue = requiresValue;
-    this.requiresOperation = requiresOperation;
+  public static final String DATA_EXECUTION_COUNT_TAG = "Count";
+  public static final String DATA_WINDOW_START_TAG = "WindowStart";
+  public static final String DATA_LAST_EXECUTION_TAG = "LastExec";
+
+  public ExecutionData(CompoundTag compoundTag) {
+    this(
+        compoundTag.getInt(DATA_EXECUTION_COUNT_TAG),
+        compoundTag.getLong(DATA_WINDOW_START_TAG),
+        compoundTag.getLong(DATA_LAST_EXECUTION_TAG));
   }
 
-  public static ConditionType get(String conditionType) {
-    if (conditionType == null || conditionType.isEmpty()) {
-      return ConditionType.NONE;
-    }
-    try {
-      return ConditionType.valueOf(conditionType);
-    } catch (IllegalArgumentException e) {
-      return ConditionType.NONE;
-    }
+  public CompoundTag save(CompoundTag compoundTag) {
+    compoundTag.putInt(DATA_EXECUTION_COUNT_TAG, this.executionCount);
+    compoundTag.putLong(DATA_WINDOW_START_TAG, this.windowStartTime);
+    compoundTag.putLong(DATA_LAST_EXECUTION_TAG, this.lastExecutionTime);
+    return compoundTag;
   }
 
-  public boolean requiresName() {
-    return requiresName;
-  }
-
-  public boolean requiresValue() {
-    return requiresValue;
-  }
-
-  public boolean requiresOperation() {
-    return requiresOperation;
+  public CompoundTag save() {
+    return save(new CompoundTag());
   }
 }

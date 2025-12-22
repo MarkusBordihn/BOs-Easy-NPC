@@ -39,7 +39,7 @@ public class ConditionDataListEntry extends ObjectSelectionList.Entry<ConditionD
   public static final int ID_LEFT_POS = 0;
   public static final int TYPE_LEFT_POS = 22;
   public static final int VALUE_LEFT_POS = 110;
-  public static final int OPTIONS_LEFT_POS = 230;
+  public static final int OPTIONS_LEFT_POS = 250;
 
   // Layout constants
   private static final int ENTRY_HEIGHT = 21;
@@ -49,7 +49,7 @@ public class ConditionDataListEntry extends ObjectSelectionList.Entry<ConditionD
   private static final int COLUMN_SEPARATOR_OFFSET = 3;
   private static final int BUTTON_SPACING = 2;
   private static final int BUTTON_SIZE = 18;
-  private static final int VALUE_MAX_LENGTH = 18;
+  private static final int VALUE_MAX_LENGTH = 21;
   private static final int LIST_WIDTH = 309;
 
   // Color constants
@@ -175,23 +175,29 @@ public class ConditionDataListEntry extends ObjectSelectionList.Entry<ConditionD
   }
 
   private void renderValuePreview(GuiGraphics guiGraphics, int fieldsLeft, int fieldTop) {
-    if (this.conditionType == ConditionType.SCOREBOARD) {
-      String valuePreview =
-          TextUtils.limitString(
-              this.conditionDataEntry.name()
-                  + " "
-                  + this.conditionDataEntry.operationType().name()
-                  + " "
-                  + this.conditionDataEntry.value(),
-              VALUE_MAX_LENGTH);
-      Text.drawString(
-          guiGraphics,
-          this.font,
-          valuePreview,
-          fieldsLeft + VALUE_LEFT_POS + 2,
-          fieldTop,
-          Constants.FONT_COLOR_BLACK);
-    }
+    String valuePreview =
+        switch (this.conditionType) {
+          case SCOREBOARD ->
+              TextUtils.limitString(
+                  this.conditionDataEntry.name()
+                      + " "
+                      + this.conditionDataEntry.operationType().name()
+                      + " "
+                      + this.conditionDataEntry.value(),
+                  VALUE_MAX_LENGTH);
+          case EXECUTION_LIMIT ->
+              TextUtils.limitString(
+                  this.conditionDataEntry.value() + " (" + this.conditionDataEntry.text() + ")",
+                  VALUE_MAX_LENGTH);
+          default -> "-";
+        };
+    Text.drawString(
+        guiGraphics,
+        this.font,
+        valuePreview,
+        fieldsLeft + VALUE_LEFT_POS + 2,
+        fieldTop,
+        Constants.FONT_COLOR_BLACK);
   }
 
   public void renderSeparatorLines(GuiGraphics guiGraphics, int top) {
