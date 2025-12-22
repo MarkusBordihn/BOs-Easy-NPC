@@ -19,12 +19,18 @@
 
 package de.markusbordihn.easynpc.data.skin;
 
+import net.minecraft.core.ClientAsset;
 import net.minecraft.resources.ResourceLocation;
 
 public interface VariantTexture {
 
   default ResourceLocation parseTextureLocation(String namespace, String path) {
     return ResourceLocation.fromNamespaceAndPath(namespace, path);
+  }
+
+  default ClientAsset.ResourceTexture getResourceTexture() {
+    ResourceLocation textureLocation = getTextureLocation();
+    return new ClientAsset.ResourceTexture(textureLocation, textureLocation);
   }
 
   ResourceLocation getTextureLocation();

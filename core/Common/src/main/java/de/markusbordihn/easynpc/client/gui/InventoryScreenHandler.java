@@ -22,10 +22,13 @@ package de.markusbordihn.easynpc.client.gui;
 import de.markusbordihn.easynpc.client.renderer.manager.EntityTypeManager;
 import de.markusbordihn.easynpc.client.renderer.manager.RendererManager;
 import de.markusbordihn.easynpc.data.render.RenderType;
+import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.data.skin.SkinType;
+import de.markusbordihn.easynpc.data.skin.VariantTexture;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.RenderDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.VariantDataCapable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.entity.CatRenderer;
@@ -33,6 +36,7 @@ import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.HumanoidMobRenderer;
 import net.minecraft.client.renderer.entity.VillagerRenderer;
+import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.renderer.entity.state.CatRenderState;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
@@ -45,12 +49,15 @@ import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.animal.Cat;
 import net.minecraft.world.entity.monster.ZombieVillager;
 import net.minecraft.world.entity.npc.Villager;
+import net.minecraft.world.entity.player.PlayerModelType;
+import net.minecraft.world.entity.player.PlayerSkin;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
 public class InventoryScreenHandler {
 
   private static final ThreadLocal<Boolean> BYPASS_MIXIN = ThreadLocal.withInitial(() -> false);
+  private static final int FULL_BRIGHT = 15728880;
 
   public static boolean isBypassMixin() {
     return BYPASS_MIXIN.get();
@@ -58,6 +65,23 @@ public class InventoryScreenHandler {
 
   public static void setBypassMixin(boolean bypass) {
     BYPASS_MIXIN.set(bypass);
+  }
+
+  private static void submitEntityRenderState(
+      GuiGraphics guiGraphics,
+      EntityRenderState renderState,
+      float scale,
+      Vector3f translation,
+      Quaternionf rotation,
+      Quaternionf entityRotation,
+      int left,
+      int top,
+      int right,
+      int bottom) {
+    renderState.lightCoords = FULL_BRIGHT;
+    renderState.hitboxesRenderState = null;
+    guiGraphics.submitEntityRenderState(
+        renderState, scale, translation, rotation, entityRotation, left, top, right, bottom);
   }
 
   public static boolean onRenderEntityInInventory(
@@ -119,9 +143,17 @@ public class InventoryScreenHandler {
     EntityRenderer<? super LivingEntity, ?> entityrenderer =
         entityRenderDispatcher.getRenderer(entity);
     EntityRenderState entityrenderstate = entityrenderer.createRenderState(entity, 1.0F);
-    entityrenderstate.hitboxesRenderState = null;
-    guiGraphics.submitEntityRenderState(
-        entityrenderstate, scale, translation, rotation, entityRotation, left, top, right, bottom);
+    submitEntityRenderState(
+        guiGraphics,
+        entityrenderstate,
+        scale,
+        translation,
+        rotation,
+        entityRotation,
+        left,
+        top,
+        right,
+        bottom);
     return true;
   }
 
@@ -152,9 +184,17 @@ public class InventoryScreenHandler {
     EntityRenderer<? super Entity, ?> entityrenderer =
         entityRenderDispatcher.getRenderer(customEntity);
     EntityRenderState entityrenderstate = entityrenderer.createRenderState(customEntity, 1.0F);
-    entityrenderstate.hitboxesRenderState = null;
-    guiGraphics.submitEntityRenderState(
-        entityrenderstate, scale, translation, rotation, entityRotation, left, top, right, bottom);
+    submitEntityRenderState(
+        guiGraphics,
+        entityrenderstate,
+        scale,
+        translation,
+        rotation,
+        entityRotation,
+        left,
+        top,
+        right,
+        bottom);
     return true;
   }
 
@@ -176,12 +216,15 @@ public class InventoryScreenHandler {
         Minecraft.getInstance().getEntityRenderDispatcher();
     EntityRenderer<? super Entity, ?> entityRenderer =
         entityRenderDispatcher.getRenderer(livingEntity);
-
-    // Handle player renderer with custom skin.
     EntityRenderState baseRenderState = entityRenderer.createRenderState(livingEntity, 1.0F);
-    if (baseRenderState instanceof HumanoidRenderState humanoidRenderState) {
-      guiGraphics.submitEntityRenderState(
-          humanoidRenderState,
+
+    // Handle player renderer with custom skin - check render state type first.
+    if (baseRenderState instanceof AvatarRenderState avatarRenderState) {
+      AvatarRenderState customAvatarRenderState =
+          getCustomPlayerRenderState(entityRenderer, avatarRenderState, skinData, easyNPC);
+      submitEntityRenderState(
+          guiGraphics,
+          customAvatarRenderState,
           scale,
           translation,
           rotation,
@@ -199,8 +242,8 @@ public class InventoryScreenHandler {
       CatRenderer catRenderer = (CatRenderer) (EntityRenderer<? super Cat, ?>) entityRenderer;
       catRenderer.extractRenderState((Cat) livingEntity, customCatRenderState, 1.0F);
       customCatRenderState.texture = catRenderer.getTextureLocation(customCatRenderState);
-      customCatRenderState.hitboxesRenderState = null;
-      guiGraphics.submitEntityRenderState(
+      submitEntityRenderState(
+          guiGraphics,
           customCatRenderState,
           scale,
           translation,
@@ -220,8 +263,8 @@ public class InventoryScreenHandler {
       VillagerRenderer villagerRenderer =
           (VillagerRenderer) (EntityRenderer<? super Villager, ?>) entityRenderer;
       villagerRenderer.extractRenderState((Villager) livingEntity, customVillagerRenderState, 1.0F);
-      customVillagerRenderState.hitboxesRenderState = null;
-      guiGraphics.submitEntityRenderState(
+      submitEntityRenderState(
+          guiGraphics,
           customVillagerRenderState,
           scale,
           translation,
@@ -242,8 +285,8 @@ public class InventoryScreenHandler {
       // Override villagerData with current entity data to show correct type and profession
       customZombieVillagerRenderState.villagerData =
           ((ZombieVillager) livingEntity).getVillagerData();
-      customZombieVillagerRenderState.hitboxesRenderState = null;
-      guiGraphics.submitEntityRenderState(
+      submitEntityRenderState(
+          guiGraphics,
           customZombieVillagerRenderState,
           scale,
           translation,
@@ -262,8 +305,8 @@ public class InventoryScreenHandler {
       HumanoidRenderState customHumanoidRenderState =
           (HumanoidRenderState) entityRenderer.createRenderState();
       humanoidRenderer.extractRenderState(easyNPC.getMob(), customHumanoidRenderState, 1.0F);
-      customHumanoidRenderState.hitboxesRenderState = null;
-      guiGraphics.submitEntityRenderState(
+      submitEntityRenderState(
+          guiGraphics,
           customHumanoidRenderState,
           scale,
           translation,
@@ -277,9 +320,59 @@ public class InventoryScreenHandler {
     }
 
     // Fallback to default rendering.
-    baseRenderState.hitboxesRenderState = null;
-    guiGraphics.submitEntityRenderState(
-        baseRenderState, scale, translation, rotation, entityRotation, left, top, right, bottom);
+    submitEntityRenderState(
+        guiGraphics,
+        baseRenderState,
+        scale,
+        translation,
+        rotation,
+        entityRotation,
+        left,
+        top,
+        right,
+        bottom);
     return true;
+  }
+
+  public static AvatarRenderState getCustomPlayerRenderState(
+      EntityRenderer<? super Entity, ?> entityRenderer,
+      AvatarRenderState avatarRenderState,
+      SkinDataCapable<?> skinData,
+      EasyNPC<?> easyNPC) {
+    AvatarRenderState cumstomAvatarRenderState =
+        (AvatarRenderState) entityRenderer.createRenderState();
+    cumstomAvatarRenderState.scale = avatarRenderState.scale;
+    cumstomAvatarRenderState.mainArm = avatarRenderState.mainArm;
+    cumstomAvatarRenderState.x = avatarRenderState.x;
+    cumstomAvatarRenderState.y = avatarRenderState.y;
+    cumstomAvatarRenderState.z = avatarRenderState.z;
+    cumstomAvatarRenderState.bodyRot = avatarRenderState.bodyRot;
+
+    PlayerModelType playerModelType =
+        skinData.getSkinModel() == SkinModel.HUMANOID_SLIM
+            ? PlayerModelType.SLIM
+            : PlayerModelType.WIDE;
+    if (skinData.getSkinType() == SkinType.NONE) {
+      return cumstomAvatarRenderState;
+    } else if (skinData.getSkinType() == SkinType.DEFAULT) {
+      VariantDataCapable<?> variantData = easyNPC.getEasyNPCVariantData();
+      if (variantData.getSkinVariantType() instanceof VariantTexture variantTexture) {
+        cumstomAvatarRenderState.skin =
+            new PlayerSkin(variantTexture.getResourceTexture(), null, null, playerModelType, false);
+      }
+    } else if (skinData.getSkinType() == SkinType.CUSTOM) {
+      cumstomAvatarRenderState.skin =
+          new PlayerSkin(avatarRenderState.skin.body(), null, null, playerModelType, false);
+    } else if (skinData.getSkinType() == SkinType.PLAYER_SKIN) {
+      cumstomAvatarRenderState.skin =
+          new PlayerSkin(avatarRenderState.skin.body(), null, null, playerModelType, false);
+    } else if (skinData.getSkinType() == SkinType.INSECURE_REMOTE_URL) {
+      cumstomAvatarRenderState.skin =
+          new PlayerSkin(avatarRenderState.skin.body(), null, null, playerModelType, false);
+    } else if (skinData.getSkinType() == SkinType.SECURE_REMOTE_URL) {
+      cumstomAvatarRenderState.skin =
+          new PlayerSkin(avatarRenderState.skin.body(), null, null, playerModelType, true);
+    }
+    return cumstomAvatarRenderState;
   }
 }

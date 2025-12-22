@@ -101,6 +101,10 @@ public interface DialogDataCapable<T extends PathfinderMob> extends EasyNPC<T> {
   }
 
   default void openDialog(ServerPlayer serverPlayer, UUID dialogId) {
+    DialogDataEntry dialog = getDialogDataSet().getDialog(dialogId);
+    if (dialog != null) {
+      getDialogDataSet().recordDialogExecution(dialog, serverPlayer);
+    }
     MenuManager.getMenuHandler().openDialogMenu(serverPlayer, this, dialogId, 0);
   }
 

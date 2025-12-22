@@ -99,7 +99,7 @@ public class EquipmentConfigurationContainerScreen<T extends ConfigurationMenu>
   public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
     super.render(guiGraphics, x, y, partialTicks);
 
-    EntityConfigScreenRenderer.renderEntity(
+    EntityConfigScreenRenderer.renderEntityRaw(
         guiGraphics,
         this.getEasyNPC(),
         EntityRenderConfig.guiScaled(
