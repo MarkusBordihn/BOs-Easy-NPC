@@ -1,5 +1,5 @@
 modLoader = "javafml"
-loaderVersion = "[47.4.10,)"
+loaderVersion = "[47,)"
 license = "MIT"
 issueTrackerURL = "https://github.com/MarkusBordihn/BOs-Easy-NPC/issues"
 
