@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.entity.easynpc.handlers.action;
 
 import de.markusbordihn.easynpc.data.action.ActionDataEntry;
+import de.markusbordihn.easynpc.data.condition.ConditionUtils;
 import de.markusbordihn.easynpc.entity.easynpc.data.DialogDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.TradingDataCapable;
 import net.minecraft.core.BlockPos;
@@ -31,10 +32,15 @@ public class ActionValidator {
 
   public static boolean validateActionData(
       ActionDataEntry actionDataEntry, ServerPlayer serverPlayer) {
-    return actionDataEntry != null
-        && serverPlayer != null
-        && actionDataEntry.isValidAndNotEmpty()
-        && !serverPlayer.level().isClientSide();
+    if (actionDataEntry == null
+        || serverPlayer == null
+        || !actionDataEntry.isValidAndNotEmpty()
+        || serverPlayer.level().isClientSide()) {
+      return false;
+    }
+
+    return ConditionUtils.evaluateConditions(
+        actionDataEntry.conditionDataSet().getConditions(), serverPlayer, actionDataEntry.getId());
   }
 
   public static boolean validateServerSide(ServerPlayer serverPlayer) {

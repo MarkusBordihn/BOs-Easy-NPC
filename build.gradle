@@ -99,15 +99,15 @@ tasks.named('cleanBuild') {
   }
 }
 
-// Remove all .gradle directories in project and subproject folders
+// Remove all .gradle and .build directories in project and subproject folders
 tasks.register('cleanGradleDirs') {
-  description = 'Deletes all .gradle directories in project and subproject folders'
+  description = 'Deletes all .gradle and build directories in project and subproject folders'
   group = "build"
 
   doLast {
     def dirsToClean = []
     rootDir.eachFileRecurse { file ->
-      if (file.isDirectory() && file.name == '.gradle') {
+      if (file.isDirectory() && (file.name == '.gradle' || file.name == 'build')) {
         dirsToClean << file
       }
     }
@@ -115,7 +115,7 @@ tasks.register('cleanGradleDirs') {
       println "Deleting: ${dir}"
       dir.deleteDir()
     }
-    println ".gradle directories deleted: ${dirsToClean.size()}"
+    println ".gradle and build directories deleted: ${dirsToClean.size()}"
   }
 }
 
