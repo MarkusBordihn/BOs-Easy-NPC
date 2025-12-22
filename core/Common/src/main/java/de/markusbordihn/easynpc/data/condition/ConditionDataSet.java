@@ -85,6 +85,16 @@ public class ConditionDataSet {
     return this.conditionDataEntries.removeIf(entry -> entry.getId().equals(id));
   }
 
+  public void put(UUID conditionDataEntryId, ConditionDataEntry conditionDataEntry) {
+    if (conditionDataEntryId == null || conditionDataEntry == null) {
+      return;
+    }
+    remove(conditionDataEntryId);
+    if (conditionDataEntry.isValid()) {
+      this.conditionDataEntries.add(conditionDataEntry);
+    }
+  }
+
   public void update(ConditionDataEntry conditionDataEntry) {
     if (conditionDataEntry != null && conditionDataEntry.isValid()) {
       remove(conditionDataEntry.getId());
@@ -94,34 +104,6 @@ public class ConditionDataSet {
 
   public void clear() {
     this.conditionDataEntries.clear();
-  }
-
-  public void moveUp(ConditionDataEntry conditionDataEntry) {
-    if (conditionDataEntry == null) {
-      return;
-    }
-    List<ConditionDataEntry> list = new ArrayList<>(this.conditionDataEntries);
-    int index = list.indexOf(conditionDataEntry);
-    if (index > 0) {
-      list.remove(index);
-      list.add(index - 1, conditionDataEntry);
-      this.conditionDataEntries.clear();
-      this.conditionDataEntries.addAll(list);
-    }
-  }
-
-  public void moveDown(ConditionDataEntry conditionDataEntry) {
-    if (conditionDataEntry == null) {
-      return;
-    }
-    List<ConditionDataEntry> list = new ArrayList<>(this.conditionDataEntries);
-    int index = list.indexOf(conditionDataEntry);
-    if (index >= 0 && index < list.size() - 1) {
-      list.remove(index);
-      list.add(index + 1, conditionDataEntry);
-      this.conditionDataEntries.clear();
-      this.conditionDataEntries.addAll(list);
-    }
   }
 
   public void load(CompoundTag compoundTag) {
