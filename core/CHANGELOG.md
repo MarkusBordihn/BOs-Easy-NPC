@@ -14,6 +14,8 @@ Check the [upgrade guide][upgrade_guide] for more information.
 - Fixed #623 by refactoring render data and render handling.
 - Fixed #622 by making sure custom data are properly saved and loaded.
 - Fixed open dialog action type to allow opening dialogs from other NPCs.
+- Fixed hashing issues by adding missing equals and hashCode methods for ConditionDataSet and
+  ActionDataSet.
 - Added custom data test item for #622 and easier testing of custom data.
 - Improved records and fixed potential issues with missing data.
 
