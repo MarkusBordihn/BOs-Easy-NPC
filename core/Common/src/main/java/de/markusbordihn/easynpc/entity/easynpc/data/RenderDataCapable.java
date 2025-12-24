@@ -19,7 +19,7 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.data;
 
-import de.markusbordihn.easynpc.data.render.RenderDataSet;
+import de.markusbordihn.easynpc.data.render.RenderDataEntry;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
@@ -39,33 +39,27 @@ public interface RenderDataCapable<E extends PathfinderMob> extends EasyNPC<E> {
     log.info("- Registering Synched Render Data for {}.", entityClass.getSimpleName());
     map.put(
         SynchedDataIndex.RENDER_DATA,
-        SynchedEntityData.defineId(entityClass, EntityDataSerializersManager.RENDER_DATA_SET));
+        SynchedEntityData.defineId(entityClass, EntityDataSerializersManager.RENDER_DATA_ENTRY));
   }
 
   default void defineSynchedRenderData(SynchedEntityData.Builder builder) {
-    defineSynchedEntityData(builder, SynchedDataIndex.RENDER_DATA, new RenderDataSet());
+    defineSynchedEntityData(builder, SynchedDataIndex.RENDER_DATA, new RenderDataEntry());
   }
 
-  default RenderDataSet getRenderDataSet() {
+  default RenderDataEntry getRenderDataEntry() {
     return this.getSynchedEntityData(SynchedDataIndex.RENDER_DATA);
   }
 
-  default void setRenderData(RenderDataSet renderData) {
-    this.setSynchedEntityData(SynchedDataIndex.RENDER_DATA, renderData);
-  }
-
-  default void updateRenderData() {
-    RenderDataSet renderDataSet = this.getRenderDataSet();
-    this.setRenderData(new RenderDataSet());
-    this.setRenderData(renderDataSet);
+  default void setRenderData(RenderDataEntry renderData) {
+    this.setSynchedEntityData(SynchedDataIndex.RENDER_DATA, renderData, true);
   }
 
   default void addAdditionalRenderData(CompoundTag compoundTag) {
     CompoundTag renderTag = new CompoundTag();
 
-    RenderDataSet renderData = this.getRenderDataSet();
+    RenderDataEntry renderData = this.getRenderDataEntry();
     if (renderData != null) {
-      renderData.save(renderTag);
+      renderData.write(renderTag);
     }
 
     compoundTag.put(DATA_RENDER_DATA_TAG, renderTag);
@@ -73,13 +67,13 @@ public interface RenderDataCapable<E extends PathfinderMob> extends EasyNPC<E> {
 
   default void readAdditionalRenderData(CompoundTag compoundTag) {
 
-    // Early exit if no dialog data is available.
+    // Early exit if no render data is available.
     if (!compoundTag.contains(DATA_RENDER_DATA_TAG)) {
       return;
     }
 
-    // Read dialog data
-    RenderDataSet renderData = new RenderDataSet(compoundTag.getCompound(DATA_RENDER_DATA_TAG));
+    // Read render data.
+    RenderDataEntry renderData = new RenderDataEntry(compoundTag.getCompound(DATA_RENDER_DATA_TAG));
     this.setRenderData(renderData);
   }
 }

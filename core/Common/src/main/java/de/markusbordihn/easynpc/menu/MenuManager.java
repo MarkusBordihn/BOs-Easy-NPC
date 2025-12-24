@@ -93,6 +93,16 @@ public class MenuManager {
       return;
     }
 
+    // Close existing container to prevent race conditions during screen transitions.
+    if (serverPlayer.containerMenu != null
+        && serverPlayer.containerMenu != serverPlayer.inventoryMenu) {
+      log.debug(
+          "Closing existing container {} before opening menu {}",
+          serverPlayer.containerMenu.getClass().getSimpleName(),
+          menuId);
+      serverPlayer.closeContainer();
+    }
+
     log.info(
         "Opening menu {} for npc {} and player {} with {}",
         menuId,

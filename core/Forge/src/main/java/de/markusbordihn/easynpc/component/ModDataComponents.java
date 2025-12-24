@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.component;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.preset.PresetData;
+import de.markusbordihn.easynpc.data.test.TestItemData;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -42,6 +43,14 @@ public class ModDataComponents {
                   .persistent(PresetData.CODEC)
                   .networkSynchronized(PresetData.STREAM_CODEC)
                   .build());
+  public static final RegistryObject<DataComponentType<TestItemData>> TEST_ITEM_DATA =
+      DATA_COMPONENTS.register(
+          TestItemData.ID,
+          () ->
+              DataComponentType.<TestItemData>builder()
+                  .persistent(TestItemData.CODEC)
+                  .networkSynchronized(TestItemData.STREAM_CODEC)
+                  .build());
 
   private ModDataComponents() {}
 
@@ -50,6 +59,7 @@ public class ModDataComponents {
     event.enqueueWork(
         () -> {
           DataComponents.registerPresetData(PRESET_DATA);
+          DataComponents.registerTestItemData(TEST_ITEM_DATA);
         });
   }
 }

@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.item.configuration;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.access.AccessManager;
 import de.markusbordihn.easynpc.block.entity.EasyNPCSpawnerBlockEntity;
+import de.markusbordihn.easynpc.data.preset.PresetData;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.PresetDataCapable;
 import de.markusbordihn.easynpc.network.components.TextComponent;
@@ -135,10 +136,8 @@ public class EasyNPCPresetEmptyItem extends Item {
     }
 
     // Store entity type and preset data in the item stack.
-    de.markusbordihn.easynpc.data.preset.PresetData presetData =
-        new de.markusbordihn.easynpc.data.preset.PresetData(entityType, compoundTag);
-    ItemStack presetItemStack =
-        de.markusbordihn.easynpc.data.preset.PresetData.set(item, presetData);
+    PresetData presetData = new PresetData(entityType, compoundTag);
+    ItemStack presetItemStack = PresetData.set(item, presetData);
     new ItemStack(item);
     log.debug(
         "Captured NPC preset from {} with {} to {}",
