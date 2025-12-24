@@ -246,6 +246,24 @@ public final class ActionDataSet {
     return compoundTag;
   }
 
+  @Override
+  public boolean equals(Object object) {
+    if (this == object) {
+      return true;
+    }
+    if (object == null || getClass() != object.getClass()) {
+      return false;
+    }
+    ActionDataSet other = (ActionDataSet) object;
+    return this.actionDataEntries.equals(other.actionDataEntries);
+  }
+
+  @Override
+  public int hashCode() {
+    return this.actionDataEntries.hashCode();
+  }
+
+  @Override
   public String toString() {
     return this.actionDataEntries.toString();
   }

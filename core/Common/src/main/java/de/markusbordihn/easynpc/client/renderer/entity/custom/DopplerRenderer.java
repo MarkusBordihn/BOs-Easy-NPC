@@ -60,14 +60,14 @@ public class DopplerRenderer
     // Get render data.
     RenderDataCapable<?> renderData = easyNPC.getEasyNPCRenderData();
     if (renderData == null
-        || renderData.getRenderDataSet() == null
-        || renderData.getRenderDataSet().getRenderType() != RenderType.CUSTOM_ENTITY) {
+        || renderData.getRenderDataEntry() == null
+        || renderData.getRenderDataEntry().getRenderType() != RenderType.CUSTOM_ENTITY) {
       return false;
     }
 
     // Get custom render data.
     EntityType<? extends Entity> renderEntityType =
-        renderData.getRenderDataSet().getRenderEntityType();
+        renderData.getRenderDataEntry().getRenderEntityType();
 
     // Get custom entity for render custom .
     PathfinderMob customEntity =

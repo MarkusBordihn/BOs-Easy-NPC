@@ -30,7 +30,7 @@ import de.markusbordihn.easynpc.configui.client.renderer.screen.EntityConfigScre
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.render.EntityRenderConfig;
-import de.markusbordihn.easynpc.data.render.RenderDataSet;
+import de.markusbordihn.easynpc.data.render.RenderDataEntry;
 import de.markusbordihn.easynpc.entity.easynpc.data.RenderDataCapable;
 import de.markusbordihn.easynpc.utils.TextUtils;
 import java.util.ArrayList;
@@ -284,7 +284,7 @@ public class CustomModelConfigurationScreen<T extends ConfigurationMenu>
                     .setRenderEntityType(this.getEasyNPCUUID(), entityType));
 
     RenderDataCapable<?> renderData = this.getEasyNPC().getEasyNPCRenderData();
-    RenderDataSet renderDataSet = renderData.getRenderDataSet();
+    RenderDataEntry renderDataSet = renderData.getRenderDataEntry();
     EntityType<?> currentEntityType = renderDataSet.getRenderEntityType();
     customModelButton.active = currentEntityType == null || !(currentEntityType.equals(entityType));
 

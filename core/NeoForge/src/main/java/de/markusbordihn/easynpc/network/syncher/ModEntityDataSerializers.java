@@ -30,7 +30,7 @@ import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataSet;
 import de.markusbordihn.easynpc.data.position.CustomPosition;
 import de.markusbordihn.easynpc.data.profession.Profession;
-import de.markusbordihn.easynpc.data.render.RenderDataSet;
+import de.markusbordihn.easynpc.data.render.RenderDataEntry;
 import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.data.scale.CustomScale;
 import de.markusbordihn.easynpc.data.skin.SkinDataEntry;
@@ -97,10 +97,10 @@ public class ModEntityDataSerializers {
       PROFESSION =
           ENTITY_DATA_SERIALIZERS.register(
               "profession", () -> EntityDataSerializersManager.PROFESSION);
-  public static final DeferredHolder<EntityDataSerializer<?>, EntityDataSerializer<RenderDataSet>>
-      RENDER_DATA_SET =
+  public static final DeferredHolder<EntityDataSerializer<?>, EntityDataSerializer<RenderDataEntry>>
+      RENDER_DATA_ENTRY =
           ENTITY_DATA_SERIALIZERS.register(
-              "render_data_set", () -> EntityDataSerializersManager.RENDER_DATA_SET);
+              "render_data_entry", () -> EntityDataSerializersManager.RENDER_DATA_ENTRY);
   public static final DeferredHolder<EntityDataSerializer<?>, EntityDataSerializer<CustomScale>>
       SCALE = ENTITY_DATA_SERIALIZERS.register("scale", () -> EntityDataSerializersManager.SCALE);
   public static final DeferredHolder<EntityDataSerializer<?>, EntityDataSerializer<SkinDataEntry>>
