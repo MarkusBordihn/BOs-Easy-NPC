@@ -36,5 +36,6 @@ public class ConfigItems implements DisplayItemsGenerator {
     output.accept(ModItems.EASY_NPC_SPAWNER_GROUP.getDefaultInstance());
     output.accept(ModItems.EASY_NPC_SPAWNER_SINGLE.getDefaultInstance());
     output.accept(ModItems.MOVE_EASY_NPC.asItem().getDefaultInstance());
+    output.accept(ModItems.CUSTOM_DATA_TEST_ITEM.asItem().getDefaultInstance());
   }
 }

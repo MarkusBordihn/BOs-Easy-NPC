@@ -29,7 +29,7 @@ import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataSet;
 import de.markusbordihn.easynpc.data.position.CustomPosition;
 import de.markusbordihn.easynpc.data.profession.Profession;
-import de.markusbordihn.easynpc.data.render.RenderDataSet;
+import de.markusbordihn.easynpc.data.render.RenderDataEntry;
 import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.data.scale.CustomScale;
 import de.markusbordihn.easynpc.data.skin.SkinDataEntry;
@@ -227,22 +227,22 @@ public class EntityDataSerializersManager {
               return value;
             }
           });
-  public static final EntityDataSerializer<RenderDataSet> RENDER_DATA_SET =
+  public static final EntityDataSerializer<RenderDataEntry> RENDER_DATA_SET =
       defineSerializer(
-          RenderDataSet.class.getSimpleName(),
+          RenderDataEntry.class.getSimpleName(),
           new EntityDataSerializer<>() {
             @Override
-            public void write(FriendlyByteBuf buffer, RenderDataSet value) {
+            public void write(FriendlyByteBuf buffer, RenderDataEntry value) {
               buffer.writeNbt(value.createTag());
             }
 
             @Override
-            public RenderDataSet read(FriendlyByteBuf buffer) {
-              return new RenderDataSet(buffer.readNbt());
+            public RenderDataEntry read(FriendlyByteBuf buffer) {
+              return new RenderDataEntry(buffer.readNbt());
             }
 
             @Override
-            public RenderDataSet copy(RenderDataSet value) {
+            public RenderDataEntry copy(RenderDataEntry value) {
               return value;
             }
           });

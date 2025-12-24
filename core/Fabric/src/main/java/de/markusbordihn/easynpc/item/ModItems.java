@@ -67,6 +67,8 @@ public class ModItems {
       new EasyNPCSpawnerBlockItem(
           ModBlocks.EASY_NPC_SPAWNER_SINGLE, new Item.Properties(), SpawnerType.SINGLE_SPAWNER);
   public static final Item MOVE_EASY_NPC = new MoveEasyNPCItem(new Item.Properties());
+  public static final Item CUSTOM_DATA_TEST_ITEM =
+      new CustomDataTestItem(new Item.Properties().stacksTo(1));
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   private ModItems() {}
@@ -77,6 +79,9 @@ public class ModItems {
     registerItem(MoveEasyNPCItem.ID, MOVE_EASY_NPC);
     registerItem(EasyNPCPresetItem.NAME, EASY_NPC_PRESET_ITEM);
     registerItem(EasyNPCPresetEmptyItem.NAME, EASY_NPC_PRESET_EMPTY_ITEM);
+
+    log.info("{} Test Items ...", Constants.LOG_REGISTER_PREFIX);
+    registerItem(CustomDataTestItem.ID, CUSTOM_DATA_TEST_ITEM);
 
     log.info("{} Block Items ...", Constants.LOG_REGISTER_PREFIX);
     registerItem(SpawnerType.BOSS_SPAWNER.getId(), EASY_NPC_SPAWNER_BOSS);

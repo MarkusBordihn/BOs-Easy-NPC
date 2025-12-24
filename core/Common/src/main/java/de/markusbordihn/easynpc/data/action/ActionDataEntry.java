@@ -34,6 +34,7 @@ public record ActionDataEntry(
     ActionDataType actionDataType,
     ConditionDataSet conditionDataSet,
     String command,
+    UUID targetUUID,
     BlockPos blockPos,
     boolean executeAsUser,
     boolean enableDebug,
@@ -45,6 +46,7 @@ public record ActionDataEntry(
   public static final String DATA_EXECUTE_AS_USER_TAG = "ExecAsUser";
   public static final String DATA_PERMISSION_LEVEL_TAG = "PermLevel";
   public static final String DATA_BLOCK_POS_TAG = "BlockPos";
+  public static final String DATA_TARGET_UUID_TAG = "TargetUUID";
   public static final String DATA_TYPE_TAG = "Type";
   public static final int DEFAULT_PERMISSION_LEVEL = 2;
   public static final int MAX_PERMISSION_LEVEL = 2;
@@ -65,6 +67,9 @@ public record ActionDataEntry(
         compoundTag.contains(DATA_COMMAND_TAG)
             ? compoundTag.getString(DATA_COMMAND_TAG)
             : DEFAULT_COMMAND,
+        compoundTag.contains(DATA_TARGET_UUID_TAG)
+            ? compoundTag.getUUID(DATA_TARGET_UUID_TAG)
+            : null,
         compoundTag.contains(DATA_BLOCK_POS_TAG)
             ? CompoundTagUtils.readBlockPos(compoundTag.getCompound(DATA_BLOCK_POS_TAG))
             : BlockPos.ZERO,
@@ -108,10 +113,23 @@ public record ActionDataEntry(
         actionDataType,
         new ConditionDataSet(),
         command != null ? command : DEFAULT_COMMAND,
+        null,
         BlockPos.ZERO,
         executeAsUser,
         enableDebug,
         permissionLevel);
+  }
+
+  public ActionDataEntry(ActionDataType actionDataType, UUID targetUUID, String command) {
+    this(
+        actionDataType,
+        new ConditionDataSet(),
+        command,
+        targetUUID,
+        BlockPos.ZERO,
+        false,
+        false,
+        DEFAULT_PERMISSION_LEVEL);
   }
 
   private static int checkPermissionLevel(int permissionLevel) {
@@ -136,9 +154,10 @@ public record ActionDataEntry(
         this.actionDataType,
         this.conditionDataSet,
         this.command,
+        this.targetUUID,
         blockPos,
-        this.enableDebug,
         this.executeAsUser,
+        this.enableDebug,
         this.permissionLevel);
   }
 
@@ -181,6 +200,11 @@ public record ActionDataEntry(
       compoundTag.putInt(DATA_PERMISSION_LEVEL_TAG, this.permissionLevel);
     }
 
+    // Save target UUID if present.
+    if (this.targetUUID != null) {
+      compoundTag.putUUID(DATA_TARGET_UUID_TAG, this.targetUUID);
+    }
+
     // Only save block position if it is different from default.
     if (this.blockPos != BlockPos.ZERO) {
       compoundTag.put(DATA_BLOCK_POS_TAG, CompoundTagUtils.writeBlockPos(this.blockPos));
@@ -221,57 +245,5 @@ public record ActionDataEntry(
   public UUID getId() {
     String idString = DATA_TAG + hashCode();
     return UUID.nameUUIDFromBytes(idString.getBytes());
-  }
-
-  @Override
-  public boolean equals(Object object) {
-    if (this == object) {
-      return true;
-    }
-    if (object == null || getClass() != object.getClass()) {
-      return false;
-    }
-    ActionDataEntry other = (ActionDataEntry) object;
-    return this.actionDataType == other.actionDataType
-        && this.command.equals(other.command)
-        && this.blockPos.equals(other.blockPos)
-        && this.permissionLevel == other.permissionLevel
-        && this.executeAsUser == other.executeAsUser
-        && this.enableDebug == other.enableDebug
-        && this.conditionDataSet.equals(other.conditionDataSet);
-  }
-
-  @Override
-  public int hashCode() {
-    int result = 17;
-    result = 31 * result + this.actionDataType.hashCode();
-    result = 31 * result + this.command.hashCode();
-    result = 31 * result + this.blockPos.hashCode();
-    result = 31 * result + this.permissionLevel;
-    result = 31 * result + (this.executeAsUser ? 1 : 0);
-    result = 31 * result + (this.enableDebug ? 1 : 0);
-    if (this.conditionDataSet != null && !this.conditionDataSet.isEmpty()) {
-      result = 31 * result + this.conditionDataSet.size();
-    }
-    return result;
-  }
-
-  public String toString() {
-    return "ActionData [type="
-        + this.actionDataType
-        + ", cmd="
-        + this.command
-        + ", blockPos="
-        + this.blockPos
-        + ", permLvl="
-        + this.permissionLevel
-        + ", execAsUser="
-        + this.executeAsUser
-        + ", debug="
-        + this.enableDebug
-        + (this.conditionDataSet != null && !this.conditionDataSet.isEmpty()
-            ? ", conditions=" + this.conditionDataSet
-            : "")
-        + "]";
   }
 }

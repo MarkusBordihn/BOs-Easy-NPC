@@ -23,7 +23,7 @@ import de.markusbordihn.easynpc.client.renderer.screen.EntityScreenRenderer;
 import de.markusbordihn.easynpc.data.profession.Profession;
 import de.markusbordihn.easynpc.data.render.EntityRenderConfig;
 import de.markusbordihn.easynpc.data.render.EntityRenderOverrides;
-import de.markusbordihn.easynpc.data.render.RenderType;
+import de.markusbordihn.easynpc.data.render.RenderDataEntry;
 import de.markusbordihn.easynpc.data.skin.SkinDataEntry;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ProfessionDataCapable;
@@ -31,7 +31,6 @@ import de.markusbordihn.easynpc.entity.easynpc.data.RenderDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.VariantDataCapable;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.world.entity.EntityType;
 
 public class EntityConfigScreenRenderer extends EntityScreenRenderer {
 
@@ -55,25 +54,27 @@ public class EntityConfigScreenRenderer extends EntityScreenRenderer {
     EntityRenderOverrides overrides = config.overrides();
 
     RenderDataCapable<?> renderData = easyNPC.getEasyNPCRenderData();
-    if (renderData != null && renderData.getRenderDataSet() != null) {
+    if (renderData != null && renderData.getRenderDataEntry() != null) {
+      RenderDataEntry renderDataSet = renderData.getRenderDataEntry();
       if (overrides.renderType() != null) {
-        renderData.getRenderDataSet().setRenderType(overrides.renderType());
+        renderDataSet = renderDataSet.withRenderType(overrides.renderType());
       }
       if (overrides.renderEntityType() != null) {
-        renderData.getRenderDataSet().setRenderEntityType(overrides.renderEntityType());
+        renderDataSet = renderDataSet.withRenderEntityType(overrides.renderEntityType());
       }
+      renderData.setRenderData(renderDataSet);
     }
 
     SkinDataCapable<?> skinData = easyNPC.getEasyNPCSkinData();
     if (skinData != null && (overrides.skinType() != null || overrides.skinUUID() != null)) {
-      SkinDataEntry currentEntry = skinData.getSkinDataEntry();
+      SkinDataEntry skinDataEntry = skinData.getSkinDataEntry();
       if (overrides.skinType() != null) {
-        currentEntry = currentEntry.withType(overrides.skinType());
+        skinDataEntry = skinDataEntry.withType(overrides.skinType());
       }
       if (overrides.skinUUID() != null) {
-        currentEntry = currentEntry.withUUID(overrides.skinUUID());
+        skinDataEntry = skinDataEntry.withUUID(overrides.skinUUID());
       }
-      skinData.setSkinDataEntry(currentEntry);
+      skinData.setSkinDataEntry(skinDataEntry);
     }
 
     VariantDataCapable<?> variantData = easyNPC.getEasyNPCVariantData();
@@ -89,13 +90,8 @@ public class EntityConfigScreenRenderer extends EntityScreenRenderer {
 
   private static void restoreConfigState(EasyNPC<?> easyNPC, ConfigRenderState backupState) {
     RenderDataCapable<?> renderData = easyNPC.getEasyNPCRenderData();
-    if (renderData != null && renderData.getRenderDataSet() != null) {
-      if (backupState.renderType != null) {
-        renderData.getRenderDataSet().setRenderType(backupState.renderType);
-      }
-      if (backupState.renderEntityType != null) {
-        renderData.getRenderDataSet().setRenderEntityType(backupState.renderEntityType);
-      }
+    if (renderData != null && backupState.renderDataSet != null) {
+      renderData.setRenderData(backupState.renderDataSet);
     }
 
     SkinDataCapable<?> skinData = easyNPC.getEasyNPCSkinData();
@@ -115,21 +111,14 @@ public class EntityConfigScreenRenderer extends EntityScreenRenderer {
   }
 
   private static class ConfigRenderState {
-    final RenderType renderType;
-    final EntityType<?> renderEntityType;
     final SkinDataEntry skinDataEntry;
     final Enum<?> variantType;
     final Profession profession;
+    final RenderDataEntry renderDataSet;
 
     ConfigRenderState(EasyNPC<?> easyNPC) {
       RenderDataCapable<?> renderData = easyNPC.getEasyNPCRenderData();
-      if (renderData != null && renderData.getRenderDataSet() != null) {
-        this.renderType = renderData.getRenderDataSet().getRenderType();
-        this.renderEntityType = renderData.getRenderDataSet().getRenderEntityType();
-      } else {
-        this.renderType = null;
-        this.renderEntityType = null;
-      }
+      this.renderDataSet = renderData != null ? renderData.getRenderDataEntry() : null;
       SkinDataCapable<?> skinData = easyNPC.getEasyNPCSkinData();
       this.skinDataEntry = skinData != null ? skinData.getSkinDataEntry() : null;
       VariantDataCapable<?> variantData = easyNPC.getEasyNPCVariantData();

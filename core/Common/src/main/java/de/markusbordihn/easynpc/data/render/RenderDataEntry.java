@@ -27,54 +27,42 @@ import net.minecraft.world.entity.EntityType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class RenderDataSet {
+public record RenderDataEntry(
+    RenderType renderType, EntityType<? extends Entity> renderEntityType) {
 
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+  static final String DATA_RENDER_TYPE_TAG = "Type";
+  static final String DATA_RENDER_ENTITY_TYPE_TAG = "EntityType";
+  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  private static final String DATA_RENDER_TYPE_TAG = "Type";
-  private static final String DATA_RENDER_ENTITY_TYPE_TAG = "EntityType";
-  private EntityType<?> renderEntityType = null;
-  private RenderType renderType = RenderType.DEFAULT;
-
-  public RenderDataSet() {}
-
-  public RenderDataSet(CompoundTag compoundTag) {
-    this.load(compoundTag);
+  public RenderDataEntry() {
+    this(RenderType.DEFAULT, null);
   }
 
-  public RenderType getRenderType() {
-    return this.renderType;
-  }
-
-  public void setRenderType(RenderType renderType) {
-    this.renderType = renderType;
-    if (this.renderType == RenderType.DEFAULT) {
-      this.renderEntityType = null;
-    }
-  }
-
-  public EntityType<? extends Entity> getRenderEntityType() {
-    return this.renderEntityType;
-  }
-
-  public void setRenderEntityType(EntityType<? extends Entity> renderEntityType) {
-    this.renderEntityType = renderEntityType;
-    this.renderType = this.renderEntityType != null ? RenderType.CUSTOM_ENTITY : RenderType.DEFAULT;
-  }
-
-  public void load(CompoundTag compoundTag) {
-    this.renderType =
+  public RenderDataEntry(final CompoundTag compoundTag) {
+    this(
         compoundTag.contains(DATA_RENDER_TYPE_TAG)
             ? RenderType.get(compoundTag.getString(DATA_RENDER_TYPE_TAG))
-            : RenderType.DEFAULT;
-
-    this.renderEntityType =
+            : RenderType.DEFAULT,
         compoundTag.contains(DATA_RENDER_ENTITY_TYPE_TAG)
             ? EntityType.byString(compoundTag.getString(DATA_RENDER_ENTITY_TYPE_TAG)).orElse(null)
-            : null;
+            : null);
   }
 
-  public CompoundTag save(CompoundTag compoundTag) {
+  public RenderDataEntry withRenderType(final RenderType renderType) {
+    return new RenderDataEntry(
+        renderType, renderType == RenderType.DEFAULT ? null : renderEntityType);
+  }
+
+  public RenderDataEntry withRenderEntityType(final EntityType<? extends Entity> renderEntityType) {
+    return new RenderDataEntry(
+        renderEntityType != null ? RenderType.CUSTOM_ENTITY : RenderType.DEFAULT, renderEntityType);
+  }
+
+  public RenderDataEntry create(CompoundTag compoundTag) {
+    return new RenderDataEntry(compoundTag);
+  }
+
+  public CompoundTag write(CompoundTag compoundTag) {
     if (this.renderType != RenderType.DEFAULT) {
       compoundTag.putString(DATA_RENDER_TYPE_TAG, this.renderType.name());
     }
@@ -88,6 +76,18 @@ public class RenderDataSet {
   }
 
   public CompoundTag createTag() {
-    return this.save(new CompoundTag());
+    return write(new CompoundTag());
+  }
+
+  public CompoundTag save(CompoundTag compoundTag) {
+    return write(compoundTag);
+  }
+
+  public RenderType getRenderType() {
+    return renderType;
+  }
+
+  public EntityType<? extends Entity> getRenderEntityType() {
+    return renderEntityType;
   }
 }
