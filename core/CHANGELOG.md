@@ -8,6 +8,17 @@ For the full changelog, please go to the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 6.4.0
+
+- Fixed #626 by improving dialog data validation and error handling.
+- Fixed #623 by refactoring render data and render handling.
+- Fixed #622 by making sure custom data are properly saved and loaded.
+- Fixed open dialog action type to allow opening dialogs from other NPCs.
+- Fixed hashing issues by adding missing equals and hashCode methods for ConditionDataSet and
+  ActionDataSet.
+- Added custom data test item for #622 and easier testing of custom data.
+- Improved records and fixed potential issues with missing data.
+
 ### 6.3.0
 
 - Refactored config ui specific components and removed them from the core mod.

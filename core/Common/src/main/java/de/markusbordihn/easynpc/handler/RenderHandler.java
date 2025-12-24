@@ -47,8 +47,7 @@ public class RenderHandler {
     }
 
     log.debug("[{}] Setting render type to {}", easyNPC, renderType);
-    renderData.getRenderDataSet().setRenderType(renderType);
-    renderData.updateRenderData();
+    renderData.setRenderData(renderData.getRenderDataEntry().withRenderType(renderType));
     return true;
   }
 
@@ -60,14 +59,13 @@ public class RenderHandler {
     }
 
     RenderDataCapable<?> renderData = easyNPC.getEasyNPCRenderData();
-    if (renderData == null || renderData.getRenderDataSet() == null) {
+    if (renderData == null || renderData.getRenderDataEntry() == null) {
       log.error("[{}] No render data available for setting render entity {}!", easyNPC, entityType);
       return false;
     }
 
     log.debug("[{}] Setting render entity to {}", easyNPC, entityType);
-    renderData.getRenderDataSet().setRenderEntityType(entityType);
-    renderData.updateRenderData();
+    renderData.setRenderData(renderData.getRenderDataEntry().withRenderEntityType(entityType));
     return true;
   }
 }

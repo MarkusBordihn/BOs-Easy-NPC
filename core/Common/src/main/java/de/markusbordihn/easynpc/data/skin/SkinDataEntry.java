@@ -1,3 +1,22 @@
+/*
+ * Copyright 2023 Markus Bordihn
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+ * associated documentation files (the "Software"), to deal in the Software without restriction,
+ * including without limitation the rights to use, copy, modify, merge, publish, distribute,
+ * sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all copies or
+ * substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
+ * NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+
 package de.markusbordihn.easynpc.data.skin;
 
 import de.markusbordihn.easynpc.Constants;
@@ -133,60 +152,5 @@ public record SkinDataEntry(
 
   public CompoundTag createTag() {
     return write(new CompoundTag());
-  }
-
-  @Override
-  public boolean equals(Object object) {
-    if (this == object) {
-      return true;
-    }
-    if (object == null || getClass() != object.getClass()) {
-      return false;
-    }
-    SkinDataEntry other = (SkinDataEntry) object;
-    return this.name.equals(other.name)
-        && this.type.equals(other.type)
-        && this.url.equals(other.url)
-        && this.uuid.equals(other.uuid)
-        && this.disableLayers == other.disableLayers
-        && this.content.equals(other.content)
-        && this.timestamp == other.timestamp;
-  }
-
-  @Override
-  public int hashCode() {
-    int result = 16;
-    result = 31 * result + this.name.hashCode();
-    result = 31 * result + this.type.hashCode();
-    result = 31 * result + this.url.hashCode();
-    result = 31 * result + this.uuid.hashCode();
-    result = 31 * result + Boolean.hashCode(this.disableLayers);
-    if (!this.content.isEmpty()) {
-      result = 31 * result + this.content.hashCode();
-    }
-    if (this.timestamp != 0) {
-      result = 31 * result + Long.hashCode(this.timestamp);
-    }
-    return result;
-  }
-
-  @Override
-  public String toString() {
-    return "SkinDataEntry{"
-        + "name="
-        + this.name
-        + ", type="
-        + this.type
-        + ", url="
-        + this.url
-        + ", uuid="
-        + this.uuid
-        + ", disableLayers="
-        + this.disableLayers
-        + ", content="
-        + this.content
-        + ", timestamp="
-        + this.timestamp
-        + '}';
   }
 }

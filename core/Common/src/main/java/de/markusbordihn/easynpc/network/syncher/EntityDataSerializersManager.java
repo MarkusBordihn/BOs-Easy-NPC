@@ -1,16 +1,16 @@
-/*
+/**
  * Copyright 2023 Markus Bordihn
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this software
+ * <p>Permission is hereby granted, free of charge, to any person obtaining a copy of this software
  * and associated documentation files (the "Software"), to deal in the Software without restriction,
  * including without limitation the rights to use, copy, modify, merge, publish, distribute,
  * sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all copies or
+ * <p>The above copyright notice and this permission notice shall be included in all copies or
  * substantial portions of the Software.
  *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
+ * <p>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
  * BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
  * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
@@ -31,7 +31,7 @@ import de.markusbordihn.easynpc.data.objective.TargetedEntitySet;
 import de.markusbordihn.easynpc.data.objective.TargetedPlayerSet;
 import de.markusbordihn.easynpc.data.position.CustomPosition;
 import de.markusbordihn.easynpc.data.profession.Profession;
-import de.markusbordihn.easynpc.data.render.RenderDataSet;
+import de.markusbordihn.easynpc.data.render.RenderDataEntry;
 import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.data.scale.CustomScale;
 import de.markusbordihn.easynpc.data.skin.SkinDataEntry;
@@ -99,10 +99,10 @@ public class EntityDataSerializersManager {
       defineSerializer(
           Profession.class.getSimpleName(),
           EntityDataSerializer.forValueType(Profession.STREAM_CODEC));
-  public static final EntityDataSerializer<RenderDataSet> RENDER_DATA_SET =
+  public static final EntityDataSerializer<RenderDataEntry> RENDER_DATA_ENTRY =
       defineSerializer(
-          RenderDataSet.class.getSimpleName(),
-          EntityDataSerializer.forValueType(RenderDataSet.STREAM_CODEC));
+          RenderDataEntry.class.getSimpleName(),
+          EntityDataSerializer.forValueType(RenderDataEntry.STREAM_CODEC));
   public static final EntityDataSerializer<CustomScale> SCALE =
       defineSerializer(
           CustomScale.class.getSimpleName(),

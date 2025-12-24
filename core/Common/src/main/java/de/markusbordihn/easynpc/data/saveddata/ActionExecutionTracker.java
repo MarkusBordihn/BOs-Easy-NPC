@@ -55,6 +55,15 @@ public class ActionExecutionTracker extends SavedData {
           ActionExecutionTracker::new,
           context -> codec(),
           DataFixTypes.SAVED_DATA_STRUCTURE_FEATURE_INDICES);
+  private final Map<UUID, Map<UUID, ExecutionData>> trackingData;
+
+  private ActionExecutionTracker(SavedData.Context context) {
+    this(new HashMap<>());
+  }
+
+  private ActionExecutionTracker(Map<UUID, Map<UUID, ExecutionData>> trackingData) {
+    this.trackingData = new HashMap<>(trackingData);
+  }
 
   private static Codec<ActionExecutionTracker> codec() {
     return Codec.PASSTHROUGH.comapFlatMap(
@@ -62,11 +71,11 @@ public class ActionExecutionTracker extends SavedData {
           try {
             return DataResult.success(loadFromNbt(dynamic));
           } catch (Exception e) {
-            return DataResult.error(() -> "Failed to load ActionExecutionTracker: " + e.getMessage());
+            return DataResult.error(
+                () -> "Failed to load ActionExecutionTracker: " + e.getMessage());
           }
         },
-        tracker -> new Dynamic<>(NbtOps.INSTANCE, saveToNbt(tracker))
-    );
+        tracker -> new Dynamic<>(NbtOps.INSTANCE, saveToNbt(tracker)));
   }
 
   private static ActionExecutionTracker loadFromNbt(Dynamic<?> dynamic) {
@@ -123,16 +132,6 @@ public class ActionExecutionTracker extends SavedData {
 
     compoundTag.put(DATA_PLAYERS_TAG, playersTag);
     return compoundTag;
-  }
-
-  private final Map<UUID, Map<UUID, ExecutionData>> trackingData;
-
-  private ActionExecutionTracker(SavedData.Context context) {
-    this(new HashMap<>());
-  }
-
-  private ActionExecutionTracker(Map<UUID, Map<UUID, ExecutionData>> trackingData) {
-    this.trackingData = new HashMap<>(trackingData);
   }
 
   public static ActionExecutionTracker get(ServerLevel serverLevel) {

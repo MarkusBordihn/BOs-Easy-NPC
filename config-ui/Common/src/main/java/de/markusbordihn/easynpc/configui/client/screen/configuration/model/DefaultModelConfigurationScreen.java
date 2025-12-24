@@ -22,7 +22,7 @@ package de.markusbordihn.easynpc.configui.client.screen.configuration.model;
 import de.markusbordihn.easynpc.client.screen.components.Checkbox;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
-import de.markusbordihn.easynpc.data.render.RenderDataSet;
+import de.markusbordihn.easynpc.data.render.RenderDataEntry;
 import de.markusbordihn.easynpc.data.render.RenderType;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -48,7 +48,7 @@ public class DefaultModelConfigurationScreen<T extends ConfigurationMenu>
     setDescriptionText("default_model.text");
 
     // Render data
-    RenderDataSet renderData = this.getRenderDataSet();
+    RenderDataEntry renderData = this.getRenderDataEntry();
     RenderType renderType = renderData.getRenderType();
 
     // Default Model Checkbox
