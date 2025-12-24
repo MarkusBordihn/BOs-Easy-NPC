@@ -25,7 +25,7 @@ import de.markusbordihn.easynpc.data.action.ActionEventSet;
 import de.markusbordihn.easynpc.data.dialog.DialogButtonEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
-import de.markusbordihn.easynpc.data.render.RenderDataSet;
+import de.markusbordihn.easynpc.data.render.RenderDataEntry;
 import de.markusbordihn.easynpc.data.screen.AdditionalScreenDataInterface;
 import de.markusbordihn.easynpc.data.screen.ScreenData;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
@@ -104,8 +104,8 @@ public interface ScreenInterface<D extends AdditionalScreenDataInterface> {
     return this.getAdditionalScreenData().getDialogDataSet();
   }
 
-  default RenderDataSet getRenderDataSet() {
-    return this.getEasyNPC().getEasyNPCRenderData().getRenderDataSet();
+  default RenderDataEntry getRenderDataEntry() {
+    return this.getEasyNPC().getEasyNPCRenderData().getRenderDataEntry();
   }
 
   default boolean hasDialogData() {

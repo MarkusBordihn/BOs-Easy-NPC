@@ -96,8 +96,7 @@ public interface SkinDataCapable<T extends PathfinderMob> extends EasyNPC<T> {
     }
 
     // Load skin data from new format
-    CompoundTag skinTag = compoundTagData.get();
-    SkinDataEntry skinDataEntry = new SkinDataEntry(skinTag);
+    SkinDataEntry skinDataEntry = new SkinDataEntry(compoundTagData.get());
     this.setSkinDataEntry(skinDataEntry);
   }
 }

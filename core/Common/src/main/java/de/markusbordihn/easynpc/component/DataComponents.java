@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.component;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.preset.PresetData;
+import de.markusbordihn.easynpc.data.test.TestItemData;
 import java.util.function.Supplier;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentType;
@@ -34,6 +35,7 @@ public class DataComponents {
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   public static DataComponentType<PresetData> PRESET_DATA;
+  public static DataComponentType<TestItemData> TEST_ITEM_DATA;
 
   private DataComponents() {}
 
@@ -47,10 +49,23 @@ public class DataComponents {
                 .persistent(PresetData.CODEC)
                 .networkSynchronized(PresetData.STREAM_CODEC)
                 .build());
+    TEST_ITEM_DATA =
+        Registry.register(
+            BuiltInRegistries.DATA_COMPONENT_TYPE,
+            ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, TestItemData.ID),
+            DataComponentType.<TestItemData>builder()
+                .persistent(TestItemData.CODEC)
+                .networkSynchronized(TestItemData.STREAM_CODEC)
+                .build());
   }
 
   public static void registerPresetData(Supplier<DataComponentType<PresetData>> supplier) {
     log.info("{} Preset Data Component {} ...", Constants.MOD_NAME, supplier.get());
     PRESET_DATA = supplier.get();
+  }
+
+  public static void registerTestItemData(Supplier<DataComponentType<TestItemData>> supplier) {
+    log.info("{} Test Item Data Component {} ...", Constants.MOD_NAME, supplier.get());
+    TEST_ITEM_DATA = supplier.get();
   }
 }

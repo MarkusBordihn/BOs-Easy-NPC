@@ -243,6 +243,29 @@ class ConditionDataEntryTest {
   }
 
   @Test
+  @DisplayName("Should generate consistent UUID from hashCode")
+  void testConsistentUUIDGeneration() {
+    ConditionDataEntry entry1 =
+        new ConditionDataEntry(ConditionType.SCOREBOARD, ConditionOperationType.EQUALS, "test", 5);
+    ConditionDataEntry entry2 =
+        new ConditionDataEntry(ConditionType.SCOREBOARD, ConditionOperationType.EQUALS, "test", 5);
+
+    assertEquals(entry1.getId(), entry2.getId());
+  }
+
+  @Test
+  @DisplayName("Should generate same UUID after encode/decode cycle")
+  void testUUIDConsistencyAfterEncodeDecode() {
+    ConditionDataEntry original =
+        new ConditionDataEntry(ConditionType.SCOREBOARD, ConditionOperationType.EQUALS, "test", 5);
+
+    CompoundTag tag = original.createTag();
+    ConditionDataEntry decoded = new ConditionDataEntry(tag);
+
+    assertEquals(original.getId(), decoded.getId());
+  }
+
+  @Test
   @DisplayName("Should handle non-existent scoreboard value (-1) in conditions")
   void testNonExistentScoreboardValue() {
     ConditionDataEntry checkExists =

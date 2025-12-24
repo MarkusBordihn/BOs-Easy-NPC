@@ -37,7 +37,7 @@ import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.data.display.DisplayAttributeType;
 import de.markusbordihn.easynpc.data.display.NameVisibilityType;
 import de.markusbordihn.easynpc.data.render.EntityRenderConfig;
-import de.markusbordihn.easynpc.data.render.RenderDataSet;
+import de.markusbordihn.easynpc.data.render.RenderDataEntry;
 import de.markusbordihn.easynpc.data.skin.SkinType;
 import de.markusbordihn.easynpc.entity.easynpc.data.DisplayAttributeDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.NavigationDataCapable;
@@ -410,7 +410,7 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
   }
 
   protected void defineChangeModelButton() {
-    RenderDataSet renderDataSet = this.getRenderDataSet();
+    RenderDataEntry renderDataSet = this.getRenderDataEntry();
     if (renderDataSet == null) {
       return;
     }

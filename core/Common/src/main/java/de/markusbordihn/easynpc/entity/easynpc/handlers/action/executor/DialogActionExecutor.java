@@ -20,10 +20,13 @@
 package de.markusbordihn.easynpc.entity.easynpc.handlers.action.executor;
 
 import de.markusbordihn.easynpc.data.action.ActionDataEntry;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.DialogDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.action.ActionValidator;
 import java.util.UUID;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -51,13 +54,36 @@ public class DialogActionExecutor {
     if (!ActionValidator.validateActionData(actionDataEntry, serverPlayer)) {
       return;
     }
+
+    DialogDataCapable<?> targetDialogData;
+    if (actionDataEntry.targetUUID() == null) {
+      targetDialogData = dialogData;
+    } else {
+      EasyNPC<?> targetNpc = findEasyNPCByUuid(serverPlayer.level(), actionDataEntry.targetUUID());
+      if (targetNpc == null) {
+        log.error("Target NPC with UUID {} not found", actionDataEntry.targetUUID());
+        serverPlayer.closeContainer();
+        return;
+      }
+      targetDialogData = targetNpc.getEasyNPCDialogData();
+      if (targetDialogData == null) {
+        log.error("No dialog data found for NPC {}", actionDataEntry.targetUUID());
+        serverPlayer.closeContainer();
+        return;
+      }
+    }
+
     String dialogLabel = actionDataEntry.command();
-    if (ActionValidator.validateNamedDialog(dialogData, dialogLabel)) {
-      UUID dialogId = dialogData.getDialogId(dialogLabel);
-      dialogData.openDialog(serverPlayer, dialogId);
+    if (ActionValidator.validateNamedDialog(targetDialogData, dialogLabel)) {
+      targetDialogData.openDialog(serverPlayer, targetDialogData.getDialogId(dialogLabel));
     } else {
       log.error("Unknown dialog label {} for action {}", dialogLabel, actionDataEntry);
       serverPlayer.closeContainer();
     }
+  }
+
+  private static EasyNPC<?> findEasyNPCByUuid(ServerLevel level, UUID uuid) {
+    Entity entity = level.getEntity(uuid);
+    return entity instanceof EasyNPC<?> easyNPC ? easyNPC : null;
   }
 }

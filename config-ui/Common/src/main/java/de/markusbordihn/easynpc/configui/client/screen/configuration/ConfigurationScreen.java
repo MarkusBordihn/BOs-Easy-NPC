@@ -147,8 +147,8 @@ public class ConfigurationScreen<T extends ConfigUIMenu>
     RenderDataCapable<?> renderData = easyNPC.getEasyNPCRenderData();
     boolean isCustomModel =
         renderData != null
-            && renderData.getRenderDataSet() != null
-            && renderData.getRenderDataSet().getRenderType() != RenderType.DEFAULT;
+            && renderData.getRenderDataEntry() != null
+            && renderData.getRenderDataEntry().getRenderType() != RenderType.DEFAULT;
     return !isCustomModel
         || (configurationType != ConfigurationType.POSE
             && configurationType != ConfigurationType.SCALING

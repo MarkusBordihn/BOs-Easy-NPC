@@ -42,7 +42,7 @@ public class GameTestHelpers {
   private GameTestHelpers() {}
 
   public static ServerPlayer mockServerPlayer(GameTestHelper helper, Vec3 position) {
-    Player player = helper .makeMockServerPlayerInLevel();
+    Player player = helper.makeMockServerPlayerInLevel();
     if (!(player instanceof ServerPlayer serverPlayer)) {
       helper.fail(Component.literal("Failed to create ServerPlayer!"));
       return null;

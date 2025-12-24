@@ -88,9 +88,9 @@ public class InventoryScreenHandler {
     // Get render data and render custom entity if avaible.
     RenderDataCapable<?> renderData = easyNPC.getEasyNPCRenderData();
     if (renderData != null
-        && renderData.getRenderDataSet() != null
-        && renderData.getRenderDataSet().getRenderType() == RenderType.CUSTOM_ENTITY
-        && renderData.getRenderDataSet().getRenderEntityType() != null) {
+        && renderData.getRenderDataEntry() != null
+        && renderData.getRenderDataEntry().getRenderType() == RenderType.CUSTOM_ENTITY
+        && renderData.getRenderDataEntry().getRenderEntityType() != null) {
       return renderCustomEntityInInventory(
           guiGraphics,
           left,
@@ -101,7 +101,7 @@ public class InventoryScreenHandler {
           translation,
           rotation,
           entityRotation,
-          renderData.getRenderDataSet().getRenderEntityType(),
+          renderData.getRenderDataEntry().getRenderEntityType(),
           easyNPC);
     }
 

@@ -27,6 +27,7 @@
   "text.easy_npc.config.action.increase_value": "Increase Value",
   "text.easy_npc.config.action.decrease_value": "Decrease Value",
   "text.easy_npc.config.action.invalid_dialog_name": "Invalid Dialog Name",
+  "text.easy_npc.config.action.invalid_uuid": "Invalid target NPC UUID",
   "text.easy_npc.config.action.name": "Name:",
   "text.easy_npc.config.action.named_dialog": "Named Dialog",
   "text.easy_npc.config.action.open_default_dialog": "Open Default Dialog",
