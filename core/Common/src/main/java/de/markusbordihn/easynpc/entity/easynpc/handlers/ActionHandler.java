@@ -218,7 +218,6 @@ public interface ActionHandler<E extends PathfinderMob> extends EasyNPC<E> {
 
     ActionDataEntry closeDialogAction = null;
     boolean hasScreenAction = false;
-
     for (ActionDataEntry actionDataEntry : actionDataSet.getEntries()) {
       ActionDataType actionType = actionDataEntry.actionDataType();
 
@@ -236,7 +235,6 @@ public interface ActionHandler<E extends PathfinderMob> extends EasyNPC<E> {
       if (actionType == ActionDataType.OPEN_DEFAULT_DIALOG
           || actionType == ActionDataType.OPEN_NAMED_DIALOG
           || actionType == ActionDataType.OPEN_TRADING_SCREEN) {
-
         if (hasScreenAction) {
           log.debug(
               "Ignoring {}. Multiple screen actions found in action data set {}! Only the first valid will be executed.",
@@ -248,10 +246,14 @@ public interface ActionHandler<E extends PathfinderMob> extends EasyNPC<E> {
         if ((actionType == ActionDataType.OPEN_DEFAULT_DIALOG
                 && !this.getEasyNPCDialogData().hasDialog())
             || (actionType == ActionDataType.OPEN_NAMED_DIALOG
+                && actionDataEntry.targetUUID() == null
                 && !this.getEasyNPCDialogData().hasDialog(actionDataEntry.command()))
             || (actionType == ActionDataType.OPEN_TRADING_SCREEN
                 && !this.getEasyNPCTradingData().hasTradingData())) {
-          log.debug("Ignoring {} action because no data is available.", actionType);
+          log.debug(
+              "Ignoring {} action because no valid data are available: {}",
+              actionType,
+              actionDataEntry);
           continue;
         }
 

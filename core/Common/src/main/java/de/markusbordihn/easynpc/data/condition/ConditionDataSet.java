@@ -156,6 +156,23 @@ public class ConditionDataSet {
   }
 
   @Override
+  public boolean equals(Object object) {
+    if (this == object) {
+      return true;
+    }
+    if (object == null || getClass() != object.getClass()) {
+      return false;
+    }
+    ConditionDataSet other = (ConditionDataSet) object;
+    return this.conditionDataEntries.equals(other.conditionDataEntries);
+  }
+
+  @Override
+  public int hashCode() {
+    return this.conditionDataEntries.hashCode();
+  }
+
+  @Override
   public String toString() {
     return "ConditionDataSet[size=" + size() + ", entries=" + this.conditionDataEntries + "]";
   }

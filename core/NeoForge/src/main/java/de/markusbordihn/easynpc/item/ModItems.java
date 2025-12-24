@@ -117,6 +117,9 @@ public class ModItems {
                   SpawnerType.SINGLE_SPAWNER));
   public static final DeferredItem<Item> MOVE_EASY_NPC =
       ITEMS.register(MoveEasyNPCItem.ID, () -> new MoveEasyNPCItem(new Item.Properties()));
+  public static final DeferredItem<Item> CUSTOM_DATA_TEST_ITEM =
+      ITEMS.register(
+          CustomDataTestItem.ID, () -> new CustomDataTestItem(new Item.Properties().stacksTo(1)));
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   static {

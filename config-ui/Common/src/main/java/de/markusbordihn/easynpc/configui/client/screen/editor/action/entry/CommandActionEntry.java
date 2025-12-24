@@ -15,6 +15,7 @@ public class CommandActionEntry extends ActionEntryWidget {
   private TextField actionValueTextField;
   private Checkbox debugCheckbox;
   private Checkbox executeAsUserCheckbox;
+  private boolean showDialogCommandHint = false;
 
   public CommandActionEntry(
       ActionDataEntry actionDataEntry,
@@ -33,6 +34,7 @@ public class CommandActionEntry extends ActionEntryWidget {
             new TextField(this.font, editorLeft, editorTop + 20, 275, 16));
     this.actionValueTextField.setMaxLength(512);
     this.actionValueTextField.setValue(hasActionData ? this.actionDataEntry.command() : "");
+    this.actionValueTextField.setResponder(this::checkForDialogCommand);
 
     // Execute as User
     this.executeAsUserCheckbox =
@@ -53,6 +55,10 @@ public class CommandActionEntry extends ActionEntryWidget {
                 hasActionData && this.actionDataEntry.enableDebug()));
   }
 
+  private void checkForDialogCommand(String command) {
+    this.showDialogCommandHint = DialogCommandParser.isDialogOpenCommand(command);
+  }
+
   @Override
   public void render(GuiGraphics guiGraphics, int editorLeft, int editorTop) {
     Text.drawConfigString(
@@ -62,13 +68,30 @@ public class CommandActionEntry extends ActionEntryWidget {
         editorLeft + 2,
         editorTop + 5,
         Constants.FONT_COLOR_DEFAULT);
+
+    if (this.showDialogCommandHint) {
+      Text.drawString(
+          guiGraphics,
+          this.font,
+          "Hint: Use 'Open Named Dialog' action type instead",
+          editorLeft + 2,
+          editorTop + 60,
+          Constants.FONT_COLOR_YELLOW);
+    }
   }
 
   @Override
   public ActionDataEntry getActionDataEntry() {
+    String command = this.actionValueTextField.getValue();
+
+    ActionDataEntry parsedDialog = DialogCommandParser.parseDialogCommand(command);
+    if (parsedDialog != null) {
+      return parsedDialog;
+    }
+
     return new ActionDataEntry(
         ActionDataType.COMMAND,
-        this.actionValueTextField.getValue(),
+        command,
         this.executeAsUserCheckbox.selected(),
         this.debugCheckbox.selected());
   }
