@@ -44,16 +44,14 @@ public interface ScreenInterface
   @Override
   default boolean isSwitchingToAnotherEasyNPCScreen(
       net.minecraft.client.gui.screens.Screen newScreen) {
-    if (newScreen == this || newScreen == null) {
-      ScreenData pendingScreenData = ClientConfigUIMenuManager.getScreenData();
-      return pendingScreenData != null && this.getEasyNPCUUID().equals(pendingScreenData.uuid());
-    }
-
-    if (newScreen instanceof ScreenInterface screenInterface
-        && this.getEasyNPCUUID().equals(screenInterface.getEasyNPCUUID())) {
+    if (newScreen == this) {
       return true;
     }
 
-    return false;
+    if (newScreen == null) {
+      return ClientConfigUIMenuManager.getScreenData() != null;
+    }
+
+    return newScreen instanceof ScreenInterface;
   }
 }

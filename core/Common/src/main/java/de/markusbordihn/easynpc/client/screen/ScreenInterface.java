@@ -141,17 +141,15 @@ public interface ScreenInterface<D extends AdditionalScreenDataInterface> {
 
   default boolean isSwitchingToAnotherEasyNPCScreen(
       net.minecraft.client.gui.screens.Screen newScreen) {
-    if (newScreen == this || newScreen == null) {
-      ScreenData pendingScreenData = ClientMenuManager.getScreenData();
-      return pendingScreenData != null && this.getEasyNPCUUID().equals(pendingScreenData.uuid());
-    }
-
-    if (newScreen instanceof ScreenInterface<?> screenInterface
-        && this.getEasyNPCUUID().equals(screenInterface.getEasyNPCUUID())) {
+    if (newScreen == this) {
       return true;
     }
 
-    return false;
+    if (newScreen == null) {
+      return ClientMenuManager.getScreenData() != null;
+    }
+
+    return newScreen instanceof ScreenInterface<?>;
   }
 
   default void renderDefaultScreenBg(GuiGraphics guiGraphics, int leftPos, int topPos) {
