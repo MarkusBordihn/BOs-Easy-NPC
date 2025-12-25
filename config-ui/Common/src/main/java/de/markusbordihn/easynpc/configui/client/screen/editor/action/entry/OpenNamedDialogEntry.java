@@ -21,6 +21,7 @@ public class OpenNamedDialogEntry extends ActionEntryWidget {
   private TargetType targetType;
   private SpinButton<TargetType> targetTypeButton;
   private boolean showInvalidDialogName = false;
+  private boolean showInvalidUuid = false;
 
   public OpenNamedDialogEntry(
       ActionDataEntry actionDataEntry,
@@ -39,6 +40,19 @@ public class OpenNamedDialogEntry extends ActionEntryWidget {
         this.targetType != TargetType.SELF
             || this.dialogDataSet == null
             || !this.dialogDataSet.hasDialog(dialogName);
+  }
+
+  private void validateUuid(String uuidString) {
+    if (uuidString == null || uuidString.isEmpty()) {
+      this.showInvalidUuid = false;
+      return;
+    }
+    try {
+      UUID.fromString(uuidString);
+      this.showInvalidUuid = false;
+    } catch (IllegalArgumentException e) {
+      this.showInvalidUuid = true;
+    }
   }
 
   @Override
@@ -82,6 +96,7 @@ public class OpenNamedDialogEntry extends ActionEntryWidget {
         hasActionData && this.actionDataEntry.targetUUID() != null
             ? this.actionDataEntry.targetUUID().toString()
             : "");
+    this.targetUuidTextField.setResponder(this::validateUuid);
     this.targetUuidTextField.visible = this.targetType == TargetType.UUID;
   }
 
@@ -111,6 +126,16 @@ public class OpenNamedDialogEntry extends ActionEntryWidget {
           editorTop + 62,
           Constants.FONT_COLOR_RED);
     }
+
+    if (this.showInvalidUuid && this.targetType == TargetType.UUID) {
+      Text.drawConfigString(
+          guiGraphics,
+          this.font,
+          "action.invalid_uuid",
+          editorLeft + 90,
+          editorTop + 78,
+          Constants.FONT_COLOR_RED);
+    }
   }
 
   @Override
@@ -134,6 +159,11 @@ public class OpenNamedDialogEntry extends ActionEntryWidget {
   public boolean hasChanged() {
     // Invalid dialog name for self target type, no changes allowed.
     if (this.showInvalidDialogName && this.targetType == TargetType.SELF) {
+      return false;
+    }
+
+    // Invalid UUID for uuid target type, no changes allowed.
+    if (this.showInvalidUuid && this.targetType == TargetType.UUID) {
       return false;
     }
 
