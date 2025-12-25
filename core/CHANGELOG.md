@@ -8,6 +8,11 @@ For the full changelog, please go to the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 6.4.1
+
+- Fixed #626 screen switching logic for different NPC UUIDs, thanks to `Spawnblade` for the detailed
+  investigation and fix suggestion.
+
 ### 6.4.0
 
 - Fixed #626 by improving dialog data validation and error handling.
