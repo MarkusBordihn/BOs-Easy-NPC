@@ -24,10 +24,13 @@ import de.markusbordihn.easynpc.data.test.TestItemData;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import java.util.List;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -42,7 +45,10 @@ public class CustomDataTestItem extends Item {
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   public CustomDataTestItem(Item.Properties properties) {
-    super(properties);
+    super(
+        properties.setId(
+            ResourceKey.create(
+                Registries.ITEM, ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, ID))));
   }
 
   @Override
@@ -54,7 +60,7 @@ public class CustomDataTestItem extends Item {
   }
 
   @Override
-  public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+  public InteractionResult use(Level level, Player player, InteractionHand hand) {
     ItemStack itemStack = player.getItemInHand(hand);
 
     if (!level.isClientSide && player instanceof ServerPlayer serverPlayer) {
@@ -99,10 +105,10 @@ public class CustomDataTestItem extends Item {
             usageCounter + 1);
       }
 
-      return InteractionResultHolder.success(itemStack);
+      return InteractionResult.SUCCESS;
     }
 
-    return InteractionResultHolder.pass(itemStack);
+    return InteractionResult.PASS;
   }
 
   @Override
