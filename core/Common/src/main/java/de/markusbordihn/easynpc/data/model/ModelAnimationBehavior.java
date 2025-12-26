@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Markus Bordihn
+ * Copyright 2025 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,17 +17,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.data.render;
+package de.markusbordihn.easynpc.data.model;
 
-public record ScissorBox(float scaleMultiplier) {
+public enum ModelAnimationBehavior {
+  SMART,
+  DEFAULT,
+  NONE;
 
-  public static final ScissorBox NONE = null;
-
-  public static final ScissorBox LARGE = new ScissorBox(3.0f);
-
-  public static final ScissorBox EXTRA_LARGE = new ScissorBox(5.0f);
-
-  public static ScissorBox of(float multiplier) {
-    return new ScissorBox(multiplier);
+  public static ModelAnimationBehavior get(String modelAnimationBehavior) {
+    if (modelAnimationBehavior == null || modelAnimationBehavior.isEmpty()) {
+      return ModelAnimationBehavior.SMART;
+    }
+    try {
+      return ModelAnimationBehavior.valueOf(modelAnimationBehavior);
+    } catch (IllegalArgumentException e) {
+      return ModelAnimationBehavior.SMART;
+    }
   }
 }

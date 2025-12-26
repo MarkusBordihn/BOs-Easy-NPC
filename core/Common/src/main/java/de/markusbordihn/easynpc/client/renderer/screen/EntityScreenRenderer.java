@@ -50,30 +50,11 @@ public class EntityScreenRenderer {
     EntityRenderState backupState = new EntityRenderState(livingEntity, easyNPC);
     applyRenderModifications(easyNPC, config);
 
-    int renderScale = config.scale();
-    if (config.scissorBox() != null) {
-      float multiplier = config.scissorBox().scaleMultiplier();
-      renderScale = (int) (config.scale() * multiplier);
-      ModelDataCapable<?> modelData = easyNPC.getEasyNPCModelData();
-      if (modelData != null) {
-        CustomScale originalScale = modelData.getModelPartScale(ModelPartType.ROOT);
-        if (originalScale != null) {
-          float adjustment = 1.0f / multiplier;
-          modelData.setModelPartScale(
-              ModelPartType.ROOT,
-              new CustomScale(
-                  originalScale.x() * adjustment,
-                  originalScale.y() * adjustment,
-                  originalScale.z() * adjustment));
-        }
-      }
-    }
-
     InventoryScreen.renderEntityInInventoryFollowsMouse(
         guiGraphics,
         config.x(),
         config.y(),
-        renderScale,
+        config.scale(),
         config.rotationYaw(),
         config.rotationPitch(),
         livingEntity);

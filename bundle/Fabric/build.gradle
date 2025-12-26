@@ -6,28 +6,17 @@ plugins {
   id "com.modrinth.minotaur" version "2.+"
 }
 
-repositories {
-  mavenLocal()
-  mavenCentral()
-  maven {
-    name = 'Fabric'
-    url = 'https://maven.fabricmc.net/'
-  }
-  maven {
-    name = 'Sponge / Mixin'
-    url = 'https://repo.spongepowered.org/repository/maven-public/'
-  }
-  maven {
-    name = 'CurseForge'
-    url = 'https://cursemaven.com'
-    content {
-      includeGroup "curse.maven"
-    }
-  }
-}
-
 base {
   archivesName = "${project.mod_id}-fabric-${project.minecraft_version}"
+}
+
+def getNextMajorVersion(String currentVersion) {
+  def versionParts = currentVersion.tokenize('.')
+  if (versionParts.size() > 0) {
+    def majorVersion = versionParts[0].toInteger()
+    return "${majorVersion + 1}.0.0"
+  }
+  return "1.0.0"
 }
 
 sourceSets {
@@ -61,20 +50,24 @@ dependencies {
   minecraft "com.mojang:minecraft:${project.minecraft_version}"
   mappings loom.officialMojangMappings()
   modImplementation "net.fabricmc:fabric-loader:${project.fabric_loader_version}"
-  modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
   // Bundle dependencies - use compileOnly to avoid transitive dependency issues
   modRuntimeOnly group: 'de.markusbordihn.easynpc', name: "easy_npc-fabric-${project.minecraft_version}", version: "${project.version}"
   modRuntimeOnly group: 'de.markusbordihn.easynpc.configui', name: "easy_npc_config_ui-fabric-${project.minecraft_version}", version: "${project.version}"
+}
 
-  // Include dependencies in final JAR with proper metadata preservation
-  include(group: 'de.markusbordihn.easynpc', name: "easy_npc-fabric-${project.minecraft_version}", version: "${project.version}") {
-    exclude group: 'net.fabricmc.fabric-api'
-    exclude group: 'net.fabricmc'
-  }
-  include(group: 'de.markusbordihn.easynpc.configui', name: "easy_npc_config_ui-fabric-${project.minecraft_version}", version: "${project.version}") {
-    exclude group: 'net.fabricmc.fabric-api'
-    exclude group: 'net.fabricmc'
+def nextMajorVersion = getNextMajorVersion(project.version.toString())
+
+processResources {
+  from project(":Common").sourceSets.main.resources
+  duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+  inputs.property "version", project.version
+  inputs.property 'nextMajorVersion', nextMajorVersion
+
+  filesMatching("fabric.mod.json") {
+    expand "version": project.version,
+           "nextMajorVersion": nextMajorVersion
   }
 }
 
@@ -123,7 +116,12 @@ if (project.hasProperty('curseforge_project_id') && project.curseforge_project_i
       releaseType = "${project.curseforge_release_type}"
       addGameVersion("${project.minecraft_version}")
       addGameVersion("Fabric")
-      mainArtifact(remapJar)
+      mainArtifact(remapJar) {
+        relations {
+          requiredDependency 'easy-npc-core'
+          requiredDependency 'easy-npc-config-ui'
+        }
+      }
     }
   }
 }
@@ -140,5 +138,9 @@ if (project.hasProperty('modrinth_project_id') && project.modrinth_project_id) {
     uploadFile = remapJar
     gameVersions = ["${project.minecraft_version}"]
     loaders = ["fabric"]
+    dependencies {
+      required.project "easy-npc-core"
+      required.project "easy-npc-config-ui"
+    }
   }
 }

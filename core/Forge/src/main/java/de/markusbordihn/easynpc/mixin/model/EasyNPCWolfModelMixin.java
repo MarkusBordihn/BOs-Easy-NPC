@@ -76,4 +76,18 @@ public class EasyNPCWolfModelMixin<T extends Wolf> {
       callbackInfo.cancel();
     }
   }
+
+  @Inject(method = "setupAnim(Lnet/minecraft/world/entity/animal/Wolf;FFFFF)V", at = @At("TAIL"))
+  private void setupNpcAnimEnd(
+      T entity,
+      float limbSwing,
+      float limbSwingAmount,
+      float ageInTicks,
+      float netHeadYaw,
+      float headPitch,
+      CallbackInfo callbackInfo) {
+    if (entity instanceof EasyNPC<?> easyNPC) {
+      EasyNPCModel.setupAnimationEnd(easyNPC, this.easyNPC$modelManager);
+    }
+  }
 }

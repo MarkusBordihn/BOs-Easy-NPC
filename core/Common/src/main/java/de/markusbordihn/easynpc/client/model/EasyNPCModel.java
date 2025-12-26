@@ -63,13 +63,13 @@ public class EasyNPCModel {
     // Always reset model parts first to ensure clean state (fixes visibility issues at distance)
     modelManager.resetModelParts();
 
-    // Early return if no custom model pose is used.
-    if (modelData.getModelPose() == ModelPose.DEFAULT) {
-      return false;
+    // Handle canceled animations and setup model parts accordingly
+    if (modelManager.shouldCancelAnimation(modelData)) {
+      modelManager.setupModelParts(modelData);
+      return true;
     }
 
-    // Handle Model Pose
-    return modelManager.setupModelParts(modelData);
+    return false;
   }
 
   public static int getEntityLightLevel(
@@ -107,6 +107,13 @@ public class EasyNPCModel {
       final EasyNPC<?> easyNPC, final EasyNPCModelManager modelManager) {
     if (easyNPC == null || modelManager == null) {
       return;
+    }
+
+    ModelDataCapable<?> modelData = easyNPC.getEasyNPCModelData();
+    if (modelData != null
+        && modelData.getModelPose() == ModelPose.CUSTOM
+        && !modelManager.shouldCancelAnimation(modelData)) {
+      modelManager.applySelectiveChanges(modelData);
     }
 
     setupArmPoses(easyNPC, modelManager);

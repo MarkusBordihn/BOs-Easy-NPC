@@ -20,12 +20,14 @@
 package de.markusbordihn.easynpc.configui.client.renderer.screen;
 
 import de.markusbordihn.easynpc.client.renderer.screen.EntityScreenRenderer;
+import de.markusbordihn.easynpc.data.model.ModelAnimationData;
 import de.markusbordihn.easynpc.data.profession.Profession;
 import de.markusbordihn.easynpc.data.render.EntityRenderConfig;
 import de.markusbordihn.easynpc.data.render.EntityRenderOverrides;
 import de.markusbordihn.easynpc.data.render.RenderDataEntry;
 import de.markusbordihn.easynpc.data.skin.SkinDataEntry;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.data.ModelAnimationDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.ProfessionDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.RenderDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
@@ -108,6 +110,11 @@ public class EntityConfigScreenRenderer extends EntityScreenRenderer {
     if (professionData != null && backupState.profession != null) {
       professionData.setProfession(backupState.profession);
     }
+
+    ModelAnimationDataCapable<?> animationData = easyNPC.getEasyNPCModelData();
+    if (animationData != null && backupState.modelAnimationData != null) {
+      animationData.setModelAnimationData(backupState.modelAnimationData);
+    }
   }
 
   private static class ConfigRenderState {
@@ -115,6 +122,7 @@ public class EntityConfigScreenRenderer extends EntityScreenRenderer {
     final Enum<?> variantType;
     final Profession profession;
     final RenderDataEntry renderDataSet;
+    final ModelAnimationData modelAnimationData;
 
     ConfigRenderState(EasyNPC<?> easyNPC) {
       RenderDataCapable<?> renderData = easyNPC.getEasyNPCRenderData();
@@ -125,6 +133,9 @@ public class EntityConfigScreenRenderer extends EntityScreenRenderer {
       this.variantType = variantData != null ? variantData.getSkinVariantType() : null;
       ProfessionDataCapable<?> professionData = easyNPC.getEasyNPCProfessionData();
       this.profession = professionData != null ? professionData.getProfession() : null;
+      ModelAnimationDataCapable<?> animationData = easyNPC.getEasyNPCModelData();
+      this.modelAnimationData =
+          animationData != null ? animationData.getModelAnimationData() : null;
     }
   }
 }

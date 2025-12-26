@@ -9,6 +9,16 @@ subprojects {
   repositories {
     mavenCentral()
     mavenLocal()
+    repositories {
+      mavenCentral()
+      mavenLocal()
+      maven {
+        url = "https://www.cursemaven.com"
+        content {
+          includeGroup "curse.maven"
+        }
+      }
+    }
   }
 
   tasks.register('wrapper', Wrapper) {
@@ -19,10 +29,20 @@ subprojects {
     options.encoding = 'UTF-8'
   }
 
+  tasks.withType(GenerateModuleMetadata).configureEach {
+    enabled = false
+  }
+
+  tasks.withType(Javadoc).configureEach {
+    enabled = false
+  }
+
+  tasks.register("prepareKotlinBuildScriptModel") {}
+
   configurations.configureEach {
     resolutionStrategy {
-      cacheChangingModulesFor 0, 'days'
-      cacheDynamicVersionsFor 0, 'days'
+      cacheChangingModulesFor 0, 'minutes'
+      cacheDynamicVersionsFor 15, 'minutes'
     }
   }
 }

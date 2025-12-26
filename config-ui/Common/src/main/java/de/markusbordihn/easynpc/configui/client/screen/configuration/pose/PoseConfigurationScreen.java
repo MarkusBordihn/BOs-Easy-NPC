@@ -21,17 +21,20 @@ package de.markusbordihn.easynpc.configui.client.screen.configuration.pose;
 
 import de.markusbordihn.easynpc.client.screen.components.RangeSliderButton;
 import de.markusbordihn.easynpc.client.screen.components.SliderButton;
+import de.markusbordihn.easynpc.client.screen.components.SpinButton;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.ConfigurationScreen;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
+import de.markusbordihn.easynpc.data.model.ModelAnimationBehavior;
 import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.position.CustomPosition;
 import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.data.scale.CustomScale;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
 import de.markusbordihn.easynpc.network.components.TextComponent;
+import java.util.LinkedHashSet;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -47,6 +50,29 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
   public PoseConfigurationScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
     this.modelData = this.getEasyNPC().getEasyNPCModelData();
+  }
+
+  protected SpinButton<ModelAnimationBehavior> createAnimationBehaviorButton(int x, int y) {
+    LinkedHashSet<ModelAnimationBehavior> values = new LinkedHashSet<>();
+    values.add(ModelAnimationBehavior.SMART);
+    values.add(ModelAnimationBehavior.DEFAULT);
+    values.add(ModelAnimationBehavior.NONE);
+
+    return this.addRenderableWidget(
+        new SpinButton<>(
+            x,
+            y,
+            80,
+            16,
+            values,
+            this.modelData.getModelAnimationBehavior(),
+            spinButton -> {
+              ModelAnimationBehavior behavior = (ModelAnimationBehavior) spinButton.get();
+              if (behavior != null) {
+                NetworkMessageHandlerManager.getServerHandler()
+                    .modelAnimationBehaviorChange(this.getEasyNPCUUID(), behavior);
+              }
+            }));
   }
 
   protected RangeSliderButton createRotationSlider(

@@ -10,6 +10,17 @@ base {
   archivesName = "${project.mod_id}-fabric-${project.minecraft_version}"
 }
 
+ext {
+  getNextMajorVersion = { String currentVersion ->
+    def versionParts = currentVersion.tokenize('.')
+    if (versionParts.size() > 0) {
+      def majorVersion = versionParts[0].toInteger()
+      return "${majorVersion + 1}.0.0"
+    }
+    return "1.0.0"
+  }
+}
+
 dependencies {
   minecraft "com.mojang:minecraft:${project.minecraft_version}"
   mappings loom.officialMojangMappings()
@@ -66,12 +77,18 @@ loom {
   }
 }
 
+def nextMajorVersion = getNextMajorVersion(project.version.toString())
+
 processResources {
   from project(":Common").sourceSets.main.resources
+  duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 
   inputs.property "version", project.version
+  inputs.property 'nextMajorVersion', nextMajorVersion
+
   filesMatching("fabric.mod.json") {
-    expand "version": project.version
+    expand "version": project.version,
+           "nextMajorVersion": nextMajorVersion
   }
 }
 

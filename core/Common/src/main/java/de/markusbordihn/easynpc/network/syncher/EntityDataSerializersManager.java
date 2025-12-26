@@ -24,6 +24,7 @@ import de.markusbordihn.easynpc.data.attribute.EntityAttributes;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.data.display.DisplayAttributeEntry;
 import de.markusbordihn.easynpc.data.display.DisplayAttributeType;
+import de.markusbordihn.easynpc.data.model.ModelAnimationData;
 import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataSet;
@@ -186,6 +187,25 @@ public class EntityDataSerializersManager {
 
             @Override
             public ModelPose copy(ModelPose value) {
+              return value;
+            }
+          });
+  public static final EntityDataSerializer<ModelAnimationData> MODEL_ANIMATION_DATA =
+      defineSerializer(
+          ModelAnimationData.class.getSimpleName(),
+          new EntityDataSerializer<>() {
+            @Override
+            public void write(FriendlyByteBuf buffer, ModelAnimationData animationData) {
+              animationData.encode(buffer);
+            }
+
+            @Override
+            public ModelAnimationData read(FriendlyByteBuf buffer) {
+              return ModelAnimationData.decode(buffer);
+            }
+
+            @Override
+            public ModelAnimationData copy(ModelAnimationData value) {
               return value;
             }
           });

@@ -30,7 +30,6 @@ import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.render.EntityRenderConfig;
-import de.markusbordihn.easynpc.data.render.ScissorBox;
 import de.markusbordihn.easynpc.data.scale.CustomScale;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
 import net.minecraft.client.gui.GuiGraphics;
@@ -229,17 +228,57 @@ public class ScalingConfigurationScreen<T extends ConfigurationMenu>
   public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
     super.render(guiGraphics, x, y, partialTicks);
 
-    // Avatar
+    // Get current NPC scale to adjust rendering
+    ModelDataCapable<?> modelData = this.getEasyNPC().getEasyNPCModelData();
+    CustomScale originalRootScale = null;
+    int renderScale = 30;
+    float scaleAdjustment = 1.0f;
+    if (modelData != null) {
+      originalRootScale = modelData.getModelPartScale(ModelPartType.ROOT);
+      if (originalRootScale != null) {
+        float maxScale =
+            Math.max(Math.max(originalRootScale.x(), originalRootScale.y()), originalRootScale.z());
+        if (maxScale > 1.0f) {
+          renderScale = (int) (30 * Math.min(maxScale, 3.0f));
+          scaleAdjustment = 1.0f / Math.min(maxScale, 3.0f);
+          modelData.setModelPartScale(
+              ModelPartType.ROOT,
+              new CustomScale(
+                  originalRootScale.x() * scaleAdjustment,
+                  originalRootScale.y() * scaleAdjustment,
+                  originalRootScale.z() * scaleAdjustment));
+        }
+      }
+    }
+
+    // Define the render area boundaries
+    int renderAreaX = this.contentLeftPos + 1;
+    int renderAreaY = this.contentTopPos + 1;
+    int renderAreaWidth = 158;
+    int renderAreaHeight = 206;
+
+    // Enable scissor (clipping) to restrict rendering to the defined area
+    guiGraphics.enableScissor(
+        renderAreaX, renderAreaY, renderAreaX + renderAreaWidth, renderAreaY + renderAreaHeight);
+
+    // Avatar - render with dynamic scale
     EntityConfigScreenRenderer.renderEntity(
         guiGraphics,
         this.getEasyNPC(),
         EntityRenderConfig.scaling(
-                this.contentLeftPos + 80,
-                this.contentTopPos + 192,
-                30,
-                this.contentLeftPos + 75 - this.xMouse,
-                this.contentTopPos + 120 - this.yMouse)
-            .withScissorBox(ScissorBox.LARGE));
+            this.contentLeftPos + 80,
+            this.contentTopPos + 192,
+            renderScale,
+            this.contentLeftPos + 75 - this.xMouse,
+            this.contentTopPos + 120 - this.yMouse));
+
+    // Disable scissor after rendering the entity
+    guiGraphics.disableScissor();
+
+    // Restore original root scale if it was modified
+    if (modelData != null && originalRootScale != null && scaleAdjustment != 1.0f) {
+      modelData.setModelPartScale(ModelPartType.ROOT, originalRootScale);
+    }
 
     // Label for Scale Sliders
     drawScaleLabel(guiGraphics, "scale_x", scaleXSliderButton);
