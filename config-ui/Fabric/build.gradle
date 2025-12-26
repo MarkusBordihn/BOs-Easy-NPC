@@ -125,6 +125,7 @@ if (project.hasProperty('curseforge_project_id') && project.curseforge_project_i
       addGameVersion("Quilt")
       mainArtifact(remapJar) {
         relations {
+          requiredDependency 'easy-npc-core'
           requiredDependency 'fabric-api'
         }
       }
@@ -148,6 +149,7 @@ if (project.hasProperty('modrinth_project_id') && project.modrinth_project_id) {
     gameVersions = ["${project.minecraft_version}"]
     loaders = ["fabric", "quilt"]
     dependencies {
+      required.project "easy-npc-core"
       required.project "fabric-api"
     }
   }

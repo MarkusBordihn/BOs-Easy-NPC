@@ -185,6 +185,7 @@ if (project.hasProperty('curseforge_project_id') && project.curseforge_project_i
       releaseType = "${project.curseforge_release_type}"
       addGameVersion("${project.minecraft_version}")
       addGameVersion("Forge")
+      addGameVersion("NeoForge")
       mainArtifact(jar)
     }
   }
@@ -201,6 +202,6 @@ if (project.hasProperty('modrinth_project_id') && project.modrinth_project_id) {
     changelog = rootProject.file("CHANGELOG.md").text
     uploadFile = jar
     gameVersions = ["${project.minecraft_version}"]
-    loaders = ["forge"]
+    loaders = ["forge", "neoforge"]
   }
 }

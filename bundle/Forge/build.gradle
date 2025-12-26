@@ -152,7 +152,7 @@ if (project.hasProperty('modrinth_project_id') && project.modrinth_project_id) {
     versionType = "${project.modrinth_release_type}"
     versionName = "${project.mod_name} ${project.version}"
     changelog = rootProject.file('../core/CHANGELOG.md').text
-    uploadFile = tasks.jarJar
+    uploadFile = tasks.jar
     gameVersions = ["${project.minecraft_version}"]
     loaders = ["forge", "neoforge"]
     dependencies {
