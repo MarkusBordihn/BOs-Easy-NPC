@@ -81,18 +81,13 @@ tasks.named('clean') {
   }
 }
 
-// Clean and build all modules
+// Build all modules
 tasks.named('cleanBuild') {
   description = 'Cleans and builds all modules (core, config-ui, bundle)'
   group = "build"
 
-  // Make sure clean runs first
-  dependsOn 'clean'
-
   // Then build all modules
   dependsOn 'build'
-
-  tasks.build.mustRunAfter tasks.clean
 
   doLast {
     println "All modules successfully cleaned and built."

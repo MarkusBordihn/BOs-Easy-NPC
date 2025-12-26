@@ -30,6 +30,6 @@ side = "BOTH"
 [[dependencies.easy_npc_config_ui]]
 modId = "easy_npc"
 mandatory = true
-versionRange = "[6.0.0,7.0.0)"
+versionRange = "[${file.jarVersion},${file.nextMajorVersion})"
 ordering = "AFTER"
 side = "BOTH"

@@ -1,0 +1,33 @@
+plugins {
+  id 'maven-publish'
+  id 'org.spongepowered.gradle.vanilla' version '0.2.1-SNAPSHOT'
+}
+
+base {
+  archivesName = "${project.mod_id}-common-${project.minecraft_version}"
+}
+
+minecraft {
+  version(project.minecraft_version)
+  runs {
+    server('vanilla_server (bundle)') {
+      workingDirectory(this.file("run"))
+    }
+    client('vanilla_client (bundle)') {
+      workingDirectory(this.file("run"))
+    }
+  }
+}
+
+dependencies {
+  // Include Core Common code
+  compileOnly "de.markusbordihn.easynpc:easy_npc-common-${project.minecraft_version}:${project.version}"
+}
+
+processResources {
+  def buildProps = project.properties.clone()
+
+  filesMatching(['pack.mcmeta']) {
+    expand buildProps
+  }
+}
