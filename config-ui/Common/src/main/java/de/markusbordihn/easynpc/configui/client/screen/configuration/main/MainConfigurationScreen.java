@@ -127,11 +127,7 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
         guiGraphics,
         getEasyNPC(),
         EntityRenderConfig.guiScaled(
-            this.leftPos + 60,
-            this.avatarTopPos + 150,
-            EntityGuiScaling.getScaling(getEasyNPC()),
-            this.leftPos + 50 - this.xMouse,
-            this.contentTopPos + 70 - this.yMouse),
+            this.leftPos + 60, this.avatarTopPos + 97, EntityGuiScaling.getScaling(getEasyNPC())),
         this.xMouse,
         this.yMouse);
 

@@ -292,10 +292,8 @@ public class CustomModelConfigurationScreen<T extends ConfigurationMenu>
         this.getEasyNPC(),
         EntityRenderConfig.customModel(
             x + 5,
-            y + 7,
+            y - 30,
             Math.round(30 / EntityTypeManager.getScaleFactor(entityType)),
-            x - this.xMouse,
-            y - 40 - this.yMouse,
             entityType),
         this.xMouse,
         this.yMouse);

@@ -58,7 +58,7 @@ public class EasyNPCModel {
 
     // Get Model Data
     ModelDataCapable<?> modelData = easyNPC.getEasyNPCModelData();
-    if (modelData == null) {
+    if (modelData == null || modelData.getModelPose() == ModelPose.DEFAULT) {
       return false;
     }
 
@@ -76,13 +76,13 @@ public class EasyNPCModel {
     // Always reset model parts first to ensure clean state (fixes visibility issues at distance)
     modelManager.resetModelParts();
 
-    // Early return if no custom model pose is used.
-    if (modelData.getModelPose() == ModelPose.DEFAULT) {
-      return false;
+    // Handle canceled animations and setup model parts accordingly
+    if (modelManager.shouldCancelAnimation(modelData)) {
+      modelManager.setupModelParts(modelData);
+      return true;
     }
 
-    // Handle Model Pose
-    return modelManager.setupModelParts(modelData);
+    return false;
   }
 
   public static EasyNPC<?> getEasyNPC(final EasyNPCRenderStateExtension extension) {
@@ -116,7 +116,6 @@ public class EasyNPCModel {
 
   public static boolean renderEntityNameTag(
       final EasyNPCRenderStateExtension extension, final PoseStack poseStack) {
-
     if (extension == null) {
       return true;
     }
@@ -157,6 +156,19 @@ public class EasyNPCModel {
       final EasyNPCRenderStateExtension extension, final EasyNPCModelManager modelManager) {
     if (extension == null || modelManager == null) {
       return;
+    }
+
+    // Get EasyNPC
+    EasyNPC<?> easyNPC = getEasyNPC(extension);
+    if (easyNPC == null) {
+      return;
+    }
+
+    ModelDataCapable<?> modelData = easyNPC.getEasyNPCModelData();
+    if (modelData != null
+        && modelData.getModelPose() == ModelPose.CUSTOM
+        && !modelManager.shouldCancelAnimation(modelData)) {
+      modelManager.applySelectiveChanges(modelData);
     }
 
     setupArmPoses(extension, modelManager);

@@ -17,30 +17,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.data.render;
+package de.markusbordihn.easynpc.data.model;
 
-public record ScissorBox(
-    float scaleMultiplier, Integer width, Integer height, Integer left, Integer top) {
+public enum ModelAnimationBehavior {
+  SMART,
+  DEFAULT,
+  NONE;
 
-  public static final ScissorBox NONE = null;
-
-  public static final ScissorBox LARGE = new ScissorBox(3.0f, null, null, null, null);
-
-  public static final ScissorBox EXTRA_LARGE = new ScissorBox(5.0f, null, null, null, null);
-
-  public ScissorBox(float scaleMultiplier) {
-    this(scaleMultiplier, null, null, null, null);
-  }
-
-  public static ScissorBox of(float multiplier) {
-    return new ScissorBox(multiplier);
-  }
-
-  public static ScissorBox of(int width, int height, int left, int top) {
-    return new ScissorBox(1.0f, width, height, left, top);
-  }
-
-  public boolean hasCustomScissor() {
-    return width != null && height != null && left != null && top != null;
+  public static ModelAnimationBehavior get(String modelAnimationBehavior) {
+    if (modelAnimationBehavior == null || modelAnimationBehavior.isEmpty()) {
+      return ModelAnimationBehavior.SMART;
+    }
+    try {
+      return ModelAnimationBehavior.valueOf(modelAnimationBehavior);
+    } catch (IllegalArgumentException e) {
+      return ModelAnimationBehavior.SMART;
+    }
   }
 }

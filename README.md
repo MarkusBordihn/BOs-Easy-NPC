@@ -20,44 +20,93 @@
 [![Wiki](https://img.shields.io/badge/dynamic/json?label=Wiki&labelColor=black&color=grey&query=title&url=https://api.modrinth.com/v2/project/CgGEe1h3&style=flat&logo=github)][wiki]
 [![Support me on Ko-fi](https://img.shields.io/badge/Support_me_on_Ko--fi-!?labelColor=black&style=flat&logo=ko-fi)][ko-fi]
 
-Easy NPCs allows a simplified setup for custom NPCs with dialogs for mapmaker and other mods.
+Easy NPC provides a simplified system for creating custom NPCs with dialogs, trading,
+and interactions for map makers, RPGs, adventure servers, modpacks, and other mods.
+
+This project is the **Easy NPC Bundle**, a launcher convenience package that installs the
+required Easy NPC modules automatically.
+
+This bundle does not contain the Easy NPC modules themselves.
+
+## 📦 Installation Overview
+
+Easy NPC is split into multiple modules.
+The bundle exists to simplify installation via launchers that support automatic dependency
+resolution.
+
+### Option A: Launcher install (recommended)
+
+- Install **Easy NPC Bundle**
+- Your launcher will automatically install the required modules:
+    - **Easy NPC Core**
+    - **Easy NPC Config UI** (configuration tools and required networking)
+
+### Option B: Manual install or copied modpacks
+
+If you install mods manually or copy a modpack between instances, make sure the required modules are
+present:
+
+- **Easy NPC Core**
+- **Easy NPC Config UI**
+
+Tip: When sharing or copying a modpack, copy the full `mods/` folder to ensure all required jars are
+included.
 
 ## ✨ Features
 
-- Providing easy NPCs with basic dialogs and a easy setup.
-- Easy Action configuration with debug option.
-- Skin configuration with player name and URL support.
-- Server and client friendly.
-- No additional dependencies.
-- API support / integration for other mods (WIP).
+- Easy NPCs with dialogs, trading, and interactions
+- Simple setup for map makers, servers, and RPG environments
+- Configurable actions with debug options
+- Trading support with configurable offers and conditions
+- Skin configuration with player name and URL support
+- Designed for both server and client environments
+- API support and integration for other mods
 
 ## 📦 Mod Integration
 
 ### [Armourer's Workshop][armourers_workshop]
 
-Basic integration for [Armourer's Workshop][armourers_workshop] to use the skins from the library.
+Basic integration for Armourer's Workshop to use skins from the library.
 
 ### [Epic Fight Mod][epic_fight_mod]
 
-Basic integration for [Epic Fight Mod][epic_fight_mod] to use the animations and
-models from the mod.
-The integration is done over an external mod
-called [Easy NPC Epic Fight Mod][easy_npc_epic_fight_mod].
+Built in support for Epic Fight is included since Easy NPC **6.4.x**.
+No additional integration mod is required.
 
 ### [Immersive Melodies][immersive-melodies]
 
-Basic integration for [Immersive Melodies][immersive-melodies] to use the music instrument from the
-mod.
+Basic integration for Immersive Melodies to use music instruments.
 
 ## Usage
 
-Just spawn a NPC with the corresponding spawn egg and click with your empty hand on the spawned NPC.
-If you need to adjust the existing dialog, just click with your empty hand and crouching on the NPC.
+Spawn an NPC using the corresponding spawn egg or via the summon command.
+
+Use the predefined `/easy_npc` commands or the NPC config wand to open a graphical user interface.
+The GUI allows you to configure dialogs, trading options, skins, actions, and other NPC related
+settings directly in game.
+
+Most interactions and adjustments can be done directly in game without editing files or restarting
+the server.
 
 ## ⬆️ Upgrading
 
 Please make sure to check the [upgrade guide][upgrade_guide] before upgrading/updating to a new
 version.
+
+## ℹ️ Why there is no jar-in-jar bundle anymore
+
+Older versions used a jar-in-jar setup to bundle multiple Easy NPC modules into a single file.
+
+This approach caused several technical issues:
+
+- Duplicate mod IDs when modules were installed separately
+- Class loading conflicts and ambiguous mod sources
+- Incompatibilities when only the Easy NPC Core was required as a dependency
+- Increased maintenance and support complexity
+
+Modern launchers already provide dependency resolution.
+Using this mechanism results in a cleaner, more predictable setup and allows Easy NPC modules to be
+updated independently.
 
 ## ℹ️ More Information
 
@@ -70,10 +119,10 @@ Please report issues and feature requests over the [issues link][issues]. I'm ha
 ## 🫶 Support me
 
 If you enjoy using my creations, consider supporting my development! ☕️
-Donations via [Patreon][patreon] and [Ko-fi][ko-fi] are immensely helpful, but not required (my mods
-are free and open-source!).
-Every bit helps me keep creating mods in my free time, covering software, services, and hardware
-costs.
+Donations via [Ko-fi][ko-fi] are immensely helpful,
+but not required (my mods are free and open-source!).
+Every bit helps me keep creating mods in my free time, covering software, services, hardware costs
+and some extra slice of pizza or additional Spezi.
 
 ## 🧠 AI Assistance
 

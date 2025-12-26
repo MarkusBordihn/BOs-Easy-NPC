@@ -1,43 +1,39 @@
 plugins {
   id 'maven-publish'
-  id 'fabric-loom' version '1.11-SNAPSHOT'
+  id 'fabric-loom' version "${fabric_loom}"
   id 'com.matthewprenger.cursegradle' version '1.4.0'
   id 'nu.studer.credentials' version '3.0'
   id "com.modrinth.minotaur" version "2.+"
-}
-
-repositories {
-  mavenLocal()
-  mavenCentral()
-  maven {
-    name = 'Fabric'
-    url = 'https://maven.fabricmc.net/'
-  }
-  maven {
-    name = 'Sponge / Mixin'
-    url = 'https://repo.spongepowered.org/repository/maven-public/'
-  }
-  maven {
-    name = 'CurseForge'
-    url = 'https://cursemaven.com'
-    content {
-      includeGroup "curse.maven"
-    }
-  }
 }
 
 base {
   archivesName = "${project.mod_id}-fabric-${project.minecraft_version}"
 }
 
-sourceSets {
-  main {
-    resources {
-      srcDirs += [
-          '../Common/src/main/resources'
-      ]
+ext {
+  getNextMajorVersion = { String currentVersion ->
+    def versionParts = currentVersion.tokenize('.')
+    if (versionParts.size() > 0) {
+      def majorVersion = versionParts[0].toInteger()
+      return "${majorVersion + 1}.0.0"
     }
+    return "1.0.0"
   }
+}
+
+def nextMajorVersion = getNextMajorVersion(project.version.toString())
+
+dependencies {
+  minecraft "com.mojang:minecraft:${project.minecraft_version}"
+  mappings loom.officialMojangMappings()
+  modImplementation "net.fabricmc:fabric-loader:${project.fabric_loader_version}"
+
+  // Include Common code
+  implementation project(":Common")
+
+  // Bundle dependencies - use compileOnly to avoid transitive dependency issues
+  modRuntimeOnly group: 'de.markusbordihn.easynpc', name: "easy_npc-fabric-${project.minecraft_version}", version: "${project.version}"
+  modRuntimeOnly group: 'de.markusbordihn.easynpc.configui', name: "easy_npc_config_ui-fabric-${project.minecraft_version}", version: "${project.version}"
 }
 
 loom {
@@ -57,59 +53,25 @@ loom {
   }
 }
 
-dependencies {
-  minecraft "com.mojang:minecraft:${project.minecraft_version}"
-  mappings loom.officialMojangMappings()
-  modImplementation "net.fabricmc:fabric-loader:${project.fabric_loader_version}"
-  modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-
-  // Bundle dependencies - use compileOnly to avoid transitive dependency issues
-  modRuntimeOnly group: 'de.markusbordihn.easynpc', name: "easy_npc-fabric-${project.minecraft_version}", version: "${project.version}"
-  modRuntimeOnly group: 'de.markusbordihn.easynpc.configui', name: "easy_npc_config_ui-fabric-${project.minecraft_version}", version: "${project.version}"
-
-  // Include dependencies in final JAR with proper metadata preservation
-  include(group: 'de.markusbordihn.easynpc', name: "easy_npc-fabric-${project.minecraft_version}", version: "${project.version}") {
-    exclude group: 'net.fabricmc.fabric-api'
-    exclude group: 'net.fabricmc'
-  }
-  include(group: 'de.markusbordihn.easynpc.configui', name: "easy_npc_config_ui-fabric-${project.minecraft_version}", version: "${project.version}") {
-    exclude group: 'net.fabricmc.fabric-api'
-    exclude group: 'net.fabricmc'
-  }
-}
-
-// The standard remapJar task will automatically include the 'include' dependencies
-tasks.named('remapJar') {
-  archiveClassifier = 'all'
-  archiveFileName = "${project.mod_id}-${project.version}-fabric-${project.minecraft_version}.jar"
-
-  from('../Common/src/main/resources') {
-    include 'pack.mcmeta'
-    include 'logo.png'
-  }
-}
-
-// Keep the slim jar as well
-jar {
-  archiveClassifier = 'slim'
+processResources {
+  from project(":Common").sourceSets.main.resources
   duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 
-  from('../Common/src/main/resources') {
-    include 'pack.mcmeta'
-    include 'logo.png'
-  }
+  inputs.property "version", project.version
+  inputs.property 'nextMajorVersion', nextMajorVersion
 
-  manifest {
-    attributes([
-        "Specification-Title"     : "${project.mod_name}",
-        "Specification-Vendor"    : "${project.mod_author}",
-        "Specification-Version"   : "${project.version}",
-        "Implementation-Title"    : "${project.mod_name}",
-        "Implementation-Version"  : "${project.version}",
-        "Implementation-Vendor"   : "${project.mod_author}",
-        "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
-    ])
+  filesMatching("fabric.mod.json") {
+    expand "version": project.version,
+        "nextMajorVersion": nextMajorVersion
   }
+}
+
+tasks.withType(JavaCompile).configureEach {
+  source(project(":Common").sourceSets.main.allSource)
+}
+
+tasks.named('compileTestJava', JavaCompile).configure {
+  enabled = !sourceSets.test.allSource.isEmpty()
 }
 
 // CurseForge Publishing
@@ -123,7 +85,13 @@ if (project.hasProperty('curseforge_project_id') && project.curseforge_project_i
       releaseType = "${project.curseforge_release_type}"
       addGameVersion("${project.minecraft_version}")
       addGameVersion("Fabric")
-      mainArtifact(remapJar)
+      addGameVersion("Quilt")
+      mainArtifact(remapJar) {
+        relations {
+          requiredDependency 'easy-npc-core'
+          requiredDependency 'easy-npc-config-ui'
+        }
+      }
     }
   }
 }
@@ -139,6 +107,10 @@ if (project.hasProperty('modrinth_project_id') && project.modrinth_project_id) {
     changelog = rootProject.file('../core/CHANGELOG.md').text
     uploadFile = remapJar
     gameVersions = ["${project.minecraft_version}"]
-    loaders = ["fabric"]
+    loaders = ["fabric", "quilt"]
+    dependencies {
+      required.project "easy-npc-core"
+      required.project "easy-npc-config-ui"
+    }
   }
 }

@@ -26,4 +26,4 @@ pluginManagement {
 
 rootProject.name = 'bundle'
 
-include("Fabric", "Forge", "NeoForge")
+include("Common", "Fabric", "Forge", "NeoForge")

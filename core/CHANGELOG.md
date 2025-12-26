@@ -8,6 +8,14 @@ For the full changelog, please go to the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 6.5.0
+
+- ⚠️ Removed jar-in-jar bundle approach for better mod compatibility and api capabilities.
+- Fixed #627 scissor implementation for better compatibility with other mods.
+- Fixed #625 lively animation issues when using rotated or moved model parts.
+- Fixed default animation are canceled when using scaled model parts.
+- Added better pose animation control with smart, default und none options.
+
 ### 6.4.1
 
 - Fixed #626 screen switching logic for different NPC UUIDs, thanks to `Spawnblade` for the detailed

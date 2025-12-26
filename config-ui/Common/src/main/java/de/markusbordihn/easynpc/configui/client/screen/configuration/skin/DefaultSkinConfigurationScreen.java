@@ -156,12 +156,7 @@ public class DefaultSkinConfigurationScreen<T extends ConfigurationMenu>
         guiGraphics,
         this.getEasyNPC(),
         EntityRenderConfig.withOverrides(
-            x + 4,
-            y + 7,
-            30,
-            x - this.xMouse,
-            y - 40 - this.yMouse,
-            EntityRenderOverrides.withVariant(variantType, profession)),
+            x + 4, y - 30, 30, EntityRenderOverrides.withVariant(variantType, profession)),
         this.xMouse,
         this.yMouse);
 
