@@ -185,12 +185,7 @@ public class DefaultPoseConfigurationScreen<T extends ConfigurationMenu>
     EntityConfigScreenRenderer.renderEntityRaw(
         guiGraphics,
         this.getEasyNPC(),
-        EntityRenderConfig.guiScaled(
-            this.contentLeftPos + 80,
-            this.contentTopPos + 155,
-            36,
-            this.contentLeftPos + 80 - this.xMouse,
-            this.contentTopPos + 85 - this.yMouse),
+        EntityRenderConfig.guiScaled(this.contentLeftPos + 80, this.contentTopPos + 110, 36),
         this.xMouse,
         this.yMouse);
 

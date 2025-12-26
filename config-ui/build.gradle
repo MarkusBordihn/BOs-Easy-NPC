@@ -57,8 +57,8 @@ subprojects {
 
   configurations.configureEach {
     resolutionStrategy {
-      cacheChangingModulesFor 7, 'days'
-      cacheDynamicVersionsFor 7, 'days'
+      cacheChangingModulesFor 0, 'minutes'
+      cacheDynamicVersionsFor 15, 'minutes'
     }
   }
 }

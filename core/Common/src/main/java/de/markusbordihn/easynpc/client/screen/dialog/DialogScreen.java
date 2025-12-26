@@ -467,14 +467,8 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
         this.getEasyNPC(),
         EntityRenderConfig.dialog(
             this.leftPos + 40,
-            this.topPos + 140 + this.getEasyNPC().getEasyNPCDialogData().getEntityDialogTop(),
-            this.getEasyNPC().getEasyNPCDialogData().getEntityDialogScaling(),
-            Math.round(this.leftPos - 100 - (this.xMouse * 0.25f)),
-            Math.round(
-                this.topPos
-                    + 10
-                    + this.getEasyNPC().getEasyNPCDialogData().getEntityDialogTop()
-                    - (this.yMouse * 0.5f))),
+            this.topPos + 80 + this.getEasyNPC().getEasyNPCDialogData().getEntityDialogTop(),
+            this.getEasyNPC().getEasyNPCDialogData().getEntityDialogScaling()),
         this.xMouse,
         this.yMouse);
 

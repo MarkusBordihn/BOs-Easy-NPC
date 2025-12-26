@@ -23,7 +23,6 @@ import de.markusbordihn.easynpc.configui.data.screen.AdditionalScreenData;
 import de.markusbordihn.easynpc.configui.menu.ClientConfigUIMenuManager;
 import de.markusbordihn.easynpc.data.attribute.BaseAttributes;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataSet;
-import de.markusbordihn.easynpc.data.screen.ScreenData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ConfigurationDataCapable;
 
 public interface ScreenInterface

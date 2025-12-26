@@ -30,7 +30,6 @@ import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.render.EntityRenderConfig;
-import de.markusbordihn.easynpc.data.render.ScissorBox;
 import de.markusbordihn.easynpc.data.scale.CustomScale;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
 import net.minecraft.client.gui.GuiGraphics;
@@ -229,23 +228,34 @@ public class ScalingConfigurationScreen<T extends ConfigurationMenu>
   public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
     super.render(guiGraphics, x, y, partialTicks);
 
-    // Avatar
     ModelDataCapable<?> modelData = this.getEasyNPC().getEasyNPCModelData();
     CustomScale rootScale = modelData.getModelPartScale(ModelPartType.ROOT);
+    float yScale = rootScale.y();
+    int pixelsPerScale = Math.round(33f * yScale);
+    int baselineY = this.contentTopPos + 160;
+
+    // Calculate yOffset to keep feet at the 0-line
+    float scaleDifference = yScale - 1.0f;
+    float multiplier = 1.73f - scaleDifference * 0.26f;
+    if (yScale >= 2.5f) {
+      float extraScale = yScale - 2.5f;
+      multiplier += extraScale * 0.17f;
+    } else if (yScale < 0.5f) {
+      float missingScale = 1.5f - yScale;
+      multiplier += missingScale * 1.5f;
+    } else if (yScale < 1.0f) {
+      float missingScale = 1.0f - yScale;
+      multiplier += missingScale * 2f;
+    }
+    float yOffset = -scaleDifference * multiplier;
+
     EntityConfigScreenRenderer.renderEntity(
         guiGraphics,
         this.getEasyNPC(),
-        EntityRenderConfig.scaling(
-                this.contentLeftPos + 80,
-                (this.contentTopPos + 223) + (int) ((rootScale.y() - 1.0f)),
-                Math.round(11 * rootScale.y()),
-                this.contentLeftPos + 75 - this.xMouse,
-                this.contentTopPos + 120 - this.yMouse)
-            .withScissorBox(ScissorBox.LARGE),
+        EntityRenderConfig.scaling(this.contentLeftPos + 80, baselineY, pixelsPerScale, yOffset),
         this.xMouse,
         this.yMouse);
 
-    // Label for Scale Sliders
     drawScaleLabel(guiGraphics, "scale_x", scaleXSliderButton);
     drawScaleLabel(guiGraphics, "scale_y", scaleYSliderButton);
     drawScaleLabel(guiGraphics, "scale_z", scaleZSliderButton);

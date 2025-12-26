@@ -24,6 +24,7 @@ import de.markusbordihn.easynpc.data.attribute.EntityAttributes;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.data.display.DisplayAttributeEntry;
 import de.markusbordihn.easynpc.data.display.DisplayAttributeType;
+import de.markusbordihn.easynpc.data.model.ModelAnimationData;
 import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataSet;
@@ -87,6 +88,10 @@ public class EntityDataSerializersManager {
       defineSerializer(
           ModelPose.class.getSimpleName(),
           EntityDataSerializer.forValueType(ModelPose.STREAM_CODEC));
+  public static final EntityDataSerializer<ModelAnimationData> MODEL_ANIMATION_DATA =
+      defineSerializer(
+          ModelAnimationData.class.getSimpleName(),
+          EntityDataSerializer.forValueType(ModelAnimationData.STREAM_CODEC));
   public static final EntityDataSerializer<ObjectiveDataSet> OBJECTIVE_DATA_SET =
       defineSerializer(
           ObjectiveDataSet.class.getSimpleName(),
