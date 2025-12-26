@@ -100,6 +100,10 @@ public class AdvancedPoseConfigurationScreen<T extends ConfigurationMenu>
         sliderTopPos += sliderTopSpace;
       }
     }
+
+    // Animation Behavior Button
+    this.addRenderableWidget(
+        this.createAnimationBehaviorButton(this.contentLeftPos + 118, this.bottomPos - 26));
   }
 
   @Override
@@ -110,12 +114,7 @@ public class AdvancedPoseConfigurationScreen<T extends ConfigurationMenu>
     EntityConfigScreenRenderer.renderEntity(
         guiGraphics,
         this.getEasyNPC(),
-        EntityRenderConfig.customPose(
-            this.contentLeftPos + 157,
-            this.contentTopPos + 170,
-            45,
-            this.contentLeftPos + 150 - this.xMouse,
-            this.contentTopPos + 100 - this.yMouse),
+        EntityRenderConfig.guiScaled(this.contentLeftPos + 157, this.contentTopPos + 110, 45),
         this.xMouse,
         this.yMouse);
 
@@ -137,7 +136,7 @@ public class AdvancedPoseConfigurationScreen<T extends ConfigurationMenu>
   protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
     super.renderBg(guiGraphics, partialTicks, mouseX, mouseY);
 
-    // Entity background
+    // Entity
     int backgroundTopPos = this.contentTopPos + 30;
     guiGraphics.fill(
         this.contentLeftPos + 109,
@@ -151,5 +150,9 @@ public class AdvancedPoseConfigurationScreen<T extends ConfigurationMenu>
         this.contentLeftPos + 205,
         this.contentTopPos + 177,
         0xffaaaaaa);
+
+    // Animation Text
+    Text.drawConfigString(
+        guiGraphics, this.font, "animation", this.contentLeftPos + 134, this.bottomPos - 37);
   }
 }

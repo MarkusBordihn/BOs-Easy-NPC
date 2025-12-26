@@ -74,13 +74,26 @@ public class EasyNPCSpiderModelMixin<T extends Entity> {
       float headPitch,
       CallbackInfo callbackInfo) {
     if (entity instanceof EasyNPC<?> easyNPC) {
-      // Only cancel Minecraft's animation if we have custom model pose
       ModelDataCapable<?> modelData = easyNPC.getEasyNPCModelData();
       if (modelData != null
           && modelData.getModelPose() != ModelPose.DEFAULT
           && EasyNPCModel.setupAnimationStart(easyNPC, this.easyNPC$modelManager)) {
         callbackInfo.cancel();
       }
+    }
+  }
+
+  @Inject(method = "setupAnim(Lnet/minecraft/world/entity/Entity;FFFFF)V", at = @At("TAIL"))
+  private void setupNpcAnimEnd(
+      T entity,
+      float limbSwing,
+      float limbSwingAmount,
+      float ageInTicks,
+      float netHeadYaw,
+      float headPitch,
+      CallbackInfo callbackInfo) {
+    if (entity instanceof EasyNPC<?> easyNPC) {
+      EasyNPCModel.setupAnimationEnd(easyNPC, this.easyNPC$modelManager);
     }
   }
 }

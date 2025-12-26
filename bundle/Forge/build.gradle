@@ -1,6 +1,6 @@
 plugins {
   id 'maven-publish'
-  id 'net.minecraftforge.gradle' version '[6.0,6.2)'
+  id 'net.minecraftforge.gradle' version '[6.0.24,6.2)'
   id 'com.matthewprenger.cursegradle' version '1.4.0'
   id 'nu.studer.credentials' version '3.0'
   id "com.modrinth.minotaur" version "2.+"
@@ -8,33 +8,8 @@ plugins {
 
 apply plugin: 'net.minecraftforge.gradle'
 
-jarJar.enable()
-
-repositories {
-  mavenLocal()
-  mavenCentral()
-  maven {
-    name = 'MinecraftForge'
-    url = 'https://maven.minecraftforge.net/'
-  }
-  maven {
-    name = 'Sponge / Mixin'
-    url = 'https://repo.spongepowered.org/repository/maven-public/'
-  }
-}
-
 base {
   archivesName = "${project.mod_id}-forge-${project.minecraft_version}"
-}
-
-sourceSets {
-  main {
-    resources {
-      srcDirs += [
-          '../Common/src/main/resources'
-      ]
-    }
-  }
 }
 
 minecraft {
@@ -79,54 +54,61 @@ minecraft {
 dependencies {
   minecraft "net.minecraftforge:forge:${project.minecraft_version}-${project.forge_version}"
 
+  // Include Common code
+  compileOnly project(":Common")
+
   // Regular dependencies for development mode (runClient/runServer)
   runtimeOnly fg.deobf(group: 'de.markusbordihn.easynpc', name: "easy_npc-forge-${project.minecraft_version}", version: "${project.version}")
   runtimeOnly fg.deobf(group: 'de.markusbordihn.easynpc.configui', name: "easy_npc_config_ui-forge-${project.minecraft_version}", version: "${project.version}")
+}
 
-  // JarJar dependencies for final JAR distribution
-  jarJar(group: 'de.markusbordihn.easynpc', name: "easy_npc-forge-${project.minecraft_version}", version: "[${project.version},)") {
-    jarJar.pin(it, "${project.version}")
+tasks.named('compileJava', JavaCompile).configure {
+  source(project(":Common").sourceSets.main.allSource)
+}
+
+tasks.named('compileTestJava', JavaCompile).configure {
+  enabled = !sourceSets.test.allSource.isEmpty()
+}
+
+def getNextMajorVersion(String currentVersion) {
+  def versionParts = currentVersion.tokenize('.')
+  if (versionParts.size() > 0) {
+    def majorVersion = versionParts[0].toInteger()
+    return "${majorVersion + 1}.0.0"
   }
+  return "1.0.0"
+}
 
-  jarJar(group: 'de.markusbordihn.easynpc.configui', name: "easy_npc_config_ui-forge-${project.minecraft_version}", version: "[${project.version},)") {
-    jarJar.pin(it, "${project.version}")
+processResources {
+  from project(":Common").sourceSets.main.resources
+  duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+  inputs.property 'version', project.version
+
+  def nextMajor = getNextMajorVersion(project.version.toString())
+  inputs.property 'nextMajorVersion', nextMajor
+
+  filesMatching(['META-INF/mods.toml']) {
+    expand 'file': [
+        'jarVersion'      : project.version,
+        'nextMajorVersion': nextMajor
+    ]
   }
 }
 
-jar {
-  archiveClassifier = 'slim'
-  duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-
-  from('../Common/src/main/resources') {
-    include 'pack.mcmeta'
-    include 'logo.png'
-  }
-
+tasks.named('jar', Jar).configure {
   manifest {
     attributes([
         "Specification-Title"     : "${project.mod_name}",
-        "Specification-Vendor"    : "${project.mod_author}",
-        "Specification-Version"   : "${project.version}",
-        "Implementation-Title"    : "${project.mod_name}",
+        "Specification-Vendor"    : "${project.vendor_name}",
+        "Specification-Version"   : "1",
+        "Implementation-Title"    : project.name,
         "Implementation-Version"  : "${project.version}",
-        "Implementation-Vendor"   : "${project.mod_author}",
-        "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+        "Implementation-Vendor"   : "${project.mod_id}",
+        "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
     ])
   }
 }
-
-tasks.named('jarJar') {
-  archiveClassifier = 'all'
-  archiveFileName = "${project.mod_id}-${project.version}-forge-${project.minecraft_version}.jar"
-  duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-
-  from('../Common/src/main/resources') {
-    include 'pack.mcmeta'
-    include 'logo.png'
-  }
-}
-
-build.dependsOn tasks.named('jarJar')
 
 // CurseForge Publishing
 if (project.hasProperty('curseforge_project_id') && project.curseforge_project_id) {
@@ -139,7 +121,12 @@ if (project.hasProperty('curseforge_project_id') && project.curseforge_project_i
       releaseType = "${project.curseforge_release_type}"
       addGameVersion("${project.minecraft_version}")
       addGameVersion("Forge")
-      mainArtifact(tasks.jarJar)
+      mainArtifact(jar) {
+        relations {
+          requiredDependency 'easy-npc-core'
+          requiredDependency 'easy-npc-config-ui'
+        }
+      }
     }
   }
 }
@@ -153,9 +140,13 @@ if (project.hasProperty('modrinth_project_id') && project.modrinth_project_id) {
     versionType = "${project.modrinth_release_type}"
     versionName = "${project.mod_name} ${project.version}"
     changelog = rootProject.file('../core/CHANGELOG.md').text
-    uploadFile = tasks.jarJar
+    uploadFile = jar
     gameVersions = ["${project.minecraft_version}"]
     loaders = ["forge"]
+    dependencies {
+      required.project "easy-npc-core"
+      required.project "easy-npc-config-ui"
+    }
   }
 }
 

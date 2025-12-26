@@ -79,6 +79,20 @@ public class EasyNPCCatModelMixin<T extends Cat> extends OcelotModel<T> {
     }
   }
 
+  @Inject(method = "setupAnim(Lnet/minecraft/world/entity/animal/Cat;FFFFF)V", at = @At("TAIL"))
+  private void setupNpcAnimEnd(
+      T entity,
+      float limbSwing,
+      float limbSwingAmount,
+      float ageInTicks,
+      float netHeadYaw,
+      float headPitch,
+      CallbackInfo callbackInfo) {
+    if (entity instanceof EasyNPC<?> easyNPC) {
+      EasyNPCModel.setupAnimationEnd(easyNPC, this.easyNPC$modelManager);
+    }
+  }
+
   @Unique
   private void easyNPCAdjustTailToBody(EasyNPC<?> easyNPC) {
     ModelDataCapable<?> modelData = easyNPC.getEasyNPCModelData();

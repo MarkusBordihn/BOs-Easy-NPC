@@ -10,6 +10,19 @@ base {
   archivesName = "${project.mod_id}-fabric-${project.minecraft_version}"
 }
 
+ext {
+  getNextMajorVersion = { String currentVersion ->
+    def versionParts = currentVersion.tokenize('.')
+    if (versionParts.size() > 0) {
+      def majorVersion = versionParts[0].toInteger()
+      return "${majorVersion + 1}.0.0"
+    }
+    return "1.0.0"
+  }
+}
+
+def nextMajorVersion = getNextMajorVersion(project.version.toString())
+
 dependencies {
   minecraft "com.mojang:minecraft:${minecraft_version}"
   mappings loom.officialMojangMappings()
@@ -65,10 +78,14 @@ loom {
 
 processResources {
   from project(":Common").sourceSets.main.resources
+  duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
   inputs.property "version", project.version
+  inputs.property 'nextMajorVersion', nextMajorVersion
 
   filesMatching("fabric.mod.json") {
-    expand "version": project.version
+    expand "version": project.version,
+        "nextMajorVersion": nextMajorVersion
   }
 }
 
@@ -105,6 +122,7 @@ if (project.hasProperty('curseforge_project_id') && project.curseforge_project_i
       addGameVersion("Quilt")
       mainArtifact(remapJar) {
         relations {
+          requiredDependency 'easy-npc-core'
           requiredDependency 'fabric-api'
         }
       }
@@ -113,7 +131,6 @@ if (project.hasProperty('curseforge_project_id') && project.curseforge_project_i
       forgeGradleIntegration = false
     }
   }
-
 }
 
 // Modrinth Publishing
@@ -129,6 +146,7 @@ if (project.hasProperty('modrinth_project_id') && project.modrinth_project_id) {
     gameVersions = ["${project.minecraft_version}"]
     loaders = ["fabric", "quilt"]
     dependencies {
+      required.project "easy-npc-core"
       required.project "fabric-api"
     }
   }

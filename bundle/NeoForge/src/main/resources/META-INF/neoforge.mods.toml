@@ -38,13 +38,13 @@ side = "BOTH"
 [[dependencies.easy_npc_bundle]]
 modId = "easy_npc"
 mandatory = true
-versionRange = "[${file.jarVersion},)"
+versionRange = "[${file.jarVersion},${file.nextMajorVersion})"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.easy_npc_bundle]]
 modId = "easy_npc_config_ui"
 mandatory = true
-versionRange = "[${file.jarVersion},)"
+versionRange = "[${file.jarVersion},${file.nextMajorVersion})"
 ordering = "NONE"
 side = "BOTH"

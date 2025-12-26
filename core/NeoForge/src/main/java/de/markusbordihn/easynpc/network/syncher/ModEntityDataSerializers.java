@@ -81,6 +81,12 @@ public class ModEntityDataSerializers {
           ENTITY_DATA_SERIALIZERS.register(
               "model_pose", () -> EntityDataSerializersManager.MODEL_POSE);
   public static final DeferredHolder<
+          EntityDataSerializer<?>,
+          EntityDataSerializer<de.markusbordihn.easynpc.data.model.ModelAnimationData>>
+      MODEL_ANIMATION_DATA =
+          ENTITY_DATA_SERIALIZERS.register(
+              "model_animation_data", () -> EntityDataSerializersManager.MODEL_ANIMATION_DATA);
+  public static final DeferredHolder<
           EntityDataSerializer<?>, EntityDataSerializer<ObjectiveDataSet>>
       OBJECTIVE_DATA_SET =
           ENTITY_DATA_SERIALIZERS.register(
