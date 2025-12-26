@@ -56,18 +56,18 @@ public record EntityRenderOverrides(
       RESET_ROOT.withHideNameTag(true);
 
   public static EntityRenderOverrides withSkin(SkinType skinType, UUID skinUUID) {
-    return NONE.withHideNameTag(true).withSkinType(skinType).withSkinUUID(skinUUID);
+    return NONE.withHideNameTag(true)
+        .withSkinType(skinType)
+        .withSkinUUID(skinUUID)
+        .withRootScale(new CustomScale(1.0F, 1.0F, 1.0F));
   }
 
   public static EntityRenderOverrides withVariant(Enum<?> variant, Profession profession) {
     return NONE.withHideNameTag(true)
         .withSkinType(SkinType.DEFAULT)
         .withVariant(variant)
-        .withProfession(profession);
-  }
-
-  public static EntityRenderOverrides withCustomPose(ModelPose modelPose, Pose entityPose) {
-    return NONE.withModelPose(modelPose).withEntityPose(entityPose);
+        .withProfession(profession)
+        .withRootScale(new CustomScale(1.0F, 1.0F, 1.0F));
   }
 
   public static EntityRenderOverrides withCustomModel(

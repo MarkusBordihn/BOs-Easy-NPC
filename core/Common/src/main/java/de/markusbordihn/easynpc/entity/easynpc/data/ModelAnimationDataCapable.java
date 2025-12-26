@@ -1,0 +1,89 @@
+/*
+ * Copyright 2025 Markus Bordihn
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+ * associated documentation files (the "Software"), to deal in the Software without restriction,
+ * including without limitation the rights to use, copy, modify, merge, publish, distribute,
+ * sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all copies or
+ * substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
+ * NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+
+package de.markusbordihn.easynpc.entity.easynpc.data;
+
+import de.markusbordihn.easynpc.data.model.ModelAnimationBehavior;
+import de.markusbordihn.easynpc.data.model.ModelAnimationData;
+import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
+import java.util.EnumMap;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.PathfinderMob;
+
+public interface ModelAnimationDataCapable<T extends PathfinderMob> extends EasyNPC<T> {
+
+  String EASY_NPC_DATA_ANIMATION_DATA_TAG = "AnimationData";
+
+  static void registerSyncedModelAnimationData(
+      EnumMap<SynchedDataIndex, EntityDataAccessor<?>> map, Class<? extends Entity> entityClass) {
+    log.info("Registering Synched Model Animation Data for {}.", entityClass.getSimpleName());
+    map.put(
+        SynchedDataIndex.MODEL_ANIMATION,
+        SynchedEntityData.defineId(entityClass, EntityDataSerializersManager.MODEL_ANIMATION_DATA));
+  }
+
+  default ModelAnimationData getModelAnimationData() {
+    ModelAnimationData animationData = getSynchedEntityData(SynchedDataIndex.MODEL_ANIMATION);
+    if (animationData == null) {
+      animationData = new ModelAnimationData();
+      setModelAnimationData(animationData);
+    }
+    return animationData;
+  }
+
+  default void setModelAnimationData(ModelAnimationData animationData) {
+    if (animationData != null) {
+      setSynchedEntityData(SynchedDataIndex.MODEL_ANIMATION, animationData);
+    }
+  }
+
+  default ModelAnimationBehavior getModelAnimationBehavior() {
+    return getModelAnimationData().behavior();
+  }
+
+  default void setModelAnimationBehavior(ModelAnimationBehavior behavior) {
+    setModelAnimationData(new ModelAnimationData(behavior));
+  }
+
+  default void defineSynchedModelAnimationData(SynchedEntityData.Builder builder) {
+    defineSynchedEntityData(builder, SynchedDataIndex.MODEL_ANIMATION, new ModelAnimationData());
+  }
+
+  default void addAdditionalModelAnimationData(CompoundTag compoundTag) {
+    ModelAnimationData animationData = getModelAnimationData();
+    if (animationData != null && animationData.hasChanged()) {
+      compoundTag.put(EASY_NPC_DATA_ANIMATION_DATA_TAG, animationData.save());
+    }
+  }
+
+  default void readAdditionalModelAnimationData(CompoundTag compoundTag) {
+    if (!compoundTag.contains(EASY_NPC_DATA_ANIMATION_DATA_TAG)) {
+      return;
+    }
+
+    CompoundTag animationDataTag = compoundTag.getCompoundOrEmpty(EASY_NPC_DATA_ANIMATION_DATA_TAG);
+    ModelAnimationData animationData = new ModelAnimationData(animationDataTag);
+    setModelAnimationData(animationData);
+  }
+}

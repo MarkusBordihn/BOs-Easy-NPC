@@ -54,6 +54,13 @@ subprojects {
   }
 
   tasks.register("prepareKotlinBuildScriptModel") {}
+
+  configurations.configureEach {
+    resolutionStrategy {
+      cacheChangingModulesFor 0, 'minutes'
+      cacheDynamicVersionsFor 15, 'minutes'
+    }
+  }
 }
 
 tasks.register('allGameTests') {

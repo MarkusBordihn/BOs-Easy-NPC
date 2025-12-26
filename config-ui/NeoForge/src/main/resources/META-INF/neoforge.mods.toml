@@ -26,3 +26,10 @@ type = "required"
 versionRange = "[1.21.5,1.22)"
 ordering = "NONE"
 side = "BOTH"
+
+[[dependencies.easy_npc_config_ui]]
+modId = "easy_npc"
+mandatory = true
+versionRange = "[${file.jarVersion},${file.nextMajorVersion})"
+ordering = "AFTER"
+side = "BOTH"

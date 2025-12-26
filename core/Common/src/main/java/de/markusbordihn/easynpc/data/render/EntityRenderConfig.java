@@ -19,10 +19,8 @@
 
 package de.markusbordihn.easynpc.data.render;
 
-import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.Pose;
 
 public record EntityRenderConfig(
     int x,
@@ -30,43 +28,117 @@ public record EntityRenderConfig(
     int scale,
     float rotationYaw,
     float rotationPitch,
-    EntityRenderOverrides overrides,
-    ScissorBox scissorBox) {
+    int left,
+    int top,
+    int right,
+    int bottom,
+    float yOffset,
+    EntityRenderOverrides overrides) {
 
-  public static EntityRenderConfig guiScaled(
-      int x, int y, int scale, float rotationYaw, float rotationPitch) {
-    return new EntityRenderConfig(
+  private static final int DEFAULT_RENDER_WIDTH = 300;
+  private static final int DEFAULT_RENDER_HEIGHT = 300;
+
+  private EntityRenderConfig(
+      int x,
+      int y,
+      int scale,
+      float rotationYaw,
+      float rotationPitch,
+      EntityRenderOverrides overrides) {
+    this(
         x,
         y,
         scale,
         rotationYaw,
         rotationPitch,
-        EntityRenderOverrides.HIDE_NAME_TAG_RESET_ROOT,
-        ScissorBox.NONE);
+        x - DEFAULT_RENDER_WIDTH / 2,
+        y - DEFAULT_RENDER_HEIGHT / 2,
+        x + DEFAULT_RENDER_WIDTH / 2,
+        y + DEFAULT_RENDER_HEIGHT / 2,
+        0.0f,
+        overrides);
+  }
+
+  private EntityRenderConfig(
+      int x,
+      int y,
+      int scale,
+      float rotationYaw,
+      float rotationPitch,
+      int width,
+      int height,
+      EntityRenderOverrides overrides) {
+    this(
+        x,
+        y,
+        scale,
+        rotationYaw,
+        rotationPitch,
+        x - width / 2,
+        y - height / 2,
+        x + width / 2,
+        y + height / 2,
+        0.0f,
+        overrides);
+  }
+
+  private EntityRenderConfig(
+      int x,
+      int y,
+      int scale,
+      float rotationYaw,
+      float rotationPitch,
+      float yOffset,
+      EntityRenderOverrides overrides) {
+    this(
+        x,
+        y,
+        scale,
+        rotationYaw,
+        rotationPitch,
+        x - DEFAULT_RENDER_WIDTH / 2,
+        y - DEFAULT_RENDER_HEIGHT / 2,
+        x + DEFAULT_RENDER_WIDTH / 2,
+        y + DEFAULT_RENDER_HEIGHT / 2,
+        yOffset,
+        overrides);
+  }
+
+  public static EntityRenderConfig guiScaled(int x, int y, int scale) {
+    return guiScaled(x, y, scale, 0, 0);
+  }
+
+  public static EntityRenderConfig guiScaled(
+      int x, int y, int scale, float rotationYaw, float rotationPitch) {
+    return new EntityRenderConfig(
+        x, y, scale, rotationYaw, rotationPitch, EntityRenderOverrides.HIDE_NAME_TAG_RESET_ROOT);
+  }
+
+  public static EntityRenderConfig dialog(int x, int y, int scale) {
+    return dialog(x, y, scale, 0, 0);
   }
 
   public static EntityRenderConfig dialog(
       int x, int y, int scale, float rotationYaw, float rotationPitch) {
     return new EntityRenderConfig(
-        x,
-        y,
-        scale,
-        rotationYaw,
-        rotationPitch,
-        EntityRenderOverrides.HIDE_NAME_TAG,
-        ScissorBox.NONE);
+        x, y, scale, rotationYaw, rotationPitch, EntityRenderOverrides.HIDE_NAME_TAG_RESET_ROOT);
   }
 
-  public static EntityRenderConfig customPose(
-      int x, int y, int scale, float rotationYaw, float rotationPitch) {
+  public static EntityRenderConfig scaling(int x, int y, int scale) {
+    return scaling(x, y, scale, 0.0f);
+  }
+
+  public static EntityRenderConfig scaling(int x, int y, int scale, float yOffset) {
     return new EntityRenderConfig(
         x,
         y,
         scale,
-        rotationYaw,
-        rotationPitch,
-        EntityRenderOverrides.withCustomPose(ModelPose.CUSTOM, Pose.STANDING).withHideNameTag(true),
-        ScissorBox.NONE);
+        0,
+        0,
+        yOffset,
+        EntityRenderOverrides.NONE
+            .withRootRotation(new CustomRotation(0.0F, 0.0F, 0.0F))
+            .withHideNameTag(true));
   }
 
   public static EntityRenderConfig scaling(
@@ -79,8 +151,11 @@ public record EntityRenderConfig(
         rotationPitch,
         EntityRenderOverrides.NONE
             .withRootRotation(new CustomRotation(0.0F, 0.0F, 0.0F))
-            .withHideNameTag(true),
-        ScissorBox.NONE);
+            .withHideNameTag(true));
+  }
+
+  public static EntityRenderConfig customModel(int x, int y, int scale, EntityType<?> entityType) {
+    return customModel(x, y, scale, 0, 0, entityType);
   }
 
   public static EntityRenderConfig customModel(
@@ -91,8 +166,12 @@ public record EntityRenderConfig(
         scale,
         rotationYaw,
         rotationPitch,
-        EntityRenderOverrides.withCustomModel(RenderType.CUSTOM, entityType),
-        ScissorBox.NONE);
+        EntityRenderOverrides.withCustomModel(RenderType.CUSTOM, entityType));
+  }
+
+  public static EntityRenderConfig withOverrides(
+      int x, int y, int scale, EntityRenderOverrides overrides) {
+    return withOverrides(x, y, scale, 0, 0, overrides);
   }
 
   public static EntityRenderConfig withOverrides(
@@ -102,11 +181,6 @@ public record EntityRenderConfig(
       float rotationYaw,
       float rotationPitch,
       EntityRenderOverrides overrides) {
-    return new EntityRenderConfig(
-        x, y, scale, rotationYaw, rotationPitch, overrides, ScissorBox.NONE);
-  }
-
-  public EntityRenderConfig withScissorBox(ScissorBox scissorBox) {
-    return new EntityRenderConfig(x, y, scale, rotationYaw, rotationPitch, overrides, scissorBox);
+    return new EntityRenderConfig(x, y, scale, rotationYaw, rotationPitch, overrides);
   }
 }

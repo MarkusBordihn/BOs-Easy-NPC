@@ -32,6 +32,7 @@ import de.markusbordihn.easynpc.configui.network.message.server.ChangeEntityAttr
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeEntityBaseAttributeMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeEnvironmentalAttributeMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeInteractionAttributeMessage;
+import de.markusbordihn.easynpc.configui.network.message.server.ChangeModelAnimationDataMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeModelEquipmentVisibilityMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeModelPositionMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeModelRotationMessage;
@@ -80,6 +81,8 @@ import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.data.display.DisplayAttributeType;
 import de.markusbordihn.easynpc.data.display.NameVisibilityType;
+import de.markusbordihn.easynpc.data.model.ModelAnimationBehavior;
+import de.markusbordihn.easynpc.data.model.ModelAnimationData;
 import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataEntry;
 import de.markusbordihn.easynpc.data.position.CustomPosition;
@@ -523,6 +526,13 @@ public interface ServerNetworkMessageHandlerInterface {
     if (uuid != null && modelPartType != null && position != null) {
       NetworkHandlerManager.sendMessageToServer(
           new ChangeModelPositionMessage(uuid, modelPartType, position));
+    }
+  }
+
+  default void modelAnimationBehaviorChange(UUID uuid, ModelAnimationBehavior animationBehavior) {
+    if (uuid != null && animationBehavior != null) {
+      NetworkHandlerManager.sendMessageToServer(
+          new ChangeModelAnimationDataMessage(uuid, new ModelAnimationData(animationBehavior)));
     }
   }
 

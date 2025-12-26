@@ -19,7 +19,6 @@
 
 package de.markusbordihn.easynpc.client.renderer.screen;
 
-import de.markusbordihn.easynpc.client.renderer.manager.RendererManager;
 import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.data.render.EntityRenderConfig;
@@ -55,47 +54,17 @@ public class EntityScreenRenderer {
     EntityRenderState backupState = new EntityRenderState(livingEntity, easyNPC);
     applyRenderModifications(easyNPC, config);
 
-    int renderScale = config.scale();
-    if (config.scissorBox() != null) {
-      float multiplier = config.scissorBox().scaleMultiplier();
-      renderScale = (int) (config.scale() * multiplier);
-      ModelDataCapable<?> modelData = easyNPC.getEasyNPCModelData();
-      if (modelData != null) {
-        CustomScale originalScale = modelData.getModelPartScale(ModelPartType.ROOT);
-        if (originalScale != null) {
-          float adjustment = 1.0f / multiplier;
-          modelData.setModelPartScale(
-              ModelPartType.ROOT,
-              new CustomScale(
-                  originalScale.x() * adjustment,
-                  originalScale.y() * adjustment,
-                  originalScale.z() * adjustment));
-        }
-      }
-    }
-
-    int left, right, top, bottom;
-    if (config.scissorBox() != null && config.scissorBox().hasCustomScissor()) {
-      left = config.x() + config.scissorBox().left();
-      right = left + config.scissorBox().width();
-      top = config.y() + config.scissorBox().top();
-      bottom = top + config.scissorBox().height();
-    } else {
-      int entityWidth = (int) (renderScale * 2.5f);
-      int entityHeight = (int) (renderScale * 3.0f);
-      left = config.x() - entityWidth / 2;
-      right = config.x() + entityWidth / 2;
-      top = config.y() - entityHeight;
-      bottom = config.y() + (int) (renderScale * 0.5f);
-    }
-
-    try {
-      RendererManager.setScreenRendering(true);
-      InventoryScreen.renderEntityInInventoryFollowsMouse(
-          guiGraphics, left, top, right, bottom, renderScale, 0.0f, mouseX, mouseY, livingEntity);
-    } finally {
-      RendererManager.setScreenRendering(false);
-    }
+    InventoryScreen.renderEntityInInventoryFollowsMouse(
+        guiGraphics,
+        config.left(),
+        config.top(),
+        config.right(),
+        config.bottom(),
+        config.scale(),
+        config.yOffset(),
+        mouseX,
+        mouseY,
+        livingEntity);
 
     restoreEntityState(easyNPC, backupState);
   }

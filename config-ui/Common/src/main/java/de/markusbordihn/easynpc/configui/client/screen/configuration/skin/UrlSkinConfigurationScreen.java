@@ -146,12 +146,7 @@ public class UrlSkinConfigurationScreen<T extends ConfigurationMenu>
         guiGraphics,
         this.getEasyNPC(),
         EntityRenderConfig.withOverrides(
-            x + 4,
-            y,
-            30,
-            x - this.xMouse,
-            y - 40 - this.yMouse,
-            EntityRenderOverrides.withSkin(skinType, textureUUID)),
+            x + 4, y - 30, 30, EntityRenderOverrides.withSkin(skinType, textureUUID)),
         this.xMouse,
         this.yMouse);
 
