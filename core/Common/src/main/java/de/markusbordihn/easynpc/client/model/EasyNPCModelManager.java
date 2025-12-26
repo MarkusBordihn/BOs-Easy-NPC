@@ -199,6 +199,104 @@ public class EasyNPCModelManager {
     }
   }
 
+  public boolean shouldCancelAnimation(final ModelDataCapable<?> modelData) {
+    if (modelData == null) {
+      return false;
+    }
+
+    // Check animation behavior
+    switch (modelData.getModelAnimationBehavior()) {
+      case NONE:
+        return true;
+      case DEFAULT:
+        return modelData.getModelPose() == ModelPose.CUSTOM;
+      case SMART:
+      default:
+        break;
+    }
+
+    // Check if all critical animation parts are modified
+    int modifiedCriticalParts = 0;
+    int totalCriticalParts = 0;
+    for (ModelPartType partType : modelPartMap.keySet()) {
+      if (!isCriticalAnimationPart(partType)) {
+        continue;
+      }
+
+      totalCriticalParts++;
+
+      CustomRotation rotation = modelData.getModelPartRotation(partType);
+      CustomPosition position = modelData.getModelPartPosition(partType);
+      CustomScale scale = modelData.getModelPartScale(partType);
+
+      if ((rotation != null && rotation.hasChanged())
+          || (position != null && position.hasChanged())
+          || (scale != null && scale.hasChanged())) {
+        modifiedCriticalParts++;
+      }
+    }
+
+    return totalCriticalParts > 0 && modifiedCriticalParts >= totalCriticalParts;
+  }
+
+  private boolean isCriticalAnimationPart(ModelPartType partType) {
+    return partType == ModelPartType.HEAD
+        || partType == ModelPartType.RIGHT_ARM
+        || partType == ModelPartType.LEFT_ARM
+        || partType == ModelPartType.RIGHT_LEG
+        || partType == ModelPartType.LEFT_LEG
+        || partType == ModelPartType.RIGHT_FRONT_LEG
+        || partType == ModelPartType.LEFT_FRONT_LEG
+        || partType == ModelPartType.RIGHT_HIND_LEG
+        || partType == ModelPartType.LEFT_HIND_LEG
+        || partType == ModelPartType.ARMS;
+  }
+
+  public void applySelectiveChanges(final ModelDataCapable<?> modelData) {
+    if (modelData == null) {
+      return;
+    }
+
+    for (Map.Entry<ModelPartType, ModelPart> entry : modelPartMap.entrySet()) {
+      ModelPartType partType = entry.getKey();
+      ModelPart modelPart = entry.getValue();
+
+      if (partType == ModelPartType.HAT) {
+        continue;
+      }
+
+      CustomScale customScale = modelData.getModelPartScale(partType);
+      if (customScale != null && customScale.hasChanged()) {
+        CustomScale defaultScale = defaultModelPartScaleMap.get(partType);
+        if (defaultScale != null) {
+          modelPart.xScale = defaultScale.x() * customScale.x();
+          modelPart.yScale = defaultScale.y() * customScale.y();
+          modelPart.zScale = defaultScale.z() * customScale.z();
+        } else {
+          modelPart.xScale = customScale.x();
+          modelPart.yScale = customScale.y();
+          modelPart.zScale = customScale.z();
+        }
+      }
+
+      CustomRotation customRotation = modelData.getModelPartRotation(partType);
+      if (customRotation != null && customRotation.hasChanged()) {
+        modelPart.xRot += customRotation.x();
+        modelPart.yRot += customRotation.y();
+        modelPart.zRot += customRotation.z();
+      }
+
+      CustomPosition customPosition = modelData.getModelPartPosition(partType);
+      if (customPosition != null && customPosition.hasChanged()) {
+        modelPart.x += customPosition.x();
+        modelPart.y += customPosition.y();
+        modelPart.z += customPosition.z();
+      }
+    }
+
+    syncModelParts(modelData);
+  }
+
   public void resetModelParts() {
     for (Map.Entry<ModelPartType, ModelPart> entry : modelPartMap.entrySet()) {
       ModelPartType modelPartType = entry.getKey();

@@ -49,7 +49,6 @@ public class ContainerScreen<T extends ConfigUIMenu> extends AbstractContainerSc
   protected float yMouse;
   protected int rightPos;
   protected int bottomPos;
-  protected boolean renderBackground = true;
   protected boolean showCloseButton = true;
   protected Button closeButton = null;
   protected boolean compactMode = false;
@@ -131,9 +130,6 @@ public class ContainerScreen<T extends ConfigUIMenu> extends AbstractContainerSc
 
   @Override
   public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
-    if (this.renderBackground) {
-      super.renderBackground(guiGraphics, x, y, partialTicks);
-    }
     super.render(guiGraphics, x, y, partialTicks);
     this.xMouse = x;
     this.yMouse = y;

@@ -102,12 +102,7 @@ public class EquipmentConfigurationContainerScreen<T extends ConfigurationMenu>
     EntityConfigScreenRenderer.renderEntityRaw(
         guiGraphics,
         this.getEasyNPC(),
-        EntityRenderConfig.guiScaled(
-            this.contentLeftPos + 138,
-            this.contentTopPos + 102,
-            35,
-            this.contentLeftPos + 138 - this.xMouse,
-            this.contentTopPos + 50 - this.yMouse),
+        EntityRenderConfig.guiScaled(this.contentLeftPos + 138, this.contentTopPos + 70, 35),
         this.xMouse,
         this.yMouse);
 

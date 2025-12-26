@@ -66,4 +66,13 @@ public class EasyNPCVillagerModelMixin<T extends VillagerRenderState> {
       callbackInfo.cancel();
     }
   }
+
+  @Inject(
+      method = "setupAnim(Lnet/minecraft/client/renderer/entity/state/VillagerRenderState;)V",
+      at = @At("TAIL"))
+  private void setupNpcAnimEnd(T renderState, CallbackInfo callbackInfo) {
+    if (renderState instanceof EasyNPCRenderStateExtension extension) {
+      EasyNPCModel.setupAnimationEnd(extension, this.easyNPC$modelManager);
+    }
+  }
 }

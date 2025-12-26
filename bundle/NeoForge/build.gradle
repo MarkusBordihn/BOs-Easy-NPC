@@ -10,8 +10,6 @@ base {
   archivesName = "${project.mod_id}-neoforge-${project.minecraft_version}"
 }
 
-jarJar.enable()
-
 repositories {
   mavenLocal()
   mavenCentral()
@@ -46,23 +44,9 @@ runs {
     systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
   }
 
-  client2 {
-    runType('client')
-    workingDirectory project.file('runs/client2')
-    arguments.addAll '--username', 'guest_player'
-  }
-
   server {
     systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
     arguments.add '--nogui'
-  }
-
-  gameTestServer {
-    systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
-  }
-
-  clientData {
-    arguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
   }
 }
 
@@ -72,26 +56,38 @@ dependencies {
   // Regular dependencies for development mode (runClient/runServer)
   runtimeOnly(group: 'de.markusbordihn.easynpc', name: "easy_npc-neoforge-${project.minecraft_version}", version: "${project.version}")
   runtimeOnly(group: 'de.markusbordihn.easynpc.configui', name: "easy_npc_config_ui-neoforge-${project.minecraft_version}", version: "${project.version}")
+}
 
-  // JarJar dependencies for final JAR distribution
-  jarJar(group: 'de.markusbordihn.easynpc', name: "easy_npc-neoforge-${project.minecraft_version}", version: "[${project.version},)") {
-    jarJar.pin(it, "${project.version}")
+def getNextMajorVersion(String currentVersion) {
+  def versionParts = currentVersion.tokenize('.')
+  if (versionParts.size() > 0) {
+    def majorVersion = versionParts[0].toInteger()
+    return "${majorVersion + 1}.0.0"
   }
+  return "1.0.0"
+}
 
-  jarJar(group: 'de.markusbordihn.easynpc.configui', name: "easy_npc_config_ui-neoforge-${project.minecraft_version}", version: "[${project.version},)") {
-    jarJar.pin(it, "${project.version}")
+processResources {
+  duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+  inputs.property 'version', project.version
+
+  def nextMajor = getNextMajorVersion(project.version.toString())
+  inputs.property 'nextMajorVersion', nextMajor
+
+  filesMatching(['META-INF/neoforge.mods.toml']) {
+    expand 'file': [
+        'jarVersion'      : project.version,
+        'nextMajorVersion': nextMajor
+    ]
   }
 }
 
+tasks.named('compileTestJava', JavaCompile).configure {
+  enabled = !sourceSets.test.allSource.isEmpty()
+}
+
 jar {
-  archiveClassifier = 'slim'
-  duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-
-  from('../Common/src/main/resources') {
-    include 'pack.mcmeta'
-    include 'logo.png'
-  }
-
   manifest {
     attributes([
         "Specification-Title"     : "${project.mod_name}",
@@ -105,18 +101,7 @@ jar {
   }
 }
 
-tasks.named('jarJar') {
-  archiveClassifier = 'all'
-  archiveFileName = "${project.mod_id}-${project.version}-neoforge-${project.minecraft_version}.jar"
-  duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-
-  from('../Common/src/main/resources') {
-    include 'pack.mcmeta'
-    include 'logo.png'
-  }
-}
-
-build.dependsOn tasks.named('jarJar')
+build.dependsOn tasks.named('jar')
 
 // CurseForge Publishing
 if (project.hasProperty('curseforge_project_id') && project.curseforge_project_id) {
@@ -129,7 +114,12 @@ if (project.hasProperty('curseforge_project_id') && project.curseforge_project_i
       releaseType = "${project.curseforge_release_type}"
       addGameVersion("${project.minecraft_version}")
       addGameVersion("NeoForge")
-      mainArtifact(tasks.jarJar)
+      mainArtifact(jar) {
+        relations {
+          requiredDependency 'easy-npc-core'
+          requiredDependency 'easy-npc-config-ui'
+        }
+      }
     }
   }
 }
@@ -143,8 +133,12 @@ if (project.hasProperty('modrinth_project_id') && project.modrinth_project_id) {
     versionType = "${project.modrinth_release_type}"
     versionName = "${project.mod_name} ${project.version}"
     changelog = rootProject.file('../core/CHANGELOG.md').text
-    uploadFile = tasks.jarJar
+    uploadFile = tasks.jar
     gameVersions = ["${project.minecraft_version}"]
     loaders = ["neoforge"]
+    dependencies {
+      required.project "easy-npc-core"
+      required.project "easy-npc-config-ui"
+    }
   }
 }

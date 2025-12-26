@@ -240,12 +240,7 @@ public class DisplayAttributeConfigurationScreen<T extends ConfigurationMenu>
       EntityConfigScreenRenderer.renderEntity(
           guiGraphics,
           getEasyNPC(),
-          EntityRenderConfig.guiScaled(
-              this.leftPos + 260,
-              this.contentTopPos + 180,
-              30,
-              this.leftPos + 50 - this.xMouse,
-              this.contentTopPos + 70 - this.yMouse),
+          EntityRenderConfig.guiScaled(this.leftPos + 260, this.contentTopPos + 170, 30),
           this.xMouse,
           this.yMouse);
     }

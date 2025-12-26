@@ -78,6 +78,15 @@ public class EasyNPCFelineModelMixin<T extends FelineRenderState> {
     }
   }
 
+  @Inject(
+      method = "setupAnim(Lnet/minecraft/client/renderer/entity/state/FelineRenderState;)V",
+      at = @At("TAIL"))
+  private void setupNpcAnimEnd(T renderState, CallbackInfo callbackInfo) {
+    if (renderState instanceof EasyNPCRenderStateExtension extension) {
+      EasyNPCModel.setupAnimationEnd(extension, this.easyNPC$modelManager);
+    }
+  }
+
   @Unique
   private void easyNPC$adjustTailToBody(EasyNPCRenderStateExtension extension) {
     var easyNPC = EasyNPCModel.getEasyNPC(extension);

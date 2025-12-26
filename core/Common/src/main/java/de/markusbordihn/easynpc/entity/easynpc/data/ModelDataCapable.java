@@ -37,6 +37,7 @@ import net.minecraft.world.level.storage.ValueOutput;
 
 public interface ModelDataCapable<T extends PathfinderMob>
     extends EasyNPC<T>,
+        ModelAnimationDataCapable<T>,
         ModelPositionDataCapable<T>,
         ModelRotationDataCapable<T>,
         ModelScaleDataCapable<T>,
@@ -52,6 +53,7 @@ public interface ModelDataCapable<T extends PathfinderMob>
     map.put(
         SynchedDataIndex.MODEL_POSE,
         SynchedEntityData.defineId(entityClass, EntityDataSerializersManager.MODEL_POSE));
+    ModelAnimationDataCapable.registerSyncedModelAnimationData(map, entityClass);
     ModelPositionDataCapable.registerSyncedModelPositionData(map, entityClass);
     ModelRotationDataCapable.registerSyncedModelRotationData(map, entityClass);
     ModelScaleDataCapable.registerSyncedModelScaleData(map, entityClass);
@@ -98,26 +100,17 @@ public interface ModelDataCapable<T extends PathfinderMob>
   }
 
   default void defineSynchedModelData(SynchedEntityData.Builder builder) {
-    // General
     defineSynchedEntityData(builder, SynchedDataIndex.MODEL_POSE, ModelPose.DEFAULT);
-
-    // Model Position Data
+    defineSynchedModelAnimationData(builder);
     defineSynchedModelPositionData(builder);
-
-    // Rotation
     defineSynchedModelRotationData(builder);
-
-    // Scale
     defineSynchedModelScaleData(builder);
-
-    // Visibility
     defineSynchedModelVisibilityData(builder);
   }
 
   default void addAdditionalModelData(ValueOutput valueOutput) {
     CompoundTag modelDataTag = new CompoundTag();
 
-    // Model Pose
     if (this.getModelPose() != ModelPose.DEFAULT && this.hasChangedModel()) {
       modelDataTag.putString(EASY_NPC_DATA_MODEL_POSE_TAG, this.getModelPose().name());
       modelDataTag.putString(EASY_NPC_DATA_MODEL_DEFAULT_POSE_TAG, Pose.STANDING.name());
@@ -128,33 +121,24 @@ public interface ModelDataCapable<T extends PathfinderMob>
           this.getDefaultPose() != null ? this.getDefaultPose().name() : Pose.STANDING.name());
     }
 
-    // Model Position
+    // Add additional model data
+    this.addAdditionalModelAnimationData(modelDataTag);
     this.addAdditionalModelPositionData(modelDataTag);
-
-    // Model Rotation
     this.addAdditionalModelRotationData(modelDataTag);
-
-    // Model Scale
     this.addAdditionalModelScaleData(modelDataTag);
-
-    // Model Visibility
     this.addAdditionalModelVisibilityData(modelDataTag);
 
     valueOutput.store(EASY_NPC_DATA_MODEL_DATA_TAG, CompoundTag.CODEC, modelDataTag);
   }
 
   default void readAdditionalModelData(ValueInput valueInput) {
-    // Early exit if no model data is available
     Optional<CompoundTag> compoundTagData =
         valueInput.read(EASY_NPC_DATA_MODEL_DATA_TAG, CompoundTag.CODEC);
     if (compoundTagData.isEmpty()) {
       return;
     }
 
-    // Read model data
     CompoundTag modelDataTag = compoundTagData.get();
-
-    // Model Pose
     if (modelDataTag.contains(EASY_NPC_DATA_MODEL_POSE_TAG)) {
       String modelPose = modelDataTag.getString(EASY_NPC_DATA_MODEL_POSE_TAG).orElse("");
       if (!modelPose.isEmpty()) {
@@ -162,7 +146,6 @@ public interface ModelDataCapable<T extends PathfinderMob>
       }
     }
 
-    // Default Pose
     if (this.getModelPose() == ModelPose.DEFAULT
         && modelDataTag.contains(EASY_NPC_DATA_MODEL_DEFAULT_POSE_TAG)) {
       String defaultPose = modelDataTag.getString(EASY_NPC_DATA_MODEL_DEFAULT_POSE_TAG).orElse("");
@@ -171,16 +154,11 @@ public interface ModelDataCapable<T extends PathfinderMob>
       }
     }
 
-    // Model Position
+    // Read additional model data
+    this.readAdditionalModelAnimationData(modelDataTag);
     this.readAdditionalModelPositionData(modelDataTag);
-
-    // Model Rotation
     this.readAdditionalModelRotationData(modelDataTag);
-
-    // Model Scale
     this.readAdditionalModelScaleData(modelDataTag);
-
-    // Model Visibility
     this.readAdditionalModelVisibilityData(modelDataTag);
   }
 }

@@ -40,6 +40,7 @@
   "text.easy_npc.config.actions": "Actions",
   "text.easy_npc.config.add": "Add",
   "text.easy_npc.config.add_action": "Add '%1$s' Action",
+  "text.easy_npc.config.animation": "Animation",
   "text.easy_npc.config.condition.add": "Add new condition",
   "text.easy_npc.config.condition.help_text": "Shows dialog only if the following condition is met",
   "text.easy_npc.config.condition.name": "Name:",

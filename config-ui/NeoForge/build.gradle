@@ -83,8 +83,30 @@ tasks.withType(Javadoc).matching(notNeoTask).configureEach {
   source(project(":Common").sourceSets.main.allJava)
 }
 
+def getNextMajorVersion(String currentVersion) {
+  def versionParts = currentVersion.tokenize('.')
+  if (versionParts.size() > 0) {
+    def majorVersion = versionParts[0].toInteger()
+    return "${majorVersion + 1}.0.0"
+  }
+  return "1.0.0"
+}
+
 tasks.withType(ProcessResources).matching(notNeoTask).configureEach {
   from project(":Common").sourceSets.main.resources
+  duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+  inputs.property 'version', project.version
+
+  def nextMajor = getNextMajorVersion(project.version.toString())
+  inputs.property 'nextMajorVersion', nextMajor
+
+  filesMatching(['META-INF/neoforge.mods.toml']) {
+    expand 'file': [
+        'jarVersion'      : project.version,
+        'nextMajorVersion': nextMajor
+    ]
+  }
 }
 
 idea {
@@ -120,7 +142,11 @@ if (project.hasProperty('curseforge_project_id') && project.curseforge_project_i
       releaseType = "${project.curseforge_release_type}"
       addGameVersion("${project.minecraft_version}")
       addGameVersion("NeoForge")
-      mainArtifact(jar)
+      mainArtifact(jar) {
+        relations {
+          requiredDependency 'easy-npc-core'
+        }
+      }
     }
   }
 }
@@ -137,5 +163,8 @@ if (project.hasProperty('modrinth_project_id') && project.modrinth_project_id) {
     uploadFile = jar
     gameVersions = ["${project.minecraft_version}"]
     loaders = ["neoforge"]
+    dependencies {
+      required.project "easy-npc-core"
+    }
   }
 }
