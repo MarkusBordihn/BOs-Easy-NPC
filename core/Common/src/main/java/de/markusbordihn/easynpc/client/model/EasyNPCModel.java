@@ -46,6 +46,10 @@ public class EasyNPCModel {
 
     // Get Model Data
     ModelDataCapable<?> modelData = easyNPC.getEasyNPCModelData();
+
+    // Always reset model parts first to prevent state bleeding between entities
+    modelManager.resetModelParts();
+
     if (modelData == null || modelData.getModelPose() == ModelPose.DEFAULT) {
       return false;
     }
@@ -61,12 +65,8 @@ public class EasyNPCModel {
       return false;
     }
 
-    // Always reset model parts first to ensure clean state (fixes visibility issues at distance)
-    modelManager.resetModelParts();
-
     // Handle canceled animations and setup model parts accordingly
     if (modelManager.shouldCancelAnimation(modelData)) {
-      // Skip visibility application for SMART animations
       modelManager.setupModelParts(
           modelData, modelData.getModelAnimationBehavior() != ModelAnimationBehavior.SMART);
       return true;
