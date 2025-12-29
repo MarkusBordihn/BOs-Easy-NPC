@@ -58,14 +58,16 @@ public class CustomSkinDataFiles {
         continue;
       }
 
-      // Get all files which end with _template.png from the resource location.
+      // Get all skin template files from this mod's resources only (filter by namespace).
       String skinModelName = skinModel.getName();
       Map<ResourceLocation, Resource> resourceLocations =
           Minecraft.getInstance()
               .getResourceManager()
               .listResources(
-                  "textures/entity/" + skinModelName,
-                  fileName -> fileName.toString().endsWith(TEMPLATE_PREFIX));
+                  DataFileHandler.RESOURCE_TEXTURES_ENTITY_PATH + "/" + skinModelName,
+                  fileName ->
+                      fileName.getNamespace().equals(Constants.MOD_ID)
+                          && fileName.toString().endsWith(TEMPLATE_PREFIX));
 
       // Copy all template files to the custom skin model folder.
       for (ResourceLocation resourceLocation : resourceLocations.keySet()) {
@@ -73,15 +75,10 @@ public class CustomSkinDataFiles {
             skinModelFolder
                 .resolve(DataFileHandler.getFileNameFromResourceLocation(resourceLocation))
                 .toFile();
-        if (skinModelTemplateFile.exists()) {
-          log.warn(
-              "Skin model template file {} already exists, skipping copy!", skinModelTemplateFile);
-        } else {
+        boolean success = DataFileHandler.copyResourceFile(resourceLocation, skinModelTemplateFile);
+        if (success && !skinModelTemplateFile.exists()) {
           log.info(
-              "Copy skin model template file {} to {} ...",
-              resourceLocation,
-              skinModelTemplateFile);
-          DataFileHandler.copyResourceFile(resourceLocation, skinModelTemplateFile);
+              "Copied skin model template file {} to {}", resourceLocation, skinModelTemplateFile);
         }
       }
     }

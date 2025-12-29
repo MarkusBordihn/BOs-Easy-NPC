@@ -41,7 +41,7 @@ task generateRawNPCs {
           className: "ChickenRaw",
           baseClass: "Chicken",
           modelType: "AVIAN",
-          variant  : "ChickenSkinVariant.WHITE"
+          variant  : "ChickenSkinVariant.TEMPERATE"
       ],
       [
           id       : "drowned_raw",
@@ -140,7 +140,7 @@ task generateRawNPCs {
           className: "PigRaw",
           baseClass: "Pig",
           modelType: "QUADRUPED",
-          variant  : "PigSkinVariant.PIG"
+          variant  : "PigSkinVariant.TEMPERATE"
       ],
       [
           id       : "piglin_raw",

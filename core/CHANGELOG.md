@@ -8,6 +8,19 @@ For the full changelog, please go to the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 6.5.1
+
+- Fixed #632 by implementing ON_KILL action type and event.
+- Fixed #629 by improving texture handling performance, caching, and memory usage.
+- Fixed kill command is not working on NPCs.
+- Fixed texture reload protection preventing cache reload after eviction.
+- Fixed WebP validation bug in remote image validator (missing return statement).
+- Refactored texture handling logic for better maintainability and future improvements.
+- Added time-based reload protection (60 seconds) to replace permanent blocking mechanism.
+- Added missing variant textures for chicken, pig and wolf.
+- Added additional unit tests for texture handling.
+- Improved gradle build tasks.
+
 ### 6.5.0
 
 - ⚠️ Removed jar-in-jar bundle approach for better mod compatibility and api capabilities.
