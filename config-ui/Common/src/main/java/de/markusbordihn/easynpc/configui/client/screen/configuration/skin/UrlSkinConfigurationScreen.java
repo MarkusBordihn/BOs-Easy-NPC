@@ -32,6 +32,7 @@ import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.configui.client.renderer.screen.EntityConfigScreenRenderer;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.configui.validator.RemoteImageValidator;
 import de.markusbordihn.easynpc.data.render.EntityRenderConfig;
 import de.markusbordihn.easynpc.data.render.EntityRenderOverrides;
 import de.markusbordihn.easynpc.data.skin.SkinDataEntry;
@@ -40,7 +41,6 @@ import de.markusbordihn.easynpc.data.skin.SkinType;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import de.markusbordihn.easynpc.utils.TextUtils;
-import de.markusbordihn.easynpc.validator.ImageValidator;
 import de.markusbordihn.easynpc.validator.UrlValidator;
 import java.net.URL;
 import java.util.ArrayList;
@@ -180,7 +180,7 @@ public class UrlSkinConfigurationScreen<T extends ConfigurationMenu>
       }
 
       // Validate image before sending it to the server.
-      if (!ImageValidator.isValidImage(textureSkinLocation)) {
+      if (!RemoteImageValidator.isValidImage(textureSkinLocation)) {
         log.error("Unable to set remote user texture to {}", textureSkinLocationValue);
         this.errorMessage = "invalid_remote_image";
         return;

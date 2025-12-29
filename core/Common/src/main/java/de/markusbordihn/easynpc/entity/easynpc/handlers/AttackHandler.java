@@ -28,6 +28,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
@@ -200,6 +201,11 @@ public class AttackHandler {
 
   public static boolean handleIsInvulnerableTo(
       EasyNPCBase<?> easyNPC, DamageSource damageSource, boolean defaultValue) {
+    // Allow certain damage types to bypass invulnerability like void or /kill command.
+    if (damageSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
+      return defaultValue;
+    }
+
     // If the NPC is invulnerable, return true.
     if (easyNPC.getEntityAttributes().getCombatAttributes().isInvulnerable()) {
       return true;

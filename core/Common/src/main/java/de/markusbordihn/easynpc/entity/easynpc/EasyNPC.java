@@ -184,6 +184,11 @@ public interface EasyNPC<E extends PathfinderMob> extends EasyNPCDataAccessors<E
     EasyNPCEventHandler.handleDieEvent(this, damageSource);
   }
 
+  /** Handle the event when the EasyNPC is killed over command or admin action. */
+  default void handleKillEvent() {
+    EasyNPCEventHandler.handleKillEvent(this);
+  }
+
   /**
    * Handle the event when the EasyNPC is changing dimension.
    *

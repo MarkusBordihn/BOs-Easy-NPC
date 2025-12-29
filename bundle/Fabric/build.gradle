@@ -67,14 +67,13 @@ processResources {
 
   filesMatching("fabric.mod.json") {
     expand "version": project.version,
-           "nextMajorVersion": nextMajorVersion
+        "nextMajorVersion": nextMajorVersion
   }
 }
 
 // The standard remapJar task will automatically include the 'include' dependencies
 tasks.named('remapJar') {
   archiveClassifier = 'all'
-  archiveFileName = "${project.mod_id}-${project.version}-fabric-${project.minecraft_version}.jar"
 
   from('../Common/src/main/resources') {
     include 'pack.mcmeta'

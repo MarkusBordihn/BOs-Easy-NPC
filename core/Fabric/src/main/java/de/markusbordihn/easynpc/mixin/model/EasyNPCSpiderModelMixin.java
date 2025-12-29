@@ -22,9 +22,7 @@ package de.markusbordihn.easynpc.mixin.model;
 import de.markusbordihn.easynpc.client.model.EasyNPCModel;
 import de.markusbordihn.easynpc.client.model.EasyNPCModelManager;
 import de.markusbordihn.easynpc.data.model.ModelPartType;
-import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
 import net.minecraft.client.model.SpiderModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.world.entity.Entity;
@@ -67,13 +65,9 @@ public class EasyNPCSpiderModelMixin<T extends Entity> {
       float netHeadYaw,
       float headPitch,
       CallbackInfo callbackInfo) {
-    if (entity instanceof EasyNPC<?> easyNPC) {
-      ModelDataCapable<?> modelData = easyNPC.getEasyNPCModelData();
-      if (modelData != null
-          && modelData.getModelPose() != ModelPose.DEFAULT
-          && EasyNPCModel.setupAnimationStart(easyNPC, this.easyNPC$modelManager)) {
-        callbackInfo.cancel();
-      }
+    if (entity instanceof EasyNPC<?> easyNPC
+        && EasyNPCModel.setupAnimationStart(easyNPC, this.easyNPC$modelManager)) {
+      callbackInfo.cancel();
     }
   }
 

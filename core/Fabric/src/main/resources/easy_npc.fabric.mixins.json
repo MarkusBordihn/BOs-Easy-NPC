@@ -6,6 +6,7 @@
   "client": [
     "model.EasyNPCCatModelMixin",
     "model.EasyNPCHumanoidModelMixin",
+    "model.EasyNPCPlayerModelMixin",
     "model.EasyNPCSpiderModelMixin",
     "model.EasyNPCVillagerModelMixin",
     "model.EasyNPCWolfModelMixin",

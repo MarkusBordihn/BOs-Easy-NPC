@@ -260,19 +260,30 @@ public interface ActionHandler<E extends PathfinderMob> extends EasyNPC<E> {
   }
 
   default void executeAction(ActionDataEntry actionDataEntry, ServerPlayer serverPlayer) {
-    if (!ActionValidator.validateActionData(actionDataEntry, serverPlayer)) {
+    boolean isValid =
+        serverPlayer != null
+            ? ActionValidator.validateActionData(actionDataEntry, serverPlayer)
+            : ActionValidator.validateActionDataWithoutPlayer(actionDataEntry);
+    if (!isValid) {
       return;
     }
+
     switch (actionDataEntry.actionDataType()) {
       case NONE:
         break;
       case COMMAND:
         if (actionDataEntry.executeAsUser()) {
-          CommandActionExecutor.executeAsPlayer(
-              actionDataEntry,
-              serverPlayer,
-              this.getLivingEntity(),
-              this.getEasyNPCActionEventData());
+          if (serverPlayer != null) {
+            CommandActionExecutor.executeAsPlayer(
+                actionDataEntry,
+                serverPlayer,
+                this.getLivingEntity(),
+                this.getEasyNPCActionEventData());
+          } else {
+            log.warn(
+                "Skipping COMMAND action with executeAsUser=true because no ServerPlayer is available: {}",
+                actionDataEntry);
+          }
         } else {
           CommandActionExecutor.executeAsEntity(
               actionDataEntry,
@@ -283,7 +294,11 @@ public interface ActionHandler<E extends PathfinderMob> extends EasyNPC<E> {
         }
         break;
       case CLOSE_DIALOG:
-        serverPlayer.closeContainer();
+        if (serverPlayer != null) {
+          serverPlayer.closeContainer();
+        } else {
+          log.warn("Skipping CLOSE_DIALOG action because no ServerPlayer is available");
+        }
         break;
       case INTERACT_BLOCK:
         BlockPos blockPos = actionDataEntry.blockPos();
@@ -294,26 +309,42 @@ public interface ActionHandler<E extends PathfinderMob> extends EasyNPC<E> {
         }
         break;
       case OPEN_DEFAULT_DIALOG:
-        DialogActionExecutor.openDefaultDialog(
-            actionDataEntry, serverPlayer, this.getEasyNPCDialogData());
+        if (serverPlayer != null) {
+          DialogActionExecutor.openDefaultDialog(
+              actionDataEntry, serverPlayer, this.getEasyNPCDialogData());
+        } else {
+          log.warn("Skipping OPEN_DEFAULT_DIALOG action because no ServerPlayer is available");
+        }
         break;
       case OPEN_NAMED_DIALOG:
-        DialogActionExecutor.openNamedDialog(
-            actionDataEntry, serverPlayer, this.getEasyNPCDialogData());
+        if (serverPlayer != null) {
+          DialogActionExecutor.openNamedDialog(
+              actionDataEntry, serverPlayer, this.getEasyNPCDialogData());
+        } else {
+          log.warn("Skipping OPEN_NAMED_DIALOG action because no ServerPlayer is available");
+        }
         break;
       case OPEN_TRADING_SCREEN:
-        TradingDataCapable<E> tradingData = this.getEasyNPCTradingData();
-        if (tradingData != null) {
-          tradingData.openTradingScreen(serverPlayer);
+        if (serverPlayer != null) {
+          TradingDataCapable<E> tradingData = this.getEasyNPCTradingData();
+          if (tradingData != null) {
+            tradingData.openTradingScreen(serverPlayer);
+          } else {
+            log.warn(
+                "Cannot execute OPEN_TRADING_SCREEN action for player {}: No trading data found in action {}",
+                serverPlayer.getName().getString(),
+                actionDataEntry);
+          }
         } else {
-          log.warn(
-              "Cannot execute OPEN_TRADING_SCREEN action for player {}: No trading data found in action {}",
-              serverPlayer.getName().getString(),
-              actionDataEntry);
+          log.debug("Skipping OPEN_TRADING_SCREEN action because no ServerPlayer is available");
         }
         break;
       case SCOREBOARD:
-        ScoreboardActionExecutor.execute(actionDataEntry, serverPlayer);
+        if (serverPlayer != null) {
+          ScoreboardActionExecutor.execute(actionDataEntry, serverPlayer);
+        } else {
+          log.warn("Skipping SCOREBOARD action because no ServerPlayer is available");
+        }
         break;
       default:
         log.warn(
@@ -323,8 +354,10 @@ public interface ActionHandler<E extends PathfinderMob> extends EasyNPC<E> {
         break;
     }
 
-    for (ConditionDataEntry condition : actionDataEntry.conditionDataSet().getConditions()) {
-      ConditionUtils.recordActionExecution(condition, serverPlayer, actionDataEntry.getId());
+    if (serverPlayer != null) {
+      for (ConditionDataEntry condition : actionDataEntry.conditionDataSet().getConditions()) {
+        ConditionUtils.recordActionExecution(condition, serverPlayer, actionDataEntry.getId());
+      }
     }
   }
 }

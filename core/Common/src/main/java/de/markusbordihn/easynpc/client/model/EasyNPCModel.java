@@ -23,6 +23,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import de.markusbordihn.easynpc.client.model.armpose.ModelArmPoseUtils;
 import de.markusbordihn.easynpc.data.display.DisplayAttributeType;
+import de.markusbordihn.easynpc.data.model.ModelAnimationBehavior;
 import de.markusbordihn.easynpc.data.model.ModelArmPose;
 import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.model.ModelPose;
@@ -45,7 +46,7 @@ public class EasyNPCModel {
 
     // Get Model Data
     ModelDataCapable<?> modelData = easyNPC.getEasyNPCModelData();
-    if (modelData == null) {
+    if (modelData == null || modelData.getModelPose() == ModelPose.DEFAULT) {
       return false;
     }
 
@@ -65,7 +66,9 @@ public class EasyNPCModel {
 
     // Handle canceled animations and setup model parts accordingly
     if (modelManager.shouldCancelAnimation(modelData)) {
-      modelManager.setupModelParts(modelData);
+      // Skip visibility application for SMART animations
+      modelManager.setupModelParts(
+          modelData, modelData.getModelAnimationBehavior() != ModelAnimationBehavior.SMART);
       return true;
     }
 
@@ -117,6 +120,15 @@ public class EasyNPCModel {
     }
 
     setupArmPoses(easyNPC, modelManager);
+
+    // Apply visibility synchronization after all standard animations
+    if (modelData != null) {
+      if (modelData.getModelAnimationBehavior() == ModelAnimationBehavior.SMART) {
+        modelManager.applyVisibilityChanges(modelData);
+      } else {
+        modelManager.syncModelParts(modelData);
+      }
+    }
   }
 
   public static void setupArmPoses(

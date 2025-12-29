@@ -151,7 +151,7 @@ processResources {
 
   filesMatching(['META-INF/mods.toml']) {
     expand 'file': [
-        'jarVersion': project.version,
+        'jarVersion'      : project.version,
         'nextMajorVersion': nextMajor
     ]
   }
@@ -206,7 +206,7 @@ if (project.hasProperty('curseforge_project_id') && project.curseforge_project_i
       addGameVersion("${project.minecraft_version}")
       addGameVersion("Forge")
       addGameVersion("NeoForge")
-      mainArtifact(jar){
+      mainArtifact(jar) {
         relations {
           requiredDependency 'easy-npc-core'
         }
