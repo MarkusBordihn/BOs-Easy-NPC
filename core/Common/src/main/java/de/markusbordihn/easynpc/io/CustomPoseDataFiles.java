@@ -60,14 +60,16 @@ public class CustomPoseDataFiles {
         continue;
       }
 
-      // Get all files which end with _template.png from the resource location.
+      // Get all pose files from this mod's resources only (filter by namespace).
       String skinModelName = skinModel.getName();
       Map<ResourceLocation, Resource> resourceLocations =
           minecraftServer
               .getResourceManager()
               .listResources(
-                  "poses/" + skinModelName,
-                  fileName -> fileName.toString().endsWith(TEMPLATE_PREFIX));
+                  DataFileHandler.RESOURCE_POSES_PATH + "/" + skinModelName,
+                  fileName ->
+                      fileName.getNamespace().equals(Constants.MOD_ID)
+                          && fileName.toString().endsWith(TEMPLATE_PREFIX));
 
       // Copy all default pose files to the pose data folder.
       for (ResourceLocation resourceLocation : resourceLocations.keySet()) {
@@ -75,11 +77,10 @@ public class CustomPoseDataFiles {
             poseModelFolder
                 .resolve(DataFileHandler.getFileNameFromResourceLocation(resourceLocation))
                 .toFile();
-        if (skinModelPoseFile.exists()) {
-          log.warn("Skin model pose file {} already exists, skipping copy!", skinModelPoseFile);
-        } else {
-          log.info("Copy skin model pose file {} to {} ...", resourceLocation, skinModelPoseFile);
-          DataFileHandler.copyResourceFile(minecraftServer, resourceLocation, skinModelPoseFile);
+        if (DataFileHandler.copyResourceFile(minecraftServer, resourceLocation, skinModelPoseFile)
+            && skinModelPoseFile.exists()
+            && skinModelPoseFile.length() > 0) {
+          log.info("Copied skin model pose file {} to {}", resourceLocation, skinModelPoseFile);
         }
       }
     }

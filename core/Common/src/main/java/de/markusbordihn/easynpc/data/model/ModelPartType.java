@@ -34,10 +34,17 @@ public enum ModelPartType {
   BODY("Body"),
   CHESTPLATE("Chestplate"),
 
+  // Outer body layer
+  BODY_JACKET("BodyJacket"),
+
   // Arm parts
   RIGHT_ARM("RightArm"),
   LEFT_ARM("LeftArm"),
   ARMS("Arms"), // combined arms (e.g. crossed arms)
+
+  // Outer arm layers
+  RIGHT_SLEEVE("RightSleeve"),
+  LEFT_SLEEVE("LeftSleeve"),
 
   // Wings
   RIGHT_WING("RightWing"),
@@ -48,6 +55,10 @@ public enum ModelPartType {
   LEFT_LEG("LeftLeg"),
   LEGGINGS("Leggings"),
   BOOTS("Boots"),
+
+  // Outer leg layers
+  RIGHT_PANTS("RightPants"),
+  LEFT_PANTS("LeftPants"),
 
   // Quadruped front legs
   RIGHT_FRONT_LEG("RightFrontLeg"),

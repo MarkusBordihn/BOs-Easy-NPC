@@ -47,8 +47,9 @@ public class RemoteTextureManager {
   private static final Map<TextureModelKey, SkinType> textureSkinTypeCache =
       new ConcurrentHashMap<>();
   private static final Map<TextureModelKey, String> textureSkinURLCache = new ConcurrentHashMap<>();
-  private static final HashSet<UUID> textureReloadProtection = new HashSet<>();
+  private static final Map<UUID, Long> textureReloadProtection = new ConcurrentHashMap<>();
   private static final String LOG_PREFIX = "[Remote Texture Manager] ";
+  private static final long RELOAD_PROTECTION_TIME = 60000;
 
   private RemoteTextureManager() {}
 
@@ -102,11 +103,13 @@ public class RemoteTextureManager {
   private static ResourceLocation createTexture(
       TextureModelKey textureModelKey, SkinDataCapable<?> skinData, String skinURL) {
 
-    // Reload protection to avoid multiple texture requests in the same session.
+    // Reload protection to avoid multiple texture requests in a short time.
     UUID skinUUID = textureModelKey.getUUID();
-    if (!textureReloadProtection.add(skinUUID)) {
+    Long lastAttempt = textureReloadProtection.get(skinUUID);
+    if (lastAttempt != null && System.currentTimeMillis() - lastAttempt < RELOAD_PROTECTION_TIME) {
       return null;
     }
+    textureReloadProtection.put(skinUUID, System.currentTimeMillis());
 
     // Get the skin model and texture data folder
     SkinModel skinModel = skinData.getSkinModel();

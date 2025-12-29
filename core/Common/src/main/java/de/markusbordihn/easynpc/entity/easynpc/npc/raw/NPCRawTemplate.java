@@ -209,6 +209,12 @@ public class NPCRawTemplate extends Zombie implements EasyNPCBase<Zombie> {
   }
 
   @Override
+  public void kill(ServerLevel serverLevel) {
+    this.handleKillEvent();
+    super.kill(serverLevel);
+  }
+
+  @Override
   public Entity teleport(TeleportTransition teleportTransition) {
     this.handleChangeDimensionEvent(teleportTransition);
     return super.teleport(teleportTransition);
@@ -562,6 +568,10 @@ public class NPCRawTemplate extends Zombie implements EasyNPCBase<Zombie> {
     super.readAdditionalSaveData(compoundTag);
     this.readPersistentAngerSaveData(this.level(), compoundTag);
     this.readEasyNPCBaseAdditionalSaveData(compoundTag, this.registryAccess());
+    Enum<?> currentVariant = this.getSkinVariantType();
+    if (currentVariant != null) {
+      this.handleSkinVariantTypeChange(currentVariant);
+    }
   }
 
   @Override

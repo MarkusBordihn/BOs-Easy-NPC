@@ -24,6 +24,7 @@ import com.mojang.math.Axis;
 import de.markusbordihn.easynpc.client.model.armpose.ModelArmPoseUtils;
 import de.markusbordihn.easynpc.client.renderer.entity.state.EasyNPCRenderStateExtension;
 import de.markusbordihn.easynpc.data.display.DisplayAttributeType;
+import de.markusbordihn.easynpc.data.model.ModelAnimationBehavior;
 import de.markusbordihn.easynpc.data.model.ModelArmPose;
 import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.model.ModelPose;
@@ -56,6 +57,9 @@ public class EasyNPCModel {
       return false;
     }
 
+    // Always reset model parts first to prevent state bleeding between entities
+    modelManager.resetModelParts();
+
     // Get Model Data
     ModelDataCapable<?> modelData = easyNPC.getEasyNPCModelData();
     if (modelData == null || modelData.getModelPose() == ModelPose.DEFAULT) {
@@ -73,12 +77,10 @@ public class EasyNPCModel {
       return false;
     }
 
-    // Always reset model parts first to ensure clean state (fixes visibility issues at distance)
-    modelManager.resetModelParts();
-
     // Handle canceled animations and setup model parts accordingly
     if (modelManager.shouldCancelAnimation(modelData)) {
-      modelManager.setupModelParts(modelData);
+      modelManager.setupModelParts(
+          modelData, modelData.getModelAnimationBehavior() != ModelAnimationBehavior.SMART);
       return true;
     }
 
@@ -172,6 +174,15 @@ public class EasyNPCModel {
     }
 
     setupArmPoses(extension, modelManager);
+
+    // Apply visibility synchronization after all standard animations
+    if (modelData != null) {
+      if (modelData.getModelAnimationBehavior() == ModelAnimationBehavior.SMART) {
+        modelManager.applyVisibilityChanges(modelData);
+      } else {
+        modelManager.syncModelParts(modelData);
+      }
+    }
   }
 
   public static void setupArmPoses(

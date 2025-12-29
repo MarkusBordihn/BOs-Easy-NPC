@@ -47,8 +47,9 @@ public class PlayerTextureManager {
       new ConcurrentHashMap<>();
   private static final Map<TextureModelKey, SkinType> textureSkinTypeCache =
       new ConcurrentHashMap<>();
-  private static final HashSet<UUID> textureReloadProtection = new HashSet<>();
+  private static final Map<UUID, Long> textureReloadProtection = new ConcurrentHashMap<>();
   private static final String LOG_PREFIX = "[Player Texture Manager] ";
+  private static final long RELOAD_PROTECTION_TIME = 60000;
 
   private PlayerTextureManager() {}
 
@@ -97,10 +98,12 @@ public class PlayerTextureManager {
   private static ResourceLocation createTexture(
       TextureModelKey textureModelKey, SkinDataCapable<?> skinData, UUID playerUUID) {
 
-    // Reload protection to avoid multiple texture requests in the same session.
-    if (!textureReloadProtection.add(playerUUID)) {
+    // Reload protection to avoid multiple texture requests in a short time.
+    Long lastAttempt = textureReloadProtection.get(playerUUID);
+    if (lastAttempt != null && System.currentTimeMillis() - lastAttempt < RELOAD_PROTECTION_TIME) {
       return null;
     }
+    textureReloadProtection.put(playerUUID, System.currentTimeMillis());
 
     // Get the skin model and texture data folder
     SkinModel skinModel = skinData.getSkinModel();
