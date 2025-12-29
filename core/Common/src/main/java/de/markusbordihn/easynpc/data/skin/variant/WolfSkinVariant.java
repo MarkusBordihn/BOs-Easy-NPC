@@ -26,7 +26,28 @@ import net.minecraft.resources.ResourceLocation;
 public enum WolfSkinVariant implements VariantTexture {
   WOLF(Constants.MINECRAFT_PREFIX, "textures/entity/wolf/wolf.png"),
   TAMED(Constants.MINECRAFT_PREFIX, "textures/entity/wolf/wolf_tame.png"),
-  ANGRY(Constants.MINECRAFT_PREFIX, "textures/entity/wolf/wolf_angry.png");
+  ANGRY(Constants.MINECRAFT_PREFIX, "textures/entity/wolf/wolf_angry.png"),
+  ASHEN(Constants.MINECRAFT_PREFIX, "textures/entity/wolf/wolf_ashen.png"),
+  ASHEN_TAMED(Constants.MINECRAFT_PREFIX, "textures/entity/wolf/wolf_ashen_tame.png"),
+  ASHEN_ANGRY(Constants.MINECRAFT_PREFIX, "textures/entity/wolf/wolf_ashen_angry.png"),
+  BLACK(Constants.MINECRAFT_PREFIX, "textures/entity/wolf/wolf_black.png"),
+  BLACK_TAMED(Constants.MINECRAFT_PREFIX, "textures/entity/wolf/wolf_black_tame.png"),
+  BLACK_ANGRY(Constants.MINECRAFT_PREFIX, "textures/entity/wolf/wolf_black_angry.png"),
+  CHESTNUT(Constants.MINECRAFT_PREFIX, "textures/entity/wolf/wolf_chestnut.png"),
+  CHESTNUT_TAMED(Constants.MINECRAFT_PREFIX, "textures/entity/wolf/wolf_chestnut_tame.png"),
+  CHESTNUT_ANGRY(Constants.MINECRAFT_PREFIX, "textures/entity/wolf/wolf_chestnut_angry.png"),
+  SNOWY(Constants.MINECRAFT_PREFIX, "textures/entity/wolf/wolf_snowy.png"),
+  SNOWY_TAMED(Constants.MINECRAFT_PREFIX, "textures/entity/wolf/wolf_snowy_tame.png"),
+  SNOWY_ANGRY(Constants.MINECRAFT_PREFIX, "textures/entity/wolf/wolf_snowy_angry.png"),
+  SPOTTED(Constants.MINECRAFT_PREFIX, "textures/entity/wolf/wolf_spotted.png"),
+  SPOTTED_TAMED(Constants.MINECRAFT_PREFIX, "textures/entity/wolf/wolf_spotted_tame.png"),
+  SPOTTED_ANGRY(Constants.MINECRAFT_PREFIX, "textures/entity/wolf/wolf_spotted_angry.png"),
+  STRIPED(Constants.MINECRAFT_PREFIX, "textures/entity/wolf/wolf_striped.png"),
+  STRIPED_TAMED(Constants.MINECRAFT_PREFIX, "textures/entity/wolf/wolf_striped_tame.png"),
+  STRIPED_ANGRY(Constants.MINECRAFT_PREFIX, "textures/entity/wolf/wolf_striped_angry.png"),
+  WOODS(Constants.MINECRAFT_PREFIX, "textures/entity/wolf/wolf_woods.png"),
+  WOODS_TAMED(Constants.MINECRAFT_PREFIX, "textures/entity/wolf/wolf_woods_tame.png"),
+  WOODS_ANGRY(Constants.MINECRAFT_PREFIX, "textures/entity/wolf/wolf_woods_angry.png");
 
   private final ResourceLocation textureLocation;
 

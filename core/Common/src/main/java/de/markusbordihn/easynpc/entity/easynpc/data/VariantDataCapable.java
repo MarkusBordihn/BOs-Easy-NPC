@@ -61,6 +61,8 @@ public interface VariantDataCapable<T extends PathfinderMob> extends EasyNPC<T> 
   default void setSkinVariantType(Enum<?> variant) {
     if (getSkinVariantType() != variant) {
       setSynchedEntityData(SynchedDataIndex.VARIANT_TYPE, variant != null ? variant.name() : "");
+    }
+    if (variant != null) {
       handleSkinVariantTypeChange(variant);
     }
   }
@@ -146,7 +148,14 @@ public interface VariantDataCapable<T extends PathfinderMob> extends EasyNPC<T> 
     if (compoundTag.contains(EASY_NPC_DATA_VARIANT_TYPE_TAG)) {
       String variantType = compoundTag.getString(EASY_NPC_DATA_VARIANT_TYPE_TAG).orElse("");
       if (!variantType.isEmpty()) {
-        this.setSkinVariantType(this.getSkinVariantType(variantType));
+        Enum<?> variant = this.getSkinVariantType(variantType);
+        if (variant != null) {
+          // Set the synced data
+          setSynchedEntityData(SynchedDataIndex.VARIANT_TYPE, variant.name());
+          // Always call handleSkinVariantTypeChange to ensure proper state updates
+          // This is crucial for entities like Villager that need VillagerData updated
+          handleSkinVariantTypeChange(variant);
+        }
       }
     }
   }

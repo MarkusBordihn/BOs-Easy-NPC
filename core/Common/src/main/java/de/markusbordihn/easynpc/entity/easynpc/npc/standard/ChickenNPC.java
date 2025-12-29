@@ -39,7 +39,7 @@ public class ChickenNPC extends ChickenRaw implements StandardEasyNPC<ChickenRaw
   public static final String ID = "chicken";
 
   public ChickenNPC(EntityType<? extends Chicken> entityType, Level level) {
-    this(entityType, level, ChickenSkinVariant.WHITE);
+    this(entityType, level, ChickenSkinVariant.TEMPERATE);
   }
 
   public ChickenNPC(EntityType<? extends Chicken> entityType, Level level, Enum<?> variantType) {
