@@ -120,6 +120,37 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
     return new ActionDataEntry();
   }
 
+  private LinkedHashSet<ActionDataType> getAvailableActionDataTypes() {
+    boolean requiresServerPlayer = requiresServerPlayer(this.actionEventType);
+    return Arrays.stream(ActionDataType.values())
+        .filter(type -> type != ActionDataType.NONE)
+        .filter(
+            type -> {
+              if (!requiresServerPlayer) {
+                return !actionDataTypeRequiresServerPlayer(type);
+              }
+              return true;
+            })
+        .sorted()
+        .collect(Collectors.toCollection(LinkedHashSet::new));
+  }
+
+  private boolean requiresServerPlayer(ActionEventType actionEventType) {
+    return actionEventType != ActionEventType.ON_KILL;
+  }
+
+  public boolean currentEventRequiresServerPlayer() {
+    return requiresServerPlayer(this.actionEventType);
+  }
+
+  private boolean actionDataTypeRequiresServerPlayer(ActionDataType actionDataType) {
+    return actionDataType == ActionDataType.CLOSE_DIALOG
+        || actionDataType == ActionDataType.OPEN_DEFAULT_DIALOG
+        || actionDataType == ActionDataType.OPEN_NAMED_DIALOG
+        || actionDataType == ActionDataType.OPEN_TRADING_SCREEN
+        || actionDataType == ActionDataType.SCOREBOARD;
+  }
+
   private void navigateToActionDataEditor() {
     if (this.actionEventType != null && this.actionEventType != ActionEventType.NONE) {
       NetworkMessageHandlerManager.getServerHandler()
@@ -261,10 +292,7 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
                 this.contentTop + 5,
                 160,
                 16,
-                Arrays.stream(ActionDataType.values())
-                    .filter(type -> type != ActionDataType.NONE)
-                    .sorted()
-                    .collect(Collectors.toCollection(LinkedHashSet::new)),
+                this.getAvailableActionDataTypes(),
                 this.actionDataType,
                 this::changeActionDataType));
 

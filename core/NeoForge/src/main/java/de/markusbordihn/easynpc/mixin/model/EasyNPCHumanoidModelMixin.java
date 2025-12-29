@@ -50,6 +50,11 @@ public class EasyNPCHumanoidModelMixin<T extends LivingEntity> {
 
   @Unique private EasyNPCModelManager easyNPC$modelManager;
 
+  @Unique
+  public EasyNPCModelManager easyNPC$getModelManager() {
+    return this.easyNPC$modelManager;
+  }
+
   @Inject(
       method = "<init>(Lnet/minecraft/client/model/geom/ModelPart;Ljava/util/function/Function;)V",
       at = @At("TAIL"))

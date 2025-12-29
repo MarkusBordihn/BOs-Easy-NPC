@@ -43,6 +43,10 @@ public class ActionValidator {
         actionDataEntry.conditionDataSet().getConditions(), serverPlayer, actionDataEntry.getId());
   }
 
+  public static boolean validateActionDataWithoutPlayer(ActionDataEntry actionDataEntry) {
+    return actionDataEntry != null && actionDataEntry.isValidAndNotEmpty();
+  }
+
   public static boolean validateServerSide(ServerPlayer serverPlayer) {
     return serverPlayer != null && !serverPlayer.level().isClientSide();
   }

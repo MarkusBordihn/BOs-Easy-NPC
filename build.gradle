@@ -50,7 +50,7 @@ tasks.named('build') {
 tasks.named('clean') {
   description = 'Cleans all modules (core, config-ui, bundle)'
 
-  dependsOn 'cleanGradleDirs'
+  dependsOn 'cleanGradleAndBuildDirs'
 
   doLast {
     // Define module directories
@@ -81,43 +81,55 @@ tasks.named('clean') {
   }
 }
 
-// Build all modules
-tasks.named('cleanBuild') {
-  description = 'Cleans and builds all modules (core, config-ui, bundle)'
-  group = "build"
-
-  // Then build all modules
-  dependsOn 'build'
-
-  doLast {
-    println "All modules successfully cleaned and built."
-  }
-}
-
 // Remove all .gradle directories in project and subproject folders
-tasks.register('cleanGradleDirs') {
+tasks.register('cleanGradleAndBuildDirs') {
   description = 'Deletes all .gradle directories in project and subproject folders'
   group = "build"
 
   doLast {
     def dirsToClean = []
+    def rootPath = rootDir.canonicalPath
+    def protectedPaths = [
+        file("${System.getProperty('user.home')}/.gradle").canonicalPath,
+        file("${rootDir}/gradle").canonicalPath
+    ]
+
     rootDir.eachFileRecurse { file ->
-      if (file.isDirectory() && file.name == '.gradle') {
-        dirsToClean << file
+      try {
+        if (file.canonicalPath != file.absolutePath) {
+          return
+        }
+
+        if (!file.canonicalPath.startsWith(rootPath)) {
+          return
+        }
+
+        if (protectedPaths.any { file.canonicalPath.startsWith(it) }) {
+          return
+        }
+
+        if (file.isDirectory() && (file.name == '.gradle' || file.name == 'build')) {
+          dirsToClean << file
+        }
+      } catch (IOException e) {
+        println "Skipping file ${file}: ${e.message}"
       }
     }
+
     dirsToClean.each { dir ->
       println "Deleting: ${dir}"
       dir.deleteDir()
     }
-    println ".gradle directories deleted: ${dirsToClean.size()}"
+    println ".gradle and build directories deleted: ${dirsToClean.size()}"
   }
 }
 
 // Clean cache and build all modules with refreshed dependencies
-tasks.register('cleanCache') {
+tasks.register('cleanBuild') {
   description = 'Cleans cache and builds all modules with refreshed dependencies (core, config-ui, bundle)'
   group = "build"
+
+  dependsOn 'cleanGradleAndBuildDirs'
 
   doLast {
     // Define module directories
@@ -127,7 +139,7 @@ tasks.register('cleanCache') {
     modules.each { moduleName ->
       def moduleDir = file("${rootDir}/${moduleName}")
 
-      println "Cleaning cache and building module: ${moduleName}"
+      println "Cleaning and building module: ${moduleName}"
       def connection = GradleConnector.newConnector()
           .forProjectDirectory(moduleDir)
           .connect()
@@ -139,13 +151,13 @@ tasks.register('cleanCache') {
         buildLauncher.setStandardOutput(System.out)
         buildLauncher.setStandardError(System.err)
         buildLauncher.run()
-        println "Successfully cleaned cache and built module: ${moduleName}"
+        println "Successfully cleaned and built module: ${moduleName}"
       } finally {
         connection.close()
       }
     }
 
-    println "All modules successfully cleaned cache and built with refreshed dependencies."
+    println "All modules successfully cleaned and built with refreshed dependencies."
   }
 }
 

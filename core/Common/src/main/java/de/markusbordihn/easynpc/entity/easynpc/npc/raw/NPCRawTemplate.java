@@ -209,6 +209,12 @@ public class NPCRawTemplate extends Zombie implements EasyNPCBase<Zombie> {
   }
 
   @Override
+  public void kill() {
+    this.handleKillEvent();
+    super.kill();
+  }
+
+  @Override
   public Entity changeDimension(DimensionTransition dimensionTransition) {
     this.handleChangeDimensionEvent(dimensionTransition);
     return super.changeDimension(dimensionTransition);

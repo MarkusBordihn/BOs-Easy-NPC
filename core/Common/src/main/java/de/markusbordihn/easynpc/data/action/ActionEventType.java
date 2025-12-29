@@ -30,6 +30,7 @@ public enum ActionEventType {
   ON_DISTANCE_VERY_CLOSE,
   ON_HURT,
   ON_INTERACTION,
+  ON_KILL,
   ON_OPEN_DIALOG;
 
   public static ActionEventType get(String actionEventType) {

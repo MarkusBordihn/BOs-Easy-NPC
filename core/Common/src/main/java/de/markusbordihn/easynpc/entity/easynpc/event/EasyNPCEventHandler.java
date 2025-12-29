@@ -95,6 +95,18 @@ public final class EasyNPCEventHandler {
     }
   }
 
+  public static <E extends PathfinderMob> void handleKillEvent(EasyNPC<E> easyNPC) {
+    TradingDataCapable<E> tradingData = easyNPC.getEasyNPCTradingData();
+    if (tradingData != null) {
+      tradingData.stopMerchantTrading();
+    }
+
+    ActionEventDataCapable<E> actionEventData = easyNPC.getEasyNPCActionEventData();
+    if (actionEventData != null) {
+      actionEventData.handleActionEvent(ActionEventType.ON_KILL);
+    }
+  }
+
   public static <E extends PathfinderMob> void handleChangeDimensionEvent(
       EasyNPC<E> easyNPC, DimensionTransition dimensionTransition) {
     TradingDataCapable<E> tradingData = easyNPC.getEasyNPCTradingData();

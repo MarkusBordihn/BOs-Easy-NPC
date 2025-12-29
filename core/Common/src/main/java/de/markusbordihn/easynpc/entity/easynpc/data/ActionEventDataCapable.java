@@ -160,6 +160,16 @@ public interface ActionEventDataCapable<E extends PathfinderMob> extends EasyNPC
     this.setActionEventSet(actionEventSet);
   }
 
+  default void handleActionEvent(ActionEventType actionEventType) {
+    if (!this.hasActionEvent(actionEventType)) {
+      return;
+    }
+    ActionHandler<E> actionHandler = this.getEasyNPCActionHandler();
+    if (actionHandler != null) {
+      actionHandler.executeActions(this.getActionDataSet(actionEventType), null);
+    }
+  }
+
   default void handleActionEvent(ActionEventType actionEventType, ServerPlayer serverPlayer) {
     if (!this.hasActionEvent(actionEventType)) {
       return;

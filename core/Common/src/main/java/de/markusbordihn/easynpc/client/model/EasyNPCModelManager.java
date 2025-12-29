@@ -116,29 +116,34 @@ public class EasyNPCModelManager {
     return modelPartMap.get(modelPartType);
   }
 
-  public boolean setupModelParts(final ModelDataCapable<?> modelData) {
+  public boolean setupModelParts(
+      final ModelDataCapable<?> modelData, final boolean applyVisibility) {
     if (modelData == null || modelData.getModelPose() == ModelPose.DEFAULT) {
       return false;
     }
 
+    EnumMap<ModelPartType, Boolean> visibilityMap = modelData.getModelPartVisibility();
     boolean hasChangedModelPart = false;
+
     for (Map.Entry<ModelPartType, ModelPart> entry : modelPartMap.entrySet()) {
       ModelPartType partType = entry.getKey();
       ModelPart modelPart = entry.getValue();
 
-      // Skip HAT as it will be synced from HEAD
-      if (partType == ModelPartType.HAT) {
+      // Skip outer layer parts as they will be synced from their inner parts
+      if (isOuterLayerPart(partType)) {
         continue;
       }
 
       // Check if model part is available.
-      Boolean visibility = modelData.getModelPartVisibility(partType);
-      if (Boolean.FALSE.equals(visibility)) {
-        modelPart.visible = false;
-        continue;
-      } else if (Boolean.TRUE.equals(visibility)
-          && Boolean.TRUE.equals(defaultModelPartVisibilityMap.get(partType))) {
-        modelPart.visible = true;
+      if (applyVisibility) {
+        Boolean visibility = visibilityMap.get(partType);
+        if (Boolean.FALSE.equals(visibility)) {
+          modelPart.visible = false;
+          continue;
+        } else if (Boolean.TRUE.equals(visibility)
+            && Boolean.TRUE.equals(defaultModelPartVisibilityMap.get(partType))) {
+          modelPart.visible = true;
+        }
       }
 
       // Handle custom position.
@@ -187,15 +192,39 @@ public class EasyNPCModelManager {
       return;
     }
 
-    ModelPart hatModelPart = modelPartMap.get(ModelPartType.HAT);
-    ModelPart headModelPart = modelPartMap.get(ModelPartType.HEAD);
-    if (hatModelPart != null
-        && headModelPart != null
-        && Boolean.TRUE.equals(defaultModelPartVisibilityMap.get(ModelPartType.HAT))) {
-      if (modelData.getModelType().requiresHatSync()) {
-        hatModelPart.copyFrom(headModelPart);
+    EnumMap<ModelPartType, Boolean> visibilityMap = modelData.getModelPartVisibility();
+    syncOuterLayer(modelData, visibilityMap, ModelPartType.HAT, ModelPartType.HEAD);
+    syncOuterLayer(modelData, visibilityMap, ModelPartType.BODY_JACKET, ModelPartType.BODY);
+    syncOuterLayer(modelData, visibilityMap, ModelPartType.LEFT_SLEEVE, ModelPartType.LEFT_ARM);
+    syncOuterLayer(modelData, visibilityMap, ModelPartType.RIGHT_SLEEVE, ModelPartType.RIGHT_ARM);
+    syncOuterLayer(modelData, visibilityMap, ModelPartType.LEFT_PANTS, ModelPartType.LEFT_LEG);
+    syncOuterLayer(modelData, visibilityMap, ModelPartType.RIGHT_PANTS, ModelPartType.RIGHT_LEG);
+  }
+
+  private void syncOuterLayer(
+      final ModelDataCapable<?> modelData,
+      final EnumMap<ModelPartType, Boolean> visibilityMap,
+      final ModelPartType outerPartType,
+      final ModelPartType innerPartType) {
+
+    ModelPart outerPart = modelPartMap.get(outerPartType);
+    ModelPart innerPart = modelPartMap.get(innerPartType);
+
+    // Skip if parts don't exist or outer part is not visible by default
+    if (outerPart == null
+        || innerPart == null
+        || !Boolean.TRUE.equals(defaultModelPartVisibilityMap.get(outerPartType))) {
+      return;
+    }
+
+    // Check if outer layer is explicitly hidden (set to false)
+    if (Boolean.FALSE.equals(visibilityMap.get(outerPartType))) {
+      outerPart.visible = false;
+    } else {
+      if (outerPartType == ModelPartType.HAT && modelData.getModelType().requiresHatSync()) {
+        outerPart.copyFrom(innerPart);
       } else {
-        hatModelPart.visible = headModelPart.visible;
+        outerPart.visible = innerPart.visible;
       }
     }
   }
@@ -253,6 +282,15 @@ public class EasyNPCModelManager {
         || partType == ModelPartType.ARMS;
   }
 
+  private boolean isOuterLayerPart(ModelPartType partType) {
+    return partType == ModelPartType.HAT
+        || partType == ModelPartType.LEFT_SLEEVE
+        || partType == ModelPartType.RIGHT_SLEEVE
+        || partType == ModelPartType.LEFT_PANTS
+        || partType == ModelPartType.RIGHT_PANTS
+        || partType == ModelPartType.BODY_JACKET;
+  }
+
   public void applySelectiveChanges(final ModelDataCapable<?> modelData) {
     if (modelData == null) {
       return;
@@ -298,13 +336,42 @@ public class EasyNPCModelManager {
     syncModelParts(modelData);
   }
 
+  public void applyVisibilityChanges(final ModelDataCapable<?> modelData) {
+    if (modelData == null) {
+      return;
+    }
+
+    EnumMap<ModelPartType, Boolean> visibilityMap = modelData.getModelPartVisibility();
+
+    for (Map.Entry<ModelPartType, ModelPart> entry : modelPartMap.entrySet()) {
+      ModelPartType partType = entry.getKey();
+      ModelPart modelPart = entry.getValue();
+
+      // Skip outer layer parts as they will be synced from their inner parts
+      if (isOuterLayerPart(partType)) {
+        continue;
+      }
+
+      // Apply visibility changes
+      Boolean visibility = visibilityMap.get(partType);
+      if (Boolean.FALSE.equals(visibility)) {
+        modelPart.visible = false;
+      } else if (Boolean.TRUE.equals(visibility)
+          && Boolean.TRUE.equals(defaultModelPartVisibilityMap.get(partType))) {
+        modelPart.visible = true;
+      }
+    }
+
+    syncModelParts(modelData);
+  }
+
   public void resetModelParts() {
     for (Map.Entry<ModelPartType, ModelPart> entry : modelPartMap.entrySet()) {
       ModelPartType modelPartType = entry.getKey();
       ModelPart modelPartToRest = entry.getValue();
 
-      // Skip HAT as it will be synced from HEAD
-      if (modelPartType == ModelPartType.HAT) {
+      // Skip outer layer parts as they will be synced from their inner parts
+      if (isOuterLayerPart(modelPartType)) {
         continue;
       }
 

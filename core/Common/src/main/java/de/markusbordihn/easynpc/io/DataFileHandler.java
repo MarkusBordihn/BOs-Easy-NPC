@@ -41,6 +41,10 @@ public class DataFileHandler {
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   protected static final String BACKUP_FOLDER_NAME = "backup";
   protected static final String CACHE_FOLDER_NAME = "cache";
+  protected static final String RESOURCE_PRESET_PATH = "preset";
+  protected static final String RESOURCE_DEFAULT_PRESET_PATH = "default_preset";
+  protected static final String RESOURCE_POSES_PATH = "poses";
+  protected static final String RESOURCE_TEXTURES_ENTITY_PATH = "textures/entity";
   private static final Pattern VALID_PRESET_FILENAME_PATTERN = Pattern.compile("[a-zA-Z0-9/._-]+");
 
   private DataFileHandler() {}
@@ -200,48 +204,90 @@ public class DataFileHandler {
     return null;
   }
 
-  public static void copyResourceFile(
+  public static boolean copyResourceFile(
       MinecraftServer minecraftServer, ResourceLocation resourceLocation, File targetFile) {
+    return copyResourceFile(minecraftServer, resourceLocation, targetFile, false);
+  }
+
+  public static boolean copyResourceFile(
+      MinecraftServer minecraftServer,
+      ResourceLocation resourceLocation,
+      File targetFile,
+      boolean overwriteExisting) {
     if (resourceLocation == null || targetFile == null) {
-      return;
+      log.warn("Cannot copy resource file: resourceLocation or targetFile is null");
+      return false;
     }
+
+    // Skip if file already exists and overwrite is not requested
+    if (targetFile.exists() && !overwriteExisting) {
+      log.debug("Skipping copy of {} to {} - file already exists", resourceLocation, targetFile);
+      return true;
+    }
+
     try {
       Optional<Resource> resources =
           minecraftServer.getResourceManager().getResource(resourceLocation);
       if (resources.isPresent()) {
-        try (InputStream inputStream = resources.get().open();
-            OutputStream outputStream = new FileOutputStream(targetFile)) {
-          byte[] buffer = new byte[1024];
-          int length;
-          while ((length = inputStream.read(buffer)) > 0) {
-            outputStream.write(buffer, 0, length);
-          }
-        }
+        return copyResourceToFile(resources.get(), targetFile);
+      } else {
+        log.error("Resource {} not found in resource manager", resourceLocation);
+        return false;
       }
     } catch (Exception e) {
       log.error("Failed to load resource {}:", resourceLocation, e);
+      return false;
     }
   }
 
-  public static void copyResourceFile(ResourceLocation resourceLocation, File targetFile) {
+  public static boolean copyResourceFile(ResourceLocation resourceLocation, File targetFile) {
+    return copyResourceFile(resourceLocation, targetFile, false);
+  }
+
+  public static boolean copyResourceFile(
+      ResourceLocation resourceLocation, File targetFile, boolean overwriteExisting) {
     if (resourceLocation == null || targetFile == null) {
-      return;
+      log.warn("Cannot copy resource file: resourceLocation or targetFile is null");
+      return false;
     }
+
+    // Skip if file already exists and overwrite is not requested
+    if (targetFile.exists() && !overwriteExisting) {
+      log.debug("Skipping copy of {} to {} - file already exists", resourceLocation, targetFile);
+      return true;
+    }
+
     try {
       Optional<Resource> resources =
           Minecraft.getInstance().getResourceManager().getResource(resourceLocation);
       if (resources.isPresent()) {
-        try (InputStream inputStream = resources.get().open();
-            OutputStream outputStream = new FileOutputStream(targetFile)) {
-          byte[] buffer = new byte[1024];
-          int length;
-          while ((length = inputStream.read(buffer)) > 0) {
-            outputStream.write(buffer, 0, length);
-          }
-        }
+        return copyResourceToFile(resources.get(), targetFile);
+      } else {
+        log.error("Resource {} not found in resource manager", resourceLocation);
+        return false;
       }
     } catch (Exception e) {
       log.error("Failed to load resource {}:", resourceLocation, e);
+      return false;
+    }
+  }
+
+  private static boolean copyResourceToFile(Resource resource, File targetFile) {
+    try (InputStream inputStream = resource.open();
+        OutputStream outputStream = new FileOutputStream(targetFile)) {
+      // Use 8KB buffer for better performance (instead of 1KB)
+      byte[] buffer = new byte[8192];
+      int bytesRead;
+      long totalBytes = 0;
+      while ((bytesRead = inputStream.read(buffer)) > 0) {
+        outputStream.write(buffer, 0, bytesRead);
+        totalBytes += bytesRead;
+      }
+      log.debug("Successfully copied {} bytes to {}", totalBytes, targetFile);
+      return true;
+    } catch (Exception e) {
+      log.error("Failed to copy resource to file {}:", targetFile, e);
+      return false;
     }
   }
 
