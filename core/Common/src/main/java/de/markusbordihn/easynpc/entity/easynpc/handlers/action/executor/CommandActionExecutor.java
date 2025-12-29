@@ -75,7 +75,9 @@ public class CommandActionExecutor {
       Entity entity,
       LivingEntity livingEntity,
       ActionEventDataCapable<?> actionEventData) {
-    if (!ActionValidator.validateActionData(actionDataEntry, serverPlayer)) {
+    if (serverPlayer == null
+        ? !ActionValidator.validateActionDataWithoutPlayer(actionDataEntry)
+        : !ActionValidator.validateActionData(actionDataEntry, serverPlayer)) {
       return;
     }
     if (actionEventData == null) {

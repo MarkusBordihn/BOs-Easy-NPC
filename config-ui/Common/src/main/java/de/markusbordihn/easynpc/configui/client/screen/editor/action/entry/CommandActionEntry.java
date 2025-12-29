@@ -15,13 +15,15 @@ public class CommandActionEntry extends ActionEntryWidget {
   private TextField actionValueTextField;
   private Checkbox debugCheckbox;
   private Checkbox executeAsUserCheckbox;
-  private boolean showDialogCommandHint = false;
+  private boolean showDialogCommandHint;
+  private boolean showExecuteAsUserWarning;
 
   public CommandActionEntry(
       ActionDataEntry actionDataEntry,
       ActionDataSet actionDataSet,
       ActionDataEntryEditorContainerScreen<?> screen) {
     super(actionDataEntry, actionDataSet, screen);
+    this.showExecuteAsUserWarning = !screen.currentEventRequiresServerPlayer();
   }
 
   @Override
@@ -37,13 +39,19 @@ public class CommandActionEntry extends ActionEntryWidget {
     this.actionValueTextField.setResponder(this::checkForDialogCommand);
 
     // Execute as User
+    boolean executeAsUserValue = hasActionData && this.actionDataEntry.executeAsUser();
+    if (this.showExecuteAsUserWarning) {
+      executeAsUserValue = false;
+    }
+
     this.executeAsUserCheckbox =
         this.screen.addActionEntryWidget(
-            new Checkbox(
-                editorLeft,
-                editorTop + 40,
-                "execute_as_player",
-                hasActionData && this.actionDataEntry.executeAsUser()));
+            new Checkbox(editorLeft, editorTop + 40, "execute_as_player", executeAsUserValue));
+
+    // Disable checkbox if server player is not available
+    if (this.showExecuteAsUserWarning) {
+      this.executeAsUserCheckbox.active = false;
+    }
 
     // Debug
     this.debugCheckbox =
@@ -77,6 +85,23 @@ public class CommandActionEntry extends ActionEntryWidget {
           editorLeft + 2,
           editorTop + 60,
           Constants.FONT_COLOR_YELLOW);
+    }
+
+    if (this.showExecuteAsUserWarning) {
+      Text.drawConfigString(
+          guiGraphics,
+          this.font,
+          "action.executeAsUser.disabled.line1",
+          editorLeft + 2,
+          editorTop + 75,
+          Constants.FONT_COLOR_DARK_GREEN);
+      Text.drawConfigString(
+          guiGraphics,
+          this.font,
+          "action.executeAsUser.disabled.line2",
+          editorLeft + 2,
+          editorTop + 85,
+          Constants.FONT_COLOR_DARK_GREEN);
     }
   }
 

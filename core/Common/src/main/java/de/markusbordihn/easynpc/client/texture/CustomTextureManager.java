@@ -42,12 +42,11 @@ import org.apache.logging.log4j.Logger;
 public class CustomTextureManager {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-  protected static final int RELOAD_PROTECTION = 10000;
   private static final Map<TextureModelKey, ResourceLocation> textureCache =
       new ConcurrentHashMap<>();
-  private static final HashSet<UUID> textureReloadProtection = new HashSet<>();
+  private static final Map<UUID, Long> textureReloadProtection = new ConcurrentHashMap<>();
   private static final String LOG_PREFIX = "[Custom Texture Manager] ";
-  private static int reloadProtectionCounter = 0;
+  private static final long RELOAD_PROTECTION_TIME = 60000;
 
   private CustomTextureManager() {}
 
@@ -97,13 +96,11 @@ public class CustomTextureManager {
 
     // Reload protection to avoid multiple texture requests in a short time.
     UUID skinUUID = textureModelKey.getUUID();
-    if (!textureReloadProtection.add(skinUUID)) {
-      if (reloadProtectionCounter++ > RELOAD_PROTECTION) {
-        textureReloadProtection.clear();
-        reloadProtectionCounter = 0;
-      }
+    Long lastAttempt = textureReloadProtection.get(skinUUID);
+    if (lastAttempt != null && System.currentTimeMillis() - lastAttempt < RELOAD_PROTECTION_TIME) {
       return null;
     }
+    textureReloadProtection.put(skinUUID, System.currentTimeMillis());
 
     // Get the skin model and texture data folder
     SkinModel skinModel = skinData.getSkinModel();

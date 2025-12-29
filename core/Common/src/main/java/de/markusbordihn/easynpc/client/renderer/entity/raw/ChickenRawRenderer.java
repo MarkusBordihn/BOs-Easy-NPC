@@ -29,7 +29,7 @@ import net.minecraft.resources.ResourceLocation;
 public class ChickenRawRenderer extends ChickenRenderer implements EasyNPCEntityRenderer {
 
   protected static final ResourceLocation DEFAULT_TEXTURE =
-      ChickenSkinVariant.WHITE.getTextureLocation();
+      ChickenSkinVariant.WARM.getTextureLocation();
 
   public ChickenRawRenderer(EntityRendererProvider.Context context) {
     super(context);

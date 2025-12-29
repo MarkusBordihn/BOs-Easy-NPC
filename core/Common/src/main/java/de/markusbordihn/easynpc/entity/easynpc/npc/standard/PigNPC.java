@@ -39,7 +39,7 @@ public class PigNPC extends PigRaw implements StandardEasyNPC<PigRaw> {
   public static final String ID = "pig";
 
   public PigNPC(EntityType<? extends Pig> entityType, Level level) {
-    this(entityType, level, PigSkinVariant.PIG);
+    this(entityType, level, PigSkinVariant.TEMPERATE);
   }
 
   public PigNPC(EntityType<? extends Pig> entityType, Level level, Enum<?> variantType) {

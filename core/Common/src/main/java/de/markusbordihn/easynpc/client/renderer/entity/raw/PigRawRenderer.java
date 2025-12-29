@@ -28,7 +28,8 @@ import net.minecraft.resources.ResourceLocation;
 
 public class PigRawRenderer extends PigRenderer implements EasyNPCEntityRenderer {
 
-  protected static final ResourceLocation DEFAULT_TEXTURE = PigSkinVariant.PIG.getTextureLocation();
+  protected static final ResourceLocation DEFAULT_TEXTURE =
+      PigSkinVariant.TEMPERATE.getTextureLocation();
 
   public PigRawRenderer(EntityRendererProvider.Context context) {
     super(context);

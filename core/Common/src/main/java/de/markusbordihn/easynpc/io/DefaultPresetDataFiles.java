@@ -37,7 +37,11 @@ public class DefaultPresetDataFiles {
     try {
       return minecraftServer
           .getResourceManager()
-          .listResources("default_preset", DataFileHandler::isPresetFile)
+          .listResources(
+              DataFileHandler.RESOURCE_DEFAULT_PRESET_PATH,
+              resourceLocation ->
+                  resourceLocation.getNamespace().equals(Constants.MOD_ID)
+                      && DataFileHandler.isPresetFile(resourceLocation))
           .keySet()
           .stream();
     } catch (Exception e) {

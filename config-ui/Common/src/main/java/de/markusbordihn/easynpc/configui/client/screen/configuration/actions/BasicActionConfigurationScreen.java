@@ -62,5 +62,13 @@ public class BasicActionConfigurationScreen<T extends ConfigurationMenu>
             this.contentTopPos + 110,
             ActionEventType.ON_DEATH,
             ConfigurationType.BASIC_ACTION));
+
+    // On Kill Actions
+    this.addRenderableWidget(
+        this.getActionDataButton(
+            this.contentLeftPos,
+            this.contentTopPos + 160,
+            ActionEventType.ON_KILL,
+            ConfigurationType.BASIC_ACTION));
   }
 }
