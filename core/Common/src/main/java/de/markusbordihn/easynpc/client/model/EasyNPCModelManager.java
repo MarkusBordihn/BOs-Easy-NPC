@@ -77,14 +77,24 @@ public class EasyNPCModelManager {
 
   public EasyNPCModelManager defineModelPart(
       final ModelPartType modelPartType, final ModelPart modelPart) {
-    setDefaultModelPartPosition(
-        modelPartType, new CustomPosition(modelPart.x, modelPart.y, modelPart.z));
-    setDefaultModelPartRotation(
-        modelPartType, new CustomRotation(modelPart.xRot, modelPart.yRot, modelPart.zRot));
-    setDefaultModelPartScale(
-        modelPartType, new CustomScale(modelPart.xScale, modelPart.yScale, modelPart.zScale));
-    setDefaultModelPartVisibility(modelPartType, modelPart.visible);
-    setDefaultModelPart(modelPartType, modelPart);
+    if (!defaultModelPartPositionMap.containsKey(modelPartType)) {
+      setDefaultModelPartPosition(
+          modelPartType, new CustomPosition(modelPart.x, modelPart.y, modelPart.z));
+    }
+    if (!defaultModelPartRotationMap.containsKey(modelPartType)) {
+      setDefaultModelPartRotation(
+          modelPartType, new CustomRotation(modelPart.xRot, modelPart.yRot, modelPart.zRot));
+    }
+    if (!defaultModelPartScaleMap.containsKey(modelPartType)) {
+      setDefaultModelPartScale(
+          modelPartType, new CustomScale(modelPart.xScale, modelPart.yScale, modelPart.zScale));
+    }
+    if (!defaultModelPartVisibilityMap.containsKey(modelPartType)) {
+      setDefaultModelPartVisibility(modelPartType, modelPart.visible);
+    }
+    if (!modelPartMap.containsKey(modelPartType)) {
+      setDefaultModelPart(modelPartType, modelPart);
+    }
     return this;
   }
 
