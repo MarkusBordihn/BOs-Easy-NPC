@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Markus Bordihn
+ * Copyright 2022 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,36 +17,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.io;
+package de.markusbordihn.easynpc.client.texture;
 
 import de.markusbordihn.easynpc.Constants;
-import java.util.stream.Stream;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.MinecraftServer;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import java.util.Locale;
+import java.util.UUID;
 
-public class DefaultPresetDataFiles {
+public class TextureNameHelper {
 
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+  private static final String TEXTURE_PREFIX = Constants.MOD_ID + "_client_texture_";
 
-  private DefaultPresetDataFiles() {}
+  private TextureNameHelper() {}
 
-  public static Stream<ResourceLocation> getPresetResourceLocations(
-      MinecraftServer minecraftServer) {
-    try {
-      return minecraftServer
-          .getResourceManager()
-          .listResources(
-              DataFileHandler.RESOURCE_DEFAULT_PRESET_PATH,
-              resourceLocation ->
-                  resourceLocation.getNamespace().equals(Constants.MOD_ID)
-                      && DataFileHandler.isPresetFile(resourceLocation))
-          .keySet()
-          .stream();
-    } catch (Exception e) {
-      log.error("Could not get default preset resource locations:", e);
-    }
-    return Stream.empty();
+  public static String getResourceName(TextureModelKey textureModelKey) {
+    return getResourceName(textureModelKey.getUUID().toString(), textureModelKey.getSubType());
+  }
+
+  public static String getResourceName(String name, String type) {
+    return (TEXTURE_PREFIX + type + "_" + name.replaceAll("[^a-zA-Z0-9_.-]", ""))
+        .toLowerCase(Locale.ROOT);
+  }
+
+  public static String getFileName(UUID uuid) {
+    return getFileName(uuid.toString());
+  }
+
+  public static String getFileName(String name) {
+    return name.replaceAll("[^a-zA-Z0-9_.-]", "") + ".png";
   }
 }

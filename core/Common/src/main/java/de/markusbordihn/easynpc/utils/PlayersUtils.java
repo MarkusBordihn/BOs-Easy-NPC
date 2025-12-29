@@ -170,10 +170,7 @@ public class PlayersUtils {
             new String(Base64.getDecoder().decode(propertyObject.get("value").getAsString()));
         String userTexture = getUserTextureFromTextureData(textureData);
         String userTextureModel = getUserTextureModelFromTextureData(textureData);
-        log.debug(
-            "Found user texture {} with model {} ...",
-            userTexture,
-            userTextureModel == null || userTextureModel.isEmpty() ? "default" : userTextureModel);
+        log.debug("Found user texture {} with model {} ...", userTexture, userTextureModel);
         return userTexture;
       }
     }
@@ -213,8 +210,8 @@ public class PlayersUtils {
         }
       }
     }
-    log.debug("Unable to get user texture model from texture data: {}", data);
-    return "";
+    log.debug("Unable to get user texture model from texture data, will use default: {}", data);
+    return "default";
   }
 
   public static JsonObject getJsonObject(String data) {

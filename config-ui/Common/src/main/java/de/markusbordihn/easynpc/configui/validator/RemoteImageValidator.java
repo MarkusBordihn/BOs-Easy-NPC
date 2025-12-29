@@ -17,38 +17,60 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.validator;
+package de.markusbordihn.easynpc.configui.validator;
 
-import com.mojang.blaze3d.platform.NativeImage;
 import de.markusbordihn.easynpc.Constants;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.net.URL;
+import javax.imageio.ImageIO;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ImageValidator {
+public class RemoteImageValidator {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  private ImageValidator() {}
+  private RemoteImageValidator() {}
 
-  public static boolean isValidImage(NativeImage image) {
-    // Verify the image data to make sure we got a valid image!
-    if (image == null) {
-      log.error("Found no valid image data in native image!");
+  public static boolean isValidImage(URL remoteUrl) {
+
+    if (remoteUrl.toString().endsWith(".webp")) {
+      log.error("WebP images are not supported, please use PNG images!");
       return false;
     }
 
-    // Accept some edge case for image size like 48x32
+    BufferedImage image;
+    try {
+      image = ImageIO.read(remoteUrl);
+    } catch (IllegalArgumentException | IOException exception) {
+      log.error("Unable to get any valid image from URL {}:", remoteUrl, exception);
+      return false;
+    }
+
+    if (image == null) {
+      log.error("Unable to get any valid image from URL {}!", remoteUrl);
+      return false;
+    }
+
+    return isValidImageSize(image);
+  }
+
+  private static boolean isValidImageSize(BufferedImage image) {
+    if (image == null) {
+      return false;
+    }
+
     if (image.getWidth() == 48 && image.getHeight() == 32) {
       return true;
     }
 
-    // Verify the image size needs to be at least 32x32 and a multiple of 32!
     if (image.getWidth() < 32
         || image.getHeight() < 32
         || image.getWidth() % 32 != 0
         || image.getHeight() % 32 != 0) {
       log.error(
-          "Unable to get any valid texture from native image, got {}x{}!",
+          "Invalid image size {}x{}, must be at least 32x32 and multiple of 32!",
           image.getWidth(),
           image.getHeight());
       return false;

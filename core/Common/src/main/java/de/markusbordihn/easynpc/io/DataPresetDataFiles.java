@@ -37,7 +37,11 @@ public class DataPresetDataFiles {
     try {
       return minecraftServer
           .getResourceManager()
-          .listResources("preset", DataFileHandler::isPresetFile)
+          .listResources(
+              DataFileHandler.RESOURCE_PRESET_PATH,
+              resourceLocation ->
+                  resourceLocation.getNamespace().equals(Constants.MOD_ID)
+                      && DataFileHandler.isPresetFile(resourceLocation))
           .keySet()
           .stream();
     } catch (Exception e) {
