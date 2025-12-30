@@ -61,8 +61,6 @@ public interface VariantDataCapable<T extends PathfinderMob> extends EasyNPC<T> 
   default void setSkinVariantType(Enum<?> variant) {
     if (getSkinVariantType() != variant) {
       setSynchedEntityData(SynchedDataIndex.VARIANT_TYPE, variant != null ? variant.name() : "");
-    }
-    if (variant != null) {
       handleSkinVariantTypeChange(variant);
     }
   }
@@ -126,8 +124,10 @@ public interface VariantDataCapable<T extends PathfinderMob> extends EasyNPC<T> 
   default Holder<VillagerType> getVillagerType(Enum<?> variantType) {
     String name = variantType.name().toLowerCase(Locale.ROOT);
     for (VillagerType villagerType : BuiltInRegistries.VILLAGER_TYPE) {
-      if (name.startsWith(villagerType.toString().toLowerCase(Locale.ROOT))) {
-        return BuiltInRegistries.VILLAGER_TYPE.wrapAsHolder(villagerType);
+      Holder<VillagerType> holder = BuiltInRegistries.VILLAGER_TYPE.wrapAsHolder(villagerType);
+      String typeName = BuiltInRegistries.VILLAGER_TYPE.getKey(villagerType).getPath();
+      if (name.startsWith(typeName.toLowerCase(Locale.ROOT))) {
+        return holder;
       }
     }
     return null;
@@ -150,11 +150,7 @@ public interface VariantDataCapable<T extends PathfinderMob> extends EasyNPC<T> 
       if (!variantType.isEmpty()) {
         Enum<?> variant = this.getSkinVariantType(variantType);
         if (variant != null) {
-          // Set the synced data
-          setSynchedEntityData(SynchedDataIndex.VARIANT_TYPE, variant.name());
-          // Always call handleSkinVariantTypeChange to ensure proper state updates
-          // This is crucial for entities like Villager that need VillagerData updated
-          handleSkinVariantTypeChange(variant);
+          this.setSkinVariantType(this.getSkinVariantType(variantType));
         }
       }
     }
