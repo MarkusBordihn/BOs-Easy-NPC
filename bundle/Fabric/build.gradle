@@ -19,15 +19,7 @@ def getNextMajorVersion(String currentVersion) {
   return "1.0.0"
 }
 
-sourceSets {
-  main {
-    resources {
-      srcDirs += [
-          '../Common/src/main/resources'
-      ]
-    }
-  }
-}
+def nextMajorVersion = getNextMajorVersion(project.version.toString())
 
 loom {
   runs {
@@ -52,11 +44,13 @@ dependencies {
   modImplementation "net.fabricmc:fabric-loader:${project.fabric_loader_version}"
 
   // Bundle dependencies - use compileOnly to avoid transitive dependency issues
-  modRuntimeOnly group: 'de.markusbordihn.easynpc', name: "easy_npc-fabric-${project.minecraft_version}", version: "${project.version}"
-  modRuntimeOnly group: 'de.markusbordihn.easynpc.configui', name: "easy_npc_config_ui-fabric-${project.minecraft_version}", version: "${project.version}"
+  modRuntimeOnly(group: 'de.markusbordihn.easynpc', name: "easy_npc-fabric-${project.minecraft_version}", version: "${project.version}") {
+    changing = true
+  }
+  modRuntimeOnly(group: 'de.markusbordihn.easynpc.configui', name: "easy_npc_config_ui-fabric-${project.minecraft_version}", version: "${project.version}") {
+    changing = true
+  }
 }
-
-def nextMajorVersion = getNextMajorVersion(project.version.toString())
 
 processResources {
   from project(":Common").sourceSets.main.resources
@@ -71,37 +65,12 @@ processResources {
   }
 }
 
-// The standard remapJar task will automatically include the 'include' dependencies
-tasks.named('remapJar') {
-  archiveClassifier = 'all'
-
-  from('../Common/src/main/resources') {
-    include 'pack.mcmeta'
-    include 'logo.png'
-  }
+tasks.withType(JavaCompile).configureEach {
+  source(project(":Common").sourceSets.main.allSource)
 }
 
-// Keep the slim jar as well
-jar {
-  archiveClassifier = 'slim'
-  duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-
-  from('../Common/src/main/resources') {
-    include 'pack.mcmeta'
-    include 'logo.png'
-  }
-
-  manifest {
-    attributes([
-        "Specification-Title"     : "${project.mod_name}",
-        "Specification-Vendor"    : "${project.mod_author}",
-        "Specification-Version"   : "${project.version}",
-        "Implementation-Title"    : "${project.mod_name}",
-        "Implementation-Version"  : "${project.version}",
-        "Implementation-Vendor"   : "${project.mod_author}",
-        "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
-    ])
-  }
+tasks.named('compileTestJava', JavaCompile).configure {
+  enabled = !sourceSets.test.allSource.isEmpty()
 }
 
 // CurseForge Publishing

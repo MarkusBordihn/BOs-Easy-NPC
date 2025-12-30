@@ -13,19 +13,17 @@ subprojects {
 
 }
 
-// Override default build task to build all modules
+// Build all modules
 tasks.named('build') {
   description = 'Builds all modules (core, config-ui, bundle)'
 
   doLast {
-    // Define module directories
     def modules = ['core', 'config-ui', 'bundle']
 
-    // Build each module
     modules.each { moduleName ->
       def moduleDir = file("${rootDir}/${moduleName}")
-
       println "Building module: ${moduleName}"
+
       def connection = GradleConnector.newConnector()
           .forProjectDirectory(moduleDir)
           .connect()
@@ -46,21 +44,17 @@ tasks.named('build') {
   }
 }
 
-// Override clean build task to build all modules
+// Clean all modules
 tasks.named('clean') {
   description = 'Cleans all modules (core, config-ui, bundle)'
 
-  dependsOn 'cleanGradleAndBuildDirs'
-
   doLast {
-    // Define module directories
     def modules = ['core', 'config-ui', 'bundle']
 
-    // Build each module
     modules.each { moduleName ->
       def moduleDir = file("${rootDir}/${moduleName}")
+      println "Cleaning module: ${moduleName}"
 
-      println "Building module: ${moduleName}"
       def connection = GradleConnector.newConnector()
           .forProjectDirectory(moduleDir)
           .connect()
@@ -71,118 +65,122 @@ tasks.named('clean') {
         buildLauncher.setStandardOutput(System.out)
         buildLauncher.setStandardError(System.err)
         buildLauncher.run()
-        println "Successfully clean module: ${moduleName}"
+        println "Successfully cleaned module: ${moduleName}"
       } finally {
         connection.close()
       }
     }
 
-    println "All modules successfully clean."
+    println "All modules successfully cleaned."
   }
 }
 
-// Remove all .gradle directories in project and subproject folders
-tasks.register('cleanGradleAndBuildDirs') {
-  description = 'Deletes all .gradle directories in project and subproject folders'
+// Clean Maven Local artifacts (current version only)
+tasks.register('cleanMavenLocal') {
+  description = 'Deletes this project\'s artifacts from Maven Local (current version)'
   group = "build"
 
   doLast {
-    def dirsToClean = []
-    def rootPath = rootDir.canonicalPath
-    def protectedPaths = [
-        file("${System.getProperty('user.home')}/.gradle").canonicalPath,
-        file("${rootDir}/gradle").canonicalPath
+    def mavenLocalRepo = file("${System.getProperty('user.home')}/.m2/repository")
+    if (!mavenLocalRepo.exists()) {
+      println "Maven Local repository not found"
+      return
+    }
+
+    def corePropertiesFile = file("${rootDir}/core/gradle.properties")
+    if (!corePropertiesFile.exists()) {
+      println "Could not find core/gradle.properties"
+      return
+    }
+
+    def props = new Properties()
+    corePropertiesFile.withInputStream { props.load(it) }
+    def projectVersion = props.getProperty('version')
+    def minecraftVersion = props.getProperty('minecraft_version')
+
+    println "Cleaning Maven Local for version ${projectVersion} (Minecraft ${minecraftVersion})"
+
+    def artifacts = [
+        [group: 'de/markusbordihn/easynpc', artifact: "easy_npc-common-${minecraftVersion}", version: projectVersion],
+        [group: 'de/markusbordihn/easynpc', artifact: "easy_npc-fabric-${minecraftVersion}", version: projectVersion],
+        [group: 'de/markusbordihn/easynpc', artifact: "easy_npc-forge-${minecraftVersion}", version: projectVersion],
+        [group: 'de/markusbordihn/easynpc/configui', artifact: "easy_npc_config_ui-common-${minecraftVersion}", version: projectVersion],
+        [group: 'de/markusbordihn/easynpc/configui', artifact: "easy_npc_config_ui-fabric-${minecraftVersion}", version: projectVersion],
+        [group: 'de/markusbordihn/easynpc/configui', artifact: "easy_npc_config_ui-forge-${minecraftVersion}", version: projectVersion]
     ]
 
-    rootDir.eachFileRecurse { file ->
-      try {
-        if (file.canonicalPath != file.absolutePath) {
-          return
-        }
-
-        if (!file.canonicalPath.startsWith(rootPath)) {
-          return
-        }
-
-        if (protectedPaths.any { file.canonicalPath.startsWith(it) }) {
-          return
-        }
-
-        if (file.isDirectory() && (file.name == '.gradle' || file.name == 'build')) {
-          dirsToClean << file
-        }
-      } catch (IOException e) {
-        println "Skipping file ${file}: ${e.message}"
+    def deletedCount = 0
+    artifacts.each { artifactInfo ->
+      def versionDir = new File(mavenLocalRepo, "${artifactInfo.group}/${artifactInfo.artifact}/${artifactInfo.version}")
+      if (versionDir.exists()) {
+        println "Deleting: ${artifactInfo.artifact}:${artifactInfo.version}"
+        versionDir.deleteDir()
+        deletedCount++
       }
     }
 
-    dirsToClean.each { dir ->
-      println "Deleting: ${dir}"
-      dir.deleteDir()
+    if (deletedCount > 0) {
+      println "Successfully deleted ${deletedCount} artifact(s)"
+    } else {
+      println "No artifacts found for version ${projectVersion}"
     }
-    println ".gradle and build directories deleted: ${dirsToClean.size()}"
   }
 }
 
-// Clean cache and build all modules with refreshed dependencies
+// Clean Maven Local and build all modules sequentially
 tasks.register('cleanBuild') {
-  description = 'Cleans cache and builds all modules with refreshed dependencies (core, config-ui, bundle)'
+  description = 'Cleans Maven Local and builds all modules sequentially (core -> config-ui -> bundle)'
   group = "build"
 
-  dependsOn 'cleanGradleAndBuildDirs'
-
   doLast {
-    // Define module directories
+    // First clean Maven Local
+    println "Cleaning Maven Local..."
+    tasks.cleanMavenLocal.actions.each { it.execute(tasks.cleanMavenLocal) }
+
+    // Build modules in correct order: core first, then config-ui (needs core), then bundle (needs both)
     def modules = ['core', 'config-ui', 'bundle']
 
-    // Process each module
     modules.each { moduleName ->
       def moduleDir = file("${rootDir}/${moduleName}")
+      println "Building module: ${moduleName}"
 
-      println "Cleaning and building module: ${moduleName}"
       def connection = GradleConnector.newConnector()
           .forProjectDirectory(moduleDir)
           .connect()
 
       try {
         def buildLauncher = connection.newBuild()
-        buildLauncher.forTasks('clean', 'build')
-        buildLauncher.withArguments('--refresh-dependencies')
+        buildLauncher.forTasks('build')
         buildLauncher.setStandardOutput(System.out)
         buildLauncher.setStandardError(System.err)
         buildLauncher.run()
-        println "Successfully cleaned and built module: ${moduleName}"
+        println "Successfully built module: ${moduleName}"
       } finally {
         connection.close()
       }
     }
 
-    println "All modules successfully cleaned and built with refreshed dependencies."
+    println "All modules successfully built and published to Maven Local."
   }
 }
 
-// Create a publish task to build and publish all modules sequentially
+// Publish all modules to Modrinth and CurseForge
 tasks.register('publish') {
-  description = 'Builds and publishes all modules sequentially (core, config-ui, bundle)'
+  description = 'Builds and publishes all modules (core, config-ui, bundle)'
   group = "publishing"
 
-  // Make sure build runs first
   dependsOn 'cleanBuild'
 
   doLast {
-    // Define module directories in the order they should be published
     def modules = ['core', 'config-ui', 'bundle']
-
-    // Publishing tasks to run for each module
     def publishingTasks = ['modrinth', 'curseforge']
 
-    // Process each module sequentially
     modules.each { moduleName ->
       def moduleDir = file("${rootDir}/${moduleName}")
 
-      // Run each publishing task sequentially for the current module
       publishingTasks.each { publishTask ->
-        println "Publishing module: ${moduleName} with task: ${publishTask}"
+        println "Publishing ${moduleName} to ${publishTask}..."
+
         def connection = GradleConnector.newConnector()
             .forProjectDirectory(moduleDir)
             .connect()
@@ -193,14 +191,13 @@ tasks.register('publish') {
           publishLauncher.setStandardOutput(System.out)
           publishLauncher.setStandardError(System.err)
           publishLauncher.run()
-          println "Successfully published module: ${moduleName} with task: ${publishTask}"
+          println "Successfully published ${moduleName} to ${publishTask}"
 
-          // Add delay of 5 seconds after each publishing task
-          println "Waiting 5 seconds before proceeding to the next task..."
+          println "Waiting 5 seconds..."
           sleep(5000)
         } catch (Exception e) {
-          println "Warning: Failed to execute ${publishTask} for module: ${moduleName}"
-          println "Error message: ${e.message}"
+          println "Warning: Failed to publish ${moduleName} to ${publishTask}"
+          println "Error: ${e.message}"
         } finally {
           connection.close()
         }

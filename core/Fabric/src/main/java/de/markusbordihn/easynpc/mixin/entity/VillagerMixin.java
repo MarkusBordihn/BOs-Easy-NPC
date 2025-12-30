@@ -19,27 +19,27 @@
 
 package de.markusbordihn.easynpc.mixin.entity;
 
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.StandardEasyNPC;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.monster.EnderMan;
-import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(EnderMan.class)
-public abstract class EndermanMixin extends Monster {
+@Mixin(Villager.class)
+public abstract class VillagerMixin extends AbstractVillager {
 
-  private EndermanMixin(EntityType<? extends Monster> entityType, Level level) {
+  private VillagerMixin(EntityType<? extends AbstractVillager> entityType, Level level) {
     super(entityType, level);
   }
 
   @Inject(method = "customServerAiStep", at = @At("HEAD"), cancellable = true)
   public void onCustomServerAiStep(CallbackInfo ci) {
     if ((Object) this instanceof StandardEasyNPC<?> && this.isAlive()) {
-      super.customServerAiStep();
       ci.cancel();
     }
   }
