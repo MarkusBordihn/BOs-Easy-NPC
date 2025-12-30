@@ -24,7 +24,6 @@ import de.markusbordihn.easynpc.data.skin.VariantTexture;
 import net.minecraft.resources.ResourceLocation;
 
 public enum ZombieVillagerSkinVariant implements VariantTexture {
-  ZOMBIE_VILLAGER,
   DESERT_ARMORER,
   DESERT_BUTCHER,
   DESERT_CARTOGRAPHER,
@@ -36,6 +35,7 @@ public enum ZombieVillagerSkinVariant implements VariantTexture {
   DESERT_LIBRARIAN,
   DESERT_MASON,
   DESERT_NITWIT,
+  DESERT_NONE,
   DESERT_SHEPHERD,
   DESERT_TOOLSMITH,
   DESERT_WEAPONSMITH,
@@ -50,6 +50,7 @@ public enum ZombieVillagerSkinVariant implements VariantTexture {
   JUNGLE_LIBRARIAN,
   JUNGLE_MASON,
   JUNGLE_NITWIT,
+  JUNGLE_NONE,
   JUNGLE_SHEPHERD,
   JUNGLE_TOOLSMITH,
   JUNGLE_WEAPONSMITH,
@@ -64,6 +65,7 @@ public enum ZombieVillagerSkinVariant implements VariantTexture {
   PLAINS_LIBRARIAN,
   PLAINS_MASON,
   PLAINS_NITWIT,
+  PLAINS_NONE,
   PLAINS_SHEPHERD,
   PLAINS_TOOLSMITH,
   PLAINS_WEAPONSMITH,
@@ -78,6 +80,7 @@ public enum ZombieVillagerSkinVariant implements VariantTexture {
   SAVANNA_LIBRARIAN,
   SAVANNA_MASON,
   SAVANNA_NITWIT,
+  SAVANNA_NONE,
   SAVANNA_SHEPHERD,
   SAVANNA_TOOLSMITH,
   SAVANNA_WEAPONSMITH,
@@ -92,6 +95,7 @@ public enum ZombieVillagerSkinVariant implements VariantTexture {
   SNOW_LIBRARIAN,
   SNOW_MASON,
   SNOW_NITWIT,
+  SNOW_NONE,
   SNOW_SHEPHERD,
   SNOW_TOOLSMITH,
   SNOW_WEAPONSMITH,
@@ -106,6 +110,7 @@ public enum ZombieVillagerSkinVariant implements VariantTexture {
   SWAMP_LIBRARIAN,
   SWAMP_MASON,
   SWAMP_NITWIT,
+  SWAMP_NONE,
   SWAMP_SHEPHERD,
   SWAMP_TOOLSMITH,
   SWAMP_WEAPONSMITH,
@@ -120,9 +125,12 @@ public enum ZombieVillagerSkinVariant implements VariantTexture {
   TAIGA_LIBRARIAN,
   TAIGA_MASON,
   TAIGA_NITWIT,
+  TAIGA_NONE,
   TAIGA_SHEPHERD,
   TAIGA_TOOLSMITH,
   TAIGA_WEAPONSMITH;
+
+  public static final ZombieVillagerSkinVariant DEFAULT = PLAINS_NONE;
 
   private static final ResourceLocation TEXTURE =
       ResourceLocation.fromNamespaceAndPath(

@@ -65,13 +65,12 @@ public class EasyNPCModelManager {
       final ModelPartType modelPartType, final String modelPartName) {
     if (this.rootModelPart != null && this.rootModelPart.hasChild(modelPartName)) {
       return defineModelPart(modelPartType, this.rootModelPart.getChild(modelPartName));
-    } else {
-      log.error(
-          "Model part '{}' not found for model part type '{}' in {}.",
-          modelPartName,
-          modelPartType.getTagName(),
-          this.rootModelPart);
     }
+    log.error(
+        "Model part '{}' not found for model part type '{}' in {}.",
+        modelPartName,
+        modelPartType.getTagName(),
+        this.rootModelPart);
     return this;
   }
 

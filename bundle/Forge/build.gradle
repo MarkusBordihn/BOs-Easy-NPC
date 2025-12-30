@@ -56,8 +56,12 @@ dependencies {
   compileOnly project(":Common")
 
   // Regular dependencies for development mode (runClient/runServer)
-  runtimeOnly fg.deobf(group: 'de.markusbordihn.easynpc', name: "easy_npc-forge-${project.minecraft_version}", version: "${project.version}")
-  runtimeOnly fg.deobf(group: 'de.markusbordihn.easynpc.configui', name: "easy_npc_config_ui-forge-${project.minecraft_version}", version: "${project.version}")
+  runtimeOnly(fg.deobf(group: 'de.markusbordihn.easynpc', name: "easy_npc-forge-${project.minecraft_version}", version: "${project.version}")) {
+    changing = true
+  }
+  runtimeOnly(fg.deobf(group: 'de.markusbordihn.easynpc.configui', name: "easy_npc_config_ui-forge-${project.minecraft_version}", version: "${project.version}")) {
+    changing = true
+  }
 }
 
 tasks.named('compileJava', JavaCompile).configure {

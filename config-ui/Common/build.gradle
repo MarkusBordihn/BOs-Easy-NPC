@@ -15,7 +15,9 @@ dependencies {
   compileOnly group: 'org.spongepowered', name: 'mixin', version: '0.8.7'
 
   // Include Core Common code
-  compileOnly "de.markusbordihn.easynpc:easy_npc-common-${project.minecraft_version}:${project.version}"
+  compileOnly("de.markusbordihn.easynpc:easy_npc-common-${project.minecraft_version}:${project.version}") {
+    changing = true
+  }
 }
 
 publishing {

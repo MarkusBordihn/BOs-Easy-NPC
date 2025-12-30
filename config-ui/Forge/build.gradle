@@ -98,9 +98,15 @@ dependencies {
   compileOnly project(":Common")
 
   // Include Core Common code
-  testCompileOnly "de.markusbordihn.easynpc:easy_npc-common-${project.minecraft_version}:${project.version}"
-  compileOnly "de.markusbordihn.easynpc:easy_npc-forge-${project.minecraft_version}:${project.version}"
-  runtimeOnly "de.markusbordihn.easynpc:easy_npc-forge-${project.minecraft_version}:${project.version}"
+  testCompileOnly("de.markusbordihn.easynpc:easy_npc-common-${project.minecraft_version}:${project.version}") {
+    changing = true
+  }
+  compileOnly(fg.deobf("de.markusbordihn.easynpc:easy_npc-forge-${project.minecraft_version}:${project.version}")) {
+    changing = true
+  }
+  runtimeOnly(fg.deobf("de.markusbordihn.easynpc:easy_npc-forge-${project.minecraft_version}:${project.version}")) {
+    changing = true
+  }
 
   // Additional helpful Mods for development (runtime dependency)
   if (project.hasProperty('forge_jei_mod') && project.forge_jei_mod) {
