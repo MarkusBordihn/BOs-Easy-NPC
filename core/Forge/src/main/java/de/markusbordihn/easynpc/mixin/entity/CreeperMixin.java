@@ -39,8 +39,6 @@ public abstract class CreeperMixin extends Monster {
 
   @Inject(method = "tick", at = @At("HEAD"), cancellable = true)
   public void onTick(CallbackInfo callbackInfo) {
-
-    // If this is a StandardEasyNPC, only execute the parent tick and cancel original execution.
     if ((Object) this instanceof StandardEasyNPC<?>) {
       super.tick();
       callbackInfo.cancel();

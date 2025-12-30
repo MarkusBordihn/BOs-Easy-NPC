@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.client.renderer.entity.raw;
 
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
+import de.markusbordihn.easynpc.data.skin.variant.VillagerSkinVariant;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.VillagerRenderer;
 import net.minecraft.client.renderer.entity.state.VillagerRenderState;
@@ -28,8 +29,7 @@ import net.minecraft.resources.ResourceLocation;
 public class VillagerRawRenderer extends VillagerRenderer implements EasyNPCEntityRenderer {
 
   private static final ResourceLocation DEFAULT_TEXTURE =
-      ResourceLocation.fromNamespaceAndPath(
-          ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/villager/villager.png");
+      VillagerSkinVariant.DEFAULT.getTextureLocation();
 
   public VillagerRawRenderer(EntityRendererProvider.Context context) {
     super(context);
@@ -38,7 +38,6 @@ public class VillagerRawRenderer extends VillagerRenderer implements EasyNPCEnti
   @Override
   public ResourceLocation getTextureLocation(VillagerRenderState renderState) {
     ResourceLocation texture = getTextureFromRenderState(renderState);
-    // Fallback to original logic if no cached texture available
     if (texture == DEFAULT_TEXTURE) {
       return super.getTextureLocation(renderState);
     }

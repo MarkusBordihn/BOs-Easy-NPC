@@ -15,23 +15,25 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up JDK 21
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           java-version: '21'
           distribution: 'temurin'
           cache: gradle
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v3
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-read-only: ${{ github.ref != 'refs/heads/main' && github.ref != 'refs/heads/master' }}
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Run Core GameTests (Forge)
-        run: ./gradlew -p core NeoForge:runGameTestServer
+      - name: Run Core GameTests (NeoForge)
+        run: ./gradlew -p core NeoForge:runGameTestServer --no-daemon
 
       - name: Build Core and Publish to Maven Local
-        run: ./gradlew -p core build publishToMavenLocal
+        run: ./gradlew -p core build publishToMavenLocal --no-daemon
 
-      - name: Run Config UI GameTests (Forge)
-        run: ./gradlew -p config-ui NeoForge:runGameTestServer
+      - name: Run Config UI GameTests (NeoForge)
+        run: ./gradlew -p config-ui NeoForge:runGameTestServer --no-daemon
