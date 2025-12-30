@@ -21,7 +21,9 @@ minecraft {
 
 dependencies {
   // Include Core Common code
-  compileOnly "de.markusbordihn.easynpc:easy_npc-common-${project.minecraft_version}:${project.version}"
+  compileOnly("de.markusbordihn.easynpc:easy_npc-common-${project.minecraft_version}:${project.version}") {
+    changing = true
+  }
 }
 
 processResources {

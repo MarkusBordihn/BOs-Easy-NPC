@@ -33,8 +33,12 @@ dependencies {
   implementation project(":Common")
 
   // Include Core Common code
-  modImplementation("de.markusbordihn.easynpc:easy_npc-fabric-${project.minecraft_version}:${project.version}")
-  modRuntimeOnly("de.markusbordihn.easynpc:easy_npc-fabric-${project.minecraft_version}:${project.version}")
+  modImplementation("de.markusbordihn.easynpc:easy_npc-fabric-${project.minecraft_version}:${project.version}") {
+    changing = true
+  }
+  modRuntimeOnly("de.markusbordihn.easynpc:easy_npc-fabric-${project.minecraft_version}:${project.version}") {
+    changing = true
+  }
 
   // Additional helpful Mods for development (runtime dependency)
   if (project.hasProperty('fabric_jei_mod') && project.fabric_jei_mod) {

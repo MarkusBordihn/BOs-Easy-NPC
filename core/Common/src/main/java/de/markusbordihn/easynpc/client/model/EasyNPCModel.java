@@ -44,12 +44,11 @@ public class EasyNPCModel {
       return false;
     }
 
-    // Get Model Data
-    ModelDataCapable<?> modelData = easyNPC.getEasyNPCModelData();
-
     // Always reset model parts first to prevent state bleeding between entities
     modelManager.resetModelParts();
 
+    // Get Model Data
+    ModelDataCapable<?> modelData = easyNPC.getEasyNPCModelData();
     if (modelData == null || modelData.getModelPose() == ModelPose.DEFAULT) {
       return false;
     }
