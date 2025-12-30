@@ -8,6 +8,12 @@ For the full changelog, please go to the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 6.5.2
+
+- Fixed Villager profession and job skin issue.
+- Improved GitHub workflows by adding cache for gradle dependencies.
+- Improved Gradle build time and cleanup tasks.
+
 ### 6.5.1
 
 - Fixed #632 by implementing ON_KILL action type and event.

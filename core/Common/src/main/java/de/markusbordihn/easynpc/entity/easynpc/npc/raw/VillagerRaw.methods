@@ -14,7 +14,13 @@
       villagerData = villagerData.withType(type);
     }
 
+    // Apply updated villager data
     this.setVillagerData(villagerData);
+
+    // Refresh brain to apply possible changes
+    if (this.level() instanceof ServerLevel serverLevel) {
+      this.refreshBrain(serverLevel);
+    }
   }
 
   @Override
