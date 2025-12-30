@@ -30,7 +30,7 @@ public class ZombieVillagerRawRenderer extends ZombieVillagerRenderer
     implements EasyNPCEntityRenderer {
 
   protected static final ResourceLocation DEFAULT_TEXTURE =
-      ZombieVillagerSkinVariant.ZOMBIE_VILLAGER.getTextureLocation();
+      ZombieVillagerSkinVariant.DEFAULT.getTextureLocation();
 
   public ZombieVillagerRawRenderer(EntityRendererProvider.Context context) {
     super(context);

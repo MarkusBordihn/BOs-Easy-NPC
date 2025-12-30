@@ -22,9 +22,10 @@
   ],
   "mixins": [
     "entity.CreeperMixin",
-    "entity.EasyNPCFoxMixin",
     "entity.EndermanMixin",
+    "entity.FoxMixin",
     "entity.RaiderMixin",
+    "entity.VillagerMixin",
     "entity.WitchMixin",
     "menu.MerchantMenuMixin",
     "target.LivingEntityTargetingMixin",
