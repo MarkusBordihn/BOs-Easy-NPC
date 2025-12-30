@@ -33,7 +33,7 @@ jobs:
         run: ./gradlew -p core Forge:runGameTestServer --no-daemon
 
       - name: Build Core and Publish to Maven Local
-        run: ./gradlew -p core build --no-daemon
+        run: ./gradlew -p core build publishToMavenLocal --no-daemon
 
       - name: Run Config UI GameTests (Forge)
         run: ./gradlew -p config-ui Forge:runGameTestServer --no-daemon

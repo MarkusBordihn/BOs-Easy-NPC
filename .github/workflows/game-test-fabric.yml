@@ -33,7 +33,7 @@ jobs:
         run: ./gradlew -p core Fabric:runGameTest --no-daemon
 
       - name: Build Core and Publish to Maven Local
-        run: ./gradlew -p core Common:build --no-daemon
+        run: ./gradlew -p core Common:build publishToMavenLocal --no-daemon
 
       - name: Run Config UI GameTests (Fabric)
         run: ./gradlew -p config-ui Fabric:runGameTest --no-daemon
