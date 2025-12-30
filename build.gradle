@@ -127,6 +127,44 @@ tasks.register('cleanMavenLocal') {
   }
 }
 
+// Clean Loom Cache for Easy NPC artifacts
+tasks.register('cleanLoomCache') {
+  description = 'Deletes Easy NPC artifacts from Fabric Loom cache'
+  group = "build"
+
+  doLast {
+    println "Cleaning Loom Cache for Easy NPC artifacts..."
+
+    def deletedCount = 0
+    def loomCacheDirs = [
+        file("${rootDir}/core/.gradle/loom-cache/remapped_mods"),
+        file("${rootDir}/config-ui/.gradle/loom-cache/remapped_mods"),
+        file("${rootDir}/bundle/.gradle/loom-cache/remapped_mods")
+    ]
+
+    loomCacheDirs.each { cacheDir ->
+      if (cacheDir.exists()) {
+        cacheDir.eachDir { mappingsDir ->
+          if (mappingsDir.name.startsWith("loom_mappings_")) {
+            def easyNpcCacheDir = new File(mappingsDir, "de/markusbordihn/easynpc")
+            if (easyNpcCacheDir.exists()) {
+              println "Deleting: ${easyNpcCacheDir.absolutePath}"
+              easyNpcCacheDir.deleteDir()
+              deletedCount++
+            }
+          }
+        }
+      }
+    }
+
+    if (deletedCount > 0) {
+      println "Successfully deleted ${deletedCount} Loom cache directory(ies)"
+    } else {
+      println "No Loom cache entries found for Easy NPC"
+    }
+  }
+}
+
 // Clean Maven Local and build all modules sequentially
 tasks.register('cleanBuild') {
   description = 'Cleans Maven Local and builds all modules sequentially (core -> config-ui -> bundle)'
@@ -134,8 +172,10 @@ tasks.register('cleanBuild') {
 
   doLast {
     // First clean Maven Local
-    println "Cleaning Maven Local..."
     tasks.cleanMavenLocal.actions.each { it.execute(tasks.cleanMavenLocal) }
+
+    // Clean Loom Cache
+    tasks.cleanLoomCache.actions.each { it.execute(tasks.cleanLoomCache) }
 
     // Build modules in correct order: core first, then config-ui (needs core), then bundle (needs both)
     def modules = ['core', 'config-ui', 'bundle']

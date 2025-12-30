@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.client.renderer.entity.raw;
 
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
+import de.markusbordihn.easynpc.data.skin.variant.VillagerSkinVariant;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.VillagerRenderer;
@@ -29,8 +30,7 @@ import net.minecraft.world.entity.npc.Villager;
 public class VillagerRawRenderer extends VillagerRenderer implements EasyNPCEntityRenderer {
 
   private static final ResourceLocation DEFAULT_TEXTURE =
-      new ResourceLocation(
-          ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/villager/villager.png");
+      VillagerSkinVariant.DEFAULT.getTextureLocation();
 
   public VillagerRawRenderer(EntityRendererProvider.Context context) {
     super(context);
