@@ -10,31 +10,16 @@ base {
   archivesName = "${project.mod_id}-fabric-${project.minecraft_version}"
 }
 
-ext {
-  getNextMajorVersion = { String currentVersion ->
-    def versionParts = currentVersion.tokenize('.')
-    if (versionParts.size() > 0) {
-      def majorVersion = versionParts[0].toInteger()
-      return "${majorVersion + 1}.0.0"
-    }
-    return "1.0.0"
+def getNextMajorVersion(String currentVersion) {
+  def versionParts = currentVersion.tokenize('.')
+  if (versionParts.size() > 0) {
+    def majorVersion = versionParts[0].toInteger()
+    return "${majorVersion + 1}.0.0"
   }
+  return "1.0.0"
 }
 
 def nextMajorVersion = getNextMajorVersion(project.version.toString())
-
-dependencies {
-  minecraft "com.mojang:minecraft:${project.minecraft_version}"
-  mappings loom.officialMojangMappings()
-  modImplementation "net.fabricmc:fabric-loader:${project.fabric_loader_version}"
-
-  // Include Common code
-  implementation project(":Common")
-
-  // Bundle dependencies - use compileOnly to avoid transitive dependency issues
-  modRuntimeOnly group: 'de.markusbordihn.easynpc', name: "easy_npc-fabric-${project.minecraft_version}", version: "${project.version}"
-  modRuntimeOnly group: 'de.markusbordihn.easynpc.configui', name: "easy_npc_config_ui-fabric-${project.minecraft_version}", version: "${project.version}"
-}
 
 loom {
   runs {
@@ -50,6 +35,20 @@ loom {
       ideConfigGenerated(true)
       runDir("run/server")
     }
+  }
+}
+
+dependencies {
+  minecraft "com.mojang:minecraft:${project.minecraft_version}"
+  mappings loom.officialMojangMappings()
+  modImplementation "net.fabricmc:fabric-loader:${project.fabric_loader_version}"
+
+  // Bundle dependencies - use compileOnly to avoid transitive dependency issues
+  modRuntimeOnly(group: 'de.markusbordihn.easynpc', name: "easy_npc-fabric-${project.minecraft_version}", version: "${project.version}") {
+    changing = true
+  }
+  modRuntimeOnly(group: 'de.markusbordihn.easynpc.configui', name: "easy_npc_config_ui-fabric-${project.minecraft_version}", version: "${project.version}") {
+    changing = true
   }
 }
 

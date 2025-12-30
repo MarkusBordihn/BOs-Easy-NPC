@@ -43,7 +43,7 @@ public class ZombieVillagerNPC extends ZombieVillagerRaw
   public static final String ID = "zombie_villager";
 
   public ZombieVillagerNPC(EntityType<? extends ZombieVillager> entityType, Level level) {
-    this(entityType, level, ZombieVillagerSkinVariant.ZOMBIE_VILLAGER);
+    this(entityType, level, ZombieVillagerSkinVariant.DEFAULT);
   }
 
   public ZombieVillagerNPC(

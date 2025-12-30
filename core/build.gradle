@@ -43,6 +43,9 @@ subprojects {
 
   tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
+    options.incremental = true
+    options.fork = true
+    options.forkOptions.memoryMaximumSize = '2g'
   }
 
   tasks.withType(GenerateModuleMetadata).configureEach {
@@ -57,8 +60,8 @@ subprojects {
 
   configurations.configureEach {
     resolutionStrategy {
-      cacheChangingModulesFor 0, 'minutes'
-      cacheDynamicVersionsFor 15, 'minutes'
+      cacheChangingModulesFor 5, 'minutes'
+      cacheDynamicVersionsFor 60, 'minutes'
     }
   }
 }

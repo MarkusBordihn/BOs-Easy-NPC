@@ -215,7 +215,7 @@ task generateRawNPCs {
           className: "VillagerRaw",
           baseClass: "Villager",
           modelType: "VILLAGER",
-          variant  : "VillagerSkinVariant.DEFAULT_NITWIT"
+          variant  : "VillagerSkinVariant.DEFAULT"
       ],
       [
           id       : "vindicator_raw",
@@ -263,7 +263,7 @@ task generateRawNPCs {
           className: "ZombieVillagerRaw",
           baseClass: "ZombieVillager",
           modelType: "ZOMBIE",
-          variant  : "ZombieVillagerSkinVariant.ZOMBIE_VILLAGER"
+          variant  : "ZombieVillagerSkinVariant.DEFAULT"
       ],
   ]
 

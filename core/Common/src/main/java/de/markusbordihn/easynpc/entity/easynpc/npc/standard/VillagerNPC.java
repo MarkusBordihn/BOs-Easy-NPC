@@ -78,7 +78,7 @@ public class VillagerNPC extends VillagerRaw implements StandardEasyNPC<Villager
           SensorType.VILLAGER_HOSTILES);
 
   public VillagerNPC(EntityType<? extends Villager> entityType, Level level) {
-    this(entityType, level, VillagerSkinVariant.PLAINS_NITWIT);
+    this(entityType, level, VillagerSkinVariant.DEFAULT);
   }
 
   public VillagerNPC(EntityType<? extends Villager> entityType, Level level, Enum<?> variantType) {
