@@ -136,24 +136,17 @@ tasks.register('cleanLoomCache') {
     println "Cleaning Loom Cache for Easy NPC artifacts..."
 
     def deletedCount = 0
-    def loomCacheDirs = [
-        file("${rootDir}/core/.gradle/loom-cache/remapped_mods"),
-        file("${rootDir}/config-ui/.gradle/loom-cache/remapped_mods"),
-        file("${rootDir}/bundle/.gradle/loom-cache/remapped_mods")
+    def loomCachePaths = [
+        file("${rootDir}/core/.gradle/loom-cache/remapped_mods/remapped/de/markusbordihn/easynpc"),
+        file("${rootDir}/config-ui/.gradle/loom-cache/remapped_mods/remapped/de/markusbordihn/easynpc"),
+        file("${rootDir}/bundle/.gradle/loom-cache/remapped_mods/remapped/de/markusbordihn/easynpc")
     ]
 
-    loomCacheDirs.each { cacheDir ->
-      if (cacheDir.exists()) {
-        cacheDir.eachDir { mappingsDir ->
-          if (mappingsDir.name.startsWith("loom_mappings_")) {
-            def easyNpcCacheDir = new File(mappingsDir, "de/markusbordihn/easynpc")
-            if (easyNpcCacheDir.exists()) {
-              println "Deleting: ${easyNpcCacheDir.absolutePath}"
-              easyNpcCacheDir.deleteDir()
-              deletedCount++
-            }
-          }
-        }
+    loomCachePaths.each { easyNpcCacheDir ->
+      if (easyNpcCacheDir.exists()) {
+        println "Deleting: ${easyNpcCacheDir.absolutePath}"
+        easyNpcCacheDir.deleteDir()
+        deletedCount++
       }
     }
 

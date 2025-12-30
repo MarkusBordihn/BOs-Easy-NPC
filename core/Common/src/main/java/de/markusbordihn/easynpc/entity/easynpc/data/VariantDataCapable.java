@@ -129,12 +129,10 @@ public interface VariantDataCapable<T extends PathfinderMob> extends EasyNPC<T> 
   default Holder<VillagerType> getVillagerType(Enum<?> variantType) {
     String name = variantType.name().toLowerCase(Locale.ROOT);
     for (VillagerType villagerType : BuiltInRegistries.VILLAGER_TYPE) {
-      if (name.startsWith(
-          BuiltInRegistries.VILLAGER_TYPE
-              .getKey(villagerType)
-              .getPath()
-              .toLowerCase(Locale.ROOT))) {
-        return BuiltInRegistries.VILLAGER_TYPE.wrapAsHolder(villagerType);
+      Holder<VillagerType> holder = BuiltInRegistries.VILLAGER_TYPE.wrapAsHolder(villagerType);
+      String typeName = BuiltInRegistries.VILLAGER_TYPE.getKey(villagerType).getPath();
+      if (name.startsWith(typeName.toLowerCase(Locale.ROOT))) {
+        return holder;
       }
     }
     return null;
