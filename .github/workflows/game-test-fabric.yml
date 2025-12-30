@@ -30,10 +30,10 @@ jobs:
         run: chmod +x gradlew
 
       - name: Run Core GameTests (Fabric)
-        run: ./gradlew -p core Fabric:runGameTest -x Forge:compileJava -x Forge:processResources
+        run: ./gradlew -p core Fabric:runGameTest --no-daemon
 
       - name: Build Core and Publish to Maven Local
-        run: ./gradlew -p core build publishToMavenLocal
+        run: ./gradlew -p core Common:build --no-daemon
 
       - name: Run Config UI GameTests (Fabric)
-        run: ./gradlew -p config-ui Fabric:runGameTest -x Forge:compileJava -x Forge:processResources
+        run: ./gradlew -p config-ui Fabric:runGameTest --no-daemon

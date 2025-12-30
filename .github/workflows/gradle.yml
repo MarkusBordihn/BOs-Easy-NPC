@@ -40,10 +40,10 @@ jobs:
         run: chmod +x gradlew
 
       - name: Gradle Build Test Core
-        run: ./gradlew -p core build
+        run: ./gradlew -p core build --no-daemon
 
       - name: Gradle Build Test Config UI
-        run: ./gradlew -p config-ui build
+        run: ./gradlew -p config-ui build --no-daemon
 
       - name: Gradle Build Test Bundle
-        run: ./gradlew -p bundle build
+        run: ./gradlew -p bundle build --no-daemon
