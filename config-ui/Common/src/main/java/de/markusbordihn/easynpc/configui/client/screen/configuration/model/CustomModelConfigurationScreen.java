@@ -247,7 +247,7 @@ public class CustomModelConfigurationScreen<T extends ConfigurationMenu>
       EntityType<? extends Entity> entityType = entityKeys.get(index);
       this.renderCustomModelEntity(guiGraphics, left, top, entityType);
 
-      int topNamePos = Math.round((top - 76f) / SKIN_NAME_SCALING);
+      int topNamePos = Math.round((top - 177f) / SKIN_NAME_SCALING);
       int leftNamePos = Math.round((left - 21f) / SKIN_NAME_SCALING);
       guiGraphics.pose().pushMatrix();
       guiGraphics.pose().translate(0, 100);
@@ -266,7 +266,7 @@ public class CustomModelConfigurationScreen<T extends ConfigurationMenu>
           TextUtils.normalizeString(entityTypeKey.getPath(), 14),
           leftNamePos,
           topNamePos + 10,
-          Constants.FONT_COLOR_DARK_GREEN);
+          Constants.FONT_COLOR_BLACK);
       guiGraphics.pose().popMatrix();
 
       skinPosition++;
