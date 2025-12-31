@@ -25,7 +25,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 
 public class SoundDataSet {
@@ -63,7 +63,7 @@ public class SoundDataSet {
     this.addSound(type, soundEvent.location());
   }
 
-  public void addSound(SoundType type, ResourceLocation resourceLocation) {
+  public void addSound(SoundType type, Identifier resourceLocation) {
     if (resourceLocation == null || resourceLocation.toString().isEmpty()) {
       return;
     }

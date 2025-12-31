@@ -21,19 +21,16 @@ package de.markusbordihn.easynpc.client.model;
 
 import de.markusbordihn.easynpc.Constants;
 import net.minecraft.client.model.geom.ModelLayerLocation;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class ModModelLayers {
 
   public static final ModelLayerLocation DOPPLER =
-      new ModelLayerLocation(
-          ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "doppler"), "main");
+      new ModelLayerLocation(Identifier.fromNamespaceAndPath(Constants.MOD_ID, "doppler"), "main");
   public static final ModelLayerLocation FAIRY =
-      new ModelLayerLocation(
-          ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "fairy"), "main");
+      new ModelLayerLocation(Identifier.fromNamespaceAndPath(Constants.MOD_ID, "fairy"), "main");
   public static final ModelLayerLocation ORC =
-      new ModelLayerLocation(
-          ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "orc"), "main");
+      new ModelLayerLocation(Identifier.fromNamespaceAndPath(Constants.MOD_ID, "orc"), "main");
 
   private ModModelLayers() {}
 }

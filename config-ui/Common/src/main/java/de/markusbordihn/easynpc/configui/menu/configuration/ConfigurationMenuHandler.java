@@ -37,7 +37,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
@@ -147,23 +147,23 @@ public class ConfigurationMenuHandler {
     final CompoundTag additionalSyncData = new CompoundTag();
     switch (configurationType) {
       case DEFAULT_PRESET_IMPORT -> {
-        Set<ResourceLocation> defaultPresets =
-            DefaultPresetDataFiles.getPresetResourceLocations(serverPlayer.level().getServer())
+        Set<Identifier> defaultPresets =
+            DefaultPresetDataFiles.getPresetIdentifiers(serverPlayer.level().getServer())
                 .collect(Collectors.toSet());
         additionalSyncData.put(
-            "DefaultPresets", CompoundTagUtils.writeResourceLocations(defaultPresets));
+            "DefaultPresets", CompoundTagUtils.writeIdentifiers(defaultPresets));
       }
       case CUSTOM_PRESET_IMPORT -> {
-        CustomPresetDataFiles.refreshPresetResourceLocations();
-        Set<ResourceLocation> customPresets = CustomPresetDataFiles.getPresetResourceLocationSet();
+        CustomPresetDataFiles.refreshPresetIdentifiers();
+        Set<Identifier> customPresets = CustomPresetDataFiles.getPresetIdentifierSet();
         additionalSyncData.put(
-            "CustomPresets", CompoundTagUtils.writeResourceLocations(customPresets));
+            "CustomPresets", CompoundTagUtils.writeIdentifiers(customPresets));
       }
       case WORLD_PRESET_IMPORT -> {
-        WorldPresetDataFiles.refreshPresetResourceLocations();
-        Set<ResourceLocation> worldPresets = WorldPresetDataFiles.getPresetResourceLocationSet();
+        WorldPresetDataFiles.refreshPresetIdentifiers();
+        Set<Identifier> worldPresets = WorldPresetDataFiles.getPresetIdentifierSet();
         additionalSyncData.put(
-            "WorldPresets", CompoundTagUtils.writeResourceLocations(worldPresets));
+            "WorldPresets", CompoundTagUtils.writeIdentifiers(worldPresets));
       }
       case BASIC_ACTION, DIALOG_ACTION, DISTANCE_ACTION ->
           AdditionalScreenData.addActionEventSet(additionalSyncData, easyNPC);

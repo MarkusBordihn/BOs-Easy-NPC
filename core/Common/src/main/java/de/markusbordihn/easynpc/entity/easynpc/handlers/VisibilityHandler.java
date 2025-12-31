@@ -102,10 +102,9 @@ public class VisibilityHandler {
             && displayAttributeData.getDisplayBooleanAttribute(
                 DisplayAttributeType.VISIBLE_TO_TEAM);
     if (npcTeam != null
-        && playerTeam != null
-        && npcTeam.equals(playerTeam)
-        && visibleToTeamEnabled
-        && npcTeam.canSeeFriendlyInvisibles()) {
+      && npcTeam.equals(playerTeam)
+      && visibleToTeamEnabled
+      && npcTeam.canSeeFriendlyInvisibles()) {
       return false;
     }
 
@@ -173,12 +172,8 @@ public class VisibilityHandler {
     }
 
     // If we reach here and time visibility is set for the opposite time
-    if ((isDayTime && !visibleAtDaySet && visibleAtNightSet)
-        || (isNightTime && !visibleAtNightSet && visibleAtDaySet)) {
-      return true;
-    }
-
-    return false;
+    return (isDayTime && !visibleAtDaySet && visibleAtNightSet)
+      || (isNightTime && !visibleAtNightSet && visibleAtDaySet);
   }
 
   public static boolean handleIsCustomNameVisible(

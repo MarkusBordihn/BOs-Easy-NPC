@@ -29,18 +29,16 @@ import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.input.InputWithModifiers;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
 public class CustomButton extends Button {
 
   protected static final WidgetSprites SPRITES =
       new WidgetSprites(
-          ResourceLocation.fromNamespaceAndPath(Constants.MINECRAFT_PREFIX, "widget/button"),
-          ResourceLocation.fromNamespaceAndPath(
-              Constants.MINECRAFT_PREFIX, "widget/button_disabled"),
-          ResourceLocation.fromNamespaceAndPath(
-              Constants.MINECRAFT_PREFIX, "widget/button_highlighted"));
+          Identifier.fromNamespaceAndPath(Constants.MINECRAFT_PREFIX, "widget/button"),
+          Identifier.fromNamespaceAndPath(Constants.MINECRAFT_PREFIX, "widget/button_disabled"),
+          Identifier.fromNamespaceAndPath(Constants.MINECRAFT_PREFIX, "widget/button_highlighted"));
 
   public CustomButton(int left, int top, int width, int height) {
     this(left, top, width, height, null, unused -> {});

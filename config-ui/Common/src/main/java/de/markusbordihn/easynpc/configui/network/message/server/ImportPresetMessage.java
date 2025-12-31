@@ -30,15 +30,15 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 
 public record ImportPresetMessage(
-    UUID uuid, PresetType presetType, CompoundTag compoundTag, ResourceLocation resourceLocation)
+    UUID uuid, PresetType presetType, CompoundTag compoundTag, Identifier resourceLocation)
     implements NetworkMessageRecord {
 
-  public static final ResourceLocation MESSAGE_ID =
-      ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "import_preset");
+  public static final Identifier MESSAGE_ID =
+      Identifier.fromNamespaceAndPath(Constants.MOD_ID, "import_preset");
   public static final Type<ImportPresetMessage> PAYLOAD_TYPE = new Type<>(MESSAGE_ID);
   public static final StreamCodec<RegistryFriendlyByteBuf, ImportPresetMessage> STREAM_CODEC =
       StreamCodec.of((buffer, message) -> message.write(buffer), ImportPresetMessage::create);
@@ -48,7 +48,7 @@ public record ImportPresetMessage(
         buffer.readUUID(),
         buffer.readEnum(PresetType.class),
         buffer.readNbt(),
-        buffer.readResourceLocation());
+        buffer.readIdentifier());
   }
 
   @Override
@@ -56,11 +56,11 @@ public record ImportPresetMessage(
     buffer.writeUUID(this.uuid);
     buffer.writeEnum(this.presetType);
     buffer.writeNbt(this.compoundTag);
-    buffer.writeResourceLocation(this.resourceLocation);
+    buffer.writeIdentifier(this.resourceLocation);
   }
 
   @Override
-  public ResourceLocation id() {
+  public Identifier id() {
     return MESSAGE_ID;
   }
 

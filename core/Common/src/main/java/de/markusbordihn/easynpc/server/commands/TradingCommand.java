@@ -38,7 +38,7 @@ public class TradingCommand extends Command {
             Commands.literal("open")
                 .requires(
                     commandSourceStack ->
-                        commandSourceStack.hasPermission(Commands.LEVEL_GAMEMASTERS))
+                        commandSourceStack.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER))
                 .then(
                     Commands.argument(NPC_TARGET_ARG, EasyNPCArgument.npc())
                         .executes(
@@ -63,7 +63,7 @@ public class TradingCommand extends Command {
             Commands.literal("reset")
                 .requires(
                     commandSourceStack ->
-                        commandSourceStack.hasPermission(Commands.LEVEL_GAMEMASTERS))
+                        commandSourceStack.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER))
                 .then(
                     Commands.argument(NPC_TARGET_ARG, EasyNPCArgument.npc())
                         .executes(

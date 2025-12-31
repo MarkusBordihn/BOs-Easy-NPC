@@ -27,13 +27,13 @@ import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.HumanoidMobRenderer;
 import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class OrcRenderer
     extends HumanoidMobRenderer<Orc, HumanoidRenderState, OrcModel<HumanoidRenderState>>
     implements EasyNPCEntityRenderer {
 
-  protected static final ResourceLocation DEFAULT_TEXTURE = OrcSkinVariant.ORC.getTextureLocation();
+  protected static final Identifier DEFAULT_TEXTURE = OrcSkinVariant.ORC.getTextureLocation();
 
   public OrcRenderer(
       EntityRendererProvider.Context context, ModelLayerLocation modelLayerLocation) {
@@ -41,12 +41,12 @@ public class OrcRenderer
   }
 
   @Override
-  public ResourceLocation getTextureLocation(HumanoidRenderState renderState) {
+  public Identifier getTextureLocation(HumanoidRenderState renderState) {
     return getTextureFromRenderState(renderState);
   }
 
   @Override
-  public ResourceLocation getDefaultTexture() {
+  public Identifier getDefaultTexture() {
     return DEFAULT_TEXTURE;
   }
 

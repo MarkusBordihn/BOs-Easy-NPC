@@ -24,13 +24,12 @@ import de.markusbordihn.easynpc.data.skin.variant.CatSkinVariant;
 import net.minecraft.client.renderer.entity.CatRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.state.CatRenderState;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.animal.Cat;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.animal.feline.Cat;
 
 public class CatRawRenderer extends CatRenderer implements EasyNPCEntityRenderer {
 
-  protected static final ResourceLocation DEFAULT_TEXTURE =
-      CatSkinVariant.BLACK.getTextureLocation();
+  protected static final Identifier DEFAULT_TEXTURE = CatSkinVariant.BLACK.getTextureLocation();
 
   public CatRawRenderer(EntityRendererProvider.Context context) {
     super(context);
@@ -43,12 +42,12 @@ public class CatRawRenderer extends CatRenderer implements EasyNPCEntityRenderer
   }
 
   @Override
-  public ResourceLocation getTextureLocation(CatRenderState renderState) {
+  public Identifier getTextureLocation(CatRenderState renderState) {
     return getTextureFromRenderState(renderState);
   }
 
   @Override
-  public ResourceLocation getDefaultTexture() {
+  public Identifier getDefaultTexture() {
     return DEFAULT_TEXTURE;
   }
 }

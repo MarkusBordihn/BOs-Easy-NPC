@@ -28,8 +28,8 @@ import java.util.function.Consumer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -51,7 +51,7 @@ public class MoveEasyNPCItem extends Item {
     super(
         properties.setId(
             ResourceKey.create(
-                Registries.ITEM, ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, ID))));
+                Registries.ITEM, Identifier.fromNamespaceAndPath(Constants.MOD_ID, ID))));
   }
 
   @Override

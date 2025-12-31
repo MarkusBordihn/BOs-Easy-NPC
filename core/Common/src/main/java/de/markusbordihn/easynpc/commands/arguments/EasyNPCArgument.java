@@ -41,6 +41,7 @@ import java.util.concurrent.CompletableFuture;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.commands.arguments.selector.EntitySelector;
+import net.minecraft.server.permissions.Permissions;
 import net.minecraft.world.entity.Entity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -158,7 +159,7 @@ public class EasyNPCArgument implements ArgumentType<EntitySelector> {
         new EasyNPCSelectorParser(
             stringReader,
             context.getSource() instanceof CommandSourceStack commandSourceStack
-                && commandSourceStack.hasPermission(2));
+                && commandSourceStack.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER));
     try {
       easyNPCSelectorParser.parse();
     } catch (CommandSyntaxException exception) {

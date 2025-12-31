@@ -128,7 +128,7 @@ public interface DisplayAttributeDataCapable<E extends PathfinderMob> extends Ea
     EnumMap<DisplayAttributeType, DisplayAttributeEntry> displayAttributeMap =
         getDisplayAttributeMap();
     DisplayAttributeEntry entry = displayAttributeMap.get(displayAttributeType);
-    return entry != null ? entry.booleanValue() : false;
+    return entry != null && entry.booleanValue();
   }
 
   default int getDisplayIntAttribute(DisplayAttributeType displayAttributeType) {

@@ -29,7 +29,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
@@ -117,7 +117,7 @@ public class NPCEntityFactory {
   }
 
   private static String getEntityTypeId(EntityType<?> entityType) {
-    ResourceLocation resourceLocation = BuiltInRegistries.ENTITY_TYPE.getKey(entityType);
+    Identifier resourceLocation = BuiltInRegistries.ENTITY_TYPE.getKey(entityType);
     return resourceLocation.toString();
   }
 }

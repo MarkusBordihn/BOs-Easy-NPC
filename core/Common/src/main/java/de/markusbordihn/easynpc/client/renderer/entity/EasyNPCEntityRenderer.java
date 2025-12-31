@@ -25,11 +25,11 @@ import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
 import java.util.function.Supplier;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public interface EasyNPCEntityRenderer {
 
-  ResourceLocation getDefaultTexture();
+  Identifier getDefaultTexture();
 
   default boolean supportsPlayerSkins() {
     return false;
@@ -39,19 +39,19 @@ public interface EasyNPCEntityRenderer {
     return livingEntityRenderState instanceof EasyNPCRenderStateExtension;
   }
 
-  default ResourceLocation getTextureByVariant(final Enum<?> variant) {
+  default Identifier getTextureByVariant(final Enum<?> variant) {
     return LivingEntityTextureManager.getTextureByVariant(variant, getDefaultTexture());
   }
 
-  default ResourceLocation getCustomTexture(final SkinDataCapable<?> entity) {
+  default Identifier getCustomTexture(final SkinDataCapable<?> entity) {
     return LivingEntityTextureManager.getCustomTexture(entity, getDefaultTexture());
   }
 
-  default ResourceLocation getPlayerTexture(final SkinDataCapable<?> entity) {
+  default Identifier getPlayerTexture(final SkinDataCapable<?> entity) {
     return LivingEntityTextureManager.getPlayerTexture(entity, getDefaultTexture());
   }
 
-  default ResourceLocation getRemoteTexture(final SkinDataCapable<?> entity) {
+  default Identifier getRemoteTexture(final SkinDataCapable<?> entity) {
     return LivingEntityTextureManager.getRemoteTexture(entity, getDefaultTexture());
   }
 
@@ -59,20 +59,20 @@ public interface EasyNPCEntityRenderer {
     return EasyNPCLivingEntityRenderer.getEasyNPC(livingEntityRenderState);
   }
 
-  default ResourceLocation getTextureFromRenderState(final LivingEntityRenderState renderState) {
+  default Identifier getTextureFromRenderState(final LivingEntityRenderState renderState) {
     return EasyNPCLivingEntityRenderer.getTexture(renderState, getDefaultTexture());
   }
 
-  default ResourceLocation getEntityTexture(final EasyNPC<?> easyNPC) {
+  default Identifier getEntityTexture(final EasyNPC<?> easyNPC) {
     return LivingEntityTextureManager.getEntityTexture(easyNPC, getDefaultTexture());
   }
 
-  default ResourceLocation getEntityPlayerTexture(final EasyNPC<?> easyNPC) {
+  default Identifier getEntityPlayerTexture(final EasyNPC<?> easyNPC) {
     return LivingEntityTextureManager.getEntityPlayerTexture(easyNPC, getDefaultTexture());
   }
 
-  default ResourceLocation getEntityTextureWithDefaultCallback(
-      final EasyNPC<?> easyNPC, final Supplier<ResourceLocation> defaultTextureSupplier) {
+  default Identifier getEntityTextureWithDefaultCallback(
+      final EasyNPC<?> easyNPC, final Supplier<Identifier> defaultTextureSupplier) {
     return LivingEntityTextureManager.getEntityTextureWithDefaultCallback(
         easyNPC, getDefaultTexture(), defaultTextureSupplier);
   }

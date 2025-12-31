@@ -21,7 +21,7 @@ package de.markusbordihn.easynpc.data.skin.variant;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.skin.VariantTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public enum AllaySkinVariant implements VariantTexture {
   ALLAY(Constants.MINECRAFT_PREFIX, "textures/entity/allay/allay.png"),
@@ -29,14 +29,14 @@ public enum AllaySkinVariant implements VariantTexture {
   GRASSLAND(Constants.MOD_ID, "textures/entity/allay/allay_grassland.png"),
   WATER(Constants.MOD_ID, "textures/entity/allay/allay_water.png");
 
-  private final ResourceLocation textureLocation;
+  private final Identifier textureLocation;
 
   AllaySkinVariant(String namespace, String path) {
     this.textureLocation = parseTextureLocation(namespace, path);
   }
 
   @Override
-  public ResourceLocation getTextureLocation() {
+  public Identifier getTextureLocation() {
     return textureLocation;
   }
 }

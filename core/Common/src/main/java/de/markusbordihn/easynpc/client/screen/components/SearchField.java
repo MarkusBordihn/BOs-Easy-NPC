@@ -23,11 +23,11 @@ import de.markusbordihn.easynpc.Constants;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class SearchField extends TextField {
 
-  public static final ResourceLocation SPRITE = Constants.TEXTURE_CONFIGURATION;
+  public static final Identifier SPRITE = Constants.TEXTURE_CONFIGURATION;
   public static final int SPRITE_HEIGHT = 12;
   public static final int SPRITE_OFFSET_X = 93;
   public static final int SPRITE_OFFSET_Y = 30;

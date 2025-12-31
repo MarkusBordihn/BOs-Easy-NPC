@@ -28,13 +28,13 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 
 public record ExportPresetMessage(UUID uuid, String name) implements NetworkMessageRecord {
 
-  public static final ResourceLocation MESSAGE_ID =
-      ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "export_preset");
+  public static final Identifier MESSAGE_ID =
+      Identifier.fromNamespaceAndPath(Constants.MOD_ID, "export_preset");
   public static final Type<ExportPresetMessage> PAYLOAD_TYPE = new Type<>(MESSAGE_ID);
   public static final StreamCodec<RegistryFriendlyByteBuf, ExportPresetMessage> STREAM_CODEC =
       StreamCodec.of((buffer, message) -> message.write(buffer), ExportPresetMessage::create);
@@ -50,7 +50,7 @@ public record ExportPresetMessage(UUID uuid, String name) implements NetworkMess
   }
 
   @Override
-  public ResourceLocation id() {
+  public Identifier id() {
     return MESSAGE_ID;
   }
 

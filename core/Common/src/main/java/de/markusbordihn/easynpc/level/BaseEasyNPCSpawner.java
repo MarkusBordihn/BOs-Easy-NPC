@@ -33,7 +33,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.Entity;
@@ -362,8 +362,7 @@ public class BaseEasyNPCSpawner extends BaseSpawner {
       if (spawnData.contains("entity")) {
         CompoundTag entityData = spawnData.getCompoundOrEmpty("entity");
         if (entityData.contains("id")) {
-          ResourceLocation entityId =
-              ResourceLocation.tryParse(entityData.getString("id").orElse(""));
+          Identifier entityId = Identifier.tryParse(entityData.getString("id").orElse(""));
           this.isEasyNPC = entityId != null && entityId.getNamespace().equals(Constants.MOD_ID);
         }
 

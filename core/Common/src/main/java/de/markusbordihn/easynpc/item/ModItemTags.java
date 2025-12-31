@@ -21,7 +21,7 @@ package de.markusbordihn.easynpc.item;
 
 import de.markusbordihn.easynpc.Constants;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
@@ -31,27 +31,27 @@ public class ModItemTags {
   public static final TagKey<Item> MELEE_WEAPON =
       TagKey.create(
           BuiltInRegistries.ITEM.key(),
-          ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "melee_weapon"));
+          Identifier.fromNamespaceAndPath(Constants.MOD_ID, "melee_weapon"));
   public static final TagKey<Item> MELEE_WEAPON_SWORD =
       TagKey.create(
           BuiltInRegistries.ITEM.key(),
-          ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "melee_weapon/sword"));
+          Identifier.fromNamespaceAndPath(Constants.MOD_ID, "melee_weapon/sword"));
   public static final TagKey<Item> MELEE_WEAPON_AXE =
       TagKey.create(
           BuiltInRegistries.ITEM.key(),
-          ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "melee_weapon/axe"));
+          Identifier.fromNamespaceAndPath(Constants.MOD_ID, "melee_weapon/axe"));
 
   // Ranged Weapon Tags
   public static final TagKey<Item> RANGED_WEAPON_BOW =
       TagKey.create(
           BuiltInRegistries.ITEM.key(),
-          ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "ranged_weapon/bow"));
+          Identifier.fromNamespaceAndPath(Constants.MOD_ID, "ranged_weapon/bow"));
   public static final TagKey<Item> RANGED_WEAPON_CROSSBOW =
       TagKey.create(
           BuiltInRegistries.ITEM.key(),
-          ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "ranged_weapon/crossbow"));
+          Identifier.fromNamespaceAndPath(Constants.MOD_ID, "ranged_weapon/crossbow"));
   public static final TagKey<Item> RANGED_WEAPON_GUN =
       TagKey.create(
           BuiltInRegistries.ITEM.key(),
-          ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "ranged_weapon/gun"));
+          Identifier.fromNamespaceAndPath(Constants.MOD_ID, "ranged_weapon/gun"));
 }

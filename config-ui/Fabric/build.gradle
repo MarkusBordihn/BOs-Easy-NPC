@@ -1,7 +1,7 @@
 plugins {
-  id 'fabric-loom' version "${fabric_loom}"
   id 'maven-publish'
-  id 'com.matthewprenger.cursegradle' version '1.4.0'
+  id 'net.fabricmc.fabric-loom-remap' version "${fabric_loom}"
+  id 'net.darkhax.curseforgegradle' version '1.1.28'
   id 'nu.studer.credentials' version '3.0'
   id "com.modrinth.minotaur" version "2.+"
 }
@@ -27,7 +27,7 @@ dependencies {
   minecraft "com.mojang:minecraft:${minecraft_version}"
   mappings loom.officialMojangMappings()
   modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
-  modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
+  modApi "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
 
   // Include Common code
   implementation project(":Common")
@@ -97,11 +97,15 @@ processResources {
   }
 }
 
+tasks.withType(Test).configureEach {
+  failOnNoDiscoveredTests = false
+}
+
 publishing {
   publications {
     mavenJava(MavenPublication) {
       groupId project.group
-      artifactId project.archivesBaseName
+      artifactId base.archivesName.get()
       version project.version
       from components.java
     }
@@ -114,26 +118,19 @@ tasks.named('build') {
 
 // CurseForge Publishing
 if (project.hasProperty('curseforge_project_id') && project.curseforge_project_id) {
-  curseforge {
-    apiKey = "${credentials.forKey('curseforge_api_token')}"
-    project {
-      id = "${project.curseforge_project_id}"
-      changelog = rootProject.file("CHANGELOG.md")
-      changelogType = 'markdown'
-      releaseType = "${project.curseforge_release_type}"
-      addGameVersion("${project.minecraft_version}")
-      addGameVersion("Fabric")
-      addGameVersion("Quilt")
-      mainArtifact(remapJar) {
-        relations {
-          requiredDependency 'easy-npc-core'
-          requiredDependency 'fabric-api'
-        }
-      }
-    }
-    options {
-      forgeGradleIntegration = false
-    }
+  tasks.register('curseforge', net.darkhax.curseforgegradle.TaskPublishCurseForge) {
+    group = 'publishing'
+    description = 'Uploads to CurseForge'
+    apiToken = "${credentials.forKey('curseforge_api_token')}"
+
+    def mainFile = upload(project.curseforge_project_id, remapJar)
+    mainFile.changelogType = 'markdown'
+    mainFile.changelog = rootProject.file("../core/CHANGELOG.md").text
+    mainFile.releaseType = "${project.curseforge_release_type}"
+    mainFile.addModLoader('Fabric')
+    mainFile.addModLoader('Quilt')
+    mainFile.addGameVersion("${project.minecraft_version}")
+    mainFile.addRequirement('easy-npc-core')
   }
 }
 
@@ -145,13 +142,13 @@ if (project.hasProperty('modrinth_project_id') && project.modrinth_project_id) {
     versionNumber = "${version}"
     versionType = "${project.modrinth_release_type}"
     versionName = "${project.mod_name} ${project.version}"
-    changelog = rootProject.file("CHANGELOG.md").text
+    changelog = rootProject.file("../core/CHANGELOG.md").text
     uploadFile = remapJar
-    gameVersions = ["${project.minecraft_version}"]
+    gameVersions = ["${minecraft_version}"]
     loaders = ["fabric", "quilt"]
     dependencies {
       required.project "easy-npc-core"
-      required.project "fabric-api"
+      optional.project "tooltipfix"
     }
   }
 }

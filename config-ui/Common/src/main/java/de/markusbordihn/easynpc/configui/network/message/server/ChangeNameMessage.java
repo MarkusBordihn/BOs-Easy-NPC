@@ -29,15 +29,15 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 
 public record ChangeNameMessage(
     UUID uuid, String name, int color, NameVisibilityType nameVisibilityType)
     implements NetworkMessageRecord {
 
-  public static final ResourceLocation MESSAGE_ID =
-      ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "change_name");
+  public static final Identifier MESSAGE_ID =
+      Identifier.fromNamespaceAndPath(Constants.MOD_ID, "change_name");
   public static final Type<ChangeNameMessage> PAYLOAD_TYPE = new Type<>(MESSAGE_ID);
   public static final StreamCodec<RegistryFriendlyByteBuf, ChangeNameMessage> STREAM_CODEC =
       StreamCodec.of((buffer, message) -> message.write(buffer), ChangeNameMessage::create);
@@ -59,7 +59,7 @@ public record ChangeNameMessage(
   }
 
   @Override
-  public ResourceLocation id() {
+  public Identifier id() {
     return MESSAGE_ID;
   }
 

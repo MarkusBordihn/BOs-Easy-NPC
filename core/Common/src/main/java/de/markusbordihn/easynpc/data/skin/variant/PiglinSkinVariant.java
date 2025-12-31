@@ -21,21 +21,21 @@ package de.markusbordihn.easynpc.data.skin.variant;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.skin.VariantTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public enum PiglinSkinVariant implements VariantTexture {
   PIGLIN(Constants.MINECRAFT_PREFIX, "textures/entity/piglin/piglin.png"),
   PIGLIN_BRUTE(Constants.MINECRAFT_PREFIX, "textures/entity/piglin/piglin_brute.png"),
   ZOMBIFIED_PIGLIN(Constants.MINECRAFT_PREFIX, "textures/entity/piglin/zombified_piglin.png");
 
-  private final ResourceLocation textureLocation;
+  private final Identifier textureLocation;
 
   PiglinSkinVariant(String namespace, String path) {
     this.textureLocation = parseTextureLocation(namespace, path);
   }
 
   @Override
-  public ResourceLocation getTextureLocation() {
+  public Identifier getTextureLocation() {
     return textureLocation;
   }
 }

@@ -42,7 +42,7 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Inventory;
@@ -252,7 +252,7 @@ public class CustomModelConfigurationScreen<T extends ConfigurationMenu>
       guiGraphics.pose().pushMatrix();
       guiGraphics.pose().translate(0, 100);
       guiGraphics.pose().scale(SKIN_NAME_SCALING, SKIN_NAME_SCALING);
-      ResourceLocation entityTypeKey = BuiltInRegistries.ENTITY_TYPE.getKey(entityType);
+      Identifier entityTypeKey = BuiltInRegistries.ENTITY_TYPE.getKey(entityType);
       Text.drawString(
           guiGraphics,
           this.font,

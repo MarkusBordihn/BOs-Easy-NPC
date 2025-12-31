@@ -21,7 +21,7 @@ package de.markusbordihn.easynpc.data.skin.variant;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.skin.VariantTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public enum WolfSkinVariant implements VariantTexture {
   WOLF(Constants.MINECRAFT_PREFIX, "textures/entity/wolf/wolf.png"),
@@ -49,14 +49,14 @@ public enum WolfSkinVariant implements VariantTexture {
   WOODS_TAMED(Constants.MINECRAFT_PREFIX, "textures/entity/wolf/wolf_woods_tame.png"),
   WOODS_ANGRY(Constants.MINECRAFT_PREFIX, "textures/entity/wolf/wolf_woods_angry.png");
 
-  private final ResourceLocation textureLocation;
+  private final Identifier textureLocation;
 
   WolfSkinVariant(String namespace, String path) {
     this.textureLocation = parseTextureLocation(namespace, path);
   }
 
   @Override
-  public ResourceLocation getTextureLocation() {
+  public Identifier getTextureLocation() {
     return textureLocation;
   }
 }

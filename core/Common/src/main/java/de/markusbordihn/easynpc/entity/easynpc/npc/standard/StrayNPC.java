@@ -29,7 +29,7 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.FlyingAnimal;
-import net.minecraft.world.entity.monster.Stray;
+import net.minecraft.world.entity.monster.skeleton.Stray;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
@@ -83,11 +83,6 @@ public class StrayNPC extends StrayRaw implements StandardEasyNPC<StrayRaw> {
 
   @Override
   protected void registerGoals() {}
-
-  @Override
-  protected boolean isSunBurnTick() {
-    return false;
-  }
 
   @Override
   public void travel(Vec3 vec3) {

@@ -30,7 +30,7 @@ import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.regex.Pattern;
 import net.minecraft.client.Minecraft;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.packs.resources.Resource;
 import org.apache.logging.log4j.LogManager;
@@ -61,7 +61,7 @@ public class DataFileHandler {
     return path.toString().endsWith(Constants.NPC_NBT_SUFFIX) && isValidPresetFilename(path);
   }
 
-  public static boolean isPresetFile(ResourceLocation resourceLocation) {
+  public static boolean isPresetFile(Identifier resourceLocation) {
     return resourceLocation.toString().endsWith(Constants.NPC_NBT_SUFFIX);
   }
 
@@ -205,13 +205,13 @@ public class DataFileHandler {
   }
 
   public static boolean copyResourceFile(
-      MinecraftServer minecraftServer, ResourceLocation resourceLocation, File targetFile) {
+      MinecraftServer minecraftServer, Identifier resourceLocation, File targetFile) {
     return copyResourceFile(minecraftServer, resourceLocation, targetFile, false);
   }
 
   public static boolean copyResourceFile(
       MinecraftServer minecraftServer,
-      ResourceLocation resourceLocation,
+      Identifier resourceLocation,
       File targetFile,
       boolean overwriteExisting) {
     if (resourceLocation == null || targetFile == null) {
@@ -240,12 +240,12 @@ public class DataFileHandler {
     }
   }
 
-  public static boolean copyResourceFile(ResourceLocation resourceLocation, File targetFile) {
+  public static boolean copyResourceFile(Identifier resourceLocation, File targetFile) {
     return copyResourceFile(resourceLocation, targetFile, false);
   }
 
   public static boolean copyResourceFile(
-      ResourceLocation resourceLocation, File targetFile, boolean overwriteExisting) {
+      Identifier resourceLocation, File targetFile, boolean overwriteExisting) {
     if (resourceLocation == null || targetFile == null) {
       log.warn("Cannot copy resource file: resourceLocation or targetFile is null");
       return false;
@@ -291,7 +291,7 @@ public class DataFileHandler {
     }
   }
 
-  public static String getFileNameFromResourceLocation(ResourceLocation resourceLocation) {
+  public static String getFileNameFromIdentifier(Identifier resourceLocation) {
     if (resourceLocation == null) {
       return null;
     }

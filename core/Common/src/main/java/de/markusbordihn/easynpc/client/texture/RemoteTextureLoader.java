@@ -30,7 +30,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.UUID;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -41,7 +41,7 @@ public class RemoteTextureLoader {
 
   private RemoteTextureLoader() {}
 
-  public static ResourceLocation loadRemoteTexture(
+  public static Identifier loadRemoteTexture(
       TextureModelKey textureModelKey, String remoteUrl, Path targetDirectory) {
     if (!UrlValidator.isValidUrl(remoteUrl)) {
       TextureErrorHandler.urlLoadErrorMessage(textureModelKey, remoteUrl, "Invalid URL");
@@ -49,7 +49,7 @@ public class RemoteTextureLoader {
     }
 
     // Check for cached texture.
-    ResourceLocation cachedTexture =
+    Identifier cachedTexture =
         TextureCacheManager.getCachedTexture(textureModelKey, targetDirectory);
     if (cachedTexture != null) {
       log.info(

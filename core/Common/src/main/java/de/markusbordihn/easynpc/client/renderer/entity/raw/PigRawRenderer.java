@@ -24,24 +24,23 @@ import de.markusbordihn.easynpc.data.skin.variant.PigSkinVariant;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.PigRenderer;
 import net.minecraft.client.renderer.entity.state.PigRenderState;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class PigRawRenderer extends PigRenderer implements EasyNPCEntityRenderer {
 
-  protected static final ResourceLocation DEFAULT_TEXTURE =
-      PigSkinVariant.TEMPERATE.getTextureLocation();
+  protected static final Identifier DEFAULT_TEXTURE = PigSkinVariant.TEMPERATE.getTextureLocation();
 
   public PigRawRenderer(EntityRendererProvider.Context context) {
     super(context);
   }
 
   @Override
-  public ResourceLocation getTextureLocation(PigRenderState renderState) {
+  public Identifier getTextureLocation(PigRenderState renderState) {
     return getTextureFromRenderState(renderState);
   }
 
   @Override
-  public ResourceLocation getDefaultTexture() {
+  public Identifier getDefaultTexture() {
     return DEFAULT_TEXTURE;
   }
 }

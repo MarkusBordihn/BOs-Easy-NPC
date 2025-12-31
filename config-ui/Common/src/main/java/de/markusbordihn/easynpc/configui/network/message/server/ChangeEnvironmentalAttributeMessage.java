@@ -29,7 +29,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 
 public record ChangeEnvironmentalAttributeMessage(
@@ -40,8 +40,8 @@ public record ChangeEnvironmentalAttributeMessage(
     Integer integerValue)
     implements NetworkMessageRecord {
 
-  public static final ResourceLocation MESSAGE_ID =
-      ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "change_environmental_attribute");
+  public static final Identifier MESSAGE_ID =
+      Identifier.fromNamespaceAndPath(Constants.MOD_ID, "change_environmental_attribute");
   public static final Type<ChangeEnvironmentalAttributeMessage> PAYLOAD_TYPE =
       new Type<>(MESSAGE_ID);
   public static final StreamCodec<RegistryFriendlyByteBuf, ChangeEnvironmentalAttributeMessage>
@@ -74,7 +74,7 @@ public record ChangeEnvironmentalAttributeMessage(
   }
 
   @Override
-  public ResourceLocation id() {
+  public Identifier id() {
     return MESSAGE_ID;
   }
 

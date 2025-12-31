@@ -25,12 +25,11 @@ import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.PiglinRenderer;
 import net.minecraft.client.renderer.entity.state.PiglinRenderState;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class PiglinRawRenderer extends PiglinRenderer implements EasyNPCEntityRenderer {
 
-  protected static final ResourceLocation DEFAULT_TEXTURE =
-      PiglinSkinVariant.PIGLIN.getTextureLocation();
+  protected static final Identifier DEFAULT_TEXTURE = PiglinSkinVariant.PIGLIN.getTextureLocation();
 
   public PiglinRawRenderer(EntityRendererProvider.Context context) {
     super(
@@ -42,8 +41,8 @@ public class PiglinRawRenderer extends PiglinRenderer implements EasyNPCEntityRe
   }
 
   @Override
-  public ResourceLocation getTextureLocation(PiglinRenderState renderState) {
-    ResourceLocation texture = getTextureFromRenderState(renderState);
+  public Identifier getTextureLocation(PiglinRenderState renderState) {
+    Identifier texture = getTextureFromRenderState(renderState);
     // Fallback to original logic if no cached texture available
     if (texture == DEFAULT_TEXTURE) {
       return renderState.isBrute
@@ -54,7 +53,7 @@ public class PiglinRawRenderer extends PiglinRenderer implements EasyNPCEntityRe
   }
 
   @Override
-  public ResourceLocation getDefaultTexture() {
+  public Identifier getDefaultTexture() {
     return DEFAULT_TEXTURE;
   }
 }

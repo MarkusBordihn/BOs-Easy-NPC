@@ -29,14 +29,14 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 
 public record OpenConfigurationMessage(
     UUID uuid, ConfigurationType configurationType, int pageIndex) implements NetworkMessageRecord {
 
-  public static final ResourceLocation MESSAGE_ID =
-      ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "open_configuration_screen");
+  public static final Identifier MESSAGE_ID =
+      Identifier.fromNamespaceAndPath(Constants.MOD_ID, "open_configuration_screen");
   public static final Type<OpenConfigurationMessage> PAYLOAD_TYPE = new Type<>(MESSAGE_ID);
   public static final StreamCodec<RegistryFriendlyByteBuf, OpenConfigurationMessage> STREAM_CODEC =
       StreamCodec.of((buffer, message) -> message.write(buffer), OpenConfigurationMessage::create);
@@ -54,7 +54,7 @@ public record OpenConfigurationMessage(
   }
 
   @Override
-  public ResourceLocation id() {
+  public Identifier id() {
     return MESSAGE_ID;
   }
 

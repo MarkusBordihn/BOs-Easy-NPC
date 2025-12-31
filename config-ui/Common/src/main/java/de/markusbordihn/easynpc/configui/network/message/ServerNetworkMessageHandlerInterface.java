@@ -98,7 +98,7 @@ import java.util.Optional;
 import java.util.UUID;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Pose;
@@ -413,7 +413,7 @@ public interface ServerNetworkMessageHandlerInterface {
     }
   }
 
-  default void importPreset(UUID uuid, PresetType presetType, ResourceLocation resourceLocation) {
+  default void importPreset(UUID uuid, PresetType presetType, Identifier resourceLocation) {
     if (uuid != null && presetType != null && resourceLocation != null) {
       NetworkHandlerManager.sendMessageToServer(
           new ImportPresetMessage(uuid, presetType, null, resourceLocation));
@@ -424,7 +424,7 @@ public interface ServerNetworkMessageHandlerInterface {
       UUID uuid,
       PresetType presetType,
       CompoundTag compoundTag,
-      ResourceLocation resourceLocation) {
+      Identifier resourceLocation) {
     if (uuid != null && presetType != null && compoundTag != null && !compoundTag.isEmpty()) {
       NetworkHandlerManager.sendMessageToServer(
           new ImportPresetMessage(uuid, presetType, compoundTag, resourceLocation));
@@ -469,20 +469,20 @@ public interface ServerNetworkMessageHandlerInterface {
     }
   }
 
-  default void importCustomPreset(UUID uuid, ResourceLocation resourceLocation) {
+  default void importCustomPreset(UUID uuid, Identifier resourceLocation) {
     importPreset(uuid, PresetType.CUSTOM, resourceLocation);
   }
 
-  default void importDefaultPreset(UUID uuid, ResourceLocation resourceLocation) {
+  default void importDefaultPreset(UUID uuid, Identifier resourceLocation) {
     importPreset(uuid, PresetType.DEFAULT, resourceLocation);
   }
 
   default void importLocalPreset(
-      UUID uuid, CompoundTag compoundTag, ResourceLocation resourceLocation) {
+      UUID uuid, CompoundTag compoundTag, Identifier resourceLocation) {
     importPreset(uuid, PresetType.LOCAL, compoundTag, resourceLocation);
   }
 
-  default void importWorldPreset(UUID uuid, ResourceLocation resourceLocation) {
+  default void importWorldPreset(UUID uuid, Identifier resourceLocation) {
     importPreset(uuid, PresetType.WORLD, resourceLocation);
   }
 

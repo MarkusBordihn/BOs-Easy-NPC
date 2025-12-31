@@ -20,7 +20,7 @@
 package de.markusbordihn.easynpc.client.renderer.entity.state;
 
 import java.util.UUID;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public interface EasyNPCRenderStateExtension {
 
@@ -28,7 +28,7 @@ public interface EasyNPCRenderStateExtension {
 
   void setEasyNpcUUID(UUID uuid);
 
-  ResourceLocation getEasyNpcTexture();
+  Identifier getEasyNpcTexture();
 
-  void setEasyNpcTexture(ResourceLocation texture);
+  void setEasyNpcTexture(Identifier texture);
 }

@@ -39,7 +39,7 @@ import net.minecraft.nbt.DoubleTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.NbtIo;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -198,7 +198,7 @@ public class PresetHandler {
 
   public static boolean importCustomPreset(
       ServerLevel serverLevel,
-      ResourceLocation presetLocation,
+      Identifier presetLocation,
       Vec3 position,
       UUID uuid,
       ServerPlayer serverPlayer) {
@@ -207,7 +207,7 @@ public class PresetHandler {
       return false;
     }
 
-    Path presetFile = CustomPresetDataFiles.getPresetsResourceLocationPath(presetLocation);
+    Path presetFile = CustomPresetDataFiles.getPresetsIdentifierPath(presetLocation);
     if (presetFile == null || !presetFile.toFile().exists()) {
       log.error(
           "[{}] Error importing custom preset, no preset file found at {}",
@@ -238,7 +238,7 @@ public class PresetHandler {
 
   public static boolean importDataPreset(
       ServerLevel serverLevel,
-      ResourceLocation presetLocation,
+      Identifier presetLocation,
       Vec3 position,
       UUID uuid,
       ServerPlayer serverPlayer) {
@@ -267,7 +267,7 @@ public class PresetHandler {
 
   public static boolean importDefaultPreset(
       ServerLevel serverLevel,
-      ResourceLocation presetLocation,
+      Identifier presetLocation,
       Vec3 position,
       UUID uuid,
       ServerPlayer serverPlayer) {
@@ -298,7 +298,7 @@ public class PresetHandler {
   public static boolean importLocalPreset(
       ServerLevel serverLevel,
       CompoundTag compoundTag,
-      ResourceLocation presetLocation,
+      Identifier presetLocation,
       Vec3 position,
       UUID uuid,
       ServerPlayer serverPlayer) {
@@ -325,7 +325,7 @@ public class PresetHandler {
 
   public static boolean importWorldPreset(
       ServerLevel serverLevel,
-      ResourceLocation presetLocation,
+      Identifier presetLocation,
       Vec3 position,
       UUID uuid,
       ServerPlayer serverPlayer) {
@@ -334,7 +334,7 @@ public class PresetHandler {
       return false;
     }
 
-    Path presetFile = WorldPresetDataFiles.getPresetsResourceLocationPath(presetLocation);
+    Path presetFile = WorldPresetDataFiles.getPresetsIdentifierPath(presetLocation);
     if (presetFile == null || !presetFile.toFile().exists()) {
       log.error(
           "[{}] Error importing world preset, no preset file found at {}",

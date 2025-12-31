@@ -21,8 +21,8 @@ package de.markusbordihn.easynpc.client.renderer.entity.raw;
 
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
 import de.markusbordihn.easynpc.data.skin.variant.HorseSkinVariant;
-import net.minecraft.client.model.EquineSaddleModel;
-import net.minecraft.client.model.HorseModel;
+import net.minecraft.client.model.animal.equine.EquineSaddleModel;
+import net.minecraft.client.model.animal.equine.HorseModel;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.entity.AbstractHorseRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -30,14 +30,13 @@ import net.minecraft.client.renderer.entity.layers.HorseMarkingLayer;
 import net.minecraft.client.renderer.entity.layers.SimpleEquipmentLayer;
 import net.minecraft.client.renderer.entity.state.HorseRenderState;
 import net.minecraft.client.resources.model.EquipmentClientInfo.LayerType;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.animal.horse.Horse;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.animal.equine.Horse;
 
 public class HorseRawRenderer extends AbstractHorseRenderer<Horse, HorseRenderState, HorseModel>
     implements EasyNPCEntityRenderer {
 
-  protected static final ResourceLocation DEFAULT_TEXTURE =
-      HorseSkinVariant.WHITE.getTextureLocation();
+  protected static final Identifier DEFAULT_TEXTURE = HorseSkinVariant.WHITE.getTextureLocation();
 
   public HorseRawRenderer(EntityRendererProvider.Context context) {
     super(
@@ -63,7 +62,7 @@ public class HorseRawRenderer extends AbstractHorseRenderer<Horse, HorseRenderSt
             new EquineSaddleModel(context.bakeLayer(ModelLayers.HORSE_BABY_SADDLE))));
   }
 
-  public ResourceLocation getTextureLocation(HorseRenderState renderState) {
+  public Identifier getTextureLocation(HorseRenderState renderState) {
     return getTextureFromRenderState(renderState);
   }
 
@@ -80,7 +79,7 @@ public class HorseRawRenderer extends AbstractHorseRenderer<Horse, HorseRenderSt
   }
 
   @Override
-  public ResourceLocation getDefaultTexture() {
+  public Identifier getDefaultTexture() {
     return DEFAULT_TEXTURE;
   }
 }

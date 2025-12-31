@@ -1,7 +1,7 @@
 plugins {
   id 'maven-publish'
-  id 'net.neoforged.gradle.userdev' version '7.1.4'
-  id 'com.matthewprenger.cursegradle' version '1.4.0'
+  id 'net.neoforged.moddev' version '2.0.126'
+  id 'net.darkhax.curseforgegradle' version '1.1.28'
   id 'nu.studer.credentials' version '3.0'
   id "com.modrinth.minotaur" version "2.+"
 }
@@ -10,44 +10,53 @@ base {
   archivesName = "${project.mod_id}-neoforge-${project.minecraft_version}"
 }
 
-minecraft.accessTransformers.file file('src/main/resources/META-INF/accesstransformer.cfg')
+neoForge {
+  version = project.neoforge_version
 
-runs {
-  configureEach {
-    systemProperty 'forge.logging.markers', 'REGISTRIES'
-    systemProperty 'forge.logging.console.level', 'debug'
-    modSource project.sourceSets.main
+  accessTransformers {
+    file('src/main/resources/META-INF/accesstransformer.cfg')
   }
 
-  client {
-    systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+  runs {
+    configureEach {
+      systemProperty 'forge.logging.markers', 'REGISTRIES'
+      logLevel = org.slf4j.event.Level.DEBUG
+    }
+
+    client {
+      client()
+      systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+    }
+
+    client2 {
+      client()
+      gameDirectory = project.file('runs/client2')
+      programArguments.addAll '--username', 'guest_player'
+    }
+
+    server {
+      server()
+      systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+      programArgument '--nogui'
+    }
+
+    gameTestServer {
+      type = 'gameTestServer'
+      systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+    }
   }
 
-  client2 {
-    run('client')
-    workingDirectory project.file('runs/client2')
-    arguments.addAll '--username', 'guest_player'
+  mods {
+    "${project.mod_id}" {
+      sourceSet sourceSets.main
+    }
   }
 
-  server {
-    systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
-    arguments.add '--nogui'
-  }
-
-  gameTestServer {
-    systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
-  }
-
-  clientData {
-    arguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
-  }
 }
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 dependencies {
-  implementation "net.neoforged:neoforge:${project.neoforge_version}"
-
   // Include Common code
   implementation project(":Common")
 
@@ -73,7 +82,7 @@ dependencies {
 }
 
 // NeoGradle compiles the game, but we don't want to add our common code to the game's code
-Spec<Task> notNeoTask = { Task it -> !it.name.startsWith("neo") } as Spec<Task>
+Spec<Task> notNeoTask = { Task it -> !it.name.startsWith("neo") && !it.name.contains("Test") } as Spec<Task>
 
 tasks.withType(JavaCompile).matching(notNeoTask).configureEach {
   source(project(":Common").sourceSets.main.allSource)
@@ -81,6 +90,18 @@ tasks.withType(JavaCompile).matching(notNeoTask).configureEach {
 
 tasks.withType(Javadoc).matching(notNeoTask).configureEach {
   source(project(":Common").sourceSets.main.allJava)
+}
+
+tasks.named("sourcesJar", Jar) {
+  from(project(":Common").sourceSets.main.allSource)
+}
+
+tasks.withType(ProcessResources).matching(notNeoTask).configureEach {
+  from project(":Common").sourceSets.main.resources
+}
+
+tasks.named('compileTestJava', JavaCompile).configure {
+  enabled = !sourceSets.test.allSource.isEmpty()
 }
 
 def getNextMajorVersion(String currentVersion) {
@@ -109,13 +130,6 @@ tasks.withType(ProcessResources).matching(notNeoTask).configureEach {
   }
 }
 
-idea {
-  module {
-    downloadSources = true
-    downloadJavadoc = true
-  }
-}
-
 publishing {
   publications {
     mavenJava(MavenPublication) {
@@ -131,23 +145,25 @@ tasks.named('build') {
   finalizedBy 'publishToMavenLocal'
 }
 
+test {
+  useJUnitPlatform()
+  failOnNoDiscoveredTests = false
+}
+
 // CurseForge Publishing
 if (project.hasProperty('curseforge_project_id') && project.curseforge_project_id) {
-  curseforge {
-    apiKey = "${credentials.forKey('curseforge_api_token')}"
-    project {
-      id = "${project.curseforge_project_id}"
-      changelog = rootProject.file("CHANGELOG.md")
-      changelogType = 'markdown'
-      releaseType = "${project.curseforge_release_type}"
-      addGameVersion("${project.minecraft_version}")
-      addGameVersion("NeoForge")
-      mainArtifact(jar) {
-        relations {
-          requiredDependency 'easy-npc-core'
-        }
-      }
-    }
+  tasks.register('curseforge', net.darkhax.curseforgegradle.TaskPublishCurseForge) {
+    group = 'publishing'
+    description = 'Uploads to CurseForge'
+    apiToken = "${credentials.forKey('curseforge_api_token')}"
+
+    def mainFile = upload(project.curseforge_project_id, jar)
+    mainFile.changelogType = 'markdown'
+    mainFile.changelog = rootProject.file("../core/CHANGELOG.md").text
+    mainFile.releaseType = "${project.curseforge_release_type}"
+    mainFile.addModLoader('NeoForge')
+    mainFile.addGameVersion("${project.minecraft_version}")
+    mainFile.addRequirement('easy-npc-core')
   }
 }
 
@@ -159,7 +175,7 @@ if (project.hasProperty('modrinth_project_id') && project.modrinth_project_id) {
     versionNumber = "${project.version}"
     versionType = "${project.modrinth_release_type}"
     versionName = "${project.mod_name} ${project.version}"
-    changelog = rootProject.file("CHANGELOG.md").text
+    changelog = rootProject.file("../core/CHANGELOG.md").text
     uploadFile = jar
     gameVersions = ["${project.minecraft_version}"]
     loaders = ["neoforge"]

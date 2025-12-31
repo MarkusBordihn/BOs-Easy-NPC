@@ -30,6 +30,7 @@ import java.util.Optional;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -149,7 +150,7 @@ public interface TradingDataCapable<E extends PathfinderMob> extends EasyNPC<E>,
     return this.getMerchantTradingOffers();
   }
 
-  default void updateMerchantTradingOffers() {
+  default void updateMerchantTradingOffers(ServerLevel serverLevel) {
     TradingDataSet tradingDataSet = this.getTradingDataSet();
     MerchantOffers merchantOffers = new MerchantOffers();
     if (tradingDataSet.isType(TradingType.BASIC)

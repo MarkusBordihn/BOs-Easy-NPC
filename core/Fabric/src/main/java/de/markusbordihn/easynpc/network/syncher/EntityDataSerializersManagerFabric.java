@@ -23,7 +23,7 @@ import de.markusbordihn.easynpc.Constants;
 import java.util.Map;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricTrackedDataRegistry;
 import net.minecraft.network.syncher.EntityDataSerializer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -43,8 +43,8 @@ public class EntityDataSerializersManagerFabric {
       }
 
       try {
-        ResourceLocation id =
-            ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, entry.getKey().toLowerCase());
+        Identifier id =
+            Identifier.fromNamespaceAndPath(Constants.MOD_ID, entry.getKey().toLowerCase());
         FabricTrackedDataRegistry.register(id, serializer);
         log.info(
             "Registered entity data serializer {} with id {} using FabricTrackedDataRegistry",

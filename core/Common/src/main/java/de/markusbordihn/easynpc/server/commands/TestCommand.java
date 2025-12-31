@@ -36,6 +36,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.permissions.Permissions;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.block.Blocks;
@@ -51,7 +52,9 @@ public class TestCommand extends Command {
 
   public static ArgumentBuilder<CommandSourceStack, ?> register() {
     return Commands.literal("test")
-        .requires(commandSource -> commandSource.hasPermission(Commands.LEVEL_GAMEMASTERS))
+        .requires(
+            commandSource ->
+                commandSource.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER))
         .then(
             Commands.literal("spawn")
                 .then(

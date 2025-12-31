@@ -24,13 +24,13 @@ import de.markusbordihn.easynpc.data.skin.variant.IllagerSkinVariant;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.EvokerRenderer;
 import net.minecraft.client.renderer.entity.state.EvokerRenderState;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.monster.SpellcasterIllager;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.monster.illager.SpellcasterIllager;
 
 public class EvokerRawRenderer<T extends SpellcasterIllager> extends EvokerRenderer<T>
     implements EasyNPCEntityRenderer {
 
-  protected static final ResourceLocation DEFAULT_TEXTURE =
+  protected static final Identifier DEFAULT_TEXTURE =
       IllagerSkinVariant.EVOKER.getTextureLocation();
 
   public EvokerRawRenderer(EntityRendererProvider.Context context) {
@@ -38,12 +38,12 @@ public class EvokerRawRenderer<T extends SpellcasterIllager> extends EvokerRende
   }
 
   @Override
-  public ResourceLocation getTextureLocation(EvokerRenderState renderState) {
+  public Identifier getTextureLocation(EvokerRenderState renderState) {
     return getTextureFromRenderState(renderState);
   }
 
   @Override
-  public ResourceLocation getDefaultTexture() {
+  public Identifier getDefaultTexture() {
     return DEFAULT_TEXTURE;
   }
 }

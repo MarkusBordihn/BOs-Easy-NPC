@@ -23,7 +23,7 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.utils.CompoundTagUtils;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import org.apache.logging.log4j.LogManager;
@@ -46,12 +46,12 @@ public class SoundDataEntry {
   private SoundType type;
   private float volume = DEFAULT_VOLUME;
 
-  public SoundDataEntry(SoundType type, ResourceLocation location) {
+  public SoundDataEntry(SoundType type, Identifier location) {
     this(type, location, DEFAULT_VOLUME, DEFAULT_PITCH, DEFAULT_ENABLED);
   }
 
   public SoundDataEntry(
-      SoundType type, ResourceLocation location, float volume, float pitch, boolean enabled) {
+      SoundType type, Identifier location, float volume, float pitch, boolean enabled) {
     this.type = type;
     this.volume = volume;
     this.pitch = pitch;
@@ -89,8 +89,7 @@ public class SoundDataEntry {
   public void load(CompoundTag compoundTag) {
     this.type = SoundType.valueOf(compoundTag.getString(DATA_SOUND_TYPE).orElse(""));
     if (compoundTag.contains(DATA_SOUND_NAME_TAG)) {
-      ResourceLocation location =
-          CompoundTagUtils.readResourceLocation(compoundTag, DATA_SOUND_NAME_TAG);
+      Identifier location = CompoundTagUtils.readIdentifier(compoundTag, DATA_SOUND_NAME_TAG);
       this.soundEvent =
           BuiltInRegistries.SOUND_EVENT
               .getOptional(location)

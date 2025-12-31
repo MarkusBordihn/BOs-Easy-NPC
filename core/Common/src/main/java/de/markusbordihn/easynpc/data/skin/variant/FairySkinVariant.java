@@ -21,21 +21,21 @@ package de.markusbordihn.easynpc.data.skin.variant;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.skin.VariantTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public enum FairySkinVariant implements VariantTexture {
   GREEN(Constants.MOD_ID, "textures/entity/fairy/fairy_green.png"),
   RED(Constants.MOD_ID, "textures/entity/fairy/fairy_red.png"),
   BLUE(Constants.MOD_ID, "textures/entity/fairy/fairy_blue.png");
 
-  private final ResourceLocation textureLocation;
+  private final Identifier textureLocation;
 
   FairySkinVariant(String namespace, String path) {
     this.textureLocation = parseTextureLocation(namespace, path);
   }
 
   @Override
-  public ResourceLocation getTextureLocation() {
+  public Identifier getTextureLocation() {
     return textureLocation;
   }
 }

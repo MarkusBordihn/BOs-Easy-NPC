@@ -25,11 +25,11 @@ import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.PiglinRenderer;
 import net.minecraft.client.renderer.entity.state.PiglinRenderState;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class ZombifiedPiglinRawRenderer extends PiglinRenderer implements EasyNPCEntityRenderer {
 
-  protected static final ResourceLocation DEFAULT_TEXTURE =
+  protected static final Identifier DEFAULT_TEXTURE =
       PiglinSkinVariant.ZOMBIFIED_PIGLIN.getTextureLocation();
 
   public ZombifiedPiglinRawRenderer(EntityRendererProvider.Context context) {
@@ -42,12 +42,12 @@ public class ZombifiedPiglinRawRenderer extends PiglinRenderer implements EasyNP
   }
 
   @Override
-  public ResourceLocation getTextureLocation(PiglinRenderState renderState) {
+  public Identifier getTextureLocation(PiglinRenderState renderState) {
     return getTextureFromRenderState(renderState);
   }
 
   @Override
-  public ResourceLocation getDefaultTexture() {
+  public Identifier getDefaultTexture() {
     return DEFAULT_TEXTURE;
   }
 }

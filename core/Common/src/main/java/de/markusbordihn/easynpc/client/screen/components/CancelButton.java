@@ -20,13 +20,13 @@
 package de.markusbordihn.easynpc.client.screen.components;
 
 import de.markusbordihn.easynpc.Constants;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class CancelButton extends SpriteButton {
 
   public static final int DEFAULT_HEIGHT = 18;
   public static final int DEFAULT_WIDTH = 100;
-  public static final ResourceLocation SPRITE = Constants.TEXTURE_CONFIGURATION;
+  public static final Identifier SPRITE = Constants.TEXTURE_CONFIGURATION;
   public static final int SPRITE_HEIGHT = 10;
   public static final int SPRITE_OFFSET_X = 64;
   public static final int SPRITE_OFFSET_Y = 47;

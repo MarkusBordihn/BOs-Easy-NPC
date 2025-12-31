@@ -21,20 +21,20 @@ package de.markusbordihn.easynpc.data.skin.variant;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.skin.VariantTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public enum VexSkinVariant implements VariantTexture {
   VEX(Constants.MINECRAFT_PREFIX, "textures/entity/illager/vex.png"),
   CHARGED(Constants.MINECRAFT_PREFIX, "textures/entity/illager/vex_charging.png");
 
-  private final ResourceLocation textureLocation;
+  private final Identifier textureLocation;
 
   VexSkinVariant(String namespace, String path) {
     this.textureLocation = parseTextureLocation(namespace, path);
   }
 
   @Override
-  public ResourceLocation getTextureLocation() {
+  public Identifier getTextureLocation() {
     return textureLocation;
   }
 }

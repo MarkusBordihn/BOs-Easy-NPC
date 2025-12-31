@@ -23,7 +23,7 @@ import de.markusbordihn.easynpc.compat.CompatConstants;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
 import de.markusbordihn.easynpc.entity.easynpc.npc.raw.SkeletonRaw;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.monster.Skeleton;
+import net.minecraft.world.entity.monster.skeleton.Skeleton;
 import net.minecraft.world.level.Level;
 
 public class SkeletonEpicFight extends SkeletonRaw {

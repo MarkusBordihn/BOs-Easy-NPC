@@ -21,21 +21,21 @@ package de.markusbordihn.easynpc.data.skin.variant;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.skin.VariantTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public enum ZombieSkinVariant implements VariantTexture {
   ZOMBIE(Constants.MINECRAFT_PREFIX, "textures/entity/zombie/zombie.png"),
   HUSK(Constants.MINECRAFT_PREFIX, "textures/entity/zombie/husk.png"),
   DROWNED(Constants.MINECRAFT_PREFIX, "textures/entity/zombie/drowned.png");
 
-  private final ResourceLocation textureLocation;
+  private final Identifier textureLocation;
 
   ZombieSkinVariant(String namespace, String path) {
     this.textureLocation = parseTextureLocation(namespace, path);
   }
 
   @Override
-  public ResourceLocation getTextureLocation() {
+  public Identifier getTextureLocation() {
     return textureLocation;
   }
 }

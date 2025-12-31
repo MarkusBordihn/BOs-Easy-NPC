@@ -29,7 +29,7 @@ import java.nio.file.Path;
 import java.util.Map;
 import java.util.stream.Stream;
 import net.minecraft.client.Minecraft;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.Resource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -60,7 +60,7 @@ public class CustomSkinDataFiles {
 
       // Get all skin template files from this mod's resources only (filter by namespace).
       String skinModelName = skinModel.getName();
-      Map<ResourceLocation, Resource> resourceLocations =
+      Map<Identifier, Resource> resourceLocations =
           Minecraft.getInstance()
               .getResourceManager()
               .listResources(
@@ -70,10 +70,10 @@ public class CustomSkinDataFiles {
                           && fileName.toString().endsWith(TEMPLATE_PREFIX));
 
       // Copy all template files to the custom skin model folder.
-      for (ResourceLocation resourceLocation : resourceLocations.keySet()) {
+      for (Identifier resourceLocation : resourceLocations.keySet()) {
         File skinModelTemplateFile =
             skinModelFolder
-                .resolve(DataFileHandler.getFileNameFromResourceLocation(resourceLocation))
+                .resolve(DataFileHandler.getFileNameFromIdentifier(resourceLocation))
                 .toFile();
         boolean success = DataFileHandler.copyResourceFile(resourceLocation, skinModelTemplateFile);
         if (success && !skinModelTemplateFile.exists()) {

@@ -22,7 +22,7 @@ import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.renderer.state.CameraRenderState;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -35,7 +35,7 @@ public class DopplerRenderer
         PathfinderMob, HumanoidRenderState, DopplerModel<HumanoidRenderState>>
     implements EasyNPCEntityRenderer {
 
-  protected static final ResourceLocation DEFAULT_TEXTURE =
+  protected static final Identifier DEFAULT_TEXTURE =
       DopplerSkinVariant.DOPPLER.getTextureLocation();
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
@@ -153,12 +153,12 @@ public class DopplerRenderer
   }
 
   @Override
-  public ResourceLocation getTextureLocation(HumanoidRenderState renderState) {
+  public Identifier getTextureLocation(HumanoidRenderState renderState) {
     return getTextureFromRenderState(renderState);
   }
 
   @Override
-  public ResourceLocation getDefaultTexture() {
+  public Identifier getDefaultTexture() {
     return DEFAULT_TEXTURE;
   }
 

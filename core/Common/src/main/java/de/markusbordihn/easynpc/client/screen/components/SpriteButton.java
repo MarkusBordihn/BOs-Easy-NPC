@@ -25,15 +25,15 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
 public class SpriteButton extends CustomButton {
 
   public static final int DEFAULT_HEIGHT = 16;
-  public static final ResourceLocation DEFAULT_SPRITE = Constants.TEXTURE_CONFIGURATION;
+  public static final Identifier DEFAULT_SPRITE = Constants.TEXTURE_CONFIGURATION;
 
-  private final ResourceLocation sprite;
+  private final Identifier sprite;
   private final int spriteX;
   private final int spriteY;
   private final int spriteOffsetX;
@@ -47,7 +47,7 @@ public class SpriteButton extends CustomButton {
       int left,
       int top,
       int width,
-      ResourceLocation sprite,
+      Identifier sprite,
       int spriteX,
       int spriteY,
       int spriteOffsetX,
@@ -75,7 +75,7 @@ public class SpriteButton extends CustomButton {
       int top,
       int width,
       int height,
-      ResourceLocation sprite,
+      Identifier sprite,
       int spriteX,
       int spriteY,
       int spriteOffsetX,
@@ -132,7 +132,7 @@ public class SpriteButton extends CustomButton {
       int top,
       int width,
       int height,
-      ResourceLocation sprite,
+      Identifier sprite,
       int spriteOffsetX,
       int spriteOffsetY,
       int spriteWidth,
@@ -189,7 +189,7 @@ public class SpriteButton extends CustomButton {
       int width,
       int height,
       String label,
-      ResourceLocation sprite,
+      Identifier sprite,
       int spriteX,
       int spriteY,
       int spriteOffsetX,
@@ -219,7 +219,7 @@ public class SpriteButton extends CustomButton {
       int width,
       int height,
       Component component,
-      ResourceLocation sprite,
+      Identifier sprite,
       int spriteX,
       int spriteY,
       int spriteOffsetX,

@@ -24,11 +24,11 @@ import de.markusbordihn.easynpc.data.skin.variant.CreeperSkinVariant;
 import net.minecraft.client.renderer.entity.CreeperRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.state.CreeperRenderState;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class CreeperRawRenderer extends CreeperRenderer implements EasyNPCEntityRenderer {
 
-  protected static final ResourceLocation DEFAULT_TEXTURE =
+  protected static final Identifier DEFAULT_TEXTURE =
       CreeperSkinVariant.CREEPER.getTextureLocation();
 
   public CreeperRawRenderer(EntityRendererProvider.Context context) {
@@ -36,12 +36,12 @@ public class CreeperRawRenderer extends CreeperRenderer implements EasyNPCEntity
   }
 
   @Override
-  public ResourceLocation getTextureLocation(CreeperRenderState renderState) {
+  public Identifier getTextureLocation(CreeperRenderState renderState) {
     return getTextureFromRenderState(renderState);
   }
 
   @Override
-  public ResourceLocation getDefaultTexture() {
+  public Identifier getDefaultTexture() {
     return DEFAULT_TEXTURE;
   }
 }

@@ -24,24 +24,23 @@ import de.markusbordihn.easynpc.data.skin.variant.WolfSkinVariant;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.WolfRenderer;
 import net.minecraft.client.renderer.entity.state.WolfRenderState;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class WolfRawRenderer extends WolfRenderer implements EasyNPCEntityRenderer {
 
-  protected static final ResourceLocation DEFAULT_TEXTURE =
-      WolfSkinVariant.WOLF.getTextureLocation();
+  protected static final Identifier DEFAULT_TEXTURE = WolfSkinVariant.WOLF.getTextureLocation();
 
   public WolfRawRenderer(EntityRendererProvider.Context context) {
     super(context);
   }
 
   @Override
-  public ResourceLocation getTextureLocation(WolfRenderState renderState) {
+  public Identifier getTextureLocation(WolfRenderState renderState) {
     return getTextureFromRenderState(renderState);
   }
 
   @Override
-  public ResourceLocation getDefaultTexture() {
+  public Identifier getDefaultTexture() {
     return DEFAULT_TEXTURE;
   }
 }

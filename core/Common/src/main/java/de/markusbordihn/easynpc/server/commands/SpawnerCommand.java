@@ -32,6 +32,7 @@ import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.permissions.Permissions;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.SpawnerBlockEntity;
@@ -47,7 +48,7 @@ public class SpawnerCommand extends Command {
     return Commands.literal("spawner")
         .then(
             Commands.literal("set")
-                .requires(cs -> cs.hasPermission(Commands.LEVEL_GAMEMASTERS))
+                .requires(cs -> cs.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER))
                 .then(
                     Commands.argument(TARGET_ARG, BlockPosArgument.blockPos())
                         .then(

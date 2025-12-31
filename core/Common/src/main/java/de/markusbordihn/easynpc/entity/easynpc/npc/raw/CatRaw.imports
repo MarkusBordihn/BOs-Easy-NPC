@@ -1,6 +1,6 @@
 import de.markusbordihn.easynpc.utils.ReflectionUtils;
 import net.minecraft.core.Holder;
-import net.minecraft.world.entity.animal.CatVariant;
-import net.minecraft.world.entity.animal.CatVariants;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.entity.animal.feline.CatVariant;
+import net.minecraft.world.entity.animal.feline.CatVariants;

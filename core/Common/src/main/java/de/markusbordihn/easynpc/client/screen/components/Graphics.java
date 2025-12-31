@@ -21,7 +21,7 @@ package de.markusbordihn.easynpc.client.screen.components;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class Graphics {
 
@@ -29,7 +29,7 @@ public class Graphics {
 
   public static void blit(
       GuiGraphics guiGraphics,
-      ResourceLocation texture,
+      Identifier texture,
       int x,
       int y,
       int width,
@@ -41,7 +41,7 @@ public class Graphics {
 
   public static void blit(
       GuiGraphics guiGraphics,
-      ResourceLocation texture,
+      Identifier texture,
       int x,
       int y,
       int width,

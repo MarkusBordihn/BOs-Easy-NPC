@@ -11,13 +11,13 @@ import de.markusbordihn.easynpc.data.skin.variant.HumanoidSkinVariant;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.VariantDataCapable;
-import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.model.geom.ModelLayers;
+import net.minecraft.client.model.player.PlayerModel;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.HumanoidMobRenderer;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.core.ClientAsset;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.player.PlayerModelType;
 import net.minecraft.world.entity.player.PlayerSkin;
@@ -26,7 +26,7 @@ public class PlayerRenderer
     extends HumanoidMobRenderer<PathfinderMob, AvatarRenderState, PlayerModel>
     implements EasyNPCEntityRenderer {
 
-  protected static final ResourceLocation DEFAULT_TEXTURE =
+  protected static final Identifier DEFAULT_TEXTURE =
       HumanoidSkinVariant.STEVE.getTextureLocation();
 
   public PlayerRenderer(EntityRendererProvider.Context context) {
@@ -74,7 +74,7 @@ public class PlayerRenderer
             new PlayerSkin(variantTexture.getResourceTexture(), null, null, playerModelType, false);
       }
     } else if (skinData.getSkinType() == SkinType.CUSTOM) {
-      ResourceLocation textureLocation =
+      Identifier textureLocation =
           CustomTextureManager.getOrCreateTextureWithDefault(skinData, getDefaultTexture());
       renderState.skin =
           new PlayerSkin(
@@ -84,7 +84,7 @@ public class PlayerRenderer
               playerModelType,
               false);
     } else if (skinData.getSkinType() == SkinType.PLAYER_SKIN) {
-      ResourceLocation textureLocation =
+      Identifier textureLocation =
           PlayerTextureManager.getOrCreateTextureWithDefault(skinData, getDefaultTexture());
       renderState.skin =
           new PlayerSkin(
@@ -94,7 +94,7 @@ public class PlayerRenderer
               playerModelType,
               false);
     } else if (skinData.getSkinType() == SkinType.INSECURE_REMOTE_URL) {
-      ResourceLocation textureLocation =
+      Identifier textureLocation =
           RemoteTextureManager.getOrCreateTextureWithDefault(skinData, getDefaultTexture());
       renderState.skin =
           new PlayerSkin(
@@ -104,7 +104,7 @@ public class PlayerRenderer
               playerModelType,
               false);
     } else if (skinData.getSkinType() == SkinType.SECURE_REMOTE_URL) {
-      ResourceLocation textureLocation =
+      Identifier textureLocation =
           RemoteTextureManager.getOrCreateTextureWithDefault(skinData, getDefaultTexture());
       renderState.skin =
           new PlayerSkin(
@@ -117,12 +117,12 @@ public class PlayerRenderer
   }
 
   @Override
-  public ResourceLocation getTextureLocation(AvatarRenderState renderState) {
+  public Identifier getTextureLocation(AvatarRenderState renderState) {
     return getTextureFromRenderState(renderState);
   }
 
   @Override
-  public ResourceLocation getDefaultTexture() {
+  public Identifier getDefaultTexture() {
     return DEFAULT_TEXTURE;
   }
 

@@ -24,7 +24,7 @@ import de.markusbordihn.easynpc.configui.item.ModItems;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -41,7 +41,7 @@ public class ModTabs {
     ItemGroupEvents.modifyEntriesEvent(
             ResourceKey.create(
                 Registries.CREATIVE_MODE_TAB,
-                ResourceLocation.fromNamespaceAndPath("easy_npc", "config_items")))
+                Identifier.fromNamespaceAndPath("easy_npc", "config_items")))
         .register(entries -> entries.accept(ModItems.EASY_NPC_WAND.asItem().getDefaultInstance()));
   }
 }

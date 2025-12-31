@@ -20,13 +20,13 @@
 package de.markusbordihn.easynpc.client.screen.components;
 
 import de.markusbordihn.easynpc.Constants;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class DeleteButton extends SpriteButton {
 
   public static final int DEFAULT_HEIGHT = 18;
   public static final int DEFAULT_WIDTH_SMALL = 18;
-  public static final ResourceLocation SPRITE = Constants.TEXTURE_CONFIGURATION;
+  public static final Identifier SPRITE = Constants.TEXTURE_CONFIGURATION;
   public static final int SPRITE_HEIGHT = 12;
   public static final int SPRITE_OFFSET_X = 65;
   public static final int SPRITE_OFFSET_Y = 155;

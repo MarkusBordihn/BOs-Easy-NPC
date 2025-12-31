@@ -24,12 +24,12 @@ import de.markusbordihn.easynpc.data.skin.variant.ZombieVillagerSkinVariant;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.ZombieVillagerRenderer;
 import net.minecraft.client.renderer.entity.state.ZombieVillagerRenderState;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class ZombieVillagerRawRenderer extends ZombieVillagerRenderer
     implements EasyNPCEntityRenderer {
 
-  protected static final ResourceLocation DEFAULT_TEXTURE =
+  protected static final Identifier DEFAULT_TEXTURE =
       ZombieVillagerSkinVariant.DEFAULT.getTextureLocation();
 
   public ZombieVillagerRawRenderer(EntityRendererProvider.Context context) {
@@ -37,12 +37,12 @@ public class ZombieVillagerRawRenderer extends ZombieVillagerRenderer
   }
 
   @Override
-  public ResourceLocation getTextureLocation(ZombieVillagerRenderState renderState) {
+  public Identifier getTextureLocation(ZombieVillagerRenderState renderState) {
     return getTextureFromRenderState(renderState);
   }
 
   @Override
-  public ResourceLocation getDefaultTexture() {
+  public Identifier getDefaultTexture() {
     return DEFAULT_TEXTURE;
   }
 }

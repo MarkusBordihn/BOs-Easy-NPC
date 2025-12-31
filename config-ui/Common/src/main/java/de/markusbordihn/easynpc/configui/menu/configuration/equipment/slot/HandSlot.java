@@ -22,7 +22,7 @@ package de.markusbordihn.easynpc.configui.menu.configuration.equipment.slot;
 import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.configui.menu.configuration.equipment.EquipmentConfigurationMenu;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.EnchantmentTags;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
@@ -85,7 +85,7 @@ public class HandSlot extends Slot {
   }
 
   @Override
-  public ResourceLocation getNoItemIcon() {
+  public Identifier getNoItemIcon() {
     if (this.equipmentSlot == EquipmentSlot.OFFHAND) {
       return InventoryMenu.EMPTY_ARMOR_SLOT_SHIELD;
     }

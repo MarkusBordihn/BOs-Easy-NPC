@@ -31,14 +31,14 @@ import net.minecraft.nbt.NbtIo;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public record ExportClientPresetMessage(
     UUID uuid, String name, SkinModel skinModel, String fileName, CompoundTag data)
     implements NetworkMessageRecord {
 
-  public static final ResourceLocation MESSAGE_ID =
-      ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "preset_export_client");
+  public static final Identifier MESSAGE_ID =
+      Identifier.fromNamespaceAndPath(Constants.MOD_ID, "preset_export_client");
   public static final Type<ExportClientPresetMessage> PAYLOAD_TYPE = new Type<>(MESSAGE_ID);
   public static final StreamCodec<RegistryFriendlyByteBuf, ExportClientPresetMessage> STREAM_CODEC =
       StreamCodec.of((buffer, message) -> message.write(buffer), ExportClientPresetMessage::create);
@@ -62,7 +62,7 @@ public record ExportClientPresetMessage(
   }
 
   @Override
-  public ResourceLocation id() {
+  public Identifier id() {
     return MESSAGE_ID;
   }
 

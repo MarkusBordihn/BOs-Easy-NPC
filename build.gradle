@@ -4,7 +4,8 @@ import org.gradle.tooling.GradleConnector
 subprojects {
 
   tasks.register('wrapper', Wrapper) {
-    gradleVersion = '8.14.3'
+    gradleVersion = '9.2.1'
+    distributionType = Wrapper.DistributionType.BIN
   }
 
   tasks.withType(JavaCompile).configureEach {

@@ -30,9 +30,9 @@ import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.SoundDataCapable;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.commands.arguments.ResourceLocationArgument;
+import net.minecraft.commands.arguments.IdentifierArgument;
 import net.minecraft.commands.synchronization.SuggestionProviders;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class SoundCommand extends Command {
 
@@ -40,7 +40,7 @@ public class SoundCommand extends Command {
 
   public static ArgumentBuilder<CommandSourceStack, ?> register() {
     return Commands.literal("sound")
-        .requires(cs -> cs.hasPermission(Commands.LEVEL_ALL))
+        
         .then(
             Commands.literal("set")
                 .then(
@@ -49,7 +49,7 @@ public class SoundCommand extends Command {
                             Commands.argument(TYPE_ARG, StringArgumentType.string())
                                 .suggests(SoundTypeSuggestions::suggest)
                                 .then(
-                                    Commands.argument(SOUND_ARG, ResourceLocationArgument.id())
+                                    Commands.argument(SOUND_ARG, IdentifierArgument.id())
                                         .suggests(
                                             SuggestionProviders.cast(
                                                 SuggestionProviders.AVAILABLE_SOUNDS))
@@ -62,12 +62,12 @@ public class SoundCommand extends Command {
                                                     SoundType.get(
                                                         StringArgumentType.getString(
                                                             context, "type")),
-                                                    ResourceLocationArgument.getId(
+                                                    IdentifierArgument.getId(
                                                         context, "sound")))))));
   }
 
   private static int setSoundType(
-      CommandSourceStack context, EasyNPC<?> easyNPC, SoundType soundType, ResourceLocation sound) {
+      CommandSourceStack context, EasyNPC<?> easyNPC, SoundType soundType, Identifier sound) {
     if (easyNPC == null || soundType == null || sound == null) {
       return 0;
     }

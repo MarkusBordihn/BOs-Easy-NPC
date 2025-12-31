@@ -28,7 +28,7 @@ import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -60,7 +60,7 @@ public class EasyNPCHumanoidModelMixin<T extends HumanoidRenderState> {
       at = @At("TAIL"))
   private void easyNpcModel(
       final ModelPart modelPart,
-      final Function<ResourceLocation, RenderType> renderType,
+      final Function<Identifier, RenderType> renderType,
       final CallbackInfo callbackInfo) {
     this.easyNPC$modelManager =
         new EasyNPCModelManager(modelPart, renderType)

@@ -25,20 +25,20 @@ import de.markusbordihn.easynpc.utils.CompoundTagUtils;
 import java.util.Set;
 import java.util.stream.Collectors;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 
 public class ImportCustomPresetConfigurationScreen<T extends ConfigurationMenu>
     extends ImportPresetConfigurationScreen<T> {
 
-  private final Set<ResourceLocation> customPresets;
+  private final Set<Identifier> customPresets;
 
   public ImportCustomPresetConfigurationScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
     importPresetButtonLabel = "import_custom_preset";
     importPresetHeaderLabel = "preset_custom_for";
     this.customPresets =
-        CompoundTagUtils.readResourceLocations(
+        CompoundTagUtils.readIdentifiers(
                 this.getAdditionalScreenData().getList("CustomPresets"))
             .stream()
             .filter(
@@ -48,7 +48,7 @@ public class ImportCustomPresetConfigurationScreen<T extends ConfigurationMenu>
   }
 
   @Override
-  public void loadPreset(ResourceLocation resourceLocation) {
+  public void loadPreset(Identifier resourceLocation) {
     NetworkMessageHandlerManager.getServerHandler()
         .importCustomPreset(getEasyNPCUUID(), resourceLocation);
   }

@@ -32,11 +32,11 @@ import java.util.UUID;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
-import net.minecraft.commands.arguments.ResourceLocationArgument;
+import net.minecraft.commands.arguments.IdentifierArgument;
 import net.minecraft.commands.arguments.UuidArgument;
 import net.minecraft.commands.arguments.coordinates.Coordinates;
 import net.minecraft.commands.arguments.coordinates.Vec3Argument;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.Vec3;
 
@@ -61,7 +61,7 @@ public class PresetCommand extends Command {
 
   public static ArgumentBuilder<CommandSourceStack, ?> register() {
     return Commands.literal(COMMAND_NAME)
-        .requires(cs -> cs.hasPermission(Commands.LEVEL_GAMEMASTERS))
+        .requires(cs -> cs.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER))
         .then(
             Commands.literal(EXPORT_ARG)
                 .then(
@@ -135,13 +135,13 @@ public class PresetCommand extends Command {
                 .then(
                     Commands.literal(CUSTOM_ARG)
                         .then(
-                            Commands.argument(PRESET_ARG, ResourceLocationArgument.id())
+                            Commands.argument(PRESET_ARG, IdentifierArgument.id())
                                 .suggests(PresetSuggestions::suggestCustom)
                                 .executes(
                                     context ->
                                         importCustomPreset(
                                             context.getSource(),
-                                            ResourceLocationArgument.getId(context, PRESET_ARG),
+                                            IdentifierArgument.getId(context, PRESET_ARG),
                                             null,
                                             null,
                                             null))
@@ -154,7 +154,7 @@ public class PresetCommand extends Command {
                                                       context, LOCATION_ARG);
                                               return importCustomPreset(
                                                   context.getSource(),
-                                                  ResourceLocationArgument.getId(
+                                                  IdentifierArgument.getId(
                                                       context, PRESET_ARG),
                                                   coordinates.getPosition(context.getSource()),
                                                   null,
@@ -171,7 +171,7 @@ public class PresetCommand extends Command {
                                                               context, LOCATION_ARG);
                                                       return importCustomPreset(
                                                           context.getSource(),
-                                                          ResourceLocationArgument.getId(
+                                                          IdentifierArgument.getId(
                                                               context, PRESET_ARG),
                                                           coordinates.getPosition(
                                                               context.getSource()),
@@ -181,13 +181,13 @@ public class PresetCommand extends Command {
                 .then(
                     Commands.literal(DATA_ARG)
                         .then(
-                            Commands.argument(PRESET_ARG, ResourceLocationArgument.id())
+                            Commands.argument(PRESET_ARG, IdentifierArgument.id())
                                 .suggests(PresetSuggestions::suggestData)
                                 .executes(
                                     context ->
                                         importDefaultPreset(
                                             context.getSource(),
-                                            ResourceLocationArgument.getId(context, PRESET_ARG),
+                                            IdentifierArgument.getId(context, PRESET_ARG),
                                             null,
                                             null,
                                             null))
@@ -200,7 +200,7 @@ public class PresetCommand extends Command {
                                                       context, LOCATION_ARG);
                                               return importDataPreset(
                                                   context.getSource(),
-                                                  ResourceLocationArgument.getId(
+                                                  IdentifierArgument.getId(
                                                       context, PRESET_ARG),
                                                   coordinates.getPosition(context.getSource()),
                                                   null,
@@ -217,7 +217,7 @@ public class PresetCommand extends Command {
                                                               context, LOCATION_ARG);
                                                       return importDataPreset(
                                                           context.getSource(),
-                                                          ResourceLocationArgument.getId(
+                                                          IdentifierArgument.getId(
                                                               context, PRESET_ARG),
                                                           coordinates.getPosition(
                                                               context.getSource()),
@@ -227,13 +227,13 @@ public class PresetCommand extends Command {
                 .then(
                     Commands.literal(DEFAULT_ARG)
                         .then(
-                            Commands.argument(PRESET_ARG, ResourceLocationArgument.id())
+                            Commands.argument(PRESET_ARG, IdentifierArgument.id())
                                 .suggests(PresetSuggestions::suggestDefault)
                                 .executes(
                                     context ->
                                         importDefaultPreset(
                                             context.getSource(),
-                                            ResourceLocationArgument.getId(context, PRESET_ARG),
+                                            IdentifierArgument.getId(context, PRESET_ARG),
                                             null,
                                             null,
                                             null))
@@ -246,7 +246,7 @@ public class PresetCommand extends Command {
                                                       context, LOCATION_ARG);
                                               return importDefaultPreset(
                                                   context.getSource(),
-                                                  ResourceLocationArgument.getId(
+                                                  IdentifierArgument.getId(
                                                       context, PRESET_ARG),
                                                   coordinates.getPosition(context.getSource()),
                                                   null,
@@ -263,7 +263,7 @@ public class PresetCommand extends Command {
                                                               context, LOCATION_ARG);
                                                       return importDefaultPreset(
                                                           context.getSource(),
-                                                          ResourceLocationArgument.getId(
+                                                          IdentifierArgument.getId(
                                                               context, PRESET_ARG),
                                                           coordinates.getPosition(
                                                               context.getSource()),
@@ -273,13 +273,13 @@ public class PresetCommand extends Command {
                 .then(
                     Commands.literal(WORLD_ARG)
                         .then(
-                            Commands.argument(PRESET_ARG, ResourceLocationArgument.id())
+                            Commands.argument(PRESET_ARG, IdentifierArgument.id())
                                 .suggests(PresetSuggestions::suggestWorld)
                                 .executes(
                                     context ->
                                         importWorldPreset(
                                             context.getSource(),
-                                            ResourceLocationArgument.getId(context, PRESET_ARG),
+                                            IdentifierArgument.getId(context, PRESET_ARG),
                                             null,
                                             null,
                                             null))
@@ -292,7 +292,7 @@ public class PresetCommand extends Command {
                                                       context, LOCATION_ARG);
                                               return importWorldPreset(
                                                   context.getSource(),
-                                                  ResourceLocationArgument.getId(
+                                                  IdentifierArgument.getId(
                                                       context, PRESET_ARG),
                                                   coordinates.getPosition(context.getSource()),
                                                   null,
@@ -309,7 +309,7 @@ public class PresetCommand extends Command {
                                                               context, LOCATION_ARG);
                                                       return importWorldPreset(
                                                           context.getSource(),
-                                                          ResourceLocationArgument.getId(
+                                                          IdentifierArgument.getId(
                                                               context, PRESET_ARG),
                                                           coordinates.getPosition(
                                                               context.getSource()),
@@ -321,13 +321,13 @@ public class PresetCommand extends Command {
                 .then(
                     Commands.literal(CUSTOM_ARG)
                         .then(
-                            Commands.argument(PRESET_ARG, ResourceLocationArgument.id())
+                            Commands.argument(PRESET_ARG, IdentifierArgument.id())
                                 .suggests(PresetSuggestions::suggestCustom)
                                 .executes(
                                     context ->
                                         importCustomPreset(
                                             context.getSource(),
-                                            ResourceLocationArgument.getId(context, PRESET_ARG),
+                                            IdentifierArgument.getId(context, PRESET_ARG),
                                             null,
                                             UUID.randomUUID(),
                                             null))
@@ -340,7 +340,7 @@ public class PresetCommand extends Command {
                                                       context, LOCATION_ARG);
                                               return importCustomPreset(
                                                   context.getSource(),
-                                                  ResourceLocationArgument.getId(
+                                                  IdentifierArgument.getId(
                                                       context, PRESET_ARG),
                                                   coordinates.getPosition(context.getSource()),
                                                   UUID.randomUUID(),
@@ -349,13 +349,13 @@ public class PresetCommand extends Command {
                 .then(
                     Commands.literal(DATA_ARG)
                         .then(
-                            Commands.argument(PRESET_ARG, ResourceLocationArgument.id())
+                            Commands.argument(PRESET_ARG, IdentifierArgument.id())
                                 .suggests(PresetSuggestions::suggestData)
                                 .executes(
                                     context ->
                                         importDefaultPreset(
                                             context.getSource(),
-                                            ResourceLocationArgument.getId(context, PRESET_ARG),
+                                            IdentifierArgument.getId(context, PRESET_ARG),
                                             null,
                                             UUID.randomUUID(),
                                             null))
@@ -368,7 +368,7 @@ public class PresetCommand extends Command {
                                                       context, LOCATION_ARG);
                                               return importDataPreset(
                                                   context.getSource(),
-                                                  ResourceLocationArgument.getId(
+                                                  IdentifierArgument.getId(
                                                       context, PRESET_ARG),
                                                   coordinates.getPosition(context.getSource()),
                                                   UUID.randomUUID(),
@@ -377,13 +377,13 @@ public class PresetCommand extends Command {
                 .then(
                     Commands.literal(DEFAULT_ARG)
                         .then(
-                            Commands.argument(PRESET_ARG, ResourceLocationArgument.id())
+                            Commands.argument(PRESET_ARG, IdentifierArgument.id())
                                 .suggests(PresetSuggestions::suggestDefault)
                                 .executes(
                                     context ->
                                         importDefaultPreset(
                                             context.getSource(),
-                                            ResourceLocationArgument.getId(context, PRESET_ARG),
+                                            IdentifierArgument.getId(context, PRESET_ARG),
                                             null,
                                             UUID.randomUUID(),
                                             null))
@@ -396,7 +396,7 @@ public class PresetCommand extends Command {
                                                       context, LOCATION_ARG);
                                               return importDefaultPreset(
                                                   context.getSource(),
-                                                  ResourceLocationArgument.getId(
+                                                  IdentifierArgument.getId(
                                                       context, PRESET_ARG),
                                                   coordinates.getPosition(context.getSource()),
                                                   UUID.randomUUID(),
@@ -405,13 +405,13 @@ public class PresetCommand extends Command {
                 .then(
                     Commands.literal(WORLD_ARG)
                         .then(
-                            Commands.argument(PRESET_ARG, ResourceLocationArgument.id())
+                            Commands.argument(PRESET_ARG, IdentifierArgument.id())
                                 .suggests(PresetSuggestions::suggestWorld)
                                 .executes(
                                     context ->
                                         importWorldPreset(
                                             context.getSource(),
-                                            ResourceLocationArgument.getId(context, PRESET_ARG),
+                                            IdentifierArgument.getId(context, PRESET_ARG),
                                             null,
                                             UUID.randomUUID(),
                                             null))
@@ -424,7 +424,7 @@ public class PresetCommand extends Command {
                                                       context, LOCATION_ARG);
                                               return importWorldPreset(
                                                   context.getSource(),
-                                                  ResourceLocationArgument.getId(
+                                                  IdentifierArgument.getId(
                                                       context, PRESET_ARG),
                                                   coordinates.getPosition(context.getSource()),
                                                   UUID.randomUUID(),
@@ -435,7 +435,7 @@ public class PresetCommand extends Command {
                 .then(
                     Commands.literal(CUSTOM_ARG)
                         .then(
-                            Commands.argument(PRESET_ARG, ResourceLocationArgument.id())
+                            Commands.argument(PRESET_ARG, IdentifierArgument.id())
                                 .suggests(PresetSuggestions::suggestCustom)
                                 .then(
                                     Commands.argument(PLAYER_ARG, EntityArgument.player())
@@ -448,7 +448,7 @@ public class PresetCommand extends Command {
                                                               context, LOCATION_ARG);
                                                       return importCustomPreset(
                                                           context.getSource(),
-                                                          ResourceLocationArgument.getId(
+                                                          IdentifierArgument.getId(
                                                               context, PRESET_ARG),
                                                           coordinates.getPosition(
                                                               context.getSource()),
@@ -459,7 +459,7 @@ public class PresetCommand extends Command {
                 .then(
                     Commands.literal(DATA_ARG)
                         .then(
-                            Commands.argument(PRESET_ARG, ResourceLocationArgument.id())
+                            Commands.argument(PRESET_ARG, IdentifierArgument.id())
                                 .suggests(PresetSuggestions::suggestData)
                                 .then(
                                     Commands.argument(PLAYER_ARG, EntityArgument.player())
@@ -472,7 +472,7 @@ public class PresetCommand extends Command {
                                                               context, LOCATION_ARG);
                                                       return importDataPreset(
                                                           context.getSource(),
-                                                          ResourceLocationArgument.getId(
+                                                          IdentifierArgument.getId(
                                                               context, PRESET_ARG),
                                                           coordinates.getPosition(
                                                               context.getSource()),
@@ -483,7 +483,7 @@ public class PresetCommand extends Command {
                 .then(
                     Commands.literal(DEFAULT_ARG)
                         .then(
-                            Commands.argument(PRESET_ARG, ResourceLocationArgument.id())
+                            Commands.argument(PRESET_ARG, IdentifierArgument.id())
                                 .suggests(PresetSuggestions::suggestDefault)
                                 .then(
                                     Commands.argument(PLAYER_ARG, EntityArgument.player())
@@ -496,7 +496,7 @@ public class PresetCommand extends Command {
                                                               context, LOCATION_ARG);
                                                       return importDefaultPreset(
                                                           context.getSource(),
-                                                          ResourceLocationArgument.getId(
+                                                          IdentifierArgument.getId(
                                                               context, PRESET_ARG),
                                                           coordinates.getPosition(
                                                               context.getSource()),
@@ -507,7 +507,7 @@ public class PresetCommand extends Command {
                 .then(
                     Commands.literal(WORLD_ARG)
                         .then(
-                            Commands.argument(PRESET_ARG, ResourceLocationArgument.id())
+                            Commands.argument(PRESET_ARG, IdentifierArgument.id())
                                 .suggests(PresetSuggestions::suggestWorld)
                                 .then(
                                     Commands.argument(PLAYER_ARG, EntityArgument.player())
@@ -520,7 +520,7 @@ public class PresetCommand extends Command {
                                                               context, LOCATION_ARG);
                                                       return importWorldPreset(
                                                           context.getSource(),
-                                                          ResourceLocationArgument.getId(
+                                                          IdentifierArgument.getId(
                                                               context, PRESET_ARG),
                                                           coordinates.getPosition(
                                                               context.getSource()),
@@ -532,7 +532,7 @@ public class PresetCommand extends Command {
 
   private static int importCustomPreset(
       CommandSourceStack context,
-      ResourceLocation preset,
+      Identifier preset,
       Vec3 position,
       UUID uuid,
       ServerPlayer serverPlayer) {
@@ -550,7 +550,7 @@ public class PresetCommand extends Command {
 
   private static int importDataPreset(
       CommandSourceStack context,
-      ResourceLocation preset,
+      Identifier preset,
       Vec3 position,
       UUID uuid,
       ServerPlayer serverPlayer) {
@@ -567,7 +567,7 @@ public class PresetCommand extends Command {
 
   private static int importDefaultPreset(
       CommandSourceStack context,
-      ResourceLocation preset,
+      Identifier preset,
       Vec3 position,
       UUID uuid,
       ServerPlayer serverPlayer) {
@@ -590,7 +590,7 @@ public class PresetCommand extends Command {
 
   private static int importWorldPreset(
       CommandSourceStack context,
-      ResourceLocation preset,
+      Identifier preset,
       Vec3 position,
       UUID uuid,
       ServerPlayer serverPlayer) {
@@ -606,12 +606,12 @@ public class PresetCommand extends Command {
     return sendSuccessMessage(context, importedPresetMessage(WORLD_ARG, preset, position, uuid));
   }
 
-  private static String importedPresetFailedMessage(String presetType, ResourceLocation preset) {
+  private static String importedPresetFailedMessage(String presetType, Identifier preset) {
     return "Unable to import " + presetType + " preset " + preset + " !";
   }
 
   private static String importedPresetMessage(
-      String presetType, ResourceLocation preset, Vec3 position, UUID uuid) {
+      String presetType, Identifier preset, Vec3 position, UUID uuid) {
     return "Imported "
         + presetType
         + " preset "

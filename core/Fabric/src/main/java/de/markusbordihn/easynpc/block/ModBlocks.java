@@ -28,7 +28,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -43,7 +43,7 @@ public class ModBlocks {
               .setId(
                   ResourceKey.create(
                       Registries.BLOCK,
-                      ResourceLocation.fromNamespaceAndPath(
+                      Identifier.fromNamespaceAndPath(
                           Constants.MOD_ID, SpawnerType.BOSS_SPAWNER.getId())))
               .mapColor(MapColor.STONE)
               .requiresCorrectToolForDrops()
@@ -57,7 +57,7 @@ public class ModBlocks {
               .setId(
                   ResourceKey.create(
                       Registries.BLOCK,
-                      ResourceLocation.fromNamespaceAndPath(
+                      Identifier.fromNamespaceAndPath(
                           Constants.MOD_ID, SpawnerType.DEFAULT_SPAWNER.getId())))
               .mapColor(MapColor.STONE)
               .requiresCorrectToolForDrops()
@@ -71,7 +71,7 @@ public class ModBlocks {
               .setId(
                   ResourceKey.create(
                       Registries.BLOCK,
-                      ResourceLocation.fromNamespaceAndPath(
+                      Identifier.fromNamespaceAndPath(
                           Constants.MOD_ID, SpawnerType.GROUP_SPAWNER.getId())))
               .mapColor(MapColor.STONE)
               .requiresCorrectToolForDrops()
@@ -85,7 +85,7 @@ public class ModBlocks {
               .setId(
                   ResourceKey.create(
                       Registries.BLOCK,
-                      ResourceLocation.fromNamespaceAndPath(
+                      Identifier.fromNamespaceAndPath(
                           Constants.MOD_ID, SpawnerType.SINGLE_SPAWNER.getId())))
               .mapColor(MapColor.STONE)
               .requiresCorrectToolForDrops()
@@ -106,14 +106,14 @@ public class ModBlocks {
   public static void registerModBlockEntities() {
     Registry.register(
         BuiltInRegistries.BLOCK_ENTITY_TYPE,
-        ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, EasyNPCSpawnerBlockEntity.NAME),
+        Identifier.fromNamespaceAndPath(Constants.MOD_ID, EasyNPCSpawnerBlockEntity.NAME),
         EASY_NPC_SPAWNER_ENTITY);
   }
 
   private static void registerBlock(String id, Block block) {
     Registry.register(
         BuiltInRegistries.BLOCK,
-        ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, id),
+        Identifier.fromNamespaceAndPath(Constants.MOD_ID, id),
         block);
   }
 

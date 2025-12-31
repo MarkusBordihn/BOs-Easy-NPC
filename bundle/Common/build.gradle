@@ -1,22 +1,14 @@
 plugins {
   id 'maven-publish'
-  id 'org.spongepowered.gradle.vanilla' version '0.2.1-SNAPSHOT'
+  id 'net.neoforged.moddev' version '2.0.126'
 }
 
 base {
   archivesName = "${project.mod_id}-common-${project.minecraft_version}"
 }
 
-minecraft {
-  version(project.minecraft_version)
-  runs {
-    server('vanilla_server (bundle)') {
-      workingDirectory(this.file("run"))
-    }
-    client('vanilla_client (bundle)') {
-      workingDirectory(this.file("run"))
-    }
-  }
+neoForge {
+  neoFormVersion = neo_form_version
 }
 
 dependencies {
@@ -32,4 +24,9 @@ processResources {
   filesMatching(['pack.mcmeta']) {
     expand buildProps
   }
+}
+
+tasks.register("prepareWorkspace") {
+  group = "ide"
+  description = "Runs post-sync tasks for IDE integration"
 }

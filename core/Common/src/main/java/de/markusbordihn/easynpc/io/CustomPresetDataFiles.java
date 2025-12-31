@@ -30,7 +30,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -38,7 +38,7 @@ public class CustomPresetDataFiles {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   protected static final String DATA_FOLDER_NAME = "preset";
-  private static final ConcurrentHashMap<ResourceLocation, Path> presetResourceLocationMap =
+  private static final ConcurrentHashMap<Identifier, Path> presetIdentifierMap =
       new ConcurrentHashMap<>();
 
   private CustomPresetDataFiles() {}
@@ -55,7 +55,7 @@ public class CustomPresetDataFiles {
       getPresetDataFolder(skinModel);
     }
 
-    refreshPresetResourceLocations();
+    refreshPresetIdentifiers();
   }
 
   public static Path getPresetDataFolder() {
@@ -97,36 +97,36 @@ public class CustomPresetDataFiles {
     return getPresetFile(skinModel, uuid.toString());
   }
 
-  public static Stream<ResourceLocation> getPresetResourceLocations(SkinModel skinModel) {
+  public static Stream<Identifier> getPresetIdentifiers(SkinModel skinModel) {
     String searchName = "/" + skinModel.getName() + "/";
-    return getPresetResourceLocations()
+    return getPresetIdentifiers()
         .filter(
             resourceLocation ->
                 resourceLocation.toString().contains(searchName)
                     && DataFileHandler.isPresetFile(resourceLocation));
   }
 
-  public static Stream<ResourceLocation> getPresetResourceLocations() {
-    return presetResourceLocationMap.keySet().stream();
+  public static Stream<Identifier> getPresetIdentifiers() {
+    return presetIdentifierMap.keySet().stream();
   }
 
-  public static Set<ResourceLocation> getPresetResourceLocationSet() {
-    return presetResourceLocationMap.keySet();
+  public static Set<Identifier> getPresetIdentifierSet() {
+    return presetIdentifierMap.keySet();
   }
 
-  public static void refreshPresetResourceLocations() {
+  public static void refreshPresetIdentifiers() {
     Path presetDataFolder = getPresetDataFolder();
     if (presetDataFolder == null) {
       return;
     }
-    presetResourceLocationMap.clear();
+    presetIdentifierMap.clear();
     try (Stream<Path> filesStream = Files.walk(presetDataFolder)) {
       filesStream
           .filter(DataFileHandler::isPresetFile)
           .forEach(
               path -> {
-                ResourceLocation resourceLocation =
-                    ResourceLocation.fromNamespaceAndPath(
+                Identifier resourceLocation =
+                    Identifier.fromNamespaceAndPath(
                         Constants.MOD_ID,
                         DATA_FOLDER_NAME
                             + '/'
@@ -135,18 +135,18 @@ public class CustomPresetDataFiles {
                                 .toString()
                                 .replace("\\", "/")
                                 .toLowerCase(Locale.ROOT));
-                presetResourceLocationMap.put(resourceLocation, path);
+                presetIdentifierMap.put(resourceLocation, path);
               });
     } catch (IOException exception) {
       log.error("Could not read custom preset data folder {}:", presetDataFolder, exception);
     }
   }
 
-  public static Path getPresetsResourceLocationPath(ResourceLocation resourceLocation) {
-    Path path = presetResourceLocationMap.get(resourceLocation);
+  public static Path getPresetsIdentifierPath(Identifier resourceLocation) {
+    Path path = presetIdentifierMap.get(resourceLocation);
     if (path == null) {
-      refreshPresetResourceLocations();
-      path = presetResourceLocationMap.get(resourceLocation);
+      refreshPresetIdentifiers();
+      path = presetIdentifierMap.get(resourceLocation);
     }
     return path;
   }

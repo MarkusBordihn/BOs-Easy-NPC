@@ -34,7 +34,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -42,8 +42,7 @@ import org.apache.logging.log4j.Logger;
 public class CustomTextureManager {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-  private static final Map<TextureModelKey, ResourceLocation> textureCache =
-      new ConcurrentHashMap<>();
+  private static final Map<TextureModelKey, Identifier> textureCache = new ConcurrentHashMap<>();
   private static final Map<UUID, Long> textureReloadProtection = new ConcurrentHashMap<>();
   private static final String LOG_PREFIX = "[Custom Texture Manager] ";
   private static final long RELOAD_PROTECTION_TIME = 60000;
@@ -72,26 +71,26 @@ public class CustomTextureManager {
     return hashSet;
   }
 
-  public static ResourceLocation getOrCreateTextureWithDefault(
-      SkinDataCapable<?> skinData, ResourceLocation defaultResourceLocation) {
+  public static Identifier getOrCreateTextureWithDefault(
+      SkinDataCapable<?> skinData, Identifier defaultIdentifier) {
     // Check if we have a skin UUID otherwise we assume that the texture is unknown.
     UUID skinUUID = skinData.getSkinUUID();
     if (skinUUID.equals(Constants.BLANK_UUID)) {
-      return defaultResourceLocation;
+      return defaultIdentifier;
     }
 
     // Check if there is already any cached resource location.
     TextureModelKey textureModelKey = new TextureModelKey(skinUUID, skinData.getSkinModel());
-    ResourceLocation resourceLocation = textureCache.get(textureModelKey);
+    Identifier resourceLocation = textureCache.get(textureModelKey);
     if (resourceLocation != null) {
       return resourceLocation;
     }
 
-    ResourceLocation createdResourceLocation = createTexture(textureModelKey, skinData);
-    return createdResourceLocation != null ? createdResourceLocation : defaultResourceLocation;
+    Identifier createdIdentifier = createTexture(textureModelKey, skinData);
+    return createdIdentifier != null ? createdIdentifier : defaultIdentifier;
   }
 
-  private static ResourceLocation createTexture(
+  private static Identifier createTexture(
       TextureModelKey textureModelKey, SkinDataCapable<?> skinData) {
 
     // Reload protection to avoid multiple texture requests in a short time.
@@ -110,7 +109,7 @@ public class CustomTextureManager {
     }
 
     // Search the local texture cache directory for any matching texture.
-    ResourceLocation localTextureCache =
+    Identifier localTextureCache =
         TextureManager.searchCachedTexture(textureModelKey, textureDataFolder);
     if (localTextureCache != null) {
       textureCache.put(textureModelKey, localTextureCache);
@@ -147,8 +146,7 @@ public class CustomTextureManager {
   }
 
   public static void registerTexture(TextureModelKey textureModelKey, File textureFile) {
-    ResourceLocation resourceLocation =
-        TextureManager.addCustomTexture(textureModelKey, textureFile);
+    Identifier resourceLocation = TextureManager.addCustomTexture(textureModelKey, textureFile);
     if (resourceLocation != null) {
       textureCache.put(textureModelKey, resourceLocation);
     }

@@ -30,7 +30,7 @@ import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -40,15 +40,14 @@ public class SliderButton extends AbstractSliderButton {
   public static final int DEFAULT_HEIGHT = 16;
   protected static final Component EMPTY_TEXT = TextComponent.getBlankText();
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-  private static final ResourceLocation SLIDER_SPRITE =
-      ResourceLocation.fromNamespaceAndPath(Constants.MINECRAFT_PREFIX, "widget/slider");
-  private static final ResourceLocation HIGHLIGHTED_SPRITE =
-      ResourceLocation.fromNamespaceAndPath(
-          Constants.MINECRAFT_PREFIX, "widget/slider_highlighted");
-  private static final ResourceLocation SLIDER_HANDLE_SPRITE =
-      ResourceLocation.fromNamespaceAndPath(Constants.MINECRAFT_PREFIX, "widget/slider_handle");
-  private static final ResourceLocation SLIDER_HANDLE_HIGHLIGHTED_SPRITE =
-      ResourceLocation.fromNamespaceAndPath(
+  private static final Identifier SLIDER_SPRITE =
+      Identifier.fromNamespaceAndPath(Constants.MINECRAFT_PREFIX, "widget/slider");
+  private static final Identifier HIGHLIGHTED_SPRITE =
+      Identifier.fromNamespaceAndPath(Constants.MINECRAFT_PREFIX, "widget/slider_highlighted");
+  private static final Identifier SLIDER_HANDLE_SPRITE =
+      Identifier.fromNamespaceAndPath(Constants.MINECRAFT_PREFIX, "widget/slider_handle");
+  private static final Identifier SLIDER_HANDLE_HIGHLIGHTED_SPRITE =
+      Identifier.fromNamespaceAndPath(
           Constants.MINECRAFT_PREFIX, "widget/slider_handle_highlighted");
   protected final SliderButton.OnChange onChange;
   protected final float maxValue;
@@ -350,11 +349,11 @@ public class SliderButton extends AbstractSliderButton {
         fgColor | Mth.ceil(this.alpha * 255.0F) << 24);
   }
 
-  private ResourceLocation getSliderSprite() {
+  private Identifier getSliderSprite() {
     return this.isFocused() && !this.canChangeValue ? HIGHLIGHTED_SPRITE : SLIDER_SPRITE;
   }
 
-  private ResourceLocation getSliderHandleSprite() {
+  private Identifier getSliderHandleSprite() {
     return !this.isHovered && !this.canChangeValue
         ? SLIDER_HANDLE_SPRITE
         : SLIDER_HANDLE_HIGHLIGHTED_SPRITE;

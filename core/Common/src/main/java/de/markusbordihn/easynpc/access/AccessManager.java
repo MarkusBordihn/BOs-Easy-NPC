@@ -29,6 +29,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.permissions.Permissions;
 import net.minecraft.server.players.NameAndId;
 import net.minecraft.world.entity.Entity;
 import org.apache.logging.log4j.LogManager;
@@ -46,7 +47,7 @@ public class AccessManager {
     }
 
     // Check if command source has gamemaster permissions (e.g., command blocks, console).
-    if (context.hasPermission(Commands.LEVEL_GAMEMASTERS)) {
+    if (context.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER)) {
       log.debug(
           "[Access allowed] Command source with gamemaster permissions accessing EasyNPC with UUID {}!",
           uuid);

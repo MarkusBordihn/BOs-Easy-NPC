@@ -29,7 +29,7 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -37,14 +37,14 @@ public class WorldPresetDataFiles {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   protected static final String DATA_FOLDER_NAME = "preset";
-  private static final ConcurrentHashMap<ResourceLocation, Path> presetResourceLocationMap =
+  private static final ConcurrentHashMap<Identifier, Path> presetIdentifierMap =
       new ConcurrentHashMap<>();
 
   private WorldPresetDataFiles() {}
 
   public static void registerWorldPresetData() {
     log.info("{} world preset data ...", Constants.LOG_REGISTER_PREFIX);
-    refreshPresetResourceLocations();
+    refreshPresetIdentifiers();
   }
 
   public static Path getPresetDataFolder() {
@@ -81,24 +81,24 @@ public class WorldPresetDataFiles {
     return presetModelFolder.resolve(sanitizedFileName).toFile();
   }
 
-  public static Stream<ResourceLocation> getPresetResourceLocations() {
-    return presetResourceLocationMap.keySet().stream();
+  public static Stream<Identifier> getPresetIdentifiers() {
+    return presetIdentifierMap.keySet().stream();
   }
 
-  public static Set<ResourceLocation> getPresetResourceLocationSet() {
-    return presetResourceLocationMap.keySet();
+  public static Set<Identifier> getPresetIdentifierSet() {
+    return presetIdentifierMap.keySet();
   }
 
-  public static void refreshPresetResourceLocations() {
+  public static void refreshPresetIdentifiers() {
     Path presetDataFolder = getPresetDataFolder();
-    presetResourceLocationMap.clear();
+    presetIdentifierMap.clear();
     try (Stream<Path> filesStream = Files.walk(presetDataFolder)) {
       filesStream
           .filter(DataFileHandler::isPresetFile)
           .forEach(
               path -> {
-                ResourceLocation resourceLocation =
-                    ResourceLocation.fromNamespaceAndPath(
+                Identifier resourceLocation =
+                    Identifier.fromNamespaceAndPath(
                         Constants.MOD_ID,
                         DATA_FOLDER_NAME
                             + '/'
@@ -107,18 +107,18 @@ public class WorldPresetDataFiles {
                                 .toString()
                                 .replace("\\", "/")
                                 .toLowerCase(Locale.ROOT));
-                presetResourceLocationMap.put(resourceLocation, path);
+                presetIdentifierMap.put(resourceLocation, path);
               });
     } catch (IOException exception) {
       log.error("Could not read world preset data folder {}:", presetDataFolder, exception);
     }
   }
 
-  public static Path getPresetsResourceLocationPath(ResourceLocation resourceLocation) {
-    Path path = presetResourceLocationMap.get(resourceLocation);
+  public static Path getPresetsIdentifierPath(Identifier resourceLocation) {
+    Path path = presetIdentifierMap.get(resourceLocation);
     if (path == null) {
-      refreshPresetResourceLocations();
-      path = presetResourceLocationMap.get(resourceLocation);
+      refreshPresetIdentifiers();
+      path = presetIdentifierMap.get(resourceLocation);
     }
     return path;
   }

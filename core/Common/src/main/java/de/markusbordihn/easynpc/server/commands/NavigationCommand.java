@@ -39,7 +39,7 @@ public class NavigationCommand extends Command {
 
   public static ArgumentBuilder<CommandSourceStack, ?> register() {
     return Commands.literal("navigation")
-        .requires(cs -> cs.hasPermission(Commands.LEVEL_ALL))
+        
         .then(
             Commands.literal("set")
                 .then(

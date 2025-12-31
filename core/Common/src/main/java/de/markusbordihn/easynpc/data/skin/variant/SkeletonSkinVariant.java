@@ -21,7 +21,7 @@ package de.markusbordihn.easynpc.data.skin.variant;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.skin.VariantTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public enum SkeletonSkinVariant implements VariantTexture {
   SKELETON(Constants.MINECRAFT_PREFIX, "textures/entity/skeleton/skeleton.png"),
@@ -29,14 +29,14 @@ public enum SkeletonSkinVariant implements VariantTexture {
   WITHER_SKELETON(Constants.MINECRAFT_PREFIX, "textures/entity/skeleton/wither_skeleton.png"),
   BOGGED(Constants.MINECRAFT_PREFIX, "textures/entity/skeleton/bogged.png");
 
-  private final ResourceLocation textureLocation;
+  private final Identifier textureLocation;
 
   SkeletonSkinVariant(String namespace, String path) {
     this.textureLocation = parseTextureLocation(namespace, path);
   }
 
   @Override
-  public ResourceLocation getTextureLocation() {
+  public Identifier getTextureLocation() {
     return textureLocation;
   }
 }

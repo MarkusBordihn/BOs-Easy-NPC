@@ -22,7 +22,7 @@ package de.markusbordihn.easynpc.data.render;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 
@@ -80,8 +80,8 @@ public record RenderDataEntry(
     }
 
     if (this.renderEntityType != null && this.renderEntityType.canSerialize()) {
-      ResourceLocation entityTypeResourceLocation = EntityType.getKey(this.renderEntityType);
-      compoundTag.putString(DATA_RENDER_ENTITY_TYPE_TAG, entityTypeResourceLocation.toString());
+      Identifier entityTypeIdentifier = EntityType.getKey(this.renderEntityType);
+      compoundTag.putString(DATA_RENDER_ENTITY_TYPE_TAG, entityTypeIdentifier.toString());
     }
 
     return compoundTag;

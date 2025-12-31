@@ -27,26 +27,26 @@ import java.util.List;
 import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 
 public class ImportLocalPresetConfigurationScreen<T extends ConfigurationMenu>
     extends ImportPresetConfigurationScreen<T> {
 
-  private final List<ResourceLocation> localPresets;
+  private final List<Identifier> localPresets;
 
   public ImportLocalPresetConfigurationScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
     importPresetButtonLabel = "import_local_preset";
     importPresetHeaderLabel = "preset_local_for";
     this.localPresets =
-        CustomPresetDataFiles.getPresetResourceLocations(this.getSkinModel()).toList();
+        CustomPresetDataFiles.getPresetIdentifiers(this.getSkinModel()).toList();
   }
 
   @Override
-  public void loadPreset(ResourceLocation resourceLocation) {
+  public void loadPreset(Identifier resourceLocation) {
     try {
-      Path presetFilePath = CustomPresetDataFiles.getPresetsResourceLocationPath(resourceLocation);
+      Path presetFilePath = CustomPresetDataFiles.getPresetsIdentifierPath(resourceLocation);
       NetworkMessageHandlerManager.getServerHandler()
           .importLocalPreset(
               getEasyNPCUUID(),

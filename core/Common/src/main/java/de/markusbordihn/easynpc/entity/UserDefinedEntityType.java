@@ -21,8 +21,8 @@ package de.markusbordihn.easynpc.entity;
 
 import de.markusbordihn.easynpc.Constants;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -115,7 +115,6 @@ public class UserDefinedEntityType implements ModEntityTypeProvider {
 
   private ResourceKey<EntityType<?>> createResourceKey(String entityId) {
     return ResourceKey.create(
-        Registries.ENTITY_TYPE,
-        ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID_CUSTOM, entityId));
+        Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(Constants.MOD_ID_CUSTOM, entityId));
   }
 }

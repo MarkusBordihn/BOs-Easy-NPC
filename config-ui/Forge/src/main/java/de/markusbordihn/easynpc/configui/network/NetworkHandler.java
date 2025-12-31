@@ -28,7 +28,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload.Type;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.loading.FMLEnvironment;
@@ -40,7 +40,7 @@ import net.minecraftforge.network.SimpleChannel;
 public class NetworkHandler implements NetworkHandlerInterface {
 
   public static final SimpleChannel INSTANCE =
-      ChannelBuilder.named(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "network"))
+      ChannelBuilder.named(Identifier.fromNamespaceAndPath(Constants.MOD_ID, "network"))
           .networkProtocolVersion(PROTOCOL_VERSION)
           .simpleChannel();
 

@@ -38,8 +38,8 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -75,7 +75,7 @@ public class EasyNPCPresetItem extends Item {
     super(
         properties.setId(
             ResourceKey.create(
-                Registries.ITEM, ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, NAME))));
+                Registries.ITEM, Identifier.fromNamespaceAndPath(Constants.MOD_ID, NAME))));
   }
 
   public static UUID getPresetUUID(ItemStack itemStack) {

@@ -24,11 +24,11 @@ import de.markusbordihn.easynpc.data.skin.variant.EnderManSkinVariant;
 import net.minecraft.client.renderer.entity.EndermanRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.state.EndermanRenderState;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class EnderManRawRenderer extends EndermanRenderer implements EasyNPCEntityRenderer {
 
-  protected static final ResourceLocation DEFAULT_TEXTURE =
+  protected static final Identifier DEFAULT_TEXTURE =
       EnderManSkinVariant.ENDERMAN.getTextureLocation();
 
   public EnderManRawRenderer(EntityRendererProvider.Context context) {
@@ -36,12 +36,12 @@ public class EnderManRawRenderer extends EndermanRenderer implements EasyNPCEnti
   }
 
   @Override
-  public ResourceLocation getTextureLocation(EndermanRenderState renderState) {
+  public Identifier getTextureLocation(EndermanRenderState renderState) {
     return getTextureFromRenderState(renderState);
   }
 
   @Override
-  public ResourceLocation getDefaultTexture() {
+  public Identifier getDefaultTexture() {
     return DEFAULT_TEXTURE;
   }
 }

@@ -23,7 +23,7 @@ import de.markusbordihn.easynpc.compat.CompatConstants;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
 import de.markusbordihn.easynpc.entity.easynpc.npc.raw.EvokerRaw;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.monster.Evoker;
+import net.minecraft.world.entity.monster.illager.Evoker;
 import net.minecraft.world.level.Level;
 
 public class EvokerEpicFight extends EvokerRaw {

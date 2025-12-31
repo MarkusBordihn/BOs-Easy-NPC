@@ -21,7 +21,7 @@ package de.markusbordihn.easynpc.configui.data.editor;
 
 import de.markusbordihn.easynpc.Constants;
 import java.util.Locale;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public enum EditorType {
   NONE,
@@ -44,8 +44,8 @@ public enum EditorType {
     }
   }
 
-  public ResourceLocation getId() {
-    return ResourceLocation.fromNamespaceAndPath(
+  public Identifier getId() {
+    return Identifier.fromNamespaceAndPath(
         Constants.MOD_ID, this.name().toLowerCase(Locale.ROOT) + "_editor");
   }
 

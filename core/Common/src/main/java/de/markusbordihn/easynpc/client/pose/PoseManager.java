@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Pose;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -46,7 +46,7 @@ public class PoseManager {
   private static final String TEXTURE_PREFIX = "pose/";
   private static final String LOG_PREFIX = "[Pose Manager]";
 
-  private static final Map<ResourceLocation, Animation> poseDataMap = new HashMap<>();
+  private static final Map<Identifier, Animation> poseDataMap = new HashMap<>();
 
   private PoseManager() {}
 
@@ -66,18 +66,18 @@ public class PoseManager {
             animation.getName());
         continue;
       }
-      registerPoseData(getResourceLocation(skinModel, animation), animation);
+      registerPoseData(getIdentifier(skinModel, animation), animation);
     }
   }
 
-  public static ResourceLocation getResourceLocation(SkinModel skinModel, Animation animation) {
+  public static Identifier getIdentifier(SkinModel skinModel, Animation animation) {
     try {
       String resourcePath =
           TEXTURE_PREFIX
               + skinModel.name().toLowerCase(Locale.ROOT)
               + "/"
               + animation.getName().replaceAll("[^a-zA-Z0-9_.-]", "").toLowerCase(Locale.ROOT);
-      return ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, resourcePath);
+      return Identifier.fromNamespaceAndPath(Constants.MOD_ID, resourcePath);
     } catch (Exception exception) {
       log.error(
           "{} Could not create resource location for {} with {}",
@@ -89,18 +89,18 @@ public class PoseManager {
     return null;
   }
 
-  public static Animation getPoseData(ResourceLocation resourceLocation) {
+  public static Animation getPoseData(Identifier resourceLocation) {
     if (resourceLocation == null) {
       return null;
     }
     return poseDataMap.get(resourceLocation);
   }
 
-  public static Set<ResourceLocation> getPoseDataKeys() {
+  public static Set<Identifier> getPoseDataKeys() {
     return poseDataMap.keySet();
   }
 
-  private static void registerPoseData(ResourceLocation resourceLocation, Animation animation) {
+  private static void registerPoseData(Identifier resourceLocation, Animation animation) {
     if (resourceLocation == null || animation == null) {
       log.error("{} Pose data {} is invalid!", LOG_PREFIX, resourceLocation);
       return;

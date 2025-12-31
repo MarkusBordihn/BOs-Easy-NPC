@@ -21,7 +21,7 @@ package de.markusbordihn.easynpc.data.skin.variant;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.skin.VariantTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public enum HumanoidSlimSkinVariant implements VariantTexture {
   ALEX(Constants.MINECRAFT_PREFIX, "textures/entity/player/slim/alex.png"),
@@ -35,14 +35,14 @@ public enum HumanoidSlimSkinVariant implements VariantTexture {
   ZURI(Constants.MINECRAFT_PREFIX, "textures/entity/player/slim/zuri.png"),
   KAWORRU(Constants.MOD_ID, "textures/entity/humanoid_slim/kaworru.png");
 
-  private final ResourceLocation textureLocation;
+  private final Identifier textureLocation;
 
   HumanoidSlimSkinVariant(String namespace, String path) {
     this.textureLocation = parseTextureLocation(namespace, path);
   }
 
   @Override
-  public ResourceLocation getTextureLocation() {
+  public Identifier getTextureLocation() {
     return textureLocation;
   }
 }

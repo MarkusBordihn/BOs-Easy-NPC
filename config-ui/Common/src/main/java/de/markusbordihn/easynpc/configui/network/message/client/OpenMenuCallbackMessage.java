@@ -30,13 +30,13 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public record OpenMenuCallbackMessage(UUID uuid, UUID menuId, CompoundTag data)
     implements NetworkMessageRecord {
 
-  public static final ResourceLocation MESSAGE_ID =
-      ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "open_menu_callback_message");
+  public static final Identifier MESSAGE_ID =
+      Identifier.fromNamespaceAndPath(Constants.MOD_ID, "open_menu_callback_message");
   public static final Type<OpenMenuCallbackMessage> PAYLOAD_TYPE = new Type<>(MESSAGE_ID);
   public static final StreamCodec<RegistryFriendlyByteBuf, OpenMenuCallbackMessage> STREAM_CODEC =
       StreamCodec.of((buffer, message) -> message.write(buffer), OpenMenuCallbackMessage::create);
@@ -53,7 +53,7 @@ public record OpenMenuCallbackMessage(UUID uuid, UUID menuId, CompoundTag data)
   }
 
   @Override
-  public ResourceLocation id() {
+  public Identifier id() {
     return MESSAGE_ID;
   }
 

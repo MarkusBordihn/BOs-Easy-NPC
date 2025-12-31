@@ -24,11 +24,11 @@ import de.markusbordihn.easynpc.data.skin.variant.IronGolemSkinVariant;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.IronGolemRenderer;
 import net.minecraft.client.renderer.entity.state.IronGolemRenderState;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class IronGolemRawRenderer extends IronGolemRenderer implements EasyNPCEntityRenderer {
 
-  protected static final ResourceLocation DEFAULT_TEXTURE =
+  protected static final Identifier DEFAULT_TEXTURE =
       IronGolemSkinVariant.IRON_GOLEM.getTextureLocation();
 
   public IronGolemRawRenderer(EntityRendererProvider.Context context) {
@@ -36,12 +36,12 @@ public class IronGolemRawRenderer extends IronGolemRenderer implements EasyNPCEn
   }
 
   @Override
-  public ResourceLocation getTextureLocation(IronGolemRenderState renderState) {
+  public Identifier getTextureLocation(IronGolemRenderState renderState) {
     return getTextureFromRenderState(renderState);
   }
 
   @Override
-  public ResourceLocation getDefaultTexture() {
+  public Identifier getDefaultTexture() {
     return DEFAULT_TEXTURE;
   }
 }

@@ -23,7 +23,7 @@ import de.markusbordihn.easynpc.compat.CompatConstants;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
 import de.markusbordihn.easynpc.entity.easynpc.npc.raw.PillagerRaw;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.monster.Pillager;
+import net.minecraft.world.entity.monster.illager.Pillager;
 import net.minecraft.world.level.Level;
 
 public class PillagerEpicFight extends PillagerRaw {

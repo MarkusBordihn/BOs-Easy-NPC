@@ -30,8 +30,9 @@ import java.util.EnumMap;
 import java.util.Map;
 import java.util.function.Function;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.resources.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -40,7 +41,7 @@ public class EasyNPCModelManager {
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   private final ModelPart rootModelPart;
-  private final Function<ResourceLocation, RenderType> renderType;
+  private final Function<Identifier, RenderType> renderType;
   private final Map<ModelPartType, CustomPosition> defaultModelPartPositionMap =
       new EnumMap<>(ModelPartType.class);
   private final Map<ModelPartType, CustomRotation> defaultModelPartRotationMap =
@@ -52,11 +53,11 @@ public class EasyNPCModelManager {
   private final Map<ModelPartType, ModelPart> modelPartMap = new EnumMap<>(ModelPartType.class);
 
   public EasyNPCModelManager(final ModelPart rootModelPart) {
-    this(rootModelPart, RenderType::entityCutoutNoCull);
+    this(rootModelPart, RenderTypes::entityCutoutNoCull);
   }
 
   public EasyNPCModelManager(
-      final ModelPart rootModelPart, final Function<ResourceLocation, RenderType> renderType) {
+      final ModelPart rootModelPart, final Function<Identifier, RenderType> renderType) {
     this.rootModelPart = rootModelPart;
     this.renderType = renderType;
   }

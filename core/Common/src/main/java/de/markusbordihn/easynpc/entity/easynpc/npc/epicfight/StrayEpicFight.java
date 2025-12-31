@@ -23,7 +23,7 @@ import de.markusbordihn.easynpc.compat.CompatConstants;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
 import de.markusbordihn.easynpc.entity.easynpc.npc.raw.StrayRaw;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.monster.Stray;
+import net.minecraft.world.entity.monster.skeleton.Stray;
 import net.minecraft.world.level.Level;
 
 public class StrayEpicFight extends StrayRaw {

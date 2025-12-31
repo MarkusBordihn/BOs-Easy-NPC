@@ -21,7 +21,7 @@ package de.markusbordihn.easynpc.data.skin.variant;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.skin.VariantTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public enum CatSkinVariant implements VariantTexture {
   ALL_BLACK(Constants.MINECRAFT_PREFIX, "textures/entity/cat/all_black.png"),
@@ -37,14 +37,14 @@ public enum CatSkinVariant implements VariantTexture {
   TABBY(Constants.MINECRAFT_PREFIX, "textures/entity/cat/tabby.png"),
   WHITE(Constants.MINECRAFT_PREFIX, "textures/entity/cat/white.png");
 
-  private final ResourceLocation textureLocation;
+  private final Identifier textureLocation;
 
   CatSkinVariant(String namespace, String path) {
     this.textureLocation = parseTextureLocation(namespace, path);
   }
 
   @Override
-  public ResourceLocation getTextureLocation() {
+  public Identifier getTextureLocation() {
     return textureLocation;
   }
 }

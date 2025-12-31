@@ -21,7 +21,7 @@ package de.markusbordihn.easynpc.configui.menu.configuration.equipment.slot;
 
 import de.markusbordihn.easynpc.configui.menu.configuration.equipment.EquipmentConfigurationMenu;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.EnchantmentTags;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -33,8 +33,8 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 
 public class ArmorSlot extends Slot {
 
-  private static final ResourceLocation[] TEXTURE_EMPTY_SLOTS =
-      new ResourceLocation[] {
+  private static final Identifier[] TEXTURE_EMPTY_SLOTS =
+      new Identifier[] {
         InventoryMenu.EMPTY_ARMOR_SLOT_BOOTS,
         InventoryMenu.EMPTY_ARMOR_SLOT_LEGGINGS,
         InventoryMenu.EMPTY_ARMOR_SLOT_CHESTPLATE,
@@ -83,7 +83,7 @@ public class ArmorSlot extends Slot {
   }
 
   @Override
-  public ResourceLocation getNoItemIcon() {
+  public Identifier getNoItemIcon() {
     return TEXTURE_EMPTY_SLOTS[this.equipmentSlot.getIndex()];
   }
 }

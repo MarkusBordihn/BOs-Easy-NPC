@@ -21,7 +21,7 @@ package de.markusbordihn.easynpc.data.skin.variant;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.skin.VariantTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public enum PigSkinVariant implements VariantTexture {
   COLD(Constants.MINECRAFT_PREFIX, "textures/entity/pig/cold_pig.png"),
@@ -29,14 +29,14 @@ public enum PigSkinVariant implements VariantTexture {
   WARM(Constants.MINECRAFT_PREFIX, "textures/entity/pig/warm_pig.png"),
   SPOTTED(Constants.MOD_ID, "textures/entity/pig/pig_spotted.png");
 
-  private final ResourceLocation textureLocation;
+  private final Identifier textureLocation;
 
   PigSkinVariant(String namespace, String path) {
     this.textureLocation = parseTextureLocation(namespace, path);
   }
 
   @Override
-  public ResourceLocation getTextureLocation() {
+  public Identifier getTextureLocation() {
     return textureLocation;
   }
 }

@@ -43,7 +43,6 @@ import de.markusbordihn.easynpc.server.player.FakePlayer;
 import de.markusbordihn.easynpc.utils.TextUtils;
 import java.util.EnumMap;
 import java.util.Objects;
-import java.util.UUID;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -59,15 +58,16 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.goal.GoalSelector;
-import net.minecraft.world.entity.monster.Zombie;
+import net.minecraft.world.entity.monster.zombie.Zombie;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ProjectileWeaponItem;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.item.trading.MerchantOffers;
 import net.minecraft.world.level.Level;
@@ -110,8 +110,8 @@ public class NPCRawTemplate extends Zombie implements EasyNPCBase<Zombie> {
   private ServerEntityData serverEntityData;
   private int attackAnimationTick;
   private int npcDataVersion = -1;
-  private UUID persistentAngerTarget;
-  private int remainingPersistentAngerTime;
+  private long persistentAngerEndTime;
+  private EntityReference<LivingEntity> persistentAngerTarget;
   private SynchedEntityData synchedEntityData;
   private Player tradingPlayer;
   private FakePlayer fakePlayer;
@@ -320,33 +320,32 @@ public class NPCRawTemplate extends Zombie implements EasyNPCBase<Zombie> {
   }
 
   @Override
-  public boolean canFireProjectileWeapon(ProjectileWeaponItem projectileWeaponItem) {
-    return AttackHandler.canFireProjectileWeapon(projectileWeaponItem);
+  public boolean canUseNonMeleeWeapon(ItemStack projectileWeaponItem) {
+    return AttackHandler.canUseNonMeleeWeapon(projectileWeaponItem);
   }
 
   @Override
-  public int getRemainingPersistentAngerTime() {
-    return this.remainingPersistentAngerTime;
+  public long getPersistentAngerEndTime() {
+    return this.persistentAngerEndTime;
   }
 
   @Override
-  public void setRemainingPersistentAngerTime(int remainingPersistentAngerTime) {
-    this.remainingPersistentAngerTime = remainingPersistentAngerTime;
+  public void setPersistentAngerEndTime(long persistentAngerEndTime) {
+    this.persistentAngerEndTime = persistentAngerEndTime;
   }
 
-  @Override
-  public UUID getPersistentAngerTarget() {
+  public EntityReference<LivingEntity> getPersistentAngerTarget() {
     return this.persistentAngerTarget;
   }
 
   @Override
-  public void setPersistentAngerTarget(UUID targetUUID) {
-    this.persistentAngerTarget = targetUUID;
+  public void setPersistentAngerTarget(EntityReference<LivingEntity> targetReference) {
+    this.persistentAngerTarget = targetReference;
   }
 
   @Override
   public void startPersistentAngerTimer() {
-    this.setRemainingPersistentAngerTime(PERSISTENT_ANGER_TIME.sample(this.random));
+    this.setTimeToRemainAngry(PERSISTENT_ANGER_TIME.sample(this.random));
   }
 
   @Override

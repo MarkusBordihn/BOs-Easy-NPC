@@ -22,7 +22,7 @@ package de.markusbordihn.easynpc.configui;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public final class Constants {
 
@@ -41,12 +41,12 @@ public final class Constants {
   public static final String TEXT_ITEM_PREFIX = TEXT_PREFIX + "item.";
   public static final String MINECRAFT_PREFIX = "minecraft";
   public static final String MINECRAFT_RESOURCE_PREFIX = MINECRAFT_PREFIX + ":";
-  public static final ResourceLocation TEXTURE_CONFIGURATION =
-      ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/configuration.png");
-  public static final ResourceLocation TEXTURE_DEMO_BACKGROUND =
-      ResourceLocation.fromNamespaceAndPath(MINECRAFT_PREFIX, "textures/gui/demo_background.png");
-  public static final ResourceLocation TEXTURE_INVENTORY =
-      ResourceLocation.fromNamespaceAndPath(
+  public static final Identifier TEXTURE_CONFIGURATION =
+      Identifier.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/configuration.png");
+  public static final Identifier TEXTURE_DEMO_BACKGROUND =
+      Identifier.fromNamespaceAndPath(MINECRAFT_PREFIX, "textures/gui/demo_background.png");
+  public static final Identifier TEXTURE_INVENTORY =
+      Identifier.fromNamespaceAndPath(
           MINECRAFT_PREFIX, "textures/gui/container/inventory.png");
 
   public static final int FONT_COLOR_BLACK = 0;

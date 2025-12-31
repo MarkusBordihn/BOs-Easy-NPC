@@ -37,7 +37,6 @@ public class SkinCommand extends Command {
 
   public static ArgumentBuilder<CommandSourceStack, ?> register() {
     return Commands.literal("skin")
-        .requires(cs -> cs.hasPermission(Commands.LEVEL_ALL))
         .then(
             Commands.literal("set")
                 .then(

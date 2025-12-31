@@ -21,7 +21,7 @@ package de.markusbordihn.easynpc.data.configuration;
 
 import de.markusbordihn.easynpc.Constants;
 import java.util.Locale;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public enum ConfigurationType {
   NONE,
@@ -94,8 +94,8 @@ public enum ConfigurationType {
     return isAlias;
   }
 
-  public ResourceLocation getId() {
-    return ResourceLocation.fromNamespaceAndPath(
+  public Identifier getId() {
+    return Identifier.fromNamespaceAndPath(
         Constants.MOD_ID, this.name().toLowerCase(Locale.ROOT) + "_configuration");
   }
 

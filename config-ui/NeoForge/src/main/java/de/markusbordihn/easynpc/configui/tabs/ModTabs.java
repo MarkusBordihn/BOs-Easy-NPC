@@ -20,7 +20,7 @@ package de.markusbordihn.easynpc.configui.tabs;
 
 import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.configui.item.ModItems;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -35,7 +35,7 @@ public class ModTabs {
     if (event
         .getTabKey()
         .location()
-        .equals(ResourceLocation.fromNamespaceAndPath("easy_npc", "config_items"))) {
+        .equals(Identifier.fromNamespaceAndPath("easy_npc", "config_items"))) {
       log.info("{} creative mod tabs ...", Constants.LOG_REGISTER_PREFIX);
       event.accept(ModItems.EASY_NPC_WAND.get());
     }

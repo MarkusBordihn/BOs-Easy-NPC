@@ -34,7 +34,7 @@ public class DebugCommand extends Command {
 
   public static ArgumentBuilder<CommandSourceStack, ?> register() {
     return Commands.literal("debug")
-        .requires(cs -> cs.hasPermission(Commands.LEVEL_GAMEMASTERS))
+        .requires(cs -> cs.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER))
         .then(
             Commands.literal("config")
                 .then(

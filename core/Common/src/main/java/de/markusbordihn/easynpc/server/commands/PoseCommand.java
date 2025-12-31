@@ -28,8 +28,8 @@ import de.markusbordihn.easynpc.data.animation.AnimationData.Animation;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.commands.arguments.ResourceLocationArgument;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.commands.arguments.IdentifierArgument;
+import net.minecraft.resources.Identifier;
 
 public class PoseCommand extends Command {
 
@@ -50,7 +50,7 @@ public class PoseCommand extends Command {
         .then(
             Commands.literal("set")
                 .then(
-                    Commands.argument(TYPE_ARG, ResourceLocationArgument.id())
+                    Commands.argument(TYPE_ARG, IdentifierArgument.id())
                         .suggests(PoseSuggestions::suggest)
                         .then(
                             Commands.argument(NPC_TARGET_ARG, EasyNPCArgument.npc())
@@ -60,7 +60,7 @@ public class PoseCommand extends Command {
                                             context.getSource(),
                                             EasyNPCArgument.getEntityWithAccess(
                                                 context, NPC_TARGET_ARG),
-                                            ResourceLocationArgument.getId(context, TYPE_ARG))))));
+                                            IdentifierArgument.getId(context, TYPE_ARG))))));
   }
 
   private static int resetPose(CommandSourceStack context, EasyNPC<?> easyNPC) {
@@ -70,7 +70,7 @@ public class PoseCommand extends Command {
   }
 
   private static int setPose(
-      CommandSourceStack context, EasyNPC<?> easyNPC, ResourceLocation resourceLocation) {
+      CommandSourceStack context, EasyNPC<?> easyNPC, Identifier resourceLocation) {
     Animation animation = PoseManager.getPoseData(resourceLocation);
     if (animation == null) {
       return sendFailureMessage(context, "Pose " + resourceLocation + " was not found!");

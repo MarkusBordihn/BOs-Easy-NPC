@@ -24,7 +24,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public final class Constants {
 
@@ -46,19 +46,19 @@ public final class Constants {
   public static final String MOD_ID = "easy_npc";
   public static final String MOD_ID_CUSTOM = MOD_ID + "_custom";
   public static final String MINECRAFT_PREFIX = "minecraft";
-  public static final ResourceLocation BLANK_ENTITY_TEXTURE =
-      ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "textures/entity/blank.png");
-  public static final ResourceLocation TEXTURE_CONFIGURATION =
-      ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/configuration.png");
-  public static final ResourceLocation TEXTURE_DEMO_BACKGROUND =
-      ResourceLocation.fromNamespaceAndPath(MINECRAFT_PREFIX, "textures/gui/demo_background.png");
-  public static final ResourceLocation TEXTURE_DIALOG =
-      ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/dialog.png");
-  public static final ResourceLocation TEXTURE_INVENTORY =
-      ResourceLocation.fromNamespaceAndPath(
+  public static final Identifier BLANK_ENTITY_TEXTURE =
+      Identifier.fromNamespaceAndPath(Constants.MOD_ID, "textures/entity/blank.png");
+  public static final Identifier TEXTURE_CONFIGURATION =
+      Identifier.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/configuration.png");
+  public static final Identifier TEXTURE_DEMO_BACKGROUND =
+      Identifier.fromNamespaceAndPath(MINECRAFT_PREFIX, "textures/gui/demo_background.png");
+  public static final Identifier TEXTURE_DIALOG =
+      Identifier.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/dialog.png");
+  public static final Identifier TEXTURE_INVENTORY =
+      Identifier.fromNamespaceAndPath(
           MINECRAFT_PREFIX, "textures/gui/container/inventory.png");
-  public static final ResourceLocation TEXTURE_SPAWNER =
-      ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/spawner.png");
+  public static final Identifier TEXTURE_SPAWNER =
+      Identifier.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/spawner.png");
   public static final String TEXT_PREFIX = "text." + MOD_ID + ".";
   public static final String CONTAINER_PREFIX = TEXT_PREFIX + "container.";
   public static final String TEXT_CONFIG_PREFIX = TEXT_PREFIX + "config.";

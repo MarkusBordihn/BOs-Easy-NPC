@@ -24,21 +24,21 @@ import de.markusbordihn.easynpc.data.skin.SkinModel;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class VariantTextureManager {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-  private static final EnumMap<SkinModel, Map<Enum<?>, ResourceLocation>> textureRegistry =
+  private static final EnumMap<SkinModel, Map<Enum<?>, Identifier>> textureRegistry =
       new EnumMap<>(SkinModel.class);
   private static final String LOG_PREFIX = "[Variant Texture Manager] ";
 
   private VariantTextureManager() {}
 
   public static void registerVariantTexture(
-      SkinModel skinModel, Enum<?> variantType, ResourceLocation texture) {
+      SkinModel skinModel, Enum<?> variantType, Identifier texture) {
     if (skinModel == null || variantType == null || texture == null) {
       log.warn(
           "{} Invalid registration attempt: skinModel={}, variantType={}, texture={}",
@@ -58,7 +58,7 @@ public class VariantTextureManager {
   }
 
   public static void registerVariantTextures(
-      SkinModel skinModel, Map<? extends Enum<?>, ResourceLocation> textures) {
+      SkinModel skinModel, Map<? extends Enum<?>, Identifier> textures) {
     if (skinModel == null || textures == null || textures.isEmpty()) {
       log.warn(
           "{} Invalid bulk registration attempt: skinModel={}, textures={}",
@@ -67,26 +67,26 @@ public class VariantTextureManager {
           textures);
       return;
     }
-    Map<Enum<?>, ResourceLocation> variantMap =
+    Map<Enum<?>, Identifier> variantMap =
         textureRegistry.computeIfAbsent(skinModel, k -> new HashMap<>());
     variantMap.putAll(textures);
     log.debug("{} Registered {} variant textures for {}", LOG_PREFIX, textures.size(), skinModel);
   }
 
-  public static ResourceLocation getVariantTexture(SkinModel skinModel, Enum<?> variantType) {
+  public static Identifier getVariantTexture(SkinModel skinModel, Enum<?> variantType) {
     if (skinModel == null || variantType == null) {
       return Constants.BLANK_ENTITY_TEXTURE;
     }
-    Map<Enum<?>, ResourceLocation> variantMap = textureRegistry.get(skinModel);
+    Map<Enum<?>, Identifier> variantMap = textureRegistry.get(skinModel);
     if (variantMap == null) {
       return Constants.BLANK_ENTITY_TEXTURE;
     }
     return variantMap.getOrDefault(variantType, Constants.BLANK_ENTITY_TEXTURE);
   }
 
-  public static ResourceLocation getVariantTextureOrDefault(
-      SkinModel skinModel, Enum<?> variantType, ResourceLocation defaultTexture) {
-    ResourceLocation texture = getVariantTexture(skinModel, variantType);
+  public static Identifier getVariantTextureOrDefault(
+      SkinModel skinModel, Enum<?> variantType, Identifier defaultTexture) {
+    Identifier texture = getVariantTexture(skinModel, variantType);
     return texture.equals(Constants.BLANK_ENTITY_TEXTURE) ? defaultTexture : texture;
   }
 
@@ -94,11 +94,11 @@ public class VariantTextureManager {
     if (skinModel == null || variantType == null) {
       return false;
     }
-    Map<Enum<?>, ResourceLocation> variantMap = textureRegistry.get(skinModel);
+    Map<Enum<?>, Identifier> variantMap = textureRegistry.get(skinModel);
     return variantMap != null && variantMap.containsKey(variantType);
   }
 
-  public static Map<Enum<?>, ResourceLocation> getVariantTextures(SkinModel skinModel) {
+  public static Map<Enum<?>, Identifier> getVariantTextures(SkinModel skinModel) {
     return textureRegistry.get(skinModel);
   }
 

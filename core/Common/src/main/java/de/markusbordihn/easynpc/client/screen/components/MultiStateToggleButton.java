@@ -26,7 +26,7 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class MultiStateToggleButton extends CustomButton {
 
@@ -38,10 +38,10 @@ public class MultiStateToggleButton extends CustomButton {
   public static final int DEFAULT_SPRITE_HEIGHT = 12;
   public static final int DEFAULT_SPRITE_X = 3;
   public static final int DEFAULT_SPRITE_Y = 3;
-  public static final ResourceLocation DEFAULT_SPRITE = Constants.TEXTURE_CONFIGURATION;
+  public static final Identifier DEFAULT_SPRITE = Constants.TEXTURE_CONFIGURATION;
 
   private final ToggleState[] states;
-  private final ResourceLocation spriteTexture;
+  private final Identifier spriteTexture;
   private final int spriteX;
   private final int spriteY;
   private final int spriteWidth;
@@ -95,7 +95,7 @@ public class MultiStateToggleButton extends CustomButton {
       int top,
       int width,
       int height,
-      ResourceLocation spriteTexture,
+      Identifier spriteTexture,
       int spriteX,
       int spriteY,
       int spriteWidth,

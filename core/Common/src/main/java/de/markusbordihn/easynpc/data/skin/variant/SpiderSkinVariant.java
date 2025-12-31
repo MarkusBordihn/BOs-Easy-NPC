@@ -21,20 +21,20 @@ package de.markusbordihn.easynpc.data.skin.variant;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.skin.VariantTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public enum SpiderSkinVariant implements VariantTexture {
   CAVE_SPIDER(Constants.MINECRAFT_PREFIX, "textures/entity/spider/cave_spider.png"),
   SPIDER(Constants.MINECRAFT_PREFIX, "textures/entity/spider/spider.png");
 
-  private final ResourceLocation textureLocation;
+  private final Identifier textureLocation;
 
   SpiderSkinVariant(String namespace, String path) {
     this.textureLocation = parseTextureLocation(namespace, path);
   }
 
   @Override
-  public ResourceLocation getTextureLocation() {
+  public Identifier getTextureLocation() {
     return textureLocation;
   }
 }

@@ -21,16 +21,15 @@ package de.markusbordihn.easynpc.menu;
 
 import de.markusbordihn.easynpc.Constants;
 import java.util.Locale;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public enum ModMenuType {
   DIALOG,
   SPAWNER,
   ;
 
-  public ResourceLocation getId() {
-    return ResourceLocation.fromNamespaceAndPath(
-        Constants.MOD_ID, this.name().toLowerCase(Locale.ROOT));
+  public Identifier getId() {
+    return Identifier.fromNamespaceAndPath(Constants.MOD_ID, this.name().toLowerCase(Locale.ROOT));
   }
 
   public String getName() {

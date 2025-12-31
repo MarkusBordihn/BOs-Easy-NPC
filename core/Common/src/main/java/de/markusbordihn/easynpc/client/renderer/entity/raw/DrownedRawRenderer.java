@@ -24,11 +24,11 @@ import de.markusbordihn.easynpc.data.skin.variant.ZombieSkinVariant;
 import net.minecraft.client.renderer.entity.DrownedRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.state.ZombieRenderState;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class DrownedRawRenderer extends DrownedRenderer implements EasyNPCEntityRenderer {
 
-  protected static final ResourceLocation DEFAULT_TEXTURE =
+  protected static final Identifier DEFAULT_TEXTURE =
       ZombieSkinVariant.DROWNED.getTextureLocation();
 
   public DrownedRawRenderer(EntityRendererProvider.Context context) {
@@ -36,12 +36,12 @@ public class DrownedRawRenderer extends DrownedRenderer implements EasyNPCEntity
   }
 
   @Override
-  public ResourceLocation getTextureLocation(ZombieRenderState renderState) {
+  public Identifier getTextureLocation(ZombieRenderState renderState) {
     return getTextureFromRenderState(renderState);
   }
 
   @Override
-  public ResourceLocation getDefaultTexture() {
+  public Identifier getDefaultTexture() {
     return DEFAULT_TEXTURE;
   }
 }

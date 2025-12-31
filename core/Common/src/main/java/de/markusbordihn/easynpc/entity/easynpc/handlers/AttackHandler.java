@@ -27,7 +27,7 @@ import java.util.Optional;
 import net.minecraft.core.Holder.Reference;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.ItemTags;
@@ -37,8 +37,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.CrossbowAttackMob;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
+import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.BowItem;
 import net.minecraft.world.item.CrossbowItem;
@@ -101,8 +101,9 @@ public class AttackHandler {
     return itemStack.is(ModItemTags.RANGED_WEAPON_GUN);
   }
 
-  public static boolean canFireProjectileWeapon(ProjectileWeaponItem projectileWeaponItem) {
-    return projectileWeaponItem instanceof CrossbowItem || projectileWeaponItem instanceof BowItem;
+  public static boolean canUseNonMeleeWeapon(ItemStack nonMeleeWeapon) {
+    return nonMeleeWeapon.getItem() instanceof CrossbowItem
+        || nonMeleeWeapon.getItem() instanceof BowItem;
   }
 
   public static boolean isHoldingBowWeapon(LivingEntity livingEntity) {
@@ -225,8 +226,7 @@ public class AttackHandler {
   public static AbstractArrow getBullet(
       LivingEntity livingEntity, ItemStack itemStackWeapon, float damage) {
     Optional<Reference<Item>> item =
-        BuiltInRegistries.ITEM.get(
-            ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "bullet"));
+        BuiltInRegistries.ITEM.get(Identifier.fromNamespaceAndPath(Constants.MOD_ID, "bullet"));
     return item.map(
             itemReference ->
                 ProjectileUtil.getMobArrow(

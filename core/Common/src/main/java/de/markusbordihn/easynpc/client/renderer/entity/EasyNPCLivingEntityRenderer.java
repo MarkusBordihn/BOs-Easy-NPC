@@ -13,7 +13,7 @@ import java.util.function.Supplier;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class EasyNPCLivingEntityRenderer {
 
@@ -64,11 +64,11 @@ public class EasyNPCLivingEntityRenderer {
     return null;
   }
 
-  public static ResourceLocation getTexture(
-      LivingEntityRenderState livingEntityRenderState, ResourceLocation defaultTexture) {
+  public static Identifier getTexture(
+      LivingEntityRenderState livingEntityRenderState, Identifier defaultTexture) {
     if (livingEntityRenderState
         instanceof EasyNPCRenderStateExtension easyNPCRenderStateExtension) {
-      ResourceLocation texture = easyNPCRenderStateExtension.getEasyNpcTexture();
+      Identifier texture = easyNPCRenderStateExtension.getEasyNpcTexture();
       if (texture != null) {
         return texture;
       }
@@ -76,20 +76,17 @@ public class EasyNPCLivingEntityRenderer {
     return defaultTexture;
   }
 
-  public static ResourceLocation extractEntityTexture(
-      EasyNPC<?> easyNPC, ResourceLocation defaultTexture) {
+  public static Identifier extractEntityTexture(EasyNPC<?> easyNPC, Identifier defaultTexture) {
     return LivingEntityTextureManager.getEntityTexture(easyNPC, defaultTexture);
   }
 
-  public static ResourceLocation extractEntityPlayerTexture(
-      EasyNPC<?> easyNPC, ResourceLocation defaultTexture) {
+  public static Identifier extractEntityPlayerTexture(
+      EasyNPC<?> easyNPC, Identifier defaultTexture) {
     return LivingEntityTextureManager.getEntityPlayerTexture(easyNPC, defaultTexture);
   }
 
-  public static ResourceLocation extractEntityTextureWithDefaultCallback(
-      EasyNPC<?> easyNPC,
-      ResourceLocation defaultTexture,
-      Supplier<ResourceLocation> defaultTextureSupplier) {
+  public static Identifier extractEntityTextureWithDefaultCallback(
+      EasyNPC<?> easyNPC, Identifier defaultTexture, Supplier<Identifier> defaultTextureSupplier) {
     return LivingEntityTextureManager.getEntityTextureWithDefaultCallback(
         easyNPC, defaultTexture, defaultTextureSupplier);
   }
@@ -100,7 +97,7 @@ public class EasyNPCLivingEntityRenderer {
       LivingEntityRenderState renderState,
       LivingEntityRenderer<?, ?, ?> renderer) {
     if (renderer instanceof EasyNPCEntityRenderer easyNPCRenderer) {
-      ResourceLocation defaultTexture = easyNPCRenderer.getDefaultTexture();
+      Identifier defaultTexture = easyNPCRenderer.getDefaultTexture();
       renderStateExtension.setEasyNpcTexture(
           easyNPCRenderer.supportsPlayerSkins()
               ? extractEntityPlayerTexture(easyNPC, defaultTexture)

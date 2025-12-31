@@ -24,11 +24,11 @@ import de.markusbordihn.easynpc.data.skin.variant.SkeletonSkinVariant;
 import net.minecraft.client.renderer.entity.BoggedRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.state.BoggedRenderState;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class BoggedRawRenderer extends BoggedRenderer implements EasyNPCEntityRenderer {
 
-  protected static final ResourceLocation DEFAULT_TEXTURE =
+  protected static final Identifier DEFAULT_TEXTURE =
       SkeletonSkinVariant.BOGGED.getTextureLocation();
 
   public BoggedRawRenderer(EntityRendererProvider.Context context) {
@@ -36,12 +36,12 @@ public class BoggedRawRenderer extends BoggedRenderer implements EasyNPCEntityRe
   }
 
   @Override
-  public ResourceLocation getTextureLocation(BoggedRenderState renderState) {
+  public Identifier getTextureLocation(BoggedRenderState renderState) {
     return getTextureFromRenderState(renderState);
   }
 
   @Override
-  public ResourceLocation getDefaultTexture() {
+  public Identifier getDefaultTexture() {
     return DEFAULT_TEXTURE;
   }
 }

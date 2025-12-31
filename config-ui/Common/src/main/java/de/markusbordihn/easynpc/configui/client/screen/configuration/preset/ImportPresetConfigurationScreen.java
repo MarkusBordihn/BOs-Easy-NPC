@@ -39,14 +39,14 @@ import net.minecraft.client.gui.screens.ConfirmScreen;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 
 public class ImportPresetConfigurationScreen<T extends ConfigurationMenu>
     extends ConfigurationScreen<T> {
 
-  protected static ResourceLocation selectedPreset;
-  protected static List<ResourceLocation> presetList;
+  protected static Identifier selectedPreset;
+  protected static List<Identifier> presetList;
   protected Button localImportPresetButton;
   protected Button customImportPresetButton;
   protected Button defaultImportPresetButton;
@@ -60,15 +60,15 @@ public class ImportPresetConfigurationScreen<T extends ConfigurationMenu>
     super(menu, inventory, component);
   }
 
-  public static void updateSelectedPreset(ResourceLocation resourceLocation) {
+  public static void updateSelectedPreset(Identifier resourceLocation) {
     selectedPreset = resourceLocation;
   }
 
-  public static void updatePresets(List<ResourceLocation> presets) {
+  public static void updatePresets(List<Identifier> presets) {
     presetList = presets;
   }
 
-  public static List<ResourceLocation> getPresets() {
+  public static List<Identifier> getPresets() {
     return presetList;
   }
 
@@ -76,7 +76,7 @@ public class ImportPresetConfigurationScreen<T extends ConfigurationMenu>
     return presetList == null || presetList.isEmpty();
   }
 
-  public void loadPresetConfirm(ResourceLocation resourceLocation) {
+  public void loadPresetConfirm(Identifier resourceLocation) {
     Minecraft minecraft = this.minecraft;
     if (minecraft == null) {
       return;
@@ -102,11 +102,11 @@ public class ImportPresetConfigurationScreen<T extends ConfigurationMenu>
             CommonComponents.GUI_CANCEL));
   }
 
-  public void loadPreset(ResourceLocation resourceLocation) {
+  public void loadPreset(Identifier resourceLocation) {
     log.error("Not implemented! Received resource location {}", resourceLocation);
   }
 
-  public String getPresetFileName(ResourceLocation resourceLocation) {
+  public String getPresetFileName(Identifier resourceLocation) {
     this.getSkinModel();
     return resourceLocation
         .getPath()
@@ -292,11 +292,11 @@ public class ImportPresetConfigurationScreen<T extends ConfigurationMenu>
     }
 
     public class Entry extends ObjectSelectionList.Entry<Entry> {
-      final ResourceLocation resourceLocation;
+      final Identifier resourceLocation;
       final SkinModel skinModel;
       final String fileName;
 
-      public Entry(ResourceLocation resourceLocation, SkinModel skinModel) {
+      public Entry(Identifier resourceLocation, SkinModel skinModel) {
         this.resourceLocation = resourceLocation;
         this.skinModel = skinModel;
         this.fileName = getPresetFileName(resourceLocation);

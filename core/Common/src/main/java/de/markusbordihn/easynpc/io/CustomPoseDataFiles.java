@@ -30,7 +30,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.stream.Stream;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.packs.resources.Resource;
 import org.apache.logging.log4j.LogManager;
@@ -62,7 +62,7 @@ public class CustomPoseDataFiles {
 
       // Get all pose files from this mod's resources only (filter by namespace).
       String skinModelName = skinModel.getName();
-      Map<ResourceLocation, Resource> resourceLocations =
+      Map<Identifier, Resource> resourceLocations =
           minecraftServer
               .getResourceManager()
               .listResources(
@@ -72,10 +72,10 @@ public class CustomPoseDataFiles {
                           && fileName.toString().endsWith(TEMPLATE_PREFIX));
 
       // Copy all default pose files to the pose data folder.
-      for (ResourceLocation resourceLocation : resourceLocations.keySet()) {
+      for (Identifier resourceLocation : resourceLocations.keySet()) {
         File skinModelPoseFile =
             poseModelFolder
-                .resolve(DataFileHandler.getFileNameFromResourceLocation(resourceLocation))
+                .resolve(DataFileHandler.getFileNameFromIdentifier(resourceLocation))
                 .toFile();
         if (DataFileHandler.copyResourceFile(minecraftServer, resourceLocation, skinModelPoseFile)
             && skinModelPoseFile.exists()

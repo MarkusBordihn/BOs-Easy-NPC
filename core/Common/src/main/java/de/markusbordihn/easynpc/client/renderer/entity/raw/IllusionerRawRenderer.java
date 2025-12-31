@@ -24,11 +24,11 @@ import de.markusbordihn.easynpc.data.skin.variant.IllagerSkinVariant;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.IllusionerRenderer;
 import net.minecraft.client.renderer.entity.state.IllusionerRenderState;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class IllusionerRawRenderer extends IllusionerRenderer implements EasyNPCEntityRenderer {
 
-  protected static final ResourceLocation DEFAULT_TEXTURE =
+  protected static final Identifier DEFAULT_TEXTURE =
       IllagerSkinVariant.ILLUSIONER.getTextureLocation();
 
   public IllusionerRawRenderer(EntityRendererProvider.Context context) {
@@ -36,12 +36,12 @@ public class IllusionerRawRenderer extends IllusionerRenderer implements EasyNPC
   }
 
   @Override
-  public ResourceLocation getTextureLocation(IllusionerRenderState renderState) {
+  public Identifier getTextureLocation(IllusionerRenderState renderState) {
     return getTextureFromRenderState(renderState);
   }
 
   @Override
-  public ResourceLocation getDefaultTexture() {
+  public Identifier getDefaultTexture() {
     return DEFAULT_TEXTURE;
   }
 }

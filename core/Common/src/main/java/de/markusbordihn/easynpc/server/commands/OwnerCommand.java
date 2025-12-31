@@ -37,7 +37,7 @@ public class OwnerCommand extends Command {
 
   public static ArgumentBuilder<CommandSourceStack, ?> register() {
     return Commands.literal("owner")
-        .requires(cs -> cs.hasPermission(Commands.LEVEL_GAMEMASTERS))
+        .requires(cs -> cs.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER))
         .then(
             Commands.literal("set")
                 .then(

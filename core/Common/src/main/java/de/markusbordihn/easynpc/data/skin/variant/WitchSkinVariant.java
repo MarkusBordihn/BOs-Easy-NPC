@@ -21,17 +21,16 @@ package de.markusbordihn.easynpc.data.skin.variant;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.skin.VariantTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public enum WitchSkinVariant implements VariantTexture {
   WITCH;
 
-  private static final ResourceLocation TEXTURE =
-      ResourceLocation.fromNamespaceAndPath(
-          Constants.MINECRAFT_PREFIX, "textures/entity/witch.png");
+  private static final Identifier TEXTURE =
+      Identifier.fromNamespaceAndPath(Constants.MINECRAFT_PREFIX, "textures/entity/witch.png");
 
   @Override
-  public ResourceLocation getTextureLocation() {
+  public Identifier getTextureLocation() {
     return TEXTURE;
   }
 }

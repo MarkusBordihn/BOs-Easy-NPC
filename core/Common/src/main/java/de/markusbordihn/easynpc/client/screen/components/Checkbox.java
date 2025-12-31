@@ -30,11 +30,11 @@ import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.InputWithModifiers;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class Checkbox extends AbstractButton {
-  private static final ResourceLocation TEXTURE =
-      ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/checkbox.png");
+  private static final Identifier TEXTURE =
+      Identifier.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/checkbox.png");
 
   protected final Checkbox.OnChange onChange;
   private final boolean showLabel;

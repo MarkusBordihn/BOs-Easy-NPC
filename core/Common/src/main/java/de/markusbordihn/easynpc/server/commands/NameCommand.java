@@ -32,6 +32,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.permissions.Permissions;
 
 public class NameCommand extends Command {
 
@@ -39,7 +40,7 @@ public class NameCommand extends Command {
 
   public static ArgumentBuilder<CommandSourceStack, ?> register() {
     return Commands.literal("name")
-        .requires(cs -> cs.hasPermission(Commands.LEVEL_GAMEMASTERS))
+        .requires(cs -> cs.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER))
         .then(
             Commands.literal("set")
                 .then(

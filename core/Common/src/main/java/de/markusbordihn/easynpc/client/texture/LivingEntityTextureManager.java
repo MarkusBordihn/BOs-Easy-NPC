@@ -24,37 +24,32 @@ import de.markusbordihn.easynpc.data.skin.VariantTexture;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
 import java.util.function.Supplier;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class LivingEntityTextureManager {
 
   private LivingEntityTextureManager() {}
 
-  public static ResourceLocation getTextureByVariant(
-      Enum<?> variant, ResourceLocation defaultTexture) {
+  public static Identifier getTextureByVariant(Enum<?> variant, Identifier defaultTexture) {
     if (variant instanceof VariantTexture variantTexture) {
       return variantTexture.getTextureLocation();
     }
     return defaultTexture;
   }
 
-  public static ResourceLocation getCustomTexture(
-      SkinDataCapable<?> entity, ResourceLocation defaultTexture) {
+  public static Identifier getCustomTexture(SkinDataCapable<?> entity, Identifier defaultTexture) {
     return CustomTextureManager.getOrCreateTextureWithDefault(entity, defaultTexture);
   }
 
-  public static ResourceLocation getPlayerTexture(
-      SkinDataCapable<?> entity, ResourceLocation defaultTexture) {
+  public static Identifier getPlayerTexture(SkinDataCapable<?> entity, Identifier defaultTexture) {
     return PlayerTextureManager.getOrCreateTextureWithDefault(entity, defaultTexture);
   }
 
-  public static ResourceLocation getRemoteTexture(
-      SkinDataCapable<?> entity, ResourceLocation defaultTexture) {
+  public static Identifier getRemoteTexture(SkinDataCapable<?> entity, Identifier defaultTexture) {
     return RemoteTextureManager.getOrCreateTextureWithDefault(entity, defaultTexture);
   }
 
-  public static ResourceLocation getEntityTexture(
-      EasyNPC<?> easyNPC, ResourceLocation defaultTexture) {
+  public static Identifier getEntityTexture(EasyNPC<?> easyNPC, Identifier defaultTexture) {
     SkinDataCapable<?> skinData = easyNPC.getEasyNPCSkinData();
     return switch (skinData.getSkinType()) {
       case NONE -> Constants.BLANK_ENTITY_TEXTURE;
@@ -65,8 +60,7 @@ public class LivingEntityTextureManager {
     };
   }
 
-  public static ResourceLocation getEntityPlayerTexture(
-      EasyNPC<?> easyNPC, ResourceLocation defaultTexture) {
+  public static Identifier getEntityPlayerTexture(EasyNPC<?> easyNPC, Identifier defaultTexture) {
     SkinDataCapable<?> skinData = easyNPC.getEasyNPCSkinData();
     return switch (skinData.getSkinType()) {
       case NONE -> Constants.BLANK_ENTITY_TEXTURE;
@@ -78,10 +72,8 @@ public class LivingEntityTextureManager {
     };
   }
 
-  public static ResourceLocation getEntityTextureWithDefaultCallback(
-      EasyNPC<?> easyNPC,
-      ResourceLocation defaultTexture,
-      Supplier<ResourceLocation> defaultTextureSupplier) {
+  public static Identifier getEntityTextureWithDefaultCallback(
+      EasyNPC<?> easyNPC, Identifier defaultTexture, Supplier<Identifier> defaultTextureSupplier) {
     SkinDataCapable<?> skinData = easyNPC.getEasyNPCSkinData();
     return switch (skinData.getSkinType()) {
       case NONE -> Constants.BLANK_ENTITY_TEXTURE;

@@ -36,8 +36,8 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.InteractionHand;
@@ -75,7 +75,7 @@ public class EasyNPCPresetEmptyItem extends Item {
     super(
         properties.setId(
             ResourceKey.create(
-                Registries.ITEM, ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, NAME))));
+                Registries.ITEM, Identifier.fromNamespaceAndPath(Constants.MOD_ID, NAME))));
   }
 
   @Override
@@ -123,8 +123,7 @@ public class EasyNPCPresetEmptyItem extends Item {
     // Get new preset item from registry
     Item item =
         BuiltInRegistries.ITEM
-            .getOptional(
-                ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, EasyNPCPresetItem.NAME))
+            .getOptional(Identifier.fromNamespaceAndPath(Constants.MOD_ID, EasyNPCPresetItem.NAME))
             .orElse(null);
     if (item == null) {
       log.error("Can't find item for storing preset {}", EasyNPCPresetItem.NAME);
@@ -132,7 +131,7 @@ public class EasyNPCPresetEmptyItem extends Item {
     }
 
     // Get entity type registry name
-    ResourceLocation entityTypeRegistryName = EntityType.getKey(entityType);
+    Identifier entityTypeRegistryName = EntityType.getKey(entityType);
 
     // Clean up preset data
     if (compoundTag.contains(FIRE_TAG)) {
@@ -187,8 +186,8 @@ public class EasyNPCPresetEmptyItem extends Item {
                   .orElseGet(SpawnData::new);
           CompoundTag entitySpawnData = spawnData.getEntityToSpawn();
           if (entitySpawnData.contains(ID_TAG)) {
-            ResourceLocation entityRegistryName =
-                ResourceLocation.tryParse(entitySpawnData.getString(ID_TAG).orElse(""));
+            Identifier entityRegistryName =
+                Identifier.tryParse(entitySpawnData.getString(ID_TAG).orElse(""));
             Optional<Reference<EntityType<?>>> entityType =
                 BuiltInRegistries.ENTITY_TYPE.get(entityRegistryName);
             if (entityType.isPresent()) {

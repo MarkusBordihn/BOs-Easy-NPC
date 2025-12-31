@@ -24,11 +24,11 @@ import de.markusbordihn.easynpc.data.skin.variant.VillagerSkinVariant;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.VillagerRenderer;
 import net.minecraft.client.renderer.entity.state.VillagerRenderState;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class VillagerRawRenderer extends VillagerRenderer implements EasyNPCEntityRenderer {
 
-  private static final ResourceLocation DEFAULT_TEXTURE =
+  private static final Identifier DEFAULT_TEXTURE =
       VillagerSkinVariant.DEFAULT.getTextureLocation();
 
   public VillagerRawRenderer(EntityRendererProvider.Context context) {
@@ -36,8 +36,8 @@ public class VillagerRawRenderer extends VillagerRenderer implements EasyNPCEnti
   }
 
   @Override
-  public ResourceLocation getTextureLocation(VillagerRenderState renderState) {
-    ResourceLocation texture = getTextureFromRenderState(renderState);
+  public Identifier getTextureLocation(VillagerRenderState renderState) {
+    Identifier texture = getTextureFromRenderState(renderState);
     if (texture == DEFAULT_TEXTURE) {
       return super.getTextureLocation(renderState);
     }
@@ -45,7 +45,7 @@ public class VillagerRawRenderer extends VillagerRenderer implements EasyNPCEnti
   }
 
   @Override
-  public ResourceLocation getDefaultTexture() {
+  public Identifier getDefaultTexture() {
     return DEFAULT_TEXTURE;
   }
 }

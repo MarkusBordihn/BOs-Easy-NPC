@@ -36,7 +36,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.Item;
@@ -73,7 +73,7 @@ public class ModItems {
                       .setId(
                           ResourceKey.create(
                               Registries.ITEM,
-                              ResourceLocation.fromNamespaceAndPath(
+                              Identifier.fromNamespaceAndPath(
                                   Constants.MOD_ID, SpawnerType.BOSS_SPAWNER.getId()))),
                   SpawnerType.BOSS_SPAWNER));
   public static final DeferredItem<Item> EASY_NPC_SPAWNER_DEFAULT =
@@ -86,7 +86,7 @@ public class ModItems {
                       .setId(
                           ResourceKey.create(
                               Registries.ITEM,
-                              ResourceLocation.fromNamespaceAndPath(
+                              Identifier.fromNamespaceAndPath(
                                   Constants.MOD_ID, SpawnerType.DEFAULT_SPAWNER.getId()))),
                   SpawnerType.DEFAULT_SPAWNER));
   public static final DeferredItem<Item> EASY_NPC_SPAWNER_GROUP =
@@ -99,7 +99,7 @@ public class ModItems {
                       .setId(
                           ResourceKey.create(
                               Registries.ITEM,
-                              ResourceLocation.fromNamespaceAndPath(
+                              Identifier.fromNamespaceAndPath(
                                   Constants.MOD_ID, SpawnerType.GROUP_SPAWNER.getId()))),
                   SpawnerType.GROUP_SPAWNER));
   public static final DeferredItem<Item> EASY_NPC_SPAWNER_SINGLE =
@@ -112,7 +112,7 @@ public class ModItems {
                       .setId(
                           ResourceKey.create(
                               Registries.ITEM,
-                              ResourceLocation.fromNamespaceAndPath(
+                              Identifier.fromNamespaceAndPath(
                                   Constants.MOD_ID, SpawnerType.SINGLE_SPAWNER.getId()))),
                   SpawnerType.SINGLE_SPAWNER));
   public static final DeferredItem<Item> MOVE_EASY_NPC =
@@ -192,7 +192,7 @@ public class ModItems {
                     .setId(
                         ResourceKey.create(
                             Registries.ITEM,
-                            ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, spawnEggId)))
+                            Identifier.fromNamespaceAndPath(Constants.MOD_ID, spawnEggId)))
                     .rarity(Rarity.EPIC)));
   }
 }

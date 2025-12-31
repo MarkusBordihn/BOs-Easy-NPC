@@ -35,7 +35,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EntityType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -186,7 +186,7 @@ public class UserDefinedConfigurationManager {
 
   private static EntityType<?> parseEntityType(String entityTypeId) {
     try {
-      ResourceLocation resourceLocation = ResourceLocation.parse(entityTypeId);
+      Identifier resourceLocation = Identifier.parse(entityTypeId);
       return BuiltInRegistries.ENTITY_TYPE
           .get(resourceLocation)
           .map(reference -> reference.value())

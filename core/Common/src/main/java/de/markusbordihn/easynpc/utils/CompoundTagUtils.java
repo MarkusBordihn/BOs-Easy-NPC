@@ -35,7 +35,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -140,7 +140,7 @@ public class CompoundTagUtils {
         compoundTag.getFloat(Z_TAG).orElse(0.0F));
   }
 
-  public static ResourceLocation readResourceLocation(CompoundTag compoundTag, String name) {
+  public static Identifier readIdentifier(CompoundTag compoundTag, String name) {
     if (compoundTag == null || !compoundTag.contains(name)) {
       return null;
     }
@@ -149,14 +149,14 @@ public class CompoundTagUtils {
       return null;
     }
     if (!resourceLocationString.contains(":")) {
-      return ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, resourceLocationString);
+      return Identifier.fromNamespaceAndPath(Constants.MOD_ID, resourceLocationString);
     }
     String namespace = compoundTag.getString(name).orElse("").split(":")[0];
     String path = compoundTag.getString(name).orElse("").split(":")[1];
-    return ResourceLocation.fromNamespaceAndPath(namespace, path);
+    return Identifier.fromNamespaceAndPath(namespace, path);
   }
 
-  public static ListTag writeResourceLocations(Set<ResourceLocation> resourceLocations) {
+  public static ListTag writeIdentifiers(Set<Identifier> resourceLocations) {
     ListTag listTag = new ListTag();
     resourceLocations.forEach(
         resourceLocation -> {
@@ -168,8 +168,8 @@ public class CompoundTagUtils {
     return listTag;
   }
 
-  public static Set<ResourceLocation> readResourceLocations(ListTag listTag) {
-    Set<ResourceLocation> resourceLocations = new HashSet<>();
+  public static Set<Identifier> readIdentifiers(ListTag listTag) {
+    Set<Identifier> resourceLocations = new HashSet<>();
     listTag.forEach(
         tag -> {
           CompoundTag compoundTag = (CompoundTag) tag;
@@ -178,7 +178,7 @@ public class CompoundTagUtils {
               .forEach(
                   key -> {
                     if (key.startsWith(ID_PREFIX)) {
-                      resourceLocations.add(readResourceLocation(compoundTag, key));
+                      resourceLocations.add(readIdentifier(compoundTag, key));
                     }
                   });
         });

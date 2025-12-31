@@ -168,7 +168,7 @@ public class EntityScreenRenderer {
       this.customName = livingEntity.getCustomName();
       this.shouldShowName = livingEntity.shouldShowName();
       Minecraft minecraft = Minecraft.getInstance();
-      this.minecraftHideGui = minecraft != null ? minecraft.options.hideGui : false;
+      this.minecraftHideGui = minecraft != null && minecraft.options.hideGui;
       ModelDataCapable<?> modelData = easyNPC.getEasyNPCModelData();
       if (modelData != null) {
         this.rootRotation = modelData.getModelPartRotation(ModelPartType.ROOT);

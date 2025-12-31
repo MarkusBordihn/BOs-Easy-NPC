@@ -32,9 +32,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import net.minecraft.Util;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.util.Util;
 import net.minecraft.world.entity.EquipmentSlot;
 
 public class EquipmentSlotArgument implements ArgumentType<EquipmentSlot> {

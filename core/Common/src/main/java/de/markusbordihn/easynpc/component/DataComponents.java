@@ -26,7 +26,7 @@ import java.util.function.Supplier;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -44,7 +44,7 @@ public class DataComponents {
     PRESET_DATA =
         Registry.register(
             BuiltInRegistries.DATA_COMPONENT_TYPE,
-            ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, PresetData.ID),
+            Identifier.fromNamespaceAndPath(Constants.MOD_ID, PresetData.ID),
             DataComponentType.<PresetData>builder()
                 .persistent(PresetData.CODEC)
                 .networkSynchronized(PresetData.STREAM_CODEC)
@@ -52,7 +52,7 @@ public class DataComponents {
     TEST_ITEM_DATA =
         Registry.register(
             BuiltInRegistries.DATA_COMPONENT_TYPE,
-            ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, TestItemData.ID),
+            Identifier.fromNamespaceAndPath(Constants.MOD_ID, TestItemData.ID),
             DataComponentType.<TestItemData>builder()
                 .persistent(TestItemData.CODEC)
                 .networkSynchronized(TestItemData.STREAM_CODEC)

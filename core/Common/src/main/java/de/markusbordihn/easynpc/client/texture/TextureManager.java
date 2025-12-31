@@ -26,7 +26,7 @@ import de.markusbordihn.easynpc.validator.ImageValidator;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.UUID;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -37,7 +37,7 @@ public class TextureManager {
 
   private TextureManager() {}
 
-  public static ResourceLocation addCustomTexture(TextureModelKey textureModelKey, File file) {
+  public static Identifier addCustomTexture(TextureModelKey textureModelKey, File file) {
     // Verify texture model key.
     if (textureModelKey == null) {
       log.error("{} Texture model key for {} is invalid!", LOG_PREFIX, file);
@@ -80,7 +80,7 @@ public class TextureManager {
     return TextureRegistrationHelper.registerTexture(textureModelKey, nativeImage);
   }
 
-  public static ResourceLocation addRemoteTexture(
+  public static Identifier addRemoteTexture(
       TextureModelKey textureModelKey, String remoteUrl, Path targetDirectory) {
     return RemoteTextureLoader.loadRemoteTexture(textureModelKey, remoteUrl, targetDirectory);
   }
@@ -101,12 +101,11 @@ public class TextureManager {
     return TextureNameHelper.getFileName(name);
   }
 
-  public static ResourceLocation getCachedTexture(
-      TextureModelKey textureModelKey, Path targetDirectory) {
+  public static Identifier getCachedTexture(TextureModelKey textureModelKey, Path targetDirectory) {
     return TextureCacheManager.getCachedTexture(textureModelKey, targetDirectory);
   }
 
-  public static ResourceLocation searchCachedTexture(
+  public static Identifier searchCachedTexture(
       TextureModelKey textureModelKey, Path targetDirectory) {
     return TextureCacheManager.searchCachedTexture(textureModelKey, targetDirectory);
   }

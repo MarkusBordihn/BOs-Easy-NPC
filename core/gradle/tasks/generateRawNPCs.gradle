@@ -13,7 +13,7 @@ task generateRawNPCs {
       ],
       [
           id       : "bogged_raw",
-          class    : "net.minecraft.world.entity.monster.Bogged",
+          class    : "net.minecraft.world.entity.monster.skeleton.Bogged",
           className: "BoggedRaw",
           baseClass: "Bogged",
           modelType: "ZOMBIE",
@@ -21,7 +21,7 @@ task generateRawNPCs {
       ],
       [
           id       : "cat_raw",
-          class    : "net.minecraft.world.entity.animal.Cat",
+          class    : "net.minecraft.world.entity.animal.feline.Cat",
           className: "CatRaw",
           baseClass: "Cat",
           modelType: "FELINE",
@@ -37,7 +37,7 @@ task generateRawNPCs {
       ],
       [
           id       : "chicken_raw",
-          class    : "net.minecraft.world.entity.animal.Chicken",
+          class    : "net.minecraft.world.entity.animal.chicken.Chicken",
           className: "ChickenRaw",
           baseClass: "Chicken",
           modelType: "AVIAN",
@@ -45,7 +45,7 @@ task generateRawNPCs {
       ],
       [
           id       : "drowned_raw",
-          class    : "net.minecraft.world.entity.monster.Drowned",
+          class    : "net.minecraft.world.entity.monster.zombie.Drowned",
           className: "DrownedRaw",
           baseClass: "Drowned",
           modelType: "ZOMBIE",
@@ -61,7 +61,7 @@ task generateRawNPCs {
       ],
       [
           id       : "evoker_raw",
-          class    : "net.minecraft.world.entity.monster.Evoker",
+          class    : "net.minecraft.world.entity.monster.illager.Evoker",
           className: "EvokerRaw",
           baseClass: "Evoker",
           modelType: "ILLAGER",
@@ -69,7 +69,7 @@ task generateRawNPCs {
       ],
       [
           id       : "fox_raw",
-          class    : "net.minecraft.world.entity.animal.Fox",
+          class    : "net.minecraft.world.entity.animal.fox.Fox",
           className: "FoxRaw",
           baseClass: "Fox",
           modelType: "CANINE",
@@ -77,27 +77,27 @@ task generateRawNPCs {
       ],
       [
           id       : "horse_raw",
-          class    : "net.minecraft.world.entity.animal.horse.Horse",
+          class    : "net.minecraft.world.entity.animal.equine.Horse",
           className: "HorseRaw",
           baseClass: "Horse",
           modelType: "EQUINE",
           variant  : "HorseSkinVariant.WHITE"
       ],
       [
-          id       : "iron_golem_raw",
-          class    : "net.minecraft.world.entity.animal.IronGolem",
-          className: "IronGolemRaw",
-          baseClass: "IronGolem",
-          modelType: "GOLEM",
-          variant  : "IronGolemSkinVariant.IRON_GOLEM"
-      ],
-      [
           id       : "illusioner_raw",
-          class    : "net.minecraft.world.entity.monster.Illusioner",
+          class    : "net.minecraft.world.entity.monster.illager.Illusioner",
           className: "IllusionerRaw",
           baseClass: "Illusioner",
           modelType: "ILLAGER",
           variant  : "IllagerSkinVariant.ILLUSIONER"
+      ],
+      [
+          id       : "iron_golem_raw",
+          class    : "net.minecraft.world.entity.animal.golem.IronGolem",
+          className: "IronGolemRaw",
+          baseClass: "IronGolem",
+          modelType: "GOLEM",
+          variant  : "IronGolemSkinVariant.IRON_GOLEM"
       ],
       [
           id       : "pathfinder_mob_raw",
@@ -127,28 +127,12 @@ task generateRawNPCs {
           variant  : "HumanoidSlimSkinVariant.ALEX"
       ],
       [
-          id       : "pillager_raw",
-          class    : "net.minecraft.world.entity.monster.Pillager",
-          className: "PillagerRaw",
-          baseClass: "Pillager",
-          modelType: "ILLAGER",
-          variant  : "IllagerSkinVariant.PILLAGER"
-      ],
-      [
-          id       : "pig_raw",
-          class    : "net.minecraft.world.entity.animal.Pig",
-          className: "PigRaw",
-          baseClass: "Pig",
-          modelType: "QUADRUPED",
-          variant  : "PigSkinVariant.TEMPERATE"
-      ],
-      [
-          id       : "piglin_raw",
-          class    : "net.minecraft.world.entity.monster.piglin.Piglin",
-          className: "PiglinRaw",
-          baseClass: "Piglin",
-          modelType: "HUMANOID",
-          variant  : "PiglinSkinVariant.PIGLIN"
+          id       : "husk_raw",
+          class    : "net.minecraft.world.entity.monster.zombie.Husk",
+          className: "HuskRaw",
+          baseClass: "Husk",
+          modelType: "ZOMBIE",
+          variant  : "ZombieSkinVariant.HUSK"
       ],
       [
           id       : "piglin_brute_raw",
@@ -159,47 +143,54 @@ task generateRawNPCs {
           variant  : "PiglinSkinVariant.PIGLIN_BRUTE"
       ],
       [
-          id       : "zombified_piglin_raw",
-          class    : "net.minecraft.world.entity.monster.ZombifiedPiglin",
-          className: "ZombifiedPiglinRaw",
-          baseClass: "ZombifiedPiglin",
+          id       : "piglin_raw",
+          class    : "net.minecraft.world.entity.monster.piglin.Piglin",
+          className: "PiglinRaw",
+          baseClass: "Piglin",
           modelType: "HUMANOID",
-          variant  : "PiglinSkinVariant.ZOMBIFIED_PIGLIN"
+          variant  : "PiglinSkinVariant.PIGLIN"
+      ],
+      [
+          id       : "pig_raw",
+          class    : "net.minecraft.world.entity.animal.pig.Pig",
+          className: "PigRaw",
+          baseClass: "Pig",
+          modelType: "QUADRUPED",
+          variant  : "PigSkinVariant.TEMPERATE"
+      ],
+      [
+          id       : "pillager_raw",
+          class    : "net.minecraft.world.entity.monster.illager.Pillager",
+          className: "PillagerRaw",
+          baseClass: "Pillager",
+          modelType: "ILLAGER",
+          variant  : "IllagerSkinVariant.PILLAGER"
       ],
       [
           id       : "skeleton_raw",
-          class    : "net.minecraft.world.entity.monster.Skeleton",
+          class    : "net.minecraft.world.entity.monster.skeleton.Skeleton",
           className: "SkeletonRaw",
           baseClass: "Skeleton",
           modelType: "HUMANOID",
           variant  : "SkeletonSkinVariant.SKELETON"
       ],
       [
-          id       : "stray_raw",
-          class    : "net.minecraft.world.entity.monster.Stray",
-          className: "StrayRaw",
-          baseClass: "Stray",
-          skinModel: "STRAY",
-          modelType: "ZOMBIE",
-          variant  : "SkeletonSkinVariant.STRAY"
-      ],
-      [
-          id       : "wither_skeleton_raw",
-          class    : "net.minecraft.world.entity.monster.WitherSkeleton",
-          className: "WitherSkeletonRaw",
-          baseClass: "WitherSkeleton",
-          skinModel: "WITHER_SKELETON",
-          modelType: "ZOMBIE",
-          variant  : "SkeletonSkinVariant.WITHER_SKELETON"
-      ],
-      [
           id       : "spider_raw",
-          class    : "net.minecraft.world.entity.monster.Spider",
+          class    : "net.minecraft.world.entity.monster.spider.Spider",
           className: "SpiderRaw",
           baseClass: "Spider",
           skinModel: "SPIDER",
           modelType: "SPIDER",
           variant  : "SpiderSkinVariant.SPIDER"
+      ],
+      [
+          id       : "stray_raw",
+          class    : "net.minecraft.world.entity.monster.skeleton.Stray",
+          className: "StrayRaw",
+          baseClass: "Stray",
+          skinModel: "STRAY",
+          modelType: "ZOMBIE",
+          variant  : "SkeletonSkinVariant.STRAY"
       ],
       [
           id       : "vex_raw",
@@ -211,7 +202,7 @@ task generateRawNPCs {
       ],
       [
           id       : "villager_raw",
-          class    : "net.minecraft.world.entity.npc.Villager",
+          class    : "net.minecraft.world.entity.npc.villager.Villager",
           className: "VillagerRaw",
           baseClass: "Villager",
           modelType: "VILLAGER",
@@ -219,7 +210,7 @@ task generateRawNPCs {
       ],
       [
           id       : "vindicator_raw",
-          class    : "net.minecraft.world.entity.monster.Vindicator",
+          class    : "net.minecraft.world.entity.monster.illager.Vindicator",
           className: "VindicatorRaw",
           baseClass: "Vindicator",
           modelType: "ILLAGER",
@@ -242,28 +233,37 @@ task generateRawNPCs {
           variant  : "WitchSkinVariant.WITCH"
       ],
       [
+          id       : "wither_skeleton_raw",
+          class    : "net.minecraft.world.entity.monster.skeleton.WitherSkeleton",
+          className: "WitherSkeletonRaw",
+          baseClass: "WitherSkeleton",
+          skinModel: "WITHER_SKELETON",
+          modelType: "ZOMBIE",
+          variant  : "SkeletonSkinVariant.WITHER_SKELETON"
+      ],
+      [
           id       : "zombie_raw",
-          class    : "net.minecraft.world.entity.monster.Zombie",
+          class    : "net.minecraft.world.entity.monster.zombie.Zombie",
           className: "ZombieRaw",
           baseClass: "Zombie",
           modelType: "ZOMBIE",
           variant  : "ZombieSkinVariant.ZOMBIE"
       ],
       [
-          id       : "husk_raw",
-          class    : "net.minecraft.world.entity.monster.Husk",
-          className: "HuskRaw",
-          baseClass: "Husk",
-          modelType: "ZOMBIE",
-          variant  : "ZombieSkinVariant.HUSK"
-      ],
-      [
           id       : "zombie_villager_raw",
-          class    : "net.minecraft.world.entity.monster.ZombieVillager",
+          class    : "net.minecraft.world.entity.monster.zombie.ZombieVillager",
           className: "ZombieVillagerRaw",
           baseClass: "ZombieVillager",
           modelType: "ZOMBIE",
           variant  : "ZombieVillagerSkinVariant.DEFAULT"
+      ],
+      [
+          id       : "zombified_piglin_raw",
+          class    : "net.minecraft.world.entity.monster.zombie.ZombifiedPiglin",
+          className: "ZombifiedPiglinRaw",
+          baseClass: "ZombifiedPiglin",
+          modelType: "HUMANOID",
+          variant  : "PiglinSkinVariant.ZOMBIFIED_PIGLIN"
       ],
   ]
 
@@ -288,7 +288,7 @@ task generateRawNPCs {
     npcClasses.each { npcClass ->
       def outputFile = new File(outputDir, npcClass.className + ".java")
       def content = templateFile.text
-          .replace("import net.minecraft.world.entity.monster.Zombie;", "import " + npcClass.class + ";")
+          .replace("import net.minecraft.world.entity.monster.zombie.Zombie;", "import " + npcClass.class + ";")
           .replace("import de.markusbordihn.easynpc.data.skin.variant.ZombieSkinVariant;", "import de.markusbordihn.easynpc.data.skin.variant." + npcClass.variant.replaceAll(/\.[^.]+$/, "") + ";")
           .replace("npc_raw_template", npcClass.id)
           .replace("NPCRawTemplate", npcClass.className)

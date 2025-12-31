@@ -23,7 +23,7 @@ public class RotateCommand extends Command {
 
   public static ArgumentBuilder<CommandSourceStack, ?> register() {
     return Commands.literal("rotate")
-        .requires(cs -> cs.hasPermission(Commands.LEVEL_ALL))
+        
         // Ganzkörper-Rotation
         .then(
             Commands.argument(NPC_TARGETS_ARG, EasyNPCArgument.npc())

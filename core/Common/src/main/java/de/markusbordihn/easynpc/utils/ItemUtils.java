@@ -21,7 +21,7 @@ package de.markusbordihn.easynpc.utils;
 
 import de.markusbordihn.easynpc.Constants;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -29,10 +29,10 @@ import net.minecraft.world.item.Items;
 
 public class ItemUtils {
 
-  private static final ResourceLocation EASY_NPC_WAND_RESOURCE_LOCATION =
-      ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "easy_npc_wand");
-  private static final ResourceLocation MOVE_EASY_NPC_RESOURCE_LOCATION =
-      ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "move_easy_npc");
+  private static final Identifier EASY_NPC_WAND_RESOURCE_LOCATION =
+      Identifier.fromNamespaceAndPath(Constants.MOD_ID, "easy_npc_wand");
+  private static final Identifier MOVE_EASY_NPC_RESOURCE_LOCATION =
+      Identifier.fromNamespaceAndPath(Constants.MOD_ID, "move_easy_npc");
   private static Item cachedEasyNpcWandItem = null;
   private static Item cachedMoveEasyNpcItem = null;
 

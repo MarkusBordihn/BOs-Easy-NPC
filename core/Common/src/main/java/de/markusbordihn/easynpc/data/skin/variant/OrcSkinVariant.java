@@ -21,20 +21,20 @@ package de.markusbordihn.easynpc.data.skin.variant;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.skin.VariantTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public enum OrcSkinVariant implements VariantTexture {
   ORC(Constants.MOD_ID, "textures/entity/orc/orc_default.png"),
   ORC_WARRIOR(Constants.MOD_ID, "textures/entity/orc/orc_warrior.png");
 
-  private final ResourceLocation textureLocation;
+  private final Identifier textureLocation;
 
   OrcSkinVariant(String namespace, String path) {
     this.textureLocation = parseTextureLocation(namespace, path);
   }
 
   @Override
-  public ResourceLocation getTextureLocation() {
+  public Identifier getTextureLocation() {
     return textureLocation;
   }
 }

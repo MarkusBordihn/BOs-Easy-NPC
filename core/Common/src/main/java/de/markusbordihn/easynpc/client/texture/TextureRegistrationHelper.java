@@ -23,7 +23,7 @@ import com.mojang.blaze3d.platform.NativeImage;
 import de.markusbordihn.easynpc.Constants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -34,7 +34,7 @@ public class TextureRegistrationHelper {
 
   private TextureRegistrationHelper() {}
 
-  public static ResourceLocation registerTexture(
+  public static Identifier registerTexture(
       TextureModelKey textureModelKey, NativeImage nativeImage) {
     // Using client Texture Manager
     Minecraft client = Minecraft.getInstance();
@@ -54,7 +54,7 @@ public class TextureRegistrationHelper {
 
     // Register dynamic texture under resource location.
     String resourceName = TextureNameHelper.getResourceName(textureModelKey);
-    ResourceLocation resourceLocation = ResourceLocation.parse(resourceName);
+    Identifier resourceLocation = Identifier.parse(resourceName);
     textureManager.register(resourceLocation, dynamicTexture);
     log.info(
         "{} Registered texture {} with image {} with {}.",

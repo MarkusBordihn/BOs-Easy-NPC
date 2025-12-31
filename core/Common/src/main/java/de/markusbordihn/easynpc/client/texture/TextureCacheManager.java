@@ -25,7 +25,7 @@ import de.markusbordihn.easynpc.data.skin.SkinModel;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.UUID;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -37,8 +37,7 @@ public class TextureCacheManager {
 
   private TextureCacheManager() {}
 
-  public static ResourceLocation getCachedTexture(
-      TextureModelKey textureModelKey, Path targetDirectory) {
+  public static Identifier getCachedTexture(TextureModelKey textureModelKey, Path targetDirectory) {
     String fileName = String.format("%s.png", textureModelKey.getUUID());
     File file = targetDirectory.resolve(fileName).toFile();
     if (file.exists()) {
@@ -60,10 +59,10 @@ public class TextureCacheManager {
     return null;
   }
 
-  public static ResourceLocation searchCachedTexture(
+  public static Identifier searchCachedTexture(
       TextureModelKey textureModelKey, Path targetDirectory) {
     // Check for cached texture and return if found.
-    ResourceLocation resourceLocation = getCachedTexture(textureModelKey, targetDirectory);
+    Identifier resourceLocation = getCachedTexture(textureModelKey, targetDirectory);
     if (resourceLocation != null) {
       return resourceLocation;
     }
@@ -94,15 +93,15 @@ public class TextureCacheManager {
                 textureModelKey);
             return null;
           }
-          ResourceLocation textureResourceLocation =
+          Identifier textureIdentifier =
               TextureRegistrationHelper.registerTexture(textureModelKey, nativeImage);
-          if (textureResourceLocation != null) {
+          if (textureIdentifier != null) {
             log.info(
                 "{} Registered cached texture file {} for {} with {}",
                 LOG_PREFIX,
                 file,
                 textureModelKey,
-                textureResourceLocation);
+                textureIdentifier);
           } else {
             log.error(
                 "{} Unable to register cached texture file {} for {}",
@@ -110,7 +109,7 @@ public class TextureCacheManager {
                 file,
                 textureModelKey);
           }
-          return textureResourceLocation;
+          return textureIdentifier;
         }
       }
     }
