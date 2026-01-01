@@ -41,14 +41,10 @@ public class RenderCommand extends Command {
 
   public static ArgumentBuilder<CommandSourceStack, ?> register() {
     return Commands.literal("render")
-        .requires(commandSource -> commandSource.hasPermission(Commands.LEVEL_ALL))
         .then(
             Commands.literal("set")
                 .then(
                     Commands.literal("type")
-                        .requires(
-                            commandSourceStack ->
-                                commandSourceStack.hasPermission(Commands.LEVEL_ALL))
                         .then(
                             Commands.argument(NPC_TARGET_ARG, EasyNPCArgument.npc())
                                 .then(
@@ -65,9 +61,6 @@ public class RenderCommand extends Command {
                                                             context, TYPE_ARG)))))))
                 .then(
                     Commands.literal("model")
-                        .requires(
-                            commandSourceStack ->
-                                commandSourceStack.hasPermission(Commands.LEVEL_ALL))
                         .then(
                             Commands.argument(NPC_TARGET_ARG, EasyNPCArgument.npc())
                                 .then(

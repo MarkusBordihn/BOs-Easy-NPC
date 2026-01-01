@@ -29,12 +29,12 @@ import de.markusbordihn.easynpc.network.components.TextComponent;
 import java.io.File;
 import java.util.Collections;
 import java.util.List;
-import net.minecraft.Util;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.util.Util;
 import net.minecraft.world.entity.player.Inventory;
 
 public class ExportCustomPresetConfigurationScreen<T extends ConfigurationMenu>

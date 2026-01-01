@@ -25,6 +25,7 @@ minecraft {
     configureEach {
       systemProperty 'forge.logging.console.level', 'debug'
       systemProperty 'eventbus.api.strictRuntimeChecks', 'true'
+      args "-mixin.config=${mod_id}.forge.mixins.json"
     }
 
     client {
@@ -75,9 +76,6 @@ dependencies {
   implementation minecraft.dependency("net.minecraftforge:forge:${minecraft_version}-${forge_version}")
 
   annotationProcessor 'net.minecraftforge:eventbus-validator:7.0-beta.12'
-
-  // Mixin dependencies
-  annotationProcessor "org.spongepowered:mixin:0.8.7:processor"
 
   // Include Common code
   compileOnly project(":Common")

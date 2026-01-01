@@ -39,14 +39,10 @@ public class NavigationCommand extends Command {
 
   public static ArgumentBuilder<CommandSourceStack, ?> register() {
     return Commands.literal("navigation")
-        
         .then(
             Commands.literal("set")
                 .then(
                     Commands.literal("home")
-                        .requires(
-                            commandSourceStack ->
-                                commandSourceStack.hasPermission(Commands.LEVEL_ALL))
                         .then(
                             Commands.argument(NPC_TARGET_ARG, EasyNPCArgument.npc())
                                 .then(
@@ -64,9 +60,6 @@ public class NavigationCommand extends Command {
                                             }))))
                 .then(
                     Commands.literal("pos")
-                        .requires(
-                            commandSourceStack ->
-                                commandSourceStack.hasPermission(Commands.LEVEL_ALL))
                         .then(
                             Commands.argument(NPC_TARGET_ARG, EasyNPCArgument.npc())
                                 .then(
@@ -84,8 +77,6 @@ public class NavigationCommand extends Command {
                                             })))))
         .then(
             Commands.literal("reset")
-                .requires(
-                    commandSourceStack -> commandSourceStack.hasPermission(Commands.LEVEL_ALL))
                 .then(
                     Commands.argument(NPC_TARGET_ARG, EasyNPCArgument.npc())
                         .executes(

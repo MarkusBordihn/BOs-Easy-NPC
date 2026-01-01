@@ -43,11 +43,9 @@ public class BlockEntityRenderer {
 
   public static void registerRenderLayers() {
     log.info("{} Render Layers ...", Constants.LOG_REGISTER_PREFIX);
-    BlockRenderLayerMap.putBlock(ModBlocks.EASY_NPC_SPAWNER_BOSS, ChunkSectionLayer.CUTOUT_MIPPED);
-    BlockRenderLayerMap.putBlock(
-        ModBlocks.EASY_NPC_SPAWNER_DEFAULT, ChunkSectionLayer.CUTOUT_MIPPED);
-    BlockRenderLayerMap.putBlock(ModBlocks.EASY_NPC_SPAWNER_GROUP, ChunkSectionLayer.CUTOUT_MIPPED);
-    BlockRenderLayerMap.putBlock(
-        ModBlocks.EASY_NPC_SPAWNER_SINGLE, ChunkSectionLayer.CUTOUT_MIPPED);
+    BlockRenderLayerMap.putBlock(ModBlocks.EASY_NPC_SPAWNER_BOSS, ChunkSectionLayer.CUTOUT);
+    BlockRenderLayerMap.putBlock(ModBlocks.EASY_NPC_SPAWNER_DEFAULT, ChunkSectionLayer.CUTOUT);
+    BlockRenderLayerMap.putBlock(ModBlocks.EASY_NPC_SPAWNER_GROUP, ChunkSectionLayer.CUTOUT);
+    BlockRenderLayerMap.putBlock(ModBlocks.EASY_NPC_SPAWNER_SINGLE, ChunkSectionLayer.CUTOUT);
   }
 }

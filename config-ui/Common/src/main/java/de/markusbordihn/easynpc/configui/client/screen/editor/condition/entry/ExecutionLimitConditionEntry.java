@@ -37,6 +37,7 @@ import java.util.LinkedHashSet;
 import java.util.stream.Collectors;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.server.permissions.Permissions;
 
 public class ExecutionLimitConditionEntry extends ConditionEntryWidget {
   private TextField maxExecutionsTextField;
@@ -101,7 +102,11 @@ public class ExecutionLimitConditionEntry extends ConditionEntryWidget {
                         new ResetExecutionLimitMessage(this.screen.getDialogUUID(), true))));
 
     resetAllPlayersButton.active =
-        Minecraft.getInstance().player != null && Minecraft.getInstance().player.hasPermissions(2);
+        Minecraft.getInstance().player != null
+            && Minecraft.getInstance()
+                .player
+                .permissions()
+                .hasPermission(Permissions.COMMANDS_GAMEMASTER);
   }
 
   @Override

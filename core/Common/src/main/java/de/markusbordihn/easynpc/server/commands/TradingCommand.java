@@ -28,6 +28,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.permissions.Permissions;
 import net.minecraft.world.item.trading.Merchant;
 
 public class TradingCommand extends Command {
@@ -38,7 +39,9 @@ public class TradingCommand extends Command {
             Commands.literal("open")
                 .requires(
                     commandSourceStack ->
-                        commandSourceStack.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER))
+                        commandSourceStack
+                            .permissions()
+                            .hasPermission(Permissions.COMMANDS_GAMEMASTER))
                 .then(
                     Commands.argument(NPC_TARGET_ARG, EasyNPCArgument.npc())
                         .executes(
@@ -63,7 +66,9 @@ public class TradingCommand extends Command {
             Commands.literal("reset")
                 .requires(
                     commandSourceStack ->
-                        commandSourceStack.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER))
+                        commandSourceStack
+                            .permissions()
+                            .hasPermission(Permissions.COMMANDS_GAMEMASTER))
                 .then(
                     Commands.argument(NPC_TARGET_ARG, EasyNPCArgument.npc())
                         .executes(

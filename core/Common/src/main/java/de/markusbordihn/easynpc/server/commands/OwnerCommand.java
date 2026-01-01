@@ -29,6 +29,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.permissions.Permissions;
 
 public class OwnerCommand extends Command {
   private static final String EASY_NPC_PREFIX = "EasyNPC ";

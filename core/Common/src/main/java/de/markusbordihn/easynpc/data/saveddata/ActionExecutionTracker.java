@@ -48,34 +48,32 @@ public class ActionExecutionTracker extends SavedData {
   private static final String DATA_PLAYER_UUID_TAG = "PlayerUUID";
   private static final String DATA_ACTIONS_TAG = "Actions";
   private static final String DATA_ACTION_UUID_TAG = "ActionUUID";
+  private static final Codec<ActionExecutionTracker> CODEC =
+      Codec.PASSTHROUGH.comapFlatMap(
+          dynamic -> {
+            try {
+              return DataResult.success(loadFromNbt(dynamic));
+            } catch (Exception e) {
+              return DataResult.error(
+                  () -> "Failed to load ActionExecutionTracker: " + e.getMessage());
+            }
+          },
+          tracker -> new Dynamic<>(NbtOps.INSTANCE, saveToNbt(tracker)));
 
   public static final SavedDataType<ActionExecutionTracker> TYPE =
       new SavedDataType<>(
           DATA_NAME,
           ActionExecutionTracker::new,
-          context -> codec(),
+          CODEC,
           DataFixTypes.SAVED_DATA_STRUCTURE_FEATURE_INDICES);
   private final Map<UUID, Map<UUID, ExecutionData>> trackingData;
 
-  private ActionExecutionTracker(SavedData.Context context) {
+  private ActionExecutionTracker() {
     this(new HashMap<>());
   }
 
   private ActionExecutionTracker(Map<UUID, Map<UUID, ExecutionData>> trackingData) {
     this.trackingData = new HashMap<>(trackingData);
-  }
-
-  private static Codec<ActionExecutionTracker> codec() {
-    return Codec.PASSTHROUGH.comapFlatMap(
-        dynamic -> {
-          try {
-            return DataResult.success(loadFromNbt(dynamic));
-          } catch (Exception e) {
-            return DataResult.error(
-                () -> "Failed to load ActionExecutionTracker: " + e.getMessage());
-          }
-        },
-        tracker -> new Dynamic<>(NbtOps.INSTANCE, saveToNbt(tracker)));
   }
 
   private static ActionExecutionTracker loadFromNbt(Dynamic<?> dynamic) {

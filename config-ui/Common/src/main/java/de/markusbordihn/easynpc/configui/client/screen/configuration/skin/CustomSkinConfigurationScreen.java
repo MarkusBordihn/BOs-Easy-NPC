@@ -42,11 +42,11 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.UUID;
-import net.minecraft.Util;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Util;
 import net.minecraft.world.entity.player.Inventory;
 
 public class CustomSkinConfigurationScreen<T extends ConfigurationMenu>
@@ -135,7 +135,7 @@ public class CustomSkinConfigurationScreen<T extends ConfigurationMenu>
         guiGraphics,
         this.getEasyNPC(),
         EntityRenderConfig.withOverrides(
-            x + 4, y - 30, 30, EntityRenderOverrides.withSkin(SkinType.CUSTOM, textureUUID)),
+            x + 4, y - 35, 30, EntityRenderOverrides.withSkin(SkinType.CUSTOM, textureUUID)),
         this.xMouse,
         this.yMouse);
 

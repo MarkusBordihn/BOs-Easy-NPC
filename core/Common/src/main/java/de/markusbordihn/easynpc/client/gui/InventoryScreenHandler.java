@@ -40,12 +40,14 @@ import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.renderer.entity.state.CatRenderState;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.renderer.entity.state.VillagerRenderState;
 import net.minecraft.client.renderer.entity.state.ZombieVillagerRenderState;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.animal.feline.Cat;
 import net.minecraft.world.entity.monster.zombie.ZombieVillager;
 import net.minecraft.world.entity.npc.villager.Villager;
@@ -67,10 +69,39 @@ public class InventoryScreenHandler {
     BYPASS_MIXIN.set(bypass);
   }
 
+  private static EntityRenderState extractRenderState(LivingEntity livingEntity) {
+    EntityRenderDispatcher entityRenderDispatcher =
+        Minecraft.getInstance().getEntityRenderDispatcher();
+    EntityRenderer<? super LivingEntity, ?> entityRenderer =
+        entityRenderDispatcher.getRenderer(livingEntity);
+    return entityRenderer.createRenderState(livingEntity, 1.0F);
+  }
+
+  private static void applyRotationsAndScale(
+      EntityRenderState renderState, float xRotation, float yRotation) {
+    if (!(renderState instanceof LivingEntityRenderState livingEntityRenderState)) {
+      return;
+    }
+
+    // Apply rotations
+    livingEntityRenderState.bodyRot = 180.0F + xRotation * 20.0F;
+    livingEntityRenderState.yRot = xRotation * 20.0F;
+    if (livingEntityRenderState.pose != Pose.FALL_FLYING) {
+      livingEntityRenderState.xRot = -yRotation * 20.0F;
+    } else {
+      livingEntityRenderState.xRot = 0.0F;
+    }
+
+    // Normalize scale
+    livingEntityRenderState.boundingBoxWidth /= livingEntityRenderState.scale;
+    livingEntityRenderState.boundingBoxHeight /= livingEntityRenderState.scale;
+    livingEntityRenderState.scale = 1.0F;
+  }
+
   private static void submitEntityRenderState(
       GuiGraphics guiGraphics,
       EntityRenderState renderState,
-      float scale,
+      int size,
       Vector3f translation,
       Quaternionf rotation,
       Quaternionf entityRotation,
@@ -79,28 +110,27 @@ public class InventoryScreenHandler {
       int right,
       int bottom) {
     renderState.lightCoords = FULL_BRIGHT;
-    renderState.hitboxesRenderState = null;
     guiGraphics.submitEntityRenderState(
-        renderState, scale, translation, rotation, entityRotation, left, top, right, bottom);
+        renderState, size, translation, rotation, entityRotation, left, top, right, bottom);
   }
 
-  public static boolean onRenderEntityInInventory(
+  public static boolean onRenderEntityInInventoryFollowsMouse(
       GuiGraphics guiGraphics,
       int left,
       int top,
       int right,
       int bottom,
-      float scale,
-      Vector3f translation,
-      Quaternionf rotation,
-      Quaternionf entityRotation,
+      int size,
+      float yOffset,
+      float mouseX,
+      float mouseY,
       LivingEntity entity,
       EasyNPC<?> easyNPC) {
     if (isBypassMixin()) {
       return false;
     }
 
-    // Get render data and render custom entity if avaible.
+    // Get render data and render custom entity if available.
     RenderDataCapable<?> renderData = easyNPC.getEasyNPCRenderData();
     if (renderData != null
         && renderData.getRenderDataEntry() != null
@@ -112,10 +142,10 @@ public class InventoryScreenHandler {
           top,
           right,
           bottom,
-          scale,
-          translation,
-          rotation,
-          entityRotation,
+          size,
+          yOffset,
+          mouseX,
+          mouseY,
           renderData.getRenderDataEntry().getRenderEntityType(),
           easyNPC);
     }
@@ -124,29 +154,45 @@ public class InventoryScreenHandler {
     SkinDataCapable<?> skinData = easyNPC.getEasyNPCSkinData();
     if (skinData != null && skinData.getSkinType() != SkinType.NONE) {
       return renderSkinEntityInInventory(
-          guiGraphics,
-          left,
-          top,
-          right,
-          bottom,
-          scale,
-          translation,
-          rotation,
-          entityRotation,
-          skinData,
-          easyNPC);
+          guiGraphics, left, top, right, bottom, size, yOffset, mouseX, mouseY, skinData, easyNPC);
     }
 
-    // Fallback to default entity rendering.
-    EntityRenderDispatcher entityRenderDispatcher =
-        Minecraft.getInstance().getEntityRenderDispatcher();
-    EntityRenderer<? super LivingEntity, ?> entityrenderer =
-        entityRenderDispatcher.getRenderer(entity);
-    EntityRenderState entityrenderstate = entityrenderer.createRenderState(entity, 1.0F);
+    // Fallback to default entity rendering with mouse tracking.
+    renderDefaultEntityInInventory(
+        guiGraphics, left, top, right, bottom, size, yOffset, mouseX, mouseY, entity);
+    return true;
+  }
+
+  private static void renderDefaultEntityInInventory(
+      GuiGraphics guiGraphics,
+      int left,
+      int top,
+      int right,
+      int bottom,
+      int size,
+      float yOffset,
+      float mouseX,
+      float mouseY,
+      LivingEntity entity) {
+    float centerX = (left + right) / 2.0F;
+    float centerY = (top + bottom) / 2.0F;
+    float xRotation = (float) Math.atan((centerX - mouseX) / 40.0F);
+    float yRotation = (float) Math.atan((centerY - mouseY) / 40.0F);
+
+    Quaternionf rotation = (new Quaternionf()).rotateZ((float) Math.PI);
+    Quaternionf entityRotation =
+        (new Quaternionf()).rotateX(yRotation * 20.0F * ((float) Math.PI / 180F));
+    rotation.mul(entityRotation);
+
+    EntityRenderState entityRenderState = extractRenderState(entity);
+    Vector3f translation =
+        new Vector3f(0.0F, entityRenderState.boundingBoxHeight / 2.0F + yOffset, 0.0F);
+    applyRotationsAndScale(entityRenderState, xRotation, yRotation);
+
     submitEntityRenderState(
         guiGraphics,
-        entityrenderstate,
-        scale,
+        entityRenderState,
+        size,
         translation,
         rotation,
         entityRotation,
@@ -154,7 +200,6 @@ public class InventoryScreenHandler {
         top,
         right,
         bottom);
-    return true;
   }
 
   public static boolean renderCustomEntityInInventory(
@@ -163,10 +208,10 @@ public class InventoryScreenHandler {
       int top,
       int right,
       int bottom,
-      float scale,
-      Vector3f translation,
-      Quaternionf rotation,
-      Quaternionf entityRotation,
+      int size,
+      float yOffset,
+      float mouseX,
+      float mouseY,
       EntityType<? extends Entity> entityType,
       EasyNPC<?> easyNPC) {
 
@@ -178,16 +223,32 @@ public class InventoryScreenHandler {
     }
     RendererManager.copyCustomLivingEntityData(easyNPC.getPathfinderMob(), customEntity);
 
+    // Calculate rotations based on mouse position
+    float centerX = (left + right) / 2.0F;
+    float centerY = (top + bottom) / 2.0F;
+    float xRotation = (float) Math.atan((centerX - mouseX) / 40.0F);
+    float yRotation = (float) Math.atan((centerY - mouseY) / 40.0F);
+
+    Quaternionf rotation = (new Quaternionf()).rotateZ((float) Math.PI);
+    Quaternionf entityRotation =
+        (new Quaternionf()).rotateX(yRotation * 20.0F * ((float) Math.PI / 180F));
+    rotation.mul(entityRotation);
+
     // Get entity renderer and render state.
     EntityRenderDispatcher entityRenderDispatcher =
         Minecraft.getInstance().getEntityRenderDispatcher();
-    EntityRenderer<? super Entity, ?> entityrenderer =
+    EntityRenderer<? super Entity, ?> entityRenderer =
         entityRenderDispatcher.getRenderer(customEntity);
-    EntityRenderState entityrenderstate = entityrenderer.createRenderState(customEntity, 1.0F);
+    EntityRenderState entityRenderState = entityRenderer.createRenderState(customEntity, 1.0F);
+
+    Vector3f translation =
+        new Vector3f(0.0F, entityRenderState.boundingBoxHeight / 2.0F + yOffset, 0.0F);
+    applyRotationsAndScale(entityRenderState, xRotation, yRotation);
+
     submitEntityRenderState(
         guiGraphics,
-        entityrenderstate,
-        scale,
+        entityRenderState,
+        size,
         translation,
         rotation,
         entityRotation,
@@ -204,12 +265,24 @@ public class InventoryScreenHandler {
       int top,
       int right,
       int bottom,
-      float scale,
-      Vector3f translation,
-      Quaternionf rotation,
-      Quaternionf entityRotation,
+      int size,
+      float yOffset,
+      float mouseX,
+      float mouseY,
       SkinDataCapable<?> skinData,
       EasyNPC<?> easyNPC) {
+
+    // Calculate rotations based on mouse position
+    float centerX = (left + right) / 2.0F;
+    float centerY = (top + bottom) / 2.0F;
+    float xRotation = (float) Math.atan((centerX - mouseX) / 40.0F);
+    float yRotation = (float) Math.atan((centerY - mouseY) / 40.0F);
+
+    Quaternionf rotation = (new Quaternionf()).rotateZ((float) Math.PI);
+    Quaternionf entityRotation =
+        (new Quaternionf()).rotateX(yRotation * 20.0F * ((float) Math.PI / 180F));
+    rotation.mul(entityRotation);
+
     // Get entity renderer.
     LivingEntity livingEntity = easyNPC.getLivingEntity();
     EntityRenderDispatcher entityRenderDispatcher =
@@ -222,10 +295,15 @@ public class InventoryScreenHandler {
     if (baseRenderState instanceof AvatarRenderState avatarRenderState) {
       AvatarRenderState customAvatarRenderState =
           getCustomPlayerRenderState(entityRenderer, avatarRenderState, skinData, easyNPC);
+
+      Vector3f translation =
+          new Vector3f(0.0F, customAvatarRenderState.boundingBoxHeight / 2.0F + yOffset, 0.0F);
+      applyRotationsAndScale(customAvatarRenderState, xRotation, yRotation);
+
       submitEntityRenderState(
           guiGraphics,
           customAvatarRenderState,
-          scale,
+          size,
           translation,
           rotation,
           entityRotation,
@@ -242,10 +320,15 @@ public class InventoryScreenHandler {
       CatRenderer catRenderer = (CatRenderer) (EntityRenderer<? super Cat, ?>) entityRenderer;
       catRenderer.extractRenderState((Cat) livingEntity, customCatRenderState, 1.0F);
       customCatRenderState.texture = catRenderer.getTextureLocation(customCatRenderState);
+
+      Vector3f translation =
+          new Vector3f(0.0F, customCatRenderState.boundingBoxHeight / 2.0F + yOffset, 0.0F);
+      applyRotationsAndScale(customCatRenderState, xRotation, yRotation);
+
       submitEntityRenderState(
           guiGraphics,
           customCatRenderState,
-          scale,
+          size,
           translation,
           rotation,
           entityRotation,
@@ -263,10 +346,15 @@ public class InventoryScreenHandler {
       VillagerRenderer villagerRenderer =
           (VillagerRenderer) (EntityRenderer<? super Villager, ?>) entityRenderer;
       villagerRenderer.extractRenderState((Villager) livingEntity, customVillagerRenderState, 1.0F);
+
+      Vector3f translation =
+          new Vector3f(0.0F, customVillagerRenderState.boundingBoxHeight / 2.0F + yOffset, 0.0F);
+      applyRotationsAndScale(customVillagerRenderState, xRotation, yRotation);
+
       submitEntityRenderState(
           guiGraphics,
           customVillagerRenderState,
-          scale,
+          size,
           translation,
           rotation,
           entityRotation,
@@ -282,13 +370,18 @@ public class InventoryScreenHandler {
         && livingEntity instanceof ZombieVillager) {
       ZombieVillagerRenderState customZombieVillagerRenderState =
           (ZombieVillagerRenderState) entityRenderer.createRenderState();
-      // Override villagerData with current entity data to show correct type and profession
       customZombieVillagerRenderState.villagerData =
           ((ZombieVillager) livingEntity).getVillagerData();
+
+      Vector3f translation =
+          new Vector3f(
+              0.0F, customZombieVillagerRenderState.boundingBoxHeight / 2.0F + yOffset, 0.0F);
+      applyRotationsAndScale(customZombieVillagerRenderState, xRotation, yRotation);
+
       submitEntityRenderState(
           guiGraphics,
           customZombieVillagerRenderState,
-          scale,
+          size,
           translation,
           rotation,
           entityRotation,
@@ -300,15 +393,22 @@ public class InventoryScreenHandler {
     }
 
     // Handle humanoid mob renderer - create fresh render state to avoid caching issues.
-    if (entityRenderer instanceof HumanoidMobRenderer humanoidRenderer
-        && baseRenderState instanceof HumanoidRenderState) {
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    HumanoidMobRenderer humanoidRenderer =
+        entityRenderer instanceof HumanoidMobRenderer ? (HumanoidMobRenderer) entityRenderer : null;
+    if (humanoidRenderer != null && baseRenderState instanceof HumanoidRenderState) {
       HumanoidRenderState customHumanoidRenderState =
           (HumanoidRenderState) entityRenderer.createRenderState();
       humanoidRenderer.extractRenderState(easyNPC.getMob(), customHumanoidRenderState, 1.0F);
+
+      Vector3f translation =
+          new Vector3f(0.0F, customHumanoidRenderState.boundingBoxHeight / 2.0F + yOffset, 0.0F);
+      applyRotationsAndScale(customHumanoidRenderState, xRotation, yRotation);
+
       submitEntityRenderState(
           guiGraphics,
           customHumanoidRenderState,
-          scale,
+          size,
           translation,
           rotation,
           entityRotation,
@@ -320,10 +420,14 @@ public class InventoryScreenHandler {
     }
 
     // Fallback to default rendering.
+    Vector3f translation =
+        new Vector3f(0.0F, baseRenderState.boundingBoxHeight / 2.0F + yOffset, 0.0F);
+    applyRotationsAndScale(baseRenderState, xRotation, yRotation);
+
     submitEntityRenderState(
         guiGraphics,
         baseRenderState,
-        scale,
+        size,
         translation,
         rotation,
         entityRotation,
@@ -342,6 +446,8 @@ public class InventoryScreenHandler {
     AvatarRenderState cumstomAvatarRenderState =
         (AvatarRenderState) entityRenderer.createRenderState();
     cumstomAvatarRenderState.scale = avatarRenderState.scale;
+    cumstomAvatarRenderState.boundingBoxHeight = avatarRenderState.boundingBoxHeight;
+    cumstomAvatarRenderState.boundingBoxWidth = avatarRenderState.boundingBoxWidth;
     cumstomAvatarRenderState.mainArm = avatarRenderState.mainArm;
     cumstomAvatarRenderState.x = avatarRenderState.x;
     cumstomAvatarRenderState.y = avatarRenderState.y;

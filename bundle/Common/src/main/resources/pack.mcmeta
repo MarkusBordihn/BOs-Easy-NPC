@@ -1,6 +1,7 @@
 {
   "pack": {
     "description": "Easy NPC: Bundle Resources",
-    "pack_format": 15
+    "max_format": 94,
+    "min_format": 94
   }
 }

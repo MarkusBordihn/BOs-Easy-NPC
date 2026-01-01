@@ -128,7 +128,10 @@ public record SaveDialogButtonMessage(
       MinecraftServer minecraftServer = serverPlayer.level().getServer();
       if (minecraftServer != null) {
         int permissionLevel =
-            minecraftServer.getProfilePermissions(new NameAndId(serverPlayer.getGameProfile()));
+            minecraftServer
+                .getProfilePermissions(new NameAndId(serverPlayer.getGameProfile()))
+                .level()
+                .id();
         if (permissionLevel > currentPermissionLevel) {
           log.debug(
               "Update owner permission level from {} to {} for {} from {}",

@@ -27,8 +27,8 @@ import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityT
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -112,9 +112,7 @@ public class ModBlocks {
 
   private static void registerBlock(String id, Block block) {
     Registry.register(
-        BuiltInRegistries.BLOCK,
-        Identifier.fromNamespaceAndPath(Constants.MOD_ID, id),
-        block);
+        BuiltInRegistries.BLOCK, Identifier.fromNamespaceAndPath(Constants.MOD_ID, id), block);
   }
 
   public static final BlockEntityType<EasyNPCSpawnerBlockEntityWrapper> EASY_NPC_SPAWNER_ENTITY =

@@ -27,6 +27,7 @@ import de.markusbordihn.easynpc.configui.debug.DebugManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.server.permissions.Permissions;
 
 public class DebugCommand extends Command {
 

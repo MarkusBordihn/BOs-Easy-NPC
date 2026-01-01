@@ -39,7 +39,7 @@ import java.util.ArrayList;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.npc.Villager;
+import net.minecraft.world.entity.npc.villager.Villager;
 import net.minecraft.world.entity.player.Inventory;
 
 public class DefaultSkinConfigurationScreen<T extends ConfigurationMenu>

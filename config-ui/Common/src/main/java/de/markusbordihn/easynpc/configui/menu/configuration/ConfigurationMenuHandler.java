@@ -150,20 +150,17 @@ public class ConfigurationMenuHandler {
         Set<Identifier> defaultPresets =
             DefaultPresetDataFiles.getPresetIdentifiers(serverPlayer.level().getServer())
                 .collect(Collectors.toSet());
-        additionalSyncData.put(
-            "DefaultPresets", CompoundTagUtils.writeIdentifiers(defaultPresets));
+        additionalSyncData.put("DefaultPresets", CompoundTagUtils.writeIdentifiers(defaultPresets));
       }
       case CUSTOM_PRESET_IMPORT -> {
         CustomPresetDataFiles.refreshPresetIdentifiers();
         Set<Identifier> customPresets = CustomPresetDataFiles.getPresetIdentifierSet();
-        additionalSyncData.put(
-            "CustomPresets", CompoundTagUtils.writeIdentifiers(customPresets));
+        additionalSyncData.put("CustomPresets", CompoundTagUtils.writeIdentifiers(customPresets));
       }
       case WORLD_PRESET_IMPORT -> {
         WorldPresetDataFiles.refreshPresetIdentifiers();
         Set<Identifier> worldPresets = WorldPresetDataFiles.getPresetIdentifierSet();
-        additionalSyncData.put(
-            "WorldPresets", CompoundTagUtils.writeIdentifiers(worldPresets));
+        additionalSyncData.put("WorldPresets", CompoundTagUtils.writeIdentifiers(worldPresets));
       }
       case BASIC_ACTION, DIALOG_ACTION, DISTANCE_ACTION ->
           AdditionalScreenData.addActionEventSet(additionalSyncData, easyNPC);

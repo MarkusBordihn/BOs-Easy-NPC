@@ -38,8 +38,7 @@ public class ImportDefaultPresetConfigurationScreen<T extends ConfigurationMenu>
     importPresetButtonLabel = "import_default_preset";
     importPresetHeaderLabel = "preset_default_for";
     this.defaultPresets =
-        CompoundTagUtils.readIdentifiers(
-                this.getAdditionalScreenData().getList("DefaultPresets"))
+        CompoundTagUtils.readIdentifiers(this.getAdditionalScreenData().getList("DefaultPresets"))
             .stream()
             .filter(
                 resourceLocation ->

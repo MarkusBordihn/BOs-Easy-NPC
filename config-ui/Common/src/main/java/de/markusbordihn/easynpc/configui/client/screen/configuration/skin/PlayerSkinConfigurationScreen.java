@@ -144,7 +144,7 @@ public class PlayerSkinConfigurationScreen<T extends ConfigurationMenu>
         guiGraphics,
         this.getEasyNPC(),
         EntityRenderConfig.withOverrides(
-            x + 4, y - 30, 30, EntityRenderOverrides.withSkin(skinType, textureUUID)),
+            x + 4, y - 35, 30, EntityRenderOverrides.withSkin(skinType, textureUUID)),
         this.xMouse,
         this.yMouse);
 

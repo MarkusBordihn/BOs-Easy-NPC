@@ -24,8 +24,6 @@ import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.world.entity.LivingEntity;
-import org.joml.Quaternionf;
-import org.joml.Vector3f;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -36,32 +34,32 @@ public class InventoryScreenMixin {
 
   @Inject(
       method =
-          "renderEntityInInventory(Lnet/minecraft/client/gui/GuiGraphics;IIIIFLorg/joml/Vector3f;Lorg/joml/Quaternionf;Lorg/joml/Quaternionf;Lnet/minecraft/world/entity/LivingEntity;)V",
+          "renderEntityInInventoryFollowsMouse(Lnet/minecraft/client/gui/GuiGraphics;IIIIIFFFLnet/minecraft/world/entity/LivingEntity;)V",
       at = @At("HEAD"),
       cancellable = true)
-  private static void onRenderEntityInInventory(
+  private static void onRenderEntityInInventoryFollowsMouse(
       GuiGraphics guiGraphics,
       int left,
       int top,
       int right,
       int bottom,
-      float scale,
-      Vector3f translation,
-      Quaternionf rotation,
-      Quaternionf entityRotation,
+      int size,
+      float yOffset,
+      float mouseX,
+      float mouseY,
       LivingEntity entity,
       CallbackInfo ci) {
     if (entity instanceof EasyNPC<?> easyNPC
-        && InventoryScreenHandler.onRenderEntityInInventory(
+        && InventoryScreenHandler.onRenderEntityInInventoryFollowsMouse(
             guiGraphics,
             left,
             top,
             right,
             bottom,
-            scale,
-            translation,
-            rotation,
-            entityRotation,
+            size,
+            yOffset,
+            mouseX,
+            mouseY,
             entity,
             easyNPC)) {
       ci.cancel();

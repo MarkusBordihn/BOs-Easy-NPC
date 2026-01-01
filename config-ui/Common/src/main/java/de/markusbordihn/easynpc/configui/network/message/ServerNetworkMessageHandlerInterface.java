@@ -421,10 +421,7 @@ public interface ServerNetworkMessageHandlerInterface {
   }
 
   default void importPreset(
-      UUID uuid,
-      PresetType presetType,
-      CompoundTag compoundTag,
-      Identifier resourceLocation) {
+      UUID uuid, PresetType presetType, CompoundTag compoundTag, Identifier resourceLocation) {
     if (uuid != null && presetType != null && compoundTag != null && !compoundTag.isEmpty()) {
       NetworkHandlerManager.sendMessageToServer(
           new ImportPresetMessage(uuid, presetType, compoundTag, resourceLocation));
@@ -477,8 +474,7 @@ public interface ServerNetworkMessageHandlerInterface {
     importPreset(uuid, PresetType.DEFAULT, resourceLocation);
   }
 
-  default void importLocalPreset(
-      UUID uuid, CompoundTag compoundTag, Identifier resourceLocation) {
+  default void importLocalPreset(UUID uuid, CompoundTag compoundTag, Identifier resourceLocation) {
     importPreset(uuid, PresetType.LOCAL, compoundTag, resourceLocation);
   }
 

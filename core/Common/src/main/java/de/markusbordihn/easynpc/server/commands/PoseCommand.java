@@ -37,7 +37,6 @@ public class PoseCommand extends Command {
 
   public static ArgumentBuilder<CommandSourceStack, ?> register() {
     return Commands.literal("pose")
-        .requires(commandSource -> commandSource.hasPermission(Commands.LEVEL_ALL))
         .then(
             Commands.literal("reset")
                 .then(

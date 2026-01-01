@@ -36,7 +36,6 @@ public class RespawnCommand extends Command {
 
   public static ArgumentBuilder<CommandSourceStack, ?> register() {
     return Commands.literal("respawn")
-        
         .then(
             Commands.argument(NPC_TARGETS_ARG, EasyNPCArgument.npc())
                 .executes(

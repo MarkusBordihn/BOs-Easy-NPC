@@ -40,8 +40,6 @@ public class EquipmentCommand extends Command {
     return Commands.literal("equipment")
         .then(
             Commands.literal("set")
-                .requires(
-                    commandSourceStack -> commandSourceStack.hasPermission(Commands.LEVEL_ALL))
                 .then(
                     Commands.argument(NPC_TARGET_ARG, EasyNPCArgument.npc())
                         .then(
@@ -60,8 +58,6 @@ public class EquipmentCommand extends Command {
                                                         .getItem()))))))
         .then(
             Commands.literal("remove")
-                .requires(
-                    commandSourceStack -> commandSourceStack.hasPermission(Commands.LEVEL_ALL))
                 .then(
                     Commands.argument(NPC_TARGET_ARG, EasyNPCArgument.npc())
                         .then(

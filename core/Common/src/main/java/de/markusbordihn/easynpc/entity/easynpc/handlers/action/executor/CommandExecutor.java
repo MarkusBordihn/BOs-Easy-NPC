@@ -29,6 +29,8 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.permissions.LevelBasedPermissionSet;
+import net.minecraft.server.permissions.PermissionLevel;
 import net.minecraft.world.entity.Entity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -109,7 +111,8 @@ public class CommandExecutor {
             .withEntity(entity)
             .withPosition(entity.position())
             .withRotation(entity.getRotationVector())
-            .withPermission(permissionLevel);
+            .withPermission(
+                LevelBasedPermissionSet.forLevel(PermissionLevel.byId(permissionLevel)));
     CommandDispatcher<CommandSourceStack> commandDispatcher = commands.getDispatcher();
     ParseResults<CommandSourceStack> parseResults =
         commandDispatcher.parse(
@@ -147,8 +150,9 @@ public class CommandExecutor {
             .withEntity(serverPlayer)
             .withPosition(serverPlayer.position())
             .withRotation(serverPlayer.getRotationVector())
-            .withPermission(permissionLevel)
-            .withLevel(serverPlayer.level());
+            .withLevel(serverPlayer.level())
+            .withPermission(
+                LevelBasedPermissionSet.forLevel(PermissionLevel.byId(permissionLevel)));
     CommandDispatcher<CommandSourceStack> commandDispatcher = commands.getDispatcher();
     ParseResults<CommandSourceStack> parseResults =
         commandDispatcher.parse(

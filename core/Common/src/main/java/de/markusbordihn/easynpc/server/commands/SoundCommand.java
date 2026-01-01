@@ -40,7 +40,6 @@ public class SoundCommand extends Command {
 
   public static ArgumentBuilder<CommandSourceStack, ?> register() {
     return Commands.literal("sound")
-        
         .then(
             Commands.literal("set")
                 .then(

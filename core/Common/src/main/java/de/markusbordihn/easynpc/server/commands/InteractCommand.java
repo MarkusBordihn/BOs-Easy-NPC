@@ -35,8 +35,6 @@ public class InteractCommand extends Command {
     return Commands.literal("interact")
         .then(
             Commands.literal("block")
-                .requires(
-                    commandSourceStack -> commandSourceStack.hasPermission(Commands.LEVEL_ALL))
                 .then(
                     Commands.argument(NPC_TARGET_ARG, EasyNPCArgument.npc())
                         .then(

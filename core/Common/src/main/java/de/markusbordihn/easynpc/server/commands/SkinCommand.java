@@ -41,9 +41,6 @@ public class SkinCommand extends Command {
             Commands.literal("set")
                 .then(
                     Commands.literal("variant")
-                        .requires(
-                            commandSourceStack ->
-                                commandSourceStack.hasPermission(Commands.LEVEL_ALL))
                         .then(
                             Commands.argument(NPC_TARGET_ARG, EasyNPCArgument.npc())
                                 .then(
@@ -72,8 +69,6 @@ public class SkinCommand extends Command {
                                                         context, VARIANT_ARG)))))))
         .then(
             Commands.literal("layer")
-                .requires(
-                    commandSourceStack -> commandSourceStack.hasPermission(Commands.LEVEL_ALL))
                 .then(
                     Commands.argument(NPC_TARGET_ARG, EasyNPCArgument.npc())
                         .executes(

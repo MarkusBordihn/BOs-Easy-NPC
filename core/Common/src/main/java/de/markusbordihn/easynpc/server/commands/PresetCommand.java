@@ -38,6 +38,7 @@ import net.minecraft.commands.arguments.coordinates.Coordinates;
 import net.minecraft.commands.arguments.coordinates.Vec3Argument;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.permissions.Permissions;
 import net.minecraft.world.phys.Vec3;
 
 public class PresetCommand extends Command {
@@ -154,8 +155,7 @@ public class PresetCommand extends Command {
                                                       context, LOCATION_ARG);
                                               return importCustomPreset(
                                                   context.getSource(),
-                                                  IdentifierArgument.getId(
-                                                      context, PRESET_ARG),
+                                                  IdentifierArgument.getId(context, PRESET_ARG),
                                                   coordinates.getPosition(context.getSource()),
                                                   null,
                                                   null);
@@ -200,8 +200,7 @@ public class PresetCommand extends Command {
                                                       context, LOCATION_ARG);
                                               return importDataPreset(
                                                   context.getSource(),
-                                                  IdentifierArgument.getId(
-                                                      context, PRESET_ARG),
+                                                  IdentifierArgument.getId(context, PRESET_ARG),
                                                   coordinates.getPosition(context.getSource()),
                                                   null,
                                                   null);
@@ -246,8 +245,7 @@ public class PresetCommand extends Command {
                                                       context, LOCATION_ARG);
                                               return importDefaultPreset(
                                                   context.getSource(),
-                                                  IdentifierArgument.getId(
-                                                      context, PRESET_ARG),
+                                                  IdentifierArgument.getId(context, PRESET_ARG),
                                                   coordinates.getPosition(context.getSource()),
                                                   null,
                                                   null);
@@ -292,8 +290,7 @@ public class PresetCommand extends Command {
                                                       context, LOCATION_ARG);
                                               return importWorldPreset(
                                                   context.getSource(),
-                                                  IdentifierArgument.getId(
-                                                      context, PRESET_ARG),
+                                                  IdentifierArgument.getId(context, PRESET_ARG),
                                                   coordinates.getPosition(context.getSource()),
                                                   null,
                                                   null);
@@ -340,8 +337,7 @@ public class PresetCommand extends Command {
                                                       context, LOCATION_ARG);
                                               return importCustomPreset(
                                                   context.getSource(),
-                                                  IdentifierArgument.getId(
-                                                      context, PRESET_ARG),
+                                                  IdentifierArgument.getId(context, PRESET_ARG),
                                                   coordinates.getPosition(context.getSource()),
                                                   UUID.randomUUID(),
                                                   null);
@@ -368,8 +364,7 @@ public class PresetCommand extends Command {
                                                       context, LOCATION_ARG);
                                               return importDataPreset(
                                                   context.getSource(),
-                                                  IdentifierArgument.getId(
-                                                      context, PRESET_ARG),
+                                                  IdentifierArgument.getId(context, PRESET_ARG),
                                                   coordinates.getPosition(context.getSource()),
                                                   UUID.randomUUID(),
                                                   null);
@@ -396,8 +391,7 @@ public class PresetCommand extends Command {
                                                       context, LOCATION_ARG);
                                               return importDefaultPreset(
                                                   context.getSource(),
-                                                  IdentifierArgument.getId(
-                                                      context, PRESET_ARG),
+                                                  IdentifierArgument.getId(context, PRESET_ARG),
                                                   coordinates.getPosition(context.getSource()),
                                                   UUID.randomUUID(),
                                                   null);
@@ -424,8 +418,7 @@ public class PresetCommand extends Command {
                                                       context, LOCATION_ARG);
                                               return importWorldPreset(
                                                   context.getSource(),
-                                                  IdentifierArgument.getId(
-                                                      context, PRESET_ARG),
+                                                  IdentifierArgument.getId(context, PRESET_ARG),
                                                   coordinates.getPosition(context.getSource()),
                                                   UUID.randomUUID(),
                                                   null);

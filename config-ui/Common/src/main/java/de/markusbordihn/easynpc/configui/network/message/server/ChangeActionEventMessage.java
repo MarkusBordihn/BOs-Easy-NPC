@@ -86,7 +86,10 @@ public record ChangeActionEventMessage(
     ActionEventDataCapable<?> actionEventData = easyNPC.getEasyNPCActionEventData();
     if (minecraftServer != null) {
       permissionLevel =
-          minecraftServer.getProfilePermissions(new NameAndId(serverPlayer.getGameProfile()));
+          minecraftServer
+              .getProfilePermissions(new NameAndId(serverPlayer.getGameProfile()))
+              .level()
+              .id();
       log.debug(
           "Set action owner permission level {} for {} from {}",
           permissionLevel,

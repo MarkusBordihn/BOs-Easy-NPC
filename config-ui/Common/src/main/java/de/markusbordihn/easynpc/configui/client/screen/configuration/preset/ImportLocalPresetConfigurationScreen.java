@@ -39,8 +39,7 @@ public class ImportLocalPresetConfigurationScreen<T extends ConfigurationMenu>
     super(menu, inventory, component);
     importPresetButtonLabel = "import_local_preset";
     importPresetHeaderLabel = "preset_local_for";
-    this.localPresets =
-        CustomPresetDataFiles.getPresetIdentifiers(this.getSkinModel()).toList();
+    this.localPresets = CustomPresetDataFiles.getPresetIdentifiers(this.getSkinModel()).toList();
   }
 
   @Override

@@ -38,8 +38,7 @@ public class ImportWorldPresetConfigurationScreen<T extends ConfigurationMenu>
     importPresetButtonLabel = "import_world_preset";
     importPresetHeaderLabel = "preset_world_for";
     this.worldPresets =
-        CompoundTagUtils.readIdentifiers(
-                this.getAdditionalScreenData().getList("WorldPresets"))
+        CompoundTagUtils.readIdentifiers(this.getAdditionalScreenData().getList("WorldPresets"))
             .stream()
             .filter(
                 resourceLocation ->

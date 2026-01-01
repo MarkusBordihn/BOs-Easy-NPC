@@ -145,7 +145,7 @@ public interface TradingDataCapable<E extends PathfinderMob> extends EasyNPC<E>,
   @Override
   default MerchantOffers getOffers() {
     if (this.getMerchantTradingOffers() == null) {
-      this.updateMerchantTradingOffers();
+      this.updateMerchantTradingOffers(null);
     }
     return this.getMerchantTradingOffers();
   }
@@ -219,7 +219,7 @@ public interface TradingDataCapable<E extends PathfinderMob> extends EasyNPC<E>,
     // Force update and client sync because of weak change detection.
     setSynchedEntityData(SynchedDataIndex.TRADING_MERCHANT_OFFERS, new MerchantOffers());
     setSynchedEntityData(SynchedDataIndex.TRADING_MERCHANT_OFFERS, merchantOffers);
-    this.updateMerchantTradingOffers();
+    this.updateMerchantTradingOffers(null);
   }
 
   default void notifyTrade(MerchantOffer merchantOffer) {

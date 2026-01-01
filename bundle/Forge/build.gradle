@@ -30,7 +30,7 @@ minecraft {
     server {
       workingDir = project.file('run/server')
     }
-    
+
     data {
       workingDir = project.file('run/data')
       args '--mod', "${project.mod_id}", '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
@@ -73,10 +73,10 @@ dependencies {
   compileOnly project(":Common")
 
   // Regular dependencies for development mode (runClient/runServer)
-  runtimeOnly(fg.deobf(group: 'de.markusbordihn.easynpc', name: "easy_npc-forge-${project.minecraft_version}", version: "${project.version}")) {
+  runtimeOnly(group: 'de.markusbordihn.easynpc', name: "easy_npc-forge-${project.minecraft_version}", version: "${project.version}") {
     changing = true
   }
-  runtimeOnly(fg.deobf(group: 'de.markusbordihn.easynpc.configui', name: "easy_npc_config_ui-forge-${project.minecraft_version}", version: "${project.version}")) {
+  runtimeOnly(group: 'de.markusbordihn.easynpc.configui', name: "easy_npc_config_ui-forge-${project.minecraft_version}", version: "${project.version}") {
     changing = true
   }
 }

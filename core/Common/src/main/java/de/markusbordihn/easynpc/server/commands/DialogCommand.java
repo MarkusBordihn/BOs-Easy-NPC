@@ -42,7 +42,6 @@ public class DialogCommand extends Command {
 
   public static ArgumentBuilder<CommandSourceStack, ?> register() {
     return Commands.literal("dialog")
-        .requires(commandSourceStack -> commandSourceStack.hasPermission(Commands.LEVEL_ALL))
         .then(
             Commands.literal("set")
                 .then(

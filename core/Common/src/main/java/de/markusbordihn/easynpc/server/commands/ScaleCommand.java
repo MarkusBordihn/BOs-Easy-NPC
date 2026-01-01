@@ -23,7 +23,6 @@ public class ScaleCommand extends Command {
 
   public static ArgumentBuilder<CommandSourceStack, ?> register() {
     return Commands.literal("scale")
-        
         .then(
             Commands.argument(NPC_TARGETS_ARG, EasyNPCArgument.npc())
                 .then(

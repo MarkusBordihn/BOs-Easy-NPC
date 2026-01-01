@@ -23,7 +23,7 @@ import de.markusbordihn.easynpc.client.model.EasyNPCModel;
 import de.markusbordihn.easynpc.client.model.EasyNPCModelManager;
 import de.markusbordihn.easynpc.client.renderer.entity.state.EasyNPCRenderStateExtension;
 import de.markusbordihn.easynpc.data.model.ModelPartType;
-import net.minecraft.client.model.WolfModel;
+import net.minecraft.client.model.animal.wolf.WolfModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.entity.state.WolfRenderState;
 import org.spongepowered.asm.mixin.Final;

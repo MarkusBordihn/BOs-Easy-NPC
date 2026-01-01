@@ -21,8 +21,8 @@ package de.markusbordihn.easynpc.mixin.model;
 
 import de.markusbordihn.easynpc.client.model.EasyNPCModelManager;
 import de.markusbordihn.easynpc.data.model.ModelPartType;
-import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.model.player.PlayerModel;
 import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;

@@ -1,6 +1,7 @@
 {
   "pack": {
     "description": "Bo's Easy NPC resources",
-    "pack_format": 42
+    "max_format": 94,
+    "min_format": 94
   }
 }

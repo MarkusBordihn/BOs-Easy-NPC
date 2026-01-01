@@ -115,7 +115,7 @@ public class Checkbox extends AbstractButton {
   }
 
   @Override
-  public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+  public void renderContents(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
     this.renderButton(guiGraphics, mouseX, mouseY, partialTicks);
   }
 

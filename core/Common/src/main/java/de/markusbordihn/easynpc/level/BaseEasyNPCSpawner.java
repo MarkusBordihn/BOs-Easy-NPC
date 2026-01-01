@@ -28,7 +28,6 @@ import de.markusbordihn.easynpc.utils.CompoundTagUtils;
 import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
-import java.util.function.Function;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -167,7 +166,7 @@ public class BaseEasyNPCSpawner extends BaseSpawner {
       }
       this.displayEntity =
           EntityType.loadEntityRecursive(
-              compoundTag, level, EntitySpawnReason.SPAWNER, Function.identity());
+              compoundTag, level, EntitySpawnReason.SPAWNER, entity -> entity);
       if (this.displayEntity != null) {
         log.debug(
             "Created display entity {} for spawner at {}", this.displayEntity.getType(), blockPos);

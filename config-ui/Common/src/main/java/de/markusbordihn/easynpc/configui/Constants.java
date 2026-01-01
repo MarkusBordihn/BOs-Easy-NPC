@@ -46,8 +46,7 @@ public final class Constants {
   public static final Identifier TEXTURE_DEMO_BACKGROUND =
       Identifier.fromNamespaceAndPath(MINECRAFT_PREFIX, "textures/gui/demo_background.png");
   public static final Identifier TEXTURE_INVENTORY =
-      Identifier.fromNamespaceAndPath(
-          MINECRAFT_PREFIX, "textures/gui/container/inventory.png");
+      Identifier.fromNamespaceAndPath(MINECRAFT_PREFIX, "textures/gui/container/inventory.png");
 
   public static final int FONT_COLOR_BLACK = 0;
   public static final int FONT_COLOR_DARK_GREEN = 43520;

@@ -30,7 +30,7 @@ minecraft {
     server {
       workingDir = project.file('run/server')
     }
-    
+
     data {
       workingDir = project.file('run/data')
       args '--mod', "${project.mod_id}", '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
@@ -79,19 +79,19 @@ dependencies {
   testCompileOnly("de.markusbordihn.easynpc:easy_npc-common-${project.minecraft_version}:${project.version}") {
     changing = true
   }
-  compileOnly(fg.deobf("de.markusbordihn.easynpc:easy_npc-forge-${project.minecraft_version}:${project.version}")) {
+  compileOnly("de.markusbordihn.easynpc:easy_npc-forge-${project.minecraft_version}:${project.version}") {
     changing = true
   }
-  runtimeOnly(fg.deobf("de.markusbordihn.easynpc:easy_npc-forge-${project.minecraft_version}:${project.version}")) {
+  runtimeOnly("de.markusbordihn.easynpc:easy_npc-forge-${project.minecraft_version}:${project.version}") {
     changing = true
   }
 
   // Additional helpful Mods for development (runtime dependency)
   if (project.hasProperty('forge_jei_mod') && project.forge_jei_mod) {
-    runtimeOnly fg.deobf("curse.maven:jei-238222:${project.forge_jei_mod}")
+    runtimeOnly "curse.maven:jei-238222:${project.forge_jei_mod}"
   }
   if (project.hasProperty('forge_xaeros_minimap_mod') && project.forge_xaeros_minimap_mod) {
-    runtimeOnly fg.deobf("curse.maven:xaeros_minimap-263420:${project.forge_xaeros_minimap_mod}")
+    runtimeOnly "curse.maven:xaeros_minimap-263420:${project.forge_xaeros_minimap_mod}"
   }
 
   // Hack fix for now, force jopt-simple to be exactly 5.0.4 because Mojang ships that version, but some transitive dependencies request 6.0+
@@ -151,7 +151,7 @@ publishing {
   publications {
     mavenJava(MavenPublication) {
       groupId project.group
-      artifactId project.archivesBaseName
+      artifactId base.archivesName.get()
       version project.version
       artifact jar
     }

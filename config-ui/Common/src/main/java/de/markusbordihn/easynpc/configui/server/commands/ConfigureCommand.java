@@ -37,7 +37,6 @@ public class ConfigureCommand extends Command {
 
   public static ArgumentBuilder<CommandSourceStack, ?> register() {
     return Commands.literal("configure")
-        .requires(commandSourceStack -> commandSourceStack.hasPermission(Commands.LEVEL_ALL))
         .then(
             Commands.argument(NPC_TARGET_ARG, EasyNPCArgument.npc())
                 .executes(

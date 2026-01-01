@@ -10,24 +10,6 @@ base {
   archivesName = "${project.mod_id}-fabric-${project.minecraft_version}"
 }
 
-dependencies {
-  minecraft "com.mojang:minecraft:${minecraft_version}"
-  mappings loom.officialMojangMappings()
-  modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
-  modApi "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
-
-  // Include Common code
-  implementation project(":Common")
-
-  // Additional helpful Mods for development (runtime dependency)
-  if (project.hasProperty('fabric_jei_mod') && project.fabric_jei_mod) {
-    modRuntimeOnly("curse.maven:jei-238222:${project.fabric_jei_mod}")
-  }
-  if (project.hasProperty('fabric_xaeros_minimap_mod') && project.fabric_xaeros_minimap_mod) {
-    modRuntimeOnly("curse.maven:xaeros_minimap-263420:${project.fabric_xaeros_minimap_mod}")
-  }
-}
-
 loom {
   accessWidenerPath = file("src/main/resources/easynpc.accesswidener")
 
@@ -61,6 +43,24 @@ loom {
       name "Game Test"
       vmArg "-Dfabric-api.gametest"
     }
+  }
+}
+
+dependencies {
+  minecraft "com.mojang:minecraft:${minecraft_version}"
+  mappings loom.officialMojangMappings()
+  modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
+  modApi "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
+
+  // Include Common code
+  implementation project(":Common")
+
+  // Additional helpful Mods for development (runtime dependency)
+  if (project.hasProperty('fabric_jei_mod') && project.fabric_jei_mod) {
+    modRuntimeOnly("curse.maven:jei-238222:${project.fabric_jei_mod}")
+  }
+  if (project.hasProperty('fabric_xaeros_minimap_mod') && project.fabric_xaeros_minimap_mod) {
+    modRuntimeOnly("curse.maven:xaeros_minimap-263420:${project.fabric_xaeros_minimap_mod}")
   }
 }
 

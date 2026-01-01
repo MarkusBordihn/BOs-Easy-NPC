@@ -20,7 +20,7 @@
 package de.markusbordihn.easynpc.mixin.entity;
 
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.FoxNPC;
-import net.minecraft.world.entity.animal.Fox;
+import net.minecraft.world.entity.animal.fox.Fox;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;

@@ -29,6 +29,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.permissions.Permissions;
 
 public record ResetExecutionLimitMessage(UUID dialogId, boolean allPlayers)
     implements NetworkMessageRecord {
@@ -69,7 +70,7 @@ public record ResetExecutionLimitMessage(UUID dialogId, boolean allPlayers)
 
     ActionExecutionTracker tracker = ActionExecutionTracker.get(serverPlayer.level());
     if (this.allPlayers) {
-      if (!serverPlayer.hasPermissions(2)) {
+      if (!serverPlayer.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER)) {
         log.warn(
             "Player {} tried to reset executions for all players without permission",
             serverPlayer.getName().getString());

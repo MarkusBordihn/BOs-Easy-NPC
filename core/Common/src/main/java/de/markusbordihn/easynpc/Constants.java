@@ -55,8 +55,7 @@ public final class Constants {
   public static final Identifier TEXTURE_DIALOG =
       Identifier.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/dialog.png");
   public static final Identifier TEXTURE_INVENTORY =
-      Identifier.fromNamespaceAndPath(
-          MINECRAFT_PREFIX, "textures/gui/container/inventory.png");
+      Identifier.fromNamespaceAndPath(MINECRAFT_PREFIX, "textures/gui/container/inventory.png");
   public static final Identifier TEXTURE_SPAWNER =
       Identifier.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/spawner.png");
   public static final String TEXT_PREFIX = "text." + MOD_ID + ".";

@@ -44,6 +44,9 @@ dependencies {
   modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
   modApi "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
 
+  // Include Common code
+  implementation project(":Common")
+
   // Bundle dependencies - use compileOnly to avoid transitive dependency issues
   modRuntimeOnly(group: 'de.markusbordihn.easynpc', name: "easy_npc-fabric-${project.minecraft_version}", version: "${project.version}") {
     changing = true
@@ -51,6 +54,10 @@ dependencies {
   modRuntimeOnly(group: 'de.markusbordihn.easynpc.configui', name: "easy_npc_config_ui-fabric-${project.minecraft_version}", version: "${project.version}") {
     changing = true
   }
+}
+
+tasks.withType(JavaCompile).configureEach {
+  source(project(":Common").sourceSets.main.allSource)
 }
 
 processResources {
@@ -66,12 +73,12 @@ processResources {
   }
 }
 
-tasks.withType(JavaCompile).configureEach {
-  source(project(":Common").sourceSets.main.allSource)
-}
-
 tasks.withType(Test).configureEach {
   failOnNoDiscoveredTests = false
+}
+
+tasks.named('compileTestJava', JavaCompile).configure {
+  enabled = !sourceSets.test.allSource.isEmpty()
 }
 
 // CurseForge Publishing
