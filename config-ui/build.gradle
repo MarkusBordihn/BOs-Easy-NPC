@@ -66,5 +66,5 @@ subprojects {
 tasks.register('allGameTests') {
   group = 'verification'
   description = 'Runs Fabric, Forge and NeoForge game tests.'
-  dependsOn ':Fabric:runGameTest', ':Forge:runGameTestServer', ':NeoForge:runGameTestServer'
+  dependsOn ':Fabric:runGameTest', ':Forge:runTestServer', ':NeoForge:runGameTestServer'
 }

@@ -147,7 +147,9 @@ test {
 // This is done because java expects modules to be in a single directory.
 // And if we have it in multiple we have to do performance intensive hacks like having the UnionFileSystem
 // This will eventually be migrated to ForgeGradle so modders don't need to manually do it. But that is later.
-sourceSets.each {
+// Note: We exclude 'test' sourceset to avoid Java Module System conflicts where both 'test' and 'easy_npc'
+// modules export the same packages.
+sourceSets.matching { it.name != 'test' }.each {
   def dir = layout.buildDirectory.dir("sourcesSets/$it.name")
   it.output.resourcesDir = dir
   it.java.destinationDirectory = dir
