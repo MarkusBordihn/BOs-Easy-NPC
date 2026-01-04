@@ -90,7 +90,7 @@ if (project.hasProperty('curseforge_project_id') && project.curseforge_project_i
 
     def mainFile = upload(project.curseforge_project_id, remapJar)
     mainFile.changelogType = 'markdown'
-    mainFile.changelog = rootProject.file("../core/CHANGELOG.md").text
+    mainFile.changelog = rootProject.file("../CHANGELOG.md").text
     mainFile.releaseType = "${project.curseforge_release_type}"
     mainFile.addModLoader('Fabric')
     mainFile.addModLoader('Quilt')
@@ -107,7 +107,7 @@ if (project.hasProperty('modrinth_project_id') && project.modrinth_project_id) {
     versionNumber = "${version}"
     versionType = "${project.modrinth_release_type}"
     versionName = "${project.mod_name} ${project.version}"
-    changelog = rootProject.file("../core/CHANGELOG.md").text
+    changelog = rootProject.file('../CHANGELOG.md').text
     uploadFile = remapJar
     gameVersions = ["${minecraft_version}"]
     loaders = ["fabric", "quilt"]

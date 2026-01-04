@@ -24,8 +24,6 @@ import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.data.skin.SkinType;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
 import de.markusbordihn.easynpc.io.PlayerSkinDataFiles;
-import de.markusbordihn.easynpc.network.components.TextComponent;
-import de.markusbordihn.easynpc.utils.PlayersUtils;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.HashSet;
@@ -33,10 +31,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.entity.player.Player;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -82,27 +77,31 @@ public class PlayerTextureManager {
     TextureModelKey textureModelKey = new TextureModelKey(skinUUID, skinData.getSkinModel());
     Identifier resourceLocation = textureCache.get(textureModelKey);
     if (resourceLocation != null) {
-      // Return resource location and update reference, if needed.
       if (!hasTextureSkinData(textureModelKey)) {
         textureSkinTypeCache.put(textureModelKey, skinData.getSkinType());
       }
       return resourceLocation;
     }
 
-    UUID playerUUID = skinData.getSkinUUID();
-    Identifier createdIdentifier = createTexture(textureModelKey, skinData, playerUUID);
+    Identifier createdIdentifier = createTexture(textureModelKey, skinData, skinUUID);
     return createdIdentifier != null ? createdIdentifier : defaultIdentifier;
   }
 
   private static Identifier createTexture(
       TextureModelKey textureModelKey, SkinDataCapable<?> skinData, UUID playerUUID) {
 
-    // Reload protection to avoid multiple texture requests in a short time.
+    // Reload protection to avoid multiple texture requests in a short time using atomic operation
+    long currentTime = System.currentTimeMillis();
     Long lastAttempt = textureReloadProtection.get(playerUUID);
-    if (lastAttempt != null && System.currentTimeMillis() - lastAttempt < RELOAD_PROTECTION_TIME) {
+    if (lastAttempt != null && currentTime - lastAttempt < RELOAD_PROTECTION_TIME) {
       return null;
     }
-    textureReloadProtection.put(playerUUID, System.currentTimeMillis());
+
+    // Only proceed if we successfully claim this request
+    Long existingAttempt = textureReloadProtection.putIfAbsent(playerUUID, currentTime);
+    if (existingAttempt != null && currentTime - existingAttempt < RELOAD_PROTECTION_TIME) {
+      return null;
+    }
 
     // Get the skin model and texture data folder
     SkinModel skinModel = skinData.getSkinModel();
@@ -120,57 +119,26 @@ public class PlayerTextureManager {
       return localTextureCache;
     }
 
-    // Get skin texture location based on the player UUID.
-    String playerSkinUrl = PlayersUtils.getUserTexture(playerUUID);
-
-    // Check if we got a valid skin URL
-    if (playerSkinUrl == null || playerSkinUrl.isEmpty()) {
-      log.error("{} Unable to get player skin URL for UUID: {}", LOG_PREFIX, playerUUID);
-      return null;
-    }
-
-    log.debug("{} Got player skin URL for {}: {}", LOG_PREFIX, playerUUID, playerSkinUrl);
-
-    // Validate the skin URL and perform some basic sanity checks and
-    // process the remote texture.
-    log.debug(
-        "{} Starting remote texture download for {}: {}", LOG_PREFIX, playerUUID, playerSkinUrl);
-    Identifier resourceLocation =
-        TextureManager.addRemoteTexture(textureModelKey, playerSkinUrl, textureDataFolder);
-    if (resourceLocation != null) {
-      log.info(
-          "{} Successfully loaded player texture for {}: {}",
-          LOG_PREFIX,
-          playerUUID,
-          resourceLocation);
-      textureCache.put(textureModelKey, resourceLocation);
-      textureSkinTypeCache.put(textureModelKey, skinData.getSkinType());
-      return resourceLocation;
-    }
-
-    // Log error if texture could not be loaded.
-    log.error(
-        "{} Unable to load player {} texture {} from {}!",
-        LOG_PREFIX,
-        playerUUID,
-        textureModelKey,
-        textureDataFolder);
-
-    // Send error message to the user.
-    Player player = Minecraft.getInstance().player;
-    if (player != null) {
-      player.displayClientMessage(
-          TextComponent.getText(
-                  LOG_PREFIX
-                      + "Unable to load player "
-                      + playerUUID
-                      + " texture "
-                      + textureModelKey
-                      + ": "
-                      + playerSkinUrl)
-              .withStyle(ChatFormatting.RED),
-          false);
-    }
+    AsyncTextureLoader.loadPlayerTextureAsync(textureModelKey, playerUUID, textureDataFolder)
+        .thenAccept(
+            resourceLocation -> {
+              if (resourceLocation != null) {
+                log.info(
+                    "{} Successfully loaded player texture for {}: {}",
+                    LOG_PREFIX,
+                    playerUUID,
+                    resourceLocation);
+                textureCache.put(textureModelKey, resourceLocation);
+                textureSkinTypeCache.put(textureModelKey, skinData.getSkinType());
+              } else {
+                log.error(
+                    "{} Unable to load player {} texture {} from {}!",
+                    LOG_PREFIX,
+                    playerUUID,
+                    textureModelKey,
+                    textureDataFolder);
+              }
+            });
 
     return null;
   }

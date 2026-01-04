@@ -24,14 +24,10 @@ import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.data.skin.SkinType;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
-import java.util.EnumMap;
 import java.util.Optional;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -39,14 +35,6 @@ import net.minecraft.world.level.storage.ValueOutput;
 public interface SkinDataCapable<T extends PathfinderMob> extends EasyNPC<T> {
 
   String EASY_NPC_DATA_SKIN_DATA_TAG = "SkinData";
-
-  static void registerSyncedSkinData(
-      EnumMap<SynchedDataIndex, EntityDataAccessor<?>> map, Class<? extends Entity> entityClass) {
-    log.info("- Registering Synched Skin Data for {}.", entityClass.getSimpleName());
-    map.put(
-        SynchedDataIndex.SKIN_DATA,
-        SynchedEntityData.defineId(entityClass, EntityDataSerializersManager.SKIN_DATA_ENTRY));
-  }
 
   default int getEntitySkinScaling() {
     return 30;
@@ -87,6 +75,7 @@ public interface SkinDataCapable<T extends PathfinderMob> extends EasyNPC<T> {
   }
 
   default void readAdditionalSkinData(ValueInput valueInput) {
+
     // Early exit if no skin data is available.
     Optional<CompoundTag> compoundTagData =
         valueInput.read(EASY_NPC_DATA_SKIN_DATA_TAG, CompoundTag.CODEC);

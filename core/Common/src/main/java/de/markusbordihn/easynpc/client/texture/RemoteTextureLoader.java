@@ -22,6 +22,8 @@ package de.markusbordihn.easynpc.client.texture;
 import com.mojang.blaze3d.platform.NativeImage;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
+import de.markusbordihn.easynpc.data.texture.TextureFailureType;
+import de.markusbordihn.easynpc.validator.ImageValidator;
 import de.markusbordihn.easynpc.validator.UrlValidator;
 import java.io.File;
 import java.io.IOException;
@@ -30,6 +32,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import net.minecraft.client.Minecraft;
 import net.minecraft.resources.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -38,13 +42,19 @@ public class RemoteTextureLoader {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private static final String LOG_PREFIX = "[Remote Texture Loader]";
+  private static final int CONNECTION_TIMEOUT = 10000;
+  private static final int READ_TIMEOUT = 30000;
+  private static final long MAX_DOWNLOAD_SIZE = 5 * 1024 * 1024;
 
   private RemoteTextureLoader() {}
 
   public static Identifier loadRemoteTexture(
       TextureModelKey textureModelKey, String remoteUrl, Path targetDirectory) {
     if (!UrlValidator.isValidUrl(remoteUrl)) {
-      TextureErrorHandler.urlLoadErrorMessage(textureModelKey, remoteUrl, "Invalid URL");
+      String error = "Invalid URL format or forbidden extension";
+      TextureErrorHandler.urlLoadErrorMessage(textureModelKey, remoteUrl, error);
+      RemoteTextureManager.markPermanentFailure(
+          textureModelKey, TextureFailureType.URL_INVALID, error, remoteUrl);
       return null;
     }
 
@@ -60,46 +70,93 @@ public class RemoteTextureLoader {
       return cachedTexture;
     }
 
-    // Log the start of the download process
+    // Start downloading the remote texture.
     log.warn(
         "{} Starting download of remote texture from {} for {}",
         LOG_PREFIX,
         remoteUrl,
         textureModelKey);
 
-    // Verify URL and follow redirect for 301 and 302, if needed.
+    HttpURLConnection connection = null;
+    NativeImage nativeImage = null;
+
     try {
       URL remoteImageURL = new URL(remoteUrl);
-      HttpURLConnection connection = (HttpURLConnection) remoteImageURL.openConnection();
-      if (connection.getResponseCode() == HttpURLConnection.HTTP_MOVED_PERM
-          || connection.getResponseCode() == HttpURLConnection.HTTP_MOVED_TEMP) {
-        String redirectUrl = connection.getHeaderField("Location");
-        log.info("{} Following redirect from {} > {}", LOG_PREFIX, remoteUrl, redirectUrl);
-        remoteUrl = redirectUrl;
-      } else if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
-        TextureErrorHandler.urlLoadErrorMessage(
-            textureModelKey, remoteUrl, connection.getResponseMessage());
+      connection = (HttpURLConnection) remoteImageURL.openConnection();
+      connection.setConnectTimeout(CONNECTION_TIMEOUT);
+      connection.setReadTimeout(READ_TIMEOUT);
+
+      // Check content length
+      long contentLength = connection.getContentLengthLong();
+      if (contentLength > MAX_DOWNLOAD_SIZE) {
+        String error =
+            String.format(
+                "File too large: %d bytes (max %d bytes)", contentLength, MAX_DOWNLOAD_SIZE);
+        TextureErrorHandler.urlLoadErrorMessage(textureModelKey, remoteUrl, error);
+        RemoteTextureManager.markPermanentFailure(
+            textureModelKey, TextureFailureType.FILE_TOO_LARGE, error, remoteUrl);
         return null;
       }
+
+      // Handle redirects
+      int responseCode = connection.getResponseCode();
+      if (responseCode == HttpURLConnection.HTTP_MOVED_PERM
+          || responseCode == HttpURLConnection.HTTP_MOVED_TEMP) {
+        String redirectUrl = connection.getHeaderField("Location");
+        log.info("{} Following redirect from {} > {}", LOG_PREFIX, remoteUrl, redirectUrl);
+        connection.disconnect();
+
+        // Follow redirect
+        remoteImageURL = new URL(redirectUrl);
+        connection = (HttpURLConnection) remoteImageURL.openConnection();
+        connection.setConnectTimeout(CONNECTION_TIMEOUT);
+        connection.setReadTimeout(READ_TIMEOUT);
+        responseCode = connection.getResponseCode();
+        remoteUrl = redirectUrl;
+      }
+
+      if (responseCode != HttpURLConnection.HTTP_OK) {
+        String error = "HTTP " + responseCode + ": " + connection.getResponseMessage();
+        TextureErrorHandler.urlLoadErrorMessage(textureModelKey, remoteUrl, error);
+        RemoteTextureManager.markPermanentFailure(
+            textureModelKey, TextureFailureType.NETWORK_ERROR, error, remoteUrl);
+        return null;
+      }
+
+      // Read and decode the image directly from the connection
+      try (InputStream inputStream = connection.getInputStream()) {
+        nativeImage = NativeImage.read(inputStream);
+      }
+
     } catch (IllegalArgumentException | IOException exception) {
-      TextureErrorHandler.urlLoadErrorMessage(textureModelKey, remoteUrl, exception.getMessage());
+      String error = exception.getClass().getSimpleName() + ": " + exception.getMessage();
+      TextureErrorHandler.urlLoadErrorMessage(textureModelKey, remoteUrl, error);
+      RemoteTextureManager.markPermanentFailure(
+          textureModelKey, TextureFailureType.NETWORK_ERROR, error, remoteUrl);
+      return null;
+    } finally {
+      if (connection != null) {
+        connection.disconnect();
+      }
+    }
+
+    // Validate image
+    if (nativeImage == null) {
+      String error = "Failed to decode image";
+      TextureErrorHandler.processingErrorMessage(textureModelKey, remoteUrl, error);
+      RemoteTextureManager.markPermanentFailure(
+          textureModelKey, TextureFailureType.DECODING_ERROR, error, remoteUrl);
       return null;
     }
 
-    // Download URL directly to NativeImage
-    NativeImage nativeImage;
-    try (InputStream inputStream = new URL(remoteUrl).openStream()) {
-      nativeImage = NativeImage.read(inputStream);
-    } catch (IllegalArgumentException | IOException exception) {
-      TextureErrorHandler.processingErrorMessage(
-          textureModelKey, remoteUrl, exception.getMessage());
-      return null;
-    }
-
-    // Verify the image data to make sure we got a valid image!
-    if (!de.markusbordihn.easynpc.validator.ImageValidator.isValidImage(nativeImage)) {
-      TextureErrorHandler.processingErrorMessage(
-          textureModelKey, remoteUrl, "Unable to get any valid texture");
+    if (!ImageValidator.isValidImage(nativeImage)) {
+      String error =
+          String.format(
+              "Invalid image dimensions: %dx%d (expected 64x64, 64x32, or multiples of 32 >= 32x32)",
+              nativeImage.getWidth(), nativeImage.getHeight());
+      TextureErrorHandler.processingErrorMessage(textureModelKey, remoteUrl, error);
+      RemoteTextureManager.markPermanentFailure(
+          textureModelKey, TextureFailureType.INVALID_IMAGE_SIZE, error, remoteUrl);
       nativeImage.close();
       return null;
     }
@@ -128,7 +185,32 @@ public class RemoteTextureLoader {
           exception.getMessage());
     }
 
-    // Register texture directly with NativeImage
-    return TextureRegistrationHelper.registerTexture(textureModelKey, nativeImage);
+    // Register texture on the main thread
+    NativeImage finalImage = nativeImage;
+    CompletableFuture<Identifier> registrationFuture = new CompletableFuture<>();
+    Minecraft.getInstance()
+        .execute(
+            () -> {
+              try {
+                Identifier resourceLocation =
+                    TextureRegistrationHelper.registerTexture(textureModelKey, finalImage);
+                registrationFuture.complete(resourceLocation);
+              } catch (Exception e) {
+                log.error(
+                    "{} Failed to register texture on main thread: {}", LOG_PREFIX, e.getMessage());
+                finalImage.close();
+                registrationFuture.completeExceptionally(e);
+              }
+            });
+
+    // Wait for registration to complete with timeout
+    try {
+      return registrationFuture.get(5, java.util.concurrent.TimeUnit.SECONDS);
+    } catch (Exception e) {
+      log.error(
+          "{} Timeout or error waiting for texture registration: {}", LOG_PREFIX, e.getMessage());
+      nativeImage.close();
+      return null;
+    }
   }
 }

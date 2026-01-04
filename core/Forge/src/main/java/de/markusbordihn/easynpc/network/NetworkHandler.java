@@ -32,7 +32,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload.Type;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.network.ChannelBuilder;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.PacketDistributor;
@@ -65,9 +65,9 @@ public class NetworkHandler implements NetworkHandlerInterface {
 
   @Override
   public <M extends NetworkMessageRecord> void sendToServer(M networkMessageRecord) {
-    DistExecutor.unsafeRunWhenOn(
-        Dist.CLIENT,
-        () -> () -> INSTANCE.send(networkMessageRecord, PacketDistributor.SERVER.noArg()));
+    if (FMLEnvironment.dist == Dist.CLIENT) {
+      INSTANCE.send(networkMessageRecord, PacketDistributor.SERVER.noArg());
+    }
   }
 
   @Override
@@ -91,7 +91,15 @@ public class NetworkHandler implements NetworkHandlerInterface {
         .consumerNetworkThread(
             (message, context) -> {
               context.enqueueWork(
-                  () -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> message::handleClient));
+                  () -> {
+                    if (message == null) {
+                      log.warn("Received null client message, ignoring packet");
+                      return;
+                    }
+                    if (FMLEnvironment.dist == Dist.CLIENT) {
+                      message.handleClient();
+                    }
+                  });
               context.setPacketHandled(true);
             })
         .add();
@@ -111,7 +119,19 @@ public class NetworkHandler implements NetworkHandlerInterface {
         .decoder(creator::apply)
         .consumerNetworkThread(
             (message, context) -> {
-              context.enqueueWork(() -> message.handleServer(context.getSender()));
+              context.enqueueWork(
+                  () -> {
+                    if (message == null) {
+                      log.warn("Received null message, ignoring packet");
+                      return;
+                    }
+                    ServerPlayer sender = context.getSender();
+                    if (sender instanceof ServerPlayer) {
+                      message.handleServer(sender);
+                    } else {
+                      log.error("Unable to get valid player for network message {}", message);
+                    }
+                  });
               context.setPacketHandled(true);
             })
         .add();

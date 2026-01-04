@@ -160,7 +160,7 @@ if (project.hasProperty('curseforge_project_id') && project.curseforge_project_i
 
     def mainFile = upload(project.curseforge_project_id, jar)
     mainFile.changelogType = 'markdown'
-    mainFile.changelog = rootProject.file("../core/CHANGELOG.md").text
+    mainFile.changelog = rootProject.file("../CHANGELOG.md").text
     mainFile.releaseType = "${project.curseforge_release_type}"
     mainFile.addModLoader('NeoForge')
     mainFile.addGameVersion("${project.minecraft_version}")
@@ -176,7 +176,7 @@ if (project.hasProperty('modrinth_project_id') && project.modrinth_project_id) {
     versionNumber = "${project.version}"
     versionType = "${project.modrinth_release_type}"
     versionName = "${project.mod_name} ${project.version}"
-    changelog = rootProject.file("../core/CHANGELOG.md").text
+    changelog = rootProject.file("../CHANGELOG.md").text
     uploadFile = jar
     gameVersions = ["${project.minecraft_version}"]
     loaders = ["neoforge"]

@@ -164,22 +164,43 @@ public class UrlSkinConfigurationScreen<T extends ConfigurationMenu>
     if (!textureSkinLocationValue.isEmpty()
         && !textureSkinLocationValue.equals(this.formerTextureSkinLocation)) {
 
+      // Immediate spam protection: Set cooldown and disable button BEFORE validation
+      updateNextTextureSkinLocationChange();
+      this.addTextureSettingsButton.active = false;
+      this.formerTextureSkinLocation = textureSkinLocationValue;
+
       // Validate url
       if (!UrlValidator.isValidUrl(textureSkinLocationValue)) {
         this.errorMessage = "invalid_remote_image";
+        resetCooldownOnError();
         return;
       }
+
+      // Validate URL format
       URL textureSkinLocation;
       try {
         textureSkinLocation = new URL(textureSkinLocationValue);
       } catch (Exception e) {
+        log.error("Invalid URL format: {}", textureSkinLocationValue, e);
+        this.errorMessage = "invalid_url";
+        resetCooldownOnError();
         return;
       }
 
       // Validate image before sending it to the server.
-      if (!RemoteImageValidator.isValidImage(textureSkinLocation)) {
-        log.error("Unable to set remote user texture to {}", textureSkinLocationValue);
-        this.errorMessage = "invalid_remote_image";
+      // Any exceptions during download/validation are caught and handled gracefully
+      try {
+        if (!RemoteImageValidator.isValidImage(textureSkinLocation)) {
+          log.error("Unable to set remote user texture to {}", textureSkinLocationValue);
+          this.errorMessage = "invalid_remote_image";
+          resetCooldownOnError();
+          return;
+        }
+      } catch (Exception e) {
+        log.error(
+            "Error validating remote image from {}: {}", textureSkinLocationValue, e.getMessage());
+        this.errorMessage = "error_loading_image";
+        resetCooldownOnError();
         return;
       }
 
@@ -188,10 +209,13 @@ public class UrlSkinConfigurationScreen<T extends ConfigurationMenu>
       this.errorMessage = "";
       NetworkMessageHandlerManager.getServerHandler()
           .setSkin(this.getEasyNPCUUID(), SkinDataEntry.createRemoteSkin(textureSkinLocationValue));
-      this.addTextureSettingsButton.active = false;
-      this.formerTextureSkinLocation = textureSkinLocationValue;
-      updateNextTextureSkinLocationChange();
     }
+  }
+
+  private void resetCooldownOnError() {
+    // Reset protection to allow immediate retry after fixing the URL
+    this.formerTextureSkinLocation = "";
+    UrlSkinConfigurationScreen.nextTextureSkinLocationChange = 0;
   }
 
   private void validateTextureSkinLocation() {
@@ -261,7 +285,7 @@ public class UrlSkinConfigurationScreen<T extends ConfigurationMenu>
     this.addRenderableWidget(
         new Checkbox(
             this.contentLeftPos + 55,
-            this.contentTopPos + 85,
+            this.contentTopPos + 193,
             "disable_skin_layers",
             skinData.getSkinDataEntry().disableLayers(),
             checkbox ->
