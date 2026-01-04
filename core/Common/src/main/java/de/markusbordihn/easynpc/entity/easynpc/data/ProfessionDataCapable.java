@@ -23,27 +23,15 @@ import de.markusbordihn.easynpc.data.profession.Profession;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.network.components.TextComponent;
-import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
 import de.markusbordihn.easynpc.utils.TextUtils;
-import java.util.EnumMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.PathfinderMob;
 
 public interface ProfessionDataCapable<T extends PathfinderMob> extends EasyNPC<T> {
 
   String DATA_PROFESSION_TAG = "Profession";
-
-  static void registerSyncedProfessionData(
-      EnumMap<SynchedDataIndex, EntityDataAccessor<?>> map, Class<? extends Entity> entityClass) {
-    log.info("- Registering Synched Profession Data for {}.", entityClass.getSimpleName());
-    map.put(
-        SynchedDataIndex.PROFESSION,
-        SynchedEntityData.defineId(entityClass, EntityDataSerializersManager.PROFESSION));
-  }
 
   default Profession getDefaultProfession() {
     return Profession.NONE;

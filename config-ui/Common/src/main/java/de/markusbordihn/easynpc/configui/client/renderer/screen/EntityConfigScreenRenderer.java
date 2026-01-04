@@ -96,8 +96,8 @@ public class EntityConfigScreenRenderer extends EntityScreenRenderer {
 
   private static void restoreConfigState(EasyNPC<?> easyNPC, ConfigRenderState backupState) {
     RenderDataCapable<?> renderData = easyNPC.getEasyNPCRenderData();
-    if (renderData != null && backupState.renderDataSet != null) {
-      renderData.setRenderData(backupState.renderDataSet);
+    if (renderData != null && backupState.renderDataEntry != null) {
+      renderData.setRenderData(backupState.renderDataEntry);
     }
 
     SkinDataCapable<?> skinData = easyNPC.getEasyNPCSkinData();
@@ -125,12 +125,12 @@ public class EntityConfigScreenRenderer extends EntityScreenRenderer {
     final SkinDataEntry skinDataEntry;
     final Enum<?> variantType;
     final Profession profession;
-    final RenderDataEntry renderDataSet;
+    final RenderDataEntry renderDataEntry;
     final ModelAnimationData modelAnimationData;
 
     ConfigRenderState(EasyNPC<?> easyNPC) {
       RenderDataCapable<?> renderData = easyNPC.getEasyNPCRenderData();
-      this.renderDataSet = renderData != null ? renderData.getRenderDataEntry() : null;
+      this.renderDataEntry = renderData != null ? renderData.getRenderDataEntry() : null;
       SkinDataCapable<?> skinData = easyNPC.getEasyNPCSkinData();
       this.skinDataEntry = skinData != null ? skinData.getSkinDataEntry() : null;
       VariantDataCapable<?> variantData = easyNPC.getEasyNPCVariantData();

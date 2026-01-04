@@ -21,8 +21,8 @@
   ],
   "mixins": [
     "entity.CreeperMixin",
-    "entity.FoxMixin",
     "entity.EndermanMixin",
+    "entity.FoxMixin",
     "entity.RaiderMixin",
     "entity.VillagerMixin",
     "entity.WitchMixin",

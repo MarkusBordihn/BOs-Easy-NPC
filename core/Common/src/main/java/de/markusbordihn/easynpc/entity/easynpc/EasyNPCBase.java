@@ -20,7 +20,6 @@
 package de.markusbordihn.easynpc.entity.easynpc;
 
 import de.markusbordihn.easynpc.data.status.StatusDataType;
-import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.AttackDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.AttributeDataCapable;
@@ -45,12 +44,9 @@ import de.markusbordihn.easynpc.entity.easynpc.data.VariantDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.ActionHandler;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.AttributeHandler;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.BaseTickHandler;
-import java.util.EnumMap;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.Saddleable;
 import net.minecraft.world.entity.SpawnGroupData;
@@ -82,22 +78,6 @@ public interface EasyNPCBase<E extends PathfinderMob>
         TickerDataCapable<E>,
         TradingDataCapable<E>,
         VariantDataCapable<E> {
-
-  static void registerEasyNPCSyncedData(
-      EnumMap<SynchedDataIndex, EntityDataAccessor<?>> map, Class<? extends Entity> entityClass) {
-    AttackDataCapable.registerSyncedAttackData(map, entityClass);
-    AttributeDataCapable.registerSyncedAttributeData(map, entityClass);
-    DisplayAttributeDataCapable.registerSyncedDisplayAttributeData(map, entityClass);
-    ModelDataCapable.registerSyncedModelData(map, entityClass);
-    NavigationDataCapable.registerSyncedNavigationData(map, entityClass);
-    OwnerDataCapable.registerSyncedOwnerData(map, entityClass);
-    ProfessionDataCapable.registerSyncedProfessionData(map, entityClass);
-    RenderDataCapable.registerSyncedRenderData(map, entityClass);
-    SkinDataCapable.registerSyncedSkinData(map, entityClass);
-    SoundDataCapable.registerSyncedSoundData(map, entityClass);
-    TradingDataCapable.registerSyncedTradingData(map, entityClass);
-    VariantDataCapable.registerSyncedVariantData(map, entityClass);
-  }
 
   default void registerEasyNPCDefaultVariant(Enum<?> variant) {
     log.info("Register default variant for {} with variant {} ...", this, variant);

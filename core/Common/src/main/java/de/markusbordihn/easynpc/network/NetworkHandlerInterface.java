@@ -212,7 +212,21 @@ public interface NetworkHandlerInterface {
         return;
       }
       try {
-        registerServerNetworkMessageHandler(type, codec, networkMessage, creator);
+        // Wrap creator with error handling
+        Function<FriendlyByteBuf, M> safeCreator =
+            buffer -> {
+              try {
+                return creator.apply(buffer);
+              } catch (Exception e) {
+                log.error(
+                    "{} Failed to deserialize {}, packet will be ignored",
+                    LOG_PREFIX,
+                    networkMessage.getSimpleName(),
+                    e);
+                return null;
+              }
+            };
+        registerServerNetworkMessageHandler(type, codec, networkMessage, safeCreator);
         addRegisteredServerMessage(type, networkMessage);
       } catch (Exception e) {
         log.error(
@@ -253,7 +267,21 @@ public interface NetworkHandlerInterface {
         return;
       }
       try {
-        registerClientNetworkMessageHandler(type, codec, networkMessage, creator);
+        // Wrap creator with error handling
+        Function<FriendlyByteBuf, M> safeCreator =
+            buffer -> {
+              try {
+                return creator.apply(buffer);
+              } catch (Exception e) {
+                log.error(
+                    "{} Failed to deserialize {}, packet will be ignored",
+                    LOG_PREFIX,
+                    networkMessage.getSimpleName(),
+                    e);
+                return null;
+              }
+            };
+        registerClientNetworkMessageHandler(type, codec, networkMessage, safeCreator);
         addRegisteredClientMessage(type, networkMessage);
       } catch (Exception e) {
         log.error(

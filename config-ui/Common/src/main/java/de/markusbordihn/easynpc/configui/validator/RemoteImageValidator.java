@@ -21,8 +21,10 @@ package de.markusbordihn.easynpc.configui.validator;
 
 import de.markusbordihn.easynpc.Constants;
 import java.awt.image.BufferedImage;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
+import javax.imageio.IIOException;
 import javax.imageio.ImageIO;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -43,8 +45,18 @@ public class RemoteImageValidator {
     BufferedImage image;
     try {
       image = ImageIO.read(remoteUrl);
+    } catch (IIOException iioException) {
+      log.error("Unable to download image from URL {}: {}", remoteUrl, iioException.getMessage());
+      return false;
+    } catch (FileNotFoundException fileNotFoundException) {
+      log.error("Image not found at URL {}: {}", remoteUrl, fileNotFoundException.getMessage());
+      return false;
     } catch (IllegalArgumentException | IOException exception) {
-      log.error("Unable to get any valid image from URL {}:", remoteUrl, exception);
+      log.error("Unable to get any valid image from URL {}: {}", remoteUrl, exception.getMessage());
+      return false;
+    } catch (Exception exception) {
+      log.error(
+          "Unexpected error loading image from URL {}: {}", remoteUrl, exception.getMessage());
       return false;
     }
 

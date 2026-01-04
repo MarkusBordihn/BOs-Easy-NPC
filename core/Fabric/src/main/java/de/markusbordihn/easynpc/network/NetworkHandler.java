@@ -81,7 +81,14 @@ public class NetworkHandler implements NetworkHandlerInterface {
       final Class<M> networkMessageRecord,
       final Function<FriendlyByteBuf, M> creator) {
     if (!ClientPlayNetworking.registerGlobalReceiver(
-        type, (payload, context) -> payload.handleClient())) {
+        type,
+        (payload, context) -> {
+          if (payload != null) {
+            payload.handleClient();
+          } else {
+            log.warn("Received null client payload, ignoring packet");
+          }
+        })) {
       log.error("Failed to register client network message handler {}:", type);
     } else {
       logRegisterClientNetworkMessageHandler(type, networkMessageRecord);
@@ -95,7 +102,14 @@ public class NetworkHandler implements NetworkHandlerInterface {
       final Class<M> networkMessageRecord,
       final Function<FriendlyByteBuf, M> creator) {
     if (!ServerPlayNetworking.registerGlobalReceiver(
-        type, (payload, context) -> payload.handleServer(context.player()))) {
+        type,
+        (payload, context) -> {
+          if (payload != null) {
+            payload.handleServer(context.player());
+          } else {
+            log.warn("Received null server payload, ignoring packet");
+          }
+        })) {
       log.error("Failed to register server network message handler {}:", type);
     } else {
       logRegisterServerNetworkMessageHandler(type, networkMessageRecord);

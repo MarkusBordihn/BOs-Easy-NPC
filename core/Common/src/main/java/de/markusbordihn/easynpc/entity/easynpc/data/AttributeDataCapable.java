@@ -22,25 +22,13 @@ package de.markusbordihn.easynpc.entity.easynpc.data;
 import de.markusbordihn.easynpc.data.attribute.EntityAttributes;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
-import java.util.EnumMap;
 import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 
 public interface AttributeDataCapable<E extends PathfinderMob> extends EasyNPC<E> {
-
-  static void registerSyncedAttributeData(
-      EnumMap<SynchedDataIndex, EntityDataAccessor<?>> map, Class<? extends Entity> entityClass) {
-    log.info("- Registering Synched Attribute Data for {}.", entityClass.getSimpleName());
-    map.put(
-        SynchedDataIndex.ENTITY_ATTRIBUTES,
-        SynchedEntityData.defineId(entityClass, EntityDataSerializersManager.ENTITY_ATTRIBUTES));
-  }
 
   default void setBaseAttribute(Holder<Attribute> attribute, double value) {
     if (attribute == null || getLivingEntity().getAttribute(attribute) == null) {

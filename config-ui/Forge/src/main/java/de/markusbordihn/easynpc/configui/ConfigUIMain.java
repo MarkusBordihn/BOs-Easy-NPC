@@ -47,8 +47,8 @@ public class ConfigUIMain {
 
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  public ConfigUIMain() {
-    final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+  public ConfigUIMain(FMLJavaModLoadingContext context) {
+    IEventBus modEventBus = context.getModEventBus();
 
     log.info("Initializing {} (Forge) ...", Constants.MOD_NAME);
 

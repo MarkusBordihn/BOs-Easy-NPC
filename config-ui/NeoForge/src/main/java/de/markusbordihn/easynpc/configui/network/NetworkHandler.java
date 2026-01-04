@@ -54,8 +54,7 @@ public class NetworkHandler implements NetworkHandlerInterface {
     payloadRegistrar =
         payloadHandlersEvent
             .registrar(Constants.MOD_ID)
-            .versioned(String.valueOf(PROTOCOL_VERSION))
-            .optional();
+            .versioned(String.valueOf(PROTOCOL_VERSION));
     log.info(
         "{} Network Handler for {} with version {} ...",
         Constants.LOG_REGISTER_PREFIX,

@@ -22,25 +22,13 @@ package de.markusbordihn.easynpc.entity.easynpc.data;
 import de.markusbordihn.easynpc.data.render.RenderDataEntry;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
-import java.util.EnumMap;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.PathfinderMob;
 
 public interface RenderDataCapable<E extends PathfinderMob> extends EasyNPC<E> {
 
   String DATA_RENDER_DATA_TAG = "RenderData";
-
-  static void registerSyncedRenderData(
-      EnumMap<SynchedDataIndex, EntityDataAccessor<?>> map, Class<? extends Entity> entityClass) {
-    log.info("- Registering Synched Render Data for {}.", entityClass.getSimpleName());
-    map.put(
-        SynchedDataIndex.RENDER_DATA,
-        SynchedEntityData.defineId(entityClass, EntityDataSerializersManager.RENDER_DATA_ENTRY));
-  }
 
   default void defineSynchedRenderData(SynchedEntityData.Builder builder) {
     defineSynchedEntityData(builder, SynchedDataIndex.RENDER_DATA, new RenderDataEntry());

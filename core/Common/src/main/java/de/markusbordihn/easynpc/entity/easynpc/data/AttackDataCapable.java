@@ -22,12 +22,8 @@ package de.markusbordihn.easynpc.entity.easynpc.data;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.AttackHandler;
-import java.util.EnumMap;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.NeutralMob;
 import net.minecraft.world.entity.PathfinderMob;
@@ -36,14 +32,6 @@ import net.minecraft.world.entity.monster.RangedAttackMob;
 
 public interface AttackDataCapable<E extends PathfinderMob>
     extends EasyNPC<E>, NeutralMob, RangedAttackMob, CrossbowAttackMob {
-
-  static void registerSyncedAttackData(
-      EnumMap<SynchedDataIndex, EntityDataAccessor<?>> map, Class<? extends Entity> entityClass) {
-    log.info("- Registering Synched Attack Data for {}.", entityClass.getSimpleName());
-    map.put(
-        SynchedDataIndex.ATTACK_IS_CHARGING_CROSSBOW,
-        SynchedEntityData.defineId(entityClass, EntityDataSerializers.BOOLEAN));
-  }
 
   int getAttackAnimationTick();
 

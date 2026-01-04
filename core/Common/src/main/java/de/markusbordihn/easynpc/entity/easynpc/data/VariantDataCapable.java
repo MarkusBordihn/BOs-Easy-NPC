@@ -23,16 +23,12 @@ import de.markusbordihn.easynpc.data.skin.variant.HumanoidSkinVariant;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.utils.TextUtils;
-import java.util.EnumMap;
 import java.util.Locale;
 import java.util.stream.Stream;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.npc.VillagerType;
@@ -40,14 +36,6 @@ import net.minecraft.world.entity.npc.VillagerType;
 public interface VariantDataCapable<T extends PathfinderMob> extends EasyNPC<T> {
 
   String EASY_NPC_DATA_VARIANT_TYPE_TAG = "VariantType";
-
-  static void registerSyncedVariantData(
-      EnumMap<SynchedDataIndex, EntityDataAccessor<?>> map, Class<? extends Entity> entityClass) {
-    log.info("- Registering Synched Variant Type Data for {}.", entityClass.getSimpleName());
-    map.put(
-        SynchedDataIndex.VARIANT_TYPE,
-        SynchedEntityData.defineId(entityClass, EntityDataSerializers.STRING));
-  }
 
   default Enum<?> getDefaultSkinVariantType() {
     return HumanoidSkinVariant.STEVE;

@@ -55,8 +55,7 @@ public class NetworkHandler implements NetworkHandlerInterface {
     payloadRegistrar =
         payloadHandlersEvent
             .registrar(Constants.MOD_ID)
-            .versioned(String.valueOf(PROTOCOL_VERSION))
-            .optional();
+            .versioned(String.valueOf(PROTOCOL_VERSION));
     log.info(
         "{} Network Handler for {} with version {} ...",
         Constants.LOG_REGISTER_PREFIX,
@@ -85,7 +84,13 @@ public class NetworkHandler implements NetworkHandlerInterface {
     payloadRegistrar.playToClient(
         type,
         codec,
-        (customPacketPayload, playPayloadContext) -> customPacketPayload.handleClient());
+        (customPacketPayload, playPayloadContext) -> {
+          if (customPacketPayload != null) {
+            customPacketPayload.handleClient();
+          } else {
+            log.warn("Received null client payload, ignoring packet");
+          }
+        });
   }
 
   @Override
@@ -99,6 +104,10 @@ public class NetworkHandler implements NetworkHandlerInterface {
         type,
         codec,
         (customPacketPayload, playPayloadContext) -> {
+          if (customPacketPayload == null) {
+            log.warn("Received null server payload, ignoring packet");
+            return;
+          }
           if (playPayloadContext.player() instanceof ServerPlayer serverPlayer) {
             customPacketPayload.handleServer(serverPlayer);
           } else {
