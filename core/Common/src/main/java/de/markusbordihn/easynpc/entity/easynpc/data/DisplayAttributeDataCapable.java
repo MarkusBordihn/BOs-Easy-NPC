@@ -25,7 +25,6 @@ import de.markusbordihn.easynpc.data.display.NameVisibilityType;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.data.type.ValueType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
 import de.markusbordihn.easynpc.serialization.ModCodec;
 import java.util.EnumMap;
 import java.util.Map;
@@ -34,9 +33,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -79,14 +76,6 @@ public interface DisplayAttributeDataCapable<E extends PathfinderMob> extends Ea
               registryFriendlyByteBuf.writeNbt(compoundTag);
             }
           };
-
-  static void registerSyncedDisplayAttributeData(
-      EnumMap<SynchedDataIndex, EntityDataAccessor<?>> map, Class<? extends Entity> entityClass) {
-    log.info("- Registering Synched Display Attribute Data for {}.", entityClass.getSimpleName());
-    map.put(
-        SynchedDataIndex.DISPLAY_ATTRIBUTE_SET,
-        SynchedEntityData.defineId(entityClass, EntityDataSerializersManager.DISPLAY_ATTRIBUTE));
-  }
 
   default EnumMap<DisplayAttributeType, DisplayAttributeEntry> getDisplayAttributeMap() {
     EnumMap<DisplayAttributeType, DisplayAttributeEntry> displayAttributeMap =

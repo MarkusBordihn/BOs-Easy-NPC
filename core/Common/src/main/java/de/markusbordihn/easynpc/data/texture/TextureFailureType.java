@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Markus Bordihn
+ * Copyright 2026 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,13 +17,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.network;
+package de.markusbordihn.easynpc.data.texture;
 
-import de.markusbordihn.easynpc.network.message.ServerNetworkMessageHandlerInterface;
+public enum TextureFailureType {
+  INVALID_IMAGE_SIZE(true, "Image dimensions invalid"),
+  DECODING_ERROR(true, "Failed to decode image"),
+  INVALID_FORMAT(true, "Unsupported image format"),
+  FILE_TOO_LARGE(true, "File exceeds size limit"),
+  NETWORK_ERROR(false, "Network connection failed"),
+  URL_INVALID(true, "URL format invalid"),
+  TIMEOUT(false, "Connection timeout"),
+  MAX_RETRIES_EXCEEDED(true, "Maximum retry attempts exceeded");
 
-public class ServerNetworkMessageHandler implements ServerNetworkMessageHandlerInterface {
+  private final boolean permanent;
+  private final String message;
 
-  public ServerNetworkMessageHandler() {
-    log.info("Registering server network handler for Client -> Server messages.");
+  TextureFailureType(boolean permanent, String message) {
+    this.permanent = permanent;
+    this.message = message;
+  }
+
+  public boolean isPermanent() {
+    return permanent;
+  }
+
+  public String getMessage() {
+    return message;
   }
 }

@@ -1,6 +1,6 @@
 plugins {
   id 'maven-publish'
-  id 'net.minecraftforge.gradle' version '[6.0.24,6.2)'
+  id 'net.minecraftforge.gradle' version '[6.0,6.2)'
   id 'com.matthewprenger.cursegradle' version '1.4.0'
   id 'nu.studer.credentials' version '3.0'
   id "com.modrinth.minotaur" version "2.+"
@@ -114,13 +114,23 @@ tasks.named('jar', Jar).configure {
   }
 }
 
+// Merge the resources and classes into the same directory.
+// This is done because java expects modules to be in a single directory.
+// And if we have it in multiple we have to do performance intensive hacks like having the UnionFileSystem
+// This will eventually be migrated to ForgeGradle so modders don't need to manually do it. But that is later.
+sourceSets.each {
+  def dir = layout.buildDirectory.dir("sourcesSets/$it.name")
+  it.output.resourcesDir = dir
+  it.java.destinationDirectory = dir
+}
+
 // CurseForge Publishing
 if (project.hasProperty('curseforge_project_id') && project.curseforge_project_id) {
   curseforge {
     apiKey = "${credentials.forKey('curseforge_api_token')}"
     project {
       id = "${project.curseforge_project_id}"
-      changelog = rootProject.file('../core/CHANGELOG.md')
+      changelog = rootProject.file('../CHANGELOG.md')
       changelogType = 'markdown'
       releaseType = "${project.curseforge_release_type}"
       addGameVersion("${project.minecraft_version}")
@@ -143,8 +153,8 @@ if (project.hasProperty('modrinth_project_id') && project.modrinth_project_id) {
     versionNumber = "${project.version}"
     versionType = "${project.modrinth_release_type}"
     versionName = "${project.mod_name} ${project.version}"
-    changelog = rootProject.file('../core/CHANGELOG.md').text
-    uploadFile = jar
+    changelog = rootProject.file('../CHANGELOG.md').text
+    uploadFile = tasks.jar
     gameVersions = ["${project.minecraft_version}"]
     loaders = ["forge"]
     dependencies {
@@ -152,14 +162,4 @@ if (project.hasProperty('modrinth_project_id') && project.modrinth_project_id) {
       required.project "easy-npc-config-ui"
     }
   }
-}
-
-// Merge the resources and classes into the same directory.
-// This is done because java expects modules to be in a single directory.
-// And if we have it in multiple we have to do performance intensive hacks like having the UnionFileSystem
-// This will eventually be migrated to ForgeGradle so modders don't need to manually do it. But that is later.
-sourceSets.each {
-  def dir = layout.buildDirectory.dir("sourcesSets/$it.name")
-  it.output.resourcesDir = dir
-  it.java.destinationDirectory = dir
 }

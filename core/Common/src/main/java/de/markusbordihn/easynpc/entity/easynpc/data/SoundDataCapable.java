@@ -24,12 +24,9 @@ import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.sound.SoundType;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
-import java.util.EnumMap;
 import java.util.Optional;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.damagesource.DamageSource;
@@ -43,14 +40,6 @@ import net.minecraft.world.level.storage.ValueOutput;
 public interface SoundDataCapable<E extends PathfinderMob> extends EasyNPC<E> {
 
   String EASY_NPC_DATA_SOUND_DATA_TAG = "SoundData";
-
-  static void registerSyncedSoundData(
-      EnumMap<SynchedDataIndex, EntityDataAccessor<?>> map, Class<? extends Entity> entityClass) {
-    log.info("- Registering Synched Sound Data for {}.", entityClass.getSimpleName());
-    map.put(
-        SynchedDataIndex.SOUND_DATA_SET,
-        SynchedEntityData.defineId(entityClass, EntityDataSerializersManager.SOUND_DATA_SET));
-  }
 
   default SoundDataSet getSoundDataSet() {
     return getSynchedEntityData(SynchedDataIndex.SOUND_DATA_SET);
@@ -185,16 +174,13 @@ public interface SoundDataCapable<E extends PathfinderMob> extends EasyNPC<E> {
   }
 
   default void readAdditionalSoundData(ValueInput valueInput) {
-    // Early exit if no action data is available
     Optional<CompoundTag> compoundTagData =
         valueInput.read(EASY_NPC_DATA_SOUND_DATA_TAG, CompoundTag.CODEC);
     if (compoundTagData.isEmpty()) {
       return;
     }
 
-    // Read sound data
     CompoundTag soundDataTag = compoundTagData.get();
-
     if (soundDataTag.contains(SoundDataSet.DATA_SOUND_DATA_SET_TAG)) {
       SoundDataSet soundDataSet = new SoundDataSet(soundDataTag);
       this.setSoundDataSet(soundDataSet);

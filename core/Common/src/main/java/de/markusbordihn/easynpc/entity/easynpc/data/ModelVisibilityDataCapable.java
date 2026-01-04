@@ -22,15 +22,12 @@ package de.markusbordihn.easynpc.entity.easynpc.data;
 import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
 import java.util.EnumMap;
 import java.util.Map;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.PathfinderMob;
 
@@ -67,15 +64,6 @@ public interface ModelVisibilityDataCapable<T extends PathfinderMob> extends Eas
             }
           };
 
-  static void registerSyncedModelVisibilityData(
-      EnumMap<SynchedDataIndex, EntityDataAccessor<?>> map, Class<? extends Entity> entityClass) {
-    log.info("Registering Synched Model Visibility Data for {}.", entityClass.getSimpleName());
-    map.put(
-        SynchedDataIndex.MODEL_VISIBILITY,
-        SynchedEntityData.defineId(
-            entityClass, EntityDataSerializersManager.MODEL_PART_VISIBILITY));
-  }
-
   default EnumMap<ModelPartType, Boolean> getModelPartVisibility() {
     EnumMap<ModelPartType, Boolean> modelPartMap =
         getSynchedEntityData(SynchedDataIndex.MODEL_VISIBILITY);
@@ -101,18 +89,13 @@ public interface ModelVisibilityDataCapable<T extends PathfinderMob> extends Eas
   }
 
   default boolean getModelPartVisibility(EquipmentSlot equipmentSlot) {
-    switch (equipmentSlot) {
-      case HEAD:
-        return getModelPartVisibility(ModelPartType.HELMET);
-      case CHEST:
-        return getModelPartVisibility(ModelPartType.CHESTPLATE);
-      case LEGS:
-        return getModelPartVisibility(ModelPartType.LEGGINGS);
-      case FEET:
-        return getModelPartVisibility(ModelPartType.BOOTS);
-      default:
-        return false;
-    }
+    return switch (equipmentSlot) {
+      case HEAD -> getModelPartVisibility(ModelPartType.HELMET);
+      case CHEST -> getModelPartVisibility(ModelPartType.CHESTPLATE);
+      case LEGS -> getModelPartVisibility(ModelPartType.LEGGINGS);
+      case FEET -> getModelPartVisibility(ModelPartType.BOOTS);
+      default -> false;
+    };
   }
 
   default boolean getModelPartVisibility(ModelPartType modelPartType) {
