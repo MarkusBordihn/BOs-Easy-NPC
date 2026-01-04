@@ -50,7 +50,8 @@ public class PlayersUtils {
   private static final String API_PROFILE_URL =
       "https://api.mojang.com/users/profiles/minecraft/%s";
   private static final Map<String, UUID> userUUIDCache = new ConcurrentHashMap<>();
-  private static UUID lastUserUUIDForUserTexture;
+  private static final Map<UUID, Long> sessionServerRequestProtection = new ConcurrentHashMap<>();
+  private static final long SESSION_REQUEST_COOLDOWN = 1000;
 
   protected PlayersUtils() {}
 
@@ -118,6 +119,9 @@ public class PlayersUtils {
   }
 
   public static UUID getUUIDfromString(String uuidString) {
+    if (uuidString == null || uuidString.isEmpty()) {
+      return null;
+    }
     try {
       return UUID.fromString(uuidString);
     } catch (IllegalArgumentException exception) {
@@ -130,12 +134,23 @@ public class PlayersUtils {
   }
 
   public static String getUserTexture(UUID userUUID) {
-    // Simple reload protected to avoid spawning to the session server.
-    if (lastUserUUIDForUserTexture != null && lastUserUUIDForUserTexture.equals(userUUID)) {
-      log.error("Ignore duplicated user texture request for {}!", userUUID);
+    // Session server spam protection: prevent duplicate requests within cooldown period
+    long currentTime = System.currentTimeMillis();
+    Long lastRequest = sessionServerRequestProtection.get(userUUID);
+    if (lastRequest != null && currentTime - lastRequest < SESSION_REQUEST_COOLDOWN) {
+      log.debug(
+          "Ignoring duplicate session server request for {} (within cooldown period)", userUUID);
       return null;
     }
-    lastUserUUIDForUserTexture = userUUID;
+
+    // Use putIfAbsent to avoid race condition - only one thread should make the request
+    Long existingRequest = sessionServerRequestProtection.putIfAbsent(userUUID, currentTime);
+    if (existingRequest != null && currentTime - existingRequest < SESSION_REQUEST_COOLDOWN) {
+      log.debug(
+          "Ignoring duplicate session server request for {} (another thread is handling it)",
+          userUUID);
+      return null;
+    }
 
     // Create sessions request and parse result, if any.
     String sessionURL = String.format(SESSION_PROFILE_URL, userUUID);
@@ -166,12 +181,23 @@ public class PlayersUtils {
       if (propertyObject.has("name")
           && TEXTURES_STRING.equals(propertyObject.get("name").getAsString())
           && propertyObject.has("value")) {
-        String textureData =
-            new String(Base64.getDecoder().decode(propertyObject.get("value").getAsString()));
-        String userTexture = getUserTextureFromTextureData(textureData);
-        String userTextureModel = getUserTextureModelFromTextureData(textureData);
-        log.debug("Found user texture {} with model {} ...", userTexture, userTextureModel);
-        return userTexture;
+        try {
+          String textureData =
+              new String(Base64.getDecoder().decode(propertyObject.get("value").getAsString()));
+
+          // Parse texture data once and extract both URL and model
+          JsonObject textureDataObject = getJsonObject(textureData);
+          log.debug("getUserTextureFromTextureData: {}", textureDataObject);
+
+          // Extract user texture URL and model
+          String userTexture = extractUserTextureUrl(textureDataObject);
+          String userTextureModel = extractUserTextureModel(textureDataObject);
+          log.debug("Found user texture {} with model {} ...", userTexture, userTextureModel);
+          return userTexture;
+        } catch (IllegalArgumentException e) {
+          log.error("Unable to decode Base64 texture data: {}", e.getMessage());
+          return "";
+        }
       }
     }
 
@@ -179,11 +205,9 @@ public class PlayersUtils {
     return "";
   }
 
-  public static String getUserTextureFromTextureData(String data) {
-    JsonObject jsonObject = getJsonObject(data);
-    log.debug("getUserTextureFromTextureData: {}", jsonObject);
-    if (jsonObject != null && jsonObject.has(TEXTURES_STRING)) {
-      JsonObject textureObject = jsonObject.getAsJsonObject(TEXTURES_STRING);
+  private static String extractUserTextureUrl(JsonObject textureDataObject) {
+    if (textureDataObject != null && textureDataObject.has(TEXTURES_STRING)) {
+      JsonObject textureObject = textureDataObject.getAsJsonObject(TEXTURES_STRING);
       if (textureObject.has("SKIN")) {
         JsonObject skinObject = textureObject.getAsJsonObject("SKIN");
         if (skinObject.has("url")) {
@@ -191,15 +215,13 @@ public class PlayersUtils {
         }
       }
     }
-    log.error("Unable to get user texture from texture data: {}", data);
+    log.error("Unable to get user texture from texture data: {}", textureDataObject);
     return "";
   }
 
-  public static String getUserTextureModelFromTextureData(String data) {
-    JsonObject jsonObject = getJsonObject(data);
-    log.debug("getUserTextureModelFromTextureData: {}", jsonObject);
-    if (jsonObject != null && jsonObject.has(TEXTURES_STRING)) {
-      JsonObject textureObject = jsonObject.getAsJsonObject(TEXTURES_STRING);
+  private static String extractUserTextureModel(JsonObject textureDataObject) {
+    if (textureDataObject != null && textureDataObject.has(TEXTURES_STRING)) {
+      JsonObject textureObject = textureDataObject.getAsJsonObject(TEXTURES_STRING);
       if (textureObject.has("SKIN")) {
         JsonObject skinObject = textureObject.getAsJsonObject("SKIN");
         if (skinObject.has("metadata")) {
@@ -210,7 +232,9 @@ public class PlayersUtils {
         }
       }
     }
-    log.debug("Unable to get user texture model from texture data, will use default: {}", data);
+    log.debug(
+        "Unable to get user texture model from texture data, will use default: {}",
+        textureDataObject);
     return "default";
   }
 

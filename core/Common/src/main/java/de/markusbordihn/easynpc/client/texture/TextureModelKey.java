@@ -23,69 +23,55 @@ import de.markusbordihn.easynpc.data.skin.SkinModel;
 import java.util.Objects;
 import java.util.UUID;
 
-public class TextureModelKey {
-
-  private final UUID uuid;
-  private final String subType;
-  private final SkinModel skinModel;
-  private final String resourceName;
+public record TextureModelKey(UUID uuid, SkinModel skinModel, String resourceName) {
 
   public TextureModelKey(UUID uuid, SkinModel skinModel) {
     this(uuid, skinModel, "");
   }
 
-  public TextureModelKey(UUID uuid, SkinModel skinModel, String resourceName) {
-    this.uuid = uuid;
-    this.subType = skinModel != null ? skinModel.name() : "";
-    this.skinModel = skinModel;
-    this.resourceName = resourceName != null ? resourceName : "";
+  public String getSubType() {
+    return skinModel != null ? skinModel.name() : "";
   }
 
   public UUID getUUID() {
-    return this.uuid;
-  }
-
-  public String getSubType() {
-    return this.subType;
+    return uuid;
   }
 
   public SkinModel getSkinModel() {
-    return this.skinModel;
+    return skinModel;
   }
 
   public String getResourceName() {
-    return this.resourceName;
+    return resourceName != null ? resourceName : "";
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (!(obj instanceof TextureModelKey other)) {
+      return false;
+    }
+    return Objects.equals(uuid, other.uuid) && Objects.equals(getSubType(), other.getSubType());
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.uuid, this.subType);
-  }
-
-  @Override
-  public boolean equals(Object object) {
-    if (object == this) {
-      return true;
-    }
-    if (!(object instanceof TextureModelKey textureModelKey)) {
-      return false;
-    }
-
-    return this.uuid.equals(textureModelKey.uuid) && this.subType.equals(textureModelKey.subType);
+    return Objects.hash(uuid, getSubType());
   }
 
   @Override
   public String toString() {
     return "TextureModelKey{"
         + "uuid="
-        + this.uuid
+        + uuid
         + ", skinModel="
-        + this.skinModel
+        + skinModel
         + ", subType='"
-        + this.subType
-        + ", resourceName='"
-        + this.resourceName
-        + '\''
-        + '}';
+        + getSubType()
+        + "', resourceName='"
+        + resourceName
+        + "'}";
   }
 }

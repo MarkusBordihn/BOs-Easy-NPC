@@ -22,9 +22,10 @@ package de.markusbordihn.easynpc.client.texture;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.data.skin.SkinType;
+import de.markusbordihn.easynpc.data.texture.TextureFailureInfo;
+import de.markusbordihn.easynpc.data.texture.TextureFailureType;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
 import de.markusbordihn.easynpc.io.RemoteSkinDataFiles;
-import de.markusbordihn.easynpc.network.components.TextComponent;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.HashSet;
@@ -32,10 +33,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.player.Player;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -48,10 +46,63 @@ public class RemoteTextureManager {
       new ConcurrentHashMap<>();
   private static final Map<TextureModelKey, String> textureSkinURLCache = new ConcurrentHashMap<>();
   private static final Map<UUID, Long> textureReloadProtection = new ConcurrentHashMap<>();
+  private static final Map<TextureModelKey, TextureFailureInfo> permanentFailures =
+      new ConcurrentHashMap<>();
+  private static final Map<TextureModelKey, Integer> retryAttempts = new ConcurrentHashMap<>();
   private static final String LOG_PREFIX = "[Remote Texture Manager] ";
-  private static final long RELOAD_PROTECTION_TIME = 60000;
+  private static final long BASE_RETRY_DELAY = 60000;
+  private static final int MAX_RETRY_ATTEMPTS = 3;
+  private static final long CACHE_CLEANUP_INTERVAL = 600000;
+  private static volatile long lastCleanup = System.currentTimeMillis();
 
   private RemoteTextureManager() {}
+
+  public static void markPermanentFailure(
+      TextureModelKey key, TextureFailureType type, String details, String url) {
+    if (type.isPermanent()) {
+      permanentFailures.put(key, new TextureFailureInfo(type, details, url));
+      log.warn(
+          "{} Marked texture {} as permanently failed: {} - {}", LOG_PREFIX, key, type, details);
+    }
+  }
+
+  public static boolean hasPermanentFailure(TextureModelKey key) {
+    return permanentFailures.containsKey(key);
+  }
+
+  public static void clearPermanentFailure(TextureModelKey key) {
+    if (permanentFailures.remove(key) != null) {
+      retryAttempts.remove(key);
+      textureReloadProtection.remove(key.getUUID());
+      log.info("{} Cleared permanent failure for {}", LOG_PREFIX, key);
+    }
+  }
+
+  public static void clearAllPermanentFailures() {
+    int count = permanentFailures.size();
+    permanentFailures.clear();
+    retryAttempts.clear();
+    log.info("{} Cleared {} permanent failures", LOG_PREFIX, count);
+  }
+
+  private static long calculateRetryDelay(int attempts) {
+    if (attempts >= MAX_RETRY_ATTEMPTS) {
+      return Long.MAX_VALUE;
+    }
+    return BASE_RETRY_DELAY * (long) Math.pow(2, attempts);
+  }
+
+  private static void cleanupOldEntries() {
+    long now = System.currentTimeMillis();
+    if (now - lastCleanup < CACHE_CLEANUP_INTERVAL) {
+      return;
+    }
+
+    textureReloadProtection.entrySet().removeIf(entry -> now - entry.getValue() > 300000);
+    retryAttempts.entrySet().removeIf(entry -> textureCache.containsKey(entry.getKey()));
+
+    lastCleanup = now;
+  }
 
   public static Set<UUID> getTextureCacheKeys(SkinModel skinModel) {
     HashSet<UUID> hashSet = new HashSet<>();
@@ -78,7 +129,8 @@ public class RemoteTextureManager {
 
   public static ResourceLocation getOrCreateTextureWithDefault(
       SkinDataCapable<?> skinData, ResourceLocation defaultResourceLocation) {
-    // Check if we have a skin UUID otherwise we assume that the texture is unknown.
+    cleanupOldEntries();
+
     UUID skinUUID = skinData.getSkinUUID();
     if (skinUUID.equals(Constants.BLANK_UUID)) {
       return defaultResourceLocation;
@@ -103,13 +155,46 @@ public class RemoteTextureManager {
   private static ResourceLocation createTexture(
       TextureModelKey textureModelKey, SkinDataCapable<?> skinData, String skinURL) {
 
-    // Reload protection to avoid multiple texture requests in a short time.
-    UUID skinUUID = textureModelKey.getUUID();
-    Long lastAttempt = textureReloadProtection.get(skinUUID);
-    if (lastAttempt != null && System.currentTimeMillis() - lastAttempt < RELOAD_PROTECTION_TIME) {
+    if (hasPermanentFailure(textureModelKey)) {
       return null;
     }
-    textureReloadProtection.put(skinUUID, System.currentTimeMillis());
+
+    UUID skinUUID = textureModelKey.getUUID();
+    long currentTime = System.currentTimeMillis();
+
+    // Use atomic operations to prevent race conditions
+    int attempts =
+        retryAttempts.compute(
+            textureModelKey,
+            (key, current) -> {
+              int currentAttempts = (current == null) ? 0 : current;
+              if (currentAttempts >= MAX_RETRY_ATTEMPTS) {
+                return currentAttempts;
+              }
+              return currentAttempts + 1;
+            });
+
+    if (attempts > MAX_RETRY_ATTEMPTS) {
+      markPermanentFailure(
+          textureModelKey,
+          TextureFailureType.MAX_RETRIES_EXCEEDED,
+          "Maximum retry attempts exceeded",
+          skinURL);
+      return null;
+    }
+
+    long requiredDelay = calculateRetryDelay(attempts - 1);
+    Long lastAttempt = textureReloadProtection.get(skinUUID);
+
+    if (lastAttempt != null && currentTime - lastAttempt < requiredDelay) {
+      return null;
+    }
+
+    // Use putIfAbsent to avoid race condition
+    Long existingAttempt = textureReloadProtection.putIfAbsent(skinUUID, currentTime);
+    if (existingAttempt != null && currentTime - existingAttempt < requiredDelay) {
+      return null;
+    }
 
     // Get the skin model and texture data folder
     SkinModel skinModel = skinData.getSkinModel();
@@ -128,34 +213,23 @@ public class RemoteTextureManager {
       return localTextureCache;
     }
 
-    // Validate the skin URL and perform some basic sanity checks and
-    // process the remote texture.
-    ResourceLocation resourceLocation =
-        TextureManager.addRemoteTexture(textureModelKey, skinURL, textureDataFolder);
-    if (resourceLocation != null) {
-      textureCache.put(textureModelKey, resourceLocation);
-      textureSkinTypeCache.put(textureModelKey, skinData.getSkinType());
-      textureSkinURLCache.put(textureModelKey, skinURL);
-      return resourceLocation;
-    }
-
-    // Log error if texture could not be loaded.
-    log.error(
-        "{} Unable to load remote texture {} ({}) from {}!",
-        LOG_PREFIX,
-        textureModelKey,
-        skinURL,
-        textureDataFolder);
-
-    // Send error message to the user.
-    Player player = Minecraft.getInstance().player;
-    if (player != null) {
-      player.displayClientMessage(
-          TextComponent.getText(
-                  LOG_PREFIX + "Unable to load remote " + skinURL + " texture " + textureModelKey)
-              .withStyle(ChatFormatting.RED),
-          false);
-    }
+    AsyncTextureLoader.loadTextureAsync(textureModelKey, skinURL, textureDataFolder)
+        .thenAccept(
+            resourceLocation -> {
+              if (resourceLocation != null) {
+                textureCache.put(textureModelKey, resourceLocation);
+                textureSkinTypeCache.put(textureModelKey, skinData.getSkinType());
+                textureSkinURLCache.put(textureModelKey, skinURL);
+                retryAttempts.remove(textureModelKey);
+              } else {
+                log.error(
+                    "{} Unable to load remote texture {} ({}) from {}!",
+                    LOG_PREFIX,
+                    textureModelKey,
+                    skinURL,
+                    textureDataFolder);
+              }
+            });
 
     return null;
   }
@@ -177,5 +251,7 @@ public class RemoteTextureManager {
     textureCache.clear();
     textureSkinTypeCache.clear();
     textureSkinURLCache.clear();
+    permanentFailures.clear();
+    retryAttempts.clear();
   }
 }

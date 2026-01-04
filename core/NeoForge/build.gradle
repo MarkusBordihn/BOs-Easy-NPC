@@ -110,7 +110,7 @@ if (project.hasProperty('curseforge_project_id') && project.curseforge_project_i
     apiKey = "${credentials.forKey('curseforge_api_token')}"
     project {
       id = "${project.curseforge_project_id}"
-      changelog = rootProject.file("CHANGELOG.md")
+      changelog = rootProject.file("../CHANGELOG.md")
       changelogType = 'markdown'
       releaseType = "${project.curseforge_release_type}"
       addGameVersion("${project.minecraft_version}")
@@ -132,7 +132,7 @@ if (project.hasProperty('modrinth_project_id') && project.modrinth_project_id) {
     versionNumber = "${project.version}"
     versionType = "${project.modrinth_release_type}"
     versionName = "${project.mod_name} ${project.version}"
-    changelog = rootProject.file("CHANGELOG.md").text
+    changelog = rootProject.file("../CHANGELOG.md").text
     uploadFile = jar
     gameVersions = ["${project.minecraft_version}"]
     loaders = ["neoforge"]

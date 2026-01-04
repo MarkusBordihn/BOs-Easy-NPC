@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Markus Bordihn
+ * Copyright 2026 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,13 +17,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.network;
+package de.markusbordihn.easynpc.data.texture;
 
-import de.markusbordihn.easynpc.network.message.ServerNetworkMessageHandlerInterface;
+public record TextureFailureInfo(
+    TextureFailureType type, long timestamp, String details, String url) {
 
-public class ServerNetworkMessageHandler implements ServerNetworkMessageHandlerInterface {
+  public TextureFailureInfo(TextureFailureType type, String details, String url) {
+    this(type, System.currentTimeMillis(), details, url);
+  }
 
-  public ServerNetworkMessageHandler() {
-    log.info("Registering server network handler for Client -> Server messages.");
+  public boolean isExpired(long maxAge) {
+    return System.currentTimeMillis() - timestamp > maxAge;
   }
 }
