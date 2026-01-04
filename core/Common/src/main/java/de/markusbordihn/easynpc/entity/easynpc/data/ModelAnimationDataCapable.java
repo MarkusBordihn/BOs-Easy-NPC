@@ -23,25 +23,12 @@ import de.markusbordihn.easynpc.data.model.ModelAnimationBehavior;
 import de.markusbordihn.easynpc.data.model.ModelAnimationData;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
-import java.util.EnumMap;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.PathfinderMob;
 
 public interface ModelAnimationDataCapable<T extends PathfinderMob> extends EasyNPC<T> {
 
   String EASY_NPC_DATA_ANIMATION_DATA_TAG = "AnimationData";
-
-  static void registerSynchedModelAnimationData(
-      EnumMap<SynchedDataIndex, EntityDataAccessor<?>> map, Class<? extends Entity> entityClass) {
-    log.info("Registering Synched Model Animation Data for {}.", entityClass.getSimpleName());
-    map.put(
-        SynchedDataIndex.MODEL_ANIMATION,
-        SynchedEntityData.defineId(entityClass, EntityDataSerializersManager.MODEL_ANIMATION_DATA));
-  }
 
   default ModelAnimationData getModelAnimationData() {
     ModelAnimationData animationData = getSynchedEntityData(SynchedDataIndex.MODEL_ANIMATION);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Markus Bordihn
+ * Copyright 2026 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,29 +17,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.mixin.entity;
+package de.markusbordihn.easynpc.data.texture;
 
-import de.markusbordihn.easynpc.entity.easynpc.npc.standard.StandardEasyNPC;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.npc.AbstractVillager;
-import net.minecraft.world.entity.npc.Villager;
-import net.minecraft.world.level.Level;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+public record TextureFailureInfo(
+    TextureFailureType type, long timestamp, String details, String url) {
 
-@Mixin(Villager.class)
-public abstract class VillagerMixin extends AbstractVillager {
-
-  private VillagerMixin(EntityType<? extends AbstractVillager> entityType, Level level) {
-    super(entityType, level);
+  public TextureFailureInfo(TextureFailureType type, String details, String url) {
+    this(type, System.currentTimeMillis(), details, url);
   }
 
-  @Inject(method = "customServerAiStep", at = @At("HEAD"), cancellable = true)
-  public void onCustomServerAiStep(CallbackInfo ci) {
-    if ((Object) this instanceof StandardEasyNPC<?> && this.isAlive()) {
-      ci.cancel();
-    }
+  public boolean isExpired(long maxAge) {
+    return System.currentTimeMillis() - timestamp > maxAge;
   }
 }

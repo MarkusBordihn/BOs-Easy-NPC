@@ -23,13 +23,9 @@ import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.scale.CustomScale;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
 import java.util.EnumMap;
 import java.util.Map;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.PathfinderMob;
 
 public interface ModelScaleDataCapable<T extends PathfinderMob> extends EasyNPC<T> {
@@ -37,14 +33,6 @@ public interface ModelScaleDataCapable<T extends PathfinderMob> extends EasyNPC<
   CustomScale DEFAULT_MODEL_PART_SCALE = new CustomScale(1, 1, 1);
   CustomScale DEFAULT_MODEL_SCALE = new CustomScale(1, 1, 1);
   String EASY_NPC_DATA_MODEL_SCALE_TAG = "Scale";
-
-  static void registerSynchedModelScaleData(
-      EnumMap<SynchedDataIndex, EntityDataAccessor<?>> map, Class<? extends Entity> entityClass) {
-    log.info("Registering Synched Model Scale Data for {}.", entityClass.getSimpleName());
-    map.put(
-        SynchedDataIndex.MODEL_SCALE,
-        SynchedEntityData.defineId(entityClass, EntityDataSerializersManager.MODEL_PART_SCALE));
-  }
 
   default EnumMap<ModelPartType, CustomScale> getModelPartScale() {
     EnumMap<ModelPartType, CustomScale> modelPartMap =

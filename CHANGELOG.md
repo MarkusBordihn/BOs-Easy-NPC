@@ -1,4 +1,4 @@
-# Changelog for Easy NPC: Core (1.20.1)
+# Changelog for Easy NPC (1.20.1)
 
 ## Note
 
@@ -7,6 +7,23 @@ For the full changelog, please go to the [GitHub History][history] instead.
 
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
+
+### 6.6.0
+
+- Fixed #634 by implementing asynchronous texture loading with dedicated thread pool.
+- Fixed texture loading blocking render thread causing game freezes.
+- Fixed race conditions in texture reload protection using atomic operations.
+- Fixed resource leaks in HTTP connections during remote texture downloads.
+- Fixed URL validation spam allowing multiple simultaneous downloads of the same texture.
+- Fixed exception handling for remote image validation preventing crashes on invalid URLs.
+- Fixed `defineId called for:` warning messages during NPC loading.
+- Refactored texture loading architecture with multi-level defense and rate limiting.
+- Refactored entity data registration logic for better maintainability.
+- Converted data classes to modern Java records for better immutability and thread-safety.
+- Added thread-safe session server spam protection with ConcurrentHashMap.
+- Added comprehensive error recovery with automatic cooldown reset on failures.
+- Improved texture loading with 2-thread pool and 500ms rate limiting.
+- Improved exception handling with specific catch blocks for IIOException and FileNotFoundException.
 
 ### 6.5.2
 

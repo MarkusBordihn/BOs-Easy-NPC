@@ -23,12 +23,9 @@ import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
 import java.util.EnumMap;
 import java.util.Map;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
@@ -37,14 +34,6 @@ public interface ModelRotationDataCapable<T extends PathfinderMob> extends EasyN
 
   CustomRotation DEFAULT_MODEL_PART_ROTATION = new CustomRotation(0, 0, 0);
   String EASY_NPC_DATA_MODEL_ROTATION_TAG = "Rotation";
-
-  static void registerSynchedModelRotationData(
-      EnumMap<SynchedDataIndex, EntityDataAccessor<?>> map, Class<? extends Entity> entityClass) {
-    log.info("Registering Synched Model Rotation Data for {}.", entityClass.getSimpleName());
-    map.put(
-        SynchedDataIndex.MODEL_ROTATION,
-        SynchedEntityData.defineId(entityClass, EntityDataSerializersManager.MODEL_PART_ROTATION));
-  }
 
   default EnumMap<ModelPartType, CustomRotation> getModelPartRotation() {
     EnumMap<ModelPartType, CustomRotation> modelPartMap =

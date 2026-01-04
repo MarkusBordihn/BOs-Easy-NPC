@@ -23,14 +23,9 @@ import de.markusbordihn.easynpc.data.attribute.EntityAttributes;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.data.ticker.TickerType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import java.util.EnumMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
-import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
@@ -44,14 +39,6 @@ public interface NavigationDataCapable<T extends PathfinderMob> extends EasyNPC<
   String DATA_HOME_TAG = "Home";
   String DATA_NAVIGATION_TAG = "Navigation";
   int TRAVEL_EVENT_TICK = 20;
-
-  static void registerSyncedNavigationData(
-      EnumMap<SynchedDataIndex, EntityDataAccessor<?>> map, Class<? extends Entity> entityClass) {
-    log.info("- Registering Synched Navigation Data for {}.", entityClass.getSimpleName());
-    map.put(
-        SynchedDataIndex.NAVIGATION_HOME_POSITION,
-        SynchedEntityData.defineId(entityClass, EntityDataSerializers.BLOCK_POS));
-  }
 
   default BlockPos getHomePosition() {
     return getSynchedEntityData(SynchedDataIndex.NAVIGATION_HOME_POSITION);

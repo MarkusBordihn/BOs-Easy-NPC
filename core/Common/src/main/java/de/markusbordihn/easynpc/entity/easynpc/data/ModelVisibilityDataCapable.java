@@ -22,28 +22,15 @@ package de.markusbordihn.easynpc.entity.easynpc.data;
 import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
 import java.util.EnumMap;
 import java.util.Map;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.PathfinderMob;
 
 public interface ModelVisibilityDataCapable<T extends PathfinderMob> extends EasyNPC<T> {
 
   String EASY_NPC_DATA_MODEL_VISIBLE_TAG = "Visible";
-
-  static void registerSynchedModelVisibilityData(
-      EnumMap<SynchedDataIndex, EntityDataAccessor<?>> map, Class<? extends Entity> entityClass) {
-    log.info("Registering Synched Model Visibility Data for {}.", entityClass.getSimpleName());
-    map.put(
-        SynchedDataIndex.MODEL_VISIBILITY,
-        SynchedEntityData.defineId(
-            entityClass, EntityDataSerializersManager.MODEL_PART_VISIBILITY));
-  }
 
   default EnumMap<ModelPartType, Boolean> getModelPartVisibility() {
     EnumMap<ModelPartType, Boolean> modelPartMap =

@@ -24,12 +24,7 @@ import de.markusbordihn.easynpc.data.trading.TradingDataSet;
 import de.markusbordihn.easynpc.data.trading.TradingType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.network.components.TextComponent;
-import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
-import java.util.EnumMap;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
-import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -49,20 +44,6 @@ public interface TradingDataCapable<E extends PathfinderMob> extends EasyNPC<E>,
   String DATA_TRADING_OFFERS_TAG = "Offers";
   String DATA_TRADING_RECIPES_TAG = "Recipes";
   String DATA_TRADING_DATA_TAG = "TradingData";
-
-  static void registerSyncedTradingData(
-      EnumMap<SynchedDataIndex, EntityDataAccessor<?>> map, Class<? extends Entity> entityClass) {
-    log.info("- Registering Synched Trading Data for {}.", entityClass.getSimpleName());
-    map.put(
-        SynchedDataIndex.TRADING_DATA_SET,
-        SynchedEntityData.defineId(entityClass, EntityDataSerializersManager.TRADING_DATA_SET));
-    map.put(
-        SynchedDataIndex.TRADING_INVENTORY,
-        SynchedEntityData.defineId(entityClass, EntityDataSerializers.COMPOUND_TAG));
-    map.put(
-        SynchedDataIndex.TRADING_MERCHANT_OFFERS,
-        SynchedEntityData.defineId(entityClass, EntityDataSerializersManager.MERCHANT_OFFERS));
-  }
 
   private static MerchantOffers sanitizeTradingOffers(MerchantOffers offers) {
     if (offers == null || offers.isEmpty()) {

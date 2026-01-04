@@ -23,12 +23,7 @@ import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.data.model.ModelType;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
-import java.util.EnumMap;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.Pose;
 
@@ -43,19 +38,6 @@ public interface ModelDataCapable<T extends PathfinderMob>
   String EASY_NPC_DATA_MODEL_DATA_TAG = "ModelData";
   String EASY_NPC_DATA_MODEL_DEFAULT_POSE_TAG = "DefaultPose";
   String EASY_NPC_DATA_MODEL_POSE_TAG = "Pose";
-
-  static void registerSyncedModelData(
-      EnumMap<SynchedDataIndex, EntityDataAccessor<?>> map, Class<? extends Entity> entityClass) {
-    log.info("Registering Synched Model Data for {}.", entityClass.getSimpleName());
-    map.put(
-        SynchedDataIndex.MODEL_POSE,
-        SynchedEntityData.defineId(entityClass, EntityDataSerializersManager.MODEL_POSE));
-    ModelAnimationDataCapable.registerSynchedModelAnimationData(map, entityClass);
-    ModelPositionDataCapable.registerSyncedModelPositionData(map, entityClass);
-    ModelRotationDataCapable.registerSynchedModelRotationData(map, entityClass);
-    ModelScaleDataCapable.registerSynchedModelScaleData(map, entityClass);
-    ModelVisibilityDataCapable.registerSynchedModelVisibilityData(map, entityClass);
-  }
 
   default Pose getDefaultPose() {
     return this.getEntity().getPose();

@@ -23,27 +23,15 @@ import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.position.CustomPosition;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
 import java.util.EnumMap;
 import java.util.Map;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.PathfinderMob;
 
 public interface ModelPositionDataCapable<T extends PathfinderMob> extends EasyNPC<T> {
 
   CustomPosition DEFAULT_MODEL_PART_POSITION = new CustomPosition(0, 0, 0);
   String EASY_NPC_DATA_MODEL_POSITION_TAG = "Position";
-
-  static void registerSyncedModelPositionData(
-      EnumMap<SynchedDataIndex, EntityDataAccessor<?>> map, Class<? extends Entity> entityClass) {
-    log.info("Registering Synched Model Position Data for {}.", entityClass.getSimpleName());
-    map.put(
-        SynchedDataIndex.MODEL_POSITION,
-        SynchedEntityData.defineId(entityClass, EntityDataSerializersManager.MODEL_PART_POSITION));
-  }
 
   default EnumMap<ModelPartType, CustomPosition> getModelPartPosition() {
     EnumMap<ModelPartType, CustomPosition> modelPartMap =

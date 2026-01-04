@@ -39,6 +39,7 @@ import de.markusbordihn.easynpc.entity.easynpc.handlers.AttackHandler;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.InteractionHandler;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.VisibilityHandler;
 import de.markusbordihn.easynpc.handler.AttributeHandler;
+import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
 import de.markusbordihn.easynpc.server.player.FakePlayer;
 import de.markusbordihn.easynpc.utils.TextUtils;
 import java.util.EnumMap;
@@ -48,6 +49,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
@@ -100,7 +102,105 @@ public class NPCRawTemplate extends Zombie implements EasyNPCBase<Zombie> {
   private static final UniformInt PERSISTENT_ANGER_TIME = TimeUtil.rangeOfSeconds(20, 39);
 
   static {
-    EasyNPCBase.registerEasyNPCSyncedData(entityDataAccessorMap, NPCRawTemplate.class);
+    // Attack Data
+    entityDataAccessorMap.put(
+        SynchedDataIndex.ATTACK_IS_CHARGING_CROSSBOW,
+        net.minecraft.network.syncher.SynchedEntityData.defineId(
+            NPCRawTemplate.class, EntityDataSerializers.BOOLEAN));
+
+    // Attribute Data
+    entityDataAccessorMap.put(
+        SynchedDataIndex.ENTITY_ATTRIBUTES,
+        net.minecraft.network.syncher.SynchedEntityData.defineId(
+            NPCRawTemplate.class, EntityDataSerializersManager.ENTITY_ATTRIBUTES));
+
+    // Display Attribute Data
+    entityDataAccessorMap.put(
+        SynchedDataIndex.DISPLAY_ATTRIBUTE_SET,
+        net.minecraft.network.syncher.SynchedEntityData.defineId(
+            NPCRawTemplate.class, EntityDataSerializersManager.DISPLAY_ATTRIBUTE));
+
+    // Model Data
+    entityDataAccessorMap.put(
+        SynchedDataIndex.MODEL_POSE,
+        net.minecraft.network.syncher.SynchedEntityData.defineId(
+            NPCRawTemplate.class, EntityDataSerializersManager.MODEL_POSE));
+    entityDataAccessorMap.put(
+        SynchedDataIndex.MODEL_ANIMATION,
+        net.minecraft.network.syncher.SynchedEntityData.defineId(
+            NPCRawTemplate.class, EntityDataSerializersManager.MODEL_ANIMATION_DATA));
+    entityDataAccessorMap.put(
+        SynchedDataIndex.MODEL_POSITION,
+        net.minecraft.network.syncher.SynchedEntityData.defineId(
+            NPCRawTemplate.class, EntityDataSerializersManager.MODEL_PART_POSITION));
+    entityDataAccessorMap.put(
+        SynchedDataIndex.MODEL_ROTATION,
+        net.minecraft.network.syncher.SynchedEntityData.defineId(
+            NPCRawTemplate.class, EntityDataSerializersManager.MODEL_PART_ROTATION));
+    entityDataAccessorMap.put(
+        SynchedDataIndex.MODEL_SCALE,
+        net.minecraft.network.syncher.SynchedEntityData.defineId(
+            NPCRawTemplate.class, EntityDataSerializersManager.MODEL_PART_SCALE));
+    entityDataAccessorMap.put(
+        SynchedDataIndex.MODEL_VISIBILITY,
+        net.minecraft.network.syncher.SynchedEntityData.defineId(
+            NPCRawTemplate.class, EntityDataSerializersManager.MODEL_PART_VISIBILITY));
+
+    // Navigation Data
+    entityDataAccessorMap.put(
+        SynchedDataIndex.NAVIGATION_HOME_POSITION,
+        net.minecraft.network.syncher.SynchedEntityData.defineId(
+            NPCRawTemplate.class, EntityDataSerializers.BLOCK_POS));
+
+    // Owner Data
+    entityDataAccessorMap.put(
+        SynchedDataIndex.OWNER_UUID,
+        net.minecraft.network.syncher.SynchedEntityData.defineId(
+            NPCRawTemplate.class, EntityDataSerializers.OPTIONAL_UUID));
+
+    // Profession Data
+    entityDataAccessorMap.put(
+        SynchedDataIndex.PROFESSION,
+        net.minecraft.network.syncher.SynchedEntityData.defineId(
+            NPCRawTemplate.class, EntityDataSerializersManager.PROFESSION));
+
+    // Render Data
+    entityDataAccessorMap.put(
+        SynchedDataIndex.RENDER_DATA,
+        net.minecraft.network.syncher.SynchedEntityData.defineId(
+            NPCRawTemplate.class, EntityDataSerializersManager.RENDER_DATA_SET));
+
+    // Skin Data
+    entityDataAccessorMap.put(
+        SynchedDataIndex.SKIN_DATA,
+        net.minecraft.network.syncher.SynchedEntityData.defineId(
+            NPCRawTemplate.class, EntityDataSerializersManager.SKIN_DATA_ENTRY));
+
+    // Sound Data
+    entityDataAccessorMap.put(
+        SynchedDataIndex.SOUND_DATA_SET,
+        net.minecraft.network.syncher.SynchedEntityData.defineId(
+            NPCRawTemplate.class, EntityDataSerializersManager.SOUND_DATA_SET));
+
+    // Trading Data
+    entityDataAccessorMap.put(
+        SynchedDataIndex.TRADING_DATA_SET,
+        net.minecraft.network.syncher.SynchedEntityData.defineId(
+            NPCRawTemplate.class, EntityDataSerializersManager.TRADING_DATA_SET));
+    entityDataAccessorMap.put(
+        SynchedDataIndex.TRADING_INVENTORY,
+        net.minecraft.network.syncher.SynchedEntityData.defineId(
+            NPCRawTemplate.class, EntityDataSerializers.COMPOUND_TAG));
+    entityDataAccessorMap.put(
+        SynchedDataIndex.TRADING_MERCHANT_OFFERS,
+        net.minecraft.network.syncher.SynchedEntityData.defineId(
+            NPCRawTemplate.class, EntityDataSerializersManager.MERCHANT_OFFERS));
+
+    // Variant Data
+    entityDataAccessorMap.put(
+        SynchedDataIndex.VARIANT_TYPE,
+        net.minecraft.network.syncher.SynchedEntityData.defineId(
+            NPCRawTemplate.class, EntityDataSerializers.STRING));
   }
 
   private final EnumMap<TickerType, Integer> tickerMap = new EnumMap<>(TickerType.class);
