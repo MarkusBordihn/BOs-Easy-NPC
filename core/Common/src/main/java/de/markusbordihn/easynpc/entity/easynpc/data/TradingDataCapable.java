@@ -371,7 +371,7 @@ public interface TradingDataCapable<E extends PathfinderMob> extends EasyNPC<E>,
     Optional<MerchantOffers> merchantOffers =
         valueInput.read(DATA_OFFERS_TAG, MerchantOffers.CODEC);
     if (merchantOffers.isEmpty()) {
-      log.warn("Missing trading offers for {} in {}", this, valueInput);
+      log.debug("Missing trading offers for {} in {}", this, valueInput);
       return;
     }
     this.setTradingOffers(merchantOffers.get());

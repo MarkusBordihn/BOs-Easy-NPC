@@ -13,10 +13,6 @@ pluginManagement {
       name = 'Forge'
       url = 'https://maven.minecraftforge.net/'
     }
-    maven {
-      name = 'Minecraft libraries'
-      url = 'https://libraries.minecraft.net'
-    }
     exclusiveContent {
       forRepository {
         maven {
@@ -27,6 +23,10 @@ pluginManagement {
       filter {
         includeGroupAndSubgroups('org.spongepowered')
       }
+    }
+    maven {
+      name = 'Minecraft libraries'
+      url = 'https://libraries.minecraft.net'
     }
   }
 
