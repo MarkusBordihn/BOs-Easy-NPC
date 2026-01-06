@@ -1,0 +1,91 @@
+name: 'Close deprecated version issues and feature requests'
+
+on:
+  schedule:
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+
+jobs:
+  deprecated-issues:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
+    steps:
+      - uses: actions/stale@v10
+        with:
+          # Process issues labeled as deprecated (old versions)
+          only-labels: 'deprecated'
+          exempt-issue-labels: 'feature,enhancement,feature-request,pinned,in-progress'
+
+          stale-issue-message: |
+            👋 Thank you for reporting this issue!
+            
+            It looks like this issue was reported for an older version of the mod that is no longer actively maintained.
+            To help us assist you better, could you please check if the **issue still occurs in the latest version**?
+            
+            If the problem persists:
+            - Please open a **new issue** with details about the current version
+            - Include the exact **mod version**, **Minecraft version**, and **mod loader**
+            - Add any **logs or crash reports** if available
+            
+            If the issue is resolved in the latest version, no further action is needed! 🎉
+            
+            This issue will remain open for another 14 days to give you time to verify.
+
+          close-issue-message: |
+            Closing this issue as it relates to an older version of the mod.
+            If you find that the issue still exists in the latest version, you're welcome to open a new issue with updated information.
+            Thank you for your understanding and for helping to improve the mod! 🙏
+
+          # Timings for deprecated issues
+          days-before-stale: 7
+          days-before-close: 14
+          days-before-pr-stale: -1
+          days-before-pr-close: -1
+
+          # Behavior
+          remove-stale-when-updated: true
+
+  deprecated-features:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
+    steps:
+      - uses: actions/stale@v10
+        with:
+          # Process feature requests labeled as deprecated (old versions)
+          only-labels: 'deprecated'
+          any-of-labels: 'feature,enhancement,feature-request'
+
+          stale-issue-message: |
+            👋 Thank you for your feature suggestion!
+            
+            This feature request was made for an older version of the mod that is no longer in active development.
+            Since then, the mod has evolved and new features have been added!
+            
+            Could you please check if the **feature you requested is still missing** in the latest version?
+            
+            If it's still relevant:
+            - Please open a **new feature request** with current details
+            - Describe your **use case** and how the feature would help you
+            - Mention the **latest mod version** and **Minecraft version** you're using
+            
+            If the feature has already been implemented, great news! 🎉
+            
+            This request will remain open for another 14 days to give you time to verify.
+
+          close-issue-message: |
+            Closing this feature request as it relates to an older version of the mod.
+            If the feature is still relevant for the current version, you're welcome to open a new request with updated details.
+            We appreciate your ideas and contributions! 🙏
+
+          # Timings for deprecated feature requests
+          days-before-stale: 7
+          days-before-close: 14
+          days-before-pr-stale: -1
+          days-before-pr-close: -1
+
+          # Behavior
+          remove-stale-when-updated: true
