@@ -110,7 +110,9 @@ class AsyncTextureLoaderTest {
     assertNotNull(future1);
     assertNotNull(future2);
     assertNotSame(
-        future1, future2, "Different keys should get different CompletableFutures even with same URL");
+        future1,
+        future2,
+        "Different keys should get different CompletableFutures even with same URL");
   }
 
   @Test
@@ -249,7 +251,8 @@ class AsyncTextureLoaderTest {
     String testUrl = "http://example.com/texture.png";
     TextureModelKey humanoidKey = new TextureModelKey(uuid, SkinModel.HUMANOID);
     TextureModelKey slimKey = new TextureModelKey(uuid, SkinModel.HUMANOID_SLIM);
-    CompletableFuture<?> future1 = AsyncTextureLoader.loadTextureAsync(humanoidKey, testUrl, tempDir);
+    CompletableFuture<?> future1 =
+        AsyncTextureLoader.loadTextureAsync(humanoidKey, testUrl, tempDir);
     CompletableFuture<?> future2 = AsyncTextureLoader.loadTextureAsync(slimKey, testUrl, tempDir);
 
     assertNotNull(future1);

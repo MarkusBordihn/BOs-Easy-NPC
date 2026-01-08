@@ -36,7 +36,7 @@ public class VisibilityHandler {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  private static final double DEFAULT_NAME_VISIBILITY_RANGE = 8.0d;
+  private static final double DEFAULT_NAME_VISIBILITY_RANGE = 16.0d;
 
   private VisibilityHandler() {}
 
@@ -232,8 +232,8 @@ public class VisibilityHandler {
         }
 
         if (player != null) {
-          double distanceSquared = easyNPC.getEntity().distanceToSqr(player);
-          return distanceSquared <= DEFAULT_NAME_VISIBILITY_RANGE * DEFAULT_NAME_VISIBILITY_RANGE;
+          return easyNPC.getEntity().distanceToSqr(player)
+              <= DEFAULT_NAME_VISIBILITY_RANGE * DEFAULT_NAME_VISIBILITY_RANGE;
         } else {
           return fallbackVisibility;
         }
