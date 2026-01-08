@@ -19,13 +19,14 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.data;
 
+import de.markusbordihn.easynpc.data.display.DisplayAttributeDataSet;
 import de.markusbordihn.easynpc.data.display.DisplayAttributeEntry;
 import de.markusbordihn.easynpc.data.display.DisplayAttributeType;
 import de.markusbordihn.easynpc.data.display.NameVisibilityType;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.data.type.ValueType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.serialization.ModCodec;
+import de.markusbordihn.easynpc.utils.CompoundTagUtils;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Optional;
@@ -40,7 +41,7 @@ import net.minecraft.world.level.storage.ValueOutput;
 
 public interface DisplayAttributeDataCapable<E extends PathfinderMob> extends EasyNPC<E> {
 
-  String DATA_DISPLAY_ATTRIBUTE_SET_TAG = "DisplayAttribute";
+  String DATA_DISPLAY_ATTRIBUTE_TAG = "DisplayAttribute";
 
   StreamCodec<RegistryFriendlyByteBuf, EnumMap<DisplayAttributeType, DisplayAttributeEntry>>
       STREAM_CODEC =
@@ -77,60 +78,61 @@ public interface DisplayAttributeDataCapable<E extends PathfinderMob> extends Ea
             }
           };
 
-  default EnumMap<DisplayAttributeType, DisplayAttributeEntry> getDisplayAttributeMap() {
-    EnumMap<DisplayAttributeType, DisplayAttributeEntry> displayAttributeMap =
+  default DisplayAttributeDataSet getDisplayAttributeData() {
+    DisplayAttributeDataSet displayAttributeDataSet =
         getSynchedEntityData(SynchedDataIndex.DISPLAY_ATTRIBUTE_SET);
-    if (displayAttributeMap == null) {
-      displayAttributeMap = createDefaultDisplayAttributeMap();
-      setDisplayAttributeMap(displayAttributeMap);
+    if (displayAttributeDataSet == null) {
+      displayAttributeDataSet = DisplayAttributeDataSet.createDefault();
+      setDisplayAttributeData(displayAttributeDataSet);
     }
-    return displayAttributeMap;
+    return displayAttributeDataSet;
   }
 
-  default void setDisplayAttributeMap(
-      EnumMap<DisplayAttributeType, DisplayAttributeEntry> displayAttributeMap) {
-    if (displayAttributeMap != null) {
-      setSynchedEntityData(SynchedDataIndex.DISPLAY_ATTRIBUTE_SET, displayAttributeMap, true);
+  default void setDisplayAttributeData(DisplayAttributeDataSet displayAttributeDataSet) {
+    if (displayAttributeDataSet != null) {
+      setSynchedEntityData(SynchedDataIndex.DISPLAY_ATTRIBUTE_SET, displayAttributeDataSet, true);
+      syncDisplayAttributesToEntity(displayAttributeDataSet);
     }
   }
 
-  default void clearDisplayAttributeMap() {
-    setSynchedEntityData(
-        SynchedDataIndex.DISPLAY_ATTRIBUTE_SET, createDefaultDisplayAttributeMap());
+  default void syncDisplayAttributesToEntity(DisplayAttributeDataSet displayAttributeDataSet) {
+
+    // Sync customNameVisible property from NAME_VISIBILITY attribute
+    if (displayAttributeDataSet.hasAttribute(DisplayAttributeType.NAME_VISIBILITY)) {
+      DisplayAttributeEntry nameVisibilityEntry =
+        displayAttributeDataSet.getAttribute(DisplayAttributeType.NAME_VISIBILITY);
+      if (nameVisibilityEntry != null) {
+        try {
+          NameVisibilityType nameVisibilityType =
+            NameVisibilityType.valueOf(nameVisibilityEntry.stringValue());
+          getEntity().setCustomNameVisible(nameVisibilityType != NameVisibilityType.NEVER);
+        } catch (IllegalArgumentException e) {
+          log.warn("Invalid name visibility type: {}", nameVisibilityEntry.stringValue());
+        }
+      }
+    }
   }
 
-  default void updateDisplayAttributeMap() {
-    EnumMap<DisplayAttributeType, DisplayAttributeEntry> displayAttributeMap =
-        getDisplayAttributeMap();
-    if (displayAttributeMap != null) {
-      this.setDisplayAttributeMap(new EnumMap<>(displayAttributeMap));
-    }
+  default void clearDisplayAttributeData() {
+    setDisplayAttributeData(DisplayAttributeDataSet.createDefault());
   }
 
   default boolean hasDisplayAttribute(DisplayAttributeType displayAttributeType) {
-    EnumMap<DisplayAttributeType, DisplayAttributeEntry> displayAttributeMap =
-        getDisplayAttributeMap();
-    return displayAttributeMap.containsKey(displayAttributeType);
+    return getDisplayAttributeData().hasAttribute(displayAttributeType);
   }
 
   default boolean getDisplayBooleanAttribute(DisplayAttributeType displayAttributeType) {
-    EnumMap<DisplayAttributeType, DisplayAttributeEntry> displayAttributeMap =
-        getDisplayAttributeMap();
-    DisplayAttributeEntry entry = displayAttributeMap.get(displayAttributeType);
+    DisplayAttributeEntry entry = getDisplayAttributeData().getAttribute(displayAttributeType);
     return entry != null && entry.booleanValue();
   }
 
   default int getDisplayIntAttribute(DisplayAttributeType displayAttributeType) {
-    EnumMap<DisplayAttributeType, DisplayAttributeEntry> displayAttributeMap =
-        getDisplayAttributeMap();
-    DisplayAttributeEntry entry = displayAttributeMap.get(displayAttributeType);
+    DisplayAttributeEntry entry = getDisplayAttributeData().getAttribute(displayAttributeType);
     return entry != null ? entry.intValue() : 0;
   }
 
   default String getDisplayStringAttribute(DisplayAttributeType displayAttributeType) {
-    EnumMap<DisplayAttributeType, DisplayAttributeEntry> displayAttributeMap =
-        getDisplayAttributeMap();
-    DisplayAttributeEntry entry = displayAttributeMap.get(displayAttributeType);
+    DisplayAttributeEntry entry = getDisplayAttributeData().getAttribute(displayAttributeType);
     return entry != null ? entry.stringValue() : "";
   }
 
@@ -147,102 +149,49 @@ public interface DisplayAttributeDataCapable<E extends PathfinderMob> extends Ea
 
   default <T> void setDisplayAttribute(
       DisplayAttributeType displayAttributeType, ValueType valueType, T value) {
-    EnumMap<DisplayAttributeType, DisplayAttributeEntry> displayAttributeMap =
-        getDisplayAttributeMap();
-    switch (valueType) {
-      case BOOLEAN ->
-          displayAttributeMap.put(displayAttributeType, new DisplayAttributeEntry((boolean) value));
-      case INTEGER ->
-          displayAttributeMap.put(displayAttributeType, new DisplayAttributeEntry((int) value));
-      case STRING ->
-          displayAttributeMap.put(displayAttributeType, new DisplayAttributeEntry((String) value));
-      default -> {
-        log.error("Invalid display value type {} for {}", valueType, displayAttributeType);
-        return;
-      }
+    DisplayAttributeEntry newEntry =
+        switch (valueType) {
+          case BOOLEAN -> new DisplayAttributeEntry((boolean) value);
+          case INTEGER -> new DisplayAttributeEntry((int) value);
+          case STRING -> new DisplayAttributeEntry((String) value);
+          default -> {
+            log.error("Invalid display value type {} for {}", valueType, displayAttributeType);
+            yield null;
+          }
+        };
+
+    if (newEntry != null) {
+      setDisplayAttributeData(
+          getDisplayAttributeData().withAttribute(displayAttributeType, newEntry));
     }
-    this.updateDisplayAttributeMap();
   }
 
   default void setDisplayAttribute(DisplayAttributeType displayAttributeType, Enum<?> enumValue) {
     setDisplayAttribute(displayAttributeType, ValueType.STRING, enumValue.toString());
   }
 
-  default EnumMap<DisplayAttributeType, DisplayAttributeEntry> createDefaultDisplayAttributeMap() {
-    EnumMap<DisplayAttributeType, DisplayAttributeEntry> map =
-        new EnumMap<>(DisplayAttributeType.class);
-    map.put(DisplayAttributeType.LIGHT_LEVEL, new DisplayAttributeEntry(7));
-    map.put(DisplayAttributeType.VISIBLE, new DisplayAttributeEntry(true));
-    map.put(DisplayAttributeType.VISIBLE_AT_DAY, new DisplayAttributeEntry(true));
-    map.put(DisplayAttributeType.VISIBLE_AT_NIGHT, new DisplayAttributeEntry(true));
-    map.put(DisplayAttributeType.VISIBLE_IN_CREATIVE, new DisplayAttributeEntry(true));
-    map.put(DisplayAttributeType.VISIBLE_IN_SPECTATOR, new DisplayAttributeEntry(true));
-    map.put(DisplayAttributeType.VISIBLE_IN_STANDARD, new DisplayAttributeEntry(true));
-    map.put(DisplayAttributeType.VISIBLE_TO_OWNER, new DisplayAttributeEntry(true));
-    map.put(DisplayAttributeType.VISIBLE_TO_TEAM, new DisplayAttributeEntry(true));
-    map.put(
-        DisplayAttributeType.NAME_VISIBILITY,
-        new DisplayAttributeEntry(NameVisibilityType.ALWAYS.toString()));
-    return map;
-  }
-
   default void defineSynchedDisplayAttributeData(SynchedEntityData.Builder builder) {
     defineSynchedEntityData(
-        builder, SynchedDataIndex.DISPLAY_ATTRIBUTE_SET, createDefaultDisplayAttributeMap());
+        builder, SynchedDataIndex.DISPLAY_ATTRIBUTE_SET, DisplayAttributeDataSet.createDefault());
   }
 
   default void addAdditionalDisplayAttributeData(ValueOutput valueOutput) {
-    EnumMap<DisplayAttributeType, DisplayAttributeEntry> displayAttributeMap =
-        getDisplayAttributeMap();
-    if (displayAttributeMap != null && !displayAttributeMap.isEmpty()) {
-      ListTag displayListTag = new ListTag();
-      displayAttributeMap.entrySet().stream()
-          .filter(mapEntry -> mapEntry.getKey() != DisplayAttributeType.NONE)
-          .forEach(
-              mapEntry -> {
-                CompoundTag entryTag = new CompoundTag();
-                entryTag.putString("Type", mapEntry.getKey().name());
-                mapEntry.getValue().write(entryTag);
-                displayListTag.add(entryTag);
-              });
-      valueOutput.store(DATA_DISPLAY_ATTRIBUTE_SET_TAG, ModCodec.LIST_TAG_CODEC, displayListTag);
+    DisplayAttributeDataSet displayAttributeData = getDisplayAttributeData();
+
+    if (displayAttributeData != null) {
+      valueOutput.store(
+          DATA_DISPLAY_ATTRIBUTE_TAG, CompoundTagUtils.LIST_TAG_CODEC, displayAttributeData.save());
     }
   }
 
   default void readAdditionalDisplayAttributeData(ValueInput valueInput) {
-    // Early exit if no display attribute data is available.
-    Optional<ListTag> compoundTagData =
-        valueInput.read(DATA_DISPLAY_ATTRIBUTE_SET_TAG, ModCodec.LIST_TAG_CODEC);
-    if (compoundTagData.isEmpty()) {
+    Optional<ListTag> listTagData =
+        valueInput.read(DATA_DISPLAY_ATTRIBUTE_TAG, CompoundTagUtils.LIST_TAG_CODEC);
+    if (listTagData.isEmpty()) {
       return;
     }
 
-    // Read display attribute data.
-    ListTag displayListTag = compoundTagData.get();
-    EnumMap<DisplayAttributeType, DisplayAttributeEntry> displayAttributeMap =
-        new EnumMap<>(DisplayAttributeType.class);
-
-    displayListTag.forEach(
-        entry -> {
-          if (entry instanceof CompoundTag entryCompoundTag) {
-            if (entryCompoundTag.contains("Type")) {
-              String typeString = entryCompoundTag.getString("Type").orElse("");
-              DisplayAttributeType displayAttributeType = DisplayAttributeType.get(typeString);
-              if (displayAttributeType != DisplayAttributeType.NONE) {
-                DisplayAttributeEntry displayAttributeEntry =
-                    new DisplayAttributeEntry(entryCompoundTag);
-                displayAttributeMap.put(displayAttributeType, displayAttributeEntry);
-              } else {
-                log.warn("Skip invalid display attribute type {}", typeString);
-              }
-            } else {
-              log.warn("Skip display attribute entry without type information");
-            }
-          } else {
-            log.error("Failed to load display attribute entry from {}", entry);
-          }
-        });
-
-    setDisplayAttributeMap(displayAttributeMap);
+    DisplayAttributeDataSet displayAttributeData = new DisplayAttributeDataSet(listTagData.get());
+    this.setDisplayAttributeData(displayAttributeData);
   }
 }

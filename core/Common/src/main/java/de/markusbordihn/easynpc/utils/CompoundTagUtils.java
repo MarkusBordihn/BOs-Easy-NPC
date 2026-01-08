@@ -22,6 +22,9 @@ package de.markusbordihn.easynpc.utils;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.Dynamic;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.scale.CustomScale;
 import java.util.HashSet;
@@ -31,6 +34,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.IntArrayTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
@@ -42,15 +46,26 @@ import org.apache.logging.log4j.Logger;
 
 public class CompoundTagUtils {
 
-  public static final String ID_PREFIX = "id_";
-  public static final String X_TAG = "X";
-  public static final String Y_TAG = "Y";
-  public static final String Z_TAG = "Z";
-  public static final String UUID_TAG = "UUID";
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private static final String CUSTOM_NAME_TAG = "CustomName";
   private static final String TEXT_TAG = "text";
   private static final String COLOR_TAG = "color";
+  private static final String ID_PREFIX = "id_";
+  private static final String X_TAG = "X";
+  private static final String Y_TAG = "Y";
+  private static final String Z_TAG = "Z";
+  private static final String UUID_TAG = "UUID";
+
+  public static final Codec<ListTag> LIST_TAG_CODEC =
+      Codec.PASSTHROUGH.comapFlatMap(
+          dynamic -> {
+            Tag tag = dynamic.convert(NbtOps.INSTANCE).getValue();
+            return tag instanceof ListTag listTag
+                ? DataResult.success(listTag == dynamic.getValue() ? listTag.copy() : listTag)
+                : DataResult.error(
+                    () -> "Expected ListTag but got: " + tag.getClass().getSimpleName());
+          },
+          listTag -> new Dynamic<>(NbtOps.INSTANCE, listTag.copy()));
 
   private CompoundTagUtils() {}
 

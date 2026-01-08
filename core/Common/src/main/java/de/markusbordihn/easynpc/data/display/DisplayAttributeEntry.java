@@ -19,17 +19,13 @@
 
 package de.markusbordihn.easynpc.data.display;
 
-import de.markusbordihn.easynpc.Constants;
 import net.minecraft.nbt.CompoundTag;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public record DisplayAttributeEntry(boolean booleanValue, int intValue, String stringValue) {
 
   public static final String DATA_BOOLEAN_VALUE_TAG = "Bool";
   public static final String DATA_INT_VALUE_TAG = "Int";
   public static final String DATA_STRING_VALUE_TAG = "Text";
-  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   public DisplayAttributeEntry(final boolean booleanValue) {
     this(booleanValue, 0, "");
@@ -61,7 +57,7 @@ public record DisplayAttributeEntry(boolean booleanValue, int intValue, String s
 
   public CompoundTag write(final CompoundTag compoundTag) {
     if (booleanValue) {
-      compoundTag.putBoolean(DATA_BOOLEAN_VALUE_TAG, true);
+      compoundTag.putBoolean(DATA_BOOLEAN_VALUE_TAG, booleanValue);
     }
     if (intValue != 0) {
       compoundTag.putInt(DATA_INT_VALUE_TAG, intValue);
