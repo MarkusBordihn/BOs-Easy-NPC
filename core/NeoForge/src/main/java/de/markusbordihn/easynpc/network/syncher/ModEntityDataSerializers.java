@@ -23,8 +23,7 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.action.ActionEventSet;
 import de.markusbordihn.easynpc.data.attribute.EntityAttributes;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
-import de.markusbordihn.easynpc.data.display.DisplayAttributeEntry;
-import de.markusbordihn.easynpc.data.display.DisplayAttributeType;
+import de.markusbordihn.easynpc.data.display.DisplayAttributeDataSet;
 import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataSet;
@@ -38,7 +37,6 @@ import de.markusbordihn.easynpc.data.skin.SkinType;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.trading.TradingDataSet;
 import de.markusbordihn.easynpc.data.trading.TradingType;
-import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.UUID;
@@ -62,8 +60,7 @@ public class ModEntityDataSerializers {
           ENTITY_DATA_SERIALIZERS.register(
               "dialog_data_set", () -> EntityDataSerializersManager.DIALOG_DATA_SET);
   public static final DeferredHolder<
-          EntityDataSerializer<?>,
-          EntityDataSerializer<EnumMap<DisplayAttributeType, DisplayAttributeEntry>>>
+          EntityDataSerializer<?>, EntityDataSerializer<DisplayAttributeDataSet>>
       DISPLAY_ATTRIBUTE =
           ENTITY_DATA_SERIALIZERS.register(
               "display_attribute", () -> EntityDataSerializersManager.DISPLAY_ATTRIBUTE);

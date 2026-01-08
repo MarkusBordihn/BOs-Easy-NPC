@@ -8,6 +8,10 @@ For the full changelog, please go to the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 6.6.1
+
+- Fixed #638 by refactored internal data handling for display attributes.
+
 ### 6.6.0
 
 - Fixed #634 by implementing asynchronous texture loading with dedicated thread pool.

@@ -28,7 +28,6 @@ import de.markusbordihn.easynpc.network.components.TextComponent;
 import de.markusbordihn.easynpc.utils.TextUtils;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
-import net.minecraft.world.entity.Entity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -49,7 +48,6 @@ public class NameHandler {
       log.error("[{}] Error setting custom name {}", easyNPC, name);
       return false;
     }
-    Entity entity = easyNPC.getEntity();
 
     log.debug(
         "[{}] Change custom name to '{}' with color {} and visibility {}",
@@ -61,8 +59,8 @@ public class NameHandler {
     // Remove the custom name if the name is empty.
     if (name.isEmpty()) {
       log.debug("[{}] Remove custom name", easyNPC);
-      entity.setCustomName(null);
-      entity.setCustomNameVisible(false);
+      easyNPC.getEntity().setCustomName(null);
+      easyNPC.getEntity().setCustomNameVisible(false);
       return true;
     }
 
@@ -73,13 +71,13 @@ public class NameHandler {
     }
 
     // Set the custom name for the entity with translation key support.
-    entity.setCustomName(
-        TextComponent.getTextComponentRaw(name, TextUtils.isTranslationKey(name)).setStyle(style));
+    easyNPC
+        .getEntity()
+        .setCustomName(
+            TextComponent.getTextComponentRaw(name, TextUtils.isTranslationKey(name))
+                .setStyle(style));
 
-    // Set the visibility of the custom name based on NameVisibilityType.
-    entity.setCustomNameVisible(nameVisibilityType != NameVisibilityType.NEVER);
-
-    // Set display attribute for name visibility if available.
+    // Set display attribute for name visibility.
     DisplayAttributeDataCapable<?> displayAttributeData = easyNPC.getEasyNPCDisplayAttributeData();
     if (displayAttributeData != null) {
       displayAttributeData.setDisplayAttribute(
