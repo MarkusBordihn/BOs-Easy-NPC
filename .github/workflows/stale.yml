@@ -8,14 +8,16 @@ on:
 jobs:
   stale-general:
     runs-on: ubuntu-latest
+
     permissions:
       issues: write
       pull-requests: write
+
     steps:
       - uses: actions/stale@v10
         with:
           # Process typical support/issues which often lack details
-          any-of-labels: 'needs-more-info,question'
+          any-of-labels: 'needs more info,question'
 
           # Messages (English) clarifying that more details may be required
           stale-issue-message: |
@@ -44,9 +46,11 @@ jobs:
 
   stale-features:
     runs-on: ubuntu-latest
+
     permissions:
       issues: write
       pull-requests: write
+
     steps:
       - uses: actions/stale@v10
         with:

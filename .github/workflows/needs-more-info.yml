@@ -8,10 +8,13 @@ on:
 jobs:
   add-comment:
     if: github.event.label.name == 'needs more info'
+
     runs-on: ubuntu-latest
 
     permissions:
+      actions: write
       issues: write
+      pull-requests: write
 
     steps:
       - name: Add comment

@@ -8,9 +8,12 @@ on:
 jobs:
   deprecated-issues:
     runs-on: ubuntu-latest
+
     permissions:
+      actions: write
       issues: write
       pull-requests: write
+
     steps:
       - uses: actions/stale@v10
         with:
@@ -49,9 +52,12 @@ jobs:
 
   deprecated-features:
     runs-on: ubuntu-latest
+
     permissions:
+      actions: write
       issues: write
       pull-requests: write
+
     steps:
       - uses: actions/stale@v10
         with:
