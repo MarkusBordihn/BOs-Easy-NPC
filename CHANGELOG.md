@@ -8,6 +8,11 @@ For the full changelog, please go to the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 6.6.2
+
+- Added MID and MOUSE_OVER name tag visibility modes for finer control over NPC name display.
+- Added team-based name tag visibility support respecting vanilla Team.
+
 ### 6.6.1
 
 - Fixed #638 by refactored internal data handling for display attributes.

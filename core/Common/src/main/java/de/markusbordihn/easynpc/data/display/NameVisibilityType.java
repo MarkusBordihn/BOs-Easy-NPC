@@ -22,7 +22,9 @@ package de.markusbordihn.easynpc.data.display;
 public enum NameVisibilityType {
   NEVER(0),
   ALWAYS(1),
-  NEAR(2);
+  NEAR(2),
+  MID(3),
+  MOUSE_OVER(4);
 
   private final int id;
 
