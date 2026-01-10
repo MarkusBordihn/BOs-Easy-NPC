@@ -179,6 +179,8 @@
   "text.easy_npc.config.movement_speed": "Скорость передвижения",
   "text.easy_npc.config.name_to_label.tooltip": "Преобразовать имя в соответствующую метку/id.",
   "text.easy_npc.config.name_visibility.always": "Всегда показывать имя",
+  "text.easy_npc.config.name_visibility.mid": "Показывать имя на средней дистанции",
+  "text.easy_npc.config.name_visibility.mouse_over": "Показывать имя при наведении",
   "text.easy_npc.config.name_visibility.near": "Показывать имя когда рядом",
   "text.easy_npc.config.name_visibility.never": "Никогда не показывать имя",
   "text.easy_npc.config.next_page": "Далее >",

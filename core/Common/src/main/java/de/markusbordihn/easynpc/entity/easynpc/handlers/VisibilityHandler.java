@@ -26,6 +26,7 @@ import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.DisplayAttributeDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.OwnerDataCapable;
 import java.util.Objects;
+import net.minecraft.client.Minecraft;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.scores.Team;
@@ -36,7 +37,8 @@ public class VisibilityHandler {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  private static final double DEFAULT_NAME_VISIBILITY_RANGE = 16.0d;
+  private static final double NEAR_NAME_VISIBILITY_RANGE = 8.0d;
+  private static final double MID_NAME_VISIBILITY_RANGE = 16.0d;
 
   private VisibilityHandler() {}
 
@@ -178,16 +180,27 @@ public class VisibilityHandler {
 
   public static boolean handleIsCustomNameVisible(
       final EasyNPC<?> easyNPC, final boolean isCustomNameVisible) {
-    return evaluateNameVisibility(easyNPC, null, isCustomNameVisible);
+    return evaluateNameVisibility(easyNPC, null, isCustomNameVisible, -1.0);
   }
 
   public static boolean handleIsCustomNameVisibleToPlayer(
       final EasyNPC<?> easyNPC, final Player player, final boolean isCustomNameVisible) {
-    return evaluateNameVisibility(easyNPC, player, isCustomNameVisible);
+    return evaluateNameVisibility(easyNPC, player, isCustomNameVisible, -1.0);
+  }
+
+  public static boolean handleIsCustomNameVisibleToPlayer(
+      final EasyNPC<?> easyNPC,
+      final Player player,
+      final boolean isCustomNameVisible,
+      final double distanceSquared) {
+    return evaluateNameVisibility(easyNPC, player, isCustomNameVisible, distanceSquared);
   }
 
   private static boolean evaluateNameVisibility(
-      final EasyNPC<?> easyNPC, final Player player, final boolean fallbackVisibility) {
+      final EasyNPC<?> easyNPC,
+      final Player player,
+      final boolean fallbackVisibility,
+      final double distanceSquared) {
 
     DisplayAttributeDataCapable<?> displayAttributeData = easyNPC.getEasyNPCDisplayAttributeData();
     if (displayAttributeData == null) {
@@ -203,7 +216,8 @@ public class VisibilityHandler {
 
     try {
       NameVisibilityType nameVisibilityType = NameVisibilityType.valueOf(nameVisibilityString);
-      return evaluateNameVisibilityType(easyNPC, player, nameVisibilityType, fallbackVisibility);
+      return evaluateNameVisibilityType(
+          easyNPC, player, nameVisibilityType, fallbackVisibility, distanceSquared);
     } catch (IllegalArgumentException e) {
       log.warn("[{}] Invalid name visibility type: {}", easyNPC, nameVisibilityString);
       return hasCustomNameFallback(easyNPC, fallbackVisibility);
@@ -214,28 +228,83 @@ public class VisibilityHandler {
       final EasyNPC<?> easyNPC,
       final Player player,
       final NameVisibilityType nameVisibilityType,
-      final boolean fallbackVisibility) {
+      final boolean fallbackVisibility,
+      final double distanceSquared) {
 
-    switch (nameVisibilityType) {
-      case NEVER:
-        return false;
-      case ALWAYS:
-        return true;
-      case NEAR:
-        if (!easyNPC.getEntity().hasCustomName()) {
-          return false;
-        }
+    return switch (nameVisibilityType) {
+      case NEVER -> false;
+      case ALWAYS -> true;
+      case NEAR ->
+          evaluateDistanceBasedVisibility(
+              easyNPC, player, NEAR_NAME_VISIBILITY_RANGE, fallbackVisibility, distanceSquared);
+      case MID ->
+          evaluateDistanceBasedVisibility(
+              easyNPC, player, MID_NAME_VISIBILITY_RANGE, fallbackVisibility, distanceSquared);
+      case MOUSE_OVER -> evaluateMouseOverVisibility(easyNPC);
+      default -> hasCustomNameFallback(easyNPC, fallbackVisibility);
+    };
+  }
 
-        if (player != null) {
-          return easyNPC.getEntity().distanceToSqr(player)
-              <= DEFAULT_NAME_VISIBILITY_RANGE * DEFAULT_NAME_VISIBILITY_RANGE;
-        } else {
-          return fallbackVisibility;
-        }
-
-      default:
-        return hasCustomNameFallback(easyNPC, fallbackVisibility);
+  private static boolean evaluateDistanceBasedVisibility(
+      final EasyNPC<?> easyNPC,
+      final Player player,
+      final double range,
+      final boolean fallbackVisibility,
+      final double providedDistanceSquared) {
+    if (!easyNPC.getEntity().hasCustomName()) {
+      return false;
     }
+
+    if (player == null) {
+      return fallbackVisibility;
+    }
+
+    // Use provided distance if available (from Minecraft's shouldShowName), otherwise calculate
+    double distanceSquared =
+        providedDistanceSquared >= 0.0
+            ? providedDistanceSquared
+            : easyNPC.getEntity().distanceToSqr(player);
+    double rangeSquared = range * range;
+    if (distanceSquared > rangeSquared) {
+      return false;
+    }
+
+    // Check team visibility if NPC belongs to a team
+    Team npcTeam = easyNPC.getLivingEntity().getTeam();
+    if (npcTeam != null) {
+      Team.Visibility teamNameTagVisibility = npcTeam.getNameTagVisibility();
+      return switch (teamNameTagVisibility) {
+        case NEVER -> false;
+        case HIDE_FOR_OTHER_TEAMS -> {
+          Team playerTeam = player.getTeam();
+          yield playerTeam != null
+              && npcTeam.isAlliedTo(playerTeam)
+              && (npcTeam.canSeeFriendlyInvisibles() || !easyNPC.getEntity().isInvisibleTo(player));
+        }
+        case HIDE_FOR_OWN_TEAM -> {
+          Team playerTeam2 = player.getTeam();
+          yield playerTeam2 == null
+              || !npcTeam.isAlliedTo(playerTeam2) && !easyNPC.getEntity().isInvisibleTo(player);
+        }
+        default -> !easyNPC.getEntity().isInvisibleTo(player);
+      };
+    }
+
+    // No team, just check if within range and not invisible
+    return !easyNPC.getEntity().isInvisibleTo(player);
+  }
+
+  private static boolean evaluateMouseOverVisibility(final EasyNPC<?> easyNPC) {
+    if (!easyNPC.getEntity().hasCustomName()) {
+      return false;
+    }
+
+    Minecraft minecraft = Minecraft.getInstance();
+    if (minecraft.getCameraEntity() == null || minecraft.crosshairPickEntity == null) {
+      return false;
+    }
+
+    return minecraft.crosshairPickEntity == easyNPC.getEntity() && !easyNPC.getEntity().isVehicle();
   }
 
   private static boolean hasCustomNameFallback(

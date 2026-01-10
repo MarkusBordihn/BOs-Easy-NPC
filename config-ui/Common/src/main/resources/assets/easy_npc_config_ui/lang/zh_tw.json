@@ -179,6 +179,8 @@
   "text.easy_npc.config.movement_speed": "移動速度",
   "text.easy_npc.config.name_to_label.tooltip": "將名稱轉換為對應的標籤/ID。",
   "text.easy_npc.config.name_visibility.always": "總是顯示名稱",
+  "text.easy_npc.config.name_visibility.mid": "中距離顯示名稱",
+  "text.easy_npc.config.name_visibility.mouse_over": "滑鼠懸停時顯示名稱",
   "text.easy_npc.config.name_visibility.near": "靠近時顯示名稱",
   "text.easy_npc.config.name_visibility.never": "從不顯示名稱",
   "text.easy_npc.config.next_page": "下一頁 >",

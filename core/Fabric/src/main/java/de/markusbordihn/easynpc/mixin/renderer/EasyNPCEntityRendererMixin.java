@@ -24,7 +24,6 @@ import de.markusbordihn.easynpc.client.model.EasyNPCModel;
 import de.markusbordihn.easynpc.client.renderer.entity.state.EasyNPCRenderStateExtension;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.DisplayAttributeDataCapable;
-import de.markusbordihn.easynpc.entity.easynpc.handlers.VisibilityHandler;
 import de.markusbordihn.easynpc.utils.ItemUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.SubmitNodeCollector;
@@ -88,31 +87,15 @@ public class EasyNPCEntityRendererMixin<T extends Entity, S extends EntityRender
     }
   }
 
-  @Inject(
-      method = "shouldShowName(Lnet/minecraft/world/entity/Entity;D)Z",
-      at = @At("HEAD"),
-      cancellable = true)
-  private void onShouldShowName(T entity, double distance, CallbackInfoReturnable<Boolean> cir) {
-    if (entity instanceof EasyNPC<?> easyNPC) {
-      var player = Minecraft.getInstance().player;
-      if (player != null) {
-        cir.setReturnValue(
-            VisibilityHandler.handleIsCustomNameVisibleToPlayer(
-                easyNPC, player, entity.isCustomNameVisible()));
-      }
-    }
-  }
-
   @Inject(method = "submitNameTag", at = @At("HEAD"), cancellable = true)
-  private void onSubmitNameTag(
+  private void onRenderNameTag(
       S renderState,
       PoseStack poseStack,
       SubmitNodeCollector submitNodeCollector,
       CameraRenderState cameraRenderState,
       CallbackInfo ci) {
-    if (renderState instanceof EasyNPCRenderStateExtension renderStateExtension
-        && !EasyNPCModel.renderEntityNameTag(renderStateExtension, poseStack)) {
-      ci.cancel();
+    if (renderState instanceof EasyNPCRenderStateExtension renderStateExtension) {
+      EasyNPCModel.renderEntityNameTag(renderStateExtension, poseStack);
     }
   }
 }

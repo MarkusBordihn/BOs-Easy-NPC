@@ -100,11 +100,11 @@ public interface DisplayAttributeDataCapable<E extends PathfinderMob> extends Ea
     // Sync customNameVisible property from NAME_VISIBILITY attribute
     if (displayAttributeDataSet.hasAttribute(DisplayAttributeType.NAME_VISIBILITY)) {
       DisplayAttributeEntry nameVisibilityEntry =
-        displayAttributeDataSet.getAttribute(DisplayAttributeType.NAME_VISIBILITY);
+          displayAttributeDataSet.getAttribute(DisplayAttributeType.NAME_VISIBILITY);
       if (nameVisibilityEntry != null) {
         try {
           NameVisibilityType nameVisibilityType =
-            NameVisibilityType.valueOf(nameVisibilityEntry.stringValue());
+              NameVisibilityType.valueOf(nameVisibilityEntry.stringValue());
           getEntity().setCustomNameVisible(nameVisibilityType != NameVisibilityType.NEVER);
         } catch (IllegalArgumentException e) {
           log.warn("Invalid name visibility type: {}", nameVisibilityEntry.stringValue());

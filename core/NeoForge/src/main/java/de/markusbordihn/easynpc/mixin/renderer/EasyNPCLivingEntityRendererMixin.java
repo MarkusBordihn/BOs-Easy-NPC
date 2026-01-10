@@ -60,19 +60,6 @@ public class EasyNPCLivingEntityRendererMixin {
     }
   }
 
-  @Inject(method = "shouldShowName(Lnet/minecraft/world/entity/LivingEntity;D)Z", at = @At("HEAD"), cancellable = true)
-  private void onShouldShowName(LivingEntity entity, double distance, CallbackInfoReturnable<Boolean> cir) {
-    if (entity instanceof EasyNPC<?> easyNPC) {
-      var player = Minecraft.getInstance().player;
-      if (player != null) {
-        boolean shouldShowName =
-            VisibilityHandler.handleIsCustomNameVisibleToPlayer(
-                easyNPC, player, entity.isCustomNameVisible());
-        cir.setReturnValue(shouldShowName);
-      }
-    }
-  }
-
   @Inject(
       method =
           "submit(Lnet/minecraft/client/renderer/entity/state/LivingEntityRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/renderer/state/CameraRenderState;)V",
@@ -107,6 +94,23 @@ public class EasyNPCLivingEntityRendererMixin {
   private void onScale(LivingEntityRenderState renderState, PoseStack poseStack, CallbackInfo ci) {
     if (renderState instanceof EasyNPCRenderStateExtension) {
       EasyNPCLivingEntityRenderer.handleScale(renderState, poseStack);
+    }
+  }
+
+  @Inject(
+      method = "shouldShowName(Lnet/minecraft/world/entity/LivingEntity;D)Z",
+      at = @At("HEAD"),
+      cancellable = true)
+  private void onShouldShowName(
+      LivingEntity entity, double distance, CallbackInfoReturnable<Boolean> cir) {
+    if (entity instanceof EasyNPC<?> easyNPC) {
+      var player = Minecraft.getInstance().player;
+      if (player != null) {
+        boolean shouldShowName =
+            VisibilityHandler.handleIsCustomNameVisibleToPlayer(
+                easyNPC, player, entity.isCustomNameVisible(), distance);
+        cir.setReturnValue(shouldShowName);
+      }
     }
   }
 }
