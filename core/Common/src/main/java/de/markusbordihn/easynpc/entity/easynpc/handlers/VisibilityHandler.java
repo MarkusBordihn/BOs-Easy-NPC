@@ -26,6 +26,7 @@ import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.DisplayAttributeDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.OwnerDataCapable;
 import java.util.Objects;
+import net.minecraft.client.Minecraft;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.scores.Team;
@@ -36,7 +37,8 @@ public class VisibilityHandler {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  private static final double DEFAULT_NAME_VISIBILITY_RANGE = 16.0d;
+  private static final double NEAR_NAME_VISIBILITY_RANGE = 8.0d;
+  private static final double MID_NAME_VISIBILITY_RANGE = 16.0d;
 
   private VisibilityHandler() {}
 
@@ -221,26 +223,76 @@ public class VisibilityHandler {
       final NameVisibilityType nameVisibilityType,
       final boolean fallbackVisibility) {
 
-    switch (nameVisibilityType) {
-      case NEVER:
-        return false;
-      case ALWAYS:
-        return true;
-      case NEAR:
-        if (!easyNPC.getEntity().hasCustomName()) {
-          return false;
-        }
+    return switch (nameVisibilityType) {
+      case NEVER -> false;
+      case ALWAYS -> true;
+      case NEAR ->
+          evaluateDistanceBasedVisibility(
+              easyNPC, player, NEAR_NAME_VISIBILITY_RANGE, fallbackVisibility);
+      case MID ->
+          evaluateDistanceBasedVisibility(
+              easyNPC, player, MID_NAME_VISIBILITY_RANGE, fallbackVisibility);
+      case MOUSE_OVER -> evaluateMouseOverVisibility(easyNPC);
+      default -> hasCustomNameFallback(easyNPC, fallbackVisibility);
+    };
+  }
 
-        if (player != null) {
-          return easyNPC.getEntity().distanceToSqr(player)
-              <= DEFAULT_NAME_VISIBILITY_RANGE * DEFAULT_NAME_VISIBILITY_RANGE;
-        } else {
-          return fallbackVisibility;
-        }
-
-      default:
-        return hasCustomNameFallback(easyNPC, fallbackVisibility);
+  private static boolean evaluateDistanceBasedVisibility(
+      final EasyNPC<?> easyNPC,
+      final Player player,
+      final double range,
+      final boolean fallbackVisibility) {
+    if (!easyNPC.getEntity().hasCustomName()) {
+      return false;
     }
+
+    if (player == null) {
+      return fallbackVisibility;
+    }
+
+    // Check distance first
+    double distanceSquared = easyNPC.getEntity().distanceToSqr(player);
+    double rangeSquared = range * range;
+    if (distanceSquared > rangeSquared) {
+      return false;
+    }
+
+    // Check team visibility if NPC belongs to a team
+    Team npcTeam = easyNPC.getLivingEntity().getTeam();
+    if (npcTeam != null) {
+      Team.Visibility teamNameTagVisibility = npcTeam.getNameTagVisibility();
+      return switch (teamNameTagVisibility) {
+        case NEVER -> false;
+        case HIDE_FOR_OTHER_TEAMS -> {
+          Team playerTeam = player.getTeam();
+          yield playerTeam != null
+              && npcTeam.isAlliedTo(playerTeam)
+              && (npcTeam.canSeeFriendlyInvisibles() || !easyNPC.getEntity().isInvisibleTo(player));
+        }
+        case HIDE_FOR_OWN_TEAM -> {
+          Team playerTeam2 = player.getTeam();
+          yield playerTeam2 == null
+              || !npcTeam.isAlliedTo(playerTeam2) && !easyNPC.getEntity().isInvisibleTo(player);
+        }
+        default -> !easyNPC.getEntity().isInvisibleTo(player);
+      };
+    }
+
+    // No team, just check if within range and not invisible
+    return !easyNPC.getEntity().isInvisibleTo(player);
+  }
+
+  private static boolean evaluateMouseOverVisibility(final EasyNPC<?> easyNPC) {
+    if (!easyNPC.getEntity().hasCustomName()) {
+      return false;
+    }
+
+    Minecraft minecraft = Minecraft.getInstance();
+    if (minecraft.cameraEntity == null || minecraft.crosshairPickEntity == null) {
+      return false;
+    }
+
+    return minecraft.crosshairPickEntity == easyNPC.getEntity() && !easyNPC.getEntity().isVehicle();
   }
 
   private static boolean hasCustomNameFallback(

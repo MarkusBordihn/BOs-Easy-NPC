@@ -24,7 +24,6 @@ import de.markusbordihn.easynpc.client.model.EasyNPCModel;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.DisplayAttributeDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
-import de.markusbordihn.easynpc.entity.easynpc.handlers.VisibilityHandler;
 import de.markusbordihn.easynpc.utils.ItemUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -95,22 +94,9 @@ public class EasyNPCEntityRendererMixin<T extends Entity> {
       MultiBufferSource multiBufferSource,
       int i,
       CallbackInfo ci) {
-    if (entity instanceof EasyNPC<?> easyNPC) {
-      var player = Minecraft.getInstance().player;
-      if (player != null) {
-        boolean shouldShowName =
-            VisibilityHandler.handleIsCustomNameVisibleToPlayer(
-                easyNPC, player, entity.isCustomNameVisible());
-
-        if (!shouldShowName) {
-          ci.cancel();
-          return;
-        }
-      }
-
-      if (easyNPC.getEasyNPCModelData() instanceof ModelDataCapable) {
-        EasyNPCModel.renderEntityNameTag(easyNPC, easyNPC.getEasyNPCModelData(), poseStack);
-      }
+    if (entity instanceof EasyNPC<?> easyNPC
+        && easyNPC.getEasyNPCModelData() instanceof ModelDataCapable) {
+      EasyNPCModel.renderEntityNameTag(easyNPC, easyNPC.getEasyNPCModelData(), poseStack);
     }
   }
 }
