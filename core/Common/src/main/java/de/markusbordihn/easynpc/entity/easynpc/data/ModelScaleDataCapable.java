@@ -47,6 +47,11 @@ public interface ModelScaleDataCapable<T extends PathfinderMob> extends EasyNPC<
   default void setModelPartScale(EnumMap<ModelPartType, CustomScale> modelPartMap) {
     if (modelPartMap != null) {
       setSynchedEntityData(SynchedDataIndex.MODEL_SCALE, modelPartMap, true);
+
+      // Refresh entity dimensions when ROOT scale is present (for hitbox and nametag positioning)
+      if (modelPartMap.containsKey(ModelPartType.ROOT)) {
+        this.getEntity().refreshDimensions();
+      }
     }
   }
 
@@ -55,11 +60,6 @@ public interface ModelScaleDataCapable<T extends PathfinderMob> extends EasyNPC<
     if (modelPartType != null) {
       modelPartMap.put(modelPartType, Scale);
       this.setModelPartScale(new EnumMap<>(modelPartMap));
-
-      // Refresh entity dimensions when ROOT scale changes (for hitbox scaling)
-      if (modelPartType == ModelPartType.ROOT) {
-        this.getEntity().refreshDimensions();
-      }
     }
   }
 
