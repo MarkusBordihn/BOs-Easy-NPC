@@ -35,6 +35,7 @@ import de.markusbordihn.easynpc.data.synched.SynchedEntityData;
 import de.markusbordihn.easynpc.data.ticker.TickerType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPCBase;
+import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.AttackHandler;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.InteractionHandler;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.VisibilityHandler;
@@ -100,6 +101,8 @@ public class NPCRawTemplate extends Zombie implements EasyNPCBase<Zombie> {
   protected static final EnumMap<SynchedDataIndex, EntityDataAccessor<?>> entityDataAccessorMap =
       new EnumMap<>(SynchedDataIndex.class);
   private static final UniformInt PERSISTENT_ANGER_TIME = TimeUtil.rangeOfSeconds(20, 39);
+
+  private boolean clientDimensionsRefreshed = false;
 
   static {
     // Attack Data
@@ -282,6 +285,18 @@ public class NPCRawTemplate extends Zombie implements EasyNPCBase<Zombie> {
       this.updateSwingTime();
       if (this.attackAnimationTick > 0) {
         --this.attackAnimationTick;
+      }
+
+      // Refresh client dimensions, if necessary.
+      if (!this.clientDimensionsRefreshed && this.tickCount > 1) {
+        ModelDataCapable<?> modelData = this.getEasyNPCModelData();
+        if (modelData != null) {
+          CustomScale rootScale = modelData.getModelPartScale(ModelPartType.ROOT);
+          if (rootScale != null && (rootScale.x() != 1.0f || rootScale.y() != 1.0f)) {
+            this.refreshDimensions();
+            this.clientDimensionsRefreshed = true;
+          }
+        }
       }
     } else {
       this.updatePersistentAnger((ServerLevel) this.level(), true);
