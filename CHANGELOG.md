@@ -10,6 +10,8 @@ Check the [upgrade guide][upgrade_guide] for more information.
 
 ### 6.6.2
 
+- Fixed #643 by rework scaling system.
+- Fixed scaling not properly updating hitbox and nametag position after restart / reload.
 - Added MID and MOUSE_OVER name tag visibility modes for finer control over NPC name display.
 - Added team-based name tag visibility support respecting vanilla Team.
 
