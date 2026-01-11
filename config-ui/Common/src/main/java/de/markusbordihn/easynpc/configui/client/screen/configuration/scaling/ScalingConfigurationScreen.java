@@ -231,30 +231,16 @@ public class ScalingConfigurationScreen<T extends ConfigurationMenu>
     ModelDataCapable<?> modelData = this.getEasyNPC().getEasyNPCModelData();
     CustomScale rootScale = modelData.getModelPartScale(ModelPartType.ROOT);
     float yScale = rootScale.y();
-    int pixelsPerScale = Math.round(33f * yScale);
-    int baselineY = this.contentTopPos + 160;
+    int pixelsPerScale = 33;
+    int baselineY = this.contentTopPos + 161;
+    float yOffset = -(yScale - 0.99f);
 
-    // Calculate yOffset to keep feet at the 0-line
-    float scaleDifference = yScale - 1.0f;
-    float multiplier = 1.73f - scaleDifference * 0.26f;
-    if (yScale >= 2.5f) {
-      float extraScale = yScale - 2.5f;
-      multiplier += extraScale * 0.17f;
-    } else if (yScale < 0.5f) {
-      float missingScale = 1.5f - yScale;
-      multiplier += missingScale * 1.5f;
-    } else if (yScale < 1.0f) {
-      float missingScale = 1.0f - yScale;
-      multiplier += missingScale * 2f;
-    }
-    float yOffset = -scaleDifference * multiplier;
-
-    EntityConfigScreenRenderer.renderEntity(
-        guiGraphics,
-        this.getEasyNPC(),
-        EntityRenderConfig.scaling(this.contentLeftPos + 80, baselineY, pixelsPerScale, yOffset),
-        this.xMouse,
-        this.yMouse);
+    EntityConfigScreenRenderer.renderEntityRaw(
+      guiGraphics,
+      this.getEasyNPC(),
+      EntityRenderConfig.scaling(this.contentLeftPos + 80, baselineY, pixelsPerScale, yOffset),
+      this.xMouse,
+      this.yMouse);
 
     drawScaleLabel(guiGraphics, "scale_x", scaleXSliderButton);
     drawScaleLabel(guiGraphics, "scale_y", scaleYSliderButton);

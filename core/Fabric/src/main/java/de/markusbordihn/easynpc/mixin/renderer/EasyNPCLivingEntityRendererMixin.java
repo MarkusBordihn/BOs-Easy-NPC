@@ -79,6 +79,25 @@ public class EasyNPCLivingEntityRendererMixin {
   @Inject(
       method =
           "submit(Lnet/minecraft/client/renderer/entity/state/LivingEntityRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/renderer/state/CameraRenderState;)V",
+      at =
+          @At(
+              value = "INVOKE",
+              target =
+                  "Lnet/minecraft/client/renderer/entity/LivingEntityRenderer;setupRotations(Lnet/minecraft/client/renderer/entity/state/LivingEntityRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;FF)V"))
+  private void applyCustomScaleAfterEntityScale(
+      LivingEntityRenderState renderState,
+      PoseStack poseStack,
+      SubmitNodeCollector submitNodeCollector,
+      CameraRenderState cameraRenderState,
+      CallbackInfo ci) {
+    if (renderState instanceof EasyNPCRenderStateExtension) {
+      EasyNPCLivingEntityRenderer.handleScale(renderState, poseStack);
+    }
+  }
+
+  @Inject(
+      method =
+          "submit(Lnet/minecraft/client/renderer/entity/state/LivingEntityRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/renderer/state/CameraRenderState;)V",
       at = @At("TAIL"))
   private void onRenderEnd(
       LivingEntityRenderState renderState,
@@ -91,12 +110,6 @@ public class EasyNPCLivingEntityRendererMixin {
     }
   }
 
-  @Inject(method = "scale", at = @At("HEAD"))
-  private void onScale(LivingEntityRenderState renderState, PoseStack poseStack, CallbackInfo ci) {
-    if (renderState instanceof EasyNPCRenderStateExtension) {
-      EasyNPCLivingEntityRenderer.handleScale(renderState, poseStack);
-    }
-  }
 
   @Inject(
       method = "shouldShowName(Lnet/minecraft/world/entity/LivingEntity;D)Z",
