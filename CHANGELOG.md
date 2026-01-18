@@ -13,8 +13,6 @@ Check the [upgrade guide][upgrade_guide] for more information.
 - Fixed #648 by fixing canBeHitByProjectiles translation.
 - Fixed #645 by adding `allowBypassInvulnerability` config option to allow/deny bypassing
   invulnerability for NPCs.
-- Fixed #643 by rework scaling system.
-- Fixed scaling not properly updating hitbox and nametag position after restart / reload.
 - Fixed delete button showing label even with small width.
 - Fixed up and down buttons not positioned correctly in some cases.
 - Fixed name tag showing up for dialog and configuration UI.
@@ -22,9 +20,14 @@ Check the [upgrade guide][upgrade_guide] for more information.
 - Fixed issues with NPC presets.
 - Added preset browser for easier selection of common NPC presets.
 - Added preset .snbt (text) export and import functionality for sharing NPC presets.
+- Converted existing NPC presets to use new .snbt format.
+
+### 6.6.2
+
+- Fixed #643 by rework scaling system.
+- Fixed scaling not properly updating hitbox and nametag position after restart / reload.
 - Added MID and MOUSE_OVER name tag visibility modes for finer control over NPC name display.
 - Added team-based name tag visibility support respecting vanilla Team.
-- Converted existing NPC presets to use new .snbt format.
 
 ### 6.6.1
 
