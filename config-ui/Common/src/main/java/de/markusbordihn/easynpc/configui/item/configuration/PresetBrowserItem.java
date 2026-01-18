@@ -60,6 +60,6 @@ public class PresetBrowserItem extends Item {
   @Override
   public void appendHoverText(
       ItemStack itemStack, Level level, List<Component> tooltipList, TooltipFlag tooltipFlag) {
-    tooltipList.add(TextComponent.getTranslatedConfigText("preset_browser.tooltip"));
+    tooltipList.add(TextComponent.getTranslatedConfigText(ID + ".tooltip"));
   }
 }

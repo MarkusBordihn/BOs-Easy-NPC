@@ -73,6 +73,7 @@ loom {
 }
 
 processResources {
+  dependsOn project(":Common").tasks.named('generateDefaultPresetIndex')
   from project(":Common").sourceSets.main.resources
 
   inputs.property "version", project.version

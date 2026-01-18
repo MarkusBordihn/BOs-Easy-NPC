@@ -139,6 +139,7 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 processResources {
+  dependsOn project(":Common").tasks.named('generateDefaultPresetIndex')
   from project(":Common").sourceSets.main.resources
 }
 

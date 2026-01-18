@@ -44,12 +44,6 @@ tasks.named('compileJava') {
 
 processResources {
   dependsOn tasks.named('generateDefaultPresetIndex')
-
-  def buildProps = project.properties.clone()
-
-  filesMatching(['pack.mcmeta']) {
-    expand buildProps
-  }
 }
 
 tasks.named('sourcesJar') {
