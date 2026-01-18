@@ -19,37 +19,22 @@
 
 package de.markusbordihn.easynpc.client.screen.components;
 
-import de.markusbordihn.easynpc.Constants;
 import net.minecraft.client.gui.components.Button.OnPress;
-import net.minecraft.resources.Identifier;
 
 public class CopyButton extends SpriteButton {
 
-  public static final int DEFAULT_HEIGHT = 16;
-  public static final int DEFAULT_WIDTH_SMALL = 16;
-  public static final int DEFAULT_WIDTH = 100;
-  public static final Identifier SPRITE = Constants.TEXTURE_CONFIGURATION;
-  public static final int SPRITE_HEIGHT = 12;
-  public static final int SPRITE_OFFSET_X = 65;
-  public static final int SPRITE_OFFSET_Y = 130;
-  public static final int SPRITE_WIDTH = 12;
-  public static final int SPRITE_X = 3;
-  public static final int SPRITE_Y = 2;
+  private static final int DEFAULT_HEIGHT = 16;
+  private static final int DEFAULT_WIDTH_SMALL = 16;
+  private static final int DEFAULT_WIDTH = 100;
+  private static final int SPRITE_HEIGHT = 12;
+  private static final int SPRITE_OFFSET_X = 65;
+  private static final int SPRITE_OFFSET_Y = 130;
+  private static final int SPRITE_WIDTH = 12;
+  private static final int SPRITE_X = 3;
+  private static final int SPRITE_Y = 2;
 
   public CopyButton(int left, int top, OnPress onPress) {
-    super(
-        left,
-        top,
-        DEFAULT_WIDTH_SMALL,
-        DEFAULT_HEIGHT,
-        SPRITE,
-        SPRITE_X,
-        SPRITE_Y,
-        SPRITE_OFFSET_X,
-        SPRITE_OFFSET_Y,
-        SPRITE_WIDTH,
-        SPRITE_HEIGHT,
-        onPress);
+    this(left, top, DEFAULT_WIDTH_SMALL, "", onPress);
   }
 
   public CopyButton(int left, int top, int width, String label, OnPress onPress) {
@@ -59,7 +44,6 @@ public class CopyButton extends SpriteButton {
         width,
         DEFAULT_HEIGHT,
         label,
-        SPRITE,
         SPRITE_X,
         SPRITE_Y,
         SPRITE_OFFSET_X,

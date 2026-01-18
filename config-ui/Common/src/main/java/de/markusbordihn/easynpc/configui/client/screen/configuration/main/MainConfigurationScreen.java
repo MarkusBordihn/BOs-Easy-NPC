@@ -21,6 +21,8 @@ package de.markusbordihn.easynpc.configui.client.screen.configuration.main;
 
 import de.markusbordihn.easynpc.client.screen.components.CopyButton;
 import de.markusbordihn.easynpc.client.screen.components.DeleteButton;
+import de.markusbordihn.easynpc.client.screen.components.ExportButton;
+import de.markusbordihn.easynpc.client.screen.components.ImportButton;
 import de.markusbordihn.easynpc.client.screen.components.ReloadButton;
 import de.markusbordihn.easynpc.client.screen.components.SaveButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
@@ -245,10 +247,11 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
     // Import Button
     Button importButton =
         this.addRenderableWidget(
-            new TextButton(
+            new ImportButton(
                 this.leftPos + 122,
                 this.contentTopPos + 35,
                 97,
+                16,
                 "import",
                 onPress ->
                     NetworkMessageHandlerManager.getServerHandler()
@@ -259,10 +262,11 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
     // Export Button
     Button exportButton =
         this.addRenderableWidget(
-            new TextButton(
+            new ExportButton(
                 importButton.getX() + importButton.getWidth() + 5,
                 importButton.getY(),
                 97,
+                16,
                 "export",
                 onPress ->
                     NetworkMessageHandlerManager.getServerHandler()

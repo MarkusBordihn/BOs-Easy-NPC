@@ -236,11 +236,11 @@ public class ScalingConfigurationScreen<T extends ConfigurationMenu>
     float yOffset = -(yScale - 0.99f);
 
     EntityConfigScreenRenderer.renderEntityRaw(
-      guiGraphics,
-      this.getEasyNPC(),
-      EntityRenderConfig.scaling(this.contentLeftPos + 80, baselineY, pixelsPerScale, yOffset),
-      this.xMouse,
-      this.yMouse);
+        guiGraphics,
+        this.getEasyNPC(),
+        EntityRenderConfig.scaling(this.contentLeftPos + 80, baselineY, pixelsPerScale, yOffset),
+        this.xMouse,
+        this.yMouse);
 
     drawScaleLabel(guiGraphics, "scale_x", scaleXSliderButton);
     drawScaleLabel(guiGraphics, "scale_y", scaleYSliderButton);

@@ -68,6 +68,7 @@ import de.markusbordihn.easynpc.configui.client.screen.editor.condition.Conditio
 import de.markusbordihn.easynpc.configui.client.screen.editor.dialog.DialogButtonEditorScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.editor.dialog.DialogEditorScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.editor.dialog.DialogTextEditorScreenWrapper;
+import de.markusbordihn.easynpc.configui.client.screen.preset.PresetBrowserScreen;
 import de.markusbordihn.easynpc.configui.menu.ModMenuTypes;
 import net.minecraft.client.gui.screens.MenuScreens;
 import org.apache.logging.log4j.LogManager;
@@ -186,6 +187,7 @@ public class ClientScreens {
         NoneTradingConfigurationContainerScreenWrapper::new);
     MenuScreens.register(
         ModMenuTypes.PLAYER_SKIN_CONFIGURATION_MENU, PlayerSkinConfigurationScreenWrapper::new);
+    MenuScreens.register(ModMenuTypes.PRESET_BROWSER_MENU, PresetBrowserScreen::new);
     MenuScreens.register(
         ModMenuTypes.SCALING_CONFIGURATION_MENU, ScalingConfigurationScreenWrapper::new);
     MenuScreens.register(

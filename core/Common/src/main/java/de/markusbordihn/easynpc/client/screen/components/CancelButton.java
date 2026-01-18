@@ -19,36 +19,19 @@
 
 package de.markusbordihn.easynpc.client.screen.components;
 
-import de.markusbordihn.easynpc.Constants;
-import net.minecraft.resources.Identifier;
-
 public class CancelButton extends SpriteButton {
 
-  public static final int DEFAULT_HEIGHT = 18;
-  public static final int DEFAULT_WIDTH = 100;
-  public static final Identifier SPRITE = Constants.TEXTURE_CONFIGURATION;
-  public static final int SPRITE_HEIGHT = 10;
-  public static final int SPRITE_OFFSET_X = 64;
-  public static final int SPRITE_OFFSET_Y = 47;
-  public static final int SPRITE_WIDTH = 10;
-  public static final int SPRITE_X = 4;
-  public static final int SPRITE_Y = 3;
+  private static final int DEFAULT_HEIGHT = 18;
+  private static final int DEFAULT_WIDTH = 100;
+  private static final int SPRITE_HEIGHT = 10;
+  private static final int SPRITE_OFFSET_X = 64;
+  private static final int SPRITE_OFFSET_Y = 47;
+  private static final int SPRITE_WIDTH = 10;
+  private static final int SPRITE_X = 4;
+  private static final int SPRITE_Y = 3;
 
   public CancelButton(int left, int top, String label, OnPress onPress) {
-    super(
-        left,
-        top,
-        DEFAULT_WIDTH,
-        DEFAULT_HEIGHT,
-        label,
-        SPRITE,
-        SPRITE_X,
-        SPRITE_Y,
-        SPRITE_OFFSET_X,
-        SPRITE_OFFSET_Y,
-        SPRITE_WIDTH,
-        SPRITE_HEIGHT,
-        onPress);
+    this(left, top, DEFAULT_WIDTH, label, onPress);
   }
 
   public CancelButton(int left, int top, int width, String label, OnPress onPress) {
@@ -58,7 +41,6 @@ public class CancelButton extends SpriteButton {
         width,
         DEFAULT_HEIGHT,
         label,
-        SPRITE,
         SPRITE_X,
         3,
         SPRITE_OFFSET_X,

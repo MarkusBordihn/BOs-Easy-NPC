@@ -1,0 +1,31 @@
+{
+  PresetMetadata: {
+    name: "Complex Test",
+    category: "Advanced",
+    version: "2.0.0",
+    author: "TestUser",
+    created: 1737072000000L,
+    modified: 1737072000000L,
+    description: "A complex preset for testing",
+    entityTypeId: "easy_npc:humanoid",
+    variantType: "STEVE"
+  },
+  data: {
+    id: "easy_npc:humanoid",
+    UUID: [I; 1, 2, 3, 4],
+    CustomName: '{"text":"Complex NPC","color":"gold"}',
+    VariantType: "STEVE",
+    Attributes: [
+      {
+        Name: "generic.max_health",
+        Base: 20.0d
+      },
+      {
+        Name: "generic.movement_speed",
+        Base: 0.25d
+      }
+    ],
+    Health: 20.0f,
+    OnGround: 1b
+  }
+}

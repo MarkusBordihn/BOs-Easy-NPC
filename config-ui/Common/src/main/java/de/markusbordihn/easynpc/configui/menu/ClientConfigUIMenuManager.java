@@ -19,12 +19,17 @@
 
 package de.markusbordihn.easynpc.configui.menu;
 
+import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.configui.data.screen.AdditionalScreenData;
 import de.markusbordihn.easynpc.data.screen.ScreenData;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ClientConfigUIMenuManager {
+
+  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   private static ScreenData screenData;
   private static AdditionalScreenData additionalScreenData;
@@ -34,6 +39,11 @@ public class ClientConfigUIMenuManager {
   private ClientConfigUIMenuManager() {}
 
   public static void setMenuData(UUID menuId, CompoundTag menuData) {
+    log.debug(
+        "setMenuData called with menuId: {} and data size: {}",
+        menuId,
+        menuData != null ? menuData.size() : 0);
+
     ClientConfigUIMenuManager.clearMenuData();
     ClientConfigUIMenuManager.menuId = menuId;
     ClientConfigUIMenuManager.menuData = menuData;
@@ -44,6 +54,14 @@ public class ClientConfigUIMenuManager {
           ClientConfigUIMenuManager.screenData != null
               ? new AdditionalScreenData(ClientConfigUIMenuManager.screenData.additionalData())
               : null;
+      if (ClientConfigUIMenuManager.additionalScreenData != null) {
+        CompoundTag additionalData = ClientConfigUIMenuManager.screenData.additionalData();
+        log.debug("AdditionalScreenData created with {} keys", additionalData.size());
+      } else {
+        log.warn("AdditionalScreenData is NULL!");
+      }
+    } else {
+      log.warn("No ScreenData found in menuData!");
     }
   }
 
@@ -68,6 +86,7 @@ public class ClientConfigUIMenuManager {
   }
 
   public static void clearMenuData() {
+    log.debug("clearMenuData() called");
     ClientConfigUIMenuManager.menuId = null;
     ClientConfigUIMenuManager.menuData = null;
     ClientConfigUIMenuManager.screenData = null;

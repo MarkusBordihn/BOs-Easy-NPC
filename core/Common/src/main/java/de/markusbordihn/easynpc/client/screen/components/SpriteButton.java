@@ -219,6 +219,35 @@ public class SpriteButton extends CustomButton {
       int width,
       int height,
       Component component,
+      int spriteX,
+      int spriteY,
+      int spriteOffsetX,
+      int spriteOffsetY,
+      int spriteWidth,
+      int spriteHeight,
+      OnPress onPress) {
+    this(
+        left,
+        top,
+        width,
+        height,
+        component,
+        DEFAULT_SPRITE,
+        spriteX,
+        spriteY,
+        spriteOffsetX,
+        spriteOffsetY,
+        spriteWidth,
+        spriteHeight,
+        onPress);
+  }
+
+  public SpriteButton(
+      int left,
+      int top,
+      int width,
+      int height,
+      Component component,
       Identifier sprite,
       int spriteX,
       int spriteY,

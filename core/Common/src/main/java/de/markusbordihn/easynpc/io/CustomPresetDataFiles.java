@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.io;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.data.preset.PresetMetadata;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import java.io.File;
 import java.io.IOException;
@@ -30,6 +31,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -110,6 +112,7 @@ public class CustomPresetDataFiles {
     return presetIdentifierMap.keySet().stream();
   }
 
+  @SuppressWarnings("unused")
   public static Set<Identifier> getPresetIdentifierSet() {
     return presetIdentifierMap.keySet();
   }
@@ -145,9 +148,30 @@ public class CustomPresetDataFiles {
   public static Path getPresetsIdentifierPath(Identifier resourceLocation) {
     Path path = presetIdentifierMap.get(resourceLocation);
     if (path == null) {
+      log.debug("Preset {} not in cache, triggering refresh", resourceLocation);
       refreshPresetIdentifiers();
       path = presetIdentifierMap.get(resourceLocation);
+      if (path == null) {
+        log.debug("Preset {} not found after refresh", resourceLocation);
+      }
     }
     return path;
+  }
+
+  @SuppressWarnings("unused")
+  public static PresetMetadata getPresetMetadata(Identifier resourceLocation) {
+    Path presetPath = getPresetsIdentifierPath(resourceLocation);
+    if (presetPath == null) {
+      log.warn("Preset file not found for resource location: {}", resourceLocation);
+      return PresetMetadata.createDefault();
+    }
+
+    CompoundTag compoundTag = PresetFileHandler.load(presetPath.toFile());
+    return PresetFileHandler.extractMetadata(compoundTag);
+  }
+
+  @SuppressWarnings("unused")
+  public static String getPresetDisplayName(Identifier resourceLocation, PresetMetadata metadata) {
+    return PresetFileHandler.getDisplayName(resourceLocation, metadata);
   }
 }

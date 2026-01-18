@@ -69,9 +69,11 @@ import de.markusbordihn.easynpc.configui.menu.editor.ConditionDataEntryEditorMen
 import de.markusbordihn.easynpc.configui.menu.editor.DialogButtonEditorMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.editor.DialogEditorMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.editor.DialogTextEditorMenuWrapper;
+import de.markusbordihn.easynpc.configui.menu.preset.PresetBrowserMenuWrapper;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.inventory.MenuType;
 import org.apache.logging.log4j.LogManager;
@@ -332,6 +334,11 @@ public class ModMenuTypes {
           BuiltInRegistries.MENU,
           ConfigurationType.PLAYER_SKIN.getId(),
           new MenuType<>(PlayerSkinConfigurationMenuWrapper::new, FeatureFlagSet.of()));
+  public static final MenuType<PresetBrowserMenuWrapper> PRESET_BROWSER_MENU =
+      Registry.register(
+          BuiltInRegistries.MENU,
+          Identifier.fromNamespaceAndPath(Constants.MOD_ID, "preset_browser"),
+          new MenuType<>(PresetBrowserMenuWrapper::new, FeatureFlagSet.of()));
   public static final MenuType<ScalingConfigurationMenuWrapper> SCALING_CONFIGURATION_MENU =
       Registry.register(
           BuiltInRegistries.MENU,

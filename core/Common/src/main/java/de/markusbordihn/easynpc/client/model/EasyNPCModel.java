@@ -133,7 +133,7 @@ public class EasyNPCModel {
     Entity entity = easyNPC.getEntity();
     if (player != null
         && !VisibilityHandler.handleIsCustomNameVisibleToPlayer(
-            easyNPC, player, entity.isCustomNameVisible())) {
+            easyNPC, player, entity.isCustomNameVisible(), player.distanceToSqr(entity))) {
       return false;
     }
 

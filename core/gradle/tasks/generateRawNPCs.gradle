@@ -1,4 +1,4 @@
-task generateRawNPCs {
+tasks.register('generateRawNPCs') {
   group = "build"
   def rawNPCFolder = file("$projectDir/../Common/src/main/java/de/markusbordihn/easynpc/entity/easynpc/npc/raw")
   def templateFile = file("$rawNPCFolder/NPCRawTemplate.java")
@@ -266,6 +266,16 @@ task generateRawNPCs {
           variant  : "PiglinSkinVariant.ZOMBIFIED_PIGLIN"
       ],
   ]
+
+  inputs.file(templateFile)
+  inputs.file(buildFile)
+  inputs.files(fileTree(rawNPCFolder) {
+    include '*.imports'
+    include '*.methods'
+  }).optional(true)
+  outputs.files(npcClasses.collect { npcClass ->
+    file("$rawNPCFolder/${npcClass.className}.java")
+  })
 
   def loadMethods = { String className ->
     def file = new File(rawNPCFolder, "${className}.methods")

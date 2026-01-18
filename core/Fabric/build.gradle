@@ -76,10 +76,13 @@ processResources {
   filesMatching("fabric.mod.json") {
     expand "version": project.version
   }
+
+  dependsOn project(":Common").tasks.named('generateDefaultPresetIndex')
 }
 
 tasks.withType(JavaCompile).configureEach {
   source(project(":Common").sourceSets.main.allSource)
+  dependsOn project(":Common").tasks.named('generateDefaultPresetIndex')
 }
 
 tasks.withType(Test).configureEach {

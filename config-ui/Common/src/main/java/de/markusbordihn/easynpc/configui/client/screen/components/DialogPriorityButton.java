@@ -28,7 +28,7 @@ import java.util.Set;
 public class DialogPriorityButton extends SpinButton<DialogPriorityButton.PriorityValue> {
 
   public DialogPriorityButton(
-      int x, int y, int width, int height, int initialPriority, OnChange onChange) {
+      int x, int y, int width, int height, int initialPriority, OnChange<PriorityValue> onChange) {
     super(
         x, y, width, height, getPresetPriorities(), findPresetOrCustom(initialPriority), onChange);
   }

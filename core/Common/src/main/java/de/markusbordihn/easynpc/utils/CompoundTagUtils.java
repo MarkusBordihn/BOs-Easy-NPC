@@ -46,16 +46,6 @@ import org.apache.logging.log4j.Logger;
 
 public class CompoundTagUtils {
 
-  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-  private static final String CUSTOM_NAME_TAG = "CustomName";
-  private static final String TEXT_TAG = "text";
-  private static final String COLOR_TAG = "color";
-  private static final String ID_PREFIX = "id_";
-  private static final String X_TAG = "X";
-  private static final String Y_TAG = "Y";
-  private static final String Z_TAG = "Z";
-  private static final String UUID_TAG = "UUID";
-
   public static final Codec<ListTag> LIST_TAG_CODEC =
       Codec.PASSTHROUGH.comapFlatMap(
           dynamic -> {
@@ -66,6 +56,15 @@ public class CompoundTagUtils {
                     () -> "Expected ListTag but got: " + tag.getClass().getSimpleName());
           },
           listTag -> new Dynamic<>(NbtOps.INSTANCE, listTag.copy()));
+  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+  private static final String CUSTOM_NAME_TAG = "CustomName";
+  private static final String TEXT_TAG = "text";
+  private static final String COLOR_TAG = "color";
+  private static final String ID_PREFIX = "id_";
+  private static final String X_TAG = "X";
+  private static final String Y_TAG = "Y";
+  private static final String Z_TAG = "Z";
+  private static final String UUID_TAG = "UUID";
 
   private CompoundTagUtils() {}
 

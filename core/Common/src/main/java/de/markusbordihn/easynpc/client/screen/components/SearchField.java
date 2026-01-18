@@ -27,13 +27,13 @@ import net.minecraft.resources.Identifier;
 
 public class SearchField extends TextField {
 
-  public static final Identifier SPRITE = Constants.TEXTURE_CONFIGURATION;
-  public static final int SPRITE_HEIGHT = 12;
-  public static final int SPRITE_OFFSET_X = 93;
-  public static final int SPRITE_OFFSET_Y = 30;
-  public static final int SPRITE_WIDTH = 12;
-  public static final int SPRITE_X = 1;
-  public static final int SPRITE_Y = 2;
+  private static final Identifier SPRITE = Constants.TEXTURE_CONFIGURATION;
+  private static final int SPRITE_HEIGHT = 12;
+  private static final int SPRITE_OFFSET_X = 93;
+  private static final int SPRITE_OFFSET_Y = 30;
+  private static final int SPRITE_WIDTH = 12;
+  private static final int SPRITE_X = 1;
+  private static final int SPRITE_Y = 2;
 
   public SearchField(Font font, int x, int y, int width, int height) {
     super(font, x + SPRITE_WIDTH, y - 1, width, height + 2);

@@ -1,0 +1,20 @@
+{
+  PresetMetadata: {
+    name: "Test Preset",
+    author: "TestAuthor",
+    version: "1.0.0",
+    category: "General",
+    created: 1737072000000L,
+    modified: 1737072000000L,
+    description: "Simple armor stand test preset",
+    entityTypeId: "minecraft:armor_stand",
+    variantType: ""
+  },
+  data: {
+    id: "minecraft:armor_stand",
+    UUID: [I; 123456789, 987654321, 111222333, 444555666],
+    CustomName: '{"text":"Test NPC"}',
+    Health: 20.0f,
+    OnGround: 1b
+  }
+}

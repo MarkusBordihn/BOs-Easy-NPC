@@ -20,21 +20,26 @@
 package de.markusbordihn.easynpc.configui.network.message.client;
 
 import de.markusbordihn.easynpc.configui.Constants;
+import de.markusbordihn.easynpc.data.preset.PresetExportFormat;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.io.CustomPresetDataFiles;
+import de.markusbordihn.easynpc.io.PresetFileHandler;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.io.File;
-import java.io.IOException;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtIo;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 
 public record ExportClientPresetMessage(
-    UUID uuid, String name, SkinModel skinModel, String fileName, CompoundTag data)
+    UUID uuid,
+    String name,
+    SkinModel skinModel,
+    String fileName,
+    CompoundTag data,
+    PresetExportFormat exportFormat)
     implements NetworkMessageRecord {
 
   public static final Identifier MESSAGE_ID =
@@ -49,7 +54,8 @@ public record ExportClientPresetMessage(
         buffer.readUtf(),
         buffer.readEnum(SkinModel.class),
         buffer.readUtf(),
-        buffer.readNbt());
+        buffer.readNbt(),
+        buffer.readEnum(PresetExportFormat.class));
   }
 
   @Override
@@ -59,6 +65,7 @@ public record ExportClientPresetMessage(
     buffer.writeEnum(this.skinModel);
     buffer.writeUtf(this.fileName);
     buffer.writeNbt(this.data);
+    buffer.writeEnum(this.exportFormat);
   }
 
   @Override
@@ -73,55 +80,40 @@ public record ExportClientPresetMessage(
 
   @Override
   public void handleClient() {
-    if (this.uuid == null || this.uuid.toString().isEmpty()) {
-      log.error("Invalid UUID {} for {}", this.uuid, this);
+    if (this.uuid == null
+        || this.uuid.toString().isEmpty()
+        || this.name == null
+        || this.name.isEmpty()
+        || this.skinModel == null
+        || this.data == null
+        || this.fileName == null
+        || this.fileName.isEmpty()) {
+      log.error("Invalid preset export data: {}", this);
       return;
     }
 
-    // Validate name.
-    if (this.name == null || this.name.isEmpty()) {
-      log.error("Invalid name {} for {}", this.name, this);
-      return;
-    }
-
-    // Validate skin model.
-    if (this.skinModel == null) {
-      log.error("Invalid skin model for {}", this);
-      return;
-    }
-
-    // Validate data.
-    if (this.data == null) {
-      log.error("Invalid data for {}", this);
-      return;
-    }
-
-    // Validate name.
-    if (this.fileName == null || this.fileName.isEmpty()) {
-      log.warn("Export preset file name is empty for {}", uuid);
-      return;
-    }
-
-    // Perform action.
-    File presetFile = CustomPresetDataFiles.getPresetFile(this.skinModel, this.fileName);
+    File presetFile =
+        CustomPresetDataFiles.getPresetFile(
+            this.skinModel, this.fileName + this.exportFormat.getFileExtension());
     if (presetFile == null) {
       log.error("Failed to get preset file for {}", this);
       return;
     }
 
-    // Export preset file.
     log.info(
-        "Exporting EasyNPC {} with UUID {} and skin {} to {}", name, uuid, skinModel, presetFile);
-    try {
-      NbtIo.writeCompressed(data, presetFile.toPath());
-    } catch (final IOException exception) {
+        "Exporting EasyNPC {} with UUID {} and skin {} to {} (Format: {})",
+        name,
+        uuid,
+        skinModel,
+        presetFile,
+        exportFormat);
+    if (!PresetFileHandler.save(presetFile, data)) {
       log.error(
-          "Failed to export EasyNPC {} with UUID {} and skin {} to {}:",
+          "Failed to export EasyNPC {} with UUID {} and skin {} to {}",
           name,
           uuid,
           skinModel,
-          presetFile,
-          exception);
+          presetFile);
     }
   }
 }

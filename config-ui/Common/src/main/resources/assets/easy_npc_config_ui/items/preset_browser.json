@@ -1,0 +1,6 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "easy_npc_config_ui:item/preset_browser"
+  }
+}

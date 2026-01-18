@@ -28,6 +28,7 @@ import de.markusbordihn.easynpc.commands.suggestion.NameVisibilitySuggestions;
 import de.markusbordihn.easynpc.data.display.NameVisibilityType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.handler.NameHandler;
+import java.util.Locale;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -260,7 +261,7 @@ public class NameCommand extends Command {
 
   private static ChatFormatting parseChatFormatting(String colorName) {
     try {
-      return ChatFormatting.valueOf(colorName.toUpperCase());
+      return ChatFormatting.valueOf(colorName.toUpperCase(Locale.ROOT));
     } catch (IllegalArgumentException e) {
       return null;
     }
@@ -268,7 +269,7 @@ public class NameCommand extends Command {
 
   private static NameVisibilityType parseNameVisibilityType(String visibilityName) {
     try {
-      return NameVisibilityType.valueOf(visibilityName.toUpperCase());
+      return NameVisibilityType.valueOf(visibilityName.toUpperCase(Locale.ROOT));
     } catch (IllegalArgumentException e) {
       return null;
     }

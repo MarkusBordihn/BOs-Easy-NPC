@@ -66,6 +66,7 @@ import de.markusbordihn.easynpc.configui.network.message.server.RespawnNPCMessag
 import de.markusbordihn.easynpc.configui.network.message.server.SaveDialogButtonMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.SaveDialogMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.SaveDialogSetMessage;
+import de.markusbordihn.easynpc.configui.network.message.server.SpawnPresetMessage;
 import de.markusbordihn.easynpc.data.action.ActionDataEntry;
 import de.markusbordihn.easynpc.data.action.ActionDataSet;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
@@ -86,6 +87,8 @@ import de.markusbordihn.easynpc.data.model.ModelAnimationData;
 import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataEntry;
 import de.markusbordihn.easynpc.data.position.CustomPosition;
+import de.markusbordihn.easynpc.data.preset.PresetExportFormat;
+import de.markusbordihn.easynpc.data.preset.PresetMetadata;
 import de.markusbordihn.easynpc.data.preset.PresetType;
 import de.markusbordihn.easynpc.data.profession.Profession;
 import de.markusbordihn.easynpc.data.render.RenderType;
@@ -449,8 +452,14 @@ public interface ServerNetworkMessageHandlerInterface {
   }
 
   default void exportPreset(UUID uuid, String name) {
+    exportPreset(uuid, name, PresetExportFormat.getDefault(), PresetMetadata.getDefault());
+  }
+
+  default void exportPreset(
+      UUID uuid, String name, PresetExportFormat exportFormat, PresetMetadata metadata) {
     if (uuid != null && name != null && !name.isEmpty()) {
-      NetworkHandlerManager.sendMessageToServer(new ExportPresetMessage(uuid, name));
+      NetworkHandlerManager.sendMessageToServer(
+          new ExportPresetMessage(uuid, name, exportFormat, metadata));
     }
   }
 
@@ -579,6 +588,23 @@ public interface ServerNetworkMessageHandlerInterface {
     if (uuid != null && entityType != null) {
       NetworkHandlerManager.sendMessageToServer(
           new ChangeRendererMessage(uuid, RenderType.CUSTOM, Optional.of(entityType)));
+    }
+  }
+
+  default void spawnPreset(
+      PresetType presetType, Identifier resourceLocation, boolean useOriginalData) {
+    if (presetType != null && resourceLocation != null) {
+      NetworkHandlerManager.sendMessageToServer(
+          new SpawnPresetMessage(presetType, resourceLocation, useOriginalData, null));
+    }
+  }
+
+  default void spawnPresetWithData(
+      de.markusbordihn.easynpc.data.preset.PresetData presetData, boolean useOriginalData) {
+    if (presetData != null && presetData.hasValidData()) {
+      NetworkHandlerManager.sendMessageToServer(
+          new SpawnPresetMessage(
+              presetData.presetType(), presetData.location(), useOriginalData, presetData.data()));
     }
   }
 }

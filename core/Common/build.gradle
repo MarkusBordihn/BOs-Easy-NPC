@@ -32,8 +32,18 @@ test {
 }
 
 apply from: "$projectDir/../gradle/tasks/generateRawNPCs.gradle"
+apply from: "$projectDir/../gradle/tasks/generateDefaultPresetIndex.gradle"
 
 tasks.named('compileJava') {
+  dependsOn tasks.named('generateRawNPCs')
+}
+
+processResources {
+  dependsOn tasks.named('generateDefaultPresetIndex')
+}
+
+tasks.named('sourcesJar') {
+  dependsOn tasks.named('generateDefaultPresetIndex')
   dependsOn tasks.named('generateRawNPCs')
 }
 

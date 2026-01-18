@@ -28,6 +28,7 @@ import de.markusbordihn.easynpc.entity.ModCustomEntityType;
 import de.markusbordihn.easynpc.entity.ModEntityTypeProvider;
 import de.markusbordihn.easynpc.entity.ModNPCEntityType;
 import de.markusbordihn.easynpc.entity.ModRawEntityType;
+import java.util.Locale;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
@@ -75,7 +76,7 @@ public class TestCommand extends Command {
                                     context -> {
                                       String input =
                                           StringArgumentType.getString(context, TYPE_ARG)
-                                              .toUpperCase();
+                                              .toUpperCase(Locale.ROOT);
                                       ModRawEntityType type;
                                       try {
                                         type = ModRawEntityType.valueOf(input);
@@ -104,7 +105,7 @@ public class TestCommand extends Command {
                                     context -> {
                                       String input =
                                           StringArgumentType.getString(context, TYPE_ARG)
-                                              .toUpperCase();
+                                              .toUpperCase(Locale.ROOT);
                                       ModNPCEntityType type;
                                       try {
                                         type = ModNPCEntityType.valueOf(input);
@@ -134,7 +135,7 @@ public class TestCommand extends Command {
                                     context -> {
                                       String input =
                                           StringArgumentType.getString(context, TYPE_ARG)
-                                              .toUpperCase();
+                                              .toUpperCase(Locale.ROOT);
                                       ModCustomEntityType type;
                                       try {
                                         type = ModCustomEntityType.valueOf(input);

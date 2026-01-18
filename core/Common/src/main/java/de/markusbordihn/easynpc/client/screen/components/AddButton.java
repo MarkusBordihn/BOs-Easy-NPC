@@ -19,20 +19,17 @@
 
 package de.markusbordihn.easynpc.client.screen.components;
 
-import de.markusbordihn.easynpc.Constants;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
 
 public class AddButton extends SpriteButton {
 
-  public static final int DEFAULT_HEIGHT = 16;
-  public static final Identifier SPRITE = Constants.TEXTURE_CONFIGURATION;
-  public static final int SPRITE_HEIGHT = 12;
-  public static final int SPRITE_OFFSET_X = 65;
-  public static final int SPRITE_OFFSET_Y = 104;
-  public static final int SPRITE_WIDTH = 12;
-  public static final int SPRITE_X = 4;
-  public static final int SPRITE_Y = 3;
+  private static final int DEFAULT_HEIGHT = 16;
+  private static final int SPRITE_HEIGHT = 12;
+  private static final int SPRITE_OFFSET_X = 65;
+  private static final int SPRITE_OFFSET_Y = 104;
+  private static final int SPRITE_WIDTH = 12;
+  private static final int SPRITE_X = 4;
+  private static final int SPRITE_Y = 3;
 
   public AddButton(int left, int top, int width, String label, OnPress onPress) {
     super(
@@ -41,7 +38,6 @@ public class AddButton extends SpriteButton {
         width,
         DEFAULT_HEIGHT,
         label,
-        SPRITE,
         SPRITE_X,
         3,
         SPRITE_OFFSET_X,
@@ -58,7 +54,6 @@ public class AddButton extends SpriteButton {
         width,
         DEFAULT_HEIGHT,
         component,
-        SPRITE,
         SPRITE_X,
         SPRITE_Y,
         SPRITE_OFFSET_X,

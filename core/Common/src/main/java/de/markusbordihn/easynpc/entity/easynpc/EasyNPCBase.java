@@ -27,6 +27,7 @@ import de.markusbordihn.easynpc.entity.easynpc.data.ConfigDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.ConfigurationDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.DialogDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.DisplayAttributeDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.InventoryDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.NavigationDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.ObjectiveDataCapable;
@@ -63,6 +64,7 @@ public interface EasyNPCBase<E extends PathfinderMob>
         ConfigurationDataCapable<E>,
         DialogDataCapable<E>,
         DisplayAttributeDataCapable<E>,
+        InventoryDataCapable<E>,
         ModelDataCapable<E>,
         NavigationDataCapable<E>,
         ObjectiveDataCapable<E>,
@@ -330,6 +332,10 @@ public interface EasyNPCBase<E extends PathfinderMob>
     DisplayAttributeDataCapable<E> displayAttributeData = getEasyNPCDisplayAttributeData();
     if (displayAttributeData != null) {
       displayAttributeData.readAdditionalDisplayAttributeData(valueInput);
+    }
+    InventoryDataCapable<E> inventoryData = getEasyNPCInventoryData();
+    if (inventoryData != null) {
+      inventoryData.readAdditionalInventoryData(valueInput);
     }
     ModelDataCapable<E> modelData = getEasyNPCModelData();
     if (modelData != null) {

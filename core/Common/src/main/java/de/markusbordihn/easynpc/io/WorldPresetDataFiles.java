@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.io;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.data.preset.PresetMetadata;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import java.io.File;
 import java.io.IOException;
@@ -29,6 +30,7 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -50,8 +52,10 @@ public class WorldPresetDataFiles {
   public static Path getPresetDataFolder() {
     File worldDataFolder = new File(Constants.WORLD_DIR.toFile(), Constants.MOD_ID);
     Path path = worldDataFolder.toPath().resolve(DATA_FOLDER_NAME);
-    if (!path.toFile().exists() && !path.toFile().mkdirs()) {
-      log.error("Could not create preset data folder {}!", path);
+    try {
+      Files.createDirectories(path);
+    } catch (IOException e) {
+      log.error("Could not create preset data folder {}:", path, e);
     }
     return path;
   }
@@ -61,14 +65,17 @@ public class WorldPresetDataFiles {
     String skinModelName = skinModel.name();
     if (!skinModelName.isEmpty()) {
       Path path = presetDataFolder.resolve(skinModelName.toLowerCase(Locale.ROOT));
-      if (!path.toFile().exists() && !path.toFile().mkdirs()) {
-        log.error("Could not create preset model folder {}!", path);
+      try {
+        Files.createDirectories(path);
+      } catch (IOException e) {
+        log.error("Could not create preset model folder {}:", path, e);
       }
       return path;
     }
     return null;
   }
 
+  @SuppressWarnings("unused")
   public static File getPresetFile(SkinModel skinModel, String fileName) {
     Path presetModelFolder = getPresetDataFolder(skinModel);
     if (presetModelFolder == null || fileName == null || fileName.isEmpty()) {
@@ -85,10 +92,12 @@ public class WorldPresetDataFiles {
     return presetIdentifierMap.keySet().stream();
   }
 
+  @SuppressWarnings("unused")
   public static Set<Identifier> getPresetIdentifierSet() {
     return presetIdentifierMap.keySet();
   }
 
+  @SuppressWarnings("unused")
   public static void refreshPresetIdentifiers() {
     Path presetDataFolder = getPresetDataFolder();
     presetIdentifierMap.clear();
@@ -117,9 +126,25 @@ public class WorldPresetDataFiles {
   public static Path getPresetsIdentifierPath(Identifier resourceLocation) {
     Path path = presetIdentifierMap.get(resourceLocation);
     if (path == null) {
+      log.debug("World preset {} not in cache, triggering refresh", resourceLocation);
       refreshPresetIdentifiers();
       path = presetIdentifierMap.get(resourceLocation);
+      if (path == null) {
+        log.debug("World preset {} not found after refresh", resourceLocation);
+      }
     }
     return path;
+  }
+
+  @SuppressWarnings("unused")
+  public static PresetMetadata getPresetMetadata(Identifier resourceLocation) {
+    Path presetPath = getPresetsIdentifierPath(resourceLocation);
+    if (presetPath == null) {
+      log.warn("World preset file not found for resource location: {}", resourceLocation);
+      return PresetMetadata.createDefault();
+    }
+
+    CompoundTag compoundTag = PresetFileHandler.load(presetPath.toFile());
+    return PresetFileHandler.extractMetadata(compoundTag);
   }
 }

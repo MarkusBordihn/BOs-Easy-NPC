@@ -20,7 +20,6 @@
 package de.markusbordihn.easynpc.data.sound;
 
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.utils.CompoundTagUtils;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.Identifier;
@@ -89,7 +88,13 @@ public class SoundDataEntry {
   public void load(CompoundTag compoundTag) {
     this.type = SoundType.valueOf(compoundTag.getString(DATA_SOUND_TYPE).orElse(""));
     if (compoundTag.contains(DATA_SOUND_NAME_TAG)) {
-      Identifier location = CompoundTagUtils.readIdentifier(compoundTag, DATA_SOUND_NAME_TAG);
+      String soundName = compoundTag.getString(DATA_SOUND_NAME_TAG).orElse("");
+      Identifier location = Identifier.tryParse(soundName);
+      if (location == null) {
+        log.error("Invalid sound location: {}", soundName);
+        this.soundEvent = SoundEvents.GENERIC_SPLASH;
+        return;
+      }
       this.soundEvent =
           BuiltInRegistries.SOUND_EVENT
               .getOptional(location)

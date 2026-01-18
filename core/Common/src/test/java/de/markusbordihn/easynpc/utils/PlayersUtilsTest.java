@@ -22,7 +22,6 @@ package de.markusbordihn.easynpc.utils;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -72,43 +71,69 @@ class PlayersUtilsTest {
   @Test
   @DisplayName("Should extract texture URL from valid texture data")
   void testExtractUserTextureUrl() {
-    String textureData =
+    String base64 =
+        "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYWJjMTIzIn19fQ==";
+    String sessionResponse =
         "{"
-            + "\"textures\": {"
-            + "\"SKIN\": {"
-            + "\"url\": \"http://textures.minecraft.net/texture/abc123\""
+            + "\"properties\": ["
+            + "{"
+            + "\"name\": \"textures\","
+            + "\"value\": \""
+            + base64
+            + "\""
             + "}"
-            + "}"
+            + "]"
             + "}";
 
-    JsonObject jsonObject = JsonParser.parseString(textureData).getAsJsonObject();
+    String result = PlayersUtils.getUserTextureFromSessionResponse(sessionResponse);
+
+    assertNotNull(result);
+    assertEquals("http://textures.minecraft.net/texture/abc123", result);
   }
 
   @Test
   @DisplayName("Should extract slim model from texture data")
   void testExtractUserTextureModel_slim() {
-    String textureData =
+    String base64 =
+        "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXN0LnVybCIsIm1ldGFkYXRhIjp7Im1vZGVsIjoic2xpbSJ9fX19";
+    String sessionResponse =
         "{"
-            + "\"textures\": {"
-            + "\"SKIN\": {"
-            + "\"url\": \"http://test.url\","
-            + "\"metadata\": {"
-            + "\"model\": \"slim\""
+            + "\"properties\": ["
+            + "{"
+            + "\"name\": \"textures\","
+            + "\"value\": \""
+            + base64
+            + "\""
             + "}"
-            + "}"
-            + "}"
+            + "]"
             + "}";
 
-    JsonObject jsonObject = JsonParser.parseString(textureData).getAsJsonObject();
+    String result = PlayersUtils.getUserTextureFromSessionResponse(sessionResponse);
+
+    assertNotNull(result);
+    assertEquals("http://test.url", result);
   }
 
   @Test
-  @DisplayName("Should return default model when no metadata present")
+  @DisplayName("Should extract texture URL when no metadata present (default model)")
   void testExtractUserTextureModel_default() {
-    String textureData =
-        "{" + "\"textures\": {" + "\"SKIN\": {" + "\"url\": \"http://test.url\"" + "}" + "}" + "}";
+    String base64 = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXN0LnVybCJ9fX0=";
+    String sessionResponse =
+        "{"
+            + "\"properties\": ["
+            + "{"
+            + "\"name\": \"textures\","
+            + "\"value\": \""
+            + base64
+            + "\""
+            + "}"
+            + "]"
+            + "}";
 
-    JsonObject jsonObject = JsonParser.parseString(textureData).getAsJsonObject();
+    String result = PlayersUtils.getUserTextureFromSessionResponse(sessionResponse);
+
+    assertNotNull(result);
+    assertEquals("http://test.url", result);
   }
 
   @Test
@@ -149,17 +174,9 @@ class PlayersUtilsTest {
   @Test
   @DisplayName("Should parse session response with texture data")
   void testGetUserTextureFromSessionResponse_validResponse() {
-    String sessionResponse =
-        "{"
-            + "\"properties\": ["
-            + "{"
-            + "\"name\": \"textures\","
-            + "\"value\": \"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXN0LnVybCJ9fX0=\""
-            + // Base64 encoded: {"textures":{"SKIN":{"url":"http://test.url"}}}
-            "}"
-            + "]"
-            + "}";
-    String result = PlayersUtils.getUserTextureFromSessionResponse(sessionResponse);
+    String result =
+        PlayersUtils.getUserTextureFromSessionResponse(
+            "{\"properties\":[{\"name\":\"textures\",\"value\":\"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXN0LnVybCJ9fX0=\"}]}");
 
     assertNotNull(result);
     assertEquals("http://test.url", result);
@@ -168,63 +185,36 @@ class PlayersUtilsTest {
   @Test
   @DisplayName("Should return empty string for invalid session response")
   void testGetUserTextureFromSessionResponse_invalidResponse() {
-    String invalidResponse = "{\"invalid\": \"data\"}";
-    String result = PlayersUtils.getUserTextureFromSessionResponse(invalidResponse);
-
-    assertEquals("", result);
+    assertEquals("", PlayersUtils.getUserTextureFromSessionResponse("{\"invalid\":\"data\"}"));
   }
 
   @Test
   @DisplayName("Should return empty string for empty session response")
   void testGetUserTextureFromSessionResponse_emptyResponse() {
-    String result = PlayersUtils.getUserTextureFromSessionResponse("");
-
-    assertEquals("", result);
+    assertEquals("", PlayersUtils.getUserTextureFromSessionResponse(""));
   }
 
   @Test
   @DisplayName("Should return empty string for null session response")
   void testGetUserTextureFromSessionResponse_nullResponse() {
-    String result = PlayersUtils.getUserTextureFromSessionResponse(null);
-
-    assertEquals("", result);
+    assertEquals("", PlayersUtils.getUserTextureFromSessionResponse(null));
   }
 
   @Test
   @DisplayName("Should handle session response without textures property")
   void testGetUserTextureFromSessionResponse_noTexturesProperty() {
-    String sessionResponse =
-        "{"
-            + "\"properties\": ["
-            + "{"
-            + "\"name\": \"other\","
-            + "\"value\": \"some_value\""
-            + "}"
-            + "]"
-            + "}";
-    String result = PlayersUtils.getUserTextureFromSessionResponse(sessionResponse);
-
-    assertEquals("", result);
+    assertEquals(
+        "",
+        PlayersUtils.getUserTextureFromSessionResponse(
+            "{\"properties\":[{\"name\":\"other\",\"value\":\"some_value\"}]}"));
   }
 
   @Test
   @DisplayName("Should handle Base64 encoded texture data with slim model")
   void testGetUserTextureFromSessionResponse_slimModel() {
-    // Base64 encoded: {"textures":{"SKIN":{"url":"http://test.url","metadata":{"model":"slim"}}}}
-    String base64 =
-        "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXN0LnVybCIsIm1ldGFkYXRhIjp7Im1vZGVsIjoic2xpbSJ9fX19";
-    String sessionResponse =
-        "{"
-            + "\"properties\": ["
-            + "{"
-            + "\"name\": \"textures\","
-            + "\"value\": \""
-            + base64
-            + "\""
-            + "}"
-            + "]"
-            + "}";
-    String result = PlayersUtils.getUserTextureFromSessionResponse(sessionResponse);
+    String result =
+        PlayersUtils.getUserTextureFromSessionResponse(
+            "{\"properties\":[{\"name\":\"textures\",\"value\":\"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXN0LnVybCIsIm1ldGFkYXRhIjp7Im1vZGVsIjoic2xpbSJ9fX19\"}]}");
 
     assertNotNull(result);
     assertEquals("http://test.url", result);
@@ -233,17 +223,9 @@ class PlayersUtilsTest {
   @Test
   @DisplayName("Should handle malformed Base64 in session response")
   void testGetUserTextureFromSessionResponse_malformedBase64() {
-    String sessionResponse =
-        "{"
-            + "\"properties\": ["
-            + "{"
-            + "\"name\": \"textures\","
-            + "\"value\": \"not-valid-base64!!!\""
-            + "}"
-            + "]"
-            + "}";
-    String result = PlayersUtils.getUserTextureFromSessionResponse(sessionResponse);
-
-    assertEquals("", result);
+    assertEquals(
+        "",
+        PlayersUtils.getUserTextureFromSessionResponse(
+            "{\"properties\":[{\"name\":\"textures\",\"value\":\"not-valid-base64!!!\"}]}"));
   }
 }

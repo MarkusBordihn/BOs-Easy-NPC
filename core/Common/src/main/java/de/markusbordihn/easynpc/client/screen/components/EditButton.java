@@ -19,36 +19,21 @@
 
 package de.markusbordihn.easynpc.client.screen.components;
 
-import de.markusbordihn.easynpc.Constants;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
 
 public class EditButton extends SpriteButton {
 
-  public static final int DEFAULT_HEIGHT = 16;
-  public static final int DEFAULT_WIDTH_SMALL = 16;
-  public static final Identifier SPRITE = Constants.TEXTURE_CONFIGURATION;
-  public static final int SPRITE_HEIGHT = 12;
-  public static final int SPRITE_OFFSET_X = 64;
-  public static final int SPRITE_OFFSET_Y = 79;
-  public static final int SPRITE_WIDTH = 12;
-  public static final int SPRITE_X = 2;
-  public static final int SPRITE_Y = 2;
+  private static final int DEFAULT_HEIGHT = 16;
+  private static final int DEFAULT_WIDTH_SMALL = 16;
+  private static final int SPRITE_HEIGHT = 12;
+  private static final int SPRITE_OFFSET_X = 64;
+  private static final int SPRITE_OFFSET_Y = 79;
+  private static final int SPRITE_WIDTH = 12;
+  private static final int SPRITE_X = 2;
+  private static final int SPRITE_Y = 2;
 
   public EditButton(int left, int top, OnPress onPress) {
-    super(
-        left,
-        top,
-        DEFAULT_WIDTH_SMALL,
-        DEFAULT_HEIGHT,
-        SPRITE,
-        SPRITE_X,
-        SPRITE_Y,
-        SPRITE_OFFSET_X,
-        SPRITE_OFFSET_Y,
-        SPRITE_WIDTH,
-        SPRITE_HEIGHT,
-        onPress);
+    this(left, top, DEFAULT_WIDTH_SMALL, DEFAULT_HEIGHT, onPress);
   }
 
   public EditButton(
@@ -59,7 +44,6 @@ public class EditButton extends SpriteButton {
         width,
         height,
         component,
-        SPRITE,
         SPRITE_X,
         SPRITE_Y,
         SPRITE_OFFSET_X,
@@ -70,20 +54,7 @@ public class EditButton extends SpriteButton {
   }
 
   public EditButton(int left, int top, int width, Component component, OnPress onPress) {
-    super(
-        left,
-        top,
-        width,
-        DEFAULT_HEIGHT,
-        component,
-        SPRITE,
-        SPRITE_X,
-        SPRITE_Y,
-        SPRITE_OFFSET_X,
-        SPRITE_OFFSET_Y,
-        SPRITE_WIDTH,
-        SPRITE_HEIGHT,
-        onPress);
+    this(left, top, width, DEFAULT_HEIGHT, component, onPress);
   }
 
   public EditButton(int left, int top, int width, int height, OnPress onPress) {
@@ -92,7 +63,6 @@ public class EditButton extends SpriteButton {
         top,
         width,
         height,
-        SPRITE,
         SPRITE_X,
         SPRITE_Y,
         SPRITE_OFFSET_X,

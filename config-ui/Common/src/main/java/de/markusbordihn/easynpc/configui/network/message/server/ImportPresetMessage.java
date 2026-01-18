@@ -47,7 +47,7 @@ public record ImportPresetMessage(
     return new ImportPresetMessage(
         buffer.readUUID(),
         buffer.readEnum(PresetType.class),
-        buffer.readNbt(),
+        buffer.readBoolean() ? buffer.readNbt() : null,
         buffer.readIdentifier());
   }
 
@@ -55,7 +55,11 @@ public record ImportPresetMessage(
   public void write(final FriendlyByteBuf buffer) {
     buffer.writeUUID(this.uuid);
     buffer.writeEnum(this.presetType);
-    buffer.writeNbt(this.compoundTag);
+    boolean hasCompoundTag = this.compoundTag != null;
+    buffer.writeBoolean(hasCompoundTag);
+    if (hasCompoundTag) {
+      buffer.writeNbt(this.compoundTag);
+    }
     buffer.writeIdentifier(this.resourceLocation);
   }
 
@@ -88,32 +92,12 @@ public record ImportPresetMessage(
             null);
         break;
       case CUSTOM:
-        PresetHandler.importCustomPreset(
-            serverPlayer.level(),
-            this.resourceLocation,
-            easyNPC.getEntity().position(),
-            this.uuid,
-            null);
-        break;
       case DATA:
-        PresetHandler.importDataPreset(
-            serverPlayer.level(),
-            this.resourceLocation,
-            easyNPC.getEntity().position(),
-            this.uuid,
-            null);
-        break;
       case DEFAULT:
-        PresetHandler.importDefaultPreset(
-            serverPlayer.level(),
-            this.resourceLocation,
-            easyNPC.getEntity().position(),
-            this.uuid,
-            null);
-        break;
       case WORLD:
-        PresetHandler.importWorldPreset(
+        PresetHandler.importPreset(
             serverPlayer.level(),
+            this.presetType,
             this.resourceLocation,
             easyNPC.getEntity().position(),
             this.uuid,

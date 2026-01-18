@@ -10,6 +10,7 @@ import de.markusbordihn.easynpc.data.objective.ObjectiveType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ObjectiveDataCapable;
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.stream.Collectors;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -263,7 +264,7 @@ public class AttackObjective extends Command {
       return ObjectiveType.OWNER_HURT_BY_TARGET;
     } else {
       try {
-        return ObjectiveType.valueOf("ATTACK_" + targetName.toUpperCase());
+        return ObjectiveType.valueOf("ATTACK_" + targetName.toUpperCase(Locale.ROOT));
       } catch (IllegalArgumentException e) {
         return null;
       }

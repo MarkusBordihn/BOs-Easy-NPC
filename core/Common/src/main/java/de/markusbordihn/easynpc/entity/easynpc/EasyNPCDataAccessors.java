@@ -26,6 +26,7 @@ import de.markusbordihn.easynpc.entity.easynpc.data.ConfigDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.ConfigurationDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.DialogDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.DisplayAttributeDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.InventoryDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.NavigationDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.ObjectiveDataCapable;
@@ -74,6 +75,10 @@ public interface EasyNPCDataAccessors<E extends PathfinderMob> {
     return this instanceof DisplayAttributeDataCapable<E> displayAttributeData
         ? displayAttributeData
         : null;
+  }
+
+  default InventoryDataCapable<E> getEasyNPCInventoryData() {
+    return this instanceof InventoryDataCapable<E> inventoryData ? inventoryData : null;
   }
 
   default SkinDataCapable<E> getEasyNPCSkinData() {

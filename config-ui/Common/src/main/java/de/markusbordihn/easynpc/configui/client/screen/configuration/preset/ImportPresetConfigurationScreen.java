@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.configui.client.screen.configuration.preset;
 
 import de.markusbordihn.easynpc.client.screen.Screen;
+import de.markusbordihn.easynpc.client.screen.components.ImportButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.configui.Constants;
@@ -27,6 +28,7 @@ import de.markusbordihn.easynpc.configui.client.screen.configuration.Configurati
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
+import de.markusbordihn.easynpc.data.preset.PresetExportFormat;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import java.util.List;
@@ -108,10 +110,12 @@ public class ImportPresetConfigurationScreen<T extends ConfigurationMenu>
 
   public String getPresetFileName(Identifier resourceLocation) {
     this.getSkinModel();
-    return resourceLocation
-        .getPath()
-        .replace("preset/" + getSkinModel().toString().toLowerCase(Locale.ROOT) + "/", "")
-        .replace(de.markusbordihn.easynpc.Constants.NPC_NBT_SUFFIX, "");
+    String fileName =
+        resourceLocation
+            .getPath()
+            .replace("preset/" + getSkinModel().toString().toLowerCase(Locale.ROOT) + "/", "");
+
+    return PresetExportFormat.removePresetExtension(fileName);
   }
 
   @Override
@@ -170,10 +174,11 @@ public class ImportPresetConfigurationScreen<T extends ConfigurationMenu>
     // Import button
     this.importPresetButton =
         this.addRenderableWidget(
-            new TextButton(
+            new ImportButton(
                 this.buttonLeftPos + 25,
                 this.bottomPos - 40,
                 220,
+                20,
                 importPresetButtonLabel,
                 button -> {
                   if (selectedPreset != null) {

@@ -184,15 +184,14 @@ public class VisibilityHandler {
   }
 
   public static boolean handleIsCustomNameVisibleToPlayer(
-      final EasyNPC<?> easyNPC, final Player player, final boolean isCustomNameVisible) {
-    return evaluateNameVisibility(easyNPC, player, isCustomNameVisible, -1.0);
-  }
-
-  public static boolean handleIsCustomNameVisibleToPlayer(
       final EasyNPC<?> easyNPC,
       final Player player,
       final boolean isCustomNameVisible,
       final double distanceSquared) {
+    if (Minecraft.getInstance().options.hideGui) {
+      return false;
+    }
+
     return evaluateNameVisibility(easyNPC, player, isCustomNameVisible, distanceSquared);
   }
 

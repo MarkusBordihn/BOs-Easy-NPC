@@ -105,6 +105,7 @@ dependencies {
 
 tasks.withType(JavaCompile).configureEach {
   source(project(":Common").sourceSets.main.allSource)
+  dependsOn project(":Common").tasks.named('generateDefaultPresetIndex')
   if (name == 'compileTestJava') {
     source(project(":Common").sourceSets.test.allSource)
   }
@@ -116,6 +117,7 @@ tasks.withType(Test).configureEach {
 
 processResources {
   from project(":Common").sourceSets.main.resources
+  dependsOn project(":Common").tasks.named('generateDefaultPresetIndex')
 }
 
 tasks.named('processTestResources', ProcessResources).configure {

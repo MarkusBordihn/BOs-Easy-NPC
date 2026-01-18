@@ -80,6 +80,7 @@ Spec<Task> notNeoTask = { Task it -> !it.name.startsWith("neo") && !it.name.cont
 
 tasks.withType(JavaCompile).matching(notNeoTask).configureEach {
   source(project(":Common").sourceSets.main.allSource)
+  dependsOn project(":Common").tasks.named('generateDefaultPresetIndex')
 }
 
 tasks.withType(Javadoc).matching(notNeoTask).configureEach {
@@ -88,10 +89,13 @@ tasks.withType(Javadoc).matching(notNeoTask).configureEach {
 
 tasks.named("sourcesJar", Jar) {
   from(project(":Common").sourceSets.main.allSource)
+  dependsOn project(":Common").tasks.named('generateRawNPCs')
+  dependsOn project(":Common").tasks.named('generateDefaultPresetIndex')
 }
 
 tasks.withType(ProcessResources).matching(notNeoTask).configureEach {
   from project(":Common").sourceSets.main.resources
+  dependsOn project(":Common").tasks.named('generateDefaultPresetIndex')
 }
 
 tasks.named('compileTestJava', JavaCompile).configure {

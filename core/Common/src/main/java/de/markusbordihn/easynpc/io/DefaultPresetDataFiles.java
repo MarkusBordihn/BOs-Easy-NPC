@@ -23,6 +23,7 @@ import de.markusbordihn.easynpc.Constants;
 import java.util.stream.Stream;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.packs.resources.ResourceManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -33,18 +34,30 @@ public class DefaultPresetDataFiles {
   private DefaultPresetDataFiles() {}
 
   public static Stream<Identifier> getPresetIdentifiers(MinecraftServer minecraftServer) {
+    if (minecraftServer == null) {
+      log.warn("Cannot get default preset resource locations: server is null");
+      return Stream.empty();
+    }
+    return getPresetIdentifiers(minecraftServer.getResourceManager());
+  }
+
+  private static Stream<Identifier> getPresetIdentifiers(ResourceManager resourceManager) {
     try {
-      return minecraftServer
-          .getResourceManager()
+      return resourceManager
           .listResources(
               DataFileHandler.RESOURCE_DEFAULT_PRESET_PATH,
-              resourceLocation ->
-                  resourceLocation.getNamespace().equals(Constants.MOD_ID)
-                      && DataFileHandler.isPresetFile(resourceLocation))
+              resourceLocation -> {
+                boolean isOurNamespace = resourceLocation.getNamespace().equals(Constants.MOD_ID);
+                boolean isPresetFile = DataFileHandler.isPresetFile(resourceLocation);
+                if (isOurNamespace && isPresetFile) {
+                  log.debug("Found DEFAULT preset from DataPack: {}", resourceLocation);
+                }
+                return isOurNamespace && isPresetFile;
+              })
           .keySet()
           .stream();
     } catch (Exception e) {
-      log.error("Could not get default preset resource locations:", e);
+      log.error("Could not get default preset resource locations from DataPack:", e);
     }
     return Stream.empty();
   }

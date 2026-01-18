@@ -367,13 +367,31 @@ public interface TradingDataCapable<E extends PathfinderMob> extends EasyNPC<E>,
     tradingDataTag.ifPresent(
         compoundTag -> this.setTradingDataSet(new TradingDataSet(compoundTag)));
 
-    // Load vanilla trading data
-    Optional<MerchantOffers> merchantOffers =
-        valueInput.read(DATA_OFFERS_TAG, MerchantOffers.CODEC);
-    if (merchantOffers.isEmpty()) {
+    // Load trading data with legacy format support
+    Optional<CompoundTag> offersTag = valueInput.read(DATA_OFFERS_TAG, CompoundTag.CODEC);
+    if (offersTag.isEmpty()) {
       log.debug("Missing trading offers for {} in {}", this, valueInput);
       return;
     }
-    this.setTradingOffers(merchantOffers.get());
+
+    // Legacy conversion: Unwrap Offers.Recipes.Recipes → Offers.Recipes
+    CompoundTag offers = offersTag.get();
+    if (offers.contains("Recipes")) {
+      var recipesTag = offers.get("Recipes");
+      if (recipesTag instanceof CompoundTag recipesCompound
+          && recipesCompound.contains("Recipes")) {
+        log.info("Converting legacy trading format (1.21.1) for {}", this);
+        offers.put("Recipes", recipesCompound.get("Recipes"));
+      }
+    }
+
+    // Parse with MerchantOffers.CODEC
+    Optional<MerchantOffers> merchantOffers =
+        MerchantOffers.CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, offers).result();
+    if (merchantOffers.isPresent()) {
+      this.setTradingOffers(merchantOffers.get());
+    } else {
+      log.warn("Failed to parse trading offers for {}", this);
+    }
   }
 }

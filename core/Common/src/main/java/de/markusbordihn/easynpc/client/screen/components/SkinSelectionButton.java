@@ -19,19 +19,16 @@
 
 package de.markusbordihn.easynpc.client.screen.components;
 
-import de.markusbordihn.easynpc.Constants;
-import net.minecraft.resources.Identifier;
-
 public class SkinSelectionButton extends SpriteButton {
-  public static final int DEFAULT_HEIGHT = 84;
-  public static final int DEFAULT_WIDTH = 60;
-  public static final Identifier SPRITE = Constants.TEXTURE_CONFIGURATION;
-  public static final int SPRITE_HEIGHT = 84;
-  public static final int SPRITE_OFFSET_X = 0;
-  public static final int SPRITE_OFFSET_Y = 0;
-  public static final int SPRITE_WIDTH = 60;
-  public static final int SPRITE_X = 0;
-  public static final int SPRITE_Y = 0;
+
+  private static final int DEFAULT_HEIGHT = 84;
+  private static final int DEFAULT_WIDTH = 60;
+  private static final int SPRITE_HEIGHT = 84;
+  private static final int SPRITE_OFFSET_X = 0;
+  private static final int SPRITE_OFFSET_Y = 0;
+  private static final int SPRITE_WIDTH = 60;
+  private static final int SPRITE_X = 0;
+  private static final int SPRITE_Y = 0;
 
   public SkinSelectionButton(int left, int top, OnPress onPress) {
     super(
@@ -39,7 +36,6 @@ public class SkinSelectionButton extends SpriteButton {
         top,
         DEFAULT_WIDTH,
         DEFAULT_HEIGHT,
-        SPRITE,
         SPRITE_X,
         SPRITE_Y,
         SPRITE_OFFSET_X,

@@ -110,7 +110,6 @@ public class EasyNPCLivingEntityRendererMixin {
     }
   }
 
-
   @Inject(
       method = "shouldShowName(Lnet/minecraft/world/entity/LivingEntity;D)Z",
       at = @At("HEAD"),

@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.configui.item;
 
 import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.configui.item.configuration.EasyNPCWandItem;
+import de.markusbordihn.easynpc.configui.item.configuration.PresetBrowserItem;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -33,6 +34,9 @@ public class ModItems {
 
   public static final RegistryObject<Item> EASY_NPC_WAND =
       ITEMS.register(EasyNPCWandItem.ID, () -> new EasyNPCWandItem(new Item.Properties()));
+
+  public static final RegistryObject<Item> PRESET_BROWSER =
+      ITEMS.register(PresetBrowserItem.ID, () -> new PresetBrowserItem(new Item.Properties()));
 
   private ModItems() {}
 }
