@@ -93,17 +93,6 @@ public class UpDownButton extends AbstractWidget {
     return this.downButton != null && this.downButton.mouseClicked(mouseX, mouseY, button);
   }
 
-  @Override
-  public void setY(int y) {
-    super.setY(y);
-    if (this.upButton != null) {
-      this.upButton.setY(y);
-    }
-    if (this.downButton != null) {
-      this.downButton.setY(y + this.height / 2);
-    }
-  }
-
   public void enableUpButton(boolean enable) {
     this.upButton.active = enable;
     this.upButton.visible = enable;
@@ -112,6 +101,21 @@ public class UpDownButton extends AbstractWidget {
   public void enableDownButton(boolean enable) {
     this.downButton.active = enable;
     this.downButton.visible = enable;
+  }
+
+  @Override
+  public void setY(int y) {
+    super.setY(y);
+    int singleButtonHeight = this.height / 2;
+    this.upButton.setY(y);
+    this.downButton.setY(y + singleButtonHeight);
+  }
+
+  @Override
+  public void setX(int x) {
+    super.setX(x);
+    this.upButton.setX(x);
+    this.downButton.setX(x);
   }
 
   public interface OnUp {

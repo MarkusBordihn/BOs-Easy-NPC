@@ -19,20 +19,16 @@
 
 package de.markusbordihn.easynpc.client.screen.components;
 
-import de.markusbordihn.easynpc.Constants;
-import net.minecraft.resources.ResourceLocation;
-
 public class CloseButton extends SpriteButton {
 
-  public static final int DEFAULT_HEIGHT = 12;
-  public static final int DEFAULT_WIDTH = 12;
-  public static final ResourceLocation SPRITE = Constants.TEXTURE_CONFIGURATION;
-  public static final int SPRITE_HEIGHT = 10;
-  public static final int SPRITE_OFFSET_X = 64;
-  public static final int SPRITE_OFFSET_Y = 38;
-  public static final int SPRITE_WIDTH = 10;
-  public static final int SPRITE_X = 1;
-  public static final int SPRITE_Y = 1;
+  private static final int DEFAULT_HEIGHT = 12;
+  private static final int DEFAULT_WIDTH = 12;
+  private static final int SPRITE_HEIGHT = 10;
+  private static final int SPRITE_OFFSET_X = 64;
+  private static final int SPRITE_OFFSET_Y = 38;
+  private static final int SPRITE_WIDTH = 10;
+  private static final int SPRITE_X = 1;
+  private static final int SPRITE_Y = 1;
 
   public CloseButton(int left, int top, OnPress onPress) {
     super(
@@ -40,7 +36,6 @@ public class CloseButton extends SpriteButton {
         top,
         DEFAULT_WIDTH,
         DEFAULT_HEIGHT,
-        SPRITE,
         SPRITE_X,
         SPRITE_Y,
         SPRITE_OFFSET_X,

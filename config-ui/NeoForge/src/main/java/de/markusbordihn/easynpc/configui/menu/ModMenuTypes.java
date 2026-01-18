@@ -69,6 +69,7 @@ import de.markusbordihn.easynpc.configui.menu.editor.ConditionDataEntryEditorMen
 import de.markusbordihn.easynpc.configui.menu.editor.DialogButtonEditorMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.editor.DialogEditorMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.editor.DialogTextEditorMenuWrapper;
+import de.markusbordihn.easynpc.configui.menu.preset.PresetBrowserMenuWrapper;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.inventory.MenuType;
@@ -304,6 +305,10 @@ public class ModMenuTypes {
           MENU_TYPES.register(
               ConfigurationType.PLAYER_SKIN.getName(),
               () -> IMenuTypeExtension.create(PlayerSkinConfigurationMenuWrapper::new));
+  public static final DeferredHolder<MenuType<?>, MenuType<PresetBrowserMenuWrapper>>
+      PRESET_BROWSER_MENU =
+          MENU_TYPES.register(
+              "preset_browser", () -> IMenuTypeExtension.create(PresetBrowserMenuWrapper::new));
   public static final DeferredHolder<MenuType<?>, MenuType<ScalingConfigurationMenuWrapper>>
       SCALING_CONFIGURATION_MENU =
           MENU_TYPES.register(

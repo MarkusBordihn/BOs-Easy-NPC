@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.entity.easynpc.handlers;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.config.NPCBaseConfig;
 import de.markusbordihn.easynpc.data.attribute.CombatAttributes;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPCBase;
 import de.markusbordihn.easynpc.item.ModItemTags;
@@ -208,7 +209,8 @@ public class AttackHandler {
   public static boolean handleIsInvulnerableTo(
       EasyNPCBase<?> easyNPC, DamageSource damageSource, boolean defaultValue) {
     // Allow certain damage types to bypass invulnerability like void or /kill command.
-    if (damageSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
+    if (NPCBaseConfig.ALLOW_BYPASS_INVULNERABILITY
+        && damageSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
       return defaultValue;
     }
 

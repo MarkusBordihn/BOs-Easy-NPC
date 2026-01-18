@@ -188,17 +188,13 @@ public record ActionDataEntry(
             || this.hasBlockPos());
   }
 
+  @SuppressWarnings("unused")
   public ActionDataEntry create(CompoundTag compoundTag) {
     return new ActionDataEntry(compoundTag);
   }
 
   public CompoundTag write(CompoundTag compoundTag) {
     compoundTag.putString(DATA_TYPE_TAG, this.actionDataType.name());
-
-    // Only save permission level if it is different from default.
-    if (this.permissionLevel != DEFAULT_PERMISSION_LEVEL) {
-      compoundTag.putInt(DATA_PERMISSION_LEVEL_TAG, this.permissionLevel);
-    }
 
     // Save target UUID if present.
     if (this.targetUUID != null) {

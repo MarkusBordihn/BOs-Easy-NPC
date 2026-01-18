@@ -78,7 +78,6 @@ public final class Constants {
   public static final String MOD_PREFIX = MOD_ID + ".";
   public static final String MOD_PREFIX_ID = MOD_ID + ":";
   public static final String MOD_URL = "https://www.curseforge.com/minecraft/mc-mods/easy-npc";
-  public static final String NPC_NBT_SUFFIX = ".npc.nbt";
   public static final String TOOLTIP_PREFIX = "tooltip." + MOD_ID + ".";
   public static final UUID BLANK_UUID = new UUID(0L, 0L);
   public static final UUID EMPTY_UUID = new UUID(0L, 0L);

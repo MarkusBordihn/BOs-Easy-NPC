@@ -20,7 +20,6 @@
 package de.markusbordihn.easynpc.data.action;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -34,6 +33,7 @@ public final class ActionDataSet {
 
   public ActionDataSet() {}
 
+  @SuppressWarnings("unused")
   public ActionDataSet(CompoundTag compoundTag) {
     this.load(compoundTag, ACTION_DATA_SET_TAG);
   }
@@ -92,6 +92,7 @@ public final class ActionDataSet {
     this.actionDataEntries.addAll(indexedActionDataSet);
   }
 
+  @SuppressWarnings("unused")
   public void moveUp(ActionDataEntry actionDataEntry) {
     if (actionDataEntry == null) {
       return;
@@ -108,6 +109,7 @@ public final class ActionDataSet {
     this.actionDataEntries.addAll(indexedActionDataSet);
   }
 
+  @SuppressWarnings("unused")
   public void moveDown(ActionDataEntry actionDataEntry) {
     if (actionDataEntry == null) {
       return;
@@ -140,19 +142,8 @@ public final class ActionDataSet {
     return false;
   }
 
-  public Iterator<ActionDataEntry> iterator() {
-    return this.actionDataEntries.iterator();
-  }
-
   public int size() {
     return this.actionDataEntries.size();
-  }
-
-  public ActionDataEntry getRandomEntry() {
-    if (this.actionDataEntries.isEmpty()) {
-      return null;
-    }
-    return this.actionDataEntries.iterator().next();
   }
 
   public Set<ActionDataEntry> getEntries() {
@@ -193,6 +184,7 @@ public final class ActionDataSet {
     return -1;
   }
 
+  @SuppressWarnings("unused")
   public ActionDataEntry getEntryOrDefault(UUID actionDataEntryId) {
     ActionDataEntry actionDataEntry = this.getEntry(actionDataEntryId);
     return actionDataEntry != null ? actionDataEntry : new ActionDataEntry();

@@ -93,7 +93,6 @@ public class EasyNPCPresetItem extends Item {
   }
 
   public static boolean spawnAtPosition(BlockPos blockPos, ItemStack itemStack, Level level) {
-    // Ignore client side
     if (level.isClientSide) {
       return false;
     }
@@ -139,8 +138,6 @@ public class EasyNPCPresetItem extends Item {
   @Override
   public InteractionResult useOn(UseOnContext useOnContext) {
     Level level = useOnContext.getLevel();
-
-    // Ignore client side
     if (level.isClientSide) {
       return InteractionResult.SUCCESS;
     }

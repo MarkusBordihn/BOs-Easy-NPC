@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.configui.item;
 
 import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.configui.item.configuration.EasyNPCWandItem;
+import de.markusbordihn.easynpc.configui.item.configuration.PresetBrowserItem;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
@@ -30,6 +31,7 @@ import org.apache.logging.log4j.Logger;
 public class ModItems {
 
   public static final Item EASY_NPC_WAND = new EasyNPCWandItem(new Item.Properties());
+  public static final Item PRESET_BROWSER = new PresetBrowserItem(new Item.Properties());
 
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
@@ -39,6 +41,7 @@ public class ModItems {
 
     log.info("{} Configuration Items ...", Constants.LOG_REGISTER_PREFIX);
     registerItem(EasyNPCWandItem.ID, EASY_NPC_WAND);
+    registerItem(PresetBrowserItem.ID, PRESET_BROWSER);
   }
 
   private static void registerItem(String id, Item item) {

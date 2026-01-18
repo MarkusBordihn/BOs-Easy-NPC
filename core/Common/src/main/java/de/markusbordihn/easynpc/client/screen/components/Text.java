@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.client.screen.components;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.network.components.TextComponent;
+import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -134,5 +135,34 @@ public class Text {
         x,
         y,
         color);
+  }
+
+  public static List<String> wrapText(Font font, String text, int maxWidth) {
+    List<String> lines = new ArrayList<>();
+    String[] words = text.split(" ");
+    StringBuilder currentLine = new StringBuilder();
+
+    for (String word : words) {
+      String testLine = currentLine.isEmpty() ? word : currentLine + " " + word;
+      if (font.width(testLine) <= maxWidth) {
+        if (!currentLine.isEmpty()) {
+          currentLine.append(" ");
+        }
+        currentLine.append(word);
+      } else {
+        if (!currentLine.isEmpty()) {
+          lines.add(currentLine.toString());
+          currentLine = new StringBuilder(word);
+        } else {
+          lines.add(word);
+        }
+      }
+    }
+
+    if (!currentLine.isEmpty()) {
+      lines.add(currentLine.toString());
+    }
+
+    return lines;
   }
 }

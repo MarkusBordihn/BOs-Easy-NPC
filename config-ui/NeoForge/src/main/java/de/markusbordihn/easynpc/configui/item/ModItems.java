@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.configui.item;
 
 import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.configui.item.configuration.EasyNPCWandItem;
+import de.markusbordihn.easynpc.configui.item.configuration.PresetBrowserItem;
 import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -31,6 +32,9 @@ public class ModItems {
 
   public static final DeferredItem<Item> EASY_NPC_WAND =
       ITEMS.register(EasyNPCWandItem.ID, () -> new EasyNPCWandItem(new Item.Properties()));
+
+  public static final DeferredItem<Item> PRESET_BROWSER =
+      ITEMS.register(PresetBrowserItem.ID, () -> new PresetBrowserItem(new Item.Properties()));
 
   private ModItems() {}
 }

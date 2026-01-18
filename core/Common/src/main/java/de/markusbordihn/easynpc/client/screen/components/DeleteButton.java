@@ -19,20 +19,16 @@
 
 package de.markusbordihn.easynpc.client.screen.components;
 
-import de.markusbordihn.easynpc.Constants;
-import net.minecraft.resources.ResourceLocation;
-
 public class DeleteButton extends SpriteButton {
 
-  public static final int DEFAULT_HEIGHT = 18;
-  public static final int DEFAULT_WIDTH_SMALL = 18;
-  public static final ResourceLocation SPRITE = Constants.TEXTURE_CONFIGURATION;
-  public static final int SPRITE_HEIGHT = 12;
-  public static final int SPRITE_OFFSET_X = 65;
-  public static final int SPRITE_OFFSET_Y = 155;
-  public static final int SPRITE_WIDTH = 12;
-  public static final int SPRITE_X = 4;
-  public static final int SPRITE_Y = 4;
+  private static final int DEFAULT_HEIGHT = 18;
+  private static final int DEFAULT_WIDTH_SMALL = 18;
+  private static final int SPRITE_HEIGHT = 12;
+  private static final int SPRITE_OFFSET_X = 65;
+  private static final int SPRITE_OFFSET_Y = 155;
+  private static final int SPRITE_WIDTH = 12;
+  private static final int SPRITE_X = 4;
+  private static final int SPRITE_Y = 4;
 
   public DeleteButton(int left, int top, int width, OnPress onPress) {
     super(
@@ -40,8 +36,7 @@ public class DeleteButton extends SpriteButton {
         top,
         width,
         DEFAULT_HEIGHT,
-        "delete",
-        SPRITE,
+        width > DEFAULT_WIDTH_SMALL ? "delete" : "",
         SPRITE_X,
         SPRITE_Y,
         SPRITE_OFFSET_X,
@@ -52,18 +47,6 @@ public class DeleteButton extends SpriteButton {
   }
 
   public DeleteButton(int left, int top, OnPress onPress) {
-    super(
-        left,
-        top,
-        DEFAULT_WIDTH_SMALL,
-        DEFAULT_HEIGHT,
-        SPRITE,
-        SPRITE_X,
-        SPRITE_Y,
-        SPRITE_OFFSET_X,
-        SPRITE_OFFSET_Y,
-        SPRITE_WIDTH,
-        SPRITE_HEIGHT,
-        onPress);
+    this(left, top, DEFAULT_WIDTH_SMALL, onPress);
   }
 }

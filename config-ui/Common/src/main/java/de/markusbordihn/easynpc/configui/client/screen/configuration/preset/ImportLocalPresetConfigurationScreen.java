@@ -21,7 +21,7 @@ package de.markusbordihn.easynpc.configui.client.screen.configuration.preset;
 
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
-import de.markusbordihn.easynpc.io.CustomPresetDataFiles;
+import de.markusbordihn.easynpc.io.LocalPresetDataFiles;
 import java.nio.file.Path;
 import java.util.List;
 import net.minecraft.nbt.NbtAccounter;
@@ -40,13 +40,13 @@ public class ImportLocalPresetConfigurationScreen<T extends ConfigurationMenu>
     importPresetButtonLabel = "import_local_preset";
     importPresetHeaderLabel = "preset_local_for";
     this.localPresets =
-        CustomPresetDataFiles.getPresetResourceLocations(this.getSkinModel()).toList();
+        LocalPresetDataFiles.getPresetResourceLocations(this.getSkinModel()).toList();
   }
 
   @Override
   public void loadPreset(ResourceLocation resourceLocation) {
     try {
-      Path presetFilePath = CustomPresetDataFiles.getPresetsResourceLocationPath(resourceLocation);
+      Path presetFilePath = LocalPresetDataFiles.getPresetsResourceLocationPath(resourceLocation);
       NetworkMessageHandlerManager.getServerHandler()
           .importLocalPreset(
               getEasyNPCUUID(),

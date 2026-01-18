@@ -21,6 +21,8 @@ package de.markusbordihn.easynpc.configui.network.message.server;
 
 import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.data.preset.PresetExportFormat;
+import de.markusbordihn.easynpc.data.preset.PresetMetadata;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.UUID;
@@ -31,7 +33,9 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
-public record ExportPresetMessage(UUID uuid, String name) implements NetworkMessageRecord {
+public record ExportPresetMessage(
+    UUID uuid, String name, PresetExportFormat exportFormat, PresetMetadata metadata)
+    implements NetworkMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
       ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "export_preset");
@@ -40,13 +44,19 @@ public record ExportPresetMessage(UUID uuid, String name) implements NetworkMess
       StreamCodec.of((buffer, message) -> message.write(buffer), ExportPresetMessage::create);
 
   public static ExportPresetMessage create(final FriendlyByteBuf buffer) {
-    return new ExportPresetMessage(buffer.readUUID(), buffer.readUtf());
+    return new ExportPresetMessage(
+        buffer.readUUID(),
+        buffer.readUtf(),
+        buffer.readEnum(PresetExportFormat.class),
+        PresetMetadata.fromCompoundTag(buffer.readNbt()));
   }
 
   @Override
   public void write(final FriendlyByteBuf buffer) {
     buffer.writeUUID(this.uuid);
     buffer.writeUtf(this.name);
+    buffer.writeEnum(this.exportFormat);
+    buffer.writeNbt(this.metadata.toCompoundTag());
   }
 
   @Override
@@ -71,14 +81,11 @@ public record ExportPresetMessage(UUID uuid, String name) implements NetworkMess
       log.warn("Export preset name is empty for {}", easyNPC);
       return;
     }
+    String fileName = PresetExportFormat.removePresetExtension(this.name);
+    fileName = PresetExportFormat.normalizeFilename(fileName);
 
     // Perform action.
     NetworkMessageHandlerManager.getClientHandler()
-        .exportClientPreset(
-            this.uuid,
-            !this.name.endsWith(de.markusbordihn.easynpc.Constants.NPC_NBT_SUFFIX)
-                ? this.name + de.markusbordihn.easynpc.Constants.NPC_NBT_SUFFIX
-                : this.name,
-            serverPlayer);
+        .exportClientPreset(this.uuid, fileName, serverPlayer, this.exportFormat, this.metadata);
   }
 }

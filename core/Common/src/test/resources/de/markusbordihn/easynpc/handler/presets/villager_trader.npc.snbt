@@ -1,0 +1,19 @@
+{
+  PresetMetadata: {
+    name: "Village Trader",
+    author: "TestAuthor",
+    version: "1.0.0",
+    category: "Trader",
+    created: 1737072000000L,
+    modified: 1737072000000L,
+    description: "Village trader test preset",
+    entityTypeId: "minecraft:villager",
+    variantType: ""
+  },
+  data: {
+    id: "minecraft:villager",
+    CustomName: '{"text":"Village Trader"}',
+    Health: 20.0f,
+    UUID: [I; 111111111, 222222222, 333333333, 444444444]
+  }
+}

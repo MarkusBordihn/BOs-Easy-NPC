@@ -104,8 +104,6 @@ public class NPCRawTemplate extends Zombie implements EasyNPCBase<Zombie> {
       new EnumMap<>(SynchedDataIndex.class);
   private static final UniformInt PERSISTENT_ANGER_TIME = TimeUtil.rangeOfSeconds(20, 39);
 
-  private boolean clientDimensionsRefreshed = false;
-
   static {
     // Attack Data
     entityDataAccessorMap.put(
@@ -212,6 +210,7 @@ public class NPCRawTemplate extends Zombie implements EasyNPCBase<Zombie> {
   private final EnumMap<StatusDataType, Boolean> statusDataFlagMap =
       new EnumMap<>(StatusDataType.class);
   protected MerchantOffers merchantTradingOffers;
+  private boolean clientDimensionsRefreshed = false;
   private ServerEntityData serverEntityData;
   private int attackAnimationTick;
   private int npcDataVersion = -1;

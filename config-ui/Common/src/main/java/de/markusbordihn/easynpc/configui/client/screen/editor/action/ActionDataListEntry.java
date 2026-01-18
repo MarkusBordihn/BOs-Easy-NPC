@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.configui.client.screen.editor.action;
 
 import de.markusbordihn.easynpc.client.screen.components.DeleteButton;
+import de.markusbordihn.easynpc.client.screen.components.DrawBorder;
 import de.markusbordihn.easynpc.client.screen.components.EditButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.UpDownButton;
@@ -48,7 +49,6 @@ public class ActionDataListEntry extends ObjectSelectionList.Entry<ActionDataLis
   private static final int ENTRY_HEIGHT = 21;
   private static final int FIELD_LEFT_OFFSET = 5;
   private static final int FIELD_TOP_OFFSET = 5;
-  private static final int COLUMN_SEPARATOR_WIDTH = 1;
   private static final int COLUMN_SEPARATOR_OFFSET = 3;
   private static final int BUTTON_SPACING = 2;
   private static final int BUTTON_SIZE = 18;
@@ -191,16 +191,16 @@ public class ActionDataListEntry extends ObjectSelectionList.Entry<ActionDataLis
     renderValuePreview(guiGraphics, fieldsLeft, fieldTop);
 
     // Up and down buttons
-    this.upAndDownButton.render(guiGraphics, mouseX, mouseY, partialTicks);
     this.upAndDownButton.setY(top);
+    this.upAndDownButton.render(guiGraphics, mouseX, mouseY, partialTicks);
     this.upAndDownButton.enableUpButton(entryId > 0);
     this.upAndDownButton.enableDownButton(entryId < this.actionDateEntriesSize - 1);
 
     // Edit and delete buttons
-    this.editButton.render(guiGraphics, mouseX, mouseY, partialTicks);
     this.editButton.setY(top);
-    this.deleteButton.render(guiGraphics, mouseX, mouseY, partialTicks);
+    this.editButton.render(guiGraphics, mouseX, mouseY, partialTicks);
     this.deleteButton.setY(top);
+    this.deleteButton.render(guiGraphics, mouseX, mouseY, partialTicks);
 
     // Render separator lines
     this.renderSeparatorLines(guiGraphics, top);
@@ -238,26 +238,25 @@ public class ActionDataListEntry extends ObjectSelectionList.Entry<ActionDataLis
   }
 
   public void renderSeparatorLines(GuiGraphics guiGraphics, int top) {
-    // Draw vertical separator line for headers
     int separatorTop = top - 1;
     int separatorLeft = this.leftPos + FIELD_LEFT_OFFSET;
-    guiGraphics.fill(
+    DrawBorder.drawVerticalSeparator(
+        guiGraphics,
         separatorLeft + TYPE_LEFT_POS - COLUMN_SEPARATOR_OFFSET,
         separatorTop,
-        separatorLeft + TYPE_LEFT_POS - COLUMN_SEPARATOR_OFFSET + COLUMN_SEPARATOR_WIDTH,
-        separatorTop + ENTRY_HEIGHT,
+        ENTRY_HEIGHT,
         COLOR_COLUMN_SEPARATOR);
-    guiGraphics.fill(
+    DrawBorder.drawVerticalSeparator(
+        guiGraphics,
         separatorLeft + VALUE_LEFT_POS - COLUMN_SEPARATOR_OFFSET,
         separatorTop,
-        separatorLeft + VALUE_LEFT_POS - COLUMN_SEPARATOR_OFFSET + COLUMN_SEPARATOR_WIDTH,
-        separatorTop + ENTRY_HEIGHT,
+        ENTRY_HEIGHT,
         COLOR_COLUMN_SEPARATOR);
-    guiGraphics.fill(
+    DrawBorder.drawVerticalSeparator(
+        guiGraphics,
         separatorLeft + OPTIONS_LEFT_POS - COLUMN_SEPARATOR_OFFSET,
         separatorTop,
-        separatorLeft + OPTIONS_LEFT_POS - COLUMN_SEPARATOR_OFFSET + COLUMN_SEPARATOR_WIDTH,
-        separatorTop + ENTRY_HEIGHT,
+        ENTRY_HEIGHT,
         COLOR_COLUMN_SEPARATOR);
   }
 

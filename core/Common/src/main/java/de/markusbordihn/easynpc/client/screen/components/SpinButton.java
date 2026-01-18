@@ -32,11 +32,11 @@ public class SpinButton<T> extends CustomButton {
   private final TextButton nextButton;
   private final TextButton textButton;
   private final List<T> values;
-  private final OnChange onChange;
+  private final OnChange<T> onChange;
   private int currentIndex;
 
   public SpinButton(
-      int x, int y, int width, int height, Set<T> values, T initialValue, OnChange onChange) {
+      int x, int y, int width, int height, Set<T> values, T initialValue, OnChange<T> onChange) {
     super(x, y, width, height);
     this.values = new ArrayList<>(values);
     this.currentIndex = Math.max(0, this.values.indexOf(initialValue));
@@ -102,7 +102,24 @@ public class SpinButton<T> extends CustomButton {
         || this.textButton.mouseClicked(mouseX, mouseY, button);
   }
 
-  public interface OnChange {
-    void onChange(SpinButton<?> spinButton);
+  @Override
+  public void setY(int y) {
+    super.setY(y);
+    this.previousButton.setY(y);
+    this.textButton.setY(y);
+    this.nextButton.setY(y);
+  }
+
+  @Override
+  public void setX(int x) {
+    super.setX(x);
+    int navWidth = 10;
+    this.previousButton.setX(x);
+    this.textButton.setX(x + navWidth);
+    this.nextButton.setX(x + this.width - navWidth);
+  }
+
+  public interface OnChange<T> {
+    void onChange(SpinButton<T> spinButton);
   }
 }

@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.configui.commands.manager;
 
 import com.mojang.brigadier.CommandDispatcher;
 import de.markusbordihn.easynpc.configui.Constants;
+import de.markusbordihn.easynpc.configui.commands.PresetBrowserCommand;
 import de.markusbordihn.easynpc.configui.server.commands.ConfigureCommand;
 import de.markusbordihn.easynpc.configui.server.commands.DebugCommand;
 import net.minecraft.commands.CommandSourceStack;
@@ -43,6 +44,7 @@ public class CommandManager {
     commandDispatcher.register(
         Commands.literal(de.markusbordihn.easynpc.configui.Constants.MOD_COMMAND)
             .then(ConfigureCommand.register())
-            .then(DebugCommand.register()));
+            .then(DebugCommand.register())
+            .then(PresetBrowserCommand.register()));
   }
 }

@@ -21,10 +21,12 @@ package de.markusbordihn.easynpc.configui.menu;
 
 import de.markusbordihn.easynpc.access.AccessManager;
 import de.markusbordihn.easynpc.configui.Constants;
+import de.markusbordihn.easynpc.configui.data.custom.CustomMenuType;
 import de.markusbordihn.easynpc.configui.data.editor.EditorType;
 import de.markusbordihn.easynpc.configui.data.screen.AdditionalScreenData;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenuHandler;
+import de.markusbordihn.easynpc.configui.menu.custom.CustomMenuHandler;
 import de.markusbordihn.easynpc.configui.menu.editor.EditorMenu;
 import de.markusbordihn.easynpc.configui.menu.editor.EditorMenuHandler;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
@@ -194,8 +196,33 @@ public interface MenuHandlerInterface {
     MenuManager.openMenu(npcUUID, menuProvider, serverPlayer, screenData.encode());
   }
 
+  default void openCustomMenu(
+      final CustomMenuType customMenuType, final ServerPlayer serverPlayer) {
+    MenuType<? extends ConfigUIMenu> menuType = getMenuTypeByCustomType(customMenuType);
+    if (menuType == null) {
+      log.error("Unable to get menu type for custom menu type: {}", customMenuType);
+      return;
+    }
+
+    // Get screen data for custom menu
+    final ScreenData screenData = CustomMenuHandler.getScreenData(customMenuType, serverPlayer);
+
+    // Get menu provider for custom menu type and open menu
+    MenuProvider menuProvider =
+        CustomMenuHandler.getMenuProvider(customMenuType, menuType, screenData);
+    if (menuProvider == null) {
+      log.error("Unable to get menu provider for custom menu type: {}", customMenuType);
+      return;
+    }
+
+    final UUID npcUUID = screenData.uuid();
+    MenuManager.openMenu(npcUUID, menuProvider, serverPlayer, screenData.encode());
+  }
+
   MenuType<? extends ConfigurationMenu> getMenuTypeByConfigurationType(
       ConfigurationType configurationType);
 
   MenuType<? extends EditorMenu> getMenuTypeByEditorType(EditorType editorType);
+
+  MenuType<? extends ConfigUIMenu> getMenuTypeByCustomType(CustomMenuType customMenuType);
 }

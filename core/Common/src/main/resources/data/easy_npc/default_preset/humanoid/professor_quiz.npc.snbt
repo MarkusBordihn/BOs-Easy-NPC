@@ -1,0 +1,280 @@
+{
+  PresetMetadata:{
+    author:"Kaworru",
+    category:"Quest",
+    created:1768700872056L,
+    description:"Shows a multiple-choice quiz and guides the player through it with small effects like sounds and fireworks.",
+    entityTypeId:"easy_npc:humanoid",
+    modified:1768700872056L,
+    name:"Professor Quiz",
+    variantType:"PROFESSOR_01",
+    version:"1.0.0"
+  },
+  data:{
+    ActionData:{
+      ActionEventSet:{
+        ON_INTERACTION:[{
+          Type:"OPEN_DEFAULT_DIALOG"
+        },{
+          Type:"OPEN_TRADING_SCREEN"
+        }]
+      },
+      ActionPermissionLevel:4
+    },
+    ArmorDropChances:[0.085f,0.085f,0.085f,0.085f],
+    ArmorItems:[{},{},{},{}],
+    Attributes:[{
+      Base:0.0d,Name:"minecraft:generic.attack_knockback"
+    },{
+      Base:0.5d,Name:"minecraft:generic.movement_speed"
+    },{
+      Base:0.08d,Name:"forge:entity_gravity"
+    },{
+      Base:1.0d,Name:"minecraft:generic.attack_damage"
+    },{
+      Base:16.0d,Name:"minecraft:generic.follow_range"
+    },{
+      Base:0.0d,Name:"minecraft:generic.knockback_resistance"
+    },{
+      Base:0.0d,Name:"forge:step_height_addition"
+    }],
+    Brain:{
+      memories:{}
+    },
+    CanPickUpLoot:0b,
+    CanUpdate:1b,
+    CustomName:'{"color":"#00FFFF","text":"Professor Dr."}',
+    CustomNameVisible:1b,
+    DialogData:{
+      DialogDataSet:[{
+        Name:"End Quiz",Texts:[{
+          Text:"No worries and thanks for your time. Come back at any time to start the quiz."
+        }]
+      },{
+        Buttons:[{
+          Actions:[{
+            Cmd:"question_two_correct",Type:"OPEN_NAMED_DIALOG"
+          },{
+            Cmd:"/summon firework_rocket ~ ~1 ~ {LifeTime:30,FireworksItem:{id:firework_rocket,Count:1,tag:{Fireworks:{Flight:2,Explosions:[{Type:1,Flicker:0,Trail:1,Colors:[I;8073150,14188952],FadeColors:[I;12801229]}]}}}}",Type:"COMMAND"
+          }],Label:"button_435",Name:"The End"
+        },{
+          Actions:[{
+            Cmd:"question_two_wrong",Type:"OPEN_NAMED_DIALOG"
+          },{
+            Cmd:"/playsound minecraft:entity.villager.ambient master @a ~ ~ ~ 1 1.5",Type:"COMMAND"
+          }],Label:"button_472",Name:"The Nether"
+        },{
+          Actions:[{
+            Cmd:"question_two_wrong",Type:"OPEN_NAMED_DIALOG"
+          },{
+            Cmd:"/playsound minecraft:entity.villager.ambient master @a ~ ~ ~ 1 1.5",Type:"COMMAND"
+          }],Label:"button_194",Name:"The Overworld"
+        }],Label:"question_two",Name:"Second Question",Texts:[{
+          Text:"Which dimension in Minecraft is home to the Ender Dragon?"
+        }]
+      },{
+        Buttons:[{
+          Actions:[{
+            Cmd:"end_quiz",Type:"OPEN_NAMED_DIALOG"
+          }],Label:"button_33",Name:"No, sorry. No time."
+        },{
+          Actions:[{
+            Cmd:"start_quiz",Type:"OPEN_NAMED_DIALOG"
+          }],Label:"button_11",Name:"Yes, of course !"
+        }],Label:"default",Name:"Welcome",Texts:[{
+          Text:"Curious to see how much you know, @initiator?"
+        },{
+          Text:"Interested in testing your knowledge, @initiator?"
+        },{
+          Text:"Want to see how well you know your stuff, @initiator?"
+        },{
+          Text:"Up for a knowledge test, @initiator?"
+        },{
+          Text:"Hey @initiator you want to test your knowledge ?"
+        },{
+          Text:"Hey there, @initiator! Ready to put your knowledge to the test?"
+        }]
+      },{
+        Buttons:[{
+          Actions:[{
+            Cmd:"question_two",Type:"OPEN_NAMED_DIALOG"
+          }],Label:"button_70",Name:"Next One ..."
+        }],Label:"question_one_correct",Name:"First question: Correct",Texts:[{
+          Text:"Thats correct.\\nIn Minecraft, a crafting table is an essential crafting station that allows players to create more advanced items and tools.\\nTo craft a crafting table, you need four wooden planks.\\nSimply place the wooden planks in a 2x2 crafting grid, leaving the center square empty, and you'll have your crafting table ready for use."
+        }]
+      },{
+        Buttons:[{
+          Actions:[{
+            Cmd:"question_one",Type:"OPEN_NAMED_DIALOG"
+          }],Label:"button_564",Name:"Try again ..."
+        }],Label:"question_one_wrong",Name:"First Question: Wrong",Texts:[{
+          Text:"Wrong answer. Try again."
+        }]
+      },{
+        Buttons:[{
+          Actions:[{
+            Cmd:"question_one",Type:"OPEN_NAMED_DIALOG"
+          }],Label:"button_2",Name:"Start quiz"
+        }],Name:"Start Quiz",Texts:[{
+          Text:"Nice, lets start the quiz.... click on the start button when you are ready."
+        }]
+      },{
+        Label:"question_two_correct",Name:"Second Question: Correct",Texts:[{
+          Text:"Nice one. The End is a mysterious and otherworldly dimension in Minecraft, accessed through a portal generated after defeating the Ender Dragon.\\nIt is a desolate land with floating islands and obsidian pillars.\\nThe Ender Dragon is the final boss in Minecraft and resides in The End, guarding the End Portal and Ender Gateway."
+        }]
+      },{
+        Buttons:[{
+          Actions:[{
+            Cmd:"question_one_correct",Type:"OPEN_NAMED_DIALOG"
+          },{
+            Cmd:"/summon firework_rocket ~ ~1 ~ {LifeTime:30,FireworksItem:{id:firework_rocket,Count:1,tag:{Fireworks:{Flight:2,Explosions:[{Type:1,Flicker:0,Trail:1,Colors:[I;8073150,14188952],FadeColors:[I;12801229]}]}}}}",Type:"COMMAND"
+          }],Label:"button_46",Name:"Wooden Planks"
+        },{
+          Actions:[{
+            Cmd:"question_one_wrong",Type:"OPEN_NAMED_DIALOG"
+          },{
+            Cmd:"/playsound minecraft:entity.villager.ambient master @a ~ ~ ~ 1 1.5",Type:"COMMAND"
+          }],Label:"button_60",Name:"Diamonds"
+        },{
+          Actions:[{
+            Cmd:"question_one_wrong",Type:"OPEN_NAMED_DIALOG"
+          },{
+            Cmd:"/playsound minecraft:entity.villager.ambient master @a ~ ~ ~ 1 1.5",Type:"COMMAND"
+          }],Label:"button_16",Name:"Iron Ingots"
+        }],Label:"question_one",Name:"First question",Texts:[{
+          Text:"What is the primary material used to craft a crafting table in Minecraft?"
+        }]
+      },{
+        Buttons:[{
+          Actions:[{
+            Cmd:"question_two",Type:"OPEN_NAMED_DIALOG"
+          }],Label:"button_712",Name:"Try again"
+        }],Label:"question_two_wrong",Name:"Second Question: Wrong",Texts:[{
+          Text:"Wrong answer. Try again."
+        }]
+      }],
+      Type:"STANDARD"
+    },
+    DisplayAttribute:[{
+      Bool:1b,Type:"VISIBLE"
+    },{
+      Bool:1b,Type:"VISIBLE_AT_DAY"
+    },{
+      Bool:1b,Type:"VISIBLE_AT_NIGHT"
+    },{
+      Bool:1b,Type:"VISIBLE_IN_CREATIVE"
+    },{
+      Bool:1b,Type:"VISIBLE_IN_SPECTATOR"
+    },{
+      Bool:1b,Type:"VISIBLE_IN_STANDARD"
+    },{
+      Bool:1b,Type:"VISIBLE_TO_OWNER"
+    },{
+      Bool:1b,Type:"VISIBLE_TO_TEAM"
+    },{
+      Int:7,Type:"LIGHT_LEVEL"
+    },{
+      Text:"ALWAYS",Type:"NAME_VISIBILITY"
+    }],
+    EasyNPCVersion:3,
+    EntityAttribute:{
+      CanBeHitByProjectile:0b,
+      CanBeLeashed:0b,
+      CanBreatheUnderwater:0b,
+      CanCloseDoor:0b,
+      CanFloat:0b,
+      CanOpenDoor:0b,
+      CanPassDoor:0b,
+      CanUseNetherPortal:0b,
+      Freefall:0b,
+      HealthRegeneration:0.0d,
+      IsAttackableByMonsters:0b,
+      IsAttackableByPlayers:0b,
+      IsInvulnerable:0b,
+      IsPushable:0b,
+      NoGravity:0b,
+      PushEntities:0b
+    },
+    HandDropChances:[0.085f,0.085f],
+    HandItems:[{
+      Count:1b,id:"minecraft:paper"
+    },{}],
+    Health:16.0f,
+    Invulnerable:1b,
+    LeftHanded:0b,
+    ModelData:{
+      DefaultPose:"STANDING",
+      Position:{},
+      Rotation:{},
+      Scale:{},
+      Visible:{}
+    },
+    Navigation:{
+      Home:{
+        X:19,
+        Y:66,
+        Z:26
+      }
+    },
+    ObjectiveData:{
+      HasObjectives:1b,
+      ObjectiveDataSet:[{
+        Prio:9,Type:"LOOK_AT_PLAYER"
+      },{
+        Prio:9,Type:"LOOK_AT_RESET"
+      }]
+    },
+    Offers:{
+      Inventory:{},
+      Recipes:{
+        Recipes:[]
+      }
+    },
+    OnGround:1b,
+    Owner:[I;940439953,-167562164,-1601161573,-1389718966],
+    PersistenceRequired:0b,
+    Pos:[24.910538332875127d,64.0d,-50.27353792109816d],
+    PresetUUID:[I;-510214569,-299941322,-1519460901,-379974798],
+    Profession:"NONE",
+    RenderData:{},
+    Rotation:[69.84917f,0.9293798f],
+    SkinData:{
+      Content:"",
+      DisableLayers:0b,
+      Name:"",
+      Timestamp:1768700084703L,
+      Type:"DEFAULT",
+      URL:"",
+      UUID:[I;0,0,0,0]
+    },
+    SoundData:{
+      SoundDataSet:[{
+        Name:"minecraft:entity.player.death",Type:"DEATH"
+      },{
+        Name:"minecraft:entity.generic.eat",Type:"EAT"
+      },{
+        Name:"minecraft:entity.player.hurt",Type:"HURT"
+      },{
+        Name:"minecraft:entity.villager.trade",Type:"TRADE"
+      },{
+        Name:"minecraft:entity.villager.yes",Type:"TRADE_YES"
+      },{
+        Name:"minecraft:entity.villager.no",Type:"TRADE_NO"
+      }]
+    },
+    Status:{
+      finalized:1b
+    },
+    TradingData:{
+      TradingDataSet:{
+        LastReset:0L,
+        MaxUses:64,
+        ResetsEveryMin:0,
+        RewardedXP:0,
+        Type:"NONE"
+      }
+    },
+    VariantType:"PROFESSOR_01",
+    id:"easy_npc:humanoid"
+  }
+}

@@ -68,6 +68,7 @@ import de.markusbordihn.easynpc.configui.client.screen.editor.condition.Conditio
 import de.markusbordihn.easynpc.configui.client.screen.editor.dialog.DialogButtonEditorScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.editor.dialog.DialogEditorScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.editor.dialog.DialogTextEditorScreenWrapper;
+import de.markusbordihn.easynpc.configui.client.screen.preset.PresetBrowserScreen;
 import de.markusbordihn.easynpc.configui.menu.ModMenuTypes;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import org.apache.logging.log4j.LogManager;
@@ -197,6 +198,7 @@ public class ClientScreens {
     event.register(
         ModMenuTypes.PLAYER_SKIN_CONFIGURATION_MENU.get(),
         PlayerSkinConfigurationScreenWrapper::new);
+    event.register(ModMenuTypes.PRESET_BROWSER_MENU.get(), PresetBrowserScreen::new);
     event.register(
         ModMenuTypes.SCALING_CONFIGURATION_MENU.get(), ScalingConfigurationScreenWrapper::new);
     event.register(
