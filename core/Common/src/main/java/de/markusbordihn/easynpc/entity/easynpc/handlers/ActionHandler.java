@@ -92,12 +92,12 @@ public interface ActionHandler<E extends PathfinderMob> extends EasyNPC<E> {
         ActionManager.removeActionGroup(mob, ActionGroup.DISTANCE_NEAR);
         skipPlayerDistanceCheck = true;
       } else {
-        ActionDataEntry actionDataEntry =
-            actionEventData.getActionEvent(ActionEventType.ON_DISTANCE_NEAR);
+        ActionDataSet actionDataSet =
+            actionEventData.getActionDataSet(ActionEventType.ON_DISTANCE_NEAR);
         for (Player player : listOfPlayers) {
           if (player instanceof ServerPlayer serverPlayer
               && !ActionManager.containsPlayer(mob, ActionGroup.DISTANCE_NEAR, serverPlayer)) {
-            this.executeAction(actionDataEntry, serverPlayer);
+            this.executeActions(actionDataSet, serverPlayer);
             ActionManager.addPlayer(mob, ActionGroup.DISTANCE_NEAR, serverPlayer);
           }
         }
@@ -112,12 +112,12 @@ public interface ActionHandler<E extends PathfinderMob> extends EasyNPC<E> {
         ActionManager.removeActionGroup(mob, ActionGroup.DISTANCE_CLOSE);
         skipPlayerDistanceCheck = true;
       } else {
-        ActionDataEntry actionDataEntry =
-            actionEventData.getActionEvent(ActionEventType.ON_DISTANCE_CLOSE);
+        ActionDataSet actionDataSet =
+            actionEventData.getActionDataSet(ActionEventType.ON_DISTANCE_CLOSE);
         for (Player player : listOfPlayers) {
           if (player instanceof ServerPlayer serverPlayer
               && !ActionManager.containsPlayer(mob, ActionGroup.DISTANCE_CLOSE, serverPlayer)) {
-            this.executeAction(actionDataEntry, serverPlayer);
+            this.executeActions(actionDataSet, serverPlayer);
             ActionManager.addPlayer(mob, ActionGroup.DISTANCE_CLOSE, serverPlayer);
           }
         }
@@ -132,13 +132,13 @@ public interface ActionHandler<E extends PathfinderMob> extends EasyNPC<E> {
         ActionManager.removeActionGroup(mob, ActionGroup.DISTANCE_VERY_CLOSE);
         skipPlayerDistanceCheck = true;
       } else {
-        ActionDataEntry actionDataEntry =
-            actionEventData.getActionEvent(ActionEventType.ON_DISTANCE_VERY_CLOSE);
+        ActionDataSet actionDataSet =
+            actionEventData.getActionDataSet(ActionEventType.ON_DISTANCE_VERY_CLOSE);
         for (Player player : listOfPlayers) {
           if (player instanceof ServerPlayer serverPlayer
               && !ActionManager.containsPlayer(
                   mob, ActionGroup.DISTANCE_VERY_CLOSE, serverPlayer)) {
-            this.executeAction(actionDataEntry, serverPlayer);
+            this.executeActions(actionDataSet, serverPlayer);
             ActionManager.addPlayer(mob, ActionGroup.DISTANCE_VERY_CLOSE, serverPlayer);
           }
         }
@@ -152,12 +152,12 @@ public interface ActionHandler<E extends PathfinderMob> extends EasyNPC<E> {
       if (listOfPlayers == null || listOfPlayers.isEmpty()) {
         ActionManager.removeActionGroup(mob, ActionGroup.DISTANCE_TOUCH);
       } else {
-        ActionDataEntry actionDataEntry =
-            actionEventData.getActionEvent(ActionEventType.ON_DISTANCE_TOUCH);
+        ActionDataSet actionDataSet =
+            actionEventData.getActionDataSet(ActionEventType.ON_DISTANCE_TOUCH);
         for (Player player : listOfPlayers) {
           if (player instanceof ServerPlayer serverPlayer
               && !ActionManager.containsPlayer(mob, ActionGroup.DISTANCE_TOUCH, serverPlayer)) {
-            this.executeAction(actionDataEntry, serverPlayer);
+            this.executeActions(actionDataSet, serverPlayer);
             ActionManager.addPlayer(mob, ActionGroup.DISTANCE_TOUCH, serverPlayer);
           }
         }

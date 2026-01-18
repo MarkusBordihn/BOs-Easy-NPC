@@ -69,8 +69,10 @@ import de.markusbordihn.easynpc.configui.menu.editor.ConditionDataEntryEditorMen
 import de.markusbordihn.easynpc.configui.menu.editor.DialogButtonEditorMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.editor.DialogEditorMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.editor.DialogTextEditorMenuWrapper;
+import de.markusbordihn.easynpc.configui.menu.preset.PresetBrowserMenuWrapper;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.MenuType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -258,6 +260,9 @@ public class ModMenuTypes {
   public static final MenuType<PlayerSkinConfigurationMenuWrapper> PLAYER_SKIN_CONFIGURATION_MENU =
       ScreenHandlerRegistry.registerSimple(
           ConfigurationType.PLAYER_SKIN.getId(), PlayerSkinConfigurationMenuWrapper::new);
+  public static final MenuType<PresetBrowserMenuWrapper> PRESET_BROWSER_MENU =
+      ScreenHandlerRegistry.registerSimple(
+          new ResourceLocation(Constants.MOD_ID, "preset_browser"), PresetBrowserMenuWrapper::new);
   public static final MenuType<ScalingConfigurationMenuWrapper> SCALING_CONFIGURATION_MENU =
       ScreenHandlerRegistry.registerSimple(
           ConfigurationType.SCALING.getId(), ScalingConfigurationMenuWrapper::new);

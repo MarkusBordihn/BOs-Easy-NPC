@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.entity.easynpc.data;
 
 import de.markusbordihn.easynpc.data.model.ModelPose;
+import de.markusbordihn.easynpc.data.preset.PresetMetadata;
 import de.markusbordihn.easynpc.data.server.ServerDataAccessor;
 import de.markusbordihn.easynpc.data.server.ServerDataIndex;
 import de.markusbordihn.easynpc.data.server.ServerEntityData;
@@ -37,6 +38,7 @@ public interface PresetDataCapable<T extends PathfinderMob> extends EasyNPC<T> {
   ServerDataAccessor<UUID> CUSTOM_DATA_PRESET_UUID =
       ServerEntityData.defineId(ServerDataIndex.PRESET_UUID, EntityDataSerializersManager.UUID);
   String PRESET_UUID_TAG = "PresetUUID";
+  String PRESET_METADATA_TAG = "PresetMetadata";
 
   List<String> ENTITY_DATA_VOLATILE_FIELDS =
       List.of(
@@ -138,6 +140,20 @@ public interface PresetDataCapable<T extends PathfinderMob> extends EasyNPC<T> {
     // Clean up and optimize entity data for smaller memory footprint
     for (String entityDataFieldName : ENTITY_DATA_VOLATILE_FIELDS) {
       entityData.remove(entityDataFieldName);
+    }
+
+    // Add preset metadata if not already present
+    if (!entityData.contains(PRESET_METADATA_TAG)) {
+      String presetName = PresetMetadata.DEFAULT_NAME;
+      if (this.getEntity().hasCustomName() && this.getEntity().getCustomName() != null) {
+        presetName = this.getEntity().getCustomName().getString();
+      }
+      String presetAuthor =
+          this.getEasyNPCOwnerData() != null && this.getEasyNPCOwnerData().hasNPCOwner()
+              ? this.getEasyNPCOwnerData().getNPCOwnerName()
+              : PresetMetadata.DEFAULT_AUTHOR;
+      PresetMetadata metadata = PresetMetadata.createDefault(presetName, presetAuthor);
+      entityData.put(PRESET_METADATA_TAG, metadata.toCompoundTag());
     }
 
     return entityData;

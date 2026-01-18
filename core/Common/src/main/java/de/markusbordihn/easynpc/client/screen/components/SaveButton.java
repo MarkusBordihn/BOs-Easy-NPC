@@ -19,53 +19,24 @@
 
 package de.markusbordihn.easynpc.client.screen.components;
 
-import de.markusbordihn.easynpc.Constants;
-import net.minecraft.resources.ResourceLocation;
-
 public class SaveButton extends SpriteButton {
 
-  public static final int DEFAULT_HEIGHT = 18;
-  public static final int DEFAULT_WIDTH_SMALL = 20;
-  public static final int DEFAULT_WIDTH = 100;
-  public static final ResourceLocation SPRITE = Constants.TEXTURE_CONFIGURATION;
-  public static final int SPRITE_HEIGHT = 13;
-  public static final int SPRITE_OFFSET_X = 64;
-  public static final int SPRITE_OFFSET_Y = 4;
-  public static final int SPRITE_WIDTH = 13;
-  public static final int SPRITE_X = 4;
-  public static final int SPRITE_Y = 3;
+  private static final int DEFAULT_HEIGHT = 18;
+  private static final int DEFAULT_WIDTH_SMALL = 20;
+  private static final int DEFAULT_WIDTH = 100;
+  private static final int SPRITE_HEIGHT = 13;
+  private static final int SPRITE_OFFSET_X = 64;
+  private static final int SPRITE_OFFSET_Y = 4;
+  private static final int SPRITE_WIDTH = 13;
+  private static final int SPRITE_X = 4;
+  private static final int SPRITE_Y = 3;
 
   public SaveButton(int left, int top, OnPress onPress) {
-    super(
-        left,
-        top,
-        DEFAULT_WIDTH_SMALL,
-        DEFAULT_HEIGHT,
-        Constants.TEXTURE_CONFIGURATION,
-        SPRITE_X,
-        SPRITE_Y,
-        SPRITE_OFFSET_X,
-        SPRITE_OFFSET_Y,
-        SPRITE_WIDTH,
-        SPRITE_HEIGHT,
-        onPress);
+    this(left, top, DEFAULT_WIDTH_SMALL, "", onPress);
   }
 
   public SaveButton(int left, int top, String label, OnPress onPress) {
-    super(
-        left,
-        top,
-        DEFAULT_WIDTH,
-        DEFAULT_HEIGHT,
-        label,
-        SPRITE,
-        SPRITE_X,
-        SPRITE_Y,
-        SPRITE_OFFSET_X,
-        SPRITE_OFFSET_Y,
-        SPRITE_WIDTH,
-        SPRITE_HEIGHT,
-        onPress);
+    this(left, top, DEFAULT_WIDTH, label, onPress);
   }
 
   public SaveButton(int left, int top, int width, String label, OnPress onPress) {
@@ -75,7 +46,6 @@ public class SaveButton extends SpriteButton {
         width,
         DEFAULT_HEIGHT,
         label,
-        SPRITE,
         SPRITE_X,
         SPRITE_Y,
         SPRITE_OFFSET_X,

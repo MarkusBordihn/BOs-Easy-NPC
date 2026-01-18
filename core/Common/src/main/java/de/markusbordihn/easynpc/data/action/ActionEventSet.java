@@ -45,16 +45,6 @@ public class ActionEventSet {
     }
   }
 
-  public ActionDataEntry getActionEvent(ActionEventType actionEventType) {
-    if (actionEventType != null && actionEventType != ActionEventType.NONE) {
-      ActionDataSet actionDataSet = this.actionsMap.get(actionEventType);
-      if (actionDataSet != null && !actionDataSet.isEmpty()) {
-        return actionDataSet.getRandomEntry();
-      }
-    }
-    return null;
-  }
-
   public ActionDataSet getActionEvents(ActionEventType actionEventType) {
     if (actionEventType != ActionEventType.NONE && this.actionsMap.containsKey(actionEventType)) {
       return this.actionsMap.get(actionEventType);

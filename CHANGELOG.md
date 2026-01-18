@@ -8,12 +8,23 @@ For the full changelog, please go to the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
-### 6.6.2
+### 6.7.0
 
+- Fixed #648 by fixing canBeHitByProjectiles translation.
+- Fixed #645 by adding `allowBypassInvulnerability` config option to allow/deny bypassing
+  invulnerability for NPCs.
 - Fixed #643 by rework scaling system.
 - Fixed scaling not properly updating hitbox and nametag position after restart / reload.
+- Fixed delete button showing label even with small width.
+- Fixed up and down buttons not positioned correctly in some cases.
+- Fixed name tag showing up for dialog and configuration UI.
+- Fixed distance action issue were multiple actions are not properly triggered.
+- Fixed issues with NPC presets.
+- Added preset browser for easier selection of common NPC presets.
+- Added preset .snbt (text) export and import functionality for sharing NPC presets.
 - Added MID and MOUSE_OVER name tag visibility modes for finer control over NPC name display.
 - Added team-based name tag visibility support respecting vanilla Team.
+- Converted existing NPC presets to use new .snbt format.
 
 ### 6.6.1
 

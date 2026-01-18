@@ -25,6 +25,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import de.markusbordihn.easynpc.commands.Command;
 import de.markusbordihn.easynpc.commands.arguments.EasyNPCArgument;
 import de.markusbordihn.easynpc.commands.suggestion.PresetSuggestions;
+import de.markusbordihn.easynpc.data.preset.PresetType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.handler.PresetHandler;
 import de.markusbordihn.easynpc.io.DataFileHandler;
@@ -540,8 +541,8 @@ public class PresetCommand extends Command {
       return Command.FAILURE;
     }
 
-    if (!PresetHandler.importCustomPreset(
-        context.getLevel(), preset, position, uuid, serverPlayer)) {
+    if (!PresetHandler.importPreset(
+        context.getLevel(), PresetType.CUSTOM, preset, position, uuid, serverPlayer)) {
       return sendFailureMessage(context, importedPresetFailedMessage(CUSTOM_ARG, preset));
     }
 
@@ -558,7 +559,8 @@ public class PresetCommand extends Command {
       return Command.FAILURE;
     }
 
-    if (!PresetHandler.importDataPreset(context.getLevel(), preset, position, uuid, serverPlayer)) {
+    if (!PresetHandler.importPreset(
+        context.getLevel(), PresetType.DATA, preset, position, uuid, serverPlayer)) {
       return sendFailureMessage(context, importedPresetFailedMessage(DATA_ARG, preset));
     }
 
@@ -575,8 +577,8 @@ public class PresetCommand extends Command {
       return Command.FAILURE;
     }
 
-    if (!PresetHandler.importDefaultPreset(
-        context.getLevel(), preset, position, uuid, serverPlayer)) {
+    if (!PresetHandler.importPreset(
+        context.getLevel(), PresetType.DEFAULT, preset, position, uuid, serverPlayer)) {
       return sendFailureMessage(context, importedPresetFailedMessage(DEFAULT_ARG, preset));
     }
 
@@ -598,8 +600,8 @@ public class PresetCommand extends Command {
       return Command.FAILURE;
     }
 
-    if (!PresetHandler.importWorldPreset(
-        context.getLevel(), preset, position, uuid, serverPlayer)) {
+    if (!PresetHandler.importPreset(
+        context.getLevel(), PresetType.WORLD, preset, position, uuid, serverPlayer)) {
       return sendFailureMessage(context, importedPresetFailedMessage(WORLD_ARG, preset));
     }
 

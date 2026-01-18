@@ -60,12 +60,6 @@ public interface ActionEventDataCapable<E extends PathfinderMob> extends EasyNPC
         && getActionEventSet().hasActionEvent(actionEventType);
   }
 
-  default ActionDataEntry getActionEvent(ActionEventType actionEventType) {
-    return hasActionEvent(actionEventType)
-        ? getActionEventSet().getActionEvent(actionEventType)
-        : null;
-  }
-
   default ActionDataSet getActionDataSet(ActionEventType actionEventType) {
     return hasActionEvent(actionEventType)
         ? getActionEventSet().getActionEvents(actionEventType)

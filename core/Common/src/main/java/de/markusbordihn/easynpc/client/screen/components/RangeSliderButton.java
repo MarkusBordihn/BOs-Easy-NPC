@@ -453,4 +453,29 @@ public class RangeSliderButton extends AbstractWidget {
           NarratedElementType.USAGE, TextComponent.getTranslatedTextRaw(usageKey));
     }
   }
+
+  @Override
+  public void setY(int y) {
+    super.setY(y);
+    this.sliderButton.setY(y);
+    this.textField.setY(y);
+    this.textButtonDecrease.setY(y);
+    this.textButtonIncrease.setY(y);
+    this.textButtonReset.setY(y);
+    this.textButtonEdit.setY(y);
+    this.textButtonDone.setY(y);
+  }
+
+  @Override
+  public void setX(int x) {
+    super.setX(x);
+    int sliderX = this.showButtons ? x + DECREASE_BUTTON_WIDTH : x;
+    this.sliderButton.setX(sliderX);
+    this.textField.setX(sliderX);
+    this.textButtonDecrease.setX(sliderX - DECREASE_BUTTON_WIDTH);
+    this.textButtonIncrease.setX(sliderX + this.sliderButton.getWidth());
+    this.textButtonReset.setX(this.textButtonIncrease.getX() + this.textButtonIncrease.getWidth());
+    this.textButtonEdit.setX(this.textButtonReset.getX() + this.textButtonReset.getWidth());
+    this.textButtonDone.setX(this.textButtonReset.getX() + this.textButtonReset.getWidth());
+  }
 }

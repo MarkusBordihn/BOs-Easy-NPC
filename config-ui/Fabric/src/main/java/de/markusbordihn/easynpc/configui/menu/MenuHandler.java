@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.configui.menu;
 
+import de.markusbordihn.easynpc.configui.data.custom.CustomMenuType;
 import de.markusbordihn.easynpc.configui.data.editor.EditorType;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.menu.editor.EditorMenu;
@@ -33,6 +34,8 @@ public class MenuHandler implements MenuHandlerInterface {
       configurationMenuMap = new EnumMap<>(ConfigurationType.class);
   protected static final Map<EditorType, MenuType<? extends EditorMenu>> editorMenuMap =
       new EnumMap<>(EditorType.class);
+  protected static final Map<CustomMenuType, MenuType<? extends ConfigUIMenu>> customMenuMap =
+      new EnumMap<>(CustomMenuType.class);
 
   static {
     configurationMenuMap.put(
@@ -126,6 +129,8 @@ public class MenuHandler implements MenuHandlerInterface {
     editorMenuMap.put(EditorType.DIALOG, ModMenuTypes.DIALOG_EDITOR_MENU);
     editorMenuMap.put(EditorType.DIALOG_BUTTON, ModMenuTypes.DIALOG_BUTTON_EDITOR_MENU);
     editorMenuMap.put(EditorType.DIALOG_TEXT, ModMenuTypes.DIALOG_TEXT_EDITOR_MENU);
+
+    customMenuMap.put(CustomMenuType.PRESET_BROWSER, ModMenuTypes.PRESET_BROWSER_MENU);
   }
 
   public static Map<ConfigurationType, MenuType<? extends ConfigurationMenu>>
@@ -146,5 +151,10 @@ public class MenuHandler implements MenuHandlerInterface {
   @Override
   public MenuType<? extends EditorMenu> getMenuTypeByEditorType(EditorType editorType) {
     return editorMenuMap.get(editorType);
+  }
+
+  @Override
+  public MenuType<? extends ConfigUIMenu> getMenuTypeByCustomType(CustomMenuType customMenuType) {
+    return customMenuMap.get(customMenuType);
   }
 }

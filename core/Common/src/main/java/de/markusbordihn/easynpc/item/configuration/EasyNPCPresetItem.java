@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.item.configuration;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.block.entity.EasyNPCSpawnerBlockEntity;
+import de.markusbordihn.easynpc.data.preset.PresetData;
 import de.markusbordihn.easynpc.entity.easynpc.data.PresetDataCapable;
 import de.markusbordihn.easynpc.level.BaseEasyNPCSpawner;
 import de.markusbordihn.easynpc.network.components.TextComponent;
@@ -59,9 +60,6 @@ public class EasyNPCPresetItem extends Item {
   public static final String NAME = "easy_npc_preset";
   public static final String PRESET_TAG = "Preset";
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-  private static final String FALL_DISTANCE_TAG = "FallDistance";
-  private static final String FIRE_TAG = "Fire";
-  private static final String ON_GROUND_TAG = "OnGround";
   private static final String CUSTOM_NAME_TAG = "CustomName";
   private static final String TEXT_TAG = "text";
 
@@ -91,17 +89,7 @@ public class EasyNPCPresetItem extends Item {
       ItemStack itemStack, ResourceLocation entityType, CompoundTag presetData) {
     CompoundTag compoundTag = itemStack.getOrCreateTag();
     compoundTag.putString(ENTITY_TYPE_TAG, entityType.toString());
-
-    // Clean up preset data
-    if (presetData.contains(FIRE_TAG)) {
-      presetData.remove(FIRE_TAG);
-    }
-    if (presetData.contains(FALL_DISTANCE_TAG)) {
-      presetData.remove(FALL_DISTANCE_TAG);
-    }
-    if (presetData.contains(ON_GROUND_TAG)) {
-      presetData.remove(ON_GROUND_TAG);
-    }
+    PresetData.cleanupEntityData(presetData, PresetData.CleanupMode.FULL);
     compoundTag.put(PRESET_TAG, presetData);
   }
 
@@ -131,7 +119,6 @@ public class EasyNPCPresetItem extends Item {
   }
 
   public static boolean spawnAtPosition(BlockPos blockPos, ItemStack itemStack, Level level) {
-    // Ignore client side
     if (level.isClientSide) {
       return false;
     }
@@ -182,8 +169,6 @@ public class EasyNPCPresetItem extends Item {
   @Override
   public InteractionResult useOn(UseOnContext useOnContext) {
     Level level = useOnContext.getLevel();
-
-    // Ignore client side
     if (level.isClientSide) {
       return InteractionResult.SUCCESS;
     }

@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.io;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.data.preset.PresetMetadata;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import java.io.File;
 import java.io.IOException;
@@ -30,6 +31,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -110,6 +112,7 @@ public class CustomPresetDataFiles {
     return presetResourceLocationMap.keySet().stream();
   }
 
+  @SuppressWarnings("unused")
   public static Set<ResourceLocation> getPresetResourceLocationSet() {
     return presetResourceLocationMap.keySet();
   }
@@ -145,9 +148,31 @@ public class CustomPresetDataFiles {
   public static Path getPresetsResourceLocationPath(ResourceLocation resourceLocation) {
     Path path = presetResourceLocationMap.get(resourceLocation);
     if (path == null) {
+      log.debug("Preset {} not in cache, triggering refresh", resourceLocation);
       refreshPresetResourceLocations();
       path = presetResourceLocationMap.get(resourceLocation);
+      if (path == null) {
+        log.debug("Preset {} not found after refresh", resourceLocation);
+      }
     }
     return path;
+  }
+
+  @SuppressWarnings("unused")
+  public static PresetMetadata getPresetMetadata(ResourceLocation resourceLocation) {
+    Path presetPath = getPresetsResourceLocationPath(resourceLocation);
+    if (presetPath == null) {
+      log.warn("Preset file not found for resource location: {}", resourceLocation);
+      return PresetMetadata.createDefault();
+    }
+
+    CompoundTag compoundTag = PresetFileHandler.load(presetPath.toFile());
+    return PresetFileHandler.extractMetadata(compoundTag);
+  }
+
+  @SuppressWarnings("unused")
+  public static String getPresetDisplayName(
+      ResourceLocation resourceLocation, PresetMetadata metadata) {
+    return PresetFileHandler.getDisplayName(resourceLocation, metadata);
   }
 }

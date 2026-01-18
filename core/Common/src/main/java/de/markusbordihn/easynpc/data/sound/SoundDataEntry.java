@@ -88,7 +88,13 @@ public class SoundDataEntry {
   public void load(CompoundTag compoundTag) {
     this.type = SoundType.valueOf(compoundTag.getString(DATA_SOUND_TYPE));
     if (compoundTag.contains(DATA_SOUND_NAME_TAG)) {
-      ResourceLocation location = new ResourceLocation(compoundTag.getString(DATA_SOUND_NAME_TAG));
+      String soundName = compoundTag.getString(DATA_SOUND_NAME_TAG);
+      ResourceLocation location = ResourceLocation.tryParse(soundName);
+      if (location == null) {
+        log.error("Invalid sound location: {}", soundName);
+        this.soundEvent = SoundEvents.GENERIC_EXPLODE;
+        return;
+      }
       this.soundEvent =
           BuiltInRegistries.SOUND_EVENT
               .getOptional(location)

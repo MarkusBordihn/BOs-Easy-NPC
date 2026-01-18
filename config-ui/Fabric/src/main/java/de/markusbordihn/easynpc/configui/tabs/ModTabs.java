@@ -41,6 +41,10 @@ public class ModTabs {
     ItemGroupEvents.modifyEntriesEvent(
             ResourceKey.create(
                 Registries.CREATIVE_MODE_TAB, new ResourceLocation("easy_npc", "config_items")))
-        .register(entries -> entries.accept(ModItems.EASY_NPC_WAND.asItem().getDefaultInstance()));
+        .register(
+            entries -> {
+              entries.accept(ModItems.EASY_NPC_WAND.asItem().getDefaultInstance());
+              entries.accept(ModItems.PRESET_BROWSER.asItem().getDefaultInstance());
+            });
   }
 }

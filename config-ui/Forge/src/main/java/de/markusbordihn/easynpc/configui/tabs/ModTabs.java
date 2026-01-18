@@ -35,6 +35,7 @@ public class ModTabs {
     if (event.getTabKey().location().equals(new ResourceLocation("easy_npc", "config_items"))) {
       log.info("{} creative mod tabs ...", Constants.LOG_REGISTER_PREFIX);
       event.accept(ModItems.EASY_NPC_WAND.get());
+      event.accept(ModItems.PRESET_BROWSER.get());
     }
   }
 }

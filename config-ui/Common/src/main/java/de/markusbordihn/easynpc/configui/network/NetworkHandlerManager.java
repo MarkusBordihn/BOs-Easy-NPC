@@ -68,6 +68,7 @@ import de.markusbordihn.easynpc.configui.network.message.server.RespawnNPCMessag
 import de.markusbordihn.easynpc.configui.network.message.server.SaveDialogButtonMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.SaveDialogMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.SaveDialogSetMessage;
+import de.markusbordihn.easynpc.configui.network.message.server.SpawnPresetMessage;
 import de.markusbordihn.easynpc.network.NetworkHandlerManagerType;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import net.minecraft.server.level.ServerPlayer;
@@ -283,6 +284,9 @@ public class NetworkHandlerManager {
 
     networkHandler.registerServerNetworkMessage(
         ImportPresetMessage.MESSAGE_ID, ImportPresetMessage.class, ImportPresetMessage::create);
+
+    networkHandler.registerServerNetworkMessage(
+        SpawnPresetMessage.MESSAGE_ID, SpawnPresetMessage.class, SpawnPresetMessage::create);
 
     networkHandler.registerServerNetworkMessage(
         OpenActionDataEditorMessage.MESSAGE_ID,

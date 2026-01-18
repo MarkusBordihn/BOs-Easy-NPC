@@ -20,9 +20,12 @@
 package de.markusbordihn.easynpc.io;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.data.preset.PresetMetadata;
+import java.io.InputStream;
 import java.util.stream.Stream;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.packs.resources.Resource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -48,5 +51,29 @@ public class DataPresetDataFiles {
       log.error("Could not get default preset resource locations:", e);
     }
     return Stream.empty();
+  }
+
+  public static PresetMetadata getPresetMetadata(
+      MinecraftServer minecraftServer, ResourceLocation resourceLocation) {
+    try {
+      Resource resource =
+          minecraftServer.getResourceManager().getResource(resourceLocation).orElse(null);
+      if (resource == null) {
+        log.warn("DATA preset resource not found: {}", resourceLocation);
+        return PresetMetadata.createDefault();
+      }
+
+      try (InputStream inputStream = resource.open()) {
+        return PresetFileHandler.extractMetadata(inputStream, resourceLocation);
+      }
+    } catch (Exception e) {
+      log.warn("Failed to load metadata for DATA preset {}: {}", resourceLocation, e.getMessage());
+      return PresetMetadata.createDefault();
+    }
+  }
+
+  public static String getPresetDisplayName(
+      ResourceLocation resourceLocation, PresetMetadata metadata) {
+    return PresetFileHandler.getDisplayName(resourceLocation, metadata);
   }
 }

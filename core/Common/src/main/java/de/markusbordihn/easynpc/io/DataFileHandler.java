@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.io;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.data.preset.PresetExportFormat;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -58,11 +59,26 @@ public class DataFileHandler {
   }
 
   public static boolean isPresetFile(Path path) {
-    return path.toString().endsWith(Constants.NPC_NBT_SUFFIX) && isValidPresetFilename(path);
+    if (path == null) {
+      return false;
+    }
+
+    PresetExportFormat format = PresetExportFormat.getPresetExportFormat(path.toString());
+    if (format == PresetExportFormat.UNKNOWN || !isValidPresetFilename(path)) {
+      return false;
+    }
+
+    return Files.isRegularFile(path);
   }
 
   public static boolean isPresetFile(ResourceLocation resourceLocation) {
-    return resourceLocation.toString().endsWith(Constants.NPC_NBT_SUFFIX);
+    if (resourceLocation == null) {
+      return false;
+    }
+
+    PresetExportFormat format =
+        PresetExportFormat.getPresetExportFormat(resourceLocation.toString());
+    return format != PresetExportFormat.UNKNOWN;
   }
 
   public static String getPresetFileName(String fileName) {
@@ -73,7 +89,12 @@ public class DataFileHandler {
     if (result.isEmpty() || !VALID_PRESET_FILENAME_PATTERN.matcher(result).matches()) {
       return null;
     }
-    return result.endsWith(Constants.NPC_NBT_SUFFIX) ? result : result + Constants.NPC_NBT_SUFFIX;
+    // Check if already has a valid preset extension - if so, keep it
+    if (PresetExportFormat.hasPresetExtension(result)) {
+      return result;
+    }
+    // Only add default extension if no preset extension present
+    return result + PresetExportFormat.getDefault().getFileExtension();
   }
 
   public static void registerCommonDataFiles() {
@@ -105,7 +126,7 @@ public class DataFileHandler {
     RemoteSkinDataFiles.registerRemoteSkinData();
 
     log.info("{} Preset data folders ...", Constants.LOG_REGISTER_PREFIX);
-    CustomPresetDataFiles.registerCustomPresetData();
+    LocalPresetDataFiles.registerLocalPresetData();
   }
 
   public static Path getBackupFolder() {
@@ -275,7 +296,6 @@ public class DataFileHandler {
   private static boolean copyResourceToFile(Resource resource, File targetFile) {
     try (InputStream inputStream = resource.open();
         OutputStream outputStream = new FileOutputStream(targetFile)) {
-      // Use 8KB buffer for better performance (instead of 1KB)
       byte[] buffer = new byte[8192];
       int bytesRead;
       long totalBytes = 0;

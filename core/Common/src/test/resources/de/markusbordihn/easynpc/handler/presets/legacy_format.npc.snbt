@@ -1,0 +1,11 @@
+{
+  id: "minecraft:zombie",
+  UUID: [I; 555, 666, 777, 888],
+  CustomName: '{"text":"Legacy Zombie"}',
+  Health: 20.0f,
+  preset_metadata: {
+    name: "Legacy Format Test",
+    author: "TestAuthor",
+    version: "1.0.0"
+  }
+}

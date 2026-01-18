@@ -103,6 +103,21 @@ public class UpDownButton extends AbstractWidget {
     this.downButton.visible = enable;
   }
 
+  @Override
+  public void setY(int y) {
+    super.setY(y);
+    int singleButtonHeight = this.height / 2;
+    this.upButton.setY(y);
+    this.downButton.setY(y + singleButtonHeight);
+  }
+
+  @Override
+  public void setX(int x) {
+    super.setX(x);
+    this.upButton.setX(x);
+    this.downButton.setX(x);
+  }
+
   public interface OnUp {
     void onUp(UpDownButton button);
   }

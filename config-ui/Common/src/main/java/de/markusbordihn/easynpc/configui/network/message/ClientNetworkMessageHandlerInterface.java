@@ -23,9 +23,11 @@ import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.configui.network.NetworkHandlerManager;
 import de.markusbordihn.easynpc.configui.network.message.client.ExportClientPresetMessage;
 import de.markusbordihn.easynpc.configui.network.message.client.OpenMenuCallbackMessage;
+import de.markusbordihn.easynpc.data.preset.PresetExportFormat;
+import de.markusbordihn.easynpc.data.preset.PresetMetadata;
 import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.data.PresetDataCapable;
+import de.markusbordihn.easynpc.handler.PresetHandler;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
@@ -52,24 +54,47 @@ public interface ClientNetworkMessageHandlerInterface {
 
   default void exportClientPreset(
       final UUID uuid, final String name, final ServerPlayer serverPlayer) {
+    exportClientPreset(
+        uuid, name, serverPlayer, PresetExportFormat.getDefault(), PresetMetadata.getDefault());
+  }
+
+  default void exportClientPreset(
+      final UUID uuid,
+      final String name,
+      final ServerPlayer serverPlayer,
+      final PresetExportFormat exportFormat,
+      final PresetMetadata metadata) {
     if (name == null || name.isEmpty() || !NetworkMessageRecord.checkAccess(uuid, serverPlayer)) {
       return;
     }
 
     EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
-    PresetDataCapable<?> presetData = easyNPC.getEasyNPCPresetData();
-    CompoundTag compoundTag = presetData.serializePresetData();
+    if (easyNPC == null) {
+      log.error("Cannot export preset, EasyNPC with UUID {} not found", uuid);
+      return;
+    }
+
+    CompoundTag exportData = PresetHandler.prepareClientExportData(easyNPC, metadata);
+    if (exportData == null) {
+      log.error(
+          "Failed to prepare client export data for {}", easyNPC.getEntity().getName().getString());
+      return;
+    }
+
     log.info(
-        "Exporting preset for {} to {}",
+        "Exporting preset for {} to {} (Format: {})",
         easyNPC.getEntity().getName().getString(),
-        serverPlayer.getName().getString());
+        serverPlayer.getName().getString(),
+        exportFormat);
+
     NetworkHandlerManager.sendMessageToPlayer(
         new ExportClientPresetMessage(
             uuid,
             easyNPC.getEntity().getName().getString(),
             easyNPC.getEasyNPCSkinData().getSkinModel(),
             name,
-            compoundTag),
+            exportData,
+            exportFormat),
         serverPlayer);
   }
 }

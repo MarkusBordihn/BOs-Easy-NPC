@@ -58,6 +58,7 @@ public class Screen<
   protected int bottomPos;
   protected boolean renderBackground = true;
   protected boolean showCloseButton = true;
+  protected boolean renderDefaultScreenBackground = true;
   protected Button closeButton = null;
   protected boolean compactMode = false;
   protected int titleLabelX;
@@ -175,7 +176,9 @@ public class Screen<
 
   protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
     // Render screen background
-    this.renderDefaultScreenBg(guiGraphics, this.leftPos, this.topPos);
+    if (renderDefaultScreenBackground) {
+      this.renderDefaultScreenBg(guiGraphics, this.leftPos, this.topPos);
+    }
 
     // Render title background for none compact mode
     if (!this.compactMode) {
