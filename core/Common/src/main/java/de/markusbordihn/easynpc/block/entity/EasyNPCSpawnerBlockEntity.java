@@ -65,9 +65,6 @@ public class EasyNPCSpawnerBlockEntity extends BlockEntity {
       BlockPos blockPos,
       BlockState blockState,
       EasyNPCSpawnerBlockEntity blockEntity) {
-    if (!blockEntity.spawner.hasEasyNPC()) {
-      return;
-    }
     blockEntity.spawner.clientTick(level, blockPos);
   }
 
@@ -76,9 +73,6 @@ public class EasyNPCSpawnerBlockEntity extends BlockEntity {
       BlockPos blockPos,
       BlockState blockState,
       EasyNPCSpawnerBlockEntity blockEntity) {
-    if (!blockEntity.spawner.hasEasyNPC()) {
-      return;
-    }
     blockEntity.spawner.serverTick((ServerLevel) level, blockPos);
   }
 
@@ -107,7 +101,6 @@ public class EasyNPCSpawnerBlockEntity extends BlockEntity {
   @Override
   public void setChanged() {
     super.setChanged();
-    this.spawner.updateSpawnData(this.spawner.save(new CompoundTag()));
   }
 
   @Override

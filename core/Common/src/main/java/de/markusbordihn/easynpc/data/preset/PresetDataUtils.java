@@ -19,9 +19,25 @@
 
 package de.markusbordihn.easynpc.data.preset;
 
+import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.component.DataComponents;
+import java.util.Optional;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.SpawnData;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class PresetDataUtils {
+
+  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   private static final String[] RUNTIME_STATE_TAGS = {
     "Fire", "FallDistance", "OnGround", "Motion", "HurtTime", "DeathTime", "Air"
@@ -53,6 +69,94 @@ public class PresetDataUtils {
     }
 
     return entityData;
+  }
+
+  public static SpawnData toSpawnData(PresetData presetData) {
+    if (presetData == null || !presetData.hasValidData()) {
+      return new SpawnData();
+    }
+    return new SpawnData(presetData.data().copy(), Optional.empty(), Optional.empty());
+  }
+
+  public static PresetData fromSpawnData(SpawnData spawnData) {
+    if (spawnData == null) {
+      return PresetData.EMPTY;
+    }
+
+    CompoundTag entityData = spawnData.getEntityToSpawn();
+    if (!entityData.contains(Entity.ID_TAG)) {
+      return PresetData.EMPTY;
+    }
+
+    String entityTypeId = entityData.getString(Entity.ID_TAG);
+    EntityType<?> entityType = EntityType.byString(entityTypeId).orElse(null);
+
+    if (entityType == null) {
+      return PresetData.EMPTY;
+    }
+
+    return new PresetData(entityType, entityData.copy());
+  }
+
+  public static ItemStack toItemStack(PresetData presetData) {
+    if (presetData == null || !presetData.hasValidData()) {
+      log.warn("Cannot create item stack from invalid preset data");
+      return ItemStack.EMPTY;
+    }
+
+    Item item =
+        BuiltInRegistries.ITEM
+            .getOptional(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "easy_npc_preset"))
+            .orElse(null);
+    if (item == null) {
+      log.error("Cannot find easy_npc_preset item in registry");
+      return ItemStack.EMPTY;
+    }
+
+    ItemStack itemStack = new ItemStack(item);
+    itemStack.set(DataComponents.PRESET_DATA, presetData);
+
+    return itemStack;
+  }
+
+  public static PresetData fromItemStack(ItemStack itemStack) {
+    if (itemStack.isEmpty()) {
+      return PresetData.EMPTY;
+    }
+
+    PresetData presetData = itemStack.get(DataComponents.PRESET_DATA);
+    if (presetData == null) {
+      return PresetData.EMPTY;
+    }
+
+    return presetData;
+  }
+
+  public static boolean spawnEntity(PresetData presetData, Level level, BlockPos blockPos) {
+    if (level.isClientSide || presetData == null || !presetData.hasValidData()) {
+      return false;
+    }
+
+    Entity entity = presetData.entityType().create(level);
+    if (entity == null) {
+      log.error("Unable to create entity for {} in {}", presetData.entityType(), level);
+      return false;
+    }
+
+    CompoundTag entityData = presetData.data().copy();
+    if (entityData.contains(Entity.UUID_TAG)) {
+      entityData.remove(Entity.UUID_TAG);
+    }
+
+    entity.load(entityData);
+    entity.moveTo(blockPos.getX() + 0.5, blockPos.getY(), blockPos.getZ() + 0.5);
+
+    if (level.addFreshEntity(entity)) {
+      log.debug("Spawned {} at {} in {}", presetData.entityType(), blockPos, level);
+      return true;
+    }
+
+    return false;
   }
 
   public enum CleanupMode {

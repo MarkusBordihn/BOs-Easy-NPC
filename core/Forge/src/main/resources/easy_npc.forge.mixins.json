@@ -27,6 +27,7 @@
     "entity.VillagerMixin",
     "entity.WitchMixin",
     "menu.MerchantMenuMixin",
+    "spawner.BaseSpawnerMixin",
     "target.LivingEntityTargetingMixin",
     "target.MobTargetingMixin"
   ],

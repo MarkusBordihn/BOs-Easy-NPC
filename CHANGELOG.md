@@ -10,6 +10,7 @@ Check the [upgrade guide][upgrade_guide] for more information.
 
 ### 6.7.0
 
+- Fixed #650 by implementing Wolf Leg Animations in setupAnim method.
 - Fixed #648 by fixing canBeHitByProjectiles translation.
 - Fixed #645 by adding `allowBypassInvulnerability` config option to allow/deny bypassing
   invulnerability for NPCs.
@@ -18,9 +19,12 @@ Check the [upgrade guide][upgrade_guide] for more information.
 - Fixed name tag showing up for dialog and configuration UI.
 - Fixed distance action issue were multiple actions are not properly triggered.
 - Fixed issues with NPC presets.
+- Fixed Cat NPC and Wolf NPC owner data not syncing properly.
 - Added preset browser for easier selection of common NPC presets.
 - Added preset .snbt (text) export and import functionality for sharing NPC presets.
-- Converted existing NPC presets to use new .snbt format.
+- Refactored existing NPC presets to use new .snbt format.
+- Refactored spawner system to use new preset format for better maintainability and future
+  improvements.
 
 ### 6.6.2
 

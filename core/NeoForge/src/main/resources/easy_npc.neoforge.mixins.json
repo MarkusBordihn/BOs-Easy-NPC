@@ -20,9 +20,16 @@
     "renderer.VillagerProfessionLayerMixin"
   ],
   "mixins": [
-    "entity.CreeperMixin", "entity.EndermanMixin", "entity.FoxMixin", "entity.RaiderMixin",
-    "entity.VillagerMixin", "entity.WitchMixin", "menu.MerchantMenuMixin",
-    "target.LivingEntityTargetingMixin", "target.MobTargetingMixin"
+    "entity.CreeperMixin",
+    "entity.EndermanMixin",
+    "entity.FoxMixin",
+    "entity.RaiderMixin",
+    "entity.VillagerMixin",
+    "entity.WitchMixin",
+    "menu.MerchantMenuMixin",
+    "spawner.BaseSpawnerMixin",
+    "target.LivingEntityTargetingMixin",
+    "target.MobTargetingMixin"
   ],
   "injectors": {
     "defaultRequire": 1

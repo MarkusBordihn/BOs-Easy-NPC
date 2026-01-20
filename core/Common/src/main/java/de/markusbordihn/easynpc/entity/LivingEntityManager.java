@@ -48,6 +48,9 @@ public class LivingEntityManager {
   private static final ConcurrentHashMap<UUID, Set<EasyNPC<?>>> presetMap =
       new ConcurrentHashMap<>();
   private static final ConcurrentHashMap<UUID, ServerPlayer> playerMap = new ConcurrentHashMap<>();
+  private static final ConcurrentHashMap<UUID, PresetCountCache> presetCountCache =
+      new ConcurrentHashMap<>();
+  private static final int PRESET_COUNT_CACHE_TTL = 10;
 
   private LivingEntityManager() {}
 
@@ -237,6 +240,22 @@ public class LivingEntityManager {
     return presetMap.getOrDefault(presetUUID, ConcurrentHashMap.newKeySet()).size();
   }
 
+  public static int getEntityCountByPresetUUID(UUID presetUUID, ServerLevel serverLevel) {
+    if (presetUUID == null || serverLevel == null) {
+      return 0;
+    }
+
+    long currentTick = serverLevel.getGameTime();
+    PresetCountCache cache = presetCountCache.get(presetUUID);
+    if (cache != null && (currentTick - cache.tickTime) < PRESET_COUNT_CACHE_TTL) {
+      return cache.count;
+    }
+
+    int count = getEntityCountByPresetUUID(presetUUID);
+    presetCountCache.put(presetUUID, new PresetCountCache(count, currentTick));
+    return count;
+  }
+
   public static ConcurrentHashMap<UUID, EasyNPC<?>> getNpcEntityMap() {
     return npcEntityMap;
   }
@@ -272,4 +291,6 @@ public class LivingEntityManager {
       log.warn("{} [Discard] Unable to discard EASY NPC entity {}: {}", LOG_PREFIX, easyNPC, uuid);
     }
   }
+
+  private record PresetCountCache(int count, long tickTime) {}
 }

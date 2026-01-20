@@ -157,6 +157,42 @@ public class EasyNPCModel {
     }
   }
 
+  public static void setupLegAnimations(
+      final EasyNPC<?> easyNPC,
+      final EasyNPCModelManager modelManager,
+      final float limbSwing,
+      final float limbSwingAmount,
+      final boolean isSitting) {
+    if (easyNPC == null || modelManager == null || isSitting) {
+      return;
+    }
+
+    ModelDataCapable<?> modelData = easyNPC.getEasyNPCModelData();
+    if (modelData != null && modelData.getModelPose() != ModelPose.DEFAULT) {
+      return;
+    }
+
+    ModelPart rightHindLeg = modelManager.getModelPart(ModelPartType.RIGHT_HIND_LEG);
+    if (rightHindLeg != null) {
+      rightHindLeg.xRot = Mth.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
+    }
+
+    ModelPart leftHindLeg = modelManager.getModelPart(ModelPartType.LEFT_HIND_LEG);
+    if (leftHindLeg != null) {
+      leftHindLeg.xRot = Mth.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.4F * limbSwingAmount;
+    }
+
+    ModelPart rightFrontLeg = modelManager.getModelPart(ModelPartType.RIGHT_FRONT_LEG);
+    if (rightFrontLeg != null) {
+      rightFrontLeg.xRot = Mth.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.4F * limbSwingAmount;
+    }
+
+    ModelPart leftFrontLeg = modelManager.getModelPart(ModelPartType.LEFT_FRONT_LEG);
+    if (leftFrontLeg != null) {
+      leftFrontLeg.xRot = Mth.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
+    }
+  }
+
   public static void applyArmPoseToModelPart(
       final ModelArmPose armPose,
       final ModelPart armModelPart,

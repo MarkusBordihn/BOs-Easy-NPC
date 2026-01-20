@@ -88,6 +88,8 @@ public class EasyNPCWolfModelMixin<T extends Wolf> {
       CallbackInfo callbackInfo) {
     if (entity instanceof EasyNPC<?> easyNPC) {
       EasyNPCModel.setupAnimationEnd(easyNPC, this.easyNPC$modelManager);
+      EasyNPCModel.setupLegAnimations(
+          easyNPC, this.easyNPC$modelManager, limbSwing, limbSwingAmount, entity.isInSittingPose());
     }
   }
 }

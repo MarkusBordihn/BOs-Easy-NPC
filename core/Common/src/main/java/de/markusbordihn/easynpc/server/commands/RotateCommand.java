@@ -24,7 +24,6 @@ public class RotateCommand extends Command {
   public static ArgumentBuilder<CommandSourceStack, ?> register() {
     return Commands.literal("rotate")
         .requires(cs -> cs.hasPermission(Commands.LEVEL_ALL))
-        // Ganzkörper-Rotation
         .then(
             Commands.argument(NPC_TARGETS_ARG, EasyNPCArgument.npc())
                 .then(
@@ -36,7 +35,6 @@ public class RotateCommand extends Command {
                                   EasyNPCArgument.getEntitiesWithAccess(context, NPC_TARGETS_ARG);
                               return rotateEntity(context.getSource(), easyNPCs, yaw);
                             })))
-        // Einzelteil-Rotation (ModelPartType)
         .then(
             Commands.argument(NPC_TARGETS_ARG, EasyNPCArgument.npc())
                 .then(
