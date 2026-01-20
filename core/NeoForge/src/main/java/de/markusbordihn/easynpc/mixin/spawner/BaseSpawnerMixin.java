@@ -20,17 +20,39 @@
 package de.markusbordihn.easynpc.mixin.spawner;
 
 import de.markusbordihn.easynpc.access.SpawnerAccessHelper;
+import de.markusbordihn.easynpc.data.spawner.SpawnerData;
+import de.markusbordihn.easynpc.data.spawner.SpawnerType;
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.random.WeightedList;
 import net.minecraft.world.level.BaseSpawner;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.SpawnData;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 
 @Mixin(BaseSpawner.class)
 public abstract class BaseSpawnerMixin implements SpawnerAccessHelper {
 
   @Shadow private SpawnData nextSpawnData;
+
+  @Shadow private int spawnDelay;
+
+  @Shadow private int minSpawnDelay;
+
+  @Shadow private int maxSpawnDelay;
+
+  @Shadow private int spawnCount;
+
+  @Shadow private int maxNearbyEntities;
+
+  @Shadow private int requiredPlayerRange;
+
+  @Shadow private int spawnRange;
+
+  @Shadow private WeightedList<SpawnData> spawnPotentials;
+
+  @Unique private SpawnerType easyNPC$spawnerType;
 
   @Shadow
   protected abstract void setNextSpawnData(Level level, BlockPos blockPos, SpawnData spawnData);
@@ -43,5 +65,98 @@ public abstract class BaseSpawnerMixin implements SpawnerAccessHelper {
   @Override
   public SpawnData getSpawnDataDirect() {
     return this.nextSpawnData;
+  }
+
+  @Override
+  public void initializeSpawnerData(SpawnerType spawnerType, SpawnData spawnData) {
+    this.easyNPC$spawnerType = spawnerType != null ? spawnerType : SpawnerType.SINGLE_SPAWNER;
+
+    SpawnerData config = SpawnerData.fromSpawnerType(this.easyNPC$spawnerType);
+
+    this.spawnDelay = config.spawnDelay();
+    this.minSpawnDelay = config.minSpawnDelay();
+    this.maxSpawnDelay = config.maxSpawnDelay();
+    this.spawnCount = config.spawnCount();
+    this.maxNearbyEntities = config.maxNearbyEntities();
+    this.requiredPlayerRange = config.requiredPlayerRange();
+    this.spawnRange = config.spawnRange();
+
+    this.nextSpawnData = SpawnerData.getOrCreateSpawnData(spawnData);
+    this.spawnPotentials = SpawnerData.createSpawnPotentials(this.nextSpawnData);
+  }
+
+  @Override
+  public SpawnerType getSpawnerType() {
+    return this.easyNPC$spawnerType;
+  }
+
+  @Override
+  public int getMaxNearbyEntities() {
+    return this.maxNearbyEntities;
+  }
+
+  @Override
+  public void setMaxNearbyEntities(int value) {
+    this.maxNearbyEntities = value;
+  }
+
+  @Override
+  public int getSpawnDelay() {
+    return this.spawnDelay;
+  }
+
+  @Override
+  public void setSpawnDelay(int value) {
+    this.spawnDelay = value;
+  }
+
+  @Override
+  public int getMinSpawnDelay() {
+    return this.minSpawnDelay;
+  }
+
+  @Override
+  public void setMinSpawnDelay(int value) {
+    this.minSpawnDelay = value;
+  }
+
+  @Override
+  public int getMaxSpawnDelay() {
+    return this.maxSpawnDelay;
+  }
+
+  @Override
+  public void setMaxSpawnDelay(int value) {
+    this.maxSpawnDelay = value;
+  }
+
+  @Override
+  public int getSpawnCount() {
+    return this.spawnCount;
+  }
+
+  @Override
+  public void setSpawnCount(int value) {
+    this.spawnCount = value;
+  }
+
+  @Override
+  public int getRequiredPlayerRange() {
+    return this.requiredPlayerRange;
+  }
+
+  @Override
+  public void setRequiredPlayerRange(int value) {
+    this.requiredPlayerRange = value;
+  }
+
+  @Override
+  public int getSpawnRange() {
+    return this.spawnRange;
+  }
+
+  @Override
+  public void setSpawnRange(int value) {
+    this.spawnRange = value;
   }
 }

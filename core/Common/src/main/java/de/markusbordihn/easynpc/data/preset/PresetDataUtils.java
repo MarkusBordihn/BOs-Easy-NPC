@@ -21,7 +21,9 @@ package de.markusbordihn.easynpc.data.preset;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.component.DataComponents;
+import de.markusbordihn.easynpc.utils.CompoundTagUtils;
 import java.util.Optional;
+import java.util.UUID;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -29,6 +31,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -45,8 +48,8 @@ public class PresetDataUtils {
   private static final String[] RUNTIME_STATE_TAGS = {
     "Fire", "FallDistance", "OnGround", "Motion", "HurtTime", "DeathTime", "Air"
   };
-
   private static final String[] POSITION_TAGS = {"Pos", "Rotation"};
+  private static final String ENTITY_UUID_TAG = "UUID";
 
   private PresetDataUtils() {
     // Utility class
@@ -78,7 +81,14 @@ public class PresetDataUtils {
     if (presetData == null || !presetData.hasValidData()) {
       return new SpawnData();
     }
-    return new SpawnData(presetData.data().copy(), Optional.empty(), Optional.empty());
+
+    CompoundTag dataCopy = presetData.data().copy();
+    if (CompoundTagUtils.readUUID(dataCopy, ENTITY_UUID_TAG) == null) {
+      CompoundTagUtils.writeUUID(dataCopy, ENTITY_UUID_TAG, UUID.randomUUID());
+      log.debug("Generated missing Entity UUID in toSpawnData");
+    }
+
+    return new SpawnData(dataCopy, Optional.empty(), Optional.empty());
   }
 
   public static PresetData fromSpawnData(SpawnData spawnData) {
@@ -121,7 +131,11 @@ public class PresetDataUtils {
     }
 
     ItemStack itemStack = new ItemStack(item);
-    itemStack.set(DataComponents.PRESET_DATA, presetData);
+    itemStack.set(
+        DataComponents.PRESET_DATA,
+        new PresetData(
+            presetData.entityType(),
+            cleanupEntityData(presetData.data().copy(), CleanupMode.FULL)));
 
     return itemStack;
   }
@@ -136,30 +150,37 @@ public class PresetDataUtils {
       return PresetData.EMPTY;
     }
 
+    String entityTypeId = presetData.data().getString(PresetData.ENTITY_TYPE_TAG).orElse("");
+    EntityType<?> entityType = EntityType.byString(entityTypeId).orElse(null);
+
+    if (entityType == null) {
+      return PresetData.EMPTY;
+    }
+
     return presetData;
   }
 
   public static boolean spawnEntity(PresetData presetData, Level level, BlockPos blockPos) {
-    if (level.isClientSide() || presetData == null || !presetData.hasValidData()) {
+    if (level.isClientSide()
+        || !(level instanceof ServerLevel serverLevel)
+        || presetData == null
+        || !presetData.hasValidData()) {
       return false;
     }
 
-    if (!(level instanceof ServerLevel serverLevel)) {
-      return false;
-    }
-
-    Entity entity = presetData.entityType().create(serverLevel, net.minecraft.world.entity.EntitySpawnReason.COMMAND);
+    Entity entity = presetData.entityType().create(serverLevel, EntitySpawnReason.COMMAND);
     if (entity == null) {
       log.error("Unable to create entity for {} in {}", presetData.entityType(), level);
       return false;
     }
 
     CompoundTag entityData = presetData.data().copy();
-    if (entityData.contains("UUID")) {
-      entityData.remove("UUID");
+    if (entityData.contains(ENTITY_UUID_TAG)) {
+      entityData.remove(ENTITY_UUID_TAG);
     }
 
-    entity.load(TagValueInput.create(ProblemReporter.DISCARDING, serverLevel.registryAccess(), entityData));
+    entity.load(
+        TagValueInput.create(ProblemReporter.DISCARDING, serverLevel.registryAccess(), entityData));
     entity.setPos(blockPos.getX() + 0.5, blockPos.getY(), blockPos.getZ() + 0.5);
 
     if (level.addFreshEntity(entity)) {

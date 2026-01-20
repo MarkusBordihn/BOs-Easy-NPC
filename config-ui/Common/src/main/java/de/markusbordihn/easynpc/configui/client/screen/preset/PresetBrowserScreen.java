@@ -91,7 +91,7 @@ public class PresetBrowserScreen extends CustomScreen<PresetBrowserMenu, Additio
         new SpinButton<>(
             listX,
             filterY,
-            65,
+            68,
             16,
             PresetFilterType.getFilterNames(),
             PresetFilterType.ALL.name(),
@@ -100,7 +100,7 @@ public class PresetBrowserScreen extends CustomScreen<PresetBrowserMenu, Additio
               refreshPresetList();
             }));
 
-    this.searchBox = new TextField(this.font, listX + 70, filterY, listWidth - 65);
+    this.searchBox = new TextField(this.font, listX + 73, filterY, listWidth - 65);
     this.searchBox.setMaxLength(50);
     this.searchBox.setHint(Component.translatable("text.easy_npc.config.preset_browser.search"));
     this.searchBox.setResponder(

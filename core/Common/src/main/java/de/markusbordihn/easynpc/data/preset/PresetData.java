@@ -50,10 +50,11 @@ public record PresetData(
     Identifier location,
     PresetType presetType,
     PresetMetadata metadata) {
-  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-
   public static final String ID = "preset_data";
   public static final String EMPTY_NAME = "Empty";
+  public static final String ENTITY_TYPE_TAG = "EntityType";
+  public static final String PRESET_TAG = "Preset";
+  public static final String PRESET_UUID_TAG = "PresetUUID";
   public static final String ID_TAG = "id";
   public static final String UUID_TAG = "UUID";
   public static final PresetData EMPTY =
@@ -64,7 +65,6 @@ public record PresetData(
           null,
           null,
           PresetMetadata.createDefault());
-
   public static final Codec<PresetData> CODEC =
       RecordCodecBuilder.create(
           instance ->
@@ -104,7 +104,6 @@ public record PresetData(
                               location.orElse(null),
                               presetType.orElse(null),
                               metadata)));
-
   public static final StreamCodec<RegistryFriendlyByteBuf, PresetData> STREAM_CODEC =
       StreamCodec.composite(
           ByteBufCodecs.STRING_UTF8,
@@ -132,12 +131,13 @@ public record PresetData(
                   location.orElse(null),
                   presetType.orElse(null),
                   metadata));
+  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   public PresetData(EntityType<?> entityType, CompoundTag data) {
     this(
         entityType.getDescriptionId(),
         entityType,
-        data,
+        ensurePresetUUID(data),
         null,
         null,
         PresetMetadata.createDefault());
@@ -158,6 +158,20 @@ public record PresetData(
         location,
         presetType,
         metadata);
+  }
+
+  private static CompoundTag ensurePresetUUID(CompoundTag data) {
+    if (data == null) {
+      return data;
+    }
+
+    if (CompoundTagUtils.readUUID(data, PRESET_UUID_TAG) == null) {
+      CompoundTag updated = data.copy();
+      CompoundTagUtils.writeUUID(updated, PRESET_UUID_TAG, UUID.randomUUID());
+      return updated;
+    }
+
+    return data;
   }
 
   public static PresetData fromCompoundTag(
@@ -183,30 +197,11 @@ public record PresetData(
     }
 
     return new PresetData(
-        location, presetType, PresetMetadata.fromPresetData(compoundTag), entityData, entityType);
-  }
-
-  public static PresetData fromNBT(
-      Identifier location,
-      PresetType presetType,
-      PresetMetadata metadata,
-      CompoundTag compoundTag) {
-    if (compoundTag == null || !compoundTag.contains(ID_TAG)) {
-      return null;
-    }
-
-    String entityTypeId = compoundTag.getString(ID_TAG).orElse("");
-    EntityType<?> entityType = EntityType.byString(entityTypeId).orElse(null);
-
-    if (entityType == null) {
-      return null;
-    }
-
-    return new PresetData(location, presetType, metadata, compoundTag, entityType);
-  }
-
-  public static PresetData of(EntityType<?> entityType, CompoundTag compoundTag) {
-    return new PresetData(entityType, compoundTag);
+        location,
+        presetType,
+        PresetMetadata.fromPresetData(compoundTag),
+        ensurePresetUUID(entityData),
+        entityType);
   }
 
   public static boolean has(ItemStack itemStack) {
@@ -242,7 +237,7 @@ public record PresetData(
       Identifier location,
       PresetType presetType,
       PresetMetadata metadata) {
-    return new PresetData(name, entityType, data, location, presetType, metadata);
+    return new PresetData(name, entityType, ensurePresetUUID(data), location, presetType, metadata);
   }
 
   public boolean isEmpty() {
@@ -288,5 +283,19 @@ public record PresetData(
     CompoundTag updatedData = data.copy();
     CompoundTagUtils.writeUUID(updatedData, UUID_TAG, uuid);
     return new PresetData(name, entityType, updatedData, location, presetType, metadata);
+  }
+
+  public UUID getPresetUUID() {
+    if (data == null) {
+      return null;
+    }
+    return CompoundTagUtils.readUUID(data, PRESET_UUID_TAG);
+  }
+
+  public UUID getEntityUUID() {
+    if (data == null) {
+      return null;
+    }
+    return CompoundTagUtils.readUUID(data, UUID_TAG);
   }
 }

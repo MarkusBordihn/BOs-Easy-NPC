@@ -96,7 +96,6 @@ public class BaseEasyNPCSpawnerBlockEntityRenderer<T extends EasyNPCSpawnerBlock
 
       // Transfer light coords from block entity render state to entity render state
       entityRenderState.lightCoords = renderState.lightCoords;
-
       renderState.entityRenderState = entityRenderState;
     } catch (Exception exception) {
       renderState.entityRenderState = null;

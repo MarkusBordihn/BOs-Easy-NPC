@@ -46,7 +46,7 @@ public interface PresetDataCapable<T extends PathfinderMob> extends EasyNPC<T> {
       ServerEntityData.defineId(ServerDataIndex.PRESET_UUID, EntityDataSerializersManager.UUID);
   String PRESET_UUID_TAG = "PresetUUID";
   String PRESET_METADATA_TAG = "PresetMetadata";
-  String UUID_TAG = "UUID";
+  String ENTITY_UUID_TAG = "UUID";
   String ID_TAG = "id";
 
   List<String> ENTITY_DATA_VOLATILE_FIELDS =
@@ -87,7 +87,7 @@ public interface PresetDataCapable<T extends PathfinderMob> extends EasyNPC<T> {
 
     // If preset contains id and pos then we can import it directly, otherwise we
     // need to merge it with existing data.
-    if (!compoundTag.contains(UUID_TAG) || !compoundTag.contains("Pos")) {
+    if (!compoundTag.contains(ENTITY_UUID_TAG) || !compoundTag.contains("Pos")) {
       CompoundTag existingCompoundTag = this.serializePresetData();
 
       // Remove existing dialog data.
@@ -150,10 +150,13 @@ public interface PresetDataCapable<T extends PathfinderMob> extends EasyNPC<T> {
       entityData.putString(ID_TAG, entityTypeId);
     }
 
-    // Add Preset UUID for unique identification
+    // Add Preset UUID for unique identification (after saveWithoutId to prevent overwriting)
     if (!entityData.contains(PRESET_UUID_TAG)) {
       CompoundTagUtils.writeUUID(entityData, PRESET_UUID_TAG, UUID.randomUUID());
     }
+
+    // Add Entity UUID for spawner tracking (single/boss spawner)
+    CompoundTagUtils.writeUUID(entityData, ENTITY_UUID_TAG, this.getEntity().getUUID());
 
     // Clean up and optimize entity data for smaller memory footprint
     for (String entityDataFieldName : ENTITY_DATA_VOLATILE_FIELDS) {
