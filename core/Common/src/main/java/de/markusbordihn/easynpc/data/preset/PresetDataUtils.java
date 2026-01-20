@@ -41,8 +41,8 @@ public class PresetDataUtils {
   private static final String[] RUNTIME_STATE_TAGS = {
     "Fire", "FallDistance", "OnGround", "Motion", "HurtTime", "DeathTime", "Air"
   };
-
   private static final String[] POSITION_TAGS = {"Pos", "Rotation"};
+  private static final String ENTITY_UUID_TAG = "UUID";
 
   private PresetDataUtils() {
     // Utility class
@@ -74,7 +74,14 @@ public class PresetDataUtils {
     if (presetData == null || !presetData.hasValidData()) {
       return new SpawnData();
     }
-    return new SpawnData(presetData.data().copy(), Optional.empty());
+
+    CompoundTag dataCopy = presetData.data().copy();
+    if (!dataCopy.hasUUID(ENTITY_UUID_TAG)) {
+      dataCopy.putUUID(ENTITY_UUID_TAG, java.util.UUID.randomUUID());
+      log.debug("Generated missing Entity UUID in toSpawnData");
+    }
+
+    return new SpawnData(dataCopy, Optional.empty());
   }
 
   public static PresetData fromSpawnData(SpawnData spawnData) {
@@ -157,8 +164,8 @@ public class PresetDataUtils {
     }
 
     CompoundTag entityData = presetData.data().copy();
-    if (entityData.contains(Entity.UUID_TAG)) {
-      entityData.remove(Entity.UUID_TAG);
+    if (entityData.contains(ENTITY_UUID_TAG)) {
+      entityData.remove(ENTITY_UUID_TAG);
     }
 
     entity.load(entityData);

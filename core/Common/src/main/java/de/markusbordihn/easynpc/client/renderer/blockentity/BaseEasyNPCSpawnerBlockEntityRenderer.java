@@ -23,10 +23,10 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import de.markusbordihn.easynpc.block.entity.EasyNPCSpawnerBlockEntity;
 import de.markusbordihn.easynpc.level.BaseEasyNPCSpawner;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.BaseSpawner;
@@ -34,8 +34,12 @@ import net.minecraft.world.level.BaseSpawner;
 public class BaseEasyNPCSpawnerBlockEntityRenderer<T extends EasyNPCSpawnerBlockEntity>
     implements BlockEntityRenderer<T> {
 
+  private final EntityRenderDispatcher entityRenderer;
+
   public BaseEasyNPCSpawnerBlockEntityRenderer(
-      @SuppressWarnings("unused") BlockEntityRendererProvider.Context context) {}
+      BlockEntityRendererProvider.Context context) {
+    this.entityRenderer = context.getEntityRenderer();
+  }
 
   @Override
   public void render(
@@ -78,8 +82,7 @@ public class BaseEasyNPCSpawnerBlockEntityRenderer<T extends EasyNPCSpawnerBlock
     poseStack.translate(0.0F, -0.2F, 0.0F);
     poseStack.mulPose(Axis.XP.rotationDegrees(-30.0F));
     poseStack.scale(scale, scale, scale);
-    Minecraft.getInstance()
-        .getEntityRenderDispatcher()
+    this.entityRenderer
         .render(entity, 0.0F, 0.0F, 0.0F, 0.0F, partialTicks, poseStack, bufferSource, packedLight);
     poseStack.popPose();
   }

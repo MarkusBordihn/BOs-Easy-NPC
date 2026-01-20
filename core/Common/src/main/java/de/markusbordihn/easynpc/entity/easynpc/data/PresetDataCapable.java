@@ -39,6 +39,7 @@ public interface PresetDataCapable<T extends PathfinderMob> extends EasyNPC<T> {
       ServerEntityData.defineId(ServerDataIndex.PRESET_UUID, EntityDataSerializersManager.UUID);
   String PRESET_UUID_TAG = "PresetUUID";
   String PRESET_METADATA_TAG = "PresetMetadata";
+  String ENTITY_UUID_TAG = "UUID";
 
   List<String> ENTITY_DATA_VOLATILE_FIELDS =
       List.of(
@@ -129,13 +130,17 @@ public interface PresetDataCapable<T extends PathfinderMob> extends EasyNPC<T> {
       compoundTag.putString(Entity.ID_TAG, entityTypeId);
     }
 
-    // Add Preset UUID for unique identification
-    if (!compoundTag.contains(PRESET_UUID_TAG)) {
-      compoundTag.putUUID(PRESET_UUID_TAG, UUID.randomUUID());
-    }
-
     // Entity saved data
     CompoundTag entityData = this.getEntity().saveWithoutId(compoundTag);
+
+    // Add Preset UUID for unique identification (after saveWithoutId to prevent overwriting)
+    if (!entityData.contains(PRESET_UUID_TAG)) {
+      UUID presetUUID = this.hasPresetUUID() ? this.getPresetUUID() : UUID.randomUUID();
+      entityData.putUUID(PRESET_UUID_TAG, presetUUID);
+    }
+
+    // Add Entity UUID for spawner tracking (single/boss spawner)
+    entityData.putUUID(ENTITY_UUID_TAG, this.getEntity().getUUID());
 
     // Clean up and optimize entity data for smaller memory footprint
     for (String entityDataFieldName : ENTITY_DATA_VOLATILE_FIELDS) {

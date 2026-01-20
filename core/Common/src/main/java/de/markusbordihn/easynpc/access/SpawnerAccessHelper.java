@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.access;
 
+import de.markusbordihn.easynpc.data.spawner.SpawnerType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.SpawnData;
@@ -28,4 +29,36 @@ public interface SpawnerAccessHelper {
   void setSpawnDataDirect(Level level, BlockPos blockPos, SpawnData spawnData);
 
   SpawnData getSpawnDataDirect();
+
+  void initializeSpawnerData(SpawnerType spawnerType, SpawnData spawnData);
+
+  SpawnerType getSpawnerType();
+
+  int getMaxNearbyEntities();
+
+  int getSpawnDelay();
+
+  int getMinSpawnDelay();
+
+  int getMaxSpawnDelay();
+
+  int getSpawnCount();
+
+  int getRequiredPlayerRange();
+
+  int getSpawnRange();
+
+  void setSpawnDelay(int value);
+
+  void setMinSpawnDelay(int value);
+
+  void setMaxSpawnDelay(int value);
+
+  void setSpawnCount(int value);
+
+  void setMaxNearbyEntities(int value);
+
+  void setRequiredPlayerRange(int value);
+
+  void setSpawnRange(int value);
 }

@@ -24,6 +24,7 @@ import de.markusbordihn.easynpc.access.SpawnerAccessHelper;
 import de.markusbordihn.easynpc.block.entity.EasyNPCSpawnerBlockEntity;
 import de.markusbordihn.easynpc.data.preset.PresetData;
 import de.markusbordihn.easynpc.data.preset.PresetDataUtils;
+import de.markusbordihn.easynpc.data.spawner.SpawnerType;
 import de.markusbordihn.easynpc.entity.easynpc.data.PresetDataCapable;
 import de.markusbordihn.easynpc.level.BaseEasyNPCSpawner;
 import de.markusbordihn.easynpc.network.components.TextComponent;
@@ -163,7 +164,7 @@ public class EasyNPCPresetItem extends Item {
         SpawnData spawnData = PresetDataUtils.toSpawnData(presetData);
         log.debug(
             "Set spawn data {} for spawner {} at {}", spawnData, spawnerBlockEntity, blockPos);
-        spawnerAccess.setSpawnDataDirect(level, blockPos, spawnData);
+        spawnerAccess.initializeSpawnerData(SpawnerType.SINGLE_SPAWNER, spawnData);
         spawnerBlockEntity.setChanged();
         itemStack.shrink(1);
         return InteractionResult.CONSUME;
