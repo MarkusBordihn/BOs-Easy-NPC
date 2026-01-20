@@ -1,4 +1,10 @@
   @Override
+  public UUID getOwnerUUID() {
+    Optional<UUID> ownerUUID = getSynchedEntityData(SynchedDataIndex.OWNER_UUID);
+    return ownerUUID.orElse(null);
+  }
+
+  @Override
   public void handleSkinVariantTypeChange(Enum<?> variant) {
     if (!(variant instanceof CatSkinVariant catSkinVariant)) {
       return;

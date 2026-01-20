@@ -110,11 +110,11 @@ public class AnimationData {
   }
 
   public static class Bone {
-    private List<Float> position; // Für Arrays wie [0, 0, 0]
-    private List<Float> rotation; // Für Arrays wie [0, 0, 0]
-    private Float scale; // Optional
-    private Map<String, List<Float>> keyframePosition; // Für Keyframes bei Position
-    private Map<String, List<Float>> keyframeRotation; // Für Keyframes bei Rotation
+    private List<Float> position;
+    private List<Float> rotation;
+    private Float scale;
+    private Map<String, List<Float>> keyframePosition;
+    private Map<String, List<Float>> keyframeRotation;
 
     public List<Float> getPosition() {
       return position;

@@ -20,14 +20,14 @@
 package de.markusbordihn.easynpc.item.configuration;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.access.SpawnerAccessHelper;
 import de.markusbordihn.easynpc.block.entity.EasyNPCSpawnerBlockEntity;
 import de.markusbordihn.easynpc.data.preset.PresetData;
+import de.markusbordihn.easynpc.data.preset.PresetDataUtils;
 import de.markusbordihn.easynpc.entity.easynpc.data.PresetDataCapable;
 import de.markusbordihn.easynpc.level.BaseEasyNPCSpawner;
 import de.markusbordihn.easynpc.network.components.TextComponent;
-import de.markusbordihn.easynpc.utils.SpawnerUtils;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -89,7 +89,7 @@ public class EasyNPCPresetItem extends Item {
       ItemStack itemStack, ResourceLocation entityType, CompoundTag presetData) {
     CompoundTag compoundTag = itemStack.getOrCreateTag();
     compoundTag.putString(ENTITY_TYPE_TAG, entityType.toString());
-    PresetData.cleanupEntityData(presetData, PresetData.CleanupMode.FULL);
+    PresetDataUtils.cleanupEntityData(presetData, PresetDataUtils.CleanupMode.FULL);
     compoundTag.put(PRESET_TAG, presetData);
   }
 
@@ -119,51 +119,24 @@ public class EasyNPCPresetItem extends Item {
   }
 
   public static boolean spawnAtPosition(BlockPos blockPos, ItemStack itemStack, Level level) {
-    if (level.isClientSide) {
+    if (level.isClientSide || !hasPreset(itemStack) || !hasEntityType(itemStack)) {
       return false;
     }
 
-    // Verify that we have preset and entity type data
-    if (!hasPreset(itemStack) || !hasEntityType(itemStack)) {
-      log.error("No valid preset data found in {}!", itemStack);
-      return false;
-    }
+    PresetData presetData = PresetDataUtils.fromItemStack(itemStack);
+    boolean spawned = PresetDataUtils.spawnEntity(presetData, level, blockPos);
 
-    // Get entity type and create entity.
-    CompoundTag entityPreset = getPreset(itemStack);
-    EntityType<?> entityType = getEntityType(itemStack);
-    if (entityType == null) {
-      log.error("No valid entity type found in {}!", itemStack);
-      return false;
-    }
-
-    // Create and validate entity.
-    Entity entity = entityType.create(level);
-    if (entity == null) {
-      log.error("Unable to create entity for {} in {}", entityType, level);
-      return false;
-    }
-
-    // Remove UUID from preset, to avoid conflicts with existing entities.
-    if (entityPreset.contains(Entity.UUID_TAG)) {
-      entityPreset.remove(Entity.UUID_TAG);
-    }
-    entity.load(entityPreset);
-
-    // Move entity to and spawn entity.
-    entity.moveTo(blockPos.getX() + 0.5f, blockPos.getY(), blockPos.getZ() + 0.5f);
-    if (level.addFreshEntity(entity)) {
+    if (spawned) {
       UUID presetUUID = getPresetUUID(itemStack);
       log.debug(
-          "Spawned {} at {} with preset UUID {} and {} in {}",
-          entityType,
+          "Spawned {} at {} with preset UUID {} in {}",
+          presetData.entityType(),
           blockPos,
           presetUUID,
-          entityPreset,
           level);
-      return true;
     }
-    return false;
+
+    return spawned;
   }
 
   @Override
@@ -185,20 +158,26 @@ public class EasyNPCPresetItem extends Item {
     BlockEntity blockEntity = level.getBlockEntity(blockPos);
     if (blockEntity instanceof SpawnerBlockEntity spawnerBlockEntity) {
       BaseSpawner baseSpawner = spawnerBlockEntity.getSpawner();
-      SpawnData spawnData = new SpawnData(getPreset(itemStack), Optional.empty());
-      log.debug("Set spawn data {} for spawner {} at {}", spawnData, spawnerBlockEntity, blockPos);
-      if (!SpawnerUtils.setNextSpawnData(baseSpawner, level, blockPos, spawnData)) {
+      if (baseSpawner instanceof SpawnerAccessHelper spawnerAccess) {
+        PresetData presetData = PresetDataUtils.fromItemStack(itemStack);
+        SpawnData spawnData = PresetDataUtils.toSpawnData(presetData);
+        log.debug(
+            "Set spawn data {} for spawner {} at {}", spawnData, spawnerBlockEntity, blockPos);
+        spawnerAccess.setSpawnDataDirect(level, blockPos, spawnData);
+        spawnerBlockEntity.setChanged();
+        itemStack.shrink(1);
+        return InteractionResult.CONSUME;
+      } else {
+        log.error("BaseSpawner does not implement SpawnerAccessHelper - mixin not applied?");
         return InteractionResult.FAIL;
       }
-      spawnerBlockEntity.setChanged();
-      itemStack.shrink(1);
-      return InteractionResult.CONSUME;
     }
 
     // Check for NPC Spawner Block
     if (blockEntity instanceof EasyNPCSpawnerBlockEntity easyNPCSpawnerBlockEntity) {
       BaseEasyNPCSpawner baseEasyNPCSpawner = easyNPCSpawnerBlockEntity.getSpawner();
-      SpawnData spawnData = new SpawnData(getPreset(itemStack), Optional.empty());
+      PresetData presetData = PresetDataUtils.fromItemStack(itemStack);
+      SpawnData spawnData = PresetDataUtils.toSpawnData(presetData);
       log.debug(
           "Set spawn data {} for base NPC spawner {} at {}",
           spawnData,
@@ -206,6 +185,8 @@ public class EasyNPCPresetItem extends Item {
           blockPos);
       baseEasyNPCSpawner.setNextSpawnData(level, blockPos, spawnData);
       easyNPCSpawnerBlockEntity.setChanged();
+      level.sendBlockUpdated(
+          blockPos, level.getBlockState(blockPos), level.getBlockState(blockPos), 3);
       itemStack.shrink(1);
       return InteractionResult.CONSUME;
     }

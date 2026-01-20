@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.data.preset;
 
+import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.io.CustomPresetDataFiles;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
@@ -28,6 +29,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.phys.Vec3;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public record PresetData(
     String name,
@@ -36,9 +39,12 @@ public record PresetData(
     ResourceLocation location,
     PresetType presetType,
     PresetMetadata metadata) {
+  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   public static final String ID = "preset_data";
   public static final String EMPTY_NAME = "Empty";
+  public static final String ENTITY_TYPE_TAG = "EntityType";
+  public static final String PRESET_TAG = "Preset";
   public static final PresetData EMPTY =
       new PresetData(
           EMPTY_NAME,
@@ -86,12 +92,14 @@ public record PresetData(
             ? compoundTag.getCompound("data")
             : compoundTag;
     if (!entityData.contains(Entity.ID_TAG)) {
+      log.error("Missing entity ID tag in preset data: {}", compoundTag);
       return null;
     }
 
     EntityType<?> entityType =
         EntityType.byString(entityData.getString(Entity.ID_TAG)).orElse(null);
     if (entityType == null) {
+      log.error("Unknown entity type in preset data: {}", compoundTag);
       return null;
     }
 
@@ -130,18 +138,6 @@ public record PresetData(
       PresetType presetType,
       PresetMetadata metadata) {
     return new PresetData(name, entityType, data, location, presetType, metadata);
-  }
-
-  public static CompoundTag cleanupEntityData(CompoundTag entityData) {
-    return PresetDataUtils.cleanupEntityData(entityData, PresetDataUtils.CleanupMode.RUNTIME_ONLY);
-  }
-
-  public static CompoundTag cleanupEntityData(CompoundTag entityData, CleanupMode mode) {
-    PresetDataUtils.CleanupMode utilMode =
-        mode == CleanupMode.FULL
-            ? PresetDataUtils.CleanupMode.FULL
-            : PresetDataUtils.CleanupMode.RUNTIME_ONLY;
-    return PresetDataUtils.cleanupEntityData(entityData, utilMode);
   }
 
   public boolean isEmpty() {
@@ -187,10 +183,5 @@ public record PresetData(
     CompoundTag updatedData = data.copy();
     updatedData.putUUID(Entity.UUID_TAG, uuid);
     return new PresetData(name, entityType, updatedData, location, presetType, metadata);
-  }
-
-  public enum CleanupMode {
-    RUNTIME_ONLY,
-    FULL
   }
 }

@@ -34,7 +34,8 @@ import net.minecraft.world.level.BaseSpawner;
 public class BaseEasyNPCSpawnerBlockEntityRenderer<T extends EasyNPCSpawnerBlockEntity>
     implements BlockEntityRenderer<T> {
 
-  public BaseEasyNPCSpawnerBlockEntityRenderer(BlockEntityRendererProvider.Context context) {}
+  public BaseEasyNPCSpawnerBlockEntityRenderer(
+      @SuppressWarnings("unused") BlockEntityRendererProvider.Context context) {}
 
   @Override
   public void render(

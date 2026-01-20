@@ -1,0 +1,5 @@
+  @Override
+  public UUID getOwnerUUID() {
+    Optional<UUID> ownerUUID = getSynchedEntityData(SynchedDataIndex.OWNER_UUID);
+    return ownerUUID.orElse(null);
+  }
