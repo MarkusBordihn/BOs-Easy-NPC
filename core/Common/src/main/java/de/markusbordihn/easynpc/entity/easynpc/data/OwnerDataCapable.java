@@ -40,10 +40,10 @@ public interface OwnerDataCapable<T extends PathfinderMob> extends EasyNPC<T>, O
 
   default void setNPCOwnerUUID(UUID uuid) {
     if (uuid == null) {
-      setSynchedEntityData(SynchedDataIndex.OWNER_UUID, Optional.empty());
+      setSynchedEntityData(SynchedDataIndex.OWNER_REFERENCE, Optional.empty());
     } else {
       EntityReference<LivingEntity> entityReference = EntityReference.of(uuid);
-      setSynchedEntityData(SynchedDataIndex.OWNER_UUID, Optional.of(entityReference));
+      setSynchedEntityData(SynchedDataIndex.OWNER_REFERENCE, Optional.of(entityReference));
     }
   }
 
@@ -54,7 +54,7 @@ public interface OwnerDataCapable<T extends PathfinderMob> extends EasyNPC<T>, O
 
   default EntityReference<LivingEntity> getOwnerReference() {
     Optional<EntityReference<LivingEntity>> ownerReference =
-        getSynchedEntityData(SynchedDataIndex.OWNER_UUID);
+        getSynchedEntityData(SynchedDataIndex.OWNER_REFERENCE);
     return ownerReference.orElse(null);
   }
 
@@ -104,7 +104,7 @@ public interface OwnerDataCapable<T extends PathfinderMob> extends EasyNPC<T>, O
   }
 
   default void defineSynchedOwnerData(SynchedEntityData.Builder builder) {
-    defineSynchedEntityData(builder, SynchedDataIndex.OWNER_UUID, Optional.empty());
+    defineSynchedEntityData(builder, SynchedDataIndex.OWNER_REFERENCE, Optional.empty());
   }
 
   default void addAdditionalOwnerData(ValueOutput valueOutput) {

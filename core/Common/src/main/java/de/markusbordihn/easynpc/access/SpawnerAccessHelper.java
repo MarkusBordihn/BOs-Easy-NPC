@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Markus Bordihn
+ * Copyright 2026 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,29 +17,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.data.synched;
+package de.markusbordihn.easynpc.access;
 
-public enum SynchedDataIndex {
-  ATTACK_IS_CHARGING_CROSSBOW,
-  DISPLAY_ATTRIBUTE_SET,
-  ENTITY_ATTRIBUTES,
-  MODEL_ANIMATION,
-  MODEL_POSE,
-  MODEL_POSITION,
-  MODEL_ROTATION,
-  MODEL_SCALE,
-  MODEL_VISIBILITY,
-  NAVIGATION_HOME_POSITION,
-  OWNER_REFERENCE,
-  PROFESSION,
-  RENDER_DATA,
-  SCALE_X,
-  SCALE_Y,
-  SCALE_Z,
-  SKIN_DATA,
-  SOUND_DATA_SET,
-  TRADING_DATA_SET,
-  TRADING_INVENTORY,
-  TRADING_MERCHANT_OFFERS,
-  VARIANT_TYPE,
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.SpawnData;
+
+public interface SpawnerAccessHelper {
+
+  void setSpawnDataDirect(Level level, BlockPos blockPos, SpawnData spawnData);
+
+  SpawnData getSpawnDataDirect();
 }

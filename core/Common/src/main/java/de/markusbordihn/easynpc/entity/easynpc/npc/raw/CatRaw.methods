@@ -1,4 +1,17 @@
   @Override
+  public UUID getOwnerUUID() {
+    EntityReference<LivingEntity> ownerReference = getOwnerReference();
+    return ownerReference == null ? null : ownerReference.getUUID();
+  }
+
+  @Override
+  public EntityReference<LivingEntity> getOwnerReference() {
+    Optional<EntityReference<LivingEntity>> ownerReference =
+        getSynchedEntityData(SynchedDataIndex.OWNER_REFERENCE);
+    return ownerReference.orElse(null);
+  }
+
+  @Override
   public void handleSkinVariantTypeChange(Enum<?> variant) {
     if (!(variant instanceof CatSkinVariant catSkinVariant)) {
       return;

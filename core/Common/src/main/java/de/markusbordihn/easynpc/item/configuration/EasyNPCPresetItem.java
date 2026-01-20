@@ -20,30 +20,27 @@
 package de.markusbordihn.easynpc.item.configuration;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.access.SpawnerAccessHelper;
 import de.markusbordihn.easynpc.block.entity.EasyNPCSpawnerBlockEntity;
 import de.markusbordihn.easynpc.data.preset.PresetData;
+import de.markusbordihn.easynpc.data.preset.PresetDataUtils;
 import de.markusbordihn.easynpc.entity.easynpc.data.PresetDataCapable;
 import de.markusbordihn.easynpc.level.BaseEasyNPCSpawner;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import de.markusbordihn.easynpc.utils.CompoundTagUtils;
-import de.markusbordihn.easynpc.utils.SpawnerUtils;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
@@ -57,7 +54,6 @@ import net.minecraft.world.level.SpawnData;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.SpawnerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.TagValueInput;
 import net.minecraft.world.phys.AABB;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -123,46 +119,24 @@ public class EasyNPCPresetItem extends Item {
       return false;
     }
 
-    // Verify preset data
-    PresetData presetData = PresetData.get(itemStack);
-    if (presetData == null || !presetData.hasEntityType() || !presetData.hasData()) {
-      log.error("No valid preset data found in {}!", itemStack);
+    PresetData presetData = PresetDataUtils.fromItemStack(itemStack);
+    if (presetData == null || !presetData.hasValidData()) {
       return false;
     }
 
-    // Create and validate entity.
-    EntityType<?> entityType = presetData.entityType();
-    Entity entity = entityType.create(level, EntitySpawnReason.SPAWN_ITEM_USE);
-    if (entity == null) {
-      log.error("Unable to create entity for {} in {}", entityType, level);
-      return false;
-    }
+    boolean spawned = PresetDataUtils.spawnEntity(presetData, level, blockPos);
 
-    // Remove UUID from preset, to avoid conflicts with existing entities.
-    CompoundTag entityData = presetData.data();
-    if (entityData.contains(UUID_TAG)) {
-      entityData.remove(UUID_TAG);
-    }
-    entity.load(
-        TagValueInput.create(ProblemReporter.DISCARDING, level.registryAccess(), entityData));
-
-    // Fix possible legacy custom name.
-    CompoundTagUtils.fixLegacyCustomName(entity, entityData);
-
-    // Move entity to and spawn entity.
-    entity.snapTo(blockPos.getX() + 0.5f, blockPos.getY(), blockPos.getZ() + 0.5f);
-    if (level.addFreshEntity(entity)) {
+    if (spawned) {
       UUID presetUUID = getPresetUUID(itemStack);
       log.debug(
-          "Spawned {} at {} with preset UUID {} and {} in {}",
-          entityType,
+          "Spawned {} at {} with preset UUID {} in {}",
+          presetData.entityType(),
           blockPos,
           presetUUID,
-          entityData,
           level);
-      return true;
     }
-    return false;
+
+    return spawned;
   }
 
   @Override
@@ -186,24 +160,24 @@ public class EasyNPCPresetItem extends Item {
     BlockEntity blockEntity = level.getBlockEntity(blockPos);
     if (blockEntity instanceof SpawnerBlockEntity spawnerBlockEntity) {
       BaseSpawner baseSpawner = spawnerBlockEntity.getSpawner();
-      SpawnData spawnData = new SpawnData(presetData.data(), Optional.empty(), Optional.empty());
-      log.debug("Set spawn data {} for spawner {} at {}", spawnData, spawnerBlockEntity, blockPos);
-      if (!SpawnerUtils.setNextSpawnData(baseSpawner, level, blockPos, spawnData)) {
+      if (baseSpawner instanceof SpawnerAccessHelper spawnerAccess) {
+        SpawnData spawnData = PresetDataUtils.toSpawnData(presetData);
+        log.debug(
+            "Set spawn data {} for spawner {} at {}", spawnData, spawnerBlockEntity, blockPos);
+        spawnerAccess.setSpawnDataDirect(level, blockPos, spawnData);
+        spawnerBlockEntity.setChanged();
+        itemStack.shrink(1);
+        return InteractionResult.CONSUME;
+      } else {
+        log.error("BaseSpawner does not implement SpawnerAccessHelper - mixin not applied?");
         return InteractionResult.FAIL;
       }
-      spawnerBlockEntity.setChanged();
-      itemStack.shrink(1);
-      return InteractionResult.CONSUME;
     }
 
     // Check for NPC Spawner Block
     if (blockEntity instanceof EasyNPCSpawnerBlockEntity easyNPCSpawnerBlockEntity) {
       BaseEasyNPCSpawner baseEasyNPCSpawner = easyNPCSpawnerBlockEntity.getSpawner();
-      // Add entity id to spawn data so getOrCreateDisplayEntity can load the entity
-      CompoundTag entityData = presetData.data().copy();
-      entityData.putString(
-          "id", BuiltInRegistries.ENTITY_TYPE.getKey(presetData.entityType()).toString());
-      SpawnData spawnData = new SpawnData(entityData, Optional.empty(), Optional.empty());
+      SpawnData spawnData = PresetDataUtils.toSpawnData(presetData);
       log.debug(
           "Set spawn data {} for base NPC spawner {} at {}",
           spawnData,
@@ -211,6 +185,8 @@ public class EasyNPCPresetItem extends Item {
           blockPos);
       baseEasyNPCSpawner.setNextSpawnData(level, blockPos, spawnData);
       easyNPCSpawnerBlockEntity.setChanged();
+      level.sendBlockUpdated(
+          blockPos, level.getBlockState(blockPos), level.getBlockState(blockPos), 3);
       itemStack.shrink(1);
       return InteractionResult.CONSUME;
     }

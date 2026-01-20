@@ -21,25 +21,21 @@ package de.markusbordihn.easynpc.item.configuration;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.access.AccessManager;
+import de.markusbordihn.easynpc.access.SpawnerAccessHelper;
 import de.markusbordihn.easynpc.block.entity.EasyNPCSpawnerBlockEntity;
 import de.markusbordihn.easynpc.data.preset.PresetData;
+import de.markusbordihn.easynpc.data.preset.PresetDataUtils;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.PresetDataCapable;
 import de.markusbordihn.easynpc.network.components.TextComponent;
-import java.util.Optional;
-import java.util.function.Consumer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder.Reference;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EntityType;
@@ -55,7 +51,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.SpawnData;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.TagValueOutput;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -64,12 +59,6 @@ public class EasyNPCPresetEmptyItem extends Item {
   public static final String NAME = "easy_npc_preset_empty";
 
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-
-  private static final String FALL_DISTANCE_TAG = "FallDistance";
-  private static final String FIRE_TAG = "Fire";
-  private static final String ON_GROUND_TAG = "OnGround";
-  private static final String SPAWN_DATA_TAG = "SpawnData";
-  private static final String ID_TAG = "id";
 
   public EasyNPCPresetEmptyItem(Properties properties) {
     super(
@@ -115,46 +104,14 @@ public class EasyNPCPresetEmptyItem extends Item {
       return ItemStack.EMPTY;
     }
 
-    return createPresetItemStack(
-        easyNPC.getLivingEntity().getType(), presetData.serializePresetData());
-  }
+    CompoundTag presetDataTag = presetData.serializePresetData();
+    EntityType<?> entityType = easyNPC.getLivingEntity().getType();
+    PresetData preset = new PresetData(entityType, presetDataTag);
 
-  private ItemStack createPresetItemStack(EntityType<?> entityType, CompoundTag compoundTag) {
-    // Get new preset item from registry
-    Item item =
-        BuiltInRegistries.ITEM
-            .getOptional(Identifier.fromNamespaceAndPath(Constants.MOD_ID, EasyNPCPresetItem.NAME))
-            .orElse(null);
-    if (item == null) {
-      log.error("Can't find item for storing preset {}", EasyNPCPresetItem.NAME);
-      return ItemStack.EMPTY;
-    }
+    ItemStack itemStack = PresetDataUtils.toItemStack(preset);
+    log.debug("Captured NPC preset from {} to {}", entityType, itemStack);
 
-    // Get entity type registry name
-    Identifier entityTypeRegistryName = EntityType.getKey(entityType);
-
-    // Clean up preset data
-    if (compoundTag.contains(FIRE_TAG)) {
-      compoundTag.remove(FIRE_TAG);
-    }
-    if (compoundTag.contains(FALL_DISTANCE_TAG)) {
-      compoundTag.remove(FALL_DISTANCE_TAG);
-    }
-    if (compoundTag.contains(ON_GROUND_TAG)) {
-      compoundTag.remove(ON_GROUND_TAG);
-    }
-
-    // Store entity type and preset data in the item stack.
-    PresetData presetData = new PresetData(entityType, compoundTag);
-    ItemStack presetItemStack = PresetData.set(item, presetData);
-    new ItemStack(item);
-    log.debug(
-        "Captured NPC preset from {} with {} to {}",
-        entityTypeRegistryName,
-        presetData,
-        presetItemStack);
-
-    return presetItemStack;
+    return itemStack;
   }
 
   @Override
@@ -174,32 +131,17 @@ public class EasyNPCPresetEmptyItem extends Item {
       BlockEntity blockEntity = level.getBlockEntity(blockPos);
       if (blockEntity instanceof EasyNPCSpawnerBlockEntity spawnerBlockEntity) {
         BaseSpawner baseSpawner = spawnerBlockEntity.getSpawner();
-        TagValueOutput valueOutput =
-            TagValueOutput.createWithoutContext(ProblemReporter.DISCARDING);
-        baseSpawner.save(valueOutput);
-        CompoundTag compoundTag = valueOutput.buildResult();
-        if (compoundTag != null && compoundTag.contains(SPAWN_DATA_TAG)) {
-          SpawnData spawnData =
-              SpawnData.CODEC
-                  .parse(NbtOps.INSTANCE, compoundTag.getCompoundOrEmpty(SPAWN_DATA_TAG))
-                  .resultOrPartial((string) -> log.warn("Invalid SpawnData: {}", string))
-                  .orElseGet(SpawnData::new);
-          CompoundTag entitySpawnData = spawnData.getEntityToSpawn();
-          if (entitySpawnData.contains(ID_TAG)) {
-            Identifier entityRegistryName =
-                Identifier.tryParse(entitySpawnData.getString(ID_TAG).orElse(""));
-            Optional<Reference<EntityType<?>>> entityType =
-                BuiltInRegistries.ENTITY_TYPE.get(entityRegistryName);
-            if (entityType.isPresent()) {
-              ItemStack presetItemStack =
-                  createPresetItemStack(entityType.get().value(), entitySpawnData.copy());
-              if (!presetItemStack.isEmpty()) {
-                Player player = useOnContext.getPlayer();
-                if (!player.getInventory().add(presetItemStack)) {
-                  player.drop(presetItemStack, false);
-                }
-                return InteractionResult.SUCCESS;
+        if (baseSpawner instanceof SpawnerAccessHelper spawnerAccess) {
+          SpawnData spawnData = spawnerAccess.getSpawnDataDirect();
+          PresetData presetData = PresetDataUtils.fromSpawnData(spawnData);
+          if (presetData != PresetData.EMPTY) {
+            ItemStack presetItemStack = PresetDataUtils.toItemStack(presetData);
+            if (!presetItemStack.isEmpty()) {
+              Player player = useOnContext.getPlayer();
+              if (!player.getInventory().add(presetItemStack)) {
+                player.drop(presetItemStack, false);
               }
+              return InteractionResult.SUCCESS;
             }
           }
         }
@@ -210,22 +152,12 @@ public class EasyNPCPresetEmptyItem extends Item {
   }
 
   @Override
-  public boolean canDestroyBlock(
-      ItemStack itemStack,
-      BlockState blockState,
-      Level level,
-      BlockPos blockPos,
-      LivingEntity livingEntity) {
-    return false;
-  }
-
-  @Override
   public void appendHoverText(
       ItemStack itemStack,
       TooltipContext tooltipContext,
       TooltipDisplay tooltipDisplay,
-      Consumer<Component> consumer,
-      TooltipFlag flag) {
+      java.util.function.Consumer<Component> consumer,
+      TooltipFlag tooltipFlag) {
     consumer.accept(
         TextComponent.getTranslatedTextRaw(Constants.TEXT_ITEM_PREFIX + NAME)
             .withStyle(ChatFormatting.RED));

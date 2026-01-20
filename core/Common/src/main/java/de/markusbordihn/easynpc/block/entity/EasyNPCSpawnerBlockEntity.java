@@ -30,13 +30,11 @@ import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.TagValueOutput;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 
@@ -70,9 +68,7 @@ public class EasyNPCSpawnerBlockEntity extends BlockEntity {
       BlockPos blockPos,
       BlockState blockState,
       EasyNPCSpawnerBlockEntity blockEntity) {
-    if (blockEntity.spawner != null) {
-      blockEntity.spawner.clientTick(level, blockPos);
-    }
+    blockEntity.spawner.clientTick(level, blockPos);
   }
 
   public static void serverTick(
@@ -80,9 +76,7 @@ public class EasyNPCSpawnerBlockEntity extends BlockEntity {
       BlockPos blockPos,
       BlockState blockState,
       EasyNPCSpawnerBlockEntity blockEntity) {
-    if (blockEntity.spawner != null) {
-      blockEntity.spawner.serverTick((ServerLevel) level, blockPos);
-    }
+    blockEntity.spawner.serverTick((ServerLevel) level, blockPos);
   }
 
   public SpawnerType getSpawnerType() {
@@ -110,9 +104,6 @@ public class EasyNPCSpawnerBlockEntity extends BlockEntity {
   @Override
   public void setChanged() {
     super.setChanged();
-    TagValueOutput valueOutput = TagValueOutput.createWithoutContext(ProblemReporter.DISCARDING);
-    this.spawner.save(valueOutput);
-    this.spawner.updateSpawnData(valueOutput.buildResult());
   }
 
   @Override

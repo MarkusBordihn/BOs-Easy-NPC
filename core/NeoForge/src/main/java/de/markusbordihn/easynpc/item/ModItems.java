@@ -177,7 +177,12 @@ public class ModItems {
         () ->
             new ModEpicFightSpawnEggItem(
                 (Supplier<? extends EntityType<? extends Mob>>) entityTypeSupplier,
-                new Item.Properties().rarity(Rarity.EPIC)));
+                new Item.Properties()
+                    .setId(
+                        ResourceKey.create(
+                            Registries.ITEM,
+                            Identifier.fromNamespaceAndPath(Constants.MOD_ID, spawnEggId)))
+                    .rarity(Rarity.EPIC)));
   }
 
   private static DeferredItem<Item> registerSpawnEgg(

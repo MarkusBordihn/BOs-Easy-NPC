@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Markus Bordihn
+ * Copyright 2026 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,29 +17,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.data.synched;
+package de.markusbordihn.easynpc.mixin.spawner;
 
-public enum SynchedDataIndex {
-  ATTACK_IS_CHARGING_CROSSBOW,
-  DISPLAY_ATTRIBUTE_SET,
-  ENTITY_ATTRIBUTES,
-  MODEL_ANIMATION,
-  MODEL_POSE,
-  MODEL_POSITION,
-  MODEL_ROTATION,
-  MODEL_SCALE,
-  MODEL_VISIBILITY,
-  NAVIGATION_HOME_POSITION,
-  OWNER_REFERENCE,
-  PROFESSION,
-  RENDER_DATA,
-  SCALE_X,
-  SCALE_Y,
-  SCALE_Z,
-  SKIN_DATA,
-  SOUND_DATA_SET,
-  TRADING_DATA_SET,
-  TRADING_INVENTORY,
-  TRADING_MERCHANT_OFFERS,
-  VARIANT_TYPE,
+import de.markusbordihn.easynpc.access.SpawnerAccessHelper;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BaseSpawner;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.SpawnData;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+
+@Mixin(BaseSpawner.class)
+public abstract class BaseSpawnerMixin implements SpawnerAccessHelper {
+
+  @Shadow private SpawnData nextSpawnData;
+
+  @Shadow
+  protected abstract void setNextSpawnData(Level level, BlockPos blockPos, SpawnData spawnData);
+
+  @Override
+  public void setSpawnDataDirect(Level level, BlockPos blockPos, SpawnData spawnData) {
+    this.setNextSpawnData(level, blockPos, spawnData);
+  }
+
+  @Override
+  public SpawnData getSpawnDataDirect() {
+    return this.nextSpawnData;
+  }
 }

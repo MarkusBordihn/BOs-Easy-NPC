@@ -155,7 +155,7 @@ public class NPCRawTemplate extends Zombie implements EasyNPCBase<Zombie> {
 
     // Owner Data
     entityDataAccessorMap.put(
-        SynchedDataIndex.OWNER_UUID,
+        SynchedDataIndex.OWNER_REFERENCE,
         net.minecraft.network.syncher.SynchedEntityData.defineId(
             NPCRawTemplate.class, EntityDataSerializers.OPTIONAL_LIVING_ENTITY_REFERENCE));
 

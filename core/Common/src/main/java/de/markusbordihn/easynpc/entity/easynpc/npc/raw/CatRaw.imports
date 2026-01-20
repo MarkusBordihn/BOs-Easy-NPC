@@ -1,3 +1,5 @@
+import java.util.Optional;
+import java.util.UUID;
 import de.markusbordihn.easynpc.utils.ReflectionUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;

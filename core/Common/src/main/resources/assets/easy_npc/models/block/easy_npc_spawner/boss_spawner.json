@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:block/cube_all",
-  "render_type": "cutout_mipped",
+  "render_type": "cutout",
   "textures": {
     "all": "easy_npc:block/easy_npc_spawner/boss_spawner"
   }
