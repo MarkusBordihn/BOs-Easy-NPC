@@ -22,16 +22,16 @@ package de.markusbordihn.easynpc.server.commands;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
+import de.markusbordihn.easynpc.access.SpawnerAccessHelper;
 import de.markusbordihn.easynpc.block.entity.EasyNPCSpawnerBlockEntity;
 import de.markusbordihn.easynpc.commands.Command;
-import de.markusbordihn.easynpc.data.spawner.SpawnerData;
 import java.util.List;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.BaseSpawner;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.SpawnerBlockEntity;
 
@@ -79,36 +79,43 @@ public class SpawnerCommand extends Command {
       CommandSourceStack context, BlockPos blockPos, String parameter, int value) {
     BlockEntity blockEntity = context.getLevel().getBlockEntity(blockPos);
 
-    // Check if block entity is a valid spawner and get spawner data.
-    CompoundTag spawnerData;
+    // Get spawner instance
+    BaseSpawner spawner = null;
     if (blockEntity instanceof SpawnerBlockEntity spawnerBlockEntity) {
-      spawnerData = spawnerBlockEntity.getSpawner().save(new CompoundTag());
-    } else if (blockEntity instanceof EasyNPCSpawnerBlockEntity spawnerBlockEntity) {
-      spawnerData = spawnerBlockEntity.getSpawner().save(new CompoundTag());
-    } else {
+      spawner = spawnerBlockEntity.getSpawner();
+    } else if (blockEntity instanceof EasyNPCSpawnerBlockEntity easyNPCSpawnerBlockEntity) {
+      spawner = easyNPCSpawnerBlockEntity.getSpawner();
+    }
+
+    if (spawner == null) {
       return sendFailureMessage(context, "No valid spawner found at " + blockPos);
     }
 
-    // Get and apply adjusted spawner data
-    if (!SpawnerData.setSpawnerValue(spawnerData, parameter, (short) value)) {
+    // Check if spawner has mixin access
+    if (!(spawner instanceof SpawnerAccessHelper spawnerAccess)) {
       return sendFailureMessage(
-          context, "Invalid parameter " + parameter + " for spawner at " + blockPos);
+          context, "Spawner does not support direct access (mixin not applied?)");
     }
 
-    // Load adjusted spawner data
-    if (blockEntity instanceof SpawnerBlockEntity spawnerBlockEntity) {
-      spawnerBlockEntity
-          .getSpawner()
-          .load(context.getLevel(), spawnerBlockEntity.getBlockPos(), spawnerData);
-      spawnerBlockEntity.setChanged();
-    } else if (blockEntity instanceof EasyNPCSpawnerBlockEntity spawnerBlockEntity) {
-      spawnerBlockEntity
-          .getSpawner()
-          .load(context.getLevel(), spawnerBlockEntity.getBlockPos(), spawnerData);
-      spawnerBlockEntity.setChanged();
+    // Set spawner value directly via mixin
+    switch (parameter) {
+      case "Delay" -> spawnerAccess.setSpawnDelay(value);
+      case "MinSpawnDelay" -> spawnerAccess.setMinSpawnDelay(value);
+      case "MaxSpawnDelay" -> spawnerAccess.setMaxSpawnDelay(value);
+      case "SpawnCount" -> spawnerAccess.setSpawnCount(value);
+      case "MaxNearbyEntities" -> spawnerAccess.setMaxNearbyEntities(value);
+      case "RequiredPlayerRange" -> spawnerAccess.setRequiredPlayerRange(value);
+      case "SpawnRange" -> spawnerAccess.setSpawnRange(value);
+      default -> {
+        return sendFailureMessage(
+            context, "Invalid parameter " + parameter + " for spawner at " + blockPos);
+      }
     }
+
+    // Mark block entity as changed
+    blockEntity.setChanged();
 
     return sendSuccessMessage(
-        context, "Adjusted spawner data " + spawnerData + " for spawner at " + blockPos);
+        context, "Set " + parameter + " to " + value + " for spawner at " + blockPos);
   }
 }

@@ -21,8 +21,8 @@ package de.markusbordihn.easynpc.data.preset;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import de.markusbordihn.easynpc.component.DataComponents;
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.component.DataComponents;
 import de.markusbordihn.easynpc.io.CustomPresetDataFiles;
 import java.util.Optional;
 import java.util.UUID;
@@ -50,12 +50,11 @@ public record PresetData(
     ResourceLocation location,
     PresetType presetType,
     PresetMetadata metadata) {
-  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-
   public static final String ID = "preset_data";
   public static final String EMPTY_NAME = "Empty";
   public static final String ENTITY_TYPE_TAG = "EntityType";
   public static final String PRESET_TAG = "Preset";
+  public static final String PRESET_UUID_TAG = "PresetUUID";
   public static final PresetData EMPTY =
       new PresetData(
           EMPTY_NAME,
@@ -64,7 +63,6 @@ public record PresetData(
           null,
           null,
           PresetMetadata.createDefault());
-
   public static final Codec<PresetData> CODEC =
       RecordCodecBuilder.create(
           instance ->
@@ -104,7 +102,6 @@ public record PresetData(
                               location.orElse(null),
                               presetType.orElse(null),
                               metadata)));
-
   public static final StreamCodec<RegistryFriendlyByteBuf, PresetData> STREAM_CODEC =
       StreamCodec.composite(
           ByteBufCodecs.STRING_UTF8,
@@ -132,12 +129,13 @@ public record PresetData(
                   location.orElse(null),
                   presetType.orElse(null),
                   metadata));
+  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   public PresetData(EntityType<?> entityType, CompoundTag data) {
     this(
         entityType.getDescriptionId(),
         entityType,
-        data,
+        ensurePresetUUID(data),
         null,
         null,
         PresetMetadata.createDefault());
@@ -158,6 +156,20 @@ public record PresetData(
         location,
         presetType,
         metadata);
+  }
+
+  private static CompoundTag ensurePresetUUID(CompoundTag data) {
+    if (data == null) {
+      return data;
+    }
+
+    if (!data.hasUUID(PRESET_UUID_TAG)) {
+      CompoundTag updated = data.copy();
+      updated.putUUID(PRESET_UUID_TAG, UUID.randomUUID());
+      return updated;
+    }
+
+    return data;
   }
 
   public static PresetData fromCompoundTag(
@@ -183,30 +195,11 @@ public record PresetData(
     }
 
     return new PresetData(
-        location, presetType, PresetMetadata.fromPresetData(compoundTag), entityData, entityType);
-  }
-
-  public static PresetData fromNBT(
-      ResourceLocation location,
-      PresetType presetType,
-      PresetMetadata metadata,
-      CompoundTag compoundTag) {
-    if (compoundTag == null || !compoundTag.contains(Entity.ID_TAG)) {
-      return null;
-    }
-
-    String entityTypeId = compoundTag.getString(Entity.ID_TAG);
-    EntityType<?> entityType = EntityType.byString(entityTypeId).orElse(null);
-
-    if (entityType == null) {
-      return null;
-    }
-
-    return new PresetData(location, presetType, metadata, compoundTag, entityType);
-  }
-
-  public static PresetData of(EntityType<?> entityType, CompoundTag compoundTag) {
-    return new PresetData(entityType, compoundTag);
+        location,
+        presetType,
+        PresetMetadata.fromPresetData(compoundTag),
+        ensurePresetUUID(entityData),
+        entityType);
   }
 
   public static boolean has(ItemStack itemStack) {
@@ -242,7 +235,7 @@ public record PresetData(
       ResourceLocation location,
       PresetType presetType,
       PresetMetadata metadata) {
-    return new PresetData(name, entityType, data, location, presetType, metadata);
+    return new PresetData(name, entityType, ensurePresetUUID(data), location, presetType, metadata);
   }
 
   public boolean isEmpty() {
@@ -288,5 +281,19 @@ public record PresetData(
     CompoundTag updatedData = data.copy();
     updatedData.putUUID(Entity.UUID_TAG, uuid);
     return new PresetData(name, entityType, updatedData, location, presetType, metadata);
+  }
+
+  public UUID getPresetUUID() {
+    if (data == null || !data.hasUUID(PRESET_UUID_TAG)) {
+      return null;
+    }
+    return data.getUUID(PRESET_UUID_TAG);
+  }
+
+  public UUID getEntityUUID() {
+    if (data == null || !data.hasUUID(Entity.UUID_TAG)) {
+      return null;
+    }
+    return data.getUUID(Entity.UUID_TAG);
   }
 }

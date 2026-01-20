@@ -42,8 +42,8 @@ public class PresetDataUtils {
   private static final String[] RUNTIME_STATE_TAGS = {
     "Fire", "FallDistance", "OnGround", "Motion", "HurtTime", "DeathTime", "Air"
   };
-
   private static final String[] POSITION_TAGS = {"Pos", "Rotation"};
+  private static final String ENTITY_UUID_TAG = "UUID";
 
   private PresetDataUtils() {
     // Utility class
@@ -75,7 +75,14 @@ public class PresetDataUtils {
     if (presetData == null || !presetData.hasValidData()) {
       return new SpawnData();
     }
-    return new SpawnData(presetData.data().copy(), Optional.empty(), Optional.empty());
+
+    CompoundTag dataCopy = presetData.data().copy();
+    if (!dataCopy.hasUUID(ENTITY_UUID_TAG)) {
+      dataCopy.putUUID(ENTITY_UUID_TAG, java.util.UUID.randomUUID());
+      log.debug("Generated missing Entity UUID in toSpawnData");
+    }
+
+    return new SpawnData(dataCopy, Optional.empty(), Optional.empty());
   }
 
   public static PresetData fromSpawnData(SpawnData spawnData) {
@@ -114,7 +121,11 @@ public class PresetDataUtils {
     }
 
     ItemStack itemStack = new ItemStack(item);
-    itemStack.set(DataComponents.PRESET_DATA, presetData);
+    itemStack.set(
+        DataComponents.PRESET_DATA,
+        new PresetData(
+            presetData.entityType(),
+            cleanupEntityData(presetData.data().copy(), CleanupMode.FULL)));
 
     return itemStack;
   }
@@ -126,6 +137,13 @@ public class PresetDataUtils {
 
     PresetData presetData = itemStack.get(DataComponents.PRESET_DATA);
     if (presetData == null) {
+      return PresetData.EMPTY;
+    }
+
+    String entityTypeId = presetData.data().getString(PresetData.ENTITY_TYPE_TAG);
+    EntityType<?> entityType = EntityType.byString(entityTypeId).orElse(null);
+
+    if (entityType == null) {
       return PresetData.EMPTY;
     }
 
@@ -144,8 +162,8 @@ public class PresetDataUtils {
     }
 
     CompoundTag entityData = presetData.data().copy();
-    if (entityData.contains(Entity.UUID_TAG)) {
-      entityData.remove(Entity.UUID_TAG);
+    if (entityData.contains(ENTITY_UUID_TAG)) {
+      entityData.remove(ENTITY_UUID_TAG);
     }
 
     entity.load(entityData);

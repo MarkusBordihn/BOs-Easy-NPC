@@ -33,6 +33,7 @@ import net.minecraft.world.level.BaseSpawner;
 
 public class BaseEasyNPCSpawnerBlockEntityRenderer<T extends EasyNPCSpawnerBlockEntity>
     implements BlockEntityRenderer<T> {
+
   private final EntityRenderDispatcher entityRenderer;
 
   public BaseEasyNPCSpawnerBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
