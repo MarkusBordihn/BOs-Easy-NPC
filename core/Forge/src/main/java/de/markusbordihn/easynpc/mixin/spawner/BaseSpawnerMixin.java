@@ -96,33 +96,13 @@ public abstract class BaseSpawnerMixin implements SpawnerAccessHelper {
   }
 
   @Override
+  public void setMaxNearbyEntities(int value) {
+    this.maxNearbyEntities = value;
+  }
+
+  @Override
   public int getSpawnDelay() {
     return this.spawnDelay;
-  }
-
-  @Override
-  public int getMinSpawnDelay() {
-    return this.minSpawnDelay;
-  }
-
-  @Override
-  public int getMaxSpawnDelay() {
-    return this.maxSpawnDelay;
-  }
-
-  @Override
-  public int getSpawnCount() {
-    return this.spawnCount;
-  }
-
-  @Override
-  public int getRequiredPlayerRange() {
-    return this.requiredPlayerRange;
-  }
-
-  @Override
-  public int getSpawnRange() {
-    return this.spawnRange;
   }
 
   @Override
@@ -131,8 +111,18 @@ public abstract class BaseSpawnerMixin implements SpawnerAccessHelper {
   }
 
   @Override
+  public int getMinSpawnDelay() {
+    return this.minSpawnDelay;
+  }
+
+  @Override
   public void setMinSpawnDelay(int value) {
     this.minSpawnDelay = value;
+  }
+
+  @Override
+  public int getMaxSpawnDelay() {
+    return this.maxSpawnDelay;
   }
 
   @Override
@@ -141,18 +131,28 @@ public abstract class BaseSpawnerMixin implements SpawnerAccessHelper {
   }
 
   @Override
+  public int getSpawnCount() {
+    return this.spawnCount;
+  }
+
+  @Override
   public void setSpawnCount(int value) {
     this.spawnCount = value;
   }
 
   @Override
-  public void setMaxNearbyEntities(int value) {
-    this.maxNearbyEntities = value;
+  public int getRequiredPlayerRange() {
+    return this.requiredPlayerRange;
   }
 
   @Override
   public void setRequiredPlayerRange(int value) {
     this.requiredPlayerRange = value;
+  }
+
+  @Override
+  public int getSpawnRange() {
+    return this.spawnRange;
   }
 
   @Override

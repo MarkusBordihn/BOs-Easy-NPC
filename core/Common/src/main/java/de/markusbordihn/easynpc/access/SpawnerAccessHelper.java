@@ -36,29 +36,29 @@ public interface SpawnerAccessHelper {
 
   int getMaxNearbyEntities();
 
+  void setMaxNearbyEntities(int value);
+
   int getSpawnDelay();
-
-  int getMinSpawnDelay();
-
-  int getMaxSpawnDelay();
-
-  int getSpawnCount();
-
-  int getRequiredPlayerRange();
-
-  int getSpawnRange();
 
   void setSpawnDelay(int value);
 
+  int getMinSpawnDelay();
+
   void setMinSpawnDelay(int value);
+
+  int getMaxSpawnDelay();
 
   void setMaxSpawnDelay(int value);
 
+  int getSpawnCount();
+
   void setSpawnCount(int value);
 
-  void setMaxNearbyEntities(int value);
+  int getRequiredPlayerRange();
 
   void setRequiredPlayerRange(int value);
+
+  int getSpawnRange();
 
   void setSpawnRange(int value);
 }

@@ -36,8 +36,7 @@ public class BaseEasyNPCSpawnerBlockEntityRenderer<T extends EasyNPCSpawnerBlock
 
   private final EntityRenderDispatcher entityRenderer;
 
-  public BaseEasyNPCSpawnerBlockEntityRenderer(
-      BlockEntityRendererProvider.Context context) {
+  public BaseEasyNPCSpawnerBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
     this.entityRenderer = context.getEntityRenderer();
   }
 
@@ -82,8 +81,8 @@ public class BaseEasyNPCSpawnerBlockEntityRenderer<T extends EasyNPCSpawnerBlock
     poseStack.translate(0.0F, -0.2F, 0.0F);
     poseStack.mulPose(Axis.XP.rotationDegrees(-30.0F));
     poseStack.scale(scale, scale, scale);
-    this.entityRenderer
-        .render(entity, 0.0F, 0.0F, 0.0F, 0.0F, partialTicks, poseStack, bufferSource, packedLight);
+    this.entityRenderer.render(
+        entity, 0.0F, 0.0F, 0.0F, 0.0F, partialTicks, poseStack, bufferSource, packedLight);
     poseStack.popPose();
   }
 }

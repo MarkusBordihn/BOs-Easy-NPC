@@ -8,6 +8,10 @@ For the full changelog, please go to the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 6.7.1
+
+- Fixed #657 and #656 by adding additional client side checks for vanilla bug.
+
 ### 6.7.0
 
 - Fixed #650 by implementing Wolf Leg Animations in setupAnim method.

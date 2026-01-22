@@ -39,8 +39,6 @@ public record PresetData(
     ResourceLocation location,
     PresetType presetType,
     PresetMetadata metadata) {
-  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-
   public static final String ID = "preset_data";
   public static final String EMPTY_NAME = "Empty";
   public static final String ENTITY_TYPE_TAG = "EntityType";
@@ -54,6 +52,7 @@ public record PresetData(
           null,
           null,
           PresetMetadata.createDefault());
+  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   public PresetData(EntityType<?> entityType, CompoundTag data) {
     this(
@@ -63,20 +62,6 @@ public record PresetData(
         null,
         null,
         PresetMetadata.createDefault());
-  }
-
-  private static CompoundTag ensurePresetUUID(CompoundTag data) {
-    if (data == null) {
-      return data;
-    }
-
-    if (!data.hasUUID(PRESET_UUID_TAG)) {
-      CompoundTag updated = data.copy();
-      updated.putUUID(PRESET_UUID_TAG, UUID.randomUUID());
-      return updated;
-    }
-
-    return data;
   }
 
   public PresetData(
@@ -94,6 +79,20 @@ public record PresetData(
         location,
         presetType,
         metadata);
+  }
+
+  private static CompoundTag ensurePresetUUID(CompoundTag data) {
+    if (data == null) {
+      return data;
+    }
+
+    if (!data.hasUUID(PRESET_UUID_TAG)) {
+      CompoundTag updated = data.copy();
+      updated.putUUID(PRESET_UUID_TAG, UUID.randomUUID());
+      return updated;
+    }
+
+    return data;
   }
 
   public static PresetData fromCompoundTag(
@@ -119,7 +118,11 @@ public record PresetData(
     }
 
     return new PresetData(
-        location, presetType, PresetMetadata.fromPresetData(compoundTag), ensurePresetUUID(entityData), entityType);
+        location,
+        presetType,
+        PresetMetadata.fromPresetData(compoundTag),
+        ensurePresetUUID(entityData),
+        entityType);
   }
 
   public static PresetData create(

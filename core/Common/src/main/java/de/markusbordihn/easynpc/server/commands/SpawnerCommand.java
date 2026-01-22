@@ -93,7 +93,8 @@ public class SpawnerCommand extends Command {
 
     // Check if spawner has mixin access
     if (!(spawner instanceof SpawnerAccessHelper spawnerAccess)) {
-      return sendFailureMessage(context, "Spawner does not support direct access (mixin not applied?)");
+      return sendFailureMessage(
+          context, "Spawner does not support direct access (mixin not applied?)");
     }
 
     // Set spawner value directly via mixin

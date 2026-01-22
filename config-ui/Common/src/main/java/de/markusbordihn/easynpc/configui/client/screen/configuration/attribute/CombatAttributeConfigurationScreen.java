@@ -33,8 +33,6 @@ import net.minecraft.world.entity.player.Inventory;
 public class CombatAttributeConfigurationScreen<T extends ConfigurationMenu>
     extends AttributeConfigurationScreen<T> {
 
-  RangeSliderButton healthRegenerationSlider;
-
   public CombatAttributeConfigurationScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
   }
@@ -48,8 +46,6 @@ public class CombatAttributeConfigurationScreen<T extends ConfigurationMenu>
 
     // Button rows
     int firstButtonRow = this.leftPos + 10;
-    int secondButtonRow = this.leftPos + 100;
-    int thirdButtonRow = this.leftPos + 200;
 
     // Attribute data
     AttributeDataCapable<?> attributeData = this.getEasyNPC().getEasyNPCAttributeData();
