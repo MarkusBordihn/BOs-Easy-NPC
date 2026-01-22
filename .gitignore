@@ -36,7 +36,8 @@ forge*changelog.txt
 put_your_*_here
 
 # Raw NPC Types (auto-generated)
-/core/Common/src/main/java/de/markusbordihn/easynpc/entity/easynpc/npc/raw/*Raw.java
+/core/Common/src/main/java/de/markusbordihn/easynpc/api/npc/*Raw.java
+/core/Common/src/main/java/de/markusbordihn/easynpc/api/npc/*/*Raw.java
 
 # Default Preset Index (auto-generated)
 /core/Common/src/main/resources/data/easy_npc/default_preset/default_preset.index

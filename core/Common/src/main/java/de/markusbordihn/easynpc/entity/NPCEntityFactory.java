@@ -20,11 +20,11 @@
 package de.markusbordihn.easynpc.entity;
 
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.entity.easynpc.npc.raw.SkeletonRaw;
-import de.markusbordihn.easynpc.entity.easynpc.npc.raw.StrayRaw;
-import de.markusbordihn.easynpc.entity.easynpc.npc.raw.VillagerRaw;
-import de.markusbordihn.easynpc.entity.easynpc.npc.raw.WitherSkeletonRaw;
-import de.markusbordihn.easynpc.entity.easynpc.npc.raw.ZombieRaw;
+import de.markusbordihn.easynpc.api.npc.skeleton.SkeletonRaw;
+import de.markusbordihn.easynpc.api.npc.skeleton.StrayRaw;
+import de.markusbordihn.easynpc.api.npc.skeleton.WitherSkeletonRaw;
+import de.markusbordihn.easynpc.api.npc.villager.VillagerRaw;
+import de.markusbordihn.easynpc.api.npc.zombie.ZombieRaw;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiFunction;

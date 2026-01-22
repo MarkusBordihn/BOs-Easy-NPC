@@ -19,16 +19,17 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.npc.epicfight;
 
+import de.markusbordihn.easynpc.api.npc.skeleton.SkeletonRaw;
 import de.markusbordihn.easynpc.compat.CompatConstants;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
-import de.markusbordihn.easynpc.entity.easynpc.npc.raw.SkeletonRaw;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.monster.Skeleton;
 import net.minecraft.world.level.Level;
 
 public class SkeletonEpicFight extends SkeletonRaw {
 
-  public static final String ID = CompatConstants.MOD_EPIC_FIGHT_PREFIX + SkeletonRaw.ID;
+  public static final String ID =
+      CompatConstants.MOD_EPIC_FIGHT_PREFIX + SkeletonRaw.NPC_TYPE.getRegistryId();
 
   public SkeletonEpicFight(EntityType<? extends Skeleton> entityType, Level level) {
     super(entityType, level);

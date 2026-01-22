@@ -19,11 +19,13 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.npc.standard;
 
+import de.markusbordihn.easynpc.api.npc.IronGolemRaw;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
+import de.markusbordihn.easynpc.data.npc.DefaultNPCType;
+import de.markusbordihn.easynpc.data.npc.NPCType;
 import de.markusbordihn.easynpc.data.skin.variant.IronGolemSkinVariant;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.sound.SoundType;
-import de.markusbordihn.easynpc.entity.easynpc.npc.raw.IronGolemRaw;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
@@ -36,7 +38,7 @@ import net.minecraft.world.phys.Vec3;
 
 public class IronGolemNPC extends IronGolemRaw implements StandardEasyNPC<IronGolemRaw> {
 
-  public static final String ID = "iron_golem";
+  public static final DefaultNPCType NPC_TYPE = DefaultNPCType.IRON_GOLEM;
 
   public IronGolemNPC(EntityType<? extends IronGolem> entityType, Level level) {
     this(entityType, level, IronGolemSkinVariant.IRON_GOLEM);
@@ -59,6 +61,11 @@ public class IronGolemNPC extends IronGolemRaw implements StandardEasyNPC<IronGo
         .add(Attributes.MAX_HEALTH, 100.0D)
         .add(Attributes.MOVEMENT_SPEED, 0.25F)
         .add(Attributes.SPAWN_REINFORCEMENTS_CHANCE, 0.0D);
+  }
+
+  @Override
+  public NPCType getNPCType() {
+    return NPC_TYPE;
   }
 
   @Override
