@@ -17,49 +17,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.entity.easynpc.npc.standard;
+package de.markusbordihn.easynpc.entity.easynpc.npc.standard.zombie;
 
-import com.google.common.collect.ImmutableList;
+import de.markusbordihn.easynpc.api.npc.zombie.HuskRaw;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
+import de.markusbordihn.easynpc.data.npc.DefaultNPCType;
+import de.markusbordihn.easynpc.data.npc.NPCType;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.sound.SoundType;
-import de.markusbordihn.easynpc.entity.easynpc.npc.raw.ZombifiedPiglinRaw;
+import de.markusbordihn.easynpc.entity.easynpc.npc.standard.StandardEasyNPC;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.memory.MemoryModuleType;
-import net.minecraft.world.entity.ai.sensing.Sensor;
-import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.minecraft.world.entity.animal.FlyingAnimal;
-import net.minecraft.world.entity.monster.zombie.ZombifiedPiglin;
+import net.minecraft.world.entity.monster.zombie.Husk;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
-public class ZombifiedPiglinNPC extends ZombifiedPiglinRaw
-    implements StandardEasyNPC<ZombifiedPiglinRaw> {
+public class HuskNPC extends HuskRaw implements StandardEasyNPC<HuskRaw> {
 
-  public static final String ID = "zombified_piglin";
+  private static final DefaultNPCType NPC_TYPE = DefaultNPCType.HUSK;
 
-  protected static final ImmutableList<MemoryModuleType<?>> MEMORY_TYPES =
-      ImmutableList.of(
-          MemoryModuleType.ANGRY_AT,
-          MemoryModuleType.ATTACK_TARGET,
-          MemoryModuleType.CELEBRATE_LOCATION,
-          MemoryModuleType.DANCING);
-
-  protected static final ImmutableList<SensorType<? extends Sensor<? super ZombifiedPiglin>>>
-      SENSOR_TYPES =
-          ImmutableList.of(
-              SensorType.NEAREST_LIVING_ENTITIES,
-              SensorType.NEAREST_PLAYERS,
-              SensorType.NEAREST_ITEMS,
-              SensorType.HURT_BY);
-
-  public ZombifiedPiglinNPC(EntityType<? extends ZombifiedPiglin> entityType, Level level) {
+  public HuskNPC(EntityType<? extends Husk> entityType, Level level) {
     super(entityType, level);
+    this.setInvulnerable(true);
+    this.getEntityAttributes()
+        .setEnvironmentalAttributes(
+            this.getEntityAttributes().getEnvironmentalAttributes().withCanBreathUnderwater(true));
+    this.refreshGroundNavigation();
   }
 
   public static AttributeSupplier.Builder createAttributes() {
@@ -77,15 +64,13 @@ public class ZombifiedPiglinNPC extends ZombifiedPiglinRaw
   }
 
   @Override
-  public SoundDataSet getDefaultSoundDataSet(SoundDataSet soundDataSet, String variantName) {
-    soundDataSet.addDefaultSound(SoundType.AMBIENT, SoundEvents.ZOMBIFIED_PIGLIN_AMBIENT);
-    soundDataSet.addDefaultSound(SoundType.HURT, SoundEvents.ZOMBIFIED_PIGLIN_HURT);
-    soundDataSet.addDefaultSound(SoundType.DEATH, SoundEvents.ZOMBIFIED_PIGLIN_DEATH);
-    soundDataSet.addDefaultSound(SoundType.STEP, SoundEvents.PIGLIN_STEP);
-    soundDataSet.addDefaultSound(SoundType.TRADE, SoundEvents.VILLAGER_TRADE);
-    soundDataSet.addDefaultSound(SoundType.TRADE_YES, SoundEvents.VILLAGER_YES);
-    soundDataSet.addDefaultSound(SoundType.TRADE_NO, SoundEvents.VILLAGER_NO);
-    return soundDataSet;
+  public NPCType getNPCType() {
+    return NPC_TYPE;
+  }
+
+  @Override
+  public boolean canUseArmor() {
+    return true;
   }
 
   @Override
@@ -94,13 +79,30 @@ public class ZombifiedPiglinNPC extends ZombifiedPiglinRaw
   }
 
   @Override
+  public SoundDataSet getDefaultSoundDataSet(SoundDataSet soundDataSet, String variantName) {
+    soundDataSet.addDefaultSound(SoundType.AMBIENT, SoundEvents.HUSK_AMBIENT);
+    soundDataSet.addDefaultSound(SoundType.HURT, SoundEvents.HUSK_HURT);
+    soundDataSet.addDefaultSound(SoundType.DEATH, SoundEvents.HUSK_DEATH);
+    soundDataSet.addDefaultSound(SoundType.STEP, SoundEvents.HUSK_STEP);
+    soundDataSet.addDefaultSound(SoundType.TRADE, SoundEvents.VILLAGER_TRADE);
+    soundDataSet.addDefaultSound(SoundType.TRADE_YES, SoundEvents.VILLAGER_YES);
+    soundDataSet.addDefaultSound(SoundType.TRADE_NO, SoundEvents.VILLAGER_NO);
+    return soundDataSet;
+  }
+
+  @Override
+  protected void randomizeReinforcementsChance() {
+    // No default reinforcements for NPCs.
+  }
+
+  @Override
   protected void registerGoals() {
     // No default goals for NPCs.
   }
 
   @Override
-  protected Brain.Provider<ZombifiedPiglin> brainProvider() {
-    return Brain.provider(MEMORY_TYPES, SENSOR_TYPES);
+  protected boolean isSunSensitive() {
+    return false;
   }
 
   @Override

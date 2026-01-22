@@ -19,16 +19,17 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.npc.epicfight;
 
+import de.markusbordihn.easynpc.api.npc.piglin.PillagerRaw;
 import de.markusbordihn.easynpc.compat.CompatConstants;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
-import de.markusbordihn.easynpc.entity.easynpc.npc.raw.PillagerRaw;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.monster.illager.Pillager;
 import net.minecraft.world.level.Level;
 
 public class PillagerEpicFight extends PillagerRaw {
 
-  public static final String ID = CompatConstants.MOD_EPIC_FIGHT_PREFIX + PillagerRaw.ID;
+  public static final String ID =
+      CompatConstants.MOD_EPIC_FIGHT_PREFIX + PillagerRaw.NPC_TYPE.getRegistryId();
 
   public PillagerEpicFight(EntityType<? extends Pillager> entityType, Level level) {
     super(entityType, level);

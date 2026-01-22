@@ -19,16 +19,17 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.npc.epicfight;
 
+import de.markusbordihn.easynpc.api.npc.HumanoidSlimRaw;
 import de.markusbordihn.easynpc.compat.CompatConstants;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
-import de.markusbordihn.easynpc.entity.easynpc.npc.raw.HumanoidSlimRaw;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.level.Level;
 
 public class HumanoidSlimEpicFight extends HumanoidSlimRaw {
 
-  public static final String ID = CompatConstants.MOD_EPIC_FIGHT_PREFIX + HumanoidSlimRaw.ID;
+  public static final String ID =
+      CompatConstants.MOD_EPIC_FIGHT_PREFIX + HumanoidSlimRaw.NPC_TYPE.getRegistryId();
 
   public HumanoidSlimEpicFight(EntityType<? extends PathfinderMob> entityType, Level level) {
     super(entityType, level);

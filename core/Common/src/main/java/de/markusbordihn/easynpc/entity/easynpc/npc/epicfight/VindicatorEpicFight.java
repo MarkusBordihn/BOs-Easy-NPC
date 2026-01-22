@@ -19,16 +19,17 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.npc.epicfight;
 
+import de.markusbordihn.easynpc.api.npc.VindicatorRaw;
 import de.markusbordihn.easynpc.compat.CompatConstants;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
-import de.markusbordihn.easynpc.entity.easynpc.npc.raw.VindicatorRaw;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.monster.illager.Vindicator;
 import net.minecraft.world.level.Level;
 
 public class VindicatorEpicFight extends VindicatorRaw {
 
-  public static final String ID = CompatConstants.MOD_EPIC_FIGHT_PREFIX + VindicatorRaw.ID;
+  public static final String ID =
+      CompatConstants.MOD_EPIC_FIGHT_PREFIX + VindicatorRaw.NPC_TYPE.getRegistryId();
 
   public VindicatorEpicFight(EntityType<? extends Vindicator> entityType, Level level) {
     super(entityType, level);

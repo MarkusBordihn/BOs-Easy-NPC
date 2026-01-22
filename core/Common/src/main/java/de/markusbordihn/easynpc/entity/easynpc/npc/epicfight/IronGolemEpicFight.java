@@ -19,16 +19,17 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.npc.epicfight;
 
+import de.markusbordihn.easynpc.api.npc.IronGolemRaw;
 import de.markusbordihn.easynpc.compat.CompatConstants;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
-import de.markusbordihn.easynpc.entity.easynpc.npc.raw.IronGolemRaw;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.animal.golem.IronGolem;
 import net.minecraft.world.level.Level;
 
 public class IronGolemEpicFight extends IronGolemRaw {
 
-  public static final String ID = CompatConstants.MOD_EPIC_FIGHT_PREFIX + IronGolemRaw.ID;
+  public static final String ID =
+      CompatConstants.MOD_EPIC_FIGHT_PREFIX + IronGolemRaw.NPC_TYPE.getRegistryId();
 
   public IronGolemEpicFight(EntityType<? extends IronGolem> entityType, Level level) {
     super(entityType, level);

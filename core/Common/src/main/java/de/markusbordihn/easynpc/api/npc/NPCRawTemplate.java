@@ -17,7 +17,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.entity.easynpc.npc.raw;
+package de.markusbordihn.easynpc.api.npc;
 
 import static java.util.Objects.hash;
 
@@ -25,6 +25,8 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
 import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.model.ModelType;
+import de.markusbordihn.easynpc.data.npc.NPCType;
+import de.markusbordihn.easynpc.data.npc.RawNPCType;
 import de.markusbordihn.easynpc.data.scale.CustomScale;
 import de.markusbordihn.easynpc.data.server.ServerEntityData;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
@@ -95,8 +97,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class NPCRawTemplate extends Zombie implements EasyNPCBase<Zombie> {
 
-  public static final String ID = "npc_raw_template";
-
+  public static final RawNPCType NPC_TYPE = RawNPCType.ZOMBIE;
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   protected static final EnumMap<SynchedDataIndex, EntityDataAccessor<?>> entityDataAccessorMap =
       new EnumMap<>(SynchedDataIndex.class);
@@ -225,6 +226,11 @@ public class NPCRawTemplate extends Zombie implements EasyNPCBase<Zombie> {
 
   public NPCRawTemplate(EntityType<? extends Zombie> entityType, Level level) {
     super(entityType, level);
+  }
+
+  @Override
+  public NPCType getNPCType() {
+    return NPC_TYPE;
   }
 
   @Override

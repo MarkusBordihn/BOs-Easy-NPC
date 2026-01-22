@@ -19,16 +19,17 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.npc.epicfight;
 
+import de.markusbordihn.easynpc.api.npc.piglin.ZombifiedPiglinRaw;
 import de.markusbordihn.easynpc.compat.CompatConstants;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
-import de.markusbordihn.easynpc.entity.easynpc.npc.raw.ZombifiedPiglinRaw;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.monster.zombie.ZombifiedPiglin;
 import net.minecraft.world.level.Level;
 
 public class ZombifiedPiglinEpicFight extends ZombifiedPiglinRaw {
 
-  public static final String ID = CompatConstants.MOD_EPIC_FIGHT_PREFIX + ZombifiedPiglinRaw.ID;
+  public static final String ID =
+      CompatConstants.MOD_EPIC_FIGHT_PREFIX + ZombifiedPiglinRaw.NPC_TYPE.getRegistryId();
 
   public ZombifiedPiglinEpicFight(EntityType<? extends ZombifiedPiglin> entityType, Level level) {
     super(entityType, level);

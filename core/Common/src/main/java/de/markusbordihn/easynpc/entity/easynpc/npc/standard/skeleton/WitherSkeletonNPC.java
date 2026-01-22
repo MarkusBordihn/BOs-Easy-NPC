@@ -17,60 +17,60 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.entity.easynpc.npc.standard;
+package de.markusbordihn.easynpc.entity.easynpc.npc.standard.skeleton;
 
+import de.markusbordihn.easynpc.api.npc.skeleton.WitherSkeletonRaw;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
-import de.markusbordihn.easynpc.data.skin.SkinModel;
-import de.markusbordihn.easynpc.data.skin.variant.HorseSkinVariant;
+import de.markusbordihn.easynpc.data.npc.DefaultNPCType;
+import de.markusbordihn.easynpc.data.npc.NPCType;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.sound.SoundType;
-import de.markusbordihn.easynpc.entity.easynpc.npc.raw.HorseRaw;
+import de.markusbordihn.easynpc.entity.easynpc.npc.standard.StandardEasyNPC;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.FlyingAnimal;
-import net.minecraft.world.entity.animal.equine.Horse;
+import net.minecraft.world.entity.monster.skeleton.WitherSkeleton;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
-public class HorseNPC extends HorseRaw implements StandardEasyNPC<HorseRaw> {
+public class WitherSkeletonNPC extends WitherSkeletonRaw
+    implements StandardEasyNPC<WitherSkeletonRaw> {
 
-  public static final String ID = "horse";
-  public static final String ID_SKELETON = "horse_skeleton";
-  public static final String ID_ZOMBIE = "horse_zombie";
+  private static final DefaultNPCType NPC_TYPE = DefaultNPCType.WITHER_SKELETON;
 
-  public HorseNPC(EntityType<? extends Horse> entityType, Level level) {
-    this(entityType, level, HorseSkinVariant.WHITE);
-  }
-
-  public HorseNPC(EntityType<? extends Horse> entityType, Level level, Enum<?> variantType) {
-    super(entityType, level, variantType);
+  public WitherSkeletonNPC(EntityType<? extends WitherSkeleton> entityType, Level level) {
+    super(entityType, level);
+    this.setInvulnerable(true);
+    this.getEntityAttributes()
+        .setEnvironmentalAttributes(
+            this.getEntityAttributes().getEnvironmentalAttributes().withCanBreathUnderwater(true));
   }
 
   public static AttributeSupplier.Builder createAttributes() {
     return Mob.createMobAttributes()
         .add(Attributes.ARMOR_TOUGHNESS, 0.0D)
         .add(Attributes.ARMOR, 0.0D)
-        .add(Attributes.ATTACK_DAMAGE, 2.0D)
+        .add(Attributes.ATTACK_DAMAGE, 1.0D)
         .add(Attributes.ATTACK_KNOCKBACK, 0.0D)
         .add(Attributes.ATTACK_SPEED, 0.0D)
         .add(Attributes.FOLLOW_RANGE, 32.0D)
         .add(Attributes.KNOCKBACK_RESISTANCE, 0.0D)
-        .add(Attributes.MAX_HEALTH, 8.0D)
-        .add(Attributes.MOVEMENT_SPEED, 0.3F)
+        .add(Attributes.MAX_HEALTH, 20.0D)
+        .add(Attributes.MOVEMENT_SPEED, 0.6F)
         .add(Attributes.SPAWN_REINFORCEMENTS_CHANCE, 0.0D);
   }
 
   @Override
-  public boolean canUseOffHand() {
-    return false;
+  public NPCType getNPCType() {
+    return NPC_TYPE;
   }
 
   @Override
-  public boolean canUseMainHand() {
-    return false;
+  public boolean canUseArmor() {
+    return true;
   }
 
   @Override
@@ -79,22 +79,11 @@ public class HorseNPC extends HorseRaw implements StandardEasyNPC<HorseRaw> {
   }
 
   @Override
-  public SkinModel getSkinModel() {
-    return SkinModel.WOLF;
-  }
-
-  @Override
-  public int getEntityDialogTop() {
-    return -37;
-  }
-
-  @Override
   public SoundDataSet getDefaultSoundDataSet(SoundDataSet soundDataSet, String variantName) {
-    soundDataSet.addDefaultSound(SoundType.AMBIENT, SoundEvents.HORSE_AMBIENT);
-    soundDataSet.addDefaultSound(SoundType.DEATH, SoundEvents.HORSE_DEATH);
-    soundDataSet.addDefaultSound(SoundType.EAT, SoundEvents.HORSE_EAT);
-    soundDataSet.addDefaultSound(SoundType.HURT, SoundEvents.HORSE_HURT);
-    soundDataSet.addDefaultSound(SoundType.STEP, SoundEvents.HORSE_STEP);
+    soundDataSet.addDefaultSound(SoundType.AMBIENT, SoundEvents.WITHER_SKELETON_AMBIENT);
+    soundDataSet.addDefaultSound(SoundType.DEATH, SoundEvents.WITHER_SKELETON_DEATH);
+    soundDataSet.addDefaultSound(SoundType.HURT, SoundEvents.WITHER_SKELETON_HURT);
+    soundDataSet.addDefaultSound(SoundType.STEP, SoundEvents.WITHER_SKELETON_STEP);
     soundDataSet.addDefaultSound(SoundType.TRADE, SoundEvents.VILLAGER_TRADE);
     soundDataSet.addDefaultSound(SoundType.TRADE_YES, SoundEvents.VILLAGER_YES);
     soundDataSet.addDefaultSound(SoundType.TRADE_NO, SoundEvents.VILLAGER_NO);
@@ -102,21 +91,15 @@ public class HorseNPC extends HorseRaw implements StandardEasyNPC<HorseRaw> {
   }
 
   @Override
-  protected void registerGoals() {
-    // No default goals for NPCs.
-  }
+  protected void registerGoals() {}
 
   @Override
   public void travel(Vec3 vec3) {
-
     this.handleNavigationTravelEvent(vec3);
 
-    // Handle movement for NPC for specific conditions.
     if (this.hasTravelTargetObjectives()) {
-      // Allow travel for NPC, if travel objectives are used.
       super.travel(vec3);
     } else {
-      // Make sure we only calculate animations for be as much as possible server-friendly.
       this.calculateEntityAnimation(this instanceof FlyingAnimal);
     }
   }

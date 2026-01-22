@@ -19,16 +19,17 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.npc.epicfight;
 
+import de.markusbordihn.easynpc.api.npc.WitchRaw;
 import de.markusbordihn.easynpc.compat.CompatConstants;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
-import de.markusbordihn.easynpc.entity.easynpc.npc.raw.WitchRaw;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.monster.Witch;
 import net.minecraft.world.level.Level;
 
 public class WitchEpicFight extends WitchRaw {
 
-  public static final String ID = CompatConstants.MOD_EPIC_FIGHT_PREFIX + WitchRaw.ID;
+  public static final String ID =
+      CompatConstants.MOD_EPIC_FIGHT_PREFIX + WitchRaw.NPC_TYPE.getRegistryId();
 
   public WitchEpicFight(EntityType<? extends Witch> entityType, Level level) {
     super(entityType, level);

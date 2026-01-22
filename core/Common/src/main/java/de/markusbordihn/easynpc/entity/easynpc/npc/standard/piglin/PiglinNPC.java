@@ -17,37 +17,45 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.entity.easynpc.npc.standard;
+package de.markusbordihn.easynpc.entity.easynpc.npc.standard.piglin;
 
+import com.google.common.collect.ImmutableList;
+import de.markusbordihn.easynpc.api.npc.piglin.PiglinRaw;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
-import de.markusbordihn.easynpc.data.skin.variant.SkeletonSkinVariant;
+import de.markusbordihn.easynpc.data.npc.DefaultNPCType;
+import de.markusbordihn.easynpc.data.npc.NPCType;
+import de.markusbordihn.easynpc.data.skin.variant.PiglinSkinVariant;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.sound.SoundType;
-import de.markusbordihn.easynpc.entity.easynpc.npc.raw.SkeletonRaw;
+import de.markusbordihn.easynpc.entity.easynpc.npc.standard.StandardEasyNPC;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.animal.FlyingAnimal;
-import net.minecraft.world.entity.monster.skeleton.Skeleton;
+import net.minecraft.world.entity.monster.piglin.Piglin;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
-public class SkeletonNPC extends SkeletonRaw implements StandardEasyNPC<SkeletonRaw> {
+public class PiglinNPC extends PiglinRaw implements StandardEasyNPC<PiglinRaw> {
 
-  public static final String ID = "skeleton";
+  protected static final ImmutableList<MemoryModuleType<?>> MEMORY_TYPES =
+      ImmutableList.of(
+          MemoryModuleType.ANGRY_AT,
+          MemoryModuleType.ATTACK_TARGET,
+          MemoryModuleType.CELEBRATE_LOCATION,
+          MemoryModuleType.DANCING);
+  private static final DefaultNPCType NPC_TYPE = DefaultNPCType.PIGLIN;
 
-  public SkeletonNPC(EntityType<? extends Skeleton> entityType, Level level) {
-    this(entityType, level, SkeletonSkinVariant.SKELETON);
+  public PiglinNPC(EntityType<? extends Piglin> entityType, Level level) {
+    this(entityType, level, PiglinSkinVariant.PIGLIN);
   }
 
-  public SkeletonNPC(EntityType<? extends Skeleton> entityType, Level level, Enum<?> variantType) {
+  public PiglinNPC(EntityType<? extends Piglin> entityType, Level level, Enum<?> variantType) {
     super(entityType, level, variantType);
-    this.setInvulnerable(true);
-    this.getEntityAttributes()
-        .setEnvironmentalAttributes(
-            this.getEntityAttributes().getEnvironmentalAttributes().withCanBreathUnderwater(true));
   }
 
   public static AttributeSupplier.Builder createAttributes() {
@@ -60,13 +68,13 @@ public class SkeletonNPC extends SkeletonRaw implements StandardEasyNPC<Skeleton
         .add(Attributes.FOLLOW_RANGE, 32.0D)
         .add(Attributes.KNOCKBACK_RESISTANCE, 0.0D)
         .add(Attributes.MAX_HEALTH, 20.0D)
-        .add(Attributes.MOVEMENT_SPEED, 0.6F)
+        .add(Attributes.MOVEMENT_SPEED, 0.5F)
         .add(Attributes.SPAWN_REINFORCEMENTS_CHANCE, 0.0D);
   }
 
   @Override
-  public boolean canUseArmor() {
-    return true;
+  public NPCType getNPCType() {
+    return NPC_TYPE;
   }
 
   @Override
@@ -76,10 +84,26 @@ public class SkeletonNPC extends SkeletonRaw implements StandardEasyNPC<Skeleton
 
   @Override
   public SoundDataSet getDefaultSoundDataSet(SoundDataSet soundDataSet, String variantName) {
-    soundDataSet.addDefaultSound(SoundType.AMBIENT, SoundEvents.SKELETON_AMBIENT);
-    soundDataSet.addDefaultSound(SoundType.DEATH, SoundEvents.SKELETON_DEATH);
-    soundDataSet.addDefaultSound(SoundType.HURT, SoundEvents.SKELETON_HURT);
-    soundDataSet.addDefaultSound(SoundType.STEP, SoundEvents.SKELETON_STEP);
+    PiglinSkinVariant soundVariant = PiglinSkinVariant.valueOf(variantName);
+    switch (soundVariant) {
+      case PIGLIN_BRUTE:
+        soundDataSet.addDefaultSound(SoundType.AMBIENT, SoundEvents.PIGLIN_BRUTE_AMBIENT);
+        soundDataSet.addDefaultSound(SoundType.HURT, SoundEvents.PIGLIN_BRUTE_HURT);
+        soundDataSet.addDefaultSound(SoundType.DEATH, SoundEvents.PIGLIN_BRUTE_DEATH);
+        soundDataSet.addDefaultSound(SoundType.STEP, SoundEvents.PIGLIN_BRUTE_STEP);
+        break;
+      case ZOMBIFIED_PIGLIN:
+        soundDataSet.addDefaultSound(SoundType.AMBIENT, SoundEvents.ZOMBIFIED_PIGLIN_AMBIENT);
+        soundDataSet.addDefaultSound(SoundType.HURT, SoundEvents.ZOMBIFIED_PIGLIN_HURT);
+        soundDataSet.addDefaultSound(SoundType.DEATH, SoundEvents.ZOMBIFIED_PIGLIN_DEATH);
+        soundDataSet.addDefaultSound(SoundType.STEP, SoundEvents.PIGLIN_STEP);
+        break;
+      default:
+        soundDataSet.addDefaultSound(SoundType.AMBIENT, SoundEvents.PIGLIN_AMBIENT);
+        soundDataSet.addDefaultSound(SoundType.HURT, SoundEvents.PIGLIN_HURT);
+        soundDataSet.addDefaultSound(SoundType.DEATH, SoundEvents.PIGLIN_DEATH);
+        soundDataSet.addDefaultSound(SoundType.STEP, SoundEvents.PIGLIN_STEP);
+    }
     soundDataSet.addDefaultSound(SoundType.TRADE, SoundEvents.VILLAGER_TRADE);
     soundDataSet.addDefaultSound(SoundType.TRADE_YES, SoundEvents.VILLAGER_YES);
     soundDataSet.addDefaultSound(SoundType.TRADE_NO, SoundEvents.VILLAGER_NO);
@@ -89,6 +113,16 @@ public class SkeletonNPC extends SkeletonRaw implements StandardEasyNPC<Skeleton
   @Override
   protected void registerGoals() {
     // No default goals for NPCs.
+  }
+
+  @Override
+  public boolean isConverting() {
+    return false;
+  }
+
+  @Override
+  protected Brain.Provider<Piglin> brainProvider() {
+    return Brain.provider(MEMORY_TYPES, SENSOR_TYPES);
   }
 
   @Override

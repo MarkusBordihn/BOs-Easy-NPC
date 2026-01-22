@@ -17,49 +17,41 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.entity.easynpc.npc.standard;
+package de.markusbordihn.easynpc.entity.easynpc.npc.standard.zombie;
 
-import com.google.common.collect.ImmutableList;
+import de.markusbordihn.easynpc.api.npc.zombie.ZombieRaw;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
+import de.markusbordihn.easynpc.data.npc.DefaultNPCType;
+import de.markusbordihn.easynpc.data.npc.NPCType;
+import de.markusbordihn.easynpc.data.skin.variant.ZombieSkinVariant;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.sound.SoundType;
-import de.markusbordihn.easynpc.entity.easynpc.npc.raw.PiglinBruteRaw;
+import de.markusbordihn.easynpc.entity.easynpc.npc.standard.StandardEasyNPC;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.memory.MemoryModuleType;
-import net.minecraft.world.entity.ai.sensing.Sensor;
-import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.minecraft.world.entity.animal.FlyingAnimal;
-import net.minecraft.world.entity.monster.piglin.PiglinBrute;
+import net.minecraft.world.entity.monster.zombie.Zombie;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
-public class PiglinBruteNPC extends PiglinBruteRaw implements StandardEasyNPC<PiglinBruteRaw> {
+public class ZombieNPC extends ZombieRaw implements StandardEasyNPC<ZombieRaw> {
 
-  public static final String ID = "piglin_brute";
+  private static final DefaultNPCType NPC_TYPE = DefaultNPCType.ZOMBIE;
 
-  protected static final ImmutableList<MemoryModuleType<?>> MEMORY_TYPES =
-      ImmutableList.of(
-          MemoryModuleType.ANGRY_AT,
-          MemoryModuleType.ATTACK_TARGET,
-          MemoryModuleType.CELEBRATE_LOCATION,
-          MemoryModuleType.DANCING);
+  public ZombieNPC(EntityType<? extends Zombie> entityType, Level level) {
+    this(entityType, level, ZombieSkinVariant.ZOMBIE);
+  }
 
-  protected static final ImmutableList<SensorType<? extends Sensor<? super PiglinBrute>>>
-      SENSOR_TYPES =
-          ImmutableList.of(
-              SensorType.NEAREST_LIVING_ENTITIES,
-              SensorType.NEAREST_PLAYERS,
-              SensorType.NEAREST_ITEMS,
-              SensorType.HURT_BY,
-              SensorType.PIGLIN_BRUTE_SPECIFIC_SENSOR);
-
-  public PiglinBruteNPC(EntityType<? extends PiglinBrute> entityType, Level level) {
-    super(entityType, level);
+  public ZombieNPC(EntityType<? extends Zombie> entityType, Level level, Enum<?> variantType) {
+    super(entityType, level, variantType);
+    this.setInvulnerable(true);
+    this.getEntityAttributes()
+        .setEnvironmentalAttributes(
+            this.getEntityAttributes().getEnvironmentalAttributes().withCanBreathUnderwater(true));
+    this.refreshGroundNavigation();
   }
 
   public static AttributeSupplier.Builder createAttributes() {
@@ -77,20 +69,47 @@ public class PiglinBruteNPC extends PiglinBruteRaw implements StandardEasyNPC<Pi
   }
 
   @Override
+  public NPCType getNPCType() {
+    return NPC_TYPE;
+  }
+
+  @Override
+  public boolean canUseArmor() {
+    return true;
+  }
+
+  @Override
   public ConfigurationData getConfigurationData() {
     return ConfigurationData.STANDARD;
   }
 
   @Override
   public SoundDataSet getDefaultSoundDataSet(SoundDataSet soundDataSet, String variantName) {
-    soundDataSet.addDefaultSound(SoundType.AMBIENT, SoundEvents.PIGLIN_BRUTE_AMBIENT);
-    soundDataSet.addDefaultSound(SoundType.HURT, SoundEvents.PIGLIN_BRUTE_HURT);
-    soundDataSet.addDefaultSound(SoundType.DEATH, SoundEvents.PIGLIN_BRUTE_DEATH);
-    soundDataSet.addDefaultSound(SoundType.STEP, SoundEvents.PIGLIN_BRUTE_STEP);
+    ZombieSkinVariant soundVariant = ZombieSkinVariant.valueOf(variantName);
+    switch (soundVariant) {
+      case HUSK:
+        soundDataSet.addDefaultSound(SoundType.AMBIENT, SoundEvents.HUSK_AMBIENT);
+        soundDataSet.addDefaultSound(SoundType.HURT, SoundEvents.HUSK_HURT);
+        soundDataSet.addDefaultSound(SoundType.DEATH, SoundEvents.HUSK_DEATH);
+        soundDataSet.addDefaultSound(SoundType.STEP, SoundEvents.HUSK_STEP);
+        break;
+      case ZOMBIE:
+      default:
+        soundDataSet.addDefaultSound(SoundType.AMBIENT, SoundEvents.ZOMBIE_AMBIENT);
+        soundDataSet.addDefaultSound(SoundType.HURT, SoundEvents.ZOMBIE_HURT);
+        soundDataSet.addDefaultSound(SoundType.DEATH, SoundEvents.ZOMBIE_DEATH);
+        soundDataSet.addDefaultSound(SoundType.STEP, SoundEvents.ZOMBIE_STEP);
+        break;
+    }
     soundDataSet.addDefaultSound(SoundType.TRADE, SoundEvents.VILLAGER_TRADE);
     soundDataSet.addDefaultSound(SoundType.TRADE_YES, SoundEvents.VILLAGER_YES);
     soundDataSet.addDefaultSound(SoundType.TRADE_NO, SoundEvents.VILLAGER_NO);
     return soundDataSet;
+  }
+
+  @Override
+  protected void randomizeReinforcementsChance() {
+    // No default reinforcements for NPCs.
   }
 
   @Override
@@ -99,8 +118,13 @@ public class PiglinBruteNPC extends PiglinBruteRaw implements StandardEasyNPC<Pi
   }
 
   @Override
-  protected Brain.Provider<PiglinBrute> brainProvider() {
-    return Brain.provider(MEMORY_TYPES, SENSOR_TYPES);
+  protected void addBehaviourGoals() {
+    // No default behaviour goals for NPCs.
+  }
+
+  @Override
+  protected boolean isSunSensitive() {
+    return false;
   }
 
   @Override

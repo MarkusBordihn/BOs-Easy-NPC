@@ -19,11 +19,13 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.npc.standard;
 
+import de.markusbordihn.easynpc.api.npc.piglin.PillagerRaw;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
+import de.markusbordihn.easynpc.data.npc.DefaultNPCType;
+import de.markusbordihn.easynpc.data.npc.NPCType;
 import de.markusbordihn.easynpc.data.skin.variant.IllagerSkinVariant;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.sound.SoundType;
-import de.markusbordihn.easynpc.entity.easynpc.npc.raw.PillagerRaw;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
@@ -36,7 +38,7 @@ import net.minecraft.world.phys.Vec3;
 
 public class PillagerNPC extends PillagerRaw implements StandardEasyNPC<PillagerRaw> {
 
-  public static final String ID = "pillager";
+  public static final DefaultNPCType NPC_TYPE = DefaultNPCType.PILLAGER;
 
   public PillagerNPC(EntityType<? extends Pillager> entityType, Level level) {
     super(entityType, level, IllagerSkinVariant.PILLAGER);
@@ -60,6 +62,11 @@ public class PillagerNPC extends PillagerRaw implements StandardEasyNPC<Pillager
         .add(Attributes.MAX_HEALTH, 20.0D)
         .add(Attributes.MOVEMENT_SPEED, 0.6F)
         .add(Attributes.SPAWN_REINFORCEMENTS_CHANCE, 0.0D);
+  }
+
+  @Override
+  public NPCType getNPCType() {
+    return NPC_TYPE;
   }
 
   @Override

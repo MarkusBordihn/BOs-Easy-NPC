@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.configui.client.screen.components;
 
 import de.markusbordihn.easynpc.client.screen.components.CustomButton;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button.OnPress;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.world.item.DyeColor;
 

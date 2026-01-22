@@ -19,10 +19,12 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.npc.standard;
 
+import de.markusbordihn.easynpc.api.npc.zombie.HuskRaw;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
+import de.markusbordihn.easynpc.data.npc.DefaultNPCType;
+import de.markusbordihn.easynpc.data.npc.NPCType;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.sound.SoundType;
-import de.markusbordihn.easynpc.entity.easynpc.npc.raw.HuskRaw;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
@@ -35,7 +37,7 @@ import net.minecraft.world.phys.Vec3;
 
 public class HuskNPC extends HuskRaw implements StandardEasyNPC<HuskRaw> {
 
-  public static final String ID = "husk";
+  public static final DefaultNPCType NPC_TYPE = DefaultNPCType.HUSK;
 
   public HuskNPC(EntityType<? extends Husk> entityType, Level level) {
     super(entityType, level);
@@ -58,6 +60,11 @@ public class HuskNPC extends HuskRaw implements StandardEasyNPC<HuskRaw> {
         .add(Attributes.MAX_HEALTH, 20.0D)
         .add(Attributes.MOVEMENT_SPEED, 0.5F)
         .add(Attributes.SPAWN_REINFORCEMENTS_CHANCE, 0.0D);
+  }
+
+  @Override
+  public NPCType getNPCType() {
+    return NPC_TYPE;
   }
 
   @Override

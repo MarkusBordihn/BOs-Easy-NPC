@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Markus Bordihn
+ * Copyright 2025 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,33 +17,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.entity.easynpc.npc.standard;
+package de.markusbordihn.easynpc.entity.easynpc.npc.standard.spider;
 
+import de.markusbordihn.easynpc.api.npc.spider.SpiderRaw;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
-import de.markusbordihn.easynpc.data.skin.variant.ZombieSkinVariant;
+import de.markusbordihn.easynpc.data.npc.DefaultNPCType;
+import de.markusbordihn.easynpc.data.npc.NPCType;
+import de.markusbordihn.easynpc.data.skin.variant.SpiderSkinVariant;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.sound.SoundType;
-import de.markusbordihn.easynpc.entity.easynpc.npc.raw.ZombieRaw;
+import de.markusbordihn.easynpc.entity.easynpc.npc.standard.StandardEasyNPC;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.FlyingAnimal;
-import net.minecraft.world.entity.monster.zombie.Zombie;
+import net.minecraft.world.entity.monster.spider.Spider;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
-public class ZombieNPC extends ZombieRaw implements StandardEasyNPC<ZombieRaw> {
+public class SpiderNPC extends SpiderRaw implements StandardEasyNPC<SpiderRaw> {
 
-  public static final String ID = "zombie";
-  public static final String ID_HUSK = "husk";
+  private static final DefaultNPCType NPC_TYPE = DefaultNPCType.SPIDER;
 
-  public ZombieNPC(EntityType<? extends Zombie> entityType, Level level) {
-    this(entityType, level, ZombieSkinVariant.ZOMBIE);
+  public SpiderNPC(EntityType<? extends Spider> entityType, Level level) {
+    this(entityType, level, SpiderSkinVariant.SPIDER);
   }
 
-  public ZombieNPC(EntityType<? extends Zombie> entityType, Level level, Enum<?> variantType) {
+  public SpiderNPC(EntityType<? extends Spider> entityType, Level level, Enum<?> variantType) {
     super(entityType, level, variantType);
     this.setInvulnerable(true);
     this.getEntityAttributes()
@@ -62,13 +64,17 @@ public class ZombieNPC extends ZombieRaw implements StandardEasyNPC<ZombieRaw> {
         .add(Attributes.FOLLOW_RANGE, 32.0D)
         .add(Attributes.KNOCKBACK_RESISTANCE, 0.0D)
         .add(Attributes.MAX_HEALTH, 20.0D)
-        .add(Attributes.MOVEMENT_SPEED, 0.5F)
-        .add(Attributes.SPAWN_REINFORCEMENTS_CHANCE, 0.0D);
+        .add(Attributes.MOVEMENT_SPEED, 0.3F);
+  }
+
+  @Override
+  public NPCType getNPCType() {
+    return NPC_TYPE;
   }
 
   @Override
   public boolean canUseArmor() {
-    return true;
+    return false;
   }
 
   @Override
@@ -78,20 +84,14 @@ public class ZombieNPC extends ZombieRaw implements StandardEasyNPC<ZombieRaw> {
 
   @Override
   public SoundDataSet getDefaultSoundDataSet(SoundDataSet soundDataSet, String variantName) {
-    ZombieSkinVariant soundVariant = ZombieSkinVariant.valueOf(variantName);
+    SpiderSkinVariant soundVariant = SpiderSkinVariant.valueOf(variantName);
     switch (soundVariant) {
-      case HUSK:
-        soundDataSet.addDefaultSound(SoundType.AMBIENT, SoundEvents.HUSK_AMBIENT);
-        soundDataSet.addDefaultSound(SoundType.HURT, SoundEvents.HUSK_HURT);
-        soundDataSet.addDefaultSound(SoundType.DEATH, SoundEvents.HUSK_DEATH);
-        soundDataSet.addDefaultSound(SoundType.STEP, SoundEvents.HUSK_STEP);
-        break;
-      case ZOMBIE:
+      case CAVE_SPIDER, SPIDER:
       default:
-        soundDataSet.addDefaultSound(SoundType.AMBIENT, SoundEvents.ZOMBIE_AMBIENT);
-        soundDataSet.addDefaultSound(SoundType.HURT, SoundEvents.ZOMBIE_HURT);
-        soundDataSet.addDefaultSound(SoundType.DEATH, SoundEvents.ZOMBIE_DEATH);
-        soundDataSet.addDefaultSound(SoundType.STEP, SoundEvents.ZOMBIE_STEP);
+        soundDataSet.addDefaultSound(SoundType.AMBIENT, SoundEvents.SPIDER_AMBIENT);
+        soundDataSet.addDefaultSound(SoundType.HURT, SoundEvents.SPIDER_HURT);
+        soundDataSet.addDefaultSound(SoundType.DEATH, SoundEvents.SPIDER_DEATH);
+        soundDataSet.addDefaultSound(SoundType.STEP, SoundEvents.SPIDER_STEP);
         break;
     }
     soundDataSet.addDefaultSound(SoundType.TRADE, SoundEvents.VILLAGER_TRADE);
@@ -101,23 +101,8 @@ public class ZombieNPC extends ZombieRaw implements StandardEasyNPC<ZombieRaw> {
   }
 
   @Override
-  protected void randomizeReinforcementsChance() {
-    // No default reinforcements for NPCs.
-  }
-
-  @Override
   protected void registerGoals() {
     // No default goals for NPCs.
-  }
-
-  @Override
-  protected void addBehaviourGoals() {
-    // No default behaviour goals for NPCs.
-  }
-
-  @Override
-  protected boolean isSunSensitive() {
-    return false;
   }
 
   @Override

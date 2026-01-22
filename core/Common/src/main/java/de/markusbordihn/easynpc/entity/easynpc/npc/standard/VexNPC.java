@@ -19,11 +19,13 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.npc.standard;
 
+import de.markusbordihn.easynpc.api.npc.VexRaw;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
+import de.markusbordihn.easynpc.data.npc.DefaultNPCType;
+import de.markusbordihn.easynpc.data.npc.NPCType;
 import de.markusbordihn.easynpc.data.skin.variant.VexSkinVariant;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.sound.SoundType;
-import de.markusbordihn.easynpc.entity.easynpc.npc.raw.VexRaw;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
@@ -36,7 +38,7 @@ import net.minecraft.world.phys.Vec3;
 
 public class VexNPC extends VexRaw implements StandardEasyNPC<VexRaw> {
 
-  public static final String ID = "vex";
+  public static final DefaultNPCType NPC_TYPE = DefaultNPCType.VEX;
 
   public VexNPC(EntityType<? extends Vex> entityType, Level level) {
     this(entityType, level, VexSkinVariant.VEX);
@@ -61,6 +63,11 @@ public class VexNPC extends VexRaw implements StandardEasyNPC<VexRaw> {
         .add(Attributes.MAX_HEALTH, 14.0D)
         .add(Attributes.MOVEMENT_SPEED, 0.25D)
         .add(Attributes.SPAWN_REINFORCEMENTS_CHANCE, 0.0D);
+  }
+
+  @Override
+  public NPCType getNPCType() {
+    return NPC_TYPE;
   }
 
   @Override

@@ -19,11 +19,12 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.npc.standard;
 
+import de.markusbordihn.easynpc.api.npc.BoggedRaw;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
+import de.markusbordihn.easynpc.data.npc.DefaultNPCType;
 import de.markusbordihn.easynpc.data.skin.variant.SkeletonSkinVariant;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.sound.SoundType;
-import de.markusbordihn.easynpc.entity.easynpc.npc.raw.BoggedRaw;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
@@ -36,7 +37,7 @@ import net.minecraft.world.phys.Vec3;
 
 public class BoggedNPC extends BoggedRaw implements StandardEasyNPC<BoggedRaw> {
 
-  public static final String ID = "bogged";
+  public static final DefaultNPCType NPC_TYPE = DefaultNPCType.BOGGED;
 
   public BoggedNPC(EntityType<? extends Bogged> entityType, Level level) {
     this(entityType, level, SkeletonSkinVariant.BOGGED);

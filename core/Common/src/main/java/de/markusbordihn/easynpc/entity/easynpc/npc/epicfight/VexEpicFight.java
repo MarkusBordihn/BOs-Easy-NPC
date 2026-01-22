@@ -19,16 +19,17 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.npc.epicfight;
 
+import de.markusbordihn.easynpc.api.npc.VexRaw;
 import de.markusbordihn.easynpc.compat.CompatConstants;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
-import de.markusbordihn.easynpc.entity.easynpc.npc.raw.VexRaw;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.monster.Vex;
 import net.minecraft.world.level.Level;
 
 public class VexEpicFight extends VexRaw {
 
-  public static final String ID = CompatConstants.MOD_EPIC_FIGHT_PREFIX + VexRaw.ID;
+  public static final String ID =
+      CompatConstants.MOD_EPIC_FIGHT_PREFIX + VexRaw.NPC_TYPE.getRegistryId();
 
   public VexEpicFight(EntityType<? extends Vex> entityType, Level level) {
     super(entityType, level);

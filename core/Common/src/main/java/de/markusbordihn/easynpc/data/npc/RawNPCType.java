@@ -1,0 +1,80 @@
+/*
+ * Copyright 2023 Markus Bordihn
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software
+ * and associated documentation files (the "Software"), to deal in the Software without restriction,
+ * including without limitation the rights to use, copy, modify, merge, publish, distribute,
+ * sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all copies or
+ * substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
+ * BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+
+package de.markusbordihn.easynpc.data.npc;
+
+import java.util.Locale;
+
+public enum RawNPCType implements NPCType {
+  GENERIC,
+  // ===== AUTO_GENERATED_START: Do not edit between these markers =====
+  ALLAY,
+  BOGGED,
+  CAT,
+  CREEPER,
+  CHICKEN,
+  DROWNED,
+  ENDERMAN,
+  EVOKER,
+  FOX,
+  HORSE,
+  ILLUSIONER,
+  IRON_GOLEM,
+  PATHFINDER_MOB,
+  HUMANOID,
+  HUMANOID_SLIM,
+  HUSK,
+  PIGLIN_BRUTE,
+  PIGLIN,
+  PIG,
+  PILLAGER,
+  SKELETON,
+  SPIDER,
+  STRAY,
+  VEX,
+  VILLAGER,
+  VINDICATOR,
+  WOLF,
+  WITCH,
+  WITHER_SKELETON,
+  ZOMBIE,
+  ZOMBIE_VILLAGER,
+  ZOMBIFIED_PIGLIN;
+  // ===== AUTO_GENERATED_END =====
+
+  private final String registryId;
+
+  RawNPCType() {
+    this.registryId = name().toLowerCase(Locale.ROOT) + "_raw";
+  }
+
+  public static RawNPCType fromRegistryId(String registryId) {
+    for (RawNPCType type : values()) {
+      if (type.registryId.equals(registryId)) {
+        return type;
+      }
+    }
+    return null;
+  }
+
+  @Override
+  public String getRegistryId() {
+    return registryId;
+  }
+}

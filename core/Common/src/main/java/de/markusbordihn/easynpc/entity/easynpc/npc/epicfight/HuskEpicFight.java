@@ -19,16 +19,17 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.npc.epicfight;
 
+import de.markusbordihn.easynpc.api.npc.zombie.HuskRaw;
 import de.markusbordihn.easynpc.compat.CompatConstants;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
-import de.markusbordihn.easynpc.entity.easynpc.npc.raw.HuskRaw;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.monster.zombie.Husk;
 import net.minecraft.world.level.Level;
 
 public class HuskEpicFight extends HuskRaw {
 
-  public static final String ID = CompatConstants.MOD_EPIC_FIGHT_PREFIX + HuskRaw.ID;
+  public static final String ID =
+      CompatConstants.MOD_EPIC_FIGHT_PREFIX + HuskRaw.NPC_TYPE.getRegistryId();
 
   public HuskEpicFight(EntityType<? extends Husk> entityType, Level level) {
     super(entityType, level);

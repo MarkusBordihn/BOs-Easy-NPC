@@ -17,28 +17,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.entity.easynpc.npc.standard;
+package de.markusbordihn.easynpc.entity.easynpc.npc.standard.skeleton;
 
+import de.markusbordihn.easynpc.api.npc.skeleton.StrayRaw;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
+import de.markusbordihn.easynpc.data.npc.DefaultNPCType;
+import de.markusbordihn.easynpc.data.npc.NPCType;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.sound.SoundType;
-import de.markusbordihn.easynpc.entity.easynpc.npc.raw.WitherSkeletonRaw;
+import de.markusbordihn.easynpc.entity.easynpc.npc.standard.StandardEasyNPC;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.FlyingAnimal;
-import net.minecraft.world.entity.monster.skeleton.WitherSkeleton;
+import net.minecraft.world.entity.monster.skeleton.Stray;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
-public class WitherSkeletonNPC extends WitherSkeletonRaw
-    implements StandardEasyNPC<WitherSkeletonRaw> {
+public class StrayNPC extends StrayRaw implements StandardEasyNPC<StrayRaw> {
 
-  public static final String ID = "wither_skeleton";
+  private static final DefaultNPCType NPC_TYPE = DefaultNPCType.STRAY;
 
-  public WitherSkeletonNPC(EntityType<? extends WitherSkeleton> entityType, Level level) {
+  public StrayNPC(EntityType<? extends Stray> entityType, Level level) {
     super(entityType, level);
     this.setInvulnerable(true);
     this.getEntityAttributes()
@@ -61,6 +63,11 @@ public class WitherSkeletonNPC extends WitherSkeletonRaw
   }
 
   @Override
+  public NPCType getNPCType() {
+    return NPC_TYPE;
+  }
+
+  @Override
   public boolean canUseArmor() {
     return true;
   }
@@ -72,10 +79,10 @@ public class WitherSkeletonNPC extends WitherSkeletonRaw
 
   @Override
   public SoundDataSet getDefaultSoundDataSet(SoundDataSet soundDataSet, String variantName) {
-    soundDataSet.addDefaultSound(SoundType.AMBIENT, SoundEvents.WITHER_SKELETON_AMBIENT);
-    soundDataSet.addDefaultSound(SoundType.DEATH, SoundEvents.WITHER_SKELETON_DEATH);
-    soundDataSet.addDefaultSound(SoundType.HURT, SoundEvents.WITHER_SKELETON_HURT);
-    soundDataSet.addDefaultSound(SoundType.STEP, SoundEvents.WITHER_SKELETON_STEP);
+    soundDataSet.addDefaultSound(SoundType.AMBIENT, SoundEvents.STRAY_AMBIENT);
+    soundDataSet.addDefaultSound(SoundType.DEATH, SoundEvents.STRAY_DEATH);
+    soundDataSet.addDefaultSound(SoundType.HURT, SoundEvents.STRAY_HURT);
+    soundDataSet.addDefaultSound(SoundType.STEP, SoundEvents.STRAY_STEP);
     soundDataSet.addDefaultSound(SoundType.TRADE, SoundEvents.VILLAGER_TRADE);
     soundDataSet.addDefaultSound(SoundType.TRADE_YES, SoundEvents.VILLAGER_YES);
     soundDataSet.addDefaultSound(SoundType.TRADE_NO, SoundEvents.VILLAGER_NO);

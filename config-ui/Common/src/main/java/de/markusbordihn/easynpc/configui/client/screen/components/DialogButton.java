@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.configui.client.screen.components;
 
 import de.markusbordihn.easynpc.client.screen.components.SpriteButton;
+import net.minecraft.client.gui.components.Button.OnPress;
 
 public class DialogButton extends SpriteButton {
 
