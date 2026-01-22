@@ -188,7 +188,7 @@ public class VisibilityHandler {
       final Player player,
       final boolean isCustomNameVisible,
       final double distanceSquared) {
-    if (Minecraft.getInstance().options.hideGui) {
+    if (easyNPC.getEntity().level().isClientSide() && Minecraft.getInstance().options.hideGui) {
       return false;
     }
 
@@ -296,6 +296,10 @@ public class VisibilityHandler {
   private static boolean evaluateMouseOverVisibility(final EasyNPC<?> easyNPC) {
     if (!easyNPC.getEntity().hasCustomName()) {
       return false;
+    }
+
+    if (!easyNPC.getEntity().level().isClientSide()) {
+      return true;
     }
 
     Minecraft minecraft = Minecraft.getInstance();
