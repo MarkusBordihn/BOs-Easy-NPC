@@ -19,17 +19,17 @@
 
 package de.markusbordihn.easynpc.configui.client.screen;
 
+import de.markusbordihn.easynpc.api.npc.AllayRaw;
+import de.markusbordihn.easynpc.api.npc.CatRaw;
+import de.markusbordihn.easynpc.api.npc.ChickenRaw;
+import de.markusbordihn.easynpc.api.npc.CreeperRaw;
+import de.markusbordihn.easynpc.api.npc.IronGolemRaw;
+import de.markusbordihn.easynpc.api.npc.PigRaw;
+import de.markusbordihn.easynpc.api.npc.VexRaw;
+import de.markusbordihn.easynpc.api.npc.WitchRaw;
+import de.markusbordihn.easynpc.api.npc.WolfRaw;
+import de.markusbordihn.easynpc.api.npc.horse.HorseRaw;
 import de.markusbordihn.easynpc.entity.easynpc.npc.custom.Fairy;
-import de.markusbordihn.easynpc.entity.easynpc.npc.raw.AllayRaw;
-import de.markusbordihn.easynpc.entity.easynpc.npc.raw.CatRaw;
-import de.markusbordihn.easynpc.entity.easynpc.npc.raw.ChickenRaw;
-import de.markusbordihn.easynpc.entity.easynpc.npc.raw.CreeperRaw;
-import de.markusbordihn.easynpc.entity.easynpc.npc.raw.HorseRaw;
-import de.markusbordihn.easynpc.entity.easynpc.npc.raw.IronGolemRaw;
-import de.markusbordihn.easynpc.entity.easynpc.npc.raw.PigRaw;
-import de.markusbordihn.easynpc.entity.easynpc.npc.raw.VexRaw;
-import de.markusbordihn.easynpc.entity.easynpc.npc.raw.WitchRaw;
-import de.markusbordihn.easynpc.entity.easynpc.npc.raw.WolfRaw;
 import java.util.HashMap;
 import java.util.Map;
 

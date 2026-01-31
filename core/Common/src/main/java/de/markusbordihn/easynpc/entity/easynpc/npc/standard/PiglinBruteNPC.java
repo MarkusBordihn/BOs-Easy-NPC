@@ -20,10 +20,12 @@
 package de.markusbordihn.easynpc.entity.easynpc.npc.standard;
 
 import com.google.common.collect.ImmutableList;
+import de.markusbordihn.easynpc.api.npc.piglin.PiglinBruteRaw;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
+import de.markusbordihn.easynpc.data.npc.DefaultNPCType;
+import de.markusbordihn.easynpc.data.npc.NPCType;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.sound.SoundType;
-import de.markusbordihn.easynpc.entity.easynpc.npc.raw.PiglinBruteRaw;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
@@ -40,15 +42,13 @@ import net.minecraft.world.phys.Vec3;
 
 public class PiglinBruteNPC extends PiglinBruteRaw implements StandardEasyNPC<PiglinBruteRaw> {
 
-  public static final String ID = "piglin_brute";
-
+  public static final DefaultNPCType NPC_TYPE = DefaultNPCType.PIGLIN_BRUTE;
   protected static final ImmutableList<MemoryModuleType<?>> MEMORY_TYPES =
       ImmutableList.of(
           MemoryModuleType.ANGRY_AT,
           MemoryModuleType.ATTACK_TARGET,
           MemoryModuleType.CELEBRATE_LOCATION,
           MemoryModuleType.DANCING);
-
   protected static final ImmutableList<SensorType<? extends Sensor<? super PiglinBrute>>>
       SENSOR_TYPES =
           ImmutableList.of(
@@ -74,6 +74,11 @@ public class PiglinBruteNPC extends PiglinBruteRaw implements StandardEasyNPC<Pi
         .add(Attributes.MAX_HEALTH, 20.0D)
         .add(Attributes.MOVEMENT_SPEED, 0.5F)
         .add(Attributes.SPAWN_REINFORCEMENTS_CHANCE, 0.0D);
+  }
+
+  @Override
+  public NPCType getNPCType() {
+    return NPC_TYPE;
   }
 
   @Override

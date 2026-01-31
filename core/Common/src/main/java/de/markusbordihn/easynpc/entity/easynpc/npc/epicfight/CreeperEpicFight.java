@@ -19,16 +19,17 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.npc.epicfight;
 
+import de.markusbordihn.easynpc.api.npc.CreeperRaw;
 import de.markusbordihn.easynpc.compat.CompatConstants;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
-import de.markusbordihn.easynpc.entity.easynpc.npc.raw.CreeperRaw;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.level.Level;
 
 public class CreeperEpicFight extends CreeperRaw {
 
-  public static final String ID = CompatConstants.MOD_EPIC_FIGHT_PREFIX + CreeperRaw.ID;
+  public static final String ID =
+      CompatConstants.MOD_EPIC_FIGHT_PREFIX + CreeperRaw.NPC_TYPE.getRegistryId();
 
   public CreeperEpicFight(EntityType<? extends Creeper> entityType, Level level) {
     super(entityType, level);

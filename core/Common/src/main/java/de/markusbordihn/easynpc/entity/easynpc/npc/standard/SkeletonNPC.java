@@ -19,11 +19,13 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.npc.standard;
 
+import de.markusbordihn.easynpc.api.npc.skeleton.SkeletonRaw;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
+import de.markusbordihn.easynpc.data.npc.DefaultNPCType;
+import de.markusbordihn.easynpc.data.npc.NPCType;
 import de.markusbordihn.easynpc.data.skin.variant.SkeletonSkinVariant;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.sound.SoundType;
-import de.markusbordihn.easynpc.entity.easynpc.npc.raw.SkeletonRaw;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
@@ -36,7 +38,7 @@ import net.minecraft.world.phys.Vec3;
 
 public class SkeletonNPC extends SkeletonRaw implements StandardEasyNPC<SkeletonRaw> {
 
-  public static final String ID = "skeleton";
+  public static final DefaultNPCType NPC_TYPE = DefaultNPCType.SKELETON;
 
   public SkeletonNPC(EntityType<? extends Skeleton> entityType, Level level) {
     this(entityType, level, SkeletonSkinVariant.SKELETON);
@@ -62,6 +64,11 @@ public class SkeletonNPC extends SkeletonRaw implements StandardEasyNPC<Skeleton
         .add(Attributes.MAX_HEALTH, 20.0D)
         .add(Attributes.MOVEMENT_SPEED, 0.6F)
         .add(Attributes.SPAWN_REINFORCEMENTS_CHANCE, 0.0D);
+  }
+
+  @Override
+  public NPCType getNPCType() {
+    return NPC_TYPE;
   }
 
   @Override

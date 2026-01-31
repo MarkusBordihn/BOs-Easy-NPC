@@ -20,6 +20,8 @@
 package de.markusbordihn.easynpc.entity.easynpc;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.data.npc.NPCType;
+import de.markusbordihn.easynpc.data.npc.RawNPCType;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.entity.easynpc.event.EasyNPCEventHandler;
 import de.markusbordihn.easynpc.server.player.FakePlayer;
@@ -54,6 +56,10 @@ public interface EasyNPC<E extends PathfinderMob> extends EasyNPCDataAccessors<E
   int getNPCDataVersion();
 
   void setNPCDataVersion(int version);
+
+  default NPCType getNPCType() {
+    return RawNPCType.GENERIC;
+  }
 
   FakePlayer getFakePlayer(ServerLevel level, BlockPos blockPos);
 

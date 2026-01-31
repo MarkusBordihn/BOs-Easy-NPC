@@ -19,16 +19,17 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.npc.epicfight;
 
+import de.markusbordihn.easynpc.api.npc.villager.ZombieVillagerRaw;
 import de.markusbordihn.easynpc.compat.CompatConstants;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
-import de.markusbordihn.easynpc.entity.easynpc.npc.raw.ZombieVillagerRaw;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.monster.ZombieVillager;
 import net.minecraft.world.level.Level;
 
 public class ZombieVillagerEpicFight extends ZombieVillagerRaw {
 
-  public static final String ID = CompatConstants.MOD_EPIC_FIGHT_PREFIX + ZombieVillagerRaw.ID;
+  public static final String ID =
+      CompatConstants.MOD_EPIC_FIGHT_PREFIX + ZombieVillagerRaw.NPC_TYPE.getRegistryId();
 
   public ZombieVillagerEpicFight(EntityType<? extends ZombieVillager> entityType, Level level) {
     super(entityType, level);

@@ -1,6 +1,6 @@
 tasks.register('generateRawNPCs') {
   group = "build"
-  def rawNPCFolder = file("$projectDir/../Common/src/main/java/de/markusbordihn/easynpc/entity/easynpc/npc/raw")
+  def rawNPCFolder = file("$projectDir/../Common/src/main/java/de/markusbordihn/easynpc/api/npc")
   def templateFile = file("$rawNPCFolder/NPCRawTemplate.java")
   def npcClasses = [
       [
@@ -41,7 +41,8 @@ tasks.register('generateRawNPCs') {
           className: "DrownedRaw",
           baseClass: "Drowned",
           modelType: "ZOMBIE",
-          variant  : "ZombieSkinVariant.DROWNED"
+          variant  : "ZombieSkinVariant.DROWNED",
+          subfolder: "zombie"
       ],
       [
           id       : "enderman_raw",
@@ -73,7 +74,8 @@ tasks.register('generateRawNPCs') {
           className: "HorseRaw",
           baseClass: "Horse",
           modelType: "EQUINE",
-          variant  : "HorseSkinVariant.WHITE"
+          variant  : "HorseSkinVariant.WHITE",
+          subfolder: "horse"
       ],
       [
           id       : "iron_golem_raw",
@@ -140,7 +142,8 @@ tasks.register('generateRawNPCs') {
           className: "PiglinRaw",
           baseClass: "Piglin",
           modelType: "HUMANOID",
-          variant  : "PiglinSkinVariant.PIGLIN"
+          variant  : "PiglinSkinVariant.PIGLIN",
+          subfolder: "piglin"
       ],
       [
           id       : "piglin_brute_raw",
@@ -148,7 +151,8 @@ tasks.register('generateRawNPCs') {
           className: "PiglinBruteRaw",
           baseClass: "PiglinBrute",
           modelType: "HUMANOID",
-          variant  : "PiglinSkinVariant.PIGLIN_BRUTE"
+          variant  : "PiglinSkinVariant.PIGLIN_BRUTE",
+          subfolder: "piglin"
       ],
       [
           id       : "zombified_piglin_raw",
@@ -156,7 +160,8 @@ tasks.register('generateRawNPCs') {
           className: "ZombifiedPiglinRaw",
           baseClass: "ZombifiedPiglin",
           modelType: "HUMANOID",
-          variant  : "PiglinSkinVariant.ZOMBIFIED_PIGLIN"
+          variant  : "PiglinSkinVariant.ZOMBIFIED_PIGLIN",
+          subfolder: "piglin"
       ],
       [
           id       : "skeleton_raw",
@@ -164,7 +169,8 @@ tasks.register('generateRawNPCs') {
           className: "SkeletonRaw",
           baseClass: "Skeleton",
           modelType: "HUMANOID",
-          variant  : "SkeletonSkinVariant.SKELETON"
+          variant  : "SkeletonSkinVariant.SKELETON",
+          subfolder: "skeleton"
       ],
       [
           id       : "stray_raw",
@@ -173,7 +179,8 @@ tasks.register('generateRawNPCs') {
           baseClass: "Stray",
           skinModel: "STRAY",
           modelType: "ZOMBIE",
-          variant  : "SkeletonSkinVariant.STRAY"
+          variant  : "SkeletonSkinVariant.STRAY",
+          subfolder: "skeleton"
       ],
       [
           id       : "wither_skeleton_raw",
@@ -182,7 +189,8 @@ tasks.register('generateRawNPCs') {
           baseClass: "WitherSkeleton",
           skinModel: "WITHER_SKELETON",
           modelType: "ZOMBIE",
-          variant  : "SkeletonSkinVariant.WITHER_SKELETON"
+          variant  : "SkeletonSkinVariant.WITHER_SKELETON",
+          subfolder: "skeleton"
       ],
       [
           id       : "spider_raw",
@@ -191,7 +199,8 @@ tasks.register('generateRawNPCs') {
           baseClass: "Spider",
           skinModel: "SPIDER",
           modelType: "SPIDER",
-          variant  : "SpiderSkinVariant.SPIDER"
+          variant  : "SpiderSkinVariant.SPIDER",
+          subfolder: "spider"
       ],
       [
           id       : "vex_raw",
@@ -207,7 +216,8 @@ tasks.register('generateRawNPCs') {
           className: "VillagerRaw",
           baseClass: "Villager",
           modelType: "VILLAGER",
-          variant  : "VillagerSkinVariant.DEFAULT"
+          variant  : "VillagerSkinVariant.DEFAULT",
+          subfolder: "villager"
       ],
       [
           id       : "vindicator_raw",
@@ -239,7 +249,8 @@ tasks.register('generateRawNPCs') {
           className: "ZombieRaw",
           baseClass: "Zombie",
           modelType: "ZOMBIE",
-          variant  : "ZombieSkinVariant.ZOMBIE"
+          variant  : "ZombieSkinVariant.ZOMBIE",
+          subfolder: "zombie"
       ],
       [
           id       : "husk_raw",
@@ -247,7 +258,8 @@ tasks.register('generateRawNPCs') {
           className: "HuskRaw",
           baseClass: "Husk",
           modelType: "ZOMBIE",
-          variant  : "ZombieSkinVariant.HUSK"
+          variant  : "ZombieSkinVariant.HUSK",
+          subfolder: "zombie"
       ],
       [
           id       : "zombie_villager_raw",
@@ -255,7 +267,8 @@ tasks.register('generateRawNPCs') {
           className: "ZombieVillagerRaw",
           baseClass: "ZombieVillager",
           modelType: "ZOMBIE",
-          variant  : "ZombieVillagerSkinVariant.DEFAULT"
+          variant  : "ZombieVillagerSkinVariant.DEFAULT",
+          subfolder: "villager"
       ],
   ]
 
@@ -264,34 +277,89 @@ tasks.register('generateRawNPCs') {
   inputs.files(fileTree(rawNPCFolder) {
     include '*.imports'
     include '*.methods'
+    include '**/*.imports'
+    include '**/*.methods'
   }).optional(true)
   outputs.files(npcClasses.collect { npcClass ->
-    file("$rawNPCFolder/${npcClass.className}.java")
+    def targetFolder = npcClass.subfolder ? new File(rawNPCFolder, npcClass.subfolder) : rawNPCFolder
+    file("${targetFolder}/${npcClass.className}.java")
   })
 
-  def loadMethods = { String className ->
-    def file = new File(rawNPCFolder, "${className}.methods")
-    return file.exists() ? file.text : ""
+  def loadMethods = { String className, String subfolder ->
+    if (subfolder) {
+      def subfolderFile = new File(new File(rawNPCFolder, subfolder), "${className}.methods")
+      if (subfolderFile.exists()) {
+        return subfolderFile.text
+      }
+    }
+    def mainFile = new File(rawNPCFolder, "${className}.methods")
+    return mainFile.exists() ? mainFile.text : ""
   }
 
-  def loadImports = { String className ->
-    def file = new File(rawNPCFolder, "${className}.imports")
-    return file.exists() ? file.text : ""
+  def loadImports = { String className, String subfolder ->
+    if (subfolder) {
+      def subfolderFile = new File(new File(rawNPCFolder, subfolder), "${className}.imports")
+      if (subfolderFile.exists()) {
+        return subfolderFile.text
+      }
+    }
+    def mainFile = new File(rawNPCFolder, "${className}.imports")
+    return mainFile.exists() ? mainFile.text : ""
   }
 
   def toUpperSnakeCase = { String input ->
     return input.replaceAll(/([a-z])([A-Z])/, '$1_$2').toUpperCase(Locale.ROOT)
   }
 
+  def toEnumName = { String id ->
+    return id.replace("_raw", "").toUpperCase(Locale.ROOT)
+  }
+
   doLast {
     def outputDir = rawNPCFolder
+    def rawNPCTypeFile = file("$projectDir/../Common/src/main/java/de/markusbordihn/easynpc/data/npc/RawNPCType.java")
+
+    // Update RawNPCType enum
+    if (rawNPCTypeFile.exists()) {
+      println "🔄 Updating RawNPCType enum values..."
+      def enumContent = rawNPCTypeFile.text
+      def startMarker = "// ===== AUTO_GENERATED_START: Do not edit between these markers ====="
+      def endMarker = "// ===== AUTO_GENERATED_END ====="
+
+      def startIndex = enumContent.indexOf(startMarker)
+      def endIndex = enumContent.indexOf(endMarker)
+
+      if (startIndex != -1 && endIndex != -1) {
+        def beforeMarker = enumContent.substring(0, startIndex + startMarker.length())
+        def afterMarker = enumContent.substring(endIndex)
+
+        def enumValues = npcClasses.collect { npcClass ->
+          "  ${toEnumName(npcClass.id)}"
+        }.join(",\n")
+
+        def newContent = beforeMarker + "\n" + enumValues + ";\n  " + afterMarker
+        rawNPCTypeFile.write(newContent)
+        println "✅ Updated RawNPCType with ${npcClasses.size()} enum values"
+      } else {
+        println "⚠️  Could not find AUTO_GENERATED markers in RawNPCType.java"
+      }
+    } else {
+      println "⚠️  RawNPCType.java not found at ${rawNPCTypeFile}"
+    }
 
     println "✨ Processing ${npcClasses.size()} NPC classes from ${templateFile} to ${outputDir} ..."
     npcClasses.each { npcClass ->
-      def outputFile = new File(outputDir, npcClass.className + ".java")
+      def targetFolder = npcClass.subfolder ? new File(outputDir, npcClass.subfolder) : outputDir
+      targetFolder.mkdirs() // Ensure subfolder exists
+
+      def outputFile = new File(targetFolder, npcClass.className + ".java")
+      def packagePath = npcClass.subfolder ? "de.markusbordihn.easynpc.api.npc.${npcClass.subfolder}" : "de.markusbordihn.easynpc.api.npc"
+
       def content = templateFile.text
+          .replace("package de.markusbordihn.easynpc.api.npc;", "package ${packagePath};")
           .replace("import net.minecraft.world.entity.monster.Zombie;", "import " + npcClass.class + ";")
           .replace("import de.markusbordihn.easynpc.data.skin.variant.ZombieSkinVariant;", "import de.markusbordihn.easynpc.data.skin.variant." + npcClass.variant.replaceAll(/\.[^.]+$/, "") + ";")
+          .replace("RawNPCType.ZOMBIE", "RawNPCType." + toEnumName(npcClass.id))
           .replace("npc_raw_template", npcClass.id)
           .replace("NPCRawTemplate", npcClass.className)
           .replaceAll("\\bZombie\\b", npcClass.baseClass)
@@ -300,8 +368,8 @@ tasks.register('generateRawNPCs') {
           .replace("ZombieSkinVariant.ZOMBIE", npcClass.variant)
           .replace("ZombieSkinVariant.values()", npcClass.variant.replaceAll(/\.[^.]+$/, "") + ".values()")
           .replace("ZombieSkinVariant.valueOf(", npcClass.variant.replaceAll(/\.[^.]+$/, "") + ".valueOf(")
-          .replace("// TEMPLATE_INSERT:IMPORTS", loadImports(npcClass.className))
-          .replace("// TEMPLATE_INSERT:METHODS", loadMethods(npcClass.className))
+          .replace("// TEMPLATE_INSERT:IMPORTS", loadImports(npcClass.className, npcClass.subfolder))
+          .replace("// TEMPLATE_INSERT:METHODS", loadMethods(npcClass.className, npcClass.subfolder))
 
       outputFile.write(content)
       println "✅ [${npcClass.className}] Generated ${outputFile}"

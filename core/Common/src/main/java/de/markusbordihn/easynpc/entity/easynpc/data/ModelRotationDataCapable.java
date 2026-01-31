@@ -84,7 +84,8 @@ public interface ModelRotationDataCapable<T extends PathfinderMob> extends EasyN
       livingEntity.yHeadRotO = y;
     }
 
-    setModelPartRotation(ModelPartType.ROOT, new CustomRotation(x, y, z).withLocked(y != 0));
+    setModelPartRotation(
+        ModelPartType.ROOT, new CustomRotation(x, y, z).withLocked(x != 0 || y != 0 || z != 0));
   }
 
   default boolean hasChangedModelRotation() {

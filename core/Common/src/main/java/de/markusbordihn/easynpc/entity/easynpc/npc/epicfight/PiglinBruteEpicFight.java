@@ -19,16 +19,17 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.npc.epicfight;
 
+import de.markusbordihn.easynpc.api.npc.piglin.PiglinBruteRaw;
 import de.markusbordihn.easynpc.compat.CompatConstants;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
-import de.markusbordihn.easynpc.entity.easynpc.npc.raw.PiglinBruteRaw;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.monster.piglin.PiglinBrute;
 import net.minecraft.world.level.Level;
 
 public class PiglinBruteEpicFight extends PiglinBruteRaw {
 
-  public static final String ID = CompatConstants.MOD_EPIC_FIGHT_PREFIX + PiglinBruteRaw.ID;
+  public static final String ID =
+      CompatConstants.MOD_EPIC_FIGHT_PREFIX + PiglinBruteRaw.NPC_TYPE.getRegistryId();
 
   public PiglinBruteEpicFight(EntityType<? extends PiglinBrute> entityType, Level level) {
     super(entityType, level);

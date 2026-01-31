@@ -20,38 +20,40 @@
 package de.markusbordihn.easynpc.entity;
 
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.data.skin.variant.HorseSkinVariant;
-import de.markusbordihn.easynpc.data.skin.variant.SpiderSkinVariant;
+import de.markusbordihn.easynpc.data.npc.DefaultNPCType;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.AllayNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.CatNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.ChickenNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.CreeperNPC;
-import de.markusbordihn.easynpc.entity.easynpc.npc.standard.DrownedNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.EnderManNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.EvokerNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.FoxNPC;
-import de.markusbordihn.easynpc.entity.easynpc.npc.standard.HorseNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.HumanoidNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.HumanoidSlimNPC;
-import de.markusbordihn.easynpc.entity.easynpc.npc.standard.HuskNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.IllusionerNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.IronGolemNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.PigNPC;
-import de.markusbordihn.easynpc.entity.easynpc.npc.standard.PiglinBruteNPC;
-import de.markusbordihn.easynpc.entity.easynpc.npc.standard.PiglinNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.PillagerNPC;
-import de.markusbordihn.easynpc.entity.easynpc.npc.standard.SkeletonNPC;
-import de.markusbordihn.easynpc.entity.easynpc.npc.standard.SpiderNPC;
-import de.markusbordihn.easynpc.entity.easynpc.npc.standard.StrayNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.VexNPC;
-import de.markusbordihn.easynpc.entity.easynpc.npc.standard.VillagerNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.VindicatorNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.WitchNPC;
-import de.markusbordihn.easynpc.entity.easynpc.npc.standard.WitherSkeletonNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.WolfNPC;
-import de.markusbordihn.easynpc.entity.easynpc.npc.standard.ZombieNPC;
-import de.markusbordihn.easynpc.entity.easynpc.npc.standard.ZombieVillagerNPC;
-import de.markusbordihn.easynpc.entity.easynpc.npc.standard.ZombifiedPiglinNPC;
+import de.markusbordihn.easynpc.entity.easynpc.npc.standard.horse.HorseNPC;
+import de.markusbordihn.easynpc.entity.easynpc.npc.standard.horse.SkeletonHorseNPC;
+import de.markusbordihn.easynpc.entity.easynpc.npc.standard.horse.ZombieHorseNPC;
+import de.markusbordihn.easynpc.entity.easynpc.npc.standard.piglin.PiglinBruteNPC;
+import de.markusbordihn.easynpc.entity.easynpc.npc.standard.piglin.PiglinNPC;
+import de.markusbordihn.easynpc.entity.easynpc.npc.standard.piglin.ZombifiedPiglinNPC;
+import de.markusbordihn.easynpc.entity.easynpc.npc.standard.skeleton.SkeletonNPC;
+import de.markusbordihn.easynpc.entity.easynpc.npc.standard.skeleton.StrayNPC;
+import de.markusbordihn.easynpc.entity.easynpc.npc.standard.skeleton.WitherSkeletonNPC;
+import de.markusbordihn.easynpc.entity.easynpc.npc.standard.spider.CaveSpiderNPC;
+import de.markusbordihn.easynpc.entity.easynpc.npc.standard.spider.SpiderNPC;
+import de.markusbordihn.easynpc.entity.easynpc.npc.standard.villager.VillagerNPC;
+import de.markusbordihn.easynpc.entity.easynpc.npc.standard.villager.ZombieVillagerNPC;
+import de.markusbordihn.easynpc.entity.easynpc.npc.standard.zombie.DrownedNPC;
+import de.markusbordihn.easynpc.entity.easynpc.npc.standard.zombie.HuskNPC;
+import de.markusbordihn.easynpc.entity.easynpc.npc.standard.zombie.ZombieNPC;
 import java.util.function.Supplier;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -64,7 +66,7 @@ import net.minecraft.world.level.Level;
 
 public enum ModNPCEntityType implements ModEntityTypeProvider {
   ALLAY(
-      AllayNPC.ID,
+      DefaultNPCType.ALLAY.getRegistryId(),
       EntityType.Builder.of(
               (EntityType<AllayNPC> type, Level level) -> new AllayNPC(type, level),
               MobCategory.MISC)
@@ -72,14 +74,14 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
           .clientTrackingRange(12),
       AllayNPC::createAttributes),
   CAT(
-      CatNPC.ID,
+      DefaultNPCType.CAT.getRegistryId(),
       EntityType.Builder.of(
               (EntityType<CatNPC> type, Level level) -> new CatNPC(type, level), MobCategory.MISC)
           .sized(0.6F, 0.7F)
           .clientTrackingRange(12),
       CatNPC::createAttributes),
   CHICKEN(
-      ChickenNPC.ID,
+      DefaultNPCType.CHICKEN.getRegistryId(),
       EntityType.Builder.of(
               (EntityType<ChickenNPC> type, Level level) -> new ChickenNPC(type, level),
               MobCategory.MISC)
@@ -87,7 +89,7 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
           .clientTrackingRange(12),
       ChickenNPC::createAttributes),
   CREEPER(
-      CreeperNPC.ID,
+      DefaultNPCType.CREEPER.getRegistryId(),
       EntityType.Builder.of(
               (EntityType<CreeperNPC> type, Level level) -> new CreeperNPC(type, level),
               MobCategory.MONSTER)
@@ -95,7 +97,7 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
           .clientTrackingRange(12),
       CreeperNPC::createAttributes),
   DROWNED(
-      DrownedNPC.ID,
+      DefaultNPCType.DROWNED.getRegistryId(),
       EntityType.Builder.of(
               (EntityType<DrownedNPC> type, Level level) -> new DrownedNPC(type, level),
               MobCategory.MONSTER)
@@ -103,7 +105,7 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
           .clientTrackingRange(12),
       DrownedNPC::createAttributes),
   ENDERMAN(
-      EnderManNPC.ID,
+      DefaultNPCType.ENDERMAN.getRegistryId(),
       EntityType.Builder.of(
               (EntityType<EnderManNPC> type, Level level) -> new EnderManNPC(type, level),
               MobCategory.MONSTER)
@@ -111,7 +113,7 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
           .clientTrackingRange(12),
       EnderManNPC::createAttributes),
   EVOKER(
-      EvokerNPC.ID,
+      DefaultNPCType.EVOKER.getRegistryId(),
       EntityType.Builder.of(
               (EntityType<EvokerNPC> type, Level level) -> new EvokerNPC(type, level),
               MobCategory.MONSTER)
@@ -119,14 +121,14 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
           .clientTrackingRange(12),
       EvokerNPC::createAttributes),
   FOX(
-      FoxNPC.ID,
+      DefaultNPCType.FOX.getRegistryId(),
       EntityType.Builder.of(
               (EntityType<FoxNPC> type, Level level) -> new FoxNPC(type, level), MobCategory.MISC)
           .sized(0.6F, 0.7F)
           .clientTrackingRange(12),
       FoxNPC::createAttributes),
   HORSE(
-      HorseNPC.ID,
+      DefaultNPCType.HORSE.getRegistryId(),
       EntityType.Builder.of(
               (EntityType<HorseNPC> type, Level level) -> new HorseNPC(type, level),
               MobCategory.MISC)
@@ -134,25 +136,23 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
           .clientTrackingRange(12),
       HorseNPC::createBaseHorseAttributes),
   HORSE_SKELETON(
-      HorseNPC.ID_SKELETON,
+      DefaultNPCType.SKELETON_HORSE.getRegistryId(),
       EntityType.Builder.of(
-              (EntityType<HorseNPC> type, Level level) ->
-                  new HorseNPC(type, level, HorseSkinVariant.SKELETON),
+              (EntityType<SkeletonHorseNPC> type, Level level) -> new SkeletonHorseNPC(type, level),
               MobCategory.MONSTER)
           .sized(1.4F, 1.6F)
           .clientTrackingRange(12),
       HorseNPC::createBaseHorseAttributes),
   HORSE_ZOMBIE(
-      HorseNPC.ID_ZOMBIE,
+      DefaultNPCType.ZOMBIE_HORSE.getRegistryId(),
       EntityType.Builder.of(
-              (EntityType<HorseNPC> type, Level level) ->
-                  new HorseNPC(type, level, HorseSkinVariant.ZOMBIE),
+              (EntityType<ZombieHorseNPC> type, Level level) -> new ZombieHorseNPC(type, level),
               MobCategory.MONSTER)
           .sized(1.4F, 1.6F)
           .clientTrackingRange(12),
       HorseNPC::createBaseHorseAttributes),
   HUMANOID(
-      HumanoidNPC.ID,
+      DefaultNPCType.HUMANOID.getRegistryId(),
       EntityType.Builder.of(
               (EntityType<HumanoidNPC> type, Level level) -> new HumanoidNPC(type, level),
               MobCategory.MISC)
@@ -160,7 +160,7 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
           .clientTrackingRange(12),
       HumanoidNPC::createAttributes),
   HUMANOID_SLIM(
-      HumanoidSlimNPC.ID,
+      DefaultNPCType.HUMANOID_SLIM.getRegistryId(),
       EntityType.Builder.of(
               (EntityType<HumanoidSlimNPC> type, Level level) -> new HumanoidSlimNPC(type, level),
               MobCategory.MISC)
@@ -168,7 +168,7 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
           .clientTrackingRange(12),
       HumanoidSlimNPC::createAttributes),
   ILLUSIONER(
-      IllusionerNPC.ID,
+      DefaultNPCType.ILLUSIONER.getRegistryId(),
       EntityType.Builder.of(
               (EntityType<IllusionerNPC> type, Level level) -> new IllusionerNPC(type, level),
               MobCategory.MISC)
@@ -176,7 +176,7 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
           .clientTrackingRange(12),
       IllusionerNPC::createAttributes),
   IRON_GOLEM(
-      IronGolemNPC.ID,
+      DefaultNPCType.IRON_GOLEM.getRegistryId(),
       EntityType.Builder.of(
               (EntityType<IronGolemNPC> type, Level level) -> new IronGolemNPC(type, level),
               MobCategory.MISC)
@@ -184,7 +184,7 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
           .clientTrackingRange(12),
       IronGolemNPC::createAttributes),
   PIGLIN(
-      PiglinNPC.ID,
+      DefaultNPCType.PIGLIN.getRegistryId(),
       EntityType.Builder.of(
               (EntityType<PiglinNPC> type, Level level) -> new PiglinNPC(type, level),
               MobCategory.MONSTER)
@@ -192,7 +192,7 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
           .clientTrackingRange(12),
       PiglinNPC::createAttributes),
   PIGLIN_BRUTE(
-      PiglinBruteNPC.ID,
+      DefaultNPCType.PIGLIN_BRUTE.getRegistryId(),
       EntityType.Builder.of(
               (EntityType<PiglinBruteNPC> type, Level level) -> new PiglinBruteNPC(type, level),
               MobCategory.MONSTER)
@@ -200,7 +200,7 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
           .clientTrackingRange(12),
       PiglinBruteNPC::createAttributes),
   PIGLIN_ZOMBIFIED(
-      ZombifiedPiglinNPC.ID,
+      DefaultNPCType.ZOMBIFIED_PIGLIN.getRegistryId(),
       EntityType.Builder.of(
               (EntityType<ZombifiedPiglinNPC> type, Level level) ->
                   new ZombifiedPiglinNPC(type, level),
@@ -209,14 +209,14 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
           .clientTrackingRange(12),
       ZombifiedPiglinNPC::createAttributes),
   PIG(
-      PigNPC.ID,
+      DefaultNPCType.PIG.getRegistryId(),
       EntityType.Builder.of(
               (EntityType<PigNPC> type, Level level) -> new PigNPC(type, level), MobCategory.MISC)
           .sized(0.9F, 0.9F)
           .clientTrackingRange(12),
       PigNPC::createAttributes),
   PILLAGER(
-      PillagerNPC.ID,
+      DefaultNPCType.PILLAGER.getRegistryId(),
       EntityType.Builder.of(
               (EntityType<PillagerNPC> type, Level level) -> new PillagerNPC(type, level),
               MobCategory.MONSTER)
@@ -224,7 +224,7 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
           .clientTrackingRange(12),
       PillagerNPC::createAttributes),
   SKELETON(
-      SkeletonNPC.ID,
+      DefaultNPCType.SKELETON.getRegistryId(),
       EntityType.Builder.of(
               (EntityType<SkeletonNPC> type, Level level) -> new SkeletonNPC(type, level),
               MobCategory.MONSTER)
@@ -232,7 +232,7 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
           .clientTrackingRange(12),
       SkeletonNPC::createAttributes),
   STRAY(
-      StrayNPC.ID,
+      DefaultNPCType.STRAY.getRegistryId(),
       EntityType.Builder.of(
               (EntityType<StrayNPC> type, Level level) -> new StrayNPC(type, level),
               MobCategory.MONSTER)
@@ -240,7 +240,7 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
           .clientTrackingRange(12),
       StrayNPC::createAttributes),
   WITHER_SKELETON(
-      WitherSkeletonNPC.ID,
+      DefaultNPCType.WITHER_SKELETON.getRegistryId(),
       EntityType.Builder.of(
               (EntityType<WitherSkeletonNPC> type, Level level) ->
                   new WitherSkeletonNPC(type, level),
@@ -249,7 +249,7 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
           .clientTrackingRange(12),
       WitherSkeletonNPC::createAttributes),
   SPIDER(
-      SpiderNPC.ID,
+      DefaultNPCType.SPIDER.getRegistryId(),
       EntityType.Builder.of(
               (EntityType<SpiderNPC> type, Level level) -> new SpiderNPC(type, level),
               MobCategory.MONSTER)
@@ -257,16 +257,15 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
           .clientTrackingRange(12),
       SpiderNPC::createAttributes),
   CAVE_SPIDER(
-      SpiderNPC.CAVE_SPIDER_ID,
+      DefaultNPCType.CAVE_SPIDER.getRegistryId(),
       EntityType.Builder.of(
-              (EntityType<SpiderNPC> type, Level level) ->
-                  new SpiderNPC(type, level, SpiderSkinVariant.CAVE_SPIDER),
+              (EntityType<CaveSpiderNPC> type, Level level) -> new CaveSpiderNPC(type, level),
               MobCategory.MONSTER)
           .sized(0.7F, 0.5F)
           .clientTrackingRange(12),
       SpiderNPC::createAttributes),
   VILLAGER(
-      VillagerNPC.ID,
+      DefaultNPCType.VILLAGER.getRegistryId(),
       EntityType.Builder.of(
               (EntityType<VillagerNPC> type, Level level) -> new VillagerNPC(type, level),
               MobCategory.MISC)
@@ -274,7 +273,7 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
           .clientTrackingRange(12),
       VillagerNPC::createAttributes),
   VEX(
-      VexNPC.ID,
+      DefaultNPCType.VEX.getRegistryId(),
       EntityType.Builder.of(
               (EntityType<VexNPC> type, Level level) -> new VexNPC(type, level),
               MobCategory.MONSTER)
@@ -282,7 +281,7 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
           .clientTrackingRange(12),
       VexNPC::createAttributes),
   VINDICATOR(
-      VindicatorNPC.ID,
+      DefaultNPCType.VINDICATOR.getRegistryId(),
       EntityType.Builder.of(
               (EntityType<VindicatorNPC> type, Level level) -> new VindicatorNPC(type, level),
               MobCategory.MONSTER)
@@ -290,7 +289,7 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
           .clientTrackingRange(12),
       VindicatorNPC::createAttributes),
   WITCH(
-      WitchNPC.ID,
+      DefaultNPCType.WITCH.getRegistryId(),
       EntityType.Builder.of(
               (EntityType<WitchNPC> type, Level level) -> new WitchNPC(type, level),
               MobCategory.MONSTER)
@@ -298,14 +297,14 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
           .clientTrackingRange(12),
       WitchNPC::createAttributes),
   WOLF(
-      WolfNPC.ID,
+      DefaultNPCType.WOLF.getRegistryId(),
       EntityType.Builder.of(
               (EntityType<WolfNPC> type, Level level) -> new WolfNPC(type, level), MobCategory.MISC)
           .sized(0.6F, 0.85F)
           .clientTrackingRange(12),
       WolfNPC::createAttributes),
   ZOMBIE(
-      ZombieNPC.ID,
+      DefaultNPCType.ZOMBIE.getRegistryId(),
       EntityType.Builder.of(
               (EntityType<ZombieNPC> type, Level level) -> new ZombieNPC(type, level),
               MobCategory.MONSTER)
@@ -313,7 +312,7 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
           .clientTrackingRange(12),
       ZombieNPC::createAttributes),
   ZOMBIE_HUSK(
-      HuskNPC.ID,
+      DefaultNPCType.HUSK.getRegistryId(),
       EntityType.Builder.of(
               (EntityType<HuskNPC> type, Level level) -> new HuskNPC(type, level),
               MobCategory.MONSTER)
@@ -321,7 +320,7 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
           .clientTrackingRange(12),
       HuskNPC::createAttributes),
   ZOMBIE_VILLAGER(
-      ZombieVillagerNPC.ID,
+      DefaultNPCType.ZOMBIE_VILLAGER.getRegistryId(),
       EntityType.Builder.of(
               (EntityType<ZombieVillagerNPC> type, Level level) ->
                   new ZombieVillagerNPC(type, level),

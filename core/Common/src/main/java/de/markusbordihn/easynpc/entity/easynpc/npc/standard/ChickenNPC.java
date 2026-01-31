@@ -19,11 +19,13 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.npc.standard;
 
+import de.markusbordihn.easynpc.api.npc.ChickenRaw;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
+import de.markusbordihn.easynpc.data.npc.DefaultNPCType;
+import de.markusbordihn.easynpc.data.npc.NPCType;
 import de.markusbordihn.easynpc.data.skin.variant.ChickenSkinVariant;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.sound.SoundType;
-import de.markusbordihn.easynpc.entity.easynpc.npc.raw.ChickenRaw;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
@@ -36,7 +38,7 @@ import net.minecraft.world.phys.Vec3;
 
 public class ChickenNPC extends ChickenRaw implements StandardEasyNPC<ChickenRaw> {
 
-  public static final String ID = "chicken";
+  public static final DefaultNPCType NPC_TYPE = DefaultNPCType.CHICKEN;
 
   public ChickenNPC(EntityType<? extends Chicken> entityType, Level level) {
     this(entityType, level, ChickenSkinVariant.WHITE);
@@ -61,6 +63,11 @@ public class ChickenNPC extends ChickenRaw implements StandardEasyNPC<ChickenRaw
         .add(Attributes.MAX_HEALTH, 16.0D)
         .add(Attributes.MOVEMENT_SPEED, 0.5F)
         .add(Attributes.SPAWN_REINFORCEMENTS_CHANCE, 0.0D);
+  }
+
+  @Override
+  public NPCType getNPCType() {
+    return NPC_TYPE;
   }
 
   @Override

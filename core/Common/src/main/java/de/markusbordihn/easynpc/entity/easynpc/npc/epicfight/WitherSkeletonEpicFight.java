@@ -19,16 +19,17 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.npc.epicfight;
 
+import de.markusbordihn.easynpc.api.npc.skeleton.WitherSkeletonRaw;
 import de.markusbordihn.easynpc.compat.CompatConstants;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
-import de.markusbordihn.easynpc.entity.easynpc.npc.raw.WitherSkeletonRaw;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.monster.WitherSkeleton;
 import net.minecraft.world.level.Level;
 
 public class WitherSkeletonEpicFight extends WitherSkeletonRaw {
 
-  public static final String ID = CompatConstants.MOD_EPIC_FIGHT_PREFIX + WitherSkeletonRaw.ID;
+  public static final String ID =
+      CompatConstants.MOD_EPIC_FIGHT_PREFIX + WitherSkeletonRaw.NPC_TYPE.getRegistryId();
 
   public WitherSkeletonEpicFight(EntityType<? extends WitherSkeleton> entityType, Level level) {
     super(entityType, level);
