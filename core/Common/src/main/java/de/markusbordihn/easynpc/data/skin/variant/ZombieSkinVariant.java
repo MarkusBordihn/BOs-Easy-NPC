@@ -20,7 +20,7 @@
 package de.markusbordihn.easynpc.data.skin.variant;
 
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.data.skin.VariantTexture;
+import de.markusbordihn.easynpc.api.skin.VariantTexture;
 import net.minecraft.resources.ResourceLocation;
 
 public enum ZombieSkinVariant implements VariantTexture {

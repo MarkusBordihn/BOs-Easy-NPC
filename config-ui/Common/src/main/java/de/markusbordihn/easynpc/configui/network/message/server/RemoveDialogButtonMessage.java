@@ -99,7 +99,6 @@ public record RemoveDialogButtonMessage(UUID uuid, UUID dialogId, UUID dialogBut
       return;
     }
 
-    // Perform action.
     if (dialogData.removeDialogButton(this.dialogId, this.dialogButtonId)) {
       log.info(
           "Removed dialog button {} from dialog {} for {} from {}",

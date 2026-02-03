@@ -19,7 +19,7 @@
 
 package de.markusbordihn.easynpc.mixin.entity;
 
-import de.markusbordihn.easynpc.entity.easynpc.npc.standard.StandardEasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.npc.StandardEasyNPC;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.monster.EnderMan;
 import net.minecraft.world.entity.monster.Monster;

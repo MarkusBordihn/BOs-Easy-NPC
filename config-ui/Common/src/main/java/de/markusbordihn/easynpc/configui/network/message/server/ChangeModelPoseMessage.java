@@ -82,7 +82,6 @@ public record ChangeModelPoseMessage(UUID uuid, ModelPose modelPose)
       return;
     }
 
-    // Perform action.
     log.debug("Change modelPose {} for {} from {}", this.modelPose, easyNPC, serverPlayer);
     modelData.setModelPose(this.modelPose);
     easyNPC.getEntity().setPose(Pose.STANDING);

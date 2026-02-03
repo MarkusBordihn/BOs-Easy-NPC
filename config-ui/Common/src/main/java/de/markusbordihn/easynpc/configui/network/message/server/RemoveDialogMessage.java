@@ -89,7 +89,6 @@ public record RemoveDialogMessage(UUID uuid, UUID dialogId) implements NetworkMe
       return;
     }
 
-    // Perform action.
     if (dialogData.removeDialog(this.dialogId)) {
       log.info("Removed dialog {} for {} from {}", this.dialogId, easyNPC, serverPlayer);
     } else {

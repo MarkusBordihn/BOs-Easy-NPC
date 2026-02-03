@@ -19,14 +19,16 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.npc.standard.spider;
 
+import de.markusbordihn.easynpc.api.npc.base.spider.SpiderBase;
 import de.markusbordihn.easynpc.data.npc.DefaultNPCType;
 import de.markusbordihn.easynpc.data.npc.NPCType;
 import de.markusbordihn.easynpc.data.skin.variant.SpiderSkinVariant;
+import de.markusbordihn.easynpc.entity.easynpc.npc.StandardEasyNPC;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.monster.Spider;
 import net.minecraft.world.level.Level;
 
-public class CaveSpiderNPC extends SpiderNPC {
+public class CaveSpiderNPC extends SpiderBase implements StandardEasyNPC<SpiderBase> {
 
   public static final DefaultNPCType NPC_TYPE = DefaultNPCType.CAVE_SPIDER;
 

@@ -19,12 +19,11 @@
 
 package de.markusbordihn.easynpc.mixin.entity;
 
-import de.markusbordihn.easynpc.entity.easynpc.npc.standard.StandardEasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.npc.StandardEasyNPC;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.PowerableMob;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.Monster;
-import net.minecraft.world.entity.raid.Raider;
 import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -34,7 +33,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(Creeper.class)
 public abstract class CreeperMixin extends Monster implements PowerableMob {
 
-  private CreeperMixin(EntityType<? extends Raider> entityType, Level level) {
+  private CreeperMixin(EntityType<? extends Monster> entityType, Level level) {
     super(entityType, level);
   }
 
