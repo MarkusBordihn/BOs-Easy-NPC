@@ -19,96 +19,24 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.npc.standard;
 
-import de.markusbordihn.easynpc.api.npc.PathfinderMobRaw;
-import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
+import de.markusbordihn.easynpc.api.npc.base.HumanoidSlimBase;
 import de.markusbordihn.easynpc.data.npc.DefaultNPCType;
 import de.markusbordihn.easynpc.data.npc.NPCType;
-import de.markusbordihn.easynpc.data.skin.SkinModel;
-import de.markusbordihn.easynpc.data.skin.variant.HumanoidSlimSkinVariant;
-import de.markusbordihn.easynpc.data.sound.SoundDataSet;
-import de.markusbordihn.easynpc.data.sound.SoundType;
-import net.minecraft.sounds.SoundEvents;
+import de.markusbordihn.easynpc.entity.easynpc.npc.StandardEasyNPC;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;
-import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
 
-public class HumanoidSlimNPC extends PathfinderMobRaw implements StandardEasyNPC<PathfinderMobRaw> {
+public class HumanoidSlimNPC extends HumanoidSlimBase implements StandardEasyNPC<HumanoidSlimBase> {
 
   public static final DefaultNPCType NPC_TYPE = DefaultNPCType.HUMANOID_SLIM;
 
   public HumanoidSlimNPC(EntityType<? extends PathfinderMob> entityType, Level level) {
-    this(entityType, level, HumanoidSlimSkinVariant.ALEX);
-  }
-
-  public HumanoidSlimNPC(
-      EntityType<? extends PathfinderMob> entityType, Level level, Enum<?> variantType) {
-    super(entityType, level, variantType);
-  }
-
-  public static AttributeSupplier.Builder createAttributes() {
-    return Mob.createMobAttributes()
-        .add(Attributes.ARMOR_TOUGHNESS, 0.0D)
-        .add(Attributes.ARMOR, 0.0D)
-        .add(Attributes.ATTACK_DAMAGE, 1.0D)
-        .add(Attributes.ATTACK_KNOCKBACK, 0.0D)
-        .add(Attributes.ATTACK_SPEED, 0.0D)
-        .add(Attributes.FOLLOW_RANGE, 32.0D)
-        .add(Attributes.KNOCKBACK_RESISTANCE, 0.0D)
-        .add(Attributes.MAX_HEALTH, 20.0D)
-        .add(Attributes.MOVEMENT_SPEED, 0.6F)
-        .add(Attributes.SPAWN_REINFORCEMENTS_CHANCE, 0.0D);
+    super(entityType, level);
   }
 
   @Override
   public NPCType getNPCType() {
     return NPC_TYPE;
-  }
-
-  @Override
-  public SkinModel getSkinModel() {
-    return SkinModel.HUMANOID_SLIM;
-  }
-
-  @Override
-  public Enum<?>[] getSkinVariantTypes() {
-    return HumanoidSlimSkinVariant.values();
-  }
-
-  @Override
-  public Enum<?> getDefaultSkinVariantType() {
-    return HumanoidSlimSkinVariant.ALEX;
-  }
-
-  @Override
-  public Enum<?> getSkinVariantType(String name) {
-    try {
-      return HumanoidSlimSkinVariant.valueOf(name);
-    } catch (IllegalArgumentException e) {
-      return getDefaultSkinVariantType();
-    }
-  }
-
-  @Override
-  public boolean canUseArmor() {
-    return true;
-  }
-
-  @Override
-  public ConfigurationData getConfigurationData() {
-    return ConfigurationData.HUMANOID;
-  }
-
-  @Override
-  public SoundDataSet getDefaultSoundDataSet(SoundDataSet soundDataSet, String variantName) {
-    soundDataSet.addDefaultSound(SoundType.DEATH, SoundEvents.PLAYER_DEATH);
-    soundDataSet.addDefaultSound(SoundType.HURT, SoundEvents.PLAYER_HURT);
-    soundDataSet.addDefaultSound(SoundType.EAT, SoundEvents.GENERIC_EAT.value());
-    soundDataSet.addDefaultSound(SoundType.TRADE, SoundEvents.VILLAGER_TRADE);
-    soundDataSet.addDefaultSound(SoundType.TRADE_YES, SoundEvents.VILLAGER_YES);
-    soundDataSet.addDefaultSound(SoundType.TRADE_NO, SoundEvents.VILLAGER_NO);
-    return soundDataSet;
   }
 }

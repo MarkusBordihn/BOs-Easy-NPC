@@ -19,7 +19,7 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.npc.epicfight;
 
-import de.markusbordihn.easynpc.api.npc.HumanoidRaw;
+import de.markusbordihn.easynpc.api.npc.raw.HumanoidRaw;
 import de.markusbordihn.easynpc.compat.CompatConstants;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
 import net.minecraft.world.entity.EntityType;

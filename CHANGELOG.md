@@ -8,6 +8,14 @@ For the full changelog, please go to the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 6.8.0 (Adding API support)
+
+- Added NPC base classes for better API support.
+- Added NPC raw classes for advanced API support.
+- Added Custom Model API for easier integration with other mods and custom models.
+- Refactored internal data handling and registration for better maintainability and future
+  improvements.
+
 ### 6.7.1
 
 - Fixed #657 and #656 by adding additional client side checks for vanilla bug.

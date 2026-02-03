@@ -20,7 +20,7 @@
 package de.markusbordihn.easynpc.client.texture;
 
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.data.skin.VariantTexture;
+import de.markusbordihn.easynpc.api.skin.VariantTexture;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
 import java.util.function.Supplier;

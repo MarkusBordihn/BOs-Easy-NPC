@@ -63,7 +63,7 @@ public class HorseRawRenderer extends AbstractHorseRenderer<Horse, HorseRenderSt
   }
 
   public Identifier getTextureLocation(HorseRenderState renderState) {
-    return getTextureFromRenderState(renderState);
+    return getTextureFromRenderStateWithConfig(renderState);
   }
 
   public HorseRenderState createRenderState() {

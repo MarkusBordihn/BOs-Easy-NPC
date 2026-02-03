@@ -17,37 +17,47 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.entity.easynpc.npc.standard;
+package de.markusbordihn.easynpc.api.npc.base.piglin;
 
-import de.markusbordihn.easynpc.api.npc.VindicatorRaw;
+import com.google.common.collect.ImmutableList;
+import de.markusbordihn.easynpc.api.npc.BaseEasyNPC;
+import de.markusbordihn.easynpc.api.npc.raw.piglin.ZombifiedPiglinRaw;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
-import de.markusbordihn.easynpc.data.npc.DefaultNPCType;
-import de.markusbordihn.easynpc.data.npc.NPCType;
-import de.markusbordihn.easynpc.data.skin.variant.IllagerSkinVariant;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.sound.SoundType;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.memory.MemoryModuleType;
+import net.minecraft.world.entity.ai.sensing.Sensor;
+import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.minecraft.world.entity.animal.FlyingAnimal;
-import net.minecraft.world.entity.monster.illager.Vindicator;
+import net.minecraft.world.entity.monster.zombie.ZombifiedPiglin;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
-public class VindicatorNPC extends VindicatorRaw implements StandardEasyNPC<VindicatorRaw> {
+public class ZombifiedPiglinBase extends ZombifiedPiglinRaw
+    implements BaseEasyNPC<ZombifiedPiglinRaw> {
 
-  public static final DefaultNPCType NPC_TYPE = DefaultNPCType.VINDICATOR;
+  protected static final ImmutableList<MemoryModuleType<?>> MEMORY_TYPES =
+      ImmutableList.of(
+          MemoryModuleType.ANGRY_AT,
+          MemoryModuleType.ATTACK_TARGET,
+          MemoryModuleType.CELEBRATE_LOCATION,
+          MemoryModuleType.DANCING);
+  protected static final ImmutableList<SensorType<? extends Sensor<? super ZombifiedPiglin>>>
+      SENSOR_TYPES =
+          ImmutableList.of(
+              SensorType.NEAREST_LIVING_ENTITIES,
+              SensorType.NEAREST_PLAYERS,
+              SensorType.NEAREST_ITEMS,
+              SensorType.HURT_BY);
 
-  public VindicatorNPC(EntityType<? extends Vindicator> entityType, Level level) {
-    super(entityType, level, IllagerSkinVariant.VINDICATOR);
-  }
-
-  public VindicatorNPC(EntityType<? extends Vindicator> entityType, Level level, Enum<?> variant) {
-    super(entityType, level, variant);
-    this.setInvulnerable(true);
-    this.refreshGroundNavigation();
+  public ZombifiedPiglinBase(EntityType<? extends ZombifiedPiglin> entityType, Level level) {
+    super(entityType, level);
   }
 
   public static AttributeSupplier.Builder createAttributes() {
@@ -60,21 +70,16 @@ public class VindicatorNPC extends VindicatorRaw implements StandardEasyNPC<Vind
         .add(Attributes.FOLLOW_RANGE, 32.0D)
         .add(Attributes.KNOCKBACK_RESISTANCE, 0.0D)
         .add(Attributes.MAX_HEALTH, 20.0D)
-        .add(Attributes.MOVEMENT_SPEED, 0.6F)
+        .add(Attributes.MOVEMENT_SPEED, 0.5F)
         .add(Attributes.SPAWN_REINFORCEMENTS_CHANCE, 0.0D);
   }
 
   @Override
-  public NPCType getNPCType() {
-    return NPC_TYPE;
-  }
-
-  @Override
   public SoundDataSet getDefaultSoundDataSet(SoundDataSet soundDataSet, String variantName) {
-    soundDataSet.addDefaultSound(SoundType.AMBIENT, SoundEvents.VINDICATOR_AMBIENT);
-    soundDataSet.addDefaultSound(SoundType.DEATH, SoundEvents.VINDICATOR_DEATH);
-    soundDataSet.addDefaultSound(SoundType.HURT, SoundEvents.VINDICATOR_HURT);
-    soundDataSet.addDefaultSound(SoundType.CELEBRATE, SoundEvents.VINDICATOR_CELEBRATE);
+    soundDataSet.addDefaultSound(SoundType.AMBIENT, SoundEvents.ZOMBIFIED_PIGLIN_AMBIENT);
+    soundDataSet.addDefaultSound(SoundType.HURT, SoundEvents.ZOMBIFIED_PIGLIN_HURT);
+    soundDataSet.addDefaultSound(SoundType.DEATH, SoundEvents.ZOMBIFIED_PIGLIN_DEATH);
+    soundDataSet.addDefaultSound(SoundType.STEP, SoundEvents.PIGLIN_STEP);
     soundDataSet.addDefaultSound(SoundType.TRADE, SoundEvents.VILLAGER_TRADE);
     soundDataSet.addDefaultSound(SoundType.TRADE_YES, SoundEvents.VILLAGER_YES);
     soundDataSet.addDefaultSound(SoundType.TRADE_NO, SoundEvents.VILLAGER_NO);
@@ -88,7 +93,12 @@ public class VindicatorNPC extends VindicatorRaw implements StandardEasyNPC<Vind
 
   @Override
   protected void registerGoals() {
-    // No default goals for NPCs.
+    // No default goals for base NPCs.
+  }
+
+  @Override
+  protected Brain.Provider<ZombifiedPiglin> brainProvider() {
+    return Brain.provider(MEMORY_TYPES, SENSOR_TYPES);
   }
 
   @Override

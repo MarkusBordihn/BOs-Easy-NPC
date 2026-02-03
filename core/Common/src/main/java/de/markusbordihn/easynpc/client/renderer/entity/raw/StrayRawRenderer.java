@@ -37,7 +37,7 @@ public class StrayRawRenderer extends StrayRenderer implements EasyNPCEntityRend
 
   @Override
   public Identifier getTextureLocation(SkeletonRenderState renderState) {
-    return getTextureFromRenderState(renderState);
+    return getTextureFromRenderStateWithConfig(renderState);
   }
 
   @Override

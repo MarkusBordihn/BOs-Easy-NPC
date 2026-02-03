@@ -19,97 +19,24 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.npc.standard;
 
-import de.markusbordihn.easynpc.api.npc.FoxRaw;
-import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
+import de.markusbordihn.easynpc.api.npc.base.FoxBase;
 import de.markusbordihn.easynpc.data.npc.DefaultNPCType;
 import de.markusbordihn.easynpc.data.npc.NPCType;
-import de.markusbordihn.easynpc.data.skin.variant.FoxSkinVariant;
-import de.markusbordihn.easynpc.data.sound.SoundDataSet;
-import de.markusbordihn.easynpc.data.sound.SoundType;
-import net.minecraft.sounds.SoundEvents;
+import de.markusbordihn.easynpc.entity.easynpc.npc.StandardEasyNPC;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.animal.FlyingAnimal;
 import net.minecraft.world.entity.animal.fox.Fox;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.Vec3;
 
-public class FoxNPC extends FoxRaw implements StandardEasyNPC<FoxRaw> {
+public class FoxNPC extends FoxBase implements StandardEasyNPC<FoxBase> {
 
   public static final DefaultNPCType NPC_TYPE = DefaultNPCType.FOX;
 
   public FoxNPC(EntityType<? extends Fox> entityType, Level level) {
-    this(entityType, level, FoxSkinVariant.RED);
-  }
-
-  public FoxNPC(EntityType<? extends Fox> entityType, Level level, Enum<?> variantType) {
-    super(entityType, level, variantType);
-    this.setInvulnerable(true);
-    this.refreshGroundNavigation();
-  }
-
-  public static AttributeSupplier.Builder createAttributes() {
-    return Mob.createMobAttributes()
-        .add(Attributes.ARMOR_TOUGHNESS, 0.0D)
-        .add(Attributes.ARMOR, 0.0D)
-        .add(Attributes.ATTACK_DAMAGE, 2.0D)
-        .add(Attributes.ATTACK_KNOCKBACK, 0.0D)
-        .add(Attributes.ATTACK_SPEED, 1.0D)
-        .add(Attributes.FOLLOW_RANGE, 32.0D)
-        .add(Attributes.KNOCKBACK_RESISTANCE, 0.0D)
-        .add(Attributes.MAX_HEALTH, 16.0D)
-        .add(Attributes.MOVEMENT_SPEED, 0.4D)
-        .add(Attributes.SPAWN_REINFORCEMENTS_CHANCE, 0.0D);
+    super(entityType, level);
   }
 
   @Override
   public NPCType getNPCType() {
     return NPC_TYPE;
-  }
-
-  @Override
-  public boolean canUseOffHand() {
-    return false;
-  }
-
-  @Override
-  public ConfigurationData getConfigurationData() {
-    return ConfigurationData.STANDARD;
-  }
-
-  @Override
-  public SoundDataSet getDefaultSoundDataSet(SoundDataSet soundDataSet, String variantName) {
-    soundDataSet.addDefaultSound(SoundType.AMBIENT, SoundEvents.FOX_AMBIENT);
-    soundDataSet.addDefaultSound(SoundType.AMBIENT_TAMED, SoundEvents.FOX_SCREECH);
-    soundDataSet.addDefaultSound(SoundType.AMBIENT_STRAY, SoundEvents.FOX_AMBIENT);
-    soundDataSet.addDefaultSound(SoundType.DEATH, SoundEvents.FOX_DEATH);
-    soundDataSet.addDefaultSound(SoundType.HURT, SoundEvents.FOX_HURT);
-    soundDataSet.addDefaultSound(SoundType.EAT, SoundEvents.FOX_EAT);
-    soundDataSet.addDefaultSound(SoundType.TRADE, SoundEvents.VILLAGER_TRADE);
-    soundDataSet.addDefaultSound(SoundType.TRADE_YES, SoundEvents.VILLAGER_YES);
-    soundDataSet.addDefaultSound(SoundType.TRADE_NO, SoundEvents.VILLAGER_NO);
-    return soundDataSet;
-  }
-
-  @Override
-  protected void registerGoals() {
-    // No default goals for NPCs.
-  }
-
-  @Override
-  public void travel(Vec3 vec3) {
-
-    this.handleNavigationTravelEvent(vec3);
-
-    // Handle movement for NPC for specific conditions.
-    if (this.hasTravelTargetObjectives()) {
-      // Allow travel for NPC, if travel objectives are used.
-      super.travel(vec3);
-    } else {
-      // Make sure we only calculate animations for be as much as possible server-friendly.
-      this.calculateEntityAnimation(this instanceof FlyingAnimal);
-    }
   }
 }

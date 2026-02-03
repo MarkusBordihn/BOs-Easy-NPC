@@ -37,7 +37,7 @@ public class IllusionerRawRenderer extends IllusionerRenderer implements EasyNPC
 
   @Override
   public Identifier getTextureLocation(IllusionerRenderState renderState) {
-    return getTextureFromRenderState(renderState);
+    return getTextureFromRenderStateWithConfig(renderState);
   }
 
   @Override

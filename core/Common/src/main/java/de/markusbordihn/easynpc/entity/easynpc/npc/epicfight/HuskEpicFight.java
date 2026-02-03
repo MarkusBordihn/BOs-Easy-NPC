@@ -19,7 +19,7 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.npc.epicfight;
 
-import de.markusbordihn.easynpc.api.npc.zombie.HuskRaw;
+import de.markusbordihn.easynpc.api.npc.raw.zombie.HuskRaw;
 import de.markusbordihn.easynpc.compat.CompatConstants;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
 import net.minecraft.world.entity.EntityType;

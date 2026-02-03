@@ -87,7 +87,6 @@ public record ChangeModelEquipmentVisibilityMessage(
       return;
     }
 
-    // Perform action.
     log.debug(
         "Change {} visibility to {} for {} from {}",
         this.equipmentSlot,

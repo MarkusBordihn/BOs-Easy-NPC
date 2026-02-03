@@ -37,7 +37,7 @@ public class PillagerRawRenderer extends PillagerRenderer implements EasyNPCEnti
 
   @Override
   public Identifier getTextureLocation(IllagerRenderState renderState) {
-    return getTextureFromRenderState(renderState);
+    return getTextureFromRenderStateWithConfig(renderState);
   }
 
   @Override

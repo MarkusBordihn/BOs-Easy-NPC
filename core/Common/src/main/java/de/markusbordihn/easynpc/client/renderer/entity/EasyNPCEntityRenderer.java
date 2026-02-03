@@ -19,6 +19,9 @@
 
 package de.markusbordihn.easynpc.client.renderer.entity;
 
+import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.api.model.CustomModelConfig;
+import de.markusbordihn.easynpc.api.model.OriginalModelConfig;
 import de.markusbordihn.easynpc.client.renderer.entity.state.EasyNPCRenderStateExtension;
 import de.markusbordihn.easynpc.client.texture.LivingEntityTextureManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
@@ -26,6 +29,7 @@ import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
 import java.util.function.Supplier;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.LivingEntity;
 
 public interface EasyNPCEntityRenderer {
 
@@ -33,6 +37,40 @@ public interface EasyNPCEntityRenderer {
 
   default boolean supportsPlayerSkins() {
     return false;
+  }
+
+  default OriginalModelConfig getOriginalModelConfig() {
+    return OriginalModelConfig.DEFAULT;
+  }
+
+  default CustomModelConfig getCustomModelConfig() {
+    return CustomModelConfig.NONE;
+  }
+
+  default Identifier getTransparentTexture() {
+    return Constants.BLANK_ENTITY_TEXTURE;
+  }
+
+  default Identifier getTextureLocationWithConfig(final LivingEntity entity) {
+
+    // Hide original model if custom model replaces it or if explicitly hidden
+    OriginalModelConfig originalConfig = getOriginalModelConfig();
+    if (getCustomModelConfig().shouldHideOriginal() || originalConfig.isHidden()) {
+      return getTransparentTexture();
+    }
+
+    // Use custom texture from original model config if available
+    if (originalConfig.hasCustomTexture()) {
+      return originalConfig.getCustomTexture();
+    }
+
+    // Use EasyNPC skin system if entity is an EasyNPC
+    if (entity instanceof EasyNPC<?> easyNPC) {
+      return getEntityTexture(easyNPC);
+    }
+
+    // Fall back to default texture
+    return getDefaultTexture();
   }
 
   default boolean hasEasyNPCRenderState(LivingEntityRenderState livingEntityRenderState) {
@@ -61,6 +99,27 @@ public interface EasyNPCEntityRenderer {
 
   default Identifier getTextureFromRenderState(final LivingEntityRenderState renderState) {
     return EasyNPCLivingEntityRenderer.getTexture(renderState, getDefaultTexture());
+  }
+
+  default Identifier getTextureFromRenderStateWithConfig(final LivingEntityRenderState renderState) {
+    // Hide original model if custom model replaces it or if explicitly hidden
+    OriginalModelConfig originalConfig = getOriginalModelConfig();
+    if (getCustomModelConfig().shouldHideOriginal() || originalConfig.isHidden()) {
+      return getTransparentTexture();
+    }
+
+    // Use custom texture from original model config if available
+    if (originalConfig.hasCustomTexture()) {
+      return originalConfig.getCustomTexture();
+    }
+
+    // Use EasyNPC skin system if render state contains EasyNPC data
+    if (hasEasyNPCRenderState(renderState)) {
+      return getTextureFromRenderState(renderState);
+    }
+
+    // Fall back to default texture
+    return getDefaultTexture();
   }
 
   default Identifier getEntityTexture(final EasyNPC<?> easyNPC) {

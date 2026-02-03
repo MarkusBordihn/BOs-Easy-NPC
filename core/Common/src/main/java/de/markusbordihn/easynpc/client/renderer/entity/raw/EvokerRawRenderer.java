@@ -39,7 +39,7 @@ public class EvokerRawRenderer<T extends SpellcasterIllager> extends EvokerRende
 
   @Override
   public Identifier getTextureLocation(EvokerRenderState renderState) {
-    return getTextureFromRenderState(renderState);
+    return getTextureFromRenderStateWithConfig(renderState);
   }
 
   @Override

@@ -37,7 +37,7 @@ public class SkeletonRawRenderer extends SkeletonRenderer implements EasyNPCEnti
 
   @Override
   public Identifier getTextureLocation(SkeletonRenderState renderState) {
-    return getTextureFromRenderState(renderState);
+    return getTextureFromRenderStateWithConfig(renderState);
   }
 
   @Override

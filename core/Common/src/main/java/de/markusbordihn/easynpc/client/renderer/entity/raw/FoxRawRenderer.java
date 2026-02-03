@@ -36,7 +36,7 @@ public class FoxRawRenderer extends FoxRenderer implements EasyNPCEntityRenderer
 
   @Override
   public Identifier getTextureLocation(FoxRenderState renderState) {
-    return getTextureFromRenderState(renderState);
+    return getTextureFromRenderStateWithConfig(renderState);
   }
 
   @Override

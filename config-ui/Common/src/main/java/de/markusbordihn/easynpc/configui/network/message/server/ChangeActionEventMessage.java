@@ -100,7 +100,6 @@ public record ChangeActionEventMessage(
       log.warn("Unable to verify permission level from {} for {}", this, serverPlayer);
     }
 
-    // Perform action.
     log.debug(
         "Set action event {} with {} for {} from {} with owner permission level {}.",
         actionEventType,

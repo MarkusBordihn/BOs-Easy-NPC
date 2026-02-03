@@ -17,12 +17,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.entity.easynpc.npc.standard;
+package de.markusbordihn.easynpc.api.npc.base.illager;
 
-import de.markusbordihn.easynpc.api.npc.zombie.HuskRaw;
+import de.markusbordihn.easynpc.api.npc.BaseEasyNPC;
+import de.markusbordihn.easynpc.api.npc.raw.illager.VindicatorRaw;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
-import de.markusbordihn.easynpc.data.npc.DefaultNPCType;
-import de.markusbordihn.easynpc.data.npc.NPCType;
+import de.markusbordihn.easynpc.data.skin.variant.IllagerSkinVariant;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.sound.SoundType;
 import net.minecraft.sounds.SoundEvents;
@@ -31,20 +31,19 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.FlyingAnimal;
-import net.minecraft.world.entity.monster.zombie.Husk;
+import net.minecraft.world.entity.monster.illager.Vindicator;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
-public class HuskNPC extends HuskRaw implements StandardEasyNPC<HuskRaw> {
+public class VindicatorBase extends VindicatorRaw implements BaseEasyNPC<VindicatorRaw> {
 
-  public static final DefaultNPCType NPC_TYPE = DefaultNPCType.HUSK;
+  public VindicatorBase(EntityType<? extends Vindicator> entityType, Level level) {
+    super(entityType, level, IllagerSkinVariant.VINDICATOR);
+  }
 
-  public HuskNPC(EntityType<? extends Husk> entityType, Level level) {
-    super(entityType, level);
+  public VindicatorBase(EntityType<? extends Vindicator> entityType, Level level, Enum<?> variant) {
+    super(entityType, level, variant);
     this.setInvulnerable(true);
-    this.getEntityAttributes()
-        .setEnvironmentalAttributes(
-            this.getEntityAttributes().getEnvironmentalAttributes().withCanBreathUnderwater(true));
     this.refreshGroundNavigation();
   }
 
@@ -58,18 +57,20 @@ public class HuskNPC extends HuskRaw implements StandardEasyNPC<HuskRaw> {
         .add(Attributes.FOLLOW_RANGE, 32.0D)
         .add(Attributes.KNOCKBACK_RESISTANCE, 0.0D)
         .add(Attributes.MAX_HEALTH, 20.0D)
-        .add(Attributes.MOVEMENT_SPEED, 0.5F)
+        .add(Attributes.MOVEMENT_SPEED, 0.6F)
         .add(Attributes.SPAWN_REINFORCEMENTS_CHANCE, 0.0D);
   }
 
   @Override
-  public NPCType getNPCType() {
-    return NPC_TYPE;
-  }
-
-  @Override
-  public boolean canUseArmor() {
-    return true;
+  public SoundDataSet getDefaultSoundDataSet(SoundDataSet soundDataSet, String variantName) {
+    soundDataSet.addDefaultSound(SoundType.AMBIENT, SoundEvents.VINDICATOR_AMBIENT);
+    soundDataSet.addDefaultSound(SoundType.DEATH, SoundEvents.VINDICATOR_DEATH);
+    soundDataSet.addDefaultSound(SoundType.HURT, SoundEvents.VINDICATOR_HURT);
+    soundDataSet.addDefaultSound(SoundType.CELEBRATE, SoundEvents.VINDICATOR_CELEBRATE);
+    soundDataSet.addDefaultSound(SoundType.TRADE, SoundEvents.VILLAGER_TRADE);
+    soundDataSet.addDefaultSound(SoundType.TRADE_YES, SoundEvents.VILLAGER_YES);
+    soundDataSet.addDefaultSound(SoundType.TRADE_NO, SoundEvents.VILLAGER_NO);
+    return soundDataSet;
   }
 
   @Override
@@ -78,30 +79,8 @@ public class HuskNPC extends HuskRaw implements StandardEasyNPC<HuskRaw> {
   }
 
   @Override
-  public SoundDataSet getDefaultSoundDataSet(SoundDataSet soundDataSet, String variantName) {
-    soundDataSet.addDefaultSound(SoundType.AMBIENT, SoundEvents.HUSK_AMBIENT);
-    soundDataSet.addDefaultSound(SoundType.HURT, SoundEvents.HUSK_HURT);
-    soundDataSet.addDefaultSound(SoundType.DEATH, SoundEvents.HUSK_DEATH);
-    soundDataSet.addDefaultSound(SoundType.STEP, SoundEvents.HUSK_STEP);
-    soundDataSet.addDefaultSound(SoundType.TRADE, SoundEvents.VILLAGER_TRADE);
-    soundDataSet.addDefaultSound(SoundType.TRADE_YES, SoundEvents.VILLAGER_YES);
-    soundDataSet.addDefaultSound(SoundType.TRADE_NO, SoundEvents.VILLAGER_NO);
-    return soundDataSet;
-  }
-
-  @Override
-  protected void randomizeReinforcementsChance() {
-    // No default reinforcements for NPCs.
-  }
-
-  @Override
   protected void registerGoals() {
-    // No default goals for NPCs.
-  }
-
-  @Override
-  protected boolean isSunSensitive() {
-    return false;
+    // No default goals for base NPCs.
   }
 
   @Override

@@ -6,7 +6,7 @@ import de.markusbordihn.easynpc.client.texture.PlayerTextureManager;
 import de.markusbordihn.easynpc.client.texture.RemoteTextureManager;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.data.skin.SkinType;
-import de.markusbordihn.easynpc.data.skin.VariantTexture;
+import de.markusbordihn.easynpc.api.skin.VariantTexture;
 import de.markusbordihn.easynpc.data.skin.variant.HumanoidSkinVariant;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;

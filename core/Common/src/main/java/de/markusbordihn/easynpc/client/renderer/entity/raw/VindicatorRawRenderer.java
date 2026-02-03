@@ -37,7 +37,7 @@ public class VindicatorRawRenderer extends VindicatorRenderer implements EasyNPC
 
   @Override
   public Identifier getTextureLocation(IllagerRenderState renderState) {
-    return getTextureFromRenderState(renderState);
+    return getTextureFromRenderStateWithConfig(renderState);
   }
 
   @Override

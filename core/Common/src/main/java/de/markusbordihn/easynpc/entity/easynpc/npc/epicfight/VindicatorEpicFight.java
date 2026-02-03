@@ -19,7 +19,7 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.npc.epicfight;
 
-import de.markusbordihn.easynpc.api.npc.VindicatorRaw;
+import de.markusbordihn.easynpc.api.npc.raw.illager.VindicatorRaw;
 import de.markusbordihn.easynpc.compat.CompatConstants;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
 import net.minecraft.world.entity.EntityType;

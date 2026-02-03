@@ -43,7 +43,6 @@ public class PiglinRawRenderer extends PiglinRenderer implements EasyNPCEntityRe
   @Override
   public Identifier getTextureLocation(PiglinRenderState renderState) {
     Identifier texture = getTextureFromRenderState(renderState);
-    // Fallback to original logic if no cached texture available
     if (texture == DEFAULT_TEXTURE) {
       return renderState.isBrute
           ? PiglinSkinVariant.PIGLIN_BRUTE.getTextureLocation()

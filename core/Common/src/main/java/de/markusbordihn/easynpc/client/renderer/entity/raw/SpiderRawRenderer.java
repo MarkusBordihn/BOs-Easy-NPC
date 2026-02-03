@@ -36,7 +36,7 @@ public class SpiderRawRenderer extends SpiderRenderer implements EasyNPCEntityRe
 
   @Override
   public Identifier getTextureLocation(LivingEntityRenderState renderState) {
-    return getTextureFromRenderState(renderState);
+    return getTextureFromRenderStateWithConfig(renderState);
   }
 
   @Override

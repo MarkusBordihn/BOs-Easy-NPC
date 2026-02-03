@@ -17,7 +17,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.api.npc;
+package de.markusbordihn.easynpc.api.npc.raw;
 
 import static java.util.Objects.hash;
 

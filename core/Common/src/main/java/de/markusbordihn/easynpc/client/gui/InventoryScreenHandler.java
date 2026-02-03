@@ -19,12 +19,12 @@
 
 package de.markusbordihn.easynpc.client.gui;
 
+import de.markusbordihn.easynpc.api.skin.VariantTexture;
 import de.markusbordihn.easynpc.client.renderer.manager.EntityTypeManager;
 import de.markusbordihn.easynpc.client.renderer.manager.RendererManager;
 import de.markusbordihn.easynpc.data.render.RenderType;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.data.skin.SkinType;
-import de.markusbordihn.easynpc.data.skin.VariantTexture;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.RenderDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;

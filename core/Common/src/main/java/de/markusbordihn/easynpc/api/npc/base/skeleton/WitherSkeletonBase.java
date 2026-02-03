@@ -17,13 +17,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.entity.easynpc.npc.standard;
+package de.markusbordihn.easynpc.api.npc.base.skeleton;
 
-import de.markusbordihn.easynpc.api.npc.zombie.DrownedRaw;
+import de.markusbordihn.easynpc.api.npc.BaseEasyNPC;
+import de.markusbordihn.easynpc.api.npc.raw.skeleton.WitherSkeletonRaw;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
-import de.markusbordihn.easynpc.data.npc.DefaultNPCType;
-import de.markusbordihn.easynpc.data.npc.NPCType;
-import de.markusbordihn.easynpc.data.skin.variant.ZombieSkinVariant;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.sound.SoundType;
 import net.minecraft.sounds.SoundEvents;
@@ -32,25 +30,19 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.FlyingAnimal;
-import net.minecraft.world.entity.monster.zombie.Drowned;
+import net.minecraft.world.entity.monster.skeleton.WitherSkeleton;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
-public class DrownedNPC extends DrownedRaw implements StandardEasyNPC<DrownedRaw> {
+public class WitherSkeletonBase extends WitherSkeletonRaw
+    implements BaseEasyNPC<WitherSkeletonRaw> {
 
-  public static final DefaultNPCType NPC_TYPE = DefaultNPCType.DROWNED;
-
-  public DrownedNPC(EntityType<? extends Drowned> entityType, Level level) {
-    this(entityType, level, ZombieSkinVariant.DROWNED);
-  }
-
-  public DrownedNPC(EntityType<? extends Drowned> entityType, Level level, Enum<?> variantType) {
-    super(entityType, level, variantType);
+  public WitherSkeletonBase(EntityType<? extends WitherSkeleton> entityType, Level level) {
+    super(entityType, level);
     this.setInvulnerable(true);
     this.getEntityAttributes()
         .setEnvironmentalAttributes(
             this.getEntityAttributes().getEnvironmentalAttributes().withCanBreathUnderwater(true));
-    this.refreshGroundNavigation();
   }
 
   public static AttributeSupplier.Builder createAttributes() {
@@ -63,13 +55,8 @@ public class DrownedNPC extends DrownedRaw implements StandardEasyNPC<DrownedRaw
         .add(Attributes.FOLLOW_RANGE, 32.0D)
         .add(Attributes.KNOCKBACK_RESISTANCE, 0.0D)
         .add(Attributes.MAX_HEALTH, 20.0D)
-        .add(Attributes.MOVEMENT_SPEED, 0.5F)
+        .add(Attributes.MOVEMENT_SPEED, 0.6F)
         .add(Attributes.SPAWN_REINFORCEMENTS_CHANCE, 0.0D);
-  }
-
-  @Override
-  public NPCType getNPCType() {
-    return NPC_TYPE;
   }
 
   @Override
@@ -84,10 +71,10 @@ public class DrownedNPC extends DrownedRaw implements StandardEasyNPC<DrownedRaw
 
   @Override
   public SoundDataSet getDefaultSoundDataSet(SoundDataSet soundDataSet, String variantName) {
-    soundDataSet.addDefaultSound(SoundType.AMBIENT, SoundEvents.DROWNED_AMBIENT);
-    soundDataSet.addDefaultSound(SoundType.HURT, SoundEvents.DROWNED_HURT);
-    soundDataSet.addDefaultSound(SoundType.DEATH, SoundEvents.DROWNED_DEATH);
-    soundDataSet.addDefaultSound(SoundType.STEP, SoundEvents.DROWNED_STEP);
+    soundDataSet.addDefaultSound(SoundType.AMBIENT, SoundEvents.WITHER_SKELETON_AMBIENT);
+    soundDataSet.addDefaultSound(SoundType.DEATH, SoundEvents.WITHER_SKELETON_DEATH);
+    soundDataSet.addDefaultSound(SoundType.HURT, SoundEvents.WITHER_SKELETON_HURT);
+    soundDataSet.addDefaultSound(SoundType.STEP, SoundEvents.WITHER_SKELETON_STEP);
     soundDataSet.addDefaultSound(SoundType.TRADE, SoundEvents.VILLAGER_TRADE);
     soundDataSet.addDefaultSound(SoundType.TRADE_YES, SoundEvents.VILLAGER_YES);
     soundDataSet.addDefaultSound(SoundType.TRADE_NO, SoundEvents.VILLAGER_NO);
@@ -95,36 +82,15 @@ public class DrownedNPC extends DrownedRaw implements StandardEasyNPC<DrownedRaw
   }
 
   @Override
-  protected void randomizeReinforcementsChance() {
-    // No default reinforcements for NPCs.
-  }
-
-  @Override
-  protected void registerGoals() {
-    // No default goals for NPCs.
-  }
-
-  @Override
-  protected void addBehaviourGoals() {
-    // No default behaviour goals for NPCs.
-  }
-
-  @Override
-  protected boolean isSunSensitive() {
-    return false;
-  }
+  protected void registerGoals() {}
 
   @Override
   public void travel(Vec3 vec3) {
-
     this.handleNavigationTravelEvent(vec3);
 
-    // Handle movement for NPC for specific conditions.
     if (this.hasTravelTargetObjectives()) {
-      // Allow travel for NPC, if travel objectives are used.
       super.travel(vec3);
     } else {
-      // Make sure we only calculate animations for be as much as possible server-friendly.
       this.calculateEntityAnimation(this instanceof FlyingAnimal);
     }
   }

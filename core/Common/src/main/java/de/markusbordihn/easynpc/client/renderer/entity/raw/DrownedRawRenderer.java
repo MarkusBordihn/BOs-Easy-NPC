@@ -37,7 +37,7 @@ public class DrownedRawRenderer extends DrownedRenderer implements EasyNPCEntity
 
   @Override
   public Identifier getTextureLocation(ZombieRenderState renderState) {
-    return getTextureFromRenderState(renderState);
+    return getTextureFromRenderStateWithConfig(renderState);
   }
 
   @Override

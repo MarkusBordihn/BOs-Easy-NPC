@@ -25,7 +25,7 @@ public sealed interface NPCType permits RawNPCType, DefaultNPCType {
 
   String getRegistryId();
 
-  default Identifier getResourceLocation(String namespace) {
+  default Identifier getIdentifier(String namespace) {
     return Identifier.fromNamespaceAndPath(namespace, getRegistryId());
   }
 

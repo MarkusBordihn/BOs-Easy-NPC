@@ -17,38 +17,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.entity.easynpc.npc.standard;
+package de.markusbordihn.easynpc.api.npc.base;
 
-import de.markusbordihn.easynpc.api.npc.BoggedRaw;
+import de.markusbordihn.easynpc.api.npc.BaseEasyNPC;
+import de.markusbordihn.easynpc.api.npc.raw.PathfinderMobRaw;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
-import de.markusbordihn.easynpc.data.npc.DefaultNPCType;
-import de.markusbordihn.easynpc.data.skin.variant.SkeletonSkinVariant;
+import de.markusbordihn.easynpc.data.skin.SkinModel;
+import de.markusbordihn.easynpc.data.skin.variant.HumanoidSlimSkinVariant;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.sound.SoundType;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.animal.FlyingAnimal;
-import net.minecraft.world.entity.monster.skeleton.Bogged;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.Vec3;
 
-public class BoggedNPC extends BoggedRaw implements StandardEasyNPC<BoggedRaw> {
+public class HumanoidSlimBase extends PathfinderMobRaw implements BaseEasyNPC<PathfinderMobRaw> {
 
-  public static final DefaultNPCType NPC_TYPE = DefaultNPCType.BOGGED;
-
-  public BoggedNPC(EntityType<? extends Bogged> entityType, Level level) {
-    this(entityType, level, SkeletonSkinVariant.BOGGED);
+  public HumanoidSlimBase(EntityType<? extends PathfinderMob> entityType, Level level) {
+    this(entityType, level, HumanoidSlimSkinVariant.ALEX);
   }
 
-  public BoggedNPC(EntityType<? extends Bogged> entityType, Level level, Enum<?> variantType) {
+  public HumanoidSlimBase(
+      EntityType<? extends PathfinderMob> entityType, Level level, Enum<?> variantType) {
     super(entityType, level, variantType);
-    this.setInvulnerable(true);
-    this.getEntityAttributes()
-        .setEnvironmentalAttributes(
-            this.getEntityAttributes().getEnvironmentalAttributes().withCanBreathUnderwater(true));
   }
 
   public static AttributeSupplier.Builder createAttributes() {
@@ -66,44 +60,47 @@ public class BoggedNPC extends BoggedRaw implements StandardEasyNPC<BoggedRaw> {
   }
 
   @Override
+  public SkinModel getSkinModel() {
+    return SkinModel.HUMANOID_SLIM;
+  }
+
+  @Override
+  public Enum<?>[] getSkinVariantTypes() {
+    return HumanoidSlimSkinVariant.values();
+  }
+
+  @Override
+  public Enum<?> getDefaultSkinVariantType() {
+    return HumanoidSlimSkinVariant.ALEX;
+  }
+
+  @Override
+  public Enum<?> getSkinVariantType(String name) {
+    try {
+      return HumanoidSlimSkinVariant.valueOf(name);
+    } catch (IllegalArgumentException e) {
+      return getDefaultSkinVariantType();
+    }
+  }
+
+  @Override
   public boolean canUseArmor() {
     return true;
   }
 
   @Override
   public ConfigurationData getConfigurationData() {
-    return ConfigurationData.STANDARD;
+    return ConfigurationData.HUMANOID;
   }
 
   @Override
   public SoundDataSet getDefaultSoundDataSet(SoundDataSet soundDataSet, String variantName) {
-    soundDataSet.addDefaultSound(SoundType.AMBIENT, SoundEvents.BOGGED_AMBIENT);
-    soundDataSet.addDefaultSound(SoundType.DEATH, SoundEvents.BOGGED_DEATH);
-    soundDataSet.addDefaultSound(SoundType.HURT, SoundEvents.BOGGED_HURT);
-    soundDataSet.addDefaultSound(SoundType.STEP, SoundEvents.BOGGED_STEP);
+    soundDataSet.addDefaultSound(SoundType.DEATH, SoundEvents.PLAYER_DEATH);
+    soundDataSet.addDefaultSound(SoundType.HURT, SoundEvents.PLAYER_HURT);
+    soundDataSet.addDefaultSound(SoundType.EAT, SoundEvents.GENERIC_EAT.value());
     soundDataSet.addDefaultSound(SoundType.TRADE, SoundEvents.VILLAGER_TRADE);
     soundDataSet.addDefaultSound(SoundType.TRADE_YES, SoundEvents.VILLAGER_YES);
     soundDataSet.addDefaultSound(SoundType.TRADE_NO, SoundEvents.VILLAGER_NO);
     return soundDataSet;
-  }
-
-  @Override
-  protected void registerGoals() {
-    // No default goals for NPCs.
-  }
-
-  @Override
-  public void travel(Vec3 vec3) {
-
-    this.handleNavigationTravelEvent(vec3);
-
-    // Handle movement for NPC for specific conditions.
-    if (this.hasTravelTargetObjectives()) {
-      // Allow travel for NPC, if travel objectives are used.
-      super.travel(vec3);
-    } else {
-      // Make sure we only calculate animations for be as much as possible server-friendly.
-      this.calculateEntityAnimation(this instanceof FlyingAnimal);
-    }
   }
 }

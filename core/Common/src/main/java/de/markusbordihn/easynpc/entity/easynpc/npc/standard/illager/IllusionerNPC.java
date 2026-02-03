@@ -17,14 +17,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.entity.easynpc.npc.standard;
+package de.markusbordihn.easynpc.entity.easynpc.npc.standard.illager;
 
-import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
-import net.minecraft.world.entity.PathfinderMob;
+import de.markusbordihn.easynpc.api.npc.base.illager.IllusionerBase;
+import de.markusbordihn.easynpc.data.npc.DefaultNPCType;
+import de.markusbordihn.easynpc.data.npc.NPCType;
+import de.markusbordihn.easynpc.entity.easynpc.npc.StandardEasyNPC;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.monster.illager.Illusioner;
+import net.minecraft.world.level.Level;
 
-public interface StandardEasyNPC<T extends PathfinderMob> {
+public class IllusionerNPC extends IllusionerBase implements StandardEasyNPC<IllusionerBase> {
 
-  default ConfigurationData getConfigurationData() {
-    return ConfigurationData.STANDARD;
+  public static final DefaultNPCType NPC_TYPE = DefaultNPCType.ILLUSIONER;
+
+  public IllusionerNPC(EntityType<? extends Illusioner> entityType, Level level) {
+    super(entityType, level);
+  }
+
+  @Override
+  public NPCType getNPCType() {
+    return NPC_TYPE;
   }
 }

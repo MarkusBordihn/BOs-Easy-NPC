@@ -19,7 +19,7 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.npc.epicfight;
 
-import de.markusbordihn.easynpc.api.npc.spider.SpiderRaw;
+import de.markusbordihn.easynpc.api.npc.raw.spider.SpiderRaw;
 import de.markusbordihn.easynpc.compat.CompatConstants;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
 import de.markusbordihn.easynpc.data.skin.variant.SpiderSkinVariant;

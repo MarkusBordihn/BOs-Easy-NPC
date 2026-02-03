@@ -19,7 +19,10 @@
 
 package de.markusbordihn.easynpc.client.renderer.entity.raw;
 
+import de.markusbordihn.easynpc.api.model.CustomModelConfig;
+import de.markusbordihn.easynpc.api.model.OriginalModelConfig;
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.layers.ChickenCustomModelLayer;
 import de.markusbordihn.easynpc.data.skin.variant.ChickenSkinVariant;
 import net.minecraft.client.renderer.entity.ChickenRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -30,13 +33,49 @@ public class ChickenRawRenderer extends ChickenRenderer implements EasyNPCEntity
 
   protected static final Identifier DEFAULT_TEXTURE = ChickenSkinVariant.WARM.getTextureLocation();
 
+  private final OriginalModelConfig originalConfig;
+  private final CustomModelConfig customConfig;
+
   public ChickenRawRenderer(EntityRendererProvider.Context context) {
+    this(context, OriginalModelConfig.DEFAULT, CustomModelConfig.NONE);
+  }
+
+  public ChickenRawRenderer(
+      EntityRendererProvider.Context context, OriginalModelConfig originalConfig) {
+    this(context, originalConfig, CustomModelConfig.NONE);
+  }
+
+  public ChickenRawRenderer(
+      EntityRendererProvider.Context context, CustomModelConfig customConfig) {
+    this(context, OriginalModelConfig.DEFAULT, customConfig);
+  }
+
+  public ChickenRawRenderer(
+      EntityRendererProvider.Context context,
+      OriginalModelConfig originalConfig,
+      CustomModelConfig customConfig) {
     super(context);
+    this.originalConfig = originalConfig != null ? originalConfig : OriginalModelConfig.DEFAULT;
+    this.customConfig = customConfig != null ? customConfig : CustomModelConfig.NONE;
+
+    if (this.customConfig.hasCustomModel()) {
+      this.addLayer(new ChickenCustomModelLayer(this, context.getModelSet(), this.customConfig));
+    }
+  }
+
+  @Override
+  public OriginalModelConfig getOriginalModelConfig() {
+    return originalConfig;
+  }
+
+  @Override
+  public CustomModelConfig getCustomModelConfig() {
+    return customConfig;
   }
 
   @Override
   public Identifier getTextureLocation(ChickenRenderState renderState) {
-    return getTextureFromRenderState(renderState);
+    return getTextureFromRenderStateWithConfig(renderState);
   }
 
   @Override

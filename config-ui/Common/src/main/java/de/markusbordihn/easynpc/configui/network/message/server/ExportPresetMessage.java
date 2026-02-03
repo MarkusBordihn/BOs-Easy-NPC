@@ -84,7 +84,6 @@ public record ExportPresetMessage(
     String fileName = PresetExportFormat.removePresetExtension(this.name);
     fileName = PresetExportFormat.normalizeFilename(fileName);
 
-    // Perform action.
     NetworkMessageHandlerManager.getClientHandler()
         .exportClientPreset(this.uuid, fileName, serverPlayer, this.exportFormat, this.metadata);
   }

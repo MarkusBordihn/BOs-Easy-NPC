@@ -17,7 +17,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.data.skin;
+package de.markusbordihn.easynpc.api.skin;
 
 import net.minecraft.core.ClientAsset;
 import net.minecraft.resources.Identifier;

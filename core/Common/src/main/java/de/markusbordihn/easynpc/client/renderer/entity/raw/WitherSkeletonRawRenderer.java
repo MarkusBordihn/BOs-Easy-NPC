@@ -38,7 +38,7 @@ public class WitherSkeletonRawRenderer extends WitherSkeletonRenderer
 
   @Override
   public Identifier getTextureLocation(SkeletonRenderState renderState) {
-    return getTextureFromRenderState(renderState);
+    return getTextureFromRenderStateWithConfig(renderState);
   }
 
   @Override

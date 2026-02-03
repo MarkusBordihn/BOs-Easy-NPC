@@ -37,7 +37,7 @@ public class CreeperRawRenderer extends CreeperRenderer implements EasyNPCEntity
 
   @Override
   public Identifier getTextureLocation(CreeperRenderState renderState) {
-    return getTextureFromRenderState(renderState);
+    return getTextureFromRenderStateWithConfig(renderState);
   }
 
   @Override

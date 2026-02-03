@@ -107,7 +107,6 @@ public record ExecuteActionEventMessage(UUID uuid, ActionEventType actionEventTy
       return;
     }
 
-    // Perform action.
     actionHandler.executeActions(actionDataSet, serverPlayer);
   }
 }

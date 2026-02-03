@@ -36,7 +36,7 @@ public class ZombieRawRenderer extends ZombieRenderer implements EasyNPCEntityRe
 
   @Override
   public Identifier getTextureLocation(ZombieRenderState renderState) {
-    return getTextureFromRenderState(renderState);
+    return getTextureFromRenderStateWithConfig(renderState);
   }
 
   @Override
