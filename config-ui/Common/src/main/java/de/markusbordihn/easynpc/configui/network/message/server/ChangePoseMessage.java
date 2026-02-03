@@ -70,7 +70,6 @@ public record ChangePoseMessage(UUID uuid, Pose pose) implements NetworkMessageR
       return;
     }
 
-    // Perform action.
     log.debug("Change pose {} for {} from {}", this.pose, easyNPC, serverPlayer);
     modelData.setModelPose(ModelPose.DEFAULT);
     easyNPC.getEntity().setPose(this.pose);

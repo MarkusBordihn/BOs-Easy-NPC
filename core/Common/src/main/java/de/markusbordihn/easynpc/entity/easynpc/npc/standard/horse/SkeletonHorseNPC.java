@@ -19,14 +19,16 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.npc.standard.horse;
 
+import de.markusbordihn.easynpc.api.npc.base.horse.HorseBase;
 import de.markusbordihn.easynpc.data.npc.DefaultNPCType;
 import de.markusbordihn.easynpc.data.npc.NPCType;
 import de.markusbordihn.easynpc.data.skin.variant.HorseSkinVariant;
+import de.markusbordihn.easynpc.entity.easynpc.npc.StandardEasyNPC;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.animal.horse.Horse;
 import net.minecraft.world.level.Level;
 
-public class SkeletonHorseNPC extends HorseNPC {
+public class SkeletonHorseNPC extends HorseBase implements StandardEasyNPC<HorseBase> {
 
   public static final DefaultNPCType NPC_TYPE = DefaultNPCType.SKELETON_HORSE;
 

@@ -121,7 +121,6 @@ public record ExecuteDialogButtonActionMessage(UUID uuid, UUID dialogId, UUID di
       return;
     }
 
-    // Perform action.
     actionHandler.executeActions(actionDataSet, serverPlayer);
   }
 }

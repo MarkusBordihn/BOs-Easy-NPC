@@ -1,6 +1,6 @@
 tasks.register('generateRawNPCs') {
   group = "build"
-  def rawNPCFolder = file("$projectDir/../Common/src/main/java/de/markusbordihn/easynpc/api/npc")
+  def rawNPCFolder = file("$projectDir/../Common/src/main/java/de/markusbordihn/easynpc/api/npc/raw")
   def templateFile = file("$rawNPCFolder/NPCRawTemplate.java")
   def npcClasses = [
       [
@@ -58,7 +58,8 @@ tasks.register('generateRawNPCs') {
           className: "EvokerRaw",
           baseClass: "Evoker",
           modelType: "ILLAGER",
-          variant  : "IllagerSkinVariant.EVOKER"
+          variant  : "IllagerSkinVariant.EVOKER",
+          subfolder: "illager"
       ],
       [
           id       : "fox_raw",
@@ -91,7 +92,8 @@ tasks.register('generateRawNPCs') {
           className: "IllusionerRaw",
           baseClass: "Illusioner",
           modelType: "ILLAGER",
-          variant  : "IllagerSkinVariant.ILLUSIONER"
+          variant  : "IllagerSkinVariant.ILLUSIONER",
+          subfolder: "illager"
       ],
       [
           id       : "pathfinder_mob_raw",
@@ -126,7 +128,8 @@ tasks.register('generateRawNPCs') {
           className: "PillagerRaw",
           baseClass: "Pillager",
           modelType: "ILLAGER",
-          variant  : "IllagerSkinVariant.PILLAGER"
+          variant  : "IllagerSkinVariant.PILLAGER",
+          subfolder: "illager"
       ],
       [
           id       : "pig_raw",
@@ -225,7 +228,8 @@ tasks.register('generateRawNPCs') {
           className: "VindicatorRaw",
           baseClass: "Vindicator",
           modelType: "ILLAGER",
-          variant  : "IllagerSkinVariant.VINDICATOR"
+          variant  : "IllagerSkinVariant.VINDICATOR",
+          subfolder: "illager"
       ],
       [
           id       : "wolf_raw",
@@ -353,10 +357,10 @@ tasks.register('generateRawNPCs') {
       targetFolder.mkdirs() // Ensure subfolder exists
 
       def outputFile = new File(targetFolder, npcClass.className + ".java")
-      def packagePath = npcClass.subfolder ? "de.markusbordihn.easynpc.api.npc.${npcClass.subfolder}" : "de.markusbordihn.easynpc.api.npc"
+      def packagePath = npcClass.subfolder ? "de.markusbordihn.easynpc.api.npc.raw.${npcClass.subfolder}" : "de.markusbordihn.easynpc.api.npc.raw"
 
       def content = templateFile.text
-          .replace("package de.markusbordihn.easynpc.api.npc;", "package ${packagePath};")
+          .replace("package de.markusbordihn.easynpc.api.npc.raw;", "package ${packagePath};")
           .replace("import net.minecraft.world.entity.monster.Zombie;", "import " + npcClass.class + ";")
           .replace("import de.markusbordihn.easynpc.data.skin.variant.ZombieSkinVariant;", "import de.markusbordihn.easynpc.data.skin.variant." + npcClass.variant.replaceAll(/\.[^.]+$/, "") + ";")
           .replace("RawNPCType.ZOMBIE", "RawNPCType." + toEnumName(npcClass.id))

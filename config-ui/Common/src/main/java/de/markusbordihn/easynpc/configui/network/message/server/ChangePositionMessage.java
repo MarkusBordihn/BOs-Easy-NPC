@@ -64,7 +64,6 @@ public record ChangePositionMessage(UUID uuid, Vec3 pos) implements NetworkMessa
       return;
     }
 
-    // Perform action.
     log.debug("Change pos {} for {} from {}", this.pos, easyNPC, serverPlayer);
     easyNPC.getEntity().setPos(this.pos);
   }

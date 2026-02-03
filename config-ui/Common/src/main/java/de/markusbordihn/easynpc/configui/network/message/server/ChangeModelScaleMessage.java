@@ -85,7 +85,6 @@ public record ChangeModelScaleMessage(UUID uuid, ModelPartType modelPartType, Cu
       return;
     }
 
-    // Perform action.
     log.debug(
         "Change {} scale to {}° for {} from {}", modelPartType, this.scale, easyNPC, serverPlayer);
 

@@ -99,8 +99,7 @@ public class EasyNPCWandItem extends Item {
     if (player instanceof ServerPlayer serverPlayer) {
       BlockPos blockPos = userContext.getClickedPos();
 
-      // 1. Search all nearby EasyNPC entities above and below the block position.
-      AABB aabbAbove =
+      AABB verticalSearchArea =
           new AABB(
               blockPos.getX() - 0.25d,
               blockPos.getY() - 2d,
@@ -109,7 +108,7 @@ public class EasyNPCWandItem extends Item {
               blockPos.getY() + 2d,
               blockPos.getZ() + 0.25d);
       for (PathfinderMob pathfinderMob :
-          level.getEntitiesOfClass(PathfinderMob.class, aabbAbove.inflate(0.5), Entity::isAlive)) {
+          level.getEntitiesOfClass(PathfinderMob.class, verticalSearchArea.inflate(0.5), Entity::isAlive)) {
         if (pathfinderMob instanceof EasyNPCBase<?> easyNPC) {
           MenuManager.getMenuHandler()
               .openConfigurationMenu(ConfigurationType.MAIN, serverPlayer, easyNPC, 0);
@@ -117,8 +116,7 @@ public class EasyNPCWandItem extends Item {
         }
       }
 
-      // 2. Search all nearby EasyNPC entities around the block position.
-      AABB aabbAround =
+      AABB nearbySearchArea =
           new AABB(
               blockPos.getX() - 0.5d,
               blockPos.getY() - 0.5d,
@@ -127,7 +125,7 @@ public class EasyNPCWandItem extends Item {
               blockPos.getY() + 1d,
               blockPos.getZ() + 1d);
       for (PathfinderMob pathfinderMob :
-          level.getEntitiesOfClass(PathfinderMob.class, aabbAround.inflate(0.5), Entity::isAlive)) {
+          level.getEntitiesOfClass(PathfinderMob.class, nearbySearchArea.inflate(0.5), Entity::isAlive)) {
         if (pathfinderMob instanceof EasyNPCBase<?> easyNPC) {
           MenuManager.getMenuHandler()
               .openConfigurationMenu(ConfigurationType.MAIN, serverPlayer, easyNPC, 0);
@@ -135,9 +133,8 @@ public class EasyNPCWandItem extends Item {
         }
       }
 
-      // 3. Expand the search area by 2.5x to find all nearby EasyNPC entities.
       for (PathfinderMob pathfinderMob :
-          level.getEntitiesOfClass(PathfinderMob.class, aabbAround.inflate(2.5), Entity::isAlive)) {
+          level.getEntitiesOfClass(PathfinderMob.class, nearbySearchArea.inflate(2.5), Entity::isAlive)) {
         if (pathfinderMob instanceof EasyNPCBase<?> easyNPC) {
           MenuManager.getMenuHandler()
               .openConfigurationMenu(ConfigurationType.MAIN, serverPlayer, easyNPC, 0);
@@ -156,7 +153,6 @@ public class EasyNPCWandItem extends Item {
   @Override
   public void appendHoverText(
       ItemStack itemStack, Level level, List<Component> tooltipList, TooltipFlag tooltipFlag) {
-    // Display description.
     tooltipList.add(TextComponent.getTranslatedTextRaw(Constants.TEXT_ITEM_PREFIX + ID));
   }
 }

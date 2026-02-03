@@ -86,7 +86,6 @@ public record ChangeModelPositionMessage(
       return;
     }
 
-    // Perform action.
     log.debug(
         "Change {} position to {}° for {} from {}",
         modelPartType,

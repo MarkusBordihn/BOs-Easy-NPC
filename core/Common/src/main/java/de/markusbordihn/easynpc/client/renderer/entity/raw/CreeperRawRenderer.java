@@ -21,7 +21,6 @@ package de.markusbordihn.easynpc.client.renderer.entity.raw;
 
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
 import de.markusbordihn.easynpc.data.skin.variant.CreeperSkinVariant;
-import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import net.minecraft.client.renderer.entity.CreeperRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
@@ -38,10 +37,7 @@ public class CreeperRawRenderer extends CreeperRenderer implements EasyNPCEntity
 
   @Override
   public ResourceLocation getTextureLocation(Creeper entity) {
-    if (entity instanceof EasyNPC<?> easyNPC) {
-      return getEntityTexture(easyNPC);
-    }
-    return DEFAULT_TEXTURE;
+    return getTextureLocationWithConfig(entity);
   }
 
   @Override

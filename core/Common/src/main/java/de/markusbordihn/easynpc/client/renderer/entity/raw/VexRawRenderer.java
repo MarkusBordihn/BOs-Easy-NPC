@@ -21,7 +21,6 @@ package de.markusbordihn.easynpc.client.renderer.entity.raw;
 
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
 import de.markusbordihn.easynpc.data.skin.variant.VexSkinVariant;
-import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.VexRenderer;
 import net.minecraft.resources.ResourceLocation;
@@ -37,10 +36,7 @@ public class VexRawRenderer extends VexRenderer implements EasyNPCEntityRenderer
 
   @Override
   public ResourceLocation getTextureLocation(Vex entity) {
-    if (entity instanceof EasyNPC<?> easyNPC) {
-      return getEntityTexture(easyNPC);
-    }
-    return DEFAULT_TEXTURE;
+    return getTextureLocationWithConfig(entity);
   }
 
   @Override

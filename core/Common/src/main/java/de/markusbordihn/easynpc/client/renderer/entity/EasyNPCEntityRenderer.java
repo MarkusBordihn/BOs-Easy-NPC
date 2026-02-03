@@ -20,18 +20,55 @@
 package de.markusbordihn.easynpc.client.renderer.entity;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.api.model.CustomModelConfig;
+import de.markusbordihn.easynpc.api.model.OriginalModelConfig;
+import de.markusbordihn.easynpc.api.skin.VariantTexture;
 import de.markusbordihn.easynpc.client.texture.CustomTextureManager;
 import de.markusbordihn.easynpc.client.texture.PlayerTextureManager;
 import de.markusbordihn.easynpc.client.texture.RemoteTextureManager;
-import de.markusbordihn.easynpc.data.skin.VariantTexture;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
 import java.util.function.Supplier;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.LivingEntity;
 
 public interface EasyNPCEntityRenderer {
 
   ResourceLocation getDefaultTexture();
+
+  default OriginalModelConfig getOriginalModelConfig() {
+    return OriginalModelConfig.DEFAULT;
+  }
+
+  default CustomModelConfig getCustomModelConfig() {
+    return CustomModelConfig.NONE;
+  }
+
+  default ResourceLocation getTransparentTexture() {
+    return Constants.BLANK_ENTITY_TEXTURE;
+  }
+
+  default ResourceLocation getTextureLocationWithConfig(final LivingEntity entity) {
+
+    // Hide original model if custom model replaces it or if explicitly hidden
+    OriginalModelConfig originalConfig = getOriginalModelConfig();
+    if (getCustomModelConfig().shouldHideOriginal() || originalConfig.isHidden()) {
+      return getTransparentTexture();
+    }
+
+    // Use custom texture from original model config if available
+    if (originalConfig.hasCustomTexture()) {
+      return originalConfig.getCustomTexture();
+    }
+
+    // Use EasyNPC skin system if entity is an EasyNPC
+    if (entity instanceof EasyNPC<?> easyNPC) {
+      return getEntityTexture(easyNPC);
+    }
+
+    // Fall back to default texture
+    return getDefaultTexture();
+  }
 
   default ResourceLocation getTextureByVariant(final Enum<?> variant) {
     if (variant instanceof VariantTexture variantTexture) {
@@ -60,6 +97,10 @@ public interface EasyNPCEntityRenderer {
       case SECURE_REMOTE_URL, INSECURE_REMOTE_URL -> getRemoteTexture(skinData);
       default -> getTextureByVariant(easyNPC.getEasyNPCVariantData().getSkinVariantType());
     };
+  }
+
+  default ResourceLocation getVariantTexture(final EasyNPC<?> easyNPC) {
+    return getTextureByVariant(easyNPC.getEasyNPCVariantData().getSkinVariantType());
   }
 
   default ResourceLocation getEntityPlayerTexture(final EasyNPC<?> easyNPC) {

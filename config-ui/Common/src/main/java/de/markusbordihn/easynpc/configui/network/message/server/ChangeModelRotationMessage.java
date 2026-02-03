@@ -88,7 +88,6 @@ public record ChangeModelRotationMessage(
       return;
     }
 
-    // Perform action.
     if (this.modelPartType == ModelPartType.ROOT) {
       modelData.setModelRotation(this.rotation.x(), this.rotation.y(), this.rotation.z());
     } else {

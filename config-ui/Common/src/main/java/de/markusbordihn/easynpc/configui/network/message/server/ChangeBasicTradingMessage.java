@@ -84,7 +84,6 @@ public record ChangeBasicTradingMessage(
       return;
     }
 
-    // Perform action.
     switch (this.tradingValueType) {
       case RESET_TRADING_EVERY_MIN:
         log.debug(

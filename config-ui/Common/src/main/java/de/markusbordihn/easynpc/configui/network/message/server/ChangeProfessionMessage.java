@@ -70,7 +70,6 @@ public record ChangeProfessionMessage(UUID uuid, Profession profession)
       return;
     }
 
-    // Perform action.
     log.debug("Change profession {} for {} from {}", this.profession, easyNPC, serverPlayer);
     professionData.setProfession(this.profession);
   }

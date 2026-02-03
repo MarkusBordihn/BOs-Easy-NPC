@@ -21,7 +21,6 @@ package de.markusbordihn.easynpc.client.renderer.entity.raw;
 
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
 import de.markusbordihn.easynpc.data.skin.variant.PiglinSkinVariant;
-import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.PiglinRenderer;
@@ -44,10 +43,7 @@ public class PiglinRawRenderer extends PiglinRenderer implements EasyNPCEntityRe
 
   @Override
   public ResourceLocation getTextureLocation(Mob entity) {
-    if (entity instanceof EasyNPC<?> easyNPC) {
-      return getEntityTexture(easyNPC);
-    }
-    return DEFAULT_TEXTURE;
+    return getTextureLocationWithConfig(entity);
   }
 
   @Override

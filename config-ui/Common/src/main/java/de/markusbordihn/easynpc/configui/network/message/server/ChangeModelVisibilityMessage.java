@@ -74,7 +74,6 @@ public record ChangeModelVisibilityMessage(UUID uuid, ModelPartType modelPartTyp
       return;
     }
 
-    // Perform action.
     log.debug(
         "Change {} visibility to {} for {} from {}",
         this.modelPartType,

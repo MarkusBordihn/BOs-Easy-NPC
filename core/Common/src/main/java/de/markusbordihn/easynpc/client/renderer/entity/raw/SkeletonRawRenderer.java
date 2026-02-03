@@ -21,7 +21,6 @@ package de.markusbordihn.easynpc.client.renderer.entity.raw;
 
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
 import de.markusbordihn.easynpc.data.skin.variant.SkeletonSkinVariant;
-import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.SkeletonRenderer;
 import net.minecraft.resources.ResourceLocation;
@@ -38,10 +37,7 @@ public class SkeletonRawRenderer extends SkeletonRenderer implements EasyNPCEnti
 
   @Override
   public ResourceLocation getTextureLocation(AbstractSkeleton entity) {
-    if (entity instanceof EasyNPC<?> easyNPC) {
-      return getEntityTexture(easyNPC);
-    }
-    return DEFAULT_TEXTURE;
+    return getTextureLocationWithConfig(entity);
   }
 
   @Override

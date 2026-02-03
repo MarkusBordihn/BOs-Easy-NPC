@@ -67,7 +67,6 @@ public record ChangeRendererMessage(
       return;
     }
 
-    // Perform action.
     if (this.renderType != null) {
       RenderHandler.setRenderType(easyNPC, this.renderType);
     }
