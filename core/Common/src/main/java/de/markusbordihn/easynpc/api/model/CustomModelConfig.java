@@ -39,8 +39,7 @@ public record CustomModelConfig(
     return new CustomModelConfig(modelLayer, null, RenderMode.OVERLAY_USE_VARIANT_TEXTURE);
   }
 
-  public static CustomModelConfig replacement(
-      ModelLayerLocation modelLayer, Identifier texture) {
+  public static CustomModelConfig replacement(ModelLayerLocation modelLayer, Identifier texture) {
     return new CustomModelConfig(modelLayer, texture, RenderMode.REPLACEMENT);
   }
 

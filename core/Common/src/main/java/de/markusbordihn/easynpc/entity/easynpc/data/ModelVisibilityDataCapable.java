@@ -29,9 +29,9 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.Mob;
 
-public interface ModelVisibilityDataCapable<T extends PathfinderMob> extends EasyNPC<T> {
+public interface ModelVisibilityDataCapable<T extends Mob> extends EasyNPC<T> {
 
   String EASY_NPC_DATA_MODEL_VISIBLE_TAG = "Visible";
 

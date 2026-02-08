@@ -31,13 +31,13 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 
-public interface SoundDataCapable<E extends PathfinderMob> extends EasyNPC<E> {
+public interface SoundDataCapable<E extends Mob> extends EasyNPC<E> {
 
   String EASY_NPC_DATA_SOUND_DATA_TAG = "SoundData";
 

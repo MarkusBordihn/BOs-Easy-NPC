@@ -33,11 +33,11 @@ import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 
-public interface DialogDataCapable<T extends PathfinderMob> extends EasyNPC<T> {
+public interface DialogDataCapable<T extends Mob> extends EasyNPC<T> {
 
   ServerDataAccessor<DialogDataSet> CUSTOM_DATA_DIALOG_DATA_SET =
       ServerEntityData.defineId(

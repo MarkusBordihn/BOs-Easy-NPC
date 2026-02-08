@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.data.objective;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -45,7 +46,9 @@ public class ObjectiveDataSet {
         @Override
         public void encode(
             RegistryFriendlyByteBuf registryFriendlyByteBuf, ObjectiveDataSet objectiveDataSet) {
-          registryFriendlyByteBuf.writeNbt(objectiveDataSet.createTag());
+          registryFriendlyByteBuf.writeNbt(
+              EntityDataSerializersManager.validateAndGetNbt(
+                  objectiveDataSet.createTag(), "ObjectiveDataSet"));
         }
       };
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);

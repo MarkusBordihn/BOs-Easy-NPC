@@ -24,9 +24,8 @@ import de.markusbordihn.easynpc.data.attribute.EntityAttributes;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.AttributeDataCapable;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.PathfinderMob;
 
-public interface AttributeHandler<E extends PathfinderMob> extends EasyNPC<E> {
+public interface AttributeHandler<E extends Mob> extends EasyNPC<E> {
 
   default void checkAttributeActions() {
     this.getProfiler().push("npcCheckAttributeActions");

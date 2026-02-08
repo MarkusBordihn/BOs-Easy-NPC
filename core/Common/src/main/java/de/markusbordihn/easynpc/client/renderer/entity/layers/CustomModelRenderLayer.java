@@ -29,7 +29,8 @@ import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.resources.Identifier;
 
-public abstract class CustomModelRenderLayer<S extends LivingEntityRenderState, M extends EntityModel<? super S>>
+public abstract class CustomModelRenderLayer<
+        S extends LivingEntityRenderState, M extends EntityModel<? super S>>
     extends RenderLayer<S, M> {
 
   protected final M customModel;
@@ -71,9 +72,9 @@ public abstract class CustomModelRenderLayer<S extends LivingEntityRenderState, 
         submitNodeCollector,
         packedLight,
         renderState,
-        -1,  // white color (no tint)
-        0  // render type ordinal (default layer order)
-    );
+        -1, // white color (no tint)
+        0 // render type ordinal (default layer order)
+        );
   }
 
   protected Identifier getTextureLocation(S renderState) {

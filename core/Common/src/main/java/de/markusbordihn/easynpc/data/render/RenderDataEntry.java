@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.data.render;
 
+import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -41,7 +42,9 @@ public record RenderDataEntry(
         @Override
         public void encode(
             RegistryFriendlyByteBuf registryFriendlyByteBuf, RenderDataEntry renderDataEntry) {
-          registryFriendlyByteBuf.writeNbt(renderDataEntry.createTag());
+          registryFriendlyByteBuf.writeNbt(
+              EntityDataSerializersManager.validateAndGetNbt(
+                  renderDataEntry.createTag(), "RenderDataEntry"));
         }
       };
 

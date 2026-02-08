@@ -27,11 +27,11 @@ import de.markusbordihn.easynpc.utils.TextUtils;
 import java.util.Optional;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 
-public interface ProfessionDataCapable<T extends PathfinderMob> extends EasyNPC<T> {
+public interface ProfessionDataCapable<T extends Mob> extends EasyNPC<T> {
 
   String DATA_PROFESSION_TAG = "Profession";
 

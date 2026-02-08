@@ -118,6 +118,8 @@ public enum ModelType {
           ModelPartType.RIGHT_HIND_LEG,
           ModelPartType.LEFT_HIND_LEG)),
   SPIDER(EnumSet.of(ModelPartType.HEAD, ModelPartType.RIGHT_ARM, ModelPartType.LEFT_ARM)),
+  SLIME(EnumSet.of(ModelPartType.BODY)),
+  GHAST(EnumSet.of(ModelPartType.BODY, ModelPartType.LEFT_ARM, ModelPartType.RIGHT_ARM)),
   VILLAGER(
       EnumSet.of(
           ModelPartType.HEAD,

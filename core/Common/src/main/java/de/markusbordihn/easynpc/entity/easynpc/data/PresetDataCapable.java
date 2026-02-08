@@ -33,14 +33,14 @@ import java.util.UUID;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.ProblemReporter;
-import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.level.storage.TagValueInput;
 import net.minecraft.world.level.storage.TagValueOutput;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 
-public interface PresetDataCapable<T extends PathfinderMob> extends EasyNPC<T> {
+public interface PresetDataCapable<T extends Mob> extends EasyNPC<T> {
 
   ServerDataAccessor<UUID> CUSTOM_DATA_PRESET_UUID =
       ServerEntityData.defineId(ServerDataIndex.PRESET_UUID, EntityDataSerializersManager.UUID);

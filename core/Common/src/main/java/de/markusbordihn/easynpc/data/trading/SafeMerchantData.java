@@ -27,7 +27,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MerchantMenu;
 import net.minecraft.world.item.ItemStack;
@@ -37,7 +37,7 @@ import net.minecraft.world.item.trading.MerchantOffers;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class SafeMerchantData<E extends PathfinderMob> implements Merchant {
+public class SafeMerchantData<E extends Mob> implements Merchant {
 
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 

@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.data.attribute;
 
+import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Optional;
@@ -41,7 +42,9 @@ public class EntityAttributes {
         @Override
         public void encode(
             RegistryFriendlyByteBuf registryFriendlyByteBuf, EntityAttributes value) {
-          registryFriendlyByteBuf.writeNbt(value.createTag());
+          registryFriendlyByteBuf.writeNbt(
+              EntityDataSerializersManager.validateAndGetNbt(
+                  value.createTag(), "EntityAttributes"));
         }
       };
   private final Map<EntityAttributeType, EntityAttributesInterface> attributeMap =

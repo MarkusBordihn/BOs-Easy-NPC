@@ -30,8 +30,9 @@ public class TargetedEntitySet {
       new StreamCodec<>() {
         @Override
         public HashSet<UUID> decode(RegistryFriendlyByteBuf registryFriendlyByteBuf) {
+          int size = registryFriendlyByteBuf.readVarInt();
           HashSet<UUID> values = new HashSet<>();
-          while (registryFriendlyByteBuf.isReadable()) {
+          for (int i = 0; i < size; i++) {
             values.add(registryFriendlyByteBuf.readUUID());
           }
           return values;
@@ -39,6 +40,7 @@ public class TargetedEntitySet {
 
         @Override
         public void encode(RegistryFriendlyByteBuf registryFriendlyByteBuf, HashSet<UUID> values) {
+          registryFriendlyByteBuf.writeVarInt(values.size());
           for (UUID value : values) {
             registryFriendlyByteBuf.writeUUID(value);
           }

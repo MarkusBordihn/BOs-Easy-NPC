@@ -38,72 +38,71 @@ import net.minecraft.world.level.Level;
 
 public final class EasyNPCEntityAccess {
 
-  public static <E extends PathfinderMob> LookControl getLookControl(EasyNPC<E> easyNPC) {
+  public static <E extends Mob> LookControl getLookControl(EasyNPC<E> easyNPC) {
     return easyNPC instanceof Mob mob ? mob.getLookControl() : null;
   }
 
-  public static <E extends PathfinderMob> PathfinderMob getPathfinderMob(EasyNPC<E> easyNPC) {
+  public static <E extends Mob> PathfinderMob getPathfinderMob(EasyNPC<E> easyNPC) {
     return easyNPC instanceof PathfinderMob pathfinderMob ? pathfinderMob : null;
   }
 
-  public static <E extends PathfinderMob> Level getLevel(EasyNPC<E> easyNPC) {
+  public static <E extends Mob> Level getLevel(EasyNPC<E> easyNPC) {
     return easyNPC instanceof Mob mob ? mob.level() : null;
   }
 
-  public static <E extends PathfinderMob> ServerLevel getServerLevel(EasyNPC<E> easyNPC) {
+  public static <E extends Mob> ServerLevel getServerLevel(EasyNPC<E> easyNPC) {
     return easyNPC instanceof Mob mob && mob.level() instanceof ServerLevel serverLevel
         ? serverLevel
         : null;
   }
 
-  public static <E extends PathfinderMob> boolean isClientSide(EasyNPC<E> easyNPC) {
+  public static <E extends Mob> boolean isClientSide(EasyNPC<E> easyNPC) {
     return easyNPC.getEntityLevel() != null && easyNPC.getEntityLevel().isClientSide();
   }
 
-  public static <E extends PathfinderMob> boolean isServerSide(EasyNPC<E> easyNPC) {
+  public static <E extends Mob> boolean isServerSide(EasyNPC<E> easyNPC) {
     return !isClientSide(easyNPC);
   }
 
-  public static <E extends PathfinderMob> LivingEntity getLivingEntity(EasyNPC<E> easyNPC) {
+  public static <E extends Mob> LivingEntity getLivingEntity(EasyNPC<E> easyNPC) {
     return easyNPC instanceof LivingEntity livingEntity ? livingEntity : null;
   }
 
-  public static <E extends PathfinderMob> Merchant getMerchant(EasyNPC<E> easyNPC) {
+  public static <E extends Mob> Merchant getMerchant(EasyNPC<E> easyNPC) {
     return easyNPC instanceof Merchant
         ? new SafeMerchantData<>(easyNPC.getEasyNPCTradingData())
         : null;
   }
 
-  public static <E extends PathfinderMob> CrossbowAttackMob getCrossbowAttackMob(
-      EasyNPC<E> easyNPC) {
+  public static <E extends Mob> CrossbowAttackMob getCrossbowAttackMob(EasyNPC<E> easyNPC) {
     return easyNPC instanceof CrossbowAttackMob crossbowAttackMob ? crossbowAttackMob : null;
   }
 
-  public static <E extends PathfinderMob> RangedAttackMob getRangedAttackMob(EasyNPC<E> easyNPC) {
+  public static <E extends Mob> RangedAttackMob getRangedAttackMob(EasyNPC<E> easyNPC) {
     return easyNPC instanceof RangedAttackMob rangedAttackMob ? rangedAttackMob : null;
   }
 
-  public static <E extends PathfinderMob> ProfilerFiller getProfiler(EasyNPC<E> easyNPC) {
+  public static <E extends Mob> ProfilerFiller getProfiler(EasyNPC<E> easyNPC) {
     return easyNPC instanceof Mob ? Profiler.get() : null;
   }
 
-  public static <E extends PathfinderMob> Entity getEntity(EasyNPC<E> easyNPC) {
+  public static <E extends Mob> Entity getEntity(EasyNPC<E> easyNPC) {
     return easyNPC instanceof Entity entity ? entity : null;
   }
 
-  public static <E extends PathfinderMob> UUID getEntityUUID(EasyNPC<E> easyNPC) {
+  public static <E extends Mob> UUID getEntityUUID(EasyNPC<E> easyNPC) {
     return easyNPC instanceof Entity entity ? entity.getUUID() : null;
   }
 
-  public static <E extends PathfinderMob> Component getEntityTypeName(EasyNPC<E> easyNPC) {
+  public static <E extends Mob> Component getEntityTypeName(EasyNPC<E> easyNPC) {
     return easyNPC instanceof Entity entity ? entity.getType().getDescription() : null;
   }
 
-  public static <E extends PathfinderMob> EntityType<?> getEntityType(EasyNPC<E> easyNPC) {
+  public static <E extends Mob> EntityType<?> getEntityType(EasyNPC<E> easyNPC) {
     return easyNPC instanceof Entity entity ? entity.getType() : null;
   }
 
-  public static <E extends PathfinderMob> String getEntityTypeId(EasyNPC<E> easyNPC) {
+  public static <E extends Mob> String getEntityTypeId(EasyNPC<E> easyNPC) {
     EntityType<?> entityType = getEntityType(easyNPC);
     if (entityType == null || !entityType.canSerialize()) {
       return null;
@@ -111,7 +110,7 @@ public final class EasyNPCEntityAccess {
     return EntityType.getKey(entityType).toString();
   }
 
-  public static <E extends PathfinderMob> Mob getMob(EasyNPC<E> easyNPC) {
+  public static <E extends Mob> Mob getMob(EasyNPC<E> easyNPC) {
     return easyNPC instanceof Mob mob ? mob : null;
   }
 }

@@ -29,7 +29,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -38,7 +37,7 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 
-public interface NavigationDataCapable<T extends PathfinderMob> extends EasyNPC<T> {
+public interface NavigationDataCapable<T extends Mob> extends EasyNPC<T> {
 
   String DATA_HOME_TAG = "Home";
   String DATA_NAVIGATION_TAG = "Navigation";
@@ -98,6 +97,10 @@ public interface NavigationDataCapable<T extends PathfinderMob> extends EasyNPC<
 
   default boolean isFlying() {
     return canFly() && !this.getEntity().onGround();
+  }
+
+  default boolean canJump() {
+    return false;
   }
 
   default void addAdditionalNavigationData(ValueOutput valueOutput) {

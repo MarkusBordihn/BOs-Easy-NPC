@@ -25,11 +25,11 @@ import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import java.util.Optional;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 
-public interface RenderDataCapable<E extends PathfinderMob> extends EasyNPC<E> {
+public interface RenderDataCapable<E extends Mob> extends EasyNPC<E> {
 
   String DATA_RENDER_DATA_TAG = "RenderData";
 

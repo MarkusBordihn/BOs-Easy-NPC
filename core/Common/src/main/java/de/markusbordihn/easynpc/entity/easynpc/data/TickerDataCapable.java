@@ -21,9 +21,9 @@ package de.markusbordihn.easynpc.entity.easynpc.data;
 
 import de.markusbordihn.easynpc.data.ticker.TickerType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.Mob;
 
-public interface TickerDataCapable<T extends PathfinderMob> extends EasyNPC<T> {
+public interface TickerDataCapable<T extends Mob> extends EasyNPC<T> {
 
   int getTicker(TickerType tickerType);
 

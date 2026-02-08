@@ -22,7 +22,6 @@ package de.markusbordihn.easynpc.client.renderer.entity.layers;
 import de.markusbordihn.easynpc.api.model.CustomModelConfig;
 import net.minecraft.client.model.animal.pig.PigModel;
 import net.minecraft.client.model.geom.EntityModelSet;
-import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.state.PigRenderState;
 
@@ -32,6 +31,9 @@ public class PigCustomModelLayer extends CustomModelRenderLayer<PigRenderState, 
       RenderLayerParent<PigRenderState, ?> renderer,
       EntityModelSet modelSet,
       CustomModelConfig config) {
-    super((RenderLayerParent<PigRenderState, PigModel>) renderer, new PigModel(modelSet.bakeLayer(ModelLayers.PIG)), config);
+    super(
+        (RenderLayerParent<PigRenderState, PigModel>) renderer,
+        new PigModel(modelSet.bakeLayer(config.getModelLayer())),
+        config);
   }
 }

@@ -21,11 +21,11 @@ package de.markusbordihn.easynpc.entity.easynpc.data;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 
-public interface ConfigDataCapable<T extends PathfinderMob> extends EasyNPC<T> {
+public interface ConfigDataCapable<T extends Mob> extends EasyNPC<T> {
 
   String DATA_EASY_NPC_DATA_VERSION_TAG = "EasyNPCVersion";
 

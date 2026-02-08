@@ -44,12 +44,15 @@ import de.markusbordihn.easynpc.entity.easynpc.data.ModelPositionDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelRotationDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelScaleDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelVisibilityDataCapable;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -166,8 +169,56 @@ public class EntityDataSerializersManager {
       defineSerializer(
           ModelScaleDataCapable.class.getSimpleName(),
           EntityDataSerializer.forValueType(ModelScaleDataCapable.MODEL_PART_SCALE_STREAM_CODEC));
+  private static final int RECOMMENDED_NBT_SIZE_BYTES = 8192; // 8 KB recommended
+  private static final int WARNING_NBT_SIZE_BYTES = 32768; // 32 KB warning
+  private static final int MAX_NBT_SIZE_BYTES = 2097152; // 2 MB absolute max
 
   private EntityDataSerializersManager() {}
+
+  public static CompoundTag validateAndGetNbt(CompoundTag tag, String dataType) {
+    if (tag == null || (!log.isDebugEnabled() && !log.isInfoEnabled())) {
+      return tag;
+    }
+
+    try {
+      ByteBuf tempBuf = Unpooled.buffer();
+      try {
+        FriendlyByteBuf tempBuffer = new FriendlyByteBuf(tempBuf);
+        tempBuffer.writeNbt(tag);
+        int sizeBytes = tempBuffer.writerIndex();
+
+        // Only log if size exceeds recommended limits
+        if (sizeBytes > MAX_NBT_SIZE_BYTES) {
+          log.error(
+              "[Entity Data] CRITICAL: {} NBT data size ({} bytes) exceeds maximum packet size! "
+                  + "This WILL cause network errors and client crashes. "
+                  + "Please reduce the amount of data stored in this field.",
+              dataType,
+              sizeBytes);
+        } else if (sizeBytes > WARNING_NBT_SIZE_BYTES) {
+          log.warn(
+              "[Entity Data] {} NBT data size ({} bytes) is very large and may cause network issues. "
+                  + "Recommended maximum is {} bytes. Consider reducing data amount.",
+              dataType,
+              sizeBytes,
+              RECOMMENDED_NBT_SIZE_BYTES);
+        } else if (sizeBytes > RECOMMENDED_NBT_SIZE_BYTES && log.isDebugEnabled()) {
+          log.debug(
+              "[Entity Data] {} NBT data size ({} bytes) exceeds recommended size of {} bytes.",
+              dataType,
+              sizeBytes,
+              RECOMMENDED_NBT_SIZE_BYTES);
+        }
+      } finally {
+        tempBuf.release();
+      }
+    } catch (Exception e) {
+      if (log.isErrorEnabled()) {
+        log.error("[Entity Data] Failed to validate NBT size for {}", dataType, e);
+      }
+    }
+    return tag;
+  }
 
   public static <T> EntityDataSerializer<T> defineSerializer(
       final String className, final EntityDataSerializer<T> serializer) {

@@ -23,12 +23,12 @@ import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 
-public interface InventoryDataCapable<E extends PathfinderMob> extends EasyNPC<E> {
+public interface InventoryDataCapable<E extends Mob> extends EasyNPC<E> {
 
   String LEGACY_ARMOR_ITEMS_TAG = "ArmorItems";
   String LEGACY_HAND_ITEMS_TAG = "HandItems";

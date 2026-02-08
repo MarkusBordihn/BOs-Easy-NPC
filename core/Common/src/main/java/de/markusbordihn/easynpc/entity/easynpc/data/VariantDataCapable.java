@@ -29,13 +29,13 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.npc.villager.VillagerProfession;
 import net.minecraft.world.entity.npc.villager.VillagerType;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 
-public interface VariantDataCapable<T extends PathfinderMob> extends EasyNPC<T> {
+public interface VariantDataCapable<T extends Mob> extends EasyNPC<T> {
 
   String EASY_NPC_DATA_VARIANT_TYPE_TAG = "VariantType";
 

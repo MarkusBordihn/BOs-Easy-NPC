@@ -27,13 +27,13 @@ import de.markusbordihn.easynpc.entity.easynpc.data.TradingDataCapable;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.portal.TeleportTransition;
 
 public final class EasyNPCEventHandler {
 
-  public static <E extends PathfinderMob> void handlePlayerJoinEvent(
+  public static <E extends Mob> void handlePlayerJoinEvent(
       EasyNPC<E> easyNPC, ServerPlayer serverPlayer) {
     ObjectiveDataCapable<E> objectiveData = easyNPC.getEasyNPCObjectiveData();
     if (objectiveData != null) {
@@ -41,7 +41,7 @@ public final class EasyNPCEventHandler {
     }
   }
 
-  public static <E extends PathfinderMob> void handlePlayerLeaveEvent(
+  public static <E extends Mob> void handlePlayerLeaveEvent(
       EasyNPC<E> easyNPC, ServerPlayer serverPlayer) {
     ObjectiveDataCapable<E> objectiveData = easyNPC.getEasyNPCObjectiveData();
     if (objectiveData != null) {
@@ -49,7 +49,7 @@ public final class EasyNPCEventHandler {
     }
   }
 
-  public static <E extends PathfinderMob> void handleLivingEntityJoinEvent(
+  public static <E extends Mob> void handleLivingEntityJoinEvent(
       EasyNPC<E> easyNPC, LivingEntity livingEntity) {
     ObjectiveDataCapable<E> objectiveData = easyNPC.getEasyNPCObjectiveData();
     if (objectiveData != null) {
@@ -57,7 +57,7 @@ public final class EasyNPCEventHandler {
     }
   }
 
-  public static <E extends PathfinderMob> void handleLivingEntityLeaveEvent(
+  public static <E extends Mob> void handleLivingEntityLeaveEvent(
       EasyNPC<E> easyNPC, LivingEntity livingEntity) {
     ObjectiveDataCapable<E> objectiveData = easyNPC.getEasyNPCObjectiveData();
     if (objectiveData != null) {
@@ -65,15 +65,14 @@ public final class EasyNPCEventHandler {
     }
   }
 
-  public static <E extends PathfinderMob> void handleEasyNPCJoinEvent(
-      EasyNPC<E> easyNPC, EasyNPC<?> entity) {
+  public static <E extends Mob> void handleEasyNPCJoinEvent(EasyNPC<E> easyNPC, EasyNPC<?> entity) {
     ObjectiveDataCapable<E> objectiveData = easyNPC.getEasyNPCObjectiveData();
     if (objectiveData != null && entity != null) {
       objectiveData.onEasyNPCJoinUpdateObjective(entity);
     }
   }
 
-  public static <E extends PathfinderMob> void handleEasyNPCLeaveEvent(
+  public static <E extends Mob> void handleEasyNPCLeaveEvent(
       EasyNPC<E> easyNPC, EasyNPC<?> entity) {
     ObjectiveDataCapable<E> objectiveData = easyNPC.getEasyNPCObjectiveData();
     if (objectiveData != null && entity != null) {
@@ -81,8 +80,7 @@ public final class EasyNPCEventHandler {
     }
   }
 
-  public static <E extends PathfinderMob> void handleDieEvent(
-      EasyNPC<E> easyNPC, DamageSource damageSource) {
+  public static <E extends Mob> void handleDieEvent(EasyNPC<E> easyNPC, DamageSource damageSource) {
     TradingDataCapable<E> tradingData = easyNPC.getEasyNPCTradingData();
     if (tradingData != null) {
       tradingData.stopMerchantTrading();
@@ -95,7 +93,7 @@ public final class EasyNPCEventHandler {
     }
   }
 
-  public static <E extends PathfinderMob> void handleKillEvent(EasyNPC<E> easyNPC) {
+  public static <E extends Mob> void handleKillEvent(EasyNPC<E> easyNPC) {
     TradingDataCapable<E> tradingData = easyNPC.getEasyNPCTradingData();
     if (tradingData != null) {
       tradingData.stopMerchantTrading();
@@ -107,7 +105,7 @@ public final class EasyNPCEventHandler {
     }
   }
 
-  public static <E extends PathfinderMob> void handleChangeDimensionEvent(
+  public static <E extends Mob> void handleChangeDimensionEvent(
       EasyNPC<E> easyNPC, TeleportTransition TeleportTransition) {
     TradingDataCapable<E> tradingData = easyNPC.getEasyNPCTradingData();
     if (tradingData != null) {
@@ -115,7 +113,7 @@ public final class EasyNPCEventHandler {
     }
   }
 
-  public static <E extends PathfinderMob> void handleHurtEvent(
+  public static <E extends Mob> void handleHurtEvent(
       EasyNPC<E> easyNPC, DamageSource damageSource, float damage) {
     ActionEventDataCapable<E> actionEventData = easyNPC.getEasyNPCActionEventData();
     if (actionEventData != null) {

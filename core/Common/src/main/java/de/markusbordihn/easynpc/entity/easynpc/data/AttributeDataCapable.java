@@ -24,12 +24,12 @@ import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import net.minecraft.core.Holder;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 
-public interface AttributeDataCapable<E extends PathfinderMob> extends EasyNPC<E> {
+public interface AttributeDataCapable<E extends Mob> extends EasyNPC<E> {
 
   default void setBaseAttribute(Holder<Attribute> attribute, double value) {
     if (attribute == null || getLivingEntity().getAttribute(attribute) == null) {

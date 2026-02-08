@@ -25,11 +25,11 @@ import java.util.EnumMap;
 import java.util.Map;
 import java.util.Optional;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 
-public interface StatusDataCapable<T extends PathfinderMob> extends EasyNPC<T> {
+public interface StatusDataCapable<T extends Mob> extends EasyNPC<T> {
 
   String DATA_STATUS_DATA_TAG = "Status";
 

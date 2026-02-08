@@ -101,6 +101,11 @@ public class ModelArmPoseUtils {
       final boolean isRightArm,
       final boolean isRightHanded) {
 
+    // Return default pose if entity doesn't have PathfinderMob (e.g., Slime, Ghast)
+    if (easyNPC.getPathfinderMob() == null) {
+      return ModelArmPose.DEFAULT;
+    }
+
     // Only show special poses when aggressive
     if (!((easyNPC.getPathfinderMob().getTarget() != null)
         || (livingEntity instanceof Mob mob && mob.isAggressive()))) {

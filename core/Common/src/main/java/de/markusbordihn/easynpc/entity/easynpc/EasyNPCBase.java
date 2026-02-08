@@ -47,12 +47,12 @@ import de.markusbordihn.easynpc.entity.easynpc.handlers.AttributeHandler;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.BaseTickHandler;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 
-public interface EasyNPCBase<E extends PathfinderMob>
+public interface EasyNPCBase<E extends Mob>
     extends EasyNPC<E>,
         ActionEventDataCapable<E>,
         ActionHandler<E>,

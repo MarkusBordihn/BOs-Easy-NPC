@@ -101,7 +101,8 @@ public interface EasyNPCEntityRenderer {
     return EasyNPCLivingEntityRenderer.getTexture(renderState, getDefaultTexture());
   }
 
-  default Identifier getTextureFromRenderStateWithConfig(final LivingEntityRenderState renderState) {
+  default Identifier getTextureFromRenderStateWithConfig(
+      final LivingEntityRenderState renderState) {
     // Hide original model if custom model replaces it or if explicitly hidden
     OriginalModelConfig originalConfig = getOriginalModelConfig();
     if (getCustomModelConfig().shouldHideOriginal() || originalConfig.isHidden()) {

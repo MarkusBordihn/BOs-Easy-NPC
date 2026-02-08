@@ -26,12 +26,12 @@ import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import java.util.Optional;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 
-public interface ModelDataCapable<T extends PathfinderMob>
+public interface ModelDataCapable<T extends Mob>
     extends EasyNPC<T>,
         ModelAnimationDataCapable<T>,
         ModelPositionDataCapable<T>,

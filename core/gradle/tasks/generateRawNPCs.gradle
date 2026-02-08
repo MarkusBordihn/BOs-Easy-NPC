@@ -78,6 +78,14 @@ tasks.register('generateRawNPCs') {
           variant  : "FoxSkinVariant.RED"
       ],
       [
+          id       : "ghast_raw",
+          class    : "net.minecraft.world.entity.monster.Ghast",
+          className: "GhastRaw",
+          baseClass: "Ghast",
+          modelType: "GHAST",
+          variant  : "GhastSkinVariant.GHAST"
+      ],
+      [
           id       : "horse_raw",
           class    : "net.minecraft.world.entity.animal.equine.Horse",
           className: "HorseRaw",
@@ -192,6 +200,14 @@ tasks.register('generateRawNPCs') {
           modelType: "SPIDER",
           variant  : "SpiderSkinVariant.SPIDER",
           subfolder: "spider"
+      ],
+      [
+          id       : "slime_raw",
+          class    : "net.minecraft.world.entity.monster.Slime",
+          className: "SlimeRaw",
+          baseClass: "Slime",
+          modelType: "SLIME",
+          variant  : "SlimeSkinVariant.SLIME"
       ],
       [
           id       : "stray_raw",
