@@ -35,6 +35,8 @@ import de.markusbordihn.easynpc.data.scale.CustomScale;
 import de.markusbordihn.easynpc.data.skin.SkinDataEntry;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.trading.TradingDataSet;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -316,7 +318,7 @@ public class EntityDataSerializersManager {
               return value;
             }
           });
-  // Network packet size limits (Minecraft uses 2MB max for most packets)
+
   private static final int RECOMMENDED_NBT_SIZE_BYTES = 8192; // 8 KB recommended
   private static final int WARNING_NBT_SIZE_BYTES = 32768; // 32 KB warning
   private static final int MAX_NBT_SIZE_BYTES = 2097152; // 2 MB absolute max
@@ -495,26 +497,16 @@ public class EntityDataSerializersManager {
 
   private EntityDataSerializersManager() {}
 
-  /**
-   * Validates NBT tag size and logs warnings if data is too large. Only active when DEBUG or INFO
-   * logging is enabled to avoid performance impact in production.
-   *
-   * @param tag The CompoundTag to validate
-   * @param dataType The type of data for logging purposes
-   * @return The same tag (for chaining)
-   */
   private static CompoundTag validateAndGetNbt(CompoundTag tag, String dataType) {
-    // Skip validation if logging is not enabled (performance optimization)
     if (tag == null || (!log.isDebugEnabled() && !log.isInfoEnabled())) {
       return tag;
     }
 
     try {
       // Use a pooled buffer for better performance
-      io.netty.buffer.ByteBuf tempBuf = io.netty.buffer.Unpooled.buffer();
+      ByteBuf tempBuf = Unpooled.buffer();
       try {
-        net.minecraft.network.FriendlyByteBuf tempBuffer =
-            new net.minecraft.network.FriendlyByteBuf(tempBuf);
+        FriendlyByteBuf tempBuffer = new FriendlyByteBuf(tempBuf);
         tempBuffer.writeNbt(tag);
         int sizeBytes = tempBuffer.writerIndex();
 
@@ -541,11 +533,9 @@ public class EntityDataSerializersManager {
               RECOMMENDED_NBT_SIZE_BYTES);
         }
       } finally {
-        // Always release the buffer to prevent memory leaks
         tempBuf.release();
       }
     } catch (Exception e) {
-      // Only log errors if logging is enabled
       if (log.isErrorEnabled()) {
         log.error("[Entity Data] Failed to validate NBT size for {}", dataType, e);
       }

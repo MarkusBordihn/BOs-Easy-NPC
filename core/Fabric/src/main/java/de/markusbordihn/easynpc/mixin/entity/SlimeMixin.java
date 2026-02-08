@@ -47,7 +47,6 @@ public class SlimeMixin {
       CallbackInfoReturnable<SpawnGroupData> cir) {
     Slime slime = (Slime) (Object) this;
     if (slime instanceof EasyNPC<?>) {
-      // Skip setSize() call and just return SpawnGroupData from super (Mob.finalizeSpawn).
       cir.setReturnValue(spawnGroupData);
     }
   }

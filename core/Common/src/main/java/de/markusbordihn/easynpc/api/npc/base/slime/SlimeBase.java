@@ -65,8 +65,12 @@ public class SlimeBase extends SlimeRaw implements BaseEasyNPC<SlimeRaw> {
         .add(Attributes.FOLLOW_RANGE, 32.0D)
         .add(Attributes.KNOCKBACK_RESISTANCE, 0.0D)
         .add(Attributes.MAX_HEALTH, 16.0D)
-        .add(Attributes.MOVEMENT_SPEED, 0.5F)
+        .add(Attributes.MOVEMENT_SPEED, 0.6F)
         .add(Attributes.SPAWN_REINFORCEMENTS_CHANCE, 0.0D);
+  }
+
+  protected boolean spawnCustomParticles() {
+    return false;
   }
 
   @Override
