@@ -5,9 +5,9 @@ import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.TickerDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.TradingDataCapable;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.Mob;
 
-public interface BaseTickHandler<E extends PathfinderMob> extends EasyNPC<E> {
+public interface BaseTickHandler<E extends Mob> extends EasyNPC<E> {
 
   int BASE_TICK = 16;
   int TRADING_BASE_TICK = Math.round((20f / BASE_TICK) * 60) - 10;

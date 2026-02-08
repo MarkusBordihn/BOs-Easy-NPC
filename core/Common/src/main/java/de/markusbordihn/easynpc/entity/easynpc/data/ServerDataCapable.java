@@ -22,9 +22,9 @@ package de.markusbordihn.easynpc.entity.easynpc.data;
 import de.markusbordihn.easynpc.data.server.ServerDataAccessor;
 import de.markusbordihn.easynpc.data.server.ServerEntityData;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.Mob;
 
-public interface ServerDataCapable<E extends PathfinderMob> extends EasyNPC<E> {
+public interface ServerDataCapable<E extends Mob> extends EasyNPC<E> {
 
   default <T> void setServerEntityData(ServerDataAccessor<T> entityDataAccessor, T entityData) {
     getServerEntityData().set(entityDataAccessor, entityData);

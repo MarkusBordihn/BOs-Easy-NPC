@@ -36,7 +36,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -59,8 +59,8 @@ public class EasyNPCWandItem extends Item {
   }
 
   private void highlightEasyNPC(EasyNPCBase<?> easyNPC) {
-    if (easyNPC instanceof PathfinderMob pathfinderMob) {
-      pathfinderMob.addEffect(
+    if (easyNPC instanceof Mob mob) {
+      mob.addEffect(
           new MobEffectInstance(MobEffects.GLOWING, GLOWING_DURATION, 0, false, false, true));
     }
   }
@@ -76,11 +76,9 @@ public class EasyNPCWandItem extends Item {
         && level.getGameTime() % 30 == 0) {
       AABB searchArea = serverPlayer.getBoundingBox().inflate(HIGHLIGHT_RADIUS);
       // Find all EasyNPC entities in the search area
-      for (PathfinderMob pathfinderMob :
+      for (Mob pathfinderMob :
           serverLevel.getEntitiesOfClass(
-              PathfinderMob.class,
-              searchArea,
-              mob -> mob.isAlive() && mob instanceof EasyNPCBase<?>)) {
+              Mob.class, searchArea, mob -> mob.isAlive() && mob instanceof EasyNPCBase<?>)) {
         highlightEasyNPC((EasyNPCBase<?>) pathfinderMob);
       }
     }
@@ -117,9 +115,8 @@ public class EasyNPCWandItem extends Item {
               blockPos.getX() + 0.25d,
               blockPos.getY() + 2d,
               blockPos.getZ() + 0.25d);
-      for (PathfinderMob pathfinderMob :
-          level.getEntitiesOfClass(PathfinderMob.class, aabbAbove.inflate(0.5), Entity::isAlive)) {
-        if (pathfinderMob instanceof EasyNPCBase<?> easyNPC) {
+      for (Mob mob : level.getEntitiesOfClass(Mob.class, aabbAbove.inflate(0.5), Entity::isAlive)) {
+        if (mob instanceof EasyNPCBase<?> easyNPC) {
           MenuManager.getMenuHandler()
               .openConfigurationMenu(ConfigurationType.MAIN, serverPlayer, easyNPC, 0);
           return InteractionResult.SUCCESS;
@@ -135,9 +132,9 @@ public class EasyNPCWandItem extends Item {
               blockPos.getX() + 1d,
               blockPos.getY() + 1d,
               blockPos.getZ() + 1d);
-      for (PathfinderMob pathfinderMob :
-          level.getEntitiesOfClass(PathfinderMob.class, aabbAround.inflate(0.5), Entity::isAlive)) {
-        if (pathfinderMob instanceof EasyNPCBase<?> easyNPC) {
+      for (Mob mob :
+          level.getEntitiesOfClass(Mob.class, aabbAround.inflate(0.5), Entity::isAlive)) {
+        if (mob instanceof EasyNPCBase<?> easyNPC) {
           MenuManager.getMenuHandler()
               .openConfigurationMenu(ConfigurationType.MAIN, serverPlayer, easyNPC, 0);
           return InteractionResult.SUCCESS;
@@ -145,9 +142,9 @@ public class EasyNPCWandItem extends Item {
       }
 
       // Expand the search area to find all nearby EasyNPC entities
-      for (PathfinderMob pathfinderMob :
-          level.getEntitiesOfClass(PathfinderMob.class, aabbAround.inflate(2.5), Entity::isAlive)) {
-        if (pathfinderMob instanceof EasyNPCBase<?> easyNPC) {
+      for (Mob mob :
+          level.getEntitiesOfClass(Mob.class, aabbAround.inflate(2.5), Entity::isAlive)) {
+        if (mob instanceof EasyNPCBase<?> easyNPC) {
           MenuManager.getMenuHandler()
               .openConfigurationMenu(ConfigurationType.MAIN, serverPlayer, easyNPC, 0);
           return InteractionResult.SUCCESS;

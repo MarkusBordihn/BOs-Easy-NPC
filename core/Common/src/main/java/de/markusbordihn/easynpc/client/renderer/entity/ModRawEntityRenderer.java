@@ -27,6 +27,7 @@ import de.markusbordihn.easynpc.client.renderer.entity.raw.DrownedRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.EnderManRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.EvokerRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.FoxRawRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.raw.GhastRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.HorseRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.HuskRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.IllusionerRawRenderer;
@@ -36,6 +37,7 @@ import de.markusbordihn.easynpc.client.renderer.entity.raw.PiglinBruteRawRendere
 import de.markusbordihn.easynpc.client.renderer.entity.raw.PiglinRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.PillagerRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.SkeletonRawRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.raw.SlimeRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.SpiderRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.StrayRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.VexRawRenderer;
@@ -63,6 +65,7 @@ public enum ModRawEntityRenderer {
   ENDER_MAN(ModRawEntityType.ENDER_MAN, () -> EnderManRawRenderer::new),
   EVOKER(ModRawEntityType.EVOKER, () -> EvokerRawRenderer::new),
   FOX(ModRawEntityType.FOX, () -> FoxRawRenderer::new),
+  GHAST(ModRawEntityType.GHAST, () -> GhastRawRenderer::new),
   HORSE(ModRawEntityType.HORSE, () -> HorseRawRenderer::new),
   HUSK(ModRawEntityType.HUSK, () -> HuskRawRenderer::new),
   ILLUSIONER(ModRawEntityType.ILLUSIONER, () -> IllusionerRawRenderer::new),
@@ -73,6 +76,7 @@ public enum ModRawEntityRenderer {
   PILLAGER(ModRawEntityType.PILLAGER, () -> PillagerRawRenderer::new),
   SKELETON(ModRawEntityType.SKELETON, () -> SkeletonRawRenderer::new),
   SPIDER(ModRawEntityType.SPIDER, () -> SpiderRawRenderer::new),
+  SLIME(ModRawEntityType.SLIME, () -> SlimeRawRenderer::new),
   STRAY(ModRawEntityType.STRAY, () -> StrayRawRenderer::new),
   VEX(ModRawEntityType.VEX, () -> VexRawRenderer::new),
   VILLAGER(ModRawEntityType.VILLAGER, () -> VillagerRawRenderer::new),

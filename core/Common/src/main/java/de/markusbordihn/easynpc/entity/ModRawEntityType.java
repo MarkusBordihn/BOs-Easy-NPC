@@ -26,8 +26,10 @@ import de.markusbordihn.easynpc.api.npc.raw.ChickenRaw;
 import de.markusbordihn.easynpc.api.npc.raw.CreeperRaw;
 import de.markusbordihn.easynpc.api.npc.raw.EnderManRaw;
 import de.markusbordihn.easynpc.api.npc.raw.FoxRaw;
+import de.markusbordihn.easynpc.api.npc.raw.GhastRaw;
 import de.markusbordihn.easynpc.api.npc.raw.IronGolemRaw;
 import de.markusbordihn.easynpc.api.npc.raw.PigRaw;
+import de.markusbordihn.easynpc.api.npc.raw.SlimeRaw;
 import de.markusbordihn.easynpc.api.npc.raw.VexRaw;
 import de.markusbordihn.easynpc.api.npc.raw.WitchRaw;
 import de.markusbordihn.easynpc.api.npc.raw.WolfRaw;
@@ -105,6 +107,15 @@ public enum ModRawEntityType implements ModEntityTypeProvider {
           .sized(0.6F, 0.7F)
           .clientTrackingRange(12),
       FoxRaw::createAttributes),
+  GHAST(
+      GhastRaw.NPC_TYPE.getRegistryId(),
+      EntityType.Builder.of(
+              (EntityType<GhastRaw> type, Level level) -> new GhastRaw(type, level),
+              MobCategory.MISC)
+          .sized(4.0F, 4.0F)
+          .fireImmune()
+          .clientTrackingRange(12),
+      GhastRaw::createAttributes),
   HORSE(
       HorseRaw.NPC_TYPE.getRegistryId(),
       EntityType.Builder.of(
@@ -218,6 +229,14 @@ public enum ModRawEntityType implements ModEntityTypeProvider {
           .sized(1.4F, 0.9F)
           .clientTrackingRange(12),
       SpiderRaw::createAttributes),
+  SLIME(
+      SlimeRaw.NPC_TYPE.getRegistryId(),
+      EntityType.Builder.of(
+              (EntityType<SlimeRaw> type, Level level) -> new SlimeRaw(type, level),
+              MobCategory.MISC)
+          .sized(2.04F, 2.04F)
+          .clientTrackingRange(12),
+      SlimeRaw::createAttributes),
   VEX(
       VexRaw.NPC_TYPE.getRegistryId(),
       EntityType.Builder.of(

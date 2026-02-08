@@ -42,9 +42,9 @@ import de.markusbordihn.easynpc.entity.easynpc.data.TradingDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.VariantDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.ActionHandler;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.AttributeHandler;
-import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.Mob;
 
-public interface EasyNPCDataAccessors<E extends PathfinderMob> {
+public interface EasyNPCDataAccessors<E extends Mob> {
 
   default ActionEventDataCapable<E> getEasyNPCActionEventData() {
     return this instanceof ActionEventDataCapable<E> actionEventData ? actionEventData : null;

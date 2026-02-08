@@ -24,14 +24,14 @@ import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.AttackHandler;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.NeutralMob;
-import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.monster.CrossbowAttackMob;
 import net.minecraft.world.entity.monster.RangedAttackMob;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
 
-public interface AttackDataCapable<E extends PathfinderMob>
+public interface AttackDataCapable<E extends Mob>
     extends EasyNPC<E>, NeutralMob, RangedAttackMob, CrossbowAttackMob {
 
   int getAttackAnimationTick();

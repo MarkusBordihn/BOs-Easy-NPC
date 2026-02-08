@@ -27,10 +27,12 @@ import de.markusbordihn.easynpc.entity.easynpc.npc.standard.ChickenNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.CreeperNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.EnderManNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.FoxNPC;
+import de.markusbordihn.easynpc.entity.easynpc.npc.standard.GhastNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.HumanoidNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.HumanoidSlimNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.IronGolemNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.PigNPC;
+import de.markusbordihn.easynpc.entity.easynpc.npc.standard.SlimeNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.VexNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.WitchNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.WolfNPC;
@@ -127,6 +129,14 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
           .sized(0.6F, 0.7F)
           .clientTrackingRange(12),
       FoxNPC::createAttributes),
+  GHAST(
+      DefaultNPCType.GHAST.getRegistryId(),
+      EntityType.Builder.of(
+              (EntityType<GhastNPC> type, Level level) -> new GhastNPC(type, level),
+              MobCategory.MONSTER)
+          .sized(4.0F, 4.0F)
+          .clientTrackingRange(12),
+      GhastNPC::createAttributes),
   HORSE(
       DefaultNPCType.HORSE.getRegistryId(),
       EntityType.Builder.of(
@@ -248,6 +258,14 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
           .sized(0.7F, 2.4F)
           .clientTrackingRange(12),
       WitherSkeletonNPC::createAttributes),
+  SLIME(
+      DefaultNPCType.SLIME.getRegistryId(),
+      EntityType.Builder.of(
+              (EntityType<SlimeNPC> type, Level level) -> new SlimeNPC(type, level),
+              MobCategory.MONSTER)
+          .sized(2.04F, 2.04F)
+          .clientTrackingRange(12),
+      SlimeNPC::createAttributes),
   SPIDER(
       DefaultNPCType.SPIDER.getRegistryId(),
       EntityType.Builder.of(

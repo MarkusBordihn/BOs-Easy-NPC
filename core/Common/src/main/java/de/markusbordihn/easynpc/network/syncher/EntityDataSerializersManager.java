@@ -53,44 +53,6 @@ public class EntityDataSerializersManager {
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private static final Map<String, EntityDataSerializer<?>> ENTITY_DATA_SERIALIZERS =
       new LinkedHashMap<>();
-  public static final EntityDataSerializer<ActionEventSet> ACTION_EVENT_SET =
-      defineSerializer(
-          ActionEventSet.class.getSimpleName(),
-          new EntityDataSerializer<>() {
-            @Override
-            public void write(FriendlyByteBuf buffer, ActionEventSet value) {
-              buffer.writeNbt(value.createTag());
-            }
-
-            @Override
-            public ActionEventSet read(FriendlyByteBuf buffer) {
-              return new ActionEventSet(buffer.readNbt());
-            }
-
-            @Override
-            public ActionEventSet copy(ActionEventSet value) {
-              return value;
-            }
-          });
-  public static final EntityDataSerializer<DialogDataSet> DIALOG_DATA_SET =
-      defineSerializer(
-          DialogDataSet.class.getSimpleName(),
-          new EntityDataSerializer<>() {
-            @Override
-            public void write(FriendlyByteBuf buffer, DialogDataSet value) {
-              buffer.writeNbt(value.createTag());
-            }
-
-            @Override
-            public DialogDataSet read(FriendlyByteBuf buffer) {
-              return new DialogDataSet(buffer.readNbt());
-            }
-
-            @Override
-            public DialogDataSet copy(DialogDataSet value) {
-              return value;
-            }
-          });
   public static final EntityDataSerializer<DisplayAttributeDataSet> DISPLAY_ATTRIBUTE =
       defineSerializer(
           DisplayAttributeDataSet.class.getSimpleName(),
@@ -107,45 +69,6 @@ public class EntityDataSerializersManager {
 
             @Override
             public DisplayAttributeDataSet copy(DisplayAttributeDataSet value) {
-              return value;
-            }
-          });
-  public static final EntityDataSerializer<EntityAttributes> ENTITY_ATTRIBUTES =
-      defineSerializer(
-          EntityAttributes.class.getSimpleName(),
-          new EntityDataSerializer<>() {
-            @Override
-            public void write(FriendlyByteBuf buffer, EntityAttributes value) {
-              buffer.writeNbt(value.createTag());
-            }
-
-            @Override
-            public EntityAttributes read(FriendlyByteBuf buffer) {
-              return new EntityAttributes(buffer.readNbt());
-            }
-
-            @Override
-            public EntityAttributes copy(EntityAttributes value) {
-              return value;
-            }
-          });
-  public static final EntityDataSerializer<MerchantOffers> MERCHANT_OFFERS =
-      defineSerializer(
-          MerchantOffers.class.getSimpleName(),
-          new EntityDataSerializer<>() {
-            @Override
-            public void write(FriendlyByteBuf buffer, MerchantOffers value) {
-              buffer.writeNbt(value.createTag());
-            }
-
-            @Override
-            public MerchantOffers read(FriendlyByteBuf buffer) {
-              CompoundTag compoundTag = buffer.readNbt();
-              return compoundTag != null ? new MerchantOffers(compoundTag) : new MerchantOffers();
-            }
-
-            @Override
-            public MerchantOffers copy(MerchantOffers value) {
               return value;
             }
           });
@@ -187,25 +110,6 @@ public class EntityDataSerializersManager {
               return value;
             }
           });
-  public static final EntityDataSerializer<ObjectiveDataSet> OBJECTIVE_DATA_SET =
-      defineSerializer(
-          ObjectiveDataSet.class.getSimpleName(),
-          new EntityDataSerializer<>() {
-            @Override
-            public void write(FriendlyByteBuf buffer, ObjectiveDataSet value) {
-              buffer.writeNbt(value.createTag());
-            }
-
-            @Override
-            public ObjectiveDataSet read(FriendlyByteBuf buffer) {
-              return new ObjectiveDataSet(buffer.readNbt());
-            }
-
-            @Override
-            public ObjectiveDataSet copy(ObjectiveDataSet value) {
-              return value;
-            }
-          });
   public static final EntityDataSerializer<Profession> PROFESSION =
       defineSerializer(
           Profession.class.getSimpleName(),
@@ -222,25 +126,6 @@ public class EntityDataSerializersManager {
 
             @Override
             public Profession copy(Profession value) {
-              return value;
-            }
-          });
-  public static final EntityDataSerializer<RenderDataEntry> RENDER_DATA_SET =
-      defineSerializer(
-          RenderDataEntry.class.getSimpleName(),
-          new EntityDataSerializer<>() {
-            @Override
-            public void write(FriendlyByteBuf buffer, RenderDataEntry value) {
-              buffer.writeNbt(value.createTag());
-            }
-
-            @Override
-            public RenderDataEntry read(FriendlyByteBuf buffer) {
-              return new RenderDataEntry(buffer.readNbt());
-            }
-
-            @Override
-            public RenderDataEntry copy(RenderDataEntry value) {
               return value;
             }
           });
@@ -358,50 +243,13 @@ public class EntityDataSerializersManager {
               return new EnumMap<>(value);
             }
           });
-  public static final EntityDataSerializer<SkinDataEntry> SKIN_DATA_ENTRY =
-      defineSerializer(
-          SkinDataEntry.class.getSimpleName(),
-          new EntityDataSerializer<>() {
-            @Override
-            public void write(FriendlyByteBuf buffer, SkinDataEntry value) {
-              buffer.writeNbt(value.createTag());
-            }
-
-            @Override
-            public SkinDataEntry read(FriendlyByteBuf buffer) {
-              return new SkinDataEntry(buffer.readNbt());
-            }
-
-            @Override
-            public SkinDataEntry copy(SkinDataEntry value) {
-              return value;
-            }
-          });
-  public static final EntityDataSerializer<SoundDataSet> SOUND_DATA_SET =
-      defineSerializer(
-          SoundDataSet.class.getSimpleName(),
-          new EntityDataSerializer<>() {
-            @Override
-            public void write(FriendlyByteBuf buffer, SoundDataSet value) {
-              buffer.writeNbt(value.createTag());
-            }
-
-            @Override
-            public SoundDataSet read(FriendlyByteBuf buffer) {
-              return new SoundDataSet(buffer.readNbt());
-            }
-
-            @Override
-            public SoundDataSet copy(SoundDataSet value) {
-              return value;
-            }
-          });
   public static final EntityDataSerializer<HashSet<UUID>> TARGETED_ENTITY_HASH_SET =
       defineSerializer(
           HashSet.class.getSimpleName() + ":" + UUID.class.getSimpleName(),
           new EntityDataSerializer<>() {
             @Override
             public void write(FriendlyByteBuf buffer, HashSet<UUID> value) {
+              buffer.writeVarInt(value.size());
               for (UUID entry : value) {
                 buffer.writeUUID(entry);
               }
@@ -409,8 +257,9 @@ public class EntityDataSerializersManager {
 
             @Override
             public HashSet<UUID> read(FriendlyByteBuf buffer) {
+              int size = buffer.readVarInt();
               HashSet<UUID> value = new HashSet<>();
-              while (buffer.isReadable()) {
+              for (int i = 0; i < size; i++) {
                 value.add(buffer.readUUID());
               }
               return value;
@@ -427,6 +276,7 @@ public class EntityDataSerializersManager {
           new EntityDataSerializer<>() {
             @Override
             public void write(FriendlyByteBuf buffer, HashSet<String> value) {
+              buffer.writeVarInt(value.size());
               for (String entry : value) {
                 buffer.writeUtf(entry);
               }
@@ -434,8 +284,9 @@ public class EntityDataSerializersManager {
 
             @Override
             public HashSet<String> read(FriendlyByteBuf buffer) {
+              int size = buffer.readVarInt();
               HashSet<String> value = new HashSet<>();
-              while (buffer.isReadable()) {
+              for (int i = 0; i < size; i++) {
                 value.add(buffer.readUtf());
               }
               return value;
@@ -443,25 +294,6 @@ public class EntityDataSerializersManager {
 
             @Override
             public HashSet<String> copy(HashSet<String> value) {
-              return value;
-            }
-          });
-  public static final EntityDataSerializer<TradingDataSet> TRADING_DATA_SET =
-      defineSerializer(
-          TradingDataSet.class.getSimpleName(),
-          new EntityDataSerializer<>() {
-            @Override
-            public void write(FriendlyByteBuf buffer, TradingDataSet value) {
-              buffer.writeNbt(value.createTag());
-            }
-
-            @Override
-            public TradingDataSet read(FriendlyByteBuf buffer) {
-              return new TradingDataSet(buffer.readNbt());
-            }
-
-            @Override
-            public TradingDataSet copy(TradingDataSet value) {
               return value;
             }
           });
@@ -484,8 +316,242 @@ public class EntityDataSerializersManager {
               return value;
             }
           });
+  // Network packet size limits (Minecraft uses 2MB max for most packets)
+  private static final int RECOMMENDED_NBT_SIZE_BYTES = 8192; // 8 KB recommended
+  private static final int WARNING_NBT_SIZE_BYTES = 32768; // 32 KB warning
+  private static final int MAX_NBT_SIZE_BYTES = 2097152; // 2 MB absolute max
+  public static final EntityDataSerializer<ActionEventSet> ACTION_EVENT_SET =
+      defineSerializer(
+          ActionEventSet.class.getSimpleName(),
+          new EntityDataSerializer<>() {
+            @Override
+            public void write(FriendlyByteBuf buffer, ActionEventSet value) {
+              buffer.writeNbt(validateAndGetNbt(value.createTag(), "ActionEventSet"));
+            }
+
+            @Override
+            public ActionEventSet read(FriendlyByteBuf buffer) {
+              return new ActionEventSet(buffer.readNbt());
+            }
+
+            @Override
+            public ActionEventSet copy(ActionEventSet value) {
+              return value;
+            }
+          });
+  public static final EntityDataSerializer<DialogDataSet> DIALOG_DATA_SET =
+      defineSerializer(
+          DialogDataSet.class.getSimpleName(),
+          new EntityDataSerializer<>() {
+            @Override
+            public void write(FriendlyByteBuf buffer, DialogDataSet value) {
+              buffer.writeNbt(validateAndGetNbt(value.createTag(), "DialogDataSet"));
+            }
+
+            @Override
+            public DialogDataSet read(FriendlyByteBuf buffer) {
+              return new DialogDataSet(buffer.readNbt());
+            }
+
+            @Override
+            public DialogDataSet copy(DialogDataSet value) {
+              return value;
+            }
+          });
+  public static final EntityDataSerializer<EntityAttributes> ENTITY_ATTRIBUTES =
+      defineSerializer(
+          EntityAttributes.class.getSimpleName(),
+          new EntityDataSerializer<>() {
+            @Override
+            public void write(FriendlyByteBuf buffer, EntityAttributes value) {
+              buffer.writeNbt(validateAndGetNbt(value.createTag(), "EntityAttributes"));
+            }
+
+            @Override
+            public EntityAttributes read(FriendlyByteBuf buffer) {
+              return new EntityAttributes(buffer.readNbt());
+            }
+
+            @Override
+            public EntityAttributes copy(EntityAttributes value) {
+              return value;
+            }
+          });
+  public static final EntityDataSerializer<MerchantOffers> MERCHANT_OFFERS =
+      defineSerializer(
+          MerchantOffers.class.getSimpleName(),
+          new EntityDataSerializer<>() {
+            @Override
+            public void write(FriendlyByteBuf buffer, MerchantOffers value) {
+              buffer.writeNbt(validateAndGetNbt(value.createTag(), "MerchantOffers"));
+            }
+
+            @Override
+            public MerchantOffers read(FriendlyByteBuf buffer) {
+              CompoundTag compoundTag = buffer.readNbt();
+              return compoundTag != null ? new MerchantOffers(compoundTag) : new MerchantOffers();
+            }
+
+            @Override
+            public MerchantOffers copy(MerchantOffers value) {
+              return value;
+            }
+          });
+  public static final EntityDataSerializer<ObjectiveDataSet> OBJECTIVE_DATA_SET =
+      defineSerializer(
+          ObjectiveDataSet.class.getSimpleName(),
+          new EntityDataSerializer<>() {
+            @Override
+            public void write(FriendlyByteBuf buffer, ObjectiveDataSet value) {
+              buffer.writeNbt(validateAndGetNbt(value.createTag(), "ObjectiveDataSet"));
+            }
+
+            @Override
+            public ObjectiveDataSet read(FriendlyByteBuf buffer) {
+              return new ObjectiveDataSet(buffer.readNbt());
+            }
+
+            @Override
+            public ObjectiveDataSet copy(ObjectiveDataSet value) {
+              return value;
+            }
+          });
+  public static final EntityDataSerializer<RenderDataEntry> RENDER_DATA_SET =
+      defineSerializer(
+          RenderDataEntry.class.getSimpleName(),
+          new EntityDataSerializer<>() {
+            @Override
+            public void write(FriendlyByteBuf buffer, RenderDataEntry value) {
+              buffer.writeNbt(validateAndGetNbt(value.createTag(), "RenderDataEntry"));
+            }
+
+            @Override
+            public RenderDataEntry read(FriendlyByteBuf buffer) {
+              return new RenderDataEntry(buffer.readNbt());
+            }
+
+            @Override
+            public RenderDataEntry copy(RenderDataEntry value) {
+              return value;
+            }
+          });
+  public static final EntityDataSerializer<SkinDataEntry> SKIN_DATA_ENTRY =
+      defineSerializer(
+          SkinDataEntry.class.getSimpleName(),
+          new EntityDataSerializer<>() {
+            @Override
+            public void write(FriendlyByteBuf buffer, SkinDataEntry value) {
+              buffer.writeNbt(validateAndGetNbt(value.createTag(), "SkinDataEntry"));
+            }
+
+            @Override
+            public SkinDataEntry read(FriendlyByteBuf buffer) {
+              return new SkinDataEntry(buffer.readNbt());
+            }
+
+            @Override
+            public SkinDataEntry copy(SkinDataEntry value) {
+              return value;
+            }
+          });
+  public static final EntityDataSerializer<SoundDataSet> SOUND_DATA_SET =
+      defineSerializer(
+          SoundDataSet.class.getSimpleName(),
+          new EntityDataSerializer<>() {
+            @Override
+            public void write(FriendlyByteBuf buffer, SoundDataSet value) {
+              buffer.writeNbt(validateAndGetNbt(value.createTag(), "SoundDataSet"));
+            }
+
+            @Override
+            public SoundDataSet read(FriendlyByteBuf buffer) {
+              return new SoundDataSet(buffer.readNbt());
+            }
+
+            @Override
+            public SoundDataSet copy(SoundDataSet value) {
+              return value;
+            }
+          });
+  public static final EntityDataSerializer<TradingDataSet> TRADING_DATA_SET =
+      defineSerializer(
+          TradingDataSet.class.getSimpleName(),
+          new EntityDataSerializer<>() {
+            @Override
+            public void write(FriendlyByteBuf buffer, TradingDataSet value) {
+              buffer.writeNbt(validateAndGetNbt(value.createTag(), "TradingDataSet"));
+            }
+
+            @Override
+            public TradingDataSet read(FriendlyByteBuf buffer) {
+              return new TradingDataSet(buffer.readNbt());
+            }
+
+            @Override
+            public TradingDataSet copy(TradingDataSet value) {
+              return value;
+            }
+          });
 
   private EntityDataSerializersManager() {}
+
+  /**
+   * Validates NBT tag size and logs warnings if data is too large. Only active when DEBUG or INFO
+   * logging is enabled to avoid performance impact in production.
+   *
+   * @param tag The CompoundTag to validate
+   * @param dataType The type of data for logging purposes
+   * @return The same tag (for chaining)
+   */
+  private static CompoundTag validateAndGetNbt(CompoundTag tag, String dataType) {
+    // Skip validation if logging is not enabled (performance optimization)
+    if (tag == null || (!log.isDebugEnabled() && !log.isInfoEnabled())) {
+      return tag;
+    }
+
+    try {
+      // Use a pooled buffer for better performance
+      io.netty.buffer.ByteBuf tempBuf = io.netty.buffer.Unpooled.buffer();
+      try {
+        net.minecraft.network.FriendlyByteBuf tempBuffer =
+            new net.minecraft.network.FriendlyByteBuf(tempBuf);
+        tempBuffer.writeNbt(tag);
+        int sizeBytes = tempBuffer.writerIndex();
+
+        // Only log if size exceeds recommended limits
+        if (sizeBytes > MAX_NBT_SIZE_BYTES) {
+          log.error(
+              "[Entity Data] CRITICAL: {} NBT data size ({} bytes) exceeds maximum packet size! "
+                  + "This WILL cause network errors and client crashes. "
+                  + "Please reduce the amount of data stored in this field.",
+              dataType,
+              sizeBytes);
+        } else if (sizeBytes > WARNING_NBT_SIZE_BYTES) {
+          log.warn(
+              "[Entity Data] {} NBT data size ({} bytes) is very large and may cause network issues. "
+                  + "Recommended maximum is {} bytes. Consider reducing data amount.",
+              dataType,
+              sizeBytes,
+              RECOMMENDED_NBT_SIZE_BYTES);
+        } else if (sizeBytes > RECOMMENDED_NBT_SIZE_BYTES && log.isDebugEnabled()) {
+          log.debug(
+              "[Entity Data] {} NBT data size ({} bytes) exceeds recommended size of {} bytes.",
+              dataType,
+              sizeBytes,
+              RECOMMENDED_NBT_SIZE_BYTES);
+        }
+      } finally {
+        // Always release the buffer to prevent memory leaks
+        tempBuf.release();
+      }
+    } catch (Exception e) {
+      // Only log errors if logging is enabled
+      if (log.isErrorEnabled()) {
+        log.error("[Entity Data] Failed to validate NBT size for {}", dataType, e);
+      }
+    }
+    return tag;
+  }
 
   public static <T> EntityDataSerializer<T> defineSerializer(
       final String className, final EntityDataSerializer<T> serializer) {

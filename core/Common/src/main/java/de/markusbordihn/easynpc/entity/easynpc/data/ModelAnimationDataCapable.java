@@ -24,9 +24,9 @@ import de.markusbordihn.easynpc.data.model.ModelAnimationData;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.Mob;
 
-public interface ModelAnimationDataCapable<T extends PathfinderMob> extends EasyNPC<T> {
+public interface ModelAnimationDataCapable<T extends Mob> extends EasyNPC<T> {
 
   String EASY_NPC_DATA_ANIMATION_DATA_TAG = "AnimationData";
 

@@ -45,12 +45,11 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 
-public interface ActionHandler<E extends PathfinderMob> extends EasyNPC<E> {
+public interface ActionHandler<E extends Mob> extends EasyNPC<E> {
 
   default List<? extends Player> getPlayersInRange(Double range) {
     Entity entity = this.getEntity();

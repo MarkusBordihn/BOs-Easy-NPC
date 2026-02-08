@@ -26,9 +26,9 @@ import de.markusbordihn.easynpc.network.components.TextComponent;
 import de.markusbordihn.easynpc.utils.TextUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.Mob;
 
-public interface ProfessionDataCapable<T extends PathfinderMob> extends EasyNPC<T> {
+public interface ProfessionDataCapable<T extends Mob> extends EasyNPC<T> {
 
   String DATA_PROFESSION_TAG = "Profession";
 

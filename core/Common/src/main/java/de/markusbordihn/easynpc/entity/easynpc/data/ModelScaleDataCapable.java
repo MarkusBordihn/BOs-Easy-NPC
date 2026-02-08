@@ -26,9 +26,9 @@ import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import java.util.EnumMap;
 import java.util.Map;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.Mob;
 
-public interface ModelScaleDataCapable<T extends PathfinderMob> extends EasyNPC<T> {
+public interface ModelScaleDataCapable<T extends Mob> extends EasyNPC<T> {
 
   CustomScale DEFAULT_MODEL_PART_SCALE = new CustomScale(1, 1, 1);
   CustomScale DEFAULT_MODEL_SCALE = new CustomScale(1, 1, 1);

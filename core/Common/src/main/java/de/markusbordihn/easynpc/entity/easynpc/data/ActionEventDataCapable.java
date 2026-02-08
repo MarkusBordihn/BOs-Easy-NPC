@@ -33,9 +33,9 @@ import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.Mob;
 
-public interface ActionEventDataCapable<E extends PathfinderMob> extends EasyNPC<E> {
+public interface ActionEventDataCapable<E extends Mob> extends EasyNPC<E> {
 
   ServerDataAccessor<ActionEventSet> CUSTOM_DATA_ACTION_EVENT_SET =
       ServerEntityData.defineId(

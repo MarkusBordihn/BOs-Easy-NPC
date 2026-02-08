@@ -45,11 +45,11 @@ import de.markusbordihn.easynpc.entity.easynpc.handlers.ActionHandler;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.AttributeHandler;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.BaseTickHandler;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.Saddleable;
 import net.minecraft.world.entity.SpawnGroupData;
 
-public interface EasyNPCBase<E extends PathfinderMob>
+public interface EasyNPCBase<E extends Mob>
     extends Saddleable,
         EasyNPC<E>,
         ActionEventDataCapable<E>,

@@ -27,9 +27,9 @@ import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.data.type.ValueType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.Mob;
 
-public interface DisplayAttributeDataCapable<E extends PathfinderMob> extends EasyNPC<E> {
+public interface DisplayAttributeDataCapable<E extends Mob> extends EasyNPC<E> {
 
   String DATA_DISPLAY_ATTRIBUTE_TAG = "DisplayAttribute";
 

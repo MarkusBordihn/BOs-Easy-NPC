@@ -10,8 +10,13 @@ Check the [upgrade guide][upgrade_guide] for more information.
 
 ### 6.8.0 (Adding API support)
 
+- Fixed #667 by adding warning messages and additional checks for invalid network packets.
+- Fixed Horse spawn eggs model.
+- Fixed pose support for allay, chicken, creeper, fox, ghast, horse, illager, iron golem, slime and
+  vex.
 - Added NPC base classes for better API support.
 - Added NPC raw classes for advanced API support.
+- Added Slim and Ghast NPC types.
 - Added Custom Model API for easier integration with other mods and custom models.
 - Refactored internal data handling and registration for better maintainability and future
   improvements.

@@ -26,9 +26,9 @@ import java.util.EnumMap;
 import java.util.Map;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.Mob;
 
-public interface ModelVisibilityDataCapable<T extends PathfinderMob> extends EasyNPC<T> {
+public interface ModelVisibilityDataCapable<T extends Mob> extends EasyNPC<T> {
 
   String EASY_NPC_DATA_MODEL_VISIBLE_TAG = "Visible";
 

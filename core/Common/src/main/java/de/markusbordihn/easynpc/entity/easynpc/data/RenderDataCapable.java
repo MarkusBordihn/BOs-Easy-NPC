@@ -23,9 +23,9 @@ import de.markusbordihn.easynpc.data.render.RenderDataEntry;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.Mob;
 
-public interface RenderDataCapable<E extends PathfinderMob> extends EasyNPC<E> {
+public interface RenderDataCapable<E extends Mob> extends EasyNPC<E> {
 
   String DATA_RENDER_DATA_TAG = "RenderData";
 

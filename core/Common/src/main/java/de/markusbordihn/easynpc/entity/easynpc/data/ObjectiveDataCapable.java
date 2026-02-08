@@ -37,11 +37,11 @@ import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.GoalSelector;
 
-public interface ObjectiveDataCapable<T extends PathfinderMob> extends EasyNPC<T> {
+public interface ObjectiveDataCapable<T extends Mob> extends EasyNPC<T> {
 
   ServerDataAccessor<ObjectiveDataSet> CUSTOM_DATA_OBJECTIVE_DATA_SET =
       ServerEntityData.defineId(

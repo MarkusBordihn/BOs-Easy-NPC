@@ -47,7 +47,7 @@ import net.minecraft.world.level.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public interface EasyNPC<E extends PathfinderMob> extends EasyNPCDataAccessors<E>, Npc {
+public interface EasyNPC<E extends Mob> extends EasyNPCDataAccessors<E>, Npc {
 
   Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
