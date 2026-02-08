@@ -37,7 +37,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.trading.ItemCost;
@@ -45,7 +45,7 @@ import net.minecraft.world.item.trading.Merchant;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.item.trading.MerchantOffers;
 
-public interface TradingDataCapable<E extends PathfinderMob> extends EasyNPC<E>, Merchant {
+public interface TradingDataCapable<E extends Mob> extends EasyNPC<E>, Merchant {
 
   String DATA_OFFERS_TAG = "Offers";
   String DATA_TRADING_DATA_TAG = "TradingData";

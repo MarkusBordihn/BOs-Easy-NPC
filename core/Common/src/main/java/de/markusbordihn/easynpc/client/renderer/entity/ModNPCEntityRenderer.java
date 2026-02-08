@@ -28,6 +28,7 @@ import de.markusbordihn.easynpc.client.renderer.entity.raw.DrownedRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.EnderManRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.EvokerRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.FoxRawRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.raw.GhastRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.HorseRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.HuskRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.IllusionerRawRenderer;
@@ -37,6 +38,7 @@ import de.markusbordihn.easynpc.client.renderer.entity.raw.PiglinBruteRawRendere
 import de.markusbordihn.easynpc.client.renderer.entity.raw.PiglinRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.PillagerRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.SkeletonRawRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.raw.SlimeRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.SpiderRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.StrayRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.VexRawRenderer;
@@ -66,6 +68,7 @@ public enum ModNPCEntityRenderer {
   DROWNED(ModNPCEntityType.DROWNED, () -> DrownedRawRenderer::new),
   ENDERMAN(ModNPCEntityType.ENDERMAN, () -> EnderManRawRenderer::new),
   EVOKER(ModNPCEntityType.EVOKER, () -> EvokerRawRenderer::new),
+  GHAST(ModNPCEntityType.GHAST, () -> GhastRawRenderer::new),
   FOX(ModNPCEntityType.FOX, () -> FoxRawRenderer::new),
   HORSE_SKELETON(ModNPCEntityType.HORSE_SKELETON, () -> HorseRawRenderer::new),
   HORSE_ZOMBIE(ModNPCEntityType.HORSE_ZOMBIE, () -> HorseRawRenderer::new),
@@ -79,6 +82,7 @@ public enum ModNPCEntityRenderer {
   PIGLIN_ZOMBIFIED(ModNPCEntityType.PIGLIN_ZOMBIFIED, () -> ZombifiedPiglinRawRenderer::new),
   PIGLIN(ModNPCEntityType.PIGLIN, () -> PiglinRawRenderer::new),
   PILLAGER(ModNPCEntityType.PILLAGER, () -> PillagerRawRenderer::new),
+  SLIME(ModNPCEntityType.SLIME, () -> SlimeRawRenderer::new),
   SKELETON(ModNPCEntityType.SKELETON, () -> SkeletonRawRenderer::new),
   CAVE_SPIDER(ModNPCEntityType.CAVE_SPIDER, () -> SpiderRawRenderer::new),
   SPIDER(ModNPCEntityType.SPIDER, () -> SpiderRawRenderer::new),

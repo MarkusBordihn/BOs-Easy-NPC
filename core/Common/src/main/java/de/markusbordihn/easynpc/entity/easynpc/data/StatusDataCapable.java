@@ -24,9 +24,9 @@ import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import java.util.EnumMap;
 import java.util.Map;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.Mob;
 
-public interface StatusDataCapable<T extends PathfinderMob> extends EasyNPC<T> {
+public interface StatusDataCapable<T extends Mob> extends EasyNPC<T> {
 
   String DATA_STATUS_DATA_TAG = "Status";
 

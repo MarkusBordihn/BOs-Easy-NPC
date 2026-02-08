@@ -39,7 +39,7 @@ import de.markusbordihn.easynpc.entity.easynpc.data.NavigationDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.ObjectiveDataCapable;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -322,14 +322,14 @@ public class AttributeHandler {
     return false;
   }
 
-  public static void handleDefaultAttributes(PathfinderMob pathfinderMob) {
-    if (pathfinderMob == null) {
+  public static void handleDefaultAttributes(Mob mob) {
+    if (mob == null) {
       return;
     }
 
     // Ensure that the default attributes are set.
-    if (pathfinderMob.getAttribute(Attributes.SPAWN_REINFORCEMENTS_CHANCE) != null) {
-      pathfinderMob.getAttribute(Attributes.SPAWN_REINFORCEMENTS_CHANCE).setBaseValue(0.0D);
+    if (mob.getAttribute(Attributes.SPAWN_REINFORCEMENTS_CHANCE) != null) {
+      mob.getAttribute(Attributes.SPAWN_REINFORCEMENTS_CHANCE).setBaseValue(0.0D);
     }
   }
 }

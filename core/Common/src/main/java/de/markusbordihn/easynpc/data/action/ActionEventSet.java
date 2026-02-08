@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.data.action;
 
+import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
 import java.util.EnumMap;
 import java.util.Map.Entry;
 import net.minecraft.nbt.CompoundTag;
@@ -38,7 +39,9 @@ public class ActionEventSet {
         @Override
         public void encode(
             RegistryFriendlyByteBuf registryFriendlyByteBuf, ActionEventSet actionEventSet) {
-          registryFriendlyByteBuf.writeNbt(actionEventSet.createTag());
+          registryFriendlyByteBuf.writeNbt(
+              EntityDataSerializersManager.validateAndGetNbt(
+                  actionEventSet.createTag(), "ActionEventSet"));
         }
       };
   private final EnumMap<ActionEventType, ActionDataSet> actionsMap =

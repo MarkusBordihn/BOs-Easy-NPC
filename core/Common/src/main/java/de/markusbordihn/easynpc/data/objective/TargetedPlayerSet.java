@@ -29,8 +29,9 @@ public class TargetedPlayerSet {
       new StreamCodec<>() {
         @Override
         public HashSet<String> decode(RegistryFriendlyByteBuf registryFriendlyByteBuf) {
+          int size = registryFriendlyByteBuf.readVarInt();
           HashSet<String> values = new HashSet<>();
-          while (registryFriendlyByteBuf.isReadable()) {
+          for (int i = 0; i < size; i++) {
             values.add(registryFriendlyByteBuf.readUtf());
           }
           return values;
@@ -39,6 +40,7 @@ public class TargetedPlayerSet {
         @Override
         public void encode(
             RegistryFriendlyByteBuf registryFriendlyByteBuf, HashSet<String> values) {
+          registryFriendlyByteBuf.writeVarInt(values.size());
           for (String value : values) {
             registryFriendlyByteBuf.writeUtf(value);
           }

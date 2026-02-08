@@ -27,9 +27,9 @@ import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.Mob;
 
-public interface SkinDataCapable<T extends PathfinderMob> extends EasyNPC<T> {
+public interface SkinDataCapable<T extends Mob> extends EasyNPC<T> {
 
   String EASY_NPC_DATA_SKIN_DATA_TAG = "SkinData";
 

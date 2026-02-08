@@ -25,10 +25,10 @@ import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.Pose;
 
-public interface ModelDataCapable<T extends PathfinderMob>
+public interface ModelDataCapable<T extends Mob>
     extends EasyNPC<T>,
         ModelAnimationDataCapable<T>,
         ModelPositionDataCapable<T>,

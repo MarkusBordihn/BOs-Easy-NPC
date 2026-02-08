@@ -32,9 +32,9 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.Mob;
 
-public interface DisplayAttributeDataCapable<E extends PathfinderMob> extends EasyNPC<E> {
+public interface DisplayAttributeDataCapable<E extends Mob> extends EasyNPC<E> {
 
   String DATA_DISPLAY_ATTRIBUTE_TAG = "DisplayAttribute";
 

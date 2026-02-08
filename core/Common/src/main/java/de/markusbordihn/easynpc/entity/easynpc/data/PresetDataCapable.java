@@ -30,10 +30,10 @@ import java.util.List;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.Pose;
 
-public interface PresetDataCapable<T extends PathfinderMob> extends EasyNPC<T> {
+public interface PresetDataCapable<T extends Mob> extends EasyNPC<T> {
 
   ServerDataAccessor<UUID> CUSTOM_DATA_PRESET_UUID =
       ServerEntityData.defineId(ServerDataIndex.PRESET_UUID, EntityDataSerializersManager.UUID);

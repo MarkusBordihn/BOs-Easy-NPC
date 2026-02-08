@@ -21,35 +21,125 @@ package de.markusbordihn.easynpc.entity.easynpc.ai.goal;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.ai.control.JumpEasyNPCMoveControl;
 import de.markusbordihn.easynpc.entity.easynpc.data.NavigationDataCapable;
+import java.util.EnumSet;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
+import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.ai.control.MoveControl;
+import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.util.AirRandomPos;
 import net.minecraft.world.entity.ai.util.LandRandomPos;
 import net.minecraft.world.phys.Vec3;
 
-public class RandomStrollAroundHomeGoal<T extends EasyNPC<?>> extends RandomStrollGoal {
+public class RandomStrollAroundHomeGoal<T extends EasyNPC<?>> extends Goal {
 
   private final NavigationDataCapable<?> navigationData;
-  private final Entity entity;
+  private final Mob mob;
+  private final PathfinderMob pathfinderMob;
+  private final double speedModifier;
+  private final int interval;
 
   public RandomStrollAroundHomeGoal(T easyNPCEntity, double speedModifier) {
-    super(easyNPCEntity.getPathfinderMob(), speedModifier, 240, false);
     this.navigationData = easyNPCEntity.getEasyNPCNavigationData();
-    this.entity = easyNPCEntity.getEntity();
+    this.mob = easyNPCEntity.getMob();
+    this.pathfinderMob = easyNPCEntity.getPathfinderMob();
+    this.speedModifier = speedModifier;
+    this.interval = 240;
+    this.setFlags(EnumSet.of(Goal.Flag.MOVE));
+  }
+
+  @Override
+  public boolean canUse() {
+    if (this.mob.isVehicle()
+        || !this.navigationData.hasHomePosition()
+        || this.mob.getRandom().nextInt(reducedTickDelay(this.interval)) != 0) {
+      return false;
+    }
+
+    if (this.pathfinderMob != null) {
+      Vec3 vec3 = this.getPosition();
+      if (vec3 == null) {
+        return false;
+      }
+      return this.pathfinderMob.getNavigation().moveTo(vec3.x, vec3.y, vec3.z, this.speedModifier);
+    }
+
+    MoveControl moveControl = this.mob.getMoveControl();
+    if (!moveControl.hasWanted()) {
+      return true;
+    }
+    double dx = moveControl.getWantedX() - this.mob.getX();
+    double dy = moveControl.getWantedY() - this.mob.getY();
+    double dz = moveControl.getWantedZ() - this.mob.getZ();
+    double distanceSq = dx * dx + dy * dy + dz * dz;
+    return distanceSq < 1.0D || distanceSq > 3600.0D;
   }
 
   @Override
   public boolean canContinueToUse() {
-    return !this.mob.getNavigation().isDone()
-        && !this.mob.isVehicle()
-        && (!this.mob.isAggressive() || this.mob.getTarget() == null);
+    if (this.pathfinderMob != null) {
+      return !this.pathfinderMob.getNavigation().isDone()
+          && !this.pathfinderMob.isVehicle()
+          && (!this.pathfinderMob.isAggressive() || this.pathfinderMob.getTarget() == null);
+    }
+    return false;
   }
 
   @Override
+  public void start() {
+    if (this.pathfinderMob == null) {
+      BlockPos homePos = this.navigationData.getHomePosition();
+      RandomSource random = this.mob.getRandom();
+
+      double x, y, z;
+      if (random.nextFloat() < 0.5F) {
+        double dx = homePos.getX() - this.mob.getX();
+        double dy = homePos.getY() - this.mob.getY();
+        double dz = homePos.getZ() - this.mob.getZ();
+        double distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
+
+        if (distance > 1.0D) {
+          double factor = Math.min(10.0D / distance, 1.0D) * (0.5D + random.nextDouble() * 0.5D);
+          x = this.mob.getX() + dx * factor + (random.nextDouble() * 2.0D - 1.0D) * 3.0D;
+          y = this.mob.getY() + dy * factor + (random.nextDouble() * 2.0D - 1.0D) * 3.0D;
+          z = this.mob.getZ() + dz * factor + (random.nextDouble() * 2.0D - 1.0D) * 3.0D;
+        } else {
+          x = this.mob.getX() + ((random.nextFloat() * 2.0F - 1.0F) * 10.0F);
+          y = this.mob.getY() + ((random.nextFloat() * 2.0F - 1.0F) * 5.0F);
+          z = this.mob.getZ() + ((random.nextFloat() * 2.0F - 1.0F) * 10.0F);
+        }
+      } else {
+        x = this.mob.getX() + ((random.nextFloat() * 2.0F - 1.0F) * 10.0F);
+        y = this.mob.getY() + ((random.nextFloat() * 2.0F - 1.0F) * 5.0F);
+        z = this.mob.getZ() + ((random.nextFloat() * 2.0F - 1.0F) * 10.0F);
+      }
+
+      MoveControl moveControl = this.mob.getMoveControl();
+      if (moveControl instanceof JumpEasyNPCMoveControl jumpMoveControl) {
+        jumpMoveControl.setDirection(
+            (float) (Mth.atan2(z - this.mob.getZ(), x - this.mob.getX()) * (180.0 / Math.PI))
+                - 90.0F,
+            false);
+        jumpMoveControl.setWantedMovement(this.speedModifier);
+      } else {
+        moveControl.setWantedPosition(x, y, z, this.speedModifier);
+      }
+    }
+  }
+
+  @Override
+  public void stop() {
+    if (this.pathfinderMob != null) {
+      this.pathfinderMob.getNavigation().stop();
+    }
+  }
+
   protected Vec3 getPosition() {
-    if (this.mob.level().random.nextFloat() < 0.5F) {
+    if (this.pathfinderMob.level().random.nextFloat() < 0.5F) {
       return this.getPositionTowardsAnywhere();
     } else {
       Vec3 targetPosition = this.getPositionTowardsHome();
@@ -61,7 +151,7 @@ public class RandomStrollAroundHomeGoal<T extends EasyNPC<?>> extends RandomStro
     BlockPos homeBlockPos = this.navigationData.getHomePosition();
     Vec3 homePosition = new Vec3(homeBlockPos.getX(), homeBlockPos.getY(), homeBlockPos.getZ());
     if (this.navigationData.isFlying()) {
-      BlockPos blockPos = this.entity.blockPosition();
+      BlockPos blockPos = this.pathfinderMob.blockPosition();
       int homePositionDifference = (int) (homePosition.y - blockPos.getY());
       int flyingZ = 0;
       if (homePositionDifference > 2) {
@@ -77,12 +167,12 @@ public class RandomStrollAroundHomeGoal<T extends EasyNPC<?>> extends RandomStro
         flyingY = distanceToHome / 2;
       }
       return AirRandomPos.getPosTowards(
-          this.mob, flyingX, flyingY, flyingZ, homePosition, Constants.HALF_OF_PI);
+          this.pathfinderMob, flyingX, flyingY, flyingZ, homePosition, Constants.HALF_OF_PI);
     }
-    return LandRandomPos.getPosTowards(this.mob, 10, 7, homePosition);
+    return LandRandomPos.getPosTowards(this.pathfinderMob, 10, 7, homePosition);
   }
 
   private Vec3 getPositionTowardsAnywhere() {
-    return LandRandomPos.getPos(this.mob, 10, 7);
+    return LandRandomPos.getPos(this.pathfinderMob, 10, 7);
   }
 }

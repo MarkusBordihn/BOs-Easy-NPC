@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.data.trading;
 
+import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -41,7 +42,9 @@ public class TradingDataSet {
         @Override
         public void encode(
             RegistryFriendlyByteBuf registryFriendlyByteBuf, TradingDataSet tradingDataSet) {
-          registryFriendlyByteBuf.writeNbt(tradingDataSet.createTag());
+          registryFriendlyByteBuf.writeNbt(
+              EntityDataSerializersManager.validateAndGetNbt(
+                  tradingDataSet.createTag(), "TradingDataSet"));
         }
       };
   private TradingType tradingType = TradingType.NONE;

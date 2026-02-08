@@ -31,9 +31,9 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.Mob;
 
-public interface ModelRotationDataCapable<T extends PathfinderMob> extends EasyNPC<T> {
+public interface ModelRotationDataCapable<T extends Mob> extends EasyNPC<T> {
 
   CustomRotation DEFAULT_MODEL_PART_ROTATION = new CustomRotation(0, 0, 0);
   String EASY_NPC_DATA_MODEL_ROTATION_TAG = "Rotation";

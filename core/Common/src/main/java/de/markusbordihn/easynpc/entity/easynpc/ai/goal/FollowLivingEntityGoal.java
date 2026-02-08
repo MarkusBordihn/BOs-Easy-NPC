@@ -20,10 +20,13 @@
 package de.markusbordihn.easynpc.entity.easynpc.ai.goal;
 
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.ai.control.JumpEasyNPCMoveControl;
 import de.markusbordihn.easynpc.entity.easynpc.data.NavigationDataCapable;
 import java.util.EnumSet;
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
@@ -37,12 +40,14 @@ public class FollowLivingEntityGoal extends Goal {
 
   private static final int COMBAT_COOLDOWN_DURATION = 3 * 20;
 
-  private final PathfinderMob pathfinderMob;
+  private final Mob mob;
+  private final NavigationDataCapable<?> navigationData;
   private final LivingEntity livingEntity;
   private final double speedModifier;
   private final float stopDistance;
   private final float startDistance;
   private final boolean canFly;
+  private final boolean canJump;
   private final PathNavigation pathNavigation;
   private final LevelReader level;
   private float oldWaterCost;
@@ -55,83 +60,83 @@ public class FollowLivingEntityGoal extends Goal {
       double speedModifier,
       float stopDistance,
       float startDistance) {
-    this.pathfinderMob = easyNPC.getPathfinderMob();
-    NavigationDataCapable<?> navigationData = easyNPC.getEasyNPCNavigationData();
+    this.mob = easyNPC.getMob();
+    this.navigationData = easyNPC.getEasyNPCNavigationData();
     this.livingEntity = livingEntity;
     this.speedModifier = speedModifier;
     this.stopDistance = stopDistance;
     this.startDistance = startDistance;
-    this.canFly = navigationData.canFly();
-    this.pathNavigation = this.pathfinderMob.getNavigation();
+    this.canFly = this.navigationData.canFly();
+    this.canJump = this.navigationData.canJump();
+    this.pathNavigation = this.mob.getNavigation();
     this.level = easyNPC.getEntityServerLevel();
     this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
   }
 
   @Override
   public boolean canUse() {
-    // Pause following behavior when NPC is fighting or on combat cooldown
-    if (this.pathfinderMob.getTarget() != null) {
+    if (this.mob.getTarget() != null) {
       this.combatCooldownTicks = COMBAT_COOLDOWN_DURATION;
       return false;
     }
-
     if (this.combatCooldownTicks > 0) {
       this.combatCooldownTicks--;
       return false;
     }
-
-    // Only follow if entity and target are valid and within appropriate distance range
-    return this.pathfinderMob.isAlive()
+    double distanceSq = this.mob.distanceToSqr(this.livingEntity);
+    return this.mob.isAlive()
         && this.livingEntity != null
         && this.livingEntity.isAlive()
-        && this.pathfinderMob.distanceToSqr(this.livingEntity)
-            > this.stopDistance * this.stopDistance
-        && this.pathfinderMob.distanceToSqr(this.livingEntity)
-            < this.startDistance * this.startDistance;
+        && distanceSq > this.stopDistance * this.stopDistance
+        && distanceSq < this.startDistance * this.startDistance;
   }
 
   @Override
   public boolean canContinueToUse() {
-    // Stop following if NPC has a combat target or is on cooldown
-    if (this.pathfinderMob.getTarget() != null) {
+    if (this.mob.getTarget() != null) {
       this.combatCooldownTicks = COMBAT_COOLDOWN_DURATION;
       return false;
     }
-
     if (this.combatCooldownTicks > 0) {
       this.combatCooldownTicks--;
       return false;
     }
-
-    // Continue following if navigation is active and target is not too close
     return !this.pathNavigation.isDone()
-        && this.pathfinderMob.distanceToSqr(this.livingEntity)
-            > this.stopDistance * this.stopDistance;
+        && this.mob.distanceToSqr(this.livingEntity) > this.stopDistance * this.stopDistance;
   }
 
   @Override
   public void start() {
     this.timeToRecalcPath = 0;
-    this.oldWaterCost = this.pathfinderMob.getPathfindingMalus(PathType.WATER);
-    this.pathfinderMob.setPathfindingMalus(PathType.WATER, 0.0F);
+    if (this.mob instanceof PathfinderMob pathfinderMob) {
+      this.oldWaterCost = pathfinderMob.getPathfindingMalus(PathType.WATER);
+      pathfinderMob.setPathfindingMalus(PathType.WATER, 0.0F);
+    }
   }
 
   @Override
   public void stop() {
     this.pathNavigation.stop();
-    this.pathfinderMob.setPathfindingMalus(PathType.WATER, this.oldWaterCost);
+    if (this.mob instanceof PathfinderMob pathfinderMob) {
+      pathfinderMob.setPathfindingMalus(PathType.WATER, this.oldWaterCost);
+    }
   }
 
   @Override
   public void tick() {
-    this.pathfinderMob
-        .getLookControl()
-        .setLookAt(this.livingEntity, 10.0F, this.pathfinderMob.getMaxHeadXRot());
+    this.mob.getLookControl().setLookAt(this.livingEntity, 10.0F, this.mob.getMaxHeadXRot());
     if (--this.timeToRecalcPath <= 0) {
       this.timeToRecalcPath = this.adjustedTickDelay(10);
-      if (!this.pathfinderMob.isLeashed() && !this.pathfinderMob.isPassenger()) {
-        if (this.pathfinderMob.distanceToSqr(this.livingEntity) >= 144.0D) {
+      if (!this.mob.isLeashed() && !this.mob.isPassenger()) {
+        if (this.mob.distanceToSqr(this.livingEntity) >= 144.0D) {
           this.teleportToLivingEntity();
+        } else if (this.canJump
+            && this.mob.getMoveControl() instanceof JumpEasyNPCMoveControl jumpMoveControl) {
+          double dx = this.livingEntity.getX() - this.mob.getX();
+          double dz = this.livingEntity.getZ() - this.mob.getZ();
+          jumpMoveControl.setDirection(
+              (float) (Mth.atan2(dz, dx) * (180.0 / Math.PI)) - 90.0F, false);
+          jumpMoveControl.setWantedMovement(this.speedModifier);
         } else {
           this.pathNavigation.moveTo(this.livingEntity, this.speedModifier);
         }
@@ -161,20 +166,14 @@ public class FollowLivingEntityGoal extends Goal {
     } else if (!this.canTeleportTo(new BlockPos(posX, posY, posZ))) {
       return false;
     } else {
-      this.pathfinderMob.moveTo(
-          posX + 0.5D,
-          posY,
-          posZ + 0.5D,
-          this.pathfinderMob.getYRot(),
-          this.pathfinderMob.getXRot());
+      this.mob.moveTo(posX + 0.5D, posY, posZ + 0.5D, this.mob.getYRot(), this.mob.getXRot());
       this.pathNavigation.stop();
       return true;
     }
   }
 
   private boolean canTeleportTo(BlockPos blockPos) {
-    PathType blockPathTypes =
-        WalkNodeEvaluator.getPathTypeStatic(this.pathfinderMob, blockPos.mutable());
+    PathType blockPathTypes = WalkNodeEvaluator.getPathTypeStatic(this.mob, blockPos.mutable());
     if (!this.canFly && blockPathTypes != PathType.WALKABLE) {
       return false;
     } else {
@@ -182,14 +181,13 @@ public class FollowLivingEntityGoal extends Goal {
       if (!this.canFly && blockState.getBlock() instanceof LeavesBlock) {
         return false;
       } else {
-        BlockPos targetBlockPos = blockPos.subtract(this.pathfinderMob.blockPosition());
-        return this.level.noCollision(
-            this.pathfinderMob, this.pathfinderMob.getBoundingBox().move(targetBlockPos));
+        BlockPos targetBlockPos = blockPos.subtract(this.mob.blockPosition());
+        return this.level.noCollision(this.mob, this.mob.getBoundingBox().move(targetBlockPos));
       }
     }
   }
 
   private int randomIntInclusive(int fromRange, int toRange) {
-    return this.pathfinderMob.getRandom().nextInt(toRange - fromRange + 1) + fromRange;
+    return this.mob.getRandom().nextInt(toRange - fromRange + 1) + fromRange;
   }
 }

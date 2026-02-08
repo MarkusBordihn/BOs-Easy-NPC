@@ -23,6 +23,7 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.condition.ConditionDataEntry;
 import de.markusbordihn.easynpc.data.condition.ConditionType;
 import de.markusbordihn.easynpc.data.condition.ConditionUtils;
+import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -52,7 +53,9 @@ public class DialogDataSet {
         @Override
         public void encode(
             RegistryFriendlyByteBuf registryFriendlyByteBuf, DialogDataSet dialogDataSet) {
-          registryFriendlyByteBuf.writeNbt(dialogDataSet.createTag());
+          registryFriendlyByteBuf.writeNbt(
+              EntityDataSerializersManager.validateAndGetNbt(
+                  dialogDataSet.createTag(), "DialogDataSet"));
         }
       };
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);

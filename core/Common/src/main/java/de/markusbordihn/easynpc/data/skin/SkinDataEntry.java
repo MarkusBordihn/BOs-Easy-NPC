@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.data.skin;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
 import de.markusbordihn.easynpc.validator.UrlValidator;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
@@ -52,7 +53,9 @@ public record SkinDataEntry(
         @Override
         public void encode(
             RegistryFriendlyByteBuf registryFriendlyByteBuf, SkinDataEntry skinDataEntry) {
-          registryFriendlyByteBuf.writeNbt(skinDataEntry.createTag());
+          registryFriendlyByteBuf.writeNbt(
+              EntityDataSerializersManager.validateAndGetNbt(
+                  skinDataEntry.createTag(), "SkinDataEntry"));
         }
       };
 

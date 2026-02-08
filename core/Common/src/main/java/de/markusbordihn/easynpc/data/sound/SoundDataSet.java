@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.data.sound;
 
+import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
 import java.util.EnumMap;
 import java.util.Map;
 import net.minecraft.nbt.CompoundTag;
@@ -42,7 +43,9 @@ public class SoundDataSet {
         @Override
         public void encode(
             RegistryFriendlyByteBuf registryFriendlyByteBuf, SoundDataSet soundDataSet) {
-          registryFriendlyByteBuf.writeNbt(soundDataSet.createTag());
+          registryFriendlyByteBuf.writeNbt(
+              EntityDataSerializersManager.validateAndGetNbt(
+                  soundDataSet.createTag(), "SoundDataSet"));
         }
       };
 

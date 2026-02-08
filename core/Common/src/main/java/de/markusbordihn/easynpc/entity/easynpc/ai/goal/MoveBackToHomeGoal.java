@@ -20,10 +20,13 @@
 package de.markusbordihn.easynpc.entity.easynpc.ai.goal;
 
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.ai.control.JumpEasyNPCMoveControl;
 import de.markusbordihn.easynpc.entity.easynpc.data.NavigationDataCapable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.core.Vec3i;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.util.DefaultRandomPos;
@@ -33,9 +36,11 @@ public class MoveBackToHomeGoal<T extends EasyNPC<?>> extends Goal {
 
   private final float stopDistance;
   private final NavigationDataCapable<?> navigationData;
+  private final Mob mob;
   private final PathfinderMob pathfinderMob;
   private final double speedModifier;
   private final int interval;
+  private final boolean canJump;
   protected double wantedX;
   protected double wantedY;
   protected double wantedZ;
@@ -50,14 +55,16 @@ public class MoveBackToHomeGoal<T extends EasyNPC<?>> extends Goal {
     this.speedModifier = speedModifier;
     this.interval = interval;
     this.navigationData = easyNPCEntity.getEasyNPCNavigationData();
+    this.mob = easyNPCEntity.getMob();
     this.pathfinderMob = easyNPCEntity.getPathfinderMob();
+    this.canJump = this.navigationData.canJump();
   }
 
   @Override
   public boolean canUse() {
-    if (this.pathfinderMob.isVehicle()
-        || this.pathfinderMob.getRandom().nextInt(reducedTickDelay(this.interval)) != 0
-        || (this.pathfinderMob.isAggressive() && this.pathfinderMob.getTarget() != null)
+    if (this.mob.isVehicle()
+        || this.mob.getRandom().nextInt(reducedTickDelay(this.interval)) != 0
+        || (this.mob.isAggressive() && this.mob.getTarget() != null)
         || reachedHome()) {
       return false;
     }
@@ -76,21 +83,27 @@ public class MoveBackToHomeGoal<T extends EasyNPC<?>> extends Goal {
 
   @Override
   public boolean canContinueToUse() {
-    return !this.pathfinderMob.getNavigation().isDone()
-        && !this.pathfinderMob.isVehicle()
-        && this.pathfinderMob.getTarget() == null;
+    return !this.mob.getNavigation().isDone()
+        && !this.mob.isVehicle()
+        && this.mob.getTarget() == null;
   }
 
   @Override
   public void start() {
-    this.pathfinderMob
-        .getNavigation()
-        .moveTo(this.wantedX, this.wantedY, this.wantedZ, this.speedModifier);
+    if (this.canJump
+        && this.mob.getMoveControl() instanceof JumpEasyNPCMoveControl jumpMoveControl) {
+      double dx = this.wantedX - this.mob.getX();
+      double dz = this.wantedZ - this.mob.getZ();
+      jumpMoveControl.setDirection((float) (Mth.atan2(dz, dx) * (180.0 / Math.PI)) - 90.0F, false);
+      jumpMoveControl.setWantedMovement(this.speedModifier);
+    } else {
+      this.mob.getNavigation().moveTo(this.wantedX, this.wantedY, this.wantedZ, this.speedModifier);
+    }
   }
 
   @Override
   public void stop() {
-    this.pathfinderMob.getNavigation().stop();
+    this.mob.getNavigation().stop();
     super.stop();
   }
 
@@ -98,12 +111,13 @@ public class MoveBackToHomeGoal<T extends EasyNPC<?>> extends Goal {
     if (reachedHome()) {
       return null;
     }
-    SectionPos currentPosition = SectionPos.of(this.pathfinderMob.blockPosition());
+    SectionPos currentPosition = SectionPos.of(this.mob.blockPosition());
     SectionPos homePosition = SectionPos.of(this.navigationData.getHomePosition());
-    return currentPosition != homePosition
-        ? DefaultRandomPos.getPosTowards(
-            this.pathfinderMob, 10, 7, Vec3.atBottomCenterOf(homePosition), 1.5707963705062866)
-        : null;
+    if (currentPosition != homePosition && this.pathfinderMob != null) {
+      return DefaultRandomPos.getPosTowards(
+          this.pathfinderMob, 10, 7, Vec3.atBottomCenterOf(homePosition), 1.5707963705062866);
+    }
+    return null;
   }
 
   private boolean reachedHome() {
@@ -113,11 +127,11 @@ public class MoveBackToHomeGoal<T extends EasyNPC<?>> extends Goal {
     if (!this.navigationData.hasHomePosition()) {
       return this.navigationData.getGroundPathNavigation().isDone();
     }
-    if (this.pathfinderMob.blockPosition().equals(this.navigationData.getHomePosition())) {
+    if (this.mob.blockPosition().equals(this.navigationData.getHomePosition())) {
       return true;
     }
 
-    BlockPos blockPos = this.pathfinderMob.blockPosition();
+    BlockPos blockPos = this.mob.blockPosition();
     Vec3i vec3i = new Vec3i(blockPos.getX(), blockPos.getY(), blockPos.getZ());
     return this.navigationData.getHomePosition().closerThan(vec3i, this.stopDistance);
   }

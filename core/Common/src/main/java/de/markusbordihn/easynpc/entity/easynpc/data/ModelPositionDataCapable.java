@@ -29,9 +29,9 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.Mob;
 
-public interface ModelPositionDataCapable<T extends PathfinderMob> extends EasyNPC<T> {
+public interface ModelPositionDataCapable<T extends Mob> extends EasyNPC<T> {
 
   CustomPosition DEFAULT_MODEL_PART_POSITION = new CustomPosition(0, 0, 0);
   String EASY_NPC_DATA_MODEL_POSITION_TAG = "Position";
