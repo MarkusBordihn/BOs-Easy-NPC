@@ -36,7 +36,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(CreeperModel.class)
 public class EasyNPCCreeperModelMixin<T extends Entity> {
 
-  @Shadow private ModelPart root;
   @Shadow private ModelPart head;
   @Shadow private ModelPart rightHindLeg;
   @Shadow private ModelPart leftHindLeg;
@@ -47,11 +46,10 @@ public class EasyNPCCreeperModelMixin<T extends Entity> {
 
   @Inject(method = "<init>(Lnet/minecraft/client/model/geom/ModelPart;)V", at = @At("TAIL"))
   private void easyNpcModel(ModelPart modelPart, CallbackInfo callbackInfo) {
-    ModelPart body = this.root.getChild("body");
     this.easyNPC$modelManager =
         new EasyNPCModelManager(modelPart)
             .defineModelPart(ModelPartType.HEAD, this.head)
-            .defineModelPart(ModelPartType.BODY, body)
+            .defineModelPart(ModelPartType.BODY, "body")
             .defineModelPart(ModelPartType.RIGHT_HIND_LEG, this.rightHindLeg)
             .defineModelPart(ModelPartType.LEFT_HIND_LEG, this.leftHindLeg)
             .defineModelPart(ModelPartType.RIGHT_FRONT_LEG, this.rightFrontLeg)

@@ -47,7 +47,6 @@ public class EasyNPCFoxModelMixin<T extends Fox> {
 
   @Inject(method = "<init>(Lnet/minecraft/client/model/geom/ModelPart;)V", at = @At("TAIL"))
   private void easyNpcModel(ModelPart modelPart, CallbackInfo callbackInfo) {
-    ModelPart tail = this.body.getChild("tail");
     this.easyNPC$modelManager =
         new EasyNPCModelManager(modelPart)
             .defineModelPart(ModelPartType.HEAD, this.head)
@@ -56,7 +55,7 @@ public class EasyNPCFoxModelMixin<T extends Fox> {
             .defineModelPart(ModelPartType.LEFT_HIND_LEG, this.leftHindLeg)
             .defineModelPart(ModelPartType.RIGHT_FRONT_LEG, this.rightFrontLeg)
             .defineModelPart(ModelPartType.LEFT_FRONT_LEG, this.leftFrontLeg)
-            .defineModelPart(ModelPartType.TAIL, tail);
+            .defineModelPart(ModelPartType.TAIL, this.body.getChild("tail"));
   }
 
   @Inject(
