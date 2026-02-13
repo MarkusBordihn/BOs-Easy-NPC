@@ -82,7 +82,6 @@ public class EasyNPCWandItem extends Item {
         && (equipmentSlot == EquipmentSlot.MAINHAND || equipmentSlot == EquipmentSlot.OFFHAND)
         && serverLevel.getGameTime() % 30 == 0) {
       AABB searchArea = serverPlayer.getBoundingBox().inflate(HIGHLIGHT_RADIUS);
-      // Find all EasyNPC entities in the search area
       for (Mob pathfinderMob :
           serverLevel.getEntitiesOfClass(
               Mob.class, searchArea, mob -> mob.isAlive() && mob instanceof EasyNPCBase<?>)) {

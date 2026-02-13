@@ -115,31 +115,6 @@ public class EasyNPCPresetItem extends Item {
     return null;
   }
 
-  public static boolean spawnAtPosition(BlockPos blockPos, ItemStack itemStack, Level level) {
-    if (level.isClientSide()) {
-      return false;
-    }
-
-    PresetData presetData = PresetDataUtils.fromItemStack(itemStack);
-    if (presetData == null || !presetData.hasValidData()) {
-      return false;
-    }
-
-    boolean spawned = PresetDataUtils.spawnEntity(presetData, level, blockPos);
-
-    if (spawned) {
-      UUID presetUUID = getPresetUUID(itemStack);
-      log.debug(
-          "Spawned {} at {} with preset UUID {} in {}",
-          presetData.entityType(),
-          blockPos,
-          presetUUID,
-          level);
-    }
-
-    return spawned;
-  }
-
   @Override
   public InteractionResult useOn(UseOnContext useOnContext) {
     Level level = useOnContext.getLevel();
@@ -149,7 +124,6 @@ public class EasyNPCPresetItem extends Item {
 
     // Verify item stack, preset and entity type.
     ItemStack itemStack = useOnContext.getItemInHand();
-    // Verify preset data
     PresetData presetData = PresetData.get(itemStack);
     if (presetData == null || !presetData.hasEntityType() || !presetData.hasData()) {
       log.warn("No valid preset found in {}!", itemStack);
@@ -204,10 +178,12 @@ public class EasyNPCPresetItem extends Item {
               possibleSpawnPosition.getZ());
       if (level.getBlockState(targetBlockPos.above()).isAir()
           && level.getEntitiesOfClass(Entity.class, aabb).isEmpty()
-          && spawnAtPosition(targetBlockPos, itemStack, level)) {
+          && PresetDataUtils.spawnEntity(presetData, level, blockPos.above())) {
         return InteractionResult.SUCCESS;
       }
     }
+
+    log.error("Found no valid spawn placement for preset data: {}", presetData);
 
     return InteractionResult.PASS;
   }
