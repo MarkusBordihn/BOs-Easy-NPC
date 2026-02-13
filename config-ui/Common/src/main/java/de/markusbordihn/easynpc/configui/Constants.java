@@ -62,7 +62,6 @@ public final class Constants {
   // Directories
   public static Path GAME_DIR = Paths.get("").toAbsolutePath();
   public static Path CONFIG_DIR = GAME_DIR.resolve("config");
-  public static Path WORLD_DIR = GAME_DIR.resolve("world");
 
   private Constants() {}
 }

@@ -68,14 +68,12 @@ public class EasyNPCWandItem extends Item {
   @Override
   public void inventoryTick(
       ItemStack itemStack, Level level, Entity entity, int slot, boolean selected) {
-    // Only perform highlighting every 30 ticks (1.5 seconds) to reduce server load
     if (selected
         && level instanceof ServerLevel serverLevel
         && entity instanceof ServerPlayer serverPlayer
         && !(serverPlayer.containerMenu instanceof ConfigurationMenu)
         && level.getGameTime() % 30 == 0) {
       AABB searchArea = serverPlayer.getBoundingBox().inflate(HIGHLIGHT_RADIUS);
-      // Find all EasyNPC entities in the search area
       for (Mob pathfinderMob :
           serverLevel.getEntitiesOfClass(
               Mob.class, searchArea, mob -> mob.isAlive() && mob instanceof EasyNPCBase<?>)) {
