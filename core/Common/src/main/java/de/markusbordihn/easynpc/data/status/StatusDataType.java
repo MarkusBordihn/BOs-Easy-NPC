@@ -22,7 +22,15 @@ package de.markusbordihn.easynpc.data.status;
 import java.util.Locale;
 
 public enum StatusDataType {
-  FINALIZED;
+  FINALIZED(ValueType.BOOLEAN),
+  NPC_DATA_LAST_UPDATE(ValueType.TIMESTAMP),
+  NPC_DATA_LAST_SAVED(ValueType.TIMESTAMP);
+
+  private final ValueType valueType;
+
+  StatusDataType(ValueType valueType) {
+    this.valueType = valueType;
+  }
 
   public static StatusDataType get(String statusDataType) {
     if (statusDataType == null || statusDataType.isEmpty()) {
@@ -37,5 +45,22 @@ public enum StatusDataType {
 
   public String getTagName() {
     return this.name().toLowerCase(Locale.ROOT);
+  }
+
+  public ValueType getValueType() {
+    return this.valueType;
+  }
+
+  public boolean isBoolean() {
+    return this.valueType == ValueType.BOOLEAN;
+  }
+
+  public boolean isTimestamp() {
+    return this.valueType == ValueType.TIMESTAMP;
+  }
+
+  public enum ValueType {
+    BOOLEAN,
+    TIMESTAMP
   }
 }

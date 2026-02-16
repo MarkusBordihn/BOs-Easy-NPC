@@ -69,18 +69,29 @@ public class SafeMerchantData<E extends Mob> implements Merchant {
   }
 
   @Override
-  public void overrideOffers(MerchantOffers offers) {
-    tradingData.overrideOffers(offers);
+  public void overrideOffers(MerchantOffers merchantOffers) {
+    tradingData.overrideOffers(merchantOffers);
   }
 
   @Override
-  public void notifyTrade(MerchantOffer offer) {
-    tradingData.notifyTrade(offer);
+  public void notifyTrade(MerchantOffer merchantOffer) {
+    try {
+      tradingData.notifyTrade(merchantOffer);
+    } catch (AbstractMethodError e) {
+      merchantOffer.increaseUses();
+      if (tradingData.getTradingPlayer() instanceof ServerPlayer serverPlayer) {
+        log.debug("Trade {} completed for {}", merchantOffer, serverPlayer.getName().getString());
+      }
+    }
   }
 
   @Override
-  public void notifyTradeUpdated(ItemStack stack) {
-    tradingData.notifyTradeUpdated(stack);
+  public void notifyTradeUpdated(ItemStack itemStack) {
+    try {
+      tradingData.notifyTradeUpdated(itemStack);
+    } catch (AbstractMethodError e) {
+      // Silently ignore if method is not implemented
+    }
   }
 
   @Override

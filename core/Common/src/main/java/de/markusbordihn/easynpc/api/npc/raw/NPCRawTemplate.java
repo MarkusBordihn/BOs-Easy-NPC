@@ -166,6 +166,12 @@ public class NPCRawTemplate extends Zombie implements EasyNPCBase<Zombie> {
         net.minecraft.network.syncher.SynchedEntityData.defineId(
             NPCRawTemplate.class, EntityDataSerializersManager.PROFESSION));
 
+    // Progression Data
+    entityDataAccessorMap.put(
+        SynchedDataIndex.PROGRESSION,
+        net.minecraft.network.syncher.SynchedEntityData.defineId(
+            NPCRawTemplate.class, EntityDataSerializersManager.PROGRESSION));
+
     // Render Data
     entityDataAccessorMap.put(
         SynchedDataIndex.RENDER_DATA,
@@ -207,6 +213,8 @@ public class NPCRawTemplate extends Zombie implements EasyNPCBase<Zombie> {
 
   private final EnumMap<TickerType, Integer> tickerMap = new EnumMap<>(TickerType.class);
   private final EnumMap<StatusDataType, Boolean> statusDataFlagMap =
+      new EnumMap<>(StatusDataType.class);
+  private final EnumMap<StatusDataType, Long> statusDataTimestampMap =
       new EnumMap<>(StatusDataType.class);
   protected MerchantOffers merchantTradingOffers;
   private boolean clientDimensionsRefreshed = false;
@@ -255,6 +263,11 @@ public class NPCRawTemplate extends Zombie implements EasyNPCBase<Zombie> {
   @Override
   public EnumMap<StatusDataType, Boolean> getStatusDataFlags() {
     return this.statusDataFlagMap;
+  }
+
+  @Override
+  public EnumMap<StatusDataType, Long> getStatusDataTimestamps() {
+    return this.statusDataTimestampMap;
   }
 
   @Override

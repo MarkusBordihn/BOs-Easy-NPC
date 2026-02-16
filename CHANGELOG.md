@@ -8,6 +8,18 @@ For the full changelog, please go to the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 6.8.2
+
+- Fixed #677 by extending `SafeMerchantData` with notifyTrade to avoid crashes.
+- Added progression data support for leveling up NPCs based on player interactions and actions.
+- Added global NPC tracking system for better management and debugging of NPCs across the world.
+- Added `OriginalModelConfig.withVariantTexture()` option to allow using variant textures with the
+  original model.
+
+### 6.8.1
+
+- Fixed #676 by using existing preset helper method instead of custom one.
+
 ### 6.8.0 (Adding API support)
 
 - Fixed #667 by adding warning messages and additional checks for invalid network packets.

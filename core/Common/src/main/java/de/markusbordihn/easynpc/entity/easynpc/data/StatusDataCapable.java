@@ -22,7 +22,6 @@ package de.markusbordihn.easynpc.entity.easynpc.data;
 import de.markusbordihn.easynpc.data.status.StatusDataType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import java.util.EnumMap;
-import java.util.Map;
 import java.util.Optional;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Mob;
@@ -35,12 +34,35 @@ public interface StatusDataCapable<T extends Mob> extends EasyNPC<T> {
 
   EnumMap<StatusDataType, Boolean> getStatusDataFlags();
 
+  EnumMap<StatusDataType, Long> getStatusDataTimestamps();
+
   default boolean getStatusDataFlag(StatusDataType key) {
     return getStatusDataFlags().getOrDefault(key, false);
   }
 
   default void setStatusDataFlag(StatusDataType key, boolean value) {
     getStatusDataFlags().put(key, value);
+  }
+
+  default long getStatusDataTimestamp(StatusDataType key) {
+    return getStatusDataTimestamps().getOrDefault(key, 0L);
+  }
+
+  default void setStatusDataTimestamp(StatusDataType key, long timestamp) {
+    getStatusDataTimestamps().put(key, timestamp);
+  }
+
+  default boolean hasUnsavedNPCData() {
+    return getStatusDataTimestamp(StatusDataType.NPC_DATA_LAST_UPDATE)
+        > getStatusDataTimestamp(StatusDataType.NPC_DATA_LAST_SAVED);
+  }
+
+  default void markNPCDataUpdated() {
+    setStatusDataTimestamp(StatusDataType.NPC_DATA_LAST_UPDATE, System.currentTimeMillis());
+  }
+
+  default void markNPCDataSaved() {
+    setStatusDataTimestamp(StatusDataType.NPC_DATA_LAST_SAVED, System.currentTimeMillis());
   }
 
   default void addAdditionalStatusData(ValueOutput valueOutput) {
@@ -51,9 +73,19 @@ public interface StatusDataCapable<T extends Mob> extends EasyNPC<T> {
       setStatusDataFlag(StatusDataType.FINALIZED, true);
     }
 
-    // Add status flags to the status tag.
-    for (Map.Entry<StatusDataType, Boolean> entry : getStatusDataFlags().entrySet()) {
-      statusTag.putBoolean(entry.getKey().getTagName(), entry.getValue());
+    // Add all status data (both flags and timestamps) to the status tag.
+    for (StatusDataType statusDataType : StatusDataType.values()) {
+      if (statusDataType.isBoolean()) {
+        Boolean value = getStatusDataFlags().get(statusDataType);
+        if (value != null) {
+          statusTag.putBoolean(statusDataType.getTagName(), value);
+        }
+      } else if (statusDataType.isTimestamp()) {
+        Long value = getStatusDataTimestamps().get(statusDataType);
+        if (value != null && value > 0) {
+          statusTag.putLong(statusDataType.getTagName(), value);
+        }
+      }
     }
 
     valueOutput.store(DATA_STATUS_DATA_TAG, CompoundTag.CODEC, statusTag);
@@ -74,7 +106,12 @@ public interface StatusDataCapable<T extends Mob> extends EasyNPC<T> {
       if (statusDataType == null) {
         continue;
       }
-      setStatusDataFlag(StatusDataType.get(key), statusTag.getBoolean(key).orElse(false));
+
+      if (statusDataType.isBoolean()) {
+        setStatusDataFlag(statusDataType, statusTag.getBoolean(key).orElse(false));
+      } else if (statusDataType.isTimestamp()) {
+        setStatusDataTimestamp(statusDataType, statusTag.getLong(key).orElse(0L));
+      }
     }
   }
 }

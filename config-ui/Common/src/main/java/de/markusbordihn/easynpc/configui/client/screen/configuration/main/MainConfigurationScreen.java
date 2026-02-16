@@ -44,6 +44,7 @@ import de.markusbordihn.easynpc.data.skin.SkinType;
 import de.markusbordihn.easynpc.entity.easynpc.data.DisplayAttributeDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.NavigationDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.OwnerDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.ProgressionDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import java.util.LinkedHashMap;
@@ -89,6 +90,7 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
   private NameVisibilityToggleButton nameVisibilityButton;
   private Button saveNameButton;
   private int avatarTopPos;
+  private int avatarHeight;
 
   public MainConfigurationScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
@@ -102,6 +104,7 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
     // Core Positions
     this.contentTopPos = this.topPos + 15;
     this.avatarTopPos = this.contentTopPos + 1;
+    this.avatarHeight = 170;
 
     // Hide home button
     this.homeButton.visible = false;
@@ -198,6 +201,23 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
         Math.round((this.contentLeftPos + 3) / scaleEntityTypeText),
         Math.round((this.avatarTopPos + 39) / scaleEntityTypeText));
 
+    // Entity Level and Experience
+    ProgressionDataCapable<?> progressionData = getEasyNPC().getEasyNPCProgressionData();
+    if (progressionData != null && progressionData.getExperience() > 1) {
+      Text.drawString(
+          guiGraphics,
+          this.font,
+          "Level: "
+              + progressionData.getExperienceLevel()
+              + " (XP: "
+              + progressionData.getExperience()
+              + "/"
+              + progressionData.getExperienceForNextLevel()
+              + ")",
+          Math.round((this.contentLeftPos + 3) / scaleEntityTypeText),
+          Math.round((this.avatarTopPos + 47) / scaleEntityTypeText));
+    }
+
     // Current position
     BlockPos blockPos = getEasyNPCEntity().getOnPos();
     Text.drawString(
@@ -205,7 +225,7 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
         this.font,
         "Pos: " + blockPos.getX() + ", " + blockPos.getY() + ", " + blockPos.getZ(),
         Math.round((this.contentLeftPos + 3) / scaleEntityTypeText),
-        Math.round((this.avatarTopPos + 147) / scaleEntityTypeText));
+        Math.round((this.avatarTopPos + this.avatarHeight - 8) / scaleEntityTypeText));
 
     guiGraphics.pose().popMatrix();
   }
@@ -233,13 +253,13 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
         this.contentLeftPos,
         this.avatarTopPos + 12,
         this.leftPos + 117,
-        this.avatarTopPos + 155,
+        this.avatarTopPos + this.avatarHeight,
         0xff000000);
     guiGraphics.fill(
         this.leftPos + 8,
         this.avatarTopPos + 13,
         this.leftPos + 116,
-        this.avatarTopPos + 155,
+        this.avatarTopPos + this.avatarHeight,
         0xffaaaaaa);
   }
 
@@ -378,7 +398,7 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
         this.addRenderableWidget(
             new TextButton(
                 this.contentLeftPos,
-                this.avatarTopPos + 155,
+                this.avatarTopPos + this.avatarHeight,
                 110,
                 14,
                 "edit_skin",
@@ -419,7 +439,7 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
         this.addRenderableWidget(
             new TextButton(
                 this.contentLeftPos,
-                this.avatarTopPos + 168,
+                this.avatarTopPos + this.avatarHeight + 14,
                 110,
                 14,
                 "change_model",

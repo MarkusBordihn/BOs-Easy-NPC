@@ -79,7 +79,7 @@ public record CustomModelConfig(
         || renderMode == RenderMode.REPLACEMENT_USE_VARIANT_TEXTURE;
   }
 
-  enum RenderMode {
+  public enum RenderMode {
     NONE,
     OVERLAY,
     OVERLAY_USE_ENTITY_TEXTURE,

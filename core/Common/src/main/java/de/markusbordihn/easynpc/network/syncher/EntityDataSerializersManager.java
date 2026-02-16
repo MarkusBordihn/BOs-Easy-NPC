@@ -31,6 +31,7 @@ import de.markusbordihn.easynpc.data.objective.TargetedEntitySet;
 import de.markusbordihn.easynpc.data.objective.TargetedPlayerSet;
 import de.markusbordihn.easynpc.data.position.CustomPosition;
 import de.markusbordihn.easynpc.data.profession.Profession;
+import de.markusbordihn.easynpc.data.progression.ProgressionData;
 import de.markusbordihn.easynpc.data.render.RenderDataEntry;
 import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.data.scale.CustomScale;
@@ -85,6 +86,11 @@ public class EntityDataSerializersManager {
       defineSerializer(
           EntityAttributes.class.getSimpleName(),
           EntityDataSerializer.forValueType(EntityAttributes.STREAM_CODEC));
+  public static final EntityDataSerializer<ProgressionData> PROGRESSION =
+      defineSerializer(
+          ProgressionData.class.getSimpleName(),
+          EntityDataSerializer.forValueType(ProgressionData.STREAM_CODEC));
+
   public static final EntityDataSerializer<MerchantOffers> MERCHANT_OFFERS =
       defineSerializer(
           MerchantOffers.class.getSimpleName(),

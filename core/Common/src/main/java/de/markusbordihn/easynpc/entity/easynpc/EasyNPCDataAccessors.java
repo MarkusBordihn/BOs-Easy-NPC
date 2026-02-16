@@ -33,6 +33,7 @@ import de.markusbordihn.easynpc.entity.easynpc.data.ObjectiveDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.OwnerDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.PresetDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.ProfessionDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.ProgressionDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.RenderDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.ServerDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
@@ -107,6 +108,10 @@ public interface EasyNPCDataAccessors<E extends Mob> {
 
   default ProfessionDataCapable<E> getEasyNPCProfessionData() {
     return this instanceof ProfessionDataCapable<E> professionData ? professionData : null;
+  }
+
+  default ProgressionDataCapable<E> getEasyNPCProgressionData() {
+    return this instanceof ProgressionDataCapable<E> progressionData ? progressionData : null;
   }
 
   default RenderDataCapable<E> getEasyNPCRenderData() {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Markus Bordihn
+ * Copyright 2026 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,24 +17,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.client.renderer.entity.layers;
+package de.markusbordihn.easynpc.commands.suggestion;
 
-import de.markusbordihn.easynpc.api.model.CustomModelConfig;
-import net.minecraft.client.model.animal.pig.PigModel;
-import net.minecraft.client.model.geom.EntityModelSet;
-import net.minecraft.client.model.geom.ModelLayers;
-import net.minecraft.client.renderer.entity.RenderLayerParent;
-import net.minecraft.client.renderer.entity.state.PigRenderState;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.suggestion.Suggestions;
+import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import de.markusbordihn.easynpc.data.saveddata.NPCEntityData;
+import java.util.concurrent.CompletableFuture;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.SharedSuggestionProvider;
 
-public class PigCustomModelLayer extends CustomModelRenderLayer<PigRenderState, PigModel> {
+public class NPCEntityTypeSuggestions {
 
-  public PigCustomModelLayer(
-      RenderLayerParent<PigRenderState, ?> renderer,
-      EntityModelSet modelSet,
-      CustomModelConfig config) {
-    super(
-        (RenderLayerParent<PigRenderState, PigModel>) renderer,
-        new PigModel(modelSet.bakeLayer(ModelLayers.PIG)),
-        config);
+  protected NPCEntityTypeSuggestions() {}
+
+  public static CompletableFuture<Suggestions> suggest(
+      CommandContext<CommandSourceStack> context, SuggestionsBuilder builder) {
+    return SharedSuggestionProvider.suggest(
+        NPCEntityData.get(context.getSource().getServer()).getAllEntityTypes(), builder);
   }
 }

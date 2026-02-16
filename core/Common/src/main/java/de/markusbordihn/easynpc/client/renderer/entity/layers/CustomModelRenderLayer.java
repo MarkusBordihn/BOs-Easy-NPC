@@ -73,7 +73,7 @@ public abstract class CustomModelRenderLayer<
         packedLight,
         renderState,
         -1, // white color (no tint)
-        0 // render type ordinal (default layer order)
+        config.renderMode().ordinal() // render type from config
         );
   }
 
