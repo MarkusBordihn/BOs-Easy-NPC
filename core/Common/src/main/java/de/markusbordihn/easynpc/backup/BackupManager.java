@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.backup;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.LivingEntityManager;
+import de.markusbordihn.easynpc.entity.NPCEntityManager;
 import de.markusbordihn.easynpc.handler.PresetHandler;
 import de.markusbordihn.easynpc.io.BackupDataFiles;
 import java.io.File;
@@ -49,6 +50,10 @@ public class BackupManager {
     if (shouldPerformBackup()) {
       long backupTime = System.currentTimeMillis();
       backupNPCData();
+
+      // Save dirty NPCs to persistent storage
+      NPCEntityManager.saveAllDirtyNPCs();
+
       lastBackupTime = backupTime;
     }
     backupTicks = 0;

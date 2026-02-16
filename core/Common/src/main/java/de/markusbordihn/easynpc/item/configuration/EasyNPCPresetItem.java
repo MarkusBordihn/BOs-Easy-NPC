@@ -209,6 +209,8 @@ public class EasyNPCPresetItem extends Item {
       }
     }
 
+    log.error("Found no valid spawn placement for preset data: {}", itemStack);
+
     return InteractionResult.PASS;
   }
 

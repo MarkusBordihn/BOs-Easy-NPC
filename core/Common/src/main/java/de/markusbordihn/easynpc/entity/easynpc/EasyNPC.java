@@ -29,6 +29,7 @@ import java.util.Random;
 import java.util.UUID;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.profiling.ProfilerFiller;
@@ -121,6 +122,10 @@ public interface EasyNPC<E extends Mob> extends EasyNPCDataAccessors<E>, Npc {
 
   default String getEntityTypeId() {
     return EasyNPCEntityAccess.getEntityTypeId(this);
+  }
+
+  default ResourceLocation getCustomNPCIdentifier() {
+    return new ResourceLocation(Constants.MOD_ID, "general");
   }
 
   default CrossbowAttackMob getCrossbowAttackMob() {

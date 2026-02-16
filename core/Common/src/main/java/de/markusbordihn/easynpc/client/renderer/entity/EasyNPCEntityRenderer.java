@@ -50,23 +50,22 @@ public interface EasyNPCEntityRenderer {
 
   default ResourceLocation getTextureLocationWithConfig(final LivingEntity entity) {
 
-    // Hide original model if custom model replaces it or if explicitly hidden
     OriginalModelConfig originalConfig = getOriginalModelConfig();
     if (getCustomModelConfig().shouldHideOriginal() || originalConfig.isHidden()) {
       return getTransparentTexture();
     }
 
-    // Use custom texture from original model config if available
     if (originalConfig.hasCustomTexture()) {
       return originalConfig.getCustomTexture();
     }
 
-    // Use EasyNPC skin system if entity is an EasyNPC
     if (entity instanceof EasyNPC<?> easyNPC) {
+      if (originalConfig.shouldUseVariantTexture()) {
+        return getVariantTexture(easyNPC);
+      }
       return getEntityTexture(easyNPC);
     }
 
-    // Fall back to default texture
     return getDefaultTexture();
   }
 

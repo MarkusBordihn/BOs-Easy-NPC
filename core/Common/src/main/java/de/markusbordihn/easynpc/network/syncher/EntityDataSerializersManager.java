@@ -29,6 +29,7 @@ import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataSet;
 import de.markusbordihn.easynpc.data.position.CustomPosition;
 import de.markusbordihn.easynpc.data.profession.Profession;
+import de.markusbordihn.easynpc.data.progression.ProgressionData;
 import de.markusbordihn.easynpc.data.render.RenderDataEntry;
 import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.data.scale.CustomScale;
@@ -376,6 +377,29 @@ public class EntityDataSerializersManager {
 
             @Override
             public EntityAttributes copy(EntityAttributes value) {
+              return value;
+            }
+          });
+  public static final EntityDataSerializer<ProgressionData> PROGRESSION =
+      defineSerializer(
+          ProgressionData.class.getSimpleName(),
+          new EntityDataSerializer<>() {
+            @Override
+            public void write(FriendlyByteBuf buffer, ProgressionData value) {
+              CompoundTag tag = new CompoundTag();
+              buffer.writeNbt(validateAndGetNbt(value.encode(tag), "ProgressionData"));
+            }
+
+            @Override
+            public ProgressionData read(FriendlyByteBuf buffer) {
+              CompoundTag compoundTag = buffer.readNbt();
+              return compoundTag != null
+                  ? ProgressionData.decode(compoundTag)
+                  : new ProgressionData();
+            }
+
+            @Override
+            public ProgressionData copy(ProgressionData value) {
               return value;
             }
           });

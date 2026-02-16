@@ -115,16 +115,17 @@ class SnbtFormatterTest {
   void testComplexStructure() {
     String input = "{data:{name:\"Test\",items:[{id:1},{id:2}]}}";
     String expected =
-        "{\n"
-            + "  data:{\n"
-            + "    name:\"Test\",\n"
-            + "    items:[{\n"
-            + "      id:1\n"
-            + "    },{\n"
-            + "      id:2\n"
-            + "    }]\n"
-            + "  }\n"
-            + "}";
+        """
+        {
+          data:{
+            name:"Test",
+            items:[{
+              id:1
+            },{
+              id:2
+            }]
+          }
+        }""";
     assertEquals(expected, SnbtFormatter.format(input));
   }
 

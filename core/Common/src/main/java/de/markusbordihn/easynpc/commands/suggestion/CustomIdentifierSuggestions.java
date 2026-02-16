@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Markus Bordihn
+ * Copyright 2026 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,50 +17,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.data.status;
+package de.markusbordihn.easynpc.commands.suggestion;
 
-import java.util.Locale;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.suggestion.Suggestions;
+import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import de.markusbordihn.easynpc.data.saveddata.NPCEntityData;
+import java.util.concurrent.CompletableFuture;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.SharedSuggestionProvider;
 
-public enum StatusDataType {
-  FINALIZED(ValueType.BOOLEAN),
-  NPC_DATA_LAST_UPDATE(ValueType.TIMESTAMP),
-  NPC_DATA_LAST_SAVED(ValueType.TIMESTAMP);
+public class CustomIdentifierSuggestions {
 
-  private final ValueType valueType;
+  protected CustomIdentifierSuggestions() {}
 
-  StatusDataType(ValueType valueType) {
-    this.valueType = valueType;
-  }
-
-  public static StatusDataType get(String statusDataType) {
-    if (statusDataType == null || statusDataType.isEmpty()) {
-      return null;
-    }
-    try {
-      return StatusDataType.valueOf(statusDataType.toUpperCase(Locale.ROOT));
-    } catch (IllegalArgumentException e) {
-      return null;
-    }
-  }
-
-  public String getTagName() {
-    return this.name().toLowerCase(Locale.ROOT);
-  }
-
-  public ValueType getValueType() {
-    return this.valueType;
-  }
-
-  public boolean isBoolean() {
-    return this.valueType == ValueType.BOOLEAN;
-  }
-
-  public boolean isTimestamp() {
-    return this.valueType == ValueType.TIMESTAMP;
-  }
-
-  public enum ValueType {
-    BOOLEAN,
-    TIMESTAMP
+  public static CompletableFuture<Suggestions> suggest(
+      CommandContext<CommandSourceStack> context, SuggestionsBuilder builder) {
+    return SharedSuggestionProvider.suggest(
+        NPCEntityData.get(context.getSource().getServer()).getAllCustomIdentifiers().stream()
+            .map(Object::toString)
+            .toList(),
+        builder);
   }
 }

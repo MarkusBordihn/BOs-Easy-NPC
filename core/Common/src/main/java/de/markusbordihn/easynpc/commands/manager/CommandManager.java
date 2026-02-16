@@ -25,7 +25,9 @@ import de.markusbordihn.easynpc.server.commands.DebugCommand;
 import de.markusbordihn.easynpc.server.commands.DeleteCommand;
 import de.markusbordihn.easynpc.server.commands.DialogCommand;
 import de.markusbordihn.easynpc.server.commands.EquipmentCommand;
+import de.markusbordihn.easynpc.server.commands.InfoCommand;
 import de.markusbordihn.easynpc.server.commands.InteractCommand;
+import de.markusbordihn.easynpc.server.commands.ListCommand;
 import de.markusbordihn.easynpc.server.commands.NameCommand;
 import de.markusbordihn.easynpc.server.commands.NavigationCommand;
 import de.markusbordihn.easynpc.server.commands.ObjectiveCommand;
@@ -33,6 +35,7 @@ import de.markusbordihn.easynpc.server.commands.OwnerCommand;
 import de.markusbordihn.easynpc.server.commands.PoseCommand;
 import de.markusbordihn.easynpc.server.commands.PositionCommand;
 import de.markusbordihn.easynpc.server.commands.PresetCommand;
+import de.markusbordihn.easynpc.server.commands.ProgressionCommand;
 import de.markusbordihn.easynpc.server.commands.ReloadCommand;
 import de.markusbordihn.easynpc.server.commands.RenderCommand;
 import de.markusbordihn.easynpc.server.commands.RespawnCommand;
@@ -41,6 +44,7 @@ import de.markusbordihn.easynpc.server.commands.ScaleCommand;
 import de.markusbordihn.easynpc.server.commands.SkinCommand;
 import de.markusbordihn.easynpc.server.commands.SoundCommand;
 import de.markusbordihn.easynpc.server.commands.SpawnerCommand;
+import de.markusbordihn.easynpc.server.commands.StatsCommand;
 import de.markusbordihn.easynpc.server.commands.TestCommand;
 import de.markusbordihn.easynpc.server.commands.TradingCommand;
 import net.minecraft.commands.CommandBuildContext;
@@ -68,7 +72,9 @@ public class CommandManager {
             .then(DeleteCommand.register())
             .then(DialogCommand.register())
             .then(EquipmentCommand.register(context))
+            .then(InfoCommand.register())
             .then(InteractCommand.register())
+            .then(ListCommand.register())
             .then(NameCommand.register())
             .then(NavigationCommand.register())
             .then(ObjectiveCommand.register())
@@ -76,6 +82,7 @@ public class CommandManager {
             .then(PoseCommand.register())
             .then(PositionCommand.register())
             .then(PresetCommand.register())
+            .then(ProgressionCommand.register())
             .then(ReloadCommand.register())
             .then(RenderCommand.register())
             .then(RespawnCommand.register())
@@ -84,6 +91,7 @@ public class CommandManager {
             .then(SkinCommand.register())
             .then(SoundCommand.register())
             .then(SpawnerCommand.register())
+            .then(StatsCommand.register())
             .then(TestCommand.register())
             .then(TradingCommand.register()));
   }
