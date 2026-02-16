@@ -21,7 +21,9 @@ package de.markusbordihn.easynpc.server;
 
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.ServerTickEvent;
+import net.minecraftforge.event.server.ServerStartedEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
+import net.minecraftforge.event.server.ServerStoppingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
@@ -31,8 +33,18 @@ public class ServerEventHandler {
   private ServerEventHandler() {}
 
   @SubscribeEvent
-  public static void handleServerAboutToStartEvent(ServerStartingEvent event) {
+  public static void handleServerStartingEvent(ServerStartingEvent event) {
     ServerEvents.handleServerStarting(event.getServer());
+  }
+
+  @SubscribeEvent
+  public static void handleServerStartedEvent(ServerStartedEvent event) {
+    ServerEvents.handleServerStarted(event.getServer());
+  }
+
+  @SubscribeEvent
+  public static void handleServerAboutToStopEvent(ServerStoppingEvent event) {
+    ServerEvents.handleServerStopping(event.getServer());
   }
 
   @SubscribeEvent

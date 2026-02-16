@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.server;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.backup.BackupManager;
+import de.markusbordihn.easynpc.entity.NPCEntityManager;
 import de.markusbordihn.easynpc.io.DataFileHandler;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.storage.LevelResource;
@@ -47,6 +48,17 @@ public class ServerEvents {
     DataFileHandler.registerServerDataFiles(minecraftServer);
   }
 
+  public static void handleServerStarted(MinecraftServer minecraftServer) {
+    if (minecraftServer == null) {
+      return;
+    }
+
+    log.info("{} Server started Events ...", Constants.LOG_REGISTER_PREFIX);
+
+    // Initialize NPC entity tracking (requires overworld to be loaded)
+    NPCEntityManager.initialize(minecraftServer);
+  }
+
   public static void handleServerTick(MinecraftServer minecraftServer) {
     if (minecraftServer == null) {
       return;
@@ -54,5 +66,16 @@ public class ServerEvents {
 
     // Perform backup each hour.
     BackupManager.performBackup();
+  }
+
+  public static void handleServerStopping(MinecraftServer minecraftServer) {
+    if (minecraftServer == null) {
+      return;
+    }
+
+    log.info("{} Server is stopping, saving all dirty NPCs...", Constants.LOG_REGISTER_PREFIX);
+
+    // Save all dirty NPCs before server stops
+    NPCEntityManager.saveAllDirtyNPCs();
   }
 }

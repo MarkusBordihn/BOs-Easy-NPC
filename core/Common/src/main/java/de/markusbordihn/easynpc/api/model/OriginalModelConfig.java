@@ -21,27 +21,52 @@ package de.markusbordihn.easynpc.api.model;
 
 import net.minecraft.resources.ResourceLocation;
 
-public record OriginalModelConfig(ResourceLocation customTexture, boolean hidden) {
+public record OriginalModelConfig(ResourceLocation customTexture, RenderMode renderMode) {
 
-  public static final OriginalModelConfig DEFAULT = new OriginalModelConfig(null, false);
+  public static final OriginalModelConfig DEFAULT =
+      new OriginalModelConfig(null, RenderMode.DEFAULT);
 
   public static OriginalModelConfig withHidden() {
-    return new OriginalModelConfig(null, true);
+    return new OriginalModelConfig(null, RenderMode.HIDDEN);
   }
 
   public static OriginalModelConfig withTexture(ResourceLocation texture) {
-    return new OriginalModelConfig(texture, false);
+    return new OriginalModelConfig(texture, RenderMode.CUSTOM_TEXTURE);
+  }
+
+  public static OriginalModelConfig withVariantTexture() {
+    return new OriginalModelConfig(null, RenderMode.USE_VARIANT_TEXTURE);
+  }
+
+  public static OriginalModelConfig withEntityTexture() {
+    return new OriginalModelConfig(null, RenderMode.USE_ENTITY_TEXTURE);
   }
 
   public boolean isHidden() {
-    return hidden;
+    return renderMode == RenderMode.HIDDEN;
   }
 
   public boolean hasCustomTexture() {
-    return customTexture != null;
+    return customTexture != null && renderMode == RenderMode.CUSTOM_TEXTURE;
+  }
+
+  public boolean shouldUseVariantTexture() {
+    return renderMode == RenderMode.USE_VARIANT_TEXTURE;
+  }
+
+  public boolean shouldUseEntityTexture() {
+    return renderMode == RenderMode.USE_ENTITY_TEXTURE || renderMode == RenderMode.DEFAULT;
   }
 
   public ResourceLocation getCustomTexture() {
     return customTexture;
+  }
+
+  enum RenderMode {
+    DEFAULT,
+    HIDDEN,
+    CUSTOM_TEXTURE,
+    USE_VARIANT_TEXTURE,
+    USE_ENTITY_TEXTURE
   }
 }

@@ -29,6 +29,7 @@ import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataSet;
 import de.markusbordihn.easynpc.data.position.CustomPosition;
 import de.markusbordihn.easynpc.data.profession.Profession;
+import de.markusbordihn.easynpc.data.progression.ProgressionData;
 import de.markusbordihn.easynpc.data.render.RenderDataEntry;
 import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.data.scale.CustomScale;
@@ -95,6 +96,10 @@ public class ModEntityDataSerializers {
       PROFESSION =
           ENTITY_DATA_SERIALIZERS.register(
               "profession", () -> EntityDataSerializersManager.PROFESSION);
+  public static final DeferredHolder<EntityDataSerializer<?>, EntityDataSerializer<ProgressionData>>
+      PROGRESSION =
+          ENTITY_DATA_SERIALIZERS.register(
+              "progression", () -> EntityDataSerializersManager.PROGRESSION);
   public static final DeferredHolder<EntityDataSerializer<?>, EntityDataSerializer<RenderDataEntry>>
       RENDER_DATA_ENTRY =
           ENTITY_DATA_SERIALIZERS.register(

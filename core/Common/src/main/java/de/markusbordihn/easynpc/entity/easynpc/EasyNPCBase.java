@@ -33,6 +33,7 @@ import de.markusbordihn.easynpc.entity.easynpc.data.ObjectiveDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.OwnerDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.PresetDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.ProfessionDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.ProgressionDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.RenderDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.ServerDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
@@ -70,6 +71,7 @@ public interface EasyNPCBase<E extends Mob>
         OwnerDataCapable<E>,
         PresetDataCapable<E>,
         ProfessionDataCapable<E>,
+        ProgressionDataCapable<E>,
         RenderDataCapable<E>,
         ServerDataCapable<E>,
         SkinDataCapable<E>,
@@ -168,6 +170,10 @@ public interface EasyNPCBase<E extends Mob>
     ProfessionDataCapable<E> professionData = getEasyNPCProfessionData();
     if (professionData != null) {
       professionData.defineSynchedProfessionData(builder);
+    }
+    ProgressionDataCapable<E> progressionData = getEasyNPCProgressionData();
+    if (progressionData != null) {
+      progressionData.defineSynchedProgressionData(builder);
     }
     RenderDataCapable<E> renderData = getEasyNPCRenderData();
     if (renderData != null) {
@@ -271,6 +277,10 @@ public interface EasyNPCBase<E extends Mob>
     if (professionData != null) {
       professionData.addAdditionalProfessionData(compoundTag);
     }
+    ProgressionDataCapable<E> progressionData = getEasyNPCProgressionData();
+    if (progressionData != null) {
+      progressionData.addAdditionalProgressionData(compoundTag);
+    }
     RenderDataCapable<E> renderData = getEasyNPCRenderData();
     if (renderData != null) {
       renderData.addAdditionalRenderData(compoundTag);
@@ -351,6 +361,10 @@ public interface EasyNPCBase<E extends Mob>
     ProfessionDataCapable<E> professionData = getEasyNPCProfessionData();
     if (professionData != null) {
       professionData.readAdditionalProfessionData(compoundTag);
+    }
+    ProgressionDataCapable<E> progressionData = getEasyNPCProgressionData();
+    if (progressionData != null) {
+      progressionData.readAdditionalProgressionData(compoundTag);
     }
     RenderDataCapable<E> renderData = getEasyNPCRenderData();
     if (renderData != null) {
