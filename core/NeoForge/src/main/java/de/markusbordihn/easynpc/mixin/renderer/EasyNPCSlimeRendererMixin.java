@@ -53,6 +53,7 @@ public class EasyNPCSlimeRendererMixin {
   protected void onScale(SlimeRenderState renderState, PoseStack poseStack, CallbackInfo ci) {
     if (renderState instanceof EasyNPCRenderStateExtension) {
       EasyNPCLivingEntityRenderer.handleScale(renderState, poseStack);
+      EasyNPCLivingEntityRenderer.handleRotation(renderState, poseStack);
     }
   }
 }

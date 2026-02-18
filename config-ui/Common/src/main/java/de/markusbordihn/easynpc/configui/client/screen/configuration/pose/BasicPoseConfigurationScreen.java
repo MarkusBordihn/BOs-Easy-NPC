@@ -99,6 +99,9 @@ public class BasicPoseConfigurationScreen<T extends ConfigurationMenu>
     // Animation Behavior Button
     this.addRenderableWidget(
         this.createAnimationBehaviorButton(this.contentLeftPos + 118, this.bottomPos - 26));
+
+    // Follow Cursor Toggle Button
+    this.createFollowCursorToggleButton(this.contentLeftPos + 149, this.topPos + 38);
   }
 
   @Override
@@ -106,12 +109,14 @@ public class BasicPoseConfigurationScreen<T extends ConfigurationMenu>
     super.render(guiGraphics, x, y, partialTicks);
 
     // Avatar
+    EntityRenderConfig renderConfig =
+        EntityRenderConfig.guiScaled(this.contentLeftPos + 157, this.contentTopPos + 110, 50);
     EntityConfigScreenRenderer.renderEntityRaw(
         guiGraphics,
         this.getEasyNPC(),
-        EntityRenderConfig.guiScaled(this.contentLeftPos + 157, this.contentTopPos + 110, 50),
-        this.xMouse,
-        this.yMouse);
+        renderConfig,
+        this.getPreviewRotationYaw(this.xMouse, renderConfig),
+        this.getPreviewRotationPitch(this.yMouse, renderConfig));
 
     // Model Part texts
     for (ModelPartType modelPart : sliders.keySet()) {

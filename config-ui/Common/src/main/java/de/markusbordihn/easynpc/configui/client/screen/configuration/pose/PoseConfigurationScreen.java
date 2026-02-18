@@ -30,6 +30,7 @@ import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.data.model.ModelAnimationBehavior;
 import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.position.CustomPosition;
+import de.markusbordihn.easynpc.data.render.EntityRenderConfig;
 import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.data.scale.CustomScale;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
@@ -41,6 +42,7 @@ import net.minecraft.world.entity.player.Inventory;
 
 public class PoseConfigurationScreen<T extends ConfigurationMenu> extends ConfigurationScreen<T> {
 
+  protected static boolean followCursor = true;
   protected final ModelDataCapable<?> modelData;
   protected Button defaultPoseButton;
   protected Button basicPoseButton;
@@ -72,6 +74,19 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
                 NetworkMessageHandlerManager.getServerHandler()
                     .modelAnimationBehaviorChange(this.getEasyNPCUUID(), behavior);
               }
+            }));
+  }
+
+  protected Button createFollowCursorToggleButton(int x, int y) {
+    return this.addRenderableWidget(
+        new TextButton(
+            x,
+            y,
+            20,
+            TextComponent.getText(followCursor ? "👁" : "⊙"),
+            button -> {
+              followCursor = !followCursor;
+              button.setMessage(TextComponent.getText(followCursor ? "👁" : "⊙"));
             }));
   }
 
@@ -490,5 +505,13 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
                 button ->
                     NetworkMessageHandlerManager.getServerHandler()
                         .openConfiguration(this.getEasyNPCUUID(), ConfigurationType.CUSTOM_POSE)));
+  }
+
+  protected float getPreviewRotationYaw(float mouseRelativeYaw, EntityRenderConfig config) {
+    return followCursor ? mouseRelativeYaw : (config.left() + config.right()) / 2.0f;
+  }
+
+  protected float getPreviewRotationPitch(float mouseRelativePitch, EntityRenderConfig config) {
+    return followCursor ? mouseRelativePitch : (config.top() + config.bottom()) / 2.0f;
   }
 }

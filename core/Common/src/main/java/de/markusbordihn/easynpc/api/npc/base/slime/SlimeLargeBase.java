@@ -36,6 +36,6 @@ public class SlimeLargeBase extends SlimeBase {
 
   @Override
   public int getEntityDialogTop() {
-    return -55;
+    return -35;
   }
 }

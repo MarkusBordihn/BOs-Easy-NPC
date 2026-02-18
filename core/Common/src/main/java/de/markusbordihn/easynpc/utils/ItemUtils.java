@@ -29,12 +29,21 @@ import net.minecraft.world.item.Items;
 
 public class ItemUtils {
 
+  private static final String CONFIG_UI_MOD_ID = "easy_npc_config_ui";
   private static final Identifier EASY_NPC_WAND_RESOURCE_LOCATION =
       Identifier.fromNamespaceAndPath(Constants.MOD_ID, "easy_npc_wand");
+  private static final Identifier EASY_NPC_WAND_CONFIG_UI_RESOURCE_LOCATION =
+      Identifier.fromNamespaceAndPath(CONFIG_UI_MOD_ID, "easy_npc_wand");
   private static final Identifier MOVE_EASY_NPC_RESOURCE_LOCATION =
       Identifier.fromNamespaceAndPath(Constants.MOD_ID, "move_easy_npc");
+  private static final Identifier EASY_NPC_PRESET_EMPTY_RESOURCE_LOCATION =
+      Identifier.fromNamespaceAndPath(Constants.MOD_ID, "easy_npc_preset_empty");
+  private static final Identifier EASY_NPC_PRESET_RESOURCE_LOCATION =
+      Identifier.fromNamespaceAndPath(Constants.MOD_ID, "easy_npc_preset");
   private static Item cachedEasyNpcWandItem = null;
   private static Item cachedMoveEasyNpcItem = null;
+  private static Item cachedEasyNpcPresetEmptyItem = null;
+  private static Item cachedEasyNpcPresetItem = null;
 
   private ItemUtils() {}
 
@@ -73,7 +82,13 @@ public class ItemUtils {
 
   public static Item getEasyNPCWandItem() {
     if (cachedEasyNpcWandItem == null) {
-      cachedEasyNpcWandItem = BuiltInRegistries.ITEM.getValue(EASY_NPC_WAND_RESOURCE_LOCATION);
+      // Try config-ui namespace first (where the wand is actually registered)
+      cachedEasyNpcWandItem =
+          BuiltInRegistries.ITEM.getValue(EASY_NPC_WAND_CONFIG_UI_RESOURCE_LOCATION);
+      if (cachedEasyNpcWandItem == null || cachedEasyNpcWandItem == Items.AIR) {
+        // Fallback to core namespace
+        cachedEasyNpcWandItem = BuiltInRegistries.ITEM.getValue(EASY_NPC_WAND_RESOURCE_LOCATION);
+      }
     }
     return cachedEasyNpcWandItem;
   }
@@ -83,6 +98,21 @@ public class ItemUtils {
       cachedMoveEasyNpcItem = BuiltInRegistries.ITEM.getValue(MOVE_EASY_NPC_RESOURCE_LOCATION);
     }
     return cachedMoveEasyNpcItem;
+  }
+
+  public static Item getEasyNPCPresetEmptyItem() {
+    if (cachedEasyNpcPresetEmptyItem == null) {
+      cachedEasyNpcPresetEmptyItem =
+          BuiltInRegistries.ITEM.getValue(EASY_NPC_PRESET_EMPTY_RESOURCE_LOCATION);
+    }
+    return cachedEasyNpcPresetEmptyItem;
+  }
+
+  public static Item getEasyNPCPresetItem() {
+    if (cachedEasyNpcPresetItem == null) {
+      cachedEasyNpcPresetItem = BuiltInRegistries.ITEM.getValue(EASY_NPC_PRESET_RESOURCE_LOCATION);
+    }
+    return cachedEasyNpcPresetItem;
   }
 
   public static boolean isPlayerHoldingMoveEasyNPC(Player player) {

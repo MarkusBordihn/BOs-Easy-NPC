@@ -23,27 +23,17 @@ import de.markusbordihn.easynpc.client.model.EasyNPCModel;
 import de.markusbordihn.easynpc.client.model.EasyNPCModelManager;
 import de.markusbordihn.easynpc.client.renderer.entity.state.EasyNPCRenderStateExtension;
 import de.markusbordihn.easynpc.data.model.ModelPartType;
-import net.minecraft.client.model.animal.equine.HorseModel;
+import net.minecraft.client.model.animal.equine.AbstractEquineModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.entity.state.EquineRenderState;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(HorseModel.class)
+@Mixin(AbstractEquineModel.class)
 public class EasyNPCHorseModelMixin<T extends EquineRenderState> {
-
-  @Shadow @Final protected ModelPart headParts;
-  @Shadow @Final protected ModelPart body;
-  @Shadow @Final private ModelPart rightHindLeg;
-  @Shadow @Final private ModelPart leftHindLeg;
-  @Shadow @Final private ModelPart rightFrontLeg;
-  @Shadow @Final private ModelPart leftFrontLeg;
-  @Shadow @Final private ModelPart tail;
 
   @Unique private EasyNPCModelManager easyNPC$modelManager;
 
@@ -51,13 +41,13 @@ public class EasyNPCHorseModelMixin<T extends EquineRenderState> {
   private void easyNpcModel(ModelPart modelPart, CallbackInfo callbackInfo) {
     this.easyNPC$modelManager =
         new EasyNPCModelManager(modelPart)
-            .defineModelPart(ModelPartType.HEAD, this.headParts)
-            .defineModelPart(ModelPartType.BODY, this.body)
-            .defineModelPart(ModelPartType.RIGHT_FRONT_LEG, this.rightFrontLeg)
-            .defineModelPart(ModelPartType.LEFT_FRONT_LEG, this.leftFrontLeg)
-            .defineModelPart(ModelPartType.RIGHT_HIND_LEG, this.rightHindLeg)
-            .defineModelPart(ModelPartType.LEFT_HIND_LEG, this.leftHindLeg)
-            .defineModelPart(ModelPartType.TAIL, this.tail);
+            .defineModelPart(ModelPartType.HEAD, "head_parts")
+            .defineModelPart(ModelPartType.BODY, "body")
+            .defineModelPart(ModelPartType.RIGHT_FRONT_LEG, "right_front_leg")
+            .defineModelPart(ModelPartType.LEFT_FRONT_LEG, "left_front_leg")
+            .defineModelPart(ModelPartType.RIGHT_HIND_LEG, "right_hind_leg")
+            .defineModelPart(ModelPartType.LEFT_HIND_LEG, "left_hind_leg")
+            .defineModelPart(ModelPartType.TAIL, modelPart.getChild("body").getChild("tail"));
   }
 
   @Inject(

@@ -1,9 +1,30 @@
+/*
+ * Copyright 2023 Markus Bordihn
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+ * associated documentation files (the "Software"), to deal in the Software without restriction,
+ * including without limitation the rights to use, copy, modify, merge, publish, distribute,
+ * sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all copies or
+ * substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
+ * NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+
 package de.markusbordihn.easynpc.client.renderer.entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
 import de.markusbordihn.easynpc.client.renderer.entity.state.EasyNPCRenderStateExtension;
 import de.markusbordihn.easynpc.client.texture.LivingEntityTextureManager;
 import de.markusbordihn.easynpc.data.model.ModelPartType;
+import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.data.scale.CustomScale;
 import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
@@ -102,6 +123,40 @@ public class EasyNPCLivingEntityRenderer {
           easyNPCRenderer.supportsPlayerSkins()
               ? extractEntityPlayerTexture(easyNPC, defaultTexture)
               : extractEntityTexture(easyNPC, defaultTexture));
+    }
+  }
+
+  public static void handleRotation(LivingEntityRenderState renderState, PoseStack poseStack) {
+    handleRotation(getEasyNPC(renderState), poseStack);
+  }
+
+  public static void handleRotation(EasyNPC<?> easyNPC, PoseStack poseStack) {
+    if (easyNPC == null || poseStack == null) {
+      return;
+    }
+
+    ModelDataCapable<?> modelData = easyNPC.getEasyNPCModelData();
+    if (modelData == null) {
+      return;
+    }
+
+    CustomRotation rootRotation = modelData.getModelPartRotation(ModelPartType.ROOT);
+    if (rootRotation == null) {
+      return;
+    }
+
+    float xDeg = (float) Math.toDegrees(rootRotation.x());
+    float zDeg = (float) Math.toDegrees(rootRotation.z());
+
+    if (xDeg != 0.0f || zDeg != 0.0f) {
+      poseStack.translate(0.0f, 0.5f, 0.0f);
+      if (xDeg != 0.0f) {
+        poseStack.mulPose(Axis.XP.rotationDegrees(xDeg));
+      }
+      if (zDeg != 0.0f) {
+        poseStack.mulPose(Axis.ZP.rotationDegrees(zDeg));
+      }
+      poseStack.translate(0.0f, -0.5f, 0.0f);
     }
   }
 }

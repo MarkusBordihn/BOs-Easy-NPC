@@ -169,6 +169,9 @@ public class DefaultPoseConfigurationScreen<T extends ConfigurationMenu>
                 }));
 
     this.checkPoseButtonState(this.getEasyNPCEntity().getPose(), this.modelData.getModelPose());
+
+    // Follow Cursor Toggle Button
+    this.createFollowCursorToggleButton(this.contentLeftPos + 149, this.contentTopPos);
   }
 
   @Override
@@ -182,12 +185,14 @@ public class DefaultPoseConfigurationScreen<T extends ConfigurationMenu>
     this.getEasyNPCEntity().setInvisible(false);
 
     // Render Entity
+    EntityRenderConfig renderConfig =
+        EntityRenderConfig.guiScaled(this.contentLeftPos + 80, this.contentTopPos + 110, 36);
     EntityConfigScreenRenderer.renderEntityRaw(
         guiGraphics,
         this.getEasyNPC(),
-        EntityRenderConfig.guiScaled(this.contentLeftPos + 80, this.contentTopPos + 110, 36),
-        this.xMouse,
-        this.yMouse);
+        renderConfig,
+        this.getPreviewRotationYaw(this.xMouse, renderConfig),
+        this.getPreviewRotationPitch(this.yMouse, renderConfig));
 
     // Restore entity information
     this.getEasyNPCEntity().setInvisible(entityInvisible);

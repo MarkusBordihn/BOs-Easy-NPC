@@ -109,6 +109,13 @@ public class EasyNPCLivingEntityRendererMixin {
     }
   }
 
+  @Inject(method = "scale", at = @At("HEAD"))
+  private void onScale(LivingEntityRenderState renderState, PoseStack poseStack, CallbackInfo ci) {
+    if (renderState instanceof EasyNPCRenderStateExtension) {
+      EasyNPCLivingEntityRenderer.handleRotation(renderState, poseStack);
+    }
+  }
+
   @Inject(
       method = "shouldShowName(Lnet/minecraft/world/entity/LivingEntity;D)Z",
       at = @At("HEAD"),
