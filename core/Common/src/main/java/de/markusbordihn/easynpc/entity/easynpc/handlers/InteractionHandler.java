@@ -70,6 +70,12 @@ public class InteractionHandler {
         return InteractionResult.PASS;
       }
 
+      // Handle Easy NPC Preset Items
+      if (handItem.equals(ItemUtils.getEasyNPCPresetEmptyItem())
+          || handItem.equals(ItemUtils.getEasyNPCPresetItem())) {
+        return InteractionResult.PASS;
+      }
+
       // Handle Armourer's Workshop items like the NPC wand.
       if (Constants.MOD_ARMOURERS_WORKSHOP_ID.equals(
           BuiltInRegistries.ITEM.getKey(handItem).getNamespace())) {

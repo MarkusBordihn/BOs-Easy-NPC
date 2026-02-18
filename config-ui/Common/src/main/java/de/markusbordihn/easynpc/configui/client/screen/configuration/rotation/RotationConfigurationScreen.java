@@ -68,14 +68,14 @@ public class RotationConfigurationScreen<T extends ConfigurationMenu>
     Graphics.blit(
         guiGraphics, Constants.TEXTURE_DEMO_BACKGROUND, leftPos + 213, topPos, 132, 0, 120, 27);
     Graphics.blit(
-        guiGraphics, Constants.TEXTURE_DEMO_BACKGROUND, leftPos, topPos + 27, 0, 130, 220, 40);
+        guiGraphics, Constants.TEXTURE_DEMO_BACKGROUND, leftPos, topPos + 27, 0, 137, 220, 40);
     Graphics.blit(
         guiGraphics,
         Constants.TEXTURE_DEMO_BACKGROUND,
         leftPos + 213,
         topPos + 27,
         132,
-        130,
+        137,
         120,
         40);
   }

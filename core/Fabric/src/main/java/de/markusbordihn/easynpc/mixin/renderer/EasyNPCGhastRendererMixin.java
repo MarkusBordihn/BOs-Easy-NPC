@@ -39,6 +39,7 @@ public class EasyNPCGhastRendererMixin {
   protected void onScale(Ghast entity, PoseStack poseStack, float scale, CallbackInfo ci) {
     if (entity instanceof EasyNPC<?> easyNPC) {
       EasyNPCLivingEntityRenderer.handleScale(easyNPC, poseStack);
+      EasyNPCLivingEntityRenderer.handleRotation(easyNPC, poseStack);
     }
   }
 }

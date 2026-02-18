@@ -57,6 +57,7 @@ public class EasyNPCSlimeRendererMixin {
   protected void onScale(Slime entity, PoseStack poseStack, float scale, CallbackInfo ci) {
     if (entity instanceof EasyNPC<?> easyNPC) {
       EasyNPCLivingEntityRenderer.handleScale(easyNPC, poseStack);
+      EasyNPCLivingEntityRenderer.handleRotation(easyNPC, poseStack);
     }
   }
 }

@@ -10,6 +10,7 @@
     "model.EasyNPCCreeperModelMixin",
     "model.EasyNPCFoxModelMixin",
     "model.EasyNPCGhastModelMixin",
+    "model.EasyNPCHorseModelMixin",
     "model.EasyNPCHumanoidModelMixin",
     "model.EasyNPCIllagerModelMixin",
     "model.EasyNPCIronGolemModelMixin",

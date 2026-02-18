@@ -8,6 +8,23 @@ For the full changelog, please go to the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 6.8.3
+
+- Fixed #680 by enforcing version miss-match by upgrading network protocol version.
+- Fixed #679 by resetting position, rotation and size for name tag.
+- Fixed #665 by adding multi state slide for root rotations.
+- Fixed #664 by adding option to disable following mouse cursor for easier posing.
+- Fixed #663 by improve support for X and Z root rotations.
+- Fixed #661 by adding quick rotation with NPC wand and sneaking to the NPC to rotate the root to
+  face the player.
+- Fixed move tool is wrongly triggering interactions by adding check for move tool in interaction
+  handler.
+- Fixed Preset Item is wrongly triggering interactions by adding check for preset item in
+  interaction handler.
+- Fixed Slime and Ghast hitbox and name tag position issues by adjusting bounding box and eye height
+  calculations.
+- Fixed Slime and Ghast GUI position by adjusting offset values.
+
 ### 6.8.2
 
 - Fixed #677 by extending `SafeMerchantData` with notifyTrade to avoid crashes.

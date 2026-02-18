@@ -20,14 +20,12 @@
 package de.markusbordihn.easynpc.client.model;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Axis;
 import de.markusbordihn.easynpc.client.model.armpose.ModelArmPoseUtils;
 import de.markusbordihn.easynpc.data.display.DisplayAttributeType;
 import de.markusbordihn.easynpc.data.model.ModelAnimationBehavior;
 import de.markusbordihn.easynpc.data.model.ModelArmPose;
 import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.model.ModelPose;
-import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.DisplayAttributeDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
@@ -92,17 +90,9 @@ public class EasyNPCModel {
 
   public static void renderEntityNameTag(
       final EasyNPC<?> easyNPC, final ModelDataCapable<?> modelData, final PoseStack poseStack) {
-    if (easyNPC == null || modelData == null) {
-      return;
-    }
-    CustomRotation rootRotation = modelData.getModelPartRotation(ModelPartType.ROOT);
-    if (rootRotation != null) {
-      poseStack.translate(0, 1, 0);
-      poseStack.mulPose(Axis.XP.rotationDegrees(-rootRotation.x()));
-      poseStack.mulPose(Axis.YP.rotationDegrees(-rootRotation.y()));
-      poseStack.mulPose(Axis.ZP.rotationDegrees(-rootRotation.z()));
-      poseStack.translate(0, -1, 0);
-    }
+    // No-op: The name tag renders after LivingEntityRenderer.render() calls popPose(),
+    // so the PoseStack is already clean. No counter-rotation is needed.
+    // The name tag always faces the camera via vanilla's cameraOrientation() billboard.
   }
 
   public static void setupAnimationEnd(
