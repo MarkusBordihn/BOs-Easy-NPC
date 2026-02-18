@@ -41,6 +41,7 @@ import net.minecraft.world.entity.player.Inventory;
 
 public class PoseConfigurationScreen<T extends ConfigurationMenu> extends ConfigurationScreen<T> {
 
+  protected static boolean followCursor = true;
   protected final ModelDataCapable<?> modelData;
   protected Button defaultPoseButton;
   protected Button basicPoseButton;
@@ -72,6 +73,19 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
                 NetworkMessageHandlerManager.getServerHandler()
                     .modelAnimationBehaviorChange(this.getEasyNPCUUID(), behavior);
               }
+            }));
+  }
+
+  protected Button createFollowCursorToggleButton(int x, int y) {
+    return this.addRenderableWidget(
+        new TextButton(
+            x,
+            y,
+            20,
+            TextComponent.getText(followCursor ? "👁" : "⊙"),
+            button -> {
+              followCursor = !followCursor;
+              button.setMessage(TextComponent.getText(followCursor ? "👁" : "⊙"));
             }));
   }
 
@@ -490,5 +504,13 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
                 button ->
                     NetworkMessageHandlerManager.getServerHandler()
                         .openConfiguration(this.getEasyNPCUUID(), ConfigurationType.CUSTOM_POSE)));
+  }
+
+  protected float getPreviewRotationYaw(float mouseRelativeYaw) {
+    return followCursor ? mouseRelativeYaw : 0.0f;
+  }
+
+  protected float getPreviewRotationPitch(float mouseRelativePitch) {
+    return followCursor ? mouseRelativePitch : 0.0f;
   }
 }

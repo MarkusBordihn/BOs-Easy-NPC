@@ -389,5 +389,6 @@
   "text.easy_npc.config.yes_no_dialog.title": "Yes/No Dialog",
   "text.easy_npc.config.zombie_attack": "Zombie Attack",
   "text.easy_npc.invalid_remote_image": "The remote image is invalid or not accessible!\nPleas check the URL and try again.",
-  "text.easy_npc_config_ui.item.easy_npc_wand": "The EasyNPC wand is a configuration tool for Easy NPCs that allows for easier selection and configuration of NPCs without having to directly target them."
+  "text.easy_npc_config_ui.item.easy_npc_wand": "The EasyNPC wand is a configuration tool for Easy NPCs that allows for easier selection and configuration of NPCs without having to directly target them.",
+  "text.easy_npc_config_ui.item.easy_npc_wand.rotation_hint": "Shift+Right-Click on an NPC to quickly rotate it to face you."
 }

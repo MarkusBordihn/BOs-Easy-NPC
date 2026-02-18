@@ -87,7 +87,7 @@ public class GhastBase extends GhastRaw implements BaseEasyNPC<GhastRaw> {
 
   @Override
   public int getEntityDialogTop() {
-    return -80;
+    return -55;
   }
 
   @Override

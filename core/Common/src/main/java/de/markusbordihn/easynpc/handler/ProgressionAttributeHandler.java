@@ -90,7 +90,7 @@ public class ProgressionAttributeHandler {
     log.debug("Removing level-based attribute modifiers for {}", easyNPC);
     removeAttributeModifier(easyNPC, Attributes.MAX_HEALTH, HEALTH_MODIFIER_UUID);
     removeAttributeModifier(easyNPC, Attributes.ATTACK_DAMAGE, ATTACK_DAMAGE_MODIFIER_UUID);
-    
+
     float currentHealth = easyNPC.getLivingEntity().getHealth();
     float maxHealth = easyNPC.getLivingEntity().getMaxHealth();
     if (currentHealth > maxHealth) {

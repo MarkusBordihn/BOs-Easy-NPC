@@ -718,13 +718,21 @@ public class NPCRawTemplate extends Zombie implements EasyNPCBase<Zombie> {
 
   @Override
   public EntityDimensions getDimensions(Pose pose) {
-    CustomScale rootScale = getModelPartScale(ModelPartType.ROOT);
-    if (rootScale.x() != 1.0f || rootScale.y() != 1.0f) {
-      EntityDimensions baseDimensions = super.getDimensions(pose);
-      return baseDimensions.scale(rootScale.x(), rootScale.y());
+    EntityDimensions baseDimensions = super.getDimensions(pose);
+
+    // Default model scale
+    CustomScale defaultScale = getDefaultModelScale();
+    if (defaultScale != null && defaultScale.hasChanged()) {
+      baseDimensions = baseDimensions.scale(defaultScale.x(), defaultScale.y());
     }
 
-    return super.getDimensions(pose);
+    // Root scale
+    CustomScale rootScale = getModelPartScale(ModelPartType.ROOT);
+    if (rootScale.x() != 1.0f || rootScale.y() != 1.0f) {
+      baseDimensions = baseDimensions.scale(rootScale.x(), rootScale.y());
+    }
+
+    return baseDimensions;
   }
 
   // TEMPLATE_INSERT:METHODS

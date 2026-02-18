@@ -20,8 +20,8 @@
 package de.markusbordihn.easynpc.configui.client.screen.configuration.rotation;
 
 import de.markusbordihn.easynpc.client.screen.components.Checkbox;
+import de.markusbordihn.easynpc.client.screen.components.RangeSliderButton;
 import de.markusbordihn.easynpc.client.screen.components.SliderButton;
-import de.markusbordihn.easynpc.client.screen.components.SliderButton.Type;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
@@ -31,28 +31,24 @@ import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
 public class DefaultRotationConfigurationScreen<T extends ConfigurationMenu>
     extends RotationConfigurationScreen<T> {
 
-  protected Button rootRotationXResetButton;
-  protected Button rootRotationYResetButton;
-  protected Button rootRotationZResetButton;
-  protected SliderButton rootRotationXSliderButton;
-  protected SliderButton rootRotationYSliderButton;
-  protected SliderButton rootRotationZSliderButton;
   protected Checkbox rootRotationCheckbox;
-  protected float rootRotationX = 0f;
-  protected float rootRotationY = 0f;
-  protected float rootRotationZ = 0f;
 
   public DefaultRotationConfigurationScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
     this.showCloseButton = true;
     this.renderBackground = false;
+  }
+
+  private void sendRotationUpdate(float x, float y, float z) {
+    NetworkMessageHandlerManager.getServerHandler()
+        .modelRotationChange(
+            this.getEasyNPCUUID(), ModelPartType.ROOT, new CustomRotation(x, y, z));
   }
 
   @Override
@@ -65,109 +61,107 @@ public class DefaultRotationConfigurationScreen<T extends ConfigurationMenu>
     // Root Rotations
     ModelDataCapable<?> modelData = this.getEasyNPC().getEasyNPCModelData();
     CustomRotation rootRotation = modelData.getModelPartRotation(ModelPartType.ROOT);
-    this.rootRotationX = rootRotation.x();
-    this.rootRotationY = rootRotation.y();
-    this.rootRotationZ = rootRotation.z();
+
+    int sliderWidth = 80;
+    int sliderHeight = 16;
+    int sliderLeftPosition = this.contentLeftPos + 10;
+    int sliderTopPosition = this.contentTopPos;
 
     // Root Rotation X
-    this.rootRotationXSliderButton =
+    RangeSliderButton sliderButtonX =
         this.addRenderableWidget(
-            new SliderButton(
-                this.contentLeftPos,
-                this.contentTopPos,
-                60,
-                "rootRotationX",
-                (float) Math.toDegrees(rootRotation.x()),
-                Type.DEGREE,
+            new RangeSliderButton(
+                sliderLeftPosition,
+                sliderTopPosition,
+                sliderWidth,
+                sliderHeight,
+                Math.toDegrees(rootRotation.x()),
+                0,
+                SliderButton.Type.DEGREE,
+                false,
                 slider -> {
-                  this.rootRotationX = (float) Math.toRadians(slider.getTargetValue());
-                  NetworkMessageHandlerManager.getServerHandler()
-                      .modelRotationChange(
-                          this.getEasyNPCUUID(),
-                          ModelPartType.ROOT,
-                          new CustomRotation(
-                              this.rootRotationX, this.rootRotationY, this.rootRotationZ));
-                }));
-    this.rootRotationXResetButton =
-        this.addRenderableWidget(
-            new TextButton(
-                this.rootRotationXSliderButton.getX() + this.rootRotationXSliderButton.getWidth(),
-                this.contentTopPos,
-                10,
-                TextComponent.getText("↺"),
-                button -> {
-                  this.rootRotationX = 0f;
-                  this.rootRotationXSliderButton.reset();
+                  CustomRotation current = modelData.getModelPartRotation(ModelPartType.ROOT);
+                  sendRotationUpdate(
+                      (float) Math.toRadians(slider.getTargetValue()), current.y(), current.z());
                 }));
 
-    // Root Rotation Y (Yaw)
-    this.rootRotationYSliderButton =
+    // Root Rotation Y
+    RangeSliderButton sliderButtonY =
         this.addRenderableWidget(
-            new SliderButton(
-                this.rootRotationXResetButton.getX() + this.rootRotationXResetButton.getWidth() + 5,
-                this.contentTopPos,
-                60,
-                "rootRotationY",
+            new RangeSliderButton(
+                sliderButtonX.getX() + sliderButtonX.getWidth(),
+                sliderTopPosition,
+                sliderWidth,
+                sliderHeight,
                 rootRotation.y(),
-                Type.DEGREE,
+                0,
+                SliderButton.Type.DEGREE,
+                false,
                 slider -> {
-                  this.rootRotationY = slider.getTargetValue();
-                  NetworkMessageHandlerManager.getServerHandler()
-                      .modelRotationChange(
-                          this.getEasyNPCUUID(),
-                          ModelPartType.ROOT,
-                          new CustomRotation(
-                              this.rootRotationX, this.rootRotationY, this.rootRotationZ));
-                }));
-    this.rootRotationYResetButton =
-        this.addRenderableWidget(
-            new TextButton(
-                this.rootRotationYSliderButton.getX() + this.rootRotationYSliderButton.getWidth(),
-                this.contentTopPos,
-                10,
-                TextComponent.getText("↺"),
-                button -> {
-                  this.rootRotationY = 0f;
-                  this.rootRotationYSliderButton.reset();
+                  CustomRotation current = modelData.getModelPartRotation(ModelPartType.ROOT);
+                  sendRotationUpdate(current.x(), slider.getTargetValue(), current.z());
                 }));
 
     // Root Rotation Z
-    this.rootRotationZSliderButton =
+    RangeSliderButton sliderButtonZ =
         this.addRenderableWidget(
-            new SliderButton(
-                this.rootRotationYResetButton.getX() + this.rootRotationYResetButton.getWidth() + 5,
-                this.contentTopPos,
-                60,
-                "rootRotationZ",
-                (float) Math.toDegrees(rootRotation.z()),
-                Type.DEGREE,
+            new RangeSliderButton(
+                sliderButtonY.getX() + sliderButtonY.getWidth(),
+                sliderTopPosition,
+                sliderWidth,
+                sliderHeight,
+                Math.toDegrees(rootRotation.z()),
+                0,
+                SliderButton.Type.DEGREE,
+                false,
                 slider -> {
-                  this.rootRotationZ = (float) Math.toRadians(slider.getTargetValue());
-                  NetworkMessageHandlerManager.getServerHandler()
-                      .modelRotationChange(
-                          this.getEasyNPCUUID(),
-                          ModelPartType.ROOT,
-                          new CustomRotation(
-                              this.rootRotationX, this.rootRotationY, this.rootRotationZ));
+                  CustomRotation current = modelData.getModelPartRotation(ModelPartType.ROOT);
+                  sendRotationUpdate(
+                      current.x(), current.y(), (float) Math.toRadians(slider.getTargetValue()));
                 }));
-    this.rootRotationZResetButton =
-        this.addRenderableWidget(
-            new TextButton(
-                this.rootRotationZSliderButton.getX() + this.rootRotationZSliderButton.getWidth(),
-                this.contentTopPos,
-                10,
-                TextComponent.getText("↺"),
-                button -> {
-                  this.rootRotationZ = 0f;
-                  this.rootRotationZSliderButton.reset();
-                }));
+
+    // Edit / Done Button
+    this.addRenderableWidget(
+        new TextButton(
+            this.contentLeftPos,
+            sliderTopPosition,
+            10,
+            RangeSliderButton.EDIT_TEXT,
+            button -> {
+              if (button.getMessage() == RangeSliderButton.EDIT_TEXT) {
+                sliderButtonX.showTextField();
+                sliderButtonY.showTextField();
+                sliderButtonZ.showTextField();
+                button.setMessage(RangeSliderButton.DONE_TEXT);
+              } else {
+                sliderButtonX.showSliderButton();
+                sliderButtonY.showSliderButton();
+                sliderButtonZ.showSliderButton();
+                button.setMessage(RangeSliderButton.EDIT_TEXT);
+              }
+            }));
+
+    // Reset Button
+    int resetButtonLeftPosition = sliderButtonZ.getX() + sliderButtonZ.getWidth();
+    this.addRenderableWidget(
+        new TextButton(
+            resetButtonLeftPosition,
+            sliderTopPosition,
+            10,
+            TextComponent.getText("↺"),
+            button -> {
+              sliderButtonX.reset();
+              sliderButtonY.reset();
+              sliderButtonZ.reset();
+              sendRotationUpdate(0, 0, 0);
+            }));
 
     // Lock Root Rotation Checkbox
     this.rootRotationCheckbox =
         this.addRenderableWidget(
             new Checkbox(
-                this.rootRotationZResetButton.getX() + this.rootRotationZResetButton.getWidth() + 5,
-                this.contentTopPos + 2,
+                resetButtonLeftPosition + 15,
+                sliderTopPosition + 1,
                 "lock_rotation",
                 modelData.getModelPartRotation(ModelPartType.ROOT).locked(),
                 checkbox ->
@@ -195,30 +189,10 @@ public class DefaultRotationConfigurationScreen<T extends ConfigurationMenu>
   public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
     super.render(guiGraphics, x, y, partialTicks);
 
-    // Rotation Text
-    if (rootRotationXSliderButton != null) {
-      Text.drawString(
-          guiGraphics,
-          this.font,
-          "Rotation X",
-          this.rootRotationXSliderButton.getX() + 5,
-          this.rootRotationXSliderButton.getY() + 25);
-    }
-    if (rootRotationYSliderButton != null) {
-      Text.drawString(
-          guiGraphics,
-          this.font,
-          "Rotation Y",
-          this.rootRotationYSliderButton.getX() + 5,
-          this.rootRotationYSliderButton.getY() + 25);
-    }
-    if (rootRotationZSliderButton != null) {
-      Text.drawString(
-          guiGraphics,
-          this.font,
-          "Rotation Z",
-          this.rootRotationZSliderButton.getX() + 5,
-          this.rootRotationZSliderButton.getY() + 25);
-    }
+    // Rotation axis labels
+    int labelYPosition = this.contentTopPos + 19;
+    Text.drawString(guiGraphics, this.font, "X", this.contentLeftPos + 45, labelYPosition);
+    Text.drawString(guiGraphics, this.font, "Y", this.contentLeftPos + 125, labelYPosition);
+    Text.drawString(guiGraphics, this.font, "Z", this.contentLeftPos + 210, labelYPosition);
   }
 }

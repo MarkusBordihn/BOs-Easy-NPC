@@ -112,6 +112,9 @@ public class CustomPoseConfigurationScreen<T extends ConfigurationMenu>
     // Animation Behavior Button
     this.addRenderableWidget(
         this.createAnimationBehaviorButton(this.contentLeftPos + 118, this.bottomPos - 26));
+
+    // Follow Cursor Toggle Button
+    this.createFollowCursorToggleButton(this.contentLeftPos + 149, this.topPos + 38);
   }
 
   @Override
@@ -126,8 +129,8 @@ public class CustomPoseConfigurationScreen<T extends ConfigurationMenu>
             this.contentLeftPos + 157,
             this.contentTopPos + 165,
             45,
-            this.contentLeftPos + 150 - this.xMouse,
-            this.contentTopPos + 100 - this.yMouse));
+            this.getPreviewRotationYaw(this.contentLeftPos + 150 - this.xMouse),
+            this.getPreviewRotationPitch(this.contentTopPos + 100 - this.yMouse)));
 
     // Model Part texts
     for (ModelPartType modelPartType : sliders.keySet()) {

@@ -74,7 +74,7 @@ public record NPCEntityMetadata(
     String entityType = tag.contains(TAG_ENTITY_TYPE) ? tag.getString(TAG_ENTITY_TYPE) : null;
     String dimension = tag.contains(TAG_DIMENSION) ? tag.getString(TAG_DIMENSION) : null;
     UUID presetUUID = tag.contains(TAG_PRESET_UUID) ? tag.getUUID(TAG_PRESET_UUID) : null;
-    
+
     ResourceLocation customIdentifier = null;
     if (tag.contains(TAG_CUSTOM_IDENTIFIER)) {
       try {

@@ -24,12 +24,14 @@ import de.markusbordihn.easynpc.configui.menu.MenuManager;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPCBase;
+import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -92,6 +94,22 @@ public class EasyNPCWandItem extends Item {
       InteractionHand interactionHand) {
     if (player instanceof ServerPlayer serverPlayer
         && livingEntity instanceof EasyNPCBase<?> easyNPCEntity) {
+
+      // Shift+right-click: Quick rotate NPC to face the player.
+      if (player.isShiftKeyDown()) {
+        ModelDataCapable<?> modelData = easyNPCEntity.getEasyNPCModelData();
+        if (modelData != null) {
+          double dx = player.getX() - livingEntity.getX();
+          double dz = player.getZ() - livingEntity.getZ();
+          float yaw = (float) Math.toDegrees(Mth.atan2(dz, dx)) - 90.0f;
+          yaw = Mth.wrapDegrees(yaw);
+          modelData.setModelRotation(yaw);
+          serverPlayer.displayClientMessage(
+              Component.literal("Rotation: " + String.format("%.1f", yaw) + "°"), true);
+        }
+        return InteractionResult.SUCCESS;
+      }
+
       MenuManager.getMenuHandler()
           .openConfigurationMenu(ConfigurationType.MAIN, serverPlayer, easyNPCEntity, 0);
       return InteractionResult.SUCCESS;
@@ -163,5 +181,7 @@ public class EasyNPCWandItem extends Item {
   public void appendHoverText(
       ItemStack itemStack, Level level, List<Component> tooltipList, TooltipFlag tooltipFlag) {
     tooltipList.add(TextComponent.getTranslatedTextRaw(Constants.TEXT_ITEM_PREFIX + ID));
+    tooltipList.add(
+        TextComponent.getTranslatedTextRaw(Constants.TEXT_ITEM_PREFIX + ID + ".rotation_hint"));
   }
 }

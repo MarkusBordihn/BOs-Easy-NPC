@@ -29,7 +29,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
@@ -139,7 +138,7 @@ public class NPCFileStorage {
         savedCount++;
       }
     }
-    
+
     if (savedCount > 0) {
       log.info("Saved {} dirty NPC files out of {}", savedCount, snapshot.size());
     }

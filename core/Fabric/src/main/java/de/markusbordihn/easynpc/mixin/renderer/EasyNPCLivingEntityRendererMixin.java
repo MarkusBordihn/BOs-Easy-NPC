@@ -93,6 +93,7 @@ public class EasyNPCLivingEntityRendererMixin {
   private void onScale(LivingEntity entity, PoseStack poseStack, float scale, CallbackInfo ci) {
     if (entity instanceof EasyNPC<?> easyNPC) {
       EasyNPCLivingEntityRenderer.handleScale(easyNPC, poseStack);
+      EasyNPCLivingEntityRenderer.handleRotation(easyNPC, poseStack);
     }
   }
 }
