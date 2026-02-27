@@ -26,6 +26,7 @@ import de.markusbordihn.easynpc.entity.easynpc.ai.goal.CrossbowAttackGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.CustomLookAtPlayerGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.CustomMeleeAttackGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.CustomOwnerHurtByTargetGoal;
+import de.markusbordihn.easynpc.entity.easynpc.ai.goal.CustomPanicGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.FollowLivingEntityGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.GunAttackGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.MoveBackToHomeGoal;
@@ -33,11 +34,12 @@ import de.markusbordihn.easynpc.entity.easynpc.ai.goal.RandomStrollAroundGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.RandomStrollAroundHomeGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.ResetLookAtPlayerGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.ZombieAttackGoal;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.FleeSunGoal;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.Goal;
@@ -45,10 +47,10 @@ import net.minecraft.world.entity.ai.goal.GolemRandomStrollInVillageGoal;
 import net.minecraft.world.entity.ai.goal.MoveBackToVillageGoal;
 import net.minecraft.world.entity.ai.goal.MoveThroughVillageGoal;
 import net.minecraft.world.entity.ai.goal.OpenDoorGoal;
-import net.minecraft.world.entity.ai.goal.PanicGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.RandomSwimmingGoal;
 import net.minecraft.world.entity.ai.goal.RestrictSunGoal;
+import net.minecraft.world.entity.ai.goal.TemptGoal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
@@ -58,6 +60,8 @@ import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.npc.villager.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.crafting.Ingredient;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -67,10 +71,9 @@ public class ObjectiveUtils {
 
   private ObjectiveUtils() {}
 
-  private static boolean requiresPathfinderMob(
-      PathfinderMob pathfinderMob, ObjectiveType objectiveType, EasyNPC<?> easyNPC) {
-    if (pathfinderMob == null) {
-      log.warn(
+  private static boolean requiresPathfinderMob(ObjectiveType objectiveType, EasyNPC<?> easyNPC) {
+    if (easyNPC.getPathfinderMob() == null) {
+      log.debug(
           "Entity {} is not a PathfinderMob, cannot use {} objective!",
           easyNPC.getEntity(),
           objectiveType);
@@ -82,7 +85,6 @@ public class ObjectiveUtils {
   public static Goal createObjectiveGoal(
       ObjectiveDataEntry objectiveDataEntry, EasyNPC<?> easyNPC) {
     Entity targetOwner = objectiveDataEntry.getTargetOwner(easyNPC);
-    PathfinderMob pathfinderMob = easyNPC.getPathfinderMob();
     ObjectiveType objectiveType = objectiveDataEntry.getType();
 
     switch (objectiveType) {
@@ -134,20 +136,37 @@ public class ObjectiveUtils {
               objectiveDataEntry);
         }
         break;
+      case FOLLOW_ITEM:
+        if (!requiresPathfinderMob(objectiveType, easyNPC)) {
+          return null;
+        }
+        String itemTag = objectiveDataEntry.getTargetItemTag();
+        if (itemTag != null && !itemTag.isEmpty()) {
+          Item item = BuiltInRegistries.ITEM.getOptional(Identifier.parse(itemTag)).orElse(null);
+          if (item != null && item != net.minecraft.world.item.Items.AIR) {
+            return new TemptGoal(
+                easyNPC.getPathfinderMob(),
+                objectiveDataEntry.getSpeedModifier(),
+                Ingredient.of(item),
+                false);
+          }
+          log.debug("Unable to find item {} for {}!", itemTag, objectiveDataEntry);
+        }
+        break;
       case RANDOM_STROLL:
         return new RandomStrollAroundGoal<>(easyNPC, objectiveDataEntry.getSpeedModifier());
       case WATER_AVOIDING_RANDOM_STROLL:
-        if (!requiresPathfinderMob(pathfinderMob, objectiveType, easyNPC)) {
-          return null;
+        if (easyNPC.getPathfinderMob() != null) {
+          return new WaterAvoidingRandomStrollGoal(
+              easyNPC.getPathfinderMob(), objectiveDataEntry.getSpeedModifier());
         }
-        return new WaterAvoidingRandomStrollGoal(
-            pathfinderMob, objectiveDataEntry.getSpeedModifier());
+        return new RandomStrollAroundGoal<>(easyNPC, objectiveDataEntry.getSpeedModifier());
       case MOVE_THROUGH_VILLAGE:
-        if (!requiresPathfinderMob(pathfinderMob, objectiveType, easyNPC)) {
+        if (!requiresPathfinderMob(objectiveType, easyNPC)) {
           return null;
         }
         return new MoveThroughVillageGoal(
-            pathfinderMob,
+            easyNPC.getPathfinderMob(),
             objectiveDataEntry.getSpeedModifier(),
             objectiveDataEntry.getOnlyAtNight(),
             objectiveDataEntry.getDistanceToPoi(),
@@ -156,27 +175,27 @@ public class ObjectiveUtils {
         return new MoveBackToHomeGoal<>(
             easyNPC, objectiveDataEntry.getSpeedModifier(), objectiveDataEntry.getStopDistance());
       case MOVE_BACK_TO_VILLAGE:
-        if (!requiresPathfinderMob(pathfinderMob, objectiveType, easyNPC)) {
+        if (!requiresPathfinderMob(objectiveType, easyNPC)) {
           return null;
         }
         return new MoveBackToVillageGoal(
-            pathfinderMob, objectiveDataEntry.getSpeedModifier(), false);
+            easyNPC.getPathfinderMob(), objectiveDataEntry.getSpeedModifier(), false);
       case RANDOM_STROLL_AROUND_HOME:
         return new RandomStrollAroundHomeGoal<>(easyNPC, objectiveDataEntry.getSpeedModifier());
       case RANDOM_STROLL_IN_VILLAGE:
-        if (!requiresPathfinderMob(pathfinderMob, objectiveType, easyNPC)) {
+        if (!requiresPathfinderMob(objectiveType, easyNPC)) {
           return null;
         }
         return new GolemRandomStrollInVillageGoal(
-            pathfinderMob, objectiveDataEntry.getSpeedModifier());
+            easyNPC.getPathfinderMob(), objectiveDataEntry.getSpeedModifier());
       case CROSSBOW_ATTACK:
-        if (!requiresPathfinderMob(pathfinderMob, objectiveType, easyNPC)) {
+        if (!requiresPathfinderMob(objectiveType, easyNPC)) {
           return null;
         }
         return new CrossbowAttackGoal<>(
             easyNPC, objectiveDataEntry.getSpeedModifier(), objectiveDataEntry.getAttackRadius());
       case BOW_ATTACK:
-        if (!requiresPathfinderMob(pathfinderMob, objectiveType, easyNPC)) {
+        if (!requiresPathfinderMob(objectiveType, easyNPC)) {
           return null;
         }
         return new BowAttackGoal<>(
@@ -185,19 +204,19 @@ public class ObjectiveUtils {
             objectiveDataEntry.getAttackInterval(),
             objectiveDataEntry.getAttackRadius());
       case MELEE_ATTACK:
-        if (!requiresPathfinderMob(pathfinderMob, objectiveType, easyNPC)) {
+        if (!requiresPathfinderMob(objectiveType, easyNPC)) {
           return null;
         }
         return new CustomMeleeAttackGoal<>(
             easyNPC, objectiveDataEntry.getSpeedModifier(), objectiveDataEntry.isMustSeeTarget());
       case ZOMBIE_ATTACK:
-        if (!requiresPathfinderMob(pathfinderMob, objectiveType, easyNPC)) {
+        if (!requiresPathfinderMob(objectiveType, easyNPC)) {
           return null;
         }
         return new ZombieAttackGoal<>(
             easyNPC, objectiveDataEntry.getSpeedModifier(), objectiveDataEntry.isMustSeeTarget());
       case GUN_ATTACK:
-        if (!requiresPathfinderMob(pathfinderMob, objectiveType, easyNPC)) {
+        if (!requiresPathfinderMob(objectiveType, easyNPC)) {
           return null;
         }
         return new GunAttackGoal<>(
@@ -206,26 +225,19 @@ public class ObjectiveUtils {
             objectiveDataEntry.getAttackInterval(),
             objectiveDataEntry.getAttackRadius());
       case RANDOM_SWIMMING:
-        if (!requiresPathfinderMob(pathfinderMob, objectiveType, easyNPC)) {
+        if (!requiresPathfinderMob(objectiveType, easyNPC)) {
           return null;
         }
         return new RandomSwimmingGoal(
-            pathfinderMob, objectiveDataEntry.getSpeedModifier(), objectiveDataEntry.getInterval());
+            easyNPC.getPathfinderMob(),
+            objectiveDataEntry.getSpeedModifier(),
+            objectiveDataEntry.getInterval());
       case FLOAT:
-        if (!requiresPathfinderMob(pathfinderMob, objectiveType, easyNPC)) {
-          return null;
-        }
-        return new FloatGoal(pathfinderMob);
+        return new FloatGoal(easyNPC.getMob());
       case OPEN_DOOR:
-        if (!requiresPathfinderMob(pathfinderMob, objectiveType, easyNPC)) {
-          return null;
-        }
-        return new OpenDoorGoal(pathfinderMob, false);
+        return new OpenDoorGoal(easyNPC.getMob(), false);
       case CLOSE_DOOR:
-        if (!requiresPathfinderMob(pathfinderMob, objectiveType, easyNPC)) {
-          return null;
-        }
-        return new OpenDoorGoal(pathfinderMob, true);
+        return new OpenDoorGoal(easyNPC.getMob(), true);
       case LOOK_AT_RESET:
         return new ResetLookAtPlayerGoal<>(easyNPC);
       case LOOK_AT_PLAYER:
@@ -247,22 +259,19 @@ public class ObjectiveUtils {
             objectiveDataEntry.getLookDistance(),
             objectiveDataEntry.getProbability());
       case LOOK_RANDOM_AROUND:
-        return new RandomLookAroundGoal(pathfinderMob);
+        return new RandomLookAroundGoal(easyNPC.getMob());
       case PANIC:
-        if (!requiresPathfinderMob(pathfinderMob, objectiveType, easyNPC)) {
-          return null;
-        }
-        return new PanicGoal(pathfinderMob, objectiveDataEntry.getSpeedModifier());
+        return new CustomPanicGoal<>(easyNPC, objectiveDataEntry.getSpeedModifier());
       case AVOID_SUN:
-        if (!requiresPathfinderMob(pathfinderMob, objectiveType, easyNPC)) {
+        if (!requiresPathfinderMob(objectiveType, easyNPC)) {
           return null;
         }
-        return new RestrictSunGoal(pathfinderMob);
+        return new RestrictSunGoal(easyNPC.getPathfinderMob());
       case FLEE_SUN:
-        if (!requiresPathfinderMob(pathfinderMob, objectiveType, easyNPC)) {
+        if (!requiresPathfinderMob(objectiveType, easyNPC)) {
           return null;
         }
-        return new FleeSunGoal(pathfinderMob, objectiveDataEntry.getSpeedModifier());
+        return new FleeSunGoal(easyNPC.getPathfinderMob(), objectiveDataEntry.getSpeedModifier());
       default:
         return null;
     }
@@ -271,28 +280,19 @@ public class ObjectiveUtils {
 
   public static Goal createObjectiveTarget(
       ObjectiveDataEntry objectiveDataEntry, EasyNPC<?> easyNPC) {
-    PathfinderMob pathfinderMob = easyNPC.getPathfinderMob();
+    Mob mob = easyNPC.getMob();
     ObjectiveType objectiveType = objectiveDataEntry.getType();
 
     switch (objectiveType) {
       case ATTACK_ANIMAL:
-        if (!requiresPathfinderMob(pathfinderMob, objectiveType, easyNPC)) {
-          return null;
-        }
         return new NearestAttackableTargetGoal<>(
-            pathfinderMob, Animal.class, objectiveDataEntry.isMustSeeTarget());
+            mob, Animal.class, objectiveDataEntry.isMustSeeTarget());
       case ATTACK_PLAYER:
-        if (!requiresPathfinderMob(pathfinderMob, objectiveType, easyNPC)) {
-          return null;
-        }
         return new NearestAttackableTargetGoal<>(
-            pathfinderMob, Player.class, objectiveDataEntry.isMustSeeTarget());
+            mob, Player.class, objectiveDataEntry.isMustSeeTarget());
       case ATTACK_PLAYER_WITHOUT_OWNER:
-        if (!requiresPathfinderMob(pathfinderMob, objectiveType, easyNPC)) {
-          return null;
-        }
         return new NearestAttackableTargetGoal<>(
-            pathfinderMob,
+            mob,
             Player.class,
             objectiveDataEntry.getInterval(),
             objectiveDataEntry.isMustSeeTarget(),
@@ -301,46 +301,34 @@ public class ObjectiveUtils {
                 easyNPC.getEasyNPCOwnerData() != null
                     && entity != easyNPC.getEasyNPCOwnerData().getOwner());
       case ATTACK_MONSTER:
-        if (!requiresPathfinderMob(pathfinderMob, objectiveType, easyNPC)) {
-          return null;
-        }
         return new NearestAttackableTargetGoal<>(
-            pathfinderMob, Monster.class, objectiveDataEntry.isMustSeeTarget());
+            mob, Monster.class, objectiveDataEntry.isMustSeeTarget());
       case ATTACK_MOB_WITHOUT_CREEPER:
-        if (!requiresPathfinderMob(pathfinderMob, objectiveType, easyNPC)) {
-          return null;
-        }
         return new NearestAttackableTargetGoal<>(
-            pathfinderMob,
+            mob,
             Mob.class,
             objectiveDataEntry.getInterval(),
             objectiveDataEntry.isMustSeeTarget(),
             objectiveDataEntry.isMustReachTarget(),
             (entity, serverLevel) -> entity instanceof Enemy && !(entity instanceof Creeper));
       case ATTACK_MOB:
-        if (!requiresPathfinderMob(pathfinderMob, objectiveType, easyNPC)) {
-          return null;
-        }
         return new NearestAttackableTargetGoal<>(
-            pathfinderMob,
+            mob,
             Mob.class,
             objectiveDataEntry.getInterval(),
             objectiveDataEntry.isMustSeeTarget(),
             objectiveDataEntry.isMustReachTarget(),
             (entity, serverLevel) -> entity instanceof Enemy);
       case ATTACK_VILLAGER:
-        if (!requiresPathfinderMob(pathfinderMob, objectiveType, easyNPC)) {
-          return null;
-        }
         return new NearestAttackableTargetGoal<>(
-            pathfinderMob, AbstractVillager.class, objectiveDataEntry.isMustSeeTarget());
+            mob, AbstractVillager.class, objectiveDataEntry.isMustSeeTarget());
       case OWNER_HURT_BY_TARGET:
         return new CustomOwnerHurtByTargetGoal<>(easyNPC);
       case HURT_BY_TARGET:
-        if (!requiresPathfinderMob(pathfinderMob, objectiveType, easyNPC)) {
+        if (!requiresPathfinderMob(objectiveType, easyNPC)) {
           return null;
         }
-        HurtByTargetGoal hurtByTargetGoal = new HurtByTargetGoal(pathfinderMob);
+        HurtByTargetGoal hurtByTargetGoal = new HurtByTargetGoal(easyNPC.getPathfinderMob());
         hurtByTargetGoal.setAlertOthers();
         return hurtByTargetGoal;
       default:

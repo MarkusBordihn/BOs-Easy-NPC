@@ -42,6 +42,7 @@ public interface ModelDataCapable<T extends Mob>
   String EASY_NPC_DATA_MODEL_DATA_TAG = "ModelData";
   String EASY_NPC_DATA_MODEL_DEFAULT_POSE_TAG = "DefaultPose";
   String EASY_NPC_DATA_MODEL_POSE_TAG = "Pose";
+  String EASY_NPC_DATA_MODEL_POSE_NAME_TAG = "PoseName";
 
   default Pose getDefaultPose() {
     return this.getEntity().getPose();
@@ -57,6 +58,14 @@ public interface ModelDataCapable<T extends Mob>
 
   default void setModelPose(ModelPose modelPose) {
     setSynchedEntityData(SynchedDataIndex.MODEL_POSE, modelPose);
+  }
+
+  default String getModelPoseName() {
+    return getSynchedEntityData(SynchedDataIndex.MODEL_POSE_NAME);
+  }
+
+  default void setModelPoseName(String poseName) {
+    setSynchedEntityData(SynchedDataIndex.MODEL_POSE_NAME, poseName != null ? poseName : "");
   }
 
   default ModelType getModelType() {
@@ -83,7 +92,8 @@ public interface ModelDataCapable<T extends Mob>
   }
 
   default void defineSynchedModelData(SynchedEntityData.Builder builder) {
-    defineSynchedEntityData(builder, SynchedDataIndex.MODEL_POSE, ModelPose.DEFAULT);
+    defineSynchedEntityData(builder, SynchedDataIndex.MODEL_POSE, ModelPose.VANILLA);
+    defineSynchedEntityData(builder, SynchedDataIndex.MODEL_POSE_NAME, "");
     defineSynchedModelAnimationData(builder);
     defineSynchedModelPositionData(builder);
     defineSynchedModelRotationData(builder);
@@ -94,9 +104,13 @@ public interface ModelDataCapable<T extends Mob>
   default void addAdditionalModelData(ValueOutput valueOutput) {
     CompoundTag modelDataTag = new CompoundTag();
 
-    if (this.getModelPose() != ModelPose.DEFAULT && this.hasChangedModel()) {
+    if (this.getModelPose() != ModelPose.VANILLA && this.hasChangedModel()) {
       modelDataTag.putString(EASY_NPC_DATA_MODEL_POSE_TAG, this.getModelPose().name());
       modelDataTag.putString(EASY_NPC_DATA_MODEL_DEFAULT_POSE_TAG, Pose.STANDING.name());
+      String poseName = this.getModelPoseName();
+      if (poseName != null && !poseName.isEmpty()) {
+        modelDataTag.putString(EASY_NPC_DATA_MODEL_POSE_NAME_TAG, poseName);
+      }
     } else {
       modelDataTag.putString(EASY_NPC_DATA_MODEL_POSE_TAG, ModelPose.DEFAULT.name());
       modelDataTag.putString(
@@ -129,7 +143,14 @@ public interface ModelDataCapable<T extends Mob>
       }
     }
 
-    if (this.getModelPose() == ModelPose.DEFAULT
+    if (modelDataTag.contains(EASY_NPC_DATA_MODEL_POSE_NAME_TAG)) {
+      String poseName = modelDataTag.getString(EASY_NPC_DATA_MODEL_POSE_NAME_TAG).orElse("");
+      if (!poseName.isEmpty()) {
+        this.setModelPoseName(poseName);
+      }
+    }
+
+    if (this.getModelPose() == ModelPose.VANILLA
         && modelDataTag.contains(EASY_NPC_DATA_MODEL_DEFAULT_POSE_TAG)) {
       String defaultPose = modelDataTag.getString(EASY_NPC_DATA_MODEL_DEFAULT_POSE_TAG).orElse("");
       if (!defaultPose.isEmpty()) {

@@ -29,7 +29,6 @@ import net.minecraft.world.entity.NeutralMob;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.phys.AABB;
 
 public class ResetUniversalAngerTargetGoal<T extends EasyNPC<?>> extends Goal {
@@ -49,7 +48,7 @@ public class ResetUniversalAngerTargetGoal<T extends EasyNPC<?>> extends Goal {
 
   @Override
   public boolean canUse() {
-    return this.serverLevel.getGameRules().get(GameRules.UNIVERSAL_ANGER) && this.wasHurtByPlayer();
+    return this.mob instanceof NeutralMob && this.wasHurtByPlayer();
   }
 
   private boolean wasHurtByPlayer() {
@@ -61,10 +60,13 @@ public class ResetUniversalAngerTargetGoal<T extends EasyNPC<?>> extends Goal {
   @Override
   public void start() {
     this.lastHurtByPlayerTimestamp = this.mob.getLastHurtByMobTimestamp();
-    ((NeutralMob) this.mob).forgetCurrentTargetAndRefreshUniversalAnger();
+    if (this.mob instanceof NeutralMob neutralMob) {
+      neutralMob.forgetCurrentTargetAndRefreshUniversalAnger();
+    }
     if (this.alertOthersOfSameType) {
       this.getNearbyMobsOfSameType().stream()
           .filter(nearMob -> nearMob != this.mob)
+          .filter(NeutralMob.class::isInstance)
           .map(NeutralMob.class::cast)
           .forEach(NeutralMob::forgetCurrentTargetAndRefreshUniversalAnger);
     }

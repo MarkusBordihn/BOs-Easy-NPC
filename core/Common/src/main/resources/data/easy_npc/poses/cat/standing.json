@@ -1,0 +1,42 @@
+﻿{
+  "format_version": "1.8.0",
+  "animations": {
+    "Standing": {
+      "loop": "hold_on_last_frame",
+      "bones": {
+        "Head": {
+          "rotation": [0, 0, 0],
+          "position": [0, 0, 0]
+        },
+        "Body": {
+          "rotation": [0, 0, 0],
+          "position": [0, 0, 0]
+        },
+        "RightFrontLeg": {
+          "rotation": [0, 0, 0],
+          "position": [0, 0, 0]
+        },
+        "LeftFrontLeg": {
+          "rotation": [0, 0, 0],
+          "position": [0, 0, 0]
+        },
+        "RightHindLeg": {
+          "rotation": [0, 0, 0],
+          "position": [0, 0, 0]
+        },
+        "LeftHindLeg": {
+          "rotation": [0, 0, 0],
+          "position": [0, 0, 0]
+        },
+        "Tail1": {
+          "rotation": [20, 0, 0],
+          "position": [0, 0, 0]
+        },
+        "Tail2": {
+          "rotation": [10, 0, 0],
+          "position": [0, 0, 0]
+        }
+      }
+    }
+  }
+}

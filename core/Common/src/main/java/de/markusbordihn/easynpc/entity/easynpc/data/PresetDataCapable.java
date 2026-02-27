@@ -59,6 +59,7 @@ public interface PresetDataCapable<T extends Mob> extends EasyNPC<T> {
           "FallFlying",
           "Fire",
           "forge:spawn_type",
+          "Health",
           "HurtByTimestamp",
           "HurtTime",
           "Motion",
@@ -76,7 +77,7 @@ public interface PresetDataCapable<T extends Mob> extends EasyNPC<T> {
       this.getEntity().setPose(Pose.STANDING);
     }
     if (this.getEasyNPCModelData() != null) {
-      this.getEasyNPCModelData().setModelPose(ModelPose.DEFAULT);
+      this.getEasyNPCModelData().setModelPose(ModelPose.VANILLA);
     }
     if (this.getEasyNPCActionEventData() != null) {
       this.getEasyNPCActionEventData().clearActionEventSet();

@@ -131,7 +131,7 @@ public class RotateCommand extends Command {
           continue;
         }
         modelData.setModelPartRotation(modelPartType, rotation);
-        modelData.setModelPose(modelData.hasChangedModel() ? ModelPose.CUSTOM : ModelPose.DEFAULT);
+        modelData.setModelPose(modelData.hasChangedModel() ? ModelPose.CUSTOM : ModelPose.VANILLA);
         rotated++;
       } else {
         sendFailureMessage(context, "You are not allowed to rotate the Easy NPC " + uuid + " !");

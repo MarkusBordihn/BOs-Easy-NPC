@@ -8,6 +8,20 @@ For the full changelog, please go to the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 6.9.0
+
+- Fixed #651, #617 by adding basic custom poses for all supported NPC types.
+- Fixed pose loading to read directly from mod resources instead of copying files to disk.
+- Added `despawn` and `spawn` commands to remove and re-spawn NPCs by UUID with configurable
+  removal reasons.
+- Added `ModelPoseAPI` and `EasyNPCEntityHandler` public API classes for controlling NPC poses and
+  managing NPCs programmatically from external mods.
+- Added pose data files for all supported NPC types.
+- Added lock rotation checkbox to the basic pose configuration screen.
+- Added `MoveToPositionGoal` to move an NPC to a position before executing a callback action.
+- Added `EasyNPCLookControl` and `EasyNPCBodyRotationControl` to respect locked root rotation.
+- Added synced owner change and dimension change to the NPC entity data index.
+
 ### 6.8.3
 
 - Fixed #680 by enforcing version miss-match by upgrading network protocol version.

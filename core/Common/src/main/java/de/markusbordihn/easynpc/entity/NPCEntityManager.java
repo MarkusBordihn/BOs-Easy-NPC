@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.entity;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.data.npc.NPCRemovalReason;
 import de.markusbordihn.easynpc.data.npc.SavedNPCEntityEntry;
 import de.markusbordihn.easynpc.data.saveddata.NPCEntityData;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
@@ -49,8 +50,9 @@ public class NPCEntityManager {
     }
 
     currentServer = server;
-    NPCEntityData savedData = NPCEntityData.get(server);
-    log.info("{} Initialized with {} tracked NPC entities", LOG_PREFIX, savedData.getCount());
+    NPCEntityData.init(server);
+    log.info(
+        "{} Initialized with {} tracked NPC entities", LOG_PREFIX, NPCEntityData.get().getCount());
   }
 
   public static <T extends Mob> void saveNPC(EasyNPC<T> easyNPC) {
@@ -74,6 +76,13 @@ public class NPCEntityManager {
 
     getNPCEntityData().removeEntry(entityUUID);
     log.debug("{} Removed NPC entity: {}", LOG_PREFIX, entityUUID);
+  }
+
+  public static void updateRemovalReason(UUID entityUUID, NPCRemovalReason reason) {
+    if (!validateServer() || entityUUID == null) {
+      return;
+    }
+    getNPCEntityData().updateRemovalReason(entityUUID, reason);
   }
 
   public static void saveAllDirtyNPCs() {
@@ -168,6 +177,6 @@ public class NPCEntityManager {
   }
 
   private static NPCEntityData getNPCEntityData() {
-    return NPCEntityData.get(currentServer);
+    return NPCEntityData.get();
   }
 }

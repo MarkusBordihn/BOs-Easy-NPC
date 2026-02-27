@@ -120,7 +120,7 @@ public class ScaleCommand extends Command {
           continue;
         }
         modelData.setModelPartScale(modelPartType, scaling);
-        modelData.setModelPose(modelData.hasChangedModel() ? ModelPose.CUSTOM : ModelPose.DEFAULT);
+        modelData.setModelPose(modelData.hasChangedModel() ? ModelPose.CUSTOM : ModelPose.VANILLA);
         scaled++;
       } else {
         sendFailureMessage(context, "You are not allowed to scale the Easy NPC " + uuid + " !");

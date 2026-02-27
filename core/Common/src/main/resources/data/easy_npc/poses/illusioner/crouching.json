@@ -1,0 +1,38 @@
+﻿{
+  "format_version": "1.8.0",
+  "animations": {
+    "Crouching": {
+      "loop": "hold_on_last_frame",
+      "bones": {
+        "Head": {
+          "rotation": [-7.5, 0, 0],
+          "position": [0, -4.2, 0]
+        },
+        "Body": {
+          "rotation": [20, 0, 0],
+          "position": [0, -3.2, 0]
+        },
+        "Arms": {
+          "rotation": [25, 0, 0],
+          "position": [0, -3.2, 1]
+        },
+        "RightArm": {
+          "rotation": [40, 0, 0],
+          "position": [0, -3.2, 1]
+        },
+        "LeftArm": {
+          "rotation": [40, 0, 0],
+          "position": [0, -3.2, 1]
+        },
+        "RightLeg": {
+          "rotation": [-25, 0, 0],
+          "position": [0, 0, 4]
+        },
+        "LeftLeg": {
+          "rotation": [-10, 0, 0],
+          "position": [0, 0, 3]
+        }
+      }
+    }
+  }
+}

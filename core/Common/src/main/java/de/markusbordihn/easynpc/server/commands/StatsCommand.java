@@ -38,9 +38,9 @@ public class StatsCommand extends Command {
   }
 
   private static int showStats(CommandSourceStack context) {
-    NPCEntityData npcData = NPCEntityData.get(context.getServer());
     sendSuccessMessage(context, "Easy NPC Storage Statistics", ChatFormatting.GOLD);
-    sendSuccessMessage(context, "Total NPCs: " + npcData.getCount(), ChatFormatting.WHITE);
+    sendSuccessMessage(
+        context, "Total NPCs: " + NPCEntityData.get().getCount(), ChatFormatting.WHITE);
     sendSuccessMessage(context, "Storage: world/easy_npc/npcs/*.npc.nbt", ChatFormatting.GRAY);
     sendSuccessMessage(context, "Index: world/data/easy_npc_index.dat", ChatFormatting.GRAY);
     return Command.SINGLE_SUCCESS;

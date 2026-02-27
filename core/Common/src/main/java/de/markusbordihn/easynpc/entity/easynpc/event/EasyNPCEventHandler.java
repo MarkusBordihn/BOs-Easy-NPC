@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.entity.easynpc.event;
 
 import de.markusbordihn.easynpc.data.action.ActionEventType;
+import de.markusbordihn.easynpc.data.saveddata.NPCEntityData;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.ObjectiveDataCapable;
@@ -106,11 +107,12 @@ public final class EasyNPCEventHandler {
   }
 
   public static <E extends Mob> void handleChangeDimensionEvent(
-      EasyNPC<E> easyNPC, TeleportTransition TeleportTransition) {
+      EasyNPC<E> easyNPC, TeleportTransition teleportTransition) {
     TradingDataCapable<E> tradingData = easyNPC.getEasyNPCTradingData();
     if (tradingData != null) {
       tradingData.stopMerchantTrading();
     }
+    NPCEntityData.get().updateDimension(easyNPC, teleportTransition.newLevel());
   }
 
   public static <E extends Mob> void handleHurtEvent(

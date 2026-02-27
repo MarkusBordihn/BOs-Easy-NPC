@@ -25,7 +25,7 @@ import de.markusbordihn.easynpc.utils.CompoundTagUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.ProblemReporter;
-import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.storage.TagValueInput;
 import net.minecraft.world.level.storage.TagValueOutput;
 import org.apache.logging.log4j.LogManager;
@@ -44,7 +44,7 @@ public class ReloadHandler {
       return false;
     }
 
-    PathfinderMob entity = easyNPC.getPathfinderMob();
+    Mob entity = easyNPC.getMob();
     if (entity == null || !entity.isAlive()) {
       log.warn(
           "Unable to reload NPC {} because entity is null or not alive!", easyNPC.getEntityUUID());

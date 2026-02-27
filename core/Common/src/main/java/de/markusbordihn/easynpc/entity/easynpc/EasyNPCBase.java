@@ -83,7 +83,7 @@ public interface EasyNPCBase<E extends Mob>
         VariantDataCapable<E> {
 
   default void registerEasyNPCDefaultVariant(Enum<?> variant) {
-    log.info("Register default variant for {} with variant {} ...", this, variant);
+    log.debug("Register default variant for {} with variant {} ...", this, variant);
     VariantDataCapable<E> variantData = getEasyNPCVariantData();
     if (variantData != null) {
       variantData.setSkinVariantType(variant);
@@ -95,7 +95,7 @@ public interface EasyNPCBase<E extends Mob>
   }
 
   default SpawnGroupData finalizeEasyNPCSpawn(SpawnGroupData spawnGroupData) {
-    log.info("Finalize spawn for {} ...", this);
+    log.debug("Finalize spawn for {} ...", this);
 
     // Set default navigation data.
     NavigationDataCapable<?> navigationData = getEasyNPCNavigationData();

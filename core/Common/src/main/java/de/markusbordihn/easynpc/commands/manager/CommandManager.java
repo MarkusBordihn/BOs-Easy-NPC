@@ -23,6 +23,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.server.commands.DebugCommand;
 import de.markusbordihn.easynpc.server.commands.DeleteCommand;
+import de.markusbordihn.easynpc.server.commands.DespawnCommand;
 import de.markusbordihn.easynpc.server.commands.DialogCommand;
 import de.markusbordihn.easynpc.server.commands.EquipmentCommand;
 import de.markusbordihn.easynpc.server.commands.InfoCommand;
@@ -43,6 +44,7 @@ import de.markusbordihn.easynpc.server.commands.RotateCommand;
 import de.markusbordihn.easynpc.server.commands.ScaleCommand;
 import de.markusbordihn.easynpc.server.commands.SkinCommand;
 import de.markusbordihn.easynpc.server.commands.SoundCommand;
+import de.markusbordihn.easynpc.server.commands.SpawnCommand;
 import de.markusbordihn.easynpc.server.commands.SpawnerCommand;
 import de.markusbordihn.easynpc.server.commands.StatsCommand;
 import de.markusbordihn.easynpc.server.commands.TestCommand;
@@ -70,6 +72,7 @@ public class CommandManager {
         Commands.literal(Constants.MOD_COMMAND)
             .then(DebugCommand.register())
             .then(DeleteCommand.register())
+            .then(DespawnCommand.register())
             .then(DialogCommand.register())
             .then(EquipmentCommand.register(context))
             .then(InfoCommand.register())
@@ -90,6 +93,7 @@ public class CommandManager {
             .then(ScaleCommand.register())
             .then(SkinCommand.register())
             .then(SoundCommand.register())
+            .then(SpawnCommand.register())
             .then(SpawnerCommand.register())
             .then(StatsCommand.register())
             .then(TestCommand.register())

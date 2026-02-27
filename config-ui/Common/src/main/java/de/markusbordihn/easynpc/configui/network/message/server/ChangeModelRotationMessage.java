@@ -102,7 +102,8 @@ public record ChangeModelRotationMessage(
     }
 
     if (this.modelPartType == ModelPartType.ROOT) {
-      modelData.setModelRotation(this.rotation.x(), this.rotation.y(), this.rotation.z());
+      modelData.setModelRotation(
+          this.rotation.x(), this.rotation.y(), this.rotation.z(), this.rotation.locked());
     } else {
       log.debug(
           "Change {} rotation to {}° {}° {}° for {} from {}",
@@ -122,7 +123,7 @@ public record ChangeModelRotationMessage(
       if (!modelData.hasChangedModel()
           || (this.modelPartType == ModelPartType.ROOT && this.rotation.hasChanged())) {
         log.debug("Reset custom model pose for {} from {}", easyNPC, serverPlayer);
-        modelData.setModelPose(ModelPose.DEFAULT);
+        modelData.setModelPose(ModelPose.VANILLA);
         easyNPC.getEntity().setPose(Pose.STANDING);
       }
     }

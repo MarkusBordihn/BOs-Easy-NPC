@@ -309,7 +309,15 @@ public interface ObjectiveDataCapable<T extends Mob> extends EasyNPC<T> {
     }
 
     // Set registered flag.
-    objectiveDataEntry.setRegistered(addedCustomObjective);
+    if (!addedCustomObjective && goal == null && target == null) {
+      log.debug(
+          "- Objective {} is not compatible with {} and will not be retried.",
+          objectiveDataEntry.getType(),
+          this);
+      objectiveDataEntry.setRegistered(true);
+    } else {
+      objectiveDataEntry.setRegistered(addedCustomObjective);
+    }
 
     // Add objective data to set, regardless if goal or target was added.
     getObjectiveDataSet().addObjective(objectiveDataEntry);
@@ -373,7 +381,7 @@ public interface ObjectiveDataCapable<T extends Mob> extends EasyNPC<T> {
 
   default void registerStandardObjectives() {
     log.debug("Register standard objectives for {}", this);
-    this.addOrUpdateCustomObjective(new ObjectiveDataEntry(ObjectiveType.LOOK_AT_RESET, 9));
+    this.addOrUpdateCustomObjective(new ObjectiveDataEntry(ObjectiveType.LOOK_AT_RESET, 10));
     this.addOrUpdateCustomObjective(new ObjectiveDataEntry(ObjectiveType.LOOK_AT_PLAYER, 9));
     this.addOrUpdateCustomObjective(new ObjectiveDataEntry(ObjectiveType.LOOK_AT_MOB, 10));
   }

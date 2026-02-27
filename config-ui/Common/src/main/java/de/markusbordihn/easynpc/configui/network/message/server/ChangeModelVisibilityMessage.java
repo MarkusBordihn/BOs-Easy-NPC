@@ -106,7 +106,7 @@ public record ChangeModelVisibilityMessage(UUID uuid, ModelPartType modelPartTyp
     // Verify if custom model pose is really needed.
     if (!modelData.hasChangedModel()) {
       log.debug("Reset custom model pose for {} from {}", easyNPC, serverPlayer);
-      modelData.setModelPose(ModelPose.DEFAULT);
+      modelData.setModelPose(ModelPose.VANILLA);
     }
   }
 }

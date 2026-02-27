@@ -24,12 +24,8 @@ import de.markusbordihn.easynpc.client.pose.PoseManager;
 import de.markusbordihn.easynpc.data.animation.AnimationData;
 import de.markusbordihn.easynpc.data.animation.AnimationDataReader;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.io.InputStream;
 import java.util.Map;
-import java.util.stream.Stream;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.packs.resources.Resource;
@@ -39,108 +35,39 @@ import org.apache.logging.log4j.Logger;
 public class CustomPoseDataFiles {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-  protected static final String DATA_FOLDER_NAME = "pose";
-  protected static final String TEMPLATE_PREFIX = "_poses.json";
+  protected static final String TEMPLATE_SUFFIX = ".json";
 
   private CustomPoseDataFiles() {}
 
   public static void registerCustomPoseData(MinecraftServer minecraftServer) {
-    log.info("{} custom pose data ...", Constants.LOG_REGISTER_PREFIX);
+    log.info("{} custom pose data from data packs ...", Constants.LOG_REGISTER_PREFIX);
 
-    // Prepare pose data folder
-    Path poseDataFolder = getCustomPoseDataFolder();
-    if (poseDataFolder == null) {
-      return;
-    }
+    PoseManager.clearPoseData();
 
-    // Prepare pose model folders
     for (SkinModel skinModel : SkinModel.values()) {
-      Path poseModelFolder = getCustomPoseDataFolder(skinModel);
-      if (poseModelFolder == null) {
-        continue;
-      }
-
-      // Get all pose files from this mod's resources only (filter by namespace).
       String skinModelName = skinModel.getName();
-      Map<Identifier, Resource> resourceLocations =
+      String resourcePath = DataFileHandler.RESOURCE_POSES_PATH + "/" + skinModelName;
+
+      Map<Identifier, Resource> resources =
           minecraftServer
               .getResourceManager()
               .listResources(
-                  DataFileHandler.RESOURCE_POSES_PATH + "/" + skinModelName,
-                  fileName ->
-                      fileName.getNamespace().equals(Constants.MOD_ID)
-                          && fileName.toString().endsWith(TEMPLATE_PREFIX));
+                  resourcePath, fileName -> fileName.toString().endsWith(TEMPLATE_SUFFIX));
 
-      // Copy all default pose files to the pose data folder.
-      for (Identifier resourceLocation : resourceLocations.keySet()) {
-        File skinModelPoseFile =
-            poseModelFolder
-                .resolve(DataFileHandler.getFileNameFromIdentifier(resourceLocation))
-                .toFile();
-        if (DataFileHandler.copyResourceFile(minecraftServer, resourceLocation, skinModelPoseFile)
-            && skinModelPoseFile.exists()
-            && skinModelPoseFile.length() > 0) {
-          log.info("Copied skin model pose file {} to {}", resourceLocation, skinModelPoseFile);
+      for (Map.Entry<Identifier, Resource> entry : resources.entrySet()) {
+        Identifier resourceLocation = entry.getKey();
+        Resource resource = entry.getValue();
+        try (InputStream inputStream = resource.open()) {
+          AnimationData animationData =
+              AnimationDataReader.parseAnimationStream(inputStream, resourceLocation.toString());
+          if (animationData != null) {
+            PoseManager.registerPoseData(skinModel, animationData);
+            log.debug("Loaded pose {} for {}", resourceLocation, skinModelName);
+          }
+        } catch (Exception e) {
+          log.error("Error loading pose {} for {}:", resourceLocation, skinModelName, e);
         }
       }
     }
-
-    registerCustomPoseFiles();
-  }
-
-  public static void registerCustomPoseFiles() {
-    Path poseDataFolder = getCustomPoseDataFolder();
-    if (poseDataFolder == null) {
-      return;
-    }
-
-    log.info("{} custom poses from {} ...", Constants.LOG_REGISTER_PREFIX, poseDataFolder);
-    for (SkinModel skinModel : SkinModel.values()) {
-      Path poseModelFolder = getCustomPoseDataFolder(skinModel);
-      if (poseModelFolder != null
-          && poseModelFolder.toFile().exists()
-          && poseModelFolder.toFile().isDirectory()) {
-        try (Stream<Path> posePaths = Files.walk(poseModelFolder)) {
-          posePaths
-              .filter(
-                  path -> Files.isRegularFile(path) && path.toString().endsWith(TEMPLATE_PREFIX))
-              .forEach(
-                  path -> {
-                    log.info("Found custom pose file {} ...", path);
-                    try {
-                      AnimationData animationData = AnimationDataReader.parseAnimationFile(path);
-                      PoseManager.registerPoseData(skinModel, animationData);
-                    } catch (IOException e) {
-                      throw new RuntimeException(e);
-                    }
-                  });
-        } catch (IOException e) {
-          log.error("Error reading custom pose files from {}:", poseModelFolder, e);
-        }
-      }
-    }
-  }
-
-  public static Path getCustomPoseDataFolder() {
-    return DataFileHandler.getOrCreateCustomDataFolder(DATA_FOLDER_NAME);
-  }
-
-  public static Path getCustomPoseDataFolder(SkinModel skinModel) {
-    Path poseDataFolder = getCustomPoseDataFolder();
-    if (poseDataFolder == null) {
-      return null;
-    }
-    String skinModelName = skinModel.getName();
-    Path poseDataFolderPath = poseDataFolder.resolve(skinModelName);
-    try {
-      if (Files.exists(poseDataFolderPath) && Files.isDirectory(poseDataFolderPath)) {
-        return poseDataFolderPath;
-      }
-      log.info("Created new pose data folder {} at {}!", skinModelName, poseDataFolderPath);
-      return Files.createDirectories(poseDataFolderPath);
-    } catch (IOException e) {
-      log.error("Error creating pose data folder {} at {}:", skinModelName, poseDataFolderPath, e);
-    }
-    return null;
   }
 }

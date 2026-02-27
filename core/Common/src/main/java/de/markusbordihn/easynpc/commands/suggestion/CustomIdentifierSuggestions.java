@@ -34,9 +34,7 @@ public class CustomIdentifierSuggestions {
   public static CompletableFuture<Suggestions> suggest(
       CommandContext<CommandSourceStack> context, SuggestionsBuilder builder) {
     return SharedSuggestionProvider.suggest(
-        NPCEntityData.get(context.getSource().getServer()).getAllCustomIdentifiers().stream()
-            .map(Object::toString)
-            .toList(),
+        NPCEntityData.get().getAllCustomIdentifiers().stream().map(Object::toString).toList(),
         builder);
   }
 }

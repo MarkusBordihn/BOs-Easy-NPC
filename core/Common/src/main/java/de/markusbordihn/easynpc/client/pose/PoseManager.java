@@ -30,11 +30,14 @@ import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
-import java.util.HashMap;
+import java.util.EnumMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Pose;
 import org.apache.logging.log4j.LogManager;
@@ -46,9 +49,20 @@ public class PoseManager {
   private static final String TEXTURE_PREFIX = "pose/";
   private static final String LOG_PREFIX = "[Pose Manager]";
 
-  private static final Map<Identifier, Animation> poseDataMap = new HashMap<>();
+  private static final Map<Identifier, Animation> poseDataMap = new ConcurrentHashMap<>();
+  private static final Map<Identifier, EnumMap<ModelPartType, CustomRotation>> cachedRotations =
+      new ConcurrentHashMap<>();
+  private static final Map<Identifier, EnumMap<ModelPartType, CustomPosition>> cachedPositions =
+      new ConcurrentHashMap<>();
 
   private PoseManager() {}
+
+  public static void clearPoseData() {
+    poseDataMap.clear();
+    cachedRotations.clear();
+    cachedPositions.clear();
+    log.info("{} Cleared all pose data.", LOG_PREFIX);
+  }
 
   public static void registerPoseData(SkinModel skinModel, AnimationData animationData) {
     if (skinModel == null || animationData == null) {
@@ -100,6 +114,30 @@ public class PoseManager {
     return poseDataMap.keySet();
   }
 
+  public static Set<Identifier> getPoseDataKeysForModel(SkinModel skinModel) {
+    if (skinModel == null) {
+      return Set.of();
+    }
+    String prefix = TEXTURE_PREFIX + skinModel.name().toLowerCase(Locale.ROOT) + "/";
+    return poseDataMap.keySet().stream()
+        .filter(rl -> rl.getPath().startsWith(prefix))
+        .sorted((a, b) -> a.getPath().compareTo(b.getPath()))
+        .collect(Collectors.toCollection(LinkedHashSet::new));
+  }
+
+  public static String getPoseDisplayName(Identifier resourceLocation) {
+    if (resourceLocation == null) {
+      return "";
+    }
+    String path = resourceLocation.getPath();
+    int lastSlash = path.lastIndexOf('/');
+    String name = lastSlash >= 0 ? path.substring(lastSlash + 1) : path;
+    if (name.isEmpty()) {
+      return "";
+    }
+    return name.substring(0, 1).toUpperCase(Locale.ROOT) + name.substring(1);
+  }
+
   private static void registerPoseData(Identifier resourceLocation, Animation animation) {
     if (resourceLocation == null || animation == null) {
       log.error("{} Pose data {} is invalid!", LOG_PREFIX, resourceLocation);
@@ -112,6 +150,8 @@ public class PoseManager {
 
     log.info("{} Registering pose data {} with {}", LOG_PREFIX, resourceLocation, animation);
     poseDataMap.put(resourceLocation, animation);
+    cachedRotations.remove(resourceLocation);
+    cachedPositions.remove(resourceLocation);
   }
 
   public static void resetModelPose(EasyNPC<?> easyNPC) {
@@ -119,16 +159,53 @@ public class PoseManager {
       return;
     }
 
-    // Validate Model data.
     ModelDataCapable<?> modelData = easyNPC.getEasyNPCModelData();
     if (modelData == null) {
       log.error("{} Model data is missing for Easy NPC {}!", LOG_PREFIX, easyNPC.getEntityUUID());
       return;
     }
 
-    // Reset model pose
     easyNPC.getEntity().setPose(Pose.STANDING);
-    modelData.setModelPose(ModelPose.DEFAULT);
+    modelData.setModelPose(ModelPose.VANILLA);
+    modelData.setModelPoseName("");
+
+    // Clear all pose data to prevent leftover rotations/positions
+    modelData.setModelPartRotation(new EnumMap<>(ModelPartType.class));
+    modelData.setModelPartPosition(new EnumMap<>(ModelPartType.class));
+  }
+
+  public static boolean setModelPose(EasyNPC<?> easyNPC, Identifier resourceLocation) {
+    if (easyNPC == null || resourceLocation == null) {
+      return false;
+    }
+
+    Animation animation = getPoseData(resourceLocation);
+    if (animation == null) {
+      log.error("{} Pose data {} was not found!", LOG_PREFIX, resourceLocation);
+      return false;
+    }
+
+    // Try cached version first for better performance
+    if (cachedRotations.containsKey(resourceLocation)) {
+      if (setModelPoseFromCache(easyNPC, resourceLocation)) {
+        ModelDataCapable<?> modelData = easyNPC.getEasyNPCModelData();
+        if (modelData != null) {
+          modelData.setModelPoseName(resourceLocation.toString());
+        }
+        return true;
+      }
+    }
+
+    if (setModelPose(easyNPC, animation)) {
+      ModelDataCapable<?> modelData = easyNPC.getEasyNPCModelData();
+      if (modelData != null) {
+        modelData.setModelPoseName(resourceLocation.toString());
+      }
+      // Build cache for subsequent uses
+      buildCache(resourceLocation, animation);
+      return true;
+    }
+    return false;
   }
 
   public static boolean setModelPose(EasyNPC<?> easyNPC, Animation animation) {
@@ -151,38 +228,93 @@ public class PoseManager {
 
     // Set default pose
     easyNPC.getEntity().setPose(Pose.STANDING);
-    modelData.setModelPose(ModelPose.CUSTOM);
+    modelData.setModelPose(ModelPose.DEFAULT);
 
-    // Iterate over all bones and set the pose
-    for (String boneName : animation.getBones().keySet()) {
-      Bone bone = animation.getBones().get(boneName);
-      ModelPartType modelPartType = ModelPartType.get(boneName);
+    // Convert bones to rotation/position maps and apply atomically
+    EnumMap<ModelPartType, CustomRotation> newRotations = new EnumMap<>(ModelPartType.class);
+    EnumMap<ModelPartType, CustomPosition> newPositions = new EnumMap<>(ModelPartType.class);
+    convertBonesToMaps(animation, newRotations, newPositions);
+
+    // Auto-lock ROOT rotation to prevent body turning when in a default pose
+    newRotations.put(ModelPartType.ROOT, new CustomRotation(0, 0, 0).withLocked(true));
+
+    // Apply fresh maps atomically, replacing any leftover data from previous poses
+    modelData.setModelPartRotation(newRotations);
+    modelData.setModelPartPosition(newPositions);
+
+    return true;
+  }
+
+  public static boolean setModelPoseFromCache(EasyNPC<?> easyNPC, Identifier resourceLocation) {
+    if (easyNPC == null || resourceLocation == null) {
+      return false;
+    }
+
+    EnumMap<ModelPartType, CustomRotation> rotations = cachedRotations.get(resourceLocation);
+    EnumMap<ModelPartType, CustomPosition> positions = cachedPositions.get(resourceLocation);
+    if (rotations == null || positions == null) {
+      return false;
+    }
+
+    ModelDataCapable<?> modelData = easyNPC.getEasyNPCModelData();
+    if (modelData == null) {
+      return false;
+    }
+
+    easyNPC.getEntity().setPose(Pose.STANDING);
+    modelData.setModelPose(ModelPose.DEFAULT);
+
+    // Build fresh maps from cache to replace all previous pose data atomically
+    EnumMap<ModelPartType, CustomRotation> newRotations = new EnumMap<>(rotations);
+    EnumMap<ModelPartType, CustomPosition> newPositions = new EnumMap<>(positions);
+
+    // Auto-lock ROOT rotation
+    newRotations.put(ModelPartType.ROOT, new CustomRotation(0, 0, 0).withLocked(true));
+
+    // Apply fresh maps, replacing any leftover data from previous poses
+    modelData.setModelPartRotation(newRotations);
+    modelData.setModelPartPosition(newPositions);
+
+    return true;
+  }
+
+  private static void buildCache(Identifier resourceLocation, Animation animation) {
+    EnumMap<ModelPartType, CustomRotation> rotations = new EnumMap<>(ModelPartType.class);
+    EnumMap<ModelPartType, CustomPosition> positions = new EnumMap<>(ModelPartType.class);
+    convertBonesToMaps(animation, rotations, positions);
+    cachedRotations.put(resourceLocation, rotations);
+    cachedPositions.put(resourceLocation, positions);
+    log.debug("{} Built cache for pose {}", LOG_PREFIX, resourceLocation);
+  }
+
+  private static void convertBonesToMaps(
+      Animation animation,
+      EnumMap<ModelPartType, CustomRotation> rotations,
+      EnumMap<ModelPartType, CustomPosition> positions) {
+    for (Map.Entry<String, Bone> entry : animation.getBones().entrySet()) {
+      ModelPartType modelPartType = ModelPartType.get(entry.getKey());
       if (modelPartType == ModelPartType.UNKNOWN) {
-        log.error("{} Bone {} is not supported!", LOG_PREFIX, boneName);
+        log.error("{} Bone {} is not supported!", LOG_PREFIX, entry.getKey());
         continue;
       }
 
+      Bone bone = entry.getValue();
       List<Float> position = bone.getPosition();
-      CustomPosition customPosition =
+      positions.put(
+          modelPartType,
           position == null || position.size() < 3
               ? new CustomPosition(0, 0, 0)
-              : new CustomPosition(position.get(0), position.get(1) * -1, position.get(2));
+              : new CustomPosition(position.get(0), position.get(1) * -1, position.get(2)));
 
       List<Float> rotation = bone.getRotation();
-      CustomRotation customRotation =
+      rotations.put(
+          modelPartType,
           rotation == null || rotation.size() < 3
               ? new CustomRotation(0, 0, 0)
               : new CustomRotation(
                   rotation.get(0) * (float) Math.PI / 180.0f,
                   rotation.get(1) * (float) Math.PI / 180.0f,
-                  rotation.get(2) * (float) Math.PI / 180.0f);
-
-      modelData.setModelPartPosition(modelPartType, customPosition);
-      modelData.setModelPartRotation(modelPartType, customRotation);
-
-      log.debug("{} Set {} to {} / {}", LOG_PREFIX, modelPartType, customPosition, customRotation);
+                  rotation.get(2) * (float) Math.PI / 180.0f));
     }
-
-    return true;
   }
 }

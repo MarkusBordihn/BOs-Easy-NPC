@@ -132,7 +132,7 @@ public class EasyNPCModelManager {
 
   public boolean setupModelParts(
       final ModelDataCapable<?> modelData, final boolean applyVisibility) {
-    if (modelData == null || modelData.getModelPose() == ModelPose.DEFAULT) {
+    if (modelData == null || modelData.getModelPose() == ModelPose.VANILLA) {
       return false;
     }
 
@@ -202,7 +202,7 @@ public class EasyNPCModelManager {
   }
 
   public void syncModelParts(final ModelDataCapable<?> modelData) {
-    if (modelData == null || modelData.getModelPose() == ModelPose.DEFAULT) {
+    if (modelData == null || modelData.getModelPose() == ModelPose.VANILLA) {
       return;
     }
 

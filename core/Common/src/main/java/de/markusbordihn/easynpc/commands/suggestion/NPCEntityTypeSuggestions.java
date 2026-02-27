@@ -33,7 +33,6 @@ public class NPCEntityTypeSuggestions {
 
   public static CompletableFuture<Suggestions> suggest(
       CommandContext<CommandSourceStack> context, SuggestionsBuilder builder) {
-    return SharedSuggestionProvider.suggest(
-        NPCEntityData.get(context.getSource().getServer()).getAllEntityTypes(), builder);
+    return SharedSuggestionProvider.suggest(NPCEntityData.get().getAllEntityTypes(), builder);
   }
 }

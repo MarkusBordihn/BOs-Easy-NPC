@@ -24,14 +24,18 @@ import de.markusbordihn.easynpc.client.pose.PoseManager;
 import de.markusbordihn.easynpc.commands.Command;
 import de.markusbordihn.easynpc.commands.arguments.EasyNPCArgument;
 import de.markusbordihn.easynpc.commands.suggestion.PoseSuggestions;
-import de.markusbordihn.easynpc.data.animation.AnimationData.Animation;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.ai.goal.MoveToPositionGoal;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.IdentifierArgument;
+import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.phys.Vec3;
 
 public class PoseCommand extends Command {
+
+  private static final String ARG_POSITION = "position";
 
   private PoseCommand() {}
 
@@ -70,13 +74,8 @@ public class PoseCommand extends Command {
 
   private static int setPose(
       CommandSourceStack context, EasyNPC<?> easyNPC, Identifier resourceLocation) {
-    Animation animation = PoseManager.getPoseData(resourceLocation);
-    if (animation == null) {
-      return sendFailureMessage(context, "Pose " + resourceLocation + " was not found!");
-    }
-
     // Set pose for Easy NPC
-    if (PoseManager.setModelPose(easyNPC, animation)) {
+    if (PoseManager.setModelPose(easyNPC, resourceLocation)) {
       return sendSuccessMessage(
           context,
           "Setting pose " + resourceLocation + " for Easy NPC " + easyNPC.getEntityUUID() + " !");
@@ -89,5 +88,30 @@ public class PoseCommand extends Command {
               + easyNPC.getEntityUUID()
               + " !");
     }
+  }
+
+  @SuppressWarnings("unchecked")
+  private static <E extends EasyNPC<?>> int setPoseAtPosition(
+      CommandSourceStack context, EasyNPC<?> easyNPC, Identifier resourceLocation, Vec3 position) {
+    if (position == null || position.equals(Vec3.ZERO)) {
+      return setPose(context, easyNPC, resourceLocation);
+    }
+
+    BlockPos targetPos = new BlockPos((int) position.x, (int) position.y, (int) position.z);
+    MoveToPositionGoal<E> moveGoal =
+        new MoveToPositionGoal<>(
+            (E) easyNPC, targetPos, 1.0, () -> PoseManager.setModelPose(easyNPC, resourceLocation));
+
+    easyNPC.getEntityGoalSelector().addGoal(1, moveGoal);
+
+    return sendSuccessMessage(
+        context,
+        "NPC "
+            + easyNPC.getEntityUUID()
+            + " moving to "
+            + targetPos
+            + " then setting pose "
+            + resourceLocation
+            + " !");
   }
 }

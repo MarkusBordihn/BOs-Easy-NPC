@@ -22,6 +22,9 @@ package de.markusbordihn.easynpc.entity.easynpc.ai.goal;
 import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
+import java.util.EnumSet;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.control.LookControl;
 import net.minecraft.world.entity.ai.goal.Goal;
 
@@ -29,12 +32,28 @@ public class ResetLookAtPlayerGoal<T extends EasyNPC<?>> extends Goal {
 
   private final ModelDataCapable<?> modelData;
   private final LookControl lookControl;
+  private final LivingEntity livingEntity;
   private int resetLookTime = 40;
 
   public ResetLookAtPlayerGoal(T easyNPC) {
     super();
+    this.setFlags(EnumSet.of(Goal.Flag.LOOK));
     this.modelData = easyNPC.getEasyNPCModelData();
     this.lookControl = easyNPC.getEntityLookControl();
+    this.livingEntity = easyNPC.getLivingEntity();
+  }
+
+  private boolean isRootLocked() {
+    return this.modelData != null
+        && this.modelData.getModelPartRotation(ModelPartType.ROOT).locked();
+  }
+
+  private boolean isRootLockedWithExplicitHeadRotation() {
+    if (this.modelData == null) {
+      return false;
+    }
+    return this.modelData.getModelPartRotation(ModelPartType.ROOT).locked()
+        && this.modelData.getModelPartRotation(ModelPartType.HEAD).hasChanged();
   }
 
   @Override
@@ -49,25 +68,32 @@ public class ResetLookAtPlayerGoal<T extends EasyNPC<?>> extends Goal {
 
   @Override
   public boolean canUse() {
-    return this.modelData == null
-        || !this.modelData.getModelPartRotation(ModelPartType.ROOT).locked();
+    return this.modelData == null || !isRootLockedWithExplicitHeadRotation();
   }
 
   @Override
   public boolean canContinueToUse() {
-    return (this.modelData == null
-            || !this.modelData.getModelPartRotation(ModelPartType.ROOT).locked())
+    return (this.modelData == null || !isRootLockedWithExplicitHeadRotation())
         && this.resetLookTime > 0;
   }
 
   @Override
   public void tick() {
-    if ((this.modelData == null || this.modelData.getModelPartRotation(ModelPartType.ROOT).locked())
-        && this.resetLookTime > 0) {
-      if (this.lookControl != null) {
-        this.lookControl.setLookAt(0, 0, 0);
-      }
-      this.resetLookTime--;
+    if (this.resetLookTime <= 0) {
+      return;
     }
+
+    if (isRootLocked() && this.livingEntity != null) {
+      float delta = Mth.wrapDegrees(this.livingEntity.yBodyRot - this.livingEntity.yHeadRot);
+      if (Math.abs(delta) < 1.0F) {
+        this.livingEntity.yHeadRot = this.livingEntity.yBodyRot;
+      } else {
+        this.livingEntity.yHeadRot += delta * 0.1F;
+      }
+    } else if (this.modelData == null && this.lookControl != null) {
+      this.lookControl.setLookAt(0, 0, 0);
+    }
+
+    this.resetLookTime--;
   }
 }

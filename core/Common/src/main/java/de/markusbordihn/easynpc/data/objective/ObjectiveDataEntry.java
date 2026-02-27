@@ -51,6 +51,7 @@ public final class ObjectiveDataEntry {
   public static final String DATA_TARGET_ENTITY_UUID_TAG = "TargetEntityUUID";
   public static final String DATA_TARGET_OWNER_UUID_TAG = "TargetOwnerUUID";
   public static final String DATA_TARGET_PLAYER_NAME_TAG = "TargetPlayerName";
+  public static final String DATA_TARGET_ITEM_TAG = "TargetItemTag";
   public static final String DATA_TYPE_TAG = "Type";
 
   public static final double DEFAULT_SPEED_MODIFIER = 0.7D;
@@ -93,6 +94,7 @@ public final class ObjectiveDataEntry {
   private UUID targetEntityUUID;
   private UUID targetOwnerUUID;
   private String targetPlayerName;
+  private String targetItemTag;
 
   public ObjectiveDataEntry() {}
 
@@ -221,6 +223,14 @@ public final class ObjectiveDataEntry {
     this.targetEntityUUID = targetEntityUUID;
   }
 
+  public String getTargetItemTag() {
+    return this.targetItemTag;
+  }
+
+  public void setTargetItemTag(String targetItemTag) {
+    this.targetItemTag = targetItemTag;
+  }
+
   public LivingEntity getTargetEntity(EasyNPC<?> easyNPC) {
     return this.getTargetEntity(easyNPC.getEntityServerLevel());
   }
@@ -324,6 +334,9 @@ public final class ObjectiveDataEntry {
     if (compoundTag.contains(DATA_TARGET_OWNER_UUID_TAG)) {
       this.targetOwnerUUID = CompoundTagUtils.readUUID(compoundTag, DATA_TARGET_OWNER_UUID_TAG);
     }
+    if (compoundTag.contains(DATA_TARGET_ITEM_TAG)) {
+      this.targetItemTag = compoundTag.getString(DATA_TARGET_ITEM_TAG).orElse(null);
+    }
 
     // Additional parameters
     if (compoundTag.contains(DATA_SPEED_MODIFIER_TAG)) {
@@ -403,6 +416,9 @@ public final class ObjectiveDataEntry {
     }
     if (this.targetOwnerUUID != null) {
       CompoundTagUtils.writeUUID(compoundTag, DATA_TARGET_OWNER_UUID_TAG, this.targetOwnerUUID);
+    }
+    if (this.targetItemTag != null && !this.targetItemTag.isEmpty()) {
+      compoundTag.putString(DATA_TARGET_ITEM_TAG, this.targetItemTag);
     }
 
     // Additional parameters
