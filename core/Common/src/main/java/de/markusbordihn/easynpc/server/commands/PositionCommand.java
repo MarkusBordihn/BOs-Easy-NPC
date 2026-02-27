@@ -100,7 +100,7 @@ public class PositionCommand extends Command {
           continue;
         }
         modelData.setModelPartPosition(modelPartType, position);
-        modelData.setModelPose(modelData.hasChangedModel() ? ModelPose.CUSTOM : ModelPose.DEFAULT);
+        modelData.setModelPose(modelData.hasChangedModel() ? ModelPose.CUSTOM : ModelPose.VANILLA);
         moved++;
       } else {
         sendFailureMessage(context, "You are not allowed to move the Easy NPC " + uuid + " !");

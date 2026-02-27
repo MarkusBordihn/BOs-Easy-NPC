@@ -23,6 +23,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 
 public enum ModelPose {
+  VANILLA,
   DEFAULT,
   CUSTOM;
 
@@ -41,12 +42,12 @@ public enum ModelPose {
 
   public static ModelPose get(String modelPose) {
     if (modelPose == null || modelPose.isEmpty()) {
-      return ModelPose.DEFAULT;
+      return ModelPose.VANILLA;
     }
     try {
       return ModelPose.valueOf(modelPose);
     } catch (IllegalArgumentException e) {
-      return ModelPose.DEFAULT;
+      return ModelPose.VANILLA;
     }
   }
 }

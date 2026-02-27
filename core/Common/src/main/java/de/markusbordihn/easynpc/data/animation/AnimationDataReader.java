@@ -22,10 +22,10 @@ package de.markusbordihn.easynpc.data.animation;
 import com.google.gson.Gson;
 import de.markusbordihn.easynpc.Constants;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Reader;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -36,26 +36,39 @@ public class AnimationDataReader {
 
   private static final String LOG_PREFIX = "[Animation Data Reader]";
   private static final String SUPPORTED_FORMAT_VERSION = "1.8.0";
+  private static final Gson GSON = new Gson();
 
-  public static AnimationData parseAnimationFile(String filePath) throws IOException {
-    return parseAnimationFile(Paths.get(filePath));
+  public static AnimationData parseAnimationStream(InputStream inputStream, String sourceName)
+      throws IOException {
+    try (Reader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8)) {
+      return parseAnimation(reader, sourceName);
+    }
   }
 
-  public static AnimationData parseAnimationFile(Path filePath) throws IOException {
-    Gson gson = new Gson();
-    Reader reader = Files.newBufferedReader(filePath);
-    AnimationData animationData = gson.fromJson(reader, AnimationData.class);
+  private static AnimationData parseAnimation(Reader reader, String sourceName) {
+    AnimationData animationData = GSON.fromJson(reader, AnimationData.class);
 
-    // Warn if format version is not supported
-    if (!SUPPORTED_FORMAT_VERSION.equals(animationData.getFormatVersion())) {
-      log.warn(
-          "{} Unsupported format version {} in file {}, will try to load it anyway.",
+    if (animationData == null) {
+      log.error(
+          "{} Failed to parse animation from {}, data is empty or invalid.",
           LOG_PREFIX,
-          animationData.getFormatVersion(),
-          filePath);
+          sourceName);
+      return null;
     }
 
-    // Adding meta data to the animation data
+    if (!SUPPORTED_FORMAT_VERSION.equals(animationData.getFormatVersion())) {
+      log.warn(
+          "{} Unsupported format version {} in {}, will try to load it anyway.",
+          LOG_PREFIX,
+          animationData.getFormatVersion(),
+          sourceName);
+    }
+
+    if (animationData.getAnimations() == null || animationData.getAnimations().isEmpty()) {
+      log.error("{} No animations found in {}.", LOG_PREFIX, sourceName);
+      return null;
+    }
+
     for (Map.Entry<String, AnimationData.Animation> entry :
         animationData.getAnimations().entrySet()) {
       entry.getValue().setName(entry.getKey());

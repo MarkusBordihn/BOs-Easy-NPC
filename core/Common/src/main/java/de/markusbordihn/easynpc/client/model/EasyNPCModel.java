@@ -26,15 +26,21 @@ import de.markusbordihn.easynpc.data.model.ModelAnimationBehavior;
 import de.markusbordihn.easynpc.data.model.ModelArmPose;
 import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.model.ModelPose;
+import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.DisplayAttributeDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.LightLayer;
 
 public class EasyNPCModel {
+
+  private static final float MAX_HEAD_YAW = 60.0F;
+  private static final float MAX_HEAD_PITCH = 45.0F;
+  private static final float DEG_TO_RAD = (float) Math.PI / 180.0F;
 
   public static boolean setupAnimationStart(
       final EasyNPC<?> easyNPC, final EasyNPCModelManager modelManager) {
@@ -47,7 +53,7 @@ public class EasyNPCModel {
 
     // Get Model Data
     ModelDataCapable<?> modelData = easyNPC.getEasyNPCModelData();
-    if (modelData == null || modelData.getModelPose() == ModelPose.DEFAULT) {
+    if (modelData == null || modelData.getModelPose() == ModelPose.VANILLA) {
       return false;
     }
 
@@ -66,10 +72,33 @@ public class EasyNPCModel {
     if (modelManager.shouldCancelAnimation(modelData)) {
       modelManager.setupModelParts(
           modelData, modelData.getModelAnimationBehavior() != ModelAnimationBehavior.SMART);
+      applyLimitedHeadTracking(easyNPC, modelData, modelManager);
       return true;
     }
 
     return false;
+  }
+
+  private static void applyLimitedHeadTracking(
+      final EasyNPC<?> easyNPC,
+      final ModelDataCapable<?> modelData,
+      final EasyNPCModelManager modelManager) {
+    CustomRotation rootRotation = modelData.getModelPartRotation(ModelPartType.ROOT);
+    if (rootRotation == null || !rootRotation.locked()) {
+      return;
+    }
+    if (modelData.getModelPartRotation(ModelPartType.HEAD).hasChanged()) {
+      return;
+    }
+    ModelPart head = modelManager.getModelPart(ModelPartType.HEAD);
+    if (head == null) {
+      return;
+    }
+    LivingEntity living = easyNPC.getLivingEntity();
+    head.yRot =
+        Mth.clamp(Mth.wrapDegrees(living.yHeadRot - living.yBodyRot), -MAX_HEAD_YAW, MAX_HEAD_YAW)
+            * DEG_TO_RAD;
+    head.xRot = Mth.clamp(living.getXRot(), -MAX_HEAD_PITCH, MAX_HEAD_PITCH) * DEG_TO_RAD;
   }
 
   public static int getEntityLightLevel(
@@ -103,7 +132,8 @@ public class EasyNPCModel {
 
     ModelDataCapable<?> modelData = easyNPC.getEasyNPCModelData();
     if (modelData != null
-        && modelData.getModelPose() == ModelPose.CUSTOM
+        && (modelData.getModelPose() == ModelPose.CUSTOM
+            || modelData.getModelPose() == ModelPose.DEFAULT)
         && !modelManager.shouldCancelAnimation(modelData)) {
       modelManager.applySelectiveChanges(modelData);
     }
@@ -158,7 +188,7 @@ public class EasyNPCModel {
     }
 
     ModelDataCapable<?> modelData = easyNPC.getEasyNPCModelData();
-    if (modelData != null && modelData.getModelPose() != ModelPose.DEFAULT) {
+    if (modelData != null && modelData.getModelPose() != ModelPose.VANILLA) {
       return;
     }
 

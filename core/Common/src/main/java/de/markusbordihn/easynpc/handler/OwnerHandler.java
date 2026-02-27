@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.handler;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataEntry;
 import de.markusbordihn.easynpc.data.objective.ObjectiveType;
+import de.markusbordihn.easynpc.data.saveddata.NPCEntityData;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ObjectiveDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.OwnerDataCapable;
@@ -54,6 +55,7 @@ public class OwnerHandler {
 
     log.debug("[{}] Setting owner to {}", easyNPC, owner);
     ownerData.setNPCOwnerUUID(owner.getUUID());
+    NPCEntityData.get().updateOwner(easyNPC, owner);
 
     // Update objective data if follow owner objective is active.
     ObjectiveDataCapable<?> objectiveData = easyNPC.getEasyNPCObjectiveData();
@@ -86,6 +88,7 @@ public class OwnerHandler {
 
     log.debug("[{}] Removing owner ...", easyNPC);
     ownerData.setNPCOwner(null);
+    NPCEntityData.get().updateOwner(easyNPC, null);
     return true;
   }
 }

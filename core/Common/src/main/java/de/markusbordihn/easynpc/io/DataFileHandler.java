@@ -106,7 +106,7 @@ public class DataFileHandler {
   public static void registerServerDataFiles(MinecraftServer minecraftServer) {
     log.info("{} Server data folders ...", Constants.LOG_REGISTER_PREFIX);
 
-    log.info("{} Pose data folders ...", Constants.LOG_REGISTER_PREFIX);
+    log.info("{} Pose data from data packs ...", Constants.LOG_REGISTER_PREFIX);
     CustomPoseDataFiles.registerCustomPoseData(minecraftServer);
 
     log.info("{} Backup data folders ...", Constants.LOG_REGISTER_PREFIX);

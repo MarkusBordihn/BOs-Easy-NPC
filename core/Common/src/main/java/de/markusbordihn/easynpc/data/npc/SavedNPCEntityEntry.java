@@ -65,7 +65,7 @@ public record SavedNPCEntityEntry(
             : new CompoundTag(),
         compoundTag.contains(DATA_METADATA_TAG)
             ? NPCEntityMetadata.fromCompoundTag(compoundTag.getCompound(DATA_METADATA_TAG))
-            : new NPCEntityMetadata(null, null, null, null, null));
+            : NPCEntityMetadata.DEFAULT);
   }
 
   public CompoundTag save(CompoundTag compoundTag) {

@@ -19,9 +19,11 @@
 
 package de.markusbordihn.easynpc.entity;
 
+import de.markusbordihn.easynpc.data.npc.NPCRemovalReason;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.menu.MenuManager;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 
 public class LivingEntityEvents {
@@ -52,10 +54,11 @@ public class LivingEntityEvents {
 
     if (livingEntity instanceof EasyNPC<?> easyNPC) {
       if (!livingEntity.level().isClientSide()) {
-        if (livingEntity.isRemoved()) {
-          NPCEntityManager.removeNPC(easyNPC.getEntityUUID());
-        } else {
+        Entity.RemovalReason reason = livingEntity.getRemovalReason();
+        if (reason != Entity.RemovalReason.DISCARDED) {
           NPCEntityManager.saveNPC(easyNPC);
+          NPCEntityManager.updateRemovalReason(
+              easyNPC.getEntityUUID(), NPCRemovalReason.fromRemovalReason(reason));
         }
       }
       LivingEntityManager.removeEasyNPC(easyNPC);

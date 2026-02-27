@@ -42,6 +42,7 @@ import de.markusbordihn.easynpc.configui.network.message.server.ChangeModelScale
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeModelVisibilityMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeMovementAttributeMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeNameMessage;
+import de.markusbordihn.easynpc.configui.network.message.server.ChangeNamedPoseMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangePoseMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangePositionMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeProfessionMessage;
@@ -278,6 +279,12 @@ public class NetworkHandlerManager {
         ChangeNameMessage.STREAM_CODEC,
         ChangeNameMessage.class,
         ChangeNameMessage::create);
+
+    networkHandler.registerServerNetworkMessage(
+        ChangeNamedPoseMessage.PAYLOAD_TYPE,
+        ChangeNamedPoseMessage.STREAM_CODEC,
+        ChangeNamedPoseMessage.class,
+        ChangeNamedPoseMessage::create);
 
     networkHandler.registerServerNetworkMessage(
         ChangePoseMessage.PAYLOAD_TYPE,

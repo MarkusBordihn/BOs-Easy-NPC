@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.configui.client.screen.configuration.pose;
 
+import de.markusbordihn.easynpc.client.screen.components.Checkbox;
 import de.markusbordihn.easynpc.client.screen.components.RangeSliderButton;
 import de.markusbordihn.easynpc.client.screen.components.SliderButton;
 import de.markusbordihn.easynpc.client.screen.components.SpinButton;
@@ -37,6 +38,7 @@ import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import java.util.LinkedHashSet;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -48,6 +50,7 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
   protected Button basicPoseButton;
   protected Button advancedPoseButton;
   protected Button customPoseButton;
+  protected Checkbox lockRotationCheckbox;
 
   public PoseConfigurationScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
@@ -75,6 +78,27 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
                     .modelAnimationBehaviorChange(this.getEasyNPCUUID(), behavior);
               }
             }));
+  }
+
+  protected Checkbox createLockRotationCheckbox(int x, int y) {
+    this.lockRotationCheckbox =
+        this.addRenderableWidget(
+            new Checkbox(
+                x,
+                y,
+                "lock_rotation",
+                this.modelData.getModelPartRotation(ModelPartType.ROOT).locked(),
+                checkbox ->
+                    NetworkMessageHandlerManager.getServerHandler()
+                        .modelRotationChange(
+                            this.getEasyNPCUUID(),
+                            ModelPartType.ROOT,
+                            this.modelData
+                                .getModelPartRotation(ModelPartType.ROOT)
+                                .withLocked(checkbox.selected()))));
+    this.lockRotationCheckbox.setTooltip(
+        Tooltip.create(TextComponent.getTranslatedConfigText("lock_rotation.tooltip")));
+    return this.lockRotationCheckbox;
   }
 
   protected Button createFollowCursorToggleButton(int x, int y) {

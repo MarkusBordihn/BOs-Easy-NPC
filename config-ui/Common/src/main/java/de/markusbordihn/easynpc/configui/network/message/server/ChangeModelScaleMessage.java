@@ -111,7 +111,7 @@ public record ChangeModelScaleMessage(UUID uuid, ModelPartType modelPartType, Cu
     // Verify if custom model pose is really needed.
     if (!modelData.hasChangedModel()) {
       log.debug("Reset custom model pose for {} from {}", easyNPC, serverPlayer);
-      modelData.setModelPose(ModelPose.DEFAULT);
+      modelData.setModelPose(ModelPose.VANILLA);
     }
   }
 }
