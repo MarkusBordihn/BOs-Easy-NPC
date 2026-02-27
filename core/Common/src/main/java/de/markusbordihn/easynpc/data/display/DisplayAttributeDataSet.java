@@ -148,9 +148,8 @@ public record DisplayAttributeDataSet(
   }
 
   public void encode(FriendlyByteBuf buffer) {
-    buffer.writeVarInt((int) attributes.keySet().stream()
-                .filter(key -> key != DisplayAttributeType.NONE)
-                .count());
+    buffer.writeVarInt(
+        (int) attributes.keySet().stream().filter(key -> key != DisplayAttributeType.NONE).count());
     for (var entry : attributes.entrySet()) {
       if (entry.getKey() == DisplayAttributeType.NONE) {
         continue;

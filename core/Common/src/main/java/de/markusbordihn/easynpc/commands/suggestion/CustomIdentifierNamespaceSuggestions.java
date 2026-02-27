@@ -34,7 +34,6 @@ public class CustomIdentifierNamespaceSuggestions {
   public static CompletableFuture<Suggestions> suggest(
       CommandContext<CommandSourceStack> context, SuggestionsBuilder builder) {
     return SharedSuggestionProvider.suggest(
-        NPCEntityData.get(context.getSource().getServer()).getAllCustomIdentifierNamespaces(),
-        builder);
+        NPCEntityData.get().getAllCustomIdentifierNamespaces(), builder);
   }
 }

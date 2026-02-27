@@ -22,11 +22,15 @@ package de.markusbordihn.easynpc.entity.easynpc.ai.goal;
 import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 
 public class CustomLookAtPlayerGoal<T extends EasyNPC<?>> extends LookAtPlayerGoal {
+  private static final float MAX_HEAD_ROTATION = 60.0F;
+  private static final float LOOK_SPEED = 0.15F;
   private final ModelDataCapable<?> modelData;
+  private final LivingEntity livingEntity;
 
   public CustomLookAtPlayerGoal(
       T easyNPC, Class<? extends LivingEntity> lookAtType, float lookDistance, float probability) {
@@ -41,26 +45,59 @@ public class CustomLookAtPlayerGoal<T extends EasyNPC<?>> extends LookAtPlayerGo
       boolean onlyHorizontal) {
     super(easyNPC.getMob(), lookAtType, lookDistance, probability, onlyHorizontal);
     this.modelData = easyNPC.getEasyNPCModelData();
+    this.livingEntity = easyNPC.getLivingEntity();
+  }
+
+  private boolean isRootLockedWithDefaultHeadRotation() {
+    if (this.modelData == null) {
+      return false;
+    }
+    return this.modelData.getModelPartRotation(ModelPartType.ROOT).locked()
+        && !this.modelData.getModelPartRotation(ModelPartType.HEAD).hasChanged();
   }
 
   @Override
   public boolean canUse() {
-    return (this.modelData == null
-            || !this.modelData.getModelPartRotation(ModelPartType.ROOT).locked())
-        && super.canUse();
+    if (this.modelData != null
+        && this.modelData.getModelPartRotation(ModelPartType.ROOT).locked()
+        && !isRootLockedWithDefaultHeadRotation()) {
+      return false;
+    }
+    return super.canUse();
   }
 
   @Override
   public boolean canContinueToUse() {
-    return (this.modelData == null
-            || !this.modelData.getModelPartRotation(ModelPartType.ROOT).locked())
-        && super.canContinueToUse();
+    if (this.modelData != null
+        && this.modelData.getModelPartRotation(ModelPartType.ROOT).locked()
+        && !isRootLockedWithDefaultHeadRotation()) {
+      return false;
+    }
+    return super.canContinueToUse();
   }
 
   @Override
   public void tick() {
-    if (this.modelData == null
-        || !this.modelData.getModelPartRotation(ModelPartType.ROOT).locked()) {
+    if (this.modelData != null
+        && this.modelData.getModelPartRotation(ModelPartType.ROOT).locked()
+        && !isRootLockedWithDefaultHeadRotation()) {
+      return;
+    }
+
+    if (this.livingEntity != null && isRootLockedWithDefaultHeadRotation()) {
+      if (this.lookAt != null && this.lookAt.isAlive()) {
+        double dx = this.lookAt.getX() - this.livingEntity.getX();
+        double dz = this.lookAt.getZ() - this.livingEntity.getZ();
+        float targetAngle = (float) (Mth.atan2(dz, dx) * (180.0 / Math.PI)) - 90.0F;
+        float bodyRot = this.livingEntity.yBodyRot;
+        float clampedTarget =
+            bodyRot
+                + Mth.clamp(
+                    Mth.wrapDegrees(targetAngle - bodyRot), -MAX_HEAD_ROTATION, MAX_HEAD_ROTATION);
+        float delta = Mth.wrapDegrees(clampedTarget - this.livingEntity.yHeadRot);
+        this.livingEntity.yHeadRot += delta * LOOK_SPEED;
+      }
+    } else {
       super.tick();
     }
   }

@@ -108,7 +108,7 @@ public class ListCommand extends Command {
   }
 
   private static int listAllNPCs(CommandSourceStack context) {
-    NPCEntityData npcData = NPCEntityData.get(context.getServer());
+    NPCEntityData npcData = NPCEntityData.get();
     int count = npcData.getCount();
     sendSuccessMessage(context, "Total NPCs: " + count, ChatFormatting.GREEN);
 
@@ -127,8 +127,8 @@ public class ListCommand extends Command {
   }
 
   private static int listNPCsByOwner(CommandSourceStack context, ServerPlayer player) {
-    NPCEntityData npcData = NPCEntityData.get(context.getServer());
-    Collection<SavedNPCEntityEntry> entries = npcData.getEntriesByOwner(player.getUUID());
+    Collection<SavedNPCEntityEntry> entries =
+        NPCEntityData.get().getEntriesByOwner(player.getUUID());
 
     boolean isSelf =
         context.getEntity() instanceof ServerPlayer self && self.getUUID().equals(player.getUUID());
@@ -140,8 +140,8 @@ public class ListCommand extends Command {
   }
 
   private static int listNPCsByType(CommandSourceStack context, ResourceLocation entityType) {
-    NPCEntityData npcData = NPCEntityData.get(context.getServer());
-    Collection<SavedNPCEntityEntry> entries = npcData.getEntriesByType(entityType.toString());
+    Collection<SavedNPCEntityEntry> entries =
+        NPCEntityData.get().getEntriesByType(entityType.toString());
 
     sendSuccessMessage(
         context, "NPCs of type " + entityType + ": " + entries.size(), ChatFormatting.GREEN);
@@ -150,8 +150,8 @@ public class ListCommand extends Command {
   }
 
   private static int listNPCsByDimension(CommandSourceStack context, ResourceLocation dimension) {
-    NPCEntityData npcData = NPCEntityData.get(context.getServer());
-    Collection<SavedNPCEntityEntry> entries = npcData.getEntriesByDimension(dimension.toString());
+    Collection<SavedNPCEntityEntry> entries =
+        NPCEntityData.get().getEntriesByDimension(dimension.toString());
 
     sendSuccessMessage(
         context, "NPCs in dimension " + dimension + ": " + entries.size(), ChatFormatting.GREEN);
@@ -161,9 +161,8 @@ public class ListCommand extends Command {
 
   private static int listNPCsByCustomIdentifier(
       CommandSourceStack context, ResourceLocation customIdentifier) {
-    NPCEntityData npcData = NPCEntityData.get(context.getServer());
     Collection<SavedNPCEntityEntry> entries =
-        npcData.getEntriesByCustomIdentifier(customIdentifier);
+        NPCEntityData.get().getEntriesByCustomIdentifier(customIdentifier);
 
     sendSuccessMessage(
         context,
@@ -174,9 +173,8 @@ public class ListCommand extends Command {
   }
 
   private static int listNPCsByNamespace(CommandSourceStack context, String namespace) {
-    NPCEntityData npcData = NPCEntityData.get(context.getServer());
     Collection<SavedNPCEntityEntry> entries =
-        npcData.getEntriesByCustomIdentifierNamespace(namespace);
+        NPCEntityData.get().getEntriesByCustomIdentifierNamespace(namespace);
 
     sendSuccessMessage(
         context,

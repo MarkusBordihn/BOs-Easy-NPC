@@ -102,6 +102,9 @@ public class BasicPoseConfigurationScreen<T extends ConfigurationMenu>
 
     // Follow Cursor Toggle Button
     this.createFollowCursorToggleButton(this.contentLeftPos + 149, this.topPos + 38);
+
+    // Lock Rotation Checkbox
+    this.createLockRotationCheckbox(this.contentLeftPos, this.bottomPos - 26);
   }
 
   @Override

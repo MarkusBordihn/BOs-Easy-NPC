@@ -31,6 +31,7 @@ import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -46,9 +47,11 @@ public class DefaultRotationConfigurationScreen<T extends ConfigurationMenu>
   }
 
   private void sendRotationUpdate(float x, float y, float z) {
+    ModelDataCapable<?> modelData = this.getEasyNPC().getEasyNPCModelData();
+    boolean locked = modelData.getModelPartRotation(ModelPartType.ROOT).locked();
     NetworkMessageHandlerManager.getServerHandler()
         .modelRotationChange(
-            this.getEasyNPCUUID(), ModelPartType.ROOT, new CustomRotation(x, y, z));
+            this.getEasyNPCUUID(), ModelPartType.ROOT, new CustomRotation(x, y, z, locked));
   }
 
   @Override
@@ -172,6 +175,8 @@ public class DefaultRotationConfigurationScreen<T extends ConfigurationMenu>
                             modelData
                                 .getModelPartRotation(ModelPartType.ROOT)
                                 .withLocked(checkbox.selected()))));
+    this.rootRotationCheckbox.setTooltip(
+        Tooltip.create(TextComponent.getTranslatedConfigText("lock_rotation.tooltip")));
   }
 
   @Override

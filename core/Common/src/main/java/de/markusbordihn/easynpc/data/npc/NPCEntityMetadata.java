@@ -30,17 +30,22 @@ public record NPCEntityMetadata(
     String entityType,
     String dimension,
     UUID presetUUID,
-    ResourceLocation customIdentifier) {
+    ResourceLocation customIdentifier,
+    NPCRemovalReason removalReason) {
+
+  public static final NPCEntityMetadata DEFAULT =
+      new NPCEntityMetadata(null, null, null, null, null, NPCRemovalReason.NONE);
 
   public static final String TAG_DIMENSION = "Dimension";
   public static final String TAG_OWNER = "Owner";
   public static final String TAG_ENTITY_TYPE = "EntityType";
   public static final String TAG_PRESET_UUID = "PresetUUID";
   public static final String TAG_CUSTOM_IDENTIFIER = "CustomIdentifier";
+  public static final String TAG_REMOVAL_REASON = "RemovalReason";
 
   public static <T extends Mob> NPCEntityMetadata fromEasyNPC(EasyNPC<T> easyNPC) {
     if (easyNPC == null || easyNPC.getEntity() == null) {
-      return new NPCEntityMetadata(null, null, null, null, null);
+      return DEFAULT;
     }
 
     UUID ownerUUID = null;
@@ -62,12 +67,13 @@ public record NPCEntityMetadata(
 
     ResourceLocation customIdentifier = easyNPC.getCustomNPCIdentifier();
 
-    return new NPCEntityMetadata(ownerUUID, entityType, dimension, presetUUID, customIdentifier);
+    return new NPCEntityMetadata(
+        ownerUUID, entityType, dimension, presetUUID, customIdentifier, NPCRemovalReason.NONE);
   }
 
   public static NPCEntityMetadata fromCompoundTag(CompoundTag tag) {
     if (tag == null || tag.isEmpty()) {
-      return new NPCEntityMetadata(null, null, null, null, null);
+      return DEFAULT;
     }
 
     UUID ownerUUID = tag.contains(TAG_OWNER) ? tag.getUUID(TAG_OWNER) : null;
@@ -84,7 +90,13 @@ public record NPCEntityMetadata(
       }
     }
 
-    return new NPCEntityMetadata(ownerUUID, entityType, dimension, presetUUID, customIdentifier);
+    NPCRemovalReason removalReason =
+        tag.contains(TAG_REMOVAL_REASON)
+            ? NPCRemovalReason.fromString(tag.getString(TAG_REMOVAL_REASON))
+            : NPCRemovalReason.NONE;
+
+    return new NPCEntityMetadata(
+        ownerUUID, entityType, dimension, presetUUID, customIdentifier, removalReason);
   }
 
   public CompoundTag toCompoundTag() {
@@ -103,6 +115,9 @@ public record NPCEntityMetadata(
     }
     if (customIdentifier != null) {
       tag.putString(TAG_CUSTOM_IDENTIFIER, customIdentifier.toString());
+    }
+    if (removalReason != null && removalReason != NPCRemovalReason.NONE) {
+      tag.putString(TAG_REMOVAL_REASON, removalReason.name());
     }
     return tag;
   }
@@ -125,5 +140,9 @@ public record NPCEntityMetadata(
 
   public boolean hasCustomIdentifier() {
     return customIdentifier != null;
+  }
+
+  public boolean hasRemovalReason() {
+    return removalReason != null && removalReason != NPCRemovalReason.NONE;
   }
 }

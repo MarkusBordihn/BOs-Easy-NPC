@@ -40,6 +40,7 @@ import de.markusbordihn.easynpc.configui.network.message.server.ChangeModelScale
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeModelVisibilityMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeMovementAttributeMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeNameMessage;
+import de.markusbordihn.easynpc.configui.network.message.server.ChangeNamedPoseMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangePoseMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangePositionMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeProfessionMessage;
@@ -510,6 +511,13 @@ public interface ServerNetworkMessageHandlerInterface {
   default void poseChange(UUID uuid, Pose pose) {
     if (uuid != null && pose != null) {
       NetworkHandlerManager.sendMessageToServer(new ChangePoseMessage(uuid, pose));
+    }
+  }
+
+  default void namedPoseChange(UUID uuid, ResourceLocation poseId) {
+    if (uuid != null && poseId != null) {
+      NetworkHandlerManager.sendMessageToServer(
+          new ChangeNamedPoseMessage(uuid, poseId.toString()));
     }
   }
 

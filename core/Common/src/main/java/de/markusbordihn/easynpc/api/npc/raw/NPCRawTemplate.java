@@ -72,6 +72,7 @@ import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.entity.ai.control.BodyRotationControl;
 import net.minecraft.world.entity.ai.goal.GoalSelector;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.player.Player;
@@ -127,6 +128,10 @@ public class NPCRawTemplate extends Zombie implements EasyNPCBase<Zombie> {
         SynchedDataIndex.MODEL_POSE,
         net.minecraft.network.syncher.SynchedEntityData.defineId(
             NPCRawTemplate.class, EntityDataSerializersManager.MODEL_POSE));
+    entityDataAccessorMap.put(
+        SynchedDataIndex.MODEL_POSE_NAME,
+        net.minecraft.network.syncher.SynchedEntityData.defineId(
+            NPCRawTemplate.class, EntityDataSerializers.STRING));
     entityDataAccessorMap.put(
         SynchedDataIndex.MODEL_ANIMATION,
         net.minecraft.network.syncher.SynchedEntityData.defineId(
@@ -229,11 +234,15 @@ public class NPCRawTemplate extends Zombie implements EasyNPCBase<Zombie> {
 
   public NPCRawTemplate(EntityType<? extends Zombie> entityType, Level level, Enum<?> variant) {
     super(entityType, level);
+    this.lookControl =
+        new de.markusbordihn.easynpc.entity.easynpc.ai.control.EasyNPCLookControl(this);
     this.registerEasyNPCDefaultVariant(variant);
   }
 
   public NPCRawTemplate(EntityType<? extends Zombie> entityType, Level level) {
     super(entityType, level);
+    this.lookControl =
+        new de.markusbordihn.easynpc.entity.easynpc.ai.control.EasyNPCLookControl(this);
   }
 
   @Override
@@ -736,6 +745,11 @@ public class NPCRawTemplate extends Zombie implements EasyNPCBase<Zombie> {
   }
 
   // TEMPLATE_INSERT:METHODS
+
+  @Override
+  protected BodyRotationControl createBodyControl() {
+    return new de.markusbordihn.easynpc.entity.easynpc.ai.control.EasyNPCBodyRotationControl(this);
+  }
 
   @Override
   public boolean equals(Object object) {

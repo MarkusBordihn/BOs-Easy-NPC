@@ -33,7 +33,6 @@ public class DimensionSuggestions {
 
   public static CompletableFuture<Suggestions> suggest(
       CommandContext<CommandSourceStack> context, SuggestionsBuilder builder) {
-    return SharedSuggestionProvider.suggest(
-        NPCEntityData.get(context.getSource().getServer()).getAllDimensions(), builder);
+    return SharedSuggestionProvider.suggest(NPCEntityData.get().getAllDimensions(), builder);
   }
 }

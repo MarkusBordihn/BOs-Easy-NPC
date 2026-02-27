@@ -20,17 +20,18 @@
 package de.markusbordihn.easynpc.data.model;
 
 public enum ModelPose {
+  VANILLA,
   DEFAULT,
   CUSTOM;
 
   public static ModelPose get(String modelPose) {
     if (modelPose == null || modelPose.isEmpty()) {
-      return ModelPose.DEFAULT;
+      return ModelPose.VANILLA;
     }
     try {
       return ModelPose.valueOf(modelPose);
     } catch (IllegalArgumentException e) {
-      return ModelPose.DEFAULT;
+      return ModelPose.VANILLA;
     }
   }
 }

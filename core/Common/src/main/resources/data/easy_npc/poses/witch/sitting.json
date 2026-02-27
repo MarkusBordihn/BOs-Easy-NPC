@@ -1,0 +1,28 @@
+{
+  "format_version": "1.8.0",
+  "animations": {
+    "Sitting": {
+      "loop": "hold_on_last_frame",
+      "bones": {
+        "Head": {
+          "position": [0, -10.5, 0]
+        },
+        "Body": {
+          "position": [0, -10.5, 0]
+        },
+        "Arms": {
+          "rotation": [-20, 0, 0],
+          "position": [0, -10.5, 0]
+        },
+        "RightLeg": {
+          "rotation": [-90, 15, 0],
+          "position": [0, -10, 0]
+        },
+        "LeftLeg": {
+          "rotation": [-90, -10.5, 0],
+          "position": [0, -10, 0]
+        }
+      }
+    }
+  }
+}

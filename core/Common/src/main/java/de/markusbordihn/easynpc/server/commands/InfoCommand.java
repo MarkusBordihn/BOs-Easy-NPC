@@ -48,7 +48,7 @@ public class InfoCommand extends Command {
   private static int showNPCInfo(CommandSourceStack context, EasyNPC<?> easyNPC) {
     UUID uuid = easyNPC.getEntityUUID();
 
-    NPCEntityData.get(context.getServer())
+    NPCEntityData.get()
         .getEntry(uuid)
         .ifPresentOrElse(
             entry -> {

@@ -19,159 +19,100 @@
 
 package de.markusbordihn.easynpc.configui.client.screen.configuration.pose;
 
+import de.markusbordihn.easynpc.client.pose.PoseManager;
+import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.configui.client.renderer.screen.EntityConfigScreenRenderer;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
-import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.data.render.EntityRenderConfig;
+import de.markusbordihn.easynpc.data.skin.SkinModel;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.Pose;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
 public class DefaultPoseConfigurationScreen<T extends ConfigurationMenu>
     extends PoseConfigurationScreen<T> {
 
   public static final int BUTTON_WIDTH = 100;
-  protected Button crouchingPoseButton;
-  protected Button dyingPoseButton;
-  protected Button fallFlyingPoseButton;
-  protected Button longJumpPoseButton;
-  protected Button sleepingPoseButton;
-  protected Button spinAttackPoseButton;
-  protected Button standingPoseButton;
-  protected Button swimmingPoseButton;
+  private static final int BUTTON_HEIGHT = 16;
+  private static final int BUTTON_SPACING = 20;
+  private static final int MAX_VISIBLE_BUTTONS = 10;
+
+  private final List<Button> poseButtons = new ArrayList<>();
+  private final List<ResourceLocation> poseKeys = new ArrayList<>();
+  private int scrollOffset = 0;
 
   public DefaultPoseConfigurationScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
   }
 
-  private void checkPoseButtonState(Pose pose, ModelPose modelPose) {
-    Pose currentPose = pose != null ? pose : this.getEasyNPCEntity().getPose();
-    boolean isCustomModelPose =
-        (modelPose != null ? modelPose : this.modelData.getModelPose()) == ModelPose.CUSTOM;
-    this.standingPoseButton.active = isCustomModelPose || currentPose != Pose.STANDING;
-    this.crouchingPoseButton.active = isCustomModelPose || currentPose != Pose.CROUCHING;
-    this.dyingPoseButton.active = isCustomModelPose || currentPose != Pose.DYING;
-    this.fallFlyingPoseButton.active = isCustomModelPose || currentPose != Pose.FALL_FLYING;
-    this.longJumpPoseButton.active = isCustomModelPose || currentPose != Pose.LONG_JUMPING;
-    this.sleepingPoseButton.active = isCustomModelPose || currentPose != Pose.SLEEPING;
-    this.spinAttackPoseButton.active = isCustomModelPose || currentPose != Pose.SPIN_ATTACK;
-    this.swimmingPoseButton.active = isCustomModelPose || currentPose != Pose.SWIMMING;
+  private void updatePoseButtonStates() {
+    String currentPoseName = this.modelData.getModelPoseName();
+    for (int i = 0; i < poseButtons.size(); i++) {
+      if (i < poseKeys.size()) {
+        ResourceLocation poseId = poseKeys.get(i + scrollOffset);
+        poseButtons.get(i).active = !poseId.toString().equals(currentPoseName);
+      }
+    }
   }
 
   @Override
   public void init() {
     super.init();
 
-    // Default button stats
     this.defaultPoseButton.active = false;
 
-    // Pose Buttons
-    int poseButtonLeft = this.contentLeftPos + 175;
-    this.standingPoseButton =
-        this.addRenderableWidget(
-            new TextButton(
-                poseButtonLeft,
-                this.contentTopPos,
-                BUTTON_WIDTH,
-                "pose.standing",
-                button -> {
-                  NetworkMessageHandlerManager.getServerHandler()
-                      .poseChange(this.getEasyNPCUUID(), Pose.STANDING);
-                  this.checkPoseButtonState(Pose.STANDING, ModelPose.DEFAULT);
-                }));
-    this.crouchingPoseButton =
-        this.addRenderableWidget(
-            new TextButton(
-                poseButtonLeft,
-                this.contentTopPos + 24,
-                BUTTON_WIDTH,
-                "pose.crouching",
-                button -> {
-                  NetworkMessageHandlerManager.getServerHandler()
-                      .poseChange(this.getEasyNPCUUID(), Pose.CROUCHING);
-                  this.checkPoseButtonState(Pose.CROUCHING, ModelPose.DEFAULT);
-                }));
-    this.dyingPoseButton =
-        this.addRenderableWidget(
-            new TextButton(
-                poseButtonLeft,
-                this.contentTopPos + 48,
-                BUTTON_WIDTH,
-                "pose.dying",
-                button -> {
-                  NetworkMessageHandlerManager.getServerHandler()
-                      .poseChange(this.getEasyNPCUUID(), Pose.DYING);
-                  this.checkPoseButtonState(Pose.DYING, ModelPose.DEFAULT);
-                }));
-    this.fallFlyingPoseButton =
-        this.addRenderableWidget(
-            new TextButton(
-                poseButtonLeft,
-                this.contentTopPos + 72,
-                BUTTON_WIDTH,
-                "pose.fall_flying",
-                button -> {
-                  NetworkMessageHandlerManager.getServerHandler()
-                      .poseChange(this.getEasyNPCUUID(), Pose.FALL_FLYING);
-                  this.checkPoseButtonState(Pose.FALL_FLYING, ModelPose.DEFAULT);
-                }));
-    this.longJumpPoseButton =
-        this.addRenderableWidget(
-            new TextButton(
-                poseButtonLeft,
-                this.contentTopPos + 96,
-                BUTTON_WIDTH,
-                "pose.long_jumping",
-                button -> {
-                  NetworkMessageHandlerManager.getServerHandler()
-                      .poseChange(this.getEasyNPCUUID(), Pose.LONG_JUMPING);
-                  this.checkPoseButtonState(Pose.LONG_JUMPING, ModelPose.DEFAULT);
-                }));
-    this.sleepingPoseButton =
-        this.addRenderableWidget(
-            new TextButton(
-                poseButtonLeft,
-                this.contentTopPos + 120,
-                BUTTON_WIDTH,
-                "pose.sleeping",
-                button -> {
-                  NetworkMessageHandlerManager.getServerHandler()
-                      .poseChange(this.getEasyNPCUUID(), Pose.SLEEPING);
-                  this.checkPoseButtonState(Pose.SLEEPING, ModelPose.DEFAULT);
-                }));
-    this.spinAttackPoseButton =
-        this.addRenderableWidget(
-            new TextButton(
-                poseButtonLeft,
-                this.contentTopPos + 144,
-                BUTTON_WIDTH,
-                "pose.spin_attack",
-                button -> {
-                  NetworkMessageHandlerManager.getServerHandler()
-                      .poseChange(this.getEasyNPCUUID(), Pose.SPIN_ATTACK);
-                  this.checkPoseButtonState(Pose.SPIN_ATTACK, ModelPose.DEFAULT);
-                }));
-    this.swimmingPoseButton =
-        this.addRenderableWidget(
-            new TextButton(
-                poseButtonLeft,
-                this.contentTopPos + 168,
-                BUTTON_WIDTH,
-                "pose.swimming",
-                button -> {
-                  NetworkMessageHandlerManager.getServerHandler()
-                      .poseChange(this.getEasyNPCUUID(), Pose.SWIMMING);
-                  this.checkPoseButtonState(Pose.SWIMMING, ModelPose.DEFAULT);
-                }));
+    // Discover available poses for this NPC's skin model
+    SkinModel skinModel = this.getSkinModel();
+    Set<ResourceLocation> availablePoses =
+        skinModel != null
+            ? PoseManager.getPoseDataKeysForModel(skinModel)
+            : PoseManager.getPoseDataKeys();
 
-    this.checkPoseButtonState(this.getEasyNPCEntity().getPose(), this.modelData.getModelPose());
+    poseKeys.clear();
+    poseKeys.addAll(availablePoses);
+    poseButtons.clear();
+
+    int poseButtonLeft = this.contentLeftPos + 175;
+    int maxButtons = Math.min(poseKeys.size(), MAX_VISIBLE_BUTTONS);
+
+    for (int i = 0; i < maxButtons; i++) {
+      ResourceLocation poseId = poseKeys.get(i + scrollOffset);
+      String displayName = PoseManager.getPoseDisplayName(poseId);
+
+      Button button =
+          this.addRenderableWidget(
+              new TextButton(
+                  poseButtonLeft,
+                  this.contentTopPos + (i * BUTTON_SPACING),
+                  BUTTON_WIDTH,
+                  Component.literal(displayName),
+                  btn -> {
+                    NetworkMessageHandlerManager.getServerHandler()
+                        .namedPoseChange(this.getEasyNPCUUID(), poseId);
+                    this.modelData.setModelPoseName(poseId.toString());
+                    this.updatePoseButtonStates();
+                  }));
+      poseButtons.add(button);
+    }
+
+    this.updatePoseButtonStates();
+
+    // Animation Behavior Button
+    this.addRenderableWidget(
+        this.createAnimationBehaviorButton(this.contentLeftPos + 30, this.contentTopPos + 190));
 
     // Follow Cursor Toggle Button
     this.createFollowCursorToggleButton(this.contentLeftPos + 149, this.contentTopPos);
+
+    // Lock Rotation Checkbox
+    this.createLockRotationCheckbox(this.contentLeftPos + 175, this.contentTopPos + 190);
   }
 
   @Override
@@ -230,5 +171,9 @@ public class DefaultPoseConfigurationScreen<T extends ConfigurationMenu>
         this.contentLeftPos + 168,
         this.contentTopPos + 150,
         0xaa888888);
+
+    // Animation label
+    Text.drawConfigString(
+        guiGraphics, this.font, "animation", this.contentLeftPos + 46, this.contentTopPos + 179);
   }
 }

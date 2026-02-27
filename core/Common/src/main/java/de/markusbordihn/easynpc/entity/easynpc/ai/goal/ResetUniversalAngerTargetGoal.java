@@ -49,7 +49,8 @@ public class ResetUniversalAngerTargetGoal<T extends EasyNPC<?>> extends Goal {
 
   @Override
   public boolean canUse() {
-    return this.serverLevel.getGameRules().getBoolean(GameRules.RULE_UNIVERSAL_ANGER)
+    return this.mob instanceof NeutralMob
+        && this.serverLevel.getGameRules().getBoolean(GameRules.RULE_UNIVERSAL_ANGER)
         && this.wasHurtByPlayer();
   }
 
@@ -62,10 +63,13 @@ public class ResetUniversalAngerTargetGoal<T extends EasyNPC<?>> extends Goal {
   @Override
   public void start() {
     this.lastHurtByPlayerTimestamp = this.mob.getLastHurtByMobTimestamp();
-    ((NeutralMob) this.mob).forgetCurrentTargetAndRefreshUniversalAnger();
+    if (this.mob instanceof NeutralMob neutralMob) {
+      neutralMob.forgetCurrentTargetAndRefreshUniversalAnger();
+    }
     if (this.alertOthersOfSameType) {
       this.getNearbyMobsOfSameType().stream()
           .filter(nearMob -> nearMob != this.mob)
+          .filter(NeutralMob.class::isInstance)
           .map(NeutralMob.class::cast)
           .forEach(NeutralMob::forgetCurrentTargetAndRefreshUniversalAnger);
     }

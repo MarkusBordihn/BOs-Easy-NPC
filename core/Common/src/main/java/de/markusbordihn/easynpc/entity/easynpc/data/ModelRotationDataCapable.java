@@ -65,11 +65,16 @@ public interface ModelRotationDataCapable<T extends Mob> extends EasyNPC<T> {
   }
 
   default void setModelRotation(float y) {
-    CustomRotation rotation = getModelPartRotation(ModelPartType.ROOT);
-    setModelRotation(rotation.x(), y, rotation.z());
+    CustomRotation current = getModelPartRotation(ModelPartType.ROOT);
+    setModelRotation(current.x(), y, current.z(), current.locked());
   }
 
   default void setModelRotation(float x, float y, float z) {
+    CustomRotation current = getModelPartRotation(ModelPartType.ROOT);
+    setModelRotation(x, y, z, current.locked());
+  }
+
+  default void setModelRotation(float x, float y, float z, boolean locked) {
     Entity entity = this.getEntity();
     if (entity != null) {
       entity.setYRot(y);
@@ -84,8 +89,7 @@ public interface ModelRotationDataCapable<T extends Mob> extends EasyNPC<T> {
       livingEntity.yHeadRotO = y;
     }
 
-    setModelPartRotation(
-        ModelPartType.ROOT, new CustomRotation(x, y, z).withLocked(x != 0 || y != 0 || z != 0));
+    setModelPartRotation(ModelPartType.ROOT, new CustomRotation(x, y, z).withLocked(locked));
   }
 
   default boolean hasChangedModelRotation() {
