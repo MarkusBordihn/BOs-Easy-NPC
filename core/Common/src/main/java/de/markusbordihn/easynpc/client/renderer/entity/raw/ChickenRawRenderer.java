@@ -23,6 +23,7 @@ import de.markusbordihn.easynpc.api.model.CustomModelConfig;
 import de.markusbordihn.easynpc.api.model.OriginalModelConfig;
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.layers.ChickenCustomModelLayer;
+import de.markusbordihn.easynpc.client.renderer.entity.layers.EasyNPCItemAttachmentLayer;
 import de.markusbordihn.easynpc.data.skin.variant.ChickenSkinVariant;
 import net.minecraft.client.renderer.entity.ChickenRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -62,6 +63,7 @@ public class ChickenRawRenderer extends ChickenRenderer implements EasyNPCEntity
     if (this.customConfig.hasCustomModel()) {
       this.addLayer(new ChickenCustomModelLayer(this, context.getModelSet(), this.customConfig));
     }
+    this.addLayer(new EasyNPCItemAttachmentLayer<>(this, context.getItemInHandRenderer()));
   }
 
   @Override

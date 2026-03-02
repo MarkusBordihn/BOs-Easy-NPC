@@ -30,8 +30,10 @@ import java.util.List;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 
 public interface PresetDataCapable<T extends Mob> extends EasyNPC<T> {
 
@@ -115,8 +117,25 @@ public interface PresetDataCapable<T extends Mob> extends EasyNPC<T> {
       log.debug("Importing full preset {} for {}", compoundTag, this);
     }
 
+    // Remove volatile fields that could cause issues (e.g. dead state)
+    for (String volatileField : ENTITY_DATA_VOLATILE_FIELDS) {
+      compoundTag.remove(volatileField);
+    }
+
     // Import preset data to entity.
     this.getEntity().load(compoundTag);
+
+    // Ensure entity is alive with full health after import
+    if (this.getEntity() instanceof LivingEntity livingEntity) {
+      float maxHealth =
+          livingEntity.getAttribute(Attributes.MAX_HEALTH) != null
+              ? (float) livingEntity.getAttribute(Attributes.MAX_HEALTH).getValue()
+              : 20.0f;
+      livingEntity.setHealth(maxHealth);
+      livingEntity.setAbsorptionAmount(0.0f);
+      livingEntity.deathTime = 0;
+      livingEntity.hurtTime = 0;
+    }
   }
 
   default CompoundTag serializePresetData() {

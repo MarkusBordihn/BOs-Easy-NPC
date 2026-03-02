@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.mixin.model;
 
 import de.markusbordihn.easynpc.client.model.EasyNPCModel;
 import de.markusbordihn.easynpc.client.model.EasyNPCModelManager;
+import de.markusbordihn.easynpc.client.model.EasyNPCModelManagerAccessor;
 import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import net.minecraft.client.model.QuadrupedModel;
@@ -35,7 +36,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(QuadrupedModel.class)
-public class EasyNPCQuadrupedModelMixin<T extends Entity> {
+public class EasyNPCQuadrupedModelMixin<T extends Entity> implements EasyNPCModelManagerAccessor {
 
   @Shadow @Final protected ModelPart head;
   @Shadow @Final protected ModelPart body;
@@ -45,6 +46,11 @@ public class EasyNPCQuadrupedModelMixin<T extends Entity> {
   @Shadow @Final protected ModelPart leftHindLeg;
 
   @Unique private EasyNPCModelManager easyNPC$modelManager;
+
+  @Override
+  public EasyNPCModelManager easyNPC$getModelManager() {
+    return this.easyNPC$modelManager;
+  }
 
   @Inject(method = "<init>(Lnet/minecraft/client/model/geom/ModelPart;ZFFFFI)V", at = @At("TAIL"))
   private void easyNpcModel(

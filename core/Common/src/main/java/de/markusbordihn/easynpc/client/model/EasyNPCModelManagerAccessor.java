@@ -17,32 +17,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.client.renderer.entity.raw;
+package de.markusbordihn.easynpc.client.model;
 
-import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
-import de.markusbordihn.easynpc.client.renderer.entity.layers.EasyNPCItemAttachmentLayer;
-import de.markusbordihn.easynpc.data.skin.variant.FoxSkinVariant;
-import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.FoxRenderer;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.animal.Fox;
+public interface EasyNPCModelManagerAccessor {
 
-public class FoxRawRenderer extends FoxRenderer implements EasyNPCEntityRenderer {
-
-  protected static final ResourceLocation DEFAULT_TEXTURE = FoxSkinVariant.RED.getTextureLocation();
-
-  public FoxRawRenderer(EntityRendererProvider.Context context) {
-    super(context);
-    this.addLayer(new EasyNPCItemAttachmentLayer<>(this, context.getItemInHandRenderer()));
-  }
-
-  @Override
-  public ResourceLocation getTextureLocation(Fox entity) {
-    return getTextureLocationWithConfig(entity);
-  }
-
-  @Override
-  public ResourceLocation getDefaultTexture() {
-    return DEFAULT_TEXTURE;
-  }
+  EasyNPCModelManager easyNPC$getModelManager();
 }

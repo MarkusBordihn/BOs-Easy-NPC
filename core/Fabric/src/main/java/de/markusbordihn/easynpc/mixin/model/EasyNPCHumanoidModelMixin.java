@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.mixin.model;
 
 import de.markusbordihn.easynpc.client.model.EasyNPCModel;
 import de.markusbordihn.easynpc.client.model.EasyNPCModelManager;
+import de.markusbordihn.easynpc.client.model.EasyNPCModelManagerAccessor;
 import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import java.util.function.Function;
@@ -38,7 +39,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(HumanoidModel.class)
-public class EasyNPCHumanoidModelMixin<T extends LivingEntity> {
+public class EasyNPCHumanoidModelMixin<T extends LivingEntity>
+    implements EasyNPCModelManagerAccessor {
 
   @Shadow @Final public ModelPart head;
   @Shadow @Final public ModelPart hat;
@@ -50,7 +52,7 @@ public class EasyNPCHumanoidModelMixin<T extends LivingEntity> {
 
   @Unique private EasyNPCModelManager easyNPC$modelManager;
 
-  @Unique
+  @Override
   public EasyNPCModelManager easyNPC$getModelManager() {
     return this.easyNPC$modelManager;
   }

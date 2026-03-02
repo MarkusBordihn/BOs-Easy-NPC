@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.client.renderer.entity.raw;
 
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.layers.EasyNPCItemAttachmentLayer;
 import de.markusbordihn.easynpc.data.skin.variant.HorseSkinVariant;
 import net.minecraft.client.model.HorseModel;
 import net.minecraft.client.model.geom.ModelLayers;
@@ -40,6 +41,7 @@ public class HorseRawRenderer extends AbstractHorseRenderer<Horse, HorseModel<Ho
     super(context, new HorseModel<>(context.bakeLayer(ModelLayers.HORSE)), 1.1F);
     this.addLayer(new HorseMarkingLayer(this));
     this.addLayer(new HorseArmorLayer(this, context.getModelSet()));
+    this.addLayer(new EasyNPCItemAttachmentLayer<>(this, context.getItemInHandRenderer()));
   }
 
   @Override

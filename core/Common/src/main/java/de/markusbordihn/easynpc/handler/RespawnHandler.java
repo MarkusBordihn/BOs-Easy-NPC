@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.handler;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.data.PresetDataCapable;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
@@ -40,11 +41,16 @@ public class RespawnHandler {
       return false;
     }
 
-    // Save entity and entity type
-    CompoundTag compoundTag = easyNPC.getEntity().saveWithoutId(new CompoundTag());
+    // Get preset data for respawn
+    PresetDataCapable<?> presetData = easyNPC.getEasyNPCPresetData();
+    if (presetData == null) {
+      log.error("[{}] No preset data available for respawn.", easyNPC);
+      return false;
+    }
+    CompoundTag compoundTag = presetData.serializePresetData();
     EntityType<?> entityType = easyNPC.getEntity().getType();
 
-    // Create new entity with compoundTag
+    // Create new entity with cleaned preset data
     Entity entity = entityType.create(serverLevel);
     if (entity == null) {
       log.error(

@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.data.skin;
 
 import java.util.Locale;
+import java.util.Set;
 
 public enum SkinModel {
   ALLAY,
@@ -60,6 +61,8 @@ public enum SkinModel {
   STRAY,
   WITHER_SKELETON;
 
+  private static final Set<String> EXCLUDED_FROM_INHERITANCE = Set.of("chilling");
+
   private final boolean hasArmourersWorkshopSupport;
 
   SkinModel() {
@@ -79,6 +82,33 @@ public enum SkinModel {
     } catch (IllegalArgumentException e) {
       return SkinModel.HUMANOID;
     }
+  }
+
+  public static Set<String> getExcludedFromInheritance() {
+    return EXCLUDED_FROM_INHERITANCE;
+  }
+
+  public SkinModel getParentSkinModel() {
+    return switch (this) {
+      case HUMANOID_SLIM,
+          PLAYER,
+          SKELETON,
+          ZOMBIE,
+          HUSK,
+          DROWNED,
+          STRAY,
+          WITHER_SKELETON,
+          ORC,
+          FAIRY,
+          ENDER_MAN,
+          PIGLIN,
+          PIGLIN_BRUTE,
+          ZOMBIFIED_PIGLIN,
+          ZOMBIE_VILLAGER,
+          IRON_GOLEM ->
+          HUMANOID;
+      default -> null;
+    };
   }
 
   public boolean hasArmourersWorkshopSupport() {

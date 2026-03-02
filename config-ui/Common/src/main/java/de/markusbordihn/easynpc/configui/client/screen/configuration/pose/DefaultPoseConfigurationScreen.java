@@ -81,16 +81,23 @@ public class DefaultPoseConfigurationScreen<T extends ConfigurationMenu>
 
     int poseButtonLeft = this.contentLeftPos + 175;
     int maxButtons = Math.min(poseKeys.size(), MAX_VISIBLE_BUTTONS);
+    int standingSeparatorOffset = BUTTON_SPACING / 2;
 
     for (int i = 0; i < maxButtons; i++) {
       ResourceLocation poseId = poseKeys.get(i + scrollOffset);
       String displayName = PoseManager.getPoseDisplayName(poseId);
 
+      // Add extra vertical offset after the standing button (index 0)
+      int yOffset = i * BUTTON_SPACING;
+      if (i > 0) {
+        yOffset += standingSeparatorOffset;
+      }
+
       Button button =
           this.addRenderableWidget(
               new TextButton(
                   poseButtonLeft,
-                  this.contentTopPos + (i * BUTTON_SPACING),
+                  this.contentTopPos + yOffset,
                   BUTTON_WIDTH,
                   Component.literal(displayName),
                   btn -> {

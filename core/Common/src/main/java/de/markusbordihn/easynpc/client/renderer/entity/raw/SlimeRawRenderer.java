@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.client.renderer.entity.raw;
 import de.markusbordihn.easynpc.api.model.CustomModelConfig;
 import de.markusbordihn.easynpc.api.model.OriginalModelConfig;
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.layers.EasyNPCItemAttachmentLayer;
 import de.markusbordihn.easynpc.client.renderer.entity.layers.SlimeCustomModelLayer;
 import de.markusbordihn.easynpc.data.skin.variant.SlimeSkinVariant;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -61,6 +62,7 @@ public class SlimeRawRenderer extends SlimeRenderer implements EasyNPCEntityRend
     if (this.customConfig.hasCustomModel()) {
       this.addLayer(new SlimeCustomModelLayer(this, context.getModelSet(), this.customConfig));
     }
+    this.addLayer(new EasyNPCItemAttachmentLayer<>(this, context.getItemInHandRenderer()));
   }
 
   @Override

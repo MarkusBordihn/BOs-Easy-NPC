@@ -28,6 +28,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -40,7 +42,15 @@ public class PresetDataUtils {
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   private static final String[] RUNTIME_STATE_TAGS = {
-    "Fire", "FallDistance", "OnGround", "Motion", "HurtTime", "DeathTime", "Air"
+    "AbsorptionAmount",
+    "Air",
+    "DeathTime",
+    "FallDistance",
+    "Fire",
+    "HurtByTimestamp",
+    "HurtTime",
+    "Motion",
+    "OnGround"
   };
   private static final String[] POSITION_TAGS = {"Pos", "Rotation"};
   private static final String ENTITY_UUID_TAG = "UUID";
@@ -168,6 +178,17 @@ public class PresetDataUtils {
 
     entity.load(entityData);
     entity.moveTo(blockPos.getX() + 0.5, blockPos.getY(), blockPos.getZ() + 0.5);
+
+    // Ensure entity spawns alive with full health
+    if (entity instanceof LivingEntity livingEntity) {
+      float maxHealth =
+          livingEntity.getAttribute(Attributes.MAX_HEALTH) != null
+              ? (float) livingEntity.getAttribute(Attributes.MAX_HEALTH).getValue()
+              : 20.0f;
+      livingEntity.setHealth(maxHealth);
+      livingEntity.deathTime = 0;
+      livingEntity.hurtTime = 0;
+    }
 
     if (level.addFreshEntity(entity)) {
       log.debug("Spawned {} at {} in {}", presetData.entityType(), blockPos, level);
