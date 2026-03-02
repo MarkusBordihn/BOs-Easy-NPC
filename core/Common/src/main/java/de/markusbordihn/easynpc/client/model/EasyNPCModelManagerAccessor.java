@@ -17,32 +17,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.client.renderer.entity.raw;
+package de.markusbordihn.easynpc.client.model;
 
-import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
-import de.markusbordihn.easynpc.client.renderer.entity.layers.EasyNPCItemAttachmentLayer;
-import de.markusbordihn.easynpc.data.skin.variant.WolfSkinVariant;
-import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.WolfRenderer;
-import net.minecraft.client.renderer.entity.state.WolfRenderState;
-import net.minecraft.resources.Identifier;
+public interface EasyNPCModelManagerAccessor {
 
-public class WolfRawRenderer extends WolfRenderer implements EasyNPCEntityRenderer {
-
-  protected static final Identifier DEFAULT_TEXTURE = WolfSkinVariant.WOLF.getTextureLocation();
-
-  public WolfRawRenderer(EntityRendererProvider.Context context) {
-    super(context);
-    this.addLayer(new EasyNPCItemAttachmentLayer<>(this));
-  }
-
-  @Override
-  public Identifier getTextureLocation(WolfRenderState renderState) {
-    return getTextureFromRenderStateWithConfig(renderState);
-  }
-
-  @Override
-  public Identifier getDefaultTexture() {
-    return DEFAULT_TEXTURE;
-  }
+  EasyNPCModelManager easyNPC$getModelManager();
 }

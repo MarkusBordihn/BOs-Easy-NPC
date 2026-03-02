@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.client.renderer.entity.raw;
 
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.layers.EasyNPCItemAttachmentLayer;
 import de.markusbordihn.easynpc.data.skin.variant.CreeperSkinVariant;
 import net.minecraft.client.renderer.entity.CreeperRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -33,6 +34,7 @@ public class CreeperRawRenderer extends CreeperRenderer implements EasyNPCEntity
 
   public CreeperRawRenderer(EntityRendererProvider.Context context) {
     super(context);
+    this.addLayer(new EasyNPCItemAttachmentLayer<>(this));
   }
 
   @Override

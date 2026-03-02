@@ -5,7 +5,8 @@
       "loop": "hold_on_last_frame",
       "bones": {
         "Head": {
-          "position": [0, -6, 2]
+          "rotation": [10, 0, 0],
+          "position": [0, -1, 1]
         },
         "Body": {
           "rotation": [-20, 0, 0],
@@ -28,8 +29,8 @@
           "position": [0, -5, -2]
         },
         "Tail": {
-          "rotation": [10, 0, 0],
-          "position": [0, -3, 0]
+          "rotation": [30, 0, 0],
+          "position": [0, 0, 0]
         }
       }
     }

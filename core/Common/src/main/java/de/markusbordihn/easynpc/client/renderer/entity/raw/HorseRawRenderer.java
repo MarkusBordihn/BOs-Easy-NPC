@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.client.renderer.entity.raw;
 
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.layers.EasyNPCItemAttachmentLayer;
 import de.markusbordihn.easynpc.data.skin.variant.HorseSkinVariant;
 import net.minecraft.client.model.animal.equine.EquineSaddleModel;
 import net.minecraft.client.model.animal.equine.HorseModel;
@@ -60,6 +61,7 @@ public class HorseRawRenderer extends AbstractHorseRenderer<Horse, HorseRenderSt
             (renderState) -> renderState.saddle,
             new EquineSaddleModel(context.bakeLayer(ModelLayers.HORSE_SADDLE)),
             new EquineSaddleModel(context.bakeLayer(ModelLayers.HORSE_BABY_SADDLE))));
+    this.addLayer(new EasyNPCItemAttachmentLayer<>(this));
   }
 
   public Identifier getTextureLocation(HorseRenderState renderState) {

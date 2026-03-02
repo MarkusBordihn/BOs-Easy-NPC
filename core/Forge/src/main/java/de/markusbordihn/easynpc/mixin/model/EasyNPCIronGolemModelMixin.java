@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.mixin.model;
 
 import de.markusbordihn.easynpc.client.model.EasyNPCModel;
 import de.markusbordihn.easynpc.client.model.EasyNPCModelManager;
+import de.markusbordihn.easynpc.client.model.EasyNPCModelManagerAccessor;
 import de.markusbordihn.easynpc.client.renderer.entity.state.EasyNPCRenderStateExtension;
 import de.markusbordihn.easynpc.data.model.ModelPartType;
 import net.minecraft.client.model.animal.golem.IronGolemModel;
@@ -34,7 +35,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(IronGolemModel.class)
-public class EasyNPCIronGolemModelMixin<T extends IronGolemRenderState> {
+public class EasyNPCIronGolemModelMixin<T extends IronGolemRenderState>
+    implements EasyNPCModelManagerAccessor {
 
   @Shadow private ModelPart head;
   @Shadow private ModelPart rightArm;
@@ -43,6 +45,11 @@ public class EasyNPCIronGolemModelMixin<T extends IronGolemRenderState> {
   @Shadow private ModelPart leftLeg;
 
   @Unique private EasyNPCModelManager easyNPC$modelManager;
+
+  @Override
+  public EasyNPCModelManager easyNPC$getModelManager() {
+    return this.easyNPC$modelManager;
+  }
 
   @Inject(method = "<init>(Lnet/minecraft/client/model/geom/ModelPart;)V", at = @At("TAIL"))
   private void easyNpcModel(ModelPart modelPart, CallbackInfo callbackInfo) {

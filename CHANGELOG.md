@@ -1,4 +1,4 @@
-# Changelog for Easy NPC: Core (1.21.10)
+# Changelog for Easy NPC: Core (1.21.11)
 
 ## Note
 

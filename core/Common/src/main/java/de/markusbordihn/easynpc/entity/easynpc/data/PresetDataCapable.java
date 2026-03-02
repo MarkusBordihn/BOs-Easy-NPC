@@ -33,8 +33,10 @@ import java.util.UUID;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.ProblemReporter;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.storage.TagValueInput;
 import net.minecraft.world.level.storage.TagValueOutput;
 import net.minecraft.world.level.storage.ValueInput;
@@ -123,6 +125,11 @@ public interface PresetDataCapable<T extends Mob> extends EasyNPC<T> {
       log.debug("Importing full preset {} for {}", compoundTag, this);
     }
 
+    // Remove volatile fields that could cause issues (e.g. dead state)
+    for (String volatileField : ENTITY_DATA_VOLATILE_FIELDS) {
+      compoundTag.remove(volatileField);
+    }
+
     // Import preset data to entity.
     ValueInput valueInput =
         TagValueInput.create(
@@ -131,6 +138,18 @@ public interface PresetDataCapable<T extends Mob> extends EasyNPC<T> {
 
     // Fix possible legacy custom name.
     CompoundTagUtils.fixLegacyCustomName(this.getEntity(), compoundTag);
+
+    // Ensure entity is alive with full health after import
+    if (this.getEntity() instanceof LivingEntity livingEntity) {
+      float maxHealth =
+          livingEntity.getAttribute(Attributes.MAX_HEALTH) != null
+              ? (float) livingEntity.getAttribute(Attributes.MAX_HEALTH).getValue()
+              : 20.0f;
+      livingEntity.setHealth(maxHealth);
+      livingEntity.setAbsorptionAmount(0.0f);
+      livingEntity.deathTime = 0;
+      livingEntity.hurtTime = 0;
+    }
   }
 
   default CompoundTag serializePresetData() {

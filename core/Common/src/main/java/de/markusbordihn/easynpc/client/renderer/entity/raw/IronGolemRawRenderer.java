@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.client.renderer.entity.raw;
 
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.layers.EasyNPCItemAttachmentLayer;
 import de.markusbordihn.easynpc.data.skin.variant.IronGolemSkinVariant;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.IronGolemRenderer;
@@ -33,6 +34,7 @@ public class IronGolemRawRenderer extends IronGolemRenderer implements EasyNPCEn
 
   public IronGolemRawRenderer(EntityRendererProvider.Context context) {
     super(context);
+    this.addLayer(new EasyNPCItemAttachmentLayer<>(this));
   }
 
   @Override

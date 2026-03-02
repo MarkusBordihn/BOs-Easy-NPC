@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.handler;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.data.PresetDataCapable;
 import de.markusbordihn.easynpc.utils.CompoundTagUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
@@ -29,7 +30,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.storage.TagValueInput;
-import net.minecraft.world.level.storage.TagValueOutput;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -45,10 +45,13 @@ public class RespawnHandler {
       return false;
     }
 
-    // Save entity data using TagValueOutput
-    TagValueOutput tagValueOutput = TagValueOutput.createWithoutContext(ProblemReporter.DISCARDING);
-    easyNPC.getEntity().saveWithoutId(tagValueOutput);
-    CompoundTag compoundTag = tagValueOutput.buildResult();
+    // Get preset data for respawn
+    PresetDataCapable<?> presetData = easyNPC.getEasyNPCPresetData();
+    if (presetData == null) {
+      log.error("[{}] No preset data available for respawn.", easyNPC);
+      return false;
+    }
+    CompoundTag compoundTag = presetData.serializePresetData();
     EntityType<?> entityType = easyNPC.getEntity().getType();
 
     // Create new entity with saved data

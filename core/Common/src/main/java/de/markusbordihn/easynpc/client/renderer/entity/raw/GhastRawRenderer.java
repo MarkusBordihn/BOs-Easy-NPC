@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.client.renderer.entity.raw;
 import de.markusbordihn.easynpc.api.model.CustomModelConfig;
 import de.markusbordihn.easynpc.api.model.OriginalModelConfig;
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.layers.EasyNPCItemAttachmentLayer;
 import de.markusbordihn.easynpc.client.renderer.entity.layers.GhastCustomModelLayer;
 import de.markusbordihn.easynpc.data.skin.variant.GhastSkinVariant;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -60,6 +61,7 @@ public class GhastRawRenderer extends GhastRenderer implements EasyNPCEntityRend
     if (this.customConfig.hasCustomModel()) {
       this.addLayer(new GhastCustomModelLayer(this, context.getModelSet(), this.customConfig));
     }
+    this.addLayer(new EasyNPCItemAttachmentLayer<>(this));
   }
 
   @Override

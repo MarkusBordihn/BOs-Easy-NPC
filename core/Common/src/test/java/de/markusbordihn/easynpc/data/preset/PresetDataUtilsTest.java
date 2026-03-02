@@ -34,12 +34,14 @@ class PresetDataUtilsTest {
   void testCleanupEntityDataRuntimeOnly() {
     CompoundTag dirtyData = new CompoundTag();
     dirtyData.putString("id", "minecraft:zombie");
-    dirtyData.putInt("Fire", 100);
-    dirtyData.putDouble("FallDistance", 5.0);
-    dirtyData.putBoolean("OnGround", true);
-    dirtyData.putInt("HurtTime", 10);
-    dirtyData.putInt("DeathTime", 0);
+    dirtyData.putFloat("AbsorptionAmount", 4.0f);
     dirtyData.putInt("Air", 300);
+    dirtyData.putInt("DeathTime", 0);
+    dirtyData.putDouble("FallDistance", 5.0);
+    dirtyData.putInt("Fire", 100);
+    dirtyData.putInt("HurtByTimestamp", 12345);
+    dirtyData.putInt("HurtTime", 10);
+    dirtyData.putBoolean("OnGround", true);
 
     ListTag motionTag = new ListTag();
     dirtyData.put("Motion", motionTag);
@@ -52,13 +54,15 @@ class PresetDataUtilsTest {
 
     PresetDataUtils.cleanupEntityData(dirtyData, PresetDataUtils.CleanupMode.RUNTIME_ONLY);
 
-    assertFalse(dirtyData.contains("Fire"), "Fire should be removed");
-    assertFalse(dirtyData.contains("FallDistance"), "FallDistance should be removed");
-    assertFalse(dirtyData.contains("OnGround"), "OnGround should be removed");
-    assertFalse(dirtyData.contains("HurtTime"), "HurtTime should be removed");
-    assertFalse(dirtyData.contains("DeathTime"), "DeathTime should be removed");
+    assertFalse(dirtyData.contains("AbsorptionAmount"), "AbsorptionAmount should be removed");
     assertFalse(dirtyData.contains("Air"), "Air should be removed");
+    assertFalse(dirtyData.contains("DeathTime"), "DeathTime should be removed");
+    assertFalse(dirtyData.contains("FallDistance"), "FallDistance should be removed");
+    assertFalse(dirtyData.contains("Fire"), "Fire should be removed");
+    assertFalse(dirtyData.contains("HurtByTimestamp"), "HurtByTimestamp should be removed");
+    assertFalse(dirtyData.contains("HurtTime"), "HurtTime should be removed");
     assertFalse(dirtyData.contains("Motion"), "Motion should be removed");
+    assertFalse(dirtyData.contains("OnGround"), "OnGround should be removed");
 
     assertTrue(dirtyData.contains("Pos"), "Pos should be preserved in RUNTIME_ONLY mode");
     assertTrue(dirtyData.contains("Rotation"), "Rotation should be preserved in RUNTIME_ONLY mode");
@@ -70,12 +74,14 @@ class PresetDataUtilsTest {
   void testCleanupEntityDataFull() {
     CompoundTag dirtyData = new CompoundTag();
     dirtyData.putString("id", "minecraft:zombie");
-    dirtyData.putInt("Fire", 100);
-    dirtyData.putDouble("FallDistance", 5.0);
-    dirtyData.putBoolean("OnGround", true);
-    dirtyData.putInt("HurtTime", 10);
-    dirtyData.putInt("DeathTime", 0);
+    dirtyData.putFloat("AbsorptionAmount", 4.0f);
     dirtyData.putInt("Air", 300);
+    dirtyData.putInt("DeathTime", 0);
+    dirtyData.putDouble("FallDistance", 5.0);
+    dirtyData.putInt("Fire", 100);
+    dirtyData.putInt("HurtByTimestamp", 12345);
+    dirtyData.putInt("HurtTime", 10);
+    dirtyData.putBoolean("OnGround", true);
 
     ListTag motionTag = new ListTag();
     dirtyData.put("Motion", motionTag);
@@ -88,13 +94,15 @@ class PresetDataUtilsTest {
 
     PresetDataUtils.cleanupEntityData(dirtyData, PresetDataUtils.CleanupMode.FULL);
 
-    assertFalse(dirtyData.contains("Fire"), "Fire should be removed");
-    assertFalse(dirtyData.contains("FallDistance"), "FallDistance should be removed");
-    assertFalse(dirtyData.contains("OnGround"), "OnGround should be removed");
-    assertFalse(dirtyData.contains("HurtTime"), "HurtTime should be removed");
-    assertFalse(dirtyData.contains("DeathTime"), "DeathTime should be removed");
+    assertFalse(dirtyData.contains("AbsorptionAmount"), "AbsorptionAmount should be removed");
     assertFalse(dirtyData.contains("Air"), "Air should be removed");
+    assertFalse(dirtyData.contains("DeathTime"), "DeathTime should be removed");
+    assertFalse(dirtyData.contains("FallDistance"), "FallDistance should be removed");
+    assertFalse(dirtyData.contains("Fire"), "Fire should be removed");
+    assertFalse(dirtyData.contains("HurtByTimestamp"), "HurtByTimestamp should be removed");
+    assertFalse(dirtyData.contains("HurtTime"), "HurtTime should be removed");
     assertFalse(dirtyData.contains("Motion"), "Motion should be removed");
+    assertFalse(dirtyData.contains("OnGround"), "OnGround should be removed");
     assertFalse(dirtyData.contains("Pos"), "Pos should be removed in FULL mode");
     assertFalse(dirtyData.contains("Rotation"), "Rotation should be removed in FULL mode");
 
@@ -157,13 +165,15 @@ class PresetDataUtilsTest {
   @DisplayName("Should cleanup all runtime tags in one pass")
   void testCleanupAllRuntimeTags() {
     CompoundTag data = new CompoundTag();
-    data.putInt("Fire", 100);
-    data.putDouble("FallDistance", 5.0);
-    data.putBoolean("OnGround", true);
-    data.putInt("Motion", 1);
-    data.putInt("HurtTime", 10);
-    data.putInt("DeathTime", 5);
+    data.putFloat("AbsorptionAmount", 4.0f);
     data.putInt("Air", 300);
+    data.putInt("DeathTime", 5);
+    data.putDouble("FallDistance", 5.0);
+    data.putInt("Fire", 100);
+    data.putInt("HurtByTimestamp", 12345);
+    data.putInt("HurtTime", 10);
+    data.putInt("Motion", 1);
+    data.putBoolean("OnGround", true);
 
     PresetDataUtils.cleanupEntityData(data, PresetDataUtils.CleanupMode.RUNTIME_ONLY);
 

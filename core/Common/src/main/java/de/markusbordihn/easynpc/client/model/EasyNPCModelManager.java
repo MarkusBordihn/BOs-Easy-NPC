@@ -243,6 +243,11 @@ public class EasyNPCModelManager {
       return false;
     }
 
+    // Named poses (set via PoseManager) always cancel vanilla animation
+    if (modelData.getModelPose() == ModelPose.DEFAULT) {
+      return true;
+    }
+
     // Check animation behavior
     switch (modelData.getModelAnimationBehavior()) {
       case NONE:

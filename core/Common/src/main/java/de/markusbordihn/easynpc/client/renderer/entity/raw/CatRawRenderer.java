@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.client.renderer.entity.raw;
 
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.layers.EasyNPCItemAttachmentLayer;
 import de.markusbordihn.easynpc.data.skin.variant.CatSkinVariant;
 import net.minecraft.client.renderer.entity.CatRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -33,6 +34,7 @@ public class CatRawRenderer extends CatRenderer implements EasyNPCEntityRenderer
 
   public CatRawRenderer(EntityRendererProvider.Context context) {
     super(context);
+    this.addLayer(new EasyNPCItemAttachmentLayer<>(this));
   }
 
   @Override
