@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.mixin.model;
 
 import de.markusbordihn.easynpc.client.model.EasyNPCModel;
 import de.markusbordihn.easynpc.client.model.EasyNPCModelManager;
+import de.markusbordihn.easynpc.client.model.EasyNPCModelManagerAccessor;
 import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.position.CustomPosition;
 import de.markusbordihn.easynpc.data.rotation.CustomRotation;
@@ -38,12 +39,18 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(CatModel.class)
-public class EasyNPCCatModelMixin<T extends Cat> extends OcelotModel<T> {
+public class EasyNPCCatModelMixin<T extends Cat> extends OcelotModel<T>
+    implements EasyNPCModelManagerAccessor {
 
   @Unique private EasyNPCModelManager easyNPC$modelManager;
 
   public EasyNPCCatModelMixin(ModelPart modelPart) {
     super(modelPart);
+  }
+
+  @Override
+  public EasyNPCModelManager easyNPC$getModelManager() {
+    return this.easyNPC$modelManager;
   }
 
   @Inject(method = "<init>(Lnet/minecraft/client/model/geom/ModelPart;)V", at = @At("TAIL"))

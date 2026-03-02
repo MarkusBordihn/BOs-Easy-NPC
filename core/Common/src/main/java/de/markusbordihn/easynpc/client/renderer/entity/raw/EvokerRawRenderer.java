@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.client.renderer.entity.raw;
 
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.layers.EasyNPCItemAttachmentLayer;
 import de.markusbordihn.easynpc.data.skin.variant.IllagerSkinVariant;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.EvokerRenderer;
@@ -34,6 +35,7 @@ public class EvokerRawRenderer<T extends SpellcasterIllager> extends EvokerRende
 
   public EvokerRawRenderer(EntityRendererProvider.Context context) {
     super(context);
+    this.addLayer(new EasyNPCItemAttachmentLayer<>(this, context.getItemInHandRenderer()));
   }
 
   @Override

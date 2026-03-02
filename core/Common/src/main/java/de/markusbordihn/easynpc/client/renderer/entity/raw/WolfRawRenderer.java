@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.client.renderer.entity.raw;
 
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.layers.EasyNPCItemAttachmentLayer;
 import de.markusbordihn.easynpc.data.skin.variant.WolfSkinVariant;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.WolfRenderer;
@@ -33,6 +34,7 @@ public class WolfRawRenderer extends WolfRenderer implements EasyNPCEntityRender
 
   public WolfRawRenderer(EntityRendererProvider.Context context) {
     super(context);
+    this.addLayer(new EasyNPCItemAttachmentLayer<>(this, context.getItemInHandRenderer()));
   }
 
   @Override

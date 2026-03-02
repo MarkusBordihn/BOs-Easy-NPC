@@ -118,10 +118,42 @@ public class PoseManager {
     if (skinModel == null) {
       return Set.of();
     }
+
+    // Collect own poses
     String prefix = TEXTURE_PREFIX + skinModel.name().toLowerCase(Locale.ROOT) + "/";
-    return poseDataMap.keySet().stream()
-        .filter(rl -> rl.getPath().startsWith(prefix))
-        .sorted((a, b) -> a.getPath().compareTo(b.getPath()))
+    Map<String, ResourceLocation> posesByName = new java.util.LinkedHashMap<>();
+    for (ResourceLocation rl : poseDataMap.keySet()) {
+      if (rl.getPath().startsWith(prefix)) {
+        String poseName = rl.getPath().substring(prefix.length());
+        posesByName.put(poseName, rl);
+      }
+    }
+
+    // Inherit poses from parent model (if available)
+    SkinModel parentModel = skinModel.getParentSkinModel();
+    if (parentModel != null) {
+      String parentPrefix = TEXTURE_PREFIX + parentModel.name().toLowerCase(Locale.ROOT) + "/";
+      Set<String> excluded = SkinModel.getExcludedFromInheritance();
+      for (ResourceLocation rl : poseDataMap.keySet()) {
+        if (rl.getPath().startsWith(parentPrefix)) {
+          String poseName = rl.getPath().substring(parentPrefix.length());
+          if (!posesByName.containsKey(poseName) && !excluded.contains(poseName)) {
+            posesByName.put(poseName, rl);
+          }
+        }
+      }
+    }
+
+    // Sort: "standing" always first, rest alphabetically
+    return posesByName.values().stream()
+        .sorted(
+            (a, b) -> {
+              boolean aStanding = a.getPath().endsWith("/standing");
+              boolean bStanding = b.getPath().endsWith("/standing");
+              if (aStanding && !bStanding) return -1;
+              if (!aStanding && bStanding) return 1;
+              return a.getPath().compareTo(b.getPath());
+            })
         .collect(Collectors.toCollection(LinkedHashSet::new));
   }
 
