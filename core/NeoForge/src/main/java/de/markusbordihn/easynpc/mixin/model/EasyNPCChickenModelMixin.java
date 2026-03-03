@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.mixin.model;
 
 import de.markusbordihn.easynpc.client.model.EasyNPCModel;
 import de.markusbordihn.easynpc.client.model.EasyNPCModelManager;
+import de.markusbordihn.easynpc.client.model.EasyNPCModelManagerAccessor;
 import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import net.minecraft.client.model.ChickenModel;
@@ -35,9 +36,11 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ChickenModel.class)
-public class EasyNPCChickenModelMixin<T extends Entity> {
+public class EasyNPCChickenModelMixin<T extends Entity> implements EasyNPCModelManagerAccessor {
 
   @Shadow @Final private ModelPart head;
+  @Shadow @Final private ModelPart beak;
+  @Shadow @Final private ModelPart redThing;
   @Shadow @Final private ModelPart body;
   @Shadow @Final private ModelPart rightLeg;
   @Shadow @Final private ModelPart leftLeg;
@@ -45,6 +48,11 @@ public class EasyNPCChickenModelMixin<T extends Entity> {
   @Shadow @Final private ModelPart leftWing;
 
   @Unique private EasyNPCModelManager easyNPC$modelManager;
+
+  @Override
+  public EasyNPCModelManager easyNPC$getModelManager() {
+    return this.easyNPC$modelManager;
+  }
 
   @Inject(method = "<init>(Lnet/minecraft/client/model/geom/ModelPart;)V", at = @At("TAIL"))
   private void easyNpcModel(ModelPart modelPart, CallbackInfo callbackInfo) {
@@ -72,6 +80,7 @@ public class EasyNPCChickenModelMixin<T extends Entity> {
       CallbackInfo callbackInfo) {
     if (entity instanceof EasyNPC<?> easyNPC
         && EasyNPCModel.setupAnimationStart(easyNPC, this.easyNPC$modelManager)) {
+      this.easyNPC$syncBeakToHead();
       callbackInfo.cancel();
     }
   }
@@ -87,6 +96,13 @@ public class EasyNPCChickenModelMixin<T extends Entity> {
       CallbackInfo callbackInfo) {
     if (entity instanceof EasyNPC<?> easyNPC) {
       EasyNPCModel.setupAnimationEnd(easyNPC, this.easyNPC$modelManager);
+      this.easyNPC$syncBeakToHead();
     }
+  }
+
+  @Unique
+  private void easyNPC$syncBeakToHead() {
+    this.beak.copyFrom(this.head);
+    this.redThing.copyFrom(this.head);
   }
 }

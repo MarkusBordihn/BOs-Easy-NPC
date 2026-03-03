@@ -37,8 +37,7 @@ public record ChangeNamedPoseMessage(UUID uuid, String poseId) implements Networ
       ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "change_named_pose");
   public static final Type<ChangeNamedPoseMessage> PAYLOAD_TYPE = new Type<>(MESSAGE_ID);
   public static final StreamCodec<RegistryFriendlyByteBuf, ChangeNamedPoseMessage> STREAM_CODEC =
-      StreamCodec.of(
-          (buffer, message) -> message.write(buffer), ChangeNamedPoseMessage::create);
+      StreamCodec.of((buffer, message) -> message.write(buffer), ChangeNamedPoseMessage::create);
 
   public static ChangeNamedPoseMessage create(final FriendlyByteBuf buffer) {
     return new ChangeNamedPoseMessage(buffer.readUUID(), buffer.readUtf());
