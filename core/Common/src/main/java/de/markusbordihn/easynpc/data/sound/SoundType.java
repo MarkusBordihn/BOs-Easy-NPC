@@ -35,6 +35,7 @@ public enum SoundType {
   FALL_DAMAGE_BIG,
   FALL_DAMAGE_SMALL,
   HURT,
+  PET,
   STEP,
   SWIM,
   TRADE,

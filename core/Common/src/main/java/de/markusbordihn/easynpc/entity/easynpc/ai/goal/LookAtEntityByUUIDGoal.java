@@ -1,0 +1,99 @@
+/*
+ * Copyright 2023 Markus Bordihn
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+ * associated documentation files (the "Software"), to deal in the Software without restriction,
+ * including without limitation the rights to use, copy, modify, merge, publish, distribute,
+ * sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all copies or
+ * substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
+ * NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+
+package de.markusbordihn.easynpc.entity.easynpc.ai.goal;
+
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import java.util.EnumSet;
+import java.util.UUID;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.goal.Goal;
+
+public class LookAtEntityByUUIDGoal<T extends EasyNPC<?>> extends Goal {
+
+  private static final int ENTITY_SEARCH_INTERVAL = 40;
+
+  private final Mob mob;
+  private final UUID targetEntityUUID;
+  private final float lookDistance;
+  private LivingEntity targetEntity;
+  private int searchCooldown;
+
+  public LookAtEntityByUUIDGoal(T easyNPC, UUID targetEntityUUID, float lookDistance) {
+    this.mob = easyNPC.getMob();
+    this.targetEntityUUID = targetEntityUUID;
+    this.lookDistance = lookDistance;
+    this.setFlags(EnumSet.of(Goal.Flag.LOOK));
+  }
+
+  @Override
+  public boolean canUse() {
+    if (this.targetEntity == null || !this.targetEntity.isAlive()) {
+      resolveTargetEntity();
+    }
+    return isTargetInRange();
+  }
+
+  @Override
+  public boolean canContinueToUse() {
+    return isTargetInRange();
+  }
+
+  @Override
+  public void start() {
+    this.searchCooldown = 0;
+  }
+
+  @Override
+  public void stop() {
+    this.targetEntity = null;
+  }
+
+  @Override
+  public void tick() {
+    if (this.targetEntity != null && this.targetEntity.isAlive()) {
+      this.mob
+          .getLookControl()
+          .setLookAt(
+              this.targetEntity.getX(), this.targetEntity.getEyeY(), this.targetEntity.getZ());
+    }
+
+    if (--this.searchCooldown <= 0) {
+      this.searchCooldown = ENTITY_SEARCH_INTERVAL;
+      resolveTargetEntity();
+    }
+  }
+
+  private boolean isTargetInRange() {
+    return this.targetEntity != null
+        && this.targetEntity.isAlive()
+        && this.mob.distanceToSqr(this.targetEntity) <= this.lookDistance * this.lookDistance;
+  }
+
+  private void resolveTargetEntity() {
+    if (!(this.mob.level() instanceof ServerLevel serverLevel)) {
+      return;
+    }
+    Entity entity = serverLevel.getEntity(this.targetEntityUUID);
+    this.targetEntity = entity instanceof LivingEntity livingEntity ? livingEntity : null;
+  }
+}

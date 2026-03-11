@@ -58,7 +58,8 @@ public class FoxBase extends FoxRaw implements BaseEasyNPC<FoxRaw> {
         .add(Attributes.KNOCKBACK_RESISTANCE, 0.0D)
         .add(Attributes.MAX_HEALTH, 16.0D)
         .add(Attributes.MOVEMENT_SPEED, 0.4D)
-        .add(Attributes.SPAWN_REINFORCEMENTS_CHANCE, 0.0D);
+        .add(Attributes.SPAWN_REINFORCEMENTS_CHANCE, 0.0D)
+        .add(Attributes.TEMPT_RANGE, 10.0D);
   }
 
   @Override

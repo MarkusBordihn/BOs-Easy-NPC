@@ -17,38 +17,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.data.synched;
+package de.markusbordihn.easynpc.configui.client.screen.configuration.objective;
 
-public enum SynchedDataIndex {
-  ATTACK_IS_CHARGING_CROSSBOW(false),
-  DISPLAY_ATTRIBUTE_SET,
-  ENTITY_ATTRIBUTES,
-  MODEL_ANIMATION(false),
-  MODEL_POSE,
-  MODEL_POSE_NAME,
-  MODEL_POSITION,
-  MODEL_ROTATION,
-  MODEL_SCALE,
-  MODEL_VISIBILITY,
-  NAVIGATION_HOME_POSITION,
-  OWNER_REFERENCE,
-  PROFESSION,
-  PROGRESSION,
-  RENDER_DATA,
-  SKIN_DATA,
-  SOUND_DATA_SET,
-  TRADING_DATA_SET,
-  TRADING_INVENTORY,
-  TRADING_MERCHANT_OFFERS,
-  VARIANT_TYPE;
+import de.markusbordihn.easynpc.configui.menu.configuration.objective.FleeObjectiveConfigurationMenuWrapper;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
 
-  public final boolean persistent;
+public class FleeObjectiveConfigurationScreenWrapper
+    extends FleeObjectiveConfigurationScreen<FleeObjectiveConfigurationMenuWrapper> {
 
-  SynchedDataIndex() {
-    this.persistent = true;
-  }
-
-  SynchedDataIndex(boolean persistent) {
-    this.persistent = persistent;
+  public FleeObjectiveConfigurationScreenWrapper(
+      FleeObjectiveConfigurationMenuWrapper menu, Inventory inventory, Component component) {
+    super(menu, inventory, component);
   }
 }

@@ -99,7 +99,7 @@ public class NPCEntityManager {
     }
 
     if (savedCount > 0) {
-      log.info("{} Saved {} dirty NPC(s) to persistent storage", LOG_PREFIX, savedCount);
+      log.debug("{} Saved {} dirty NPC(s) to persistent storage", LOG_PREFIX, savedCount);
     }
   }
 

@@ -38,6 +38,7 @@ import de.markusbordihn.easynpc.configui.menu.configuration.model.CustomModelCon
 import de.markusbordihn.easynpc.configui.menu.configuration.model.DefaultModelConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.objective.AttackObjectiveConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.objective.BasicObjectiveConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.configui.menu.configuration.objective.FleeObjectiveConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.objective.FollowObjectiveConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.objective.LookObjectiveConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.pose.AdvancedPoseConfigurationMenuWrapper;
@@ -130,6 +131,11 @@ public class ModMenuTypes {
           MENU_TYPES.register(
               ConfigurationType.ATTACK_OBJECTIVE.getName(),
               () -> IMenuTypeExtension.create(AttackObjectiveConfigurationMenuWrapper::new));
+  public static final DeferredHolder<MenuType<?>, MenuType<FleeObjectiveConfigurationMenuWrapper>>
+      FLEE_OBJECTIVE_CONFIGURATION_MENU =
+          MENU_TYPES.register(
+              ConfigurationType.FLEE_OBJECTIVE.getName(),
+              () -> IMenuTypeExtension.create(FleeObjectiveConfigurationMenuWrapper::new));
   public static final DeferredHolder<MenuType<?>, MenuType<BaseAttributeConfigurationMenuWrapper>>
       BASE_ATTRIBUTE_CONFIGURATION_MENU =
           MENU_TYPES.register(

@@ -37,6 +37,7 @@ import de.markusbordihn.easynpc.configui.client.screen.configuration.model.Custo
 import de.markusbordihn.easynpc.configui.client.screen.configuration.model.DefaultModelConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.objective.AttackObjectiveConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.objective.BasicObjectiveConfigurationScreenWrapper;
+import de.markusbordihn.easynpc.configui.client.screen.configuration.objective.FleeObjectiveConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.objective.FollowObjectiveConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.objective.LookObjectiveConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.pose.AdvancedPoseConfigurationScreenWrapper;
@@ -106,6 +107,9 @@ public class ClientScreens {
     event.register(
         ModMenuTypes.ATTACK_OBJECTIVE_CONFIGURATION_MENU.get(),
         AttackObjectiveConfigurationScreenWrapper::new);
+    event.register(
+        ModMenuTypes.FLEE_OBJECTIVE_CONFIGURATION_MENU.get(),
+        FleeObjectiveConfigurationScreenWrapper::new);
     event.register(
         ModMenuTypes.BASE_ATTRIBUTE_CONFIGURATION_MENU.get(),
         BaseAttributeConfigurationScreenWrapper::new);

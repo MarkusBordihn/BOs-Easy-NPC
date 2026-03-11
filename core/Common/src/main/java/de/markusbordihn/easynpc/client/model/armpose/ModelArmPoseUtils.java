@@ -43,17 +43,11 @@ public class ModelArmPoseUtils {
     if (easyNPC == null) {
       return ModelArmPose.DEFAULT;
     }
-
     LivingEntity livingEntity = easyNPC.getLivingEntity();
     boolean isRightHanded = livingEntity.getMainArm() == HumanoidArm.RIGHT;
-
-    // Check if entity is using an item
-    if (livingEntity.isUsingItem()) {
-      return getArmPoseWhileUsingItem(livingEntity, isRightArm, isRightHanded);
-    }
-
-    // Get idle pose when not using item
-    return getIdleArmPose(easyNPC, livingEntity, isRightArm, isRightHanded);
+    return livingEntity.isUsingItem()
+        ? getArmPoseWhileUsingItem(livingEntity, isRightArm, isRightHanded)
+        : getIdleArmPose(easyNPC, livingEntity, isRightArm, isRightHanded);
   }
 
   private static ModelArmPose getArmPoseWhileUsingItem(
@@ -63,28 +57,6 @@ public class ModelArmPoseUtils {
       return ModelArmPose.DEFAULT;
     }
 
-    // Determine pose based on item use animation
-    ModelArmPose itemUseModelArmPose =
-        switch (useItem.getUseAnimation()) {
-          case BOW -> ModelArmPose.BOW_AND_ARROW;
-          case CROSSBOW -> ModelArmPose.CROSSBOW_CHARGE;
-          case SPYGLASS -> ModelArmPose.SPYGLASS;
-          case SPEAR -> ModelArmPose.ATTACKING_WITH_MELEE_WEAPON;
-          default -> ModelArmPose.DEFAULT;
-        };
-
-    // For two-handed weapons (bow, crossbow, gun), apply pose to both arms
-    if (itemUseModelArmPose == ModelArmPose.BOW_AND_ARROW
-        || itemUseModelArmPose == ModelArmPose.CROSSBOW_CHARGE) {
-      return itemUseModelArmPose;
-    }
-
-    // Check if we should use the GUN_HOLD pose (also two-handed)
-    if (AttackHandler.isGunWeapon(useItem)) {
-      return ModelArmPose.GUN_HOLD;
-    }
-
-    // For other items, only apply pose to the arm being used
     boolean isUsingMainHand = livingEntity.getUsedItemHand() == InteractionHand.MAIN_HAND;
     boolean isUsingRightHand =
         (isRightHanded && isUsingMainHand) || (!isRightHanded && !isUsingMainHand);
@@ -92,7 +64,13 @@ public class ModelArmPoseUtils {
       return ModelArmPose.DEFAULT;
     }
 
-    return itemUseModelArmPose;
+    return switch (useItem.getUseAnimation()) {
+      case BOW -> ModelArmPose.BOW_AND_ARROW;
+      case CROSSBOW -> ModelArmPose.CROSSBOW_CHARGE;
+      case SPYGLASS -> ModelArmPose.SPYGLASS;
+      case SPEAR -> ModelArmPose.ATTACKING_WITH_MELEE_WEAPON;
+      default -> AttackHandler.isGunWeapon(useItem) ? ModelArmPose.GUN_HOLD : ModelArmPose.DEFAULT;
+    };
   }
 
   private static ModelArmPose getIdleArmPose(
@@ -100,50 +78,33 @@ public class ModelArmPoseUtils {
       final LivingEntity livingEntity,
       final boolean isRightArm,
       final boolean isRightHanded) {
-
-    // Return default pose if entity doesn't have PathfinderMob (e.g., Slime, Ghast)
     if (easyNPC.getPathfinderMob() == null) {
       return ModelArmPose.DEFAULT;
     }
 
-    // Only show special poses when aggressive
-    if (!((easyNPC.getPathfinderMob().getTarget() != null)
-        || (livingEntity instanceof Mob mob && mob.isAggressive()))) {
+    boolean isAggressive =
+        easyNPC.getPathfinderMob().getTarget() != null
+            || (livingEntity instanceof Mob mob && mob.isAggressive());
+    if (!isAggressive) {
       return ModelArmPose.DEFAULT;
     }
 
-    // Get the item in the main hand and offhand
     ItemStack mainHandItem = livingEntity.getMainHandItem();
     ItemStack offHandItem = livingEntity.getOffhandItem();
-
-    // Check main hand for two-handed weapons first (applies to both arms)
-    if (!mainHandItem.isEmpty()) {
-      if (mainHandItem.getItem() instanceof CrossbowItem) {
-        return ModelArmPose.CROSSBOW_HOLD;
-      } else if (AttackHandler.isBowWeapon(mainHandItem)) {
-        return ModelArmPose.BOW_AND_ARROW;
-      } else if (AttackHandler.isGunWeapon(mainHandItem)) {
-        return ModelArmPose.GUN_HOLD;
-      }
-    }
-
-    // Check offhand for two-handed weapons (rare but possible)
-    if (!offHandItem.isEmpty()) {
-      if (offHandItem.getItem() instanceof CrossbowItem) {
-        return ModelArmPose.CROSSBOW_HOLD;
-      } else if (AttackHandler.isBowWeapon(offHandItem)) {
-        return ModelArmPose.BOW_AND_ARROW;
-      } else if (AttackHandler.isGunWeapon(offHandItem)) {
-        return ModelArmPose.GUN_HOLD;
-      }
-    }
-
-    // For single-handed weapons, check the current arm's item
     ItemStack itemInRightArm = isRightHanded ? mainHandItem : offHandItem;
     ItemStack itemInLeftArm = isRightHanded ? offHandItem : mainHandItem;
     ItemStack currentArmItem = isRightArm ? itemInRightArm : itemInLeftArm;
+    if (currentArmItem.isEmpty()) {
+      return ModelArmPose.DEFAULT;
+    }
 
-    if (!currentArmItem.isEmpty() && AttackHandler.isMeleeWeapon(currentArmItem)) {
+    if (currentArmItem.getItem() instanceof CrossbowItem) {
+      return ModelArmPose.CROSSBOW_HOLD;
+    } else if (AttackHandler.isBowWeapon(currentArmItem)) {
+      return ModelArmPose.BOW_AND_ARROW;
+    } else if (AttackHandler.isGunWeapon(currentArmItem)) {
+      return ModelArmPose.GUN_HOLD;
+    } else if (AttackHandler.isMeleeWeapon(currentArmItem)) {
       return ModelArmPose.ATTACKING_WITH_MELEE_WEAPON;
     }
 

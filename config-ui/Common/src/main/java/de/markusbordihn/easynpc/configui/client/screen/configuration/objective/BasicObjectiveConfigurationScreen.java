@@ -37,7 +37,6 @@ public class BasicObjectiveConfigurationScreen<T extends ConfigurationMenu>
   protected Checkbox randomSwimmingCheckbox;
   protected Checkbox panicCheckbox;
   protected Checkbox avoidSunCheckbox;
-  protected Checkbox fleeSunCheckbox;
 
   public BasicObjectiveConfigurationScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
@@ -135,11 +134,5 @@ public class BasicObjectiveConfigurationScreen<T extends ConfigurationMenu>
         this.addRenderableWidget(
             this.getObjectiveCheckbox(
                 objectiveEntriesFirstColumn, objectiveEntriesTop, ObjectiveType.AVOID_SUN, 0.8D));
-
-    // Flee Sun
-    this.fleeSunCheckbox =
-        this.addRenderableWidget(
-            this.getObjectiveCheckbox(
-                objectiveEntriesSecondColumn, objectiveEntriesTop, ObjectiveType.FLEE_SUN, 1.0D));
   }
 }

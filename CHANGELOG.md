@@ -10,8 +10,12 @@ Check the [upgrade guide][upgrade_guide] for more information.
 
 ### 6.9.0
 
+- Fixed #692, #666 by adding caching and safeguards to prevent redundant retriggering of NPC entity
+  data updates.
 - Fixed #651, #617 by adding basic custom poses for all supported NPC types.
+- Fixed #597 by adding additional Flee goals for fleeing from players, villagers, monsters, ...
 - Fixed pose loading to read directly from mod resources instead of copying files to disk.
+- Fixed duplicate `saveNPC` calls on entity join by checking existing registry entry first.
 - Added `despawn` and `spawn` commands to remove and re-spawn NPCs by UUID with configurable
   removal reasons.
 - Added `ModelPoseAPI` and `EasyNPCEntityHandler` public API classes for controlling NPC poses and
@@ -21,6 +25,18 @@ Check the [upgrade guide][upgrade_guide] for more information.
 - Added `MoveToPositionGoal` to move an NPC to a position before executing a callback action.
 - Added `EasyNPCLookControl` and `EasyNPCBodyRotationControl` to respect locked root rotation.
 - Added synced owner change and dimension change to the NPC entity data index.
+- Added EasyNPCItemAttachmentLayer into various entity renderers.
+- Added dedicated `Flee Objective` configuration tab with objectives for fleeing creepers,
+  monsters, mobs, players, villagers and the sun.
+- Added `FOLLOW_ITEM` objective to the follow objectives tab to make NPCs follow item entities
+  by resource location (e.g. `minecraft:apple`).
+- Added `LookAtEntityByUUIDGoal` and enabled the look-at-entity-by-UUID and look-at-owner
+  objectives in the look objectives screen.
+- Added `persistent` flag to `SynchedDataIndex` so that transient indices (e.g. crossbow charge,
+  model animation) no longer trigger dirty-save marking.
+- Added configurable `customParticlesEnabled` flag to `SlimeBase` for API consumers.
+- Added `SoundType.PET` and mapped `CAT_PURR` to the cat NPC for tamed ambient sound variety.
+- Reduced log verbosity for periodic NPC save operations from INFO to DEBUG.
 
 ### 6.8.3
 

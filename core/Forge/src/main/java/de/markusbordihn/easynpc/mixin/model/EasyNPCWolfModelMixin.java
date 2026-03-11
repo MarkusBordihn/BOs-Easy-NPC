@@ -36,7 +36,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(WolfModel.class)
-public class EasyNPCWolfModelMixin<T extends WolfRenderState> implements EasyNPCModelManagerAccessor{
+public class EasyNPCWolfModelMixin<T extends WolfRenderState>
+    implements EasyNPCModelManagerAccessor {
 
   @Shadow @Final private ModelPart head;
   @Shadow @Final private ModelPart body;

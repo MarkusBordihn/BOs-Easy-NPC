@@ -28,6 +28,10 @@ public interface ServerDataCapable<E extends Mob> extends EasyNPC<E> {
 
   default <T> void setServerEntityData(ServerDataAccessor<T> entityDataAccessor, T entityData) {
     getServerEntityData().set(entityDataAccessor, entityData);
+    StatusDataCapable<E> statusData = getEasyNPCStatusData();
+    if (statusData != null) {
+      statusData.markNPCDataUpdated();
+    }
   }
 
   default <T> T getServerEntityData(ServerDataAccessor<T> entityDataAccessor) {

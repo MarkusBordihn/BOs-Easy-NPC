@@ -58,7 +58,8 @@ public class CatBase extends CatRaw implements BaseEasyNPC<CatRaw> {
         .add(Attributes.KNOCKBACK_RESISTANCE, 0.0D)
         .add(Attributes.MAX_HEALTH, 16.0D)
         .add(Attributes.MOVEMENT_SPEED, 0.5F)
-        .add(Attributes.SPAWN_REINFORCEMENTS_CHANCE, 0.0D);
+        .add(Attributes.SPAWN_REINFORCEMENTS_CHANCE, 0.0D)
+        .add(Attributes.TEMPT_RANGE, 10.0D);
   }
 
   @Override
@@ -86,6 +87,7 @@ public class CatBase extends CatRaw implements BaseEasyNPC<CatRaw> {
     soundDataSet.addDefaultSound(SoundType.AMBIENT, SoundEvents.CAT_AMBIENT);
     soundDataSet.addDefaultSound(SoundType.AMBIENT_TAMED, SoundEvents.CAT_PURREOW);
     soundDataSet.addDefaultSound(SoundType.AMBIENT_STRAY, SoundEvents.CAT_STRAY_AMBIENT);
+    soundDataSet.addDefaultSound(SoundType.PET, SoundEvents.CAT_PURR);
     soundDataSet.addDefaultSound(SoundType.DEATH, SoundEvents.CAT_DEATH);
     soundDataSet.addDefaultSound(SoundType.HURT, SoundEvents.CAT_HURT);
     soundDataSet.addDefaultSound(SoundType.EAT, SoundEvents.CAT_EAT);
