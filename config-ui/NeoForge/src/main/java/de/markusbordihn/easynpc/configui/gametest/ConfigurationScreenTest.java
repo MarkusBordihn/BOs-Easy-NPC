@@ -269,6 +269,15 @@ public class ConfigurationScreenTest {
   }
 
   @GameTest(template = "gametest.3x3x3")
+  public void testFleeObjectiveConfigurationScreen(GameTestHelper helper) {
+    ConfigurationScreenTestHelper.testConfigurationScreen(
+        helper,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
+        ConfigurationType.FLEE_OBJECTIVE,
+        ModMenuTypes.FLEE_OBJECTIVE_CONFIGURATION_MENU.get());
+  }
+
+  @GameTest(template = "gametest.3x3x3")
   public void testOpenFollowObjectiveConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,

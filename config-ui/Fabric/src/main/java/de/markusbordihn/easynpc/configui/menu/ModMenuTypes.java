@@ -38,6 +38,7 @@ import de.markusbordihn.easynpc.configui.menu.configuration.model.CustomModelCon
 import de.markusbordihn.easynpc.configui.menu.configuration.model.DefaultModelConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.objective.AttackObjectiveConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.objective.BasicObjectiveConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.configui.menu.configuration.objective.FleeObjectiveConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.objective.FollowObjectiveConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.objective.LookObjectiveConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.pose.AdvancedPoseConfigurationMenuWrapper;
@@ -140,6 +141,12 @@ public class ModMenuTypes {
               BuiltInRegistries.MENU,
               ConfigurationType.ATTACK_OBJECTIVE.getId(),
               new MenuType<>(AttackObjectiveConfigurationMenuWrapper::new, FeatureFlagSet.of()));
+  public static final MenuType<FleeObjectiveConfigurationMenuWrapper>
+      FLEE_OBJECTIVE_CONFIGURATION_MENU =
+          Registry.register(
+              BuiltInRegistries.MENU,
+              ConfigurationType.FLEE_OBJECTIVE.getId(),
+              new MenuType<>(FleeObjectiveConfigurationMenuWrapper::new, FeatureFlagSet.of()));
   public static final MenuType<BaseAttributeConfigurationMenuWrapper>
       BASE_ATTRIBUTE_CONFIGURATION_MENU =
           Registry.register(

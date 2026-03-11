@@ -99,7 +99,7 @@ public class LookObjectiveConfigurationScreen<T extends ConfigurationMenu>
                         .removeObjective(this.getEasyNPCUUID(), objectiveDataEntry);
                   }
                 }));
-    this.lookAtOwnerCheckbox.active = false;
+    this.lookAtOwnerCheckbox.active = ownerData.hasNPCOwner();
 
     // Look at Player
     objectiveEntriesTop += SPACE_BETWEEN_ENTRIES;
@@ -162,7 +162,6 @@ public class LookObjectiveConfigurationScreen<T extends ConfigurationMenu>
                         .addOrUpdateObjective(this.getEasyNPCUUID(), objectiveDataEntry);
                   }
                 }));
-    this.lookAtEntityCheckbox.active = false;
     this.lookAtEntityUUID =
         this.addRenderableWidget(
             new TextField(this.font, objectiveEntriesSecondColumn, objectiveEntriesTop, 115));
@@ -186,7 +185,7 @@ public class LookObjectiveConfigurationScreen<T extends ConfigurationMenu>
                 .getTargetEntityUUID()
                 .toString()
             : "");
-    this.lookAtEntityUUID.active = false;
+    this.lookAtEntityUUID.active = true;
     this.lookAtEntityUUIDSaveButton =
         this.addRenderableWidget(
             new SaveButton(

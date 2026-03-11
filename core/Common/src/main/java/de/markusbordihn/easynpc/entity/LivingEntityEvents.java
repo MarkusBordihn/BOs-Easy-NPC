@@ -37,7 +37,8 @@ public class LivingEntityEvents {
 
     if (livingEntity instanceof EasyNPC<?> easyNPC) {
       LivingEntityManager.addEasyNPC(easyNPC);
-      if (!livingEntity.level().isClientSide()) {
+      if (!livingEntity.level().isClientSide()
+          && NPCEntityManager.getNPC(easyNPC.getEntityUUID()).isEmpty()) {
         NPCEntityManager.saveNPC(easyNPC);
       }
     } else if (livingEntity instanceof ServerPlayer serverPlayer) {

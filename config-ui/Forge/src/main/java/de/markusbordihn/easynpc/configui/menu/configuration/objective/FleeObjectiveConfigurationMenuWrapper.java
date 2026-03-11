@@ -17,44 +17,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.data.sound;
+package de.markusbordihn.easynpc.configui.menu.configuration.objective;
 
-import java.util.stream.Stream;
+import de.markusbordihn.easynpc.configui.menu.ModMenuTypes;
+import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.player.Inventory;
 
-public enum SoundType {
-  AMBIENT,
-  AMBIENT_STRAY,
-  AMBIENT_TAMED,
-  CAST_SPELL,
-  CELEBRATE,
-  DAMAGE,
-  DEATH,
-  DEFAULT,
-  DRINKING,
-  EAT,
-  FALL_DAMAGE_BIG,
-  FALL_DAMAGE_SMALL,
-  HURT,
-  PET,
-  STEP,
-  SWIM,
-  TRADE,
-  TRADE_YES,
-  TRADE_NO,
-  ;
+public class FleeObjectiveConfigurationMenuWrapper extends ConfigurationMenu {
 
-  public static SoundType get(String soundType) {
-    if (soundType == null || soundType.isEmpty()) {
-      return SoundType.DEFAULT;
-    }
-    try {
-      return SoundType.valueOf(soundType);
-    } catch (IllegalArgumentException e) {
-      return SoundType.DEFAULT;
-    }
-  }
-
-  public static Stream<String> getSoundTypeNames() {
-    return Stream.of(SoundType.values()).map(Enum::name);
+  public FleeObjectiveConfigurationMenuWrapper(
+      final int containerId,
+      final Inventory playerInventory,
+      @SuppressWarnings("unused") final FriendlyByteBuf buffer) {
+    super(ModMenuTypes.FLEE_OBJECTIVE_CONFIGURATION_MENU.get(), containerId, playerInventory);
   }
 }

@@ -86,6 +86,7 @@ public class CatBase extends CatRaw implements BaseEasyNPC<CatRaw> {
     soundDataSet.addDefaultSound(SoundType.AMBIENT, SoundEvents.CAT_AMBIENT);
     soundDataSet.addDefaultSound(SoundType.AMBIENT_TAMED, SoundEvents.CAT_PURREOW);
     soundDataSet.addDefaultSound(SoundType.AMBIENT_STRAY, SoundEvents.CAT_STRAY_AMBIENT);
+    soundDataSet.addDefaultSound(SoundType.PET, SoundEvents.CAT_PURR);
     soundDataSet.addDefaultSound(SoundType.DEATH, SoundEvents.CAT_DEATH);
     soundDataSet.addDefaultSound(SoundType.HURT, SoundEvents.CAT_HURT);
     soundDataSet.addDefaultSound(SoundType.EAT, SoundEvents.CAT_EAT);

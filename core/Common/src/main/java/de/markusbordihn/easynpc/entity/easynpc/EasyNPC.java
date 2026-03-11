@@ -23,6 +23,7 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.npc.NPCType;
 import de.markusbordihn.easynpc.data.npc.RawNPCType;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
+import de.markusbordihn.easynpc.entity.easynpc.data.StatusDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.event.EasyNPCEventHandler;
 import de.markusbordihn.easynpc.server.player.FakePlayer;
 import java.util.Random;
@@ -238,6 +239,12 @@ public interface EasyNPC<E extends Mob> extends EasyNPCDataAccessors<E>, Npc {
    * @param data The data to set.
    */
   default <T> void setSynchedEntityData(SynchedDataIndex synchedDataIndex, T data) {
+    if (synchedDataIndex.persistent) {
+      StatusDataCapable<?> statusData = getEasyNPCStatusData();
+      if (statusData != null) {
+        statusData.markNPCDataUpdated();
+      }
+    }
     setSynchedEntityData(synchedDataIndex, data, false);
   }
 

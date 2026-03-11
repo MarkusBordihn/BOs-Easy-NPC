@@ -20,10 +20,10 @@
 package de.markusbordihn.easynpc.data.synched;
 
 public enum SynchedDataIndex {
-  ATTACK_IS_CHARGING_CROSSBOW,
+  ATTACK_IS_CHARGING_CROSSBOW(false),
   DISPLAY_ATTRIBUTE_SET,
   ENTITY_ATTRIBUTES,
-  MODEL_ANIMATION,
+  MODEL_ANIMATION(false),
   MODEL_POSE,
   MODEL_POSE_NAME,
   MODEL_POSITION,
@@ -40,5 +40,15 @@ public enum SynchedDataIndex {
   TRADING_DATA_SET,
   TRADING_INVENTORY,
   TRADING_MERCHANT_OFFERS,
-  VARIANT_TYPE,
+  VARIANT_TYPE;
+
+  public final boolean persistent;
+
+  SynchedDataIndex() {
+    this.persistent = true;
+  }
+
+  SynchedDataIndex(boolean persistent) {
+    this.persistent = persistent;
+  }
 }

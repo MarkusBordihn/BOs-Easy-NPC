@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.entity.easynpc;
 
 import de.markusbordihn.easynpc.data.status.StatusDataType;
+import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.AttackDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.AttributeDataCapable;
@@ -81,6 +82,17 @@ public interface EasyNPCBase<E extends Mob>
         TradingDataCapable<E>,
         VariantDataCapable<E> {
 
+  @Override
+  default <T> void setSynchedEntityData(SynchedDataIndex synchedDataIndex, T data) {
+    if (synchedDataIndex.persistent) {
+      StatusDataCapable<E> statusData = getEasyNPCStatusData();
+      if (statusData != null) {
+        statusData.markNPCDataUpdated();
+      }
+    }
+    setSynchedEntityData(synchedDataIndex, data, false);
+  }
+
   default void registerEasyNPCDefaultVariant(Enum<?> variant) {
     log.debug("Register default variant for {} with variant {} ...", this, variant);
     VariantDataCapable<E> variantData = getEasyNPCVariantData();
@@ -126,8 +138,6 @@ public interface EasyNPCBase<E extends Mob>
   }
 
   default void defineEasyNPCBaseSyncedData(SynchedEntityData.Builder builder) {
-    log.debug("Define synced data for {} with {}", this, builder);
-
     // First define variant data to ensure that all other data can be linked to the variant.
     VariantDataCapable<E> variantData = getEasyNPCVariantData();
     if (variantData != null) {
@@ -203,11 +213,10 @@ public interface EasyNPCBase<E extends Mob>
       return;
     }
     if (!serverData.hasServerEntityData()) {
-      log.info("Register server-side data for {} ...", this.getEntityUUID());
+      log.debug("Register server-side data for {} ...", this.getEntityUUID());
       serverData.defineServerEntityData();
     }
 
-    log.info("Define custom server-side data for {} ...", this.getEntityUUID());
     ActionEventDataCapable<E> actionEventData = getEasyNPCActionEventData();
     if (actionEventData != null) {
       actionEventData.defineCustomActionData();
@@ -228,7 +237,6 @@ public interface EasyNPCBase<E extends Mob>
 
   default void addEasyNPCBaseAdditionalSaveData(
       CompoundTag compoundTag, HolderLookup.Provider provider) {
-    log.debug("Add additional save data for {} with {}", this, provider);
     ActionEventDataCapable<E> actionEventData = getEasyNPCActionEventData();
     if (actionEventData != null) {
       actionEventData.addAdditionalActionData(compoundTag);
@@ -309,8 +317,6 @@ public interface EasyNPCBase<E extends Mob>
 
   default void readEasyNPCBaseAdditionalSaveData(
       CompoundTag compoundTag, HolderLookup.Provider provider) {
-    log.debug("Read additional save data for {} with {}", this, provider);
-
     // First read important data to ensure that all other data can be linked to the variant.
     ConfigDataCapable<E> configData = getEasyNPCConfigData();
     if (configData != null) {

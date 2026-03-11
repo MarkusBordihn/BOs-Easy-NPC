@@ -48,5 +48,13 @@ public class ObjectiveGroup {
           ObjectiveType.ATTACK_MOB,
           ObjectiveType.ATTACK_MOB_WITHOUT_CREEPER);
 
+  public static final Set<ObjectiveType> FLEE_TARGET =
+      EnumSet.of(
+          ObjectiveType.FLEE_CREEPER,
+          ObjectiveType.FLEE_MOB,
+          ObjectiveType.FLEE_MONSTER,
+          ObjectiveType.FLEE_PLAYER,
+          ObjectiveType.FLEE_VILLAGER);
+
   private ObjectiveGroup() {}
 }
