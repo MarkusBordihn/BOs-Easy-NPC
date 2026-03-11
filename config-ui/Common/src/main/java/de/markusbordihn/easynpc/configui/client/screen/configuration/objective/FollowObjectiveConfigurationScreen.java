@@ -43,6 +43,13 @@ public class FollowObjectiveConfigurationScreen<T extends ConfigurationMenu>
   protected Checkbox followEntityCheckbox;
   protected EditBox followEntityUUID;
   protected Button followEntityUUIDSaveButton;
+  protected Checkbox followItemCheckbox;
+  protected EditBox followItemId;
+  protected Button followItemIdSaveButton;
+
+  private String savedPlayerName;
+  private String savedEntityUUID;
+  private String savedItemTag;
 
   public FollowObjectiveConfigurationScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
@@ -84,6 +91,10 @@ public class FollowObjectiveConfigurationScreen<T extends ConfigurationMenu>
 
     // Follow Player with name input field
     objectiveEntriesTop += SPACE_BETWEEN_ENTRIES;
+    savedPlayerName =
+        objectiveDataSet.hasObjective(ObjectiveType.FOLLOW_PLAYER)
+            ? objectiveDataSet.getObjective(ObjectiveType.FOLLOW_PLAYER).getTargetPlayerName()
+            : "";
     this.followPlayerCheckbox =
         this.addRenderableWidget(
             new Checkbox(
@@ -99,7 +110,10 @@ public class FollowObjectiveConfigurationScreen<T extends ConfigurationMenu>
                     followPlayerName.setEditable(checkbox.selected());
                   }
                   if (followPlayerNameSaveButton != null) {
-                    followPlayerNameSaveButton.active = checkbox.selected();
+                    followPlayerNameSaveButton.active =
+                        checkbox.selected()
+                            && followPlayerName != null
+                            && !followPlayerName.getValue().equals(savedPlayerName);
                   }
                   if (!checkbox.selected()) {
                     NetworkMessageHandlerManager.getServerHandler()
@@ -117,13 +131,14 @@ public class FollowObjectiveConfigurationScreen<T extends ConfigurationMenu>
     followPlayerName.setResponder(
         value -> {
           if (this.followPlayerNameSaveButton != null) {
-            this.followPlayerNameSaveButton.active = value != null && !value.isEmpty();
+            this.followPlayerNameSaveButton.active =
+                this.followPlayerCheckbox != null
+                    && this.followPlayerCheckbox.selected()
+                    && value != null
+                    && !value.equals(savedPlayerName);
           }
         });
-    followPlayerName.setValue(
-        objectiveDataSet.hasObjective(ObjectiveType.FOLLOW_PLAYER)
-            ? objectiveDataSet.getObjective(ObjectiveType.FOLLOW_PLAYER).getTargetPlayerName()
-            : "");
+    followPlayerName.setValue(savedPlayerName);
     this.followPlayerNameSaveButton =
         this.addRenderableWidget(
             new SaveButton(
@@ -135,10 +150,24 @@ public class FollowObjectiveConfigurationScreen<T extends ConfigurationMenu>
                   objectiveDataEntry.setTargetPlayerName(this.followPlayerName.getValue());
                   NetworkMessageHandlerManager.getServerHandler()
                       .addOrUpdateObjective(this.getEasyNPCUUID(), objectiveDataEntry);
+                  savedPlayerName = this.followPlayerName.getValue();
+                  this.followPlayerNameSaveButton.active = false;
                 }));
+    this.followPlayerNameSaveButton.active = false;
 
     // Follow Entity with UUID input field
     objectiveEntriesTop += SPACE_BETWEEN_ENTRIES;
+    savedEntityUUID =
+        objectiveDataSet.hasObjective(ObjectiveType.FOLLOW_ENTITY_BY_UUID)
+                && objectiveDataSet
+                        .getObjective(ObjectiveType.FOLLOW_ENTITY_BY_UUID)
+                        .getTargetEntityUUID()
+                    != null
+            ? objectiveDataSet
+                .getObjective(ObjectiveType.FOLLOW_ENTITY_BY_UUID)
+                .getTargetEntityUUID()
+                .toString()
+            : "";
     this.followEntityCheckbox =
         this.addRenderableWidget(
             new Checkbox(
@@ -167,7 +196,10 @@ public class FollowObjectiveConfigurationScreen<T extends ConfigurationMenu>
                     followEntityUUID.setEditable(checkbox.selected());
                   }
                   if (followEntityUUIDSaveButton != null) {
-                    followEntityUUIDSaveButton.active = checkbox.selected();
+                    followEntityUUIDSaveButton.active =
+                        checkbox.selected()
+                            && followEntityUUID != null
+                            && !followEntityUUID.getValue().equals(savedEntityUUID);
                   }
                   if (!checkbox.selected()) {
                     NetworkMessageHandlerManager.getServerHandler()
@@ -186,20 +218,14 @@ public class FollowObjectiveConfigurationScreen<T extends ConfigurationMenu>
     followEntityUUID.setResponder(
         value -> {
           if (this.followEntityUUIDSaveButton != null) {
-            this.followEntityUUIDSaveButton.active = value != null && !value.isEmpty();
+            this.followEntityUUIDSaveButton.active =
+                this.followEntityCheckbox != null
+                    && this.followEntityCheckbox.selected()
+                    && value != null
+                    && !value.equals(savedEntityUUID);
           }
         });
-    followEntityUUID.setValue(
-        objectiveDataSet.hasObjective(ObjectiveType.FOLLOW_ENTITY_BY_UUID)
-                && objectiveDataSet
-                        .getObjective(ObjectiveType.FOLLOW_ENTITY_BY_UUID)
-                        .getTargetEntityUUID()
-                    != null
-            ? objectiveDataSet
-                .getObjective(ObjectiveType.FOLLOW_ENTITY_BY_UUID)
-                .getTargetEntityUUID()
-                .toString()
-            : "");
+    followEntityUUID.setValue(savedEntityUUID);
     this.followEntityUUIDSaveButton =
         this.addRenderableWidget(
             new SaveButton(
@@ -214,6 +240,76 @@ public class FollowObjectiveConfigurationScreen<T extends ConfigurationMenu>
                           : null);
                   NetworkMessageHandlerManager.getServerHandler()
                       .addOrUpdateObjective(this.getEasyNPCUUID(), objectiveDataEntry);
+                  savedEntityUUID = this.followEntityUUID.getValue();
+                  this.followEntityUUIDSaveButton.active = false;
                 }));
+    this.followEntityUUIDSaveButton.active = false;
+
+    // Follow Item with item resource location input field (e.g. "minecraft:apple")
+    objectiveEntriesTop += SPACE_BETWEEN_ENTRIES;
+    savedItemTag =
+        objectiveDataSet.hasObjective(ObjectiveType.FOLLOW_ITEM)
+                && objectiveDataSet.getObjective(ObjectiveType.FOLLOW_ITEM).getTargetItemTag()
+                    != null
+            ? objectiveDataSet.getObjective(ObjectiveType.FOLLOW_ITEM).getTargetItemTag()
+            : "";
+    this.followItemCheckbox =
+        this.addRenderableWidget(
+            new Checkbox(
+                objectiveEntriesFirstColumn,
+                objectiveEntriesTop,
+                ObjectiveType.FOLLOW_ITEM.getObjectiveName(),
+                objectiveDataSet.hasObjective(ObjectiveType.FOLLOW_ITEM),
+                checkbox -> {
+                  ObjectiveDataEntry objectiveDataEntry =
+                      new ObjectiveDataEntry(ObjectiveType.FOLLOW_ITEM, 7);
+                  if (followItemId != null) {
+                    objectiveDataEntry.setTargetItemTag(followItemId.getValue());
+                    followItemId.setEditable(checkbox.selected());
+                  }
+                  if (followItemIdSaveButton != null) {
+                    followItemIdSaveButton.active =
+                        checkbox.selected()
+                            && followItemId != null
+                            && !followItemId.getValue().equals(savedItemTag);
+                  }
+                  if (!checkbox.selected()) {
+                    NetworkMessageHandlerManager.getServerHandler()
+                        .removeObjective(this.getEasyNPCUUID(), objectiveDataEntry);
+                  } else if (!followItemId.getValue().isEmpty()) {
+                    NetworkMessageHandlerManager.getServerHandler()
+                        .addOrUpdateObjective(this.getEasyNPCUUID(), objectiveDataEntry);
+                  }
+                }));
+    this.followItemId =
+        this.addRenderableWidget(
+            new TextField(this.font, objectiveEntriesSecondColumn, objectiveEntriesTop, 125));
+    followItemId.setEditable(objectiveDataSet.hasObjective(ObjectiveType.FOLLOW_ITEM));
+    followItemId.setResponder(
+        value -> {
+          if (this.followItemIdSaveButton != null) {
+            this.followItemIdSaveButton.active =
+                this.followItemCheckbox != null
+                    && this.followItemCheckbox.selected()
+                    && value != null
+                    && !value.equals(savedItemTag);
+          }
+        });
+    followItemId.setValue(savedItemTag);
+    this.followItemIdSaveButton =
+        this.addRenderableWidget(
+            new SaveButton(
+                this.followItemId.getX() + this.followItemId.getWidth() + 5,
+                objectiveEntriesTop - 1,
+                onPress -> {
+                  ObjectiveDataEntry objectiveDataEntry =
+                      new ObjectiveDataEntry(ObjectiveType.FOLLOW_ITEM, 7);
+                  objectiveDataEntry.setTargetItemTag(this.followItemId.getValue());
+                  NetworkMessageHandlerManager.getServerHandler()
+                      .addOrUpdateObjective(this.getEasyNPCUUID(), objectiveDataEntry);
+                  savedItemTag = this.followItemId.getValue();
+                  this.followItemIdSaveButton.active = false;
+                }));
+    this.followItemIdSaveButton.active = false;
   }
 }

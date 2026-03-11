@@ -29,17 +29,20 @@ import de.markusbordihn.easynpc.entity.easynpc.ai.goal.CustomOwnerHurtByTargetGo
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.CustomPanicGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.FollowLivingEntityGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.GunAttackGoal;
+import de.markusbordihn.easynpc.entity.easynpc.ai.goal.LookAtEntityByUUIDGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.MoveBackToHomeGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.RandomStrollAroundGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.RandomStrollAroundHomeGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.ResetLookAtPlayerGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.ZombieAttackGoal;
+import java.util.UUID;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
 import net.minecraft.world.entity.ai.goal.FleeSunGoal;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.Goal;
@@ -258,6 +261,22 @@ public class ObjectiveUtils {
             Animal.class,
             objectiveDataEntry.getLookDistance(),
             objectiveDataEntry.getProbability());
+      case LOOK_AT_ENTITY_BY_UUID:
+        UUID lookAtEntityUUID = objectiveDataEntry.getTargetEntityUUID();
+        if (lookAtEntityUUID != null) {
+          return new LookAtEntityByUUIDGoal<>(
+              easyNPC, lookAtEntityUUID, objectiveDataEntry.getLookDistance());
+        }
+        log.debug("No valid target entity UUID for LOOK_AT_ENTITY_BY_UUID objective!");
+        break;
+      case LOOK_AT_OWNER:
+        Entity lookAtOwner = objectiveDataEntry.getTargetOwner(easyNPC);
+        if (lookAtOwner instanceof LivingEntity ownerEntity && !ownerEntity.isRemoved()) {
+          return new LookAtEntityByUUIDGoal<>(
+              easyNPC, ownerEntity.getUUID(), objectiveDataEntry.getLookDistance());
+        }
+        log.debug("No valid owner for LOOK_AT_OWNER objective!");
+        break;
       case LOOK_RANDOM_AROUND:
         return new RandomLookAroundGoal(easyNPC.getMob());
       case PANIC:
@@ -272,6 +291,56 @@ public class ObjectiveUtils {
           return null;
         }
         return new FleeSunGoal(easyNPC.getPathfinderMob(), objectiveDataEntry.getSpeedModifier());
+      case FLEE_CREEPER:
+        if (!requiresPathfinderMob(objectiveType, easyNPC)) {
+          return null;
+        }
+        return new AvoidEntityGoal<>(
+            easyNPC.getPathfinderMob(),
+            Creeper.class,
+            objectiveDataEntry.getLookDistance(),
+            objectiveDataEntry.getSpeedModifier(),
+            objectiveDataEntry.getSpeedModifier() * 1.2D);
+      case FLEE_MOB:
+        if (!requiresPathfinderMob(objectiveType, easyNPC)) {
+          return null;
+        }
+        return new AvoidEntityGoal<>(
+            easyNPC.getPathfinderMob(),
+            Mob.class,
+            objectiveDataEntry.getLookDistance(),
+            objectiveDataEntry.getSpeedModifier(),
+            objectiveDataEntry.getSpeedModifier() * 1.2D);
+      case FLEE_MONSTER:
+        if (!requiresPathfinderMob(objectiveType, easyNPC)) {
+          return null;
+        }
+        return new AvoidEntityGoal<>(
+            easyNPC.getPathfinderMob(),
+            Monster.class,
+            objectiveDataEntry.getLookDistance(),
+            objectiveDataEntry.getSpeedModifier(),
+            objectiveDataEntry.getSpeedModifier() * 1.2D);
+      case FLEE_PLAYER:
+        if (!requiresPathfinderMob(objectiveType, easyNPC)) {
+          return null;
+        }
+        return new AvoidEntityGoal<>(
+            easyNPC.getPathfinderMob(),
+            Player.class,
+            objectiveDataEntry.getLookDistance(),
+            objectiveDataEntry.getSpeedModifier(),
+            objectiveDataEntry.getSpeedModifier() * 1.2D);
+      case FLEE_VILLAGER:
+        if (!requiresPathfinderMob(objectiveType, easyNPC)) {
+          return null;
+        }
+        return new AvoidEntityGoal<>(
+            easyNPC.getPathfinderMob(),
+            AbstractVillager.class,
+            objectiveDataEntry.getLookDistance(),
+            objectiveDataEntry.getSpeedModifier(),
+            objectiveDataEntry.getSpeedModifier() * 1.2D);
       default:
         return null;
     }

@@ -38,6 +38,8 @@ import net.minecraft.world.phys.Vec3;
 
 public class SlimeBase extends SlimeRaw implements BaseEasyNPC<SlimeRaw> {
 
+  private boolean customParticlesEnabled = false;
+
   public SlimeBase(EntityType<? extends Slime> entityType, Level level) {
     this(entityType, level, SlimeSkinVariant.SLIME);
   }
@@ -69,8 +71,16 @@ public class SlimeBase extends SlimeRaw implements BaseEasyNPC<SlimeRaw> {
         .add(Attributes.SPAWN_REINFORCEMENTS_CHANCE, 0.0D);
   }
 
+  public boolean isCustomParticlesEnabled() {
+    return this.customParticlesEnabled;
+  }
+
+  public void setCustomParticlesEnabled(boolean customParticlesEnabled) {
+    this.customParticlesEnabled = customParticlesEnabled;
+  }
+
   protected boolean spawnCustomParticles() {
-    return false;
+    return this.customParticlesEnabled;
   }
 
   @Override

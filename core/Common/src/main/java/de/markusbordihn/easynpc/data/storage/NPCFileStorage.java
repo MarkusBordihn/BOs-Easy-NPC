@@ -140,7 +140,7 @@ public class NPCFileStorage {
     }
 
     if (savedCount > 0) {
-      log.info("Saved {} dirty NPC files out of {}", savedCount, snapshot.size());
+      log.debug("Saved {} dirty NPC files out of {}", savedCount, snapshot.size());
     }
     return savedCount;
   }

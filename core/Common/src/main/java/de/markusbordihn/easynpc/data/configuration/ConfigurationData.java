@@ -37,6 +37,7 @@ public record ConfigurationData(Set<ConfigurationType> enabledTypes) {
               STANDARD.enabledTypes(),
               ConfigurationType.BASIC_OBJECTIVE,
               ConfigurationType.ATTACK_OBJECTIVE,
+              ConfigurationType.FLEE_OBJECTIVE,
               ConfigurationType.FOLLOW_OBJECTIVE,
               ConfigurationType.LOOK_OBJECTIVE,
               ConfigurationType.DEFAULT_MODEL));
@@ -51,6 +52,7 @@ public record ConfigurationData(Set<ConfigurationType> enabledTypes) {
               ConfigurationType.POSE,
               ConfigurationType.BASIC_OBJECTIVE,
               ConfigurationType.ATTACK_OBJECTIVE,
+              ConfigurationType.FLEE_OBJECTIVE,
               ConfigurationType.FOLLOW_OBJECTIVE,
               ConfigurationType.LOOK_OBJECTIVE,
               ConfigurationType.SCALING,

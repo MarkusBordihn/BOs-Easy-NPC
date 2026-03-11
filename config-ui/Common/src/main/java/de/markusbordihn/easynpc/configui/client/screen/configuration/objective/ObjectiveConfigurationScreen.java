@@ -40,6 +40,7 @@ public class ObjectiveConfigurationScreen<T extends ConfigurationMenu>
   protected Button basicObjectiveButton;
   protected Button followObjectiveButton;
   protected Button attackObjectiveButton;
+  protected Button fleeObjectiveButton;
   protected Button lookObjectiveButton;
 
   public ObjectiveConfigurationScreen(T menu, Inventory inventory, Component component) {
@@ -82,7 +83,7 @@ public class ObjectiveConfigurationScreen<T extends ConfigurationMenu>
             new TextButton(
                 this.buttonLeftPos,
                 this.buttonTopPos,
-                60,
+                50,
                 "basic",
                 onPress ->
                     NetworkMessageHandlerManager.getServerHandler()
@@ -94,7 +95,7 @@ public class ObjectiveConfigurationScreen<T extends ConfigurationMenu>
             new TextButton(
                 this.basicObjectiveButton.getX() + this.basicObjectiveButton.getWidth(),
                 this.buttonTopPos,
-                60,
+                50,
                 "follow",
                 onPress ->
                     NetworkMessageHandlerManager.getServerHandler()
@@ -106,19 +107,31 @@ public class ObjectiveConfigurationScreen<T extends ConfigurationMenu>
             new TextButton(
                 this.followObjectiveButton.getX() + this.followObjectiveButton.getWidth(),
                 this.buttonTopPos,
-                60,
+                50,
                 "attack",
                 onPress ->
                     NetworkMessageHandlerManager.getServerHandler()
                         .openConfiguration(
                             this.getEasyNPCUUID(), ConfigurationType.ATTACK_OBJECTIVE)));
 
-    this.lookObjectiveButton =
+    this.fleeObjectiveButton =
         this.addRenderableWidget(
             new TextButton(
                 this.attackObjectiveButton.getX() + this.attackObjectiveButton.getWidth(),
                 this.buttonTopPos,
-                65,
+                50,
+                "flee",
+                onPress ->
+                    NetworkMessageHandlerManager.getServerHandler()
+                        .openConfiguration(
+                            this.getEasyNPCUUID(), ConfigurationType.FLEE_OBJECTIVE)));
+
+    this.lookObjectiveButton =
+        this.addRenderableWidget(
+            new TextButton(
+                this.fleeObjectiveButton.getX() + this.fleeObjectiveButton.getWidth(),
+                this.buttonTopPos,
+                50,
                 "look",
                 onPress ->
                     NetworkMessageHandlerManager.getServerHandler()

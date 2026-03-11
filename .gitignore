@@ -32,6 +32,9 @@ forge*changelog.txt
 .vscode/launch.json
 .vscode/settings.json
 
+# Ghost Reference Index (local knowledge base sync)
+.ghost-reference-index
+
 # Template placeholder files
 put_your_*_here
 

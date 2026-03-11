@@ -87,7 +87,10 @@ public interface SoundDataCapable<E extends Mob> extends EasyNPC<E> {
   default void playDefaultAmbientSound() {
     OwnerDataCapable<E> ownerData = this.getEasyNPCOwnerData();
     if (ownerData != null && ownerData.hasNPCOwner()) {
-      if (hasDefaultSound(SoundType.AMBIENT_TAMED) && EasyNPC.randomNumber.nextInt(4) == 0) {
+      if (hasDefaultSound(SoundType.PET) && EasyNPC.randomNumber.nextInt(8) == 0) {
+        this.playDefaultSound(SoundType.PET);
+        return;
+      } else if (hasDefaultSound(SoundType.AMBIENT_TAMED) && EasyNPC.randomNumber.nextInt(4) == 0) {
         this.playDefaultSound(SoundType.AMBIENT_TAMED);
         return;
       } else if (hasDefaultSound(SoundType.AMBIENT)) {

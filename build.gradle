@@ -1,6 +1,9 @@
 apply plugin: 'java'
 import org.gradle.tooling.GradleConnector
 
+def ghostRefScript = file(findProperty('ghostRefIndex') ?: '')
+if (ghostRefScript.exists()) apply from: ghostRefScript
+
 subprojects {
 
   tasks.register('wrapper', Wrapper) {

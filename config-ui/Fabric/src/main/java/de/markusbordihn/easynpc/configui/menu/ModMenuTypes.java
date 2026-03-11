@@ -38,6 +38,7 @@ import de.markusbordihn.easynpc.configui.menu.configuration.model.CustomModelCon
 import de.markusbordihn.easynpc.configui.menu.configuration.model.DefaultModelConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.objective.AttackObjectiveConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.objective.BasicObjectiveConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.configui.menu.configuration.objective.FleeObjectiveConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.objective.FollowObjectiveConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.objective.LookObjectiveConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.pose.AdvancedPoseConfigurationMenuWrapper;
@@ -124,6 +125,10 @@ public class ModMenuTypes {
           ScreenHandlerRegistry.registerSimple(
               ConfigurationType.ATTACK_OBJECTIVE.getId(),
               AttackObjectiveConfigurationMenuWrapper::new);
+  public static final MenuType<FleeObjectiveConfigurationMenuWrapper>
+      FLEE_OBJECTIVE_CONFIGURATION_MENU =
+          ScreenHandlerRegistry.registerSimple(
+              ConfigurationType.FLEE_OBJECTIVE.getId(), FleeObjectiveConfigurationMenuWrapper::new);
   public static final MenuType<BaseAttributeConfigurationMenuWrapper>
       BASE_ATTRIBUTE_CONFIGURATION_MENU =
           ScreenHandlerRegistry.registerSimple(
