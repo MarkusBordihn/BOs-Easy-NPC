@@ -146,7 +146,7 @@ public class ObjectiveDataSet {
 
   public boolean isTargetedPlayer(String playerName) {
     return playerName != null
-        && playerName.isEmpty()
+        && !playerName.isEmpty()
         && this.targetedPlayerSet.contains(playerName);
   }
 

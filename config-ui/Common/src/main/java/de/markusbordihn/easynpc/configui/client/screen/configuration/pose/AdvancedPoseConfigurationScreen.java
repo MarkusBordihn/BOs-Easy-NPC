@@ -26,6 +26,7 @@ import de.markusbordihn.easynpc.configui.client.renderer.screen.EntityConfigScre
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.model.ModelPartType;
+import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.data.render.EntityRenderConfig;
 import java.util.EnumMap;
 import java.util.Set;
@@ -106,7 +107,22 @@ public class AdvancedPoseConfigurationScreen<T extends ConfigurationMenu>
         this.createAnimationBehaviorButton(this.contentLeftPos + 118, this.bottomPos - 26));
 
     // Follow Cursor Toggle Button
-    this.createFollowCursorToggleButton(this.contentLeftPos + 149, this.topPos + 38);
+    this.createFollowCursorToggleButton(this.contentLeftPos + 149, this.topPos + 45);
+
+    // Lock Rotation Checkbox
+    this.createLockRotationCheckbox(this.contentLeftPos + 125, this.topPos + 28);
+
+    // Auto-disable lock rotation only when coming from a named preset (DEFAULT) pose
+    if (this.lockRotationCheckbox != null
+        && this.lockRotationCheckbox.selected()
+        && this.modelData.getModelPose() == ModelPose.DEFAULT) {
+      this.lockRotationCheckbox.setSelected(false);
+      NetworkMessageHandlerManager.getServerHandler()
+          .modelRotationChange(
+              this.getEasyNPCUUID(),
+              ModelPartType.ROOT,
+              this.modelData.getModelPartRotation(ModelPartType.ROOT).withLocked(false));
+    }
   }
 
   @Override

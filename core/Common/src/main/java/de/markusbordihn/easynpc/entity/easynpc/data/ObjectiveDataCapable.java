@@ -142,18 +142,15 @@ public interface ObjectiveDataCapable<T extends Mob> extends EasyNPC<T> {
   }
 
   default void onEasyNPCLeaveUpdateObjective(EasyNPC<?> easyNPC) {
-    // Check if we need to re-register NPC based objectives.
     if (this.hasEntityTargetObjectives()
-        && this.getObjectiveDataSet().hasValidTarget(this)
-        && getObjectiveDataSet().isTargetedEntity(this.getEntityUUID())) {
+        && getObjectiveDataSet().isTargetedEntity(easyNPC.getEntityUUID())) {
       this.refreshCustomObjectives();
     }
   }
 
   default void onPlayerJoinUpdateObjective(ServerPlayer serverPlayer) {
     // Check if we need to re-register owner and player based objectives.
-    if (this.hasOwnerTargetObjectives()
-        && !this.getObjectiveDataSet().hasValidTarget(this)
+    if ((this.hasOwnerTargetObjectives() || this.hasPlayerTargetObjectives())
         && (isObjectiveOwner(serverPlayer) || isObjectiveTargetedPlayer(serverPlayer))) {
       this.refreshCustomObjectives();
     }
@@ -169,9 +166,7 @@ public interface ObjectiveDataCapable<T extends Mob> extends EasyNPC<T> {
   }
 
   default void onPlayerLeaveUpdateObjective(ServerPlayer serverPlayer) {
-    // Check if we need to re-register owner and player based objectives.
-    if (this.hasOwnerTargetObjectives()
-        && this.getObjectiveDataSet().hasValidTarget(this)
+    if ((this.hasOwnerTargetObjectives() || this.hasPlayerTargetObjectives())
         && (isObjectiveOwner(serverPlayer) || isObjectiveTargetedPlayer(serverPlayer))) {
       this.refreshCustomObjectives();
     }
@@ -187,9 +182,7 @@ public interface ObjectiveDataCapable<T extends Mob> extends EasyNPC<T> {
   }
 
   default void onLivingEntityLeaveUpdateObjective(LivingEntity livingEntity) {
-    // Check if we need to re-register living entity based objectives.
-    if (this.hasObjectives()
-        && this.getObjectiveDataSet().hasValidTarget(this)
+    if (this.hasEntityTargetObjectives()
         && this.getObjectiveDataSet().isTargetedEntity(livingEntity.getUUID())) {
       this.refreshCustomObjectives();
     }
@@ -308,11 +301,17 @@ public interface ObjectiveDataCapable<T extends Mob> extends EasyNPC<T> {
 
     // Set registered flag.
     if (!addedCustomObjective && goal == null && target == null) {
-      log.debug(
-          "- Objective {} is not compatible with {} and will not be retried.",
-          objectiveDataEntry.getType(),
-          this);
-      objectiveDataEntry.setRegistered(true);
+      if (objectiveDataEntry.hasValidTarget(this)) {
+        // Target is available but no goal/target was created -> truly incompatible with entity
+        // type.
+        log.debug(
+            "- Objective {} is not compatible with {} and will not be retried.",
+            objectiveDataEntry.getType(),
+            this);
+        objectiveDataEntry.setRegistered(true);
+      }
+      // else: target is currently unavailable (e.g. player offline) - keep isRegistered=false
+      // so refreshCustomObjectives() will retry once the target becomes available.
     } else {
       objectiveDataEntry.setRegistered(addedCustomObjective);
     }
