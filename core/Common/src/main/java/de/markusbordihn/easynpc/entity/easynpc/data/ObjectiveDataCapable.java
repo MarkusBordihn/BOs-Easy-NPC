@@ -135,7 +135,6 @@ public interface ObjectiveDataCapable<T extends Mob> extends EasyNPC<T> {
   }
 
   default void onEasyNPCJoinUpdateObjective(EasyNPC<?> easyNPC) {
-    // Check if we need to re-register NPC based objectives.
     if (this.hasEntityTargetObjectives()
         && !this.getObjectiveDataSet().hasValidTarget(this)
         && getObjectiveDataSet().isTargetedEntity(easyNPC.getEntityUUID())) {
@@ -151,7 +150,6 @@ public interface ObjectiveDataCapable<T extends Mob> extends EasyNPC<T> {
   }
 
   default void onPlayerJoinUpdateObjective(ServerPlayer serverPlayer) {
-    // Check if we need to re-register owner and player based objectives.
     if ((this.hasOwnerTargetObjectives() || this.hasPlayerTargetObjectives())
         && (isObjectiveOwner(serverPlayer) || isObjectiveTargetedPlayer(serverPlayer))) {
       this.refreshCustomObjectives();
@@ -175,7 +173,6 @@ public interface ObjectiveDataCapable<T extends Mob> extends EasyNPC<T> {
   }
 
   default void onLivingEntityJoinUpdateObjective(LivingEntity livingEntity) {
-    // Check if we need to re-register living entity based objectives.
     if (this.hasEntityTargetObjectives()
         && !this.getObjectiveDataSet().hasValidTarget(this)
         && this.getObjectiveDataSet().isTargetedEntity(livingEntity.getUUID())) {
@@ -209,8 +206,6 @@ public interface ObjectiveDataCapable<T extends Mob> extends EasyNPC<T> {
       return;
     }
     log.debug("Register attribute based objectives for {}", this);
-
-    // Handle floating goals.
     ObjectiveDataEntry floatObjective = new ObjectiveDataEntry(ObjectiveType.FLOAT, 0);
     EntityAttributes attributeData = this.getEasyNPCAttributeData().getEntityAttributes();
     if (attributeData.getEnvironmentalAttributes().canFloat()) {
@@ -221,7 +216,6 @@ public interface ObjectiveDataCapable<T extends Mob> extends EasyNPC<T> {
       this.removeCustomObjective(floatObjective);
     }
 
-    // Handle close door interaction goals.
     ObjectiveDataEntry closeDoorObjective = new ObjectiveDataEntry(ObjectiveType.CLOSE_DOOR, 8);
     if (attributeData.getMovementAttributes().canCloseDoor()) {
       if (!this.hasObjective(closeDoorObjective)) {
@@ -231,7 +225,6 @@ public interface ObjectiveDataCapable<T extends Mob> extends EasyNPC<T> {
       this.removeCustomObjective(closeDoorObjective);
     }
 
-    // Handle open door interaction goals.
     ObjectiveDataEntry openDoorObjective = new ObjectiveDataEntry(ObjectiveType.OPEN_DOOR, 8);
     if (attributeData.getMovementAttributes().canOpenDoor()) {
       if (!this.hasObjective(closeDoorObjective)) {
@@ -269,9 +262,12 @@ public interface ObjectiveDataCapable<T extends Mob> extends EasyNPC<T> {
       return false;
     }
 
+    if (this.isClientSideInstance()) {
+      return false;
+    }
+
     boolean addedCustomObjective = false;
 
-    // Handle goal specific objectives.
     Goal goal = objectiveDataEntry.getGoal(this);
     if (goal != null) {
       GoalSelector goalSelector = this.getEntityGoalSelector();
@@ -291,7 +287,6 @@ public interface ObjectiveDataCapable<T extends Mob> extends EasyNPC<T> {
       }
     }
 
-    // Handle target specific objectives.
     Goal target = objectiveDataEntry.getTarget(this);
     if (target != null) {
       log.debug("- Adding target goal {} for {}", target, this);
@@ -301,19 +296,14 @@ public interface ObjectiveDataCapable<T extends Mob> extends EasyNPC<T> {
       addedCustomObjective = true;
     }
 
-    // Set registered flag.
     if (!addedCustomObjective && goal == null && target == null) {
       if (objectiveDataEntry.hasValidTarget(this)) {
-        // Target is available but no goal/target was created -> truly incompatible with entity
-        // type.
         log.debug(
             "- Objective {} is not compatible with {} and will not be retried.",
             objectiveDataEntry.getType(),
             this);
         objectiveDataEntry.setRegistered(true);
       }
-      // else: target is currently unavailable (e.g. player offline) - keep isRegistered=false
-      // so refreshCustomObjectives() will retry once the target becomes available.
     } else {
       objectiveDataEntry.setRegistered(addedCustomObjective);
     }
@@ -345,7 +335,6 @@ public interface ObjectiveDataCapable<T extends Mob> extends EasyNPC<T> {
       return false;
     }
 
-    // Make sure we have the correct objective data and not a copy or clone.
     if (objectiveDataEntry.getId() != null && !objectiveDataEntry.getId().isEmpty()) {
       objectiveDataEntry = this.getObjectiveDataSet().getObjective(objectiveDataEntry.getId());
       if (objectiveDataEntry == null) {
@@ -357,7 +346,6 @@ public interface ObjectiveDataCapable<T extends Mob> extends EasyNPC<T> {
       }
     }
 
-    // Remove goal and target if available.
     Goal goal = objectiveDataEntry.getGoal(this);
     Goal target = objectiveDataEntry.getTarget(this);
     if (goal == null && target == null) {
@@ -417,14 +405,12 @@ public interface ObjectiveDataCapable<T extends Mob> extends EasyNPC<T> {
   }
 
   default void readAdditionalObjectiveData(ValueInput valueInput) {
-    // Early exit if no objective data is available.
     Optional<CompoundTag> compoundTagData =
         valueInput.read(DATA_OBJECTIVE_DATA_TAG, CompoundTag.CODEC);
     if (compoundTagData.isEmpty()) {
       return;
     }
 
-    // Read objective data set
     CompoundTag objectiveDataTag = compoundTagData.get();
     if (objectiveDataTag.contains(ObjectiveDataSet.DATA_OBJECTIVE_DATA_SET_TAG)) {
       ObjectiveDataSet objectiveDataSet = new ObjectiveDataSet(objectiveDataTag);
