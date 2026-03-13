@@ -26,7 +26,6 @@ import de.markusbordihn.easynpc.data.model.ModelAnimationBehavior;
 import de.markusbordihn.easynpc.data.model.ModelArmPose;
 import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.model.ModelPose;
-import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.DisplayAttributeDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
@@ -89,10 +88,6 @@ public class EasyNPCModel {
       final EasyNPC<?> easyNPC,
       final ModelDataCapable<?> modelData,
       final EasyNPCModelManager modelManager) {
-    CustomRotation rootRotation = modelData.getModelPartRotation(ModelPartType.ROOT);
-    if (rootRotation == null || !rootRotation.locked()) {
-      return;
-    }
     if (modelData.getModelPartRotation(ModelPartType.HEAD).hasChanged()) {
       return;
     }
@@ -105,6 +100,12 @@ public class EasyNPCModel {
         Mth.clamp(Mth.wrapDegrees(living.yHeadRot - living.yBodyRot), -MAX_HEAD_YAW, MAX_HEAD_YAW)
             * DEG_TO_RAD;
     head.xRot = Mth.clamp(living.getXRot(), -MAX_HEAD_PITCH, MAX_HEAD_PITCH) * DEG_TO_RAD;
+
+    ModelPart hat = modelManager.getModelPart(ModelPartType.HAT);
+    if (hat != null && !modelData.getModelPartRotation(ModelPartType.HAT).hasChanged()) {
+      hat.yRot = head.yRot;
+      hat.xRot = head.xRot;
+    }
   }
 
   public static int getEntityLightLevel(

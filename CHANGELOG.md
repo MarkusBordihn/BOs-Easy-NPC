@@ -10,6 +10,7 @@ Check the [upgrade guide][upgrade_guide] for more information.
 
 ### 6.10.0
 
+- Fixed #698 by adding try and catch for 3rd party entity creation.
 - Fixed #695 by clearing model part rotations/positions when switching to a `DEFAULT` vanilla pose.
 - Fixed #695 by applying lock rotation and pose animation only when the NPC is idle.
 - Fixed #695 by correcting root rotation pivot to use actual bounding box height instead of 0.5f.

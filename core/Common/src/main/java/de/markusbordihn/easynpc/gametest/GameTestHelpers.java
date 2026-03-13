@@ -59,8 +59,7 @@ public class GameTestHelpers {
     return easyNPC;
   }
 
-  public static EasyNPC<?> spawnNPCEntityType(
-      GameTestHelper helper, EntityType<?> entityType) {
+  public static EasyNPC<?> spawnNPCEntityType(GameTestHelper helper, EntityType<?> entityType) {
     Entity entity = spawnEntityType(helper, entityType);
     if (entity instanceof EasyNPC<?> easyNPC) {
       return easyNPC;
