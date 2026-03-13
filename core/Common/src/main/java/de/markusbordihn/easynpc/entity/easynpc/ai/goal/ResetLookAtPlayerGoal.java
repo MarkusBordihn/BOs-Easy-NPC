@@ -25,13 +25,11 @@ import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
 import java.util.EnumSet;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.control.LookControl;
 import net.minecraft.world.entity.ai.goal.Goal;
 
 public class ResetLookAtPlayerGoal<T extends EasyNPC<?>> extends Goal {
 
   private final ModelDataCapable<?> modelData;
-  private final LookControl lookControl;
   private final LivingEntity livingEntity;
   private int resetLookTime = 40;
 
@@ -39,21 +37,15 @@ public class ResetLookAtPlayerGoal<T extends EasyNPC<?>> extends Goal {
     super();
     this.setFlags(EnumSet.of(Goal.Flag.LOOK));
     this.modelData = easyNPC.getEasyNPCModelData();
-    this.lookControl = easyNPC.getEntityLookControl();
     this.livingEntity = easyNPC.getLivingEntity();
   }
 
-  private boolean isRootLocked() {
-    return this.modelData != null
-        && this.modelData.getModelPartRotation(ModelPartType.ROOT).locked();
-  }
-
-  private boolean isRootLockedWithExplicitHeadRotation() {
+  private boolean isRootLockedWithDefaultHeadRotation() {
     if (this.modelData == null) {
       return false;
     }
     return this.modelData.getModelPartRotation(ModelPartType.ROOT).locked()
-        && this.modelData.getModelPartRotation(ModelPartType.HEAD).hasChanged();
+        && !this.modelData.getModelPartRotation(ModelPartType.HEAD).hasChanged();
   }
 
   @Override
@@ -68,32 +60,25 @@ public class ResetLookAtPlayerGoal<T extends EasyNPC<?>> extends Goal {
 
   @Override
   public boolean canUse() {
-    return this.modelData == null || !isRootLockedWithExplicitHeadRotation();
+    return isRootLockedWithDefaultHeadRotation();
   }
 
   @Override
   public boolean canContinueToUse() {
-    return (this.modelData == null || !isRootLockedWithExplicitHeadRotation())
-        && this.resetLookTime > 0;
+    return isRootLockedWithDefaultHeadRotation() && this.resetLookTime > 0;
   }
 
   @Override
   public void tick() {
-    if (this.resetLookTime <= 0) {
+    if (this.resetLookTime <= 0 || this.livingEntity == null) {
       return;
     }
-
-    if (isRootLocked() && this.livingEntity != null) {
-      float delta = Mth.wrapDegrees(this.livingEntity.yBodyRot - this.livingEntity.yHeadRot);
-      if (Math.abs(delta) < 1.0F) {
-        this.livingEntity.yHeadRot = this.livingEntity.yBodyRot;
-      } else {
-        this.livingEntity.yHeadRot += delta * 0.1F;
-      }
-    } else if (this.modelData == null && this.lookControl != null) {
-      this.lookControl.setLookAt(0, 0, 0);
+    float delta = Mth.wrapDegrees(this.livingEntity.yBodyRot - this.livingEntity.yHeadRot);
+    if (Math.abs(delta) < 1.0F) {
+      this.livingEntity.yHeadRot = this.livingEntity.yBodyRot;
+    } else {
+      this.livingEntity.yHeadRot += delta * 0.1F;
     }
-
     this.resetLookTime--;
   }
 }
