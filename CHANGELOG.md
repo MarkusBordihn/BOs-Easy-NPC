@@ -8,6 +8,23 @@ For the full changelog, please go to the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 6.10.0
+
+- Fixed #695 by clearing model part rotations/positions when switching to a `DEFAULT` vanilla pose.
+- Fixed #695 by applying lock rotation and pose animation only when the NPC is idle.
+- Fixed #695 by correcting root rotation pivot to use actual bounding box height instead of 0.5f.
+- Fixed multiple objective registration issues including inverted `isTargetedPlayer` check, wrong
+  UUID in leave-handler, missing player-targeted refresh on join/leave, and retry for offline
+  targets.
+- Fixed goal reference being retained after objective is unregistered.
+- Removed auto-lock of ROOT rotation when loading poses; root lock is now user-controlled.
+- Added lock rotation checkbox to the advanced and custom pose configuration screens.
+- Added model-specific pose key filtering in `ConfigurationMenuHandler` for the default pose screen.
+- Added unit tests for `CustomPosition`, `CustomRotation`, `CustomScale`, `ModelPose`,
+  `ModelAnimationBehavior` and `ModelAnimationData`.
+- Added `NPCDataIsolationTestHelper` and game tests for Fabric and Forge.
+- Increased max head yaw range from 60° to 65°.
+
 ### 6.9.0
 
 - Fixed #692, #666 by adding caching and safeguards to prevent redundant retriggering of NPC entity

@@ -38,7 +38,7 @@ import net.minecraft.world.level.LightLayer;
 
 public class EasyNPCModel {
 
-  private static final float MAX_HEAD_YAW = 60.0F;
+  private static final float MAX_HEAD_YAW = 65.0F;
   private static final float MAX_HEAD_PITCH = 45.0F;
   private static final float DEG_TO_RAD = (float) Math.PI / 180.0F;
 
@@ -54,6 +54,12 @@ public class EasyNPCModel {
     // Get Model Data
     ModelDataCapable<?> modelData = easyNPC.getEasyNPCModelData();
     if (modelData == null || modelData.getModelPose() == ModelPose.VANILLA) {
+      return false;
+    }
+
+    // The pose is only applied when the NPC is standing still.
+    if (modelData.getModelPose() == ModelPose.DEFAULT
+        && easyNPC.getLivingEntity().walkAnimation.speed() > 0.01f) {
       return false;
     }
 
@@ -119,9 +125,7 @@ public class EasyNPCModel {
 
   public static void renderEntityNameTag(
       final EasyNPC<?> easyNPC, final ModelDataCapable<?> modelData, final PoseStack poseStack) {
-    // No-op: The name tag renders after LivingEntityRenderer.render() calls popPose(),
-    // so the PoseStack is already clean. No counter-rotation is needed.
-    // The name tag always faces the camera via vanilla's cameraOrientation() billboard.
+    // No-op
   }
 
   public static void setupAnimationEnd(
