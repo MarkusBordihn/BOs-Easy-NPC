@@ -255,7 +255,9 @@ public final class ObjectiveDataEntry {
   }
 
   public boolean hasOwnerTarget() {
-    return this.getType() == ObjectiveType.FOLLOW_OWNER && this.targetOwnerUUID != null;
+    return (this.getType() == ObjectiveType.FOLLOW_OWNER
+            || this.getType() == ObjectiveType.LOOK_AT_OWNER)
+        && this.targetOwnerUUID != null;
   }
 
   public boolean hasPlayerTarget() {
@@ -265,7 +267,9 @@ public final class ObjectiveDataEntry {
   }
 
   public boolean hasEntityTarget() {
-    return this.getType() == ObjectiveType.FOLLOW_ENTITY_BY_UUID && this.targetEntityUUID != null;
+    return (this.getType() == ObjectiveType.FOLLOW_ENTITY_BY_UUID
+            || this.getType() == ObjectiveType.LOOK_AT_ENTITY_BY_UUID)
+        && this.targetEntityUUID != null;
   }
 
   public boolean hasValidTarget(EasyNPC<?> easyNPC) {
