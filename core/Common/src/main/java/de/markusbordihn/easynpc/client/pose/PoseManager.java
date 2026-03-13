@@ -267,9 +267,6 @@ public class PoseManager {
     EnumMap<ModelPartType, CustomPosition> newPositions = new EnumMap<>(ModelPartType.class);
     convertBonesToMaps(animation, newRotations, newPositions);
 
-    // Auto-lock ROOT rotation to prevent body turning when in a default pose
-    newRotations.put(ModelPartType.ROOT, new CustomRotation(0, 0, 0).withLocked(true));
-
     // Apply fresh maps atomically, replacing any leftover data from previous poses
     modelData.setModelPartRotation(newRotations);
     modelData.setModelPartPosition(newPositions);
@@ -299,9 +296,6 @@ public class PoseManager {
     // Build fresh maps from cache to replace all previous pose data atomically
     EnumMap<ModelPartType, CustomRotation> newRotations = new EnumMap<>(rotations);
     EnumMap<ModelPartType, CustomPosition> newPositions = new EnumMap<>(positions);
-
-    // Auto-lock ROOT rotation
-    newRotations.put(ModelPartType.ROOT, new CustomRotation(0, 0, 0).withLocked(true));
 
     // Apply fresh maps, replacing any leftover data from previous poses
     modelData.setModelPartRotation(newRotations);

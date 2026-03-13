@@ -41,7 +41,9 @@ public class EasyNPCBodyRotationControl extends BodyRotationControl {
       ModelDataCapable<?> modelData = easyNPC.getEasyNPCModelData();
       if (modelData != null) {
         CustomRotation rootRotation = modelData.getModelPartRotation(ModelPartType.ROOT);
-        if (rootRotation != null && rootRotation.locked()) {
+        if (rootRotation != null
+            && rootRotation.locked()
+            && this.mob.walkAnimation.speed() <= 0.01f) {
           this.mob.yBodyRot = rootRotation.y();
           return;
         }

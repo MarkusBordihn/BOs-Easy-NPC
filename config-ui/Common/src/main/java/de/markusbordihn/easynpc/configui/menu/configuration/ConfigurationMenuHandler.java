@@ -19,12 +19,14 @@
 
 package de.markusbordihn.easynpc.configui.menu.configuration;
 
+import de.markusbordihn.easynpc.client.pose.PoseManager;
 import de.markusbordihn.easynpc.configui.data.screen.AdditionalScreenData;
 import de.markusbordihn.easynpc.configui.menu.configuration.equipment.EquipmentConfigurationMenu;
 import de.markusbordihn.easynpc.configui.menu.configuration.trading.AdvancedTradingConfigurationMenu;
 import de.markusbordihn.easynpc.configui.menu.configuration.trading.BasicTradingConfigurationMenu;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.data.screen.ScreenData;
+import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.io.CustomPresetDataFiles;
 import de.markusbordihn.easynpc.io.DefaultPresetDataFiles;
@@ -146,6 +148,14 @@ public class ConfigurationMenuHandler {
     // Additional data for specific configuration menu.
     final CompoundTag additionalSyncData = new CompoundTag();
     switch (configurationType) {
+      case DEFAULT_POSE -> {
+        SkinModel skinModel = easyNPC.getEasyNPCSkinData().getSkinModel();
+        Set<Identifier> poseKeys =
+            skinModel != null
+                ? PoseManager.getPoseDataKeysForModel(skinModel)
+                : PoseManager.getPoseDataKeys();
+        additionalSyncData.put("PoseKeys", CompoundTagUtils.writeIdentifiers(poseKeys));
+      }
       case DEFAULT_PRESET_IMPORT -> {
         Set<Identifier> defaultPresets =
             DefaultPresetDataFiles.getPresetIdentifiers(serverPlayer.level().getServer())

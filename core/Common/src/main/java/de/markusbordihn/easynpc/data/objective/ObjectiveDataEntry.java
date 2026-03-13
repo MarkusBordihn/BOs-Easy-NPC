@@ -178,6 +178,9 @@ public final class ObjectiveDataEntry {
 
   public void setRegistered(boolean isRegistered) {
     this.isRegistered = isRegistered;
+    if (!isRegistered) {
+      this.goal = null;
+    }
   }
 
   public String getTargetPlayerName() {

@@ -149,14 +149,15 @@ public class EasyNPCLivingEntityRenderer {
     float zDeg = (float) Math.toDegrees(rootRotation.z());
 
     if (xDeg != 0.0f || zDeg != 0.0f) {
-      poseStack.translate(0.0f, 0.5f, 0.0f);
+      float pivotY = easyNPC.getLivingEntity().getBbHeight() * 0.5f;
+      poseStack.translate(0.0f, pivotY, 0.0f);
       if (xDeg != 0.0f) {
         poseStack.mulPose(Axis.XP.rotationDegrees(xDeg));
       }
       if (zDeg != 0.0f) {
         poseStack.mulPose(Axis.ZP.rotationDegrees(zDeg));
       }
-      poseStack.translate(0.0f, -0.5f, 0.0f);
+      poseStack.translate(0.0f, -pivotY, 0.0f);
     }
   }
 }

@@ -20,10 +20,12 @@
 package de.markusbordihn.easynpc.configui.network.message.server;
 
 import de.markusbordihn.easynpc.configui.Constants;
+import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
+import java.util.EnumMap;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -82,6 +84,11 @@ public record ChangePoseMessage(UUID uuid, Pose pose) implements NetworkMessageR
     }
 
     log.debug("Change pose {} for {} from {}", this.pose, easyNPC, serverPlayer);
+    if (modelData.getModelPose() == ModelPose.DEFAULT) {
+      modelData.setModelPoseName("");
+      modelData.setModelPartRotation(new EnumMap<>(ModelPartType.class));
+      modelData.setModelPartPosition(new EnumMap<>(ModelPartType.class));
+    }
     modelData.setModelPose(ModelPose.VANILLA);
     easyNPC.getEntity().setPose(this.pose);
   }
