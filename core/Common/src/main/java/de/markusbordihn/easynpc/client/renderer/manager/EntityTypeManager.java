@@ -213,7 +213,16 @@ public class EntityTypeManager {
 
     // Check if entity type is supported and created entity is a PathfinderMob.
     if (!isUnsupportedEntityType(entityType)) {
-      Entity entity = entityType.create(level);
+      Entity entity;
+      try {
+        entity = entityType.create(level);
+      } catch (Exception e) {
+        log.warn(
+            "{} Failed to create entity for type {}: {}", LOG_PREFIX, entityType, e.getMessage());
+        addUnsupportedEntityType(entityType);
+        return null;
+      }
+
       if (entity instanceof PathfinderMob newPathfinderMob) {
         log.debug(
             "{} Registering PathfinderMob {} for {}", LOG_PREFIX, newPathfinderMob, entityType);
