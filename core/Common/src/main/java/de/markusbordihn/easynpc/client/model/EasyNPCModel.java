@@ -113,12 +113,6 @@ public class EasyNPCModel {
         Mth.clamp(Mth.wrapDegrees(living.yHeadRot - living.yBodyRot), -MAX_HEAD_YAW, MAX_HEAD_YAW)
             * DEG_TO_RAD;
     head.xRot = Mth.clamp(living.getXRot(), -MAX_HEAD_PITCH, MAX_HEAD_PITCH) * DEG_TO_RAD;
-
-    ModelPart hat = modelManager.getModelPart(ModelPartType.HAT);
-    if (hat != null && !modelData.getModelPartRotation(ModelPartType.HAT).hasChanged()) {
-      hat.yRot = head.yRot;
-      hat.xRot = head.xRot;
-    }
   }
 
   public static EasyNPC<?> getEasyNPC(final EasyNPCRenderStateExtension extension) {
