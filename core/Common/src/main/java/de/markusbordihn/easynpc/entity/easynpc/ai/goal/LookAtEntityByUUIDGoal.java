@@ -19,10 +19,14 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.ai.goal;
 
+import de.markusbordihn.easynpc.data.model.ModelPartType;
+import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
 import java.util.EnumSet;
 import java.util.UUID;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -31,8 +35,12 @@ import net.minecraft.world.entity.ai.goal.Goal;
 public class LookAtEntityByUUIDGoal<T extends EasyNPC<?>> extends Goal {
 
   private static final int ENTITY_SEARCH_INTERVAL = 40;
+  private static final float MAX_HEAD_ROTATION = 60.0F;
+  private static final float LOOK_SPEED = 0.15F;
 
   private final Mob mob;
+  private final ModelDataCapable<?> modelData;
+  private final LivingEntity livingEntity;
   private final UUID targetEntityUUID;
   private final float lookDistance;
   private LivingEntity targetEntity;
@@ -40,6 +48,8 @@ public class LookAtEntityByUUIDGoal<T extends EasyNPC<?>> extends Goal {
 
   public LookAtEntityByUUIDGoal(T easyNPC, UUID targetEntityUUID, float lookDistance) {
     this.mob = easyNPC.getMob();
+    this.modelData = easyNPC.getEasyNPCModelData();
+    this.livingEntity = easyNPC.getLivingEntity();
     this.targetEntityUUID = targetEntityUUID;
     this.lookDistance = lookDistance;
     this.setFlags(EnumSet.of(Goal.Flag.LOOK));
@@ -71,16 +81,44 @@ public class LookAtEntityByUUIDGoal<T extends EasyNPC<?>> extends Goal {
   @Override
   public void tick() {
     if (this.targetEntity != null && this.targetEntity.isAlive()) {
-      this.mob
-          .getLookControl()
-          .setLookAt(
-              this.targetEntity.getX(), this.targetEntity.getEyeY(), this.targetEntity.getZ());
+      if (hasLockedBodyPose()) {
+        applyLimitedHeadRotationToTarget(this.targetEntity);
+      } else {
+        this.mob
+            .getLookControl()
+            .setLookAt(
+                this.targetEntity.getX(), this.targetEntity.getEyeY(), this.targetEntity.getZ());
+      }
     }
 
     if (--this.searchCooldown <= 0) {
       this.searchCooldown = ENTITY_SEARCH_INTERVAL;
       resolveTargetEntity();
     }
+  }
+
+  private boolean hasLockedBodyPose() {
+    if (this.modelData == null) {
+      return false;
+    }
+    if (this.modelData.getModelPartRotation(ModelPartType.HEAD).hasChangedRotation()) {
+      return false;
+    }
+    return this.modelData.getModelPose() == ModelPose.DEFAULT
+        || this.modelData.getModelPartRotation(ModelPartType.ROOT).locked();
+  }
+
+  private void applyLimitedHeadRotationToTarget(LivingEntity target) {
+    double dx = target.getX() - this.livingEntity.getX();
+    double dz = target.getZ() - this.livingEntity.getZ();
+    float targetAngle = (float) (Mth.atan2(dz, dx) * (180.0 / Math.PI)) - 90.0F;
+    float bodyRot = this.livingEntity.yBodyRot;
+    float clamped =
+        bodyRot
+            + Mth.clamp(
+                Mth.wrapDegrees(targetAngle - bodyRot), -MAX_HEAD_ROTATION, MAX_HEAD_ROTATION);
+    float delta = Mth.wrapDegrees(clamped - this.livingEntity.yHeadRot);
+    this.livingEntity.yHeadRot += delta * LOOK_SPEED;
   }
 
   private boolean isTargetInRange() {

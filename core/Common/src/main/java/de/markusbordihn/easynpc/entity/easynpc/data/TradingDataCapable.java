@@ -19,14 +19,12 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.data;
 
-import com.mojang.serialization.DataResult;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.data.trading.TradingDataSet;
 import de.markusbordihn.easynpc.data.trading.TradingType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.network.components.TextComponent;
-import java.util.Optional;
-import net.minecraft.Util;
+import de.markusbordihn.easynpc.utils.TradingUtils;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
@@ -40,7 +38,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.trading.ItemCost;
 import net.minecraft.world.item.trading.Merchant;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.item.trading.MerchantOffers;
@@ -49,70 +46,6 @@ public interface TradingDataCapable<E extends Mob> extends EasyNPC<E>, Merchant 
 
   String DATA_OFFERS_TAG = "Offers";
   String DATA_TRADING_DATA_TAG = "TradingData";
-
-  private static ItemCost getItemCost(ItemStack itemStack) {
-    return new ItemCost(
-        itemStack.isEmpty() ? ItemStack.EMPTY.getItem() : itemStack.getItem(),
-        itemStack.getCount() > 0 ? itemStack.getCount() : 1);
-  }
-
-  private static Optional<ItemCost> getOptionalItemCost(ItemStack itemStack) {
-    return itemStack.isEmpty() ? Optional.empty() : Optional.of(getItemCost(itemStack));
-  }
-
-  private static MerchantOffers sanitizeTradingOffers(MerchantOffers offers) {
-    if (offers == null || offers.isEmpty()) {
-      return offers;
-    }
-    MerchantOffers sanitized = new MerchantOffers();
-    int filteredCount = 0;
-    for (MerchantOffer offer : offers) {
-      if (offer == null || offer.getResult().isEmpty() || offer.getResult().getCount() <= 0) {
-        filteredCount++;
-        continue;
-      }
-      ItemStack costA = offer.getBaseCostA();
-      ItemStack costB = offer.getCostB();
-
-      boolean costAValid = !costA.isEmpty() && costA.getCount() > 0;
-      boolean costBValid = !costB.isEmpty() && costB.getCount() > 0;
-
-      if (!costAValid && !costBValid) {
-        filteredCount++;
-        continue;
-      }
-
-      if (!costAValid && costBValid) {
-        sanitized.add(
-            new MerchantOffer(
-                getItemCost(costB),
-                Optional.empty(),
-                offer.getResult(),
-                offer.getUses(),
-                offer.getMaxUses(),
-                offer.getXp(),
-                offer.getPriceMultiplier(),
-                offer.getDemand()));
-      } else if (costAValid && costBValid) {
-        sanitized.add(offer);
-      } else if (costAValid) {
-        sanitized.add(
-            new MerchantOffer(
-                getItemCost(costA),
-                Optional.empty(),
-                offer.getResult(),
-                offer.getUses(),
-                offer.getMaxUses(),
-                offer.getXp(),
-                offer.getPriceMultiplier(),
-                offer.getDemand()));
-      }
-    }
-    if (filteredCount > 0) {
-      log.warn("Sanitized {} invalid trade(s) to prevent crash", filteredCount);
-    }
-    return sanitized;
-  }
 
   Player getTradingPlayer();
 
@@ -140,7 +73,7 @@ public interface TradingDataCapable<E extends Mob> extends EasyNPC<E>, Merchant 
     if (tradingDataSet.isType(TradingType.BASIC)
         || tradingDataSet.isType(TradingType.ADVANCED)
         || tradingDataSet.isType(TradingType.CUSTOM)) {
-      merchantOffers = sanitizeTradingOffers(this.getTradingOffers().copy());
+      merchantOffers = TradingUtils.sanitizeTradingOffers(this.getTradingOffers().copy());
     }
     this.setMerchantTradingOffers(merchantOffers);
   }
@@ -355,7 +288,7 @@ public interface TradingDataCapable<E extends Mob> extends EasyNPC<E>, Merchant 
           MerchantOffers.CODEC
               .encodeStart(
                   provider.createSerializationContext(NbtOps.INSTANCE),
-                  sanitizeTradingOffers(merchantOffers.copy()))
+                  TradingUtils.sanitizeTradingOffers(merchantOffers.copy()))
               .getOrThrow());
     }
   }
@@ -365,19 +298,30 @@ public interface TradingDataCapable<E extends Mob> extends EasyNPC<E>, Merchant 
     // Load custom trading data set
     CompoundTag tradingDataTag = compoundTag.getCompound(DATA_TRADING_DATA_TAG);
     if (tradingDataTag.contains(TradingDataSet.DATA_TRADING_DATA_SET_TAG)) {
-      TradingDataSet tradingDataSet = new TradingDataSet(tradingDataTag);
-      this.setTradingDataSet(tradingDataSet);
+      try {
+        TradingDataSet tradingDataSet = new TradingDataSet(tradingDataTag);
+        this.setTradingDataSet(tradingDataSet);
+      } catch (Exception e) {
+        log.warn(
+            "Failed to load trading data set for {} ({}): {}",
+            this,
+            this.getEntity().getUUID(),
+            e.getMessage());
+      }
     }
 
-    // Load vanilla trading data
-    if (!compoundTag.contains(DATA_OFFERS_TAG)) {
-      return;
+    // Load vanilla trading data with legacy migration and per-entry fallback
+    if (compoundTag.contains(DATA_OFFERS_TAG)) {
+      MerchantOffers offers =
+          TradingUtils.parseMerchantOffers(
+              compoundTag,
+              DATA_OFFERS_TAG,
+              provider,
+              this + " (" + this.getEntity().getUUID() + ")");
+      if (offers != null) {
+        log.debug("Loading trading offers {} for {}", offers, this);
+        this.setTradingOffers(offers);
+      }
     }
-    DataResult<MerchantOffers> dataResult =
-        MerchantOffers.CODEC.parse(
-            provider.createSerializationContext(NbtOps.INSTANCE), compoundTag.get(DATA_OFFERS_TAG));
-    dataResult
-        .resultOrPartial(Util.prefix("Failed to load offers: ", log::warn))
-        .ifPresent(this::setTradingOffers);
   }
 }

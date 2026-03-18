@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.entity.easynpc.ai.goal;
 
 import de.markusbordihn.easynpc.data.model.ModelPartType;
+import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
 import java.util.EnumSet;
@@ -40,12 +41,15 @@ public class ResetLookAtPlayerGoal<T extends EasyNPC<?>> extends Goal {
     this.livingEntity = easyNPC.getLivingEntity();
   }
 
-  private boolean isRootLockedWithDefaultHeadRotation() {
+  private boolean hasLockedBodyPose() {
     if (this.modelData == null) {
       return false;
     }
-    return this.modelData.getModelPartRotation(ModelPartType.ROOT).locked()
-        && !this.modelData.getModelPartRotation(ModelPartType.HEAD).hasChanged();
+    if (this.modelData.getModelPartRotation(ModelPartType.HEAD).hasChangedRotation()) {
+      return false;
+    }
+    return this.modelData.getModelPose() == ModelPose.DEFAULT
+        || this.modelData.getModelPartRotation(ModelPartType.ROOT).locked();
   }
 
   @Override
@@ -60,12 +64,12 @@ public class ResetLookAtPlayerGoal<T extends EasyNPC<?>> extends Goal {
 
   @Override
   public boolean canUse() {
-    return isRootLockedWithDefaultHeadRotation();
+    return hasLockedBodyPose();
   }
 
   @Override
   public boolean canContinueToUse() {
-    return isRootLockedWithDefaultHeadRotation() && this.resetLookTime > 0;
+    return hasLockedBodyPose() && this.resetLookTime > 0;
   }
 
   @Override
