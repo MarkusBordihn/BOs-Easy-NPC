@@ -180,7 +180,7 @@ public class PoseManager {
       log.warn("{} Pose data {} already registered!", LOG_PREFIX, resourceLocation);
     }
 
-    log.info("{} Registering pose data {} with {}", LOG_PREFIX, resourceLocation, animation);
+    log.info("{} Registering pose data {}", LOG_PREFIX, resourceLocation);
     poseDataMap.put(resourceLocation, animation);
     cachedRotations.remove(resourceLocation);
     cachedPositions.remove(resourceLocation);

@@ -8,6 +8,17 @@ For the full changelog, please go to the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 6.11.0
+
+- Fixed #703 rendering issue with new custom layer system and hand renderings.
+- Fixed #701 by adding additional safeguards and logging for invalid trading offers.
+- Fixed smart animation not working properly with modified head position.
+- Fixed head tracking by moving player detection back to server side-only.
+- Fixed CustomLookAtPlayerGoal to better handle edge cases and reduce jitter.
+- Fixed issue with Doppler NPCs keeping their hand inventory.
+- Improved PoseManager logging message.
+- Updated logo with a new design.
+
 ### 6.10.0
 
 - Fixed #695 by clearing model part rotations/positions when switching to a `DEFAULT` vanilla pose.

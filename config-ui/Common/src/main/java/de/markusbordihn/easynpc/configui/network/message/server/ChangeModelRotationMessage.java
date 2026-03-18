@@ -108,7 +108,7 @@ public record ChangeModelRotationMessage(
 
       // Verify if custom model pose is really needed.
       if (!modelData.hasChangedModel()
-          || (this.modelPartType == ModelPartType.ROOT && this.rotation.hasChanged())) {
+          || (this.modelPartType == ModelPartType.ROOT && this.rotation.hasChangedRotation())) {
         log.debug("Reset custom model pose for {} from {}", easyNPC, serverPlayer);
         modelData.setModelPose(ModelPose.VANILLA);
         easyNPC.getEntity().setPose(Pose.STANDING);

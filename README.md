@@ -17,7 +17,6 @@
 [![Run game tests on Forge](https://github.com/MarkusBordihn/BOs-Easy-NPC/actions/workflows/game-test-forge.yml/badge.svg?branch=1.20.1)](https://github.com/MarkusBordihn/BOs-Easy-NPC/actions/workflows/game-test-forge.yml)
 
 [![Wiki](https://img.shields.io/badge/dynamic/json?label=Wiki&labelColor=black&color=grey&query=title&url=https://api.modrinth.com/v2/project/CgGEe1h3&style=flat&logo=github)][wiki]
-[![Support me on Ko-fi](https://img.shields.io/badge/Support_me_on_Ko--fi-!?labelColor=black&style=flat&logo=ko-fi)][ko-fi]
 
 Easy NPC provides a simplified system for creating custom NPCs with dialogs, trading,
 and interactions for map makers, RPGs, adventure servers, modpacks, and other mods.
@@ -115,14 +114,6 @@ Please check the [wiki][wiki] for additional information.
 
 Please report issues and feature requests over the [issues link][issues]. I'm happy to help you.
 
-## 🫶 Support me
-
-If you enjoy using my creations, consider supporting my development! ☕️
-Donations via [Ko-fi][ko-fi] are immensely helpful,
-but not required (my mods are free and open-source!).
-Every bit helps me keep creating mods in my free time, covering software, services, hardware costs
-and some extra slice of pizza or additional Spezi.
-
 ## 🧠 AI Assistance
 
 AI-assisted tools are used to improve documentation, translations, and repetitive code sections.
@@ -132,10 +123,21 @@ See [AI ASSISTANCE](AI_ASSISTANCE.md) for full details.
 
 ## ⚖️ License
 
-The [MIT LICENSE](LICENSE.md) applies only to the code in this repository.
-Images, models and other assets are explicitly excluded.
+**This project is open source under the MIT License.**
 
-[ko-fi]: https://ko-fi.com/Kaworru
+⚠️ **Important:** The license applies **only to the source code** in this repository.
+
+**Assets are excluded from the license:**
+
+* 3D models (`.bbmodel` files)
+* Textures and images
+* Sounds and music
+* Animations
+* Other creative/artistic content
+
+**These assets may not be redistributed, modified, or used in other projects without permission.**
+
+For the full license text, see [LICENSE.md](LICENSE.md).
 
 [wiki]: https://github.com/MarkusBordihn/BOs-Easy-NPC/wiki
 

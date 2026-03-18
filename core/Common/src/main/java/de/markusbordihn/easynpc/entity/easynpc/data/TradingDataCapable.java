@@ -25,6 +25,8 @@ import de.markusbordihn.easynpc.data.trading.TradingType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -357,15 +359,62 @@ public interface TradingDataCapable<E extends Mob> extends EasyNPC<E>, Merchant 
     // Load custom trading data set
     CompoundTag tradingDataTag = compoundTag.getCompound(DATA_TRADING_DATA_TAG);
     if (tradingDataTag.contains(TradingDataSet.DATA_TRADING_DATA_SET_TAG)) {
-      TradingDataSet tradingDataSet = new TradingDataSet(tradingDataTag);
-      this.setTradingDataSet(tradingDataSet);
+      try {
+        TradingDataSet tradingDataSet = new TradingDataSet(tradingDataTag);
+        this.setTradingDataSet(tradingDataSet);
+      } catch (Exception e) {
+        log.warn("Failed to load trading data set for {}: {}", this, e.getMessage());
+      }
     }
 
     // Load vanilla trading data
     CompoundTag tradingOffersTag = compoundTag.getCompound(DATA_TRADING_OFFERS_TAG);
     if (tradingOffersTag.contains(DATA_TRADING_RECIPES_TAG)) {
-      MerchantOffers merchantOffers =
-          new MerchantOffers(tradingOffersTag.getCompound(DATA_TRADING_RECIPES_TAG));
+      CompoundTag recipesCompound = tradingOffersTag.getCompound(DATA_TRADING_RECIPES_TAG);
+      MerchantOffers merchantOffers = null;
+
+      // Attempt bulk parse first
+      try {
+        merchantOffers = new MerchantOffers(recipesCompound);
+      } catch (Exception e) {
+        log.error(
+            "Failed to parse full trade list for {} ({}): {}",
+            this,
+            this.getEntity().getUUID(),
+            e.getMessage());
+        if (log.isDebugEnabled()) {
+          log.debug("Raw trade data that failed to parse for {}: {}", this, recipesCompound);
+        }
+      }
+
+      // Per-entry fallback if bulk parse failed
+      if (merchantOffers == null) {
+        merchantOffers = new MerchantOffers();
+        ListTag recipesList = recipesCompound.getList("Recipes", Tag.TAG_COMPOUND);
+        int skipped = 0;
+        for (int i = 0; i < recipesList.size(); i++) {
+          CompoundTag entryTag = recipesList.getCompound(i);
+          try {
+            merchantOffers.add(new MerchantOffer(entryTag));
+          } catch (Exception e) {
+            skipped++;
+            log.warn("Skipping malformed trade entry [{}] for {}: {}", i, this, e.getMessage());
+            if (log.isDebugEnabled()) {
+              log.debug("Malformed trade entry [{}] raw data for {}: {}", i, this, entryTag);
+            }
+          }
+        }
+        if (skipped > 0) {
+          log.warn(
+              "Recovered {}/{} trade(s) for {}, skipped {} malformed entr{}",
+              merchantOffers.size(),
+              recipesList.size(),
+              this,
+              skipped,
+              skipped == 1 ? "y" : "ies");
+        }
+      }
+
       if (!merchantOffers.isEmpty()) {
         merchantOffers = sanitizeTradingOffers(merchantOffers);
         if (!merchantOffers.isEmpty()) {

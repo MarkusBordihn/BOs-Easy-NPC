@@ -56,11 +56,11 @@ public record EntityRenderOverrides(
       RESET_ROOT.withHideNameTag(true);
 
   public static EntityRenderOverrides withSkin(SkinType skinType, UUID skinUUID) {
-    return NONE.withHideNameTag(true).withSkinType(skinType).withSkinUUID(skinUUID);
+    return HIDE_NAME_TAG_RESET_ROOT.withSkinType(skinType).withSkinUUID(skinUUID);
   }
 
   public static EntityRenderOverrides withVariant(Enum<?> variant, Profession profession) {
-    return NONE.withHideNameTag(true)
+    return HIDE_NAME_TAG_RESET_ROOT
         .withSkinType(SkinType.DEFAULT)
         .withVariant(variant)
         .withProfession(profession);
