@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.entity.easynpc.ai.goal;
 
 import de.markusbordihn.easynpc.data.model.ModelPartType;
+import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
 import net.minecraft.util.Mth;
@@ -48,19 +49,22 @@ public class CustomLookAtPlayerGoal<T extends EasyNPC<?>> extends LookAtPlayerGo
     this.livingEntity = easyNPC.getLivingEntity();
   }
 
-  private boolean isRootLockedWithDefaultHeadRotation() {
+  private boolean hasLockedBodyPose() {
     if (this.modelData == null) {
       return false;
     }
-    return this.modelData.getModelPartRotation(ModelPartType.ROOT).locked()
-        && !this.modelData.getModelPartRotation(ModelPartType.HEAD).hasChanged();
+    if (this.modelData.getModelPartRotation(ModelPartType.HEAD).hasChangedRotation()) {
+      return false;
+    }
+    return this.modelData.getModelPose() == ModelPose.DEFAULT
+        || this.modelData.getModelPartRotation(ModelPartType.ROOT).locked();
   }
 
   @Override
   public boolean canUse() {
     if (this.modelData != null
         && this.modelData.getModelPartRotation(ModelPartType.ROOT).locked()
-        && !isRootLockedWithDefaultHeadRotation()) {
+        && !hasLockedBodyPose()) {
       return false;
     }
     return super.canUse();
@@ -70,7 +74,7 @@ public class CustomLookAtPlayerGoal<T extends EasyNPC<?>> extends LookAtPlayerGo
   public boolean canContinueToUse() {
     if (this.modelData != null
         && this.modelData.getModelPartRotation(ModelPartType.ROOT).locked()
-        && !isRootLockedWithDefaultHeadRotation()) {
+        && !hasLockedBodyPose()) {
       return false;
     }
     return super.canContinueToUse();
@@ -80,11 +84,11 @@ public class CustomLookAtPlayerGoal<T extends EasyNPC<?>> extends LookAtPlayerGo
   public void tick() {
     if (this.modelData != null
         && this.modelData.getModelPartRotation(ModelPartType.ROOT).locked()
-        && !isRootLockedWithDefaultHeadRotation()) {
+        && !hasLockedBodyPose()) {
       return;
     }
 
-    if (this.livingEntity != null && isRootLockedWithDefaultHeadRotation()) {
+    if (this.livingEntity != null && hasLockedBodyPose()) {
       if (this.lookAt != null && this.lookAt.isAlive()) {
         double dx = this.lookAt.getX() - this.livingEntity.getX();
         double dz = this.lookAt.getZ() - this.livingEntity.getZ();

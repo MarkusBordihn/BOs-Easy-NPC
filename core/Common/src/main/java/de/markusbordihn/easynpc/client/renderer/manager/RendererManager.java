@@ -253,11 +253,7 @@ public class RendererManager {
     targetEntity.oAttackAnim = sourceEntity.oAttackAnim;
 
     // Hand item support.
-    if (!sourceEntity.getMainHandItem().isEmpty()) {
-      targetEntity.setItemInHand(InteractionHand.MAIN_HAND, sourceEntity.getMainHandItem());
-    }
-    if (!sourceEntity.getOffhandItem().isEmpty()) {
-      targetEntity.setItemInHand(InteractionHand.OFF_HAND, sourceEntity.getOffhandItem());
-    }
+    targetEntity.setItemInHand(InteractionHand.MAIN_HAND, sourceEntity.getMainHandItem());
+    targetEntity.setItemInHand(InteractionHand.OFF_HAND, sourceEntity.getOffhandItem());
   }
 }

@@ -112,7 +112,7 @@ public interface ModelDataCapable<T extends Mob>
         modelDataTag.putString(EASY_NPC_DATA_MODEL_POSE_NAME_TAG, poseName);
       }
     } else {
-      modelDataTag.putString(EASY_NPC_DATA_MODEL_POSE_TAG, ModelPose.DEFAULT.name());
+      modelDataTag.putString(EASY_NPC_DATA_MODEL_POSE_TAG, ModelPose.VANILLA.name());
       modelDataTag.putString(
           EASY_NPC_DATA_MODEL_DEFAULT_POSE_TAG,
           this.getDefaultPose() != null ? this.getDefaultPose().name() : Pose.STANDING.name());
@@ -164,5 +164,10 @@ public interface ModelDataCapable<T extends Mob>
     this.readAdditionalModelRotationData(modelDataTag);
     this.readAdditionalModelScaleData(modelDataTag);
     this.readAdditionalModelVisibilityData(modelDataTag);
+
+    // DEFAULT without any model changes means vanilla pose
+    if (this.getModelPose() == ModelPose.DEFAULT && !this.hasChangedModel()) {
+      this.setModelPose(ModelPose.VANILLA);
+    }
   }
 }

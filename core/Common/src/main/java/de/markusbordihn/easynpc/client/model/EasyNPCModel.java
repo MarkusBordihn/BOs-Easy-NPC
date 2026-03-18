@@ -39,14 +39,9 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.LightLayer;
 
 public class EasyNPCModel {
-
-  private static final float MAX_HEAD_YAW = 65.0F;
-  private static final float MAX_HEAD_PITCH = 45.0F;
-  private static final float DEG_TO_RAD = (float) Math.PI / 180.0F;
 
   public static boolean setupAnimationStart(
       final EasyNPCRenderStateExtension extension, EasyNPCModelManager modelManager) {
@@ -90,29 +85,10 @@ public class EasyNPCModel {
     if (modelManager.shouldCancelAnimation(modelData)) {
       modelManager.setupModelParts(
           modelData, modelData.getModelAnimationBehavior() != ModelAnimationBehavior.SMART);
-      applyLimitedHeadTracking(easyNPC, modelData, modelManager);
       return true;
     }
 
     return false;
-  }
-
-  private static void applyLimitedHeadTracking(
-      final EasyNPC<?> easyNPC,
-      final ModelDataCapable<?> modelData,
-      final EasyNPCModelManager modelManager) {
-    if (modelData.getModelPartRotation(ModelPartType.HEAD).hasChanged()) {
-      return;
-    }
-    ModelPart head = modelManager.getModelPart(ModelPartType.HEAD);
-    if (head == null) {
-      return;
-    }
-    LivingEntity living = easyNPC.getLivingEntity();
-    head.yRot =
-        Mth.clamp(Mth.wrapDegrees(living.yHeadRot - living.yBodyRot), -MAX_HEAD_YAW, MAX_HEAD_YAW)
-            * DEG_TO_RAD;
-    head.xRot = Mth.clamp(living.getXRot(), -MAX_HEAD_PITCH, MAX_HEAD_PITCH) * DEG_TO_RAD;
   }
 
   public static EasyNPC<?> getEasyNPC(final EasyNPCRenderStateExtension extension) {

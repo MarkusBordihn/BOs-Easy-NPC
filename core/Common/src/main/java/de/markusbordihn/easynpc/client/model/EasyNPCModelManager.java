@@ -243,17 +243,13 @@ public class EasyNPCModelManager {
       return false;
     }
 
-    // Named poses (set via PoseManager) always cancel vanilla animation
-    if (modelData.getModelPose() == ModelPose.DEFAULT) {
-      return true;
-    }
-
     // Check animation behavior
     switch (modelData.getModelAnimationBehavior()) {
       case NONE:
         return true;
       case DEFAULT:
-        return modelData.getModelPose() == ModelPose.CUSTOM;
+        return modelData.getModelPose() == ModelPose.CUSTOM
+            || modelData.getModelPose() == ModelPose.DEFAULT;
       case SMART:
       default:
         break;
@@ -272,10 +268,11 @@ public class EasyNPCModelManager {
       CustomRotation rotation = modelData.getModelPartRotation(partType);
       CustomPosition position = modelData.getModelPartPosition(partType);
       CustomScale scale = modelData.getModelPartScale(partType);
-
-      if ((rotation != null && rotation.hasChanged())
-          || (position != null && position.hasChanged())
-          || (scale != null && scale.hasChanged())) {
+      boolean rotationChanged = rotation != null && rotation.hasChanged();
+      boolean positionChanged =
+          partType != ModelPartType.HEAD && position != null && position.hasChanged();
+      boolean scaleChanged = scale != null && scale.hasChanged();
+      if (rotationChanged || positionChanged || scaleChanged) {
         modifiedCriticalParts++;
       }
     }
