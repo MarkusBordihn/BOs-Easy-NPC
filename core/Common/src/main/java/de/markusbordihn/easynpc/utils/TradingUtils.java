@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.utils;
 
 import com.mojang.serialization.DataResult;
+import java.util.List;
 import java.util.Optional;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -91,25 +92,43 @@ public class TradingUtils {
       return null;
     }
 
-    // Legacy format migration
+    // Legacy format migration: normalize nested/wrapped structures
     Tag migratedTag = migrateLegacyOffersTag(rawTag);
+    RegistryOps<Tag> registryOps = provider.createSerializationContext(NbtOps.INSTANCE);
+
+    if (migratedTag instanceof ListTag recipesList) {
+      if (recipesList.isEmpty()) {
+        return null;
+      }
+      DataResult<List<MerchantOffer>> bulkResult =
+          MerchantOffer.CODEC.listOf().parse(registryOps, recipesList);
+      if (bulkResult.result().isPresent()) {
+        MerchantOffers bulk = new MerchantOffers();
+        bulk.addAll(bulkResult.result().get());
+        MerchantOffers offers = sanitizeTradingOffers(bulk);
+        return offers.isEmpty() ? null : offers;
+      }
+      log.warn(
+          "Failed to bulk-parse legacy trade list for {}, attempting per-entry recovery: {}",
+          context,
+          bulkResult.error().map(e -> e.message()).orElse("unknown error"));
+      return parseFromList(recipesList, registryOps, context);
+    }
+
+    // Native format: CompoundTag with "Recipes" key use MerchantOffers.CODEC
     if (migratedTag != rawTag) {
       compoundTag.put(offersTag, migratedTag);
     }
-
-    // Attempt bulk parse
-    RegistryOps<Tag> registryOps = provider.createSerializationContext(NbtOps.INSTANCE);
     DataResult<MerchantOffers> dataResult =
         MerchantOffers.CODEC.parse(registryOps, compoundTag.get(offersTag));
 
-    // Bulk parse succeeded
     Optional<MerchantOffers> result = dataResult.result();
     if (result.isPresent()) {
       MerchantOffers offers = sanitizeTradingOffers(result.get());
       return offers.isEmpty() ? null : offers;
     }
 
-    // Per-entry fallback
+    // Per-entry fallback for native format parse failures
     Tag offersNbt = compoundTag.get(offersTag);
     if (!(offersNbt instanceof ListTag recipesList)) {
       log.error(
@@ -127,7 +146,11 @@ public class TradingUtils {
         context,
         dataResult.error().map(e -> e.message()).orElse("unknown error"));
 
-    // Attempt to parse entries individually to salvage valid trades
+    return parseFromList(recipesList, registryOps, context);
+  }
+
+  private static MerchantOffers parseFromList(
+      ListTag recipesList, RegistryOps<Tag> registryOps, String context) {
     MerchantOffers recovered = new MerchantOffers();
     int skipped = 0;
     for (int i = 0; i < recipesList.size(); i++) {
