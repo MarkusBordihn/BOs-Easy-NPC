@@ -1,0 +1,18 @@
+{
+  Offers:[
+    {
+      buy:{count:1,id:"cobblemon:heal_powder"},
+      maxUses:64,
+      priceMultiplier:1.0f,
+      sell:{count:1,id:"minecraft:emerald"},
+      xp:0
+    },
+    {
+      buy:{count:3,id:"minecraft:emerald"},
+      maxUses:64,
+      priceMultiplier:1.0f,
+      sell:{count:2,id:"cobblemon:revive"},
+      xp:0
+    }
+  ]
+}

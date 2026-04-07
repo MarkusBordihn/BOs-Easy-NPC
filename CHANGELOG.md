@@ -8,6 +8,10 @@ For the full changelog, please go to the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 6.11.1
+
+- Fixed #710 by improving backward-compatible parsing for recoverable trade data.
+
 ### 6.11.0
 
 - Fixed #703 rendering issue with new custom layer system and hand renderings.
