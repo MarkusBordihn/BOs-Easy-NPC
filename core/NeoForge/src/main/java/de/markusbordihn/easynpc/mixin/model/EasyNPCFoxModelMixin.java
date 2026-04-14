@@ -27,6 +27,7 @@ import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import net.minecraft.client.model.FoxModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.world.entity.animal.Fox;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -37,12 +38,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(FoxModel.class)
 public class EasyNPCFoxModelMixin<T extends Fox> implements EasyNPCModelManagerAccessor {
 
-  @Shadow public ModelPart head;
-  @Shadow private ModelPart body;
-  @Shadow private ModelPart rightHindLeg;
-  @Shadow private ModelPart leftHindLeg;
-  @Shadow private ModelPart rightFrontLeg;
-  @Shadow private ModelPart leftFrontLeg;
+  @Shadow @Final public ModelPart head;
+  @Shadow @Final private ModelPart body;
+  @Shadow @Final private ModelPart rightHindLeg;
+  @Shadow @Final private ModelPart leftHindLeg;
+  @Shadow @Final private ModelPart rightFrontLeg;
+  @Shadow @Final private ModelPart leftFrontLeg;
 
   @Unique private EasyNPCModelManager easyNPC$modelManager;
 
@@ -61,7 +62,7 @@ public class EasyNPCFoxModelMixin<T extends Fox> implements EasyNPCModelManagerA
             .defineModelPart(ModelPartType.LEFT_HIND_LEG, this.leftHindLeg)
             .defineModelPart(ModelPartType.RIGHT_FRONT_LEG, this.rightFrontLeg)
             .defineModelPart(ModelPartType.LEFT_FRONT_LEG, this.leftFrontLeg)
-            .defineModelPart(ModelPartType.TAIL, this.body.getChild("tail"));
+            .defineModelPart(ModelPartType.TAIL, this.body, EasyNPCModelManager.MODEL_PART_TAIL);
   }
 
   @Inject(

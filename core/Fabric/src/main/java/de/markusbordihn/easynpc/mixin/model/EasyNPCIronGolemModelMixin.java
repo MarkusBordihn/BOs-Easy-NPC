@@ -27,6 +27,7 @@ import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import net.minecraft.client.model.IronGolemModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.world.entity.animal.IronGolem;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -38,12 +39,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class EasyNPCIronGolemModelMixin<T extends IronGolem>
     implements EasyNPCModelManagerAccessor {
 
-  @Shadow private ModelPart root;
-  @Shadow private ModelPart head;
-  @Shadow private ModelPart rightArm;
-  @Shadow private ModelPart leftArm;
-  @Shadow private ModelPart rightLeg;
-  @Shadow private ModelPart leftLeg;
+  @Shadow @Final private ModelPart root;
+  @Shadow @Final private ModelPart head;
+  @Shadow @Final private ModelPart rightArm;
+  @Shadow @Final private ModelPart leftArm;
+  @Shadow @Final private ModelPart rightLeg;
+  @Shadow @Final private ModelPart leftLeg;
 
   @Unique private EasyNPCModelManager easyNPC$modelManager;
 
@@ -57,7 +58,7 @@ public class EasyNPCIronGolemModelMixin<T extends IronGolem>
     this.easyNPC$modelManager =
         new EasyNPCModelManager(modelPart)
             .defineModelPart(ModelPartType.HEAD, this.head)
-            .defineModelPart(ModelPartType.BODY, this.root.getChild("body"))
+            .defineModelPart(ModelPartType.BODY, this.root, EasyNPCModelManager.MODEL_PART_BODY)
             .defineModelPart(ModelPartType.RIGHT_ARM, this.rightArm)
             .defineModelPart(ModelPartType.LEFT_ARM, this.leftArm)
             .defineModelPart(ModelPartType.RIGHT_LEG, this.rightLeg)

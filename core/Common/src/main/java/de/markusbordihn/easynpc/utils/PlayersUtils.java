@@ -104,7 +104,6 @@ public class PlayersUtils {
         return null;
       }
 
-      // Format UUID string and return UUID.
       String formattedUUID =
           uuidString.replaceFirst("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})", "$1-$2-$3-$4-$5");
       UUID userUUID = UUID.fromString(formattedUUID);
@@ -134,7 +133,6 @@ public class PlayersUtils {
   }
 
   public static String getUserTexture(UUID userUUID) {
-    // Session server spam protection: prevent duplicate requests within cooldown period
     long currentTime = System.currentTimeMillis();
     Long lastRequest = sessionServerRequestProtection.get(userUUID);
     if (lastRequest != null && currentTime - lastRequest < SESSION_REQUEST_COOLDOWN) {
@@ -143,7 +141,7 @@ public class PlayersUtils {
       return null;
     }
 
-    // Use putIfAbsent to avoid race condition - only one thread should make the request
+    // putIfAbsent to avoid race condition between concurrent texture requests
     Long existingRequest = sessionServerRequestProtection.putIfAbsent(userUUID, currentTime);
     if (existingRequest != null && currentTime - existingRequest < SESSION_REQUEST_COOLDOWN) {
       log.debug(
@@ -152,7 +150,6 @@ public class PlayersUtils {
       return null;
     }
 
-    // Create sessions request and parse result, if any.
     String sessionURL = String.format(SESSION_PROFILE_URL, userUUID);
     try {
       String data = IOUtils.toString(new URL(sessionURL), StandardCharsets.UTF_8);
@@ -184,12 +181,9 @@ public class PlayersUtils {
         try {
           String textureData =
               new String(Base64.getDecoder().decode(propertyObject.get("value").getAsString()));
-
-          // Parse texture data once and extract both URL and model
           JsonObject textureDataObject = getJsonObject(textureData);
           log.debug("getUserTextureFromTextureData: {}", textureDataObject);
 
-          // Extract user texture URL and model
           String userTexture = extractUserTextureUrl(textureDataObject);
           String userTextureModel = extractUserTextureModel(textureDataObject);
           log.debug("Found user texture {} with model {} ...", userTexture, userTextureModel);
@@ -205,31 +199,31 @@ public class PlayersUtils {
     return "";
   }
 
-  private static String extractUserTextureUrl(JsonObject textureDataObject) {
+  private static JsonObject getSkinObject(JsonObject textureDataObject) {
     if (textureDataObject != null && textureDataObject.has(TEXTURES_STRING)) {
       JsonObject textureObject = textureDataObject.getAsJsonObject(TEXTURES_STRING);
       if (textureObject.has("SKIN")) {
-        JsonObject skinObject = textureObject.getAsJsonObject("SKIN");
-        if (skinObject.has("url")) {
-          return skinObject.get("url").getAsString();
-        }
+        return textureObject.getAsJsonObject("SKIN");
       }
+    }
+    return null;
+  }
+
+  private static String extractUserTextureUrl(JsonObject textureDataObject) {
+    JsonObject skinObject = getSkinObject(textureDataObject);
+    if (skinObject != null && skinObject.has("url")) {
+      return skinObject.get("url").getAsString();
     }
     log.error("Unable to get user texture from texture data: {}", textureDataObject);
     return "";
   }
 
   private static String extractUserTextureModel(JsonObject textureDataObject) {
-    if (textureDataObject != null && textureDataObject.has(TEXTURES_STRING)) {
-      JsonObject textureObject = textureDataObject.getAsJsonObject(TEXTURES_STRING);
-      if (textureObject.has("SKIN")) {
-        JsonObject skinObject = textureObject.getAsJsonObject("SKIN");
-        if (skinObject.has("metadata")) {
-          JsonObject metaDataObject = skinObject.getAsJsonObject("metadata");
-          if (metaDataObject.has("model")) {
-            return metaDataObject.get("model").getAsString();
-          }
-        }
+    JsonObject skinObject = getSkinObject(textureDataObject);
+    if (skinObject != null && skinObject.has("metadata")) {
+      JsonObject metaDataObject = skinObject.getAsJsonObject("metadata");
+      if (metaDataObject.has("model")) {
+        return metaDataObject.get("model").getAsString();
       }
     }
     log.debug(

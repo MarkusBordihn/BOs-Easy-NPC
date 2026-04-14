@@ -189,7 +189,6 @@ public class EntityDataSerializersManager {
         tempBuffer.writeNbt(tag);
         int sizeBytes = tempBuffer.writerIndex();
 
-        // Only log if size exceeds recommended limits
         if (sizeBytes > MAX_NBT_SIZE_BYTES) {
           log.error(
               "[Entity Data] CRITICAL: {} NBT data size ({} bytes) exceeds maximum packet size! "
@@ -245,7 +244,7 @@ public class EntityDataSerializersManager {
       EntityDataSerializers.registerSerializer(serializer);
       int id = EntityDataSerializers.getSerializedId(serializer);
       if (id >= 0) {
-        log.info("Registered entity data serializer {} with id {}", entry.getKey(), id);
+        log.debug("Registered entity data serializer {} with id {}", entry.getKey(), id);
       } else {
         log.error(
             "Failed to register entity data serializer {} with {}", entry.getKey(), serializer);

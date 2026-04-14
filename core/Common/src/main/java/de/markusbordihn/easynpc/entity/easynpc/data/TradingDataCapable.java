@@ -114,8 +114,6 @@ public interface TradingDataCapable<E extends Mob> extends EasyNPC<E>, Merchant 
       return;
     }
 
-    log.debug("Reset trading offers {} for {}", merchantOffers, this);
-
     // Reset trading offers
     for (MerchantOffer merchantOffer : merchantOffers) {
       merchantOffer.resetUses();
@@ -256,7 +254,6 @@ public interface TradingDataCapable<E extends Mob> extends EasyNPC<E>, Merchant 
     }
 
     // Open trading screen for the player.
-    log.debug("Open trading screen for {} with {} from {}", this, merchantOffers, serverPlayer);
     merchant.setTradingPlayer(serverPlayer);
     merchant.openTradingScreen(
         serverPlayer,

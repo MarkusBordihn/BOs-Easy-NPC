@@ -27,6 +27,7 @@ import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import net.minecraft.client.model.CreeperModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.world.entity.Entity;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -37,11 +38,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(CreeperModel.class)
 public class EasyNPCCreeperModelMixin<T extends Entity> implements EasyNPCModelManagerAccessor {
 
-  @Shadow private ModelPart head;
-  @Shadow private ModelPart rightHindLeg;
-  @Shadow private ModelPart leftHindLeg;
-  @Shadow private ModelPart rightFrontLeg;
-  @Shadow private ModelPart leftFrontLeg;
+  @Shadow @Final private ModelPart head;
+  @Shadow @Final private ModelPart rightHindLeg;
+  @Shadow @Final private ModelPart leftHindLeg;
+  @Shadow @Final private ModelPart rightFrontLeg;
+  @Shadow @Final private ModelPart leftFrontLeg;
 
   @Unique private EasyNPCModelManager easyNPC$modelManager;
 
@@ -55,7 +56,7 @@ public class EasyNPCCreeperModelMixin<T extends Entity> implements EasyNPCModelM
     this.easyNPC$modelManager =
         new EasyNPCModelManager(modelPart)
             .defineModelPart(ModelPartType.HEAD, this.head)
-            .defineModelPart(ModelPartType.BODY, "body")
+            .defineModelPart(ModelPartType.BODY, EasyNPCModelManager.MODEL_PART_BODY)
             .defineModelPart(ModelPartType.RIGHT_HIND_LEG, this.rightHindLeg)
             .defineModelPart(ModelPartType.LEFT_HIND_LEG, this.leftHindLeg)
             .defineModelPart(ModelPartType.RIGHT_FRONT_LEG, this.rightFrontLeg)

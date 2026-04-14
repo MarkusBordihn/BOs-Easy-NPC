@@ -88,7 +88,7 @@ public class SafeMerchantData<E extends Mob> implements Merchant {
     try {
       tradingData.notifyTradeUpdated(itemStack);
     } catch (AbstractMethodError e) {
-      // Silently ignore if method is not implemented
+      // Expected for some TradingDataCapable implementations
     }
   }
 
@@ -106,7 +106,7 @@ public class SafeMerchantData<E extends Mob> implements Merchant {
     try {
       tradingData.overrideXp(xp);
     } catch (AbstractMethodError e) {
-      // Silently ignore if method is not implemented
+      // Expected for some TradingDataCapable implementations
     }
   }
 

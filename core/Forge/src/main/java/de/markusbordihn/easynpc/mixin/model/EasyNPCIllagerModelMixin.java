@@ -27,6 +27,7 @@ import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import net.minecraft.client.model.IllagerModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.world.entity.monster.AbstractIllager;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -38,13 +39,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class EasyNPCIllagerModelMixin<T extends AbstractIllager>
     implements EasyNPCModelManagerAccessor {
 
-  @Shadow private ModelPart root;
-  @Shadow private ModelPart head;
-  @Shadow private ModelPart arms;
-  @Shadow private ModelPart leftLeg;
-  @Shadow private ModelPart rightLeg;
-  @Shadow private ModelPart rightArm;
-  @Shadow private ModelPart leftArm;
+  @Shadow @Final private ModelPart root;
+  @Shadow @Final private ModelPart head;
+  @Shadow @Final private ModelPart arms;
+  @Shadow @Final private ModelPart leftLeg;
+  @Shadow @Final private ModelPart rightLeg;
+  @Shadow @Final private ModelPart rightArm;
+  @Shadow @Final private ModelPart leftArm;
 
   @Unique private EasyNPCModelManager easyNPC$modelManager;
 
@@ -55,11 +56,10 @@ public class EasyNPCIllagerModelMixin<T extends AbstractIllager>
 
   @Inject(method = "<init>(Lnet/minecraft/client/model/geom/ModelPart;)V", at = @At("TAIL"))
   private void easyNpcModel(ModelPart modelPart, CallbackInfo callbackInfo) {
-    ModelPart body = this.root.getChild("body");
     this.easyNPC$modelManager =
         new EasyNPCModelManager(modelPart)
             .defineModelPart(ModelPartType.HEAD, this.head)
-            .defineModelPart(ModelPartType.BODY, body)
+            .defineModelPart(ModelPartType.BODY, this.root, EasyNPCModelManager.MODEL_PART_BODY)
             .defineModelPart(ModelPartType.ARMS, this.arms)
             .defineModelPart(ModelPartType.LEFT_ARM, this.leftArm)
             .defineModelPart(ModelPartType.RIGHT_ARM, this.rightArm)

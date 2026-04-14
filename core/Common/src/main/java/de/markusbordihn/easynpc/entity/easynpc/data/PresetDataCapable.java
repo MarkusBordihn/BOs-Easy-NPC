@@ -110,11 +110,7 @@ public interface PresetDataCapable<T extends Mob> extends EasyNPC<T> {
         existingCompoundTag.remove(ActionEventDataCapable.DATA_ACTION_DATA_TAG);
       }
 
-      log.debug(
-          "Merging preset {} with existing data {} for {}", compoundTag, existingCompoundTag, this);
       compoundTag = existingCompoundTag.merge(compoundTag);
-    } else {
-      log.debug("Importing full preset {} for {}", compoundTag, this);
     }
 
     // Remove volatile fields that could cause issues (e.g. dead state)

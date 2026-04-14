@@ -37,6 +37,11 @@ import org.apache.logging.log4j.Logger;
 
 public class EasyNPCModelManager {
 
+  public static final String MODEL_PART_ARMS = "arms";
+  public static final String MODEL_PART_BODY = "body";
+  public static final String MODEL_PART_CUBE = "cube";
+  public static final String MODEL_PART_TAIL = "tail";
+
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   private final ModelPart rootModelPart;
@@ -59,6 +64,14 @@ public class EasyNPCModelManager {
       final ModelPart rootModelPart, final Function<ResourceLocation, RenderType> renderType) {
     this.rootModelPart = rootModelPart;
     this.renderType = renderType;
+  }
+
+  public EasyNPCModelManager defineModelPart(
+      final ModelPartType modelPartType, final ModelPart parentPart, final String childName) {
+    if (parentPart != null && parentPart.hasChild(childName)) {
+      return defineModelPart(modelPartType, parentPart.getChild(childName));
+    }
+    return this;
   }
 
   public EasyNPCModelManager defineModelPart(

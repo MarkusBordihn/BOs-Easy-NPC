@@ -102,17 +102,7 @@ public class EasyNPCChickenModelMixin<T extends Entity> implements EasyNPCModelM
 
   @Unique
   private void easyNPC$syncBeakToHead() {
-    this.beak.x = this.head.x;
-    this.beak.y = this.head.y;
-    this.beak.z = this.head.z;
-    this.beak.xRot = this.head.xRot;
-    this.beak.yRot = this.head.yRot;
-    this.beak.zRot = this.head.zRot;
-    this.redThing.x = this.head.x;
-    this.redThing.y = this.head.y;
-    this.redThing.z = this.head.z;
-    this.redThing.xRot = this.head.xRot;
-    this.redThing.yRot = this.head.yRot;
-    this.redThing.zRot = this.head.zRot;
+    this.beak.copyFrom(this.head);
+    this.redThing.copyFrom(this.head);
   }
 }

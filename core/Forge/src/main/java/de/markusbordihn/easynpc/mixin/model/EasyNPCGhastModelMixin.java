@@ -27,6 +27,7 @@ import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import net.minecraft.client.model.GhastModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.world.entity.Entity;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -37,8 +38,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(GhastModel.class)
 public class EasyNPCGhastModelMixin<T extends Entity> implements EasyNPCModelManagerAccessor {
 
-  @Shadow private ModelPart root;
-  @Shadow private ModelPart[] tentacles;
+  @Shadow @Final private ModelPart root;
+  @Shadow @Final private ModelPart[] tentacles;
 
   @Unique private EasyNPCModelManager easyNPC$modelManager;
 
@@ -51,7 +52,7 @@ public class EasyNPCGhastModelMixin<T extends Entity> implements EasyNPCModelMan
   private void easyNpcModel(ModelPart modelPart, CallbackInfo callbackInfo) {
     this.easyNPC$modelManager =
         new EasyNPCModelManager(modelPart)
-            .defineModelPart(ModelPartType.BODY, this.root.getChild("body"))
+            .defineModelPart(ModelPartType.BODY, this.root, EasyNPCModelManager.MODEL_PART_BODY)
             .defineModelPart(ModelPartType.LEFT_ARM, this.tentacles[0])
             .defineModelPart(ModelPartType.RIGHT_ARM, this.tentacles[2]);
   }
