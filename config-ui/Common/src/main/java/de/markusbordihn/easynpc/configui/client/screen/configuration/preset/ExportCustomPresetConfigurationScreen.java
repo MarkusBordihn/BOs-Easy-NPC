@@ -19,12 +19,12 @@
 
 package de.markusbordihn.easynpc.configui.client.screen.configuration.preset;
 
-import de.markusbordihn.easynpc.client.screen.components.Checkbox;
-import de.markusbordihn.easynpc.client.screen.components.ExportButton;
-import de.markusbordihn.easynpc.client.screen.components.FileBrowserButton;
 import de.markusbordihn.easynpc.client.screen.components.SpinButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextField;
+import de.markusbordihn.easynpc.configui.client.screen.components.Checkbox;
+import de.markusbordihn.easynpc.configui.client.screen.components.ExportButton;
+import de.markusbordihn.easynpc.configui.client.screen.components.FileBrowserButton;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.preset.PresetExportFormat;

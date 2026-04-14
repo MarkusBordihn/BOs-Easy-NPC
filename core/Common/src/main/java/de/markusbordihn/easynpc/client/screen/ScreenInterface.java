@@ -19,8 +19,6 @@
 
 package de.markusbordihn.easynpc.client.screen;
 
-import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.client.screen.components.Graphics;
 import de.markusbordihn.easynpc.data.action.ActionEventSet;
 import de.markusbordihn.easynpc.data.dialog.DialogButtonEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
@@ -152,25 +150,6 @@ public interface ScreenInterface<D extends AdditionalScreenDataInterface> {
     return newScreen instanceof ScreenInterface<?>;
   }
 
-  default void renderDefaultScreenBg(GuiGraphics guiGraphics, int leftPos, int topPos) {
-    Graphics.blit(guiGraphics, Constants.TEXTURE_DEMO_BACKGROUND, leftPos, topPos, 0, 0, 220, 160);
-    Graphics.blit(
-        guiGraphics, Constants.TEXTURE_DEMO_BACKGROUND, leftPos + 213, topPos, 132, 0, 120, 160);
-    Graphics.blit(
-        guiGraphics, Constants.TEXTURE_DEMO_BACKGROUND, leftPos, topPos + 77, 0, 5, 220, 170);
-    Graphics.blit(
-        guiGraphics,
-        Constants.TEXTURE_DEMO_BACKGROUND,
-        leftPos + 213,
-        topPos + 77,
-        132,
-        5,
-        120,
-        170);
-  }
-
-  default void renderDefaultTitleBg(GuiGraphics guiGraphics, int leftPos, int topPos) {
-    Graphics.blit(
-        guiGraphics, Constants.TEXTURE_DEMO_BACKGROUND, leftPos, topPos - 16, 0, 0, 248, 19);
-  }
+  default void renderDefaultScreenBg(
+      GuiGraphics guiGraphics, int leftPos, int topPos, boolean compactMode) {}
 }

@@ -19,11 +19,14 @@
 
 package de.markusbordihn.easynpc.configui.client.screen;
 
+import de.markusbordihn.easynpc.client.screen.components.Graphics;
+import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.configui.data.screen.AdditionalScreenData;
 import de.markusbordihn.easynpc.configui.menu.ClientConfigUIMenuManager;
 import de.markusbordihn.easynpc.data.attribute.BaseAttributes;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataSet;
 import de.markusbordihn.easynpc.entity.easynpc.data.ConfigurationDataCapable;
+import net.minecraft.client.gui.GuiGraphics;
 
 public interface ScreenInterface
     extends de.markusbordihn.easynpc.client.screen.ScreenInterface<AdditionalScreenData> {
@@ -52,5 +55,35 @@ public interface ScreenInterface
     }
 
     return newScreen instanceof ScreenInterface;
+  }
+
+  @Override
+  default void renderDefaultScreenBg(
+      GuiGraphics guiGraphics, int leftPos, int topPos, boolean compactMode) {
+    if (compactMode) {
+      Graphics.blit(
+          guiGraphics,
+          Constants.TEXTURE_CONFIG_SCREEN_BACKGROUND,
+          leftPos,
+          topPos,
+          1,
+          17,
+          333,
+          247,
+          512,
+          512);
+    } else {
+      Graphics.blit(
+          guiGraphics,
+          Constants.TEXTURE_CONFIG_SCREEN_BACKGROUND,
+          leftPos,
+          topPos - 16,
+          1,
+          1,
+          333,
+          263,
+          512,
+          512);
+    }
   }
 }

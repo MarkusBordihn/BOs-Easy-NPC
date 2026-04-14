@@ -352,18 +352,12 @@ public class PresetBrowserScreen extends CustomScreen<PresetBrowserMenu, Additio
 
   @Override
   public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-    // Render parent (includes background from CustomScreen)
     super.render(guiGraphics, mouseX, mouseY, partialTicks);
-
-    // Render search box on top of everything
+    Text.drawString(guiGraphics, this.font, this.title, 8, 6);
     if (this.searchBox != null) {
       this.searchBox.render(guiGraphics, mouseX, mouseY, partialTicks);
     }
-
-    // Render preset list
     this.presetListWidget.render(guiGraphics, mouseX, mouseY, partialTicks);
-
-    // Render selected preset details
     if (this.selectedEntry != null) {
       this.renderPresetTitle(guiGraphics);
       this.renderPreviewPanels(guiGraphics, mouseX, mouseY);
@@ -423,6 +417,9 @@ public class PresetBrowserScreen extends CustomScreen<PresetBrowserMenu, Additio
     this.spawnAsNewButton.setY(previewBoxY + 115 + this.infoBoxHeight + 5);
     this.spawnWithOriginalButton.setY(this.spawnAsNewButton.getY());
   }
+
+  @Override
+  protected void renderLabels(GuiGraphics guiGraphics, int x, int y) {}
 
   @Override
   public void removed() {

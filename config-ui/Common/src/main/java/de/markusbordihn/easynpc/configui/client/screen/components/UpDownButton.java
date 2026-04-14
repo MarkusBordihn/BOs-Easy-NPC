@@ -17,9 +17,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.client.screen.components;
+package de.markusbordihn.easynpc.configui.client.screen.components;
 
-import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.client.screen.components.SpriteButton;
+import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -39,7 +40,6 @@ public class UpDownButton extends AbstractWidget {
     this.onUp = onUp;
     this.onDown = onDown;
 
-    // Create up and down buttons
     int singleButtonHeight = height / 2;
     this.upButton =
         new SpriteButton(

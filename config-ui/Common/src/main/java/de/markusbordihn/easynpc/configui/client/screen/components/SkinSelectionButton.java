@@ -17,31 +17,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.client.screen.components;
+package de.markusbordihn.easynpc.configui.client.screen.components;
 
-public class ReloadButton extends SpriteButton {
+import de.markusbordihn.easynpc.client.screen.components.SpriteButton;
+import de.markusbordihn.easynpc.configui.Constants;
+import net.minecraft.resources.Identifier;
 
-  private static final int DEFAULT_HEIGHT = 18;
-  private static final int SPRITE_HEIGHT = 12;
-  private static final int SPRITE_OFFSET_X = 92;
-  private static final int SPRITE_OFFSET_Y = 4;
-  private static final int SPRITE_WIDTH = 12;
-  private static final int SPRITE_X = 3;
-  private static final int SPRITE_Y = 3;
+public class SkinSelectionButton extends SpriteButton {
 
-  public ReloadButton(int left, int top, int width, int height, String label, OnPress onPress) {
+  private static final int DEFAULT_HEIGHT = 84;
+  private static final int DEFAULT_WIDTH = 60;
+  private static final int SPRITE_HEIGHT = 84;
+  private static final int SPRITE_OFFSET_X = 0;
+  private static final int SPRITE_OFFSET_Y = 0;
+  private static final int SPRITE_WIDTH = 60;
+  private static final int SPRITE_X = 0;
+  private static final int SPRITE_Y = 0;
+  private static final Identifier TEXTURE = Constants.TEXTURE_CONFIGURATION;
+
+  public SkinSelectionButton(int left, int top, OnPress onPress) {
     super(
         left,
         top,
-        width,
-        height,
-        label,
+        DEFAULT_WIDTH,
+        DEFAULT_HEIGHT,
+        TEXTURE,
         SPRITE_X,
-        height <= 16 ? 2 : SPRITE_Y,
+        SPRITE_Y,
         SPRITE_OFFSET_X,
         SPRITE_OFFSET_Y,
         SPRITE_WIDTH,
         SPRITE_HEIGHT,
         onPress);
+    this.setRenderBackground(false);
   }
 }

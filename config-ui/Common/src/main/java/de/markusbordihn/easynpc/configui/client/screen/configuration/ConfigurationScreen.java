@@ -54,7 +54,6 @@ public class ConfigurationScreen<T extends ConfigUIMenu>
 
   public ConfigurationScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component, 328, 243);
-    this.showCloseButton = false;
   }
 
   protected void renderDescriptionText(
@@ -106,7 +105,6 @@ public class ConfigurationScreen<T extends ConfigUIMenu>
 
   @Override
   protected void renderLabels(GuiGraphics guiGraphics, int x, int y) {
-    // Render Title if not in compact mode
     if (!this.compactMode) {
       Text.drawString(
           guiGraphics,

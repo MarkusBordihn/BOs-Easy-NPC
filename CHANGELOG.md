@@ -8,6 +8,18 @@ For the full changelog, please go to the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 6.13.0
+
+- Fixed #722 by supporting .sbnt files as local presets.
+- Fixed #675 by adding dedicated assets for dialog and config screen backgrounds.
+- Fixed double rendering of config screen background by removing redundant background rendering.
+- Replaced dynamic dialog screen background with a static one for better performance, customization
+  and compatibility.
+- Replaced dynamic config screen background with a static one for better performance.
+- Refactored config-ui specific components and removed them from the core mod.
+- Removed duplicated sprite sheets.
+- General code cleanup and optimizations related to config screen rendering and assets.
+
 ### 6.12.0
 
 - Fixed #714 by adding additional checks for custom model part list based on vanilla models.

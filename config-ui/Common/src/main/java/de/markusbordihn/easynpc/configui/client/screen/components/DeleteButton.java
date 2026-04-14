@@ -17,33 +17,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.client.screen.components;
+package de.markusbordihn.easynpc.configui.client.screen.components;
 
-import net.minecraft.network.chat.Component;
+import de.markusbordihn.easynpc.client.screen.components.SpriteButton;
+import de.markusbordihn.easynpc.configui.Constants;
+import net.minecraft.resources.Identifier;
 
-public class EditButton extends SpriteButton {
+public class DeleteButton extends SpriteButton {
 
-  private static final int DEFAULT_HEIGHT = 16;
-  private static final int DEFAULT_WIDTH_SMALL = 16;
+  private static final int DEFAULT_HEIGHT = 18;
+  private static final int DEFAULT_WIDTH_SMALL = 18;
   private static final int SPRITE_HEIGHT = 12;
-  private static final int SPRITE_OFFSET_X = 64;
-  private static final int SPRITE_OFFSET_Y = 79;
+  private static final int SPRITE_OFFSET_X = 65;
+  private static final int SPRITE_OFFSET_Y = 155;
   private static final int SPRITE_WIDTH = 12;
-  private static final int SPRITE_X = 2;
-  private static final int SPRITE_Y = 2;
+  private static final int SPRITE_X = 4;
+  private static final int SPRITE_Y = 4;
+  private static final Identifier TEXTURE = Constants.TEXTURE_CONFIGURATION;
 
-  public EditButton(int left, int top, OnPress onPress) {
-    this(left, top, DEFAULT_WIDTH_SMALL, DEFAULT_HEIGHT, onPress);
-  }
-
-  public EditButton(
-      int left, int top, int width, int height, Component component, OnPress onPress) {
+  public DeleteButton(int left, int top, int width, OnPress onPress) {
     super(
         left,
         top,
         width,
-        height,
-        component,
+        DEFAULT_HEIGHT,
+        width > DEFAULT_WIDTH_SMALL ? "delete" : "",
+        TEXTURE,
         SPRITE_X,
         SPRITE_Y,
         SPRITE_OFFSET_X,
@@ -53,22 +52,7 @@ public class EditButton extends SpriteButton {
         onPress);
   }
 
-  public EditButton(int left, int top, int width, Component component, OnPress onPress) {
-    this(left, top, width, DEFAULT_HEIGHT, component, onPress);
-  }
-
-  public EditButton(int left, int top, int width, int height, OnPress onPress) {
-    super(
-        left,
-        top,
-        width,
-        height,
-        SPRITE_X,
-        SPRITE_Y,
-        SPRITE_OFFSET_X,
-        SPRITE_OFFSET_Y,
-        SPRITE_WIDTH,
-        SPRITE_HEIGHT,
-        onPress);
+  public DeleteButton(int left, int top, OnPress onPress) {
+    this(left, top, DEFAULT_WIDTH_SMALL, onPress);
   }
 }

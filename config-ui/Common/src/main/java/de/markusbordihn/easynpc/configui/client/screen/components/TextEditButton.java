@@ -17,7 +17,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.client.screen.components;
+package de.markusbordihn.easynpc.configui.client.screen.components;
+
+import de.markusbordihn.easynpc.client.screen.components.SpriteButton;
+import de.markusbordihn.easynpc.configui.Constants;
+import net.minecraft.resources.Identifier;
 
 public class TextEditButton extends SpriteButton {
 
@@ -28,6 +32,7 @@ public class TextEditButton extends SpriteButton {
   private static final int SPRITE_WIDTH = 12;
   private static final int SPRITE_X = 3;
   private static final int SPRITE_Y = 3;
+  private static final Identifier TEXTURE = Constants.TEXTURE_CONFIGURATION;
 
   public TextEditButton(int left, int top, OnPress onPress) {
     this(left, top, 16, 16, "", onPress);
@@ -44,6 +49,7 @@ public class TextEditButton extends SpriteButton {
         width,
         height,
         label,
+        TEXTURE,
         SPRITE_X,
         SPRITE_Y,
         SPRITE_OFFSET_X,

@@ -62,4 +62,34 @@ public class Graphics {
         textureWidth,
         textureHeight);
   }
+
+  public static void blitStretched(
+      GuiGraphics guiGraphics,
+      Identifier texture,
+      int destX,
+      int destY,
+      int destWidth,
+      int destHeight,
+      int srcX,
+      int srcY,
+      int srcWidth,
+      int srcHeight,
+      int textureWidth,
+      int textureHeight) {
+    guiGraphics.pose().pushMatrix();
+    guiGraphics.pose().translate((float) destX, (float) destY);
+    guiGraphics.pose().scale((float) destWidth / srcWidth, (float) destHeight / srcHeight);
+    guiGraphics.blit(
+        RenderPipelines.GUI_TEXTURED,
+        texture,
+        0,
+        0,
+        srcX,
+        srcY,
+        srcWidth,
+        srcHeight,
+        textureWidth,
+        textureHeight);
+    guiGraphics.pose().popMatrix();
+  }
 }

@@ -31,7 +31,6 @@ import net.minecraft.util.Mth;
 public class SpriteButton extends CustomButton {
 
   public static final int DEFAULT_HEIGHT = 16;
-  public static final Identifier DEFAULT_SPRITE = Constants.TEXTURE_CONFIGURATION;
 
   private final Identifier sprite;
   private final int spriteX;
@@ -42,6 +41,8 @@ public class SpriteButton extends CustomButton {
   private final int spriteHeight;
   private boolean renderBackground = true;
   private boolean renderCenter = true;
+  private int textureWidth = 256;
+  private int textureHeight = 256;
 
   public SpriteButton(
       int left,
@@ -104,34 +105,6 @@ public class SpriteButton extends CustomButton {
       int top,
       int width,
       int height,
-      int spriteX,
-      int spriteY,
-      int spriteOffsetX,
-      int spriteOffsetY,
-      int spriteWidth,
-      int spriteHeight,
-      OnPress onPress) {
-    this(
-        left,
-        top,
-        width,
-        height,
-        TextComponent.getBlankText(),
-        DEFAULT_SPRITE,
-        spriteX,
-        spriteY,
-        spriteOffsetX,
-        spriteOffsetY,
-        spriteWidth,
-        spriteHeight,
-        onPress);
-  }
-
-  public SpriteButton(
-      int left,
-      int top,
-      int width,
-      int height,
       Identifier sprite,
       int spriteOffsetX,
       int spriteOffsetY,
@@ -160,35 +133,6 @@ public class SpriteButton extends CustomButton {
       int width,
       int height,
       String label,
-      int spriteX,
-      int spriteY,
-      int spriteOffsetX,
-      int spriteOffsetY,
-      int spriteWidth,
-      int spriteHeight,
-      OnPress onPress) {
-    this(
-        left,
-        top,
-        width,
-        height,
-        TextComponent.getTextComponent(label),
-        DEFAULT_SPRITE,
-        spriteX,
-        spriteY,
-        spriteOffsetX,
-        spriteOffsetY,
-        spriteWidth,
-        spriteHeight,
-        onPress);
-  }
-
-  public SpriteButton(
-      int left,
-      int top,
-      int width,
-      int height,
-      String label,
       Identifier sprite,
       int spriteX,
       int spriteY,
@@ -204,35 +148,6 @@ public class SpriteButton extends CustomButton {
         height,
         TextComponent.getTextComponent(label),
         sprite,
-        spriteX,
-        spriteY,
-        spriteOffsetX,
-        spriteOffsetY,
-        spriteWidth,
-        spriteHeight,
-        onPress);
-  }
-
-  public SpriteButton(
-      int left,
-      int top,
-      int width,
-      int height,
-      Component component,
-      int spriteX,
-      int spriteY,
-      int spriteOffsetX,
-      int spriteOffsetY,
-      int spriteWidth,
-      int spriteHeight,
-      OnPress onPress) {
-    this(
-        left,
-        top,
-        width,
-        height,
-        component,
-        DEFAULT_SPRITE,
         spriteX,
         spriteY,
         spriteOffsetX,
@@ -300,6 +215,11 @@ public class SpriteButton extends CustomButton {
     return this;
   }
 
+  public void setTextureSize(int textureWidth, int textureHeight) {
+    this.textureWidth = textureWidth;
+    this.textureHeight = textureHeight;
+  }
+
   @Override
   public void renderButton(GuiGraphics guiGraphics, int left, int top, float partialTicks) {
     if (this.renderBackground) {
@@ -316,7 +236,7 @@ public class SpriteButton extends CustomButton {
         isActive() ? this.spriteOffsetY : spriteOffsetY + spriteHeight,
         spriteWidth,
         spriteHeight,
-        256,
-        256);
+        this.textureWidth,
+        this.textureHeight);
   }
 }

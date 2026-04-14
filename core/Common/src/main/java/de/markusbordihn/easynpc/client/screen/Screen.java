@@ -146,7 +146,7 @@ public class Screen<
     if (this.showCloseButton) {
       this.closeButton =
           this.addRenderableWidget(
-              new CloseButton(this.rightPos - 15, this.topPos + 4, onPress -> onClose()));
+              new CloseButton(this.rightPos - 10, this.topPos + 1, onPress -> onClose()));
     }
   }
 
@@ -174,14 +174,8 @@ public class Screen<
   }
 
   protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
-    // Render screen background
     if (renderDefaultScreenBackground) {
-      this.renderDefaultScreenBg(guiGraphics, this.leftPos, this.topPos);
-    }
-
-    // Render title background for none compact mode
-    if (!this.compactMode) {
-      this.renderDefaultTitleBg(guiGraphics, this.leftPos, this.topPos);
+      this.renderDefaultScreenBg(guiGraphics, this.leftPos, this.topPos, this.compactMode);
     }
   }
 

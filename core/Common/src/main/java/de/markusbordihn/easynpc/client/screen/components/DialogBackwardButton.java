@@ -19,34 +19,35 @@
 
 package de.markusbordihn.easynpc.client.screen.components;
 
-public class DeleteButton extends SpriteButton {
+import de.markusbordihn.easynpc.Constants;
+import net.minecraft.resources.Identifier;
 
-  private static final int DEFAULT_HEIGHT = 18;
-  private static final int DEFAULT_WIDTH_SMALL = 18;
+public class DialogBackwardButton extends SpriteButton {
+
+  private static final Identifier TEXTURE =
+      Identifier.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/navigation_button.png");
+
+  private static final int DEFAULT_SIZE = 12;
   private static final int SPRITE_HEIGHT = 12;
-  private static final int SPRITE_OFFSET_X = 65;
-  private static final int SPRITE_OFFSET_Y = 155;
+  private static final int SPRITE_OFFSET_X = 12;
+  private static final int SPRITE_OFFSET_Y = 0;
   private static final int SPRITE_WIDTH = 12;
-  private static final int SPRITE_X = 4;
-  private static final int SPRITE_Y = 4;
 
-  public DeleteButton(int left, int top, int width, OnPress onPress) {
+  public DialogBackwardButton(int left, int top, OnPress onPress) {
     super(
         left,
         top,
-        width,
-        DEFAULT_HEIGHT,
-        width > DEFAULT_WIDTH_SMALL ? "delete" : "",
-        SPRITE_X,
-        SPRITE_Y,
+        DEFAULT_SIZE,
+        DEFAULT_SIZE,
+        TEXTURE,
+        0,
+        0,
         SPRITE_OFFSET_X,
         SPRITE_OFFSET_Y,
         SPRITE_WIDTH,
         SPRITE_HEIGHT,
         onPress);
-  }
-
-  public DeleteButton(int left, int top, OnPress onPress) {
-    this(left, top, DEFAULT_WIDTH_SMALL, onPress);
+    this.setRenderBackground(false);
+    this.setTextureSize(64, 64);
   }
 }
