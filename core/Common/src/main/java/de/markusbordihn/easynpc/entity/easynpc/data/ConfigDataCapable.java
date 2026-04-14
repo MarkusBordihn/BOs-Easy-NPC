@@ -39,21 +39,21 @@ public interface ConfigDataCapable<T extends Mob> extends EasyNPC<T> {
     if (npcDataVersion > 0) {
       if (npcDataVersion > Constants.NPC_DATA_VERSION) {
         log.warn(
-            "Incompatible Easy NPC Data with version {} > {} for {}!",
+            "Incompatible Easy NPC Data with version {} > {} for {}! Will try to load data, but expect issues.",
             npcDataVersion,
             Constants.NPC_DATA_VERSION,
             this);
-        log.warn("Will try to load data, but expect issues!");
       } else if (npcDataVersion < Constants.NPC_DATA_VERSION) {
-        log.warn("Outdated Easy NPC Data with version {} for {}!", npcDataVersion, this);
-        log.warn("Will try to convert data automatically to new format.");
-      } else {
-        log.info("Easy NPC Data version {} for {}.", npcDataVersion, this);
+        log.warn(
+            "Outdated Easy NPC Data with version {} for {}. Will try to convert data automatically.",
+            npcDataVersion,
+            this);
       }
       this.setNPCDataVersion(npcDataVersion);
     } else {
-      log.warn("Legacy Easy NPC Data for {}!", this);
-      log.warn("It could be possible that the data is not compatible with the current version.");
+      log.warn(
+          "Legacy Easy NPC Data for {}. Data may not be compatible with the current version.",
+          this);
       this.setNPCDataVersion(-1);
     }
   }

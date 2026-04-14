@@ -214,7 +214,6 @@ public interface EasyNPCBase<E extends Mob>
       return;
     }
     if (!serverData.hasServerEntityData()) {
-      log.debug("Register server-side data for {} ...", this.getEntityUUID());
       serverData.defineServerEntityData();
     }
 

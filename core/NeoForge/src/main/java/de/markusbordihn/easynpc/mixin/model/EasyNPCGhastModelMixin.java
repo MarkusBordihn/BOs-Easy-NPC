@@ -51,7 +51,7 @@ public class EasyNPCGhastModelMixin<T extends GhastRenderState>
   private void easyNpcModel(ModelPart modelPart, CallbackInfo callbackInfo) {
     this.easyNPC$modelManager =
         new EasyNPCModelManager(modelPart)
-            .defineModelPart(ModelPartType.BODY, "body")
+            .defineModelPart(ModelPartType.BODY, EasyNPCModelManager.MODEL_PART_BODY)
             .defineModelPart(ModelPartType.LEFT_ARM, this.tentacles[0])
             .defineModelPart(ModelPartType.RIGHT_ARM, this.tentacles[2]);
   }

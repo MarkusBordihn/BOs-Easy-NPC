@@ -58,7 +58,7 @@ public class EasyNPCIllagerModelMixin<T extends IllagerRenderState>
     this.easyNPC$modelManager =
         new EasyNPCModelManager(modelPart)
             .defineModelPart(ModelPartType.HEAD, this.head)
-            .defineModelPart(ModelPartType.BODY, "body")
+            .defineModelPart(ModelPartType.BODY, EasyNPCModelManager.MODEL_PART_BODY)
             .defineModelPart(ModelPartType.ARMS, this.arms)
             .defineModelPart(ModelPartType.LEFT_ARM, this.leftArm)
             .defineModelPart(ModelPartType.RIGHT_ARM, this.rightArm)

@@ -56,7 +56,7 @@ public class EasyNPCCreeperModelMixin implements EasyNPCModelManagerAccessor {
     this.easyNPC$modelManager =
         new EasyNPCModelManager(modelPart)
             .defineModelPart(ModelPartType.HEAD, this.head)
-            .defineModelPart(ModelPartType.BODY, "body")
+            .defineModelPart(ModelPartType.BODY, EasyNPCModelManager.MODEL_PART_BODY)
             .defineModelPart(ModelPartType.RIGHT_HIND_LEG, this.rightHindLeg)
             .defineModelPart(ModelPartType.LEFT_HIND_LEG, this.leftHindLeg)
             .defineModelPart(ModelPartType.RIGHT_FRONT_LEG, this.rightFrontLeg)

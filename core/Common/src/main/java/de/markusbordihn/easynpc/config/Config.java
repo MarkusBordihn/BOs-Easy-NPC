@@ -140,7 +140,13 @@ public class Config {
       Properties unmodifiedProperties) {
     if (!properties.equals(unmodifiedProperties)) {
       log.info(
-          "{} Updating configuration file {} {}: {}",
+          "{} Updating configuration file {} {} ({} entries)",
+          LOG_PREFIX,
+          configFile,
+          configFileHeader,
+          properties.size());
+      log.debug(
+          "{} Updated configuration file {} {} with: {}",
           LOG_PREFIX,
           configFile,
           configFileHeader,
@@ -155,7 +161,8 @@ public class Config {
             properties);
       }
     } else {
-      log.info("{} {} is up to date: {}", LOG_PREFIX, configFileHeader, properties);
+      log.info("{} {} is up to date ({} entries)", LOG_PREFIX, configFileHeader, properties.size());
+      log.debug("{} {} values: {}", LOG_PREFIX, configFileHeader, properties);
     }
   }
 

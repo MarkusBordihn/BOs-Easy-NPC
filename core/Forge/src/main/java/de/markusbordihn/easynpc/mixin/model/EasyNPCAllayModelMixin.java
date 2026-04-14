@@ -27,6 +27,7 @@ import de.markusbordihn.easynpc.data.model.ModelPartType;
 import net.minecraft.client.model.animal.allay.AllayModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.entity.state.AllayRenderState;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -37,12 +38,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(AllayModel.class)
 public class EasyNPCAllayModelMixin implements EasyNPCModelManagerAccessor {
 
-  @Shadow private ModelPart head;
-  @Shadow private ModelPart body;
-  @Shadow private ModelPart right_arm;
-  @Shadow private ModelPart left_arm;
-  @Shadow private ModelPart right_wing;
-  @Shadow private ModelPart left_wing;
+  @Shadow @Final private ModelPart head;
+  @Shadow @Final private ModelPart body;
+  @Shadow @Final private ModelPart right_arm;
+  @Shadow @Final private ModelPart left_arm;
+  @Shadow @Final private ModelPart right_wing;
+  @Shadow @Final private ModelPart left_wing;
 
   @Unique private EasyNPCModelManager easyNPC$modelManager;
 

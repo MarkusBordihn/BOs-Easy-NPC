@@ -273,8 +273,8 @@ public interface ObjectiveDataCapable<T extends Mob> extends EasyNPC<T> {
       GoalSelector goalSelector = this.getEntityGoalSelector();
       if (!objectiveDataEntry.hasValidTarget(this)) {
         if (this.hasObjective(objectiveDataEntry.getId()) && objectiveDataEntry.isRegistered()) {
-          log.warn(
-              "- Removing existing goal {} for {} because target was not found! Will try later again.",
+          log.debug(
+              "Removing existing goal {} for {} because target was not found. Will try later again.",
               goal,
               this);
         }

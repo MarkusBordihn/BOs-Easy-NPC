@@ -80,7 +80,7 @@ public record DisplayAttributeDataSet(
   private static EnumMap<DisplayAttributeType, DisplayAttributeEntry> readAttributesFromList(
       ListTag listTag) {
     if (listTag == null || listTag.isEmpty()) {
-      log.warn("Received null or empty ListTag for DisplayAttributeDataSet, using defaults");
+      log.debug("Received null or empty ListTag for DisplayAttributeDataSet, using defaults");
       return createDefaultAttributes();
     }
 

@@ -93,7 +93,6 @@ public class ServerEntityData {
   public <T> void define(ServerDataAccessor<T> serverDataAccessor, T customData) {
     if (!this.isClientSide) {
       ServerDataItem<T> dataItem = new ServerDataItem<>(serverDataAccessor, customData);
-      log.debug("{} Define custom data item {} with {}", LOG_PREFIX, dataItem, serverDataAccessor);
       this.customEntityDataMap.put(serverDataAccessor.getIndex(), dataItem);
     }
   }
@@ -101,12 +100,6 @@ public class ServerEntityData {
   public <T> void set(ServerDataAccessor<T> entityDataAccessor, T customData) {
     ServerDataItem<T> serverDataItem = this.getDataItem(entityDataAccessor);
     if (serverDataItem != null) {
-      log.debug(
-          "{} Set custom data {} for {} with id {}",
-          LOG_PREFIX,
-          serverDataItem,
-          entityDataAccessor,
-          entityDataAccessor.getIndex());
       serverDataItem.setValue(customData);
     }
   }

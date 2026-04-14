@@ -174,26 +174,19 @@ class SnbtFormatterTest {
     String originalSnbt = Files.readString(presetPath);
     CompoundTag originalTag = TagParser.parseCompoundFully(originalSnbt);
 
-    // Format the original SNBT
     String formattedSnbt = SnbtFormatter.format(originalSnbt);
-
-    // Parse the formatted SNBT
     CompoundTag formattedTag = TagParser.parseCompoundFully(formattedSnbt);
 
-    // Compare NBT structures 1:1 - all nodes and values must be identical
     assertEquals(originalTag, formattedTag);
 
-    // Verify that formatting actually happened
     assertTrue(formattedSnbt.contains("{\n"), "Opening braces should be followed by newline");
     assertTrue(formattedSnbt.contains("\n}"), "Closing braces should be on new line");
 
-    // Verify that formatted content is different from original (i.e., formatting was applied)
     assertNotEquals(
         originalSnbt,
         formattedSnbt,
         "Formatted content should be different from original single-line format");
 
-    // Verify original is single line (or at least not already formatted)
     assertFalse(
         originalSnbt.contains("{\n  "),
         "Original file should not already be formatted with indentation");

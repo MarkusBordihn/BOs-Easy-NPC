@@ -80,7 +80,7 @@ public interface SkinDataCapable<T extends Mob> extends EasyNPC<T> {
     Optional<CompoundTag> compoundTagData =
         valueInput.read(EASY_NPC_DATA_SKIN_DATA_TAG, CompoundTag.CODEC);
     if (compoundTagData.isEmpty()) {
-      log.warn("No skin data available for {}.", this);
+      log.debug("No skin data available for {}.", this);
       return;
     }
 
