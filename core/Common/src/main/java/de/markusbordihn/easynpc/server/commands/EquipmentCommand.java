@@ -55,7 +55,8 @@ public class EquipmentCommand extends Command {
                                                     EquipmentSlotArgument.getEquipmentSlot(
                                                         context, SLOT_ARG),
                                                     ItemArgument.getItem(context, ITEM_ARG)
-                                                        .getItem()))))))
+                                                        .item()
+                                                        .value()))))))
         .then(
             Commands.literal("remove")
                 .then(

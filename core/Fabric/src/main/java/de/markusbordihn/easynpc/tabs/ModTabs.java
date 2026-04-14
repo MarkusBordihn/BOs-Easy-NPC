@@ -24,7 +24,7 @@ import de.markusbordihn.easynpc.compat.CompatConstants;
 import de.markusbordihn.easynpc.entity.EpicFightEntityType;
 import de.markusbordihn.easynpc.entity.ModCustomEntityType;
 import de.markusbordihn.easynpc.item.ModItems;
-import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
+import net.fabricmc.fabric.api.creativetab.v1.FabricCreativeModeTab;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
@@ -44,7 +44,7 @@ public class ModTabs {
     Registry.register(
         BuiltInRegistries.CREATIVE_MODE_TAB,
         Constants.MOD_ID + ":config_items",
-        FabricItemGroup.builder()
+        FabricCreativeModeTab.builder()
             .icon(() -> ModItems.MOVE_EASY_NPC.asItem().getDefaultInstance())
             .title(Component.translatable("itemGroup.easy_npc.config_items"))
             .displayItems(new ConfigItems())
@@ -53,7 +53,7 @@ public class ModTabs {
     Registry.register(
         BuiltInRegistries.CREATIVE_MODE_TAB,
         Constants.MOD_ID + ":spawn_eggs",
-        FabricItemGroup.builder()
+        FabricCreativeModeTab.builder()
             .icon(
                 () ->
                     ModItems.CUSTOM_NPC_SPAWN_EGGS
@@ -68,7 +68,7 @@ public class ModTabs {
       Registry.register(
           BuiltInRegistries.CREATIVE_MODE_TAB,
           Constants.MOD_ID + ":epic_fight_spawn_eggs",
-          FabricItemGroup.builder()
+          FabricCreativeModeTab.builder()
               .icon(
                   () ->
                       ModItems.EPIC_FIGHT_SPAWN_EGGS

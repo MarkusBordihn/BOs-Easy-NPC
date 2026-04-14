@@ -21,7 +21,7 @@ package de.markusbordihn.easynpc.network.syncher;
 
 import de.markusbordihn.easynpc.Constants;
 import java.util.Map;
-import net.fabricmc.fabric.api.object.builder.v1.entity.FabricTrackedDataRegistry;
+import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityDataRegistry;
 import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.resources.Identifier;
 import org.apache.logging.log4j.LogManager;
@@ -45,7 +45,7 @@ public class EntityDataSerializersManagerFabric {
       try {
         Identifier id =
             Identifier.fromNamespaceAndPath(Constants.MOD_ID, entry.getKey().toLowerCase());
-        FabricTrackedDataRegistry.register(id, serializer);
+        FabricEntityDataRegistry.register(id, serializer);
         log.info(
             "Registered entity data serializer {} with id {} using FabricTrackedDataRegistry",
             entry.getKey(),

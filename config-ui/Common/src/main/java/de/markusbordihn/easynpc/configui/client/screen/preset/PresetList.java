@@ -21,7 +21,7 @@ package de.markusbordihn.easynpc.configui.client.screen.preset;
 
 import de.markusbordihn.easynpc.client.screen.components.DrawBoxWithBorder;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 
 public class PresetList extends ObjectSelectionList<PresetListEntry> {
@@ -40,7 +40,8 @@ public class PresetList extends ObjectSelectionList<PresetListEntry> {
   }
 
   @Override
-  protected void renderSelection(GuiGraphics guiGraphics, PresetListEntry entry, int color) {
+  protected void extractSelection(
+      GuiGraphicsExtractor guiGraphics, PresetListEntry entry, int color) {
     DrawBoxWithBorder.draw(
         guiGraphics,
         entry.getX() + 3,
@@ -49,16 +50,6 @@ public class PresetList extends ObjectSelectionList<PresetListEntry> {
         entry.getHeight(),
         color,
         -16777216);
-  }
-
-  @Override
-  protected void renderListSeparators(GuiGraphics guiGraphics) {
-    // Do not render list separators.
-  }
-
-  @Override
-  protected void renderListBackground(GuiGraphics guiGraphics) {
-    // Do not render list background.
   }
 
   public void clearEntries() {

@@ -19,6 +19,7 @@ build
 run
 runs
 .gradle
+.gradle-local
 *local.properties
 
 # NodeJs
@@ -49,9 +50,12 @@ put_your_*_here
 # Other
 .DS_Store
 generated
+third_party
 *.bak
 *.clip
 *.log
 *.log.gz
 *.patch.txt
 *.stackdump
+*.local.json
+*.local.properties

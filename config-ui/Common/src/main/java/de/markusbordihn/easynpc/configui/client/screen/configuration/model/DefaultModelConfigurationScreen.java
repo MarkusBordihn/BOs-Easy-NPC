@@ -19,12 +19,12 @@
 
 package de.markusbordihn.easynpc.configui.client.screen.configuration.model;
 
-import de.markusbordihn.easynpc.client.screen.components.Checkbox;
+import de.markusbordihn.easynpc.configui.client.screen.components.Checkbox;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.render.RenderDataEntry;
 import de.markusbordihn.easynpc.data.render.RenderType;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -71,8 +71,9 @@ public class DefaultModelConfigurationScreen<T extends ConfigurationMenu>
   }
 
   @Override
-  public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
-    super.render(guiGraphics, x, y, partialTicks);
+  public void extractRenderState(
+      GuiGraphicsExtractor guiGraphics, int x, int y, float partialTicks) {
+    super.extractRenderState(guiGraphics, x, y, partialTicks);
 
     // Description text
     renderDescriptionText(guiGraphics, this.contentLeftPos + 5, this.contentTopPos + 60);

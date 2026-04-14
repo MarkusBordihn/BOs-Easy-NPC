@@ -19,18 +19,18 @@
 
 package de.markusbordihn.easynpc.configui.client.screen.configuration.rotation;
 
-import de.markusbordihn.easynpc.client.screen.components.Checkbox;
 import de.markusbordihn.easynpc.client.screen.components.RangeSliderButton;
 import de.markusbordihn.easynpc.client.screen.components.SliderButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
+import de.markusbordihn.easynpc.configui.client.screen.components.Checkbox;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
 import de.markusbordihn.easynpc.network.components.TextComponent;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -191,8 +191,9 @@ public class DefaultRotationConfigurationScreen<T extends ConfigurationMenu>
   }
 
   @Override
-  public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
-    super.render(guiGraphics, x, y, partialTicks);
+  public void extractRenderState(
+      GuiGraphicsExtractor guiGraphics, int x, int y, float partialTicks) {
+    super.extractRenderState(guiGraphics, x, y, partialTicks);
 
     // Rotation axis labels
     int labelYPosition = this.contentTopPos + 19;

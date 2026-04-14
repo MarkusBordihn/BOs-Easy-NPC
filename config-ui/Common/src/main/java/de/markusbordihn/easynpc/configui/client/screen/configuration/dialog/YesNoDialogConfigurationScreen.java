@@ -19,12 +19,12 @@
 
 package de.markusbordihn.easynpc.configui.client.screen.configuration.dialog;
 
-import de.markusbordihn.easynpc.client.screen.components.CancelButton;
-import de.markusbordihn.easynpc.client.screen.components.SaveButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.client.screen.components.TextField;
 import de.markusbordihn.easynpc.configui.Constants;
+import de.markusbordihn.easynpc.configui.client.screen.components.CancelButton;
+import de.markusbordihn.easynpc.configui.client.screen.components.SaveButton;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
@@ -36,7 +36,7 @@ import de.markusbordihn.easynpc.data.dialog.DialogUtils;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import java.util.Set;
 import java.util.UUID;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
@@ -220,8 +220,9 @@ public class YesNoDialogConfigurationScreen<T extends ConfigurationMenu>
   }
 
   @Override
-  public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
-    super.render(guiGraphics, x, y, partialTicks);
+  public void extractRenderState(
+      GuiGraphicsExtractor guiGraphics, int x, int y, float partialTicks) {
+    super.extractRenderState(guiGraphics, x, y, partialTicks);
 
     // Edit box Labels
     Text.drawConfigString(

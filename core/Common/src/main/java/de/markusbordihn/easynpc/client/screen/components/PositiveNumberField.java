@@ -19,23 +19,19 @@
 
 package de.markusbordihn.easynpc.client.screen.components;
 
-import de.markusbordihn.easynpc.utils.ValueUtils;
 import net.minecraft.client.gui.Font;
 
 public class PositiveNumberField extends TextField {
 
   public PositiveNumberField(Font font, int x, int y, int width) {
     super(font, x, y, width);
-    this.setFilter(ValueUtils::isPositiveNumericValueOrZero);
   }
 
   public PositiveNumberField(Font font, int x, int y, int width, int value, int maxLength) {
     super(font, x, y, width, value, maxLength);
-    this.setFilter(ValueUtils::isPositiveNumericValueOrZero);
   }
 
   public PositiveNumberField(Font font, int x, int y, int width, int height, double value) {
     super(font, x, y, width, height, value);
-    this.setFilter(ValueUtils::isDoubleValue);
   }
 }

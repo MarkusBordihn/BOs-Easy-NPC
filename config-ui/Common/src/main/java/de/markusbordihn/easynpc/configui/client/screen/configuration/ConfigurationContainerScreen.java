@@ -25,7 +25,7 @@ import de.markusbordihn.easynpc.configui.client.screen.ContainerScreen;
 import de.markusbordihn.easynpc.configui.menu.ConfigUIMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.network.chat.Component;
@@ -41,7 +41,6 @@ public class ConfigurationContainerScreen<T extends ConfigUIMenu> extends Contai
 
   public ConfigurationContainerScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
-    this.showCloseButton = false;
   }
 
   @Override
@@ -68,7 +67,7 @@ public class ConfigurationContainerScreen<T extends ConfigUIMenu> extends Contai
   }
 
   @Override
-  protected void renderLabels(GuiGraphics guiGraphics, int x, int y) {
+  protected void extractLabels(GuiGraphicsExtractor guiGraphics, int x, int y) {
     // Render Title if not in compact mode
     if (!this.compactMode) {
       Text.drawString(

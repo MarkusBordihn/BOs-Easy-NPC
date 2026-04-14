@@ -191,7 +191,7 @@ public class BaseEasyNPCSpawner extends BaseSpawner {
     spawnerAccess.setSpawnDelay(
         minDelay >= maxDelay
             ? minDelay
-            : minDelay + serverLevel.random.nextInt(maxDelay - minDelay));
+            : minDelay + serverLevel.getRandom().nextInt(maxDelay - minDelay));
   }
 
   private boolean isNearPlayer(ServerLevel serverLevel, BlockPos blockPos) {

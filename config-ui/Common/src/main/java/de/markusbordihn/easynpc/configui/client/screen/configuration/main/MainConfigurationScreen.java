@@ -19,19 +19,19 @@
 
 package de.markusbordihn.easynpc.configui.client.screen.configuration.main;
 
-import de.markusbordihn.easynpc.client.screen.components.CopyButton;
-import de.markusbordihn.easynpc.client.screen.components.DeleteButton;
-import de.markusbordihn.easynpc.client.screen.components.ExportButton;
-import de.markusbordihn.easynpc.client.screen.components.ImportButton;
-import de.markusbordihn.easynpc.client.screen.components.ReloadButton;
-import de.markusbordihn.easynpc.client.screen.components.SaveButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.client.screen.components.TextField;
 import de.markusbordihn.easynpc.configui.client.renderer.screen.EntityConfigScreenRenderer;
 import de.markusbordihn.easynpc.configui.client.screen.EntityGuiScaling;
 import de.markusbordihn.easynpc.configui.client.screen.components.ColorButton;
+import de.markusbordihn.easynpc.configui.client.screen.components.CopyButton;
+import de.markusbordihn.easynpc.configui.client.screen.components.DeleteButton;
+import de.markusbordihn.easynpc.configui.client.screen.components.ExportButton;
+import de.markusbordihn.easynpc.configui.client.screen.components.ImportButton;
 import de.markusbordihn.easynpc.configui.client.screen.components.NameVisibilityToggleButton;
+import de.markusbordihn.easynpc.configui.client.screen.components.ReloadButton;
+import de.markusbordihn.easynpc.configui.client.screen.components.SaveButton;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.ConfigurationScreen;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
@@ -50,7 +50,7 @@ import de.markusbordihn.easynpc.network.components.TextComponent;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.Tooltip;
@@ -121,8 +121,9 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
   }
 
   @Override
-  public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
-    super.render(guiGraphics, x, y, partialTicks);
+  public void extractRenderState(
+      GuiGraphicsExtractor guiGraphics, int x, int y, float partialTicks) {
+    super.extractRenderState(guiGraphics, x, y, partialTicks);
 
     if (getEasyNPC() == null) {
       return;
@@ -231,8 +232,9 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
   }
 
   @Override
-  protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
-    super.renderBg(guiGraphics, partialTicks, mouseX, mouseY);
+  public void extractBackground(
+      GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    super.extractBackground(guiGraphics, mouseX, mouseY, partialTicks);
 
     // Entity Type
     guiGraphics.fill(

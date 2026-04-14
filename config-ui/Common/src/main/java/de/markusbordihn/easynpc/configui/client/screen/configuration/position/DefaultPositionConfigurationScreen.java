@@ -19,17 +19,17 @@
 
 package de.markusbordihn.easynpc.configui.client.screen.configuration.position;
 
-import de.markusbordihn.easynpc.client.screen.components.Checkbox;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.client.screen.components.TextField;
+import de.markusbordihn.easynpc.configui.client.screen.components.Checkbox;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.attribute.EntityAttributes;
 import de.markusbordihn.easynpc.data.attribute.EnvironmentalAttributeType;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import de.markusbordihn.easynpc.utils.ValueUtils;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
@@ -231,8 +231,9 @@ public class DefaultPositionConfigurationScreen<T extends ConfigurationMenu>
   }
 
   @Override
-  public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
-    super.render(guiGraphics, x, y, partialTicks);
+  public void extractRenderState(
+      GuiGraphicsExtractor guiGraphics, int x, int y, float partialTicks) {
+    super.extractRenderState(guiGraphics, x, y, partialTicks);
 
     // Position Text
     Text.drawString(

@@ -19,25 +19,22 @@
 
 package de.markusbordihn.easynpc.configui.client.screen.configuration.dialog;
 
-import de.markusbordihn.easynpc.client.screen.components.AddButton;
-import de.markusbordihn.easynpc.client.screen.components.CopyButton;
-import de.markusbordihn.easynpc.client.screen.components.EditButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
-import de.markusbordihn.easynpc.client.screen.components.TextEditButton;
 import de.markusbordihn.easynpc.configui.Constants;
+import de.markusbordihn.easynpc.configui.client.screen.components.AddButton;
+import de.markusbordihn.easynpc.configui.client.screen.components.CopyButton;
+import de.markusbordihn.easynpc.configui.client.screen.components.EditButton;
+import de.markusbordihn.easynpc.configui.client.screen.components.TextEditButton;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogPriority;
 import de.markusbordihn.easynpc.network.components.TextComponent;
-import java.util.Collections;
 import java.util.Comparator;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ObjectSelectionList;
-import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
-import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -95,8 +92,9 @@ public class AdvancedDialogConfigurationScreen<T extends ConfigurationMenu>
   }
 
   @Override
-  public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
-    super.render(guiGraphics, x, y, partialTicks);
+  public void extractRenderState(
+      GuiGraphicsExtractor guiGraphics, int x, int y, float partialTicks) {
+    super.extractRenderState(guiGraphics, x, y, partialTicks);
 
     int listLeft = this.leftPos + COLUMN_PRIORITY_START;
     int listRight = this.leftPos + COLUMN_TEXT_START + COLUMN_TEXT_WIDTH + 4;
@@ -192,7 +190,7 @@ public class AdvancedDialogConfigurationScreen<T extends ConfigurationMenu>
 
     // Re-render button for visibility
     if (this.newDialogButton != null) {
-      this.newDialogButton.render(guiGraphics, x, y, partialTicks);
+      this.newDialogButton.extractRenderState(guiGraphics, x, y, partialTicks);
     }
   }
 
@@ -219,27 +217,28 @@ public class AdvancedDialogConfigurationScreen<T extends ConfigurationMenu>
                       new AdvancedDialogConfigurationScreen<?>.DialogList.Entry(dialogData)));
     }
 
-    public void renderSelectionList(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
+    public void renderSelectionList(
+        GuiGraphicsExtractor guiGraphics, int x, int y, float partialTicks) {
       if (this.getItemCount() > 0) {
-        super.render(guiGraphics, x, y, partialTicks);
+        super.extractRenderState(guiGraphics, x, y, partialTicks);
       }
     }
 
     @Override
-    protected void renderSelection(
-        GuiGraphics guiGraphics,
+    protected void extractSelection(
+        GuiGraphicsExtractor guiGraphics,
         AdvancedDialogConfigurationScreen<?>.DialogList.Entry entry,
         int color) {
       // Do not render selection.
     }
 
     @Override
-    protected void renderListSeparators(GuiGraphics guiGraphics) {
+    protected void extractListSeparators(GuiGraphicsExtractor guiGraphics) {
       // Do not render list separators.
     }
 
     @Override
-    protected void renderListBackground(GuiGraphics guiGraphics) {
+    protected void extractListBackground(GuiGraphicsExtractor guiGraphics) {
       // Do not render list background.
     }
 
@@ -297,8 +296,12 @@ public class AdvancedDialogConfigurationScreen<T extends ConfigurationMenu>
       }
 
       @Override
-      public void renderContent(
-          GuiGraphics guiGraphics, int mouseX, int mouseY, boolean isHovered, float partialTicks) {
+      public void extractContent(
+          GuiGraphicsExtractor guiGraphics,
+          int mouseX,
+          int mouseY,
+          boolean isHovered,
+          float partialTicks) {
 
         int top = this.getY();
         int left = this.getX();
@@ -310,55 +313,39 @@ public class AdvancedDialogConfigurationScreen<T extends ConfigurationMenu>
         // Render edit button and tooltip
         this.editButton.setX(leftPos + COLUMN_NAME_START - buttonWidth - 7);
         this.editButton.setY(top);
-        this.editButton.render(guiGraphics, mouseX, mouseY, partialTicks);
+        this.editButton.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
         if (this.editButton.isHovered()) {
-          guiGraphics.renderTooltip(
+          guiGraphics.setTooltipForNextFrame(
               AdvancedDialogConfigurationScreen.this.font,
-              Collections.singletonList(
-                  ClientTooltipComponent.create(
-                      TextComponent.getTranslatedConfigText(
-                              "dialog.edit_dialog", dialogData.getName())
-                          .getVisualOrderText())),
+              TextComponent.getTranslatedConfigText("dialog.edit_dialog", dialogData.getName()),
               mouseX,
-              mouseY,
-              DefaultTooltipPositioner.INSTANCE,
-              null);
+              mouseY);
         }
 
         // Render copy button and tooltip
         this.copyLabelButton.setX(this.editButton.getX() - this.editButton.getWidth());
         this.copyLabelButton.setY(top);
-        this.copyLabelButton.render(guiGraphics, mouseX, mouseY, partialTicks);
+        this.copyLabelButton.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
         if (this.copyLabelButton.isHovered()) {
-          guiGraphics.renderTooltip(
+          guiGraphics.setTooltipForNextFrame(
               AdvancedDialogConfigurationScreen.this.font,
-              Collections.singletonList(
-                  ClientTooltipComponent.create(
-                      TextComponent.getTranslatedConfigText(
-                              "dialog.copy_dialog_label", dialogData.getLabel())
-                          .getVisualOrderText())),
+              TextComponent.getTranslatedConfigText(
+                  "dialog.copy_dialog_label", dialogData.getLabel()),
               mouseX,
-              mouseY,
-              DefaultTooltipPositioner.INSTANCE,
-              null);
+              mouseY);
         }
 
         // Render edit text button and tooltip
         this.textEditButton.setX(leftPos + COLUMN_TEXT_START - 5);
         this.textEditButton.setY(top);
-        this.textEditButton.render(guiGraphics, mouseX, mouseY, partialTicks);
+        this.textEditButton.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
         if (this.textEditButton.isHovered()) {
-          guiGraphics.renderTooltip(
+          guiGraphics.setTooltipForNextFrame(
               AdvancedDialogConfigurationScreen.this.font,
-              Collections.singletonList(
-                  ClientTooltipComponent.create(
-                      TextComponent.getTranslatedConfigText(
-                              "dialog.edit_dialog_text", dialogData.getText())
-                          .getVisualOrderText())),
+              TextComponent.getTranslatedConfigText(
+                  "dialog.edit_dialog_text", dialogData.getText()),
               mouseX,
-              mouseY,
-              DefaultTooltipPositioner.INSTANCE,
-              null);
+              mouseY);
         }
 
         int dialogDataTopPos = Math.round((top + 5) / TEXT_SCALE);

@@ -20,10 +20,10 @@
 package de.markusbordihn.easynpc.configui.client.screen.configuration.preset;
 
 import de.markusbordihn.easynpc.client.screen.Screen;
-import de.markusbordihn.easynpc.client.screen.components.ImportButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.configui.Constants;
+import de.markusbordihn.easynpc.configui.client.screen.components.ImportButton;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.ConfigurationScreen;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
@@ -34,7 +34,7 @@ import de.markusbordihn.easynpc.network.components.TextComponent;
 import java.util.List;
 import java.util.Locale;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.client.gui.screens.ConfirmScreen;
@@ -194,8 +194,9 @@ public class ImportPresetConfigurationScreen<T extends ConfigurationMenu>
   }
 
   @Override
-  public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
-    super.render(guiGraphics, x, y, partialTicks);
+  public void extractRenderState(
+      GuiGraphicsExtractor guiGraphics, int x, int y, float partialTicks) {
+    super.extractRenderState(guiGraphics, x, y, partialTicks);
     if (this.presetSelectionList != null) {
       this.presetSelectionList.renderSelectionList(guiGraphics, x, y, partialTicks);
     }
@@ -205,8 +206,9 @@ public class ImportPresetConfigurationScreen<T extends ConfigurationMenu>
   }
 
   @Override
-  protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
-    super.renderBg(guiGraphics, partialTicks, mouseX, mouseY);
+  public void extractBackground(
+      GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    super.extractBackground(guiGraphics, mouseX, mouseY, partialTicks);
 
     int fileListTop = this.topPos + 55;
     int fileListHeight = fileListTop + 110;
@@ -251,22 +253,22 @@ public class ImportPresetConfigurationScreen<T extends ConfigurationMenu>
     }
 
     @Override
-    protected void renderSelection(GuiGraphics guiGraphics, Entry entry, int color) {
+    protected void extractSelection(GuiGraphicsExtractor guiGraphics, Entry entry, int color) {
       // Do not render selection.
     }
 
     @Override
-    protected void renderListSeparators(GuiGraphics guiGraphics) {
+    protected void extractListSeparators(GuiGraphicsExtractor guiGraphics) {
       // Do not render list separators.
     }
 
     @Override
-    protected void renderListBackground(GuiGraphics guiGraphics) {
+    protected void extractListBackground(GuiGraphicsExtractor guiGraphics) {
       // Do not render list background.
     }
 
     @Override
-    protected int scrollBarY() {
+    public int scrollBarY() {
       return super.scrollBarY() + 12;
     }
 
@@ -280,9 +282,10 @@ public class ImportPresetConfigurationScreen<T extends ConfigurationMenu>
       return ImportPresetConfigurationScreen.this.getFocused() == this;
     }
 
-    public void renderSelectionList(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
+    public void renderSelectionList(
+        GuiGraphicsExtractor guiGraphics, int x, int y, float partialTicks) {
       if (this.getItemCount() > 0) {
-        super.render(guiGraphics, x, y, partialTicks);
+        super.extractRenderState(guiGraphics, x, y, partialTicks);
         return;
       }
 
@@ -308,8 +311,12 @@ public class ImportPresetConfigurationScreen<T extends ConfigurationMenu>
       }
 
       @Override
-      public void renderContent(
-          GuiGraphics guiGraphics, int mouseX, int mouseY, boolean isHovered, float partialTicks) {
+      public void extractContent(
+          GuiGraphicsExtractor guiGraphics,
+          int mouseX,
+          int mouseY,
+          boolean isHovered,
+          float partialTicks) {
 
         int y = this.getY();
 

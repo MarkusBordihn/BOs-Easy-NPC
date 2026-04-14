@@ -19,11 +19,11 @@
 
 package de.markusbordihn.easynpc.configui.client.screen.configuration.skin;
 
-import de.markusbordihn.easynpc.client.screen.components.Checkbox;
-import de.markusbordihn.easynpc.client.screen.components.SkinSelectionButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.configui.client.renderer.screen.EntityConfigScreenRenderer;
+import de.markusbordihn.easynpc.configui.client.screen.components.Checkbox;
+import de.markusbordihn.easynpc.configui.client.screen.components.SkinSelectionButton;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.profession.Profession;
@@ -36,7 +36,7 @@ import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.VariantDataCapable;
 import de.markusbordihn.easynpc.utils.TextUtils;
 import java.util.ArrayList;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.npc.villager.Villager;
@@ -54,7 +54,7 @@ public class DefaultSkinConfigurationScreen<T extends ConfigurationMenu>
     this.maxSkinsPerPage = 10;
   }
 
-  private void renderSkins(GuiGraphics guiGraphics) {
+  private void renderSkins(GuiGraphicsExtractor guiGraphics) {
     if (this.getEasyNPCEntity() == null) {
       return;
     }
@@ -127,7 +127,7 @@ public class DefaultSkinConfigurationScreen<T extends ConfigurationMenu>
   }
 
   private void renderSkinEntity(
-      GuiGraphics guiGraphics, int x, int y, Enum<?> variantType, Profession profession) {
+      GuiGraphicsExtractor guiGraphics, int x, int y, Enum<?> variantType, Profession profession) {
 
     Button skinButton =
         new SkinSelectionButton(
@@ -202,8 +202,9 @@ public class DefaultSkinConfigurationScreen<T extends ConfigurationMenu>
   }
 
   @Override
-  public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
-    super.render(guiGraphics, x, y, partialTicks);
+  public void extractRenderState(
+      GuiGraphicsExtractor guiGraphics, int x, int y, float partialTicks) {
+    super.extractRenderState(guiGraphics, x, y, partialTicks);
 
     // Description text
     renderDescriptionText(guiGraphics, this.contentLeftPos + 5, this.contentTopPos + 5);
@@ -213,7 +214,7 @@ public class DefaultSkinConfigurationScreen<T extends ConfigurationMenu>
   }
 
   @Override
-  protected void renderSkinSelectionBackground(GuiGraphics guiGraphics) {
+  protected void renderSkinSelectionBackground(GuiGraphicsExtractor guiGraphics) {
     guiGraphics.fill(
         this.contentLeftPos,
         this.contentTopPos + 20,

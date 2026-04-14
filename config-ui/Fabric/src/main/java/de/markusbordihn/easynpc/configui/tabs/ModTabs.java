@@ -21,7 +21,7 @@ package de.markusbordihn.easynpc.configui.tabs;
 
 import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.configui.item.ModItems;
-import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
@@ -38,14 +38,14 @@ public class ModTabs {
 
     log.info("{} creative mod tabs ...", Constants.LOG_REGISTER_PREFIX);
 
-    ItemGroupEvents.modifyEntriesEvent(
+    CreativeModeTabEvents.modifyOutputEvent(
             ResourceKey.create(
                 Registries.CREATIVE_MODE_TAB,
                 Identifier.fromNamespaceAndPath("easy_npc", "config_items")))
         .register(
-            entries -> {
-              entries.accept(ModItems.EASY_NPC_WAND.asItem().getDefaultInstance());
-              entries.accept(ModItems.PRESET_BROWSER.asItem().getDefaultInstance());
+            output -> {
+              output.accept(ModItems.EASY_NPC_WAND.asItem().getDefaultInstance());
+              output.accept(ModItems.PRESET_BROWSER.asItem().getDefaultInstance());
             });
   }
 }

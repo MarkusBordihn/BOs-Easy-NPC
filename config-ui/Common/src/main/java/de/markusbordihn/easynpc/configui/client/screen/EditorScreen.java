@@ -19,8 +19,9 @@
 
 package de.markusbordihn.easynpc.configui.client.screen;
 
+import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.configui.menu.ConfigUIMenu;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
@@ -35,7 +36,7 @@ public class EditorScreen<T extends ConfigUIMenu>
   protected final LocalPlayer localPlayer;
 
   public EditorScreen(T menu, Inventory inventory, Component component) {
-    super(menu, inventory, component);
+    super(menu, inventory, component, 328, 243);
 
     // General environment Data
     this.localPlayer = this.minecraftInstance.player;
@@ -43,12 +44,21 @@ public class EditorScreen<T extends ConfigUIMenu>
   }
 
   @Override
-  public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
-    super.render(guiGraphics, x, y, partialTicks);
+  public void extractRenderState(
+      GuiGraphicsExtractor guiGraphics, int x, int y, float partialTicks) {
+    super.extractRenderState(guiGraphics, x, y, partialTicks);
   }
 
   @Override
-  protected void renderLabels(GuiGraphics guiGraphics, int x, int y) {
-    // No labels
+  protected void renderLabels(GuiGraphicsExtractor guiGraphics, int x, int y) {
+    if (!this.compactMode) {
+      Text.drawString(
+          guiGraphics,
+          this.font,
+          this.title,
+          this.leftPos + this.titleLabelX,
+          this.topPos + this.titleLabelY,
+          4210752);
+    }
   }
 }

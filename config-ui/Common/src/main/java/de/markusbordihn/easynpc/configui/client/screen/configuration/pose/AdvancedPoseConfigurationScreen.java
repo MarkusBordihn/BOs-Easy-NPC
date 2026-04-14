@@ -19,10 +19,10 @@
 
 package de.markusbordihn.easynpc.configui.client.screen.configuration.pose;
 
-import de.markusbordihn.easynpc.client.screen.components.Checkbox;
 import de.markusbordihn.easynpc.client.screen.components.RangeSliderButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.configui.client.renderer.screen.EntityConfigScreenRenderer;
+import de.markusbordihn.easynpc.configui.client.screen.components.Checkbox;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.model.ModelPartType;
@@ -30,7 +30,7 @@ import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.data.render.EntityRenderConfig;
 import java.util.EnumMap;
 import java.util.Set;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -126,8 +126,9 @@ public class AdvancedPoseConfigurationScreen<T extends ConfigurationMenu>
   }
 
   @Override
-  public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
-    super.render(guiGraphics, x, y, partialTicks);
+  public void extractRenderState(
+      GuiGraphicsExtractor guiGraphics, int x, int y, float partialTicks) {
+    super.extractRenderState(guiGraphics, x, y, partialTicks);
 
     // Avatar
     EntityRenderConfig renderConfig =
@@ -154,8 +155,9 @@ public class AdvancedPoseConfigurationScreen<T extends ConfigurationMenu>
   }
 
   @Override
-  protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
-    super.renderBg(guiGraphics, partialTicks, mouseX, mouseY);
+  public void extractBackground(
+      GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    super.extractBackground(guiGraphics, mouseX, mouseY, partialTicks);
 
     // Entity
     int backgroundTopPos = this.contentTopPos + 30;

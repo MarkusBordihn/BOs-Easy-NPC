@@ -131,7 +131,7 @@ public class VisibilityHandler {
       return false;
     }
 
-    long dayTime = player.level().getDayTime() % 24000;
+    long dayTime = player.level().getOverworldClockTime() % 24000;
     boolean isDayTime = (dayTime >= 1000 && dayTime <= 13000);
     boolean isNightTime = !isDayTime;
     boolean visibleAtDaySet =

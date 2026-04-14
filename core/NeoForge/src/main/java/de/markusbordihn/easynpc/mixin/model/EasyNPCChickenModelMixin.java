@@ -38,7 +38,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(ChickenModel.class)
 public class EasyNPCChickenModelMixin implements EasyNPCModelManagerAccessor {
 
-  @Shadow @Final private ModelPart head;
   @Shadow @Final private ModelPart rightLeg;
   @Shadow @Final private ModelPart leftLeg;
   @Shadow @Final private ModelPart rightWing;
@@ -55,7 +54,7 @@ public class EasyNPCChickenModelMixin implements EasyNPCModelManagerAccessor {
   private void easyNpcModel(ModelPart modelPart, CallbackInfo callbackInfo) {
     this.easyNPC$modelManager =
         new EasyNPCModelManager(modelPart)
-            .defineModelPart(ModelPartType.HEAD, this.head)
+            .defineModelPart(ModelPartType.HEAD, "head")
             .defineModelPart(ModelPartType.BODY, "body")
             .defineModelPart(ModelPartType.RIGHT_WING, this.rightWing)
             .defineModelPart(ModelPartType.LEFT_WING, this.leftWing)

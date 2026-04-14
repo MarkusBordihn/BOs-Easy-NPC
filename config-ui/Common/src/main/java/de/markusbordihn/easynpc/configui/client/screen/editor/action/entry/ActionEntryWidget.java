@@ -5,7 +5,7 @@ import de.markusbordihn.easynpc.data.action.ActionDataEntry;
 import de.markusbordihn.easynpc.data.action.ActionDataSet;
 import de.markusbordihn.easynpc.data.action.ActionDataType;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 public class ActionEntryWidget {
 
@@ -30,7 +30,7 @@ public class ActionEntryWidget {
 
   public void init(int editorLeft, int editorTop) {}
 
-  public void render(GuiGraphics guiGraphics, int editorLeft, int editorTop) {}
+  public void render(GuiGraphicsExtractor guiGraphics, int editorLeft, int editorTop) {}
 
   public ActionDataEntry getActionDataEntry() {
     return this.actionDataEntry;

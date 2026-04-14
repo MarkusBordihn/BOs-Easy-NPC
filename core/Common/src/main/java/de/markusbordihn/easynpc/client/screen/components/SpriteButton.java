@@ -22,7 +22,7 @@ package de.markusbordihn.easynpc.client.screen.components;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -31,7 +31,6 @@ import net.minecraft.util.Mth;
 public class SpriteButton extends CustomButton {
 
   public static final int DEFAULT_HEIGHT = 16;
-  public static final Identifier DEFAULT_SPRITE = Constants.TEXTURE_CONFIGURATION;
 
   private final Identifier sprite;
   private final int spriteX;
@@ -42,6 +41,8 @@ public class SpriteButton extends CustomButton {
   private final int spriteHeight;
   private boolean renderBackground = true;
   private boolean renderCenter = true;
+  private int textureWidth = 256;
+  private int textureHeight = 256;
 
   public SpriteButton(
       int left,
@@ -104,34 +105,6 @@ public class SpriteButton extends CustomButton {
       int top,
       int width,
       int height,
-      int spriteX,
-      int spriteY,
-      int spriteOffsetX,
-      int spriteOffsetY,
-      int spriteWidth,
-      int spriteHeight,
-      OnPress onPress) {
-    this(
-        left,
-        top,
-        width,
-        height,
-        TextComponent.getBlankText(),
-        DEFAULT_SPRITE,
-        spriteX,
-        spriteY,
-        spriteOffsetX,
-        spriteOffsetY,
-        spriteWidth,
-        spriteHeight,
-        onPress);
-  }
-
-  public SpriteButton(
-      int left,
-      int top,
-      int width,
-      int height,
       Identifier sprite,
       int spriteOffsetX,
       int spriteOffsetY,
@@ -160,35 +133,6 @@ public class SpriteButton extends CustomButton {
       int width,
       int height,
       String label,
-      int spriteX,
-      int spriteY,
-      int spriteOffsetX,
-      int spriteOffsetY,
-      int spriteWidth,
-      int spriteHeight,
-      OnPress onPress) {
-    this(
-        left,
-        top,
-        width,
-        height,
-        TextComponent.getTextComponent(label),
-        DEFAULT_SPRITE,
-        spriteX,
-        spriteY,
-        spriteOffsetX,
-        spriteOffsetY,
-        spriteWidth,
-        spriteHeight,
-        onPress);
-  }
-
-  public SpriteButton(
-      int left,
-      int top,
-      int width,
-      int height,
-      String label,
       Identifier sprite,
       int spriteX,
       int spriteY,
@@ -204,35 +148,6 @@ public class SpriteButton extends CustomButton {
         height,
         TextComponent.getTextComponent(label),
         sprite,
-        spriteX,
-        spriteY,
-        spriteOffsetX,
-        spriteOffsetY,
-        spriteWidth,
-        spriteHeight,
-        onPress);
-  }
-
-  public SpriteButton(
-      int left,
-      int top,
-      int width,
-      int height,
-      Component component,
-      int spriteX,
-      int spriteY,
-      int spriteOffsetX,
-      int spriteOffsetY,
-      int spriteWidth,
-      int spriteHeight,
-      OnPress onPress) {
-    this(
-        left,
-        top,
-        width,
-        height,
-        component,
-        DEFAULT_SPRITE,
         spriteX,
         spriteY,
         spriteOffsetX,
@@ -268,19 +183,19 @@ public class SpriteButton extends CustomButton {
 
   @Override
   public void renderButtonText(
-      GuiGraphics guiGraphics, Font font, Component component, int x, int y) {
+      GuiGraphicsExtractor guiGraphics, Font font, Component component, int x, int y) {
     if (component != null && !component.getString().isEmpty()) {
       int fgColor = this.active ? Constants.FONT_COLOR_WHITE : Constants.FONT_COLOR_LIGHT_GRAY;
       int textColor = fgColor | Mth.ceil(this.alpha * 255.0F) << 24;
       if (this.renderCenter) {
-        guiGraphics.drawCenteredString(
+        guiGraphics.centeredText(
             font,
             component,
             this.getX() + (this.width + this.spriteWidth) / 2,
             this.getY() + (this.height - 8) / 2,
             textColor);
       } else {
-        guiGraphics.drawString(
+        guiGraphics.text(
             font,
             component,
             this.getX() + this.spriteWidth + 4,
@@ -300,8 +215,14 @@ public class SpriteButton extends CustomButton {
     return this;
   }
 
+  public void setTextureSize(int textureWidth, int textureHeight) {
+    this.textureWidth = textureWidth;
+    this.textureHeight = textureHeight;
+  }
+
   @Override
-  public void renderButton(GuiGraphics guiGraphics, int left, int top, float partialTicks) {
+  public void renderButton(
+      GuiGraphicsExtractor guiGraphics, int left, int top, float partialTicks) {
     if (this.renderBackground) {
       super.renderButton(guiGraphics, left, top, partialTicks);
     }
@@ -316,7 +237,7 @@ public class SpriteButton extends CustomButton {
         isActive() ? this.spriteOffsetY : spriteOffsetY + spriteHeight,
         spriteWidth,
         spriteHeight,
-        256,
-        256);
+        this.textureWidth,
+        this.textureHeight);
   }
 }

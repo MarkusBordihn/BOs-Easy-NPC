@@ -24,9 +24,9 @@ import de.markusbordihn.easynpc.api.skin.VariantTexture;
 import net.minecraft.resources.Identifier;
 
 public enum ChickenSkinVariant implements VariantTexture {
-  COLD(Constants.MINECRAFT_PREFIX, "textures/entity/chicken/cold_chicken.png"),
-  TEMPERATE(Constants.MINECRAFT_PREFIX, "textures/entity/chicken/temperate_chicken.png"),
-  WARM(Constants.MINECRAFT_PREFIX, "textures/entity/chicken/warm_chicken.png");
+  COLD(Constants.MINECRAFT_PREFIX, "textures/entity/chicken/chicken_cold.png"),
+  TEMPERATE(Constants.MINECRAFT_PREFIX, "textures/entity/chicken/chicken_temperate.png"),
+  WARM(Constants.MINECRAFT_PREFIX, "textures/entity/chicken/chicken_warm.png");
 
   private final Identifier textureLocation;
 

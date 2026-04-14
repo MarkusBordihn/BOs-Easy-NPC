@@ -26,7 +26,7 @@ import de.markusbordihn.easynpc.configui.client.screen.editor.action.ActionDataL
 import de.markusbordihn.easynpc.data.action.ActionDataEntry;
 import de.markusbordihn.easynpc.data.action.ActionDataSet;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 
 class ActionDataList extends ObjectSelectionList<ActionDataListEntry> {
@@ -70,17 +70,18 @@ class ActionDataList extends ObjectSelectionList<ActionDataListEntry> {
   }
 
   @Override
-  protected void renderSelection(GuiGraphics guiGraphics, ActionDataListEntry entry, int color) {
+  protected void extractSelection(
+      GuiGraphicsExtractor guiGraphics, ActionDataListEntry entry, int color) {
     // Do not render selection.
   }
 
   @Override
-  protected void renderListSeparators(GuiGraphics guiGraphics) {
+  protected void extractListSeparators(GuiGraphicsExtractor guiGraphics) {
     // Do not render list separators.
   }
 
   @Override
-  protected void renderListBackground(GuiGraphics guiGraphics) {
+  protected void extractListBackground(GuiGraphicsExtractor guiGraphics) {
     // Do not render list background.
   }
 }

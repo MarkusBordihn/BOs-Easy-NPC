@@ -58,7 +58,7 @@ public class EasyNPCModelManager {
   private final Map<ModelPartType, ModelPart> modelPartMap = new EnumMap<>(ModelPartType.class);
 
   public EasyNPCModelManager(final ModelPart rootModelPart) {
-    this(rootModelPart, RenderTypes::entityCutoutNoCull);
+    this(rootModelPart, RenderTypes::entityCutout);
   }
 
   public EasyNPCModelManager(

@@ -19,11 +19,11 @@
 
 package de.markusbordihn.easynpc.configui.client.screen.editor.condition.entry;
 
-import de.markusbordihn.easynpc.client.screen.components.ReloadButton;
 import de.markusbordihn.easynpc.client.screen.components.SpinButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextField;
 import de.markusbordihn.easynpc.configui.Constants;
+import de.markusbordihn.easynpc.configui.client.screen.components.ReloadButton;
 import de.markusbordihn.easynpc.configui.client.screen.editor.condition.ConditionDataEntryEditorContainerScreen;
 import de.markusbordihn.easynpc.configui.network.NetworkHandlerManager;
 import de.markusbordihn.easynpc.configui.network.message.server.ResetExecutionLimitMessage;
@@ -36,7 +36,7 @@ import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.stream.Collectors;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.server.permissions.Permissions;
 
 public class ExecutionLimitConditionEntry extends ConditionEntryWidget {
@@ -110,7 +110,7 @@ public class ExecutionLimitConditionEntry extends ConditionEntryWidget {
   }
 
   @Override
-  public void render(GuiGraphics guiGraphics, int editorLeft, int editorTop) {
+  public void render(GuiGraphicsExtractor guiGraphics, int editorLeft, int editorTop) {
     if (this.maxExecutionsTextField != null) {
       Text.drawConfigString(
           guiGraphics,

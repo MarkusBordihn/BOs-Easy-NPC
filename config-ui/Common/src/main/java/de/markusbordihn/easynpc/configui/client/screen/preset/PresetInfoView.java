@@ -26,7 +26,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 
@@ -40,7 +40,7 @@ public class PresetInfoView {
   }
 
   public static void render(
-      GuiGraphics guiGraphics,
+      GuiGraphicsExtractor guiGraphics,
       Font font,
       Identifier preset,
       PresetMetadata metadata,

@@ -44,7 +44,6 @@ public class EasyNPCClient implements ClientModInitializer {
 
     log.info("{} Renderer ...", Constants.LOG_REGISTER_PREFIX);
     BlockEntityRenderer.register();
-    BlockEntityRenderer.registerRenderLayers();
     EntityRenderer.register();
 
     log.info("{} Entity Layer Definitions ...", Constants.LOG_REGISTER_PREFIX);

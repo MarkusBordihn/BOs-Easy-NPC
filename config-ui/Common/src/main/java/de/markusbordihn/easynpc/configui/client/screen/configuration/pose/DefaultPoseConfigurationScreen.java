@@ -36,7 +36,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
@@ -220,8 +220,9 @@ public class DefaultPoseConfigurationScreen<T extends ConfigurationMenu>
   }
 
   @Override
-  public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
-    super.render(guiGraphics, x, y, partialTicks);
+  public void extractRenderState(
+      GuiGraphicsExtractor guiGraphics, int x, int y, float partialTicks) {
+    super.extractRenderState(guiGraphics, x, y, partialTicks);
 
     // Backup entity information
     boolean entityInvisible = this.getEasyNPCEntity().isInvisible();
@@ -253,7 +254,7 @@ public class DefaultPoseConfigurationScreen<T extends ConfigurationMenu>
               + Math.min(currentRow + MAX_VISIBLE_ROWS, totalRows)
               + " / "
               + totalRows;
-      guiGraphics.drawString(
+      guiGraphics.text(
           this.font,
           indicator,
           this.contentLeftPos + 175,
@@ -264,8 +265,9 @@ public class DefaultPoseConfigurationScreen<T extends ConfigurationMenu>
   }
 
   @Override
-  protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
-    super.renderBg(guiGraphics, partialTicks, mouseX, mouseY);
+  public void extractBackground(
+      GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    super.extractBackground(guiGraphics, mouseX, mouseY, partialTicks);
 
     // Entity
     guiGraphics.fill(

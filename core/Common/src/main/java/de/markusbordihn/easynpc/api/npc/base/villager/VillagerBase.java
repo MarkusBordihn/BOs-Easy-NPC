@@ -19,7 +19,6 @@
 
 package de.markusbordihn.easynpc.api.npc.base.villager;
 
-import com.google.common.collect.ImmutableList;
 import de.markusbordihn.easynpc.api.npc.BaseEasyNPC;
 import de.markusbordihn.easynpc.api.npc.raw.villager.VillagerRaw;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
@@ -35,45 +34,12 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.memory.MemoryModuleType;
-import net.minecraft.world.entity.ai.sensing.Sensor;
-import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.minecraft.world.entity.animal.FlyingAnimal;
 import net.minecraft.world.entity.npc.villager.Villager;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
 public class VillagerBase extends VillagerRaw implements BaseEasyNPC<VillagerRaw> {
-
-  protected static final ImmutableList<MemoryModuleType<?>> MEMORY_TYPES =
-      ImmutableList.of(
-          MemoryModuleType.ANGRY_AT,
-          MemoryModuleType.ATTACK_TARGET,
-          MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE,
-          MemoryModuleType.HEARD_BELL_TIME,
-          MemoryModuleType.HOME,
-          MemoryModuleType.HURT_BY_ENTITY,
-          MemoryModuleType.HURT_BY,
-          MemoryModuleType.JOB_SITE,
-          MemoryModuleType.LOOK_TARGET,
-          MemoryModuleType.MEETING_POINT,
-          MemoryModuleType.NEAREST_PLAYERS,
-          MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES,
-          MemoryModuleType.NEAREST_VISIBLE_PLAYER,
-          MemoryModuleType.PATH,
-          MemoryModuleType.POTENTIAL_JOB_SITE,
-          MemoryModuleType.WALK_TARGET);
-  private static final ImmutableList<SensorType<? extends Sensor<? super Villager>>> SENSOR_TYPES =
-      ImmutableList.of(
-          SensorType.GOLEM_DETECTED,
-          SensorType.HURT_BY,
-          SensorType.NEAREST_BED,
-          SensorType.NEAREST_ITEMS,
-          SensorType.NEAREST_LIVING_ENTITIES,
-          SensorType.NEAREST_PLAYERS,
-          SensorType.SECONDARY_POIS,
-          SensorType.VILLAGER_BABIES,
-          SensorType.VILLAGER_HOSTILES);
 
   public VillagerBase(EntityType<? extends Villager> entityType, Level level) {
     this(entityType, level, VillagerSkinVariant.DEFAULT);
@@ -146,8 +112,8 @@ public class VillagerBase extends VillagerRaw implements BaseEasyNPC<VillagerRaw
   }
 
   @Override
-  protected Brain.Provider<Villager> brainProvider() {
-    return Brain.provider(MEMORY_TYPES, SENSOR_TYPES);
+  protected Brain<Villager> makeBrain(Brain.Packed packedBrain) {
+    return new Brain<>();
   }
 
   @Override

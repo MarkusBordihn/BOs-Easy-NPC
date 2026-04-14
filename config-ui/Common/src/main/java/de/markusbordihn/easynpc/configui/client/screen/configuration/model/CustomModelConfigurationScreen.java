@@ -20,13 +20,13 @@
 package de.markusbordihn.easynpc.configui.client.screen.configuration.model;
 
 import de.markusbordihn.easynpc.client.renderer.manager.EntityTypeManager;
-import de.markusbordihn.easynpc.client.screen.components.SearchField;
-import de.markusbordihn.easynpc.client.screen.components.SkinSelectionButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.configui.client.renderer.manager.EntityTypeValidator;
 import de.markusbordihn.easynpc.configui.client.renderer.screen.EntityConfigScreenRenderer;
+import de.markusbordihn.easynpc.configui.client.screen.components.SearchField;
+import de.markusbordihn.easynpc.configui.client.screen.components.SkinSelectionButton;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.render.EntityRenderConfig;
@@ -36,7 +36,7 @@ import de.markusbordihn.easynpc.utils.TextUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -91,8 +91,9 @@ public class CustomModelConfigurationScreen<T extends ConfigurationMenu>
   }
 
   @Override
-  public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
-    super.render(guiGraphics, x, y, partialTicks);
+  public void extractRenderState(
+      GuiGraphicsExtractor guiGraphics, int x, int y, float partialTicks) {
+    super.extractRenderState(guiGraphics, x, y, partialTicks);
 
     // Description text
     renderDescriptionText(guiGraphics, this.contentLeftPos + 5, this.contentTopPos + 20);
@@ -100,7 +101,7 @@ public class CustomModelConfigurationScreen<T extends ConfigurationMenu>
     // Make sure we pass the mouse movements to the dynamically added buttons, if any.
     if (!customModelButtons.isEmpty()) {
       for (Button skinButton : customModelButtons) {
-        skinButton.render(guiGraphics, x, y, partialTicks);
+        skinButton.extractRenderState(guiGraphics, x, y, partialTicks);
       }
     }
 
@@ -199,8 +200,9 @@ public class CustomModelConfigurationScreen<T extends ConfigurationMenu>
   }
 
   @Override
-  protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
-    super.renderBg(guiGraphics, partialTicks, mouseX, mouseY);
+  public void extractBackground(
+      GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    super.extractBackground(guiGraphics, mouseX, mouseY, partialTicks);
     this.renderSkinSelectionBackground(guiGraphics);
   }
 
@@ -211,7 +213,7 @@ public class CustomModelConfigurationScreen<T extends ConfigurationMenu>
     EntityTypeValidator.validateUnknownEntityTypes(this.minecraftInstance.level);
   }
 
-  private void renderCustomModels(GuiGraphics guiGraphics) {
+  private void renderCustomModels(GuiGraphicsExtractor guiGraphics) {
     if (this.getEasyNPC() == null) {
       return;
     }
@@ -274,7 +276,7 @@ public class CustomModelConfigurationScreen<T extends ConfigurationMenu>
   }
 
   private void renderCustomModelEntity(
-      GuiGraphics guiGraphics, int x, int y, EntityType<? extends Entity> entityType) {
+      GuiGraphicsExtractor guiGraphics, int x, int y, EntityType<? extends Entity> entityType) {
     Button customModelButton =
         new SkinSelectionButton(
             x - 24,
@@ -302,7 +304,7 @@ public class CustomModelConfigurationScreen<T extends ConfigurationMenu>
     customModelButtons.add(customModelButton);
   }
 
-  private void renderSkinSelectionBackground(GuiGraphics guiGraphics) {
+  private void renderSkinSelectionBackground(GuiGraphicsExtractor guiGraphics) {
     guiGraphics.fill(
         this.contentLeftPos,
         this.contentTopPos + 104,

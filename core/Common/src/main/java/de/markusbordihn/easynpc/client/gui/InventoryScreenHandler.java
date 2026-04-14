@@ -30,7 +30,7 @@ import de.markusbordihn.easynpc.entity.easynpc.data.RenderDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.VariantDataCapable;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.entity.CatRenderer;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -99,7 +99,7 @@ public class InventoryScreenHandler {
   }
 
   private static void submitEntityRenderState(
-      GuiGraphics guiGraphics,
+      GuiGraphicsExtractor guiGraphics,
       EntityRenderState renderState,
       int size,
       Vector3f translation,
@@ -109,13 +109,12 @@ public class InventoryScreenHandler {
       int top,
       int right,
       int bottom) {
-    renderState.lightCoords = FULL_BRIGHT;
-    guiGraphics.submitEntityRenderState(
-        renderState, size, translation, rotation, entityRotation, left, top, right, bottom);
+    guiGraphics.entity(
+        renderState, (float) size, translation, rotation, entityRotation, left, top, right, bottom);
   }
 
   public static boolean onRenderEntityInInventoryFollowsMouse(
-      GuiGraphics guiGraphics,
+      GuiGraphicsExtractor guiGraphics,
       int left,
       int top,
       int right,
@@ -164,7 +163,7 @@ public class InventoryScreenHandler {
   }
 
   private static void renderDefaultEntityInInventory(
-      GuiGraphics guiGraphics,
+      GuiGraphicsExtractor guiGraphics,
       int left,
       int top,
       int right,
@@ -203,7 +202,7 @@ public class InventoryScreenHandler {
   }
 
   public static boolean renderCustomEntityInInventory(
-      GuiGraphics guiGraphics,
+      GuiGraphicsExtractor guiGraphics,
       int left,
       int top,
       int right,
@@ -260,7 +259,7 @@ public class InventoryScreenHandler {
   }
 
   public static boolean renderSkinEntityInInventory(
-      GuiGraphics guiGraphics,
+      GuiGraphicsExtractor guiGraphics,
       int left,
       int top,
       int right,

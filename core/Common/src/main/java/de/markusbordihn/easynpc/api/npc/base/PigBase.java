@@ -32,6 +32,8 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.FlyingAnimal;
 import net.minecraft.world.entity.animal.pig.Pig;
+import net.minecraft.world.entity.animal.pig.PigSoundVariant;
+import net.minecraft.world.entity.animal.pig.PigSoundVariants;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
@@ -79,10 +81,12 @@ public class PigBase extends PigRaw implements BaseEasyNPC<PigRaw> {
 
   @Override
   public SoundDataSet getDefaultSoundDataSet(SoundDataSet soundDataSet, String variantName) {
-    soundDataSet.addDefaultSound(SoundType.AMBIENT, SoundEvents.PIG_AMBIENT);
-    soundDataSet.addDefaultSound(SoundType.DEATH, SoundEvents.PIG_DEATH);
-    soundDataSet.addDefaultSound(SoundType.HURT, SoundEvents.PIG_HURT);
-    soundDataSet.addDefaultSound(SoundType.STEP, SoundEvents.PIG_STEP);
+    PigSoundVariant.PigSoundSet pigSounds =
+        SoundEvents.PIG_SOUNDS.get(PigSoundVariants.SoundSet.CLASSIC).adultSounds();
+    soundDataSet.addDefaultSound(SoundType.AMBIENT, pigSounds.ambientSound());
+    soundDataSet.addDefaultSound(SoundType.DEATH, pigSounds.deathSound());
+    soundDataSet.addDefaultSound(SoundType.HURT, pigSounds.hurtSound());
+    soundDataSet.addDefaultSound(SoundType.STEP, pigSounds.stepSound());
     soundDataSet.addDefaultSound(SoundType.TRADE, SoundEvents.VILLAGER_TRADE);
     soundDataSet.addDefaultSound(SoundType.TRADE_YES, SoundEvents.VILLAGER_YES);
     soundDataSet.addDefaultSound(SoundType.TRADE_NO, SoundEvents.VILLAGER_NO);

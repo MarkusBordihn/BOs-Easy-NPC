@@ -30,7 +30,7 @@ import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
-import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import org.spongepowered.asm.mixin.Mixin;
@@ -84,7 +84,7 @@ public class EasyNPCEntityRendererMixin<T extends Entity, S extends EntityRender
     }
   }
 
-  @Inject(method = "submitNameTag", at = @At("HEAD"), cancellable = true)
+  @Inject(method = "submitNameDisplay", at = @At("HEAD"), cancellable = true)
   private void onRenderNameTag(
       S renderState,
       PoseStack poseStack,

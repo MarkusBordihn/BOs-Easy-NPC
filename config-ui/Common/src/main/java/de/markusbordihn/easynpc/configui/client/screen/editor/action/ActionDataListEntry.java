@@ -19,12 +19,12 @@
 
 package de.markusbordihn.easynpc.configui.client.screen.editor.action;
 
-import de.markusbordihn.easynpc.client.screen.components.DeleteButton;
 import de.markusbordihn.easynpc.client.screen.components.DrawBorder;
-import de.markusbordihn.easynpc.client.screen.components.EditButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
-import de.markusbordihn.easynpc.client.screen.components.UpDownButton;
 import de.markusbordihn.easynpc.configui.Constants;
+import de.markusbordihn.easynpc.configui.client.screen.components.DeleteButton;
+import de.markusbordihn.easynpc.configui.client.screen.components.EditButton;
+import de.markusbordihn.easynpc.configui.client.screen.components.UpDownButton;
 import de.markusbordihn.easynpc.data.action.ActionDataEntry;
 import de.markusbordihn.easynpc.data.action.ActionDataSet;
 import de.markusbordihn.easynpc.data.action.ActionDataType;
@@ -33,7 +33,7 @@ import de.markusbordihn.easynpc.network.components.TextComponent;
 import de.markusbordihn.easynpc.utils.TextUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
@@ -152,8 +152,12 @@ public class ActionDataListEntry extends ObjectSelectionList.Entry<ActionDataLis
   }
 
   @Override
-  public void renderContent(
-      GuiGraphics guiGraphics, int mouseX, int mouseY, boolean isHovered, float partialTicks) {
+  public void extractContent(
+      GuiGraphicsExtractor guiGraphics,
+      int mouseX,
+      int mouseY,
+      boolean isHovered,
+      float partialTicks) {
 
     int top = this.getY();
     int entryHeight = this.getHeight();
@@ -192,21 +196,21 @@ public class ActionDataListEntry extends ObjectSelectionList.Entry<ActionDataLis
 
     // Up and down buttons
     this.upAndDownButton.setY(top);
-    this.upAndDownButton.render(guiGraphics, mouseX, mouseY, partialTicks);
+    this.upAndDownButton.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
     this.upAndDownButton.enableUpButton(this.entryIndex > 0);
     this.upAndDownButton.enableDownButton(this.entryIndex < this.actionDateEntriesSize - 1);
 
     // Edit and delete buttons
     this.editButton.setY(top);
-    this.editButton.render(guiGraphics, mouseX, mouseY, partialTicks);
+    this.editButton.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
     this.deleteButton.setY(top);
-    this.deleteButton.render(guiGraphics, mouseX, mouseY, partialTicks);
+    this.deleteButton.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
 
     // Render separator lines
     this.renderSeparatorLines(guiGraphics, top);
   }
 
-  private void renderValuePreview(GuiGraphics guiGraphics, int fieldsLeft, int fieldTop) {
+  private void renderValuePreview(GuiGraphicsExtractor guiGraphics, int fieldsLeft, int fieldTop) {
     if (this.actionDataType == ActionDataType.COMMAND
         || this.actionDataType == ActionDataType.OPEN_NAMED_DIALOG) {
       Text.drawString(
@@ -237,7 +241,7 @@ public class ActionDataListEntry extends ObjectSelectionList.Entry<ActionDataLis
     }
   }
 
-  public void renderSeparatorLines(GuiGraphics guiGraphics, int top) {
+  public void renderSeparatorLines(GuiGraphicsExtractor guiGraphics, int top) {
     int separatorTop = top - 1;
     int separatorLeft = this.leftPos + FIELD_LEFT_OFFSET;
     DrawBorder.drawVerticalSeparator(

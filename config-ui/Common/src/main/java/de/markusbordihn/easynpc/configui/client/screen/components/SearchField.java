@@ -17,11 +17,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.client.screen.components;
+package de.markusbordihn.easynpc.configui.client.screen.components;
 
-import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.client.screen.components.TextField;
+import de.markusbordihn.easynpc.configui.Constants;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
 
@@ -42,10 +43,10 @@ public class SearchField extends TextField {
   }
 
   @Override
-  public void renderWidget(GuiGraphics guiGraphics, int left, int top, float partialTicks) {
-    super.renderWidget(guiGraphics, left, top, partialTicks);
+  public void extractWidgetRenderState(
+      GuiGraphicsExtractor guiGraphics, int left, int top, float partialTicks) {
+    super.extractWidgetRenderState(guiGraphics, left, top, partialTicks);
 
-    // Expand Search Field Background and Border
     int stylePositionX = this.getX() - SPRITE_WIDTH;
     guiGraphics.fill(
         stylePositionX - 1,
@@ -60,7 +61,6 @@ public class SearchField extends TextField {
         this.getY() + this.height - 1,
         0xFF000000);
 
-    // Button Sprite
     guiGraphics.blit(
         RenderPipelines.GUI_TEXTURED,
         SPRITE,

@@ -16,14 +16,14 @@ description = '''Create easily NPCs for your world or for your mods.'''
 [[dependencies.easy_npc_config_ui]]
 modId = "forge"
 mandatory = true
-versionRange = "[61.0.3,)"
+versionRange = "[63.0.1,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.easy_npc_config_ui]]
 modId = "minecraft"
 mandatory = true
-versionRange = "[1.21.11]"
+versionRange = "[26.1.1]"
 ordering = "NONE"
 side = "BOTH"
 

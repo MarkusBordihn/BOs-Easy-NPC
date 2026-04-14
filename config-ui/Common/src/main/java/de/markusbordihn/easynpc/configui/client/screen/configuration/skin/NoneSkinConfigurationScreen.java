@@ -19,7 +19,7 @@
 
 package de.markusbordihn.easynpc.configui.client.screen.configuration.skin;
 
-import de.markusbordihn.easynpc.client.screen.components.Checkbox;
+import de.markusbordihn.easynpc.configui.client.screen.components.Checkbox;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.skin.SkinDataEntry;
@@ -27,7 +27,7 @@ import de.markusbordihn.easynpc.data.skin.SkinType;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.VariantDataCapable;
 import java.util.UUID;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -86,13 +86,14 @@ public class NoneSkinConfigurationScreen<T extends ConfigurationMenu>
   }
 
   @Override
-  protected void renderSkinSelectionBackground(GuiGraphics guiGraphics) {
+  protected void renderSkinSelectionBackground(GuiGraphicsExtractor guiGraphics) {
     // Do nothing
   }
 
   @Override
-  public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
-    super.render(guiGraphics, x, y, partialTicks);
+  public void extractRenderState(
+      GuiGraphicsExtractor guiGraphics, int x, int y, float partialTicks) {
+    super.extractRenderState(guiGraphics, x, y, partialTicks);
 
     // Description text
     renderDescriptionText(guiGraphics, this.contentLeftPos + 5, this.contentTopPos + 60);

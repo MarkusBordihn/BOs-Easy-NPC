@@ -20,7 +20,7 @@
 package de.markusbordihn.easynpc.configui.client.screen.components;
 
 import de.markusbordihn.easynpc.client.screen.components.CustomButton;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button.OnPress;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.world.item.DyeColor;
@@ -50,7 +50,8 @@ public class ColorButton extends CustomButton {
   }
 
   @Override
-  public void renderButton(GuiGraphics guiGraphics, int left, int top, float partialTicks) {
+  public void renderButton(
+      GuiGraphicsExtractor guiGraphics, int left, int top, float partialTicks) {
     super.renderButton(guiGraphics, left, top, partialTicks);
     guiGraphics.fill(
         getX() + 2,

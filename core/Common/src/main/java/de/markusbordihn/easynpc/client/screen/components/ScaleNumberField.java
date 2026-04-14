@@ -19,7 +19,6 @@
 
 package de.markusbordihn.easynpc.client.screen.components;
 
-import de.markusbordihn.easynpc.utils.ValueUtils;
 import net.minecraft.client.gui.Font;
 
 public class ScaleNumberField extends TextField {
@@ -34,6 +33,5 @@ public class ScaleNumberField extends TextField {
       double minValue,
       double maxValue) {
     super(font, x, y, width, height, value);
-    this.setFilter(text -> ValueUtils.isScaleValueInRange(text, minValue, maxValue));
   }
 }

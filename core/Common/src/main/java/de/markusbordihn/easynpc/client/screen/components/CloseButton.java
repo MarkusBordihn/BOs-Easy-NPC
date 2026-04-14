@@ -19,13 +19,19 @@
 
 package de.markusbordihn.easynpc.client.screen.components;
 
+import de.markusbordihn.easynpc.Constants;
+import net.minecraft.resources.Identifier;
+
 public class CloseButton extends SpriteButton {
+
+  private static final Identifier TEXTURE =
+      Identifier.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/close_button.png");
 
   private static final int DEFAULT_HEIGHT = 12;
   private static final int DEFAULT_WIDTH = 12;
   private static final int SPRITE_HEIGHT = 10;
-  private static final int SPRITE_OFFSET_X = 64;
-  private static final int SPRITE_OFFSET_Y = 38;
+  private static final int SPRITE_OFFSET_X = 0;
+  private static final int SPRITE_OFFSET_Y = 0;
   private static final int SPRITE_WIDTH = 10;
   private static final int SPRITE_X = 1;
   private static final int SPRITE_Y = 1;
@@ -36,6 +42,7 @@ public class CloseButton extends SpriteButton {
         top,
         DEFAULT_WIDTH,
         DEFAULT_HEIGHT,
+        TEXTURE,
         SPRITE_X,
         SPRITE_Y,
         SPRITE_OFFSET_X,
@@ -44,5 +51,6 @@ public class CloseButton extends SpriteButton {
         SPRITE_HEIGHT,
         onPress);
     this.setRenderBackground(false);
+    this.setTextureSize(64, 64);
   }
 }

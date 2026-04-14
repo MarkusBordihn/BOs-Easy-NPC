@@ -45,6 +45,7 @@ import net.minecraft.world.item.BowItem;
 import net.minecraft.world.item.CrossbowItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ProjectileWeaponItem;
 import net.minecraft.world.item.component.ChargedProjectiles;
@@ -56,7 +57,8 @@ public class AttackHandler {
   public static void addChargedProjectile(
       ItemStack weaponItemStack, ItemStack projectileItemStack) {
     weaponItemStack.set(
-        DataComponents.CHARGED_PROJECTILES, ChargedProjectiles.of(projectileItemStack));
+        DataComponents.CHARGED_PROJECTILES,
+        ChargedProjectiles.of(ItemStackTemplate.fromNonEmptyStack(projectileItemStack)));
   }
 
   public static boolean isMeleeWeapon(ItemStack itemStack) {

@@ -7,8 +7,7 @@ import de.markusbordihn.easynpc.configui.client.screen.editor.action.ActionDataE
 import de.markusbordihn.easynpc.data.action.ActionDataEntry;
 import de.markusbordihn.easynpc.data.action.ActionDataSet;
 import de.markusbordihn.easynpc.data.action.ActionDataType;
-import de.markusbordihn.easynpc.utils.ValueUtils;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.BlockPos;
 
 public class InteractBlockEntry extends ActionEntryWidget {
@@ -35,25 +34,22 @@ public class InteractBlockEntry extends ActionEntryWidget {
             new TextField(this.font, editorLeft, editorTop + 20, 70, 16));
     this.blockPosXTextField.setMaxLength(8);
     this.blockPosXTextField.setValue(String.valueOf(blockPos.getX()));
-    this.blockPosXTextField.setFilter(ValueUtils::isNumericValue);
 
     this.blockPosYTextField =
         this.screen.addActionEntryWidget(
             new TextField(this.font, editorLeft + 100, editorTop + 20, 70, 16));
     this.blockPosYTextField.setMaxLength(8);
     this.blockPosYTextField.setValue(String.valueOf(blockPos.getY()));
-    this.blockPosYTextField.setFilter(ValueUtils::isNumericValue);
 
     this.blockPosZTextField =
         this.screen.addActionEntryWidget(
             new TextField(this.font, editorLeft + 200, editorTop + 20, 70, 16));
     this.blockPosZTextField.setMaxLength(8);
     this.blockPosZTextField.setValue(String.valueOf(blockPos.getZ()));
-    this.blockPosZTextField.setFilter(ValueUtils::isNumericValue);
   }
 
   @Override
-  public void render(GuiGraphics guiGraphics, int editorLeft, int editorTop) {
+  public void render(GuiGraphicsExtractor guiGraphics, int editorLeft, int editorTop) {
     Text.drawConfigString(
         guiGraphics,
         this.font,

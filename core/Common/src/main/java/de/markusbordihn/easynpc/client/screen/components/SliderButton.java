@@ -24,7 +24,7 @@ import de.markusbordihn.easynpc.network.components.TextComponent;
 import net.minecraft.client.InputType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractSliderButton;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -314,11 +314,13 @@ public class SliderButton extends AbstractSliderButton {
   }
 
   @Override
-  public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+  public void extractWidgetRenderState(
+      GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
     this.renderButton(guiGraphics, mouseX, mouseY, partialTicks);
   }
 
-  public void renderButton(GuiGraphics guiGraphics, int left, int top, float partialTicks) {
+  public void renderButton(
+      GuiGraphicsExtractor guiGraphics, int left, int top, float partialTicks) {
     Minecraft minecraft = Minecraft.getInstance();
     Font font = minecraft.font;
 
@@ -341,7 +343,7 @@ public class SliderButton extends AbstractSliderButton {
         this.getHeight());
 
     int fgColor = this.active ? Constants.FONT_COLOR_WHITE : Constants.FONT_COLOR_LIGHT_GRAY;
-    guiGraphics.drawCenteredString(
+    guiGraphics.centeredText(
         font,
         this.getMessage(),
         this.getX() + this.width / 2,

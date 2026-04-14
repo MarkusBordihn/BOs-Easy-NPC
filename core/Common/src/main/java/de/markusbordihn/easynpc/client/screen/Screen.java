@@ -28,7 +28,7 @@ import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.menu.ScreenMenuInterface;
 import java.util.UUID;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.client.input.KeyEvent;
@@ -146,7 +146,7 @@ public class Screen<
     if (this.showCloseButton) {
       this.closeButton =
           this.addRenderableWidget(
-              new CloseButton(this.rightPos - 15, this.topPos + 4, onPress -> onClose()));
+              new CloseButton(this.rightPos - 10, this.topPos + 1, onPress -> onClose()));
     }
   }
 
@@ -158,34 +158,31 @@ public class Screen<
   }
 
   @Override
-  public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
+  public void extractRenderState(
+      GuiGraphicsExtractor guiGraphics, int x, int y, float partialTicks) {
     this.xMouse = x;
     this.yMouse = y;
-    super.render(guiGraphics, x, y, partialTicks);
+    super.extractRenderState(guiGraphics, x, y, partialTicks);
   }
 
   @Override
-  public void renderBackground(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
+  public void extractBackground(
+      GuiGraphicsExtractor guiGraphics, int x, int y, float partialTicks) {
     if (this.renderBackground) {
-      super.renderBackground(guiGraphics, x, y, partialTicks);
+      super.extractBackground(guiGraphics, x, y, partialTicks);
     }
     this.renderBg(guiGraphics, partialTicks, x, y);
     this.renderLabels(guiGraphics, x, y);
   }
 
-  protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
-    // Render screen background
+  protected void renderBg(
+      GuiGraphicsExtractor guiGraphics, float partialTicks, int mouseX, int mouseY) {
     if (renderDefaultScreenBackground) {
-      this.renderDefaultScreenBg(guiGraphics, this.leftPos, this.topPos);
-    }
-
-    // Render title background for none compact mode
-    if (!this.compactMode) {
-      this.renderDefaultTitleBg(guiGraphics, this.leftPos, this.topPos);
+      this.renderDefaultScreenBg(guiGraphics, this.leftPos, this.topPos, this.compactMode);
     }
   }
 
-  protected void renderLabels(GuiGraphics guiGraphics, int x, int y) {
+  protected void renderLabels(GuiGraphicsExtractor guiGraphics, int x, int y) {
     Text.drawString(
         guiGraphics,
         this.font,

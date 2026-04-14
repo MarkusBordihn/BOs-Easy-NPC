@@ -19,11 +19,11 @@
 
 package de.markusbordihn.easynpc.configui.client.screen.editor.action;
 
-import de.markusbordihn.easynpc.client.screen.components.AddButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.configui.client.screen.components.ActionsButton;
+import de.markusbordihn.easynpc.configui.client.screen.components.AddButton;
 import de.markusbordihn.easynpc.configui.client.screen.components.DialogButtonButton;
 import de.markusbordihn.easynpc.configui.data.editor.EditorType;
 import de.markusbordihn.easynpc.configui.menu.editor.EditorMenu;
@@ -33,7 +33,7 @@ import de.markusbordihn.easynpc.data.action.ActionDataSet;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.network.components.TextComponent;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.ConfirmScreen;
 import net.minecraft.network.chat.CommonComponents;
@@ -322,8 +322,9 @@ public class ActionDataEditorContainerScreen<T extends EditorMenu>
   }
 
   @Override
-  public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
-    super.render(guiGraphics, x, y, partialTicks);
+  public void extractRenderState(
+      GuiGraphicsExtractor guiGraphics, int x, int y, float partialTicks) {
+    super.extractRenderState(guiGraphics, x, y, partialTicks);
 
     // Gray background for dialog list
     guiGraphics.fill(
@@ -335,7 +336,7 @@ public class ActionDataEditorContainerScreen<T extends EditorMenu>
 
     // Render Action Data List
     if (this.actionDataList != null) {
-      this.actionDataList.render(guiGraphics, x, y, partialTicks);
+      this.actionDataList.extractRenderState(guiGraphics, x, y, partialTicks);
     }
 
     // Render Header
@@ -346,11 +347,11 @@ public class ActionDataEditorContainerScreen<T extends EditorMenu>
 
     // Re-render button for visibility
     if (this.newActionDataEntryButton != null) {
-      this.newActionDataEntryButton.render(guiGraphics, x, y, partialTicks);
+      this.newActionDataEntryButton.extractRenderState(guiGraphics, x, y, partialTicks);
     }
   }
 
-  private void renderHeader(GuiGraphics guiGraphics) {
+  private void renderHeader(GuiGraphicsExtractor guiGraphics) {
     // Header background
     guiGraphics.fill(
         this.leftPos + LIST_X_OFFSET,
@@ -413,7 +414,7 @@ public class ActionDataEditorContainerScreen<T extends EditorMenu>
         COLOR_SEPARATOR);
   }
 
-  private void renderFooter(GuiGraphics guiGraphics) {
+  private void renderFooter(GuiGraphicsExtractor guiGraphics) {
     // Footer background
     guiGraphics.fill(
         this.leftPos + LIST_X_OFFSET,

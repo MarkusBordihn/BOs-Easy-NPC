@@ -17,21 +17,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.client.screen.components;
+package de.markusbordihn.easynpc.configui.client.screen.components;
 
-import net.minecraft.client.gui.components.Button.OnPress;
+import de.markusbordihn.easynpc.client.screen.components.SpriteButton;
+import de.markusbordihn.easynpc.configui.Constants;
+import net.minecraft.resources.Identifier;
 
 public class CopyButton extends SpriteButton {
 
   private static final int DEFAULT_HEIGHT = 16;
   private static final int DEFAULT_WIDTH_SMALL = 16;
-  private static final int DEFAULT_WIDTH = 100;
   private static final int SPRITE_HEIGHT = 12;
   private static final int SPRITE_OFFSET_X = 65;
   private static final int SPRITE_OFFSET_Y = 130;
   private static final int SPRITE_WIDTH = 12;
   private static final int SPRITE_X = 3;
   private static final int SPRITE_Y = 2;
+  private static final Identifier TEXTURE = Constants.TEXTURE_CONFIGURATION;
 
   public CopyButton(int left, int top, OnPress onPress) {
     this(left, top, DEFAULT_WIDTH_SMALL, "", onPress);
@@ -44,6 +46,7 @@ public class CopyButton extends SpriteButton {
         width,
         DEFAULT_HEIGHT,
         label,
+        TEXTURE,
         SPRITE_X,
         SPRITE_Y,
         SPRITE_OFFSET_X,

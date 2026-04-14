@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.data.sound;
 import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
 import java.util.EnumMap;
 import java.util.Map;
+import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -83,6 +84,13 @@ public class SoundDataSet {
       return;
     }
     defaultSounds.put(type, new SoundDataEntry(type, soundEvent.location()));
+  }
+
+  public void addDefaultSound(SoundType type, Holder<SoundEvent> soundHolder) {
+    if (soundHolder == null) {
+      return;
+    }
+    addDefaultSound(type, soundHolder.value());
   }
 
   public boolean isEmpty() {

@@ -23,7 +23,7 @@ import de.markusbordihn.easynpc.network.components.TextComponent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.input.MouseButtonEvent;
 
@@ -85,7 +85,8 @@ public class SpinButton<T> extends CustomButton {
   }
 
   @Override
-  public void renderButton(GuiGraphics guiGraphics, int left, int top, float partialTicks) {
+  public void renderButton(
+      GuiGraphicsExtractor guiGraphics, int left, int top, float partialTicks) {
     this.previousButton.renderButton(guiGraphics, left, top, partialTicks);
     this.nextButton.renderButton(guiGraphics, left, top, partialTicks);
     this.textButton.renderButton(guiGraphics, left, top, partialTicks);

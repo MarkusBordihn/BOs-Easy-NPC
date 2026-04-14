@@ -19,13 +19,11 @@
 
 package de.markusbordihn.easynpc.client.screen.components;
 
-import de.markusbordihn.easynpc.utils.ValueUtils;
 import net.minecraft.client.gui.Font;
 
 public class DegreeNumberField extends TextField {
 
   public DegreeNumberField(Font font, int x, int y, int width, int height, double value) {
     super(font, x, y, width, height, value);
-    this.setFilter(ValueUtils::isDegreeValue);
   }
 }

@@ -24,18 +24,18 @@ import de.markusbordihn.easynpc.api.skin.VariantTexture;
 import net.minecraft.resources.Identifier;
 
 public enum CatSkinVariant implements VariantTexture {
-  ALL_BLACK(Constants.MINECRAFT_PREFIX, "textures/entity/cat/all_black.png"),
-  BLACK(Constants.MINECRAFT_PREFIX, "textures/entity/cat/black.png"),
-  BRITISH_SHORTHAIR(Constants.MINECRAFT_PREFIX, "textures/entity/cat/british_shorthair.png"),
-  CALICO(Constants.MINECRAFT_PREFIX, "textures/entity/cat/calico.png"),
-  JELLIE(Constants.MINECRAFT_PREFIX, "textures/entity/cat/jellie.png"),
+  ALL_BLACK(Constants.MINECRAFT_PREFIX, "textures/entity/cat/cat_all_black.png"),
+  BLACK(Constants.MINECRAFT_PREFIX, "textures/entity/cat/cat_black.png"),
+  BRITISH_SHORTHAIR(Constants.MINECRAFT_PREFIX, "textures/entity/cat/cat_british_shorthair.png"),
+  CALICO(Constants.MINECRAFT_PREFIX, "textures/entity/cat/cat_calico.png"),
+  JELLIE(Constants.MINECRAFT_PREFIX, "textures/entity/cat/cat_jellie.png"),
   OCELOT(Constants.MINECRAFT_PREFIX, "textures/entity/cat/ocelot.png"),
-  PERSIAN(Constants.MINECRAFT_PREFIX, "textures/entity/cat/persian.png"),
-  RAGDOLL(Constants.MINECRAFT_PREFIX, "textures/entity/cat/ragdoll.png"),
-  RED(Constants.MINECRAFT_PREFIX, "textures/entity/cat/red.png"),
-  SIAMESE(Constants.MINECRAFT_PREFIX, "textures/entity/cat/siamese.png"),
-  TABBY(Constants.MINECRAFT_PREFIX, "textures/entity/cat/tabby.png"),
-  WHITE(Constants.MINECRAFT_PREFIX, "textures/entity/cat/white.png");
+  PERSIAN(Constants.MINECRAFT_PREFIX, "textures/entity/cat/cat_persian.png"),
+  RAGDOLL(Constants.MINECRAFT_PREFIX, "textures/entity/cat/cat_ragdoll.png"),
+  RED(Constants.MINECRAFT_PREFIX, "textures/entity/cat/cat_red.png"),
+  SIAMESE(Constants.MINECRAFT_PREFIX, "textures/entity/cat/cat_siamese.png"),
+  TABBY(Constants.MINECRAFT_PREFIX, "textures/entity/cat/cat_tabby.png"),
+  WHITE(Constants.MINECRAFT_PREFIX, "textures/entity/cat/cat_white.png");
 
   private final Identifier textureLocation;
 

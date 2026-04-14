@@ -35,7 +35,7 @@ import de.markusbordihn.easynpc.entity.easynpc.data.TradingDataCapable;
 import de.markusbordihn.easynpc.utils.ValueUtils;
 import java.util.HashMap;
 import java.util.Objects;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
@@ -130,7 +130,6 @@ public class AdvancedTradingConfigurationContainerScreen<T extends Configuration
     this.resetsEveryMinEditBox.setMaxLength(3);
     this.resetsEveryMinEditBox.setValue(tradingDataSet.getResetsEveryMin() + "");
     this.resetsEveryMinEditBox.setResponder(this::onResetsEveryMinEditBoxChanged);
-    this.resetsEveryMinEditBox.setFilter(ValueUtils::isNumericValue);
     this.addRenderableWidget(this.resetsEveryMinEditBox);
 
     // Adding trading edit boxes for advanced trading configuration
@@ -173,7 +172,6 @@ public class AdvancedTradingConfigurationContainerScreen<T extends Configuration
       rewardExpEditBox.setValue(merchantOffer.getXp() >= 0 ? merchantOffer.getXp() + "" : "0");
       rewardExpEditBox.setResponder(
           text -> onRewardExpEditBoxChanged(tradingOfferIndex, text, merchantOffer.getXp() + ""));
-      rewardExpEditBox.setFilter(ValueUtils::isNumericValue);
       rewardExpEditBox.setEditable(hasValidOffer);
       rewardExpEditBoxes.put(tradingOfferIndex, rewardExpEditBox);
       this.addRenderableWidget(rewardExpEditBox);
@@ -188,7 +186,6 @@ public class AdvancedTradingConfigurationContainerScreen<T extends Configuration
           text ->
               onPriceMultiplierEditBoxChanged(
                   tradingOfferIndex, text, merchantOffer.getPriceMultiplier() + ""));
-      priceMultiplierEditBox.setFilter(ValueUtils::isFloatValue);
       priceMultiplierEditBox.setEditable(hasValidOffer);
       priceMultiplierEditBoxes.put(tradingOfferIndex, priceMultiplierEditBox);
       this.addRenderableWidget(priceMultiplierEditBox);
@@ -200,7 +197,6 @@ public class AdvancedTradingConfigurationContainerScreen<T extends Configuration
       demandEditBox.setValue(merchantOffer.getDemand() >= 0 ? merchantOffer.getDemand() + "" : "0");
       demandEditBox.setResponder(
           text -> onDemandEditBoxChanged(tradingOfferIndex, text, merchantOffer.getDemand() + ""));
-      demandEditBox.setFilter(ValueUtils::isNumericValue);
       demandEditBox.setEditable(hasValidOffer);
       demandEditBoxes.put(tradingOfferIndex, demandEditBox);
       this.addRenderableWidget(demandEditBox);
@@ -303,14 +299,15 @@ public class AdvancedTradingConfigurationContainerScreen<T extends Configuration
   }
 
   @Override
-  public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
-    super.render(guiGraphics, x, y, partialTicks);
-    this.renderTooltip(guiGraphics, x, y);
+  public void extractRenderState(
+      GuiGraphicsExtractor guiGraphics, int x, int y, float partialTicks) {
+    super.extractRenderState(guiGraphics, x, y, partialTicks);
   }
 
   @Override
-  protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
-    super.renderBg(guiGraphics, partialTicks, mouseX, mouseY);
+  public void extractBackground(
+      GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    super.extractBackground(guiGraphics, mouseX, mouseY, partialTicks);
 
     // Render Legend (without translation / not enough space for translation)
     int legendTopPositionY = this.contentTopPos + 2;

@@ -20,7 +20,9 @@
 package de.markusbordihn.easynpc.configui.client.screen.components;
 
 import de.markusbordihn.easynpc.client.screen.components.SpriteButton;
+import de.markusbordihn.easynpc.configui.Constants;
 import net.minecraft.client.gui.components.Button.OnPress;
+import net.minecraft.resources.Identifier;
 
 public class DialogButton extends SpriteButton {
 
@@ -31,6 +33,7 @@ public class DialogButton extends SpriteButton {
   public static final int SPRITE_WIDTH = 12;
   public static final int SPRITE_X = 4;
   public static final int SPRITE_Y = 2;
+  private static final Identifier TEXTURE = Constants.TEXTURE_CONFIGURATION;
 
   public DialogButton(int left, int top, int width, String label, OnPress onPress) {
     super(
@@ -39,6 +42,7 @@ public class DialogButton extends SpriteButton {
         width,
         DEFAULT_HEIGHT,
         label,
+        TEXTURE,
         SPRITE_X,
         SPRITE_Y,
         SPRITE_OFFSET_X,

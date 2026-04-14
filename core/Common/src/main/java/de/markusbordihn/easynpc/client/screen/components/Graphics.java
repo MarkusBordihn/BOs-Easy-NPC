@@ -19,7 +19,7 @@
 
 package de.markusbordihn.easynpc.client.screen.components;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
 
@@ -28,7 +28,7 @@ public class Graphics {
   private Graphics() {}
 
   public static void blit(
-      GuiGraphics guiGraphics,
+      GuiGraphicsExtractor guiGraphics,
       Identifier texture,
       int x,
       int y,
@@ -40,7 +40,7 @@ public class Graphics {
   }
 
   public static void blit(
-      GuiGraphics guiGraphics,
+      GuiGraphicsExtractor guiGraphics,
       Identifier texture,
       int x,
       int y,
@@ -61,5 +61,35 @@ public class Graphics {
         textureY,
         textureWidth,
         textureHeight);
+  }
+
+  public static void blitStretched(
+      GuiGraphicsExtractor guiGraphics,
+      Identifier texture,
+      int destX,
+      int destY,
+      int destWidth,
+      int destHeight,
+      int srcX,
+      int srcY,
+      int srcWidth,
+      int srcHeight,
+      int textureWidth,
+      int textureHeight) {
+    guiGraphics.pose().pushMatrix();
+    guiGraphics.pose().translate((float) destX, (float) destY);
+    guiGraphics.pose().scale((float) destWidth / srcWidth, (float) destHeight / srcHeight);
+    guiGraphics.blit(
+        RenderPipelines.GUI_TEXTURED,
+        texture,
+        0,
+        0,
+        (float) srcX,
+        (float) srcY,
+        srcWidth,
+        srcHeight,
+        textureWidth,
+        textureHeight);
+    guiGraphics.pose().popMatrix();
   }
 }

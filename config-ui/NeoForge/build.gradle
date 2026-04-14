@@ -1,7 +1,7 @@
 plugins {
   id 'maven-publish'
-  id 'net.neoforged.moddev' version '2.0.126'
-  id 'net.darkhax.curseforgegradle' version '1.1.28'
+  id 'net.neoforged.moddev' version '2.0.141'
+  id 'net.darkhax.curseforgegradle' version '1.2.30'
   id 'nu.studer.credentials' version '3.0'
   id "com.modrinth.minotaur" version "2.+"
 }
@@ -58,11 +58,15 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 dependencies {
   // Include Common code
-  implementation project(":Common")
+  compileOnly project(":Common")
 
   // Include Core Common code
-  implementation "de.markusbordihn.easynpc:easy_npc-neoforge-${project.minecraft_version}:${project.version}"
-  runtimeOnly "de.markusbordihn.easynpc:easy_npc-neoforge-${project.minecraft_version}:${project.version}"
+  implementation("de.markusbordihn.easynpc:easy_npc-neoforge-${project.minecraft_version}:${project.version}") {
+    changing = true
+  }
+  runtimeOnly("de.markusbordihn.easynpc:easy_npc-neoforge-${project.minecraft_version}:${project.version}") {
+    changing = true
+  }
 
   // Test dependencies
   testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.1'
@@ -95,10 +99,6 @@ tasks.withType(Javadoc).matching(notNeoTask).configureEach {
 
 tasks.named("sourcesJar", Jar) {
   from(project(":Common").sourceSets.main.allSource)
-}
-
-tasks.withType(ProcessResources).matching(notNeoTask).configureEach {
-  from project(":Common").sourceSets.main.resources
 }
 
 tasks.named('compileTestJava', JavaCompile).configure {
@@ -184,4 +184,10 @@ if (project.hasProperty('modrinth_project_id') && project.modrinth_project_id) {
       required.project "easy-npc-core"
     }
   }
+}
+
+sourceSets.each {
+  def dir = layout.buildDirectory.dir("sourcesSets/$it.name")
+  it.output.resourcesDir = dir
+  it.java.destinationDirectory = dir
 }

@@ -19,17 +19,17 @@
 
 package de.markusbordihn.easynpc.configui.client.screen.configuration.equipment;
 
-import de.markusbordihn.easynpc.client.screen.components.Checkbox;
 import de.markusbordihn.easynpc.client.screen.components.Graphics;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.configui.client.renderer.screen.EntityConfigScreenRenderer;
+import de.markusbordihn.easynpc.configui.client.screen.components.Checkbox;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.ConfigurationContainerScreen;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.render.EntityRenderConfig;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -96,8 +96,9 @@ public class EquipmentConfigurationContainerScreen<T extends ConfigurationMenu>
   }
 
   @Override
-  public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
-    super.render(guiGraphics, x, y, partialTicks);
+  public void extractRenderState(
+      GuiGraphicsExtractor guiGraphics, int x, int y, float partialTicks) {
+    super.extractRenderState(guiGraphics, x, y, partialTicks);
 
     EntityConfigScreenRenderer.renderEntityRaw(
         guiGraphics,
@@ -105,13 +106,12 @@ public class EquipmentConfigurationContainerScreen<T extends ConfigurationMenu>
         EntityRenderConfig.guiScaled(this.contentLeftPos + 138, this.contentTopPos + 70, 35),
         this.xMouse,
         this.yMouse);
-
-    this.renderTooltip(guiGraphics, x, y);
   }
 
   @Override
-  protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
-    super.renderBg(guiGraphics, partialTicks, mouseX, mouseY);
+  public void extractBackground(
+      GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    super.extractBackground(guiGraphics, mouseX, mouseY, partialTicks);
 
     int slotPositionTop = this.contentTopPos + 20;
 

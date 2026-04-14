@@ -25,7 +25,7 @@ import de.markusbordihn.easynpc.configui.client.renderer.screen.EntityConfigScre
 import de.markusbordihn.easynpc.data.render.EntityRenderConfig;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 
 public class PresetPreviewView {
@@ -35,7 +35,7 @@ public class PresetPreviewView {
   }
 
   public static void render(
-      GuiGraphics guiGraphics,
+      GuiGraphicsExtractor guiGraphics,
       Font font,
       EasyNPC<?> npc,
       int x,

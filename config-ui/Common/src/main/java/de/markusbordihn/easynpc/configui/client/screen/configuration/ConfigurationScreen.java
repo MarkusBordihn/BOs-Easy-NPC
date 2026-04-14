@@ -33,7 +33,7 @@ import de.markusbordihn.easynpc.entity.easynpc.data.RenderDataCapable;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import java.util.Collections;
 import java.util.List;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.network.chat.Component;
@@ -54,11 +54,10 @@ public class ConfigurationScreen<T extends ConfigUIMenu>
 
   public ConfigurationScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component, 328, 243);
-    this.showCloseButton = false;
   }
 
   protected void renderDescriptionText(
-      GuiGraphics guiGraphics, int descriptionLeft, int descriptionTop) {
+      GuiGraphicsExtractor guiGraphics, int descriptionLeft, int descriptionTop) {
     if (!this.descriptionTextComponents.isEmpty() && this.numberOfDescriptionTextLines > 0) {
       for (int line = 0; line < this.numberOfDescriptionTextLines; ++line) {
         FormattedCharSequence formattedCharSequence = this.descriptionTextComponents.get(line);
@@ -105,8 +104,7 @@ public class ConfigurationScreen<T extends ConfigUIMenu>
   }
 
   @Override
-  protected void renderLabels(GuiGraphics guiGraphics, int x, int y) {
-    // Render Title if not in compact mode
+  protected void renderLabels(GuiGraphicsExtractor guiGraphics, int x, int y) {
     if (!this.compactMode) {
       Text.drawString(
           guiGraphics,

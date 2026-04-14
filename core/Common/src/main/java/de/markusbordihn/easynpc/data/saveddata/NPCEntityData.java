@@ -56,7 +56,7 @@ import org.apache.logging.log4j.Logger;
 public class NPCEntityData extends SavedData {
 
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-  private static final String DATA_NAME = "easy_npc_index";
+  private static final Identifier DATA_NAME = Identifier.fromNamespaceAndPath("easy_npc", "index");
   private static final String DATA_METADATA_TAG = "Metadata";
   private static final String DATA_METADATA_UUID_TAG = "UUID";
   private static final String DATA_METADATA_DATA_TAG = "Data";

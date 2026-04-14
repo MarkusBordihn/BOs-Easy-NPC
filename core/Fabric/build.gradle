@@ -1,7 +1,9 @@
+import net.darkhax.curseforgegradle.TaskPublishCurseForge
+
 plugins {
   id 'maven-publish'
-  id 'net.fabricmc.fabric-loom-remap' version "${fabric_loom}"
-  id 'net.darkhax.curseforgegradle' version '1.1.28'
+  id 'net.fabricmc.fabric-loom' version "${fabric_loom}"
+  id 'net.darkhax.curseforgegradle' version '1.2.30'
   id 'nu.studer.credentials' version '3.0'
   id "com.modrinth.minotaur" version "2.+"
 }
@@ -12,10 +14,6 @@ base {
 
 loom {
   accessWidenerPath = file("src/main/resources/easynpc.accesswidener")
-
-  mixin {
-    defaultRefmapName = "easy_npc.refmap.json"
-  }
 
   runs {
     client {
@@ -48,9 +46,8 @@ loom {
 
 dependencies {
   minecraft "com.mojang:minecraft:${minecraft_version}"
-  mappings loom.officialMojangMappings()
-  modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
-  modApi "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
+  implementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
+  implementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
 
   // Include Common code
   implementation project(":Common")
@@ -96,13 +93,11 @@ publishing {
       artifactId base.archivesName.get()
       version project.version
       from components.java
-      artifact jar
     }
   }
 }
 
 tasks.named('build') {
-  dependsOn 'remapJar'
   finalizedBy tasks.named('publishToMavenLocal')
 }
 
@@ -113,12 +108,12 @@ test {
 
 // CurseForge Publishing
 if (project.hasProperty('curseforge_project_id') && project.curseforge_project_id) {
-  tasks.register('curseforge', net.darkhax.curseforgegradle.TaskPublishCurseForge) {
+  tasks.register('curseforge', TaskPublishCurseForge) {
     group = 'publishing'
     description = 'Uploads to CurseForge'
     apiToken = "${credentials.forKey('curseforge_api_token')}"
 
-    def mainFile = upload(project.curseforge_project_id, remapJar)
+    def mainFile = upload(project.curseforge_project_id, jar)
     mainFile.changelogType = 'markdown'
     mainFile.changelog = rootProject.file("../CHANGELOG.md").text
     mainFile.releaseType = "${project.curseforge_release_type}"
@@ -137,7 +132,7 @@ if (project.hasProperty('modrinth_project_id') && project.modrinth_project_id) {
     versionType = "${project.modrinth_release_type}"
     versionName = "${project.mod_name} ${project.version}"
     changelog = rootProject.file("../CHANGELOG.md").text
-    uploadFile = remapJar
+    uploadFile = jar
     gameVersions = ["${minecraft_version}"]
     loaders = ["fabric", "quilt"]
     dependencies {

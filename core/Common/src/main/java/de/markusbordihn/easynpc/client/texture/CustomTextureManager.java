@@ -127,15 +127,14 @@ public class CustomTextureManager {
     // Send error message to the user.
     Player player = Minecraft.getInstance().player;
     if (player != null) {
-      player.displayClientMessage(
+      player.sendSystemMessage(
           TextComponent.getText(
                   LOG_PREFIX
                       + "Unable to load custom texture "
                       + textureModelKey
                       + " from: "
                       + textureDataFolder)
-              .withStyle(ChatFormatting.RED),
-          false);
+              .withStyle(ChatFormatting.RED));
     }
 
     return null;

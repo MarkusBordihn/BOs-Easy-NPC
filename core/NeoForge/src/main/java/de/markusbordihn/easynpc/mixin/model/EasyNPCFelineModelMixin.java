@@ -19,16 +19,10 @@
 
 package de.markusbordihn.easynpc.mixin.model;
 
-import de.markusbordihn.easynpc.client.model.EasyNPCModel;
 import de.markusbordihn.easynpc.client.model.EasyNPCModelManager;
 import de.markusbordihn.easynpc.client.model.EasyNPCModelManagerAccessor;
-import de.markusbordihn.easynpc.client.renderer.entity.state.EasyNPCRenderStateExtension;
 import de.markusbordihn.easynpc.data.model.ModelPartType;
-import de.markusbordihn.easynpc.data.position.CustomPosition;
-import de.markusbordihn.easynpc.data.rotation.CustomRotation;
-import de.markusbordihn.easynpc.data.scale.CustomScale;
-import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
-import net.minecraft.client.model.animal.feline.FelineModel;
+import net.minecraft.client.model.animal.feline.AbstractFelineModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.entity.state.FelineRenderState;
 import org.spongepowered.asm.mixin.Final;
@@ -39,7 +33,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(FelineModel.class)
+@Mixin(AbstractFelineModel.class)
 public class EasyNPCFelineModelMixin<T extends FelineRenderState>
     implements EasyNPCModelManagerAccessor {
 
@@ -73,78 +67,4 @@ public class EasyNPCFelineModelMixin<T extends FelineRenderState>
             .defineModelPart(ModelPartType.TAIL2, this.tail2);
   }
 
-  @Inject(
-      method = "setupAnim(Lnet/minecraft/client/renderer/entity/state/FelineRenderState;)V",
-      at = @At("HEAD"),
-      cancellable = true)
-  private void setupNpcAnimStart(T renderState, CallbackInfo callbackInfo) {
-    if (renderState instanceof EasyNPCRenderStateExtension extension
-        && EasyNPCModel.setupAnimationStart(extension, this.easyNPC$modelManager)) {
-      this.easyNPC$adjustTailToBody(extension);
-      callbackInfo.cancel();
-    }
-  }
-
-  @Inject(
-      method = "setupAnim(Lnet/minecraft/client/renderer/entity/state/FelineRenderState;)V",
-      at = @At("TAIL"))
-  private void setupNpcAnimEnd(T renderState, CallbackInfo callbackInfo) {
-    if (renderState instanceof EasyNPCRenderStateExtension extension) {
-      EasyNPCModel.setupAnimationEnd(extension, this.easyNPC$modelManager);
-    }
-  }
-
-  @Unique
-  private void easyNPC$adjustTailToBody(EasyNPCRenderStateExtension extension) {
-    var easyNPC = EasyNPCModel.getEasyNPC(extension);
-    if (easyNPC == null) {
-      return;
-    }
-
-    ModelDataCapable<?> modelData = easyNPC.getEasyNPCModelData();
-    if (modelData == null) {
-      return;
-    }
-
-    CustomPosition bodyPosition = modelData.getModelPartPosition(ModelPartType.BODY);
-    CustomScale bodyScale = modelData.getModelPartScale(ModelPartType.BODY);
-    CustomRotation bodyRotation = modelData.getModelPartRotation(ModelPartType.BODY);
-
-    // Check for extreme scale - hide tail if > 0.5 deviation
-    if (bodyScale != null
-        && bodyScale.hasChanged()
-        && Math.abs(bodyScale.x() - 1.0f)
-                + Math.abs(bodyScale.y() - 1.0f)
-                + Math.abs(bodyScale.z() - 1.0f)
-            > 0.5f) {
-      this.tail1.visible = false;
-      this.tail2.visible = false;
-      return;
-    }
-
-    // Check for rotation - hide tail if > ~5 degrees (0.1 radians)
-    if (bodyRotation != null
-        && bodyRotation.hasChanged()
-        && Math.abs(bodyRotation.x()) + Math.abs(bodyRotation.y()) + Math.abs(bodyRotation.z())
-            > 0.1f) {
-      this.tail1.visible = false;
-      this.tail2.visible = false;
-      return;
-    }
-
-    // Only process if body has position change
-    if (bodyPosition == null || !bodyPosition.hasChanged()) {
-      return;
-    }
-
-    // Tail is visible and follows body position
-    this.tail1.visible = true;
-    this.tail2.visible = true;
-    this.tail1.x += bodyPosition.x();
-    this.tail1.y += bodyPosition.y();
-    this.tail1.z += bodyPosition.z();
-    this.tail2.x += bodyPosition.x();
-    this.tail2.y += bodyPosition.y();
-    this.tail2.z += bodyPosition.z();
-  }
 }

@@ -23,7 +23,7 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.input.InputWithModifiers;
@@ -65,10 +65,10 @@ public class CustomButton extends Button {
   }
 
   public void renderButtonText(
-      GuiGraphics guiGraphics, Font font, Component component, int x, int y) {
+      GuiGraphicsExtractor guiGraphics, Font font, Component component, int x, int y) {
     if (component != null && !component.getString().isEmpty()) {
       int fgColor = this.active ? Constants.FONT_COLOR_WHITE : Constants.FONT_COLOR_LIGHT_GRAY;
-      guiGraphics.drawCenteredString(
+      guiGraphics.centeredText(
           font,
           component,
           this.getX() + (this.width) / 2,
@@ -85,11 +85,13 @@ public class CustomButton extends Button {
   }
 
   @Override
-  public void renderContents(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+  public void extractContents(
+      GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
     this.renderButton(guiGraphics, mouseX, mouseY, partialTicks);
   }
 
-  public void renderButton(GuiGraphics guiGraphics, int left, int top, float partialTicks) {
+  public void renderButton(
+      GuiGraphicsExtractor guiGraphics, int left, int top, float partialTicks) {
     Minecraft minecraft = Minecraft.getInstance();
     Font font = minecraft.font;
 

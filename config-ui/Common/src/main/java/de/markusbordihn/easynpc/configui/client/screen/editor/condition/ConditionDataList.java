@@ -24,7 +24,7 @@ import de.markusbordihn.easynpc.configui.client.screen.editor.condition.Conditio
 import de.markusbordihn.easynpc.data.condition.ConditionDataEntry;
 import de.markusbordihn.easynpc.data.condition.ConditionDataSet;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 
 class ConditionDataList extends ObjectSelectionList<ConditionDataListEntry> {
@@ -55,17 +55,18 @@ class ConditionDataList extends ObjectSelectionList<ConditionDataListEntry> {
   }
 
   @Override
-  protected void renderSelection(GuiGraphics guiGraphics, ConditionDataListEntry entry, int color) {
+  protected void extractSelection(
+      GuiGraphicsExtractor guiGraphics, ConditionDataListEntry entry, int color) {
     // Nothing to render
   }
 
   @Override
-  protected void renderListSeparators(GuiGraphics guiGraphics) {
+  protected void extractListSeparators(GuiGraphicsExtractor guiGraphics) {
     // Do not render list separators.
   }
 
   @Override
-  protected void renderListBackground(GuiGraphics guiGraphics) {
+  protected void extractListBackground(GuiGraphicsExtractor guiGraphics) {
     // Do not render list background.
   }
 }

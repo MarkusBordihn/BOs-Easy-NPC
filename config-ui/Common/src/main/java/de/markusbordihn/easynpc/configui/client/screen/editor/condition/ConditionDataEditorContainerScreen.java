@@ -19,11 +19,11 @@
 
 package de.markusbordihn.easynpc.configui.client.screen.editor.condition;
 
-import de.markusbordihn.easynpc.client.screen.components.AddButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.configui.client.screen.EditorScreen;
+import de.markusbordihn.easynpc.configui.client.screen.components.AddButton;
 import de.markusbordihn.easynpc.configui.client.screen.components.DialogButton;
 import de.markusbordihn.easynpc.configui.menu.editor.EditorMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
@@ -32,7 +32,7 @@ import de.markusbordihn.easynpc.data.condition.ConditionDataSet;
 import de.markusbordihn.easynpc.data.condition.ConditionType;
 import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.network.components.TextComponent;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.ConfirmScreen;
 import net.minecraft.network.chat.CommonComponents;
@@ -213,8 +213,9 @@ public class ConditionDataEditorContainerScreen<T extends EditorMenu> extends Ed
   }
 
   @Override
-  public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
-    super.render(guiGraphics, x, y, partialTicks);
+  public void extractRenderState(
+      GuiGraphicsExtractor guiGraphics, int x, int y, float partialTicks) {
+    super.extractRenderState(guiGraphics, x, y, partialTicks);
 
     // Gray background for condition list
     guiGraphics.fill(
@@ -226,7 +227,7 @@ public class ConditionDataEditorContainerScreen<T extends EditorMenu> extends Ed
 
     // Render Condition Data List
     if (this.conditionDataList != null) {
-      this.conditionDataList.render(guiGraphics, x, y, partialTicks);
+      this.conditionDataList.extractRenderState(guiGraphics, x, y, partialTicks);
     }
 
     // Render Header
@@ -237,11 +238,11 @@ public class ConditionDataEditorContainerScreen<T extends EditorMenu> extends Ed
 
     // Re-render button for visibility
     if (this.newConditionDataEntryButton != null) {
-      this.newConditionDataEntryButton.render(guiGraphics, x, y, partialTicks);
+      this.newConditionDataEntryButton.extractRenderState(guiGraphics, x, y, partialTicks);
     }
   }
 
-  private void renderHeader(GuiGraphics guiGraphics) {
+  private void renderHeader(GuiGraphicsExtractor guiGraphics) {
     // Header background
     guiGraphics.fill(
         this.leftPos + LIST_X_OFFSET,
@@ -304,7 +305,7 @@ public class ConditionDataEditorContainerScreen<T extends EditorMenu> extends Ed
         COLOR_SEPARATOR);
   }
 
-  private void renderFooter(GuiGraphics guiGraphics) {
+  private void renderFooter(GuiGraphicsExtractor guiGraphics) {
     // Footer background
     guiGraphics.fill(
         this.leftPos + LIST_X_OFFSET,

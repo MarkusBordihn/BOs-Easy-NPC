@@ -24,7 +24,7 @@ import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.data.preset.PresetData;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
@@ -38,7 +38,7 @@ public class PresetDetailsView {
   }
 
   public static void render(
-      GuiGraphics guiGraphics,
+      GuiGraphicsExtractor guiGraphics,
       Font font,
       EasyNPC<?> npc,
       PresetData presetData,

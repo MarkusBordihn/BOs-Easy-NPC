@@ -24,14 +24,14 @@ Users only need to install this single file to get both mods.
 [[dependencies.easy_npc_bundle]]
 modId = "forge"
 mandatory = true
-versionRange = "[61.0.3,)"
+versionRange = "[63.0.1,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.easy_npc_bundle]]
 modId = "minecraft"
 mandatory = true
-versionRange = "[1.21.11]"
+versionRange = "[26.1.1]"
 ordering = "NONE"
 side = "BOTH"
 

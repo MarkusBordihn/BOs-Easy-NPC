@@ -19,14 +19,14 @@
 
 package de.markusbordihn.easynpc.configui.client.screen.editor.dialog;
 
-import de.markusbordihn.easynpc.client.screen.components.CancelButton;
-import de.markusbordihn.easynpc.client.screen.components.SaveButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.client.screen.components.TextField;
 import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.configui.client.screen.EditorScreen;
+import de.markusbordihn.easynpc.configui.client.screen.components.CancelButton;
 import de.markusbordihn.easynpc.configui.client.screen.components.DialogButton;
+import de.markusbordihn.easynpc.configui.client.screen.components.SaveButton;
 import de.markusbordihn.easynpc.configui.menu.editor.EditorMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
@@ -34,7 +34,7 @@ import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogTextData;
 import java.util.HashSet;
 import java.util.Set;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -177,7 +177,7 @@ public class DialogTextEditorScreen<T extends EditorMenu> extends EditorScreen<T
                         .openConfiguration(this.getEasyNPCUUID(), ConfigurationType.DIALOG)));
   }
 
-  protected void renderEditLabels(GuiGraphics guiGraphics) {
+  protected void renderEditLabels(GuiGraphicsExtractor guiGraphics) {
     Text.drawConfigString(
         guiGraphics,
         this.font,
@@ -198,8 +198,9 @@ public class DialogTextEditorScreen<T extends EditorMenu> extends EditorScreen<T
   }
 
   @Override
-  public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
-    super.render(guiGraphics, x, y, partialTicks);
+  public void extractRenderState(
+      GuiGraphicsExtractor guiGraphics, int x, int y, float partialTicks) {
+    super.extractRenderState(guiGraphics, x, y, partialTicks);
     this.renderEditLabels(guiGraphics);
   }
 }

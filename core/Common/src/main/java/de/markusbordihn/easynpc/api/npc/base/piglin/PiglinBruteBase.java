@@ -19,7 +19,6 @@
 
 package de.markusbordihn.easynpc.api.npc.base.piglin;
 
-import com.google.common.collect.ImmutableList;
 import de.markusbordihn.easynpc.api.npc.BaseEasyNPC;
 import de.markusbordihn.easynpc.api.npc.raw.piglin.PiglinBruteRaw;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
@@ -31,30 +30,12 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.memory.MemoryModuleType;
-import net.minecraft.world.entity.ai.sensing.Sensor;
-import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.minecraft.world.entity.animal.FlyingAnimal;
 import net.minecraft.world.entity.monster.piglin.PiglinBrute;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
 public class PiglinBruteBase extends PiglinBruteRaw implements BaseEasyNPC<PiglinBruteRaw> {
-
-  protected static final ImmutableList<MemoryModuleType<?>> MEMORY_TYPES =
-      ImmutableList.of(
-          MemoryModuleType.ANGRY_AT,
-          MemoryModuleType.ATTACK_TARGET,
-          MemoryModuleType.CELEBRATE_LOCATION,
-          MemoryModuleType.DANCING);
-  protected static final ImmutableList<SensorType<? extends Sensor<? super PiglinBrute>>>
-      SENSOR_TYPES =
-          ImmutableList.of(
-              SensorType.NEAREST_LIVING_ENTITIES,
-              SensorType.NEAREST_PLAYERS,
-              SensorType.NEAREST_ITEMS,
-              SensorType.HURT_BY,
-              SensorType.PIGLIN_BRUTE_SPECIFIC_SENSOR);
 
   public PiglinBruteBase(EntityType<? extends PiglinBrute> entityType, Level level) {
     super(entityType, level);
@@ -97,8 +78,8 @@ public class PiglinBruteBase extends PiglinBruteRaw implements BaseEasyNPC<Pigli
   }
 
   @Override
-  protected Brain.Provider<PiglinBrute> brainProvider() {
-    return Brain.provider(MEMORY_TYPES, SENSOR_TYPES);
+  protected Brain<PiglinBrute> makeBrain(Brain.Packed packedBrain) {
+    return new Brain<>();
   }
 
   @Override

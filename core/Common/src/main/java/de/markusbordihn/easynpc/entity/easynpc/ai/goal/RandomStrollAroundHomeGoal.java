@@ -139,7 +139,7 @@ public class RandomStrollAroundHomeGoal<T extends EasyNPC<?>> extends Goal {
   }
 
   protected Vec3 getPosition() {
-    if (this.pathfinderMob.level().random.nextFloat() < 0.5F) {
+    if (this.pathfinderMob.level().getRandom().nextFloat() < 0.5F) {
       return this.getPositionTowardsAnywhere();
     } else {
       Vec3 targetPosition = this.getPositionTowardsHome();

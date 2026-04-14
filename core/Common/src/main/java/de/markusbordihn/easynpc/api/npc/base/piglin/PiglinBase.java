@@ -19,7 +19,6 @@
 
 package de.markusbordihn.easynpc.api.npc.base.piglin;
 
-import com.google.common.collect.ImmutableList;
 import de.markusbordihn.easynpc.api.npc.BaseEasyNPC;
 import de.markusbordihn.easynpc.api.npc.raw.piglin.PiglinRaw;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
@@ -32,20 +31,12 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.animal.FlyingAnimal;
 import net.minecraft.world.entity.monster.piglin.Piglin;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
 public class PiglinBase extends PiglinRaw implements BaseEasyNPC<PiglinRaw> {
-
-  protected static final ImmutableList<MemoryModuleType<?>> MEMORY_TYPES =
-      ImmutableList.of(
-          MemoryModuleType.ANGRY_AT,
-          MemoryModuleType.ATTACK_TARGET,
-          MemoryModuleType.CELEBRATE_LOCATION,
-          MemoryModuleType.DANCING);
 
   public PiglinBase(EntityType<? extends Piglin> entityType, Level level) {
     this(entityType, level, PiglinSkinVariant.PIGLIN);
@@ -108,13 +99,13 @@ public class PiglinBase extends PiglinRaw implements BaseEasyNPC<PiglinRaw> {
   }
 
   @Override
-  public boolean isConverting() {
-    return false;
+  protected Brain<Piglin> makeBrain(Brain.Packed packedBrain) {
+    return new Brain<>();
   }
 
   @Override
-  protected Brain.Provider<Piglin> brainProvider() {
-    return Brain.provider(MEMORY_TYPES, SENSOR_TYPES);
+  public boolean isConverting() {
+    return false;
   }
 
   @Override

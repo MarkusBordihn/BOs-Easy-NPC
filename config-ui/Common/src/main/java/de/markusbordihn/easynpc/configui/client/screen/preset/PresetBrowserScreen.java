@@ -41,7 +41,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Stream;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.ConfirmScreen;
 import net.minecraft.nbt.CompoundTag;
@@ -351,26 +351,28 @@ public class PresetBrowserScreen extends CustomScreen<PresetBrowserMenu, Additio
   }
 
   @Override
-  public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-    // Render parent (includes background from CustomScreen)
-    super.render(guiGraphics, mouseX, mouseY, partialTicks);
+  public void extractRenderState(
+      GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    super.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
 
-    // Render search box on top of everything
+    Text.drawString(guiGraphics, this.font, this.title, 8, 6);
+
     if (this.searchBox != null) {
-      this.searchBox.render(guiGraphics, mouseX, mouseY, partialTicks);
+      this.searchBox.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
     }
 
-    // Render preset list
-    this.presetListWidget.render(guiGraphics, mouseX, mouseY, partialTicks);
+    this.presetListWidget.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
 
-    // Render selected preset details
     if (this.selectedEntry != null) {
       this.renderPresetTitle(guiGraphics);
       this.renderPreviewPanels(guiGraphics, mouseX, mouseY);
     }
   }
 
-  private void renderPresetTitle(GuiGraphics guiGraphics) {
+  @Override
+  protected void renderLabels(GuiGraphicsExtractor guiGraphics, int x, int y) {}
+
+  private void renderPresetTitle(GuiGraphicsExtractor guiGraphics) {
     Text.drawString(
         guiGraphics,
         this.font,
@@ -381,7 +383,7 @@ public class PresetBrowserScreen extends CustomScreen<PresetBrowserMenu, Additio
         0x3F3F3F);
   }
 
-  private void renderPreviewPanels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+  private void renderPreviewPanels(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
     int rightPanelX = this.spawnAsNewButton.getX();
     int rightPanelWidth =
         this.spawnWithOriginalButton.getX() + this.spawnWithOriginalButton.getWidth() - rightPanelX;

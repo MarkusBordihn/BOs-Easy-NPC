@@ -54,12 +54,17 @@ public class FakePlayer extends ServerPlayer {
   }
 
   @Override
-  public void displayClientMessage(final Component chatComponent, final boolean actionBar) {
+  public void sendSystemMessage(final Component chatComponent) {
     // Suppress chat messages
   }
 
   @Override
-  public void awardStat(final Stat stat, final int increment) {
+  public void sendOverlayMessage(final Component chatComponent) {
+    // Suppress overlay messages
+  }
+
+  @Override
+  public void awardStat(final Stat<?> stat, final int increment) {
     // Suppress stat award
   }
 

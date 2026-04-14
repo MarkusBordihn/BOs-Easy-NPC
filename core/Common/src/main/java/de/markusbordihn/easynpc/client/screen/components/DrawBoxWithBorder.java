@@ -19,7 +19,7 @@
 
 package de.markusbordihn.easynpc.client.screen.components;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 public class DrawBoxWithBorder {
 
@@ -28,12 +28,12 @@ public class DrawBoxWithBorder {
 
   private DrawBoxWithBorder() {}
 
-  public static void draw(GuiGraphics guiGraphics, int x, int y, int width, int height) {
+  public static void draw(GuiGraphicsExtractor guiGraphics, int x, int y, int width, int height) {
     draw(guiGraphics, x, y, width, height, DEFAULT_BACKGROUND_COLOR, DEFAULT_BORDER_COLOR);
   }
 
   public static void draw(
-      GuiGraphics guiGraphics,
+      GuiGraphicsExtractor guiGraphics,
       int x,
       int y,
       int width,

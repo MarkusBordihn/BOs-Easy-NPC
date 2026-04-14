@@ -22,8 +22,9 @@ package de.markusbordihn.easynpc.client.screen.dialog;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.renderer.screen.EntityScreenRenderer;
 import de.markusbordihn.easynpc.client.screen.Screen;
+import de.markusbordihn.easynpc.client.screen.components.DialogBackwardButton;
+import de.markusbordihn.easynpc.client.screen.components.DialogForwardButton;
 import de.markusbordihn.easynpc.client.screen.components.Graphics;
-import de.markusbordihn.easynpc.client.screen.components.SpriteButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
@@ -41,7 +42,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
@@ -83,34 +84,9 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
     DialogScreen.dialogScreenLayout = dialogScreenLayout;
   }
 
-  protected void renderDialog(GuiGraphics guiGraphics) {
-    // Draw dialog background bobble.
+  protected void renderDialog(GuiGraphicsExtractor guiGraphics) {
     int dialogTopPosition = topPos + 20;
-    switch (dialogScreenLayout) {
-      case COMPACT_TEXT_ONLY,
-      COMPACT_TEXT_WITH_ONE_BUTTON,
-      COMPACT_TEXT_WITH_TWO_BUTTONS,
-      COMPACT_TEXT_WITH_TWO_LARGE_BUTTONS,
-      COMPACT_TEXT_WITH_THREE_BUTTONS,
-      COMPACT_TEXT_WITH_FOUR_BUTTONS,
-      COMPACT_TEXT_WITH_FIVE_BUTTONS,
-      COMPACT_TEXT_WITH_SIX_BUTTONS:
-        Graphics.blit(
-            guiGraphics,
-            Constants.TEXTURE_DIALOG,
-            leftPos + 70,
-            dialogTopPosition,
-            0,
-            120,
-            205,
-            78);
-        break;
-      default:
-        Graphics.blit(
-            guiGraphics, Constants.TEXTURE_DIALOG, leftPos + 70, dialogTopPosition, 0, 0, 205, 118);
-    }
 
-    // Distribute text for the across the lines and the give dialogPageIndex.
     if (!this.cachedDialogComponents.isEmpty()) {
       for (int line = this.dialogPageIndex * MAX_NUMBER_OF_DIALOG_LINES;
           line < this.numberOfDialogLines
@@ -348,16 +324,9 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
     // Forward Button
     this.dialogForwardButton =
         this.addRenderableWidget(
-            new SpriteButton(
+            new DialogForwardButton(
                 this.leftPos + 257,
                 dialogNavigationButtonTopPosition,
-                12,
-                12,
-                Constants.TEXTURE_DIALOG,
-                206,
-                2,
-                12,
-                12,
                 onPress -> {
                   this.dialogPageIndex =
                       this.dialogPageIndex < this.numberOfDialogLines / MAX_NUMBER_OF_DIALOG_LINES
@@ -378,16 +347,9 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
     // Backward Button
     this.dialogBackwardButton =
         this.addRenderableWidget(
-            new SpriteButton(
+            new DialogBackwardButton(
                 this.leftPos + 245,
                 dialogNavigationButtonTopPosition,
-                12,
-                12,
-                Constants.TEXTURE_DIALOG,
-                207,
-                28,
-                12,
-                12,
                 onPress -> {
                   this.dialogPageIndex =
                       this.dialogPageIndex > 0
@@ -456,11 +418,12 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
   }
 
   @Override
-  public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
+  public void extractRenderState(
+      GuiGraphicsExtractor guiGraphics, int x, int y, float partialTicks) {
     if (this.getEasyNPC() == null) {
       return;
     }
-    super.render(guiGraphics, x, y, partialTicks);
+    super.extractRenderState(guiGraphics, x, y, partialTicks);
 
     EntityScreenRenderer.renderEntityRaw(
         guiGraphics,
@@ -477,7 +440,7 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
   }
 
   @Override
-  protected void renderLabels(GuiGraphics guiGraphics, int x, int y) {
+  protected void renderLabels(GuiGraphicsExtractor guiGraphics, int x, int y) {
     Text.drawString(
         guiGraphics,
         this.font,
@@ -487,7 +450,8 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
   }
 
   @Override
-  protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
+  protected void renderBg(
+      GuiGraphicsExtractor guiGraphics, float partialTicks, int mouseX, int mouseY) {
     switch (dialogScreenLayout) {
       case UNKNOWN:
         break;
@@ -495,30 +459,46 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
       COMPACT_TEXT_WITH_ONE_BUTTON,
       COMPACT_TEXT_WITH_TWO_BUTTONS,
       COMPACT_TEXT_WITH_TWO_LARGE_BUTTONS:
-        // Compact background
-        Graphics.blit(
-            guiGraphics, Constants.TEXTURE_DEMO_BACKGROUND, leftPos, topPos, 0, 0, 200, 170);
-        Graphics.blit(
-            guiGraphics, Constants.TEXTURE_DEMO_BACKGROUND, leftPos + 200, topPos, 165, 0, 85, 170);
-        break;
-      default:
-        // Full background
-        Graphics.blit(
-            guiGraphics, Constants.TEXTURE_DEMO_BACKGROUND, leftPos, topPos, 0, 0, 210, 140);
-        Graphics.blit(
-            guiGraphics, Constants.TEXTURE_DEMO_BACKGROUND, leftPos + 200, topPos, 165, 0, 85, 140);
-
-        Graphics.blit(
-            guiGraphics, Constants.TEXTURE_DEMO_BACKGROUND, leftPos, topPos + 70, 0, 30, 210, 140);
         Graphics.blit(
             guiGraphics,
-            Constants.TEXTURE_DEMO_BACKGROUND,
-            leftPos + 200,
-            topPos + 70,
-            165,
-            30,
-            85,
-            140);
+            Constants.TEXTURE_DIALOG_SCENE_SMALL,
+            leftPos,
+            topPos,
+            1,
+            1,
+            285,
+            170,
+            512,
+            256);
+        break;
+      case COMPACT_TEXT_WITH_THREE_BUTTONS,
+      COMPACT_TEXT_WITH_FOUR_BUTTONS,
+      COMPACT_TEXT_WITH_FIVE_BUTTONS,
+      COMPACT_TEXT_WITH_SIX_BUTTONS:
+        Graphics.blit(
+            guiGraphics,
+            Constants.TEXTURE_DIALOG_SCENE_MEDIUM,
+            leftPos,
+            topPos,
+            1,
+            1,
+            285,
+            210,
+            512,
+            256);
+        break;
+      default:
+        Graphics.blit(
+            guiGraphics,
+            Constants.TEXTURE_DIALOG_SCENE_LARGE,
+            leftPos,
+            topPos,
+            1,
+            1,
+            285,
+            210,
+            512,
+            256);
     }
   }
 

@@ -33,7 +33,7 @@ import de.markusbordihn.easynpc.handler.PresetHandler;
 import de.markusbordihn.easynpc.io.ClientDefaultPresetDataFiles;
 import de.markusbordihn.easynpc.io.LocalPresetDataFiles;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
@@ -166,8 +166,12 @@ public class PresetListEntry extends ObjectSelectionList.Entry<PresetListEntry> 
   }
 
   @Override
-  public void renderContent(
-      GuiGraphics guiGraphics, int mouseX, int mouseY, boolean isMouseOver, float partialTicks) {
+  public void extractContent(
+      GuiGraphicsExtractor guiGraphics,
+      int mouseX,
+      int mouseY,
+      boolean isMouseOver,
+      float partialTicks) {
 
     int top = this.getY();
     int left = screen.getPresetListWidget().getX() + 5;
@@ -188,7 +192,8 @@ public class PresetListEntry extends ObjectSelectionList.Entry<PresetListEntry> 
     renderPresetInfo(guiGraphics, left, top);
   }
 
-  private void renderPreviewBox(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY) {
+  private void renderPreviewBox(
+      GuiGraphicsExtractor guiGraphics, int x, int y, int mouseX, int mouseY) {
     DrawBox.draw(guiGraphics, x, y, PREVIEW_BOX_SIZE, PREVIEW_BOX_SIZE);
     DrawBorder.draw(guiGraphics, x, y, PREVIEW_BOX_SIZE, PREVIEW_BOX_SIZE);
 
@@ -202,7 +207,7 @@ public class PresetListEntry extends ObjectSelectionList.Entry<PresetListEntry> 
     }
   }
 
-  private void renderPresetInfo(GuiGraphics guiGraphics, int left, int top) {
+  private void renderPresetInfo(GuiGraphicsExtractor guiGraphics, int left, int top) {
     int scaledX = left + 28;
     int scaledY = top + 2;
     int lineHeight = 10;

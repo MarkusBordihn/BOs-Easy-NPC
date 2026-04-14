@@ -24,7 +24,7 @@ import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.data.screen.AdditionalScreenDataInterface;
 import de.markusbordihn.easynpc.menu.ScreenMenuInterface;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -59,44 +59,33 @@ public class CustomScreen<
   }
 
   @Override
-  protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-    guiGraphics.drawString(this.font, this.title, 6, 6, Constants.FONT_COLOR_BLACK, false);
-  }
-
-  @Override
-  public void renderBackground(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
-
-    // Title section
-    Graphics.blit(guiGraphics, Constants.TEXTURE_DEMO_BACKGROUND, 0, 0, 0, 0, 248, TITLE_HEIGHT);
-
-    // Body section
-    int startY = TITLE_HEIGHT - 2;
-    Graphics.blit(guiGraphics, Constants.TEXTURE_DEMO_BACKGROUND, 0, startY, 0, 0, 245, 161);
-    Graphics.blit(
-        guiGraphics, Constants.TEXTURE_DEMO_BACKGROUND, 245, startY, 4, 0, this.width, 161);
-    Graphics.blit(
-        guiGraphics, Constants.TEXTURE_DEMO_BACKGROUND, this.width - 244, startY, 4, 0, 244, 161);
-    Graphics.blit(
-        guiGraphics, Constants.TEXTURE_DEMO_BACKGROUND, 0, this.height - 161, 0, 4, 245, 161);
-    Graphics.blit(
+  protected void renderBg(
+      GuiGraphicsExtractor guiGraphics, float partialTicks, int mouseX, int mouseY) {
+    Graphics.blitStretched(
         guiGraphics,
-        Constants.TEXTURE_DEMO_BACKGROUND,
-        245,
-        this.height - 161,
-        4,
-        4,
+        Constants.TEXTURE_PRESET_BROWSER_BACKGROUND,
+        0,
+        0,
         this.width,
-        161);
-    Graphics.blit(
+        TITLE_HEIGHT,
+        1,
+        1,
+        333,
+        19,
+        512,
+        512);
+    Graphics.blitStretched(
         guiGraphics,
-        Constants.TEXTURE_DEMO_BACKGROUND,
-        this.width - 244,
-        this.height - 161,
-        4,
-        4,
+        Constants.TEXTURE_PRESET_BROWSER_BACKGROUND,
+        0,
+        TITLE_HEIGHT,
+        this.width,
+        this.height - TITLE_HEIGHT,
+        1,
+        20,
+        333,
         244,
-        161);
-
-    this.renderLabels(guiGraphics, x, y);
+        512,
+        512);
   }
 }

@@ -19,21 +19,21 @@
 
 package de.markusbordihn.easynpc.configui.client.screen.editor.dialog;
 
-import de.markusbordihn.easynpc.client.screen.components.AddButton;
-import de.markusbordihn.easynpc.client.screen.components.CancelButton;
-import de.markusbordihn.easynpc.client.screen.components.Checkbox;
-import de.markusbordihn.easynpc.client.screen.components.DeleteButton;
-import de.markusbordihn.easynpc.client.screen.components.SaveButton;
 import de.markusbordihn.easynpc.client.screen.components.SpriteButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
-import de.markusbordihn.easynpc.client.screen.components.TextEditButton;
 import de.markusbordihn.easynpc.client.screen.components.TextField;
 import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.configui.client.screen.EditorScreen;
+import de.markusbordihn.easynpc.configui.client.screen.components.AddButton;
+import de.markusbordihn.easynpc.configui.client.screen.components.CancelButton;
+import de.markusbordihn.easynpc.configui.client.screen.components.Checkbox;
+import de.markusbordihn.easynpc.configui.client.screen.components.DeleteButton;
 import de.markusbordihn.easynpc.configui.client.screen.components.DialogButton;
 import de.markusbordihn.easynpc.configui.client.screen.components.DialogButtonButton;
 import de.markusbordihn.easynpc.configui.client.screen.components.DialogPriorityButton;
+import de.markusbordihn.easynpc.configui.client.screen.components.SaveButton;
+import de.markusbordihn.easynpc.configui.client.screen.components.TextEditButton;
 import de.markusbordihn.easynpc.configui.menu.editor.EditorMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
@@ -41,14 +41,11 @@ import de.markusbordihn.easynpc.data.dialog.DialogButtonEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogUtils;
 import de.markusbordihn.easynpc.network.components.TextComponent;
-import java.util.Collections;
 import java.util.Set;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.ConfirmScreen;
-import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
-import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -107,7 +104,7 @@ public class DialogEditorScreen<T extends EditorMenu> extends EditorScreen<T> {
             CommonComponents.GUI_CANCEL));
   }
 
-  private void renderEditLabels(GuiGraphics guiGraphics) {
+  private void renderEditLabels(GuiGraphicsExtractor guiGraphics) {
     if (this.dialogNameTextField != null) {
       Text.drawConfigString(
           guiGraphics,
@@ -237,6 +234,7 @@ public class DialogEditorScreen<T extends EditorMenu> extends EditorScreen<T> {
                 this.dialogNameTextField.getY() - 1,
                 18,
                 18,
+                Constants.TEXTURE_CONFIGURATION,
                 4,
                 4,
                 80,
@@ -449,21 +447,14 @@ public class DialogEditorScreen<T extends EditorMenu> extends EditorScreen<T> {
   }
 
   @Override
-  public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
-    super.render(guiGraphics, x, y, partialTicks);
+  public void extractRenderState(
+      GuiGraphicsExtractor guiGraphics, int x, int y, float partialTicks) {
+    super.extractRenderState(guiGraphics, x, y, partialTicks);
     this.renderEditLabels(guiGraphics);
 
     if (this.dialogNameToLabelButton != null && this.dialogNameToLabelButton.isMouseOver(x, y)) {
-      guiGraphics.renderTooltip(
-          this.font,
-          Collections.singletonList(
-              ClientTooltipComponent.create(
-                  TextComponent.getTranslatedConfigText("name_to_label.tooltip")
-                      .getVisualOrderText())),
-          x,
-          y,
-          DefaultTooltipPositioner.INSTANCE,
-          null);
+      guiGraphics.setTooltipForNextFrame(
+          this.font, TextComponent.getTranslatedConfigText("name_to_label.tooltip"), x, y);
     }
   }
 }

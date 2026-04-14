@@ -24,9 +24,9 @@ import de.markusbordihn.easynpc.api.skin.VariantTexture;
 import net.minecraft.resources.Identifier;
 
 public enum PigSkinVariant implements VariantTexture {
-  COLD(Constants.MINECRAFT_PREFIX, "textures/entity/pig/cold_pig.png"),
-  TEMPERATE(Constants.MINECRAFT_PREFIX, "textures/entity/pig/temperate_pig.png"),
-  WARM(Constants.MINECRAFT_PREFIX, "textures/entity/pig/warm_pig.png"),
+  COLD(Constants.MINECRAFT_PREFIX, "textures/entity/pig/pig_cold.png"),
+  TEMPERATE(Constants.MINECRAFT_PREFIX, "textures/entity/pig/pig_temperate.png"),
+  WARM(Constants.MINECRAFT_PREFIX, "textures/entity/pig/pig_warm.png"),
   SPOTTED(Constants.MOD_ID, "textures/entity/pig/pig_spotted.png");
 
   private final Identifier textureLocation;

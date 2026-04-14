@@ -31,7 +31,7 @@ import de.markusbordihn.easynpc.data.condition.ConditionType;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.stream.Collectors;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 public class ScoreboardConditionEntry extends ConditionEntryWidget {
   private TextField nameTextField;
@@ -84,7 +84,7 @@ public class ScoreboardConditionEntry extends ConditionEntryWidget {
   }
 
   @Override
-  public void render(GuiGraphics guiGraphics, int editorLeft, int editorTop) {
+  public void render(GuiGraphicsExtractor guiGraphics, int editorLeft, int editorTop) {
     Text.drawConfigString(
         guiGraphics,
         this.font,

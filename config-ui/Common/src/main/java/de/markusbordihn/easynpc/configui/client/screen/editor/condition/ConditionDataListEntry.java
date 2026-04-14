@@ -19,18 +19,18 @@
 
 package de.markusbordihn.easynpc.configui.client.screen.editor.condition;
 
-import de.markusbordihn.easynpc.client.screen.components.DeleteButton;
 import de.markusbordihn.easynpc.client.screen.components.DrawBorder;
-import de.markusbordihn.easynpc.client.screen.components.EditButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.configui.Constants;
+import de.markusbordihn.easynpc.configui.client.screen.components.DeleteButton;
+import de.markusbordihn.easynpc.configui.client.screen.components.EditButton;
 import de.markusbordihn.easynpc.data.condition.ConditionDataEntry;
 import de.markusbordihn.easynpc.data.condition.ConditionType;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import de.markusbordihn.easynpc.utils.TextUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
@@ -126,8 +126,12 @@ public class ConditionDataListEntry extends ObjectSelectionList.Entry<ConditionD
   }
 
   @Override
-  public void renderContent(
-      GuiGraphics guiGraphics, int mouseX, int mouseY, boolean isHovered, float partialTicks) {
+  public void extractContent(
+      GuiGraphicsExtractor guiGraphics,
+      int mouseX,
+      int mouseY,
+      boolean isHovered,
+      float partialTicks) {
 
     int top = this.getY();
     int entryHeight = this.getHeight();
@@ -165,16 +169,16 @@ public class ConditionDataListEntry extends ObjectSelectionList.Entry<ConditionD
     renderValuePreview(guiGraphics, fieldsLeft, fieldTop);
 
     // Edit and delete buttons
-    this.editButton.render(guiGraphics, mouseX, mouseY, partialTicks);
+    this.editButton.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
     this.editButton.setY(top);
-    this.deleteButton.render(guiGraphics, mouseX, mouseY, partialTicks);
+    this.deleteButton.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
     this.deleteButton.setY(top);
 
     // Render separator lines
     this.renderSeparatorLines(guiGraphics, top);
   }
 
-  private void renderValuePreview(GuiGraphics guiGraphics, int fieldsLeft, int fieldTop) {
+  private void renderValuePreview(GuiGraphicsExtractor guiGraphics, int fieldsLeft, int fieldTop) {
     String valuePreview =
         switch (this.conditionType) {
           case SCOREBOARD ->
@@ -200,7 +204,7 @@ public class ConditionDataListEntry extends ObjectSelectionList.Entry<ConditionD
         Constants.FONT_COLOR_BLACK);
   }
 
-  public void renderSeparatorLines(GuiGraphics guiGraphics, int top) {
+  public void renderSeparatorLines(GuiGraphicsExtractor guiGraphics, int top) {
     int separatorTop = top - 1;
     int separatorLeft = this.leftPos + FIELD_LEFT_OFFSET;
     DrawBorder.drawVerticalSeparator(

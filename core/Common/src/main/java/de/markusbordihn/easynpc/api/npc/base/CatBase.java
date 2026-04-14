@@ -32,6 +32,8 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.FlyingAnimal;
 import net.minecraft.world.entity.animal.feline.Cat;
+import net.minecraft.world.entity.animal.feline.CatSoundVariant;
+import net.minecraft.world.entity.animal.feline.CatSoundVariants;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
@@ -84,13 +86,15 @@ public class CatBase extends CatRaw implements BaseEasyNPC<CatRaw> {
 
   @Override
   public SoundDataSet getDefaultSoundDataSet(SoundDataSet soundDataSet, String variantName) {
-    soundDataSet.addDefaultSound(SoundType.AMBIENT, SoundEvents.CAT_AMBIENT);
-    soundDataSet.addDefaultSound(SoundType.AMBIENT_TAMED, SoundEvents.CAT_PURREOW);
-    soundDataSet.addDefaultSound(SoundType.AMBIENT_STRAY, SoundEvents.CAT_STRAY_AMBIENT);
-    soundDataSet.addDefaultSound(SoundType.PET, SoundEvents.CAT_PURR);
-    soundDataSet.addDefaultSound(SoundType.DEATH, SoundEvents.CAT_DEATH);
-    soundDataSet.addDefaultSound(SoundType.HURT, SoundEvents.CAT_HURT);
-    soundDataSet.addDefaultSound(SoundType.EAT, SoundEvents.CAT_EAT);
+    CatSoundVariant.CatSoundSet catSounds =
+        SoundEvents.CAT_SOUNDS.get(CatSoundVariants.SoundSet.CLASSIC).adultSounds();
+    soundDataSet.addDefaultSound(SoundType.AMBIENT, catSounds.ambientSound());
+    soundDataSet.addDefaultSound(SoundType.AMBIENT_TAMED, catSounds.purreowSound());
+    soundDataSet.addDefaultSound(SoundType.AMBIENT_STRAY, catSounds.strayAmbientSound());
+    soundDataSet.addDefaultSound(SoundType.PET, catSounds.purrSound());
+    soundDataSet.addDefaultSound(SoundType.DEATH, catSounds.deathSound());
+    soundDataSet.addDefaultSound(SoundType.HURT, catSounds.hurtSound());
+    soundDataSet.addDefaultSound(SoundType.EAT, catSounds.eatSound());
     soundDataSet.addDefaultSound(SoundType.TRADE, SoundEvents.VILLAGER_TRADE);
     soundDataSet.addDefaultSound(SoundType.TRADE_YES, SoundEvents.VILLAGER_YES);
     soundDataSet.addDefaultSound(SoundType.TRADE_NO, SoundEvents.VILLAGER_NO);

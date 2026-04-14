@@ -11,7 +11,7 @@ import de.markusbordihn.easynpc.data.action.ActionDataType;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import java.util.LinkedHashSet;
 import java.util.UUID;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 public class OpenNamedDialogEntry extends ActionEntryWidget {
 
@@ -108,7 +108,7 @@ public class OpenNamedDialogEntry extends ActionEntryWidget {
   }
 
   @Override
-  public void render(GuiGraphics guiGraphics, int editorLeft, int editorTop) {
+  public void render(GuiGraphicsExtractor guiGraphics, int editorLeft, int editorTop) {
     Text.drawConfigString(
         guiGraphics,
         this.font,

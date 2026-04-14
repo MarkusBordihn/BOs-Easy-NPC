@@ -31,7 +31,7 @@ import de.markusbordihn.easynpc.data.trading.TradingDataSet;
 import de.markusbordihn.easynpc.data.trading.TradingSettings;
 import de.markusbordihn.easynpc.entity.easynpc.data.TradingDataCapable;
 import de.markusbordihn.easynpc.utils.ValueUtils;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -86,7 +86,6 @@ public class BasicTradingConfigurationContainerScreen<T extends ConfigurationMen
     this.resetsEveryMinEditBox.setMaxLength(3);
     this.resetsEveryMinEditBox.setValue(tradingDataSet.getResetsEveryMin() + "");
     this.resetsEveryMinEditBox.setResponder(this::onResetsEveryMinEditBoxChanged);
-    this.resetsEveryMinEditBox.setFilter(ValueUtils::isPositiveNumericValueOrZero);
     this.addRenderableWidget(this.resetsEveryMinEditBox);
 
     // Max Uses Edit Box
@@ -95,7 +94,6 @@ public class BasicTradingConfigurationContainerScreen<T extends ConfigurationMen
     this.maxUsesEditBox.setMaxLength(4);
     this.maxUsesEditBox.setValue(tradingDataSet.getMaxUses() + "");
     this.maxUsesEditBox.setResponder(this::onMaxUsesEditBoxChanged);
-    this.maxUsesEditBox.setFilter(ValueUtils::isPositiveNumericValueOrZero);
     this.addRenderableWidget(this.maxUsesEditBox);
 
     // Experience Edit Box
@@ -104,19 +102,19 @@ public class BasicTradingConfigurationContainerScreen<T extends ConfigurationMen
     this.rewardExpEditBox.setMaxLength(3);
     this.rewardExpEditBox.setValue(tradingDataSet.getRewardedXP() + "");
     this.rewardExpEditBox.setResponder(this::onRewardExpEditBoxChanged);
-    this.rewardExpEditBox.setFilter(ValueUtils::isPositiveNumericValueOrZero);
     this.addRenderableWidget(this.rewardExpEditBox);
   }
 
   @Override
-  public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
-    super.render(guiGraphics, x, y, partialTicks);
-    this.renderTooltip(guiGraphics, x, y);
+  public void extractRenderState(
+      GuiGraphicsExtractor guiGraphics, int x, int y, float partialTicks) {
+    super.extractRenderState(guiGraphics, x, y, partialTicks);
   }
 
   @Override
-  protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
-    super.renderBg(guiGraphics, partialTicks, mouseX, mouseY);
+  public void extractBackground(
+      GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    super.extractBackground(guiGraphics, mouseX, mouseY, partialTicks);
 
     // Render Trading Slots
     int slotPositionX = this.leftPos + BasicTradingConfigurationMenu.TRADING_START_POSITION_X - 1;

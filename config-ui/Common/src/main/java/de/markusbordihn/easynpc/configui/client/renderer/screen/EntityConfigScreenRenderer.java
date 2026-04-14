@@ -32,14 +32,14 @@ import de.markusbordihn.easynpc.entity.easynpc.data.ProfessionDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.RenderDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.VariantDataCapable;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 public class EntityConfigScreenRenderer extends EntityScreenRenderer {
 
   private EntityConfigScreenRenderer() {}
 
   public static void renderEntity(
-      GuiGraphics guiGraphics,
+      GuiGraphicsExtractor guiGraphics,
       EasyNPC<?> easyNPC,
       EntityRenderConfig config,
       float mouseX,
@@ -57,7 +57,7 @@ public class EntityConfigScreenRenderer extends EntityScreenRenderer {
   }
 
   public static void renderEntityRaw(
-      GuiGraphics guiGraphics,
+      GuiGraphicsExtractor guiGraphics,
       EasyNPC<?> easyNPC,
       EntityRenderConfig config,
       float mouseX,

@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.client.renderer.entity.layers;
 
 import de.markusbordihn.easynpc.api.model.CustomModelConfig;
+import net.minecraft.client.model.animal.chicken.AdultChickenModel;
 import net.minecraft.client.model.animal.chicken.ChickenModel;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.geom.ModelLayers;
@@ -33,6 +34,6 @@ public class ChickenCustomModelLayer
       RenderLayerParent<ChickenRenderState, ChickenModel> renderer,
       EntityModelSet modelSet,
       CustomModelConfig config) {
-    super(renderer, new ChickenModel(modelSet.bakeLayer(ModelLayers.CHICKEN)), config);
+    super(renderer, new AdultChickenModel(modelSet.bakeLayer(ModelLayers.CHICKEN)), config);
   }
 }

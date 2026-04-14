@@ -48,12 +48,14 @@ public final class Constants {
   public static final String MINECRAFT_PREFIX = "minecraft";
   public static final Identifier BLANK_ENTITY_TEXTURE =
       Identifier.fromNamespaceAndPath(Constants.MOD_ID, "textures/entity/blank.png");
-  public static final Identifier TEXTURE_CONFIGURATION =
-      Identifier.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/configuration.png");
-  public static final Identifier TEXTURE_DEMO_BACKGROUND =
-      Identifier.fromNamespaceAndPath(MINECRAFT_PREFIX, "textures/gui/demo_background.png");
-  public static final Identifier TEXTURE_DIALOG =
-      Identifier.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/dialog.png");
+  public static final Identifier TEXTURE_DIALOG_SCENE_LARGE =
+      Identifier.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/dialog/scene_large.png");
+  public static final Identifier TEXTURE_DIALOG_SCENE_MEDIUM =
+      Identifier.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/dialog/scene_medium.png");
+  public static final Identifier TEXTURE_DIALOG_SCENE_SMALL =
+      Identifier.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/dialog/scene_small.png");
+  public static final Identifier TEXTURE_INWORLD_MENU_BACKGROUND =
+      Identifier.fromNamespaceAndPath(MINECRAFT_PREFIX, "textures/gui/inworld_menu_background.png");
   public static final Identifier TEXTURE_INVENTORY =
       Identifier.fromNamespaceAndPath(MINECRAFT_PREFIX, "textures/gui/container/inventory.png");
   public static final Identifier TEXTURE_SPAWNER =

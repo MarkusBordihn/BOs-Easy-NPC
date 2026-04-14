@@ -6,7 +6,7 @@ import de.markusbordihn.easynpc.configui.client.screen.editor.action.ActionDataE
 import de.markusbordihn.easynpc.data.action.ActionDataEntry;
 import de.markusbordihn.easynpc.data.action.ActionDataSet;
 import de.markusbordihn.easynpc.data.action.ActionDataType;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 public class OpenTradingScreenEntry extends ActionEntryWidget {
 
@@ -23,7 +23,7 @@ public class OpenTradingScreenEntry extends ActionEntryWidget {
   }
 
   @Override
-  public void render(GuiGraphics guiGraphics, int editorLeft, int editorTop) {
+  public void render(GuiGraphicsExtractor guiGraphics, int editorLeft, int editorTop) {
     Text.drawConfigString(
         guiGraphics,
         this.font,

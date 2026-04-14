@@ -1,8 +1,8 @@
 /*
  * Copyright 2023 Markus Bordihn
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this software
- * and associated documentation files (the "Software"), to deal in the Software without restriction,
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+ * associated documentation files (the "Software"), to deal in the Software without restriction,
  * including without limitation the rights to use, copy, modify, merge, publish, distribute,
  * sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
@@ -10,18 +10,19 @@
  * The above copyright notice and this permission notice shall be included in all copies or
  * substantial portions of the Software.
  *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
- * BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
+ * NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
  * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.client.screen.components;
+package de.markusbordihn.easynpc.configui.client.screen.components;
 
-import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.client.screen.components.CustomButton;
+import de.markusbordihn.easynpc.configui.Constants;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -140,6 +141,7 @@ public class MultiStateToggleButton extends CustomButton {
     if (!this.visible) {
       return false;
     }
+
     if (this.isValidClickButton(mouseButtonEvent.buttonInfo())
         && this.isMouseOver(mouseButtonEvent.x(), mouseButtonEvent.y())) {
       this.playDownSound(Minecraft.getInstance().getSoundManager());
@@ -147,16 +149,17 @@ public class MultiStateToggleButton extends CustomButton {
       this.onClick(mouseButtonEvent, doubleClick);
       return true;
     }
+
     return false;
   }
 
   @Override
-  public void renderButton(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+  public void renderButton(
+      GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
     if (this.renderBackground) {
       super.renderButton(guiGraphics, mouseX, mouseY, partialTicks);
     }
 
-    // Render the sprite for the current state
     ToggleState currentState = this.states[this.currentStateIndex];
     guiGraphics.blit(
         RenderPipelines.GUI_TEXTURED,

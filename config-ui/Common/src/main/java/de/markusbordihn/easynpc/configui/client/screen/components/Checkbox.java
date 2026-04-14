@@ -17,13 +17,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.client.screen.components;
+package de.markusbordihn.easynpc.configui.client.screen.components;
 
-import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.client.screen.components.Text;
+import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
@@ -33,6 +34,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 
 public class Checkbox extends AbstractButton {
+
   private static final Identifier TEXTURE =
       Identifier.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/checkbox.png");
 
@@ -115,11 +117,13 @@ public class Checkbox extends AbstractButton {
   }
 
   @Override
-  public void renderContents(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+  public void extractContents(
+      GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
     this.renderButton(guiGraphics, mouseX, mouseY, partialTicks);
   }
 
-  public void renderButton(GuiGraphics guiGraphics, int left, int top, float partialTicks) {
+  public void renderButton(
+      GuiGraphicsExtractor guiGraphics, int left, int top, float partialTicks) {
     guiGraphics.blit(
         RenderPipelines.GUI_TEXTURED,
         TEXTURE,

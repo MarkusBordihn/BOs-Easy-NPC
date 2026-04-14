@@ -24,7 +24,7 @@ import de.markusbordihn.easynpc.network.components.TextComponent;
 import de.markusbordihn.easynpc.utils.ValueUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.narration.NarratedElementType;
@@ -355,27 +355,28 @@ public class RangeSliderButton extends AbstractWidget {
   }
 
   @Override
-  public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+  public void extractWidgetRenderState(
+      GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
     if (sliderButton.visible) {
-      sliderButton.render(guiGraphics, mouseX, mouseY, partialTicks);
+      sliderButton.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
     } else if (textField.visible) {
-      textField.render(guiGraphics, mouseX, mouseY, partialTicks);
+      textField.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
     }
 
     if (textButtonDecrease.active) {
-      textButtonDecrease.render(guiGraphics, mouseX, mouseY, partialTicks);
+      textButtonDecrease.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
     }
     if (textButtonIncrease.active) {
-      textButtonIncrease.render(guiGraphics, mouseX, mouseY, partialTicks);
+      textButtonIncrease.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
     }
     if (textButtonReset.active) {
-      textButtonReset.render(guiGraphics, mouseX, mouseY, partialTicks);
+      textButtonReset.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
     }
 
     if (textButtonEdit.active && textButtonEdit.visible) {
-      textButtonEdit.render(guiGraphics, mouseX, mouseY, partialTicks);
+      textButtonEdit.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
     } else if (textButtonDone.active && textButtonDone.visible) {
-      textButtonDone.render(guiGraphics, mouseX, mouseY, partialTicks);
+      textButtonDone.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
     }
   }
 

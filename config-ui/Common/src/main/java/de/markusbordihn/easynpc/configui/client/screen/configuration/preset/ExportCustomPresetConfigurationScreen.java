@@ -19,12 +19,12 @@
 
 package de.markusbordihn.easynpc.configui.client.screen.configuration.preset;
 
-import de.markusbordihn.easynpc.client.screen.components.Checkbox;
-import de.markusbordihn.easynpc.client.screen.components.ExportButton;
-import de.markusbordihn.easynpc.client.screen.components.FileBrowserButton;
 import de.markusbordihn.easynpc.client.screen.components.SpinButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextField;
+import de.markusbordihn.easynpc.configui.client.screen.components.Checkbox;
+import de.markusbordihn.easynpc.configui.client.screen.components.ExportButton;
+import de.markusbordihn.easynpc.configui.client.screen.components.FileBrowserButton;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.preset.PresetExportFormat;
@@ -36,7 +36,7 @@ import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.ConfirmScreen;
@@ -213,8 +213,9 @@ public class ExportCustomPresetConfigurationScreen<T extends ConfigurationMenu>
   }
 
   @Override
-  public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
-    super.render(guiGraphics, x, y, partialTicks);
+  public void extractRenderState(
+      GuiGraphicsExtractor guiGraphics, int x, int y, float partialTicks) {
+    super.extractRenderState(guiGraphics, x, y, partialTicks);
 
     // Render info text at the top of the screen
     if (!this.textComponents.isEmpty()) {

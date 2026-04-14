@@ -29,7 +29,7 @@ import de.markusbordihn.easynpc.data.scale.CustomScale;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
@@ -41,7 +41,7 @@ public class EntityScreenRenderer {
   protected EntityScreenRenderer() {}
 
   public static void renderEntity(
-      GuiGraphics guiGraphics,
+      GuiGraphicsExtractor guiGraphics,
       EasyNPC<?> easyNPC,
       EntityRenderConfig config,
       float mouseX,
@@ -55,7 +55,7 @@ public class EntityScreenRenderer {
     EntityRenderState backupState = new EntityRenderState(livingEntity, easyNPC);
     applyRenderModifications(easyNPC, config);
 
-    InventoryScreen.renderEntityInInventoryFollowsMouse(
+    InventoryScreen.extractEntityInInventoryFollowsMouse(
         guiGraphics,
         config.left(),
         config.top(),
@@ -71,7 +71,7 @@ public class EntityScreenRenderer {
   }
 
   public static void renderEntityRaw(
-      GuiGraphics guiGraphics,
+      GuiGraphicsExtractor guiGraphics,
       EasyNPC<?> easyNPC,
       EntityRenderConfig config,
       float mouseX,

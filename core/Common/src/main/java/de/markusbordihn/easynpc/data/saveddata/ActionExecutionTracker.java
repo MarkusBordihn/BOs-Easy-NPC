@@ -33,6 +33,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.level.saveddata.SavedData;
@@ -43,7 +44,8 @@ import org.apache.logging.log4j.Logger;
 public class ActionExecutionTracker extends SavedData {
 
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-  private static final String DATA_NAME = "easy_npc_action_executions";
+  private static final Identifier DATA_NAME =
+      Identifier.fromNamespaceAndPath("easy_npc", "action_executions");
   private static final String DATA_PLAYERS_TAG = "Players";
   private static final String DATA_PLAYER_UUID_TAG = "PlayerUUID";
   private static final String DATA_ACTIONS_TAG = "Actions";

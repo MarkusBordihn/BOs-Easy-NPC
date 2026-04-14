@@ -32,6 +32,8 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.FlyingAnimal;
 import net.minecraft.world.entity.animal.chicken.Chicken;
+import net.minecraft.world.entity.animal.chicken.ChickenSoundVariant;
+import net.minecraft.world.entity.animal.chicken.ChickenSoundVariants;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
@@ -80,10 +82,12 @@ public class ChickenBase extends ChickenRaw implements BaseEasyNPC<ChickenRaw> {
 
   @Override
   public SoundDataSet getDefaultSoundDataSet(SoundDataSet soundDataSet, String variantName) {
-    soundDataSet.addDefaultSound(SoundType.AMBIENT, SoundEvents.CHICKEN_AMBIENT);
-    soundDataSet.addDefaultSound(SoundType.DEATH, SoundEvents.CHICKEN_DEATH);
-    soundDataSet.addDefaultSound(SoundType.HURT, SoundEvents.CHICKEN_HURT);
-    soundDataSet.addDefaultSound(SoundType.STEP, SoundEvents.CHICKEN_STEP);
+    ChickenSoundVariant.ChickenSoundSet chickenSounds =
+        SoundEvents.CHICKEN_SOUNDS.get(ChickenSoundVariants.SoundSet.CLASSIC).adultSounds();
+    soundDataSet.addDefaultSound(SoundType.AMBIENT, chickenSounds.ambientSound());
+    soundDataSet.addDefaultSound(SoundType.DEATH, chickenSounds.deathSound());
+    soundDataSet.addDefaultSound(SoundType.HURT, chickenSounds.hurtSound());
+    soundDataSet.addDefaultSound(SoundType.STEP, chickenSounds.stepSound());
     soundDataSet.addDefaultSound(SoundType.TRADE, SoundEvents.VILLAGER_TRADE);
     soundDataSet.addDefaultSound(SoundType.TRADE_YES, SoundEvents.VILLAGER_YES);
     soundDataSet.addDefaultSound(SoundType.TRADE_NO, SoundEvents.VILLAGER_NO);

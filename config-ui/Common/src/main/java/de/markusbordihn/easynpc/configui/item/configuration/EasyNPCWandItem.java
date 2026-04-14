@@ -110,8 +110,8 @@ public class EasyNPCWandItem extends Item {
           float yaw = (float) Math.toDegrees(Mth.atan2(dz, dx)) - 90.0f;
           yaw = Mth.wrapDegrees(yaw);
           modelData.setModelRotation(yaw);
-          serverPlayer.displayClientMessage(
-              Component.literal("Rotation: " + String.format("%.1f", yaw) + "°"), true);
+          serverPlayer.sendOverlayMessage(
+              Component.literal("Rotation: " + String.format("%.1f", yaw) + "°"));
         }
         return InteractionResult.SUCCESS;
       }

@@ -24,7 +24,7 @@ import de.markusbordihn.easynpc.data.condition.ConditionDataEntry;
 import de.markusbordihn.easynpc.data.condition.ConditionDataSet;
 import de.markusbordihn.easynpc.data.condition.ConditionType;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 public class ConditionEntryWidget {
   protected final ConditionDataEntry conditionDataEntry;
@@ -49,7 +49,7 @@ public class ConditionEntryWidget {
 
   public void init(int editorLeft, int editorTop) {}
 
-  public void render(GuiGraphics guiGraphics, int editorLeft, int editorTop) {}
+  public void render(GuiGraphicsExtractor guiGraphics, int editorLeft, int editorTop) {}
 
   public ConditionDataEntry getConditionDataEntry() {
     return this.conditionDataEntry;

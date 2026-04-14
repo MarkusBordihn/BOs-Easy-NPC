@@ -19,7 +19,7 @@
 
 package de.markusbordihn.easynpc.client.screen.components;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 public class DrawBorder {
 
@@ -27,12 +27,12 @@ public class DrawBorder {
 
   private DrawBorder() {}
 
-  public static void draw(GuiGraphics guiGraphics, int x, int y, int width, int height) {
+  public static void draw(GuiGraphicsExtractor guiGraphics, int x, int y, int width, int height) {
     draw(guiGraphics, x, y, width, height, DEFAULT_BORDER_COLOR);
   }
 
   public static void draw(
-      GuiGraphics guiGraphics, int x, int y, int width, int height, int borderColor) {
+      GuiGraphicsExtractor guiGraphics, int x, int y, int width, int height, int borderColor) {
     guiGraphics.fill(x, y, x + width, y + 1, borderColor);
     guiGraphics.fill(x, y + height - 1, x + width, y + height, borderColor);
     guiGraphics.fill(x, y, x + 1, y + height, borderColor);
@@ -40,7 +40,7 @@ public class DrawBorder {
   }
 
   public static void drawVerticalSeparator(
-      GuiGraphics guiGraphics, int x, int y, int height, int color) {
+      GuiGraphicsExtractor guiGraphics, int x, int y, int height, int color) {
     guiGraphics.fill(x, y, x + 1, y + height, color);
   }
 }

@@ -64,14 +64,14 @@ public class NetworkHandler implements NetworkHandlerInterface {
   public <M extends NetworkMessageRecord> void registerClientPayloadType(
       Type<M> type, StreamCodec<RegistryFriendlyByteBuf, M> codec) {
     log.info("Registering client payload type {} with {}", type, codec);
-    PayloadTypeRegistry.playS2C().register(type, codec);
+    PayloadTypeRegistry.clientboundPlay().register(type, codec);
   }
 
   @Override
   public <M extends NetworkMessageRecord> void registerServerPayloadType(
       Type<M> type, StreamCodec<RegistryFriendlyByteBuf, M> codec) {
     log.info("Registering server payload type {} with {}", type, codec);
-    PayloadTypeRegistry.playC2S().register(type, codec);
+    PayloadTypeRegistry.serverboundPlay().register(type, codec);
   }
 
   @Override

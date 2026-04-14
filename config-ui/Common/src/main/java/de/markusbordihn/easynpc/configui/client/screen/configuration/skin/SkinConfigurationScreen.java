@@ -28,7 +28,7 @@ import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.entity.easynpc.data.ConfigurationDataCapable;
 import java.util.ArrayList;
 import java.util.List;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
@@ -76,7 +76,7 @@ public class SkinConfigurationScreen<T extends ConfigurationMenu> extends Config
     }
   }
 
-  protected void renderSkinSelectionBackground(GuiGraphics guiGraphics) {
+  protected void renderSkinSelectionBackground(GuiGraphicsExtractor guiGraphics) {
     guiGraphics.fill(
         this.contentLeftPos,
         this.contentTopPos + 104,
@@ -182,8 +182,9 @@ public class SkinConfigurationScreen<T extends ConfigurationMenu> extends Config
   }
 
   @Override
-  protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
-    super.renderBg(guiGraphics, partialTicks, mouseX, mouseY);
+  public void extractBackground(
+      GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    super.extractBackground(guiGraphics, mouseX, mouseY, partialTicks);
     this.renderSkinSelectionBackground(guiGraphics);
   }
 
@@ -266,13 +267,14 @@ public class SkinConfigurationScreen<T extends ConfigurationMenu> extends Config
   }
 
   @Override
-  public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
-    super.render(guiGraphics, x, y, partialTicks);
+  public void extractRenderState(
+      GuiGraphicsExtractor guiGraphics, int x, int y, float partialTicks) {
+    super.extractRenderState(guiGraphics, x, y, partialTicks);
 
     // Make sure we pass the mouse movements to the dynamically added buttons, if any.
     if (!skinButtons.isEmpty()) {
       for (Button skinButton : skinButtons) {
-        skinButton.render(guiGraphics, x, y, partialTicks);
+        skinButton.extractRenderState(guiGraphics, x, y, partialTicks);
       }
     }
   }

@@ -35,7 +35,6 @@ import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.item.context.UseOnContext;
@@ -75,15 +74,6 @@ public class ModSpawnEggItem extends SpawnEggItem {
     return TextComponent.getTranslatedTextRaw(this.getDescriptionId());
   }
 
-  public EntityType<?> getType(ItemStack itemStack) {
-    return this.typeSupplier.get();
-  }
-
-  @Override
-  public FeatureFlagSet requiredFeatures() {
-    return this.typeSupplier.get().requiredFeatures();
-  }
-
   @Override
   public InteractionResult useOn(UseOnContext context) {
     Level level = context.getLevel();
@@ -103,7 +93,7 @@ public class ModSpawnEggItem extends SpawnEggItem {
     }
 
     // Spawn the entity based on the spawn egg type.
-    EntityType<?> entityType = this.getType(itemStack);
+    EntityType<?> entityType = this.typeSupplier.get();
     Entity entity =
         entityType.spawn(
             (ServerLevel) level,

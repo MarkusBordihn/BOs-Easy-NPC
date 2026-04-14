@@ -1,8 +1,8 @@
 plugins {
   id 'maven-publish'
   id 'net.minecraftforge.accesstransformers' version '5.0.1'
-  id 'net.minecraftforge.gradle' version '7.0.0-beta.48'
-  id 'net.darkhax.curseforgegradle' version '1.1.28'
+  id 'net.minecraftforge.gradle' version '[7.0.17,8)'
+  id 'net.darkhax.curseforgegradle' version '1.2.30'
   id 'nu.studer.credentials' version '3.0'
   id "com.modrinth.minotaur" version "2.+"
 }
@@ -15,9 +15,6 @@ base {
 
 minecraft {
   mappings channel: 'official', version: "${project.minecraft_version}"
-
-  // Access Transformer
-  accessTransformers = true
 
   // Run configurations
   runs {
@@ -81,7 +78,7 @@ repositories {
 dependencies {
   implementation minecraft.dependency("net.minecraftforge:forge:${minecraft_version}-${forge_version}")
 
-  annotationProcessor 'net.minecraftforge:eventbus-validator:7.0-beta.12'
+  annotationProcessor 'net.minecraftforge:eventbus-validator:7.0.1'
 
   // Include Common code
   compileOnly project(":Common")

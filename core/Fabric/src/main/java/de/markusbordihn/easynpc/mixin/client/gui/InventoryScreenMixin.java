@@ -21,7 +21,7 @@ package de.markusbordihn.easynpc.mixin.client.gui;
 
 import de.markusbordihn.easynpc.client.gui.InventoryScreenHandler;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.world.entity.LivingEntity;
 import org.spongepowered.asm.mixin.Mixin;
@@ -34,11 +34,11 @@ public class InventoryScreenMixin {
 
   @Inject(
       method =
-          "renderEntityInInventoryFollowsMouse(Lnet/minecraft/client/gui/GuiGraphics;IIIIIFFFLnet/minecraft/world/entity/LivingEntity;)V",
+          "extractEntityInInventoryFollowsMouse(Lnet/minecraft/client/gui/GuiGraphicsExtractor;IIIIIFFFLnet/minecraft/world/entity/LivingEntity;)V",
       at = @At("HEAD"),
       cancellable = true)
   private static void onRenderEntityInInventoryFollowsMouse(
-      GuiGraphics guiGraphics,
+      GuiGraphicsExtractor guiGraphics,
       int left,
       int top,
       int right,

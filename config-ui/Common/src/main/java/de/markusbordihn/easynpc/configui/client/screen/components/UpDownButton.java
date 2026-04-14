@@ -17,11 +17,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.client.screen.components;
+package de.markusbordihn.easynpc.configui.client.screen.components;
 
-import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.client.screen.components.SpriteButton;
+import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.network.components.TextComponent;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
@@ -39,7 +40,6 @@ public class UpDownButton extends AbstractWidget {
     this.onUp = onUp;
     this.onDown = onDown;
 
-    // Create up and down buttons
     int singleButtonHeight = height / 2;
     this.upButton =
         new SpriteButton(
@@ -77,12 +77,14 @@ public class UpDownButton extends AbstractWidget {
   }
 
   @Override
-  public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+  public void extractWidgetRenderState(
+      GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
     if (this.upButton != null) {
-      this.upButton.render(guiGraphics, mouseX, mouseY, partialTicks);
+      this.upButton.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
     }
+
     if (this.downButton != null) {
-      this.downButton.render(guiGraphics, mouseX, mouseY, partialTicks);
+      this.downButton.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
     }
   }
 
@@ -91,6 +93,7 @@ public class UpDownButton extends AbstractWidget {
     if (this.upButton != null && this.upButton.mouseClicked(mouseButtonEvent, doubleClick)) {
       return true;
     }
+
     return this.downButton != null && this.downButton.mouseClicked(mouseButtonEvent, doubleClick);
   }
 

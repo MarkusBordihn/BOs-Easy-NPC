@@ -26,7 +26,7 @@ import de.markusbordihn.easynpc.configui.menu.ConfigUIMenu;
 import de.markusbordihn.easynpc.data.screen.ScreenData;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.input.KeyEvent;
@@ -60,10 +60,7 @@ public class ContainerScreen<T extends ConfigUIMenu> extends AbstractContainerSc
 
   protected ContainerScreen(
       T menu, Inventory inventory, Component component, int width, int height) {
-    super(menu, inventory, component);
-
-    this.imageWidth = width;
-    this.imageHeight = height;
+    super(menu, inventory, component, width, height);
     this.menu = menu;
     this.minecraftInstance = Minecraft.getInstance();
   }
@@ -129,21 +126,18 @@ public class ContainerScreen<T extends ConfigUIMenu> extends AbstractContainerSc
   }
 
   @Override
-  public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
-    super.render(guiGraphics, x, y, partialTicks);
+  public void extractRenderState(
+      GuiGraphicsExtractor guiGraphics, int x, int y, float partialTicks) {
+    super.extractRenderState(guiGraphics, x, y, partialTicks);
     this.xMouse = x;
     this.yMouse = y;
   }
 
   @Override
-  protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
-    // Render screen background
-    this.renderDefaultScreenBg(guiGraphics, this.leftPos, this.topPos);
-
-    // Render title background for none compact mode
-    if (!this.compactMode) {
-      this.renderDefaultTitleBg(guiGraphics, this.leftPos, this.topPos);
-    }
+  public void extractBackground(
+      GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    super.extractBackground(guiGraphics, mouseX, mouseY, partialTicks);
+    this.renderDefaultScreenBg(guiGraphics, this.leftPos, this.topPos, this.compactMode);
   }
 
   @Override

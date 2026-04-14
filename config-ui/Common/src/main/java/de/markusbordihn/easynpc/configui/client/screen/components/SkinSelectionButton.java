@@ -17,26 +17,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.client.screen.components;
+package de.markusbordihn.easynpc.configui.client.screen.components;
 
-public class DeleteButton extends SpriteButton {
+import de.markusbordihn.easynpc.client.screen.components.SpriteButton;
+import de.markusbordihn.easynpc.configui.Constants;
+import net.minecraft.resources.Identifier;
 
-  private static final int DEFAULT_HEIGHT = 18;
-  private static final int DEFAULT_WIDTH_SMALL = 18;
-  private static final int SPRITE_HEIGHT = 12;
-  private static final int SPRITE_OFFSET_X = 65;
-  private static final int SPRITE_OFFSET_Y = 155;
-  private static final int SPRITE_WIDTH = 12;
-  private static final int SPRITE_X = 4;
-  private static final int SPRITE_Y = 4;
+@SuppressWarnings("unused")
+public class SkinSelectionButton extends SpriteButton {
 
-  public DeleteButton(int left, int top, int width, OnPress onPress) {
+  private static final int DEFAULT_HEIGHT = 84;
+  private static final int DEFAULT_WIDTH = 60;
+  private static final int SPRITE_HEIGHT = 84;
+  private static final int SPRITE_OFFSET_X = 0;
+  private static final int SPRITE_OFFSET_Y = 0;
+  private static final int SPRITE_WIDTH = 60;
+  private static final int SPRITE_X = 0;
+  private static final int SPRITE_Y = 0;
+  private static final Identifier TEXTURE = Constants.TEXTURE_CONFIGURATION;
+
+  public SkinSelectionButton(int left, int top, OnPress onPress) {
     super(
         left,
         top,
-        width,
+        DEFAULT_WIDTH,
         DEFAULT_HEIGHT,
-        width > DEFAULT_WIDTH_SMALL ? "delete" : "",
+        TEXTURE,
         SPRITE_X,
         SPRITE_Y,
         SPRITE_OFFSET_X,
@@ -44,9 +50,6 @@ public class DeleteButton extends SpriteButton {
         SPRITE_WIDTH,
         SPRITE_HEIGHT,
         onPress);
-  }
-
-  public DeleteButton(int left, int top, OnPress onPress) {
-    this(left, top, DEFAULT_WIDTH_SMALL, onPress);
+    this.setRenderBackground(false);
   }
 }
