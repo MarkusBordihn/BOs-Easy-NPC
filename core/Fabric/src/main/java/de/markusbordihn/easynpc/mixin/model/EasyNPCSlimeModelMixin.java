@@ -50,7 +50,7 @@ public class EasyNPCSlimeModelMixin<T extends Entity> implements EasyNPCModelMan
   private void easyNpcModel(ModelPart modelPart, CallbackInfo callbackInfo) {
     this.easyNPC$modelManager =
         new EasyNPCModelManager(modelPart)
-            .defineModelPart(ModelPartType.BODY, this.root.getChild("cube"));
+            .defineModelPart(ModelPartType.BODY, this.root, EasyNPCModelManager.MODEL_PART_CUBE);
   }
 
   @Inject(

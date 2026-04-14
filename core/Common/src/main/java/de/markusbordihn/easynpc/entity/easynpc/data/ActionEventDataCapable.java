@@ -128,7 +128,7 @@ public interface ActionEventDataCapable<E extends Mob> extends EasyNPC<E> {
   }
 
   default void registerDefaultActionInteractionEvents() {
-    log.info("Register default action interaction events for {} ...", this);
+    log.debug("Register default action interaction events for {} ...", this);
 
     // Get existing action event set or create a new one
     ActionEventSet actionEventSet =

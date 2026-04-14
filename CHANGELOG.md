@@ -8,6 +8,18 @@ For the full changelog, please go to the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 6.12.0
+
+- Fixed #714 by adding additional checks for custom model part list based on vanilla models.
+- Fixed #713 by reducing log verbosity with downgraded per-NPC INFO messages to DEBUG and
+  consolidated redundant warning messages.
+- Fixed #711 by reduced oversized startup/config log output.
+- Fixed NBT validation guard to prevent unnecessary buffer allocations in production.
+- Added model part name constants to EasyNPCModelManager for consistent usage across mixins.
+- Improved RenderEntityTypeSupportConfig by enhancing filter logic and optimizing data structures
+  for better performance and maintainability.
+- Removed verbose debug logs that dump large data structures.
+
 ### 6.11.0
 
 - Fixed #703 rendering issue with new custom layer system and hand renderings.

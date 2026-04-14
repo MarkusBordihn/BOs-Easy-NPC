@@ -32,6 +32,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.level.Level;
 import org.apache.logging.log4j.LogManager;
@@ -75,52 +76,48 @@ public class EntityTypeManager {
           configuredUnsupportedTypes.size());
     }
 
+    int autoFilteredCount = 0;
     for (EntityType<?> entityType : BuiltInRegistries.ENTITY_TYPE) {
       if (entityType == null) {
         continue;
       }
 
+      // Skip non-mob entities like projectiles, vehicles, items, and displays.
+      if (entityType.getCategory() == MobCategory.MISC) {
+        autoFilteredCount++;
+        continue;
+      }
+
       String entityTypeLocation = BuiltInRegistries.ENTITY_TYPE.getKey(entityType).toString();
-      if (entityTypeLocation.startsWith(Constants.MOD_ID)
-          || entityTypeLocation.startsWith("mythicmounts:")
-          || entityTypeLocation.endsWith("_arrow")
-          || entityTypeLocation.endsWith("_ball")
-          || entityTypeLocation.endsWith("_boat")
-          || entityTypeLocation.endsWith("_bullet")
-          || entityTypeLocation.endsWith("_charge")
-          || entityTypeLocation.endsWith("_display")
-          || entityTypeLocation.endsWith("_fireball")
-          || entityTypeLocation.endsWith("_marker")
-          || entityTypeLocation.endsWith("_part")
-          || entityTypeLocation.endsWith("_projectile")
-          || entityTypeLocation.endsWith("_spawner")
-          || entityTypeLocation.endsWith("_thrown")
-          || entityTypeLocation.endsWith("effect")
-          || entityTypeLocation.contains(":projectile")
-          || entityTypeLocation.contains("_attack")
-          || entityTypeLocation.contains("multi_part")
-          || entityTypeLocation.contains("effect_")
-          || entityTypeLocation.contains("flash_")
-          || entityTypeLocation.contains(":spell_")) {
+
+      // Explicitly configured entities always take priority over pattern filtering.
+      if (configuredSupportedTypes.contains(entityTypeLocation)) {
+        entityTypeNameMap.put(entityType, entityTypeLocation);
+        addSupportedEntityType(entityType);
+        continue;
+      } else if (configuredUnsupportedTypes.contains(entityTypeLocation)) {
+        entityTypeNameMap.put(entityType, entityTypeLocation);
+        addUnsupportedEntityType(entityType);
+        continue;
+      }
+
+      // Auto-filter unknown entities by common non-mob name patterns.
+      if (shouldFilterEntityTypeByName(entityTypeLocation)) {
+        autoFilteredCount++;
         continue;
       }
 
       entityTypeNameMap.put(entityType, entityTypeLocation);
-
-      if (configuredSupportedTypes.contains(entityTypeLocation)) {
-        addSupportedEntityType(entityType);
-      } else if (configuredUnsupportedTypes.contains(entityTypeLocation)) {
-        addUnsupportedEntityType(entityType);
-      } else {
-        addUnknownEntityType(entityType);
-      }
+      addUnknownEntityType(entityType);
     }
 
     log.info(
-        LOG_PREFIX + " Found {} supported, {} unsupported and {} unknown entity types.",
+        LOG_PREFIX
+            + " Found {} supported, {} unsupported, {} unknown and {} auto-filtered entity types.",
         supportedEntityTypes.size(),
         unsupportedEntityTypes.size(),
-        unknownEntityTypes.size());
+        unknownEntityTypes.size(),
+        autoFilteredCount);
 
     isRegistered = true;
   }
@@ -241,8 +238,10 @@ public class EntityTypeManager {
         }
         return newPathfinderMob;
       } else {
-        log.error(
-            "{} Invalid Entity type {} is not extending PathfinderMob!", LOG_PREFIX, entityType);
+        log.debug(
+            "{} Entity type {} is not a PathfinderMob, marking as unsupported.",
+            LOG_PREFIX,
+            entityType);
         if (entity != null) {
           entity.discard();
         }
@@ -259,5 +258,61 @@ public class EntityTypeManager {
 
   public static String getEntityTypeName(EntityType<? extends Entity> entityType) {
     return entityTypeNameMap.getOrDefault(entityType, "Unknown");
+  }
+
+  public static boolean shouldFilterEntityTypeByName(String entityTypeLocation) {
+    if (entityTypeLocation == null || entityTypeLocation.isEmpty()) {
+      return true;
+    }
+    return entityTypeLocation.startsWith(Constants.MOD_ID)
+        || entityTypeLocation.startsWith("mythicmounts:")
+        || entityTypeLocation.endsWith("_arrow")
+        || entityTypeLocation.endsWith("_ball")
+        || entityTypeLocation.endsWith("_beam")
+        || entityTypeLocation.endsWith("_blast")
+        || entityTypeLocation.endsWith("_blob")
+        || entityTypeLocation.endsWith("_boat")
+        || entityTypeLocation.endsWith("_bolt")
+        || entityTypeLocation.endsWith("_bomb")
+        || entityTypeLocation.endsWith("_bubble")
+        || entityTypeLocation.endsWith("_bullet")
+        || entityTypeLocation.endsWith("_charge")
+        || entityTypeLocation.endsWith("_cloud")
+        || entityTypeLocation.endsWith("_crystal")
+        || entityTypeLocation.endsWith("_dart")
+        || entityTypeLocation.endsWith("_display")
+        || entityTypeLocation.endsWith("_egg")
+        || entityTypeLocation.endsWith("_fireball")
+        || entityTypeLocation.endsWith("_flare")
+        || entityTypeLocation.endsWith("_marker")
+        || entityTypeLocation.endsWith("_missile")
+        || entityTypeLocation.endsWith("_mortar")
+        || entityTypeLocation.endsWith("_needle")
+        || entityTypeLocation.endsWith("_orb")
+        || entityTypeLocation.endsWith("_parachute")
+        || entityTypeLocation.endsWith("_part")
+        || entityTypeLocation.endsWith("_pearl")
+        || entityTypeLocation.endsWith("_pellet")
+        || entityTypeLocation.endsWith("_piece")
+        || entityTypeLocation.endsWith("_projectile")
+        || entityTypeLocation.endsWith("_shard")
+        || entityTypeLocation.endsWith("_shot")
+        || entityTypeLocation.endsWith("_snowball")
+        || entityTypeLocation.endsWith("_spawner")
+        || entityTypeLocation.endsWith("_spear")
+        || entityTypeLocation.endsWith("_spike")
+        || entityTypeLocation.endsWith("_tentacle")
+        || entityTypeLocation.endsWith("_thrown")
+        || entityTypeLocation.endsWith("_vortex")
+        || entityTypeLocation.endsWith("effect")
+        || entityTypeLocation.contains(":projectile")
+        || entityTypeLocation.endsWith(":boat")
+        || entityTypeLocation.contains("_attack")
+        || entityTypeLocation.contains("multi_part")
+        || entityTypeLocation.contains("effect_")
+        || entityTypeLocation.contains("falling_")
+        || entityTypeLocation.contains("flash_")
+        || entityTypeLocation.contains("minecart")
+        || entityTypeLocation.contains(":spell_");
   }
 }

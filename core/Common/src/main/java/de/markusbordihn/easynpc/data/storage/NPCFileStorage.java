@@ -23,6 +23,7 @@ import de.markusbordihn.easynpc.Constants;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -117,7 +118,7 @@ public class NPCFileStorage {
     try {
       Path tempFile = npcFile.getParent().resolve(uuid.toString() + ".tmp");
       NbtIo.writeCompressed(data, tempFile.toFile());
-      Files.move(tempFile, npcFile, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+      Files.move(tempFile, npcFile, StandardCopyOption.REPLACE_EXISTING);
 
       cache.put(uuid, data);
       log.debug("Saved NPC data for UUID {} to file {}", uuid, npcFile);
@@ -129,7 +130,7 @@ public class NPCFileStorage {
   }
 
   public int saveAllDirty() {
-    // Create snapshot to ensure atomicity - new entries during save are kept
+    // Snapshot to avoid ConcurrentModificationException - new entries during save are kept
     Map<UUID, CompoundTag> snapshot = new HashMap<>(dirtyNPCs);
     int savedCount = 0;
     for (Map.Entry<UUID, CompoundTag> entry : snapshot.entrySet()) {
@@ -158,7 +159,6 @@ public class NPCFileStorage {
       return false;
     }
 
-    // Remove from cache and dirty tracking
     cache.remove(uuid);
     dirtyNPCs.remove(uuid);
 

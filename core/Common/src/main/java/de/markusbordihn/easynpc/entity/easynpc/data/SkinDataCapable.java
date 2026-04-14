@@ -74,7 +74,7 @@ public interface SkinDataCapable<T extends Mob> extends EasyNPC<T> {
 
     // Early exit if no skin data is available.
     if (!compoundTag.contains(EASY_NPC_DATA_SKIN_DATA_TAG)) {
-      log.warn("No skin data available for {}.", this);
+      log.debug("No skin data available for {}.", this);
       return;
     }
 

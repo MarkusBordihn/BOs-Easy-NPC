@@ -124,6 +124,9 @@ dependencies {
   runtimeOnly fg.deobf("curse.maven:ftb-teams-forge-404468:4623116")
   runtimeOnly fg.deobf("curse.maven:architectury-api-419699:4663010")
   runtimeOnly fg.deobf("curse.maven:ftb-quests-forge-289412:6829212")
+
+  // Grimoire of Gaia (for testing)
+  runtimeOnly fg.deobf("curse.maven:grimoire-of-gaia-228948:7187135")
 }
 
 mixin {

@@ -56,8 +56,8 @@ public class EasyNPCVillagerModelMixin<T extends Entity> implements EasyNPCModel
         new EasyNPCModelManager(modelPart)
             .defineModelPart(ModelPartType.HAT, this.hat)
             .defineModelPart(ModelPartType.HEAD, this.head)
-            .defineModelPart(ModelPartType.BODY, "body")
-            .defineModelPart(ModelPartType.ARMS, "arms")
+            .defineModelPart(ModelPartType.BODY, EasyNPCModelManager.MODEL_PART_BODY)
+            .defineModelPart(ModelPartType.ARMS, EasyNPCModelManager.MODEL_PART_ARMS)
             .defineModelPart(ModelPartType.RIGHT_LEG, this.rightLeg)
             .defineModelPart(ModelPartType.LEFT_LEG, this.leftLeg);
   }

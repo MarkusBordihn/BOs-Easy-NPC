@@ -57,7 +57,7 @@ public class EasyNPCIronGolemModelMixin<T extends IronGolem>
     this.easyNPC$modelManager =
         new EasyNPCModelManager(modelPart)
             .defineModelPart(ModelPartType.HEAD, this.head)
-            .defineModelPart(ModelPartType.BODY, this.root.getChild("body"))
+            .defineModelPart(ModelPartType.BODY, this.root, EasyNPCModelManager.MODEL_PART_BODY)
             .defineModelPart(ModelPartType.RIGHT_ARM, this.rightArm)
             .defineModelPart(ModelPartType.LEFT_ARM, this.leftArm)
             .defineModelPart(ModelPartType.RIGHT_LEG, this.rightLeg)
