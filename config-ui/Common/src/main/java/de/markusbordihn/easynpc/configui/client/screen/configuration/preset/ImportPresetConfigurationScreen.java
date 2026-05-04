@@ -20,10 +20,10 @@
 package de.markusbordihn.easynpc.configui.client.screen.configuration.preset;
 
 import de.markusbordihn.easynpc.client.screen.Screen;
-import de.markusbordihn.easynpc.client.screen.components.ImportButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.configui.Constants;
+import de.markusbordihn.easynpc.configui.client.screen.components.ImportButton;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.ConfigurationScreen;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;

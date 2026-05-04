@@ -22,10 +22,10 @@ package de.markusbordihn.easynpc.configui.client.screen.configuration.preset;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.io.LocalPresetDataFiles;
+import de.markusbordihn.easynpc.io.PresetFileHandler;
 import java.nio.file.Path;
 import java.util.List;
-import net.minecraft.nbt.NbtAccounter;
-import net.minecraft.nbt.NbtIo;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -47,11 +47,13 @@ public class ImportLocalPresetConfigurationScreen<T extends ConfigurationMenu>
   public void loadPreset(ResourceLocation resourceLocation) {
     try {
       Path presetFilePath = LocalPresetDataFiles.getPresetsResourceLocationPath(resourceLocation);
+      CompoundTag compoundTag = PresetFileHandler.load(presetFilePath.toFile());
+      if (compoundTag == null || compoundTag.isEmpty()) {
+        log.error("Failed to load local preset file {}:", resourceLocation);
+        return;
+      }
       NetworkMessageHandlerManager.getServerHandler()
-          .importLocalPreset(
-              getEasyNPCUUID(),
-              NbtIo.readCompressed(presetFilePath.toFile().toPath(), NbtAccounter.unlimitedHeap()),
-              resourceLocation);
+          .importLocalPreset(getEasyNPCUUID(), compoundTag, resourceLocation);
     } catch (Exception e) {
       log.error("Failed to import local preset file {}:", resourceLocation, e);
     }

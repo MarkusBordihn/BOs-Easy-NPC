@@ -17,33 +17,49 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.client.screen.components;
+package de.markusbordihn.easynpc.configui.client.screen.components;
 
-public class TextEditButton extends SpriteButton {
+import de.markusbordihn.easynpc.client.screen.components.SpriteButton;
+import de.markusbordihn.easynpc.configui.Constants;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 
-  private static final int DEFAULT_HEIGHT = 18;
+public class AddButton extends SpriteButton {
+
+  private static final int DEFAULT_HEIGHT = 16;
   private static final int SPRITE_HEIGHT = 12;
-  private static final int SPRITE_OFFSET_X = 80;
+  private static final int SPRITE_OFFSET_X = 65;
   private static final int SPRITE_OFFSET_Y = 104;
   private static final int SPRITE_WIDTH = 12;
-  private static final int SPRITE_X = 3;
+  private static final int SPRITE_X = 4;
   private static final int SPRITE_Y = 3;
+  private static final ResourceLocation TEXTURE = Constants.TEXTURE_CONFIGURATION;
 
-  public TextEditButton(int left, int top, OnPress onPress) {
-    this(left, top, 16, 16, "", onPress);
-  }
-
-  public TextEditButton(int left, int top, int width, String label, OnPress onPress) {
-    this(left, top, width, DEFAULT_HEIGHT, label, onPress);
-  }
-
-  public TextEditButton(int left, int top, int width, int height, String label, OnPress onPress) {
+  public AddButton(int left, int top, int width, String label, OnPress onPress) {
     super(
         left,
         top,
         width,
-        height,
+        DEFAULT_HEIGHT,
         label,
+        TEXTURE,
+        SPRITE_X,
+        3,
+        SPRITE_OFFSET_X,
+        SPRITE_OFFSET_Y,
+        SPRITE_WIDTH,
+        SPRITE_HEIGHT,
+        onPress);
+  }
+
+  public AddButton(int left, int top, int width, Component component, OnPress onPress) {
+    super(
+        left,
+        top,
+        width,
+        DEFAULT_HEIGHT,
+        component,
+        TEXTURE,
         SPRITE_X,
         SPRITE_Y,
         SPRITE_OFFSET_X,

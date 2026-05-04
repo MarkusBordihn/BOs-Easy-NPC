@@ -43,8 +43,15 @@ public final class Constants {
   public static final String MINECRAFT_RESOURCE_PREFIX = MINECRAFT_PREFIX + ":";
   public static final ResourceLocation TEXTURE_CONFIGURATION =
       ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/configuration.png");
-  public static final ResourceLocation TEXTURE_DEMO_BACKGROUND =
-      ResourceLocation.fromNamespaceAndPath(MINECRAFT_PREFIX, "textures/gui/demo_background.png");
+  public static final ResourceLocation TEXTURE_CONFIG_SCREEN_BACKGROUND =
+      ResourceLocation.fromNamespaceAndPath(
+          Constants.MOD_ID, "textures/gui/config_screen/background.png");
+  public static final ResourceLocation TEXTURE_CONFIG_SCREEN_BACKGROUND_SMALL =
+      ResourceLocation.fromNamespaceAndPath(
+          Constants.MOD_ID, "textures/gui/config_screen/background_small.png");
+  public static final ResourceLocation TEXTURE_PRESET_BROWSER_BACKGROUND =
+      ResourceLocation.fromNamespaceAndPath(
+          Constants.MOD_ID, "textures/gui/preset_browser/background.png");
   public static final ResourceLocation TEXTURE_INVENTORY =
       ResourceLocation.fromNamespaceAndPath(
           MINECRAFT_PREFIX, "textures/gui/container/inventory.png");

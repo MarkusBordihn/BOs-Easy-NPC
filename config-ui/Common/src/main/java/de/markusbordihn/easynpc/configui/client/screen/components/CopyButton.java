@@ -17,31 +17,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.client.screen.components;
+package de.markusbordihn.easynpc.configui.client.screen.components;
 
-import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.client.screen.components.SpriteButton;
+import de.markusbordihn.easynpc.configui.Constants;
 import net.minecraft.resources.ResourceLocation;
 
-public class CloseButton extends SpriteButton {
+public class CopyButton extends SpriteButton {
 
-  private static final ResourceLocation TEXTURE =
-      ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/close_button.png");
+  private static final int DEFAULT_HEIGHT = 16;
+  private static final int DEFAULT_WIDTH_SMALL = 16;
+  private static final int SPRITE_HEIGHT = 12;
+  private static final int SPRITE_OFFSET_X = 65;
+  private static final int SPRITE_OFFSET_Y = 130;
+  private static final int SPRITE_WIDTH = 12;
+  private static final int SPRITE_X = 3;
+  private static final int SPRITE_Y = 2;
+  private static final ResourceLocation TEXTURE = Constants.TEXTURE_CONFIGURATION;
 
-  private static final int DEFAULT_HEIGHT = 12;
-  private static final int DEFAULT_WIDTH = 12;
-  private static final int SPRITE_HEIGHT = 10;
-  private static final int SPRITE_OFFSET_X = 0;
-  private static final int SPRITE_OFFSET_Y = 0;
-  private static final int SPRITE_WIDTH = 10;
-  private static final int SPRITE_X = 1;
-  private static final int SPRITE_Y = 1;
+  public CopyButton(int left, int top, OnPress onPress) {
+    this(left, top, DEFAULT_WIDTH_SMALL, "", onPress);
+  }
 
-  public CloseButton(int left, int top, OnPress onPress) {
+  public CopyButton(int left, int top, int width, String label, OnPress onPress) {
     super(
         left,
         top,
-        DEFAULT_WIDTH,
+        width,
         DEFAULT_HEIGHT,
+        label,
         TEXTURE,
         SPRITE_X,
         SPRITE_Y,
@@ -50,7 +54,5 @@ public class CloseButton extends SpriteButton {
         SPRITE_WIDTH,
         SPRITE_HEIGHT,
         onPress);
-    this.setRenderBackground(false);
-    this.setTextureSize(64, 64);
   }
 }

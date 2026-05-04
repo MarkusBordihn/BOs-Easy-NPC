@@ -17,9 +17,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.client.screen.components;
+package de.markusbordihn.easynpc.configui.client.screen.components;
 
-import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.client.screen.components.TextField;
+import de.markusbordihn.easynpc.configui.Constants;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
@@ -44,7 +45,6 @@ public class SearchField extends TextField {
   public void renderWidget(GuiGraphics guiGraphics, int left, int top, float partialTicks) {
     super.renderWidget(guiGraphics, left, top, partialTicks);
 
-    // Expand Search Field Background and Border
     int stylePositionX = this.getX() - SPRITE_WIDTH;
     guiGraphics.fill(
         stylePositionX - 1,
@@ -59,7 +59,6 @@ public class SearchField extends TextField {
         this.getY() + this.height - 1,
         0xFF000000);
 
-    // Button Sprite
     guiGraphics.blit(
         SPRITE,
         stylePositionX + SPRITE_X,

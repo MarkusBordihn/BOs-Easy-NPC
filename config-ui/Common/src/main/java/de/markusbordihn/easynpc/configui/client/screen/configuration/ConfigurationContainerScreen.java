@@ -40,7 +40,6 @@ public class ConfigurationContainerScreen<T extends ConfigUIMenu> extends Contai
 
   public ConfigurationContainerScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
-    this.showCloseButton = false;
   }
 
   @Override

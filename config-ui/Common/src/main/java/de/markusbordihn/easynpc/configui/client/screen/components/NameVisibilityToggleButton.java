@@ -19,7 +19,6 @@
 
 package de.markusbordihn.easynpc.configui.client.screen.components;
 
-import de.markusbordihn.easynpc.client.screen.components.MultiStateToggleButton;
 import de.markusbordihn.easynpc.data.display.NameVisibilityType;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 

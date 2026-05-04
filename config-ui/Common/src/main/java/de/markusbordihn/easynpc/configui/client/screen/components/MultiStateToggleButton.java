@@ -17,9 +17,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.client.screen.components;
+package de.markusbordihn.easynpc.configui.client.screen.components;
 
-import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.client.screen.components.CustomButton;
+import de.markusbordihn.easynpc.configui.Constants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
@@ -153,7 +154,6 @@ public class MultiStateToggleButton extends CustomButton {
       super.renderButton(guiGraphics, mouseX, mouseY, partialTicks);
     }
 
-    // Render the sprite for the current state
     ToggleState currentState = this.states[this.currentStateIndex];
     guiGraphics.blit(
         this.spriteTexture,

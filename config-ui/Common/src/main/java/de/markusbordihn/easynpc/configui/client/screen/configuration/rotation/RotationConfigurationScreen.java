@@ -63,20 +63,23 @@ public class RotationConfigurationScreen<T extends ConfigurationMenu>
   }
 
   @Override
-  public void renderDefaultScreenBg(GuiGraphics guiGraphics, int leftPos, int topPos) {
-    Graphics.blit(guiGraphics, Constants.TEXTURE_DEMO_BACKGROUND, leftPos, topPos, 0, 0, 220, 40);
-    Graphics.blit(
-        guiGraphics, Constants.TEXTURE_DEMO_BACKGROUND, leftPos + 213, topPos, 132, 0, 120, 27);
-    Graphics.blit(
-        guiGraphics, Constants.TEXTURE_DEMO_BACKGROUND, leftPos, topPos + 27, 0, 137, 220, 40);
+  public void renderDefaultScreenBg(
+      GuiGraphics guiGraphics, int leftPos, int topPos, boolean compactMode) {
     Graphics.blit(
         guiGraphics,
-        Constants.TEXTURE_DEMO_BACKGROUND,
-        leftPos + 213,
-        topPos + 27,
-        132,
-        137,
-        120,
-        40);
+        Constants.TEXTURE_CONFIG_SCREEN_BACKGROUND_SMALL,
+        leftPos,
+        topPos,
+        1,
+        1,
+        333,
+        80,
+        512,
+        256);
+  }
+
+  @Override
+  protected void renderLabels(GuiGraphics guiGraphics, int x, int y) {
+    // No title bar area in background_small
   }
 }
