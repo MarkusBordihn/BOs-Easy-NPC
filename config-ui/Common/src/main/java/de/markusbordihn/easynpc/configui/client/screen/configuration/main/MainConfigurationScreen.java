@@ -19,19 +19,19 @@
 
 package de.markusbordihn.easynpc.configui.client.screen.configuration.main;
 
-import de.markusbordihn.easynpc.client.screen.components.CopyButton;
-import de.markusbordihn.easynpc.client.screen.components.DeleteButton;
-import de.markusbordihn.easynpc.client.screen.components.ExportButton;
-import de.markusbordihn.easynpc.client.screen.components.ImportButton;
-import de.markusbordihn.easynpc.client.screen.components.ReloadButton;
-import de.markusbordihn.easynpc.client.screen.components.SaveButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.client.screen.components.TextField;
 import de.markusbordihn.easynpc.configui.client.renderer.screen.EntityConfigScreenRenderer;
 import de.markusbordihn.easynpc.configui.client.screen.EntityGuiScaling;
 import de.markusbordihn.easynpc.configui.client.screen.components.ColorButton;
+import de.markusbordihn.easynpc.configui.client.screen.components.CopyButton;
+import de.markusbordihn.easynpc.configui.client.screen.components.DeleteButton;
+import de.markusbordihn.easynpc.configui.client.screen.components.ExportButton;
+import de.markusbordihn.easynpc.configui.client.screen.components.ImportButton;
 import de.markusbordihn.easynpc.configui.client.screen.components.NameVisibilityToggleButton;
+import de.markusbordihn.easynpc.configui.client.screen.components.ReloadButton;
+import de.markusbordihn.easynpc.configui.client.screen.components.SaveButton;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.ConfigurationScreen;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
@@ -367,7 +367,7 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
         this.addRenderableWidget(
             new CopyButton(
                 this.contentLeftPos,
-                this.bottomPos - 27,
+                this.bottomPos - 26,
                 90,
                 "copy_uuid",
                 onPress -> {
@@ -380,7 +380,7 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
     this.addRenderableWidget(
         new ReloadButton(
             copyUUIDButton.getX() + copyUUIDButton.getWidth() + 4,
-            this.bottomPos - 27,
+            this.bottomPos - 25,
             80,
             16,
             "respawn",

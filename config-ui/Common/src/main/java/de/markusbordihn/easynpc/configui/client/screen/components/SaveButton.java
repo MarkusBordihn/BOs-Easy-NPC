@@ -17,32 +17,43 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.client.screen.components;
+package de.markusbordihn.easynpc.configui.client.screen.components;
 
-public class CancelButton extends SpriteButton {
+import de.markusbordihn.easynpc.client.screen.components.SpriteButton;
+import de.markusbordihn.easynpc.configui.Constants;
+import net.minecraft.resources.ResourceLocation;
+
+public class SaveButton extends SpriteButton {
 
   private static final int DEFAULT_HEIGHT = 18;
+  private static final int DEFAULT_WIDTH_SMALL = 20;
   private static final int DEFAULT_WIDTH = 100;
-  private static final int SPRITE_HEIGHT = 10;
+  private static final int SPRITE_HEIGHT = 13;
   private static final int SPRITE_OFFSET_X = 64;
-  private static final int SPRITE_OFFSET_Y = 47;
-  private static final int SPRITE_WIDTH = 10;
+  private static final int SPRITE_OFFSET_Y = 4;
+  private static final int SPRITE_WIDTH = 13;
   private static final int SPRITE_X = 4;
   private static final int SPRITE_Y = 3;
+  private static final ResourceLocation TEXTURE = Constants.TEXTURE_CONFIGURATION;
 
-  public CancelButton(int left, int top, String label, OnPress onPress) {
+  public SaveButton(int left, int top, OnPress onPress) {
+    this(left, top, DEFAULT_WIDTH_SMALL, "", onPress);
+  }
+
+  public SaveButton(int left, int top, String label, OnPress onPress) {
     this(left, top, DEFAULT_WIDTH, label, onPress);
   }
 
-  public CancelButton(int left, int top, int width, String label, OnPress onPress) {
+  public SaveButton(int left, int top, int width, String label, OnPress onPress) {
     super(
         left,
         top,
         width,
         DEFAULT_HEIGHT,
         label,
+        TEXTURE,
         SPRITE_X,
-        3,
+        SPRITE_Y,
         SPRITE_OFFSET_X,
         SPRITE_OFFSET_Y,
         SPRITE_WIDTH,

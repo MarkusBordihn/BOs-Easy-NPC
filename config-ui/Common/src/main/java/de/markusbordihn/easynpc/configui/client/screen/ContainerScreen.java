@@ -54,7 +54,7 @@ public class ContainerScreen<T extends ConfigUIMenu> extends AbstractContainerSc
   private boolean containerClosed = false;
 
   protected ContainerScreen(T menu, Inventory inventory, Component component) {
-    this(menu, inventory, component, 318, 243);
+    this(menu, inventory, component, 328, 243);
   }
 
   protected ContainerScreen(
@@ -139,13 +139,7 @@ public class ContainerScreen<T extends ConfigUIMenu> extends AbstractContainerSc
 
   @Override
   protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
-    // Render screen background
-    this.renderDefaultScreenBg(guiGraphics, this.leftPos, this.topPos);
-
-    // Render title background for none compact mode
-    if (!this.compactMode) {
-      this.renderDefaultTitleBg(guiGraphics, this.leftPos, this.topPos);
-    }
+    this.renderDefaultScreenBg(guiGraphics, this.leftPos, this.topPos, this.compactMode);
   }
 
   @Override

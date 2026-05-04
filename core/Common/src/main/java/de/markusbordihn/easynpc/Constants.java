@@ -48,12 +48,12 @@ public final class Constants {
   public static final String MINECRAFT_PREFIX = "minecraft";
   public static final ResourceLocation BLANK_ENTITY_TEXTURE =
       new ResourceLocation(Constants.MOD_ID, "textures/entity/blank.png");
-  public static final ResourceLocation TEXTURE_CONFIGURATION =
-      new ResourceLocation(Constants.MOD_ID, "textures/gui/configuration.png");
-  public static final ResourceLocation TEXTURE_DEMO_BACKGROUND =
-      new ResourceLocation(MINECRAFT_PREFIX, "textures/gui/demo_background.png");
-  public static final ResourceLocation TEXTURE_DIALOG =
-      new ResourceLocation(Constants.MOD_ID, "textures/gui/dialog.png");
+  public static final ResourceLocation TEXTURE_DIALOG_SCENE_LARGE =
+      new ResourceLocation(Constants.MOD_ID, "textures/gui/dialog/scene_large.png");
+  public static final ResourceLocation TEXTURE_DIALOG_SCENE_MEDIUM =
+      new ResourceLocation(Constants.MOD_ID, "textures/gui/dialog/scene_medium.png");
+  public static final ResourceLocation TEXTURE_DIALOG_SCENE_SMALL =
+      new ResourceLocation(Constants.MOD_ID, "textures/gui/dialog/scene_small.png");
   public static final ResourceLocation TEXTURE_INVENTORY =
       new ResourceLocation(MINECRAFT_PREFIX, "textures/gui/container/inventory.png");
   public static final ResourceLocation TEXTURE_SPAWNER =

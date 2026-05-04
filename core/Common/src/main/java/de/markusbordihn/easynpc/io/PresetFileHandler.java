@@ -45,8 +45,8 @@ public class PresetFileHandler {
   private PresetFileHandler() {}
 
   public static CompoundTag load(File file) {
-    if (file == null || !file.exists()) {
-      log.error("Error loading preset file, file does not exist: {}", file);
+    if (file == null || !file.exists() || !file.isFile()) {
+      log.error("Error loading preset file, file does not exist or is not a file: {}", file);
       return null;
     }
 
@@ -68,8 +68,8 @@ public class PresetFileHandler {
   }
 
   public static CompoundTag loadNbt(File file) {
-    if (file == null || !file.exists()) {
-      log.error("Error loading NBT preset file, file does not exist: {}", file);
+    if (file == null || !file.exists() || !file.isFile()) {
+      log.error("Error loading NBT preset file, file does not exist or is not a file: {}", file);
       return null;
     }
 
@@ -82,8 +82,8 @@ public class PresetFileHandler {
   }
 
   public static CompoundTag loadSnbt(File file) {
-    if (file == null || !file.exists()) {
-      log.error("Error loading SNBT preset file, file does not exist: {}", file);
+    if (file == null || !file.exists() || !file.isFile()) {
+      log.error("Error loading SNBT preset file, file does not exist or is not a file: {}", file);
       return null;
     }
 

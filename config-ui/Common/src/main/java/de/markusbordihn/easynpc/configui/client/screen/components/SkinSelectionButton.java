@@ -17,33 +17,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.client.screen.components;
+package de.markusbordihn.easynpc.configui.client.screen.components;
 
-import net.minecraft.client.gui.components.Button.OnPress;
+import de.markusbordihn.easynpc.client.screen.components.SpriteButton;
+import de.markusbordihn.easynpc.configui.Constants;
+import net.minecraft.resources.ResourceLocation;
 
-public class CopyButton extends SpriteButton {
+public class SkinSelectionButton extends SpriteButton {
 
-  private static final int DEFAULT_HEIGHT = 16;
-  private static final int DEFAULT_WIDTH_SMALL = 16;
-  private static final int DEFAULT_WIDTH = 100;
-  private static final int SPRITE_HEIGHT = 12;
-  private static final int SPRITE_OFFSET_X = 65;
-  private static final int SPRITE_OFFSET_Y = 130;
-  private static final int SPRITE_WIDTH = 12;
-  private static final int SPRITE_X = 3;
-  private static final int SPRITE_Y = 2;
+  private static final int DEFAULT_HEIGHT = 84;
+  private static final int DEFAULT_WIDTH = 60;
+  private static final int SPRITE_HEIGHT = 84;
+  private static final int SPRITE_OFFSET_X = 0;
+  private static final int SPRITE_OFFSET_Y = 0;
+  private static final int SPRITE_WIDTH = 60;
+  private static final int SPRITE_X = 0;
+  private static final int SPRITE_Y = 0;
+  private static final ResourceLocation TEXTURE = Constants.TEXTURE_CONFIGURATION;
 
-  public CopyButton(int left, int top, OnPress onPress) {
-    this(left, top, DEFAULT_WIDTH_SMALL, "", onPress);
-  }
-
-  public CopyButton(int left, int top, int width, String label, OnPress onPress) {
+  public SkinSelectionButton(int left, int top, OnPress onPress) {
     super(
         left,
         top,
-        width,
+        DEFAULT_WIDTH,
         DEFAULT_HEIGHT,
-        label,
+        TEXTURE,
         SPRITE_X,
         SPRITE_Y,
         SPRITE_OFFSET_X,
@@ -51,5 +49,6 @@ public class CopyButton extends SpriteButton {
         SPRITE_WIDTH,
         SPRITE_HEIGHT,
         onPress);
+    this.setRenderBackground(false);
   }
 }

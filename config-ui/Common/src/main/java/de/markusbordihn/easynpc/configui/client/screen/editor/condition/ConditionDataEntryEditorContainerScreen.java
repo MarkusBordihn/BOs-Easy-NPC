@@ -19,15 +19,15 @@
 
 package de.markusbordihn.easynpc.configui.client.screen.editor.condition;
 
-import de.markusbordihn.easynpc.client.screen.components.CancelButton;
-import de.markusbordihn.easynpc.client.screen.components.DeleteButton;
-import de.markusbordihn.easynpc.client.screen.components.SaveButton;
 import de.markusbordihn.easynpc.client.screen.components.SpinButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.configui.client.screen.EditorScreen;
+import de.markusbordihn.easynpc.configui.client.screen.components.CancelButton;
+import de.markusbordihn.easynpc.configui.client.screen.components.DeleteButton;
 import de.markusbordihn.easynpc.configui.client.screen.components.DialogButton;
+import de.markusbordihn.easynpc.configui.client.screen.components.SaveButton;
 import de.markusbordihn.easynpc.configui.client.screen.editor.condition.entry.ConditionEntryWidget;
 import de.markusbordihn.easynpc.configui.client.screen.editor.condition.entry.ExecutionLimitConditionEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.condition.entry.ScoreboardConditionEntry;
@@ -277,7 +277,6 @@ public class ConditionDataEntryEditorContainerScreen<T extends EditorMenu> exten
 
   @Override
   public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
-    this.renderBackground(guiGraphics);
     super.render(guiGraphics, x, y, partialTicks);
 
     // Condition type label

@@ -17,26 +17,39 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.client.screen.components;
+package de.markusbordihn.easynpc.configui.client.screen.components;
 
-public class DeleteButton extends SpriteButton {
+import de.markusbordihn.easynpc.client.screen.components.SpriteButton;
+import de.markusbordihn.easynpc.configui.Constants;
+import net.minecraft.resources.ResourceLocation;
+
+public class TextEditButton extends SpriteButton {
 
   private static final int DEFAULT_HEIGHT = 18;
-  private static final int DEFAULT_WIDTH_SMALL = 18;
   private static final int SPRITE_HEIGHT = 12;
-  private static final int SPRITE_OFFSET_X = 65;
-  private static final int SPRITE_OFFSET_Y = 155;
+  private static final int SPRITE_OFFSET_X = 80;
+  private static final int SPRITE_OFFSET_Y = 104;
   private static final int SPRITE_WIDTH = 12;
-  private static final int SPRITE_X = 4;
-  private static final int SPRITE_Y = 4;
+  private static final int SPRITE_X = 3;
+  private static final int SPRITE_Y = 3;
+  private static final ResourceLocation TEXTURE = Constants.TEXTURE_CONFIGURATION;
 
-  public DeleteButton(int left, int top, int width, OnPress onPress) {
+  public TextEditButton(int left, int top, OnPress onPress) {
+    this(left, top, 16, 16, "", onPress);
+  }
+
+  public TextEditButton(int left, int top, int width, String label, OnPress onPress) {
+    this(left, top, width, DEFAULT_HEIGHT, label, onPress);
+  }
+
+  public TextEditButton(int left, int top, int width, int height, String label, OnPress onPress) {
     super(
         left,
         top,
         width,
-        DEFAULT_HEIGHT,
-        width > DEFAULT_WIDTH_SMALL ? "delete" : "",
+        height,
+        label,
+        TEXTURE,
         SPRITE_X,
         SPRITE_Y,
         SPRITE_OFFSET_X,
@@ -44,9 +57,5 @@ public class DeleteButton extends SpriteButton {
         SPRITE_WIDTH,
         SPRITE_HEIGHT,
         onPress);
-  }
-
-  public DeleteButton(int left, int top, OnPress onPress) {
-    this(left, top, DEFAULT_WIDTH_SMALL, onPress);
   }
 }

@@ -51,4 +51,35 @@ public class Graphics {
       int textureHeight) {
     guiGraphics.blit(texture, x, y, width, height, textureX, textureY, textureWidth, textureHeight);
   }
+
+  public static void blitStretched(
+      GuiGraphics guiGraphics,
+      ResourceLocation texture,
+      int destX,
+      int destY,
+      int destWidth,
+      int destHeight,
+      int srcX,
+      int srcY,
+      int srcWidth,
+      int srcHeight,
+      int textureWidth,
+      int textureHeight) {
+    guiGraphics.pose().pushPose();
+    guiGraphics.pose().translate(destX, destY, 0);
+    guiGraphics.pose().scale((float) destWidth / srcWidth, (float) destHeight / srcHeight, 1f);
+    guiGraphics.blit(
+        texture,
+        0,
+        0,
+        srcWidth,
+        srcHeight,
+        srcX,
+        srcY,
+        srcWidth,
+        srcHeight,
+        textureWidth,
+        textureHeight);
+    guiGraphics.pose().popPose();
+  }
 }

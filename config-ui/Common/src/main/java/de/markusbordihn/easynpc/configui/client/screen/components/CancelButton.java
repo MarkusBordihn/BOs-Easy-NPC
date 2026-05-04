@@ -17,45 +17,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.client.screen.components;
+package de.markusbordihn.easynpc.configui.client.screen.components;
 
-import net.minecraft.network.chat.Component;
+import de.markusbordihn.easynpc.client.screen.components.SpriteButton;
+import de.markusbordihn.easynpc.configui.Constants;
+import net.minecraft.resources.ResourceLocation;
 
-public class AddButton extends SpriteButton {
+public class CancelButton extends SpriteButton {
 
-  private static final int DEFAULT_HEIGHT = 16;
-  private static final int SPRITE_HEIGHT = 12;
-  private static final int SPRITE_OFFSET_X = 65;
-  private static final int SPRITE_OFFSET_Y = 104;
-  private static final int SPRITE_WIDTH = 12;
+  private static final int DEFAULT_HEIGHT = 18;
+  private static final int DEFAULT_WIDTH = 100;
+  private static final int SPRITE_HEIGHT = 10;
+  private static final int SPRITE_OFFSET_X = 64;
+  private static final int SPRITE_OFFSET_Y = 47;
+  private static final int SPRITE_WIDTH = 10;
   private static final int SPRITE_X = 4;
   private static final int SPRITE_Y = 3;
+  private static final ResourceLocation TEXTURE = Constants.TEXTURE_CONFIGURATION;
 
-  public AddButton(int left, int top, int width, String label, OnPress onPress) {
+  public CancelButton(int left, int top, String label, OnPress onPress) {
+    this(left, top, DEFAULT_WIDTH, label, onPress);
+  }
+
+  public CancelButton(int left, int top, int width, String label, OnPress onPress) {
     super(
         left,
         top,
         width,
         DEFAULT_HEIGHT,
         label,
+        TEXTURE,
         SPRITE_X,
         3,
-        SPRITE_OFFSET_X,
-        SPRITE_OFFSET_Y,
-        SPRITE_WIDTH,
-        SPRITE_HEIGHT,
-        onPress);
-  }
-
-  public AddButton(int left, int top, int width, Component component, OnPress onPress) {
-    super(
-        left,
-        top,
-        width,
-        DEFAULT_HEIGHT,
-        component,
-        SPRITE_X,
-        SPRITE_Y,
         SPRITE_OFFSET_X,
         SPRITE_OFFSET_Y,
         SPRITE_WIDTH,

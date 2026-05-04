@@ -19,21 +19,21 @@
 
 package de.markusbordihn.easynpc.configui.client.screen.editor.dialog;
 
-import de.markusbordihn.easynpc.client.screen.components.AddButton;
-import de.markusbordihn.easynpc.client.screen.components.CancelButton;
-import de.markusbordihn.easynpc.client.screen.components.Checkbox;
-import de.markusbordihn.easynpc.client.screen.components.DeleteButton;
-import de.markusbordihn.easynpc.client.screen.components.SaveButton;
 import de.markusbordihn.easynpc.client.screen.components.SpriteButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
-import de.markusbordihn.easynpc.client.screen.components.TextEditButton;
 import de.markusbordihn.easynpc.client.screen.components.TextField;
 import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.configui.client.screen.EditorScreen;
+import de.markusbordihn.easynpc.configui.client.screen.components.AddButton;
+import de.markusbordihn.easynpc.configui.client.screen.components.CancelButton;
+import de.markusbordihn.easynpc.configui.client.screen.components.Checkbox;
+import de.markusbordihn.easynpc.configui.client.screen.components.DeleteButton;
 import de.markusbordihn.easynpc.configui.client.screen.components.DialogButton;
 import de.markusbordihn.easynpc.configui.client.screen.components.DialogButtonButton;
 import de.markusbordihn.easynpc.configui.client.screen.components.DialogPriorityButton;
+import de.markusbordihn.easynpc.configui.client.screen.components.SaveButton;
+import de.markusbordihn.easynpc.configui.client.screen.components.TextEditButton;
 import de.markusbordihn.easynpc.configui.menu.editor.EditorMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
@@ -234,6 +234,7 @@ public class DialogEditorScreen<T extends EditorMenu> extends EditorScreen<T> {
                 this.dialogNameTextField.getY() - 1,
                 18,
                 18,
+                Constants.TEXTURE_CONFIGURATION,
                 4,
                 4,
                 80,
@@ -447,7 +448,6 @@ public class DialogEditorScreen<T extends EditorMenu> extends EditorScreen<T> {
 
   @Override
   public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
-    this.renderBackground(guiGraphics);
     super.render(guiGraphics, x, y, partialTicks);
     this.renderEditLabels(guiGraphics);
 

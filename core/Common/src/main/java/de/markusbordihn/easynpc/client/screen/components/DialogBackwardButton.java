@@ -19,30 +19,35 @@
 
 package de.markusbordihn.easynpc.client.screen.components;
 
-public class SkinSelectionButton extends SpriteButton {
+import de.markusbordihn.easynpc.Constants;
+import net.minecraft.resources.ResourceLocation;
 
-  private static final int DEFAULT_HEIGHT = 84;
-  private static final int DEFAULT_WIDTH = 60;
-  private static final int SPRITE_HEIGHT = 84;
-  private static final int SPRITE_OFFSET_X = 0;
+public class DialogBackwardButton extends SpriteButton {
+
+  private static final ResourceLocation TEXTURE =
+      new ResourceLocation(Constants.MOD_ID, "textures/gui/navigation_button.png");
+
+  private static final int DEFAULT_SIZE = 12;
+  private static final int SPRITE_HEIGHT = 12;
+  private static final int SPRITE_OFFSET_X = 12;
   private static final int SPRITE_OFFSET_Y = 0;
-  private static final int SPRITE_WIDTH = 60;
-  private static final int SPRITE_X = 0;
-  private static final int SPRITE_Y = 0;
+  private static final int SPRITE_WIDTH = 12;
 
-  public SkinSelectionButton(int left, int top, OnPress onPress) {
+  public DialogBackwardButton(int left, int top, OnPress onPress) {
     super(
         left,
         top,
-        DEFAULT_WIDTH,
-        DEFAULT_HEIGHT,
-        SPRITE_X,
-        SPRITE_Y,
+        DEFAULT_SIZE,
+        DEFAULT_SIZE,
+        TEXTURE,
+        0,
+        0,
         SPRITE_OFFSET_X,
         SPRITE_OFFSET_Y,
         SPRITE_WIDTH,
         SPRITE_HEIGHT,
         onPress);
     this.setRenderBackground(false);
+    this.setTextureSize(64, 64);
   }
 }

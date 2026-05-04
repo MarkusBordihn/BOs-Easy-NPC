@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.configui.client.screen;
 
+import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.configui.menu.ConfigUIMenu;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -35,7 +36,7 @@ public class EditorScreen<T extends ConfigUIMenu>
   protected final LocalPlayer localPlayer;
 
   public EditorScreen(T menu, Inventory inventory, Component component) {
-    super(menu, inventory, component);
+    super(menu, inventory, component, 328, 243);
 
     // General environment Data
     this.localPlayer = this.minecraftInstance.player;
@@ -49,6 +50,14 @@ public class EditorScreen<T extends ConfigUIMenu>
 
   @Override
   protected void renderLabels(GuiGraphics guiGraphics, int x, int y) {
-    // No labels
+    if (!this.compactMode) {
+      Text.drawString(
+          guiGraphics,
+          this.font,
+          this.title,
+          this.leftPos + this.titleLabelX,
+          this.topPos + this.titleLabelY,
+          4210752);
+    }
   }
 }

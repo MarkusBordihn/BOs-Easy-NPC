@@ -20,13 +20,13 @@
 package de.markusbordihn.easynpc.configui.client.screen.configuration.model;
 
 import de.markusbordihn.easynpc.client.renderer.manager.EntityTypeManager;
-import de.markusbordihn.easynpc.client.screen.components.SearchField;
-import de.markusbordihn.easynpc.client.screen.components.SkinSelectionButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.configui.client.renderer.manager.EntityTypeValidator;
 import de.markusbordihn.easynpc.configui.client.renderer.screen.EntityConfigScreenRenderer;
+import de.markusbordihn.easynpc.configui.client.screen.components.SearchField;
+import de.markusbordihn.easynpc.configui.client.screen.components.SkinSelectionButton;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.render.EntityRenderConfig;
