@@ -18,6 +18,7 @@ out
 build
 run
 .gradle
+.gradle-*
 *local.properties
 
 # NodeJs

@@ -24,13 +24,17 @@ import de.markusbordihn.easynpc.configui.client.screen.configuration.Configurati
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
+import de.markusbordihn.easynpc.network.components.TextComponent;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
 public class ExportPresetConfigurationScreen<T extends ConfigurationMenu>
     extends ConfigurationScreen<T> {
 
+  protected Button localExportPresetButton;
   protected Button customExportPresetButton;
   protected Button worldExportPresetButton;
 
@@ -38,28 +42,69 @@ public class ExportPresetConfigurationScreen<T extends ConfigurationMenu>
     super(menu, inventory, component);
   }
 
+  private static boolean isSinglePlayerNotLan() {
+    Minecraft mc = Minecraft.getInstance();
+    if (!mc.isLocalServer()) {
+      return false;
+    }
+
+    var integratedServer = mc.getSingleplayerServer();
+    return integratedServer == null || !integratedServer.isPublished();
+  }
+
   @Override
   public void init() {
     super.init();
 
-    // Import buttons
+    boolean singlePlayer = isSinglePlayerNotLan();
     int buttonWidth = 92;
-    this.customExportPresetButton =
+
+    // Local Export tab — always visible and accessible
+    this.localExportPresetButton =
         this.addRenderableWidget(
             new TextButton(
                 this.buttonLeftPos,
                 this.buttonTopPos,
-                buttonWidth + 16,
-                "custom",
+                singlePlayer ? buttonWidth + 16 : buttonWidth,
+                "local",
                 button ->
                     NetworkMessageHandlerManager.getServerHandler()
                         .openConfiguration(
-                            getEasyNPCUUID(), ConfigurationType.CUSTOM_PRESET_EXPORT)));
+                            getEasyNPCUUID(), ConfigurationType.LOCAL_PRESET_EXPORT)));
+    if (this.isConfigurationBlockedByPermission(ConfigurationType.LOCAL_PRESET_EXPORT)) {
+      this.localExportPresetButton.active = false;
+      this.localExportPresetButton.setTooltip(
+          Tooltip.create(TextComponent.getTranslatedConfigText("menu.tooltip.no_permission")));
+    }
 
+    // Custom Export tab — hidden in single-player (same dir as local), visible on servers
+    if (!singlePlayer) {
+      this.customExportPresetButton =
+          this.addRenderableWidget(
+              new TextButton(
+                  this.localExportPresetButton.getX() + this.localExportPresetButton.getWidth(),
+                  this.buttonTopPos,
+                  buttonWidth,
+                  "custom",
+                  button ->
+                      NetworkMessageHandlerManager.getServerHandler()
+                          .openConfiguration(
+                              getEasyNPCUUID(), ConfigurationType.CUSTOM_PRESET_EXPORT)));
+      if (this.isConfigurationBlockedByPermission(ConfigurationType.CUSTOM_PRESET_EXPORT)) {
+        this.customExportPresetButton.active = false;
+        this.customExportPresetButton.setTooltip(
+            Tooltip.create(TextComponent.getTranslatedConfigText("menu.tooltip.no_permission")));
+      }
+    }
+
+    int worldButtonX =
+        singlePlayer
+            ? this.localExportPresetButton.getX() + this.localExportPresetButton.getWidth()
+            : this.customExportPresetButton.getX() + this.customExportPresetButton.getWidth();
     this.worldExportPresetButton =
         this.addRenderableWidget(
             new TextButton(
-                this.customExportPresetButton.getX() + this.customExportPresetButton.getWidth(),
+                worldButtonX,
                 this.buttonTopPos,
                 buttonWidth,
                 "world_preset",
@@ -67,5 +112,10 @@ public class ExportPresetConfigurationScreen<T extends ConfigurationMenu>
                     NetworkMessageHandlerManager.getServerHandler()
                         .openConfiguration(
                             getEasyNPCUUID(), ConfigurationType.WORLD_PRESET_EXPORT)));
+    if (this.isConfigurationBlockedByPermission(ConfigurationType.WORLD_PRESET_EXPORT)) {
+      this.worldExportPresetButton.active = false;
+      this.worldExportPresetButton.setTooltip(
+          Tooltip.create(TextComponent.getTranslatedConfigText("menu.tooltip.no_permission")));
+    }
   }
 }

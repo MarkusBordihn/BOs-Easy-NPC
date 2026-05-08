@@ -271,7 +271,7 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
   }
 
   private void defineImportExportButtons() {
-    // Import Button
+    // Import Button — opens local import screen (always accessible)
     Button importButton =
         this.addRenderableWidget(
             new ImportButton(
@@ -283,7 +283,7 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
                 onPress ->
                     NetworkMessageHandlerManager.getServerHandler()
                         .openConfiguration(
-                            this.getEasyNPCUUID(), ConfigurationType.DEFAULT_PRESET_IMPORT)));
+                            this.getEasyNPCUUID(), ConfigurationType.LOCAL_PRESET_IMPORT)));
     importButton.active = true;
 
     // Export Button
@@ -298,8 +298,14 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
                 onPress ->
                     NetworkMessageHandlerManager.getServerHandler()
                         .openConfiguration(
-                            this.getEasyNPCUUID(), ConfigurationType.CUSTOM_PRESET_EXPORT)));
-    exportButton.active = true;
+                            this.getEasyNPCUUID(), ConfigurationType.LOCAL_PRESET_EXPORT)));
+    if (this.isConfigurationBlockedByPermission(ConfigurationType.LOCAL_PRESET_EXPORT)) {
+      exportButton.active = false;
+      exportButton.setTooltip(
+          Tooltip.create(TextComponent.getTranslatedConfigText("menu.tooltip.no_permission")));
+    } else {
+      exportButton.active = true;
+    }
   }
 
   private void defineNameAndColorBox() {
@@ -367,8 +373,9 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
         this.addRenderableWidget(
             new CopyButton(
                 this.contentLeftPos,
-                this.bottomPos - 26,
+                this.bottomPos - 27,
                 90,
+                18,
                 "copy_uuid",
                 onPress -> {
                   Minecraft minecraft = Minecraft.getInstance();
@@ -380,16 +387,17 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
     this.addRenderableWidget(
         new ReloadButton(
             copyUUIDButton.getX() + copyUUIDButton.getWidth() + 4,
-            this.bottomPos - 25,
+            this.bottomPos - 27,
             80,
-            16,
+            18,
             "respawn",
             onPress -> respawnNPC()));
   }
 
   private void defineDeleteButton() {
     this.addRenderableWidget(
-        new DeleteButton(this.rightPos - 70, this.bottomPos - 29, 65, onPress -> this.deleteNPC()));
+        new DeleteButton(
+            this.rightPos - 70, this.bottomPos - 27, 66, 18, onPress -> this.deleteNPC()));
   }
 
   protected void defineEditSkinButton() {
@@ -397,6 +405,7 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
     if (skinData == null) {
       return;
     }
+
     Button editSkinButton =
         this.addRenderableWidget(
             new TextButton(
@@ -485,7 +494,13 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
                   onPress ->
                       NetworkMessageHandlerManager.getServerHandler()
                           .openConfiguration(this.getEasyNPCUUID(), configurationType)));
-      button.active = this.supportsConfigurationType(configurationType);
+      boolean typeSupported = this.supportsConfigurationType(configurationType);
+      boolean permissionBlocked = this.isConfigurationBlockedByPermission(configurationType);
+      button.active = typeSupported && !permissionBlocked;
+      if (typeSupported && permissionBlocked) {
+        button.setTooltip(
+            Tooltip.create(TextComponent.getTranslatedConfigText("menu.tooltip.no_permission")));
+      }
       buttonIndex++;
     }
   }
@@ -495,6 +510,7 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
     if (minecraft == null) {
       return;
     }
+
     minecraft.setScreen(
         new ConfirmScreen(
             confirmed -> {
@@ -517,6 +533,7 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
     if (minecraft == null) {
       return;
     }
+
     minecraft.setScreen(
         new ConfirmScreen(
             confirmed -> {

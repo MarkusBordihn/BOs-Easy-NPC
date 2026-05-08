@@ -28,6 +28,7 @@ import de.markusbordihn.easynpc.data.spawner.SpawnerType;
 import de.markusbordihn.easynpc.entity.easynpc.data.PresetDataCapable;
 import de.markusbordihn.easynpc.level.BaseEasyNPCSpawner;
 import de.markusbordihn.easynpc.network.components.TextComponent;
+import de.markusbordihn.easynpc.security.SecurityManager;
 import java.util.List;
 import java.util.UUID;
 import net.minecraft.ChatFormatting;
@@ -73,6 +74,7 @@ public class EasyNPCPresetItem extends Item {
     if (compoundTag.contains(PresetDataCapable.PRESET_UUID_TAG)) {
       return compoundTag.getUUID(PresetDataCapable.PRESET_UUID_TAG);
     }
+
     return null;
   }
 
@@ -91,7 +93,7 @@ public class EasyNPCPresetItem extends Item {
     CompoundTag compoundTag = itemStack.getOrCreateTag();
     compoundTag.putString(ENTITY_TYPE_TAG, entityType.toString());
     PresetDataUtils.cleanupEntityData(presetData, PresetDataUtils.CleanupMode.FULL);
-    compoundTag.put(PRESET_TAG, presetData);
+    compoundTag.put(PRESET_TAG, SecurityManager.sanitizePresetExport(presetData));
   }
 
   public static String getCustomName(ItemStack itemStack) {
@@ -102,6 +104,7 @@ public class EasyNPCPresetItem extends Item {
         return customNameTag.getString(TEXT_TAG);
       }
     }
+
     return null;
   }
 
@@ -116,16 +119,22 @@ public class EasyNPCPresetItem extends Item {
     if (compoundTag.contains(ENTITY_TYPE_TAG)) {
       return EntityType.byString(compoundTag.getString(ENTITY_TYPE_TAG)).orElse(null);
     }
+
     return null;
   }
 
   public static boolean spawnAtPosition(BlockPos blockPos, ItemStack itemStack, Level level) {
+    return spawnAtPosition(blockPos, itemStack, level, null);
+  }
+
+  public static boolean spawnAtPosition(
+      BlockPos blockPos, ItemStack itemStack, Level level, Player player) {
     if (level.isClientSide || !hasPreset(itemStack) || !hasEntityType(itemStack)) {
       return false;
     }
 
     PresetData presetData = PresetDataUtils.fromItemStack(itemStack);
-    boolean spawned = PresetDataUtils.spawnEntity(presetData, level, blockPos);
+    boolean spawned = PresetDataUtils.spawnEntity(presetData, level, blockPos, player);
 
     if (spawned) {
       UUID presetUUID = getPresetUUID(itemStack);
@@ -161,7 +170,8 @@ public class EasyNPCPresetItem extends Item {
       BaseSpawner baseSpawner = spawnerBlockEntity.getSpawner();
       if (baseSpawner instanceof SpawnerAccessHelper spawnerAccess) {
         PresetData presetData = PresetDataUtils.fromItemStack(itemStack);
-        SpawnData spawnData = PresetDataUtils.toSpawnData(presetData);
+        SpawnData spawnData =
+            PresetDataUtils.toSpawnData(presetData, level, useOnContext.getPlayer());
         log.debug(
             "Set spawn data {} for spawner {} at {}", spawnData, spawnerBlockEntity, blockPos);
         spawnerAccess.initializeSpawnerData(SpawnerType.SINGLE_SPAWNER, spawnData);
@@ -178,7 +188,8 @@ public class EasyNPCPresetItem extends Item {
     if (blockEntity instanceof EasyNPCSpawnerBlockEntity easyNPCSpawnerBlockEntity) {
       BaseEasyNPCSpawner baseEasyNPCSpawner = easyNPCSpawnerBlockEntity.getSpawner();
       PresetData presetData = PresetDataUtils.fromItemStack(itemStack);
-      SpawnData spawnData = PresetDataUtils.toSpawnData(presetData);
+      SpawnData spawnData =
+          PresetDataUtils.toSpawnData(presetData, level, useOnContext.getPlayer());
       log.debug(
           "Set spawn data {} for base NPC spawner {} at {}",
           spawnData,
@@ -204,7 +215,7 @@ public class EasyNPCPresetItem extends Item {
               possibleSpawnPosition.getZ());
       if (level.getBlockState(targetBlockPos.above()).isAir()
           && level.getEntitiesOfClass(Entity.class, aabb).isEmpty()
-          && spawnAtPosition(targetBlockPos, itemStack, level)) {
+          && spawnAtPosition(targetBlockPos, itemStack, level, useOnContext.getPlayer())) {
         return InteractionResult.SUCCESS;
       }
     }

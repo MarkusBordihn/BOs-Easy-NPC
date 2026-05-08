@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.configui.client.screen.components;
 
 import de.markusbordihn.easynpc.client.screen.components.SpriteButton;
 import de.markusbordihn.easynpc.configui.Constants;
+import net.minecraft.client.gui.components.Button.OnPress;
 import net.minecraft.resources.ResourceLocation;
 
 public class SaveButton extends SpriteButton {

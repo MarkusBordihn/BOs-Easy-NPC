@@ -23,7 +23,6 @@ import static java.util.Objects.hash;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
-import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.model.ModelType;
 import de.markusbordihn.easynpc.data.npc.NPCType;
 import de.markusbordihn.easynpc.data.npc.RawNPCType;
@@ -136,6 +135,10 @@ public class NPCRawTemplate extends Zombie implements EasyNPCBase<Zombie> {
         SynchedDataIndex.MODEL_ANIMATION,
         net.minecraft.network.syncher.SynchedEntityData.defineId(
             NPCRawTemplate.class, EntityDataSerializersManager.MODEL_ANIMATION_DATA));
+    entityDataAccessorMap.put(
+        SynchedDataIndex.MODEL_ROOT_DATA,
+        net.minecraft.network.syncher.SynchedEntityData.defineId(
+            NPCRawTemplate.class, EntityDataSerializersManager.ROOT_MODEL_DATA));
     entityDataAccessorMap.put(
         SynchedDataIndex.MODEL_POSITION,
         net.minecraft.network.syncher.SynchedEntityData.defineId(
@@ -316,13 +319,17 @@ public class NPCRawTemplate extends Zombie implements EasyNPCBase<Zombie> {
 
       // Refresh client dimensions, if necessary.
       if (!this.clientDimensionsRefreshed && this.tickCount > 1) {
+        CustomScale defaultScale = this.getDefaultModelScale();
+        boolean hasDefaultScale = defaultScale != null && defaultScale.hasChanged();
         ModelDataCapable<?> modelData = this.getEasyNPCModelData();
+        boolean hasRootScale = false;
         if (modelData != null) {
-          CustomScale rootScale = modelData.getModelPartScale(ModelPartType.ROOT);
-          if (rootScale != null && (rootScale.x() != 1.0f || rootScale.y() != 1.0f)) {
-            this.refreshDimensions();
-            this.clientDimensionsRefreshed = true;
-          }
+          CustomScale rootScale = modelData.getModelRootData().scale();
+          hasRootScale = rootScale != null && (rootScale.x() != 1.0f || rootScale.y() != 1.0f);
+        }
+        if (hasDefaultScale || hasRootScale) {
+          this.refreshDimensions();
+          this.clientDimensionsRefreshed = true;
         }
       }
     } else {
@@ -736,7 +743,7 @@ public class NPCRawTemplate extends Zombie implements EasyNPCBase<Zombie> {
     }
 
     // Root scale
-    CustomScale rootScale = getModelPartScale(ModelPartType.ROOT);
+    CustomScale rootScale = getModelRootData().scale();
     if (rootScale.x() != 1.0f || rootScale.y() != 1.0f) {
       baseDimensions = baseDimensions.scale(rootScale.x(), rootScale.y());
     }

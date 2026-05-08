@@ -20,12 +20,16 @@
 package de.markusbordihn.easynpc.network.message;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.data.screen.ScreenData;
 import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.menu.dialog.DialogMenu;
 import io.netty.buffer.Unpooled;
+import java.util.Objects;
 import java.util.Random;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import org.apache.logging.log4j.LogManager;
@@ -40,28 +44,28 @@ public interface NetworkMessageRecord {
   Random RANDOM = new Random();
 
   static boolean checkAccess(final UUID uuid, final ServerPlayer serverPlayer) {
-    // Validate UUID.
     if (uuid == null || uuid.equals(EMPTY_UUID)) {
       log.error("Unable to get valid entity UUID {} for {}", uuid, serverPlayer);
       return false;
     }
 
-    // Validate player.
     if (serverPlayer == null) {
       log.error("Unable to get valid player for entity with UUID {}", uuid);
       return false;
     }
 
-    // Validate entity.
     EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
     if (easyNPC == null) {
       log.error("Unable to get valid entity with UUID {} for {}", uuid, serverPlayer);
+      serverPlayer.sendSystemMessage(
+          Component.translatable("message.easynpc.access.npc_not_found"));
       return false;
     }
 
-    // Validate access.
     if (!LivingEntityManager.hasAccess(uuid, serverPlayer)) {
       log.error("User {} has no access to Easy NPC with uuid {}.", serverPlayer, uuid);
+      serverPlayer.sendSystemMessage(
+          Component.translatable("message.easynpc.access.no_permission"));
       return false;
     }
 
@@ -103,5 +107,41 @@ public interface NetworkMessageRecord {
 
   default EasyNPC<?> getEasyNPCAndCheckAccess(final UUID uuid, final ServerPlayer serverPlayer) {
     return checkAccess(uuid, serverPlayer) ? getEasyNPC(uuid, serverPlayer) : null;
+  }
+
+  default boolean checkDialogSession(final UUID uuid, final ServerPlayer serverPlayer) {
+    return checkDialogSession(uuid, null, serverPlayer);
+  }
+
+  default boolean checkDialogSession(
+      final UUID uuid, final UUID dialogId, final ServerPlayer serverPlayer) {
+    if (uuid == null || serverPlayer == null) {
+      log.warn("Blocked dialog action without valid context from {}", serverPlayer);
+      return false;
+    }
+
+    if (!(serverPlayer.containerMenu instanceof DialogMenu dialogMenu)) {
+      log.warn(
+          "Blocked dialog action without active dialog menu for {} from {}", uuid, serverPlayer);
+      return false;
+    }
+
+    ScreenData screenData = dialogMenu.getScreenData();
+    if (screenData == null || !uuid.equals(screenData.uuid())) {
+      log.warn(
+          "Blocked dialog action with invalid menu context for {} from {}", uuid, serverPlayer);
+      return false;
+    }
+
+    if (dialogId != null && !Objects.equals(dialogId, screenData.dialogId())) {
+      log.warn(
+          "Blocked dialog action for dialog {} with menu dialog {} from {}",
+          dialogId,
+          screenData.dialogId(),
+          serverPlayer);
+      return false;
+    }
+
+    return true;
   }
 }

@@ -25,10 +25,11 @@ import de.markusbordihn.easynpc.data.action.ActionEventType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventDataCapable;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
+import de.markusbordihn.easynpc.security.CommandPermissionLevel;
+import de.markusbordihn.easynpc.security.SecurityManager;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 
 public record ChangeActionEventMessage(
@@ -68,29 +69,31 @@ public record ChangeActionEventMessage(
       return;
     }
 
-    // Get Permission level for corresponding action.
-    int permissionLevel = 0;
-    MinecraftServer minecraftServer = serverPlayer.getServer();
     ActionEventDataCapable<?> actionEventData = easyNPC.getEasyNPCActionEventData();
-    if (minecraftServer != null) {
-      permissionLevel = minecraftServer.getProfilePermissions(serverPlayer.getGameProfile());
-      log.debug(
-          "Set action owner permission level {} for {} from {}",
-          permissionLevel,
-          easyNPC,
-          serverPlayer);
-      actionEventData.setActionPermissionLevel(permissionLevel);
-    } else {
-      log.warn("Unable to verify permission level from {} for {}", this, serverPlayer);
+    CommandPermissionLevel permissionLevel =
+        SecurityManager.applyActionAuthority(easyNPC, serverPlayer);
+    log.debug(
+        "Set action owner permission level {} for {} from {}",
+        permissionLevel,
+        easyNPC,
+        serverPlayer);
+
+    ActionDataSet sanitizedDataSet =
+        MessageSecurity.sanitizeActionDataSet(
+            this.actionDataSet, easyNPC, serverPlayer, permissionLevel);
+    if (sanitizedDataSet == null) {
+      log.warn(
+          "Blocked action event {} change for {} from {}", actionEventType, easyNPC, serverPlayer);
+      return;
     }
 
     log.debug(
         "Set action event {} with {} for {} from {} with owner permission level {}.",
         actionEventType,
-        actionDataSet,
+        sanitizedDataSet,
         easyNPC,
         serverPlayer,
         permissionLevel);
-    actionEventData.getActionEventSet().setActionEvent(actionEventType, actionDataSet);
+    actionEventData.getActionEventSet().setActionEvent(actionEventType, sanitizedDataSet);
   }
 }

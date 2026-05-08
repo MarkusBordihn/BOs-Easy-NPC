@@ -34,19 +34,16 @@ import org.junit.jupiter.api.Test;
 class SnbtFormatterTest {
 
   @Test
-  @DisplayName("Should handle null input")
   void testNullInput() {
     assertNull(SnbtFormatter.format(null));
   }
 
   @Test
-  @DisplayName("Should handle empty string")
   void testEmptyString() {
     assertEquals("", SnbtFormatter.format(""));
   }
 
   @Test
-  @DisplayName("Should format simple compound tag")
   void testSimpleCompound() {
     String input = "{name:\"Test\",value:123}";
     String expected = "{\n  name:\"Test\",\n  value:123\n}";
@@ -54,7 +51,6 @@ class SnbtFormatterTest {
   }
 
   @Test
-  @DisplayName("Should format nested compound tags")
   void testNestedCompound() {
     String input = "{outer:{inner:\"value\"}}";
     String expected = "{\n  outer:{\n    inner:\"value\"\n  }\n}";
@@ -62,7 +58,6 @@ class SnbtFormatterTest {
   }
 
   @Test
-  @DisplayName("Should format arrays")
   void testArrays() {
     String input = "{items:[1,2,3]}";
     // Arrays are not formatted, only compound tags
@@ -71,7 +66,6 @@ class SnbtFormatterTest {
   }
 
   @Test
-  @DisplayName("Should preserve strings with special characters")
   void testStringsWithSpecialCharacters() {
     String input = "{text:\"Hello, World!\"}";
     String expected = "{\n  text:\"Hello, World!\"\n}";
@@ -79,7 +73,6 @@ class SnbtFormatterTest {
   }
 
   @Test
-  @DisplayName("Should preserve escaped quotes in strings")
   void testEscapedQuotes() {
     String input = "{text:\"Say \\\"Hello\\\"\"}";
     String expected = "{\n  text:\"Say \\\"Hello\\\"\"\n}";
@@ -87,7 +80,6 @@ class SnbtFormatterTest {
   }
 
   @Test
-  @DisplayName("Should handle empty compound tags")
   void testEmptyCompound() {
     String input = "{empty:{}}";
     String expected = "{\n  empty:{}\n}";
@@ -95,7 +87,6 @@ class SnbtFormatterTest {
   }
 
   @Test
-  @DisplayName("Should handle empty arrays")
   void testEmptyArray() {
     String input = "{items:[]}";
     String expected = "{\n  items:[]\n}";
@@ -111,7 +102,6 @@ class SnbtFormatterTest {
   }
 
   @Test
-  @DisplayName("Should handle complex nested structure")
   void testComplexStructure() {
     String input = "{data:{name:\"Test\",items:[{id:1},{id:2}]}}";
     String expected =
@@ -130,7 +120,6 @@ class SnbtFormatterTest {
   }
 
   @Test
-  @DisplayName("Should handle multiple fields")
   void testMultipleFields() {
     String input = "{a:1,b:2,c:3,d:4}";
     String expected = "{\n  a:1,\n  b:2,\n  c:3,\n  d:4\n}";
@@ -138,7 +127,6 @@ class SnbtFormatterTest {
   }
 
   @Test
-  @DisplayName("Should strip existing whitespace")
   void testStripWhitespace() {
     String input = "{ a : 1 , b : 2 }";
     String expected = "{\n   a : 1 ,\n   b : 2 \n}";
@@ -146,7 +134,6 @@ class SnbtFormatterTest {
   }
 
   @Test
-  @DisplayName("Should preserve whitespace inside strings")
   void testPreserveWhitespaceInStrings() {
     String input = "{text:\"  spaces  \"}";
     String expected = "{\n  text:\"  spaces  \"\n}";
@@ -154,7 +141,6 @@ class SnbtFormatterTest {
   }
 
   @Test
-  @DisplayName("Should handle newlines in strings")
   void testNewlinesInStrings() {
     String input = "{text:\"Line1\\nLine2\"}";
     String expected = "{\n  text:\"Line1\\nLine2\"\n}";

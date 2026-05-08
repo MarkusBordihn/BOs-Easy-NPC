@@ -53,17 +53,19 @@ public class CustomLookAtPlayerGoal<T extends EasyNPC<?>> extends LookAtPlayerGo
     if (this.modelData == null) {
       return false;
     }
+
     if (this.modelData.getModelPartRotation(ModelPartType.HEAD).hasChangedRotation()) {
       return false;
     }
+
     return this.modelData.getModelPose() == ModelPose.DEFAULT
-        || this.modelData.getModelPartRotation(ModelPartType.ROOT).locked();
+        || this.modelData.getModelRootData().isRotationLocked();
   }
 
   @Override
   public boolean canUse() {
     if (this.modelData != null
-        && this.modelData.getModelPartRotation(ModelPartType.ROOT).locked()
+        && this.modelData.getModelRootData().isRotationLocked()
         && !hasLockedBodyPose()) {
       return false;
     }
@@ -73,36 +75,42 @@ public class CustomLookAtPlayerGoal<T extends EasyNPC<?>> extends LookAtPlayerGo
   @Override
   public boolean canContinueToUse() {
     if (this.modelData != null
-        && this.modelData.getModelPartRotation(ModelPartType.ROOT).locked()
+        && this.modelData.getModelRootData().isRotationLocked()
         && !hasLockedBodyPose()) {
       return false;
     }
+
     return super.canContinueToUse();
   }
 
   @Override
   public void tick() {
     if (this.modelData != null
-        && this.modelData.getModelPartRotation(ModelPartType.ROOT).locked()
+        && this.modelData.getModelRootData().isRotationLocked()
         && !hasLockedBodyPose()) {
       return;
     }
 
     if (this.livingEntity != null && hasLockedBodyPose()) {
       if (this.lookAt != null && this.lookAt.isAlive()) {
-        double dx = this.lookAt.getX() - this.livingEntity.getX();
-        double dz = this.lookAt.getZ() - this.livingEntity.getZ();
-        float targetAngle = (float) (Mth.atan2(dz, dx) * (180.0 / Math.PI)) - 90.0F;
-        float bodyRot = this.livingEntity.yBodyRot;
-        float clampedTarget =
-            bodyRot
-                + Mth.clamp(
-                    Mth.wrapDegrees(targetAngle - bodyRot), -MAX_HEAD_ROTATION, MAX_HEAD_ROTATION);
-        float delta = Mth.wrapDegrees(clampedTarget - this.livingEntity.yHeadRot);
+        float delta = getDelta();
         this.livingEntity.yHeadRot += delta * LOOK_SPEED;
       }
     } else {
       super.tick();
     }
+  }
+
+  private float getDelta() {
+    double dx = this.lookAt.getX() - this.livingEntity.getX();
+    double dz = this.lookAt.getZ() - this.livingEntity.getZ();
+    float targetAngle = (float) (Mth.atan2(dz, dx) * (180.0 / Math.PI)) - 90.0F;
+    float bodyRot = this.livingEntity.yBodyRot;
+    float clampedTarget =
+        bodyRot
+            + Mth.clamp(
+                Mth.wrapDegrees(targetAngle - bodyRot), -MAX_HEAD_ROTATION, MAX_HEAD_ROTATION);
+
+    return Mth.wrapDegrees(clampedTarget - this.livingEntity.yHeadRot);
   }
 }

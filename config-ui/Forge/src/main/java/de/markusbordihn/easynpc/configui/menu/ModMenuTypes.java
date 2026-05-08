@@ -47,6 +47,7 @@ import de.markusbordihn.easynpc.configui.menu.configuration.pose.CustomPoseConfi
 import de.markusbordihn.easynpc.configui.menu.configuration.pose.DefaultPoseConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.position.DefaultPositionConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.preset.ExportCustomPresetConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.configui.menu.configuration.preset.ExportLocalPresetConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.preset.ExportWorldPresetConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.preset.ImportCustomPresetConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.preset.ImportDefaultPresetConfigurationMenuWrapper;
@@ -180,6 +181,11 @@ public class ModMenuTypes {
           MENU_TYPES.register(
               ConfigurationType.CUSTOM_PRESET_EXPORT.getName(),
               () -> IForgeMenuType.create(ExportCustomPresetConfigurationMenuWrapper::new));
+  public static final RegistryObject<MenuType<ExportLocalPresetConfigurationMenuWrapper>>
+      LOCAL_EXPORT_PRESET_CONFIGURATION_MENU =
+          MENU_TYPES.register(
+              ConfigurationType.LOCAL_PRESET_EXPORT.getName(),
+              () -> IForgeMenuType.create(ExportLocalPresetConfigurationMenuWrapper::new));
   public static final RegistryObject<MenuType<ImportCustomPresetConfigurationMenuWrapper>>
       CUSTOM_IMPORT_PRESET_CONFIGURATION_MENU =
           MENU_TYPES.register(

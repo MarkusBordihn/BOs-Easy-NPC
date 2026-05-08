@@ -121,7 +121,7 @@ public class AdvancedPoseConfigurationScreen<T extends ConfigurationMenu>
           .modelRotationChange(
               this.getEasyNPCUUID(),
               ModelPartType.ROOT,
-              this.modelData.getModelPartRotation(ModelPartType.ROOT).withLocked(false));
+              this.modelData.getModelRootData().rotation().withLocked(false));
     }
   }
 

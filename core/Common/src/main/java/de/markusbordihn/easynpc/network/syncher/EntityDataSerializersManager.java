@@ -27,6 +27,7 @@ import de.markusbordihn.easynpc.data.display.DisplayAttributeDataSet;
 import de.markusbordihn.easynpc.data.model.ModelAnimationData;
 import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.model.ModelPose;
+import de.markusbordihn.easynpc.data.model.RootModelData;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataSet;
 import de.markusbordihn.easynpc.data.position.CustomPosition;
 import de.markusbordihn.easynpc.data.profession.Profession;
@@ -111,6 +112,25 @@ public class EntityDataSerializersManager {
 
             @Override
             public ModelAnimationData copy(ModelAnimationData value) {
+              return value;
+            }
+          });
+  public static final EntityDataSerializer<RootModelData> ROOT_MODEL_DATA =
+      defineSerializer(
+          RootModelData.class.getSimpleName(),
+          new EntityDataSerializer<>() {
+            @Override
+            public void write(FriendlyByteBuf buffer, RootModelData value) {
+              value.encode(buffer);
+            }
+
+            @Override
+            public RootModelData read(FriendlyByteBuf buffer) {
+              return RootModelData.decode(buffer);
+            }
+
+            @Override
+            public RootModelData copy(RootModelData value) {
               return value;
             }
           });

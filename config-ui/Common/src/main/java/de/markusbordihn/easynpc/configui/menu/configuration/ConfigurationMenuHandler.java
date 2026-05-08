@@ -32,7 +32,11 @@ import de.markusbordihn.easynpc.io.CustomPresetDataFiles;
 import de.markusbordihn.easynpc.io.DefaultPresetDataFiles;
 import de.markusbordihn.easynpc.io.WorldPresetDataFiles;
 import de.markusbordihn.easynpc.network.components.TextComponent;
+import de.markusbordihn.easynpc.security.FeatureSecurity;
+import de.markusbordihn.easynpc.security.NpcFeature;
+import de.markusbordihn.easynpc.security.SecurityManager;
 import de.markusbordihn.easynpc.utils.CompoundTagUtils;
+import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
@@ -162,18 +166,48 @@ public class ConfigurationMenuHandler {
                 .collect(Collectors.toSet());
         additionalSyncData.put(
             "DefaultPresets", CompoundTagUtils.writeResourceLocations(defaultPresets));
+        addBlockedConfigurationsForTypes(
+            additionalSyncData,
+            serverPlayer,
+            easyNPC,
+            ConfigurationType.DEFAULT_PRESET_IMPORT,
+            ConfigurationType.CUSTOM_PRESET_IMPORT,
+            ConfigurationType.WORLD_PRESET_IMPORT);
       }
       case CUSTOM_PRESET_IMPORT -> {
         CustomPresetDataFiles.refreshPresetResourceLocations();
         Set<ResourceLocation> customPresets = CustomPresetDataFiles.getPresetResourceLocationSet();
         additionalSyncData.put(
             "CustomPresets", CompoundTagUtils.writeResourceLocations(customPresets));
+        addBlockedConfigurationsForTypes(
+            additionalSyncData,
+            serverPlayer,
+            easyNPC,
+            ConfigurationType.DEFAULT_PRESET_IMPORT,
+            ConfigurationType.CUSTOM_PRESET_IMPORT,
+            ConfigurationType.WORLD_PRESET_IMPORT);
       }
       case WORLD_PRESET_IMPORT -> {
         WorldPresetDataFiles.refreshPresetResourceLocations();
         Set<ResourceLocation> worldPresets = WorldPresetDataFiles.getPresetResourceLocationSet();
         additionalSyncData.put(
             "WorldPresets", CompoundTagUtils.writeResourceLocations(worldPresets));
+        addBlockedConfigurationsForTypes(
+            additionalSyncData,
+            serverPlayer,
+            easyNPC,
+            ConfigurationType.DEFAULT_PRESET_IMPORT,
+            ConfigurationType.CUSTOM_PRESET_IMPORT,
+            ConfigurationType.WORLD_PRESET_IMPORT);
+      }
+      case LOCAL_PRESET_IMPORT -> {
+        addBlockedConfigurationsForTypes(
+            additionalSyncData,
+            serverPlayer,
+            easyNPC,
+            ConfigurationType.DEFAULT_PRESET_IMPORT,
+            ConfigurationType.CUSTOM_PRESET_IMPORT,
+            ConfigurationType.WORLD_PRESET_IMPORT);
       }
       case BASIC_ACTION, DIALOG_ACTION, DISTANCE_ACTION ->
           AdditionalScreenData.addActionEventSet(additionalSyncData, easyNPC);
@@ -182,6 +216,54 @@ public class ConfigurationMenuHandler {
           AdditionalScreenData.addDialogDataSet(additionalSyncData, easyNPC);
       case ATTACK_OBJECTIVE, BASIC_OBJECTIVE, FLEE_OBJECTIVE, FOLLOW_OBJECTIVE, LOOK_OBJECTIVE ->
           AdditionalScreenData.addObjectiveDataSet(additionalSyncData, easyNPC);
+      case ABILITIES_ATTRIBUTE, DISPLAY_ATTRIBUTE -> {
+        addBlockedConfigurationsForTypes(
+            additionalSyncData,
+            serverPlayer,
+            easyNPC,
+            ConfigurationType.BASE_ATTRIBUTE,
+            ConfigurationType.COMBAT_ATTRIBUTE);
+      }
+      case CUSTOM_PRESET_EXPORT, WORLD_PRESET_EXPORT -> {
+        addBlockedConfigurationsForTypes(
+            additionalSyncData,
+            serverPlayer,
+            easyNPC,
+            ConfigurationType.LOCAL_PRESET_EXPORT,
+            ConfigurationType.CUSTOM_PRESET_EXPORT,
+            ConfigurationType.WORLD_PRESET_EXPORT);
+      }
+      case LOCAL_PRESET_EXPORT -> {
+        addBlockedConfigurationsForTypes(
+            additionalSyncData,
+            serverPlayer,
+            easyNPC,
+            ConfigurationType.LOCAL_PRESET_EXPORT,
+            ConfigurationType.CUSTOM_PRESET_EXPORT,
+            ConfigurationType.WORLD_PRESET_EXPORT);
+      }
+      case SKIN, NONE_SKIN, DEFAULT_SKIN, PLAYER_SKIN, CUSTOM_SKIN, URL_SKIN -> {
+        addBlockedConfigurationsForTypes(
+            additionalSyncData, serverPlayer, easyNPC, ConfigurationType.URL_SKIN);
+      }
+      case MAIN -> {
+        addBlockedConfigurationsForTypes(
+            additionalSyncData,
+            serverPlayer,
+            easyNPC,
+            ConfigurationType.BASIC_ACTION,
+            ConfigurationType.ABILITIES_ATTRIBUTE,
+            ConfigurationType.DIALOG,
+            ConfigurationType.EQUIPMENT,
+            ConfigurationType.BASIC_OBJECTIVE,
+            ConfigurationType.POSE,
+            ConfigurationType.DEFAULT_POSITION,
+            ConfigurationType.DEFAULT_ROTATION,
+            ConfigurationType.SCALING,
+            ConfigurationType.TRADING,
+            ConfigurationType.LOCAL_PRESET_EXPORT,
+            ConfigurationType.CUSTOM_PRESET_EXPORT);
+      }
       default -> {
         // Do nothing
       }
@@ -194,5 +276,21 @@ public class ConfigurationMenuHandler {
     return TextComponent.getTranslatedConfigText(
         configurationType.name().toLowerCase(Locale.ROOT) + ".title",
         easyNPC.getEntity().getName().getString(16));
+  }
+
+  private static void addBlockedConfigurationsForTypes(
+      CompoundTag additionalSyncData,
+      ServerPlayer serverPlayer,
+      EasyNPC<?> easyNPC,
+      ConfigurationType... types) {
+    Set<ConfigurationType> blockedTypes = new HashSet<>();
+    for (ConfigurationType type : types) {
+      NpcFeature feature = FeatureSecurity.getFeature(type);
+      if (feature != null
+          && !SecurityManager.checkFeatureAccess(serverPlayer, easyNPC, feature).allowed()) {
+        blockedTypes.add(type);
+      }
+    }
+    AdditionalScreenData.addBlockedConfigurations(additionalSyncData, blockedTypes);
   }
 }

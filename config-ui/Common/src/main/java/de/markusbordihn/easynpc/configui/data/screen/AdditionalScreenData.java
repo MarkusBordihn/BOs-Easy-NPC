@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.configui.data.screen;
 
 import de.markusbordihn.easynpc.configui.data.editor.EditorType;
+import de.markusbordihn.easynpc.data.action.ActionDataType;
 import de.markusbordihn.easynpc.data.action.ActionEventSet;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
 import de.markusbordihn.easynpc.data.attribute.BaseAttributes;
@@ -46,6 +47,8 @@ public class AdditionalScreenData implements AdditionalScreenDataInterface {
   private static final String DIALOG_DATA_TAG = "DialogData";
   private static final String EDITOR_TYPE_TAG = "EditorType";
   private static final String OBJECTIVE_DATA_TAG = "ObjectiveData";
+  private static final String BLOCKED_CONFIGURATIONS_TAG = "BlockedConfigurations";
+  private static final String BLOCKED_ACTION_TYPES_TAG = "BlockedActionTypes";
   private static final String SCOREBOARD_DATA_TAG = "ScoreboardData";
 
   private final ActionEventSet actionEventSet;
@@ -85,6 +88,7 @@ public class AdditionalScreenData implements AdditionalScreenDataInterface {
     if (compoundTag == null || actionEventType == null) {
       return;
     }
+
     compoundTag.putString(ACTION_EVENT_TYPE_TAG, actionEventType.name());
   }
 
@@ -92,6 +96,7 @@ public class AdditionalScreenData implements AdditionalScreenDataInterface {
     if (!hasActionEventType(compoundTag)) {
       return ActionEventType.NONE;
     }
+
     return ActionEventType.get(compoundTag.getString(ACTION_EVENT_TYPE_TAG));
   }
 
@@ -103,6 +108,7 @@ public class AdditionalScreenData implements AdditionalScreenDataInterface {
     if (compoundTag == null || easyNPC == null || easyNPC.getEasyNPCActionEventData() == null) {
       return;
     }
+
     compoundTag.put(
         ACTION_EVENT_DATA_TAG, easyNPC.getEasyNPCActionEventData().getActionEventSet().createTag());
   }
@@ -111,6 +117,7 @@ public class AdditionalScreenData implements AdditionalScreenDataInterface {
     if (!hasActionEventSet(compoundTag)) {
       return new ActionEventSet();
     }
+
     return new ActionEventSet(compoundTag.getCompound(ACTION_EVENT_DATA_TAG));
   }
 
@@ -122,6 +129,7 @@ public class AdditionalScreenData implements AdditionalScreenDataInterface {
     if (compoundTag == null || easyNPC == null || easyNPC.getLivingEntity() == null) {
       return;
     }
+
     compoundTag.put(
         BASE_ATTRIBUTES_DATA_TAG, new BaseAttributes(easyNPC.getLivingEntity()).createTag());
   }
@@ -130,6 +138,7 @@ public class AdditionalScreenData implements AdditionalScreenDataInterface {
     if (!hasBaseAttributes(compoundTag)) {
       return new BaseAttributes();
     }
+
     return new BaseAttributes(compoundTag.getCompound(BASE_ATTRIBUTES_DATA_TAG));
   }
 
@@ -142,6 +151,7 @@ public class AdditionalScreenData implements AdditionalScreenDataInterface {
     if (compoundTag == null || configurationType == null) {
       return;
     }
+
     compoundTag.putString(CONFIGURATION_TYPE_TAG, configurationType.name());
   }
 
@@ -149,6 +159,7 @@ public class AdditionalScreenData implements AdditionalScreenDataInterface {
     if (!hasConfigurationType(compoundTag)) {
       return ConfigurationType.NONE;
     }
+
     return ConfigurationType.get(compoundTag.getString(CONFIGURATION_TYPE_TAG));
   }
 
@@ -160,6 +171,7 @@ public class AdditionalScreenData implements AdditionalScreenDataInterface {
     if (compoundTag == null || easyNPC == null || easyNPC.getEasyNPCDialogData() == null) {
       return;
     }
+
     compoundTag.put(DIALOG_DATA_TAG, easyNPC.getEasyNPCDialogData().getDialogDataSet().createTag());
   }
 
@@ -167,6 +179,7 @@ public class AdditionalScreenData implements AdditionalScreenDataInterface {
     if (!hasDialogDataSet(compoundTag)) {
       return new DialogDataSet();
     }
+
     return new DialogDataSet(compoundTag.getCompound(DIALOG_DATA_TAG));
   }
 
@@ -178,6 +191,7 @@ public class AdditionalScreenData implements AdditionalScreenDataInterface {
     if (compoundTag == null || editorType == null) {
       return;
     }
+
     compoundTag.putString(EDITOR_TYPE_TAG, editorType.name());
   }
 
@@ -185,6 +199,7 @@ public class AdditionalScreenData implements AdditionalScreenDataInterface {
     if (!hasEditorType(compoundTag)) {
       return EditorType.NONE;
     }
+
     return EditorType.get(compoundTag.getString(EDITOR_TYPE_TAG));
   }
 
@@ -196,6 +211,7 @@ public class AdditionalScreenData implements AdditionalScreenDataInterface {
     if (compoundTag == null || easyNPC == null || easyNPC.getEasyNPCObjectiveData() == null) {
       return;
     }
+
     compoundTag.put(
         OBJECTIVE_DATA_TAG, easyNPC.getEasyNPCObjectiveData().getObjectiveDataSet().createTag());
   }
@@ -204,6 +220,7 @@ public class AdditionalScreenData implements AdditionalScreenDataInterface {
     if (!hasObjectiveDataSet(compoundTag)) {
       return new ObjectiveDataSet();
     }
+
     return new ObjectiveDataSet(compoundTag.getCompound(OBJECTIVE_DATA_TAG));
   }
 
@@ -215,6 +232,7 @@ public class AdditionalScreenData implements AdditionalScreenDataInterface {
     if (compoundTag == null || scoreboardData == null) {
       return;
     }
+
     compoundTag.put(SCOREBOARD_DATA_TAG, scoreboardData.createTag());
   }
 
@@ -222,11 +240,44 @@ public class AdditionalScreenData implements AdditionalScreenDataInterface {
     if (!hasScoreboardData(compoundTag)) {
       return new ScoreboardData();
     }
+
     return new ScoreboardData(compoundTag.getCompound(SCOREBOARD_DATA_TAG));
   }
 
   public static boolean hasScoreboardData(CompoundTag compoundTag) {
     return compoundTag != null && compoundTag.contains(SCOREBOARD_DATA_TAG);
+  }
+
+  public static void addBlockedConfigurations(
+      CompoundTag compoundTag, Set<ConfigurationType> blockedTypes) {
+    if (compoundTag == null || blockedTypes == null || blockedTypes.isEmpty()) {
+      return;
+    }
+
+    StringBuilder builder = new StringBuilder();
+    for (ConfigurationType type : blockedTypes) {
+      if (!builder.isEmpty()) {
+        builder.append(',');
+      }
+      builder.append(type.name());
+    }
+    compoundTag.putString(BLOCKED_CONFIGURATIONS_TAG, builder.toString());
+  }
+
+  public static void addBlockedActionTypes(
+      CompoundTag compoundTag, Set<ActionDataType> blockedTypes) {
+    if (compoundTag == null || blockedTypes == null || blockedTypes.isEmpty()) {
+      return;
+    }
+
+    StringBuilder builder = new StringBuilder();
+    for (ActionDataType type : blockedTypes) {
+      if (!builder.isEmpty()) {
+        builder.append(',');
+      }
+      builder.append(type.name());
+    }
+    compoundTag.putString(BLOCKED_ACTION_TYPES_TAG, builder.toString());
   }
 
   public static void addDialogDataSet(
@@ -301,6 +352,7 @@ public class AdditionalScreenData implements AdditionalScreenDataInterface {
     if (this.data.contains(dataTag)) {
       return this.data.getCompound(dataTag);
     }
+
     return new CompoundTag();
   }
 
@@ -308,6 +360,7 @@ public class AdditionalScreenData implements AdditionalScreenDataInterface {
     if (this.data.contains(dataTag)) {
       return this.data.getList(dataTag, 10);
     }
+
     return new ListTag();
   }
 

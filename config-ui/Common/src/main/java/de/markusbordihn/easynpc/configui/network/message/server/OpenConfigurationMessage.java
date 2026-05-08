@@ -24,6 +24,9 @@ import de.markusbordihn.easynpc.configui.menu.MenuManager;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
+import de.markusbordihn.easynpc.security.FeatureSecurity;
+import de.markusbordihn.easynpc.security.NpcFeature;
+import de.markusbordihn.easynpc.security.SecurityManager;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -68,6 +71,13 @@ public record OpenConfigurationMessage(
     // Validate page index.
     if (this.pageIndex < 0) {
       log.error("Invalid page index {} for {} from {}", pageIndex, easyNPC, serverPlayer);
+      return;
+    }
+    NpcFeature feature = FeatureSecurity.getFeature(this.configurationType);
+    if (feature != null
+        && !SecurityManager.checkFeatureAccess(serverPlayer, easyNPC, feature).allowed()) {
+      log.warn(
+          "Blocked configuration {} for {} from {}", this.configurationType, easyNPC, serverPlayer);
       return;
     }
 

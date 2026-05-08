@@ -31,7 +31,6 @@ import org.junit.jupiter.params.provider.ValueSource;
 class UrlValidatorTest {
 
   @ParameterizedTest
-  @DisplayName("Should validate correct URLs")
   @ValueSource(
       strings = {
         "https://www.example.com/",
@@ -46,7 +45,6 @@ class UrlValidatorTest {
   }
 
   @ParameterizedTest
-  @DisplayName("Should reject URLs with forbidden extensions")
   @ValueSource(
       strings = {
         "https://example.com/file.exe",
@@ -61,7 +59,6 @@ class UrlValidatorTest {
   }
 
   @ParameterizedTest
-  @DisplayName("Should reject invalid URL formats")
   @ValueSource(
       strings = {
         "not-a-url",
@@ -77,13 +74,11 @@ class UrlValidatorTest {
 
   @ParameterizedTest
   @NullAndEmptySource
-  @DisplayName("Should reject null or empty URLs")
   void testIsValidUrl_nullOrEmpty(String url) {
     assertFalse(UrlValidator.isValidUrl(url));
   }
 
   @ParameterizedTest
-  @DisplayName("Should validate secure remote URLs from whitelisted sources")
   @ValueSource(
       strings = {
         "https://www.minecraftskins.com/skin/123/player",
@@ -96,7 +91,6 @@ class UrlValidatorTest {
   }
 
   @ParameterizedTest
-  @DisplayName("Should accept valid HTTPS URLs as secure (general case)")
   @ValueSource(
       strings = {
         "https://example.com/skin.png",
@@ -108,7 +102,6 @@ class UrlValidatorTest {
   }
 
   @ParameterizedTest
-  @DisplayName("Should reject non-HTTPS URLs")
   @ValueSource(
       strings = {
         "http://example.com/skin.png",
@@ -120,33 +113,28 @@ class UrlValidatorTest {
   }
 
   @Test
-  @DisplayName("Should reject secure remote URL with forbidden extension")
   void testIsSecureRemoteUrl_forbiddenExtension() {
     assertFalse(UrlValidator.isSecureRemoteUrl("https://example.com/file.exe"));
   }
 
   @ParameterizedTest
   @NullAndEmptySource
-  @DisplayName("Should reject null or empty secure remote URLs")
   void testIsSecureRemoteUrl_nullOrEmpty(String url) {
     assertFalse(UrlValidator.isSecureRemoteUrl(url));
   }
 
   @Test
-  @DisplayName("Should handle malformed URLs correctly")
   void testIsValidUrl_malformed() {
     assertFalse(UrlValidator.isValidUrl("https://example .com"));
     assertFalse(UrlValidator.isValidUrl("https://[invalid]"));
   }
 
   @Test
-  @DisplayName("Should validate URLs with query parameters")
   void testIsValidUrl_withQueryParams() {
     assertTrue(UrlValidator.isValidUrl("https://example.com/path?param=value&other=123"));
   }
 
   @Test
-  @DisplayName("Should validate URLs with fragments")
   void testIsValidUrl_withFragments() {
     assertTrue(UrlValidator.isValidUrl("https://example.com/path#section"));
   }

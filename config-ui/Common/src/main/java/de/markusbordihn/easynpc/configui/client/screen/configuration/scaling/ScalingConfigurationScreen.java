@@ -76,7 +76,7 @@ public class ScalingConfigurationScreen<T extends ConfigurationMenu>
 
     // Model Data
     ModelDataCapable<?> modelData = this.getEasyNPC().getEasyNPCModelData();
-    CustomScale rootScale = modelData.getModelPartScale(ModelPartType.ROOT);
+    CustomScale rootScale = modelData.getModelRootData().scale();
 
     // Store initial values
     this.lastScaleX = rootScale.x();
@@ -234,15 +234,14 @@ public class ScalingConfigurationScreen<T extends ConfigurationMenu>
     int renderScale = 30;
     float scaleAdjustment = 1.0f;
     if (modelData != null) {
-      originalRootScale = modelData.getModelPartScale(ModelPartType.ROOT);
+      originalRootScale = modelData.getModelRootData().scale();
       if (originalRootScale != null) {
         float maxScale =
             Math.max(Math.max(originalRootScale.x(), originalRootScale.y()), originalRootScale.z());
         if (maxScale > 1.0f) {
           renderScale = (int) (30 * Math.min(maxScale, 3.0f));
           scaleAdjustment = 1.0f / Math.min(maxScale, 3.0f);
-          modelData.setModelPartScale(
-              ModelPartType.ROOT,
+          modelData.setModelRootScale(
               new CustomScale(
                   originalRootScale.x() * scaleAdjustment,
                   originalRootScale.y() * scaleAdjustment,
@@ -277,7 +276,7 @@ public class ScalingConfigurationScreen<T extends ConfigurationMenu>
 
     // Restore original root scale if it was modified
     if (modelData != null && originalRootScale != null && scaleAdjustment != 1.0f) {
-      modelData.setModelPartScale(ModelPartType.ROOT, originalRootScale);
+      modelData.setModelRootScale(originalRootScale);
     }
 
     // Label for Scale Sliders

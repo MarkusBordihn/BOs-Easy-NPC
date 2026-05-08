@@ -81,9 +81,7 @@ public class InfoCommand extends Command {
                   "NBT Data Size: " + entry.npcData().toString().length() + " chars",
                   ChatFormatting.GRAY);
             },
-            () -> {
-              sendFailureMessage(context, "NPC not found: " + uuid);
-            });
+            () -> sendFailureMessage(context, "NPC not found: " + uuid));
 
     return Command.SINGLE_SUCCESS;
   }

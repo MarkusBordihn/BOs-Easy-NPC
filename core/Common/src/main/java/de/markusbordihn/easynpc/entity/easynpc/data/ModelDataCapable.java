@@ -31,6 +31,7 @@ public interface ModelDataCapable<T extends Mob>
     extends EasyNPC<T>,
         ModelAnimationDataCapable<T>,
         ModelPositionDataCapable<T>,
+        ModelRootDataCapable<T>,
         ModelRotationDataCapable<T>,
         ModelScaleDataCapable<T>,
         ModelVisibilityDataCapable<T> {
@@ -92,6 +93,7 @@ public interface ModelDataCapable<T extends Mob>
     defineSynchedEntityData(SynchedDataIndex.MODEL_POSE_NAME, "");
     defineSynchedModelAnimationData();
     defineSynchedModelPositionData();
+    defineSynchedModelRootData();
     defineSynchedModelRotationData();
     defineSynchedModelScaleData();
     defineSynchedModelVisibilityData();
@@ -111,9 +113,9 @@ public interface ModelDataCapable<T extends Mob>
       modelDataTag.putString(EASY_NPC_DATA_MODEL_DEFAULT_POSE_TAG, this.getDefaultPose().name());
     }
 
-    // Add additional model data
     this.addAdditionalModelAnimationData(compoundTag);
     this.addAdditionalModelPositionData(modelDataTag);
+    this.addAdditionalModelRootData(modelDataTag);
     this.addAdditionalModelRotationData(modelDataTag);
     this.addAdditionalModelScaleData(modelDataTag);
     this.addAdditionalModelVisibilityData(modelDataTag);
@@ -151,9 +153,9 @@ public interface ModelDataCapable<T extends Mob>
       }
     }
 
-    // Read additional model data
     this.readAdditionalModelAnimationData(compoundTag);
     this.readAdditionalModelPositionData(modelDataTag);
+    this.readAdditionalModelRootData(modelDataTag);
     this.readAdditionalModelRotationData(modelDataTag);
     this.readAdditionalModelScaleData(modelDataTag);
     this.readAdditionalModelVisibilityData(modelDataTag);

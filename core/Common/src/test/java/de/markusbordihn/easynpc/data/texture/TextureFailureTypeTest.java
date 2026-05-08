@@ -28,56 +28,48 @@ import org.junit.jupiter.api.Test;
 class TextureFailureTypeTest {
 
   @Test
-  @DisplayName("Should mark INVALID_IMAGE_SIZE as permanent")
   void testInvalidImageSizeIsPermanent() {
     assertTrue(TextureFailureType.INVALID_IMAGE_SIZE.isPermanent());
     assertNotNull(TextureFailureType.INVALID_IMAGE_SIZE.getMessage());
   }
 
   @Test
-  @DisplayName("Should mark DECODING_ERROR as permanent")
   void testDecodingErrorIsPermanent() {
     assertTrue(TextureFailureType.DECODING_ERROR.isPermanent());
     assertNotNull(TextureFailureType.DECODING_ERROR.getMessage());
   }
 
   @Test
-  @DisplayName("Should mark INVALID_FORMAT as permanent")
   void testInvalidFormatIsPermanent() {
     assertTrue(TextureFailureType.INVALID_FORMAT.isPermanent());
     assertNotNull(TextureFailureType.INVALID_FORMAT.getMessage());
   }
 
   @Test
-  @DisplayName("Should mark FILE_TOO_LARGE as permanent")
   void testFileTooLargeIsPermanent() {
     assertTrue(TextureFailureType.FILE_TOO_LARGE.isPermanent());
     assertNotNull(TextureFailureType.FILE_TOO_LARGE.getMessage());
   }
 
   @Test
-  @DisplayName("Should mark URL_INVALID as permanent")
   void testUrlInvalidIsPermanent() {
     assertTrue(TextureFailureType.URL_INVALID.isPermanent());
     assertNotNull(TextureFailureType.URL_INVALID.getMessage());
   }
 
   @Test
-  @DisplayName("Should mark MAX_RETRIES_EXCEEDED as permanent")
   void testMaxRetriesExceededIsPermanent() {
     assertTrue(TextureFailureType.MAX_RETRIES_EXCEEDED.isPermanent());
     assertNotNull(TextureFailureType.MAX_RETRIES_EXCEEDED.getMessage());
   }
 
   @Test
-  @DisplayName("Should mark NETWORK_ERROR as non-permanent")
   void testNetworkErrorIsNotPermanent() {
     assertFalse(TextureFailureType.NETWORK_ERROR.isPermanent());
     assertNotNull(TextureFailureType.NETWORK_ERROR.getMessage());
   }
 
   @Test
-  @DisplayName("Should mark TIMEOUT as non-permanent")
   void testTimeoutIsNotPermanent() {
     assertFalse(TextureFailureType.TIMEOUT.isPermanent());
     assertNotNull(TextureFailureType.TIMEOUT.getMessage());
@@ -100,7 +92,6 @@ class TextureFailureTypeTest {
   }
 
   @Test
-  @DisplayName("Should have all expected failure types")
   void testAllFailureTypesPresent() {
     TextureFailureType[] types = TextureFailureType.values();
     assertEquals(8, types.length);
@@ -116,7 +107,6 @@ class TextureFailureTypeTest {
   }
 
   @Test
-  @DisplayName("Should have meaningful error messages")
   void testMeaningfulMessages() {
     assertTrue(
         TextureFailureType.INVALID_IMAGE_SIZE.getMessage().toLowerCase().contains("dimension")

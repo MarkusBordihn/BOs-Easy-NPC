@@ -172,7 +172,6 @@ class ScoreboardDataTest {
   }
 
   @Test
-  @DisplayName("Should handle numeric objective names")
   void testExtractObjectiveNames_numericNames() {
     String text = "@score(score123) and @score(456test)";
     Set<String> result = ScoreboardData.parseScoreMacros(text);

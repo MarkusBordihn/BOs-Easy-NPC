@@ -30,7 +30,6 @@ import org.junit.jupiter.api.Test;
 class PresetDataUtilsTest {
 
   @Test
-  @DisplayName("Should cleanup runtime state tags with RUNTIME_ONLY mode")
   void testCleanupEntityDataRuntimeOnly() {
     CompoundTag dirtyData = new CompoundTag();
     dirtyData.putString("id", "minecraft:zombie");
@@ -43,14 +42,9 @@ class PresetDataUtilsTest {
     dirtyData.putInt("HurtTime", 10);
     dirtyData.putBoolean("OnGround", true);
 
-    ListTag motionTag = new ListTag();
-    dirtyData.put("Motion", motionTag);
-
-    ListTag posTag = new ListTag();
-    dirtyData.put("Pos", posTag);
-
-    ListTag rotTag = new ListTag();
-    dirtyData.put("Rotation", rotTag);
+    dirtyData.put("Motion", new ListTag());
+    dirtyData.put("Pos", new ListTag());
+    dirtyData.put("Rotation", new ListTag());
 
     PresetDataUtils.cleanupEntityData(dirtyData, PresetDataUtils.CleanupMode.RUNTIME_ONLY);
 
@@ -70,7 +64,6 @@ class PresetDataUtilsTest {
   }
 
   @Test
-  @DisplayName("Should cleanup all tags including position with FULL mode")
   void testCleanupEntityDataFull() {
     CompoundTag dirtyData = new CompoundTag();
     dirtyData.putString("id", "minecraft:zombie");
@@ -83,14 +76,9 @@ class PresetDataUtilsTest {
     dirtyData.putInt("HurtTime", 10);
     dirtyData.putBoolean("OnGround", true);
 
-    ListTag motionTag = new ListTag();
-    dirtyData.put("Motion", motionTag);
-
-    ListTag posTag = new ListTag();
-    dirtyData.put("Pos", posTag);
-
-    ListTag rotTag = new ListTag();
-    dirtyData.put("Rotation", rotTag);
+    dirtyData.put("Motion", new ListTag());
+    dirtyData.put("Pos", new ListTag());
+    dirtyData.put("Rotation", new ListTag());
 
     PresetDataUtils.cleanupEntityData(dirtyData, PresetDataUtils.CleanupMode.FULL);
 
@@ -110,14 +98,12 @@ class PresetDataUtilsTest {
   }
 
   @Test
-  @DisplayName("Should default to RUNTIME_ONLY cleanup mode")
   void testCleanupEntityDataDefaultMode() {
     CompoundTag dirtyData = new CompoundTag();
     dirtyData.putInt("Fire", 100);
     dirtyData.putInt("HurtTime", 10);
 
-    ListTag posTag = new ListTag();
-    dirtyData.put("Pos", posTag);
+    dirtyData.put("Pos", new ListTag());
 
     PresetDataUtils.cleanupEntityData(dirtyData);
 
@@ -127,14 +113,12 @@ class PresetDataUtilsTest {
   }
 
   @Test
-  @DisplayName("Should handle null CompoundTag in cleanup")
   void testCleanupEntityDataNull() {
     CompoundTag result = PresetDataUtils.cleanupEntityData(null);
     assertNull(result, "Should return null for null input");
   }
 
   @Test
-  @DisplayName("Should handle empty CompoundTag in cleanup")
   void testCleanupEntityDataEmpty() {
     CompoundTag empty = new CompoundTag();
     CompoundTag result = PresetDataUtils.cleanupEntityData(empty);
@@ -143,7 +127,6 @@ class PresetDataUtilsTest {
   }
 
   @Test
-  @DisplayName("Should only remove specified runtime tags")
   void testCleanupOnlySpecifiedTags() {
     CompoundTag data = new CompoundTag();
     data.putString("id", "minecraft:zombie");
@@ -162,7 +145,6 @@ class PresetDataUtilsTest {
   }
 
   @Test
-  @DisplayName("Should cleanup all runtime tags in one pass")
   void testCleanupAllRuntimeTags() {
     CompoundTag data = new CompoundTag();
     data.putFloat("AbsorptionAmount", 4.0f);
@@ -182,7 +164,6 @@ class PresetDataUtilsTest {
   }
 
   @Test
-  @DisplayName("Should preserve important game data during cleanup")
   void testPreserveImportantData() {
     CompoundTag data = new CompoundTag();
     data.putString("id", "minecraft:villager");
@@ -208,7 +189,6 @@ class PresetDataUtilsTest {
   }
 
   @Test
-  @DisplayName("Should return same instance when modified in place")
   void testCleanupModifiesInPlace() {
     CompoundTag original = new CompoundTag();
     original.putInt("Fire", 100);
@@ -219,15 +199,13 @@ class PresetDataUtilsTest {
   }
 
   @Test
-  @DisplayName("Should handle multiple cleanup passes idempotently")
   void testIdempotentCleanup() {
     CompoundTag data = new CompoundTag();
     data.putString("id", "minecraft:zombie");
     data.putInt("Fire", 100);
     data.putInt("HurtTime", 10);
 
-    ListTag posTag = new ListTag();
-    data.put("Pos", posTag);
+    data.put("Pos", new ListTag());
 
     PresetDataUtils.cleanupEntityData(data, PresetDataUtils.CleanupMode.RUNTIME_ONLY);
     int sizeAfterFirstCleanup = data.size();
@@ -242,7 +220,6 @@ class PresetDataUtilsTest {
   }
 
   @Test
-  @DisplayName("Should handle complex nested structures")
   void testComplexNestedStructures() {
     CompoundTag data = new CompoundTag();
     data.putString("id", "minecraft:zombie");
@@ -269,21 +246,16 @@ class PresetDataUtilsTest {
   }
 
   @Test
-  @DisplayName("Should differentiate between RUNTIME_ONLY and FULL modes")
   void testCleanupModeDifferences() {
     CompoundTag runtimeOnlyData = new CompoundTag();
     runtimeOnlyData.putInt("Fire", 100);
-    ListTag posTag1 = new ListTag();
-    runtimeOnlyData.put("Pos", posTag1);
-    ListTag rotTag1 = new ListTag();
-    runtimeOnlyData.put("Rotation", rotTag1);
+    runtimeOnlyData.put("Pos", new ListTag());
+    runtimeOnlyData.put("Rotation", new ListTag());
 
     CompoundTag fullData = new CompoundTag();
     fullData.putInt("Fire", 100);
-    ListTag posTag2 = new ListTag();
-    fullData.put("Pos", posTag2);
-    ListTag rotTag2 = new ListTag();
-    fullData.put("Rotation", rotTag2);
+    fullData.put("Pos", new ListTag());
+    fullData.put("Rotation", new ListTag());
 
     PresetDataUtils.cleanupEntityData(runtimeOnlyData, PresetDataUtils.CleanupMode.RUNTIME_ONLY);
     PresetDataUtils.cleanupEntityData(fullData, PresetDataUtils.CleanupMode.FULL);

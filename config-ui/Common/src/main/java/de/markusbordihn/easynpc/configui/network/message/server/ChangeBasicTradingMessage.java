@@ -25,6 +25,8 @@ import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.TradingDataCapable;
 import de.markusbordihn.easynpc.handler.TradingOfferHandler;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
+import de.markusbordihn.easynpc.security.NpcFeature;
+import de.markusbordihn.easynpc.security.SecurityManager;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -58,6 +60,11 @@ public record ChangeBasicTradingMessage(
   public void handleServer(final ServerPlayer serverPlayer) {
     EasyNPC<?> easyNPC = getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
     if (easyNPC == null) {
+      return;
+    }
+
+    if (!SecurityManager.checkFeatureAccess(serverPlayer, easyNPC, NpcFeature.TRADING).allowed()) {
+      log.warn("Blocked trading change for {} from {}", easyNPC, serverPlayer);
       return;
     }
 

@@ -31,13 +31,11 @@ import org.junit.jupiter.params.provider.CsvSource;
 class ImageValidatorTest {
 
   @Test
-  @DisplayName("Should reject null image")
   void testNullImage() {
     assertFalse(ImageValidator.isValidImage(null));
   }
 
   @ParameterizedTest
-  @DisplayName("Should accept valid image dimensions")
   @CsvSource({
     "64,64", "64,32", "128,128", "256,256", "32,32", "96,96", "48,32", "160,160", "192,192",
     "224,224"
@@ -49,7 +47,6 @@ class ImageValidatorTest {
   }
 
   @ParameterizedTest
-  @DisplayName("Should reject invalid image dimensions")
   @CsvSource({
     "16,16", "31,31", "33,32", "64,33", "100,100", "64,48", "48,64", "24,24", "8,8", "65,65",
     "63,64", "64,63"

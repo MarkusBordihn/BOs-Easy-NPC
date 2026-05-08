@@ -24,7 +24,10 @@ import de.markusbordihn.easynpc.configui.menu.configuration.trading.slot.ItemASl
 import de.markusbordihn.easynpc.configui.menu.configuration.trading.slot.ItemBSlot;
 import de.markusbordihn.easynpc.configui.menu.configuration.trading.slot.ItemResultSlot;
 import de.markusbordihn.easynpc.data.trading.TradingSettings;
+import de.markusbordihn.easynpc.security.NpcFeature;
+import de.markusbordihn.easynpc.security.SecurityManager;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -155,6 +158,13 @@ public class BasicTradingConfigurationMenu extends TradingConfigurationMenu {
     if (this.level.isClientSide) {
       return;
     }
+
+    if (!(this.player instanceof ServerPlayer serverPlayer)
+        || !SecurityManager.checkFeatureAccess(serverPlayer, this.getEasyNPC(), NpcFeature.TRADING)
+            .allowed()) {
+      return;
+    }
+
     TradingContainerHandler.setBasicTradingOffers(
         this.getEasyNPC().getEasyNPCTradingData(), tradingContainer);
   }

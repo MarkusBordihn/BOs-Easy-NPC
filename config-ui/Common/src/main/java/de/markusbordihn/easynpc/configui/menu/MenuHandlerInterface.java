@@ -29,11 +29,17 @@ import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenuHan
 import de.markusbordihn.easynpc.configui.menu.custom.CustomMenuHandler;
 import de.markusbordihn.easynpc.configui.menu.editor.EditorMenu;
 import de.markusbordihn.easynpc.configui.menu.editor.EditorMenuHandler;
+import de.markusbordihn.easynpc.data.action.ActionDataType;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationTypeHelper;
 import de.markusbordihn.easynpc.data.screen.ScreenData;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.security.FeatureSecurity;
+import de.markusbordihn.easynpc.security.NpcFeature;
+import de.markusbordihn.easynpc.security.SecurityManager;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
@@ -105,6 +111,18 @@ public interface MenuHandlerInterface {
     AdditionalScreenData.addActionEventType(additionalSyncData, actionEventType);
     AdditionalScreenData.addConfigurationType(additionalSyncData, configurationType);
     AdditionalScreenData.addEditorType(additionalSyncData, formerEditorType);
+
+    // Compute blocked action types for this player.
+    Set<ActionDataType> blockedActionTypes = new HashSet<>();
+    for (ActionDataType type : ActionDataType.values()) {
+      NpcFeature feature = FeatureSecurity.getFeature(type);
+      if (feature != null
+          && !SecurityManager.checkFeatureAccess(serverPlayer, easyNPC, feature).allowed()) {
+        blockedActionTypes.add(type);
+      }
+    }
+    AdditionalScreenData.addBlockedActionTypes(additionalSyncData, blockedActionTypes);
+
     openEditorMenu(
         editorType,
         serverPlayer,

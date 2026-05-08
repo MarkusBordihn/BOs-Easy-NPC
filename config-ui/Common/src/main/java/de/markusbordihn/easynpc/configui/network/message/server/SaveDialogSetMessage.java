@@ -22,8 +22,11 @@ package de.markusbordihn.easynpc.configui.network.message.server;
 import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.DialogDataCapable;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
+import de.markusbordihn.easynpc.security.CommandPermissionLevel;
+import de.markusbordihn.easynpc.security.SecurityManager;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -70,8 +73,34 @@ public record SaveDialogSetMessage(UUID uuid, DialogDataSet dialogDataSet)
       return;
     }
 
+    // Validate action event data.
+    ActionEventDataCapable<?> actionEventData = easyNPC.getEasyNPCActionEventData();
+    if (actionEventData == null) {
+      log.error("Invalid action data for {} from {}", easyNPC, serverPlayer);
+      return;
+    }
+
+    CommandPermissionLevel currentPermissionLevel =
+        actionEventData.getActionCommandPermissionLevel();
+    CommandPermissionLevel permissionLevel =
+        SecurityManager.applyActionAuthority(easyNPC, serverPlayer);
+    log.debug(
+        "Update owner permission level from {} to {} for {} from {}",
+        currentPermissionLevel,
+        permissionLevel,
+        easyNPC,
+        serverPlayer);
+
+    DialogDataSet sanitizedDialogDataSet =
+        MessageSecurity.sanitizeDialogDataSet(
+            this.dialogDataSet, easyNPC, serverPlayer, permissionLevel);
+    if (sanitizedDialogDataSet == null) {
+      log.warn("Blocked dialog set save for {} from {}", easyNPC, serverPlayer);
+      return;
+    }
+
     // Perform action.
-    log.debug("Saving dialog {} for {} from {}", this.dialogDataSet, easyNPC, serverPlayer);
-    dialogData.setDialogDataSet(this.dialogDataSet);
+    log.debug("Saving dialog {} for {} from {}", sanitizedDialogDataSet, easyNPC, serverPlayer);
+    dialogData.setDialogDataSet(sanitizedDialogDataSet);
   }
 }

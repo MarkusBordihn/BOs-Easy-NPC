@@ -22,7 +22,6 @@ package de.markusbordihn.easynpc.entity.easynpc.data;
 import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
-import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import java.util.EnumMap;
 import java.util.Map;
 import net.minecraft.nbt.CompoundTag;
@@ -30,7 +29,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 
-public interface ModelRotationDataCapable<T extends Mob> extends EasyNPC<T> {
+public interface ModelRotationDataCapable<T extends Mob> extends ModelRootDataCapable<T> {
 
   CustomRotation DEFAULT_MODEL_PART_ROTATION = new CustomRotation(0, 0, 0);
   String EASY_NPC_DATA_MODEL_ROTATION_TAG = "Rotation";
@@ -65,12 +64,12 @@ public interface ModelRotationDataCapable<T extends Mob> extends EasyNPC<T> {
   }
 
   default void setModelRotation(float y) {
-    CustomRotation current = getModelPartRotation(ModelPartType.ROOT);
+    CustomRotation current = getModelRootData().rotation();
     setModelRotation(current.x(), y, current.z(), current.locked());
   }
 
   default void setModelRotation(float x, float y, float z) {
-    CustomRotation current = getModelPartRotation(ModelPartType.ROOT);
+    CustomRotation current = getModelRootData().rotation();
     setModelRotation(x, y, z, current.locked());
   }
 
@@ -89,17 +88,16 @@ public interface ModelRotationDataCapable<T extends Mob> extends EasyNPC<T> {
       livingEntity.yHeadRotO = y;
     }
 
-    setModelPartRotation(ModelPartType.ROOT, new CustomRotation(x, y, z).withLocked(locked));
+    setModelRootRotation(new CustomRotation(x, y, z).withLocked(locked));
   }
 
   default boolean hasChangedModelRotation() {
-    EnumMap<ModelPartType, CustomRotation> modelPartMap = getModelPartRotation();
-    for (CustomRotation rotation : modelPartMap.values()) {
-      if (rotation.hasChanged()
-          && !(rotation == modelPartMap.get(ModelPartType.ROOT) && rotation.hasChangedYaw())) {
+    for (CustomRotation rotation : getModelPartRotation().values()) {
+      if (rotation.hasChanged()) {
         return true;
       }
     }
+
     return false;
   }
 
@@ -120,6 +118,7 @@ public interface ModelRotationDataCapable<T extends Mob> extends EasyNPC<T> {
     if (!compoundTag.contains(EASY_NPC_DATA_MODEL_ROTATION_TAG)) {
       return;
     }
+
     CompoundTag rotationsTag = compoundTag.getCompound(EASY_NPC_DATA_MODEL_ROTATION_TAG);
     EnumMap<ModelPartType, CustomRotation> modelPartMap = new EnumMap<>(ModelPartType.class);
     for (String key : rotationsTag.getAllKeys()) {

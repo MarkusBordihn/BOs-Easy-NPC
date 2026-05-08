@@ -46,6 +46,7 @@ import de.markusbordihn.easynpc.configui.client.screen.configuration.pose.Custom
 import de.markusbordihn.easynpc.configui.client.screen.configuration.pose.DefaultPoseConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.position.DefaultPositionConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.preset.ExportCustomPresetConfigurationScreenWrapper;
+import de.markusbordihn.easynpc.configui.client.screen.configuration.preset.ExportLocalPresetConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.preset.ExportWorldPresetConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.preset.ImportCustomPresetConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.preset.ImportDefaultPresetConfigurationScreenWrapper;
@@ -141,6 +142,9 @@ public class ClientScreens {
           MenuScreens.register(
               ModMenuTypes.CUSTOM_EXPORT_PRESET_CONFIGURATION_MENU.get(),
               ExportCustomPresetConfigurationScreenWrapper::new);
+          MenuScreens.register(
+              ModMenuTypes.LOCAL_EXPORT_PRESET_CONFIGURATION_MENU.get(),
+              ExportLocalPresetConfigurationScreenWrapper::new);
           MenuScreens.register(
               ModMenuTypes.CUSTOM_IMPORT_PRESET_CONFIGURATION_MENU.get(),
               ImportCustomPresetConfigurationScreenWrapper::new);

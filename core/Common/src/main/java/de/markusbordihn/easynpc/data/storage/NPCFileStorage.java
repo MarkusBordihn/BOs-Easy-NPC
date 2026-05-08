@@ -116,7 +116,7 @@ public class NPCFileStorage {
   private boolean saveToFile(UUID uuid, CompoundTag data) {
     Path npcFile = getNPCFilePath(uuid);
     try {
-      Path tempFile = npcFile.getParent().resolve(uuid.toString() + ".tmp");
+      Path tempFile = npcFile.getParent().resolve(uuid + ".tmp");
       NbtIo.writeCompressed(data, tempFile.toFile());
       Files.move(tempFile, npcFile, StandardCopyOption.REPLACE_EXISTING);
 

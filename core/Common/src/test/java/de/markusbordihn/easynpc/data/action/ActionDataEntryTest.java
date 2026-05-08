@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.data.action;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import de.markusbordihn.easynpc.security.CommandPermissionLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import org.junit.jupiter.api.DisplayName;
@@ -133,6 +134,23 @@ class ActionDataEntryTest {
       assertEquals(original.permissionLevel(), decoded.permissionLevel());
       assertEquals(original.getId(), decoded.getId());
     }
+  }
+
+  @Test
+  @DisplayName("Should support admin command permission levels")
+  void testAdminPermissionLevelPreservation() {
+    ActionDataEntry original =
+        new ActionDataEntry(
+            ActionDataType.COMMAND,
+            "say admin",
+            CommandPermissionLevel.ADMINS.minecraftLevel(),
+            false,
+            false);
+
+    ActionDataEntry decoded = new ActionDataEntry(original.createTag());
+
+    assertEquals(CommandPermissionLevel.ADMINS.minecraftLevel(), decoded.permissionLevel());
+    assertEquals(CommandPermissionLevel.ADMINS, decoded.commandPermissionLevel());
   }
 
   @Test

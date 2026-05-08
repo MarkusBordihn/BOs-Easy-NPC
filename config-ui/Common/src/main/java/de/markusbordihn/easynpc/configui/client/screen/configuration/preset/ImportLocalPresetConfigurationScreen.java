@@ -19,12 +19,13 @@
 
 package de.markusbordihn.easynpc.configui.client.screen.configuration.preset;
 
+import de.markusbordihn.easynpc.configui.client.screen.components.ReloadButton;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.io.CustomPresetDataFiles;
 import de.markusbordihn.easynpc.io.LocalPresetDataFiles;
 import de.markusbordihn.easynpc.io.PresetFileHandler;
 import java.nio.file.Path;
-import java.util.List;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -33,14 +34,18 @@ import net.minecraft.world.entity.player.Inventory;
 public class ImportLocalPresetConfigurationScreen<T extends ConfigurationMenu>
     extends ImportPresetConfigurationScreen<T> {
 
-  private final List<ResourceLocation> localPresets;
-
   public ImportLocalPresetConfigurationScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
     importPresetButtonLabel = "import_local_preset";
     importPresetHeaderLabel = "preset_local_for";
-    this.localPresets =
-        LocalPresetDataFiles.getPresetResourceLocations(this.getSkinModel()).toList();
+  }
+
+  private void reloadLocalPresets() {
+    CustomPresetDataFiles.refreshPresetResourceLocations();
+    updatePresets(LocalPresetDataFiles.getPresetResourceLocations(this.getSkinModel()).toList());
+    if (this.presetSelectionList != null) {
+      this.presetSelectionList.updatePresets();
+    }
   }
 
   @Override
@@ -52,6 +57,7 @@ public class ImportLocalPresetConfigurationScreen<T extends ConfigurationMenu>
         log.error("Failed to load local preset file {}:", resourceLocation);
         return;
       }
+
       NetworkMessageHandlerManager.getServerHandler()
           .importLocalPreset(getEasyNPCUUID(), compoundTag, resourceLocation);
     } catch (Exception e) {
@@ -63,11 +69,17 @@ public class ImportLocalPresetConfigurationScreen<T extends ConfigurationMenu>
   public void init() {
     super.init();
 
-    // Default button stats
     this.localImportPresetButton.active = false;
 
-    // Update local presets
-    updatePresets(this.localPresets);
-    this.presetSelectionList.updatePresets();
+    this.addRenderableWidget(
+        new ReloadButton(
+            this.importPresetButton.getX() + this.importPresetButton.getWidth() + 4,
+            this.bottomPos - 40,
+            20,
+            20,
+            "",
+            button -> reloadLocalPresets()));
+
+    reloadLocalPresets();
   }
 }
