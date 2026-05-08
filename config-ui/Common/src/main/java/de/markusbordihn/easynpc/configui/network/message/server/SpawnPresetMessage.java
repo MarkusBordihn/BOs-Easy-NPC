@@ -24,9 +24,13 @@ import de.markusbordihn.easynpc.data.preset.PresetData;
 import de.markusbordihn.easynpc.data.preset.PresetType;
 import de.markusbordihn.easynpc.handler.PresetHandler;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
+import de.markusbordihn.easynpc.security.FeatureSecurity;
+import de.markusbordihn.easynpc.security.NpcFeature;
+import de.markusbordihn.easynpc.security.SpawnRateLimiter;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
@@ -82,10 +86,27 @@ public record SpawnPresetMessage(
 
   @Override
   public void handleServer(final ServerPlayer serverPlayer) {
+    if (!FeatureSecurity.checkActorFeatureAccess(serverPlayer, NpcFeature.SPAWN_NPC).allowed()) {
+      log.warn(
+          "Blocked NPC browser-spawn attempt by {} (insufficient role)", serverPlayer.getName());
+      return;
+    }
+
+    if (!SpawnRateLimiter.checkAndRecord(serverPlayer)) {
+      log.warn("Rate-limited NPC spawn attempt by {}", serverPlayer.getName());
+      serverPlayer.sendSystemMessage(
+          Component.literal(
+              "NPC spawn rate limit reached. Please wait before spawning more NPCs."));
+      return;
+    }
+
     var playerLook = serverPlayer.getLookAngle();
     var spawnPos = serverPlayer.position().add(playerLook.x * 3, 0, playerLook.z * 3);
-    var uuid = useOriginalData ? null : java.util.UUID.randomUUID();
-    var position = useOriginalData ? null : spawnPos;
+    boolean canUseOriginalData =
+        useOriginalData
+            && FeatureSecurity.checkActorFeatureAccess(serverPlayer, NpcFeature.POSITION).allowed();
+    var uuid = canUseOriginalData ? null : java.util.UUID.randomUUID();
+    var position = canUseOriginalData ? null : spawnPos;
 
     boolean success;
 

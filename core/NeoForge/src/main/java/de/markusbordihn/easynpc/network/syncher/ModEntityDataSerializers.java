@@ -24,8 +24,10 @@ import de.markusbordihn.easynpc.data.action.ActionEventSet;
 import de.markusbordihn.easynpc.data.attribute.EntityAttributes;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.data.display.DisplayAttributeDataSet;
+import de.markusbordihn.easynpc.data.model.ModelAnimationData;
 import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.model.ModelPose;
+import de.markusbordihn.easynpc.data.model.RootModelData;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataSet;
 import de.markusbordihn.easynpc.data.position.CustomPosition;
 import de.markusbordihn.easynpc.data.profession.Profession;
@@ -79,11 +81,14 @@ public class ModEntityDataSerializers {
           ENTITY_DATA_SERIALIZERS.register(
               "model_pose", () -> EntityDataSerializersManager.MODEL_POSE);
   public static final DeferredHolder<
-          EntityDataSerializer<?>,
-          EntityDataSerializer<de.markusbordihn.easynpc.data.model.ModelAnimationData>>
+          EntityDataSerializer<?>, EntityDataSerializer<ModelAnimationData>>
       MODEL_ANIMATION_DATA =
           ENTITY_DATA_SERIALIZERS.register(
               "model_animation_data", () -> EntityDataSerializersManager.MODEL_ANIMATION_DATA);
+  public static final DeferredHolder<EntityDataSerializer<?>, EntityDataSerializer<RootModelData>>
+      ROOT_MODEL_DATA =
+          ENTITY_DATA_SERIALIZERS.register(
+              "root_model_data", () -> EntityDataSerializersManager.ROOT_MODEL_DATA);
   public static final DeferredHolder<
           EntityDataSerializer<?>, EntityDataSerializer<ObjectiveDataSet>>
       OBJECTIVE_DATA_SET =

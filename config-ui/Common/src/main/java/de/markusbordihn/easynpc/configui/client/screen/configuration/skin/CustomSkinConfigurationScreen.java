@@ -180,7 +180,7 @@ public class CustomSkinConfigurationScreen<T extends ConfigurationMenu>
             new ReloadButton(
                 this.skinFolderButton.getX() + this.skinFolderButton.getWidth(),
                 this.skinFolderButton.getY(),
-                17,
+                20,
                 16,
                 null,
                 onPress -> {

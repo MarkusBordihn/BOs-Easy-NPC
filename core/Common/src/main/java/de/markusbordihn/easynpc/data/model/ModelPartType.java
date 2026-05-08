@@ -86,17 +86,16 @@ public enum ModelPartType {
     if (modelPart == null || modelPart.isEmpty()) {
       return ModelPartType.UNKNOWN;
     }
+
     try {
       return ModelPartType.valueOf(modelPart.toUpperCase(Locale.ROOT));
     } catch (IllegalArgumentException e) {
-      // Alternative search for model part tag name.
       for (ModelPartType modelPartTypeEnum : ModelPartType.values()) {
         if (modelPartTypeEnum.tagName.equalsIgnoreCase(modelPart)) {
           return modelPartTypeEnum;
         }
       }
 
-      // Return unknown model part if no match was found.
       return ModelPartType.UNKNOWN;
     }
   }

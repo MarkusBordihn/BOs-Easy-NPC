@@ -21,10 +21,10 @@ package de.markusbordihn.easynpc.entity.easynpc.handlers.action.executor;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.ParseResults;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
+import de.markusbordihn.easynpc.security.CommandAuthority;
+import de.markusbordihn.easynpc.security.CommandExecutionSubject;
+import de.markusbordihn.easynpc.security.CommandPermissionLevel;
+import de.markusbordihn.easynpc.security.CommandSecurity;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.server.MinecraftServer;
@@ -37,55 +37,37 @@ public class CommandExecutor {
 
   protected static final Logger log = LogManager.getLogger(CommandExecutor.class);
 
-  private static final Set<String> BLOCKED_UNSAFE_NPC_COMMANDS =
-      new HashSet<>(
-          List.of(
-              "ban-ip",
-              "ban",
-              "banlist",
-              "debug",
-              "deop",
-              "difficulty",
-              "forceload",
-              "gamerule",
-              "kick",
-              "op",
-              "pardon",
-              "reload",
-              "save-all",
-              "save-off",
-              "save-on",
-              "setidletimeout",
-              "setworldspawn",
-              "stop",
-              "whitelist"));
-
   private CommandExecutor() {}
 
   public static boolean isBlockedUnsafeNPCCommand(String command) {
-    if (command == null || command.isBlank()) {
-      return false;
-    }
-    String cmd = command.trim();
-    if (cmd.startsWith("/")) {
-      cmd = cmd.substring(1);
-    }
-    String[] runParts = cmd.split("\\s+run\\s+");
-    String relevant = runParts[runParts.length - 1].trim();
-    if (relevant.startsWith("/")) {
-      relevant = relevant.substring(1);
-    }
-    String mainCmd = relevant.split(" ")[0].toLowerCase(Locale.ROOT);
-    return BLOCKED_UNSAFE_NPC_COMMANDS.contains(mainCmd);
+    return CommandSecurity.isBlockedUnsafeNpcCommand(command);
   }
 
   public static void executeEntityCommand(
       String command, Entity entity, int permissionLevel, boolean debug) {
+    executeEntityCommand(
+        command, entity, CommandPermissionLevel.fromMinecraftLevel(permissionLevel), debug);
+  }
+
+  public static void executeEntityCommand(
+      String command, Entity entity, CommandPermissionLevel permissionLevel, boolean debug) {
+    executeEntityCommand(
+        command,
+        entity,
+        new CommandAuthority(CommandExecutionSubject.NPC_ENTITY, permissionLevel, permissionLevel),
+        debug);
+  }
+
+  public static void executeEntityCommand(
+      String command, Entity entity, CommandAuthority commandAuthority, boolean debug) {
     MinecraftServer minecraftServer = entity.getServer();
     if (minecraftServer == null) {
       log.error("No Minecraft server found for entity {}", entity);
       return;
     }
+
+    CommandPermissionLevel permissionLevel =
+        commandAuthority != null ? commandAuthority.effective() : CommandPermissionLevel.ALL;
     if (isBlockedUnsafeNPCCommand(command)) {
       log.warn(
           "Blocked unsafe entity command {} for {} with permission level {}!",
@@ -94,6 +76,7 @@ public class CommandExecutor {
           permissionLevel);
       return;
     }
+
     if (command.startsWith("/")) {
       command = command.substring(1);
     }
@@ -109,7 +92,7 @@ public class CommandExecutor {
             .withEntity(entity)
             .withPosition(entity.position())
             .withRotation(entity.getRotationVector())
-            .withPermission(permissionLevel);
+            .withPermission(permissionLevel.minecraftLevel());
     CommandDispatcher<CommandSourceStack> commandDispatcher = commands.getDispatcher();
     ParseResults<CommandSourceStack> parseResults =
         commandDispatcher.parse(
@@ -119,11 +102,32 @@ public class CommandExecutor {
 
   public static void executePlayerCommand(
       String command, ServerPlayer serverPlayer, int permissionLevel, boolean debug) {
+    executePlayerCommand(
+        command, serverPlayer, CommandPermissionLevel.fromMinecraftLevel(permissionLevel), debug);
+  }
+
+  public static void executePlayerCommand(
+      String command,
+      ServerPlayer serverPlayer,
+      CommandPermissionLevel permissionLevel,
+      boolean debug) {
+    executePlayerCommand(
+        command,
+        serverPlayer,
+        new CommandAuthority(CommandExecutionSubject.USER, permissionLevel, permissionLevel),
+        debug);
+  }
+
+  public static void executePlayerCommand(
+      String command, ServerPlayer serverPlayer, CommandAuthority commandAuthority, boolean debug) {
     MinecraftServer minecraftServer = serverPlayer.getServer();
     if (minecraftServer == null) {
       log.error("No Minecraft server found for player {}", serverPlayer);
       return;
     }
+
+    CommandPermissionLevel permissionLevel =
+        commandAuthority != null ? commandAuthority.effective() : CommandPermissionLevel.ALL;
     if (isBlockedUnsafeNPCCommand(command)) {
       log.warn(
           "Blocked unsafe player command {} for {} with permission level {}!",
@@ -132,6 +136,7 @@ public class CommandExecutor {
           permissionLevel);
       return;
     }
+
     if (command.startsWith("/")) {
       command = command.substring(1);
     }
@@ -147,7 +152,7 @@ public class CommandExecutor {
             .withEntity(serverPlayer)
             .withPosition(serverPlayer.position())
             .withRotation(serverPlayer.getRotationVector())
-            .withPermission(permissionLevel)
+            .withPermission(permissionLevel.minecraftLevel())
             .withLevel(serverPlayer.serverLevel());
     CommandDispatcher<CommandSourceStack> commandDispatcher = commands.getDispatcher();
     ParseResults<CommandSourceStack> parseResults =

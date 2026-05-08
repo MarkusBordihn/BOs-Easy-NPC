@@ -31,7 +31,6 @@ import org.junit.jupiter.params.provider.CsvSource;
 class PresetExportFormatTest {
 
   @ParameterizedTest
-  @DisplayName("Should normalize filenames correctly")
   @CsvSource({
     "'Give Stone Or Dirt To A Player', 'give_stone_or_dirt_to_a_player'",
     "'Test Preset', 'test_preset'",
@@ -46,7 +45,6 @@ class PresetExportFormatTest {
   }
 
   @ParameterizedTest
-  @DisplayName("Should handle preset extensions correctly")
   @CsvSource({
     "'test.npc.nbt', true",
     "'test.npc.snbt', true",
@@ -61,7 +59,6 @@ class PresetExportFormatTest {
   }
 
   @ParameterizedTest
-  @DisplayName("Should remove preset extensions correctly")
   @CsvSource({
     "'test.npc.nbt', 'test'",
     "'test.npc.snbt', 'test'",
@@ -75,7 +72,6 @@ class PresetExportFormatTest {
   }
 
   @Test
-  @DisplayName("Should get correct file extensions")
   void testGetFileExtension() {
     assertEquals(".npc.nbt", PresetExportFormat.NBT.getFileExtension());
     assertEquals(".npc.snbt", PresetExportFormat.SNBT.getFileExtension());
@@ -115,7 +111,6 @@ class PresetExportFormatTest {
   }
 
   @ParameterizedTest
-  @DisplayName("Should not add duplicate extensions")
   @CsvSource({
     "'test.npc.nbt', 'test.npc.nbt'",
     "'test.npc.snbt', 'test.npc.snbt'",

@@ -19,17 +19,21 @@
 
 package de.markusbordihn.easynpc.configui.client.screen.configuration.preset;
 
+import de.markusbordihn.easynpc.client.screen.components.SpinButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextField;
 import de.markusbordihn.easynpc.configui.client.screen.components.ExportButton;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.preset.PresetExportFormat;
+import de.markusbordihn.easynpc.data.preset.PresetMetadata;
 import de.markusbordihn.easynpc.io.CustomPresetDataFiles;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import java.io.File;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
@@ -40,9 +44,16 @@ import net.minecraft.world.entity.player.Inventory;
 public class ExportWorldPresetConfigurationScreen<T extends ConfigurationMenu>
     extends ExportPresetConfigurationScreen<T> {
 
+  private static final Set<String> PRESET_CATEGORIES =
+      new LinkedHashSet<>(List.of("General", "Villager", "Guard", "Trader", "Quest", "Custom"));
+
   protected Button exportPresetButton;
   protected int numberOfTextLines = 1;
   private EditBox nameBox;
+  private SpinButton<String> categorySpinButton;
+  private EditBox versionBox;
+  private EditBox descriptionBox;
+  private EditBox authorBox;
   private List<FormattedCharSequence> textComponents = Collections.emptyList();
 
   public ExportWorldPresetConfigurationScreen(T menu, Inventory inventory, Component component) {
@@ -57,33 +68,51 @@ public class ExportWorldPresetConfigurationScreen<T extends ConfigurationMenu>
   public void init() {
     super.init();
 
-    // Default button stats
     this.worldExportPresetButton.active = false;
 
-    // Preset file
     File customPresetFile =
         CustomPresetDataFiles.getPresetFile(this.getSkinModel(), getEasyNPCUUID());
     String customPresetFileName =
         PresetExportFormat.removePresetExtension(customPresetFile.getName());
 
-    // Name Edit Box
-    this.nameBox = new TextField(this.font, this.contentLeftPos + 5, this.bottomPos - 65, 270);
+    this.textComponents =
+        this.font.split(
+            TextComponent.getTranslatedConfigText("export_preset_world_text"),
+            this.imageWidth - 25);
+    this.numberOfTextLines = this.textComponents.size();
+
+    this.nameBox = new TextField(this.font, this.contentLeftPos + 5, this.bottomPos - 140, 300);
     this.nameBox.setMaxLength(64);
     this.nameBox.setValue(customPresetFileName);
     this.nameBox.setResponder(consumer -> this.validateName());
     this.addRenderableWidget(this.nameBox);
 
-    // Pre-format text
-    this.textComponents =
-        this.font.split(
-            TextComponent.getTranslatedConfigText(
-                "export_preset_world_text",
-                customPresetFile.getParentFile().getPath(),
-                customPresetFile.getName()),
-            this.imageWidth - 25);
-    this.numberOfTextLines = this.textComponents.size();
+    int metaDataYOffset = this.nameBox.getY() + 35;
+    String defaultAuthor =
+        this.minecraft != null && this.minecraft.player != null
+            ? this.minecraft.player.getName().getString()
+            : "Unknown";
 
-    // Export button
+    this.categorySpinButton =
+        new SpinButton<>(
+            this.contentLeftPos + 5, metaDataYOffset, 130, 16, PRESET_CATEGORIES, "General", null);
+    this.addRenderableWidget(this.categorySpinButton);
+
+    this.versionBox = new TextField(this.font, this.contentLeftPos + 230, metaDataYOffset, 75);
+    this.versionBox.setMaxLength(12);
+    this.versionBox.setValue("1.0.0");
+    this.addRenderableWidget(this.versionBox);
+
+    this.descriptionBox =
+        new TextField(this.font, this.contentLeftPos + 5, metaDataYOffset + 35, 180);
+    this.descriptionBox.setMaxLength(128);
+    this.addRenderableWidget(this.descriptionBox);
+
+    this.authorBox = new TextField(this.font, this.contentLeftPos + 200, metaDataYOffset + 35, 105);
+    this.authorBox.setMaxLength(16);
+    this.authorBox.setValue(defaultAuthor);
+    this.addRenderableWidget(this.authorBox);
+
     this.exportPresetButton =
         this.addRenderableWidget(
             new ExportButton(
@@ -91,10 +120,17 @@ public class ExportWorldPresetConfigurationScreen<T extends ConfigurationMenu>
                 this.bottomPos - 40,
                 150,
                 20,
-                "export_preset",
+                "export_world_preset",
                 button -> {
                   NetworkMessageHandlerManager.getServerHandler()
-                      .exportWorldPreset(this.getEasyNPCUUID(), this.nameBox.getValue());
+                      .exportWorldPreset(
+                          this.getEasyNPCUUID(),
+                          this.nameBox.getValue(),
+                          PresetMetadata.createDefault(
+                                  this.nameBox.getValue(), this.authorBox.getValue())
+                              .withCategory(this.categorySpinButton.get())
+                              .withVersion(this.versionBox.getValue())
+                              .withDescription(this.descriptionBox.getValue()));
                   exportPresetButton.active = false;
                 }));
   }
@@ -111,8 +147,41 @@ public class ExportWorldPresetConfigurationScreen<T extends ConfigurationMenu>
             this.font,
             formattedCharSequence,
             leftPos + 15,
-            topPos + 80 + (line * (font.lineHeight + 2)));
+            topPos + 25 + (line * (font.lineHeight + 2)));
       }
+    }
+
+    if (this.categorySpinButton != null) {
+      Text.drawString(
+          guiGraphics,
+          this.font,
+          Component.literal("Category:"),
+          this.categorySpinButton.getX(),
+          this.categorySpinButton.getY() - 10);
+    }
+    if (this.versionBox != null) {
+      Text.drawString(
+          guiGraphics,
+          this.font,
+          Component.literal("Version:"),
+          this.versionBox.getX(),
+          this.versionBox.getY() - 10);
+    }
+    if (this.authorBox != null) {
+      Text.drawString(
+          guiGraphics,
+          this.font,
+          Component.literal("Author:"),
+          this.authorBox.getX(),
+          this.authorBox.getY() - 10);
+    }
+    if (this.descriptionBox != null) {
+      Text.drawString(
+          guiGraphics,
+          this.font,
+          Component.literal("Description:"),
+          this.descriptionBox.getX(),
+          this.descriptionBox.getY() - 10);
     }
   }
 }

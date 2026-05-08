@@ -35,6 +35,10 @@ import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
 import de.markusbordihn.easynpc.io.CustomPresetDataFiles;
 import de.markusbordihn.easynpc.io.PresetFileHandler;
 import de.markusbordihn.easynpc.io.WorldPresetDataFiles;
+import de.markusbordihn.easynpc.security.PresetSanitizationResult;
+import de.markusbordihn.easynpc.security.PresetWarningMessages;
+import de.markusbordihn.easynpc.security.SecurityDecision;
+import de.markusbordihn.easynpc.security.SecurityManager;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -46,6 +50,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.nbt.TagParser;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -94,7 +99,23 @@ public class PresetHandler {
       updatedPresetData = updatedPresetData.withUUID(uuid);
     }
 
-    if (!importPreset(serverLevel, updatedPresetData.data())) {
+    PresetSanitizationResult sanitizationResult =
+        SecurityManager.sanitizePresetImport(
+            serverLevel,
+            updatedPresetData.data(),
+            updatedPresetData.presetType(),
+            uuid,
+            serverPlayer);
+    updatedPresetData =
+        PresetData.create(
+            updatedPresetData.name(),
+            updatedPresetData.entityType(),
+            sanitizationResult.sanitizedTag(),
+            updatedPresetData.location(),
+            updatedPresetData.presetType(),
+            updatedPresetData.metadata());
+
+    if (!importPresetData(serverLevel, updatedPresetData.data())) {
       return false;
     }
 
@@ -106,14 +127,48 @@ public class PresetHandler {
     }
 
     configureImportedEntity(easyNPC, position, serverPlayer);
+    sendImportSanitizationWarnings(serverPlayer, sanitizationResult);
+
     return true;
+  }
+
+  private static void sendImportSanitizationWarnings(
+      ServerPlayer serverPlayer, PresetSanitizationResult sanitizationResult) {
+    if (serverPlayer == null
+        || sanitizationResult == null
+        || !sanitizationResult.changed()
+        || sanitizationResult.notices().isEmpty()) {
+      return;
+    }
+
+    var playerMessages = PresetWarningMessages.toPlayerMessages(sanitizationResult);
+    if (playerMessages.isEmpty()) {
+      return;
+    }
+
+    serverPlayer.sendSystemMessage(
+        Component.literal("Preset imported, but some features were limited by server rules."));
+    int shownNotices = 0;
+    for (String message : playerMessages) {
+      if (shownNotices >= 3) {
+        break;
+      }
+      serverPlayer.sendSystemMessage(Component.literal("- " + message));
+      shownNotices++;
+    }
+
+    int remainingNotices = playerMessages.size() - shownNotices;
+    if (remainingNotices > 0) {
+      serverPlayer.sendSystemMessage(
+          Component.literal("- And " + remainingNotices + " more changes."));
+    }
   }
 
   private static void configureImportedEntity(
       EasyNPC<?> easyNPC, Vec3 position, ServerPlayer serverPlayer) {
     if (serverPlayer != null) {
       OwnerDataCapable<?> ownerData = easyNPC.getEasyNPCOwnerData();
-      if (ownerData != null) {
+      if (ownerData != null && !ownerData.hasNPCOwner()) {
         ownerData.setNPCOwner(serverPlayer);
       }
     }
@@ -128,6 +183,12 @@ public class PresetHandler {
   }
 
   public static boolean importPreset(ServerLevel serverLevel, CompoundTag compoundTag) {
+    PresetSanitizationResult sanitizationResult =
+        SecurityManager.sanitizePresetImport(serverLevel, compoundTag, null, null, null);
+    return importPresetData(serverLevel, sanitizationResult.sanitizedTag());
+  }
+
+  private static boolean importPresetData(ServerLevel serverLevel, CompoundTag compoundTag) {
     if (!validateImportParameters(serverLevel, compoundTag)) {
       return false;
     }
@@ -240,6 +301,17 @@ public class PresetHandler {
       return null;
     }
 
+    SecurityDecision resourceDecision =
+        SecurityManager.validatePresetResourceLocation(presetType, presetLocation);
+    if (!resourceDecision.allowed()) {
+      log.error(
+          "Blocked invalid {} preset resource {}: {}",
+          presetType,
+          presetLocation,
+          resourceDecision.reason());
+      return null;
+    }
+
     CompoundTag compoundTag =
         switch (presetType) {
           case CUSTOM ->
@@ -301,6 +373,7 @@ public class PresetHandler {
       log.error("Preset file path is null for: {}", presetLocation);
       return null;
     }
+
     return PresetFileHandler.load(presetFile.toFile());
   }
 
@@ -367,7 +440,8 @@ public class PresetHandler {
       return false;
     }
 
-    CompoundTag compoundTag = presetData.serializePresetData();
+    CompoundTag compoundTag =
+        SecurityManager.sanitizePresetExport(presetData.serializePresetData());
     if (compoundTag == null || compoundTag.isEmpty()) {
       log.error("[{}] Error exporting custom preset {}!", easyNPC, file);
       return false;
@@ -416,7 +490,7 @@ public class PresetHandler {
       return null;
     }
 
-    return originalPresetData.copy();
+    return SecurityManager.sanitizePresetExport(originalPresetData);
   }
 
   private static PresetMetadata extractAndEnrichMetadata(

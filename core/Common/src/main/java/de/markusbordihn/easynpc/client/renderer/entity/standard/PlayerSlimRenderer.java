@@ -6,7 +6,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.PathfinderMob;
 
-public class PlayerSlimRenderer extends PlayerRenderer {
+public class PlayerSlimRenderer extends PlayerRenderer<PathfinderMob> {
 
   protected static final ResourceLocation DEFAULT_TEXTURE =
       HumanoidSlimSkinVariant.ALEX.getTextureLocation();
@@ -20,6 +20,7 @@ public class PlayerSlimRenderer extends PlayerRenderer {
     if (entity instanceof EasyNPC<?> easyNPC) {
       return getEntityPlayerTexture(easyNPC);
     }
+
     return DEFAULT_TEXTURE;
   }
 

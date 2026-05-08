@@ -22,7 +22,6 @@ package de.markusbordihn.easynpc.entity.easynpc.data;
 import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.scale.CustomScale;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
-import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import java.util.EnumMap;
 import java.util.Map;
 import net.minecraft.nbt.CompoundTag;
@@ -31,7 +30,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.Mob;
 
-public interface ModelScaleDataCapable<T extends Mob> extends EasyNPC<T> {
+public interface ModelScaleDataCapable<T extends Mob> extends ModelRootDataCapable<T> {
 
   CustomScale DEFAULT_MODEL_PART_SCALE = new CustomScale(1, 1, 1);
   CustomScale DEFAULT_MODEL_SCALE = new CustomScale(1, 1, 1);
@@ -79,20 +78,22 @@ public interface ModelScaleDataCapable<T extends Mob> extends EasyNPC<T> {
   default void setModelPartScale(EnumMap<ModelPartType, CustomScale> modelPartMap) {
     if (modelPartMap != null) {
       setSynchedEntityData(SynchedDataIndex.MODEL_SCALE, modelPartMap, true);
-
-      // Refresh entity dimensions when ROOT scale is present (for hitbox and nametag positioning)
-      if (modelPartMap.containsKey(ModelPartType.ROOT)) {
-        this.getEntity().refreshDimensions();
-      }
     }
   }
 
-  default void setModelPartScale(ModelPartType modelPartType, CustomScale Scale) {
-    EnumMap<ModelPartType, CustomScale> modelPartMap = getModelPartScale();
-    if (modelPartType != null) {
-      modelPartMap.put(modelPartType, Scale);
-      this.setModelPartScale(new EnumMap<>(modelPartMap));
+  default void setModelPartScale(ModelPartType modelPartType, CustomScale scale) {
+    if (modelPartType == null) {
+      return;
     }
+
+    if (modelPartType == ModelPartType.ROOT) {
+      setModelRootScale(scale);
+      return;
+    }
+
+    EnumMap<ModelPartType, CustomScale> modelPartMap = getModelPartScale();
+    modelPartMap.put(modelPartType, scale);
+    this.setModelPartScale(new EnumMap<>(modelPartMap));
   }
 
   default CustomScale getModelPartScale(ModelPartType modelPartType) {
@@ -107,6 +108,7 @@ public interface ModelScaleDataCapable<T extends Mob> extends EasyNPC<T> {
         return true;
       }
     }
+
     return false;
   }
 
@@ -132,6 +134,7 @@ public interface ModelScaleDataCapable<T extends Mob> extends EasyNPC<T> {
     if (!compoundTag.contains(EASY_NPC_DATA_MODEL_SCALE_TAG)) {
       return;
     }
+
     CompoundTag positionTag = compoundTag.getCompound(EASY_NPC_DATA_MODEL_SCALE_TAG);
     EnumMap<ModelPartType, CustomScale> modelPartMap = new EnumMap<>(ModelPartType.class);
     for (String key : positionTag.getAllKeys()) {

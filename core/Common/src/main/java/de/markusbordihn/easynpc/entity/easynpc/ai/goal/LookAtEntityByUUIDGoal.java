@@ -101,11 +101,13 @@ public class LookAtEntityByUUIDGoal<T extends EasyNPC<?>> extends Goal {
     if (this.modelData == null) {
       return false;
     }
+
     if (this.modelData.getModelPartRotation(ModelPartType.HEAD).hasChangedRotation()) {
       return false;
     }
+
     return this.modelData.getModelPose() == ModelPose.DEFAULT
-        || this.modelData.getModelPartRotation(ModelPartType.ROOT).locked();
+        || this.modelData.getModelRootData().isRotationLocked();
   }
 
   private void applyLimitedHeadRotationToTarget(LivingEntity target) {
@@ -131,7 +133,9 @@ public class LookAtEntityByUUIDGoal<T extends EasyNPC<?>> extends Goal {
     if (!(this.mob.level() instanceof ServerLevel serverLevel)) {
       return;
     }
+
     Entity entity = serverLevel.getEntity(this.targetEntityUUID);
-    this.targetEntity = entity instanceof LivingEntity livingEntity ? livingEntity : null;
+    this.targetEntity =
+        entity instanceof LivingEntity targetLivingEntity ? targetLivingEntity : null;
   }
 }

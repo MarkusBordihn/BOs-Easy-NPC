@@ -30,6 +30,7 @@ import de.markusbordihn.easynpc.data.server.ServerEntityData;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.ActionHandler;
 import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
+import de.markusbordihn.easynpc.security.CommandPermissionLevel;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -80,8 +81,23 @@ public interface ActionEventDataCapable<E extends Mob> extends EasyNPC<E> {
   }
 
   default void setActionPermissionLevel(int actionPermissionLevel) {
+    CommandPermissionLevel commandPermissionLevel =
+        CommandPermissionLevel.fromMinecraftLevel(actionPermissionLevel);
     getEasyNPCServerData()
-        .setServerEntityData(CUSTOM_DATA_ACTION_PERMISSION_LEVEL, actionPermissionLevel);
+        .setServerEntityData(
+            CUSTOM_DATA_ACTION_PERMISSION_LEVEL, commandPermissionLevel.minecraftLevel());
+  }
+
+  default CommandPermissionLevel getActionCommandPermissionLevel() {
+    return CommandPermissionLevel.fromMinecraftLevel(this.getActionPermissionLevel());
+  }
+
+  default void setActionCommandPermissionLevel(CommandPermissionLevel commandPermissionLevel) {
+    getEasyNPCServerData()
+        .setServerEntityData(
+            CUSTOM_DATA_ACTION_PERMISSION_LEVEL,
+            (commandPermissionLevel != null ? commandPermissionLevel : CommandPermissionLevel.ALL)
+                .minecraftLevel());
   }
 
   default void defineSynchedActionData(SynchedEntityData.Builder builder) {}
@@ -158,6 +174,7 @@ public interface ActionEventDataCapable<E extends Mob> extends EasyNPC<E> {
     if (!this.hasActionEvent(actionEventType)) {
       return;
     }
+
     ActionHandler<E> actionHandler = this.getEasyNPCActionHandler();
     if (actionHandler != null) {
       actionHandler.executeActions(this.getActionDataSet(actionEventType), null);
@@ -168,6 +185,7 @@ public interface ActionEventDataCapable<E extends Mob> extends EasyNPC<E> {
     if (!this.hasActionEvent(actionEventType)) {
       return;
     }
+
     ActionHandler<E> actionHandler = this.getEasyNPCActionHandler();
     if (actionHandler != null) {
       actionHandler.executeActions(this.getActionDataSet(actionEventType), serverPlayer);

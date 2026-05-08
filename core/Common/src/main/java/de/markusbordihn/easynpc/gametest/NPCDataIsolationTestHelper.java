@@ -166,31 +166,57 @@ public class NPCDataIsolationTestHelper {
     CustomScale defaultScale = new CustomScale(1f, 1f, 1f);
     CustomScale doubleScale = new CustomScale(2f, 2f, 2f);
 
-    if (!defaultScale.equals(data1.getModelPartScale(ModelPartType.ROOT)))
+    if (!defaultScale.equals(data1.getModelRootData().scale()))
       helper.fail(
           "NPC1 initial ROOT scale: expected "
               + defaultScale
               + ", got "
-              + data1.getModelPartScale(ModelPartType.ROOT));
-    if (!defaultScale.equals(data2.getModelPartScale(ModelPartType.ROOT)))
+              + data1.getModelRootData().scale());
+    if (!defaultScale.equals(data2.getModelRootData().scale()))
       helper.fail(
           "NPC2 initial ROOT scale: expected "
               + defaultScale
               + ", got "
-              + data2.getModelPartScale(ModelPartType.ROOT));
+              + data2.getModelRootData().scale());
 
-    data1.setModelPartScale(ModelPartType.ROOT, doubleScale);
+    data1.setModelRootScale(doubleScale);
 
-    if (!doubleScale.equals(data1.getModelPartScale(ModelPartType.ROOT)))
+    if (!doubleScale.equals(data1.getModelRootData().scale()))
       helper.fail(
           "NPC1 ROOT scale after change: expected "
               + doubleScale
               + ", got "
-              + data1.getModelPartScale(ModelPartType.ROOT));
-    if (!defaultScale.equals(data2.getModelPartScale(ModelPartType.ROOT)))
+              + data1.getModelRootData().scale());
+    if (!defaultScale.equals(data2.getModelRootData().scale()))
       helper.fail(
           "NPC2 ROOT scale must not be affected by NPC1 change, got "
-              + data2.getModelPartScale(ModelPartType.ROOT));
+              + data2.getModelRootData().scale());
+  }
+
+  public static void assertRootDataIsolation(GameTestHelper helper, EntityType<?> entityType) {
+    EasyNPC<?> npc1 = GameTestHelpers.mockEasyNPC(helper, entityType, new Vec3(1, 2, 1));
+    EasyNPC<?> npc2 = GameTestHelpers.mockEasyNPC(helper, entityType, new Vec3(2, 2, 1));
+
+    ModelDataCapable<?> data1 = requireModelData(helper, npc1, "NPC1");
+    ModelDataCapable<?> data2 = requireModelData(helper, npc2, "NPC2");
+    if (data1 == null || data2 == null) return;
+
+    // Both NPCs must start unlocked.
+    if (data1.getModelRootData().isRotationLocked())
+      helper.fail("NPC1 must start with an unlocked root rotation");
+    if (data2.getModelRootData().isRotationLocked())
+      helper.fail("NPC2 must start with an unlocked root rotation");
+
+    // Lock NPC1 root rotation to 90° Y and verify NPC2 is unaffected.
+    data1.setModelRootRotation(new CustomRotation(0f, 90f, 0f, true));
+
+    if (!data1.getModelRootData().isRotationLocked())
+      helper.fail("NPC1 root rotation must be locked after setModelRootRotation");
+    if (data1.getModelRootData().rotation().y() != 90f)
+      helper.fail(
+          "NPC1 root rotation Y: expected 90, got " + data1.getModelRootData().rotation().y());
+    if (data2.getModelRootData().isRotationLocked())
+      helper.fail("NPC2 root rotation must not be affected by NPC1 change");
   }
 
   public static void assertPositionIsolation(GameTestHelper helper, EntityType<?> entityType) {

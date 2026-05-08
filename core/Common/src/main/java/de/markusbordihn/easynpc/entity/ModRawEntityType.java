@@ -243,7 +243,7 @@ public enum ModRawEntityType implements ModEntityTypeProvider {
       EntityType.Builder.of(
               (EntityType<SlimeRaw> type, Level level) -> new SlimeRaw(type, level),
               MobCategory.MISC)
-          .sized(2.04F, 2.04F)
+          .sized(0.52F, 0.52F)
           .clientTrackingRange(12),
       SlimeRaw::createAttributes),
   VEX(

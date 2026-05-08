@@ -35,10 +35,10 @@ public class PlayerRenderer<T extends PathfinderMob> extends LivingEntityRendere
     this.addLayer(
         new HumanoidArmorLayer<>(
             this,
-            new HumanoidArmorModel(
+            new HumanoidArmorModel<>(
                 context.bakeLayer(
                     slim ? ModelLayers.PLAYER_SLIM_INNER_ARMOR : ModelLayers.PLAYER_INNER_ARMOR)),
-            new HumanoidArmorModel(
+            new HumanoidArmorModel<>(
                 context.bakeLayer(
                     slim ? ModelLayers.PLAYER_SLIM_OUTER_ARMOR : ModelLayers.PLAYER_OUTER_ARMOR)),
             context.getModelManager()));
@@ -50,6 +50,7 @@ public class PlayerRenderer<T extends PathfinderMob> extends LivingEntityRendere
     if (entity instanceof EasyNPC<?> easyNPC) {
       return getEntityPlayerTexture(easyNPC);
     }
+
     return DEFAULT_TEXTURE;
   }
 

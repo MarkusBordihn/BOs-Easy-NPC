@@ -47,7 +47,9 @@ import de.markusbordihn.easynpc.data.action.ActionEventType;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import net.minecraft.client.gui.Font;
@@ -57,6 +59,7 @@ import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.screens.ConfirmScreen;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -122,8 +125,10 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
 
   private LinkedHashSet<ActionDataType> getAvailableActionDataTypes() {
     boolean requiresServerPlayer = requiresServerPlayer(this.actionEventType);
+    Set<ActionDataType> blockedTypes = getBlockedActionTypes();
     return Arrays.stream(ActionDataType.values())
         .filter(type -> type != ActionDataType.NONE)
+        .filter(type -> !blockedTypes.contains(type))
         .filter(
             type -> {
               if (!requiresServerPlayer) {
@@ -133,6 +138,28 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
             })
         .sorted()
         .collect(Collectors.toCollection(LinkedHashSet::new));
+  }
+
+  private Set<ActionDataType> getBlockedActionTypes() {
+    de.markusbordihn.easynpc.configui.data.screen.AdditionalScreenData additionalScreenData =
+        this.getAdditionalScreenData();
+    if (additionalScreenData == null) {
+      return Set.of();
+    }
+
+    CompoundTag data = additionalScreenData.getData();
+    if (data == null || !data.contains("BlockedActionTypes")) {
+      return Set.of();
+    }
+
+    Set<ActionDataType> blocked = new HashSet<>();
+    for (String entry : data.getString("BlockedActionTypes").split(",")) {
+      try {
+        blocked.add(ActionDataType.valueOf(entry));
+      } catch (IllegalArgumentException ignored) {
+      }
+    }
+    return blocked;
   }
 
   private boolean requiresServerPlayer(ActionEventType actionEventType) {
@@ -201,6 +228,7 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
         || this.actionDataEntryId == Constants.EMPTY_UUID) {
       return;
     }
+
     this.minecraft.setScreen(
         new ConfirmScreen(
             confirmed -> {

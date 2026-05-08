@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.data.preset;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.component.DataComponents;
+import de.markusbordihn.easynpc.security.SecurityManager;
 import java.util.Optional;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -30,6 +31,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -93,6 +95,10 @@ public class PresetDataUtils {
     }
 
     return new SpawnData(dataCopy, Optional.empty(), Optional.empty());
+  }
+
+  public static SpawnData toSpawnData(PresetData presetData, Level level, Player player) {
+    return toSpawnData(SecurityManager.sanitizePresetDataForSpawn(presetData, level, player));
   }
 
   public static PresetData fromSpawnData(SpawnData spawnData) {
@@ -161,17 +167,24 @@ public class PresetDataUtils {
   }
 
   public static boolean spawnEntity(PresetData presetData, Level level, BlockPos blockPos) {
+    return spawnEntity(presetData, level, blockPos, null);
+  }
+
+  public static boolean spawnEntity(
+      PresetData presetData, Level level, BlockPos blockPos, Player player) {
     if (level.isClientSide || presetData == null || !presetData.hasValidData()) {
       return false;
     }
 
-    Entity entity = presetData.entityType().create(level);
+    PresetData sanitizedPresetData =
+        SecurityManager.sanitizePresetDataForSpawn(presetData, level, player);
+    Entity entity = sanitizedPresetData.entityType().create(level);
     if (entity == null) {
-      log.error("Unable to create entity for {} in {}", presetData.entityType(), level);
+      log.error("Unable to create entity for {} in {}", sanitizedPresetData.entityType(), level);
       return false;
     }
 
-    CompoundTag entityData = presetData.data().copy();
+    CompoundTag entityData = sanitizedPresetData.data().copy();
     if (entityData.contains(ENTITY_UUID_TAG)) {
       entityData.remove(ENTITY_UUID_TAG);
     }

@@ -19,7 +19,6 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.ai.control;
 
-import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
@@ -40,15 +39,14 @@ public class EasyNPCBodyRotationControl extends BodyRotationControl {
     if (this.mob instanceof EasyNPC<?> easyNPC) {
       ModelDataCapable<?> modelData = easyNPC.getEasyNPCModelData();
       if (modelData != null) {
-        CustomRotation rootRotation = modelData.getModelPartRotation(ModelPartType.ROOT);
-        if (rootRotation != null
-            && rootRotation.locked()
-            && this.mob.walkAnimation.speed() <= 0.01f) {
+        CustomRotation rootRotation = modelData.getModelRootData().rotation();
+        if (rootRotation.locked() && this.mob.walkAnimation.speed() <= 0.01f) {
           this.mob.yBodyRot = rootRotation.y();
           return;
         }
       }
     }
+
     super.clientTick();
   }
 }

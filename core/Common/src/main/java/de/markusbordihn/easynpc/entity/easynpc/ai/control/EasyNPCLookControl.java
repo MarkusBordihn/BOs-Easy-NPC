@@ -19,7 +19,6 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.ai.control;
 
-import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
 import net.minecraft.world.entity.Mob;
@@ -38,10 +37,11 @@ public class EasyNPCLookControl extends LookControl {
   public void tick() {
     if (this.mob instanceof EasyNPC<?> easyNPC) {
       ModelDataCapable<?> modelData = easyNPC.getEasyNPCModelData();
-      if (modelData != null && modelData.getModelPartRotation(ModelPartType.ROOT).locked()) {
+      if (modelData != null && modelData.getModelRootData().isRotationLocked()) {
         return;
       }
     }
+
     super.tick();
   }
 }

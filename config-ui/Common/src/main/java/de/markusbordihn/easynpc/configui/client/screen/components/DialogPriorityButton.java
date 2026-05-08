@@ -22,7 +22,6 @@ package de.markusbordihn.easynpc.configui.client.screen.components;
 import de.markusbordihn.easynpc.client.screen.components.SpinButton;
 import de.markusbordihn.easynpc.data.dialog.DialogPriority;
 import java.util.LinkedHashSet;
-import java.util.Objects;
 import java.util.Set;
 
 public class DialogPriorityButton extends SpinButton<DialogPriorityButton.PriorityValue> {
@@ -51,6 +50,7 @@ public class DialogPriorityButton extends SpinButton<DialogPriorityButton.Priori
         return preset;
       }
     }
+
     return new PriorityValue(priority, true);
   }
 
@@ -64,17 +64,9 @@ public class DialogPriorityButton extends SpinButton<DialogPriorityButton.Priori
     return current != null && current.isCustom;
   }
 
-  public static class PriorityValue {
-    public final int value;
-    public final boolean isCustom;
-
+  public record PriorityValue(int value, boolean isCustom) {
     public PriorityValue(int value) {
       this(value, false);
-    }
-
-    public PriorityValue(int value, boolean isCustom) {
-      this.value = value;
-      this.isCustom = isCustom;
     }
 
     @Override
@@ -84,15 +76,19 @@ public class DialogPriorityButton extends SpinButton<DialogPriorityButton.Priori
 
     @Override
     public boolean equals(Object obj) {
-      if (this == obj) return true;
-      if (!(obj instanceof PriorityValue other)) return false;
-      if (isCustom && other.isCustom) return true;
-      return !isCustom && !other.isCustom && value == other.value;
-    }
+      if (this == obj) {
+        return true;
+      }
 
-    @Override
-    public int hashCode() {
-      return isCustom ? Integer.MAX_VALUE : Objects.hash(value);
+      if (!(obj instanceof PriorityValue other)) {
+        return false;
+      }
+
+      if (isCustom && other.isCustom) {
+        return true;
+      }
+
+      return !isCustom && !other.isCustom && value == other.value;
     }
   }
 }

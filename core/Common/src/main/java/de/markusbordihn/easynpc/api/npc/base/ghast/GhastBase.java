@@ -132,6 +132,9 @@ public class GhastBase extends GhastRaw implements BaseEasyNPC<GhastRaw> {
       MobSpawnType mobSpawnType,
       SpawnGroupData spawnGroupData) {
     this.setPos(this.getX(), this.getY() + 1.0D, this.getZ());
-    return super.finalizeSpawn(serverLevelAccessor, difficulty, mobSpawnType, spawnGroupData);
+    SpawnGroupData result =
+        super.finalizeSpawn(serverLevelAccessor, difficulty, mobSpawnType, spawnGroupData);
+    this.refreshDimensions();
+    return result;
   }
 }

@@ -80,6 +80,11 @@ public record ImportPresetMessage(
       return;
     }
 
+    if (!MessageSecurity.checkPresetFeatureAccess(serverPlayer, easyNPC, this.presetType)) {
+      log.warn("Blocked preset import {} for {} from {}", this.presetType, easyNPC, serverPlayer);
+      return;
+    }
+
     // Validate preset type and data
     switch (this.presetType) {
       case LOCAL:
@@ -89,7 +94,7 @@ public record ImportPresetMessage(
             this.resourceLocation,
             easyNPC.getEntity().position(),
             this.uuid,
-            null);
+            serverPlayer);
         break;
       case CUSTOM:
       case DATA:
@@ -101,7 +106,7 @@ public record ImportPresetMessage(
             this.resourceLocation,
             easyNPC.getEntity().position(),
             this.uuid,
-            null);
+            serverPlayer);
         break;
       default:
         log.error("Invalid preset type {} from {}", this.presetType, serverPlayer);

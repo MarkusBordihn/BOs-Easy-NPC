@@ -134,20 +134,8 @@ public class ModEntityType {
     return (EntityType<T>) CUSTOM_TYPE.get(type).get();
   }
 
-  public static <T extends Entity> EntityType<T> getConfigurableEntityType(String id) {
-    if (!USER_DEFINED_TYPE.containsKey(id)) {
-      throw new IllegalArgumentException(
-          "Invalid configured entity type '"
-              + id
-              + "'! Supported types are "
-              + USER_DEFINED_TYPE.keySet());
-    }
-    return (EntityType<T>) USER_DEFINED_TYPE.get(id).get();
-  }
-
   @SubscribeEvent
   public static void entityAttributeCreation(EntityAttributeCreationEvent event) {
-
     // Raw entities (for modding only)
     for (ModRawEntityType type : ModRawEntityType.values()) {
       if (type.getAttributes() != null) {

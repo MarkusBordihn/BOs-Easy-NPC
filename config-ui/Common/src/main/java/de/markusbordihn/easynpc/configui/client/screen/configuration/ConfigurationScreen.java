@@ -35,6 +35,7 @@ import java.util.Collections;
 import java.util.List;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Inventory;
@@ -127,7 +128,28 @@ public class ConfigurationScreen<T extends ConfigUIMenu>
       showMainScreen();
       return true;
     }
+
     return super.keyPressed(keyCode, unused1, unused2);
+  }
+
+  protected boolean isConfigurationBlockedByPermission(ConfigurationType configurationType) {
+    AdditionalScreenData additionalScreenData = this.getAdditionalScreenData();
+    if (additionalScreenData == null) {
+      return false;
+    }
+
+    CompoundTag data = additionalScreenData.getData();
+    if (data == null || !data.contains("BlockedConfigurations")) {
+      return false;
+    }
+
+    for (String entry : data.getString("BlockedConfigurations").split(",")) {
+      if (entry.equals(configurationType.name())) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   protected boolean supportsConfigurationType(ConfigurationType configurationType) {
@@ -135,13 +157,16 @@ public class ConfigurationScreen<T extends ConfigUIMenu>
     if (easyNPC == null) {
       return false;
     }
+
     ConfigurationDataCapable<?> configurationData = easyNPC.getEasyNPCConfigurationData();
     if (configurationData == null) {
       return true;
     }
+
     if (!configurationData.supportsConfigurationType(configurationType)) {
       return false;
     }
+
     RenderDataCapable<?> renderData = easyNPC.getEasyNPCRenderData();
     boolean isCustomModel =
         renderData != null

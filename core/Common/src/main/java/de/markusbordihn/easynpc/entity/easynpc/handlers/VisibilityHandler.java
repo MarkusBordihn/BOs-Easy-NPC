@@ -97,7 +97,6 @@ public class VisibilityHandler {
             && displayAttributeData.getDisplayBooleanAttribute(
                 DisplayAttributeType.VISIBLE_TO_TEAM);
     if (npcTeam != null
-        && playerTeam != null
         && npcTeam.equals(playerTeam)
         && visibleToTeamEnabled
         && npcTeam.canSeeFriendlyInvisibles()) {

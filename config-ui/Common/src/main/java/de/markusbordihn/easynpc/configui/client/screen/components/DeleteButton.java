@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.configui.client.screen.components;
 
 import de.markusbordihn.easynpc.client.screen.components.SpriteButton;
 import de.markusbordihn.easynpc.configui.Constants;
+import net.minecraft.client.gui.components.Button.OnPress;
 import net.minecraft.resources.ResourceLocation;
 
 public class DeleteButton extends SpriteButton {
@@ -35,7 +36,7 @@ public class DeleteButton extends SpriteButton {
   private static final int SPRITE_Y = 4;
   private static final ResourceLocation TEXTURE = Constants.TEXTURE_CONFIGURATION;
 
-  public DeleteButton(int left, int top, int width, OnPress onPress) {
+  public DeleteButton(int left, int top, int width, int height, OnPress onPress) {
     super(
         left,
         top,
@@ -54,5 +55,9 @@ public class DeleteButton extends SpriteButton {
 
   public DeleteButton(int left, int top, OnPress onPress) {
     this(left, top, DEFAULT_WIDTH_SMALL, onPress);
+  }
+
+  public DeleteButton(int left, int top, int width, OnPress onPress) {
+    this(left, top, width, DEFAULT_HEIGHT, onPress);
   }
 }

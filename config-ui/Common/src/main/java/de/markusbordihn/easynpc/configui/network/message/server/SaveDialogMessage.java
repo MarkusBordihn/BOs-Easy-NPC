@@ -22,8 +22,11 @@ package de.markusbordihn.easynpc.configui.network.message.server;
 import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.DialogDataCapable;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
+import de.markusbordihn.easynpc.security.CommandPermissionLevel;
+import de.markusbordihn.easynpc.security.SecurityManager;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -89,6 +92,13 @@ public record SaveDialogMessage(UUID uuid, UUID dialogId, DialogDataEntry dialog
       return;
     }
 
+    // Validate action event data.
+    ActionEventDataCapable<?> actionEventData = easyNPC.getEasyNPCActionEventData();
+    if (actionEventData == null) {
+      log.error("Invalid action data for {} from {}", easyNPC, serverPlayer);
+      return;
+    }
+
     // Validate dialog
     if (!dialogData.hasDialog(this.dialogId)) {
       log.error(
@@ -99,13 +109,32 @@ public record SaveDialogMessage(UUID uuid, UUID dialogId, DialogDataEntry dialog
       return;
     }
 
+    CommandPermissionLevel currentPermissionLevel =
+        actionEventData.getActionCommandPermissionLevel();
+    CommandPermissionLevel permissionLevel =
+        SecurityManager.applyActionAuthority(easyNPC, serverPlayer);
+    log.debug(
+        "Update owner permission level from {} to {} for {} from {}",
+        currentPermissionLevel,
+        permissionLevel,
+        easyNPC,
+        serverPlayer);
+
+    DialogDataEntry sanitizedDialogDataEntry =
+        MessageSecurity.sanitizeDialogDataEntry(
+            this.dialogDataEntry, easyNPC, serverPlayer, permissionLevel);
+    if (sanitizedDialogDataEntry == null) {
+      log.warn("Blocked dialog save for dialog {} for {} from {}", dialogId, easyNPC, serverPlayer);
+      return;
+    }
+
     // Perform action.
     log.debug(
         "Saving dialog data {} for dialog {} for {} from {}",
-        this.dialogDataEntry,
+        sanitizedDialogDataEntry,
         this.dialogId,
         easyNPC,
         serverPlayer);
-    dialogData.setDialog(this.dialogId, this.dialogDataEntry);
+    dialogData.setDialog(this.dialogId, sanitizedDialogDataEntry);
   }
 }

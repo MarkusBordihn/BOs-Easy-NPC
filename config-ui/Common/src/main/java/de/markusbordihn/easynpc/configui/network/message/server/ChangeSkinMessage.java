@@ -21,9 +21,12 @@ package de.markusbordihn.easynpc.configui.network.message.server;
 
 import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.data.skin.SkinDataEntry;
+import de.markusbordihn.easynpc.data.skin.SkinType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.handler.SkinHandler;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
+import de.markusbordihn.easynpc.security.NpcFeature;
+import de.markusbordihn.easynpc.security.SecurityManager;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -43,6 +46,10 @@ public record ChangeSkinMessage(UUID uuid, SkinDataEntry skinDataEntry)
 
   public static ChangeSkinMessage create(final FriendlyByteBuf buffer) {
     return new ChangeSkinMessage(buffer.readUUID(), new SkinDataEntry(buffer.readNbt()));
+  }
+
+  private static boolean isRemoteSkin(final SkinType skinType) {
+    return skinType == SkinType.SECURE_REMOTE_URL || skinType == SkinType.INSECURE_REMOTE_URL;
   }
 
   @Override
@@ -67,6 +74,28 @@ public record ChangeSkinMessage(UUID uuid, SkinDataEntry skinDataEntry)
     if (easyNPC == null || this.skinDataEntry == null || easyNPC.getEasyNPCSkinData() == null) {
       log.error("Skin validation failed for {} from {}", easyNPC, serverPlayer);
       return;
+    }
+
+    if (isRemoteSkin(this.skinDataEntry.type())) {
+      if (!SecurityManager.checkFeatureAccess(serverPlayer, easyNPC, NpcFeature.URL_RESOURCE)
+          .allowed()) {
+        log.warn("Blocked URL skin change for {} from {}", easyNPC, serverPlayer);
+        return;
+      }
+
+      if (this.skinDataEntry.type() == SkinType.INSECURE_REMOTE_URL) {
+        log.warn(
+            "Applying unsafe remote skin URL {} for {} from {}",
+            this.skinDataEntry.url(),
+            easyNPC,
+            serverPlayer);
+      } else if (!MessageSecurity.isKnownSecureRemoteUrl(this.skinDataEntry.url())) {
+        log.warn(
+            "Applying remote skin URL outside known secure list {} for {} from {}",
+            this.skinDataEntry.url(),
+            easyNPC,
+            serverPlayer);
+      }
     }
 
     if (!SkinHandler.setSkin(easyNPC, this.skinDataEntry)) {

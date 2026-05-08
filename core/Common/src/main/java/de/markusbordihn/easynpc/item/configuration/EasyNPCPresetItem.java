@@ -75,6 +75,7 @@ public class EasyNPCPresetItem extends Item {
     if (compoundTag.contains(PresetDataCapable.PRESET_UUID_TAG)) {
       return compoundTag.getUUID(PresetDataCapable.PRESET_UUID_TAG);
     }
+
     return null;
   }
 
@@ -90,6 +91,7 @@ public class EasyNPCPresetItem extends Item {
         return customNameTag.getString(TEXT_TAG);
       }
     }
+
     return null;
   }
 
@@ -114,7 +116,8 @@ public class EasyNPCPresetItem extends Item {
     if (blockEntity instanceof SpawnerBlockEntity spawnerBlockEntity) {
       BaseSpawner baseSpawner = spawnerBlockEntity.getSpawner();
       if (baseSpawner instanceof SpawnerAccessHelper spawnerAccess) {
-        SpawnData spawnData = PresetDataUtils.toSpawnData(presetData);
+        SpawnData spawnData =
+            PresetDataUtils.toSpawnData(presetData, level, useOnContext.getPlayer());
         log.debug(
             "Set spawn data {} for spawner {} at {}", spawnData, spawnerBlockEntity, blockPos);
         spawnerAccess.initializeSpawnerData(SpawnerType.SINGLE_SPAWNER, spawnData);
@@ -130,7 +133,8 @@ public class EasyNPCPresetItem extends Item {
     // Check for NPC Spawner Block
     if (blockEntity instanceof EasyNPCSpawnerBlockEntity easyNPCSpawnerBlockEntity) {
       BaseEasyNPCSpawner baseEasyNPCSpawner = easyNPCSpawnerBlockEntity.getSpawner();
-      SpawnData spawnData = PresetDataUtils.toSpawnData(presetData);
+      SpawnData spawnData =
+          PresetDataUtils.toSpawnData(presetData, level, useOnContext.getPlayer());
       log.debug(
           "Set spawn data {} for base NPC spawner {} at {}",
           spawnData,
@@ -156,7 +160,8 @@ public class EasyNPCPresetItem extends Item {
               possibleSpawnPosition.getZ());
       if (level.getBlockState(targetBlockPos.above()).isAir()
           && level.getEntitiesOfClass(Entity.class, aabb).isEmpty()
-          && PresetDataUtils.spawnEntity(presetData, level, blockPos.above())) {
+          && PresetDataUtils.spawnEntity(
+              presetData, level, blockPos.above(), useOnContext.getPlayer())) {
         return InteractionResult.SUCCESS;
       }
     }

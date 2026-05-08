@@ -8,16 +8,30 @@ For the full changelog, please go to the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
-### 6.13.0
+### 6.13.0 (Security and Permissions Updates)
 
+Notes: This update includes better security checks and permissions for multiplayer environments.
+It allows to execute server commands which can be potentially dangerous if used with malicious
+intent.
+
+**The update splits the model root data and logic from the rest of the model part data and logic,
+which mean it may reset the root rotation and scaling of existing NPCs to the default values.**
+
+- Fixed #725 by separating model root data and logic from the rest of the model part data and logic.
 - Fixed #722 by supporting .sbnt files as local presets.
 - Fixed #675 by adding dedicated assets for dialog and config screen backgrounds.
+- Fixed #605, #532, #529 with new security checks and permissions system.
+- Fixed #469, #311 by adding experimental api documentation and examples for custom model support.
 - Fixed double rendering of config screen background by removing redundant background rendering.
+- Fixed Ghast and Slime hitbox and name tag position issues by adjusting bounding box.
+- ⚠️ Added security checks to prevent potential exploits and allow safe usage in multiplayer
+  environments.
 - Replaced dynamic dialog screen background with a static one for better performance, customization
   and compatibility.
 - Replaced dynamic config screen background with a static one for better performance.
 - Refactored config-ui specific components and removed them from the core mod.
 - Removed duplicated sprite sheets.
+- Prepare permission system for possible Luck Perms integration in the future like #712.
 - General code cleanup and optimizations related to config screen rendering and assets.
 
 ### 6.12.0
