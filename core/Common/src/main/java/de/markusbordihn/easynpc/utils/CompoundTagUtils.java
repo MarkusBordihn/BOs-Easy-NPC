@@ -243,20 +243,17 @@ public class CompoundTagUtils {
     }
   }
 
-  public static void fixLegacyCustomName(Entity entity, CompoundTag compoundTag) {
-    if (!compoundTag.contains(CUSTOM_NAME_TAG)) {
+  public static void fixLegacyCustomName(Entity entity) {
+    Component currentName = entity.getCustomName();
+    if (currentName == null) {
       return;
     }
 
-    try {
-      String customNameString = compoundTag.getString(CUSTOM_NAME_TAG).orElse("");
-      Component legacyName = parseLegacyCustomName(customNameString);
-      if (legacyName != null) {
-        entity.setCustomName(legacyName);
-        log.debug("Applied legacy CustomName '{}' to entity", customNameString);
-      }
-    } catch (Exception e) {
-      // Ignore if CustomName is in new format
+    String nameString = currentName.getString();
+    Component legacyName = parseLegacyCustomName(nameString);
+    if (legacyName != null) {
+      entity.setCustomName(legacyName);
+      log.debug("Fixed legacy CustomName '{}' on entity load", nameString);
     }
   }
 }

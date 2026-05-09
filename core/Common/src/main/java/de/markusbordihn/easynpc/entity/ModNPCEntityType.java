@@ -272,7 +272,7 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
       EntityType.Builder.of(
               (EntityType<SlimeNPC> type, Level level) -> new SlimeNPC(type, level),
               MobCategory.MONSTER)
-          .sized(2.04F, 2.04F)
+          .sized(0.52F, 0.52F)
           .clientTrackingRange(12),
       SlimeNPC::createAttributes),
   SPIDER(

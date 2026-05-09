@@ -112,6 +112,7 @@ public class EasyNPCPresetItem extends Item {
         log.debug("Could not parse CustomName as legacy JSON format", e);
       }
     }
+
     return null;
   }
 
@@ -136,7 +137,8 @@ public class EasyNPCPresetItem extends Item {
     if (blockEntity instanceof SpawnerBlockEntity spawnerBlockEntity) {
       BaseSpawner baseSpawner = spawnerBlockEntity.getSpawner();
       if (baseSpawner instanceof SpawnerAccessHelper spawnerAccess) {
-        SpawnData spawnData = PresetDataUtils.toSpawnData(presetData);
+        SpawnData spawnData =
+            PresetDataUtils.toSpawnData(presetData, level, useOnContext.getPlayer());
         log.debug(
             "Set spawn data {} for spawner {} at {}", spawnData, spawnerBlockEntity, blockPos);
         spawnerAccess.initializeSpawnerData(SpawnerType.SINGLE_SPAWNER, spawnData);
@@ -152,7 +154,8 @@ public class EasyNPCPresetItem extends Item {
     // Check for NPC Spawner Block
     if (blockEntity instanceof EasyNPCSpawnerBlockEntity easyNPCSpawnerBlockEntity) {
       BaseEasyNPCSpawner baseEasyNPCSpawner = easyNPCSpawnerBlockEntity.getSpawner();
-      SpawnData spawnData = PresetDataUtils.toSpawnData(presetData);
+      SpawnData spawnData =
+          PresetDataUtils.toSpawnData(presetData, level, useOnContext.getPlayer());
       log.debug(
           "Set spawn data {} for base NPC spawner {} at {}",
           spawnData,
@@ -178,7 +181,8 @@ public class EasyNPCPresetItem extends Item {
               possibleSpawnPosition.getZ());
       if (level.getBlockState(targetBlockPos.above()).isAir()
           && level.getEntitiesOfClass(Entity.class, aabb).isEmpty()
-          && PresetDataUtils.spawnEntity(presetData, level, blockPos.above())) {
+          && PresetDataUtils.spawnEntity(
+              presetData, level, blockPos.above(), useOnContext.getPlayer())) {
         return InteractionResult.SUCCESS;
       }
     }

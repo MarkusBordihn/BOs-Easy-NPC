@@ -63,7 +63,7 @@ public class ReloadHandler {
             ProblemReporter.DISCARDING, serverLevel.registryAccess(), compoundTag));
 
     // Fix possible legacy custom name.
-    CompoundTagUtils.fixLegacyCustomName(entity, compoundTag);
+    CompoundTagUtils.fixLegacyCustomName(entity);
 
     // Force update visibility for all players
     entity.refreshDimensions();

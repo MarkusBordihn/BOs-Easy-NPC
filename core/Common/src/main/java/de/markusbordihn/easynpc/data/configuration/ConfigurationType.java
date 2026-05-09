@@ -56,6 +56,7 @@ public enum ConfigurationType {
   EQUIPMENT,
   FLEE_OBJECTIVE,
   FOLLOW_OBJECTIVE,
+  LOCAL_PRESET_EXPORT,
   LOCAL_PRESET_IMPORT,
   LOOK_OBJECTIVE,
   MAIN,
@@ -84,6 +85,7 @@ public enum ConfigurationType {
     if (configurationType == null || configurationType.isEmpty()) {
       return ConfigurationType.NONE;
     }
+
     try {
       return ConfigurationType.valueOf(configurationType);
     } catch (IllegalArgumentException e) {

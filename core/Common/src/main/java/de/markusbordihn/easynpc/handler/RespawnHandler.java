@@ -71,7 +71,7 @@ public class RespawnHandler {
             ProblemReporter.DISCARDING, serverLevel.registryAccess(), compoundTag));
 
     // Fix possible legacy custom name.
-    CompoundTagUtils.fixLegacyCustomName(entity, compoundTag);
+    CompoundTagUtils.fixLegacyCustomName(entity);
 
     // Remove old entity
     easyNPC.getEntity().discard();

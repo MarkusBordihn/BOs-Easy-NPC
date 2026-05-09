@@ -24,7 +24,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-@DisplayName("CustomPosition Tests")
 class CustomPositionTest {
 
   @Test
@@ -34,20 +33,17 @@ class CustomPositionTest {
   }
 
   @Test
-  @DisplayName("hasChanged() should be true when X is non-zero")
   void testHasChangedTrueForNonZeroX() {
     assertTrue(new CustomPosition(1f, 0f, 0f).hasChanged());
     assertTrue(new CustomPosition(-0.5f, 0f, 0f).hasChanged());
   }
 
   @Test
-  @DisplayName("hasChanged() should be true when Y is non-zero")
   void testHasChangedTrueForNonZeroY() {
     assertTrue(new CustomPosition(0f, 1f, 0f).hasChanged());
   }
 
   @Test
-  @DisplayName("hasChanged() should be true when Z is non-zero")
   void testHasChangedTrueForNonZeroZ() {
     assertTrue(new CustomPosition(0f, 0f, 1f).hasChanged());
   }
@@ -84,7 +80,6 @@ class CustomPositionTest {
   }
 
   @Test
-  @DisplayName("Two CustomPositions with different components should not be equal")
   void testInequalityByDifferentComponents() {
     assertNotEquals(new CustomPosition(1f, 0f, 0f), new CustomPosition(0f, 0f, 0f));
     assertNotEquals(new CustomPosition(0f, 1f, 0f), new CustomPosition(0f, 0f, 0f));

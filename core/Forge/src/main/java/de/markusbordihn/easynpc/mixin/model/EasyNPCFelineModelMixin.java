@@ -66,5 +66,4 @@ public class EasyNPCFelineModelMixin<T extends FelineRenderState>
             .defineModelPart(ModelPartType.TAIL1, this.tail1)
             .defineModelPart(ModelPartType.TAIL2, this.tail2);
   }
-
 }

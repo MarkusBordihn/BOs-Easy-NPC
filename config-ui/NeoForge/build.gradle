@@ -30,7 +30,7 @@ neoForge {
 
     client2 {
       client()
-      gameDirectory = project.file('runs/client2')
+      gameDirectory = project.file('run/client2')
       programArguments.addAll '--username', 'guest_player'
     }
 

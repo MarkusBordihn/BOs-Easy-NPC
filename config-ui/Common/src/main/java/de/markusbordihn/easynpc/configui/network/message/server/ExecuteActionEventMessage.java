@@ -47,6 +47,12 @@ public record ExecuteActionEventMessage(UUID uuid, ActionEventType actionEventTy
     return new ExecuteActionEventMessage(buffer.readUUID(), buffer.readEnum(ActionEventType.class));
   }
 
+  private static boolean isDialogActionEvent(final ActionEventType actionEventType) {
+    return actionEventType == ActionEventType.ON_BUTTON_CLICK
+        || actionEventType == ActionEventType.ON_CLOSE_DIALOG
+        || actionEventType == ActionEventType.ON_OPEN_DIALOG;
+  }
+
   @Override
   public void write(final FriendlyByteBuf buffer) {
     buffer.writeUUID(this.uuid);
@@ -74,6 +80,16 @@ public record ExecuteActionEventMessage(UUID uuid, ActionEventType actionEventTy
     if (this.actionEventType == null || this.actionEventType == ActionEventType.NONE) {
       log.error(
           "Invalid action event type {} for {} from {}",
+          this.actionEventType,
+          easyNPC,
+          serverPlayer);
+      return;
+    }
+
+    if (!isDialogActionEvent(this.actionEventType)
+        || !MessageSecurity.checkDialogSession(this.uuid, serverPlayer)) {
+      log.warn(
+          "Blocked action event {} for {} without valid dialog session from {}",
           this.actionEventType,
           easyNPC,
           serverPlayer);

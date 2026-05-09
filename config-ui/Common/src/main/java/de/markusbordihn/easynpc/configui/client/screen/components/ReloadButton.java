@@ -34,7 +34,7 @@ public class ReloadButton extends SpriteButton {
   private static final int SPRITE_OFFSET_X = 92;
   private static final int SPRITE_OFFSET_Y = 4;
   private static final int SPRITE_WIDTH = 12;
-  private static final int SPRITE_X = 3;
+  private static final int SPRITE_X = 5;
   private static final int SPRITE_Y = 3;
   private static final Identifier TEXTURE = Constants.TEXTURE_CONFIGURATION;
 

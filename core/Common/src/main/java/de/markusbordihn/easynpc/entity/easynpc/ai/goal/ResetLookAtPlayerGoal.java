@@ -49,7 +49,7 @@ public class ResetLookAtPlayerGoal<T extends EasyNPC<?>> extends Goal {
       return false;
     }
     return this.modelData.getModelPose() == ModelPose.DEFAULT
-        || this.modelData.getModelPartRotation(ModelPartType.ROOT).locked();
+        || this.modelData.getModelRootData().isRotationLocked();
   }
 
   @Override

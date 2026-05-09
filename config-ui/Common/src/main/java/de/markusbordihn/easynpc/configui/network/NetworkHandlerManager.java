@@ -49,6 +49,7 @@ import de.markusbordihn.easynpc.configui.network.message.server.ChangeProfession
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeRendererMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeSkinMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeTradingTypeMessage;
+import de.markusbordihn.easynpc.configui.network.message.server.ExportCustomPresetServerMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ExportPresetMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ExportWorldPresetMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ImportPresetMessage;
@@ -327,6 +328,12 @@ public class NetworkHandlerManager {
         ExportPresetMessage.STREAM_CODEC,
         ExportPresetMessage.class,
         ExportPresetMessage::create);
+
+    networkHandler.registerServerNetworkMessage(
+        ExportCustomPresetServerMessage.PAYLOAD_TYPE,
+        ExportCustomPresetServerMessage.STREAM_CODEC,
+        ExportCustomPresetServerMessage.class,
+        ExportCustomPresetServerMessage::create);
 
     networkHandler.registerServerNetworkMessage(
         ExportWorldPresetMessage.PAYLOAD_TYPE,

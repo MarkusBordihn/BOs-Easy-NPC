@@ -32,10 +32,12 @@ import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.handler.PresetHandler;
 import de.markusbordihn.easynpc.io.ClientDefaultPresetDataFiles;
 import de.markusbordihn.easynpc.io.LocalPresetDataFiles;
+import de.markusbordihn.easynpc.security.PresetFeaturePreview;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
@@ -53,6 +55,7 @@ public class PresetListEntry extends ObjectSelectionList.Entry<PresetListEntry> 
   private final PresetType presetType;
   private final PresetBrowserScreen screen;
   private PresetData presetData;
+  private PresetFeaturePreview securityPreview;
   private EasyNPC<?> previewNPC;
 
   public PresetListEntry(
@@ -74,6 +77,7 @@ public class PresetListEntry extends ObjectSelectionList.Entry<PresetListEntry> 
         this.presetData = LocalPresetDataFiles.loadPresetData(this.preset);
 
         if (this.presetData != null && this.presetData.hasValidData()) {
+          this.securityPreview = this.screen.createSecurityPreview(this.presetData);
           loadPreviewNPC();
         } else {
           log.warn("Invalid PresetData for LOCAL preset: {}", this.preset);
@@ -86,6 +90,7 @@ public class PresetListEntry extends ObjectSelectionList.Entry<PresetListEntry> 
         this.presetData = ClientDefaultPresetDataFiles.loadDefaultPresetData(this.preset);
 
         if (this.presetData != null && this.presetData.hasValidData()) {
+          this.securityPreview = this.screen.createSecurityPreview(this.presetData);
           loadPreviewNPC();
         } else {
           log.warn("Invalid PresetData for DEFAULT preset: {}", this.preset);
@@ -99,14 +104,26 @@ public class PresetListEntry extends ObjectSelectionList.Entry<PresetListEntry> 
       if (server != null) {
         this.presetData = PresetHandler.loadPreset(this.preset, this.presetType, server);
         if (this.presetData != null && this.presetData.hasValidData()) {
+          this.securityPreview = this.screen.createSecurityPreview(this.presetData);
           loadPreviewNPC();
         } else {
           log.warn("Invalid PresetData for: {}", this.preset);
         }
       } else {
-        log.debug(
-            "Preset preview not available on dedicated server for: {} (spawning will still work)",
-            this.preset);
+        CompoundTag syncedTag = this.screen.getPresetDataFromSync(this.preset, this.presetType);
+        if (syncedTag != null) {
+          this.presetData = PresetData.fromCompoundTag(this.preset, this.presetType, syncedTag);
+          if (this.presetData != null && this.presetData.hasValidData()) {
+            this.securityPreview = this.screen.createSecurityPreview(this.presetData);
+            loadPreviewNPC();
+          } else {
+            log.warn("Invalid synced PresetData for: {}", this.preset);
+          }
+        } else {
+          log.debug(
+              "Preset preview not available on dedicated server for: {} (spawning will still work)",
+              this.preset);
+        }
       }
     } catch (Exception e) {
       log.error("Failed to load preset data for {}: {}", this.preset, e.getMessage());
@@ -159,6 +176,10 @@ public class PresetListEntry extends ObjectSelectionList.Entry<PresetListEntry> 
 
   public PresetData getPresetData() {
     return presetData;
+  }
+
+  public PresetFeaturePreview getSecurityPreview() {
+    return this.securityPreview;
   }
 
   public EasyNPC<?> getPreviewNPC() {

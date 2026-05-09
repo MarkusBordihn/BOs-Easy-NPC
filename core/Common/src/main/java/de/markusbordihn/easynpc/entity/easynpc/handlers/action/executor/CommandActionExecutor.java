@@ -22,6 +22,9 @@ package de.markusbordihn.easynpc.entity.easynpc.handlers.action.executor;
 import de.markusbordihn.easynpc.data.action.ActionDataEntry;
 import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.action.ActionValidator;
+import de.markusbordihn.easynpc.security.ActorSecurityContext;
+import de.markusbordihn.easynpc.security.CommandAuthority;
+import de.markusbordihn.easynpc.security.CommandSecurity;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -42,30 +45,34 @@ public class CommandActionExecutor {
     if (!ActionValidator.validateActionData(actionDataEntry, serverPlayer)) {
       return;
     }
+
     if (actionEventData == null) {
       log.error("No action event data found for action {}", actionDataEntry);
       return;
     }
-    int userPermissionLevel = actionDataEntry.permissionLevel();
-    if (userPermissionLevel > actionEventData.getActionPermissionLevel()) {
+
+    ActorSecurityContext actorSecurityContext = CommandSecurity.getActorContext(serverPlayer);
+    CommandAuthority commandAuthority =
+        CommandSecurity.getUserCommandAuthority(
+            actionDataEntry.commandPermissionLevel(), actorSecurityContext);
+    if (commandAuthority.effective() != commandAuthority.requested()) {
       log.warn(
-          "User permission level {} is lower than action permission level {} for action {}",
-          actionEventData.getActionPermissionLevel(),
-          userPermissionLevel,
+          "User command permission level {} is lower than requested action permission level {} for action {}",
+          commandAuthority.effective(),
+          commandAuthority.requested(),
           actionDataEntry);
-      userPermissionLevel = actionEventData.getActionPermissionLevel();
     }
 
     log.debug(
         "Try to execute action {} as user {} with user permission level {} of requested action permission level {} ...",
         actionDataEntry,
         serverPlayer,
-        userPermissionLevel,
-        actionDataEntry.permissionLevel());
+        commandAuthority.effective(),
+        commandAuthority.requested());
     CommandExecutor.executePlayerCommand(
         actionDataEntry.getAction(livingEntity, serverPlayer),
         serverPlayer,
-        userPermissionLevel,
+        commandAuthority,
         actionDataEntry.enableDebug());
   }
 
@@ -80,27 +87,27 @@ public class CommandActionExecutor {
         : !ActionValidator.validateActionData(actionDataEntry, serverPlayer)) {
       return;
     }
+
     if (actionEventData == null) {
       log.error("No action event data found for action {}", actionDataEntry);
       return;
     }
-    int ownerPermissionLevel = actionEventData.getActionPermissionLevel();
-    if (ownerPermissionLevel > 3) {
-      ownerPermissionLevel = 3;
-    } else if (ownerPermissionLevel <= 0) {
-      ownerPermissionLevel = 1;
-    }
+
+    CommandAuthority commandAuthority =
+        CommandSecurity.getNpcCommandAuthority(
+            actionDataEntry.commandPermissionLevel(),
+            actionEventData.getActionCommandPermissionLevel());
 
     log.debug(
         "Try to execute action {} as entity {} with owner permission level {} of max. {} ...",
         actionDataEntry,
         entity,
-        ownerPermissionLevel,
-        actionEventData.getActionPermissionLevel());
+        commandAuthority.effective(),
+        commandAuthority.ceiling());
     CommandExecutor.executeEntityCommand(
         actionDataEntry.getAction(livingEntity, serverPlayer),
         entity,
-        ownerPermissionLevel,
+        commandAuthority,
         actionDataEntry.enableDebug());
   }
 }

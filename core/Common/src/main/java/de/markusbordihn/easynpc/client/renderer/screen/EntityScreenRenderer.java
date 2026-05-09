@@ -20,12 +20,10 @@
 package de.markusbordihn.easynpc.client.renderer.screen;
 
 import de.markusbordihn.easynpc.client.gui.InventoryScreenHandler;
-import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.model.ModelPose;
+import de.markusbordihn.easynpc.data.model.RootModelData;
 import de.markusbordihn.easynpc.data.render.EntityRenderConfig;
 import de.markusbordihn.easynpc.data.render.EntityRenderOverrides;
-import de.markusbordihn.easynpc.data.rotation.CustomRotation;
-import de.markusbordihn.easynpc.data.scale.CustomScale;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
 import net.minecraft.client.Minecraft;
@@ -110,10 +108,10 @@ public class EntityScreenRenderer {
     ModelDataCapable<?> modelData = easyNPC.getEasyNPCModelData();
     if (modelData != null) {
       if (overrides.rootRotation() != null) {
-        modelData.setModelPartRotation(ModelPartType.ROOT, overrides.rootRotation());
+        modelData.setModelRootRotation(overrides.rootRotation());
       }
       if (overrides.rootScale() != null) {
-        modelData.setModelPartScale(ModelPartType.ROOT, overrides.rootScale());
+        modelData.setModelRootScale(overrides.rootScale());
       }
       if (overrides.modelPose() != null) {
         modelData.setModelPose(overrides.modelPose());
@@ -139,11 +137,8 @@ public class EntityScreenRenderer {
 
     ModelDataCapable<?> modelData = easyNPC.getEasyNPCModelData();
     if (modelData != null) {
-      if (backupState.rootRotation != null) {
-        modelData.setModelPartRotation(ModelPartType.ROOT, backupState.rootRotation);
-      }
-      if (backupState.rootScale != null) {
-        modelData.setModelPartScale(ModelPartType.ROOT, backupState.rootScale);
+      if (backupState.rootData != null) {
+        modelData.setModelRootData(backupState.rootData);
       }
       if (backupState.modelPose != null) {
         modelData.setModelPose(backupState.modelPose);
@@ -159,8 +154,7 @@ public class EntityScreenRenderer {
     final Component customName;
     final boolean shouldShowName;
     final boolean minecraftHideGui;
-    final CustomRotation rootRotation;
-    final CustomScale rootScale;
+    final RootModelData rootData;
     final ModelPose modelPose;
     final Pose entityPose;
 
@@ -171,12 +165,10 @@ public class EntityScreenRenderer {
       this.minecraftHideGui = minecraft != null && minecraft.options.hideGui;
       ModelDataCapable<?> modelData = easyNPC.getEasyNPCModelData();
       if (modelData != null) {
-        this.rootRotation = modelData.getModelPartRotation(ModelPartType.ROOT);
-        this.rootScale = modelData.getModelPartScale(ModelPartType.ROOT);
+        this.rootData = modelData.getModelRootData();
         this.modelPose = modelData.getModelPose();
       } else {
-        this.rootRotation = null;
-        this.rootScale = null;
+        this.rootData = null;
         this.modelPose = null;
       }
       this.entityPose = easyNPC.getEntity().getPose();

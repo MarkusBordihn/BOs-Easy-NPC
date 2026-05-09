@@ -23,31 +23,33 @@ import de.markusbordihn.easynpc.client.screen.components.DrawBoxWithBorder;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.data.preset.PresetData;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.security.PresetFeatureNotice;
+import de.markusbordihn.easynpc.security.PresetFeaturePreview;
+import de.markusbordihn.easynpc.security.PresetFeatureStatus;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 
 public class PresetDetailsView {
 
   private static final float TEXT_SCALE = 0.8f;
+  private static final String CHECKMARK = "\u2713";
+  private static final String CROSS = "\u2715";
 
-  private PresetDetailsView() {
-    // Utility class
-  }
+  private PresetDetailsView() {}
 
   public static void render(
       GuiGraphicsExtractor guiGraphics,
       Font font,
-      EasyNPC<?> npc,
+      EasyNPC<?> easyNPC,
       PresetData presetData,
+      PresetFeaturePreview securityPreview,
       int x,
       int y,
       int width,
       int height) {
     DrawBoxWithBorder.draw(guiGraphics, x, y, width, height);
-    if (npc == null) {
+    if (easyNPC == null) {
       Text.drawString(guiGraphics, font, Component.literal("No NPC Data"), x + 5, y + 5, 0x3F3F3F);
       return;
     }
@@ -60,14 +62,14 @@ public class PresetDetailsView {
     Text.drawString(
         guiGraphics,
         font,
-        Component.literal("Type: " + npc.getEntityTypeId()),
+        Component.literal("Type: " + easyNPC.getEntityTypeId()),
         scaledX,
         scaledY + lineHeight * line++,
         0x3F3F3F);
 
-    if (npc.getEasyNPCNavigationData() != null
-        && npc.getEasyNPCNavigationData().hasHomePosition()) {
-      var homePos = npc.getEasyNPCNavigationData().getHomePosition();
+    if (easyNPC.getEasyNPCNavigationData() != null
+        && easyNPC.getEasyNPCNavigationData().hasHomePosition()) {
+      var homePos = easyNPC.getEasyNPCNavigationData().getHomePosition();
       Text.drawString(
           guiGraphics,
           font,
@@ -78,82 +80,77 @@ public class PresetDetailsView {
           0x3F3F3F);
     }
 
-    if (npc.getEasyNPCOwnerData() != null && npc.getEasyNPCOwnerData().hasNPCOwner()) {
+    if (easyNPC.getEasyNPCOwnerData() != null && easyNPC.getEasyNPCOwnerData().hasNPCOwner()) {
       Text.drawString(
           guiGraphics,
           font,
-          Component.literal("Owner: " + npc.getEasyNPCOwnerData().getNPCOwnerName()),
+          Component.literal("Owner: " + easyNPC.getEasyNPCOwnerData().getNPCOwnerName()),
           scaledX,
           scaledY + lineHeight * line++,
           0x3F3F3F);
     }
 
-    if (npc.getEasyNPCSkinData() != null) {
+    if (easyNPC.getEasyNPCSkinData() != null) {
       Text.drawString(
           guiGraphics,
           font,
-          Component.literal("Skin: " + npc.getEasyNPCSkinData().getSkinType()),
+          Component.literal("Skin: " + easyNPC.getEasyNPCSkinData().getSkinType()),
           scaledX,
           scaledY + lineHeight * line++,
           0x3F3F3F);
     }
 
-    if (presetData != null && presetData.data() != null) {
-      CompoundTag data = presetData.data();
-
-      if (data.contains("ActionData")) {
-        CompoundTag actionData = data.getCompound("ActionData").orElse(new CompoundTag());
-        if (actionData.contains("ActionEventSet")
-            && !actionData.getCompound("ActionEventSet").orElse(new CompoundTag()).isEmpty()) {
-          Text.drawString(
-              guiGraphics,
-              font,
-              Component.literal("✓ Has Actions"),
-              scaledX,
-              scaledY + lineHeight * line++,
-              0x00AA00);
+    if (securityPreview != null && securityPreview.hasNotices()) {
+      line++;
+      int renderedNotices = 0;
+      for (PresetFeatureNotice notice : securityPreview.notices()) {
+        if (notice == null || renderedNotices >= 5) {
+          continue;
         }
+        Text.drawString(
+            guiGraphics,
+            font,
+            getSecurityComponent(notice),
+            scaledX,
+            scaledY + lineHeight * line++,
+            getSecurityColor(notice.status()));
+        renderedNotices++;
       }
 
-      if (data.contains("DialogData")) {
-        CompoundTag dialogData = data.getCompound("DialogData").orElse(new CompoundTag());
-        if (!dialogData.isEmpty()
-            && dialogData.contains("DialogDataSet")
-            && dialogData.get("DialogDataSet") instanceof ListTag listTag
-            && !listTag.isEmpty()) {
-          Text.drawString(
-              guiGraphics,
-              font,
-              Component.literal("✓ Has Dialog"),
-              scaledX,
-              scaledY + lineHeight * line++,
-              0x00AA00);
-        }
-      }
-
-      if (data.contains("Offers")) {
-        CompoundTag offers = data.getCompound("Offers").orElse(new CompoundTag());
-        var recipes = offers.get("Recipes");
-        if (recipes instanceof ListTag listTag && !listTag.isEmpty()) {
-          Text.drawString(
-              guiGraphics,
-              font,
-              Component.literal("✓ Has Trades"),
-              scaledX,
-              scaledY + lineHeight * line++,
-              0x00AA00);
-        } else if (recipes instanceof CompoundTag recipesCompound
-            && recipesCompound.get("Recipes") instanceof ListTag nestedList
-            && !nestedList.isEmpty()) {
-          Text.drawString(
-              guiGraphics,
-              font,
-              Component.literal("✓ Has Legacy Trades"),
-              scaledX,
-              scaledY + lineHeight * line++,
-              0xFFAA00);
-        }
+      int remainingNotices = securityPreview.notices().size() - renderedNotices;
+      if (remainingNotices > 0) {
+        Text.drawString(
+            guiGraphics,
+            font,
+            Component.literal("+" + remainingNotices + " more"),
+            scaledX,
+            scaledY + lineHeight * line,
+            0x7F7F7F);
       }
     }
+  }
+
+  private static int getSecurityColor(PresetFeatureStatus status) {
+    return switch (status) {
+      case ALLOWED -> 0x00AA00;
+      case BLOCKED -> 0xAA0000;
+      case REDUCED -> 0xAA7700;
+    };
+  }
+
+  private static Component getSecurityComponent(PresetFeatureNotice notice) {
+    return switch (notice.status()) {
+      case ALLOWED -> Component.literal(CHECKMARK + " " + notice.feature().displayName());
+      case BLOCKED ->
+          Component.literal(CROSS + " ")
+              .append(
+                  Component.literal(notice.feature().displayName())
+                      .withStyle(style -> style.withStrikethrough(true)));
+      case REDUCED ->
+          Component.literal(
+              "! "
+                  + notice.feature().displayName()
+                  + (notice.commandLevel() != null ? " \u2192 " + notice.commandLevel() : ""));
+    };
   }
 }

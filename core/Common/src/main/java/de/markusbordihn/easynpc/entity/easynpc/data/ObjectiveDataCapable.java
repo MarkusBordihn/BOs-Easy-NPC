@@ -227,7 +227,7 @@ public interface ObjectiveDataCapable<T extends Mob> extends EasyNPC<T> {
 
     ObjectiveDataEntry openDoorObjective = new ObjectiveDataEntry(ObjectiveType.OPEN_DOOR, 8);
     if (attributeData.getMovementAttributes().canOpenDoor()) {
-      if (!this.hasObjective(closeDoorObjective)) {
+      if (!this.hasObjective(openDoorObjective)) {
         this.addOrUpdateCustomObjective(openDoorObjective);
       }
     } else if (this.hasObjective(openDoorObjective)) {

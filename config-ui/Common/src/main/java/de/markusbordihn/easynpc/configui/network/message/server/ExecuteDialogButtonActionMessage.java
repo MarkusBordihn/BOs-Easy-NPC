@@ -86,6 +86,16 @@ public record ExecuteDialogButtonActionMessage(UUID uuid, UUID dialogId, UUID di
       return;
     }
 
+    if (!MessageSecurity.checkDialogSession(this.uuid, this.dialogId, serverPlayer)) {
+      log.warn(
+          "Blocked dialog button action {} for dialog {} for {} from {}",
+          this.dialogButtonId,
+          this.dialogId,
+          easyNPC,
+          serverPlayer);
+      return;
+    }
+
     // Validate dialog data.
     DialogDataCapable<?> dialogData = easyNPC.getEasyNPCDialogData();
     if (dialogData == null) {

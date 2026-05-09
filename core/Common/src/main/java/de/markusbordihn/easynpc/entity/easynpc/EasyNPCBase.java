@@ -47,6 +47,7 @@ import de.markusbordihn.easynpc.entity.easynpc.data.VariantDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.ActionHandler;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.AttributeHandler;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.BaseTickHandler;
+import de.markusbordihn.easynpc.utils.CompoundTagUtils;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.Mob;
@@ -317,6 +318,8 @@ public interface EasyNPCBase<E extends Mob>
 
   default void readEasyNPCBaseAdditionalSaveData(
       ValueInput valueInput, HolderLookup.Provider provider) {
+    CompoundTagUtils.fixLegacyCustomName(this.getEntity());
+
     // First read important data to ensure that all other data can be linked to the variant.
     ConfigDataCapable<E> configData = getEasyNPCConfigData();
     if (configData != null) {

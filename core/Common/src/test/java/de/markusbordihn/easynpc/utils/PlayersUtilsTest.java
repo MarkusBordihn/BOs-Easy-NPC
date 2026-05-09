@@ -30,7 +30,6 @@ import org.junit.jupiter.api.Test;
 class PlayersUtilsTest {
 
   @Test
-  @DisplayName("Should parse JSON object from valid string")
   void testGetJsonObject_validJson() {
     String jsonString = "{\"key\":\"value\",\"number\":123}";
     JsonObject result = PlayersUtils.getJsonObject(jsonString);
@@ -43,29 +42,18 @@ class PlayersUtilsTest {
   }
 
   @Test
-  @DisplayName("Should return null for empty string")
   void testGetJsonObject_emptyString() {
-    JsonObject result = PlayersUtils.getJsonObject("");
-
-    assertNull(result);
+    assertNull(PlayersUtils.getJsonObject(""));
   }
 
   @Test
-  @DisplayName("Should return null for null string")
   void testGetJsonObject_nullString() {
-    JsonObject result = PlayersUtils.getJsonObject(null);
-
-    assertNull(result);
+    assertNull(PlayersUtils.getJsonObject(null));
   }
 
   @Test
-  @DisplayName("Should return null for invalid JSON")
   void testGetJsonObject_invalidJson() {
-    String invalidJson = "{invalid json}";
-
-    JsonObject result = PlayersUtils.getJsonObject(invalidJson);
-
-    assertNull(result);
+    assertNull(PlayersUtils.getJsonObject("{invalid json}"));
   }
 
   @Test
@@ -137,7 +125,6 @@ class PlayersUtilsTest {
   }
 
   @Test
-  @DisplayName("Should parse UUID from valid UUID string")
   void testGetUUIDfromString_validUUID() {
     String uuidString = "550e8400-e29b-41d4-a716-446655440000";
     UUID result = PlayersUtils.getUUIDfromString(uuidString);
@@ -147,32 +134,21 @@ class PlayersUtilsTest {
   }
 
   @Test
-  @DisplayName("Should return null for invalid UUID string")
   void testGetUUIDfromString_invalidUUID() {
-    String invalidUuid = "not-a-valid-uuid";
-    UUID result = PlayersUtils.getUUIDfromString(invalidUuid);
-
-    assertNull(result);
+    assertNull(PlayersUtils.getUUIDfromString("not-a-valid-uuid"));
   }
 
   @Test
-  @DisplayName("Should return null for empty UUID string")
   void testGetUUIDfromString_emptyString() {
-    UUID result = PlayersUtils.getUUIDfromString("");
-
-    assertNull(result);
+    assertNull(PlayersUtils.getUUIDfromString(""));
   }
 
   @Test
-  @DisplayName("Should return null for null UUID string")
   void testGetUUIDfromString_nullString() {
-    UUID result = PlayersUtils.getUUIDfromString(null);
-
-    assertNull(result);
+    assertNull(PlayersUtils.getUUIDfromString(null));
   }
 
   @Test
-  @DisplayName("Should parse session response with texture data")
   void testGetUserTextureFromSessionResponse_validResponse() {
     String result =
         PlayersUtils.getUserTextureFromSessionResponse(
@@ -183,25 +159,21 @@ class PlayersUtilsTest {
   }
 
   @Test
-  @DisplayName("Should return empty string for invalid session response")
   void testGetUserTextureFromSessionResponse_invalidResponse() {
     assertEquals("", PlayersUtils.getUserTextureFromSessionResponse("{\"invalid\":\"data\"}"));
   }
 
   @Test
-  @DisplayName("Should return empty string for empty session response")
   void testGetUserTextureFromSessionResponse_emptyResponse() {
     assertEquals("", PlayersUtils.getUserTextureFromSessionResponse(""));
   }
 
   @Test
-  @DisplayName("Should return empty string for null session response")
   void testGetUserTextureFromSessionResponse_nullResponse() {
     assertEquals("", PlayersUtils.getUserTextureFromSessionResponse(null));
   }
 
   @Test
-  @DisplayName("Should handle session response without textures property")
   void testGetUserTextureFromSessionResponse_noTexturesProperty() {
     assertEquals(
         "",
@@ -210,7 +182,6 @@ class PlayersUtilsTest {
   }
 
   @Test
-  @DisplayName("Should handle Base64 encoded texture data with slim model")
   void testGetUserTextureFromSessionResponse_slimModel() {
     String result =
         PlayersUtils.getUserTextureFromSessionResponse(
@@ -221,7 +192,6 @@ class PlayersUtilsTest {
   }
 
   @Test
-  @DisplayName("Should handle malformed Base64 in session response")
   void testGetUserTextureFromSessionResponse_malformedBase64() {
     assertEquals(
         "",

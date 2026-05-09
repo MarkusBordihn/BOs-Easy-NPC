@@ -133,7 +133,7 @@ public interface PresetDataCapable<T extends Mob> extends EasyNPC<T> {
     this.getEntity().load(valueInput);
 
     // Fix possible legacy custom name.
-    CompoundTagUtils.fixLegacyCustomName(this.getEntity(), compoundTag);
+    CompoundTagUtils.fixLegacyCustomName(this.getEntity());
 
     // Ensure entity is alive with full health after import
     if (this.getEntity() instanceof LivingEntity livingEntity) {

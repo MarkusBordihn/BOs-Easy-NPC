@@ -20,25 +20,29 @@
 package de.markusbordihn.easynpc.configui.network.message.server;
 
 import de.markusbordihn.easynpc.configui.Constants;
+import de.markusbordihn.easynpc.data.preset.PresetMetadata;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.data.PresetDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
+import de.markusbordihn.easynpc.handler.PresetHandler;
+import de.markusbordihn.easynpc.io.PresetFileHandler;
 import de.markusbordihn.easynpc.io.WorldPresetDataFiles;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
+import de.markusbordihn.easynpc.security.NpcFeature;
+import de.markusbordihn.easynpc.security.SecurityManager;
 import java.io.File;
-import java.io.IOException;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtIo;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 
-public record ExportWorldPresetMessage(UUID uuid, String name) implements NetworkMessageRecord {
+public record ExportWorldPresetMessage(UUID uuid, String name, PresetMetadata metadata)
+    implements NetworkMessageRecord {
 
   public static final Identifier MESSAGE_ID =
       Identifier.fromNamespaceAndPath(Constants.MOD_ID, "export_world_preset");
@@ -47,13 +51,15 @@ public record ExportWorldPresetMessage(UUID uuid, String name) implements Networ
       StreamCodec.of((buffer, message) -> message.write(buffer), ExportWorldPresetMessage::create);
 
   public static ExportWorldPresetMessage create(final FriendlyByteBuf buffer) {
-    return new ExportWorldPresetMessage(buffer.readUUID(), buffer.readUtf());
+    return new ExportWorldPresetMessage(
+        buffer.readUUID(), buffer.readUtf(), PresetMetadata.fromCompoundTag(buffer.readNbt()));
   }
 
   @Override
   public void write(final FriendlyByteBuf buffer) {
     buffer.writeUUID(this.uuid);
     buffer.writeUtf(this.name);
+    buffer.writeNbt(this.metadata.toCompoundTag());
   }
 
   @Override
@@ -73,54 +79,54 @@ public record ExportWorldPresetMessage(UUID uuid, String name) implements Networ
       return;
     }
 
-    // Validate name.
+    if (!SecurityManager.checkFeatureAccess(serverPlayer, easyNPC, NpcFeature.WORLD_PRESET)
+        .allowed()) {
+      log.warn("Blocked world preset export for {} from {}", easyNPC, serverPlayer);
+      return;
+    }
+
     if (this.name == null || this.name.isEmpty()) {
       log.warn("Export preset name is empty for {}", easyNPC);
       return;
     }
 
-    // Validate skin data.
     SkinDataCapable<?> skinData = easyNPC.getEasyNPCSkinData();
     if (skinData == null) {
       log.warn("Export preset skin data is empty for {}", easyNPC);
       return;
     }
 
-    // Validate Skin Model
     SkinModel skinModel = skinData.getSkinModel();
     if (skinModel == null) {
       log.warn("Export preset skin model is empty for {}", easyNPC);
       return;
     }
 
-    // Validate data.
-    PresetDataCapable<?> presetData = easyNPC.getEasyNPCPresetData();
-    CompoundTag compoundTag = presetData.serializePresetData();
-    if (compoundTag == null || compoundTag.isEmpty()) {
+    CompoundTag exportData = PresetHandler.prepareClientExportData(easyNPC, this.metadata);
+    if (exportData == null || exportData.isEmpty()) {
       log.warn("Export preset data is empty for {}", easyNPC);
       return;
     }
 
-    // Validate preset file.
     File presetFile = WorldPresetDataFiles.getPresetFile(skinModel, name);
     if (presetFile == null) {
       log.error("Failed to get preset file for {} with name {}", skinModel, name);
       return;
     }
 
-    // Perform action.
     log.info(
         "Exporting EasyNPC {} with {} and skin {} to {}", name, easyNPC, skinModel, presetFile);
-    try {
-      NbtIo.writeCompressed(compoundTag, presetFile.toPath());
-    } catch (final IOException exception) {
+    if (!PresetFileHandler.saveNbt(presetFile, exportData)) {
       log.error(
-          "Failed to export EasyNPC {} with {} and skin {} to {}:",
+          "Failed to export EasyNPC {} with {} and skin {} to {}",
           name,
           easyNPC,
           skinModel,
-          presetFile,
-          exception);
+          presetFile);
+      return;
     }
+
+    serverPlayer.sendSystemMessage(
+        Component.literal("Preset exported. Server-specific data was not included."));
   }
 }

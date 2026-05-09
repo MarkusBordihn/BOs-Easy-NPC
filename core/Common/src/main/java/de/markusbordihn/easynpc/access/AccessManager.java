@@ -19,16 +19,13 @@
 
 package de.markusbordihn.easynpc.access;
 
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.data.OwnerDataCapable;
+import de.markusbordihn.easynpc.security.SecurityDecision;
+import de.markusbordihn.easynpc.security.SecurityManager;
 import java.util.UUID;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.permissions.Permissions;
-import net.minecraft.world.entity.Entity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -39,107 +36,20 @@ public class AccessManager {
   private AccessManager() {}
 
   public static boolean hasAccess(CommandSourceStack context, UUID uuid) {
-    if (context == null || uuid == null) {
-      return false;
-    }
-
-    // Check if command source has gamemaster permissions (e.g., command blocks, console).
-    if (context.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER)) {
-      log.debug(
-          "[Access allowed] Command source with gamemaster permissions accessing EasyNPC with UUID {}!",
-          uuid);
-      return true;
-    }
-
-    // Check if server player is available and skip access check if not.
-    try {
-      ServerPlayer serverPlayer = context.getPlayerOrException();
-      boolean hasAccess = hasAccess(serverPlayer, uuid);
-      if (hasAccess) {
-        log.debug(
-            "[Access allowed] Player {} has access to EasyNPC with UUID {}!", serverPlayer, uuid);
-      } else {
-        log.error(
-            "[Access denied] Player {} tried to access EasyNPC with UUID {}!", serverPlayer, uuid);
-      }
-      return hasAccess;
-    } catch (CommandSyntaxException serverPlayerException) {
-      try {
-        // Allow access from the same entity.
-        Entity entity = context.getEntityOrException();
-        EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(uuid, context.getLevel());
-        if (easyNPC != null && easyNPC.getEntity() == entity) {
-          log.debug("[Access allowed] EasyNPC {} and entity {} are the same!", easyNPC, entity);
-          return true;
-        }
-
-        // Allow access from NPCs with the same owner data.
-        if (easyNPC != null
-            && easyNPC.getEasyNPCOwnerData() != null
-            && entity instanceof EasyNPC<?> easyNPCEntity
-            && easyNPCEntity.getEasyNPCOwnerData() != null) {
-          OwnerDataCapable<?> ownerData = easyNPC.getEasyNPCOwnerData();
-          OwnerDataCapable<?> ownerDataEntity = easyNPCEntity.getEasyNPCOwnerData();
-          boolean ownerDataAccess =
-              (!ownerData.hasNPCOwner() && !ownerDataEntity.hasNPCOwner())
-                  || (ownerData.getOwner() != null
-                      && ownerData.getOwner().equals(ownerDataEntity.getOwner()));
-          if (ownerDataAccess) {
-            log.debug(
-                "[Access allowed] EasyNPC {} and entity {} has same owner data!",
-                easyNPC,
-                easyNPCEntity);
-          } else {
-            log.error(
-                "[Access denied] EasyNPC {} and entity {} has different owner data!",
-                easyNPC,
-                easyNPCEntity);
-          }
-          return ownerDataAccess;
-        }
-
-        log.error(
-            "[Access denied] Entity {} tried to access EasyNPC {} with UUID {}!",
-            entity,
-            easyNPC,
-            uuid);
-        return false;
-      } catch (CommandSyntaxException entityException) {
-        log.debug(
-            "[Access skipped] EasyNPC with UUID {} was not executed by a player or entity!", uuid);
-        return true;
-      }
-    }
+    SecurityDecision decision = SecurityManager.checkAccess(context, uuid);
+    log.debug("[Access {}] EasyNPC UUID {} reason {}", decision.allowed(), uuid, decision.reason());
+    return decision.allowed();
   }
 
   public static boolean hasAccess(ServerPlayer serverPlayer, EasyNPC<?> easyNPC) {
-    return getEasyNPCEntityByUUID(easyNPC.getEntityUUID(), serverPlayer) != null;
+    return SecurityManager.checkAccess(serverPlayer, easyNPC).allowed();
   }
 
   public static boolean hasAccess(ServerPlayer serverPlayer, UUID uuid) {
-    return getEasyNPCEntityByUUID(uuid, serverPlayer) != null;
+    return SecurityManager.checkAccess(serverPlayer, uuid).allowed();
   }
 
   public static EasyNPC<?> getEasyNPCEntityByUUID(UUID uuid, ServerPlayer serverPlayer) {
-    if (serverPlayer == null || uuid == null) {
-      return null;
-    }
-
-    // Get EasyNPC entity by UUID.
-    EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
-    if (easyNPC == null) {
-      log.error("[{}:{}] Unable to get valid entity!", uuid, serverPlayer);
-      return null;
-    }
-
-    // Check if player has permission to access the entity.
-    if (!serverPlayer.isCreative()
-        && !easyNPC.getEasyNPCOwnerData().isNPCOwner(serverPlayer)
-        && !serverPlayer.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER)) {
-      log.error("[{}:{}] Player has no permission to access {}!", uuid, serverPlayer, easyNPC);
-      return null;
-    }
-
-    return easyNPC;
+    return SecurityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
   }
 }

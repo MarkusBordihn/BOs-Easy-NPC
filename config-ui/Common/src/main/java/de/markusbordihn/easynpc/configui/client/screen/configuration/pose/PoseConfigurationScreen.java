@@ -87,14 +87,15 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
                 x,
                 y,
                 "lock_rotation",
-                this.modelData.getModelPartRotation(ModelPartType.ROOT).locked(),
+                this.modelData.getModelRootData().rotation().locked(),
                 checkbox ->
                     NetworkMessageHandlerManager.getServerHandler()
                         .modelRotationChange(
                             this.getEasyNPCUUID(),
                             ModelPartType.ROOT,
                             this.modelData
-                                .getModelPartRotation(ModelPartType.ROOT)
+                                .getModelRootData()
+                                .rotation()
                                 .withLocked(checkbox.selected()))));
     this.lockRotationCheckbox.setTooltip(
         Tooltip.create(TextComponent.getTranslatedConfigText("lock_rotation.tooltip")));

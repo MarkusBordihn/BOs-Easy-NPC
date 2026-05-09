@@ -27,6 +27,7 @@ import de.markusbordihn.easynpc.data.display.DisplayAttributeDataSet;
 import de.markusbordihn.easynpc.data.model.ModelAnimationData;
 import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.model.ModelPose;
+import de.markusbordihn.easynpc.data.model.RootModelData;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataSet;
 import de.markusbordihn.easynpc.data.objective.TargetedEntitySet;
 import de.markusbordihn.easynpc.data.objective.TargetedPlayerSet;
@@ -104,6 +105,10 @@ public class EntityDataSerializersManager {
       defineSerializer(
           ModelAnimationData.class.getSimpleName(),
           EntityDataSerializer.forValueType(ModelAnimationData.STREAM_CODEC));
+  public static final EntityDataSerializer<RootModelData> ROOT_MODEL_DATA =
+      defineSerializer(
+          RootModelData.class.getSimpleName(),
+          EntityDataSerializer.forValueType(RootModelData.STREAM_CODEC));
   public static final EntityDataSerializer<ObjectiveDataSet> OBJECTIVE_DATA_SET =
       defineSerializer(
           ObjectiveDataSet.class.getSimpleName(),
