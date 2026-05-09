@@ -71,5 +71,7 @@
   "tooltip.easy_npc.spawner.boss_spawner": "首領生怪磚是一個特殊的生怪磚，允許你生成首領 NPC。",
   "tooltip.easy_npc.spawner.default_spawner": "預設生怪磚是一個生怪磚，允許你生成預設的 NPC。",
   "tooltip.easy_npc.spawner.group_spawner": "群組生怪磚是一個生怪磚，允許你生成一組 NPC。",
-  "tooltip.easy_npc.spawner.single_spawner": "單一生怪磚是一個生怪磚，允許你生成單一 NPC。"
+  "tooltip.easy_npc.spawner.single_spawner": "單一生怪磚是一個生怪磚，允許你生成單一 NPC。",
+  "message.easynpc.access.no_permission": "你沒有權限編輯此 NPC。",
+  "message.easynpc.access.npc_not_found": "找不到此 NPC 或其已不存在。"
 }

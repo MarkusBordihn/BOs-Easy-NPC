@@ -91,6 +91,7 @@ public class EasyNPCLivingEntityRendererMixin {
       CameraRenderState cameraRenderState,
       CallbackInfo ci) {
     if (renderState instanceof EasyNPCRenderStateExtension) {
+      EasyNPCLivingEntityRenderer.handleRotation(renderState, poseStack);
       EasyNPCLivingEntityRenderer.handleScale(renderState, poseStack);
     }
   }
@@ -107,13 +108,6 @@ public class EasyNPCLivingEntityRendererMixin {
       CallbackInfo ci) {
     if (renderState instanceof EasyNPCRenderStateExtension) {
       EasyNPCLivingEntityRenderer.handleRenderEnd(renderState, poseStack, null, 0);
-    }
-  }
-
-  @Inject(method = "scale", at = @At("HEAD"))
-  private void onScale(LivingEntityRenderState renderState, PoseStack poseStack, CallbackInfo ci) {
-    if (renderState instanceof EasyNPCRenderStateExtension) {
-      EasyNPCLivingEntityRenderer.handleRotation(renderState, poseStack);
     }
   }
 

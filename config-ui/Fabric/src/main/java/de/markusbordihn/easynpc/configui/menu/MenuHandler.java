@@ -70,6 +70,8 @@ public class MenuHandler implements MenuHandlerInterface {
         ConfigurationType.CUSTOM_PRESET_EXPORT,
         ModMenuTypes.CUSTOM_EXPORT_PRESET_CONFIGURATION_MENU);
     configurationMenuMap.put(
+        ConfigurationType.LOCAL_PRESET_EXPORT, ModMenuTypes.LOCAL_EXPORT_PRESET_CONFIGURATION_MENU);
+    configurationMenuMap.put(
         ConfigurationType.CUSTOM_PRESET_IMPORT,
         ModMenuTypes.CUSTOM_IMPORT_PRESET_CONFIGURATION_MENU);
     configurationMenuMap.put(

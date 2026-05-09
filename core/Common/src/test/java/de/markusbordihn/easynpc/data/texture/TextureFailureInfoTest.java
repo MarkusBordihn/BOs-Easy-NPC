@@ -28,7 +28,6 @@ import org.junit.jupiter.api.Test;
 class TextureFailureInfoTest {
 
   @Test
-  @DisplayName("Should create failure info with automatic timestamp")
   void testCreateWithAutoTimestamp() {
     long before = System.currentTimeMillis();
     TextureFailureInfo info =
@@ -44,7 +43,6 @@ class TextureFailureInfoTest {
   }
 
   @Test
-  @DisplayName("Should create failure info with explicit timestamp")
   void testCreateWithExplicitTimestamp() {
     long timestamp = 1000000L;
     TextureFailureInfo info =
@@ -78,7 +76,6 @@ class TextureFailureInfoTest {
   }
 
   @Test
-  @DisplayName("Should handle different failure types")
   void testDifferentFailureTypes() {
     TextureFailureInfo info1 =
         new TextureFailureInfo(

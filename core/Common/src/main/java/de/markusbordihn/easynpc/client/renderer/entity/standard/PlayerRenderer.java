@@ -13,8 +13,10 @@ import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.VariantDataCapable;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.model.player.PlayerModel;
+import net.minecraft.client.renderer.entity.ArmorModelSet;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.HumanoidMobRenderer;
+import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.core.ClientAsset;
 import net.minecraft.resources.Identifier;
@@ -39,6 +41,14 @@ public class PlayerRenderer
         new PlayerModel(
             context.bakeLayer(slim ? ModelLayers.PLAYER_SLIM : ModelLayers.PLAYER), slim),
         0.5F);
+    this.addLayer(
+        new HumanoidArmorLayer<>(
+            this,
+            ArmorModelSet.bake(
+                slim ? ModelLayers.PLAYER_SLIM_ARMOR : ModelLayers.PLAYER_ARMOR,
+                context.getModelSet(),
+                modelPart -> new PlayerModel(modelPart, slim)),
+            context.getEquipmentRenderer()));
   }
 
   @Override

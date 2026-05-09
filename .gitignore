@@ -19,6 +19,7 @@ build
 run
 runs
 .gradle
+.gradle-*
 *local.properties
 
 # NodeJs

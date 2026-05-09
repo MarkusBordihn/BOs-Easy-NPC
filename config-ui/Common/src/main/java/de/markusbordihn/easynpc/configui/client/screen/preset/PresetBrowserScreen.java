@@ -29,12 +29,17 @@ import de.markusbordihn.easynpc.configui.data.preset.PresetFilterType;
 import de.markusbordihn.easynpc.configui.data.screen.AdditionalScreenData;
 import de.markusbordihn.easynpc.configui.menu.preset.PresetBrowserMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.data.preset.PresetData;
 import de.markusbordihn.easynpc.data.preset.PresetMetadata;
 import de.markusbordihn.easynpc.data.preset.PresetType;
 import de.markusbordihn.easynpc.io.ClientDefaultPresetDataFiles;
-import de.markusbordihn.easynpc.io.CustomPresetDataFiles;
 import de.markusbordihn.easynpc.io.LocalPresetDataFiles;
-import de.markusbordihn.easynpc.io.WorldPresetDataFiles;
+import de.markusbordihn.easynpc.security.CommandPermissionLevel;
+import de.markusbordihn.easynpc.security.NpcSecurityRole;
+import de.markusbordihn.easynpc.security.PresetAuthority;
+import de.markusbordihn.easynpc.security.PresetFeaturePreview;
+import de.markusbordihn.easynpc.security.PresetTrustLevel;
+import de.markusbordihn.easynpc.security.SecurityManager;
 import de.markusbordihn.easynpc.utils.CompoundTagUtils;
 import java.util.Collections;
 import java.util.HashSet;
@@ -163,6 +168,36 @@ public class PresetBrowserScreen extends CustomScreen<PresetBrowserMenu, Additio
     this.spawnWithOriginalButton.visible = hasUUID;
   }
 
+  public PresetFeaturePreview createSecurityPreview(PresetData presetData) {
+    PresetAuthority presetAuthority = this.createPreviewAuthority();
+    if (presetData == null || presetData.data() == null || presetAuthority == null) {
+      return null;
+    }
+
+    return SecurityManager.previewPresetImport(presetData.data(), presetAuthority);
+  }
+
+  private PresetAuthority createPreviewAuthority() {
+    if (this.getAdditionalScreenData() == null
+        || this.getAdditionalScreenData().getData() == null) {
+      return null;
+    }
+
+    CompoundTag data = this.getAdditionalScreenData().getData();
+    if (!data.contains("SecurityRole") || !data.contains("SecurityCommandLevel")) {
+      return null;
+    }
+
+    NpcSecurityRole role =
+        NpcSecurityRole.parse(
+            data.getString("SecurityRole").orElse(""), NpcSecurityRole.NORMAL_PLAYER);
+    CommandPermissionLevel commandPermissionLevel =
+        CommandPermissionLevel.parse(
+            data.getString("SecurityCommandLevel").orElse(""), CommandPermissionLevel.ALL);
+    return new PresetAuthority(
+        null, commandPermissionLevel, PresetTrustLevel.UNTRUSTED_PLAYER, role);
+  }
+
   private boolean matchesFilters(Identifier preset, PresetMetadata metadata, PresetType type) {
     if (!currentFilter.matches(type)) {
       return false;
@@ -214,7 +249,9 @@ public class PresetBrowserScreen extends CustomScreen<PresetBrowserMenu, Additio
     Set<Identifier> customPresets = loadPresetListFromAdditionalData("CustomPresets");
     if (!customPresets.isEmpty()) {
       loadPresetsOfType(
-          PresetType.CUSTOM, customPresets.stream(), CustomPresetDataFiles::getPresetMetadata);
+          PresetType.CUSTOM,
+          customPresets.stream(),
+          preset -> loadMetadataFromAdditionalData("CustomPresetsMetadata", preset));
     }
 
     // Load DATA presets (datapacks)
@@ -230,8 +267,31 @@ public class PresetBrowserScreen extends CustomScreen<PresetBrowserMenu, Additio
     Set<Identifier> worldPresets = loadPresetListFromAdditionalData("WorldPresets");
     if (!worldPresets.isEmpty()) {
       loadPresetsOfType(
-          PresetType.WORLD, worldPresets.stream(), WorldPresetDataFiles::getPresetMetadata);
+          PresetType.WORLD,
+          worldPresets.stream(),
+          preset -> loadMetadataFromAdditionalData("WorldPresetsMetadata", preset));
     }
+  }
+
+  public CompoundTag getPresetDataFromSync(Identifier preset, PresetType presetType) {
+    String dataKey =
+        switch (presetType) {
+          case CUSTOM -> "CustomPresetsData";
+          case WORLD -> "WorldPresetsData";
+          default -> null;
+        };
+    if (dataKey == null || this.getAdditionalScreenData() == null) {
+      return null;
+    }
+
+    CompoundTag presetsData = this.getAdditionalScreenData().get(dataKey);
+    String presetKey = preset.toString();
+    if (presetsData.isEmpty() || !presetsData.contains(presetKey)) {
+      return null;
+    }
+
+    CompoundTag presetTag = presetsData.getCompoundOrEmpty(presetKey);
+    return presetTag.isEmpty() ? null : presetTag;
   }
 
   private Set<Identifier> loadPresetListFromAdditionalData(String key) {
@@ -399,6 +459,7 @@ public class PresetBrowserScreen extends CustomScreen<PresetBrowserMenu, Additio
         this.font,
         this.selectedEntry.getPreviewNPC(),
         this.selectedEntry.getPresetData(),
+        this.selectedEntry.getSecurityPreview(),
         rightPanelX + previewBoxWidth + 5,
         previewBoxY,
         rightPanelWidth - previewBoxWidth - 5,

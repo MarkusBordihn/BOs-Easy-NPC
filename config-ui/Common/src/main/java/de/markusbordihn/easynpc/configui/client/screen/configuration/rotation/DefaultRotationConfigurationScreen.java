@@ -48,7 +48,7 @@ public class DefaultRotationConfigurationScreen<T extends ConfigurationMenu>
 
   private void sendRotationUpdate(float x, float y, float z) {
     ModelDataCapable<?> modelData = this.getEasyNPC().getEasyNPCModelData();
-    boolean locked = modelData.getModelPartRotation(ModelPartType.ROOT).locked();
+    boolean locked = modelData.getModelRootData().rotation().locked();
     NetworkMessageHandlerManager.getServerHandler()
         .modelRotationChange(
             this.getEasyNPCUUID(), ModelPartType.ROOT, new CustomRotation(x, y, z, locked));
@@ -63,7 +63,7 @@ public class DefaultRotationConfigurationScreen<T extends ConfigurationMenu>
 
     // Root Rotations
     ModelDataCapable<?> modelData = this.getEasyNPC().getEasyNPCModelData();
-    CustomRotation rootRotation = modelData.getModelPartRotation(ModelPartType.ROOT);
+    CustomRotation rootRotation = modelData.getModelRootData().rotation();
 
     int sliderWidth = 80;
     int sliderHeight = 16;
@@ -83,7 +83,7 @@ public class DefaultRotationConfigurationScreen<T extends ConfigurationMenu>
                 SliderButton.Type.DEGREE,
                 false,
                 slider -> {
-                  CustomRotation current = modelData.getModelPartRotation(ModelPartType.ROOT);
+                  CustomRotation current = modelData.getModelRootData().rotation();
                   sendRotationUpdate(
                       (float) Math.toRadians(slider.getTargetValue()), current.y(), current.z());
                 }));
@@ -101,7 +101,7 @@ public class DefaultRotationConfigurationScreen<T extends ConfigurationMenu>
                 SliderButton.Type.DEGREE,
                 false,
                 slider -> {
-                  CustomRotation current = modelData.getModelPartRotation(ModelPartType.ROOT);
+                  CustomRotation current = modelData.getModelRootData().rotation();
                   sendRotationUpdate(current.x(), slider.getTargetValue(), current.z());
                 }));
 
@@ -118,7 +118,7 @@ public class DefaultRotationConfigurationScreen<T extends ConfigurationMenu>
                 SliderButton.Type.DEGREE,
                 false,
                 slider -> {
-                  CustomRotation current = modelData.getModelPartRotation(ModelPartType.ROOT);
+                  CustomRotation current = modelData.getModelRootData().rotation();
                   sendRotationUpdate(
                       current.x(), current.y(), (float) Math.toRadians(slider.getTargetValue()));
                 }));
@@ -166,14 +166,15 @@ public class DefaultRotationConfigurationScreen<T extends ConfigurationMenu>
                 resetButtonLeftPosition + 15,
                 sliderTopPosition + 1,
                 "lock_rotation",
-                modelData.getModelPartRotation(ModelPartType.ROOT).locked(),
+                modelData.getModelRootData().rotation().locked(),
                 checkbox ->
                     NetworkMessageHandlerManager.getServerHandler()
                         .modelRotationChange(
                             this.getEasyNPCUUID(),
                             ModelPartType.ROOT,
                             modelData
-                                .getModelPartRotation(ModelPartType.ROOT)
+                                .getModelRootData()
+                                .rotation()
                                 .withLocked(checkbox.selected()))));
     this.rootRotationCheckbox.setTooltip(
         Tooltip.create(TextComponent.getTranslatedConfigText("lock_rotation.tooltip")));
@@ -185,7 +186,7 @@ public class DefaultRotationConfigurationScreen<T extends ConfigurationMenu>
 
     ModelDataCapable<?> modelData = this.getEasyNPC().getEasyNPCModelData();
     if (modelData != null) {
-      CustomRotation rootRotation = modelData.getModelPartRotation(ModelPartType.ROOT);
+      CustomRotation rootRotation = modelData.getModelRootData().rotation();
       this.rootRotationCheckbox.setSelected(rootRotation.locked());
     }
   }

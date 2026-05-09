@@ -24,7 +24,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-@DisplayName("CustomRotation Tests")
 class CustomRotationTest {
 
   @Test
@@ -34,20 +33,17 @@ class CustomRotationTest {
   }
 
   @Test
-  @DisplayName("hasChanged() should be true when X is non-zero")
   void testHasChangedTrueForNonZeroX() {
     assertTrue(new CustomRotation(1f, 0f, 0f).hasChanged());
     assertTrue(new CustomRotation(-0.5f, 0f, 0f).hasChanged());
   }
 
   @Test
-  @DisplayName("hasChanged() should be true when Y is non-zero")
   void testHasChangedTrueForNonZeroY() {
     assertTrue(new CustomRotation(0f, 1f, 0f).hasChanged());
   }
 
   @Test
-  @DisplayName("hasChanged() should be true when Z is non-zero")
   void testHasChangedTrueForNonZeroZ() {
     assertTrue(new CustomRotation(0f, 0f, 1f).hasChanged());
   }
@@ -60,13 +56,11 @@ class CustomRotationTest {
   }
 
   @Test
-  @DisplayName("hasChangedYaw() should be false when locked=false")
   void testHasChangedYawFalseWhenNotLocked() {
     assertFalse(new CustomRotation(0f, 45f, 0f, false).hasChangedYaw());
   }
 
   @Test
-  @DisplayName("hasChangedYaw() should be false when X or Z is non-zero")
   void testHasChangedYawFalseWhenXOrZNonZero() {
     assertFalse(new CustomRotation(1f, 45f, 0f, true).hasChangedYaw());
     assertFalse(new CustomRotation(0f, 45f, 1f, true).hasChangedYaw());
@@ -74,7 +68,6 @@ class CustomRotationTest {
   }
 
   @Test
-  @DisplayName("hasChangedYaw() should be false when Y is zero (no rotation)")
   void testHasChangedYawFalseWhenYIsZero() {
     assertFalse(new CustomRotation(0f, 0f, 0f, true).hasChangedYaw());
   }
@@ -112,7 +105,6 @@ class CustomRotationTest {
   }
 
   @Test
-  @DisplayName("3-arg constructor (x, y, z) should default locked to false")
   void testThreeArgConstructorSetsLockedFalse() {
     CustomRotation r = new CustomRotation(5f, 10f, 15f);
     assertFalse(r.locked());
@@ -153,14 +145,12 @@ class CustomRotationTest {
   }
 
   @Test
-  @DisplayName("hasChanged(x,y,z,locked) should be true when only locked differs")
   void testHasChangedLockedOverloadTrueWhenOnlyLockedDiffers() {
     assertTrue(new CustomRotation(1f, 2f, 3f, true).hasChanged(1f, 2f, 3f, false));
     assertTrue(new CustomRotation(1f, 2f, 3f, false).hasChanged(1f, 2f, 3f, true));
   }
 
   @Test
-  @DisplayName("hasChanged(x,y,z,locked) should be true when a float component differs")
   void testHasChangedLockedOverloadTrueWhenFloatDiffers() {
     assertTrue(new CustomRotation(1f, 2f, 3f, true).hasChanged(0f, 2f, 3f, true));
     assertTrue(new CustomRotation(1f, 2f, 3f, true).hasChanged(1f, 0f, 3f, true));
@@ -176,7 +166,6 @@ class CustomRotationTest {
   }
 
   @Test
-  @DisplayName("Two CustomRotations with different locked flags should not be equal")
   void testInequalityByLockedFlag() {
     CustomRotation unlocked = new CustomRotation(1.5f, 0f, 0f, false);
     CustomRotation locked = new CustomRotation(1.5f, 0f, 0f, true);

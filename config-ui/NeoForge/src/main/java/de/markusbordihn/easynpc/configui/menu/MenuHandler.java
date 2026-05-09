@@ -115,6 +115,9 @@ public class MenuHandler implements MenuHandlerInterface {
         ConfigurationType.LOCAL_PRESET_IMPORT,
         ModMenuTypes.LOCAL_IMPORT_PRESET_CONFIGURATION_MENU.get());
     configurationMenuMap.put(
+        ConfigurationType.LOCAL_PRESET_EXPORT,
+        ModMenuTypes.LOCAL_EXPORT_PRESET_CONFIGURATION_MENU.get());
+    configurationMenuMap.put(
         ConfigurationType.LOOK_OBJECTIVE, ModMenuTypes.LOOK_OBJECTIVE_CONFIGURATION_MENU.get());
     configurationMenuMap.put(ConfigurationType.MAIN, ModMenuTypes.MAIN_CONFIGURATION_MENU.get());
     configurationMenuMap.put(

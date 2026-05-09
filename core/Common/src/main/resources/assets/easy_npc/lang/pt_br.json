@@ -71,5 +71,7 @@
   "tooltip.easy_npc.spawner.boss_spawner": "O Gerador de Chefe é um gerador especial que permite gerar um NPC chefe.",
   "tooltip.easy_npc.spawner.default_spawner": "O Gerador Padrão é um gerador que permite gerar um NPC padrão.",
   "tooltip.easy_npc.spawner.group_spawner": "O Gerador de Grupo é um gerador que permite gerar um grupo de NPCs.",
-  "tooltip.easy_npc.spawner.single_spawner": "O Gerador Único é um gerador que permite gerar um único NPC."
+  "tooltip.easy_npc.spawner.single_spawner": "O Gerador Único é um gerador que permite gerar um único NPC.",
+  "message.easynpc.access.no_permission": "Você não tem permissão para editar este NPC.",
+  "message.easynpc.access.npc_not_found": "Este NPC não pôde ser encontrado ou não existe mais."
 }

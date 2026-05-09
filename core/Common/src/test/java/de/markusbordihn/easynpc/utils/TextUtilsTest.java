@@ -32,7 +32,6 @@ import org.junit.jupiter.params.provider.ValueSource;
 class TextUtilsTest {
 
   @Test
-  @DisplayName("Should identify valid translation keys")
   void testIsTranslationKey_validKeys() {
     assertTrue(TextUtils.isTranslationKey("item.minecraft.diamond_sword"));
     assertTrue(TextUtils.isTranslationKey("block.easynpc.spawner"));
@@ -41,7 +40,6 @@ class TextUtilsTest {
   }
 
   @ParameterizedTest
-  @DisplayName("Should reject invalid translation keys")
   @ValueSource(
       strings = {
         "invalid",
@@ -58,7 +56,6 @@ class TextUtilsTest {
 
   @ParameterizedTest
   @NullAndEmptySource
-  @DisplayName("Should reject null or empty translation keys")
   void testIsTranslationKey_nullOrEmpty(String key) {
     assertFalse(TextUtils.isTranslationKey(key));
   }
@@ -71,7 +68,6 @@ class TextUtilsTest {
     "mixed_CASE-test, Mixed case test",
     "single, Single"
   })
-  @DisplayName("Should normalize strings correctly")
   void testNormalizeString(String input, String expected) {
     assertEquals(expected, TextUtils.normalizeString(input));
   }
@@ -86,7 +82,6 @@ class TextUtilsTest {
 
   @ParameterizedTest
   @NullAndEmptySource
-  @DisplayName("Should handle null and empty strings in limitString")
   void testLimitString_nullOrEmpty(String input) {
     assertEquals(input, TextUtils.limitString(input, 10));
   }
@@ -106,21 +101,18 @@ class TextUtilsTest {
     "Mixed_Test, mixedTest",
     "test with spaces, testWithSpaces"
   })
-  @DisplayName("Should convert to camelCase correctly")
   void testConvertToCamelCase(String input, String expected) {
     assertEquals(expected, TextUtils.convertToCamelCase(input));
   }
 
   @ParameterizedTest
   @NullAndEmptySource
-  @DisplayName("Should handle null and empty strings in case conversion")
   void testConvertToCamelCase_nullOrEmpty(String input) {
     assertEquals(input, TextUtils.convertToCamelCase(input));
     assertEquals(input, TextUtils.convertToPascalCase(input));
   }
 
   @Test
-  @DisplayName("Should normalize string with max size")
   void testNormalizeString_withMaxSize() {
     assertEquals("Hello…", TextUtils.normalizeString("hello_world_test", 5));
     assertEquals("Test", TextUtils.normalizeString("test", 10));

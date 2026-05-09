@@ -23,7 +23,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import de.markusbordihn.easynpc.client.renderer.entity.state.EasyNPCRenderStateExtension;
 import de.markusbordihn.easynpc.client.texture.LivingEntityTextureManager;
-import de.markusbordihn.easynpc.data.model.ModelPartType;
+import de.markusbordihn.easynpc.data.model.RootModelData;
 import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.data.scale.CustomScale;
 import de.markusbordihn.easynpc.entity.LivingEntityManager;
@@ -67,9 +67,10 @@ public class EasyNPCLivingEntityRenderer {
       poseStack.scale(defaultScale.x(), defaultScale.y(), defaultScale.z());
     }
 
-    // Apply custom scale to the model.
-    CustomScale customScale = modelData.getModelPartScale(ModelPartType.ROOT);
-    if (customScale != null && customScale.hasChanged()) {
+    // Apply custom root scale to the model.
+    RootModelData rootModelData = modelData.getModelRootData();
+    CustomScale customScale = rootModelData.scale();
+    if (customScale.hasChanged()) {
       poseStack.scale(customScale.x(), customScale.y(), customScale.z());
     }
   }
@@ -140,8 +141,8 @@ public class EasyNPCLivingEntityRenderer {
       return;
     }
 
-    CustomRotation rootRotation = modelData.getModelPartRotation(ModelPartType.ROOT);
-    if (rootRotation == null) {
+    CustomRotation rootRotation = modelData.getModelRootData().rotation();
+    if (!rootRotation.hasChangedRotation()) {
       return;
     }
 

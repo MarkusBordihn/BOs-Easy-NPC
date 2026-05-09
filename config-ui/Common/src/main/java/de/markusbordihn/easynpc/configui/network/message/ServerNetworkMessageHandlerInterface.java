@@ -47,6 +47,7 @@ import de.markusbordihn.easynpc.configui.network.message.server.ChangeProfession
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeRendererMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeSkinMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeTradingTypeMessage;
+import de.markusbordihn.easynpc.configui.network.message.server.ExportCustomPresetServerMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ExportPresetMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ExportWorldPresetMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ImportPresetMessage;
@@ -464,9 +465,16 @@ public interface ServerNetworkMessageHandlerInterface {
     }
   }
 
-  default void exportWorldPreset(UUID uuid, String name) {
+  default void exportWorldPreset(UUID uuid, String name, PresetMetadata metadata) {
     if (uuid != null && name != null && !name.isEmpty()) {
-      NetworkHandlerManager.sendMessageToServer(new ExportWorldPresetMessage(uuid, name));
+      NetworkHandlerManager.sendMessageToServer(new ExportWorldPresetMessage(uuid, name, metadata));
+    }
+  }
+
+  default void exportCustomPreset(UUID uuid, String name, PresetMetadata metadata) {
+    if (uuid != null && name != null && !name.isEmpty()) {
+      NetworkHandlerManager.sendMessageToServer(
+          new ExportCustomPresetServerMessage(uuid, name, metadata));
     }
   }
 

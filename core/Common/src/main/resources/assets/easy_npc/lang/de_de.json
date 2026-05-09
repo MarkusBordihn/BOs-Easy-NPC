@@ -75,5 +75,7 @@
   "tooltip.easy_npc.spawner.boss_spawner": "Der Boss Spawner ist ein Spawner, der es Ihnen ermöglicht, einen Boss-NPC zu spawnen.",
   "tooltip.easy_npc.spawner.default_spawner": "Der Standard Spawner ist ein Spawner, der es Ihnen ermöglicht, einen Standard-NPC zu spawnen.",
   "tooltip.easy_npc.spawner.group_spawner": "Der Gruppen Spawner ist ein Spawner, der es Ihnen ermöglicht, eine Gruppe von NPCs zu spawnen.",
-  "tooltip.easy_npc.spawner.single_spawner": "Der Einzel Spawner ist ein Spawner, der es Ihnen ermöglicht, einen einzelnen NPC zu spawnen."
+  "tooltip.easy_npc.spawner.single_spawner": "Der Einzel Spawner ist ein Spawner, der es Ihnen ermöglicht, einen einzelnen NPC zu spawnen.",
+  "message.easynpc.access.no_permission": "Du hast keine Berechtigung, diesen NPC zu bearbeiten.",
+  "message.easynpc.access.npc_not_found": "Dieser NPC konnte nicht gefunden werden oder existiert nicht mehr."
 }

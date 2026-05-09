@@ -76,7 +76,7 @@ public class ScalingConfigurationScreen<T extends ConfigurationMenu>
 
     // Model Data
     ModelDataCapable<?> modelData = this.getEasyNPC().getEasyNPCModelData();
-    CustomScale rootScale = modelData.getModelPartScale(ModelPartType.ROOT);
+    CustomScale rootScale = modelData.getModelRootData().scale();
 
     // Store initial values
     this.lastScaleX = rootScale.x();

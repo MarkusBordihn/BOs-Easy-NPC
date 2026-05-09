@@ -71,5 +71,7 @@
   "tooltip.easy_npc.spawner.boss_spawner": "Спавнер Босса — это специальный спавнер, который позволяет вам заспаунить босса NPC.",
   "tooltip.easy_npc.spawner.default_spawner": "Стандартный Спавнер — это спавнер, который позволяет вам заспаунить стандартного NPC.",
   "tooltip.easy_npc.spawner.group_spawner": "Групповой Спавнер — это спавнер, который позволяет вам заспаунить группу NPC.",
-  "tooltip.easy_npc.spawner.single_spawner": "Одиночный Спавнер — это спавнер, который позволяет вам заспаунить одного NPC."
+  "tooltip.easy_npc.spawner.single_spawner": "Одиночный Спавнер — это спавнер, который позволяет вам заспаунить одного NPC.",
+  "message.easynpc.access.no_permission": "У вас нет прав для редактирования этого NPC.",
+  "message.easynpc.access.npc_not_found": "Этот NPC не найден или больше не существует."
 }

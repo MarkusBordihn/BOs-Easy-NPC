@@ -22,9 +22,7 @@ package de.markusbordihn.easynpc.configui.client.screen.configuration.preset;
 import de.markusbordihn.easynpc.client.screen.components.SpinButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextField;
-import de.markusbordihn.easynpc.configui.client.screen.components.Checkbox;
 import de.markusbordihn.easynpc.configui.client.screen.components.ExportButton;
-import de.markusbordihn.easynpc.configui.client.screen.components.FileBrowserButton;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.preset.PresetExportFormat;
@@ -39,11 +37,8 @@ import java.util.Set;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.client.gui.screens.ConfirmScreen;
-import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
-import net.minecraft.util.Util;
 import net.minecraft.world.entity.player.Inventory;
 
 public class ExportCustomPresetConfigurationScreen<T extends ConfigurationMenu>
@@ -51,172 +46,101 @@ public class ExportCustomPresetConfigurationScreen<T extends ConfigurationMenu>
 
   private static final Set<String> PRESET_CATEGORIES =
       new LinkedHashSet<>(List.of("General", "Villager", "Guard", "Trader", "Quest", "Custom"));
-  private static boolean lastSnbtFormatPreference = false;
+
   protected Button exportPresetButton;
-  protected Button openCustomExportPresetFolder;
   protected int numberOfTextLines = 1;
-  private File customPresetFile;
-  private String customPresetFileName = "";
   private EditBox nameBox;
   private SpinButton<String> categorySpinButton;
   private EditBox versionBox;
   private EditBox descriptionBox;
   private EditBox authorBox;
-  private Checkbox snbtCheckbox;
   private List<FormattedCharSequence> textComponents = Collections.emptyList();
 
   public ExportCustomPresetConfigurationScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
   }
 
+  private void validateName() {
+    this.exportPresetButton.active = !this.nameBox.getValue().isEmpty();
+  }
+
   @Override
   public void init() {
     super.init();
 
-    // Default button stats
-    this.customExportPresetButton.active = false;
+    if (this.customExportPresetButton != null) {
+      this.customExportPresetButton.active = false;
+    }
 
-    // Preset file
-    this.customPresetFile = CustomPresetDataFiles.getPresetFile(getSkinModel(), getEasyNPCUUID());
+    File customPresetFile =
+        CustomPresetDataFiles.getPresetFile(this.getSkinModel(), getEasyNPCUUID());
+    String customPresetFileName =
+        PresetExportFormat.removePresetExtension(customPresetFile.getName());
 
-    // Extract clean name without file extensions
-    this.customPresetFileName =
-        PresetExportFormat.removePresetExtension(this.customPresetFile.getName());
-
-    // Info text
     this.textComponents =
         this.font.split(
-            TextComponent.getTranslatedConfigText(
-                "export_preset_text", customPresetFile.getParentFile().getPath()),
-            this.imageWidth - 30);
+            TextComponent.getTranslatedConfigText("export_preset_custom_text"),
+            this.imageWidth - 25);
     this.numberOfTextLines = this.textComponents.size();
 
-    // Name Edit Box
     this.nameBox = new TextField(this.font, this.contentLeftPos + 5, this.bottomPos - 140, 300);
     this.nameBox.setMaxLength(64);
     this.nameBox.setValue(customPresetFileName);
+    this.nameBox.setResponder(consumer -> this.validateName());
     this.addRenderableWidget(this.nameBox);
 
-    // Pre-fill metadata from existing NPC data
     int metaDataYOffset = this.nameBox.getY() + 35;
-    String defaultCategory = "General";
     String defaultAuthor =
         this.minecraft != null && this.minecraft.player != null
             ? this.minecraft.player.getName().getString()
             : "Unknown";
 
-    // Category Spin Button (always visible)
     this.categorySpinButton =
         new SpinButton<>(
-            this.contentLeftPos + 5,
-            metaDataYOffset,
-            130,
-            16,
-            PRESET_CATEGORIES,
-            defaultCategory,
-            null);
+            this.contentLeftPos + 5, metaDataYOffset, 130, 16, PRESET_CATEGORIES, "General", null);
     this.addRenderableWidget(this.categorySpinButton);
 
-    // Version Box
     this.versionBox = new TextField(this.font, this.contentLeftPos + 230, metaDataYOffset, 75);
     this.versionBox.setMaxLength(12);
     this.versionBox.setValue("1.0.0");
     this.addRenderableWidget(this.versionBox);
 
-    // Description Box
     this.descriptionBox =
         new TextField(this.font, this.contentLeftPos + 5, metaDataYOffset + 35, 180);
     this.descriptionBox.setMaxLength(128);
-    this.descriptionBox.setValue("");
     this.addRenderableWidget(this.descriptionBox);
 
-    // Author Box
     this.authorBox = new TextField(this.font, this.contentLeftPos + 200, metaDataYOffset + 35, 105);
     this.authorBox.setMaxLength(16);
     this.authorBox.setValue(defaultAuthor);
     this.addRenderableWidget(this.authorBox);
 
-    // Export Preset button
     this.exportPresetButton =
         this.addRenderableWidget(
             new ExportButton(
-                this.contentLeftPos + 5,
-                this.bottomPos - 45,
-                140,
+                this.contentLeftPos + 65,
+                this.bottomPos - 40,
+                150,
                 20,
-                "export_preset",
+                "export_custom_preset",
                 button -> {
-                  if (this.snbtCheckbox.selected()) {
-                    showSnbtWarning();
-                  } else {
-                    exportPreset();
-                  }
+                  NetworkMessageHandlerManager.getServerHandler()
+                      .exportCustomPreset(
+                          this.getEasyNPCUUID(),
+                          this.nameBox.getValue(),
+                          PresetMetadata.createDefault(
+                                  this.nameBox.getValue(), this.authorBox.getValue())
+                              .withCategory(this.categorySpinButton.get())
+                              .withVersion(this.versionBox.getValue())
+                              .withDescription(this.descriptionBox.getValue()));
+                  exportPresetButton.active = false;
                 }));
-
-    // SNBT Export checkbox (remember last preference)
-    this.snbtCheckbox =
-        new Checkbox(
-            this.exportPresetButton.getX(),
-            this.exportPresetButton.getY() + 20,
-            "export_preset.use_snbt_format",
-            lastSnbtFormatPreference,
-            checkbox -> lastSnbtFormatPreference = checkbox.selected());
-    this.addRenderableWidget(this.snbtCheckbox);
-
-    // Open custom export preset folder button
-    this.openCustomExportPresetFolder =
-        this.addRenderableWidget(
-            new FileBrowserButton(
-                this.exportPresetButton.getX() + this.exportPresetButton.getWidth() + 20,
-                this.exportPresetButton.getY(),
-                140,
-                20,
-                "open_export_folder",
-                button -> Util.getPlatform().openFile(customPresetFile.getParentFile())));
-  }
-
-  private void showSnbtWarning() {
-    if (this.minecraft != null) {
-      this.minecraft.setScreen(
-          new ConfirmScreen(
-              confirmed -> {
-                if (confirmed) {
-                  exportPreset();
-                }
-                this.minecraft.setScreen(this);
-              },
-              TextComponent.getTranslatedConfigText("export_preset.snbt_warning_title"),
-              TextComponent.getTranslatedConfigText("export_preset.snbt_warning_message"),
-              TextComponent.getTranslatedConfigText("export_preset.snbt_confirm"),
-              CommonComponents.GUI_CANCEL));
-    }
-  }
-
-  private void exportPreset() {
-    String displayName = this.nameBox.getValue();
-    NetworkMessageHandlerManager.getServerHandler()
-        .exportPreset(
-            getEasyNPCUUID(),
-            displayName,
-            this.snbtCheckbox.selected() ? PresetExportFormat.SNBT : PresetExportFormat.NBT,
-            PresetMetadata.createDefault(displayName, this.authorBox.getValue())
-                .withCategory(this.categorySpinButton.get())
-                .withVersion(this.versionBox.getValue())
-                .withDescription(this.descriptionBox.getValue()));
-  }
-
-  @Override
-  public void updateTick() {
-    super.updateTick();
-
-    this.exportPresetButton.active = this.nameBox != null && !this.nameBox.getValue().isEmpty();
   }
 
   @Override
   public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
     super.render(guiGraphics, x, y, partialTicks);
 
-    // Render info text at the top of the screen
     if (!this.textComponents.isEmpty()) {
       for (int line = 0; line < this.numberOfTextLines; ++line) {
         FormattedCharSequence formattedCharSequence = this.textComponents.get(line);
@@ -229,7 +153,6 @@ public class ExportCustomPresetConfigurationScreen<T extends ConfigurationMenu>
       }
     }
 
-    // Draw labels for metadata fields (always visible)
     if (this.categorySpinButton != null) {
       Text.drawString(
           guiGraphics,

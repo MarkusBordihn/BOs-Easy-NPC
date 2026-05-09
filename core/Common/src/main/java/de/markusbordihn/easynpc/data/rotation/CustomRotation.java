@@ -39,7 +39,7 @@ public record CustomRotation(float x, float y, float z, boolean locked) {
               registryFriendlyByteBuf.readFloat(),
               registryFriendlyByteBuf.readFloat(),
               registryFriendlyByteBuf.readFloat(),
-              false);
+              registryFriendlyByteBuf.readBoolean());
         }
 
         @Override

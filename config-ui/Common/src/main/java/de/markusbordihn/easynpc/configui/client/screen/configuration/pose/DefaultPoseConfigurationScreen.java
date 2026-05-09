@@ -160,9 +160,7 @@ public class DefaultPoseConfigurationScreen<T extends ConfigurationMenu>
                         .modelRotationChange(
                             this.getEasyNPCUUID(),
                             ModelPartType.ROOT,
-                            this.modelData
-                                .getModelPartRotation(ModelPartType.ROOT)
-                                .withLocked(false));
+                            this.modelData.getModelRootData().rotation().withLocked(false));
                   }
                   this.updatePoseButtonStates();
                 }));
@@ -197,9 +195,7 @@ public class DefaultPoseConfigurationScreen<T extends ConfigurationMenu>
                           .modelRotationChange(
                               this.getEasyNPCUUID(),
                               ModelPartType.ROOT,
-                              this.modelData
-                                  .getModelPartRotation(ModelPartType.ROOT)
-                                  .withLocked(true));
+                              this.modelData.getModelRootData().rotation().withLocked(true));
                     }
                     this.updatePoseButtonStates();
                   }));

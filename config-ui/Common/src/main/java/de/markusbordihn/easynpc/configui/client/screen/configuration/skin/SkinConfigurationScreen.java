@@ -26,10 +26,12 @@ import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.entity.easynpc.data.ConfigurationDataCapable;
+import de.markusbordihn.easynpc.network.components.TextComponent;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -178,7 +180,13 @@ public class SkinConfigurationScreen<T extends ConfigurationMenu> extends Config
             && configurationData.supportsConfigurationType(ConfigurationType.PLAYER_SKIN);
     this.urlSkinButton.active =
         configurationData.supportsConfigurationType(ConfigurationType.SKIN)
-            && configurationData.supportsConfigurationType(ConfigurationType.URL_SKIN);
+            && configurationData.supportsConfigurationType(ConfigurationType.URL_SKIN)
+            && !this.isConfigurationBlockedByPermission(ConfigurationType.URL_SKIN);
+    if (!this.urlSkinButton.active
+        && this.isConfigurationBlockedByPermission(ConfigurationType.URL_SKIN)) {
+      this.urlSkinButton.setTooltip(
+          Tooltip.create(TextComponent.getTranslatedConfigText("menu.tooltip.no_permission")));
+    }
   }
 
   @Override

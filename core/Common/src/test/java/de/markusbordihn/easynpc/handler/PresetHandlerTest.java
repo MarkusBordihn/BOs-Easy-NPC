@@ -92,7 +92,6 @@ class PresetHandlerTest {
   }
 
   @Test
-  @DisplayName("Should load NBT file correctly")
   void testLoadPresetFromNbtFile() throws IOException {
     NbtIo.writeCompressed(testPresetData, nbtFile.toPath());
 
@@ -107,7 +106,6 @@ class PresetHandlerTest {
   }
 
   @Test
-  @DisplayName("Should load SNBT file correctly")
   void testLoadPresetFromSnbtFile() throws IOException {
     File snbtFile =
         getResourceFile("/de/markusbordihn/easynpc/handler/presets/simple_armor_stand.npc.snbt");
@@ -158,7 +156,6 @@ class PresetHandlerTest {
   }
 
   @Test
-  @DisplayName("Should return null for non-existent file")
   void testLoadNonExistentFile() {
     File nonExistent = new File(tempDir, "does_not_exist.npc.nbt");
 
@@ -168,7 +165,6 @@ class PresetHandlerTest {
   }
 
   @Test
-  @DisplayName("Should return null for null file")
   void testLoadNullFile() {
     CompoundTag loaded = PresetFileHandler.load(null);
 
@@ -176,7 +172,6 @@ class PresetHandlerTest {
   }
 
   @Test
-  @DisplayName("Should export preset to NBT file")
   void testExportPresetToNbtFile() throws IOException {
     File exportFile = new File(tempDir, "exported.npc.nbt");
 
@@ -194,7 +189,6 @@ class PresetHandlerTest {
   }
 
   @Test
-  @DisplayName("Should export preset to SNBT file")
   void testExportPresetToSnbtFile() throws IOException {
     File exportFile = new File(tempDir, "exported.npc.snbt");
 
@@ -220,7 +214,6 @@ class PresetHandlerTest {
   }
 
   @Test
-  @DisplayName("Should fail export with null file")
   void testExportWithNullFile() {
     boolean result = PresetFileHandler.save(null, testPresetData);
 
@@ -228,7 +221,6 @@ class PresetHandlerTest {
   }
 
   @Test
-  @DisplayName("Should fail export with null data")
   void testExportWithNullData() {
     File exportFile = new File(tempDir, "test.npc.nbt");
 
@@ -238,7 +230,6 @@ class PresetHandlerTest {
   }
 
   @Test
-  @DisplayName("Should fail export with empty data")
   void testExportWithEmptyData() {
     File exportFile = new File(tempDir, "test.npc.nbt");
     CompoundTag emptyData = new CompoundTag();
@@ -249,7 +240,6 @@ class PresetHandlerTest {
   }
 
   @Test
-  @DisplayName("Should import SNBT from file")
   void testImportPresetFromSnbt() throws IOException {
     File snbtFile =
         getResourceFile("/de/markusbordihn/easynpc/handler/presets/villager_trader.npc.snbt");
@@ -284,7 +274,6 @@ class PresetHandlerTest {
   }
 
   @Test
-  @DisplayName("Should handle complex nested SNBT with variant data")
   void testComplexSnbtWithVariant() throws IOException {
     File snbtFile =
         getResourceFile("/de/markusbordihn/easynpc/handler/presets/complex_humanoid.npc.snbt");
@@ -306,7 +295,6 @@ class PresetHandlerTest {
   }
 
   @Test
-  @DisplayName("Should return null for malformed SNBT")
   void testImportMalformedSnbt() throws IOException {
     File snbtFile = getResourceFile("/de/markusbordihn/easynpc/handler/presets/malformed.npc.snbt");
 

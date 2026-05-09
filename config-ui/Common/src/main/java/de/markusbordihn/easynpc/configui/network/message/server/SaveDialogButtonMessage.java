@@ -25,15 +25,15 @@ import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.DialogDataCapable;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
+import de.markusbordihn.easynpc.security.CommandPermissionLevel;
+import de.markusbordihn.easynpc.security.SecurityManager;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.players.NameAndId;
 
 public record SaveDialogButtonMessage(
     UUID uuid, UUID dialogId, UUID dialogButtonId, DialogButtonEntry dialogButtonEntry)
@@ -122,51 +122,52 @@ public record SaveDialogButtonMessage(
       return;
     }
 
-    // Re-check permission levels for dialog related actions.
-    int currentPermissionLevel = actionEventData.getActionPermissionLevel();
-    if (currentPermissionLevel == 0) {
-      MinecraftServer minecraftServer = serverPlayer.level().getServer();
-      if (minecraftServer != null) {
-        int permissionLevel =
-            minecraftServer
-                .getProfilePermissions(new NameAndId(serverPlayer.getGameProfile()))
-                .level()
-                .id();
-        if (permissionLevel > currentPermissionLevel) {
-          log.debug(
-              "Update owner permission level from {} to {} for {} from {}",
-              currentPermissionLevel,
-              permissionLevel,
-              easyNPC,
-              serverPlayer);
-          actionEventData.setActionPermissionLevel(permissionLevel);
-        }
-      }
+    CommandPermissionLevel currentPermissionLevel =
+        actionEventData.getActionCommandPermissionLevel();
+    CommandPermissionLevel permissionLevel =
+        SecurityManager.applyActionAuthority(easyNPC, serverPlayer);
+    log.debug(
+        "Update owner permission level from {} to {} for {} from {}",
+        currentPermissionLevel,
+        permissionLevel,
+        easyNPC,
+        serverPlayer);
+
+    DialogButtonEntry sanitizedDialogButtonEntry =
+        MessageSecurity.sanitizeDialogButtonEntry(
+            this.dialogButtonEntry, easyNPC, serverPlayer, permissionLevel);
+    if (sanitizedDialogButtonEntry == null) {
+      log.warn(
+          "Blocked dialog button save for dialog {} for {} from {}",
+          dialogId,
+          easyNPC,
+          serverPlayer);
+      return;
     }
 
     // Perform action.
     if (this.dialogButtonId == null) {
       log.info(
           "Add new dialog button {} for dialog {} for {} from {}",
-          dialogButtonEntry,
+          sanitizedDialogButtonEntry,
           dialogId,
           easyNPC,
           serverPlayer);
       dialogData
           .getDialogDataSet()
           .getDialog(this.dialogId)
-          .setDialogButton(this.dialogButtonEntry);
+          .setDialogButton(sanitizedDialogButtonEntry);
     } else {
       log.info(
           "Edit existing dialog button {} for dialog {} for {} from {}",
-          dialogButtonEntry,
+          sanitizedDialogButtonEntry,
           dialogId,
           easyNPC,
           serverPlayer);
       dialogData
           .getDialogDataSet()
           .getDialog(this.dialogId)
-          .setDialogButton(this.dialogButtonId, this.dialogButtonEntry);
+          .setDialogButton(this.dialogButtonId, sanitizedDialogButtonEntry);
     }
   }
 }

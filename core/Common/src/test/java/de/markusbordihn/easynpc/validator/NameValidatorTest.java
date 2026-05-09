@@ -30,7 +30,6 @@ import org.junit.jupiter.params.provider.ValueSource;
 class NameValidatorTest {
 
   @ParameterizedTest
-  @DisplayName("Should validate correct player names")
   @ValueSource(
       strings = {
         "Player123",
@@ -46,21 +45,18 @@ class NameValidatorTest {
   }
 
   @ParameterizedTest
-  @DisplayName("Should reject player names that are too short")
   @ValueSource(strings = {"ab", "a", "12"})
   void testIsValidPlayerName_tooShort(String name) {
     assertFalse(NameValidator.isValidPlayerName(name));
   }
 
   @ParameterizedTest
-  @DisplayName("Should reject player names that are too long")
   @ValueSource(strings = {"ThisNameIsTooLong1", "ABCDEFGHIJ1234567", "VeryLongUsername123"})
   void testIsValidPlayerName_tooLong(String name) {
     assertFalse(NameValidator.isValidPlayerName(name));
   }
 
   @ParameterizedTest
-  @DisplayName("Should reject player names with invalid characters")
   @ValueSource(
       strings = {
         "Player-123",
@@ -91,34 +87,29 @@ class NameValidatorTest {
 
   @ParameterizedTest
   @NullAndEmptySource
-  @DisplayName("Should reject null or empty player names")
   void testIsValidPlayerName_nullOrEmpty(String name) {
     assertFalse(NameValidator.isValidPlayerName(name));
   }
 
   @ParameterizedTest
-  @DisplayName("Should validate player names at boundary lengths")
   @ValueSource(strings = {"abc", "ABCDEFGHIJ123456"})
   void testIsValidPlayerName_boundaryLengths(String name) {
     assertTrue(NameValidator.isValidPlayerName(name));
   }
 
   @ParameterizedTest
-  @DisplayName("Should validate alphanumeric player names")
   @ValueSource(strings = {"Player1", "Test2", "User123", "Gamer999"})
   void testIsValidPlayerName_alphanumeric(String name) {
     assertTrue(NameValidator.isValidPlayerName(name));
   }
 
   @ParameterizedTest
-  @DisplayName("Should validate player names with underscores")
   @ValueSource(strings = {"Player_1", "Test_User", "User_Name_123", "___test___"})
   void testIsValidPlayerName_withUnderscores(String name) {
     assertTrue(NameValidator.isValidPlayerName(name));
   }
 
   @ParameterizedTest
-  @DisplayName("Should validate numeric player names")
   @ValueSource(strings = {"123", "999", "12345", "1234567890123456"})
   void testIsValidPlayerName_numeric(String name) {
     assertTrue(NameValidator.isValidPlayerName(name));

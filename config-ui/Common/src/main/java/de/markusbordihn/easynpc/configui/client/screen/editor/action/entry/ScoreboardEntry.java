@@ -51,6 +51,7 @@ public class ScoreboardEntry extends ActionEntryWidget {
     if (!hasActionData(ActionDataType.SCOREBOARD) || actionDataEntry.command() == null) {
       return ScoreboardOperation.INCREASE;
     }
+
     return ScoreboardOperation.fromCommand(actionDataEntry.command());
   }
 
@@ -91,7 +92,7 @@ public class ScoreboardEntry extends ActionEntryWidget {
             spinButton -> {
               Object value = spinButton.get();
               if (value instanceof TranslatableScoreboardOperation translatable) {
-                this.currentOperation = translatable.getOperation();
+                this.currentOperation = translatable.operation();
                 if (this.scoreboardValueTextField != null) {
                   this.scoreboardValueTextField.setVisible(
                       this.currentOperation == ScoreboardOperation.SET);
@@ -163,16 +164,7 @@ public class ScoreboardEntry extends ActionEntryWidget {
         || this.actionDataEntry.enableDebug() != currentEntry.enableDebug();
   }
 
-  private static class TranslatableScoreboardOperation {
-    private final ScoreboardOperation operation;
-
-    TranslatableScoreboardOperation(ScoreboardOperation operation) {
-      this.operation = operation;
-    }
-
-    ScoreboardOperation getOperation() {
-      return this.operation;
-    }
+  private record TranslatableScoreboardOperation(ScoreboardOperation operation) {
 
     @Override
     public String toString() {
@@ -184,11 +176,6 @@ public class ScoreboardEntry extends ActionEntryWidget {
       if (this == obj) return true;
       if (!(obj instanceof TranslatableScoreboardOperation other)) return false;
       return this.operation == other.operation;
-    }
-
-    @Override
-    public int hashCode() {
-      return this.operation.hashCode();
     }
   }
 }
