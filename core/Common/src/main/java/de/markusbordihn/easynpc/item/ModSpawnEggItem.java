@@ -23,10 +23,13 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.OwnerDataCapable;
 import de.markusbordihn.easynpc.network.components.TextComponent;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.locale.Language;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -39,6 +42,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SpawnEggItem;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -60,6 +64,20 @@ public class ModSpawnEggItem extends SpawnEggItem {
       Supplier<? extends EntityType<? extends Mob>> entityType, Properties properties) {
     super(null, Constants.FONT_COLOR_RED, Constants.FONT_COLOR_YELLOW, properties);
     this.typeSupplier = entityType;
+  }
+
+  @Override
+  public void appendHoverText(
+      ItemStack itemStack, Level level, List<Component> tooltip, TooltipFlag flag) {
+    super.appendHoverText(itemStack, level, tooltip, flag);
+    String descriptionId = this.getDescriptionId();
+    if (descriptionId.contains(SUFFIX)) {
+      String entityId = descriptionId.replace(Constants.ITEM_PREFIX, "").replace(SUFFIX, "");
+      String tooltipKey = Constants.TOOLTIP_PREFIX + "spawn_egg." + entityId;
+      if (Language.getInstance().has(tooltipKey)) {
+        tooltip.add(Component.translatable(tooltipKey).withStyle(ChatFormatting.GRAY));
+      }
+    }
   }
 
   @Override

@@ -25,6 +25,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -511,6 +512,146 @@ class EntityTypeManagerTest {
       assertFalse(
           EntityTypeManager.shouldFilterEntityTypeByName(entityTypeLocation),
           "Not caught by name pattern (needs MobCategory.MISC or config): " + entityTypeLocation);
+    }
+  }
+
+  @Nested
+  @DisplayName("calculateGuiPreviewScaleFactor")
+  class GuiPreviewScaleFactorTests {
+
+    @ParameterizedTest(name = "height={0} \u2192 scale \u2264 MAX")
+    @ValueSource(floats = {0.01f, 0.1f, 0.3f, 0.5f, 1.0f, 1.3f, 1.7f, 2.0f, 3.0f})
+    @DisplayName("Result never exceeds GUI_PREVIEW_MAX_SCALE_FACTOR")
+    void resultIsAlwaysCapped(float height) {
+      float scale = EntityTypeManager.calculateGuiPreviewScaleFactor(height);
+      assertTrue(
+          scale <= EntityTypeManager.GUI_PREVIEW_MAX_SCALE_FACTOR,
+          "Scale " + scale + " exceeds max for height " + height);
+    }
+
+    @Test
+    @DisplayName("Entity at target height gets scale factor 1.0")
+    void targetHeightGivesScaleOne() {
+      assertEquals(
+          1.0f,
+          EntityTypeManager.calculateGuiPreviewScaleFactor(
+              EntityTypeManager.GUI_PREVIEW_TARGET_HEIGHT),
+          0.001f);
+    }
+
+    @ParameterizedTest(name = "Tiny entity height={0} is capped")
+    @ValueSource(floats = {0.01f, 0.1f, 0.2f, 0.3f, 0.43f})
+    @DisplayName("Tiny entities (e.g. Anorith) are capped at GUI_PREVIEW_MAX_SCALE_FACTOR")
+    void tinyEntitiesAreCapped(float height) {
+      assertEquals(
+          EntityTypeManager.GUI_PREVIEW_MAX_SCALE_FACTOR,
+          EntityTypeManager.calculateGuiPreviewScaleFactor(height),
+          0.001f,
+          "Height " + height + " should hit the cap");
+    }
+
+    @Test
+    @DisplayName("Anorith (0.3 blocks) formerly scaled to ~6.5x — now capped at max")
+    void anorithIsNowCapped() {
+      float legacyScale = 1.95f / 0.3f;
+      float newScale = EntityTypeManager.calculateGuiPreviewScaleFactor(0.3f);
+      assertTrue(legacyScale > 6f, "Legacy scale should have been > 6x");
+      assertEquals(EntityTypeManager.GUI_PREVIEW_MAX_SCALE_FACTOR, newScale, 0.001f);
+    }
+
+    @ParameterizedTest(name = "Large entity height={0} scales below 1.0")
+    @ValueSource(floats = {1.7f, 2.0f, 2.5f, 3.0f})
+    @DisplayName("Large entities (e.g. Charizard) are scaled down below 1.0")
+    void largeEntitiesAreScaledDown(float height) {
+      assertTrue(
+          EntityTypeManager.calculateGuiPreviewScaleFactor(height) < 1.0f,
+          "Expected scale < 1.0 for height " + height);
+    }
+
+    @ParameterizedTest(name = "tall={0} vs short={1}: tall gets smaller scale")
+    @CsvSource({"1.7, 0.4", "2.0, 0.5", "1.5, 0.3"})
+    @DisplayName("Taller entities always get a smaller or equal scale factor")
+    void tallerEntityGetsSmallerScale(float tallHeight, float shortHeight) {
+      float tallScale = EntityTypeManager.calculateGuiPreviewScaleFactor(tallHeight);
+      float shortScale = EntityTypeManager.calculateGuiPreviewScaleFactor(shortHeight);
+      assertTrue(
+          tallScale <= shortScale,
+          tallHeight
+              + "\u2192"
+              + tallScale
+              + " should be \u2264 "
+              + shortHeight
+              + "\u2192"
+              + shortScale);
+    }
+
+    @ParameterizedTest(name = "height={0} → IllegalArgumentException")
+    @ValueSource(floats = {0f, -0.1f, -1f})
+    @DisplayName("Zero or negative heights throw IllegalArgumentException")
+    void invalidHeightThrows(float height) {
+      assertThrows(
+          IllegalArgumentException.class,
+          () -> EntityTypeManager.calculateGuiPreviewScaleFactor(height));
+    }
+  }
+
+  @Nested
+  @DisplayName("calculateGuiPreviewYLift")
+  class GuiPreviewYLiftTests {
+
+    @ParameterizedTest(name = "height={0} → yLift ≥ 0")
+    @ValueSource(floats = {0.01f, 0.1f, 0.3f, 0.43f, 1.0f, 1.3f, 1.7f, 2.5f})
+    @DisplayName("Result is always non-negative")
+    void liftIsNeverNegative(float height) {
+      assertTrue(
+          EntityTypeManager.calculateGuiPreviewYLift(height) >= 0f,
+          "yLift should be ≥ 0 for height " + height);
+    }
+
+    @ParameterizedTest(name = "non-capped height={0} → yLift == 0")
+    @ValueSource(floats = {1.3f, 1.5f, 1.7f, 2.0f, 3.0f})
+    @DisplayName("Entities at or above target height need no lift")
+    void nonCappedEntitiesHaveZeroLift(float height) {
+      assertEquals(
+          0f,
+          EntityTypeManager.calculateGuiPreviewYLift(height),
+          0.001f,
+          "yLift should be 0 for non-capped height " + height);
+    }
+
+    @Test
+    @DisplayName("Anorith (0.3 blocks) gets positive yLift to center it")
+    void anorithGetsPositiveLift() {
+      float yLift = EntityTypeManager.calculateGuiPreviewYLift(0.3f);
+      assertEquals(0.2325f, yLift, 0.001f, "Anorith (0.3m) yLift should be 0.2325 blocks");
+    }
+
+    @Test
+    @DisplayName("Charizard (1.7 blocks) needs no lift")
+    void charizardHasZeroLift() {
+      assertEquals(0f, EntityTypeManager.calculateGuiPreviewYLift(1.7f), 0.001f);
+    }
+
+    @ParameterizedTest(name = "height={0} → centered in target area")
+    @ValueSource(floats = {0.1f, 0.2f, 0.3f, 0.43f})
+    @DisplayName("Capped entities are vertically centred within GUI_PREVIEW_TARGET_HEIGHT")
+    void cappedEntitiesAreCentred(float height) {
+      float scaleFactor = EntityTypeManager.calculateGuiPreviewScaleFactor(height);
+      float yLift = EntityTypeManager.calculateGuiPreviewYLift(height);
+      float visualHalfHeight = scaleFactor * height / 2f;
+      float expectedCenter = EntityTypeManager.GUI_PREVIEW_TARGET_HEIGHT / 2f;
+      assertEquals(
+          expectedCenter,
+          visualHalfHeight + yLift,
+          0.001f,
+          "Entity center should align with target area center for height " + height);
+    }
+
+    @ParameterizedTest(name = "height={0} → zero or positive lift")
+    @ValueSource(floats = {0f, -0.5f})
+    @DisplayName("Zero or negative heights return 0 (no exception)")
+    void invalidHeightReturnsZero(float height) {
+      assertEquals(0f, EntityTypeManager.calculateGuiPreviewYLift(height), 0.001f);
     }
   }
 }

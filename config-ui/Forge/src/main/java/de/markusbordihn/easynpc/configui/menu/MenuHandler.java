@@ -82,6 +82,8 @@ public class MenuHandler implements MenuHandlerInterface {
     configurationMenuMap.put(
         ConfigurationType.CUSTOM_MODEL, ModMenuTypes.CUSTOM_MODEL_CONFIGURATION_MENU.get());
     configurationMenuMap.put(
+        ConfigurationType.COBBLEMON_MODEL, ModMenuTypes.COBBLEMON_MODEL_CONFIGURATION_MENU.get());
+    configurationMenuMap.put(
         ConfigurationType.CUSTOM_SKIN, ModMenuTypes.CUSTOM_SKIN_CONFIGURATION_MENU.get());
     configurationMenuMap.put(
         ConfigurationType.CUSTOM_TRADING, ModMenuTypes.CUSTOM_TRADING_CONFIGURATION_MENU.get());

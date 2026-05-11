@@ -71,14 +71,20 @@ public class DopplerRenderer<E extends PathfinderMob>
     String entityTypeName = EntityTypeManager.getEntityTypeName(renderEntityType);
 
     // Render custom entity over living render, if supported.
-    LivingEntityRenderer<E, DopplerModel<E>> livingEntityRenderer =
-        (LivingEntityRenderer<E, DopplerModel<E>>)
-            RendererManager.getLivingEntityRenderer(renderEntityType, customEntity);
+    LivingEntityRenderer<?, ?> livingEntityRenderer =
+        RendererManager.getLivingEntityRenderer(renderEntityType, customEntity);
     if (livingEntityRenderer != null) {
       try {
-        RendererManager.copyCustomLivingEntityData(entity, customEntity, entityTypeName);
-        livingEntityRenderer.render(
-            (E) customEntity, entityYaw, partialTicks, poseStack, buffer, packedLight);
+        RendererManager.renderLivingEntity(
+            entity,
+            customEntity,
+            entityTypeName,
+            livingEntityRenderer,
+            entityYaw,
+            partialTicks,
+            poseStack,
+            buffer,
+            packedLight);
         return true;
       } catch (Exception exception) {
         log.error(

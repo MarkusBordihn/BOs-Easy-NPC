@@ -22,10 +22,15 @@ package de.markusbordihn.easynpc.config;
 import de.markusbordihn.easynpc.security.CommandPermissionLevel;
 import de.markusbordihn.easynpc.security.NpcFeature;
 import de.markusbordihn.easynpc.security.NpcSecurityRole;
+import de.markusbordihn.easynpc.security.UnsafeNpcCommand;
 import java.io.File;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
+import java.util.TreeSet;
 
 @SuppressWarnings({"java:S1104", "java:S1444", "java:S3008"})
 public class SecurityConfig extends Config {
@@ -38,11 +43,13 @@ Easy NPC Security Configuration
 Permission values use enum names: ALL, MODERATORS, GAMEMASTERS, ADMINS, OWNERS.
 Legacy numeric Minecraft command permission levels are accepted and rewritten to enum names.
 
-normalPlayerCommandLevel: Max command level for normal player-owned imports (default: ALL)
+normalPlayerCommandLevel: Max command level stored for normal player-owned imports (default: ALL)
 creativePlayerCommandLevel: Max command level for creative non-admin imports (default: MODERATORS)
 maxAdminImportedCommandLevel: Max command level for admin imports (default: ADMINS)
 serverTrustedCommandLevel: Max command level for server-side trusted imports without player context (default: ADMINS)
 blockUnsafeNpcCommands: Blocks critical server management commands from NPC command execution (default: true)
+unsafeNpcCommands: Command roots blocked from NPC command execution while blockUnsafeNpcCommands is enabled
+executeAsUserCommandAllowList.<LEVEL>: Command roots allowed for execute-as-user actions up to LEVEL
 npcSpawnRateLimitCreative: Max new NPCs a creative (non-admin) player may spawn via browser per minute (default: 5)
 npcSpawnRateLimitAdmin: Max new NPCs an admin player may spawn via browser per minute (default: 20)
 Feature values use enum names: NORMAL_PLAYER, CREATIVE_PLAYER, ADMIN, SERVER_TRUSTED.
@@ -58,6 +65,8 @@ feature.URL_RESOURCE: Minimum role required to use URL-based skin loading (defau
       new EnumMap<>(NpcFeature.class);
   private static final EnumMap<NpcFeature, NpcSecurityRole> FEATURE_ROLES =
       new EnumMap<>(NpcFeature.class);
+  private static final EnumMap<CommandPermissionLevel, Set<String>>
+      EXECUTE_AS_USER_COMMAND_ALLOW_LIST = new EnumMap<>(CommandPermissionLevel.class);
   public static CommandPermissionLevel NORMAL_PLAYER_COMMAND_LEVEL = CommandPermissionLevel.ALL;
   public static CommandPermissionLevel CREATIVE_PLAYER_COMMAND_LEVEL =
       CommandPermissionLevel.MODERATORS;
@@ -65,6 +74,7 @@ feature.URL_RESOURCE: Minimum role required to use URL-based skin loading (defau
       CommandPermissionLevel.ADMINS;
   public static CommandPermissionLevel SERVER_TRUSTED_COMMAND_LEVEL = CommandPermissionLevel.ADMINS;
   public static boolean BLOCK_UNSAFE_NPC_COMMANDS = true;
+  public static Set<String> UNSAFE_NPC_COMMANDS = UnsafeNpcCommand.defaultCommandNames();
   public static int NPC_SPAWN_RATE_LIMIT_CREATIVE = 5;
   public static int NPC_SPAWN_RATE_LIMIT_ADMIN = 20;
 
@@ -87,6 +97,9 @@ feature.URL_RESOURCE: Minimum role required to use URL-based skin loading (defau
     DEFAULT_FEATURE_ROLES.put(NpcFeature.DEFAULT_PRESET_IMPORT, NpcSecurityRole.CREATIVE_PLAYER);
     DEFAULT_FEATURE_ROLES.put(NpcFeature.URL_RESOURCE, NpcSecurityRole.CREATIVE_PLAYER);
     FEATURE_ROLES.putAll(DEFAULT_FEATURE_ROLES);
+    for (CommandPermissionLevel permissionLevel : CommandPermissionLevel.values()) {
+      EXECUTE_AS_USER_COMMAND_ALLOW_LIST.put(permissionLevel, Set.of());
+    }
   }
 
   public static void registerConfig() {
@@ -110,6 +123,14 @@ feature.URL_RESOURCE: Minimum role required to use URL-based skin loading (defau
         parseConfigValue(properties, "serverTrustedCommandLevel", SERVER_TRUSTED_COMMAND_LEVEL);
     BLOCK_UNSAFE_NPC_COMMANDS =
         parseConfigValue(properties, "blockUnsafeNpcCommands", BLOCK_UNSAFE_NPC_COMMANDS);
+    UNSAFE_NPC_COMMANDS =
+        parseCommandListConfig(properties, "unsafeNpcCommands", UNSAFE_NPC_COMMANDS);
+    for (CommandPermissionLevel permissionLevel : CommandPermissionLevel.values()) {
+      EXECUTE_AS_USER_COMMAND_ALLOW_LIST.put(
+          permissionLevel,
+          parseCommandListConfig(
+              properties, "executeAsUserCommandAllowList." + permissionLevel.name(), Set.of()));
+    }
     NPC_SPAWN_RATE_LIMIT_CREATIVE =
         parseConfigValue(properties, "npcSpawnRateLimitCreative", NPC_SPAWN_RATE_LIMIT_CREATIVE);
     NPC_SPAWN_RATE_LIMIT_ADMIN =
@@ -126,6 +147,59 @@ feature.URL_RESOURCE: Minimum role required to use URL-based skin loading (defau
   public static NpcSecurityRole getRequiredRole(NpcFeature feature) {
     return FEATURE_ROLES.getOrDefault(
         feature, DEFAULT_FEATURE_ROLES.getOrDefault(feature, NpcSecurityRole.ADMIN));
+  }
+
+  public static boolean isExecuteAsUserCommandAllowed(
+      String commandName, CommandPermissionLevel permissionLevel) {
+    String normalizedCommandName = normalizeCommandName(commandName);
+    if (normalizedCommandName == null || permissionLevel == null) {
+      return false;
+    }
+
+    for (CommandPermissionLevel allowListLevel : CommandPermissionLevel.values()) {
+      if (permissionLevel.allows(allowListLevel)
+          && EXECUTE_AS_USER_COMMAND_ALLOW_LIST
+              .getOrDefault(allowListLevel, Set.of())
+              .contains(normalizedCommandName)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  private static Set<String> parseCommandListConfig(
+      Properties properties, String key, Set<String> defaultValue) {
+    if (!properties.containsKey(key)) {
+      Set<String> normalizedDefaultValue = normalizeCommandList(defaultValue);
+      properties.setProperty(key, String.join(",", normalizedDefaultValue));
+      return normalizedDefaultValue;
+    }
+
+    Set<String> normalizedValue =
+        normalizeCommandList(Arrays.asList(properties.getProperty(key).split(",")));
+    properties.setProperty(key, String.join(",", normalizedValue));
+    return normalizedValue;
+  }
+
+  private static Set<String> normalizeCommandList(Iterable<String> commandNames) {
+    TreeSet<String> normalizedCommandNames = new TreeSet<>();
+    if (commandNames == null) {
+      return Set.of();
+    }
+
+    for (String commandName : commandNames) {
+      String normalizedCommandName = normalizeCommandName(commandName);
+      if (normalizedCommandName != null) {
+        normalizedCommandNames.add(normalizedCommandName);
+      }
+    }
+
+    return Collections.unmodifiableSet(normalizedCommandNames);
+  }
+
+  private static String normalizeCommandName(String commandName) {
+    return UnsafeNpcCommand.extractRootCommandName(commandName);
   }
 
   private static CommandPermissionLevel parseConfigValue(

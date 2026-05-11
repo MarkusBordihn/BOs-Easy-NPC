@@ -23,6 +23,7 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.block.ModBlocks;
 import de.markusbordihn.easynpc.compat.CompatConstants;
 import de.markusbordihn.easynpc.data.spawner.SpawnerType;
+import de.markusbordihn.easynpc.entity.CobblemonEntityType;
 import de.markusbordihn.easynpc.entity.EpicFightEntityType;
 import de.markusbordihn.easynpc.entity.ModCustomEntityType;
 import de.markusbordihn.easynpc.entity.ModEntityType;
@@ -31,7 +32,9 @@ import de.markusbordihn.easynpc.item.attack.BulletItem;
 import de.markusbordihn.easynpc.item.configuration.EasyNPCPresetEmptyItem;
 import de.markusbordihn.easynpc.item.configuration.EasyNPCPresetItem;
 import de.markusbordihn.easynpc.item.configuration.MoveEasyNPCItem;
+import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -50,6 +53,7 @@ public class ModItems {
       new EnumMap<>(ModCustomEntityType.class);
   public static final Map<EpicFightEntityType, Item> EPIC_FIGHT_SPAWN_EGGS =
       new EnumMap<>(EpicFightEntityType.class);
+  public static final List<Item> INTEGRATION_SPAWN_EGGS = new ArrayList<>();
   public static final Item BULLET_ITEM = new BulletItem(new Item.Properties());
   public static final Item EASY_NPC_PRESET_EMPTY_ITEM =
       new EasyNPCPresetEmptyItem(new Item.Properties());
@@ -131,6 +135,21 @@ public class ModItems {
             entityType.getId());
         EPIC_FIGHT_SPAWN_EGGS.put(
             entityType, registerEpicFightSpawnEgg(entityType.getId(), entityTypeObject));
+      }
+    }
+
+    if (CompatConstants.MOD_COBBLEMON_LOADED) {
+      for (CobblemonEntityType entityType : CobblemonEntityType.values()) {
+        EntityType<?> entityTypeObject = ModEntityType.COBBLEMON_TYPE.get(entityType);
+        if (entityTypeObject == null) {
+          log.error("Unable to register Cobblemon spawn egg with id {}.", entityType.getId());
+          continue;
+        }
+        log.info(
+            "Registering Cobblemon spawn egg for {} with id {}.",
+            entityTypeObject,
+            entityType.getId());
+        INTEGRATION_SPAWN_EGGS.add(registerSpawnEgg(entityType.getId(), entityTypeObject));
       }
     }
   }

@@ -61,6 +61,7 @@ public class ModTabs {
                   .build());
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   public static RegistryObject<CreativeModeTab> TAB_EPIC_FIGHT_SPAWN_EGGS;
+  public static RegistryObject<CreativeModeTab> TAB_INTEGRATION_SPAWN_EGGS;
 
   static {
     if (CompatConstants.MOD_EPIC_FIGHT_LOADED) {
@@ -77,6 +78,18 @@ public class ModTabs {
                                   .getDefaultInstance())
                       .displayItems(new EpicFightSpawnEggs())
                       .title(Component.translatable("itemGroup.easy_npc.epic_fight_spawn_eggs"))
+                      .build());
+    }
+
+    if (!ModItems.INTEGRATION_SPAWN_EGGS.isEmpty()) {
+      TAB_INTEGRATION_SPAWN_EGGS =
+          CREATIVE_TABS.register(
+              "integration_spawn_eggs",
+              () ->
+                  CreativeModeTab.builder()
+                      .icon(() -> ModItems.INTEGRATION_SPAWN_EGGS.get(0).get().getDefaultInstance())
+                      .displayItems(new IntegrationSpawnEggs())
+                      .title(Component.translatable("itemGroup.easy_npc.integration_spawn_eggs"))
                       .build());
     }
   }

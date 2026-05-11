@@ -19,8 +19,11 @@
 
 package de.markusbordihn.easynpc.client;
 
+import de.markusbordihn.easynpc.compat.CompatConstants;
+import de.markusbordihn.easynpc.compat.cobblemon.CobblemonLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.event.TagsUpdatedEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -31,5 +34,16 @@ public class ClientEventHandler {
   @SubscribeEvent
   public static void onClientSetup(FMLClientSetupEvent event) {
     event.enqueueWork(() -> ClientEvents.handleClientStartedEvent(Minecraft.getInstance()));
+  }
+}
+
+@EventBusSubscriber(value = Dist.CLIENT)
+class ClientGameEventHandler {
+
+  @SubscribeEvent
+  public static void onTagsUpdated(TagsUpdatedEvent event) {
+    if (CompatConstants.MOD_COBBLEMON_LOADED) {
+      CobblemonLoader.register();
+    }
   }
 }

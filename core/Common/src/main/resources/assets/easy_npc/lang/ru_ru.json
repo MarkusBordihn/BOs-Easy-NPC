@@ -39,6 +39,7 @@
   "entity.easy_npc.witch": "Ведьма",
   "entity.easy_npc.wither_skeleton": "Скелет-иссушитель",
   "entity.easy_npc.wolf": "Волк",
+  "entity.easy_npc.cobblemon_npc": "Cobblemon",
   "entity.easy_npc.zombie": "Зомби",
   "entity.easy_npc.zombie_villager": "Зомби-житель",
   "item.easy_npc.easy_npc_preset": "Шаблон NPC",
@@ -68,10 +69,10 @@
   "text.easy_npc.trading.busy": "%1$s сейчас занят торговлей с %2$s.\n Пожалуйста, подождите, пока торговля завершится.",
   "text.easy_npc.type": "Тип",
   "text.easy_npc.value": "Значение",
-  "tooltip.easy_npc.spawner.boss_spawner": "Спавнер Босса — это специальный спавнер, который позволяет вам заспаунить босса NPC.",
-  "tooltip.easy_npc.spawner.default_spawner": "Стандартный Спавнер — это спавнер, который позволяет вам заспаунить стандартного NPC.",
-  "tooltip.easy_npc.spawner.group_spawner": "Групповой Спавнер — это спавнер, который позволяет вам заспаунить группу NPC.",
-  "tooltip.easy_npc.spawner.single_spawner": "Одиночный Спавнер — это спавнер, который позволяет вам заспаунить одного NPC.",
+  "tooltip.easy_npc.spawner.boss_spawner": "Спавнер Босса - это специальный спавнер, который позволяет вам заспаунить босса NPC.",
+  "tooltip.easy_npc.spawner.default_spawner": "Стандартный Спавнер - это спавнер, который позволяет вам заспаунить стандартного NPC.",
+  "tooltip.easy_npc.spawner.group_spawner": "Групповой Спавнер - это спавнер, который позволяет вам заспаунить группу NPC.",
+  "tooltip.easy_npc.spawner.single_spawner": "Одиночный Спавнер - это спавнер, который позволяет вам заспаунить одного NPC.",
   "message.easynpc.access.no_permission": "У вас нет прав для редактирования этого NPC.",
   "message.easynpc.access.npc_not_found": "Этот NPC не найден или больше не существует."
 }

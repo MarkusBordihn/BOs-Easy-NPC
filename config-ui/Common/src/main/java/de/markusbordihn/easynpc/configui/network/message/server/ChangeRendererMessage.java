@@ -32,7 +32,10 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EntityType;
 
 public record ChangeRendererMessage(
-    UUID uuid, RenderType renderType, Optional<EntityType<?>> renderEntityType)
+    UUID uuid,
+    RenderType renderType,
+    Optional<EntityType<?>> renderEntityType,
+    Optional<String> renderEntityModel)
     implements NetworkMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
@@ -42,7 +45,8 @@ public record ChangeRendererMessage(
     return new ChangeRendererMessage(
         buffer.readUUID(),
         buffer.readEnum(RenderType.class),
-        EntityType.byString(buffer.readUtf()));
+        EntityType.byString(buffer.readUtf()),
+        Optional.of(buffer.readUtf()).filter(modelName -> !modelName.isEmpty()));
   }
 
   @Override
@@ -53,6 +57,7 @@ public record ChangeRendererMessage(
         this.renderEntityType
             .map(entityType -> EntityType.getKey(entityType).toString())
             .orElse(""));
+    buffer.writeUtf(this.renderEntityModel.orElse(""));
   }
 
   @Override
@@ -72,5 +77,7 @@ public record ChangeRendererMessage(
     }
     this.renderEntityType.ifPresent(
         entityType -> RenderHandler.setRenderEntity(easyNPC, entityType));
+    this.renderEntityModel.ifPresent(
+        entityModel -> RenderHandler.setRenderEntityModel(easyNPC, entityModel));
   }
 }

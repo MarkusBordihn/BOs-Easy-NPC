@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.security;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.Set;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -99,5 +100,20 @@ class UnsafeNpcCommandTest {
     assertTrue(UnsafeNpcCommand.matches("Stop"));
     assertTrue(UnsafeNpcCommand.matches("FUNCTION mypack:foo"));
     assertTrue(UnsafeNpcCommand.matches("execute as @a run STOP"));
+  }
+
+  @Test
+  void testConfigurableCommandList() {
+    Set<String> unsafeCommandNames = Set.of("op");
+    assertTrue(UnsafeNpcCommand.matches("op Steve", unsafeCommandNames));
+    assertTrue(UnsafeNpcCommand.matches("execute as @a run op Steve", unsafeCommandNames));
+    assertFalse(UnsafeNpcCommand.matches("stop", unsafeCommandNames));
+  }
+
+  @Test
+  void testRootCommandExtraction() {
+    assertEquals("shop", UnsafeNpcCommand.extractRootCommandName("/shop Mobbie's Drops"));
+    assertEquals("execute", UnsafeNpcCommand.extractRootCommandName("execute as @a run op Steve"));
+    assertNull(UnsafeNpcCommand.extractRootCommandName("   "));
   }
 }

@@ -34,6 +34,9 @@ dependencies {
   if (project.hasProperty('fabric_xaeros_minimap_mod') && project.fabric_xaeros_minimap_mod) {
     modRuntimeOnly("curse.maven:xaeros_minimap-263420:${project.fabric_xaeros_minimap_mod}")
   }
+
+  // Cobblemon (compileOnly for Cobblemon NPC support)
+  modCompileOnly("curse.maven:cobblemon-687131:5375408")
 }
 
 loom {

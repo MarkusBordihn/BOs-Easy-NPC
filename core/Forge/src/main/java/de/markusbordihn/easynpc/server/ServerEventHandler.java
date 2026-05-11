@@ -19,6 +19,8 @@
 
 package de.markusbordihn.easynpc.server;
 
+import de.markusbordihn.easynpc.compat.CompatConstants;
+import de.markusbordihn.easynpc.compat.cobblemon.CobblemonLoader;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.ServerTickEvent;
 import net.minecraftforge.event.server.ServerStartedEvent;
@@ -41,6 +43,9 @@ public class ServerEventHandler {
   @SubscribeEvent
   public static void handleServerStartedEvent(ServerStartedEvent event) {
     ServerEvents.handleServerStarted(event.getServer());
+    if (CompatConstants.MOD_COBBLEMON_LOADED) {
+      CobblemonLoader.register();
+    }
   }
 
   @SubscribeEvent

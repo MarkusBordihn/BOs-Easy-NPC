@@ -135,6 +135,10 @@ dependencies {
   runtimeOnly fg.deobf("curse.maven:framework-549225:6531428")
   runtimeOnly fg.deobf("curse.maven:just-enough-guns-820727:6808139")
   runtimeOnly fg.deobf("curse.maven:create-328085:7178761")
+
+  // Cobblemon (Testing)
+  runtimeOnly fg.deobf("curse.maven:kotlin-for-forge-351264:7291067")
+  runtimeOnly fg.deobf("curse.maven:cobblemon-687131:5375390")
 }
 
 tasks.withType(JavaCompile).configureEach {

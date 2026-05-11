@@ -99,6 +99,7 @@ public record ChangeBasicTradingMessage(
             easyNPC,
             serverPlayer);
         tradingData.getTradingDataSet().setResetsEveryMin(this.tradingValue);
+        tradingData.updateTradingDataSet();
         break;
       case MAX_USES:
         log.debug("Set max uses to {} for {} from {}", this.tradingValue, easyNPC, serverPlayer);

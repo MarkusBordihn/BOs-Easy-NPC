@@ -28,14 +28,22 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public record RenderDataEntry(
-    RenderType renderType, EntityType<? extends Entity> renderEntityType) {
+    RenderType renderType,
+    EntityType<? extends Entity> renderEntityType,
+    String renderEntityModel) {
 
   static final String DATA_RENDER_TYPE_TAG = "Type";
   static final String DATA_RENDER_ENTITY_TYPE_TAG = "EntityType";
+  static final String DATA_RENDER_ENTITY_MODEL_TAG = "EntityModel";
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   public RenderDataEntry() {
-    this(RenderType.DEFAULT, null);
+    this(RenderType.DEFAULT, null, null);
+  }
+
+  public RenderDataEntry(
+      final RenderType renderType, final EntityType<? extends Entity> renderEntityType) {
+    this(renderType, renderEntityType, null);
   }
 
   public RenderDataEntry(final CompoundTag compoundTag) {
@@ -45,17 +53,29 @@ public record RenderDataEntry(
             : RenderType.DEFAULT,
         compoundTag.contains(DATA_RENDER_ENTITY_TYPE_TAG)
             ? EntityType.byString(compoundTag.getString(DATA_RENDER_ENTITY_TYPE_TAG)).orElse(null)
+            : null,
+        compoundTag.contains(DATA_RENDER_ENTITY_MODEL_TAG)
+            ? compoundTag.getString(DATA_RENDER_ENTITY_MODEL_TAG)
             : null);
   }
 
   public RenderDataEntry withRenderType(final RenderType renderType) {
     return new RenderDataEntry(
-        renderType, renderType == RenderType.DEFAULT ? null : renderEntityType);
+        renderType, renderType == RenderType.DEFAULT ? null : renderEntityType, renderEntityModel);
   }
 
   public RenderDataEntry withRenderEntityType(final EntityType<? extends Entity> renderEntityType) {
     return new RenderDataEntry(
-        renderEntityType != null ? RenderType.CUSTOM_ENTITY : RenderType.DEFAULT, renderEntityType);
+        renderEntityType != null ? RenderType.CUSTOM_ENTITY : RenderType.DEFAULT,
+        renderEntityType,
+        null);
+  }
+
+  public RenderDataEntry withRenderEntityModel(final String renderEntityModel) {
+    return new RenderDataEntry(
+        renderEntityModel != null ? RenderType.COBBLEMON_ENTITY : RenderType.DEFAULT,
+        null,
+        renderEntityModel);
   }
 
   public RenderDataEntry create(CompoundTag compoundTag) {
@@ -70,6 +90,10 @@ public record RenderDataEntry(
     if (this.renderEntityType != null && this.renderEntityType.canSerialize()) {
       ResourceLocation entityTypeResourceLocation = EntityType.getKey(this.renderEntityType);
       compoundTag.putString(DATA_RENDER_ENTITY_TYPE_TAG, entityTypeResourceLocation.toString());
+    }
+
+    if (this.renderEntityModel != null && !this.renderEntityModel.isEmpty()) {
+      compoundTag.putString(DATA_RENDER_ENTITY_MODEL_TAG, this.renderEntityModel);
     }
 
     return compoundTag;
@@ -89,5 +113,9 @@ public record RenderDataEntry(
 
   public EntityType<? extends Entity> getRenderEntityType() {
     return renderEntityType;
+  }
+
+  public String getRenderEntityModel() {
+    return renderEntityModel;
   }
 }

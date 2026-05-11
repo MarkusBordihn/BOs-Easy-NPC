@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.configui.client.screen.configuration.main;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.client.screen.components.TextField;
+import de.markusbordihn.easynpc.compat.IntegrationRegistry;
 import de.markusbordihn.easynpc.configui.client.renderer.screen.EntityConfigScreenRenderer;
 import de.markusbordihn.easynpc.configui.client.screen.EntityGuiScaling;
 import de.markusbordihn.easynpc.configui.client.screen.components.ColorButton;
@@ -139,7 +140,9 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
             scale,
             rotationYaw,
             rotationPitch);
+    IntegrationRegistry.setGuiPreviewMode(true);
     EntityConfigScreenRenderer.renderEntity(guiGraphics, getEasyNPC(), config);
+    IntegrationRegistry.setGuiPreviewMode(false);
 
     // Scale entity texts
     float scaleEntityTypeText = 0.75f;
@@ -456,19 +459,28 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
                 14,
                 "change_model",
                 onPress -> {
-                  switch (renderDataSet.getRenderType()) {
-                    case CUSTOM_ENTITY:
-                      NetworkMessageHandlerManager.getServerHandler()
-                          .openConfiguration(this.getEasyNPCUUID(), ConfigurationType.CUSTOM_MODEL);
-                      break;
-                    default:
-                      NetworkMessageHandlerManager.getServerHandler()
-                          .openConfiguration(
-                              this.getEasyNPCUUID(), ConfigurationType.DEFAULT_MODEL);
-                      break;
+                  if (this.supportsConfigurationType(ConfigurationType.COBBLEMON_MODEL)) {
+                    NetworkMessageHandlerManager.getServerHandler()
+                        .openConfiguration(
+                            this.getEasyNPCUUID(), ConfigurationType.COBBLEMON_MODEL);
+                  } else {
+                    switch (renderDataSet.getRenderType()) {
+                      case CUSTOM_ENTITY:
+                        NetworkMessageHandlerManager.getServerHandler()
+                            .openConfiguration(
+                                this.getEasyNPCUUID(), ConfigurationType.CUSTOM_MODEL);
+                        break;
+                      default:
+                        NetworkMessageHandlerManager.getServerHandler()
+                            .openConfiguration(
+                                this.getEasyNPCUUID(), ConfigurationType.DEFAULT_MODEL);
+                        break;
+                    }
                   }
                 }));
-    changeModelButton.active = this.supportsConfigurationType(ConfigurationType.CUSTOM_MODEL);
+    changeModelButton.active =
+        this.supportsConfigurationType(ConfigurationType.CUSTOM_MODEL)
+            || this.supportsConfigurationType(ConfigurationType.COBBLEMON_MODEL);
     if (!changeModelButton.active) {
       changeModelButton.setTooltip(
           Tooltip.create(

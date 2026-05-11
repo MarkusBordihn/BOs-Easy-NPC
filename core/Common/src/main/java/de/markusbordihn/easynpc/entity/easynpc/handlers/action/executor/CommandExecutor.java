@@ -68,7 +68,7 @@ public class CommandExecutor {
 
     CommandPermissionLevel permissionLevel =
         commandAuthority != null ? commandAuthority.effective() : CommandPermissionLevel.ALL;
-    if (isBlockedUnsafeNPCCommand(command)) {
+    if (!CommandSecurity.isExecuteAsNpcCommandAllowed(command)) {
       log.warn(
           "Blocked unsafe entity command {} for {} with permission level {}!",
           command,
@@ -137,15 +137,97 @@ public class CommandExecutor {
       return;
     }
 
-    if (command.startsWith("/")) {
-      command = command.substring(1);
+    command = normalizeCommand(command);
+    if (command.isEmpty()) {
+      log.warn("Blocked empty player command for {}", serverPlayer);
+      return;
     }
-    log.debug(
-        "Execute Player {} Command: \"{}\" with permission level {}",
-        serverPlayer,
-        command,
-        permissionLevel);
+
+    String rootCommandName = CommandSecurity.getRootCommandName(command);
+    CommandPermissionLevel npcPermissionLevel =
+        commandAuthority != null ? commandAuthority.ceiling() : CommandPermissionLevel.ALL;
+    CommandPermissionLevel requestedPermissionLevel =
+        commandAuthority != null ? commandAuthority.requested() : permissionLevel;
+    CommandPermissionLevel maxPermissionLevel =
+        CommandPermissionLevel.min(requestedPermissionLevel, npcPermissionLevel);
+    if (!CommandSecurity.isExecuteAsUserCommandAllowed(command, maxPermissionLevel)) {
+      log.warn(
+          "Blocked player command {} for {} because root command {} is not allowlisted up to permission level {}!",
+          command,
+          serverPlayer,
+          rootCommandName,
+          maxPermissionLevel);
+      return;
+    }
+
     Commands commands = minecraftServer.getCommands();
+    CommandDispatcher<CommandSourceStack> commandDispatcher = commands.getDispatcher();
+    CommandPermissionLevel playerPermissionLevel =
+        CommandSecurity.getPlayerPermissionLevel(serverPlayer);
+    CommandPermissionLevel basePermissionLevel =
+        CommandPermissionLevel.min(
+            requestedPermissionLevel,
+            CommandPermissionLevel.min(playerPermissionLevel, npcPermissionLevel));
+    CommandSourceStack baseCommandSourceStack =
+        createPlayerCommandSourceStack(minecraftServer, serverPlayer, basePermissionLevel, debug);
+    ParseResults<CommandSourceStack> parseResults =
+        commandDispatcher.parse(command, baseCommandSourceStack);
+    if (isParseSuccessful(parseResults)) {
+      log.debug(
+          "Execute Player {} Command: \"{}\" with player permission level {}, capped by NPC permission level {}",
+          serverPlayer,
+          command,
+          basePermissionLevel,
+          npcPermissionLevel);
+      commands.performCommand(parseResults, command);
+      return;
+    }
+
+    if (maxPermissionLevel == basePermissionLevel) {
+      log.warn(
+          "Blocked player command {} for {} because it is not available at capped permission level {}!",
+          command,
+          serverPlayer,
+          basePermissionLevel);
+      return;
+    }
+
+    CommandSourceStack elevatedCommandSourceStack =
+        createPlayerCommandSourceStack(minecraftServer, serverPlayer, maxPermissionLevel, debug);
+    parseResults = commandDispatcher.parse(command, elevatedCommandSourceStack);
+    if (!isParseSuccessful(parseResults)) {
+      log.warn(
+          "Blocked player command {} for {} because it is not available at allowlisted permission level {}!",
+          command,
+          serverPlayer,
+          maxPermissionLevel);
+      return;
+    }
+
+    log.info(
+        "Execute allowlisted player command {} for {} with permission level {} (player {}, NPC cap {})",
+        rootCommandName,
+        serverPlayer,
+        maxPermissionLevel,
+        playerPermissionLevel,
+        npcPermissionLevel);
+    commands.performCommand(parseResults, command);
+  }
+
+  private static String normalizeCommand(String command) {
+    if (command == null) {
+      return "";
+    }
+
+    String normalizedCommand = command.trim();
+    return normalizedCommand.startsWith("/") ? normalizedCommand.substring(1) : normalizedCommand;
+  }
+
+  private static CommandSourceStack createPlayerCommandSourceStack(
+      MinecraftServer minecraftServer,
+      ServerPlayer serverPlayer,
+      CommandPermissionLevel permissionLevel,
+      boolean debug) {
     CommandSourceStack commandSourceStack =
         minecraftServer
             .createCommandSourceStack()
@@ -154,10 +236,12 @@ public class CommandExecutor {
             .withRotation(serverPlayer.getRotationVector())
             .withPermission(permissionLevel.minecraftLevel())
             .withLevel(serverPlayer.serverLevel());
-    CommandDispatcher<CommandSourceStack> commandDispatcher = commands.getDispatcher();
-    ParseResults<CommandSourceStack> parseResults =
-        commandDispatcher.parse(
-            command, debug ? commandSourceStack : commandSourceStack.withSuppressedOutput());
-    commands.performCommand(parseResults, command);
+    return debug ? commandSourceStack : commandSourceStack.withSuppressedOutput();
+  }
+
+  private static boolean isParseSuccessful(ParseResults<CommandSourceStack> parseResults) {
+    return parseResults != null
+        && !parseResults.getReader().canRead()
+        && parseResults.getContext().getCommand() != null;
   }
 }

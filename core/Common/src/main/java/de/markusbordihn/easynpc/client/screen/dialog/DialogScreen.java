@@ -27,6 +27,7 @@ import de.markusbordihn.easynpc.client.screen.components.DialogForwardButton;
 import de.markusbordihn.easynpc.client.screen.components.Graphics;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
+import de.markusbordihn.easynpc.compat.IntegrationRegistry;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
 import de.markusbordihn.easynpc.data.dialog.DialogButtonEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
@@ -318,8 +319,8 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
                 || dialogScreenLayout == DialogScreenLayout.COMPACT_TEXT_WITH_FOUR_BUTTONS
                 || dialogScreenLayout == DialogScreenLayout.COMPACT_TEXT_WITH_FIVE_BUTTONS
                 || dialogScreenLayout == DialogScreenLayout.COMPACT_TEXT_WITH_SIX_BUTTONS
-            ? this.topPos + 95
-            : this.topPos + 136;
+            ? this.topPos + 97
+            : this.topPos + 138;
 
     // Forward Button
     this.dialogForwardButton =
@@ -436,7 +437,9 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
 
     EntityRenderConfig config =
         EntityRenderConfig.dialog(left, top, scale, rotationYaw, rotationPitch);
+    IntegrationRegistry.setGuiPreviewMode(true);
     EntityScreenRenderer.renderEntity(guiGraphics, this.getEasyNPC(), config);
+    IntegrationRegistry.setGuiPreviewMode(false);
 
     guiGraphics.pose().popPose();
 
