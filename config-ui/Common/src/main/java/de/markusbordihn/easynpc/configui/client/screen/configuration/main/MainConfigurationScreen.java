@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.configui.client.screen.configuration.main;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.client.screen.components.TextField;
+import de.markusbordihn.easynpc.compat.IntegrationRegistry;
 import de.markusbordihn.easynpc.configui.client.renderer.screen.EntityConfigScreenRenderer;
 import de.markusbordihn.easynpc.configui.client.screen.EntityGuiScaling;
 import de.markusbordihn.easynpc.configui.client.screen.components.ColorButton;
@@ -128,6 +129,7 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
       return;
     }
 
+    IntegrationRegistry.setGuiPreviewMode(true);
     EntityConfigScreenRenderer.renderEntity(
         guiGraphics,
         getEasyNPC(),
@@ -135,6 +137,7 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
             this.leftPos + 60, this.avatarTopPos + 97, EntityGuiScaling.getScaling(getEasyNPC())),
         this.xMouse,
         this.yMouse);
+    IntegrationRegistry.setGuiPreviewMode(false);
 
     // Scale entity texts
     float scaleEntityTypeText = 0.75f;
@@ -452,6 +455,11 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
                 "change_model",
                 onPress -> {
                   switch (renderDataSet.getRenderType()) {
+                    case COBBLEMON_ENTITY:
+                      NetworkMessageHandlerManager.getServerHandler()
+                          .openConfiguration(
+                              this.getEasyNPCUUID(), ConfigurationType.COBBLEMON_MODEL);
+                      break;
                     case CUSTOM_ENTITY:
                       NetworkMessageHandlerManager.getServerHandler()
                           .openConfiguration(this.getEasyNPCUUID(), ConfigurationType.CUSTOM_MODEL);
@@ -463,7 +471,9 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
                       break;
                   }
                 }));
-    changeModelButton.active = this.supportsConfigurationType(ConfigurationType.CUSTOM_MODEL);
+    changeModelButton.active =
+        this.supportsConfigurationType(ConfigurationType.CUSTOM_MODEL)
+            || this.supportsConfigurationType(ConfigurationType.COBBLEMON_MODEL);
     if (!changeModelButton.active) {
       changeModelButton.setTooltip(
           Tooltip.create(

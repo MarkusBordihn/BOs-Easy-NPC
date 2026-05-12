@@ -64,6 +64,9 @@ dependencies {
     runtimeOnly "curse.maven:xaeros_minimap-263420:${project.neoforge_xaeros_minimap_mod}"
   }
 
+  // Cobblemon integration
+  compileOnly "curse.maven:cobblemon-687131:7553231"
+
   // Test dependencies
   // runtimeOnly "curse.maven:epic-fight-mod-405076:7185834"
 }

@@ -8,6 +8,15 @@ For the full changelog, please go to the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 6.14.0
+
+- Fixed #727 by making sure changes are synced to the client when changing values.
+- Fixed #726 by adding additional allow lists for specific commands.
+- Fixed #686, #389, #304, #211 by adding basic Cobblemon support with Cobblemon NPC.
+- Fixed dialog misalignment and navigation issues by adjusting dialog sprites and screens.
+- Fixed x and z root rotation by correcting rotation logic and pivot calculations.
+- Added basic Cobblemon support with custom NPC type and model for testing.
+
 ### 6.13.0 (Security and Permissions Updates)
 
 Notes: This update includes better security checks and permissions for multiplayer environments.

@@ -53,6 +53,8 @@ public class ModEntityType {
       new ConcurrentHashMap<>();
   public static final Map<EpicFightEntityType, RegistryObject<EntityType<?>>> EPIC_FIGHT_TYPE =
       new EnumMap<>(EpicFightEntityType.class);
+  public static final Map<CobblemonEntityType, RegistryObject<EntityType<?>>> COBBLEMON_TYPE =
+      new EnumMap<>(CobblemonEntityType.class);
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   static {
@@ -101,6 +103,16 @@ public class ModEntityType {
       for (EpicFightEntityType type : EpicFightEntityType.values()) {
         log.info("Registering Epic Fight entity type {}", type.getResourceKey());
         EPIC_FIGHT_TYPE.put(
+            type,
+            ENTITY_TYPES.register(
+                type.getId(), () -> type.getBuilder().build(type.getResourceKey().toString())));
+      }
+    }
+
+    if (CompatConstants.MOD_COBBLEMON_LOADED) {
+      for (CobblemonEntityType type : CobblemonEntityType.values()) {
+        log.info("Registering Cobblemon entity type {}", type.getResourceKey());
+        COBBLEMON_TYPE.put(
             type,
             ENTITY_TYPES.register(
                 type.getId(), () -> type.getBuilder().build(type.getResourceKey().toString())));
@@ -300,6 +312,19 @@ public class ModEntityType {
         }
       }
     }
+
+    if (CompatConstants.MOD_COBBLEMON_LOADED) {
+      for (CobblemonEntityType type : CobblemonEntityType.values()) {
+        if (type.getAttributes() != null) {
+          event.put(
+              (EntityType<? extends LivingEntity>) COBBLEMON_TYPE.get(type).get(),
+              type.getAttributes().build());
+        } else {
+          log.warn(
+              "Cobblemon entity type {} does not have attributes defined!", type.getResourceKey());
+        }
+      }
+    }
   }
 
   public static <T extends Entity> EntityType<T> getEntityType(EpicFightEntityType type) {
@@ -311,5 +336,16 @@ public class ModEntityType {
               + EPIC_FIGHT_TYPE.keySet());
     }
     return (EntityType<T>) EPIC_FIGHT_TYPE.get(type).get();
+  }
+
+  public static <T extends Entity> EntityType<T> getEntityType(CobblemonEntityType type) {
+    if (!COBBLEMON_TYPE.containsKey(type)) {
+      throw new IllegalArgumentException(
+          "Invalid Cobblemon entity type '"
+              + type
+              + "'! Supported types are "
+              + COBBLEMON_TYPE.keySet());
+    }
+    return (EntityType<T>) COBBLEMON_TYPE.get(type).get();
   }
 }

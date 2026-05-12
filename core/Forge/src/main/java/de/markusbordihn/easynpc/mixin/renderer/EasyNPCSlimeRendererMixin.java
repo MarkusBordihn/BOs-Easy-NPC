@@ -20,7 +20,6 @@
 package de.markusbordihn.easynpc.mixin.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCLivingEntityRenderer;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import net.minecraft.client.renderer.entity.SlimeRenderer;
 import net.minecraft.world.entity.monster.Slime;
@@ -47,17 +46,6 @@ public class EasyNPCSlimeRendererMixin {
     if (entity instanceof EasyNPC<?>) {
       entity.yBodyRot = entity.yHeadRot;
       entity.yBodyRotO = entity.yHeadRotO;
-    }
-  }
-
-  @Inject(
-      method =
-          "scale(Lnet/minecraft/world/entity/monster/Slime;Lcom/mojang/blaze3d/vertex/PoseStack;F)V",
-      at = @At("TAIL"))
-  protected void onScale(Slime entity, PoseStack poseStack, float scale, CallbackInfo ci) {
-    if (entity instanceof EasyNPC<?> easyNPC) {
-      EasyNPCLivingEntityRenderer.handleScale(easyNPC, poseStack);
-      EasyNPCLivingEntityRenderer.handleRotation(easyNPC, poseStack);
     }
   }
 }

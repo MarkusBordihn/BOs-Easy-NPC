@@ -59,6 +59,7 @@ public class ModTabs {
                   .build());
 
   public static DeferredHolder<CreativeModeTab, CreativeModeTab> TAB_EPIC_FIGHT_SPAWN_EGGS;
+  public static DeferredHolder<CreativeModeTab, CreativeModeTab> TAB_INTEGRATION_SPAWN_EGGS;
 
   static {
     if (CompatConstants.MOD_EPIC_FIGHT_LOADED) {
@@ -75,6 +76,25 @@ public class ModTabs {
                                   .getDefaultInstance())
                       .displayItems(new EpicFightSpawnEggs())
                       .title(Component.translatable("itemGroup.easy_npc.epic_fight_spawn_eggs"))
+                      .build());
+    }
+
+    if (CompatConstants.MOD_COBBLEMON_LOADED) {
+      TAB_INTEGRATION_SPAWN_EGGS =
+          CREATIVE_TABS.register(
+              "integration_spawn_eggs",
+              () ->
+                  CreativeModeTab.builder()
+                      .icon(
+                          () ->
+                              ModItems.INTEGRATION_SPAWN_EGGS.isEmpty()
+                                  ? ModItems.MOVE_EASY_NPC.get().getDefaultInstance()
+                                  : ModItems.INTEGRATION_SPAWN_EGGS
+                                      .get(0)
+                                      .get()
+                                      .getDefaultInstance())
+                      .displayItems(new IntegrationSpawnEggs())
+                      .title(Component.translatable("itemGroup.easy_npc.integration_spawn_eggs"))
                       .build());
     }
   }

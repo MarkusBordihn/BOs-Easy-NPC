@@ -72,6 +72,7 @@
   "tooltip.easy_npc.spawner.default_spawner": "El Generador Predeterminado es un generador que te permite generar un NPC predeterminado.",
   "tooltip.easy_npc.spawner.group_spawner": "El Generador de Grupo es un generador que te permite generar un grupo de NPCs.",
   "tooltip.easy_npc.spawner.single_spawner": "El Generador Individual es un generador que te permite generar un solo NPC.",
+  "entity.easy_npc.cobblemon_npc": "Cobblemon",
   "message.easynpc.access.no_permission": "No tienes permiso para editar este NPC.",
   "message.easynpc.access.npc_not_found": "Este NPC no se pudo encontrar o ya no existe."
 }

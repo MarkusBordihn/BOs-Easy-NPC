@@ -19,15 +19,18 @@
 
 package de.markusbordihn.easynpc.client.renderer.manager;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.compat.CompatConstants;
 import java.util.HashMap;
 import java.util.Map;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -228,8 +231,30 @@ public class RendererManager {
     targetEntity.attackAnim = sourceEntity.attackAnim;
     targetEntity.oAttackAnim = sourceEntity.oAttackAnim;
 
+    // Adjust walk distance for animation.
+    targetEntity.walkDist = sourceEntity.walkDist;
+    targetEntity.walkDistO = sourceEntity.walkDistO;
+
     // Hand item support.
     targetEntity.setItemInHand(InteractionHand.MAIN_HAND, sourceEntity.getMainHandItem());
     targetEntity.setItemInHand(InteractionHand.OFF_HAND, sourceEntity.getOffhandItem());
+  }
+
+  @SuppressWarnings({"unchecked", "rawtypes"})
+  public static void renderLivingEntity(
+      PathfinderMob sourceEntity,
+      LivingEntity targetEntity,
+      String entityTypeName,
+      LivingEntityRenderer<?, ?> livingEntityRenderer,
+      float entityYaw,
+      float partialTicks,
+      PoseStack poseStack,
+      MultiBufferSource buffer,
+      int packedLight) {
+    copyCustomLivingEntityData(sourceEntity, targetEntity, entityTypeName);
+    targetEntity.setCustomNameVisible(false);
+    targetEntity.setCustomName(Component.empty());
+    ((LivingEntityRenderer) livingEntityRenderer)
+        .render(targetEntity, entityYaw, partialTicks, poseStack, buffer, packedLight);
   }
 }

@@ -601,14 +601,23 @@ public interface ServerNetworkMessageHandlerInterface {
   default void setRenderType(UUID uuid, RenderType renderType) {
     if (uuid != null && renderType != null) {
       NetworkHandlerManager.sendMessageToServer(
-          new ChangeRendererMessage(uuid, renderType, Optional.empty()));
+          new ChangeRendererMessage(uuid, renderType, Optional.empty(), Optional.empty()));
     }
   }
 
   default void setRenderEntityType(UUID uuid, EntityType<?> entityType) {
     if (uuid != null && entityType != null) {
       NetworkHandlerManager.sendMessageToServer(
-          new ChangeRendererMessage(uuid, RenderType.CUSTOM, Optional.of(entityType)));
+          new ChangeRendererMessage(
+              uuid, RenderType.CUSTOM, Optional.of(entityType), Optional.empty()));
+    }
+  }
+
+  default void setRenderEntityModel(UUID uuid, String entityModel) {
+    if (uuid != null && entityModel != null && !entityModel.isEmpty()) {
+      NetworkHandlerManager.sendMessageToServer(
+          new ChangeRendererMessage(
+              uuid, RenderType.COBBLEMON_ENTITY, Optional.empty(), Optional.of(entityModel)));
     }
   }
 

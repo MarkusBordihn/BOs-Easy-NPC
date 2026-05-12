@@ -20,12 +20,15 @@
 package de.markusbordihn.easynpc.client.renderer;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.client.model.ModModelLayers;
 import de.markusbordihn.easynpc.client.renderer.entity.EntityRendererUtils;
 import de.markusbordihn.easynpc.client.renderer.entity.ModCustomEntityRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.ModEpicFightEntityRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.ModNPCEntityRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.ModRawEntityRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.cobblemon.CobblemonNPCRenderer;
 import de.markusbordihn.easynpc.compat.CompatConstants;
+import de.markusbordihn.easynpc.entity.CobblemonEntityType;
 import de.markusbordihn.easynpc.entity.ModEntityType;
 import de.markusbordihn.easynpc.entity.UserDefinedEntityRegistry;
 import de.markusbordihn.easynpc.entity.UserDefinedEntityType;
@@ -84,6 +87,12 @@ public class EntityRenderer {
             ModEntityType.getEntityType(renderer.getEntityType()),
             context -> renderer.getRenderer().apply(context));
       }
+    }
+
+    if (CompatConstants.MOD_COBBLEMON_LOADED) {
+      EntityRendererRegistry.register(
+          ModEntityType.getEntityType(CobblemonEntityType.COBBLEMON_NPC),
+          context -> new CobblemonNPCRenderer<>(context, ModModelLayers.DOPPLER));
     }
   }
 

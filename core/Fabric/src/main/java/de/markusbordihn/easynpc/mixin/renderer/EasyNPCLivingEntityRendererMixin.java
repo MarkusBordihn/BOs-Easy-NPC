@@ -67,11 +67,21 @@ public class EasyNPCLivingEntityRendererMixin {
     }
   }
 
-  @Inject(method = "scale", at = @At("HEAD"))
-  private void onScale(LivingEntity entity, PoseStack poseStack, float scale, CallbackInfo ci) {
+  @Inject(
+      method =
+          "setupRotations(Lnet/minecraft/world/entity/LivingEntity;Lcom/mojang/blaze3d/vertex/PoseStack;FFFF)V",
+      at = @At("HEAD"))
+  private void applyCustomTransformsBeforeSetupRotations(
+      LivingEntity entity,
+      PoseStack poseStack,
+      float ageInTicks,
+      float rotationYaw,
+      float partialTicks,
+      float scale,
+      CallbackInfo ci) {
     if (entity instanceof EasyNPC<?> easyNPC) {
-      EasyNPCLivingEntityRenderer.handleScale(easyNPC, poseStack);
       EasyNPCLivingEntityRenderer.handleRotation(easyNPC, poseStack);
+      EasyNPCLivingEntityRenderer.handleScale(easyNPC, poseStack);
     }
   }
 

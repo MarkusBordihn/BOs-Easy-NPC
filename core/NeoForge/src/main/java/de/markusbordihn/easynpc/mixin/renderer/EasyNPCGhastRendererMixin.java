@@ -19,27 +19,8 @@
 
 package de.markusbordihn.easynpc.mixin.renderer;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCLivingEntityRenderer;
-import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import net.minecraft.client.renderer.entity.GhastRenderer;
-import net.minecraft.world.entity.monster.Ghast;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(GhastRenderer.class)
-public class EasyNPCGhastRendererMixin {
-
-  @Inject(
-      method =
-          "scale(Lnet/minecraft/world/entity/monster/Ghast;Lcom/mojang/blaze3d/vertex/PoseStack;F)V",
-      at = @At("TAIL"))
-  protected void onScale(Ghast entity, PoseStack poseStack, float scale, CallbackInfo ci) {
-    if (entity instanceof EasyNPC<?> easyNPC) {
-      EasyNPCLivingEntityRenderer.handleScale(easyNPC, poseStack);
-      EasyNPCLivingEntityRenderer.handleRotation(easyNPC, poseStack);
-    }
-  }
-}
+public class EasyNPCGhastRendererMixin {}

@@ -40,9 +40,10 @@ import org.apache.logging.log4j.Logger;
 
 public class EntityTypeManager {
 
+  public static final float GUI_PREVIEW_TARGET_HEIGHT = 1.365f;
+  public static final float GUI_PREVIEW_MAX_SCALE_FACTOR = 3.0f;
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private static final String LOG_PREFIX = "[Entity Type Manager]";
-
   private static final Set<EntityType<? extends Entity>> unknownEntityTypes = new HashSet<>();
   private static final Set<EntityType<? extends Entity>> supportedEntityTypes = new HashSet<>();
   private static final Set<EntityType<? extends Entity>> unsupportedEntityTypes = new HashSet<>();
@@ -180,7 +181,23 @@ public class EntityTypeManager {
     if (width > defaultWidth || height > defaultHeight) {
       scaleFactor = Math.max(width / defaultWidth, height / defaultHeight);
     }
+
     return scaleFactor;
+  }
+
+  public static float calculateGuiPreviewScaleFactor(float entityHeight) {
+    if (entityHeight <= 0f) {
+      throw new IllegalArgumentException("entityHeight must be > 0, got: " + entityHeight);
+    }
+    return Math.min(GUI_PREVIEW_TARGET_HEIGHT / entityHeight, GUI_PREVIEW_MAX_SCALE_FACTOR);
+  }
+
+  public static float calculateGuiPreviewYLift(float entityHeight) {
+    if (entityHeight <= 0f) {
+      return 0f;
+    }
+    float scaleFactor = calculateGuiPreviewScaleFactor(entityHeight);
+    return Math.max(0f, (GUI_PREVIEW_TARGET_HEIGHT - scaleFactor * entityHeight) / 2f);
   }
 
   public static PathfinderMob getPathfinderMob(EntityType<?> entityType, Level level) {

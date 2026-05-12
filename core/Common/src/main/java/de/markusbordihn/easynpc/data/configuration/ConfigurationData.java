@@ -59,6 +59,25 @@ public record ConfigurationData(Set<ConfigurationType> enabledTypes) {
               ConfigurationType.DEFAULT_ROTATION,
               ConfigurationType.DEFAULT_MODEL));
 
+  public static final ConfigurationData COBBLEMON =
+      new ConfigurationData(
+          include(
+              exclude(
+                  STANDARD.enabledTypes(),
+                  ConfigurationType.ADVANCED_POSE,
+                  ConfigurationType.BASIC_POSE,
+                  ConfigurationType.DEFAULT_POSE,
+                  ConfigurationType.POSE,
+                  ConfigurationType.SKIN,
+                  ConfigurationType.DEFAULT_SKIN,
+                  ConfigurationType.CUSTOM_SKIN,
+                  ConfigurationType.PLAYER_SKIN,
+                  ConfigurationType.URL_SKIN,
+                  ConfigurationType.NONE_SKIN,
+                  ConfigurationType.SCALING,
+                  ConfigurationType.DEFAULT_ROTATION),
+              ConfigurationType.COBBLEMON_MODEL));
+
   public static final ConfigurationData DOPPLER =
       new ConfigurationData(
           include(

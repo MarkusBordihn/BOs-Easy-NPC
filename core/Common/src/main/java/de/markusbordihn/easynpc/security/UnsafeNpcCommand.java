@@ -20,6 +20,8 @@
 package de.markusbordihn.easynpc.security;
 
 import java.util.Locale;
+import java.util.Set;
+import java.util.TreeSet;
 
 public enum UnsafeNpcCommand {
   BAN_IP("ban-ip"),
@@ -53,41 +55,62 @@ public enum UnsafeNpcCommand {
   }
 
   public static boolean matches(String command) {
+    return matches(command, defaultCommandNames());
+  }
+
+  public static boolean matches(String command, Set<String> unsafeCommandNames) {
+    if (unsafeCommandNames == null || unsafeCommandNames.isEmpty()) {
+      return false;
+    }
+
     String commandName = extractCommandName(command);
     if (commandName == null) {
       return false;
     }
 
-    for (UnsafeNpcCommand unsafeNpcCommand : values()) {
-      if (unsafeNpcCommand.commandName.equals(commandName)) {
-        return true;
-      }
-    }
-
-    return false;
+    return unsafeCommandNames.contains(commandName);
   }
 
-  private static String extractCommandName(String command) {
+  public static String extractCommandName(String command) {
     if (command == null || command.isBlank()) {
       return null;
     }
 
-    String normalizedCommand = command.trim();
-    if (normalizedCommand.startsWith("/")) {
-      normalizedCommand = normalizedCommand.substring(1);
-    }
+    String normalizedCommand = removeLeadingSlash(command.trim());
 
     String[] runParts = normalizedCommand.split("\\s+run\\s+");
-    String relevantCommand = runParts[runParts.length - 1].trim();
-    if (relevantCommand.startsWith("/")) {
-      relevantCommand = relevantCommand.substring(1);
-    }
-
+    String relevantCommand = removeLeadingSlash(runParts[runParts.length - 1].trim());
     if (relevantCommand.isEmpty()) {
       return null;
     }
 
     return relevantCommand.split("\\s+")[0].toLowerCase(Locale.ROOT);
+  }
+
+  public static String extractRootCommandName(String command) {
+    if (command == null || command.isBlank()) {
+      return null;
+    }
+
+    String normalizedCommand = removeLeadingSlash(command.trim());
+    if (normalizedCommand.isEmpty()) {
+      return null;
+    }
+
+    return normalizedCommand.split("\\s+")[0].toLowerCase(Locale.ROOT);
+  }
+
+  public static Set<String> defaultCommandNames() {
+    TreeSet<String> commandNames = new TreeSet<>();
+    for (UnsafeNpcCommand unsafeNpcCommand : values()) {
+      commandNames.add(unsafeNpcCommand.commandName);
+    }
+
+    return Set.copyOf(commandNames);
+  }
+
+  private static String removeLeadingSlash(String command) {
+    return command.startsWith("/") ? command.substring(1) : command;
   }
 
   public String commandName() {

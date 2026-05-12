@@ -47,6 +47,7 @@ public class Command {
   public static final String SCALE_ARG = "scale";
   public static final String SLOT_ARG = "slot";
   public static final String SOUND_ARG = "sound";
+  public static final String SPECIES_ARG = "species";
   public static final String TARGET_ARG = "target";
   public static final String TYPE_ARG = "type";
   public static final String VALUE_ARG = "value";
