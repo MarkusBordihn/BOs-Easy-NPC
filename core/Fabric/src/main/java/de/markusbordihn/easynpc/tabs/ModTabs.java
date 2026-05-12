@@ -79,5 +79,16 @@ public class ModTabs {
               .displayItems(new EpicFightSpawnEggs())
               .build());
     }
+
+    if (!ModItems.INTEGRATION_SPAWN_EGGS.isEmpty()) {
+      Registry.register(
+          BuiltInRegistries.CREATIVE_MODE_TAB,
+          Constants.MOD_ID + ":integration_spawn_eggs",
+          FabricCreativeModeTab.builder()
+              .icon(() -> ModItems.INTEGRATION_SPAWN_EGGS.get(0).asItem().getDefaultInstance())
+              .title(Component.translatable("itemGroup.easy_npc.integration_spawn_eggs"))
+              .displayItems(new IntegrationSpawnEggs())
+              .build());
+    }
   }
 }

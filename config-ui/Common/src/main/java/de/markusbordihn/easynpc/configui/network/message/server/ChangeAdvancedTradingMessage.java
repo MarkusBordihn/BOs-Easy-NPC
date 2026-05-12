@@ -125,6 +125,7 @@ public record ChangeAdvancedTradingMessage(
             easyNPC,
             serverPlayer);
         tradingData.getTradingDataSet().setResetsEveryMin((int) this.tradingValue);
+        tradingData.updateTradingDataSet();
         break;
       case MAX_USES:
         log.debug(

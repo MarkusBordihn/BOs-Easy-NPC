@@ -82,6 +82,10 @@ dependencies {
     runtimeOnly "curse.maven:xaeros_minimap-263420:${project.neoforge_xaeros_minimap_mod}"
   }
 
+  // Cobblemon Integration
+  // runtimeOnly "curse.maven:kotlin-for-forge-351264:7471280"
+  // runtimeOnly "curse.maven:cobblemon-687131:7553231"
+
   // Test dependencies
   // runtimeOnly "curse.maven:create-328085:7178775"
 }

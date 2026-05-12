@@ -32,6 +32,7 @@ import de.markusbordihn.easynpc.entity.easynpc.data.ConfigurationDataCapable;
 import de.markusbordihn.easynpc.handler.RenderHandler;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.server.permissions.Permissions;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 
@@ -72,7 +73,23 @@ public class RenderCommand extends Command {
                                                     EasyNPCArgument.getEntityWithAccess(
                                                         context, NPC_TARGET_ARG),
                                                     EntityTypeArgument.getEntityType(
-                                                        context, ENTITY_ARG)))))));
+                                                        context, ENTITY_ARG))))))
+                .then(
+                    Commands.literal("species")
+                        .requires(
+                            cs -> cs.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER))
+                        .then(
+                            Commands.argument(NPC_TARGET_ARG, EasyNPCArgument.npc())
+                                .then(
+                                    Commands.argument(SPECIES_ARG, StringArgumentType.string())
+                                        .executes(
+                                            context ->
+                                                setRenderEntityModel(
+                                                    context.getSource(),
+                                                    EasyNPCArgument.getEntityWithAccess(
+                                                        context, NPC_TARGET_ARG),
+                                                    StringArgumentType.getString(
+                                                        context, SPECIES_ARG)))))));
   }
 
   private static int setRenderType(
@@ -116,5 +133,32 @@ public class RenderCommand extends Command {
   private static boolean isDopplerNPC(EasyNPC<?> easyNPC) {
     return easyNPC instanceof ConfigurationDataCapable<?> configurable
         && configurable.getConfigurationData() == ConfigurationData.DOPPLER;
+  }
+
+  private static int setRenderEntityModel(
+      CommandSourceStack context, EasyNPC<?> easyNPC, String speciesId) {
+    if (easyNPC == null || speciesId == null || speciesId.isEmpty()) {
+      return 0;
+    }
+
+    if (!isCobblemonNPC(easyNPC)) {
+      return sendFailureMessage(
+          context,
+          "Species can only be set on Cobblemon NPCs. Current NPC type: "
+              + easyNPC.getEntity().getType().getDescriptionId());
+    }
+
+    if (!RenderHandler.setRenderEntityModel(easyNPC, speciesId)) {
+      return sendFailureMessage(
+          context, "Failed to set species " + speciesId + " for EasyNPC " + easyNPC);
+    }
+
+    return sendSuccessMessage(
+        context, "Set species " + speciesId + " for EasyNPC with UUID " + easyNPC.getEntityUUID());
+  }
+
+  private static boolean isCobblemonNPC(EasyNPC<?> easyNPC) {
+    return easyNPC instanceof ConfigurationDataCapable<?> configurable
+        && configurable.getConfigurationData() == ConfigurationData.COBBLEMON;
   }
 }

@@ -221,6 +221,7 @@ public class InventoryScreenHandler {
       return false;
     }
     RendererManager.copyCustomLivingEntityData(easyNPC.getPathfinderMob(), customEntity);
+    customEntity.setCustomNameVisible(false);
 
     // Calculate rotations based on mouse position
     float centerX = (left + right) / 2.0F;
