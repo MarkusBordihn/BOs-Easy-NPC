@@ -34,6 +34,7 @@ import de.markusbordihn.easynpc.configui.menu.configuration.dialog.NoneDialogCon
 import de.markusbordihn.easynpc.configui.menu.configuration.dialog.YesNoDialogConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.equipment.EquipmentConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.main.MainConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.configui.menu.configuration.model.CobblemonModelConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.model.CustomModelConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.model.DefaultModelConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.objective.AttackObjectiveConfigurationMenuWrapper;
@@ -201,6 +202,11 @@ public class ModMenuTypes {
           MENU_TYPES.register(
               ConfigurationType.CUSTOM_TRADING.getName(),
               () -> IForgeMenuType.create(CustomTradingConfigurationMenuWrapper::new));
+  public static final RegistryObject<MenuType<CobblemonModelConfigurationMenuWrapper>>
+      COBBLEMON_MODEL_CONFIGURATION_MENU =
+          MENU_TYPES.register(
+              ConfigurationType.COBBLEMON_MODEL.getName(),
+              () -> IForgeMenuType.create(CobblemonModelConfigurationMenuWrapper::new));
   public static final RegistryObject<MenuType<CustomModelConfigurationMenuWrapper>>
       CUSTOM_MODEL_CONFIGURATION_MENU =
           MENU_TYPES.register(

@@ -20,9 +20,12 @@
 package de.markusbordihn.easynpc.handler;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.compat.IntegrationRegistry;
+import de.markusbordihn.easynpc.compat.cobblemon.CobblemonSpeciesManager;
 import de.markusbordihn.easynpc.data.render.RenderType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.RenderDataCapable;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import org.apache.logging.log4j.LogManager;
@@ -66,6 +69,41 @@ public class RenderHandler {
 
     log.debug("[{}] Setting render entity to {}", easyNPC, entityType);
     renderData.setRenderData(renderData.getRenderDataEntry().withRenderEntityType(entityType));
+    return true;
+  }
+
+  public static boolean setRenderEntityModel(EasyNPC<?> easyNPC, String entityModel) {
+    if (easyNPC == null || entityModel == null || entityModel.isEmpty()) {
+      log.error("[{}] Error setting render entity model to {}", easyNPC, entityModel);
+      return false;
+    }
+
+    RenderDataCapable<?> renderData = easyNPC.getEasyNPCRenderData();
+    if (renderData == null || renderData.getRenderDataEntry() == null) {
+      log.error(
+          "[{}] No render data available for setting render entity model {}!",
+          easyNPC,
+          entityModel);
+      return false;
+    }
+
+    Identifier speciesResourceLocation = Identifier.tryParse(entityModel);
+    if (speciesResourceLocation == null) {
+      final String entityModelKey = entityModel;
+      String resolvedModel =
+          IntegrationRegistry.getModels(CobblemonSpeciesManager.INTEGRATION_ID).stream()
+              .filter(model -> model.endsWith(":" + entityModelKey) || model.equals(entityModelKey))
+              .findFirst()
+              .orElse(null);
+      if (resolvedModel == null) {
+        log.error("[{}] Unknown entity model {}!", easyNPC, entityModel);
+        return false;
+      }
+      entityModel = resolvedModel;
+    }
+
+    log.debug("[{}] Setting render entity model to {}", easyNPC, entityModel);
+    renderData.setRenderData(renderData.getRenderDataEntry().withRenderEntityModel(entityModel));
     return true;
   }
 }

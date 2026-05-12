@@ -77,6 +77,8 @@ public class EntityConfigScreenRenderer extends EntityScreenRenderer {
   private static void applyConfigOverrides(EasyNPC<?> easyNPC, EntityRenderConfig config) {
     EntityRenderOverrides overrides = config.overrides();
 
+    easyNPC.getLivingEntity().setCustomNameVisible(false);
+
     RenderDataCapable<?> renderData = easyNPC.getEasyNPCRenderData();
     if (renderData != null && renderData.getRenderDataEntry() != null) {
       RenderDataEntry renderDataSet = renderData.getRenderDataEntry();
@@ -113,6 +115,7 @@ public class EntityConfigScreenRenderer extends EntityScreenRenderer {
   }
 
   private static void restoreConfigState(EasyNPC<?> easyNPC, ConfigRenderState backupState) {
+    easyNPC.getLivingEntity().setCustomNameVisible(backupState.customNameVisible);
     RenderDataCapable<?> renderData = easyNPC.getEasyNPCRenderData();
     if (renderData != null && backupState.renderDataEntry != null) {
       renderData.setRenderData(backupState.renderDataEntry);
@@ -140,6 +143,7 @@ public class EntityConfigScreenRenderer extends EntityScreenRenderer {
   }
 
   private static class ConfigRenderState {
+    final boolean customNameVisible;
     final SkinDataEntry skinDataEntry;
     final Enum<?> variantType;
     final Profession profession;
@@ -147,6 +151,7 @@ public class EntityConfigScreenRenderer extends EntityScreenRenderer {
     final ModelAnimationData modelAnimationData;
 
     ConfigRenderState(EasyNPC<?> easyNPC) {
+      this.customNameVisible = easyNPC.getLivingEntity().isCustomNameVisible();
       RenderDataCapable<?> renderData = easyNPC.getEasyNPCRenderData();
       this.renderDataEntry = renderData != null ? renderData.getRenderDataEntry() : null;
       SkinDataCapable<?> skinData = easyNPC.getEasyNPCSkinData();

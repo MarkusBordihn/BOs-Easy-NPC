@@ -72,6 +72,7 @@
   "tooltip.easy_npc.spawner.default_spawner": "默认刷怪笼是一个刷怪笼，允许你生成默认的 NPC。",
   "tooltip.easy_npc.spawner.group_spawner": "组刷怪笼是一个刷怪笼，允许你生成一组 NPC。",
   "tooltip.easy_npc.spawner.single_spawner": "单刷怪笼是一个刷怪笼，允许你生成单个 NPC。",
+  "entity.easy_npc.cobblemon_npc": "Cobblemon",
   "message.easynpc.access.no_permission": "你没有权限编辑此 NPC。",
   "message.easynpc.access.npc_not_found": "找不到此 NPC 或其已不存在。"
 }

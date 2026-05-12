@@ -30,6 +30,7 @@ public class ClientEventHandler {
 
   public static void registerClientEvents() {
     ClientLifecycleEvents.CLIENT_STARTED.register(ClientEventHandler::onClientStarted);
+    ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {});
     ClientPlayConnectionEvents.DISCONNECT.register(ClientEventHandler::onDisconnect);
   }
 

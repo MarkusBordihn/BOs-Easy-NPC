@@ -75,12 +75,22 @@ public class CommandSecurity {
 
   public static CommandAuthority getUserCommandAuthority(
       CommandPermissionLevel requestedLevel, ActorSecurityContext actorSecurityContext) {
-    return new CommandAuthority(
-        CommandExecutionSubject.USER,
+    return getUserCommandAuthority(
         requestedLevel,
+        actorSecurityContext,
         actorSecurityContext != null
             ? actorSecurityContext.permissionLevel()
             : CommandPermissionLevel.ALL);
+  }
+
+  public static CommandAuthority getUserCommandAuthority(
+      CommandPermissionLevel requestedLevel,
+      ActorSecurityContext actorSecurityContext,
+      CommandPermissionLevel npcLevel) {
+    return new CommandAuthority(
+        CommandExecutionSubject.USER,
+        requestedLevel,
+        npcLevel != null ? npcLevel : CommandPermissionLevel.ALL);
   }
 
   public static CommandAuthority getNpcCommandAuthority(
@@ -92,6 +102,21 @@ public class CommandSecurity {
   }
 
   public static boolean isBlockedUnsafeNpcCommand(String command) {
-    return SecurityConfig.BLOCK_UNSAFE_NPC_COMMANDS && UnsafeNpcCommand.matches(command);
+    return SecurityConfig.BLOCK_UNSAFE_NPC_COMMANDS
+        && UnsafeNpcCommand.matches(command, SecurityConfig.UNSAFE_NPC_COMMANDS);
+  }
+
+  public static boolean isExecuteAsNpcCommandAllowed(String command) {
+    return !isBlockedUnsafeNpcCommand(command);
+  }
+
+  public static String getRootCommandName(String command) {
+    return UnsafeNpcCommand.extractRootCommandName(command);
+  }
+
+  public static boolean isExecuteAsUserCommandAllowed(
+      String command, CommandPermissionLevel permissionLevel) {
+    return SecurityConfig.isExecuteAsUserCommandAllowed(
+        getRootCommandName(command), permissionLevel);
   }
 }

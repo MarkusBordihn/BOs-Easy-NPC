@@ -54,10 +54,12 @@ public class CommandActionExecutor {
     ActorSecurityContext actorSecurityContext = CommandSecurity.getActorContext(serverPlayer);
     CommandAuthority commandAuthority =
         CommandSecurity.getUserCommandAuthority(
-            actionDataEntry.commandPermissionLevel(), actorSecurityContext);
+            actionDataEntry.commandPermissionLevel(),
+            actorSecurityContext,
+            actionEventData.getActionCommandPermissionLevel());
     if (commandAuthority.effective() != commandAuthority.requested()) {
       log.warn(
-          "User command permission level {} is lower than requested action permission level {} for action {}",
+          "NPC command permission level {} is lower than requested action permission level {} for action {}",
           commandAuthority.effective(),
           commandAuthority.requested(),
           actionDataEntry);
@@ -69,11 +71,9 @@ public class CommandActionExecutor {
         serverPlayer,
         commandAuthority.effective(),
         commandAuthority.requested());
+    String command = actionDataEntry.getAction(livingEntity, serverPlayer);
     CommandExecutor.executePlayerCommand(
-        actionDataEntry.getAction(livingEntity, serverPlayer),
-        serverPlayer,
-        commandAuthority,
-        actionDataEntry.enableDebug());
+        command, serverPlayer, commandAuthority, actionDataEntry.enableDebug());
   }
 
   public static void executeAsEntity(

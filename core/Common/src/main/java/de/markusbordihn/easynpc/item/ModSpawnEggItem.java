@@ -24,9 +24,12 @@ import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.OwnerDataCapable;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import java.util.Objects;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
@@ -36,8 +39,11 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.flag.FeatureFlagSet;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SpawnEggItem;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -128,5 +134,23 @@ public class ModSpawnEggItem extends SpawnEggItem {
     }
 
     return InteractionResult.CONSUME;
+  }
+
+  @Override
+  public void appendHoverText(
+      ItemStack itemStack,
+      Item.TooltipContext tooltipContext,
+      TooltipDisplay tooltipDisplay,
+      Consumer<Component> consumer,
+      TooltipFlag tooltipFlag) {
+    super.appendHoverText(itemStack, tooltipContext, tooltipDisplay, consumer, tooltipFlag);
+
+    String descriptionId = this.getDescriptionId();
+    String entityId = descriptionId.replace(Constants.ITEM_PREFIX, "").replace(SUFFIX, "");
+    String tooltipKey = Constants.TOOLTIP_PREFIX + "spawn_egg." + entityId;
+    if (Language.getInstance().has(tooltipKey)) {
+      consumer.accept(
+          TextComponent.getTranslatedTextRaw(tooltipKey).withStyle(ChatFormatting.GRAY));
+    }
   }
 }
