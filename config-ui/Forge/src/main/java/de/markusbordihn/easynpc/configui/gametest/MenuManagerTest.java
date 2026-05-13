@@ -54,7 +54,7 @@ public class MenuManagerTest {
   public void testMissingEditorType(GameTestHelper helper) {
     MenuHandlerInterface menuHandlerInterface = MenuManager.getMenuHandler();
     for (EditorType editorTypeType : EditorType.values()) {
-      if (editorTypeType == EditorType.NONE) {
+      if (!editorTypeType.hasMenu()) {
         continue;
       }
       GameTestHelpers.assertNotNull(

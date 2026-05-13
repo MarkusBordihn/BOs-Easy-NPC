@@ -24,7 +24,7 @@ import java.util.Locale;
 import net.minecraft.resources.ResourceLocation;
 
 public enum EditorType {
-  NONE,
+  NONE(false),
   ACTION_DATA,
   ACTION_DATA_ENTRY,
   CONDITION_DATA,
@@ -32,7 +32,21 @@ public enum EditorType {
   DIALOG,
   DIALOG_BUTTON,
   DIALOG_TEXT,
-  TRADING_OFFER_ACTION;
+  TRADING_OFFER_ACTION(false);
+
+  private final boolean hasMenu;
+
+  EditorType() {
+    this.hasMenu = true;
+  }
+
+  EditorType(boolean hasMenu) {
+    this.hasMenu = hasMenu;
+  }
+
+  public boolean hasMenu() {
+    return this.hasMenu;
+  }
 
   public static EditorType get(String editorType) {
     if (editorType == null || editorType.isEmpty()) {
