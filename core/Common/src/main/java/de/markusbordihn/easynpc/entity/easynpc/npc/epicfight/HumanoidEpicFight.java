@@ -41,6 +41,14 @@ public class HumanoidEpicFight extends HumanoidRaw {
   }
 
   @Override
+  protected void registerGoals() {}
+
+  @Override
+  public boolean canUseArmor() {
+    return true;
+  }
+
+  @Override
   public ConfigurationData getConfigurationData() {
     return ConfigurationData.EPIC_FIGHT;
   }

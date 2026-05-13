@@ -41,7 +41,7 @@ public class AdvancedTradingConfigurationMenu extends TradingConfigurationMenu {
   public static final int SLOT_SIZE = 18;
   public static final int TRADING_OFFERS_PER_PAGE = 5;
   public static final int TRADING_SLOT_SIZE = 18;
-  public static final int TRADING_START_POSITION_X = 30;
+  public static final int TRADING_START_POSITION_X = 22;
   public static final int TRADING_START_POSITION_Y = 40;
 
   protected static final int TRADING_CONTAINER_SIZE = TradingSettings.ADVANCED_TRADING_OFFERS * 3;
@@ -120,15 +120,15 @@ public class AdvancedTradingConfigurationMenu extends TradingConfigurationMenu {
               this,
               tradingContainer,
               (tradingOffer * 3) + 2,
-              slotPositionX + ((TRADING_SLOT_SIZE + TRADING_SLOT_SIZE + 5) * 2),
+              slotPositionX + ((TRADING_SLOT_SIZE + TRADING_SLOT_SIZE) * 2),
               slotPositionY));
 
       slotPositionY += TRADING_SLOT_SIZE + 1;
     }
 
     // Player Inventory Slots
-    int playerInventoryStartPositionY = 159;
-    int playerInventoryStartPositionX = 80;
+    int playerInventoryStartPositionY = 156;
+    int playerInventoryStartPositionX = 8;
     for (int inventoryRow = 0; inventoryRow < 3; ++inventoryRow) {
       for (int inventoryColumn = 0; inventoryColumn < 9; ++inventoryColumn) {
         this.addSlot(
@@ -141,8 +141,8 @@ public class AdvancedTradingConfigurationMenu extends TradingConfigurationMenu {
     }
 
     // Player Hotbar Slots
-    int hotbarStartPositionY = 215;
-    int hotbarStartPositionX = 80;
+    int hotbarStartPositionY = 216;
+    int hotbarStartPositionX = 8;
     for (int playerInventorySlot = 0; playerInventorySlot < 9; ++playerInventorySlot) {
       this.addSlot(
           new Slot(

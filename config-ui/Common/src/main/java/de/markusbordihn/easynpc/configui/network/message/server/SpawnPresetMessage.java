@@ -75,14 +75,15 @@ public record SpawnPresetMessage(
 
   @Override
   public void handleServer(final ServerPlayer serverPlayer) {
-    if (!FeatureSecurity.checkActorFeatureAccess(serverPlayer, NpcFeature.SPAWN_NPC).allowed()) {
-      log.warn(
-          "Blocked NPC browser-spawn attempt by {} (insufficient role)", serverPlayer.getName());
+    if (!MessageSecurity.checkActorFeatureAccess(
+        serverPlayer, NpcFeature.SPAWN_NPC, "NPC browser spawn")) {
       return;
     }
 
     if (!SpawnRateLimiter.checkAndRecord(serverPlayer)) {
-      log.warn("Rate-limited NPC spawn attempt by {}", serverPlayer.getName());
+      log.warn(
+          "Rate-limited NPC spawn attempt by {}. Adjust security.cfg keys npcSpawnRateLimitCreative or npcSpawnRateLimitAdmin to change this.",
+          serverPlayer.getName());
       serverPlayer.sendSystemMessage(
           Component.literal(
               "NPC spawn rate limit reached. Please wait before spawning more NPCs."));

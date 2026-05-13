@@ -127,7 +127,7 @@ public record SaveDialogButtonMessage(
             this.dialogButtonEntry, easyNPC, serverPlayer, permissionLevel);
     if (sanitizedDialogButtonEntry == null) {
       log.warn(
-          "Blocked dialog button save for dialog {} for {} from {}",
+          "Blocked dialog button save for dialog {} for {} from {} because it contains an action type blocked by security.cfg feature settings",
           dialogId,
           easyNPC,
           serverPlayer);

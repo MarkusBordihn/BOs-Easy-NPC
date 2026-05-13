@@ -41,6 +41,19 @@ public class ZombieVillagerEpicFight extends ZombieVillagerRaw {
   }
 
   @Override
+  protected void registerGoals() {}
+
+  @Override
+  protected boolean isSunBurnTick() {
+    return false;
+  }
+
+  @Override
+  public boolean canUseArmor() {
+    return true;
+  }
+
+  @Override
   public ConfigurationData getConfigurationData() {
     return ConfigurationData.EPIC_FIGHT;
   }

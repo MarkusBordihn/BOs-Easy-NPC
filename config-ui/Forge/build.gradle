@@ -126,19 +126,22 @@ dependencies {
     runtimeOnly fg.deobf("curse.maven:xaeros_minimap-263420:${project.forge_xaeros_minimap_mod}")
   }
 
+  // Epic Fight Mod (for testing)
+  runtimeOnly fg.deobf("curse.maven:epic-fight-mod-405076:8049910")
+
   // Test dependencies
-  runtimeOnly fg.deobf("curse.maven:armourers-workshop-229523:6701559")
-  runtimeOnly fg.deobf("curse.maven:geckolib-388172:6920925")
+  // runtimeOnly fg.deobf("curse.maven:armourers-workshop-229523:6701559")
+  // runtimeOnly fg.deobf("curse.maven:geckolib-388172:6920925")
 
   // Bug Testing
   // runtimeOnly fg.deobf("curse.maven:naturalist-627986:6863943")
   runtimeOnly fg.deobf("curse.maven:framework-549225:6531428")
-  runtimeOnly fg.deobf("curse.maven:just-enough-guns-820727:6808139")
-  runtimeOnly fg.deobf("curse.maven:create-328085:7178761")
+  // runtimeOnly fg.deobf("curse.maven:just-enough-guns-820727:6808139")
+  // runtimeOnly fg.deobf("curse.maven:create-328085:7178761")
 
   // Cobblemon (Testing)
-  runtimeOnly fg.deobf("curse.maven:kotlin-for-forge-351264:7291067")
-  runtimeOnly fg.deobf("curse.maven:cobblemon-687131:5375390")
+  // runtimeOnly fg.deobf("curse.maven:kotlin-for-forge-351264:7291067")
+  // runtimeOnly fg.deobf("curse.maven:cobblemon-687131:5375390")
 }
 
 tasks.withType(JavaCompile).configureEach {

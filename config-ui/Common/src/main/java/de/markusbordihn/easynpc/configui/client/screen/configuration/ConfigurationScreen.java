@@ -177,4 +177,32 @@ public class ConfigurationScreen<T extends ConfigUIMenu>
             && configurationType != ConfigurationType.SCALING
             && configurationType != ConfigurationType.SKIN);
   }
+
+  protected boolean isExperimentalConfigurationType(ConfigurationType configurationType) {
+    EasyNPC<?> easyNPC = this.getEasyNPC();
+    if (easyNPC == null) {
+      return false;
+    }
+
+    ConfigurationDataCapable<?> configurationData = easyNPC.getEasyNPCConfigurationData();
+    if (configurationData == null) {
+      return false;
+    }
+
+    return configurationData.isExperimentalConfigurationType(configurationType);
+  }
+
+  protected boolean hasExperimentalConfigurationTypes() {
+    EasyNPC<?> easyNPC = this.getEasyNPC();
+    if (easyNPC == null) {
+      return false;
+    }
+
+    ConfigurationDataCapable<?> configurationData = easyNPC.getEasyNPCConfigurationData();
+    if (configurationData == null) {
+      return false;
+    }
+
+    return configurationData.hasExperimentalConfigurationTypes();
+  }
 }

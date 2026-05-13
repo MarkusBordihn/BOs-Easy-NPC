@@ -31,7 +31,8 @@ public enum EditorType {
   CONDITION_DATA_ENTRY,
   DIALOG,
   DIALOG_BUTTON,
-  DIALOG_TEXT;
+  DIALOG_TEXT,
+  TRADING_OFFER_ACTION;
 
   public static EditorType get(String editorType) {
     if (editorType == null || editorType.isEmpty()) {

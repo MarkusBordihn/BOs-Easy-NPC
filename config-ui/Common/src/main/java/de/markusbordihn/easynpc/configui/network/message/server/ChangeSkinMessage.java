@@ -26,7 +26,6 @@ import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.handler.SkinHandler;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import de.markusbordihn.easynpc.security.NpcFeature;
-import de.markusbordihn.easynpc.security.SecurityManager;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -66,9 +65,8 @@ public record ChangeSkinMessage(UUID uuid, SkinDataEntry skinDataEntry)
     }
 
     if (isRemoteSkin(this.skinDataEntry.type())) {
-      if (!SecurityManager.checkFeatureAccess(serverPlayer, easyNPC, NpcFeature.URL_RESOURCE)
-          .allowed()) {
-        log.warn("Blocked URL skin change for {} from {}", easyNPC, serverPlayer);
+      if (!MessageSecurity.checkFeatureAccess(
+          serverPlayer, easyNPC, NpcFeature.URL_RESOURCE, "URL skin change")) {
         return;
       }
 

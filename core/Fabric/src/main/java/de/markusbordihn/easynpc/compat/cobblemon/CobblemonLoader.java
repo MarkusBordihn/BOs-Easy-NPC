@@ -21,15 +21,19 @@ package de.markusbordihn.easynpc.compat.cobblemon;
 
 import com.cobblemon.mod.common.api.pokemon.PokemonSpecies;
 import com.cobblemon.mod.common.pokemon.Species;
+import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.compat.IntegrationModelProvider;
 import de.markusbordihn.easynpc.compat.IntegrationRegistry;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import net.minecraft.resources.ResourceLocation;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class CobblemonLoader implements IntegrationModelProvider {
 
+  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private static final CobblemonLoader INSTANCE = new CobblemonLoader();
 
   private List<ResourceLocation> cachedModels;
@@ -42,6 +46,9 @@ public class CobblemonLoader implements IntegrationModelProvider {
             .map(Species::getResourceIdentifier)
             .sorted(Comparator.comparing(ResourceLocation::toString))
             .collect(Collectors.toList());
+    if (!INSTANCE.cachedModels.isEmpty()) {
+      log.info("Loaded {} Cobblemon Species Models", INSTANCE.cachedModels.size());
+    }
     IntegrationRegistry.register(INSTANCE);
   }
 
@@ -52,6 +59,19 @@ public class CobblemonLoader implements IntegrationModelProvider {
 
   @Override
   public List<ResourceLocation> getAvailableModels() {
+    if (cachedModels == null || cachedModels.isEmpty()) {
+      List<Species> implemented = PokemonSpecies.INSTANCE.getImplemented();
+      if (!implemented.isEmpty()) {
+        log.info("Re-Loading Cobblemon Species Models ...");
+        cachedModels =
+            implemented.stream()
+                .map(Species::getResourceIdentifier)
+                .sorted(Comparator.comparing(ResourceLocation::toString))
+                .collect(Collectors.toList());
+        log.info("Loaded {} Cobblemon Species Models", cachedModels.size());
+      }
+    }
+
     return cachedModels != null ? cachedModels : List.of();
   }
 }

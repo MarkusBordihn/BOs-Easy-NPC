@@ -40,6 +40,9 @@ public class VexEpicFight extends VexRaw {
   }
 
   @Override
+  protected void registerGoals() {}
+
+  @Override
   public ConfigurationData getConfigurationData() {
     return ConfigurationData.EPIC_FIGHT;
   }

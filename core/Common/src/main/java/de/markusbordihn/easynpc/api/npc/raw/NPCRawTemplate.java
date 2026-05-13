@@ -36,7 +36,6 @@ import de.markusbordihn.easynpc.data.synched.SynchedEntityData;
 import de.markusbordihn.easynpc.data.ticker.TickerType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPCBase;
-import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.AttackHandler;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.InteractionHandler;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.VisibilityHandler;
@@ -317,20 +316,10 @@ public class NPCRawTemplate extends Zombie implements EasyNPCBase<Zombie> {
         --this.attackAnimationTick;
       }
 
-      // Refresh client dimensions, if necessary.
+      // Refresh client dimensions on second tick to ensure model data is synced.
       if (!this.clientDimensionsRefreshed && this.tickCount > 1) {
-        CustomScale defaultScale = this.getDefaultModelScale();
-        boolean hasDefaultScale = defaultScale != null && defaultScale.hasChanged();
-        ModelDataCapable<?> modelData = this.getEasyNPCModelData();
-        boolean hasRootScale = false;
-        if (modelData != null) {
-          CustomScale rootScale = modelData.getModelRootData().scale();
-          hasRootScale = rootScale != null && (rootScale.x() != 1.0f || rootScale.y() != 1.0f);
-        }
-        if (hasDefaultScale || hasRootScale) {
-          this.refreshDimensions();
-          this.clientDimensionsRefreshed = true;
-        }
+        this.refreshDimensions();
+        this.clientDimensionsRefreshed = true;
       }
     } else {
       this.updatePersistentAnger((ServerLevel) this.level(), true);
@@ -435,9 +424,12 @@ public class NPCRawTemplate extends Zombie implements EasyNPCBase<Zombie> {
       SpawnGroupData spawnGroupData,
       CompoundTag compoundTag) {
     AttributeHandler.handleDefaultAttributes(this);
-    return finalizeEasyNPCSpawn(
-        super.finalizeSpawn(
-            serverLevelAccessor, difficulty, mobSpawnType, spawnGroupData, compoundTag));
+    SpawnGroupData result =
+        finalizeEasyNPCSpawn(
+            super.finalizeSpawn(
+                serverLevelAccessor, difficulty, mobSpawnType, spawnGroupData, compoundTag));
+    this.refreshDimensions();
+    return result;
   }
 
   @Override

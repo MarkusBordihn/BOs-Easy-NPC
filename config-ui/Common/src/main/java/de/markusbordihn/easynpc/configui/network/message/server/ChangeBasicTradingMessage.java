@@ -26,7 +26,6 @@ import de.markusbordihn.easynpc.entity.easynpc.data.TradingDataCapable;
 import de.markusbordihn.easynpc.handler.TradingOfferHandler;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import de.markusbordihn.easynpc.security.NpcFeature;
-import de.markusbordihn.easynpc.security.SecurityManager;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -63,8 +62,8 @@ public record ChangeBasicTradingMessage(
       return;
     }
 
-    if (!SecurityManager.checkFeatureAccess(serverPlayer, easyNPC, NpcFeature.TRADING).allowed()) {
-      log.warn("Blocked trading change for {} from {}", easyNPC, serverPlayer);
+    if (!MessageSecurity.checkFeatureAccess(
+        serverPlayer, easyNPC, NpcFeature.TRADING, "trading change")) {
       return;
     }
 
@@ -110,6 +109,10 @@ public record ChangeBasicTradingMessage(
         log.debug("Set reward exp to {} for {} from {}", this.tradingValue, easyNPC, serverPlayer);
         tradingData.getTradingDataSet().setRewardedXP(this.tradingValue);
         TradingOfferHandler.updateBasicTradingOffers(tradingData);
+        break;
+      case LAST_TRADING_RESET:
+        log.debug("Reset trading offers for {} from {}", easyNPC, serverPlayer);
+        tradingData.resetTradingOffers();
         break;
       default:
         log.error("Trading value type {} is unknown for {}", this.tradingValueType, serverPlayer);

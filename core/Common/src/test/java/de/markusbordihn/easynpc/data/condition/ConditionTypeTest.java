@@ -21,14 +21,11 @@ package de.markusbordihn.easynpc.data.condition;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-@DisplayName("ConditionType Tests")
 class ConditionTypeTest {
 
   @Test
-  @DisplayName("Should get ConditionType from string")
   void testGet() {
     assertEquals(ConditionType.SCOREBOARD, ConditionType.get("SCOREBOARD"));
     assertEquals(ConditionType.EXECUTION_LIMIT, ConditionType.get("EXECUTION_LIMIT"));
@@ -36,7 +33,6 @@ class ConditionTypeTest {
   }
 
   @Test
-  @DisplayName("Should return NONE for invalid string")
   void testGetInvalid() {
     assertEquals(ConditionType.NONE, ConditionType.get("INVALID"));
     assertEquals(ConditionType.NONE, ConditionType.get(""));
@@ -44,7 +40,6 @@ class ConditionTypeTest {
   }
 
   @Test
-  @DisplayName("Should check if name is required")
   void testRequiresName() {
     assertTrue(ConditionType.SCOREBOARD.requiresName());
     assertFalse(ConditionType.EXECUTION_LIMIT.requiresName());
@@ -52,7 +47,6 @@ class ConditionTypeTest {
   }
 
   @Test
-  @DisplayName("Should check if value is required")
   void testRequiresValue() {
     assertTrue(ConditionType.SCOREBOARD.requiresValue());
     assertTrue(ConditionType.EXECUTION_LIMIT.requiresValue());
@@ -60,7 +54,6 @@ class ConditionTypeTest {
   }
 
   @Test
-  @DisplayName("Should check if operation is required")
   void testRequiresOperation() {
     assertTrue(ConditionType.SCOREBOARD.requiresOperation());
     assertFalse(ConditionType.EXECUTION_LIMIT.requiresOperation());

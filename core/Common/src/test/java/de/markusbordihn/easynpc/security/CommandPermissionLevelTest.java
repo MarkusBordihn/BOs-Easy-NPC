@@ -25,7 +25,6 @@ import net.minecraft.commands.Commands;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-@DisplayName("CommandPermissionLevel Tests")
 class CommandPermissionLevelTest {
 
   @Test

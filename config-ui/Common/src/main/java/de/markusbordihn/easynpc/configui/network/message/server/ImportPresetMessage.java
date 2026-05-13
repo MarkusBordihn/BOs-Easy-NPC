@@ -69,8 +69,8 @@ public record ImportPresetMessage(
       return;
     }
 
-    if (!MessageSecurity.checkPresetFeatureAccess(serverPlayer, easyNPC, this.presetType)) {
-      log.warn("Blocked preset import {} for {} from {}", this.presetType, easyNPC, serverPlayer);
+    if (!MessageSecurity.checkPresetFeatureAccess(
+        serverPlayer, easyNPC, this.presetType, "preset import " + this.presetType)) {
       return;
     }
 

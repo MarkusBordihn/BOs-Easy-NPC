@@ -20,11 +20,15 @@
 package de.markusbordihn.easynpc.data.configuration;
 
 import de.markusbordihn.easynpc.data.model.ModelPose;
+import de.markusbordihn.easynpc.data.trading.TradingDataSet;
+import de.markusbordihn.easynpc.data.trading.TradingSettings;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.DialogDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.TradingDataCapable;
+import net.minecraft.world.item.trading.MerchantOffer;
+import net.minecraft.world.item.trading.MerchantOffers;
 
 public class ConfigurationTypeHelper {
 
@@ -57,11 +61,11 @@ public class ConfigurationTypeHelper {
       };
     } else if (configurationType == ConfigurationType.TRADING) {
       TradingDataCapable<?> tradingData = easyNPC.getEasyNPCTradingData();
-      return switch (tradingData.getTradingDataSet().getType()) {
-        case ADVANCED -> ConfigurationType.ADVANCED_TRADING;
-        case BASIC -> ConfigurationType.BASIC_TRADING;
+      TradingDataSet tradingDataSet = tradingData.getTradingDataSet();
+      return switch (tradingDataSet.getType()) {
         case CUSTOM -> ConfigurationType.CUSTOM_TRADING;
-        default -> ConfigurationType.NONE_TRADING;
+        case NONE -> ConfigurationType.NONE_TRADING;
+        default -> detectTradingConfigurationType(tradingData, tradingDataSet);
       };
     } else if (configurationType == ConfigurationType.POSE) {
       ModelDataCapable<?> modelData = easyNPC.getEasyNPCModelData();
@@ -77,5 +81,29 @@ public class ConfigurationTypeHelper {
     }
 
     return configurationType;
+  }
+
+  private static ConfigurationType detectTradingConfigurationType(
+      TradingDataCapable<?> tradingData, TradingDataSet tradingDataSet) {
+    MerchantOffers offers = tradingData.getTradingOffers();
+    if (offers == null || offers.isEmpty()) {
+      return ConfigurationType.BASIC_TRADING;
+    }
+    if (offers.size() > TradingSettings.BASIC_TRADING_OFFERS) {
+      return ConfigurationType.ADVANCED_TRADING;
+    }
+    int globalMaxUses = tradingDataSet.getMaxUses();
+    int globalRewardedXP = tradingDataSet.getRewardedXP();
+    for (int i = 0; i < offers.size(); i++) {
+      MerchantOffer offer = offers.get(i);
+      if (offer.getMaxUses() != globalMaxUses
+          || offer.getXp() != globalRewardedXP
+          || offer.getPriceMultiplier() != 1.0f
+          || offer.getDemand() != 0
+          || tradingDataSet.hasOfferAction(i)) {
+        return ConfigurationType.ADVANCED_TRADING;
+      }
+    }
+    return ConfigurationType.BASIC_TRADING;
   }
 }

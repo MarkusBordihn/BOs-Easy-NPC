@@ -23,10 +23,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-@DisplayName("PresetDataUtils Tests")
 class PresetDataUtilsTest {
 
   @Test

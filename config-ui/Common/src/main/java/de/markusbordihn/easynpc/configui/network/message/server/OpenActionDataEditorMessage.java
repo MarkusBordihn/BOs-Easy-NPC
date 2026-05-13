@@ -37,7 +37,8 @@ public record OpenActionDataEditorMessage(
     UUID dialogButtonId,
     ActionEventType actionEventType,
     ConfigurationType configurationType,
-    EditorType editorType)
+    EditorType editorType,
+    int contextIndex)
     implements NetworkMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
@@ -50,7 +51,8 @@ public record OpenActionDataEditorMessage(
         buffer.readUUID(),
         buffer.readEnum(ActionEventType.class),
         buffer.readEnum(ConfigurationType.class),
-        buffer.readEnum(EditorType.class));
+        buffer.readEnum(EditorType.class),
+        buffer.readInt());
   }
 
   @Override
@@ -61,6 +63,7 @@ public record OpenActionDataEditorMessage(
     buffer.writeEnum(this.actionEventType);
     buffer.writeEnum(this.configurationType);
     buffer.writeEnum(this.editorType);
+    buffer.writeInt(this.contextIndex);
   }
 
   @Override
@@ -87,6 +90,6 @@ public record OpenActionDataEditorMessage(
             this.actionEventType,
             this.configurationType,
             this.editorType,
-            0);
+            this.contextIndex);
   }
 }

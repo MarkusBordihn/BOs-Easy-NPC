@@ -112,6 +112,10 @@ public interface MenuHandlerInterface {
     AdditionalScreenData.addConfigurationType(additionalSyncData, configurationType);
     AdditionalScreenData.addEditorType(additionalSyncData, formerEditorType);
 
+    if (formerEditorType == EditorType.TRADING_OFFER_ACTION) {
+      AdditionalScreenData.addTradingOfferActionDataSet(additionalSyncData, easyNPC, pageIndex);
+    }
+
     // Compute blocked action types for this player.
     Set<ActionDataType> blockedActionTypes = new HashSet<>();
     for (ActionDataType type : ActionDataType.values()) {

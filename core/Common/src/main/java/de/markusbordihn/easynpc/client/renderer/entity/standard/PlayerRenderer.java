@@ -1,6 +1,7 @@
 package de.markusbordihn.easynpc.client.renderer.entity.standard;
 
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.layers.SkullHeadRenderLayer;
 import de.markusbordihn.easynpc.client.texture.CustomTextureManager;
 import de.markusbordihn.easynpc.client.texture.RemoteTextureManager;
 import de.markusbordihn.easynpc.data.skin.variant.HumanoidSkinVariant;
@@ -42,6 +43,7 @@ public class PlayerRenderer<T extends PathfinderMob> extends LivingEntityRendere
                 context.bakeLayer(
                     slim ? ModelLayers.PLAYER_SLIM_OUTER_ARMOR : ModelLayers.PLAYER_OUTER_ARMOR)),
             context.getModelManager()));
+    this.addLayer(new SkullHeadRenderLayer<>(this));
     this.addLayer(new ItemInHandLayer<>(this, context.getItemInHandRenderer()));
   }
 

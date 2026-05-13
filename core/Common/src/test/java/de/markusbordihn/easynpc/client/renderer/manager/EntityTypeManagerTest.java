@@ -29,7 +29,6 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-@DisplayName("EntityTypeManager Tests")
 class EntityTypeManagerTest {
 
   @Nested

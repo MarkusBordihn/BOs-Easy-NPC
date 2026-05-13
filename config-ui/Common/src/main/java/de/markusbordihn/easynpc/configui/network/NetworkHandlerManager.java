@@ -47,6 +47,7 @@ import de.markusbordihn.easynpc.configui.network.message.server.ChangePositionMe
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeProfessionMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeRendererMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeSkinMessage;
+import de.markusbordihn.easynpc.configui.network.message.server.ChangeTradingOfferActionMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeTradingTypeMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ExportCustomPresetServerMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ExportPresetMessage;
@@ -176,6 +177,11 @@ public class NetworkHandlerManager {
         ChangeBasicTradingMessage.MESSAGE_ID,
         ChangeBasicTradingMessage.class,
         ChangeBasicTradingMessage::create);
+
+    networkHandler.registerServerNetworkMessage(
+        ChangeTradingOfferActionMessage.MESSAGE_ID,
+        ChangeTradingOfferActionMessage.class,
+        ChangeTradingOfferActionMessage::create);
 
     networkHandler.registerServerNetworkMessage(
         ChangeCombatAttributeMessage.MESSAGE_ID,

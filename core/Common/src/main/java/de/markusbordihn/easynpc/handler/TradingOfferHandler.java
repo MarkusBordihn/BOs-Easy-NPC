@@ -61,7 +61,7 @@ public class TradingOfferHandler {
                 offer.getBaseCostA(),
                 offer.getCostB(),
                 offer.getResult(),
-                0,
+                offer.getUses(),
                 maxUses,
                 offer.getXp(),
                 offer.getPriceMultiplier(),
@@ -120,7 +120,7 @@ public class TradingOfferHandler {
   }
 
   public static void updateBasicTradingOffers(TradingDataCapable<?> tradingData) {
-    if (tradingData
+    if (!tradingData
         .getTradingDataSet()
         .isType(de.markusbordihn.easynpc.data.trading.TradingType.BASIC)) {
       return;
@@ -131,26 +131,24 @@ public class TradingOfferHandler {
       return;
     }
 
-    // Update trading offers
-    MerchantOffers newMerchantOffers = new MerchantOffers();
+    MerchantOffers updatedOffers = new MerchantOffers();
     for (MerchantOffer merchantOffer : merchantOffers) {
       if (!isValidTradingOffer(
           merchantOffer.getBaseCostA(), merchantOffer.getCostB(), merchantOffer.getResult())) {
         continue;
       }
-      MerchantOffer newMerchantOffer =
+      updatedOffers.add(
           new MerchantOffer(
               merchantOffer.getBaseCostA(),
               merchantOffer.getCostB(),
               merchantOffer.getResult(),
+              merchantOffer.getUses(),
               tradingData.getTradingDataSet().getMaxUses(),
               tradingData.getTradingDataSet().getRewardedXP(),
-              merchantOffer.getPriceMultiplier());
-      newMerchantOffers.add(newMerchantOffer);
+              merchantOffer.getPriceMultiplier()));
     }
 
-    // Update trading offers
-    tradingData.setTradingOffers(newMerchantOffers);
+    tradingData.setTradingOffers(updatedOffers);
   }
 
   private static boolean isValidTradingOffer(

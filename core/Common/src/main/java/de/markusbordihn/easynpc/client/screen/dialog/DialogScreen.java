@@ -45,6 +45,7 @@ import java.util.List;
 import java.util.UUID;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Inventory;
@@ -168,6 +169,14 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
 
     // Set dialog button visibility.
     dialogButton.visible = dialogButtonEntry.name() != null && !dialogButtonEntry.name().isBlank();
+
+    // Add tooltip with full text when it was truncated.
+    Component fullButtonName =
+        TextComponent.getTextComponentRaw(
+            dialogButtonEntry.name(), dialogButtonEntry.isTranslationKey());
+    if (fullButtonName.getString().length() > dialogButtonMaxTextLength) {
+      dialogButton.setTooltip(Tooltip.create(fullButtonName));
+    }
 
     this.dialogButtons.add(dialogButton);
   }

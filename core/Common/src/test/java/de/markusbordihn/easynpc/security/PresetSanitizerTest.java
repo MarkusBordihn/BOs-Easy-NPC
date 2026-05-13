@@ -31,7 +31,6 @@ import net.minecraft.world.entity.Entity;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-@DisplayName("PresetSanitizer Tests")
 class PresetSanitizerTest {
 
   private static CompoundTag createPresetData(CommandPermissionLevel commandPermissionLevel) {

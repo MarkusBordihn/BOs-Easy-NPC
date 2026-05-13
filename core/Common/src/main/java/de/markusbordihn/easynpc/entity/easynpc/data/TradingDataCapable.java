@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.data;
 
+import de.markusbordihn.easynpc.data.action.ActionEventType;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.data.trading.TradingDataSet;
 import de.markusbordihn.easynpc.data.trading.TradingType;
@@ -207,8 +208,29 @@ public interface TradingDataCapable<E extends Mob> extends EasyNPC<E>, Merchant 
     merchantOffer.increaseUses();
     this.getMob().ambientSoundTime = -this.getMob().getAmbientSoundInterval();
     this.rewardTradeXp(merchantOffer);
-    if (getTradingPlayer() instanceof ServerPlayer serverPlayer) {
+    // merchantTradingOffers is a copy of the synced data; sync back so NBT save captures the
+    // updated uses.
+    MerchantOffers updatedOffers = this.getMerchantTradingOffers();
+    if (updatedOffers != null && !updatedOffers.isEmpty()) {
+      this.setSynchedEntityData(SynchedDataIndex.TRADING_MERCHANT_OFFERS, new MerchantOffers());
+      this.setSynchedEntityData(SynchedDataIndex.TRADING_MERCHANT_OFFERS, updatedOffers);
+    }
+    if (this.getTradingPlayer() instanceof ServerPlayer serverPlayer) {
       log.debug("Trade {} with {} for {}", merchantOffer, serverPlayer, this);
+      ActionEventDataCapable<E> actionEventData = this.getEasyNPCActionEventData();
+      if (actionEventData != null) {
+        actionEventData.handleActionEvent(ActionEventType.ON_TRADE, serverPlayer);
+      }
+      // Fire per-offer action if configured for the specific offer index.
+      int offerIndex =
+          this.getTradingOffers() != null ? this.getTradingOffers().indexOf(merchantOffer) : -1;
+      if (offerIndex >= 0 && this.getTradingDataSet().hasOfferAction(offerIndex)) {
+        var actionHandler = this.getEasyNPCActionHandler();
+        if (actionHandler != null) {
+          actionHandler.executeActions(
+              this.getTradingDataSet().getOfferAction(offerIndex), serverPlayer);
+        }
+      }
     }
   }
 
@@ -336,19 +358,25 @@ public interface TradingDataCapable<E extends Mob> extends EasyNPC<E>, Merchant 
   }
 
   default void addAdditionalTradingData(CompoundTag compoundTag) {
-    // Save custom trading data set
-    CompoundTag tradingDataTag = new CompoundTag();
     TradingDataSet tradingDataSet = this.getTradingDataSet();
-    if (tradingDataSet != null) {
-      tradingDataSet.save(tradingDataTag);
-    }
-    compoundTag.put(DATA_TRADING_DATA_TAG, tradingDataTag);
 
-    // Store vanilla trading data
-    CompoundTag tradingOffersTag = new CompoundTag();
-    tradingOffersTag.put(DATA_TRADING_INVENTORY_TAG, getTradingInventory());
-    tradingOffersTag.put(DATA_TRADING_RECIPES_TAG, getTradingOffers().createTag());
-    compoundTag.put(DATA_TRADING_OFFERS_TAG, tradingOffersTag);
+    // Only save trading config when trading is enabled or per-offer actions are configured.
+    if (tradingDataSet != null
+        && (!tradingDataSet.isType(TradingType.NONE)
+            || !tradingDataSet.getOfferActions().isEmpty())) {
+      CompoundTag tradingDataTag = new CompoundTag();
+      tradingDataSet.save(tradingDataTag);
+      compoundTag.put(DATA_TRADING_DATA_TAG, tradingDataTag);
+    }
+
+    // Only save vanilla trading offers when there are actual offers to persist.
+    MerchantOffers tradingOffers = this.getTradingOffers();
+    if (tradingOffers != null && !tradingOffers.isEmpty()) {
+      CompoundTag tradingOffersTag = new CompoundTag();
+      tradingOffersTag.put(DATA_TRADING_INVENTORY_TAG, this.getTradingInventory());
+      tradingOffersTag.put(DATA_TRADING_RECIPES_TAG, tradingOffers.createTag());
+      compoundTag.put(DATA_TRADING_OFFERS_TAG, tradingOffersTag);
+    }
   }
 
   default void readAdditionalTradingData(CompoundTag compoundTag) {

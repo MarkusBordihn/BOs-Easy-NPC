@@ -24,7 +24,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-@DisplayName("TextureFailureInfo Tests")
 class TextureFailureInfoTest {
 
   @Test
@@ -66,7 +65,6 @@ class TextureFailureInfoTest {
   }
 
   @Test
-  @DisplayName("Should not be expired when maxAge not reached")
   void testIsNotExpired() {
     TextureFailureInfo info =
         new TextureFailureInfo(

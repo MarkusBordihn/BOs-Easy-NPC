@@ -23,14 +23,17 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Set;
 
-public record ConfigurationData(Set<ConfigurationType> enabledTypes) {
+public record ConfigurationData(
+    Set<ConfigurationType> enabledTypes, Set<ConfigurationType> experimentalTypes) {
 
   private static final Set<ConfigurationType> ALL_TYPES = EnumSet.allOf(ConfigurationType.class);
-
   public static final ConfigurationData STANDARD =
       new ConfigurationData(
-          exclude(ALL_TYPES, ConfigurationType.PLAYER_SKIN, ConfigurationType.CUSTOM_MODEL));
-
+          exclude(
+              ALL_TYPES,
+              ConfigurationType.PLAYER_SKIN,
+              ConfigurationType.CUSTOM_MODEL,
+              ConfigurationType.COBBLEMON_MODEL));
   public static final ConfigurationData RAW =
       new ConfigurationData(
           exclude(
@@ -41,7 +44,6 @@ public record ConfigurationData(Set<ConfigurationType> enabledTypes) {
               ConfigurationType.FOLLOW_OBJECTIVE,
               ConfigurationType.LOOK_OBJECTIVE,
               ConfigurationType.DEFAULT_MODEL));
-
   public static final ConfigurationData EPIC_FIGHT =
       new ConfigurationData(
           exclude(
@@ -50,15 +52,22 @@ public record ConfigurationData(Set<ConfigurationType> enabledTypes) {
               ConfigurationType.BASIC_POSE,
               ConfigurationType.DEFAULT_POSE,
               ConfigurationType.POSE,
+              ConfigurationType.DEFAULT_ROTATION,
+              ConfigurationType.DEFAULT_MODEL,
+              ConfigurationType.SCALING,
               ConfigurationType.BASIC_OBJECTIVE,
               ConfigurationType.ATTACK_OBJECTIVE,
               ConfigurationType.FLEE_OBJECTIVE,
               ConfigurationType.FOLLOW_OBJECTIVE,
-              ConfigurationType.LOOK_OBJECTIVE,
-              ConfigurationType.SCALING,
+              ConfigurationType.LOOK_OBJECTIVE),
+          EnumSet.of(
               ConfigurationType.DEFAULT_ROTATION,
-              ConfigurationType.DEFAULT_MODEL));
-
+              ConfigurationType.SCALING,
+              ConfigurationType.BASIC_OBJECTIVE,
+              ConfigurationType.ATTACK_OBJECTIVE,
+              ConfigurationType.FLEE_OBJECTIVE,
+              ConfigurationType.FOLLOW_OBJECTIVE,
+              ConfigurationType.LOOK_OBJECTIVE));
   public static final ConfigurationData DOPPLER =
       new ConfigurationData(
           include(
@@ -77,7 +86,6 @@ public record ConfigurationData(Set<ConfigurationType> enabledTypes) {
                   ConfigurationType.SCALING,
                   ConfigurationType.DEFAULT_ROTATION),
               ConfigurationType.CUSTOM_MODEL));
-
   public static final ConfigurationData COBBLEMON =
       new ConfigurationData(
           include(
@@ -96,9 +104,13 @@ public record ConfigurationData(Set<ConfigurationType> enabledTypes) {
                   ConfigurationType.SCALING,
                   ConfigurationType.DEFAULT_ROTATION),
               ConfigurationType.COBBLEMON_MODEL));
-
   public static final ConfigurationData HUMANOID =
-      new ConfigurationData(exclude(ALL_TYPES, ConfigurationType.CUSTOM_MODEL));
+      new ConfigurationData(
+          exclude(ALL_TYPES, ConfigurationType.CUSTOM_MODEL, ConfigurationType.COBBLEMON_MODEL));
+
+  public ConfigurationData(Set<ConfigurationType> enabledTypes) {
+    this(enabledTypes, Collections.emptySet());
+  }
 
   private static EnumSet<ConfigurationType> exclude(
       Set<ConfigurationType> base, ConfigurationType... types) {
@@ -118,5 +130,13 @@ public record ConfigurationData(Set<ConfigurationType> enabledTypes) {
 
   public boolean isEnabled(ConfigurationType type) {
     return enabledTypes.contains(type);
+  }
+
+  public boolean isExperimental(ConfigurationType type) {
+    return experimentalTypes.contains(type);
+  }
+
+  public boolean hasExperimentalTypes() {
+    return !experimentalTypes.isEmpty();
   }
 }

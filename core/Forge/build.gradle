@@ -117,7 +117,7 @@ dependencies {
   }
 
   // Epic Fight Mod (for testing)
-  runtimeOnly fg.deobf("curse.maven:epic-fight-mod-405076:6854306")
+  compileOnly fg.deobf("curse.maven:epic-fight-mod-405076:8049910")
 
   // Cobblemon (compileOnly for Cobblemon NPC support)
   compileOnly fg.deobf("curse.maven:cobblemon-687131:5375390")

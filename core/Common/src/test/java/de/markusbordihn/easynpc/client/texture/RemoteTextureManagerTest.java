@@ -27,7 +27,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-@DisplayName("RemoteTextureManager Tests")
 class RemoteTextureManagerTest {
 
   private TextureModelKey testKey;
@@ -46,7 +45,6 @@ class RemoteTextureManagerTest {
   }
 
   @Test
-  @DisplayName("Should mark texture as permanent failure")
   void testMarkPermanentFailure() {
     assertFalse(RemoteTextureManager.hasPermanentFailure(testKey));
 
@@ -60,7 +58,6 @@ class RemoteTextureManagerTest {
   }
 
   @Test
-  @DisplayName("Should not retry texture marked as permanent failure")
   void testNoRetryForPermanentFailure() {
     RemoteTextureManager.markPermanentFailure(
         testKey,
@@ -80,7 +77,6 @@ class RemoteTextureManagerTest {
   }
 
   @Test
-  @DisplayName("Should clear specific permanent failure")
   void testClearSpecificPermanentFailure() {
     RemoteTextureManager.markPermanentFailure(
         testKey,
@@ -96,7 +92,6 @@ class RemoteTextureManagerTest {
   }
 
   @Test
-  @DisplayName("Should clear all permanent failures")
   void testClearAllPermanentFailures() {
     TextureModelKey key1 =
         new TextureModelKey(
@@ -126,7 +121,6 @@ class RemoteTextureManagerTest {
   }
 
   @Test
-  @DisplayName("Should handle permanent failure types correctly")
   void testPermanentFailureTypes() {
     assertTrue(
         de.markusbordihn.easynpc.data.texture.TextureFailureType.INVALID_IMAGE_SIZE.isPermanent());

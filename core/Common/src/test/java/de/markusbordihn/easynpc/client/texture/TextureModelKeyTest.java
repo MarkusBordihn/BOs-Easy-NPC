@@ -28,11 +28,9 @@ import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-@DisplayName("TextureModelKey Tests")
 class TextureModelKeyTest {
 
   @Test
-  @DisplayName("Should create TextureModelKey with all parameters")
   void testCreateWithAllParameters() {
     UUID uuid = UUID.randomUUID();
     SkinModel skinModel = SkinModel.HUMANOID;
@@ -46,7 +44,6 @@ class TextureModelKeyTest {
   }
 
   @Test
-  @DisplayName("Should create TextureModelKey without resourceName")
   void testCreateWithoutResourceName() {
     UUID uuid = UUID.randomUUID();
     SkinModel skinModel = SkinModel.HUMANOID_SLIM;
@@ -59,7 +56,6 @@ class TextureModelKeyTest {
   }
 
   @Test
-  @DisplayName("Should handle null resourceName")
   void testNullResourceName() {
     UUID uuid = UUID.randomUUID();
     SkinModel skinModel = SkinModel.HUMANOID;
@@ -79,7 +75,6 @@ class TextureModelKeyTest {
   }
 
   @Test
-  @DisplayName("Should use custom equals - resourceName is ignored")
   void testCustomEqualsIgnoresResourceName() {
     UUID uuid = UUID.randomUUID();
     SkinModel skinModel = SkinModel.HUMANOID;
@@ -93,7 +88,6 @@ class TextureModelKeyTest {
   }
 
   @Test
-  @DisplayName("Should use custom equals - uuid and subType must match")
   void testCustomEqualsRequiresUuidAndSubType() {
     UUID uuid1 = UUID.randomUUID();
     UUID uuid2 = UUID.randomUUID();
@@ -106,7 +100,6 @@ class TextureModelKeyTest {
   }
 
   @Test
-  @DisplayName("Should use custom hashCode - resourceName is ignored")
   void testCustomHashCodeIgnoresResourceName() {
     UUID uuid = UUID.randomUUID();
     SkinModel skinModel = SkinModel.HUMANOID;
@@ -120,7 +113,6 @@ class TextureModelKeyTest {
   }
 
   @Test
-  @DisplayName("Should use custom hashCode - different for different uuid/subType")
   void testCustomHashCodeDifferent() {
     UUID uuid1 = UUID.randomUUID();
     UUID uuid2 = UUID.randomUUID();
@@ -151,7 +143,6 @@ class TextureModelKeyTest {
   }
 
   @Test
-  @DisplayName("Should maintain reflexivity of equals")
   void testEqualsReflexivity() {
     TextureModelKey key = new TextureModelKey(UUID.randomUUID(), SkinModel.HUMANOID);
 
@@ -159,7 +150,6 @@ class TextureModelKeyTest {
   }
 
   @Test
-  @DisplayName("Should maintain symmetry of equals")
   void testEqualsSymmetry() {
     UUID uuid = UUID.randomUUID();
     TextureModelKey key1 = new TextureModelKey(uuid, SkinModel.HUMANOID);
@@ -170,7 +160,6 @@ class TextureModelKeyTest {
   }
 
   @Test
-  @DisplayName("Should maintain transitivity of equals")
   void testEqualsTransitivity() {
     UUID uuid = UUID.randomUUID();
     TextureModelKey key1 = new TextureModelKey(uuid, SkinModel.HUMANOID);
@@ -183,7 +172,6 @@ class TextureModelKeyTest {
   }
 
   @Test
-  @DisplayName("Should return false when comparing to null")
   void testEqualsWithNull() {
     TextureModelKey key = new TextureModelKey(UUID.randomUUID(), SkinModel.HUMANOID);
 
@@ -191,7 +179,6 @@ class TextureModelKeyTest {
   }
 
   @Test
-  @DisplayName("Should return false when comparing to different type")
   void testEqualsWithDifferentType() {
     TextureModelKey key = new TextureModelKey(UUID.randomUUID(), SkinModel.HUMANOID);
 
@@ -200,7 +187,6 @@ class TextureModelKeyTest {
   }
 
   @Test
-  @DisplayName("Should have consistent toString output")
   void testToString() {
     UUID uuid = UUID.randomUUID();
     SkinModel skinModel = SkinModel.HUMANOID;
@@ -215,7 +201,6 @@ class TextureModelKeyTest {
   }
 
   @Test
-  @DisplayName("Should test all SkinModel types")
   void testAllSkinModelTypes() {
     UUID uuid = UUID.randomUUID();
 

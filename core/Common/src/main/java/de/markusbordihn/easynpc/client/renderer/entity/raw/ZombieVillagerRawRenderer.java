@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.client.renderer.entity.raw;
 
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.layers.SkullHeadRenderLayer;
 import de.markusbordihn.easynpc.data.skin.variant.ZombieVillagerSkinVariant;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -35,6 +36,7 @@ public class ZombieVillagerRawRenderer extends ZombieVillagerRenderer
 
   public ZombieVillagerRawRenderer(EntityRendererProvider.Context context) {
     super(context);
+    this.addLayer(new SkullHeadRenderLayer<>(this));
   }
 
   @Override
