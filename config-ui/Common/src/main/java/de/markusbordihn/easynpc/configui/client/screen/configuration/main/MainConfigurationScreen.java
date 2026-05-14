@@ -25,9 +25,12 @@ import de.markusbordihn.easynpc.client.screen.components.TextField;
 import de.markusbordihn.easynpc.compat.IntegrationRegistry;
 import de.markusbordihn.easynpc.configui.client.renderer.screen.EntityConfigScreenRenderer;
 import de.markusbordihn.easynpc.configui.client.screen.EntityGuiScaling;
+import de.markusbordihn.easynpc.configui.client.screen.ExperimentalFeaturesState;
+import de.markusbordihn.easynpc.configui.client.screen.components.Checkbox;
 import de.markusbordihn.easynpc.configui.client.screen.components.ColorButton;
 import de.markusbordihn.easynpc.configui.client.screen.components.CopyButton;
 import de.markusbordihn.easynpc.configui.client.screen.components.DeleteButton;
+import de.markusbordihn.easynpc.configui.client.screen.components.ExperimentalButton;
 import de.markusbordihn.easynpc.configui.client.screen.components.ExportButton;
 import de.markusbordihn.easynpc.configui.client.screen.components.ImportButton;
 import de.markusbordihn.easynpc.configui.client.screen.components.NameVisibilityToggleButton;
@@ -48,7 +51,9 @@ import de.markusbordihn.easynpc.entity.easynpc.data.OwnerDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.ProgressionDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
 import de.markusbordihn.easynpc.network.components.TextComponent;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -485,28 +490,68 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
     int buttonTopPos = this.topPos + 75;
     int buttonLeftPos = this.contentLeftPos + 115;
     int buttonIndex = 0;
+    List<Button> experimentalButtons = new ArrayList<>();
 
     for (Map.Entry<String, ConfigurationType> entry : menuButtons.entrySet()) {
       String buttonName = entry.getKey();
       ConfigurationType configurationType = entry.getValue();
-      Button button =
-          this.addRenderableWidget(
-              new TextButton(
-                  buttonLeftPos + ((buttonIndex % 2) * (BUTTON_WIDTH + 5)),
-                  buttonTopPos + ((buttonIndex / 2) * (BUTTON_HEIGHT + 2)),
-                  BUTTON_WIDTH,
-                  buttonName,
-                  onPress ->
-                      NetworkMessageHandlerManager.getServerHandler()
-                          .openConfiguration(this.getEasyNPCUUID(), configurationType)));
-      boolean typeSupported = this.supportsConfigurationType(configurationType);
+      boolean experimental = this.isExperimentalConfigurationType(configurationType);
       boolean permissionBlocked = this.isConfigurationBlockedByPermission(configurationType);
-      button.active = typeSupported && !permissionBlocked;
-      if (typeSupported && permissionBlocked) {
-        button.setTooltip(
-            Tooltip.create(TextComponent.getTranslatedConfigText("menu.tooltip.no_permission")));
+      int buttonX = buttonLeftPos + ((buttonIndex % 2) * (BUTTON_WIDTH + 5));
+      int buttonY = buttonTopPos + ((buttonIndex / 2) * (BUTTON_HEIGHT + 2));
+
+      Button button;
+      if (experimental) {
+        button =
+            this.addRenderableWidget(
+                new ExperimentalButton(
+                    buttonX,
+                    buttonY,
+                    BUTTON_WIDTH,
+                    buttonName,
+                    onPress ->
+                        NetworkMessageHandlerManager.getServerHandler()
+                            .openConfiguration(this.getEasyNPCUUID(), configurationType)));
+        button.active = ExperimentalFeaturesState.isEnabled() && !permissionBlocked;
+        experimentalButtons.add(button);
+      } else {
+        button =
+            this.addRenderableWidget(
+                new TextButton(
+                    buttonX,
+                    buttonY,
+                    BUTTON_WIDTH,
+                    buttonName,
+                    onPress ->
+                        NetworkMessageHandlerManager.getServerHandler()
+                            .openConfiguration(this.getEasyNPCUUID(), configurationType)));
+        boolean typeSupported = this.supportsConfigurationType(configurationType);
+        button.active = typeSupported && !permissionBlocked;
+        if (typeSupported && permissionBlocked) {
+          button.setTooltip(
+              Tooltip.create(TextComponent.getTranslatedConfigText("menu.tooltip.no_permission")));
+        }
       }
+
       buttonIndex++;
+    }
+
+    if (!experimentalButtons.isEmpty()) {
+      int rows = (menuButtons.size() + 1) / 2;
+      int checkboxY = buttonTopPos + (rows * (BUTTON_HEIGHT + 2)) + 2;
+      this.addRenderableWidget(
+          new Checkbox(
+              buttonLeftPos,
+              checkboxY,
+              TextComponent.getTranslatedConfigText("experimental_features"),
+              ExperimentalFeaturesState.isEnabled(),
+              true,
+              checkbox -> {
+                ExperimentalFeaturesState.setEnabled(checkbox.selected());
+                for (Button experimentalButton : experimentalButtons) {
+                  experimentalButton.active = checkbox.selected();
+                }
+              }));
     }
   }
 

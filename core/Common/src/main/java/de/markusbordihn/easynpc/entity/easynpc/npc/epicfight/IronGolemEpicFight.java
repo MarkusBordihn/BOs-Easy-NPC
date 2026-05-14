@@ -41,6 +41,9 @@ public class IronGolemEpicFight extends IronGolemRaw {
   }
 
   @Override
+  protected void registerGoals() {}
+
+  @Override
   public ConfigurationData getConfigurationData() {
     return ConfigurationData.EPIC_FIGHT;
   }

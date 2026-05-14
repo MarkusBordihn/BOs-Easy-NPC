@@ -26,8 +26,10 @@ import de.markusbordihn.easynpc.data.skin.variant.WitchSkinVariant;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.sound.SoundType;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.FlyingAnimal;
@@ -63,12 +65,18 @@ public class WitchBase extends WitchRaw implements BaseEasyNPC<WitchRaw> {
 
   @Override
   public int getEntityDialogTop() {
-    return -35;
+    return 5;
   }
 
   @Override
   public int getEntityDialogLeft() {
     return 0;
+  }
+
+  @Override
+  public EntityDimensions getDefaultDimensions(Pose pose) {
+    EntityDimensions dimensions = super.getDefaultDimensions(pose);
+    return EntityDimensions.scalable(dimensions.width(), dimensions.height() + 0.4F);
   }
 
   @Override

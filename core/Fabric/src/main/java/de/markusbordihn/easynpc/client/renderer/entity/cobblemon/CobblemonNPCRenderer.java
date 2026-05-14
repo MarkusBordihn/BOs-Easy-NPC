@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.client.renderer.entity.cobblemon;
 
 import com.cobblemon.mod.common.CobblemonEntities;
 import com.cobblemon.mod.common.api.pokemon.PokemonSpecies;
+import com.cobblemon.mod.common.client.entity.PokemonClientDelegate;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.cobblemon.mod.common.pokemon.Species;
@@ -99,6 +100,16 @@ public class CobblemonNPCRenderer<E extends PathfinderMob>
     }
   }
 
+  private static void syncCobblemonRenderState(
+      PathfinderMob sourceEntity, PokemonEntity cobblemonEntity) {
+    int renderAge = sourceEntity.tickCount + 100;
+    cobblemonEntity.setTicksLived(renderAge);
+    if (cobblemonEntity.getDelegate() instanceof PokemonClientDelegate clientDelegate) {
+      clientDelegate.setCurrentEntity(cobblemonEntity);
+      clientDelegate.updateAge(renderAge);
+    }
+  }
+
   private boolean renderCobblemon(
       E entity,
       float entityYaw,
@@ -141,6 +152,7 @@ public class CobblemonNPCRenderer<E extends PathfinderMob>
 
     try {
       cobblemonEntity.setCustomNameVisible(false);
+      syncCobblemonRenderState(entity, cobblemonEntity);
 
       if (IntegrationRegistry.isGuiPreviewMode()) {
         float cobblemonHeight = cobblemonEntity.getBbHeight();

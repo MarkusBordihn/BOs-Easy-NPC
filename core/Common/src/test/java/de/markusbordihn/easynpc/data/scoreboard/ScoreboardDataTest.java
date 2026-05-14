@@ -25,7 +25,6 @@ import java.util.Set;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-@DisplayName("ScoreboardData Tests")
 class ScoreboardDataTest {
 
   @Test
@@ -50,7 +49,6 @@ class ScoreboardDataTest {
   }
 
   @Test
-  @DisplayName("Should extract @score with underscores")
   void testExtractObjectiveNames_withUnderscores() {
     String text = "Score: @score(test_score_val)";
     Set<String> result = ScoreboardData.parseScoreMacros(text);
@@ -60,7 +58,6 @@ class ScoreboardDataTest {
   }
 
   @Test
-  @DisplayName("Should extract @score with hyphens")
   void testExtractObjectiveNames_withHyphens() {
     String text = "Score: @score(test-score-name)";
     Set<String> result = ScoreboardData.parseScoreMacros(text);
@@ -70,7 +67,6 @@ class ScoreboardDataTest {
   }
 
   @Test
-  @DisplayName("Should extract @score with dots")
   void testExtractObjectiveNames_withDots() {
     String text = "Score: @score(my.score.value)";
     Set<String> result = ScoreboardData.parseScoreMacros(text);
@@ -80,7 +76,6 @@ class ScoreboardDataTest {
   }
 
   @Test
-  @DisplayName("Should return empty set when no @score macros present")
   void testExtractObjectiveNames_noMacros() {
     String text = "This is just plain text without any macros.";
     Set<String> result = ScoreboardData.parseScoreMacros(text);
@@ -89,7 +84,6 @@ class ScoreboardDataTest {
   }
 
   @Test
-  @DisplayName("Should return empty set for null text")
   void testExtractObjectiveNames_nullText() {
     Set<String> result = ScoreboardData.parseScoreMacros(null);
 
@@ -97,7 +91,6 @@ class ScoreboardDataTest {
   }
 
   @Test
-  @DisplayName("Should return empty set for empty text")
   void testExtractObjectiveNames_emptyText() {
     Set<String> result = ScoreboardData.parseScoreMacros("");
 
@@ -105,7 +98,6 @@ class ScoreboardDataTest {
   }
 
   @Test
-  @DisplayName("Should handle @score with other macros")
   void testExtractObjectiveNames_mixedMacros() {
     String text = "Hello @initiator, your score is @score(player_score). Talk to @npc.";
     Set<String> result = ScoreboardData.parseScoreMacros(text);
@@ -115,7 +107,6 @@ class ScoreboardDataTest {
   }
 
   @Test
-  @DisplayName("Should reject @score with invalid characters")
   void testExtractObjectiveNames_invalidCharacters() {
     String text = "@score(invalid@name) and @score(bad#score)";
     Set<String> result = ScoreboardData.parseScoreMacros(text);
@@ -124,7 +115,6 @@ class ScoreboardDataTest {
   }
 
   @Test
-  @DisplayName("Should handle @score at start of text")
   void testExtractObjectiveNames_atStart() {
     String text = "@score(first) is your score";
     Set<String> result = ScoreboardData.parseScoreMacros(text);
@@ -134,7 +124,6 @@ class ScoreboardDataTest {
   }
 
   @Test
-  @DisplayName("Should handle @score at end of text")
   void testExtractObjectiveNames_atEnd() {
     String text = "Your score is @score(last)";
     Set<String> result = ScoreboardData.parseScoreMacros(text);
@@ -144,7 +133,6 @@ class ScoreboardDataTest {
   }
 
   @Test
-  @DisplayName("Should handle duplicate @score macros")
   void testExtractObjectiveNames_duplicates() {
     String text = "@score(test) and again @score(test) and @score(test)";
     Set<String> result = ScoreboardData.parseScoreMacros(text);
@@ -154,7 +142,6 @@ class ScoreboardDataTest {
   }
 
   @Test
-  @DisplayName("Should not match @score without parentheses")
   void testExtractObjectiveNames_noParentheses() {
     String text = "@score without parentheses";
     Set<String> result = ScoreboardData.parseScoreMacros(text);
@@ -163,7 +150,6 @@ class ScoreboardDataTest {
   }
 
   @Test
-  @DisplayName("Should not match @score with empty parentheses")
   void testExtractObjectiveNames_emptyParentheses() {
     String text = "@score()";
     Set<String> result = ScoreboardData.parseScoreMacros(text);

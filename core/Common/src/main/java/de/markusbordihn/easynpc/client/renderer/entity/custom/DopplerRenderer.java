@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.model.custom.DopplerModel;
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.layers.SkullHeadRenderLayer;
 import de.markusbordihn.easynpc.client.renderer.manager.EntityTypeManager;
 import de.markusbordihn.easynpc.client.renderer.manager.RendererManager;
 import de.markusbordihn.easynpc.data.render.RenderType;
@@ -33,6 +34,7 @@ public class DopplerRenderer<E extends PathfinderMob>
   public DopplerRenderer(
       EntityRendererProvider.Context context, ModelLayerLocation modelLayerLocation) {
     super(context, new DopplerModel<>(context.bakeLayer(modelLayerLocation)), 0.5F);
+    this.addLayer(new SkullHeadRenderLayer<>(this));
   }
 
   private boolean renderEntity(

@@ -28,11 +28,9 @@ import net.minecraft.nbt.CompoundTag;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-@DisplayName("DialogDataEntry Tests")
 class DialogDataEntryTest {
 
   @Test
-  @DisplayName("Should generate consistent hashCode for identical data")
   void testConsistentHashCode() {
     DialogDataEntry entry1 = new DialogDataEntry("test_label", "Test Name", "Test Text");
     DialogDataEntry entry2 = new DialogDataEntry("test_label", "Test Name", "Test Text");
@@ -50,7 +48,6 @@ class DialogDataEntryTest {
   }
 
   @Test
-  @DisplayName("Should preserve data through encode/decode cycle")
   void testEncodeDecodeConsistency() {
     DialogDataEntry original = new DialogDataEntry("test_dialog", "Test Dialog", "Test text");
     CompoundTag tag = new CompoundTag();
@@ -64,7 +61,6 @@ class DialogDataEntryTest {
   }
 
   @Test
-  @DisplayName("Should generate same UUID after encode/decode cycle")
   void testUUIDConsistencyAfterEncodeDecode() {
     DialogDataEntry original = new DialogDataEntry("dialog_label", "Dialog Name", "Dialog Text");
     CompoundTag tag = new CompoundTag();
@@ -75,7 +71,6 @@ class DialogDataEntryTest {
   }
 
   @Test
-  @DisplayName("Should preserve label when changed and re-encoded")
   void testLabelChangePreservation() {
     DialogDataEntry original = new DialogDataEntry("original_label", "Name", "Text");
     UUID originalId = original.getId();
@@ -92,7 +87,6 @@ class DialogDataEntryTest {
   }
 
   @Test
-  @DisplayName("Should handle dialog buttons correctly")
   void testDialogButtonsEncodeDecode() {
     Set<DialogButtonEntry> buttons = new LinkedHashSet<>();
     buttons.add(new DialogButtonEntry("Button 1", DialogButtonType.DEFAULT));
@@ -108,7 +102,6 @@ class DialogDataEntryTest {
   }
 
   @Test
-  @DisplayName("Should generate different UUIDs for different labels")
   void testDifferentUUIDsForDifferentLabels() {
     DialogDataEntry entry1 = new DialogDataEntry("label1", "Name", "Text");
     DialogDataEntry entry2 = new DialogDataEntry("label2", "Name", "Text");
@@ -117,7 +110,6 @@ class DialogDataEntryTest {
   }
 
   @Test
-  @DisplayName("Should handle empty label correctly")
   void testEmptyLabel() {
     DialogDataEntry entry = new DialogDataEntry("", "TestName", "Text");
 
@@ -127,7 +119,6 @@ class DialogDataEntryTest {
   }
 
   @Test
-  @DisplayName("Should handle null label correctly")
   void testNullLabel() {
     DialogDataEntry entry = new DialogDataEntry(null, "TestName", "Text");
 
@@ -137,7 +128,6 @@ class DialogDataEntryTest {
   }
 
   @Test
-  @DisplayName("Should preserve priority through encode/decode")
   void testPriorityPreservation() {
     DialogDataEntry original = new DialogDataEntry("label", "Name", "Text");
     CompoundTag tag = new CompoundTag();
@@ -149,7 +139,6 @@ class DialogDataEntryTest {
   }
 
   @Test
-  @DisplayName("Should handle special characters in label")
   void testSpecialCharactersInLabel() {
     DialogDataEntry entry1 = new DialogDataEntry("test_label_with_üöä_and_!@#", "Name", "Text");
     DialogDataEntry entry2 = new DialogDataEntry("test_label_with_üöä_and_!@#", "Name", "Text");
@@ -164,7 +153,6 @@ class DialogDataEntryTest {
   }
 
   @Test
-  @DisplayName("Should ensure label consistency determines UUID consistency")
   void testLabelConsistencyDeterminesUUIDConsistency() {
     DialogDataEntry clientEntry =
         new DialogDataEntry("critical_test_label", "Client Name", "Client Text");

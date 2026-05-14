@@ -27,7 +27,6 @@ import net.minecraft.nbt.CompoundTag;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-@DisplayName("RootModelData Tests")
 class RootModelDataTest {
 
   @Test

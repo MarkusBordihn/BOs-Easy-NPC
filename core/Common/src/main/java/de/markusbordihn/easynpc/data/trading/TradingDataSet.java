@@ -19,8 +19,13 @@
 
 package de.markusbordihn.easynpc.data.trading;
 
+import de.markusbordihn.easynpc.data.action.ActionDataSet;
 import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
+import java.util.HashMap;
+import java.util.Map;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 
@@ -32,6 +37,8 @@ public class TradingDataSet {
   public static final String DATA_TRADING_RESETS_EVERY_MIN_TAG = "ResetsEveryMin";
   public static final String DATA_TRADING_LAST_RESET_TAG = "LastReset";
   public static final String DATA_TYPE_TAG = "Type";
+  public static final String DATA_OFFER_ACTIONS_TAG = "OfferActions";
+  public static final String DATA_OFFER_ACTION_INDEX_TAG = "Index";
   public static final StreamCodec<RegistryFriendlyByteBuf, TradingDataSet> STREAM_CODEC =
       new StreamCodec<>() {
         @Override
@@ -47,6 +54,7 @@ public class TradingDataSet {
                   tradingDataSet.createTag(), "TradingDataSet"));
         }
       };
+  private final HashMap<Integer, ActionDataSet> offerActions = new HashMap<>();
   private TradingType tradingType = TradingType.NONE;
   private int maxUses = 64;
   private int rewardedXP = 0;
@@ -103,6 +111,27 @@ public class TradingDataSet {
     this.lastReset = lastReset;
   }
 
+  public boolean hasOfferAction(int offerIndex) {
+    ActionDataSet actionDataSet = this.offerActions.get(offerIndex);
+    return actionDataSet != null && !actionDataSet.isEmpty();
+  }
+
+  public ActionDataSet getOfferAction(int offerIndex) {
+    return this.offerActions.getOrDefault(offerIndex, new ActionDataSet());
+  }
+
+  public void setOfferAction(int offerIndex, ActionDataSet actionDataSet) {
+    if (actionDataSet == null || actionDataSet.isEmpty()) {
+      this.offerActions.remove(offerIndex);
+    } else {
+      this.offerActions.put(offerIndex, actionDataSet);
+    }
+  }
+
+  public Map<Integer, ActionDataSet> getOfferActions() {
+    return this.offerActions;
+  }
+
   public void load(CompoundTag compoundTag) {
     if (compoundTag == null || !compoundTag.contains(DATA_TRADING_DATA_SET_TAG)) {
       return;
@@ -117,6 +146,20 @@ public class TradingDataSet {
             ? tradingData.getLong(DATA_TRADING_LAST_RESET_TAG)
             : System.currentTimeMillis();
     this.tradingType = TradingType.get(tradingData.getString(DATA_TYPE_TAG));
+
+    this.offerActions.clear();
+    if (tradingData.contains(DATA_OFFER_ACTIONS_TAG)) {
+      ListTag offerActionsList = tradingData.getList(DATA_OFFER_ACTIONS_TAG, Tag.TAG_COMPOUND);
+      for (int i = 0; i < offerActionsList.size(); i++) {
+        CompoundTag entryTag = offerActionsList.getCompound(i);
+        int index = entryTag.getInt(DATA_OFFER_ACTION_INDEX_TAG);
+        ActionDataSet actionDataSet =
+            new ActionDataSet(entryTag, ActionDataSet.ACTION_DATA_SET_TAG);
+        if (!actionDataSet.isEmpty()) {
+          this.offerActions.put(index, actionDataSet);
+        }
+      }
+    }
   }
 
   public CompoundTag save(CompoundTag compoundTag) {
@@ -126,6 +169,22 @@ public class TradingDataSet {
     tradingData.putInt(DATA_TRADING_RESETS_EVERY_MIN_TAG, this.resetsEveryMin);
     tradingData.putLong(DATA_TRADING_LAST_RESET_TAG, this.lastReset);
     tradingData.putString(DATA_TYPE_TAG, this.tradingType.name());
+
+    if (!this.offerActions.isEmpty()) {
+      ListTag offerActionsList = new ListTag();
+      for (Map.Entry<Integer, ActionDataSet> entry : this.offerActions.entrySet()) {
+        ActionDataSet actionDataSet = entry.getValue();
+        if (actionDataSet != null && !actionDataSet.isEmpty()) {
+          CompoundTag entryTag = new CompoundTag();
+          entryTag.putInt(DATA_OFFER_ACTION_INDEX_TAG, entry.getKey());
+          actionDataSet.save(entryTag, ActionDataSet.ACTION_DATA_SET_TAG);
+          offerActionsList.add(entryTag);
+        }
+      }
+      if (!offerActionsList.isEmpty()) {
+        tradingData.put(DATA_OFFER_ACTIONS_TAG, offerActionsList);
+      }
+    }
 
     compoundTag.put(DATA_TRADING_DATA_SET_TAG, tradingData);
 

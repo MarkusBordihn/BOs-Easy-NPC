@@ -67,8 +67,8 @@ dependencies {
   // Cobblemon integration
   compileOnly "curse.maven:cobblemon-687131:7553231"
 
-  // Test dependencies
-  // runtimeOnly "curse.maven:epic-fight-mod-405076:7185834"
+  // Epic Fight integration
+  compileOnly "curse.maven:epic-fight-mod-405076:8080214"
 }
 
 // NeoGradle compiles the game, but we don't want to add our common code to the game's code

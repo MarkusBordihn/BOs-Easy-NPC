@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.client.renderer.entity.custom;
 
 import de.markusbordihn.easynpc.client.model.custom.OrcModel;
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.layers.SkullHeadRenderLayer;
 import de.markusbordihn.easynpc.client.texture.CustomTextureManager;
 import de.markusbordihn.easynpc.client.texture.RemoteTextureManager;
 import de.markusbordihn.easynpc.data.skin.variant.OrcSkinVariant;
@@ -39,6 +40,7 @@ public class OrcRenderer<E extends Orc> extends HumanoidMobRenderer<E, OrcModel<
   public OrcRenderer(
       EntityRendererProvider.Context context, ModelLayerLocation modelLayerLocation) {
     super(context, new OrcModel<>(context.bakeLayer(modelLayerLocation)), 0.3F);
+    this.addLayer(new SkullHeadRenderLayer<>(this));
   }
 
   @Override

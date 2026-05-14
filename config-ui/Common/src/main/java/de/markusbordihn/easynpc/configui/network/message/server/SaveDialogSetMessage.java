@@ -106,7 +106,10 @@ public record SaveDialogSetMessage(UUID uuid, DialogDataSet dialogDataSet)
         MessageSecurity.sanitizeDialogDataSet(
             this.dialogDataSet, easyNPC, serverPlayer, permissionLevel);
     if (sanitizedDialogDataSet == null) {
-      log.warn("Blocked dialog set save for {} from {}", easyNPC, serverPlayer);
+      log.warn(
+          "Blocked dialog set save for {} from {} because it contains an action type blocked by security.cfg feature settings",
+          easyNPC,
+          serverPlayer);
       return;
     }
 

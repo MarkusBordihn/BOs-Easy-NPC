@@ -28,7 +28,6 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-@DisplayName("ValueUtils Tests")
 class ValueUtilsTest {
 
   @ParameterizedTest
@@ -124,7 +123,6 @@ class ValueUtilsTest {
   }
 
   @ParameterizedTest
-  @DisplayName("Should reject negative or non-numeric values")
   @ValueSource(strings = {"-1", "-100", "abc", "1.5", ""})
   void testIsPositiveNumericValueOrZero_invalid(String value) {
     assertFalse(ValueUtils.isPositiveNumericValueOrZero(value));

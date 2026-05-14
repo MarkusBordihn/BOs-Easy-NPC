@@ -21,7 +21,6 @@ package de.markusbordihn.easynpc.client.renderer.manager;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.compat.CompatConstants;
 import java.util.HashMap;
 import java.util.Map;
 import net.minecraft.client.Minecraft;
@@ -153,20 +152,6 @@ public class RendererManager {
     return entityRenderer;
   }
 
-  public static void copyModSpecificData(
-      PathfinderMob sourceEntity, Entity targetEntity, String entityTypeName) {
-    if (sourceEntity == null
-        || targetEntity == null
-        || entityTypeName == null
-        || sourceEntity == targetEntity) {
-      return;
-    }
-
-    if (CompatConstants.MOD_COBBLEMON_LOADED && entityTypeName.equals("cobblemon:pokemon")) {
-      // TODO: Add custom entity data copy for Cobblemon.
-    }
-  }
-
   public static void copyCustomEntityData(
       PathfinderMob sourceEntity, Entity targetEntity, String entityTypeName) {
     if (sourceEntity == null
@@ -175,9 +160,6 @@ public class RendererManager {
         || sourceEntity == targetEntity) {
       return;
     }
-
-    // Copy mod specific data, if any.
-    copyModSpecificData(sourceEntity, targetEntity, entityTypeName);
 
     // Synchronize entity tick count.
     targetEntity.tickCount = sourceEntity.tickCount;
@@ -192,6 +174,11 @@ public class RendererManager {
     targetEntity.setYHeadRot(sourceEntity.getYHeadRot());
 
     targetEntity.setYBodyRot(sourceEntity.yBodyRot);
+
+    // Sync former position to allow proper interpolation and animation.
+    targetEntity.xo = sourceEntity.xo;
+    targetEntity.yo = sourceEntity.yo;
+    targetEntity.zo = sourceEntity.zo;
 
     // Sync entity position (to allow proper spawning and de-spawning).
     targetEntity.setPos(sourceEntity.getX(), sourceEntity.getY(), sourceEntity.getZ());

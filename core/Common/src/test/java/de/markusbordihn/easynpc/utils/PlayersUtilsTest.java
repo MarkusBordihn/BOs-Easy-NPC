@@ -26,7 +26,6 @@ import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-@DisplayName("PlayersUtils Tests")
 class PlayersUtilsTest {
 
   @Test
@@ -57,7 +56,6 @@ class PlayersUtilsTest {
   }
 
   @Test
-  @DisplayName("Should extract texture URL from valid texture data")
   void testExtractUserTextureUrl() {
     String base64 =
         "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYWJjMTIzIn19fQ==";

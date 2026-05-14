@@ -37,6 +37,9 @@ public class CaveSpiderEpicFight extends SpiderRaw {
   }
 
   @Override
+  protected void registerGoals() {}
+
+  @Override
   public ConfigurationData getConfigurationData() {
     return ConfigurationData.EPIC_FIGHT;
   }

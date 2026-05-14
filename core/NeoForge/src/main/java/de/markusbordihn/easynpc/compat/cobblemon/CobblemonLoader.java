@@ -20,13 +20,17 @@
 package de.markusbordihn.easynpc.compat.cobblemon;
 
 import com.cobblemon.mod.common.api.pokemon.PokemonSpecies;
+import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.compat.IntegrationModelProvider;
 import de.markusbordihn.easynpc.compat.IntegrationRegistry;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class CobblemonLoader implements IntegrationModelProvider {
 
+  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private static final CobblemonLoader INSTANCE = new CobblemonLoader();
 
   private List<String> cachedModels;
@@ -39,6 +43,9 @@ public class CobblemonLoader implements IntegrationModelProvider {
             .map(species -> species.getResourceIdentifier().toString())
             .sorted()
             .collect(Collectors.toList());
+    if (!INSTANCE.cachedModels.isEmpty()) {
+      log.info("Loaded {} Cobblemon Species Models", INSTANCE.cachedModels.size());
+    }
     IntegrationRegistry.register(INSTANCE);
   }
 
@@ -49,6 +56,19 @@ public class CobblemonLoader implements IntegrationModelProvider {
 
   @Override
   public List<String> getAvailableModels() {
+    if (cachedModels == null || cachedModels.isEmpty()) {
+      List<?> implemented = PokemonSpecies.INSTANCE.getImplemented();
+      if (!implemented.isEmpty()) {
+        log.info("Re-Loading Cobblemon Species Models ...");
+        cachedModels =
+            PokemonSpecies.INSTANCE.getImplemented().stream()
+                .map(species -> species.getResourceIdentifier().toString())
+                .sorted()
+                .collect(Collectors.toList());
+        log.info("Loaded {} Cobblemon Species Models", cachedModels.size());
+      }
+    }
+
     return cachedModels != null ? cachedModels : List.of();
   }
 }

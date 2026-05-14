@@ -21,12 +21,10 @@ package de.markusbordihn.easynpc.validator;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-@DisplayName("NameValidator Tests")
 class NameValidatorTest {
 
   @ParameterizedTest
@@ -72,14 +70,12 @@ class NameValidatorTest {
   }
 
   @ParameterizedTest
-  @DisplayName("Should reject player names starting with 'http'")
   @ValueSource(strings = {"http", "https", "httpUser", "httpsPlayer"})
   void testIsValidPlayerName_startsWithHttp(String name) {
     assertFalse(NameValidator.isValidPlayerName(name));
   }
 
   @ParameterizedTest
-  @DisplayName("Should reject player name 'htt'")
   @ValueSource(strings = {"htt"})
   void testIsValidPlayerName_htt(String name) {
     assertFalse(NameValidator.isValidPlayerName(name));

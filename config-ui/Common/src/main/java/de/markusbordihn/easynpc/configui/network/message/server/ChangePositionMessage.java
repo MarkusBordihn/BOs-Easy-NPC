@@ -23,7 +23,6 @@ import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import de.markusbordihn.easynpc.security.NpcFeature;
-import de.markusbordihn.easynpc.security.SecurityManager;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -71,8 +70,8 @@ public record ChangePositionMessage(UUID uuid, Vec3 pos) implements NetworkMessa
       return;
     }
 
-    if (!SecurityManager.checkFeatureAccess(serverPlayer, easyNPC, NpcFeature.POSITION).allowed()) {
-      log.warn("Blocked position change for {} from {}", easyNPC, serverPlayer);
+    if (!MessageSecurity.checkFeatureAccess(
+        serverPlayer, easyNPC, NpcFeature.POSITION, "position change")) {
       return;
     }
 

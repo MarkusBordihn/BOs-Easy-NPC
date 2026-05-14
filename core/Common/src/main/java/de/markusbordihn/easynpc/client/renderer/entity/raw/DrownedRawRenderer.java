@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.client.renderer.entity.raw;
 
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.layers.SkullHeadRenderLayer;
 import de.markusbordihn.easynpc.data.skin.variant.ZombieSkinVariant;
 import net.minecraft.client.renderer.entity.DrownedRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -33,6 +34,7 @@ public class DrownedRawRenderer extends DrownedRenderer implements EasyNPCEntity
 
   public DrownedRawRenderer(EntityRendererProvider.Context context) {
     super(context);
+    this.addLayer(new SkullHeadRenderLayer<>(this));
   }
 
   @Override

@@ -40,9 +40,9 @@ public class BasicTradingConfigurationMenu extends TradingConfigurationMenu {
 
   public static final int SLOT_SIZE = 18;
   public static final int TRADING_SLOT_SIZE = 18;
-  public static final int TRADING_START_POSITION_X = 30;
-  public static final int TRADING_START_POSITION_Y = 40;
-  public static final int TRADING_START_POSITION_SECOND_ROW_X = TRADING_START_POSITION_X + 160;
+  public static final int TRADING_START_POSITION_X = 22;
+  public static final int TRADING_START_POSITION_Y = 30;
+  public static final int TRADING_START_POSITION_SECOND_ROW_X = TRADING_START_POSITION_X + 165;
   protected static final int TRADING_CONTAINER_SIZE = TradingSettings.BASIC_TRADING_OFFERS * 3;
   protected final Container tradingContainer;
 
@@ -127,7 +127,7 @@ public class BasicTradingConfigurationMenu extends TradingConfigurationMenu {
     }
 
     // Player Inventory Slots
-    int playerInventoryStartPositionY = 159;
+    int playerInventoryStartPositionY = 156;
     int playerInventoryStartPositionX = 8;
     for (int inventoryRow = 0; inventoryRow < 3; ++inventoryRow) {
       for (int inventoryColumn = 0; inventoryColumn < 9; ++inventoryColumn) {
@@ -141,7 +141,7 @@ public class BasicTradingConfigurationMenu extends TradingConfigurationMenu {
     }
 
     // Player Hotbar Slots
-    int hotbarStartPositionY = 215;
+    int hotbarStartPositionY = 216;
     int hotbarStartPositionX = 8;
     for (int playerInventorySlot = 0; playerInventorySlot < 9; ++playerInventorySlot) {
       this.addSlot(

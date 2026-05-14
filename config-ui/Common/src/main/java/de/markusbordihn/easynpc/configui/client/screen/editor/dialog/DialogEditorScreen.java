@@ -393,7 +393,7 @@ public class DialogEditorScreen<T extends EditorMenu> extends EditorScreen<T> {
               buttonWidth,
               dialogButtonEntry.getButtonName(buttonMaxTextLength).getString(),
               onPress -> {
-                log.info("Edit dialog button {}", dialogButtonEntry.id());
+                log.debug("Edit dialog button {}", dialogButtonEntry.id());
                 NetworkMessageHandlerManager.getServerHandler()
                     .openDialogButtonEditor(
                         this.getEasyNPCUUID(), this.getDialogUUID(), dialogButtonEntry.id());
@@ -412,8 +412,6 @@ public class DialogEditorScreen<T extends EditorMenu> extends EditorScreen<T> {
               smallButtons ? buttonWidth : 208,
               "dialog.add_button",
               onPress -> {
-                // Check if something has changed, to store the current dialog data before opening
-                // the dialog button editor.
                 this.saveDialogData();
                 NetworkMessageHandlerManager.getServerHandler()
                     .openDialogButtonEditor(this.getEasyNPCUUID(), this.getDialogUUID());

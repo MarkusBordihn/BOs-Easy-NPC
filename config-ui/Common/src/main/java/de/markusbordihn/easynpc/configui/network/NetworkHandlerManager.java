@@ -48,6 +48,7 @@ import de.markusbordihn.easynpc.configui.network.message.server.ChangePositionMe
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeProfessionMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeRendererMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeSkinMessage;
+import de.markusbordihn.easynpc.configui.network.message.server.ChangeTradingOfferActionMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeTradingTypeMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ExportCustomPresetServerMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ExportPresetMessage;
@@ -62,6 +63,8 @@ import de.markusbordihn.easynpc.configui.network.message.server.OpenDialogButton
 import de.markusbordihn.easynpc.configui.network.message.server.OpenDialogEditorMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.OpenDialogTextEditorMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.OpenMenuMessage;
+import de.markusbordihn.easynpc.configui.network.message.server.OpenTradingOfferActionEditorMessage;
+import de.markusbordihn.easynpc.configui.network.message.server.OpenTradingOfferActionEntryEditorMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.RemoveDialogButtonMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.RemoveDialogMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.RemoveNPCMessage;
@@ -190,6 +193,12 @@ public class NetworkHandlerManager {
         ChangeBasicTradingMessage.STREAM_CODEC,
         ChangeBasicTradingMessage.class,
         ChangeBasicTradingMessage::create);
+
+    networkHandler.registerServerNetworkMessage(
+        ChangeTradingOfferActionMessage.PAYLOAD_TYPE,
+        ChangeTradingOfferActionMessage.STREAM_CODEC,
+        ChangeTradingOfferActionMessage.class,
+        ChangeTradingOfferActionMessage::create);
 
     networkHandler.registerServerNetworkMessage(
         ChangeCombatAttributeMessage.PAYLOAD_TYPE,
@@ -364,6 +373,18 @@ public class NetworkHandlerManager {
         OpenActionDataEntryEditorMessage.STREAM_CODEC,
         OpenActionDataEntryEditorMessage.class,
         OpenActionDataEntryEditorMessage::create);
+
+    networkHandler.registerServerNetworkMessage(
+        OpenTradingOfferActionEditorMessage.PAYLOAD_TYPE,
+        OpenTradingOfferActionEditorMessage.STREAM_CODEC,
+        OpenTradingOfferActionEditorMessage.class,
+        OpenTradingOfferActionEditorMessage::create);
+
+    networkHandler.registerServerNetworkMessage(
+        OpenTradingOfferActionEntryEditorMessage.PAYLOAD_TYPE,
+        OpenTradingOfferActionEntryEditorMessage.STREAM_CODEC,
+        OpenTradingOfferActionEntryEditorMessage.class,
+        OpenTradingOfferActionEntryEditorMessage::create);
 
     networkHandler.registerServerNetworkMessage(
         OpenConditionDataEditorMessage.PAYLOAD_TYPE,

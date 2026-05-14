@@ -28,6 +28,7 @@
     "renderer.EasyNPCGhastRendererMixin",
     "renderer.EasyNPCLivingEntityRendererMixin",
     "renderer.EasyNPCSlimeRendererMixin",
+    "renderer.EpicFightPatchedEntityRendererMixin",
     "renderer.HumanoidArmorLayerMixin",
     "renderer.SkeletonClothingLayerMixin",
     "renderer.VillagerProfessionLayerMixin"
@@ -35,6 +36,7 @@
   "mixins": [
     "entity.CreeperMixin",
     "entity.EndermanMixin",
+    "entity.EpicFightEquipmentMixin",
     "entity.FoxMixin",
     "entity.RaiderMixin",
     "entity.SlimeMixin",

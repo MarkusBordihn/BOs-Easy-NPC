@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.client.renderer.entity.raw;
 
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.layers.SkullHeadRenderLayer;
 import de.markusbordihn.easynpc.data.skin.variant.PiglinSkinVariant;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -39,6 +40,7 @@ public class PiglinRawRenderer extends PiglinRenderer implements EasyNPCEntityRe
         ModelLayers.PIGLIN_INNER_ARMOR,
         ModelLayers.PIGLIN_OUTER_ARMOR,
         false); // zombifiedPiglin
+    this.addLayer(new SkullHeadRenderLayer<>(this));
   }
 
   @Override

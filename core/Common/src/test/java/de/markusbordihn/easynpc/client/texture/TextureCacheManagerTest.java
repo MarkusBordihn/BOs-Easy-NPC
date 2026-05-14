@@ -30,11 +30,9 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-@DisplayName("TextureCacheManager Tests")
 class TextureCacheManagerTest {
 
   @Test
-  @DisplayName("Should extract UUID from valid PNG filename")
   void testGetUUIDFromFilename_validUUID() {
     String validUUID = "550e8400-e29b-41d4-a716-446655440000";
     String filename = validUUID + ".png";
@@ -59,7 +57,6 @@ class TextureCacheManagerTest {
 
   @ParameterizedTest
   @NullAndEmptySource
-  @DisplayName("Should return null for null or empty filename")
   void testGetUUIDFromFilename_nullOrEmpty(String filename) {
     UUID result = TextureCacheManager.getUUIDFromFilename(filename);
     assertNull(result);
@@ -67,14 +64,12 @@ class TextureCacheManagerTest {
 
   @ParameterizedTest
   @ValueSource(strings = {"test.jpg", "test.txt", "test", "test.PNG"})
-  @DisplayName("Should return null for non-PNG files")
   void testGetUUIDFromFilename_nonPngFile(String filename) {
     UUID result = TextureCacheManager.getUUIDFromFilename(filename);
     assertNull(result);
   }
 
   @Test
-  @DisplayName("Should create TextureModelKey from valid file")
   void testGetTextureModelKey_validFile() {
     UUID testUUID = UUID.fromString("550e8400-e29b-41d4-a716-446655440000");
     File testFile = new File(testUUID + ".png");
@@ -99,7 +94,6 @@ class TextureCacheManagerTest {
   }
 
   @Test
-  @DisplayName("Should return null for invalid file extension")
   void testGetTextureModelKey_invalidExtension() {
     File testFile = new File("test.jpg");
 
@@ -109,7 +103,6 @@ class TextureCacheManagerTest {
   }
 
   @Test
-  @DisplayName("Should handle different skin models")
   void testGetTextureModelKey_differentSkinModels() {
     UUID testUUID = UUID.randomUUID();
     File testFile = new File(testUUID + ".png");

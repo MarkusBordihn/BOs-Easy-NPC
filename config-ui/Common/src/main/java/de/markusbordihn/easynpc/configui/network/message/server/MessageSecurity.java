@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.configui.network.message.server;
 
+import de.markusbordihn.easynpc.config.SecurityConfig;
 import de.markusbordihn.easynpc.data.action.ActionDataEntry;
 import de.markusbordihn.easynpc.data.action.ActionDataSet;
 import de.markusbordihn.easynpc.data.dialog.DialogButtonEntry;
@@ -29,16 +30,21 @@ import de.markusbordihn.easynpc.data.screen.ScreenData;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.menu.dialog.DialogMenu;
 import de.markusbordihn.easynpc.security.CommandPermissionLevel;
+import de.markusbordihn.easynpc.security.CommandSecurity;
 import de.markusbordihn.easynpc.security.FeatureSecurity;
 import de.markusbordihn.easynpc.security.NpcFeature;
+import de.markusbordihn.easynpc.security.NpcSecurityRole;
 import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import net.minecraft.server.level.ServerPlayer;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 class MessageSecurity {
 
+  private static final Logger log = LogManager.getLogger(MessageSecurity.class);
   private static final String[] KNOWN_SECURE_REMOTE_URLS = {
     "https://www.minecraftskins.com/",
     "https://minecraft.novaskin.me/",
@@ -47,6 +53,26 @@ class MessageSecurity {
   };
 
   private MessageSecurity() {}
+
+  static boolean checkFeatureAccess(
+      ServerPlayer serverPlayer, EasyNPC<?> easyNPC, NpcFeature feature, String action) {
+    if (FeatureSecurity.checkFeatureAccess(serverPlayer, easyNPC, feature).allowed()) {
+      return true;
+    }
+
+    logBlockedFeature(action, easyNPC, serverPlayer, feature);
+    return false;
+  }
+
+  static boolean checkActorFeatureAccess(
+      ServerPlayer serverPlayer, NpcFeature feature, String action) {
+    if (FeatureSecurity.checkActorFeatureAccess(serverPlayer, feature).allowed()) {
+      return true;
+    }
+
+    logBlockedFeature(action, null, serverPlayer, feature);
+    return false;
+  }
 
   static boolean checkDialogSession(final UUID uuid, final ServerPlayer serverPlayer) {
     return checkDialogSession(uuid, null, serverPlayer);
@@ -84,6 +110,15 @@ class MessageSecurity {
       NpcFeature feature = FeatureSecurity.getFeature(entry.actionDataType());
       if (feature != null
           && !FeatureSecurity.checkFeatureAccess(serverPlayer, easyNPC, feature).allowed()) {
+        log.warn(
+            "Blocked action type {} for {} from {} because feature {} requires role {} but actor role is {}. Adjust security.cfg key {} to change this.",
+            entry.actionDataType(),
+            easyNPC,
+            serverPlayer,
+            feature.displayName(),
+            SecurityConfig.getRequiredRole(feature),
+            getActorRole(serverPlayer),
+            getFeatureConfigKey(feature));
         return null;
       }
 
@@ -167,10 +202,9 @@ class MessageSecurity {
   }
 
   static boolean checkPresetFeatureAccess(
-      ServerPlayer serverPlayer, EasyNPC<?> easyNPC, PresetType presetType) {
+      ServerPlayer serverPlayer, EasyNPC<?> easyNPC, PresetType presetType, String action) {
     NpcFeature feature = getPresetFeature(presetType);
-    return feature == null
-        || FeatureSecurity.checkFeatureAccess(serverPlayer, easyNPC, feature).allowed();
+    return feature == null || checkFeatureAccess(serverPlayer, easyNPC, feature, action);
   }
 
   static boolean isKnownSecureRemoteUrl(String url) {
@@ -199,5 +233,36 @@ class MessageSecurity {
       case WORLD -> NpcFeature.WORLD_PRESET;
       case DATA -> null;
     };
+  }
+
+  private static void logBlockedFeature(
+      String action, EasyNPC<?> easyNPC, ServerPlayer serverPlayer, NpcFeature feature) {
+    String target = easyNPC != null ? " for " + easyNPC : "";
+    if (feature == null) {
+      log.warn(
+          "Blocked {}{} from {} because the feature security context is invalid.",
+          action,
+          target,
+          serverPlayer);
+      return;
+    }
+
+    log.warn(
+        "Blocked {}{} from {} because feature {} requires role {} but actor role is {}. Adjust security.cfg key {} to change this.",
+        action,
+        target,
+        serverPlayer,
+        feature.displayName(),
+        SecurityConfig.getRequiredRole(feature),
+        getActorRole(serverPlayer),
+        getFeatureConfigKey(feature));
+  }
+
+  private static NpcSecurityRole getActorRole(ServerPlayer serverPlayer) {
+    return FeatureSecurity.getRole(CommandSecurity.getActorContext(serverPlayer));
+  }
+
+  private static String getFeatureConfigKey(NpcFeature feature) {
+    return "feature." + feature.name();
   }
 }
