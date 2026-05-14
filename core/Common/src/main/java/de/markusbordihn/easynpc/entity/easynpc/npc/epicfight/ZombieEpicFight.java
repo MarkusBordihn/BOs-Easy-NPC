@@ -39,6 +39,15 @@ public class ZombieEpicFight extends ZombieRaw {
     super(entityType, level, variant);
   }
 
+  protected boolean isSunBurnTick() {
+    return false;
+  }
+
+  @Override
+  public boolean canUseArmor() {
+    return true;
+  }
+
   @Override
   public ConfigurationData getConfigurationData() {
     return ConfigurationData.EPIC_FIGHT;

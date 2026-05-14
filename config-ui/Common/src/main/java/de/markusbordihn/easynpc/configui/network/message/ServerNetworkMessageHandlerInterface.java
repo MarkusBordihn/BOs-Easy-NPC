@@ -46,6 +46,7 @@ import de.markusbordihn.easynpc.configui.network.message.server.ChangePositionMe
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeProfessionMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeRendererMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeSkinMessage;
+import de.markusbordihn.easynpc.configui.network.message.server.ChangeTradingOfferActionMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeTradingTypeMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ExportCustomPresetServerMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ExportPresetMessage;
@@ -270,6 +271,13 @@ public interface ServerNetworkMessageHandlerInterface {
     }
   }
 
+  default void resetTradingOffers(UUID uuid) {
+    if (uuid != null) {
+      NetworkHandlerManager.sendMessageToServer(
+          new ChangeBasicTradingMessage(uuid, TradingValueType.LAST_TRADING_RESET, 0));
+    }
+  }
+
   default void openActionDataEditor(
       UUID uuid, ActionEventType actionEventType, ConfigurationType configurationType) {
     if (uuid != null && actionEventType != null && actionEventType != ActionEventType.NONE) {
@@ -280,7 +288,8 @@ public interface ServerNetworkMessageHandlerInterface {
               Constants.EMPTY_UUID,
               actionEventType,
               configurationType,
-              EditorType.NONE));
+              EditorType.NONE,
+              0));
     }
   }
 
@@ -294,7 +303,8 @@ public interface ServerNetworkMessageHandlerInterface {
               dialogButtonId,
               ActionEventType.NONE,
               ConfigurationType.NONE,
-              editorType));
+              editorType,
+              0));
     }
   }
 
@@ -317,7 +327,8 @@ public interface ServerNetworkMessageHandlerInterface {
               actionDataEntry.getId(),
               ActionEventType.NONE,
               ConfigurationType.NONE,
-              editorType));
+              editorType,
+              0));
     }
   }
 
@@ -335,7 +346,49 @@ public interface ServerNetworkMessageHandlerInterface {
               actionDataEntry.getId(),
               actionEventType,
               configurationType,
-              EditorType.NONE));
+              EditorType.NONE,
+              0));
+    }
+  }
+
+  default void openTradingOfferActionEditor(
+      UUID uuid, int offerIndex, ConfigurationType configurationType) {
+    if (uuid != null && offerIndex >= 0) {
+      NetworkHandlerManager.sendMessageToServer(
+          new OpenActionDataEditorMessage(
+              uuid,
+              Constants.EMPTY_UUID,
+              Constants.EMPTY_UUID,
+              ActionEventType.NONE,
+              configurationType,
+              EditorType.TRADING_OFFER_ACTION,
+              offerIndex));
+    }
+  }
+
+  default void openTradingOfferActionEntryEditor(
+      UUID uuid,
+      int offerIndex,
+      ConfigurationType configurationType,
+      ActionDataEntry actionDataEntry) {
+    if (uuid != null && offerIndex >= 0 && actionDataEntry != null) {
+      NetworkHandlerManager.sendMessageToServer(
+          new OpenActionDataEntryEditorMessage(
+              uuid,
+              Constants.EMPTY_UUID,
+              Constants.EMPTY_UUID,
+              actionDataEntry.getId(),
+              ActionEventType.NONE,
+              configurationType,
+              EditorType.TRADING_OFFER_ACTION,
+              offerIndex));
+    }
+  }
+
+  default void changeTradingOfferAction(UUID uuid, int offerIndex, ActionDataSet actionDataSet) {
+    if (uuid != null && offerIndex >= 0 && actionDataSet != null) {
+      NetworkHandlerManager.sendMessageToServer(
+          new ChangeTradingOfferActionMessage(uuid, offerIndex, actionDataSet));
     }
   }
 

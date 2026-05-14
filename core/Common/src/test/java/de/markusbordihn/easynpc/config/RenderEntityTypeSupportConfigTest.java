@@ -22,22 +22,13 @@ package de.markusbordihn.easynpc.config;
 import static org.junit.jupiter.api.Assertions.*;
 
 import de.markusbordihn.easynpc.client.renderer.manager.EntityTypeManager;
-import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.Set;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-@DisplayName("RenderEntityTypeSupportConfig Tests")
 class RenderEntityTypeSupportConfigTest {
-
-  @SuppressWarnings("unchecked")
-  private Set<String> getPrivateStaticField(String fieldName) throws Exception {
-    Field field = RenderEntityTypeSupportConfig.class.getDeclaredField(fieldName);
-    field.setAccessible(true);
-    return (Set<String>) field.get(null);
-  }
 
   @Nested
   @DisplayName("Entity Type List Format Validation")
@@ -45,9 +36,8 @@ class RenderEntityTypeSupportConfigTest {
 
     @Test
     @DisplayName("All known unsupported entity types should have valid format")
-    void unsupportedEntityTypesShouldHaveValidFormat() throws Exception {
-      Set<String> entityTypes = getPrivateStaticField("knownUnsupportedEntityTypes");
-      for (String entityType : entityTypes) {
+    void unsupportedEntityTypesShouldHaveValidFormat() {
+      for (String entityType : RenderEntityTypeSupportDefaults.KNOWN_UNSUPPORTED_ENTITY_TYPES) {
         assertTrue(
             entityType.contains(":"),
             "Entity type should contain namespace separator ':' - found: " + entityType);
@@ -61,9 +51,8 @@ class RenderEntityTypeSupportConfigTest {
 
     @Test
     @DisplayName("All known supported entity types should have valid format")
-    void supportedEntityTypesShouldHaveValidFormat() throws Exception {
-      Set<String> entityTypes = getPrivateStaticField("knownSupportedEntityTypes");
-      for (String entityType : entityTypes) {
+    void supportedEntityTypesShouldHaveValidFormat() {
+      for (String entityType : RenderEntityTypeSupportDefaults.KNOWN_SUPPORTED_ENTITY_TYPES) {
         assertTrue(
             entityType.contains(":"),
             "Entity type should contain namespace separator ':' - found: " + entityType);
@@ -77,9 +66,9 @@ class RenderEntityTypeSupportConfigTest {
 
     @Test
     @DisplayName("All known unsupported third-party entity types should have valid format")
-    void unsupportedThirdPartyEntityTypesShouldHaveValidFormat() throws Exception {
-      Set<String> entityTypes = getPrivateStaticField("knownUnsupportedThirdPartyEntityTypes");
-      for (String entityType : entityTypes) {
+    void unsupportedThirdPartyEntityTypesShouldHaveValidFormat() {
+      for (String entityType :
+          RenderEntityTypeSupportDefaults.KNOWN_UNSUPPORTED_THIRD_PARTY_ENTITY_TYPES) {
         assertTrue(
             entityType.contains(":"),
             "Entity type should contain namespace separator ':' - found: " + entityType);
@@ -96,9 +85,9 @@ class RenderEntityTypeSupportConfigTest {
 
     @Test
     @DisplayName("All known supported third-party entity types should have valid format")
-    void supportedThirdPartyEntityTypesShouldHaveValidFormat() throws Exception {
-      Set<String> entityTypes = getPrivateStaticField("knownSupportedThirdPartyEntityTypes");
-      for (String entityType : entityTypes) {
+    void supportedThirdPartyEntityTypesShouldHaveValidFormat() {
+      for (String entityType :
+          RenderEntityTypeSupportDefaults.KNOWN_SUPPORTED_THIRD_PARTY_ENTITY_TYPES) {
         assertTrue(
             entityType.contains(":"),
             "Entity type should contain namespace separator ':' - found: " + entityType);
@@ -120,12 +109,10 @@ class RenderEntityTypeSupportConfigTest {
 
     @Test
     @DisplayName("No entity type should be in both supported and unsupported vanilla lists")
-    void noOverlapBetweenVanillaSupportedAndUnsupported() throws Exception {
-      Set<String> supported = getPrivateStaticField("knownSupportedEntityTypes");
-      Set<String> unsupported = getPrivateStaticField("knownUnsupportedEntityTypes");
-
-      Set<String> overlap = new HashSet<>(supported);
-      overlap.retainAll(unsupported);
+    void noOverlapBetweenVanillaSupportedAndUnsupported() {
+      Set<String> overlap =
+          new HashSet<>(RenderEntityTypeSupportDefaults.KNOWN_SUPPORTED_ENTITY_TYPES);
+      overlap.retainAll(RenderEntityTypeSupportDefaults.KNOWN_UNSUPPORTED_ENTITY_TYPES);
       assertTrue(
           overlap.isEmpty(),
           "Entity types found in both supported and unsupported vanilla lists: " + overlap);
@@ -133,12 +120,10 @@ class RenderEntityTypeSupportConfigTest {
 
     @Test
     @DisplayName("No entity type should be in both supported and unsupported third-party lists")
-    void noOverlapBetweenThirdPartySupportedAndUnsupported() throws Exception {
-      Set<String> supported = getPrivateStaticField("knownSupportedThirdPartyEntityTypes");
-      Set<String> unsupported = getPrivateStaticField("knownUnsupportedThirdPartyEntityTypes");
-
-      Set<String> overlap = new HashSet<>(supported);
-      overlap.retainAll(unsupported);
+    void noOverlapBetweenThirdPartySupportedAndUnsupported() {
+      Set<String> overlap =
+          new HashSet<>(RenderEntityTypeSupportDefaults.KNOWN_SUPPORTED_THIRD_PARTY_ENTITY_TYPES);
+      overlap.retainAll(RenderEntityTypeSupportDefaults.KNOWN_UNSUPPORTED_THIRD_PARTY_ENTITY_TYPES);
       assertTrue(
           overlap.isEmpty(),
           "Entity types found in both supported and unsupported third-party lists: " + overlap);
@@ -146,12 +131,10 @@ class RenderEntityTypeSupportConfigTest {
 
     @Test
     @DisplayName("No overlap between vanilla and third-party supported lists")
-    void noOverlapBetweenVanillaAndThirdPartySupported() throws Exception {
-      Set<String> vanilla = getPrivateStaticField("knownSupportedEntityTypes");
-      Set<String> thirdParty = getPrivateStaticField("knownSupportedThirdPartyEntityTypes");
-
-      Set<String> overlap = new HashSet<>(vanilla);
-      overlap.retainAll(thirdParty);
+    void noOverlapBetweenVanillaAndThirdPartySupported() {
+      Set<String> overlap =
+          new HashSet<>(RenderEntityTypeSupportDefaults.KNOWN_SUPPORTED_ENTITY_TYPES);
+      overlap.retainAll(RenderEntityTypeSupportDefaults.KNOWN_SUPPORTED_THIRD_PARTY_ENTITY_TYPES);
       assertTrue(
           overlap.isEmpty(),
           "Entity types found in both vanilla and third-party supported lists: " + overlap);
@@ -159,12 +142,10 @@ class RenderEntityTypeSupportConfigTest {
 
     @Test
     @DisplayName("No overlap between vanilla and third-party unsupported lists")
-    void noOverlapBetweenVanillaAndThirdPartyUnsupported() throws Exception {
-      Set<String> vanilla = getPrivateStaticField("knownUnsupportedEntityTypes");
-      Set<String> thirdParty = getPrivateStaticField("knownUnsupportedThirdPartyEntityTypes");
-
-      Set<String> overlap = new HashSet<>(vanilla);
-      overlap.retainAll(thirdParty);
+    void noOverlapBetweenVanillaAndThirdPartyUnsupported() {
+      Set<String> overlap =
+          new HashSet<>(RenderEntityTypeSupportDefaults.KNOWN_UNSUPPORTED_ENTITY_TYPES);
+      overlap.retainAll(RenderEntityTypeSupportDefaults.KNOWN_UNSUPPORTED_THIRD_PARTY_ENTITY_TYPES);
       assertTrue(
           overlap.isEmpty(),
           "Entity types found in both vanilla and third-party unsupported lists: " + overlap);
@@ -177,9 +158,8 @@ class RenderEntityTypeSupportConfigTest {
 
     @Test
     @DisplayName("All vanilla supported entity types should use minecraft namespace")
-    void vanillaSupportedShouldUseMinecraftNamespace() throws Exception {
-      Set<String> entityTypes = getPrivateStaticField("knownSupportedEntityTypes");
-      for (String entityType : entityTypes) {
+    void vanillaSupportedShouldUseMinecraftNamespace() {
+      for (String entityType : RenderEntityTypeSupportDefaults.KNOWN_SUPPORTED_ENTITY_TYPES) {
         assertTrue(
             entityType.startsWith("minecraft:"),
             "Vanilla supported entity type should use minecraft namespace - found: " + entityType);
@@ -188,9 +168,8 @@ class RenderEntityTypeSupportConfigTest {
 
     @Test
     @DisplayName("All vanilla unsupported entity types should use minecraft namespace")
-    void vanillaUnsupportedShouldUseMinecraftNamespace() throws Exception {
-      Set<String> entityTypes = getPrivateStaticField("knownUnsupportedEntityTypes");
-      for (String entityType : entityTypes) {
+    void vanillaUnsupportedShouldUseMinecraftNamespace() {
+      for (String entityType : RenderEntityTypeSupportDefaults.KNOWN_UNSUPPORTED_ENTITY_TYPES) {
         assertTrue(
             entityType.startsWith("minecraft:"),
             "Vanilla unsupported entity type should use minecraft namespace - found: "
@@ -200,8 +179,8 @@ class RenderEntityTypeSupportConfigTest {
 
     @Test
     @DisplayName("Known supported vanilla entities should include common mobs")
-    void shouldIncludeCommonVanillaMobs() throws Exception {
-      Set<String> entityTypes = getPrivateStaticField("knownSupportedEntityTypes");
+    void shouldIncludeCommonVanillaMobs() {
+      Set<String> entityTypes = RenderEntityTypeSupportDefaults.KNOWN_SUPPORTED_ENTITY_TYPES;
       assertTrue(entityTypes.contains("minecraft:zombie"), "Should contain zombie");
       assertTrue(entityTypes.contains("minecraft:skeleton"), "Should contain skeleton");
       assertTrue(entityTypes.contains("minecraft:creeper"), "Should contain creeper");
@@ -211,8 +190,8 @@ class RenderEntityTypeSupportConfigTest {
 
     @Test
     @DisplayName("Known unsupported vanilla entities should include non-PathfinderMob entities")
-    void shouldIncludeKnownUnsupportedVanilla() throws Exception {
-      Set<String> entityTypes = getPrivateStaticField("knownUnsupportedEntityTypes");
+    void shouldIncludeKnownUnsupportedVanilla() {
+      Set<String> entityTypes = RenderEntityTypeSupportDefaults.KNOWN_UNSUPPORTED_ENTITY_TYPES;
       assertTrue(entityTypes.contains("minecraft:ender_dragon"), "Should contain ender_dragon");
       assertTrue(entityTypes.contains("minecraft:bat"), "Should contain bat");
       assertTrue(entityTypes.contains("minecraft:phantom"), "Should contain phantom");
@@ -220,11 +199,13 @@ class RenderEntityTypeSupportConfigTest {
 
     @Test
     @DisplayName("Entity type lists should not be empty")
-    void listsShouldNotBeEmpty() throws Exception {
-      assertFalse(getPrivateStaticField("knownSupportedEntityTypes").isEmpty());
-      assertFalse(getPrivateStaticField("knownUnsupportedEntityTypes").isEmpty());
-      assertFalse(getPrivateStaticField("knownSupportedThirdPartyEntityTypes").isEmpty());
-      assertFalse(getPrivateStaticField("knownUnsupportedThirdPartyEntityTypes").isEmpty());
+    void listsShouldNotBeEmpty() {
+      assertFalse(RenderEntityTypeSupportDefaults.KNOWN_SUPPORTED_ENTITY_TYPES.isEmpty());
+      assertFalse(RenderEntityTypeSupportDefaults.KNOWN_UNSUPPORTED_ENTITY_TYPES.isEmpty());
+      assertFalse(
+          RenderEntityTypeSupportDefaults.KNOWN_SUPPORTED_THIRD_PARTY_ENTITY_TYPES.isEmpty());
+      assertFalse(
+          RenderEntityTypeSupportDefaults.KNOWN_UNSUPPORTED_THIRD_PARTY_ENTITY_TYPES.isEmpty());
     }
   }
 
@@ -234,17 +215,15 @@ class RenderEntityTypeSupportConfigTest {
 
     @Test
     @DisplayName("Unsupported third-party entities should not be already caught by name patterns")
-    void unsupportedThirdPartyShouldNotBeRedundantWithPatternFilter() throws Exception {
-      Set<String> entityTypes = getPrivateStaticField("knownUnsupportedThirdPartyEntityTypes");
+    void unsupportedThirdPartyShouldNotBeRedundantWithPatternFilter() {
       Set<String> redundantEntries = new HashSet<>();
-
-      for (String entityType : entityTypes) {
+      for (String entityType :
+          RenderEntityTypeSupportDefaults.KNOWN_UNSUPPORTED_THIRD_PARTY_ENTITY_TYPES) {
         if (EntityTypeManager.shouldFilterEntityTypeByName(entityType)) {
           redundantEntries.add(entityType);
         }
       }
 
-      // Redundant entries are already filtered by name pattern in EntityTypeManager.register()
       if (!redundantEntries.isEmpty()) {
         System.out.println(
             "INFO: "
@@ -252,23 +231,19 @@ class RenderEntityTypeSupportConfigTest {
                 + " unsupported third-party entries are redundant with name pattern filter:");
         redundantEntries.stream().sorted().forEach(e -> System.out.println("  - " + e));
       }
-
-      // Informational only - redundant entries provide an extra safety net
     }
 
     @Test
     @DisplayName("Supported third-party entities caught by name pattern are documented")
-    void supportedThirdPartyWithPatternConflictsAreDocumented() throws Exception {
-      Set<String> entityTypes = getPrivateStaticField("knownSupportedThirdPartyEntityTypes");
+    void supportedThirdPartyWithPatternConflictsAreDocumented() {
       Set<String> conflictingEntries = new HashSet<>();
-
-      for (String entityType : entityTypes) {
+      for (String entityType :
+          RenderEntityTypeSupportDefaults.KNOWN_SUPPORTED_THIRD_PARTY_ENTITY_TYPES) {
         if (EntityTypeManager.shouldFilterEntityTypeByName(entityType)) {
           conflictingEntries.add(entityType);
         }
       }
 
-      // Config entries are checked BEFORE name patterns, so these are correctly handled
       if (!conflictingEntries.isEmpty()) {
         System.out.println(
             "INFO: "
@@ -280,10 +255,8 @@ class RenderEntityTypeSupportConfigTest {
 
     @Test
     @DisplayName("Supported vanilla entities should NOT be caught by name pattern filter")
-    void supportedVanillaShouldNeverBeFilteredByNamePattern() throws Exception {
-      Set<String> entityTypes = getPrivateStaticField("knownSupportedEntityTypes");
-
-      for (String entityType : entityTypes) {
+    void supportedVanillaShouldNeverBeFilteredByNamePattern() {
+      for (String entityType : RenderEntityTypeSupportDefaults.KNOWN_SUPPORTED_ENTITY_TYPES) {
         assertFalse(
             EntityTypeManager.shouldFilterEntityTypeByName(entityType),
             "Supported entity type should NEVER be caught by name pattern filter: " + entityType);

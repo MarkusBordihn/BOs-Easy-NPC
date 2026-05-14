@@ -94,7 +94,10 @@ public record ChangeActionEventMessage(
             this.actionDataSet, easyNPC, serverPlayer, permissionLevel);
     if (sanitizedDataSet == null) {
       log.warn(
-          "Blocked action event {} change for {} from {}", actionEventType, easyNPC, serverPlayer);
+          "Blocked action event {} change for {} from {} because it contains an action type blocked by security.cfg feature settings",
+          actionEventType,
+          easyNPC,
+          serverPlayer);
       return;
     }
 

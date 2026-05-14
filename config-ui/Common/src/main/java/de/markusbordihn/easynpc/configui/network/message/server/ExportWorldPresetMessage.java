@@ -29,7 +29,6 @@ import de.markusbordihn.easynpc.io.PresetFileHandler;
 import de.markusbordihn.easynpc.io.WorldPresetDataFiles;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import de.markusbordihn.easynpc.security.NpcFeature;
-import de.markusbordihn.easynpc.security.SecurityManager;
 import java.io.File;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
@@ -79,9 +78,8 @@ public record ExportWorldPresetMessage(UUID uuid, String name, PresetMetadata me
       return;
     }
 
-    if (!SecurityManager.checkFeatureAccess(serverPlayer, easyNPC, NpcFeature.WORLD_PRESET)
-        .allowed()) {
-      log.warn("Blocked world preset export for {} from {}", easyNPC, serverPlayer);
+    if (!MessageSecurity.checkFeatureAccess(
+        serverPlayer, easyNPC, NpcFeature.WORLD_PRESET, "world preset export")) {
       return;
     }
 

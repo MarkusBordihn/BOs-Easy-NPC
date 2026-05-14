@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.configui.data.screen;
 
 import de.markusbordihn.easynpc.configui.data.editor.EditorType;
+import de.markusbordihn.easynpc.data.action.ActionDataSet;
 import de.markusbordihn.easynpc.data.action.ActionDataType;
 import de.markusbordihn.easynpc.data.action.ActionEventSet;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
@@ -50,6 +51,7 @@ public class AdditionalScreenData implements AdditionalScreenDataInterface {
   private static final String BLOCKED_CONFIGURATIONS_TAG = "BlockedConfigurations";
   private static final String BLOCKED_ACTION_TYPES_TAG = "BlockedActionTypes";
   private static final String SCOREBOARD_DATA_TAG = "ScoreboardData";
+  private static final String TRADING_OFFER_ACTION_DATA_TAG = "TradingOfferActionData";
 
   private final ActionEventSet actionEventSet;
   private final ActionEventType actionEventType;
@@ -121,6 +123,19 @@ public class AdditionalScreenData implements AdditionalScreenDataInterface {
 
   public static boolean hasActionEventSet(CompoundTag compoundTag) {
     return compoundTag != null && compoundTag.contains(ACTION_EVENT_DATA_TAG);
+  }
+
+  public static void addTradingOfferActionDataSet(
+      CompoundTag compoundTag, EasyNPC<?> easyNPC, int offerIndex) {
+    if (compoundTag == null || easyNPC == null || easyNPC.getEasyNPCTradingData() == null) {
+      return;
+    }
+
+    ActionDataSet offerActionDataSet =
+        easyNPC.getEasyNPCTradingData().getTradingDataSet().getOfferAction(offerIndex);
+    if (offerActionDataSet != null && !offerActionDataSet.isEmpty()) {
+      compoundTag.put(TRADING_OFFER_ACTION_DATA_TAG, offerActionDataSet.createTag());
+    }
   }
 
   public static void addBaseAttributes(CompoundTag compoundTag, EasyNPC<?> easyNPC) {
@@ -362,5 +377,13 @@ public class AdditionalScreenData implements AdditionalScreenDataInterface {
 
   public ScoreboardData getScoreboardData() {
     return this.scoreboardData;
+  }
+
+  public ActionDataSet getTradingOfferActionDataSet() {
+    if (!this.data.contains(TRADING_OFFER_ACTION_DATA_TAG)) {
+      return new ActionDataSet();
+    }
+    return new ActionDataSet(
+        this.data.getCompound(TRADING_OFFER_ACTION_DATA_TAG).orElseGet(CompoundTag::new));
   }
 }

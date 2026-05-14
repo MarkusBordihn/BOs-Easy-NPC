@@ -201,7 +201,8 @@ public class ConditionDataEditorContainerScreen<T extends EditorMenu> extends Ed
   }
 
   private void handleEditConditionDataEntry(ConditionDataEntry conditionDataEntry) {
-    log.info("Editing Condition Data Entry {}: {}", conditionDataEntry.getId(), conditionDataEntry);
+    log.debug(
+        "Editing Condition Data Entry {}: {}", conditionDataEntry.getId(), conditionDataEntry);
     NetworkMessageHandlerManager.getServerHandler()
         .openConditionDataEntryEditor(
             this.getEasyNPCUUID(), this.getDialogUUID(), conditionDataEntry);

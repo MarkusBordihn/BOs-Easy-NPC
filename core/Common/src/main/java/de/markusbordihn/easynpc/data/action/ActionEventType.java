@@ -31,7 +31,8 @@ public enum ActionEventType {
   ON_HURT,
   ON_INTERACTION,
   ON_KILL,
-  ON_OPEN_DIALOG;
+  ON_OPEN_DIALOG,
+  ON_TRADE;
 
   public static ActionEventType get(String actionEventType) {
     if (actionEventType == null || actionEventType.isEmpty()) {

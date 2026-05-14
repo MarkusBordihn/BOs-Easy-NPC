@@ -25,7 +25,6 @@ import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-@DisplayName("SpawnRateLimiter Tests")
 class SpawnRateLimiterTest {
 
   @Test
@@ -40,7 +39,6 @@ class SpawnRateLimiterTest {
   }
 
   @Test
-  @DisplayName("Should block the next spawn after the limit is reached")
   void testBlocksAtLimit() {
     UUID uuid = UUID.randomUUID();
     int limit = 3;

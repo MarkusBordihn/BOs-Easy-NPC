@@ -24,11 +24,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-@DisplayName("DialogPriority Tests")
 class DialogPriorityTest {
 
   @Test
-  @DisplayName("Should calculate HIGH priority for 'default' label")
   void testDefaultLabel() {
     assertEquals(DialogPriority.HIGH, DialogPriority.calculateDefaultPriority("default"));
   }
@@ -42,7 +40,6 @@ class DialogPriorityTest {
   }
 
   @Test
-  @DisplayName("Should calculate HIGH priority for 'start' label")
   void testStartLabel() {
     assertEquals(DialogPriority.HIGH, DialogPriority.calculateDefaultPriority("start"));
   }
@@ -56,7 +53,6 @@ class DialogPriorityTest {
   }
 
   @Test
-  @DisplayName("Should calculate HIGH priority for 'welcome' label")
   void testWelcomeLabel() {
     assertEquals(DialogPriority.HIGH, DialogPriority.calculateDefaultPriority("welcome"));
     assertEquals(DialogPriority.HIGH, DialogPriority.calculateDefaultPriority("Welcome"));
@@ -64,7 +60,6 @@ class DialogPriorityTest {
   }
 
   @Test
-  @DisplayName("Should calculate HIGH priority for 'greeting' label")
   void testGreetingLabel() {
     assertEquals(DialogPriority.HIGH, DialogPriority.calculateDefaultPriority("greeting"));
     assertEquals(DialogPriority.HIGH, DialogPriority.calculateDefaultPriority("Greeting"));
@@ -81,7 +76,6 @@ class DialogPriorityTest {
   }
 
   @Test
-  @DisplayName("Should calculate NORMAL priority for 'main' label")
   void testMainLabel() {
     assertEquals(DialogPriority.NORMAL, DialogPriority.calculateDefaultPriority("main"));
   }
@@ -95,7 +89,6 @@ class DialogPriorityTest {
   }
 
   @Test
-  @DisplayName("Should calculate NORMAL priority for 'question' label")
   void testQuestionLabel() {
     assertEquals(DialogPriority.NORMAL, DialogPriority.calculateDefaultPriority("question"));
     assertEquals(DialogPriority.NORMAL, DialogPriority.calculateDefaultPriority("Question"));
@@ -103,7 +96,6 @@ class DialogPriorityTest {
   }
 
   @Test
-  @DisplayName("Should calculate NORMAL priority for 'help' label")
   void testHelpLabel() {
     assertEquals(DialogPriority.NORMAL, DialogPriority.calculateDefaultPriority("help"));
     assertEquals(DialogPriority.NORMAL, DialogPriority.calculateDefaultPriority("Help"));
@@ -167,7 +159,6 @@ class DialogPriorityTest {
   }
 
   @Test
-  @DisplayName("Should calculate FALLBACK priority for custom labels")
   void testCustomLabels() {
     assertEquals(DialogPriority.FALLBACK, DialogPriority.calculateDefaultPriority("quest_1"));
     assertEquals(DialogPriority.FALLBACK, DialogPriority.calculateDefaultPriority("custom_dialog"));
@@ -176,7 +167,6 @@ class DialogPriorityTest {
   }
 
   @Test
-  @DisplayName("Should handle labels with whitespace")
   void testLabelsWithWhitespace() {
     assertEquals(DialogPriority.HIGH, DialogPriority.calculateDefaultPriority("  default  "));
     assertEquals(DialogPriority.HIGH, DialogPriority.calculateDefaultPriority("  start  "));
@@ -184,20 +174,17 @@ class DialogPriorityTest {
   }
 
   @Test
-  @DisplayName("Should calculate FALLBACK priority for null label")
   void testNullLabel() {
     assertEquals(DialogPriority.FALLBACK, DialogPriority.calculateDefaultPriority(null));
   }
 
   @Test
-  @DisplayName("Should calculate FALLBACK priority for empty label")
   void testEmptyLabel() {
     assertEquals(DialogPriority.FALLBACK, DialogPriority.calculateDefaultPriority(""));
     assertEquals(DialogPriority.FALLBACK, DialogPriority.calculateDefaultPriority("   "));
   }
 
   @Test
-  @DisplayName("Should calculate FALLBACK priority for similar but different labels")
   void testSimilarButDifferentLabels() {
     assertEquals(DialogPriority.FALLBACK, DialogPriority.calculateDefaultPriority("defaults"));
     assertEquals(DialogPriority.FALLBACK, DialogPriority.calculateDefaultPriority("started"));
@@ -210,7 +197,6 @@ class DialogPriorityTest {
   }
 
   @Test
-  @DisplayName("Should return correct name for each priority level")
   void testGetNameForPriority() {
     assertEquals("Manual Only", DialogPriority.getNameForPriority(DialogPriority.MANUAL_ONLY));
     assertEquals("Fallback", DialogPriority.getNameForPriority(DialogPriority.FALLBACK));
@@ -230,7 +216,6 @@ class DialogPriorityTest {
   }
 
   @Test
-  @DisplayName("Should return correct display name with priority value")
   void testGetDisplayName() {
     assertEquals("Manual Only (-1)", DialogPriority.getDisplayName(DialogPriority.MANUAL_ONLY));
     assertEquals("Fallback (0)", DialogPriority.getDisplayName(DialogPriority.FALLBACK));
@@ -241,14 +226,12 @@ class DialogPriorityTest {
   }
 
   @Test
-  @DisplayName("Should return custom display name for unknown priority values")
   void testGetDisplayNameCustom() {
     assertEquals("Custom (3)", DialogPriority.getDisplayName(3));
     assertEquals("Custom (42)", DialogPriority.getDisplayName(42));
   }
 
   @Test
-  @DisplayName("Should verify priority constants are correctly ordered")
   void testPriorityOrdering() {
     assertTrue(DialogPriority.MANUAL_ONLY < DialogPriority.FALLBACK);
     assertTrue(DialogPriority.FALLBACK < DialogPriority.LOW);

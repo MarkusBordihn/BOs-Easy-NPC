@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.client.renderer.entity.raw;
 
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.layers.SkullHeadRenderLayer;
 import de.markusbordihn.easynpc.data.skin.variant.SkeletonSkinVariant;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.SkeletonRenderer;
@@ -33,6 +34,7 @@ public class SkeletonRawRenderer extends SkeletonRenderer implements EasyNPCEnti
 
   public SkeletonRawRenderer(EntityRendererProvider.Context context) {
     super(context);
+    this.addLayer(new SkullHeadRenderLayer<>(this));
   }
 
   @Override

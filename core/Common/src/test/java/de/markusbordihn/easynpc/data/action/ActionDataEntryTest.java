@@ -24,14 +24,11 @@ import static org.junit.jupiter.api.Assertions.*;
 import de.markusbordihn.easynpc.security.CommandPermissionLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-@DisplayName("ActionDataEntry Tests")
 class ActionDataEntryTest {
 
   @Test
-  @DisplayName("Should generate consistent hashCode for identical data")
   void testConsistentHashCode() {
     ActionDataEntry entry1 =
         new ActionDataEntry(ActionDataType.COMMAND, "test command", 2, false, false);
@@ -42,7 +39,6 @@ class ActionDataEntryTest {
   }
 
   @Test
-  @DisplayName("Should generate consistent UUID from hashCode")
   void testConsistentUUIDGeneration() {
     ActionDataEntry entry1 =
         new ActionDataEntry(ActionDataType.COMMAND, "test command", 2, false, false);
@@ -53,7 +49,6 @@ class ActionDataEntryTest {
   }
 
   @Test
-  @DisplayName("Should preserve data through encode/decode cycle")
   void testEncodeDecodeConsistency() {
     ActionDataEntry original =
         new ActionDataEntry(ActionDataType.COMMAND, "say Hello World", 2, true, false);
@@ -69,7 +64,6 @@ class ActionDataEntryTest {
   }
 
   @Test
-  @DisplayName("Should generate same UUID after encode/decode cycle")
   void testUUIDConsistencyAfterEncodeDecode() {
     ActionDataEntry original =
         new ActionDataEntry(ActionDataType.COMMAND, "test command", 2, false, false);
@@ -81,7 +75,6 @@ class ActionDataEntryTest {
   }
 
   @Test
-  @DisplayName("Should handle complex data with BlockPos and UUID")
   void testComplexDataEncodeDecode() {
     BlockPos testPos = new BlockPos(100, 64, 200);
     ActionDataEntry original =
@@ -95,7 +88,6 @@ class ActionDataEntryTest {
   }
 
   @Test
-  @DisplayName("Should generate different UUIDs for different data")
   void testDifferentUUIDsForDifferentData() {
     ActionDataEntry entry1 =
         new ActionDataEntry(ActionDataType.COMMAND, "command1", 2, false, false);
@@ -106,7 +98,6 @@ class ActionDataEntryTest {
   }
 
   @Test
-  @DisplayName("Should handle empty and default values correctly")
   void testEmptyAndDefaultValues() {
     ActionDataEntry defaultEntry = new ActionDataEntry();
     ActionDataEntry emptyCommand = new ActionDataEntry(ActionDataType.COMMAND, "", 2, false, false);
@@ -121,7 +112,6 @@ class ActionDataEntryTest {
   }
 
   @Test
-  @DisplayName("Should preserve permission level through encode/decode")
   void testPermissionLevelPreservation() {
     for (int permLevel = ActionDataEntry.MIN_PERMISSION_LEVEL;
         permLevel <= ActionDataEntry.MAX_PERMISSION_LEVEL;
@@ -137,7 +127,6 @@ class ActionDataEntryTest {
   }
 
   @Test
-  @DisplayName("Should support admin command permission levels")
   void testAdminPermissionLevelPreservation() {
     ActionDataEntry original =
         new ActionDataEntry(
@@ -154,7 +143,6 @@ class ActionDataEntryTest {
   }
 
   @Test
-  @DisplayName("Should handle whitespace trimming consistently")
   void testWhitespaceTrimming() {
     ActionDataEntry withSpaces =
         new ActionDataEntry(ActionDataType.COMMAND, "  test command  ", 2, false, false);

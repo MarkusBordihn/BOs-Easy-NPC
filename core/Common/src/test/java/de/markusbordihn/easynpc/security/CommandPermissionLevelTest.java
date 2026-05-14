@@ -24,7 +24,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-@DisplayName("CommandPermissionLevel Tests")
 class CommandPermissionLevelTest {
 
   @Test

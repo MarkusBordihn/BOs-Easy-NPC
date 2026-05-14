@@ -24,7 +24,6 @@ import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.handler.AttributeHandler;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import de.markusbordihn.easynpc.security.NpcFeature;
-import de.markusbordihn.easynpc.security.SecurityManager;
 import java.util.UUID;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
@@ -77,9 +76,8 @@ public record ChangeEntityBaseAttributeMessage(UUID uuid, Attribute attribute, D
       return;
     }
 
-    if (!SecurityManager.checkFeatureAccess(serverPlayer, easyNPC, NpcFeature.BASE_ATTRIBUTE)
-        .allowed()) {
-      log.warn("Blocked base attribute change for {} from {}", easyNPC, serverPlayer);
+    if (!MessageSecurity.checkFeatureAccess(
+        serverPlayer, easyNPC, NpcFeature.BASE_ATTRIBUTE, "base attribute change")) {
       return;
     }
 

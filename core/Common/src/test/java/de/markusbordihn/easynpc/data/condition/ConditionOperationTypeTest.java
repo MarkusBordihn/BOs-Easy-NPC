@@ -21,14 +21,11 @@ package de.markusbordihn.easynpc.data.condition;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-@DisplayName("ConditionOperationType Tests")
 class ConditionOperationTypeTest {
 
   @Test
-  @DisplayName("Should evaluate EQUALS correctly")
   void testEquals() {
     assertTrue(ConditionOperationType.EQUALS.evaluate(5, 5));
     assertTrue(ConditionOperationType.EQUALS.evaluate(0, 0));
@@ -38,7 +35,6 @@ class ConditionOperationTypeTest {
   }
 
   @Test
-  @DisplayName("Should evaluate NOT_EQUALS correctly")
   void testNotEquals() {
     assertTrue(ConditionOperationType.NOT_EQUALS.evaluate(5, 3));
     assertTrue(ConditionOperationType.NOT_EQUALS.evaluate(0, 1));
@@ -48,7 +44,6 @@ class ConditionOperationTypeTest {
   }
 
   @Test
-  @DisplayName("Should evaluate GREATER_THAN correctly")
   void testGreaterThan() {
     assertTrue(ConditionOperationType.GREATER_THAN.evaluate(10, 5));
     assertTrue(ConditionOperationType.GREATER_THAN.evaluate(1, 0));
@@ -58,7 +53,6 @@ class ConditionOperationTypeTest {
   }
 
   @Test
-  @DisplayName("Should evaluate GREATER_THAN_OR_EQUALS correctly")
   void testGreaterThanOrEquals() {
     assertTrue(ConditionOperationType.GREATER_THAN_OR_EQUALS.evaluate(10, 5));
     assertTrue(ConditionOperationType.GREATER_THAN_OR_EQUALS.evaluate(5, 5));
@@ -68,7 +62,6 @@ class ConditionOperationTypeTest {
   }
 
   @Test
-  @DisplayName("Should evaluate LESS_THAN correctly")
   void testLessThan() {
     assertTrue(ConditionOperationType.LESS_THAN.evaluate(5, 10));
     assertTrue(ConditionOperationType.LESS_THAN.evaluate(0, 1));
@@ -78,7 +71,6 @@ class ConditionOperationTypeTest {
   }
 
   @Test
-  @DisplayName("Should evaluate LESS_THAN_OR_EQUALS correctly")
   void testLessThanOrEquals() {
     assertTrue(ConditionOperationType.LESS_THAN_OR_EQUALS.evaluate(5, 10));
     assertTrue(ConditionOperationType.LESS_THAN_OR_EQUALS.evaluate(5, 5));
@@ -88,7 +80,6 @@ class ConditionOperationTypeTest {
   }
 
   @Test
-  @DisplayName("Should evaluate NONE as false")
   void testNone() {
     assertFalse(ConditionOperationType.NONE.evaluate(5, 5));
     assertFalse(ConditionOperationType.NONE.evaluate(0, 0));
@@ -96,7 +87,6 @@ class ConditionOperationTypeTest {
   }
 
   @Test
-  @DisplayName("Should handle non-existent scoreboard value (-1)")
   void testNonExistentScoreboardValue() {
     assertTrue(ConditionOperationType.EQUALS.evaluate(-1, -1));
     assertTrue(ConditionOperationType.GREATER_THAN.evaluate(0, -1));
@@ -105,7 +95,6 @@ class ConditionOperationTypeTest {
   }
 
   @Test
-  @DisplayName("Should return correct symbols")
   void testGetSymbol() {
     assertEquals("==", ConditionOperationType.EQUALS.getSymbol());
     assertEquals("!=", ConditionOperationType.NOT_EQUALS.getSymbol());
@@ -117,7 +106,6 @@ class ConditionOperationTypeTest {
   }
 
   @Test
-  @DisplayName("Should get ConditionOperationType from string")
   void testGet() {
     assertEquals(ConditionOperationType.EQUALS, ConditionOperationType.get("EQUALS"));
     assertEquals(ConditionOperationType.NOT_EQUALS, ConditionOperationType.get("NOT_EQUALS"));
@@ -126,7 +114,6 @@ class ConditionOperationTypeTest {
   }
 
   @Test
-  @DisplayName("Should return NONE for invalid string")
   void testGetInvalid() {
     assertEquals(ConditionOperationType.NONE, ConditionOperationType.get("INVALID"));
     assertEquals(ConditionOperationType.NONE, ConditionOperationType.get(""));

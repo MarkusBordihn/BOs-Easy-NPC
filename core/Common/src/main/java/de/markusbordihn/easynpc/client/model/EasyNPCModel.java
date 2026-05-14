@@ -85,6 +85,9 @@ public class EasyNPCModel {
     if (modelManager.shouldCancelAnimation(modelData)) {
       modelManager.setupModelParts(
           modelData, modelData.getModelAnimationBehavior() != ModelAnimationBehavior.SMART);
+      if (modelData.getModelAnimationBehavior() == ModelAnimationBehavior.SMART) {
+        modelManager.applyVisibilityChanges(modelData);
+      }
       return true;
     }
 

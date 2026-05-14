@@ -40,6 +40,15 @@ public class WitherSkeletonEpicFight extends WitherSkeletonRaw {
     super(entityType, level, variant);
   }
 
+  protected boolean isSunBurnTick() {
+    return false;
+  }
+
+  @Override
+  public boolean canUseArmor() {
+    return true;
+  }
+
   @Override
   public ConfigurationData getConfigurationData() {
     return ConfigurationData.EPIC_FIGHT;

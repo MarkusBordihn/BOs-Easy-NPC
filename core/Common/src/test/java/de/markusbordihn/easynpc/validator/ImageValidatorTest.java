@@ -22,12 +22,10 @@ package de.markusbordihn.easynpc.validator;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.mojang.blaze3d.platform.NativeImage;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-@DisplayName("ImageValidator Tests")
 class ImageValidatorTest {
 
   @Test

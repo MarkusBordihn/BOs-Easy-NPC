@@ -40,6 +40,11 @@ public class HuskEpicFight extends HuskRaw {
   }
 
   @Override
+  public boolean canUseArmor() {
+    return true;
+  }
+
+  @Override
   public ConfigurationData getConfigurationData() {
     return ConfigurationData.EPIC_FIGHT;
   }
