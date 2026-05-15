@@ -41,6 +41,11 @@ public class PillagerEpicFight extends PillagerRaw {
   }
 
   @Override
+  public boolean canUseArmor() {
+    return true;
+  }
+
+  @Override
   public ConfigurationData getConfigurationData() {
     return ConfigurationData.EPIC_FIGHT;
   }

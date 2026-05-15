@@ -21,30 +21,25 @@ package de.markusbordihn.easynpc.data.action;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-@DisplayName("ActionUtils Tests")
 class ActionUtilsTest {
 
   @Test
-  @DisplayName("Should return empty string for null command")
   void testParseAction_nullCommand() {
     String result = ActionUtils.parseAction(null, null, null);
     assertEquals("", result);
   }
 
   @Test
-  @DisplayName("Should return empty string for empty command")
   void testParseAction_emptyCommand() {
     String result = ActionUtils.parseAction("", null, null);
     assertEquals("", result);
   }
 
   @Test
-  @DisplayName("Should handle commands without modifications")
   void testParseAction_simpleCommand() {
     String result = ActionUtils.parseAction("say hello", null, null);
     // Returns original output which doesn't have the slash added
@@ -60,14 +55,12 @@ class ActionUtilsTest {
         "/success_message Success|/title @initiator title {\"text\":\"Success\",\"color\":\"green\"}"
       },
       delimiter = '|')
-  @DisplayName("Should convert message shortcuts to title commands")
   void testParseAction_messageShortcuts(String input, String expected) {
     String result = ActionUtils.parseAction(input, null, null);
     assertEquals(expected, result);
   }
 
   @Test
-  @DisplayName("Should handle message shortcuts with quotes correctly")
   void testParseAction_messageShortcutWithQuotes() {
     String result = ActionUtils.parseAction("/error_message \"Test\" Error", null, null);
     assertTrue(result.contains("Test"));
@@ -75,7 +68,6 @@ class ActionUtilsTest {
   }
 
   @Test
-  @DisplayName("Should not modify non-shortcut commands")
   void testParseAction_regularCommand() {
     String command = "/give @p diamond 1";
     String result = ActionUtils.parseAction(command, null, null);
@@ -83,7 +75,6 @@ class ActionUtilsTest {
   }
 
   @Test
-  @DisplayName("Should keep @initiator macro when no player provided")
   void testParseAction_initiatorMacroWithoutPlayer() {
     String command = "/say Hello @initiator";
     String result = ActionUtils.parseAction(command, null, null);
@@ -91,7 +82,6 @@ class ActionUtilsTest {
   }
 
   @Test
-  @DisplayName("Should keep @npc macro when no entity provided")
   void testParseAction_npcMacroWithoutEntity() {
     String command = "/say Hello from @npc";
     String result = ActionUtils.parseAction(command, null, null);
@@ -99,7 +89,6 @@ class ActionUtilsTest {
   }
 
   @Test
-  @DisplayName("Should verify macro constants are defined")
   void testMacroConstants() {
     assertEquals("@initiator", ActionUtils.MACRO_INITIATOR);
     assertEquals("@initiator-uuid", ActionUtils.MACRO_INITIATOR_UUID);
@@ -112,7 +101,6 @@ class ActionUtilsTest {
   }
 
   @Test
-  @DisplayName("Should handle multiple macro replacements in single command")
   void testParseAction_multipleMacros() {
     String command = "/say @npc says hello to @initiator";
     String result = ActionUtils.parseAction(command, null, null);
@@ -120,7 +108,6 @@ class ActionUtilsTest {
   }
 
   @Test
-  @DisplayName("Should preserve command structure after parsing")
   void testParseAction_preserveStructure() {
     String command = "/execute as @initiator run say test";
     String result = ActionUtils.parseAction(command, null, null);
@@ -129,7 +116,6 @@ class ActionUtilsTest {
   }
 
   @Test
-  @DisplayName("Should handle commands with special characters")
   void testParseAction_specialCharacters() {
     String command = "/say Hello! @#$%";
     String result = ActionUtils.parseAction(command, null, null);
@@ -137,7 +123,6 @@ class ActionUtilsTest {
   }
 
   @Test
-  @DisplayName("Should trim whitespace from message shortcuts")
   void testParseAction_trimWhitespace() {
     String result = ActionUtils.parseAction("/error_message   Test   ", null, null);
     assertTrue(result.contains("Test"));
@@ -145,7 +130,6 @@ class ActionUtilsTest {
   }
 
   @Test
-  @DisplayName("Should keep @score macro when no player provided")
   void testParseAction_scoreMacroWithoutPlayer() {
     String command = "/say Your score is @score(kills)";
     String result = ActionUtils.parseAction(command, null, null);
@@ -153,7 +137,6 @@ class ActionUtilsTest {
   }
 
   @Test
-  @DisplayName("Should escape JSON special characters in message shortcuts")
   void testParseAction_jsonEscaping() {
     String result = ActionUtils.parseAction("/error_message Test\\nNew\"Line", null, null);
     assertTrue(result.contains("\\\\"));
@@ -162,7 +145,6 @@ class ActionUtilsTest {
   }
 
   @Test
-  @DisplayName("Should handle backslashes in message shortcuts")
   void testParseAction_backslashEscaping() {
     String result = ActionUtils.parseAction("/info_message C:\\\\Path\\\\File", null, null);
     assertTrue(result.contains("\\\\"));

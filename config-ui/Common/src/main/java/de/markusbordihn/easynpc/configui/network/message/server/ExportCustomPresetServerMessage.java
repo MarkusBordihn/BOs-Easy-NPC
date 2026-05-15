@@ -29,7 +29,6 @@ import de.markusbordihn.easynpc.io.CustomPresetDataFiles;
 import de.markusbordihn.easynpc.io.PresetFileHandler;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import de.markusbordihn.easynpc.security.NpcFeature;
-import de.markusbordihn.easynpc.security.SecurityManager;
 import java.io.File;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
@@ -81,9 +80,8 @@ public record ExportCustomPresetServerMessage(UUID uuid, String name, PresetMeta
       return;
     }
 
-    if (!SecurityManager.checkFeatureAccess(serverPlayer, easyNPC, NpcFeature.CUSTOM_PRESET)
-        .allowed()) {
-      log.warn("Blocked custom preset export for {} from {}", easyNPC, serverPlayer);
+    if (!MessageSecurity.checkFeatureAccess(
+        serverPlayer, easyNPC, NpcFeature.CUSTOM_PRESET, "custom preset export")) {
       return;
     }
 

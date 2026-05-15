@@ -37,8 +37,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-@DisplayName("PresetFileHandler File Import Tests")
-class PresetHandlerTest {
+class PresetFileHandlerTest {
 
   @TempDir File tempDir;
 
@@ -202,10 +201,7 @@ class PresetHandlerTest {
     assertTrue(content.contains("data"), "SNBT should contain data");
     assertTrue(content.contains("minecraft:armor_stand"), "SNBT should contain entity ID");
     assertTrue(content.contains("Test NPC"), "SNBT should contain custom name");
-    // Verify UUIDs are NOT skipped (old bug with prettyPrint)
     assertFalse(content.contains("Skipped"), "SNBT should not skip binary data");
-
-    // Verify SNBT is formatted (not single line)
     assertTrue(content.contains("{\n"), "SNBT should be formatted with newlines after {");
     assertTrue(content.contains("\n}"), "SNBT should be formatted with } on new lines");
     assertTrue(content.lines().count() > 1, "SNBT should be formatted across multiple lines");

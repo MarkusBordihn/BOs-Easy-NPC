@@ -26,7 +26,6 @@ import de.markusbordihn.easynpc.entity.easynpc.data.TradingDataCapable;
 import de.markusbordihn.easynpc.handler.TradingOfferHandler;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import de.markusbordihn.easynpc.security.NpcFeature;
-import de.markusbordihn.easynpc.security.SecurityManager;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -80,8 +79,8 @@ public record ChangeAdvancedTradingMessage(
       return;
     }
 
-    if (!SecurityManager.checkFeatureAccess(serverPlayer, easyNPC, NpcFeature.TRADING).allowed()) {
-      log.warn("Blocked advanced trading change for {} from {}", easyNPC, serverPlayer);
+    if (!MessageSecurity.checkFeatureAccess(
+        serverPlayer, easyNPC, NpcFeature.TRADING, "advanced trading change")) {
       return;
     }
 
@@ -166,6 +165,10 @@ public record ChangeAdvancedTradingMessage(
             serverPlayer);
         TradingOfferHandler.setAdvancedTradingDemand(
             tradingData, this.tradingOfferIndex, (int) this.tradingValue);
+        break;
+      case LAST_TRADING_RESET:
+        log.debug("Reset trading offers for {} from {}", easyNPC, serverPlayer);
+        tradingData.resetTradingOffers();
         break;
       default:
         log.error(

@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.configui.client.screen.configuration.trading;
 import de.markusbordihn.easynpc.client.screen.components.Graphics;
 import de.markusbordihn.easynpc.client.screen.components.PositiveNumberField;
 import de.markusbordihn.easynpc.client.screen.components.Text;
+import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.client.screen.components.TextField;
 import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
@@ -35,6 +36,8 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.trading.MerchantOffer;
+import net.minecraft.world.item.trading.MerchantOffers;
 
 public class BasicTradingConfigurationContainerScreen<T extends ConfigurationMenu>
     extends TradingConfigurationContainerScreen<T> {
@@ -82,7 +85,7 @@ public class BasicTradingConfigurationContainerScreen<T extends ConfigurationMen
 
     // Reset Every Min Edit Box
     this.resetsEveryMinEditBox =
-        new TextField(this.font, this.contentLeftPos + 166, this.contentTopPos + 142, 32);
+        new TextField(this.font, this.contentLeftPos + 166, this.contentTopPos + 133, 32);
     this.resetsEveryMinEditBox.setMaxLength(3);
     this.resetsEveryMinEditBox.setValue(tradingDataSet.getResetsEveryMin() + "");
     this.resetsEveryMinEditBox.setResponder(this::onResetsEveryMinEditBoxChanged);
@@ -90,7 +93,11 @@ public class BasicTradingConfigurationContainerScreen<T extends ConfigurationMen
 
     // Max Uses Edit Box
     this.maxUsesEditBox =
-        new PositiveNumberField(this.font, this.contentLeftPos + 166, this.contentTopPos + 165, 32);
+        new PositiveNumberField(
+            this.font,
+            this.contentLeftPos + 166,
+            this.resetsEveryMinEditBox.getY() + this.resetsEveryMinEditBox.getHeight() + 4,
+            32);
     this.maxUsesEditBox.setMaxLength(4);
     this.maxUsesEditBox.setValue(tradingDataSet.getMaxUses() + "");
     this.maxUsesEditBox.setResponder(this::onMaxUsesEditBoxChanged);
@@ -98,11 +105,26 @@ public class BasicTradingConfigurationContainerScreen<T extends ConfigurationMen
 
     // Experience Edit Box
     this.rewardExpEditBox =
-        new TextField(this.font, this.contentLeftPos + 166, this.contentTopPos + 188, 32);
+        new TextField(
+            this.font,
+            this.contentLeftPos + 166,
+            this.maxUsesEditBox.getY() + this.maxUsesEditBox.getHeight() + 4,
+            32);
     this.rewardExpEditBox.setMaxLength(3);
     this.rewardExpEditBox.setValue(tradingDataSet.getRewardedXP() + "");
     this.rewardExpEditBox.setResponder(this::onRewardExpEditBoxChanged);
     this.addRenderableWidget(this.rewardExpEditBox);
+
+    // Reset Trades Button
+    this.addRenderableWidget(
+        new TextButton(
+            this.contentLeftPos + 166,
+            this.rewardExpEditBox.getY() + this.rewardExpEditBox.getHeight() + 4,
+            128,
+            "trading.reset_trades",
+            onPress ->
+                NetworkMessageHandlerManager.getServerHandler()
+                    .resetTradingOffers(this.getEasyNPCUUID())));
   }
 
   @Override
@@ -115,6 +137,8 @@ public class BasicTradingConfigurationContainerScreen<T extends ConfigurationMen
   public void extractBackground(
       GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
     super.extractBackground(guiGraphics, mouseX, mouseY, partialTicks);
+
+    MerchantOffers merchantOffers = this.getEasyNPC().getEasyNPCTradingData().getTradingOffers();
 
     // Render Trading Slots
     int slotPositionX = this.leftPos + BasicTradingConfigurationMenu.TRADING_START_POSITION_X - 1;
@@ -201,6 +225,18 @@ public class BasicTradingConfigurationContainerScreen<T extends ConfigurationMen
           18,
           18);
 
+      // Uses / MaxUses label
+      if (merchantOffers != null && tradingOffer < merchantOffers.size()) {
+        MerchantOffer offer = merchantOffers.get(tradingOffer);
+        Text.drawString(
+            guiGraphics,
+            this.font,
+            offer.getUses() + "/" + offer.getMaxUses(),
+            slotPositionX + 107,
+            slotPositionY + 5,
+            offer.isOutOfStock() ? 0xAA0000 : 0x606060);
+      }
+
       slotPositionY += BasicTradingConfigurationMenu.TRADING_SLOT_SIZE + 1;
     }
 
@@ -209,7 +245,7 @@ public class BasicTradingConfigurationContainerScreen<T extends ConfigurationMen
         guiGraphics,
         Constants.TEXTURE_INVENTORY,
         this.contentLeftPos,
-        this.contentTopPos + 135,
+        this.contentTopPos + 132,
         7,
         83,
         162,
@@ -220,7 +256,7 @@ public class BasicTradingConfigurationContainerScreen<T extends ConfigurationMen
         guiGraphics,
         Constants.TEXTURE_INVENTORY,
         this.contentLeftPos,
-        this.contentTopPos + 191,
+        this.contentTopPos + 192,
         7,
         141,
         162,

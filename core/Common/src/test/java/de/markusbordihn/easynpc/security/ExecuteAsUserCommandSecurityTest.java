@@ -28,7 +28,6 @@ import java.util.Set;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-@DisplayName("Execute As User Command Security Tests")
 class ExecuteAsUserCommandSecurityTest {
 
   @SuppressWarnings("unchecked")

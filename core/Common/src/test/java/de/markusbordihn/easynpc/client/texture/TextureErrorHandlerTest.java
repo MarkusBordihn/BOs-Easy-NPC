@@ -25,7 +25,6 @@ import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-@DisplayName("TextureErrorHandler Tests")
 class TextureErrorHandlerTest {
 
   @Test
@@ -37,7 +36,6 @@ class TextureErrorHandlerTest {
   }
 
   @Test
-  @DisplayName("Should store processing error message")
   void testProcessingErrorMessage() {
     TextureErrorHandler.clearLastErrorMessage();
     TextureModelKey key =
@@ -56,7 +54,6 @@ class TextureErrorHandlerTest {
   }
 
   @Test
-  @DisplayName("Should store URL load error message")
   void testUrlLoadErrorMessage() {
     TextureErrorHandler.clearLastErrorMessage();
     TextureModelKey key =
@@ -75,7 +72,6 @@ class TextureErrorHandlerTest {
   }
 
   @Test
-  @DisplayName("Should clear error message")
   void testClearErrorMessage() {
     TextureModelKey key =
         new TextureModelKey(
@@ -91,7 +87,6 @@ class TextureErrorHandlerTest {
   }
 
   @Test
-  @DisplayName("Should overwrite previous error message")
   void testOverwriteErrorMessage() {
     TextureErrorHandler.clearLastErrorMessage();
     TextureModelKey key1 =

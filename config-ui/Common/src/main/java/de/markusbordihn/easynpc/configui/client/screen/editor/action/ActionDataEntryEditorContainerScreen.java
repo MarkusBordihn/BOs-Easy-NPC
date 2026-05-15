@@ -104,6 +104,8 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
       return this.getAdditionalScreenData().getActionEventSet().getActionEvents(actionEventType);
     } else if (this.editorType != null && this.editorType == EditorType.DIALOG_BUTTON) {
       return this.getDialogButtonData().actionDataSet();
+    } else if (this.editorType != null && this.editorType == EditorType.TRADING_OFFER_ACTION) {
+      return this.getAdditionalScreenData().getTradingOfferActionDataSet();
     }
     log.error("No valid action data set found for {}!", this.getEasyNPCUUID());
     return new ActionDataSet();
@@ -179,7 +181,11 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
   }
 
   private void navigateToActionDataEditor() {
-    if (this.actionEventType != null && this.actionEventType != ActionEventType.NONE) {
+    if (this.editorType != null && this.editorType == EditorType.TRADING_OFFER_ACTION) {
+      NetworkMessageHandlerManager.getServerHandler()
+          .openTradingOfferActionEditor(
+              this.getEasyNPCUUID(), this.menu.getPageIndex(), this.configurationType);
+    } else if (this.actionEventType != null && this.actionEventType != ActionEventType.NONE) {
       NetworkMessageHandlerManager.getServerHandler()
           .openActionDataEditor(this.getEasyNPCUUID(), actionEventType, configurationType);
     } else if (this.editorType != null && this.editorType == EditorType.DIALOG_BUTTON) {
@@ -205,7 +211,11 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
     this.actionDataSet.put(this.actionDataEntryId, newActionDataEntry);
 
     // Save action data set
-    if (this.actionEventType != null && this.actionEventType != ActionEventType.NONE) {
+    if (this.editorType != null && this.editorType == EditorType.TRADING_OFFER_ACTION) {
+      NetworkMessageHandlerManager.getServerHandler()
+          .changeTradingOfferAction(
+              this.getEasyNPCUUID(), this.menu.getPageIndex(), this.actionDataSet);
+    } else if (this.actionEventType != null && this.actionEventType != ActionEventType.NONE) {
       NetworkMessageHandlerManager.getServerHandler()
           .actionEventChange(this.getEasyNPCUUID(), actionEventType, this.actionDataSet);
     } else if (this.editorType != null && this.editorType == EditorType.DIALOG_BUTTON) {
@@ -234,7 +244,12 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
             confirmed -> {
               if (confirmed) {
                 this.actionDataSet.remove(this.actionDataEntryId);
-                if (this.actionEventType != null && this.actionEventType != ActionEventType.NONE) {
+                if (this.editorType != null && this.editorType == EditorType.TRADING_OFFER_ACTION) {
+                  NetworkMessageHandlerManager.getServerHandler()
+                      .changeTradingOfferAction(
+                          this.getEasyNPCUUID(), this.menu.getPageIndex(), this.actionDataSet);
+                } else if (this.actionEventType != null
+                    && this.actionEventType != ActionEventType.NONE) {
                   NetworkMessageHandlerManager.getServerHandler()
                       .actionEventChange(
                           this.getEasyNPCUUID(), this.actionEventType, this.actionDataSet);
@@ -265,7 +280,7 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
   }
 
   protected void changeActionDataType(SpinButton<?> spinButton) {
-    log.info("Change action data type to {}", spinButton.get());
+    log.debug("Change action data type to {}", spinButton.get());
     this.actionDataType = (ActionDataType) spinButton.get();
     this.clearWidgets();
     init();

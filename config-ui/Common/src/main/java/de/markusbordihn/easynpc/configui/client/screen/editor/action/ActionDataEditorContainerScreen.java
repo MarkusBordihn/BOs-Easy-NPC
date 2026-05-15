@@ -73,6 +73,7 @@ public class ActionDataEditorContainerScreen<T extends EditorMenu>
   private final EditorType editorType;
   private final boolean isDialogButtonContext;
   private final boolean isActionEventContext;
+  private final boolean isOfferActionContext;
   protected Button homeButton;
   protected Button navigationLevelOne;
   protected Button navigationLevelTwo;
@@ -88,6 +89,8 @@ public class ActionDataEditorContainerScreen<T extends EditorMenu>
         this.editorType != null && this.editorType == EditorType.DIALOG_BUTTON;
     this.isActionEventContext =
         this.actionEventType != null && this.actionEventType != ActionEventType.NONE;
+    this.isOfferActionContext =
+        this.editorType != null && this.editorType == EditorType.TRADING_OFFER_ACTION;
     this.actionDataSet = getActionDataSet();
   }
 
@@ -96,6 +99,8 @@ public class ActionDataEditorContainerScreen<T extends EditorMenu>
       return this.getAdditionalScreenData().getActionEventSet().getActionEvents(actionEventType);
     } else if (this.isDialogButtonContext) {
       return this.getDialogButtonData().actionDataSet();
+    } else if (this.isOfferActionContext) {
+      return this.getAdditionalScreenData().getTradingOfferActionDataSet();
     } else {
       log.error("No valid action data set found!");
       return null;
@@ -142,6 +147,16 @@ public class ActionDataEditorContainerScreen<T extends EditorMenu>
                               this.getEasyNPCUUID(),
                               this.getDialogUUID(),
                               this.getDialogButtonUUID())));
+    } else if (this.isOfferActionContext) {
+      this.navigationLevelOne =
+          this.addRenderableWidget(
+              new ActionsButton(
+                  this.homeButton.getX() + this.homeButton.getWidth(),
+                  this.topPos + HOME_BUTTON_Y_OFFSET,
+                  NAVIGATION_BUTTON_WIDTH,
+                  "Trade #" + (this.menu.getPageIndex() + 1),
+                  onPress -> navigateToActionDataEditor()));
+      this.navigationLevelOne.active = false;
     } else {
       this.navigationLevelOne =
           this.addRenderableWidget(
@@ -196,7 +211,11 @@ public class ActionDataEditorContainerScreen<T extends EditorMenu>
   }
 
   private void navigateToActionDataEditor() {
-    if (configurationType != null && configurationType != ConfigurationType.NONE) {
+    if (this.isOfferActionContext) {
+      NetworkMessageHandlerManager.getServerHandler()
+          .openTradingOfferActionEditor(
+              this.getEasyNPCUUID(), this.menu.getPageIndex(), this.configurationType);
+    } else if (configurationType != null && configurationType != ConfigurationType.NONE) {
       NetworkMessageHandlerManager.getServerHandler()
           .openActionDataEditor(this.getEasyNPCUUID(), actionEventType, configurationType);
     } else if (this.isDialogButtonContext) {
@@ -226,7 +245,14 @@ public class ActionDataEditorContainerScreen<T extends EditorMenu>
   }
 
   private void handleNewActionDataEntry() {
-    if (this.isActionEventContext) {
+    if (this.isOfferActionContext) {
+      NetworkMessageHandlerManager.getServerHandler()
+          .openTradingOfferActionEntryEditor(
+              this.getEasyNPCUUID(),
+              this.menu.getPageIndex(),
+              this.configurationType,
+              new ActionDataEntry());
+    } else if (this.isActionEventContext) {
       NetworkMessageHandlerManager.getServerHandler()
           .openActionDataEntryEditor(
               this.getEasyNPCUUID(),
@@ -272,7 +298,11 @@ public class ActionDataEditorContainerScreen<T extends EditorMenu>
   }
 
   private void updateActionDataSet() {
-    if (this.isActionEventContext) {
+    if (this.isOfferActionContext) {
+      NetworkMessageHandlerManager.getServerHandler()
+          .changeTradingOfferAction(
+              this.getEasyNPCUUID(), this.menu.getPageIndex(), this.actionDataSet);
+    } else if (this.isActionEventContext) {
       NetworkMessageHandlerManager.getServerHandler()
           .actionEventChange(this.getEasyNPCUUID(), this.actionEventType, this.actionDataSet);
     } else if (this.isDialogButtonContext) {
@@ -289,8 +319,15 @@ public class ActionDataEditorContainerScreen<T extends EditorMenu>
   }
 
   private void handleEditActionDataEntry(ActionDataEntry actionDataEntry) {
-    log.info("Editing Action Data Entry {}: {}", actionDataEntry.getId(), actionDataEntry);
-    if (this.isActionEventContext) {
+    log.debug("Editing Action Data Entry {}: {}", actionDataEntry.getId(), actionDataEntry);
+    if (this.isOfferActionContext) {
+      NetworkMessageHandlerManager.getServerHandler()
+          .openTradingOfferActionEntryEditor(
+              this.getEasyNPCUUID(),
+              this.menu.getPageIndex(),
+              this.configurationType,
+              actionDataEntry);
+    } else if (this.isActionEventContext) {
       NetworkMessageHandlerManager.getServerHandler()
           .openActionDataEntryEditor(
               this.getEasyNPCUUID(), this.actionEventType, this.configurationType, actionDataEntry);
@@ -308,14 +345,14 @@ public class ActionDataEditorContainerScreen<T extends EditorMenu>
   }
 
   private void handleMoveUpOrderActionDataEntry(ActionDataEntry actionDataEntry) {
-    log.info("Moving up Action Data Entry {}: {}", actionDataEntry.getId(), actionDataEntry);
+    log.debug("Moving up Action Data Entry {}: {}", actionDataEntry.getId(), actionDataEntry);
     this.actionDataSet.moveUp(actionDataEntry);
     updateActionDataSet();
     this.navigateToActionDataEditor();
   }
 
   private void handleMoveDownOrderActionDataEntry(ActionDataEntry actionDataEntry) {
-    log.info("Moving down Action Data Entry {}: {}", actionDataEntry.getId(), actionDataEntry);
+    log.debug("Moving down Action Data Entry {}: {}", actionDataEntry.getId(), actionDataEntry);
     this.actionDataSet.moveDown(actionDataEntry);
     updateActionDataSet();
     this.navigateToActionDataEditor();

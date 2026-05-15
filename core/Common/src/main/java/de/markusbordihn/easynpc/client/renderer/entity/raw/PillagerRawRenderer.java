@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.client.renderer.entity.raw;
 
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.layers.EasyNPCItemAttachmentLayer;
+import de.markusbordihn.easynpc.client.renderer.entity.layers.SkullHeadRenderLayer;
 import de.markusbordihn.easynpc.data.skin.variant.IllagerSkinVariant;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.PillagerRenderer;
@@ -34,6 +35,7 @@ public class PillagerRawRenderer extends PillagerRenderer implements EasyNPCEnti
 
   public PillagerRawRenderer(EntityRendererProvider.Context context) {
     super(context);
+    this.addLayer(new SkullHeadRenderLayer<>(this));
     this.addLayer(new EasyNPCItemAttachmentLayer<>(this));
   }
 

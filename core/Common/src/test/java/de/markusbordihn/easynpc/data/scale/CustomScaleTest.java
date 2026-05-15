@@ -24,7 +24,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-@DisplayName("CustomScale Tests")
 class CustomScaleTest {
 
   @Test
@@ -102,7 +101,6 @@ class CustomScaleTest {
   }
 
   @Test
-  @DisplayName("Two CustomScales with different components should not be equal")
   void testInequalityByDifferentComponents() {
     assertNotEquals(new CustomScale(2f, 1f, 1f), new CustomScale(1f, 1f, 1f));
   }

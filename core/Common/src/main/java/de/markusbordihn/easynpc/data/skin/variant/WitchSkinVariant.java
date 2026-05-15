@@ -27,7 +27,7 @@ public enum WitchSkinVariant implements VariantTexture {
   WITCH;
 
   private static final Identifier TEXTURE =
-      Identifier.fromNamespaceAndPath(Constants.MINECRAFT_PREFIX, "textures/entity/witch.png");
+      Identifier.fromNamespaceAndPath(Constants.MINECRAFT_PREFIX, "textures/entity/witch/witch.png");
 
   @Override
   public Identifier getTextureLocation() {

@@ -25,11 +25,9 @@ import net.minecraft.nbt.CompoundTag;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-@DisplayName("ConditionDataEntry Tests")
 class ConditionDataEntryTest {
 
   @Test
-  @DisplayName("Should create empty condition")
   void testEmptyCondition() {
     ConditionDataEntry entry = ConditionDataEntry.EMPTY;
 
@@ -39,7 +37,6 @@ class ConditionDataEntryTest {
   }
 
   @Test
-  @DisplayName("Should validate scoreboard condition requires name")
   void testScoreboardConditionRequiresName() {
     ConditionDataEntry entryWithoutName =
         new ConditionDataEntry(ConditionType.SCOREBOARD, ConditionOperationType.EQUALS, "", 5);
@@ -52,7 +49,6 @@ class ConditionDataEntryTest {
   }
 
   @Test
-  @DisplayName("Should validate scoreboard condition requires operation")
   void testScoreboardConditionRequiresOperation() {
     ConditionDataEntry entryWithoutOperation =
         new ConditionDataEntry(ConditionType.SCOREBOARD, ConditionOperationType.NONE, "test", 5);
@@ -65,7 +61,6 @@ class ConditionDataEntryTest {
   }
 
   @Test
-  @DisplayName("Should detect if entry has name")
   void testHasName() {
     ConditionDataEntry withName = new ConditionDataEntry(ConditionType.SCOREBOARD).withName("test");
     assertTrue(withName.hasName());
@@ -78,7 +73,6 @@ class ConditionDataEntryTest {
   }
 
   @Test
-  @DisplayName("Should detect if entry has string value")
   void testHasStringValue() {
     ConditionDataEntry withText =
         new ConditionDataEntry(ConditionType.SCOREBOARD).withStringValue("test");
@@ -90,7 +84,6 @@ class ConditionDataEntryTest {
   }
 
   @Test
-  @DisplayName("Should create entry with condition type")
   void testWithConditionType() {
     ConditionDataEntry original =
         new ConditionDataEntry(ConditionType.NONE, ConditionOperationType.EQUALS, "test", 5);
@@ -103,7 +96,6 @@ class ConditionDataEntryTest {
   }
 
   @Test
-  @DisplayName("Should create entry with operation type")
   void testWithOperationType() {
     ConditionDataEntry original =
         new ConditionDataEntry(ConditionType.SCOREBOARD, ConditionOperationType.NONE, "test", 5);
@@ -116,7 +108,6 @@ class ConditionDataEntryTest {
   }
 
   @Test
-  @DisplayName("Should create entry with name")
   void testWithName() {
     ConditionDataEntry original = new ConditionDataEntry(ConditionType.SCOREBOARD);
     ConditionDataEntry updated = original.withName("test_score");
@@ -125,7 +116,6 @@ class ConditionDataEntryTest {
   }
 
   @Test
-  @DisplayName("Should create entry with value")
   void testWithValue() {
     ConditionDataEntry original = new ConditionDataEntry(ConditionType.SCOREBOARD);
     ConditionDataEntry updated = original.withValue(10);
@@ -134,7 +124,6 @@ class ConditionDataEntryTest {
   }
 
   @Test
-  @DisplayName("Should create entry with string value")
   void testWithStringValue() {
     ConditionDataEntry original = new ConditionDataEntry(ConditionType.SCOREBOARD);
     ConditionDataEntry updated = original.withStringValue("test text");
@@ -143,7 +132,6 @@ class ConditionDataEntryTest {
   }
 
   @Test
-  @DisplayName("Should serialize to NBT correctly")
   void testWriteToNBT() {
     ConditionDataEntry entry =
         new ConditionDataEntry(
@@ -170,7 +158,6 @@ class ConditionDataEntryTest {
   }
 
   @Test
-  @DisplayName("Should deserialize from NBT correctly")
   void testReadFromNBT() {
     CompoundTag tag = new CompoundTag();
     tag.putString(ConditionDataEntry.DATA_TYPE_TAG, "SCOREBOARD");
@@ -187,7 +174,6 @@ class ConditionDataEntryTest {
   }
 
   @Test
-  @DisplayName("Should handle missing optional fields in NBT")
   void testReadFromNBTWithMissingFields() {
     CompoundTag tag = new CompoundTag();
     tag.putString(ConditionDataEntry.DATA_TYPE_TAG, "SCOREBOARD");
@@ -201,7 +187,6 @@ class ConditionDataEntryTest {
   }
 
   @Test
-  @DisplayName("Should serialize and deserialize with string value")
   void testSerializeWithStringValue() {
     ConditionDataEntry original =
         new ConditionDataEntry(ConditionType.SCOREBOARD, ConditionOperationType.EQUALS, "test", 5)
@@ -217,7 +202,6 @@ class ConditionDataEntryTest {
   }
 
   @Test
-  @DisplayName("Should test equality correctly")
   void testEquals() {
     ConditionDataEntry entry1 =
         new ConditionDataEntry(ConditionType.SCOREBOARD, ConditionOperationType.EQUALS, "test", 5);
@@ -232,7 +216,6 @@ class ConditionDataEntryTest {
   }
 
   @Test
-  @DisplayName("Should generate consistent hash codes")
   void testHashCode() {
     ConditionDataEntry entry1 =
         new ConditionDataEntry(ConditionType.SCOREBOARD, ConditionOperationType.EQUALS, "test", 5);
@@ -243,7 +226,6 @@ class ConditionDataEntryTest {
   }
 
   @Test
-  @DisplayName("Should generate consistent UUID from hashCode")
   void testConsistentUUIDGeneration() {
     ConditionDataEntry entry1 =
         new ConditionDataEntry(ConditionType.SCOREBOARD, ConditionOperationType.EQUALS, "test", 5);
@@ -254,7 +236,6 @@ class ConditionDataEntryTest {
   }
 
   @Test
-  @DisplayName("Should generate same UUID after encode/decode cycle")
   void testUUIDConsistencyAfterEncodeDecode() {
     ConditionDataEntry original =
         new ConditionDataEntry(ConditionType.SCOREBOARD, ConditionOperationType.EQUALS, "test", 5);

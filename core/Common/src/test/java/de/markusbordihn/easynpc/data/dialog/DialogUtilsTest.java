@@ -26,11 +26,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-@DisplayName("DialogUtils Tests")
 class DialogUtilsTest {
 
   @Test
-  @DisplayName("Should detect dialog macros in text")
   void testHasDialogMacros_withMacros() {
     assertTrue(DialogUtils.hasDialogMacros("Hello @npc"));
     assertTrue(DialogUtils.hasDialogMacros("Hello @initiator"));
@@ -38,7 +36,6 @@ class DialogUtilsTest {
   }
 
   @Test
-  @DisplayName("Should not detect dialog macros in plain text")
   void testHasDialogMacros_withoutMacros() {
     assertFalse(DialogUtils.hasDialogMacros("Hello world"));
     assertFalse(DialogUtils.hasDialogMacros("Simple text"));
@@ -46,19 +43,16 @@ class DialogUtilsTest {
   }
 
   @Test
-  @DisplayName("Should handle null text in macro detection")
   void testHasDialogMacros_null() {
     assertFalse(DialogUtils.hasDialogMacros((String) null));
   }
 
   @Test
-  @DisplayName("Should handle empty text in macro detection")
   void testHasDialogMacros_empty() {
     assertFalse(DialogUtils.hasDialogMacros(""));
   }
 
   @Test
-  @DisplayName("Should parse dialog text without macros")
   void testParseDialogText_noMacros() {
     String input = "Hello world";
     String result = DialogUtils.parseDialogText(input, null, null);
@@ -66,7 +60,6 @@ class DialogUtilsTest {
   }
 
   @Test
-  @DisplayName("Should keep macros when entities are null")
   void testParseDialogText_nullEntities() {
     String input = "Hello @npc and @initiator";
     String result = DialogUtils.parseDialogText(input, null, null);
@@ -74,7 +67,6 @@ class DialogUtilsTest {
   }
 
   @Test
-  @DisplayName("Should generate valid button labels from names")
   void testGenerateButtonLabel_withName() {
     assertEquals("abc", DialogUtils.generateButtonLabel("abc"));
     assertEquals("test123", DialogUtils.generateButtonLabel("test123"));
@@ -83,7 +75,6 @@ class DialogUtilsTest {
   }
 
   @Test
-  @DisplayName("Should generate random button label for null name")
   void testGenerateButtonLabel_nullName() {
     String result = DialogUtils.generateButtonLabel(null);
     assertTrue(result.startsWith("button_"));
@@ -91,7 +82,6 @@ class DialogUtilsTest {
   }
 
   @Test
-  @DisplayName("Should generate random button label for empty name")
   void testGenerateButtonLabel_emptyName() {
     String result = DialogUtils.generateButtonLabel("");
     assertTrue(result.startsWith("button_"));
@@ -99,7 +89,6 @@ class DialogUtilsTest {
   }
 
   @Test
-  @DisplayName("Should generate random dialog label for null name")
   void testGenerateDialogLabel_nullName() {
     String result = DialogUtils.generateDialogLabel(null);
     assertTrue(result.startsWith("dialog_"));
@@ -107,7 +96,6 @@ class DialogUtilsTest {
   }
 
   @Test
-  @DisplayName("Should generate random dialog label for empty name")
   void testGenerateDialogLabel_emptyName() {
     String result = DialogUtils.generateDialogLabel("");
     assertTrue(result.startsWith("dialog_"));
@@ -116,14 +104,12 @@ class DialogUtilsTest {
 
   @ParameterizedTest
   @ValueSource(strings = {"main", "quest", "trade"})
-  @DisplayName("Should generate valid dialog labels from names")
   void testGenerateDialogLabel_withName(String name) {
     String result = DialogUtils.generateDialogLabel(name);
     assertEquals(name.toLowerCase(), result);
   }
 
   @Test
-  @DisplayName("Should generate different random labels")
   void testGenerateLabel_randomness() {
     String label1 = DialogUtils.generateButtonLabel(null);
     String label2 = DialogUtils.generateButtonLabel(null);
@@ -132,7 +118,6 @@ class DialogUtilsTest {
   }
 
   @Test
-  @DisplayName("Should generate lowercase random labels")
   void testGenerateLabel_lowercase() {
     String result = DialogUtils.generateButtonLabel(null);
     assertEquals(result, result.toLowerCase());

@@ -8,6 +8,24 @@ For the full changelog, please go to the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 6.15.0 (Trades, Player Heads, Epic Fight and QOL updates)
+
+- Fixed #731 by resyncing species data, if species list is empty on the client.
+- Fixed #730 by improving Epic Fight integration and enabled experimental features.
+- Fixed #729 by making sure trade uses are stored correctly.
+- Fixed #728 by adding custom head support for player heads.
+- Fixed #689 by showing remaining trade uses and allow resetting manually and automatically.
+- Fixed #218 and #132 with new trade configuration screen and better support for custom trades.
+- Fixed trade specific edge by switching between basic and normal/advanced trading mode.
+- Fixed dialog button text is truncated with tooltip showing the full text.
+- Fixed Cobblemon animation issues by syncing animation state with Cobblemon Animation System.
+- Added per trade specific actions to allow users triggering actions after buys.
+- Added trade reset button to reset all trades easily.
+- Added trade usage information to trade configuration screen.
+- Added experimental feature state to allow users to manually enable experimental features.
+- Added Griselda Grindstone as example trader with actions.
+- Cleanup test files.
+
 ### 6.14.0
 
 - Fixed #727 by making sure changes are synced to the client when changing values.

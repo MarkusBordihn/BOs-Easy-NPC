@@ -37,7 +37,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-@DisplayName("AsyncTextureLoader Tests")
 class AsyncTextureLoaderTest {
 
   private Path tempDir;
@@ -99,7 +98,6 @@ class AsyncTextureLoaderTest {
   }
 
   @Test
-  @DisplayName("Should handle different keys independently")
   void testDifferentKeysIndependent() {
     TextureModelKey key1 = new TextureModelKey(UUID.randomUUID(), SkinModel.HUMANOID);
     TextureModelKey key2 = new TextureModelKey(UUID.randomUUID(), SkinModel.HUMANOID);
@@ -116,7 +114,6 @@ class AsyncTextureLoaderTest {
   }
 
   @Test
-  @DisplayName("Should handle concurrent requests for same key")
   void testConcurrentRequestsSameKey() throws InterruptedException {
     TextureModelKey key = new TextureModelKey(UUID.randomUUID(), SkinModel.HUMANOID);
     String testUrl = "http://example.com/texture.png";
@@ -154,7 +151,6 @@ class AsyncTextureLoaderTest {
   }
 
   @Test
-  @DisplayName("Should handle concurrent requests for different keys")
   void testConcurrentRequestsDifferentKeys() throws InterruptedException {
     String testUrl = "http://example.com/texture.png";
     int threadCount = 10;
@@ -191,7 +187,6 @@ class AsyncTextureLoaderTest {
   }
 
   @Test
-  @DisplayName("Should handle null URL gracefully")
   void testNullUrl() {
     TextureModelKey key = new TextureModelKey(UUID.randomUUID(), SkinModel.HUMANOID);
 
@@ -199,7 +194,6 @@ class AsyncTextureLoaderTest {
   }
 
   @Test
-  @DisplayName("Should handle empty URL gracefully")
   void testEmptyUrl() {
     TextureModelKey key = new TextureModelKey(UUID.randomUUID(), SkinModel.HUMANOID);
 
@@ -207,7 +201,6 @@ class AsyncTextureLoaderTest {
   }
 
   @Test
-  @DisplayName("Should handle null directory gracefully")
   void testNullDirectory() {
     TextureModelKey key = new TextureModelKey(UUID.randomUUID(), SkinModel.HUMANOID);
     String testUrl = "http://example.com/texture.png";
@@ -216,7 +209,6 @@ class AsyncTextureLoaderTest {
   }
 
   @Test
-  @DisplayName("Should complete future on successful load")
   void testFutureCompletion() throws InterruptedException, ExecutionException, TimeoutException {
     TextureModelKey key = new TextureModelKey(UUID.randomUUID(), SkinModel.HUMANOID);
     UUID playerUUID = UUID.randomUUID();
@@ -235,7 +227,6 @@ class AsyncTextureLoaderTest {
   }
 
   @Test
-  @DisplayName("Should handle invalid texture URL")
   void testInvalidTextureUrl() {
     TextureModelKey key = new TextureModelKey(UUID.randomUUID(), SkinModel.HUMANOID);
     String invalidUrl = "not-a-valid-url";
@@ -245,7 +236,6 @@ class AsyncTextureLoaderTest {
   }
 
   @Test
-  @DisplayName("Should handle multiple different skin models")
   void testMultipleSkinModels() {
     UUID uuid = UUID.randomUUID();
     String testUrl = "http://example.com/texture.png";
@@ -261,7 +251,6 @@ class AsyncTextureLoaderTest {
   }
 
   @Test
-  @DisplayName("Should not block calling thread")
   void testNonBlocking() {
     TextureModelKey key = new TextureModelKey(UUID.randomUUID(), SkinModel.HUMANOID);
     String testUrl = "http://example.com/texture.png";

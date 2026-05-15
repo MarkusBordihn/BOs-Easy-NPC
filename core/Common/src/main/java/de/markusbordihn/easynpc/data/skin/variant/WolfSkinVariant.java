@@ -45,6 +45,9 @@ public enum WolfSkinVariant implements VariantTexture {
   STRIPED(Constants.MINECRAFT_PREFIX, "textures/entity/wolf/wolf_striped.png"),
   STRIPED_TAMED(Constants.MINECRAFT_PREFIX, "textures/entity/wolf/wolf_striped_tame.png"),
   STRIPED_ANGRY(Constants.MINECRAFT_PREFIX, "textures/entity/wolf/wolf_striped_angry.png"),
+  RUSTY(Constants.MINECRAFT_PREFIX, "textures/entity/wolf/wolf_rusty.png"),
+  RUSTY_TAMED(Constants.MINECRAFT_PREFIX, "textures/entity/wolf/wolf_rusty_tame.png"),
+  RUSTY_ANGRY(Constants.MINECRAFT_PREFIX, "textures/entity/wolf/wolf_rusty_angry.png"),
   WOODS(Constants.MINECRAFT_PREFIX, "textures/entity/wolf/wolf_woods.png"),
   WOODS_TAMED(Constants.MINECRAFT_PREFIX, "textures/entity/wolf/wolf_woods_tame.png"),
   WOODS_ANGRY(Constants.MINECRAFT_PREFIX, "textures/entity/wolf/wolf_woods_angry.png");

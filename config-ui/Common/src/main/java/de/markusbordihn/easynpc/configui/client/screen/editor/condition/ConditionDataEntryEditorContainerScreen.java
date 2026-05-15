@@ -106,7 +106,7 @@ public class ConditionDataEntryEditorContainerScreen<T extends EditorMenu> exten
   }
 
   protected void changeConditionType(SpinButton<?> spinButton) {
-    log.info("Change condition type to {}", spinButton.get());
+    log.debug("Change condition type to {}", spinButton.get());
     this.conditionType = (ConditionType) spinButton.get();
     this.clearWidgets();
     init();

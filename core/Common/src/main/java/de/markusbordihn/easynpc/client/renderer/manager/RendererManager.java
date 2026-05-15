@@ -20,7 +20,6 @@
 package de.markusbordihn.easynpc.client.renderer.manager;
 
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.compat.CompatConstants;
 import java.util.HashMap;
 import java.util.Map;
 import net.minecraft.client.Minecraft;
@@ -171,29 +170,10 @@ public class RendererManager {
     return entityRenderer;
   }
 
-  public static void copyModSpecificData(
-      PathfinderMob sourceEntity, Entity targetEntity, String entityTypeName) {
-    if (sourceEntity == null
-        || targetEntity == null
-        || entityTypeName == null
-        || sourceEntity == targetEntity) {
-      return;
-    }
-
-    if (CompatConstants.MOD_COBBLEMON_LOADED && entityTypeName.equals("cobblemon:pokemon")) {
-      // TODO: Add custom entity data copy for Cobblemon.
-    }
-  }
-
   public static void copyCustomEntityData(
       PathfinderMob sourceEntity, Entity targetEntity, String entityTypeName) {
     if (sourceEntity == null || targetEntity == null || sourceEntity == targetEntity) {
       return;
-    }
-
-    // Copy mod specific data, if any.
-    if (entityTypeName != null && entityTypeName != EntityTypeManager.UNKNOWN_ENTITY_TYPE_NAME) {
-      copyModSpecificData(sourceEntity, targetEntity, entityTypeName);
     }
 
     // Synchronize entity tick count.
@@ -209,6 +189,11 @@ public class RendererManager {
     targetEntity.setYHeadRot(sourceEntity.getYHeadRot());
 
     targetEntity.setYBodyRot(sourceEntity.yBodyRot);
+
+    // Sync former position to allow proper interpolation and animation.
+    targetEntity.xo = sourceEntity.xo;
+    targetEntity.yo = sourceEntity.yo;
+    targetEntity.zo = sourceEntity.zo;
 
     // Sync entity position (to allow proper spawning and de-spawning).
     targetEntity.setPos(sourceEntity.getX(), sourceEntity.getY(), sourceEntity.getZ());

@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.client.renderer.entity.custom;
 
 import de.markusbordihn.easynpc.client.model.custom.OrcModel;
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.layers.SkullHeadRenderLayer;
 import de.markusbordihn.easynpc.data.skin.variant.OrcSkinVariant;
 import de.markusbordihn.easynpc.entity.easynpc.npc.custom.Orc;
 import net.minecraft.client.model.geom.ModelLayerLocation;
@@ -38,6 +39,7 @@ public class OrcRenderer
   public OrcRenderer(
       EntityRendererProvider.Context context, ModelLayerLocation modelLayerLocation) {
     super(context, new OrcModel<>(context.bakeLayer(modelLayerLocation)), 0.3F);
+    this.addLayer(new SkullHeadRenderLayer<>(this));
   }
 
   @Override

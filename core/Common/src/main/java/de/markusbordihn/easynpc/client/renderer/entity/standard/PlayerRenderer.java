@@ -2,6 +2,7 @@ package de.markusbordihn.easynpc.client.renderer.entity.standard;
 
 import de.markusbordihn.easynpc.api.skin.VariantTexture;
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.layers.SkullHeadRenderLayer;
 import de.markusbordihn.easynpc.client.texture.CustomTextureManager;
 import de.markusbordihn.easynpc.client.texture.PlayerTextureManager;
 import de.markusbordihn.easynpc.client.texture.RemoteTextureManager;
@@ -49,6 +50,7 @@ public class PlayerRenderer
                 context.getModelSet(),
                 modelPart -> new PlayerModel(modelPart, slim)),
             context.getEquipmentRenderer()));
+    this.addLayer(new SkullHeadRenderLayer<>(this));
   }
 
   @Override

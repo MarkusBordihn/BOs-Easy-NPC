@@ -25,7 +25,6 @@ import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.handler.ObjectiveHandler;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import de.markusbordihn.easynpc.security.NpcFeature;
-import de.markusbordihn.easynpc.security.SecurityManager;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -70,9 +69,8 @@ public record RemoveObjectiveMessage(UUID uuid, ObjectiveDataEntry objectiveData
       log.error("Invalid data to remove objective for {}: ", this);
       return;
     }
-    if (!SecurityManager.checkFeatureAccess(serverPlayer, easyNPC, NpcFeature.OBJECTIVE)
-        .allowed()) {
-      log.warn("Blocked objective removal for {} from {}", easyNPC, serverPlayer);
+    if (!MessageSecurity.checkFeatureAccess(
+        serverPlayer, easyNPC, NpcFeature.OBJECTIVE, "objective removal")) {
       return;
     }
 

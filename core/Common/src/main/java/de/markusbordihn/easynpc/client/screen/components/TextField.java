@@ -20,8 +20,10 @@
 package de.markusbordihn.easynpc.client.screen.components;
 
 import de.markusbordihn.easynpc.network.components.TextComponent;
+import java.util.function.Predicate;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.network.chat.Component;
 
 public class TextField extends EditBox {
@@ -29,6 +31,8 @@ public class TextField extends EditBox {
   private static final Component EMPTY_TEXT_COMPONENT = TextComponent.getBlankText();
   private static final int DEFAULT_HEIGHT = 16;
   private static final int DEFAULT_MAX_LENGTH = 64;
+
+  private Predicate<String> filter = null;
 
   public TextField(Font font, int x, int y, int width) {
     this(font, x, y, width, DEFAULT_HEIGHT, EMPTY_TEXT_COMPONENT);
@@ -62,5 +66,23 @@ public class TextField extends EditBox {
 
   private TextField(Font font, int x, int y, int width, int height, Component component) {
     super(font, x, y, width, height, component);
+  }
+
+  public void setFilter(Predicate<String> filter) {
+    this.filter = filter;
+  }
+
+  @Override
+  public boolean charTyped(CharacterEvent event) {
+    if (this.filter == null) {
+      return super.charTyped(event);
+    }
+    String before = this.getValue();
+    boolean handled = super.charTyped(event);
+    if (handled && !this.filter.test(this.getValue())) {
+      this.setValue(before);
+      return false;
+    }
+    return handled;
   }
 }
