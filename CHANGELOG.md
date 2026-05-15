@@ -26,7 +26,7 @@ Check the [upgrade guide][upgrade_guide] for more information.
 - Added Griselda Grindstone as example trader with actions.
 - Cleanup test files.
 
-### 6.14.0
+### 6.14.0 (Cobblemon Support and Dialog Improvements)
 
 - Fixed #727 by making sure changes are synced to the client when changing values.
 - Fixed #726 by adding additional allow lists for specific commands.

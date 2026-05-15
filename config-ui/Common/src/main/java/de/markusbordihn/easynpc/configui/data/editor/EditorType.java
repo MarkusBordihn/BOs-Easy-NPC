@@ -44,10 +44,6 @@ public enum EditorType {
     this.hasMenu = hasMenu;
   }
 
-  public boolean hasMenu() {
-    return this.hasMenu;
-  }
-
   public static EditorType get(String editorType) {
     if (editorType == null || editorType.isEmpty()) {
       return EditorType.NONE;
@@ -57,6 +53,10 @@ public enum EditorType {
     } catch (IllegalArgumentException e) {
       return EditorType.NONE;
     }
+  }
+
+  public boolean hasMenu() {
+    return this.hasMenu;
   }
 
   public ResourceLocation getId() {
