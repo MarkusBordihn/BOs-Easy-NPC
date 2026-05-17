@@ -43,6 +43,7 @@ public class ModelArmPoseUtils {
     if (easyNPC == null) {
       return ModelArmPose.DEFAULT;
     }
+
     LivingEntity livingEntity = easyNPC.getLivingEntity();
     boolean isRightHanded = livingEntity.getMainArm() == HumanoidArm.RIGHT;
     return livingEntity.isUsingItem()
@@ -82,9 +83,14 @@ public class ModelArmPoseUtils {
       return ModelArmPose.DEFAULT;
     }
 
-    boolean isAggressive =
-        easyNPC.getPathfinderMob().getTarget() != null
-            || (livingEntity instanceof Mob mob && mob.isAggressive());
+    boolean hasTarget;
+    try {
+      hasTarget = easyNPC.getPathfinderMob().getTarget() != null;
+    } catch (IllegalStateException e) {
+      hasTarget = false;
+    }
+
+    boolean isAggressive = hasTarget || (livingEntity instanceof Mob mob && mob.isAggressive());
     if (!isAggressive) {
       return ModelArmPose.DEFAULT;
     }

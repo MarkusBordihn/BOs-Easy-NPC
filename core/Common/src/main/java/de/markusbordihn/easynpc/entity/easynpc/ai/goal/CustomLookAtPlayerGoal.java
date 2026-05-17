@@ -69,7 +69,12 @@ public class CustomLookAtPlayerGoal<T extends EasyNPC<?>> extends LookAtPlayerGo
         && !hasLockedBodyPose()) {
       return false;
     }
-    return super.canUse();
+
+    try {
+      return super.canUse();
+    } catch (IllegalStateException e) {
+      return false;
+    }
   }
 
   @Override

@@ -8,6 +8,11 @@ For the full changelog, please go to the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 6.15.1
+
+- Fixed #735 by extending the correct base class.
+- Fixed several 26.1.2 specific issues from manual spawn testing.
+
 ### 6.15.0 (Trades, Player Heads, Epic Fight and QOL updates)
 
 - Fixed #731 by resyncing species data, if species list is empty on the client.

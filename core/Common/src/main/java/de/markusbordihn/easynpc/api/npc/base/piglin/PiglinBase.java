@@ -25,16 +25,20 @@ import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
 import de.markusbordihn.easynpc.data.skin.variant.PiglinSkinVariant;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.sound.SoundType;
+import java.util.List;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.animal.FlyingAnimal;
 import net.minecraft.world.entity.monster.piglin.Piglin;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import org.jspecify.annotations.Nullable;
 
 public class PiglinBase extends PiglinRaw implements BaseEasyNPC<PiglinRaw> {
 
@@ -99,8 +103,23 @@ public class PiglinBase extends PiglinRaw implements BaseEasyNPC<PiglinRaw> {
   }
 
   @Override
+  @SuppressWarnings("deprecation")
   protected Brain<Piglin> makeBrain(Brain.Packed packedBrain) {
-    return new Brain<>();
+    return Brain.<Piglin>provider(
+            List.of(MemoryModuleType.ATTACK_TARGET),
+            List.of(),
+            entity -> List.of())
+        .makeBrain(this, packedBrain);
+  }
+
+  @Override
+  public void setTarget(@Nullable LivingEntity target) {
+    super.setTarget(target);
+    if (target != null) {
+      this.getBrain().setMemory(MemoryModuleType.ATTACK_TARGET, target);
+    } else {
+      this.getBrain().eraseMemory(MemoryModuleType.ATTACK_TARGET);
+    }
   }
 
   @Override
