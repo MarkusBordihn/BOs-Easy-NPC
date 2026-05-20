@@ -32,6 +32,7 @@ import de.markusbordihn.easynpc.data.action.ActionEventType;
 import de.markusbordihn.easynpc.data.dialog.DialogButtonEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogMetaData;
+import de.markusbordihn.easynpc.data.dialog.DialogOptionsData;
 import de.markusbordihn.easynpc.data.dialog.DialogScreenLayout;
 import de.markusbordihn.easynpc.data.dialog.DialogUtils;
 import de.markusbordihn.easynpc.data.render.EntityRenderConfig;
@@ -46,6 +47,7 @@ import java.util.UUID;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.input.KeyEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Inventory;
@@ -69,6 +71,7 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
   protected int numberOfDialogLines = 1;
   protected int dialogPageIndex = 0;
   private List<FormattedCharSequence> cachedDialogComponents = Collections.emptyList();
+  private DialogOptionsData cachedDialogOptions = DialogOptionsData.DEFAULT;
 
   public DialogScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component, 280, 200);
@@ -87,7 +90,7 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
   }
 
   protected void renderDialog(GuiGraphics guiGraphics) {
-    int dialogTopPosition = topPos + 20;
+    int dialogTopPosition = this.topPos + 20;
 
     if (!this.cachedDialogComponents.isEmpty()) {
       for (int line = this.dialogPageIndex * MAX_NUMBER_OF_DIALOG_LINES;
@@ -101,7 +104,7 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
                     * (font.lineHeight + 2);
         FormattedCharSequence formattedCharSequence = this.cachedDialogComponents.get(line);
         Text.drawString(
-            guiGraphics, this.font, formattedCharSequence, leftPos + 87, textTopPosition, 0);
+            guiGraphics, this.font, formattedCharSequence, this.leftPos + 87, textTopPosition, 0);
       }
     }
   }
@@ -115,10 +118,7 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
       return;
     }
 
-    // Create dialog text component.
     this.dialogComponent = TextComponent.getText(dialogText);
-
-    // Split dialog text to lines.
     this.cachedDialogComponents =
         this.font.split(this.dialogComponent, MAX_NUMBER_OF_PIXEL_PER_LINE);
     this.numberOfDialogLines = Math.min(MAX_TOTAL_DIALOG_LINES, this.cachedDialogComponents.size());
@@ -129,7 +129,6 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
       return;
     }
 
-    // Create dialog button text and limit the length based on the dialog screen layout.
     int dialogButtonMaxTextLength =
         switch (dialogScreenLayout) {
           case COMPACT_TEXT_WITH_ONE_BUTTON,
@@ -142,7 +141,6 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
           default -> 22;
         };
 
-    // Create dialog button.
     TextButton dialogButton =
         new TextButton(
             this.leftPos + 70,
@@ -167,7 +165,6 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
               }
             });
 
-    // Set dialog button visibility.
     dialogButton.visible = dialogButtonEntry.name() != null && !dialogButtonEntry.name().isBlank();
 
     Component fullButtonName =
@@ -189,7 +186,6 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
   }
 
   private void renderDialogButtons() {
-    // Render menu buttons specific on layout, if needed.
     switch (dialogScreenLayout) {
       case COMPACT_TEXT_ONLY, TEXT_ONLY:
         break;
@@ -330,7 +326,6 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
             ? this.topPos + 97
             : this.topPos + 138;
 
-    // Forward Button
     this.dialogForwardButton =
         this.addRenderableWidget(
             new DialogForwardButton(
@@ -353,7 +348,6 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
     this.dialogForwardButton.active =
         this.dialogPageIndex < this.numberOfDialogLines / MAX_NUMBER_OF_DIALOG_LINES;
 
-    // Backward Button
     this.dialogBackwardButton =
         this.addRenderableWidget(
             new DialogBackwardButton(
@@ -378,17 +372,23 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
 
   @Override
   public void init() {
+    if (this.hasDialogData()) {
+      this.cachedDialogOptions = this.getDialogData().getDialogOptions();
+      if (!this.cachedDialogOptions.showCloseButton()) {
+        this.showCloseButton = false;
+      }
+    }
+
     super.init();
 
-    // Basic Position
     this.titleLabelX = 10;
     this.titleLabelY = 8;
 
-    // Close Button
-    this.closeButton.setX(this.leftPos + this.imageWidth - 13);
-    this.closeButton.setY(this.topPos + 4);
+    if (this.closeButton != null) {
+      this.closeButton.setX(this.leftPos + this.imageWidth - 13);
+      this.closeButton.setY(this.topPos + 4);
+    }
 
-    // Dialog Screen Layout
     setDialogScreenLayout(DialogUtils.getDialogScreenLayout(this.getDialogData(), this.font));
     log.debug(
         "Prepare Dialog Screen {} with page index {} for {} with {} line(s) and layout {}",
@@ -398,7 +398,6 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
         this.numberOfDialogLines,
         dialogScreenLayout);
 
-    // Set dialog text
     this.setDialogText(this.getDialogData());
     log.debug("Dialog with {} line(s) and layout {}", this.numberOfDialogLines, dialogScreenLayout);
 
@@ -407,13 +406,11 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
       this.defineDialogNavigationButtons();
     }
 
-    // Action Event for open dialog.
     if (this.getActionEventSet().hasActionEvent(ActionEventType.ON_OPEN_DIALOG)) {
       NetworkMessageHandlerManager.getServerHandler()
           .executeActionEvent(this.getEasyNPCUUID(), ActionEventType.ON_OPEN_DIALOG);
     }
 
-    // Get and render dialog buttons, if any.
     if (this.hasDialogData() && this.getDialogData().getNumberOfDialogButtons() > 0) {
       this.dialogButtons.ensureCapacity(this.getDialogData().getNumberOfDialogButtons());
       for (DialogButtonEntry dialogButtonEntry : this.getDialogData().getDialogButtons()) {
@@ -433,20 +430,35 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
     }
     super.render(guiGraphics, x, y, partialTicks);
 
+    if (!this.cachedDialogOptions.displayAvatar()) {
+      this.renderDialog(guiGraphics);
+      return;
+    }
+
+    int entityTop =
+        this.cachedDialogOptions.hasAvatarTop()
+            ? this.cachedDialogOptions.avatarTop()
+            : this.getEasyNPC().getEasyNPCDialogData().getEntityDialogTop();
+    int entityLeft =
+        this.cachedDialogOptions.hasAvatarLeft()
+            ? this.cachedDialogOptions.avatarLeft()
+            : this.getEasyNPC().getEasyNPCDialogData().getEntityDialogLeft();
+    int scale =
+        this.cachedDialogOptions.hasAvatarScale()
+            ? this.cachedDialogOptions.avatarScale()
+            : this.getEasyNPC().getEasyNPCDialogData().getEntityDialogScaling();
+
     IntegrationRegistry.setGuiPreviewMode(true);
     EntityScreenRenderer.renderEntityRaw(
         guiGraphics,
         this.getEasyNPC(),
         EntityRenderConfig.dialog(
-            this.leftPos + 40,
-            this.topPos + 80 + this.getEasyNPC().getEasyNPCDialogData().getEntityDialogTop(),
-            this.getEasyNPC().getEasyNPCDialogData().getEntityDialogScaling()),
+            this.leftPos + 40 + entityLeft, this.topPos + 80 + entityTop, scale),
         this.xMouse,
         this.yMouse);
     IntegrationRegistry.setGuiPreviewMode(false);
 
-    // Render Dialog
-    renderDialog(guiGraphics);
+    this.renderDialog(guiGraphics);
   }
 
   @Override
@@ -471,8 +483,8 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
         Graphics.blit(
             guiGraphics,
             Constants.TEXTURE_DIALOG_SCENE_SMALL,
-            leftPos,
-            topPos,
+            this.leftPos,
+            this.topPos,
             1,
             1,
             285,
@@ -487,8 +499,8 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
         Graphics.blit(
             guiGraphics,
             Constants.TEXTURE_DIALOG_SCENE_MEDIUM,
-            leftPos,
-            topPos,
+            this.leftPos,
+            this.topPos,
             1,
             1,
             285,
@@ -500,8 +512,8 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
         Graphics.blit(
             guiGraphics,
             Constants.TEXTURE_DIALOG_SCENE_LARGE,
-            leftPos,
-            topPos,
+            this.leftPos,
+            this.topPos,
             1,
             1,
             285,
@@ -512,8 +524,16 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
   }
 
   @Override
+  public boolean keyPressed(KeyEvent keyEvent) {
+    if (keyEvent.input() == 256 && !this.cachedDialogOptions.allowEscClose()) {
+      return true;
+    }
+
+    return super.keyPressed(keyEvent);
+  }
+
+  @Override
   public void onClose() {
-    // Action Event for close dialog.
     if (this.getActionEventSet().hasActionEvent(ActionEventType.ON_CLOSE_DIALOG)) {
       NetworkMessageHandlerManager.getServerHandler()
           .executeActionEvent(this.getEasyNPCUUID(), ActionEventType.ON_CLOSE_DIALOG);

@@ -17,56 +17,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.configui.data.editor;
+package de.markusbordihn.easynpc.configui.menu.editor;
 
-import de.markusbordihn.easynpc.Constants;
-import java.util.Locale;
-import net.minecraft.resources.Identifier;
+import de.markusbordihn.easynpc.configui.menu.ModMenuTypes;
+import net.minecraft.world.entity.player.Inventory;
 
-public enum EditorType {
-  NONE(false),
-  ACTION_DATA,
-  ACTION_DATA_ENTRY,
-  CONDITION_DATA,
-  CONDITION_DATA_ENTRY,
-  DIALOG,
-  DIALOG_BUTTON,
-  DIALOG_OPTIONS,
-  DIALOG_TEXT,
-  TRADING_OFFER_ACTION(false);
+public class DialogOptionsEditorMenuWrapper extends EditorMenu {
 
-  private final boolean hasMenu;
-
-  EditorType() {
-    this.hasMenu = true;
-  }
-
-  EditorType(boolean hasMenu) {
-    this.hasMenu = hasMenu;
-  }
-
-  public static EditorType get(String editorType) {
-    if (editorType == null || editorType.isEmpty()) {
-      return EditorType.NONE;
-    }
-
-    try {
-      return EditorType.valueOf(editorType);
-    } catch (IllegalArgumentException e) {
-      return EditorType.NONE;
-    }
-  }
-
-  public boolean hasMenu() {
-    return this.hasMenu;
-  }
-
-  public Identifier getId() {
-    return Identifier.fromNamespaceAndPath(
-        Constants.MOD_ID, this.name().toLowerCase(Locale.ROOT) + "_editor");
-  }
-
-  public String getName() {
-    return this.name().toLowerCase(Locale.ROOT) + "_editor";
+  public DialogOptionsEditorMenuWrapper(final int windowId, final Inventory playerInventory) {
+    super(ModMenuTypes.DIALOG_OPTIONS_EDITOR_MENU, windowId, playerInventory);
   }
 }
