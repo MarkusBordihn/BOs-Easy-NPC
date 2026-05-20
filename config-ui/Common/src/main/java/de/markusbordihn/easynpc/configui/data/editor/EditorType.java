@@ -31,6 +31,7 @@ public enum EditorType {
   CONDITION_DATA_ENTRY,
   DIALOG,
   DIALOG_BUTTON,
+  DIALOG_OPTIONS,
   DIALOG_TEXT,
   TRADING_OFFER_ACTION(false);
 
@@ -48,6 +49,7 @@ public enum EditorType {
     if (editorType == null || editorType.isEmpty()) {
       return EditorType.NONE;
     }
+
     try {
       return EditorType.valueOf(editorType);
     } catch (IllegalArgumentException e) {

@@ -82,12 +82,10 @@ public class EditorMenuHandler {
       final int pageIndex,
       CompoundTag additionalSyncData) {
 
-    // Get basic data for configuration menu.
     final UUID npcUUID = easyNPC.getEntityUUID();
 
-    // Additional data for specific configuration menu.
     switch (editorType) {
-      case DIALOG, DIALOG_BUTTON, DIALOG_TEXT ->
+      case DIALOG, DIALOG_BUTTON, DIALOG_OPTIONS, DIALOG_TEXT ->
           AdditionalScreenData.addDialogDataSet(additionalSyncData, easyNPC);
       case ACTION_DATA, ACTION_DATA_ENTRY -> {
         AdditionalScreenData.addActionEventSet(additionalSyncData, easyNPC);

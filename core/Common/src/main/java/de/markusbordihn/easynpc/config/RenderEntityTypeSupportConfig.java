@@ -32,8 +32,8 @@ public class RenderEntityTypeSupportConfig extends Config {
 """
 Render Entity Type Support Configuration
 
- Please note that this configuration file only includes confirmed entity types.
- If an entity type is not listed here, it doesn't mean it's automatically supported or unsupported!
+Please note that this configuration file only includes confirmed entity types.
+If an entity type is not listed here, it doesn't mean it's automatically supported or unsupported!
 """;
   private static final Set<String> supportedEntityTypes = new HashSet<>();
   private static final Set<String> unsupportedEntityTypes = new HashSet<>();
