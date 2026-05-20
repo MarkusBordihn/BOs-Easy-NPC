@@ -71,6 +71,7 @@ import de.markusbordihn.easynpc.configui.menu.editor.ConditionDataEditorMenuWrap
 import de.markusbordihn.easynpc.configui.menu.editor.ConditionDataEntryEditorMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.editor.DialogButtonEditorMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.editor.DialogEditorMenuWrapper;
+import de.markusbordihn.easynpc.configui.menu.editor.DialogOptionsEditorMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.editor.DialogTextEditorMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.preset.PresetBrowserMenuWrapper;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
@@ -226,6 +227,9 @@ public class ModMenuTypes {
   public static final MenuType<DialogButtonEditorMenuWrapper> DIALOG_BUTTON_EDITOR_MENU =
       ScreenHandlerRegistry.registerSimple(
           EditorType.DIALOG_BUTTON.getId(), DialogButtonEditorMenuWrapper::new);
+  public static final MenuType<DialogOptionsEditorMenuWrapper> DIALOG_OPTIONS_EDITOR_MENU =
+      ScreenHandlerRegistry.registerSimple(
+          EditorType.DIALOG_OPTIONS.getId(), DialogOptionsEditorMenuWrapper::new);
   public static final MenuType<DialogTextEditorMenuWrapper> DIALOG_TEXT_EDITOR_MENU =
       ScreenHandlerRegistry.registerSimple(
           EditorType.DIALOG_TEXT.getId(), DialogTextEditorMenuWrapper::new);

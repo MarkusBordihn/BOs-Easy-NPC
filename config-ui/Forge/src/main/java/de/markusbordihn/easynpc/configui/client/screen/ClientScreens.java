@@ -70,6 +70,7 @@ import de.markusbordihn.easynpc.configui.client.screen.editor.condition.Conditio
 import de.markusbordihn.easynpc.configui.client.screen.editor.condition.ConditionDataEntryEditorContainerScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.editor.dialog.DialogButtonEditorScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.editor.dialog.DialogEditorScreenWrapper;
+import de.markusbordihn.easynpc.configui.client.screen.editor.dialog.DialogOptionsEditorScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.editor.dialog.DialogTextEditorScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.preset.PresetBrowserScreen;
 import de.markusbordihn.easynpc.configui.menu.ModMenuTypes;
@@ -187,6 +188,8 @@ public class ClientScreens {
               DialogActionConfigurationScreenWrapper::new);
           MenuScreens.register(
               ModMenuTypes.DIALOG_BUTTON_EDITOR_MENU.get(), DialogButtonEditorScreenWrapper::new);
+          MenuScreens.register(
+              ModMenuTypes.DIALOG_OPTIONS_EDITOR_MENU.get(), DialogOptionsEditorScreenWrapper::new);
           MenuScreens.register(
               ModMenuTypes.DIALOG_EDITOR_MENU.get(), DialogEditorScreenWrapper::new);
           MenuScreens.register(

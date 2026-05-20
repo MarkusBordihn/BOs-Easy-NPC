@@ -134,6 +134,7 @@ public class MenuHandler implements MenuHandlerInterface {
         EditorType.CONDITION_DATA_ENTRY, ModMenuTypes.CONDITION_DATA_ENTRY_EDITOR_MENU);
     editorMenuMap.put(EditorType.DIALOG, ModMenuTypes.DIALOG_EDITOR_MENU);
     editorMenuMap.put(EditorType.DIALOG_BUTTON, ModMenuTypes.DIALOG_BUTTON_EDITOR_MENU);
+    editorMenuMap.put(EditorType.DIALOG_OPTIONS, ModMenuTypes.DIALOG_OPTIONS_EDITOR_MENU);
     editorMenuMap.put(EditorType.DIALOG_TEXT, ModMenuTypes.DIALOG_TEXT_EDITOR_MENU);
 
     customMenuMap.put(CustomMenuType.PRESET_BROWSER, ModMenuTypes.PRESET_BROWSER_MENU);

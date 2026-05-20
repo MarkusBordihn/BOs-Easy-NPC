@@ -38,9 +38,7 @@ public class MenuHandler implements MenuHandlerInterface {
   protected static final Map<CustomMenuType, MenuType<? extends ConfigUIMenu>> customMenuMap =
       new EnumMap<>(CustomMenuType.class);
 
-  public MenuHandler() {
-    // Register menu handler
-  }
+  public MenuHandler() {}
 
   public static void registerMenuHandler(final FMLCommonSetupEvent event) {
 
@@ -149,6 +147,7 @@ public class MenuHandler implements MenuHandlerInterface {
         EditorType.CONDITION_DATA_ENTRY, ModMenuTypes.CONDITION_DATA_ENTRY_EDITOR_MENU.get());
     editorMenuMap.put(EditorType.DIALOG, ModMenuTypes.DIALOG_EDITOR_MENU.get());
     editorMenuMap.put(EditorType.DIALOG_BUTTON, ModMenuTypes.DIALOG_BUTTON_EDITOR_MENU.get());
+    editorMenuMap.put(EditorType.DIALOG_OPTIONS, ModMenuTypes.DIALOG_OPTIONS_EDITOR_MENU.get());
     editorMenuMap.put(EditorType.DIALOG_TEXT, ModMenuTypes.DIALOG_TEXT_EDITOR_MENU.get());
 
     customMenuMap.put(CustomMenuType.PRESET_BROWSER, ModMenuTypes.PRESET_BROWSER_MENU.get());
