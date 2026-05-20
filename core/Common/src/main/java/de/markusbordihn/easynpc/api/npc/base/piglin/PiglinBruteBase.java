@@ -85,9 +85,7 @@ public class PiglinBruteBase extends PiglinBruteRaw implements BaseEasyNPC<Pigli
   @SuppressWarnings("deprecation")
   protected Brain<PiglinBrute> makeBrain(Brain.Packed packedBrain) {
     return Brain.<PiglinBrute>provider(
-            List.of(MemoryModuleType.ATTACK_TARGET),
-            List.of(),
-            entity -> List.of())
+            List.of(MemoryModuleType.ATTACK_TARGET), List.of(), entity -> List.of())
         .makeBrain(this, packedBrain);
   }
 

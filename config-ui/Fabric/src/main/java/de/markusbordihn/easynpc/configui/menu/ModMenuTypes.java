@@ -71,6 +71,7 @@ import de.markusbordihn.easynpc.configui.menu.editor.ConditionDataEditorMenuWrap
 import de.markusbordihn.easynpc.configui.menu.editor.ConditionDataEntryEditorMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.editor.DialogButtonEditorMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.editor.DialogEditorMenuWrapper;
+import de.markusbordihn.easynpc.configui.menu.editor.DialogOptionsEditorMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.editor.DialogTextEditorMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.preset.PresetBrowserMenuWrapper;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
@@ -283,6 +284,11 @@ public class ModMenuTypes {
           BuiltInRegistries.MENU,
           EditorType.DIALOG_BUTTON.getId(),
           new MenuType<>(DialogButtonEditorMenuWrapper::new, FeatureFlagSet.of()));
+  public static final MenuType<DialogOptionsEditorMenuWrapper> DIALOG_OPTIONS_EDITOR_MENU =
+      Registry.register(
+          BuiltInRegistries.MENU,
+          EditorType.DIALOG_OPTIONS.getId(),
+          new MenuType<>(DialogOptionsEditorMenuWrapper::new, FeatureFlagSet.of()));
   public static final MenuType<DialogTextEditorMenuWrapper> DIALOG_TEXT_EDITOR_MENU =
       Registry.register(
           BuiltInRegistries.MENU,

@@ -35,6 +35,7 @@ public final class DialogDataEntry {
   public static final String DATA_CONDITIONS_TAG = "Conditions";
   public static final String DATA_DIALOG_NAME = "Name";
   public static final String DATA_LABEL_TAG = "Label";
+  public static final String DATA_OPTIONS_TAG = "Options";
   public static final String DATA_PRIORITY_TAG = "Priority";
   public static final String DATA_TEXTS_TAG = "Texts";
   public static final String DATA_TEXT_TAG = "Text";
@@ -42,6 +43,7 @@ public final class DialogDataEntry {
   private Set<DialogButtonEntry> dialogButtons = new LinkedHashSet<>();
   private Set<DialogTextData> dialogTexts = new LinkedHashSet<>();
   private Set<ConditionDataEntry> conditions = new LinkedHashSet<>();
+  private DialogOptionsData dialogOptions = null;
   private UUID id;
   private String label = "";
   private String name;
@@ -249,6 +251,14 @@ public final class DialogDataEntry {
     return this.dialogButtons.size();
   }
 
+  public DialogOptionsData getDialogOptions() {
+    return this.dialogOptions != null ? this.dialogOptions : DialogOptionsData.getDefault();
+  }
+
+  public void setDialogOptions(DialogOptionsData dialogOptions) {
+    this.dialogOptions = dialogOptions;
+  }
+
   public void load(CompoundTag compoundTag) {
     this.name = compoundTag.getString(DATA_DIALOG_NAME).orElse("");
 
@@ -258,7 +268,6 @@ public final class DialogDataEntry {
             ? compoundTag.getString(DATA_LABEL_TAG).orElse("")
             : this.name);
 
-    // Load dialog texts, if available.
     if (compoundTag.contains(DATA_TEXTS_TAG)) {
       this.dialogTexts.clear();
       ListTag dialogTextsList = compoundTag.getListOrEmpty(DATA_TEXTS_TAG);
@@ -272,7 +281,6 @@ public final class DialogDataEntry {
       this.dialogTexts.add(new DialogTextData(compoundTag.getString(DATA_TEXT_TAG).orElse("")));
     }
 
-    // Load buttons, if available.
     if (compoundTag.contains(DATA_BUTTONS_TAG)) {
       this.dialogButtons.clear();
       ListTag buttonsList = compoundTag.getListOrEmpty(DATA_BUTTONS_TAG);
@@ -283,7 +291,6 @@ public final class DialogDataEntry {
       }
     }
 
-    // Load conditions, if available.
     if (compoundTag.contains(DATA_CONDITIONS_TAG)) {
       this.conditions.clear();
       ListTag conditionsList = compoundTag.getListOrEmpty(DATA_CONDITIONS_TAG);
@@ -302,6 +309,12 @@ public final class DialogDataEntry {
         compoundTag
             .getInt(DATA_PRIORITY_TAG)
             .orElse(DialogPriority.calculateDefaultPriority(this.label));
+
+    if (compoundTag.contains(DATA_OPTIONS_TAG)) {
+      this.dialogOptions =
+          DialogOptionsData.load(
+              compoundTag.getCompound(DATA_OPTIONS_TAG).orElse(new CompoundTag()));
+    }
   }
 
   public CompoundTag save(CompoundTag compoundTag) {
@@ -312,7 +325,6 @@ public final class DialogDataEntry {
       compoundTag.putString(DATA_LABEL_TAG, this.label);
     }
 
-    // Save dialog text
     if (this.dialogTexts != null && !this.dialogTexts.isEmpty()) {
       ListTag dialogTextsList = new ListTag();
       for (DialogTextData dialogText : this.dialogTexts) {
@@ -321,7 +333,6 @@ public final class DialogDataEntry {
       compoundTag.put(DATA_TEXTS_TAG, dialogTextsList);
     }
 
-    // Save buttons, if any.
     if (this.dialogButtons != null && !this.dialogButtons.isEmpty()) {
       ListTag buttonsList = new ListTag();
       for (DialogButtonEntry button : this.dialogButtons) {
@@ -330,7 +341,6 @@ public final class DialogDataEntry {
       compoundTag.put(DATA_BUTTONS_TAG, buttonsList);
     }
 
-    // Save conditions, if any.
     if (this.conditions != null && !this.conditions.isEmpty()) {
       ListTag conditionsList = new ListTag();
       for (ConditionDataEntry condition : this.conditions) {
@@ -346,6 +356,10 @@ public final class DialogDataEntry {
     int defaultPriority = DialogPriority.calculateDefaultPriority(this.label);
     if (this.priority != defaultPriority) {
       compoundTag.putInt(DATA_PRIORITY_TAG, this.priority);
+    }
+
+    if (this.dialogOptions != null && !this.dialogOptions.isDefault()) {
+      compoundTag.put(DATA_OPTIONS_TAG, this.dialogOptions.createTag());
     }
 
     return compoundTag;

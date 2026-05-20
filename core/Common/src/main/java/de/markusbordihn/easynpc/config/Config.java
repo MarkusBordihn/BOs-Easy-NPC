@@ -52,6 +52,7 @@ public class Config {
 
   public static void registerCommonConfig() {
     log.info("{} Registering common configuration ...", LOG_PREFIX);
+    DialogOptionsConfig.registerConfig();
     NPCBaseConfig.registerConfig();
     RenderEntityTypeSupportConfig.registerConfig();
     SecurityConfig.registerConfig();

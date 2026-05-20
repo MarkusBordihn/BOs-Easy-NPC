@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Markus Bordihn
+ * Copyright 2022 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,21 +17,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.data.skin.variant;
+package de.markusbordihn.easynpc.configui.client.screen.editor.dialog;
 
-import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.api.skin.VariantTexture;
-import net.minecraft.resources.Identifier;
+import de.markusbordihn.easynpc.configui.menu.editor.DialogOptionsEditorMenuWrapper;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
 
-public enum WitchSkinVariant implements VariantTexture {
-  WITCH;
+public class DialogOptionsEditorScreenWrapper
+    extends DialogOptionsEditorScreen<DialogOptionsEditorMenuWrapper> {
 
-  private static final Identifier TEXTURE =
-      Identifier.fromNamespaceAndPath(
-          Constants.MINECRAFT_PREFIX, "textures/entity/witch/witch.png");
-
-  @Override
-  public Identifier getTextureLocation() {
-    return TEXTURE;
+  public DialogOptionsEditorScreenWrapper(
+      DialogOptionsEditorMenuWrapper menu, Inventory inventory, Component component) {
+    super(menu, inventory, component);
   }
 }

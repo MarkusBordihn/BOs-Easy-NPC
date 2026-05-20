@@ -59,6 +59,7 @@ import de.markusbordihn.easynpc.configui.network.message.server.OpenConditionDat
 import de.markusbordihn.easynpc.configui.network.message.server.OpenConfigurationMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.OpenDialogButtonEditorMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.OpenDialogEditorMessage;
+import de.markusbordihn.easynpc.configui.network.message.server.OpenDialogOptionsEditorMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.OpenDialogTextEditorMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.OpenMenuMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.RemoveDialogButtonMessage;
@@ -90,6 +91,7 @@ import de.markusbordihn.easynpc.data.model.ModelAnimationData;
 import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataEntry;
 import de.markusbordihn.easynpc.data.position.CustomPosition;
+import de.markusbordihn.easynpc.data.preset.PresetData;
 import de.markusbordihn.easynpc.data.preset.PresetExportFormat;
 import de.markusbordihn.easynpc.data.preset.PresetMetadata;
 import de.markusbordihn.easynpc.data.preset.PresetType;
@@ -398,6 +400,12 @@ public interface ServerNetworkMessageHandlerInterface {
     }
   }
 
+  default void openDialogOptionsEditor(UUID uuid, UUID dialogId) {
+    if (uuid != null && dialogId != null) {
+      NetworkHandlerManager.sendMessageToServer(new OpenDialogOptionsEditorMessage(uuid, dialogId));
+    }
+  }
+
   default void openDialogTextEditor(UUID uuid, UUID dialogId) {
     if (uuid != null && dialogId != null) {
       NetworkHandlerManager.sendMessageToServer(new OpenDialogTextEditorMessage(uuid, dialogId));
@@ -677,8 +685,7 @@ public interface ServerNetworkMessageHandlerInterface {
     }
   }
 
-  default void spawnPresetWithData(
-      de.markusbordihn.easynpc.data.preset.PresetData presetData, boolean useOriginalData) {
+  default void spawnPresetWithData(PresetData presetData, boolean useOriginalData) {
     if (presetData != null && presetData.hasValidData()) {
       NetworkHandlerManager.sendMessageToServer(
           new SpawnPresetMessage(

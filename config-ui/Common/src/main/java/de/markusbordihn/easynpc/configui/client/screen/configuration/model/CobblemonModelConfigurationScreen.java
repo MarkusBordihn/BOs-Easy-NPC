@@ -96,7 +96,8 @@ public class CobblemonModelConfigurationScreen<T extends ConfigurationMenu>
   }
 
   @Override
-  public void extractRenderState(GuiGraphicsExtractor guiGraphics, int x, int y, float partialTicks) {
+  public void extractRenderState(
+      GuiGraphicsExtractor guiGraphics, int x, int y, float partialTicks) {
     super.extractRenderState(guiGraphics, x, y, partialTicks);
 
     renderDescriptionText(guiGraphics, this.contentLeftPos + 5, this.contentTopPos + 20);
@@ -133,7 +134,8 @@ public class CobblemonModelConfigurationScreen<T extends ConfigurationMenu>
   }
 
   @Override
-  public void extractBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+  public void extractBackground(
+      GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
     super.extractBackground(guiGraphics, mouseX, mouseY, partialTicks);
     renderSkinSelectionBackground(guiGraphics);
   }

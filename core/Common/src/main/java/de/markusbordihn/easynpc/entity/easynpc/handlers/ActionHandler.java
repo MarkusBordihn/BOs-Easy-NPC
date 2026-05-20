@@ -55,7 +55,7 @@ public interface ActionHandler<E extends Mob> extends EasyNPC<E> {
     Entity entity = this.getEntity();
     return this.getEntityLevel().players().stream()
         .filter(EntitySelector.NO_SPECTATORS)
-        .filter(targetPlayers -> entity.closerThan(targetPlayers, range))
+        .filter(player -> entity.closerThan(player, range))
         .toList();
   }
 
@@ -74,17 +74,14 @@ public interface ActionHandler<E extends Mob> extends EasyNPC<E> {
   default void checkDistanceActions() {
     this.getProfiler().push("npcCheckDistanceActions");
 
-    // Validate action data and mob entity.
     Mob mob = this.getMob();
     ActionEventDataCapable<E> actionEventData = this.getEasyNPCActionEventData();
     if (actionEventData == null || mob == null || mob.isDeadOrDying()) {
       return;
     }
 
-    // Check to avoid additional checks, when no player is in range.
     boolean skipPlayerDistanceCheck = false;
 
-    // Near distance action, if set.
     if (actionEventData.hasActionEvent(ActionEventType.ON_DISTANCE_NEAR)) {
       List<? extends Player> listOfPlayers = this.getPlayersInRange(16.0D);
       if (listOfPlayers == null || listOfPlayers.isEmpty()) {
@@ -103,7 +100,6 @@ public interface ActionHandler<E extends Mob> extends EasyNPC<E> {
       }
     }
 
-    // Close distance action, if set.
     if (actionEventData.hasActionEvent(ActionEventType.ON_DISTANCE_CLOSE)) {
       List<? extends Player> listOfPlayers =
           skipPlayerDistanceCheck ? null : this.getPlayersInRange(8.0D);
@@ -123,7 +119,6 @@ public interface ActionHandler<E extends Mob> extends EasyNPC<E> {
       }
     }
 
-    // Very close distance action, if set.
     if (actionEventData.hasActionEvent(ActionEventType.ON_DISTANCE_VERY_CLOSE)) {
       List<? extends Player> listOfPlayers =
           skipPlayerDistanceCheck ? null : this.getPlayersInRange(4.0D);
@@ -144,7 +139,6 @@ public interface ActionHandler<E extends Mob> extends EasyNPC<E> {
       }
     }
 
-    // Touch distance action, if set.
     if (actionEventData.hasActionEvent(ActionEventType.ON_DISTANCE_TOUCH)) {
       List<? extends Player> listOfPlayers =
           skipPlayerDistanceCheck ? null : this.getPlayersInRange(1.25D);
@@ -199,9 +193,9 @@ public interface ActionHandler<E extends Mob> extends EasyNPC<E> {
 
   default void lookAtBlock(BlockPos target) {
     Entity entity = this.getEntity();
-    Vec3 vec3d = entity.position();
-    Vec3 targetVec = Vec3.atCenterOf(target);
-    Vec3 delta = targetVec.subtract(vec3d);
+    Vec3 entityPosition = entity.position();
+    Vec3 targetCenter = Vec3.atCenterOf(target);
+    Vec3 delta = targetCenter.subtract(entityPosition);
     double horizontalDistance = delta.horizontalDistance();
     entity.setXRot(
         Mth.wrapDegrees((float) (-(Mth.atan2(delta.y, horizontalDistance) * (180D / Math.PI)))));
@@ -262,8 +256,9 @@ public interface ActionHandler<E extends Mob> extends EasyNPC<E> {
       this.executeAction(actionDataEntry, serverPlayer);
     }
 
-    // Execute close dialog action at the end.
-    if (closeDialogAction != null) {
+    // Execute close dialog action at the end, but skip if a screen action was already executed.
+    // Trading/dialog screens open immediately and closeContainer() would close the new screen.
+    if (closeDialogAction != null && !hasScreenAction) {
       this.executeAction(closeDialogAction, serverPlayer);
     }
   }

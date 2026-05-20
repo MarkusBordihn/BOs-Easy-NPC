@@ -357,94 +357,111 @@ public class RangeSliderButton extends AbstractWidget {
   @Override
   public void extractWidgetRenderState(
       GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
-    if (sliderButton.visible) {
-      sliderButton.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
-    } else if (textField.visible) {
-      textField.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
+    this.sliderButton.active = this.active;
+    this.textButtonDecrease.active = this.active && this.showButtons;
+    this.textButtonIncrease.active = this.active && this.showButtons;
+    this.textButtonReset.active = this.active && this.showButtons;
+    this.textButtonEdit.active = this.active && this.showButtons;
+    this.textButtonDone.active = this.active && this.showButtons;
+
+    if (this.sliderButton.visible) {
+      this.sliderButton.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
+    } else if (this.textField.visible) {
+      this.textField.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
     }
 
-    if (textButtonDecrease.active) {
-      textButtonDecrease.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
+    if (this.textButtonDecrease.active) {
+      this.textButtonDecrease.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
     }
-    if (textButtonIncrease.active) {
-      textButtonIncrease.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
+    if (this.textButtonIncrease.active) {
+      this.textButtonIncrease.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
     }
-    if (textButtonReset.active) {
-      textButtonReset.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
+    if (this.textButtonReset.active) {
+      this.textButtonReset.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
     }
 
-    if (textButtonEdit.active && textButtonEdit.visible) {
-      textButtonEdit.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
-    } else if (textButtonDone.active && textButtonDone.visible) {
-      textButtonDone.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
+    if (this.textButtonEdit.active && this.textButtonEdit.visible) {
+      this.textButtonEdit.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
+    } else if (this.textButtonDone.active && this.textButtonDone.visible) {
+      this.textButtonDone.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
     }
   }
 
   @Override
   public boolean mouseClicked(MouseButtonEvent mouseButtonEvent, boolean doubleClick) {
-    if (sliderButton.visible && sliderButton.mouseClicked(mouseButtonEvent, doubleClick)) {
+    if (!this.active) {
+      return false;
+    }
+
+    if (this.sliderButton.visible
+        && this.sliderButton.mouseClicked(mouseButtonEvent, doubleClick)) {
       return true;
     }
-    if (textField.visible && textField.mouseClicked(mouseButtonEvent, doubleClick)) {
-      textField.setFocused(true);
+    if (this.textField.visible && this.textField.mouseClicked(mouseButtonEvent, doubleClick)) {
+      this.textField.setFocused(true);
       return true;
     }
 
-    textButtonDecrease.mouseClicked(mouseButtonEvent, doubleClick);
-    textButtonIncrease.mouseClicked(mouseButtonEvent, doubleClick);
-    textButtonReset.mouseClicked(mouseButtonEvent, doubleClick);
+    this.textButtonDecrease.mouseClicked(mouseButtonEvent, doubleClick);
+    this.textButtonIncrease.mouseClicked(mouseButtonEvent, doubleClick);
+    this.textButtonReset.mouseClicked(mouseButtonEvent, doubleClick);
 
-    if (textButtonEdit.visible) {
-      textButtonEdit.mouseClicked(mouseButtonEvent, doubleClick);
-    } else if (textButtonDone.visible) {
-      textButtonDone.mouseClicked(mouseButtonEvent, doubleClick);
+    if (this.textButtonEdit.visible) {
+      this.textButtonEdit.mouseClicked(mouseButtonEvent, doubleClick);
+    } else if (this.textButtonDone.visible) {
+      this.textButtonDone.mouseClicked(mouseButtonEvent, doubleClick);
     }
+
     return super.mouseClicked(mouseButtonEvent, doubleClick);
   }
 
   @Override
   public boolean mouseReleased(MouseButtonEvent mouseButtonEvent) {
-    if (textField.visible) {
-      textField.mouseReleased(mouseButtonEvent);
+    if (this.textField.visible) {
+      this.textField.mouseReleased(mouseButtonEvent);
     }
+
     return super.mouseReleased(mouseButtonEvent);
   }
 
   @Override
   public boolean mouseScrolled(double x, double y, double scrollDeltaX, double scrollDeltaY) {
-    if (sliderButton.visible) {
-      return sliderButton.mouseScrolled(x, y, scrollDeltaX, scrollDeltaY);
-    } else if (textField.visible) {
-      return textField.mouseScrolled(x, y, scrollDeltaX, scrollDeltaY);
+    if (this.sliderButton.visible) {
+      return this.sliderButton.mouseScrolled(x, y, scrollDeltaX, scrollDeltaY);
+    } else if (this.textField.visible) {
+      return this.textField.mouseScrolled(x, y, scrollDeltaX, scrollDeltaY);
     }
+
     return super.mouseScrolled(x, y, scrollDeltaX, scrollDeltaY);
   }
 
   @Override
   public void onDrag(MouseButtonEvent mouseButtonEvent, double deltaX, double deltaY) {
-    if (sliderButton.visible
-        && sliderButton.isMouseOver(mouseButtonEvent.x(), mouseButtonEvent.y())) {
-      sliderButton.triggerOnDrag(mouseButtonEvent, deltaX, deltaY);
+    if (this.sliderButton.visible
+        && this.sliderButton.isMouseOver(mouseButtonEvent.x(), mouseButtonEvent.y())) {
+      this.sliderButton.triggerOnDrag(mouseButtonEvent, deltaX, deltaY);
     }
   }
 
   @Override
   public boolean charTyped(CharacterEvent characterEvent) {
-    if (sliderButton.visible) {
-      return sliderButton.charTyped(characterEvent);
-    } else if (textField.visible) {
-      return textField.charTyped(characterEvent);
+    if (this.sliderButton.visible) {
+      return this.sliderButton.charTyped(characterEvent);
+    } else if (this.textField.visible) {
+      return this.textField.charTyped(characterEvent);
     }
+
     return false;
   }
 
   @Override
   public boolean keyPressed(KeyEvent keyEvent) {
-    if (sliderButton.visible) {
-      return sliderButton.keyPressed(keyEvent);
-    } else if (textField.visible) {
-      return textField.keyPressed(keyEvent);
+    if (this.sliderButton.visible) {
+      return this.sliderButton.keyPressed(keyEvent);
+    } else if (this.textField.visible) {
+      return this.textField.keyPressed(keyEvent);
     }
+
     return false;
   }
 

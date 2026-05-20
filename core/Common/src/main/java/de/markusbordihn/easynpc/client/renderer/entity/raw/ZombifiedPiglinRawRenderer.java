@@ -28,7 +28,8 @@ import net.minecraft.client.renderer.entity.ZombifiedPiglinRenderer;
 import net.minecraft.client.renderer.entity.state.ZombifiedPiglinRenderState;
 import net.minecraft.resources.Identifier;
 
-public class ZombifiedPiglinRawRenderer extends ZombifiedPiglinRenderer implements EasyNPCEntityRenderer {
+public class ZombifiedPiglinRawRenderer extends ZombifiedPiglinRenderer
+    implements EasyNPCEntityRenderer {
 
   protected static final Identifier DEFAULT_TEXTURE =
       PiglinSkinVariant.ZOMBIFIED_PIGLIN.getTextureLocation();

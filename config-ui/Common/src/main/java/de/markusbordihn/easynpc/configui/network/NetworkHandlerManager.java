@@ -61,6 +61,7 @@ import de.markusbordihn.easynpc.configui.network.message.server.OpenConditionDat
 import de.markusbordihn.easynpc.configui.network.message.server.OpenConfigurationMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.OpenDialogButtonEditorMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.OpenDialogEditorMessage;
+import de.markusbordihn.easynpc.configui.network.message.server.OpenDialogOptionsEditorMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.OpenDialogTextEditorMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.OpenMenuMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.OpenTradingOfferActionEditorMessage;
@@ -421,6 +422,12 @@ public class NetworkHandlerManager {
         OpenMenuMessage.STREAM_CODEC,
         OpenMenuMessage.class,
         OpenMenuMessage::create);
+
+    networkHandler.registerServerNetworkMessage(
+        OpenDialogOptionsEditorMessage.PAYLOAD_TYPE,
+        OpenDialogOptionsEditorMessage.STREAM_CODEC,
+        OpenDialogOptionsEditorMessage.class,
+        OpenDialogOptionsEditorMessage::create);
 
     networkHandler.registerServerNetworkMessage(
         OpenDialogTextEditorMessage.PAYLOAD_TYPE,

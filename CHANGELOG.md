@@ -8,6 +8,14 @@ For the full changelog, please go to the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 6.16.0
+
+- Fixed #732 by providing option to disable ESC key and close button for dialogs.
+- Fixed #723 by avoid auto-close in specific cases like trading screens.
+- Added general dialog configuration options to allow users to customize dialog behavior.
+- Added avatar scaling and position offset options for dialogs.
+- Added missing translation keys.
+
 ### 6.15.1
 
 - Fixed #735 by extending the correct base class.
