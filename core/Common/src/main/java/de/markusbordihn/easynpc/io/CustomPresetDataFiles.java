@@ -46,7 +46,7 @@ public class CustomPresetDataFiles {
   private CustomPresetDataFiles() {}
 
   public static void registerCustomPresetData() {
-    log.info("{} custom preset data ...", Constants.LOG_REGISTER_PREFIX);
+    log.debug("{} custom preset data ...", Constants.LOG_REGISTER_PREFIX);
 
     Path presetDataFolder = getPresetDataFolder();
     if (presetDataFolder == null) {
@@ -75,7 +75,7 @@ public class CustomPresetDataFiles {
       if (Files.exists(presetDataFolderPath) && Files.isDirectory(presetDataFolderPath)) {
         return presetDataFolderPath;
       }
-      log.info("Creating preset data folder {} at {} ...", skinModelName, presetDataFolderPath);
+      log.debug("Creating preset data folder {} at {} ...", skinModelName, presetDataFolderPath);
       return Files.createDirectories(presetDataFolderPath);
     } catch (IOException exception) {
       log.error("Could not create preset data folder {}:", skinDataFolder, exception);

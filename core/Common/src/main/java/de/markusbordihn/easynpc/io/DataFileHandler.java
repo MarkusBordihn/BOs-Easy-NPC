@@ -106,13 +106,13 @@ public class DataFileHandler {
   public static void registerServerDataFiles(MinecraftServer minecraftServer) {
     log.info("{} Server data folders ...", Constants.LOG_REGISTER_PREFIX);
 
-    log.info("{} Pose data from data packs ...", Constants.LOG_REGISTER_PREFIX);
+    log.debug("{} Pose data from data packs ...", Constants.LOG_REGISTER_PREFIX);
     CustomPoseDataFiles.registerCustomPoseData(minecraftServer);
 
-    log.info("{} Backup data folders ...", Constants.LOG_REGISTER_PREFIX);
+    log.debug("{} Backup data folders ...", Constants.LOG_REGISTER_PREFIX);
     BackupDataFiles.registerBackupData();
 
-    log.info("{} Preset data folders ...", Constants.LOG_REGISTER_PREFIX);
+    log.debug("{} Preset data folders ...", Constants.LOG_REGISTER_PREFIX);
     CustomPresetDataFiles.registerCustomPresetData();
     WorldPresetDataFiles.registerWorldPresetData();
   }
@@ -120,12 +120,12 @@ public class DataFileHandler {
   public static void registerClientDataFiles() {
     log.info("{} Client data folders ...", Constants.LOG_REGISTER_PREFIX);
 
-    log.info("{} Skin data folders ...", Constants.LOG_REGISTER_PREFIX);
+    log.debug("{} Skin data folders ...", Constants.LOG_REGISTER_PREFIX);
     CustomSkinDataFiles.registerCustomSkinData();
     PlayerSkinDataFiles.registerPlayerSkinData();
     RemoteSkinDataFiles.registerRemoteSkinData();
 
-    log.info("{} Preset data folders ...", Constants.LOG_REGISTER_PREFIX);
+    log.debug("{} Preset data folders ...", Constants.LOG_REGISTER_PREFIX);
     LocalPresetDataFiles.registerLocalPresetData();
   }
 
@@ -135,7 +135,7 @@ public class DataFileHandler {
       if (Files.exists(backupFolder) && Files.isDirectory(backupFolder)) {
         return backupFolder;
       }
-      log.info("Creating backup folder at {} ...", backupFolder);
+      log.debug("Creating backup folder at {} ...", backupFolder);
       return Files.createDirectories(backupFolder);
     } catch (Exception exception) {
       log.error("There was an error, creating the backup folder:", exception);
@@ -149,7 +149,7 @@ public class DataFileHandler {
       if (Files.exists(cacheFolder) && Files.isDirectory(cacheFolder)) {
         return cacheFolder;
       }
-      log.info("Creating cache folder at {} ...", cacheFolder);
+      log.debug("Creating cache folder at {} ...", cacheFolder);
       return Files.createDirectories(cacheFolder);
     } catch (Exception exception) {
       log.error("There was an error, creating the cache folder:", exception);
@@ -163,7 +163,7 @@ public class DataFileHandler {
       if (Files.exists(customDataFolder) && Files.isDirectory(customDataFolder)) {
         return customDataFolder;
       }
-      log.info("Creating custom data folder at {} ...", customDataFolder);
+      log.debug("Creating custom data folder at {} ...", customDataFolder);
       return Files.createDirectories(customDataFolder);
     } catch (Exception exception) {
       log.error("There was an error, creating the custom data folder:", exception);
@@ -181,7 +181,7 @@ public class DataFileHandler {
       if (Files.exists(backupFolderPath) && Files.isDirectory(backupFolderPath)) {
         return backupFolderPath;
       }
-      log.info("Creating backup folder {} at {} ...", dataLabel, backupFolder);
+      log.debug("Creating backup folder {} at {} ...", dataLabel, backupFolder);
       return Files.createDirectories(backupFolderPath);
     } catch (Exception exception) {
       log.error("There was an error, creating the backup folder {}:", dataLabel, exception);
@@ -199,7 +199,7 @@ public class DataFileHandler {
       if (Files.exists(cacheFolderPath) && Files.isDirectory(cacheFolderPath)) {
         return cacheFolderPath;
       }
-      log.info("Creating cache folder {} at {} ...", dataLabel, cacheFolder);
+      log.debug("Creating cache folder {} at {} ...", dataLabel, cacheFolder);
       return Files.createDirectories(cacheFolderPath);
     } catch (Exception exception) {
       log.error("There was an error, creating the cache folder {}:", dataLabel, exception);
@@ -217,7 +217,7 @@ public class DataFileHandler {
       if (Files.exists(customDataFolderPath) && Files.isDirectory(customDataFolderPath)) {
         return customDataFolderPath;
       }
-      log.info("Creating custom data folder {} at {} ...", dataLabel, customDataFolder);
+      log.debug("Creating custom data folder {} at {} ...", dataLabel, customDataFolder);
       return Files.createDirectories(customDataFolderPath);
     } catch (Exception exception) {
       log.error("There was an error, creating the custom data folder {}:", dataLabel, exception);
