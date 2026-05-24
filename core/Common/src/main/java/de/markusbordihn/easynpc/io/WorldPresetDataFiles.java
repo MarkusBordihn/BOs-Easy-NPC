@@ -45,7 +45,7 @@ public class WorldPresetDataFiles {
   private WorldPresetDataFiles() {}
 
   public static void registerWorldPresetData() {
-    log.info("{} world preset data ...", Constants.LOG_REGISTER_PREFIX);
+    log.debug("{} world preset data ...", Constants.LOG_REGISTER_PREFIX);
     refreshPresetIdentifiers();
   }
 

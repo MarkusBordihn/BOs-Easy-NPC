@@ -46,7 +46,7 @@ If an entity type is not listed here, it doesn't mean it's automatically support
         supportedEntityTypes.size(),
         unsupportedEntityTypes.size());
     parseConfigFile();
-    log.info(
+    log.debug(
         "After config parsing: {} supported and {} unsupported entity types.",
         supportedEntityTypes.size(),
         unsupportedEntityTypes.size());

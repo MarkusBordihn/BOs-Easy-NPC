@@ -60,7 +60,6 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.EntityLeaveLevelEvent;
-import net.minecraftforge.event.server.ServerStartedEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.bus.BusGroup;
 import net.minecraftforge.eventbus.api.listener.Priority;
@@ -149,7 +148,6 @@ public class EasyNPCMain {
     // Register GAME bus events
     RegisterCommandsEvent.BUS.addListener(this::registerCommands);
     ServerStartingEvent.BUS.addListener(this::onServerStarting);
-    ServerStartedEvent.BUS.addListener(this::onServerStarted);
     TickEvent.ServerTickEvent.Post.BUS.addListener(this::onServerTick);
     EntityJoinLevelEvent.BUS.addListener(Priority.HIGHEST, this::onEntityJoinLevel);
     EntityLeaveLevelEvent.BUS.addListener(Priority.HIGHEST, this::onEntityLeaveLevel);
@@ -210,17 +208,6 @@ public class EasyNPCMain {
 
   private void onServerStarting(final ServerStartingEvent event) {
     ServerEvents.handleServerStarting(event.getServer());
-  }
-
-  private void onServerStarted(final ServerStartedEvent event) {
-    // GameTest server auto-shutdown for failsafe testing
-    String enabledGameTestNamespaces = System.getProperty("forge.enabledGameTestNamespaces");
-    if ("true".equals(System.getProperty("forge.enableGameTest"))
-        && enabledGameTestNamespaces != null
-        && enabledGameTestNamespaces.contains(Constants.MOD_ID)) {
-      log.info("GameTest server started successfully for {}. Shutting down...", Constants.MOD_ID);
-      event.getServer().halt(false);
-    }
   }
 
   private void onServerTick(final TickEvent.ServerTickEvent event) {

@@ -40,7 +40,7 @@ public class CustomPoseDataFiles {
   private CustomPoseDataFiles() {}
 
   public static void registerCustomPoseData(MinecraftServer minecraftServer) {
-    log.info("{} custom pose data from data packs ...", Constants.LOG_REGISTER_PREFIX);
+    log.debug("{} custom pose data from data packs ...", Constants.LOG_REGISTER_PREFIX);
 
     PoseManager.clearPoseData();
 

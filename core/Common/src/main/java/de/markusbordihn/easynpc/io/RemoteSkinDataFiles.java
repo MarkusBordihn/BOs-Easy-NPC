@@ -37,7 +37,7 @@ public class RemoteSkinDataFiles {
   private RemoteSkinDataFiles() {}
 
   public static void registerRemoteSkinData() {
-    log.info("{} remote skin data ...", Constants.LOG_REGISTER_PREFIX);
+    log.debug("{} remote skin data ...", Constants.LOG_REGISTER_PREFIX);
 
     // Prepare skin data folder
     Path skinDataFolder = getRemoteSkinDataFolder();
@@ -77,7 +77,7 @@ public class RemoteSkinDataFiles {
       if (Files.exists(skinDataFolderPath) && Files.isDirectory(skinDataFolderPath)) {
         return skinDataFolderPath;
       }
-      log.info("Created new remote skin data folder {} at {}!", skinModelName, skinDataFolderPath);
+      log.debug("Created new remote skin data folder {} at {}!", skinModelName, skinDataFolderPath);
       return Files.createDirectories(skinDataFolderPath);
     } catch (IOException e) {
       log.error(

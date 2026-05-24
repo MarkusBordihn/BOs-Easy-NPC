@@ -36,7 +36,6 @@ import de.markusbordihn.easynpc.network.NetworkHandlerManagerType;
 import java.util.Optional;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
-import net.minecraftforge.event.server.ServerStartedEvent;
 import net.minecraftforge.eventbus.api.bus.BusGroup;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -82,7 +81,6 @@ public class ConfigUIMain {
     FMLCommonSetupEvent.getBus(modBusGroup).addListener(this::commonSetup);
 
     RegisterCommandsEvent.BUS.addListener(this::registerCommands);
-    ServerStartedEvent.BUS.addListener(this::onServerStarted);
 
     log.info("{} Creative Mode Tabs ...", Constants.LOG_REGISTER_PREFIX);
     BuildCreativeModeTabContentsEvent.BUS.addListener(this::onBuildCreativeModeTabContentsEvent);
@@ -102,16 +100,5 @@ public class ConfigUIMain {
 
   private void registerCommands(final RegisterCommandsEvent event) {
     CommandManager.registerCommands(event.getDispatcher());
-  }
-
-  private void onServerStarted(final ServerStartedEvent event) {
-    // GameTest server auto-shutdown for failsafe testing
-    String enabledGameTestNamespaces = System.getProperty("forge.enabledGameTestNamespaces");
-    if ("true".equals(System.getProperty("forge.enableGameTest"))
-        && enabledGameTestNamespaces != null
-        && enabledGameTestNamespaces.contains(Constants.MOD_ID)) {
-      log.info("GameTest server started successfully for {}. Shutting down...", Constants.MOD_ID);
-      event.getServer().halt(false);
-    }
   }
 }

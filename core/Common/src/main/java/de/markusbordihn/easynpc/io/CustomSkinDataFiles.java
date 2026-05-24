@@ -43,7 +43,7 @@ public class CustomSkinDataFiles {
   private CustomSkinDataFiles() {}
 
   public static void registerCustomSkinData() {
-    log.info("{} custom skin data ...", Constants.LOG_REGISTER_PREFIX);
+    log.debug("{} custom skin data ...", Constants.LOG_REGISTER_PREFIX);
 
     // Prepare skin data folder
     Path skinDataFolder = getCustomSkinDataFolder();
@@ -77,7 +77,7 @@ public class CustomSkinDataFiles {
                 .toFile();
         boolean success = DataFileHandler.copyResourceFile(resourceLocation, skinModelTemplateFile);
         if (success && !skinModelTemplateFile.exists()) {
-          log.info(
+          log.debug(
               "Copied skin model template file {} to {}", resourceLocation, skinModelTemplateFile);
         }
       }
@@ -91,7 +91,7 @@ public class CustomSkinDataFiles {
     if (skinDataFolder == null) {
       return;
     }
-    log.info("{} custom skins from {} ...", Constants.LOG_REGISTER_PREFIX, skinDataFolder);
+    log.debug("{} custom skins from {} ...", Constants.LOG_REGISTER_PREFIX, skinDataFolder);
     for (SkinModel skinModel : SkinModel.values()) {
       Path skinModelFolder = getCustomSkinDataFolder(skinModel);
       if (skinModelFolder != null
@@ -133,7 +133,7 @@ public class CustomSkinDataFiles {
       if (Files.exists(skinDataFolderPath) && Files.isDirectory(skinDataFolderPath)) {
         return skinDataFolderPath;
       }
-      log.info("Created new skin data folder {} at {}!", skinModelName, skinDataFolderPath);
+      log.debug("Created new skin data folder {} at {}!", skinModelName, skinDataFolderPath);
       return Files.createDirectories(skinDataFolderPath);
     } catch (IOException e) {
       log.error("Error creating skin data folder {} at {}:", skinModelName, skinDataFolderPath, e);

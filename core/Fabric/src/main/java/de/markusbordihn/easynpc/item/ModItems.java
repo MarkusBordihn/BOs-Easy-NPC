@@ -136,10 +136,11 @@ public class ModItems {
         log.error("Unable to register NPC spawn egg with id {}.", entityType.getId());
         continue;
       }
-      log.info(
+      log.debug(
           "Registering NPC spawn egg for {} with id {}.", entityTypeObject, entityType.getId());
       NPC_SPAWN_EGGS.put(entityType, registerSpawnEgg(entityType.getId(), entityTypeObject));
     }
+    log.info("Registered {} NPC spawn eggs.", NPC_SPAWN_EGGS.size());
 
     // Register spawn eggs for all custom entity types.
     for (ModCustomEntityType entityType : ModCustomEntityType.values()) {
@@ -148,10 +149,11 @@ public class ModItems {
         log.error("Unable to register custom spawn egg with id {}.", entityType.getId());
         continue;
       }
-      log.info(
+      log.debug(
           "Registering custom spawn egg for {} with id {}.", entityTypeObject, entityType.getId());
       CUSTOM_NPC_SPAWN_EGGS.put(entityType, registerSpawnEgg(entityType.getId(), entityTypeObject));
     }
+    log.info("Registered {} custom spawn eggs.", CUSTOM_NPC_SPAWN_EGGS.size());
 
     if (CompatConstants.MOD_EPIC_FIGHT_LOADED) {
       for (EpicFightEntityType entityType : EpicFightEntityType.values()) {
@@ -160,13 +162,14 @@ public class ModItems {
           log.error("Unable to register Epic Fight spawn egg with id {}.", entityType.getId());
           continue;
         }
-        log.info(
+        log.debug(
             "Registering Epic Fight spawn egg for {} with id {}.",
             entityTypeObject,
             entityType.getId());
         EPIC_FIGHT_SPAWN_EGGS.put(
             entityType, registerEpicFightSpawnEgg(entityType.getId(), entityTypeObject));
       }
+      log.info("Registered {} Epic Fight spawn eggs.", EPIC_FIGHT_SPAWN_EGGS.size());
     }
 
     if (CompatConstants.MOD_COBBLEMON_LOADED) {
@@ -176,12 +179,13 @@ public class ModItems {
           log.error("Unable to register Cobblemon spawn egg with id {}.", entityType.getId());
           continue;
         }
-        log.info(
+        log.debug(
             "Registering Cobblemon spawn egg for {} with id {}.",
             entityTypeObject,
             entityType.getId());
         INTEGRATION_SPAWN_EGGS.add(registerSpawnEgg(entityType.getId(), entityTypeObject));
       }
+      log.info("Registered {} Cobblemon spawn eggs.", INTEGRATION_SPAWN_EGGS.size());
     }
   }
 
