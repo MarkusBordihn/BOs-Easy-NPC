@@ -39,7 +39,7 @@ public class LocalPresetDataFiles {
   private LocalPresetDataFiles() {}
 
   public static void registerLocalPresetData() {
-    log.info("{} local preset data ...", Constants.LOG_REGISTER_PREFIX);
+    log.debug("{} local preset data ...", Constants.LOG_REGISTER_PREFIX);
     CustomPresetDataFiles.registerCustomPresetData();
   }
 

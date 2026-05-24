@@ -71,7 +71,7 @@ public class Config {
     // Validate game folder path.
     if (Constants.CONFIG_DIR != null) {
       configPath = Constants.CONFIG_DIR.resolve(Constants.MOD_ID);
-      log.info("{} Updated configuration path to {}", LOG_PREFIX, configPath);
+      log.debug("{} Updated configuration path to {}", LOG_PREFIX, configPath);
     }
 
     // Validate configuration folder
@@ -141,7 +141,7 @@ public class Config {
       Properties properties,
       Properties unmodifiedProperties) {
     if (!properties.equals(unmodifiedProperties)) {
-      log.info(
+      log.debug(
           "{} Updating configuration file {} {} ({} entries)",
           LOG_PREFIX,
           configFile,
@@ -163,7 +163,8 @@ public class Config {
             properties);
       }
     } else {
-      log.info("{} {} is up to date ({} entries)", LOG_PREFIX, configFileHeader, properties.size());
+      log.debug(
+          "{} {} is up to date ({} entries)", LOG_PREFIX, configFileHeader, properties.size());
       log.debug("{} {} values: {}", LOG_PREFIX, configFileHeader, properties);
     }
   }
