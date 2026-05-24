@@ -37,7 +37,7 @@ public class PlayerSkinDataFiles {
   private PlayerSkinDataFiles() {}
 
   public static void registerPlayerSkinData() {
-    log.info("{} player skin data ...", Constants.LOG_REGISTER_PREFIX);
+    log.debug("{} player skin data ...", Constants.LOG_REGISTER_PREFIX);
 
     // Prepare skin data folder
     Path skinDataFolder = getPlayerSkinDataFolder();
@@ -79,7 +79,7 @@ public class PlayerSkinDataFiles {
       if (Files.exists(skinDataFolderPath) && Files.isDirectory(skinDataFolderPath)) {
         return skinDataFolderPath;
       }
-      log.info("Created new player skin data folder {} at {}!", skinModelName, skinDataFolderPath);
+      log.debug("Created new player skin data folder {} at {}!", skinModelName, skinDataFolderPath);
       return Files.createDirectories(skinDataFolderPath);
     } catch (IOException e) {
       log.error(

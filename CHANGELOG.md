@@ -8,6 +8,12 @@ For the full changelog, please go to the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 6.17.0
+
+- Fixed #738 by adding additional tooltips for "Execute as player"
+- Fixed to detailed logs by reducing log.info messages during startup and in-game.
+- Added additional unit and game-tests.
+
 ### 6.16.0
 
 - Fixed #732 by providing option to disable ESC key and close button for dialogs.

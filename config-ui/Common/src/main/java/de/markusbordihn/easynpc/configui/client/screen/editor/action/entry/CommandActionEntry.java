@@ -87,6 +87,33 @@ public class CommandActionEntry extends ActionEntryWidget {
           Constants.FONT_COLOR_YELLOW);
     }
 
+    if (!this.showExecuteAsUserWarning
+        && this.executeAsUserCheckbox != null
+        && this.executeAsUserCheckbox.selected()) {
+      int hintY = editorTop + (this.showDialogCommandHint ? 80 : 65);
+      Text.drawConfigString(
+          guiGraphics,
+          this.font,
+          "action.executeAsUser.active.hint.line1",
+          editorLeft + 2,
+          hintY,
+          Constants.FONT_COLOR_DARK_GREEN);
+      Text.drawConfigString(
+          guiGraphics,
+          this.font,
+          "action.executeAsUser.active.hint.line2",
+          editorLeft + 2,
+          hintY + 12,
+          Constants.FONT_COLOR_DARK_GREEN);
+      Text.drawConfigString(
+          guiGraphics,
+          this.font,
+          "action.executeAsUser.active.hint.line3",
+          editorLeft + 2,
+          hintY + 24,
+          Constants.FONT_COLOR_DARK_GREEN);
+    }
+
     if (this.showExecuteAsUserWarning) {
       Text.drawConfigString(
           guiGraphics,

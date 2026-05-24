@@ -59,13 +59,13 @@ public class CobblemonLoader implements IntegrationModelProvider {
     if (cachedModels == null || cachedModels.isEmpty()) {
       List<?> implemented = PokemonSpecies.INSTANCE.getImplemented();
       if (!implemented.isEmpty()) {
-        log.info("Re-Loading Cobblemon Species Models ...");
+        log.debug("Re-Loading Cobblemon Species Models ...");
         cachedModels =
             PokemonSpecies.INSTANCE.getImplemented().stream()
                 .map(species -> species.getResourceIdentifier().toString())
                 .sorted()
                 .collect(Collectors.toList());
-        log.info("Loaded {} Cobblemon Species Models", cachedModels.size());
+        log.debug("Loaded {} Cobblemon Species Models", cachedModels.size());
       }
     }
 

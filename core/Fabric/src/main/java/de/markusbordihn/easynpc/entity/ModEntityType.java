@@ -53,7 +53,7 @@ public class ModEntityType {
   static {
     // Raw entities (for modding only)
     for (ModRawEntityType type : ModRawEntityType.values()) {
-      log.info("Registering raw entity type {}", type.getResourceKey());
+      log.debug("Registering raw entity type {}", type.getResourceKey());
       RAW_TYPE.put(
           type,
           Registry.register(
@@ -61,10 +61,11 @@ public class ModEntityType {
               Constants.MOD_PREFIX_ID + type.getId(),
               type.getBuilder().build(type.getResourceKey().toString())));
     }
+    log.info("Registered {} raw entity types.", RAW_TYPE.size());
 
     // Pre-defined NPCs
     for (ModNPCEntityType type : ModNPCEntityType.values()) {
-      log.info("Registering NPC entity type {}", type.getResourceKey());
+      log.debug("Registering NPC entity type {}", type.getResourceKey());
       NPC_TYPE.put(
           type,
           Registry.register(
@@ -72,10 +73,11 @@ public class ModEntityType {
               Constants.MOD_PREFIX_ID + type.getId(),
               type.getBuilder().build(type.getResourceKey().toString())));
     }
+    log.info("Registered {} NPC entity types.", NPC_TYPE.size());
 
     // Custom NPCs
     for (ModCustomEntityType type : ModCustomEntityType.values()) {
-      log.info("Registering custom entity type {}", type.getResourceKey());
+      log.debug("Registering custom entity type {}", type.getResourceKey());
       CUSTOM_TYPE.put(
           type,
           Registry.register(
@@ -83,10 +85,11 @@ public class ModEntityType {
               Constants.MOD_PREFIX_ID + type.getId(),
               type.getBuilder().build(type.getResourceKey().toString())));
     }
+    log.info("Registered {} custom entity types.", CUSTOM_TYPE.size());
 
     // User-defined NPCs from configuration file
     for (UserDefinedEntityType type : UserDefinedEntityRegistry.getAvailableEntityTypes()) {
-      log.info("Registering user-defined entity type {}", type.getResourceKey());
+      log.debug("Registering user-defined entity type {}", type.getResourceKey());
       EntityType<?> entityType =
           Registry.register(
               BuiltInRegistries.ENTITY_TYPE,
@@ -96,11 +99,14 @@ public class ModEntityType {
       USER_DEFINED_TYPE.put(type, entityType);
       UserDefinedEntityRegistry.registerEntityType(type, entityType);
     }
+    if (!USER_DEFINED_TYPE.isEmpty()) {
+      log.info("Registered {} user-defined entity types.", USER_DEFINED_TYPE.size());
+    }
 
     // Register Epic Fight entity types if the mod is loaded
     if (CompatConstants.MOD_EPIC_FIGHT_LOADED) {
       for (EpicFightEntityType type : EpicFightEntityType.values()) {
-        log.info("Registering Epic Fight entity type {}", type.getResourceKey());
+        log.debug("Registering Epic Fight entity type {}", type.getResourceKey());
         EPIC_FIGHT_TYPE.put(
             type,
             Registry.register(
@@ -108,11 +114,12 @@ public class ModEntityType {
                 Constants.MOD_PREFIX_ID + type.getId(),
                 type.getBuilder().build(type.getResourceKey().toString())));
       }
+      log.info("Registered {} Epic Fight entity types.", EPIC_FIGHT_TYPE.size());
     }
 
     if (CompatConstants.MOD_COBBLEMON_LOADED) {
       for (CobblemonEntityType type : CobblemonEntityType.values()) {
-        log.info("Registering Cobblemon entity type {}", type.getResourceKey());
+        log.debug("Registering Cobblemon entity type {}", type.getResourceKey());
         COBBLEMON_TYPE.put(
             type,
             Registry.register(
@@ -120,6 +127,7 @@ public class ModEntityType {
                 Constants.MOD_PREFIX_ID + type.getId(),
                 type.getBuilder().build(type.getResourceKey().toString())));
       }
+      log.info("Registered {} Cobblemon entity types.", COBBLEMON_TYPE.size());
     }
   }
 
