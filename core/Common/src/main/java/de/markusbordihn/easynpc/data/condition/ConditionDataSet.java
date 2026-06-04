@@ -110,11 +110,8 @@ public class ConditionDataSet {
     if (compoundTag == null || !compoundTag.contains(CONDITION_DATA_SET_TAG)) {
       return;
     }
-    CompoundTag conditionDataSetTag = compoundTag.getCompoundOrEmpty(CONDITION_DATA_SET_TAG);
-
-    // Load condition data entries
     this.conditionDataEntries.clear();
-    ListTag conditionDataEntriesTag = conditionDataSetTag.getListOrEmpty(CONDITION_DATA_SET_TAG);
+    ListTag conditionDataEntriesTag = compoundTag.getListOrEmpty(CONDITION_DATA_SET_TAG);
     for (int i = 0; i < conditionDataEntriesTag.size(); i++) {
       CompoundTag conditionDataEntryTag = conditionDataEntriesTag.getCompoundOrEmpty(i);
       ConditionDataEntry conditionDataEntry = new ConditionDataEntry(conditionDataEntryTag);

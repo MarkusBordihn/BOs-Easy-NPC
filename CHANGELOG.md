@@ -8,6 +8,26 @@ For the full changelog, please go to the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 6.18.0
+
+Note: This update changes the internal data format for conditions and actions,
+which may reset existing execution-limit tracking for legacy entries without stored IDs.
+
+- Fixed #745 by adding conditions for actions to allow more complex and dynamic behavior.
+- Fixed #652 by adding dialog button tooltip for longer texts.
+- Fixed #687 by adding command value tooltip to show the full value.
+- Added Experience Level conditions.
+- Added Game-mode conditions.
+- Added has item in inventory condition.
+- Added has item in main-hand condition.
+- Added has item in off-hand condition.
+- Added player health condition.
+- Added player tag condition.
+- Added player team condition.
+- Added Goldmere example NPC preset with various conditions and actions.
+- Removed parameter pseudo IDs for `ActionDataEntry` and replaced them with random UUIDs.
+- Refactored condition system to allow more condition types.
+
 ### 6.17.0
 
 - Fixed #738 by adding additional tooltips for "Execute as player"

@@ -125,16 +125,7 @@ class MessageSecurity {
       CommandPermissionLevel clamped =
           CommandPermissionLevel.min(entry.commandPermissionLevel(), ceiling);
       if (clamped != entry.commandPermissionLevel()) {
-        sanitized.add(
-            new ActionDataEntry(
-                entry.actionDataType(),
-                entry.conditionDataSet(),
-                entry.command(),
-                entry.targetUUID(),
-                entry.blockPos(),
-                entry.executeAsUser(),
-                entry.enableDebug(),
-                clamped.minecraftLevel()));
+        sanitized.add(entry.withPermissionLevel(clamped.minecraftLevel()));
       } else {
         sanitized.add(entry);
       }

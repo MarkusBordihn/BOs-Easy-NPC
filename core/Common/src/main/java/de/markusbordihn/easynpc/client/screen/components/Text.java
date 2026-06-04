@@ -21,10 +21,14 @@ package de.markusbordihn.easynpc.client.screen.components;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.network.components.TextComponent;
+import de.markusbordihn.easynpc.utils.TextUtils;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
 
@@ -145,6 +149,42 @@ public class Text {
         x,
         y,
         color);
+  }
+
+  public static void drawLimitedString(
+      GuiGraphics guiGraphics, Font font, String text, int x, int y, int color, int maxLength) {
+    drawString(guiGraphics, font, TextUtils.limitString(text, maxLength), x, y, color);
+  }
+
+  public static void drawLimitedHoverString(
+      GuiGraphics guiGraphics,
+      Font font,
+      String text,
+      int x,
+      int y,
+      int color,
+      int maxLength,
+      int mouseX,
+      int mouseY) {
+    String limited = TextUtils.limitString(text, maxLength);
+    drawString(guiGraphics, font, limited, x, y, color);
+    if (text != null
+        && !text.isBlank()
+        && text.trim().length() > maxLength
+        && mouseX >= x
+        && mouseX <= x + font.width(limited) + 2
+        && mouseY >= y - 1
+        && mouseY <= y + font.lineHeight + 1) {
+      guiGraphics.renderTooltip(
+          font,
+          Collections.singletonList(
+              ClientTooltipComponent.create(
+                  Component.literal(text.trim()).getVisualOrderText())),
+          mouseX,
+          mouseY,
+          DefaultTooltipPositioner.INSTANCE,
+          null);
+    }
   }
 
   public static List<String> wrapText(Font font, String text, int maxWidth) {

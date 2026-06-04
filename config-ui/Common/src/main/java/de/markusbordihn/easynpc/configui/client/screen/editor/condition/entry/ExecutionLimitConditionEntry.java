@@ -101,8 +101,11 @@ public class ExecutionLimitConditionEntry extends ConditionEntryWidget {
                     NetworkHandlerManager.sendMessageToServer(
                         new ResetExecutionLimitMessage(this.screen.getDialogUUID(), true))));
 
+    boolean isExisting = !this.screen.isNewEntry();
+    resetCurrentPlayerButton.active = isExisting;
     resetAllPlayersButton.active =
-        Minecraft.getInstance().player != null
+        isExisting
+            && Minecraft.getInstance().player != null
             && Minecraft.getInstance()
                 .player
                 .permissions()

@@ -52,6 +52,8 @@ import de.markusbordihn.easynpc.configui.network.message.server.ExportCustomPres
 import de.markusbordihn.easynpc.configui.network.message.server.ExportPresetMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ExportWorldPresetMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ImportPresetMessage;
+import de.markusbordihn.easynpc.configui.network.message.server.OpenActionConditionDataEditorMessage;
+import de.markusbordihn.easynpc.configui.network.message.server.OpenActionConditionDataEntryEditorMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.OpenActionDataEditorMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.OpenActionDataEntryEditorMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.OpenConditionDataEditorMessage;
@@ -326,7 +328,7 @@ public interface ServerNetworkMessageHandlerInterface {
               uuid,
               dialogId,
               dialogButtonId,
-              actionDataEntry.getId(),
+              actionDataEntry.id(),
               ActionEventType.NONE,
               ConfigurationType.NONE,
               editorType,
@@ -345,7 +347,7 @@ public interface ServerNetworkMessageHandlerInterface {
               uuid,
               Constants.EMPTY_UUID,
               Constants.EMPTY_UUID,
-              actionDataEntry.getId(),
+              actionDataEntry.id(),
               actionEventType,
               configurationType,
               EditorType.NONE,
@@ -379,7 +381,7 @@ public interface ServerNetworkMessageHandlerInterface {
               uuid,
               Constants.EMPTY_UUID,
               Constants.EMPTY_UUID,
-              actionDataEntry.getId(),
+              actionDataEntry.id(),
               ActionEventType.NONE,
               configurationType,
               EditorType.TRADING_OFFER_ACTION,
@@ -430,6 +432,54 @@ public interface ServerNetworkMessageHandlerInterface {
     if (uuid != null && dialogId != null && conditionDataEntry != null) {
       NetworkHandlerManager.sendMessageToServer(
           new OpenConditionDataEntryEditorMessage(uuid, dialogId, conditionDataEntry));
+    }
+  }
+
+  default void openActionConditionDataEditor(
+      UUID uuid,
+      UUID actionDataEntryId,
+      ActionEventType actionEventType,
+      ConfigurationType configurationType,
+      EditorType editorType,
+      UUID dialogId,
+      UUID dialogButtonId,
+      int contextIndex) {
+    if (uuid != null && actionDataEntryId != null) {
+      NetworkHandlerManager.sendMessageToServer(
+          new OpenActionConditionDataEditorMessage(
+              uuid,
+              actionDataEntryId,
+              actionEventType != null ? actionEventType : ActionEventType.NONE,
+              configurationType != null ? configurationType : ConfigurationType.NONE,
+              editorType != null ? editorType : EditorType.NONE,
+              dialogId != null ? dialogId : Constants.EMPTY_UUID,
+              dialogButtonId != null ? dialogButtonId : Constants.EMPTY_UUID,
+              contextIndex));
+    }
+  }
+
+  default void openActionConditionDataEntryEditor(
+      UUID uuid,
+      UUID actionDataEntryId,
+      ActionEventType actionEventType,
+      ConfigurationType configurationType,
+      EditorType editorType,
+      UUID dialogId,
+      UUID dialogButtonId,
+      int contextIndex,
+      ConditionDataEntry conditionDataEntry) {
+    if (uuid != null && actionDataEntryId != null && conditionDataEntry != null) {
+      NetworkHandlerManager.sendMessageToServer(
+          new OpenActionConditionDataEntryEditorMessage(
+              uuid,
+              actionDataEntryId,
+              actionEventType != null ? actionEventType : ActionEventType.NONE,
+              configurationType != null ? configurationType : ConfigurationType.NONE,
+              editorType != null ? editorType : EditorType.NONE,
+              dialogId != null ? dialogId : Constants.EMPTY_UUID,
+              dialogButtonId != null ? dialogButtonId : Constants.EMPTY_UUID,
+              contextIndex,
+              conditionDataEntry));
     }
   }
 

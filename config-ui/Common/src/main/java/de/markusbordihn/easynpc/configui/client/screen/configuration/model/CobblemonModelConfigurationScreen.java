@@ -119,7 +119,7 @@ public class CobblemonModelConfigurationScreen<T extends ConfigurationMenu>
       }
     }
 
-    renderSpeciesList(guiGraphics);
+    renderSpeciesList(guiGraphics, x, y);
   }
 
   @Override
@@ -215,7 +215,7 @@ public class CobblemonModelConfigurationScreen<T extends ConfigurationMenu>
     }
   }
 
-  private void renderSpeciesList(GuiGraphics guiGraphics) {
+  private void renderSpeciesList(GuiGraphics guiGraphics, int mouseX, int mouseY) {
     if (this.getEasyNPC() == null || this.speciesList.isEmpty()) {
       return;
     }
@@ -261,22 +261,30 @@ public class CobblemonModelConfigurationScreen<T extends ConfigurationMenu>
       String path = speciesLocation != null ? speciesLocation.getPath() : "";
       int topNamePos = Math.round((top - 76f) / SKIN_NAME_SCALING);
       int leftNamePos = Math.round((left - 21f) / SKIN_NAME_SCALING);
+      int scaledMouseX = Math.round(mouseX / SKIN_NAME_SCALING);
+      int scaledMouseY = Math.round(mouseY / SKIN_NAME_SCALING);
       guiGraphics.pose().pushMatrix();
       guiGraphics.pose().scale(SKIN_NAME_SCALING, SKIN_NAME_SCALING);
-      Text.drawString(
+      Text.drawLimitedHoverString(
           guiGraphics,
           this.font,
-          TextUtils.normalizeString(namespace, 14),
+          TextUtils.normalizeString(namespace),
           leftNamePos,
           topNamePos,
-          Constants.FONT_COLOR_DARK_GREEN);
-      Text.drawString(
+          Constants.FONT_COLOR_DARK_GREEN,
+          14,
+          scaledMouseX,
+          scaledMouseY);
+      Text.drawLimitedHoverString(
           guiGraphics,
           this.font,
-          TextUtils.normalizeString(path, 14),
+          TextUtils.normalizeString(path),
           leftNamePos,
           topNamePos + 10,
-          Constants.FONT_COLOR_DARK_GREEN);
+          Constants.FONT_COLOR_DARK_GREEN,
+          14,
+          scaledMouseX,
+          scaledMouseY);
       guiGraphics.pose().popMatrix();
 
       skinPosition++;

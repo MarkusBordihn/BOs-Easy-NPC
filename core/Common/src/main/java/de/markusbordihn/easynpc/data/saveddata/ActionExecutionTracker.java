@@ -68,7 +68,7 @@ public class ActionExecutionTracker extends SavedData {
           DataFixTypes.SAVED_DATA_STRUCTURE_FEATURE_INDICES);
   private final Map<UUID, Map<UUID, ExecutionData>> trackingData;
 
-  private ActionExecutionTracker() {
+  ActionExecutionTracker() {
     this(new HashMap<>());
   }
 
@@ -76,7 +76,7 @@ public class ActionExecutionTracker extends SavedData {
     this.trackingData = new HashMap<>(trackingData);
   }
 
-  private static ActionExecutionTracker loadFromNbt(Dynamic<?> dynamic) {
+  static ActionExecutionTracker loadFromNbt(Dynamic<?> dynamic) {
     ActionExecutionTracker tracker = new ActionExecutionTracker(new HashMap<>());
     Tag tag = dynamic.convert(NbtOps.INSTANCE).getValue();
 
@@ -108,7 +108,7 @@ public class ActionExecutionTracker extends SavedData {
     return tracker;
   }
 
-  private static CompoundTag saveToNbt(ActionExecutionTracker tracker) {
+  static CompoundTag saveToNbt(ActionExecutionTracker tracker) {
     CompoundTag compoundTag = new CompoundTag();
     ListTag playersTag = new ListTag();
 

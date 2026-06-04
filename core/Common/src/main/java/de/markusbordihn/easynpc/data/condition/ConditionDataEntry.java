@@ -82,6 +82,17 @@ public record ConditionDataEntry(
               && this.operationType != null
               && this.operationType != ConditionOperationType.NONE;
       case EXECUTION_LIMIT -> this.value > 0 && hasStringValue();
+      case HAS_ITEM_IN_INVENTORY,
+          HAS_ITEM_IN_MAIN_HAND,
+          HAS_ITEM_IN_OFFHAND,
+          ADVANCEMENT,
+          PLAYER_TAG,
+          TEAM,
+          GAMEMODE ->
+          hasName();
+      case EXPERIENCE_LEVEL, PLAYER_HEALTH ->
+          this.operationType != null && this.operationType != ConditionOperationType.NONE;
+      case FALLBACK -> true;
       default -> true;
     };
   }
