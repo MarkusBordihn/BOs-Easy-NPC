@@ -74,6 +74,7 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
   private final UUID actionDataEntryId;
   protected Button actionDataTypeButton;
   protected Button cancelButton;
+  protected Button conditionsButton;
   protected Button deleteButton;
   protected Button homeButton;
   protected Button saveButton;
@@ -180,6 +181,19 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
         || actionDataType == ActionDataType.SCOREBOARD;
   }
 
+  private void openConditionEditor() {
+    NetworkMessageHandlerManager.getServerHandler()
+        .openActionConditionDataEditor(
+            this.getEasyNPCUUID(),
+            this.actionDataEntryId,
+            this.actionEventType,
+            this.configurationType,
+            this.editorType,
+            this.getDialogUUID(),
+            this.getDialogButtonUUID(),
+            this.menu.getPageIndex());
+  }
+
   private void navigateToActionDataEditor() {
     if (this.editorType != null && this.editorType == EditorType.TRADING_OFFER_ACTION) {
       NetworkMessageHandlerManager.getServerHandler()
@@ -232,10 +246,7 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
   }
 
   private void deleteActionDataEntry() {
-    if (this.minecraft == null
-        || this.actionDataSet == null
-        || this.actionDataEntryId == null
-        || this.actionDataEntryId == Constants.EMPTY_UUID) {
+    if (this.minecraft == null || this.actionDataSet == null || this.actionDataEntryId == null) {
       return;
     }
 
@@ -338,6 +349,24 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
                 this.getAvailableActionDataTypes(),
                 this.actionDataType,
                 this::changeActionDataType));
+
+    // Conditions Button — only active when the action entry is already saved
+    int conditionCount =
+        this.actionDataEntry.conditionDataSet() != null
+            ? this.actionDataEntry.conditionDataSet().size()
+            : 0;
+    String conditionsLabel =
+        conditionCount > 0 ? "Conditions (" + conditionCount + ")" : "Conditions";
+    this.conditionsButton =
+        this.addRenderableWidget(
+            new ActionButton(
+                this.leftPos + 10,
+                this.bottomPos - 55,
+                295,
+                conditionsLabel,
+                onPress -> openConditionEditor()));
+    this.conditionsButton.active =
+        this.actionDataSet != null && this.actionDataSet.contains(this.actionDataEntryId);
 
     // Save Button
     this.saveButton =
@@ -458,8 +487,12 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
           this.actionDataSet != null
               && this.actionDataEntry != null
               && this.actionDataEntry.isValidAndNotEmpty()
-              && this.actionDataEntryId != null
-              && this.actionDataEntryId != Constants.EMPTY_UUID;
+              && this.actionDataEntryId != null;
+    }
+
+    if (this.conditionsButton != null) {
+      this.conditionsButton.active =
+          this.actionDataSet != null && this.actionDataSet.contains(this.actionDataEntryId);
     }
   }
 }

@@ -23,6 +23,16 @@ public enum ConditionType {
   NONE(false, false, false),
   SCOREBOARD(true, true, true),
   EXECUTION_LIMIT(false, true, false),
+  HAS_ITEM_IN_INVENTORY(true, false, false),
+  HAS_ITEM_IN_MAIN_HAND(true, false, false),
+  HAS_ITEM_IN_OFFHAND(true, false, false),
+  ADVANCEMENT(true, false, false),
+  EXPERIENCE_LEVEL(false, true, true),
+  PLAYER_HEALTH(false, true, true),
+  PLAYER_TAG(true, false, false),
+  TEAM(true, false, false),
+  GAMEMODE(true, false, false),
+  FALLBACK(false, false, false),
   ;
 
   private final boolean requiresName;

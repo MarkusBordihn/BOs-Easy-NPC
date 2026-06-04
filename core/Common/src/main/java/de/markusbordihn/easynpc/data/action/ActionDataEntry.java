@@ -32,6 +32,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public record ActionDataEntry(
+    UUID id,
     ActionDataType actionDataType,
     ConditionDataSet conditionDataSet,
     String command,
@@ -41,7 +42,7 @@ public record ActionDataEntry(
     boolean enableDebug,
     int permissionLevel) {
 
-  public static final String DATA_TAG = "ActionDataEntry";
+  public static final String DATA_ID_TAG = "Id";
   public static final String DATA_COMMAND_TAG = "Cmd";
   public static final String DATA_DEBUG_TAG = "Debug";
   public static final String DATA_EXECUTE_AS_USER_TAG = "ExecAsUser";
@@ -62,6 +63,7 @@ public record ActionDataEntry(
 
   public ActionDataEntry(CompoundTag compoundTag) {
     this(
+        compoundTag.contains(DATA_ID_TAG) ? compoundTag.getUUID(DATA_ID_TAG) : UUID.randomUUID(),
         ActionDataType.get(compoundTag.getString(DATA_TYPE_TAG)),
         compoundTag.contains(ConditionDataSet.CONDITION_DATA_SET_TAG)
             ? new ConditionDataSet(compoundTag.getCompound(ConditionDataSet.CONDITION_DATA_SET_TAG))
@@ -112,6 +114,7 @@ public record ActionDataEntry(
       boolean executeAsUser,
       boolean enableDebug) {
     this(
+        UUID.randomUUID(),
         actionDataType,
         new ConditionDataSet(),
         command != null ? command : DEFAULT_COMMAND,
@@ -124,6 +127,7 @@ public record ActionDataEntry(
 
   public ActionDataEntry(ActionDataType actionDataType, UUID targetUUID, String command) {
     this(
+        UUID.randomUUID(),
         actionDataType,
         new ConditionDataSet(),
         command,
@@ -163,6 +167,7 @@ public record ActionDataEntry(
 
   public ActionDataEntry withBlockPos(BlockPos blockPos) {
     return new ActionDataEntry(
+        this.id,
         this.actionDataType,
         this.conditionDataSet,
         this.command,
@@ -171,6 +176,58 @@ public record ActionDataEntry(
         this.executeAsUser,
         this.enableDebug,
         this.permissionLevel);
+  }
+
+  public ActionDataEntry withCommand(String command) {
+    return new ActionDataEntry(
+        this.id,
+        this.actionDataType,
+        this.conditionDataSet,
+        command != null ? command : "",
+        this.targetUUID,
+        this.blockPos,
+        this.executeAsUser,
+        this.enableDebug,
+        this.permissionLevel);
+  }
+
+  public ActionDataEntry withConditionDataSet(ConditionDataSet conditionDataSet) {
+    return new ActionDataEntry(
+        this.id,
+        this.actionDataType,
+        conditionDataSet != null ? conditionDataSet : new ConditionDataSet(),
+        this.command,
+        this.targetUUID,
+        this.blockPos,
+        this.executeAsUser,
+        this.enableDebug,
+        this.permissionLevel);
+  }
+
+  public ActionDataEntry withExecuteAsUser(boolean executeAsUser) {
+    return new ActionDataEntry(
+        this.id,
+        this.actionDataType,
+        this.conditionDataSet,
+        this.command,
+        this.targetUUID,
+        this.blockPos,
+        executeAsUser,
+        this.enableDebug,
+        this.permissionLevel);
+  }
+
+  public ActionDataEntry withPermissionLevel(int permissionLevel) {
+    return new ActionDataEntry(
+        this.id,
+        this.actionDataType,
+        this.conditionDataSet,
+        this.command,
+        this.targetUUID,
+        this.blockPos,
+        this.executeAsUser,
+        this.enableDebug,
+        checkPermissionLevel(permissionLevel));
   }
 
   public String getAction(LivingEntity entity, ServerPlayer serverPlayer) {
@@ -206,6 +263,7 @@ public record ActionDataEntry(
   }
 
   public CompoundTag write(CompoundTag compoundTag) {
+    compoundTag.putUUID(DATA_ID_TAG, this.id);
     compoundTag.putString(DATA_TYPE_TAG, this.actionDataType.name());
 
     // Save target UUID if present.
@@ -248,10 +306,5 @@ public record ActionDataEntry(
 
   public CompoundTag createTag() {
     return this.write(new CompoundTag());
-  }
-
-  public UUID getId() {
-    String idString = DATA_TAG + hashCode();
-    return UUID.nameUUIDFromBytes(idString.getBytes());
   }
 }

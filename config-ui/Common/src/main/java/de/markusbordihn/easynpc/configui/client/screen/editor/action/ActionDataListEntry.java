@@ -30,7 +30,6 @@ import de.markusbordihn.easynpc.data.action.ActionDataSet;
 import de.markusbordihn.easynpc.data.action.ActionDataType;
 import de.markusbordihn.easynpc.data.scoreboard.ScoreboardOperation;
 import de.markusbordihn.easynpc.network.components.TextComponent;
-import de.markusbordihn.easynpc.utils.TextUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -188,7 +187,7 @@ public class ActionDataListEntry extends ObjectSelectionList.Entry<ActionDataLis
         Constants.FONT_COLOR_BLACK);
 
     // Value preview
-    renderValuePreview(guiGraphics, fieldsLeft, fieldTop);
+    renderValuePreview(guiGraphics, fieldsLeft, fieldTop, mouseX, mouseY);
 
     // Up and down buttons
     this.upAndDownButton.setY(top);
@@ -206,24 +205,31 @@ public class ActionDataListEntry extends ObjectSelectionList.Entry<ActionDataLis
     this.renderSeparatorLines(guiGraphics, top);
   }
 
-  private void renderValuePreview(GuiGraphics guiGraphics, int fieldsLeft, int fieldTop) {
+  private void renderValuePreview(
+      GuiGraphics guiGraphics, int fieldsLeft, int fieldTop, int mouseX, int mouseY) {
     if (this.actionDataType == ActionDataType.COMMAND
         || this.actionDataType == ActionDataType.OPEN_NAMED_DIALOG) {
-      Text.drawString(
+      Text.drawLimitedHoverString(
           guiGraphics,
           this.font,
-          TextUtils.limitString(this.actionDataEntry.command(), VALUE_MAX_LENGTH),
+          this.actionDataEntry.command(),
           fieldsLeft + VALUE_LEFT_POS + 2,
           fieldTop,
-          Constants.FONT_COLOR_BLACK);
+          Constants.FONT_COLOR_BLACK,
+          VALUE_MAX_LENGTH,
+          mouseX,
+          mouseY);
     } else if (this.actionDataType == ActionDataType.INTERACT_BLOCK) {
-      Text.drawString(
+      Text.drawLimitedHoverString(
           guiGraphics,
           this.font,
-          TextUtils.limitString(this.actionDataEntry.blockPos().toString(), VALUE_MAX_LENGTH),
+          this.actionDataEntry.blockPos().toString(),
           fieldsLeft + VALUE_LEFT_POS + 2,
           fieldTop,
-          Constants.FONT_COLOR_BLACK);
+          Constants.FONT_COLOR_BLACK,
+          VALUE_MAX_LENGTH,
+          mouseX,
+          mouseY);
     } else if (this.actionDataType == ActionDataType.SCOREBOARD) {
       ScoreboardOperation operation =
           ScoreboardOperation.fromCommand(this.actionDataEntry.command());

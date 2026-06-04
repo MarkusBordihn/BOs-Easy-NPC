@@ -20,9 +20,9 @@
 package de.markusbordihn.easynpc.data.dialog;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.condition.ConditionManager;
 import de.markusbordihn.easynpc.data.condition.ConditionDataEntry;
 import de.markusbordihn.easynpc.data.condition.ConditionType;
-import de.markusbordihn.easynpc.data.condition.ConditionUtils;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -31,8 +31,6 @@ import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.scores.Objective;
-import net.minecraft.world.scores.Scoreboard;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -237,64 +235,17 @@ public class DialogDataSet {
     }
 
     for (ConditionDataEntry condition : dialog.getConditions()) {
-      if (condition.conditionType() == ConditionType.EXECUTION_LIMIT && condition.isValid()) {
-        ConditionUtils.recordActionExecution(condition, serverPlayer, dialog.getId());
-      }
+      ConditionManager.recordExecution(condition, serverPlayer, dialog.getId());
     }
   }
 
   private boolean evaluateCondition(
       ConditionDataEntry condition, ServerPlayer serverPlayer, UUID dialogId) {
-    return switch (condition.conditionType()) {
-      case SCOREBOARD -> evaluateScoreboardCondition(condition, serverPlayer);
-      case EXECUTION_LIMIT -> ConditionUtils.evaluateCondition(condition, serverPlayer, dialogId);
-      case NONE -> {
-        log.warn("Encountered NONE condition type, skipping");
-        yield true;
-      }
-    };
-  }
-
-  private boolean evaluateScoreboardCondition(
-      ConditionDataEntry condition, ServerPlayer serverPlayer) {
-    if (!condition.hasName()) {
-      log.warn("Scoreboard condition missing objective name!");
-      return false;
+    if (condition.conditionType() == ConditionType.NONE) {
+      log.warn("Encountered NONE condition type, skipping");
+      return true;
     }
-
-    int actualValue = -1;
-    try {
-      Scoreboard scoreboard = serverPlayer.getScoreboard();
-      Objective objective = scoreboard.getObjective(condition.name());
-      if (objective == null) {
-        log.debug(
-            "Scoreboard objective '{}' not found for player {}, using default value -1",
-            condition.name(),
-            serverPlayer.getName().getString());
-      } else {
-        actualValue =
-            scoreboard
-                .getOrCreatePlayerScore(serverPlayer.getScoreboardName(), objective)
-                .getScore();
-      }
-
-      // Evaluate condition
-      int expectedValue = condition.value();
-      boolean result = condition.operationType().evaluate(actualValue, expectedValue);
-      log.debug(
-          "Scoreboard check: {} (actual: {}) {} {} (expected: {}) = {}",
-          condition.name(),
-          actualValue,
-          condition.operationType().getSymbol(),
-          expectedValue,
-          expectedValue,
-          result);
-
-      return result;
-    } catch (Exception e) {
-      log.error("Error evaluating scoreboard condition for dialog: {}", condition, e);
-      return false;
-    }
+    return ConditionManager.evaluate(condition, serverPlayer, dialogId);
   }
 
   public DialogType getType() {

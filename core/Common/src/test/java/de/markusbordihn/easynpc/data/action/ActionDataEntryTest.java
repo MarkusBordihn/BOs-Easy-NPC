@@ -22,30 +22,40 @@ package de.markusbordihn.easynpc.data.action;
 import static org.junit.jupiter.api.Assertions.*;
 
 import de.markusbordihn.easynpc.security.CommandPermissionLevel;
+import java.util.UUID;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import org.junit.jupiter.api.Test;
 
 class ActionDataEntryTest {
 
-  @Test
-  void testConsistentHashCode() {
-    ActionDataEntry entry1 =
-        new ActionDataEntry(ActionDataType.COMMAND, "test command", 2, false, false);
-    ActionDataEntry entry2 =
-        new ActionDataEntry(ActionDataType.COMMAND, "test command", 2, false, false);
-
-    assertEquals(entry1.hashCode(), entry2.hashCode());
+  private CompoundTag createLegacyActionTag(String command) {
+    CompoundTag tag = new CompoundTag();
+    tag.putString(ActionDataEntry.DATA_TYPE_TAG, ActionDataType.COMMAND.name());
+    if (command != null) {
+      tag.putString(ActionDataEntry.DATA_COMMAND_TAG, command);
+    }
+    return tag;
   }
 
   @Test
-  void testConsistentUUIDGeneration() {
+  void testConsistentHashCode() {
+    ActionDataEntry entry =
+        new ActionDataEntry(ActionDataType.COMMAND, "test command", 2, false, false);
+
+    assertEquals(entry.hashCode(), entry.hashCode());
+  }
+
+  @Test
+  void testUniqueIdPerEntry() {
     ActionDataEntry entry1 =
         new ActionDataEntry(ActionDataType.COMMAND, "test command", 2, false, false);
     ActionDataEntry entry2 =
         new ActionDataEntry(ActionDataType.COMMAND, "test command", 2, false, false);
 
-    assertEquals(entry1.getId(), entry2.getId());
+    assertNotNull(entry1.id());
+    assertNotNull(entry2.id());
+    assertNotEquals(entry1.id(), entry2.id());
   }
 
   @Test
@@ -71,7 +81,7 @@ class ActionDataEntryTest {
     CompoundTag tag = original.createTag();
     ActionDataEntry decoded = new ActionDataEntry(tag);
 
-    assertEquals(original.getId(), decoded.getId());
+    assertEquals(original.id(), decoded.id());
   }
 
   @Test
@@ -84,7 +94,7 @@ class ActionDataEntryTest {
     ActionDataEntry decoded = new ActionDataEntry(tag);
 
     assertEquals(original.blockPos(), decoded.blockPos());
-    assertEquals(original.getId(), decoded.getId());
+    assertEquals(original.id(), decoded.id());
   }
 
   @Test
@@ -94,7 +104,7 @@ class ActionDataEntryTest {
     ActionDataEntry entry2 =
         new ActionDataEntry(ActionDataType.COMMAND, "command2", 2, false, false);
 
-    assertNotEquals(entry1.getId(), entry2.getId());
+    assertNotEquals(entry1.id(), entry2.id());
   }
 
   @Test
@@ -104,11 +114,11 @@ class ActionDataEntryTest {
 
     CompoundTag tag1 = defaultEntry.createTag();
     ActionDataEntry decoded1 = new ActionDataEntry(tag1);
-    assertEquals(defaultEntry.getId(), decoded1.getId());
+    assertEquals(defaultEntry.id(), decoded1.id());
 
     CompoundTag tag2 = emptyCommand.createTag();
     ActionDataEntry decoded2 = new ActionDataEntry(tag2);
-    assertEquals(emptyCommand.getId(), decoded2.getId());
+    assertEquals(emptyCommand.id(), decoded2.id());
   }
 
   @Test
@@ -122,7 +132,7 @@ class ActionDataEntryTest {
       ActionDataEntry decoded = new ActionDataEntry(tag);
 
       assertEquals(original.permissionLevel(), decoded.permissionLevel());
-      assertEquals(original.getId(), decoded.getId());
+      assertEquals(original.id(), decoded.id());
     }
   }
 
@@ -154,5 +164,42 @@ class ActionDataEntryTest {
 
     assertEquals("test command", decoded.command());
     assertNotEquals(withSpaces.hashCode(), withoutSpaces.hashCode());
+  }
+
+  @Test
+  void testLegacyTagWithoutIdGeneratesRandomUuid() {
+    ActionDataEntry legacyEntry = new ActionDataEntry(createLegacyActionTag("legacy"));
+
+    assertNotNull(legacyEntry.id());
+  }
+
+  @Test
+  void testIdenticalLegacyTagsWithoutIdGenerateDifferentUuids() {
+    CompoundTag legacyTag = createLegacyActionTag("legacy");
+
+    ActionDataEntry entry1 = new ActionDataEntry(legacyTag);
+    ActionDataEntry entry2 = new ActionDataEntry(legacyTag);
+
+    assertNotEquals(entry1.id(), entry2.id());
+  }
+
+  @Test
+  void testLegacyTagGeneratedUuidStaysStableAfterSaveRoundTrip() {
+    ActionDataEntry original = new ActionDataEntry(createLegacyActionTag("legacy"));
+
+    ActionDataEntry decoded = new ActionDataEntry(original.createTag());
+
+    assertEquals(original.id(), decoded.id());
+  }
+
+  @Test
+  void testStoredUuidIsPreservedWhenPresent() {
+    UUID expectedId = UUID.randomUUID();
+    CompoundTag tag = createLegacyActionTag("legacy");
+    tag.putUUID(ActionDataEntry.DATA_ID_TAG, expectedId);
+
+    ActionDataEntry decoded = new ActionDataEntry(tag);
+
+    assertEquals(expectedId, decoded.id());
   }
 }

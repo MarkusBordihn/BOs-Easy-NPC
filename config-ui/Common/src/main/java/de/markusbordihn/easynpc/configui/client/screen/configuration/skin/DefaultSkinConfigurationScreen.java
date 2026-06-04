@@ -54,7 +54,7 @@ public class DefaultSkinConfigurationScreen<T extends ConfigurationMenu>
     this.maxSkinsPerPage = 10;
   }
 
-  private void renderSkins(GuiGraphics guiGraphics) {
+  private void renderSkins(GuiGraphics guiGraphics, int mouseX, int mouseY) {
     if (this.getEasyNPCEntity() == null) {
       return;
     }
@@ -82,42 +82,48 @@ public class DefaultSkinConfigurationScreen<T extends ConfigurationMenu>
       // Render skin name
       int topNamePos = Math.round((top - 76f) / SKIN_NAME_SCALING);
       int leftNamePos = Math.round((left - 21f) / SKIN_NAME_SCALING);
+      int scaledMouseX = Math.round(mouseX / SKIN_NAME_SCALING);
+      int scaledMouseY = Math.round(mouseY / SKIN_NAME_SCALING);
       guiGraphics.pose().pushPose();
       guiGraphics.pose().translate(0, 0, 100);
       guiGraphics.pose().scale(SKIN_NAME_SCALING, SKIN_NAME_SCALING, SKIN_NAME_SCALING);
 
-      // Determine skin variant name and split into type and profession if applicable.
       String variantName = variant.name();
       if (this.getEasyNPCEntity() instanceof Villager
           && variantName.contains("_")
           && !variantName.equals("DEFAULT")) {
         String[] parts = variantName.split("_", 2);
-
-        // Show type as title
-        Text.drawString(
+        Text.drawLimitedHoverString(
             guiGraphics,
             this.font,
-            TextUtils.normalizeString(parts[0], 14),
+            TextUtils.normalizeString(parts[0]),
             leftNamePos,
             topNamePos,
-            Constants.FONT_COLOR_DARK_GREEN);
-
-        // Show profession as subtitle
-        Text.drawString(
+            Constants.FONT_COLOR_DARK_GREEN,
+            14,
+            scaledMouseX,
+            scaledMouseY);
+        Text.drawLimitedHoverString(
             guiGraphics,
             this.font,
-            TextUtils.normalizeString(parts[1], 13),
+            TextUtils.normalizeString(parts[1]),
             leftNamePos,
             topNamePos + 10,
-            Constants.FONT_COLOR_BLACK);
+            Constants.FONT_COLOR_BLACK,
+            13,
+            scaledMouseX,
+            scaledMouseY);
       } else {
-        Text.drawString(
+        Text.drawLimitedHoverString(
             guiGraphics,
             this.font,
-            TextUtils.normalizeString(variantName, 14),
+            TextUtils.normalizeString(variantName),
             leftNamePos,
             topNamePos,
-            Constants.FONT_COLOR_DARK_GREEN);
+            Constants.FONT_COLOR_DARK_GREEN,
+            14,
+            scaledMouseX,
+            scaledMouseY);
       }
 
       guiGraphics.pose().popPose();
@@ -212,7 +218,7 @@ public class DefaultSkinConfigurationScreen<T extends ConfigurationMenu>
     renderDescriptionText(guiGraphics, this.contentLeftPos + 5, this.contentTopPos + 5);
 
     // Skins
-    this.renderSkins(guiGraphics);
+    this.renderSkins(guiGraphics, x, y);
   }
 
   @Override

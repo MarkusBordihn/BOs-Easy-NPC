@@ -262,4 +262,184 @@ class ConditionDataEntryTest {
             ConditionType.SCOREBOARD, ConditionOperationType.EQUALS, "test_score", -1);
     assertTrue(checkNotExists.isValid());
   }
+
+  @Test
+  void testHasItemInInventoryConditionRequiresName() {
+    ConditionDataEntry withoutName = new ConditionDataEntry(ConditionType.HAS_ITEM_IN_INVENTORY);
+    assertFalse(withoutName.isValid());
+
+    ConditionDataEntry withName =
+        new ConditionDataEntry(ConditionType.HAS_ITEM_IN_INVENTORY).withName("minecraft:diamond");
+    assertTrue(withName.isValid());
+  }
+
+  @Test
+  void testHasItemInMainHandConditionRequiresName() {
+    ConditionDataEntry withoutName = new ConditionDataEntry(ConditionType.HAS_ITEM_IN_MAIN_HAND);
+    assertFalse(withoutName.isValid());
+
+    ConditionDataEntry withName =
+        new ConditionDataEntry(ConditionType.HAS_ITEM_IN_MAIN_HAND).withName("minecraft:torch");
+    assertTrue(withName.isValid());
+  }
+
+  @Test
+  void testHasItemInMainHandConditionNBTRoundTrip() {
+    ConditionDataEntry original =
+        new ConditionDataEntry(ConditionType.HAS_ITEM_IN_MAIN_HAND).withName("minecraft:diamond");
+    CompoundTag tag = original.createTag();
+    ConditionDataEntry deserialized = new ConditionDataEntry(tag);
+
+    assertEquals(ConditionType.HAS_ITEM_IN_MAIN_HAND, deserialized.conditionType());
+    assertEquals("minecraft:diamond", deserialized.name());
+    assertEquals(original.getId(), deserialized.getId());
+  }
+
+  @Test
+  void testHasItemInOffhandConditionRequiresName() {
+    ConditionDataEntry withoutName = new ConditionDataEntry(ConditionType.HAS_ITEM_IN_OFFHAND);
+    assertFalse(withoutName.isValid());
+
+    ConditionDataEntry withName =
+        new ConditionDataEntry(ConditionType.HAS_ITEM_IN_OFFHAND).withName("minecraft:shield");
+    assertTrue(withName.isValid());
+  }
+
+  @Test
+  void testHasItemInOffhandConditionNBTRoundTrip() {
+    ConditionDataEntry original =
+        new ConditionDataEntry(ConditionType.HAS_ITEM_IN_OFFHAND).withName("minecraft:torch");
+    CompoundTag tag = original.createTag();
+    ConditionDataEntry deserialized = new ConditionDataEntry(tag);
+
+    assertEquals(ConditionType.HAS_ITEM_IN_OFFHAND, deserialized.conditionType());
+    assertEquals("minecraft:torch", deserialized.name());
+  }
+
+  @Test
+  void testAdvancementConditionRequiresName() {
+    ConditionDataEntry withoutName = new ConditionDataEntry(ConditionType.ADVANCEMENT);
+    assertFalse(withoutName.isValid());
+
+    ConditionDataEntry withName =
+        new ConditionDataEntry(ConditionType.ADVANCEMENT).withName("minecraft:story/obtain_armor");
+    assertTrue(withName.isValid());
+
+    CompoundTag tag = withName.createTag();
+    ConditionDataEntry deserialized = new ConditionDataEntry(tag);
+    assertEquals(ConditionType.ADVANCEMENT, deserialized.conditionType());
+    assertEquals("minecraft:story/obtain_armor", deserialized.name());
+  }
+
+  @Test
+  void testExperienceLevelConditionRequiresValueAndOperation() {
+    ConditionDataEntry withoutOperation =
+        new ConditionDataEntry(ConditionType.EXPERIENCE_LEVEL, ConditionOperationType.NONE, "", 10);
+    assertFalse(withoutOperation.isValid());
+
+    ConditionDataEntry valid =
+        new ConditionDataEntry(
+            ConditionType.EXPERIENCE_LEVEL, ConditionOperationType.GREATER_THAN_OR_EQUALS, "", 10);
+    assertTrue(valid.isValid());
+
+    CompoundTag tag = valid.createTag();
+    ConditionDataEntry deserialized = new ConditionDataEntry(tag);
+    assertEquals(ConditionType.EXPERIENCE_LEVEL, deserialized.conditionType());
+    assertEquals(ConditionOperationType.GREATER_THAN_OR_EQUALS, deserialized.operationType());
+    assertEquals(10, deserialized.value());
+  }
+
+  @Test
+  void testPlayerTagConditionRequiresName() {
+    ConditionDataEntry withoutName = new ConditionDataEntry(ConditionType.PLAYER_TAG);
+    assertFalse(withoutName.isValid());
+
+    ConditionDataEntry withName =
+        new ConditionDataEntry(ConditionType.PLAYER_TAG).withName("quest_completed");
+    assertTrue(withName.isValid());
+
+    CompoundTag tag = withName.createTag();
+    ConditionDataEntry deserialized = new ConditionDataEntry(tag);
+    assertEquals(ConditionType.PLAYER_TAG, deserialized.conditionType());
+    assertEquals("quest_completed", deserialized.name());
+    assertEquals(withName.getId(), deserialized.getId());
+  }
+
+  @Test
+  void testTeamConditionNBTRoundTrip() {
+    ConditionDataEntry withoutName = new ConditionDataEntry(ConditionType.TEAM);
+    assertFalse(withoutName.isValid());
+
+    ConditionDataEntry withName = new ConditionDataEntry(ConditionType.TEAM).withName("red_team");
+    assertTrue(withName.isValid());
+
+    CompoundTag tag = withName.createTag();
+    ConditionDataEntry deserialized = new ConditionDataEntry(tag);
+    assertEquals(ConditionType.TEAM, deserialized.conditionType());
+    assertEquals("red_team", deserialized.name());
+  }
+
+  @Test
+  void testGamemodeConditionRequiresName() {
+    ConditionDataEntry withoutName = new ConditionDataEntry(ConditionType.GAMEMODE);
+    assertFalse(withoutName.isValid());
+
+    ConditionDataEntry withName =
+        new ConditionDataEntry(ConditionType.GAMEMODE).withName("survival");
+    assertTrue(withName.isValid());
+  }
+
+  @Test
+  void testGamemodeConditionNBTRoundTrip() {
+    ConditionDataEntry withoutName = new ConditionDataEntry(ConditionType.GAMEMODE);
+    assertFalse(withoutName.isValid());
+
+    ConditionDataEntry withName =
+        new ConditionDataEntry(ConditionType.GAMEMODE).withName("survival");
+    assertTrue(withName.isValid());
+
+    CompoundTag tag = withName.createTag();
+    ConditionDataEntry deserialized = new ConditionDataEntry(tag);
+    assertEquals(ConditionType.GAMEMODE, deserialized.conditionType());
+    assertEquals("survival", deserialized.name());
+    assertEquals(withName.getId(), deserialized.getId());
+  }
+
+  @Test
+  void testFallbackConditionIsAlwaysValid() {
+    ConditionDataEntry fallback = new ConditionDataEntry(ConditionType.FALLBACK);
+    assertTrue(fallback.isValid());
+
+    CompoundTag tag = fallback.createTag();
+    ConditionDataEntry deserialized = new ConditionDataEntry(tag);
+    assertEquals(ConditionType.FALLBACK, deserialized.conditionType());
+    assertEquals(fallback.getId(), deserialized.getId());
+  }
+
+  @Test
+  void testPlayerHealthConditionRequiresOperation() {
+    ConditionDataEntry withoutOperation =
+        new ConditionDataEntry(ConditionType.PLAYER_HEALTH, ConditionOperationType.NONE, "", 50);
+    assertFalse(withoutOperation.isValid());
+
+    ConditionDataEntry valid =
+        new ConditionDataEntry(
+            ConditionType.PLAYER_HEALTH, ConditionOperationType.LESS_THAN, "", 50);
+    assertTrue(valid.isValid());
+  }
+
+  @Test
+  void testPlayerHealthConditionNBTRoundTrip() {
+    ConditionDataEntry original =
+        new ConditionDataEntry(
+            ConditionType.PLAYER_HEALTH, ConditionOperationType.GREATER_THAN_OR_EQUALS, "", 50);
+    assertTrue(original.isValid());
+
+    CompoundTag tag = original.createTag();
+    ConditionDataEntry deserialized = new ConditionDataEntry(tag);
+    assertEquals(ConditionType.PLAYER_HEALTH, deserialized.conditionType());
+    assertEquals(ConditionOperationType.GREATER_THAN_OR_EQUALS, deserialized.operationType());
+    assertEquals(50, deserialized.value());
+    assertEquals(original.getId(), deserialized.getId());
+  }
 }

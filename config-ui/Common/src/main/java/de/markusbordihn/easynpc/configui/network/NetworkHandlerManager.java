@@ -53,6 +53,8 @@ import de.markusbordihn.easynpc.configui.network.message.server.ExportCustomPres
 import de.markusbordihn.easynpc.configui.network.message.server.ExportPresetMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ExportWorldPresetMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ImportPresetMessage;
+import de.markusbordihn.easynpc.configui.network.message.server.OpenActionConditionDataEditorMessage;
+import de.markusbordihn.easynpc.configui.network.message.server.OpenActionConditionDataEntryEditorMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.OpenActionDataEditorMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.OpenActionDataEntryEditorMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.OpenConditionDataEditorMessage;
@@ -316,6 +318,16 @@ public class NetworkHandlerManager {
         OpenActionDataEntryEditorMessage.MESSAGE_ID,
         OpenActionDataEntryEditorMessage.class,
         OpenActionDataEntryEditorMessage::create);
+
+    networkHandler.registerServerNetworkMessage(
+        OpenActionConditionDataEditorMessage.MESSAGE_ID,
+        OpenActionConditionDataEditorMessage.class,
+        OpenActionConditionDataEditorMessage::create);
+
+    networkHandler.registerServerNetworkMessage(
+        OpenActionConditionDataEntryEditorMessage.MESSAGE_ID,
+        OpenActionConditionDataEntryEditorMessage.class,
+        OpenActionConditionDataEntryEditorMessage::create);
 
     networkHandler.registerServerNetworkMessage(
         OpenConditionDataEditorMessage.MESSAGE_ID,
