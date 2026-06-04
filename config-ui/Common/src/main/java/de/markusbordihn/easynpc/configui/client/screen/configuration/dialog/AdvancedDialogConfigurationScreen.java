@@ -358,6 +358,8 @@ public class AdvancedDialogConfigurationScreen<T extends ConfigurationMenu>
               default -> Constants.FONT_COLOR_BLACK;
             };
 
+        int scaledMouseX = Math.round(mouseX / TEXT_SCALE);
+        int scaledMouseY = Math.round(mouseY / TEXT_SCALE);
         guiGraphics.pose().pushPose();
         guiGraphics.pose().scale(TEXT_SCALE, TEXT_SCALE, TEXT_SCALE);
         Text.drawString(
@@ -367,27 +369,36 @@ public class AdvancedDialogConfigurationScreen<T extends ConfigurationMenu>
             Math.round((leftPos + COLUMN_PRIORITY_START - 1) / TEXT_SCALE),
             dialogDataTopPos,
             fontColor);
-        Text.drawString(
+        Text.drawLimitedHoverString(
             guiGraphics,
             AdvancedDialogConfigurationScreen.this.font,
-            dialogData.getLabel(14),
+            dialogData.getLabel(),
             Math.round((leftPos + COLUMN_LABEL_START - 4) / TEXT_SCALE),
             dialogDataTopPos,
-            fontColor);
-        Text.drawString(
+            fontColor,
+            14,
+            scaledMouseX,
+            scaledMouseY);
+        Text.drawLimitedHoverString(
             guiGraphics,
             AdvancedDialogConfigurationScreen.this.font,
-            dialogData.getName(21),
+            dialogData.getName(),
             Math.round((leftPos + COLUMN_NAME_START - 2) / TEXT_SCALE),
             dialogDataTopPos,
-            fontColor);
-        Text.drawString(
+            fontColor,
+            21,
+            scaledMouseX,
+            scaledMouseY);
+        Text.drawLimitedHoverString(
             guiGraphics,
             AdvancedDialogConfigurationScreen.this.font,
-            dialogData.getText(17),
+            dialogData.getText(),
             Math.round((leftPos + COLUMN_TEXT_START + 14) / TEXT_SCALE),
             dialogDataTopPos,
-            fontColor);
+            fontColor,
+            17,
+            scaledMouseX,
+            scaledMouseY);
 
         guiGraphics.pose().popPose();
 

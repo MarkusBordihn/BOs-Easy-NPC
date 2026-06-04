@@ -72,7 +72,7 @@ public class PlayerSkinConfigurationScreen<T extends ConfigurationMenu>
         (int) java.time.Instant.now().getEpochSecond() + ADD_SKIN_DELAY;
   }
 
-  private void renderSkins(GuiGraphics guiGraphics) {
+  private void renderSkins(GuiGraphics guiGraphics, int mouseX, int mouseY) {
     if (this.getEasyNPC() == null) {
       return;
     }
@@ -103,17 +103,21 @@ public class PlayerSkinConfigurationScreen<T extends ConfigurationMenu>
       // Render skin name
       int topNamePos = Math.round((top - 76) / SKIN_NAME_SCALING);
       int leftNamePos = Math.round((left - 21) / SKIN_NAME_SCALING);
+      int scaledMouseX = Math.round(mouseX / SKIN_NAME_SCALING);
+      int scaledMouseY = Math.round(mouseY / SKIN_NAME_SCALING);
       guiGraphics.pose().pushPose();
       guiGraphics.pose().translate(0, 0, 100);
       guiGraphics.pose().scale(SKIN_NAME_SCALING, SKIN_NAME_SCALING, SKIN_NAME_SCALING);
-      String variantName = TextUtils.normalizeString(textureKey.toString(), 11);
-      Text.drawString(
+      Text.drawLimitedHoverString(
           guiGraphics,
           this.font,
-          variantName,
+          TextUtils.normalizeString(textureKey.toString()),
           leftNamePos,
           topNamePos,
-          Constants.FONT_COLOR_DARK_GREEN);
+          Constants.FONT_COLOR_DARK_GREEN,
+          11,
+          scaledMouseX,
+          scaledMouseY);
       guiGraphics.pose().popPose();
 
       skinPosition++;
@@ -335,6 +339,6 @@ public class PlayerSkinConfigurationScreen<T extends ConfigurationMenu>
     }
 
     // Skins
-    this.renderSkins(guiGraphics);
+    this.renderSkins(guiGraphics, x, y);
   }
 }

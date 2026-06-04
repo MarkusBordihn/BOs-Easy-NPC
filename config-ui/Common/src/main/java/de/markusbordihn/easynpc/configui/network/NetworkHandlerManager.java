@@ -54,6 +54,8 @@ import de.markusbordihn.easynpc.configui.network.message.server.ExportCustomPres
 import de.markusbordihn.easynpc.configui.network.message.server.ExportPresetMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ExportWorldPresetMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ImportPresetMessage;
+import de.markusbordihn.easynpc.configui.network.message.server.OpenActionConditionDataEditorMessage;
+import de.markusbordihn.easynpc.configui.network.message.server.OpenActionConditionDataEntryEditorMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.OpenActionDataEditorMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.OpenActionDataEntryEditorMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.OpenConditionDataEditorMessage;
@@ -374,6 +376,18 @@ public class NetworkHandlerManager {
         OpenActionDataEntryEditorMessage.STREAM_CODEC,
         OpenActionDataEntryEditorMessage.class,
         OpenActionDataEntryEditorMessage::create);
+
+    networkHandler.registerServerNetworkMessage(
+        OpenActionConditionDataEditorMessage.PAYLOAD_TYPE,
+        OpenActionConditionDataEditorMessage.STREAM_CODEC,
+        OpenActionConditionDataEditorMessage.class,
+        OpenActionConditionDataEditorMessage::create);
+
+    networkHandler.registerServerNetworkMessage(
+        OpenActionConditionDataEntryEditorMessage.PAYLOAD_TYPE,
+        OpenActionConditionDataEntryEditorMessage.STREAM_CODEC,
+        OpenActionConditionDataEntryEditorMessage.class,
+        OpenActionConditionDataEntryEditorMessage::create);
 
     networkHandler.registerServerNetworkMessage(
         OpenTradingOfferActionEditorMessage.PAYLOAD_TYPE,
