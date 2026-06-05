@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.handlers;
 
+import de.markusbordihn.easynpc.condition.ConditionManager;
 import de.markusbordihn.easynpc.data.action.ActionDataEntry;
 import de.markusbordihn.easynpc.data.action.ActionDataSet;
 import de.markusbordihn.easynpc.data.action.ActionDataType;
@@ -26,7 +27,7 @@ import de.markusbordihn.easynpc.data.action.ActionEventType;
 import de.markusbordihn.easynpc.data.action.ActionGroup;
 import de.markusbordihn.easynpc.data.action.ActionManager;
 import de.markusbordihn.easynpc.data.condition.ConditionDataEntry;
-import de.markusbordihn.easynpc.data.condition.ConditionUtils;
+import de.markusbordihn.easynpc.data.condition.ConditionType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.TickerDataCapable;
@@ -50,6 +51,12 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 
 public interface ActionHandler<E extends Mob> extends EasyNPC<E> {
+
+  private static boolean hasFallbackCondition(ActionDataEntry actionDataEntry) {
+    return actionDataEntry.conditionDataSet() != null
+        && actionDataEntry.conditionDataSet().getConditions().stream()
+            .anyMatch(condition -> condition.conditionType() == ConditionType.FALLBACK);
+  }
 
   default List<? extends Player> getPlayersInRange(Double range) {
     Entity entity = this.getEntity();
@@ -209,12 +216,25 @@ public interface ActionHandler<E extends Mob> extends EasyNPC<E> {
       return;
     }
 
+    boolean anyRegularFired = false;
     ActionDataEntry closeDialogAction = null;
     boolean hasScreenAction = false;
     for (ActionDataEntry actionDataEntry : actionDataSet.getEntries()) {
+      if (hasFallbackCondition(actionDataEntry)) {
+        continue;
+      }
+
+      boolean isValid =
+          serverPlayer != null
+              ? ActionValidator.validateActionData(actionDataEntry, serverPlayer)
+              : ActionValidator.validateActionDataWithoutPlayer(actionDataEntry);
+      if (!isValid) {
+        continue;
+      }
+      anyRegularFired = true;
+
       ActionDataType actionType = actionDataEntry.actionDataType();
 
-      // Check for close dialog action and execute it at the end.
       if (actionType == ActionDataType.CLOSE_DIALOG) {
         if (closeDialogAction == null) {
           closeDialogAction = actionDataEntry;
@@ -224,7 +244,6 @@ public interface ActionHandler<E extends Mob> extends EasyNPC<E> {
         continue;
       }
 
-      // Check for screen actions and execute only the first valid one.
       if (actionType == ActionDataType.OPEN_DEFAULT_DIALOG
           || actionType == ActionDataType.OPEN_NAMED_DIALOG
           || actionType == ActionDataType.OPEN_TRADING_SCREEN) {
@@ -256,19 +275,57 @@ public interface ActionHandler<E extends Mob> extends EasyNPC<E> {
       this.executeAction(actionDataEntry, serverPlayer);
     }
 
-    // Execute close dialog action at the end, but skip if a screen action was already executed.
-    // Trading/dialog screens open immediately and closeContainer() would close the new screen.
     if (closeDialogAction != null && !hasScreenAction) {
-      this.executeAction(closeDialogAction, serverPlayer);
+      if (ActionValidator.validateActionData(closeDialogAction, serverPlayer)) {
+        this.executeAction(closeDialogAction, serverPlayer);
+      }
+    }
+
+    if (!anyRegularFired) {
+      ActionDataEntry fallbackCloseDialogAction = null;
+      boolean hasFallbackScreenAction = false;
+      for (ActionDataEntry actionDataEntry : actionDataSet.getEntries()) {
+        if (!hasFallbackCondition(actionDataEntry)) {
+          continue;
+        }
+
+        boolean isValid =
+            serverPlayer != null
+                ? ActionValidator.validateActionData(actionDataEntry, serverPlayer)
+                : ActionValidator.validateActionDataWithoutPlayer(actionDataEntry);
+        if (!isValid) {
+          continue;
+        }
+
+        ActionDataType actionType = actionDataEntry.actionDataType();
+
+        if (actionType == ActionDataType.CLOSE_DIALOG) {
+          if (fallbackCloseDialogAction == null) {
+            fallbackCloseDialogAction = actionDataEntry;
+          }
+          continue;
+        }
+
+        if (actionType == ActionDataType.OPEN_DEFAULT_DIALOG
+            || actionType == ActionDataType.OPEN_NAMED_DIALOG
+            || actionType == ActionDataType.OPEN_TRADING_SCREEN) {
+          if (hasFallbackScreenAction) {
+            continue;
+          }
+          hasFallbackScreenAction = true;
+        }
+
+        this.executeAction(actionDataEntry, serverPlayer);
+      }
+
+      if (fallbackCloseDialogAction != null && !hasFallbackScreenAction) {
+        this.executeAction(fallbackCloseDialogAction, serverPlayer);
+      }
     }
   }
 
   default void executeAction(ActionDataEntry actionDataEntry, ServerPlayer serverPlayer) {
-    boolean isValid =
-        serverPlayer != null
-            ? ActionValidator.validateActionData(actionDataEntry, serverPlayer)
-            : ActionValidator.validateActionDataWithoutPlayer(actionDataEntry);
-    if (!isValid) {
+    if (actionDataEntry == null || !actionDataEntry.isValidAndNotEmpty()) {
       return;
     }
 
@@ -360,7 +417,7 @@ public interface ActionHandler<E extends Mob> extends EasyNPC<E> {
 
     if (serverPlayer != null) {
       for (ConditionDataEntry condition : actionDataEntry.conditionDataSet().getConditions()) {
-        ConditionUtils.recordActionExecution(condition, serverPlayer, actionDataEntry.getId());
+        ConditionManager.recordExecution(condition, serverPlayer, actionDataEntry.id());
       }
     }
   }

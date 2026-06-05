@@ -64,7 +64,7 @@ public class CustomSkinConfigurationScreen<T extends ConfigurationMenu>
     super(menu, inventory, component);
   }
 
-  private void renderSkins(GuiGraphicsExtractor guiGraphics) {
+  private void renderSkins(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
     if (this.getEasyNPC() == null) {
       return;
     }
@@ -97,17 +97,20 @@ public class CustomSkinConfigurationScreen<T extends ConfigurationMenu>
       // Render skin name
       int topNamePos = Math.round((top - 76f) / SKIN_NAME_SCALING);
       int leftNamePos = Math.round((left - 21f) / SKIN_NAME_SCALING);
+      int scaledMouseX = Math.round(mouseX / SKIN_NAME_SCALING);
+      int scaledMouseY = Math.round(mouseY / SKIN_NAME_SCALING);
       guiGraphics.pose().pushMatrix();
-      guiGraphics.pose().translate(0, 100);
       guiGraphics.pose().scale(SKIN_NAME_SCALING, SKIN_NAME_SCALING);
-      String variantName = TextUtils.normalizeString(textureKey.toString(), 11);
-      Text.drawString(
+      Text.drawLimitedHoverString(
           guiGraphics,
           this.font,
-          variantName,
+          TextUtils.normalizeString(textureKey.toString()),
           leftNamePos,
           topNamePos,
-          Constants.FONT_COLOR_DARK_GREEN);
+          Constants.FONT_COLOR_DARK_GREEN,
+          11,
+          scaledMouseX,
+          scaledMouseY);
       guiGraphics.pose().popMatrix();
 
       skinPosition++;
@@ -236,7 +239,7 @@ public class CustomSkinConfigurationScreen<T extends ConfigurationMenu>
     }
 
     // Skins
-    this.renderSkins(guiGraphics);
+    this.renderSkins(guiGraphics, x, y);
   }
 
   private void onSearchFieldChanged(String searchText) {

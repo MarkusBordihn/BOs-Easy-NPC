@@ -27,7 +27,6 @@ import de.markusbordihn.easynpc.configui.client.screen.components.EditButton;
 import de.markusbordihn.easynpc.data.condition.ConditionDataEntry;
 import de.markusbordihn.easynpc.data.condition.ConditionType;
 import de.markusbordihn.easynpc.network.components.TextComponent;
-import de.markusbordihn.easynpc.utils.TextUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -166,7 +165,7 @@ public class ConditionDataListEntry extends ObjectSelectionList.Entry<ConditionD
         Constants.FONT_COLOR_BLACK);
 
     // Value preview
-    renderValuePreview(guiGraphics, fieldsLeft, fieldTop);
+    renderValuePreview(guiGraphics, fieldsLeft, fieldTop, mouseX, mouseY);
 
     // Edit and delete buttons
     this.editButton.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
@@ -178,30 +177,42 @@ public class ConditionDataListEntry extends ObjectSelectionList.Entry<ConditionD
     this.renderSeparatorLines(guiGraphics, top);
   }
 
-  private void renderValuePreview(GuiGraphicsExtractor guiGraphics, int fieldsLeft, int fieldTop) {
-    String valuePreview =
+  private void renderValuePreview(
+      GuiGraphicsExtractor guiGraphics, int fieldsLeft, int fieldTop, int mouseX, int mouseY) {
+    String fullValue =
         switch (this.conditionType) {
           case SCOREBOARD ->
-              TextUtils.limitString(
-                  this.conditionDataEntry.name()
-                      + " "
-                      + this.conditionDataEntry.operationType().name()
-                      + " "
-                      + this.conditionDataEntry.value(),
-                  VALUE_MAX_LENGTH);
+              this.conditionDataEntry.name()
+                  + " "
+                  + this.conditionDataEntry.operationType().name()
+                  + " "
+                  + this.conditionDataEntry.value();
           case EXECUTION_LIMIT ->
-              TextUtils.limitString(
-                  this.conditionDataEntry.value() + " (" + this.conditionDataEntry.text() + ")",
-                  VALUE_MAX_LENGTH);
+              this.conditionDataEntry.value() + " (" + this.conditionDataEntry.text() + ")";
+          case HAS_ITEM_IN_INVENTORY,
+              HAS_ITEM_IN_MAIN_HAND,
+              HAS_ITEM_IN_OFFHAND,
+              ADVANCEMENT,
+              PLAYER_TAG,
+              TEAM,
+              GAMEMODE ->
+              this.conditionDataEntry.name();
+          case EXPERIENCE_LEVEL, PLAYER_HEALTH ->
+              this.conditionDataEntry.operationType().name()
+                  + " "
+                  + this.conditionDataEntry.value();
           default -> "-";
         };
-    Text.drawString(
+    Text.drawLimitedHoverString(
         guiGraphics,
         this.font,
-        valuePreview,
+        fullValue,
         fieldsLeft + VALUE_LEFT_POS + 2,
         fieldTop,
-        Constants.FONT_COLOR_BLACK);
+        Constants.FONT_COLOR_BLACK,
+        VALUE_MAX_LENGTH,
+        mouseX,
+        mouseY);
   }
 
   public void renderSeparatorLines(GuiGraphicsExtractor guiGraphics, int top) {

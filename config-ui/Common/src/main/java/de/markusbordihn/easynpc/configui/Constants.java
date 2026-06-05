@@ -57,6 +57,7 @@ public final class Constants {
 
   public static final int FONT_COLOR_BLACK = 0;
   public static final int FONT_COLOR_DARK_GREEN = 43520;
+  public static final int FONT_COLOR_DARK_RED = 11141120;
   public static final int FONT_COLOR_DEFAULT = 4210752;
   public static final int FONT_COLOR_GRAY = 11184810;
   public static final int FONT_COLOR_GREEN = 5635925;

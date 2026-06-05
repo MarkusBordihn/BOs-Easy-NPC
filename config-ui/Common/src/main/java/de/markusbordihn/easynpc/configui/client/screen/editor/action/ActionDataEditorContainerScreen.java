@@ -276,14 +276,14 @@ public class ActionDataEditorContainerScreen<T extends EditorMenu>
     if (this.minecraft == null
         || this.actionDataSet == null
         || actionDataEntry == null
-        || actionDataEntry.getId().equals(Constants.EMPTY_UUID)) {
+        || !actionDataEntry.isValidAndNotEmpty()) {
       return;
     }
     this.minecraft.setScreen(
         new ConfirmScreen(
             confirmed -> {
               if (confirmed) {
-                this.actionDataSet.remove(actionDataEntry.getId());
+                this.actionDataSet.remove(actionDataEntry.id());
                 updateActionDataSet();
                 this.navigateToActionDataEditor();
               } else {
@@ -319,7 +319,7 @@ public class ActionDataEditorContainerScreen<T extends EditorMenu>
   }
 
   private void handleEditActionDataEntry(ActionDataEntry actionDataEntry) {
-    log.debug("Editing Action Data Entry {}: {}", actionDataEntry.getId(), actionDataEntry);
+    log.debug("Editing Action Data Entry {}: {}", actionDataEntry.id(), actionDataEntry);
     if (this.isOfferActionContext) {
       NetworkMessageHandlerManager.getServerHandler()
           .openTradingOfferActionEntryEditor(
@@ -345,14 +345,14 @@ public class ActionDataEditorContainerScreen<T extends EditorMenu>
   }
 
   private void handleMoveUpOrderActionDataEntry(ActionDataEntry actionDataEntry) {
-    log.debug("Moving up Action Data Entry {}: {}", actionDataEntry.getId(), actionDataEntry);
+    log.debug("Moving up Action Data Entry {}: {}", actionDataEntry.id(), actionDataEntry);
     this.actionDataSet.moveUp(actionDataEntry);
     updateActionDataSet();
     this.navigateToActionDataEditor();
   }
 
   private void handleMoveDownOrderActionDataEntry(ActionDataEntry actionDataEntry) {
-    log.debug("Moving down Action Data Entry {}: {}", actionDataEntry.getId(), actionDataEntry);
+    log.debug("Moving down Action Data Entry {}: {}", actionDataEntry.id(), actionDataEntry);
     this.actionDataSet.moveDown(actionDataEntry);
     updateActionDataSet();
     this.navigateToActionDataEditor();

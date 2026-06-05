@@ -103,8 +103,9 @@ public record DialogButtonEntry(
 
   public Component getButtonName(int maxLength) {
     Component buttonName = TextComponent.getTextComponentRaw(this.name, isTranslationKey);
-    if (buttonName.getString().length() > maxLength) {
-      buttonName = TextComponent.getText(buttonName.getString().substring(0, maxLength - 1) + '…');
+    String limited = TextUtils.limitString(buttonName.getString(), maxLength);
+    if (!limited.equals(buttonName.getString())) {
+      buttonName = TextComponent.getText(limited);
     }
     return buttonName;
   }

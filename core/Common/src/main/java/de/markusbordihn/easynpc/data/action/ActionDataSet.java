@@ -50,7 +50,7 @@ public final class ActionDataSet {
 
   public void remove(ActionDataEntry actionDataEntry) {
     if (actionDataEntry != null) {
-      this.actionDataEntries.remove(actionDataEntry);
+      this.remove(actionDataEntry.id());
     }
   }
 
@@ -68,26 +68,22 @@ public final class ActionDataSet {
       return;
     }
 
-    // Store indexed version of action data set to keep order.
     ArrayList<ActionDataEntry> indexedActionDataSet = new ArrayList<>(this.actionDataEntries);
     int index = -1;
 
-    // Find index of action data entry.
     for (int i = 0; i < indexedActionDataSet.size(); i++) {
-      if (indexedActionDataSet.get(i).getId().equals(actionDataEntryId)) {
+      if (indexedActionDataSet.get(i).id().equals(actionDataEntryId)) {
         index = i;
         break;
       }
     }
 
-    // Replace action data entry.
     if (index >= 0) {
       indexedActionDataSet.set(index, actionDataEntry);
     } else {
       indexedActionDataSet.add(actionDataEntry);
     }
 
-    // Rebuild action data set.
     this.actionDataEntries.clear();
     this.actionDataEntries.addAll(indexedActionDataSet);
   }
@@ -155,7 +151,7 @@ public final class ActionDataSet {
       return null;
     }
     for (ActionDataEntry actionDataEntry : this.actionDataEntries) {
-      if (actionDataEntry.getId().equals(actionDataEntryId)) {
+      if (actionDataEntry.id().equals(actionDataEntryId)) {
         return actionDataEntry;
       }
     }
@@ -167,7 +163,7 @@ public final class ActionDataSet {
   }
 
   public boolean contains(ActionDataEntry actionDataEntry) {
-    return this.actionDataEntries.contains(actionDataEntry);
+    return actionDataEntry != null && this.contains(actionDataEntry.id());
   }
 
   public int getPosition(ActionDataEntry actionDataEntry) {
@@ -176,7 +172,7 @@ public final class ActionDataSet {
     }
     int position = 0;
     for (ActionDataEntry entry : this.actionDataEntries) {
-      if (entry.getId().equals(actionDataEntry.getId())) {
+      if (entry.id().equals(actionDataEntry.id())) {
         return position;
       }
       position++;

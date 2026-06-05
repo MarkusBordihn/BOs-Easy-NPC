@@ -106,7 +106,7 @@ public class CustomModelConfigurationScreen<T extends ConfigurationMenu>
     }
 
     // Render custom models
-    this.renderCustomModels(guiGraphics);
+    this.renderCustomModels(guiGraphics, x, y);
   }
 
   @Override
@@ -213,7 +213,7 @@ public class CustomModelConfigurationScreen<T extends ConfigurationMenu>
     EntityTypeValidator.validateUnknownEntityTypes(this.minecraftInstance.level);
   }
 
-  private void renderCustomModels(GuiGraphicsExtractor guiGraphics) {
+  private void renderCustomModels(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
     if (this.getEasyNPC() == null) {
       return;
     }
@@ -251,24 +251,31 @@ public class CustomModelConfigurationScreen<T extends ConfigurationMenu>
 
       int topNamePos = Math.round((top - 177f) / SKIN_NAME_SCALING);
       int leftNamePos = Math.round((left - 21f) / SKIN_NAME_SCALING);
+      int scaledMouseX = Math.round(mouseX / SKIN_NAME_SCALING);
+      int scaledMouseY = Math.round(mouseY / SKIN_NAME_SCALING);
       guiGraphics.pose().pushMatrix();
-      guiGraphics.pose().translate(0, 100);
       guiGraphics.pose().scale(SKIN_NAME_SCALING, SKIN_NAME_SCALING);
       Identifier entityTypeKey = BuiltInRegistries.ENTITY_TYPE.getKey(entityType);
-      Text.drawString(
+      Text.drawLimitedHoverString(
           guiGraphics,
           this.font,
-          TextUtils.normalizeString(entityTypeKey.getNamespace(), 14),
+          TextUtils.normalizeString(entityTypeKey.getNamespace()),
           leftNamePos,
           topNamePos,
-          Constants.FONT_COLOR_DARK_GREEN);
-      Text.drawString(
+          Constants.FONT_COLOR_DARK_GREEN,
+          14,
+          scaledMouseX,
+          scaledMouseY);
+      Text.drawLimitedHoverString(
           guiGraphics,
           this.font,
-          TextUtils.normalizeString(entityTypeKey.getPath(), 14),
+          TextUtils.normalizeString(entityTypeKey.getPath()),
           leftNamePos,
           topNamePos + 10,
-          Constants.FONT_COLOR_BLACK);
+          Constants.FONT_COLOR_DARK_GREEN,
+          14,
+          scaledMouseX,
+          scaledMouseY);
       guiGraphics.pose().popMatrix();
 
       skinPosition++;
