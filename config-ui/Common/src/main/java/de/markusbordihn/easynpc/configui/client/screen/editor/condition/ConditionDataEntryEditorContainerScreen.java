@@ -365,8 +365,7 @@ public class ConditionDataEntryEditorContainerScreen<T extends EditorMenu> exten
             new ExecutionLimitConditionEntry(this.conditionDataEntry, this.conditionDataSet, this);
         break;
       case HAS_ITEM_IN_INVENTORY:
-      case HAS_ITEM_IN_MAIN_HAND:
-      case HAS_ITEM_IN_OFFHAND:
+      case HAS_ITEM_IN_HAND:
         this.conditionEntryWidget =
             new HasItemConditionEntry(
                 this.conditionDataEntry, this.conditionDataSet, this, this.conditionType);

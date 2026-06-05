@@ -17,18 +17,20 @@
           Cmd:"/say I smell gold upon you, yet your hand is empty. Show it to me.",ConditionDataSet:{
             ConditionDataSet:[{
               Name:"minecraft:gold_ingot",Type:"HAS_ITEM_IN_INVENTORY"
+            },{
+              Name:"minecraft:gold_ingot",Operation:"NOT_EQUALS",SubType:"MAIN_HAND",Type:"HAS_ITEM_IN_HAND"
             }]
           },Id:[I;1308280512,2114866386,-1704433833,1144367593],Type:"COMMAND"
         },{
           Cmd:"/say Ah, the gleam is true. Gold in hand, fate in motion. Come, see my wares.",ConditionDataSet:{
             ConditionDataSet:[{
-              Name:"minecraft:gold_ingot",Type:"HAS_ITEM_IN_MAIN_HAND"
+              Name:"minecraft:gold_ingot",SubType:"MAIN_HAND",Type:"HAS_ITEM_IN_HAND"
             }]
           },Id:[I;-391084314,1648640999,-1163052732,-1621332530],Type:"COMMAND"
         },{
           ConditionDataSet:{
             ConditionDataSet:[{
-              Name:"minecraft:gold_ingot",Type:"HAS_ITEM_IN_MAIN_HAND"
+              Name:"minecraft:gold_ingot",SubType:"MAIN_HAND",Type:"HAS_ITEM_IN_HAND"
             }]
           },Id:[I;498231359,-2103947541,-1503050505,-1384707507],Type:"OPEN_TRADING_SCREEN"
         },{

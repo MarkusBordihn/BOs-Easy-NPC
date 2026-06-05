@@ -31,7 +31,7 @@ import de.markusbordihn.easynpc.data.condition.ConditionDataEntry;
 import de.markusbordihn.easynpc.data.condition.ConditionDataSet;
 import de.markusbordihn.easynpc.data.condition.ConditionOperationType;
 import de.markusbordihn.easynpc.data.condition.ConditionType;
-import de.markusbordihn.easynpc.data.execution.ExecutionInterval;
+import de.markusbordihn.easynpc.data.condition.DurationType;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.stream.Collectors;
@@ -40,7 +40,7 @@ import net.minecraft.client.gui.GuiGraphics;
 
 public class ExecutionLimitConditionEntry extends ConditionEntryWidget {
   private TextField maxExecutionsTextField;
-  private SpinButton<ExecutionInterval> executionIntervalButton;
+  private SpinButton<DurationType> durationTypeButton;
 
   public ExecutionLimitConditionEntry(
       ConditionDataEntry conditionDataEntry,
@@ -61,26 +61,31 @@ public class ExecutionLimitConditionEntry extends ConditionEntryWidget {
                 35,
                 hasConditionData ? String.valueOf(this.conditionDataEntry.value()) : "1",
                 4));
-    this.executionIntervalButton =
+
+    DurationType durationType = DurationType.PER_DAY;
+    if (hasConditionData
+        && this.conditionDataEntry.subType() instanceof DurationType entryDurationType) {
+      durationType = entryDurationType;
+    }
+
+    this.durationTypeButton =
         this.screen.addConditionEntryWidget(
             new SpinButton<>(
                 maxExecutionsTextField.getX() + maxExecutionsTextField.getWidth() + 5,
                 maxExecutionsTextField.getY(),
                 150,
                 16,
-                Arrays.stream(ExecutionInterval.values())
+                Arrays.stream(DurationType.values())
                     .sorted()
                     .collect(Collectors.toCollection(LinkedHashSet::new)),
-                hasConditionData
-                    ? ExecutionInterval.get(this.conditionDataEntry.text())
-                    : ExecutionInterval.PER_DAY,
+                durationType,
                 button -> {}));
 
     ReloadButton resetCurrentPlayerButton =
         this.screen.addConditionEntryWidget(
             new ReloadButton(
                 editorLeft + 5,
-                this.executionIntervalButton.getY() + this.executionIntervalButton.getHeight() + 65,
+                this.durationTypeButton.getY() + this.durationTypeButton.getHeight() + 65,
                 300,
                 16,
                 "condition.execution_limit.reset_current_player",
@@ -133,11 +138,9 @@ public class ExecutionLimitConditionEntry extends ConditionEntryWidget {
     }
     return new ConditionDataEntry(
         ConditionType.EXECUTION_LIMIT,
+        this.durationTypeButton != null ? this.durationTypeButton.get() : DurationType.PER_DAY,
         ConditionOperationType.NONE,
         "",
-        value,
-        this.executionIntervalButton != null
-            ? this.executionIntervalButton.get().name()
-            : ExecutionInterval.PER_DAY.name());
+        value);
   }
 }

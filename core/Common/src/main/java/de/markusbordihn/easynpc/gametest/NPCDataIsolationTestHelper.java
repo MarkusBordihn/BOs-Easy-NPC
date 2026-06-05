@@ -19,15 +19,29 @@
 
 package de.markusbordihn.easynpc.gametest;
 
+import de.markusbordihn.easynpc.data.display.DisplayAttributeType;
+import de.markusbordihn.easynpc.data.display.NameVisibilityType;
 import de.markusbordihn.easynpc.data.model.ModelAnimationBehavior;
 import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.data.position.CustomPosition;
 import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.data.scale.CustomScale;
+import de.markusbordihn.easynpc.data.skin.SkinDataEntry;
+import de.markusbordihn.easynpc.data.skin.SkinType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.data.DisplayAttributeDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.ModelRootDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.VariantDataCapable;
+import de.markusbordihn.easynpc.handler.NameHandler;
+import de.markusbordihn.easynpc.handler.SkinHandler;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Collection;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.phys.Vec3;
 
@@ -41,7 +55,52 @@ public class NPCDataIsolationTestHelper {
     if (data == null) {
       helper.fail(label + " model data is null");
     }
+
     return data;
+  }
+
+  private static DisplayAttributeDataCapable<?> requireDisplayData(
+      GameTestHelper helper, EasyNPC<?> npc, String label) {
+    DisplayAttributeDataCapable<?> data = npc.getEasyNPCDisplayAttributeData();
+    if (data == null) {
+      helper.fail(label + " display data is null");
+    }
+
+    return data;
+  }
+
+  private static SkinDataCapable<?> requireSkinData(
+      GameTestHelper helper, EasyNPC<?> npc, String label) {
+    SkinDataCapable<?> data = npc.getEasyNPCSkinData();
+    if (data == null) {
+      helper.fail(label + " skin data is null");
+    }
+
+    return data;
+  }
+
+  private static int drainDirtyEntityData(GameTestHelper helper, EasyNPC<?> npc, String label) {
+    try {
+      Method packDirtyMethod = npc.getEntity().getEntityData().getClass().getMethod("packDirty");
+      Object dirtyValues = packDirtyMethod.invoke(npc.getEntity().getEntityData());
+      if (dirtyValues == null) {
+        return 0;
+      }
+
+      if (dirtyValues instanceof Collection<?> collection) {
+        return collection.size();
+      }
+
+      helper.fail(label + " dirty entity data is not a collection: " + dirtyValues.getClass());
+    } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+      helper.fail(label + " failed to inspect dirty entity data: " + e.getMessage());
+    }
+
+    return 0;
+  }
+
+  private static CompoundTag saveNpcData(EasyNPC<?> npc) {
+    return npc.getEntity().saveWithoutId(new CompoundTag());
   }
 
   public static void assertPoseIsolation(GameTestHelper helper, EntityType<?> entityType) {
@@ -50,19 +109,24 @@ public class NPCDataIsolationTestHelper {
 
     ModelDataCapable<?> data1 = requireModelData(helper, npc1, "NPC1");
     ModelDataCapable<?> data2 = requireModelData(helper, npc2, "NPC2");
-    if (data1 == null || data2 == null) return;
+    if (data1 == null || data2 == null) {
+      return;
+    }
 
-    if (data1.getModelPose() != ModelPose.VANILLA)
+    if (data1.getModelPose() != ModelPose.VANILLA) {
       helper.fail("NPC1 initial pose: expected VANILLA, got " + data1.getModelPose());
-    if (data2.getModelPose() != ModelPose.VANILLA)
+    }
+    if (data2.getModelPose() != ModelPose.VANILLA) {
       helper.fail("NPC2 initial pose: expected VANILLA, got " + data2.getModelPose());
-
+    }
     data1.setModelPose(ModelPose.CUSTOM);
 
-    if (data1.getModelPose() != ModelPose.CUSTOM)
+    if (data1.getModelPose() != ModelPose.CUSTOM) {
       helper.fail("NPC1 pose after change: expected CUSTOM, got " + data1.getModelPose());
-    if (data2.getModelPose() != ModelPose.VANILLA)
+    }
+    if (data2.getModelPose() != ModelPose.VANILLA) {
       helper.fail("NPC2 pose must not be affected by NPC1 change, got " + data2.getModelPose());
+    }
   }
 
   public static void assertPoseNameIsolation(GameTestHelper helper, EntityType<?> entityType) {
@@ -191,6 +255,134 @@ public class NPCDataIsolationTestHelper {
       helper.fail(
           "NPC2 ROOT scale must not be affected by NPC1 change, got "
               + data2.getModelRootData().scale());
+  }
+
+  public static void assertNameUpdate(GameTestHelper helper, EntityType<?> entityType) {
+    EasyNPC<?> npc = GameTestHelpers.mockEasyNPC(helper, entityType, new Vec3(1, 2, 1));
+    DisplayAttributeDataCapable<?> displayData = requireDisplayData(helper, npc, "NPC");
+    if (displayData == null) {
+      return;
+    }
+    drainDirtyEntityData(helper, npc, "NPC");
+
+    if (!NameHandler.setCustomName(npc, "Ricardo", 0x00FFFF, NameVisibilityType.ALWAYS)) {
+      helper.fail("Failed to update NPC name");
+    }
+    int dirtyCount = drainDirtyEntityData(helper, npc, "NPC");
+    CompoundTag savedData = saveNpcData(npc);
+
+    if (npc.getEntity().getCustomName() == null) {
+      helper.fail("NPC custom name should not be null after update");
+    }
+    if (!"Ricardo".equals(npc.getEntity().getCustomName().getString())) {
+      helper.fail(
+          "NPC custom name after update: expected Ricardo, got "
+              + npc.getEntity().getCustomName().getString());
+    }
+    if (!npc.getEntity().isCustomNameVisible()) {
+      helper.fail("NPC custom name should be visible after update");
+    }
+
+    NameVisibilityType nameVisibilityType =
+        displayData.getDisplayEnumAttribute(
+            DisplayAttributeType.NAME_VISIBILITY, NameVisibilityType.class);
+    if (nameVisibilityType != NameVisibilityType.ALWAYS) {
+      helper.fail("NPC name visibility after update: expected ALWAYS, got " + nameVisibilityType);
+    }
+    if (dirtyCount <= 0) {
+      helper.fail("NPC name update should mark synced entity data as dirty");
+    }
+    if (!savedData.contains("CustomName")) {
+      helper.fail("NPC saved data should contain CustomName after name update");
+    }
+    if (!savedData.contains("CustomNameVisible") || !savedData.getBoolean("CustomNameVisible")) {
+      helper.fail("NPC saved data should contain CustomNameVisible=true after name update");
+    }
+  }
+
+  public static void assertSkinUpdate(GameTestHelper helper, EntityType<?> entityType) {
+    EasyNPC<?> npc = GameTestHelpers.mockEasyNPC(helper, entityType, new Vec3(1, 2, 1));
+    SkinDataCapable<?> skinData = requireSkinData(helper, npc, "NPC");
+    VariantDataCapable<?> variantData = npc.getEasyNPCVariantData();
+    if (skinData == null || variantData == null) {
+      return;
+    }
+    drainDirtyEntityData(helper, npc, "NPC");
+
+    if (!SkinHandler.setSkin(npc, SkinDataEntry.createDefaultSkin("ALEX"))) {
+      helper.fail("Failed to update NPC skin");
+    }
+    int dirtyCount = drainDirtyEntityData(helper, npc, "NPC");
+    CompoundTag savedData = saveNpcData(npc);
+
+    SkinDataEntry skinDataEntry = skinData.getSkinDataEntry();
+    if (skinDataEntry.type() != SkinType.DEFAULT) {
+      helper.fail("NPC skin type after update: expected DEFAULT, got " + skinDataEntry.type());
+    }
+    if (!"ALEX".equals(skinDataEntry.name())) {
+      helper.fail("NPC skin name after update: expected ALEX, got " + skinDataEntry.name());
+    }
+    if (!"ALEX".equals(variantData.getSkinVariantType().name())) {
+      helper.fail(
+          "NPC variant after skin update: expected ALEX, got "
+              + variantData.getSkinVariantType().name());
+    }
+    if (dirtyCount <= 0) {
+      helper.fail("NPC skin update should mark synced entity data as dirty");
+    }
+    if (!savedData.contains(SkinDataCapable.EASY_NPC_DATA_SKIN_DATA_TAG)) {
+      helper.fail("NPC saved data should contain SkinData after skin update");
+    }
+    CompoundTag skinTag = savedData.getCompound(SkinDataCapable.EASY_NPC_DATA_SKIN_DATA_TAG);
+    if (!"ALEX".equals(skinTag.getString("Name"))) {
+      helper.fail(
+          "NPC saved skin name after update: expected ALEX, got " + skinTag.getString("Name"));
+    }
+  }
+
+  public static void assertScaleUpdatesDimensions(GameTestHelper helper, EntityType<?> entityType) {
+    EasyNPC<?> npc = GameTestHelpers.mockEasyNPC(helper, entityType, new Vec3(1, 2, 1));
+    ModelDataCapable<?> modelData = requireModelData(helper, npc, "NPC");
+    if (modelData == null) {
+      return;
+    }
+
+    drainDirtyEntityData(helper, npc, "NPC");
+    float initialHeight = npc.getEntity().getDimensions(npc.getEntity().getPose()).height;
+    CustomScale doubleScale = new CustomScale(2f, 2f, 2f);
+    modelData.setModelRootScale(doubleScale);
+    float updatedHeight = npc.getEntity().getDimensions(npc.getEntity().getPose()).height;
+    int dirtyCount = drainDirtyEntityData(helper, npc, "NPC");
+    CompoundTag savedData = saveNpcData(npc);
+
+    if (!doubleScale.equals(modelData.getModelRootData().scale())) {
+      helper.fail(
+          "NPC ROOT scale after update: expected "
+              + doubleScale
+              + ", got "
+              + modelData.getModelRootData().scale());
+    }
+    if (updatedHeight <= initialHeight) {
+      helper.fail(
+          "NPC height after scaling should increase, got "
+              + updatedHeight
+              + " from "
+              + initialHeight);
+    }
+    if (dirtyCount <= 0) {
+      helper.fail("NPC scale update should mark synced entity data as dirty");
+    }
+    if (!savedData.contains(ModelDataCapable.EASY_NPC_DATA_MODEL_DATA_TAG)) {
+      helper.fail("NPC saved data should contain ModelData after scale update");
+    }
+    CompoundTag modelTag = savedData.getCompound(ModelDataCapable.EASY_NPC_DATA_MODEL_DATA_TAG);
+    if (!modelTag.contains(ModelRootDataCapable.EASY_NPC_DATA_MODEL_ROOT_TAG)) {
+      helper.fail("NPC saved model data should contain Root after scale update");
+    }
+    CompoundTag rootTag = modelTag.getCompound(ModelRootDataCapable.EASY_NPC_DATA_MODEL_ROOT_TAG);
+    if (!rootTag.contains("Scale")) {
+      helper.fail("NPC saved root model data should contain Scale after scale update");
+    }
   }
 
   public static void assertRootDataIsolation(GameTestHelper helper, EntityType<?> entityType) {
