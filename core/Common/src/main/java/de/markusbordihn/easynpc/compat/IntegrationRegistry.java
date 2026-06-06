@@ -31,6 +31,7 @@ import org.apache.logging.log4j.Logger;
 public class IntegrationRegistry {
 
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+  private static final Map<String, IntegrationModelProvider> registeredProviders = new HashMap<>();
   private static final Map<String, List<ResourceLocation>> registeredModels = new HashMap<>();
   private static boolean guiPreviewMode = false;
 
@@ -46,16 +47,29 @@ public class IntegrationRegistry {
 
   public static void register(IntegrationModelProvider provider) {
     String id = provider.getIntegrationId();
+    registeredProviders.put(id, provider);
     List<ResourceLocation> models = provider.getAvailableModels();
     registeredModels.put(id, models);
     log.info("Registered {} models for integration '{}'.", models.size(), id);
   }
 
   public static List<ResourceLocation> getModels(String integrationId) {
-    return registeredModels.getOrDefault(integrationId, Collections.emptyList());
+    List<ResourceLocation> cached = registeredModels.getOrDefault(integrationId, Collections.emptyList());
+    if (cached.isEmpty()) {
+      IntegrationModelProvider provider = registeredProviders.get(integrationId);
+      if (provider != null) {
+        List<ResourceLocation> fresh = provider.getAvailableModels();
+        if (!fresh.isEmpty()) {
+          registeredModels.put(integrationId, fresh);
+          log.debug("Late-loaded {} models for integration '{}'.", fresh.size(), integrationId);
+          return fresh;
+        }
+      }
+    }
+    return cached;
   }
 
   public static boolean hasModels(String integrationId) {
-    return !registeredModels.getOrDefault(integrationId, Collections.emptyList()).isEmpty();
+    return !getModels(integrationId).isEmpty();
   }
 }
