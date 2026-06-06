@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Markus Bordihn
+ * Copyright 2025 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,29 +17,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.condition;
+package de.markusbordihn.easynpc.data.condition;
 
-import de.markusbordihn.easynpc.data.condition.ConditionDataEntry;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.item.ItemStack;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class HasItemInMainHandCondition {
+import org.junit.jupiter.api.Test;
 
-  private HasItemInMainHandCondition() {}
+class HandItemTypeTest {
 
-  public static boolean evaluate(ConditionDataEntry conditionDataEntry, ServerPlayer serverPlayer) {
-    if (!conditionDataEntry.hasName() || serverPlayer == null) {
-      return false;
-    }
+  @Test
+  void testGet() {
+    assertEquals(HandItemType.BOTH, HandItemType.get("BOTH"));
+    assertEquals(HandItemType.MAIN_HAND, HandItemType.get("MAIN_HAND"));
+    assertEquals(HandItemType.OFF_HAND, HandItemType.get("OFF_HAND"));
+  }
 
-    ItemStack stack = serverPlayer.getMainHandItem();
-    if (stack.isEmpty()) {
-      return false;
-    }
+  @Test
+  void testGetFallback() {
+    assertEquals(HandItemType.BOTH, HandItemType.get("INVALID"));
+    assertEquals(HandItemType.BOTH, HandItemType.get(""));
+    assertEquals(HandItemType.BOTH, HandItemType.get(null));
+  }
 
-    ResourceLocation key = BuiltInRegistries.ITEM.getKey(stack.getItem());
-    return key != null && key.toString().equals(conditionDataEntry.name());
+  @Test
+  void testImplementsConditionSubTypeEntry() {
+    assertTrue(HandItemType.BOTH instanceof ConditionSubTypeEntry);
+    assertTrue(HandItemType.MAIN_HAND instanceof ConditionSubTypeEntry);
+    assertTrue(HandItemType.OFF_HAND instanceof ConditionSubTypeEntry);
   }
 }

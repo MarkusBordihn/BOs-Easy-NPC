@@ -20,51 +20,79 @@
 package de.markusbordihn.easynpc.data.condition;
 
 public enum ConditionType {
-  NONE(false, false, false),
-  SCOREBOARD(true, true, true),
-  EXECUTION_LIMIT(false, true, false),
-  HAS_ITEM_IN_INVENTORY(true, false, false),
-  HAS_ITEM_IN_MAIN_HAND(true, false, false),
-  HAS_ITEM_IN_OFFHAND(true, false, false),
-  ADVANCEMENT(true, false, false),
-  EXPERIENCE_LEVEL(false, true, true),
-  PLAYER_HEALTH(false, true, true),
-  PLAYER_TAG(true, false, false),
-  TEAM(true, false, false),
-  GAMEMODE(true, false, false),
-  FALLBACK(false, false, false),
+  NONE(ConditionTypeRequirements.NONE),
+  SCOREBOARD(ConditionTypeRequirements.NAME_VALUE_OPERATION),
+  EXECUTION_LIMIT(ConditionTypeRequirements.VALUE_ONLY, DurationType.class),
+  HAS_ITEM_IN_INVENTORY(ConditionTypeRequirements.NAME_ONLY),
+  HAS_ITEM_IN_HAND(ConditionTypeRequirements.NAME_ONLY, HandItemType.class),
+  ADVANCEMENT(ConditionTypeRequirements.NAME_ONLY),
+  EXPERIENCE_LEVEL(ConditionTypeRequirements.VALUE_AND_OPERATION),
+  PLAYER_HEALTH(ConditionTypeRequirements.VALUE_AND_OPERATION),
+  PLAYER_TAG(ConditionTypeRequirements.NAME_ONLY),
+  TEAM(ConditionTypeRequirements.NAME_ONLY),
+  GAMEMODE(ConditionTypeRequirements.NAME_ONLY),
+  FALLBACK(ConditionTypeRequirements.NONE),
   ;
 
-  private final boolean requiresName;
-  private final boolean requiresValue;
-  private final boolean requiresOperation;
+  private final ConditionTypeRequirements requirements;
+  private final Class<? extends ConditionSubTypeEntry> subTypeClass;
 
-  ConditionType(boolean requiresName, boolean requiresValue, boolean requiresOperation) {
-    this.requiresName = requiresName;
-    this.requiresValue = requiresValue;
-    this.requiresOperation = requiresOperation;
+  ConditionType(ConditionTypeRequirements requirements) {
+    this(requirements, null);
+  }
+
+  ConditionType(
+      ConditionTypeRequirements requirements, Class<? extends ConditionSubTypeEntry> subTypeClass) {
+    this.requirements = requirements;
+    this.subTypeClass = subTypeClass;
   }
 
   public static ConditionType get(String conditionType) {
     if (conditionType == null || conditionType.isEmpty()) {
       return ConditionType.NONE;
     }
+
     try {
       return ConditionType.valueOf(conditionType);
-    } catch (IllegalArgumentException e) {
+    } catch (IllegalArgumentException ignored) {
       return ConditionType.NONE;
     }
   }
 
   public boolean requiresName() {
-    return requiresName;
+    return this.requirements.requiresName();
   }
 
   public boolean requiresValue() {
-    return requiresValue;
+    return this.requirements.requiresValue();
   }
 
   public boolean requiresOperation() {
-    return requiresOperation;
+    return this.requirements.requiresOperation();
+  }
+
+  public boolean hasSubTypes() {
+    return this.subTypeClass != null;
+  }
+
+  public ConditionSubTypeEntry[] getSubTypes() {
+    if (this.subTypeClass == null) {
+      return new ConditionSubTypeEntry[0];
+    }
+
+    return this.subTypeClass.getEnumConstants();
+  }
+
+  public ConditionSubTypeEntry getSubType(String name) {
+    if (this.subTypeClass == null || name == null || name.isEmpty()) {
+      return null;
+    }
+
+    for (ConditionSubTypeEntry subTypeEntry : this.subTypeClass.getEnumConstants()) {
+      if (((Enum<?>) subTypeEntry).name().equals(name)) {
+        return subTypeEntry;
+      }
+    }
+    return null;
   }
 }

@@ -11,7 +11,7 @@ Check the [upgrade guide][upgrade_guide] for more information.
 ### 6.18.0
 
 Note: This update changes the internal data format for conditions and actions,
-which may reset existing execution-limit tracking for legacy entries without stored IDs.
+which may reset / remove legacy existing execution-limit entries without stored IDs.
 
 - Fixed #745 by adding conditions for actions to allow more complex and dynamic behavior.
 - Fixed #652 by adding dialog button tooltip for longer texts.
@@ -19,12 +19,12 @@ which may reset existing execution-limit tracking for legacy entries without sto
 - Added Experience Level conditions.
 - Added Game-mode conditions.
 - Added has item in inventory condition.
-- Added has item in main-hand condition.
-- Added has item in off-hand condition.
+- Added has item in hand condition with (main hand and off-hand) support.
 - Added player health condition.
 - Added player tag condition.
 - Added player team condition.
 - Added Goldmere example NPC preset with various conditions and actions.
+- Added negative condition support to allow negating conditions for more complex logic.
 - Removed parameter pseudo IDs for `ActionDataEntry` and replaced them with random UUIDs.
 - Refactored condition system to allow more condition types.
 

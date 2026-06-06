@@ -68,6 +68,24 @@ public class NPCDataIsolationTest {
   }
 
   @GameTest(template = "gametest.3x3x3")
+  public void testNameUpdate(GameTestHelper helper) {
+    NPCDataIsolationTestHelper.assertNameUpdate(helper, humanoid());
+    helper.succeed();
+  }
+
+  @GameTest(template = "gametest.3x3x3")
+  public void testSkinUpdate(GameTestHelper helper) {
+    NPCDataIsolationTestHelper.assertSkinUpdate(helper, humanoid());
+    helper.succeed();
+  }
+
+  @GameTest(template = "gametest.3x3x3")
+  public void testScaleUpdatesDimensions(GameTestHelper helper) {
+    NPCDataIsolationTestHelper.assertScaleUpdatesDimensions(helper, humanoid());
+    helper.succeed();
+  }
+
+  @GameTest(template = "gametest.3x3x3")
   public void testPositionIsolation(GameTestHelper helper) {
     NPCDataIsolationTestHelper.assertPositionIsolation(helper, humanoid());
     helper.succeed();
