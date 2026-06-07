@@ -178,8 +178,7 @@ public class Text {
       guiGraphics.renderTooltip(
           font,
           Collections.singletonList(
-              ClientTooltipComponent.create(
-                  Component.literal(text.trim()).getVisualOrderText())),
+              ClientTooltipComponent.create(Component.literal(text.trim()).getVisualOrderText())),
           mouseX,
           mouseY,
           DefaultTooltipPositioner.INSTANCE,

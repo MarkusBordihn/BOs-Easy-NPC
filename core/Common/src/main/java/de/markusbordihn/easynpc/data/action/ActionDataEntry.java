@@ -63,7 +63,9 @@ public record ActionDataEntry(
 
   public ActionDataEntry(CompoundTag compoundTag) {
     this(
-        compoundTag.contains(DATA_ID_TAG) ? CompoundTagUtils.readUUID(compoundTag, DATA_ID_TAG) : UUID.randomUUID(),
+        compoundTag.contains(DATA_ID_TAG)
+            ? CompoundTagUtils.readUUID(compoundTag, DATA_ID_TAG)
+            : UUID.randomUUID(),
         ActionDataType.get(compoundTag.getString(DATA_TYPE_TAG).orElse("")),
         compoundTag.contains(ConditionDataSet.CONDITION_DATA_SET_TAG)
             ? new ConditionDataSet(

@@ -19,43 +19,48 @@
 
 package de.markusbordihn.easynpc.condition;
 
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.condition.ConditionDataEntry;
-import net.minecraft.advancements.AdvancementHolder;
+import de.markusbordihn.easynpc.data.condition.ConditionOperationType;
+import de.markusbordihn.easynpc.data.condition.HandItemType;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import net.minecraft.world.item.ItemStack;
 
-public class AdvancementCondition {
+public class HasItemInHandCondition {
 
-  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-
-  private AdvancementCondition() {}
+  private HasItemInHandCondition() {}
 
   public static boolean evaluate(ConditionDataEntry conditionDataEntry, ServerPlayer serverPlayer) {
-    if (!conditionDataEntry.hasName()
-        || serverPlayer == null
-        || serverPlayer.level().getServer() == null) {
+    if (!conditionDataEntry.hasName() || serverPlayer == null) {
       return false;
     }
 
-    try {
-      AdvancementHolder advancement =
-          serverPlayer
-              .level()
-              .getServer()
-              .getAdvancements()
-              .get(Identifier.parse(conditionDataEntry.name()));
-      if (advancement == null) {
-        log.debug("Advancement '{}' not found", conditionDataEntry.name());
-        return false;
-      }
+    HandItemType handItemType = HandItemType.BOTH;
+    if (conditionDataEntry.subType() instanceof HandItemType handItemTypeEntry) {
+      handItemType = handItemTypeEntry;
+    }
 
-      return serverPlayer.getAdvancements().getOrStartProgress(advancement).isDone();
-    } catch (Exception e) {
-      log.error("Error evaluating advancement condition: {}", conditionDataEntry, e);
+    boolean result =
+        switch (handItemType) {
+          case MAIN_HAND ->
+              itemMatchesInStack(serverPlayer.getMainHandItem(), conditionDataEntry.name());
+          case OFF_HAND ->
+              itemMatchesInStack(serverPlayer.getOffhandItem(), conditionDataEntry.name());
+          default ->
+              itemMatchesInStack(serverPlayer.getMainHandItem(), conditionDataEntry.name())
+                  || itemMatchesInStack(serverPlayer.getOffhandItem(), conditionDataEntry.name());
+        };
+
+    return (conditionDataEntry.operationType() == ConditionOperationType.NOT_EQUALS) != result;
+  }
+
+  private static boolean itemMatchesInStack(ItemStack stack, String itemName) {
+    if (stack.isEmpty()) {
       return false;
     }
+
+    Identifier key = BuiltInRegistries.ITEM.getKey(stack.getItem());
+    return key != null && key.toString().equals(itemName);
   }
 }

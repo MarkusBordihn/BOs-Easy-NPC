@@ -23,11 +23,23 @@ import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.commands.Command;
+import de.markusbordihn.easynpc.commands.arguments.EasyNPCArgument;
+import de.markusbordihn.easynpc.data.display.DisplayAttributeType;
+import de.markusbordihn.easynpc.data.display.NameVisibilityType;
+import de.markusbordihn.easynpc.data.model.RootModelData;
+import de.markusbordihn.easynpc.data.skin.SkinDataEntry;
 import de.markusbordihn.easynpc.debug.DebugManager;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.data.DisplayAttributeDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.VariantDataCapable;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.permissions.Permissions;
+import net.minecraft.world.entity.EntityDimensions;
 
 public class DebugCommand extends Command {
 
@@ -37,7 +49,16 @@ public class DebugCommand extends Command {
     return Commands.literal("debug")
         .requires(cs -> cs.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER))
         .then(
-            Commands.literal("log")
+            Commands.literal("npc")
+                .then(
+                    Commands.argument(NPC_TARGET_ARG, EasyNPCArgument.npc())
+                        .executes(
+                            context ->
+                                showNPCDebug(
+                                    context.getSource(),
+                                    EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG)))))
+        .then(
+            Commands.literal("core")
                 .then(
                     Commands.argument(ENABLE_ARG, BoolArgumentType.bool())
                         .executes(
@@ -70,5 +91,100 @@ public class DebugCommand extends Command {
     DebugManager.enableDebugLevel(enable);
 
     return Command.SINGLE_SUCCESS;
+  }
+
+  private static int showNPCDebug(CommandSourceStack context, EasyNPC<?> easyNPC) {
+    if (easyNPC == null) {
+      return sendFailureMessage(context, "Invalid EasyNPC target");
+    }
+
+    Component customName = easyNPC.getEntity().getCustomName();
+    String customNameText = customName != null ? customName.getString() : "<none>";
+    DisplayAttributeDataCapable<?> displayData = easyNPC.getEasyNPCDisplayAttributeData();
+    NameVisibilityType nameVisibilityType =
+        displayData != null
+            ? displayData.getDisplayEnumAttribute(
+                DisplayAttributeType.NAME_VISIBILITY, NameVisibilityType.class)
+            : null;
+    SkinDataCapable<?> skinData = easyNPC.getEasyNPCSkinData();
+    SkinDataEntry skinDataEntry = skinData != null ? skinData.getSkinDataEntry() : null;
+    VariantDataCapable<?> variantData = easyNPC.getEasyNPCVariantData();
+    String variantName =
+        variantData != null && variantData.getSkinVariantType() != null
+            ? variantData.getSkinVariantType().name()
+            : "<missing>";
+    ModelDataCapable<?> modelData = easyNPC.getEasyNPCModelData();
+    RootModelData rootModelData =
+        modelData != null ? modelData.getModelRootData() : RootModelData.DEFAULT;
+    EntityDimensions entityDimensions =
+        easyNPC.getEntity().getDimensions(easyNPC.getEntity().getPose());
+
+    sendSuccessMessage(context, "Easy NPC Debug: " + easyNPC.getEntityUUID(), ChatFormatting.GOLD);
+    sendSuccessMessage(
+        context,
+        "Type: " + easyNPC.getEntity().getType() + " / Pose: " + easyNPC.getEntity().getPose(),
+        ChatFormatting.WHITE);
+    sendSuccessMessage(
+        context,
+        "Name: " + customNameText + " / Visible: " + easyNPC.getEntity().isCustomNameVisible(),
+        ChatFormatting.WHITE);
+    sendSuccessMessage(
+        context,
+        "Name Visibility Attribute: "
+            + (nameVisibilityType != null ? nameVisibilityType : "<missing>"),
+        ChatFormatting.WHITE);
+    sendSuccessMessage(context, "Skin: " + formatSkinData(skinDataEntry), ChatFormatting.WHITE);
+    sendSuccessMessage(context, "Variant: " + variantName, ChatFormatting.WHITE);
+    sendSuccessMessage(
+        context,
+        "Root Scale: " + rootModelData.scale() + " / Root Rotation: " + rootModelData.rotation(),
+        ChatFormatting.WHITE);
+    sendSuccessMessage(
+        context,
+        "Dimensions: "
+            + entityDimensions.width()
+            + " x "
+            + entityDimensions.height()
+            + " / BB Height: "
+            + easyNPC.getEntity().getBbHeight(),
+        ChatFormatting.WHITE);
+
+    log.info(
+        "[Debug NPC] uuid={}, type={}, customName={}, visible={}, nameVisibility={}, skin={}, variant={}, rootScale={}, rootRotation={}, dimensions={}x{}, bbHeight={}",
+        easyNPC.getEntityUUID(),
+        easyNPC.getEntity().getType(),
+        customNameText,
+        easyNPC.getEntity().isCustomNameVisible(),
+        nameVisibilityType,
+        skinDataEntry,
+        variantName,
+        rootModelData.scale(),
+        rootModelData.rotation(),
+        entityDimensions.width(),
+        entityDimensions.height(),
+        easyNPC.getEntity().getBbHeight());
+
+    return Command.SINGLE_SUCCESS;
+  }
+
+  private static String formatSkinData(SkinDataEntry skinDataEntry) {
+    if (skinDataEntry == null) {
+      return "<missing>";
+    }
+
+    return "type="
+        + skinDataEntry.type()
+        + ", name="
+        + skinDataEntry.name()
+        + ", url="
+        + skinDataEntry.url()
+        + ", uuid="
+        + skinDataEntry.uuid()
+        + ", disableLayers="
+        + skinDataEntry.disableLayers()
+        + ", contentLength="
+        + skinDataEntry.content().length()
+        + ", timestamp="
+        + skinDataEntry.timestamp();
   }
 }

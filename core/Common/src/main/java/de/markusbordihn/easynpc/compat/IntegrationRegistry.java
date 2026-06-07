@@ -19,45 +19,51 @@
 
 package de.markusbordihn.easynpc.compat;
 
-import java.util.ArrayList;
+import de.markusbordihn.easynpc.Constants;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class IntegrationRegistry {
 
+  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private static final Map<String, IntegrationModelProvider> modelProviders = new HashMap<>();
+  private static final Map<String, List<String>> modelCache = new HashMap<>();
   private static boolean guiPreviewMode = false;
 
   private IntegrationRegistry() {}
 
   public static void register(IntegrationModelProvider provider) {
     if (provider != null) {
-      modelProviders.put(provider.getIntegrationId(), provider);
+      String id = provider.getIntegrationId();
+      modelProviders.put(id, provider);
+      List<String> models = provider.getAvailableModels();
+      modelCache.put(id, models);
+      log.info("Registered integration model provider '{}' with {} models.", id, models.size());
     }
   }
 
   public static List<String> getModels(String integrationId) {
-    IntegrationModelProvider provider = modelProviders.get(integrationId);
-    if (provider == null) {
-      return Collections.emptyList();
+    List<String> cached = modelCache.getOrDefault(integrationId, Collections.emptyList());
+    if (cached.isEmpty()) {
+      IntegrationModelProvider provider = modelProviders.get(integrationId);
+      if (provider != null) {
+        List<String> fresh = provider.getAvailableModels();
+        if (!fresh.isEmpty()) {
+          modelCache.put(integrationId, fresh);
+          log.debug("Late-loaded {} models for integration '{}'.", fresh.size(), integrationId);
+          return fresh;
+        }
+      }
     }
-
-    return provider.getAvailableModels();
+    return cached;
   }
 
   public static boolean hasModels(String integrationId) {
-    IntegrationModelProvider provider = modelProviders.get(integrationId);
-    return provider != null && !provider.getAvailableModels().isEmpty();
-  }
-
-  public static List<String> getAllModels() {
-    List<String> allModels = new ArrayList<>();
-    for (IntegrationModelProvider provider : modelProviders.values()) {
-      allModels.addAll(provider.getAvailableModels());
-    }
-    return allModels;
+    return !getModels(integrationId).isEmpty();
   }
 
   public static boolean isGuiPreviewMode() {

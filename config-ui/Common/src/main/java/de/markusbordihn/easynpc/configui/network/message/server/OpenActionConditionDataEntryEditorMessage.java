@@ -50,8 +50,7 @@ public record OpenActionConditionDataEntryEditorMessage(
     implements NetworkMessageRecord {
 
   public static final Identifier MESSAGE_ID =
-      Identifier.fromNamespaceAndPath(
-          Constants.MOD_ID, "open_action_condition_data_entry_editor");
+      Identifier.fromNamespaceAndPath(Constants.MOD_ID, "open_action_condition_data_entry_editor");
   public static final Type<OpenActionConditionDataEntryEditorMessage> PAYLOAD_TYPE =
       new Type<>(MESSAGE_ID);
   public static final StreamCodec<

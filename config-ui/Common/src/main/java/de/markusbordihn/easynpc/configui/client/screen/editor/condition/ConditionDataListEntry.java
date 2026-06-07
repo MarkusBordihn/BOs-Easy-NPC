@@ -25,7 +25,9 @@ import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.configui.client.screen.components.DeleteButton;
 import de.markusbordihn.easynpc.configui.client.screen.components.EditButton;
 import de.markusbordihn.easynpc.data.condition.ConditionDataEntry;
+import de.markusbordihn.easynpc.data.condition.ConditionOperationType;
 import de.markusbordihn.easynpc.data.condition.ConditionType;
+import de.markusbordihn.easynpc.data.condition.HandItemType;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -183,15 +185,9 @@ public class ConditionDataListEntry extends ObjectSelectionList.Entry<ConditionD
                   + this.conditionDataEntry.operationType().name()
                   + " "
                   + this.conditionDataEntry.value();
-          case EXECUTION_LIMIT ->
-              this.conditionDataEntry.value() + " (" + this.conditionDataEntry.text() + ")";
-          case HAS_ITEM_IN_INVENTORY,
-              HAS_ITEM_IN_MAIN_HAND,
-              HAS_ITEM_IN_OFFHAND,
-              ADVANCEMENT,
-              PLAYER_TAG,
-              TEAM,
-              GAMEMODE ->
+          case EXECUTION_LIMIT -> buildExecutionLimitPreview(this.conditionDataEntry);
+          case HAS_ITEM_IN_HAND -> buildHandItemPreview(this.conditionDataEntry);
+          case HAS_ITEM_IN_INVENTORY, ADVANCEMENT, PLAYER_TAG, TEAM, GAMEMODE ->
               this.conditionDataEntry.name();
           case EXPERIENCE_LEVEL, PLAYER_HEALTH ->
               this.conditionDataEntry.operationType().name()
@@ -209,6 +205,33 @@ public class ConditionDataListEntry extends ObjectSelectionList.Entry<ConditionD
         VALUE_MAX_LENGTH,
         mouseX,
         mouseY);
+  }
+
+  private String buildExecutionLimitPreview(ConditionDataEntry conditionDataEntry) {
+    if (conditionDataEntry.subType() == null) {
+      return String.valueOf(conditionDataEntry.value());
+    }
+    return conditionDataEntry.value()
+        + " ("
+        + ((Enum<?>) conditionDataEntry.subType()).name()
+        + ")";
+  }
+
+  private String buildHandItemPreview(ConditionDataEntry conditionDataEntry) {
+    String prefix = "";
+    if (conditionDataEntry.operationType() == ConditionOperationType.NOT_EQUALS) {
+      prefix = "NOT ";
+    }
+    String suffix = "";
+    if (conditionDataEntry.subType() instanceof HandItemType handItemType) {
+      suffix =
+          switch (handItemType) {
+            case MAIN_HAND -> " [M]";
+            case OFF_HAND -> " [O]";
+            default -> "";
+          };
+    }
+    return prefix + conditionDataEntry.name() + suffix;
   }
 
   public void renderSeparatorLines(GuiGraphics guiGraphics, int top) {
