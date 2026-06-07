@@ -73,14 +73,12 @@ class ConditionDataEntryTest {
   }
 
   @Test
-  void testHasStringValue() {
-    ConditionDataEntry withText =
-        new ConditionDataEntry(ConditionType.SCOREBOARD).withStringValue("test");
-    assertTrue(withText.hasStringValue());
+  void testWithSubType() {
+    ConditionDataEntry original = new ConditionDataEntry(ConditionType.HAS_ITEM_IN_HAND);
+    ConditionDataEntry updated = original.withSubType(HandItemType.MAIN_HAND);
 
-    ConditionDataEntry withoutText =
-        new ConditionDataEntry(ConditionType.SCOREBOARD).withStringValue("");
-    assertFalse(withoutText.hasStringValue());
+    assertEquals(HandItemType.MAIN_HAND, updated.subType());
+    assertNull(original.subType());
   }
 
   @Test
@@ -124,11 +122,12 @@ class ConditionDataEntryTest {
   }
 
   @Test
-  void testWithStringValue() {
-    ConditionDataEntry original = new ConditionDataEntry(ConditionType.SCOREBOARD);
-    ConditionDataEntry updated = original.withStringValue("test text");
+  void testSubTypeAbsentInNBTWhenNull() {
+    ConditionDataEntry entry =
+        new ConditionDataEntry(ConditionType.HAS_ITEM_IN_INVENTORY).withName("minecraft:diamond");
+    CompoundTag tag = entry.createTag();
 
-    assertEquals("test text", updated.text());
+    assertFalse(tag.contains(ConditionDataEntry.DATA_SUB_TYPE_TAG));
   }
 
   @Test
@@ -187,18 +186,38 @@ class ConditionDataEntryTest {
   }
 
   @Test
-  void testSerializeWithStringValue() {
+  void testExecutionLimitWithDurationTypeNBTRoundTrip() {
     ConditionDataEntry original =
-        new ConditionDataEntry(ConditionType.SCOREBOARD, ConditionOperationType.EQUALS, "test", 5)
-            .withStringValue("test text");
+        new ConditionDataEntry(
+            ConditionType.EXECUTION_LIMIT,
+            DurationType.PER_HOUR,
+            ConditionOperationType.NONE,
+            "",
+            5);
+    assertTrue(original.isValid());
 
     CompoundTag tag = original.createTag();
+    assertEquals("PER_HOUR", tag.getString(ConditionDataEntry.DATA_SUB_TYPE_TAG).orElse(""));
+
+    ConditionDataEntry deserialized = new ConditionDataEntry(tag);
+    assertEquals(ConditionType.EXECUTION_LIMIT, deserialized.conditionType());
+    assertEquals(DurationType.PER_HOUR, deserialized.subType());
+    assertEquals(5, deserialized.value());
+  }
+
+  @Test
+  void testExecutionLimitLegacyTextSubTypeNBT() {
+    CompoundTag tag = new CompoundTag();
+    tag.putString(ConditionDataEntry.DATA_TYPE_TAG, "EXECUTION_LIMIT");
+    tag.putString(ConditionDataEntry.DATA_LEGACY_TEXT_TAG, "PER_DAY");
+    tag.putInt(ConditionDataEntry.DATA_VALUE_TAG, 1);
+
     ConditionDataEntry deserialized = new ConditionDataEntry(tag);
 
-    assertEquals(original.conditionType(), deserialized.conditionType());
-    assertEquals(original.operationType(), deserialized.operationType());
-    assertEquals(original.name(), deserialized.name());
-    assertEquals(original.value(), deserialized.value());
+    assertEquals(ConditionType.EXECUTION_LIMIT, deserialized.conditionType());
+    assertEquals(DurationType.PER_DAY, deserialized.subType());
+    assertEquals(1, deserialized.value());
+    assertTrue(deserialized.isValid());
   }
 
   @Test
@@ -274,46 +293,65 @@ class ConditionDataEntryTest {
   }
 
   @Test
-  void testHasItemInMainHandConditionRequiresName() {
-    ConditionDataEntry withoutName = new ConditionDataEntry(ConditionType.HAS_ITEM_IN_MAIN_HAND);
+  void testHasItemInHandConditionRequiresName() {
+    ConditionDataEntry withoutName = new ConditionDataEntry(ConditionType.HAS_ITEM_IN_HAND);
     assertFalse(withoutName.isValid());
 
     ConditionDataEntry withName =
-        new ConditionDataEntry(ConditionType.HAS_ITEM_IN_MAIN_HAND).withName("minecraft:torch");
+        new ConditionDataEntry(ConditionType.HAS_ITEM_IN_HAND).withName("minecraft:torch");
     assertTrue(withName.isValid());
   }
 
   @Test
-  void testHasItemInMainHandConditionNBTRoundTrip() {
+  void testHasItemInHandNBTRoundTripMainHand() {
     ConditionDataEntry original =
-        new ConditionDataEntry(ConditionType.HAS_ITEM_IN_MAIN_HAND).withName("minecraft:diamond");
+        new ConditionDataEntry(
+            ConditionType.HAS_ITEM_IN_HAND,
+            HandItemType.MAIN_HAND,
+            ConditionOperationType.NOT_EQUALS,
+            "minecraft:gold_ingot",
+            0);
     CompoundTag tag = original.createTag();
-    ConditionDataEntry deserialized = new ConditionDataEntry(tag);
 
-    assertEquals(ConditionType.HAS_ITEM_IN_MAIN_HAND, deserialized.conditionType());
-    assertEquals("minecraft:diamond", deserialized.name());
+    assertEquals("HAS_ITEM_IN_HAND", tag.getString(ConditionDataEntry.DATA_TYPE_TAG).orElse(""));
+    assertEquals("MAIN_HAND", tag.getString(ConditionDataEntry.DATA_SUB_TYPE_TAG).orElse(""));
+    assertEquals("NOT_EQUALS", tag.getString(ConditionDataEntry.DATA_OPERATION_TAG).orElse(""));
+
+    ConditionDataEntry deserialized = new ConditionDataEntry(tag);
+    assertEquals(ConditionType.HAS_ITEM_IN_HAND, deserialized.conditionType());
+    assertEquals(HandItemType.MAIN_HAND, deserialized.subType());
+    assertEquals(ConditionOperationType.NOT_EQUALS, deserialized.operationType());
+    assertEquals("minecraft:gold_ingot", deserialized.name());
     assertEquals(original.getId(), deserialized.getId());
   }
 
   @Test
-  void testHasItemInOffhandConditionRequiresName() {
-    ConditionDataEntry withoutName = new ConditionDataEntry(ConditionType.HAS_ITEM_IN_OFFHAND);
-    assertFalse(withoutName.isValid());
-
-    ConditionDataEntry withName =
-        new ConditionDataEntry(ConditionType.HAS_ITEM_IN_OFFHAND).withName("minecraft:shield");
-    assertTrue(withName.isValid());
-  }
-
-  @Test
-  void testHasItemInOffhandConditionNBTRoundTrip() {
+  void testHasItemInHandNBTRoundTripOffHand() {
     ConditionDataEntry original =
-        new ConditionDataEntry(ConditionType.HAS_ITEM_IN_OFFHAND).withName("minecraft:torch");
+        new ConditionDataEntry(
+            ConditionType.HAS_ITEM_IN_HAND,
+            HandItemType.OFF_HAND,
+            ConditionOperationType.EQUALS,
+            "minecraft:shield",
+            0);
     CompoundTag tag = original.createTag();
     ConditionDataEntry deserialized = new ConditionDataEntry(tag);
 
-    assertEquals(ConditionType.HAS_ITEM_IN_OFFHAND, deserialized.conditionType());
-    assertEquals("minecraft:torch", deserialized.name());
+    assertEquals(HandItemType.OFF_HAND, deserialized.subType());
+    assertEquals("minecraft:shield", deserialized.name());
+  }
+
+  @Test
+  void testHasItemInHandNBTRoundTripBoth() {
+    ConditionDataEntry original =
+        new ConditionDataEntry(ConditionType.HAS_ITEM_IN_HAND)
+            .withSubType(HandItemType.BOTH)
+            .withName("minecraft:diamond");
+    CompoundTag tag = original.createTag();
+    ConditionDataEntry deserialized = new ConditionDataEntry(tag);
+
+    assertEquals(HandItemType.BOTH, deserialized.subType());
+    assertEquals("minecraft:diamond", deserialized.name());
   }
 
   @Test

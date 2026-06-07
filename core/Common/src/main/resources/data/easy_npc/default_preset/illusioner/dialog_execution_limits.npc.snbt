@@ -41,37 +41,37 @@
     DialogData:{
       DialogDataSet:[{
         Conditions:[{
-          Text:"PER_DAY",Type:"EXECUTION_LIMIT",Value:1
+          SubType:"PER_DAY",Type:"EXECUTION_LIMIT",Value:1
         }],Name:"Dialog 5",Priority:1,Texts:[{
           Text:"This is the 5th Dialog."
         }]
       },{
         Conditions:[{
-          Text:"PER_DAY",Type:"EXECUTION_LIMIT",Value:1
+          SubType:"PER_DAY",Type:"EXECUTION_LIMIT",Value:1
         }],Name:"Dialog 4",Priority:2,Texts:[{
           Text:"This is the 4th Dialog."
         }]
       },{
         Conditions:[{
-          Text:"PER_DAY",Type:"EXECUTION_LIMIT",Value:1
+          SubType:"PER_DAY",Type:"EXECUTION_LIMIT",Value:1
         }],Name:"Dialog 3",Priority:3,Texts:[{
           Text:"This is the 3rd Dialog."
         }]
       },{
         Conditions:[{
-          Text:"PER_DAY",Type:"EXECUTION_LIMIT",Value:1
+          SubType:"PER_DAY",Type:"EXECUTION_LIMIT",Value:1
         }],Name:"Dialog 2",Priority:4,Texts:[{
           Text:"This is the 2nd Dialog."
         }]
       },{
         Conditions:[{
-          Text:"PER_DAY",Type:"EXECUTION_LIMIT",Value:1
+          SubType:"PER_DAY",Type:"EXECUTION_LIMIT",Value:1
         }],Name:"Dialog 1",Priority:5,Texts:[{
           Text:"This is the 1st Dialog."
         }]
       },{
         Conditions:[{
-          Text:"PER_DAY",Type:"EXECUTION_LIMIT",Value:1
+          SubType:"PER_DAY",Type:"EXECUTION_LIMIT",Value:1
         }],Name:"Start",Texts:[{
           Text:"Welcome my friend, this is the last time you will see this dialog for today."
         }]

@@ -50,10 +50,7 @@ public class ConditionManager {
           ExecutionLimitCondition.evaluate(conditionDataEntry, serverPlayer, actionUUID);
       case HAS_ITEM_IN_INVENTORY ->
           HasItemInInventoryCondition.evaluate(conditionDataEntry, serverPlayer);
-      case HAS_ITEM_IN_MAIN_HAND ->
-          HasItemInMainHandCondition.evaluate(conditionDataEntry, serverPlayer);
-      case HAS_ITEM_IN_OFFHAND ->
-          HasItemInOffhandCondition.evaluate(conditionDataEntry, serverPlayer);
+      case HAS_ITEM_IN_HAND -> HasItemInHandCondition.evaluate(conditionDataEntry, serverPlayer);
       case ADVANCEMENT -> AdvancementCondition.evaluate(conditionDataEntry, serverPlayer);
       case EXPERIENCE_LEVEL -> ExperienceLevelCondition.evaluate(conditionDataEntry, serverPlayer);
       case PLAYER_HEALTH -> PlayerHealthCondition.evaluate(conditionDataEntry, serverPlayer);

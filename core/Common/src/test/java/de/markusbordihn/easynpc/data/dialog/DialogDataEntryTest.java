@@ -21,10 +21,14 @@ package de.markusbordihn.easynpc.data.dialog;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import de.markusbordihn.easynpc.data.condition.ConditionDataEntry;
+import de.markusbordihn.easynpc.data.condition.ConditionType;
+import de.markusbordihn.easynpc.data.condition.DurationType;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -170,5 +174,34 @@ class DialogDataEntryTest {
     DialogDataEntry serverDecoded = new DialogDataEntry(serverTag);
 
     assertEquals(clientDecoded.getId(), serverDecoded.getId());
+  }
+
+  @Test
+  void testLegacyExecutionLimitConditionLoadsFromDialog() {
+    CompoundTag dialogTag = new CompoundTag();
+    dialogTag.putString(DialogDataEntry.DATA_DIALOG_NAME, "Legacy Dialog");
+
+    ListTag texts = new ListTag();
+    CompoundTag textTag = new CompoundTag();
+    textTag.putString(DialogDataEntry.DATA_TEXT_TAG, "Legacy text");
+    texts.add(textTag);
+    dialogTag.put(DialogDataEntry.DATA_TEXTS_TAG, texts);
+
+    ListTag conditions = new ListTag();
+    CompoundTag conditionTag = new CompoundTag();
+    conditionTag.putString(ConditionDataEntry.DATA_TYPE_TAG, "EXECUTION_LIMIT");
+    conditionTag.putString(ConditionDataEntry.DATA_LEGACY_TEXT_TAG, "PER_DAY");
+    conditionTag.putInt(ConditionDataEntry.DATA_VALUE_TAG, 1);
+    conditions.add(conditionTag);
+    dialogTag.put(DialogDataEntry.DATA_CONDITIONS_TAG, conditions);
+
+    DialogDataEntry entry = new DialogDataEntry(dialogTag);
+
+    assertTrue(entry.hasConditions());
+    assertEquals(1, entry.getConditions().size());
+    ConditionDataEntry loadedCondition = entry.getConditions().iterator().next();
+    assertEquals(ConditionType.EXECUTION_LIMIT, loadedCondition.conditionType());
+    assertEquals(DurationType.PER_DAY, loadedCondition.subType());
+    assertEquals(1, loadedCondition.value());
   }
 }

@@ -30,8 +30,7 @@ class ConditionTypeTest {
     assertEquals(ConditionType.SCOREBOARD, ConditionType.get("SCOREBOARD"));
     assertEquals(ConditionType.EXECUTION_LIMIT, ConditionType.get("EXECUTION_LIMIT"));
     assertEquals(ConditionType.HAS_ITEM_IN_INVENTORY, ConditionType.get("HAS_ITEM_IN_INVENTORY"));
-    assertEquals(ConditionType.HAS_ITEM_IN_MAIN_HAND, ConditionType.get("HAS_ITEM_IN_MAIN_HAND"));
-    assertEquals(ConditionType.HAS_ITEM_IN_OFFHAND, ConditionType.get("HAS_ITEM_IN_OFFHAND"));
+    assertEquals(ConditionType.HAS_ITEM_IN_HAND, ConditionType.get("HAS_ITEM_IN_HAND"));
     assertEquals(ConditionType.ADVANCEMENT, ConditionType.get("ADVANCEMENT"));
     assertEquals(ConditionType.EXPERIENCE_LEVEL, ConditionType.get("EXPERIENCE_LEVEL"));
     assertEquals(ConditionType.PLAYER_HEALTH, ConditionType.get("PLAYER_HEALTH"));
@@ -50,11 +49,16 @@ class ConditionTypeTest {
   }
 
   @Test
+  void testGetFallbackForRemovedTypes() {
+    assertEquals(ConditionType.NONE, ConditionType.get("HAS_ITEM_IN_MAIN_HAND"));
+    assertEquals(ConditionType.NONE, ConditionType.get("HAS_ITEM_IN_OFFHAND"));
+  }
+
+  @Test
   void testRequiresName() {
     assertTrue(ConditionType.SCOREBOARD.requiresName());
     assertTrue(ConditionType.HAS_ITEM_IN_INVENTORY.requiresName());
-    assertTrue(ConditionType.HAS_ITEM_IN_MAIN_HAND.requiresName());
-    assertTrue(ConditionType.HAS_ITEM_IN_OFFHAND.requiresName());
+    assertTrue(ConditionType.HAS_ITEM_IN_HAND.requiresName());
     assertTrue(ConditionType.ADVANCEMENT.requiresName());
     assertTrue(ConditionType.PLAYER_TAG.requiresName());
     assertTrue(ConditionType.TEAM.requiresName());
@@ -73,8 +77,7 @@ class ConditionTypeTest {
     assertTrue(ConditionType.EXPERIENCE_LEVEL.requiresValue());
     assertTrue(ConditionType.PLAYER_HEALTH.requiresValue());
     assertFalse(ConditionType.HAS_ITEM_IN_INVENTORY.requiresValue());
-    assertFalse(ConditionType.HAS_ITEM_IN_MAIN_HAND.requiresValue());
-    assertFalse(ConditionType.HAS_ITEM_IN_OFFHAND.requiresValue());
+    assertFalse(ConditionType.HAS_ITEM_IN_HAND.requiresValue());
     assertFalse(ConditionType.ADVANCEMENT.requiresValue());
     assertFalse(ConditionType.PLAYER_TAG.requiresValue());
     assertFalse(ConditionType.TEAM.requiresValue());
@@ -90,13 +93,51 @@ class ConditionTypeTest {
     assertTrue(ConditionType.PLAYER_HEALTH.requiresOperation());
     assertFalse(ConditionType.EXECUTION_LIMIT.requiresOperation());
     assertFalse(ConditionType.HAS_ITEM_IN_INVENTORY.requiresOperation());
-    assertFalse(ConditionType.HAS_ITEM_IN_MAIN_HAND.requiresOperation());
-    assertFalse(ConditionType.HAS_ITEM_IN_OFFHAND.requiresOperation());
+    assertFalse(ConditionType.HAS_ITEM_IN_HAND.requiresOperation());
     assertFalse(ConditionType.ADVANCEMENT.requiresOperation());
     assertFalse(ConditionType.PLAYER_TAG.requiresOperation());
     assertFalse(ConditionType.TEAM.requiresOperation());
     assertFalse(ConditionType.GAMEMODE.requiresOperation());
     assertFalse(ConditionType.FALLBACK.requiresOperation());
     assertFalse(ConditionType.NONE.requiresOperation());
+  }
+
+  @Test
+  void testHasSubTypes() {
+    assertTrue(ConditionType.HAS_ITEM_IN_HAND.hasSubTypes());
+    assertTrue(ConditionType.EXECUTION_LIMIT.hasSubTypes());
+    assertFalse(ConditionType.HAS_ITEM_IN_INVENTORY.hasSubTypes());
+    assertFalse(ConditionType.SCOREBOARD.hasSubTypes());
+    assertFalse(ConditionType.ADVANCEMENT.hasSubTypes());
+    assertFalse(ConditionType.FALLBACK.hasSubTypes());
+    assertFalse(ConditionType.NONE.hasSubTypes());
+  }
+
+  @Test
+  void testGetSubTypes() {
+    ConditionSubTypeEntry[] handSubTypes = ConditionType.HAS_ITEM_IN_HAND.getSubTypes();
+    assertEquals(3, handSubTypes.length);
+
+    ConditionSubTypeEntry[] durationSubTypes = ConditionType.EXECUTION_LIMIT.getSubTypes();
+    assertEquals(6, durationSubTypes.length);
+
+    ConditionSubTypeEntry[] noSubTypes = ConditionType.HAS_ITEM_IN_INVENTORY.getSubTypes();
+    assertEquals(0, noSubTypes.length);
+  }
+
+  @Test
+  void testGetSubType() {
+    assertEquals(HandItemType.MAIN_HAND, ConditionType.HAS_ITEM_IN_HAND.getSubType("MAIN_HAND"));
+    assertEquals(HandItemType.OFF_HAND, ConditionType.HAS_ITEM_IN_HAND.getSubType("OFF_HAND"));
+    assertEquals(HandItemType.BOTH, ConditionType.HAS_ITEM_IN_HAND.getSubType("BOTH"));
+
+    assertEquals(DurationType.PER_DAY, ConditionType.EXECUTION_LIMIT.getSubType("PER_DAY"));
+    assertEquals(DurationType.PER_HOUR, ConditionType.EXECUTION_LIMIT.getSubType("PER_HOUR"));
+    assertEquals(DurationType.LIFETIME, ConditionType.EXECUTION_LIMIT.getSubType("LIFETIME"));
+
+    assertNull(ConditionType.HAS_ITEM_IN_HAND.getSubType("INVALID"));
+    assertNull(ConditionType.HAS_ITEM_IN_HAND.getSubType(""));
+    assertNull(ConditionType.HAS_ITEM_IN_HAND.getSubType(null));
+    assertNull(ConditionType.HAS_ITEM_IN_INVENTORY.getSubType("MAIN_HAND"));
   }
 }

@@ -21,6 +21,8 @@ package de.markusbordihn.easynpc.condition;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.condition.ConditionDataEntry;
+import de.markusbordihn.easynpc.data.condition.ConditionSubTypeEntry;
+import de.markusbordihn.easynpc.data.condition.DurationType;
 import de.markusbordihn.easynpc.data.execution.ExecutionInterval;
 import de.markusbordihn.easynpc.data.saveddata.ActionExecutionTracker;
 import java.util.UUID;
@@ -41,7 +43,7 @@ public class ExecutionLimitCondition {
     }
 
     int limit = conditionDataEntry.value();
-    ExecutionInterval interval = ExecutionInterval.get(conditionDataEntry.text());
+    ExecutionInterval interval = toInterval(conditionDataEntry.subType());
     ActionExecutionTracker tracker = ActionExecutionTracker.get(serverPlayer.level());
     boolean canExecute = tracker.canExecute(serverPlayer.getUUID(), actionUUID, limit, interval);
     log.debug(
@@ -60,8 +62,22 @@ public class ExecutionLimitCondition {
       return;
     }
 
-    ExecutionInterval interval = ExecutionInterval.get(conditionDataEntry.text());
+    ExecutionInterval interval = toInterval(conditionDataEntry.subType());
     ActionExecutionTracker tracker = ActionExecutionTracker.get(serverPlayer.level());
     tracker.recordExecution(serverPlayer.getUUID(), actionUUID, interval);
+  }
+
+  private static ExecutionInterval toInterval(ConditionSubTypeEntry conditionSubTypeEntry) {
+    if (conditionSubTypeEntry instanceof DurationType durationType) {
+      return switch (durationType) {
+        case PER_MINUTE -> ExecutionInterval.PER_MINUTE;
+        case PER_HOUR -> ExecutionInterval.PER_HOUR;
+        case PER_WEEK -> ExecutionInterval.PER_WEEK;
+        case PER_MONTH -> ExecutionInterval.PER_MONTH;
+        case LIFETIME -> ExecutionInterval.LIFETIME;
+        default -> ExecutionInterval.PER_DAY;
+      };
+    }
+    return ExecutionInterval.PER_DAY;
   }
 }

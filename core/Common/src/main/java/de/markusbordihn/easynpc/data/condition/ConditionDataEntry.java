@@ -24,39 +24,54 @@ import net.minecraft.nbt.CompoundTag;
 
 public record ConditionDataEntry(
     ConditionType conditionType,
+    ConditionSubTypeEntry subType,
     ConditionOperationType operationType,
     String name,
-    int value,
-    String text) {
+    int value) {
 
   public static final ConditionDataEntry EMPTY =
       new ConditionDataEntry(ConditionType.NONE, ConditionOperationType.NONE);
   public static final String DATA_TYPE_TAG = "Type";
+  public static final String DATA_SUB_TYPE_TAG = "SubType";
   public static final String DATA_OPERATION_TAG = "Operation";
   public static final String DATA_NAME_TAG = "Name";
+  public static final String DATA_LEGACY_TEXT_TAG = "Text";
   public static final String DATA_VALUE_TAG = "Value";
-  public static final String DATA_TEXT_TAG = "Text";
 
   public ConditionDataEntry(CompoundTag compoundTag) {
     this(
-        ConditionType.get(compoundTag.getString(DATA_TYPE_TAG).orElse("")),
+        getConditionType(compoundTag),
+        getConditionType(compoundTag).getSubType(getSubTypeName(compoundTag)),
         ConditionOperationType.get(compoundTag.getString(DATA_OPERATION_TAG).orElse("")),
         compoundTag.getString(DATA_NAME_TAG).orElse(""),
-        compoundTag.getInt(DATA_VALUE_TAG).orElse(0),
-        compoundTag.getString(DATA_TEXT_TAG).orElse(""));
+        compoundTag.getInt(DATA_VALUE_TAG).orElse(0));
   }
 
   public ConditionDataEntry(ConditionType conditionType) {
-    this(conditionType, ConditionOperationType.NONE);
+    this(conditionType, null, ConditionOperationType.NONE, "", 0);
   }
 
   public ConditionDataEntry(ConditionType conditionType, ConditionOperationType operationType) {
-    this(conditionType, operationType, "", 0, "");
+    this(conditionType, null, operationType, "", 0);
   }
 
   public ConditionDataEntry(
       ConditionType conditionType, ConditionOperationType operationType, String name, int value) {
-    this(conditionType, operationType, name, value, "");
+    this(conditionType, null, operationType, name, value);
+  }
+
+  private static ConditionType getConditionType(CompoundTag compoundTag) {
+    return ConditionType.get(compoundTag.getString(DATA_TYPE_TAG).orElse(""));
+  }
+
+  private static String getSubTypeName(CompoundTag compoundTag) {
+    if (compoundTag.contains(DATA_SUB_TYPE_TAG)) {
+      return compoundTag.getString(DATA_SUB_TYPE_TAG).orElse("");
+    }
+    if (compoundTag.contains(DATA_LEGACY_TEXT_TAG)) {
+      return compoundTag.getString(DATA_LEGACY_TEXT_TAG).orElse("");
+    }
+    return "";
   }
 
   public UUID getId() {
@@ -68,10 +83,6 @@ public record ConditionDataEntry(
     return this.name != null && !this.name.isEmpty();
   }
 
-  public boolean hasStringValue() {
-    return this.text != null && !this.text.isEmpty();
-  }
-
   public boolean isValid() {
     if (this.conditionType == ConditionType.NONE) {
       return false;
@@ -81,14 +92,8 @@ public record ConditionDataEntry(
           hasName()
               && this.operationType != null
               && this.operationType != ConditionOperationType.NONE;
-      case EXECUTION_LIMIT -> this.value > 0 && hasStringValue();
-      case HAS_ITEM_IN_INVENTORY,
-          HAS_ITEM_IN_MAIN_HAND,
-          HAS_ITEM_IN_OFFHAND,
-          ADVANCEMENT,
-          PLAYER_TAG,
-          TEAM,
-          GAMEMODE ->
+      case EXECUTION_LIMIT -> this.value > 0 && this.subType != null;
+      case HAS_ITEM_IN_INVENTORY, HAS_ITEM_IN_HAND, ADVANCEMENT, PLAYER_TAG, TEAM, GAMEMODE ->
           hasName();
       case EXPERIENCE_LEVEL, PLAYER_HEALTH ->
           this.operationType != null && this.operationType != ConditionOperationType.NONE;
@@ -99,27 +104,27 @@ public record ConditionDataEntry(
 
   public ConditionDataEntry withConditionType(ConditionType conditionType) {
     return new ConditionDataEntry(
-        conditionType, this.operationType, this.name, this.value, this.text);
+        conditionType, this.subType, this.operationType, this.name, this.value);
+  }
+
+  public ConditionDataEntry withSubType(ConditionSubTypeEntry subType) {
+    return new ConditionDataEntry(
+        this.conditionType, subType, this.operationType, this.name, this.value);
   }
 
   public ConditionDataEntry withOperationType(ConditionOperationType operationType) {
     return new ConditionDataEntry(
-        this.conditionType, operationType, this.name, this.value, this.text);
+        this.conditionType, this.subType, operationType, this.name, this.value);
   }
 
   public ConditionDataEntry withName(String name) {
     return new ConditionDataEntry(
-        this.conditionType, this.operationType, name, this.value, this.text);
+        this.conditionType, this.subType, this.operationType, name, this.value);
   }
 
   public ConditionDataEntry withValue(int value) {
     return new ConditionDataEntry(
-        this.conditionType, this.operationType, this.name, value, this.text);
-  }
-
-  public ConditionDataEntry withStringValue(String stringValue) {
-    return new ConditionDataEntry(
-        this.conditionType, this.operationType, this.name, this.value, stringValue);
+        this.conditionType, this.subType, this.operationType, this.name, value);
   }
 
   public ConditionDataEntry create(CompoundTag compoundTag) {
@@ -129,6 +134,9 @@ public record ConditionDataEntry(
   public CompoundTag write(CompoundTag compoundTag) {
     compoundTag.putString(DATA_TYPE_TAG, this.conditionType.name());
 
+    if (this.subType != null) {
+      compoundTag.putString(DATA_SUB_TYPE_TAG, ((Enum<?>) this.subType).name());
+    }
     if (this.operationType != null && this.operationType != ConditionOperationType.NONE) {
       compoundTag.putString(DATA_OPERATION_TAG, this.operationType.name());
     }
@@ -137,9 +145,6 @@ public record ConditionDataEntry(
     }
     if (this.value != 0) {
       compoundTag.putInt(DATA_VALUE_TAG, this.value);
-    }
-    if (hasStringValue()) {
-      compoundTag.putString(DATA_TEXT_TAG, this.text);
     }
 
     return compoundTag;
