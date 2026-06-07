@@ -54,7 +54,8 @@ public class IntegrationRegistry {
   }
 
   public static List<ResourceLocation> getModels(String integrationId) {
-    List<ResourceLocation> cached = registeredModels.getOrDefault(integrationId, Collections.emptyList());
+    List<ResourceLocation> cached =
+        registeredModels.getOrDefault(integrationId, Collections.emptyList());
     if (cached.isEmpty()) {
       IntegrationModelProvider provider = registeredProviders.get(integrationId);
       if (provider != null) {
