@@ -116,13 +116,31 @@ public interface ActionEventDataCapable<E extends Mob> extends EasyNPC<E> {
 
     if (this.isServerSideInstance()) {
       ActionEventSet actionEventSet = this.getActionEventSet();
-      if (actionEventSet != null) {
+      if (this.hasSavableActionEventData(actionEventSet)) {
         actionEventSet.save(actionDataTag);
       }
-      actionDataTag.putInt(DATA_ACTION_PERMISSION_LEVEL_TAG, this.getActionPermissionLevel());
+      if (this.getActionPermissionLevel() != 0) {
+        actionDataTag.putInt(DATA_ACTION_PERMISSION_LEVEL_TAG, this.getActionPermissionLevel());
+      }
     }
 
-    valueOutput.store(DATA_ACTION_DATA_TAG, CompoundTag.CODEC, actionDataTag);
+    if (!actionDataTag.isEmpty()) {
+      valueOutput.store(DATA_ACTION_DATA_TAG, CompoundTag.CODEC, actionDataTag);
+    }
+  }
+
+  default boolean hasSavableActionEventData(ActionEventSet actionEventSet) {
+    if (actionEventSet == null) {
+      return false;
+    }
+
+    for (ActionEventType actionEventType : ActionEventType.values()) {
+      if (actionEventSet.hasActionEvent(actionEventType)) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   default void readAdditionalActionData(ValueInput valueInput) {
@@ -133,16 +151,13 @@ public interface ActionEventDataCapable<E extends Mob> extends EasyNPC<E> {
       return;
     }
 
-    // Read action data
     CompoundTag actionDataTag = compoundTagData.get();
 
-    // Read actions
     if (actionDataTag.contains(ActionEventSet.DATA_ACTION_EVENT_SET_TAG)) {
       ActionEventSet actionDataSet = new ActionEventSet(actionDataTag);
       this.setActionEventSet(actionDataSet);
     }
 
-    // Read permission level
     if (actionDataTag.contains(DATA_ACTION_PERMISSION_LEVEL_TAG)) {
       this.setActionPermissionLevel(
           actionDataTag.getInt(DATA_ACTION_PERMISSION_LEVEL_TAG).orElse(0));
@@ -160,17 +175,14 @@ public interface ActionEventDataCapable<E extends Mob> extends EasyNPC<E> {
             ? actionEventSet.getActionEvents(ActionEventType.ON_INTERACTION)
             : new ActionDataSet();
 
-    // Add open Dialog action
     ActionDataEntry actionDataEntryOpenDialog =
         new ActionDataEntry(ActionDataType.OPEN_DEFAULT_DIALOG);
     actionDataSet.add(actionDataEntryOpenDialog);
 
-    // Add open Trading Screen action
     ActionDataEntry actionDataEntryOpenTradingScreen =
         new ActionDataEntry(ActionDataType.OPEN_TRADING_SCREEN);
     actionDataSet.add(actionDataEntryOpenTradingScreen);
 
-    // Update action data set
     actionEventSet.setActionEvent(ActionEventType.ON_INTERACTION, actionDataSet);
     this.setActionEventSet(actionEventSet);
   }

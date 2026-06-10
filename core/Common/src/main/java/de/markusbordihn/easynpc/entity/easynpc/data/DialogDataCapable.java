@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.entity.easynpc.data;
 import de.markusbordihn.easynpc.data.dialog.DialogButtonEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
+import de.markusbordihn.easynpc.data.dialog.DialogType;
 import de.markusbordihn.easynpc.data.server.ServerDataAccessor;
 import de.markusbordihn.easynpc.data.server.ServerDataIndex;
 import de.markusbordihn.easynpc.data.server.ServerEntityData;
@@ -126,16 +127,14 @@ public interface DialogDataCapable<T extends Mob> extends EasyNPC<T> {
   }
 
   default void addAdditionalDialogData(ValueOutput valueOutput) {
-    CompoundTag dialogDataTag = new CompoundTag();
-
     if (this.isServerSideInstance()) {
       DialogDataSet dialogDataSet = this.getDialogDataSet();
-      if (dialogDataSet != null) {
+      if (dialogDataSet != null && dialogDataSet.hasDialog()) {
+        CompoundTag dialogDataTag = new CompoundTag();
         dialogDataSet.save(dialogDataTag);
+        valueOutput.store(DATA_DIALOG_DATA_TAG, CompoundTag.CODEC, dialogDataTag);
       }
     }
-
-    valueOutput.store(DATA_DIALOG_DATA_TAG, CompoundTag.CODEC, dialogDataTag);
   }
 
   default void readAdditionalDialogData(ValueInput valueInput) {
@@ -143,13 +142,15 @@ public interface DialogDataCapable<T extends Mob> extends EasyNPC<T> {
     Optional<CompoundTag> compoundTagData =
         valueInput.read(DATA_DIALOG_DATA_TAG, CompoundTag.CODEC);
     if (compoundTagData.isEmpty()) {
+      DialogDataSet dialogDataSet = this.getDialogDataSet();
+      if (dialogDataSet != null && !dialogDataSet.hasDialog()) {
+        this.setDialogDataSet(new DialogDataSet(DialogType.NONE));
+      }
       return;
     }
 
-    // Read dialog data
     CompoundTag dialogDataTag = compoundTagData.get();
 
-    // Read dialog
     if (dialogDataTag.contains(DialogDataSet.DATA_DIALOG_DATA_SET_TAG)) {
       DialogDataSet dialogDataSet = new DialogDataSet(dialogDataTag);
       this.setDialogDataSet(dialogDataSet);

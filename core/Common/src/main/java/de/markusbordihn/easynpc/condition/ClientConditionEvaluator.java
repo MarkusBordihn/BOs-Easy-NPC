@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Markus Bordihn
+ * Copyright 2025 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -20,35 +20,38 @@
 package de.markusbordihn.easynpc.condition;
 
 import de.markusbordihn.easynpc.data.condition.ConditionDataEntry;
-import de.markusbordihn.easynpc.data.condition.ConditionOperationType;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
+import java.util.Set;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 
-public class HasItemInInventoryCondition {
+public class ClientConditionEvaluator {
 
-  private HasItemInInventoryCondition() {}
+  private ClientConditionEvaluator() {}
 
-  public static boolean evaluate(ConditionDataEntry conditionDataEntry, Player player) {
-    if (!conditionDataEntry.hasName() || player == null) {
-      return false;
+  public static boolean evaluateAll(Set<ConditionDataEntry> conditionDataEntries, Player player) {
+    if (conditionDataEntries == null || conditionDataEntries.isEmpty() || player == null) {
+      return true;
     }
 
-    String itemName = conditionDataEntry.name();
-    int required = Math.max(1, conditionDataEntry.value());
-    int total = 0;
-    for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
-      ItemStack stack = player.getInventory().getItem(i);
-      if (!stack.isEmpty()) {
-        Identifier key = BuiltInRegistries.ITEM.getKey(stack.getItem());
-        if (key != null && key.toString().equals(itemName)) {
-          total += stack.getCount();
-        }
+    for (ConditionDataEntry conditionDataEntry : conditionDataEntries) {
+      if (!evaluate(conditionDataEntry, player)) {
+        return false;
       }
     }
+    return true;
+  }
 
-    boolean hasEnough = total >= required;
-    return (conditionDataEntry.operationType() == ConditionOperationType.NOT_EQUALS) != hasEnough;
+  private static boolean evaluate(ConditionDataEntry conditionDataEntry, Player player) {
+    if (conditionDataEntry == null || !conditionDataEntry.isValid()) {
+      return true;
+    }
+
+    return switch (conditionDataEntry.conditionType()) {
+      case HAS_ITEM_IN_INVENTORY ->
+          HasItemInInventoryCondition.evaluate(conditionDataEntry, player);
+      case HAS_ITEM_IN_HAND -> HasItemInHandCondition.evaluate(conditionDataEntry, player);
+      case EXPERIENCE_LEVEL -> ExperienceLevelCondition.evaluate(conditionDataEntry, player);
+      case PLAYER_HEALTH -> PlayerHealthCondition.evaluate(conditionDataEntry, player);
+      default -> true;
+    };
   }
 }

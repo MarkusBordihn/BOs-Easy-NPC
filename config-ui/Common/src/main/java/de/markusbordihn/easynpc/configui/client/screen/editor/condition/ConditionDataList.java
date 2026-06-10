@@ -61,6 +61,11 @@ class ConditionDataList extends ObjectSelectionList<ConditionDataListEntry> {
   }
 
   @Override
+  protected int scrollBarX() {
+    return this.getX() + this.getWidth() - 6;
+  }
+
+  @Override
   protected void extractListSeparators(GuiGraphicsExtractor guiGraphics) {
     // Do not render list separators.
   }

@@ -180,7 +180,7 @@ public class PoseManager {
       log.warn("{} Pose data {} already registered!", LOG_PREFIX, resourceLocation);
     }
 
-    log.info("{} Registering pose data {}", LOG_PREFIX, resourceLocation);
+    log.debug("{} Registering pose data {}", LOG_PREFIX, resourceLocation);
     poseDataMap.put(resourceLocation, animation);
     cachedRotations.remove(resourceLocation);
     cachedPositions.remove(resourceLocation);
@@ -245,20 +245,17 @@ public class PoseManager {
       return false;
     }
 
-    // Validate Animation data.
     if (animation.getBones() == null || animation.getBones().isEmpty()) {
       log.error("{} Animation data is missing for {}!", LOG_PREFIX, animation.getName());
       return false;
     }
 
-    // Validate Model data.
     ModelDataCapable<?> modelData = easyNPC.getEasyNPCModelData();
     if (modelData == null) {
       log.error("{} Model data is missing for Easy NPC {}!", LOG_PREFIX, easyNPC.getEntityUUID());
       return false;
     }
 
-    // Set default pose
     easyNPC.getEntity().setPose(Pose.STANDING);
     modelData.setModelPose(ModelPose.DEFAULT);
 

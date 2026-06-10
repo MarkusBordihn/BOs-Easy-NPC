@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.entity.easynpc.data;
 import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
+import de.markusbordihn.easynpc.utils.CompoundTagUtils;
 import java.util.EnumMap;
 import java.util.Map;
 import net.minecraft.nbt.CompoundTag;
@@ -142,9 +143,11 @@ public interface ModelRotationDataCapable<T extends Mob> extends ModelRootDataCa
     CompoundTag rotationsTag = new CompoundTag();
     EnumMap<ModelPartType, CustomRotation> modelPartMap = getModelPartRotation();
     for (Map.Entry<ModelPartType, CustomRotation> entry : modelPartMap.entrySet()) {
-      rotationsTag.put(entry.getKey().getTagName(), entry.getValue().save());
+      if (entry.getValue() != null && entry.getValue().hasChanged()) {
+        rotationsTag.put(entry.getKey().getTagName(), entry.getValue().save());
+      }
     }
-    compoundTag.put(EASY_NPC_DATA_MODEL_ROTATION_TAG, rotationsTag);
+    CompoundTagUtils.putIfNotEmpty(compoundTag, EASY_NPC_DATA_MODEL_ROTATION_TAG, rotationsTag);
   }
 
   default void readAdditionalModelRotationData(CompoundTag compoundTag) {

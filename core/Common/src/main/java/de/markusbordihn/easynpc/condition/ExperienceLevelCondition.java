@@ -20,19 +20,19 @@
 package de.markusbordihn.easynpc.condition;
 
 import de.markusbordihn.easynpc.data.condition.ConditionDataEntry;
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 
 public class ExperienceLevelCondition {
 
   private ExperienceLevelCondition() {}
 
-  public static boolean evaluate(ConditionDataEntry conditionDataEntry, ServerPlayer serverPlayer) {
-    if (serverPlayer == null) {
+  public static boolean evaluate(ConditionDataEntry conditionDataEntry, Player player) {
+    if (player == null) {
       return false;
     }
 
     return conditionDataEntry
         .operationType()
-        .evaluate(serverPlayer.experienceLevel, conditionDataEntry.value());
+        .evaluate(player.experienceLevel, conditionDataEntry.value());
   }
 }

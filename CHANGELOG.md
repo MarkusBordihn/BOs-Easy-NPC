@@ -8,6 +8,23 @@ For the full changelog, please go to the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 6.19.0
+
+Note: This update adjusted the dialog background images by 10x6 pixels, which may require users to
+adjust their custom dialog backgrounds if they are using custom ones.
+
+- Fixed #752, #130 by adding dialog button condition support to allow to disable buttons.
+- Fixed #683, #215 by adding typewriter effect support for dialog text.
+- Fixed #690, #309 by allowing conditions for dialog, dialog buttons and interactions.
+- Fixed smaller UI issues with dialog screen layout and background.
+- Refactored dialog background images by 10x6 pixels on each side.
+- Refactored dialog screen layout to better fit the new background size and improve appearance.
+- Added typewriter effect and client configuration for dialog text.
+- Added condition symbols to indicate the condition status for dialog, buttons and interactions.
+- Added amount field for item conditions to allow checking for specific amounts of items.
+- Added `Threshold Warden` as example NPC preset with various conditions and actions.
+- Added smaller bug fixes and optimizations related to dialog conditions and button states.
+
 ### 6.18.0
 
 Note: This update changes the internal data format for conditions and actions,

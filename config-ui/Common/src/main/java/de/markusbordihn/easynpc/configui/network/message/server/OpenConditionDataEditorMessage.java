@@ -33,7 +33,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 
-public record OpenConditionDataEditorMessage(UUID uuid, UUID dialogId)
+public record OpenConditionDataEditorMessage(UUID uuid, UUID dialogId, UUID dialogButtonId)
     implements NetworkMessageRecord {
 
   public static final Identifier MESSAGE_ID =
@@ -45,13 +45,15 @@ public record OpenConditionDataEditorMessage(UUID uuid, UUID dialogId)
               (buffer, message) -> message.write(buffer), OpenConditionDataEditorMessage::create);
 
   public static OpenConditionDataEditorMessage create(final FriendlyByteBuf buffer) {
-    return new OpenConditionDataEditorMessage(buffer.readUUID(), buffer.readUUID());
+    return new OpenConditionDataEditorMessage(
+        buffer.readUUID(), buffer.readUUID(), buffer.readUUID());
   }
 
   @Override
   public void write(final FriendlyByteBuf buffer) {
     buffer.writeUUID(this.uuid);
     buffer.writeUUID(this.dialogId);
+    buffer.writeUUID(this.dialogButtonId);
   }
 
   @Override
@@ -71,14 +73,13 @@ public record OpenConditionDataEditorMessage(UUID uuid, UUID dialogId)
       return;
     }
 
-    // Open condition data editor
     MenuManager.getMenuHandler()
         .openEditorMenu(
             EditorType.CONDITION_DATA,
             serverPlayer,
             easyNPC,
             this.dialogId,
-            Constants.EMPTY_UUID,
+            this.dialogButtonId,
             null,
             null,
             0,

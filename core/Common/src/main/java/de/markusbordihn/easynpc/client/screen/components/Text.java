@@ -183,6 +183,28 @@ public class Text {
     }
   }
 
+  public static int length(FormattedCharSequence sequence) {
+    int[] count = {0};
+    sequence.accept(
+        (index, style, codePoint) -> {
+          count[0]++;
+          return true;
+        });
+    return count[0];
+  }
+
+  public static FormattedCharSequence limit(FormattedCharSequence sequence, int maxChars) {
+    if (maxChars <= 0) {
+      return FormattedCharSequence.EMPTY;
+    }
+    return sink -> {
+      int[] count = {0};
+      return sequence.accept(
+          (index, style, codePoint) ->
+              count[0]++ < maxChars && sink.accept(index, style, codePoint));
+    };
+  }
+
   public static List<String> wrapText(Font font, String text, int maxWidth) {
     List<String> lines = new ArrayList<>();
     String[] words = text.split(" ");

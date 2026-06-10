@@ -21,7 +21,9 @@
     "client": [
       "de.markusbordihn.easynpc.EasyNPCClient"
     ],
-    "fabric-gametest": []
+    "fabric-gametest": [
+      "de.markusbordihn.easynpc.gametest.ConditionEvaluationTest"
+    ]
   },
   "mixins": [
     "easy_npc.fabric.mixins.json"

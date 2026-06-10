@@ -21,8 +21,12 @@ package de.markusbordihn.easynpc.configui.client.screen.components;
 
 import de.markusbordihn.easynpc.client.screen.components.SpriteButton;
 import de.markusbordihn.easynpc.configui.Constants;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button.OnPress;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.Mth;
 
 public class DialogButtonButton extends SpriteButton {
 
@@ -35,7 +39,14 @@ public class DialogButtonButton extends SpriteButton {
   public static final int SPRITE_Y = 2;
   private static final Identifier TEXTURE = Constants.TEXTURE_CONFIGURATION;
 
+  private final boolean hasCondition;
+
   public DialogButtonButton(int left, int top, int width, String label, OnPress onPress) {
+    this(left, top, width, label, false, onPress);
+  }
+
+  public DialogButtonButton(
+      int left, int top, int width, String label, boolean hasCondition, OnPress onPress) {
     super(
         left,
         top,
@@ -50,5 +61,32 @@ public class DialogButtonButton extends SpriteButton {
         SPRITE_WIDTH,
         SPRITE_HEIGHT,
         onPress);
+    this.hasCondition = hasCondition;
+  }
+
+  @Override
+  public void renderButton(
+      GuiGraphicsExtractor guiGraphics, int left, int top, float partialTicks) {
+    super.renderButton(guiGraphics, left, top, partialTicks);
+    if (this.hasCondition) {
+      ConditionButton.renderIndicator(
+          guiGraphics, this.getX() + this.width - SPRITE_WIDTH - 2, this.getY() + 2);
+    }
+  }
+
+  @Override
+  public void renderButtonText(
+      GuiGraphicsExtractor guiGraphics, Font font, Component component, int x, int y) {
+    if (!this.hasCondition) {
+      super.renderButtonText(guiGraphics, font, component, x, y);
+      return;
+    }
+
+    int conditionReservedRight = SPRITE_WIDTH + 4;
+    int fgColor = this.active ? Constants.FONT_COLOR_WHITE : Constants.FONT_COLOR_LIGHT_GRAY;
+    int textColor = fgColor | Mth.ceil(this.alpha * 255.0F) << 24;
+    int textCenter = this.getX() + (SPRITE_WIDTH + this.width - conditionReservedRight) / 2;
+    guiGraphics.centeredText(
+        font, component, textCenter, this.getY() + (this.height - 8) / 2, textColor);
   }
 }

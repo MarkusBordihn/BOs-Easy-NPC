@@ -206,6 +206,8 @@ public class ImportPresetConfigurationScreen<T extends ConfigurationMenu>
     // Preset Selection List
     this.presetSelectionList =
         new ImportPresetConfigurationScreen<T>.ImportFileSelectionList(this.minecraft);
+    this.presetSelectionList.updateSizeAndPosition(
+        this.imageWidth - 22, 95, this.leftPos + 11, this.contentTopPos + 47);
     this.addWidget(this.presetSelectionList);
     ImportPresetConfigurationScreen.updateSelectedPreset(null);
   }
@@ -292,6 +294,11 @@ public class ImportPresetConfigurationScreen<T extends ConfigurationMenu>
     @Override
     public int getRowWidth() {
       return super.getRowWidth() + 40;
+    }
+
+    @Override
+    protected int scrollBarX() {
+      return this.getX() + this.getWidth() - 6;
     }
 
     @Override

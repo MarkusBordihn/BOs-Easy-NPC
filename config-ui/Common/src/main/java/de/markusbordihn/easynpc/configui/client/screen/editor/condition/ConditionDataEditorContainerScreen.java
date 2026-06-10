@@ -27,19 +27,11 @@ import de.markusbordihn.easynpc.configui.client.screen.components.ActionButton;
 import de.markusbordihn.easynpc.configui.client.screen.components.ActionsButton;
 import de.markusbordihn.easynpc.configui.client.screen.components.AddButton;
 import de.markusbordihn.easynpc.configui.client.screen.components.DialogButton;
-import de.markusbordihn.easynpc.configui.data.editor.EditorType;
 import de.markusbordihn.easynpc.configui.menu.editor.EditorMenu;
-import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
-import de.markusbordihn.easynpc.data.action.ActionDataEntry;
-import de.markusbordihn.easynpc.data.action.ActionDataSet;
-import de.markusbordihn.easynpc.data.action.ActionEventType;
 import de.markusbordihn.easynpc.data.condition.ConditionDataEntry;
 import de.markusbordihn.easynpc.data.condition.ConditionDataSet;
 import de.markusbordihn.easynpc.data.condition.ConditionType;
-import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
-import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.network.components.TextComponent;
-import java.util.UUID;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.ConfirmScreen;
@@ -73,7 +65,7 @@ public class ConditionDataEditorContainerScreen<T extends EditorMenu> extends Ed
   private static final int COLOR_SEPARATOR = 0xff666666;
 
   private final ConditionDataSet conditionDataSet;
-  private final boolean actionContext;
+  private final ConditionEditorContext context;
   protected Button homeButton;
   protected Button contextButton;
   protected Button conditionsButton;
@@ -82,186 +74,8 @@ public class ConditionDataEditorContainerScreen<T extends EditorMenu> extends Ed
 
   public ConditionDataEditorContainerScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
-    this.actionContext = isActionContext();
-    this.conditionDataSet = loadConditionDataSet();
-  }
-
-  private boolean isActionContext() {
-    UUID actionDataEntryId = this.getActionDataEntryUUID();
-    return actionDataEntryId != null && !Constants.EMPTY_UUID.equals(actionDataEntryId);
-  }
-
-  private ConditionDataSet loadConditionDataSet() {
-    if (this.actionContext) {
-      ActionDataEntry entry = findActionDataEntry();
-      if (entry != null) {
-        return entry.conditionDataSet();
-      }
-
-      log.error("No valid action data entry found for condition editor!");
-      return new ConditionDataSet();
-    }
-
-    DialogDataEntry dialogData = this.getDialogData();
-    if (dialogData != null && dialogData.getConditions() != null) {
-      ConditionDataSet set = new ConditionDataSet();
-      for (ConditionDataEntry entry : dialogData.getConditions()) {
-        set.add(entry);
-      }
-      return set;
-    }
-
-    log.error("No valid condition data set found!");
-    return new ConditionDataSet();
-  }
-
-  private ActionDataEntry findActionDataEntry() {
-    UUID actionDataEntryId = this.getActionDataEntryUUID();
-    if (actionDataEntryId == null) {
-      return null;
-    }
-
-    ActionDataSet actionDataSet = getActionDataSet();
-    if (actionDataSet == null) {
-      return null;
-    }
-
-    return actionDataSet.getEntryOrDefault(actionDataEntryId);
-  }
-
-  private ActionDataSet getActionDataSet() {
-    EditorType formerEditorType = this.getAdditionalScreenData().getEditorType();
-    ActionEventType actionEventType = this.getAdditionalScreenData().getActionEventType();
-
-    if (formerEditorType == EditorType.TRADING_OFFER_ACTION) {
-      return this.getAdditionalScreenData().getTradingOfferActionDataSet();
-    } else if (formerEditorType == EditorType.DIALOG_BUTTON) {
-      return this.getDialogButtonData() != null ? this.getDialogButtonData().actionDataSet() : null;
-    } else if (actionEventType != null && actionEventType != ActionEventType.NONE) {
-      return this.getAdditionalScreenData().getActionEventSet().getActionEvents(actionEventType);
-    }
-
-    return null;
-  }
-
-  private void updateConditionDataSet() {
-    if (this.actionContext) {
-      ActionDataEntry currentEntry = findActionDataEntry();
-      if (currentEntry == null) {
-        return;
-      }
-
-      ActionDataEntry updatedEntry = currentEntry.withConditionDataSet(this.conditionDataSet);
-      ActionDataSet actionDataSet = getActionDataSet();
-      if (actionDataSet != null) {
-        actionDataSet.put(this.getActionDataEntryUUID(), updatedEntry);
-      }
-
-      EditorType formerEditorType = this.getAdditionalScreenData().getEditorType();
-      ActionEventType actionEventType = this.getAdditionalScreenData().getActionEventType();
-      ConfigurationType configurationType = this.getAdditionalScreenData().getConfigurationType();
-
-      if (formerEditorType == EditorType.TRADING_OFFER_ACTION) {
-        NetworkMessageHandlerManager.getServerHandler()
-            .changeTradingOfferAction(this.getEasyNPCUUID(), this.getPageIndex(), actionDataSet);
-      } else if (formerEditorType == EditorType.DIALOG_BUTTON) {
-        NetworkMessageHandlerManager.getServerHandler()
-            .saveDialogButton(
-                this.getEasyNPCUUID(),
-                this.getDialogUUID(),
-                this.getDialogButtonUUID(),
-                this.getDialogButtonData().withActionDataSet(actionDataSet));
-      } else if (actionEventType != null && actionEventType != ActionEventType.NONE) {
-        NetworkMessageHandlerManager.getServerHandler()
-            .actionEventChange(this.getEasyNPCUUID(), actionEventType, actionDataSet);
-      }
-      return;
-    }
-
-    DialogDataEntry dialogData = this.getDialogData();
-    dialogData.setConditions(this.conditionDataSet.getConditions());
-    NetworkMessageHandlerManager.getServerHandler()
-        .saveDialog(this.getEasyNPCUUID(), this.getDialogUUID(), dialogData);
-  }
-
-  private void handleBackNavigation() {
-    if (this.actionContext) {
-      EditorType formerEditorType = this.getAdditionalScreenData().getEditorType();
-      ActionEventType actionEventType = this.getAdditionalScreenData().getActionEventType();
-      ConfigurationType configurationType = this.getAdditionalScreenData().getConfigurationType();
-
-      if (formerEditorType == EditorType.TRADING_OFFER_ACTION) {
-        NetworkMessageHandlerManager.getServerHandler()
-            .openTradingOfferActionEntryEditor(
-                this.getEasyNPCUUID(),
-                this.getPageIndex(),
-                configurationType,
-                findActionDataEntry() != null ? findActionDataEntry() : new ActionDataEntry());
-      } else if (formerEditorType == EditorType.DIALOG_BUTTON) {
-        NetworkMessageHandlerManager.getServerHandler()
-            .openActionDataEntryEditor(
-                this.getEasyNPCUUID(),
-                formerEditorType,
-                this.getDialogUUID(),
-                this.getDialogButtonUUID(),
-                findActionDataEntry() != null ? findActionDataEntry() : new ActionDataEntry());
-      } else if (actionEventType != null && actionEventType != ActionEventType.NONE) {
-        NetworkMessageHandlerManager.getServerHandler()
-            .openActionDataEntryEditor(
-                this.getEasyNPCUUID(),
-                actionEventType,
-                configurationType,
-                findActionDataEntry() != null ? findActionDataEntry() : new ActionDataEntry());
-      }
-      return;
-    }
-
-    NetworkMessageHandlerManager.getServerHandler()
-        .openDialogEditor(this.getEasyNPCUUID(), this.getDialogUUID());
-  }
-
-  private void handleNewConditionDataEntry() {
-    if (this.actionContext) {
-      NetworkMessageHandlerManager.getServerHandler()
-          .openActionConditionDataEntryEditor(
-              this.getEasyNPCUUID(),
-              this.getActionDataEntryUUID(),
-              this.getAdditionalScreenData().getActionEventType(),
-              this.getAdditionalScreenData().getConfigurationType(),
-              this.getAdditionalScreenData().getEditorType(),
-              this.getDialogUUID(),
-              this.getDialogButtonUUID(),
-              this.getPageIndex(),
-              new ConditionDataEntry(ConditionType.SCOREBOARD));
-      return;
-    }
-
-    NetworkMessageHandlerManager.getServerHandler()
-        .openConditionDataEntryEditor(
-            this.getEasyNPCUUID(),
-            this.getDialogUUID(),
-            new ConditionDataEntry(ConditionType.SCOREBOARD));
-  }
-
-  private void handleEditConditionDataEntry(ConditionDataEntry conditionDataEntry) {
-    if (this.actionContext) {
-      NetworkMessageHandlerManager.getServerHandler()
-          .openActionConditionDataEntryEditor(
-              this.getEasyNPCUUID(),
-              this.getActionDataEntryUUID(),
-              this.getAdditionalScreenData().getActionEventType(),
-              this.getAdditionalScreenData().getConfigurationType(),
-              this.getAdditionalScreenData().getEditorType(),
-              this.getDialogUUID(),
-              this.getDialogButtonUUID(),
-              this.getPageIndex(),
-              conditionDataEntry);
-      return;
-    }
-
-    NetworkMessageHandlerManager.getServerHandler()
-        .openConditionDataEntryEditor(
-            this.getEasyNPCUUID(), this.getDialogUUID(), conditionDataEntry);
+    this.context = ConditionEditorContext.resolve(this);
+    this.conditionDataSet = this.context.loadConditionDataSet();
   }
 
   private void handleDeleteConditionDataEntry(ConditionDataEntry conditionDataEntry) {
@@ -277,8 +91,8 @@ public class ConditionDataEditorContainerScreen<T extends EditorMenu> extends Ed
             confirmed -> {
               if (confirmed) {
                 this.conditionDataSet.remove(conditionDataEntry.getId());
-                updateConditionDataSet();
-                navigateToConditionDataEditor();
+                this.context.saveConditionDataSet(this.conditionDataSet);
+                this.context.openConditionListEditor();
               } else {
                 this.minecraft.setScreen(this);
               }
@@ -289,25 +103,6 @@ public class ConditionDataEditorContainerScreen<T extends EditorMenu> extends Ed
                 conditionDataEntry.conditionType().name()),
             TextComponent.getTranslatedConfigText("removeConditionDataEntry.deleteButton"),
             CommonComponents.GUI_CANCEL));
-  }
-
-  private void navigateToConditionDataEditor() {
-    if (this.actionContext) {
-      NetworkMessageHandlerManager.getServerHandler()
-          .openActionConditionDataEditor(
-              this.getEasyNPCUUID(),
-              this.getActionDataEntryUUID(),
-              this.getAdditionalScreenData().getActionEventType(),
-              this.getAdditionalScreenData().getConfigurationType(),
-              this.getAdditionalScreenData().getEditorType(),
-              this.getDialogUUID(),
-              this.getDialogButtonUUID(),
-              this.getPageIndex());
-      return;
-    }
-
-    NetworkMessageHandlerManager.getServerHandler()
-        .openConditionDataEditor(this.getEasyNPCUUID(), this.getDialogUUID());
   }
 
   @Override
@@ -322,28 +117,28 @@ public class ConditionDataEditorContainerScreen<T extends EditorMenu> extends Ed
                 HOME_BUTTON_WIDTH,
                 HOME_BUTTON_HEIGHT,
                 "<",
-                onPress -> handleBackNavigation()));
+                onPress -> this.context.openParentEditor()));
 
-    if (this.actionContext) {
+    int contextButtonX = this.homeButton.getX() + this.homeButton.getWidth();
+    int contextButtonY = this.topPos + HOME_BUTTON_Y_OFFSET;
+    if (this.context.isActionContext()) {
       this.contextButton =
           this.addRenderableWidget(
               new ActionsButton(
-                  this.homeButton.getX() + this.homeButton.getWidth(),
-                  this.topPos + HOME_BUTTON_Y_OFFSET,
+                  contextButtonX,
+                  contextButtonY,
                   NAVIGATION_BUTTON_WIDTH,
-                  "Actions",
-                  onPress -> handleBackNavigation()));
+                  this.context.breadcrumbLabel(),
+                  onPress -> this.context.openParentEditor()));
     } else {
       this.contextButton =
           this.addRenderableWidget(
               new DialogButton(
-                  this.homeButton.getX() + this.homeButton.getWidth(),
-                  this.topPos + HOME_BUTTON_Y_OFFSET,
+                  contextButtonX,
+                  contextButtonY,
                   NAVIGATION_BUTTON_WIDTH,
-                  this.getDialogData() != null ? this.getDialogData().getName(21) : "Dialog",
-                  onPress ->
-                      NetworkMessageHandlerManager.getServerHandler()
-                          .openDialogEditor(this.getEasyNPCUUID(), this.getDialogUUID())));
+                  this.context.breadcrumbLabel(),
+                  onPress -> this.context.openParentEditor()));
     }
 
     this.conditionsButton =
@@ -363,20 +158,27 @@ public class ConditionDataEditorContainerScreen<T extends EditorMenu> extends Ed
                 this.topPos + FOOTER_Y_OFFSET + 5,
                 ADD_BUTTON_WIDTH,
                 "condition.add",
-                onPress -> handleNewConditionDataEntry()));
+                onPress ->
+                    this.context.openConditionEntryEditor(
+                        new ConditionDataEntry(ConditionType.SCOREBOARD))));
 
     this.conditionDataList =
         new ConditionDataList(
             this.conditionDataSet,
             this.minecraft,
-            this.width + 50,
-            this.height - 60,
+            LIST_TOTAL_WIDTH,
+            LIST_Y_END - LIST_Y_START,
             this.leftPos + LIST_X_OFFSET,
             this.topPos + LIST_Y_START,
             this.topPos + LIST_Y_END,
             ENTRY_HEIGHT,
-            this::handleEditConditionDataEntry,
+            this.context::openConditionEntryEditor,
             this::handleDeleteConditionDataEntry);
+    this.conditionDataList.updateSizeAndPosition(
+        LIST_TOTAL_WIDTH,
+        LIST_Y_END - LIST_Y_START,
+        this.leftPos + LIST_X_OFFSET,
+        this.topPos + LIST_Y_START);
     this.addWidget(this.conditionDataList);
   }
 

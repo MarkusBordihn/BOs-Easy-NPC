@@ -256,4 +256,16 @@ public class CompoundTagUtils {
       log.debug("Fixed legacy CustomName '{}' on entity load", nameString);
     }
   }
+
+  public static boolean hasAnyKeys(CompoundTag compoundTag) {
+    return compoundTag != null && !compoundTag.isEmpty();
+  }
+
+  public static void putIfNotEmpty(CompoundTag parent, String key, CompoundTag child) {
+    if (parent == null || key == null || key.isEmpty() || !hasAnyKeys(child)) {
+      return;
+    }
+
+    parent.put(key, child);
+  }
 }

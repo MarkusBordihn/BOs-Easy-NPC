@@ -38,17 +38,10 @@ import de.markusbordihn.easynpc.configui.client.screen.editor.condition.entry.Ga
 import de.markusbordihn.easynpc.configui.client.screen.editor.condition.entry.HasItemConditionEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.condition.entry.PlayerHealthConditionEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.condition.entry.ScoreboardConditionEntry;
-import de.markusbordihn.easynpc.configui.data.editor.EditorType;
-import de.markusbordihn.easynpc.configui.data.screen.AdditionalScreenData;
 import de.markusbordihn.easynpc.configui.menu.editor.EditorMenu;
-import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
-import de.markusbordihn.easynpc.data.action.ActionDataEntry;
-import de.markusbordihn.easynpc.data.action.ActionDataSet;
-import de.markusbordihn.easynpc.data.action.ActionEventType;
 import de.markusbordihn.easynpc.data.condition.ConditionDataEntry;
 import de.markusbordihn.easynpc.data.condition.ConditionDataSet;
 import de.markusbordihn.easynpc.data.condition.ConditionType;
-import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
@@ -70,7 +63,7 @@ public class ConditionDataEntryEditorContainerScreen<T extends EditorMenu> exten
   private final ConditionDataEntry conditionDataEntry;
   private final ConditionDataSet conditionDataSet;
   private final UUID conditionDataEntryId;
-  private final boolean actionContext;
+  private final ConditionEditorContext context;
   protected Button homeButton;
   protected Button contextButton;
   protected Button conditionsButton;
@@ -85,66 +78,14 @@ public class ConditionDataEntryEditorContainerScreen<T extends EditorMenu> exten
 
   public ConditionDataEntryEditorContainerScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
-    this.actionContext = isActionContext();
-    this.conditionDataSet = loadConditionDataSet();
+    this.context = ConditionEditorContext.resolve(this);
+    this.conditionDataSet = this.context.loadConditionDataSet();
     this.conditionDataEntryId = this.getConditionDataEntryUUID();
     this.conditionDataEntry = loadConditionDataEntry();
     this.conditionType =
         this.conditionDataEntry.conditionType() != ConditionType.NONE
             ? this.conditionDataEntry.conditionType()
             : ConditionType.SCOREBOARD;
-  }
-
-  private boolean isActionContext() {
-    UUID actionDataEntryId = this.getActionDataEntryUUID();
-    return actionDataEntryId != null && !Constants.EMPTY_UUID.equals(actionDataEntryId);
-  }
-
-  private ConditionDataSet loadConditionDataSet() {
-    if (this.actionContext) {
-      ActionDataEntry entry = findActionDataEntry();
-      if (entry != null) {
-        return entry.conditionDataSet();
-      }
-
-      return new ConditionDataSet();
-    }
-
-    DialogDataEntry dialogData = this.getDialogData();
-    if (dialogData != null && dialogData.getConditions() != null) {
-      return new ConditionDataSet(dialogData.getConditions());
-    }
-
-    return new ConditionDataSet();
-  }
-
-  private ActionDataEntry findActionDataEntry() {
-    UUID actionDataEntryId = this.getActionDataEntryUUID();
-    if (actionDataEntryId == null) {
-      return null;
-    }
-
-    ActionDataSet actionDataSet = getActionDataSet();
-    if (actionDataSet == null) {
-      return null;
-    }
-
-    return actionDataSet.getEntryOrDefault(actionDataEntryId);
-  }
-
-  private ActionDataSet getActionDataSet() {
-    EditorType formerEditorType = this.getAdditionalScreenData().getEditorType();
-    ActionEventType actionEventType = this.getAdditionalScreenData().getActionEventType();
-
-    if (formerEditorType == EditorType.TRADING_OFFER_ACTION) {
-      return this.getAdditionalScreenData().getTradingOfferActionDataSet();
-    } else if (formerEditorType == EditorType.DIALOG_BUTTON) {
-      return this.getDialogButtonData() != null ? this.getDialogButtonData().actionDataSet() : null;
-    } else if (actionEventType != null && actionEventType != ActionEventType.NONE) {
-      return this.getAdditionalScreenData().getActionEventSet().getActionEvents(actionEventType);
-    }
-
-    return null;
   }
 
   private ConditionDataEntry loadConditionDataEntry() {
@@ -157,22 +98,7 @@ public class ConditionDataEntryEditorContainerScreen<T extends EditorMenu> exten
   }
 
   private void navigateToConditionDataEditor() {
-    if (this.actionContext) {
-      NetworkMessageHandlerManager.getServerHandler()
-          .openActionConditionDataEditor(
-              this.getEasyNPCUUID(),
-              this.getActionDataEntryUUID(),
-              this.getAdditionalScreenData().getActionEventType(),
-              this.getAdditionalScreenData().getConfigurationType(),
-              this.getAdditionalScreenData().getEditorType(),
-              this.getDialogUUID(),
-              this.getDialogButtonUUID(),
-              this.getPageIndex());
-      return;
-    }
-
-    NetworkMessageHandlerManager.getServerHandler()
-        .openConditionDataEditor(this.getEasyNPCUUID(), this.getDialogUUID());
+    this.context.openConditionListEditor();
   }
 
   protected void changeConditionType(SpinButton<?> spinButton) {
@@ -191,50 +117,7 @@ public class ConditionDataEntryEditorContainerScreen<T extends EditorMenu> exten
             ? this.conditionEntryWidget.getConditionDataEntry()
             : new ConditionDataEntry(this.conditionType);
     this.conditionDataSet.put(this.conditionDataEntryId, newEntry);
-
-    if (this.actionContext) {
-      ActionDataEntry currentEntry = findActionDataEntry();
-      if (currentEntry == null) {
-        return;
-      }
-
-      ActionDataEntry updatedEntry = currentEntry.withConditionDataSet(this.conditionDataSet);
-      ActionDataSet actionDataSet = getActionDataSet();
-      if (actionDataSet != null) {
-        actionDataSet.put(this.getActionDataEntryUUID(), updatedEntry);
-      }
-
-      AdditionalScreenData screenData = this.getAdditionalScreenData();
-      EditorType formerEditorType = screenData.getEditorType();
-      ActionEventType actionEventType = screenData.getActionEventType();
-
-      if (formerEditorType == EditorType.TRADING_OFFER_ACTION) {
-        NetworkMessageHandlerManager.getServerHandler()
-            .changeTradingOfferAction(this.getEasyNPCUUID(), this.getPageIndex(), actionDataSet);
-      } else if (formerEditorType == EditorType.DIALOG_BUTTON) {
-        if (this.getDialogButtonData() != null) {
-          NetworkMessageHandlerManager.getServerHandler()
-              .saveDialogButton(
-                  this.getEasyNPCUUID(),
-                  this.getDialogUUID(),
-                  this.getDialogButtonUUID(),
-                  this.getDialogButtonData().withActionDataSet(actionDataSet));
-        }
-      } else if (actionEventType != null && actionEventType != ActionEventType.NONE) {
-        NetworkMessageHandlerManager.getServerHandler()
-            .actionEventChange(this.getEasyNPCUUID(), actionEventType, actionDataSet);
-      }
-      return;
-    }
-
-    DialogDataEntry dialogData = this.getDialogData();
-    if (dialogData == null) {
-      return;
-    }
-
-    dialogData.setConditions(this.conditionDataSet.getConditions());
-    NetworkMessageHandlerManager.getServerHandler()
-        .saveDialog(this.getEasyNPCUUID(), this.getDialogUUID(), dialogData);
+    this.context.saveConditionDataSet(this.conditionDataSet);
   }
 
   private void deleteConditionDataEntry() {
@@ -278,26 +161,25 @@ public class ConditionDataEntryEditorContainerScreen<T extends EditorMenu> exten
                 "<",
                 onPress -> this.navigateToConditionDataEditor()));
 
-    if (this.actionContext) {
+    int contextButtonX = this.homeButton.getX() + this.homeButton.getWidth();
+    if (this.context.isActionContext()) {
       this.contextButton =
           this.addRenderableWidget(
               new ActionsButton(
-                  this.homeButton.getX() + this.homeButton.getWidth(),
+                  contextButtonX,
                   this.topPos + 7,
                   140,
-                  "Actions",
-                  onPress -> this.navigateToConditionDataEditor()));
+                  this.context.breadcrumbLabel(),
+                  onPress -> this.context.openParentEditor()));
     } else {
       this.contextButton =
           this.addRenderableWidget(
               new DialogButton(
-                  this.homeButton.getX() + this.homeButton.getWidth(),
+                  contextButtonX,
                   this.topPos + 7,
                   140,
-                  this.getDialogData() != null ? this.getDialogData().getName(21) : "Dialog",
-                  onPress ->
-                      NetworkMessageHandlerManager.getServerHandler()
-                          .openDialogEditor(this.getEasyNPCUUID(), this.getDialogUUID())));
+                  this.context.breadcrumbLabel(),
+                  onPress -> this.context.openParentEditor()));
     }
 
     this.conditionsButton =
@@ -451,12 +333,10 @@ public class ConditionDataEntryEditorContainerScreen<T extends EditorMenu> exten
           this.topPos + 62,
           Constants.FONT_COLOR_DEFAULT);
     } else {
-      String helpTextKey =
-          this.actionContext ? "condition.help_text.action" : "condition.help_text.dialog";
       Text.drawConfigString(
           guiGraphics,
           this.font,
-          helpTextKey,
+          this.context.helpTextKey(),
           this.leftPos + 10,
           this.topPos + 50,
           Constants.FONT_COLOR_DEFAULT);

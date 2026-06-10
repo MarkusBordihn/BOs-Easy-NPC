@@ -53,7 +53,9 @@ public interface RenderDataCapable<E extends Mob> extends EasyNPC<E> {
       renderData.write(renderTag);
     }
 
-    valueOutput.store(DATA_RENDER_DATA_TAG, CompoundTag.CODEC, renderTag);
+    if (!renderTag.isEmpty()) {
+      valueOutput.store(DATA_RENDER_DATA_TAG, CompoundTag.CODEC, renderTag);
+    }
   }
 
   default void readAdditionalRenderData(ValueInput valueInput) {
@@ -65,7 +67,6 @@ public interface RenderDataCapable<E extends Mob> extends EasyNPC<E> {
       return;
     }
 
-    // Read render data
     RenderDataEntry renderData = new RenderDataEntry(compoundTagData.get());
     this.setRenderData(renderData);
   }
