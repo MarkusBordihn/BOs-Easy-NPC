@@ -422,16 +422,31 @@ public interface ServerNetworkMessageHandlerInterface {
   }
 
   default void openConditionDataEditor(UUID uuid, UUID dialogId) {
+    openConditionDataEditor(uuid, dialogId, Constants.EMPTY_UUID);
+  }
+
+  default void openConditionDataEditor(UUID uuid, UUID dialogId, UUID dialogButtonId) {
     if (uuid != null && dialogId != null) {
-      NetworkHandlerManager.sendMessageToServer(new OpenConditionDataEditorMessage(uuid, dialogId));
+      NetworkHandlerManager.sendMessageToServer(
+          new OpenConditionDataEditorMessage(
+              uuid, dialogId, dialogButtonId != null ? dialogButtonId : Constants.EMPTY_UUID));
     }
   }
 
   default void openConditionDataEntryEditor(
       UUID uuid, UUID dialogId, ConditionDataEntry conditionDataEntry) {
+    openConditionDataEntryEditor(uuid, dialogId, Constants.EMPTY_UUID, conditionDataEntry);
+  }
+
+  default void openConditionDataEntryEditor(
+      UUID uuid, UUID dialogId, UUID dialogButtonId, ConditionDataEntry conditionDataEntry) {
     if (uuid != null && dialogId != null && conditionDataEntry != null) {
       NetworkHandlerManager.sendMessageToServer(
-          new OpenConditionDataEntryEditorMessage(uuid, dialogId, conditionDataEntry));
+          new OpenConditionDataEntryEditorMessage(
+              uuid,
+              dialogId,
+              dialogButtonId != null ? dialogButtonId : Constants.EMPTY_UUID,
+              conditionDataEntry));
     }
   }
 

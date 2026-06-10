@@ -47,7 +47,7 @@ public class ConditionDataListEntry extends ObjectSelectionList.Entry<ConditionD
   // Layout constants
   private static final int ENTRY_HEIGHT = 21;
   private static final int FIELD_LEFT_OFFSET = 5;
-  private static final int FIELD_TOP_OFFSET = 5;
+  private static final int FIELD_TOP_OFFSET = 8;
   private static final int COLUMN_SEPARATOR_OFFSET = 3;
   private static final int BUTTON_SPACING = 2;
   private static final int BUTTON_SIZE = 18;
@@ -76,17 +76,14 @@ public class ConditionDataListEntry extends ObjectSelectionList.Entry<ConditionD
       OnRemove onRemove) {
     super();
 
-    // Set font and position
     this.font = minecraft.font;
     this.leftPos = leftPos;
     this.topPos = topPos;
 
-    // Set condition data entry
     this.conditionDataEntry = conditionDataEntry;
     this.conditionType =
         conditionDataEntry != null ? conditionDataEntry.conditionType() : ConditionType.NONE;
 
-    // Adding general buttons
     this.editButton =
         new EditButton(
             this.leftPos + OPTIONS_LEFT_POS + 4,
@@ -133,7 +130,6 @@ public class ConditionDataListEntry extends ObjectSelectionList.Entry<ConditionD
     int top = this.getY();
     int entryHeight = this.getHeight();
 
-    // Draw separator line
     guiGraphics.fill(
         this.leftPos,
         top + entryHeight + 2,
@@ -144,7 +140,6 @@ public class ConditionDataListEntry extends ObjectSelectionList.Entry<ConditionD
     int fieldsLeft = this.leftPos + FIELD_LEFT_OFFSET;
     int fieldTop = top + FIELD_TOP_OFFSET;
 
-    // Condition Entry ID
     Text.drawString(
         guiGraphics,
         this.font,
@@ -153,7 +148,6 @@ public class ConditionDataListEntry extends ObjectSelectionList.Entry<ConditionD
         fieldTop,
         Constants.FONT_COLOR_BLACK);
 
-    // Condition Type
     Text.drawConfigString(
         guiGraphics,
         this.font,
@@ -162,16 +156,14 @@ public class ConditionDataListEntry extends ObjectSelectionList.Entry<ConditionD
         fieldTop,
         Constants.FONT_COLOR_BLACK);
 
-    // Value preview
     renderValuePreview(guiGraphics, fieldsLeft, fieldTop, mouseX, mouseY);
 
-    // Edit and delete buttons
+    int buttonTop = top + 4;
+    this.editButton.setY(buttonTop);
     this.editButton.render(guiGraphics, mouseX, mouseY, partialTicks);
-    this.editButton.setY(top);
+    this.deleteButton.setY(buttonTop);
     this.deleteButton.render(guiGraphics, mouseX, mouseY, partialTicks);
-    this.deleteButton.setY(top);
 
-    // Render separator lines
     this.renderSeparatorLines(guiGraphics, top);
   }
 
@@ -186,9 +178,9 @@ public class ConditionDataListEntry extends ObjectSelectionList.Entry<ConditionD
                   + " "
                   + this.conditionDataEntry.value();
           case EXECUTION_LIMIT -> buildExecutionLimitPreview(this.conditionDataEntry);
-          case HAS_ITEM_IN_HAND -> buildHandItemPreview(this.conditionDataEntry);
-          case HAS_ITEM_IN_INVENTORY, ADVANCEMENT, PLAYER_TAG, TEAM, GAMEMODE ->
-              this.conditionDataEntry.name();
+          case HAS_ITEM_IN_HAND -> buildItemPreview(this.conditionDataEntry, true);
+          case HAS_ITEM_IN_INVENTORY -> buildItemPreview(this.conditionDataEntry, false);
+          case ADVANCEMENT, PLAYER_TAG, TEAM, GAMEMODE -> this.conditionDataEntry.name();
           case EXPERIENCE_LEVEL, PLAYER_HEALTH ->
               this.conditionDataEntry.operationType().name()
                   + " "
@@ -217,13 +209,12 @@ public class ConditionDataListEntry extends ObjectSelectionList.Entry<ConditionD
         + ")";
   }
 
-  private String buildHandItemPreview(ConditionDataEntry conditionDataEntry) {
-    String prefix = "";
-    if (conditionDataEntry.operationType() == ConditionOperationType.NOT_EQUALS) {
-      prefix = "NOT ";
-    }
+  private String buildItemPreview(ConditionDataEntry conditionDataEntry, boolean includeHand) {
+    String prefix =
+        conditionDataEntry.operationType() == ConditionOperationType.NOT_EQUALS ? "NOT " : "";
+    String quantity = conditionDataEntry.value() > 1 ? conditionDataEntry.value() + " x " : "";
     String suffix = "";
-    if (conditionDataEntry.subType() instanceof HandItemType handItemType) {
+    if (includeHand && conditionDataEntry.subType() instanceof HandItemType handItemType) {
       suffix =
           switch (handItemType) {
             case MAIN_HAND -> " [M]";
@@ -231,7 +222,7 @@ public class ConditionDataListEntry extends ObjectSelectionList.Entry<ConditionD
             default -> "";
           };
     }
-    return prefix + conditionDataEntry.name() + suffix;
+    return prefix + quantity + conditionDataEntry.name() + suffix;
   }
 
   public void renderSeparatorLines(GuiGraphics guiGraphics, int top) {

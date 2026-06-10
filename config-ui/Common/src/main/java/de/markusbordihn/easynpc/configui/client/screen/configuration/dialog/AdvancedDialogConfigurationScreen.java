@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.configui.client.screen.configuration.dialog;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.configui.client.screen.components.AddButton;
+import de.markusbordihn.easynpc.configui.client.screen.components.ConditionButton;
 import de.markusbordihn.easynpc.configui.client.screen.components.CopyButton;
 import de.markusbordihn.easynpc.configui.client.screen.components.EditButton;
 import de.markusbordihn.easynpc.configui.client.screen.components.TextEditButton;
@@ -74,10 +75,8 @@ public class AdvancedDialogConfigurationScreen<T extends ConfigurationMenu>
   public void init() {
     super.init();
 
-    // Default button stats
     this.advancedDialogButton.active = false;
 
-    // Add new dialog button
     this.newDialogButton =
         this.addRenderableWidget(
             new AddButton(
@@ -89,8 +88,12 @@ public class AdvancedDialogConfigurationScreen<T extends ConfigurationMenu>
                     NetworkMessageHandlerManager.getServerHandler()
                         .openDialogEditor(this.getEasyNPCUUID())));
 
-    // Dialog List
     this.dialogList = new DialogList();
+    this.dialogList.updateSizeAndPosition(
+        this.imageWidth - COLUMN_PRIORITY_START,
+        177,
+        this.leftPos + COLUMN_PRIORITY_START,
+        this.contentTopPos + 15);
     this.addWidget(this.dialogList);
   }
 
@@ -103,10 +106,8 @@ public class AdvancedDialogConfigurationScreen<T extends ConfigurationMenu>
     int listTop = this.contentTopPos + LIST_AREA_TOP_OFFSET;
     int listBottom = this.contentTopPos + LIST_AREA_BOTTOM + FOOTER_HEIGHT;
 
-    // Gray background for dialog list
     guiGraphics.fill(listLeft, listTop, listRight, listBottom, 0xffeeeeee);
 
-    // Draw vertical separator lines for entries
     guiGraphics.fill(
         this.leftPos + COLUMN_LABEL_START - 1,
         listTop,
@@ -126,20 +127,16 @@ public class AdvancedDialogConfigurationScreen<T extends ConfigurationMenu>
         this.contentTopPos + LIST_AREA_BOTTOM,
         0xffbbbbbb);
 
-    // Render dialog list
     if (this.dialogList != null) {
       this.dialogList.renderSelectionList(guiGraphics, x, y, partialTicks);
     }
 
-    // Header background
     guiGraphics.fill(
         listLeft, this.contentTopPos, listRight, this.contentTopPos + HEADER_HEIGHT, 0xffaaaaaa);
 
-    // Footer background
     guiGraphics.fill(
         listLeft, this.contentTopPos + LIST_AREA_BOTTOM + 1, listRight, listBottom, 0xffc6c6c6);
 
-    // Dialog Data Set header
     int headerLeft = this.leftPos + COLUMN_PRIORITY_START + 5;
     Text.drawString(
         guiGraphics,
@@ -170,7 +167,6 @@ public class AdvancedDialogConfigurationScreen<T extends ConfigurationMenu>
         this.contentTopPos + 5,
         Constants.FONT_COLOR_BLACK);
 
-    // Draw vertical separator lines for headers
     guiGraphics.fill(
         this.leftPos + COLUMN_LABEL_START - 1,
         this.contentTopPos,
@@ -201,7 +197,7 @@ public class AdvancedDialogConfigurationScreen<T extends ConfigurationMenu>
     DialogList() {
       super(
           AdvancedDialogConfigurationScreen.this.minecraft,
-          AdvancedDialogConfigurationScreen.this.width + 60,
+          AdvancedDialogConfigurationScreen.this.imageWidth - COLUMN_PRIORITY_START,
           177,
           AdvancedDialogConfigurationScreen.this.contentTopPos + 15,
           19);
@@ -236,6 +232,11 @@ public class AdvancedDialogConfigurationScreen<T extends ConfigurationMenu>
     @Override
     protected void renderListSeparators(GuiGraphics guiGraphics) {
       // Do not render list separators.
+    }
+
+    @Override
+    protected int scrollBarX() {
+      return this.getX() + this.getWidth() - 6;
     }
 
     @Override
@@ -300,15 +301,11 @@ public class AdvancedDialogConfigurationScreen<T extends ConfigurationMenu>
       public void renderContent(
           GuiGraphics guiGraphics, int mouseX, int mouseY, boolean isHovered, float partialTicks) {
 
-        int top = this.getY();
-        int left = this.getX();
-
-        // Position
-        int leftPos = left - 80;
+        int top = this.getY() + 2;
+        int leftPos = AdvancedDialogConfigurationScreen.this.leftPos;
         int buttonWidth = 16;
 
-        // Render edit button and tooltip
-        this.editButton.setX(leftPos + COLUMN_NAME_START - buttonWidth - 7);
+        this.editButton.setX(leftPos + COLUMN_NAME_START - buttonWidth);
         this.editButton.setY(top);
         this.editButton.render(guiGraphics, mouseX, mouseY, partialTicks);
         if (this.editButton.isHovered()) {
@@ -325,10 +322,14 @@ public class AdvancedDialogConfigurationScreen<T extends ConfigurationMenu>
               null);
         }
 
-        // Render copy button and tooltip
         this.copyLabelButton.setX(this.editButton.getX() - this.editButton.getWidth());
         this.copyLabelButton.setY(top);
         this.copyLabelButton.render(guiGraphics, mouseX, mouseY, partialTicks);
+
+        // Render condition indicator left of the copy button
+        if (dialogData.hasConditions()) {
+          ConditionButton.renderIndicator(guiGraphics, this.copyLabelButton.getX() - 14, top + 2);
+        }
         if (this.copyLabelButton.isHovered()) {
           guiGraphics.renderTooltip(
               AdvancedDialogConfigurationScreen.this.font,
@@ -343,8 +344,7 @@ public class AdvancedDialogConfigurationScreen<T extends ConfigurationMenu>
               null);
         }
 
-        // Render edit text button and tooltip
-        this.textEditButton.setX(leftPos + COLUMN_TEXT_START - 5);
+        this.textEditButton.setX(leftPos + COLUMN_TEXT_START);
         this.textEditButton.setY(top);
         this.textEditButton.render(guiGraphics, mouseX, mouseY, partialTicks);
         if (this.textEditButton.isHovered()) {
@@ -381,14 +381,14 @@ public class AdvancedDialogConfigurationScreen<T extends ConfigurationMenu>
             guiGraphics,
             AdvancedDialogConfigurationScreen.this.font,
             String.valueOf(dialogData.getPriority()),
-            Math.round((leftPos + COLUMN_PRIORITY_START - 1) / TEXT_SCALE),
+            Math.round((leftPos + COLUMN_PRIORITY_START + 8) / TEXT_SCALE),
             dialogDataTopPos,
             fontColor);
         Text.drawLimitedHoverString(
             guiGraphics,
             AdvancedDialogConfigurationScreen.this.font,
             dialogData.getLabel(),
-            Math.round((leftPos + COLUMN_LABEL_START - 4) / TEXT_SCALE),
+            Math.round((leftPos + COLUMN_LABEL_START + 2) / TEXT_SCALE),
             dialogDataTopPos,
             fontColor,
             14,
@@ -398,7 +398,7 @@ public class AdvancedDialogConfigurationScreen<T extends ConfigurationMenu>
             guiGraphics,
             AdvancedDialogConfigurationScreen.this.font,
             dialogData.getName(),
-            Math.round((leftPos + COLUMN_NAME_START - 2) / TEXT_SCALE),
+            Math.round((leftPos + COLUMN_NAME_START + 2) / TEXT_SCALE),
             dialogDataTopPos,
             fontColor,
             21,
@@ -408,7 +408,7 @@ public class AdvancedDialogConfigurationScreen<T extends ConfigurationMenu>
             guiGraphics,
             AdvancedDialogConfigurationScreen.this.font,
             dialogData.getText(),
-            Math.round((leftPos + COLUMN_TEXT_START + 14) / TEXT_SCALE),
+            Math.round((leftPos + COLUMN_TEXT_START + 18) / TEXT_SCALE),
             dialogDataTopPos,
             fontColor,
             17,
@@ -417,7 +417,6 @@ public class AdvancedDialogConfigurationScreen<T extends ConfigurationMenu>
 
         guiGraphics.pose().popMatrix();
 
-        // Draw separator line
         int listLeft = AdvancedDialogConfigurationScreen.this.leftPos + COLUMN_PRIORITY_START;
         int listRight =
             AdvancedDialogConfigurationScreen.this.leftPos

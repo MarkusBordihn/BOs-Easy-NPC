@@ -47,7 +47,7 @@ class ActionDataList extends ObjectSelectionList<ActionDataListEntry> {
     super(minecraft, width, height, top, entryHeight);
 
     // Add entries
-    int topPos = top + 4;
+    int topPos = top + 3;
     if (actionDataSet != null) {
       int index = 0;
       for (ActionDataEntry actionDataEntry : actionDataSet.getEntries()) {
@@ -72,6 +72,11 @@ class ActionDataList extends ObjectSelectionList<ActionDataListEntry> {
   @Override
   protected void renderSelection(GuiGraphics guiGraphics, ActionDataListEntry entry, int color) {
     // Do not render selection.
+  }
+
+  @Override
+  protected int scrollBarX() {
+    return this.getX() + this.getWidth() - 6;
   }
 
   @Override

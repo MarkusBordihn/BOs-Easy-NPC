@@ -1,0 +1,218 @@
+{
+  PresetMetadata:{
+    author:"Kaworru",
+    category:"Quest",
+    created:1780600000000L,
+    description:"A castle gatekeeper that unlocks dialog buttons and whole dialogs based on conditions: a gold ingot in hand, experience level, game-mode, an ender pearl in the inventory and the player's scoreboard team.",
+    entityTypeId:"easy_npc:humanoid",
+    modified:1780600000000L,
+    name:"Threshold Warden",
+    variantType:"KNIGHT_01",
+    version:"1.0.0"
+  },
+  data:{
+    ActionData:{
+      ActionEventSet:{
+        ON_INTERACTION:[{
+          Type:"OPEN_DEFAULT_DIALOG"
+        }],
+        ActionPermissionLevel:4
+      }
+    },
+    ArmorDropChances:[0.085f,0.085f,0.085f,0.085f],
+    ArmorItems:[{},{},{},{}],
+    Attributes:[{
+      Base:0.5d,Name:"minecraft:generic.movement_speed"
+    },{
+      Base:1.0d,Name:"minecraft:generic.attack_damage"
+    },{
+      Base:16.0d,Name:"minecraft:generic.follow_range"
+    }],
+    Brain:{
+      memories:{}
+    },
+    CanPickUpLoot:0b,
+    CanUpdate:1b,
+    CustomName:'{"color":"#4FA3D1","text":"Threshold Warden"}',
+    CustomNameVisible:1b,
+    DialogData:{
+      DialogDataSet:[{
+        Conditions:[{
+          Name:"warden",Type:"TEAM"
+        }],
+        Label:"order",Name:"Order Welcome",Priority:10,Texts:[{
+          Text:"The Order welcomes you home, @initiator. The inner keep stands open to you."
+        }]
+      },{
+        Buttons:[{
+          Actions:[{
+            Cmd:"/playsound minecraft:block.iron_door.open master @a ~ ~ ~ 1 1",Type:"COMMAND"
+          },{
+            Cmd:"passage",Type:"OPEN_NAMED_DIALOG"
+          }],Conditions:[{
+            Name:"minecraft:gold_ingot",SubType:"MAIN_HAND",Type:"HAS_ITEM_IN_HAND"
+          }],Label:"button_seal",Name:"Present the Golden Seal"
+        },{
+          Actions:[{
+            Cmd:"/playsound minecraft:block.chest.open master @a ~ ~ ~ 1 1",Type:"COMMAND"
+          },{
+            Cmd:"veteran",Type:"OPEN_NAMED_DIALOG"
+          }],Conditions:[{
+            Operation:"GREATER_THAN_OR_EQUALS",Type:"EXPERIENCE_LEVEL",Value:20
+          }],Label:"button_veteran",Name:"Speak as a veteran (Lvl 20+)"
+        },{
+          Actions:[{
+            Cmd:"/playsound minecraft:block.wooden_door.open master @a ~ ~ ~ 0.5 1.3",Type:"COMMAND"
+          },{
+            Cmd:"passage",Type:"OPEN_NAMED_DIALOG"
+          }],Conditions:[{
+            Name:"creative",Type:"GAMEMODE"
+          }],Label:"button_creative",Name:"Slip past in Creative"
+        },{
+          Actions:[{
+            Cmd:"/playsound minecraft:block.iron_door.open master @a ~ ~ ~ 1 1",Type:"COMMAND"
+          },{
+            Cmd:"passage",Type:"OPEN_NAMED_DIALOG"
+          }],Conditions:[{
+            Name:"minecraft:ender_pearl",Type:"HAS_ITEM_IN_INVENTORY"
+          }],Label:"button_token",Name:"Show the Ender Token"
+        },{
+          Actions:[{
+            Cmd:"farewell",Type:"OPEN_NAMED_DIALOG"
+          }],Label:"button_leave",Name:"I'll be on my way"
+        }],Label:"default",Name:"At the Gate",Priority:5,Texts:[{
+          Text:"Halt, @initiator. None cross my threshold without proof.\\n\\nBear a Golden Seal, a gold ingot held in your hand and the gate swings wide.\\nOr show an Ender Token, a single ender pearl in your pack, and you are known to me.\\n\\nVeterans of the 20th level pass on reputation alone, and the Order walks freely in Creative.\\n\\nSo... what proof do you carry?"
+        }]
+      },{
+        Label:"passage",Name:"Passage Granted",Priority:-1,Texts:[{
+          Text:"With a heavy groan of iron, the gate yields. Pass, @initiator and may the keep keep you."
+        }]
+      },{
+        Label:"veteran",Name:"Veteran's Path",Priority:-1,Texts:[{
+          Text:"Ah, a proven veteran. No seal needed for one of your standing the armory is yours to browse."
+        }]
+      },{
+        Label:"farewell",Name:"Farewell",Priority:-1,Texts:[{
+          Text:"Safe travels, @initiator. The gate remains, should you return prepared."
+        }]
+      }],
+      Type:"STANDARD"
+    },
+    DisplayAttribute:[{
+      Bool:1b,Type:"VISIBLE"
+    },{
+      Bool:1b,Type:"VISIBLE_AT_DAY"
+    },{
+      Bool:1b,Type:"VISIBLE_AT_NIGHT"
+    },{
+      Bool:1b,Type:"VISIBLE_IN_CREATIVE"
+    },{
+      Bool:1b,Type:"VISIBLE_IN_SPECTATOR"
+    },{
+      Bool:1b,Type:"VISIBLE_IN_STANDARD"
+    },{
+      Bool:1b,Type:"VISIBLE_TO_OWNER"
+    },{
+      Bool:1b,Type:"VISIBLE_TO_TEAM"
+    },{
+      Int:7,Type:"LIGHT_LEVEL"
+    },{
+      Text:"ALWAYS",Type:"NAME_VISIBILITY"
+    }],
+    EasyNPCVersion:3,
+    EntityAttribute:{
+      CanBeHitByProjectile:0b,
+      CanBeLeashed:0b,
+      CanBreatheUnderwater:0b,
+      CanCloseDoor:0b,
+      CanFloat:0b,
+      CanOpenDoor:0b,
+      CanPassDoor:0b,
+      CanUseNetherPortal:0b,
+      Freefall:0b,
+      HealthRegeneration:0.0d,
+      IsAttackableByMonsters:0b,
+      IsAttackableByPlayers:0b,
+      IsInvulnerable:1b,
+      IsPushable:0b,
+      NoGravity:0b,
+      PushEntities:0b
+    },
+    HandDropChances:[0.085f,0.085f],
+    HandItems:[{
+      Count:1b,id:"minecraft:iron_sword",tag:{
+        Damage:0
+      }
+    },{
+      Count:1b,id:"minecraft:shield",tag:{
+        Damage:0
+      }
+    }],
+    Health:20.0f,
+    Invulnerable:1b,
+    LeftHanded:0b,
+    ModelData:{
+      DefaultPose:"STANDING",
+      Position:{},
+      Rotation:{},
+      Scale:{},
+      Visible:{}
+    },
+    Navigation:{
+      Home:{
+        X:0,
+        Y:64,
+        Z:0
+      }
+    },
+    ObjectiveData:{
+      HasObjectives:1b,
+      ObjectiveDataSet:[{
+        Prio:9,Type:"LOOK_AT_PLAYER"
+      },{
+        Prio:9,Type:"LOOK_AT_RESET"
+      }]
+    },
+    Offers:{
+      Inventory:{},
+      Recipes:{
+        Recipes:[]
+      }
+    },
+    OnGround:1b,
+    PersistenceRequired:0b,
+    PresetUUID:[I;1414812756,-1985943042,-1342177280,861217859],
+    Profession:"NONE",
+    RenderData:{},
+    SkinData:{
+      Content:"",
+      DisableLayers:0b,
+      Name:"",
+      Timestamp:1780600000000L,
+      Type:"DEFAULT",
+      URL:"",
+      UUID:[I;0,0,0,0]
+    },
+    SoundData:{
+      SoundDataSet:[{
+        Name:"minecraft:entity.player.death",Type:"DEATH"
+      },{
+        Name:"minecraft:entity.player.hurt",Type:"HURT"
+      }]
+    },
+    Status:{
+      finalized:1b
+    },
+    TradingData:{
+      TradingDataSet:{
+        LastReset:0L,
+        MaxUses:64,
+        ResetsEveryMin:0,
+        RewardedXP:0,
+        Type:"NONE"
+      }
+    },
+    VariantType:"KNIGHT_01",
+    id:"easy_npc:humanoid"
+  }
+}

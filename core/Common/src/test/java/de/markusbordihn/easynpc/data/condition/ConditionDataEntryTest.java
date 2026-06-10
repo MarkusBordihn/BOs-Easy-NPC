@@ -355,6 +355,40 @@ class ConditionDataEntryTest {
   }
 
   @Test
+  @DisplayName("Item quantity > 1 is serialized and round-trips")
+  void testHasItemQuantityNBTRoundTrip() {
+    ConditionDataEntry original =
+        new ConditionDataEntry(ConditionType.HAS_ITEM_IN_INVENTORY)
+            .withName("minecraft:diamond")
+            .withValue(10);
+    assertTrue(original.isValid());
+
+    CompoundTag tag = original.createTag();
+    assertEquals(10, tag.getInt(ConditionDataEntry.DATA_VALUE_TAG).orElse(0));
+
+    ConditionDataEntry deserialized = new ConditionDataEntry(tag);
+    assertEquals("minecraft:diamond", deserialized.name());
+    assertEquals(10, deserialized.value());
+  }
+
+  @Test
+  @DisplayName("Default item quantity (0 or 1) is not serialized")
+  void testHasItemDefaultQuantityNotSerialized() {
+    ConditionDataEntry defaultQuantity =
+        new ConditionDataEntry(ConditionType.HAS_ITEM_IN_INVENTORY).withName("minecraft:diamond");
+    assertFalse(defaultQuantity.createTag().contains(ConditionDataEntry.DATA_VALUE_TAG));
+
+    ConditionDataEntry handDefault =
+        new ConditionDataEntry(
+            ConditionType.HAS_ITEM_IN_HAND,
+            HandItemType.MAIN_HAND,
+            ConditionOperationType.EQUALS,
+            "minecraft:gold_ingot",
+            0);
+    assertFalse(handDefault.createTag().contains(ConditionDataEntry.DATA_VALUE_TAG));
+  }
+
+  @Test
   void testAdvancementConditionRequiresName() {
     ConditionDataEntry withoutName = new ConditionDataEntry(ConditionType.ADVANCEMENT);
     assertFalse(withoutName.isValid());

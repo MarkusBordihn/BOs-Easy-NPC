@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.configui.client.screen.editor.action;
 import de.markusbordihn.easynpc.client.screen.components.DrawBorder;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.configui.Constants;
+import de.markusbordihn.easynpc.configui.client.screen.components.ConditionButton;
 import de.markusbordihn.easynpc.configui.client.screen.components.DeleteButton;
 import de.markusbordihn.easynpc.configui.client.screen.components.EditButton;
 import de.markusbordihn.easynpc.configui.client.screen.components.UpDownButton;
@@ -48,7 +49,7 @@ public class ActionDataListEntry extends ObjectSelectionList.Entry<ActionDataLis
   // Layout constants
   private static final int ENTRY_HEIGHT = 21;
   private static final int FIELD_LEFT_OFFSET = 5;
-  private static final int FIELD_TOP_OFFSET = 5;
+  private static final int FIELD_TOP_OFFSET = 8;
   private static final int COLUMN_SEPARATOR_OFFSET = 3;
   private static final int BUTTON_SPACING = 2;
   private static final int BUTTON_SIZE = 18;
@@ -82,18 +83,15 @@ public class ActionDataListEntry extends ObjectSelectionList.Entry<ActionDataLis
       OnRemove onRemove) {
     super();
 
-    // Set font and position
     this.font = minecraft.font;
     this.leftPos = leftPos;
     this.topPos = topPos;
 
-    // Set action data entry
     this.actionDataEntry = actionDataEntry;
     this.actionDataType =
         actionDataEntry != null ? actionDataEntry.actionDataType() : ActionDataType.NONE;
     this.actionDateEntriesSize = actionDataSet != null ? actionDataSet.getEntries().size() : 1;
 
-    // Adding general buttons
     this.upAndDownButton =
         new UpDownButton(
             this.leftPos + OPTIONS_LEFT_POS + 4,
@@ -157,18 +155,15 @@ public class ActionDataListEntry extends ObjectSelectionList.Entry<ActionDataLis
     int top = this.getY();
     int entryHeight = this.getHeight();
 
-    // Draw separator line
     guiGraphics.fill(
         this.leftPos,
-        top + entryHeight + 2,
+        top + entryHeight + 1,
         this.leftPos + LIST_WIDTH,
-        top + entryHeight + 3,
+        top + entryHeight + 2,
         COLOR_SEPARATOR_LINE);
 
     int fieldsLeft = this.leftPos + FIELD_LEFT_OFFSET;
     int fieldTop = top + FIELD_TOP_OFFSET;
-
-    // Action Entry ID
     Text.drawString(
         guiGraphics,
         this.font,
@@ -176,8 +171,6 @@ public class ActionDataListEntry extends ObjectSelectionList.Entry<ActionDataLis
         fieldsLeft + ID_LEFT_POS + 2,
         fieldTop,
         Constants.FONT_COLOR_BLACK);
-
-    // Action Type
     Text.drawConfigString(
         guiGraphics,
         this.font,
@@ -186,22 +179,28 @@ public class ActionDataListEntry extends ObjectSelectionList.Entry<ActionDataLis
         fieldTop,
         Constants.FONT_COLOR_BLACK);
 
-    // Value preview
     renderValuePreview(guiGraphics, fieldsLeft, fieldTop, mouseX, mouseY);
 
-    // Up and down buttons
-    this.upAndDownButton.setY(top);
+    int buttonsTop = top + 3;
+    this.upAndDownButton.setY(buttonsTop);
     this.upAndDownButton.render(guiGraphics, mouseX, mouseY, partialTicks);
     this.upAndDownButton.enableUpButton(this.entryIndex > 0);
     this.upAndDownButton.enableDownButton(this.entryIndex < this.actionDateEntriesSize - 1);
 
-    // Edit and delete buttons
-    this.editButton.setY(top);
+    this.editButton.setY(buttonsTop);
     this.editButton.render(guiGraphics, mouseX, mouseY, partialTicks);
-    this.deleteButton.setY(top);
+    this.deleteButton.setY(buttonsTop);
     this.deleteButton.render(guiGraphics, mouseX, mouseY, partialTicks);
 
-    // Render separator lines
+    if (this.actionDataEntry != null
+        && this.actionDataEntry.conditionDataSet() != null
+        && this.actionDataEntry.conditionDataSet().hasConditionData()) {
+      ConditionButton.renderIndicator(
+          guiGraphics,
+          this.deleteButton.getX() + this.deleteButton.getWidth() + BUTTON_SPACING,
+        buttonsTop + 3);
+    }
+
     this.renderSeparatorLines(guiGraphics, top);
   }
 

@@ -37,6 +37,7 @@ public class HasItemConditionEntry extends ConditionEntryWidget {
 
   private final ConditionType conditionType;
   private TextField itemNameTextField;
+  private TextField quantityTextField;
   private SpinButton<ConditionOperationType> operationTypeButton;
   private Checkbox mainHandCheckbox;
   private Checkbox offHandCheckbox;
@@ -54,59 +55,7 @@ public class HasItemConditionEntry extends ConditionEntryWidget {
   public void init(int editorLeft, int editorTop) {
     boolean hasData = hasConditionData(this.conditionType);
 
-    if (this.conditionType == ConditionType.HAS_ITEM_IN_HAND) {
-      ConditionOperationType operationType =
-          hasData ? this.conditionDataEntry.operationType() : ConditionOperationType.EQUALS;
-      boolean mainHandSelected = true;
-      boolean offHandSelected = true;
-      if (hasData && this.conditionDataEntry.subType() instanceof HandItemType handItemType) {
-        mainHandSelected =
-            handItemType == HandItemType.MAIN_HAND || handItemType == HandItemType.BOTH;
-        offHandSelected =
-            handItemType == HandItemType.OFF_HAND || handItemType == HandItemType.BOTH;
-      }
-
-      LinkedHashSet<ConditionOperationType> operationTypes = new LinkedHashSet<>();
-      operationTypes.add(ConditionOperationType.EQUALS);
-      operationTypes.add(ConditionOperationType.NOT_EQUALS);
-
-      this.operationTypeButton =
-          this.screen.addConditionEntryWidget(
-              new SpinButton<>(
-                  editorLeft,
-                  editorTop + 20,
-                  125,
-                  16,
-                  operationTypes,
-                  operationType,
-                  button -> {}));
-
-      this.itemNameTextField =
-          this.screen.addConditionEntryWidget(
-              new TextField(
-                  this.font,
-                  editorLeft + 130,
-                  editorTop + 20,
-                  155,
-                  hasData ? this.conditionDataEntry.name() : "minecraft:diamond",
-                  128));
-
-      this.mainHandCheckbox =
-          this.screen.addConditionEntryWidget(
-              new Checkbox(
-                  editorLeft,
-                  editorTop + 40,
-                  "config.condition.has_item_in_hand.main_hand",
-                  mainHandSelected));
-
-      this.offHandCheckbox =
-          this.screen.addConditionEntryWidget(
-              new Checkbox(
-                  editorLeft + 155,
-                  editorTop + 40,
-                  "config.condition.has_item_in_hand.off_hand",
-                  offHandSelected));
-    } else {
+    if (!isItemCondition()) {
       this.itemNameTextField =
           this.screen.addConditionEntryWidget(
               new TextField(
@@ -116,7 +65,75 @@ public class HasItemConditionEntry extends ConditionEntryWidget {
                   180,
                   hasData ? this.conditionDataEntry.name() : getExampleValue(),
                   128));
+      return;
     }
+
+    ConditionOperationType operationType =
+        hasData ? this.conditionDataEntry.operationType() : ConditionOperationType.EQUALS;
+    if (operationType == null || operationType == ConditionOperationType.NONE) {
+      operationType = ConditionOperationType.EQUALS;
+    }
+
+    LinkedHashSet<ConditionOperationType> operationTypes = new LinkedHashSet<>();
+    operationTypes.add(ConditionOperationType.EQUALS);
+    operationTypes.add(ConditionOperationType.NOT_EQUALS);
+
+    this.operationTypeButton =
+        this.screen.addConditionEntryWidget(
+            new SpinButton<>(
+                editorLeft, editorTop + 20, 125, 16, operationTypes, operationType, button -> {}));
+
+    this.itemNameTextField =
+        this.screen.addConditionEntryWidget(
+            new TextField(
+                this.font,
+                editorLeft + 130,
+                editorTop + 20,
+                155,
+                hasData ? this.conditionDataEntry.name() : "minecraft:diamond",
+                128));
+
+    this.quantityTextField =
+        this.screen.addConditionEntryWidget(
+            new TextField(
+                this.font, editorLeft + 130, editorTop + 40, 60, getQuantityValue(hasData), 10));
+
+    if (this.conditionType == ConditionType.HAS_ITEM_IN_HAND) {
+      boolean mainHandSelected = true;
+      boolean offHandSelected = true;
+      if (hasData && this.conditionDataEntry.subType() instanceof HandItemType handItemType) {
+        mainHandSelected =
+            handItemType == HandItemType.MAIN_HAND || handItemType == HandItemType.BOTH;
+        offHandSelected =
+            handItemType == HandItemType.OFF_HAND || handItemType == HandItemType.BOTH;
+      }
+
+      this.mainHandCheckbox =
+          this.screen.addConditionEntryWidget(
+              new Checkbox(
+                  editorLeft,
+                  editorTop + 60,
+                  "config.condition.has_item_in_hand.main_hand",
+                  mainHandSelected));
+
+      this.offHandCheckbox =
+          this.screen.addConditionEntryWidget(
+              new Checkbox(
+                  editorLeft + 155,
+                  editorTop + 60,
+                  "config.condition.has_item_in_hand.off_hand",
+                  offHandSelected));
+    }
+  }
+
+  private boolean isItemCondition() {
+    return this.conditionType == ConditionType.HAS_ITEM_IN_HAND
+        || this.conditionType == ConditionType.HAS_ITEM_IN_INVENTORY;
+  }
+
+  private String getQuantityValue(boolean hasData) {
+    int value = hasData ? this.conditionDataEntry.value() : 0;
+    return String.valueOf(Math.max(1, value));
   }
 
   private String getExampleValue() {
@@ -137,6 +154,16 @@ public class HasItemConditionEntry extends ConditionEntryWidget {
         };
     Text.drawConfigString(
         guiGraphics, this.font, labelKey, editorLeft, editorTop + 4, Constants.FONT_COLOR_BLACK);
+
+    if (isItemCondition()) {
+      Text.drawConfigString(
+          guiGraphics,
+          this.font,
+          "condition.has_item.quantity",
+          editorLeft,
+          editorTop + 44,
+          Constants.FONT_COLOR_BLACK);
+    }
   }
 
   @Override
@@ -160,17 +187,36 @@ public class HasItemConditionEntry extends ConditionEntryWidget {
               : ConditionOperationType.EQUALS;
 
       return new ConditionDataEntry(
-          this.conditionType,
-          handItemType,
-          operationType,
-          this.itemNameTextField != null ? this.itemNameTextField.getValue().trim() : "",
-          0);
+          this.conditionType, handItemType, operationType, getItemName(), getQuantity());
+    }
+
+    if (this.conditionType == ConditionType.HAS_ITEM_IN_INVENTORY) {
+      ConditionOperationType operationType =
+          this.operationTypeButton != null
+              ? this.operationTypeButton.get()
+              : ConditionOperationType.EQUALS;
+      return new ConditionDataEntry(
+          this.conditionType, operationType, getItemName(), getQuantity());
     }
 
     return new ConditionDataEntry(
-        this.conditionType,
-        ConditionOperationType.NONE,
-        this.itemNameTextField != null ? this.itemNameTextField.getValue().trim() : "",
-        0);
+        this.conditionType, ConditionOperationType.NONE, getItemName(), 0);
+  }
+
+  private String getItemName() {
+    return this.itemNameTextField != null ? this.itemNameTextField.getValue().trim() : "";
+  }
+
+  private int getQuantity() {
+    if (this.quantityTextField == null) {
+      return 0;
+    }
+    int quantity;
+    try {
+      quantity = Integer.parseInt(this.quantityTextField.getValue().trim());
+    } catch (NumberFormatException ignored) {
+      return 0;
+    }
+    return quantity > 1 ? quantity : 0;
   }
 }

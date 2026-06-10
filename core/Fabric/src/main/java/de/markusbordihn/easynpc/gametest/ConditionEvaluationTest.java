@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Markus Bordihn
+ * Copyright 2025 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,21 +17,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.condition;
+package de.markusbordihn.easynpc.gametest;
 
-import de.markusbordihn.easynpc.data.condition.ConditionDataEntry;
-import net.minecraft.world.entity.player.Player;
+import net.fabricmc.fabric.api.gametest.v1.GameTest;
+import net.minecraft.gametest.framework.GameTestHelper;
 
-public class PlayerHealthCondition {
+@SuppressWarnings("unused")
+public class ConditionEvaluationTest {
 
-  private PlayerHealthCondition() {}
-
-  public static boolean evaluate(ConditionDataEntry conditionDataEntry, Player player) {
-    if (player == null) {
-      return false;
-    }
-
-    int healthPercent = (int) ((player.getHealth() / player.getMaxHealth()) * 100);
-    return conditionDataEntry.operationType().evaluate(healthPercent, conditionDataEntry.value());
+  @GameTest(structure = "easy_npc:gametest.3x3x3")
+  public void testItemQuantityConditions(GameTestHelper helper) {
+    ConditionEvaluationTestHelper.assertItemQuantityConditions(helper);
+    helper.succeed();
   }
 }

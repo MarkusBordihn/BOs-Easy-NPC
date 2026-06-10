@@ -135,4 +135,27 @@ class CompoundTagUtilsTest {
     Set<Identifier> result = CompoundTagUtils.readIdentifiers(tag);
     assertTrue(result.isEmpty());
   }
+
+  @Test
+  void testPutIfNotEmpty_skipsEmptyChild() {
+    CompoundTag parent = new CompoundTag();
+
+    CompoundTagUtils.putIfNotEmpty(parent, "Child", new CompoundTag());
+
+    assertFalse(parent.contains("Child"));
+  }
+
+  @Test
+  void testPutIfNotEmpty_writesNonEmptyChild() {
+    CompoundTag parent = new CompoundTag();
+    CompoundTag child = new CompoundTag();
+    child.putString("Value", "test");
+
+    CompoundTagUtils.putIfNotEmpty(parent, "Child", child);
+
+    assertTrue(parent.contains("Child"));
+    assertEquals(
+        "test",
+        parent.getCompound("Child").orElse(new CompoundTag()).getString("Value").orElse(""));
+  }
 }

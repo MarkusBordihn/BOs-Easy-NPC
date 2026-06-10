@@ -197,8 +197,8 @@ public class ActionDataEditorContainerScreen<T extends EditorMenu>
         new ActionDataList(
             this.actionDataSet,
             this.minecraft,
-            this.width + 50,
-            this.height - 60,
+            LIST_TOTAL_WIDTH,
+            LIST_Y_END - LIST_Y_START,
             this.leftPos + LIST_X_OFFSET,
             this.topPos + LIST_Y_START,
             this.topPos + LIST_Y_END,
@@ -207,6 +207,8 @@ public class ActionDataEditorContainerScreen<T extends EditorMenu>
             this::handleMoveDownOrderActionDataEntry,
             this::handleEditActionDataEntry,
             this::handleDeleteActionDataEntry);
+    this.actionDataList.updateSizeAndPosition(
+        LIST_TOTAL_WIDTH, LIST_Y_END - LIST_Y_START, this.leftPos + LIST_X_OFFSET, this.topPos + LIST_Y_START);
     this.addWidget(this.actionDataList);
   }
 

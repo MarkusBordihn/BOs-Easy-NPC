@@ -28,6 +28,7 @@ import de.markusbordihn.easynpc.configui.client.screen.EditorScreen;
 import de.markusbordihn.easynpc.configui.client.screen.components.AddButton;
 import de.markusbordihn.easynpc.configui.client.screen.components.CancelButton;
 import de.markusbordihn.easynpc.configui.client.screen.components.Checkbox;
+import de.markusbordihn.easynpc.configui.client.screen.components.ConditionButton;
 import de.markusbordihn.easynpc.configui.client.screen.components.DeleteButton;
 import de.markusbordihn.easynpc.configui.client.screen.components.DialogButton;
 import de.markusbordihn.easynpc.configui.client.screen.components.DialogButtonButton;
@@ -57,6 +58,7 @@ public class DialogButtonEditorScreen<T extends EditorMenu> extends EditorScreen
   protected Button homeButton;
   protected Button dialogButton;
   protected Button dialogButtonButton;
+  protected Button conditionsButton;
   protected Button saveButton;
   protected Button cancelButton;
   protected Button deleteButton;
@@ -111,7 +113,6 @@ public class DialogButtonEditorScreen<T extends EditorMenu> extends EditorScreen
   public void init() {
     super.init();
 
-    // Home Button
     this.homeButton =
         this.addRenderableWidget(
             new TextButton(
@@ -124,7 +125,6 @@ public class DialogButtonEditorScreen<T extends EditorMenu> extends EditorScreen
                     NetworkMessageHandlerManager.getServerHandler()
                         .openConfiguration(this.getEasyNPCUUID(), ConfigurationType.DIALOG)));
 
-    // Dialog Button
     this.dialogButton =
         this.addRenderableWidget(
             new DialogButton(
@@ -136,7 +136,6 @@ public class DialogButtonEditorScreen<T extends EditorMenu> extends EditorScreen
                     NetworkMessageHandlerManager.getServerHandler()
                         .openDialogEditor(this.getEasyNPCUUID(), this.getDialogUUID())));
 
-    // Dialog Button Button
     this.dialogButtonButton =
         this.addRenderableWidget(
             new DialogButtonButton(
@@ -147,14 +146,12 @@ public class DialogButtonEditorScreen<T extends EditorMenu> extends EditorScreen
                 onPress -> {}));
     this.dialogButtonButton.active = false;
 
-    // Button Name
     this.buttonNameValue = this.getDialogButtonData().name();
     this.buttonNameBox = new TextField(this.font, this.leftPos + 100, this.topPos + 30, 150);
     this.buttonNameBox.setMaxLength(64);
     this.buttonNameBox.setValue(this.buttonNameValue);
     this.addRenderableWidget(this.buttonNameBox);
 
-    // Convert Button Name to Button Label
     this.buttonNameToLabelButton =
         this.addRenderableWidget(
             new SpriteButton(
@@ -176,7 +173,6 @@ public class DialogButtonEditorScreen<T extends EditorMenu> extends EditorScreen
                   }
                 }));
 
-    // Button Label
     this.buttonLabelValue = this.getDialogButtonData().label();
     this.buttonLabelBox = new TextField(this.font, this.leftPos + 100, this.topPos + 50, 100);
     this.buttonLabelBox.setMaxLength(DialogButtonEntry.MAX_BUTTON_LABEL_LENGTH);
@@ -194,10 +190,26 @@ public class DialogButtonEditorScreen<T extends EditorMenu> extends EditorScreen
                 true,
                 onPress -> this.buttonLabelBox.setEditable(!this.buttonLabelCheckbox.selected())));
 
-    // Dialog Button Action Data
     this.addRenderableWidget(this.getActionDataButton(this.leftPos + 10, this.topPos + 70));
 
-    // Save Button
+    int conditionCount =
+        this.getDialogButtonData().conditions() != null
+            ? this.getDialogButtonData().conditions().size()
+            : 0;
+    this.conditionsButton =
+        this.addRenderableWidget(
+            new ConditionButton(
+                this.leftPos + 10,
+                this.topPos + 95,
+                300,
+                conditionCount,
+                onPress -> {
+                  this.saveDialogButton();
+                  NetworkMessageHandlerManager.getServerHandler()
+                      .openConditionDataEditor(
+                          this.getEasyNPCUUID(), this.getDialogUUID(), this.getDialogButtonUUID());
+                }));
+
     this.saveButton =
         this.addRenderableWidget(
             new SaveButton(
@@ -211,7 +223,6 @@ public class DialogButtonEditorScreen<T extends EditorMenu> extends EditorScreen
                       .openDialogEditor(this.getEasyNPCUUID(), this.getDialogUUID());
                 }));
 
-    // Delete Button
     this.deleteButton =
         this.addRenderableWidget(
             new DeleteButton(
@@ -220,7 +231,6 @@ public class DialogButtonEditorScreen<T extends EditorMenu> extends EditorScreen
                 85,
                 onPress -> this.deleteDialogButton()));
 
-    // Chancel Button
     this.cancelButton =
         this.addRenderableWidget(
             new CancelButton(
@@ -239,13 +249,11 @@ public class DialogButtonEditorScreen<T extends EditorMenu> extends EditorScreen
       return;
     }
 
-    // Basic dialog button data
     DialogButtonEntry newDialogButtonEntry =
         dialogButtonEntry
             .withName(this.buttonNameBox.getValue())
             .withLabel(this.buttonLabelBox.getValue());
 
-    // Save dialog button action data.
     NetworkMessageHandlerManager.getServerHandler()
         .saveDialogButton(
             this.getEasyNPCUUID(),
@@ -274,7 +282,6 @@ public class DialogButtonEditorScreen<T extends EditorMenu> extends EditorScreen
     super.render(guiGraphics, x, y, partialTicks);
     this.renderEditLabels(guiGraphics);
 
-    // Render Tooltips
     if (this.buttonNameToLabelButton != null && this.buttonNameToLabelButton.isMouseOver(x, y)) {
       guiGraphics.renderTooltip(
           this.font,
@@ -295,34 +302,32 @@ public class DialogButtonEditorScreen<T extends EditorMenu> extends EditorScreen
     if (actionDataSet == null || actionDataSet.isEmpty()) {
       Component buttonLabel = TextComponent.getTextComponent("add_action", "button");
       return new AddButton(
-              left,
-              top,
-              buttonWidth,
-              buttonLabel,
-              onPress ->
-                  NetworkMessageHandlerManager.getServerHandler()
-                      .openActionDataEntryEditor(
-                          this.getEasyNPCUUID(),
-                          EditorType.DIALOG_BUTTON,
-                          this.getDialogUUID(),
-                          this.getDialogButtonUUID(),
-                          new ActionDataEntry()))
-          .setRenderCenter(false);
+          left,
+          top,
+          buttonWidth,
+          buttonLabel,
+          onPress ->
+              NetworkMessageHandlerManager.getServerHandler()
+                  .openActionDataEntryEditor(
+                      this.getEasyNPCUUID(),
+                      EditorType.DIALOG_BUTTON,
+                      this.getDialogUUID(),
+                      this.getDialogButtonUUID(),
+                      new ActionDataEntry()));
     } else {
       Component buttonLabel = TextComponent.getTextComponent("edit_action", "button");
       return new EditButton(
-              left,
-              top,
-              buttonWidth,
-              buttonLabel,
-              onPress ->
-                  NetworkMessageHandlerManager.getServerHandler()
-                      .openActionDataEditor(
-                          this.getEasyNPCUUID(),
-                          EditorType.DIALOG_BUTTON,
-                          this.getDialogUUID(),
-                          this.getDialogButtonUUID()))
-          .setRenderCenter(false);
+          left,
+          top,
+          buttonWidth,
+          buttonLabel,
+          onPress ->
+              NetworkMessageHandlerManager.getServerHandler()
+                  .openActionDataEditor(
+                      this.getEasyNPCUUID(),
+                      EditorType.DIALOG_BUTTON,
+                      this.getDialogUUID(),
+                      this.getDialogButtonUUID()));
     }
   }
 }
