@@ -28,6 +28,7 @@ import de.markusbordihn.easynpc.configui.client.screen.EditorScreen;
 import de.markusbordihn.easynpc.configui.client.screen.components.AddButton;
 import de.markusbordihn.easynpc.configui.client.screen.components.CancelButton;
 import de.markusbordihn.easynpc.configui.client.screen.components.Checkbox;
+import de.markusbordihn.easynpc.configui.client.screen.components.ConditionButton;
 import de.markusbordihn.easynpc.configui.client.screen.components.DeleteButton;
 import de.markusbordihn.easynpc.configui.client.screen.components.DialogButton;
 import de.markusbordihn.easynpc.configui.client.screen.components.DialogButtonButton;
@@ -279,15 +280,13 @@ public class DialogEditorScreen<T extends EditorMenu> extends EditorScreen<T> {
 
     this.conditionsButton =
         this.addRenderableWidget(
-            new DialogButton(
+            new ConditionButton(
                 this.leftPos + 99,
                 this.dialogLabelTextField.getY()
                     + this.dialogLabelTextField.getHeight()
                     + OPTION_SPACING,
                 140,
-                dialogDataEntry.hasConditions()
-                    ? "dialog.edit_conditions"
-                    : "dialog.create_conditions",
+                dialogDataEntry.getConditions().size(),
                 onPress -> {
                   this.saveDialogData();
                   NetworkMessageHandlerManager.getServerHandler()
@@ -412,6 +411,7 @@ public class DialogEditorScreen<T extends EditorMenu> extends EditorScreen<T> {
               buttonTopPos,
               buttonWidth,
               dialogButtonEntry.getButtonName(buttonMaxTextLength).getString(),
+              dialogButtonEntry.hasConditions(),
               onPress -> {
                 log.debug("Edit dialog button {}", dialogButtonEntry.id());
                 NetworkMessageHandlerManager.getServerHandler()

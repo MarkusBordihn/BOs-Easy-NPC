@@ -23,6 +23,7 @@ import de.markusbordihn.easynpc.data.attribute.EntityAttributes;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.data.ticker.TickerType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.utils.CompoundTagUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
@@ -106,7 +107,7 @@ public interface NavigationDataCapable<T extends Mob> extends EasyNPC<T> {
     if (this.hasHomePosition()) {
       navigationTag.put(DATA_HOME_TAG, NbtUtils.writeBlockPos(this.getHomePosition()));
     }
-    compoundTag.put(DATA_NAVIGATION_TAG, navigationTag);
+    CompoundTagUtils.putIfNotEmpty(compoundTag, DATA_NAVIGATION_TAG, navigationTag);
   }
 
   default void readAdditionalNavigationData(CompoundTag compoundTag) {
@@ -126,7 +127,6 @@ public interface NavigationDataCapable<T extends Mob> extends EasyNPC<T> {
     // Update basic movement relevant data.
     if (tickerData.checkAndIncreaseTicker(TickerType.TRAVEL_EVENT, TRAVEL_EVENT_TICK)) {
 
-      // Define if NPC is on ground or not.
       Mob mob = this.getMob();
       Level level = this.getEntityLevel();
       BlockState blockState = level.getBlockState(mob.getOnPos());

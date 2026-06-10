@@ -23,6 +23,7 @@ import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.position.CustomPosition;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.utils.CompoundTagUtils;
 import java.util.EnumMap;
 import java.util.Map;
 import net.minecraft.nbt.CompoundTag;
@@ -80,9 +81,11 @@ public interface ModelPositionDataCapable<T extends Mob> extends EasyNPC<T> {
     CompoundTag positionsTag = new CompoundTag();
     EnumMap<ModelPartType, CustomPosition> modelPartMap = getModelPartPosition();
     for (Map.Entry<ModelPartType, CustomPosition> entry : modelPartMap.entrySet()) {
-      positionsTag.put(entry.getKey().getTagName(), entry.getValue().save());
+      if (entry.getValue() != null && entry.getValue().hasChanged()) {
+        positionsTag.put(entry.getKey().getTagName(), entry.getValue().save());
+      }
     }
-    compoundTag.put(EASY_NPC_DATA_MODEL_POSITION_TAG, positionsTag);
+    CompoundTagUtils.putIfNotEmpty(compoundTag, EASY_NPC_DATA_MODEL_POSITION_TAG, positionsTag);
   }
 
   default void readAdditionalModelPositionData(CompoundTag compoundTag) {

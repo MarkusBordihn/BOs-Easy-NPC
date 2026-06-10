@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.entity.easynpc.data;
 import de.markusbordihn.easynpc.data.render.RenderDataEntry;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.utils.CompoundTagUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Mob;
 
@@ -49,7 +50,7 @@ public interface RenderDataCapable<E extends Mob> extends EasyNPC<E> {
       renderData.write(renderTag);
     }
 
-    compoundTag.put(DATA_RENDER_DATA_TAG, renderTag);
+    CompoundTagUtils.putIfNotEmpty(compoundTag, DATA_RENDER_DATA_TAG, renderTag);
   }
 
   default void readAdditionalRenderData(CompoundTag compoundTag) {
@@ -59,7 +60,6 @@ public interface RenderDataCapable<E extends Mob> extends EasyNPC<E> {
       return;
     }
 
-    // Read render data.
     RenderDataEntry renderData = new RenderDataEntry(compoundTag.getCompound(DATA_RENDER_DATA_TAG));
     this.setRenderData(renderData);
   }

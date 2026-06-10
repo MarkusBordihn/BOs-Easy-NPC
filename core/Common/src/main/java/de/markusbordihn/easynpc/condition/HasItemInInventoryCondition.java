@@ -20,30 +20,35 @@
 package de.markusbordihn.easynpc.condition;
 
 import de.markusbordihn.easynpc.data.condition.ConditionDataEntry;
+import de.markusbordihn.easynpc.data.condition.ConditionOperationType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
 public class HasItemInInventoryCondition {
 
   private HasItemInInventoryCondition() {}
 
-  public static boolean evaluate(ConditionDataEntry conditionDataEntry, ServerPlayer serverPlayer) {
-    if (!conditionDataEntry.hasName() || serverPlayer == null) {
+  public static boolean evaluate(ConditionDataEntry conditionDataEntry, Player player) {
+    if (!conditionDataEntry.hasName() || player == null) {
       return false;
     }
 
     String itemName = conditionDataEntry.name();
-    for (int i = 0; i < serverPlayer.getInventory().getContainerSize(); i++) {
-      ItemStack stack = serverPlayer.getInventory().getItem(i);
+    int required = Math.max(1, conditionDataEntry.value());
+    int total = 0;
+    for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
+      ItemStack stack = player.getInventory().getItem(i);
       if (!stack.isEmpty()) {
         ResourceLocation key = BuiltInRegistries.ITEM.getKey(stack.getItem());
         if (key != null && key.toString().equals(itemName)) {
-          return true;
+          total += stack.getCount();
         }
       }
     }
-    return false;
+
+    boolean hasEnough = total >= required;
+    return (conditionDataEntry.operationType() == ConditionOperationType.NOT_EQUALS) != hasEnough;
   }
 }

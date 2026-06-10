@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.entity.easynpc.data;
 import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.utils.CompoundTagUtils;
 import java.util.EnumMap;
 import java.util.Map;
 import net.minecraft.nbt.CompoundTag;
@@ -108,9 +109,11 @@ public interface ModelVisibilityDataCapable<T extends Mob> extends EasyNPC<T> {
     CompoundTag visibilityTag = new CompoundTag();
     EnumMap<ModelPartType, Boolean> modelPartMap = getModelPartVisibility();
     for (Map.Entry<ModelPartType, Boolean> entry : modelPartMap.entrySet()) {
-      visibilityTag.putBoolean(entry.getKey().getTagName(), entry.getValue());
+      if (entry.getValue() != null && !entry.getValue()) {
+        visibilityTag.putBoolean(entry.getKey().getTagName(), false);
+      }
     }
-    compoundTag.put(EASY_NPC_DATA_MODEL_VISIBLE_TAG, visibilityTag);
+    CompoundTagUtils.putIfNotEmpty(compoundTag, EASY_NPC_DATA_MODEL_VISIBLE_TAG, visibilityTag);
   }
 
   default void readAdditionalModelVisibilityData(CompoundTag compoundTag) {

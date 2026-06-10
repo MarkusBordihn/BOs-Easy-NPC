@@ -32,7 +32,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
 public record OpenConditionDataEntryEditorMessage(
-    UUID uuid, UUID dialogId, ConditionDataEntry conditionDataEntry)
+    UUID uuid, UUID dialogId, UUID dialogButtonId, ConditionDataEntry conditionDataEntry)
     implements NetworkMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
@@ -40,13 +40,17 @@ public record OpenConditionDataEntryEditorMessage(
 
   public static OpenConditionDataEntryEditorMessage create(final FriendlyByteBuf buffer) {
     return new OpenConditionDataEntryEditorMessage(
-        buffer.readUUID(), buffer.readUUID(), new ConditionDataEntry(buffer.readNbt()));
+        buffer.readUUID(),
+        buffer.readUUID(),
+        buffer.readUUID(),
+        new ConditionDataEntry(buffer.readNbt()));
   }
 
   @Override
   public void write(final FriendlyByteBuf buffer) {
     buffer.writeUUID(this.uuid);
     buffer.writeUUID(this.dialogId);
+    buffer.writeUUID(this.dialogButtonId);
     CompoundTag compoundTag = new CompoundTag();
     this.conditionDataEntry.write(compoundTag);
     buffer.writeNbt(compoundTag);
@@ -64,14 +68,13 @@ public record OpenConditionDataEntryEditorMessage(
       return;
     }
 
-    // Open condition data entry editor
     MenuManager.getMenuHandler()
         .openEditorMenu(
             EditorType.CONDITION_DATA_ENTRY,
             serverPlayer,
             easyNPC,
             this.dialogId,
-            Constants.EMPTY_UUID,
+            this.dialogButtonId,
             null,
             this.conditionDataEntry.getId(),
             0,

@@ -30,20 +30,22 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
-public record OpenConditionDataEditorMessage(UUID uuid, UUID dialogId)
+public record OpenConditionDataEditorMessage(UUID uuid, UUID dialogId, UUID dialogButtonId)
     implements NetworkMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
       new ResourceLocation(Constants.MOD_ID, "open_condition_data_editor");
 
   public static OpenConditionDataEditorMessage create(final FriendlyByteBuf buffer) {
-    return new OpenConditionDataEditorMessage(buffer.readUUID(), buffer.readUUID());
+    return new OpenConditionDataEditorMessage(
+        buffer.readUUID(), buffer.readUUID(), buffer.readUUID());
   }
 
   @Override
   public void write(final FriendlyByteBuf buffer) {
     buffer.writeUUID(this.uuid);
     buffer.writeUUID(this.dialogId);
+    buffer.writeUUID(this.dialogButtonId);
   }
 
   @Override
@@ -58,14 +60,13 @@ public record OpenConditionDataEditorMessage(UUID uuid, UUID dialogId)
       return;
     }
 
-    // Open condition data editor
     MenuManager.getMenuHandler()
         .openEditorMenu(
             EditorType.CONDITION_DATA,
             serverPlayer,
             easyNPC,
             this.dialogId,
-            Constants.EMPTY_UUID,
+            this.dialogButtonId,
             null,
             null,
             0,
