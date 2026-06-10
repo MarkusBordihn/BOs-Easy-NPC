@@ -21,52 +21,56 @@ package de.markusbordihn.easynpc.configui.client.screen.components;
 
 import de.markusbordihn.easynpc.client.screen.components.SpriteButton;
 import de.markusbordihn.easynpc.configui.Constants;
+import de.markusbordihn.easynpc.network.components.TextComponent;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button.OnPress;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
-public class DialogButtonButton extends SpriteButton {
+public class ConditionButton extends SpriteButton {
 
-  public static final int DEFAULT_HEIGHT = 16;
-  public static final int SPRITE_HEIGHT = 12;
-  public static final int SPRITE_OFFSET_X = 80;
-  public static final int SPRITE_OFFSET_Y = 54;
-  public static final int SPRITE_WIDTH = 12;
-  public static final int SPRITE_X = 4;
-  public static final int SPRITE_Y = 2;
+  private static final int DEFAULT_HEIGHT = 16;
+  private static final int SPRITE_WIDTH = 12;
+  private static final int SPRITE_HEIGHT = 12;
+  private static final int ADD_SPRITE_X = 4;
+  private static final int ADD_SPRITE_Y = 3;
+  private static final int EDIT_SPRITE_X = 3;
+  private static final int EDIT_SPRITE_Y = 2;
+  private static final int ADD_OFFSET_X = 65;
+  private static final int ADD_OFFSET_Y = 104;
+  private static final int EDIT_OFFSET_X = 64;
+  private static final int EDIT_OFFSET_Y = 79;
+  private static final int ICON_OFFSET_X = 64;
+  private static final int ICON_OFFSET_Y = 178;
   private static final ResourceLocation TEXTURE = Constants.TEXTURE_CONFIGURATION;
 
-  private final boolean hasCondition;
-
-  public DialogButtonButton(int left, int top, int width, String label, OnPress onPress) {
-    this(left, top, width, label, false, onPress);
-  }
-
-  public DialogButtonButton(
-      int left, int top, int width, String label, boolean hasCondition, OnPress onPress) {
+  public ConditionButton(int left, int top, int width, int conditionCount, OnPress onPress) {
     super(
         left,
         top,
         width,
         DEFAULT_HEIGHT,
-        label,
+        getLabel(conditionCount),
         TEXTURE,
-        SPRITE_X,
-        SPRITE_Y,
-        SPRITE_OFFSET_X,
-        SPRITE_OFFSET_Y,
+        conditionCount > 0 ? EDIT_SPRITE_X : ADD_SPRITE_X,
+        conditionCount > 0 ? EDIT_SPRITE_Y : ADD_SPRITE_Y,
+        conditionCount > 0 ? EDIT_OFFSET_X : ADD_OFFSET_X,
+        conditionCount > 0 ? EDIT_OFFSET_Y : ADD_OFFSET_Y,
         SPRITE_WIDTH,
         SPRITE_HEIGHT,
         onPress);
-    this.hasCondition = hasCondition;
   }
 
-  @Override
-  public void renderButton(GuiGraphics guiGraphics, int left, int top, float partialTicks) {
-    super.renderButton(guiGraphics, left, top, partialTicks);
-    if (this.hasCondition) {
-      ConditionButton.renderIndicator(
-          guiGraphics, this.getX() + this.width - SPRITE_WIDTH - 2, this.getY() + 2);
+  private static Component getLabel(int conditionCount) {
+    if (conditionCount <= 0) {
+      return TextComponent.getTranslatedConfigText("add_condition");
+    } else if (conditionCount == 1) {
+      return TextComponent.getTranslatedConfigText("edit_condition");
     }
+    return TextComponent.getTranslatedConfigText("edit_conditions", String.valueOf(conditionCount));
+  }
+
+  public static void renderIndicator(GuiGraphics guiGraphics, int x, int y) {
+    guiGraphics.blit(TEXTURE, x, y, ICON_OFFSET_X, ICON_OFFSET_Y, SPRITE_WIDTH, SPRITE_HEIGHT);
   }
 }

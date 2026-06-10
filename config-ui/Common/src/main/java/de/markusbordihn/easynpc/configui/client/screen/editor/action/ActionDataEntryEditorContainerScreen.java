@@ -27,6 +27,7 @@ import de.markusbordihn.easynpc.configui.client.screen.EditorScreen;
 import de.markusbordihn.easynpc.configui.client.screen.components.ActionButton;
 import de.markusbordihn.easynpc.configui.client.screen.components.ActionsButton;
 import de.markusbordihn.easynpc.configui.client.screen.components.CancelButton;
+import de.markusbordihn.easynpc.configui.client.screen.components.ConditionButton;
 import de.markusbordihn.easynpc.configui.client.screen.components.DeleteButton;
 import de.markusbordihn.easynpc.configui.client.screen.components.SaveButton;
 import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.ActionEntryWidget;
@@ -91,7 +92,6 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
     this.editorType = this.getAdditionalScreenData().getEditorType();
     this.actionDataSet = getActionDataSet();
 
-    // Action Data Entry
     this.actionDataEntryId = this.getActionDataEntryUUID();
     this.actionDataEntry = this.getActionDataEntry();
     this.actionDataType =
@@ -219,12 +219,10 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
       return;
     }
 
-    // Store action data entry and update action data set.
     ActionDataEntry newActionDataEntry =
         actionEntryWidget != null ? actionEntryWidget.getActionDataEntry() : new ActionDataEntry();
     this.actionDataSet.put(this.actionDataEntryId, newActionDataEntry);
 
-    // Save action data set
     if (this.editorType != null && this.editorType == EditorType.TRADING_OFFER_ACTION) {
       NetworkMessageHandlerManager.getServerHandler()
           .changeTradingOfferAction(
@@ -303,7 +301,6 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
 
     this.contentTop = this.topPos + 20;
 
-    // Home Button
     this.homeButton =
         this.addRenderableWidget(
             new TextButton(
@@ -338,7 +335,6 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
                 onPress -> navigateToActionDataEditor()));
     this.navigationLevelTwo.active = false;
 
-    // Action Data Type Button
     this.actionDataTypeButton =
         this.addRenderableWidget(
             new SpinButton<>(
@@ -355,20 +351,17 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
         this.actionDataEntry.conditionDataSet() != null
             ? this.actionDataEntry.conditionDataSet().size()
             : 0;
-    String conditionsLabel =
-        conditionCount > 0 ? "Conditions (" + conditionCount + ")" : "Conditions";
     this.conditionsButton =
         this.addRenderableWidget(
-            new ActionButton(
+            new ConditionButton(
                 this.leftPos + 10,
                 this.bottomPos - 55,
                 295,
-                conditionsLabel,
+                conditionCount,
                 onPress -> openConditionEditor()));
     this.conditionsButton.active =
         this.actionDataSet != null && this.actionDataSet.contains(this.actionDataEntryId);
 
-    // Save Button
     this.saveButton =
         this.addRenderableWidget(
             new SaveButton(
@@ -381,7 +374,6 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
                   this.navigateToActionDataEditor();
                 }));
 
-    // Delete Button
     this.deleteButton =
         this.addRenderableWidget(
             new DeleteButton(
@@ -390,7 +382,6 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
                 85,
                 onPress -> this.deleteActionDataEntry()));
 
-    // Chancel Button
     this.cancelButton =
         this.addRenderableWidget(
             new CancelButton(
@@ -435,7 +426,6 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
         log.error("Unsupported action data type {}!", this.actionDataType);
     }
 
-    // Initialize action entry widget
     int editorLeft = this.leftPos + 10;
     int editorTop = this.contentTop + 25;
     if (this.actionEntryWidget != null) {

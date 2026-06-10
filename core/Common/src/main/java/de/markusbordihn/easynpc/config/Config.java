@@ -61,6 +61,7 @@ public class Config {
 
   public static void registerClientConfig() {
     log.info("{} Registering client configuration ...", LOG_PREFIX);
+    ClientDialogConfig.registerConfig();
   }
 
   public static void registerServerConfig() {

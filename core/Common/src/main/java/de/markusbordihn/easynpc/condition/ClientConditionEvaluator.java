@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Markus Bordihn
+ * Copyright 2025 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -20,18 +20,38 @@
 package de.markusbordihn.easynpc.condition;
 
 import de.markusbordihn.easynpc.data.condition.ConditionDataEntry;
+import java.util.Set;
 import net.minecraft.world.entity.player.Player;
 
-public class PlayerHealthCondition {
+public class ClientConditionEvaluator {
 
-  private PlayerHealthCondition() {}
+  private ClientConditionEvaluator() {}
 
-  public static boolean evaluate(ConditionDataEntry conditionDataEntry, Player player) {
-    if (player == null) {
-      return false;
+  public static boolean evaluateAll(Set<ConditionDataEntry> conditionDataEntries, Player player) {
+    if (conditionDataEntries == null || conditionDataEntries.isEmpty() || player == null) {
+      return true;
     }
 
-    int healthPercent = (int) ((player.getHealth() / player.getMaxHealth()) * 100);
-    return conditionDataEntry.operationType().evaluate(healthPercent, conditionDataEntry.value());
+    for (ConditionDataEntry conditionDataEntry : conditionDataEntries) {
+      if (!evaluate(conditionDataEntry, player)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  private static boolean evaluate(ConditionDataEntry conditionDataEntry, Player player) {
+    if (conditionDataEntry == null || !conditionDataEntry.isValid()) {
+      return true;
+    }
+
+    return switch (conditionDataEntry.conditionType()) {
+      case HAS_ITEM_IN_INVENTORY ->
+          HasItemInInventoryCondition.evaluate(conditionDataEntry, player);
+      case HAS_ITEM_IN_HAND -> HasItemInHandCondition.evaluate(conditionDataEntry, player);
+      case EXPERIENCE_LEVEL -> ExperienceLevelCondition.evaluate(conditionDataEntry, player);
+      case PLAYER_HEALTH -> PlayerHealthCondition.evaluate(conditionDataEntry, player);
+      default -> true;
+    };
   }
 }

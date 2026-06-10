@@ -92,6 +92,7 @@
   "text.easy_npc.item.easy_npc_preset.custom_name": "Name: %s",
   "text.easy_npc.item.easy_npc_preset.entity_type": "Entity Type: %s",
   "text.easy_npc.item.move_easy_npc": "Select the EasyNPC with the right mouse button and move it with the left mouse button to the targeted position.",
+  "text.easy_npc.dialog.button.locked": "You don't meet the requirements for this option yet.",
   "text.easy_npc.locked": "Locked",
   "text.easy_npc.not_implemented": "Not implemented yet!",
   "text.easy_npc.respawn": "Respawn",

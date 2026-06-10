@@ -24,10 +24,12 @@ import de.markusbordihn.easynpc.client.renderer.screen.EntityScreenRenderer;
 import de.markusbordihn.easynpc.client.screen.Screen;
 import de.markusbordihn.easynpc.client.screen.components.DialogBackwardButton;
 import de.markusbordihn.easynpc.client.screen.components.DialogForwardButton;
+import de.markusbordihn.easynpc.client.screen.components.DialogTextButton;
 import de.markusbordihn.easynpc.client.screen.components.Graphics;
 import de.markusbordihn.easynpc.client.screen.components.Text;
-import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.compat.IntegrationRegistry;
+import de.markusbordihn.easynpc.condition.ClientConditionEvaluator;
+import de.markusbordihn.easynpc.config.ClientDialogConfig;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
 import de.markusbordihn.easynpc.data.dialog.DialogButtonEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
@@ -46,21 +48,21 @@ import java.util.List;
 import java.util.UUID;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Inventory;
 
 public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScreenData> {
 
-  private static final int BUTTON_WIDTH = 126;
-  private static final int MIDDLE_BUTTON_WIDTH = 200;
-  private static final int LARGE_BUTTON_WIDTH = 250;
-  private static final int MAX_NUMBER_OF_PIXEL_PER_LINE = 180;
+  private static final int BUTTON_WIDTH = 134;
+  private static final int MIDDLE_BUTTON_WIDTH = 208;
+  private static final int LARGE_BUTTON_WIDTH = 262;
+  private static final int MAX_NUMBER_OF_PIXEL_PER_LINE = 192;
   private static final int MAX_NUMBER_OF_DIALOG_LINES = 10;
   private static final int MAX_TOTAL_DIALOG_LINES = 100;
   private static DialogScreenLayout dialogScreenLayout = DialogScreenLayout.UNKNOWN;
   protected final ArrayList<Button> dialogButtons = new ArrayList<>();
+  protected final ArrayList<DialogButtonEntry> dialogButtonEntries = new ArrayList<>();
   protected final Component dialogText;
   protected final DialogMetaData dialogMetaData;
   protected Button dialogForwardButton = null;
@@ -70,7 +72,12 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
   protected int numberOfDialogLines = 1;
   protected int dialogPageIndex = 0;
   private List<FormattedCharSequence> cachedDialogComponents = Collections.emptyList();
+  private int[] cachedLineLengths = new int[0];
   private DialogOptionsData cachedDialogOptions = DialogOptionsData.DEFAULT;
+  private boolean typewriterEnabled;
+  private int charsPerSecond;
+  private long pageStartTimeMillis;
+  private boolean pageFullyRevealed;
 
   public DialogScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component, 280, 200);
@@ -91,21 +98,57 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
   protected void renderDialog(GuiGraphics guiGraphics) {
     int dialogTopPosition = this.topPos + 20;
 
-    if (!this.cachedDialogComponents.isEmpty()) {
-      for (int line = this.dialogPageIndex * MAX_NUMBER_OF_DIALOG_LINES;
-          line < this.numberOfDialogLines
-              && line < MAX_NUMBER_OF_DIALOG_LINES * (this.dialogPageIndex + 1);
-          ++line) {
-        int textTopPosition =
-            dialogTopPosition
-                + 6
-                + (line - (this.dialogPageIndex * MAX_NUMBER_OF_DIALOG_LINES))
-                    * (font.lineHeight + 2);
-        FormattedCharSequence formattedCharSequence = this.cachedDialogComponents.get(line);
-        Text.drawString(
-            guiGraphics, this.font, formattedCharSequence, this.leftPos + 87, textTopPosition, 0);
-      }
+    if (this.cachedDialogComponents.isEmpty()) {
+      return;
     }
+
+    int pageStart = this.dialogPageIndex * MAX_NUMBER_OF_DIALOG_LINES;
+    int pageEnd = Math.min(this.numberOfDialogLines, pageStart + MAX_NUMBER_OF_DIALOG_LINES);
+    int revealed = this.revealedChars();
+    int consumed = 0;
+
+    for (int line = pageStart; line < pageEnd; line++) {
+      int textTopPosition = dialogTopPosition + 6 + (line - pageStart) * (font.lineHeight + 2);
+      int lineLength = this.cachedLineLengths[line];
+      int show = Math.min(lineLength, Math.max(0, revealed - consumed));
+      FormattedCharSequence formattedCharSequence =
+          show >= lineLength
+              ? this.cachedDialogComponents.get(line)
+              : Text.limit(this.cachedDialogComponents.get(line), show);
+      Text.drawString(
+          guiGraphics, this.font, formattedCharSequence, this.leftPos + 87, textTopPosition, 0);
+      consumed += lineLength;
+    }
+  }
+
+  private void beginPageReveal() {
+    this.pageStartTimeMillis = System.currentTimeMillis();
+    this.pageFullyRevealed = false;
+  }
+
+  private int revealedChars() {
+    if (!this.typewriterEnabled || this.pageFullyRevealed) {
+      return Integer.MAX_VALUE;
+    }
+    long elapsed = System.currentTimeMillis() - this.pageStartTimeMillis;
+    return (int) (elapsed * this.charsPerSecond / 1000L);
+  }
+
+  private int currentPageTotalChars() {
+    int pageStart = this.dialogPageIndex * MAX_NUMBER_OF_DIALOG_LINES;
+    int pageEnd = Math.min(this.numberOfDialogLines, pageStart + MAX_NUMBER_OF_DIALOG_LINES);
+    pageEnd = Math.min(pageEnd, this.cachedLineLengths.length);
+    int total = 0;
+    for (int line = pageStart; line < pageEnd; line++) {
+      total += this.cachedLineLengths[line];
+    }
+    return total;
+  }
+
+  private boolean isTypewriterActive() {
+    return this.typewriterEnabled
+        && !this.pageFullyRevealed
+        && this.revealedChars() < this.currentPageTotalChars();
   }
 
   private void setDialogText(DialogDataEntry dialogData) {
@@ -121,6 +164,10 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
     this.cachedDialogComponents =
         this.font.split(this.dialogComponent, MAX_NUMBER_OF_PIXEL_PER_LINE);
     this.numberOfDialogLines = Math.min(MAX_TOTAL_DIALOG_LINES, this.cachedDialogComponents.size());
+    this.cachedLineLengths = new int[this.cachedDialogComponents.size()];
+    for (int line = 0; line < this.cachedDialogComponents.size(); line++) {
+      this.cachedLineLengths[line] = Text.length(this.cachedDialogComponents.get(line));
+    }
   }
 
   private void addDialogButton(DialogButtonEntry dialogButtonEntry) {
@@ -128,24 +175,17 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
       return;
     }
 
-    int dialogButtonMaxTextLength =
-        switch (dialogScreenLayout) {
-          case COMPACT_TEXT_WITH_ONE_BUTTON,
-              TEXT_WITH_ONE_BUTTON,
-              TEXT_WITH_TWO_BUTTONS,
-              COMPACT_TEXT_WITH_THREE_BUTTONS,
-              TEXT_WITH_THREE_BUTTONS ->
-              41;
-          case COMPACT_TEXT_WITH_TWO_LARGE_BUTTONS -> 32;
-          default -> 22;
-        };
+    Component fullButtonName =
+        TextComponent.getTextComponentRaw(
+            dialogButtonEntry.name(), dialogButtonEntry.isTranslationKey());
 
-    TextButton dialogButton =
-        new TextButton(
+    DialogTextButton dialogButton =
+        new DialogTextButton(
             this.leftPos + 70,
             this.topPos + 55,
             198,
-            dialogButtonEntry.getButtonName(dialogButtonMaxTextLength),
+            fullButtonName,
+            dialogButtonEntry.hasConditions(),
             onPress -> {
               // Action Event on button click.
               if (this.getActionEventSet().hasActionEvent(ActionEventType.ON_BUTTON_CLICK)) {
@@ -166,14 +206,20 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
 
     dialogButton.visible = dialogButtonEntry.name() != null && !dialogButtonEntry.name().isBlank();
 
-    Component fullButtonName =
-        TextComponent.getTextComponentRaw(
-            dialogButtonEntry.name(), dialogButtonEntry.isTranslationKey());
-    if (fullButtonName.getString().length() > dialogButtonMaxTextLength) {
-      dialogButton.setTooltip(Tooltip.create(fullButtonName));
-    }
-
     this.dialogButtons.add(dialogButton);
+    this.dialogButtonEntries.add(dialogButtonEntry);
+    this.updateDialogButtonLockState(dialogButton, dialogButtonEntry);
+  }
+
+  private void updateDialogButtonLockState(
+      Button dialogButton, DialogButtonEntry dialogButtonEntry) {
+    if (dialogButtonEntry == null || !dialogButtonEntry.hasConditions()) {
+      return;
+    }
+    dialogButton.active =
+        ClientConditionEvaluator.evaluateAll(
+            dialogButtonEntry.conditions(),
+            minecraftInstance != null ? minecraftInstance.player : null);
   }
 
   private Button renderDialogButton(int buttonIndex, int width, int left, int top) {
@@ -197,7 +243,7 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
         this.renderDialogButton(
             1,
             BUTTON_WIDTH,
-            firstCompactDialogButton.getX() + firstCompactDialogButton.getWidth() + 10,
+            firstCompactDialogButton.getX() + firstCompactDialogButton.getWidth() + 9,
             firstCompactDialogButton.getY());
         break;
       case COMPACT_TEXT_WITH_TWO_LARGE_BUTTONS:
@@ -207,91 +253,91 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
             1,
             MIDDLE_BUTTON_WIDTH,
             firstCompactLargeDialogButton.getX(),
-            firstCompactLargeDialogButton.getY() + firstCompactLargeDialogButton.getHeight() + 10);
+            firstCompactLargeDialogButton.getY() + firstCompactLargeDialogButton.getHeight() + 9);
         break;
       case TEXT_WITH_ONE_BUTTON:
         this.renderDialogButton(0, LARGE_BUTTON_WIDTH, this.leftPos + 18, this.topPos + 170);
         break;
       case TEXT_WITH_TWO_BUTTONS:
         Button firstTwoDialogButton =
-            this.renderDialogButton(0, LARGE_BUTTON_WIDTH, this.leftPos + 18, this.topPos + 145);
+            this.renderDialogButton(0, LARGE_BUTTON_WIDTH, this.leftPos + 18, this.topPos + 159);
         this.renderDialogButton(
             1,
             LARGE_BUTTON_WIDTH,
             firstTwoDialogButton.getX(),
-            firstTwoDialogButton.getY() + firstTwoDialogButton.getHeight() + 10);
+            firstTwoDialogButton.getY() + firstTwoDialogButton.getHeight() + 9);
         break;
       case COMPACT_TEXT_WITH_THREE_BUTTONS, TEXT_WITH_THREE_BUTTONS:
         Button firstThreeDialogButton =
-            this.renderDialogButton(0, LARGE_BUTTON_WIDTH, this.leftPos + 18, this.topPos + 140);
+            this.renderDialogButton(0, LARGE_BUTTON_WIDTH, this.leftPos + 18, this.topPos + 154);
         Button secondThreeDialogButton =
             this.renderDialogButton(
                 1,
                 LARGE_BUTTON_WIDTH,
                 firstThreeDialogButton.getX(),
-                firstThreeDialogButton.getY() + firstThreeDialogButton.getHeight() + 5);
+                firstThreeDialogButton.getY() + firstThreeDialogButton.getHeight() + 4);
         this.renderDialogButton(
             2,
             LARGE_BUTTON_WIDTH,
             secondThreeDialogButton.getX(),
-            secondThreeDialogButton.getY() + secondThreeDialogButton.getHeight() + 5);
+            secondThreeDialogButton.getY() + secondThreeDialogButton.getHeight() + 4);
         break;
       case COMPACT_TEXT_WITH_FOUR_BUTTONS, TEXT_WITH_FOUR_BUTTONS:
         Button firstFourDialogButton =
-            this.renderDialogButton(0, BUTTON_WIDTH, this.leftPos + 10, this.topPos + 150);
+            this.renderDialogButton(0, BUTTON_WIDTH, this.leftPos + 10, this.topPos + 164);
         Button secondFourDialogButton =
             this.renderDialogButton(
                 1,
                 BUTTON_WIDTH,
-                firstFourDialogButton.getX() + firstFourDialogButton.getWidth() + 10,
+                firstFourDialogButton.getX() + firstFourDialogButton.getWidth() + 9,
                 firstFourDialogButton.getY());
         Button thirdFourDialogButton =
             this.renderDialogButton(
                 2,
                 BUTTON_WIDTH,
                 firstFourDialogButton.getX(),
-                firstFourDialogButton.getY() + firstFourDialogButton.getHeight() + 10);
+                firstFourDialogButton.getY() + firstFourDialogButton.getHeight() + 9);
         this.renderDialogButton(
             3, BUTTON_WIDTH, secondFourDialogButton.getX(), thirdFourDialogButton.getY());
         break;
       case COMPACT_TEXT_WITH_FIVE_BUTTONS, TEXT_WITH_FIVE_BUTTONS:
         Button firstFiveDialogButton =
-            this.renderDialogButton(0, BUTTON_WIDTH, this.leftPos + 10, this.topPos + 140);
+            this.renderDialogButton(0, BUTTON_WIDTH, this.leftPos + 10, this.topPos + 154);
         Button secondFiveDialogButton =
             this.renderDialogButton(
                 1,
                 BUTTON_WIDTH,
-                firstFiveDialogButton.getX() + firstFiveDialogButton.getWidth() + 10,
+                firstFiveDialogButton.getX() + firstFiveDialogButton.getWidth() + 9,
                 firstFiveDialogButton.getY());
         Button thirdFiveDialogButton =
             this.renderDialogButton(
                 2,
                 BUTTON_WIDTH,
                 firstFiveDialogButton.getX(),
-                firstFiveDialogButton.getY() + firstFiveDialogButton.getHeight() + 5);
+                firstFiveDialogButton.getY() + firstFiveDialogButton.getHeight() + 4);
         this.renderDialogButton(
             3, BUTTON_WIDTH, secondFiveDialogButton.getX(), thirdFiveDialogButton.getY());
         this.renderDialogButton(
             4,
             BUTTON_WIDTH,
             firstFiveDialogButton.getX(),
-            thirdFiveDialogButton.getY() + thirdFiveDialogButton.getHeight() + 5);
+            thirdFiveDialogButton.getY() + thirdFiveDialogButton.getHeight() + 4);
         break;
       case COMPACT_TEXT_WITH_SIX_BUTTONS, TEXT_WITH_SIX_BUTTONS:
         Button firstSixDialogButton =
-            this.renderDialogButton(0, BUTTON_WIDTH, this.leftPos + 10, this.topPos + 140);
+            this.renderDialogButton(0, BUTTON_WIDTH, this.leftPos + 10, this.topPos + 154);
         Button secondSixDialogButton =
             this.renderDialogButton(
                 1,
                 BUTTON_WIDTH,
-                firstSixDialogButton.getX() + firstSixDialogButton.getWidth() + 10,
+                firstSixDialogButton.getX() + firstSixDialogButton.getWidth() + 9,
                 firstSixDialogButton.getY());
         Button thirdSixDialogButton =
             this.renderDialogButton(
                 2,
                 BUTTON_WIDTH,
                 firstSixDialogButton.getX(),
-                firstSixDialogButton.getY() + firstSixDialogButton.getHeight() + 5);
+                firstSixDialogButton.getY() + firstSixDialogButton.getHeight() + 4);
         this.renderDialogButton(
             3, BUTTON_WIDTH, secondSixDialogButton.getX(), thirdSixDialogButton.getY());
         Button fifthSixDialogButton =
@@ -299,7 +345,7 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
                 4,
                 BUTTON_WIDTH,
                 firstSixDialogButton.getX(),
-                thirdSixDialogButton.getY() + thirdSixDialogButton.getHeight() + 5);
+                thirdSixDialogButton.getY() + thirdSixDialogButton.getHeight() + 4);
         this.renderDialogButton(
             5, BUTTON_WIDTH, secondSixDialogButton.getX(), fifthSixDialogButton.getY());
         break;
@@ -328,13 +374,14 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
     this.dialogForwardButton =
         this.addRenderableWidget(
             new DialogForwardButton(
-                this.leftPos + 257,
+                this.leftPos + 266,
                 dialogNavigationButtonTopPosition,
                 onPress -> {
                   this.dialogPageIndex =
                       this.dialogPageIndex < this.numberOfDialogLines / MAX_NUMBER_OF_DIALOG_LINES
                           ? this.dialogPageIndex + 1
                           : 0;
+                  this.beginPageReveal();
                   if (this.dialogBackwardButton != null) {
                     this.dialogBackwardButton.active = this.dialogPageIndex > 0;
                   }
@@ -350,13 +397,14 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
     this.dialogBackwardButton =
         this.addRenderableWidget(
             new DialogBackwardButton(
-                this.leftPos + 245,
+                this.leftPos + 254,
                 dialogNavigationButtonTopPosition,
                 onPress -> {
                   this.dialogPageIndex =
                       this.dialogPageIndex > 0
                           ? this.dialogPageIndex - 1
                           : this.numberOfDialogLines / MAX_NUMBER_OF_DIALOG_LINES;
+                  this.beginPageReveal();
                   if (this.dialogForwardButton != null) {
                     this.dialogForwardButton.active =
                         this.dialogPageIndex
@@ -380,11 +428,18 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
 
     super.init();
 
+    // Nudge the dialog up so the enlarged background stays visually centered.
+    this.topPos -= 4;
+    this.bottomPos -= 4;
+
+    this.dialogButtons.clear();
+    this.dialogButtonEntries.clear();
+
     this.titleLabelX = 10;
     this.titleLabelY = 8;
 
     if (this.closeButton != null) {
-      this.closeButton.setX(this.leftPos + this.imageWidth - 13);
+      this.closeButton.setX(this.leftPos + this.imageWidth - 5);
       this.closeButton.setY(this.topPos + 4);
     }
 
@@ -399,6 +454,10 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
 
     this.setDialogText(this.getDialogData());
     log.debug("Dialog with {} line(s) and layout {}", this.numberOfDialogLines, dialogScreenLayout);
+
+    this.typewriterEnabled = ClientDialogConfig.TYPEWRITER_ENABLED;
+    this.charsPerSecond = Math.max(1, ClientDialogConfig.TYPEWRITER_CHARS_PER_SECOND);
+    this.beginPageReveal();
 
     // If the dialog has more than 10 lines, add a button to switch between pages.
     if (this.numberOfDialogLines > MAX_NUMBER_OF_DIALOG_LINES) {
@@ -431,6 +490,7 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
 
     if (!this.cachedDialogOptions.displayAvatar()) {
       this.renderDialog(guiGraphics);
+      this.renderDialogButtonLocks(guiGraphics, x, y);
       return;
     }
 
@@ -463,6 +523,69 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
     guiGraphics.pose().popPose();
 
     this.renderDialog(guiGraphics);
+    this.renderDialogButtonLocks(guiGraphics, x, y);
+  }
+
+  @Override
+  protected void updateTick() {
+    super.updateTick();
+    for (int i = 0; i < this.dialogButtons.size() && i < this.dialogButtonEntries.size(); i++) {
+      this.updateDialogButtonLockState(this.dialogButtons.get(i), this.dialogButtonEntries.get(i));
+    }
+  }
+
+  private void renderDialogButtonLocks(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    Component tooltip = null;
+    for (int i = 0; i < this.dialogButtons.size() && i < this.dialogButtonEntries.size(); i++) {
+      Button dialogButton = this.dialogButtons.get(i);
+      DialogButtonEntry dialogButtonEntry = this.dialogButtonEntries.get(i);
+      if (!dialogButton.visible) {
+        continue;
+      }
+
+      boolean locked =
+          dialogButtonEntry != null && dialogButtonEntry.hasConditions() && !dialogButton.active;
+
+      int lockLeft = dialogButton.getX() + dialogButton.getWidth() - 12;
+      int lockTop = dialogButton.getY() + (dialogButton.getHeight() - 8) / 2;
+      if (locked) {
+        int lockColor = 0xffd0d0d0;
+        guiGraphics.fill(lockLeft + 2, lockTop, lockLeft + 5, lockTop + 1, lockColor);
+        guiGraphics.fill(lockLeft + 1, lockTop + 1, lockLeft + 2, lockTop + 3, lockColor);
+        guiGraphics.fill(lockLeft + 5, lockTop + 1, lockLeft + 6, lockTop + 3, lockColor);
+        guiGraphics.fill(lockLeft, lockTop + 3, lockLeft + 7, lockTop + 8, lockColor);
+      }
+
+      // Manual bounds check, because Button#isMouseOver returns false for inactive (locked)
+      // buttons and would suppress their tooltip.
+      boolean overButton =
+          mouseX >= dialogButton.getX()
+              && mouseX < dialogButton.getX() + dialogButton.getWidth()
+              && mouseY >= dialogButton.getY()
+              && mouseY < dialogButton.getY() + dialogButton.getHeight();
+      if (!overButton) {
+        continue;
+      }
+
+      // Over the lock glyph only the lock hint is shown, otherwise the full button name (when it
+      // does not fit on the button) - never both at once.
+      boolean overLock =
+          locked
+              && mouseX >= lockLeft
+              && mouseX < lockLeft + 7
+              && mouseY >= lockTop
+              && mouseY < lockTop + 8;
+      if (overLock) {
+        tooltip = TextComponent.getTranslatedText("dialog.button.locked");
+      } else if (dialogButton instanceof DialogTextButton dialogTextButton
+          && dialogTextButton.isTextTruncated()) {
+        tooltip = dialogButton.getMessage();
+      }
+    }
+
+    if (tooltip != null) {
+      guiGraphics.renderTooltip(this.font, tooltip, mouseX, mouseY);
+    }
   }
 
   @Override
@@ -491,8 +614,8 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
             this.topPos,
             1,
             1,
-            285,
-            170,
+            295,
+            176,
             512,
             256);
         break;
@@ -507,8 +630,8 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
             this.topPos,
             1,
             1,
-            285,
-            210,
+            295,
+            216,
             512,
             256);
         break;
@@ -520,15 +643,27 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
             this.topPos,
             1,
             1,
-            285,
-            210,
+            295,
+            216,
             512,
             256);
     }
   }
 
   @Override
+  public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    if (this.isTypewriterActive()) {
+      this.pageFullyRevealed = true;
+    }
+    return super.mouseClicked(mouseX, mouseY, button);
+  }
+
+  @Override
   public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+    if (keyCode != 256 && this.isTypewriterActive()) {
+      this.pageFullyRevealed = true;
+    }
+
     if (keyCode == 256 && !this.cachedDialogOptions.allowEscClose()) {
       return true;
     }

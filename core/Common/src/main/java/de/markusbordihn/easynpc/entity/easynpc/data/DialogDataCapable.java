@@ -22,12 +22,14 @@ package de.markusbordihn.easynpc.entity.easynpc.data;
 import de.markusbordihn.easynpc.data.dialog.DialogButtonEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
+import de.markusbordihn.easynpc.data.dialog.DialogType;
 import de.markusbordihn.easynpc.data.server.ServerDataAccessor;
 import de.markusbordihn.easynpc.data.server.ServerDataIndex;
 import de.markusbordihn.easynpc.data.server.ServerEntityData;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.menu.MenuManager;
 import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
+import de.markusbordihn.easynpc.utils.CompoundTagUtils;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -123,29 +125,29 @@ public interface DialogDataCapable<T extends Mob> extends EasyNPC<T> {
   }
 
   default void addAdditionalDialogData(CompoundTag compoundTag) {
-    CompoundTag dialogDataTag = new CompoundTag();
-
     if (this.isServerSideInstance()) {
       DialogDataSet dialogDataSet = this.getDialogDataSet();
-      if (dialogDataSet != null) {
+      if (dialogDataSet != null && dialogDataSet.hasDialog()) {
+        CompoundTag dialogDataTag = new CompoundTag();
         dialogDataSet.save(dialogDataTag);
+        CompoundTagUtils.putIfNotEmpty(compoundTag, DATA_DIALOG_DATA_TAG, dialogDataTag);
       }
     }
-
-    compoundTag.put(DATA_DIALOG_DATA_TAG, dialogDataTag);
   }
 
   default void readAdditionalDialogData(CompoundTag compoundTag) {
 
     // Early exit if no dialog data is available.
     if (!compoundTag.contains(DATA_DIALOG_DATA_TAG)) {
+      DialogDataSet dialogDataSet = this.getDialogDataSet();
+      if (dialogDataSet != null && !dialogDataSet.hasDialog()) {
+        this.setDialogDataSet(new DialogDataSet(DialogType.NONE));
+      }
       return;
     }
 
-    // Read dialog data
     CompoundTag dialogDataTag = compoundTag.getCompound(DATA_DIALOG_DATA_TAG);
 
-    // Read dialog
     if (dialogDataTag.contains(DialogDataSet.DATA_DIALOG_DATA_SET_TAG)) {
       DialogDataSet dialogDataSet = new DialogDataSet(dialogDataTag);
       this.setDialogDataSet(dialogDataSet);

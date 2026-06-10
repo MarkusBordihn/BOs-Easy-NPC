@@ -24,15 +24,15 @@ import de.markusbordihn.easynpc.data.condition.ConditionOperationType;
 import de.markusbordihn.easynpc.data.condition.HandItemType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
 public class HasItemInHandCondition {
 
   private HasItemInHandCondition() {}
 
-  public static boolean evaluate(ConditionDataEntry conditionDataEntry, ServerPlayer serverPlayer) {
-    if (!conditionDataEntry.hasName() || serverPlayer == null) {
+  public static boolean evaluate(ConditionDataEntry conditionDataEntry, Player player) {
+    if (!conditionDataEntry.hasName() || player == null) {
       return false;
     }
 
@@ -41,26 +41,27 @@ public class HasItemInHandCondition {
       handItemType = handItemTypeEntry;
     }
 
-    boolean result =
+    String itemName = conditionDataEntry.name();
+    int required = Math.max(1, conditionDataEntry.value());
+    int count =
         switch (handItemType) {
-          case MAIN_HAND ->
-              itemMatchesInStack(serverPlayer.getMainHandItem(), conditionDataEntry.name());
-          case OFF_HAND ->
-              itemMatchesInStack(serverPlayer.getOffhandItem(), conditionDataEntry.name());
+          case MAIN_HAND -> countInStack(player.getMainHandItem(), itemName);
+          case OFF_HAND -> countInStack(player.getOffhandItem(), itemName);
           default ->
-              itemMatchesInStack(serverPlayer.getMainHandItem(), conditionDataEntry.name())
-                  || itemMatchesInStack(serverPlayer.getOffhandItem(), conditionDataEntry.name());
+              countInStack(player.getMainHandItem(), itemName)
+                  + countInStack(player.getOffhandItem(), itemName);
         };
 
-    return (conditionDataEntry.operationType() == ConditionOperationType.NOT_EQUALS) != result;
+    boolean hasEnough = count >= required;
+    return (conditionDataEntry.operationType() == ConditionOperationType.NOT_EQUALS) != hasEnough;
   }
 
-  private static boolean itemMatchesInStack(ItemStack stack, String itemName) {
+  private static int countInStack(ItemStack stack, String itemName) {
     if (stack.isEmpty()) {
-      return false;
+      return 0;
     }
 
     ResourceLocation key = BuiltInRegistries.ITEM.getKey(stack.getItem());
-    return key != null && key.toString().equals(itemName);
+    return key != null && key.toString().equals(itemName) ? stack.getCount() : 0;
   }
 }
