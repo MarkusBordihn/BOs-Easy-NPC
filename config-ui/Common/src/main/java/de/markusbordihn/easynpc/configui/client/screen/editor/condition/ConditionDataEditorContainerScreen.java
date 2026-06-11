@@ -166,16 +166,19 @@ public class ConditionDataEditorContainerScreen<T extends EditorMenu> extends Ed
         new ConditionDataList(
             this.conditionDataSet,
             this.minecraft,
-              LIST_TOTAL_WIDTH,
-              LIST_Y_END - LIST_Y_START,
-              this.leftPos + LIST_X_OFFSET,
-              this.topPos + LIST_Y_START,
-              this.topPos + LIST_Y_END,
-              ENTRY_HEIGHT,
-              this.context::openConditionEntryEditor,
-              this::handleDeleteConditionDataEntry);
-      this.conditionDataList.updateSizeAndPosition(
-          LIST_TOTAL_WIDTH, LIST_Y_END - LIST_Y_START, this.leftPos + LIST_X_OFFSET, this.topPos + LIST_Y_START);
+            LIST_TOTAL_WIDTH,
+            LIST_Y_END - LIST_Y_START,
+            this.leftPos + LIST_X_OFFSET,
+            this.topPos + LIST_Y_START,
+            this.topPos + LIST_Y_END,
+            ENTRY_HEIGHT,
+            this.context::openConditionEntryEditor,
+            this::handleDeleteConditionDataEntry);
+    this.conditionDataList.updateSizeAndPosition(
+        LIST_TOTAL_WIDTH,
+        LIST_Y_END - LIST_Y_START,
+        this.leftPos + LIST_X_OFFSET,
+        this.topPos + LIST_Y_START);
     this.addWidget(this.conditionDataList);
   }
 

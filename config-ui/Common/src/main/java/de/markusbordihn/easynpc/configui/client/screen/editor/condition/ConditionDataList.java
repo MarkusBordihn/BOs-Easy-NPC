@@ -55,6 +55,11 @@ class ConditionDataList extends ObjectSelectionList<ConditionDataListEntry> {
   }
 
   @Override
+  public int getRowWidth() {
+    return this.width;
+  }
+
+  @Override
   protected void renderSelection(GuiGraphics guiGraphics, ConditionDataListEntry entry, int color) {
     // Nothing to render
   }

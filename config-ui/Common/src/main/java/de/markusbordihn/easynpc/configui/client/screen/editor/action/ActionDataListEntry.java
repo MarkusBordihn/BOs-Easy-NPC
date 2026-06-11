@@ -198,7 +198,7 @@ public class ActionDataListEntry extends ObjectSelectionList.Entry<ActionDataLis
       ConditionButton.renderIndicator(
           guiGraphics,
           this.deleteButton.getX() + this.deleteButton.getWidth() + BUTTON_SPACING,
-        buttonsTop + 3);
+          buttonsTop + 3);
     }
 
     this.renderSeparatorLines(guiGraphics, top);
