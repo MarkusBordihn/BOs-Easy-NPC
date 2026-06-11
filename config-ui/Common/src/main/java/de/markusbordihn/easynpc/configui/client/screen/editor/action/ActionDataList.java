@@ -70,6 +70,11 @@ class ActionDataList extends ObjectSelectionList<ActionDataListEntry> {
   }
 
   @Override
+  public int getRowWidth() {
+    return this.width;
+  }
+
+  @Override
   protected void extractSelection(
       GuiGraphicsExtractor guiGraphics, ActionDataListEntry entry, int color) {
     // Do not render selection.
