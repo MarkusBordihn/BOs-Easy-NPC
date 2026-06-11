@@ -198,7 +198,6 @@ public class ActionDataEditorContainerScreen<T extends EditorMenu>
             this.actionDataSet,
             this.minecraft,
             this.width + 50,
-            this.height - 60,
             this.leftPos + LIST_X_OFFSET,
             this.topPos + LIST_Y_START,
             this.topPos + LIST_Y_END,

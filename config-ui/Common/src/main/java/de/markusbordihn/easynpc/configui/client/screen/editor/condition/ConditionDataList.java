@@ -29,18 +29,23 @@ import net.minecraft.client.gui.components.ObjectSelectionList;
 
 class ConditionDataList extends ObjectSelectionList<ConditionDataListEntry> {
 
+  // Panel content width from the list left edge, used to anchor the scrollbar to the panel.
+  private static final int LIST_WIDTH = 309;
+
+  private final int leftPos;
+
   public ConditionDataList(
       ConditionDataSet conditionDataSet,
       Minecraft minecraft,
       int width,
-      int height,
       int left,
       int top,
       int bottom,
       int entryHeight,
       OnEdit onEdit,
       OnRemove onRemove) {
-    super(minecraft, width, height, top, entryHeight);
+    super(minecraft, width, bottom - top, top, entryHeight);
+    this.leftPos = left;
     this.setRenderHeader(false, 0);
 
     // Add entries
@@ -53,6 +58,11 @@ class ConditionDataList extends ObjectSelectionList<ConditionDataListEntry> {
         topPos += entryHeight;
       }
     }
+  }
+
+  @Override
+  protected int getScrollbarPosition() {
+    return this.leftPos + LIST_WIDTH - 1;
   }
 
   @Override

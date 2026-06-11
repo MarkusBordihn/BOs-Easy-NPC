@@ -31,11 +31,15 @@ import net.minecraft.client.gui.components.ObjectSelectionList;
 
 class ActionDataList extends ObjectSelectionList<ActionDataListEntry> {
 
+  // Panel content width from the list left edge, used to anchor the scrollbar to the panel.
+  private static final int LIST_WIDTH = 309;
+
+  private final int leftPos;
+
   public ActionDataList(
       ActionDataSet actionDataSet,
       Minecraft minecraft,
       int width,
-      int height,
       int left,
       int top,
       int bottom,
@@ -44,7 +48,8 @@ class ActionDataList extends ObjectSelectionList<ActionDataListEntry> {
       OnDown onDown,
       OnEdit onEdit,
       OnRemove onRemove) {
-    super(minecraft, width, height, top, entryHeight);
+    super(minecraft, width, bottom - top, top, entryHeight);
+    this.leftPos = left;
     this.setRenderHeader(false, 0);
 
     // Add entries
@@ -64,6 +69,11 @@ class ActionDataList extends ObjectSelectionList<ActionDataListEntry> {
                 onRemove));
       }
     }
+  }
+
+  @Override
+  protected int getScrollbarPosition() {
+    return this.leftPos + LIST_WIDTH - 1;
   }
 
   @Override

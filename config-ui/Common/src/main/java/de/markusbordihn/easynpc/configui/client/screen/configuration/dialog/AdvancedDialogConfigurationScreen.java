@@ -189,7 +189,7 @@ public class AdvancedDialogConfigurationScreen<T extends ConfigurationMenu>
       super(
           AdvancedDialogConfigurationScreen.this.minecraft,
           AdvancedDialogConfigurationScreen.this.width + 60,
-          177,
+          LIST_AREA_BOTTOM - 15,
           AdvancedDialogConfigurationScreen.this.contentTopPos + 15,
           19);
       this.setRenderHeader(false, 0);
@@ -205,6 +205,14 @@ public class AdvancedDialogConfigurationScreen<T extends ConfigurationMenu>
               dialogData ->
                   this.addEntry(
                       new AdvancedDialogConfigurationScreen<?>.DialogList.Entry(dialogData)));
+    }
+
+    @Override
+    protected int getScrollbarPosition() {
+      return AdvancedDialogConfigurationScreen.this.leftPos
+          + COLUMN_TEXT_START
+          + COLUMN_TEXT_WIDTH
+          - 2;
     }
 
     public void renderSelectionList(GuiGraphics guiGraphics, int x, int y, float partialTicks) {

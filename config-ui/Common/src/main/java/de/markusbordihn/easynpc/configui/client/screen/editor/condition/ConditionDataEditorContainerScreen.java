@@ -167,7 +167,6 @@ public class ConditionDataEditorContainerScreen<T extends EditorMenu> extends Ed
             this.conditionDataSet,
             this.minecraft,
             this.width + 50,
-            this.height - 60,
             this.leftPos + LIST_X_OFFSET,
             this.topPos + LIST_Y_START,
             this.topPos + LIST_Y_END,
