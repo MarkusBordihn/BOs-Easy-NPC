@@ -40,7 +40,11 @@ public class WitchEpicFight extends WitchRaw {
   }
 
   @Override
-  protected void registerGoals() {}
+  protected void registerGoals() {
+    super.registerGoals();
+    this.goalSelector.removeAllGoals(goal -> true);
+    this.targetSelector.removeAllGoals(goal -> true);
+  }
 
   @Override
   public boolean canUseArmor() {
