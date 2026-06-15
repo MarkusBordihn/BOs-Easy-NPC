@@ -98,7 +98,9 @@ public class WitchBase extends WitchRaw implements BaseEasyNPC<WitchRaw> {
 
   @Override
   protected void registerGoals() {
-    // No default goals for base NPCs.
+    super.registerGoals();
+    this.goalSelector.removeAllGoals(goal -> true);
+    this.targetSelector.removeAllGoals(goal -> true);
   }
 
   @Override

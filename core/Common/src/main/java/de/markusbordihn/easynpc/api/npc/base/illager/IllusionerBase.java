@@ -81,7 +81,9 @@ public class IllusionerBase extends IllusionerRaw implements BaseEasyNPC<Illusio
 
   @Override
   protected void registerGoals() {
-    // No default goals for base NPCs.
+    super.registerGoals();
+    this.goalSelector.removeAllGoals(goal -> true);
+    this.targetSelector.removeAllGoals(goal -> true);
   }
 
   @Override

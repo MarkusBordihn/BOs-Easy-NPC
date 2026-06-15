@@ -81,7 +81,9 @@ public class EvokerBase extends EvokerRaw implements BaseEasyNPC<EvokerRaw> {
 
   @Override
   protected void registerGoals() {
-    // No default goals for base NPCs.
+    super.registerGoals();
+    this.goalSelector.removeAllGoals(goal -> true);
+    this.targetSelector.removeAllGoals(goal -> true);
   }
 
   @Override
