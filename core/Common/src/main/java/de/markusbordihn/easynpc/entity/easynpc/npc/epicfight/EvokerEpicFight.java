@@ -40,6 +40,13 @@ public class EvokerEpicFight extends EvokerRaw {
   }
 
   @Override
+  protected void registerGoals() {
+    super.registerGoals();
+    this.goalSelector.removeAllGoals(goal -> true);
+    this.targetSelector.removeAllGoals(goal -> true);
+  }
+
+  @Override
   public ConfigurationData getConfigurationData() {
     return ConfigurationData.EPIC_FIGHT;
   }

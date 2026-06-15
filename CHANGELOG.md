@@ -8,6 +8,10 @@ For the full changelog, please go to the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 6.20.0
+
+- Fixed crashes related to 3rd mods trying to access non-existing NPCs goals.
+
 ### 6.19.0
 
 Note: This update adjusted the dialog background images by 10x6 pixels, which may require users to
