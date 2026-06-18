@@ -10,11 +10,14 @@ Check the [upgrade guide][upgrade_guide] for more information.
 
 ### 6.21.0
 
+- Fixed item attachment for Illagers in crossed-arms pose.
+- Fixed broken illager crossbow attack goal.
 - Fixed crashes related to 3rd party items which are not renderable as hand items #756.
 - Fixed crashes related to 3rd party mixins trying to access non-existing model parts #756.
 - Fixed log.info spam message by reducing log verbosity and adding additional checks for custom
   model parts.
 - Improved EasyNPCModelManager performance.
+- Refactored NPC renderers to remove default hand item layer.
 
 ### 6.20.0
 

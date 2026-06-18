@@ -25,10 +25,12 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.model.EasyNPCModelManager;
 import de.markusbordihn.easynpc.client.model.EasyNPCModelManagerAccessor;
 import de.markusbordihn.easynpc.data.model.ItemAttachmentPoint;
+import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.model.ModelType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import net.minecraft.client.model.ArmedModel;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.ItemInHandRenderer;
@@ -37,6 +39,7 @@ import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.monster.AbstractIllager;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
@@ -48,6 +51,10 @@ public class EasyNPCItemAttachmentLayer<T extends LivingEntity, M extends Entity
 
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private static final Set<Item> FAILED_ITEMS = ConcurrentHashMap.newKeySet();
+
+  private static final ItemAttachmentPoint ILLAGER_CROSSED_ARMS_ATTACHMENT =
+      new ItemAttachmentPoint(
+          ModelPartType.BODY, 0.0F, 7.0F, -7.0F, 0.0F, 0.0F, (float) Math.PI, 0.6F);
 
   private final ItemInHandRenderer itemInHandRenderer;
   private boolean renderingDisabled;
@@ -142,8 +149,7 @@ public class EasyNPCItemAttachmentLayer<T extends LivingEntity, M extends Entity
 
   private ItemAttachmentPoint getHandAttachment(
       ModelType modelType, boolean isMainHand, boolean isRightHand) {
-    boolean useMainHand =
-        modelType == ModelType.HUMANOID || modelType == ModelType.ZOMBIE ? isRightHand : isMainHand;
+    boolean useMainHand = modelType == ModelType.HUMANOID ? isRightHand : isMainHand;
     return useMainHand ? modelType.getMainHandAttachment() : modelType.getOffHandAttachment();
   }
 
@@ -213,7 +219,29 @@ public class EasyNPCItemAttachmentLayer<T extends LivingEntity, M extends Entity
       ItemDisplayContext displayContext,
       boolean isRightHand) {
 
-    ModelPart modelPart = modelManager.getModelPart(attachment.attachPart());
+    ModelPartType attachPart = attachment.attachPart();
+    boolean isHandAttachment =
+        attachPart == ModelPartType.RIGHT_ARM || attachPart == ModelPartType.LEFT_ARM;
+
+    if (isHandAttachment
+        && entity instanceof AbstractIllager illager
+        && illager.getArmPose() == AbstractIllager.IllagerArmPose.CROSSED) {
+      attachment = ILLAGER_CROSSED_ARMS_ATTACHMENT;
+      attachPart = attachment.attachPart();
+    } else if (isHandAttachment && this.getParentModel() instanceof ArmedModel armedModel) {
+      this.renderVanillaHandItem(
+          armedModel,
+          poseStack,
+          buffer,
+          packedLight,
+          entity,
+          itemStack,
+          displayContext,
+          isRightHand);
+      return;
+    }
+
+    ModelPart modelPart = modelManager.getModelPart(attachPart);
     if (modelPart == null || !modelPart.visible) {
       return;
     }
@@ -242,6 +270,32 @@ public class EasyNPCItemAttachmentLayer<T extends LivingEntity, M extends Entity
 
       this.itemInHandRenderer.renderItem(
           entity, itemStack, displayContext, !isRightHand, poseStack, buffer, packedLight);
+    } finally {
+      poseStack.popPose();
+    }
+  }
+
+  private void renderVanillaHandItem(
+      ArmedModel armedModel,
+      PoseStack poseStack,
+      MultiBufferSource buffer,
+      int packedLight,
+      T entity,
+      ItemStack itemStack,
+      ItemDisplayContext displayContext,
+      boolean isRightHand) {
+
+    HumanoidArm arm = isRightHand ? HumanoidArm.RIGHT : HumanoidArm.LEFT;
+    boolean leftHand = !isRightHand;
+
+    poseStack.pushPose();
+    try {
+      armedModel.translateToHand(arm, poseStack);
+      poseStack.mulPose(Axis.XP.rotationDegrees(-90.0F));
+      poseStack.mulPose(Axis.YP.rotationDegrees(180.0F));
+      poseStack.translate((leftHand ? -1.0F : 1.0F) / 16.0F, 0.125F, -0.625F);
+      this.itemInHandRenderer.renderItem(
+          entity, itemStack, displayContext, leftHand, poseStack, buffer, packedLight);
     } finally {
       poseStack.popPose();
     }

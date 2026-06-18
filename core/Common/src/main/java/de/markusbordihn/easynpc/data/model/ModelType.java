@@ -144,9 +144,8 @@ public enum ModelType {
           ModelPartType.RIGHT_LEG,
           ModelPartType.LEFT_LEG),
       true,
-      new ItemAttachmentPoint(
-          ModelPartType.BODY, 0.0F, 8.0F, -5.0F, (float) (-Math.PI / 2), 0.0F, 0.0F, 0.6F),
-      null),
+      ItemAttachmentPoint.arm(ModelPartType.RIGHT_ARM),
+      ItemAttachmentPoint.arm(ModelPartType.LEFT_ARM)),
   PIXIE(
       EnumSet.of(
           ModelPartType.HEAD,
@@ -207,8 +206,8 @@ public enum ModelType {
           ModelPartType.RIGHT_LEG,
           ModelPartType.LEFT_LEG),
       true,
-      ItemAttachmentPoint.arm(ModelPartType.RIGHT_ARM),
-      ItemAttachmentPoint.arm(ModelPartType.LEFT_ARM));
+      null,
+      null);
 
   private static final int PRIMARY_LIMIT = 6;
 
