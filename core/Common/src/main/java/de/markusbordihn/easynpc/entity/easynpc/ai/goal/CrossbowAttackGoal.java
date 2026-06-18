@@ -157,11 +157,11 @@ public class CrossbowAttackGoal<T extends EasyNPC<?>> extends Goal {
         this.crossbowState = CrossbowState.READY_TO_ATTACK;
       }
     } else if (this.crossbowState == CrossbowState.READY_TO_ATTACK && hasLineOfSight) {
-      this.crossbowAttackMob.performRangedAttack(livingentity, 1.0F);
-      ItemStack itemStack1 =
+      AttackHandler.performDefaultRangedAttack(this.pathfinderMob, livingentity, 1.0F);
+      ItemStack crossbowInHand =
           this.pathfinderMob.getItemInHand(
               AttackHandler.getCrossbowHoldingHand(this.pathfinderMob));
-      itemStack1.set(DataComponents.CHARGED_PROJECTILES, ChargedProjectiles.EMPTY);
+      crossbowInHand.set(DataComponents.CHARGED_PROJECTILES, ChargedProjectiles.EMPTY);
       this.crossbowState = CrossbowState.UNCHARGED;
     }
   }

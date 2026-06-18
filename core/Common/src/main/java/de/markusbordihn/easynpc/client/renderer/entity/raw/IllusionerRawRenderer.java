@@ -25,6 +25,7 @@ import de.markusbordihn.easynpc.client.renderer.entity.layers.SkullHeadRenderLay
 import de.markusbordihn.easynpc.data.skin.variant.IllagerSkinVariant;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.IllusionerRenderer;
+import net.minecraft.client.renderer.entity.layers.ItemInHandLayer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.monster.Illusioner;
 
@@ -35,6 +36,7 @@ public class IllusionerRawRenderer extends IllusionerRenderer implements EasyNPC
 
   public IllusionerRawRenderer(EntityRendererProvider.Context context) {
     super(context);
+    this.layers.removeIf(ItemInHandLayer.class::isInstance);
     this.addLayer(new SkullHeadRenderLayer<>(this));
     this.addLayer(new EasyNPCItemAttachmentLayer<>(this, context.getItemInHandRenderer()));
   }

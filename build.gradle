@@ -207,6 +207,40 @@ tasks.register('cleanBuild') {
   }
 }
 
+// Full verification: clean build, then check + game tests for all modules
+tasks.register('fullCheck') {
+  description = 'Clean build, then check and game tests for all modules (core -> config-ui -> bundle)'
+  group = "verification"
+
+  dependsOn 'cleanBuild'
+
+  doLast {
+    def modules = ['core', 'config-ui', 'bundle']
+
+    modules.each { moduleName ->
+      def moduleDir = file("${rootDir}/${moduleName}")
+      println "Verifying module: ${moduleName}"
+
+      def connection = GradleConnector.newConnector()
+          .forProjectDirectory(moduleDir)
+          .connect()
+
+      try {
+        def buildLauncher = connection.newBuild()
+        buildLauncher.forTasks('fullCheck')
+        buildLauncher.setStandardOutput(System.out)
+        buildLauncher.setStandardError(System.err)
+        buildLauncher.run()
+        println "Successfully verified module: ${moduleName}"
+      } finally {
+        connection.close()
+      }
+    }
+
+    println "Full check completed successfully for all modules."
+  }
+}
+
 // Publish all modules to Modrinth and CurseForge
 tasks.register('publish') {
   description = 'Builds and publishes all modules (core, config-ui, bundle)'
