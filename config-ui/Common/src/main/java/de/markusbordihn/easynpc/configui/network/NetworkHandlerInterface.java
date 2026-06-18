@@ -248,7 +248,7 @@ public interface NetworkHandlerInterface {
 
   default void logRegisterClientNetworkMessageHandler(
       final ResourceLocation messageID, final Class<?> networkMessage) {
-    log.info(
+    log.debug(
         "{} Registering client network message {} with {}",
         LOG_PREFIX,
         networkMessage.getSimpleName(),
@@ -257,7 +257,7 @@ public interface NetworkHandlerInterface {
 
   default void logRegisterClientNetworkMessageHandler(
       final ResourceLocation messageID, final Class<?> networkMessage, final int registrationID) {
-    log.info(
+    log.debug(
         "{} Registering client network message {} with {} ({})",
         LOG_PREFIX,
         networkMessage.getSimpleName(),
@@ -267,7 +267,7 @@ public interface NetworkHandlerInterface {
 
   default void logRegisterServerNetworkMessageHandler(
       final ResourceLocation messageID, final Class<?> networkMessage) {
-    log.info(
+    log.debug(
         "{} Registering server network message {} with {}",
         LOG_PREFIX,
         networkMessage.getSimpleName(),
@@ -276,7 +276,7 @@ public interface NetworkHandlerInterface {
 
   default void logRegisterServerNetworkMessageHandler(
       final ResourceLocation messageID, final Class<?> networkMessage, final int registrationID) {
-    log.info(
+    log.debug(
         "{} Registering server network message {} with {} ({})",
         LOG_PREFIX,
         networkMessage.getSimpleName(),

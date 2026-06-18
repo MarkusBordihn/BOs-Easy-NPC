@@ -8,6 +8,14 @@ For the full changelog, please go to the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 6.21.0
+
+- Fixed crashes related to 3rd party items which are not renderable as hand items #756.
+- Fixed crashes related to 3rd party mixins trying to access non-existing model parts #756.
+- Fixed log.info spam message by reducing log verbosity and adding additional checks for custom
+  model parts.
+- Improved EasyNPCModelManager performance.
+
 ### 6.20.0
 
 - Fixed crashes related to 3rd mods trying to access non-existing NPCs goals.

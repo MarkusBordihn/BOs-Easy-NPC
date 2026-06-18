@@ -21,11 +21,14 @@ package de.markusbordihn.easynpc.client.renderer.entity.layers;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.model.EasyNPCModelManager;
 import de.markusbordihn.easynpc.client.model.EasyNPCModelManagerAccessor;
 import de.markusbordihn.easynpc.data.model.ItemAttachmentPoint;
 import de.markusbordihn.easynpc.data.model.ModelType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.ItemInHandRenderer;
@@ -34,13 +37,20 @@ import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class EasyNPCItemAttachmentLayer<T extends LivingEntity, M extends EntityModel<T>>
     extends RenderLayer<T, M> {
 
+  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+  private static final Set<Item> FAILED_ITEMS = ConcurrentHashMap.newKeySet();
+
   private final ItemInHandRenderer itemInHandRenderer;
+  private boolean renderingDisabled;
 
   public EasyNPCItemAttachmentLayer(
       RenderLayerParent<T, M> renderer, ItemInHandRenderer itemInHandRenderer) {
@@ -68,7 +78,7 @@ public class EasyNPCItemAttachmentLayer<T extends LivingEntity, M extends Entity
       float netHeadYaw,
       float headPitch) {
 
-    if (!(entity instanceof EasyNPC<?> easyNPC)) {
+    if (this.renderingDisabled || !(entity instanceof EasyNPC<?> easyNPC)) {
       return;
     }
 
@@ -92,12 +102,13 @@ public class EasyNPCItemAttachmentLayer<T extends LivingEntity, M extends Entity
     boolean isRightHanded = entity.getMainArm() == HumanoidArm.RIGHT;
 
     if (!mainHandItem.isEmpty()) {
-      ItemAttachmentPoint attachment = modelType.getMainHandAttachment();
+      ItemAttachmentPoint attachment = getHandAttachment(modelType, true, isRightHanded);
       if (attachment != null && !attachment.isNone()) {
-        renderAttachedItem(
+        renderAttachedItemSafely(
             poseStack,
             buffer,
             packedLight,
+            modelType,
             entity,
             mainHandItem,
             attachment,
@@ -110,12 +121,13 @@ public class EasyNPCItemAttachmentLayer<T extends LivingEntity, M extends Entity
     }
 
     if (!offHandItem.isEmpty()) {
-      ItemAttachmentPoint attachment = modelType.getOffHandAttachment();
+      ItemAttachmentPoint attachment = getHandAttachment(modelType, false, !isRightHanded);
       if (attachment != null && !attachment.isNone()) {
-        renderAttachedItem(
+        renderAttachedItemSafely(
             poseStack,
             buffer,
             packedLight,
+            modelType,
             entity,
             offHandItem,
             attachment,
@@ -125,6 +137,68 @@ public class EasyNPCItemAttachmentLayer<T extends LivingEntity, M extends Entity
                 : ItemDisplayContext.THIRD_PERSON_RIGHT_HAND,
             !isRightHanded);
       }
+    }
+  }
+
+  private ItemAttachmentPoint getHandAttachment(
+      ModelType modelType, boolean isMainHand, boolean isRightHand) {
+    boolean useMainHand =
+        modelType == ModelType.HUMANOID || modelType == ModelType.ZOMBIE ? isRightHand : isMainHand;
+    return useMainHand ? modelType.getMainHandAttachment() : modelType.getOffHandAttachment();
+  }
+
+  private void renderAttachedItemSafely(
+      PoseStack poseStack,
+      MultiBufferSource buffer,
+      int packedLight,
+      ModelType modelType,
+      T entity,
+      ItemStack itemStack,
+      ItemAttachmentPoint attachment,
+      EasyNPCModelManager modelManager,
+      ItemDisplayContext displayContext,
+      boolean isRightHand) {
+    if (this.renderingDisabled) {
+      return;
+    }
+
+    Item item = itemStack.getItem();
+    if (FAILED_ITEMS.contains(item)) {
+      return;
+    }
+
+    try {
+      renderAttachedItem(
+          poseStack,
+          buffer,
+          packedLight,
+          entity,
+          itemStack,
+          attachment,
+          modelManager,
+          displayContext,
+          isRightHand);
+    } catch (LinkageError error) {
+      this.renderingDisabled = true;
+      log.error(
+          "Disabling Easy NPC item attachment rendering for entity {} ({}) with model type {}, model {}, attachment {} after linkage error.",
+          entity.getType(),
+          entity.getUUID(),
+          modelType,
+          this.getParentModel().getClass().getName(),
+          attachment,
+          error);
+    } catch (RuntimeException exception) {
+      FAILED_ITEMS.add(item);
+      log.error(
+          "Skipping Easy NPC item attachment for item {} on entity {} ({}) with model type {}, model {}, attachment {} after render error.",
+          item,
+          entity.getType(),
+          entity.getUUID(),
+          modelType,
+          this.getParentModel().getClass().getName(),
+          attachment,
+          exception);
     }
   }
 
@@ -145,30 +219,31 @@ public class EasyNPCItemAttachmentLayer<T extends LivingEntity, M extends Entity
     }
 
     poseStack.pushPose();
+    try {
+      modelPart.translateAndRotate(poseStack);
 
-    modelPart.translateAndRotate(poseStack);
+      poseStack.translate(
+          attachment.offsetX() / 16.0F, attachment.offsetY() / 16.0F, attachment.offsetZ() / 16.0F);
 
-    poseStack.translate(
-        attachment.offsetX() / 16.0F, attachment.offsetY() / 16.0F, attachment.offsetZ() / 16.0F);
+      if (attachment.rotX() != 0.0F) {
+        poseStack.mulPose(Axis.XP.rotation(attachment.rotX()));
+      }
+      if (attachment.rotY() != 0.0F) {
+        poseStack.mulPose(Axis.YP.rotation(attachment.rotY()));
+      }
+      if (attachment.rotZ() != 0.0F) {
+        poseStack.mulPose(Axis.ZP.rotation(attachment.rotZ()));
+      }
 
-    if (attachment.rotX() != 0.0F) {
-      poseStack.mulPose(Axis.XP.rotation(attachment.rotX()));
+      float scale = attachment.scale();
+      if (scale != 1.0F) {
+        poseStack.scale(scale, scale, scale);
+      }
+
+      this.itemInHandRenderer.renderItem(
+          entity, itemStack, displayContext, !isRightHand, poseStack, buffer, packedLight);
+    } finally {
+      poseStack.popPose();
     }
-    if (attachment.rotY() != 0.0F) {
-      poseStack.mulPose(Axis.YP.rotation(attachment.rotY()));
-    }
-    if (attachment.rotZ() != 0.0F) {
-      poseStack.mulPose(Axis.ZP.rotation(attachment.rotZ()));
-    }
-
-    float scale = attachment.scale();
-    if (scale != 1.0F) {
-      poseStack.scale(scale, scale, scale);
-    }
-
-    this.itemInHandRenderer.renderItem(
-        entity, itemStack, displayContext, !isRightHand, poseStack, buffer, packedLight);
-
-    poseStack.popPose();
   }
 }

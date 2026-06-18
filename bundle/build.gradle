@@ -46,3 +46,9 @@ subprojects {
     }
   }
 }
+
+tasks.register('fullCheck') {
+  group = 'verification'
+  description = 'Runs check for all platforms (Common, Fabric, Forge).'
+  dependsOn ':Common:check', ':Fabric:check', ':Forge:check'
+}

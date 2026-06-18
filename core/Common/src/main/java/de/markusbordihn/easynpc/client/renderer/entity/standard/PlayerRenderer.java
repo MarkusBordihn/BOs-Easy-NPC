@@ -1,6 +1,10 @@
 package de.markusbordihn.easynpc.client.renderer.entity.standard;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+import de.markusbordihn.easynpc.client.model.EasyNPCModelManager;
+import de.markusbordihn.easynpc.client.model.EasyNPCModelManagerAccessor;
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.layers.EasyNPCItemAttachmentLayer;
 import de.markusbordihn.easynpc.client.renderer.entity.layers.SkullHeadRenderLayer;
 import de.markusbordihn.easynpc.client.texture.CustomTextureManager;
 import de.markusbordihn.easynpc.client.texture.RemoteTextureManager;
@@ -10,10 +14,10 @@ import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
 import net.minecraft.client.model.HumanoidArmorModel;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.model.geom.ModelLayers;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;
-import net.minecraft.client.renderer.entity.layers.ItemInHandLayer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.PathfinderMob;
 
@@ -44,7 +48,26 @@ public class PlayerRenderer<T extends PathfinderMob> extends LivingEntityRendere
                     slim ? ModelLayers.PLAYER_SLIM_OUTER_ARMOR : ModelLayers.PLAYER_OUTER_ARMOR)),
             context.getModelManager()));
     this.addLayer(new SkullHeadRenderLayer<>(this));
-    this.addLayer(new ItemInHandLayer<>(this, context.getItemInHandRenderer()));
+    this.addLayer(new EasyNPCItemAttachmentLayer<>(this, context.getItemInHandRenderer()));
+  }
+
+  @Override
+  public void render(
+      T entity,
+      float entityYaw,
+      float partialTicks,
+      PoseStack poseStack,
+      MultiBufferSource buffer,
+      int packedLight) {
+    if (entity instanceof EasyNPC<?> easyNPC
+        && this.getModel() instanceof EasyNPCModelManagerAccessor accessor) {
+      EasyNPCModelManager modelManager = accessor.easyNPC$getModelManager();
+      if (modelManager != null) {
+        modelManager.validateModelPartsOnce(easyNPC);
+      }
+    }
+
+    super.render(entity, entityYaw, partialTicks, poseStack, buffer, packedLight);
   }
 
   @Override
