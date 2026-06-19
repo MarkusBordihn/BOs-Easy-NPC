@@ -132,8 +132,8 @@ public enum ModelType {
           ModelPartType.RIGHT_LEG,
           ModelPartType.LEFT_LEG),
       true,
-      null,
-      null),
+      ItemAttachmentPoint.arm(ModelPartType.RIGHT_ARM),
+      ItemAttachmentPoint.arm(ModelPartType.LEFT_ARM)),
   ILLAGER(
       EnumSet.of(
           ModelPartType.HEAD,
@@ -144,9 +144,8 @@ public enum ModelType {
           ModelPartType.RIGHT_LEG,
           ModelPartType.LEFT_LEG),
       true,
-      new ItemAttachmentPoint(
-          ModelPartType.BODY, 0.0F, 8.0F, -5.0F, (float) (-Math.PI / 2), 0.0F, 0.0F, 0.6F),
-      null),
+      ItemAttachmentPoint.arm(ModelPartType.RIGHT_ARM),
+      ItemAttachmentPoint.arm(ModelPartType.LEFT_ARM)),
   PIXIE(
       EnumSet.of(
           ModelPartType.HEAD,
@@ -263,8 +262,7 @@ public enum ModelType {
 
   /**
    * Returns true if this model type has custom item attachment points defined. Model types that
-   * return false (HUMANOID, ZOMBIE, VILLAGER) either use vanilla ItemInHandLayer or don't support
-   * held items.
+   * return false don't support held items.
    */
   public boolean hasItemAttachment() {
     return mainHandAttachment != null || offHandAttachment != null;

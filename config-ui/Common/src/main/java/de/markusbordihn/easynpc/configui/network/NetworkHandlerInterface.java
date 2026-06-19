@@ -270,7 +270,7 @@ public interface NetworkHandlerInterface {
 
   default void logRegisterClientNetworkMessageHandler(
       final CustomPacketPayload.Type<?> messageID, final Class<?> networkMessage) {
-    log.info(
+    log.debug(
         "{} Registering client network message {} with {}",
         LOG_PREFIX,
         networkMessage.getSimpleName(),
@@ -281,7 +281,7 @@ public interface NetworkHandlerInterface {
       final CustomPacketPayload.Type<?> messageID,
       final Class<?> networkMessage,
       final int registrationID) {
-    log.info(
+    log.debug(
         "{} Registering client network message {} with {} ({})",
         LOG_PREFIX,
         networkMessage.getSimpleName(),
@@ -291,7 +291,7 @@ public interface NetworkHandlerInterface {
 
   default void logRegisterServerNetworkMessageHandler(
       final CustomPacketPayload.Type<?> messageID, final Class<?> networkMessage) {
-    log.info(
+    log.debug(
         "{} Registering server network message {} with {}",
         LOG_PREFIX,
         networkMessage.getSimpleName(),
@@ -302,7 +302,7 @@ public interface NetworkHandlerInterface {
       final CustomPacketPayload.Type<?> messageID,
       final Class<?> networkMessage,
       final int registrationID) {
-    log.info(
+    log.debug(
         "{} Registering server network message {} with {} ({})",
         LOG_PREFIX,
         networkMessage.getSimpleName(),

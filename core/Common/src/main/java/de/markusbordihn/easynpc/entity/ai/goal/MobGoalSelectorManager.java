@@ -20,6 +20,9 @@
 package de.markusbordihn.easynpc.entity.ai.goal;
 
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import java.util.Collections;
+import java.util.Set;
+import java.util.WeakHashMap;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -28,6 +31,9 @@ import net.minecraft.world.entity.ai.goal.GoalSelector;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 
 public class MobGoalSelectorManager {
+
+  private static final Set<Mob> REGISTERED_TARGETING_MOBS =
+      Collections.synchronizedSet(Collections.newSetFromMap(new WeakHashMap<>()));
 
   private MobGoalSelectorManager() {}
 
@@ -54,7 +60,7 @@ public class MobGoalSelectorManager {
 
   private static void addTargetingGoals(Mob mob, GoalSelector targetSelector) {
     // Define NPCs as potential targets for hostile mobs.
-    if (!mob.getType().getCategory().isFriendly()) {
+    if (!mob.getType().getCategory().isFriendly() && REGISTERED_TARGETING_MOBS.add(mob)) {
       targetSelector.addGoal(
           4,
           new NearestAttackableTargetGoal<>(

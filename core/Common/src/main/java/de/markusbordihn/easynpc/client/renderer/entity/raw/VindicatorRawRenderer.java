@@ -25,6 +25,7 @@ import de.markusbordihn.easynpc.client.renderer.entity.layers.SkullHeadRenderLay
 import de.markusbordihn.easynpc.data.skin.variant.IllagerSkinVariant;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.VindicatorRenderer;
+import net.minecraft.client.renderer.entity.layers.ItemInHandLayer;
 import net.minecraft.client.renderer.entity.state.IllagerRenderState;
 import net.minecraft.resources.Identifier;
 
@@ -35,6 +36,7 @@ public class VindicatorRawRenderer extends VindicatorRenderer implements EasyNPC
 
   public VindicatorRawRenderer(EntityRendererProvider.Context context) {
     super(context);
+    this.layers.removeIf(ItemInHandLayer.class::isInstance);
     this.addLayer(new SkullHeadRenderLayer<>(this));
     this.addLayer(new EasyNPCItemAttachmentLayer<>(this));
   }

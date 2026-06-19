@@ -1,7 +1,10 @@
 package de.markusbordihn.easynpc.client.renderer.entity.standard;
 
 import de.markusbordihn.easynpc.api.skin.VariantTexture;
+import de.markusbordihn.easynpc.client.model.EasyNPCModelManager;
+import de.markusbordihn.easynpc.client.model.EasyNPCModelManagerAccessor;
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.layers.EasyNPCItemAttachmentLayer;
 import de.markusbordihn.easynpc.client.renderer.entity.layers.SkullHeadRenderLayer;
 import de.markusbordihn.easynpc.client.texture.CustomTextureManager;
 import de.markusbordihn.easynpc.client.texture.PlayerTextureManager;
@@ -51,6 +54,7 @@ public class PlayerRenderer
                 modelPart -> new PlayerModel(modelPart, slim)),
             context.getEquipmentRenderer()));
     this.addLayer(new SkullHeadRenderLayer<>(this));
+    this.addLayer(new EasyNPCItemAttachmentLayer<>(this));
   }
 
   @Override
@@ -64,6 +68,12 @@ public class PlayerRenderer
     super.extractRenderState(entity, renderState, partialTicks);
 
     if (entity instanceof EasyNPC<?> easyNPC) {
+      if (this.getModel() instanceof EasyNPCModelManagerAccessor accessor) {
+        EasyNPCModelManager modelManager = accessor.easyNPC$getModelManager();
+        if (modelManager != null) {
+          modelManager.validateModelPartsOnce(easyNPC);
+        }
+      }
       applySkinToRenderState(easyNPC, renderState);
     }
   }

@@ -128,6 +128,11 @@ tasks.named('compileTestJava').configure {
   dependsOn tasks.named('processTestResources')
 }
 
+tasks.matching { it.name == 'runGameTestServer' }.configureEach {
+  dependsOn tasks.named('processTestResources')
+  dependsOn tasks.named('compileTestJava')
+}
+
 tasks.named('jar', Jar).configure {
   from(project(":Common").sourceSets.main.output)
 

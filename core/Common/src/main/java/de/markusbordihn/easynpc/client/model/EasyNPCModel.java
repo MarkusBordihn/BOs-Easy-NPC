@@ -60,7 +60,13 @@ public class EasyNPCModel {
 
     // Get Model Data
     ModelDataCapable<?> modelData = easyNPC.getEasyNPCModelData();
-    if (modelData == null || modelData.getModelPose() == ModelPose.VANILLA) {
+    if (modelData == null) {
+      return false;
+    }
+
+    modelManager.validateModelPartsOnce(easyNPC);
+
+    if (modelData.getModelPose() == ModelPose.VANILLA) {
       return false;
     }
 

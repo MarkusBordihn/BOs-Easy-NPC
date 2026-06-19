@@ -25,6 +25,7 @@ import de.markusbordihn.easynpc.client.renderer.entity.layers.SkullHeadRenderLay
 import de.markusbordihn.easynpc.data.skin.variant.IllagerSkinVariant;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.EvokerRenderer;
+import net.minecraft.client.renderer.entity.layers.ItemInHandLayer;
 import net.minecraft.client.renderer.entity.state.EvokerRenderState;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.monster.illager.SpellcasterIllager;
@@ -37,6 +38,7 @@ public class EvokerRawRenderer<T extends SpellcasterIllager> extends EvokerRende
 
   public EvokerRawRenderer(EntityRendererProvider.Context context) {
     super(context);
+    this.layers.removeIf(ItemInHandLayer.class::isInstance);
     this.addLayer(new SkullHeadRenderLayer<>(this));
     this.addLayer(new EasyNPCItemAttachmentLayer<>(this));
   }
