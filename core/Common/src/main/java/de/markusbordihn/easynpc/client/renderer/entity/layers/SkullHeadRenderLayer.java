@@ -20,13 +20,16 @@
 package de.markusbordihn.easynpc.client.renderer.entity.layers;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.renderer.entity.state.EasyNPCRenderStateExtension;
 import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HumanoidModel;
@@ -41,15 +44,22 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.AbstractSkullBlock;
 import net.minecraft.world.level.block.SkullBlock;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class SkullHeadRenderLayer<
         S extends LivingEntityRenderState, M extends EntityModel<? super S>>
     extends RenderLayer<S, M> {
 
+  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+  private static final Set<Item> FAILED_HEAD_ITEMS = ConcurrentHashMap.newKeySet();
+
   private Map<SkullBlock.Type, SkullModelBase> skullModelCache;
+  private boolean renderingDisabled;
 
   public SkullHeadRenderLayer(RenderLayerParent<S, M> renderer) {
     super(renderer);
@@ -63,6 +73,10 @@ public class SkullHeadRenderLayer<
       S renderState,
       float limbSwing,
       float limbSwingAmount) {
+
+    if (this.renderingDisabled) {
+      return;
+    }
 
     if (!(renderState instanceof EasyNPCRenderStateExtension renderStateExtension)) {
       return;
@@ -95,6 +109,10 @@ public class SkullHeadRenderLayer<
       return;
     }
 
+    if (FAILED_HEAD_ITEMS.contains(blockItem)) {
+      return;
+    }
+
     if (!(this.getParentModel() instanceof HumanoidModel<?> humanoidParentModel)) {
       return;
     }
@@ -108,19 +126,43 @@ public class SkullHeadRenderLayer<
     RenderType renderType = SkullBlockRenderer.getSkullRenderType(skullType, null);
 
     poseStack.pushPose();
-    humanoidParentModel.head.translateAndRotate(poseStack);
-    poseStack.scale(1.0625F, -1.0625F, -1.0625F);
-    poseStack.translate(-0.5, 0.0, -0.5);
-    SkullBlockRenderer.submitSkull(
-        180.0F,
-        poseStack,
-        submitNodeCollector,
-        packedLight,
-        skullModel,
-        renderType,
-        OverlayTexture.NO_OVERLAY,
-        null);
-    poseStack.popPose();
+    try {
+      humanoidParentModel.head.translateAndRotate(poseStack);
+      poseStack.scale(1.0625F, -1.0625F, -1.0625F);
+      poseStack.translate(-0.5, 0.0, -0.5);
+      SkullBlockRenderer.submitSkull(
+          180.0F,
+          poseStack,
+          submitNodeCollector,
+          packedLight,
+          skullModel,
+          renderType,
+          OverlayTexture.NO_OVERLAY,
+          null);
+    } catch (LinkageError error) {
+      this.renderingDisabled = true;
+      log.error(
+          "Disabling Easy NPC skull rendering for entity {} ({}) with model type {}, model {}, skull type {} after linkage error.",
+          entity.getType(),
+          entity.getUUID(),
+          modelData.getModelType(),
+          this.getParentModel().getClass().getName(),
+          skullType,
+          error);
+    } catch (RuntimeException exception) {
+      FAILED_HEAD_ITEMS.add(blockItem);
+      log.error(
+          "Skipping Easy NPC skull rendering for item {} on entity {} ({}) with model type {}, model {}, skull type {} after render error.",
+          blockItem,
+          entity.getType(),
+          entity.getUUID(),
+          modelData.getModelType(),
+          this.getParentModel().getClass().getName(),
+          skullType,
+          exception);
+    } finally {
+      poseStack.popPose();
+    }
   }
 
   private SkullModelBase getOrCreateSkullModel(SkullBlock.Type type) {

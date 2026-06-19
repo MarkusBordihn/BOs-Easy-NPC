@@ -155,6 +155,11 @@ tasks.named('compileTestJava').configure {
   dependsOn tasks.named('processTestResources')
 }
 
+tasks.matching { it.name == 'runGameTestServer' }.configureEach {
+  dependsOn tasks.named('processTestResources')
+  dependsOn tasks.named('compileTestJava')
+}
+
 tasks.named('jar', Jar).configure {
   // Ensure jar runs after test tasks since both use the same output directory
   mustRunAfter tasks.named('compileTestJava'), tasks.named('processTestResources')
