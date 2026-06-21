@@ -75,6 +75,10 @@ public class AttributeHandler {
     switch (attributeType) {
       case IS_INVULNERABLE ->
           entityAttributes.setCombatAttributes(attributes.withIsInvulnerable(value));
+      case IS_KNOCKBACK_RESISTANT ->
+          entityAttributes.setCombatAttributes(attributes.withIsKnockbackResistant(value));
+      case IS_EXPLOSION_RESISTANT ->
+          entityAttributes.setCombatAttributes(attributes.withIsExplosionResistant(value));
       case IS_ATTACKABLE_BY_PLAYERS ->
           entityAttributes.setCombatAttributes(attributes.withIsAttackableByPlayers(value));
       case IS_ATTACKABLE_BY_MONSTERS ->

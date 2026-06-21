@@ -19,7 +19,6 @@
 
 package de.markusbordihn.easynpc.api.npc.base.piglin;
 
-import com.google.common.collect.ImmutableList;
 import de.markusbordihn.easynpc.api.npc.BaseEasyNPC;
 import de.markusbordihn.easynpc.api.npc.raw.piglin.ZombifiedPiglinRaw;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
@@ -28,12 +27,8 @@ import de.markusbordihn.easynpc.data.sound.SoundType;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.memory.MemoryModuleType;
-import net.minecraft.world.entity.ai.sensing.Sensor;
-import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.minecraft.world.entity.animal.FlyingAnimal;
 import net.minecraft.world.entity.monster.ZombifiedPiglin;
 import net.minecraft.world.level.Level;
@@ -42,22 +37,9 @@ import net.minecraft.world.phys.Vec3;
 public class ZombifiedPiglinBase extends ZombifiedPiglinRaw
     implements BaseEasyNPC<ZombifiedPiglinRaw> {
 
-  protected static final ImmutableList<MemoryModuleType<?>> MEMORY_TYPES =
-      ImmutableList.of(
-          MemoryModuleType.ANGRY_AT,
-          MemoryModuleType.ATTACK_TARGET,
-          MemoryModuleType.CELEBRATE_LOCATION,
-          MemoryModuleType.DANCING);
-  protected static final ImmutableList<SensorType<? extends Sensor<? super ZombifiedPiglin>>>
-      SENSOR_TYPES =
-          ImmutableList.of(
-              SensorType.NEAREST_LIVING_ENTITIES,
-              SensorType.NEAREST_PLAYERS,
-              SensorType.NEAREST_ITEMS,
-              SensorType.HURT_BY);
-
   public ZombifiedPiglinBase(EntityType<? extends ZombifiedPiglin> entityType, Level level) {
     super(entityType, level);
+    this.setInvulnerable(true);
   }
 
   public static AttributeSupplier.Builder createAttributes() {
@@ -94,11 +76,6 @@ public class ZombifiedPiglinBase extends ZombifiedPiglinRaw
   @Override
   protected void registerGoals() {
     // No default goals for base NPCs.
-  }
-
-  @Override
-  protected Brain.Provider<ZombifiedPiglin> brainProvider() {
-    return Brain.provider(MEMORY_TYPES, SENSOR_TYPES);
   }
 
   @Override

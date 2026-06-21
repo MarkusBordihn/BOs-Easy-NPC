@@ -34,6 +34,8 @@ class ConditionTypeTest {
     assertEquals(ConditionType.ADVANCEMENT, ConditionType.get("ADVANCEMENT"));
     assertEquals(ConditionType.EXPERIENCE_LEVEL, ConditionType.get("EXPERIENCE_LEVEL"));
     assertEquals(ConditionType.PLAYER_HEALTH, ConditionType.get("PLAYER_HEALTH"));
+    assertEquals(ConditionType.NPC_HEALTH, ConditionType.get("NPC_HEALTH"));
+    assertEquals(ConditionType.ENTITY_HEALTH, ConditionType.get("ENTITY_HEALTH"));
     assertEquals(ConditionType.PLAYER_TAG, ConditionType.get("PLAYER_TAG"));
     assertEquals(ConditionType.TEAM, ConditionType.get("TEAM"));
     assertEquals(ConditionType.GAMEMODE, ConditionType.get("GAMEMODE"));
@@ -63,9 +65,11 @@ class ConditionTypeTest {
     assertTrue(ConditionType.PLAYER_TAG.requiresName());
     assertTrue(ConditionType.TEAM.requiresName());
     assertTrue(ConditionType.GAMEMODE.requiresName());
+    assertTrue(ConditionType.ENTITY_HEALTH.requiresName());
     assertFalse(ConditionType.EXECUTION_LIMIT.requiresName());
     assertFalse(ConditionType.EXPERIENCE_LEVEL.requiresName());
     assertFalse(ConditionType.PLAYER_HEALTH.requiresName());
+    assertFalse(ConditionType.NPC_HEALTH.requiresName());
     assertFalse(ConditionType.FALLBACK.requiresName());
     assertFalse(ConditionType.NONE.requiresName());
   }
@@ -76,6 +80,8 @@ class ConditionTypeTest {
     assertTrue(ConditionType.EXECUTION_LIMIT.requiresValue());
     assertTrue(ConditionType.EXPERIENCE_LEVEL.requiresValue());
     assertTrue(ConditionType.PLAYER_HEALTH.requiresValue());
+    assertTrue(ConditionType.NPC_HEALTH.requiresValue());
+    assertTrue(ConditionType.ENTITY_HEALTH.requiresValue());
     assertFalse(ConditionType.HAS_ITEM_IN_INVENTORY.requiresValue());
     assertFalse(ConditionType.HAS_ITEM_IN_HAND.requiresValue());
     assertFalse(ConditionType.ADVANCEMENT.requiresValue());
@@ -91,6 +97,8 @@ class ConditionTypeTest {
     assertTrue(ConditionType.SCOREBOARD.requiresOperation());
     assertTrue(ConditionType.EXPERIENCE_LEVEL.requiresOperation());
     assertTrue(ConditionType.PLAYER_HEALTH.requiresOperation());
+    assertTrue(ConditionType.NPC_HEALTH.requiresOperation());
+    assertTrue(ConditionType.ENTITY_HEALTH.requiresOperation());
     assertFalse(ConditionType.EXECUTION_LIMIT.requiresOperation());
     assertFalse(ConditionType.HAS_ITEM_IN_INVENTORY.requiresOperation());
     assertFalse(ConditionType.HAS_ITEM_IN_HAND.requiresOperation());

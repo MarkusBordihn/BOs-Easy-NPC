@@ -19,8 +19,12 @@
 
 package de.markusbordihn.easynpc.data.screen;
 
+import de.markusbordihn.easynpc.condition.ConditionManager;
 import de.markusbordihn.easynpc.data.action.ActionEventSet;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
+import de.markusbordihn.easynpc.data.condition.ConditionDataEntry;
+import de.markusbordihn.easynpc.data.condition.ConditionType;
+import de.markusbordihn.easynpc.data.dialog.DialogButtonEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.data.dialog.DialogTextData;
@@ -28,8 +32,11 @@ import de.markusbordihn.easynpc.data.scoreboard.ScoreboardData;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerPlayer;
 
 public class AdditionalScreenData implements AdditionalScreenDataInterface {
@@ -38,12 +45,16 @@ public class AdditionalScreenData implements AdditionalScreenDataInterface {
   private static final String ACTION_EVENT_TYPE_TAG = "ActionEventType";
   private static final String DIALOG_DATA_TAG = "DialogData";
   private static final String SCOREBOARD_DATA_TAG = "ScoreboardData";
+  private static final String DIALOG_BUTTON_LOCK_DATA_TAG = "DialogButtonLockData";
+  private static final String EXECUTION_LIMIT_DATA_TAG = "ExecutionLimitData";
 
   private final ActionEventSet actionEventSet;
   private final ActionEventType actionEventType;
   private final CompoundTag data;
   private final DialogDataSet dialogDataSet;
   private final ScoreboardData scoreboardData;
+  private final Set<UUID> lockedDialogButtons;
+  private final Set<UUID> lockedExecutionLimitActions;
 
   public AdditionalScreenData(CompoundTag compoundTag) {
     // Processing know data.
@@ -51,6 +62,8 @@ public class AdditionalScreenData implements AdditionalScreenDataInterface {
     this.actionEventType = getActionEventType(compoundTag);
     this.dialogDataSet = getDialogDataSet(compoundTag);
     this.scoreboardData = getScoreboardData(compoundTag);
+    this.lockedDialogButtons = getLockedDialogButtons(compoundTag);
+    this.lockedExecutionLimitActions = getLockedExecutionLimitActions(compoundTag);
 
     // Store remaining data and remove already processed data.
     this.data = compoundTag;
@@ -58,6 +71,8 @@ public class AdditionalScreenData implements AdditionalScreenDataInterface {
     this.data.remove(ACTION_EVENT_TYPE_TAG);
     this.data.remove(DIALOG_DATA_TAG);
     this.data.remove(SCOREBOARD_DATA_TAG);
+    this.data.remove(DIALOG_BUTTON_LOCK_DATA_TAG);
+    this.data.remove(EXECUTION_LIMIT_DATA_TAG);
   }
 
   public static void addActionEventType(CompoundTag compoundTag, ActionEventType actionEventType) {
@@ -147,7 +162,125 @@ public class AdditionalScreenData implements AdditionalScreenDataInterface {
         ScoreboardData scoreboardData = new ScoreboardData(serverPlayer, objectiveNames);
         addScoreboardData(compoundTag, scoreboardData);
       }
+      addDialogButtonLockData(compoundTag, dialogDataSet, serverPlayer, easyNPC);
+      addExecutionLimitData(compoundTag, dialogDataSet, serverPlayer);
     }
+  }
+
+  public static void addDialogButtonLockData(
+      CompoundTag compoundTag,
+      DialogDataSet dialogDataSet,
+      ServerPlayer serverPlayer,
+      EasyNPC<?> easyNPC) {
+    if (compoundTag == null
+        || dialogDataSet == null
+        || !dialogDataSet.hasDialog()
+        || serverPlayer == null) {
+      return;
+    }
+
+    ListTag lockedButtons = new ListTag();
+    for (DialogDataEntry dialogEntry : dialogDataSet.getDialogsByLabel()) {
+      if (dialogEntry == null) {
+        continue;
+      }
+      for (DialogButtonEntry buttonEntry : dialogEntry.getDialogButtons()) {
+        if (buttonEntry == null
+            || !buttonEntry.hasConditions()
+            || areServerOnlyConditionsAvailable(buttonEntry, serverPlayer, easyNPC)) {
+          continue;
+        }
+        lockedButtons.add(NbtUtils.createUUID(buttonEntry.id()));
+      }
+    }
+
+    if (!lockedButtons.isEmpty()) {
+      compoundTag.put(DIALOG_BUTTON_LOCK_DATA_TAG, lockedButtons);
+    }
+  }
+
+  private static boolean areServerOnlyConditionsAvailable(
+      DialogButtonEntry buttonEntry, ServerPlayer serverPlayer, EasyNPC<?> easyNPC) {
+    for (ConditionDataEntry condition : buttonEntry.conditions()) {
+      if (requiresServerLockSnapshot(condition)
+          && !ConditionManager.evaluate(
+              condition,
+              serverPlayer,
+              buttonEntry.id(),
+              easyNPC != null ? easyNPC.getLivingEntity() : null)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  private static boolean requiresServerLockSnapshot(ConditionDataEntry condition) {
+    if (condition == null) {
+      return false;
+    }
+    return switch (condition.conditionType()) {
+      case SCOREBOARD, ADVANCEMENT, PLAYER_TAG, TEAM, GAMEMODE -> true;
+      default -> false;
+    };
+  }
+
+  public static void addExecutionLimitData(
+      CompoundTag compoundTag, DialogDataSet dialogDataSet, ServerPlayer serverPlayer) {
+    if (compoundTag == null
+        || dialogDataSet == null
+        || !dialogDataSet.hasDialog()
+        || serverPlayer == null) {
+      return;
+    }
+
+    ListTag lockedActions = new ListTag();
+    for (DialogDataEntry dialogEntry : dialogDataSet.getDialogsByLabel()) {
+      if (dialogEntry == null) {
+        continue;
+      }
+      for (DialogButtonEntry buttonEntry : dialogEntry.getDialogButtons()) {
+        if (buttonEntry == null
+            || !buttonEntry.hasConditions()
+            || isExecutionLimitAvailable(buttonEntry, serverPlayer)) {
+          continue;
+        }
+        lockedActions.add(NbtUtils.createUUID(buttonEntry.id()));
+      }
+    }
+
+    if (!lockedActions.isEmpty()) {
+      compoundTag.put(EXECUTION_LIMIT_DATA_TAG, lockedActions);
+    }
+  }
+
+  private static boolean isExecutionLimitAvailable(
+      DialogButtonEntry buttonEntry, ServerPlayer serverPlayer) {
+    for (ConditionDataEntry condition : buttonEntry.conditions()) {
+      if (condition.conditionType() == ConditionType.EXECUTION_LIMIT
+          && !ConditionManager.evaluate(condition, serverPlayer, buttonEntry.id())) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  public static Set<UUID> getLockedExecutionLimitActions(CompoundTag compoundTag) {
+    return getLockedActions(compoundTag, EXECUTION_LIMIT_DATA_TAG);
+  }
+
+  public static Set<UUID> getLockedDialogButtons(CompoundTag compoundTag) {
+    return getLockedActions(compoundTag, DIALOG_BUTTON_LOCK_DATA_TAG);
+  }
+
+  private static Set<UUID> getLockedActions(CompoundTag compoundTag, String dataTag) {
+    Set<UUID> lockedActions = new HashSet<>();
+    if (compoundTag != null && compoundTag.contains(dataTag)) {
+      ListTag listTag = compoundTag.getList(dataTag, Tag.TAG_INT_ARRAY);
+      for (Tag tag : listTag) {
+        lockedActions.add(NbtUtils.loadUUID(tag));
+      }
+    }
+    return lockedActions;
   }
 
   private static Set<String> extractObjectiveNamesFromDialogDataSet(DialogDataSet dialogDataSet) {
@@ -157,10 +290,25 @@ public class AdditionalScreenData implements AdditionalScreenDataInterface {
     }
 
     for (DialogDataEntry dialogEntry : dialogDataSet.getDialogsByLabel()) {
-      if (dialogEntry != null && dialogEntry.getDialogTexts() != null) {
+      if (dialogEntry == null) {
+        continue;
+      }
+      if (dialogEntry.getDialogTexts() != null) {
         for (DialogTextData dialogTextData : dialogEntry.getDialogTexts()) {
           if (dialogTextData != null && dialogTextData.text() != null) {
             objectiveNames.addAll(ScoreboardData.parseScoreMacros(dialogTextData.text()));
+          }
+        }
+      }
+      for (DialogButtonEntry buttonEntry : dialogEntry.getDialogButtons()) {
+        if (buttonEntry == null || !buttonEntry.hasConditions()) {
+          continue;
+        }
+        for (ConditionDataEntry condition : buttonEntry.conditions()) {
+          if (condition != null
+              && condition.conditionType() == ConditionType.SCOREBOARD
+              && condition.hasName()) {
+            objectiveNames.add(condition.name());
           }
         }
       }
@@ -205,5 +353,17 @@ public class AdditionalScreenData implements AdditionalScreenDataInterface {
 
   public ScoreboardData getScoreboardData() {
     return this.scoreboardData;
+  }
+
+  public Set<UUID> getLockedExecutionLimitActions() {
+    return this.lockedExecutionLimitActions;
+  }
+
+  public boolean isDialogButtonLocked(UUID buttonId) {
+    return buttonId != null && this.lockedDialogButtons.contains(buttonId);
+  }
+
+  public boolean isExecutionLimitReached(UUID actionId) {
+    return actionId != null && this.lockedExecutionLimitActions.contains(actionId);
   }
 }

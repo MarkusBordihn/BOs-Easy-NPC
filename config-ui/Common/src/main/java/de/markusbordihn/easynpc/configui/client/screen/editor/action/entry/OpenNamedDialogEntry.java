@@ -16,6 +16,7 @@ import net.minecraft.client.gui.GuiGraphics;
 public class OpenNamedDialogEntry extends ActionEntryWidget {
 
   private final DialogDataSet dialogDataSet;
+  private final ActionDataType actionDataType;
   private TextField dialogNameTextField;
   private TextField targetUuidTextField;
   private TargetType targetType;
@@ -29,6 +30,10 @@ public class OpenNamedDialogEntry extends ActionEntryWidget {
       ActionDataEntryEditorContainerScreen<?> screen) {
     super(actionDataEntry, actionDataSet, screen);
     this.dialogDataSet = screen.getDialogDataSet();
+    this.actionDataType =
+        screen.getActionDataType() == ActionDataType.OPEN_NAMED_DIALOG_CONDITIONAL
+            ? ActionDataType.OPEN_NAMED_DIALOG_CONDITIONAL
+            : ActionDataType.OPEN_NAMED_DIALOG;
     this.targetType = actionDataEntry.targetUUID() != null ? TargetType.UUID : TargetType.SELF;
   }
 
@@ -57,7 +62,7 @@ public class OpenNamedDialogEntry extends ActionEntryWidget {
 
   @Override
   public void init(int editorLeft, int editorTop) {
-    boolean hasActionData = hasActionData(ActionDataType.OPEN_NAMED_DIALOG);
+    boolean hasActionData = hasActionData(this.actionDataType);
 
     // Named Dialog Value
     this.dialogNameTextField =
@@ -145,14 +150,12 @@ public class OpenNamedDialogEntry extends ActionEntryWidget {
       try {
         UUID targetUUID = UUID.fromString(uuidString);
         return new ActionDataEntry(
-            ActionDataType.OPEN_NAMED_DIALOG, targetUUID, this.dialogNameTextField.getValue());
+            this.actionDataType, targetUUID, this.dialogNameTextField.getValue());
       } catch (IllegalArgumentException e) {
-        return new ActionDataEntry(
-            ActionDataType.OPEN_NAMED_DIALOG, this.dialogNameTextField.getValue());
+        return new ActionDataEntry(this.actionDataType, this.dialogNameTextField.getValue());
       }
     }
-    return new ActionDataEntry(
-        ActionDataType.OPEN_NAMED_DIALOG, this.dialogNameTextField.getValue());
+    return new ActionDataEntry(this.actionDataType, this.dialogNameTextField.getValue());
   }
 
   @Override

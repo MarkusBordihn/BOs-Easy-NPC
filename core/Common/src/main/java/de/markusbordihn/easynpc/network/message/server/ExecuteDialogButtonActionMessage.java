@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.network.message.server;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.condition.ConditionManager;
 import de.markusbordihn.easynpc.data.action.ActionDataSet;
+import de.markusbordihn.easynpc.data.condition.ConditionDataEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogButtonEntry;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.DialogDataCapable;
@@ -110,7 +111,10 @@ public record ExecuteDialogButtonActionMessage(UUID uuid, UUID dialogId, UUID di
 
     if (dialogButtonEntry.hasConditions()
         && !ConditionManager.evaluateAll(
-            dialogButtonEntry.conditions(), serverPlayer, this.dialogButtonId)) {
+            dialogButtonEntry.conditions(),
+            serverPlayer,
+            this.dialogButtonId,
+            easyNPC.getLivingEntity())) {
       log.warn(
           "Blocked locked dialog button action {} for dialog {} for {} from {}",
           this.dialogButtonId,
@@ -138,5 +142,11 @@ public record ExecuteDialogButtonActionMessage(UUID uuid, UUID dialogId, UUID di
     }
 
     actionHandler.executeActions(actionDataSet, serverPlayer);
+
+    if (dialogButtonEntry.hasConditions()) {
+      for (ConditionDataEntry condition : dialogButtonEntry.conditions()) {
+        ConditionManager.recordExecution(condition, serverPlayer, this.dialogButtonId);
+      }
+    }
   }
 }

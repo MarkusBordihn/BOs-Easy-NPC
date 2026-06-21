@@ -20,8 +20,11 @@
 package de.markusbordihn.easynpc.gametest;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.entity.ModEntityType;
+import de.markusbordihn.easynpc.entity.ModNPCEntityType;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.world.entity.EntityType;
 import net.minecraftforge.gametest.GameTestHolder;
 import net.minecraftforge.gametest.PrefixGameTestTemplate;
 
@@ -30,9 +33,31 @@ import net.minecraftforge.gametest.PrefixGameTestTemplate;
 @GameTestHolder(Constants.MOD_ID)
 public class ConditionEvaluationTest {
 
+  private static EntityType<?> humanoid() {
+    return ModEntityType.getEntityType(ModNPCEntityType.HUMANOID);
+  }
+
   @GameTest(template = "gametest.3x3x3")
   public void testItemQuantityConditions(GameTestHelper helper) {
     ConditionEvaluationTestHelper.assertItemQuantityConditions(helper);
+    helper.succeed();
+  }
+
+  @GameTest(template = "gametest.3x3x3")
+  public void testHealthTargetConditions(GameTestHelper helper) {
+    ConditionEvaluationTestHelper.assertHealthTargetConditions(helper, humanoid());
+    helper.succeed();
+  }
+
+  @GameTest(template = "gametest.3x3x3")
+  public void testButtonExecutionLimitEnforced(GameTestHelper helper) {
+    ConditionEvaluationTestHelper.assertButtonExecutionLimitEnforced(helper);
+    helper.succeed();
+  }
+
+  @GameTest(template = "gametest.3x3x3")
+  public void testConditionalDialogOpenRespectsConditions(GameTestHelper helper) {
+    ConditionEvaluationTestHelper.assertConditionalDialogOpenRespectsConditions(helper);
     helper.succeed();
   }
 }

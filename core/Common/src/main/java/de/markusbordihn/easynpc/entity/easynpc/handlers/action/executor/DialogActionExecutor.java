@@ -51,36 +51,65 @@ public class DialogActionExecutor {
 
   public static void openNamedDialog(
       ActionDataEntry actionDataEntry, ServerPlayer serverPlayer, DialogDataCapable<?> dialogData) {
+    openNamedDialog(actionDataEntry, serverPlayer, dialogData, false);
+  }
+
+  public static void openNamedDialogConditional(
+      ActionDataEntry actionDataEntry, ServerPlayer serverPlayer, DialogDataCapable<?> dialogData) {
+    openNamedDialog(actionDataEntry, serverPlayer, dialogData, true);
+  }
+
+  private static void openNamedDialog(
+      ActionDataEntry actionDataEntry,
+      ServerPlayer serverPlayer,
+      DialogDataCapable<?> dialogData,
+      boolean checkConditions) {
     if (!ActionValidator.validateActionData(actionDataEntry, serverPlayer)) {
       return;
     }
 
-    DialogDataCapable<?> targetDialogData;
-    if (actionDataEntry.targetUUID() == null) {
-      targetDialogData = dialogData;
-    } else {
-      EasyNPC<?> targetNpc =
-          findEasyNPCByUuid(serverPlayer.serverLevel(), actionDataEntry.targetUUID());
-      if (targetNpc == null) {
-        log.error("Target NPC with UUID {} not found", actionDataEntry.targetUUID());
-        serverPlayer.closeContainer();
-        return;
-      }
-      targetDialogData = targetNpc.getEasyNPCDialogData();
-      if (targetDialogData == null) {
-        log.error("No dialog data found for NPC {}", actionDataEntry.targetUUID());
-        serverPlayer.closeContainer();
-        return;
-      }
+    DialogDataCapable<?> targetDialogData =
+        resolveTargetDialogData(actionDataEntry, serverPlayer, dialogData);
+    if (targetDialogData == null) {
+      return;
     }
 
     String dialogLabel = actionDataEntry.command();
-    if (ActionValidator.validateNamedDialog(targetDialogData, dialogLabel)) {
-      targetDialogData.openDialog(serverPlayer, targetDialogData.getDialogId(dialogLabel));
-    } else {
+    if (!ActionValidator.validateNamedDialog(targetDialogData, dialogLabel)) {
       log.error("Unknown dialog label {} for action {}", dialogLabel, actionDataEntry);
       serverPlayer.closeContainer();
+      return;
     }
+
+    UUID dialogId = targetDialogData.getDialogId(dialogLabel);
+    if (checkConditions) {
+      if (!targetDialogData.openDialogIfConditionsMet(serverPlayer, dialogId)) {
+        log.debug("Conditions not met for dialog {} of action {}", dialogLabel, actionDataEntry);
+      }
+    } else {
+      targetDialogData.openDialog(serverPlayer, dialogId);
+    }
+  }
+
+  private static DialogDataCapable<?> resolveTargetDialogData(
+      ActionDataEntry actionDataEntry, ServerPlayer serverPlayer, DialogDataCapable<?> dialogData) {
+    if (actionDataEntry.targetUUID() == null) {
+      return dialogData;
+    }
+
+    EasyNPC<?> targetNpc =
+        findEasyNPCByUuid(serverPlayer.serverLevel(), actionDataEntry.targetUUID());
+    if (targetNpc == null) {
+      log.error("Target NPC with UUID {} not found", actionDataEntry.targetUUID());
+      serverPlayer.closeContainer();
+      return null;
+    }
+    DialogDataCapable<?> targetDialogData = targetNpc.getEasyNPCDialogData();
+    if (targetDialogData == null) {
+      log.error("No dialog data found for NPC {}", actionDataEntry.targetUUID());
+      serverPlayer.closeContainer();
+    }
+    return targetDialogData;
   }
 
   private static EasyNPC<?> findEasyNPCByUuid(ServerLevel level, UUID uuid) {

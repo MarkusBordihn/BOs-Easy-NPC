@@ -73,6 +73,7 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
   protected int dialogPageIndex = 0;
   private List<FormattedCharSequence> cachedDialogComponents = Collections.emptyList();
   private int[] cachedLineLengths = new int[0];
+  private boolean hasConditionalButtons = false;
   private DialogOptionsData cachedDialogOptions = DialogOptionsData.DEFAULT;
   private boolean typewriterEnabled;
   private int charsPerSecond;
@@ -208,6 +209,9 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
 
     this.dialogButtons.add(dialogButton);
     this.dialogButtonEntries.add(dialogButtonEntry);
+    if (dialogButtonEntry != null && dialogButtonEntry.hasConditions()) {
+      this.hasConditionalButtons = true;
+    }
     this.updateDialogButtonLockState(dialogButton, dialogButtonEntry);
   }
 
@@ -216,10 +220,19 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
     if (dialogButtonEntry == null || !dialogButtonEntry.hasConditions()) {
       return;
     }
-    dialogButton.active =
+    boolean conditionsMet =
         ClientConditionEvaluator.evaluateAll(
             dialogButtonEntry.conditions(),
-            minecraftInstance != null ? minecraftInstance.player : null);
+            minecraftInstance != null ? minecraftInstance.player : null,
+            this.getEasyNPC() != null ? this.getEasyNPC().getLivingEntity() : null);
+    AdditionalScreenData additionalScreenData = this.getAdditionalScreenData();
+    boolean executionLimitReached =
+        additionalScreenData != null
+            && additionalScreenData.isExecutionLimitReached(dialogButtonEntry.id());
+    boolean dialogButtonLocked =
+        additionalScreenData != null
+            && additionalScreenData.isDialogButtonLocked(dialogButtonEntry.id());
+    dialogButton.active = conditionsMet && !executionLimitReached && !dialogButtonLocked;
   }
 
   private Button renderDialogButton(int buttonIndex, int width, int left, int top) {
@@ -434,6 +447,7 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
 
     this.dialogButtons.clear();
     this.dialogButtonEntries.clear();
+    this.hasConditionalButtons = false;
 
     this.titleLabelX = 10;
     this.titleLabelY = 8;
@@ -528,8 +542,23 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
   }
 
   @Override
+  protected int getUpdateTickInterval() {
+    // Button lock states change rarely (dynamic conditions like NPC/entity health), so polling once
+    // per second is plenty. The initial lock state is set when the button is created, so there is
+    // no visible delay on open.
+    return 20;
+  }
+
+  @Override
   protected void updateTick() {
     super.updateTick();
+
+    // The base screen invokes updateTick() on a fixed cadence (see getUpdateTickInterval()), so it
+    // doubles as the periodic lock-state refresh without an extra ticker. Skip entirely when no
+    // button has conditions; this only refreshes dynamic conditions like NPC/entity health.
+    if (!this.hasConditionalButtons) {
+      return;
+    }
     for (int i = 0; i < this.dialogButtons.size() && i < this.dialogButtonEntries.size(); i++) {
       this.updateDialogButtonLockState(this.dialogButtons.get(i), this.dialogButtonEntries.get(i));
     }

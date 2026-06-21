@@ -89,6 +89,23 @@ public class DialogCommand extends Command {
                                                     DialogArgument.getUuidOrLabel(
                                                         context, DIALOG_ARG)))))))
         .then(
+            Commands.literal("open_conditional")
+                .then(
+                    Commands.argument(NPC_TARGET_ARG, EasyNPCArgument.npc())
+                        .then(
+                            Commands.argument(PLAYER_ARG, EntityArgument.player())
+                                .then(
+                                    Commands.argument(DIALOG_ARG, DialogArgument.uuidOrLabel())
+                                        .executes(
+                                            context ->
+                                                openDialogConditional(
+                                                    context.getSource(),
+                                                    EasyNPCArgument.getEntityWithAccess(
+                                                        context, NPC_TARGET_ARG),
+                                                    EntityArgument.getPlayer(context, PLAYER_ARG),
+                                                    DialogArgument.getUuidOrLabel(
+                                                        context, DIALOG_ARG)))))))
+        .then(
             Commands.literal("close")
                 .then(
                     Commands.argument(PLAYER_ARG, EntityArgument.player())
@@ -233,6 +250,52 @@ public class DialogCommand extends Command {
         context,
         "► Open dialog for " + easyNPC + " with " + serverPlayer + " and dialog " + dialogUUID,
         ChatFormatting.GREEN);
+  }
+
+  public static int openDialogConditional(
+      CommandSourceStack context,
+      EasyNPC<?> easyNPC,
+      ServerPlayer serverPlayer,
+      Pair<UUID, String> dialogPair) {
+    if (dialogPair.getFirst() != null) {
+      return openDialogConditional(context, easyNPC, serverPlayer, dialogPair.getFirst());
+    } else if (dialogPair.getSecond() != null
+        && easyNPC.getEasyNPCDialogData() != null
+        && easyNPC.getEasyNPCDialogData().hasDialog(dialogPair.getSecond())) {
+      return openDialogConditional(
+          context,
+          easyNPC,
+          serverPlayer,
+          easyNPC.getEasyNPCDialogData().getDialogId(dialogPair.getSecond()));
+    }
+    return sendFailureMessage(context, "Invalid dialog UUID or label!");
+  }
+
+  public static int openDialogConditional(
+      CommandSourceStack context, EasyNPC<?> easyNPC, ServerPlayer serverPlayer, UUID dialogUUID) {
+
+    // Verify Player
+    if (!serverPlayer.isAlive()) {
+      return sendFailureMessage(context, "Player is dead");
+    }
+
+    // Verify dialog data
+    if (easyNPC.getEasyNPCDialogData() == null
+        || !easyNPC.getEasyNPCDialogData().hasDialog(dialogUUID)) {
+      return sendFailureMessageNoDialogData(context, easyNPC);
+    }
+
+    // Open dialog only if its conditions are met for the player
+    if (easyNPC.getEasyNPCDialogData().openDialogIfConditionsMet(serverPlayer, dialogUUID)) {
+      return sendSuccessMessage(
+          context,
+          "► Open dialog for " + easyNPC + " with " + serverPlayer + " and dialog " + dialogUUID,
+          ChatFormatting.GREEN);
+    }
+    return sendSuccessMessage(
+        context,
+        "► Dialog " + dialogUUID + " not opened for " + serverPlayer + ": conditions are not met.",
+        ChatFormatting.YELLOW);
   }
 
   public static int closeDialog(CommandSourceStack context, ServerPlayer serverPlayer) {

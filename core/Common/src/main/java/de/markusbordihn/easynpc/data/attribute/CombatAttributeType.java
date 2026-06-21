@@ -26,6 +26,8 @@ public enum CombatAttributeType implements EntityAttributeTypeInterface {
   IS_ATTACKABLE_BY_PLAYERS,
   IS_ATTACKABLE_BY_MONSTERS,
   IS_INVULNERABLE,
+  IS_KNOCKBACK_RESISTANT,
+  IS_EXPLOSION_RESISTANT,
   HEALTH_REGENERATION;
 
   public String getTagName() {

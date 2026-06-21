@@ -514,4 +514,77 @@ class ConditionDataEntryTest {
     assertEquals(50, deserialized.value());
     assertEquals(original.getId(), deserialized.getId());
   }
+
+  @Test
+  void testNpcHealthConditionRequiresOperation() {
+    ConditionDataEntry withoutOperation =
+        new ConditionDataEntry(ConditionType.NPC_HEALTH, ConditionOperationType.NONE, "", 50);
+    assertFalse(withoutOperation.isValid());
+
+    ConditionDataEntry valid =
+        new ConditionDataEntry(ConditionType.NPC_HEALTH, ConditionOperationType.LESS_THAN, "", 50);
+    assertTrue(valid.isValid());
+  }
+
+  @Test
+  void testNpcHealthConditionNBTRoundTrip() {
+    ConditionDataEntry original =
+        new ConditionDataEntry(ConditionType.NPC_HEALTH, ConditionOperationType.LESS_THAN, "", 50);
+    assertTrue(original.isValid());
+
+    CompoundTag tag = original.createTag();
+    ConditionDataEntry deserialized = new ConditionDataEntry(tag);
+    assertEquals(ConditionType.NPC_HEALTH, deserialized.conditionType());
+    assertEquals(ConditionOperationType.LESS_THAN, deserialized.operationType());
+    assertEquals(50, deserialized.value());
+    assertEquals(original.getId(), deserialized.getId());
+  }
+
+  @Test
+  void testEntityHealthConditionRequiresValidUuid() {
+    ConditionDataEntry withoutName =
+        new ConditionDataEntry(
+            ConditionType.ENTITY_HEALTH, ConditionOperationType.LESS_THAN, "", 50);
+    assertFalse(withoutName.isValid());
+
+    ConditionDataEntry invalidUuid =
+        new ConditionDataEntry(
+            ConditionType.ENTITY_HEALTH, ConditionOperationType.LESS_THAN, "not-a-uuid", 50);
+    assertFalse(invalidUuid.isValid());
+
+    ConditionDataEntry validUuid =
+        new ConditionDataEntry(
+            ConditionType.ENTITY_HEALTH,
+            ConditionOperationType.LESS_THAN,
+            "12345678-1234-1234-1234-123456789abc",
+            50);
+    assertTrue(validUuid.isValid());
+
+    ConditionDataEntry missingOperation =
+        new ConditionDataEntry(
+            ConditionType.ENTITY_HEALTH,
+            ConditionOperationType.NONE,
+            "12345678-1234-1234-1234-123456789abc",
+            50);
+    assertFalse(missingOperation.isValid());
+  }
+
+  @Test
+  void testEntityHealthConditionNBTRoundTrip() {
+    ConditionDataEntry original =
+        new ConditionDataEntry(
+            ConditionType.ENTITY_HEALTH,
+            ConditionOperationType.LESS_THAN_OR_EQUALS,
+            "12345678-1234-1234-1234-123456789abc",
+            25);
+    assertTrue(original.isValid());
+
+    CompoundTag tag = original.createTag();
+    ConditionDataEntry deserialized = new ConditionDataEntry(tag);
+    assertEquals(ConditionType.ENTITY_HEALTH, deserialized.conditionType());
+    assertEquals(ConditionOperationType.LESS_THAN_OR_EQUALS, deserialized.operationType());
+    assertEquals("12345678-1234-1234-1234-123456789abc", deserialized.name());
+    assertEquals(25, deserialized.value());
+    assertEquals(original.getId(), deserialized.getId());
+  }
 }

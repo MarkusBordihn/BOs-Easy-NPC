@@ -31,6 +31,7 @@ import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.LivingEntity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -173,9 +174,14 @@ public class DialogDataSet {
   }
 
   public DialogDataEntry getNextAvailableDialog(ServerPlayer serverPlayer) {
+    return getNextAvailableDialog(serverPlayer, null);
+  }
+
+  public DialogDataEntry getNextAvailableDialog(
+      ServerPlayer serverPlayer, LivingEntity npcContext) {
     return dialogByIdMap.values().stream()
         .filter(dialog -> dialog.getPriority() >= DialogPriority.FALLBACK)
-        .filter(dialog -> checkConditions(dialog, serverPlayer))
+        .filter(dialog -> checkConditions(dialog, serverPlayer, npcContext))
         .sorted(
             Comparator.comparingInt(DialogDataEntry::getPriority)
                 .reversed()
@@ -184,7 +190,17 @@ public class DialogDataSet {
         .orElse(null);
   }
 
-  private boolean checkConditions(DialogDataEntry dialog, ServerPlayer serverPlayer) {
+  public boolean canOpenDialog(UUID dialogId, ServerPlayer serverPlayer) {
+    return canOpenDialog(dialogId, serverPlayer, null);
+  }
+
+  public boolean canOpenDialog(UUID dialogId, ServerPlayer serverPlayer, LivingEntity npcContext) {
+    DialogDataEntry dialog = getDialog(dialogId);
+    return dialog != null && checkConditions(dialog, serverPlayer, npcContext);
+  }
+
+  private boolean checkConditions(
+      DialogDataEntry dialog, ServerPlayer serverPlayer, LivingEntity npcContext) {
     if (!dialog.hasConditions()) {
       log.debug("Dialog {} has no conditions, allowing", dialog.getLabel());
       return true;
@@ -203,7 +219,8 @@ public class DialogDataSet {
         continue;
       }
 
-      boolean conditionResult = evaluateCondition(condition, serverPlayer, dialog.getId());
+      boolean conditionResult =
+          evaluateCondition(condition, serverPlayer, dialog.getId(), npcContext);
       log.debug(
           "Condition check for dialog {}: {} {} {} = {} (result: {})",
           dialog.getLabel(),
@@ -240,12 +257,15 @@ public class DialogDataSet {
   }
 
   private boolean evaluateCondition(
-      ConditionDataEntry condition, ServerPlayer serverPlayer, UUID dialogId) {
+      ConditionDataEntry condition,
+      ServerPlayer serverPlayer,
+      UUID dialogId,
+      LivingEntity npcContext) {
     if (condition.conditionType() == ConditionType.NONE) {
       log.warn("Encountered NONE condition type, skipping");
       return true;
     }
-    return ConditionManager.evaluate(condition, serverPlayer, dialogId);
+    return ConditionManager.evaluate(condition, serverPlayer, dialogId, npcContext);
   }
 
   public DialogType getType() {

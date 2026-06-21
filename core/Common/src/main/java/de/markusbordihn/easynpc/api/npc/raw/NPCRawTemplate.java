@@ -578,6 +578,20 @@ public class NPCRawTemplate extends Zombie implements EasyNPCBase<Zombie> {
   }
 
   @Override
+  public void knockback(double strength, double x, double z) {
+    if (getEntityAttributes().getCombatAttributes().isKnockbackResistant()) {
+      return;
+    }
+    super.knockback(strength, x, z);
+  }
+
+  @Override
+  public boolean ignoreExplosion() {
+    return getEntityAttributes().getCombatAttributes().isExplosionResistant()
+        || super.ignoreExplosion();
+  }
+
+  @Override
   public boolean isInvulnerableTo(DamageSource damageSource) {
     return AttackHandler.handleIsInvulnerableTo(
         this, damageSource, super.isInvulnerableTo(damageSource));

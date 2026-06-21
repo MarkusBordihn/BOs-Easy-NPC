@@ -179,7 +179,7 @@ public class CommandExecutor {
             requestedPermissionLevel,
             CommandPermissionLevel.min(playerPermissionLevel, npcPermissionLevel));
     CommandSourceStack baseCommandSourceStack =
-        createPlayerCommandSourceStack(minecraftServer, serverPlayer, basePermissionLevel, debug);
+        createPlayerCommandSourceStack(serverPlayer, basePermissionLevel, debug);
     ParseResults<CommandSourceStack> parseResults =
         commandDispatcher.parse(command, baseCommandSourceStack);
     if (isParseSuccessful(parseResults)) {
@@ -206,7 +206,7 @@ public class CommandExecutor {
     }
 
     CommandSourceStack elevatedCommandSourceStack =
-        createPlayerCommandSourceStack(minecraftServer, serverPlayer, maxPermissionLevel, debug);
+        createPlayerCommandSourceStack(serverPlayer, maxPermissionLevel, debug);
     parseResults = commandDispatcher.parse(command, elevatedCommandSourceStack);
     if (!isParseSuccessful(parseResults)) {
       log.warn(
@@ -245,18 +245,9 @@ public class CommandExecutor {
   }
 
   private static CommandSourceStack createPlayerCommandSourceStack(
-      MinecraftServer minecraftServer,
-      ServerPlayer serverPlayer,
-      CommandPermissionLevel permissionLevel,
-      boolean debug) {
+      ServerPlayer serverPlayer, CommandPermissionLevel permissionLevel, boolean debug) {
     CommandSourceStack commandSourceStack =
-        minecraftServer
-            .createCommandSourceStack()
-            .withEntity(serverPlayer)
-            .withPosition(serverPlayer.position())
-            .withRotation(serverPlayer.getRotationVector())
-            .withPermission(permissionLevel.minecraftLevel())
-            .withLevel(serverPlayer.serverLevel());
+        serverPlayer.createCommandSourceStack().withPermission(permissionLevel.minecraftLevel());
     return debug ? commandSourceStack : commandSourceStack.withSuppressedOutput();
   }
 
