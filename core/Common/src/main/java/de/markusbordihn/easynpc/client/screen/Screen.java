@@ -192,12 +192,21 @@ public class Screen<
 
   protected void updateTick() {}
 
+  /**
+   * Number of game ticks between {@link #updateTick()} calls. Defaults to {@value #UPDATE_TICKS}
+   * ticks (~0.4s); screens with less time-critical periodic work may override this to poll less
+   * often.
+   */
+  protected int getUpdateTickInterval() {
+    return UPDATE_TICKS;
+  }
+
   @Override
   public final void tick() {
     super.tick();
     if (this.minecraft.player.isAlive()
         && !this.minecraft.player.isRemoved()
-        && updateTicker++ % UPDATE_TICKS == 0) {
+        && updateTicker++ % this.getUpdateTickInterval() == 0) {
       this.updateTick();
     }
   }

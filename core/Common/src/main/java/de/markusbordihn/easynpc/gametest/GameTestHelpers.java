@@ -91,17 +91,13 @@ public class GameTestHelpers {
 
   public static void assertEquals(
       GameTestHelper helper, String message, Object expected, Object actual) {
-    if (expected.equals(actual)) {
-      helper.succeed();
-    } else {
+    if (!expected.equals(actual)) {
       helper.fail(message);
     }
   }
 
   public static void assertTrue(GameTestHelper helper, String message, boolean condition) {
-    if (condition) {
-      helper.succeed();
-    } else {
+    if (!condition) {
       helper.fail(message);
     }
   }

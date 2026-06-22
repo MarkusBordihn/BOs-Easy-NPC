@@ -23,6 +23,7 @@ import de.markusbordihn.easynpc.data.action.ActionEventSet;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.data.scoreboard.ScoreboardData;
+import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
 
 public interface AdditionalScreenDataInterface {
@@ -38,4 +39,10 @@ public interface AdditionalScreenDataInterface {
   CompoundTag getData();
 
   boolean hasDialogDataSet();
+
+  default boolean isDialogButtonLocked(UUID buttonId) {
+    return false;
+  }
+
+  boolean isExecutionLimitReached(UUID actionId);
 }

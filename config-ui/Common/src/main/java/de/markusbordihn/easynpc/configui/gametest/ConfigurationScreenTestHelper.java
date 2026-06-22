@@ -87,5 +87,7 @@ public class ConfigurationScreenTestHelper {
             + serverPlayer.containerMenu.getType(),
         menuType,
         serverPlayer.containerMenu.getType());
+
+    helper.succeed();
   }
 }

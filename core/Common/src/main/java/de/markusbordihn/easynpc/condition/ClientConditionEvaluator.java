@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.condition;
 
 import de.markusbordihn.easynpc.data.condition.ConditionDataEntry;
 import java.util.Set;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 
 public class ClientConditionEvaluator {
@@ -28,19 +29,25 @@ public class ClientConditionEvaluator {
   private ClientConditionEvaluator() {}
 
   public static boolean evaluateAll(Set<ConditionDataEntry> conditionDataEntries, Player player) {
+    return evaluateAll(conditionDataEntries, player, null);
+  }
+
+  public static boolean evaluateAll(
+      Set<ConditionDataEntry> conditionDataEntries, Player player, LivingEntity npcContext) {
     if (conditionDataEntries == null || conditionDataEntries.isEmpty() || player == null) {
       return true;
     }
 
     for (ConditionDataEntry conditionDataEntry : conditionDataEntries) {
-      if (!evaluate(conditionDataEntry, player)) {
+      if (!evaluate(conditionDataEntry, player, npcContext)) {
         return false;
       }
     }
     return true;
   }
 
-  private static boolean evaluate(ConditionDataEntry conditionDataEntry, Player player) {
+  private static boolean evaluate(
+      ConditionDataEntry conditionDataEntry, Player player, LivingEntity npcContext) {
     if (conditionDataEntry == null || !conditionDataEntry.isValid()) {
       return true;
     }
@@ -51,7 +58,23 @@ public class ClientConditionEvaluator {
       case HAS_ITEM_IN_HAND -> HasItemInHandCondition.evaluate(conditionDataEntry, player);
       case EXPERIENCE_LEVEL -> ExperienceLevelCondition.evaluate(conditionDataEntry, player);
       case PLAYER_HEALTH -> PlayerHealthCondition.evaluate(conditionDataEntry, player);
+      case NPC_HEALTH ->
+          npcContext == null
+              || HealthConditionEvaluator.evaluate(
+                  conditionDataEntry.operationType(), conditionDataEntry.value(), npcContext);
+      case ENTITY_HEALTH -> evaluateEntityHealth(conditionDataEntry, npcContext);
       default -> true;
     };
+  }
+
+  private static boolean evaluateEntityHealth(
+      ConditionDataEntry conditionDataEntry, LivingEntity npcContext) {
+    // Resolve the target Easy NPC by UUID on the client. If it is not loaded here, defer to the
+    // server (do not lock) since the server remains authoritative for this condition.
+    LivingEntity target =
+        HealthConditionEvaluator.resolveByUuid(npcContext, conditionDataEntry.name());
+    return target == null
+        || HealthConditionEvaluator.evaluate(
+            conditionDataEntry.operationType(), conditionDataEntry.value(), target);
   }
 }

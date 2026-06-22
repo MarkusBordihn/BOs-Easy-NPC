@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.data.preset;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.component.DataComponents;
+import de.markusbordihn.easynpc.data.attribute.LegacyAttributeConverter;
 import de.markusbordihn.easynpc.security.SecurityManager;
 import java.util.Optional;
 import net.minecraft.core.BlockPos;
@@ -188,6 +189,9 @@ public class PresetDataUtils {
     if (entityData.contains(ENTITY_UUID_TAG)) {
       entityData.remove(ENTITY_UUID_TAG);
     }
+
+    // Convert legacy (pre-1.21) attribute NBT from imported presets to the 1.21 format.
+    LegacyAttributeConverter.convertLegacyAttributes(entityData);
 
     entity.load(entityData);
     entity.moveTo(blockPos.getX() + 0.5, blockPos.getY(), blockPos.getZ() + 0.5);

@@ -9,6 +9,7 @@ build-system edge cases across different mod loaders and tooling:
 
 Why split? A pure Gradle multi-project setup does not support all combinations of loader plugins (
 Fabric Loom, ForgeGradle/NeoForge) and publication tasks at once.
+
 Keeping the modules separate lets us:
 
 - use loader-specific Gradle plugins without cross-plugin conflicts
@@ -108,19 +109,17 @@ multi-project plugin conflicts.
 
 ### Root tasks overview
 
-| Task            | What it does                                                      | When to use                                 |
-|-----------------|-------------------------------------------------------------------|---------------------------------------------|
-| build           | Builds core > config-ui > bundle in sequence                      | Normal local builds                         |
-| clean           | Cleans all three projects (calls each project's clean task)       | Before a full rebuild (keeps build caches!) |
-| cleanMavenLocal | Deletes only project artifacts from Maven Local (current version) | When you suspect stale mavenLocal artifacts |
-| cleanBuild      | cleanMavenLocal + build all projects sequentially                 | **Recommended for most development** (fast) |
+| Task            | What it does                                                         | When to use                                 |
+|-----------------|----------------------------------------------------------------------|---------------------------------------------|
+| build           | Builds core > config-ui > bundle in sequence                         | Normal local builds                         |
+| clean           | Cleans all three projects (calls each project's clean task)          | Before a full rebuild (keeps build caches!) |
+| cleanMavenLocal | Deletes only project artifacts from Maven Local (current version)    | When you suspect stale mavenLocal artifacts |
+| cleanBuild      | cleanMavenLocal + build all projects sequentially                    | **Recommended for most development** (fast) |
+| deepClean       | Deletes all .gradle and build directories                            | Deep clean when caches are broken (slow)    |
+| publish         | Runs per-project publishing (curseforge/modrinth) after a cleanBuild | Release pipeline (requires tokens)          |
 
 **Note:** Build caches (Loom, Forge mappings, Gradle cache) are intentionally kept to maximize build
 speed. Use individual project's `clean` task if you need to delete build directories.
-| deepClean | Deletes all .gradle and build directories | Deep clean when caches are broken (
-slow)    |
-| publish | Runs per-project publishing (curseforge/modrinth) after a cleanBuild | Release
-pipeline (requires tokens)          |
 
 ## Quick start (cross‑platform) 🚀
 

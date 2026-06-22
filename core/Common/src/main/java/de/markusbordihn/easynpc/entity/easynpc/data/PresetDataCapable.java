@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.data;
 
+import de.markusbordihn.easynpc.data.attribute.LegacyAttributeConverter;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.data.preset.PresetMetadata;
 import de.markusbordihn.easynpc.data.server.ServerDataAccessor;
@@ -65,6 +66,10 @@ public interface PresetDataCapable<T extends Mob> extends EasyNPC<T> {
     if (compoundTag == null || compoundTag.isEmpty() || this.getEntity() == null) {
       return;
     }
+
+    // Convert legacy (pre-1.21) attribute NBT before any merge, so the imported values are not
+    // dropped in favor of the existing current-format attributes during the merge below.
+    LegacyAttributeConverter.convertLegacyAttributes(compoundTag);
 
     // Reset specific data to avoid side effects
     if (this.getEntity() != null) {

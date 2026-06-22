@@ -36,6 +36,9 @@ class ActionDataTypeTest {
     assertEquals(ActionDataType.OPEN_TRADING_SCREEN, ActionDataType.get("OPEN_TRADING_SCREEN"));
     assertEquals(ActionDataType.OPEN_DEFAULT_DIALOG, ActionDataType.get("OPEN_DEFAULT_DIALOG"));
     assertEquals(ActionDataType.OPEN_NAMED_DIALOG, ActionDataType.get("OPEN_NAMED_DIALOG"));
+    assertEquals(
+        ActionDataType.OPEN_NAMED_DIALOG_CONDITIONAL,
+        ActionDataType.get("OPEN_NAMED_DIALOG_CONDITIONAL"));
     assertEquals(ActionDataType.SCOREBOARD, ActionDataType.get("SCOREBOARD"));
   }
 
@@ -60,6 +63,7 @@ class ActionDataTypeTest {
     assertTrue(ActionDataType.COMMAND.requiresArgument());
     assertTrue(ActionDataType.INTERACT_BLOCK.requiresArgument());
     assertTrue(ActionDataType.OPEN_NAMED_DIALOG.requiresArgument());
+    assertTrue(ActionDataType.OPEN_NAMED_DIALOG_CONDITIONAL.requiresArgument());
     assertTrue(ActionDataType.SCOREBOARD.requiresArgument());
     assertTrue(ActionDataType.NONE.requiresArgument());
   }
@@ -77,6 +81,9 @@ class ActionDataTypeTest {
     assertEquals("actionDataType.command", ActionDataType.COMMAND.getId());
     assertEquals("actionDataType.close_dialog", ActionDataType.CLOSE_DIALOG.getId());
     assertEquals("actionDataType.open_trading_screen", ActionDataType.OPEN_TRADING_SCREEN.getId());
+    assertEquals(
+        "actionDataType.open_named_dialog_conditional",
+        ActionDataType.OPEN_NAMED_DIALOG_CONDITIONAL.getId());
     assertEquals("actionDataType.scoreboard", ActionDataType.SCOREBOARD.getId());
   }
 
