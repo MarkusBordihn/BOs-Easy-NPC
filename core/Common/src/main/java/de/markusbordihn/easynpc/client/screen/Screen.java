@@ -191,12 +191,16 @@ public class Screen<
 
   protected void updateTick() {}
 
+  protected int getUpdateTickInterval() {
+    return UPDATE_TICKS;
+  }
+
   @Override
   public final void tick() {
     super.tick();
     if (this.minecraft.player.isAlive()
         && !this.minecraft.player.isRemoved()
-        && updateTicker++ % UPDATE_TICKS == 0) {
+        && updateTicker++ % this.getUpdateTickInterval() == 0) {
       this.updateTick();
     }
   }

@@ -8,6 +8,33 @@ For the full changelog, please go to the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 6.22.0
+
+- Fixed #766 by passing the full server player context to command execution for better compatibility
+  with 3rd party mods and plugins that rely on specific player data.
+- Fixed #764 by adding entity health, npc health conditions and NPC preset
+  `Grukk, the Sparring Post` as example for using these conditions.
+- Fixed #763 by making sure dialog button execution limits are now recorded.
+- Fixed #758 by providing a example NPC preset named `One Wish Companion`.
+- Fixed crashes related to 3rd party villager AI reading non-registered brain memories on Easy NPC
+  villagers (e.g. PoiCompetitorScan / job_site) #756.
+- Fixed Dialog buttons are not locked for server-side data as preparation for #760 and #644.
+- Fixed #628 by adding conditional dialog opening support / command for better control over when
+  dialogs are shown to players.
+- Added brain AI for Piglin and Piglin Brute NPCs and registered the full vanilla brain memory set.
+- Added additional guns to the gun tag for #757.
+- Added a new "Open Dialog (Conditional)" action that opens a named dialog only if its conditions
+  are met, while the existing "Open Dialog" action keeps opening the dialog unconditionally.
+- Added new entity health and npc health conditions for actions, dialogs and dialogs buttons.
+- Added Piglin, Piglin Brute and Zombified Piglin NPCs invulnerable, for consistency with other
+  NPCs.
+- Added a new "Knockback Immunity" combat attribute that prevents the NPC from being knocked back by
+  melee or projectile attacks.
+- Added a new "Explosion Immunity" combat attribute that makes the NPC immune to explosion damage
+  and displacement (e.g. TNT, creepers, end crystals).
+- Moved the "Projectile Collision" attribute to the Combat attribute screen, where it fits better
+  thematically (previously on the Abilities screen).
+
 ### 6.21.0
 
 - Fixed item attachment for Illagers in crossed-arms pose.

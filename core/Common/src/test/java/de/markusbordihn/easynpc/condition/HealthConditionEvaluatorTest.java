@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Markus Bordihn
+ * Copyright 2025 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,32 +17,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.data.screen;
+package de.markusbordihn.easynpc.condition;
 
-import de.markusbordihn.easynpc.data.action.ActionEventSet;
-import de.markusbordihn.easynpc.data.action.ActionEventType;
-import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
-import de.markusbordihn.easynpc.data.scoreboard.ScoreboardData;
-import java.util.UUID;
-import net.minecraft.nbt.CompoundTag;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-public interface AdditionalScreenDataInterface {
+import de.markusbordihn.easynpc.data.condition.ConditionOperationType;
+import org.junit.jupiter.api.Test;
 
-  ActionEventSet getActionEventSet();
+class HealthConditionEvaluatorTest {
 
-  ActionEventType getActionEventType();
-
-  DialogDataSet getDialogDataSet();
-
-  ScoreboardData getScoreboardData();
-
-  CompoundTag getData();
-
-  boolean hasDialogDataSet();
-
-  default boolean isDialogButtonLocked(UUID buttonId) {
-    return false;
+  @Test
+  void testEvaluateNullTargetReturnsFalse() {
+    assertFalse(HealthConditionEvaluator.evaluate(ConditionOperationType.LESS_THAN, 50, null));
   }
 
-  boolean isExecutionLimitReached(UUID actionId);
+  @Test
+  void testEvaluateNullOperationReturnsFalse() {
+    assertFalse(HealthConditionEvaluator.evaluate(null, 50, null));
+  }
+
+  @Test
+  void testResolveByUuidNullContextReturnsNull() {
+    assertNull(
+        HealthConditionEvaluator.resolveByUuid(null, "12345678-1234-1234-1234-123456789abc"));
+  }
+
+  @Test
+  void testResolveByUuidNullOrEmptyNameReturnsNull() {
+    assertNull(HealthConditionEvaluator.resolveByUuid(null, null));
+    assertNull(HealthConditionEvaluator.resolveByUuid(null, ""));
+  }
 }

@@ -37,6 +37,7 @@
     "entity.CreeperMixin",
     "entity.EndermanMixin",
     "entity.FoxMixin",
+    "entity.PiglinMixin",
     "entity.RaiderMixin",
     "entity.SlimeMixin",
     "entity.VillagerMixin",

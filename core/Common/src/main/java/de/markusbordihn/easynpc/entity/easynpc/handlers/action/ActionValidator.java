@@ -25,6 +25,7 @@ import de.markusbordihn.easynpc.entity.easynpc.data.DialogDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.TradingDataCapable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.LivingEntity;
 
 public class ActionValidator {
 
@@ -32,6 +33,11 @@ public class ActionValidator {
 
   public static boolean validateActionData(
       ActionDataEntry actionDataEntry, ServerPlayer serverPlayer) {
+    return validateActionData(actionDataEntry, serverPlayer, null);
+  }
+
+  public static boolean validateActionData(
+      ActionDataEntry actionDataEntry, ServerPlayer serverPlayer, LivingEntity npcContext) {
     if (actionDataEntry == null
         || serverPlayer == null
         || !actionDataEntry.isValidAndNotEmpty()
@@ -40,7 +46,10 @@ public class ActionValidator {
     }
 
     return ConditionManager.evaluateAll(
-        actionDataEntry.conditionDataSet().getConditions(), serverPlayer, actionDataEntry.id());
+        actionDataEntry.conditionDataSet().getConditions(),
+        serverPlayer,
+        actionDataEntry.id(),
+        npcContext);
   }
 
   public static boolean validateActionDataWithoutPlayer(ActionDataEntry actionDataEntry) {

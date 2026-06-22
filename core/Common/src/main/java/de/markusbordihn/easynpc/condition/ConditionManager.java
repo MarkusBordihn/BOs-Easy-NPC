@@ -25,6 +25,7 @@ import de.markusbordihn.easynpc.data.condition.ConditionType;
 import java.util.Set;
 import java.util.UUID;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.LivingEntity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -35,11 +36,19 @@ public class ConditionManager {
   private ConditionManager() {}
 
   public static boolean evaluate(ConditionDataEntry conditionDataEntry, ServerPlayer serverPlayer) {
-    return evaluate(conditionDataEntry, serverPlayer, null);
+    return evaluate(conditionDataEntry, serverPlayer, null, null);
   }
 
   public static boolean evaluate(
       ConditionDataEntry conditionDataEntry, ServerPlayer serverPlayer, UUID actionUUID) {
+    return evaluate(conditionDataEntry, serverPlayer, actionUUID, null);
+  }
+
+  public static boolean evaluate(
+      ConditionDataEntry conditionDataEntry,
+      ServerPlayer serverPlayer,
+      UUID actionUUID,
+      LivingEntity npcContext) {
     if (conditionDataEntry == null || !conditionDataEntry.isValid() || serverPlayer == null) {
       return false;
     }
@@ -54,6 +63,14 @@ public class ConditionManager {
       case ADVANCEMENT -> AdvancementCondition.evaluate(conditionDataEntry, serverPlayer);
       case EXPERIENCE_LEVEL -> ExperienceLevelCondition.evaluate(conditionDataEntry, serverPlayer);
       case PLAYER_HEALTH -> PlayerHealthCondition.evaluate(conditionDataEntry, serverPlayer);
+      case NPC_HEALTH ->
+          HealthConditionEvaluator.evaluate(
+              conditionDataEntry.operationType(), conditionDataEntry.value(), npcContext);
+      case ENTITY_HEALTH ->
+          HealthConditionEvaluator.evaluate(
+              conditionDataEntry.operationType(),
+              conditionDataEntry.value(),
+              HealthConditionEvaluator.resolveByUuid(npcContext, conditionDataEntry.name()));
       case PLAYER_TAG -> PlayerTagCondition.evaluate(conditionDataEntry, serverPlayer);
       case TEAM -> TeamCondition.evaluate(conditionDataEntry, serverPlayer);
       case GAMEMODE -> GamemodeCondition.evaluate(conditionDataEntry, serverPlayer);
@@ -64,12 +81,20 @@ public class ConditionManager {
 
   public static boolean evaluateAll(
       Set<ConditionDataEntry> conditionDataEntries, ServerPlayer serverPlayer, UUID actionUUID) {
+    return evaluateAll(conditionDataEntries, serverPlayer, actionUUID, null);
+  }
+
+  public static boolean evaluateAll(
+      Set<ConditionDataEntry> conditionDataEntries,
+      ServerPlayer serverPlayer,
+      UUID actionUUID,
+      LivingEntity npcContext) {
     if (conditionDataEntries == null || conditionDataEntries.isEmpty() || serverPlayer == null) {
       return true;
     }
 
     for (ConditionDataEntry conditionDataEntry : conditionDataEntries) {
-      if (!evaluate(conditionDataEntry, serverPlayer, actionUUID)) {
+      if (!evaluate(conditionDataEntry, serverPlayer, actionUUID, npcContext)) {
         log.debug("Condition not met: {}", conditionDataEntry);
         return false;
       }

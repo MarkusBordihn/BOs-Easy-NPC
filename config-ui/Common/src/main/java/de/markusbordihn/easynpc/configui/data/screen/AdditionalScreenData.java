@@ -25,7 +25,10 @@ import de.markusbordihn.easynpc.data.action.ActionDataType;
 import de.markusbordihn.easynpc.data.action.ActionEventSet;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
 import de.markusbordihn.easynpc.data.attribute.BaseAttributes;
+import de.markusbordihn.easynpc.data.condition.ConditionDataEntry;
+import de.markusbordihn.easynpc.data.condition.ConditionType;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
+import de.markusbordihn.easynpc.data.dialog.DialogButtonEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.data.dialog.DialogTextData;
@@ -35,6 +38,7 @@ import de.markusbordihn.easynpc.data.screen.AdditionalScreenDataInterface;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.server.level.ServerPlayer;
@@ -311,10 +315,25 @@ public class AdditionalScreenData implements AdditionalScreenDataInterface {
     }
 
     for (DialogDataEntry dialogEntry : dialogDataSet.getDialogsByLabel()) {
-      if (dialogEntry != null && dialogEntry.getDialogTexts() != null) {
+      if (dialogEntry == null) {
+        continue;
+      }
+      if (dialogEntry.getDialogTexts() != null) {
         for (DialogTextData dialogTextData : dialogEntry.getDialogTexts()) {
           if (dialogTextData != null && dialogTextData.text() != null) {
             objectiveNames.addAll(ScoreboardData.parseScoreMacros(dialogTextData.text()));
+          }
+        }
+      }
+      for (DialogButtonEntry buttonEntry : dialogEntry.getDialogButtons()) {
+        if (buttonEntry == null || !buttonEntry.hasConditions()) {
+          continue;
+        }
+        for (ConditionDataEntry condition : buttonEntry.conditions()) {
+          if (condition != null
+              && condition.conditionType() == ConditionType.SCOREBOARD
+              && condition.hasName()) {
+            objectiveNames.add(condition.name());
           }
         }
       }
@@ -377,6 +396,12 @@ public class AdditionalScreenData implements AdditionalScreenDataInterface {
 
   public ScoreboardData getScoreboardData() {
     return this.scoreboardData;
+  }
+
+  @Override
+  public boolean isExecutionLimitReached(UUID actionId) {
+    // Execution limits are intentionally not enforced inside the editor/preview.
+    return false;
   }
 
   public ActionDataSet getTradingOfferActionDataSet() {

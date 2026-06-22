@@ -83,6 +83,18 @@ public record ConditionDataEntry(
     return this.name != null && !this.name.isEmpty();
   }
 
+  public boolean hasValidUuidName() {
+    if (!hasName()) {
+      return false;
+    }
+    try {
+      UUID.fromString(this.name.trim());
+      return true;
+    } catch (IllegalArgumentException ignored) {
+      return false;
+    }
+  }
+
   public boolean isValid() {
     if (this.conditionType == ConditionType.NONE) {
       return false;
@@ -95,8 +107,12 @@ public record ConditionDataEntry(
       case EXECUTION_LIMIT -> this.value > 0 && this.subType != null;
       case HAS_ITEM_IN_INVENTORY, HAS_ITEM_IN_HAND, ADVANCEMENT, PLAYER_TAG, TEAM, GAMEMODE ->
           hasName();
-      case EXPERIENCE_LEVEL, PLAYER_HEALTH ->
+      case EXPERIENCE_LEVEL, PLAYER_HEALTH, NPC_HEALTH ->
           this.operationType != null && this.operationType != ConditionOperationType.NONE;
+      case ENTITY_HEALTH ->
+          this.operationType != null
+              && this.operationType != ConditionOperationType.NONE
+              && hasValidUuidName();
       case FALLBACK -> true;
       default -> true;
     };

@@ -29,6 +29,7 @@ public enum ActionDataType {
   OPEN_TRADING_SCREEN(false),
   OPEN_DEFAULT_DIALOG(false),
   OPEN_NAMED_DIALOG,
+  OPEN_NAMED_DIALOG_CONDITIONAL,
   SCOREBOARD;
 
   private final boolean requiresArgument;

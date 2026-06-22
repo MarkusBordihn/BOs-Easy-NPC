@@ -17,32 +17,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.data.screen;
+package de.markusbordihn.easynpc.mixin.entity;
 
-import de.markusbordihn.easynpc.data.action.ActionEventSet;
-import de.markusbordihn.easynpc.data.action.ActionEventType;
-import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
-import de.markusbordihn.easynpc.data.scoreboard.ScoreboardData;
-import java.util.UUID;
-import net.minecraft.nbt.CompoundTag;
+import de.markusbordihn.easynpc.entity.easynpc.npc.StandardEasyNPC;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.monster.piglin.AbstractPiglin;
+import net.minecraft.world.entity.monster.piglin.Piglin;
+import net.minecraft.world.entity.monster.piglin.PiglinBrute;
+import net.minecraft.world.level.Level;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-public interface AdditionalScreenDataInterface {
+@Mixin({Piglin.class, PiglinBrute.class})
+public abstract class PiglinMixin extends AbstractPiglin {
 
-  ActionEventSet getActionEventSet();
-
-  ActionEventType getActionEventType();
-
-  DialogDataSet getDialogDataSet();
-
-  ScoreboardData getScoreboardData();
-
-  CompoundTag getData();
-
-  boolean hasDialogDataSet();
-
-  default boolean isDialogButtonLocked(UUID buttonId) {
-    return false;
+  private PiglinMixin(EntityType<? extends AbstractPiglin> entityType, Level level) {
+    super(entityType, level);
   }
 
-  boolean isExecutionLimitReached(UUID actionId);
+  @Inject(method = "customServerAiStep", at = @At("HEAD"), cancellable = true)
+  public void onCustomServerAiStep(CallbackInfo ci) {
+    if ((Object) this instanceof StandardEasyNPC<?> && this.isAlive()) {
+      ci.cancel();
+    }
+  }
 }

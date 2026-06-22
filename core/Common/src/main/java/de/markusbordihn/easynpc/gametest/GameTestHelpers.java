@@ -20,9 +20,17 @@
 package de.markusbordihn.easynpc.gametest;
 
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.server.player.FakePlayer;
+import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.GameType;
 import net.minecraft.world.phys.Vec3;
 
 public final class GameTestHelpers {
@@ -38,5 +46,57 @@ public final class GameTestHelpers {
       return null;
     }
     return easyNPC;
+  }
+
+  public static EasyNPC<?> spawnNPCEntityType(GameTestHelper helper, EntityType<?> entityType) {
+    Entity entity = spawnEntityType(helper, entityType);
+    if (entity instanceof EasyNPC<?> easyNPC) {
+      return easyNPC;
+    }
+    helper.fail("Entity " + entityType + " is not an EasyNPC!");
+    return null;
+  }
+
+  @SuppressWarnings("unchecked")
+  public static <T extends Entity> T spawnEntityType(
+      GameTestHelper helper, EntityType<?> entityType) {
+    if (entityType == null) {
+      helper.fail("EntityType is null!");
+      return null;
+    }
+    Player player = helper.makeMockPlayer(GameType.DEFAULT_MODE);
+    T entity = (T) entityType.create((ServerLevel) player.level(), EntitySpawnReason.COMMAND);
+    if (entity == null) {
+      helper.fail("Entity for " + entityType + " is null!");
+      return null;
+    }
+    if (!player.level().addFreshEntity(entity)) {
+      helper.fail("Failed to spawn entity " + entityType + "!");
+      return null;
+    }
+
+    return entity;
+  }
+
+  public static void assertEquals(
+      GameTestHelper helper, String message, Object expected, Object actual) {
+    if (!expected.equals(actual)) {
+      helper.fail(message);
+    }
+  }
+
+  public static void assertTrue(GameTestHelper helper, String message, boolean condition) {
+    if (!condition) {
+      helper.fail(message);
+    }
+  }
+
+  public static void assertNotNull(GameTestHelper helper, String message, Object object) {
+    assertTrue(helper, message, object != null);
+  }
+
+  public static ServerPlayer mockServerPlayer(GameTestHelper helper, Vec3 position) {
+    return new FakePlayer(
+        helper.getLevel(), BlockPos.containing(position.x, position.y, position.z));
   }
 }

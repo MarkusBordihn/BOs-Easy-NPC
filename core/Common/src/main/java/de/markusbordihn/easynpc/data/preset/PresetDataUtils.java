@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.data.preset;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.component.DataComponents;
+import de.markusbordihn.easynpc.data.attribute.LegacyAttributeConverter;
 import de.markusbordihn.easynpc.security.SecurityManager;
 import de.markusbordihn.easynpc.utils.CompoundTagUtils;
 import java.util.Optional;
@@ -201,6 +202,8 @@ public class PresetDataUtils {
     if (entityData.contains(ENTITY_UUID_TAG)) {
       entityData.remove(ENTITY_UUID_TAG);
     }
+
+    LegacyAttributeConverter.convertLegacyAttributes(entityData);
 
     entity.load(
         TagValueInput.create(ProblemReporter.DISCARDING, serverLevel.registryAccess(), entityData));

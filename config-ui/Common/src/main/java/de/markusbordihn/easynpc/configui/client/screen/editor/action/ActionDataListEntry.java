@@ -207,7 +207,8 @@ public class ActionDataListEntry extends ObjectSelectionList.Entry<ActionDataLis
   private void renderValuePreview(
       GuiGraphics guiGraphics, int fieldsLeft, int fieldTop, int mouseX, int mouseY) {
     if (this.actionDataType == ActionDataType.COMMAND
-        || this.actionDataType == ActionDataType.OPEN_NAMED_DIALOG) {
+        || this.actionDataType == ActionDataType.OPEN_NAMED_DIALOG
+        || this.actionDataType == ActionDataType.OPEN_NAMED_DIALOG_CONDITIONAL) {
       Text.drawLimitedHoverString(
           guiGraphics,
           this.font,

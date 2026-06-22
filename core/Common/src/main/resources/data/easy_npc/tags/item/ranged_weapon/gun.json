@@ -174,7 +174,123 @@
       "required": false
     },
     {
+      "id": "jeg:revolver",
+      "required": false
+    },
+    {
+      "id": "jeg:waterpipe_shotgun",
+      "required": false
+    },
+    {
+      "id": "jeg:custom_smg",
+      "required": false
+    },
+    {
+      "id": "jeg:double_barrel_shotgun",
+      "required": false
+    },
+    {
+      "id": "jeg:semi_auto_pistol",
+      "required": false
+    },
+    {
+      "id": "jeg:semi_auto_rifle",
+      "required": false
+    },
+    {
+      "id": "jeg:assault_rifle",
+      "required": false
+    },
+    {
+      "id": "jeg:pump_shotgun",
+      "required": false
+    },
+    {
+      "id": "jeg:combat_pistol",
+      "required": false
+    },
+    {
+      "id": "jeg:burst_rifle",
+      "required": false
+    },
+    {
+      "id": "jeg:combat_rifle",
+      "required": false
+    },
+    {
+      "id": "jeg:bolt_action_rifle",
+      "required": false
+    },
+    {
+      "id": "jeg:flare_gun",
+      "required": false
+    },
+    {
+      "id": "jeg:repeating_shotgun",
+      "required": false
+    },
+    {
+      "id": "jeg:infantry_rifle",
+      "required": false
+    },
+    {
+      "id": "jeg:service_rifle",
+      "required": false
+    },
+    {
+      "id": "jeg:blossom_rifle",
+      "required": false
+    },
+    {
+      "id": "jeg:holy_shotgun",
+      "required": false
+    },
+    {
+      "id": "jeg:typhoonee",
+      "required": false
+    },
+    {
+      "id": "jeg:hollenfire_mk2",
+      "required": false
+    },
+    {
+      "id": "jeg:soulhunter_mk2",
+      "required": false
+    },
+    {
+      "id": "jeg:subsonic_rifle",
+      "required": false
+    },
+    {
+      "id": "jeg:supersonic_shotgun",
+      "required": false
+    },
+    {
+      "id": "jeg:hypersonic_cannon",
+      "required": false
+    },
+    {
+      "id": "jeg:rocket_launcher",
+      "required": false
+    },
+    {
+      "id": "jeg:grenade_launcher",
+      "required": false
+    },
+    {
+      "id": "jeg:light_machine_gun",
+      "required": false
+    },
+    {
+      "id": "jeg:flamethrower",
+      "required": false
+    },
+    {
       "id": "jeg:minigun",
+      "required": false
+    },
+    {
+      "id": "jeg:finger_gun",
       "required": false
     }
   ]

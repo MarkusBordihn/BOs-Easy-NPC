@@ -28,6 +28,8 @@ public enum ConditionType {
   ADVANCEMENT(ConditionTypeRequirements.NAME_ONLY),
   EXPERIENCE_LEVEL(ConditionTypeRequirements.VALUE_AND_OPERATION),
   PLAYER_HEALTH(ConditionTypeRequirements.VALUE_AND_OPERATION),
+  NPC_HEALTH(ConditionTypeRequirements.VALUE_AND_OPERATION),
+  ENTITY_HEALTH(ConditionTypeRequirements.NAME_VALUE_OPERATION),
   PLAYER_TAG(ConditionTypeRequirements.NAME_ONLY),
   TEAM(ConditionTypeRequirements.NAME_ONLY),
   GAMEMODE(ConditionTypeRequirements.NAME_ONLY),

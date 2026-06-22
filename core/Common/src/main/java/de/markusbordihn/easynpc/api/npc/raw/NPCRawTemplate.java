@@ -74,6 +74,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.item.trading.MerchantOffers;
+import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
@@ -563,6 +564,20 @@ public class NPCRawTemplate extends Zombie implements EasyNPCBase<Zombie> {
   @Override
   public boolean isInvulnerable() {
     return getEntityAttributes().getCombatAttributes().isInvulnerable();
+  }
+
+  @Override
+  public void knockback(double strength, double x, double z) {
+    if (getEntityAttributes().getCombatAttributes().isKnockbackResistant()) {
+      return;
+    }
+    super.knockback(strength, x, z);
+  }
+
+  @Override
+  public boolean ignoreExplosion(Explosion explosion) {
+    return getEntityAttributes().getCombatAttributes().isExplosionResistant()
+        || super.ignoreExplosion(explosion);
   }
 
   @Override
