@@ -111,6 +111,25 @@ public class CompoundTagUtils {
     }
   }
 
+  public static IntArrayTag uuidToTag(UUID uuid) {
+    long msb = uuid.getMostSignificantBits();
+    long lsb = uuid.getLeastSignificantBits();
+    return new IntArrayTag(new int[] {(int) (msb >> 32), (int) msb, (int) (lsb >> 32), (int) lsb});
+  }
+
+  public static UUID tagToUUID(Tag tag) {
+    if (!(tag instanceof IntArrayTag intArray)) {
+      return null;
+    }
+    int[] arr = intArray.getAsIntArray();
+    if (arr.length != 4) {
+      return null;
+    }
+    long msb = ((long) arr[0] << 32) | (arr[1] & 0xFFFFFFFFL);
+    long lsb = ((long) arr[2] << 32) | (arr[3] & 0xFFFFFFFFL);
+    return new UUID(msb, lsb);
+  }
+
   public static CompoundTag writeBlockPos(BlockPos blockPos) {
     CompoundTag compoundTag = new CompoundTag();
     compoundTag.putInt(X_TAG, blockPos.getX());

@@ -185,10 +185,17 @@ public class ConditionDataListEntry extends ObjectSelectionList.Entry<ConditionD
           case HAS_ITEM_IN_HAND -> buildItemPreview(this.conditionDataEntry, true);
           case HAS_ITEM_IN_INVENTORY -> buildItemPreview(this.conditionDataEntry, false);
           case ADVANCEMENT, PLAYER_TAG, TEAM, GAMEMODE -> this.conditionDataEntry.name();
-          case EXPERIENCE_LEVEL, PLAYER_HEALTH ->
+          case EXPERIENCE_LEVEL, PLAYER_HEALTH, NPC_HEALTH ->
               this.conditionDataEntry.operationType().name()
                   + " "
                   + this.conditionDataEntry.value();
+          case ENTITY_HEALTH ->
+              this.conditionDataEntry.operationType().name()
+                  + " "
+                  + this.conditionDataEntry.value()
+                  + " ("
+                  + this.conditionDataEntry.name()
+                  + ")";
           default -> "-";
         };
     Text.drawLimitedHoverString(

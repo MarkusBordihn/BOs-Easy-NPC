@@ -32,10 +32,12 @@ import de.markusbordihn.easynpc.configui.client.screen.components.DialogButton;
 import de.markusbordihn.easynpc.configui.client.screen.components.SaveButton;
 import de.markusbordihn.easynpc.configui.client.screen.editor.condition.entry.AdvancementConditionEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.condition.entry.ConditionEntryWidget;
+import de.markusbordihn.easynpc.configui.client.screen.editor.condition.entry.EntityHealthConditionEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.condition.entry.ExecutionLimitConditionEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.condition.entry.ExperienceLevelConditionEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.condition.entry.GamemodeConditionEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.condition.entry.HasItemConditionEntry;
+import de.markusbordihn.easynpc.configui.client.screen.editor.condition.entry.NpcHealthConditionEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.condition.entry.PlayerHealthConditionEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.condition.entry.ScoreboardConditionEntry;
 import de.markusbordihn.easynpc.configui.menu.editor.EditorMenu;
@@ -263,6 +265,14 @@ public class ConditionDataEntryEditorContainerScreen<T extends EditorMenu> exten
       case PLAYER_HEALTH:
         this.conditionEntryWidget =
             new PlayerHealthConditionEntry(this.conditionDataEntry, this.conditionDataSet, this);
+        break;
+      case NPC_HEALTH:
+        this.conditionEntryWidget =
+            new NpcHealthConditionEntry(this.conditionDataEntry, this.conditionDataSet, this);
+        break;
+      case ENTITY_HEALTH:
+        this.conditionEntryWidget =
+            new EntityHealthConditionEntry(this.conditionDataEntry, this.conditionDataSet, this);
         break;
       case PLAYER_TAG:
         this.conditionEntryWidget =

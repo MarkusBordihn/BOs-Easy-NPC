@@ -1,0 +1,76 @@
+name: 'Handle unsupported launcher issues'
+
+on:
+  issues:
+    types:
+      - labeled
+  schedule:
+    - cron: '15 2 * * *'
+  workflow_dispatch:
+
+jobs:
+  add-comment:
+    if: github.event_name == 'issues' && github.event.label.name == 'unsupported launcher'
+
+    runs-on: ubuntu-latest
+
+    permissions:
+      actions: write
+      issues: write
+      pull-requests: write
+
+    steps:
+      - name: Add unsupported launcher comment
+        run: gh issue comment "$NUMBER" --body "$BODY"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          NUMBER: ${{ github.event.issue.number }}
+          BODY: |
+            Thanks for the report.
+
+            We do not support unofficial or modified launcher environments.
+
+            This project only supports legitimate Minecraft installations using official or authorized game files, the standard Microsoft / Mojang authentication flow, and supported mod loaders.
+
+            Unofficial launchers may modify authentication, skin handling, libraries, game files, or logs. Because of that, reports from these environments cannot be reliably debugged and are outside the scope of support for this project.
+
+            Please reproduce the issue with a clean, supported setup:
+
+            - Official Minecraft installation, CurseForge App, Modrinth App, or clean manual install using official game files
+            - Valid Microsoft account
+            - Supported mod loader
+            - Easy NPC only
+            - No OptiFine or additional mods
+
+            If the issue still occurs in that setup, please attach the full logs/latest.log and, if available, the generated crash-reports/*.txt file.
+
+            This issue will be closed in 7 days if no supported reproduction is provided.
+
+  close-unsupported-launcher:
+    if: github.event_name != 'issues' || github.event.label.name == 'unsupported launcher'
+
+    runs-on: ubuntu-latest
+
+    permissions:
+      issues: write
+      pull-requests: write
+
+    steps:
+      - uses: actions/stale@v10
+        with:
+          only-labels: 'unsupported launcher'
+          stale-issue-message: ''
+
+          close-issue-message: |
+            Closing this issue as an unsupported environment.
+
+            If the issue can be reproduced with a clean, supported setup using official or authorized Minecraft game files, please open a new issue with the full latest.log and crash report if available.
+
+          days-before-stale: 0
+          days-before-close: 7
+          days-before-pr-stale: -1
+          days-before-pr-close: -1
+
+          remove-stale-when-updated: true
+          exempt-issue-labels: 'pinned,in-progress,blocked'

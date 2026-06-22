@@ -24,6 +24,7 @@ import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.attribute.CombatAttributeType;
 import de.markusbordihn.easynpc.data.attribute.EntityAttributes;
+import de.markusbordihn.easynpc.data.attribute.InteractionAttributeType;
 import de.markusbordihn.easynpc.entity.easynpc.data.AttributeDataCapable;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
@@ -87,6 +88,45 @@ public class CombatAttributeConfigurationScreen<T extends ConfigurationMenu>
                     .combatAttributeChange(
                         this.getEasyNPCUUID(),
                         CombatAttributeType.IS_ATTACKABLE_BY_MONSTERS,
+                        checkbox.selected())));
+
+    this.addRenderableWidget(
+        new Checkbox(
+            firstButtonRow,
+            this.buttonTopPos + 85,
+            InteractionAttributeType.CAN_BE_HIT_BY_PROJECTILE.getAttributeName(),
+            entityAttributes.getInteractionAttributes().canBeHitByProjectile(),
+            checkbox ->
+                NetworkMessageHandlerManager.getServerHandler()
+                    .interactionAttributeChange(
+                        this.getEasyNPCUUID(),
+                        InteractionAttributeType.CAN_BE_HIT_BY_PROJECTILE,
+                        checkbox.selected())));
+
+    this.addRenderableWidget(
+        new Checkbox(
+            firstButtonRow,
+            this.buttonTopPos + 105,
+            CombatAttributeType.IS_KNOCKBACK_RESISTANT.getAttributeName(),
+            entityAttributes.getCombatAttributes().isKnockbackResistant(),
+            checkbox ->
+                NetworkMessageHandlerManager.getServerHandler()
+                    .combatAttributeChange(
+                        this.getEasyNPCUUID(),
+                        CombatAttributeType.IS_KNOCKBACK_RESISTANT,
+                        checkbox.selected())));
+
+    this.addRenderableWidget(
+        new Checkbox(
+            firstButtonRow,
+            this.buttonTopPos + 125,
+            CombatAttributeType.IS_EXPLOSION_RESISTANT.getAttributeName(),
+            entityAttributes.getCombatAttributes().isExplosionResistant(),
+            checkbox ->
+                NetworkMessageHandlerManager.getServerHandler()
+                    .combatAttributeChange(
+                        this.getEasyNPCUUID(),
+                        CombatAttributeType.IS_EXPLOSION_RESISTANT,
                         checkbox.selected())));
   }
 

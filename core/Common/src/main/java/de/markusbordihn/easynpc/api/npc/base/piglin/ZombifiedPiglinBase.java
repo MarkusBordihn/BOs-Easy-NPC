@@ -39,6 +39,7 @@ public class ZombifiedPiglinBase extends ZombifiedPiglinRaw
 
   public ZombifiedPiglinBase(EntityType<? extends ZombifiedPiglin> entityType, Level level) {
     super(entityType, level);
+    this.setInvulnerable(true);
   }
 
   public static AttributeSupplier.Builder createAttributes() {

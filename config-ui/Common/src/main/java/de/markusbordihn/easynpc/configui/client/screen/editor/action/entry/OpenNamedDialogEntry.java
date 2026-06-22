@@ -1,3 +1,22 @@
+/*
+ * Copyright 2025 Markus Bordihn
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+ * associated documentation files (the "Software"), to deal in the Software without restriction,
+ * including without limitation the rights to use, copy, modify, merge, publish, distribute,
+ * sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all copies or
+ * substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
+ * NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+
 package de.markusbordihn.easynpc.configui.client.screen.editor.action.entry;
 
 import de.markusbordihn.easynpc.client.screen.components.SpinButton;
@@ -16,6 +35,7 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 public class OpenNamedDialogEntry extends ActionEntryWidget {
 
   private final DialogDataSet dialogDataSet;
+  private final ActionDataType actionDataType;
   private TextField dialogNameTextField;
   private TextField targetUuidTextField;
   private TargetType targetType;
@@ -29,6 +49,10 @@ public class OpenNamedDialogEntry extends ActionEntryWidget {
       ActionDataEntryEditorContainerScreen<?> screen) {
     super(actionDataEntry, actionDataSet, screen);
     this.dialogDataSet = screen.getDialogDataSet();
+    this.actionDataType =
+        screen.getActionDataType() == ActionDataType.OPEN_NAMED_DIALOG_CONDITIONAL
+            ? ActionDataType.OPEN_NAMED_DIALOG_CONDITIONAL
+            : ActionDataType.OPEN_NAMED_DIALOG;
     this.targetType = actionDataEntry.targetUUID() != null ? TargetType.UUID : TargetType.SELF;
   }
 
@@ -57,7 +81,7 @@ public class OpenNamedDialogEntry extends ActionEntryWidget {
 
   @Override
   public void init(int editorLeft, int editorTop) {
-    boolean hasActionData = hasActionData(ActionDataType.OPEN_NAMED_DIALOG);
+    boolean hasActionData = hasActionData(this.actionDataType);
 
     // Named Dialog Value
     this.dialogNameTextField =
@@ -145,14 +169,12 @@ public class OpenNamedDialogEntry extends ActionEntryWidget {
       try {
         UUID targetUUID = UUID.fromString(uuidString);
         return new ActionDataEntry(
-            ActionDataType.OPEN_NAMED_DIALOG, targetUUID, this.dialogNameTextField.getValue());
+            this.actionDataType, targetUUID, this.dialogNameTextField.getValue());
       } catch (IllegalArgumentException e) {
-        return new ActionDataEntry(
-            ActionDataType.OPEN_NAMED_DIALOG, this.dialogNameTextField.getValue());
+        return new ActionDataEntry(this.actionDataType, this.dialogNameTextField.getValue());
       }
     }
-    return new ActionDataEntry(
-        ActionDataType.OPEN_NAMED_DIALOG, this.dialogNameTextField.getValue());
+    return new ActionDataEntry(this.actionDataType, this.dialogNameTextField.getValue());
   }
 
   @Override

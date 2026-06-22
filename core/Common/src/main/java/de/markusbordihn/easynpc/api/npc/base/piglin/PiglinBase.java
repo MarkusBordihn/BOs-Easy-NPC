@@ -48,6 +48,7 @@ public class PiglinBase extends PiglinRaw implements BaseEasyNPC<PiglinRaw> {
 
   public PiglinBase(EntityType<? extends Piglin> entityType, Level level, Enum<?> variantType) {
     super(entityType, level, variantType);
+    this.setInvulnerable(true);
   }
 
   public static AttributeSupplier.Builder createAttributes() {

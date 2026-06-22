@@ -109,8 +109,17 @@ public interface DialogDataCapable<T extends Mob> extends EasyNPC<T> {
     MenuManager.getMenuHandler().openDialogMenu(serverPlayer, this, dialogId, 0);
   }
 
+  default boolean openDialogIfConditionsMet(ServerPlayer serverPlayer, UUID dialogId) {
+    if (!getDialogDataSet().canOpenDialog(dialogId, serverPlayer, this.getLivingEntity())) {
+      return false;
+    }
+    openDialog(serverPlayer, dialogId);
+    return true;
+  }
+
   default void openDefaultDialog(ServerPlayer serverPlayer) {
-    DialogDataEntry dialog = getDialogDataSet().getNextAvailableDialog(serverPlayer);
+    DialogDataEntry dialog =
+        getDialogDataSet().getNextAvailableDialog(serverPlayer, this.getLivingEntity());
     if (dialog != null) {
       this.openDialog(serverPlayer, dialog.getId());
     }

@@ -226,7 +226,8 @@ public interface ActionHandler<E extends Mob> extends EasyNPC<E> {
 
       boolean isValid =
           serverPlayer != null
-              ? ActionValidator.validateActionData(actionDataEntry, serverPlayer)
+              ? ActionValidator.validateActionData(
+                  actionDataEntry, serverPlayer, this.getLivingEntity())
               : ActionValidator.validateActionDataWithoutPlayer(actionDataEntry);
       if (!isValid) {
         continue;
@@ -246,6 +247,7 @@ public interface ActionHandler<E extends Mob> extends EasyNPC<E> {
 
       if (actionType == ActionDataType.OPEN_DEFAULT_DIALOG
           || actionType == ActionDataType.OPEN_NAMED_DIALOG
+          || actionType == ActionDataType.OPEN_NAMED_DIALOG_CONDITIONAL
           || actionType == ActionDataType.OPEN_TRADING_SCREEN) {
         if (hasScreenAction) {
           log.debug(
@@ -257,7 +259,8 @@ public interface ActionHandler<E extends Mob> extends EasyNPC<E> {
 
         if ((actionType == ActionDataType.OPEN_DEFAULT_DIALOG
                 && !this.getEasyNPCDialogData().hasDialog())
-            || (actionType == ActionDataType.OPEN_NAMED_DIALOG
+            || ((actionType == ActionDataType.OPEN_NAMED_DIALOG
+                    || actionType == ActionDataType.OPEN_NAMED_DIALOG_CONDITIONAL)
                 && actionDataEntry.targetUUID() == null
                 && !this.getEasyNPCDialogData().hasDialog(actionDataEntry.command()))
             || (actionType == ActionDataType.OPEN_TRADING_SCREEN
@@ -276,7 +279,8 @@ public interface ActionHandler<E extends Mob> extends EasyNPC<E> {
     }
 
     if (closeDialogAction != null && !hasScreenAction) {
-      if (ActionValidator.validateActionData(closeDialogAction, serverPlayer)) {
+      if (ActionValidator.validateActionData(
+          closeDialogAction, serverPlayer, this.getLivingEntity())) {
         this.executeAction(closeDialogAction, serverPlayer);
       }
     }
@@ -291,7 +295,8 @@ public interface ActionHandler<E extends Mob> extends EasyNPC<E> {
 
         boolean isValid =
             serverPlayer != null
-                ? ActionValidator.validateActionData(actionDataEntry, serverPlayer)
+                ? ActionValidator.validateActionData(
+                    actionDataEntry, serverPlayer, this.getLivingEntity())
                 : ActionValidator.validateActionDataWithoutPlayer(actionDataEntry);
         if (!isValid) {
           continue;
@@ -308,6 +313,7 @@ public interface ActionHandler<E extends Mob> extends EasyNPC<E> {
 
         if (actionType == ActionDataType.OPEN_DEFAULT_DIALOG
             || actionType == ActionDataType.OPEN_NAMED_DIALOG
+            || actionType == ActionDataType.OPEN_NAMED_DIALOG_CONDITIONAL
             || actionType == ActionDataType.OPEN_TRADING_SCREEN) {
           if (hasFallbackScreenAction) {
             continue;
@@ -383,6 +389,15 @@ public interface ActionHandler<E extends Mob> extends EasyNPC<E> {
               actionDataEntry, serverPlayer, this.getEasyNPCDialogData());
         } else {
           log.warn("Skipping OPEN_NAMED_DIALOG action because no ServerPlayer is available");
+        }
+        break;
+      case OPEN_NAMED_DIALOG_CONDITIONAL:
+        if (serverPlayer != null) {
+          DialogActionExecutor.openNamedDialogConditional(
+              actionDataEntry, serverPlayer, this.getEasyNPCDialogData());
+        } else {
+          log.warn(
+              "Skipping OPEN_NAMED_DIALOG_CONDITIONAL action because no ServerPlayer is available");
         }
         break;
       case OPEN_TRADING_SCREEN:

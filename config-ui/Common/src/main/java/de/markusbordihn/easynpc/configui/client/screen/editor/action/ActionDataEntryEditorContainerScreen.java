@@ -177,6 +177,7 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
     return actionDataType == ActionDataType.CLOSE_DIALOG
         || actionDataType == ActionDataType.OPEN_DEFAULT_DIALOG
         || actionDataType == ActionDataType.OPEN_NAMED_DIALOG
+        || actionDataType == ActionDataType.OPEN_NAMED_DIALOG_CONDITIONAL
         || actionDataType == ActionDataType.OPEN_TRADING_SCREEN
         || actionDataType == ActionDataType.SCOREBOARD;
   }
@@ -410,6 +411,7 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
             new OpenDefaultDialogEntry(this.actionDataEntry, this.actionDataSet, this);
         break;
       case OPEN_NAMED_DIALOG:
+      case OPEN_NAMED_DIALOG_CONDITIONAL:
         this.actionEntryWidget =
             new OpenNamedDialogEntry(this.actionDataEntry, this.actionDataSet, this);
         break;
@@ -440,6 +442,10 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
 
   public Font getFont() {
     return this.font;
+  }
+
+  public ActionDataType getActionDataType() {
+    return this.actionDataType;
   }
 
   @Override

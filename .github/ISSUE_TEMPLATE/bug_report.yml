@@ -7,6 +7,7 @@ body:
       value: |
         Thanks for reporting a bug! 🧩
         No stress - just share the basics so we can reproduce and fix it quickly.
+        Please reproduce issues with an official Minecraft installation, CurseForge App, Modrinth App, or a clean manual install using official or authorized game files.
   - type: input
     id: mc_version
     attributes:
@@ -86,4 +87,6 @@ body:
       label: "Before submitting ✅"
       options:
         - label: "I searched for existing issues and did not find a duplicate. 🔎"
+          required: true
+        - label: "I can reproduce this issue with a legitimate Minecraft installation using official or authorized game files, a supported launcher/setup, and a clean mod setup."
           required: true

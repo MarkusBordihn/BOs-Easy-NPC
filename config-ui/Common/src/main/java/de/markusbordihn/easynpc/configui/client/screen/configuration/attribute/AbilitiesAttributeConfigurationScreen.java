@@ -156,19 +156,6 @@ public class AbilitiesAttributeConfigurationScreen<T extends ConfigurationMenu>
         new Checkbox(
             firstButtonRow,
             this.buttonTopPos + 85,
-            InteractionAttributeType.CAN_BE_HIT_BY_PROJECTILE.getAttributeName(),
-            entityAttributes.getInteractionAttributes().canBeHitByProjectile(),
-            checkbox ->
-                NetworkMessageHandlerManager.getServerHandler()
-                    .interactionAttributeChange(
-                        this.getEasyNPCUUID(),
-                        InteractionAttributeType.CAN_BE_HIT_BY_PROJECTILE,
-                        checkbox.selected())));
-
-    this.addRenderableWidget(
-        new Checkbox(
-            firstButtonRow,
-            this.buttonTopPos + 105,
             InteractionAttributeType.CAN_BE_LEASHED.getAttributeName(),
             entityAttributes.getInteractionAttributes().canBeLeashed(),
             checkbox ->
@@ -181,7 +168,7 @@ public class AbilitiesAttributeConfigurationScreen<T extends ConfigurationMenu>
     this.addRenderableWidget(
         new Checkbox(
             firstButtonRow,
-            this.buttonTopPos + 125,
+            this.buttonTopPos + 105,
             MovementAttributeType.CAN_USE_NETHER_PORTAL.getAttributeName(),
             entityAttributes.getMovementAttributes().canUseNetherPortal(),
             checkbox ->
@@ -194,7 +181,7 @@ public class AbilitiesAttributeConfigurationScreen<T extends ConfigurationMenu>
     this.addRenderableWidget(
         new Checkbox(
             firstButtonRow,
-            this.buttonTopPos + 145,
+            this.buttonTopPos + 125,
             EntityAttribute.SILENT.getAttributeName(),
             attributeData.getAttributeSilent(),
             checkbox ->
