@@ -366,13 +366,13 @@ public class PresetBrowserScreen extends CustomScreen<PresetBrowserMenu, Additio
       }
     }
 
-    this.minecraft.setScreen(
+    this.minecraft.setScreenAndShow(
         new ConfirmScreen(
             confirmed -> {
               if (confirmed) {
                 executeSpawn(true);
               }
-              this.minecraft.setScreen(this);
+              this.minecraft.setScreenAndShow(this);
             },
             Component.translatable("text.easy_npc.config.preset_browser.confirm_title"),
             Component.translatable("text.easy_npc.config.preset_browser.confirm_message", uuid),

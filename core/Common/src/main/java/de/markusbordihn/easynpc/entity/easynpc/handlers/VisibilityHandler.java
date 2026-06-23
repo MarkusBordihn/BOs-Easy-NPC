@@ -173,7 +173,7 @@ public class VisibilityHandler {
       final Player player,
       final boolean isCustomNameVisible,
       final double distanceSquared) {
-    if (easyNPC.getEntity().level().isClientSide() && Minecraft.getInstance().options.hideGui) {
+    if (easyNPC.getEntity().level().isClientSide() && Minecraft.getInstance().gui.hud.isHidden()) {
       return false;
     }
 

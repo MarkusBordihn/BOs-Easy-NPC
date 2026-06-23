@@ -249,7 +249,7 @@ public class CustomModelConfigurationScreen<T extends ConfigurationMenu>
       EntityType<? extends Entity> entityType = entityKeys.get(index);
       this.renderCustomModelEntity(guiGraphics, left, top, entityType);
 
-      int topNamePos = Math.round((top - 177f) / SKIN_NAME_SCALING);
+      int topNamePos = Math.round((top - 76f) / SKIN_NAME_SCALING);
       int leftNamePos = Math.round((left - 21f) / SKIN_NAME_SCALING);
       int scaledMouseX = Math.round(mouseX / SKIN_NAME_SCALING);
       int scaledMouseY = Math.round(mouseY / SKIN_NAME_SCALING);

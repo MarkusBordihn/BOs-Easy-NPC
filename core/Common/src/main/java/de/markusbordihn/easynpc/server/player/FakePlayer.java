@@ -36,7 +36,7 @@ public class FakePlayer extends ServerPlayer {
         level,
         new GameProfile(UUID.randomUUID(), "FakePlayer"),
         ClientInformation.createDefault());
-    this.getAdvancements().stopListening();
+    this.getAdvancements().clearTriggers();
     this.setPos(blockPos.getX(), blockPos.getY(), blockPos.getZ());
   }
 

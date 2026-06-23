@@ -32,6 +32,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.level.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -98,21 +99,21 @@ public class NPCEntityFactory {
 
   private static void initializeEntityConstructors() {
     registerEntityConstructor(
-        EntityType.ZOMBIE, (type, level) -> new ZombieRaw((EntityType<ZombieRaw>) type, level));
+        EntityTypes.ZOMBIE, (type, level) -> new ZombieRaw((EntityType<ZombieRaw>) type, level));
 
     registerEntityConstructor(
-        EntityType.VILLAGER,
+        EntityTypes.VILLAGER,
         (type, level) -> new VillagerRaw((EntityType<VillagerRaw>) type, level));
 
     registerEntityConstructor(
-        EntityType.SKELETON,
+        EntityTypes.SKELETON,
         (type, level) -> new SkeletonRaw((EntityType<SkeletonRaw>) type, level));
 
     registerEntityConstructor(
-        EntityType.STRAY, (type, level) -> new StrayRaw((EntityType<StrayRaw>) type, level));
+        EntityTypes.STRAY, (type, level) -> new StrayRaw((EntityType<StrayRaw>) type, level));
 
     registerEntityConstructor(
-        EntityType.WITHER_SKELETON,
+        EntityTypes.WITHER_SKELETON,
         (type, level) -> new WitherSkeletonRaw((EntityType<WitherSkeletonRaw>) type, level));
   }
 

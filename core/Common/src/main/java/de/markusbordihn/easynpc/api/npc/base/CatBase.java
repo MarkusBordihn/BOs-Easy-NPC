@@ -30,7 +30,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.animal.FlyingAnimal;
 import net.minecraft.world.entity.animal.feline.Cat;
 import net.minecraft.world.entity.animal.feline.CatSoundVariant;
 import net.minecraft.world.entity.animal.feline.CatSoundVariants;
@@ -117,7 +116,7 @@ public class CatBase extends CatRaw implements BaseEasyNPC<CatRaw> {
       super.travel(vec3);
     } else {
       // Make sure we only calculate animations for be as much as possible server-friendly.
-      this.calculateEntityAnimation(this instanceof FlyingAnimal);
+      this.calculateEntityAnimation(false);
     }
   }
 }

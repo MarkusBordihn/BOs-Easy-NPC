@@ -140,8 +140,8 @@ public interface NavigationDataCapable<T extends Mob> extends EasyNPC<T> {
       mob.setOnGround(
           !blockState.is(Blocks.AIR)
               && !blockState.is(Blocks.GRASS_BLOCK)
-              && !blockState.is(Blocks.WHITE_CARPET)
-              && !blockState.is(Blocks.RED_CARPET));
+              && !blockState.is(Blocks.CARPET.white())
+              && !blockState.is(Blocks.CARPET.red()));
 
       // Handle gravity and movement logic based on environmental attributes
       ObjectiveDataCapable<?> objectiveData = this.getEasyNPCObjectiveData();

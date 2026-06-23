@@ -33,6 +33,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.server.permissions.Permissions;
 
 public class NameCommand extends Command {
@@ -145,7 +146,8 @@ public class NameCommand extends Command {
       return sendFailureMessage(context, "Invalid color: " + colorName);
     }
 
-    int color = chatFormatting.getColor() != null ? chatFormatting.getColor() : -1;
+    TextColor textColor = TextColor.fromLegacyFormat(chatFormatting);
+    int color = textColor != null ? textColor.getValue() : -1;
     if (NameHandler.setCustomName(easyNPC, name, color, NameVisibilityType.ALWAYS)) {
       return sendSuccessMessage(
           context,
@@ -179,7 +181,8 @@ public class NameCommand extends Command {
       return sendFailureMessage(context, "Invalid visibility: " + visibilityName);
     }
 
-    int color = chatFormatting.getColor() != null ? chatFormatting.getColor() : -1;
+    TextColor textColor = TextColor.fromLegacyFormat(chatFormatting);
+    int color = textColor != null ? textColor.getValue() : -1;
     if (NameHandler.setCustomName(easyNPC, name, color, visibility)) {
       return sendSuccessMessage(
           context,
@@ -216,7 +219,8 @@ public class NameCommand extends Command {
     NameVisibilityType visibility =
         isVisible ? NameVisibilityType.ALWAYS : NameVisibilityType.NEVER;
 
-    int color = chatFormatting.getColor() != null ? chatFormatting.getColor() : -1;
+    TextColor textColor = TextColor.fromLegacyFormat(chatFormatting);
+    int color = textColor != null ? textColor.getValue() : -1;
     if (NameHandler.setCustomName(easyNPC, nameText, color, visibility)) {
       return sendSuccessMessage(
           context, "Set color of " + easyNPC + " name to " + chatFormatting.name().toLowerCase());

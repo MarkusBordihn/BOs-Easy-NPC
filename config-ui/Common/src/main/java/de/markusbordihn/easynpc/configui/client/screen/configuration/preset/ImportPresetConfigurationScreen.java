@@ -85,14 +85,14 @@ public class ImportPresetConfigurationScreen<T extends ConfigurationMenu>
       return;
     }
 
-    minecraft.setScreen(
+    minecraft.setScreenAndShow(
         new ConfirmScreen(
             confirmed -> {
               if (confirmed && this.getEasyNPCUUID() != null) {
                 this.loadPreset(resourceLocation);
-                minecraft.setScreen(null);
+                minecraft.setScreenAndShow(null);
               } else {
-                minecraft.setScreen(this);
+                minecraft.setScreenAndShow(this);
               }
             },
             TextComponent.getTranslatedConfigText(

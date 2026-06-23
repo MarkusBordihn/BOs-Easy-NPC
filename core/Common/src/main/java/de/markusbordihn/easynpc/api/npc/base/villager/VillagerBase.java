@@ -39,7 +39,6 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.sensing.Sensor;
 import net.minecraft.world.entity.ai.sensing.SensorType;
-import net.minecraft.world.entity.animal.FlyingAnimal;
 import net.minecraft.world.entity.npc.villager.Villager;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -178,7 +177,7 @@ public class VillagerBase extends VillagerRaw implements BaseEasyNPC<VillagerRaw
       super.travel(vec3);
     } else {
       // Make sure we only calculate animations for be as much as possible server-friendly.
-      this.calculateEntityAnimation(this instanceof FlyingAnimal);
+      this.calculateEntityAnimation(false);
     }
   }
 }

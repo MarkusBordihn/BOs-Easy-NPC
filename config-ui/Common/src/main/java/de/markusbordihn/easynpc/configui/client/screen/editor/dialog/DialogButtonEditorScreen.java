@@ -74,7 +74,7 @@ public class DialogButtonEditorScreen<T extends EditorMenu> extends EditorScreen
     if (this.minecraft == null) {
       return;
     }
-    this.minecraft.setScreen(
+    this.minecraft.setScreenAndShow(
         new ConfirmScreen(
             confirmed -> {
               if (confirmed && getDialogUUID() != null) {
@@ -83,7 +83,7 @@ public class DialogButtonEditorScreen<T extends EditorMenu> extends EditorScreen
                 NetworkMessageHandlerManager.getServerHandler()
                     .openDialogEditor(this.getEasyNPCUUID(), this.getDialogUUID());
               } else {
-                this.minecraft.setScreen(this);
+                this.minecraft.setScreenAndShow(this);
               }
             },
             TextComponent.getTranslatedConfigText("removeDialogButton.deleteQuestion"),

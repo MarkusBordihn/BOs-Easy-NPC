@@ -23,7 +23,7 @@ import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import java.util.List;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntitySelector;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.NeutralMob;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -53,7 +53,7 @@ public class ResetUniversalAngerTargetGoal<T extends EasyNPC<?>> extends Goal {
 
   private boolean wasHurtByPlayer() {
     return this.mob.getLastHurtByMob() != null
-        && this.mob.getLastHurtByMob().getType() == EntityType.PLAYER
+        && this.mob.getLastHurtByMob().getType() == EntityTypes.PLAYER
         && this.mob.getLastHurtByMobTimestamp() > this.lastHurtByPlayerTimestamp;
   }
 

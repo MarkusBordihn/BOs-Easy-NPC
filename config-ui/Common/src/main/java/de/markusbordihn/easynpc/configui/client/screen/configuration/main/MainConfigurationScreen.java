@@ -565,14 +565,14 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
       return;
     }
 
-    minecraft.setScreen(
+    minecraft.setScreenAndShow(
         new ConfirmScreen(
             confirmed -> {
               if (confirmed) {
                 NetworkMessageHandlerManager.getServerHandler().respawnNPC(this.getEasyNPCUUID());
-                minecraft.setScreen(null);
+                minecraft.setScreenAndShow(null);
               } else {
-                minecraft.setScreen(this);
+                minecraft.setScreenAndShow(this);
               }
             },
             TextComponent.getTranslatedConfigText("respawnNPC.confirmQuestion"),
@@ -588,14 +588,14 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
       return;
     }
 
-    minecraft.setScreen(
+    minecraft.setScreenAndShow(
         new ConfirmScreen(
             confirmed -> {
               if (confirmed) {
                 NetworkMessageHandlerManager.getServerHandler().removeNPC(this.getEasyNPCUUID());
-                minecraft.setScreen(null);
+                minecraft.setScreenAndShow(null);
               } else {
-                minecraft.setScreen(this);
+                minecraft.setScreenAndShow(this);
               }
             },
             TextComponent.getTranslatedConfigText("removeNPC.deleteQuestion"),

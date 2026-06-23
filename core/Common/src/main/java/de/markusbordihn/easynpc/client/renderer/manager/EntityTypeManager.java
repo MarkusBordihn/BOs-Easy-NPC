@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.client.renderer.manager;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.client.renderer.screen.EntityScreenRenderer;
 import de.markusbordihn.easynpc.config.RenderEntityTypeSupportConfig;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -247,6 +248,9 @@ public class EntityTypeManager {
         newPathfinderMob.setNoAi(true);
         newPathfinderMob.setSilent(true);
         newPathfinderMob.noPhysics = true;
+
+        // Assign a render-only ID so MC 26.2 render-state extraction can safely call getId().
+        EntityScreenRenderer.assignRenderEntityId(newPathfinderMob);
 
         // Register new PathfinderMob for entity type.
         pathfinderMobMap.put(entityType, newPathfinderMob);

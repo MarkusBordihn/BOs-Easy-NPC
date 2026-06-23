@@ -26,6 +26,7 @@ import de.markusbordihn.easynpc.data.render.EntityRenderConfig;
 import de.markusbordihn.easynpc.data.render.EntityRenderOverrides;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
+import java.util.concurrent.atomic.AtomicInteger;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
@@ -36,7 +37,25 @@ import net.minecraft.world.entity.Pose;
 
 public class EntityScreenRenderer {
 
+  private static final AtomicInteger RENDER_ENTITY_ID =
+      new AtomicInteger(Integer.MAX_VALUE - 100000);
+
   protected EntityScreenRenderer() {}
+
+  /**
+   * Assigns a unique render-only entity ID, if none has been assigned yet. GUI preview entities are
+   * never added to a level, so in MC 26.2 {@code Entity.getId()} throws {@code
+   * IllegalStateException} until an ID is set. The vanilla render-state extraction (e.g. {@code
+   * ItemModelResolver#updateForLiving} for held items) reads {@code getId()}, so we assign a
+   * render-only ID once to avoid crashing.
+   */
+  public static void assignRenderEntityId(Entity entity) {
+    try {
+      entity.getId();
+    } catch (IllegalStateException exception) {
+      entity.setId(RENDER_ENTITY_ID.getAndDecrement());
+    }
+  }
 
   public static void renderEntity(
       GuiGraphicsExtractor guiGraphics,
@@ -91,6 +110,8 @@ public class EntityScreenRenderer {
     LivingEntity livingEntity = easyNPC.getLivingEntity();
     EntityRenderOverrides overrides = config.overrides();
 
+    assignRenderEntityId(entity);
+
     if (overrides.invisible() != null) {
       entity.setInvisible(overrides.invisible());
     }
@@ -98,7 +119,9 @@ public class EntityScreenRenderer {
     if (overrides.hideNameTag() != null && overrides.hideNameTag()) {
       Minecraft minecraft = Minecraft.getInstance();
       if (minecraft != null) {
-        minecraft.options.hideGui = true;
+        if (!minecraft.gui.hud.isHidden()) {
+          minecraft.gui.hud.toggle();
+        }
       } else {
         livingEntity.setCustomName(null);
         livingEntity.setCustomNameVisible(false);
@@ -131,8 +154,8 @@ public class EntityScreenRenderer {
     livingEntity.setCustomNameVisible(backupState.shouldShowName);
 
     Minecraft minecraft = Minecraft.getInstance();
-    if (minecraft != null) {
-      minecraft.options.hideGui = backupState.minecraftHideGui;
+    if (minecraft != null && minecraft.gui.hud.isHidden() != backupState.minecraftHideGui) {
+      minecraft.gui.hud.toggle();
     }
 
     ModelDataCapable<?> modelData = easyNPC.getEasyNPCModelData();
@@ -162,7 +185,7 @@ public class EntityScreenRenderer {
       this.customName = livingEntity.getCustomName();
       this.shouldShowName = livingEntity.shouldShowName();
       Minecraft minecraft = Minecraft.getInstance();
-      this.minecraftHideGui = minecraft != null && minecraft.options.hideGui;
+      this.minecraftHideGui = minecraft != null && minecraft.gui.hud.isHidden();
       ModelDataCapable<?> modelData = easyNPC.getEasyNPCModelData();
       if (modelData != null) {
         this.rootData = modelData.getModelRootData();

@@ -28,6 +28,7 @@ import net.minecraft.client.renderer.entity.SkeletonRenderer;
 import net.minecraft.client.renderer.entity.VillagerRenderer;
 import net.minecraft.client.renderer.entity.ZombieRenderer;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -39,11 +40,11 @@ public class EntityRendererUtils {
           EntityType<?>, Function<EntityRendererProvider.Context, EntityRenderer<?, ?>>>
       VANILLA_RENDERER_FACTORIES =
           Map.of(
-              EntityType.VILLAGER,
+              EntityTypes.VILLAGER,
               VillagerRenderer::new,
-              EntityType.ZOMBIE,
+              EntityTypes.ZOMBIE,
               ZombieRenderer::new,
-              EntityType.SKELETON,
+              EntityTypes.SKELETON,
               SkeletonRenderer::new);
 
   private EntityRendererUtils() {}

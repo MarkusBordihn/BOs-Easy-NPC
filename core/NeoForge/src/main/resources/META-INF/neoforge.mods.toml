@@ -23,7 +23,7 @@ side = "BOTH"
 [[dependencies.easy_npc]]
 modId = "minecraft"
 type = "required"
-versionRange = "[26.1.2,26.2)"
+versionRange = "[26.2,26.3)"
 ordering = "NONE"
 side = "BOTH"
 

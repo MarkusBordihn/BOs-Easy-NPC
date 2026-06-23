@@ -37,6 +37,7 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
@@ -60,7 +61,7 @@ public record PresetData(
   public static final PresetData EMPTY =
       new PresetData(
           EMPTY_NAME,
-          EntityType.ARMOR_STAND,
+          EntityTypes.ARMOR_STAND,
           new CompoundTag(),
           null,
           null,
@@ -190,7 +191,9 @@ public record PresetData(
     }
 
     EntityType<?> entityType =
-        EntityType.byString(entityData.getString(ID_TAG).orElse("")).orElse(null);
+        BuiltInRegistries.ENTITY_TYPE
+            .getOptional(Identifier.tryParse(entityData.getString(ID_TAG).orElse("")))
+            .orElse(null);
     if (entityType == null) {
       log.error("Unknown entity type in preset data: {}", compoundTag);
       return null;

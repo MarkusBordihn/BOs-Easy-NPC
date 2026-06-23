@@ -17,32 +17,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.mixin.entity;
+package de.markusbordihn.easynpc.mixin.renderer;
 
+import de.markusbordihn.easynpc.client.renderer.entity.state.EasyNPCRenderStateExtension;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.entity.EntitySpawnReason;
-import net.minecraft.world.entity.SpawnGroupData;
-import net.minecraft.world.entity.monster.cubemob.Slime;
-import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.client.renderer.entity.AbstractCubeMobRenderer;
+import net.minecraft.client.renderer.entity.state.SlimeRenderState;
+import net.minecraft.world.entity.monster.cubemob.AbstractCubeMob;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(Slime.class)
-public class SlimeMixin {
+@Mixin(AbstractCubeMobRenderer.class)
+public class EasyNPCAbstractCubeMobRendererMixin {
 
-  @Inject(method = "finalizeSpawn", at = @At("HEAD"), cancellable = true)
-  private void onFinalizeSpawn(
-      ServerLevelAccessor levelAccessor,
-      DifficultyInstance difficulty,
-      EntitySpawnReason entitySpawnReason,
-      SpawnGroupData spawnGroupData,
-      CallbackInfoReturnable<SpawnGroupData> cir) {
-    Slime slime = (Slime) (Object) this;
-    if (slime instanceof EasyNPC<?>) {
-      cir.setReturnValue(spawnGroupData);
+  @Inject(
+      method =
+          "extractRenderState(Lnet/minecraft/world/entity/monster/cubemob/AbstractCubeMob;Lnet/minecraft/client/renderer/entity/state/SlimeRenderState;F)V",
+      at = @At("HEAD"))
+  protected void onExtractRenderState(
+      AbstractCubeMob entity, SlimeRenderState renderState, float partialTicks, CallbackInfo ci) {
+    if (entity instanceof EasyNPC<?> && renderState instanceof EasyNPCRenderStateExtension) {
+      entity.yBodyRot = entity.yHeadRot;
+      entity.yBodyRotO = entity.yHeadRotO;
     }
   }
 }

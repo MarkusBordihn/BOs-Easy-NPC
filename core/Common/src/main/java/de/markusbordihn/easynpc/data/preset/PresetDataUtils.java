@@ -123,7 +123,10 @@ public class PresetDataUtils {
       return PresetData.EMPTY;
     }
 
-    EntityType<?> entityType = EntityType.byString(entityTypeIdOpt.get()).orElse(null);
+    EntityType<?> entityType =
+        BuiltInRegistries.ENTITY_TYPE
+            .getOptional(Identifier.tryParse(entityTypeIdOpt.get()))
+            .orElse(null);
 
     if (entityType == null) {
       return PresetData.EMPTY;
@@ -168,7 +171,8 @@ public class PresetDataUtils {
     }
 
     String entityTypeId = presetData.data().getString(PresetData.ENTITY_TYPE_TAG).orElse("");
-    EntityType<?> entityType = EntityType.byString(entityTypeId).orElse(null);
+    EntityType<?> entityType =
+        BuiltInRegistries.ENTITY_TYPE.getOptional(Identifier.tryParse(entityTypeId)).orElse(null);
 
     if (entityType == null) {
       return PresetData.EMPTY;

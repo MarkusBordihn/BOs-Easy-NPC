@@ -26,6 +26,7 @@ import de.markusbordihn.easynpc.handler.RenderHandler;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.Optional;
 import java.util.UUID;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -51,7 +52,7 @@ public record ChangeRendererMessage(
     return new ChangeRendererMessage(
         buffer.readUUID(),
         buffer.readEnum(RenderType.class),
-        EntityType.byString(buffer.readUtf()),
+        BuiltInRegistries.ENTITY_TYPE.getOptional(Identifier.tryParse(buffer.readUtf())),
         Optional.of(buffer.readUtf()).filter(s -> !s.isEmpty()));
   }
 

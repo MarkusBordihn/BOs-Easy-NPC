@@ -203,7 +203,7 @@ tasks.register('generateRawNPCs') {
       ],
       [
           id       : "slime_raw",
-          class    : "net.minecraft.world.entity.monster.Slime",
+          class    : "net.minecraft.world.entity.monster.cubemob.Slime",
           className: "SlimeRaw",
           baseClass: "Slime",
           modelType: "SLIME",

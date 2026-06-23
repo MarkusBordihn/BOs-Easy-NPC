@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.entity;
 
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.animal.golem.IronGolem;
 import net.minecraft.world.entity.monster.Witch;
@@ -43,35 +44,35 @@ public class VanillaEntityAttributeHelper {
 
   public static AttributeSupplier.Builder getVanillaAttributesForEntityType(
       EntityType<?> entityType) {
-    if (entityType == EntityType.VILLAGER) {
+    if (entityType == EntityTypes.VILLAGER) {
       return Villager.createAttributes();
-    } else if (entityType == EntityType.ZOMBIE) {
+    } else if (entityType == EntityTypes.ZOMBIE) {
       return Zombie.createAttributes();
-    } else if (entityType == EntityType.SKELETON) {
+    } else if (entityType == EntityTypes.SKELETON) {
       return AbstractSkeleton.createAttributes();
-    } else if (entityType == EntityType.PLAYER) {
+    } else if (entityType == EntityTypes.PLAYER) {
       return Player.createAttributes();
-    } else if (entityType == EntityType.IRON_GOLEM) {
+    } else if (entityType == EntityTypes.IRON_GOLEM) {
       return IronGolem.createAttributes();
-    } else if (entityType == EntityType.WITHER_SKELETON) {
+    } else if (entityType == EntityTypes.WITHER_SKELETON) {
       return WitherSkeleton.createAttributes();
-    } else if (entityType == EntityType.STRAY) {
+    } else if (entityType == EntityTypes.STRAY) {
       return Stray.createAttributes();
-    } else if (entityType == EntityType.HUSK) {
+    } else if (entityType == EntityTypes.HUSK) {
       return Husk.createAttributes();
-    } else if (entityType == EntityType.DROWNED) {
+    } else if (entityType == EntityTypes.DROWNED) {
       return Drowned.createAttributes();
-    } else if (entityType == EntityType.ZOMBIE_VILLAGER) {
+    } else if (entityType == EntityTypes.ZOMBIE_VILLAGER) {
       return ZombieVillager.createAttributes();
-    } else if (entityType == EntityType.PILLAGER) {
+    } else if (entityType == EntityTypes.PILLAGER) {
       return Pillager.createAttributes();
-    } else if (entityType == EntityType.VINDICATOR) {
+    } else if (entityType == EntityTypes.VINDICATOR) {
       return Vindicator.createAttributes();
-    } else if (entityType == EntityType.EVOKER) {
+    } else if (entityType == EntityTypes.EVOKER) {
       return Evoker.createAttributes();
-    } else if (entityType == EntityType.ILLUSIONER) {
+    } else if (entityType == EntityTypes.ILLUSIONER) {
       return Illusioner.createAttributes();
-    } else if (entityType == EntityType.WITCH) {
+    } else if (entityType == EntityTypes.WITCH) {
       return Witch.createAttributes();
     }
 

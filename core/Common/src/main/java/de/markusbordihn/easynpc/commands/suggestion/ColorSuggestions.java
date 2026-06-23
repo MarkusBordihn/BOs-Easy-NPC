@@ -28,6 +28,7 @@ import java.util.stream.Stream;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.network.chat.TextColor;
 
 public class ColorSuggestions implements SuggestionProvider<CommandSourceStack> {
 
@@ -40,7 +41,7 @@ public class ColorSuggestions implements SuggestionProvider<CommandSourceStack> 
       CommandContext<CommandSourceStack> context, SuggestionsBuilder builder) {
     return SharedSuggestionProvider.suggest(
         Stream.of(ChatFormatting.values())
-            .filter(ChatFormatting::isColor)
+            .filter(formatting -> TextColor.fromLegacyFormat(formatting) != null)
             .map(formatting -> formatting.name().toLowerCase()),
         builder);
   }

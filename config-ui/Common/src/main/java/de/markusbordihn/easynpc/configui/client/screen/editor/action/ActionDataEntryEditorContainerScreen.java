@@ -249,7 +249,7 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
       return;
     }
 
-    this.minecraft.setScreen(
+    this.minecraft.setScreenAndShow(
         new ConfirmScreen(
             confirmed -> {
               if (confirmed) {
@@ -278,7 +278,7 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
                 }
                 this.navigateToActionDataEditor();
               } else {
-                this.minecraft.setScreen(this);
+                this.minecraft.setScreenAndShow(this);
               }
             },
             TextComponent.getTranslatedConfigText("removeActionDataEntry.deleteQuestion"),

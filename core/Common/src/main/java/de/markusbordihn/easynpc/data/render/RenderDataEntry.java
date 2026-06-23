@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.data.render;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -70,7 +71,10 @@ public record RenderDataEntry(
             ? RenderType.get(compoundTag.getString(DATA_RENDER_TYPE_TAG).orElse(""))
             : RenderType.DEFAULT,
         compoundTag.contains(DATA_RENDER_ENTITY_TYPE_TAG)
-            ? EntityType.byString(compoundTag.getString(DATA_RENDER_ENTITY_TYPE_TAG).orElse(""))
+            ? BuiltInRegistries.ENTITY_TYPE
+                .getOptional(
+                    Identifier.tryParse(
+                        compoundTag.getString(DATA_RENDER_ENTITY_TYPE_TAG).orElse("")))
                 .orElse(null)
             : null,
         compoundTag.contains(DATA_RENDER_ENTITY_MODEL_TAG)

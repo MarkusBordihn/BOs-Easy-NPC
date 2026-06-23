@@ -567,11 +567,17 @@ public class NPCRawTemplate extends Zombie implements EasyNPCBase<Zombie> {
   }
 
   @Override
-  public void knockback(double strength, double x, double z) {
+  public void knockback(
+      double strength,
+      double x,
+      double z,
+      DamageSource damageSource,
+      float damage,
+      boolean comesFromEffect) {
     if (getEntityAttributes().getCombatAttributes().isKnockbackResistant()) {
       return;
     }
-    super.knockback(strength, x, z);
+    super.knockback(strength, x, z, damageSource, damage, comesFromEffect);
   }
 
   @Override

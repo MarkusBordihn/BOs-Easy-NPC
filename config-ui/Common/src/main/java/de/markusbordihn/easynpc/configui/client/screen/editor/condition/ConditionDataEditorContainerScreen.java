@@ -86,7 +86,7 @@ public class ConditionDataEditorContainerScreen<T extends EditorMenu> extends Ed
       return;
     }
 
-    this.minecraft.setScreen(
+    this.minecraft.setScreenAndShow(
         new ConfirmScreen(
             confirmed -> {
               if (confirmed) {
@@ -94,7 +94,7 @@ public class ConditionDataEditorContainerScreen<T extends EditorMenu> extends Ed
                 this.context.saveConditionDataSet(this.conditionDataSet);
                 this.context.openConditionListEditor();
               } else {
-                this.minecraft.setScreen(this);
+                this.minecraft.setScreenAndShow(this);
               }
             },
             TextComponent.getTranslatedConfigText("removeConditionDataEntry.deleteQuestion"),

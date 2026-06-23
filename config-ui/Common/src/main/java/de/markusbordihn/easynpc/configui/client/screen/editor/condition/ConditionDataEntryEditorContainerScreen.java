@@ -129,7 +129,7 @@ public class ConditionDataEntryEditorContainerScreen<T extends EditorMenu> exten
       return;
     }
 
-    this.minecraft.setScreen(
+    this.minecraft.setScreenAndShow(
         new ConfirmScreen(
             confirmed -> {
               if (confirmed) {
@@ -137,7 +137,7 @@ public class ConditionDataEntryEditorContainerScreen<T extends EditorMenu> exten
                 saveConditionDataEntry();
                 this.navigateToConditionDataEditor();
               } else {
-                this.minecraft.setScreen(this);
+                this.minecraft.setScreenAndShow(this);
               }
             },
             TextComponent.getTranslatedConfigText("removeConditionDataEntry.deleteQuestion"),

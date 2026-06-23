@@ -36,6 +36,7 @@ import java.util.stream.Collectors;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 
@@ -61,7 +62,9 @@ public class EntityTypeArgument implements ArgumentType<EntityType<? extends Ent
       throws CommandSyntaxException {
     String entityName = stringReader.getRemaining();
     EntityType<? extends Entity> entityType =
-        EntityType.byString(entityName).orElseThrow(ERROR_UNKNOWN_ENTITY::create);
+        BuiltInRegistries.ENTITY_TYPE
+            .getOptional(Identifier.tryParse(entityName))
+            .orElseThrow(ERROR_UNKNOWN_ENTITY::create);
     stringReader.setCursor(stringReader.getCursor() + entityName.length());
     return entityType;
   }

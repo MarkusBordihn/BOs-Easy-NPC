@@ -47,6 +47,7 @@ import java.nio.file.Path;
 import java.util.UUID;
 import java.util.function.BiFunction;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.NbtIo;
@@ -234,7 +235,9 @@ public class PresetHandler {
     }
 
     EntityType<?> entityType =
-        EntityType.byString(compoundTag.getString(ID_TAG).orElse("")).orElse(null);
+        BuiltInRegistries.ENTITY_TYPE
+            .getOptional(Identifier.tryParse(compoundTag.getString(ID_TAG).orElse("")))
+            .orElse(null);
     if (entityType == null) {
       log.error("[{}] Error importing preset, invalid entity type", serverLevel);
     }

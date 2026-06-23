@@ -31,7 +31,7 @@ import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
 import java.util.UUID;
 import java.util.function.Supplier;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.resources.Identifier;
@@ -41,13 +41,13 @@ public class EasyNPCLivingEntityRenderer {
   public static void handleRenderStart(
       LivingEntityRenderState renderState,
       PoseStack poseStack,
-      MultiBufferSource bufferSource,
+      SubmitNodeCollector bufferSource,
       int packedLight) {}
 
   public static void handleRenderEnd(
       LivingEntityRenderState renderState,
       PoseStack poseStack,
-      MultiBufferSource bufferSource,
+      SubmitNodeCollector bufferSource,
       int packedLight) {}
 
   public static void handleScale(LivingEntityRenderState renderState, PoseStack poseStack) {

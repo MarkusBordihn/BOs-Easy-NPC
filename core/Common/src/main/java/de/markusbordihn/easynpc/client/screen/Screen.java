@@ -223,7 +223,7 @@ public class Screen<
     if (!containerClosed
         && this.minecraft != null
         && this.minecraft.player != null
-        && !isSwitchingToAnotherEasyNPCScreen(this.minecraft.screen)) {
+        && !isSwitchingToAnotherEasyNPCScreen(null)) {
       resetFormerMousePosition();
       this.containerClosed = true;
       this.minecraft.player.closeContainer();

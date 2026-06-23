@@ -15,6 +15,7 @@
     "model.EasyNPCSpiderModelMixin", "model.EasyNPCVexModelMixin",
     "model.EasyNPCVillagerModelMixin", "model.EasyNPCWolfModelMixin",
     "renderer.CatCollarLayerMixin", "renderer.DrownedOuterLayerMixin",
+    "renderer.EasyNPCAbstractCubeMobRendererMixin",
     "renderer.EasyNPCEntityRendererMixin", "renderer.EasyNPCLivingEntityRendererMixin",
     "renderer.EasyNPCSlimeRendererMixin", "renderer.HumanoidArmorLayerMixin",
     "renderer.SkeletonClothingLayerMixin", "renderer.VillagerProfessionLayerMixin",

@@ -23,7 +23,7 @@ import de.markusbordihn.easynpc.data.npc.DefaultNPCType;
 import de.markusbordihn.easynpc.data.npc.NPCType;
 import de.markusbordihn.easynpc.entity.easynpc.npc.StandardEasyNPC;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.monster.Slime;
+import net.minecraft.world.entity.monster.cubemob.Slime;
 import net.minecraft.world.level.Level;
 
 public class SlimeNPC extends SlimeBase implements StandardEasyNPC<SlimeBase> {

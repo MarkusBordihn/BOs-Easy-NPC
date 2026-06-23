@@ -37,6 +37,7 @@ import java.util.Map;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -241,13 +242,13 @@ public class UserDefinedConfigurationManager {
           new UserDefinedConfiguration(
               "example_villager",
               "Villager NPC",
-              EntityType.VILLAGER,
+              EntityTypes.VILLAGER,
               "An example NPC based on villager");
       configurations.put(exampleVillagerNPC.id(), exampleVillagerNPC);
 
       UserDefinedConfiguration exampleZombieNPC =
           new UserDefinedConfiguration(
-              "example_zombie", "Zombie NPC", EntityType.ZOMBIE, "An example NPC based on zombie");
+              "example_zombie", "Zombie NPC", EntityTypes.ZOMBIE, "An example NPC based on zombie");
       configurations.put(exampleZombieNPC.id(), exampleZombieNPC);
 
       saveConfigurations();

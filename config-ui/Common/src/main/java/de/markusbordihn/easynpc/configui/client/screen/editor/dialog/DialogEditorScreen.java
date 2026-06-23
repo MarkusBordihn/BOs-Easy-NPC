@@ -88,7 +88,7 @@ public class DialogEditorScreen<T extends EditorMenu> extends EditorScreen<T> {
     if (minecraft == null) {
       return;
     }
-    minecraft.setScreen(
+    minecraft.setScreenAndShow(
         new ConfirmScreen(
             confirmed -> {
               if (confirmed && this.getEasyNPCUUID() != null) {
@@ -97,7 +97,7 @@ public class DialogEditorScreen<T extends EditorMenu> extends EditorScreen<T> {
                 NetworkMessageHandlerManager.getServerHandler()
                     .openConfiguration(this.getEasyNPCUUID(), ConfigurationType.DIALOG);
               } else {
-                minecraft.setScreen(this);
+                minecraft.setScreenAndShow(this);
               }
             },
             TextComponent.getTranslatedConfigText("removeDialog.deleteQuestion"),

@@ -164,13 +164,13 @@ public class ExportLocalPresetConfigurationScreen<T extends ConfigurationMenu>
 
   private void showSnbtWarning() {
     if (this.minecraft != null) {
-      this.minecraft.setScreen(
+      this.minecraft.setScreenAndShow(
           new ConfirmScreen(
               confirmed -> {
                 if (confirmed) {
                   exportPreset();
                 }
-                this.minecraft.setScreen(this);
+                this.minecraft.setScreenAndShow(this);
               },
               TextComponent.getTranslatedConfigText("export_preset.snbt_warning_title"),
               TextComponent.getTranslatedConfigText("export_preset.snbt_warning_message"),
