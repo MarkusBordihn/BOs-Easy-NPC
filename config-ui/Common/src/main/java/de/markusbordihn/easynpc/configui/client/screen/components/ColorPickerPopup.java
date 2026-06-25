@@ -43,8 +43,8 @@ public class ColorPickerPopup {
   private static final int RIGHT_MARGIN = 10;
   private static final int RGB_LABEL_WIDTH = 22;
   private static final int PREVIEW_SIZE = FIELD_HEIGHT;
-  private static final int FIELD_X_OFFSET = PADDING + RGB_LABEL_WIDTH + PREVIEW_SIZE + PREVIEW_GAP;
   private static final int PREVIEW_GAP = 4;
+  private static final int FIELD_X_OFFSET = PADDING + RGB_LABEL_WIDTH + PREVIEW_SIZE + PREVIEW_GAP;
   private static final int PANEL_WIDTH =
       PADDING * 2 + COLUMNS * SWATCH_SIZE + (COLUMNS - 1) * SWATCH_GAP;
   private static final int FIELD_WIDTH = PANEL_WIDTH - PADDING - FIELD_X_OFFSET;
