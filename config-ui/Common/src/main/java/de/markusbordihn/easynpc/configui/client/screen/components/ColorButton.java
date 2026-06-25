@@ -22,14 +22,12 @@ package de.markusbordihn.easynpc.configui.client.screen.components;
 import de.markusbordihn.easynpc.client.screen.components.CustomButton;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button.OnPress;
-import net.minecraft.client.input.MouseButtonEvent;
-import net.minecraft.world.item.DyeColor;
 
 public class ColorButton extends CustomButton {
 
   public static final int DEFAULT_HEIGHT = 18;
   public static final int DEFAULT_WIDTH = 18;
-  DyeColor color = DyeColor.WHITE;
+  private int colorValue = 0xFFFFFF;
 
   public ColorButton(int x, int y, OnPress onPress) {
     this(x, y, DEFAULT_WIDTH, DEFAULT_HEIGHT, onPress);
@@ -37,16 +35,6 @@ public class ColorButton extends CustomButton {
 
   public ColorButton(int x, int y, int width, int height, OnPress onPress) {
     super(x, y, width, height, onPress);
-  }
-
-  @Override
-  public void onClick(MouseButtonEvent mouseButtonEvent, boolean doubleClick) {
-    int colorIndex = this.color.getId() + 1;
-    if (colorIndex >= DyeColor.values().length) {
-      colorIndex = 0;
-    }
-    this.color = DyeColor.byId(colorIndex);
-    super.onClick(mouseButtonEvent, doubleClick);
   }
 
   @Override
@@ -60,15 +48,11 @@ public class ColorButton extends CustomButton {
         0xFF000000 | getColorValue());
   }
 
-  public DyeColor getColor() {
-    return this.color;
-  }
-
-  public void setColor(DyeColor color) {
-    this.color = color;
-  }
-
   public int getColorValue() {
-    return this.color.getTextColor() & 0x00FFFFFF;
+    return this.colorValue;
+  }
+
+  public void setColorValue(int colorValue) {
+    this.colorValue = colorValue & 0xffffff;
   }
 }

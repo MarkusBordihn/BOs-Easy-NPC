@@ -40,8 +40,20 @@ public class AbilitiesAttributeConfigurationScreen<T extends ConfigurationMenu>
 
   RangeSliderButton healthRegenerationSlider;
 
+  private Checkbox openDoorCheckbox;
+  private Checkbox closeDoorCheckbox;
+  private Checkbox passDoorCheckbox;
+  private boolean passDoorValue;
+
   public AbilitiesAttributeConfigurationScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
+  }
+
+  private void refreshPassDoorCheckbox() {
+    boolean impliedByDoorInteraction =
+        this.openDoorCheckbox.selected() || this.closeDoorCheckbox.selected();
+    this.passDoorCheckbox.active = !impliedByDoorInteraction;
+    this.passDoorCheckbox.setSelected(impliedByDoorInteraction || this.passDoorValue);
   }
 
   @Override
@@ -87,44 +99,55 @@ public class AbilitiesAttributeConfigurationScreen<T extends ConfigurationMenu>
                         EnvironmentalAttributeType.CAN_BREATHE_UNDERWATER,
                         checkbox.selected())));
 
-    this.addRenderableWidget(
-        new Checkbox(
-            firstButtonRow,
-            this.buttonTopPos + 45,
-            MovementAttributeType.CAN_OPEN_DOOR.getAttributeName(),
-            entityAttributes.getMovementAttributes().canOpenDoor(),
-            checkbox ->
-                NetworkMessageHandlerManager.getServerHandler()
-                    .movementAttributeChange(
-                        this.getEasyNPCUUID(),
-                        MovementAttributeType.CAN_OPEN_DOOR,
-                        checkbox.selected())));
+    this.openDoorCheckbox =
+        this.addRenderableWidget(
+            new Checkbox(
+                firstButtonRow,
+                this.buttonTopPos + 45,
+                MovementAttributeType.CAN_OPEN_DOOR.getAttributeName(),
+                entityAttributes.getMovementAttributes().canOpenDoor(),
+                checkbox -> {
+                  NetworkMessageHandlerManager.getServerHandler()
+                      .movementAttributeChange(
+                          this.getEasyNPCUUID(),
+                          MovementAttributeType.CAN_OPEN_DOOR,
+                          checkbox.selected());
+                  this.refreshPassDoorCheckbox();
+                }));
 
-    this.addRenderableWidget(
-        new Checkbox(
-            secondButtonRow,
-            this.buttonTopPos + 45,
-            MovementAttributeType.CAN_CLOSE_DOOR.getAttributeName(),
-            entityAttributes.getMovementAttributes().canCloseDoor(),
-            checkbox ->
-                NetworkMessageHandlerManager.getServerHandler()
-                    .movementAttributeChange(
-                        this.getEasyNPCUUID(),
-                        MovementAttributeType.CAN_CLOSE_DOOR,
-                        checkbox.selected())));
+    this.closeDoorCheckbox =
+        this.addRenderableWidget(
+            new Checkbox(
+                secondButtonRow,
+                this.buttonTopPos + 45,
+                MovementAttributeType.CAN_CLOSE_DOOR.getAttributeName(),
+                entityAttributes.getMovementAttributes().canCloseDoor(),
+                checkbox -> {
+                  NetworkMessageHandlerManager.getServerHandler()
+                      .movementAttributeChange(
+                          this.getEasyNPCUUID(),
+                          MovementAttributeType.CAN_CLOSE_DOOR,
+                          checkbox.selected());
+                  this.refreshPassDoorCheckbox();
+                }));
 
-    this.addRenderableWidget(
-        new Checkbox(
-            thirdButtonRow,
-            this.buttonTopPos + 45,
-            MovementAttributeType.CAN_PASS_DOOR.getAttributeName(),
-            entityAttributes.getMovementAttributes().canPassDoor(),
-            checkbox ->
-                NetworkMessageHandlerManager.getServerHandler()
-                    .movementAttributeChange(
-                        this.getEasyNPCUUID(),
-                        MovementAttributeType.CAN_PASS_DOOR,
-                        checkbox.selected())));
+    this.passDoorValue = entityAttributes.getMovementAttributes().canPassDoor();
+    this.passDoorCheckbox =
+        this.addRenderableWidget(
+            new Checkbox(
+                thirdButtonRow,
+                this.buttonTopPos + 45,
+                MovementAttributeType.CAN_PASS_DOOR.getAttributeName(),
+                this.passDoorValue,
+                checkbox -> {
+                  this.passDoorValue = checkbox.selected();
+                  NetworkMessageHandlerManager.getServerHandler()
+                      .movementAttributeChange(
+                          this.getEasyNPCUUID(),
+                          MovementAttributeType.CAN_PASS_DOOR,
+                          checkbox.selected());
+                }));
+    this.refreshPassDoorCheckbox();
 
     this.addRenderableWidget(
         new Checkbox(

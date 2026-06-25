@@ -17,32 +17,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.data.texture;
+package de.markusbordihn.easynpc.configui.client.screen.components;
 
-public enum TextureFailureType {
-  INVALID_IMAGE_SIZE(true, "Image dimensions invalid"),
-  DECODING_ERROR(true, "Failed to decode image"),
-  INVALID_FORMAT(true, "Unsupported image format"),
-  FILE_TOO_LARGE(true, "File exceeds size limit"),
-  NETWORK_ERROR(false, "Network connection failed"),
-  HTTP_CLIENT_ERROR(true, "HTTP client error"),
-  URL_INVALID(true, "URL format invalid"),
-  TIMEOUT(false, "Connection timeout"),
-  MAX_RETRIES_EXCEEDED(true, "Maximum retry attempts exceeded");
+import java.util.Locale;
 
-  private final boolean permanent;
-  private final String message;
+public final class ColorUtils {
 
-  TextureFailureType(boolean permanent, String message) {
-    this.permanent = permanent;
-    this.message = message;
+  private ColorUtils() {}
+
+  public static String formatRgbColor(int color) {
+    return String.format(Locale.ROOT, "#%06X", color & 0xffffff);
   }
 
-  public boolean isPermanent() {
-    return permanent;
-  }
+  public static Integer parseRgbColor(String color) {
+    if (color == null) {
+      return null;
+    }
 
-  public String getMessage() {
-    return message;
+    String value = color.trim();
+    if (value.startsWith("#")) {
+      value = value.substring(1);
+    }
+    if (value.length() != 6) {
+      return null;
+    }
+
+    try {
+      return Integer.parseInt(value, 16);
+    } catch (NumberFormatException exception) {
+      return null;
+    }
   }
 }

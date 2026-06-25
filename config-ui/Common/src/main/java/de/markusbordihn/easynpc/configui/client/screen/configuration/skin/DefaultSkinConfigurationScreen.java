@@ -85,6 +85,7 @@ public class DefaultSkinConfigurationScreen<T extends ConfigurationMenu>
       int scaledMouseX = Math.round(mouseX / SKIN_NAME_SCALING);
       int scaledMouseY = Math.round(mouseY / SKIN_NAME_SCALING);
       guiGraphics.pose().pushMatrix();
+      guiGraphics.pose().translate(0, 100);
       guiGraphics.pose().scale(SKIN_NAME_SCALING, SKIN_NAME_SCALING);
 
       String variantName = variant.name();

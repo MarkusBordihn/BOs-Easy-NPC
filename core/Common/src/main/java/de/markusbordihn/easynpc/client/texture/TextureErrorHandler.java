@@ -20,8 +20,8 @@
 package de.markusbordihn.easynpc.client.texture;
 
 import de.markusbordihn.easynpc.Constants;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -29,28 +29,31 @@ public class TextureErrorHandler {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private static final String LOG_PREFIX = "[Texture Error Handler]";
-  private static final Map<TextureModelKey, String> errorMessageMap = new HashMap<>();
-  private static String lastErrorMessage;
+  private static final Map<TextureModelKey, String> errorMessageMap = new ConcurrentHashMap<>();
+  private static volatile String lastErrorMessage;
 
   private TextureErrorHandler() {}
 
   public static void processingErrorMessage(
       TextureModelKey textureModelKey, String remoteUrl, String reason) {
     String errorMessage = String.format("Unable to process texture from %s: %s", remoteUrl, reason);
-    log.error("{} {}", LOG_PREFIX, errorMessage);
-    addErrorMessage(textureModelKey, errorMessage);
+    if (addErrorMessage(textureModelKey, errorMessage)) {
+      log.warn("{} {}", LOG_PREFIX, errorMessage);
+    }
   }
 
   public static void urlLoadErrorMessage(
       TextureModelKey textureModelKey, String remoteUrl, String reason) {
     String errorMessage = String.format("Unable to load texture from %s: %s", remoteUrl, reason);
-    log.error("{} {}", LOG_PREFIX, errorMessage);
-    addErrorMessage(textureModelKey, errorMessage);
+    if (addErrorMessage(textureModelKey, errorMessage)) {
+      log.warn("{} {}", LOG_PREFIX, errorMessage);
+    }
   }
 
-  private static void addErrorMessage(TextureModelKey textureModelKey, String errorMessage) {
-    errorMessageMap.put(textureModelKey, errorMessage);
+  private static boolean addErrorMessage(TextureModelKey textureModelKey, String errorMessage) {
+    String previousErrorMessage = errorMessageMap.put(textureModelKey, errorMessage);
     lastErrorMessage = errorMessage;
+    return !errorMessage.equals(previousErrorMessage);
   }
 
   public static boolean hasLastErrorMessage() {

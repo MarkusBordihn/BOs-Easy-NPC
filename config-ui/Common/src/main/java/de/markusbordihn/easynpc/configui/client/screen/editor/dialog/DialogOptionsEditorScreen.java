@@ -31,6 +31,7 @@ import de.markusbordihn.easynpc.configui.client.screen.components.DialogButton;
 import de.markusbordihn.easynpc.configui.client.screen.components.SaveButton;
 import de.markusbordihn.easynpc.configui.menu.editor.EditorMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.data.dialog.DialogButtonConditionMode;
 import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogOptionsData;
 import de.markusbordihn.easynpc.network.components.TextComponent;
@@ -51,12 +52,14 @@ public class DialogOptionsEditorScreen<T extends EditorMenu> extends EditorScree
   protected Checkbox allowEscCloseCheckbox;
   protected Checkbox showCloseButtonCheckbox;
   protected Checkbox displayAvatarCheckbox;
+  protected Checkbox hideUnavailableButtonsCheckbox;
   protected RangeSliderButton avatarScaleSlider;
   protected RangeSliderButton avatarTopSlider;
   protected RangeSliderButton avatarLeftSlider;
   private boolean allowEscCloseValue = true;
   private boolean showCloseButtonValue = true;
   private boolean displayAvatarValue = true;
+  private boolean hideUnavailableButtonsValue = false;
   private int npcDefaultScale;
   private int npcDefaultTop;
   private int npcDefaultLeft;
@@ -83,6 +86,7 @@ public class DialogOptionsEditorScreen<T extends EditorMenu> extends EditorScree
     boolean currentAllowEscClose = this.allowEscCloseCheckbox.selected();
     boolean currentShowCloseButton = this.showCloseButtonCheckbox.selected();
     boolean currentDisplayAvatar = this.displayAvatarCheckbox.selected();
+    boolean currentHideUnavailableButtons = this.hideUnavailableButtonsCheckbox.selected();
     int currentScale = Math.round(this.avatarScaleSlider.getTargetValue());
     int currentTop = Math.round(this.avatarTopSlider.getTargetValue());
     int currentLeft = Math.round(this.avatarLeftSlider.getTargetValue());
@@ -91,6 +95,7 @@ public class DialogOptionsEditorScreen<T extends EditorMenu> extends EditorScree
         currentAllowEscClose != this.allowEscCloseValue
             || currentShowCloseButton != this.showCloseButtonValue
             || currentDisplayAvatar != this.displayAvatarValue
+            || currentHideUnavailableButtons != this.hideUnavailableButtonsValue
             || currentScale != this.avatarScaleInitialValue
             || currentTop != this.avatarTopInitialValue
             || currentLeft != this.avatarLeftInitialValue;
@@ -106,7 +111,10 @@ public class DialogOptionsEditorScreen<T extends EditorMenu> extends EditorScree
             currentDisplayAvatar,
             currentTop != this.npcDefaultTop ? currentTop : null,
             currentLeft != this.npcDefaultLeft ? currentLeft : null,
-            currentScale != this.npcDefaultScale ? currentScale : null));
+            currentScale != this.npcDefaultScale ? currentScale : null,
+            currentHideUnavailableButtons
+                ? DialogButtonConditionMode.HIDE
+                : DialogButtonConditionMode.LOCK));
 
     NetworkMessageHandlerManager.getServerHandler()
         .saveDialog(this.getEasyNPCUUID(), this.getDialogUUID(), dialogDataEntry);
@@ -173,6 +181,18 @@ public class DialogOptionsEditorScreen<T extends EditorMenu> extends EditorScree
                 this.displayAvatarValue,
                 true,
                 checkbox -> this.setAvatarSlidersActive(checkbox.selected())));
+
+    this.hideUnavailableButtonsValue =
+        dialogOptions.buttonConditionMode() == DialogButtonConditionMode.HIDE;
+    this.hideUnavailableButtonsCheckbox =
+        this.addRenderableWidget(
+            new Checkbox(
+                this.leftPos + 164,
+                this.topPos + 54,
+                TextComponent.getTranslatedConfigText("dialog.hide_unavailable_buttons"),
+                this.hideUnavailableButtonsValue,
+                true,
+                null));
 
     this.avatarScaleInitialValue =
         dialogOptions.hasAvatarScale() ? dialogOptions.avatarScale() : this.npcDefaultScale;
@@ -270,6 +290,7 @@ public class DialogOptionsEditorScreen<T extends EditorMenu> extends EditorScree
           this.allowEscCloseCheckbox.selected() != this.allowEscCloseValue
               || this.showCloseButtonCheckbox.selected() != this.showCloseButtonValue
               || this.displayAvatarCheckbox.selected() != this.displayAvatarValue
+              || this.hideUnavailableButtonsCheckbox.selected() != this.hideUnavailableButtonsValue
               || avatarSlidersChanged;
     }
   }
