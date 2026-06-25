@@ -214,22 +214,24 @@ public interface ObjectiveDataCapable<T extends Mob> extends EasyNPC<T> {
       this.removeCustomObjective(floatObjective);
     }
 
+    boolean canCloseDoor = attributeData.getMovementAttributes().canCloseDoor();
+    boolean canOpenDoor = attributeData.getMovementAttributes().canOpenDoor();
     ObjectiveDataEntry closeDoorObjective = new ObjectiveDataEntry(ObjectiveType.CLOSE_DOOR, 8);
-    if (attributeData.getMovementAttributes().canCloseDoor()) {
-      if (!this.hasObjective(closeDoorObjective)) {
-        this.addOrUpdateCustomObjective(closeDoorObjective);
-      }
-    } else if (this.hasObjective(closeDoorObjective)) {
-      this.removeCustomObjective(closeDoorObjective);
-    }
-
     ObjectiveDataEntry openDoorObjective = new ObjectiveDataEntry(ObjectiveType.OPEN_DOOR, 8);
-    if (attributeData.getMovementAttributes().canOpenDoor()) {
+    if (canOpenDoor) {
       if (!this.hasObjective(openDoorObjective)) {
         this.addOrUpdateCustomObjective(openDoorObjective);
       }
     } else if (this.hasObjective(openDoorObjective)) {
       this.removeCustomObjective(openDoorObjective);
+    }
+
+    if (canCloseDoor) {
+      if (!this.hasObjective(closeDoorObjective)) {
+        this.addOrUpdateCustomObjective(closeDoorObjective);
+      }
+    } else if (this.hasObjective(closeDoorObjective)) {
+      this.removeCustomObjective(closeDoorObjective);
     }
   }
 

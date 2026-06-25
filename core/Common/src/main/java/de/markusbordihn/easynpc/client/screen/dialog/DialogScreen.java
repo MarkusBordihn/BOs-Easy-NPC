@@ -31,6 +31,7 @@ import de.markusbordihn.easynpc.compat.IntegrationRegistry;
 import de.markusbordihn.easynpc.condition.ClientConditionEvaluator;
 import de.markusbordihn.easynpc.config.ClientDialogConfig;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
+import de.markusbordihn.easynpc.data.dialog.DialogButtonConditionMode;
 import de.markusbordihn.easynpc.data.dialog.DialogButtonEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogMetaData;
@@ -146,6 +147,10 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
     return total;
   }
 
+  private boolean shouldHideUnavailableDialogButtons() {
+    return this.cachedDialogOptions.buttonConditionMode() == DialogButtonConditionMode.HIDE;
+  }
+
   private boolean isTypewriterActive() {
     return this.typewriterEnabled
         && !this.pageFullyRevealed
@@ -213,12 +218,12 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
       this.hasConditionalButtons = true;
     }
     this.updateDialogButtonLockState(dialogButton, dialogButtonEntry);
+    this.addRenderableWidget(dialogButton);
   }
 
-  private void updateDialogButtonLockState(
-      Button dialogButton, DialogButtonEntry dialogButtonEntry) {
+  private boolean isDialogButtonUnavailable(DialogButtonEntry dialogButtonEntry) {
     if (dialogButtonEntry == null || !dialogButtonEntry.hasConditions()) {
-      return;
+      return false;
     }
     boolean conditionsMet =
         ClientConditionEvaluator.evaluateAll(
@@ -232,135 +237,195 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
     boolean dialogButtonLocked =
         additionalScreenData != null
             && additionalScreenData.isDialogButtonLocked(dialogButtonEntry.id());
-    dialogButton.active = conditionsMet && !executionLimitReached && !dialogButtonLocked;
+    return !conditionsMet || executionLimitReached || dialogButtonLocked;
   }
 
-  private Button renderDialogButton(int buttonIndex, int width, int left, int top) {
-    Button dialogButton = this.dialogButtons.get(buttonIndex);
+  private void updateDialogButtonLockState(
+      Button dialogButton, DialogButtonEntry dialogButtonEntry) {
+    boolean unavailable = this.isDialogButtonUnavailable(dialogButtonEntry);
+    dialogButton.active = !unavailable;
+    dialogButton.visible =
+        dialogButtonEntry.name() != null
+            && !dialogButtonEntry.name().isBlank()
+            && (!unavailable || !this.shouldHideUnavailableDialogButtons());
+  }
+
+  private List<Button> getVisibleDialogButtons() {
+    List<Button> visibleDialogButtons = new ArrayList<>();
+    for (Button dialogButton : this.dialogButtons) {
+      if (dialogButton.visible) {
+        visibleDialogButtons.add(dialogButton);
+      }
+    }
+    return visibleDialogButtons;
+  }
+
+  private List<DialogButtonEntry> getVisibleDialogButtonEntries() {
+    List<DialogButtonEntry> visibleDialogButtonEntries = new ArrayList<>();
+    for (int i = 0; i < this.dialogButtons.size() && i < this.dialogButtonEntries.size(); i++) {
+      if (this.dialogButtons.get(i).visible) {
+        visibleDialogButtonEntries.add(this.dialogButtonEntries.get(i));
+      }
+    }
+    return visibleDialogButtonEntries;
+  }
+
+  private Button positionDialogButton(Button dialogButton, int width, int left, int top) {
     dialogButton.setWidth(width);
     dialogButton.setX(left);
     dialogButton.setY(top);
-    return this.addRenderableWidget(dialogButton);
+    return dialogButton;
   }
 
   private void renderDialogButtons() {
+    List<Button> visibleDialogButtons = this.getVisibleDialogButtons();
     switch (dialogScreenLayout) {
       case COMPACT_TEXT_ONLY, TEXT_ONLY:
         break;
       case COMPACT_TEXT_WITH_ONE_BUTTON:
-        this.renderDialogButton(0, LARGE_BUTTON_WIDTH, this.leftPos + 18, this.topPos + 140);
+        this.positionDialogButton(
+            visibleDialogButtons.get(0), LARGE_BUTTON_WIDTH, this.leftPos + 18, this.topPos + 140);
         break;
       case COMPACT_TEXT_WITH_TWO_BUTTONS:
         Button firstCompactDialogButton =
-            this.renderDialogButton(0, BUTTON_WIDTH, this.leftPos + 10, this.topPos + 140);
-        this.renderDialogButton(
-            1,
+            this.positionDialogButton(
+                visibleDialogButtons.get(0), BUTTON_WIDTH, this.leftPos + 10, this.topPos + 140);
+        this.positionDialogButton(
+            visibleDialogButtons.get(1),
             BUTTON_WIDTH,
             firstCompactDialogButton.getX() + firstCompactDialogButton.getWidth() + 9,
             firstCompactDialogButton.getY());
         break;
       case COMPACT_TEXT_WITH_TWO_LARGE_BUTTONS:
         Button firstCompactLargeDialogButton =
-            this.renderDialogButton(0, MIDDLE_BUTTON_WIDTH, this.leftPos + 75, this.topPos + 115);
-        this.renderDialogButton(
-            1,
+            this.positionDialogButton(
+                visibleDialogButtons.get(0),
+                MIDDLE_BUTTON_WIDTH,
+                this.leftPos + 75,
+                this.topPos + 115);
+        this.positionDialogButton(
+            visibleDialogButtons.get(1),
             MIDDLE_BUTTON_WIDTH,
             firstCompactLargeDialogButton.getX(),
             firstCompactLargeDialogButton.getY() + firstCompactLargeDialogButton.getHeight() + 9);
         break;
       case TEXT_WITH_ONE_BUTTON:
-        this.renderDialogButton(0, LARGE_BUTTON_WIDTH, this.leftPos + 18, this.topPos + 170);
+        this.positionDialogButton(
+            visibleDialogButtons.get(0), LARGE_BUTTON_WIDTH, this.leftPos + 18, this.topPos + 170);
         break;
       case TEXT_WITH_TWO_BUTTONS:
         Button firstTwoDialogButton =
-            this.renderDialogButton(0, LARGE_BUTTON_WIDTH, this.leftPos + 18, this.topPos + 159);
-        this.renderDialogButton(
-            1,
+            this.positionDialogButton(
+                visibleDialogButtons.get(0),
+                LARGE_BUTTON_WIDTH,
+                this.leftPos + 18,
+                this.topPos + 159);
+        this.positionDialogButton(
+            visibleDialogButtons.get(1),
             LARGE_BUTTON_WIDTH,
             firstTwoDialogButton.getX(),
             firstTwoDialogButton.getY() + firstTwoDialogButton.getHeight() + 9);
         break;
       case COMPACT_TEXT_WITH_THREE_BUTTONS, TEXT_WITH_THREE_BUTTONS:
         Button firstThreeDialogButton =
-            this.renderDialogButton(0, LARGE_BUTTON_WIDTH, this.leftPos + 18, this.topPos + 154);
+            this.positionDialogButton(
+                visibleDialogButtons.get(0),
+                LARGE_BUTTON_WIDTH,
+                this.leftPos + 18,
+                this.topPos + 154);
         Button secondThreeDialogButton =
-            this.renderDialogButton(
-                1,
+            this.positionDialogButton(
+                visibleDialogButtons.get(1),
                 LARGE_BUTTON_WIDTH,
                 firstThreeDialogButton.getX(),
                 firstThreeDialogButton.getY() + firstThreeDialogButton.getHeight() + 4);
-        this.renderDialogButton(
-            2,
+        this.positionDialogButton(
+            visibleDialogButtons.get(2),
             LARGE_BUTTON_WIDTH,
             secondThreeDialogButton.getX(),
             secondThreeDialogButton.getY() + secondThreeDialogButton.getHeight() + 4);
         break;
       case COMPACT_TEXT_WITH_FOUR_BUTTONS, TEXT_WITH_FOUR_BUTTONS:
         Button firstFourDialogButton =
-            this.renderDialogButton(0, BUTTON_WIDTH, this.leftPos + 10, this.topPos + 164);
+            this.positionDialogButton(
+                visibleDialogButtons.get(0), BUTTON_WIDTH, this.leftPos + 10, this.topPos + 164);
         Button secondFourDialogButton =
-            this.renderDialogButton(
-                1,
+            this.positionDialogButton(
+                visibleDialogButtons.get(1),
                 BUTTON_WIDTH,
                 firstFourDialogButton.getX() + firstFourDialogButton.getWidth() + 9,
                 firstFourDialogButton.getY());
         Button thirdFourDialogButton =
-            this.renderDialogButton(
-                2,
+            this.positionDialogButton(
+                visibleDialogButtons.get(2),
                 BUTTON_WIDTH,
                 firstFourDialogButton.getX(),
                 firstFourDialogButton.getY() + firstFourDialogButton.getHeight() + 9);
-        this.renderDialogButton(
-            3, BUTTON_WIDTH, secondFourDialogButton.getX(), thirdFourDialogButton.getY());
+        this.positionDialogButton(
+            visibleDialogButtons.get(3),
+            BUTTON_WIDTH,
+            secondFourDialogButton.getX(),
+            thirdFourDialogButton.getY());
         break;
       case COMPACT_TEXT_WITH_FIVE_BUTTONS, TEXT_WITH_FIVE_BUTTONS:
         Button firstFiveDialogButton =
-            this.renderDialogButton(0, BUTTON_WIDTH, this.leftPos + 10, this.topPos + 154);
+            this.positionDialogButton(
+                visibleDialogButtons.get(0), BUTTON_WIDTH, this.leftPos + 10, this.topPos + 154);
         Button secondFiveDialogButton =
-            this.renderDialogButton(
-                1,
+            this.positionDialogButton(
+                visibleDialogButtons.get(1),
                 BUTTON_WIDTH,
                 firstFiveDialogButton.getX() + firstFiveDialogButton.getWidth() + 9,
                 firstFiveDialogButton.getY());
         Button thirdFiveDialogButton =
-            this.renderDialogButton(
-                2,
+            this.positionDialogButton(
+                visibleDialogButtons.get(2),
                 BUTTON_WIDTH,
                 firstFiveDialogButton.getX(),
                 firstFiveDialogButton.getY() + firstFiveDialogButton.getHeight() + 4);
-        this.renderDialogButton(
-            3, BUTTON_WIDTH, secondFiveDialogButton.getX(), thirdFiveDialogButton.getY());
-        this.renderDialogButton(
-            4,
+        this.positionDialogButton(
+            visibleDialogButtons.get(3),
+            BUTTON_WIDTH,
+            secondFiveDialogButton.getX(),
+            thirdFiveDialogButton.getY());
+        this.positionDialogButton(
+            visibleDialogButtons.get(4),
             BUTTON_WIDTH,
             firstFiveDialogButton.getX(),
             thirdFiveDialogButton.getY() + thirdFiveDialogButton.getHeight() + 4);
         break;
       case COMPACT_TEXT_WITH_SIX_BUTTONS, TEXT_WITH_SIX_BUTTONS:
         Button firstSixDialogButton =
-            this.renderDialogButton(0, BUTTON_WIDTH, this.leftPos + 10, this.topPos + 154);
+            this.positionDialogButton(
+                visibleDialogButtons.get(0), BUTTON_WIDTH, this.leftPos + 10, this.topPos + 154);
         Button secondSixDialogButton =
-            this.renderDialogButton(
-                1,
+            this.positionDialogButton(
+                visibleDialogButtons.get(1),
                 BUTTON_WIDTH,
                 firstSixDialogButton.getX() + firstSixDialogButton.getWidth() + 9,
                 firstSixDialogButton.getY());
         Button thirdSixDialogButton =
-            this.renderDialogButton(
-                2,
+            this.positionDialogButton(
+                visibleDialogButtons.get(2),
                 BUTTON_WIDTH,
                 firstSixDialogButton.getX(),
                 firstSixDialogButton.getY() + firstSixDialogButton.getHeight() + 4);
-        this.renderDialogButton(
-            3, BUTTON_WIDTH, secondSixDialogButton.getX(), thirdSixDialogButton.getY());
+        this.positionDialogButton(
+            visibleDialogButtons.get(3),
+            BUTTON_WIDTH,
+            secondSixDialogButton.getX(),
+            thirdSixDialogButton.getY());
         Button fifthSixDialogButton =
-            this.renderDialogButton(
-                4,
+            this.positionDialogButton(
+                visibleDialogButtons.get(4),
                 BUTTON_WIDTH,
                 firstSixDialogButton.getX(),
                 thirdSixDialogButton.getY() + thirdSixDialogButton.getHeight() + 4);
-        this.renderDialogButton(
-            5, BUTTON_WIDTH, secondSixDialogButton.getX(), fifthSixDialogButton.getY());
+        this.positionDialogButton(
+            visibleDialogButtons.get(5),
+            BUTTON_WIDTH,
+            secondSixDialogButton.getX(),
+            fifthSixDialogButton.getY());
         break;
       default:
         log.warn(
@@ -457,26 +522,11 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
       this.closeButton.setY(this.topPos + 4);
     }
 
-    setDialogScreenLayout(DialogUtils.getDialogScreenLayout(this.getDialogData(), this.font));
-    log.debug(
-        "Prepare Dialog Screen {} with page index {} for {} with {} line(s) and layout {}",
-        this.getDialogUUID(),
-        this.getPageIndex(),
-        this.getDialogDataSet(),
-        this.numberOfDialogLines,
-        dialogScreenLayout);
-
     this.setDialogText(this.getDialogData());
-    log.debug("Dialog with {} line(s) and layout {}", this.numberOfDialogLines, dialogScreenLayout);
 
     this.typewriterEnabled = ClientDialogConfig.TYPEWRITER_ENABLED;
     this.charsPerSecond = Math.max(1, ClientDialogConfig.TYPEWRITER_CHARS_PER_SECOND);
     this.beginPageReveal();
-
-    // If the dialog has more than 10 lines, add a button to switch between pages.
-    if (this.numberOfDialogLines > MAX_NUMBER_OF_DIALOG_LINES) {
-      this.defineDialogNavigationButtons();
-    }
 
     if (this.getActionEventSet().hasActionEvent(ActionEventType.ON_OPEN_DIALOG)) {
       NetworkMessageHandlerManager.getServerHandler()
@@ -491,8 +541,23 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
         }
         this.addDialogButton(dialogButtonEntry);
       }
-      this.renderDialogButtons();
     }
+
+    setDialogScreenLayout(
+        DialogUtils.getDialogScreenLayout(
+            this.getDialogData(), this.font, this.getVisibleDialogButtonEntries()));
+    log.debug(
+        "Prepare Dialog Screen {} with page index {} for {} with {} line(s) and layout {}",
+        this.getDialogUUID(),
+        this.getPageIndex(),
+        this.getDialogDataSet(),
+        this.numberOfDialogLines,
+        dialogScreenLayout);
+
+    if (this.numberOfDialogLines > MAX_NUMBER_OF_DIALOG_LINES) {
+      this.defineDialogNavigationButtons();
+    }
+    this.renderDialogButtons();
   }
 
   @Override
@@ -562,6 +627,10 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
     for (int i = 0; i < this.dialogButtons.size() && i < this.dialogButtonEntries.size(); i++) {
       this.updateDialogButtonLockState(this.dialogButtons.get(i), this.dialogButtonEntries.get(i));
     }
+    setDialogScreenLayout(
+        DialogUtils.getDialogScreenLayout(
+            this.getDialogData(), this.font, this.getVisibleDialogButtonEntries()));
+    this.renderDialogButtons();
   }
 
   private void renderDialogButtonLocks(GuiGraphics guiGraphics, int mouseX, int mouseY) {

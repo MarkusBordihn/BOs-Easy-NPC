@@ -22,7 +22,9 @@ package de.markusbordihn.easynpc.data.objective;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.BowAttackGoal;
+import de.markusbordihn.easynpc.entity.easynpc.ai.goal.CloseDoorGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.CrossbowAttackGoal;
+import de.markusbordihn.easynpc.entity.easynpc.ai.goal.CustomDoorInteractGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.CustomLookAtPlayerGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.CustomMeleeAttackGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.CustomOwnerHurtByTargetGoal;
@@ -49,7 +51,6 @@ import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.GolemRandomStrollInVillageGoal;
 import net.minecraft.world.entity.ai.goal.MoveBackToVillageGoal;
 import net.minecraft.world.entity.ai.goal.MoveThroughVillageGoal;
-import net.minecraft.world.entity.ai.goal.OpenDoorGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.RandomSwimmingGoal;
 import net.minecraft.world.entity.ai.goal.RestrictSunGoal;
@@ -238,9 +239,9 @@ public class ObjectiveUtils {
       case FLOAT:
         return new FloatGoal(easyNPC.getMob());
       case OPEN_DOOR:
-        return new OpenDoorGoal(easyNPC.getMob(), false);
+        return new CustomDoorInteractGoal(easyNPC.getMob(), false);
       case CLOSE_DOOR:
-        return new OpenDoorGoal(easyNPC.getMob(), true);
+        return new CloseDoorGoal(easyNPC.getMob());
       case LOOK_AT_RESET:
         return new ResetLookAtPlayerGoal<>(easyNPC);
       case LOOK_AT_PLAYER:

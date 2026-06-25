@@ -8,6 +8,19 @@ For the full changelog, please go to the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 6.23.0
+
+- Fixed #772 by adjusting texture retries with 403 and 404 errors and lowering logging.
+- Fixed #770 item rendering for Epic Fight NPCs (Evoker, Pillager, Vindicator and humanoid skins).
+- Fixed #769 door loops with NPCs not reliably opening or closing doors.
+- Fixed #760 by adding a dialog option and config setting (buttonConditionMode: LOCK or HIDE) to
+  either lock or hide unavailable conditional dialog buttons.
+- Fixed #709 by adding color picker popup for names with 32 colors and/or a manual RGB/hex value.
+- Fixed NPC name color being reset when renaming without a specified color by preserving the
+  existing name color.
+- Improved the door movement attributes so "Pass Door" is automatically enabled while "Open Door"
+  or "Close Door" is active.
+
 ### 6.22.0
 
 - Fixed #766 by passing the full server player context to command execution for better compatibility
@@ -26,7 +39,8 @@ Check the [upgrade guide][upgrade_guide] for more information.
 - Added a new "Open Dialog (Conditional)" action that opens a named dialog only if its conditions
   are met, while the existing "Open Dialog" action keeps opening the dialog unconditionally.
 - Added new entity health and npc health conditions for actions, dialogs and dialogs buttons.
-- Added Piglin, Piglin Brute and Zombified Piglin NPCs invulnerable, for consistency with other NPCs.
+- Added Piglin, Piglin Brute and Zombified Piglin NPCs invulnerable, for consistency with other
+  NPCs.
 - Added a new "Knockback Immunity" combat attribute that prevents the NPC from being knocked back by
   melee or projectile attacks.
 - Added a new "Explosion Immunity" combat attribute that makes the NPC immune to explosion damage

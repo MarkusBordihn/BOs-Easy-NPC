@@ -15,6 +15,11 @@ public class PlayerSlimRenderer extends PlayerRenderer<PathfinderMob> {
     super(context, true);
   }
 
+  public PlayerSlimRenderer(
+      EntityRendererProvider.Context context, boolean useVanillaItemInHandLayer) {
+    super(context, true, useVanillaItemInHandLayer);
+  }
+
   @Override
   public ResourceLocation getTextureLocation(PathfinderMob entity) {
     if (entity instanceof EasyNPC<?> easyNPC) {

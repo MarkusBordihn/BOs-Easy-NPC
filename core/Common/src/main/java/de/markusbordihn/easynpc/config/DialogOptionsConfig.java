@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.config;
 
+import de.markusbordihn.easynpc.data.dialog.DialogButtonConditionMode;
 import java.io.File;
 import java.util.Properties;
 
@@ -33,12 +34,14 @@ Dialog Options Configuration
 allowEscClose: Allow players to close dialogs with the ESC key (default: true)
 showCloseButton: Show the close button in dialogs (default: true)
 displayAvatar: Display the NPC avatar in dialogs (default: true)
+buttonConditionMode: How unavailable conditional dialog buttons are shown: LOCK or HIDE (default: LOCK)
 
 """;
 
   public static boolean ALLOW_ESC_CLOSE = true;
   public static boolean SHOW_CLOSE_BUTTON = true;
   public static boolean DISPLAY_AVATAR = true;
+  public static DialogButtonConditionMode BUTTON_CONDITION_MODE = DialogButtonConditionMode.LOCK;
 
   public static void registerConfig() {
     registerConfigFile(CONFIG_FILE_NAME, CONFIG_FILE_HEADER);
@@ -53,7 +56,21 @@ displayAvatar: Display the NPC avatar in dialogs (default: true)
     ALLOW_ESC_CLOSE = parseConfigValue(properties, "allowEscClose", ALLOW_ESC_CLOSE);
     SHOW_CLOSE_BUTTON = parseConfigValue(properties, "showCloseButton", SHOW_CLOSE_BUTTON);
     DISPLAY_AVATAR = parseConfigValue(properties, "displayAvatar", DISPLAY_AVATAR);
+    BUTTON_CONDITION_MODE =
+        parseButtonConditionMode(properties, "buttonConditionMode", BUTTON_CONDITION_MODE);
 
     updateConfigFileIfChanged(configFile, CONFIG_FILE_HEADER, properties, unmodifiedProperties);
+  }
+
+  private static DialogButtonConditionMode parseButtonConditionMode(
+      Properties properties, String key, DialogButtonConditionMode defaultValue) {
+    if (properties.containsKey(key)) {
+      DialogButtonConditionMode parsedValue =
+          DialogButtonConditionMode.get(properties.getProperty(key));
+      properties.setProperty(key, parsedValue.name());
+      return parsedValue;
+    }
+    properties.setProperty(key, defaultValue.name());
+    return defaultValue;
   }
 }

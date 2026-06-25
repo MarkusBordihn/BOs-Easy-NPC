@@ -28,6 +28,7 @@ import de.markusbordihn.easynpc.configui.client.screen.EntityGuiScaling;
 import de.markusbordihn.easynpc.configui.client.screen.ExperimentalFeaturesState;
 import de.markusbordihn.easynpc.configui.client.screen.components.Checkbox;
 import de.markusbordihn.easynpc.configui.client.screen.components.ColorButton;
+import de.markusbordihn.easynpc.configui.client.screen.components.ColorPickerPopup;
 import de.markusbordihn.easynpc.configui.client.screen.components.CopyButton;
 import de.markusbordihn.easynpc.configui.client.screen.components.DeleteButton;
 import de.markusbordihn.easynpc.configui.client.screen.components.ExperimentalButton;
@@ -66,7 +67,6 @@ import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.item.DyeColor;
 
 public class MainConfigurationScreen<T extends ConfigurationMenu> extends ConfigurationScreen<T> {
 
@@ -93,6 +93,7 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
   private NameVisibilityType formerNameVisibility = NameVisibilityType.ALWAYS;
   private EditBox nameBox;
   private ColorButton nameColorButton;
+  private ColorPickerPopup colorPickerPopup;
   private NameVisibilityToggleButton nameVisibilityButton;
   private Button saveNameButton;
   private int avatarTopPos;
@@ -128,7 +129,15 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
 
   @Override
   public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
-    super.render(guiGraphics, x, y, partialTicks);
+    // While the color picker popup covers the pointer, report the pointer off-screen to the
+    // underlying screen so the widgets below the popup do not render a hover highlight.
+    if (this.colorPickerPopup != null && this.colorPickerPopup.isMouseOver(x, y)) {
+      super.render(guiGraphics, -1, -1, partialTicks);
+      this.xMouse = x;
+      this.yMouse = y;
+    } else {
+      super.render(guiGraphics, x, y, partialTicks);
+    }
 
     if (getEasyNPC() == null) {
       return;
@@ -243,6 +252,39 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
         Math.round((this.avatarTopPos + this.avatarHeight - 8) / scaleEntityTypeText));
 
     guiGraphics.pose().popPose();
+
+    if (this.colorPickerPopup != null) {
+      this.colorPickerPopup.render(guiGraphics, x, y, partialTicks);
+    }
+  }
+
+  @Override
+  public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    if (this.colorPickerPopup != null
+        && this.colorPickerPopup.mouseClicked(mouseX, mouseY, button)) {
+      return true;
+    }
+    return super.mouseClicked(mouseX, mouseY, button);
+  }
+
+  @Override
+  public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+    if (this.colorPickerPopup != null
+        && this.colorPickerPopup.isVisible()
+        && this.colorPickerPopup.keyPressed(keyCode, scanCode, modifiers)) {
+      return true;
+    }
+    return super.keyPressed(keyCode, scanCode, modifiers);
+  }
+
+  @Override
+  public boolean charTyped(char codePoint, int modifiers) {
+    if (this.colorPickerPopup != null
+        && this.colorPickerPopup.isVisible()
+        && this.colorPickerPopup.charTyped(codePoint, modifiers)) {
+      return true;
+    }
+    return super.charTyped(codePoint, modifiers);
   }
 
   @Override
@@ -329,24 +371,34 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
     this.nameBox.setResponder(consumer -> this.validateName());
     this.addRenderableWidget(this.nameBox);
 
+    // Color Picker Popup
+    this.colorPickerPopup =
+        new ColorPickerPopup(
+            this.font,
+            selectedColor -> {
+              this.nameColorButton.setColorValue(selectedColor);
+              this.validateName();
+            });
+
     // Name Color Button
     this.nameColorButton =
         this.addRenderableWidget(
             new ColorButton(
                 this.nameBox.getX() + this.nameBox.getWidth() + 1,
                 this.nameBox.getY() - 1,
-                onPress -> this.validateName()));
+                onPress ->
+                    this.colorPickerPopup.toggle(
+                        this.nameColorButton.getColorValue(),
+                        this.nameColorButton.getX(),
+                        this.nameColorButton.getY() + this.nameColorButton.getHeight() + 1,
+                        this.width,
+                        this.height)));
     if (getEasyNPCEntity().hasCustomName()
         && getEasyNPCEntity().getCustomName().getStyle() != null
         && getEasyNPCEntity().getCustomName().getStyle().getColor() != null) {
       int styleTextColor = getEasyNPCEntity().getCustomName().getStyle().getColor().getValue();
-      for (DyeColor dyeColor : DyeColor.values()) {
-        if (dyeColor.getTextColor() == styleTextColor) {
-          this.nameColorButton.setColor(dyeColor);
-          this.formerTextColor = styleTextColor;
-          break;
-        }
-      }
+      this.nameColorButton.setColorValue(styleTextColor);
+      this.formerTextColor = styleTextColor;
     }
 
     // Name Visibility Button
@@ -610,20 +662,17 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
 
   private void validateName() {
     String nameValue = this.nameBox.getValue();
-    int textColorValue = this.nameColorButton.getColorValue();
+    int textColor = this.nameColorButton.getColorValue();
     NameVisibilityType nameVisibility = this.nameVisibilityButton.getVisibilityType();
     this.saveNameButton.active =
         !this.formerName.equals(nameValue)
-            || this.formerTextColor != textColorValue
+            || this.formerTextColor != textColor
             || this.formerNameVisibility != nameVisibility;
   }
 
   private void saveName() {
     String name = this.nameBox.getValue();
-    int textColor = 0xFFFFFF;
-    if (this.nameColorButton != null) {
-      textColor = this.nameColorButton.getColorValue();
-    }
+    int textColor = this.nameColorButton.getColorValue();
     NameVisibilityType nameVisibility = this.nameVisibilityButton.getVisibilityType();
     NetworkMessageHandlerManager.getServerHandler()
         .changeName(getEasyNPC().getEntityUUID(), name, textColor, nameVisibility);

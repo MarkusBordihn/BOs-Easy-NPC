@@ -95,6 +95,10 @@ public class AsyncTextureLoader {
     return future;
   }
 
+  static boolean hasPendingLoad(TextureModelKey key) {
+    return pendingLoads.containsKey(key);
+  }
+
   public static CompletableFuture<ResourceLocation> loadPlayerTextureAsync(
       TextureModelKey key, UUID playerUUID, Path targetDirectory) {
     CompletableFuture<ResourceLocation> existing = pendingLoads.get(key);

@@ -17,32 +17,48 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.data.texture;
+package de.markusbordihn.easynpc.entity.easynpc.ai.goal;
 
-public enum TextureFailureType {
-  INVALID_IMAGE_SIZE(true, "Image dimensions invalid"),
-  DECODING_ERROR(true, "Failed to decode image"),
-  INVALID_FORMAT(true, "Unsupported image format"),
-  FILE_TOO_LARGE(true, "File exceeds size limit"),
-  NETWORK_ERROR(false, "Network connection failed"),
-  HTTP_CLIENT_ERROR(true, "HTTP client error"),
-  URL_INVALID(true, "URL format invalid"),
-  TIMEOUT(false, "Connection timeout"),
-  MAX_RETRIES_EXCEEDED(true, "Maximum retry attempts exceeded");
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.goal.DoorInteractGoal;
 
-  private final boolean permanent;
-  private final String message;
+public class CustomDoorInteractGoal extends DoorInteractGoal {
 
-  TextureFailureType(boolean permanent, String message) {
-    this.permanent = permanent;
-    this.message = message;
+  private static final int MAX_DOOR_OPEN_TICKS = 100;
+
+  private final boolean closeDoor;
+  private int openTicks;
+
+  public CustomDoorInteractGoal(Mob mob, boolean closeDoor) {
+    super(mob);
+    this.closeDoor = closeDoor;
   }
 
-  public boolean isPermanent() {
-    return permanent;
+  @Override
+  public boolean canContinueToUse() {
+    return this.closeDoor
+        && this.hasDoor
+        && this.openTicks < MAX_DOOR_OPEN_TICKS
+        && super.canContinueToUse();
   }
 
-  public String getMessage() {
-    return message;
+  @Override
+  public void start() {
+    super.start();
+    this.openTicks = 0;
+    this.setOpen(true);
+  }
+
+  @Override
+  public void stop() {
+    if (this.closeDoor) {
+      this.setOpen(false);
+    }
+  }
+
+  @Override
+  public void tick() {
+    this.openTicks++;
+    super.tick();
   }
 }

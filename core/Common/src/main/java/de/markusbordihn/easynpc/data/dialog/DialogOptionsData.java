@@ -28,7 +28,8 @@ public record DialogOptionsData(
     boolean displayAvatar,
     Integer avatarTop,
     Integer avatarLeft,
-    Integer avatarScale) {
+    Integer avatarScale,
+    DialogButtonConditionMode buttonConditionMode) {
 
   public static final String DATA_ALLOW_ESC_CLOSE_TAG = "AllowEscClose";
   public static final String DATA_DISPLAY_AVATAR_TAG = "DisplayAvatar";
@@ -36,9 +37,27 @@ public record DialogOptionsData(
   public static final String DATA_AVATAR_LEFT_TAG = "AvatarLeft";
   public static final String DATA_AVATAR_SCALE_TAG = "AvatarScale";
   public static final String DATA_AVATAR_TOP_TAG = "AvatarTop";
+  public static final String DATA_BUTTON_CONDITION_MODE_TAG = "ButtonConditionMode";
 
   public static final DialogOptionsData DEFAULT =
-      new DialogOptionsData(true, true, true, null, null, null);
+      new DialogOptionsData(true, true, true, null, null, null, DialogButtonConditionMode.LOCK);
+
+  public DialogOptionsData(
+      boolean allowEscClose,
+      boolean showCloseButton,
+      boolean displayAvatar,
+      Integer avatarTop,
+      Integer avatarLeft,
+      Integer avatarScale) {
+    this(
+        allowEscClose,
+        showCloseButton,
+        displayAvatar,
+        avatarTop,
+        avatarLeft,
+        avatarScale,
+        DialogOptionsConfig.BUTTON_CONDITION_MODE);
+  }
 
   public DialogOptionsData() {
     this(
@@ -47,7 +66,8 @@ public record DialogOptionsData(
         DialogOptionsConfig.DISPLAY_AVATAR,
         null,
         null,
-        null);
+        null,
+        DialogOptionsConfig.BUTTON_CONDITION_MODE);
   }
 
   public static DialogOptionsData getDefault() {
@@ -57,7 +77,8 @@ public record DialogOptionsData(
         DialogOptionsConfig.DISPLAY_AVATAR,
         null,
         null,
-        null);
+        null,
+        DialogOptionsConfig.BUTTON_CONDITION_MODE);
   }
 
   public static DialogOptionsData load(CompoundTag compoundTag) {
@@ -83,9 +104,19 @@ public record DialogOptionsData(
         compoundTag.contains(DATA_AVATAR_SCALE_TAG)
             ? compoundTag.getInt(DATA_AVATAR_SCALE_TAG)
             : null;
+    DialogButtonConditionMode buttonConditionMode =
+        compoundTag.contains(DATA_BUTTON_CONDITION_MODE_TAG)
+            ? DialogButtonConditionMode.get(compoundTag.getString(DATA_BUTTON_CONDITION_MODE_TAG))
+            : DialogOptionsConfig.BUTTON_CONDITION_MODE;
 
     return new DialogOptionsData(
-        allowEscClose, showCloseButton, displayAvatar, avatarTop, avatarLeft, avatarScale);
+        allowEscClose,
+        showCloseButton,
+        displayAvatar,
+        avatarTop,
+        avatarLeft,
+        avatarScale,
+        buttonConditionMode);
   }
 
   public boolean hasAvatarTop() {
@@ -106,7 +137,8 @@ public record DialogOptionsData(
         && this.displayAvatar == DialogOptionsConfig.DISPLAY_AVATAR
         && this.avatarTop == null
         && this.avatarLeft == null
-        && this.avatarScale == null;
+        && this.avatarScale == null
+        && this.buttonConditionMode == DialogOptionsConfig.BUTTON_CONDITION_MODE;
   }
 
   public CompoundTag save(CompoundTag compoundTag) {
@@ -127,6 +159,9 @@ public record DialogOptionsData(
     }
     if (this.avatarScale != null) {
       compoundTag.putInt(DATA_AVATAR_SCALE_TAG, this.avatarScale);
+    }
+    if (this.buttonConditionMode != DialogOptionsConfig.BUTTON_CONDITION_MODE) {
+      compoundTag.putString(DATA_BUTTON_CONDITION_MODE_TAG, this.buttonConditionMode.name());
     }
 
     return compoundTag;

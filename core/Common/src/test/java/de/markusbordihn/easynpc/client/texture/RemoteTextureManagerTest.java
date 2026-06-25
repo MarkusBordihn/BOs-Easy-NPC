@@ -21,6 +21,11 @@ package de.markusbordihn.easynpc.client.texture;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.sun.net.httpserver.HttpServer;
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.UUID;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,6 +35,24 @@ import org.junit.jupiter.api.Test;
 class RemoteTextureManagerTest {
 
   private TextureModelKey testKey;
+
+  private static void deleteDirectory(Path directory) throws IOException {
+    if (directory == null || !Files.exists(directory)) {
+      return;
+    }
+
+    try (java.util.stream.Stream<Path> paths = Files.walk(directory)) {
+      paths
+          .sorted((left, right) -> right.compareTo(left))
+          .forEach(
+              path -> {
+                try {
+                  Files.deleteIfExists(path);
+                } catch (IOException ignored) {
+                }
+              });
+    }
+  }
 
   @BeforeEach
   void setUp() {
@@ -132,6 +155,8 @@ class RemoteTextureManagerTest {
         de.markusbordihn.easynpc.data.texture.TextureFailureType.FILE_TOO_LARGE.isPermanent());
     assertTrue(de.markusbordihn.easynpc.data.texture.TextureFailureType.URL_INVALID.isPermanent());
     assertTrue(
+        de.markusbordihn.easynpc.data.texture.TextureFailureType.HTTP_CLIENT_ERROR.isPermanent());
+    assertTrue(
         de.markusbordihn.easynpc.data.texture.TextureFailureType.MAX_RETRIES_EXCEEDED
             .isPermanent());
 
@@ -150,6 +175,61 @@ class RemoteTextureManagerTest {
         "http://test.url");
 
     assertFalse(RemoteTextureManager.hasPermanentFailure(testKey));
+  }
+
+  @Test
+  @DisplayName("Should not increase retry attempts during retry delay")
+  void testRetryAttemptsOnlyIncreaseForScheduledDownloads() {
+    String skinUrl = "http://example.com/texture.png";
+
+    assertTrue(RemoteTextureManager.scheduleRetryAttempt(testKey, skinUrl, 0));
+    assertEquals(1, RemoteTextureManager.getRetryAttempts(testKey));
+
+    assertFalse(RemoteTextureManager.scheduleRetryAttempt(testKey, skinUrl, 59999));
+    assertEquals(1, RemoteTextureManager.getRetryAttempts(testKey));
+
+    assertTrue(RemoteTextureManager.scheduleRetryAttempt(testKey, skinUrl, 60000));
+    assertEquals(2, RemoteTextureManager.getRetryAttempts(testKey));
+  }
+
+  @Test
+  @DisplayName("Should stop retrying after maximum retry attempts")
+  void testMaxRetryAttemptsMarkPermanentFailure() {
+    String skinUrl = "http://example.com/texture.png";
+
+    assertTrue(RemoteTextureManager.scheduleRetryAttempt(testKey, skinUrl, 0));
+    assertTrue(RemoteTextureManager.scheduleRetryAttempt(testKey, skinUrl, 60000));
+    assertTrue(RemoteTextureManager.scheduleRetryAttempt(testKey, skinUrl, 180000));
+    assertFalse(RemoteTextureManager.hasPermanentFailure(testKey));
+
+    assertFalse(RemoteTextureManager.scheduleRetryAttempt(testKey, skinUrl, 180001));
+
+    assertTrue(RemoteTextureManager.hasPermanentFailure(testKey));
+  }
+
+  @Test
+  @DisplayName("Should mark HTTP 403 as permanent failure")
+  void testHttpForbiddenMarksPermanentFailure() throws IOException {
+    HttpServer httpServer = HttpServer.create(new InetSocketAddress("localhost", 0), 0);
+    httpServer.createContext(
+        "/skin.png",
+        exchange -> {
+          exchange.sendResponseHeaders(403, -1);
+          exchange.close();
+        });
+    httpServer.start();
+
+    Path tempDirectory = Files.createTempDirectory("remote_texture_forbidden");
+    try {
+      int port = httpServer.getAddress().getPort();
+      RemoteTextureLoader.loadRemoteTexture(
+          testKey, "http://localhost:" + port + "/skin.png", tempDirectory);
+
+      assertTrue(RemoteTextureManager.hasPermanentFailure(testKey));
+    } finally {
+      httpServer.stop(0);
+      deleteDirectory(tempDirectory);
+    }
   }
 
   @Test
