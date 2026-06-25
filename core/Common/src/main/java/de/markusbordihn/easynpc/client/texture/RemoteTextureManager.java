@@ -60,9 +60,13 @@ public class RemoteTextureManager {
   public static void markPermanentFailure(
       TextureModelKey key, TextureFailureType type, String details, String url) {
     if (type.isPermanent()) {
-      permanentFailures.put(key, new TextureFailureInfo(type, details, url));
-      log.warn(
-          "{} Marked texture {} as permanently failed: {} - {}", LOG_PREFIX, key, type, details);
+      TextureFailureInfo failureInfo = new TextureFailureInfo(type, details, url);
+      if (permanentFailures.putIfAbsent(key, failureInfo) == null) {
+        retryAttempts.remove(key);
+        textureReloadProtection.remove(key.getUUID());
+        log.warn(
+            "{} Marked texture {} as permanently failed: {} - {}", LOG_PREFIX, key, type, details);
+      }
     }
   }
 
@@ -82,14 +86,44 @@ public class RemoteTextureManager {
     int count = permanentFailures.size();
     permanentFailures.clear();
     retryAttempts.clear();
+    textureReloadProtection.clear();
     log.info("{} Cleared {} permanent failures", LOG_PREFIX, count);
   }
 
-  private static long calculateRetryDelay(int attempts) {
+  static long calculateRetryDelay(int attempts) {
     if (attempts >= MAX_RETRY_ATTEMPTS) {
       return Long.MAX_VALUE;
     }
-    return BASE_RETRY_DELAY * (long) Math.pow(2, attempts);
+    return BASE_RETRY_DELAY * (long) Math.pow(2, Math.max(0, attempts));
+  }
+
+  static synchronized boolean scheduleRetryAttempt(
+      TextureModelKey textureModelKey, String skinURL, long currentTime) {
+    int attempts = retryAttempts.getOrDefault(textureModelKey, 0);
+    if (attempts >= MAX_RETRY_ATTEMPTS) {
+      markPermanentFailure(
+          textureModelKey,
+          TextureFailureType.MAX_RETRIES_EXCEEDED,
+          "Maximum retry attempts exceeded",
+          skinURL);
+      return false;
+    }
+
+    Long lastAttempt = textureReloadProtection.get(textureModelKey.getUUID());
+    if (lastAttempt != null) {
+      long requiredDelay = calculateRetryDelay(attempts - 1);
+      if (currentTime - lastAttempt < requiredDelay) {
+        return false;
+      }
+    }
+
+    retryAttempts.put(textureModelKey, attempts + 1);
+    textureReloadProtection.put(textureModelKey.getUUID(), currentTime);
+    return true;
+  }
+
+  static int getRetryAttempts(TextureModelKey textureModelKey) {
+    return retryAttempts.getOrDefault(textureModelKey, 0);
   }
 
   private static void cleanupOldEntries() {
@@ -159,44 +193,6 @@ public class RemoteTextureManager {
       return null;
     }
 
-    UUID skinUUID = textureModelKey.getUUID();
-    long currentTime = System.currentTimeMillis();
-
-    // Use atomic operations to prevent race conditions
-    int attempts =
-        retryAttempts.compute(
-            textureModelKey,
-            (key, current) -> {
-              int currentAttempts = (current == null) ? 0 : current;
-              if (currentAttempts >= MAX_RETRY_ATTEMPTS) {
-                return currentAttempts;
-              }
-              return currentAttempts + 1;
-            });
-
-    if (attempts > MAX_RETRY_ATTEMPTS) {
-      markPermanentFailure(
-          textureModelKey,
-          TextureFailureType.MAX_RETRIES_EXCEEDED,
-          "Maximum retry attempts exceeded",
-          skinURL);
-      return null;
-    }
-
-    long requiredDelay = calculateRetryDelay(attempts - 1);
-    Long lastAttempt = textureReloadProtection.get(skinUUID);
-
-    if (lastAttempt != null && currentTime - lastAttempt < requiredDelay) {
-      return null;
-    }
-
-    // Use putIfAbsent to avoid race condition
-    Long existingAttempt = textureReloadProtection.putIfAbsent(skinUUID, currentTime);
-    if (existingAttempt != null && currentTime - existingAttempt < requiredDelay) {
-      return null;
-    }
-
-    // Get the skin model and texture data folder
     SkinModel skinModel = skinData.getSkinModel();
     Path textureDataFolder = RemoteSkinDataFiles.getRemoteSkinDataFolder(skinModel);
     if (textureDataFolder == null) {
@@ -213,6 +209,14 @@ public class RemoteTextureManager {
       return localTextureCache;
     }
 
+    if (AsyncTextureLoader.hasPendingLoad(textureModelKey)) {
+      return null;
+    }
+
+    if (!scheduleRetryAttempt(textureModelKey, skinURL, System.currentTimeMillis())) {
+      return null;
+    }
+
     AsyncTextureLoader.loadTextureAsync(textureModelKey, skinURL, textureDataFolder)
         .thenAccept(
             resourceLocation -> {
@@ -221,13 +225,6 @@ public class RemoteTextureManager {
                 textureSkinTypeCache.put(textureModelKey, skinData.getSkinType());
                 textureSkinURLCache.put(textureModelKey, skinURL);
                 retryAttempts.remove(textureModelKey);
-              } else {
-                log.error(
-                    "{} Unable to load remote texture {} ({}) from {}!",
-                    LOG_PREFIX,
-                    textureModelKey,
-                    skinURL,
-                    textureDataFolder);
               }
             });
 

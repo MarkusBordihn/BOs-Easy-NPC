@@ -26,6 +26,7 @@ import de.markusbordihn.easynpc.data.scoreboard.ScoreboardData;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import de.markusbordihn.easynpc.utils.TextFormattingCodes;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
@@ -200,11 +201,19 @@ public class DialogUtils {
   }
 
   public static DialogScreenLayout getDialogScreenLayout(DialogDataEntry dialogData, Font font) {
+    return getDialogScreenLayout(
+        dialogData,
+        font,
+        dialogData != null ? dialogData.getDialogButtons().stream().toList() : List.of());
+  }
+
+  public static DialogScreenLayout getDialogScreenLayout(
+      DialogDataEntry dialogData, Font font, List<DialogButtonEntry> dialogButtons) {
     if (dialogData == null) {
       return DialogScreenLayout.UNKNOWN;
     }
     boolean hasText = !dialogData.getText().isBlank();
-    int numberOfButtons = dialogData.getNumberOfDialogButtons();
+    int numberOfButtons = dialogButtons != null ? dialogButtons.size() : 0;
 
     if (!hasText) {
       return DialogScreenLayout.UNKNOWN;
@@ -228,7 +237,7 @@ public class DialogUtils {
     // Get the max length of the button names to check if we could use a compact layout.
     int maxButtonNameLength = 0;
     if (numberOfButtons > 0) {
-      for (DialogButtonEntry buttonData : dialogData.getDialogButtons()) {
+      for (DialogButtonEntry buttonData : dialogButtons) {
         int buttonNameLength = buttonData.name().length();
         if (buttonNameLength > maxButtonNameLength) {
           maxButtonNameLength = buttonNameLength;

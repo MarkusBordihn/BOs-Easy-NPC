@@ -18,6 +18,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;
+import net.minecraft.client.renderer.entity.layers.ItemInHandLayer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.PathfinderMob;
 
@@ -32,6 +33,11 @@ public class PlayerRenderer<T extends PathfinderMob> extends LivingEntityRendere
   }
 
   public PlayerRenderer(EntityRendererProvider.Context context, boolean slim) {
+    this(context, slim, false);
+  }
+
+  public PlayerRenderer(
+      EntityRendererProvider.Context context, boolean slim, boolean useVanillaItemInHandLayer) {
     super(
         context,
         new PlayerModel<>(
@@ -48,7 +54,11 @@ public class PlayerRenderer<T extends PathfinderMob> extends LivingEntityRendere
                     slim ? ModelLayers.PLAYER_SLIM_OUTER_ARMOR : ModelLayers.PLAYER_OUTER_ARMOR)),
             context.getModelManager()));
     this.addLayer(new SkullHeadRenderLayer<>(this));
-    this.addLayer(new EasyNPCItemAttachmentLayer<>(this, context.getItemInHandRenderer()));
+    if (useVanillaItemInHandLayer) {
+      this.addLayer(new ItemInHandLayer<>(this, context.getItemInHandRenderer()));
+    } else {
+      this.addLayer(new EasyNPCItemAttachmentLayer<>(this, context.getItemInHandRenderer()));
+    }
   }
 
   @Override

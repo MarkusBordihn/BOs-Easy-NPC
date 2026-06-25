@@ -57,6 +57,12 @@ class TextureFailureTypeTest {
   }
 
   @Test
+  void testHttpClientErrorIsPermanent() {
+    assertTrue(TextureFailureType.HTTP_CLIENT_ERROR.isPermanent());
+    assertNotNull(TextureFailureType.HTTP_CLIENT_ERROR.getMessage());
+  }
+
+  @Test
   void testMaxRetriesExceededIsPermanent() {
     assertTrue(TextureFailureType.MAX_RETRIES_EXCEEDED.isPermanent());
     assertNotNull(TextureFailureType.MAX_RETRIES_EXCEEDED.getMessage());
@@ -93,13 +99,14 @@ class TextureFailureTypeTest {
   @Test
   void testAllFailureTypesPresent() {
     TextureFailureType[] types = TextureFailureType.values();
-    assertEquals(8, types.length);
+    assertEquals(9, types.length);
 
     assertNotNull(TextureFailureType.valueOf("INVALID_IMAGE_SIZE"));
     assertNotNull(TextureFailureType.valueOf("DECODING_ERROR"));
     assertNotNull(TextureFailureType.valueOf("INVALID_FORMAT"));
     assertNotNull(TextureFailureType.valueOf("FILE_TOO_LARGE"));
     assertNotNull(TextureFailureType.valueOf("NETWORK_ERROR"));
+    assertNotNull(TextureFailureType.valueOf("HTTP_CLIENT_ERROR"));
     assertNotNull(TextureFailureType.valueOf("URL_INVALID"));
     assertNotNull(TextureFailureType.valueOf("TIMEOUT"));
     assertNotNull(TextureFailureType.valueOf("MAX_RETRIES_EXCEEDED"));
@@ -124,6 +131,9 @@ class TextureFailureTypeTest {
     assertTrue(
         TextureFailureType.NETWORK_ERROR.getMessage().toLowerCase().contains("network")
             || TextureFailureType.NETWORK_ERROR.getMessage().toLowerCase().contains("connection"));
+    assertTrue(
+        TextureFailureType.HTTP_CLIENT_ERROR.getMessage().toLowerCase().contains("http")
+            || TextureFailureType.HTTP_CLIENT_ERROR.getMessage().toLowerCase().contains("client"));
     assertTrue(
         TextureFailureType.URL_INVALID.getMessage().toLowerCase().contains("url")
             || TextureFailureType.URL_INVALID.getMessage().toLowerCase().contains("invalid"));

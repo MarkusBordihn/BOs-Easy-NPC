@@ -18,6 +18,23 @@ dependencies {
   compileOnly("de.markusbordihn.easynpc:easy_npc-common-${project.minecraft_version}:${project.version}") {
     changing = true
   }
+
+  // Core Common code for unit tests
+  testImplementation("de.markusbordihn.easynpc:easy_npc-common-${project.minecraft_version}:${project.version}") {
+    changing = true
+  }
+
+  // JUnit 5 for unit testing
+  testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.1'
+  testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.1'
+  testImplementation 'org.junit.jupiter:junit-jupiter-params:5.10.1'
+}
+
+test {
+  useJUnitPlatform()
+  testLogging {
+    events "passed", "skipped", "failed"
+  }
 }
 
 publishing {
