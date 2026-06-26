@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.gametest;
 
+import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.server.player.FakePlayer;
 import net.minecraft.core.BlockPos;
@@ -44,6 +45,9 @@ public final class GameTestHelpers {
     if (!(entity instanceof EasyNPC<?> easyNPC)) {
       helper.fail("Spawned entity is not an EasyNPC: " + entity);
       return null;
+    }
+    if (LivingEntityManager.getEasyNPCEntityByUUID(easyNPC.getEntityUUID()) == null) {
+      LivingEntityManager.addEasyNPC(easyNPC);
     }
     return easyNPC;
   }

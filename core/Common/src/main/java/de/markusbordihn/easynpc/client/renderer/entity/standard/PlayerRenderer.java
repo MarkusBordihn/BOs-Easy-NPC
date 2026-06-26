@@ -21,6 +21,7 @@ import net.minecraft.client.renderer.entity.ArmorModelSet;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.HumanoidMobRenderer;
 import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;
+import net.minecraft.client.renderer.entity.layers.ItemInHandLayer;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.core.ClientAsset;
 import net.minecraft.resources.Identifier;
@@ -40,6 +41,11 @@ public class PlayerRenderer
   }
 
   public PlayerRenderer(EntityRendererProvider.Context context, boolean slim) {
+    this(context, slim, false);
+  }
+
+  public PlayerRenderer(
+      EntityRendererProvider.Context context, boolean slim, boolean useVanillaItemInHandLayer) {
     super(
         context,
         new PlayerModel(
@@ -54,7 +60,11 @@ public class PlayerRenderer
                 modelPart -> new PlayerModel(modelPart, slim)),
             context.getEquipmentRenderer()));
     this.addLayer(new SkullHeadRenderLayer<>(this));
-    this.addLayer(new EasyNPCItemAttachmentLayer<>(this));
+    if (useVanillaItemInHandLayer) {
+      this.addLayer(new ItemInHandLayer<>(this));
+    } else {
+      this.addLayer(new EasyNPCItemAttachmentLayer<>(this));
+    }
   }
 
   @Override

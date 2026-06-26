@@ -25,6 +25,7 @@ public enum TextureFailureType {
   INVALID_FORMAT(true, "Unsupported image format"),
   FILE_TOO_LARGE(true, "File exceeds size limit"),
   NETWORK_ERROR(false, "Network connection failed"),
+  HTTP_CLIENT_ERROR(true, "HTTP client error"),
   URL_INVALID(true, "URL format invalid"),
   TIMEOUT(false, "Connection timeout"),
   MAX_RETRIES_EXCEEDED(true, "Maximum retry attempts exceeded");

@@ -13,6 +13,11 @@ public class PlayerSlimRenderer extends PlayerRenderer {
     super(context, true);
   }
 
+  public PlayerSlimRenderer(
+      EntityRendererProvider.Context context, boolean useVanillaItemInHandLayer) {
+    super(context, true, useVanillaItemInHandLayer);
+  }
+
   @Override
   public Identifier getDefaultTexture() {
     return DEFAULT_TEXTURE;

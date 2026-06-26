@@ -26,6 +26,7 @@ import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.DisplayAttributeDataCapable;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import de.markusbordihn.easynpc.utils.TextUtils;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
 import org.apache.logging.log4j.LogManager;
@@ -66,6 +67,10 @@ public class NameHandler {
 
     // Define custom color and style for the name, if any.
     Style style = Style.EMPTY;
+    Component currentName = easyNPC.getEntity().getCustomName();
+    if (color < 0 && currentName != null && currentName.getStyle().getColor() != null) {
+      color = currentName.getStyle().getColor().getValue();
+    }
     if (color >= 0) {
       style = style.withColor(TextColor.fromRgb(color));
     }
