@@ -39,7 +39,8 @@ public class ZombieEpicFight extends ZombieRaw {
     super(entityType, level, variant);
   }
 
-  protected boolean isSunBurnTick() {
+  @Override
+  protected boolean isSunSensitive() {
     return false;
   }
 

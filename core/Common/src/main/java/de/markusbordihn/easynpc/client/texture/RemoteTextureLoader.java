@@ -45,6 +45,7 @@ public class RemoteTextureLoader {
   private static final int CONNECTION_TIMEOUT = 10000;
   private static final int READ_TIMEOUT = 30000;
   private static final long MAX_DOWNLOAD_SIZE = 5 * 1024 * 1024;
+  private static final String USER_AGENT = Constants.MOD_NAME + " Minecraft remote texture loader";
 
   private RemoteTextureLoader() {}
 
@@ -82,9 +83,7 @@ public class RemoteTextureLoader {
 
     try {
       URL remoteImageURL = new URL(remoteUrl);
-      connection = (HttpURLConnection) remoteImageURL.openConnection();
-      connection.setConnectTimeout(CONNECTION_TIMEOUT);
-      connection.setReadTimeout(READ_TIMEOUT);
+      connection = openConnection(remoteImageURL);
 
       // Check content length
       long contentLength = connection.getContentLengthLong();
@@ -108,9 +107,7 @@ public class RemoteTextureLoader {
 
         // Follow redirect
         remoteImageURL = new URL(redirectUrl);
-        connection = (HttpURLConnection) remoteImageURL.openConnection();
-        connection.setConnectTimeout(CONNECTION_TIMEOUT);
-        connection.setReadTimeout(READ_TIMEOUT);
+        connection = openConnection(remoteImageURL);
         responseCode = connection.getResponseCode();
         remoteUrl = redirectUrl;
       }
@@ -119,7 +116,7 @@ public class RemoteTextureLoader {
         String error = "HTTP " + responseCode + ": " + connection.getResponseMessage();
         TextureErrorHandler.urlLoadErrorMessage(textureModelKey, remoteUrl, error);
         RemoteTextureManager.markPermanentFailure(
-            textureModelKey, TextureFailureType.NETWORK_ERROR, error, remoteUrl);
+            textureModelKey, getFailureType(responseCode), error, remoteUrl);
         return null;
       }
 
@@ -212,5 +209,22 @@ public class RemoteTextureLoader {
       nativeImage.close();
       return null;
     }
+  }
+
+  private static HttpURLConnection openConnection(URL remoteImageURL) throws IOException {
+    HttpURLConnection connection = (HttpURLConnection) remoteImageURL.openConnection();
+    connection.setConnectTimeout(CONNECTION_TIMEOUT);
+    connection.setReadTimeout(READ_TIMEOUT);
+    connection.setRequestProperty("User-Agent", USER_AGENT);
+    connection.setRequestProperty("Accept", "image/png,image/*,*/*");
+    return connection;
+  }
+
+  private static TextureFailureType getFailureType(int responseCode) {
+    if (responseCode == HttpURLConnection.HTTP_FORBIDDEN
+        || responseCode == HttpURLConnection.HTTP_NOT_FOUND) {
+      return TextureFailureType.HTTP_CLIENT_ERROR;
+    }
+    return TextureFailureType.NETWORK_ERROR;
   }
 }

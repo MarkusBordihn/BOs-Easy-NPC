@@ -40,7 +40,8 @@ public class ZombifiedPiglinEpicFight extends ZombifiedPiglinRaw {
     super(entityType, level, variant);
   }
 
-  protected boolean isSunBurnTick() {
+  @Override
+  protected boolean isSunSensitive() {
     return false;
   }
 

@@ -35,10 +35,17 @@ public class PillagerRawRenderer extends PillagerRenderer implements EasyNPCEnti
       IllagerSkinVariant.PILLAGER.getTextureLocation();
 
   public PillagerRawRenderer(EntityRendererProvider.Context context) {
+    this(context, false);
+  }
+
+  public PillagerRawRenderer(
+      EntityRendererProvider.Context context, boolean useVanillaItemInHandLayer) {
     super(context);
-    this.layers.removeIf(ItemInHandLayer.class::isInstance);
     this.addLayer(new SkullHeadRenderLayer<>(this));
-    this.addLayer(new EasyNPCItemAttachmentLayer<>(this));
+    if (!useVanillaItemInHandLayer) {
+      this.layers.removeIf(ItemInHandLayer.class::isInstance);
+      this.addLayer(new EasyNPCItemAttachmentLayer<>(this));
+    }
   }
 
   @Override

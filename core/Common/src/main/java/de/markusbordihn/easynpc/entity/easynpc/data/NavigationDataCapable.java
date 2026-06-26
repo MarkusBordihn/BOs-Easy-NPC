@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.entity.easynpc.data;
 
 import de.markusbordihn.easynpc.data.attribute.EntityAttributes;
+import de.markusbordihn.easynpc.data.attribute.MovementAttributes;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.data.ticker.TickerType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
@@ -71,7 +72,15 @@ public interface NavigationDataCapable<T extends Mob> extends EasyNPC<T> {
             ? this.getEasyNPCAttributeData().getEntityAttributes()
             : null;
     if (attributeData != null && attributeData.hasMovementAttributes()) {
-      groundPathNavigation.setCanOpenDoors(attributeData.getMovementAttributes().canOpenDoor());
+      MovementAttributes movementAttributes = attributeData.getMovementAttributes();
+      boolean canOpenDoor = movementAttributes.canOpenDoor();
+      boolean canCloseDoor = movementAttributes.canCloseDoor();
+      // Vanilla pathfinding only routes through a door (open or closed) when canPassDoors is set,
+      // so any door interaction implies door traversal.
+      groundPathNavigation.setCanOpenDoors(canOpenDoor);
+      groundPathNavigation
+          .getNodeEvaluator()
+          .setCanPassDoors(movementAttributes.canPassDoor() || canOpenDoor || canCloseDoor);
       groundPathNavigation.setCanFloat(attributeData.getEnvironmentalAttributes().canFloat());
     } else {
       groundPathNavigation.setCanOpenDoors(true);

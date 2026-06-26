@@ -39,10 +39,6 @@ public class StrayEpicFight extends StrayRaw {
     super(entityType, level, variant);
   }
 
-  protected boolean isSunBurnTick() {
-    return false;
-  }
-
   @Override
   public boolean canUseArmor() {
     return true;
