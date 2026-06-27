@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Markus Bordihn
+ * Copyright 2025 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,30 +17,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.client.screen.components;
+package de.markusbordihn.easynpc.condition;
 
-import net.minecraft.client.gui.GuiGraphics;
+import de.markusbordihn.easynpc.data.condition.ConditionDataEntry;
+import de.markusbordihn.easynpc.data.condition.ConditionOperationType;
+import net.minecraft.world.level.Level;
 
-public class DrawBoxWithBorder {
+public class TimeOfDayCondition {
 
-  private static final int DEFAULT_BACKGROUND_COLOR = 0xF0E0E0E0;
-  private static final int DEFAULT_BORDER_COLOR = 0xFF555555;
+  public static final int DAY_LENGTH = 24000;
 
-  private DrawBoxWithBorder() {}
+  private TimeOfDayCondition() {}
 
-  public static void draw(GuiGraphics guiGraphics, int x, int y, int width, int height) {
-    draw(guiGraphics, x, y, width, height, DEFAULT_BACKGROUND_COLOR, DEFAULT_BORDER_COLOR);
+  public static boolean evaluate(ConditionDataEntry conditionDataEntry, Level level) {
+    if (conditionDataEntry == null || level == null || conditionDataEntry.operationType() == null) {
+      return false;
+    }
+
+    return matches(
+        conditionDataEntry.operationType(), conditionDataEntry.value(), level.getDayTime());
   }
 
-  public static void draw(
-      GuiGraphics guiGraphics,
-      int x,
-      int y,
-      int width,
-      int height,
-      int backgroundColor,
-      int borderColor) {
-    DrawBox.draw(guiGraphics, x, y, width, height, backgroundColor);
-    DrawBorder.draw(guiGraphics, x, y, width, height, borderColor);
+  static boolean matches(ConditionOperationType operationType, int value, long worldTime) {
+    int dayTime = (int) (worldTime % DAY_LENGTH);
+    return operationType.evaluate(dayTime, value);
   }
 }

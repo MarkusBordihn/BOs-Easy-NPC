@@ -173,19 +173,23 @@ public class ConditionDataListEntry extends ObjectSelectionList.Entry<ConditionD
           case SCOREBOARD ->
               this.conditionDataEntry.name()
                   + " "
-                  + this.conditionDataEntry.operationType().name()
+                  + this.conditionDataEntry.operationType().getSymbol()
                   + " "
                   + this.conditionDataEntry.value();
           case EXECUTION_LIMIT -> buildExecutionLimitPreview(this.conditionDataEntry);
           case HAS_ITEM_IN_HAND -> buildItemPreview(this.conditionDataEntry, true);
           case HAS_ITEM_IN_INVENTORY -> buildItemPreview(this.conditionDataEntry, false);
           case ADVANCEMENT, PLAYER_TAG, TEAM, GAMEMODE -> this.conditionDataEntry.name();
-          case EXPERIENCE_LEVEL, PLAYER_HEALTH, NPC_HEALTH ->
-              this.conditionDataEntry.operationType().name()
+          case EXPERIENCE_LEVEL, PLAYER_HEALTH, NPC_HEALTH, TIME_OF_DAY ->
+              this.conditionDataEntry.operationType().getSymbol()
                   + " "
                   + this.conditionDataEntry.value();
+          case WEATHER ->
+              this.conditionDataEntry.subType() != null
+                  ? ((Enum<?>) this.conditionDataEntry.subType()).name()
+                  : "-";
           case ENTITY_HEALTH ->
-              this.conditionDataEntry.operationType().name()
+              this.conditionDataEntry.operationType().getSymbol()
                   + " "
                   + this.conditionDataEntry.value()
                   + " ("

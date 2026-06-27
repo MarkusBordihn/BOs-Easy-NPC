@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.entity;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.compat.CompatConstants;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
@@ -44,10 +45,8 @@ public class ModEntityType {
       new EnumMap<>(ModCustomEntityType.class);
   public static final Map<UserDefinedEntityType, EntityType<?>> USER_DEFINED_TYPE =
       new ConcurrentHashMap<>();
-  public static final Map<EpicFightEntityType, EntityType<?>> EPIC_FIGHT_TYPE =
-      new EnumMap<>(EpicFightEntityType.class);
-  public static final Map<CobblemonEntityType, EntityType<?>> COBBLEMON_TYPE =
-      new EnumMap<>(CobblemonEntityType.class);
+  public static final Map<EpicFightEntityType, EntityType<?>> EPIC_FIGHT_TYPE = new HashMap<>();
+  public static final Map<CobblemonEntityType, EntityType<?>> COBBLEMON_TYPE = new HashMap<>();
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   static {

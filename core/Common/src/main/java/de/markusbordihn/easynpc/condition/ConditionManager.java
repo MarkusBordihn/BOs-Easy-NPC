@@ -74,6 +74,8 @@ public class ConditionManager {
       case PLAYER_TAG -> PlayerTagCondition.evaluate(conditionDataEntry, serverPlayer);
       case TEAM -> TeamCondition.evaluate(conditionDataEntry, serverPlayer);
       case GAMEMODE -> GamemodeCondition.evaluate(conditionDataEntry, serverPlayer);
+      case TIME_OF_DAY -> TimeOfDayCondition.evaluate(conditionDataEntry, serverPlayer.level());
+      case WEATHER -> WeatherCondition.evaluate(conditionDataEntry, serverPlayer.level());
       case FALLBACK -> true;
       case NONE -> true;
     };

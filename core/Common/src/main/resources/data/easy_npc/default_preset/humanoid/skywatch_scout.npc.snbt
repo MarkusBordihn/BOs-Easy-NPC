@@ -1,0 +1,314 @@
+{
+  PresetMetadata:{
+    author:"Kaworru",
+    category:"Quest",
+    created:1782518400000L,
+    description:"A simple skywatcher preset that uses time-of-day and weather conditions to offer different dialogs, route hints and small command effects.",
+    entityTypeId:"easy_npc:humanoid",
+    modified:1782518400000L,
+    name:"Skywatch Scout",
+    variantType:"NOOR",
+    version:"1.0.0"
+  },
+  data:{
+    ActionData:{
+      ActionEventSet:{
+        ON_DISTANCE_CLOSE:[{
+          Cmd:"/playsound minecraft:block.note_block.chime master @initiator ~ ~ ~ 0.6 1.2",
+          Type:"COMMAND"
+        }],
+        ON_INTERACTION:[{
+          Type:"OPEN_DEFAULT_DIALOG"
+        }]
+      },
+      ActionPermissionLevel:4
+    },
+    ArmorDropChances:[0.085f,0.085f,0.085f,0.085f],
+    ArmorItems:[{
+      Count:1b,id:"minecraft:leather_boots",tag:{
+        Damage:0
+      }
+    },{},{},{}],
+    Attributes:[{
+      Base:0.5d,Name:"minecraft:generic.movement_speed"
+    },{
+      Base:1.0d,Name:"minecraft:generic.attack_damage"
+    },{
+      Base:16.0d,Name:"minecraft:generic.follow_range"
+    }],
+    Brain:{
+      memories:{}
+    },
+    CanPickUpLoot:0b,
+    CanUpdate:1b,
+    CustomName:'{"color":"#78C7FF","text":"Mira, Skywatch Scout"}',
+    CustomNameVisible:1b,
+    DialogData:{
+      DialogDataSet:[{
+        Buttons:[{
+          Actions:[{
+            Cmd:"/summon firework_rocket ~ ~1 ~ {LifeTime:25,FireworksItem:{id:firework_rocket,Count:1,tag:{Fireworks:{Flight:1,Explosions:[{Type:1,Flicker:1,Trail:1,Colors:[I;2437522,11743532],FadeColors:[I;15790320]}]}}}}",
+            Type:"COMMAND"
+          },{
+            Cmd:"storm_flare",Type:"OPEN_NAMED_DIALOG"
+          }],
+          Conditions:[{
+            SubType:"PER_DAY",Type:"EXECUTION_LIMIT",Value:1
+          }],
+          Label:"button_storm_flare",
+          Name:"Send one storm flare"
+        },{
+          Actions:[{
+            Cmd:"storm_route",Type:"OPEN_NAMED_DIALOG"
+          }],
+          Label:"button_storm_route",
+          Name:"Which path is safe?"
+        }],
+        Conditions:[{
+          SubType:"THUNDER",Type:"WEATHER"
+        }],
+        Label:"storm",
+        Name:"Storm Watch",
+        Priority:40,
+        Texts:[{
+          Text:"Hear that, @initiator? Thunder rolls from the high ridge, not the valley.\\n\\nKeep iron tools low, avoid lonely trees and follow the stone lanterns until the storm spends its temper."
+        }]
+      },{
+        Buttons:[{
+          Actions:[{
+            Cmd:"rain_route",Type:"OPEN_NAMED_DIALOG"
+          }],
+          Label:"button_rain_route",
+          Name:"Read the muddy trail"
+        }],
+        Conditions:[{
+          SubType:"RAIN",Type:"WEATHER"
+        }],
+        Label:"rain",
+        Name:"Rain Watch",
+        Priority:30,
+        Texts:[{
+          Text:"Rain makes the old paths honest, @initiator. Fresh tracks shine, loose gravel darkens and the safe road leaves fewer puddles than the shortcut."
+        }]
+      },{
+        Buttons:[{
+          Actions:[{
+            Cmd:"night_route",Type:"OPEN_NAMED_DIALOG"
+          }],
+          Label:"button_night_route",
+          Name:"Follow the star route"
+        },{
+          Actions:[{
+            Cmd:"/particle minecraft:end_rod ~ ~2 ~ 0.35 0.2 0.35 0.02 18",
+            Type:"COMMAND"
+          },{
+            Cmd:"star_signal",Type:"OPEN_NAMED_DIALOG"
+          }],
+          Label:"button_star_signal",
+          Name:"Raise a quiet signal"
+        }],
+        Conditions:[{
+          Operation:"GREATER_THAN_OR_EQUALS",Type:"TIME_OF_DAY",Value:13000
+        }],
+        Label:"night",
+        Name:"Night Watch",
+        Priority:20,
+        Texts:[{
+          Text:"The night is not empty, @initiator. See the three bright stars above the spruce line? Keep them over your left shoulder and you will circle the ravine instead of falling into it."
+        }]
+      },{
+        Buttons:[{
+          Actions:[{
+            Cmd:"day_route",Type:"OPEN_NAMED_DIALOG"
+          }],
+          Label:"button_day_route",
+          Name:"Ask for the daylight route"
+        }],
+        Conditions:[{
+          Operation:"LESS_THAN",Type:"TIME_OF_DAY",Value:12000
+        }],
+        Label:"day",
+        Name:"Day Watch",
+        Priority:10,
+        Texts:[{
+          Text:"Clear light, good wind and no smoke on the horizon. If you travel now, @initiator, keep to the ridge until the river bends. The birch grove marks the safer descent."
+        }]
+      },{
+        Label:"storm_flare",
+        Name:"Storm Flare Sent",
+        Priority:-1,
+        Texts:[{
+          Text:"A blue-white flare climbs through the rain. Anyone watching the road will know a traveler needs a weather window."
+        }]
+      },{
+        Label:"storm_route",
+        Name:"Stone Lantern Path",
+        Priority:-1,
+        Texts:[{
+          Text:"Take the low road only until the first cracked lantern. After that, climb. Water gathers there fast and the second bridge likes to vanish when the thunder gets close."
+        }]
+      },{
+        Label:"rain_route",
+        Name:"Muddy Trail",
+        Priority:-1,
+        Texts:[{
+          Text:"Look for grass that bends uphill. That means someone dragged a cart through recently. Follow it and you will find the sheltered pass before your boots give up."
+        }]
+      },{
+        Label:"night_route",
+        Name:"Star Route",
+        Priority:-1,
+        Texts:[{
+          Text:"Walk until the moon touches the tallest pine, then turn right. If you hear water before you see mossy stone, you turned too early."
+        }]
+      },{
+        Label:"star_signal",
+        Name:"Quiet Signal",
+        Priority:-1,
+        Texts:[{
+          Text:"Small lights drift upward and fade. Quiet enough for friends to notice, soft enough that trouble should keep walking."
+        }]
+      },{
+        Label:"day_route",
+        Name:"Ridge Route",
+        Priority:-1,
+        Texts:[{
+          Text:"Use the ridge while the sun is high. You will see danger before it sees you, and the way down is easier once the birch shadows point east."
+        }]
+      },{
+        Conditions:[{
+          Type:"FALLBACK"
+        }],
+        Label:"fallback",
+        Name:"Changing Light",
+        Priority:0,
+        Texts:[{
+          Text:"The sky is between stories right now, @initiator. Give it a moment, then ask again; dusk and dawn both like to keep secrets."
+        }]
+      }],
+      Type:"CUSTOM"
+    },
+    DisplayAttribute:[{
+      Bool:1b,Type:"VISIBLE"
+    },{
+      Bool:1b,Type:"VISIBLE_AT_DAY"
+    },{
+      Bool:1b,Type:"VISIBLE_AT_NIGHT"
+    },{
+      Bool:1b,Type:"VISIBLE_IN_CREATIVE"
+    },{
+      Bool:1b,Type:"VISIBLE_IN_SPECTATOR"
+    },{
+      Bool:1b,Type:"VISIBLE_IN_STANDARD"
+    },{
+      Bool:1b,Type:"VISIBLE_TO_OWNER"
+    },{
+      Bool:1b,Type:"VISIBLE_TO_TEAM"
+    },{
+      Int:9,Type:"LIGHT_LEVEL"
+    },{
+      Text:"ALWAYS",Type:"NAME_VISIBILITY"
+    }],
+    EasyNPCVersion:3,
+    EntityAttribute:{
+      CanBeHitByProjectile:0b,
+      CanBeLeashed:0b,
+      CanBreatheUnderwater:0b,
+      CanCloseDoor:1b,
+      CanFloat:1b,
+      CanOpenDoor:1b,
+      CanPassDoor:1b,
+      CanUseNetherPortal:0b,
+      Freefall:0b,
+      HealthRegeneration:0.0d,
+      IsAttackableByMonsters:0b,
+      IsAttackableByPlayers:0b,
+      IsInvulnerable:1b,
+      IsPushable:0b,
+      NoGravity:0b,
+      PushEntities:0b
+    },
+    HandDropChances:[0.085f,0.085f],
+    HandItems:[{
+      Count:1b,id:"minecraft:spyglass"
+    },{
+      Count:1b,id:"minecraft:compass"
+    }],
+    Health:20.0f,
+    Invulnerable:1b,
+    LeftHanded:0b,
+    ModelData:{
+      DefaultPose:"STANDING",
+      Pose:"CUSTOM",
+      Position:{},
+      Rotation:{
+        LeftArm:[-0.5235988f,0.0f,0.0f,0.0f],
+        RightArm:[-1.0471976f,0.17453292f,0.0f,0.0f]
+      },
+      Scale:{},
+      Visible:{}
+    },
+    Navigation:{
+      Home:{
+        X:0,
+        Y:64,
+        Z:0
+      }
+    },
+    ObjectiveData:{
+      HasObjectives:1b,
+      ObjectiveDataSet:[{
+        Prio:9,Type:"LOOK_AT_PLAYER"
+      },{
+        Prio:9,Type:"LOOK_AT_RESET"
+      }]
+    },
+    Offers:{
+      Inventory:{},
+      Recipes:{
+        Recipes:[]
+      }
+    },
+    OnGround:1b,
+    PersistenceRequired:0b,
+    PresetUUID:[I;1671093155,441074200,-1102527143,-332669871],
+    Profession:"NONE",
+    RenderData:{},
+    SkinData:{
+      Content:"",
+      DisableLayers:0b,
+      Name:"NOOR",
+      Timestamp:1782518400000L,
+      Type:"DEFAULT",
+      URL:"",
+      UUID:[I;0,0,0,0]
+    },
+    SoundData:{
+      SoundDataSet:[{
+        Name:"minecraft:entity.villager.ambient",Type:"AMBIENT"
+      },{
+        Name:"minecraft:entity.player.death",Type:"DEATH"
+      },{
+        Name:"minecraft:entity.player.hurt",Type:"HURT"
+      },{
+        Name:"minecraft:entity.villager.yes",Type:"TRADE_YES"
+      },{
+        Name:"minecraft:entity.villager.no",Type:"TRADE_NO"
+      }]
+    },
+    Status:{
+      finalized:1b
+    },
+    TradingData:{
+      TradingDataSet:{
+        LastReset:0L,
+        MaxUses:64,
+        ResetsEveryMin:0,
+        RewardedXP:0,
+        Type:"NONE"
+      }
+    },
+    VariantType:"NOOR",
+    id:"easy_npc:humanoid"
+  }
+}

@@ -19,15 +19,14 @@
 
 package de.markusbordihn.easynpc.configui.client.screen.components;
 
+import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextField;
 import java.util.function.IntConsumer;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.util.Mth;
-import org.lwjgl.glfw.GLFW;
 
-public class ColorPickerPopup {
+public class ColorPickerPopup extends Popup {
 
   public static final int COLUMNS = 8;
   public static final int ROWS = 4;
@@ -37,12 +36,9 @@ public class ColorPickerPopup {
   private static final int PADDING = 6;
   private static final int TITLE_HEIGHT = 11;
   private static final int FIELD_HEIGHT = 16;
-  private static final int RIGHT_MARGIN = 10;
   private static final int RGB_LABEL_WIDTH = 22;
   private static final int PREVIEW_SIZE = FIELD_HEIGHT;
-  private static final int PREVIEW_GAP = 4;
-  private static final int FIELD_X_OFFSET = PADDING + RGB_LABEL_WIDTH + PREVIEW_SIZE + PREVIEW_GAP;
-  private static final int Z_OFFSET = 400;
+  private static final int FIELD_X_OFFSET = PADDING + RGB_LABEL_WIDTH + PREVIEW_SIZE + 4;
   private static final int PANEL_WIDTH =
       PADDING * 2 + COLUMNS * SWATCH_SIZE + (COLUMNS - 1) * SWATCH_GAP;
   private static final int FIELD_WIDTH = PANEL_WIDTH - PADDING - FIELD_X_OFFSET;
@@ -53,14 +49,9 @@ public class ColorPickerPopup {
   private final IntConsumer onColorSelected;
   private final TextField hexField;
 
-  private boolean visible = false;
   private boolean suppressResponder = false;
-  private int x;
-  private int y;
   private int gridLeft;
   private int gridTop;
-  private int previewLeft;
-  private int previewTop;
   private int selectedColor;
 
   public ColorPickerPopup(Font font, IntConsumer onColorSelected) {
@@ -84,17 +75,39 @@ public class ColorPickerPopup {
     };
   }
 
-  private static boolean contains(
-      double pointX, double pointY, int left, int top, int width, int height) {
-    return pointX >= left && pointX < left + width && pointY >= top && pointY < top + height;
+  public void toggle(
+      int currentColor, int anchorX, int anchorY, int screenWidth, int screenHeight) {
+    if (this.isVisible()) {
+      this.close();
+    } else {
+      this.selectedColor = currentColor & 0xffffff;
+      this.open(anchorX, anchorY, screenWidth, screenHeight);
+    }
   }
 
-  public boolean isVisible() {
-    return this.visible;
+  @Override
+  protected int getPanelWidth() {
+    return PANEL_WIDTH;
   }
 
-  public boolean isMouseOver(double mouseX, double mouseY) {
-    return this.visible && contains(mouseX, mouseY, this.x, this.y, PANEL_WIDTH, PANEL_HEIGHT);
+  @Override
+  protected int getPanelHeight() {
+    return PANEL_HEIGHT;
+  }
+
+  @Override
+  protected void onOpen() {
+    this.gridLeft = this.getX() + PADDING;
+    this.gridTop = this.getY() + PADDING + TITLE_HEIGHT;
+    this.hexField.setX(this.getX() + FIELD_X_OFFSET);
+    this.hexField.setY(this.getY() + PADDING + TITLE_HEIGHT + GRID_HEIGHT + PADDING);
+    this.setHexFieldValue(this.selectedColor);
+    this.hexField.setFocused(false);
+  }
+
+  @Override
+  protected void onClose() {
+    this.hexField.setFocused(false);
   }
 
   private int swatchLeft(int index) {
@@ -105,41 +118,10 @@ public class ColorPickerPopup {
     return this.gridTop + (index / COLUMNS) * (SWATCH_SIZE + SWATCH_GAP);
   }
 
-  public void toggle(
-      int currentColor, int anchorX, int anchorY, int screenWidth, int screenHeight) {
-    if (this.visible) {
-      this.close();
-    } else {
-      this.open(currentColor, anchorX, anchorY, screenWidth, screenHeight);
-    }
-  }
-
-  public void open(int currentColor, int anchorX, int anchorY, int screenWidth, int screenHeight) {
-    this.selectedColor = currentColor & 0xffffff;
-    this.x = Mth.clamp(anchorX, 0, Math.max(0, screenWidth - PANEL_WIDTH - RIGHT_MARGIN));
-    this.y = Mth.clamp(anchorY, 0, Math.max(0, screenHeight - PANEL_HEIGHT));
-    this.gridLeft = this.x + PADDING;
-    this.gridTop = this.y + PADDING + TITLE_HEIGHT;
-
-    int fieldY = this.y + PADDING + TITLE_HEIGHT + GRID_HEIGHT + PADDING;
-    this.previewLeft = this.x + PADDING + RGB_LABEL_WIDTH;
-    this.previewTop = fieldY;
-    this.hexField.setX(this.x + FIELD_X_OFFSET);
-    this.hexField.setY(fieldY);
-    this.setHexFieldValue(this.selectedColor);
-    this.hexField.setFocused(false);
-    this.visible = true;
-  }
-
   private void setHexFieldValue(int color) {
     this.suppressResponder = true;
     this.hexField.setValue(ColorUtils.formatRgbColor(color));
     this.suppressResponder = false;
-  }
-
-  public void close() {
-    this.visible = false;
-    this.hexField.setFocused(false);
   }
 
   private void onHexFieldChanged() {
@@ -159,25 +141,16 @@ public class ColorPickerPopup {
     this.onColorSelected.accept(this.selectedColor);
   }
 
-  public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-    if (!this.visible) {
-      return;
-    }
-
-    guiGraphics.pose().pushPose();
-    guiGraphics.pose().translate(0, 0, Z_OFFSET);
-
-    guiGraphics.fill(
-        this.x - 1, this.y - 1, this.x + PANEL_WIDTH + 1, this.y + PANEL_HEIGHT + 1, 0xFF000000);
-    guiGraphics.fill(this.x, this.y, this.x + PANEL_WIDTH, this.y + PANEL_HEIGHT, 0xFF2B2B2B);
-
+  @Override
+  protected void renderContent(
+      GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
     Text.drawConfigStringShadow(
         guiGraphics,
         this.font,
         "color_picker.title",
-        this.x + PADDING,
-        this.y + PADDING,
-        0xFFFFFFFF);
+        this.getX() + PADDING,
+        this.getY() + PADDING,
+        Constants.FONT_COLOR_WHITE);
 
     for (int index = 0; index < PALETTE.length; index++) {
       int swatchX = this.swatchLeft(index);
@@ -188,55 +161,37 @@ public class ColorPickerPopup {
       boolean selected = color == this.selectedColor;
 
       int borderColor = selected ? 0xFFFFFFFF : (hovered ? 0xFFFFFFAA : 0xFF000000);
-      guiGraphics.fill(swatchX, swatchY, swatchX + SWATCH_SIZE, swatchY + SWATCH_SIZE, borderColor);
-      guiGraphics.fill(
-          swatchX + 1,
-          swatchY + 1,
-          swatchX + SWATCH_SIZE - 1,
-          swatchY + SWATCH_SIZE - 1,
-          0xFF000000 | color);
+      DrawBoxWithBorder.draw(
+          guiGraphics, swatchX, swatchY, SWATCH_SIZE, SWATCH_SIZE, 0xFF000000 | color, borderColor);
     }
 
     Text.drawConfigString(
         guiGraphics,
         this.font,
         "color_picker.rgb",
-        this.x + PADDING,
+        this.getX() + PADDING,
         this.hexField.getY() + (FIELD_HEIGHT - 8) / 2,
-        0xFFFFFFFF);
+        Constants.FONT_COLOR_WHITE);
 
     Integer parsedColor = ColorUtils.parseRgbColor(this.hexField.getValue());
     int previewColor = parsedColor != null ? parsedColor : this.selectedColor;
-    guiGraphics.fill(
-        this.previewLeft,
-        this.previewTop,
-        this.previewLeft + PREVIEW_SIZE,
-        this.previewTop + PREVIEW_SIZE,
+    DrawBoxWithBorder.draw(
+        guiGraphics,
+        this.getX() + PADDING + RGB_LABEL_WIDTH,
+        this.hexField.getY(),
+        PREVIEW_SIZE,
+        PREVIEW_SIZE,
+        0xFF000000 | previewColor,
         0xFF000000);
-    guiGraphics.fill(
-        this.previewLeft + 1,
-        this.previewTop + 1,
-        this.previewLeft + PREVIEW_SIZE - 1,
-        this.previewTop + PREVIEW_SIZE - 1,
-        0xFF000000 | previewColor);
 
     this.hexField.render(guiGraphics, mouseX, mouseY, partialTicks);
-    guiGraphics.pose().popPose();
   }
 
-  public boolean mouseClicked(double mouseX, double mouseY, int button) {
-    if (!this.visible) {
-      return false;
-    }
-
-    if (!contains(mouseX, mouseY, this.x, this.y, PANEL_WIDTH, PANEL_HEIGHT)) {
-      this.close();
-      return true;
-    }
-
+  @Override
+  protected void onMouseClicked(double mouseX, double mouseY, int button) {
     if (this.hexField.mouseClicked(mouseX, mouseY, button)) {
       this.hexField.setFocused(true);
-      return true;
+      return;
     }
     this.hexField.setFocused(false);
 
@@ -249,34 +204,22 @@ public class ColorPickerPopup {
           SWATCH_SIZE,
           SWATCH_SIZE)) {
         this.selectColor(PALETTE[index]);
-        return true;
+        return;
       }
     }
-
-    return true;
   }
 
-  public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-    if (!this.visible) {
-      return false;
-    }
-    if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
-      this.close();
-      return true;
-    }
+  @Override
+  protected void onKeyPressed(int keyCode, int scanCode, int modifiers) {
     if (this.hexField.isFocused()) {
-      return this.hexField.keyPressed(keyCode, scanCode, modifiers);
+      this.hexField.keyPressed(keyCode, scanCode, modifiers);
     }
-    return true;
   }
 
-  public boolean charTyped(char codePoint, int modifiers) {
-    if (!this.visible) {
-      return false;
-    }
+  @Override
+  protected void onCharTyped(char codePoint, int modifiers) {
     if (this.hexField.isFocused()) {
-      return this.hexField.charTyped(codePoint, modifiers);
+      this.hexField.charTyped(codePoint, modifiers);
     }
-    return true;
   }
 }
