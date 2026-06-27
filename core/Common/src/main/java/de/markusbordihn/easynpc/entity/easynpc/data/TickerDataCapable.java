@@ -34,7 +34,7 @@ public interface TickerDataCapable<T extends Mob> extends EasyNPC<T> {
     if (tickerValue >= value) {
       return true;
     }
-    increaseTicker(tickerType, tickerValue + 1);
+    increaseTicker(tickerType, 1);
     return false;
   }
 

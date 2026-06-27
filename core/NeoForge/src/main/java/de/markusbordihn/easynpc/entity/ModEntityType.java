@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.entity;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.compat.CompatConstants;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -52,9 +53,9 @@ public class ModEntityType {
   public static final Map<UserDefinedEntityType, DeferredHolder<EntityType<?>, EntityType<?>>>
       USER_DEFINED_TYPE = new ConcurrentHashMap<>();
   public static final Map<EpicFightEntityType, DeferredHolder<EntityType<?>, EntityType<?>>>
-      EPIC_FIGHT_TYPE = new EnumMap<>(EpicFightEntityType.class);
+      EPIC_FIGHT_TYPE = new HashMap<>();
   public static final Map<CobblemonEntityType, DeferredHolder<EntityType<?>, EntityType<?>>>
-      COBBLEMON_TYPE = new EnumMap<>(CobblemonEntityType.class);
+      COBBLEMON_TYPE = new HashMap<>();
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   static {

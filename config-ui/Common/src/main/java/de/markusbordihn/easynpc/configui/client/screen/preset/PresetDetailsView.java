@@ -19,8 +19,8 @@
 
 package de.markusbordihn.easynpc.configui.client.screen.preset;
 
-import de.markusbordihn.easynpc.client.screen.components.DrawBoxWithBorder;
 import de.markusbordihn.easynpc.client.screen.components.Text;
+import de.markusbordihn.easynpc.configui.client.screen.components.DrawBoxWithBorder;
 import de.markusbordihn.easynpc.data.preset.PresetData;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.security.PresetFeatureNotice;

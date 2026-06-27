@@ -21,9 +21,11 @@ package de.markusbordihn.easynpc.entity.easynpc.handlers;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
+import de.markusbordihn.easynpc.data.display.DisplayAttributeType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.ConfigurationDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.DisplayAttributeDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.OwnerDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
 import de.markusbordihn.easynpc.network.components.TextComponent;
@@ -99,6 +101,19 @@ public class InteractionHandler {
           return InteractionResult.CONSUME;
         }
       }
+    }
+
+    // Block interaction when the NPC is invisible to the player and configured to do so.
+    DisplayAttributeDataCapable<?> displayAttributeData = easyNPC.getEasyNPCDisplayAttributeData();
+    boolean blockWhenInvisible =
+        displayAttributeData != null
+            && displayAttributeData.hasDisplayAttribute(
+                DisplayAttributeType.INTERACTION_WHEN_INVISIBLE)
+            && !displayAttributeData.getDisplayBooleanAttribute(
+                DisplayAttributeType.INTERACTION_WHEN_INVISIBLE);
+    if (blockWhenInvisible
+        && VisibilityHandler.handleIsInvisibleToPlayer(easyNPC, serverPlayer, false)) {
+      return InteractionResult.PASS;
     }
 
     // Handle action event data.

@@ -19,9 +19,9 @@
 
 package de.markusbordihn.easynpc.configui.client.screen.preset;
 
-import de.markusbordihn.easynpc.client.screen.components.DrawBoxWithBorder;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.configui.client.renderer.screen.EntityConfigScreenRenderer;
+import de.markusbordihn.easynpc.configui.client.screen.components.DrawBoxWithBorder;
 import de.markusbordihn.easynpc.data.render.EntityRenderConfig;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import net.minecraft.client.gui.Font;

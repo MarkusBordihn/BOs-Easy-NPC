@@ -113,6 +113,9 @@ public record ConditionDataEntry(
           this.operationType != null
               && this.operationType != ConditionOperationType.NONE
               && hasValidUuidName();
+      case TIME_OF_DAY ->
+          this.operationType != null && this.operationType != ConditionOperationType.NONE;
+      case WEATHER -> this.subType != null;
       case FALLBACK -> true;
       default -> true;
     };
