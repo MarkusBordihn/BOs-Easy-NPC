@@ -56,6 +56,7 @@ public record DisplayAttributeDataSet(
     map.put(DisplayAttributeType.VISIBLE_IN_STANDARD, new DisplayAttributeEntry(true));
     map.put(DisplayAttributeType.VISIBLE_TO_OWNER, new DisplayAttributeEntry(true));
     map.put(DisplayAttributeType.VISIBLE_TO_TEAM, new DisplayAttributeEntry(true));
+    map.put(DisplayAttributeType.INTERACTION_WHEN_INVISIBLE, new DisplayAttributeEntry(true));
     map.put(
         DisplayAttributeType.NAME_VISIBILITY,
         new DisplayAttributeEntry(NameVisibilityType.ALWAYS.toString()));

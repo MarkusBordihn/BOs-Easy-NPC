@@ -192,6 +192,21 @@ public class DisplayAttributeConfigurationScreen<T extends ConfigurationMenu>
       this.visibilityCheckboxSet.add(this.addRenderableWidget(visibilityCheckbox));
       checkboxTopPos += 20;
     }
+
+    // Interaction behavior, independent of the master visibility toggle.
+    this.addRenderableWidget(
+        new Checkbox(
+            firstButtonRow,
+            checkboxTopPos,
+            DisplayAttributeType.INTERACTION_WHEN_INVISIBLE.getAttributeName(),
+            displayAttributeData.getDisplayBooleanAttribute(
+                DisplayAttributeType.INTERACTION_WHEN_INVISIBLE),
+            checkbox ->
+                NetworkMessageHandlerManager.getServerHandler()
+                    .changeDisplayAttribute(
+                        this.getEasyNPCUUID(),
+                        DisplayAttributeType.INTERACTION_WHEN_INVISIBLE,
+                        checkbox.selected())));
   }
 
   @Override

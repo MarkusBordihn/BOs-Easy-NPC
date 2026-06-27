@@ -24,9 +24,13 @@ import static org.junit.jupiter.api.Assertions.*;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
 import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogType;
+import de.markusbordihn.easynpc.data.model.ModelAnimationBehavior;
 import de.markusbordihn.easynpc.data.model.ModelPartType;
+import de.markusbordihn.easynpc.data.model.ModelPose;
+import de.markusbordihn.easynpc.data.model.RootModelData;
 import de.markusbordihn.easynpc.data.position.CustomPosition;
 import de.markusbordihn.easynpc.data.render.RenderDataEntry;
+import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.data.scale.CustomScale;
 import de.markusbordihn.easynpc.data.server.ServerEntityData;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
@@ -38,6 +42,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.Bootstrap;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.goal.GoalSelector;
@@ -139,6 +144,52 @@ class CustomDataOptimizationTest {
     target.readAdditionalModelData(savedTag);
 
     assertEquals(Pose.CROUCHING, target.getDefaultPose());
+  }
+
+  @Test
+  void testModelData_nonDefaultValuesRoundTrip() {
+    TestEasyNPCData source = new TestEasyNPCData();
+    source.setModelPose(ModelPose.CUSTOM);
+    source.setModelPoseName("guard_pose");
+    source.setModelRootData(
+        new RootModelData(
+            new CustomRotation(0f, 90f, 0f, true), new CustomScale(1.25f, 1.5f, 1.25f)));
+    source.setModelPartPosition(ModelPartType.HEAD, new CustomPosition(1f, 2f, 3f));
+    source.setModelPartRotation(ModelPartType.RIGHT_ARM, new CustomRotation(10f, 20f, 30f, true));
+    source.setModelPartScale(ModelPartType.LEFT_ARM, new CustomScale(1.1f, 1.2f, 1.3f));
+    source.setModelPartVisibility(EquipmentSlot.HEAD, false);
+    source.setModelAnimationBehavior(ModelAnimationBehavior.NONE);
+    CompoundTag savedTag = new CompoundTag();
+
+    source.addAdditionalModelData(savedTag);
+
+    assertTrue(savedTag.contains(ModelAnimationDataCapable.EASY_NPC_DATA_ANIMATION_DATA_TAG));
+    CompoundTag modelDataTag = savedTag.getCompound(ModelDataCapable.EASY_NPC_DATA_MODEL_DATA_TAG);
+    assertEquals(
+        ModelPose.CUSTOM.name(),
+        modelDataTag.getString(ModelDataCapable.EASY_NPC_DATA_MODEL_POSE_TAG));
+    assertEquals(
+        "guard_pose", modelDataTag.getString(ModelDataCapable.EASY_NPC_DATA_MODEL_POSE_NAME_TAG));
+    assertTrue(modelDataTag.contains(ModelRootDataCapable.EASY_NPC_DATA_MODEL_ROOT_TAG));
+    assertTrue(modelDataTag.contains(ModelPositionDataCapable.EASY_NPC_DATA_MODEL_POSITION_TAG));
+    assertTrue(modelDataTag.contains(ModelRotationDataCapable.EASY_NPC_DATA_MODEL_ROTATION_TAG));
+    assertTrue(modelDataTag.contains(ModelScaleDataCapable.EASY_NPC_DATA_MODEL_SCALE_TAG));
+    assertTrue(modelDataTag.contains(ModelVisibilityDataCapable.EASY_NPC_DATA_MODEL_VISIBLE_TAG));
+
+    TestEasyNPCData target = new TestEasyNPCData();
+    target.readAdditionalModelData(savedTag);
+
+    assertEquals(ModelPose.CUSTOM, target.getModelPose());
+    assertEquals("guard_pose", target.getModelPoseName());
+    assertEquals(90f, target.getModelRootData().rotation().y());
+    assertTrue(target.getModelRootData().rotation().locked());
+    assertEquals(1.5f, target.getModelRootData().scale().y());
+    assertEquals(1f, target.getModelPartPosition(ModelPartType.HEAD).x());
+    assertEquals(20f, target.getModelPartRotation(ModelPartType.RIGHT_ARM).y());
+    assertTrue(target.getModelPartRotation(ModelPartType.RIGHT_ARM).locked());
+    assertEquals(1.3f, target.getModelPartScale(ModelPartType.LEFT_ARM).z());
+    assertFalse(target.getModelPartVisibility(EquipmentSlot.HEAD));
+    assertEquals(ModelAnimationBehavior.NONE, target.getModelAnimationBehavior());
   }
 
   @Test

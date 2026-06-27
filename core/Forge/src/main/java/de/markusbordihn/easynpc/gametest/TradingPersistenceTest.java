@@ -55,4 +55,10 @@ public class TradingPersistenceTest {
         helper, humanoid());
     helper.succeed();
   }
+
+  @GameTest(template = "gametest.3x3x3")
+  public void testTimedTradingResetRestoresUses(GameTestHelper helper) {
+    TradingPersistenceTestHelper.assertTimedTradingResetRestoresUses(helper, humanoid());
+    helper.succeed();
+  }
 }
