@@ -129,6 +129,26 @@ public interface TradingDataCapable<E extends Mob> extends EasyNPC<E>, Merchant 
     this.getTradingDataSet().setLastReset(System.currentTimeMillis());
   }
 
+  default boolean resetExpiredTradingOffers() {
+    TradingDataSet tradingDataSet = this.getTradingDataSet();
+    if (tradingDataSet == null || tradingDataSet.getResetsEveryMin() <= 0) {
+      return false;
+    }
+
+    MerchantOffers merchantOffers = this.getTradingOffers();
+    if (merchantOffers == null || merchantOffers.isEmpty()) {
+      return false;
+    }
+
+    long resetTimeInMillis = tradingDataSet.getResetsEveryMin() * 60L * 1000L;
+    if (System.currentTimeMillis() - tradingDataSet.getLastReset() <= resetTimeInMillis) {
+      return false;
+    }
+
+    this.resetTradingOffers();
+    return true;
+  }
+
   default MerchantOffers getTradingOffers() {
     return getSynchedEntityData(SynchedDataIndex.TRADING_MERCHANT_OFFERS);
   }
@@ -242,6 +262,8 @@ public interface TradingDataCapable<E extends Mob> extends EasyNPC<E>, Merchant 
       return;
     }
 
+    this.resetExpiredTradingOffers();
+
     // Verify that we have trading offers.
     MerchantOffers merchantOffers = merchant.getOffers();
     if (merchantOffers.isEmpty()) {
@@ -263,15 +285,6 @@ public interface TradingDataCapable<E extends Mob> extends EasyNPC<E>, Merchant 
           TextComponent.getTranslatedText(
               "trading.busy", this.getLivingEntity(), merchant.getTradingPlayer()));
       return;
-    }
-
-    // Check if trades should be reset.
-    if (this.getTradingDataSet().getResetsEveryMin() > 0) {
-      long currentTime = System.currentTimeMillis();
-      long resetTimeInMillis = this.getTradingDataSet().getResetsEveryMin() * 60L * 1000L;
-      if (currentTime - this.getTradingDataSet().getLastReset() > resetTimeInMillis) {
-        this.resetTradingOffers();
-      }
     }
 
     // Open trading screen for the player.

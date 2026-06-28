@@ -478,6 +478,58 @@ class ConditionDataEntryTest {
   }
 
   @Test
+  void testTimeOfDayConditionRequiresOperation() {
+    ConditionDataEntry withoutOperation =
+        new ConditionDataEntry(ConditionType.TIME_OF_DAY, ConditionOperationType.NONE, "", 13000);
+    assertFalse(withoutOperation.isValid());
+
+    ConditionDataEntry valid =
+        new ConditionDataEntry(
+            ConditionType.TIME_OF_DAY, ConditionOperationType.GREATER_THAN_OR_EQUALS, "", 13000);
+    assertTrue(valid.isValid());
+  }
+
+  @Test
+  void testTimeOfDayConditionNBTRoundTrip() {
+    ConditionDataEntry original =
+        new ConditionDataEntry(
+            ConditionType.TIME_OF_DAY, ConditionOperationType.LESS_THAN, "", 6000);
+    assertTrue(original.isValid());
+
+    CompoundTag tag = original.createTag();
+    ConditionDataEntry deserialized = new ConditionDataEntry(tag);
+    assertEquals(ConditionType.TIME_OF_DAY, deserialized.conditionType());
+    assertEquals(ConditionOperationType.LESS_THAN, deserialized.operationType());
+    assertEquals(6000, deserialized.value());
+    assertEquals(original.getId(), deserialized.getId());
+  }
+
+  @Test
+  void testWeatherConditionRequiresSubType() {
+    ConditionDataEntry withoutSubType = new ConditionDataEntry(ConditionType.WEATHER);
+    assertFalse(withoutSubType.isValid());
+
+    ConditionDataEntry valid =
+        new ConditionDataEntry(ConditionType.WEATHER).withSubType(WeatherType.CLEAR);
+    assertTrue(valid.isValid());
+  }
+
+  @Test
+  void testWeatherConditionNBTRoundTrip() {
+    ConditionDataEntry original =
+        new ConditionDataEntry(ConditionType.WEATHER).withSubType(WeatherType.THUNDER);
+    assertTrue(original.isValid());
+
+    CompoundTag tag = original.createTag();
+    assertEquals("THUNDER", tag.getString(ConditionDataEntry.DATA_SUB_TYPE_TAG).orElse(""));
+
+    ConditionDataEntry deserialized = new ConditionDataEntry(tag);
+    assertEquals(ConditionType.WEATHER, deserialized.conditionType());
+    assertEquals(WeatherType.THUNDER, deserialized.subType());
+    assertEquals(original.getId(), deserialized.getId());
+  }
+
+  @Test
   void testFallbackConditionIsAlwaysValid() {
     ConditionDataEntry fallback = new ConditionDataEntry(ConditionType.FALLBACK);
     assertTrue(fallback.isValid());

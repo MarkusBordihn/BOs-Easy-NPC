@@ -63,6 +63,8 @@ public class ClientConditionEvaluator {
               || HealthConditionEvaluator.evaluate(
                   conditionDataEntry.operationType(), conditionDataEntry.value(), npcContext);
       case ENTITY_HEALTH -> evaluateEntityHealth(conditionDataEntry, npcContext);
+      case TIME_OF_DAY -> TimeOfDayCondition.evaluate(conditionDataEntry, player.level());
+      case WEATHER -> WeatherCondition.evaluate(conditionDataEntry, player.level());
       default -> true;
     };
   }

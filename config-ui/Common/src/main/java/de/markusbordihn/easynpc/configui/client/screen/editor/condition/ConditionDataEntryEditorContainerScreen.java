@@ -40,6 +40,8 @@ import de.markusbordihn.easynpc.configui.client.screen.editor.condition.entry.Ha
 import de.markusbordihn.easynpc.configui.client.screen.editor.condition.entry.NpcHealthConditionEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.condition.entry.PlayerHealthConditionEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.condition.entry.ScoreboardConditionEntry;
+import de.markusbordihn.easynpc.configui.client.screen.editor.condition.entry.TimeOfDayConditionEntry;
+import de.markusbordihn.easynpc.configui.client.screen.editor.condition.entry.WeatherConditionEntry;
 import de.markusbordihn.easynpc.configui.menu.editor.EditorMenu;
 import de.markusbordihn.easynpc.data.condition.ConditionDataEntry;
 import de.markusbordihn.easynpc.data.condition.ConditionDataSet;
@@ -287,6 +289,14 @@ public class ConditionDataEntryEditorContainerScreen<T extends EditorMenu> exten
       case GAMEMODE:
         this.conditionEntryWidget =
             new GamemodeConditionEntry(this.conditionDataEntry, this.conditionDataSet, this);
+        break;
+      case TIME_OF_DAY:
+        this.conditionEntryWidget =
+            new TimeOfDayConditionEntry(this.conditionDataEntry, this.conditionDataSet, this);
+        break;
+      case WEATHER:
+        this.conditionEntryWidget =
+            new WeatherConditionEntry(this.conditionDataEntry, this.conditionDataSet, this);
         break;
       case FALLBACK:
         this.conditionEntryWidget = null;

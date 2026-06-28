@@ -30,8 +30,7 @@ import org.junit.jupiter.api.Test;
 class RootModelDataTest {
 
   @Test
-  @DisplayName(
-      "Locked rotation round-trips through NBT without data loss (regression for #722-style pose reset bug)")
+  @DisplayName("Locked rotation round-trips through NBT without data loss")
   void testLockedRotationSurvivesNbtRoundTrip() {
     CustomRotation lockedRotation = new CustomRotation(0f, 90f, 0f, true);
     RootModelData original = new RootModelData(lockedRotation, CustomScale.DEFAULT);

@@ -33,6 +33,8 @@ public enum ConditionType {
   PLAYER_TAG(ConditionTypeRequirements.NAME_ONLY),
   TEAM(ConditionTypeRequirements.NAME_ONLY),
   GAMEMODE(ConditionTypeRequirements.NAME_ONLY),
+  TIME_OF_DAY(ConditionTypeRequirements.VALUE_AND_OPERATION),
+  WEATHER(ConditionTypeRequirements.NONE, WeatherType.class),
   FALLBACK(ConditionTypeRequirements.NONE),
   ;
 

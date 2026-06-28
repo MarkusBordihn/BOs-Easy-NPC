@@ -180,4 +180,42 @@ public class TradingPersistenceTestHelper {
           "Bug 2 regression: uses must be preserved (expected 1), got " + updated.getUses());
     }
   }
+
+  public static void assertTimedTradingResetRestoresUses(
+      GameTestHelper helper, EntityType<?> entityType) {
+    EasyNPC<?> npc = GameTestHelpers.mockEasyNPC(helper, entityType, new Vec3(1, 2, 1));
+
+    TradingDataCapable<?> tradingData = npc.getEasyNPCTradingData();
+    if (tradingData == null) {
+      helper.fail("NPC has no TradingDataCapable");
+      return;
+    }
+
+    MerchantOffers offers = new MerchantOffers();
+    offers.add(
+        new MerchantOffer(new ItemCost(Items.DIAMOND), new ItemStack(Items.EMERALD), 1, 0, 1.0f));
+    tradingData.getTradingDataSet().setType(TradingType.BASIC);
+    tradingData.getTradingDataSet().setResetsEveryMin(1);
+    tradingData.getTradingDataSet().setLastReset(System.currentTimeMillis());
+    tradingData.setTradingOffers(offers);
+
+    tradingData.notifyTrade(tradingData.getMerchantTradingOffers().get(0));
+
+    if (tradingData.getTradingOffers().get(0).getUses() != 1) {
+      helper.fail("Setup: expected exhausted trade with uses=1");
+      return;
+    }
+
+    tradingData.getTradingDataSet().setLastReset(System.currentTimeMillis() - (2L * 60L * 1000L));
+
+    if (!tradingData.resetExpiredTradingOffers()) {
+      helper.fail("Expected expired trading offers to reset");
+      return;
+    }
+
+    MerchantOffer resetOffer = tradingData.getTradingOffers().get(0);
+    if (resetOffer.getUses() != 0) {
+      helper.fail("Timed reset expected uses=0, got " + resetOffer.getUses());
+    }
+  }
 }
