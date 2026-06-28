@@ -8,6 +8,13 @@ For the full changelog, please go to the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 6.25.0
+
+- Fixed #780 by adding additional caching and optimization for remote texture downloads.
+- Fixed texture manager running in the wrong thread may cause crashes and deadlocks in >= 1.21.x.
+- Added Texture registration queue to avoid multiple simultaneous downloads in the same tick.
+- Improved texture manager and eliminated duplicated texture checks and registrations.
+
 ### 6.24.0
 
 - Fixed #459, #775 by adding an option to block interactions with invisible NPCs.

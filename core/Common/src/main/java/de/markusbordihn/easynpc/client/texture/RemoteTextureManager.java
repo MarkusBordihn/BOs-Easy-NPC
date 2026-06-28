@@ -199,17 +199,20 @@ public class RemoteTextureManager {
       return null;
     }
 
-    // Check the local texture cache for any matching texture.
-    ResourceLocation localTextureCache =
-        TextureManager.getCachedTexture(textureModelKey, textureDataFolder);
-    if (localTextureCache != null) {
-      textureCache.put(textureModelKey, localTextureCache);
-      textureSkinTypeCache.put(textureModelKey, skinData.getSkinType());
-      textureSkinURLCache.put(textureModelKey, skinURL);
-      return localTextureCache;
+    if (AsyncTextureLoader.hasPendingLoad(textureModelKey)) {
+      return null;
     }
 
-    if (AsyncTextureLoader.hasPendingLoad(textureModelKey)) {
+    if (TextureManager.hasCachedTexture(textureModelKey, textureDataFolder)) {
+      AsyncTextureLoader.loadCachedTextureAsync(textureModelKey, textureDataFolder)
+          .thenAccept(
+              resourceLocation -> {
+                if (resourceLocation != null) {
+                  textureCache.put(textureModelKey, resourceLocation);
+                  textureSkinTypeCache.put(textureModelKey, skinData.getSkinType());
+                  textureSkinURLCache.put(textureModelKey, skinURL);
+                }
+              });
       return null;
     }
 
@@ -244,6 +247,7 @@ public class RemoteTextureManager {
   }
 
   public static void clearTextureCache() {
+    TextureRegistrationQueue.getInstance().clear(textureCache.keySet());
     textureReloadProtection.clear();
     textureCache.clear();
     textureSkinTypeCache.clear();

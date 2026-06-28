@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.client;
 import de.markusbordihn.easynpc.compat.CompatConstants;
 import de.markusbordihn.easynpc.compat.cobblemon.CobblemonLoader;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
@@ -32,6 +33,7 @@ public class ClientEventHandler {
 
   public static void registerClientEvents() {
     ClientLifecycleEvents.CLIENT_STARTED.register(ClientEventHandler::onClientStarted);
+    ClientTickEvents.END_CLIENT_TICK.register(ClientEventHandler::onClientTick);
     ClientPlayConnectionEvents.JOIN.register(
         (handler, sender, client) -> {
           if (CompatConstants.MOD_COBBLEMON_LOADED) {
@@ -43,6 +45,10 @@ public class ClientEventHandler {
 
   public static void onClientStarted(Minecraft client) {
     ClientEvents.handleClientStartedEvent(client);
+  }
+
+  public static void onClientTick(Minecraft client) {
+    ClientEvents.handleClientTickEvent();
   }
 
   public static void onDisconnect(ClientPacketListener handler, Minecraft client) {

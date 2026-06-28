@@ -24,6 +24,7 @@ import de.markusbordihn.easynpc.compat.cobblemon.CobblemonLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.TagsUpdatedEvent;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -39,6 +40,13 @@ public class ClientEventHandler {
 
 @EventBusSubscriber(value = Dist.CLIENT)
 class ClientGameEventHandler {
+
+  @SubscribeEvent
+  public static void onClientTick(TickEvent.ClientTickEvent event) {
+    if (event.phase == TickEvent.Phase.END) {
+      ClientEvents.handleClientTickEvent();
+    }
+  }
 
   @SubscribeEvent
   public static void onTagsUpdated(TagsUpdatedEvent event) {
