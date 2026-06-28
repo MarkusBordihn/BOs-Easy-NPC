@@ -36,6 +36,11 @@ public class TextureRegistrationHelper {
 
   public static Identifier registerTexture(
       TextureModelKey textureModelKey, NativeImage nativeImage) {
+    return TextureRegistrationQueue.getInstance().register(textureModelKey, nativeImage);
+  }
+
+  static Identifier registerTextureOnCurrentThread(
+      TextureModelKey textureModelKey, NativeImage nativeImage) {
     // Using client Texture Manager
     Minecraft client = Minecraft.getInstance();
     net.minecraft.client.renderer.texture.TextureManager textureManager =

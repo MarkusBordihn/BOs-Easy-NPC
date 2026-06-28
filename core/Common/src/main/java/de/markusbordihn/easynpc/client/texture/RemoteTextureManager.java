@@ -242,6 +242,7 @@ public class RemoteTextureManager {
   }
 
   public static void clearTextureCache() {
+    TextureRegistrationQueue.getInstance().clear(textureCache.keySet());
     textureReloadProtection.clear();
     textureCache.clear();
     textureSkinTypeCache.clear();
