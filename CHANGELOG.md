@@ -8,6 +8,16 @@ For the full changelog, please go to the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 6.24.0
+
+- Fixed #459, #775 by adding an option to block interactions with invisible NPCs.
+- Fixed #774 startup crash related to optional Epic Fight and Cobblemon entity type maps.
+- Fixed #773 by checking timed trade resets during base ticks and before opening trade screens.
+- Fixed trade reset timing by increasing internal tickers correctly.
+- Added time of day and weather conditions for #459.
+- Added additional unit and game tests for trade resets, ticker handling and entity attributes.
+- Added `Skywatch Scout` as example NPC preset with time of day and weather conditions.
+
 ### 6.23.0
 
 - Fixed #774 by migrating isSunBurnTick error to 26.x.

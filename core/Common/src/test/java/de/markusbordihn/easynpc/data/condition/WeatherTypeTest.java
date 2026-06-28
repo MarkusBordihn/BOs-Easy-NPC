@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Markus Bordihn
+ * Copyright 2026 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,30 +17,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.client.screen.components;
+package de.markusbordihn.easynpc.data.condition;
 
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class DrawBoxWithBorder {
+import org.junit.jupiter.api.Test;
 
-  private static final int DEFAULT_BACKGROUND_COLOR = 0xF0E0E0E0;
-  private static final int DEFAULT_BORDER_COLOR = 0xFF555555;
+class WeatherTypeTest {
 
-  private DrawBoxWithBorder() {}
-
-  public static void draw(GuiGraphicsExtractor guiGraphics, int x, int y, int width, int height) {
-    draw(guiGraphics, x, y, width, height, DEFAULT_BACKGROUND_COLOR, DEFAULT_BORDER_COLOR);
+  @Test
+  void getDefaultsToClearForNullOrEmpty() {
+    assertEquals(WeatherType.CLEAR, WeatherType.get(null));
+    assertEquals(WeatherType.CLEAR, WeatherType.get(""));
   }
 
-  public static void draw(
-      GuiGraphicsExtractor guiGraphics,
-      int x,
-      int y,
-      int width,
-      int height,
-      int backgroundColor,
-      int borderColor) {
-    DrawBox.draw(guiGraphics, x, y, width, height, backgroundColor);
-    DrawBorder.draw(guiGraphics, x, y, width, height, borderColor);
+  @Test
+  void getParsesKnownValues() {
+    assertEquals(WeatherType.CLEAR, WeatherType.get("CLEAR"));
+    assertEquals(WeatherType.RAIN, WeatherType.get("RAIN"));
+    assertEquals(WeatherType.THUNDER, WeatherType.get("THUNDER"));
+  }
+
+  @Test
+  void getDefaultsToClearForUnknownOrMiscasedValues() {
+    assertEquals(WeatherType.CLEAR, WeatherType.get("invalid"));
+    assertEquals(WeatherType.CLEAR, WeatherType.get("rain"));
   }
 }

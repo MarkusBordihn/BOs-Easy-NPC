@@ -60,6 +60,34 @@ class TradingDataSetTest {
   }
 
   @Test
+  @DisplayName("lastReset=0 survives round-trip")
+  void testLastResetZeroRoundTrip() {
+    TradingDataSet original = new TradingDataSet();
+    original.setType(TradingType.BASIC);
+    original.setLastReset(0L);
+
+    TradingDataSet loaded = new TradingDataSet(original.createTag());
+
+    assertEquals(0L, loaded.getLastReset());
+  }
+
+  @Test
+  @DisplayName("legacy trading data without LastReset receives a non-zero fallback")
+  void testLegacyDataWithoutLastResetUsesFallback() {
+    CompoundTag inner = new CompoundTag();
+    inner.putInt(TradingDataSet.DATA_TRADING_MAX_USES_TAG, 5);
+    inner.putInt(TradingDataSet.DATA_TRADING_REWARDED_XP_TAG, 1);
+    inner.putInt(TradingDataSet.DATA_TRADING_RESETS_EVERY_MIN_TAG, 10);
+    inner.putString(TradingDataSet.DATA_TYPE_TAG, TradingType.BASIC.name());
+    CompoundTag tag = new CompoundTag();
+    tag.put(TradingDataSet.DATA_TRADING_DATA_SET_TAG, inner);
+
+    TradingDataSet loaded = new TradingDataSet(tag);
+
+    assertTrue(loaded.getLastReset() > 0L);
+  }
+
+  @Test
   @DisplayName("save() / load() round-trip preserves ADVANCED type")
   void testNbtRoundTripAdvanced() {
     TradingDataSet original = new TradingDataSet();

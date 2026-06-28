@@ -19,7 +19,7 @@
 
 package de.markusbordihn.easynpc.configui.client.screen.preset;
 
-import de.markusbordihn.easynpc.client.screen.components.DrawBoxWithBorder;
+import de.markusbordihn.easynpc.configui.client.screen.components.DrawBoxWithBorder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.ObjectSelectionList;
