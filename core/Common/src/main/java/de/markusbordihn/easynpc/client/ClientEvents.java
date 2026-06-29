@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.client;
 
 import de.markusbordihn.easynpc.client.renderer.manager.EntityTypeManager;
+import de.markusbordihn.easynpc.client.texture.TextureRegistrationQueue;
 import de.markusbordihn.easynpc.data.dialog.DialogDataManager;
 import de.markusbordihn.easynpc.io.DataFileHandler;
 import net.minecraft.client.Minecraft;
@@ -38,6 +39,10 @@ public class ClientEvents {
     clearTextureCaches();
   }
 
+  public static void handleClientTickEvent() {
+    TextureRegistrationQueue.getInstance().processPendingRegistrations();
+  }
+
   private static void clearTextureCaches() {
     try {
       Class.forName("de.markusbordihn.easynpc.client.texture.CustomTextureManager")
@@ -49,6 +54,7 @@ public class ClientEvents {
       Class.forName("de.markusbordihn.easynpc.client.texture.PlayerTextureManager")
           .getMethod("clearTextureCache")
           .invoke(null);
+      TextureRegistrationQueue.getInstance().clear();
     } catch (Exception e) {
       // Ignore - texture managers might not be loaded yet
     }

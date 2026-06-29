@@ -19,6 +19,9 @@
 
 package de.markusbordihn.easynpc.configui.handler;
 
+import static de.markusbordihn.easynpc.utils.TradingUtils.getItemCost;
+import static de.markusbordihn.easynpc.utils.TradingUtils.getOptionalItemCost;
+
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.trading.TradingSettings;
 import de.markusbordihn.easynpc.data.trading.TradingType;
@@ -136,15 +139,5 @@ public class TradingContainerHandler {
     }
     return ((itemA != null && !itemA.isEmpty()) || (itemB != null && !itemB.isEmpty()))
         && !itemResult.isEmpty();
-  }
-
-  private static ItemCost getItemCost(ItemStack itemStack) {
-    return new ItemCost(
-        itemStack.isEmpty() ? ItemStack.EMPTY.getItem() : itemStack.getItem(),
-        itemStack.getCount());
-  }
-
-  private static Optional<ItemCost> getOptionalItemCost(ItemStack itemStack) {
-    return itemStack.isEmpty() ? Optional.empty() : Optional.of(getItemCost(itemStack));
   }
 }

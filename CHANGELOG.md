@@ -8,6 +8,22 @@ For the full changelog, please go to the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 6.25.0
+
+- Fixed #782, #636, #622 by preserving data components during validations.
+- Fixed #780 by caching remote texture downloads and reducing duplicate registrations.
+- Fixed #767 by clamping attribute sliders against extreme values from other mods.
+- Fixed #754 by adding custom data item matching for NPCs with actions and conditions.
+- Fixed texture manager running in the wrong thread may cause crashes and deadlocks in >= 1.21.x.
+- Fixed empty UUID handling for action conditions.
+- Fixed execution limit reset for actions.
+- Added texture registration queue to avoid multiple simultaneous downloads in the same tick.
+- Added NPC coin, key and red token as consumable items for NPCs with actions and conditions.
+- Added `Welcome Coin Trader` as example NPC preset with custom coin, key and red token item data.
+- Added attribute safeguards against extreme values from other mods.
+- Increased fallback max health value from 1024 to 4096 for high-health NPCs.
+- Improved texture manager by reducing duplicate texture checks and registrations.
+
 ### 6.24.0
 
 - Fixed #459, #775 by adding an option to block interactions with invisible NPCs.

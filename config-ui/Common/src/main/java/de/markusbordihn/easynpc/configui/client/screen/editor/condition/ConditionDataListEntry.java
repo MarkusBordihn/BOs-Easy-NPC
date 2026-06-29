@@ -178,8 +178,7 @@ public class ConditionDataListEntry extends ObjectSelectionList.Entry<ConditionD
                   + " "
                   + this.conditionDataEntry.value();
           case EXECUTION_LIMIT -> buildExecutionLimitPreview(this.conditionDataEntry);
-          case HAS_ITEM_IN_HAND -> buildItemPreview(this.conditionDataEntry, true);
-          case HAS_ITEM_IN_INVENTORY -> buildItemPreview(this.conditionDataEntry, false);
+          case HAS_ITEM_IN_HAND, HAS_ITEM_IN_INVENTORY -> buildItemPreview(this.conditionDataEntry);
           case ADVANCEMENT, PLAYER_TAG, TEAM, GAMEMODE -> this.conditionDataEntry.name();
           case EXPERIENCE_LEVEL, PLAYER_HEALTH, NPC_HEALTH, TIME_OF_DAY ->
               this.conditionDataEntry.operationType().getSymbol()
@@ -220,12 +219,12 @@ public class ConditionDataListEntry extends ObjectSelectionList.Entry<ConditionD
         + ")";
   }
 
-  private String buildItemPreview(ConditionDataEntry conditionDataEntry, boolean includeHand) {
+  private String buildItemPreview(ConditionDataEntry conditionDataEntry) {
     String prefix =
         conditionDataEntry.operationType() == ConditionOperationType.NOT_EQUALS ? "NOT " : "";
     String quantity = conditionDataEntry.value() > 1 ? conditionDataEntry.value() + " x " : "";
     String suffix = "";
-    if (includeHand && conditionDataEntry.subType() instanceof HandItemType handItemType) {
+    if (conditionDataEntry.subType() instanceof HandItemType handItemType) {
       suffix =
           switch (handItemType) {
             case MAIN_HAND -> " [M]";

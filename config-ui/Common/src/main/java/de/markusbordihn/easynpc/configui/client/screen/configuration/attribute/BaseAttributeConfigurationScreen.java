@@ -65,11 +65,11 @@ public class BaseAttributeConfigurationScreen<T extends ConfigurationMenu>
     // Get attribute values directly from attribute with default value as fallback.
     double minValue =
         attribute instanceof RangedAttribute rangedAttribute
-            ? rangedAttribute.getMinValue()
+            ? Math.max(rangedAttribute.getMinValue(), defaultMinValue)
             : defaultMinValue;
     double maxValue =
         attribute instanceof RangedAttribute rangedAttribute
-            ? rangedAttribute.getMaxValue()
+            ? Math.min(rangedAttribute.getMaxValue(), defaultMaxValue)
             : defaultMaxValue;
     return this.addRenderableWidget(
         new RangeSliderButton(
@@ -103,7 +103,7 @@ public class BaseAttributeConfigurationScreen<T extends ConfigurationMenu>
             Attributes.MAX_HEALTH.value(),
             livingEntity.getAttributeBaseValue(Attributes.MAX_HEALTH),
             1.0D,
-            1024.0D,
+            4096.0D,
             20.0D,
             1.0D,
             slider ->
