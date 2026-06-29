@@ -49,4 +49,20 @@ class ActionExecutionTrackerTest {
         reloadedTracker.canExecute(playerId, persistedActionId, 1, ExecutionInterval.LIFETIME));
     assertTrue(reloadedTracker.canExecute(playerId, newActionId, 1, ExecutionInterval.LIFETIME));
   }
+
+  @Test
+  void testResetExecutionUsesExactTrackerKey() {
+    ActionExecutionTracker tracker = new ActionExecutionTracker();
+    UUID playerId = UUID.randomUUID();
+    UUID actionId = UUID.randomUUID();
+    UUID dialogId = UUID.randomUUID();
+
+    tracker.recordExecution(playerId, actionId, ExecutionInterval.LIFETIME);
+    tracker.recordExecution(playerId, dialogId, ExecutionInterval.LIFETIME);
+
+    tracker.resetExecution(playerId, actionId);
+
+    assertTrue(tracker.canExecute(playerId, actionId, 1, ExecutionInterval.LIFETIME));
+    assertFalse(tracker.canExecute(playerId, dialogId, 1, ExecutionInterval.LIFETIME));
+  }
 }

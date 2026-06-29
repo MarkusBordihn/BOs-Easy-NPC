@@ -73,6 +73,10 @@ public class ModItems {
   public static final Item MOVE_EASY_NPC = new MoveEasyNPCItem(new Item.Properties());
   public static final Item CUSTOM_DATA_TEST_ITEM =
       new CustomDataTestItem(new Item.Properties().stacksTo(1));
+  public static final Item NPC_COIN = new ConsumableItem("npc_coin", new Item.Properties());
+  public static final Item NPC_KEY = new ConsumableItem("npc_key", new Item.Properties());
+  public static final Item NPC_RED_TOKEN =
+      new ConsumableItem("npc_red_token", new Item.Properties());
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   private ModItems() {}
@@ -86,6 +90,11 @@ public class ModItems {
 
     log.info("{} Test Items ...", Constants.LOG_REGISTER_PREFIX);
     registerItem(CustomDataTestItem.ID, CUSTOM_DATA_TEST_ITEM);
+
+    log.info("{} Consumable Items ...", Constants.LOG_REGISTER_PREFIX);
+    registerItem("npc_coin", NPC_COIN);
+    registerItem("npc_key", NPC_KEY);
+    registerItem("npc_red_token", NPC_RED_TOKEN);
 
     log.info("{} Block Items ...", Constants.LOG_REGISTER_PREFIX);
     registerItem(SpawnerType.BOSS_SPAWNER.getId(), EASY_NPC_SPAWNER_BOSS);

@@ -91,19 +91,6 @@ public class PlayerTextureManager {
   private static ResourceLocation createTexture(
       TextureModelKey textureModelKey, SkinDataCapable<?> skinData, UUID playerUUID) {
 
-    // Reload protection to avoid multiple texture requests in a short time using atomic operation
-    long currentTime = System.currentTimeMillis();
-    Long lastAttempt = textureReloadProtection.get(playerUUID);
-    if (lastAttempt != null && currentTime - lastAttempt < RELOAD_PROTECTION_TIME) {
-      return null;
-    }
-
-    // Only proceed if we successfully claim this request
-    Long existingAttempt = textureReloadProtection.putIfAbsent(playerUUID, currentTime);
-    if (existingAttempt != null && currentTime - existingAttempt < RELOAD_PROTECTION_TIME) {
-      return null;
-    }
-
     // Get the skin model and texture data folder
     SkinModel skinModel = skinData.getSkinModel();
     Path textureDataFolder = PlayerSkinDataFiles.getPlayerSkinDataFolder(skinModel);
@@ -111,14 +98,28 @@ public class PlayerTextureManager {
       return null;
     }
 
-    // Check the local texture cache for any matching texture.
-    ResourceLocation localTextureCache =
-        TextureManager.getCachedTexture(textureModelKey, textureDataFolder);
-    if (localTextureCache != null) {
-      textureCache.put(textureModelKey, localTextureCache);
-      textureSkinTypeCache.put(textureModelKey, skinData.getSkinType());
-      return localTextureCache;
+    if (AsyncTextureLoader.hasPendingLoad(textureModelKey)) {
+      return null;
     }
+
+    if (TextureManager.hasCachedTexture(textureModelKey, textureDataFolder)) {
+      AsyncTextureLoader.loadCachedTextureAsync(textureModelKey, textureDataFolder)
+          .thenAccept(
+              resourceLocation -> {
+                if (resourceLocation != null) {
+                  textureCache.put(textureModelKey, resourceLocation);
+                  textureSkinTypeCache.put(textureModelKey, skinData.getSkinType());
+                }
+              });
+      return null;
+    }
+
+    long currentTime = System.currentTimeMillis();
+    Long lastAttempt = textureReloadProtection.get(playerUUID);
+    if (lastAttempt != null && currentTime - lastAttempt < RELOAD_PROTECTION_TIME) {
+      return null;
+    }
+    textureReloadProtection.put(playerUUID, currentTime);
 
     AsyncTextureLoader.loadPlayerTextureAsync(textureModelKey, playerUUID, textureDataFolder)
         .thenAccept(
@@ -157,6 +158,7 @@ public class PlayerTextureManager {
   }
 
   public static void clearTextureCache() {
+    TextureRegistrationQueue.getInstance().clear(textureCache.keySet());
     textureReloadProtection.clear();
     textureCache.clear();
     textureSkinTypeCache.clear();

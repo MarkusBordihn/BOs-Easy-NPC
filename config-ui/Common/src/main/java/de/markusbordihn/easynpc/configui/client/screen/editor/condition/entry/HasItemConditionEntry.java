@@ -30,6 +30,7 @@ import de.markusbordihn.easynpc.data.condition.ConditionDataSet;
 import de.markusbordihn.easynpc.data.condition.ConditionOperationType;
 import de.markusbordihn.easynpc.data.condition.ConditionType;
 import de.markusbordihn.easynpc.data.condition.HandItemType;
+import java.lang.reflect.Method;
 import java.util.LinkedHashSet;
 import net.minecraft.client.gui.GuiGraphics;
 
@@ -37,6 +38,8 @@ public class HasItemConditionEntry extends ConditionEntryWidget {
 
   private final ConditionType conditionType;
   private TextField itemNameTextField;
+  private TextField customDataTextField;
+  private TextField customDataComponentTextField;
   private TextField quantityTextField;
   private SpinButton<ConditionOperationType> operationTypeButton;
   private Checkbox mainHandCheckbox;
@@ -93,10 +96,30 @@ public class HasItemConditionEntry extends ConditionEntryWidget {
                 hasData ? this.conditionDataEntry.name() : "minecraft:diamond",
                 128));
 
+    this.customDataComponentTextField =
+        this.screen.addConditionEntryWidget(
+            new TextField(
+                this.font,
+                editorLeft + 130,
+                editorTop + 40,
+                155,
+                hasData ? getStoredCustomDataComponent() : "",
+                128));
+
+    this.customDataTextField =
+        this.screen.addConditionEntryWidget(
+            new TextField(
+                this.font,
+                editorLeft + 130,
+                editorTop + 60,
+                155,
+                hasData ? getStoredCustomData() : "",
+                1024));
+
     this.quantityTextField =
         this.screen.addConditionEntryWidget(
             new TextField(
-                this.font, editorLeft + 130, editorTop + 40, 60, getQuantityValue(hasData), 10));
+                this.font, editorLeft + 130, editorTop + 80, 60, getQuantityValue(hasData), 10));
 
     if (this.conditionType == ConditionType.HAS_ITEM_IN_HAND) {
       boolean mainHandSelected = true;
@@ -112,15 +135,14 @@ public class HasItemConditionEntry extends ConditionEntryWidget {
           this.screen.addConditionEntryWidget(
               new Checkbox(
                   editorLeft,
-                  editorTop + 60,
+                  editorTop + 104,
                   "config.condition.has_item_in_hand.main_hand",
                   mainHandSelected));
-
       this.offHandCheckbox =
           this.screen.addConditionEntryWidget(
               new Checkbox(
                   editorLeft + 155,
-                  editorTop + 60,
+                  editorTop + 104,
                   "config.condition.has_item_in_hand.off_hand",
                   offHandSelected));
     }
@@ -161,46 +183,74 @@ public class HasItemConditionEntry extends ConditionEntryWidget {
           this.font,
           "condition.has_item.quantity",
           editorLeft,
+          editorTop + 84,
+          Constants.FONT_COLOR_BLACK);
+      Text.drawConfigString(
+          guiGraphics,
+          this.font,
+          "condition.has_item.custom_data",
+          editorLeft,
+          editorTop + 64,
+          Constants.FONT_COLOR_BLACK);
+      Text.drawConfigString(
+          guiGraphics,
+          this.font,
+          "condition.has_item.custom_data_component",
+          editorLeft,
           editorTop + 44,
           Constants.FONT_COLOR_BLACK);
+      int hintTop = this.conditionType == ConditionType.HAS_ITEM_IN_HAND ? 124 : 104;
+      Text.drawConfigString(
+          guiGraphics,
+          this.font,
+          "condition.has_item.custom_data_hint",
+          editorLeft,
+          editorTop + hintTop,
+          Constants.FONT_COLOR_DEFAULT);
     }
   }
 
   @Override
   public ConditionDataEntry getConditionDataEntry() {
     if (this.conditionType == ConditionType.HAS_ITEM_IN_HAND) {
-      boolean mainSelected = this.mainHandCheckbox != null && this.mainHandCheckbox.selected();
-      boolean offSelected = this.offHandCheckbox != null && this.offHandCheckbox.selected();
-      HandItemType handItemType;
-      if (mainSelected && offSelected) {
-        handItemType = HandItemType.BOTH;
-      } else if (mainSelected) {
-        handItemType = HandItemType.MAIN_HAND;
-      } else if (offSelected) {
-        handItemType = HandItemType.OFF_HAND;
-      } else {
-        handItemType = HandItemType.BOTH;
-      }
-      ConditionOperationType operationType =
-          this.operationTypeButton != null
-              ? this.operationTypeButton.get()
-              : ConditionOperationType.EQUALS;
-
-      return new ConditionDataEntry(
-          this.conditionType, handItemType, operationType, getItemName(), getQuantity());
+      return withCustomDataComponent(
+          new ConditionDataEntry(
+                  this.conditionType,
+                  getHandItemType(),
+                  getOperationType(),
+                  getItemName(),
+                  getQuantity())
+              .withCustomData(getCustomData()));
     }
 
     if (this.conditionType == ConditionType.HAS_ITEM_IN_INVENTORY) {
-      ConditionOperationType operationType =
-          this.operationTypeButton != null
-              ? this.operationTypeButton.get()
-              : ConditionOperationType.EQUALS;
-      return new ConditionDataEntry(
-          this.conditionType, operationType, getItemName(), getQuantity());
+      return withCustomDataComponent(
+          new ConditionDataEntry(
+                  this.conditionType, getOperationType(), getItemName(), getQuantity())
+              .withCustomData(getCustomData()));
     }
 
     return new ConditionDataEntry(
         this.conditionType, ConditionOperationType.NONE, getItemName(), 0);
+  }
+
+  private ConditionOperationType getOperationType() {
+    return this.operationTypeButton != null
+        ? this.operationTypeButton.get()
+        : ConditionOperationType.EQUALS;
+  }
+
+  private HandItemType getHandItemType() {
+    boolean mainSelected = this.mainHandCheckbox != null && this.mainHandCheckbox.selected();
+    boolean offSelected = this.offHandCheckbox != null && this.offHandCheckbox.selected();
+    if (mainSelected && offSelected) {
+      return HandItemType.BOTH;
+    } else if (mainSelected) {
+      return HandItemType.MAIN_HAND;
+    } else if (offSelected) {
+      return HandItemType.OFF_HAND;
+    }
+    return HandItemType.BOTH;
   }
 
   private String getItemName() {
@@ -218,5 +268,44 @@ public class HasItemConditionEntry extends ConditionEntryWidget {
       return 0;
     }
     return quantity > 1 ? quantity : 0;
+  }
+
+  private String getCustomData() {
+    return this.customDataTextField != null ? this.customDataTextField.getValue().trim() : "";
+  }
+
+  private String getCustomDataComponent() {
+    return this.customDataComponentTextField != null
+        ? this.customDataComponentTextField.getValue().trim()
+        : "";
+  }
+
+  private String getStoredCustomData() {
+    return this.conditionDataEntry.customData();
+  }
+
+  private String getStoredCustomDataComponent() {
+    try {
+      Method method = ConditionDataEntry.class.getMethod("customDataComponent");
+      Object customDataComponent = method.invoke(this.conditionDataEntry);
+      return customDataComponent instanceof String customDataComponentString
+          ? customDataComponentString
+          : "";
+    } catch (ReflectiveOperationException ignored) {
+      return "";
+    }
+  }
+
+  private ConditionDataEntry withCustomDataComponent(ConditionDataEntry conditionDataEntry) {
+    try {
+      Method method = ConditionDataEntry.class.getMethod("withCustomDataComponent", String.class);
+      Object updatedConditionDataEntry =
+          method.invoke(conditionDataEntry, getCustomDataComponent());
+      return updatedConditionDataEntry instanceof ConditionDataEntry typedConditionDataEntry
+          ? typedConditionDataEntry
+          : conditionDataEntry;
+    } catch (ReflectiveOperationException ignored) {
+      return conditionDataEntry;
+    }
   }
 }

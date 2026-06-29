@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.client.texture;
 
 import com.mojang.blaze3d.platform.NativeImage;
 import de.markusbordihn.easynpc.Constants;
+import java.util.concurrent.CompletableFuture;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.resources.ResourceLocation;
@@ -35,6 +36,16 @@ public class TextureRegistrationHelper {
   private TextureRegistrationHelper() {}
 
   public static ResourceLocation registerTexture(
+      TextureModelKey textureModelKey, NativeImage nativeImage) {
+    return TextureRegistrationQueue.getInstance().register(textureModelKey, nativeImage);
+  }
+
+  public static CompletableFuture<ResourceLocation> registerTextureAsync(
+      TextureModelKey textureModelKey, NativeImage nativeImage) {
+    return TextureRegistrationQueue.getInstance().registerAsync(textureModelKey, nativeImage);
+  }
+
+  static ResourceLocation registerTextureOnCurrentThread(
       TextureModelKey textureModelKey, NativeImage nativeImage) {
     // Using client Texture Manager
     Minecraft client = Minecraft.getInstance();
@@ -54,7 +65,8 @@ public class TextureRegistrationHelper {
 
     // Register dynamic texture under resource location.
     String resourceName = TextureNameHelper.getResourceName(textureModelKey);
-    ResourceLocation resourceLocation = textureManager.register(resourceName, dynamicTexture);
+    ResourceLocation resourceLocation = ResourceLocation.parse(resourceName);
+    textureManager.register(resourceLocation, dynamicTexture);
     log.info(
         "{} Registered texture {} with image {} with {}.",
         LOG_PREFIX,

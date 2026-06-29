@@ -37,10 +37,13 @@ public class TextureCacheManager {
 
   private TextureCacheManager() {}
 
+  public static boolean hasCachedTexture(TextureModelKey textureModelKey, Path targetDirectory) {
+    return getCachedTextureFile(textureModelKey, targetDirectory).exists();
+  }
+
   public static ResourceLocation getCachedTexture(
       TextureModelKey textureModelKey, Path targetDirectory) {
-    String fileName = String.format("%s.png", textureModelKey.getUUID());
-    File file = targetDirectory.resolve(fileName).toFile();
+    File file = getCachedTextureFile(textureModelKey, targetDirectory);
     if (file.exists()) {
       log.info(
           "{} Found texture file in cache, will re-used file {} for {}",
@@ -58,6 +61,23 @@ public class TextureCacheManager {
       return TextureRegistrationHelper.registerTexture(textureModelKey, nativeImage);
     }
     return null;
+  }
+
+  static NativeImage getCachedNativeImage(TextureModelKey textureModelKey, Path targetDirectory) {
+    File file = getCachedTextureFile(textureModelKey, targetDirectory);
+    if (!file.exists()) {
+      return null;
+    }
+
+    log.info(
+        "{} Found texture file in cache, will re-used file {} for {}",
+        LOG_PREFIX,
+        file,
+        textureModelKey);
+    return textureModelKey.getSkinModel() == SkinModel.HUMANOID
+            || textureModelKey.getSkinModel() == SkinModel.HUMANOID_SLIM
+        ? TextureImageLoader.getNativePlayerImage(file)
+        : TextureImageLoader.getNativeImage(file);
   }
 
   public static ResourceLocation searchCachedTexture(
@@ -146,5 +166,10 @@ public class TextureCacheManager {
     } catch (IllegalArgumentException e) {
       return UUID.nameUUIDFromBytes(fileName.getBytes());
     }
+  }
+
+  private static File getCachedTextureFile(TextureModelKey textureModelKey, Path targetDirectory) {
+    String fileName = String.format("%s.png", textureModelKey.getUUID());
+    return targetDirectory.resolve(fileName).toFile();
   }
 }

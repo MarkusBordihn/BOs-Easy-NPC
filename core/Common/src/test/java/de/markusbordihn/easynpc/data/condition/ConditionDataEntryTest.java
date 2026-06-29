@@ -372,6 +372,65 @@ class ConditionDataEntryTest {
   }
 
   @Test
+  @DisplayName("Item custom data is serialized and round-trips")
+  void testHasItemCustomDataNBTRoundTrip() {
+    String customData = "{display:{Name:'{\"text\":\"Quest Diamond\"}'}}";
+    ConditionDataEntry original =
+        new ConditionDataEntry(ConditionType.HAS_ITEM_IN_INVENTORY)
+            .withName("minecraft:diamond")
+            .withCustomData(customData);
+
+    CompoundTag tag = original.createTag();
+    assertEquals(customData, tag.getString(ConditionDataEntry.DATA_CUSTOM_DATA_TAG));
+
+    ConditionDataEntry deserialized = new ConditionDataEntry(tag);
+    assertEquals("minecraft:diamond", deserialized.name());
+    assertEquals(customData, deserialized.customData());
+    assertEquals(original.getId(), deserialized.getId());
+  }
+
+  @Test
+  @DisplayName("Item custom data component is serialized and round-trips")
+  void testHasItemCustomDataComponentNBTRoundTrip() {
+    String customData = "{QuestId:\"welcome_coin\"}";
+    String customDataComponent = "easy_npc:custom_data";
+    ConditionDataEntry original =
+        new ConditionDataEntry(ConditionType.HAS_ITEM_IN_INVENTORY)
+            .withName("easy_npc:npc_coin")
+            .withCustomData(customData)
+            .withCustomDataComponent(customDataComponent);
+
+    CompoundTag tag = original.createTag();
+    assertEquals(customData, tag.getString(ConditionDataEntry.DATA_CUSTOM_DATA_TAG));
+    assertEquals(
+        customDataComponent, tag.getString(ConditionDataEntry.DATA_CUSTOM_DATA_COMPONENT_TAG));
+
+    ConditionDataEntry deserialized = new ConditionDataEntry(tag);
+    assertEquals("easy_npc:npc_coin", deserialized.name());
+    assertEquals(customData, deserialized.customData());
+    assertEquals(customDataComponent, deserialized.customDataComponent());
+    assertTrue(deserialized.hasCustomDataComponent());
+    assertEquals(original.getId(), deserialized.getId());
+  }
+
+  @Test
+  @DisplayName("Missing item custom data keeps legacy conditions compatible")
+  void testHasItemCustomDataBackwardCompatibility() {
+    CompoundTag tag = new CompoundTag();
+    tag.putString(ConditionDataEntry.DATA_TYPE_TAG, "HAS_ITEM_IN_INVENTORY");
+    tag.putString(ConditionDataEntry.DATA_NAME_TAG, "minecraft:diamond");
+
+    ConditionDataEntry deserialized = new ConditionDataEntry(tag);
+
+    assertEquals("minecraft:diamond", deserialized.name());
+    assertEquals("", deserialized.customData());
+    assertEquals("", deserialized.customDataComponent());
+    assertFalse(deserialized.hasCustomData());
+    assertFalse(deserialized.hasCustomDataComponent());
+    assertTrue(deserialized.isValid());
+  }
+
+  @Test
   @DisplayName("Default item quantity (0 or 1) is not serialized")
   void testHasItemDefaultQuantityNotSerialized() {
     ConditionDataEntry defaultQuantity =

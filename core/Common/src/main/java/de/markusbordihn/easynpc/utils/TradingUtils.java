@@ -24,8 +24,10 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import com.mojang.serialization.DataResult;
+import de.markusbordihn.easynpc.Constants;
 import java.util.Optional;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentPredicate;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.FloatTag;
 import net.minecraft.nbt.ListTag;
@@ -44,8 +46,10 @@ public class TradingUtils {
 
   private static final Logger log = LogManager.getLogger(TradingUtils.class);
   private static final String COLOR_TAG = "color";
+  private static final String BLOCK_ENTITY_TAG = "BlockEntityTag";
   private static final String COMPONENTS_TAG = "components";
-  private static final String CUSTOM_DATA_COMPONENT = "minecraft:custom_data";
+  private static final String CONTAINER_COMPONENT = "minecraft:container";
+  private static final String CUSTOM_DATA_COMPONENT = Constants.MOD_PREFIX_ID + "custom_data";
   private static final String CUSTOM_MODEL_DATA_TAG = "CustomModelData";
   private static final String CUSTOM_NAME_COMPONENT = "minecraft:custom_name";
   private static final String DISPLAY_TAG = "display";
@@ -54,7 +58,9 @@ public class TradingUtils {
       "minecraft:enchantment_glint_override";
   private static final String HIDE_FLAGS_TAG = "HideFlags";
   private static final String ITEM_NAME_COMPONENT = "minecraft:item_name";
+  private static final String ITEMS_TAG = "Items";
   private static final String LEGACY_COUNT_TAG = "Count";
+  private static final String LEGACY_CUSTOM_DATA_COMPONENT = "minecraft:custom_data";
   private static final String LEGACY_ITEM_TAG = "tag";
   private static final String LOC_NAME_TAG = "LocName";
   private static final String LORE_COMPONENT = "minecraft:lore";
@@ -63,15 +69,25 @@ public class TradingUtils {
   private static final String NAME_TAG = "Name";
   private static final String RECIPES_TAG = "Recipes";
   private static final String SHOW_IN_TOOLTIP_TAG = "show_in_tooltip";
+  private static final String SLOT_TAG = "Slot";
   private static final String UNBREAKABLE_TAG = "Unbreakable";
   private static final String[] TRADE_ITEM_KEYS = {"buy", "buyB", "sell"};
 
   private TradingUtils() {}
 
   public static ItemCost getItemCost(ItemStack itemStack) {
+    int count = itemStack.getCount() > 0 ? itemStack.getCount() : 1;
+    if (itemStack.isEmpty()) {
+      return new ItemCost(ItemStack.EMPTY.getItem(), count);
+    }
+    if (itemStack.getComponentsPatch().isEmpty()) {
+      return new ItemCost(itemStack.getItem(), count);
+    }
     return new ItemCost(
-        itemStack.isEmpty() ? ItemStack.EMPTY.getItem() : itemStack.getItem(),
-        itemStack.getCount() > 0 ? itemStack.getCount() : 1);
+        itemStack.getItem().builtInRegistryHolder(),
+        count,
+        DataComponentPredicate.allOf(itemStack.getComponents()),
+        itemStack.copyWithCount(count));
   }
 
   public static Optional<ItemCost> getOptionalItemCost(ItemStack itemStack) {
@@ -100,6 +116,7 @@ public class TradingUtils {
     }
 
     if (!migrated.contains(LEGACY_ITEM_TAG, Tag.TAG_COMPOUND)) {
+      migrateLegacyCustomDataComponent(migrated);
       return migrated;
     }
 
@@ -140,6 +157,7 @@ public class TradingUtils {
         "minecraft:stored_enchantments",
         (hideFlags & 32) != 0);
     moveDisplayTagToComponents(legacyTag, components, hideFlags);
+    moveBlockEntityItemsToContainerComponent(legacyTag, components);
     legacyTag.remove(HIDE_FLAGS_TAG);
 
     if (!legacyTag.isEmpty()) {
@@ -284,12 +302,89 @@ public class TradingUtils {
     }
   }
 
+  private static void moveBlockEntityItemsToContainerComponent(
+      CompoundTag legacyTag, CompoundTag components) {
+    if (!legacyTag.contains(BLOCK_ENTITY_TAG, Tag.TAG_COMPOUND)) {
+      return;
+    }
+
+    CompoundTag blockEntityTag = legacyTag.getCompound(BLOCK_ENTITY_TAG).copy();
+    if (!blockEntityTag.contains(ITEMS_TAG, Tag.TAG_LIST)) {
+      return;
+    }
+
+    if (!components.contains(CONTAINER_COMPONENT)) {
+      ListTag containerItems = new ListTag();
+      ListTag legacyItems = blockEntityTag.getList(ITEMS_TAG, Tag.TAG_COMPOUND);
+      for (int i = 0; i < legacyItems.size(); i++) {
+        CompoundTag legacyItem = legacyItems.getCompound(i);
+        if (!legacyItem.contains(SLOT_TAG, Tag.TAG_ANY_NUMERIC)) {
+          continue;
+        }
+
+        CompoundTag itemData = legacyItem.copy();
+        int slot = itemData.getInt(SLOT_TAG);
+        if (slot < 0 || slot > 255) {
+          continue;
+        }
+        itemData.remove(SLOT_TAG);
+        CompoundTag migratedItem = migrateLegacyItemData(itemData);
+        if (!migratedItem.contains("id", Tag.TAG_STRING)) {
+          continue;
+        }
+
+        CompoundTag containerItem = new CompoundTag();
+        containerItem.putInt("slot", slot);
+        containerItem.put("item", migratedItem);
+        containerItems.add(containerItem);
+      }
+
+      if (!containerItems.isEmpty()) {
+        components.put(CONTAINER_COMPONENT, containerItems);
+      }
+    }
+
+    blockEntityTag.remove(ITEMS_TAG);
+    if (blockEntityTag.isEmpty()) {
+      legacyTag.remove(BLOCK_ENTITY_TAG);
+    } else {
+      legacyTag.put(BLOCK_ENTITY_TAG, blockEntityTag);
+    }
+  }
+
   private static void mergeIntoCustomData(CompoundTag components, CompoundTag legacyTag) {
     CompoundTag mergedCustomData = legacyTag.copy();
-    if (components.contains(CUSTOM_DATA_COMPONENT, Tag.TAG_COMPOUND)) {
-      mergedCustomData.merge(components.getCompound(CUSTOM_DATA_COMPONENT));
-    }
+    mergeCustomDataComponent(components, LEGACY_CUSTOM_DATA_COMPONENT, mergedCustomData);
+    mergeCustomDataComponent(components, CUSTOM_DATA_COMPONENT, mergedCustomData);
     components.put(CUSTOM_DATA_COMPONENT, mergedCustomData);
+    components.remove(LEGACY_CUSTOM_DATA_COMPONENT);
+  }
+
+  private static void migrateLegacyCustomDataComponent(CompoundTag item) {
+    if (!item.contains(COMPONENTS_TAG, Tag.TAG_COMPOUND)) {
+      return;
+    }
+
+    CompoundTag components = item.getCompound(COMPONENTS_TAG).copy();
+    if (!components.contains(LEGACY_CUSTOM_DATA_COMPONENT, Tag.TAG_COMPOUND)) {
+      return;
+    }
+
+    CompoundTag mergedCustomData = new CompoundTag();
+    mergeCustomDataComponent(components, LEGACY_CUSTOM_DATA_COMPONENT, mergedCustomData);
+    mergeCustomDataComponent(components, CUSTOM_DATA_COMPONENT, mergedCustomData);
+    if (!mergedCustomData.isEmpty()) {
+      components.put(CUSTOM_DATA_COMPONENT, mergedCustomData);
+    }
+    components.remove(LEGACY_CUSTOM_DATA_COMPONENT);
+    item.put(COMPONENTS_TAG, components);
+  }
+
+  private static void mergeCustomDataComponent(
+      CompoundTag components, String componentName, CompoundTag target) {
+    if (components.contains(componentName, Tag.TAG_COMPOUND)) {
+      target.merge(components.getCompound(componentName));
+    }
   }
 
   private static String normalizeLegacyComponent(String value) {

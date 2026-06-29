@@ -95,6 +95,27 @@ public class AsyncTextureLoader {
     return future;
   }
 
+  public static CompletableFuture<ResourceLocation> loadCachedTextureAsync(
+      TextureModelKey key, Path targetDirectory) {
+    CompletableFuture<ResourceLocation> existing = pendingLoads.get(key);
+    if (existing != null) {
+      return existing;
+    }
+
+    CompletableFuture<ResourceLocation> future = new CompletableFuture<>();
+    pendingLoads.put(key, future);
+    CompletableFuture.supplyAsync(
+            () -> TextureCacheManager.getCachedNativeImage(key, targetDirectory),
+            textureLoadExecutor)
+        .thenCompose(
+            nativeImage ->
+                nativeImage != null
+                    ? TextureRegistrationHelper.registerTextureAsync(key, nativeImage)
+                    : CompletableFuture.completedFuture(null))
+        .whenComplete((result, throwable) -> completeLoad(key, future, result, throwable));
+    return future;
+  }
+
   static boolean hasPendingLoad(TextureModelKey key) {
     return pendingLoads.containsKey(key);
   }
@@ -155,26 +176,32 @@ public class AsyncTextureLoader {
       // Update last download time and start the download task
       lastDownloadTime = now;
       CompletableFuture.supplyAsync(
-              () ->
-                  RemoteTextureLoader.loadRemoteTexture(
-                      request.key, request.url, request.targetDirectory),
+              () -> loadRemoteTexture(request.key, request.url, request.targetDirectory),
               textureLoadExecutor)
+          .thenCompose(remoteTextureFuture -> remoteTextureFuture)
           .whenComplete(
-              (result, throwable) -> {
-                pendingLoads.remove(request.key);
-                if (throwable != null) {
-                  log.error(
-                      "{} Failed to load texture {}: {}",
-                      LOG_PREFIX,
-                      request.key,
-                      throwable.getMessage());
-                  request.future.completeExceptionally(throwable);
-                } else {
-                  request.future.complete(result);
-                }
-              });
+              (result, throwable) -> completeLoad(request.key, request.future, result, throwable));
     } catch (Exception e) {
       log.error("{} Error processing queue: {}", LOG_PREFIX, e.getMessage());
+    }
+  }
+
+  private static CompletableFuture<ResourceLocation> loadRemoteTexture(
+      TextureModelKey key, String url, Path targetDirectory) {
+    return RemoteTextureLoader.loadRemoteTextureAsync(key, url, targetDirectory);
+  }
+
+  private static void completeLoad(
+      TextureModelKey key,
+      CompletableFuture<ResourceLocation> future,
+      ResourceLocation result,
+      Throwable throwable) {
+    pendingLoads.remove(key);
+    if (throwable != null) {
+      log.error("{} Failed to load texture {}: {}", LOG_PREFIX, key, throwable.getMessage());
+      future.completeExceptionally(throwable);
+    } else {
+      future.complete(result);
     }
   }
 

@@ -25,6 +25,7 @@ import de.markusbordihn.easynpc.data.test.TestItemData;
 import java.util.function.Supplier;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.world.item.component.CustomData;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -35,6 +36,14 @@ public class ModDataComponents {
 
   public static final DeferredRegister<DataComponentType<?>> DATA_COMPONENTS =
       DeferredRegister.create(Registries.DATA_COMPONENT_TYPE, Constants.MOD_ID);
+  public static final Supplier<DataComponentType<CustomData>> CUSTOM_DATA =
+      DATA_COMPONENTS.register(
+          DataComponents.CUSTOM_DATA_ID,
+          () ->
+              DataComponentType.<CustomData>builder()
+                  .persistent(CustomData.CODEC)
+                  .networkSynchronized(CustomData.STREAM_CODEC)
+                  .build());
   public static final Supplier<DataComponentType<PresetData>> PRESET_DATA =
       DATA_COMPONENTS.register(
           PresetData.ID,
@@ -58,6 +67,7 @@ public class ModDataComponents {
   public static void onCommonSetup(FMLCommonSetupEvent event) {
     event.enqueueWork(
         () -> {
+          DataComponents.registerCustomData(CUSTOM_DATA);
           DataComponents.registerPresetData(PRESET_DATA);
           DataComponents.registerTestItemData(TEST_ITEM_DATA);
         });

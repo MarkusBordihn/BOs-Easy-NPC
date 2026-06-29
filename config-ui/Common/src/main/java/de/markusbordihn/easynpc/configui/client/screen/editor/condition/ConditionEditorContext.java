@@ -70,6 +70,8 @@ public abstract class ConditionEditorContext {
 
   public abstract String helpTextKey();
 
+  public abstract UUID executionLimitTargetUUID();
+
   public boolean isActionContext() {
     return false;
   }
@@ -221,6 +223,11 @@ public abstract class ConditionEditorContext {
     }
 
     @Override
+    public UUID executionLimitTargetUUID() {
+      return this.screen.getActionDataEntryUUID();
+    }
+
+    @Override
     public boolean isActionContext() {
       return true;
     }
@@ -292,6 +299,11 @@ public abstract class ConditionEditorContext {
     public String helpTextKey() {
       return "condition.help_text.dialog_button";
     }
+
+    @Override
+    public UUID executionLimitTargetUUID() {
+      return this.screen.getDialogButtonUUID();
+    }
   }
 
   private static final class DialogContext extends ConditionEditorContext {
@@ -347,6 +359,11 @@ public abstract class ConditionEditorContext {
     @Override
     public String helpTextKey() {
       return "condition.help_text.dialog";
+    }
+
+    @Override
+    public UUID executionLimitTargetUUID() {
+      return this.screen.getDialogUUID();
     }
   }
 }

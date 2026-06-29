@@ -25,14 +25,30 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
+import net.minecraft.SharedConstants;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.nbt.TagParser;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.Bootstrap;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.ItemLore;
+import net.minecraft.world.item.trading.ItemCost;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class TradingUtilsTest {
+
+  @BeforeAll
+  static void bootstrap() {
+    SharedConstants.tryDetectVersion();
+    Bootstrap.bootStrap();
+  }
 
   private CompoundTag loadCompoundTagResource(String resourcePath)
       throws IOException, CommandSyntaxException {
@@ -41,6 +57,25 @@ class TradingUtilsTest {
       String snbt = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
       return TagParser.parseTag(snbt);
     }
+  }
+
+  @Test
+  @DisplayName("Should preserve custom name and lore in trade item costs")
+  void testItemCostKeepsCustomNameAndLoreComponents() {
+    ItemStack namedCoin = new ItemStack(Items.COPPER_INGOT, 3);
+    namedCoin.set(DataComponents.CUSTOM_NAME, Component.literal("Marco"));
+    namedCoin.set(DataComponents.LORE, new ItemLore(List.of(Component.literal("Copper coin"))));
+
+    ItemCost itemCost = TradingUtils.getItemCost(namedCoin);
+    ItemStack matchingCoin = namedCoin.copy();
+    ItemStack plainCoin = new ItemStack(Items.COPPER_INGOT, 3);
+
+    assertTrue(itemCost.test(matchingCoin));
+    assertFalse(itemCost.test(plainCoin));
+    assertEquals(Component.literal("Marco"), itemCost.itemStack().get(DataComponents.CUSTOM_NAME));
+    assertEquals(
+        new ItemLore(List.of(Component.literal("Copper coin"))),
+        itemCost.itemStack().get(DataComponents.LORE));
   }
 
   @Test
@@ -139,7 +174,7 @@ class TradingUtilsTest {
     CompoundTag customModelData = components.getCompound("minecraft:custom_model_data");
     assertEquals(123.0f, customModelData.getList("floats", Tag.TAG_FLOAT).getFloat(0));
 
-    CompoundTag customData = components.getCompound("minecraft:custom_data");
+    CompoundTag customData = components.getCompound("easy_npc:custom_data");
     assertEquals(1, customData.getByte("foo"));
   }
 
@@ -167,13 +202,48 @@ class TradingUtilsTest {
     CompoundTag migratedEntry = (CompoundTag) TradingUtils.migrateLegacyTradeEntry(tradeEntry);
     CompoundTag migratedSell = migratedEntry.getCompound("sell");
     CompoundTag components = migratedSell.getCompound("components");
-    CompoundTag customData = components.getCompound("minecraft:custom_data");
+    CompoundTag customData = components.getCompound("easy_npc:custom_data");
 
     assertEquals("{\"text\":\"Modern Name\"}", components.getString("minecraft:custom_name"));
+    assertFalse(components.contains("minecraft:custom_data"));
     assertEquals(1, customData.getByte("existing"));
     assertEquals(1, customData.getByte("foo"));
     assertTrue(customData.contains("display", Tag.TAG_COMPOUND));
     assertEquals("Legacy Name", customData.getCompound("display").getString("Name"));
+  }
+
+  @Test
+  @DisplayName("Should migrate legacy chest contents into modern container component")
+  void testMigrateLegacyChestContentsToContainerComponent() throws CommandSyntaxException {
+    CompoundTag tradeEntry =
+        TagParser.parseTag(
+            """
+            {
+              sell:{
+                Count:1b,
+                id:"minecraft:chest",
+                tag:{
+                  BlockEntityTag:{
+                    Items:[
+                      {Count:4b,Slot:0b,id:"minecraft:bread"},
+                      {Count:1b,Slot:4b,id:"minecraft:emerald"}
+                    ]
+                  }
+                }
+              }
+            }""");
+
+    CompoundTag migratedEntry = (CompoundTag) TradingUtils.migrateLegacyTradeEntry(tradeEntry);
+    CompoundTag components = migratedEntry.getCompound("sell").getCompound("components");
+    ListTag container = components.getList("minecraft:container", Tag.TAG_COMPOUND);
+
+    assertEquals(2, container.size());
+    assertEquals(0, container.getCompound(0).getInt("slot"));
+    assertEquals("minecraft:bread", container.getCompound(0).getCompound("item").getString("id"));
+    assertEquals(4, container.getCompound(0).getCompound("item").getInt("count"));
+    assertEquals(4, container.getCompound(1).getInt("slot"));
+    assertEquals("minecraft:emerald", container.getCompound(1).getCompound("item").getString("id"));
+    assertFalse(components.contains("easy_npc:custom_data"));
   }
 
   @Test

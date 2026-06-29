@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Markus Bordihn
+ * Copyright 2026 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,31 +17,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.client;
+package de.markusbordihn.easynpc.client.texture;
 
-import net.minecraft.client.Minecraft;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-
-@EventBusSubscriber(value = Dist.CLIENT, bus = EventBusSubscriber.Bus.MOD)
-public class ClientEventHandler {
-
-  @SubscribeEvent
-  public static void onClientSetup(FMLClientSetupEvent event) {
-    event.enqueueWork(() -> ClientEvents.handleClientStartedEvent(Minecraft.getInstance()));
-  }
-}
-
-@EventBusSubscriber(value = Dist.CLIENT)
-class ClientGameEventHandler {
-
-  @SubscribeEvent
-  public static void onClientTick(TickEvent.ClientTickEvent event) {
-    if (event.phase == TickEvent.Phase.END) {
-      ClientEvents.handleClientTickEvent();
-    }
-  }
+public enum TextureRegistrationStatus {
+  UNKNOWN,
+  PENDING,
+  REGISTERED,
+  FAILED
 }
