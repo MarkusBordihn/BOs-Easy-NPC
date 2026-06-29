@@ -1,0 +1,345 @@
+{
+  PresetMetadata:{
+    author:"Markus Bordihn",
+    category:"Villager",
+    created:1782744600000L,
+    description:"A daily welcome trader who gives one custom named NPC coin per player per day and exchanges it for test NPC items.",
+    entityTypeId:"easy_npc:villager",
+    modified:1782744600000L,
+    name:"Welcome Coin Trader",
+    variantType:"PLAINS_LIBRARIAN",
+    version:"1.0.0"
+  },
+  data:{
+    ActionData:{
+      ActionEventSet:{
+        ON_OPEN_DIALOG:[{
+          Cmd:'/give @initiator easy_npc:npc_coin{Name:"Welcome Coin",Color:"gold",Description:"A once-per-day welcome token from the Welcome Coin Trader."} 1',
+          ConditionDataSet:{
+            ConditionDataSet:[{
+              SubType:"PER_DAY",Type:"EXECUTION_LIMIT",Value:1
+            }]
+          },
+          Id:[I;1491847234,-1200956017,-1786464396,881625912],
+          Type:"COMMAND"
+        }],
+        ON_INTERACTION:[{
+          Type:"OPEN_DEFAULT_DIALOG"
+        }]
+      },
+      ActionPermissionLevel:4
+    },
+    Age:0,
+    ArmorDropChances:[0.085f,0.085f,0.085f,0.085f],
+    ArmorItems:[{},{},{},{}],
+    Attributes:[{
+      Base:32.0d,Name:"minecraft:generic.follow_range"
+    },{
+      Base:0.6000000238418579d,Name:"minecraft:generic.movement_speed"
+    }],
+    Brain:{
+      memories:{}
+    },
+    CanPickUpLoot:0b,
+    CanUpdate:1b,
+    CustomName:'{"color":"#FFD700","text":"Welcome Coin Trader"}',
+    CustomNameVisible:1b,
+    DialogData:{
+      DialogDataSet:[{
+        Buttons:[{
+          Actions:[{
+            ExecAsUser:1b,PermLevel:0,Type:"OPEN_TRADING_SCREEN"
+          }],Label:"trade_button",Name:"Show me today's exchange."
+        }],
+        Conditions:[{
+          SubType:"PER_DAY",Type:"EXECUTION_LIMIT",Value:1
+        }],
+        Label:"welcome",
+        Name:"Welcome Coin",
+        Priority:40,
+        Texts:[{
+          Text:"<gold>First visit of the day, first coin on the house.</gold>\\n\\nThis little Welcome Coin is not legal tender in any kingdom with serious accountants, but around my stall it opens a few doors. Spend it now, save it for a check, or rename the idea and make your own quest currency."
+        }]
+      },{
+        Buttons:[{
+          Actions:[{
+            ExecAsUser:1b,PermLevel:0,Type:"OPEN_TRADING_SCREEN"
+          }],Label:"trade_button",Name:"Trade the Welcome Coin."
+        }],
+        Conditions:[{
+          CustomData:'{Name:"Welcome Coin",Color:"gold"}',
+          Name:"easy_npc:npc_coin",
+          Type:"HAS_ITEM_IN_INVENTORY"
+        }],
+        Label:"still_has_coin",
+        Name:"Still Carrying the Coin",
+        Priority:20,
+        Texts:[{
+          Text:"Ah, there it is, still warm from my counter. A coin with a name has more manners than most adventurers. Want to exchange it before it starts making plans of its own?"
+        }]
+      },{
+        Buttons:[{
+          Actions:[{
+            ExecAsUser:1b,PermLevel:0,Type:"OPEN_TRADING_SCREEN"
+          }],Label:"trade_button",Name:"Open the key chest exchange."
+        }],
+        Conditions:[{
+          CustomData:'{Name:"Ledger Key",Color:"yellow"}',
+          Name:"easy_npc:npc_key",
+          Type:"HAS_ITEM_IN_INVENTORY",
+          Value:4
+        }],
+        Label:"has_keys",
+        Name:"Four Ledger Keys",
+        Priority:30,
+        Texts:[{
+          Text:"Four Ledger Keys? Now that is a tidy little stack of possibility. Hand them over and I will slide a Surprise Chest across the counter. Nothing too wild, mind you, just useful things wrapped in mystery and merchant confidence."
+        }]
+      },{
+        Conditions:[{
+          Type:"FALLBACK"
+        }],
+        Label:"come_tomorrow",
+        Name:"Come Tomorrow",
+        Priority:0,
+        Texts:[{
+          Text:"No Welcome Coin, no daily welcome left. I would bend the rules, but the ledger stares back at me. Come tomorrow, @initiator, and we will make the numbers smile again."
+        }]
+      }],
+      Type:"CUSTOM"
+    },
+    DisplayAttribute:[{
+      Bool:1b,Type:"VISIBLE"
+    },{
+      Bool:1b,Type:"VISIBLE_AT_DAY"
+    },{
+      Bool:1b,Type:"VISIBLE_AT_NIGHT"
+    },{
+      Bool:1b,Type:"VISIBLE_IN_CREATIVE"
+    },{
+      Bool:1b,Type:"VISIBLE_IN_SPECTATOR"
+    },{
+      Bool:1b,Type:"VISIBLE_IN_STANDARD"
+    },{
+      Bool:1b,Type:"VISIBLE_TO_OWNER"
+    },{
+      Bool:1b,Type:"VISIBLE_TO_TEAM"
+    },{
+      Int:7,Type:"LIGHT_LEVEL"
+    },{
+      Text:"ALWAYS",Type:"NAME_VISIBILITY"
+    }],
+    EasyNPCVersion:3,
+    EntityAttribute:{
+      CanBeHitByProjectile:0b,
+      CanBeLeashed:0b,
+      CanBreatheUnderwater:0b,
+      CanCloseDoor:1b,
+      CanFloat:1b,
+      CanOpenDoor:1b,
+      CanPassDoor:1b,
+      CanUseNetherPortal:0b,
+      Freefall:0b,
+      HealthRegeneration:0.0d,
+      IsAttackableByMonsters:0b,
+      IsAttackableByPlayers:0b,
+      IsInvulnerable:1b,
+      IsPushable:0b,
+      NoGravity:0b,
+      PushEntities:0b
+    },
+    FoodLevel:0b,
+    ForcedAge:0,
+    Gossips:[],
+    HandDropChances:[0.085f,0.085f],
+    HandItems:[{
+      Count:1b,id:"easy_npc:npc_coin",tag:{
+        Name:"Welcome Coin",
+        Color:"gold",
+        Description:"A once-per-day welcome token from the Welcome Coin Trader."
+      }
+    },{
+      Count:1b,id:"easy_npc:npc_key",tag:{
+        Name:"Ledger Key",
+        Color:"yellow",
+        Description:"Collect four of these to unlock the trader's Surprise Chest exchange."
+      }
+    }],
+    Health:20.0f,
+    Inventory:[],
+    Invulnerable:1b,
+    LastGossipDecay:0L,
+    LastRestock:0L,
+    LeftHanded:0b,
+    ModelData:{
+      DefaultPose:"STANDING",
+      Pose:"CUSTOM",
+      Position:{},
+      Rotation:{
+        LeftArm:[-0.4537856f,0.0f,0.0f,0.0f],
+        RightArm:[-0.9599311f,0.0f,0.0f,0.0f]
+      },
+      Scale:{},
+      Visible:{}
+    },
+    Navigation:{
+      Home:{
+        X:24,
+        Y:64,
+        Z:-50
+      }
+    },
+    ObjectiveData:{
+      HasObjectives:1b,
+      ObjectiveDataSet:[{
+        Prio:9,Type:"LOOK_AT_PLAYER"
+      },{
+        Prio:10,Type:"LOOK_AT_MOB"
+      },{
+        Prio:9,Type:"LOOK_AT_RESET"
+      }]
+    },
+    Offers:{
+      Inventory:{},
+      Recipes:{
+        Recipes:[{
+          buy:{
+            Count:1b,id:"easy_npc:npc_coin",tag:{
+              Name:"Welcome Coin",
+              Color:"gold",
+              Description:"A once-per-day welcome token from the Welcome Coin Trader."
+            }
+          },
+          buyB:{},
+          demand:0,
+          maxUses:64,
+          priceMultiplier:1.0f,
+          rewardExp:1b,
+          sell:{
+            Count:1b,id:"easy_npc:npc_red_token",tag:{
+              Name:"Market Favor",
+              Color:"red",
+              Description:"A small favor token for quest checks, rewards, and trading tests."
+            }
+          },
+          specialPrice:0,
+          uses:0,
+          xp:1
+        },{
+          buy:{
+            Count:1b,id:"easy_npc:npc_coin",tag:{
+              Name:"Welcome Coin",
+              Color:"gold",
+              Description:"A once-per-day welcome token from the Welcome Coin Trader."
+            }
+          },
+          buyB:{},
+          demand:0,
+          maxUses:64,
+          priceMultiplier:1.0f,
+          rewardExp:1b,
+          sell:{
+            Count:1b,id:"easy_npc:npc_key",tag:{
+              Name:"Ledger Key",
+              Color:"yellow",
+              Description:"Collect four of these to unlock the trader's Surprise Chest exchange."
+            }
+          },
+          specialPrice:0,
+          uses:0,
+          xp:1
+        },{
+          buy:{
+            Count:4b,id:"easy_npc:npc_key",tag:{
+              Name:"Ledger Key",
+              Color:"yellow",
+              Description:"Collect four of these to unlock the trader's Surprise Chest exchange."
+            }
+          },
+          buyB:{},
+          demand:0,
+          maxUses:64,
+          priceMultiplier:1.0f,
+          rewardExp:1b,
+          sell:{
+            Count:1b,id:"minecraft:chest",tag:{
+              BlockEntityTag:{
+                Items:[{
+                  Count:4b,Slot:0b,id:"minecraft:bread"
+                },{
+                  Count:2b,Slot:1b,id:"minecraft:apple"
+                },{
+                  Count:6b,Slot:2b,id:"minecraft:torch"
+                },{
+                  Count:3b,Slot:3b,id:"minecraft:experience_bottle"
+                },{
+                  Count:1b,Slot:4b,id:"minecraft:emerald"
+                }]
+              },
+              display:{
+                Lore:['{"text":"A small cache of simple useful items.","color":"gray","italic":false}'],
+                Name:'{"text":"Surprise Chest","color":"gold","italic":false}'
+              }
+            }
+          },
+          specialPrice:0,
+          uses:0,
+          xp:1
+        }]
+      }
+    },
+    OnGround:1b,
+    Owner:[I;940439953,-167562164,-1601161573,-1389718966],
+    PersistenceRequired:0b,
+    Pos:[24.5d,64.0d,-50.5d],
+    PresetUUID:[I;1137206251,-876984417,-1218571678,514386811],
+    Profession:"LIBRARIAN",
+    RenderData:{},
+    RestocksToday:0,
+    Rotation:[-144.0f,0.0f],
+    SkinData:{
+      Content:"",
+      DisableLayers:0b,
+      Name:"PLAINS_LIBRARIAN",
+      Timestamp:1782744600000L,
+      Type:"DEFAULT",
+      URL:"",
+      UUID:[I;0,0,0,0]
+    },
+    SoundData:{
+      SoundDataSet:[{
+        Name:"minecraft:entity.villager.ambient",Type:"AMBIENT"
+      },{
+        Name:"minecraft:entity.villager.death",Type:"DEATH"
+      },{
+        Name:"minecraft:entity.villager.hurt",Type:"HURT"
+      },{
+        Name:"minecraft:entity.villager.trade",Type:"TRADE"
+      },{
+        Name:"minecraft:entity.villager.yes",Type:"TRADE_YES"
+      },{
+        Name:"minecraft:entity.villager.no",Type:"TRADE_NO"
+      }]
+    },
+    Status:{
+      finalized:1b
+    },
+    TradingData:{
+      TradingDataSet:{
+        LastReset:0L,
+        MaxUses:64,
+        ResetsEveryMin:0,
+        RewardedXP:0,
+        Type:"BASIC"
+      }
+    },
+    VariantType:"PLAINS_LIBRARIAN",
+    VillagerData:{
+      level:1,
+      profession:"minecraft:librarian",
+      type:"minecraft:plains"
+    },
+    Xp:0,
+    id:"easy_npc:villager"
+  }
+}

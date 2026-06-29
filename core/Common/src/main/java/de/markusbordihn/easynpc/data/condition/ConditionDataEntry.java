@@ -27,7 +27,8 @@ public record ConditionDataEntry(
     ConditionSubTypeEntry subType,
     ConditionOperationType operationType,
     String name,
-    int value) {
+    int value,
+    String customData) {
 
   public static final ConditionDataEntry EMPTY =
       new ConditionDataEntry(ConditionType.NONE, ConditionOperationType.NONE);
@@ -35,6 +36,7 @@ public record ConditionDataEntry(
   public static final String DATA_SUB_TYPE_TAG = "SubType";
   public static final String DATA_OPERATION_TAG = "Operation";
   public static final String DATA_NAME_TAG = "Name";
+  public static final String DATA_CUSTOM_DATA_TAG = "CustomData";
   public static final String DATA_LEGACY_TEXT_TAG = "Text";
   public static final String DATA_VALUE_TAG = "Value";
 
@@ -44,7 +46,10 @@ public record ConditionDataEntry(
         getConditionType(compoundTag).getSubType(getSubTypeName(compoundTag)),
         ConditionOperationType.get(compoundTag.getString(DATA_OPERATION_TAG)),
         compoundTag.contains(DATA_NAME_TAG) ? compoundTag.getString(DATA_NAME_TAG) : "",
-        compoundTag.contains(DATA_VALUE_TAG) ? compoundTag.getInt(DATA_VALUE_TAG) : 0);
+        compoundTag.contains(DATA_VALUE_TAG) ? compoundTag.getInt(DATA_VALUE_TAG) : 0,
+        compoundTag.contains(DATA_CUSTOM_DATA_TAG)
+            ? compoundTag.getString(DATA_CUSTOM_DATA_TAG)
+            : "");
   }
 
   public ConditionDataEntry(ConditionType conditionType) {
@@ -58,6 +63,15 @@ public record ConditionDataEntry(
   public ConditionDataEntry(
       ConditionType conditionType, ConditionOperationType operationType, String name, int value) {
     this(conditionType, null, operationType, name, value);
+  }
+
+  public ConditionDataEntry(
+      ConditionType conditionType,
+      ConditionSubTypeEntry subType,
+      ConditionOperationType operationType,
+      String name,
+      int value) {
+    this(conditionType, subType, operationType, name, value, "");
   }
 
   private static ConditionType getConditionType(CompoundTag compoundTag) {
@@ -81,6 +95,10 @@ public record ConditionDataEntry(
 
   public boolean hasName() {
     return this.name != null && !this.name.isEmpty();
+  }
+
+  public boolean hasCustomData() {
+    return this.customData != null && !this.customData.trim().isEmpty();
   }
 
   public boolean hasValidUuidName() {
@@ -123,27 +141,32 @@ public record ConditionDataEntry(
 
   public ConditionDataEntry withConditionType(ConditionType conditionType) {
     return new ConditionDataEntry(
-        conditionType, this.subType, this.operationType, this.name, this.value);
+        conditionType, this.subType, this.operationType, this.name, this.value, this.customData);
   }
 
   public ConditionDataEntry withSubType(ConditionSubTypeEntry subType) {
     return new ConditionDataEntry(
-        this.conditionType, subType, this.operationType, this.name, this.value);
+        this.conditionType, subType, this.operationType, this.name, this.value, this.customData);
   }
 
   public ConditionDataEntry withOperationType(ConditionOperationType operationType) {
     return new ConditionDataEntry(
-        this.conditionType, this.subType, operationType, this.name, this.value);
+        this.conditionType, this.subType, operationType, this.name, this.value, this.customData);
   }
 
   public ConditionDataEntry withName(String name) {
     return new ConditionDataEntry(
-        this.conditionType, this.subType, this.operationType, name, this.value);
+        this.conditionType, this.subType, this.operationType, name, this.value, this.customData);
   }
 
   public ConditionDataEntry withValue(int value) {
     return new ConditionDataEntry(
-        this.conditionType, this.subType, this.operationType, this.name, value);
+        this.conditionType, this.subType, this.operationType, this.name, value, this.customData);
+  }
+
+  public ConditionDataEntry withCustomData(String customData) {
+    return new ConditionDataEntry(
+        this.conditionType, this.subType, this.operationType, this.name, this.value, customData);
   }
 
   public ConditionDataEntry create(CompoundTag compoundTag) {
@@ -164,6 +187,9 @@ public record ConditionDataEntry(
     }
     if (this.value != 0) {
       compoundTag.putInt(DATA_VALUE_TAG, this.value);
+    }
+    if (hasCustomData()) {
+      compoundTag.putString(DATA_CUSTOM_DATA_TAG, this.customData.trim());
     }
 
     return compoundTag;
