@@ -22,9 +22,11 @@ package de.markusbordihn.easynpc.client.texture;
 import com.mojang.blaze3d.platform.NativeImage;
 import de.markusbordihn.easynpc.Constants;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executor;
 import java.util.function.BooleanSupplier;
 import net.minecraft.client.Minecraft;
@@ -37,11 +39,13 @@ public class TextureRegistrationQueue {
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private static final String LOG_PREFIX = "[Texture Registration Queue]";
   private static final TextureRegistrationQueue INSTANCE = new TextureRegistrationQueue();
+  private static final int DEFAULT_REGISTRATIONS_PER_TICK = 3;
 
   private final Map<TextureModelKey, CompletableFuture<Identifier>> pendingRegistrations =
       new ConcurrentHashMap<>();
   private final Map<TextureModelKey, TextureRegistrationStatus> registrationStatus =
       new ConcurrentHashMap<>();
+  private final Queue<PendingTextureRegistration> registrationQueue = new ConcurrentLinkedQueue<>();
   private final BooleanSupplier renderThreadCheck;
   private final Executor renderThreadExecutor;
   private final TextureRegistrar textureRegistrar;
@@ -77,24 +81,35 @@ public class TextureRegistrationQueue {
   }
 
   public Identifier register(TextureModelKey textureModelKey, NativeImage nativeImage) {
+    CompletableFuture<Identifier> registrationFuture = registerAsync(textureModelKey, nativeImage);
+    return registrationFuture.isDone()
+        ? registrationFuture.getNow(null)
+        : getResourceLocation(textureModelKey);
+  }
+
+  public CompletableFuture<Identifier> registerAsync(
+      TextureModelKey textureModelKey, NativeImage nativeImage) {
     if (textureModelKey == null || nativeImage == null) {
       closeNativeImage(nativeImage);
-      return null;
+      return CompletableFuture.completedFuture(null);
     }
 
     Identifier resourceLocation = getResourceLocation(textureModelKey);
     if (getStatus(textureModelKey) == TextureRegistrationStatus.REGISTERED) {
       closeNativeImage(nativeImage);
-      return resourceLocation;
+      return CompletableFuture.completedFuture(resourceLocation);
     }
     if (getStatus(textureModelKey) == TextureRegistrationStatus.PENDING) {
       closeNativeImage(nativeImage);
       log.debug("{} Skipped duplicate pending registration for {}", LOG_PREFIX, textureModelKey);
-      return resourceLocation;
+      CompletableFuture<Identifier> existingFuture = pendingRegistrations.get(textureModelKey);
+      return existingFuture != null
+          ? existingFuture
+          : CompletableFuture.completedFuture(resourceLocation);
     }
 
     if (renderThreadCheck.getAsBoolean()) {
-      return registerNow(textureModelKey, nativeImage);
+      return CompletableFuture.completedFuture(registerNow(textureModelKey, nativeImage));
     }
 
     CompletableFuture<Identifier> registrationFuture = new CompletableFuture<>();
@@ -103,27 +118,14 @@ public class TextureRegistrationQueue {
     if (existingFuture != null) {
       closeNativeImage(nativeImage);
       log.debug("{} Skipped duplicate pending registration for {}", LOG_PREFIX, textureModelKey);
-      return resourceLocation;
+      return existingFuture;
     }
 
     registrationStatus.put(textureModelKey, TextureRegistrationStatus.PENDING);
+    registrationQueue.offer(
+        new PendingTextureRegistration(textureModelKey, nativeImage, registrationFuture));
     log.debug("{} Queued texture registration for {}", LOG_PREFIX, textureModelKey);
-    try {
-      renderThreadExecutor.execute(
-          () -> completeRegistration(textureModelKey, nativeImage, registrationFuture));
-    } catch (RuntimeException exception) {
-      pendingRegistrations.remove(textureModelKey);
-      registrationStatus.put(textureModelKey, TextureRegistrationStatus.FAILED);
-      closeNativeImage(nativeImage);
-      registrationFuture.completeExceptionally(exception);
-      log.error(
-          "{} Unable to queue texture registration for {}:",
-          LOG_PREFIX,
-          textureModelKey,
-          exception);
-      return null;
-    }
-    return resourceLocation;
+    return registrationFuture;
   }
 
   public TextureRegistrationStatus getStatus(TextureModelKey textureModelKey) {
@@ -134,14 +136,70 @@ public class TextureRegistrationQueue {
     return getStatus(textureModelKey) == TextureRegistrationStatus.PENDING;
   }
 
+  public void processPendingRegistrations() {
+    processPendingRegistrations(DEFAULT_REGISTRATIONS_PER_TICK);
+  }
+
+  public void processPendingRegistrations(int maxRegistrations) {
+    if (maxRegistrations <= 0 || registrationQueue.isEmpty()) {
+      return;
+    }
+
+    if (!renderThreadCheck.getAsBoolean()) {
+      try {
+        renderThreadExecutor.execute(() -> processPendingRegistrations(maxRegistrations));
+      } catch (RuntimeException exception) {
+        log.error("{} Unable to schedule pending texture registrations:", LOG_PREFIX, exception);
+      }
+      return;
+    }
+
+    for (int index = 0; index < maxRegistrations; index++) {
+      PendingTextureRegistration registration = registrationQueue.poll();
+      if (registration == null) {
+        return;
+      }
+
+      CompletableFuture<Identifier> currentFuture =
+          pendingRegistrations.get(registration.textureModelKey());
+      if (currentFuture != registration.registrationFuture()) {
+        closeNativeImage(registration.nativeImage());
+        continue;
+      }
+
+      completeRegistration(
+          registration.textureModelKey(),
+          registration.nativeImage(),
+          registration.registrationFuture());
+    }
+  }
+
   public void clear() {
+    for (PendingTextureRegistration registration : registrationQueue) {
+      closeNativeImage(registration.nativeImage());
+    }
+    pendingRegistrations.values().forEach(future -> future.complete(null));
+    registrationQueue.clear();
     pendingRegistrations.clear();
     registrationStatus.clear();
   }
 
   public void clear(Set<TextureModelKey> textureModelKeys) {
+    registrationQueue.removeIf(
+        registration -> {
+          if (textureModelKeys.contains(registration.textureModelKey())) {
+            closeNativeImage(registration.nativeImage());
+            registration.registrationFuture().complete(null);
+            return true;
+          }
+          return false;
+        });
     for (TextureModelKey textureModelKey : textureModelKeys) {
-      pendingRegistrations.remove(textureModelKey);
+      CompletableFuture<Identifier> registrationFuture =
+          pendingRegistrations.remove(textureModelKey);
+      if (registrationFuture != null) {
+        registrationFuture.complete(null);
+      }
       registrationStatus.remove(textureModelKey);
     }
   }
@@ -188,7 +246,7 @@ public class TextureRegistrationQueue {
       log.error(
           "{} Unable to register queued texture for {}:", LOG_PREFIX, textureModelKey, exception);
     } finally {
-      pendingRegistrations.remove(textureModelKey);
+      pendingRegistrations.remove(textureModelKey, registrationFuture);
     }
   }
 
@@ -196,4 +254,9 @@ public class TextureRegistrationQueue {
   interface TextureRegistrar {
     Identifier register(TextureModelKey textureModelKey, NativeImage nativeImage);
   }
+
+  private record PendingTextureRegistration(
+      TextureModelKey textureModelKey,
+      NativeImage nativeImage,
+      CompletableFuture<Identifier> registrationFuture) {}
 }

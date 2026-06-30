@@ -80,11 +80,6 @@ public class TextureManager {
     return TextureRegistrationHelper.registerTexture(textureModelKey, nativeImage);
   }
 
-  public static Identifier addRemoteTexture(
-      TextureModelKey textureModelKey, String remoteUrl, Path targetDirectory) {
-    return RemoteTextureLoader.loadRemoteTexture(textureModelKey, remoteUrl, targetDirectory);
-  }
-
   public static String getResourceName(TextureModelKey textureModelKey) {
     return TextureNameHelper.getResourceName(textureModelKey);
   }
@@ -103,6 +98,10 @@ public class TextureManager {
 
   public static Identifier getCachedTexture(TextureModelKey textureModelKey, Path targetDirectory) {
     return TextureCacheManager.getCachedTexture(textureModelKey, targetDirectory);
+  }
+
+  public static boolean hasCachedTexture(TextureModelKey textureModelKey, Path targetDirectory) {
+    return TextureCacheManager.hasCachedTexture(textureModelKey, targetDirectory);
   }
 
   public static Identifier searchCachedTexture(

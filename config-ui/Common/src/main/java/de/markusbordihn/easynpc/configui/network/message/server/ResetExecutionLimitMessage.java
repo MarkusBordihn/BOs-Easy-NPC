@@ -31,7 +31,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.permissions.Permissions;
 
-public record ResetExecutionLimitMessage(UUID dialogId, boolean allPlayers)
+public record ResetExecutionLimitMessage(UUID executionId, boolean allPlayers)
     implements NetworkMessageRecord {
 
   public static final Identifier MESSAGE_ID =
@@ -48,7 +48,7 @@ public record ResetExecutionLimitMessage(UUID dialogId, boolean allPlayers)
 
   @Override
   public void write(final FriendlyByteBuf buffer) {
-    buffer.writeUUID(this.dialogId);
+    buffer.writeUUID(this.executionId);
     buffer.writeBoolean(this.allPlayers);
   }
 
@@ -64,7 +64,7 @@ public record ResetExecutionLimitMessage(UUID dialogId, boolean allPlayers)
 
   @Override
   public void handleServer(final ServerPlayer serverPlayer) {
-    if (this.dialogId == null) {
+    if (this.executionId == null) {
       return;
     }
 
@@ -76,17 +76,17 @@ public record ResetExecutionLimitMessage(UUID dialogId, boolean allPlayers)
             serverPlayer.getName().getString());
         return;
       }
-      tracker.resetExecutionForAllPlayers(this.dialogId);
+      tracker.resetExecutionForAllPlayers(this.executionId);
       log.info(
-          "Player {} reset execution limit for all players for dialog {}",
+          "Player {} reset execution limit for all players for execution {}",
           serverPlayer.getName().getString(),
-          this.dialogId);
+          this.executionId);
     } else {
-      tracker.resetExecution(serverPlayer.getUUID(), this.dialogId);
+      tracker.resetExecution(serverPlayer.getUUID(), this.executionId);
       log.debug(
-          "Player {} reset execution limit for dialog {}",
+          "Player {} reset execution limit for execution {}",
           serverPlayer.getName().getString(),
-          this.dialogId);
+          this.executionId);
     }
   }
 }

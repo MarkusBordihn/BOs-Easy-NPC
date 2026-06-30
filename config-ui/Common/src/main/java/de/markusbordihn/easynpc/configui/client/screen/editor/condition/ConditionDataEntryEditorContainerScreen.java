@@ -320,6 +320,10 @@ public class ConditionDataEntryEditorContainerScreen<T extends EditorMenu> exten
     return this.isNewEntry;
   }
 
+  public UUID getExecutionLimitTargetUUID() {
+    return this.context.executionLimitTargetUUID();
+  }
+
   public Font getFont() {
     return this.font;
   }

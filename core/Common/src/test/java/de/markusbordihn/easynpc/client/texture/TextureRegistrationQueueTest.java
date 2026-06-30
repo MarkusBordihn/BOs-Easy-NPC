@@ -25,8 +25,10 @@ import com.mojang.blaze3d.platform.NativeImage;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executor;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import net.minecraft.resources.Identifier;
 import org.junit.jupiter.api.DisplayName;
@@ -69,10 +71,11 @@ class TextureRegistrationQueueTest {
   void testQueueRegistrationOffRenderThread() {
     TextureModelKey textureModelKey = newTextureModelKey();
     ControlledExecutor controlledExecutor = new ControlledExecutor();
+    AtomicBoolean renderThread = new AtomicBoolean(false);
     AtomicInteger registrationCount = new AtomicInteger();
     TextureRegistrationQueue queue =
         new TextureRegistrationQueue(
-            () -> false,
+            renderThread::get,
             controlledExecutor,
             (key, image) -> {
               registrationCount.incrementAndGet();
@@ -86,10 +89,36 @@ class TextureRegistrationQueueTest {
     assertTrue(queue.hasPendingRegistration(textureModelKey));
     assertEquals(0, registrationCount.get());
 
-    controlledExecutor.runNext();
+    renderThread.set(true);
+    queue.processPendingRegistrations();
 
     assertEquals(TextureRegistrationStatus.REGISTERED, queue.getStatus(textureModelKey));
     assertEquals(1, registrationCount.get());
+  }
+
+  @Test
+  @DisplayName("Should complete async registration after render tick")
+  void testAsyncRegistrationCompletion() {
+    TextureModelKey textureModelKey = newTextureModelKey();
+    AtomicBoolean renderThread = new AtomicBoolean(false);
+    TextureRegistrationQueue queue =
+        new TextureRegistrationQueue(
+            renderThread::get,
+            Runnable::run,
+            (key, image) -> {
+              image.close();
+              return expectedIdentifier(key);
+            });
+
+    CompletableFuture<Identifier> future =
+        queue.registerAsync(textureModelKey, new NativeImage(64, 64, false));
+
+    assertFalse(future.isDone());
+    renderThread.set(true);
+    queue.processPendingRegistrations();
+
+    assertTrue(future.isDone());
+    assertEquals(expectedIdentifier(textureModelKey), future.join());
   }
 
   @Test
@@ -97,10 +126,11 @@ class TextureRegistrationQueueTest {
   void testSkipDuplicatePendingRegistration() {
     TextureModelKey textureModelKey = newTextureModelKey();
     ControlledExecutor controlledExecutor = new ControlledExecutor();
+    AtomicBoolean renderThread = new AtomicBoolean(false);
     AtomicInteger registrationCount = new AtomicInteger();
     TextureRegistrationQueue queue =
         new TextureRegistrationQueue(
-            () -> false,
+            renderThread::get,
             controlledExecutor,
             (key, image) -> {
               registrationCount.incrementAndGet();
@@ -114,12 +144,46 @@ class TextureRegistrationQueueTest {
 
     assertEquals(firstIdentifier, duplicateIdentifier);
     assertTrue(queue.hasPendingRegistration(textureModelKey));
-    assertEquals(1, controlledExecutor.size());
+    assertEquals(0, controlledExecutor.size());
 
-    controlledExecutor.runNext();
+    renderThread.set(true);
+    queue.processPendingRegistrations();
 
     assertEquals(TextureRegistrationStatus.REGISTERED, queue.getStatus(textureModelKey));
     assertEquals(1, registrationCount.get());
+  }
+
+  @Test
+  @DisplayName("Should limit registrations per render tick")
+  void testRegistrationLimitPerTick() {
+    TextureModelKey firstKey = newTextureModelKey();
+    TextureModelKey secondKey = newTextureModelKey();
+    AtomicBoolean renderThread = new AtomicBoolean(false);
+    AtomicInteger registrationCount = new AtomicInteger();
+    TextureRegistrationQueue queue =
+        new TextureRegistrationQueue(
+            renderThread::get,
+            Runnable::run,
+            (key, image) -> {
+              registrationCount.incrementAndGet();
+              image.close();
+              return expectedIdentifier(key);
+            });
+
+    queue.register(firstKey, new NativeImage(64, 64, false));
+    queue.register(secondKey, new NativeImage(64, 64, false));
+
+    renderThread.set(true);
+    queue.processPendingRegistrations(1);
+
+    assertEquals(TextureRegistrationStatus.REGISTERED, queue.getStatus(firstKey));
+    assertEquals(TextureRegistrationStatus.PENDING, queue.getStatus(secondKey));
+    assertEquals(1, registrationCount.get());
+
+    queue.processPendingRegistrations(1);
+
+    assertEquals(TextureRegistrationStatus.REGISTERED, queue.getStatus(secondKey));
+    assertEquals(2, registrationCount.get());
   }
 
   @Test

@@ -222,7 +222,7 @@ class RemoteTextureManagerTest {
     Path tempDirectory = Files.createTempDirectory("remote_texture_forbidden");
     try {
       int port = httpServer.getAddress().getPort();
-      RemoteTextureLoader.loadRemoteTexture(
+      RemoteTextureLoader.loadRemoteTextureAsync(
           testKey, "http://localhost:" + port + "/skin.png", tempDirectory);
 
       assertTrue(RemoteTextureManager.hasPermanentFailure(testKey));
