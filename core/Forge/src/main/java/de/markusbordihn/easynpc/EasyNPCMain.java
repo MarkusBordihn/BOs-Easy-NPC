@@ -167,8 +167,8 @@ public class EasyNPCMain {
 
   private void registerClientGameEvents() {
     log.info("{} Client GAME bus events ...", Constants.LOG_REGISTER_PREFIX);
-    net.minecraftforge.client.event.ClientPlayerNetworkEvent.LoggingOut.BUS.addListener(
-        this::onPlayerLoggedOut);
+    ClientPlayerNetworkEvent.LoggingOut.BUS.addListener(this::onPlayerLoggedOut);
+    TickEvent.ClientTickEvent.Post.BUS.addListener(this::onClientTick);
   }
 
   private void commonSetup(final FMLCommonSetupEvent event) {
@@ -212,6 +212,10 @@ public class EasyNPCMain {
 
   private void onServerTick(final TickEvent.ServerTickEvent event) {
     ServerEvents.handleServerTick(event.server());
+  }
+
+  private void onClientTick(final TickEvent.ClientTickEvent event) {
+    ClientEvents.handleClientTickEvent();
   }
 
   private void onEntityJoinLevel(final EntityJoinLevelEvent event) {
