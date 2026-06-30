@@ -124,6 +124,13 @@ public class ModItems {
   public static final DeferredItem<Item> CUSTOM_DATA_TEST_ITEM =
       ITEMS.register(
           CustomDataTestItem.ID, () -> new CustomDataTestItem(new Item.Properties().stacksTo(1)));
+  public static final DeferredItem<Item> NPC_COIN =
+      ITEMS.register("npc_coin", () -> new ConsumableItem("npc_coin", new Item.Properties()));
+  public static final DeferredItem<Item> NPC_KEY =
+      ITEMS.register("npc_key", () -> new ConsumableItem("npc_key", new Item.Properties()));
+  public static final DeferredItem<Item> NPC_RED_TOKEN =
+      ITEMS.register(
+          "npc_red_token", () -> new ConsumableItem("npc_red_token", new Item.Properties()));
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   static {

@@ -19,13 +19,14 @@
 
 package de.markusbordihn.easynpc.handler;
 
+import static de.markusbordihn.easynpc.utils.TradingUtils.getItemCost;
+import static de.markusbordihn.easynpc.utils.TradingUtils.getOptionalItemCost;
+
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.trading.TradingType;
 import de.markusbordihn.easynpc.entity.easynpc.data.TradingDataCapable;
-import java.util.Optional;
 import java.util.function.Function;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.trading.ItemCost;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.item.trading.MerchantOffers;
 import org.apache.logging.log4j.LogManager;
@@ -161,15 +162,5 @@ public class TradingOfferHandler {
     }
     return ((itemA != null && !itemA.isEmpty()) || (itemB != null && !itemB.isEmpty()))
         && !itemResult.isEmpty();
-  }
-
-  private static ItemCost getItemCost(ItemStack itemStack) {
-    return new ItemCost(
-        itemStack.isEmpty() ? ItemStack.EMPTY.getItem() : itemStack.getItem(),
-        itemStack.getCount());
-  }
-
-  private static Optional<ItemCost> getOptionalItemCost(ItemStack itemStack) {
-    return itemStack.isEmpty() ? Optional.empty() : Optional.of(getItemCost(itemStack));
   }
 }

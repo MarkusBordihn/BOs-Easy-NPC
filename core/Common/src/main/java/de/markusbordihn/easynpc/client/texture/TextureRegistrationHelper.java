@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.client.texture;
 
 import com.mojang.blaze3d.platform.NativeImage;
 import de.markusbordihn.easynpc.Constants;
+import java.util.concurrent.CompletableFuture;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.resources.Identifier;
@@ -37,6 +38,11 @@ public class TextureRegistrationHelper {
   public static Identifier registerTexture(
       TextureModelKey textureModelKey, NativeImage nativeImage) {
     return TextureRegistrationQueue.getInstance().register(textureModelKey, nativeImage);
+  }
+
+  public static CompletableFuture<Identifier> registerTextureAsync(
+      TextureModelKey textureModelKey, NativeImage nativeImage) {
+    return TextureRegistrationQueue.getInstance().registerAsync(textureModelKey, nativeImage);
   }
 
   static Identifier registerTextureOnCurrentThread(

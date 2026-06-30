@@ -39,6 +39,10 @@ public class ClientEvents {
     clearTextureCaches();
   }
 
+  public static void handleClientTickEvent() {
+    TextureRegistrationQueue.getInstance().processPendingRegistrations();
+  }
+
   private static void clearTextureCaches() {
     try {
       Class.forName("de.markusbordihn.easynpc.client.texture.CustomTextureManager")

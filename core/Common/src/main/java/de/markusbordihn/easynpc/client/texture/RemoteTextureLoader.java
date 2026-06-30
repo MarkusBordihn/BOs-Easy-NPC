@@ -32,6 +32,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import net.minecraft.resources.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -47,26 +48,26 @@ public class RemoteTextureLoader {
 
   private RemoteTextureLoader() {}
 
-  public static Identifier loadRemoteTexture(
+  public static CompletableFuture<Identifier> loadRemoteTextureAsync(
       TextureModelKey textureModelKey, String remoteUrl, Path targetDirectory) {
     if (!UrlValidator.isValidUrl(remoteUrl)) {
       String error = "Invalid URL format or forbidden extension";
       TextureErrorHandler.urlLoadErrorMessage(textureModelKey, remoteUrl, error);
       RemoteTextureManager.markPermanentFailure(
           textureModelKey, TextureFailureType.URL_INVALID, error, remoteUrl);
-      return null;
+      return CompletableFuture.completedFuture(null);
     }
 
     // Check for cached texture.
-    Identifier cachedTexture =
-        TextureCacheManager.getCachedTexture(textureModelKey, targetDirectory);
-    if (cachedTexture != null) {
+    NativeImage cachedNativeImage =
+        TextureCacheManager.getCachedNativeImage(textureModelKey, targetDirectory);
+    if (cachedNativeImage != null) {
       log.info(
           "{} Found downloaded file in cache, will re-used {} for {}",
           LOG_PREFIX,
-          cachedTexture,
+          textureModelKey,
           remoteUrl);
-      return cachedTexture;
+      return TextureRegistrationHelper.registerTextureAsync(textureModelKey, cachedNativeImage);
     }
 
     // Start downloading the remote texture.
@@ -92,7 +93,7 @@ public class RemoteTextureLoader {
         TextureErrorHandler.urlLoadErrorMessage(textureModelKey, remoteUrl, error);
         RemoteTextureManager.markPermanentFailure(
             textureModelKey, TextureFailureType.FILE_TOO_LARGE, error, remoteUrl);
-        return null;
+        return CompletableFuture.completedFuture(null);
       }
 
       // Handle redirects
@@ -115,7 +116,7 @@ public class RemoteTextureLoader {
         TextureErrorHandler.urlLoadErrorMessage(textureModelKey, remoteUrl, error);
         RemoteTextureManager.markPermanentFailure(
             textureModelKey, getFailureType(responseCode), error, remoteUrl);
-        return null;
+        return CompletableFuture.completedFuture(null);
       }
 
       // Read and decode the image directly from the connection
@@ -128,7 +129,7 @@ public class RemoteTextureLoader {
       TextureErrorHandler.urlLoadErrorMessage(textureModelKey, remoteUrl, error);
       RemoteTextureManager.markPermanentFailure(
           textureModelKey, TextureFailureType.NETWORK_ERROR, error, remoteUrl);
-      return null;
+      return CompletableFuture.completedFuture(null);
     } finally {
       if (connection != null) {
         connection.disconnect();
@@ -141,7 +142,7 @@ public class RemoteTextureLoader {
       TextureErrorHandler.processingErrorMessage(textureModelKey, remoteUrl, error);
       RemoteTextureManager.markPermanentFailure(
           textureModelKey, TextureFailureType.DECODING_ERROR, error, remoteUrl);
-      return null;
+      return CompletableFuture.completedFuture(null);
     }
 
     if (!ImageValidator.isValidImage(nativeImage)) {
@@ -153,7 +154,7 @@ public class RemoteTextureLoader {
       RemoteTextureManager.markPermanentFailure(
           textureModelKey, TextureFailureType.INVALID_IMAGE_SIZE, error, remoteUrl);
       nativeImage.close();
-      return null;
+      return CompletableFuture.completedFuture(null);
     }
 
     // Apply legacy support if needed
@@ -180,7 +181,7 @@ public class RemoteTextureLoader {
           exception.getMessage());
     }
 
-    return TextureRegistrationHelper.registerTexture(textureModelKey, nativeImage);
+    return TextureRegistrationHelper.registerTextureAsync(textureModelKey, nativeImage);
   }
 
   private static HttpURLConnection openConnection(URL remoteImageURL) throws IOException {

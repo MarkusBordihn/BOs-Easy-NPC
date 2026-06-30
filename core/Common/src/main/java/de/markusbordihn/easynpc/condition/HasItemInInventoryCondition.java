@@ -21,9 +21,9 @@ package de.markusbordihn.easynpc.condition;
 
 import de.markusbordihn.easynpc.data.condition.ConditionDataEntry;
 import de.markusbordihn.easynpc.data.condition.ConditionOperationType;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 public class HasItemInInventoryCondition {
@@ -35,16 +35,24 @@ public class HasItemInInventoryCondition {
       return false;
     }
 
-    String itemName = conditionDataEntry.name();
+    Item targetItem = ItemStackConditionMatcher.resolveItem(conditionDataEntry.name());
+    CompoundTag requiredData =
+        ItemStackConditionMatcher.parseRequiredData(conditionDataEntry.customData());
+    if (requiredData == null && conditionDataEntry.hasCustomData()) {
+      return false;
+    }
+    if (!ItemStackConditionMatcher.isCustomDataComponentValid(
+        conditionDataEntry.customDataComponent())) {
+      return false;
+    }
+
     int required = Math.max(1, conditionDataEntry.value());
     int total = 0;
     for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
       ItemStack stack = player.getInventory().getItem(i);
-      if (!stack.isEmpty()) {
-        Identifier key = BuiltInRegistries.ITEM.getKey(stack.getItem());
-        if (key != null && key.toString().equals(itemName)) {
-          total += stack.getCount();
-        }
+      if (ItemStackConditionMatcher.matches(
+          stack, targetItem, requiredData, conditionDataEntry.customDataComponent())) {
+        total += stack.getCount();
       }
     }
 

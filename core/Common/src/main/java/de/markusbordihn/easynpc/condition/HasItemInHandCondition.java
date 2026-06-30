@@ -22,9 +22,9 @@ package de.markusbordihn.easynpc.condition;
 import de.markusbordihn.easynpc.data.condition.ConditionDataEntry;
 import de.markusbordihn.easynpc.data.condition.ConditionOperationType;
 import de.markusbordihn.easynpc.data.condition.HandItemType;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 public class HasItemInHandCondition {
@@ -36,32 +36,44 @@ public class HasItemInHandCondition {
       return false;
     }
 
+    Item targetItem = ItemStackConditionMatcher.resolveItem(conditionDataEntry.name());
+    CompoundTag requiredData =
+        ItemStackConditionMatcher.parseRequiredData(conditionDataEntry.customData());
+    if (requiredData == null && conditionDataEntry.hasCustomData()) {
+      return false;
+    }
+    if (!ItemStackConditionMatcher.isCustomDataComponentValid(
+        conditionDataEntry.customDataComponent())) {
+      return false;
+    }
+
     HandItemType handItemType = HandItemType.BOTH;
     if (conditionDataEntry.subType() instanceof HandItemType handItemTypeEntry) {
       handItemType = handItemTypeEntry;
     }
 
-    String itemName = conditionDataEntry.name();
     int required = Math.max(1, conditionDataEntry.value());
+    String customDataComponent = conditionDataEntry.customDataComponent();
     int count =
         switch (handItemType) {
-          case MAIN_HAND -> countInStack(player.getMainHandItem(), itemName);
-          case OFF_HAND -> countInStack(player.getOffhandItem(), itemName);
+          case MAIN_HAND ->
+              countInStack(player.getMainHandItem(), targetItem, requiredData, customDataComponent);
+          case OFF_HAND ->
+              countInStack(player.getOffhandItem(), targetItem, requiredData, customDataComponent);
           default ->
-              countInStack(player.getMainHandItem(), itemName)
-                  + countInStack(player.getOffhandItem(), itemName);
+              countInStack(player.getMainHandItem(), targetItem, requiredData, customDataComponent)
+                  + countInStack(
+                      player.getOffhandItem(), targetItem, requiredData, customDataComponent);
         };
 
     boolean hasEnough = count >= required;
     return (conditionDataEntry.operationType() == ConditionOperationType.NOT_EQUALS) != hasEnough;
   }
 
-  private static int countInStack(ItemStack stack, String itemName) {
-    if (stack.isEmpty()) {
-      return 0;
-    }
-
-    Identifier key = BuiltInRegistries.ITEM.getKey(stack.getItem());
-    return key != null && key.toString().equals(itemName) ? stack.getCount() : 0;
+  private static int countInStack(
+      ItemStack stack, Item targetItem, CompoundTag requiredData, String customDataComponent) {
+    return ItemStackConditionMatcher.matches(stack, targetItem, requiredData, customDataComponent)
+        ? stack.getCount()
+        : 0;
   }
 }

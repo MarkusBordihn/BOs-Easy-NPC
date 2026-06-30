@@ -27,13 +27,15 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.component.CustomData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class DataComponents {
 
+  public static final String CUSTOM_DATA_ID = "custom_data";
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-
+  public static DataComponentType<CustomData> CUSTOM_DATA;
   public static DataComponentType<PresetData> PRESET_DATA;
   public static DataComponentType<TestItemData> TEST_ITEM_DATA;
 
@@ -41,22 +43,41 @@ public class DataComponents {
 
   public static void registerDataComponents() {
     log.info("{} Data Components ...", Constants.MOD_NAME);
-    PRESET_DATA =
-        Registry.register(
-            BuiltInRegistries.DATA_COMPONENT_TYPE,
-            Identifier.fromNamespaceAndPath(Constants.MOD_ID, PresetData.ID),
-            DataComponentType.<PresetData>builder()
-                .persistent(PresetData.CODEC)
-                .networkSynchronized(PresetData.STREAM_CODEC)
-                .build());
-    TEST_ITEM_DATA =
-        Registry.register(
-            BuiltInRegistries.DATA_COMPONENT_TYPE,
-            Identifier.fromNamespaceAndPath(Constants.MOD_ID, TestItemData.ID),
-            DataComponentType.<TestItemData>builder()
-                .persistent(TestItemData.CODEC)
-                .networkSynchronized(TestItemData.STREAM_CODEC)
-                .build());
+    if (CUSTOM_DATA == null) {
+      CUSTOM_DATA =
+          Registry.register(
+              BuiltInRegistries.DATA_COMPONENT_TYPE,
+              Identifier.fromNamespaceAndPath(Constants.MOD_ID, CUSTOM_DATA_ID),
+              DataComponentType.<CustomData>builder()
+                  .persistent(CustomData.CODEC)
+                  .networkSynchronized(CustomData.STREAM_CODEC)
+                  .build());
+    }
+    if (PRESET_DATA == null) {
+      PRESET_DATA =
+          Registry.register(
+              BuiltInRegistries.DATA_COMPONENT_TYPE,
+              Identifier.fromNamespaceAndPath(Constants.MOD_ID, PresetData.ID),
+              DataComponentType.<PresetData>builder()
+                  .persistent(PresetData.CODEC)
+                  .networkSynchronized(PresetData.STREAM_CODEC)
+                  .build());
+    }
+    if (TEST_ITEM_DATA == null) {
+      TEST_ITEM_DATA =
+          Registry.register(
+              BuiltInRegistries.DATA_COMPONENT_TYPE,
+              Identifier.fromNamespaceAndPath(Constants.MOD_ID, TestItemData.ID),
+              DataComponentType.<TestItemData>builder()
+                  .persistent(TestItemData.CODEC)
+                  .networkSynchronized(TestItemData.STREAM_CODEC)
+                  .build());
+    }
+  }
+
+  public static void registerCustomData(Supplier<DataComponentType<CustomData>> supplier) {
+    log.info("{} Custom Data Component {} ...", Constants.MOD_NAME, supplier.get());
+    CUSTOM_DATA = supplier.get();
   }
 
   public static void registerPresetData(Supplier<DataComponentType<PresetData>> supplier) {
