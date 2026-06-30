@@ -32,8 +32,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-import net.minecraft.client.Minecraft;
 import net.minecraft.resources.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -182,33 +180,7 @@ public class RemoteTextureLoader {
           exception.getMessage());
     }
 
-    // Register texture on the main thread
-    NativeImage finalImage = nativeImage;
-    CompletableFuture<Identifier> registrationFuture = new CompletableFuture<>();
-    Minecraft.getInstance()
-        .execute(
-            () -> {
-              try {
-                Identifier resourceLocation =
-                    TextureRegistrationHelper.registerTexture(textureModelKey, finalImage);
-                registrationFuture.complete(resourceLocation);
-              } catch (Exception e) {
-                log.error(
-                    "{} Failed to register texture on main thread: {}", LOG_PREFIX, e.getMessage());
-                finalImage.close();
-                registrationFuture.completeExceptionally(e);
-              }
-            });
-
-    // Wait for registration to complete with timeout
-    try {
-      return registrationFuture.get(5, java.util.concurrent.TimeUnit.SECONDS);
-    } catch (Exception e) {
-      log.error(
-          "{} Timeout or error waiting for texture registration: {}", LOG_PREFIX, e.getMessage());
-      nativeImage.close();
-      return null;
-    }
+    return TextureRegistrationHelper.registerTexture(textureModelKey, nativeImage);
   }
 
   private static HttpURLConnection openConnection(URL remoteImageURL) throws IOException {
