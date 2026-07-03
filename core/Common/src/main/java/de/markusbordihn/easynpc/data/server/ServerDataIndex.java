@@ -55,6 +55,7 @@ public enum ServerDataIndex {
   OBJECTIVE_PLAYER_SET,
   OBJECTIVE_ENTITY_SET,
   PRESET_UUID,
+  FACTION_NAME,
   UNKNOWN; // @formatter:on
 
   public static final int MAX_FREE_INDEX = 20;

@@ -19,9 +19,60 @@
 
 package de.markusbordihn.easynpc.compat.cobblemon;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import net.minecraft.resources.ResourceLocation;
+
 public final class CobblemonSpeciesManager {
 
   public static final String INTEGRATION_ID = "cobblemon";
 
+  public static final String VARIANT_FEMALE = "female";
+  public static final String VARIANT_SHINY = "shiny";
+
+  private static final List<String> VARIANT_TOKENS = List.of(VARIANT_FEMALE, VARIANT_SHINY);
+
   private CobblemonSpeciesManager() {}
+
+  public static ResourceLocation getBaseSpeciesId(ResourceLocation modelKey) {
+    String basePath = stripVariantTokens(modelKey.getPath(), null);
+    if (basePath.equals(modelKey.getPath())) {
+      return modelKey;
+    }
+    return new ResourceLocation(modelKey.getNamespace(), basePath);
+  }
+
+  public static Set<String> getVariantAspects(ResourceLocation modelKey) {
+    Set<String> variantAspects = new HashSet<>();
+    stripVariantTokens(modelKey.getPath(), variantAspects);
+    return variantAspects;
+  }
+
+  public static ResourceLocation createVariantKey(
+      ResourceLocation speciesId, String... variantTokens) {
+    StringBuilder path = new StringBuilder(speciesId.getPath());
+    for (String variantToken : variantTokens) {
+      path.append('_').append(variantToken);
+    }
+    return new ResourceLocation(speciesId.getNamespace(), path.toString());
+  }
+
+  private static String stripVariantTokens(String path, Set<String> collectedTokens) {
+    boolean stripped = true;
+    while (stripped) {
+      stripped = false;
+      for (String variantToken : VARIANT_TOKENS) {
+        String variantSuffix = '_' + variantToken;
+        if (path.endsWith(variantSuffix)) {
+          path = path.substring(0, path.length() - variantSuffix.length());
+          if (collectedTokens != null) {
+            collectedTokens.add(variantToken);
+          }
+          stripped = true;
+        }
+      }
+    }
+    return path;
+  }
 }

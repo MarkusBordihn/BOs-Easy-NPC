@@ -25,6 +25,7 @@ import java.util.Locale;
 public enum CombatAttributeType implements EntityAttributeTypeInterface {
   IS_ATTACKABLE_BY_PLAYERS,
   IS_ATTACKABLE_BY_MONSTERS,
+  IS_ATTACKABLE_BY_FACTIONS,
   IS_INVULNERABLE,
   IS_KNOCKBACK_RESISTANT,
   IS_EXPLOSION_RESISTANT,

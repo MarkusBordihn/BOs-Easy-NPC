@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.client;
 
+import de.markusbordihn.easynpc.client.compat.cobblemon.CobblemonVariantHelper;
 import de.markusbordihn.easynpc.compat.CompatConstants;
 import de.markusbordihn.easynpc.compat.cobblemon.CobblemonLoader;
 import net.minecraft.client.Minecraft;
@@ -51,6 +52,7 @@ class ClientGameEventHandler {
   @SubscribeEvent
   public static void onTagsUpdated(TagsUpdatedEvent event) {
     if (CompatConstants.MOD_COBBLEMON_LOADED) {
+      CobblemonLoader.setFemaleVariantFilter(CobblemonVariantHelper::hasFemaleVariant);
       CobblemonLoader.register();
     }
   }

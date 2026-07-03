@@ -27,6 +27,7 @@ public enum NpcFeature {
   INTERACT_BLOCK_ACTION("Block actions"),
   OPEN_TRADING_ACTION("Trading actions"),
   OBJECTIVE("Objectives"),
+  FACTION_MANAGEMENT("Faction management"),
   MOVEMENT("Movement"),
   POSITION("Position"),
   COMBAT_ATTRIBUTE("Combat attributes"),

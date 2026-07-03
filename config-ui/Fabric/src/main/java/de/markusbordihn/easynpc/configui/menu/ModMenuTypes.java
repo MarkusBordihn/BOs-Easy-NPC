@@ -28,6 +28,7 @@ import de.markusbordihn.easynpc.configui.menu.configuration.attribute.AbilitiesA
 import de.markusbordihn.easynpc.configui.menu.configuration.attribute.BaseAttributeConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.attribute.CombatAttributeConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.attribute.DisplayAttributeConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.configui.menu.configuration.attribute.MiscAttributeConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.dialog.AdvancedDialogConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.dialog.BasicDialogConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.dialog.NoneDialogConfigurationMenuWrapper;
@@ -42,6 +43,7 @@ import de.markusbordihn.easynpc.configui.menu.configuration.objective.BasicObjec
 import de.markusbordihn.easynpc.configui.menu.configuration.objective.FleeObjectiveConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.objective.FollowObjectiveConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.objective.LookObjectiveConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.configui.menu.configuration.objective.TargetObjectiveConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.pose.AdvancedPoseConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.pose.BasicPoseConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.pose.CustomPoseConfigurationMenuWrapper;
@@ -73,6 +75,8 @@ import de.markusbordihn.easynpc.configui.menu.editor.DialogButtonEditorMenuWrapp
 import de.markusbordihn.easynpc.configui.menu.editor.DialogEditorMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.editor.DialogOptionsEditorMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.editor.DialogTextEditorMenuWrapper;
+import de.markusbordihn.easynpc.configui.menu.editor.FactionEditorMenuWrapper;
+import de.markusbordihn.easynpc.configui.menu.editor.FactionsEditorMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.preset.PresetBrowserMenuWrapper;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
@@ -128,6 +132,11 @@ public class ModMenuTypes {
           ScreenHandlerRegistry.registerSimple(
               ConfigurationType.ATTACK_OBJECTIVE.getId(),
               AttackObjectiveConfigurationMenuWrapper::new);
+  public static final MenuType<TargetObjectiveConfigurationMenuWrapper>
+      TARGET_OBJECTIVE_CONFIGURATION_MENU =
+          ScreenHandlerRegistry.registerSimple(
+              ConfigurationType.TARGET_OBJECTIVE.getId(),
+              TargetObjectiveConfigurationMenuWrapper::new);
   public static final MenuType<FleeObjectiveConfigurationMenuWrapper>
       FLEE_OBJECTIVE_CONFIGURATION_MENU =
           ScreenHandlerRegistry.registerSimple(
@@ -233,6 +242,12 @@ public class ModMenuTypes {
   public static final MenuType<DialogTextEditorMenuWrapper> DIALOG_TEXT_EDITOR_MENU =
       ScreenHandlerRegistry.registerSimple(
           EditorType.DIALOG_TEXT.getId(), DialogTextEditorMenuWrapper::new);
+  public static final MenuType<FactionEditorMenuWrapper> FACTION_EDITOR_MENU =
+      ScreenHandlerRegistry.registerSimple(
+          EditorType.FACTION.getId(), FactionEditorMenuWrapper::new);
+  public static final MenuType<FactionsEditorMenuWrapper> FACTIONS_EDITOR_MENU =
+      ScreenHandlerRegistry.registerSimple(
+          EditorType.FACTIONS.getId(), FactionsEditorMenuWrapper::new);
 
   public static final MenuType<DialogActionConfigurationMenuWrapper>
       DIALOG_ACTION_CONFIGURATION_MENU =
@@ -268,6 +283,10 @@ public class ModMenuTypes {
   public static final MenuType<MainConfigurationMenuWrapper> MAIN_CONFIGURATION_MENU =
       ScreenHandlerRegistry.registerSimple(
           ConfigurationType.MAIN.getId(), MainConfigurationMenuWrapper::new);
+  public static final MenuType<MiscAttributeConfigurationMenuWrapper>
+      MISC_ATTRIBUTE_CONFIGURATION_MENU =
+          ScreenHandlerRegistry.registerSimple(
+              ConfigurationType.MISC_ATTRIBUTE.getId(), MiscAttributeConfigurationMenuWrapper::new);
   public static final MenuType<NoneDialogConfigurationMenuWrapper> NONE_DIALOG_CONFIGURATION_MENU =
       ScreenHandlerRegistry.registerSimple(
           ConfigurationType.NONE_DIALOG.getId(), NoneDialogConfigurationMenuWrapper::new);

@@ -19,7 +19,7 @@
 
 package de.markusbordihn.easynpc.mixin.entity;
 
-import de.markusbordihn.easynpc.entity.easynpc.npc.StandardEasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.PowerableMob;
 import net.minecraft.world.entity.monster.Creeper;
@@ -40,7 +40,7 @@ public abstract class CreeperMixin extends Monster implements PowerableMob {
 
   @Inject(method = "tick", at = @At("HEAD"), cancellable = true)
   public void onTick(CallbackInfo callbackInfo) {
-    if ((Object) this instanceof StandardEasyNPC<?>) {
+    if ((Object) this instanceof EasyNPC<?>) {
       super.tick();
       callbackInfo.cancel();
     }

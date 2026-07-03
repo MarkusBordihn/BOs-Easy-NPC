@@ -28,6 +28,7 @@ import de.markusbordihn.easynpc.configui.menu.configuration.attribute.AbilitiesA
 import de.markusbordihn.easynpc.configui.menu.configuration.attribute.BaseAttributeConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.attribute.CombatAttributeConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.attribute.DisplayAttributeConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.configui.menu.configuration.attribute.MiscAttributeConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.dialog.AdvancedDialogConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.dialog.BasicDialogConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.dialog.NoneDialogConfigurationMenuWrapper;
@@ -42,6 +43,7 @@ import de.markusbordihn.easynpc.configui.menu.configuration.objective.BasicObjec
 import de.markusbordihn.easynpc.configui.menu.configuration.objective.FleeObjectiveConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.objective.FollowObjectiveConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.objective.LookObjectiveConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.configui.menu.configuration.objective.TargetObjectiveConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.pose.AdvancedPoseConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.pose.BasicPoseConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.pose.CustomPoseConfigurationMenuWrapper;
@@ -73,6 +75,8 @@ import de.markusbordihn.easynpc.configui.menu.editor.DialogButtonEditorMenuWrapp
 import de.markusbordihn.easynpc.configui.menu.editor.DialogEditorMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.editor.DialogOptionsEditorMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.editor.DialogTextEditorMenuWrapper;
+import de.markusbordihn.easynpc.configui.menu.editor.FactionEditorMenuWrapper;
+import de.markusbordihn.easynpc.configui.menu.editor.FactionsEditorMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.preset.PresetBrowserMenuWrapper;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import net.minecraft.world.inventory.MenuType;
@@ -133,6 +137,11 @@ public class ModMenuTypes {
           MENU_TYPES.register(
               ConfigurationType.ATTACK_OBJECTIVE.getName(),
               () -> IForgeMenuType.create(AttackObjectiveConfigurationMenuWrapper::new));
+  public static final RegistryObject<MenuType<TargetObjectiveConfigurationMenuWrapper>>
+      TARGET_OBJECTIVE_CONFIGURATION_MENU =
+          MENU_TYPES.register(
+              ConfigurationType.TARGET_OBJECTIVE.getName(),
+              () -> IForgeMenuType.create(TargetObjectiveConfigurationMenuWrapper::new));
   public static final RegistryObject<MenuType<FleeObjectiveConfigurationMenuWrapper>>
       FLEE_OBJECTIVE_CONFIGURATION_MENU =
           MENU_TYPES.register(
@@ -256,6 +265,13 @@ public class ModMenuTypes {
           MENU_TYPES.register(
               EditorType.DIALOG_OPTIONS.getName(),
               () -> IForgeMenuType.create(DialogOptionsEditorMenuWrapper::new));
+  public static final RegistryObject<MenuType<FactionEditorMenuWrapper>> FACTION_EDITOR_MENU =
+      MENU_TYPES.register(
+          EditorType.FACTION.getName(), () -> IForgeMenuType.create(FactionEditorMenuWrapper::new));
+  public static final RegistryObject<MenuType<FactionsEditorMenuWrapper>> FACTIONS_EDITOR_MENU =
+      MENU_TYPES.register(
+          EditorType.FACTIONS.getName(),
+          () -> IForgeMenuType.create(FactionsEditorMenuWrapper::new));
   public static final RegistryObject<MenuType<DialogTextEditorMenuWrapper>>
       DIALOG_TEXT_EDITOR_MENU =
           MENU_TYPES.register(
@@ -301,6 +317,11 @@ public class ModMenuTypes {
           MENU_TYPES.register(
               ConfigurationType.MAIN.getName(),
               () -> IForgeMenuType.create(MainConfigurationMenuWrapper::new));
+  public static final RegistryObject<MenuType<MiscAttributeConfigurationMenuWrapper>>
+      MISC_ATTRIBUTE_CONFIGURATION_MENU =
+          MENU_TYPES.register(
+              ConfigurationType.MISC_ATTRIBUTE.getName(),
+              () -> IForgeMenuType.create(MiscAttributeConfigurationMenuWrapper::new));
   public static final RegistryObject<MenuType<NoneDialogConfigurationMenuWrapper>>
       NONE_DIALOG_CONFIGURATION_MENU =
           MENU_TYPES.register(

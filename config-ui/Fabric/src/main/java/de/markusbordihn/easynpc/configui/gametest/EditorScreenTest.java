@@ -73,4 +73,22 @@ public class EditorScreenTest {
         EditorType.DIALOG_TEXT,
         ModMenuTypes.DIALOG_TEXT_EDITOR_MENU);
   }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testFactionEditorScreen(GameTestHelper helper) {
+    EditorScreenTestHelper.testEditorScreen(
+        helper,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
+        EditorType.FACTION,
+        ModMenuTypes.FACTION_EDITOR_MENU);
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testFactionsEditorScreen(GameTestHelper helper) {
+    EditorScreenTestHelper.testEditorScreen(
+        helper,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
+        EditorType.FACTIONS,
+        ModMenuTypes.FACTIONS_EDITOR_MENU);
+  }
 }

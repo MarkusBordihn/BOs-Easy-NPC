@@ -24,6 +24,7 @@ import net.minecraft.nbt.CompoundTag;
 public record CombatAttributes(
     boolean isAttackableByPlayers,
     boolean isAttackableByMonsters,
+    boolean isAttackableByFactions,
     boolean isInvulnerable,
     boolean isKnockbackResistant,
     boolean isExplosionResistant,
@@ -34,6 +35,8 @@ public record CombatAttributes(
       CombatAttributeType.IS_ATTACKABLE_BY_PLAYERS.getTagName();
   public static final String IS_ATTACKABLE_BY_MONSTERS_TAG =
       CombatAttributeType.IS_ATTACKABLE_BY_MONSTERS.getTagName();
+  public static final String IS_ATTACKABLE_BY_FACTIONS_TAG =
+      CombatAttributeType.IS_ATTACKABLE_BY_FACTIONS.getTagName();
   public static final String IS_INVULNERABLE_TAG = CombatAttributeType.IS_INVULNERABLE.getTagName();
   public static final String IS_KNOCKBACK_RESISTANT_TAG =
       CombatAttributeType.IS_KNOCKBACK_RESISTANT.getTagName();
@@ -43,13 +46,14 @@ public record CombatAttributes(
       CombatAttributeType.HEALTH_REGENERATION.getTagName();
 
   public CombatAttributes() {
-    this(false, false, true, false, false, 0.0);
+    this(false, false, false, true, false, false, 0.0);
   }
 
   public static CombatAttributes decode(CompoundTag compoundTag) {
     return new CombatAttributes(
         compoundTag.getBoolean(IS_ATTACKABLE_BY_PLAYERS_TAG),
         compoundTag.getBoolean(IS_ATTACKABLE_BY_MONSTERS_TAG),
+        compoundTag.getBoolean(IS_ATTACKABLE_BY_FACTIONS_TAG),
         compoundTag.getBoolean(IS_INVULNERABLE_TAG),
         compoundTag.getBoolean(IS_KNOCKBACK_RESISTANT_TAG),
         compoundTag.getBoolean(IS_EXPLOSION_RESISTANT_TAG),
@@ -60,6 +64,7 @@ public record CombatAttributes(
     return new CombatAttributes(
         isAttackableByPlayers,
         isAttackableByMonsters,
+        isAttackableByFactions,
         isInvulnerable,
         isKnockbackResistant,
         isExplosionResistant,
@@ -70,6 +75,7 @@ public record CombatAttributes(
     return new CombatAttributes(
         isAttackableByPlayers,
         isAttackableByMonsters,
+        isAttackableByFactions,
         isInvulnerable,
         isKnockbackResistant,
         isExplosionResistant,
@@ -80,6 +86,18 @@ public record CombatAttributes(
     return new CombatAttributes(
         isAttackableByPlayers,
         isAttackableByMonsters,
+        isAttackableByFactions,
+        isInvulnerable,
+        isKnockbackResistant,
+        isExplosionResistant,
+        healthRegeneration);
+  }
+
+  public CombatAttributes withIsAttackableByFactions(boolean isAttackableByFactions) {
+    return new CombatAttributes(
+        isAttackableByPlayers,
+        isAttackableByMonsters,
+        isAttackableByFactions,
         isInvulnerable,
         isKnockbackResistant,
         isExplosionResistant,
@@ -90,6 +108,7 @@ public record CombatAttributes(
     return new CombatAttributes(
         isAttackableByPlayers,
         isAttackableByMonsters,
+        isAttackableByFactions,
         isInvulnerable,
         isKnockbackResistant,
         isExplosionResistant,
@@ -100,6 +119,7 @@ public record CombatAttributes(
     return new CombatAttributes(
         isAttackableByPlayers,
         isAttackableByMonsters,
+        isAttackableByFactions,
         isInvulnerable,
         isKnockbackResistant,
         isExplosionResistant,
@@ -110,6 +130,7 @@ public record CombatAttributes(
     return new CombatAttributes(
         isAttackableByPlayers,
         isAttackableByMonsters,
+        isAttackableByFactions,
         isInvulnerable,
         isKnockbackResistant,
         isExplosionResistant,
@@ -119,6 +140,7 @@ public record CombatAttributes(
   public CompoundTag encode(CompoundTag compoundTag) {
     compoundTag.putBoolean(IS_ATTACKABLE_BY_PLAYERS_TAG, isAttackableByPlayers());
     compoundTag.putBoolean(IS_ATTACKABLE_BY_MONSTERS_TAG, isAttackableByMonsters());
+    compoundTag.putBoolean(IS_ATTACKABLE_BY_FACTIONS_TAG, isAttackableByFactions());
     compoundTag.putBoolean(IS_INVULNERABLE_TAG, isInvulnerable());
     compoundTag.putBoolean(IS_KNOCKBACK_RESISTANT_TAG, isKnockbackResistant());
     compoundTag.putBoolean(IS_EXPLOSION_RESISTANT_TAG, isExplosionResistant());

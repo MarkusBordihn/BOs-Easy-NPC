@@ -43,6 +43,11 @@ public class PiglinEpicFight extends PiglinRaw {
   protected void registerGoals() {}
 
   @Override
+  public boolean isConverting() {
+    return false;
+  }
+
+  @Override
   public boolean canUseArmor() {
     return true;
   }

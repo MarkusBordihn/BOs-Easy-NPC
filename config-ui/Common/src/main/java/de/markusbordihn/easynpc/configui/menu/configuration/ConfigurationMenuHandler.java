@@ -28,6 +28,7 @@ import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.data.screen.ScreenData;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.data.FactionDataCapable;
 import de.markusbordihn.easynpc.io.CustomPresetDataFiles;
 import de.markusbordihn.easynpc.io.DefaultPresetDataFiles;
 import de.markusbordihn.easynpc.io.WorldPresetDataFiles;
@@ -216,7 +217,29 @@ public class ConfigurationMenuHandler {
           AdditionalScreenData.addDialogDataSet(additionalSyncData, easyNPC);
       case ATTACK_OBJECTIVE, BASIC_OBJECTIVE, FLEE_OBJECTIVE, FOLLOW_OBJECTIVE, LOOK_OBJECTIVE ->
           AdditionalScreenData.addObjectiveDataSet(additionalSyncData, easyNPC);
+      case TARGET_OBJECTIVE -> {
+        AdditionalScreenData.addObjectiveDataSet(additionalSyncData, easyNPC);
+        FactionDataCapable<?> factionData = easyNPC.getEasyNPCFactionData();
+        if (factionData != null && factionData.hasFactionName()) {
+          additionalSyncData.putString(
+              FactionDataCapable.DATA_FACTION_NAME_TAG, factionData.getFactionName());
+        }
+      }
       case ABILITIES_ATTRIBUTE, DISPLAY_ATTRIBUTE -> {
+        addBlockedConfigurationsForTypes(
+            additionalSyncData,
+            serverPlayer,
+            easyNPC,
+            ConfigurationType.BASE_ATTRIBUTE,
+            ConfigurationType.COMBAT_ATTRIBUTE);
+      }
+      case MISC_ATTRIBUTE -> {
+        FactionDataCapable<?> factionData = easyNPC.getEasyNPCFactionData();
+        if (factionData != null && factionData.hasFactionName()) {
+          additionalSyncData.putString(
+              FactionDataCapable.DATA_FACTION_NAME_TAG, factionData.getFactionName());
+        }
+        AdditionalScreenData.addFactionData(additionalSyncData);
         addBlockedConfigurationsForTypes(
             additionalSyncData,
             serverPlayer,

@@ -28,6 +28,7 @@ import de.markusbordihn.easynpc.entity.easynpc.data.ConfigDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.ConfigurationDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.DialogDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.DisplayAttributeDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.FactionDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.NavigationDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.ObjectiveDataCapable;
@@ -64,6 +65,7 @@ public interface EasyNPCBase<E extends Mob>
         ConfigurationDataCapable<E>,
         DialogDataCapable<E>,
         DisplayAttributeDataCapable<E>,
+        FactionDataCapable<E>,
         ModelDataCapable<E>,
         NavigationDataCapable<E>,
         ObjectiveDataCapable<E>,
@@ -230,6 +232,10 @@ public interface EasyNPCBase<E extends Mob>
     if (presetData != null) {
       presetData.defineCustomPresetData();
     }
+    FactionDataCapable<E> factionData = getEasyNPCFactionData();
+    if (factionData != null) {
+      factionData.defineCustomFactionData();
+    }
   }
 
   default void addEasyNPCBaseAdditionalSaveData(CompoundTag compoundTag) {
@@ -256,6 +262,10 @@ public interface EasyNPCBase<E extends Mob>
     DisplayAttributeDataCapable<E> displayAttributeData = getEasyNPCDisplayAttributeData();
     if (displayAttributeData != null) {
       displayAttributeData.addAdditionalDisplayAttributeData(compoundTag);
+    }
+    FactionDataCapable<E> factionData = getEasyNPCFactionData();
+    if (factionData != null) {
+      factionData.addAdditionalFactionData(compoundTag);
     }
     ModelDataCapable<E> modelData = getEasyNPCModelData();
     if (modelData != null) {
@@ -342,6 +352,10 @@ public interface EasyNPCBase<E extends Mob>
     DisplayAttributeDataCapable<E> displayAttributeData = getEasyNPCDisplayAttributeData();
     if (displayAttributeData != null) {
       displayAttributeData.readAdditionalDisplayAttributeData(compoundTag);
+    }
+    FactionDataCapable<E> factionData = getEasyNPCFactionData();
+    if (factionData != null) {
+      factionData.readAdditionalFactionData(compoundTag);
     }
     ModelDataCapable<E> modelData = getEasyNPCModelData();
     if (modelData != null) {

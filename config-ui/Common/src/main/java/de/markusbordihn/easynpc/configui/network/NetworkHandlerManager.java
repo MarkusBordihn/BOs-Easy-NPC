@@ -31,6 +31,9 @@ import de.markusbordihn.easynpc.configui.network.message.server.ChangeDisplayAtt
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeEntityAttributeMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeEntityBaseAttributeMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeEnvironmentalAttributeMessage;
+import de.markusbordihn.easynpc.configui.network.message.server.ChangeFactionColorMessage;
+import de.markusbordihn.easynpc.configui.network.message.server.ChangeFactionMessage;
+import de.markusbordihn.easynpc.configui.network.message.server.ChangeFactionRelationMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeInteractionAttributeMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeModelAnimationDataMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeModelEquipmentVisibilityMessage;
@@ -49,6 +52,7 @@ import de.markusbordihn.easynpc.configui.network.message.server.ChangeRendererMe
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeSkinMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeTradingOfferActionMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeTradingTypeMessage;
+import de.markusbordihn.easynpc.configui.network.message.server.CreateFactionMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ExportCustomPresetServerMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ExportPresetMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ExportWorldPresetMessage;
@@ -64,9 +68,12 @@ import de.markusbordihn.easynpc.configui.network.message.server.OpenDialogButton
 import de.markusbordihn.easynpc.configui.network.message.server.OpenDialogEditorMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.OpenDialogOptionsEditorMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.OpenDialogTextEditorMessage;
+import de.markusbordihn.easynpc.configui.network.message.server.OpenFactionEditorMessage;
+import de.markusbordihn.easynpc.configui.network.message.server.OpenFactionsEditorMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.OpenMenuMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.RemoveDialogButtonMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.RemoveDialogMessage;
+import de.markusbordihn.easynpc.configui.network.message.server.RemoveFactionEntryMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.RemoveNPCMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.RemoveObjectiveMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ResetExecutionLimitMessage;
@@ -180,6 +187,27 @@ public class NetworkHandlerManager {
         ChangeBasicTradingMessage.MESSAGE_ID,
         ChangeBasicTradingMessage.class,
         ChangeBasicTradingMessage::create);
+
+    networkHandler.registerServerNetworkMessage(
+        ChangeFactionMessage.MESSAGE_ID, ChangeFactionMessage.class, ChangeFactionMessage::create);
+
+    networkHandler.registerServerNetworkMessage(
+        ChangeFactionColorMessage.MESSAGE_ID,
+        ChangeFactionColorMessage.class,
+        ChangeFactionColorMessage::create);
+
+    networkHandler.registerServerNetworkMessage(
+        ChangeFactionRelationMessage.MESSAGE_ID,
+        ChangeFactionRelationMessage.class,
+        ChangeFactionRelationMessage::create);
+
+    networkHandler.registerServerNetworkMessage(
+        CreateFactionMessage.MESSAGE_ID, CreateFactionMessage.class, CreateFactionMessage::create);
+
+    networkHandler.registerServerNetworkMessage(
+        RemoveFactionEntryMessage.MESSAGE_ID,
+        RemoveFactionEntryMessage.class,
+        RemoveFactionEntryMessage::create);
 
     networkHandler.registerServerNetworkMessage(
         ChangeTradingOfferActionMessage.MESSAGE_ID,
@@ -353,6 +381,16 @@ public class NetworkHandlerManager {
         OpenDialogEditorMessage.MESSAGE_ID,
         OpenDialogEditorMessage.class,
         OpenDialogEditorMessage::create);
+
+    networkHandler.registerServerNetworkMessage(
+        OpenFactionEditorMessage.MESSAGE_ID,
+        OpenFactionEditorMessage.class,
+        OpenFactionEditorMessage::create);
+
+    networkHandler.registerServerNetworkMessage(
+        OpenFactionsEditorMessage.MESSAGE_ID,
+        OpenFactionsEditorMessage.class,
+        OpenFactionsEditorMessage::create);
 
     networkHandler.registerServerNetworkMessage(
         OpenMenuMessage.MESSAGE_ID, OpenMenuMessage.class, OpenMenuMessage::create);

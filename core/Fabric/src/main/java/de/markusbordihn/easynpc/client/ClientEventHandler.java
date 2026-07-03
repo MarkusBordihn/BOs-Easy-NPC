@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.client;
 
+import de.markusbordihn.easynpc.client.compat.cobblemon.CobblemonVariantHelper;
 import de.markusbordihn.easynpc.compat.CompatConstants;
 import de.markusbordihn.easynpc.compat.cobblemon.CobblemonLoader;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
@@ -37,6 +38,7 @@ public class ClientEventHandler {
     ClientPlayConnectionEvents.JOIN.register(
         (handler, sender, client) -> {
           if (CompatConstants.MOD_COBBLEMON_LOADED) {
+            CobblemonLoader.setFemaleVariantFilter(CobblemonVariantHelper::hasFemaleVariant);
             CobblemonLoader.register();
           }
         });
