@@ -140,6 +140,10 @@ public class MenuHandler implements MenuHandlerInterface {
         ModMenuTypes.WORLD_IMPORT_PRESET_CONFIGURATION_MENU.get());
     configurationMenuMap.put(
         ConfigurationType.YES_NO_DIALOG, ModMenuTypes.YES_NO_DIALOG_CONFIGURATION_MENU.get());
+    configurationMenuMap.put(
+        ConfigurationType.MISC_ATTRIBUTE, ModMenuTypes.MISC_ATTRIBUTE_CONFIGURATION_MENU.get());
+    configurationMenuMap.put(
+        ConfigurationType.TARGET_OBJECTIVE, ModMenuTypes.TARGET_OBJECTIVE_CONFIGURATION_MENU.get());
 
     editorMenuMap.put(EditorType.ACTION_DATA, ModMenuTypes.ACTION_DATA_EDITOR_MENU.get());
     editorMenuMap.put(
@@ -151,6 +155,8 @@ public class MenuHandler implements MenuHandlerInterface {
     editorMenuMap.put(EditorType.DIALOG_BUTTON, ModMenuTypes.DIALOG_BUTTON_EDITOR_MENU.get());
     editorMenuMap.put(EditorType.DIALOG_OPTIONS, ModMenuTypes.DIALOG_OPTIONS_EDITOR_MENU.get());
     editorMenuMap.put(EditorType.DIALOG_TEXT, ModMenuTypes.DIALOG_TEXT_EDITOR_MENU.get());
+    editorMenuMap.put(EditorType.FACTION, ModMenuTypes.FACTION_EDITOR_MENU.get());
+    editorMenuMap.put(EditorType.FACTIONS, ModMenuTypes.FACTIONS_EDITOR_MENU.get());
 
     customMenuMap.put(CustomMenuType.PRESET_BROWSER, ModMenuTypes.PRESET_BROWSER_MENU.get());
   }

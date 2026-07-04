@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Markus Bordihn
+ * Copyright 2026 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,12 +17,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.data.faction;
+package de.markusbordihn.easynpc.configui.menu.editor;
 
-public enum FactionRelationType {
-  NEUTRAL,
-  FRIENDLY,
-  HOSTILE,
-  ALLY,
-  ENEMY
+import de.markusbordihn.easynpc.configui.menu.ModMenuTypes;
+import net.minecraft.world.entity.player.Inventory;
+
+public class FactionEditorMenuWrapper extends EditorMenu {
+
+  public FactionEditorMenuWrapper(final int windowId, final Inventory playerInventory) {
+    super(ModMenuTypes.FACTION_EDITOR_MENU, windowId, playerInventory);
+  }
 }

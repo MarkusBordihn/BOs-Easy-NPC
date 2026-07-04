@@ -19,7 +19,7 @@
 
 package de.markusbordihn.easynpc.mixin.entity;
 
-import de.markusbordihn.easynpc.entity.easynpc.npc.StandardEasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.monster.piglin.AbstractPiglin;
 import net.minecraft.world.entity.monster.piglin.Piglin;
@@ -39,7 +39,7 @@ public abstract class PiglinMixin extends AbstractPiglin {
 
   @Inject(method = "customServerAiStep", at = @At("HEAD"), cancellable = true)
   public void onCustomServerAiStep(CallbackInfo ci) {
-    if ((Object) this instanceof StandardEasyNPC<?> && this.isAlive()) {
+    if ((Object) this instanceof EasyNPC<?> && this.isAlive()) {
       ci.cancel();
     }
   }

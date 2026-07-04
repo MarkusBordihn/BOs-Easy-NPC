@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.entity;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.npc.NPCRemovalReason;
 import de.markusbordihn.easynpc.data.npc.SavedNPCEntityEntry;
+import de.markusbordihn.easynpc.data.saveddata.FactionData;
 import de.markusbordihn.easynpc.data.saveddata.NPCEntityData;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import java.util.Collection;
@@ -51,6 +52,7 @@ public class NPCEntityManager {
 
     currentServer = server;
     NPCEntityData.init(server);
+    FactionData.init(server);
     log.info(
         "{} Initialized with {} tracked NPC entities", LOG_PREFIX, NPCEntityData.get().getCount());
   }

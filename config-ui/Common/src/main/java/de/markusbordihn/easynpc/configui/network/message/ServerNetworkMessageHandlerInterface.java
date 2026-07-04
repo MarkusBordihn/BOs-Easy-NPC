@@ -31,6 +31,9 @@ import de.markusbordihn.easynpc.configui.network.message.server.ChangeDisplayAtt
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeEntityAttributeMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeEntityBaseAttributeMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeEnvironmentalAttributeMessage;
+import de.markusbordihn.easynpc.configui.network.message.server.ChangeFactionColorMessage;
+import de.markusbordihn.easynpc.configui.network.message.server.ChangeFactionMessage;
+import de.markusbordihn.easynpc.configui.network.message.server.ChangeFactionRelationMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeInteractionAttributeMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeModelAnimationDataMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeModelEquipmentVisibilityMessage;
@@ -48,6 +51,7 @@ import de.markusbordihn.easynpc.configui.network.message.server.ChangeRendererMe
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeSkinMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeTradingOfferActionMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeTradingTypeMessage;
+import de.markusbordihn.easynpc.configui.network.message.server.CreateFactionMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ExportCustomPresetServerMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ExportPresetMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ExportWorldPresetMessage;
@@ -63,9 +67,12 @@ import de.markusbordihn.easynpc.configui.network.message.server.OpenDialogButton
 import de.markusbordihn.easynpc.configui.network.message.server.OpenDialogEditorMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.OpenDialogOptionsEditorMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.OpenDialogTextEditorMessage;
+import de.markusbordihn.easynpc.configui.network.message.server.OpenFactionEditorMessage;
+import de.markusbordihn.easynpc.configui.network.message.server.OpenFactionsEditorMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.OpenMenuMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.RemoveDialogButtonMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.RemoveDialogMessage;
+import de.markusbordihn.easynpc.configui.network.message.server.RemoveFactionEntryMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.RemoveNPCMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.RemoveObjectiveMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.RespawnNPCMessage;
@@ -106,6 +113,7 @@ import de.markusbordihn.easynpc.data.trading.TradingType;
 import de.markusbordihn.easynpc.data.trading.TradingValueType;
 import java.util.Optional;
 import java.util.UUID;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -133,6 +141,55 @@ public interface ServerNetworkMessageHandlerInterface {
     if (uuid != null && objectiveDataEntry != null) {
       NetworkHandlerManager.sendMessageToServer(
           new AddOrUpdateObjectiveMessage(uuid, objectiveDataEntry));
+    }
+  }
+
+  default void changeFaction(UUID uuid, String factionName) {
+    if (uuid != null && factionName != null) {
+      NetworkHandlerManager.sendMessageToServer(new ChangeFactionMessage(uuid, factionName));
+    }
+  }
+
+  default void changeFactionColor(UUID uuid, String factionName, ChatFormatting color) {
+    if (uuid != null && factionName != null && !factionName.isEmpty() && color != null) {
+      NetworkHandlerManager.sendMessageToServer(
+          new ChangeFactionColorMessage(uuid, factionName, color.getName()));
+    }
+  }
+
+  default void changeFactionRelation(
+      UUID uuid, String factionName, String targetFactionName, boolean hostile, boolean mutual) {
+    if (uuid != null
+        && factionName != null
+        && !factionName.isEmpty()
+        && targetFactionName != null
+        && !targetFactionName.isEmpty()) {
+      NetworkHandlerManager.sendMessageToServer(
+          new ChangeFactionRelationMessage(uuid, factionName, targetFactionName, hostile, mutual));
+    }
+  }
+
+  default void createFaction(UUID uuid, String factionName) {
+    if (uuid != null && factionName != null && !factionName.isEmpty()) {
+      NetworkHandlerManager.sendMessageToServer(new CreateFactionMessage(uuid, factionName));
+    }
+  }
+
+  default void removeFactionEntry(UUID uuid, String factionName) {
+    if (uuid != null && factionName != null && !factionName.isEmpty()) {
+      NetworkHandlerManager.sendMessageToServer(new RemoveFactionEntryMessage(uuid, factionName));
+    }
+  }
+
+  default void openFactionEditor(UUID uuid, String factionName) {
+    if (uuid != null && factionName != null && !factionName.isEmpty()) {
+      NetworkHandlerManager.sendMessageToServer(new OpenFactionEditorMessage(uuid, factionName));
+    }
+  }
+
+  default void openFactionsEditor(UUID uuid) {
+    if (uuid != null) {
+      NetworkHandlerManager.sendMessageToServer(new OpenFactionsEditorMessage(uuid));
     }
   }
 

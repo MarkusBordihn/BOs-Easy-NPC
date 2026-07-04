@@ -28,6 +28,7 @@ import de.markusbordihn.easynpc.configui.menu.configuration.attribute.AbilitiesA
 import de.markusbordihn.easynpc.configui.menu.configuration.attribute.BaseAttributeConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.attribute.CombatAttributeConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.attribute.DisplayAttributeConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.configui.menu.configuration.attribute.MiscAttributeConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.dialog.AdvancedDialogConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.dialog.BasicDialogConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.dialog.NoneDialogConfigurationMenuWrapper;
@@ -42,6 +43,7 @@ import de.markusbordihn.easynpc.configui.menu.configuration.objective.BasicObjec
 import de.markusbordihn.easynpc.configui.menu.configuration.objective.FleeObjectiveConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.objective.FollowObjectiveConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.objective.LookObjectiveConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.configui.menu.configuration.objective.TargetObjectiveConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.pose.AdvancedPoseConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.pose.BasicPoseConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.pose.CustomPoseConfigurationMenuWrapper;
@@ -73,6 +75,8 @@ import de.markusbordihn.easynpc.configui.menu.editor.DialogButtonEditorMenuWrapp
 import de.markusbordihn.easynpc.configui.menu.editor.DialogEditorMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.editor.DialogOptionsEditorMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.editor.DialogTextEditorMenuWrapper;
+import de.markusbordihn.easynpc.configui.menu.editor.FactionEditorMenuWrapper;
+import de.markusbordihn.easynpc.configui.menu.editor.FactionsEditorMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.preset.PresetBrowserMenuWrapper;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -361,4 +365,24 @@ public class ModMenuTypes {
           MENU_TYPES.register(
               ConfigurationType.YES_NO_DIALOG.getName(),
               () -> IMenuTypeExtension.create(YesNoDialogConfigurationMenuWrapper::new));
+  public static final DeferredHolder<MenuType<?>, MenuType<MiscAttributeConfigurationMenuWrapper>>
+      MISC_ATTRIBUTE_CONFIGURATION_MENU =
+          MENU_TYPES.register(
+              ConfigurationType.MISC_ATTRIBUTE.getName(),
+              () -> IMenuTypeExtension.create(MiscAttributeConfigurationMenuWrapper::new));
+  public static final DeferredHolder<MenuType<?>, MenuType<TargetObjectiveConfigurationMenuWrapper>>
+      TARGET_OBJECTIVE_CONFIGURATION_MENU =
+          MENU_TYPES.register(
+              ConfigurationType.TARGET_OBJECTIVE.getName(),
+              () -> IMenuTypeExtension.create(TargetObjectiveConfigurationMenuWrapper::new));
+  public static final DeferredHolder<MenuType<?>, MenuType<FactionEditorMenuWrapper>>
+      FACTION_EDITOR_MENU =
+          MENU_TYPES.register(
+              EditorType.FACTION.getName(),
+              () -> IMenuTypeExtension.create(FactionEditorMenuWrapper::new));
+  public static final DeferredHolder<MenuType<?>, MenuType<FactionsEditorMenuWrapper>>
+      FACTIONS_EDITOR_MENU =
+          MENU_TYPES.register(
+              EditorType.FACTIONS.getName(),
+              () -> IMenuTypeExtension.create(FactionsEditorMenuWrapper::new));
 }

@@ -19,12 +19,16 @@
 
 package de.markusbordihn.easynpc.client;
 
+import de.markusbordihn.easynpc.client.compat.cobblemon.CobblemonVariantHelper;
+import de.markusbordihn.easynpc.compat.CompatConstants;
+import de.markusbordihn.easynpc.compat.cobblemon.CobblemonLoader;
 import net.minecraft.client.Minecraft;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
+import net.neoforged.neoforge.event.TagsUpdatedEvent;
 
 @EventBusSubscriber(value = Dist.CLIENT)
 public class ClientEventHandler {
@@ -41,5 +45,13 @@ class ClientGameEventHandler {
   @SubscribeEvent
   public static void onClientTick(ClientTickEvent.Post event) {
     ClientEvents.handleClientTickEvent();
+  }
+
+  @SubscribeEvent
+  public static void onTagsUpdated(TagsUpdatedEvent event) {
+    if (CompatConstants.MOD_COBBLEMON_LOADED) {
+      CobblemonLoader.setFemaleVariantFilter(CobblemonVariantHelper::hasFemaleVariant);
+      CobblemonLoader.register();
+    }
   }
 }

@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.configui.client.screen.configuration.attribute;
 
 import de.markusbordihn.easynpc.configui.client.screen.components.Checkbox;
+import de.markusbordihn.easynpc.configui.client.screen.components.HelpIcon;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.attribute.CombatAttributeType;
@@ -94,6 +95,22 @@ public class CombatAttributeConfigurationScreen<T extends ConfigurationMenu>
         new Checkbox(
             firstButtonRow,
             this.buttonTopPos + 85,
+            CombatAttributeType.IS_ATTACKABLE_BY_FACTIONS.getAttributeName(),
+            entityAttributes.getCombatAttributes().isAttackableByFactions(),
+            checkbox ->
+                NetworkMessageHandlerManager.getServerHandler()
+                    .combatAttributeChange(
+                        this.getEasyNPCUUID(),
+                        CombatAttributeType.IS_ATTACKABLE_BY_FACTIONS,
+                        checkbox.selected())));
+    this.addRenderableWidget(
+        new HelpIcon(
+            this.leftPos + 230, this.buttonTopPos + 87, "is_attackable_by_factions.tooltip"));
+
+    this.addRenderableWidget(
+        new Checkbox(
+            firstButtonRow,
+            this.buttonTopPos + 105,
             InteractionAttributeType.CAN_BE_HIT_BY_PROJECTILE.getAttributeName(),
             entityAttributes.getInteractionAttributes().canBeHitByProjectile(),
             checkbox ->
@@ -106,7 +123,7 @@ public class CombatAttributeConfigurationScreen<T extends ConfigurationMenu>
     this.addRenderableWidget(
         new Checkbox(
             firstButtonRow,
-            this.buttonTopPos + 105,
+            this.buttonTopPos + 125,
             CombatAttributeType.IS_KNOCKBACK_RESISTANT.getAttributeName(),
             entityAttributes.getCombatAttributes().isKnockbackResistant(),
             checkbox ->
@@ -119,7 +136,7 @@ public class CombatAttributeConfigurationScreen<T extends ConfigurationMenu>
     this.addRenderableWidget(
         new Checkbox(
             firstButtonRow,
-            this.buttonTopPos + 125,
+            this.buttonTopPos + 145,
             CombatAttributeType.IS_EXPLOSION_RESISTANT.getAttributeName(),
             entityAttributes.getCombatAttributes().isExplosionResistant(),
             checkbox ->

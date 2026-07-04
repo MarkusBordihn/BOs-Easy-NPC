@@ -33,6 +33,8 @@ public enum EditorType {
   DIALOG_BUTTON,
   DIALOG_OPTIONS,
   DIALOG_TEXT,
+  FACTION,
+  FACTIONS,
   TRADING_OFFER_ACTION(false);
 
   private final boolean hasMenu;
