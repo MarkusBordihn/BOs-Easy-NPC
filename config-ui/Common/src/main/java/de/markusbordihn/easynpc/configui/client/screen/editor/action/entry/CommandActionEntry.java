@@ -4,6 +4,7 @@ import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextField;
 import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.configui.client.screen.components.Checkbox;
+import de.markusbordihn.easynpc.configui.client.screen.components.HelpIcon;
 import de.markusbordihn.easynpc.configui.client.screen.editor.action.ActionDataEntryEditorContainerScreen;
 import de.markusbordihn.easynpc.data.action.ActionDataEntry;
 import de.markusbordihn.easynpc.data.action.ActionDataSet;
@@ -52,6 +53,13 @@ public class CommandActionEntry extends ActionEntryWidget {
     if (this.showExecuteAsUserWarning) {
       this.executeAsUserCheckbox.active = false;
     }
+    this.screen.addActionEntryWidget(
+        new HelpIcon(
+            editorLeft + 180,
+            editorTop + 42,
+            this.showExecuteAsUserWarning
+                ? "action.executeAsUser.disabled.tooltip"
+                : "action.executeAsUser.tooltip"));
 
     // Debug
     this.debugCheckbox =
@@ -104,30 +112,6 @@ public class CommandActionEntry extends ActionEntryWidget {
           "action.executeAsUser.active.hint.line2",
           editorLeft + 2,
           hintY + 12,
-          Constants.FONT_COLOR_DARK_GREEN);
-      Text.drawConfigString(
-          guiGraphics,
-          this.font,
-          "action.executeAsUser.active.hint.line3",
-          editorLeft + 2,
-          hintY + 24,
-          Constants.FONT_COLOR_DARK_GREEN);
-    }
-
-    if (this.showExecuteAsUserWarning) {
-      Text.drawConfigString(
-          guiGraphics,
-          this.font,
-          "action.executeAsUser.disabled.line1",
-          editorLeft + 2,
-          editorTop + 75,
-          Constants.FONT_COLOR_DARK_GREEN);
-      Text.drawConfigString(
-          guiGraphics,
-          this.font,
-          "action.executeAsUser.disabled.line2",
-          editorLeft + 2,
-          editorTop + 85,
           Constants.FONT_COLOR_DARK_GREEN);
     }
   }

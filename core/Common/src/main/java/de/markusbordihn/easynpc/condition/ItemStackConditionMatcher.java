@@ -35,8 +35,7 @@ public class ItemStackConditionMatcher {
   private static final Identifier EASY_NPC_CUSTOM_DATA_COMPONENT =
       Identifier.fromNamespaceAndPath(Constants.MOD_ID, DataComponents.CUSTOM_DATA_ID);
   private static final Identifier MINECRAFT_CUSTOM_DATA_COMPONENT =
-      Identifier.fromNamespaceAndPath(
-          Constants.MINECRAFT_PREFIX, DataComponents.CUSTOM_DATA_ID);
+      Identifier.fromNamespaceAndPath(Constants.MINECRAFT_PREFIX, DataComponents.CUSTOM_DATA_ID);
 
   private ItemStackConditionMatcher() {}
 

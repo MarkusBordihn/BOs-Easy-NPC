@@ -92,6 +92,11 @@ public interface PresetDataCapable<T extends Mob> extends EasyNPC<T> {
     if (this.getEasyNPCDialogData() != null) {
       this.getEasyNPCDialogData().clearDialogDataSet();
     }
+    if (this.getEasyNPCFactionData() != null) {
+      // Remove scoreboard membership before the import may change the entity UUID.
+      this.getEasyNPCFactionData().setFactionName("");
+      this.getEasyNPCFactionData().applyFactionToScoreboard();
+    }
 
     // If preset contains id and pos then we can import it directly, otherwise we
     // need to merge it with existing data.

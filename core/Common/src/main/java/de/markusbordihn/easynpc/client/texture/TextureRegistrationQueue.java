@@ -81,8 +81,7 @@ public class TextureRegistrationQueue {
   }
 
   public Identifier register(TextureModelKey textureModelKey, NativeImage nativeImage) {
-    CompletableFuture<Identifier> registrationFuture =
-        registerAsync(textureModelKey, nativeImage);
+    CompletableFuture<Identifier> registrationFuture = registerAsync(textureModelKey, nativeImage);
     return registrationFuture.isDone()
         ? registrationFuture.getNow(null)
         : getResourceLocation(textureModelKey);
@@ -103,8 +102,7 @@ public class TextureRegistrationQueue {
     if (getStatus(textureModelKey) == TextureRegistrationStatus.PENDING) {
       closeNativeImage(nativeImage);
       log.debug("{} Skipped duplicate pending registration for {}", LOG_PREFIX, textureModelKey);
-      CompletableFuture<Identifier> existingFuture =
-          pendingRegistrations.get(textureModelKey);
+      CompletableFuture<Identifier> existingFuture = pendingRegistrations.get(textureModelKey);
       return existingFuture != null
           ? existingFuture
           : CompletableFuture.completedFuture(resourceLocation);

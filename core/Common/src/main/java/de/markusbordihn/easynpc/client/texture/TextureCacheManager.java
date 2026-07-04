@@ -41,8 +41,7 @@ public class TextureCacheManager {
     return getCachedTextureFile(textureModelKey, targetDirectory).exists();
   }
 
-  public static Identifier getCachedTexture(
-      TextureModelKey textureModelKey, Path targetDirectory) {
+  public static Identifier getCachedTexture(TextureModelKey textureModelKey, Path targetDirectory) {
     File file = getCachedTextureFile(textureModelKey, targetDirectory);
     if (file.exists()) {
       log.info(

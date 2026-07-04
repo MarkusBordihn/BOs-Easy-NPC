@@ -8,6 +8,29 @@ For the full changelog, please go to the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 7.0.0
+
+- Fixed #788 by extending the AI safeguards to Epic Fight and raw NPC variants (Piglin, Villager,
+  Enderman, Creeper, Raider and Witch).
+- Fixed #787, #531, #237 and #184 by adding a faction system with `/easy_npc faction` commands,
+  per-NPC faction assignment and automatic scoreboard team sync.
+- Fixed #787, #771 and #572 by adding a new `target` objectives tab to attack hostile factions or
+  specific targets by player name, team, entity tag or UUID.
+- Fixed #786 by adding gender and shiny model variants for Cobblemon NPCs, searchable via `female`
+  or `shiny` in the model selection.
+- Fixed faction combat between invulnerable NPCs by adding the new `Attackable by Factions` combat
+  attribute.
+- Fixed Cobblemon model selection previews for oversized species by scaling with Cobblemon's own
+  profile scale instead of hitbox height.
+- Improved the `Attackable by Players/Monsters/Factions` combat attributes to work independently of
+  `Invulnerable`, each opening a targeted hole for its own attacker group.
+- Added faction manager and faction editor screens to create, color and delete factions and manage
+  hostile relations, protected by the new `FACTION_MANAGEMENT` security feature.
+- Added new `Misc` attributes tab as home for the NPC faction assignment.
+- Added reusable warning and help icon components for inline hints with tooltips.
+- Added additional unit and game tests for factions, target objectives and Cobblemon model
+  variants.
+
 ### 6.25.0
 
 - Fixed #782, #636, #622 by preserving data components during validations.

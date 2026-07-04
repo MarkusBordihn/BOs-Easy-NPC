@@ -19,7 +19,7 @@
 
 package de.markusbordihn.easynpc.mixin.entity;
 
-import de.markusbordihn.easynpc.entity.easynpc.npc.StandardEasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.npc.villager.AbstractVillager;
 import net.minecraft.world.entity.npc.villager.Villager;
@@ -38,7 +38,7 @@ public abstract class VillagerMixin extends AbstractVillager {
 
   @Inject(method = "customServerAiStep", at = @At("HEAD"), cancellable = true)
   public void onCustomServerAiStep(CallbackInfo ci) {
-    if ((Object) this instanceof StandardEasyNPC<?> && this.isAlive()) {
+    if ((Object) this instanceof EasyNPC<?> && this.isAlive()) {
       ci.cancel();
     }
   }

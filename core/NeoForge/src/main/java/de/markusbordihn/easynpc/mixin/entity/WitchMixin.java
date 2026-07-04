@@ -19,7 +19,7 @@
 
 package de.markusbordihn.easynpc.mixin.entity;
 
-import de.markusbordihn.easynpc.entity.easynpc.npc.StandardEasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.monster.Witch;
 import net.minecraft.world.entity.raid.Raider;
@@ -38,7 +38,7 @@ public abstract class WitchMixin extends Raider {
 
   @Inject(method = "aiStep", at = @At("HEAD"), cancellable = true)
   public void onAiStep(CallbackInfo callbackInfo) {
-    if ((Object) this instanceof StandardEasyNPC<?>) {
+    if ((Object) this instanceof EasyNPC<?>) {
       super.aiStep();
       callbackInfo.cancel();
     }

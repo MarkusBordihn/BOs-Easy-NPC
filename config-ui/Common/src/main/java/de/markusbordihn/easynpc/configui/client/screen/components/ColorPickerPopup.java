@@ -42,12 +42,12 @@ public class ColorPickerPopup extends Popup {
   private static final int RGB_LABEL_WIDTH = 22;
   private static final int PREVIEW_SIZE = FIELD_HEIGHT;
   private static final int FIELD_X_OFFSET = PADDING + RGB_LABEL_WIDTH + PREVIEW_SIZE + 4;
-  private static final int PANEL_WIDTH =
-      PADDING * 2 + COLUMNS * SWATCH_SIZE + (COLUMNS - 1) * SWATCH_GAP;
-  private static final int FIELD_WIDTH = PANEL_WIDTH - PADDING - FIELD_X_OFFSET;
-  private static final int GRID_HEIGHT = ROWS * SWATCH_SIZE + (ROWS - 1) * SWATCH_GAP;
-  private static final int PANEL_HEIGHT =
-      PADDING * 2 + TITLE_HEIGHT + GRID_HEIGHT + PADDING + FIELD_HEIGHT;
+  private final int[] palette;
+  private final int columns;
+  private final boolean showHexField;
+  private final int panelWidth;
+  private final int panelHeight;
+  private final int gridHeight;
   private final Font font;
   private final IntConsumer onColorSelected;
   private final TextField hexField;
@@ -58,9 +58,23 @@ public class ColorPickerPopup extends Popup {
   private int selectedColor;
 
   public ColorPickerPopup(Font font, IntConsumer onColorSelected) {
+    this(font, PALETTE, COLUMNS, true, onColorSelected);
+  }
+
+  public ColorPickerPopup(
+      Font font, int[] palette, int columns, boolean showHexField, IntConsumer onColorSelected) {
     this.font = font;
+    this.palette = palette;
+    this.columns = columns;
+    this.showHexField = showHexField;
     this.onColorSelected = onColorSelected;
-    this.hexField = new TextField(font, 0, 0, FIELD_WIDTH, FIELD_HEIGHT);
+    int rows = (palette.length + columns - 1) / columns;
+    this.panelWidth = PADDING * 2 + columns * SWATCH_SIZE + (columns - 1) * SWATCH_GAP;
+    this.gridHeight = rows * SWATCH_SIZE + (rows - 1) * SWATCH_GAP;
+    this.panelHeight =
+        PADDING * 2 + TITLE_HEIGHT + this.gridHeight + (showHexField ? PADDING + FIELD_HEIGHT : 0);
+    this.hexField =
+        new TextField(font, 0, 0, this.panelWidth - PADDING - FIELD_X_OFFSET, FIELD_HEIGHT);
     this.hexField.setMaxLength(7);
     this.hexField.setResponder(value -> this.onHexFieldChanged());
   }
@@ -90,12 +104,12 @@ public class ColorPickerPopup extends Popup {
 
   @Override
   protected int getPanelWidth() {
-    return PANEL_WIDTH;
+    return this.panelWidth;
   }
 
   @Override
   protected int getPanelHeight() {
-    return PANEL_HEIGHT;
+    return this.panelHeight;
   }
 
   @Override
@@ -103,7 +117,7 @@ public class ColorPickerPopup extends Popup {
     this.gridLeft = this.getX() + PADDING;
     this.gridTop = this.getY() + PADDING + TITLE_HEIGHT;
     this.hexField.setX(this.getX() + FIELD_X_OFFSET);
-    this.hexField.setY(this.getY() + PADDING + TITLE_HEIGHT + GRID_HEIGHT + PADDING);
+    this.hexField.setY(this.getY() + PADDING + TITLE_HEIGHT + this.gridHeight + PADDING);
     this.setHexFieldValue(this.selectedColor);
     this.hexField.setFocused(false);
   }
@@ -114,11 +128,11 @@ public class ColorPickerPopup extends Popup {
   }
 
   private int swatchLeft(int index) {
-    return this.gridLeft + (index % COLUMNS) * (SWATCH_SIZE + SWATCH_GAP);
+    return this.gridLeft + (index % this.columns) * (SWATCH_SIZE + SWATCH_GAP);
   }
 
   private int swatchTop(int index) {
-    return this.gridTop + (index / COLUMNS) * (SWATCH_SIZE + SWATCH_GAP);
+    return this.gridTop + (index / this.columns) * (SWATCH_SIZE + SWATCH_GAP);
   }
 
   private void setHexFieldValue(int color) {
@@ -155,10 +169,10 @@ public class ColorPickerPopup extends Popup {
         this.getY() + PADDING,
         Constants.FONT_COLOR_WHITE);
 
-    for (int index = 0; index < PALETTE.length; index++) {
+    for (int index = 0; index < this.palette.length; index++) {
       int swatchX = this.swatchLeft(index);
       int swatchY = this.swatchTop(index);
-      int color = PALETTE[index];
+      int color = this.palette[index];
 
       boolean hovered = contains(mouseX, mouseY, swatchX, swatchY, SWATCH_SIZE, SWATCH_SIZE);
       boolean selected = color == this.selectedColor;
@@ -166,6 +180,10 @@ public class ColorPickerPopup extends Popup {
       int borderColor = selected ? 0xFFFFFFFF : (hovered ? 0xFFFFFFAA : 0xFF000000);
       DrawBoxWithBorder.draw(
           guiGraphics, swatchX, swatchY, SWATCH_SIZE, SWATCH_SIZE, 0xFF000000 | color, borderColor);
+    }
+
+    if (!this.showHexField) {
+      return;
     }
 
     Text.drawConfigString(
@@ -192,15 +210,17 @@ public class ColorPickerPopup extends Popup {
 
   @Override
   protected void onMouseClicked(MouseButtonEvent mouseButtonEvent, boolean doubleClick) {
-    if (this.hexField.mouseClicked(mouseButtonEvent, doubleClick)) {
-      this.hexField.setFocused(true);
-      return;
+    if (this.showHexField) {
+      if (this.hexField.mouseClicked(mouseButtonEvent, doubleClick)) {
+        this.hexField.setFocused(true);
+        return;
+      }
+      this.hexField.setFocused(false);
     }
-    this.hexField.setFocused(false);
 
     double mouseX = mouseButtonEvent.x();
     double mouseY = mouseButtonEvent.y();
-    for (int index = 0; index < PALETTE.length; index++) {
+    for (int index = 0; index < this.palette.length; index++) {
       if (contains(
           mouseX,
           mouseY,
@@ -208,7 +228,7 @@ public class ColorPickerPopup extends Popup {
           this.swatchTop(index),
           SWATCH_SIZE,
           SWATCH_SIZE)) {
-        this.selectColor(PALETTE[index]);
+        this.selectColor(this.palette[index]);
         return;
       }
     }
@@ -216,14 +236,14 @@ public class ColorPickerPopup extends Popup {
 
   @Override
   protected void onKeyPressed(KeyEvent keyEvent) {
-    if (this.hexField.isFocused()) {
+    if (this.showHexField && this.hexField.isFocused()) {
       this.hexField.keyPressed(keyEvent);
     }
   }
 
   @Override
   protected void onCharTyped(CharacterEvent characterEvent) {
-    if (this.hexField.isFocused()) {
+    if (this.showHexField && this.hexField.isFocused()) {
       this.hexField.charTyped(characterEvent);
     }
   }

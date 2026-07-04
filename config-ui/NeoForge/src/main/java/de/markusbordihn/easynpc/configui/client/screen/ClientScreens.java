@@ -27,6 +27,7 @@ import de.markusbordihn.easynpc.configui.client.screen.configuration.attribute.A
 import de.markusbordihn.easynpc.configui.client.screen.configuration.attribute.BaseAttributeConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.attribute.CombatAttributeConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.attribute.DisplayAttributeConfigurationScreenWrapper;
+import de.markusbordihn.easynpc.configui.client.screen.configuration.attribute.MiscAttributeConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.dialog.AdvancedDialogConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.dialog.BasicDialogConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.dialog.NoneDialogConfigurationScreenWrapper;
@@ -41,6 +42,7 @@ import de.markusbordihn.easynpc.configui.client.screen.configuration.objective.B
 import de.markusbordihn.easynpc.configui.client.screen.configuration.objective.FleeObjectiveConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.objective.FollowObjectiveConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.objective.LookObjectiveConfigurationScreenWrapper;
+import de.markusbordihn.easynpc.configui.client.screen.configuration.objective.TargetObjectiveConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.pose.AdvancedPoseConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.pose.BasicPoseConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.pose.CustomPoseConfigurationScreenWrapper;
@@ -72,6 +74,8 @@ import de.markusbordihn.easynpc.configui.client.screen.editor.dialog.DialogButto
 import de.markusbordihn.easynpc.configui.client.screen.editor.dialog.DialogEditorScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.editor.dialog.DialogOptionsEditorScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.editor.dialog.DialogTextEditorScreenWrapper;
+import de.markusbordihn.easynpc.configui.client.screen.editor.faction.FactionEditorScreenWrapper;
+import de.markusbordihn.easynpc.configui.client.screen.editor.faction.FactionsEditorScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.preset.PresetBrowserScreen;
 import de.markusbordihn.easynpc.configui.menu.ModMenuTypes;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
@@ -227,5 +231,13 @@ public class ClientScreens {
     event.register(
         ModMenuTypes.YES_NO_DIALOG_CONFIGURATION_MENU.get(),
         YesNoDialogConfigurationScreenWrapper::new);
+    event.register(
+        ModMenuTypes.MISC_ATTRIBUTE_CONFIGURATION_MENU.get(),
+        MiscAttributeConfigurationScreenWrapper::new);
+    event.register(
+        ModMenuTypes.TARGET_OBJECTIVE_CONFIGURATION_MENU.get(),
+        TargetObjectiveConfigurationScreenWrapper::new);
+    event.register(ModMenuTypes.FACTION_EDITOR_MENU.get(), FactionEditorScreenWrapper::new);
+    event.register(ModMenuTypes.FACTIONS_EDITOR_MENU.get(), FactionsEditorScreenWrapper::new);
   }
 }

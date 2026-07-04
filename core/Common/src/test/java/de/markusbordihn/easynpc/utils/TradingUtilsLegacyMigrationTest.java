@@ -63,7 +63,8 @@ class TradingUtilsLegacyMigrationTest {
                 + "maxUses:64,priceMultiplier:1.0f,rewardExp:1b}]}}");
 
     MerchantOffers offers =
-        TradingUtils.parseMerchantOffers(offersTag, "Offers", registries(), "legacy-migration-test");
+        TradingUtils.parseMerchantOffers(
+            offersTag, "Offers", registries(), "legacy-migration-test");
 
     assertNotNull(offers, "Migrated offers should not be null");
     assertEquals(1, offers.size());

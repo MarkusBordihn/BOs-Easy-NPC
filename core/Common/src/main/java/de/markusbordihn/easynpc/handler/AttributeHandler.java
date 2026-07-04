@@ -85,6 +85,8 @@ public class AttributeHandler {
           entityAttributes.setCombatAttributes(attributes.withIsAttackableByPlayers(value));
       case IS_ATTACKABLE_BY_MONSTERS ->
           entityAttributes.setCombatAttributes(attributes.withIsAttackableByMonsters(value));
+      case IS_ATTACKABLE_BY_FACTIONS ->
+          entityAttributes.setCombatAttributes(attributes.withIsAttackableByFactions(value));
       default -> {
         log.error("Unimplemented combat attribute {} for {}", attributeType, easyNPC);
         return false;

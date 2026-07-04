@@ -32,12 +32,16 @@ import de.markusbordihn.easynpc.data.dialog.DialogButtonEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.data.dialog.DialogTextData;
+import de.markusbordihn.easynpc.data.faction.FactionDataEntry;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataSet;
+import de.markusbordihn.easynpc.data.saveddata.FactionData;
 import de.markusbordihn.easynpc.data.scoreboard.ScoreboardData;
 import de.markusbordihn.easynpc.data.screen.AdditionalScreenDataInterface;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -54,6 +58,7 @@ public class AdditionalScreenData implements AdditionalScreenDataInterface {
   private static final String OBJECTIVE_DATA_TAG = "ObjectiveData";
   private static final String BLOCKED_CONFIGURATIONS_TAG = "BlockedConfigurations";
   private static final String BLOCKED_ACTION_TYPES_TAG = "BlockedActionTypes";
+  private static final String FACTION_REGISTRY_TAG = "FactionRegistry";
   private static final String SCOREBOARD_DATA_TAG = "ScoreboardData";
   private static final String TRADING_OFFER_ACTION_DATA_TAG = "TradingOfferActionData";
 
@@ -257,6 +262,38 @@ public class AdditionalScreenData implements AdditionalScreenDataInterface {
 
   public static boolean hasScoreboardData(CompoundTag compoundTag) {
     return compoundTag != null && compoundTag.contains(SCOREBOARD_DATA_TAG);
+  }
+
+  public static void addFactionData(CompoundTag compoundTag) {
+    if (compoundTag == null || !FactionData.isInitialized()) {
+      return;
+    }
+
+    ListTag factionsTag = new ListTag();
+    for (FactionDataEntry factionDataEntry : FactionData.get().getFactionEntries()) {
+      factionsTag.add(factionDataEntry.createTag());
+    }
+    compoundTag.put(FACTION_REGISTRY_TAG, factionsTag);
+  }
+
+  public static Map<String, FactionDataEntry> getFactionData(CompoundTag compoundTag) {
+    Map<String, FactionDataEntry> factionDataEntries = new TreeMap<>();
+    if (!hasFactionData(compoundTag)) {
+      return factionDataEntries;
+    }
+
+    ListTag factionsTag = compoundTag.getListOrEmpty(FACTION_REGISTRY_TAG);
+    for (int i = 0; i < factionsTag.size(); i++) {
+      FactionDataEntry factionDataEntry = new FactionDataEntry(factionsTag.getCompoundOrEmpty(i));
+      if (!factionDataEntry.getName().isEmpty()) {
+        factionDataEntries.put(factionDataEntry.getName(), factionDataEntry);
+      }
+    }
+    return factionDataEntries;
+  }
+
+  public static boolean hasFactionData(CompoundTag compoundTag) {
+    return compoundTag != null && compoundTag.contains(FACTION_REGISTRY_TAG);
   }
 
   public static void addBlockedConfigurations(

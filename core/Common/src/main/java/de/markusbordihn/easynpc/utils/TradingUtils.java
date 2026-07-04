@@ -263,8 +263,7 @@ public class TradingUtils {
       ListTag normalizedLore = new ListTag();
       ListTag lore = display.getListOrEmpty(LORE_TAG);
       for (int i = 0; i < lore.size(); i++) {
-        normalizedLore.add(
-            componentStringToTag(normalizeLegacyComponent(lore.getStringOr(i, ""))));
+        normalizedLore.add(componentStringToTag(normalizeLegacyComponent(lore.getStringOr(i, ""))));
       }
       if (!normalizedLore.isEmpty()) {
         components.put(LORE_COMPONENT, normalizedLore);

@@ -138,8 +138,7 @@ class TextureRegistrationQueueTest {
               return expectedIdentifier(key);
             });
 
-    Identifier firstIdentifier =
-        queue.register(textureModelKey, new NativeImage(64, 64, false));
+    Identifier firstIdentifier = queue.register(textureModelKey, new NativeImage(64, 64, false));
     Identifier duplicateIdentifier =
         queue.register(textureModelKey, new NativeImage(64, 64, false));
 
