@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Markus Bordihn
+ * Copyright 2026 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,11 +17,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.data.faction;
+package de.markusbordihn.easynpc.configui.menu.configuration.objective;
 
-public enum FactionType {
-  ANIMAL,
-  ILLAGER,
-  UNDEAD,
-  VIILLAGER,
+import de.markusbordihn.easynpc.configui.menu.ModMenuTypes;
+import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
+import net.minecraft.world.entity.player.Inventory;
+
+public class TargetObjectiveConfigurationMenuWrapper extends ConfigurationMenu {
+
+  public TargetObjectiveConfigurationMenuWrapper(
+      final int containerId, final Inventory playerInventory) {
+    super(ModMenuTypes.TARGET_OBJECTIVE_CONFIGURATION_MENU, containerId, playerInventory);
+  }
 }

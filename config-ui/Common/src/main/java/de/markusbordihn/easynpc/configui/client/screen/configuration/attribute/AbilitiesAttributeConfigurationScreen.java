@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.configui.client.screen.configuration.attribute;
 import de.markusbordihn.easynpc.client.screen.components.RangeSliderButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.configui.client.screen.components.Checkbox;
+import de.markusbordihn.easynpc.configui.client.screen.components.HelpIcon;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.attribute.CombatAttributeType;
@@ -148,6 +149,8 @@ public class AbilitiesAttributeConfigurationScreen<T extends ConfigurationMenu>
                           checkbox.selected());
                 }));
     this.refreshPassDoorCheckbox();
+    this.addRenderableWidget(
+        new HelpIcon(this.leftPos + 296, this.buttonTopPos + 47, "door_behavior.tooltip"));
 
     this.addRenderableWidget(
         new Checkbox(

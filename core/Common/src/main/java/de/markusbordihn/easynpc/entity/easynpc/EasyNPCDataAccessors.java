@@ -26,6 +26,7 @@ import de.markusbordihn.easynpc.entity.easynpc.data.ConfigDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.ConfigurationDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.DialogDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.DisplayAttributeDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.FactionDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.InventoryDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.NavigationDataCapable;
@@ -96,6 +97,10 @@ public interface EasyNPCDataAccessors<E extends Mob> {
 
   default ObjectiveDataCapable<E> getEasyNPCObjectiveData() {
     return this instanceof ObjectiveDataCapable<E> objectiveData ? objectiveData : null;
+  }
+
+  default FactionDataCapable<E> getEasyNPCFactionData() {
+    return this instanceof FactionDataCapable<E> factionData ? factionData : null;
   }
 
   default OwnerDataCapable<E> getEasyNPCOwnerData() {

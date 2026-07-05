@@ -23,6 +23,7 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.config.NPCBaseConfig;
 import de.markusbordihn.easynpc.data.attribute.CombatAttributes;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPCBase;
+import de.markusbordihn.easynpc.handler.FactionHandler;
 import de.markusbordihn.easynpc.item.ModItemTags;
 import java.util.Optional;
 import net.minecraft.core.Holder.Reference;
@@ -245,6 +246,12 @@ public class AttackHandler {
                     livingEntity, new ItemStack(Items.ARROW), damage, itemStackWeapon));
   }
 
+  public static boolean handleCanAttack(
+      EasyNPCBase<?> easyNPC, LivingEntity livingEntity, boolean defaultValue) {
+    return defaultValue
+        || FactionHandler.canBypassInvulnerability(easyNPC.getLivingEntity(), livingEntity);
+  }
+
   public static boolean handleIsInvulnerableTo(
       EasyNPCBase<?> easyNPC, DamageSource damageSource, boolean defaultValue) {
     // Allow certain damage types to bypass invulnerability like void or /kill command.
@@ -253,17 +260,25 @@ public class AttackHandler {
       return defaultValue;
     }
 
-    // If the NPC is invulnerable, return true.
-    if (easyNPC.getEntityAttributes().getCombatAttributes().isInvulnerable()) {
-      return true;
+    // Attackers from hostile factions (NPCs or players/entities in a hostile faction team)
+    // bypass the invulnerability protection if the NPC allows it.
+    if (damageSource.getEntity() instanceof LivingEntity attacker
+        && FactionHandler.canBypassInvulnerability(attacker, easyNPC.getLivingEntity())) {
+      return false;
     }
 
-    // Check if the damage source is from a player or monster and if the NPC is attackable by them.
+    // Players and monsters are controlled by their own attackable switches, independent of the
+    // invulnerability protection.
     CombatAttributes combatAttributes = easyNPC.getEntityAttributes().getCombatAttributes();
     if (damageSource.getEntity() instanceof Player) {
       return !combatAttributes.isAttackableByPlayers();
     } else if (damageSource.getEntity() instanceof Monster) {
       return !combatAttributes.isAttackableByMonsters();
+    }
+
+    // Everything else, like environmental damage, is covered by the invulnerability protection.
+    if (combatAttributes.isInvulnerable()) {
+      return true;
     }
 
     return defaultValue;

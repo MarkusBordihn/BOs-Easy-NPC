@@ -37,6 +37,7 @@ public class AttributeConfigurationScreen<T extends ConfigurationMenu>
   protected Button baseAttributeButton = null;
   protected Button combatAttributeButton = null;
   protected Button displayAttributeButton = null;
+  protected Button miscAttributeButton = null;
 
   public AttributeConfigurationScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
@@ -52,7 +53,7 @@ public class AttributeConfigurationScreen<T extends ConfigurationMenu>
             new TextButton(
                 this.buttonLeftPos,
                 this.buttonTopPos,
-                76,
+                72,
                 "abilities",
                 onPress ->
                     NetworkMessageHandlerManager.getServerHandler()
@@ -64,7 +65,7 @@ public class AttributeConfigurationScreen<T extends ConfigurationMenu>
             new TextButton(
                 this.abilitiesAttributeButton.getX() + this.abilitiesAttributeButton.getWidth(),
                 this.buttonTopPos,
-                60,
+                50,
                 "base",
                 onPress ->
                     NetworkMessageHandlerManager.getServerHandler()
@@ -81,7 +82,7 @@ public class AttributeConfigurationScreen<T extends ConfigurationMenu>
             new TextButton(
                 this.baseAttributeButton.getX() + this.baseAttributeButton.getWidth(),
                 this.buttonTopPos,
-                70,
+                60,
                 "combat",
                 onPress ->
                     NetworkMessageHandlerManager.getServerHandler()
@@ -98,11 +99,23 @@ public class AttributeConfigurationScreen<T extends ConfigurationMenu>
             new TextButton(
                 this.combatAttributeButton.getX() + this.combatAttributeButton.getWidth(),
                 this.buttonTopPos,
-                70,
+                60,
                 "display",
                 onPress ->
                     NetworkMessageHandlerManager.getServerHandler()
                         .openConfiguration(
                             this.getEasyNPCUUID(), ConfigurationType.DISPLAY_ATTRIBUTE)));
+
+    this.miscAttributeButton =
+        this.addRenderableWidget(
+            new TextButton(
+                this.displayAttributeButton.getX() + this.displayAttributeButton.getWidth(),
+                this.buttonTopPos,
+                50,
+                "misc",
+                onPress ->
+                    NetworkMessageHandlerManager.getServerHandler()
+                        .openConfiguration(
+                            this.getEasyNPCUUID(), ConfigurationType.MISC_ATTRIBUTE)));
   }
 }

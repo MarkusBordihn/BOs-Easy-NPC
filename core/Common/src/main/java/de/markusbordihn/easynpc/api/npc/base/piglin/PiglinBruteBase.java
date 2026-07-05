@@ -85,7 +85,9 @@ public class PiglinBruteBase extends PiglinBruteRaw implements BaseEasyNPC<Pigli
   @SuppressWarnings("deprecation")
   protected Brain<PiglinBrute> makeBrain(Brain.Packed packedBrain) {
     return Brain.<PiglinBrute>provider(
-            List.of(MemoryModuleType.ATTACK_TARGET), List.of(), entity -> List.of())
+            List.of(MemoryModuleType.ATTACK_TARGET, MemoryModuleType.NEARBY_ADULT_PIGLINS),
+            List.of(),
+            entity -> List.of())
         .makeBrain(this, packedBrain);
   }
 
@@ -97,6 +99,11 @@ public class PiglinBruteBase extends PiglinBruteRaw implements BaseEasyNPC<Pigli
     } else {
       this.getBrain().eraseMemory(MemoryModuleType.ATTACK_TARGET);
     }
+  }
+
+  @Override
+  public boolean isConverting() {
+    return false;
   }
 
   @Override
