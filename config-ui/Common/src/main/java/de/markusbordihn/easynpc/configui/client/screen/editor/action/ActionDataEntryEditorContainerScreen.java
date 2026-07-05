@@ -339,9 +339,9 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
     this.actionDataTypeButton =
         this.addRenderableWidget(
             new SpinButton<>(
-                this.leftPos + 133,
+                this.leftPos + 105,
                 this.contentTop + 5,
-                160,
+                200,
                 16,
                 this.getAvailableActionDataTypes(),
                 this.actionDataType,

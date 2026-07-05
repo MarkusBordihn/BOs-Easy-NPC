@@ -48,9 +48,11 @@ public final class ObjectiveDataEntry {
   public static final String DATA_SPEED_MODIFIER_TAG = "SpeedModifier";
   public static final String DATA_START_DISTANCE_TAG = "StartDistance";
   public static final String DATA_STOP_DISTANCE_TAG = "StopDistance";
+  public static final String DATA_TARGET_ENTITY_TAG_TAG = "TargetEntityTag";
   public static final String DATA_TARGET_ENTITY_UUID_TAG = "TargetEntityUUID";
   public static final String DATA_TARGET_OWNER_UUID_TAG = "TargetOwnerUUID";
   public static final String DATA_TARGET_PLAYER_NAME_TAG = "TargetPlayerName";
+  public static final String DATA_TARGET_TEAM_NAME_TAG = "TargetTeamName";
   public static final String DATA_TARGET_ITEM_TAG = "TargetItemTag";
   public static final String DATA_TYPE_TAG = "Type";
 
@@ -94,6 +96,8 @@ public final class ObjectiveDataEntry {
   private UUID targetEntityUUID;
   private UUID targetOwnerUUID;
   private String targetPlayerName;
+  private String targetTeamName;
+  private String targetEntityTag;
   private String targetItemTag;
 
   public ObjectiveDataEntry() {}
@@ -191,6 +195,22 @@ public final class ObjectiveDataEntry {
     this.targetPlayerName = targetPlayerName;
   }
 
+  public String getTargetTeamName() {
+    return this.targetTeamName;
+  }
+
+  public void setTargetTeamName(String targetTeamName) {
+    this.targetTeamName = targetTeamName;
+  }
+
+  public String getTargetEntityTag() {
+    return this.targetEntityTag;
+  }
+
+  public void setTargetEntityTag(String targetEntityTag) {
+    this.targetEntityTag = targetEntityTag;
+  }
+
   public float getLookDistance() {
     return this.lookDistance;
   }
@@ -267,14 +287,16 @@ public final class ObjectiveDataEntry {
   }
 
   public boolean hasPlayerTarget() {
-    return this.getType() == ObjectiveType.FOLLOW_PLAYER
+    return (this.getType() == ObjectiveType.FOLLOW_PLAYER
+            || this.getType() == ObjectiveType.ATTACK_PLAYER_BY_NAME)
         && this.targetPlayerName != null
         && !this.targetPlayerName.isEmpty();
   }
 
   public boolean hasEntityTarget() {
     return (this.getType() == ObjectiveType.FOLLOW_ENTITY_BY_UUID
-            || this.getType() == ObjectiveType.LOOK_AT_ENTITY_BY_UUID)
+            || this.getType() == ObjectiveType.LOOK_AT_ENTITY_BY_UUID
+            || this.getType() == ObjectiveType.ATTACK_ENTITY_BY_UUID)
         && this.targetEntityUUID != null;
   }
 
@@ -325,7 +347,8 @@ public final class ObjectiveDataEntry {
     this.priority = compoundTag.getInt(DATA_PRIORITY_TAG).orElse(DEFAULT_PRIORITY);
 
     // Restore id, if no id is set, use the objective type.
-    if (compoundTag.contains(DATA_ID_TAG) && !compoundTag.getString(DATA_ID_TAG).isEmpty()) {
+    if (compoundTag.contains(DATA_ID_TAG)
+        && !compoundTag.getString(DATA_ID_TAG).orElse("").isEmpty()) {
       this.id = compoundTag.getString(DATA_ID_TAG).orElse(this.objectiveType.name());
     } else {
       this.id = this.objectiveType.name();
@@ -337,6 +360,12 @@ public final class ObjectiveDataEntry {
     }
     if (compoundTag.contains(DATA_TARGET_PLAYER_NAME_TAG)) {
       this.targetPlayerName = compoundTag.getString(DATA_TARGET_PLAYER_NAME_TAG).orElse("");
+    }
+    if (compoundTag.contains(DATA_TARGET_TEAM_NAME_TAG)) {
+      this.targetTeamName = compoundTag.getString(DATA_TARGET_TEAM_NAME_TAG).orElse("");
+    }
+    if (compoundTag.contains(DATA_TARGET_ENTITY_TAG_TAG)) {
+      this.targetEntityTag = compoundTag.getString(DATA_TARGET_ENTITY_TAG_TAG).orElse("");
     }
     if (compoundTag.contains(DATA_TARGET_OWNER_UUID_TAG)) {
       this.targetOwnerUUID = CompoundTagUtils.readUUID(compoundTag, DATA_TARGET_OWNER_UUID_TAG);
@@ -421,6 +450,12 @@ public final class ObjectiveDataEntry {
     if (this.targetPlayerName != null && !this.targetPlayerName.isEmpty()) {
       compoundTag.putString(DATA_TARGET_PLAYER_NAME_TAG, this.targetPlayerName);
     }
+    if (this.targetTeamName != null && !this.targetTeamName.isEmpty()) {
+      compoundTag.putString(DATA_TARGET_TEAM_NAME_TAG, this.targetTeamName);
+    }
+    if (this.targetEntityTag != null && !this.targetEntityTag.isEmpty()) {
+      compoundTag.putString(DATA_TARGET_ENTITY_TAG_TAG, this.targetEntityTag);
+    }
     if (this.targetOwnerUUID != null) {
       CompoundTagUtils.writeUUID(compoundTag, DATA_TARGET_OWNER_UUID_TAG, this.targetOwnerUUID);
     }
@@ -486,6 +521,10 @@ public final class ObjectiveDataEntry {
         + this.priority
         + ", targetPlayerName="
         + this.targetPlayerName
+        + ", targetTeamName="
+        + this.targetTeamName
+        + ", targetEntityTag="
+        + this.targetEntityTag
         + ", targetEntityUUID="
         + this.targetEntityUUID
         + ", targetOwnerUUID="

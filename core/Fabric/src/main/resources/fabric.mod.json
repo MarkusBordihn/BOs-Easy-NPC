@@ -23,7 +23,8 @@
     ],
     "fabric-gametest": [
       "de.markusbordihn.easynpc.gametest.ConditionEvaluationTest",
-      "de.markusbordihn.easynpc.gametest.TradingPersistenceTest"
+      "de.markusbordihn.easynpc.gametest.TradingPersistenceTest",
+      "de.markusbordihn.easynpc.gametest.FactionObjectiveTest"
     ]
   },
   "mixins": [

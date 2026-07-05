@@ -19,7 +19,7 @@
 
 package de.markusbordihn.easynpc.mixin.entity;
 
-import de.markusbordihn.easynpc.entity.easynpc.npc.StandardEasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.monster.EnderMan;
@@ -39,7 +39,7 @@ public abstract class EndermanMixin extends Monster {
 
   @Inject(method = "customServerAiStep", at = @At("HEAD"), cancellable = true)
   public void onCustomServerAiStep(ServerLevel serverLevel, CallbackInfo ci) {
-    if (this instanceof StandardEasyNPC<?> && this.isAlive()) {
+    if ((Object) this instanceof EasyNPC<?> && this.isAlive()) {
       super.customServerAiStep(serverLevel);
       ci.cancel();
     }

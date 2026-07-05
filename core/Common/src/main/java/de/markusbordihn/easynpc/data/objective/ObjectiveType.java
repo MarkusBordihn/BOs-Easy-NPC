@@ -24,9 +24,14 @@ import java.util.Optional;
 
 public enum ObjectiveType {
   ATTACK_ANIMAL("animal", 2),
+  ATTACK_ENTITY_BY_TAG("entity_by_tag", 2),
+  ATTACK_ENTITY_BY_TEAM("entity_by_team", 2),
+  ATTACK_ENTITY_BY_UUID("entity_by_uuid", 2),
+  ATTACK_HOSTILE_FACTIONS("hostile_factions", 2),
   ATTACK_MOB_WITHOUT_CREEPER("mob_without_creeper", 2),
   ATTACK_MOB("mob", 2),
   ATTACK_MONSTER("monster", 2),
+  ATTACK_PLAYER_BY_NAME("player_by_name", 2),
   ATTACK_PLAYER_WITHOUT_OWNER("player_without_owner", 2),
   ATTACK_PLAYER("player", 2),
   ATTACK_VILLAGER("villager", 2),

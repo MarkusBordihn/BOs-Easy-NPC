@@ -540,7 +540,8 @@ public class NPCRawTemplate extends Zombie implements EasyNPCBase<Zombie> {
 
   @Override
   public boolean isAttackable() {
-    return getEntityAttributes().getCombatAttributes().isAttackableByPlayers();
+    return getEntityAttributes().getCombatAttributes().isAttackableByPlayers()
+        || getEntityAttributes().getCombatAttributes().isAttackableByFactions();
   }
 
   @Override
@@ -584,6 +585,11 @@ public class NPCRawTemplate extends Zombie implements EasyNPCBase<Zombie> {
   public boolean isInvulnerableTo(ServerLevel serverLevel, DamageSource damageSource) {
     return AttackHandler.handleIsInvulnerableTo(
         this, damageSource, super.isInvulnerableTo(serverLevel, damageSource));
+  }
+
+  @Override
+  public boolean canAttack(LivingEntity livingEntity) {
+    return AttackHandler.handleCanAttack(this, livingEntity, super.canAttack(livingEntity));
   }
 
   @Override

@@ -37,6 +37,8 @@ import de.markusbordihn.easynpc.entity.easynpc.ai.goal.RandomStrollAroundGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.RandomStrollAroundHomeGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.ResetLookAtPlayerGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.ZombieAttackGoal;
+import de.markusbordihn.easynpc.entity.easynpc.data.FactionDataCapable;
+import de.markusbordihn.easynpc.handler.FactionHandler;
 import java.util.UUID;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
@@ -357,9 +359,78 @@ public class ObjectiveUtils {
       case ATTACK_ANIMAL:
         return new NearestAttackableTargetGoal<>(
             mob, Animal.class, objectiveDataEntry.isMustSeeTarget());
+      case ATTACK_ENTITY_BY_TAG:
+        if (objectiveDataEntry.getTargetEntityTag() == null
+            || objectiveDataEntry.getTargetEntityTag().isEmpty()) {
+          return null;
+        }
+        return new NearestAttackableTargetGoal<>(
+            mob,
+            LivingEntity.class,
+            objectiveDataEntry.getInterval(),
+            objectiveDataEntry.isMustSeeTarget(),
+            objectiveDataEntry.isMustReachTarget(),
+            (entity, serverLevel) ->
+                entity.entityTags().contains(objectiveDataEntry.getTargetEntityTag())
+                    && !mob.isAlliedTo(entity));
+      case ATTACK_ENTITY_BY_TEAM:
+        if (objectiveDataEntry.getTargetTeamName() == null
+            || objectiveDataEntry.getTargetTeamName().isEmpty()) {
+          return null;
+        }
+        return new NearestAttackableTargetGoal<>(
+            mob,
+            LivingEntity.class,
+            objectiveDataEntry.getInterval(),
+            objectiveDataEntry.isMustSeeTarget(),
+            objectiveDataEntry.isMustReachTarget(),
+            (entity, serverLevel) ->
+                entity.getTeam() != null
+                    && entity.getTeam().getName().equals(objectiveDataEntry.getTargetTeamName())
+                    && !mob.isAlliedTo(entity));
+      case ATTACK_ENTITY_BY_UUID:
+        if (objectiveDataEntry.getTargetEntityUUID() == null) {
+          return null;
+        }
+        return new NearestAttackableTargetGoal<>(
+            mob,
+            LivingEntity.class,
+            objectiveDataEntry.getInterval(),
+            objectiveDataEntry.isMustSeeTarget(),
+            objectiveDataEntry.isMustReachTarget(),
+            (entity, serverLevel) ->
+                entity.getUUID().equals(objectiveDataEntry.getTargetEntityUUID())
+                    && !mob.isAlliedTo(entity));
+      case ATTACK_HOSTILE_FACTIONS:
+        return new NearestAttackableTargetGoal<>(
+            mob,
+            LivingEntity.class,
+            objectiveDataEntry.getInterval(),
+            objectiveDataEntry.isMustSeeTarget(),
+            objectiveDataEntry.isMustReachTarget(),
+            (entity, serverLevel) -> {
+              FactionDataCapable<?> factionData = easyNPC.getEasyNPCFactionData();
+              return factionData != null
+                  && !mob.isAlliedTo(entity)
+                  && FactionHandler.isHostile(factionData.getFactionName(), entity);
+            });
       case ATTACK_PLAYER:
         return new NearestAttackableTargetGoal<>(
             mob, Player.class, objectiveDataEntry.isMustSeeTarget());
+      case ATTACK_PLAYER_BY_NAME:
+        if (objectiveDataEntry.getTargetPlayerName() == null
+            || objectiveDataEntry.getTargetPlayerName().isEmpty()) {
+          return null;
+        }
+        return new NearestAttackableTargetGoal<>(
+            mob,
+            Player.class,
+            objectiveDataEntry.getInterval(),
+            objectiveDataEntry.isMustSeeTarget(),
+            objectiveDataEntry.isMustReachTarget(),
+            (entity, serverLevel) ->
+                entity.getName().getString().equals(objectiveDataEntry.getTargetPlayerName())
+                    && !mob.isAlliedTo(entity));
       case ATTACK_PLAYER_WITHOUT_OWNER:
         return new NearestAttackableTargetGoal<>(
             mob,

@@ -40,6 +40,7 @@ public class ObjectiveConfigurationScreen<T extends ConfigurationMenu>
   protected Button basicObjectiveButton;
   protected Button followObjectiveButton;
   protected Button attackObjectiveButton;
+  protected Button targetObjectiveButton;
   protected Button fleeObjectiveButton;
   protected Button lookObjectiveButton;
 
@@ -114,10 +115,22 @@ public class ObjectiveConfigurationScreen<T extends ConfigurationMenu>
                         .openConfiguration(
                             this.getEasyNPCUUID(), ConfigurationType.ATTACK_OBJECTIVE)));
 
-    this.fleeObjectiveButton =
+    this.targetObjectiveButton =
         this.addRenderableWidget(
             new TextButton(
                 this.attackObjectiveButton.getX() + this.attackObjectiveButton.getWidth(),
+                this.buttonTopPos,
+                50,
+                "target",
+                onPress ->
+                    NetworkMessageHandlerManager.getServerHandler()
+                        .openConfiguration(
+                            this.getEasyNPCUUID(), ConfigurationType.TARGET_OBJECTIVE)));
+
+    this.fleeObjectiveButton =
+        this.addRenderableWidget(
+            new TextButton(
+                this.targetObjectiveButton.getX() + this.targetObjectiveButton.getWidth(),
                 this.buttonTopPos,
                 50,
                 "flee",

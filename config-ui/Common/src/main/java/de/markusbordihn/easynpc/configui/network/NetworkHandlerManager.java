@@ -32,6 +32,9 @@ import de.markusbordihn.easynpc.configui.network.message.server.ChangeDisplayAtt
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeEntityAttributeMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeEntityBaseAttributeMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeEnvironmentalAttributeMessage;
+import de.markusbordihn.easynpc.configui.network.message.server.ChangeFactionColorMessage;
+import de.markusbordihn.easynpc.configui.network.message.server.ChangeFactionMessage;
+import de.markusbordihn.easynpc.configui.network.message.server.ChangeFactionRelationMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeInteractionAttributeMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeModelAnimationDataMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeModelEquipmentVisibilityMessage;
@@ -50,6 +53,7 @@ import de.markusbordihn.easynpc.configui.network.message.server.ChangeRendererMe
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeSkinMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeTradingOfferActionMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeTradingTypeMessage;
+import de.markusbordihn.easynpc.configui.network.message.server.CreateFactionMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ExportCustomPresetServerMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ExportPresetMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ExportWorldPresetMessage;
@@ -65,11 +69,14 @@ import de.markusbordihn.easynpc.configui.network.message.server.OpenDialogButton
 import de.markusbordihn.easynpc.configui.network.message.server.OpenDialogEditorMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.OpenDialogOptionsEditorMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.OpenDialogTextEditorMessage;
+import de.markusbordihn.easynpc.configui.network.message.server.OpenFactionEditorMessage;
+import de.markusbordihn.easynpc.configui.network.message.server.OpenFactionsEditorMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.OpenMenuMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.OpenTradingOfferActionEditorMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.OpenTradingOfferActionEntryEditorMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.RemoveDialogButtonMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.RemoveDialogMessage;
+import de.markusbordihn.easynpc.configui.network.message.server.RemoveFactionEntryMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.RemoveNPCMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.RemoveObjectiveMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.RequestDataSyncMessage;
@@ -196,6 +203,36 @@ public class NetworkHandlerManager {
         ChangeBasicTradingMessage.STREAM_CODEC,
         ChangeBasicTradingMessage.class,
         ChangeBasicTradingMessage::create);
+
+    networkHandler.registerServerNetworkMessage(
+        ChangeFactionMessage.PAYLOAD_TYPE,
+        ChangeFactionMessage.STREAM_CODEC,
+        ChangeFactionMessage.class,
+        ChangeFactionMessage::create);
+
+    networkHandler.registerServerNetworkMessage(
+        ChangeFactionColorMessage.PAYLOAD_TYPE,
+        ChangeFactionColorMessage.STREAM_CODEC,
+        ChangeFactionColorMessage.class,
+        ChangeFactionColorMessage::create);
+
+    networkHandler.registerServerNetworkMessage(
+        ChangeFactionRelationMessage.PAYLOAD_TYPE,
+        ChangeFactionRelationMessage.STREAM_CODEC,
+        ChangeFactionRelationMessage.class,
+        ChangeFactionRelationMessage::create);
+
+    networkHandler.registerServerNetworkMessage(
+        CreateFactionMessage.PAYLOAD_TYPE,
+        CreateFactionMessage.STREAM_CODEC,
+        CreateFactionMessage.class,
+        CreateFactionMessage::create);
+
+    networkHandler.registerServerNetworkMessage(
+        RemoveFactionEntryMessage.PAYLOAD_TYPE,
+        RemoveFactionEntryMessage.STREAM_CODEC,
+        RemoveFactionEntryMessage.class,
+        RemoveFactionEntryMessage::create);
 
     networkHandler.registerServerNetworkMessage(
         ChangeTradingOfferActionMessage.PAYLOAD_TYPE,
@@ -436,6 +473,18 @@ public class NetworkHandlerManager {
         OpenMenuMessage.STREAM_CODEC,
         OpenMenuMessage.class,
         OpenMenuMessage::create);
+
+    networkHandler.registerServerNetworkMessage(
+        OpenFactionEditorMessage.PAYLOAD_TYPE,
+        OpenFactionEditorMessage.STREAM_CODEC,
+        OpenFactionEditorMessage.class,
+        OpenFactionEditorMessage::create);
+
+    networkHandler.registerServerNetworkMessage(
+        OpenFactionsEditorMessage.PAYLOAD_TYPE,
+        OpenFactionsEditorMessage.STREAM_CODEC,
+        OpenFactionsEditorMessage.class,
+        OpenFactionsEditorMessage::create);
 
     networkHandler.registerServerNetworkMessage(
         OpenDialogOptionsEditorMessage.PAYLOAD_TYPE,

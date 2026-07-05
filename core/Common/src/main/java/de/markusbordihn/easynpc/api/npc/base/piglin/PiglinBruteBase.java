@@ -101,6 +101,11 @@ public class PiglinBruteBase extends PiglinBruteRaw implements BaseEasyNPC<Pigli
   }
 
   @Override
+  public boolean isConverting() {
+    return false;
+  }
+
+  @Override
   public void travel(Vec3 vec3) {
 
     this.handleNavigationTravelEvent(vec3);
