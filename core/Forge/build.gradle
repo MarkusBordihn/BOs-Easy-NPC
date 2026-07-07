@@ -128,8 +128,8 @@ dependencies {
     compileOnly files(easyModelEntitiesLocal)
     testCompileOnly files(easyModelEntitiesLocal)
   } else if (project.hasProperty('forge_easy_model_entities_mod') && project.forge_easy_model_entities_mod) {
-    compileOnly fg.deobf("curse.maven:easy_model_entities-forge-1539533:${project.forge_easy_model_entities_mod}")
-    testCompileOnly fg.deobf("curse.maven:easy_model_entities-forge-1539533:${project.forge_easy_model_entities_mod}")
+    compileOnly fg.deobf("curse.maven:easy-model-entities-1539533:${project.forge_easy_model_entities_mod}")
+    testCompileOnly fg.deobf("curse.maven:easy-model-entities-1539533:${project.forge_easy_model_entities_mod}")
   }
 
   // Easy Model Entities (runtime dependency)
@@ -137,7 +137,7 @@ dependencies {
   if (easyModelEntitiesForgeRuntime != null) {
     runtimeOnly fg.deobf(easyModelEntitiesForgeRuntime)
   } else if (project.hasProperty('forge_easy_model_entities_mod') && project.forge_easy_model_entities_mod) {
-    runtimeOnly fg.deobf("curse.maven:easy_model_entities-forge-1539533:${project.forge_easy_model_entities_mod}")
+    runtimeOnly fg.deobf("curse.maven:easy-model-entities-1539533:${project.forge_easy_model_entities_mod}")
   }
 
   // FTB Quests (for testing)

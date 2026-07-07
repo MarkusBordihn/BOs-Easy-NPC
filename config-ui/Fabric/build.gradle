@@ -59,7 +59,7 @@ dependencies {
   if (easyModelEntitiesFabricRuntime != null) {
     modRuntimeOnly easyModelEntitiesFabricRuntime
   } else if (project.hasProperty('fabric_easy_model_entities_mod') && project.fabric_easy_model_entities_mod) {
-    modRuntimeOnly("curse.maven:easy_model_entities-fabric-1539534:${project.fabric_easy_model_entities_mod}")
+    modRuntimeOnly("curse.maven:easy-model-entities-1539533:${project.fabric_easy_model_entities_mod}")
   }
 
   // Cobblemon Integration (Broken in DEV!)
