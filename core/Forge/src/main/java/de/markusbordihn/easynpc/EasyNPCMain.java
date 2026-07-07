@@ -29,8 +29,10 @@ import de.markusbordihn.easynpc.client.renderer.EntityRenderer;
 import de.markusbordihn.easynpc.client.screen.ClientScreens;
 import de.markusbordihn.easynpc.commands.ModArgumentTypes;
 import de.markusbordihn.easynpc.commands.manager.CommandManager;
+import de.markusbordihn.easynpc.compat.CompatConstants;
 import de.markusbordihn.easynpc.compat.CompatHandler;
 import de.markusbordihn.easynpc.compat.CompatManager;
+import de.markusbordihn.easynpc.compat.easymodelentities.EasyModelEntitiesLoader;
 import de.markusbordihn.easynpc.component.ModDataComponents;
 import de.markusbordihn.easynpc.config.Config;
 import de.markusbordihn.easynpc.debug.DebugManager;
@@ -56,6 +58,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.event.TagsUpdatedEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
@@ -169,6 +172,15 @@ public class EasyNPCMain {
     log.info("{} Client GAME bus events ...", Constants.LOG_REGISTER_PREFIX);
     ClientPlayerNetworkEvent.LoggingOut.BUS.addListener(this::onPlayerLoggedOut);
     TickEvent.ClientTickEvent.Post.BUS.addListener(this::onClientTick);
+    if (CompatConstants.MOD_EASY_MODEL_ENTITIES_LOADED) {
+      TagsUpdatedEvent.BUS.addListener(this::onTagsUpdated);
+    }
+  }
+
+  private void onTagsUpdated(final TagsUpdatedEvent event) {
+    if (CompatConstants.MOD_EASY_MODEL_ENTITIES_LOADED) {
+      EasyModelEntitiesLoader.register();
+    }
   }
 
   private void commonSetup(final FMLCommonSetupEvent event) {
@@ -208,6 +220,9 @@ public class EasyNPCMain {
 
   private void onServerStarting(final ServerStartingEvent event) {
     ServerEvents.handleServerStarting(event.getServer());
+    if (CompatConstants.MOD_EASY_MODEL_ENTITIES_LOADED) {
+      EasyModelEntitiesLoader.register();
+    }
   }
 
   private void onServerTick(final TickEvent.ServerTickEvent event) {

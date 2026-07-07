@@ -25,7 +25,9 @@ import de.markusbordihn.easynpc.client.renderer.entity.ModCustomEntityRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.ModEpicFightEntityRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.ModNPCEntityRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.ModRawEntityRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.easymodelentities.EasyModelNPCRenderer;
 import de.markusbordihn.easynpc.compat.CompatConstants;
+import de.markusbordihn.easynpc.entity.EasyModelEntitiesEntityType;
 import de.markusbordihn.easynpc.entity.ModEntityType;
 import de.markusbordihn.easynpc.entity.UserDefinedEntityRegistry;
 import de.markusbordihn.easynpc.entity.UserDefinedEntityType;
@@ -83,6 +85,12 @@ public class EntityRenderer {
             ModEntityType.getEntityType(renderer.getEntityType()),
             context -> renderer.getRenderer().apply(context));
       }
+    }
+
+    if (CompatConstants.MOD_EASY_MODEL_ENTITIES_LOADED) {
+      EntityRendererRegistry.register(
+          ModEntityType.getEntityType(EasyModelEntitiesEntityType.EASY_MODEL_NPC),
+          EasyModelNPCRenderer::new);
     }
   }
 

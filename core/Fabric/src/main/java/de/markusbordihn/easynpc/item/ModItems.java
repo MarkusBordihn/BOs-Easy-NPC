@@ -24,6 +24,7 @@ import de.markusbordihn.easynpc.block.ModBlocks;
 import de.markusbordihn.easynpc.compat.CompatConstants;
 import de.markusbordihn.easynpc.data.spawner.SpawnerType;
 import de.markusbordihn.easynpc.entity.CobblemonEntityType;
+import de.markusbordihn.easynpc.entity.EasyModelEntitiesEntityType;
 import de.markusbordihn.easynpc.entity.EpicFightEntityType;
 import de.markusbordihn.easynpc.entity.ModCustomEntityType;
 import de.markusbordihn.easynpc.entity.ModEntityType;
@@ -195,6 +196,23 @@ public class ModItems {
         INTEGRATION_SPAWN_EGGS.add(registerSpawnEgg(entityType.getId(), entityTypeObject));
       }
       log.info("Registered {} Cobblemon spawn eggs.", INTEGRATION_SPAWN_EGGS.size());
+    }
+
+    if (CompatConstants.MOD_EASY_MODEL_ENTITIES_LOADED) {
+      for (EasyModelEntitiesEntityType entityType : EasyModelEntitiesEntityType.values()) {
+        EntityType<?> entityTypeObject = ModEntityType.EASY_MODEL_ENTITIES_TYPE.get(entityType);
+        if (entityTypeObject == null) {
+          log.error(
+              "Unable to register Easy Model Entities spawn egg with id {}.", entityType.getId());
+          continue;
+        }
+        log.debug(
+            "Registering Easy Model Entities spawn egg for {} with id {}.",
+            entityTypeObject,
+            entityType.getId());
+        INTEGRATION_SPAWN_EGGS.add(registerSpawnEgg(entityType.getId(), entityTypeObject));
+      }
+      log.info("Registered {} integration spawn eggs.", INTEGRATION_SPAWN_EGGS.size());
     }
   }
 

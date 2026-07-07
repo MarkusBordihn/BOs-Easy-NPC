@@ -53,6 +53,8 @@ public class ModEntityType {
       new HashMap<>();
   public static final Map<CobblemonEntityType, RegistryObject<EntityType<?>>> COBBLEMON_TYPE =
       new HashMap<>();
+  public static final Map<EasyModelEntitiesEntityType, RegistryObject<EntityType<?>>>
+      EASY_MODEL_ENTITIES_TYPE = new HashMap<>();
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   static {
@@ -122,6 +124,17 @@ public class ModEntityType {
                 type.getId(), () -> type.getBuilder().build(type.getResourceKey())));
       }
       log.info("Registered {} Cobblemon entity types.", COBBLEMON_TYPE.size());
+    }
+
+    if (CompatConstants.MOD_EASY_MODEL_ENTITIES_LOADED) {
+      for (EasyModelEntitiesEntityType type : EasyModelEntitiesEntityType.values()) {
+        log.debug("Registering Easy Model Entities entity type {}", type.getResourceKey());
+        EASY_MODEL_ENTITIES_TYPE.put(
+            type,
+            ENTITY_TYPES.register(
+                type.getId(), () -> type.getBuilder().build(type.getResourceKey())));
+      }
+      log.info("Registered {} Easy Model Entities entity types.", EASY_MODEL_ENTITIES_TYPE.size());
     }
   }
 
@@ -341,6 +354,20 @@ public class ModEntityType {
         }
       }
     }
+
+    if (CompatConstants.MOD_EASY_MODEL_ENTITIES_LOADED) {
+      for (EasyModelEntitiesEntityType type : EasyModelEntitiesEntityType.values()) {
+        if (type.getAttributes() != null) {
+          event.put(
+              (EntityType<? extends LivingEntity>) EASY_MODEL_ENTITIES_TYPE.get(type).get(),
+              type.getAttributes().build());
+        } else {
+          log.warn(
+              "Easy Model Entities entity type {} does not have attributes defined!",
+              type.getResourceKey());
+        }
+      }
+    }
   }
 
   public static <T extends Entity> EntityType<T> getEntityType(EpicFightEntityType type) {
@@ -363,5 +390,16 @@ public class ModEntityType {
               + COBBLEMON_TYPE.keySet());
     }
     return (EntityType<T>) COBBLEMON_TYPE.get(type).get();
+  }
+
+  public static <T extends Entity> EntityType<T> getEntityType(EasyModelEntitiesEntityType type) {
+    if (!EASY_MODEL_ENTITIES_TYPE.containsKey(type)) {
+      throw new IllegalArgumentException(
+          "Invalid Easy Model Entities entity type '"
+              + type
+              + "'! Supported types are "
+              + EASY_MODEL_ENTITIES_TYPE.keySet());
+    }
+    return (EntityType<T>) EASY_MODEL_ENTITIES_TYPE.get(type).get();
   }
 }

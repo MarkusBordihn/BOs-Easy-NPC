@@ -20,11 +20,13 @@
 package de.markusbordihn.easynpc.data.configuration;
 
 import de.markusbordihn.easynpc.data.model.ModelPose;
+import de.markusbordihn.easynpc.data.render.RenderType;
 import de.markusbordihn.easynpc.data.trading.TradingDataSet;
 import de.markusbordihn.easynpc.data.trading.TradingSettings;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.DialogDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.RenderDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.TradingDataCapable;
 import net.minecraft.world.item.trading.MerchantOffer;
@@ -68,6 +70,12 @@ public class ConfigurationTypeHelper {
         default -> detectTradingConfigurationType(tradingData, tradingDataSet);
       };
     } else if (configurationType == ConfigurationType.POSE) {
+      RenderDataCapable<?> renderData = easyNPC.getEasyNPCRenderData();
+      if (renderData != null
+          && renderData.getRenderDataEntry() != null
+          && renderData.getRenderDataEntry().getRenderType() == RenderType.EASY_MODEL_ENTITY) {
+        return ConfigurationType.CUSTOM_POSE;
+      }
       ModelDataCapable<?> modelData = easyNPC.getEasyNPCModelData();
       if (modelData.getModelPose() == ModelPose.CUSTOM) {
         if (modelData.hasChangedModelScale()) {

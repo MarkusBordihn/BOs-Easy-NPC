@@ -101,6 +101,24 @@ dependencies {
 
   // Hack fix for now, force jopt-simple to be exactly 5.0.4 because Mojang ships that version, but some transitive dependencies request 6.0+
   implementation('net.sf.jopt-simple:jopt-simple:5.0.4') { version { strictly '5.0.4' } }
+
+  // Easy Model Entities (API support)
+  def easyModelEntitiesLocal = findLocalEasyModelEntities()
+  if (easyModelEntitiesLocal != null) {
+    compileOnly files(easyModelEntitiesLocal)
+    testCompileOnly files(easyModelEntitiesLocal)
+  } else if (project.hasProperty('forge_easy_model_entities_mod') && project.forge_easy_model_entities_mod) {
+    compileOnly "curse.maven:easy-model-entities-1539533:${project.forge_easy_model_entities_mod}"
+    testCompileOnly "curse.maven:easy-model-entities-1539533:${project.forge_easy_model_entities_mod}"
+  }
+
+  // Easy Model Entities (runtime dependency)
+  def easyModelEntitiesForgeRuntime = findLocalEasyModelEntitiesLoader('forge')
+  if (easyModelEntitiesForgeRuntime != null) {
+    runtimeOnly easyModelEntitiesForgeRuntime
+  } else if (project.hasProperty('forge_easy_model_entities_mod') && project.forge_easy_model_entities_mod) {
+    runtimeOnly "curse.maven:easy-model-entities-1539533:${project.forge_easy_model_entities_mod}"
+  }
 }
 
 tasks.withType(JavaCompile).configureEach {
@@ -213,5 +231,8 @@ if (project.hasProperty('modrinth_project_id') && project.modrinth_project_id) {
     uploadFile = jar
     gameVersions = ["${project.minecraft_version}"]
     loaders = ["forge"]
+    dependencies {
+      optional.project "easy-model-entities"
+    }
   }
 }

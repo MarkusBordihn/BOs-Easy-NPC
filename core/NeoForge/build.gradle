@@ -74,6 +74,23 @@ dependencies {
     runtimeOnly "curse.maven:xaeros_minimap-263420:${project.neoforge_xaeros_minimap_mod}"
   }
 
+  // Easy Model Entities (API support)
+  def easyModelEntitiesLocal = findLocalEasyModelEntities()
+  if (easyModelEntitiesLocal != null) {
+    compileOnly files(easyModelEntitiesLocal)
+    testCompileOnly files(easyModelEntitiesLocal)
+  } else if (project.hasProperty('neoforge_easy_model_entities_mod') && project.neoforge_easy_model_entities_mod) {
+    compileOnly "curse.maven:easy-model-entities-1539533:${project.neoforge_easy_model_entities_mod}"
+    testCompileOnly "curse.maven:easy-model-entities-1539533:${project.neoforge_easy_model_entities_mod}"
+  }
+
+  // Easy Model Entities (runtime dependency)
+  def easyModelEntitiesNeoForgeRuntime = findLocalEasyModelEntitiesLoader('neoforge')
+  if (easyModelEntitiesNeoForgeRuntime != null) {
+    runtimeOnly easyModelEntitiesNeoForgeRuntime
+  } else if (project.hasProperty('neoforge_easy_model_entities_mod') && project.neoforge_easy_model_entities_mod) {
+    runtimeOnly "curse.maven:easy-model-entities-1539533:${project.neoforge_easy_model_entities_mod}"
+  }
 }
 
 // NeoGradle compiles the game, but we don't want to add our common code to the game's code
@@ -152,5 +169,8 @@ if (project.hasProperty('modrinth_project_id') && project.modrinth_project_id) {
     uploadFile = jar
     gameVersions = ["${project.minecraft_version}"]
     loaders = ["neoforge"]
+    dependencies {
+      optional.project "easy-model-entities"
+    }
   }
 }

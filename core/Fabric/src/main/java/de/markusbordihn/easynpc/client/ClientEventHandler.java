@@ -19,6 +19,8 @@
 
 package de.markusbordihn.easynpc.client;
 
+import de.markusbordihn.easynpc.compat.CompatConstants;
+import de.markusbordihn.easynpc.compat.easymodelentities.EasyModelEntitiesLoader;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
@@ -32,7 +34,12 @@ public class ClientEventHandler {
   public static void registerClientEvents() {
     ClientLifecycleEvents.CLIENT_STARTED.register(ClientEventHandler::onClientStarted);
     ClientTickEvents.END_CLIENT_TICK.register(ClientEventHandler::onClientTick);
-    ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {});
+    ClientPlayConnectionEvents.JOIN.register(
+        (handler, sender, client) -> {
+          if (CompatConstants.MOD_EASY_MODEL_ENTITIES_LOADED) {
+            EasyModelEntitiesLoader.register();
+          }
+        });
     ClientPlayConnectionEvents.DISCONNECT.register(ClientEventHandler::onDisconnect);
   }
 

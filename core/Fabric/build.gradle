@@ -67,6 +67,24 @@ dependencies {
   if (project.hasProperty('fabric_xaeros_minimap_mod') && project.fabric_xaeros_minimap_mod) {
     modRuntimeOnly("curse.maven:xaeros_minimap-263420:${project.fabric_xaeros_minimap_mod}")
   }
+
+  // Easy Model Entities (API support)
+  def easyModelEntitiesLocal = findLocalEasyModelEntities()
+  if (easyModelEntitiesLocal != null) {
+    compileOnly files(easyModelEntitiesLocal)
+    testCompileOnly files(easyModelEntitiesLocal)
+  } else if (project.hasProperty('fabric_easy_model_entities_mod') && project.fabric_easy_model_entities_mod) {
+    modCompileOnly("curse.maven:easy-model-entities-1539533:${project.fabric_easy_model_entities_mod}")
+    testCompileOnly("curse.maven:easy-model-entities-1539533:${project.fabric_easy_model_entities_mod}")
+  }
+
+  // Easy Model Entities (runtime dependency)
+  def easyModelEntitiesFabricRuntime = findLocalEasyModelEntitiesLoader('fabric')
+  if (easyModelEntitiesFabricRuntime != null) {
+    modRuntimeOnly easyModelEntitiesFabricRuntime
+  } else if (project.hasProperty('fabric_easy_model_entities_mod') && project.fabric_easy_model_entities_mod) {
+    modRuntimeOnly("curse.maven:easy-model-entities-1539533:${project.fabric_easy_model_entities_mod}")
+  }
 }
 
 processResources {
@@ -142,6 +160,7 @@ if (project.hasProperty('modrinth_project_id') && project.modrinth_project_id) {
     loaders = ["fabric", "quilt"]
     dependencies {
       optional.project "tooltipfix"
+      optional.project "easy-model-entities"
     }
   }
 }
