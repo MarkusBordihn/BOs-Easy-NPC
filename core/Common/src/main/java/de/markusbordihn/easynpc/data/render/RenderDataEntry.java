@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.data.render;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.data.model.ModelType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
@@ -30,20 +31,29 @@ import org.apache.logging.log4j.Logger;
 public record RenderDataEntry(
     RenderType renderType,
     EntityType<? extends Entity> renderEntityType,
-    String renderEntityModel) {
+    String renderEntityModel,
+    ModelType renderModelType) {
 
   static final String DATA_RENDER_TYPE_TAG = "Type";
   static final String DATA_RENDER_ENTITY_TYPE_TAG = "EntityType";
   static final String DATA_RENDER_ENTITY_MODEL_TAG = "EntityModel";
+  static final String DATA_RENDER_MODEL_TYPE_TAG = "ModelType";
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   public RenderDataEntry() {
-    this(RenderType.DEFAULT, null, null);
+    this(RenderType.DEFAULT, null, null, null);
   }
 
   public RenderDataEntry(
       final RenderType renderType, final EntityType<? extends Entity> renderEntityType) {
-    this(renderType, renderEntityType, null);
+    this(renderType, renderEntityType, null, null);
+  }
+
+  public RenderDataEntry(
+      final RenderType renderType,
+      final EntityType<? extends Entity> renderEntityType,
+      final String renderEntityModel) {
+    this(renderType, renderEntityType, renderEntityModel, null);
   }
 
   public RenderDataEntry(final CompoundTag compoundTag) {
@@ -56,27 +66,47 @@ public record RenderDataEntry(
             : null,
         compoundTag.contains(DATA_RENDER_ENTITY_MODEL_TAG)
             ? compoundTag.getString(DATA_RENDER_ENTITY_MODEL_TAG)
-            : null);
+            : null,
+        parseModelType(compoundTag));
+  }
+
+  private static ModelType parseModelType(final CompoundTag compoundTag) {
+    if (!compoundTag.contains(DATA_RENDER_MODEL_TYPE_TAG)) {
+      return null;
+    }
+    try {
+      return ModelType.valueOf(compoundTag.getString(DATA_RENDER_MODEL_TYPE_TAG));
+    } catch (IllegalArgumentException exception) {
+      return null;
+    }
   }
 
   public RenderDataEntry withRenderType(final RenderType renderType) {
     return new RenderDataEntry(
-        renderType, renderType == RenderType.DEFAULT ? null : renderEntityType, renderEntityModel);
+        renderType,
+        renderType == RenderType.DEFAULT ? null : renderEntityType,
+        renderEntityModel,
+        renderModelType);
   }
 
   public RenderDataEntry withRenderEntityType(final EntityType<? extends Entity> renderEntityType) {
     return new RenderDataEntry(
         renderEntityType != null ? RenderType.CUSTOM_ENTITY : RenderType.DEFAULT,
         renderEntityType,
+        null,
         null);
   }
 
   public RenderDataEntry withRenderEntityModel(final String renderEntityModel) {
     if (renderEntityModel == null) {
-      return new RenderDataEntry(RenderType.DEFAULT, null, null);
+      return new RenderDataEntry(RenderType.DEFAULT, null, null, null);
     }
 
-    return new RenderDataEntry(this.renderType, null, renderEntityModel);
+    return new RenderDataEntry(this.renderType, null, renderEntityModel, null);
+  }
+
+  public RenderDataEntry withRenderModelType(final ModelType renderModelType) {
+    return new RenderDataEntry(renderType, renderEntityType, renderEntityModel, renderModelType);
   }
 
   public RenderDataEntry create(CompoundTag compoundTag) {
@@ -95,6 +125,10 @@ public record RenderDataEntry(
 
     if (this.renderEntityModel != null && !this.renderEntityModel.isEmpty()) {
       compoundTag.putString(DATA_RENDER_ENTITY_MODEL_TAG, this.renderEntityModel);
+    }
+
+    if (this.renderModelType != null) {
+      compoundTag.putString(DATA_RENDER_MODEL_TYPE_TAG, this.renderModelType.name());
     }
 
     return compoundTag;
@@ -118,5 +152,9 @@ public record RenderDataEntry(
 
   public String getRenderEntityModel() {
     return renderEntityModel;
+  }
+
+  public ModelType getRenderModelType() {
+    return renderModelType;
   }
 }

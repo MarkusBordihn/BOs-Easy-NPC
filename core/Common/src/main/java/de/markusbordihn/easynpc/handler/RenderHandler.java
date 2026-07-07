@@ -24,6 +24,7 @@ import de.markusbordihn.easynpc.compat.IntegrationRegistry;
 import de.markusbordihn.easynpc.compat.cobblemon.CobblemonSpeciesManager;
 import de.markusbordihn.easynpc.compat.easymodelentities.EasyModelEntitiesManager;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
+import de.markusbordihn.easynpc.data.model.ModelType;
 import de.markusbordihn.easynpc.data.render.RenderDataEntry;
 import de.markusbordihn.easynpc.data.render.RenderType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
@@ -91,8 +92,6 @@ public class RenderHandler {
       return false;
     }
 
-    // Determine the integration from the NPC type (not the mutable render type) so the correct
-    // model list is validated and the correct render type is applied.
     boolean easyModelNPC =
         easyNPC instanceof ConfigurationDataCapable<?> configurable
             && configurable.getConfigurationData() == ConfigurationData.EASY_MODEL;
@@ -122,7 +121,13 @@ public class RenderHandler {
     }
 
     log.debug("[{}] Setting render entity model to {}", easyNPC, entityModel);
-    renderData.setRenderData(new RenderDataEntry(renderType, null, entityModel));
+
+    ModelType modelType =
+        easyModelNPC
+            ? EasyModelEntitiesManager.getProfileModelType(
+                EasyModelEntitiesManager.getProfileId(entityModel))
+            : null;
+    renderData.setRenderData(new RenderDataEntry(renderType, null, entityModel, modelType));
     return true;
   }
 }

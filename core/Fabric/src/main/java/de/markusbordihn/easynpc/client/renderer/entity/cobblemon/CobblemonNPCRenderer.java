@@ -40,6 +40,7 @@ import de.markusbordihn.easynpc.data.render.RenderType;
 import de.markusbordihn.easynpc.data.skin.variant.DopplerSkinVariant;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.RenderDataCapable;
+import de.markusbordihn.easynpc.mixin.renderer.MobRendererInvoker;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -49,6 +50,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.HumanoidMobRenderer;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.level.Level;
 import org.apache.logging.log4j.LogManager;
@@ -111,9 +113,6 @@ public class CobblemonNPCRenderer<E extends PathfinderMob>
   }
 
   private static void syncEntityData(Pokemon cobblemonInstance, PokemonEntity entity) {
-    // Cobblemon syncs species and aspects to the entity data only via the server-side delegate.
-    // This entity exists only client-side, so the renderer would otherwise always see an empty
-    // aspect set and render the base variant without female / shiny textures.
     entity
         .getEntityData()
         .set(
@@ -124,8 +123,6 @@ public class CobblemonNPCRenderer<E extends PathfinderMob>
 
   private static void applyVariantAspects(Pokemon cobblemonInstance, ResourceLocation modelKey) {
     Set<String> variantAspects = CobblemonSpeciesManager.getVariantAspects(modelKey);
-    // Cobblemon rolls a random gender when the species is assigned, so pin it for dual-gender
-    // species to keep base keys from randomly rendering female variants.
     float maleRatio = cobblemonInstance.getSpecies().getMaleRatio();
     if (maleRatio > 0.0F && maleRatio < 1.0F) {
       cobblemonInstance.setGender(
@@ -155,10 +152,6 @@ public class CobblemonNPCRenderer<E extends PathfinderMob>
               pokemon.getSpecies().getResourceIdentifier(), pokemon.getAspects());
       float baseScale = pokemon.getForm().getBaseScale();
       if (poser != null && baseScale > 0f) {
-        // The profile scale is hand-tuned by Cobblemon to fit each model into a fixed GUI box
-        // and tracks the visual model size far better than the hitbox height, which blows up
-        // long models with tiny hitboxes. The entity renderer multiplies the base scale on its
-        // own, so it is divided out here.
         previewScale =
             Math.min(
                 previewScale,
@@ -292,6 +285,11 @@ public class CobblemonNPCRenderer<E extends PathfinderMob>
     if (renderCobblemon(entity, entityYaw, partialTicks, poseStack, bufferSource, packedLight)) {
       if (this.shouldShowName(entity)) {
         this.renderNameTag(entity, entity.getDisplayName(), poseStack, bufferSource, packedLight);
+      }
+      Entity leashHolder = entity.getLeashHolder();
+      if (leashHolder != null) {
+        ((MobRendererInvoker) this)
+            .invokeRenderLeash(entity, partialTicks, poseStack, bufferSource, leashHolder);
       }
       return;
     }

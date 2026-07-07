@@ -26,6 +26,7 @@
     "renderer.EasyNPCLivingEntityRendererMixin",
     "renderer.EasyNPCSlimeRendererMixin",
     "renderer.HumanoidArmorLayerMixin",
+    "renderer.MobRendererInvoker",
     "renderer.StrayClothingLayerMixin",
     "renderer.VillagerProfessionLayerMixin"
   ],

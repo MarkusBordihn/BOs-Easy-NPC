@@ -41,6 +41,7 @@ import de.markusbordihn.easynpc.data.skin.variant.DopplerSkinVariant;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.RenderDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.npc.easymodelentities.EasyModelNPC;
+import de.markusbordihn.easynpc.mixin.renderer.MobRendererInvoker;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import net.minecraft.client.model.geom.ModelLayerLocation;
@@ -49,6 +50,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.HumanoidMobRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.PathfinderMob;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -135,8 +137,6 @@ public class EasyModelNPCRenderer<E extends PathfinderMob>
       return false;
     }
 
-    // Easy Model Entities orients the model from the interpolated body yaw, not the raw yaw passed
-    // to the entity renderer.
     float bodyYaw = Mth.rotLerp(partialTicks, entity.yBodyRotO, entity.yBodyRot);
 
     try {
@@ -174,8 +174,6 @@ public class EasyModelNPCRenderer<E extends PathfinderMob>
       PoseStack poseStack,
       MultiBufferSource buffer,
       int packedLight) {
-    // The model selection preview shows each profile neutrally, normalized by its largest displayed
-    // dimension (width or height) so wide and tall models fit uniformly.
     ModelBounds bounds = EasyModelEntitiesClientApi.getDisplayedBounds(profileId).orElse(null);
     if (bounds == null) {
       return false;
@@ -211,9 +209,6 @@ public class EasyModelNPCRenderer<E extends PathfinderMob>
       PoseStack poseStack,
       MultiBufferSource buffer,
       int packedLight) {
-    // Attach the pose part animator only when the NPC has a custom pose, so unposed NPCs render
-    // like native Easy Model Entities and skip the per-part work each frame. The root scale is
-    // applied via the pose stack.
     EasyModelEntityRenderOptions renderOptions = EasyModelEntityRenderOptions.DEFAULT;
     if (easyModelNPC.hasChangedModel()) {
       renderOptions = renderOptions.withPartAnimator(createPartAnimator(easyModelNPC));
@@ -265,6 +260,11 @@ public class EasyModelNPCRenderer<E extends PathfinderMob>
     if (renderEasyModel(entity, partialTicks, poseStack, bufferSource, packedLight)) {
       if (this.shouldShowName(entity)) {
         this.renderNameTag(entity, entity.getDisplayName(), poseStack, bufferSource, packedLight);
+      }
+      Entity leashHolder = entity.getLeashHolder();
+      if (leashHolder != null) {
+        ((MobRendererInvoker) this)
+            .invokeRenderLeash(entity, partialTicks, poseStack, bufferSource, leashHolder);
       }
       return;
     }

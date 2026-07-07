@@ -27,6 +27,7 @@
     "renderer.EasyNPCSlimeRendererMixin",
     "renderer.EpicFightPatchedEntityRendererMixin",
     "renderer.HumanoidArmorLayerMixin",
+    "renderer.MobRendererInvoker",
     "renderer.StrayClothingLayerMixin",
     "renderer.VillagerProfessionLayerMixin"
   ],

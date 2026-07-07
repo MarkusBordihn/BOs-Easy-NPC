@@ -412,7 +412,6 @@ public class PresetBrowserScreen extends CustomScreen<PresetBrowserMenu, Additio
       this.searchBox.render(guiGraphics, mouseX, mouseY, partialTicks);
     }
 
-    // Render preset list
     this.presetListWidget.render(guiGraphics, mouseX, mouseY, partialTicks);
 
     // Render selected preset details

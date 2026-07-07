@@ -40,7 +40,7 @@ public class EasyModelEntitiesLoader implements IntegrationModelProvider {
 
   private static boolean reloadListenerRegistered = false;
 
-  private List<ResourceLocation> cachedModels;
+  private volatile List<ResourceLocation> cachedModels;
 
   private EasyModelEntitiesLoader() {}
 
@@ -80,15 +80,14 @@ public class EasyModelEntitiesLoader implements IntegrationModelProvider {
 
   @Override
   public List<ResourceLocation> getAvailableModels() {
-    if (cachedModels == null || cachedModels.isEmpty()) {
-      log.debug("Re-Loading Easy Model Entities profiles ...");
-      List<ResourceLocation> profileModels = loadProfileModels();
-      if (!profileModels.isEmpty()) {
-        this.cachedModels = profileModels;
-        log.debug("Loaded {} Easy Model Entities profiles", cachedModels.size());
+    List<ResourceLocation> models = this.cachedModels;
+    if (models == null) {
+      models = loadProfileModels();
+      this.cachedModels = models;
+      if (!models.isEmpty()) {
+        log.debug("Loaded {} Easy Model Entities profiles", models.size());
       }
     }
-
-    return cachedModels != null ? cachedModels : List.of();
+    return models;
   }
 }
