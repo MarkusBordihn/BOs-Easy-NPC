@@ -30,6 +30,7 @@
     "renderer.EasyNPCSlimeRendererMixin",
     "renderer.EpicFightPatchedEntityRendererMixin",
     "renderer.HumanoidArmorLayerMixin",
+    "renderer.MobRendererInvoker",
     "renderer.SkeletonClothingLayerMixin",
     "renderer.VillagerProfessionLayerMixin"
   ],

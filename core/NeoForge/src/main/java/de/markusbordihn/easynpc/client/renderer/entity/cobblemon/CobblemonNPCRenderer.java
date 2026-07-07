@@ -41,6 +41,7 @@ import de.markusbordihn.easynpc.data.render.RenderType;
 import de.markusbordihn.easynpc.data.skin.variant.DopplerSkinVariant;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.RenderDataCapable;
+import de.markusbordihn.easynpc.mixin.renderer.MobRendererInvoker;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -51,6 +52,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.HumanoidMobRenderer;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.level.Level;
 import org.apache.logging.log4j.LogManager;
@@ -303,6 +305,11 @@ public class CobblemonNPCRenderer<E extends PathfinderMob>
       if (this.shouldShowName(entity)) {
         this.renderNameTag(
             entity, entity.getDisplayName(), poseStack, bufferSource, packedLight, partialTicks);
+      }
+      Entity leashHolder = entity.getLeashHolder();
+      if (leashHolder != null) {
+        ((MobRendererInvoker) this)
+            .invokeRenderLeash(entity, partialTicks, poseStack, bufferSource, leashHolder);
       }
       return;
     }

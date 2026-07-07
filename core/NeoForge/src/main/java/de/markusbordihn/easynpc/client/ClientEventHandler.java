@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.client;
 import de.markusbordihn.easynpc.client.compat.cobblemon.CobblemonVariantHelper;
 import de.markusbordihn.easynpc.compat.CompatConstants;
 import de.markusbordihn.easynpc.compat.cobblemon.CobblemonLoader;
+import de.markusbordihn.easynpc.compat.easymodelentities.EasyModelEntitiesLoader;
 import net.minecraft.client.Minecraft;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -52,6 +53,9 @@ class ClientGameEventHandler {
     if (CompatConstants.MOD_COBBLEMON_LOADED) {
       CobblemonLoader.setFemaleVariantFilter(CobblemonVariantHelper::hasFemaleVariant);
       CobblemonLoader.register();
+    }
+    if (CompatConstants.MOD_EASY_MODEL_ENTITIES_LOADED) {
+      EasyModelEntitiesLoader.register();
     }
   }
 }

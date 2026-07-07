@@ -127,6 +127,14 @@ dependencies {
 
   // Hack fix for now, force jopt-simple to be exactly 5.0.4 because Mojang ships that version, but some transitive dependencies request 6.0+
   implementation('net.sf.jopt-simple:jopt-simple:5.0.4') { version { strictly '5.0.4' } }
+
+  // Easy Model Entities (runtime dependency)
+  def easyModelEntitiesForgeRuntime = findLocalEasyModelEntitiesLoader('forge')
+  if (easyModelEntitiesForgeRuntime != null) {
+    runtimeOnly fg.deobf(easyModelEntitiesForgeRuntime)
+  } else if (project.hasProperty('forge_easy_model_entities_mod') && project.forge_easy_model_entities_mod) {
+    runtimeOnly fg.deobf("curse.maven:easy-model-entities-1539533:${project.forge_easy_model_entities_mod}")
+  }
 }
 
 tasks.withType(JavaCompile).configureEach {
@@ -213,6 +221,7 @@ if (project.hasProperty('curseforge_project_id') && project.curseforge_project_i
       mainArtifact(jar) {
         relations {
           requiredDependency 'easy-npc-core'
+          optionalDependency 'easy-model-entities'
         }
       }
     }
@@ -233,6 +242,7 @@ if (project.hasProperty('modrinth_project_id') && project.modrinth_project_id) {
     loaders = ["forge"]
     dependencies {
       required.project "easy-npc-core"
+      optional.project "easy-model-entities"
     }
   }
 }

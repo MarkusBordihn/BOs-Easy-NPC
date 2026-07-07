@@ -73,4 +73,10 @@ public class IntegrationRegistry {
   public static void setGuiPreviewMode(boolean enabled) {
     guiPreviewMode = enabled;
   }
+
+  public static void invalidate(String integrationId) {
+    if (modelCache.remove(integrationId) != null) {
+      log.debug("Invalidated cached models for integration '{}'.", integrationId);
+    }
+  }
 }

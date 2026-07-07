@@ -19,8 +19,11 @@
 
 package de.markusbordihn.easynpc.client;
 
+import de.markusbordihn.easynpc.compat.CompatConstants;
+import de.markusbordihn.easynpc.compat.easymodelentities.EasyModelEntitiesLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.event.TagsUpdatedEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -42,6 +45,13 @@ class ClientGameEventHandler {
   public static void onClientTick(TickEvent.ClientTickEvent event) {
     if (event.phase == TickEvent.Phase.END) {
       ClientEvents.handleClientTickEvent();
+    }
+  }
+
+  @SubscribeEvent
+  public static void onTagsUpdated(TagsUpdatedEvent event) {
+    if (CompatConstants.MOD_EASY_MODEL_ENTITIES_LOADED) {
+      EasyModelEntitiesLoader.register();
     }
   }
 }

@@ -38,6 +38,7 @@ import de.markusbordihn.easynpc.configui.menu.configuration.main.MainConfigurati
 import de.markusbordihn.easynpc.configui.menu.configuration.model.CobblemonModelConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.model.CustomModelConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.model.DefaultModelConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.configui.menu.configuration.model.EasyModelEntitiesModelConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.objective.AttackObjectiveConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.objective.BasicObjectiveConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.objective.FleeObjectiveConfigurationMenuWrapper;
@@ -221,6 +222,12 @@ public class ModMenuTypes {
           MENU_TYPES.register(
               ConfigurationType.CUSTOM_MODEL.getName(),
               () -> IMenuTypeExtension.create(CustomModelConfigurationMenuWrapper::new));
+  public static final DeferredHolder<
+          MenuType<?>, MenuType<EasyModelEntitiesModelConfigurationMenuWrapper>>
+      EASY_MODEL_ENTITIES_MODEL_CONFIGURATION_MENU =
+          MENU_TYPES.register(
+              ConfigurationType.EASY_MODEL_ENTITIES_MODEL.getName(),
+              () -> IMenuTypeExtension.create(EasyModelEntitiesModelConfigurationMenuWrapper::new));
   public static final DeferredHolder<MenuType<?>, MenuType<DefaultModelConfigurationMenuWrapper>>
       DEFAULT_MODEL_CONFIGURATION_MENU =
           MENU_TYPES.register(

@@ -33,7 +33,8 @@ public record ConfigurationData(
               ALL_TYPES,
               ConfigurationType.PLAYER_SKIN,
               ConfigurationType.CUSTOM_MODEL,
-              ConfigurationType.COBBLEMON_MODEL));
+              ConfigurationType.COBBLEMON_MODEL,
+              ConfigurationType.EASY_MODEL_ENTITIES_MODEL));
   public static final ConfigurationData RAW =
       new ConfigurationData(
           exclude(
@@ -105,10 +106,29 @@ public record ConfigurationData(
                   ConfigurationType.SCALING,
                   ConfigurationType.DEFAULT_ROTATION),
               ConfigurationType.COBBLEMON_MODEL));
-
+  public static final ConfigurationData EASY_MODEL =
+      new ConfigurationData(
+          include(
+              exclude(
+                  STANDARD.enabledTypes(),
+                  ConfigurationType.ADVANCED_POSE,
+                  ConfigurationType.BASIC_POSE,
+                  ConfigurationType.DEFAULT_POSE,
+                  ConfigurationType.SKIN,
+                  ConfigurationType.DEFAULT_SKIN,
+                  ConfigurationType.CUSTOM_SKIN,
+                  ConfigurationType.PLAYER_SKIN,
+                  ConfigurationType.URL_SKIN,
+                  ConfigurationType.NONE_SKIN,
+                  ConfigurationType.DEFAULT_ROTATION),
+              ConfigurationType.EASY_MODEL_ENTITIES_MODEL));
   public static final ConfigurationData HUMANOID =
       new ConfigurationData(
-          exclude(ALL_TYPES, ConfigurationType.CUSTOM_MODEL, ConfigurationType.COBBLEMON_MODEL));
+          exclude(
+              ALL_TYPES,
+              ConfigurationType.CUSTOM_MODEL,
+              ConfigurationType.COBBLEMON_MODEL,
+              ConfigurationType.EASY_MODEL_ENTITIES_MODEL));
 
   public ConfigurationData(Set<ConfigurationType> enabledTypes) {
     this(enabledTypes, Collections.emptySet());

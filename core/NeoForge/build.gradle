@@ -69,6 +69,24 @@ dependencies {
 
   // Epic Fight integration
   compileOnly "curse.maven:epic-fight-mod-405076:8080214"
+
+  // Easy Model Entities (API support)
+  def easyModelEntitiesLocal = findLocalEasyModelEntities()
+  if (easyModelEntitiesLocal != null) {
+    compileOnly files(easyModelEntitiesLocal)
+    testCompileOnly files(easyModelEntitiesLocal)
+  } else if (project.hasProperty('neoforge_easy_model_entities_mod') && project.neoforge_easy_model_entities_mod) {
+    compileOnly "curse.maven:easy-model-entities-1539533:${project.neoforge_easy_model_entities_mod}"
+    testCompileOnly "curse.maven:easy-model-entities-1539533:${project.neoforge_easy_model_entities_mod}"
+  }
+
+  // Easy Model Entities (runtime dependency)
+  def easyModelEntitiesNeoForgeRuntime = findLocalEasyModelEntitiesLoader('neoforge')
+  if (easyModelEntitiesNeoForgeRuntime != null) {
+    runtimeOnly easyModelEntitiesNeoForgeRuntime
+  } else if (project.hasProperty('neoforge_easy_model_entities_mod') && project.neoforge_easy_model_entities_mod) {
+    runtimeOnly "curse.maven:easy-model-entities-1539533:${project.neoforge_easy_model_entities_mod}"
+  }
 }
 
 // NeoGradle compiles the game, but we don't want to add our common code to the game's code
@@ -121,6 +139,7 @@ if (project.hasProperty('curseforge_project_id') && project.curseforge_project_i
       mainArtifact(jar) {
         relations {
           optionalDependency 'armourers-workshop'
+          optionalDependency 'easy-model-entities'
         }
       }
     }
@@ -141,6 +160,7 @@ if (project.hasProperty('modrinth_project_id') && project.modrinth_project_id) {
     loaders = ["neoforge"]
     dependencies {
       optional.project "armourers-workshop"
+      optional.project "easy-model-entities"
     }
   }
 }

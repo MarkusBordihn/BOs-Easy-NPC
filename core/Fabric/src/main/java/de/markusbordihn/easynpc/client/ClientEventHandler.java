@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.client;
 import de.markusbordihn.easynpc.client.compat.cobblemon.CobblemonVariantHelper;
 import de.markusbordihn.easynpc.compat.CompatConstants;
 import de.markusbordihn.easynpc.compat.cobblemon.CobblemonLoader;
+import de.markusbordihn.easynpc.compat.easymodelentities.EasyModelEntitiesLoader;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
@@ -40,6 +41,9 @@ public class ClientEventHandler {
           if (CompatConstants.MOD_COBBLEMON_LOADED) {
             CobblemonLoader.setFemaleVariantFilter(CobblemonVariantHelper::hasFemaleVariant);
             CobblemonLoader.register();
+          }
+          if (CompatConstants.MOD_EASY_MODEL_ENTITIES_LOADED) {
+            EasyModelEntitiesLoader.register();
           }
         });
     ClientPlayConnectionEvents.DISCONNECT.register(ClientEventHandler::onDisconnect);

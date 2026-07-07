@@ -38,6 +38,7 @@ import de.markusbordihn.easynpc.configui.menu.configuration.main.MainConfigurati
 import de.markusbordihn.easynpc.configui.menu.configuration.model.CobblemonModelConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.model.CustomModelConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.model.DefaultModelConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.configui.menu.configuration.model.EasyModelEntitiesModelConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.objective.AttackObjectiveConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.objective.BasicObjectiveConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.objective.FleeObjectiveConfigurationMenuWrapper;
@@ -247,6 +248,13 @@ public class ModMenuTypes {
               BuiltInRegistries.MENU,
               ConfigurationType.CUSTOM_MODEL.getId(),
               new MenuType<>(CustomModelConfigurationMenuWrapper::new, FeatureFlagSet.of()));
+  public static final MenuType<EasyModelEntitiesModelConfigurationMenuWrapper>
+      EASY_MODEL_ENTITIES_MODEL_CONFIGURATION_MENU =
+          Registry.register(
+              BuiltInRegistries.MENU,
+              ConfigurationType.EASY_MODEL_ENTITIES_MODEL.getId(),
+              new MenuType<>(
+                  EasyModelEntitiesModelConfigurationMenuWrapper::new, FeatureFlagSet.of()));
   public static final MenuType<DefaultModelConfigurationMenuWrapper>
       DEFAULT_MODEL_CONFIGURATION_MENU =
           Registry.register(

@@ -168,14 +168,23 @@ public class ConfigurationScreen<T extends ConfigUIMenu>
     }
 
     RenderDataCapable<?> renderData = easyNPC.getEasyNPCRenderData();
-    boolean isCustomModel =
-        renderData != null
-            && renderData.getRenderDataEntry() != null
-            && renderData.getRenderDataEntry().getRenderType() != RenderType.DEFAULT;
-    return !isCustomModel
-        || (configurationType != ConfigurationType.POSE
-            && configurationType != ConfigurationType.SCALING
-            && configurationType != ConfigurationType.SKIN);
+    RenderType renderType =
+        renderData != null && renderData.getRenderDataEntry() != null
+            ? renderData.getRenderDataEntry().getRenderType()
+            : RenderType.DEFAULT;
+    if (renderType == RenderType.DEFAULT) {
+      return true;
+    }
+    // Easy Model Entities NPCs support pose editing and scaling; the renderer applies the pose
+    // (rotation and position) and the root scale to the model.
+    if (renderType == RenderType.EASY_MODEL_ENTITY
+        && (configurationType == ConfigurationType.POSE
+            || configurationType == ConfigurationType.SCALING)) {
+      return true;
+    }
+    return configurationType != ConfigurationType.POSE
+        && configurationType != ConfigurationType.SCALING
+        && configurationType != ConfigurationType.SKIN;
   }
 
   protected boolean isExperimentalConfigurationType(ConfigurationType configurationType) {

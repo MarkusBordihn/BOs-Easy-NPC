@@ -209,7 +209,7 @@ public class YesNoDialogConfigurationScreen<T extends ConfigurationMenu>
                       .openConfiguration(getEasyNPCUUID(), ConfigurationType.YES_NO_DIALOG);
                 }));
 
-    // Chancel Button
+    // Cancel Button
     this.cancelButton =
         this.addRenderableWidget(
             new CancelButton(

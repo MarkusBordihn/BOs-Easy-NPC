@@ -22,8 +22,13 @@ package de.markusbordihn.easynpc.handler;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.compat.IntegrationRegistry;
 import de.markusbordihn.easynpc.compat.cobblemon.CobblemonSpeciesManager;
+import de.markusbordihn.easynpc.compat.easymodelentities.EasyModelEntitiesManager;
+import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
+import de.markusbordihn.easynpc.data.model.ModelType;
+import de.markusbordihn.easynpc.data.render.RenderDataEntry;
 import de.markusbordihn.easynpc.data.render.RenderType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.data.ConfigurationDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.RenderDataCapable;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
@@ -87,11 +92,21 @@ public class RenderHandler {
       return false;
     }
 
-    ResourceLocation speciesResourceLocation = ResourceLocation.tryParse(entityModel);
-    if (speciesResourceLocation == null) {
+    boolean easyModelNPC =
+        easyNPC instanceof ConfigurationDataCapable<?> configurable
+            && configurable.getConfigurationData() == ConfigurationData.EASY_MODEL;
+    String integrationId =
+        easyModelNPC
+            ? EasyModelEntitiesManager.INTEGRATION_ID
+            : CobblemonSpeciesManager.INTEGRATION_ID;
+    RenderType renderType =
+        easyModelNPC ? RenderType.EASY_MODEL_ENTITY : RenderType.COBBLEMON_ENTITY;
+
+    ResourceLocation modelResourceLocation = ResourceLocation.tryParse(entityModel);
+    if (modelResourceLocation == null) {
       final String entityModelKey = entityModel;
       String resolvedModel =
-          IntegrationRegistry.getModels(CobblemonSpeciesManager.INTEGRATION_ID).stream()
+          IntegrationRegistry.getModels(integrationId).stream()
               .filter(model -> model.endsWith(":" + entityModelKey) || model.equals(entityModelKey))
               .findFirst()
               .orElse(null);
@@ -100,10 +115,24 @@ public class RenderHandler {
         return false;
       }
       entityModel = resolvedModel;
+    } else if (IntegrationRegistry.hasModels(integrationId)
+        && !IntegrationRegistry.getModels(integrationId).contains(entityModel)) {
+      log.error(
+          "[{}] Unknown model '{}' for integration '{}', rejecting.",
+          easyNPC,
+          entityModel,
+          integrationId);
+      return false;
     }
 
     log.debug("[{}] Setting render entity model to {}", easyNPC, entityModel);
-    renderData.setRenderData(renderData.getRenderDataEntry().withRenderEntityModel(entityModel));
+
+    ModelType modelType =
+        easyModelNPC
+            ? EasyModelEntitiesManager.getProfileModelType(
+                EasyModelEntitiesManager.getProfileId(entityModel))
+            : null;
+    renderData.setRenderData(new RenderDataEntry(renderType, null, entityModel, modelType));
     return true;
   }
 }
