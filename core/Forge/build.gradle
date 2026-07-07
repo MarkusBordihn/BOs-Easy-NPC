@@ -122,6 +122,24 @@ dependencies {
   // Cobblemon (compileOnly for Cobblemon NPC support)
   compileOnly fg.deobf("curse.maven:cobblemon-687131:5375390")
 
+  // Easy Model Entities (API support)
+  def easyModelEntitiesLocal = findLocalEasyModelEntities()
+  if (easyModelEntitiesLocal != null) {
+    compileOnly files(easyModelEntitiesLocal)
+    testCompileOnly files(easyModelEntitiesLocal)
+  } else if (project.hasProperty('forge_easy_model_entities_mod') && project.forge_easy_model_entities_mod) {
+    compileOnly fg.deobf("curse.maven:easy_model_entities-forge-1539533:${project.forge_easy_model_entities_mod}")
+    testCompileOnly fg.deobf("curse.maven:easy_model_entities-forge-1539533:${project.forge_easy_model_entities_mod}")
+  }
+
+  // Easy Model Entities (runtime dependency)
+  def easyModelEntitiesForgeRuntime = findLocalEasyModelEntitiesLoader('forge')
+  if (easyModelEntitiesForgeRuntime != null) {
+    runtimeOnly fg.deobf(easyModelEntitiesForgeRuntime)
+  } else if (project.hasProperty('forge_easy_model_entities_mod') && project.forge_easy_model_entities_mod) {
+    runtimeOnly fg.deobf("curse.maven:easy_model_entities-forge-1539533:${project.forge_easy_model_entities_mod}")
+  }
+
   // FTB Quests (for testing)
   runtimeOnly fg.deobf("curse.maven:ftb-library-forge-404465:5282375")
   runtimeOnly fg.deobf("curse.maven:ftb-teams-forge-404468:4623116")
@@ -199,7 +217,11 @@ if (project.hasProperty('curseforge_project_id') && project.curseforge_project_i
       addGameVersion("${project.minecraft_version}")
       addGameVersion("Forge")
       addGameVersion("NeoForge")
-      mainArtifact(jar)
+      mainArtifact(jar) {
+        relations {
+          optionalDependency 'easy-model-entities'
+        }
+      }
     }
   }
 }
@@ -216,5 +238,8 @@ if (project.hasProperty('modrinth_project_id') && project.modrinth_project_id) {
     uploadFile = jar
     gameVersions = ["${project.minecraft_version}"]
     loaders = ["forge", "neoforge"]
+    dependencies {
+      optional.project "easy-model-entities"
+    }
   }
 }

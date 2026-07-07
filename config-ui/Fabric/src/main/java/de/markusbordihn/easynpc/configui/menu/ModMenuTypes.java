@@ -38,6 +38,7 @@ import de.markusbordihn.easynpc.configui.menu.configuration.main.MainConfigurati
 import de.markusbordihn.easynpc.configui.menu.configuration.model.CobblemonModelConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.model.CustomModelConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.model.DefaultModelConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.configui.menu.configuration.model.EasyModelEntitiesModelConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.objective.AttackObjectiveConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.objective.BasicObjectiveConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.objective.FleeObjectiveConfigurationMenuWrapper;
@@ -204,6 +205,11 @@ public class ModMenuTypes {
       CUSTOM_MODEL_CONFIGURATION_MENU =
           ScreenHandlerRegistry.registerSimple(
               ConfigurationType.CUSTOM_MODEL.getId(), CustomModelConfigurationMenuWrapper::new);
+  public static final MenuType<EasyModelEntitiesModelConfigurationMenuWrapper>
+      EASY_MODEL_ENTITIES_MODEL_CONFIGURATION_MENU =
+          ScreenHandlerRegistry.registerSimple(
+              ConfigurationType.EASY_MODEL_ENTITIES_MODEL.getId(),
+              EasyModelEntitiesModelConfigurationMenuWrapper::new);
   public static final MenuType<DefaultModelConfigurationMenuWrapper>
       DEFAULT_MODEL_CONFIGURATION_MENU =
           ScreenHandlerRegistry.registerSimple(

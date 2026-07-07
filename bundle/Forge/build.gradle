@@ -68,6 +68,14 @@ dependencies {
   runtimeOnly(fg.deobf(group: 'de.markusbordihn.easynpc.configui', name: "easy_npc_config_ui-forge-${project.minecraft_version}", version: "${project.version}")) {
     changing = true
   }
+
+  // Easy Model Entities (Easy Model NPC support), local-first with CurseForge fallback.
+  def easyModelEntitiesForgeRuntime = findLocalEasyModelEntitiesLoader('forge')
+  if (easyModelEntitiesForgeRuntime != null) {
+    runtimeOnly fg.deobf(easyModelEntitiesForgeRuntime)
+  } else if (project.hasProperty('forge_easy_model_entities_mod') && project.forge_easy_model_entities_mod) {
+    runtimeOnly fg.deobf("curse.maven:easy_model_entities-forge-1539533:${project.forge_easy_model_entities_mod}")
+  }
 }
 
 tasks.named('compileJava', JavaCompile).configure {
@@ -141,6 +149,7 @@ if (project.hasProperty('curseforge_project_id') && project.curseforge_project_i
         relations {
           requiredDependency 'easy-npc-core'
           requiredDependency 'easy-npc-config-ui'
+          optionalDependency 'easy-model-entities'
         }
       }
     }
@@ -162,6 +171,7 @@ if (project.hasProperty('modrinth_project_id') && project.modrinth_project_id) {
     dependencies {
       required.project "easy-npc-core"
       required.project "easy-npc-config-ui"
+      optional.project "easy-model-entities"
     }
   }
 }

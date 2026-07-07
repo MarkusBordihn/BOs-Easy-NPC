@@ -38,6 +38,42 @@ subprojects {
 
   tasks.register("prepareKotlinBuildScriptModel") {}
 
+  // Local Easy Model Entities common artifact (compile); null falls back to CurseForge.
+  ext.findLocalEasyModelEntities = { ->
+    def version = project.findProperty('easy_model_entities_version')
+    if (version == null) {
+      return null
+    }
+    def mcVersion = project.minecraft_version
+    if (project.hasProperty('easy_model_entities_local_jar')) {
+      def localJar = file(project.easy_model_entities_local_jar)
+      if (localJar.exists()) {
+        return localJar
+      }
+    }
+    def mavenLocalJar =
+        file("${System.getProperty('user.home')}/.m2/repository/de/markusbordihn/easymodelentities/"
+            + "easy_model_entities-common-${mcVersion}/${version}/"
+            + "easy_model_entities-common-${mcVersion}-${version}.jar")
+    return mavenLocalJar.exists() ? mavenLocalJar : null
+  }
+
+  // Local Easy Model Entities loader artifact (runtime); null falls back to CurseForge.
+  ext.findLocalEasyModelEntitiesLoader = { String loader ->
+    def version = project.findProperty('easy_model_entities_version')
+    if (version == null) {
+      return null
+    }
+    def mcVersion = project.minecraft_version
+    def jar =
+        file("${System.getProperty('user.home')}/.m2/repository/de/markusbordihn/easymodelentities/"
+            + "easy_model_entities-${loader}-${mcVersion}/${version}/"
+            + "easy_model_entities-${loader}-${mcVersion}-${version}.jar")
+    return jar.exists()
+        ? "de.markusbordihn.easymodelentities:easy_model_entities-${loader}-${mcVersion}:${version}"
+        : null
+  }
+
   configurations.configureEach {
     resolutionStrategy {
       cacheChangingModulesFor 5, 'minutes'

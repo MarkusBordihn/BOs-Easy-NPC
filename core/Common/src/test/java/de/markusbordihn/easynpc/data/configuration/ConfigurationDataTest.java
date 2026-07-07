@@ -30,17 +30,40 @@ class ConfigurationDataTest {
   void standardDoesNotSupportSpecialModelScreens() {
     assertFalse(ConfigurationData.STANDARD.isEnabled(ConfigurationType.CUSTOM_MODEL));
     assertFalse(ConfigurationData.STANDARD.isEnabled(ConfigurationType.COBBLEMON_MODEL));
+    assertFalse(ConfigurationData.STANDARD.isEnabled(ConfigurationType.EASY_MODEL_ENTITIES_MODEL));
   }
 
   @Test
   void dopplerSupportsOnlyCustomModelScreen() {
     assertTrue(ConfigurationData.DOPPLER.isEnabled(ConfigurationType.CUSTOM_MODEL));
     assertFalse(ConfigurationData.DOPPLER.isEnabled(ConfigurationType.COBBLEMON_MODEL));
+    assertFalse(ConfigurationData.DOPPLER.isEnabled(ConfigurationType.EASY_MODEL_ENTITIES_MODEL));
   }
 
   @Test
   void cobblemonSupportsOnlyCobblemonModelScreen() {
     assertTrue(ConfigurationData.COBBLEMON.isEnabled(ConfigurationType.COBBLEMON_MODEL));
     assertFalse(ConfigurationData.COBBLEMON.isEnabled(ConfigurationType.CUSTOM_MODEL));
+    assertFalse(ConfigurationData.COBBLEMON.isEnabled(ConfigurationType.EASY_MODEL_ENTITIES_MODEL));
+  }
+
+  @Test
+  void easyModelSupportsOnlyEasyModelEntitiesModelScreen() {
+    assertTrue(ConfigurationData.EASY_MODEL.isEnabled(ConfigurationType.EASY_MODEL_ENTITIES_MODEL));
+    assertFalse(ConfigurationData.EASY_MODEL.isEnabled(ConfigurationType.CUSTOM_MODEL));
+    assertFalse(ConfigurationData.EASY_MODEL.isEnabled(ConfigurationType.COBBLEMON_MODEL));
+  }
+
+  @Test
+  void easyModelDisablesSkinButEnablesPoseAndScaling() {
+    assertFalse(ConfigurationData.EASY_MODEL.isEnabled(ConfigurationType.SKIN));
+    assertTrue(ConfigurationData.EASY_MODEL.isEnabled(ConfigurationType.SCALING));
+    assertFalse(ConfigurationData.EASY_MODEL.isEnabled(ConfigurationType.DEFAULT_POSE));
+    assertFalse(ConfigurationData.EASY_MODEL.isEnabled(ConfigurationType.BASIC_POSE));
+    assertFalse(ConfigurationData.EASY_MODEL.isEnabled(ConfigurationType.ADVANCED_POSE));
+    assertTrue(ConfigurationData.EASY_MODEL.isEnabled(ConfigurationType.POSE));
+    assertTrue(ConfigurationData.EASY_MODEL.isEnabled(ConfigurationType.CUSTOM_POSE));
+    assertFalse(ConfigurationData.EASY_MODEL.isExperimental(ConfigurationType.POSE));
+    assertFalse(ConfigurationData.EASY_MODEL.isExperimental(ConfigurationType.CUSTOM_POSE));
   }
 }

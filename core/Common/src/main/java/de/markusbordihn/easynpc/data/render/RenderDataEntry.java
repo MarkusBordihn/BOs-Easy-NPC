@@ -72,10 +72,11 @@ public record RenderDataEntry(
   }
 
   public RenderDataEntry withRenderEntityModel(final String renderEntityModel) {
-    return new RenderDataEntry(
-        renderEntityModel != null ? RenderType.COBBLEMON_ENTITY : RenderType.DEFAULT,
-        null,
-        renderEntityModel);
+    if (renderEntityModel == null) {
+      return new RenderDataEntry(RenderType.DEFAULT, null, null);
+    }
+
+    return new RenderDataEntry(this.renderType, null, renderEntityModel);
   }
 
   public RenderDataEntry create(CompoundTag compoundTag) {

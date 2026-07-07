@@ -27,8 +27,12 @@ public class CompatConstants {
   public static final String MOD_COBBLEMON_ID = "cobblemon";
   public static final String MOD_COBBLEMON_NAME = "Cobblemon";
   public static final String MOD_COBBLEMON_PREFIX = "cobblemon_";
+  public static final String MOD_EASY_MODEL_ENTITIES_ID = "easy_model_entities";
+  public static final String MOD_EASY_MODEL_ENTITIES_NAME = "Easy Model Entities";
+  public static final String MOD_EASY_MODEL_ENTITIES_PREFIX = "easy_model_entities_";
   public static boolean MOD_EPIC_FIGHT_LOADED = false;
   public static boolean MOD_COBBLEMON_LOADED = false;
+  public static boolean MOD_EASY_MODEL_ENTITIES_LOADED = false;
 
   private CompatConstants() {}
 }

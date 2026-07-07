@@ -143,10 +143,10 @@ public class RenderCommand extends Command {
       return 0;
     }
 
-    if (!isCobblemonNPC(easyNPC)) {
+    if (!isCobblemonNPC(easyNPC) && !isEasyModelNPC(easyNPC)) {
       return sendFailureMessage(
           context,
-          "Species can only be set on Cobblemon NPCs. Current NPC type: "
+          "Species can only be set on Cobblemon or Easy Model NPCs. Current NPC type: "
               + easyNPC.getEntity().getType().getDescriptionId());
     }
 
@@ -167,5 +167,10 @@ public class RenderCommand extends Command {
   private static boolean isCobblemonNPC(EasyNPC<?> easyNPC) {
     return easyNPC instanceof ConfigurationDataCapable<?> configurable
         && configurable.getConfigurationData() == ConfigurationData.COBBLEMON;
+  }
+
+  private static boolean isEasyModelNPC(EasyNPC<?> easyNPC) {
+    return easyNPC instanceof ConfigurationDataCapable<?> configurable
+        && configurable.getConfigurationData() == ConfigurationData.EASY_MODEL;
   }
 }

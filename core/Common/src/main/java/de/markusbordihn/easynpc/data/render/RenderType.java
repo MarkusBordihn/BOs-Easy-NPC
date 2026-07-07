@@ -26,6 +26,7 @@ public enum RenderType {
   DEFAULT,
   CUSTOM_ENTITY,
   COBBLEMON_ENTITY,
+  EASY_MODEL_ENTITY,
   ;
 
   public static RenderType get(String renderType) {

@@ -26,6 +26,7 @@ import de.markusbordihn.easynpc.compat.CompatConstants;
 import de.markusbordihn.easynpc.compat.CompatHandler;
 import de.markusbordihn.easynpc.compat.CompatManager;
 import de.markusbordihn.easynpc.compat.cobblemon.CobblemonLoader;
+import de.markusbordihn.easynpc.compat.easymodelentities.EasyModelEntitiesLoader;
 import de.markusbordihn.easynpc.config.Config;
 import de.markusbordihn.easynpc.debug.DebugManager;
 import de.markusbordihn.easynpc.entity.LivingEntityEventHandler;
@@ -103,6 +104,9 @@ public class EasyNPCMain implements ModInitializer {
     ServerLifecycleEvents.SERVER_STARTED.register(ServerEvents::handleServerStarted);
     if (CompatConstants.MOD_COBBLEMON_LOADED) {
       ServerLifecycleEvents.SERVER_STARTED.register(server -> CobblemonLoader.register());
+    }
+    if (CompatConstants.MOD_EASY_MODEL_ENTITIES_LOADED) {
+      ServerLifecycleEvents.SERVER_STARTED.register(server -> EasyModelEntitiesLoader.register());
     }
     ServerLifecycleEvents.SERVER_STOPPING.register(ServerEvents::handleServerStopping);
     ServerTickEvents.END_SERVER_TICK.register(ServerEvents::handleServerTick);

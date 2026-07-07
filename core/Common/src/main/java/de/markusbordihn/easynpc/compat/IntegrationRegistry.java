@@ -21,9 +21,9 @@ package de.markusbordihn.easynpc.compat;
 
 import de.markusbordihn.easynpc.Constants;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import net.minecraft.resources.ResourceLocation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -31,8 +31,10 @@ import org.apache.logging.log4j.Logger;
 public class IntegrationRegistry {
 
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-  private static final Map<String, IntegrationModelProvider> registeredProviders = new HashMap<>();
-  private static final Map<String, List<ResourceLocation>> registeredModels = new HashMap<>();
+  private static final Map<String, IntegrationModelProvider> registeredProviders =
+      new ConcurrentHashMap<>();
+  private static final Map<String, List<ResourceLocation>> registeredModels =
+      new ConcurrentHashMap<>();
   private static boolean guiPreviewMode = false;
 
   private IntegrationRegistry() {}
@@ -72,5 +74,11 @@ public class IntegrationRegistry {
 
   public static boolean hasModels(String integrationId) {
     return !getModels(integrationId).isEmpty();
+  }
+
+  public static void invalidate(String integrationId) {
+    if (registeredModels.remove(integrationId) != null) {
+      log.debug("Invalidated cached models for integration '{}'.", integrationId);
+    }
   }
 }

@@ -22,6 +22,8 @@ minecraft {
 dependencies {
   compileOnly group: 'org.spongepowered', name: 'mixin', version: '0.8.7'
 
+  // Easy Model NPC support lives in the loader modules; Common stays free of the optional mod.
+
   // JUnit 5 for unit testing
   testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.1'
   testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.1'

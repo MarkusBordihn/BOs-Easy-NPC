@@ -20,6 +20,8 @@
 package de.markusbordihn.easynpc.configui.menu.configuration;
 
 import de.markusbordihn.easynpc.client.pose.PoseManager;
+import de.markusbordihn.easynpc.compat.IntegrationRegistry;
+import de.markusbordihn.easynpc.compat.easymodelentities.EasyModelEntitiesManager;
 import de.markusbordihn.easynpc.configui.data.screen.AdditionalScreenData;
 import de.markusbordihn.easynpc.configui.menu.configuration.equipment.EquipmentConfigurationMenu;
 import de.markusbordihn.easynpc.configui.menu.configuration.trading.AdvancedTradingConfigurationMenu;
@@ -209,6 +211,12 @@ public class ConfigurationMenuHandler {
             ConfigurationType.DEFAULT_PRESET_IMPORT,
             ConfigurationType.CUSTOM_PRESET_IMPORT,
             ConfigurationType.WORLD_PRESET_IMPORT);
+      }
+      case EASY_MODEL_ENTITIES_MODEL -> {
+        Set<ResourceLocation> profileIds =
+            new HashSet<>(IntegrationRegistry.getModels(EasyModelEntitiesManager.INTEGRATION_ID));
+        additionalSyncData.put(
+            "EasyModelProfiles", CompoundTagUtils.writeResourceLocations(profileIds));
       }
       case BASIC_ACTION, DIALOG_ACTION, DISTANCE_ACTION ->
           AdditionalScreenData.addActionEventSet(additionalSyncData, easyNPC);

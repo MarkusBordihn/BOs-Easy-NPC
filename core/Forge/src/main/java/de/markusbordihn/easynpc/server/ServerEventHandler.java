@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.server;
 
 import de.markusbordihn.easynpc.compat.CompatConstants;
 import de.markusbordihn.easynpc.compat.cobblemon.CobblemonLoader;
+import de.markusbordihn.easynpc.compat.easymodelentities.EasyModelEntitiesLoader;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.ServerTickEvent;
 import net.minecraftforge.event.server.ServerStartedEvent;
@@ -45,6 +46,9 @@ public class ServerEventHandler {
     ServerEvents.handleServerStarted(event.getServer());
     if (CompatConstants.MOD_COBBLEMON_LOADED) {
       CobblemonLoader.register();
+    }
+    if (CompatConstants.MOD_EASY_MODEL_ENTITIES_LOADED) {
+      EasyModelEntitiesLoader.register();
     }
   }
 
