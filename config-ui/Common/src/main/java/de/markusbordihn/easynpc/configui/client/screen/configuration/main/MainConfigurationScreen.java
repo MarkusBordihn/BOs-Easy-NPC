@@ -514,26 +514,34 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
                 14,
                 "change_model",
                 onPress -> {
-                  switch (renderDataSet.getRenderType()) {
-                    case COBBLEMON_ENTITY:
-                      NetworkMessageHandlerManager.getServerHandler()
-                          .openConfiguration(
-                              this.getEasyNPCUUID(), ConfigurationType.COBBLEMON_MODEL);
-                      break;
-                    case CUSTOM_ENTITY:
-                      NetworkMessageHandlerManager.getServerHandler()
-                          .openConfiguration(this.getEasyNPCUUID(), ConfigurationType.CUSTOM_MODEL);
-                      break;
-                    default:
-                      NetworkMessageHandlerManager.getServerHandler()
-                          .openConfiguration(
-                              this.getEasyNPCUUID(), ConfigurationType.DEFAULT_MODEL);
-                      break;
+                  if (this.supportsConfigurationType(ConfigurationType.COBBLEMON_MODEL)) {
+                    NetworkMessageHandlerManager.getServerHandler()
+                        .openConfiguration(
+                            this.getEasyNPCUUID(), ConfigurationType.COBBLEMON_MODEL);
+                  } else if (this.supportsConfigurationType(
+                      ConfigurationType.EASY_MODEL_ENTITIES_MODEL)) {
+                    NetworkMessageHandlerManager.getServerHandler()
+                        .openConfiguration(
+                            this.getEasyNPCUUID(), ConfigurationType.EASY_MODEL_ENTITIES_MODEL);
+                  } else {
+                    switch (renderDataSet.getRenderType()) {
+                      case CUSTOM_ENTITY:
+                        NetworkMessageHandlerManager.getServerHandler()
+                            .openConfiguration(
+                                this.getEasyNPCUUID(), ConfigurationType.CUSTOM_MODEL);
+                        break;
+                      default:
+                        NetworkMessageHandlerManager.getServerHandler()
+                            .openConfiguration(
+                                this.getEasyNPCUUID(), ConfigurationType.DEFAULT_MODEL);
+                        break;
+                    }
                   }
                 }));
     changeModelButton.active =
         this.supportsConfigurationType(ConfigurationType.CUSTOM_MODEL)
-            || this.supportsConfigurationType(ConfigurationType.COBBLEMON_MODEL);
+            || this.supportsConfigurationType(ConfigurationType.COBBLEMON_MODEL)
+            || this.supportsConfigurationType(ConfigurationType.EASY_MODEL_ENTITIES_MODEL);
     if (!changeModelButton.active) {
       changeModelButton.setTooltip(
           Tooltip.create(

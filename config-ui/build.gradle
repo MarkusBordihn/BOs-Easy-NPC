@@ -30,7 +30,7 @@ subprojects {
   }
 
   tasks.register('wrapper', Wrapper) {
-    gradleVersion = '9.6.0'
+    gradleVersion = '9.6.1'
     distributionType = Wrapper.DistributionType.BIN
   }
 
@@ -53,6 +53,22 @@ subprojects {
       downloadSources = true
       downloadJavadoc = true
     }
+  }
+
+  // Local Easy Model Entities loader artifact (runtime); null falls back to CurseForge.
+  ext.findLocalEasyModelEntitiesLoader = { String loader ->
+    def version = project.findProperty('easy_model_entities_version')
+    if (version == null) {
+      return null
+    }
+    def mcVersion = project.minecraft_version
+    def jar =
+        file("${System.getProperty('user.home')}/.m2/repository/de/markusbordihn/easymodelentities/"
+            + "easy_model_entities-${loader}-${mcVersion}/${version}/"
+            + "easy_model_entities-${loader}-${mcVersion}-${version}.jar")
+    return jar.exists()
+        ? "de.markusbordihn.easymodelentities:easy_model_entities-${loader}-${mcVersion}:${version}"
+        : null
   }
 
   configurations.configureEach {

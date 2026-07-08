@@ -49,6 +49,14 @@ dependencies {
   // Bundle dependencies - use compileOnly to avoid transitive dependency issues
   runtimeOnly(group: 'de.markusbordihn.easynpc', name: "easy_npc-fabric-${project.minecraft_version}", version: "${project.version}")
   runtimeOnly(group: 'de.markusbordihn.easynpc.configui', name: "easy_npc_config_ui-fabric-${project.minecraft_version}", version: "${project.version}")
+
+  // Easy Model Entities (Easy Model NPC support), local-first with CurseForge fallback.
+  def easyModelEntitiesFabricRuntime = findLocalEasyModelEntitiesLoader('fabric')
+  if (easyModelEntitiesFabricRuntime != null) {
+    runtimeOnly easyModelEntitiesFabricRuntime
+  } else if (project.hasProperty('fabric_easy_model_entities_mod') && project.fabric_easy_model_entities_mod) {
+    runtimeOnly("curse.maven:easy_model_entities-fabric-1539534:${project.fabric_easy_model_entities_mod}")
+  }
 }
 
 tasks.withType(JavaCompile).configureEach {
@@ -110,6 +118,7 @@ if (project.hasProperty('modrinth_project_id') && project.modrinth_project_id) {
       required.project "easy-npc-core"
       required.project "easy-npc-config-ui"
       optional.project "tooltipfix"
+      optional.project "easy-model-entities"
     }
   }
 }

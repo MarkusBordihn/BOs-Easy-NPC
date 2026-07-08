@@ -22,7 +22,6 @@ package de.markusbordihn.easynpc.data.faction;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;

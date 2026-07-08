@@ -164,7 +164,7 @@ public class DialogTextEditorScreen<T extends EditorMenu> extends EditorScreen<T
                       .openDialogEditor(this.getEasyNPCUUID(), this.getDialogUUID());
                 }));
 
-    // Chancel Button
+    // Cancel Button
     this.cancelButton =
         this.addRenderableWidget(
             new CancelButton(

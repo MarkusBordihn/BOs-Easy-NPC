@@ -29,7 +29,6 @@ import de.markusbordihn.easynpc.data.saveddata.FactionData;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.FactionDataCapable;
 import de.markusbordihn.easynpc.handler.FactionHandler;
-import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.TeamColorArgument;

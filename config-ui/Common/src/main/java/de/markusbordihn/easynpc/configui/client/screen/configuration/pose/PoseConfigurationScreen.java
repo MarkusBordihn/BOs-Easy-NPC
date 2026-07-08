@@ -530,6 +530,11 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
                 button ->
                     NetworkMessageHandlerManager.getServerHandler()
                         .openConfiguration(this.getEasyNPCUUID(), ConfigurationType.CUSTOM_POSE)));
+
+    this.defaultPoseButton.active = this.supportsConfigurationType(ConfigurationType.DEFAULT_POSE);
+    this.basicPoseButton.active = this.supportsConfigurationType(ConfigurationType.BASIC_POSE);
+    this.advancedPoseButton.active =
+        this.supportsConfigurationType(ConfigurationType.ADVANCED_POSE);
   }
 
   protected float getPreviewRotationYaw(float mouseRelativeYaw, EntityRenderConfig config) {
