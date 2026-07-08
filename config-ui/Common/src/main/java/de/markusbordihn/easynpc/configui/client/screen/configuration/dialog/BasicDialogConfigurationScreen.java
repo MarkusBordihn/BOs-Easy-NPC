@@ -59,7 +59,7 @@ public class BasicDialogConfigurationScreen<T extends ConfigurationMenu>
     // Default button stats
     this.basicDialogButton.active = false;
 
-    // Chancel Button
+    // Cancel Button
     this.addRenderableWidget(
         new CancelButton(
             this.rightPos - 130, this.bottomPos - 40, "cancel", onPress -> this.showMainScreen()));

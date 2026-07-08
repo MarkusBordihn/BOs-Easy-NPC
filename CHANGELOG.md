@@ -24,6 +24,7 @@ Check the [upgrade guide][upgrade_guide] for more information.
   profile scale instead of hitbox height.
 - Improved the `Attackable by Players/Monsters/Factions` combat attributes to work independently of
   `Invulnerable`, each opening a targeted hole for its own attacker group.
+- Added Easy Model Entities Support.
 - Added faction manager and faction editor screens to create, color and delete factions and manage
   hostile relations, protected by the new `FACTION_MANAGEMENT` security feature.
 - Added new `Misc` attributes tab as home for the NPC faction assignment.

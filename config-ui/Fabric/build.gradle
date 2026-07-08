@@ -78,6 +78,14 @@ dependencies {
   if (project.hasProperty('fabric_xaeros_minimap_mod') && project.fabric_xaeros_minimap_mod) {
     modRuntimeOnly("curse.maven:xaeros_minimap-263420:${project.fabric_xaeros_minimap_mod}")
   }
+
+  // Easy Model Entities (runtime dependency)
+  def easyModelEntitiesFabricRuntime = findLocalEasyModelEntitiesLoader('fabric')
+  if (easyModelEntitiesFabricRuntime != null) {
+    runtimeOnly easyModelEntitiesFabricRuntime
+  } else if (project.hasProperty('fabric_easy_model_entities_mod') && project.fabric_easy_model_entities_mod) {
+    runtimeOnly("curse.maven:easy-model-entities-1539533:${project.fabric_easy_model_entities_mod}")
+  }
 }
 
 tasks.withType(JavaCompile).configureEach {
@@ -148,6 +156,7 @@ if (project.hasProperty('modrinth_project_id') && project.modrinth_project_id) {
     loaders = ["fabric", "quilt"]
     dependencies {
       required.project "easy-npc-core"
+      optional.project "easy-model-entities"
     }
   }
 }
