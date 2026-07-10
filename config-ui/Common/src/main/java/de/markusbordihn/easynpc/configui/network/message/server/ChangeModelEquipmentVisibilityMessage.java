@@ -59,13 +59,11 @@ public record ChangeModelEquipmentVisibilityMessage(
       return;
     }
 
-    // Validate ModelPart.
     if (this.equipmentSlot == null) {
       log.error("Invalid equipmentSlot for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
-    // Validate Model data.
     ModelDataCapable<?> modelData = easyNPC.getEasyNPCModelData();
     if (modelData == null) {
       log.error("Invalid model data for {} from {}", easyNPC, serverPlayer);

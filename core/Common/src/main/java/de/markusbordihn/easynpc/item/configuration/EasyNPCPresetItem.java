@@ -156,7 +156,6 @@ public class EasyNPCPresetItem extends Item {
       return InteractionResult.SUCCESS;
     }
 
-    // Verify item stack, preset and entity type.
     ItemStack itemStack = useOnContext.getItemInHand();
     if (itemStack.isEmpty() || !hasPreset(itemStack) || !hasEntityType(itemStack)) {
       log.warn("No valid preset found in {}!", itemStack);

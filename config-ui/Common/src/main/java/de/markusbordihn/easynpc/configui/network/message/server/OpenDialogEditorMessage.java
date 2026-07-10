@@ -58,20 +58,17 @@ public record OpenDialogEditorMessage(UUID uuid, UUID dialogId) implements Netwo
       return;
     }
 
-    // Validate dialog id.
     if (this.dialogId == null) {
       log.error("Invalid dialog id for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
-    // Validate dialog data.
     DialogDataCapable<?> dialogData = easyNPC.getEasyNPCDialogData();
     if (dialogData == null) {
       log.error("Unable to get valid dialog data for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
-    // Validate dialog id and create new dialog if needed.
     UUID newDialogId = this.dialogId;
     if (this.dialogId.equals(EMPTY_UUID)) {
       String dialogName =
@@ -90,7 +87,6 @@ public record OpenDialogEditorMessage(UUID uuid, UUID dialogId) implements Netwo
       return;
     }
 
-    // Perform action.
     log.info(
         "Open dialog editor with for dialog {} for {} from {}", newDialogId, easyNPC, serverPlayer);
     MenuManager.getMenuHandler()

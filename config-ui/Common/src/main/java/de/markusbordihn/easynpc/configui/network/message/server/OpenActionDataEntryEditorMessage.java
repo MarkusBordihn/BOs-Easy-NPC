@@ -81,7 +81,6 @@ public record OpenActionDataEntryEditorMessage(
       return;
     }
 
-    // Open action data entry editor
     MenuManager.getMenuHandler()
         .openEditorMenu(
             EditorType.ACTION_DATA_ENTRY,

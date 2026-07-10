@@ -58,13 +58,11 @@ public record ChangeModelPoseMessage(UUID uuid, ModelPose modelPose)
       return;
     }
 
-    // Validate name.
     if (this.modelPose == null) {
       log.error("Invalid model pose for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
-    // Validate Model data.
     ModelDataCapable<?> modelData = easyNPC.getEasyNPCModelData();
     if (modelData == null) {
       log.error("Invalid model data for {} from {}", easyNPC, serverPlayer);

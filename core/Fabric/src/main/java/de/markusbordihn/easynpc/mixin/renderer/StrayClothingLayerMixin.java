@@ -51,18 +51,15 @@ public class StrayClothingLayerMixin {
       float headPitch,
       CallbackInfo callbackInfo) {
 
-    // Check if this is an EasyNPC entity
     if (!(mob instanceof EasyNPC<?> easyNPC)) {
       return;
     }
 
-    // Get skin data to check layer settings
     SkinDataCapable<?> skinData = easyNPC.getEasyNPCSkinData();
     if (skinData == null) {
       return;
     }
 
-    // Check if layers should be disabled
     if (skinData.getSkinDataEntry().disableLayers()) {
       callbackInfo.cancel();
     }

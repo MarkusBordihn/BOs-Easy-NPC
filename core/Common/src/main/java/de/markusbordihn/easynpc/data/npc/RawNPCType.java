@@ -51,6 +51,7 @@ public enum RawNPCType implements NPCType {
   SLIME,
   VEX,
   VILLAGER,
+  WANDERING_TRADER,
   VINDICATOR,
   WOLF,
   WITCH,

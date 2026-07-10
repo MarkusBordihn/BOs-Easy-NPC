@@ -43,6 +43,7 @@ import de.markusbordihn.easynpc.client.renderer.entity.raw.StrayRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.VexRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.VillagerRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.VindicatorRawRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.raw.WanderingTraderRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.WitchRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.WitherSkeletonRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.WolfRawRenderer;
@@ -80,6 +81,7 @@ public enum ModRawEntityRenderer {
   STRAY(ModRawEntityType.STRAY, () -> StrayRawRenderer::new),
   VEX(ModRawEntityType.VEX, () -> VexRawRenderer::new),
   VILLAGER(ModRawEntityType.VILLAGER, () -> VillagerRawRenderer::new),
+  WANDERING_TRADER(ModRawEntityType.WANDERING_TRADER, () -> WanderingTraderRawRenderer::new),
   VINDICATOR(ModRawEntityType.VINDICATOR, () -> VindicatorRawRenderer::new),
   WITCH(ModRawEntityType.WITCH, () -> WitchRawRenderer::new),
   WITHER_SKELETON(ModRawEntityType.WITHER_SKELETON, () -> WitherSkeletonRawRenderer::new),

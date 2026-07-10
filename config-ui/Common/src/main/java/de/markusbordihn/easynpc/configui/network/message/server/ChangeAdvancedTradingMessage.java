@@ -71,7 +71,6 @@ public record ChangeAdvancedTradingMessage(
       return;
     }
 
-    // Validate trading offer index
     if (this.tradingOfferIndex < 0) {
       log.error(
           "Trading offer index {} is out of range (>= 0) for {}",
@@ -80,13 +79,11 @@ public record ChangeAdvancedTradingMessage(
       return;
     }
 
-    // Validate trading value type
     if (this.tradingValueType == null) {
       log.error("Trading value type is unknown for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
-    // Validate trading value
     if (this.tradingValue < 0.0) {
       log.error(
           "Trading value {} for {} is out of range (>= 0) for {}",
@@ -96,7 +93,6 @@ public record ChangeAdvancedTradingMessage(
       return;
     }
 
-    // Validate trading data
     TradingDataCapable<?> tradingData = easyNPC.getEasyNPCTradingData();
     if (tradingData == null) {
       log.error("Trading data for {} is not available for {}", easyNPC, serverPlayer);

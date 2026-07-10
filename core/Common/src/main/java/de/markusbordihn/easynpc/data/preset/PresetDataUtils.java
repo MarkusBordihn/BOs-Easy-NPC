@@ -56,9 +56,7 @@ public class PresetDataUtils {
   private static final String[] POSITION_TAGS = {"Pos", "Rotation"};
   private static final String ENTITY_UUID_TAG = "UUID";
 
-  private PresetDataUtils() {
-    // Utility class
-  }
+  private PresetDataUtils() {}
 
   public static CompoundTag cleanupEntityData(CompoundTag entityData) {
     return cleanupEntityData(entityData, CleanupMode.RUNTIME_ONLY);

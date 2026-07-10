@@ -2,6 +2,7 @@ tasks.register('generateRawNPCs') {
   group = "build"
   def rawNPCFolder = file("$projectDir/../Common/src/main/java/de/markusbordihn/easynpc/api/npc/raw")
   def templateFile = file("$rawNPCFolder/NPCRawTemplate.java")
+  def rawNPCTypeFile = file("$projectDir/../Common/src/main/java/de/markusbordihn/easynpc/data/npc/RawNPCType.java")
   def npcClasses = [
       [
           id       : "allay_raw",
@@ -239,6 +240,16 @@ tasks.register('generateRawNPCs') {
           subfolder: "villager"
       ],
       [
+          id       : "wandering_trader_raw",
+          class    : "net.minecraft.world.entity.npc.WanderingTrader",
+          className: "WanderingTraderRaw",
+          baseClass: "WanderingTrader",
+          skinModel: "VILLAGER",
+          modelType: "VILLAGER",
+          variant  : "WanderingTraderSkinVariant.WANDERING_TRADER",
+          subfolder: "villager"
+      ],
+      [
           id       : "vindicator_raw",
           class    : "net.minecraft.world.entity.monster.Vindicator",
           className: "VindicatorRaw",
@@ -304,6 +315,7 @@ tasks.register('generateRawNPCs') {
     def targetFolder = npcClass.subfolder ? new File(rawNPCFolder, npcClass.subfolder) : rawNPCFolder
     file("${targetFolder}/${npcClass.className}.java")
   })
+  outputs.file(rawNPCTypeFile)
 
   def loadMethods = { String className, String subfolder ->
     if (subfolder) {
@@ -337,7 +349,6 @@ tasks.register('generateRawNPCs') {
 
   doLast {
     def outputDir = rawNPCFolder
-    def rawNPCTypeFile = file("$projectDir/../Common/src/main/java/de/markusbordihn/easynpc/data/npc/RawNPCType.java")
 
     // Update RawNPCType enum
     if (rawNPCTypeFile.exists()) {
@@ -358,8 +369,12 @@ tasks.register('generateRawNPCs') {
         }.join(",\n")
 
         def newContent = beforeMarker + "\n" + enumValues + ";\n  " + afterMarker
-        rawNPCTypeFile.write(newContent)
-        println "✅ Updated RawNPCType with ${npcClasses.size()} enum values"
+        if (rawNPCTypeFile.text != newContent) {
+          rawNPCTypeFile.write(newContent)
+          println "✅ Updated RawNPCType with ${npcClasses.size()} enum values"
+        } else {
+          println "✅ RawNPCType already up-to-date (${npcClasses.size()} enum values)"
+        }
       } else {
         println "⚠️  Could not find AUTO_GENERATED markers in RawNPCType.java"
       }
@@ -391,8 +406,10 @@ tasks.register('generateRawNPCs') {
           .replace("// TEMPLATE_INSERT:IMPORTS", loadImports(npcClass.className, npcClass.subfolder))
           .replace("// TEMPLATE_INSERT:METHODS", loadMethods(npcClass.className, npcClass.subfolder))
 
-      outputFile.write(content)
-      println "✅ [${npcClass.className}] Generated ${outputFile}"
+      if (!outputFile.exists() || outputFile.text != content) {
+        outputFile.write(content)
+        println "✅ [${npcClass.className}] Generated ${outputFile}"
+      }
     }
   }
 }

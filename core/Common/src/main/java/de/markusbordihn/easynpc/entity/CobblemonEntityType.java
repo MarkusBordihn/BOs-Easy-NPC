@@ -30,14 +30,11 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
-import net.minecraft.world.level.Level;
 
 public enum CobblemonEntityType implements ModEntityTypeProvider {
   COBBLEMON_NPC(
       CompatConstants.MOD_COBBLEMON_PREFIX + "npc",
-      EntityType.Builder.of(
-              (EntityType<CobblemonNPC> type, Level level) -> new CobblemonNPC(type, level),
-              MobCategory.MISC)
+      EntityType.Builder.of(CobblemonNPC::new, MobCategory.MISC)
           .sized(0.6F, 1.95F)
           .clientTrackingRange(12),
       CobblemonNPC::createAttributes);

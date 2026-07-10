@@ -61,13 +61,11 @@ public record OpenConfigurationMessage(
       return;
     }
 
-    // Validate dialog name.
     if (this.configurationType == null) {
       log.error("Invalid configuration type for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
-    // Validate page index.
     if (this.pageIndex < 0) {
       log.error("Invalid page index {} for {} from {}", pageIndex, easyNPC, serverPlayer);
       return;
@@ -79,7 +77,6 @@ public record OpenConfigurationMessage(
       return;
     }
 
-    // Open configuration screen
     MenuManager.getMenuHandler()
         .openConfigurationMenu(configurationType, serverPlayer, easyNPC, pageIndex);
   }

@@ -51,6 +51,7 @@ public enum DefaultNPCType implements NPCType {
   VEX,
   VILLAGER,
   VINDICATOR,
+  WANDERING_TRADER,
   WITCH,
   WITHER_SKELETON,
   WOLF,

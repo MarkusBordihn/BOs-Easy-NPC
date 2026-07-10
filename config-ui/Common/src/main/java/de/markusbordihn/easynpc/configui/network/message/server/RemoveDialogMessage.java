@@ -55,20 +55,17 @@ public record RemoveDialogMessage(UUID uuid, UUID dialogId) implements NetworkMe
       return;
     }
 
-    // Validate dialog ID
     if (this.dialogId == null) {
       log.error("Invalid dialog id for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
-    // Validate dialog data
     DialogDataCapable<?> dialogData = easyNPC.getEasyNPCDialogData();
     if (dialogData == null) {
       log.error("Invalid dialog data for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
-    // Validate dialog
     if (!dialogData.hasDialog(this.dialogId)) {
       log.error(
           "Unknown delete dialog request for dialog {} for {} from {}",

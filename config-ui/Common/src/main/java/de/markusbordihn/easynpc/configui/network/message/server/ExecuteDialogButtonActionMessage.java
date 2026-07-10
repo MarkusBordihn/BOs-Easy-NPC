@@ -61,13 +61,11 @@ public record ExecuteDialogButtonActionMessage(UUID uuid, UUID dialogId, UUID di
       return;
     }
 
-    // Validate dialog id.
     if (this.dialogId == null) {
       log.error("Invalid dialog id for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
-    // Validate dialog button id.
     if (this.dialogButtonId == null) {
       log.error("Invalid dialog button id for {} from {}", easyNPC, serverPlayer);
       return;
@@ -83,14 +81,12 @@ public record ExecuteDialogButtonActionMessage(UUID uuid, UUID dialogId, UUID di
       return;
     }
 
-    // Validate dialog data.
     DialogDataCapable<?> dialogData = easyNPC.getEasyNPCDialogData();
     if (dialogData == null) {
       log.error("Dialog data for {} is not available for {}", easyNPC, serverPlayer);
       return;
     }
 
-    // Validate dialog button actions.
     if (!dialogData.hasDialogButton(this.dialogId, this.dialogButtonId)) {
       log.error(
           "Unknown dialog button action {} request for dialog {} for {} from {}",
@@ -101,7 +97,6 @@ public record ExecuteDialogButtonActionMessage(UUID uuid, UUID dialogId, UUID di
       return;
     }
 
-    // Validate dialog button data.
     DialogButtonEntry dialogButtonEntry = dialogData.getDialogButton(dialogId, dialogButtonId);
     if (dialogButtonEntry == null) {
       log.error(
@@ -112,7 +107,6 @@ public record ExecuteDialogButtonActionMessage(UUID uuid, UUID dialogId, UUID di
       return;
     }
 
-    // Validate dialog button actions.
     ActionDataSet actionDataSet = dialogButtonEntry.actionDataSet();
     if (actionDataSet == null || actionDataSet.isEmpty()) {
       log.error(
@@ -124,7 +118,6 @@ public record ExecuteDialogButtonActionMessage(UUID uuid, UUID dialogId, UUID di
       return;
     }
 
-    // Validate action handler.
     ActionHandler<?> actionHandler = easyNPC.getEasyNPCActionHandler();
     if (actionHandler == null) {
       log.error("Unable to get valid action handler for {} from {}", easyNPC, serverPlayer);

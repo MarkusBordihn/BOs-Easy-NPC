@@ -97,19 +97,16 @@ public class TradingCommand extends Command {
       return 0;
     }
 
-    // Verify merchant.
     Merchant merchant = easyNPC.getMerchant();
     if (merchant == null) {
       return sendFailureMessageNoMerchant(context, easyNPC);
     }
 
-    // Verify trading data.
     TradingDataCapable<?> tradingData = easyNPC.getEasyNPCTradingData();
     if (tradingData == null) {
       return sendFailureMessageNoTradingData(context, easyNPC);
     }
 
-    // Open trading screen for the EasyNPC entity.
     tradingData.openTradingScreen(serverPlayer);
     return sendSuccessMessage(
         context, "Opened trading screen for " + serverPlayer + " with merchant " + easyNPC + " !");

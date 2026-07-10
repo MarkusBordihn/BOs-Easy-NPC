@@ -69,19 +69,16 @@ public record ChangeModelRotationMessage(
       return;
     }
 
-    // Validate ModelPart.
     if (this.modelPartType == null) {
       log.error("Invalid modelPartType for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
-    // Validate Rotations.
     if (this.rotation == null) {
       log.error("Invalid rotation for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
-    // Validate Model data.
     ModelDataCapable<?> modelData = easyNPC.getEasyNPCModelData();
     if (modelData == null) {
       log.error("Invalid model data for {} from {}", easyNPC, serverPlayer);
@@ -106,7 +103,6 @@ public record ChangeModelRotationMessage(
       easyNPC.getEntity().setPose(Pose.STANDING);
       modelData.setModelPose(ModelPose.CUSTOM);
 
-      // Verify if custom model pose is really needed.
       if (!modelData.hasChangedModel()
           || (this.modelPartType == ModelPartType.ROOT && this.rotation.hasChangedRotation())) {
         log.debug("Reset custom model pose for {} from {}", easyNPC, serverPlayer);

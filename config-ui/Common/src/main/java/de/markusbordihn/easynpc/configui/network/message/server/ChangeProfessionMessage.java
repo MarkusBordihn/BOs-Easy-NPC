@@ -57,13 +57,11 @@ public record ChangeProfessionMessage(UUID uuid, Profession profession)
       return;
     }
 
-    // Validate name.
     if (this.profession == null) {
       log.error("Invalid profession for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
-    // Validate Profession data.
     ProfessionDataCapable<?> professionData = easyNPC.getEasyNPCProfessionData();
     if (professionData == null) {
       log.error("Invalid profession data for {} from {}", easyNPC, serverPlayer);

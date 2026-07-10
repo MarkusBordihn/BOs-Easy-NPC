@@ -21,11 +21,13 @@ package de.markusbordihn.easynpc.data.saveddata;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.faction.FactionDataEntry;
+import de.markusbordihn.easynpc.data.faction.FactionNameValidator;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -83,7 +85,7 @@ public class FactionData extends SavedData {
   }
 
   public boolean createFaction(String factionName) {
-    if (factionName == null || factionName.isEmpty() || this.factions.containsKey(factionName)) {
+    if (!FactionNameValidator.isValid(factionName) || this.factions.containsKey(factionName)) {
       return false;
     }
     this.factions.put(factionName, new FactionDataEntry(factionName));
@@ -111,7 +113,7 @@ public class FactionData extends SavedData {
   }
 
   public Set<String> getFactionNames() {
-    return Collections.unmodifiableSet(this.factions.keySet());
+    return Collections.unmodifiableSet(new TreeSet<>(this.factions.keySet()));
   }
 
   public Collection<FactionDataEntry> getFactionEntries() {

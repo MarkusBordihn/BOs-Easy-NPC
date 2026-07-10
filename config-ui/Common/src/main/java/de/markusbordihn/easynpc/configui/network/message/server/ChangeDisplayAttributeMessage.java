@@ -84,7 +84,6 @@ public record ChangeDisplayAttributeMessage(
       return;
     }
 
-    // Update attribute value.
     switch (valueType) {
       case BOOLEAN ->
           AttributeHandler.setDisplayAttribute(easyNPC, this.attributeType, this.booleanValue);

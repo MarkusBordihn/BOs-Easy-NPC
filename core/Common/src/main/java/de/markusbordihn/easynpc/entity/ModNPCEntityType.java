@@ -52,6 +52,7 @@ import de.markusbordihn.easynpc.entity.easynpc.npc.standard.skeleton.WitherSkele
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.spider.CaveSpiderNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.spider.SpiderNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.villager.VillagerNPC;
+import de.markusbordihn.easynpc.entity.easynpc.npc.standard.villager.WanderingTraderNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.villager.ZombieVillagerNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.zombie.DrownedNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.zombie.HuskNPC;
@@ -64,285 +65,221 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
-import net.minecraft.world.level.Level;
 
 public enum ModNPCEntityType implements ModEntityTypeProvider {
   ALLAY(
       DefaultNPCType.ALLAY.getRegistryId(),
-      EntityType.Builder.of(
-              (EntityType<AllayNPC> type, Level level) -> new AllayNPC(type, level),
-              MobCategory.MISC)
+      EntityType.Builder.of(AllayNPC::new, MobCategory.MISC)
           .sized(0.35F, 0.6F)
           .clientTrackingRange(12),
       AllayNPC::createAttributes),
   CAT(
       DefaultNPCType.CAT.getRegistryId(),
-      EntityType.Builder.of(
-              (EntityType<CatNPC> type, Level level) -> new CatNPC(type, level), MobCategory.MISC)
+      EntityType.Builder.of(CatNPC::new, MobCategory.MISC)
           .sized(0.6F, 0.7F)
           .clientTrackingRange(12),
       CatNPC::createAttributes),
   CHICKEN(
       DefaultNPCType.CHICKEN.getRegistryId(),
-      EntityType.Builder.of(
-              (EntityType<ChickenNPC> type, Level level) -> new ChickenNPC(type, level),
-              MobCategory.MISC)
+      EntityType.Builder.of(ChickenNPC::new, MobCategory.MISC)
           .sized(0.4F, 0.7F)
           .clientTrackingRange(12),
       ChickenNPC::createAttributes),
   CREEPER(
       DefaultNPCType.CREEPER.getRegistryId(),
-      EntityType.Builder.of(
-              (EntityType<CreeperNPC> type, Level level) -> new CreeperNPC(type, level),
-              MobCategory.MONSTER)
+      EntityType.Builder.of(CreeperNPC::new, MobCategory.MONSTER)
           .sized(0.6F, 1.7F)
           .clientTrackingRange(12),
       CreeperNPC::createAttributes),
   DROWNED(
       DefaultNPCType.DROWNED.getRegistryId(),
-      EntityType.Builder.of(
-              (EntityType<DrownedNPC> type, Level level) -> new DrownedNPC(type, level),
-              MobCategory.MONSTER)
+      EntityType.Builder.of(DrownedNPC::new, MobCategory.MONSTER)
           .sized(0.6F, 1.95F)
           .clientTrackingRange(12),
       DrownedNPC::createAttributes),
   ENDERMAN(
       DefaultNPCType.ENDERMAN.getRegistryId(),
-      EntityType.Builder.of(
-              (EntityType<EnderManNPC> type, Level level) -> new EnderManNPC(type, level),
-              MobCategory.MONSTER)
+      EntityType.Builder.of(EnderManNPC::new, MobCategory.MONSTER)
           .sized(0.6F, 2.9F)
           .clientTrackingRange(12),
       EnderManNPC::createAttributes),
   EVOKER(
       DefaultNPCType.EVOKER.getRegistryId(),
-      EntityType.Builder.of(
-              (EntityType<EvokerNPC> type, Level level) -> new EvokerNPC(type, level),
-              MobCategory.MONSTER)
+      EntityType.Builder.of(EvokerNPC::new, MobCategory.MONSTER)
           .sized(0.6F, 1.95F)
           .clientTrackingRange(12),
       EvokerNPC::createAttributes),
   FOX(
       DefaultNPCType.FOX.getRegistryId(),
-      EntityType.Builder.of(
-              (EntityType<FoxNPC> type, Level level) -> new FoxNPC(type, level), MobCategory.MISC)
+      EntityType.Builder.of(FoxNPC::new, MobCategory.MISC)
           .sized(0.6F, 0.7F)
           .clientTrackingRange(12),
       FoxNPC::createAttributes),
   GHAST(
       DefaultNPCType.GHAST.getRegistryId(),
-      EntityType.Builder.of(
-              (EntityType<GhastNPC> type, Level level) -> new GhastNPC(type, level),
-              MobCategory.MONSTER)
+      EntityType.Builder.of(GhastNPC::new, MobCategory.MONSTER)
           .sized(4.0F, 4.0F)
           .clientTrackingRange(12),
       GhastNPC::createAttributes),
   HORSE(
       DefaultNPCType.HORSE.getRegistryId(),
-      EntityType.Builder.of(
-              (EntityType<HorseNPC> type, Level level) -> new HorseNPC(type, level),
-              MobCategory.MISC)
+      EntityType.Builder.of(HorseNPC::new, MobCategory.MISC)
           .sized(1.4F, 1.6F)
           .clientTrackingRange(12),
       HorseNPC::createBaseHorseAttributes),
   HORSE_SKELETON(
       DefaultNPCType.SKELETON_HORSE.getRegistryId(),
-      EntityType.Builder.of(
-              (EntityType<SkeletonHorseNPC> type, Level level) -> new SkeletonHorseNPC(type, level),
-              MobCategory.MONSTER)
+      EntityType.Builder.of(SkeletonHorseNPC::new, MobCategory.MONSTER)
           .sized(1.4F, 1.6F)
           .clientTrackingRange(12),
       HorseNPC::createBaseHorseAttributes),
   HORSE_ZOMBIE(
       DefaultNPCType.ZOMBIE_HORSE.getRegistryId(),
-      EntityType.Builder.of(
-              (EntityType<ZombieHorseNPC> type, Level level) -> new ZombieHorseNPC(type, level),
-              MobCategory.MONSTER)
+      EntityType.Builder.of(ZombieHorseNPC::new, MobCategory.MONSTER)
           .sized(1.4F, 1.6F)
           .clientTrackingRange(12),
       HorseNPC::createBaseHorseAttributes),
   HUMANOID(
       DefaultNPCType.HUMANOID.getRegistryId(),
-      EntityType.Builder.of(
-              (EntityType<HumanoidNPC> type, Level level) -> new HumanoidNPC(type, level),
-              MobCategory.MISC)
+      EntityType.Builder.of(HumanoidNPC::new, MobCategory.MISC)
           .sized(0.6F, 1.95F)
           .clientTrackingRange(12),
       HumanoidNPC::createAttributes),
   HUMANOID_SLIM(
       DefaultNPCType.HUMANOID_SLIM.getRegistryId(),
-      EntityType.Builder.of(
-              (EntityType<HumanoidSlimNPC> type, Level level) -> new HumanoidSlimNPC(type, level),
-              MobCategory.MISC)
+      EntityType.Builder.of(HumanoidSlimNPC::new, MobCategory.MISC)
           .sized(0.6F, 1.95F)
           .clientTrackingRange(12),
       HumanoidSlimNPC::createAttributes),
   ILLUSIONER(
       DefaultNPCType.ILLUSIONER.getRegistryId(),
-      EntityType.Builder.of(
-              (EntityType<IllusionerNPC> type, Level level) -> new IllusionerNPC(type, level),
-              MobCategory.MISC)
+      EntityType.Builder.of(IllusionerNPC::new, MobCategory.MISC)
           .sized(0.6F, 1.95F)
           .clientTrackingRange(12),
       IllusionerNPC::createAttributes),
   IRON_GOLEM(
       DefaultNPCType.IRON_GOLEM.getRegistryId(),
-      EntityType.Builder.of(
-              (EntityType<IronGolemNPC> type, Level level) -> new IronGolemNPC(type, level),
-              MobCategory.MISC)
+      EntityType.Builder.of(IronGolemNPC::new, MobCategory.MISC)
           .sized(1.4F, 2.7F)
           .clientTrackingRange(12),
       IronGolemNPC::createAttributes),
   PIGLIN(
       DefaultNPCType.PIGLIN.getRegistryId(),
-      EntityType.Builder.of(
-              (EntityType<PiglinNPC> type, Level level) -> new PiglinNPC(type, level),
-              MobCategory.MONSTER)
+      EntityType.Builder.of(PiglinNPC::new, MobCategory.MONSTER)
           .sized(0.6F, 1.95F)
           .clientTrackingRange(12),
       PiglinNPC::createAttributes),
   PIGLIN_BRUTE(
       DefaultNPCType.PIGLIN_BRUTE.getRegistryId(),
-      EntityType.Builder.of(
-              (EntityType<PiglinBruteNPC> type, Level level) -> new PiglinBruteNPC(type, level),
-              MobCategory.MONSTER)
+      EntityType.Builder.of(PiglinBruteNPC::new, MobCategory.MONSTER)
           .sized(0.6F, 1.95F)
           .clientTrackingRange(12),
       PiglinBruteNPC::createAttributes),
   PIGLIN_ZOMBIFIED(
       DefaultNPCType.ZOMBIFIED_PIGLIN.getRegistryId(),
-      EntityType.Builder.of(
-              (EntityType<ZombifiedPiglinNPC> type, Level level) ->
-                  new ZombifiedPiglinNPC(type, level),
-              MobCategory.MONSTER)
+      EntityType.Builder.of(ZombifiedPiglinNPC::new, MobCategory.MONSTER)
           .sized(0.6F, 1.95F)
           .clientTrackingRange(12),
       ZombifiedPiglinNPC::createAttributes),
   PIG(
       DefaultNPCType.PIG.getRegistryId(),
-      EntityType.Builder.of(
-              (EntityType<PigNPC> type, Level level) -> new PigNPC(type, level), MobCategory.MISC)
+      EntityType.Builder.of(PigNPC::new, MobCategory.MISC)
           .sized(0.9F, 0.9F)
           .clientTrackingRange(12),
       PigNPC::createAttributes),
   PILLAGER(
       DefaultNPCType.PILLAGER.getRegistryId(),
-      EntityType.Builder.of(
-              (EntityType<PillagerNPC> type, Level level) -> new PillagerNPC(type, level),
-              MobCategory.MONSTER)
+      EntityType.Builder.of(PillagerNPC::new, MobCategory.MONSTER)
           .sized(0.6F, 1.95F)
           .clientTrackingRange(12),
       PillagerNPC::createAttributes),
   SKELETON(
       DefaultNPCType.SKELETON.getRegistryId(),
-      EntityType.Builder.of(
-              (EntityType<SkeletonNPC> type, Level level) -> new SkeletonNPC(type, level),
-              MobCategory.MONSTER)
+      EntityType.Builder.of(SkeletonNPC::new, MobCategory.MONSTER)
           .sized(0.6F, 1.95F)
           .clientTrackingRange(12),
       SkeletonNPC::createAttributes),
   STRAY(
       DefaultNPCType.STRAY.getRegistryId(),
-      EntityType.Builder.of(
-              (EntityType<StrayNPC> type, Level level) -> new StrayNPC(type, level),
-              MobCategory.MONSTER)
+      EntityType.Builder.of(StrayNPC::new, MobCategory.MONSTER)
           .sized(0.6F, 1.95F)
           .clientTrackingRange(12),
       StrayNPC::createAttributes),
   WITHER_SKELETON(
       DefaultNPCType.WITHER_SKELETON.getRegistryId(),
-      EntityType.Builder.of(
-              (EntityType<WitherSkeletonNPC> type, Level level) ->
-                  new WitherSkeletonNPC(type, level),
-              MobCategory.MONSTER)
+      EntityType.Builder.of(WitherSkeletonNPC::new, MobCategory.MONSTER)
           .sized(0.7F, 2.4F)
           .clientTrackingRange(12),
       WitherSkeletonNPC::createAttributes),
   SLIME(
       DefaultNPCType.SLIME.getRegistryId(),
-      EntityType.Builder.of(
-              (EntityType<SlimeNPC> type, Level level) -> new SlimeNPC(type, level),
-              MobCategory.MONSTER)
+      EntityType.Builder.of(SlimeNPC::new, MobCategory.MONSTER)
           .sized(2.04F, 2.04F)
           .clientTrackingRange(12),
       SlimeNPC::createAttributes),
   SPIDER(
       DefaultNPCType.SPIDER.getRegistryId(),
-      EntityType.Builder.of(
-              (EntityType<SpiderNPC> type, Level level) -> new SpiderNPC(type, level),
-              MobCategory.MONSTER)
+      EntityType.Builder.of(SpiderNPC::new, MobCategory.MONSTER)
           .sized(1.4F, 0.9F)
           .clientTrackingRange(12),
       SpiderNPC::createAttributes),
   CAVE_SPIDER(
       DefaultNPCType.CAVE_SPIDER.getRegistryId(),
-      EntityType.Builder.of(
-              (EntityType<CaveSpiderNPC> type, Level level) -> new CaveSpiderNPC(type, level),
-              MobCategory.MONSTER)
+      EntityType.Builder.of(CaveSpiderNPC::new, MobCategory.MONSTER)
           .sized(0.7F, 0.5F)
           .clientTrackingRange(12),
       SpiderNPC::createAttributes),
   VILLAGER(
       DefaultNPCType.VILLAGER.getRegistryId(),
-      EntityType.Builder.of(
-              (EntityType<VillagerNPC> type, Level level) -> new VillagerNPC(type, level),
-              MobCategory.MISC)
+      EntityType.Builder.of(VillagerNPC::new, MobCategory.MISC)
           .sized(0.6F, 1.95F)
           .clientTrackingRange(12),
       VillagerNPC::createAttributes),
+  WANDERING_TRADER(
+      DefaultNPCType.WANDERING_TRADER.getRegistryId(),
+      EntityType.Builder.of(WanderingTraderNPC::new, MobCategory.MISC)
+          .sized(0.6F, 1.95F)
+          .clientTrackingRange(12),
+      WanderingTraderNPC::createAttributes),
   VEX(
       DefaultNPCType.VEX.getRegistryId(),
-      EntityType.Builder.of(
-              (EntityType<VexNPC> type, Level level) -> new VexNPC(type, level),
-              MobCategory.MONSTER)
+      EntityType.Builder.of(VexNPC::new, MobCategory.MONSTER)
           .sized(0.4F, 0.8F)
           .clientTrackingRange(12),
       VexNPC::createAttributes),
   VINDICATOR(
       DefaultNPCType.VINDICATOR.getRegistryId(),
-      EntityType.Builder.of(
-              (EntityType<VindicatorNPC> type, Level level) -> new VindicatorNPC(type, level),
-              MobCategory.MONSTER)
+      EntityType.Builder.of(VindicatorNPC::new, MobCategory.MONSTER)
           .sized(0.6F, 1.95F)
           .clientTrackingRange(12),
       VindicatorNPC::createAttributes),
   WITCH(
       DefaultNPCType.WITCH.getRegistryId(),
-      EntityType.Builder.of(
-              (EntityType<WitchNPC> type, Level level) -> new WitchNPC(type, level),
-              MobCategory.MONSTER)
+      EntityType.Builder.of(WitchNPC::new, MobCategory.MONSTER)
           .sized(0.6F, 1.95F)
           .clientTrackingRange(12),
       WitchNPC::createAttributes),
   WOLF(
       DefaultNPCType.WOLF.getRegistryId(),
-      EntityType.Builder.of(
-              (EntityType<WolfNPC> type, Level level) -> new WolfNPC(type, level), MobCategory.MISC)
+      EntityType.Builder.of(WolfNPC::new, MobCategory.MISC)
           .sized(0.6F, 0.85F)
           .clientTrackingRange(12),
       WolfNPC::createAttributes),
   ZOMBIE(
       DefaultNPCType.ZOMBIE.getRegistryId(),
-      EntityType.Builder.of(
-              (EntityType<ZombieNPC> type, Level level) -> new ZombieNPC(type, level),
-              MobCategory.MONSTER)
+      EntityType.Builder.of(ZombieNPC::new, MobCategory.MONSTER)
           .sized(0.6F, 1.95F)
           .clientTrackingRange(12),
       ZombieNPC::createAttributes),
   ZOMBIE_HUSK(
       DefaultNPCType.HUSK.getRegistryId(),
-      EntityType.Builder.of(
-              (EntityType<HuskNPC> type, Level level) -> new HuskNPC(type, level),
-              MobCategory.MONSTER)
+      EntityType.Builder.of(HuskNPC::new, MobCategory.MONSTER)
           .sized(0.6F, 1.95F)
           .clientTrackingRange(12),
       HuskNPC::createAttributes),
   ZOMBIE_VILLAGER(
       DefaultNPCType.ZOMBIE_VILLAGER.getRegistryId(),
-      EntityType.Builder.of(
-              (EntityType<ZombieVillagerNPC> type, Level level) ->
-                  new ZombieVillagerNPC(type, level),
-              MobCategory.MONSTER)
+      EntityType.Builder.of(ZombieVillagerNPC::new, MobCategory.MONSTER)
           .sized(0.6F, 1.95F)
           .clientTrackingRange(12),
       ZombieVillagerNPC::createAttributes);

@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.configui.network.message.server;
 
 import de.markusbordihn.easynpc.configui.Constants;
+import de.markusbordihn.easynpc.data.faction.FactionNameValidator;
 import de.markusbordihn.easynpc.data.saveddata.FactionData;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
@@ -52,10 +53,7 @@ public record CreateFactionMessage(UUID uuid, String factionName) implements Net
   @Override
   public void handleServer(final ServerPlayer serverPlayer) {
     EasyNPC<?> easyNPC = getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
-    if (easyNPC == null
-        || this.factionName == null
-        || this.factionName.isEmpty()
-        || this.factionName.contains(" ")) {
+    if (easyNPC == null || !FactionNameValidator.isValid(this.factionName)) {
       log.error("Invalid data to create faction for {}: ", this);
       return;
     }

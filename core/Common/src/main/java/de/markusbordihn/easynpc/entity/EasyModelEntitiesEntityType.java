@@ -30,14 +30,11 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
-import net.minecraft.world.level.Level;
 
 public enum EasyModelEntitiesEntityType implements ModEntityTypeProvider {
   EASY_MODEL_NPC(
       CompatConstants.MOD_EASY_MODEL_ENTITIES_PREFIX + "npc",
-      EntityType.Builder.of(
-              (EntityType<EasyModelNPC> type, Level level) -> new EasyModelNPC(type, level),
-              MobCategory.MISC)
+      EntityType.Builder.of(EasyModelNPC::new, MobCategory.MISC)
           .sized(0.6F, 1.95F)
           .clientTrackingRange(12),
       EasyModelNPC::createAttributes);

@@ -65,7 +65,6 @@ public record ExecuteActionEventMessage(UUID uuid, ActionEventType actionEventTy
       return;
     }
 
-    // Validate action type.
     if (this.actionEventType == null || this.actionEventType == ActionEventType.NONE) {
       log.error(
           "Invalid action event type {} for {} from {}",
@@ -85,14 +84,12 @@ public record ExecuteActionEventMessage(UUID uuid, ActionEventType actionEventTy
       return;
     }
 
-    // Validate action event data.
     ActionEventDataCapable<?> actionEventData = easyNPC.getEasyNPCActionEventData();
     if (actionEventData == null) {
       log.error("Unable to get valid action event data for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
-    // Validate action.
     ActionDataSet actionDataSet =
         actionEventData.getActionEventSet().getActionEvents(this.actionEventType);
     if (actionDataSet == null || actionDataSet.isEmpty()) {
@@ -104,7 +101,6 @@ public record ExecuteActionEventMessage(UUID uuid, ActionEventType actionEventTy
       return;
     }
 
-    // Validate action handler.
     ActionHandler<?> actionHandler = easyNPC.getEasyNPCActionHandler();
     if (actionHandler == null) {
       log.error("Unable to get valid action handler for {} from {}", easyNPC, serverPlayer);

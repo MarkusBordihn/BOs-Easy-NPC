@@ -58,20 +58,17 @@ public record OpenDialogTextEditorMessage(UUID uuid, UUID dialogId)
       return;
     }
 
-    // Validate dialog id.
     if (this.dialogId == null) {
       log.error("Invalid dialog id for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
-    // Validate dialog data.
     DialogDataCapable<?> dialogData = easyNPC.getEasyNPCDialogData();
     if (dialogData == null) {
       log.error("Unable to get valid dialog data for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
-    // Validate dialog id.
     if (!dialogData.hasDialog(this.dialogId)) {
       log.error(
           "Unknown dialog button editor request for dialog {} for {} from {}",
@@ -82,7 +79,6 @@ public record OpenDialogTextEditorMessage(UUID uuid, UUID dialogId)
       return;
     }
 
-    // Perform action.
     log.info(
         "Open dialog editor with for dialog {} for {} from {}", dialogId, easyNPC, serverPlayer);
     MenuManager.getMenuHandler()
