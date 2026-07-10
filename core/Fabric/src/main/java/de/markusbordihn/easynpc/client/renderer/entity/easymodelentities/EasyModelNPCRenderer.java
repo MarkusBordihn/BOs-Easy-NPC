@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.client.renderer.entity.easymodelentities;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import de.markusbordihn.easymodelentities.api.data.client.EasyModelEntityRenderOptions;
 import de.markusbordihn.easymodelentities.client.render.EasyModelEntityRenderBackend;
 import de.markusbordihn.easymodelentities.client.render.EasyModelEntityRenderState;
 import de.markusbordihn.easymodelentities.runtime.EasyModelAnimationState;
@@ -55,6 +56,12 @@ public class EasyModelNPCRenderer<E extends PathfinderMob>
   public void extractRenderState(
       E entity, EasyModelEntityRenderState renderState, float partialTick) {
     super.extractRenderState(entity, renderState, partialTick);
+    renderState.easyModelRenderState = null;
+    renderState.renderOptions = EasyModelEntityRenderOptions.DEFAULT;
+    renderState.animationState = EasyModelAnimationState.AUTO;
+    renderState.limbSwing = 0.0f;
+    renderState.limbSwingAmount = 0.0f;
+    renderState.airborneAmount = 0.0f;
     if (!(entity instanceof EasyModelNPC easyModelNPC)) {
       return;
     }
@@ -68,6 +75,10 @@ public class EasyModelNPCRenderer<E extends PathfinderMob>
                 renderState.easyModelRenderState =
                     EasyModelEntityRenderBackend.resolveRenderState(contract),
             () -> log.debug("No EME contract for profile: {}", profileId));
+
+    renderState.renderOptions =
+        EasyModelEntityRenderOptions.DEFAULT.withPartAnimator(
+            EasyModelNPCPartAnimator.snapshot(easyModelNPC));
 
     renderState.entityYaw =
         entity instanceof LivingEntity le
