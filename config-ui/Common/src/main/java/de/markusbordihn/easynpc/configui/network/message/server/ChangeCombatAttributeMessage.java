@@ -103,7 +103,6 @@ public record ChangeCombatAttributeMessage(
       return;
     }
 
-    // Update attribute value.
     switch (valueType) {
       case BOOLEAN -> AttributeHandler.setCombatAttribute(easyNPC, attributeType, booleanValue);
       case DOUBLE -> AttributeHandler.setCombatAttribute(easyNPC, attributeType, doubleValue);

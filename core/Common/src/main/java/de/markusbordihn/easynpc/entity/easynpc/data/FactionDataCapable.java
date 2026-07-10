@@ -70,8 +70,15 @@ public interface FactionDataCapable<T extends Mob> extends EasyNPC<T> {
       return;
     }
 
-    if (currentTeam != null && factionName.equals(currentTeam.getName())) {
-      return;
+    if (FactionData.isInitialized()) {
+      FactionDataEntry factionDataEntry = FactionData.get().getFaction(factionName);
+      if (factionDataEntry == null) {
+        this.setFactionName("");
+        if (currentTeam != null) {
+          scoreboard.removePlayerFromTeam(scoreboardName, currentTeam);
+        }
+        return;
+      }
     }
 
     PlayerTeam team = scoreboard.getPlayerTeam(factionName);
@@ -83,6 +90,10 @@ public interface FactionDataCapable<T extends Mob> extends EasyNPC<T> {
       if (factionDataEntry != null && factionDataEntry.getColor() != null) {
         team.setColor(factionDataEntry.getColor());
       }
+    }
+
+    if (currentTeam != null && factionName.equals(currentTeam.getName())) {
+      return;
     }
     scoreboard.addPlayerToTeam(scoreboardName, team);
   }

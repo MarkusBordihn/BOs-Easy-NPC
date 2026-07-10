@@ -74,13 +74,11 @@ public record ChangeTradingTypeMessage(UUID uuid, TradingType tradingType)
       return;
     }
 
-    // Validate trading type
     if (this.tradingType == null) {
       log.error("Invalid trading type for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
-    // Validate trading data.
     TradingDataCapable<?> tradingData = easyNPC.getEasyNPCTradingData();
     if (tradingData == null) {
       log.error("Invalid trading data for {} from {}", easyNPC, serverPlayer);

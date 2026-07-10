@@ -35,6 +35,10 @@ apply from: "$projectDir/../gradle/tasks/generateDefaultPresetIndex.gradle"
 
 tasks.named('compileJava') {
   dependsOn tasks.named('generateRawNPCs')
+  // generateRawNPCs writes generated sources in-place into src/main/java, which the Gradle
+  // build cache cannot track reliably (a cached run can omit RawNPCType.class). Skip caching
+  // this task so compilation always reflects the freshly generated sources.
+  outputs.cacheIf { false }
 }
 
 processResources {

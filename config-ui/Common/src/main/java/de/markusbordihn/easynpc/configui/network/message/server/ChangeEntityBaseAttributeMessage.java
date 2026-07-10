@@ -77,20 +77,17 @@ public record ChangeEntityBaseAttributeMessage(UUID uuid, ResourceLocation attri
       return;
     }
 
-    // Validate attribute.
     if (attribute == null) {
       log.error("Invalid base attribute for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
-    // Validate value.
     if (value == null) {
       log.error(
           "Invalid value for base attribute {} for {} from {}", attribute, easyNPC, serverPlayer);
       return;
     }
 
-    // Set base attribute.
     if (!AttributeHandler.setBaseAttribute(easyNPC, attribute, value)) {
       log.error("Unable to set base attribute {} for {} from {}", attribute, easyNPC, serverPlayer);
     }

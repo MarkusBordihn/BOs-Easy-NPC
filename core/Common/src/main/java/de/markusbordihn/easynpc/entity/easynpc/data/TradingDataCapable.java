@@ -262,7 +262,6 @@ public interface TradingDataCapable<E extends Mob> extends EasyNPC<E>, Merchant 
 
     this.resetExpiredTradingOffers();
 
-    // Verify that we have trading offers.
     MerchantOffers merchantOffers = merchant.getOffers();
     if (merchantOffers.isEmpty()) {
       log.error(
@@ -285,7 +284,6 @@ public interface TradingDataCapable<E extends Mob> extends EasyNPC<E>, Merchant 
       return;
     }
 
-    // Open trading screen for the player.
     merchant.setTradingPlayer(serverPlayer);
     merchant.openTradingScreen(
         serverPlayer,

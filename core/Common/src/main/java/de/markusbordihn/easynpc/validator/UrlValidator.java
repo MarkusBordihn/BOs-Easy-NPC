@@ -119,7 +119,7 @@ public class UrlValidator {
         return true;
       }
     }
-    return true;
+    return false;
   }
 
   public static boolean isValidUrl(String url) {

@@ -106,13 +106,11 @@ public record ChangeEntityAttributeMessage(
       return;
     }
 
-    // Validate name.
     if (entityAttribute == null) {
       log.error("Invalid entity attribute for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
-    // Validate value.
     if (booleanValue == null && floatValue == null && integerValue == null && stringValue == null) {
       log.error("Invalid value for {} for {} from {}", entityAttribute, easyNPC, serverPlayer);
       return;

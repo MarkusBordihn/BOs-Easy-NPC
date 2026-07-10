@@ -79,7 +79,6 @@ public class SpawnerCommand extends Command {
       CommandSourceStack context, BlockPos blockPos, String parameter, int value) {
     BlockEntity blockEntity = context.getLevel().getBlockEntity(blockPos);
 
-    // Get spawner instance
     BaseSpawner spawner = null;
     if (blockEntity instanceof SpawnerBlockEntity spawnerBlockEntity) {
       spawner = spawnerBlockEntity.getSpawner();
@@ -91,13 +90,11 @@ public class SpawnerCommand extends Command {
       return sendFailureMessage(context, "No valid spawner found at " + blockPos);
     }
 
-    // Check if spawner has mixin access
     if (!(spawner instanceof SpawnerAccessHelper spawnerAccess)) {
       return sendFailureMessage(
           context, "Spawner does not support direct access (mixin not applied?)");
     }
 
-    // Set spawner value directly via mixin
     switch (parameter) {
       case "Delay" -> spawnerAccess.setSpawnDelay(value);
       case "MinSpawnDelay" -> spawnerAccess.setMinSpawnDelay(value);
@@ -112,7 +109,6 @@ public class SpawnerCommand extends Command {
       }
     }
 
-    // Mark block entity as changed
     blockEntity.setChanged();
 
     return sendSuccessMessage(

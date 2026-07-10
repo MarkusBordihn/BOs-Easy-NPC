@@ -51,7 +51,6 @@ public class ConfigureCommand extends Command {
       throws CommandSyntaxException {
     ServerPlayer serverPlayer = context.getPlayerOrException();
 
-    // Verify configuration data for the EasyNPC.
     ConfigurationDataCapable<?> configurationData = easyNPC.getEasyNPCConfigurationData();
     if (configurationData == null) {
       return sendFailureMessage(context, "This EasyNPC does not support configuration!");

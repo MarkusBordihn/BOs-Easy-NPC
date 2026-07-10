@@ -47,6 +47,7 @@ import de.markusbordihn.easynpc.api.npc.raw.skeleton.StrayRaw;
 import de.markusbordihn.easynpc.api.npc.raw.skeleton.WitherSkeletonRaw;
 import de.markusbordihn.easynpc.api.npc.raw.spider.SpiderRaw;
 import de.markusbordihn.easynpc.api.npc.raw.villager.VillagerRaw;
+import de.markusbordihn.easynpc.api.npc.raw.villager.WanderingTraderRaw;
 import de.markusbordihn.easynpc.api.npc.raw.villager.ZombieVillagerRaw;
 import de.markusbordihn.easynpc.api.npc.raw.zombie.DrownedRaw;
 import de.markusbordihn.easynpc.api.npc.raw.zombie.HuskRaw;
@@ -59,6 +60,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.level.Level;
 
 public enum ModRawEntityType implements ModEntityTypeProvider {
@@ -261,6 +263,15 @@ public enum ModRawEntityType implements ModEntityTypeProvider {
           .sized(0.6F, 1.95F)
           .clientTrackingRange(12),
       VillagerRaw::createAttributes),
+  WANDERING_TRADER(
+      WanderingTraderRaw.NPC_TYPE.getRegistryId(),
+      EntityType.Builder.of(
+              (EntityType<WanderingTraderRaw> type, Level level) ->
+                  new WanderingTraderRaw(type, level),
+              MobCategory.MISC)
+          .sized(0.6F, 1.95F)
+          .clientTrackingRange(12),
+      Villager::createAttributes),
   VINDICATOR(
       VindicatorRaw.NPC_TYPE.getRegistryId(),
       EntityType.Builder.of(

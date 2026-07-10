@@ -105,13 +105,10 @@ public class RendererManager {
       return livingEntityRendererMap.get(entityType);
     }
 
-    // Verify that EntityRenderDispatcher is available.
     EntityRenderDispatcher entityRenderDispatcher =
         Minecraft.getInstance().getEntityRenderDispatcher();
     EntityRenderer<? extends Entity> entityRenderer =
         entityRenderDispatcher.getRenderer(pathfinderMob);
-
-    // Verify if entity renderer is available.
     if (entityRenderer
         instanceof
         LivingEntityRenderer<? extends LivingEntity, ? extends EntityModel<? extends Entity>>
@@ -127,6 +124,7 @@ public class RendererManager {
       log.debug("{} Registering entity renderer {} for {}", LOG_PREFIX, entityRenderer, entityType);
       entityRendererMap.put(entityType, entityRenderer);
     }
+
     return null;
   }
 
@@ -141,7 +139,6 @@ public class RendererManager {
       return entityRendererMap.get(entityType);
     }
 
-    // Verify that EntityRenderDispatcher is available.
     EntityRenderDispatcher entityRenderDispatcher =
         Minecraft.getInstance().getEntityRenderDispatcher();
     EntityRenderer<? extends Entity> entityRenderer =
@@ -207,6 +204,7 @@ public class RendererManager {
         || sourceEntity == targetEntity) {
       return;
     }
+
     // Adjust basic entity data.
     copyCustomEntityData(sourceEntity, targetEntity, entityTypeName);
 

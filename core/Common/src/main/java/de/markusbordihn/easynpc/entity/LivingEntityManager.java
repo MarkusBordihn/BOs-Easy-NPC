@@ -192,6 +192,10 @@ public class LivingEntityManager {
     return npcEntityMap.getOrDefault(uuid, null);
   }
 
+  public static Stream<EasyNPC<?>> getEasyNPCEntities() {
+    return npcEntityMap.values().stream();
+  }
+
   public static ServerPlayer getPlayerByUUID(UUID uuid, ServerLevel serverLevel) {
     if (uuid == null || serverLevel == null) {
       return null;

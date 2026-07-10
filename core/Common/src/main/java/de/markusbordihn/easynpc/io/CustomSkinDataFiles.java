@@ -91,31 +91,47 @@ public class CustomSkinDataFiles {
     if (skinDataFolder == null) {
       return;
     }
+
     log.debug("{} custom skins from {} ...", Constants.LOG_REGISTER_PREFIX, skinDataFolder);
     for (SkinModel skinModel : SkinModel.values()) {
-      Path skinModelFolder = getCustomSkinDataFolder(skinModel);
-      if (skinModelFolder != null
-          && skinModelFolder.toFile().exists()
-          && skinModelFolder.toFile().isDirectory()) {
-        try (Stream<Path> skinPaths = Files.walk(skinModelFolder, 5)) {
-          skinPaths
-              .filter(Files::isRegularFile)
-              .filter(Files::isReadable)
-              .filter(skinPath -> !Files.isSymbolicLink(skinPath))
-              .filter(skinPath -> skinPath.toString().endsWith(".png"))
-              .forEach(
-                  skinPath -> CustomTextureManager.registerTexture(skinModel, skinPath.toFile()));
-        } catch (IOException e) {
-          log.error(
-              "Error reading custom skin files from {} for {}:", skinModelFolder, skinModel, e);
-        }
-      }
+      registerTextureFiles(skinModel);
     }
+  }
+
+  public static void registerTextureFiles(SkinModel skinModel) {
+    if (skinModel == null) {
+      return;
+    }
+
+    Path skinModelFolder = getCustomSkinDataFolder(skinModel);
+    if (skinModelFolder == null
+        || !skinModelFolder.toFile().exists()
+        || !skinModelFolder.toFile().isDirectory()) {
+      CustomTextureManager.markTextureCacheLoaded(skinModel);
+      return;
+    }
+
+    try (Stream<Path> skinPaths = Files.walk(skinModelFolder, 5)) {
+      skinPaths
+          .filter(Files::isRegularFile)
+          .filter(Files::isReadable)
+          .filter(skinPath -> !Files.isSymbolicLink(skinPath))
+          .filter(skinPath -> skinPath.toString().endsWith(".png"))
+          .forEach(skinPath -> CustomTextureManager.registerTexture(skinModel, skinPath.toFile()));
+    } catch (IOException e) {
+      log.error("Error reading custom skin files from {} for {}:", skinModelFolder, skinModel, e);
+    }
+    CustomTextureManager.markTextureCacheLoaded(skinModel);
   }
 
   public static void refreshRegisterTextureFiles() {
     CustomTextureManager.clearTextureCache();
     registerTextureFiles();
+  }
+
+  public static void refreshRegisterTextureFiles(SkinModel skinModel) {
+    CustomTextureManager.clearTextureCache(skinModel);
+    registerTextureFiles(skinModel);
   }
 
   public static Path getCustomSkinDataFolder() {

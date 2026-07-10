@@ -77,7 +77,6 @@ public record ExportPresetMessage(
       return;
     }
 
-    // Validate name.
     if (this.name == null || this.name.isEmpty()) {
       log.warn("Export preset name is empty for {}", easyNPC);
       return;

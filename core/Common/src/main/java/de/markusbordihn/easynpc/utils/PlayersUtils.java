@@ -97,7 +97,6 @@ public class PlayersUtils {
       JsonObject jsonObject = JsonParser.parseString(json).getAsJsonObject();
       String uuidString = jsonObject.get("id").getAsString();
 
-      // Verify UUID string
       if (uuidString == null || uuidString.isEmpty()) {
         log.error("Unable to get user UUID with invalid response: {}", json);
         userUUIDCache.put(username, null);

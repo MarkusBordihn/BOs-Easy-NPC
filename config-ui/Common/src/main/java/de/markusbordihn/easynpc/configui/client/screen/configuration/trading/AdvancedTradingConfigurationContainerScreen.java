@@ -278,7 +278,6 @@ public class AdvancedTradingConfigurationContainerScreen<T extends Configuration
       this.navigationTicker = 0;
     }
 
-    // Validate trading offers
     if (this.tradingOffersTicker++ > TRADING_OFFERS_TICKER) {
       for (int tradingOffer = 0;
           tradingOffer < AdvancedTradingConfigurationMenu.TRADING_OFFERS_PER_PAGE;

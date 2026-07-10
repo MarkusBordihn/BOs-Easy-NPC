@@ -77,19 +77,16 @@ public record ChangeModelScaleMessage(UUID uuid, ModelPartType modelPartType, Cu
       return;
     }
 
-    // Validate ModelPart.
     if (this.modelPartType == null) {
       log.error("Invalid modelPartType for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
-    // Validate Positions.
     if (this.scale == null) {
       log.error("Invalid scale for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
-    // Validate Model data.
     ModelDataCapable<?> modelData = easyNPC.getEasyNPCModelData();
     if (modelData == null) {
       log.error("Invalid model data for {} from {}", easyNPC, serverPlayer);
@@ -108,7 +105,6 @@ public record ChangeModelScaleMessage(UUID uuid, ModelPartType modelPartType, Cu
     // Apply scale change based on the model part.
     modelData.setModelPartScale(this.modelPartType, this.scale);
 
-    // Verify if custom model pose is really needed.
     if (!modelData.hasChangedModel()) {
       log.debug("Reset custom model pose for {} from {}", easyNPC, serverPlayer);
       modelData.setModelPose(ModelPose.VANILLA);
