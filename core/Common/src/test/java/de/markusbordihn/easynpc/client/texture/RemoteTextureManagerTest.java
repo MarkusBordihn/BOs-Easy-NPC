@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Comparator;
 import java.util.UUID;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -43,7 +44,7 @@ class RemoteTextureManagerTest {
 
     try (java.util.stream.Stream<Path> paths = Files.walk(directory)) {
       paths
-          .sorted((left, right) -> right.compareTo(left))
+          .sorted(Comparator.reverseOrder())
           .forEach(
               path -> {
                 try {

@@ -98,7 +98,6 @@ public class CustomModelConfigurationScreen<T extends ConfigurationMenu>
     // Description text
     renderDescriptionText(guiGraphics, this.contentLeftPos + 5, this.contentTopPos + 20);
 
-    // Make sure we pass the mouse movements to the dynamically added buttons, if any.
     if (!customModelButtons.isEmpty()) {
       for (Button skinButton : customModelButtons) {
         skinButton.extractRenderState(guiGraphics, x, y, partialTicks);
@@ -111,7 +110,6 @@ public class CustomModelConfigurationScreen<T extends ConfigurationMenu>
 
   @Override
   public boolean mouseClicked(MouseButtonEvent mouseButtonEvent, boolean doubleClick) {
-    // Make sure we pass the mouse click to the dynamically added buttons, if any.
     if (!customModelButtons.isEmpty()) {
       for (Button skinButton : customModelButtons) {
         skinButton.mouseClicked(mouseButtonEvent, doubleClick);
@@ -249,7 +247,7 @@ public class CustomModelConfigurationScreen<T extends ConfigurationMenu>
       EntityType<? extends Entity> entityType = entityKeys.get(index);
       this.renderCustomModelEntity(guiGraphics, left, top, entityType);
 
-      int topNamePos = Math.round((top - 76f) / SKIN_NAME_SCALING);
+      int topNamePos = Math.round((top - 176f) / SKIN_NAME_SCALING);
       int leftNamePos = Math.round((left - 21f) / SKIN_NAME_SCALING);
       int scaledMouseX = Math.round(mouseX / SKIN_NAME_SCALING);
       int scaledMouseY = Math.round(mouseY / SKIN_NAME_SCALING);

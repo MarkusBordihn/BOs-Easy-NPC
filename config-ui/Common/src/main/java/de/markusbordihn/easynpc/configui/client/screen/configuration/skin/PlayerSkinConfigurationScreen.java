@@ -101,7 +101,7 @@ public class PlayerSkinConfigurationScreen<T extends ConfigurationMenu>
       this.renderSkinEntity(guiGraphics, left, top, skinModel, textureKey);
 
       // Render skin name
-      int topNamePos = Math.round((top - 76) / SKIN_NAME_SCALING);
+      int topNamePos = Math.round((top - 176) / SKIN_NAME_SCALING);
       int leftNamePos = Math.round((left - 21) / SKIN_NAME_SCALING);
       int scaledMouseX = Math.round(mouseX / SKIN_NAME_SCALING);
       int scaledMouseY = Math.round(mouseY / SKIN_NAME_SCALING);
@@ -166,13 +166,11 @@ public class PlayerSkinConfigurationScreen<T extends ConfigurationMenu>
     if (!textureSkinLocationValue.isEmpty()
         && !textureSkinLocationValue.equals(this.formerTextureSkinLocation)) {
 
-      // Validate player name
       if (!NameValidator.isValidPlayerName(textureSkinLocationValue)) {
         this.errorMessage = "invalid_player_name";
         return;
       }
 
-      // Validate player UUID
       UUID playerUUID = PlayersUtils.getUserUUID(textureSkinLocationValue);
       if (playerUUID == null) {
         this.errorMessage = "invalid_player_uuid";
@@ -203,7 +201,6 @@ public class PlayerSkinConfigurationScreen<T extends ConfigurationMenu>
       return;
     }
 
-    // Validate player name.
     this.addTextureSettingsButton.active =
         !textureSkinLocationValue.isEmpty()
             && NameValidator.isValidPlayerName(textureSkinLocationValue);

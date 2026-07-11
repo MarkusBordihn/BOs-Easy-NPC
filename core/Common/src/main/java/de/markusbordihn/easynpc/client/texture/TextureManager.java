@@ -38,13 +38,11 @@ public class TextureManager {
   private TextureManager() {}
 
   public static Identifier addCustomTexture(TextureModelKey textureModelKey, File file) {
-    // Verify texture model key.
     if (textureModelKey == null) {
       log.error("{} Texture model key for {} is invalid!", LOG_PREFIX, file);
       return null;
     }
 
-    // Verify file to make sure it's not a directory, not null, exists and readable.
     if (file == null || !file.exists() || !file.canRead() || file.isDirectory()) {
       log.error("{} Texture file {} is invalid!", LOG_PREFIX, file);
       return null;
@@ -65,7 +63,6 @@ public class TextureManager {
       return null;
     }
 
-    // Verify the image data to make sure we got a valid image!
     if (!ImageValidator.isValidImage(nativeImage)) {
       log.error(
           "{} Unable to get any valid texture from file {} for {}!",

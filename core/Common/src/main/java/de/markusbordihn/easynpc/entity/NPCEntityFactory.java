@@ -25,6 +25,7 @@ import de.markusbordihn.easynpc.api.npc.raw.skeleton.StrayRaw;
 import de.markusbordihn.easynpc.api.npc.raw.skeleton.WitherSkeletonRaw;
 import de.markusbordihn.easynpc.api.npc.raw.villager.VillagerRaw;
 import de.markusbordihn.easynpc.api.npc.raw.zombie.ZombieRaw;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
@@ -58,7 +59,7 @@ public class NPCEntityFactory {
           "Unsupported base entity type: "
               + getEntityTypeId(baseEntityType)
               + ". Supported types are: "
-              + getSupportedBaseTypeIds());
+              + Arrays.toString(getSupportedBaseTypeIds()));
     }
 
     try {

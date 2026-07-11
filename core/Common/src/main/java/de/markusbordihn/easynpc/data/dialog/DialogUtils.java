@@ -90,10 +90,8 @@ public class DialogUtils {
       }
     }
 
-    // Replace all line breaks macros.
     text = TextFormattingCodes.parseTextLineBreaks(text);
 
-    // Replace color codes.
     text = TextFormattingCodes.parseTextFormattingCodes(text);
 
     return text;

@@ -102,7 +102,7 @@ public class UrlSkinConfigurationScreen<T extends ConfigurationMenu>
       this.renderSkinEntity(guiGraphics, left, top, skinModel, textureKey);
 
       // Render skin name
-      int topNamePos = Math.round((top - 76) / SKIN_NAME_SCALING);
+      int topNamePos = Math.round((top - 176) / SKIN_NAME_SCALING);
       int leftNamePos = Math.round((left - 21) / SKIN_NAME_SCALING);
       int scaledMouseX = Math.round(mouseX / SKIN_NAME_SCALING);
       int scaledMouseY = Math.round(mouseY / SKIN_NAME_SCALING);
@@ -173,14 +173,12 @@ public class UrlSkinConfigurationScreen<T extends ConfigurationMenu>
       this.addTextureSettingsButton.active = false;
       this.formerTextureSkinLocation = textureSkinLocationValue;
 
-      // Validate url
       if (!UrlValidator.isValidUrl(textureSkinLocationValue)) {
         this.errorMessage = "invalid_remote_image";
         resetCooldownOnError();
         return;
       }
 
-      // Validate URL format
       URL textureSkinLocation;
       try {
         textureSkinLocation = new URL(textureSkinLocationValue);
@@ -191,7 +189,6 @@ public class UrlSkinConfigurationScreen<T extends ConfigurationMenu>
         return;
       }
 
-      // Validate image before sending it to the server.
       // Any exceptions during download/validation are caught and handled gracefully
       try {
         if (!RemoteImageValidator.isValidImage(textureSkinLocation)) {
@@ -232,7 +229,6 @@ public class UrlSkinConfigurationScreen<T extends ConfigurationMenu>
       return;
     }
 
-    // Validate url
     this.addTextureSettingsButton.active =
         !textureSkinLocationValue.isEmpty() && UrlValidator.isValidUrl(textureSkinLocationValue);
 

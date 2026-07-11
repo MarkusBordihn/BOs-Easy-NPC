@@ -67,7 +67,6 @@ public class BasicTradingConfigurationMenu extends TradingConfigurationMenu {
       final CompoundTag data) {
     super(menuType, windowId, playerInventory, data);
 
-    // Make sure the passed container matched the expected sizes
     checkContainerSize(tradingContainer, TRADING_CONTAINER_SIZE);
 
     // Container

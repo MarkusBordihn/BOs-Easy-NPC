@@ -80,7 +80,7 @@ public class ModTabs {
                       .build());
     }
 
-    if (CompatConstants.MOD_COBBLEMON_LOADED || CompatConstants.MOD_EASY_MODEL_ENTITIES_LOADED) {
+    if (!ModItems.INTEGRATION_SPAWN_EGGS.isEmpty()) {
       TAB_INTEGRATION_SPAWN_EGGS =
           CREATIVE_TABS.register(
               "integration_spawn_eggs",

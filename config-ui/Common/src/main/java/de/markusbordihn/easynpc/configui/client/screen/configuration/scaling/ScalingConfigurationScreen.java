@@ -35,6 +35,7 @@ import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Inventory;
 
 public class ScalingConfigurationScreen<T extends ConfigurationMenu>
@@ -230,12 +231,14 @@ public class ScalingConfigurationScreen<T extends ConfigurationMenu>
       GuiGraphicsExtractor guiGraphics, int x, int y, float partialTicks) {
     super.extractRenderState(guiGraphics, x, y, partialTicks);
 
-    ModelDataCapable<?> modelData = this.getEasyNPC().getEasyNPCModelData();
-    CustomScale rootScale = modelData.getModelPartScale(ModelPartType.ROOT);
-    float yScale = rootScale.y();
+    // The render pipeline centers the entity by translating it down by half of its bounding box
+    // height. Cancel this out so the feet stay pinned to the 0 line of the scale ruler,
+    // independent of the current scale and pending bounding box refreshes.
+    Entity easyNPCEntity = this.getEasyNPCEntity();
+    float boundingBoxHeight = easyNPCEntity != null ? easyNPCEntity.getBbHeight() : 1.9f;
     int pixelsPerScale = 33;
-    int baselineY = this.contentTopPos + 161;
-    float yOffset = -(yScale - 0.99f);
+    int baselineY = this.contentTopPos + 192;
+    float yOffset = -boundingBoxHeight / 2.0f;
 
     EntityConfigScreenRenderer.renderEntityRaw(
         guiGraphics,

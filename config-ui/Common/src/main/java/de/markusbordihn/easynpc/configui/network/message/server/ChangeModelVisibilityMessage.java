@@ -74,13 +74,11 @@ public record ChangeModelVisibilityMessage(UUID uuid, ModelPartType modelPartTyp
       return;
     }
 
-    // Validate ModelPart.
     if (this.modelPartType == null) {
       log.error("Invalid modelPartType for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
-    // Validate Model data.
     ModelDataCapable<?> modelData = easyNPC.getEasyNPCModelData();
     if (modelData == null) {
       log.error("Invalid model data for {} from {}", easyNPC, serverPlayer);
@@ -103,7 +101,6 @@ public record ChangeModelVisibilityMessage(UUID uuid, ModelPartType modelPartTyp
     // Apply visibility change based on the model part.
     modelData.setModelPartVisibility(this.modelPartType, this.visible);
 
-    // Verify if custom model pose is really needed.
     if (!modelData.hasChangedModel()) {
       log.debug("Reset custom model pose for {} from {}", easyNPC, serverPlayer);
       modelData.setModelPose(ModelPose.VANILLA);

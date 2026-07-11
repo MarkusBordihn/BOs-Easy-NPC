@@ -95,8 +95,7 @@ public class EvokerBase extends EvokerRaw implements BaseEasyNPC<EvokerRaw> {
       // Allow travel for NPC, if travel objectives are used.
       super.travel(vec3);
     } else {
-      // Make sure we only calculate animations for be as much as possible server-friendly.
-      this.calculateEntityAnimation(false);
+      this.calculateEntityAnimation(this.omnidirectionalAirMover());
     }
   }
 }

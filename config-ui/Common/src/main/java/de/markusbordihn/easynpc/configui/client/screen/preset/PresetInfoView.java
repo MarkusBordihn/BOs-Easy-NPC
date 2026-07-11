@@ -35,9 +35,7 @@ public class PresetInfoView {
   private static final float TEXT_SCALE = 0.8f;
   private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
-  private PresetInfoView() {
-    // Utility class
-  }
+  private PresetInfoView() {}
 
   public static void render(
       GuiGraphicsExtractor guiGraphics,

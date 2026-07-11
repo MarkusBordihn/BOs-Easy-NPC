@@ -261,7 +261,7 @@ public class CobblemonModelConfigurationScreen<T extends ConfigurationMenu>
       Identifier speciesLocation = Identifier.tryParse(speciesId);
       String namespace = speciesLocation != null ? speciesLocation.getNamespace() : speciesId;
       String path = speciesLocation != null ? speciesLocation.getPath() : "";
-      int topNamePos = Math.round((top - 76f) / SKIN_NAME_SCALING);
+      int topNamePos = Math.round((top - 176f) / SKIN_NAME_SCALING);
       int leftNamePos = Math.round((left - 21f) / SKIN_NAME_SCALING);
       int scaledMouseX = Math.round(mouseX / SKIN_NAME_SCALING);
       int scaledMouseY = Math.round(mouseY / SKIN_NAME_SCALING);

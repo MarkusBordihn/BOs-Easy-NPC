@@ -73,7 +73,6 @@ public class EquipmentConfigurationMenu extends ConfigurationMenu {
       final CompoundTag data) {
     super(menuType, windowId, playerInventory, data);
 
-    // Make sure the passed container matched the expected sizes
     checkContainerSize(armorContainer, ARMOR_CONTAINER_SIZE);
     checkContainerSize(handContainer, HAND_CONTAINER_SIZE);
 

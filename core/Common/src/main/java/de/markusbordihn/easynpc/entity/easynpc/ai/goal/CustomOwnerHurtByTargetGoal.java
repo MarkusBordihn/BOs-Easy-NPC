@@ -46,7 +46,6 @@ public class CustomOwnerHurtByTargetGoal<T extends EasyNPC<?>> extends TargetGoa
 
   @Override
   public boolean canUse() {
-    // Verify owner exists
     if (this.ownerData == null || !this.ownerData.hasNPCOwner()) {
       return false;
     }

@@ -20,8 +20,8 @@
 package de.markusbordihn.easynpc.configui.network.message.server;
 
 import de.markusbordihn.easynpc.configui.Constants;
-import de.markusbordihn.easynpc.data.saveddata.FactionData;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.handler.FactionHandler;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import de.markusbordihn.easynpc.security.NpcFeature;
 import java.util.UUID;
@@ -82,8 +82,7 @@ public record ChangeFactionColorMessage(UUID uuid, String factionName, String co
       return;
     }
 
-    if (!FactionData.isInitialized()
-        || !FactionData.get().setFactionColor(this.factionName, color)) {
+    if (!FactionHandler.setFactionColor(this.factionName, color)) {
       log.error(
           "Failed to change color of faction '{}' to '{}' for {}",
           this.factionName,

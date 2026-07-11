@@ -25,7 +25,9 @@ import de.markusbordihn.easynpc.data.model.ModelType;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.EntityDimensions;
 
 public final class EasyModelEntitiesManager {
 
@@ -35,7 +37,19 @@ public final class EasyModelEntitiesManager {
 
   private static final Map<Identifier, ModelType> PROFILE_MODEL_TYPES = new ConcurrentHashMap<>();
 
+  private static volatile Function<Identifier, EntityDimensions> profileDimensionsProvider;
+
   private EasyModelEntitiesManager() {}
+
+  public static void registerProfileDimensionsProvider(
+      Function<Identifier, EntityDimensions> provider) {
+    profileDimensionsProvider = provider;
+  }
+
+  public static EntityDimensions getProfileDimensions(Identifier profileId) {
+    Function<Identifier, EntityDimensions> provider = profileDimensionsProvider;
+    return provider != null && profileId != null ? provider.apply(profileId) : null;
+  }
 
   public static void registerProfileModelType(Identifier profileId, ModelType modelType) {
     if (profileId != null && modelType != null) {

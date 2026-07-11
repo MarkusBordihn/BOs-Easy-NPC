@@ -95,7 +95,7 @@ public class CustomSkinConfigurationScreen<T extends ConfigurationMenu>
       this.renderSkinEntity(guiGraphics, left, top, textureKey);
 
       // Render skin name
-      int topNamePos = Math.round((top - 76f) / SKIN_NAME_SCALING);
+      int topNamePos = Math.round((top - 176f) / SKIN_NAME_SCALING);
       int leftNamePos = Math.round((left - 21f) / SKIN_NAME_SCALING);
       int scaledMouseX = Math.round(mouseX / SKIN_NAME_SCALING);
       int scaledMouseY = Math.round(mouseY / SKIN_NAME_SCALING);
@@ -159,12 +159,12 @@ public class CustomSkinConfigurationScreen<T extends ConfigurationMenu>
     // Entity specific information.
     SkinDataCapable<?> skinData = this.getEasyNPC().getEasyNPCSkinData();
     SkinModel skinModel = skinData.getSkinModel();
+    CustomTextureManager.ensureTextureCacheLoaded(skinModel);
     this.numOfSkins = CustomTextureManager.getCustomTextureCacheKeys(skinModel).size();
 
     // Skin Navigation Buttons
     defineSkinNavigationButtons();
 
-    // Open Skin Folder Button
     Path skinModelFolder = CustomSkinDataFiles.getCustomSkinDataFolder(skinModel);
     if (skinModelFolder != null) {
       this.skinFolderButton =
@@ -188,7 +188,7 @@ public class CustomSkinConfigurationScreen<T extends ConfigurationMenu>
                 16,
                 (Component) null,
                 onPress -> {
-                  CustomSkinDataFiles.refreshRegisterTextureFiles();
+                  CustomSkinDataFiles.refreshRegisterTextureFiles(skinModel);
                   CustomSkinConfigurationScreen.nextSkinReload =
                       (int) java.time.Instant.now().getEpochSecond() + ADD_SKIN_RELOAD_DELAY;
                 }));
