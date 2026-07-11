@@ -29,6 +29,7 @@ import de.markusbordihn.easynpc.configui.menu.editor.EditorMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.data.faction.FactionDataEntry;
+import de.markusbordihn.easynpc.data.faction.FactionNameValidator;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import java.util.ArrayList;
 import java.util.List;
@@ -91,7 +92,6 @@ public class FactionsEditorScreen<T extends EditorMenu> extends EditorScreen<T> 
     this.factionDataEntries =
         AdditionalScreenData.getFactionData(this.getAdditionalScreenData().getData());
 
-    // Pre-computed rows with outgoing and incoming hostile factions per faction.
     this.factionRows.clear();
     for (FactionDataEntry factionDataEntry : this.factionDataEntries.values()) {
       List<String> attackedBy = new ArrayList<>();
@@ -104,7 +104,7 @@ public class FactionsEditorScreen<T extends EditorMenu> extends EditorScreen<T> 
           new FactionRow(
               factionDataEntry.getName(),
               String.join(", ", new TreeSet<>(factionDataEntry.getHostileFactions())),
-              String.join(", ", attackedBy)));
+              String.join(", ", new TreeSet<>(attackedBy))));
     }
 
     this.homeButton =
@@ -127,7 +127,6 @@ public class FactionsEditorScreen<T extends EditorMenu> extends EditorScreen<T> 
                 onPress -> {}));
     titleButton.active = false;
 
-    // Faction rows with paging support.
     this.factionRowsTop = this.topPos + 44;
     int maxPageOffset = Math.max(0, (this.factionRows.size() - 1) / MAX_FACTIONS_PER_PAGE);
     this.pageOffset = Math.min(this.pageOffset, maxPageOffset);
@@ -148,7 +147,6 @@ public class FactionsEditorScreen<T extends EditorMenu> extends EditorScreen<T> 
       factionRowTop += ROW_HEIGHT;
     }
 
-    // Paging buttons, if needed.
     if (maxPageOffset > 0) {
       this.previousPageButton =
           this.addRenderableWidget(
@@ -178,11 +176,10 @@ public class FactionsEditorScreen<T extends EditorMenu> extends EditorScreen<T> 
       this.nextPageButton.active = this.pageOffset < maxPageOffset;
     }
 
-    // Create new faction.
     this.newFactionNameTextField =
         this.addRenderableWidget(
             new TextField(this.font, this.leftPos + 8, this.bottomPos - 27, 150));
-    this.newFactionNameTextField.setFilter(value -> value != null && !value.contains(" "));
+    this.newFactionNameTextField.setFilter(FactionNameValidator::isValidInput);
     this.addFactionButton =
         this.addRenderableWidget(
             new AddButton(
@@ -192,7 +189,7 @@ public class FactionsEditorScreen<T extends EditorMenu> extends EditorScreen<T> 
                 "add_faction",
                 onPress -> {
                   String newFactionName = this.newFactionNameTextField.getValue();
-                  if (!newFactionName.isEmpty()
+                  if (FactionNameValidator.isValid(newFactionName)
                       && !this.factionDataEntries.containsKey(newFactionName)) {
                     NetworkMessageHandlerManager.getServerHandler()
                         .createFaction(this.getEasyNPCUUID(), newFactionName);
@@ -202,7 +199,7 @@ public class FactionsEditorScreen<T extends EditorMenu> extends EditorScreen<T> 
     this.newFactionNameTextField.setResponder(
         value ->
             this.addFactionButton.active =
-                value != null && !value.isEmpty() && !this.factionDataEntries.containsKey(value));
+                FactionNameValidator.isValid(value) && !this.factionDataEntries.containsKey(value));
   }
 
   private void renderColumn(
@@ -225,7 +222,6 @@ public class FactionsEditorScreen<T extends EditorMenu> extends EditorScreen<T> 
             : columnText;
     Text.drawString(guiGraphics, this.font, visibleText, textLeft, rowTop + 5, 0xFF404040);
 
-    // Show the full faction list as tooltip if the column content is truncated.
     if (truncated
         && mouseX >= textLeft
         && mouseX < textLeft + columnWidth
@@ -240,7 +236,6 @@ public class FactionsEditorScreen<T extends EditorMenu> extends EditorScreen<T> 
       GuiGraphicsExtractor guiGraphics, int x, int y, float partialTicks) {
     super.extractRenderState(guiGraphics, x, y, partialTicks);
 
-    // Column headers with separator line.
     Text.drawConfigString(
         guiGraphics,
         this.font,

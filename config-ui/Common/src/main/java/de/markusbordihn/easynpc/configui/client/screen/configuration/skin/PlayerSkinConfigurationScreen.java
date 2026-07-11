@@ -166,13 +166,11 @@ public class PlayerSkinConfigurationScreen<T extends ConfigurationMenu>
     if (!textureSkinLocationValue.isEmpty()
         && !textureSkinLocationValue.equals(this.formerTextureSkinLocation)) {
 
-      // Validate player name
       if (!NameValidator.isValidPlayerName(textureSkinLocationValue)) {
         this.errorMessage = "invalid_player_name";
         return;
       }
 
-      // Validate player UUID
       UUID playerUUID = PlayersUtils.getUserUUID(textureSkinLocationValue);
       if (playerUUID == null) {
         this.errorMessage = "invalid_player_uuid";
@@ -203,7 +201,6 @@ public class PlayerSkinConfigurationScreen<T extends ConfigurationMenu>
       return;
     }
 
-    // Validate player name.
     this.addTextureSettingsButton.active =
         !textureSkinLocationValue.isEmpty()
             && NameValidator.isValidPlayerName(textureSkinLocationValue);

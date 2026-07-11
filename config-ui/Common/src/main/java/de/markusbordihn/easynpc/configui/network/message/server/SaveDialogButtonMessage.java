@@ -78,33 +78,28 @@ public record SaveDialogButtonMessage(
       return;
     }
 
-    // Validate dialog id.
     if (this.dialogId == null) {
       log.error("Invalid dialog id for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
-    // Validate dialog button data.
     if (this.dialogButtonEntry == null) {
       log.error("Invalid dialog button data for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
-    // Validate dialog data.
     DialogDataCapable<?> dialogData = easyNPC.getEasyNPCDialogData();
     if (dialogData == null) {
       log.error("Invalid dialog data for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
-    // Validate action event data.
     ActionEventDataCapable<?> actionEventData = easyNPC.getEasyNPCActionEventData();
     if (actionEventData == null) {
       log.error("Invalid action data for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
-    // Validate dialog for dialog button.
     if (!dialogData.hasDialog(this.dialogId)) {
       log.error(
           "Unknown dialog button editor request for dialog {} for {} from {}",
@@ -114,7 +109,6 @@ public record SaveDialogButtonMessage(
       return;
     }
 
-    // Validate dialog button id.
     if (this.dialogButtonId != null
         && !dialogData.hasDialogButton(this.dialogId, this.dialogButtonId)) {
       log.error(
@@ -145,7 +139,6 @@ public record SaveDialogButtonMessage(
       return;
     }
 
-    // Perform action.
     if (this.dialogButtonId == null) {
       log.info(
           "Add new dialog button {} for dialog {} for {} from {}",

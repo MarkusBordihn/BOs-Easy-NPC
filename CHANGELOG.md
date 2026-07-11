@@ -10,6 +10,11 @@ Check the [upgrade guide][upgrade_guide] for more information.
 
 ### 7.0.0
 
+- Fixed #794 by using the expected type for NPC rendering.
+- Fixed scaling screen preview by pinning the entity feet to the 0 line of the scale ruler, so
+  NPCs scale from the bottom up again instead of from the center and no longer shift down after
+  bounding box updates.
+- Fixed #791 by adding Wandering Trader NPC type.
 - Fixed #788 by extending the AI safeguards to Epic Fight and raw NPC variants (Piglin, Villager,
   Enderman, Creeper, Raider and Witch).
 - Fixed #787, #531, #237 and #184 by adding a faction system with `/easy_npc faction` commands,
@@ -22,8 +27,14 @@ Check the [upgrade guide][upgrade_guide] for more information.
   attribute.
 - Fixed Cobblemon model selection previews for oversized species by scaling with Cobblemon's own
   profile scale instead of hitbox height.
+- Fixed faction management edge cases by validating faction names, sorting faction lists and
+  refreshing loaded NPC scoreboard assignments after faction color or delete changes.
+- Fixed custom skin reloads by loading and clearing texture caches per skin model instead of always
+  rebuilding the full custom texture cache.
 - Improved the `Attackable by Players/Monsters/Factions` combat attributes to work independently of
   `Invulnerable`, each opening a targeted hole for its own attacker group.
+- Improved preset command and network handling by splitting the large handlers into smaller
+  focused import, export and feature-specific components.
 - Added Easy Model Entities Support.
 - Added faction manager and faction editor screens to create, color and delete factions and manage
   hostile relations, protected by the new `FACTION_MANAGEMENT` security feature.

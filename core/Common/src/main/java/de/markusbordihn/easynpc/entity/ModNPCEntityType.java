@@ -53,6 +53,7 @@ import de.markusbordihn.easynpc.entity.easynpc.npc.standard.skeleton.WitherSkele
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.spider.CaveSpiderNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.spider.SpiderNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.villager.VillagerNPC;
+import de.markusbordihn.easynpc.entity.easynpc.npc.standard.villager.WanderingTraderNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.villager.ZombieVillagerNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.zombie.DrownedNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.zombie.HuskNPC;
@@ -299,6 +300,15 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
           .sized(0.6F, 1.95F)
           .clientTrackingRange(12),
       VillagerNPC::createAttributes),
+  WANDERING_TRADER(
+      DefaultNPCType.WANDERING_TRADER.getRegistryId(),
+      EntityType.Builder.of(
+              (EntityType<WanderingTraderNPC> type, Level level) ->
+                  new WanderingTraderNPC(type, level),
+              MobCategory.MISC)
+          .sized(0.6F, 1.95F)
+          .clientTrackingRange(12),
+      WanderingTraderNPC::createAttributes),
   VEX(
       DefaultNPCType.VEX.getRegistryId(),
       EntityType.Builder.of(

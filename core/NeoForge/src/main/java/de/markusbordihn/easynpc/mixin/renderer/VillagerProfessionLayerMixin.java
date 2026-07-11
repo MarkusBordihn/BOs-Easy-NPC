@@ -49,24 +49,20 @@ public class VillagerProfessionLayerMixin {
       float ageInTicks,
       CallbackInfo callbackInfo) {
 
-    // Check if this is an EasyNPC render state
     if (!(renderState instanceof EasyNPCRenderStateExtension)) {
       return;
     }
 
-    // Get EasyNPC entity
     EasyNPC<?> easyNPC = EasyNPCLivingEntityRenderer.getEasyNPC(renderState);
     if (easyNPC == null) {
       return;
     }
 
-    // Get skin data to check layer settings
     SkinDataCapable<?> skinData = easyNPC.getEasyNPCSkinData();
     if (skinData == null) {
       return;
     }
 
-    // Check if layers should be disabled
     if (skinData.getSkinDataEntry().disableLayers()) {
       callbackInfo.cancel();
     }

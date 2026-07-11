@@ -50,6 +50,8 @@ public class EasyModelEntitiesLoader implements IntegrationModelProvider {
       log.info("Loaded {} Easy Model Entities profiles", INSTANCE.cachedModels.size());
     }
     IntegrationRegistry.register(INSTANCE);
+    EasyModelEntitiesManager.registerProfileDimensionsProvider(
+        profileId -> EasyModelEntitiesApi.getProfileEntityDimensions(profileId).orElse(null));
 
     if (!reloadListenerRegistered) {
       reloadListenerRegistered = true;

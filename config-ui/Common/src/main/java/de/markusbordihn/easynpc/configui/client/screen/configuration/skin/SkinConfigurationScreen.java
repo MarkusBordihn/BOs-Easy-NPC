@@ -152,7 +152,6 @@ public class SkinConfigurationScreen<T extends ConfigurationMenu> extends Config
     // Clear former error messages, if any.
     TextureManager.clearLastErrorMessage();
 
-    // Verify access rights and disable buttons if necessary.
     this.checkAccess();
 
     // Check if we need to hide the player skin button.
@@ -198,7 +197,6 @@ public class SkinConfigurationScreen<T extends ConfigurationMenu> extends Config
 
   @Override
   public boolean mouseClicked(MouseButtonEvent mouseButtonEvent, boolean doubleClick) {
-    // Make sure we pass the mouse click to the dynamically added buttons, if any.
     if (!skinButtons.isEmpty()) {
       for (Button skinButton : skinButtons) {
         skinButton.mouseClicked(mouseButtonEvent, doubleClick);
@@ -279,7 +277,6 @@ public class SkinConfigurationScreen<T extends ConfigurationMenu> extends Config
       GuiGraphicsExtractor guiGraphics, int x, int y, float partialTicks) {
     super.extractRenderState(guiGraphics, x, y, partialTicks);
 
-    // Make sure we pass the mouse movements to the dynamically added buttons, if any.
     if (!skinButtons.isEmpty()) {
       for (Button skinButton : skinButtons) {
         skinButton.extractRenderState(guiGraphics, x, y, partialTicks);

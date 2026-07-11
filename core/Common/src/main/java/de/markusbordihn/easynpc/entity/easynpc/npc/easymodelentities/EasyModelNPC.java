@@ -25,13 +25,17 @@ import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
 import de.markusbordihn.easynpc.data.model.ModelType;
 import de.markusbordihn.easynpc.data.render.RenderDataEntry;
 import de.markusbordihn.easynpc.data.render.RenderType;
+import de.markusbordihn.easynpc.data.scale.CustomScale;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import java.util.Objects;
+import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
@@ -68,6 +72,29 @@ public class EasyModelNPC extends PathfinderMobRaw {
       this.cachedProfileId = EasyModelEntitiesManager.getProfileId(entityModel);
     }
     return this.cachedProfileId;
+  }
+
+  @Override
+  public EntityDimensions getDefaultDimensions(Pose pose) {
+    EntityDimensions dimensions =
+        EasyModelEntitiesManager.getProfileDimensions(this.getEasyModelProfileId());
+    if (dimensions == null) {
+      return super.getDefaultDimensions(pose);
+    }
+    CustomScale rootScale = getModelRootData().scale();
+    if (rootScale.x() != 1.0f || rootScale.y() != 1.0f) {
+      dimensions = dimensions.scale(rootScale.x(), rootScale.y());
+    }
+    return dimensions;
+  }
+
+  @Override
+  public void onSyncedDataUpdated(EntityDataAccessor<?> entityDataAccessor) {
+    super.onSyncedDataUpdated(entityDataAccessor);
+    if (entityDataAccessor == entityDataAccessorMap.get(SynchedDataIndex.MODEL_ROOT_DATA)
+        || entityDataAccessor == entityDataAccessorMap.get(SynchedDataIndex.RENDER_DATA)) {
+      this.refreshDimensions();
+    }
   }
 
   @Override

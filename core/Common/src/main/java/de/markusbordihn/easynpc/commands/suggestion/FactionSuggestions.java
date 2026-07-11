@@ -23,6 +23,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import de.markusbordihn.easynpc.data.saveddata.FactionData;
+import java.util.TreeSet;
 import java.util.concurrent.CompletableFuture;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.SharedSuggestionProvider;
@@ -36,6 +37,7 @@ public class FactionSuggestions {
     if (!FactionData.isInitialized()) {
       return builder.buildFuture();
     }
-    return SharedSuggestionProvider.suggest(FactionData.get().getFactionNames(), builder);
+    return SharedSuggestionProvider.suggest(
+        new TreeSet<>(FactionData.get().getFactionNames()), builder);
   }
 }

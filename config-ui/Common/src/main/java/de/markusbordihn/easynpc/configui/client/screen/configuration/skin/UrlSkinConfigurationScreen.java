@@ -173,14 +173,12 @@ public class UrlSkinConfigurationScreen<T extends ConfigurationMenu>
       this.addTextureSettingsButton.active = false;
       this.formerTextureSkinLocation = textureSkinLocationValue;
 
-      // Validate url
       if (!UrlValidator.isValidUrl(textureSkinLocationValue)) {
         this.errorMessage = "invalid_remote_image";
         resetCooldownOnError();
         return;
       }
 
-      // Validate URL format
       URL textureSkinLocation;
       try {
         textureSkinLocation = new URL(textureSkinLocationValue);
@@ -191,7 +189,6 @@ public class UrlSkinConfigurationScreen<T extends ConfigurationMenu>
         return;
       }
 
-      // Validate image before sending it to the server.
       // Any exceptions during download/validation are caught and handled gracefully
       try {
         if (!RemoteImageValidator.isValidImage(textureSkinLocation)) {
@@ -232,7 +229,6 @@ public class UrlSkinConfigurationScreen<T extends ConfigurationMenu>
       return;
     }
 
-    // Validate url
     this.addTextureSettingsButton.active =
         !textureSkinLocationValue.isEmpty() && UrlValidator.isValidUrl(textureSkinLocationValue);
 

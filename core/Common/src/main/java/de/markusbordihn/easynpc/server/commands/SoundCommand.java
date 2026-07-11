@@ -71,13 +71,11 @@ public class SoundCommand extends Command {
       return 0;
     }
 
-    // Verify sound data
     SoundDataCapable<?> soundData = easyNPC.getEasyNPCSoundData();
     if (soundData == null) {
       return sendFailureMessageNoSoundData(context, easyNPC);
     }
 
-    // Verify sound data settings
     SoundDataSet soundDataSet = soundData.getSoundDataSet();
     if (soundDataSet == null) {
       return sendFailureMessageNoSoundDataSet(context, easyNPC);

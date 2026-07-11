@@ -138,7 +138,6 @@ public class PiglinBase extends PiglinRaw implements BaseEasyNPC<PiglinRaw> {
       // Allow travel for NPC, if travel objectives are used.
       super.travel(vec3);
     } else {
-      // Make sure we only calculate animations for be as much as possible server-friendly.
       this.calculateEntityAnimation(this instanceof FlyingAnimal);
     }
   }

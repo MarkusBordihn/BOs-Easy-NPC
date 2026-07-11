@@ -65,13 +65,11 @@ public class ItemUtils {
       return false;
     }
 
-    // Check main hand
     ItemStack mainHandItem = player.getMainHandItem();
     if (isItemStackOfType(mainHandItem, targetItem)) {
       return true;
     }
 
-    // Check offhand
     ItemStack offHandItem = player.getOffhandItem();
     return isItemStackOfType(offHandItem, targetItem);
   }

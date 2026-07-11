@@ -170,17 +170,14 @@ public class DialogCommand extends Command {
   public static int openDialog(
       CommandSourceStack context, EasyNPC<?> easyNPC, ServerPlayer serverPlayer) {
 
-    // Verify Player
     if (!serverPlayer.isAlive()) {
       return sendFailureMessage(context, "Player is death!");
     }
 
-    // Verify dialog data
     if (easyNPC.getEasyNPCDialogData() == null || !easyNPC.getEasyNPCDialogData().hasDialog()) {
       return sendFailureMessageNoDialogData(context, easyNPC);
     }
 
-    // Open dialog
     easyNPC.getEasyNPCDialogData().openDefaultDialog(serverPlayer);
     return sendSuccessMessage(
         context, "► Open dialog for " + easyNPC + " with " + serverPlayer, ChatFormatting.GREEN);
@@ -205,7 +202,6 @@ public class DialogCommand extends Command {
       ServerPlayer serverPlayer,
       String dialogLabel) {
 
-    // Verify dialog label, if any
     if (!dialogLabel.isEmpty() && !easyNPC.getEasyNPCDialogData().hasDialog(dialogLabel)) {
       return sendFailureMessage(
           context,
@@ -222,17 +218,14 @@ public class DialogCommand extends Command {
   public static int openDialog(
       CommandSourceStack context, EasyNPC<?> easyNPC, ServerPlayer serverPlayer, UUID dialogUUID) {
 
-    // Verify Player
     if (!serverPlayer.isAlive()) {
       return sendFailureMessage(context, "Player is death!");
     }
 
-    // Verify dialog data
     if (easyNPC.getEasyNPCDialogData() == null || !easyNPC.getEasyNPCDialogData().hasDialog()) {
       return sendFailureMessageNoDialogData(context, easyNPC);
     }
 
-    // Verify dialog label, if any
     if (!easyNPC.getEasyNPCDialogData().hasDialog(dialogUUID)) {
       return sendFailureMessage(
           context,
@@ -243,7 +236,6 @@ public class DialogCommand extends Command {
               + "!");
     }
 
-    // Open dialog
     easyNPC.getEasyNPCDialogData().openDialog(serverPlayer, dialogUUID);
     return sendSuccessMessage(
         context,
@@ -273,18 +265,15 @@ public class DialogCommand extends Command {
   public static int openDialogConditional(
       CommandSourceStack context, EasyNPC<?> easyNPC, ServerPlayer serverPlayer, UUID dialogUUID) {
 
-    // Verify Player
     if (!serverPlayer.isAlive()) {
       return sendFailureMessage(context, "Player is dead");
     }
 
-    // Verify dialog data
     if (easyNPC.getEasyNPCDialogData() == null
         || !easyNPC.getEasyNPCDialogData().hasDialog(dialogUUID)) {
       return sendFailureMessageNoDialogData(context, easyNPC);
     }
 
-    // Open dialog only if its conditions are met for the player
     if (easyNPC.getEasyNPCDialogData().openDialogIfConditionsMet(serverPlayer, dialogUUID)) {
       return sendSuccessMessage(
           context,

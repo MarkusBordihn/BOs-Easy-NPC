@@ -37,8 +37,8 @@ public class ZombifiedPiglinRawRenderer extends ZombifiedPiglinRenderer
   public ZombifiedPiglinRawRenderer(EntityRendererProvider.Context context) {
     super(
         context,
-        ModelLayers.PIGLIN,
-        ModelLayers.PIGLIN_BABY,
+        ModelLayers.ZOMBIFIED_PIGLIN,
+        ModelLayers.ZOMBIFIED_PIGLIN_BABY,
         ModelLayers.ZOMBIFIED_PIGLIN_ARMOR,
         ModelLayers.ZOMBIFIED_PIGLIN_BABY_ARMOR);
     this.addLayer(new SkullHeadRenderLayer<>(this));

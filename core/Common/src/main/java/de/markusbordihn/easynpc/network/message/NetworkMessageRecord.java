@@ -92,13 +92,11 @@ public interface NetworkMessageRecord extends CustomPacketPayload {
   }
 
   default EasyNPC<?> getEasyNPC(final UUID uuid, final ServerPlayer serverPlayer) {
-    // Validate UUID.
     if (uuid == null || uuid.equals(EMPTY_UUID)) {
       log.error("Invalid Easy NPC UUID {} from {}", uuid, serverPlayer);
       return null;
     }
 
-    // Validate player.
     if (serverPlayer == null) {
       log.error("Invalid server player for Easy NPC with UUID {}", uuid);
       return null;

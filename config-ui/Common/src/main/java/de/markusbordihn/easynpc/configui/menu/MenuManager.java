@@ -69,7 +69,6 @@ public class MenuManager {
   }
 
   public static void openMenu(final UUID menuId, final ServerPlayer serverPlayer) {
-    // Verify if the menu is still available for the player.
     ServerPlayer menuServerPlayer = serverPlayerMap.get(menuId);
     if (menuServerPlayer == null || !menuServerPlayer.equals(serverPlayer)) {
       log.error(
@@ -77,21 +76,18 @@ public class MenuManager {
       return;
     }
 
-    // Validate the menu provider
     MenuProvider menuProvider = menuProviderMap.get(menuId);
     if (menuProvider == null) {
       log.error("Invalid menu provider for menu {}", menuId);
       return;
     }
 
-    // Validate NPC UUID
     UUID npcUUID = menuNpcMap.get(menuId);
     if (npcUUID == null) {
       log.error("Invalid NPC UUID for menu {}", menuId);
       return;
     }
 
-    // Open the menu for the player
     log.debug(
         "Opening menu {} for npc {} and player {} with {}",
         menuId,

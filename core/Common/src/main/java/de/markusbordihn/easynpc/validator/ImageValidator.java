@@ -31,7 +31,6 @@ public class ImageValidator {
   private ImageValidator() {}
 
   public static boolean isValidImage(NativeImage image) {
-    // Verify the image data to make sure we got a valid image!
     if (image == null) {
       log.error("Found no valid image data in native image!");
       return false;
@@ -42,7 +41,6 @@ public class ImageValidator {
       return true;
     }
 
-    // Verify the image size needs to be at least 32x32 and a multiple of 32!
     if (image.getWidth() < 32
         || image.getHeight() < 32
         || image.getWidth() % 32 != 0

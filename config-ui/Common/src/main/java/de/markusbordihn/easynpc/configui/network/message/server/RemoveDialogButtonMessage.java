@@ -68,26 +68,22 @@ public record RemoveDialogButtonMessage(UUID uuid, UUID dialogId, UUID dialogBut
       return;
     }
 
-    // Validate dialog ID
     if (this.dialogId == null) {
       log.error("Invalid dialog id for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
-    // Validate dialog button ID
     if (this.dialogButtonId == null) {
       log.error("Invalid dialog button id for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
-    // Validate dialog data
     DialogDataCapable<?> dialogData = easyNPC.getEasyNPCDialogData();
     if (dialogData == null) {
       log.error("Invalid dialog data for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
-    // Validate dialog button
     if (!dialogData.hasDialog(this.dialogId)
         || !dialogData.hasDialogButton(this.dialogId, this.dialogButtonId)) {
       log.error(

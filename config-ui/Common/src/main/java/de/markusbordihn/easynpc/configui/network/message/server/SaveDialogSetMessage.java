@@ -71,20 +71,17 @@ public record SaveDialogSetMessage(UUID uuid, DialogDataSet dialogDataSet)
       return;
     }
 
-    // Verify dialog data set.
     if (this.dialogDataSet == null) {
       log.error("Unable to get dialog data set with message {} from {}", easyNPC, serverPlayer);
       return;
     }
 
-    // Validate Dialog data.
     DialogDataCapable<?> dialogData = easyNPC.getEasyNPCDialogData();
     if (dialogData == null) {
       log.error("Unable to get valid entity with UUID {} for {}", easyNPC, serverPlayer);
       return;
     }
 
-    // Validate action event data.
     ActionEventDataCapable<?> actionEventData = easyNPC.getEasyNPCActionEventData();
     if (actionEventData == null) {
       log.error("Invalid action data for {} from {}", easyNPC, serverPlayer);
@@ -113,7 +110,6 @@ public record SaveDialogSetMessage(UUID uuid, DialogDataSet dialogDataSet)
       return;
     }
 
-    // Perform action.
     log.debug("Saving dialog {} for {} from {}", sanitizedDialogDataSet, easyNPC, serverPlayer);
     dialogData.setDialogDataSet(sanitizedDialogDataSet);
   }
