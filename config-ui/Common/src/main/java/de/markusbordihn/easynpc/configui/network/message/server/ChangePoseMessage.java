@@ -70,13 +70,11 @@ public record ChangePoseMessage(UUID uuid, Pose pose) implements NetworkMessageR
       return;
     }
 
-    // Validate name.
     if (this.pose == null) {
       log.error("Invalid pose for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
-    // Validate model data.
     ModelDataCapable<?> modelData = easyNPC.getEasyNPCModelData();
     if (modelData == null) {
       log.error("Missing model data for {} from {}", easyNPC, serverPlayer);

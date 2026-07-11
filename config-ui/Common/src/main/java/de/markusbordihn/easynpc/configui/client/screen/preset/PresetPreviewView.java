@@ -30,9 +30,7 @@ import net.minecraft.network.chat.Component;
 
 public class PresetPreviewView {
 
-  private PresetPreviewView() {
-    // Utility class
-  }
+  private PresetPreviewView() {}
 
   public static void render(
       GuiGraphics guiGraphics,

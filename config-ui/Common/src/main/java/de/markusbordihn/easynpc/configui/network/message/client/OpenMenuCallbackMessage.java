@@ -68,7 +68,6 @@ public record OpenMenuCallbackMessage(UUID uuid, UUID menuId, CompoundTag data)
     UUID menuId = this.menuId;
     CompoundTag data = this.data;
 
-    // Validate menu data
     if (uuid == null || menuId == null || data == null) {
       log.error(
           "Invalid menu data received for {} with menuId {} and data: {}", uuid, menuId, data);

@@ -24,9 +24,7 @@ import net.minecraft.world.inventory.MenuType;
 
 public class MenuHandler implements MenuHandlerInterface {
 
-  public MenuHandler() {
-    // Register menu handler
-  }
+  public MenuHandler() {}
 
   @Override
   public MenuType<? extends DialogMenu> getDialogMenuType() {

@@ -30,7 +30,6 @@ public interface AttributeHandler<E extends Mob> extends EasyNPC<E> {
   default void checkAttributeActions() {
     this.getProfiler().push("npcCheckAttributeActions");
     try {
-      // Validate attribute data and mob entity.
       Mob mob = this.getMob();
       AttributeDataCapable<?> attributeData = this.getEasyNPCAttributeData();
       if (attributeData == null || mob == null || mob.isDeadOrDying()) {

@@ -25,10 +25,12 @@ import de.markusbordihn.easynpc.commands.Command;
 import de.markusbordihn.easynpc.commands.arguments.EasyNPCArgument;
 import de.markusbordihn.easynpc.commands.suggestion.FactionSuggestions;
 import de.markusbordihn.easynpc.data.faction.FactionDataEntry;
+import de.markusbordihn.easynpc.data.faction.FactionNameValidator;
 import de.markusbordihn.easynpc.data.saveddata.FactionData;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.FactionDataCapable;
 import de.markusbordihn.easynpc.handler.FactionHandler;
+import java.util.TreeSet;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -115,6 +117,42 @@ public class FactionCommand extends Command {
                                                     StringArgumentType.getString(
                                                         context, HOSTILE_FACTION_ARG))))))
                 .then(
+                    Commands.literal("mutual")
+                        .then(
+                            Commands.literal("add")
+                                .then(
+                                    Commands.argument(FACTION_ARG, StringArgumentType.word())
+                                        .suggests(FactionSuggestions::suggest)
+                                        .then(
+                                            Commands.argument(
+                                                    HOSTILE_FACTION_ARG, StringArgumentType.word())
+                                                .suggests(FactionSuggestions::suggest)
+                                                .executes(
+                                                    context ->
+                                                        addMutualHostileFaction(
+                                                            context.getSource(),
+                                                            StringArgumentType.getString(
+                                                                context, FACTION_ARG),
+                                                            StringArgumentType.getString(
+                                                                context, HOSTILE_FACTION_ARG))))))
+                        .then(
+                            Commands.literal("remove")
+                                .then(
+                                    Commands.argument(FACTION_ARG, StringArgumentType.word())
+                                        .suggests(FactionSuggestions::suggest)
+                                        .then(
+                                            Commands.argument(
+                                                    HOSTILE_FACTION_ARG, StringArgumentType.word())
+                                                .suggests(FactionSuggestions::suggest)
+                                                .executes(
+                                                    context ->
+                                                        removeMutualHostileFaction(
+                                                            context.getSource(),
+                                                            StringArgumentType.getString(
+                                                                context, FACTION_ARG),
+                                                            StringArgumentType.getString(
+                                                                context, HOSTILE_FACTION_ARG)))))))
+                .then(
                     Commands.literal("list")
                         .then(
                             Commands.argument(FACTION_ARG, StringArgumentType.word())
@@ -160,6 +198,9 @@ public class FactionCommand extends Command {
   }
 
   private static int createFaction(CommandSourceStack context, String factionName) {
+    if (!FactionNameValidator.isValid(factionName)) {
+      return sendFailureMessage(context, "Faction name '" + factionName + "' is invalid!");
+    }
     if (!FactionData.get().createFaction(factionName)) {
       return sendFailureMessage(context, "Faction '" + factionName + "' already exists!");
     }
@@ -167,7 +208,7 @@ public class FactionCommand extends Command {
   }
 
   private static int deleteFaction(CommandSourceStack context, String factionName) {
-    if (!FactionData.get().removeFaction(factionName)) {
+    if (!FactionHandler.deleteFaction(factionName)) {
       return sendFailureMessage(context, "Faction '" + factionName + "' does not exist!");
     }
     return sendSuccessMessage(context, "Deleted faction '" + factionName + "'.");
@@ -180,12 +221,9 @@ public class FactionCommand extends Command {
 
   private static int setFactionColor(
       CommandSourceStack context, String factionName, ChatFormatting color) {
-    FactionDataEntry factionDataEntry = FactionData.get().getFaction(factionName);
-    if (factionDataEntry == null) {
-      return sendFailureMessage(context, "Faction '" + factionName + "' does not exist!");
+    if (!FactionHandler.setFactionColor(factionName, color)) {
+      return sendFailureMessage(context, "Unable to set color for faction '" + factionName + "'!");
     }
-    factionDataEntry.setColor(color);
-    FactionData.get().setDirty();
     return sendSuccessMessage(
         context, "Set color of faction '" + factionName + "' to " + color.getName() + ".");
   }
@@ -221,6 +259,42 @@ public class FactionCommand extends Command {
         "Faction '" + factionName + "' is no longer hostile to '" + hostileFactionName + "'.");
   }
 
+  private static int addMutualHostileFaction(
+      CommandSourceStack context, String factionName, String hostileFactionName) {
+    FactionData factionData = FactionData.get();
+    if (!factionData.hasFaction(factionName) || !factionData.hasFaction(hostileFactionName)) {
+      return sendFailureMessage(context, "Both factions must exist for mutual hostility!");
+    }
+    boolean addedForward = factionData.addHostileFaction(factionName, hostileFactionName);
+    boolean addedReverse = factionData.addHostileFaction(hostileFactionName, factionName);
+    if (!addedForward && !addedReverse) {
+      return sendFailureMessage(
+          context,
+          "Factions '" + factionName + "' and '" + hostileFactionName + "' are already hostile!");
+    }
+    return sendSuccessMessage(
+        context,
+        "Factions '" + factionName + "' and '" + hostileFactionName + "' are now hostile.");
+  }
+
+  private static int removeMutualHostileFaction(
+      CommandSourceStack context, String factionName, String hostileFactionName) {
+    FactionData factionData = FactionData.get();
+    if (!factionData.hasFaction(factionName) || !factionData.hasFaction(hostileFactionName)) {
+      return sendFailureMessage(context, "Both factions must exist for mutual hostility!");
+    }
+    boolean removedForward = factionData.removeHostileFaction(factionName, hostileFactionName);
+    boolean removedReverse = factionData.removeHostileFaction(hostileFactionName, factionName);
+    if (!removedForward && !removedReverse) {
+      return sendFailureMessage(
+          context,
+          "Factions '" + factionName + "' and '" + hostileFactionName + "' are not hostile!");
+    }
+    return sendSuccessMessage(
+        context,
+        "Factions '" + factionName + "' and '" + hostileFactionName + "' are no longer hostile.");
+  }
+
   private static int listHostileFactions(CommandSourceStack context, String factionName) {
     FactionDataEntry factionDataEntry = FactionData.get().getFaction(factionName);
     if (factionDataEntry == null) {
@@ -231,7 +305,7 @@ public class FactionCommand extends Command {
         "Faction '"
             + factionName
             + "' is hostile to: "
-            + String.join(", ", factionDataEntry.getHostileFactions()));
+            + String.join(", ", new TreeSet<>(factionDataEntry.getHostileFactions())));
   }
 
   private static int setNPCFaction(

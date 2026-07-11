@@ -89,13 +89,11 @@ public class TextFormattingCodes {
       return text;
     }
 
-    // Replace color codes
     for (Map.Entry<String, String> entry : TEXT_COLOR_CODES.entrySet()) {
       text = text.replace("<" + entry.getKey() + ">", entry.getValue());
       text = text.replace("</" + entry.getKey() + ">", COLOR_DEFAULT_CODE);
     }
 
-    // Replace formatting codes
     for (Map.Entry<String, String> entry : TEXT_FORMATTING_CODES.entrySet()) {
       text = text.replace("<" + entry.getKey() + ">", entry.getValue());
       text = text.replace("</" + entry.getKey() + ">", FORMATTING_RESET_CODE);
@@ -123,7 +121,6 @@ public class TextFormattingCodes {
       return text;
     }
 
-    // Replace line break codes
     for (String lineBreakCode : textLinebreakCodes) {
       text = text.replace(lineBreakCode, LINE_BREAK);
     }

@@ -136,7 +136,6 @@ public class RemoteTextureLoader {
       }
     }
 
-    // Validate image
     if (nativeImage == null) {
       String error = "Failed to decode image";
       TextureErrorHandler.processingErrorMessage(textureModelKey, remoteUrl, error);

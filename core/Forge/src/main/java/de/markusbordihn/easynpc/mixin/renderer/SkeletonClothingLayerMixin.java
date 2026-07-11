@@ -48,19 +48,16 @@ public class SkeletonClothingLayerMixin {
       float partialTick,
       CallbackInfo callbackInfo) {
 
-    // Check if this is an EasyNPC entity
     EasyNPC<?> easyNPC = EasyNPCLivingEntityRenderer.getEasyNPC(renderState);
     if (easyNPC == null) {
       return;
     }
 
-    // Get skin data to check layer settings
     SkinDataCapable<?> skinData = easyNPC.getEasyNPCSkinData();
     if (skinData == null) {
       return;
     }
 
-    // Check if layers should be disabled
     if (skinData.getSkinDataEntry().disableLayers()) {
       callbackInfo.cancel();
     }

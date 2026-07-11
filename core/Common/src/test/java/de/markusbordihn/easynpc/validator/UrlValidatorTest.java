@@ -95,8 +95,8 @@ class UrlValidatorTest {
         "https://cdn.example.com/resource.png",
         "https://secure-site.com/data"
       })
-  void testIsSecureRemoteUrl_validHttps(String url) {
-    assertTrue(UrlValidator.isSecureRemoteUrl(url));
+  void testIsSecureRemoteUrl_nonWhitelistedHttps(String url) {
+    assertFalse(UrlValidator.isSecureRemoteUrl(url));
   }
 
   @ParameterizedTest

@@ -59,9 +59,6 @@ import net.minecraft.world.entity.player.Inventory;
 
 public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScreenData> {
 
-  private static final int BUTTON_WIDTH = 134;
-  private static final int MIDDLE_BUTTON_WIDTH = 208;
-  private static final int LARGE_BUTTON_WIDTH = 262;
   private static final int MAX_NUMBER_OF_PIXEL_PER_LINE = 192;
   private static final int MAX_NUMBER_OF_DIALOG_LINES = 10;
   private static final int MAX_TOTAL_DIALOG_LINES = 100;
@@ -197,13 +194,11 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
             fullButtonName,
             dialogButtonEntry.hasConditions(),
             onPress -> {
-              // Action Event on button click.
               if (this.getActionEventSet().hasActionEvent(ActionEventType.ON_BUTTON_CLICK)) {
                 NetworkMessageHandlerManager.getServerHandler()
                     .executeActionEvent(this.getEasyNPCUUID(), ActionEventType.ON_BUTTON_CLICK);
               }
 
-              // Custom action on button click.
               if (dialogButtonEntry.hasActionData()) {
                 UUID buttonId = dialogButtonEntry.id();
                 NetworkMessageHandlerManager.getServerHandler()
@@ -274,169 +269,15 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
     return visibleDialogButtonEntries;
   }
 
-  private Button positionDialogButton(Button dialogButton, int width, int left, int top) {
-    dialogButton.setWidth(width);
-    dialogButton.setX(left);
-    dialogButton.setY(top);
-    return dialogButton;
-  }
-
   private void renderDialogButtons() {
     List<Button> visibleDialogButtons = this.getVisibleDialogButtons();
-    switch (dialogScreenLayout) {
-      case COMPACT_TEXT_ONLY, TEXT_ONLY:
-        break;
-      case COMPACT_TEXT_WITH_ONE_BUTTON:
-        this.positionDialogButton(
-            visibleDialogButtons.get(0), LARGE_BUTTON_WIDTH, this.leftPos + 18, this.topPos + 140);
-        break;
-      case COMPACT_TEXT_WITH_TWO_BUTTONS:
-        Button firstCompactDialogButton =
-            this.positionDialogButton(
-                visibleDialogButtons.get(0), BUTTON_WIDTH, this.leftPos + 10, this.topPos + 140);
-        this.positionDialogButton(
-            visibleDialogButtons.get(1),
-            BUTTON_WIDTH,
-            firstCompactDialogButton.getX() + firstCompactDialogButton.getWidth() + 9,
-            firstCompactDialogButton.getY());
-        break;
-      case COMPACT_TEXT_WITH_TWO_LARGE_BUTTONS:
-        Button firstCompactLargeDialogButton =
-            this.positionDialogButton(
-                visibleDialogButtons.get(0),
-                MIDDLE_BUTTON_WIDTH,
-                this.leftPos + 75,
-                this.topPos + 115);
-        this.positionDialogButton(
-            visibleDialogButtons.get(1),
-            MIDDLE_BUTTON_WIDTH,
-            firstCompactLargeDialogButton.getX(),
-            firstCompactLargeDialogButton.getY() + firstCompactLargeDialogButton.getHeight() + 9);
-        break;
-      case TEXT_WITH_ONE_BUTTON:
-        this.positionDialogButton(
-            visibleDialogButtons.get(0), LARGE_BUTTON_WIDTH, this.leftPos + 18, this.topPos + 170);
-        break;
-      case TEXT_WITH_TWO_BUTTONS:
-        Button firstTwoDialogButton =
-            this.positionDialogButton(
-                visibleDialogButtons.get(0),
-                LARGE_BUTTON_WIDTH,
-                this.leftPos + 18,
-                this.topPos + 159);
-        this.positionDialogButton(
-            visibleDialogButtons.get(1),
-            LARGE_BUTTON_WIDTH,
-            firstTwoDialogButton.getX(),
-            firstTwoDialogButton.getY() + firstTwoDialogButton.getHeight() + 9);
-        break;
-      case COMPACT_TEXT_WITH_THREE_BUTTONS, TEXT_WITH_THREE_BUTTONS:
-        Button firstThreeDialogButton =
-            this.positionDialogButton(
-                visibleDialogButtons.get(0),
-                LARGE_BUTTON_WIDTH,
-                this.leftPos + 18,
-                this.topPos + 154);
-        Button secondThreeDialogButton =
-            this.positionDialogButton(
-                visibleDialogButtons.get(1),
-                LARGE_BUTTON_WIDTH,
-                firstThreeDialogButton.getX(),
-                firstThreeDialogButton.getY() + firstThreeDialogButton.getHeight() + 4);
-        this.positionDialogButton(
-            visibleDialogButtons.get(2),
-            LARGE_BUTTON_WIDTH,
-            secondThreeDialogButton.getX(),
-            secondThreeDialogButton.getY() + secondThreeDialogButton.getHeight() + 4);
-        break;
-      case COMPACT_TEXT_WITH_FOUR_BUTTONS, TEXT_WITH_FOUR_BUTTONS:
-        Button firstFourDialogButton =
-            this.positionDialogButton(
-                visibleDialogButtons.get(0), BUTTON_WIDTH, this.leftPos + 10, this.topPos + 164);
-        Button secondFourDialogButton =
-            this.positionDialogButton(
-                visibleDialogButtons.get(1),
-                BUTTON_WIDTH,
-                firstFourDialogButton.getX() + firstFourDialogButton.getWidth() + 9,
-                firstFourDialogButton.getY());
-        Button thirdFourDialogButton =
-            this.positionDialogButton(
-                visibleDialogButtons.get(2),
-                BUTTON_WIDTH,
-                firstFourDialogButton.getX(),
-                firstFourDialogButton.getY() + firstFourDialogButton.getHeight() + 9);
-        this.positionDialogButton(
-            visibleDialogButtons.get(3),
-            BUTTON_WIDTH,
-            secondFourDialogButton.getX(),
-            thirdFourDialogButton.getY());
-        break;
-      case COMPACT_TEXT_WITH_FIVE_BUTTONS, TEXT_WITH_FIVE_BUTTONS:
-        Button firstFiveDialogButton =
-            this.positionDialogButton(
-                visibleDialogButtons.get(0), BUTTON_WIDTH, this.leftPos + 10, this.topPos + 154);
-        Button secondFiveDialogButton =
-            this.positionDialogButton(
-                visibleDialogButtons.get(1),
-                BUTTON_WIDTH,
-                firstFiveDialogButton.getX() + firstFiveDialogButton.getWidth() + 9,
-                firstFiveDialogButton.getY());
-        Button thirdFiveDialogButton =
-            this.positionDialogButton(
-                visibleDialogButtons.get(2),
-                BUTTON_WIDTH,
-                firstFiveDialogButton.getX(),
-                firstFiveDialogButton.getY() + firstFiveDialogButton.getHeight() + 4);
-        this.positionDialogButton(
-            visibleDialogButtons.get(3),
-            BUTTON_WIDTH,
-            secondFiveDialogButton.getX(),
-            thirdFiveDialogButton.getY());
-        this.positionDialogButton(
-            visibleDialogButtons.get(4),
-            BUTTON_WIDTH,
-            firstFiveDialogButton.getX(),
-            thirdFiveDialogButton.getY() + thirdFiveDialogButton.getHeight() + 4);
-        break;
-      case COMPACT_TEXT_WITH_SIX_BUTTONS, TEXT_WITH_SIX_BUTTONS:
-        Button firstSixDialogButton =
-            this.positionDialogButton(
-                visibleDialogButtons.get(0), BUTTON_WIDTH, this.leftPos + 10, this.topPos + 154);
-        Button secondSixDialogButton =
-            this.positionDialogButton(
-                visibleDialogButtons.get(1),
-                BUTTON_WIDTH,
-                firstSixDialogButton.getX() + firstSixDialogButton.getWidth() + 9,
-                firstSixDialogButton.getY());
-        Button thirdSixDialogButton =
-            this.positionDialogButton(
-                visibleDialogButtons.get(2),
-                BUTTON_WIDTH,
-                firstSixDialogButton.getX(),
-                firstSixDialogButton.getY() + firstSixDialogButton.getHeight() + 4);
-        this.positionDialogButton(
-            visibleDialogButtons.get(3),
-            BUTTON_WIDTH,
-            secondSixDialogButton.getX(),
-            thirdSixDialogButton.getY());
-        Button fifthSixDialogButton =
-            this.positionDialogButton(
-                visibleDialogButtons.get(4),
-                BUTTON_WIDTH,
-                firstSixDialogButton.getX(),
-                thirdSixDialogButton.getY() + thirdSixDialogButton.getHeight() + 4);
-        this.positionDialogButton(
-            visibleDialogButtons.get(5),
-            BUTTON_WIDTH,
-            secondSixDialogButton.getX(),
-            fifthSixDialogButton.getY());
-        break;
-      default:
-        log.warn(
-            "Unknown dialog screen layout {} for {} with {} line(s)",
-            dialogScreenLayout,
-            this.getDialogDataSet(),
-            this.numberOfDialogLines);
+    if (!DialogButtonLayout.apply(
+        dialogScreenLayout, visibleDialogButtons, this.leftPos, this.topPos)) {
+      log.warn(
+          "Unknown dialog screen layout {} for {} with {} line(s)",
+          dialogScreenLayout,
+          this.getDialogDataSet(),
+          this.numberOfDialogLines);
     }
   }
 
@@ -510,7 +351,6 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
 
     super.init();
 
-    // Nudge the dialog up so the enlarged background stays visually centered.
     this.topPos -= 4;
     this.bottomPos -= 4;
 
@@ -606,9 +446,6 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
 
   @Override
   protected int getUpdateTickInterval() {
-    // Button lock states change rarely (dynamic conditions like NPC/entity health), so polling once
-    // per second is plenty. The initial lock state is set when the button is created, so there is
-    // no visible delay on open.
     return 20;
   }
 
@@ -616,9 +453,6 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
   protected void updateTick() {
     super.updateTick();
 
-    // The base screen invokes updateTick() on a fixed cadence (see getUpdateTickInterval()), so it
-    // doubles as the periodic lock-state refresh without an extra ticker. Skip entirely when no
-    // button has conditions; this only refreshes dynamic conditions like NPC/entity health.
     if (!this.hasConditionalButtons) {
       return;
     }
@@ -653,8 +487,6 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
         guiGraphics.fill(lockLeft, lockTop + 3, lockLeft + 7, lockTop + 8, lockColor);
       }
 
-      // Manual bounds check, because Button#isMouseOver returns false for inactive (locked)
-      // buttons and would suppress their tooltip.
       boolean overButton =
           mouseX >= dialogButton.getX()
               && mouseX < dialogButton.getX() + dialogButton.getWidth()
@@ -664,8 +496,6 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
         continue;
       }
 
-      // Over the lock glyph only the lock hint is shown, otherwise the full button name (when it
-      // does not fit on the button) - never both at once.
       boolean overLock =
           locked
               && mouseX >= lockLeft

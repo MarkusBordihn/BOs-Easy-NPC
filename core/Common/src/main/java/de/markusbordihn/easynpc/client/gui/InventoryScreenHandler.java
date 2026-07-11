@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.client.gui;
 
 import de.markusbordihn.easynpc.api.skin.VariantTexture;
+import de.markusbordihn.easynpc.client.renderer.entity.state.EasyNPCGuiRenderStateExtension;
 import de.markusbordihn.easynpc.client.renderer.manager.EntityTypeManager;
 import de.markusbordihn.easynpc.client.renderer.manager.RendererManager;
 import de.markusbordihn.easynpc.data.render.RenderType;
@@ -79,6 +80,10 @@ public class InventoryScreenHandler {
 
   private static void applyRotationsAndScale(
       EntityRenderState renderState, float xRotation, float yRotation) {
+    if (renderState instanceof EasyNPCGuiRenderStateExtension guiRenderState) {
+      guiRenderState.applyGuiRotationsAndScale(xRotation, yRotation);
+      return;
+    }
     if (!(renderState instanceof LivingEntityRenderState livingEntityRenderState)) {
       return;
     }
@@ -127,7 +132,11 @@ public class InventoryScreenHandler {
       LivingEntity entity,
       EasyNPC<?> easyNPC) {
     if (isBypassMixin()) {
-      return false;
+      // Raw rendering: skip the custom entity and skin redirection, but keep the state-based
+      // default path, as the vanilla fallback only rotates LivingEntityRenderState instances.
+      renderDefaultEntityInInventory(
+          guiGraphics, left, top, right, bottom, size, yOffset, mouseX, mouseY, entity);
+      return true;
     }
 
     // Get render data and render custom entity if available.

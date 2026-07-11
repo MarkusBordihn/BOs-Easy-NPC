@@ -60,17 +60,14 @@ public class UUIDUtils {
   }
 
   public static UUID parseUUID(String text) {
-    // Check for null or wrong length
     if (text == null || text.length() != 36) {
       return null;
     }
 
-    // Check for correct UUID pattern
     if (!UUID_PATTERN.matcher(text).matches()) {
       return null;
     }
 
-    // Try to parse UUID
     try {
       return UUID.fromString(text);
     } catch (IllegalArgumentException e) {

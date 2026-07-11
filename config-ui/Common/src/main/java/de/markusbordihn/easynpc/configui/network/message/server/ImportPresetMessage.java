@@ -85,7 +85,6 @@ public record ImportPresetMessage(
       return;
     }
 
-    // Validate preset type and data
     switch (this.presetType) {
       case LOCAL:
         PresetHandler.importLocalPreset(

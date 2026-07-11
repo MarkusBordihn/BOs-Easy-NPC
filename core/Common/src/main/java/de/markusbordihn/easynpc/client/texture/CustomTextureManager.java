@@ -44,6 +44,7 @@ public class CustomTextureManager {
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private static final Map<TextureModelKey, Identifier> textureCache = new ConcurrentHashMap<>();
   private static final Map<UUID, Long> textureReloadProtection = new ConcurrentHashMap<>();
+  private static final Set<SkinModel> loadedSkinModels = ConcurrentHashMap.newKeySet();
   private static final String LOG_PREFIX = "[Custom Texture Manager] ";
   private static final long RELOAD_PROTECTION_TIME = 60000;
 
@@ -69,6 +70,22 @@ public class CustomTextureManager {
       }
     }
     return hashSet;
+  }
+
+  public static void ensureTextureCacheLoaded(SkinModel skinModel) {
+    if (skinModel == null || !loadedSkinModels.add(skinModel)) {
+      return;
+    }
+
+    CustomSkinDataFiles.registerTextureFiles(skinModel);
+  }
+
+  public static void markTextureCacheLoaded(SkinModel skinModel) {
+    if (skinModel == null) {
+      return;
+    }
+
+    loadedSkinModels.add(skinModel);
   }
 
   public static Identifier getOrCreateTextureWithDefault(
@@ -155,6 +172,28 @@ public class CustomTextureManager {
   public static void clearTextureCache() {
     TextureRegistrationQueue.getInstance().clear(textureCache.keySet());
     textureReloadProtection.clear();
+    loadedSkinModels.clear();
     textureCache.clear();
+  }
+
+  public static void clearTextureCache(SkinModel skinModel) {
+    if (skinModel == null) {
+      clearTextureCache();
+      return;
+    }
+
+    Set<TextureModelKey> textureModelKeys = new HashSet<>();
+    for (TextureModelKey textureModelKey : textureCache.keySet()) {
+      if (skinModel.equals(textureModelKey.getSkinModel())) {
+        textureModelKeys.add(textureModelKey);
+      }
+    }
+
+    TextureRegistrationQueue.getInstance().clear(textureModelKeys);
+    for (TextureModelKey textureModelKey : textureModelKeys) {
+      textureCache.remove(textureModelKey);
+      textureReloadProtection.remove(textureModelKey.getUUID());
+    }
+    loadedSkinModels.remove(skinModel);
   }
 }

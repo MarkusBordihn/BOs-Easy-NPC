@@ -24,11 +24,12 @@ import de.markusbordihn.easynpc.client.renderer.entity.layers.SkullHeadRenderLay
 import de.markusbordihn.easynpc.data.skin.variant.PiglinSkinVariant;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.PiglinRenderer;
-import net.minecraft.client.renderer.entity.state.PiglinRenderState;
+import net.minecraft.client.renderer.entity.ZombifiedPiglinRenderer;
+import net.minecraft.client.renderer.entity.state.ZombifiedPiglinRenderState;
 import net.minecraft.resources.Identifier;
 
-public class ZombifiedPiglinRawRenderer extends PiglinRenderer implements EasyNPCEntityRenderer {
+public class ZombifiedPiglinRawRenderer extends ZombifiedPiglinRenderer
+    implements EasyNPCEntityRenderer {
 
   protected static final Identifier DEFAULT_TEXTURE =
       PiglinSkinVariant.ZOMBIFIED_PIGLIN.getTextureLocation();
@@ -36,15 +37,15 @@ public class ZombifiedPiglinRawRenderer extends PiglinRenderer implements EasyNP
   public ZombifiedPiglinRawRenderer(EntityRendererProvider.Context context) {
     super(
         context,
-        ModelLayers.PIGLIN,
-        ModelLayers.PIGLIN_BABY,
+        ModelLayers.ZOMBIFIED_PIGLIN,
+        ModelLayers.ZOMBIFIED_PIGLIN_BABY,
         ModelLayers.ZOMBIFIED_PIGLIN_ARMOR,
         ModelLayers.ZOMBIFIED_PIGLIN_BABY_ARMOR);
     this.addLayer(new SkullHeadRenderLayer<>(this));
   }
 
   @Override
-  public Identifier getTextureLocation(PiglinRenderState renderState) {
+  public Identifier getTextureLocation(ZombifiedPiglinRenderState renderState) {
     return getTextureFromRenderState(renderState);
   }
 

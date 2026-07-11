@@ -20,10 +20,13 @@
 package de.markusbordihn.easynpc.handler;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.data.faction.FactionNameValidator;
 import de.markusbordihn.easynpc.data.saveddata.FactionData;
+import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.AttributeDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.FactionDataCapable;
+import net.minecraft.ChatFormatting;
 import net.minecraft.world.entity.LivingEntity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -46,13 +49,67 @@ public class FactionHandler {
     }
 
     if (FactionData.isInitialized() && !FactionData.get().hasFaction(factionName)) {
-      FactionData.get().createFaction(factionName);
+      if (!FactionNameValidator.isValid(factionName)) {
+        return false;
+      }
+      if (!FactionData.get().createFaction(factionName)) {
+        return false;
+      }
     }
 
     log.debug("Set faction '{}' for {}", factionName, easyNPC);
     factionData.setFactionName(factionName);
     factionData.applyFactionToScoreboard();
     return true;
+  }
+
+  public static boolean deleteFaction(String factionName) {
+    if (factionName == null
+        || factionName.isEmpty()
+        || !FactionData.isInitialized()
+        || !FactionData.get().removeFaction(factionName)) {
+      return false;
+    }
+    clearLoadedFactionAssignments(factionName);
+    return true;
+  }
+
+  public static boolean setFactionColor(String factionName, ChatFormatting color) {
+    if (factionName == null
+        || factionName.isEmpty()
+        || color == null
+        || !color.isColor()
+        || !FactionData.isInitialized()
+        || !FactionData.get().setFactionColor(factionName, color)) {
+      return false;
+    }
+    refreshLoadedFactionAssignments(factionName);
+    return true;
+  }
+
+  public static void clearLoadedFactionAssignments(String factionName) {
+    LivingEntityManager.getEasyNPCEntities()
+        .filter(easyNPC -> easyNPC != null && !easyNPC.isClientSideInstance())
+        .forEach(
+            easyNPC -> {
+              FactionDataCapable<?> factionData = easyNPC.getEasyNPCFactionData();
+              if (factionData != null && factionName.equals(factionData.getFactionName())) {
+                factionData.setFactionName("");
+                factionData.applyFactionToScoreboard();
+              }
+            });
+  }
+
+  public static void refreshLoadedFactionAssignments(String factionName) {
+    LivingEntityManager.getEasyNPCEntities()
+        .filter(easyNPC -> easyNPC != null && !easyNPC.isClientSideInstance())
+        .forEach(
+            easyNPC -> {
+              FactionDataCapable<?> factionData = easyNPC.getEasyNPCFactionData();
+              if (factionData != null && factionName.equals(factionData.getFactionName())) {
+                factionData.applyFactionToScoreboard();
+              }
+            });
   }
 
   public static boolean removeFaction(EasyNPC<?> easyNPC) {

@@ -159,12 +159,12 @@ public class CustomSkinConfigurationScreen<T extends ConfigurationMenu>
     // Entity specific information.
     SkinDataCapable<?> skinData = this.getEasyNPC().getEasyNPCSkinData();
     SkinModel skinModel = skinData.getSkinModel();
+    CustomTextureManager.ensureTextureCacheLoaded(skinModel);
     this.numOfSkins = CustomTextureManager.getCustomTextureCacheKeys(skinModel).size();
 
     // Skin Navigation Buttons
     defineSkinNavigationButtons();
 
-    // Open Skin Folder Button
     Path skinModelFolder = CustomSkinDataFiles.getCustomSkinDataFolder(skinModel);
     if (skinModelFolder != null) {
       this.skinFolderButton =
@@ -188,7 +188,7 @@ public class CustomSkinConfigurationScreen<T extends ConfigurationMenu>
                 16,
                 null,
                 onPress -> {
-                  CustomSkinDataFiles.refreshRegisterTextureFiles();
+                  CustomSkinDataFiles.refreshRegisterTextureFiles(skinModel);
                   CustomSkinConfigurationScreen.nextSkinReload =
                       (int) java.time.Instant.now().getEpochSecond() + ADD_SKIN_RELOAD_DELAY;
                 }));
