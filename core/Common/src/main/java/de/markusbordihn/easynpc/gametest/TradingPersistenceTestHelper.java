@@ -23,11 +23,16 @@ import de.markusbordihn.easynpc.data.trading.TradingType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.TradingDataCapable;
 import de.markusbordihn.easynpc.handler.TradingOfferHandler;
+import de.markusbordihn.easynpc.utils.TradingUtils;
+import java.util.List;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.ItemLore;
 import net.minecraft.world.item.trading.ItemCost;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.item.trading.MerchantOffers;
@@ -138,6 +143,57 @@ public class TradingPersistenceTestHelper {
       helper.fail(
           "setAdvancedTradingMaxUses did not update maxUses: expected 5, got "
               + updated.getMaxUses());
+    }
+  }
+
+  public static void assertModifiedTradeItemPersistence(
+      GameTestHelper helper, EntityType<?> entityType) {
+    EasyNPC<?> npc = GameTestHelpers.mockEasyNPC(helper, entityType, new Vec3(1, 2, 1));
+    TradingDataCapable<?> tradingData = npc.getEasyNPCTradingData();
+    if (tradingData == null) {
+      helper.fail("NPC has no TradingDataCapable");
+      return;
+    }
+
+    ItemStack questItem = new ItemStack(Items.SUGAR);
+    questItem.set(DataComponents.CUSTOM_NAME, Component.literal("Lethal Bio-Reagent"));
+    questItem.set(
+        DataComponents.LORE, new ItemLore(List.of(Component.literal("It singes at your skin..."))));
+    questItem.remove(DataComponents.ATTRIBUTE_MODIFIERS);
+
+    MerchantOffers offers = new MerchantOffers();
+    offers.add(
+        new MerchantOffer(
+            TradingUtils.getItemCost(questItem), new ItemStack(Items.EMERALD), 10, 0, 1.0F));
+    tradingData.getTradingDataSet().setType(TradingType.ADVANCED);
+    tradingData.setTradingOffers(offers);
+    ItemStack originalCost = tradingData.getTradingOffers().get(0).getBaseCostA().copy();
+
+    TagValueOutput valueOutput =
+        TagValueOutput.createWithContext(
+            ProblemReporter.DISCARDING, helper.getLevel().registryAccess());
+    tradingData.addAdditionalTradingData(valueOutput);
+    ValueInput valueInput =
+        TagValueInput.create(
+            ProblemReporter.DISCARDING,
+            helper.getLevel().registryAccess(),
+            valueOutput.buildResult());
+    tradingData.readAdditionalTradingData(valueInput);
+    TradingOfferHandler.setAdvancedTradingMaxUses(tradingData, 0, 5);
+
+    MerchantOffer reloadedOffer = tradingData.getTradingOffers().get(0);
+    if (!reloadedOffer.satisfiedBy(questItem, ItemStack.EMPTY)) {
+      helper.fail("Modified quest item no longer matches after NBT round-trip and offer rebuild");
+      return;
+    }
+    if (reloadedOffer.satisfiedBy(new ItemStack(Items.SUGAR), ItemStack.EMPTY)) {
+      helper.fail("Plain sugar unexpectedly matches the modified quest item trade");
+      return;
+    }
+    if (!originalCost
+        .getComponentsPatch()
+        .equals(reloadedOffer.getBaseCostA().getComponentsPatch())) {
+      helper.fail("Trade item components changed after NBT round-trip and offer rebuild");
     }
   }
 
