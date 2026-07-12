@@ -48,6 +48,12 @@ public class TradingPersistenceTest {
   }
 
   @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testModifiedTradeItemPersistence(GameTestHelper helper) {
+    TradingPersistenceTestHelper.assertModifiedTradeItemPersistence(helper, humanoid());
+    helper.succeed();
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testBasicTradingOffersUpdateAppliesCorrectFields(GameTestHelper helper) {
     TradingPersistenceTestHelper.assertBasicTradingOffersUpdateAppliesCorrectFields(
         helper, humanoid());

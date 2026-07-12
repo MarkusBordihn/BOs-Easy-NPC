@@ -27,12 +27,16 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import net.minecraft.SharedConstants;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.nbt.TagParser;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.server.Bootstrap;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -48,6 +52,12 @@ class TradingUtilsTest {
   static void bootstrap() {
     SharedConstants.tryDetectVersion();
     Bootstrap.bootStrap();
+  }
+
+  private static RegistryOps<Tag> registryOps() {
+    RegistryAccess.Frozen registries =
+        RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY);
+    return registries.createSerializationContext(NbtOps.INSTANCE);
   }
 
   private CompoundTag loadCompoundTagResource(String resourcePath)
@@ -76,6 +86,33 @@ class TradingUtilsTest {
     assertEquals(
         new ItemLore(List.of(Component.literal("Copper coin"))),
         itemCost.itemStack().get(DataComponents.LORE));
+  }
+
+  @Test
+  @DisplayName("Should keep modified trade item matching stable across codec and rebuild")
+  void testModifiedItemCostMatchingSurvivesCodecAndRebuild() {
+    ItemStack questItem = new ItemStack(Items.SUGAR);
+    questItem.set(DataComponents.CUSTOM_NAME, Component.literal("Lethal Bio-Reagent"));
+    questItem.set(
+        DataComponents.LORE, new ItemLore(List.of(Component.literal("It singes at your skin..."))));
+    questItem.remove(DataComponents.ATTRIBUTE_MODIFIERS);
+
+    ItemCost itemCost = TradingUtils.getItemCost(questItem);
+    ItemCost loadedItemCost =
+        ItemCost.CODEC
+            .parse(registryOps(), ItemCost.CODEC.encodeStart(registryOps(), itemCost).getOrThrow())
+            .getOrThrow();
+    ItemCost rebuiltItemCost = TradingUtils.getItemCost(loadedItemCost.itemStack());
+
+    assertTrue(itemCost.test(questItem));
+    assertTrue(loadedItemCost.test(questItem));
+    assertTrue(rebuiltItemCost.test(questItem));
+    assertFalse(rebuiltItemCost.test(new ItemStack(Items.SUGAR)));
+    assertEquals(
+        itemCost.itemStack().getComponentsPatch(), loadedItemCost.itemStack().getComponentsPatch());
+    assertEquals(
+        loadedItemCost.itemStack().getComponentsPatch(),
+        rebuiltItemCost.itemStack().getComponentsPatch());
   }
 
   @Test
