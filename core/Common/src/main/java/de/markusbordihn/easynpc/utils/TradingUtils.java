@@ -29,6 +29,7 @@ import de.markusbordihn.easynpc.Constants;
 import java.util.Optional;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentExactPredicate;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.FloatTag;
 import net.minecraft.nbt.ListTag;
@@ -81,14 +82,14 @@ public class TradingUtils {
     if (itemStack.isEmpty()) {
       return new ItemCost(ItemStack.EMPTY.getItem(), count);
     }
-    if (itemStack.getComponentsPatch().isEmpty()) {
+    DataComponentMap requiredComponents = itemStack.getComponentsPatch().split().added();
+    if (requiredComponents.isEmpty()) {
       return new ItemCost(itemStack.getItem(), count);
     }
     return new ItemCost(
         itemStack.getItem().builtInRegistryHolder(),
         count,
-        DataComponentExactPredicate.allOf(itemStack.getComponents()),
-        itemStack.copyWithCount(count));
+        DataComponentExactPredicate.allOf(requiredComponents));
   }
 
   public static Optional<ItemCost> getOptionalItemCost(ItemStack itemStack) {
