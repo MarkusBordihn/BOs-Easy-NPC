@@ -26,6 +26,8 @@ import de.markusbordihn.easynpc.commands.Command;
 import de.markusbordihn.easynpc.commands.suggestion.PresetSuggestions;
 import de.markusbordihn.easynpc.data.preset.PresetType;
 import de.markusbordihn.easynpc.handler.PresetHandler;
+import de.markusbordihn.easynpc.security.ActorSecurityContext;
+import de.markusbordihn.easynpc.security.CommandSecurity;
 import java.util.UUID;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -239,8 +241,7 @@ class PresetImportCommand extends Command {
       return Command.FAILURE;
     }
 
-    if (!PresetHandler.importPreset(
-        context.getLevel(), PresetType.CUSTOM, preset, position, uuid, serverPlayer)) {
+    if (!importPreset(context, PresetType.CUSTOM, preset, position, uuid, serverPlayer)) {
       return sendFailureMessage(context, importedPresetFailedMessage(CUSTOM_ARG, preset));
     }
 
@@ -257,8 +258,7 @@ class PresetImportCommand extends Command {
       return Command.FAILURE;
     }
 
-    if (!PresetHandler.importPreset(
-        context.getLevel(), PresetType.DATA, preset, position, uuid, serverPlayer)) {
+    if (!importPreset(context, PresetType.DATA, preset, position, uuid, serverPlayer)) {
       return sendFailureMessage(context, importedPresetFailedMessage(DATA_ARG, preset));
     }
 
@@ -275,8 +275,7 @@ class PresetImportCommand extends Command {
       return Command.FAILURE;
     }
 
-    if (!PresetHandler.importPreset(
-        context.getLevel(), PresetType.DEFAULT, preset, position, uuid, serverPlayer)) {
+    if (!importPreset(context, PresetType.DEFAULT, preset, position, uuid, serverPlayer)) {
       return sendFailureMessage(context, importedPresetFailedMessage(DEFAULT_ARG, preset));
     }
 
@@ -298,12 +297,28 @@ class PresetImportCommand extends Command {
       return Command.FAILURE;
     }
 
-    if (!PresetHandler.importPreset(
-        context.getLevel(), PresetType.WORLD, preset, position, uuid, serverPlayer)) {
+    if (!importPreset(context, PresetType.WORLD, preset, position, uuid, serverPlayer)) {
       return sendFailureMessage(context, importedPresetFailedMessage(WORLD_ARG, preset));
     }
 
     return sendSuccessMessage(context, importedPresetMessage(WORLD_ARG, preset, position, uuid));
+  }
+
+  private static boolean importPreset(
+      CommandSourceStack context,
+      PresetType presetType,
+      ResourceLocation preset,
+      Vec3 position,
+      UUID uuid,
+      ServerPlayer requestedOwner) {
+    ActorSecurityContext actorSecurityContext = CommandSecurity.getActorContext(context);
+    ServerPlayer owner = requestedOwner;
+    if (owner == null && actorSecurityContext != null) {
+      owner = actorSecurityContext.player();
+    }
+
+    return PresetHandler.importPreset(
+        context.getLevel(), presetType, preset, position, uuid, actorSecurityContext, owner);
   }
 
   private static String importedPresetFailedMessage(String presetType, ResourceLocation preset) {

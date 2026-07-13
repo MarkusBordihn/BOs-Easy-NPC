@@ -8,6 +8,23 @@ For the full changelog, please go to the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 7.1.0
+
+- Fixed #799 by fixing edge cases and adding additional documentation and better log messages.
+- Fixed #798 by considering console, commands and command blocks as trusted command sources.
+- Fixed a critical single-player / LAN issue where client and server NPCs shared the same registry.
+- Fixed a memory leak in the configuration menu handling and added timeout and disconnect cleanup.
+- Fixed duplicate downloads when several NPCs request the same skin at the same time.
+- Fixed skin lookups failing after a error so a slow server no longer freezes the game.
+- Fixed the URL skin screen freezing the game while checking a remote image; the check now runs in
+  the background.
+- Added a new World Spawner block that limits an NPC preset across the whole world (all dimensions);
+  the existing Group Spawner now counts per dimension so far-away NPCs no longer block it.
+- Hardened remote skin downloads with a strict size limit and safe redirect handling to prevent
+  crashes from oversized or malicious skin URLs; added an optional `blockPrivateAddresses` setting.
+- Improved server performance by only sending entity and player load events to NPCs that actually
+  use them, grouped by dimension.
+
 ### 7.0.0
 
 - Fixed #791 by adding Wandering Trader NPC type.

@@ -32,7 +32,9 @@ import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.network.NetworkHandlerManagerType;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.server.level.ServerPlayer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -66,6 +68,12 @@ public class ConfigUIMain implements ModInitializer {
 
     log.info("{} Menu Handler ...", Constants.LOG_REGISTER_PREFIX);
     MenuManager.registerMenuHandler(new MenuHandler());
+    ServerEntityEvents.ENTITY_UNLOAD.register(
+        (entity, world) -> {
+          if (entity instanceof ServerPlayer serverPlayer) {
+            MenuManager.cleanupPlayerMenus(serverPlayer);
+          }
+        });
 
     log.info("{} Server Network Handler ...", Constants.LOG_REGISTER_PREFIX);
     NetworkHandlerManager.registerHandler(new NetworkHandler());

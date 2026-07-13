@@ -67,17 +67,16 @@ public class PresetSecurity {
 
   public static PresetTrustLevel getTrustLevel(
       PresetType presetType, ActorSecurityContext actorSecurityContext) {
-    if (actorSecurityContext != null && actorSecurityContext.admin()) {
+    if (actorSecurityContext == null || actorSecurityContext.player() == null) {
+      return PresetTrustLevel.SERVER_TRUSTED;
+    }
+
+    if (actorSecurityContext.admin()) {
       return PresetTrustLevel.ADMIN_TRUSTED;
     }
 
-    if (actorSecurityContext != null && actorSecurityContext.creative()) {
+    if (actorSecurityContext.creative()) {
       return PresetTrustLevel.CREATIVE_PLAYER;
-    }
-
-    if (actorSecurityContext == null
-        && (presetType == PresetType.DATA || presetType == PresetType.DEFAULT)) {
-      return PresetTrustLevel.SERVER_TRUSTED;
     }
 
     return PresetTrustLevel.UNTRUSTED_PLAYER;
@@ -88,17 +87,30 @@ public class PresetSecurity {
       PresetType presetType,
       UUID targetUuid,
       ActorSecurityContext actorSecurityContext) {
+    UUID ownerUuid =
+        actorSecurityContext != null && actorSecurityContext.player() != null
+            ? actorSecurityContext.player().getUUID()
+            : null;
+    return getPresetAuthority(serverLevel, presetType, targetUuid, actorSecurityContext, ownerUuid);
+  }
+
+  public static PresetAuthority getPresetAuthority(
+      ServerLevel serverLevel,
+      PresetType presetType,
+      UUID targetUuid,
+      ActorSecurityContext actorSecurityContext,
+      UUID importedOwnerUuid) {
     PresetTrustLevel trustLevel = getTrustLevel(presetType, actorSecurityContext);
 
     return new PresetAuthority(
-        getOwnerUuid(serverLevel, targetUuid, actorSecurityContext),
+        getOwnerUuid(serverLevel, targetUuid, importedOwnerUuid),
         CommandSecurity.getPresetImportCommandLevel(actorSecurityContext, trustLevel),
         trustLevel,
         FeatureSecurity.getRole(actorSecurityContext));
   }
 
   private static UUID getOwnerUuid(
-      ServerLevel serverLevel, UUID targetUuid, ActorSecurityContext actorSecurityContext) {
+      ServerLevel serverLevel, UUID targetUuid, UUID importedOwnerUuid) {
     if (serverLevel != null && targetUuid != null) {
       EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(targetUuid, serverLevel);
       if (easyNPC != null) {
@@ -109,8 +121,6 @@ public class PresetSecurity {
       }
     }
 
-    return actorSecurityContext != null && actorSecurityContext.player() != null
-        ? actorSecurityContext.player().getUUID()
-        : null;
+    return importedOwnerUuid;
   }
 }

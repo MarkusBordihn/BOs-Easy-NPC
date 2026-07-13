@@ -94,7 +94,8 @@ public class RenderHandler {
 
     boolean easyModelNPC =
         easyNPC instanceof ConfigurationDataCapable<?> configurable
-            && configurable.getConfigurationData() == ConfigurationData.EASY_MODEL;
+            && (configurable.getConfigurationData() == ConfigurationData.EASY_MODEL
+                || configurable.getConfigurationData() == ConfigurationData.EASY_MODEL_HUMANOID);
     String integrationId =
         easyModelNPC
             ? EasyModelEntitiesManager.INTEGRATION_ID

@@ -150,6 +150,26 @@ feature.URL_RESOURCE: Minimum role required to use URL-based skin loading (defau
         feature, DEFAULT_FEATURE_ROLES.getOrDefault(feature, NpcSecurityRole.ADMIN));
   }
 
+  public static String getConfigFilePath() {
+    File configFile = getConfigFile(CONFIG_FILE_NAME);
+    return configFile != null ? configFile.getAbsolutePath() : CONFIG_FILE_NAME;
+  }
+
+  public static Set<String> getExecuteAsUserAllowedRoots(CommandPermissionLevel permissionLevel) {
+    if (permissionLevel == null) {
+      return Set.of();
+    }
+
+    TreeSet<String> allowedRoots = new TreeSet<>();
+    for (CommandPermissionLevel allowListLevel : CommandPermissionLevel.values()) {
+      if (permissionLevel.allows(allowListLevel)) {
+        allowedRoots.addAll(
+            EXECUTE_AS_USER_COMMAND_ALLOW_LIST.getOrDefault(allowListLevel, Set.of()));
+      }
+    }
+    return Collections.unmodifiableSet(allowedRoots);
+  }
+
   public static boolean isExecuteAsUserCommandAllowed(
       String commandName, CommandPermissionLevel permissionLevel) {
     String normalizedCommandName = normalizeCommandName(commandName);
@@ -179,6 +199,13 @@ feature.URL_RESOURCE: Minimum role required to use URL-based skin loading (defau
 
     Set<String> normalizedValue =
         normalizeCommandList(Arrays.asList(properties.getProperty(key).split(",")));
+    if (normalizedValue.contains("*")) {
+      log.warn(
+          "Ignoring unsupported wildcard '*' in {}. Command names must be listed explicitly.", key);
+      TreeSet<String> withoutWildcard = new TreeSet<>(normalizedValue);
+      withoutWildcard.remove("*");
+      normalizedValue = Collections.unmodifiableSet(withoutWildcard);
+    }
     properties.setProperty(key, String.join(",", normalizedValue));
     return normalizedValue;
   }

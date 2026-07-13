@@ -30,6 +30,9 @@ import java.util.EnumMap;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.Bootstrap;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Mob;
@@ -113,6 +116,38 @@ class TradingDataCapableTest {
     assertEquals(1, loaded.size());
     assertEquals(2, loaded.get(0).getUses());
     assertEquals(7, loaded.get(0).getMaxUses());
+  }
+
+  @Test
+  @DisplayName("modified trade item survives offer NBT round-trip and rebuild")
+  void testModifiedTradeItemSurvivesOfferRoundTripAndRebuild() {
+    ItemStack questItem = new ItemStack(Items.SUGAR);
+    questItem.setHoverName(Component.literal("Lethal Bio-Reagent"));
+    ListTag lore = new ListTag();
+    lore.add(
+        StringTag.valueOf(
+            Component.Serializer.toJson(Component.literal("It singes at your skin..."))));
+    questItem.getOrCreateTagElement("display").put("Lore", lore);
+
+    MerchantOffers offers = new MerchantOffers();
+    offers.add(
+        new MerchantOffer(questItem, ItemStack.EMPTY, new ItemStack(Items.EMERALD), 10, 0, 1.0F));
+    MerchantOffer loadedOffer = new MerchantOffers(offers.createTag()).get(0);
+    MerchantOffer rebuiltOffer =
+        new MerchantOffer(
+            loadedOffer.getBaseCostA(),
+            loadedOffer.getCostB(),
+            loadedOffer.getResult(),
+            loadedOffer.getUses(),
+            5,
+            loadedOffer.getXp(),
+            loadedOffer.getPriceMultiplier(),
+            loadedOffer.getDemand());
+
+    assertTrue(loadedOffer.satisfiedBy(questItem.copy(), ItemStack.EMPTY));
+    assertTrue(rebuiltOffer.satisfiedBy(questItem.copy(), ItemStack.EMPTY));
+    assertFalse(rebuiltOffer.satisfiedBy(new ItemStack(Items.SUGAR), ItemStack.EMPTY));
+    assertTrue(ItemStack.isSameItemSameTags(questItem, rebuiltOffer.getBaseCostA()));
   }
 
   @Test

@@ -87,6 +87,18 @@ public class ModBlocks {
                       .sound(SoundType.METAL)
                       .noOcclusion(),
                   SpawnerType.SINGLE_SPAWNER));
+  public static final RegistryObject<Block> EASY_NPC_SPAWNER_WORLD =
+      BLOCKS.register(
+          SpawnerType.WORLD_SPAWNER.getId(),
+          () ->
+              new EasyNPCSpawnerBlockWrapper(
+                  Properties.of()
+                      .mapColor(MapColor.STONE)
+                      .requiresCorrectToolForDrops()
+                      .strength(5.0F)
+                      .sound(SoundType.METAL)
+                      .noOcclusion(),
+                  SpawnerType.WORLD_SPAWNER));
 
   private ModBlocks() {}
 
@@ -100,6 +112,7 @@ public class ModBlocks {
                           EASY_NPC_SPAWNER_DEFAULT.get(),
                           EASY_NPC_SPAWNER_BOSS.get(),
                           EASY_NPC_SPAWNER_GROUP.get(),
-                          EASY_NPC_SPAWNER_SINGLE.get())
+                          EASY_NPC_SPAWNER_SINGLE.get(),
+                          EASY_NPC_SPAWNER_WORLD.get())
                       .build(null));
 }

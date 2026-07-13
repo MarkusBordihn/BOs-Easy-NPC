@@ -51,5 +51,7 @@ public class BlockEntityRenderer {
         ModBlocks.EASY_NPC_SPAWNER_GROUP, RenderType.cutoutMipped());
     BlockRenderLayerMap.INSTANCE.putBlock(
         ModBlocks.EASY_NPC_SPAWNER_SINGLE, RenderType.cutoutMipped());
+    BlockRenderLayerMap.INSTANCE.putBlock(
+        ModBlocks.EASY_NPC_SPAWNER_WORLD, RenderType.cutoutMipped());
   }
 }

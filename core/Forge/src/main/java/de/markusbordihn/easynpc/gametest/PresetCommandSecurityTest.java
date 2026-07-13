@@ -20,51 +20,37 @@
 package de.markusbordihn.easynpc.gametest;
 
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.entity.ModEntityType;
-import de.markusbordihn.easynpc.entity.ModNPCEntityType;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraft.world.entity.EntityType;
 import net.minecraftforge.gametest.GameTestHolder;
 import net.minecraftforge.gametest.PrefixGameTestTemplate;
 
 @SuppressWarnings("unused")
 @PrefixGameTestTemplate(value = false)
 @GameTestHolder(Constants.MOD_ID)
-public class TradingPersistenceTest {
-
-  private static EntityType<?> humanoid() {
-    return ModEntityType.getEntityType(ModNPCEntityType.HUMANOID);
-  }
+public class PresetCommandSecurityTest {
 
   @GameTest(template = "gametest.3x3x3")
-  public void testTradeUsePersistenceAfterNbtRoundTrip(GameTestHelper helper) {
-    TradingPersistenceTestHelper.assertTradeUsePersistence(helper, humanoid());
+  public void testCommandBlockPresetImport(GameTestHelper helper) {
+    PresetCommandSecurityTestHelper.assertCommandBlockPresetImport(helper);
     helper.succeed();
   }
 
   @GameTest(template = "gametest.3x3x3")
-  public void testAdvancedMaxUsesPreservesCurrentUses(GameTestHelper helper) {
-    TradingPersistenceTestHelper.assertAdvancedMaxUsesPreservesCurrentUses(helper, humanoid());
+  public void testPlayerPresetImport(GameTestHelper helper) {
+    PresetCommandSecurityTestHelper.assertPlayerPresetImport(helper);
     helper.succeed();
   }
 
   @GameTest(template = "gametest.3x3x3")
-  public void testModifiedTradeItemPersistence(GameTestHelper helper) {
-    TradingPersistenceTestHelper.assertModifiedTradeItemPersistence(helper, humanoid());
+  public void testConsolePresetImport(GameTestHelper helper) {
+    PresetCommandSecurityTestHelper.assertConsolePresetImport(helper);
     helper.succeed();
   }
 
   @GameTest(template = "gametest.3x3x3")
-  public void testBasicTradingOffersUpdateAppliesCorrectFields(GameTestHelper helper) {
-    TradingPersistenceTestHelper.assertBasicTradingOffersUpdateAppliesCorrectFields(
-        helper, humanoid());
-    helper.succeed();
-  }
-
-  @GameTest(template = "gametest.3x3x3")
-  public void testTimedTradingResetRestoresUses(GameTestHelper helper) {
-    TradingPersistenceTestHelper.assertTimedTradingResetRestoresUses(helper, humanoid());
+  public void testConsolePresetImportWithOwner(GameTestHelper helper) {
+    PresetCommandSecurityTestHelper.assertConsolePresetImportWithOwner(helper);
     helper.succeed();
   }
 }

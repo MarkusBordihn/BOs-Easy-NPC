@@ -20,11 +20,16 @@
 package de.markusbordihn.easynpc.client.renderer.entity.easymodelentities;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
 import de.markusbordihn.easymodelentities.api.EasyModelReloadEvents;
 import de.markusbordihn.easymodelentities.api.client.EasyModelEntitiesClientApi;
 import de.markusbordihn.easymodelentities.api.client.EasyModelPartAnimator;
+import de.markusbordihn.easymodelentities.api.client.EasyModelPartPoseListener;
 import de.markusbordihn.easymodelentities.api.data.client.EasyModelEntityRenderOptions;
+import de.markusbordihn.easymodelentities.api.data.client.EasyModelItemAnchor;
+import de.markusbordihn.easymodelentities.api.data.client.EasyModelPartPose;
 import de.markusbordihn.easymodelentities.api.data.client.EasyModelPartTransform;
+import de.markusbordihn.easymodelentities.data.model.Vec3f;
 import de.markusbordihn.easymodelentities.data.model.bake.ModelBounds;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.model.custom.DopplerModel;
@@ -45,13 +50,17 @@ import de.markusbordihn.easynpc.mixin.renderer.MobRendererInvoker;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.renderer.ItemInHandRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.HumanoidMobRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraft.world.item.ItemStack;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -67,9 +76,12 @@ public class EasyModelNPCRenderer<E extends PathfinderMob>
       new ConcurrentHashMap<>();
   private static boolean reloadListenerRegistered = false;
 
+  private final ItemInHandRenderer itemInHandRenderer;
+
   public EasyModelNPCRenderer(
       EntityRendererProvider.Context context, ModelLayerLocation modelLayerLocation) {
     super(context, new DopplerModel<>(context.bakeLayer(modelLayerLocation)), 0.5F);
+    this.itemInHandRenderer = context.getItemInHandRenderer();
     registerReloadListener();
   }
 
@@ -104,6 +116,37 @@ public class EasyModelNPCRenderer<E extends PathfinderMob>
     };
   }
 
+  private static EasyModelEntityRenderOptions createRenderOptions(EasyModelNPC easyModelNPC) {
+    EasyModelEntityRenderOptions renderOptions = EasyModelEntityRenderOptions.DEFAULT;
+    if (easyModelNPC.hasChangedModel()) {
+      renderOptions = renderOptions.withPartAnimator(createPartAnimator(easyModelNPC));
+    }
+    return renderOptions;
+  }
+
+  private static void applyRootRotation(
+      EasyModelNPC easyModelNPC, PoseStack poseStack, float pivotY) {
+    CustomRotation rootRotation = easyModelNPC.getModelRootData().rotation();
+    if (!rootRotation.hasChangedRotation()) {
+      return;
+    }
+
+    float xDeg = (float) Math.toDegrees(rootRotation.x());
+    float zDeg = (float) Math.toDegrees(rootRotation.z());
+    if (xDeg == 0.0f && zDeg == 0.0f) {
+      return;
+    }
+
+    poseStack.translate(0.0f, pivotY, 0.0f);
+    if (xDeg != 0.0f) {
+      poseStack.mulPose(Axis.XP.rotationDegrees(xDeg));
+    }
+    if (zDeg != 0.0f) {
+      poseStack.mulPose(Axis.ZP.rotationDegrees(zDeg));
+    }
+    poseStack.translate(0.0f, -pivotY, 0.0f);
+  }
+
   private static float getGuiPreviewScale(
       ResourceLocation profileId, float displayedSubject, float fallbackHeight) {
     return guiPreviewScaleCache.computeIfAbsent(
@@ -112,6 +155,93 @@ public class EasyModelNPCRenderer<E extends PathfinderMob>
           float subject = displayedSubject > 0f ? displayedSubject : fallbackHeight;
           return EntityTypeManager.calculateGuiPreviewScaleFactor(subject);
         });
+  }
+
+  private HandPoseCapture createHandPoseCapture(E entity, ResourceLocation profileId) {
+    ItemStack mainHandItem = entity.getMainHandItem();
+    ItemStack offHandItem = entity.getOffhandItem();
+    if (mainHandItem.isEmpty() && offHandItem.isEmpty()) {
+      return null;
+    }
+
+    HumanoidArm mainArm = entity.getMainArm();
+    EasyModelItemAnchor mainHandAnchor =
+        mainHandItem.isEmpty()
+            ? null
+            : EasyModelEntitiesClientApi.getItemAnchor(profileId, mainArm).orElse(null);
+    EasyModelItemAnchor offHandAnchor =
+        offHandItem.isEmpty()
+            ? null
+            : EasyModelEntitiesClientApi.getItemAnchor(profileId, mainArm.getOpposite())
+                .orElse(null);
+    if (mainHandAnchor == null && offHandAnchor == null) {
+      return null;
+    }
+    return new HandPoseCapture(mainHandAnchor, offHandAnchor);
+  }
+
+  private void renderHandItems(
+      E entity,
+      HandPoseCapture handPoseCapture,
+      PoseStack poseStack,
+      MultiBufferSource buffer,
+      int packedLight) {
+    if (handPoseCapture == null) {
+      return;
+    }
+
+    HumanoidArm mainArm = entity.getMainArm();
+    renderHandItem(
+        entity,
+        entity.getMainHandItem(),
+        handPoseCapture.mainHandAnchor,
+        handPoseCapture.mainHandPose,
+        mainArm,
+        poseStack,
+        buffer,
+        packedLight);
+    renderHandItem(
+        entity,
+        entity.getOffhandItem(),
+        handPoseCapture.offHandAnchor,
+        handPoseCapture.offHandPose,
+        mainArm.getOpposite(),
+        poseStack,
+        buffer,
+        packedLight);
+  }
+
+  private void renderHandItem(
+      E entity,
+      ItemStack itemStack,
+      EasyModelItemAnchor itemAnchor,
+      EasyModelPartPose partPose,
+      HumanoidArm arm,
+      PoseStack poseStack,
+      MultiBufferSource buffer,
+      int packedLight) {
+    if (itemStack.isEmpty() || itemAnchor == null || partPose == null) {
+      return;
+    }
+
+    poseStack.pushPose();
+    partPose.applyTo(poseStack);
+    Vec3f localOffset = itemAnchor.localOffset();
+    poseStack.translate(localOffset.x() / 16.0f, localOffset.y() / 16.0f, localOffset.z() / 16.0f);
+    poseStack.mulPose(Axis.XP.rotationDegrees(-90.0f));
+    poseStack.mulPose(Axis.YP.rotationDegrees(180.0f));
+    boolean isLeftHand = arm == HumanoidArm.LEFT;
+    this.itemInHandRenderer.renderItem(
+        entity,
+        itemStack,
+        isLeftHand
+            ? ItemDisplayContext.THIRD_PERSON_LEFT_HAND
+            : ItemDisplayContext.THIRD_PERSON_RIGHT_HAND,
+        isLeftHand,
+        poseStack,
+        buffer,
+        packedLight);
+    poseStack.popPose();
   }
 
   private boolean renderEasyModel(
@@ -142,7 +272,8 @@ public class EasyModelNPCRenderer<E extends PathfinderMob>
     try {
       boolean rendered;
       if (IntegrationRegistry.isGuiPreviewMode()) {
-        rendered = renderPreview(entity, profileId, bodyYaw, poseStack, buffer, packedLight);
+        rendered =
+            renderPreview(easyModelNPC, entity, profileId, bodyYaw, poseStack, buffer, packedLight);
       } else {
         rendered =
             renderInWorld(
@@ -168,6 +299,7 @@ public class EasyModelNPCRenderer<E extends PathfinderMob>
   }
 
   private boolean renderPreview(
+      EasyModelNPC easyModelNPC,
       E entity,
       ResourceLocation profileId,
       float bodyYaw,
@@ -182,21 +314,27 @@ public class EasyModelNPCRenderer<E extends PathfinderMob>
     float displayedSubject =
         Math.max((float) Math.hypot(bounds.sizeX(), bounds.sizeZ()), bounds.sizeY());
     float previewScale = getGuiPreviewScale(profileId, displayedSubject, entity.getBbHeight());
+    CustomScale rootScale = easyModelNPC.getModelRootData().scale();
+    float displayedHeight = previewScale * rootScale.y() * bounds.sizeY();
     float yLift =
-        Math.max(
-            0f, (EntityTypeManager.GUI_PREVIEW_TARGET_HEIGHT - previewScale * bounds.sizeY()) / 2f);
+        Math.max(0f, (EntityTypeManager.GUI_PREVIEW_TARGET_HEIGHT - displayedHeight) / 2f);
     poseStack.pushPose();
     poseStack.translate(0.0, yLift, 0.0);
-    poseStack.scale(previewScale, previewScale, previewScale);
+    applyRootRotation(easyModelNPC, poseStack, displayedHeight * 0.5f);
+    poseStack.scale(
+        previewScale * rootScale.x(), previewScale * rootScale.y(), previewScale * rootScale.z());
+    HandPoseCapture handPoseCapture = createHandPoseCapture(entity, profileId);
+    EasyModelEntityRenderOptions renderOptions = createRenderOptions(easyModelNPC);
+    if (handPoseCapture != null) {
+      renderOptions = renderOptions.withPartPoseListener(handPoseCapture);
+    }
     boolean rendered =
         EasyModelEntitiesClientApi.render(
-            profileId,
-            poseStack,
-            buffer,
-            packedLight,
-            bodyYaw,
-            EasyModelEntityRenderOptions.DEFAULT);
+            profileId, poseStack, buffer, packedLight, bodyYaw, renderOptions);
     poseStack.popPose();
+    if (rendered) {
+      renderHandItems(entity, handPoseCapture, poseStack, buffer, packedLight);
+    }
     return rendered;
   }
 
@@ -209,16 +347,20 @@ public class EasyModelNPCRenderer<E extends PathfinderMob>
       PoseStack poseStack,
       MultiBufferSource buffer,
       int packedLight) {
-    EasyModelEntityRenderOptions renderOptions = EasyModelEntityRenderOptions.DEFAULT;
-    if (easyModelNPC.hasChangedModel()) {
-      renderOptions = renderOptions.withPartAnimator(createPartAnimator(easyModelNPC));
-    }
-
     CustomScale rootScale = easyModelNPC.getModelRootData().scale();
     boolean scaled = rootScale.x() != 1.0f || rootScale.y() != 1.0f || rootScale.z() != 1.0f;
-    if (scaled) {
+    boolean rotated = easyModelNPC.getModelRootData().rotation().hasChangedRotation();
+    if (scaled || rotated) {
       poseStack.pushPose();
-      poseStack.scale(rootScale.x(), rootScale.y(), rootScale.z());
+      applyRootRotation(easyModelNPC, poseStack, entity.getBbHeight() * 0.5f);
+      if (scaled) {
+        poseStack.scale(rootScale.x(), rootScale.y(), rootScale.z());
+      }
+    }
+    HandPoseCapture handPoseCapture = createHandPoseCapture(entity, profileId);
+    EasyModelEntityRenderOptions renderOptions = createRenderOptions(easyModelNPC);
+    if (handPoseCapture != null) {
+      renderOptions = renderOptions.withPartPoseListener(handPoseCapture);
     }
     boolean rendered =
         EasyModelEntitiesClientApi.render(
@@ -230,8 +372,11 @@ public class EasyModelNPCRenderer<E extends PathfinderMob>
             bodyYaw,
             partialTicks,
             renderOptions);
-    if (scaled) {
+    if (scaled || rotated) {
       poseStack.popPose();
+    }
+    if (rendered) {
+      renderHandItems(entity, handPoseCapture, poseStack, buffer, packedLight);
     }
     return rendered;
   }
@@ -269,5 +414,35 @@ public class EasyModelNPCRenderer<E extends PathfinderMob>
       return;
     }
     super.render(entity, entityYaw, partialTicks, poseStack, bufferSource, packedLight);
+  }
+
+  private static final class HandPoseCapture implements EasyModelPartPoseListener {
+
+    private final EasyModelItemAnchor mainHandAnchor;
+    private final EasyModelItemAnchor offHandAnchor;
+    private EasyModelPartPose mainHandPose;
+    private EasyModelPartPose offHandPose;
+
+    private HandPoseCapture(EasyModelItemAnchor mainHandAnchor, EasyModelItemAnchor offHandAnchor) {
+      this.mainHandAnchor = mainHandAnchor;
+      this.offHandAnchor = offHandAnchor;
+    }
+
+    @Override
+    public boolean wantsPart(String partName) {
+      return (this.mainHandAnchor != null && this.mainHandAnchor.partName().equals(partName))
+          || (this.offHandAnchor != null && this.offHandAnchor.partName().equals(partName));
+    }
+
+    @Override
+    public void onPartPose(EasyModelPartPose partPose) {
+      if (this.mainHandAnchor != null
+          && this.mainHandAnchor.partName().equals(partPose.partName())) {
+        this.mainHandPose = partPose;
+      }
+      if (this.offHandAnchor != null && this.offHandAnchor.partName().equals(partPose.partName())) {
+        this.offHandPose = partPose;
+      }
+    }
   }
 }

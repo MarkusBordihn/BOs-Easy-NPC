@@ -71,6 +71,9 @@ public class ModItems {
   public static final Item EASY_NPC_SPAWNER_SINGLE =
       new EasyNPCSpawnerBlockItem(
           ModBlocks.EASY_NPC_SPAWNER_SINGLE, new Item.Properties(), SpawnerType.SINGLE_SPAWNER);
+  public static final Item EASY_NPC_SPAWNER_WORLD =
+      new EasyNPCSpawnerBlockItem(
+          ModBlocks.EASY_NPC_SPAWNER_WORLD, new Item.Properties(), SpawnerType.WORLD_SPAWNER);
   public static final Item MOVE_EASY_NPC = new MoveEasyNPCItem(new Item.Properties());
   public static final Item CUSTOM_DATA_TEST_ITEM =
       new CustomDataTestItem(new Item.Properties().stacksTo(1));
@@ -102,6 +105,7 @@ public class ModItems {
     registerItem(SpawnerType.DEFAULT_SPAWNER.getId(), EASY_NPC_SPAWNER_DEFAULT);
     registerItem(SpawnerType.GROUP_SPAWNER.getId(), EASY_NPC_SPAWNER_GROUP);
     registerItem(SpawnerType.SINGLE_SPAWNER.getId(), EASY_NPC_SPAWNER_SINGLE);
+    registerItem(SpawnerType.WORLD_SPAWNER.getId(), EASY_NPC_SPAWNER_WORLD);
 
     log.info("{} Weapon Items ...", Constants.LOG_REGISTER_PREFIX);
     registerItem(BulletItem.ID, BULLET_ITEM);

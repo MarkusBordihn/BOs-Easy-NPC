@@ -69,6 +69,15 @@ Spawner Type Configuration
   public static short SINGLE_SPAWNER_REQUIRED_PLAYER_RANGE = 8;
   public static short SINGLE_SPAWNER_SPAWN_RANGE = 4;
 
+  // World Spawner
+  public static short WORLD_SPAWNER_DELAY = 600;
+  public static short WORLD_SPAWNER_MIN_SPAWN_DELAY = 3000;
+  public static short WORLD_SPAWNER_MAX_SPAWN_DELAY = 12000;
+  public static short WORLD_SPAWNER_SPAWN_COUNT = 3;
+  public static short WORLD_SPAWNER_MAX_NEARBY_ENTITIES = 6;
+  public static short WORLD_SPAWNER_REQUIRED_PLAYER_RANGE = 12;
+  public static short WORLD_SPAWNER_SPAWN_RANGE = 6;
+
   public static void registerConfig() {
     registerConfigFile(CONFIG_FILE_NAME, CONFIG_FILE_HEADER);
     parseConfigFile();
@@ -152,6 +161,23 @@ Spawner Type Configuration
             properties, "SingleSpawner:RequiredPlayerRange", SINGLE_SPAWNER_REQUIRED_PLAYER_RANGE);
     SINGLE_SPAWNER_SPAWN_RANGE =
         parseConfigValue(properties, "SingleSpawner:SpawnRange", SINGLE_SPAWNER_SPAWN_RANGE);
+
+    // World Spawner
+    WORLD_SPAWNER_DELAY = parseConfigValue(properties, "WorldSpawner:Delay", WORLD_SPAWNER_DELAY);
+    WORLD_SPAWNER_MIN_SPAWN_DELAY =
+        parseConfigValue(properties, "WorldSpawner:MinSpawnDelay", WORLD_SPAWNER_MIN_SPAWN_DELAY);
+    WORLD_SPAWNER_MAX_SPAWN_DELAY =
+        parseConfigValue(properties, "WorldSpawner:MaxSpawnDelay", WORLD_SPAWNER_MAX_SPAWN_DELAY);
+    WORLD_SPAWNER_SPAWN_COUNT =
+        parseConfigValue(properties, "WorldSpawner:SpawnCount", WORLD_SPAWNER_SPAWN_COUNT);
+    WORLD_SPAWNER_MAX_NEARBY_ENTITIES =
+        parseConfigValue(
+            properties, "WorldSpawner:MaxNearbyEntities", WORLD_SPAWNER_MAX_NEARBY_ENTITIES);
+    WORLD_SPAWNER_REQUIRED_PLAYER_RANGE =
+        parseConfigValue(
+            properties, "WorldSpawner:RequiredPlayerRange", WORLD_SPAWNER_REQUIRED_PLAYER_RANGE);
+    WORLD_SPAWNER_SPAWN_RANGE =
+        parseConfigValue(properties, "WorldSpawner:SpawnRange", WORLD_SPAWNER_SPAWN_RANGE);
 
     // Update config file if needed
     updateConfigFileIfChanged(configFile, CONFIG_FILE_HEADER, properties, unmodifiedProperties);
