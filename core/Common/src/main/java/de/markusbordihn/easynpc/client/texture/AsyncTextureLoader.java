@@ -83,27 +83,24 @@ public class AsyncTextureLoader {
 
   public static CompletableFuture<Identifier> loadTextureAsync(
       TextureModelKey key, String url, Path targetDirectory) {
-    CompletableFuture<Identifier> existing = pendingLoads.get(key);
+    CompletableFuture<Identifier> future = new CompletableFuture<>();
+    CompletableFuture<Identifier> existing = pendingLoads.putIfAbsent(key, future);
     if (existing != null) {
       return existing;
     }
 
-    // Create a new future and register it
-    CompletableFuture<Identifier> future = new CompletableFuture<>();
-    pendingLoads.put(key, future);
     downloadQueue.offer(new TextureLoadRequest(key, url, targetDirectory, future));
     return future;
   }
 
   public static CompletableFuture<Identifier> loadCachedTextureAsync(
       TextureModelKey key, Path targetDirectory) {
-    CompletableFuture<Identifier> existing = pendingLoads.get(key);
+    CompletableFuture<Identifier> future = new CompletableFuture<>();
+    CompletableFuture<Identifier> existing = pendingLoads.putIfAbsent(key, future);
     if (existing != null) {
       return existing;
     }
 
-    CompletableFuture<Identifier> future = new CompletableFuture<>();
-    pendingLoads.put(key, future);
     CompletableFuture.supplyAsync(
             () -> TextureCacheManager.getCachedNativeImage(key, targetDirectory),
             textureLoadExecutor)
@@ -122,14 +119,11 @@ public class AsyncTextureLoader {
 
   public static CompletableFuture<Identifier> loadPlayerTextureAsync(
       TextureModelKey key, UUID playerUUID, Path targetDirectory) {
-    CompletableFuture<Identifier> existing = pendingLoads.get(key);
+    CompletableFuture<Identifier> future = new CompletableFuture<>();
+    CompletableFuture<Identifier> existing = pendingLoads.putIfAbsent(key, future);
     if (existing != null) {
       return existing;
     }
-
-    // Create a new future and register it
-    CompletableFuture<Identifier> future = new CompletableFuture<>();
-    pendingLoads.put(key, future);
 
     // Asynchronously get the player texture URL
     CompletableFuture.supplyAsync(
@@ -138,7 +132,7 @@ public class AsyncTextureLoader {
             url -> {
               if (url == null || url.isEmpty()) {
                 log.error("{} Unable to get player skin URL for UUID: {}", LOG_PREFIX, playerUUID);
-                pendingLoads.remove(key);
+                pendingLoads.remove(key, future);
                 future.complete(null);
               } else {
                 log.debug("{} Got player skin URL for {}: {}", LOG_PREFIX, playerUUID, url);
@@ -152,7 +146,7 @@ public class AsyncTextureLoader {
                   LOG_PREFIX,
                   playerUUID,
                   throwable.getMessage());
-              pendingLoads.remove(key);
+              pendingLoads.remove(key, future);
               future.completeExceptionally(throwable);
               return null;
             });
@@ -196,7 +190,7 @@ public class AsyncTextureLoader {
       CompletableFuture<Identifier> future,
       Identifier result,
       Throwable throwable) {
-    pendingLoads.remove(key);
+    pendingLoads.remove(key, future);
     if (throwable != null) {
       log.error("{} Failed to load texture {}: {}", LOG_PREFIX, key, throwable.getMessage());
       future.completeExceptionally(throwable);

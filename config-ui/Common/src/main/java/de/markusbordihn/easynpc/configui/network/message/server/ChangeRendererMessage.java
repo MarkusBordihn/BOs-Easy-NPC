@@ -36,7 +36,7 @@ import net.minecraft.world.entity.EntityType;
 
 public record ChangeRendererMessage(
     UUID uuid,
-    RenderType renderType,
+    Optional<RenderType> renderType,
     Optional<EntityType<?>> renderEntityType,
     Optional<String> renderEntityModel)
     implements NetworkMessageRecord {
@@ -50,7 +50,7 @@ public record ChangeRendererMessage(
   public static ChangeRendererMessage create(final FriendlyByteBuf buffer) {
     return new ChangeRendererMessage(
         buffer.readUUID(),
-        buffer.readEnum(RenderType.class),
+        buffer.readOptional(buf -> buf.readEnum(RenderType.class)),
         EntityType.byString(buffer.readUtf()),
         Optional.of(buffer.readUtf()).filter(s -> !s.isEmpty()));
   }
@@ -58,7 +58,7 @@ public record ChangeRendererMessage(
   @Override
   public void write(final FriendlyByteBuf buffer) {
     buffer.writeUUID(this.uuid);
-    buffer.writeEnum(this.renderType);
+    buffer.writeOptional(this.renderType, FriendlyByteBuf::writeEnum);
     buffer.writeUtf(
         this.renderEntityType
             .map(entityType -> EntityType.getKey(entityType).toString())
@@ -83,9 +83,7 @@ public record ChangeRendererMessage(
       return;
     }
 
-    if (this.renderType != null) {
-      RenderHandler.setRenderType(easyNPC, this.renderType);
-    }
+    this.renderType.ifPresent(type -> RenderHandler.setRenderType(easyNPC, type));
     this.renderEntityType.ifPresent(
         entityType -> RenderHandler.setRenderEntity(easyNPC, entityType));
     this.renderEntityModel.ifPresent(

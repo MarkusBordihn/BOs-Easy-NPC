@@ -47,5 +47,6 @@ public class BlockEntityRenderer {
     BlockRenderLayerMap.putBlock(ModBlocks.EASY_NPC_SPAWNER_DEFAULT, ChunkSectionLayer.CUTOUT);
     BlockRenderLayerMap.putBlock(ModBlocks.EASY_NPC_SPAWNER_GROUP, ChunkSectionLayer.CUTOUT);
     BlockRenderLayerMap.putBlock(ModBlocks.EASY_NPC_SPAWNER_SINGLE, ChunkSectionLayer.CUTOUT);
+    BlockRenderLayerMap.putBlock(ModBlocks.EASY_NPC_SPAWNER_WORLD, ChunkSectionLayer.CUTOUT);
   }
 }

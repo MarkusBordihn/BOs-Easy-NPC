@@ -21,10 +21,19 @@ package de.markusbordihn.easynpc.gametest;
 
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.server.player.FakePlayer;
+import java.lang.reflect.Field;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.network.Connection;
+import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.CommonListenerCookie;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
+import net.minecraft.server.players.PlayerList;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
@@ -96,7 +105,46 @@ public final class GameTestHelpers {
   }
 
   public static ServerPlayer mockServerPlayer(GameTestHelper helper, Vec3 position) {
-    return new FakePlayer(
-        helper.getLevel(), BlockPos.containing(position.x, position.y, position.z));
+    ServerLevel level = helper.getLevel();
+    // Place the mock player at the structure-relative absolute position so it sits inside its own
+    // test area (matching the command source position) and stays far from other tests' mock
+    // players,
+    // keeping player selectors such as @p deterministic across the shared level.
+    BlockPos absolutePosition =
+        helper.absolutePos(BlockPos.containing(position.x, position.y, position.z));
+    FakePlayer fakePlayer = new FakePlayer(level, absolutePosition);
+    // Attach an unconnected packet listener so command side effects (teleport, feedback) that send
+    // client packets do not fail on the mock player, which has no real network connection.
+    fakePlayer.connection =
+        new ServerGamePacketListenerImpl(
+            level.getServer(),
+            new Connection(PacketFlow.CLIENTBOUND),
+            fakePlayer,
+            CommonListenerCookie.createInitial(fakePlayer.getGameProfile(), false));
+    registerInPlayerList(level.getServer().getPlayerList(), fakePlayer);
+    return fakePlayer;
+  }
+
+  /**
+   * Registers the mock player in the server player list so that player selectors (e.g. {@code @p})
+   * resolve it, without running the full {@code placeNewPlayer} login flow that a real connection
+   * would require. This is test-only support and relies on the development runtime mappings.
+   */
+  @SuppressWarnings("unchecked")
+  private static void registerInPlayerList(PlayerList playerList, ServerPlayer serverPlayer) {
+    try {
+      Field playersField = PlayerList.class.getDeclaredField("players");
+      playersField.setAccessible(true);
+      Field playersByUuidField = PlayerList.class.getDeclaredField("playersByUUID");
+      playersByUuidField.setAccessible(true);
+      List<ServerPlayer> players = (List<ServerPlayer>) playersField.get(playerList);
+      Map<UUID, ServerPlayer> playersByUuid =
+          (Map<UUID, ServerPlayer>) playersByUuidField.get(playerList);
+      if (playersByUuid.putIfAbsent(serverPlayer.getUUID(), serverPlayer) == null) {
+        players.add(serverPlayer);
+      }
+    } catch (ReflectiveOperationException exception) {
+      throw new IllegalStateException("Unable to register mock player in player list", exception);
+    }
   }
 }

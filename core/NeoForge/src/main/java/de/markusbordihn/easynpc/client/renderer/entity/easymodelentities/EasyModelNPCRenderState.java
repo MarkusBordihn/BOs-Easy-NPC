@@ -19,20 +19,30 @@
 
 package de.markusbordihn.easynpc.client.renderer.entity.easymodelentities;
 
+import de.markusbordihn.easymodelentities.api.data.client.EasyModelItemAnchor;
 import de.markusbordihn.easymodelentities.client.render.EasyModelEntityRenderState;
 import de.markusbordihn.easynpc.client.renderer.entity.state.EasyNPCGuiRenderStateExtension;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.resources.Identifier;
 
 @SuppressWarnings("java:S1104")
 public class EasyModelNPCRenderState extends EasyModelEntityRenderState
     implements EasyNPCGuiRenderStateExtension {
 
+  public final ItemStackRenderState mainHandItem = new ItemStackRenderState();
+  public final ItemStackRenderState offHandItem = new ItemStackRenderState();
   public Identifier profileId;
   public float rootScaleX = 1.0f;
   public float rootScaleY = 1.0f;
   public float rootScaleZ = 1.0f;
   public float previewScale;
   public float previewYLift;
+  public float rootRotationX;
+  public float rootRotationZ;
+  public float rootPivotY;
+  public EasyModelItemAnchor mainHandAnchor;
+  public EasyModelItemAnchor offHandAnchor;
+  public boolean mainArmLeft;
 
   @Override
   public void applyGuiRotationsAndScale(float xRotation, float yRotation) {
