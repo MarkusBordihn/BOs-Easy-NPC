@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.entity.easynpc.handlers.action.executor;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.ParseResults;
+import com.mojang.brigadier.context.CommandContextBuilder;
 import de.markusbordihn.easynpc.config.SecurityConfig;
 import de.markusbordihn.easynpc.security.CommandAuthority;
 import de.markusbordihn.easynpc.security.CommandExecutionSubject;
@@ -75,7 +76,7 @@ public class CommandExecutor {
         commandAuthority != null ? commandAuthority.effective() : CommandPermissionLevel.ALL;
     if (!CommandSecurity.isExecuteAsNpcCommandAllowed(command)) {
       log.warn(
-          "Blocked unsafe entity command root {} for {} with permission level {}. Adjust {} keys {} to change this.",
+          "Blocked unsafe entity command '{}' for {} with permission level {}. Adjust {} keys {} to change this.",
           CommandSecurity.getRootCommandName(command),
           entity,
           permissionLevel,
@@ -139,7 +140,7 @@ public class CommandExecutor {
         commandAuthority != null ? commandAuthority.effective() : CommandPermissionLevel.ALL;
     if (isBlockedUnsafeNPCCommand(command)) {
       log.warn(
-          "Blocked unsafe player command root {} for {} with permission level {}. Adjust {} keys {} to change this.",
+          "Blocked unsafe player command '{}' for {} with permission level {}. Adjust {} keys {} to change this.",
           CommandSecurity.getRootCommandName(command),
           serverPlayer,
           permissionLevel,
@@ -161,23 +162,28 @@ public class CommandExecutor {
         commandAuthority != null ? commandAuthority.requested() : CommandPermissionLevel.ALL;
     CommandPermissionLevel maxPermissionLevel =
         CommandPermissionLevel.min(requestedPermissionLevel, npcPermissionLevel);
+    CommandPermissionLevel playerPermissionLevel =
+        CommandSecurity.getPlayerPermissionLevel(serverPlayer);
     if (!CommandSecurity.isExecuteAsUserCommandAllowed(command, maxPermissionLevel)) {
       log.warn(
-          "Blocked execute-as-user command root {} for {} because it is not allowlisted up to permission level {} (requested {}, NPC cap {}). Adjust {} key {} to change this.",
+          "Blocked execute-as-player command '{}' for {}: not allowlisted up to {}. Add it to {} in {}.",
           rootCommandName,
           serverPlayer,
           maxPermissionLevel,
+          getExecuteAsUserAllowListKey(maxPermissionLevel),
+          SecurityConfig.getConfigFilePath());
+      log.debug(
+          "Execute-as-player permissions: player {}, requested {}, NPC cap {}, active allowlist up to {}: {}",
+          playerPermissionLevel,
           requestedPermissionLevel,
           npcPermissionLevel,
-          SecurityConfig.CONFIG_FILE_NAME,
-          getExecuteAsUserAllowListKey(maxPermissionLevel));
+          maxPermissionLevel,
+          SecurityConfig.getExecuteAsUserAllowedRoots(maxPermissionLevel));
       return;
     }
 
     Commands commands = minecraftServer.getCommands();
     CommandDispatcher<CommandSourceStack> commandDispatcher = commands.getDispatcher();
-    CommandPermissionLevel playerPermissionLevel =
-        CommandSecurity.getPlayerPermissionLevel(serverPlayer);
     CommandPermissionLevel basePermissionLevel =
         CommandPermissionLevel.min(
             requestedPermissionLevel,
@@ -199,12 +205,14 @@ public class CommandExecutor {
 
     if (maxPermissionLevel == basePermissionLevel) {
       log.warn(
-          "Blocked execute-as-user command root {} for {} because it is not available at effective permission level {} (requested {}, player {}, NPC cap {}).",
+          "Execute-as-player command '{}' is unavailable for {} at permission level {}.",
           rootCommandName,
           serverPlayer,
-          basePermissionLevel,
-          requestedPermissionLevel,
+          basePermissionLevel);
+      log.debug(
+          "Execute-as-player permissions: player {}, requested {}, NPC cap {}",
           playerPermissionLevel,
+          requestedPermissionLevel,
           npcPermissionLevel);
       return;
     }
@@ -214,14 +222,14 @@ public class CommandExecutor {
     parseResults = commandDispatcher.parse(command, elevatedCommandSourceStack);
     if (!isParseSuccessful(parseResults)) {
       log.warn(
-          "Blocked execute-as-user command root {} for {} because it is not available at allowlisted permission level {} (effective {}, NPC cap {}). Check {} key {}.",
+          "Execute-as-player command '{}' is unavailable for {} at elevated permission level {}.",
           rootCommandName,
           serverPlayer,
-          maxPermissionLevel,
+          maxPermissionLevel);
+      log.debug(
+          "Execute-as-player permissions: base {}, NPC cap {}",
           basePermissionLevel,
-          npcPermissionLevel,
-          SecurityConfig.CONFIG_FILE_NAME,
-          getExecuteAsUserAllowListKey(maxPermissionLevel));
+          npcPermissionLevel);
       return;
     }
 
@@ -260,8 +268,17 @@ public class CommandExecutor {
   }
 
   private static boolean isParseSuccessful(ParseResults<CommandSourceStack> parseResults) {
-    return parseResults != null
-        && !parseResults.getReader().canRead()
-        && parseResults.getContext().getCommand() != null;
+    if (parseResults == null || parseResults.getReader().canRead()) {
+      return false;
+    }
+
+    CommandContextBuilder<CommandSourceStack> context = parseResults.getContext();
+    while (context != null) {
+      if (context.getCommand() != null) {
+        return true;
+      }
+      context = context.getChild();
+    }
+    return false;
   }
 }

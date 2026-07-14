@@ -35,6 +35,8 @@ import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
 import de.markusbordihn.easynpc.io.CustomPresetDataFiles;
 import de.markusbordihn.easynpc.io.PresetFileHandler;
 import de.markusbordihn.easynpc.io.WorldPresetDataFiles;
+import de.markusbordihn.easynpc.security.ActorSecurityContext;
+import de.markusbordihn.easynpc.security.CommandSecurity;
 import de.markusbordihn.easynpc.security.PresetSanitizationResult;
 import de.markusbordihn.easynpc.security.PresetWarningMessages;
 import de.markusbordihn.easynpc.security.SecurityDecision;
@@ -78,10 +80,28 @@ public class PresetHandler {
       Vec3 position,
       UUID uuid,
       ServerPlayer serverPlayer) {
+    return importPreset(
+        serverLevel,
+        presetType,
+        presetLocation,
+        position,
+        uuid,
+        CommandSecurity.getActorContext(serverPlayer),
+        serverPlayer);
+  }
+
+  public static boolean importPreset(
+      ServerLevel serverLevel,
+      PresetType presetType,
+      Identifier presetLocation,
+      Vec3 position,
+      UUID uuid,
+      ActorSecurityContext actorSecurityContext,
+      ServerPlayer owner) {
     PresetData presetData =
         loadPresetFromSource(presetType, presetLocation, serverLevel.getServer());
     return presetData != null
-        && importPreset(serverLevel, presetData, position, uuid, serverPlayer);
+        && importPreset(serverLevel, presetData, position, uuid, actorSecurityContext, owner);
   }
 
   public static boolean importPreset(
@@ -90,6 +110,22 @@ public class PresetHandler {
       Vec3 position,
       UUID uuid,
       ServerPlayer serverPlayer) {
+    return importPreset(
+        serverLevel,
+        presetData,
+        position,
+        uuid,
+        CommandSecurity.getActorContext(serverPlayer),
+        serverPlayer);
+  }
+
+  public static boolean importPreset(
+      ServerLevel serverLevel,
+      PresetData presetData,
+      Vec3 position,
+      UUID uuid,
+      ActorSecurityContext actorSecurityContext,
+      ServerPlayer owner) {
     if (presetData == null || !presetData.hasValidData()) {
       log.error("[{}] Invalid preset data for import", serverLevel);
       return false;
@@ -109,7 +145,8 @@ public class PresetHandler {
             updatedPresetData.data(),
             updatedPresetData.presetType(),
             uuid,
-            serverPlayer);
+            actorSecurityContext,
+            owner);
     updatedPresetData =
         PresetData.create(
             updatedPresetData.name(),
@@ -131,8 +168,9 @@ public class PresetHandler {
       return false;
     }
 
-    configureImportedEntity(easyNPC, position, serverPlayer);
-    sendImportSanitizationWarnings(serverPlayer, sanitizationResult);
+    configureImportedEntity(easyNPC, position, owner);
+    sendImportSanitizationWarnings(
+        actorSecurityContext != null ? actorSecurityContext.player() : null, sanitizationResult);
 
     return true;
   }
@@ -189,7 +227,8 @@ public class PresetHandler {
 
   public static boolean importPreset(ServerLevel serverLevel, CompoundTag compoundTag) {
     PresetSanitizationResult sanitizationResult =
-        SecurityManager.sanitizePresetImport(serverLevel, compoundTag, null, null, null);
+        SecurityManager.sanitizePresetImport(
+            serverLevel, compoundTag, null, null, CommandSecurity.getServerActorContext(), null);
     return importPresetData(serverLevel, sanitizationResult.sanitizedTag());
   }
 

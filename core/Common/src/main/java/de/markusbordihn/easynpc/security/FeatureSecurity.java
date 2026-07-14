@@ -109,7 +109,7 @@ public class FeatureSecurity {
   }
 
   public static NpcSecurityRole getRole(ActorSecurityContext actorSecurityContext) {
-    if (actorSecurityContext == null) {
+    if (actorSecurityContext == null || actorSecurityContext.player() == null) {
       return NpcSecurityRole.SERVER_TRUSTED;
     }
 

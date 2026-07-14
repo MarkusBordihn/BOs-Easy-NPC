@@ -46,6 +46,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
@@ -165,52 +167,70 @@ public class UrlSkinConfigurationScreen<T extends ConfigurationMenu>
 
   private void addTextureSkinLocation() {
     String textureSkinLocationValue = this.textureSkinLocationBox.getValue();
-    if (!textureSkinLocationValue.isEmpty()
-        && !textureSkinLocationValue.equals(this.formerTextureSkinLocation)) {
-
-      // Immediate spam protection: Set cooldown and disable button BEFORE validation
-      updateNextTextureSkinLocationChange();
-      this.addTextureSettingsButton.active = false;
-      this.formerTextureSkinLocation = textureSkinLocationValue;
-
-      if (!UrlValidator.isValidUrl(textureSkinLocationValue)) {
-        this.errorMessage = "invalid_remote_image";
-        resetCooldownOnError();
-        return;
-      }
-
-      URL textureSkinLocation;
-      try {
-        textureSkinLocation = new URL(textureSkinLocationValue);
-      } catch (Exception e) {
-        log.error("Invalid URL format: {}", textureSkinLocationValue, e);
-        this.errorMessage = "invalid_url";
-        resetCooldownOnError();
-        return;
-      }
-
-      // Any exceptions during download/validation are caught and handled gracefully
-      try {
-        if (!RemoteImageValidator.isValidImage(textureSkinLocation)) {
-          log.error("Unable to set remote user texture to {}", textureSkinLocationValue);
-          this.errorMessage = "invalid_remote_image";
-          resetCooldownOnError();
-          return;
-        }
-      } catch (Exception e) {
-        log.error(
-            "Error validating remote image from {}: {}", textureSkinLocationValue, e.getMessage());
-        this.errorMessage = "error_loading_image";
-        resetCooldownOnError();
-        return;
-      }
-
-      log.debug("Setting remote user texture to {}", textureSkinLocationValue);
-      TextureManager.clearLastErrorMessage();
-      this.errorMessage = "";
-      NetworkMessageHandlerManager.getServerHandler()
-          .setSkin(this.getEasyNPCUUID(), SkinDataEntry.createRemoteSkin(textureSkinLocationValue));
+    if (textureSkinLocationValue.isEmpty()
+        || textureSkinLocationValue.equals(this.formerTextureSkinLocation)) {
+      return;
     }
+
+    updateNextTextureSkinLocationChange();
+    this.addTextureSettingsButton.active = false;
+    this.formerTextureSkinLocation = textureSkinLocationValue;
+
+    if (!UrlValidator.isValidUrl(textureSkinLocationValue)) {
+      this.errorMessage = "invalid_remote_image";
+      resetCooldownOnError();
+      return;
+    }
+
+    final URL textureSkinLocation;
+    try {
+      textureSkinLocation = new URL(textureSkinLocationValue);
+    } catch (Exception e) {
+      log.error("Invalid URL format: {}", textureSkinLocationValue, e);
+      this.errorMessage = "invalid_url";
+      resetCooldownOnError();
+      return;
+    }
+
+    // Validate the remote image off-thread so the render thread never blocks on network I/O.
+    CompletableFuture.supplyAsync(() -> RemoteImageValidator.isValidImage(textureSkinLocation))
+        .whenComplete(
+            (valid, throwable) ->
+                Minecraft.getInstance()
+                    .execute(
+                        () ->
+                            this.onRemoteImageValidated(
+                                textureSkinLocationValue, valid, throwable)));
+  }
+
+  private void onRemoteImageValidated(
+      String textureSkinLocationValue, Boolean valid, Throwable throwable) {
+    if (this.minecraft == null || this.minecraft.screen != this) {
+      return;
+    }
+
+    if (throwable != null) {
+      log.error(
+          "Error validating remote image from {}: {}",
+          textureSkinLocationValue,
+          throwable.getMessage());
+      this.errorMessage = "error_loading_image";
+      resetCooldownOnError();
+      return;
+    }
+
+    if (!Boolean.TRUE.equals(valid)) {
+      log.error("Unable to set remote user texture to {}", textureSkinLocationValue);
+      this.errorMessage = "invalid_remote_image";
+      resetCooldownOnError();
+      return;
+    }
+
+    log.debug("Setting remote user texture to {}", textureSkinLocationValue);
+    TextureManager.clearLastErrorMessage();
+    this.errorMessage = "";
+    NetworkMessageHandlerManager.getServerHandler()
+        .setSkin(this.getEasyNPCUUID(), SkinDataEntry.createRemoteSkin(textureSkinLocationValue));
   }
 
   private void resetCooldownOnError() {

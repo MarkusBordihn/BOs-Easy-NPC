@@ -34,8 +34,10 @@ import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.configui.tabs.ModTabs;
 import de.markusbordihn.easynpc.network.NetworkHandlerManagerType;
 import java.util.Optional;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.bus.BusGroup;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -74,6 +76,12 @@ public class ConfigUIMain {
 
     log.info("{} Menu Handler ...", Constants.LOG_REGISTER_PREFIX);
     MenuManager.registerMenuHandler(new MenuHandler());
+    PlayerEvent.PlayerLoggedOutEvent.BUS.addListener(
+        (final PlayerEvent.PlayerLoggedOutEvent event) -> {
+          if (event.getEntity() instanceof ServerPlayer serverPlayer) {
+            MenuManager.cleanupPlayerMenus(serverPlayer);
+          }
+        });
 
     log.info("{} Network Handler ...", Constants.LOG_REGISTER_PREFIX);
     NetworkMessageHandlerManager.registerClientHandler(new ClientNetworkMessageHandler());

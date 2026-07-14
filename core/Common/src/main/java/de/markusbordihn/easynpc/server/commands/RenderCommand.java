@@ -164,6 +164,7 @@ public class RenderCommand extends Command {
 
   private static boolean isEasyModelNPC(EasyNPC<?> easyNPC) {
     return easyNPC instanceof ConfigurationDataCapable<?> configurable
-        && configurable.getConfigurationData() == ConfigurationData.EASY_MODEL;
+        && (configurable.getConfigurationData() == ConfigurationData.EASY_MODEL
+            || configurable.getConfigurationData() == ConfigurationData.EASY_MODEL_HUMANOID);
   }
 }
