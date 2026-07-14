@@ -23,7 +23,9 @@ import de.markusbordihn.easynpc.Constants;
 import java.awt.image.BufferedImage;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
+import java.net.URLConnection;
 import javax.imageio.IIOException;
 import javax.imageio.ImageIO;
 import org.apache.logging.log4j.LogManager;
@@ -32,6 +34,8 @@ import org.apache.logging.log4j.Logger;
 public class RemoteImageValidator {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+  private static final int CONNECT_TIMEOUT = 5000;
+  private static final int READ_TIMEOUT = 5000;
 
   private RemoteImageValidator() {}
 
@@ -44,7 +48,12 @@ public class RemoteImageValidator {
 
     BufferedImage image;
     try {
-      image = ImageIO.read(remoteUrl);
+      URLConnection connection = remoteUrl.openConnection();
+      connection.setConnectTimeout(CONNECT_TIMEOUT);
+      connection.setReadTimeout(READ_TIMEOUT);
+      try (InputStream inputStream = connection.getInputStream()) {
+        image = ImageIO.read(inputStream);
+      }
     } catch (IIOException iioException) {
       log.error("Unable to download image from URL {}: {}", remoteUrl, iioException.getMessage());
       return false;

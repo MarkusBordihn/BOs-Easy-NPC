@@ -54,6 +54,7 @@ public class Config {
     log.info("{} Registering common configuration ...", LOG_PREFIX);
     DialogOptionsConfig.registerConfig();
     NPCBaseConfig.registerConfig();
+    RemoteTextureConfig.registerConfig();
     RenderEntityTypeSupportConfig.registerConfig();
     SecurityConfig.registerConfig();
     SpawnerTypeConfig.registerConfig();

@@ -27,7 +27,8 @@ public enum SpawnerType implements StringRepresentable {
   BOSS_SPAWNER,
   DEFAULT_SPAWNER,
   GROUP_SPAWNER,
-  SINGLE_SPAWNER;
+  SINGLE_SPAWNER,
+  WORLD_SPAWNER;
 
   private final String name;
 

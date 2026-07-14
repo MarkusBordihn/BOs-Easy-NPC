@@ -284,8 +284,9 @@ public class BaseEasyNPCSpawner extends BaseSpawner {
   }
 
   private void prepareEntityDataWithUUIDs(CompoundTag entityData) {
-    // For GROUP_SPAWNER: generate new entity UUID for each spawn
-    if (this.spawnerType == SpawnerType.GROUP_SPAWNER) {
+    // For GROUP_SPAWNER / WORLD_SPAWNER: generate new entity UUID for each spawn
+    if (this.spawnerType == SpawnerType.GROUP_SPAWNER
+        || this.spawnerType == SpawnerType.WORLD_SPAWNER) {
       entityData.putUUID(ENTITY_UUID_TAG, UUID.randomUUID());
     } else if (this.easyNPCUUID != null) {
       // For SINGLE/BOSS/DEFAULT: use stored entity UUID
@@ -303,14 +304,20 @@ public class BaseEasyNPCSpawner extends BaseSpawner {
       return false;
     }
 
-    if (this.spawnerType == SpawnerType.GROUP_SPAWNER) {
-      // GROUP_SPAWNER uses Preset UUID to track count of all entities with same preset
+    if (this.spawnerType == SpawnerType.GROUP_SPAWNER
+        || this.spawnerType == SpawnerType.WORLD_SPAWNER) {
+      // Both count entities sharing the preset UUID: WORLD_SPAWNER across the whole world,
+      // GROUP_SPAWNER only within its own dimension.
       if (this.easyNPCPresetUUID != null) {
-        int entityCount =
-            level instanceof ServerLevel serverLevel
-                ? LivingEntityManager.getEntityCountByPresetUUID(
-                    this.easyNPCPresetUUID, serverLevel)
-                : LivingEntityManager.getEntityCountByPresetUUID(this.easyNPCPresetUUID);
+        int entityCount;
+        if (this.spawnerType == SpawnerType.WORLD_SPAWNER) {
+          entityCount = LivingEntityManager.getEntityCountByPresetUUID(this.easyNPCPresetUUID);
+        } else if (level instanceof ServerLevel serverLevel) {
+          entityCount =
+              LivingEntityManager.getEntityCountByPresetUUID(this.easyNPCPresetUUID, serverLevel);
+        } else {
+          entityCount = LivingEntityManager.getEntityCountByPresetUUID(this.easyNPCPresetUUID);
+        }
 
         return entityCount < getMaxNearbyEntities();
       }
@@ -321,7 +328,7 @@ public class BaseEasyNPCSpawner extends BaseSpawner {
           Entity entity = serverLevel.getEntity(this.easyNPCUUID);
           return entity == null || !entity.isAlive();
         } else {
-          EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(this.easyNPCUUID);
+          EasyNPC<?> easyNPC = LivingEntityManager.getClientEasyNPCEntityByUUID(this.easyNPCUUID);
           return easyNPC == null || !easyNPC.getLivingEntity().isAlive();
         }
       }

@@ -26,7 +26,9 @@
       "de.markusbordihn.easynpc.gametest.DialogScreenTest",
       "de.markusbordihn.easynpc.gametest.ModSpawnEggItemTest",
       "de.markusbordihn.easynpc.gametest.ConditionEvaluationTest",
-      "de.markusbordihn.easynpc.gametest.FactionObjectiveTest"
+      "de.markusbordihn.easynpc.gametest.FactionObjectiveTest",
+      "de.markusbordihn.easynpc.gametest.ExecuteAsUserCommandTest",
+      "de.markusbordihn.easynpc.gametest.PresetCommandSecurityTest"
     ]
   },
   "mixins": [

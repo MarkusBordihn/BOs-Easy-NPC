@@ -27,6 +27,7 @@ import de.markusbordihn.easynpc.data.server.ServerDataAccessor;
 import de.markusbordihn.easynpc.data.server.ServerDataIndex;
 import de.markusbordihn.easynpc.data.server.ServerEntityData;
 import de.markusbordihn.easynpc.data.ticker.TickerType;
+import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.ResetUniversalAngerTargetGoal;
 import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
@@ -67,6 +68,7 @@ public interface ObjectiveDataCapable<T extends Mob> extends EasyNPC<T> {
 
   default void setObjectiveDataSet(ObjectiveDataSet objectiveDataSet) {
     getEasyNPCServerData().setServerEntityData(CUSTOM_DATA_OBJECTIVE_DATA_SET, objectiveDataSet);
+    LivingEntityManager.updateObjectiveEventInterest(this);
   }
 
   default boolean hasObjective(String objectiveId) {
@@ -197,6 +199,7 @@ public interface ObjectiveDataCapable<T extends Mob> extends EasyNPC<T> {
         addOrUpdateCustomObjective(objectiveDataEntry);
       }
     }
+    LivingEntityManager.updateObjectiveEventInterest(this);
   }
 
   default void registerAttributeBasedObjectives() {
@@ -254,6 +257,7 @@ public interface ObjectiveDataCapable<T extends Mob> extends EasyNPC<T> {
       log.debug("- Register reset universal anger target for {}", this);
       targetSelector.addGoal(4, new ResetUniversalAngerTargetGoal<>(this, false));
     }
+    LivingEntityManager.updateObjectiveEventInterest(this);
   }
 
   default boolean addOrUpdateCustomObjective(ObjectiveDataEntry objectiveDataEntry) {
@@ -363,7 +367,9 @@ public interface ObjectiveDataCapable<T extends Mob> extends EasyNPC<T> {
       this.getEntityTargetSelector().removeGoal(target);
     }
 
-    return this.getObjectiveDataSet().removeObjective(objectiveDataEntry);
+    boolean removed = this.getObjectiveDataSet().removeObjective(objectiveDataEntry);
+    LivingEntityManager.updateObjectiveEventInterest(this);
+    return removed;
   }
 
   default void registerStandardObjectives() {

@@ -33,6 +33,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.model.custom.DopplerModel;
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCLivingEntityRenderer;
 import de.markusbordihn.easynpc.client.renderer.manager.EntityTypeManager;
 import de.markusbordihn.easynpc.client.renderer.manager.RendererManager;
 import de.markusbordihn.easynpc.compat.IntegrationRegistry;
@@ -40,6 +41,7 @@ import de.markusbordihn.easynpc.compat.cobblemon.CobblemonSpeciesManager;
 import de.markusbordihn.easynpc.data.render.RenderType;
 import de.markusbordihn.easynpc.data.skin.variant.DopplerSkinVariant;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.RenderDataCapable;
 import de.markusbordihn.easynpc.mixin.renderer.MobRendererInvoker;
 import java.util.HashMap;
@@ -174,6 +176,14 @@ public class CobblemonNPCRenderer<E extends PathfinderMob>
     return previewScale;
   }
 
+  private static float getRootScaleY(EasyNPC<?> easyNPC) {
+    ModelDataCapable<?> modelData = easyNPC.getEasyNPCModelData();
+    if (modelData == null) {
+      return 1.0f;
+    }
+    return modelData.getModelRootData().scale().y();
+  }
+
   private static void syncCobblemonRenderState(
       PathfinderMob sourceEntity, PokemonEntity cobblemonEntity, ResourceLocation modelKey) {
     int renderAge = sourceEntity.tickCount + 100;
@@ -243,11 +253,13 @@ public class CobblemonNPCRenderer<E extends PathfinderMob>
             Math.max(
                 0f,
                 (EntityTypeManager.GUI_PREVIEW_TARGET_HEIGHT
-                        - previewScale * cobblemonEntity.getBbHeight())
+                        - previewScale * getRootScaleY(easyNPC) * cobblemonEntity.getBbHeight())
                     / 2f);
         poseStack.pushPose();
         poseStack.translate(0.0, yLift, 0.0);
         poseStack.scale(previewScale, previewScale, previewScale);
+        EasyNPCLivingEntityRenderer.handleRotation(easyNPC, poseStack);
+        EasyNPCLivingEntityRenderer.handleScale(easyNPC, poseStack);
         RendererManager.renderLivingEntity(
             entity,
             cobblemonEntity,
@@ -260,6 +272,9 @@ public class CobblemonNPCRenderer<E extends PathfinderMob>
             packedLight);
         poseStack.popPose();
       } else {
+        poseStack.pushPose();
+        EasyNPCLivingEntityRenderer.handleRotation(easyNPC, poseStack);
+        EasyNPCLivingEntityRenderer.handleScale(easyNPC, poseStack);
         RendererManager.renderLivingEntity(
             entity,
             cobblemonEntity,
@@ -270,6 +285,7 @@ public class CobblemonNPCRenderer<E extends PathfinderMob>
             poseStack,
             buffer,
             packedLight);
+        poseStack.popPose();
       }
       return true;
     } catch (Exception exception) {

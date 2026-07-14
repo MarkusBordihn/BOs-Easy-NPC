@@ -28,13 +28,16 @@ import com.mojang.authlib.GameProfile;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.validator.NameValidator;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
+import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.players.GameProfileCache;
 import org.apache.commons.io.IOUtils;
@@ -49,11 +52,24 @@ public class PlayersUtils {
       "https://sessionserver.mojang.com/session/minecraft/profile/%s";
   private static final String API_PROFILE_URL =
       "https://api.mojang.com/users/profiles/minecraft/%s";
-  private static final Map<String, UUID> userUUIDCache = new ConcurrentHashMap<>();
+  private static final Map<String, CachedUUID> userUUIDCache = new ConcurrentHashMap<>();
   private static final Map<UUID, Long> sessionServerRequestProtection = new ConcurrentHashMap<>();
   private static final long SESSION_REQUEST_COOLDOWN = 1000;
+  private static final long NEGATIVE_CACHE_TTL = 5L * 60 * 1000;
+  private static final int CONNECT_TIMEOUT = 5000;
+  private static final int READ_TIMEOUT = 5000;
+  private static final int SESSION_PROTECTION_PRUNE_THRESHOLD = 1000;
 
   protected PlayersUtils() {}
+
+  private static String fetchString(String urlString) throws IOException {
+    URLConnection connection = new URL(urlString).openConnection();
+    connection.setConnectTimeout(CONNECT_TIMEOUT);
+    connection.setReadTimeout(READ_TIMEOUT);
+    try (InputStream inputStream = connection.getInputStream()) {
+      return IOUtils.toString(inputStream, StandardCharsets.UTF_8);
+    }
+  }
 
   public static UUID getUserUUID(MinecraftServer server, String username) {
     if (username == null || username.isEmpty() || !NameValidator.isValidPlayerName(username)) {
@@ -73,7 +89,7 @@ public class PlayersUtils {
         if (optionalGameProfile.isPresent()) {
           UUID serverUUID = optionalGameProfile.get().getId();
           log.debug("Found user {} with UUID {} from server cache", username, serverUUID);
-          userUUIDCache.put(username, serverUUID);
+          userUUIDCache.put(username, new CachedUUID(serverUUID, Long.MAX_VALUE));
           return serverUUID;
         }
       } catch (Exception e) {
@@ -81,25 +97,29 @@ public class PlayersUtils {
       }
     }
 
-    // Check cache for already known or failed usernames.
-    if (userUUIDCache.containsKey(username)) {
-      UUID cachedUUID = userUUIDCache.get(username);
-      if (cachedUUID != null) {
-        log.debug("Found user {} with UUID {} from local cache", username, cachedUUID);
+    // Check cache for already known or failed usernames (failed lookups are cached briefly).
+    CachedUUID cachedResult = userUUIDCache.get(username);
+    if (cachedResult != null) {
+      if (cachedResult.isExpired()) {
+        userUUIDCache.remove(username);
+      } else {
+        if (cachedResult.uuid() != null) {
+          log.debug("Found user {} with UUID {} from local cache", username, cachedResult.uuid());
+        }
+        return cachedResult.uuid();
       }
-      return cachedUUID;
     }
 
     // Get user UUID over API.
     try {
       String url = String.format(API_PROFILE_URL, username);
-      String json = IOUtils.toString(new URL(url), StandardCharsets.UTF_8);
+      String json = fetchString(url);
       JsonObject jsonObject = JsonParser.parseString(json).getAsJsonObject();
       String uuidString = jsonObject.get("id").getAsString();
 
       if (uuidString == null || uuidString.isEmpty()) {
         log.error("Unable to get user UUID with invalid response: {}", json);
-        userUUIDCache.put(username, null);
+        cacheFailedLookup(username);
         return null;
       }
 
@@ -107,13 +127,18 @@ public class PlayersUtils {
           uuidString.replaceFirst("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})", "$1-$2-$3-$4-$5");
       UUID userUUID = UUID.fromString(formattedUUID);
       log.debug("Found user {} with UUID {} from online API", username, userUUID);
-      userUUIDCache.put(username, userUUID);
+      userUUIDCache.put(username, new CachedUUID(userUUID, Long.MAX_VALUE));
       return userUUID;
-    } catch (IOException e) {
+    } catch (IOException | RuntimeException e) {
       log.error("Unable to get UUID from user {}: {}", username, e.getMessage());
-      userUUIDCache.put(username, null);
+      cacheFailedLookup(username);
       return null;
     }
+  }
+
+  private static void cacheFailedLookup(String username) {
+    userUUIDCache.put(
+        username, new CachedUUID(null, System.currentTimeMillis() + NEGATIVE_CACHE_TTL));
   }
 
   public static UUID getUUIDfromString(String uuidString) {
@@ -133,25 +158,31 @@ public class PlayersUtils {
 
   public static String getUserTexture(UUID userUUID) {
     long currentTime = System.currentTimeMillis();
-    Long lastRequest = sessionServerRequestProtection.get(userUUID);
-    if (lastRequest != null && currentTime - lastRequest < SESSION_REQUEST_COOLDOWN) {
+    AtomicBoolean requestAllowed = new AtomicBoolean();
+    sessionServerRequestProtection.compute(
+        userUUID,
+        (key, lastRequest) -> {
+          if (lastRequest != null && currentTime - lastRequest < SESSION_REQUEST_COOLDOWN) {
+            return lastRequest;
+          }
+          requestAllowed.set(true);
+          return currentTime;
+        });
+    if (!requestAllowed.get()) {
       log.debug(
           "Ignoring duplicate session server request for {} (within cooldown period)", userUUID);
       return null;
     }
 
-    // putIfAbsent to avoid race condition between concurrent texture requests
-    Long existingRequest = sessionServerRequestProtection.putIfAbsent(userUUID, currentTime);
-    if (existingRequest != null && currentTime - existingRequest < SESSION_REQUEST_COOLDOWN) {
-      log.debug(
-          "Ignoring duplicate session server request for {} (another thread is handling it)",
-          userUUID);
-      return null;
+    if (sessionServerRequestProtection.size() > SESSION_PROTECTION_PRUNE_THRESHOLD) {
+      sessionServerRequestProtection
+          .entrySet()
+          .removeIf(entry -> currentTime - entry.getValue() > SESSION_REQUEST_COOLDOWN);
     }
 
     String sessionURL = String.format(SESSION_PROFILE_URL, userUUID);
     try {
-      String data = IOUtils.toString(new URL(sessionURL), StandardCharsets.UTF_8);
+      String data = fetchString(sessionURL);
       if (data == null || data.isEmpty()) {
         log.error("Unable to get user texture with {}", sessionURL);
         return null;
@@ -244,5 +275,11 @@ public class PlayersUtils {
       log.error("ERROR: Unable to parse json data: {}", data);
     }
     return null;
+  }
+
+  private record CachedUUID(UUID uuid, long expiresAt) {
+    boolean isExpired() {
+      return System.currentTimeMillis() > this.expiresAt;
+    }
   }
 }

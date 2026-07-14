@@ -32,7 +32,10 @@ import de.markusbordihn.easynpc.configui.network.NetworkHandlerManager;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.network.NetworkHandlerManagerType;
 import java.util.Optional;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
@@ -73,6 +76,12 @@ public class ConfigUIMain {
     log.info("{} Menu Handler ...", Constants.LOG_REGISTER_PREFIX);
     MenuManager.registerMenuHandler(new MenuHandler());
     modEventBus.addListener(MenuHandler::registerMenuHandler);
+    MinecraftForge.EVENT_BUS.addListener(
+        (final PlayerEvent.PlayerLoggedOutEvent event) -> {
+          if (event.getEntity() instanceof ServerPlayer serverPlayer) {
+            MenuManager.cleanupPlayerMenus(serverPlayer);
+          }
+        });
 
     log.info("{} Network Handler ...", Constants.LOG_REGISTER_PREFIX);
     modEventBus.addListener(

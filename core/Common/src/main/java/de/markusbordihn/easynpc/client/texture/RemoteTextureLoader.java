@@ -21,15 +21,20 @@ package de.markusbordihn.easynpc.client.texture;
 
 import com.mojang.blaze3d.platform.NativeImage;
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.config.RemoteTextureConfig;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.data.texture.TextureFailureType;
 import de.markusbordihn.easynpc.validator.ImageValidator;
 import de.markusbordihn.easynpc.validator.UrlValidator;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.InetAddress;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.nio.file.Path;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -44,6 +49,7 @@ public class RemoteTextureLoader {
   private static final int CONNECTION_TIMEOUT = 10000;
   private static final int READ_TIMEOUT = 30000;
   private static final long MAX_DOWNLOAD_SIZE = 5 * 1024 * 1024;
+  private static final int MAX_REDIRECTS = 5;
   private static final String USER_AGENT = Constants.MOD_NAME + " Minecraft remote texture loader";
 
   private RemoteTextureLoader() {}
@@ -82,9 +88,63 @@ public class RemoteTextureLoader {
 
     try {
       URL remoteImageURL = new URL(remoteUrl);
-      connection = openConnection(remoteImageURL);
+      int responseCode = 0;
+      int redirectCount = 0;
 
-      // Check content length
+      // Follow redirects manually so every hop is re-validated against the URL and address policy.
+      while (true) {
+        if (isBlockedAddress(remoteImageURL)) {
+          String error = "Blocked private/link-local address: " + remoteImageURL.getHost();
+          TextureErrorHandler.urlLoadErrorMessage(textureModelKey, remoteUrl, error);
+          RemoteTextureManager.markPermanentFailure(
+              textureModelKey, TextureFailureType.URL_INVALID, error, remoteUrl);
+          return CompletableFuture.completedFuture(null);
+        }
+
+        connection = openConnection(remoteImageURL);
+        responseCode = connection.getResponseCode();
+
+        if (!isRedirect(responseCode)) {
+          break;
+        }
+
+        if (++redirectCount > MAX_REDIRECTS) {
+          String error = "Too many redirects (max " + MAX_REDIRECTS + ")";
+          TextureErrorHandler.urlLoadErrorMessage(textureModelKey, remoteUrl, error);
+          RemoteTextureManager.markPermanentFailure(
+              textureModelKey, TextureFailureType.NETWORK_ERROR, error, remoteUrl);
+          return CompletableFuture.completedFuture(null);
+        }
+
+        String redirectLocation = connection.getHeaderField("Location");
+        connection.disconnect();
+        if (redirectLocation == null || redirectLocation.isEmpty()) {
+          break;
+        }
+
+        // Resolve relative locations against the current URL and re-validate.
+        URL redirectUrl = new URL(remoteImageURL, redirectLocation);
+        if (!UrlValidator.isValidUrl(redirectUrl.toString())) {
+          String error = "Invalid redirect target: " + redirectUrl;
+          TextureErrorHandler.urlLoadErrorMessage(textureModelKey, remoteUrl, error);
+          RemoteTextureManager.markPermanentFailure(
+              textureModelKey, TextureFailureType.URL_INVALID, error, redirectUrl.toString());
+          return CompletableFuture.completedFuture(null);
+        }
+        log.info("{} Following redirect from {} > {}", LOG_PREFIX, remoteUrl, redirectUrl);
+        remoteImageURL = redirectUrl;
+        remoteUrl = redirectUrl.toString();
+      }
+
+      if (responseCode != HttpURLConnection.HTTP_OK) {
+        String error = "HTTP " + responseCode + ": " + connection.getResponseMessage();
+        TextureErrorHandler.urlLoadErrorMessage(textureModelKey, remoteUrl, error);
+        RemoteTextureManager.markPermanentFailure(
+            textureModelKey, getFailureType(responseCode), error, remoteUrl);
+        return CompletableFuture.completedFuture(null);
+      }
+
+      // Fast-path check on the advertised size (may be absent or -1 for chunked responses).
       long contentLength = connection.getContentLengthLong();
       if (contentLength > MAX_DOWNLOAD_SIZE) {
         String error =
@@ -96,32 +156,9 @@ public class RemoteTextureLoader {
         return CompletableFuture.completedFuture(null);
       }
 
-      // Handle redirects
-      int responseCode = connection.getResponseCode();
-      if (responseCode == HttpURLConnection.HTTP_MOVED_PERM
-          || responseCode == HttpURLConnection.HTTP_MOVED_TEMP) {
-        String redirectUrl = connection.getHeaderField("Location");
-        log.info("{} Following redirect from {} > {}", LOG_PREFIX, remoteUrl, redirectUrl);
-        connection.disconnect();
-
-        // Follow redirect
-        remoteImageURL = new URL(redirectUrl);
-        connection = openConnection(remoteImageURL);
-        responseCode = connection.getResponseCode();
-        remoteUrl = redirectUrl;
-      }
-
-      if (responseCode != HttpURLConnection.HTTP_OK) {
-        String error = "HTTP " + responseCode + ": " + connection.getResponseMessage();
-        TextureErrorHandler.urlLoadErrorMessage(textureModelKey, remoteUrl, error);
-        RemoteTextureManager.markPermanentFailure(
-            textureModelKey, getFailureType(responseCode), error, remoteUrl);
-        return CompletableFuture.completedFuture(null);
-      }
-
-      // Read and decode the image directly from the connection
       try (InputStream inputStream = connection.getInputStream()) {
-        nativeImage = NativeImage.read(inputStream);
+        byte[] imageBytes = readLimited(inputStream, MAX_DOWNLOAD_SIZE);
+        nativeImage = NativeImage.read(new ByteArrayInputStream(imageBytes));
       }
 
     } catch (IllegalArgumentException | IOException exception) {
@@ -185,11 +222,55 @@ public class RemoteTextureLoader {
 
   private static HttpURLConnection openConnection(URL remoteImageURL) throws IOException {
     HttpURLConnection connection = (HttpURLConnection) remoteImageURL.openConnection();
+    connection.setInstanceFollowRedirects(false);
     connection.setConnectTimeout(CONNECTION_TIMEOUT);
     connection.setReadTimeout(READ_TIMEOUT);
     connection.setRequestProperty("User-Agent", USER_AGENT);
     connection.setRequestProperty("Accept", "image/png,image/*,*/*");
     return connection;
+  }
+
+  private static boolean isRedirect(int responseCode) {
+    return responseCode == HttpURLConnection.HTTP_MOVED_PERM
+        || responseCode == HttpURLConnection.HTTP_MOVED_TEMP
+        || responseCode == HttpURLConnection.HTTP_SEE_OTHER
+        || responseCode == 307
+        || responseCode == 308;
+  }
+
+  private static boolean isBlockedAddress(URL url) {
+    if (!RemoteTextureConfig.BLOCK_PRIVATE_ADDRESSES) {
+      return false;
+    }
+    try {
+      for (InetAddress address : InetAddress.getAllByName(url.getHost())) {
+        if (address.isLoopbackAddress()
+            || address.isAnyLocalAddress()
+            || address.isSiteLocalAddress()
+            || address.isLinkLocalAddress()) {
+          return true;
+        }
+      }
+      return false;
+    } catch (UnknownHostException exception) {
+      return true;
+    }
+  }
+
+  private static byte[] readLimited(InputStream inputStream, long maxBytes) throws IOException {
+    ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+    byte[] chunk = new byte[8192];
+    long total = 0;
+    int read;
+    while ((read = inputStream.read(chunk)) != -1) {
+      total += read;
+      if (total > maxBytes) {
+        throw new IOException(
+            "Remote image exceeds maximum allowed size of " + maxBytes + " bytes");
+      }
+      buffer.write(chunk, 0, read);
+    }
+    return buffer.toByteArray();
   }
 
   private static TextureFailureType getFailureType(int responseCode) {

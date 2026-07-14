@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.security;
 
 import de.markusbordihn.easynpc.config.SecurityConfig;
+import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 
@@ -40,6 +41,41 @@ public class CommandSecurity {
         permissionLevel.allows(CommandPermissionLevel.GAMEMASTERS));
   }
 
+  public static ActorSecurityContext getActorContext(CommandSourceStack commandSourceStack) {
+    if (commandSourceStack == null) {
+      return null;
+    }
+
+    ServerPlayer serverPlayer =
+        commandSourceStack.getEntity() instanceof ServerPlayer player ? player : null;
+    CommandPermissionLevel permissionLevel = getCommandSourcePermissionLevel(commandSourceStack);
+    return new ActorSecurityContext(
+        serverPlayer,
+        serverPlayer != null && serverPlayer.isCreative(),
+        permissionLevel,
+        permissionLevel.allows(CommandPermissionLevel.GAMEMASTERS));
+  }
+
+  public static ActorSecurityContext getServerActorContext() {
+    CommandPermissionLevel permissionLevel = SecurityConfig.SERVER_TRUSTED_COMMAND_LEVEL;
+    return new ActorSecurityContext(null, false, permissionLevel, true);
+  }
+
+  public static CommandPermissionLevel getCommandSourcePermissionLevel(
+      CommandSourceStack commandSourceStack) {
+    if (commandSourceStack == null) {
+      return CommandPermissionLevel.ALL;
+    }
+
+    CommandPermissionLevel permissionLevel = CommandPermissionLevel.ALL;
+    for (CommandPermissionLevel candidate : CommandPermissionLevel.values()) {
+      if (commandSourceStack.hasPermission(candidate.minecraftLevel())) {
+        permissionLevel = candidate;
+      }
+    }
+    return permissionLevel;
+  }
+
   public static CommandPermissionLevel getPlayerPermissionLevel(ServerPlayer serverPlayer) {
     if (serverPlayer == null || serverPlayer.getServer() == null) {
       return CommandPermissionLevel.ALL;
@@ -54,6 +90,11 @@ public class CommandSecurity {
       ActorSecurityContext actorSecurityContext, PresetTrustLevel trustLevel) {
     if (actorSecurityContext == null) {
       return SecurityConfig.SERVER_TRUSTED_COMMAND_LEVEL;
+    }
+
+    if (actorSecurityContext.player() == null) {
+      return CommandPermissionLevel.min(
+          actorSecurityContext.permissionLevel(), SecurityConfig.SERVER_TRUSTED_COMMAND_LEVEL);
     }
 
     if (actorSecurityContext.admin()) {

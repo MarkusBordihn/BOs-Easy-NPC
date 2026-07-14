@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.entity.easynpc.event;
 
 import de.markusbordihn.easynpc.data.action.ActionEventType;
 import de.markusbordihn.easynpc.data.saveddata.NPCEntityData;
+import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.ObjectiveDataCapable;
@@ -113,6 +114,7 @@ public final class EasyNPCEventHandler {
       tradingData.stopMerchantTrading();
     }
     NPCEntityData.get().updateDimension(easyNPC, dimensionTransition.newLevel());
+    LivingEntityManager.updateObjectiveEventInterest(easyNPC);
   }
 
   public static <E extends Mob> void handleHurtEvent(

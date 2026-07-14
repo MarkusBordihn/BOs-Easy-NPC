@@ -55,6 +55,22 @@ class ConfigurationDataTest {
   }
 
   @Test
+  void easyModelHumanoidSupportsEasyModelEntitiesModelScreen() {
+    assertTrue(
+        ConfigurationData.EASY_MODEL_HUMANOID.isEnabled(
+            ConfigurationType.EASY_MODEL_ENTITIES_MODEL));
+    assertFalse(ConfigurationData.EASY_MODEL_HUMANOID.isEnabled(ConfigurationType.CUSTOM_MODEL));
+    assertFalse(ConfigurationData.EASY_MODEL_HUMANOID.isEnabled(ConfigurationType.COBBLEMON_MODEL));
+  }
+
+  @Test
+  void easyModelHumanoidEnablesHumanoidPoses() {
+    assertTrue(ConfigurationData.EASY_MODEL_HUMANOID.isEnabled(ConfigurationType.DEFAULT_POSE));
+    assertTrue(ConfigurationData.EASY_MODEL_HUMANOID.isEnabled(ConfigurationType.BASIC_POSE));
+    assertTrue(ConfigurationData.EASY_MODEL_HUMANOID.isEnabled(ConfigurationType.ADVANCED_POSE));
+  }
+
+  @Test
   void easyModelDisablesSkinButEnablesPoseAndScaling() {
     assertFalse(ConfigurationData.EASY_MODEL.isEnabled(ConfigurationType.SKIN));
     assertTrue(ConfigurationData.EASY_MODEL.isEnabled(ConfigurationType.SCALING));

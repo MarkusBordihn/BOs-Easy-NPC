@@ -98,6 +98,14 @@ public class ModItems {
                   ModBlocks.EASY_NPC_SPAWNER_SINGLE.get(),
                   new Item.Properties(),
                   SpawnerType.SINGLE_SPAWNER));
+  public static final RegistryObject<Item> EASY_NPC_SPAWNER_WORLD =
+      ITEMS.register(
+          SpawnerType.WORLD_SPAWNER.getId(),
+          () ->
+              new EasyNPCSpawnerBlockItem(
+                  ModBlocks.EASY_NPC_SPAWNER_WORLD.get(),
+                  new Item.Properties(),
+                  SpawnerType.WORLD_SPAWNER));
   public static final RegistryObject<Item> MOVE_EASY_NPC =
       ITEMS.register(MoveEasyNPCItem.ID, () -> new MoveEasyNPCItem(new Item.Properties()));
   public static final RegistryObject<Item> CUSTOM_DATA_TEST_ITEM =
