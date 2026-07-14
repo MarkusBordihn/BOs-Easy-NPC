@@ -229,6 +229,7 @@ public class EasyModelNPCRenderer<E extends PathfinderMob>
 
     renderState.rootPivotY = entity.getBbHeight() * 0.5f;
     renderState.airborneAmount = EasyModelEntityRenderBackend.airborneAmount(entity);
+    renderState.attackAmount = EasyModelEntityRenderBackend.attackAmount(entity, partialTick);
     if (entity instanceof LivingEntity le) {
       renderState.limbSwing = le.walkAnimation.position(partialTick);
       renderState.limbSwingAmount = Math.min(le.walkAnimation.speed(partialTick), 1.0f);
@@ -244,6 +245,7 @@ public class EasyModelNPCRenderer<E extends PathfinderMob>
     renderState.limbSwing = 0.0f;
     renderState.limbSwingAmount = 0.0f;
     renderState.airborneAmount = 0.0f;
+    renderState.attackAmount = 0.0f;
 
     ModelBounds bounds = EasyModelEntitiesClientApi.getDisplayedBounds(profileId).orElse(null);
     if (bounds == null) {
