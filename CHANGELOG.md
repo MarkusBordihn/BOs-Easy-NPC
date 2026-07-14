@@ -8,6 +8,10 @@ For the full changelog, please go to the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 7.1.1
+
+- Fixed #800 by lazy loading entity types.
+
 ### 7.1.0
 
 - Fixed #799 by fixing edge cases and adding additional documentation and better log messages.
