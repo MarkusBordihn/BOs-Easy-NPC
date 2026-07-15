@@ -121,7 +121,8 @@ public interface ServerModelRenderSkinNetworkMessageHandlerInterface {
   default void setRenderType(UUID uuid, RenderType renderType) {
     if (uuid != null && renderType != null) {
       NetworkHandlerManager.sendMessageToServer(
-          new ChangeRendererMessage(uuid, renderType, Optional.empty(), Optional.empty()));
+          new ChangeRendererMessage(
+              uuid, Optional.of(renderType), Optional.empty(), Optional.empty()));
     }
   }
 
@@ -129,7 +130,7 @@ public interface ServerModelRenderSkinNetworkMessageHandlerInterface {
     if (uuid != null && entityType != null) {
       NetworkHandlerManager.sendMessageToServer(
           new ChangeRendererMessage(
-              uuid, RenderType.CUSTOM, Optional.of(entityType), Optional.empty()));
+              uuid, Optional.of(RenderType.CUSTOM), Optional.of(entityType), Optional.empty()));
     }
   }
 
@@ -137,7 +138,7 @@ public interface ServerModelRenderSkinNetworkMessageHandlerInterface {
     if (uuid != null && renderEntityModel != null) {
       NetworkHandlerManager.sendMessageToServer(
           new ChangeRendererMessage(
-              uuid, RenderType.COBBLEMON_ENTITY, Optional.empty(), Optional.of(renderEntityModel)));
+              uuid, Optional.empty(), Optional.empty(), Optional.of(renderEntityModel)));
     }
   }
 }

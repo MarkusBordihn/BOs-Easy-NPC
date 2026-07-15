@@ -3,6 +3,7 @@
   "item.easy_npc.default_spawner": "EasyNPC Default Spawner",
   "item.easy_npc.group_spawner": "EasyNPC Group Spawner",
   "item.easy_npc.single_spawner": "EasyNPC Single Spawner",
+  "item.easy_npc.world_spawner": "EasyNPC World Spawner",
   "entity.easy_npc.allay": "Allay",
   "entity.easy_npc.cat": "Cat",
   "entity.easy_npc.cave_spider": "Cave Spider",
@@ -154,5 +155,6 @@
   "tooltip.easy_npc.spawner.boss_spawner": "The Boss Spawner is a special spawner that allows you to spawn a boss NPC.",
   "tooltip.easy_npc.spawner.default_spawner": "The Default Spawner is a spawner that allows you to spawn a default NPC.",
   "tooltip.easy_npc.spawner.group_spawner": "The Group Spawner is a spawner that allows you to spawn a group of NPCs.",
-  "tooltip.easy_npc.spawner.single_spawner": "The Single Spawner is a spawner that allows you to spawn a single NPC."
+  "tooltip.easy_npc.spawner.single_spawner": "The Single Spawner is a spawner that allows you to spawn a single NPC.",
+  "tooltip.easy_npc.spawner.world_spawner": "The World Spawner is a group spawner that counts its preset population across the whole world (all dimensions)."
 }

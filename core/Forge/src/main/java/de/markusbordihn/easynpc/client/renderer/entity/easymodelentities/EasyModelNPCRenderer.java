@@ -20,11 +20,15 @@
 package de.markusbordihn.easynpc.client.renderer.entity.easymodelentities;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
 import de.markusbordihn.easymodelentities.api.EasyModelReloadEvents;
 import de.markusbordihn.easymodelentities.api.client.EasyModelEntitiesClientApi;
 import de.markusbordihn.easymodelentities.api.client.EasyModelPartAnimator;
+import de.markusbordihn.easymodelentities.api.data.client.EasyModelItemAnchor;
+import de.markusbordihn.easymodelentities.api.data.client.EasyModelPartPose;
 import de.markusbordihn.easymodelentities.api.data.client.EasyModelPartTransform;
 import de.markusbordihn.easymodelentities.client.render.EasyModelEntityRenderBackend;
+import de.markusbordihn.easymodelentities.data.model.Vec3f;
 import de.markusbordihn.easymodelentities.data.model.bake.ModelBounds;
 import de.markusbordihn.easymodelentities.runtime.EasyModelAnimationState;
 import de.markusbordihn.easynpc.Constants;
@@ -42,11 +46,17 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.item.ItemModelResolver;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraft.world.item.ItemStack;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -60,9 +70,12 @@ public class EasyModelNPCRenderer<E extends PathfinderMob>
   private static final Map<Identifier, Float> guiPreviewScaleCache = new ConcurrentHashMap<>();
   private static boolean reloadListenerRegistered = false;
 
+  private final ItemModelResolver itemModelResolver;
+
   public EasyModelNPCRenderer(EntityRendererProvider.Context context) {
     super(context);
     this.shadowRadius = 0.3f;
+    this.itemModelResolver = context.getItemModelResolver();
     registerReloadListener();
   }
 
@@ -136,6 +149,22 @@ public class EasyModelNPCRenderer<E extends PathfinderMob>
     return renderState.easyModelRenderState != null;
   }
 
+  private static void applyRootRotation(EasyModelNPCRenderState renderState, PoseStack poseStack) {
+    float xDegrees = (float) Math.toDegrees(renderState.rootRotationX);
+    float zDegrees = (float) Math.toDegrees(renderState.rootRotationZ);
+    if (xDegrees == 0.0f && zDegrees == 0.0f) {
+      return;
+    }
+    poseStack.translate(0.0f, renderState.rootPivotY, 0.0f);
+    if (xDegrees != 0.0f) {
+      poseStack.mulPose(Axis.XP.rotationDegrees(xDegrees));
+    }
+    if (zDegrees != 0.0f) {
+      poseStack.mulPose(Axis.ZP.rotationDegrees(zDegrees));
+    }
+    poseStack.translate(0.0f, -renderState.rootPivotY, 0.0f);
+  }
+
   @Override
   protected boolean shouldShowName(E entity, double distanceToCameraSq) {
     Minecraft minecraft = Minecraft.getInstance();
@@ -159,6 +188,13 @@ public class EasyModelNPCRenderer<E extends PathfinderMob>
     renderState.rootScaleZ = 1.0f;
     renderState.previewScale = 0.0f;
     renderState.previewYLift = 0.0f;
+    renderState.rootRotationX = 0.0f;
+    renderState.rootRotationZ = 0.0f;
+    renderState.rootPivotY = 0.0f;
+    renderState.mainHandItem.clear();
+    renderState.offHandItem.clear();
+    renderState.mainHandAnchor = null;
+    renderState.offHandAnchor = null;
 
     if (!(entity instanceof EasyModelNPC easyModelNPC)) {
       return;
@@ -178,12 +214,24 @@ public class EasyModelNPCRenderer<E extends PathfinderMob>
             ? Mth.rotLerp(partialTick, le.yBodyRotO, le.yBodyRot)
             : Mth.rotLerp(partialTick, entity.yRotO, entity.getYRot());
 
+    CustomScale rootScale = easyModelNPC.getModelRootData().scale();
+    renderState.rootScaleX = rootScale.x();
+    renderState.rootScaleY = rootScale.y();
+    renderState.rootScaleZ = rootScale.z();
+    CustomRotation rootRotation = easyModelNPC.getModelRootData().rotation();
+    renderState.rootRotationX = rootRotation.x();
+    renderState.rootRotationZ = rootRotation.z();
+
+    extractHandItems(entity, renderState, renderProfileId);
+
     if (IntegrationRegistry.isGuiPreviewMode()) {
       extractGuiPreviewState(entity, renderState, renderProfileId);
       return;
     }
 
+    renderState.rootPivotY = entity.getBbHeight() * 0.5f;
     renderState.airborneAmount = EasyModelEntityRenderBackend.airborneAmount(entity);
+    renderState.attackAmount = EasyModelEntityRenderBackend.attackAmount(entity, partialTick);
     if (entity instanceof LivingEntity le) {
       renderState.limbSwing = le.walkAnimation.position(partialTick);
       renderState.limbSwingAmount = Math.min(le.walkAnimation.speed(partialTick), 1.0f);
@@ -192,10 +240,6 @@ public class EasyModelNPCRenderer<E extends PathfinderMob>
     if (easyModelNPC.hasChangedModel()) {
       renderState.partAnimator = createPartAnimator(easyModelNPC);
     }
-    CustomScale rootScale = easyModelNPC.getModelRootData().scale();
-    renderState.rootScaleX = rootScale.x();
-    renderState.rootScaleY = rootScale.y();
-    renderState.rootScaleZ = rootScale.z();
   }
 
   private void extractGuiPreviewState(
@@ -203,6 +247,7 @@ public class EasyModelNPCRenderer<E extends PathfinderMob>
     renderState.limbSwing = 0.0f;
     renderState.limbSwingAmount = 0.0f;
     renderState.airborneAmount = 0.0f;
+    renderState.attackAmount = 0.0f;
 
     ModelBounds bounds = EasyModelEntitiesClientApi.getDisplayedBounds(profileId).orElse(null);
     if (bounds == null) {
@@ -212,9 +257,10 @@ public class EasyModelNPCRenderer<E extends PathfinderMob>
         Math.max((float) Math.hypot(bounds.sizeX(), bounds.sizeZ()), bounds.sizeY());
     float previewScale = getGuiPreviewScale(profileId, displayedSubject, entity.getBbHeight());
     renderState.previewScale = previewScale;
+    float displayedHeight = previewScale * renderState.rootScaleY * bounds.sizeY();
     renderState.previewYLift =
-        Math.max(
-            0f, (EntityTypeManager.GUI_PREVIEW_TARGET_HEIGHT - previewScale * bounds.sizeY()) / 2f);
+        Math.max(0f, (EntityTypeManager.GUI_PREVIEW_TARGET_HEIGHT - displayedHeight) / 2f);
+    renderState.rootPivotY = displayedHeight * 0.5f;
   }
 
   @Override
@@ -227,12 +273,18 @@ public class EasyModelNPCRenderer<E extends PathfinderMob>
       poseStack.pushPose();
       if (renderState.previewScale > 0.0f) {
         poseStack.translate(0.0f, renderState.previewYLift, 0.0f);
+        applyRootRotation(renderState, poseStack);
         poseStack.scale(
-            renderState.previewScale, renderState.previewScale, renderState.previewScale);
-      } else if (renderState.rootScaleX != 1.0f
-          || renderState.rootScaleY != 1.0f
-          || renderState.rootScaleZ != 1.0f) {
-        poseStack.scale(renderState.rootScaleX, renderState.rootScaleY, renderState.rootScaleZ);
+            renderState.previewScale * renderState.rootScaleX,
+            renderState.previewScale * renderState.rootScaleY,
+            renderState.previewScale * renderState.rootScaleZ);
+      } else {
+        applyRootRotation(renderState, poseStack);
+        if (renderState.rootScaleX != 1.0f
+            || renderState.rootScaleY != 1.0f
+            || renderState.rootScaleZ != 1.0f) {
+          poseStack.scale(renderState.rootScaleX, renderState.rootScaleY, renderState.rootScaleZ);
+        }
       }
       try {
         EasyModelEntityRenderBackend.render(
@@ -244,8 +296,93 @@ public class EasyModelNPCRenderer<E extends PathfinderMob>
         log.error(
             "Failed to render Easy Model Entities profile {}:", renderState.profileId, exception);
       }
+      renderHandItems(renderState, poseStack, submitNodeCollector);
       poseStack.popPose();
     }
     super.submit(renderState, poseStack, submitNodeCollector, cameraRenderState);
+  }
+
+  private void extractHandItems(
+      E entity, EasyModelNPCRenderState renderState, Identifier profileId) {
+    HumanoidArm mainArm = entity.getMainArm();
+    renderState.mainArmLeft = mainArm == HumanoidArm.LEFT;
+    renderState.mainHandAnchor =
+        extractHandItem(
+            entity, entity.getMainHandItem(), mainArm, profileId, renderState.mainHandItem);
+    renderState.offHandAnchor =
+        extractHandItem(
+            entity,
+            entity.getOffhandItem(),
+            mainArm.getOpposite(),
+            profileId,
+            renderState.offHandItem);
+  }
+
+  private EasyModelItemAnchor extractHandItem(
+      E entity,
+      ItemStack itemStack,
+      HumanoidArm arm,
+      Identifier profileId,
+      ItemStackRenderState itemRenderState) {
+    if (itemStack.isEmpty()) {
+      return null;
+    }
+    EasyModelItemAnchor anchor =
+        EasyModelEntitiesClientApi.getItemAnchor(profileId, arm).orElse(null);
+    if (anchor == null) {
+      return null;
+    }
+    this.itemModelResolver.updateForLiving(
+        itemRenderState,
+        itemStack,
+        arm == HumanoidArm.LEFT
+            ? ItemDisplayContext.THIRD_PERSON_LEFT_HAND
+            : ItemDisplayContext.THIRD_PERSON_RIGHT_HAND,
+        entity);
+    return anchor;
+  }
+
+  private void renderHandItems(
+      EasyModelNPCRenderState renderState,
+      PoseStack poseStack,
+      SubmitNodeCollector submitNodeCollector) {
+    renderHandItem(
+        renderState,
+        renderState.mainHandItem,
+        renderState.mainHandAnchor,
+        poseStack,
+        submitNodeCollector);
+    renderHandItem(
+        renderState,
+        renderState.offHandItem,
+        renderState.offHandAnchor,
+        poseStack,
+        submitNodeCollector);
+  }
+
+  private void renderHandItem(
+      EasyModelNPCRenderState renderState,
+      ItemStackRenderState itemRenderState,
+      EasyModelItemAnchor anchor,
+      PoseStack poseStack,
+      SubmitNodeCollector submitNodeCollector) {
+    if (anchor == null || itemRenderState.isEmpty()) {
+      return;
+    }
+    EasyModelPartPose partPose =
+        EasyModelEntityRenderBackend.resolvePartPose(renderState, anchor.partName(), poseStack)
+            .orElse(null);
+    if (partPose == null) {
+      return;
+    }
+    poseStack.pushPose();
+    partPose.applyTo(poseStack);
+    Vec3f localOffset = anchor.localOffset();
+    poseStack.translate(localOffset.x() / 16.0f, localOffset.y() / 16.0f, localOffset.z() / 16.0f);
+    poseStack.mulPose(Axis.XP.rotationDegrees(-90.0f));
+    poseStack.mulPose(Axis.YP.rotationDegrees(180.0f));
+    itemRenderState.submit(
+        poseStack, submitNodeCollector, renderState.lightCoords, OverlayTexture.NO_OVERLAY, 0);
+    poseStack.popPose();
   }
 }

@@ -22,12 +22,14 @@ package de.markusbordihn.easynpc.entity.easynpc.npc.easymodelentities;
 import de.markusbordihn.easynpc.api.npc.raw.PathfinderMobRaw;
 import de.markusbordihn.easynpc.compat.easymodelentities.EasyModelEntitiesManager;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
+import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.model.ModelType;
 import de.markusbordihn.easynpc.data.render.RenderDataEntry;
 import de.markusbordihn.easynpc.data.render.RenderType;
 import de.markusbordihn.easynpc.data.scale.CustomScale;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import java.util.Objects;
+import java.util.Set;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.Identifier;
@@ -99,6 +101,11 @@ public class EasyModelNPC extends PathfinderMobRaw {
 
   @Override
   public ConfigurationData getConfigurationData() {
+    Set<ModelPartType> modelParts = this.getModelType().getModelParts();
+    if (modelParts.contains(ModelPartType.RIGHT_ARM)
+        && modelParts.contains(ModelPartType.RIGHT_LEG)) {
+      return ConfigurationData.EASY_MODEL_HUMANOID;
+    }
     return ConfigurationData.EASY_MODEL;
   }
 

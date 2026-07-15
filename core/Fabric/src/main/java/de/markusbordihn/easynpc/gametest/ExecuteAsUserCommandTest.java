@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Markus Bordihn
+ * Copyright 2026 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,35 +17,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.data.spawner;
+package de.markusbordihn.easynpc.gametest;
 
-import de.markusbordihn.easynpc.Constants;
-import java.util.Locale;
-import net.minecraft.util.StringRepresentable;
+import net.fabricmc.fabric.api.gametest.v1.GameTest;
+import net.minecraft.gametest.framework.GameTestHelper;
 
-public enum SpawnerType implements StringRepresentable {
-  BOSS_SPAWNER,
-  DEFAULT_SPAWNER,
-  GROUP_SPAWNER,
-  SINGLE_SPAWNER,
-  WORLD_SPAWNER;
+@SuppressWarnings("unused")
+public class ExecuteAsUserCommandTest {
 
-  private final String name;
-
-  SpawnerType() {
-    this.name = this.name().toLowerCase(Locale.ROOT);
-  }
-
-  public String getId() {
-    return this.name;
-  }
-
-  @Override
-  public String getSerializedName() {
-    return this.name;
-  }
-
-  public String getDescriptionId() {
-    return Constants.TOOLTIP_PREFIX + "spawner." + this.name;
+  @GameTest(structure = "easy_npc:gametest.3x3x3")
+  public void testNormalPlayerTeleportWithGamemasterAllowList(GameTestHelper helper) {
+    ExecuteAsUserCommandTestHelper.assertNormalPlayerTeleportWithGamemasterAllowList(helper);
+    helper.succeed();
   }
 }

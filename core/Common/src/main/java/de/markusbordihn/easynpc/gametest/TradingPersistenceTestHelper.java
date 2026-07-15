@@ -182,7 +182,7 @@ public class TradingPersistenceTestHelper {
     TradingOfferHandler.setAdvancedTradingMaxUses(tradingData, 0, 5);
 
     MerchantOffer reloadedOffer = tradingData.getTradingOffers().get(0);
-    if (!reloadedOffer.satisfiedBy(questItem, ItemStack.EMPTY)) {
+    if (!reloadedOffer.satisfiedBy(questItem.copy(), ItemStack.EMPTY)) {
       helper.fail("Modified quest item no longer matches after NBT round-trip and offer rebuild");
       return;
     }
