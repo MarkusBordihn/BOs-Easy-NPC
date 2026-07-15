@@ -28,6 +28,7 @@ import de.markusbordihn.easynpc.data.dialog.DialogButtonEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.data.dialog.DialogTextData;
+import de.markusbordihn.easynpc.data.execution.ExecutionId;
 import de.markusbordihn.easynpc.data.scoreboard.ScoreboardData;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.utils.CompoundTagUtils;
@@ -163,7 +164,7 @@ public class AdditionalScreenData implements AdditionalScreenDataInterface {
         addScoreboardData(compoundTag, scoreboardData);
       }
       addDialogButtonLockData(compoundTag, dialogDataSet, serverPlayer, easyNPC);
-      addExecutionLimitData(compoundTag, dialogDataSet, serverPlayer);
+      addExecutionLimitData(compoundTag, dialogDataSet, serverPlayer, easyNPC);
     }
   }
 
@@ -187,7 +188,8 @@ public class AdditionalScreenData implements AdditionalScreenDataInterface {
       for (DialogButtonEntry buttonEntry : dialogEntry.getDialogButtons()) {
         if (buttonEntry == null
             || !buttonEntry.hasConditions()
-            || areServerOnlyConditionsAvailable(buttonEntry, serverPlayer, easyNPC)) {
+            || areServerOnlyConditionsAvailable(
+                dialogEntry.getId(), buttonEntry, serverPlayer, easyNPC)) {
           continue;
         }
         lockedButtons.add(CompoundTagUtils.uuidToTag(buttonEntry.id()));
@@ -199,14 +201,21 @@ public class AdditionalScreenData implements AdditionalScreenDataInterface {
     }
   }
 
+  private static ExecutionId buttonExecutionId(
+      UUID dialogId, DialogButtonEntry buttonEntry, EasyNPC<?> easyNPC) {
+    return ExecutionId.dialogButton(
+        easyNPC != null ? easyNPC.getEntity() : null, dialogId, buttonEntry.id());
+  }
+
   private static boolean areServerOnlyConditionsAvailable(
-      DialogButtonEntry buttonEntry, ServerPlayer serverPlayer, EasyNPC<?> easyNPC) {
+      UUID dialogId, DialogButtonEntry buttonEntry, ServerPlayer serverPlayer, EasyNPC<?> easyNPC) {
+    ExecutionId executionId = buttonExecutionId(dialogId, buttonEntry, easyNPC);
     for (ConditionDataEntry condition : buttonEntry.conditions()) {
       if (requiresServerLockSnapshot(condition)
           && !ConditionManager.evaluate(
               condition,
               serverPlayer,
-              buttonEntry.id(),
+              executionId,
               easyNPC != null ? easyNPC.getLivingEntity() : null)) {
         return false;
       }
@@ -225,7 +234,10 @@ public class AdditionalScreenData implements AdditionalScreenDataInterface {
   }
 
   public static void addExecutionLimitData(
-      CompoundTag compoundTag, DialogDataSet dialogDataSet, ServerPlayer serverPlayer) {
+      CompoundTag compoundTag,
+      DialogDataSet dialogDataSet,
+      ServerPlayer serverPlayer,
+      EasyNPC<?> easyNPC) {
     if (compoundTag == null
         || dialogDataSet == null
         || !dialogDataSet.hasDialog()
@@ -241,7 +253,7 @@ public class AdditionalScreenData implements AdditionalScreenDataInterface {
       for (DialogButtonEntry buttonEntry : dialogEntry.getDialogButtons()) {
         if (buttonEntry == null
             || !buttonEntry.hasConditions()
-            || isExecutionLimitAvailable(buttonEntry, serverPlayer)) {
+            || isExecutionLimitAvailable(dialogEntry.getId(), buttonEntry, serverPlayer, easyNPC)) {
           continue;
         }
         lockedActions.add(CompoundTagUtils.uuidToTag(buttonEntry.id()));
@@ -254,13 +266,19 @@ public class AdditionalScreenData implements AdditionalScreenDataInterface {
   }
 
   private static boolean isExecutionLimitAvailable(
-      DialogButtonEntry buttonEntry, ServerPlayer serverPlayer) {
+      UUID dialogId, DialogButtonEntry buttonEntry, ServerPlayer serverPlayer, EasyNPC<?> easyNPC) {
+    ExecutionId executionId = buttonExecutionId(dialogId, buttonEntry, easyNPC);
     for (ConditionDataEntry condition : buttonEntry.conditions()) {
       if (condition.conditionType() == ConditionType.EXECUTION_LIMIT
-          && !ConditionManager.evaluate(condition, serverPlayer, buttonEntry.id())) {
+          && !ConditionManager.evaluate(
+              condition,
+              serverPlayer,
+              executionId,
+              easyNPC != null ? easyNPC.getLivingEntity() : null)) {
         return false;
       }
     }
+
     return true;
   }
 

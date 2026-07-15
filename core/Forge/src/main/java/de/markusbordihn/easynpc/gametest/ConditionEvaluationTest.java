@@ -58,4 +58,10 @@ public class ConditionEvaluationTest {
     ConditionEvaluationTestHelper.assertConditionalDialogOpenRespectsConditions(helper);
     helper.succeed();
   }
+
+  @GameTest(structure = "easy_npc:gametest.3x3x3")
+  public void testDefaultDialogExecutionLimitEnforced(GameTestHelper helper) {
+    ConditionEvaluationTestHelper.assertDefaultDialogExecutionLimitEnforced(helper, humanoid());
+    helper.succeed();
+  }
 }

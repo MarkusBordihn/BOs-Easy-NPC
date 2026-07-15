@@ -42,7 +42,7 @@ public class CommandActionExecutor {
       ServerPlayer serverPlayer,
       LivingEntity livingEntity,
       ActionEventDataCapable<?> actionEventData) {
-    if (!ActionValidator.validateActionData(actionDataEntry, serverPlayer)) {
+    if (!ActionValidator.validateActionData(actionDataEntry, serverPlayer, livingEntity)) {
       return;
     }
 
@@ -84,7 +84,7 @@ public class CommandActionExecutor {
       ActionEventDataCapable<?> actionEventData) {
     if (serverPlayer == null
         ? !ActionValidator.validateActionDataWithoutPlayer(actionDataEntry)
-        : !ActionValidator.validateActionData(actionDataEntry, serverPlayer)) {
+        : !ActionValidator.validateActionData(actionDataEntry, serverPlayer, livingEntity)) {
       return;
     }
 

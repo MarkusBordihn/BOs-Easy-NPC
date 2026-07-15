@@ -46,6 +46,7 @@ import de.markusbordihn.easynpc.configui.menu.editor.EditorMenu;
 import de.markusbordihn.easynpc.data.condition.ConditionDataEntry;
 import de.markusbordihn.easynpc.data.condition.ConditionDataSet;
 import de.markusbordihn.easynpc.data.condition.ConditionType;
+import de.markusbordihn.easynpc.data.execution.ExecutionId;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
@@ -320,8 +321,8 @@ public class ConditionDataEntryEditorContainerScreen<T extends EditorMenu> exten
     return this.isNewEntry;
   }
 
-  public UUID getExecutionLimitTargetUUID() {
-    return this.context.executionLimitTargetUUID();
+  public ExecutionId getExecutionLimitId() {
+    return this.context.executionLimitId();
   }
 
   public Font getFont() {

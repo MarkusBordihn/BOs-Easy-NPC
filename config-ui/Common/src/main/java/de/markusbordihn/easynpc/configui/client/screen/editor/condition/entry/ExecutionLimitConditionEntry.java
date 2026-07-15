@@ -92,8 +92,7 @@ public class ExecutionLimitConditionEntry extends ConditionEntryWidget {
                 "condition.execution_limit.reset_current_player",
                 onPress ->
                     NetworkHandlerManager.sendMessageToServer(
-                        new ResetExecutionLimitMessage(
-                            this.screen.getExecutionLimitTargetUUID(), false))));
+                        new ResetExecutionLimitMessage(this.screen.getExecutionLimitId(), false))));
 
     ReloadButton resetAllPlayersButton =
         this.screen.addConditionEntryWidget(
@@ -105,8 +104,7 @@ public class ExecutionLimitConditionEntry extends ConditionEntryWidget {
                 "condition.execution_limit.reset_all_players",
                 onPress ->
                     NetworkHandlerManager.sendMessageToServer(
-                        new ResetExecutionLimitMessage(
-                            this.screen.getExecutionLimitTargetUUID(), true))));
+                        new ResetExecutionLimitMessage(this.screen.getExecutionLimitId(), true))));
 
     boolean isExisting = !this.screen.isNewEntry();
     resetCurrentPlayerButton.active = isExisting;

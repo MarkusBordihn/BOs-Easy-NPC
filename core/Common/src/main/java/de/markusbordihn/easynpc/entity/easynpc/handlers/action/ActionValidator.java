@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.entity.easynpc.handlers.action;
 
 import de.markusbordihn.easynpc.condition.ConditionManager;
 import de.markusbordihn.easynpc.data.action.ActionDataEntry;
+import de.markusbordihn.easynpc.data.execution.ExecutionId;
 import de.markusbordihn.easynpc.entity.easynpc.data.DialogDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.TradingDataCapable;
 import net.minecraft.core.BlockPos;
@@ -48,7 +49,7 @@ public class ActionValidator {
     return ConditionManager.evaluateAll(
         actionDataEntry.conditionDataSet().getConditions(),
         serverPlayer,
-        actionDataEntry.id(),
+        ExecutionId.action(npcContext, actionDataEntry.id()),
         npcContext);
   }
 
