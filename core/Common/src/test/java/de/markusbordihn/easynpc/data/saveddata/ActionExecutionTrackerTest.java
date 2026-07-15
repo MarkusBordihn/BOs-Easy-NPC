@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.data.saveddata;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import de.markusbordihn.easynpc.data.execution.ExecutionId;
 import de.markusbordihn.easynpc.data.execution.ExecutionInterval;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
@@ -32,8 +33,9 @@ class ActionExecutionTrackerTest {
   void testPersistedActionIdUsesSameTrackerKey() {
     ActionExecutionTracker tracker = new ActionExecutionTracker();
     UUID playerId = UUID.randomUUID();
-    UUID persistedActionId = UUID.randomUUID();
-    UUID newActionId = UUID.randomUUID();
+    UUID npcId = UUID.randomUUID();
+    ExecutionId persistedActionId = ExecutionId.action(npcId, UUID.randomUUID());
+    ExecutionId newActionId = ExecutionId.action(npcId, UUID.randomUUID());
 
     assertTrue(tracker.canExecute(playerId, persistedActionId, 1, ExecutionInterval.LIFETIME));
 
@@ -54,8 +56,10 @@ class ActionExecutionTrackerTest {
   void testResetExecutionUsesExactTrackerKey() {
     ActionExecutionTracker tracker = new ActionExecutionTracker();
     UUID playerId = UUID.randomUUID();
-    UUID actionId = UUID.randomUUID();
-    UUID dialogId = UUID.randomUUID();
+    UUID npcId = UUID.randomUUID();
+    UUID sharedId = UUID.randomUUID();
+    ExecutionId actionId = ExecutionId.action(npcId, sharedId);
+    ExecutionId dialogId = ExecutionId.dialog(npcId, sharedId);
 
     tracker.recordExecution(playerId, actionId, ExecutionInterval.LIFETIME);
     tracker.recordExecution(playerId, dialogId, ExecutionInterval.LIFETIME);
@@ -64,5 +68,20 @@ class ActionExecutionTrackerTest {
 
     assertTrue(tracker.canExecute(playerId, actionId, 1, ExecutionInterval.LIFETIME));
     assertFalse(tracker.canExecute(playerId, dialogId, 1, ExecutionInterval.LIFETIME));
+    assertNotEquals(actionId, dialogId);
+  }
+
+  @Test
+  void testSameDialogIdIsTrackedPerNpc() {
+    ActionExecutionTracker tracker = new ActionExecutionTracker();
+    UUID playerId = UUID.randomUUID();
+    UUID dialogId = UUID.randomUUID();
+    ExecutionId firstNpcDialogId = ExecutionId.dialog(UUID.randomUUID(), dialogId);
+    ExecutionId secondNpcDialogId = ExecutionId.dialog(UUID.randomUUID(), dialogId);
+
+    tracker.recordExecution(playerId, firstNpcDialogId, ExecutionInterval.LIFETIME);
+
+    assertFalse(tracker.canExecute(playerId, firstNpcDialogId, 1, ExecutionInterval.LIFETIME));
+    assertTrue(tracker.canExecute(playerId, secondNpcDialogId, 1, ExecutionInterval.LIFETIME));
   }
 }

@@ -8,6 +8,11 @@ For the full changelog, please go to the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 7.2.0
+
+- Fixed #801 by using combination for NPC, Dialog and Action UUIDs to avoid collisions for action
+  tracking and execution limits.
+
 ### 7.1.1
 
 - Fixed #800 by lazy loading entity types.

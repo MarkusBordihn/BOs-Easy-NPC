@@ -22,8 +22,8 @@ package de.markusbordihn.easynpc.condition;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.condition.ConditionDataEntry;
 import de.markusbordihn.easynpc.data.condition.ConditionType;
+import de.markusbordihn.easynpc.data.execution.ExecutionId;
 import java.util.Set;
-import java.util.UUID;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import org.apache.logging.log4j.LogManager;
@@ -40,14 +40,14 @@ public class ConditionManager {
   }
 
   public static boolean evaluate(
-      ConditionDataEntry conditionDataEntry, ServerPlayer serverPlayer, UUID actionUUID) {
-    return evaluate(conditionDataEntry, serverPlayer, actionUUID, null);
+      ConditionDataEntry conditionDataEntry, ServerPlayer serverPlayer, ExecutionId executionId) {
+    return evaluate(conditionDataEntry, serverPlayer, executionId, null);
   }
 
   public static boolean evaluate(
       ConditionDataEntry conditionDataEntry,
       ServerPlayer serverPlayer,
-      UUID actionUUID,
+      ExecutionId executionId,
       LivingEntity npcContext) {
     if (conditionDataEntry == null || !conditionDataEntry.isValid() || serverPlayer == null) {
       return false;
@@ -56,7 +56,7 @@ public class ConditionManager {
     return switch (conditionDataEntry.conditionType()) {
       case SCOREBOARD -> ScoreboardCondition.evaluate(conditionDataEntry, serverPlayer);
       case EXECUTION_LIMIT ->
-          ExecutionLimitCondition.evaluate(conditionDataEntry, serverPlayer, actionUUID);
+          ExecutionLimitCondition.evaluate(conditionDataEntry, serverPlayer, executionId);
       case HAS_ITEM_IN_INVENTORY ->
           HasItemInInventoryCondition.evaluate(conditionDataEntry, serverPlayer);
       case HAS_ITEM_IN_HAND -> HasItemInHandCondition.evaluate(conditionDataEntry, serverPlayer);
@@ -82,21 +82,23 @@ public class ConditionManager {
   }
 
   public static boolean evaluateAll(
-      Set<ConditionDataEntry> conditionDataEntries, ServerPlayer serverPlayer, UUID actionUUID) {
-    return evaluateAll(conditionDataEntries, serverPlayer, actionUUID, null);
+      Set<ConditionDataEntry> conditionDataEntries,
+      ServerPlayer serverPlayer,
+      ExecutionId executionId) {
+    return evaluateAll(conditionDataEntries, serverPlayer, executionId, null);
   }
 
   public static boolean evaluateAll(
       Set<ConditionDataEntry> conditionDataEntries,
       ServerPlayer serverPlayer,
-      UUID actionUUID,
+      ExecutionId executionId,
       LivingEntity npcContext) {
     if (conditionDataEntries == null || conditionDataEntries.isEmpty() || serverPlayer == null) {
       return true;
     }
 
     for (ConditionDataEntry conditionDataEntry : conditionDataEntries) {
-      if (!evaluate(conditionDataEntry, serverPlayer, actionUUID, npcContext)) {
+      if (!evaluate(conditionDataEntry, serverPlayer, executionId, npcContext)) {
         log.debug("Condition not met: {}", conditionDataEntry);
         return false;
       }
@@ -105,14 +107,27 @@ public class ConditionManager {
   }
 
   public static void recordExecution(
-      ConditionDataEntry conditionDataEntry, ServerPlayer serverPlayer, UUID actionUUID) {
+      ConditionDataEntry conditionDataEntry, ServerPlayer serverPlayer, ExecutionId executionId) {
     if (conditionDataEntry == null
         || conditionDataEntry.conditionType() != ConditionType.EXECUTION_LIMIT
         || serverPlayer == null
-        || actionUUID == null) {
+        || executionId == null) {
       return;
     }
 
-    ExecutionLimitCondition.recordExecution(conditionDataEntry, serverPlayer, actionUUID);
+    ExecutionLimitCondition.recordExecution(conditionDataEntry, serverPlayer, executionId);
+  }
+
+  public static void recordExecutions(
+      Set<ConditionDataEntry> conditionDataEntries,
+      ServerPlayer serverPlayer,
+      ExecutionId executionId) {
+    if (conditionDataEntries == null || conditionDataEntries.isEmpty()) {
+      return;
+    }
+
+    for (ConditionDataEntry conditionDataEntry : conditionDataEntries) {
+      recordExecution(conditionDataEntry, serverPlayer, executionId);
+    }
   }
 }

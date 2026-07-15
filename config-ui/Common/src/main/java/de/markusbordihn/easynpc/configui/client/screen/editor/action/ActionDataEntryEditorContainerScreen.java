@@ -222,6 +222,13 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
 
     ActionDataEntry newActionDataEntry =
         actionEntryWidget != null ? actionEntryWidget.getActionDataEntry() : new ActionDataEntry();
+    ActionDataEntry existingActionDataEntry = this.actionDataSet.getEntry(this.actionDataEntryId);
+    if (existingActionDataEntry != null) {
+      newActionDataEntry =
+          newActionDataEntry
+              .withId(existingActionDataEntry.id())
+              .withConditionDataSet(existingActionDataEntry.conditionDataSet());
+    }
     this.actionDataSet.put(this.actionDataEntryId, newActionDataEntry);
 
     if (this.editorType != null && this.editorType == EditorType.TRADING_OFFER_ACTION) {
