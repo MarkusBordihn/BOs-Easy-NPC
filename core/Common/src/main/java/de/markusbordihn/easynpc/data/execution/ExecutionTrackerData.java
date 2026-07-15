@@ -26,12 +26,13 @@ import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 
-public record ExecutionTrackerData(Map<UUID, Map<UUID, ExecutionData>> trackingData) {
+public record ExecutionTrackerData(Map<UUID, Map<ExecutionId, ExecutionData>> trackingData) {
 
   public static final String DATA_PLAYERS_TAG = "Players";
   public static final String DATA_PLAYER_UUID_TAG = "PlayerUUID";
-  public static final String DATA_TARGETS_TAG = "Targets";
-  public static final String DATA_TARGET_UUID_TAG = "TargetUUID";
+  public static final String DATA_EXECUTIONS_TAG = "Executions";
+  public static final String DATA_EXECUTION_ID_TAG = "Id";
+  public static final String DATA_EXECUTION_TYPE_TAG = "Type";
 
   public ExecutionTrackerData() {
     this(new HashMap<>());
@@ -41,24 +42,33 @@ public record ExecutionTrackerData(Map<UUID, Map<UUID, ExecutionData>> trackingD
     this(loadFromTag(tag));
   }
 
-  private static Map<UUID, Map<UUID, ExecutionData>> loadFromTag(CompoundTag compoundTag) {
-    Map<UUID, Map<UUID, ExecutionData>> data = new HashMap<>();
+  private static Map<UUID, Map<ExecutionId, ExecutionData>> loadFromTag(CompoundTag compoundTag) {
+    Map<UUID, Map<ExecutionId, ExecutionData>> data = new HashMap<>();
     ListTag playersTag = compoundTag.getListOrEmpty(DATA_PLAYERS_TAG);
 
     for (int i = 0; i < playersTag.size(); i++) {
       CompoundTag playerTag = playersTag.getCompoundOrEmpty(i);
       UUID playerUUID = CompoundTagUtils.readUUID(playerTag, DATA_PLAYER_UUID_TAG);
-      Map<UUID, ExecutionData> playerData = new HashMap<>();
-
-      ListTag targetsTag = playerTag.getListOrEmpty(DATA_TARGETS_TAG);
-      for (int j = 0; j < targetsTag.size(); j++) {
-        CompoundTag targetTag = targetsTag.getCompoundOrEmpty(j);
-        playerData.put(
-            CompoundTagUtils.readUUID(targetTag, DATA_TARGET_UUID_TAG),
-            new ExecutionData(targetTag));
+      if (playerUUID == null) {
+        continue;
       }
 
-      data.put(playerUUID, playerData);
+      Map<ExecutionId, ExecutionData> playerData = new HashMap<>();
+      ListTag executionsTag = playerTag.getListOrEmpty(DATA_EXECUTIONS_TAG);
+      for (int j = 0; j < executionsTag.size(); j++) {
+        CompoundTag executionTag = executionsTag.getCompoundOrEmpty(j);
+        ExecutionType type =
+            ExecutionType.get(executionTag.getString(DATA_EXECUTION_TYPE_TAG).orElse(""));
+        UUID executionUUID = CompoundTagUtils.readUUID(executionTag, DATA_EXECUTION_ID_TAG);
+        if (type == null || executionUUID == null) {
+          continue;
+        }
+        playerData.put(new ExecutionId(type, executionUUID), new ExecutionData(executionTag));
+      }
+
+      if (!playerData.isEmpty()) {
+        data.put(playerUUID, playerData);
+      }
     }
 
     return data;
@@ -67,19 +77,23 @@ public record ExecutionTrackerData(Map<UUID, Map<UUID, ExecutionData>> trackingD
   public CompoundTag save(CompoundTag compoundTag) {
     ListTag playersTag = new ListTag();
 
-    for (Map.Entry<UUID, Map<UUID, ExecutionData>> playerEntry : this.trackingData.entrySet()) {
+    for (Map.Entry<UUID, Map<ExecutionId, ExecutionData>> playerEntry :
+        this.trackingData.entrySet()) {
       CompoundTag playerTag = new CompoundTag();
       CompoundTagUtils.writeUUID(playerTag, DATA_PLAYER_UUID_TAG, playerEntry.getKey());
 
-      ListTag targetsTag = new ListTag();
-      for (Map.Entry<UUID, ExecutionData> targetEntry : playerEntry.getValue().entrySet()) {
-        CompoundTag targetTag = new CompoundTag();
-        CompoundTagUtils.writeUUID(targetTag, DATA_TARGET_UUID_TAG, targetEntry.getKey());
-        targetEntry.getValue().save(targetTag);
-        targetsTag.add(targetTag);
+      ListTag executionsTag = new ListTag();
+      for (Map.Entry<ExecutionId, ExecutionData> executionEntry :
+          playerEntry.getValue().entrySet()) {
+        CompoundTag executionTag = new CompoundTag();
+        executionTag.putString(DATA_EXECUTION_TYPE_TAG, executionEntry.getKey().type().name());
+        CompoundTagUtils.writeUUID(
+            executionTag, DATA_EXECUTION_ID_TAG, executionEntry.getKey().value());
+        executionEntry.getValue().save(executionTag);
+        executionsTag.add(executionTag);
       }
 
-      playerTag.put(DATA_TARGETS_TAG, targetsTag);
+      playerTag.put(DATA_EXECUTIONS_TAG, executionsTag);
       playersTag.add(playerTag);
     }
 

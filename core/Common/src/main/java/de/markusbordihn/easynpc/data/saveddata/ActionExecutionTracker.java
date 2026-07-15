@@ -24,13 +24,13 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.Dynamic;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.execution.ExecutionData;
+import de.markusbordihn.easynpc.data.execution.ExecutionId;
 import de.markusbordihn.easynpc.data.execution.ExecutionInterval;
-import de.markusbordihn.easynpc.utils.CompoundTagUtils;
+import de.markusbordihn.easynpc.data.execution.ExecutionTrackerData;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
@@ -44,10 +44,6 @@ public class ActionExecutionTracker extends SavedData {
 
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private static final String DATA_NAME = "easy_npc_action_executions";
-  private static final String DATA_PLAYERS_TAG = "Players";
-  private static final String DATA_PLAYER_UUID_TAG = "PlayerUUID";
-  private static final String DATA_ACTIONS_TAG = "Actions";
-  private static final String DATA_ACTION_UUID_TAG = "ActionUUID";
   private static final Codec<ActionExecutionTracker> CODEC =
       Codec.PASSTHROUGH.comapFlatMap(
           dynamic -> {
@@ -66,70 +62,26 @@ public class ActionExecutionTracker extends SavedData {
           ActionExecutionTracker::new,
           CODEC,
           DataFixTypes.SAVED_DATA_STRUCTURE_FEATURE_INDICES);
-  private final Map<UUID, Map<UUID, ExecutionData>> trackingData;
+  private final Map<UUID, Map<ExecutionId, ExecutionData>> trackingData;
 
   ActionExecutionTracker() {
     this(new HashMap<>());
   }
 
-  private ActionExecutionTracker(Map<UUID, Map<UUID, ExecutionData>> trackingData) {
+  private ActionExecutionTracker(Map<UUID, Map<ExecutionId, ExecutionData>> trackingData) {
     this.trackingData = new HashMap<>(trackingData);
   }
 
   static ActionExecutionTracker loadFromNbt(Dynamic<?> dynamic) {
-    ActionExecutionTracker tracker = new ActionExecutionTracker(new HashMap<>());
     Tag tag = dynamic.convert(NbtOps.INSTANCE).getValue();
-
     if (!(tag instanceof CompoundTag compoundTag)) {
-      return tracker;
+      return new ActionExecutionTracker(new HashMap<>());
     }
-
-    ListTag playersTag = compoundTag.getListOrEmpty(DATA_PLAYERS_TAG);
-    for (int i = 0; i < playersTag.size(); i++) {
-      CompoundTag playerTag = playersTag.getCompoundOrEmpty(i);
-      UUID playerUUID = CompoundTagUtils.readUUID(playerTag, DATA_PLAYER_UUID_TAG);
-      if (playerUUID == null) {
-        continue;
-      }
-
-      Map<UUID, ExecutionData> playerData = new HashMap<>();
-      ListTag actionsTag = playerTag.getListOrEmpty(DATA_ACTIONS_TAG);
-      for (int j = 0; j < actionsTag.size(); j++) {
-        CompoundTag actionTag = actionsTag.getCompoundOrEmpty(j);
-        UUID actionUUID = CompoundTagUtils.readUUID(actionTag, DATA_ACTION_UUID_TAG);
-        if (actionUUID != null) {
-          playerData.put(actionUUID, new ExecutionData(actionTag));
-        }
-      }
-
-      tracker.trackingData.put(playerUUID, playerData);
-    }
-
-    return tracker;
+    return new ActionExecutionTracker(new ExecutionTrackerData(compoundTag).trackingData());
   }
 
   static CompoundTag saveToNbt(ActionExecutionTracker tracker) {
-    CompoundTag compoundTag = new CompoundTag();
-    ListTag playersTag = new ListTag();
-
-    for (Map.Entry<UUID, Map<UUID, ExecutionData>> playerEntry : tracker.trackingData.entrySet()) {
-      CompoundTag playerTag = new CompoundTag();
-      CompoundTagUtils.writeUUID(playerTag, DATA_PLAYER_UUID_TAG, playerEntry.getKey());
-
-      ListTag actionsTag = new ListTag();
-      for (Map.Entry<UUID, ExecutionData> actionEntry : playerEntry.getValue().entrySet()) {
-        CompoundTag actionTag = new CompoundTag();
-        CompoundTagUtils.writeUUID(actionTag, DATA_ACTION_UUID_TAG, actionEntry.getKey());
-        actionEntry.getValue().save(actionTag);
-        actionsTag.add(actionTag);
-      }
-
-      playerTag.put(DATA_ACTIONS_TAG, actionsTag);
-      playersTag.add(playerTag);
-    }
-
-    compoundTag.put(DATA_PLAYERS_TAG, playersTag);
-    return compoundTag;
+    return new ExecutionTrackerData(tracker.trackingData).save();
   }
 
   public static ActionExecutionTracker get(ServerLevel serverLevel) {
@@ -137,13 +89,17 @@ public class ActionExecutionTracker extends SavedData {
   }
 
   public boolean canExecute(
-      UUID playerUUID, UUID actionUUID, int limit, ExecutionInterval interval) {
+      UUID playerUUID, ExecutionId executionId, int limit, ExecutionInterval interval) {
+    if (executionId == null) {
+      return false;
+    }
+
     if (limit == 0) {
       return true;
     }
 
     ExecutionData data =
-        this.trackingData.getOrDefault(playerUUID, new HashMap<>()).get(actionUUID);
+        this.trackingData.getOrDefault(playerUUID, new HashMap<>()).get(executionId);
     if (data == null) {
       return true;
     }
@@ -159,50 +115,63 @@ public class ActionExecutionTracker extends SavedData {
     return data.executionCount() < limit;
   }
 
-  public void recordExecution(UUID playerUUID, UUID actionUUID, ExecutionInterval interval) {
-    Map<UUID, ExecutionData> playerData =
+  public void recordExecution(
+      UUID playerUUID, ExecutionId executionId, ExecutionInterval interval) {
+    if (executionId == null) {
+      return;
+    }
+
+    Map<ExecutionId, ExecutionData> playerData =
         this.trackingData.computeIfAbsent(playerUUID, k -> new HashMap<>());
-    ExecutionData currentData = playerData.get(actionUUID);
+    ExecutionData currentData = playerData.get(executionId);
     long now = System.currentTimeMillis();
 
     if (currentData == null || interval.hasIntervalPassed(currentData.windowStartTime())) {
-      playerData.put(actionUUID, new ExecutionData(1, now, now));
+      playerData.put(executionId, new ExecutionData(1, now, now));
       log.debug(
-          "Started new execution window for player {} action {} with interval {}",
+          "Started new execution window for player {} execution {} with interval {}",
           playerUUID,
-          actionUUID,
+          executionId,
           interval);
     } else {
       playerData.put(
-          actionUUID,
+          executionId,
           new ExecutionData(currentData.executionCount() + 1, currentData.windowStartTime(), now));
       log.debug(
-          "Recorded execution {} for player {} action {}",
+          "Recorded execution {} for player {} execution {}",
           currentData.executionCount() + 1,
           playerUUID,
-          actionUUID);
+          executionId);
     }
 
     setDirty();
   }
 
-  public void resetExecution(UUID playerUUID, UUID actionUUID) {
-    Map<UUID, ExecutionData> playerData = this.trackingData.get(playerUUID);
-    if (playerData != null && playerData.remove(actionUUID) != null) {
-      log.debug("Reset execution for player {} action {}", playerUUID, actionUUID);
+  public void resetExecution(UUID playerUUID, ExecutionId executionId) {
+    if (executionId == null) {
+      return;
+    }
+
+    Map<ExecutionId, ExecutionData> playerData = this.trackingData.get(playerUUID);
+    if (playerData != null && playerData.remove(executionId) != null) {
+      log.debug("Reset execution for player {} execution {}", playerUUID, executionId);
       setDirty();
     }
   }
 
-  public void resetExecutionForAllPlayers(UUID actionUUID) {
+  public void resetExecutionForAllPlayers(ExecutionId executionId) {
+    if (executionId == null) {
+      return;
+    }
+
     int resetCount = 0;
-    for (Map<UUID, ExecutionData> playerData : this.trackingData.values()) {
-      if (playerData.remove(actionUUID) != null) {
+    for (Map<ExecutionId, ExecutionData> playerData : this.trackingData.values()) {
+      if (playerData.remove(executionId) != null) {
         resetCount++;
       }
     }
     if (resetCount > 0) {
-      log.debug("Reset execution for {} players for action {}", resetCount, actionUUID);
+      log.debug("Reset execution for {} players for execution {}", resetCount, executionId);
       setDirty();
     }
   }
@@ -210,7 +179,7 @@ public class ActionExecutionTracker extends SavedData {
   public void cleanupExpiredRecords() {
     long cutoffTime = System.currentTimeMillis() - ExecutionInterval.PER_MONTH.getMilliseconds();
     int removedCount = 0;
-    for (Map<UUID, ExecutionData> playerData : this.trackingData.values()) {
+    for (Map<ExecutionId, ExecutionData> playerData : this.trackingData.values()) {
       int beforeSize = playerData.size();
       playerData.entrySet().removeIf(entry -> entry.getValue().lastExecutionTime() < cutoffTime);
       removedCount += beforeSize - playerData.size();

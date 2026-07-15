@@ -33,6 +33,7 @@ import de.markusbordihn.easynpc.data.dialog.DialogButtonEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogButtonType;
 import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
+import de.markusbordihn.easynpc.data.execution.ExecutionId;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -135,22 +136,23 @@ public class ConditionEvaluationTestHelper {
             DialogButtonType.DEFAULT,
             new ActionDataSet(),
             conditions);
+    UUID npcId = UUID.randomUUID();
+    UUID dialogId = UUID.randomUUID();
+    ExecutionId buttonExecutionId = ExecutionId.dialogButton(npcId, dialogId, button.id());
 
-    // Mirror ExecuteDialogButtonActionMessage: check and record both keyed by the button id.
+    // Mirror ExecuteDialogButtonActionMessage: check and record share the same execution id.
     for (int click = 1; click <= limit; click++) {
       GameTestHelpers.assertTrue(
           helper,
           "Click " + click + " of " + limit + " should be allowed",
-          ConditionManager.evaluateAll(button.conditions(), serverPlayer, button.id()));
-      for (ConditionDataEntry condition : button.conditions()) {
-        ConditionManager.recordExecution(condition, serverPlayer, button.id());
-      }
+          ConditionManager.evaluateAll(button.conditions(), serverPlayer, buttonExecutionId));
+      ConditionManager.recordExecutions(button.conditions(), serverPlayer, buttonExecutionId);
     }
 
     GameTestHelpers.assertTrue(
         helper,
         "Click " + (limit + 1) + " should be blocked once the daily limit is reached",
-        !ConditionManager.evaluateAll(button.conditions(), serverPlayer, button.id()));
+        !ConditionManager.evaluateAll(button.conditions(), serverPlayer, buttonExecutionId));
 
     DialogButtonEntry otherButton =
         new DialogButtonEntry(
@@ -162,7 +164,73 @@ public class ConditionEvaluationTestHelper {
     GameTestHelpers.assertTrue(
         helper,
         "A different button id must not share the execution count",
-        ConditionManager.evaluateAll(otherButton.conditions(), serverPlayer, otherButton.id()));
+        ConditionManager.evaluateAll(
+            otherButton.conditions(),
+            serverPlayer,
+            ExecutionId.dialogButton(npcId, dialogId, otherButton.id())));
+  }
+
+  public static void assertDefaultDialogExecutionLimitEnforced(
+      GameTestHelper helper, EntityType<?> entityType) {
+    ServerPlayer serverPlayer = GameTestHelpers.mockServerPlayer(helper, new Vec3(1, 2, 1));
+    EasyNPC<?> firstNpc = GameTestHelpers.mockEasyNPC(helper, entityType, new Vec3(2, 2, 1));
+    EasyNPC<?> secondNpc = GameTestHelpers.mockEasyNPC(helper, entityType, new Vec3(3, 2, 1));
+
+    setLimitedDefaultDialog(firstNpc);
+    setLimitedDefaultDialog(secondNpc);
+
+    GameTestHelpers.assertTrue(
+        helper,
+        "The default dialog should be available before the first open",
+        canOpenDefaultDialog(firstNpc, serverPlayer));
+
+    firstNpc.getEasyNPCDialogData().openDefaultDialog(serverPlayer);
+    serverPlayer.closeContainer();
+
+    GameTestHelpers.assertTrue(
+        helper,
+        "The default dialog should be blocked once the hourly limit is reached",
+        !canOpenDefaultDialog(firstNpc, serverPlayer));
+
+    GameTestHelpers.assertTrue(
+        helper,
+        "The same default dialog on another NPC must not share the execution count",
+        canOpenDefaultDialog(secondNpc, serverPlayer));
+
+    secondNpc.getEasyNPCDialogData().openDefaultDialog(serverPlayer);
+    serverPlayer.closeContainer();
+
+    GameTestHelpers.assertTrue(
+        helper,
+        "The second NPC should be blocked after its own execution",
+        !canOpenDefaultDialog(secondNpc, serverPlayer));
+  }
+
+  private static boolean canOpenDefaultDialog(EasyNPC<?> easyNPC, ServerPlayer serverPlayer) {
+    return easyNPC
+            .getEasyNPCDialogData()
+            .getDialogDataSet()
+            .getNextAvailableDialog(serverPlayer, easyNPC.getLivingEntity())
+        != null;
+  }
+
+  private static void setLimitedDefaultDialog(EasyNPC<?> easyNPC) {
+    ConditionDataEntry oncePerHour =
+        new ConditionDataEntry(
+            ConditionType.EXECUTION_LIMIT,
+            DurationType.PER_HOUR,
+            ConditionOperationType.NONE,
+            "",
+            1);
+    Set<ConditionDataEntry> conditions = new LinkedHashSet<>();
+    conditions.add(oncePerHour);
+
+    DialogDataEntry dialog = new DialogDataEntry("default", "Default", "Hello");
+    dialog.setConditions(conditions);
+
+    DialogDataSet dialogDataSet = new DialogDataSet();
+    dialogDataSet.addDialog(dialog);
+    easyNPC.getEasyNPCDialogData().setDialogDataSet(dialogDataSet);
   }
 
   public static void assertConditionalDialogOpenRespectsConditions(GameTestHelper helper) {
@@ -197,14 +265,14 @@ public class ConditionEvaluationTestHelper {
     GameTestHelpers.assertTrue(
         helper,
         "Conditional open must be blocked when the dialog condition is not met",
-        !dialogDataSet.canOpenDialog(dialogId, serverPlayer));
+        !dialogDataSet.canOpenDialog(dialogId, serverPlayer, null));
 
     // The conditional open path is allowed once the condition is met.
     serverPlayer.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.STICK, 1));
     GameTestHelpers.assertTrue(
         helper,
         "Conditional open must be allowed when the dialog condition is met",
-        dialogDataSet.canOpenDialog(dialogId, serverPlayer));
+        dialogDataSet.canOpenDialog(dialogId, serverPlayer, null));
   }
 
   public static void assertHealthTargetConditions(GameTestHelper helper, EntityType<?> entityType) {
