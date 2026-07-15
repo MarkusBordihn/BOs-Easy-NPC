@@ -26,6 +26,7 @@ import de.markusbordihn.easynpc.data.action.ActionDataSet;
 import de.markusbordihn.easynpc.data.action.ActionDataType;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
 import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
+import de.markusbordihn.easynpc.data.execution.ExecutionId;
 import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataEntry;
 import de.markusbordihn.easynpc.data.objective.ObjectiveType;
@@ -127,6 +128,17 @@ class ServerNetworkMessageRoundTripTest {
     assertEquals(uuid, tradingAction.uuid());
     assertEquals(2, tradingAction.offerIndex());
     assertEquals(1, tradingAction.actionDataSet().size());
+  }
+
+  @Test
+  void testResetExecutionLimitRoundTrip() {
+    ExecutionId executionId = ExecutionId.action(UUID.randomUUID(), UUID.randomUUID());
+    ResetExecutionLimitMessage loaded =
+        roundTrip(
+            new ResetExecutionLimitMessage(executionId, true), ResetExecutionLimitMessage::create);
+
+    assertEquals(executionId, loaded.executionId());
+    assertTrue(loaded.allPlayers());
   }
 
   @Test

@@ -24,6 +24,7 @@ import de.markusbordihn.easynpc.data.scoreboard.ScoreboardOperation;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.action.ActionValidator;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.scores.Objective;
 import net.minecraft.world.scores.ScoreAccess;
 import net.minecraft.world.scores.Scoreboard;
@@ -37,8 +38,9 @@ public class ScoreboardActionExecutor {
 
   private ScoreboardActionExecutor() {}
 
-  public static void execute(ActionDataEntry actionDataEntry, ServerPlayer serverPlayer) {
-    if (!ActionValidator.validateActionData(actionDataEntry, serverPlayer)) {
+  public static void execute(
+      ActionDataEntry actionDataEntry, ServerPlayer serverPlayer, LivingEntity npcContext) {
+    if (!ActionValidator.validateActionData(actionDataEntry, serverPlayer, npcContext)) {
       log.warn(
           "Failed to execute scoreboard action for player {}: Invalid action data",
           serverPlayer.getName().getString());

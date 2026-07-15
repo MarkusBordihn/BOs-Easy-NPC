@@ -23,6 +23,7 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.condition.ConditionManager;
 import de.markusbordihn.easynpc.data.condition.ConditionDataEntry;
 import de.markusbordihn.easynpc.data.condition.ConditionType;
+import de.markusbordihn.easynpc.data.execution.ExecutionId;
 import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -191,10 +192,6 @@ public class DialogDataSet {
     return null;
   }
 
-  public DialogDataEntry getNextAvailableDialog(ServerPlayer serverPlayer) {
-    return getNextAvailableDialog(serverPlayer, null);
-  }
-
   public DialogDataEntry getNextAvailableDialog(
       ServerPlayer serverPlayer, LivingEntity npcContext) {
     return dialogByIdMap.values().stream()
@@ -206,10 +203,6 @@ public class DialogDataSet {
                 .thenComparing(Comparator.comparing(DialogDataEntry::getLabel)))
         .findFirst()
         .orElse(null);
-  }
-
-  public boolean canOpenDialog(UUID dialogId, ServerPlayer serverPlayer) {
-    return canOpenDialog(dialogId, serverPlayer, null);
   }
 
   public boolean canOpenDialog(UUID dialogId, ServerPlayer serverPlayer, LivingEntity npcContext) {
@@ -264,14 +257,14 @@ public class DialogDataSet {
     return true;
   }
 
-  public void recordDialogExecution(DialogDataEntry dialog, ServerPlayer serverPlayer) {
+  public void recordDialogExecution(
+      DialogDataEntry dialog, ServerPlayer serverPlayer, LivingEntity npcContext) {
     if (dialog == null || serverPlayer == null || !dialog.hasConditions()) {
       return;
     }
 
-    for (ConditionDataEntry condition : dialog.getConditions()) {
-      ConditionManager.recordExecution(condition, serverPlayer, dialog.getId());
-    }
+    ConditionManager.recordExecutions(
+        dialog.getConditions(), serverPlayer, ExecutionId.dialog(npcContext, dialog.getId()));
   }
 
   private boolean evaluateCondition(
@@ -283,7 +276,8 @@ public class DialogDataSet {
       log.warn("Encountered NONE condition type, skipping");
       return true;
     }
-    return ConditionManager.evaluate(condition, serverPlayer, dialogId, npcContext);
+    return ConditionManager.evaluate(
+        condition, serverPlayer, ExecutionId.dialog(npcContext, dialogId), npcContext);
   }
 
   public DialogType getType() {

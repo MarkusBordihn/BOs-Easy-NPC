@@ -24,6 +24,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.Map;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import org.junit.jupiter.api.Test;
 
 class ExecutionTrackerDataTest {
@@ -39,19 +40,44 @@ class ExecutionTrackerDataTest {
   void testSaveAndLoad() {
     ExecutionTrackerData original = new ExecutionTrackerData();
     UUID playerUUID = UUID.randomUUID();
-    UUID targetUUID = UUID.randomUUID();
-    original.trackingData().put(playerUUID, Map.of(targetUUID, new ExecutionData(5, 1000L, 2000L)));
+    ExecutionId executionId = ExecutionId.dialog(UUID.randomUUID(), UUID.randomUUID());
+    original
+        .trackingData()
+        .put(playerUUID, Map.of(executionId, new ExecutionData(5, 1000L, 2000L)));
     CompoundTag tag = original.save();
     ExecutionTrackerData loaded = new ExecutionTrackerData(tag);
 
     assertEquals(1, loaded.trackingData().size());
     assertTrue(loaded.trackingData().containsKey(playerUUID));
-    assertTrue(loaded.trackingData().get(playerUUID).containsKey(targetUUID));
+    assertTrue(loaded.trackingData().get(playerUUID).containsKey(executionId));
 
-    ExecutionData loadedData = loaded.trackingData().get(playerUUID).get(targetUUID);
+    ExecutionData loadedData = loaded.trackingData().get(playerUUID).get(executionId);
     assertEquals(5, loadedData.executionCount());
     assertEquals(1000L, loadedData.windowStartTime());
     assertEquals(2000L, loadedData.lastExecutionTime());
+  }
+
+  @Test
+  void testSaveAndLoadPreservesType() {
+    ExecutionTrackerData original = new ExecutionTrackerData();
+    UUID playerUUID = UUID.randomUUID();
+    UUID npcId = UUID.randomUUID();
+    UUID sharedId = UUID.randomUUID();
+    ExecutionId actionId = ExecutionId.action(npcId, sharedId);
+    ExecutionId dialogId = ExecutionId.dialog(npcId, sharedId);
+    original
+        .trackingData()
+        .put(
+            playerUUID,
+            Map.of(
+                actionId, new ExecutionData(1, 100L, 200L),
+                dialogId, new ExecutionData(2, 300L, 400L)));
+    ExecutionTrackerData loaded = new ExecutionTrackerData(original.save());
+
+    Map<ExecutionId, ExecutionData> playerData = loaded.trackingData().get(playerUUID);
+    assertEquals(2, playerData.size());
+    assertEquals(1, playerData.get(actionId).executionCount());
+    assertEquals(2, playerData.get(dialogId).executionCount());
   }
 
   @Test
@@ -59,8 +85,9 @@ class ExecutionTrackerDataTest {
     ExecutionTrackerData data = new ExecutionTrackerData();
     UUID player1 = UUID.randomUUID();
     UUID player2 = UUID.randomUUID();
-    UUID target1 = UUID.randomUUID();
-    UUID target2 = UUID.randomUUID();
+    ExecutionId target1 = ExecutionId.action(UUID.randomUUID(), UUID.randomUUID());
+    ExecutionId target2 =
+        ExecutionId.dialogButton(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID());
     data.trackingData().put(player1, Map.of(target1, new ExecutionData(1, 100L, 200L)));
     data.trackingData().put(player2, Map.of(target2, new ExecutionData(2, 300L, 400L)));
     CompoundTag tag = data.save();
@@ -81,11 +108,32 @@ class ExecutionTrackerDataTest {
   }
 
   @Test
+  void testLoadSkipsEntriesWithoutType() {
+    CompoundTag playerTag = new CompoundTag();
+    playerTag.putUUID(ExecutionTrackerData.DATA_PLAYER_UUID_TAG, UUID.randomUUID());
+
+    CompoundTag legacyExecutionTag = new CompoundTag();
+    legacyExecutionTag.putUUID(ExecutionTrackerData.DATA_EXECUTION_ID_TAG, UUID.randomUUID());
+    new ExecutionData(1, 100L, 200L).save(legacyExecutionTag);
+    ListTag executionsTag = new ListTag();
+    executionsTag.add(legacyExecutionTag);
+    playerTag.put(ExecutionTrackerData.DATA_EXECUTIONS_TAG, executionsTag);
+
+    ListTag playersTag = new ListTag();
+    playersTag.add(playerTag);
+    CompoundTag tag = new CompoundTag();
+    tag.put(ExecutionTrackerData.DATA_PLAYERS_TAG, playersTag);
+
+    ExecutionTrackerData loaded = new ExecutionTrackerData(tag);
+    assertTrue(loaded.trackingData().isEmpty());
+  }
+
+  @Test
   void testSaveToExistingTag() {
     ExecutionTrackerData data = new ExecutionTrackerData();
     UUID playerUUID = UUID.randomUUID();
-    UUID targetUUID = UUID.randomUUID();
-    data.trackingData().put(playerUUID, Map.of(targetUUID, new ExecutionData(3, 500L, 600L)));
+    ExecutionId executionId = ExecutionId.action(UUID.randomUUID(), UUID.randomUUID());
+    data.trackingData().put(playerUUID, Map.of(executionId, new ExecutionData(3, 500L, 600L)));
     CompoundTag tag = new CompoundTag();
     tag.putString("ExtraField", "test");
     data.save(tag);

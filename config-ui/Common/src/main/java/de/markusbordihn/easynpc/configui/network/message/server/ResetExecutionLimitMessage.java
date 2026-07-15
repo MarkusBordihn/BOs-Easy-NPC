@@ -20,9 +20,10 @@
 package de.markusbordihn.easynpc.configui.network.message.server;
 
 import de.markusbordihn.easynpc.configui.Constants;
+import de.markusbordihn.easynpc.data.execution.ExecutionId;
+import de.markusbordihn.easynpc.data.execution.ExecutionType;
 import de.markusbordihn.easynpc.data.saveddata.ActionExecutionTracker;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
-import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -30,7 +31,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
-public record ResetExecutionLimitMessage(UUID executionId, boolean allPlayers)
+public record ResetExecutionLimitMessage(ExecutionId executionId, boolean allPlayers)
     implements NetworkMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
@@ -42,12 +43,15 @@ public record ResetExecutionLimitMessage(UUID executionId, boolean allPlayers)
               (buffer, message) -> message.write(buffer), ResetExecutionLimitMessage::create);
 
   public static ResetExecutionLimitMessage create(final FriendlyByteBuf buffer) {
-    return new ResetExecutionLimitMessage(buffer.readUUID(), buffer.readBoolean());
+    return new ResetExecutionLimitMessage(
+        new ExecutionId(buffer.readEnum(ExecutionType.class), buffer.readUUID()),
+        buffer.readBoolean());
   }
 
   @Override
   public void write(final FriendlyByteBuf buffer) {
-    buffer.writeUUID(this.executionId);
+    buffer.writeEnum(this.executionId.type());
+    buffer.writeUUID(this.executionId.value());
     buffer.writeBoolean(this.allPlayers);
   }
 

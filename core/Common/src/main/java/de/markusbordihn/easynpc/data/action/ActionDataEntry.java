@@ -165,6 +165,19 @@ public record ActionDataEntry(
     return CommandPermissionLevel.fromMinecraftLevel(this.permissionLevel);
   }
 
+  public ActionDataEntry withId(UUID id) {
+    return new ActionDataEntry(
+        id,
+        this.actionDataType,
+        this.conditionDataSet,
+        this.command,
+        this.targetUUID,
+        this.blockPos,
+        this.executeAsUser,
+        this.enableDebug,
+        this.permissionLevel);
+  }
+
   public ActionDataEntry withBlockPos(BlockPos blockPos) {
     return new ActionDataEntry(
         this.id,
