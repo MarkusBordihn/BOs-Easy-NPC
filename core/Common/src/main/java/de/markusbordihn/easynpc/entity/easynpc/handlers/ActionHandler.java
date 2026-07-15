@@ -26,8 +26,8 @@ import de.markusbordihn.easynpc.data.action.ActionDataType;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
 import de.markusbordihn.easynpc.data.action.ActionGroup;
 import de.markusbordihn.easynpc.data.action.ActionManager;
-import de.markusbordihn.easynpc.data.condition.ConditionDataEntry;
 import de.markusbordihn.easynpc.data.condition.ConditionType;
+import de.markusbordihn.easynpc.data.execution.ExecutionId;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.TickerDataCapable;
@@ -417,7 +417,7 @@ public interface ActionHandler<E extends Mob> extends EasyNPC<E> {
         break;
       case SCOREBOARD:
         if (serverPlayer != null) {
-          ScoreboardActionExecutor.execute(actionDataEntry, serverPlayer);
+          ScoreboardActionExecutor.execute(actionDataEntry, serverPlayer, this.getLivingEntity());
         } else {
           log.warn("Skipping SCOREBOARD action because no ServerPlayer is available");
         }
@@ -431,9 +431,10 @@ public interface ActionHandler<E extends Mob> extends EasyNPC<E> {
     }
 
     if (serverPlayer != null) {
-      for (ConditionDataEntry condition : actionDataEntry.conditionDataSet().getConditions()) {
-        ConditionManager.recordExecution(condition, serverPlayer, actionDataEntry.id());
-      }
+      ConditionManager.recordExecutions(
+          actionDataEntry.conditionDataSet().getConditions(),
+          serverPlayer,
+          ExecutionId.action(this.getEntity(), actionDataEntry.id()));
     }
   }
 }

@@ -32,6 +32,7 @@ import de.markusbordihn.easynpc.data.condition.ConditionDataSet;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.data.dialog.DialogButtonEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
+import de.markusbordihn.easynpc.data.execution.ExecutionId;
 import java.util.UUID;
 
 public abstract class ConditionEditorContext {
@@ -70,7 +71,7 @@ public abstract class ConditionEditorContext {
 
   public abstract String helpTextKey();
 
-  public abstract UUID executionLimitTargetUUID();
+  public abstract ExecutionId executionLimitId();
 
   public boolean isActionContext() {
     return false;
@@ -223,8 +224,8 @@ public abstract class ConditionEditorContext {
     }
 
     @Override
-    public UUID executionLimitTargetUUID() {
-      return this.screen.getActionDataEntryUUID();
+    public ExecutionId executionLimitId() {
+      return ExecutionId.action(this.screen.getEasyNPCUUID(), this.screen.getActionDataEntryUUID());
     }
 
     @Override
@@ -301,8 +302,11 @@ public abstract class ConditionEditorContext {
     }
 
     @Override
-    public UUID executionLimitTargetUUID() {
-      return this.screen.getDialogButtonUUID();
+    public ExecutionId executionLimitId() {
+      return ExecutionId.dialogButton(
+          this.screen.getEasyNPCUUID(),
+          this.screen.getDialogUUID(),
+          this.screen.getDialogButtonUUID());
     }
   }
 
@@ -362,8 +366,8 @@ public abstract class ConditionEditorContext {
     }
 
     @Override
-    public UUID executionLimitTargetUUID() {
-      return this.screen.getDialogUUID();
+    public ExecutionId executionLimitId() {
+      return ExecutionId.dialog(this.screen.getEasyNPCUUID(), this.screen.getDialogUUID());
     }
   }
 }

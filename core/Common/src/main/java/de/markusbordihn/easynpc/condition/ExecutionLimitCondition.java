@@ -23,9 +23,9 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.condition.ConditionDataEntry;
 import de.markusbordihn.easynpc.data.condition.ConditionSubTypeEntry;
 import de.markusbordihn.easynpc.data.condition.DurationType;
+import de.markusbordihn.easynpc.data.execution.ExecutionId;
 import de.markusbordihn.easynpc.data.execution.ExecutionInterval;
 import de.markusbordihn.easynpc.data.saveddata.ActionExecutionTracker;
-import java.util.UUID;
 import net.minecraft.server.level.ServerPlayer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -37,19 +37,19 @@ public class ExecutionLimitCondition {
   private ExecutionLimitCondition() {}
 
   public static boolean evaluate(
-      ConditionDataEntry conditionDataEntry, ServerPlayer serverPlayer, UUID actionUUID) {
-    if (serverPlayer == null || actionUUID == null) {
+      ConditionDataEntry conditionDataEntry, ServerPlayer serverPlayer, ExecutionId executionId) {
+    if (serverPlayer == null || executionId == null) {
       return false;
     }
 
     int limit = conditionDataEntry.value();
     ExecutionInterval interval = toInterval(conditionDataEntry.subType());
     ActionExecutionTracker tracker = ActionExecutionTracker.get(serverPlayer.level());
-    boolean canExecute = tracker.canExecute(serverPlayer.getUUID(), actionUUID, limit, interval);
+    boolean canExecute = tracker.canExecute(serverPlayer.getUUID(), executionId, limit, interval);
     log.debug(
         "Execution limit check for player {} action {}: limit={}, interval={}, canExecute={}",
         serverPlayer.getGameProfile().name(),
-        actionUUID,
+        executionId,
         limit,
         interval,
         canExecute);
@@ -57,14 +57,14 @@ public class ExecutionLimitCondition {
   }
 
   public static void recordExecution(
-      ConditionDataEntry conditionDataEntry, ServerPlayer serverPlayer, UUID actionUUID) {
-    if (serverPlayer == null || actionUUID == null) {
+      ConditionDataEntry conditionDataEntry, ServerPlayer serverPlayer, ExecutionId executionId) {
+    if (serverPlayer == null || executionId == null) {
       return;
     }
 
     ExecutionInterval interval = toInterval(conditionDataEntry.subType());
     ActionExecutionTracker tracker = ActionExecutionTracker.get(serverPlayer.level());
-    tracker.recordExecution(serverPlayer.getUUID(), actionUUID, interval);
+    tracker.recordExecution(serverPlayer.getUUID(), executionId, interval);
   }
 
   private static ExecutionInterval toInterval(ConditionSubTypeEntry conditionSubTypeEntry) {

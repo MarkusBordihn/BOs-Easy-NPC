@@ -38,7 +38,8 @@ public class DialogActionExecutor {
 
   public static void openDefaultDialog(
       ActionDataEntry actionDataEntry, ServerPlayer serverPlayer, DialogDataCapable<?> dialogData) {
-    if (!ActionValidator.validateActionData(actionDataEntry, serverPlayer)) {
+    if (!ActionValidator.validateActionData(
+        actionDataEntry, serverPlayer, dialogData != null ? dialogData.getLivingEntity() : null)) {
       return;
     }
     if (dialogData != null) {
@@ -64,7 +65,8 @@ public class DialogActionExecutor {
       ServerPlayer serverPlayer,
       DialogDataCapable<?> dialogData,
       boolean checkConditions) {
-    if (!ActionValidator.validateActionData(actionDataEntry, serverPlayer)) {
+    if (!ActionValidator.validateActionData(
+        actionDataEntry, serverPlayer, dialogData != null ? dialogData.getLivingEntity() : null)) {
       return;
     }
 

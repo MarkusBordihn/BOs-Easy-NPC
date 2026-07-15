@@ -104,7 +104,7 @@ public interface DialogDataCapable<T extends Mob> extends EasyNPC<T> {
   default void openDialog(ServerPlayer serverPlayer, UUID dialogId) {
     DialogDataEntry dialog = getDialogDataSet().getDialog(dialogId);
     if (dialog != null) {
-      getDialogDataSet().recordDialogExecution(dialog, serverPlayer);
+      getDialogDataSet().recordDialogExecution(dialog, serverPlayer, this.getLivingEntity());
     }
     MenuManager.getMenuHandler().openDialogMenu(serverPlayer, this, dialogId, 0);
   }
