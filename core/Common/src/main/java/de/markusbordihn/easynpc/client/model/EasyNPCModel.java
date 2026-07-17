@@ -110,7 +110,7 @@ public class EasyNPCModel {
       return null;
     }
 
-    return LivingEntityManager.getEasyNPCEntityByUUID(uuid);
+    return LivingEntityManager.getClientEasyNPCEntityByUUID(uuid);
   }
 
   public static int getEntityLightLevel(

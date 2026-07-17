@@ -80,7 +80,7 @@ public class EasyNPCLivingEntityRenderer {
         instanceof EasyNPCRenderStateExtension easyNPCRenderStateExtension) {
       UUID uuid = easyNPCRenderStateExtension.getEasyNpcUUID();
       if (uuid != null) {
-        return LivingEntityManager.getEasyNPCEntityByUUID(uuid);
+        return LivingEntityManager.getClientEasyNPCEntityByUUID(uuid);
       }
     }
     return null;

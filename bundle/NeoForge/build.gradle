@@ -151,6 +151,7 @@ if (project.hasProperty('curseforge_project_id') && project.curseforge_project_i
     mainFile.changelogType = 'markdown'
     mainFile.changelog = rootProject.file("../CHANGELOG.md").text
     mainFile.releaseType = "${project.curseforge_release_type}"
+    mainFile.addEnvironment("Client", "Server")
     mainFile.addModLoader('NeoForge')
     mainFile.addGameVersion("${project.minecraft_version}")
     mainFile.addRequirement('easy-npc-core', 'easy-npc-config-ui')
