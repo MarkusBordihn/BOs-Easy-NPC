@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.data.skin;
 
+import de.markusbordihn.easynpc.utils.EnumUtils;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 
@@ -45,13 +46,6 @@ public enum SkinType {
       };
 
   public static SkinType get(String skinType) {
-    if (skinType == null || skinType.isEmpty()) {
-      return SkinType.DEFAULT;
-    }
-    try {
-      return SkinType.valueOf(skinType);
-    } catch (IllegalArgumentException e) {
-      return SkinType.DEFAULT;
-    }
+    return EnumUtils.get(SkinType.class, skinType, DEFAULT);
   }
 }

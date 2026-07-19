@@ -19,6 +19,8 @@
 
 package de.markusbordihn.easynpc.data.execution;
 
+import de.markusbordihn.easynpc.utils.EnumUtils;
+
 public enum ExecutionInterval {
   PER_MINUTE(60_000L),
   PER_HOUR(3_600_000L),
@@ -34,14 +36,7 @@ public enum ExecutionInterval {
   }
 
   public static ExecutionInterval get(String name) {
-    if (name == null || name.isEmpty()) {
-      return PER_DAY;
-    }
-    try {
-      return ExecutionInterval.valueOf(name);
-    } catch (IllegalArgumentException e) {
-      return PER_DAY;
-    }
+    return EnumUtils.get(ExecutionInterval.class, name, PER_DAY);
   }
 
   public boolean hasIntervalPassed(long lastExecution) {

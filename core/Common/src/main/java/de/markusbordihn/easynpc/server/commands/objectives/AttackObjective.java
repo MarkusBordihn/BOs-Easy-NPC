@@ -248,7 +248,7 @@ public class AttackObjective extends Command {
       return objectiveType.name().substring(7).toLowerCase();
     }
 
-    return objectiveType.name().toLowerCase();
+    return objectiveType.getObjectiveName();
   }
 
   private static ObjectiveType getObjectiveTypeFromFriendlyName(String targetName) {

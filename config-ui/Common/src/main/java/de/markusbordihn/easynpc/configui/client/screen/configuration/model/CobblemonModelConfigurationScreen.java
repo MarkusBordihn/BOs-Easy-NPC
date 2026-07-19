@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.configui.client.screen.configuration.model;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.compat.IntegrationRegistry;
+import de.markusbordihn.easynpc.compat.cobblemon.CobblemonSpeciesManager;
 import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.configui.client.renderer.screen.EntityConfigScreenRenderer;
 import de.markusbordihn.easynpc.configui.client.screen.components.SearchField;
@@ -83,7 +84,7 @@ public class CobblemonModelConfigurationScreen<T extends ConfigurationMenu>
         this.font.split(
             TextComponent.getTranslatedConfigText("cobblemon_model.note"), this.imageWidth - 20);
 
-    this.speciesList = IntegrationRegistry.getModels("cobblemon");
+    this.speciesList = IntegrationRegistry.getModels(CobblemonSpeciesManager.INTEGRATION_ID);
     this.numOfSpecies = this.speciesList.size();
 
     defineSkinNavigationButtons(this.contentTopPos + 189, this.contentLeftPos, this.rightPos - 29);

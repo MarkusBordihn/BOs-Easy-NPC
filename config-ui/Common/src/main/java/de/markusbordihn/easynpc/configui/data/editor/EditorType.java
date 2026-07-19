@@ -38,6 +38,8 @@ public enum EditorType {
   TRADING_OFFER_ACTION(false);
 
   private final boolean hasMenu;
+  private final String editorName = this.name().toLowerCase(Locale.ROOT) + "_editor";
+  private final Identifier id = Identifier.fromNamespaceAndPath(Constants.MOD_ID, this.editorName);
 
   EditorType() {
     this.hasMenu = true;
@@ -64,11 +66,10 @@ public enum EditorType {
   }
 
   public Identifier getId() {
-    return Identifier.fromNamespaceAndPath(
-        Constants.MOD_ID, this.name().toLowerCase(Locale.ROOT) + "_editor");
+    return this.id;
   }
 
   public String getName() {
-    return this.name().toLowerCase(Locale.ROOT) + "_editor";
+    return this.editorName;
   }
 }

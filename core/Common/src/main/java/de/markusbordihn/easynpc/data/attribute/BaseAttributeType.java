@@ -28,11 +28,14 @@ public enum BaseAttributeType {
   FOLLOW_RANGE,
   KNOCKBACK_RESISTANCE;
 
+  private final String attributeName = this.name().toLowerCase(Locale.ROOT);
+  private final String tagName = TextUtils.convertToCamelCase(this.name());
+
   public String getAttributeName() {
-    return this.name().toLowerCase(Locale.ROOT);
+    return this.attributeName;
   }
 
   public String getTagName() {
-    return TextUtils.convertToCamelCase(this.name());
+    return this.tagName;
   }
 }

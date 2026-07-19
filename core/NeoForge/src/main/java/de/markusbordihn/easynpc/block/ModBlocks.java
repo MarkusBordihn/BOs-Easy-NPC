@@ -128,9 +128,6 @@ public class ModBlocks {
                       .sound(SoundType.METAL)
                       .noOcclusion(),
                   SpawnerType.WORLD_SPAWNER));
-
-  private ModBlocks() {}
-
   public static final DeferredHolder<
           BlockEntityType<?>, BlockEntityType<EasyNPCSpawnerBlockEntityWrapper>>
       EASY_NPC_SPAWNER_ENTITY =
@@ -144,4 +141,6 @@ public class ModBlocks {
                       EASY_NPC_SPAWNER_GROUP.get(),
                       EASY_NPC_SPAWNER_SINGLE.get(),
                       EASY_NPC_SPAWNER_WORLD.get()));
+
+  private ModBlocks() {}
 }

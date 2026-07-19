@@ -31,10 +31,9 @@ public class ModMenuTypes {
 
   public static final DeferredRegister<MenuType<?>> MENU_TYPES =
       DeferredRegister.create(BuiltInRegistries.MENU, Constants.MOD_ID);
-
-  private ModMenuTypes() {}
-
   public static final DeferredHolder<MenuType<?>, MenuType<DialogMenuWrapper>> DIALOG_MENU =
       MENU_TYPES.register(
           ModMenuType.DIALOG.getName(), () -> IMenuTypeExtension.create(DialogMenuWrapper::new));
+
+  private ModMenuTypes() {}
 }
