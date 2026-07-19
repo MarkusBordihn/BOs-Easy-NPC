@@ -8,8 +8,8 @@ It provides the essential backend systems used by other Easy NPC modules.
 - 📦 **Includes** the core _Easy NPC_ functionality.
 - ⚙️ **Provides** shared backend logic and infrastructure.
 - 🧩 **Required by** modules like:
-    - `easy_npc-config-ui`
-    - `easy_npc-bundle`
+  - `easy_npc-config-ui`
+  - `easy_npc-bundle`
 
 ## 👨‍💻 Who Should Use This?
 

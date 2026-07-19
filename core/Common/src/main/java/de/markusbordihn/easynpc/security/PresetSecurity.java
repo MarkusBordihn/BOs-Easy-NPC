@@ -112,7 +112,8 @@ public class PresetSecurity {
   private static UUID getOwnerUuid(
       ServerLevel serverLevel, UUID targetUuid, UUID importedOwnerUuid) {
     if (serverLevel != null && targetUuid != null) {
-      EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(targetUuid, serverLevel);
+      EasyNPC<?> easyNPC =
+          LivingEntityManager.getServerEasyNPCEntityByUUID(targetUuid, serverLevel);
       if (easyNPC != null) {
         OwnerDataCapable<?> ownerData = easyNPC.getEasyNPCOwnerData();
         if (ownerData != null && ownerData.hasNPCOwner()) {

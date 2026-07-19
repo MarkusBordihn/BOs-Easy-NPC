@@ -19,8 +19,10 @@
 
 package de.markusbordihn.easynpc.data.profession;
 
+import java.util.Locale;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.ResourceLocation;
 
 public enum Profession {
   NONE,
@@ -51,4 +53,11 @@ public enum Profession {
           registryFriendlyByteBuf.writeEnum(profession);
         }
       };
+
+  private final ResourceLocation registryKey =
+      ResourceLocation.withDefaultNamespace(this.name().toLowerCase(Locale.ROOT));
+
+  public ResourceLocation getRegistryKey() {
+    return this.registryKey;
+  }
 }

@@ -19,19 +19,14 @@
 
 package de.markusbordihn.easynpc.data.model;
 
+import de.markusbordihn.easynpc.utils.EnumUtils;
+
 public enum ModelAnimationBehavior {
   SMART,
   DEFAULT,
   NONE;
 
   public static ModelAnimationBehavior get(String modelAnimationBehavior) {
-    if (modelAnimationBehavior == null || modelAnimationBehavior.isEmpty()) {
-      return ModelAnimationBehavior.SMART;
-    }
-    try {
-      return ModelAnimationBehavior.valueOf(modelAnimationBehavior);
-    } catch (IllegalArgumentException e) {
-      return ModelAnimationBehavior.SMART;
-    }
+    return EnumUtils.get(ModelAnimationBehavior.class, modelAnimationBehavior, SMART);
   }
 }

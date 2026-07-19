@@ -78,6 +78,7 @@ public enum ObjectiveType {
   private final String friendlyName;
   private final boolean hasTravelObjective;
   private final int defaultPriority;
+  private final String objectiveName = this.name().toLowerCase(Locale.ROOT);
 
   ObjectiveType(String friendlyName, boolean hasTravelObjective) {
     this(friendlyName, 5, hasTravelObjective);
@@ -121,7 +122,7 @@ public enum ObjectiveType {
   }
 
   public String getObjectiveName() {
-    return this.name().toLowerCase(Locale.ROOT);
+    return this.objectiveName;
   }
 
   public String getFriendlyName() {

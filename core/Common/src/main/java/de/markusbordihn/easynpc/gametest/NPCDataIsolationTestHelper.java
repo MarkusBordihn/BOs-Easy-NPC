@@ -29,6 +29,7 @@ import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.data.scale.CustomScale;
 import de.markusbordihn.easynpc.data.skin.SkinDataEntry;
 import de.markusbordihn.easynpc.data.skin.SkinType;
+import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.DisplayAttributeDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
@@ -101,6 +102,25 @@ public class NPCDataIsolationTestHelper {
 
   private static CompoundTag saveNpcData(EasyNPC<?> npc) {
     return npc.getEntity().saveWithoutId(new CompoundTag());
+  }
+
+  public static void assertServerRegistryIsolation(
+      GameTestHelper helper, EntityType<?> entityType) {
+    EasyNPC<?> easyNPC = GameTestHelpers.mockEasyNPC(helper, entityType, new Vec3(1, 2, 1));
+    EasyNPC<?> serverEasyNPC =
+        LivingEntityManager.getServerEasyNPCEntityByUUID(easyNPC.getEntityUUID());
+    EasyNPC<?> clientEasyNPC =
+        LivingEntityManager.getClientEasyNPCEntityByUUID(easyNPC.getEntityUUID());
+
+    if (serverEasyNPC != easyNPC) {
+      helper.fail("Spawned server NPC is missing from the server registry");
+    }
+    if (clientEasyNPC != null) {
+      helper.fail("Spawned server NPC must not be present in the client registry");
+    }
+    if (LivingEntityManager.getServerEasyNPCEntityByUUID(easyNPC.getEntityUUID()) != easyNPC) {
+      helper.fail("Server NPC lookup must resolve the server NPC");
+    }
   }
 
   public static void assertPoseIsolation(GameTestHelper helper, EntityType<?> entityType) {

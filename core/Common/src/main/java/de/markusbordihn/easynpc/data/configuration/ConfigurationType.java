@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.data.configuration;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.utils.EnumUtils;
 import java.util.Locale;
 import net.minecraft.resources.ResourceLocation;
 
@@ -77,6 +78,9 @@ public enum ConfigurationType {
   WORLD_PRESET_IMPORT,
   YES_NO_DIALOG;
 
+  private final String configurationName = this.name().toLowerCase(Locale.ROOT) + "_configuration";
+  private final ResourceLocation id =
+      ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, this.configurationName);
   private boolean isAlias = false;
 
   ConfigurationType() {}
@@ -86,15 +90,7 @@ public enum ConfigurationType {
   }
 
   public static ConfigurationType get(String configurationType) {
-    if (configurationType == null || configurationType.isEmpty()) {
-      return ConfigurationType.NONE;
-    }
-
-    try {
-      return ConfigurationType.valueOf(configurationType);
-    } catch (IllegalArgumentException e) {
-      return ConfigurationType.NONE;
-    }
+    return EnumUtils.get(ConfigurationType.class, configurationType, NONE);
   }
 
   public boolean isAlias() {
@@ -102,11 +98,10 @@ public enum ConfigurationType {
   }
 
   public ResourceLocation getId() {
-    return ResourceLocation.fromNamespaceAndPath(
-        Constants.MOD_ID, this.name().toLowerCase(Locale.ROOT) + "_configuration");
+    return this.id;
   }
 
   public String getName() {
-    return this.name().toLowerCase(Locale.ROOT) + "_configuration";
+    return this.configurationName;
   }
 }

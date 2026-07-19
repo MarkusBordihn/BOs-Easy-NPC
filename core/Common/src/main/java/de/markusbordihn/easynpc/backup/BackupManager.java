@@ -65,10 +65,14 @@ public class BackupManager {
 
   private static void backupNPCData() {
     Date currentDate = new Date();
-    LivingEntityManager.getNpcEntityMap()
+    LivingEntityManager.getServerEasyNPCEntities()
         .forEach(
-            (uuid, easyNPC) -> {
-              if (uuid == null || easyNPC == null) {
+            easyNPC -> {
+              if (easyNPC == null) {
+                return;
+              }
+              UUID uuid = easyNPC.getEntityUUID();
+              if (uuid == null) {
                 return;
               }
 

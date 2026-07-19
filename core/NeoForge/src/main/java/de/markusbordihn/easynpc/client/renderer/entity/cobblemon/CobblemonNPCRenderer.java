@@ -224,7 +224,7 @@ public class CobblemonNPCRenderer<E extends PathfinderMob>
 
     String modelString = renderData.getRenderDataEntry().getRenderEntityModel();
     if (modelString == null || modelString.isEmpty()) {
-      modelString = "cobblemon:ditto";
+      modelString = CobblemonSpeciesManager.DEFAULT_MODEL;
     }
 
     ResourceLocation speciesId = ResourceLocation.tryParse(modelString);

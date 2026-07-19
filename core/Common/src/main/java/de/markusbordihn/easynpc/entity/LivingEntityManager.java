@@ -241,15 +241,17 @@ public class LivingEntityManager {
     if (serverPlayer != null) {
       return serverPlayer;
     }
-    EasyNPC<?> easyNPC = getEasyNPCEntityByUUID(uuid, serverLevel);
+    EasyNPC<?> easyNPC = getServerEasyNPCEntityByUUID(uuid, serverLevel);
     return easyNPC != null ? easyNPC.getLivingEntity() : null;
   }
 
-  public static EasyNPC<?> getEasyNPCEntityByUUID(UUID uuid, ServerPlayer serverPlayer) {
-    return getEasyNPCEntityByUUID(uuid, serverPlayer.serverLevel());
+  public static EasyNPC<?> getServerEasyNPCEntityByUUID(UUID uuid, ServerPlayer serverPlayer) {
+    return serverPlayer != null
+        ? getServerEasyNPCEntityByUUID(uuid, serverPlayer.serverLevel())
+        : null;
   }
 
-  public static EasyNPC<?> getEasyNPCEntityByUUID(UUID uuid, ServerLevel serverLevel) {
+  public static EasyNPC<?> getServerEasyNPCEntityByUUID(UUID uuid, ServerLevel serverLevel) {
     if (uuid == null || serverLevel == null) {
       return null;
     }
@@ -257,10 +259,6 @@ public class LivingEntityManager {
     if (entity instanceof EasyNPC<?> easyNPC) {
       return easyNPC;
     }
-    return getEasyNPCEntityByUUID(uuid);
-  }
-
-  public static EasyNPC<?> getEasyNPCEntityByUUID(UUID uuid) {
     return getServerEasyNPCEntityByUUID(uuid);
   }
 
@@ -278,7 +276,7 @@ public class LivingEntityManager {
     return npcEntityMapClient.getOrDefault(uuid, null);
   }
 
-  public static Stream<EasyNPC<?>> getEasyNPCEntities() {
+  public static Stream<EasyNPC<?>> getServerEasyNPCEntities() {
     return npcEntityMapServer.values().stream();
   }
 
@@ -364,10 +362,6 @@ public class LivingEntityManager {
     return count;
   }
 
-  public static ConcurrentHashMap<UUID, EasyNPC<?>> getNpcEntityMap() {
-    return npcEntityMapServer;
-  }
-
   public static boolean hasAccess(UUID uuid, ServerPlayer serverPlayer) {
     if (uuid == null || serverPlayer == null) {
       return false;
@@ -390,7 +384,7 @@ public class LivingEntityManager {
   }
 
   public static void discardEasyNPCEntityByUUID(UUID uuid, ServerLevel serverLevel) {
-    EasyNPC<?> easyNPC = getEasyNPCEntityByUUID(uuid, serverLevel);
+    EasyNPC<?> easyNPC = getServerEasyNPCEntityByUUID(uuid, serverLevel);
     if (easyNPC != null && easyNPC.getMob() != null) {
       easyNPC.getMob().discard();
       npcEntityMapServer.remove(uuid);

@@ -58,13 +58,11 @@ public class HealthConditionEvaluator {
       return null;
     }
 
-    // Server side: resolve any living entity (players, NPCs, mobs) from the level.
     if (context.level() instanceof ServerLevel serverLevel) {
       return LivingEntityManager.getLivingEntityByUUID(targetUuid, serverLevel);
     }
 
-    // Client side: best-effort resolution of Easy NPC entities (UUIDs match across sides).
-    EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(targetUuid);
+    EasyNPC<?> easyNPC = LivingEntityManager.getClientEasyNPCEntityByUUID(targetUuid);
     return easyNPC != null ? easyNPC.getLivingEntity() : null;
   }
 }

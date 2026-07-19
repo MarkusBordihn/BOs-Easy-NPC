@@ -37,6 +37,7 @@ public enum DisplayAttributeType {
   NAME_VISIBILITY(ValueType.STRING);
 
   private final ValueType valueType;
+  private final String attributeName = this.name().toLowerCase(Locale.ROOT);
 
   DisplayAttributeType(ValueType valueType) {
     this.valueType = valueType;
@@ -54,7 +55,7 @@ public enum DisplayAttributeType {
   }
 
   public String getAttributeName() {
-    return this.name().toLowerCase(Locale.ROOT);
+    return this.attributeName;
   }
 
   public ValueType getValueType() {

@@ -20,10 +20,11 @@
 package de.markusbordihn.easynpc.data.skin.variant;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.api.skin.CrossedArmsVariant;
 import de.markusbordihn.easynpc.api.skin.VariantTexture;
 import net.minecraft.resources.ResourceLocation;
 
-public enum IllagerSkinVariant implements VariantTexture {
+public enum IllagerSkinVariant implements VariantTexture, CrossedArmsVariant {
   EVOKER(Constants.MINECRAFT_PREFIX, "textures/entity/illager/evoker.png"),
   EVOKER_CROSSED_ARMS(Constants.MINECRAFT_PREFIX, "textures/entity/illager/evoker.png"),
   ILLUSIONER(Constants.MINECRAFT_PREFIX, "textures/entity/illager/illusioner.png"),
@@ -33,13 +34,20 @@ public enum IllagerSkinVariant implements VariantTexture {
   VINDICATOR_CROSSED_ARMS(Constants.MINECRAFT_PREFIX, "textures/entity/illager/vindicator.png");
 
   private final ResourceLocation textureLocation;
+  private final boolean crossedArms;
 
   IllagerSkinVariant(String namespace, String path) {
     this.textureLocation = parseTextureLocation(namespace, path);
+    this.crossedArms = this.name().endsWith("_CROSSED_ARMS");
+  }
+
+  @Override
+  public boolean hasCrossedArms() {
+    return this.crossedArms;
   }
 
   @Override
   public ResourceLocation getTextureLocation() {
-    return textureLocation;
+    return this.textureLocation;
   }
 }

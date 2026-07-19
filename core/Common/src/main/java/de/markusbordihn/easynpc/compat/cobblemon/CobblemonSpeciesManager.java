@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.compat.cobblemon;
 
+import de.markusbordihn.easynpc.compat.CompatConstants;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -26,7 +27,9 @@ import net.minecraft.resources.ResourceLocation;
 
 public final class CobblemonSpeciesManager {
 
-  public static final String INTEGRATION_ID = "cobblemon";
+  public static final String INTEGRATION_ID = CompatConstants.MOD_COBBLEMON_ID;
+
+  public static final String DEFAULT_MODEL = INTEGRATION_ID + ":ditto";
 
   public static final String VARIANT_FEMALE = "female";
   public static final String VARIANT_SHINY = "shiny";

@@ -37,10 +37,6 @@ public record RenderDataEntry(
     String renderEntityModel,
     ModelType renderModelType) {
 
-  static final String DATA_RENDER_TYPE_TAG = "Type";
-  static final String DATA_RENDER_ENTITY_TYPE_TAG = "EntityType";
-  static final String DATA_RENDER_ENTITY_MODEL_TAG = "EntityModel";
-  static final String DATA_RENDER_MODEL_TYPE_TAG = "ModelType";
   public static final StreamCodec<RegistryFriendlyByteBuf, RenderDataEntry> STREAM_CODEC =
       new StreamCodec<>() {
         @Override
@@ -56,6 +52,10 @@ public record RenderDataEntry(
                   renderDataEntry.createTag(), "RenderDataEntry"));
         }
       };
+  static final String DATA_RENDER_TYPE_TAG = "Type";
+  static final String DATA_RENDER_ENTITY_TYPE_TAG = "EntityType";
+  static final String DATA_RENDER_ENTITY_MODEL_TAG = "EntityModel";
+  static final String DATA_RENDER_MODEL_TYPE_TAG = "ModelType";
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   public RenderDataEntry() {

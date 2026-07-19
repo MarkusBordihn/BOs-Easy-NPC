@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.data.sound;
 
+import de.markusbordihn.easynpc.utils.EnumUtils;
 import java.util.stream.Stream;
 
 public enum SoundType {
@@ -44,14 +45,7 @@ public enum SoundType {
   ;
 
   public static SoundType get(String soundType) {
-    if (soundType == null || soundType.isEmpty()) {
-      return SoundType.DEFAULT;
-    }
-    try {
-      return SoundType.valueOf(soundType);
-    } catch (IllegalArgumentException e) {
-      return SoundType.DEFAULT;
-    }
+    return EnumUtils.get(SoundType.class, soundType, DEFAULT);
   }
 
   public static Stream<String> getSoundTypeNames() {
