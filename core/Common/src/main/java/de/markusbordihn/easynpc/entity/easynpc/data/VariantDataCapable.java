@@ -19,11 +19,13 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.data;
 
+import de.markusbordihn.easynpc.api.skin.CrossedArmsVariant;
+import de.markusbordihn.easynpc.api.skin.SaddleableVariant;
 import de.markusbordihn.easynpc.data.skin.variant.HumanoidSkinVariant;
+import de.markusbordihn.easynpc.data.skin.variant.VillagerVariantData;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.utils.TextUtils;
-import java.util.Locale;
 import java.util.stream.Stream;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -89,7 +91,8 @@ public interface VariantDataCapable<T extends Mob> extends EasyNPC<T> {
   }
 
   default boolean hasVariantTypeCrossedArms(Enum<?> variant) {
-    return variant != null && variant.name().endsWith("_CROSSED_ARMS");
+    return variant instanceof CrossedArmsVariant crossedArmsVariant
+        && crossedArmsVariant.hasCrossedArms();
   }
 
   default boolean hasVariantTypeSaddled() {
@@ -97,33 +100,27 @@ public interface VariantDataCapable<T extends Mob> extends EasyNPC<T> {
   }
 
   default boolean hasVariantTypeSaddled(Enum<?> variant) {
-    return variant != null && variant.name().endsWith("_SADDLED");
+    return variant instanceof SaddleableVariant saddleableVariant && saddleableVariant.isSaddled();
   }
 
   default Holder<VillagerProfession> getVillagerProfession(Enum<?> variantType) {
-    String name = variantType.name().toLowerCase(Locale.ROOT);
-    for (VillagerProfession profession : BuiltInRegistries.VILLAGER_PROFESSION) {
-      if (name.endsWith(
-          BuiltInRegistries.VILLAGER_PROFESSION
-              .getKey(profession)
-              .getPath()
-              .toLowerCase(Locale.ROOT))) {
-        return BuiltInRegistries.VILLAGER_PROFESSION.wrapAsHolder(profession);
-      }
+    if (!(variantType instanceof VillagerVariantData villagerVariant)) {
+      return null;
     }
-    return null;
+
+    return BuiltInRegistries.VILLAGER_PROFESSION
+        .get(villagerVariant.getProfession().getRegistryKey())
+        .orElse(null);
   }
 
   default Holder<VillagerType> getVillagerType(Enum<?> variantType) {
-    String name = variantType.name().toLowerCase(Locale.ROOT);
-    for (VillagerType villagerType : BuiltInRegistries.VILLAGER_TYPE) {
-      Holder<VillagerType> holder = BuiltInRegistries.VILLAGER_TYPE.wrapAsHolder(villagerType);
-      String typeName = BuiltInRegistries.VILLAGER_TYPE.getKey(villagerType).getPath();
-      if (name.startsWith(typeName.toLowerCase(Locale.ROOT))) {
-        return holder;
-      }
+    if (!(variantType instanceof VillagerVariantData villagerVariant)) {
+      return null;
     }
-    return null;
+
+    return BuiltInRegistries.VILLAGER_TYPE
+        .get(villagerVariant.getVillagerBiome().getRegistryKey())
+        .orElse(null);
   }
 
   default void defineSynchedVariantData(SynchedEntityData.Builder builder) {

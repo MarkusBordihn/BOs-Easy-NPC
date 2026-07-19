@@ -8,6 +8,15 @@ For the full changelog, please go to the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 7.3.0
+
+- Improved skin variants by carrying their data as typed fields instead of parsing variant names.
+- Centralized the Cobblemon mod id and default model on shared constants.
+- Reduced duplicated enum code with a shared `EnumUtils` helper for `get(String)` lookups.
+- Optimized villager profession and type lookups to use direct registry keys instead of scans.
+- Optimized enum name lookups by caching tag names, ids and keys once at construction.
+- Added unit and game tests for skin variants, villager resolution and the enum helper.
+
 ### 7.1.2
 
 - Fixed #801 by using combination for NPC, Dialog and Action UUIDs to avoid collisions for action

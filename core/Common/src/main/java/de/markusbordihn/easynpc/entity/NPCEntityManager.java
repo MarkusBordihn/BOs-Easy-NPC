@@ -92,13 +92,18 @@ public class NPCEntityManager {
       return;
     }
 
-    int savedCount = 0;
-    for (EasyNPC<?> easyNPC : LivingEntityManager.getNpcEntityMap().values()) {
-      if (easyNPC != null && easyNPC.getEasyNPCStatusData().hasUnsavedNPCData()) {
-        saveNPC(easyNPC);
-        savedCount++;
-      }
-    }
+    int savedCount =
+        LivingEntityManager.getServerEasyNPCEntities()
+            .mapToInt(
+                easyNPC -> {
+                  if (!easyNPC.getEasyNPCStatusData().hasUnsavedNPCData()) {
+                    return 0;
+                  }
+
+                  saveNPC(easyNPC);
+                  return 1;
+                })
+            .sum();
 
     if (savedCount > 0) {
       log.debug("{} Saved {} dirty NPC(s) to persistent storage", LOG_PREFIX, savedCount);

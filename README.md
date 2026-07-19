@@ -1,4 +1,4 @@
-# 🗣 Easy NPC (1.21.10)
+# 🗣 Easy NPC (1.21.11)
 
 ![Easy NPC Versions](http://cf.way2muchnoise.eu/versions/Minecraft_559312_all.svg)
 
@@ -37,8 +37,8 @@ resolution.
 
 - Install **Easy NPC Bundle**
 - Your launcher will automatically install the required modules:
-    - **Easy NPC Core**
-    - **Easy NPC Config UI** (configuration tools and required networking)
+  - **Easy NPC Core**
+  - **Easy NPC Config UI** (configuration tools and required networking)
 
 ### Option B: Manual install or copied modpacks
 

@@ -19,20 +19,14 @@
 
 package de.markusbordihn.easynpc.data.execution;
 
+import de.markusbordihn.easynpc.utils.EnumUtils;
+
 public enum ExecutionType {
   ACTION,
   DIALOG,
   DIALOG_BUTTON;
 
   public static ExecutionType get(String name) {
-    if (name == null || name.isEmpty()) {
-      return null;
-    }
-
-    try {
-      return ExecutionType.valueOf(name);
-    } catch (IllegalArgumentException e) {
-      return null;
-    }
+    return EnumUtils.get(ExecutionType.class, name, null);
   }
 }

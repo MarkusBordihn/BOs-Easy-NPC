@@ -19,9 +19,13 @@
 
 package de.markusbordihn.easynpc.compat.cobblemon;
 
-public class CobblemonSpeciesManager {
+import de.markusbordihn.easynpc.compat.CompatConstants;
 
-  public static final String INTEGRATION_ID = "cobblemon";
+public final class CobblemonSpeciesManager {
+
+  public static final String INTEGRATION_ID = CompatConstants.MOD_COBBLEMON_ID;
+
+  public static final String DEFAULT_MODEL = INTEGRATION_ID + ":ditto";
 
   private CobblemonSpeciesManager() {}
 }

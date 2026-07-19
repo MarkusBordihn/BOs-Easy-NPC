@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.data.render;
 
+import de.markusbordihn.easynpc.utils.EnumUtils;
 import java.util.stream.Stream;
 
 public enum RenderType {
@@ -30,14 +31,7 @@ public enum RenderType {
   ;
 
   public static RenderType get(String renderType) {
-    if (renderType == null || renderType.isEmpty()) {
-      return RenderType.DEFAULT;
-    }
-    try {
-      return RenderType.valueOf(renderType);
-    } catch (IllegalArgumentException e) {
-      return RenderType.DEFAULT;
-    }
+    return EnumUtils.get(RenderType.class, renderType, DEFAULT);
   }
 
   public static Stream<String> getRenderTypeNames() {

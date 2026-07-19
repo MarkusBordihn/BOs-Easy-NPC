@@ -44,8 +44,6 @@ public class EasyNPCEntityHandler {
 
   private EasyNPCEntityHandler() {}
 
-  // Listing methods
-
   public static Collection<SavedNPCEntityEntry> getAll() {
     return NPCEntityManager.getAllNPCs();
   }
@@ -66,8 +64,6 @@ public class EasyNPCEntityHandler {
     return NPCEntityManager.getNPCsByCustomIdentifier(customIdentifier);
   }
 
-  // Despawn methods
-
   public static boolean despawn(EasyNPC<?> easyNPC, NPCRemovalReason reason) {
     if (easyNPC == null) {
       log.error("Cannot despawn null EasyNPC");
@@ -80,15 +76,13 @@ public class EasyNPCEntityHandler {
   }
 
   public static boolean despawn(UUID uuid, ServerLevel serverLevel, NPCRemovalReason reason) {
-    EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(uuid, serverLevel);
+    EasyNPC<?> easyNPC = LivingEntityManager.getServerEasyNPCEntityByUUID(uuid, serverLevel);
     if (easyNPC == null) {
       log.error("Cannot despawn NPC {}: not found in world", uuid);
       return false;
     }
     return despawn(easyNPC, reason);
   }
-
-  // Spawn methods
 
   public static boolean spawn(UUID uuid, ServerLevel serverLevel) {
     Optional<SavedNPCEntityEntry> entry = NPCEntityManager.getNPC(uuid);

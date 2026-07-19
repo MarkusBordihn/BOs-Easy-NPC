@@ -21,9 +21,10 @@ package de.markusbordihn.easynpc.data.skin.variant;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.api.skin.VariantTexture;
+import de.markusbordihn.easynpc.data.profession.Profession;
 import net.minecraft.resources.Identifier;
 
-public enum VillagerSkinVariant implements VariantTexture {
+public enum VillagerSkinVariant implements VariantTexture, VillagerVariantData {
   DESERT_ARMORER,
   DESERT_BUTCHER,
   DESERT_CARTOGRAPHER,
@@ -135,6 +136,25 @@ public enum VillagerSkinVariant implements VariantTexture {
   private static final Identifier TEXTURE =
       Identifier.fromNamespaceAndPath(
           Constants.MINECRAFT_PREFIX, "textures/entity/villager/villager.png");
+
+  private final VillagerBiome biome;
+  private final Profession profession;
+
+  VillagerSkinVariant() {
+    String[] parts = this.name().split("_", 2);
+    this.biome = VillagerBiome.valueOf(parts[0]);
+    this.profession = Profession.valueOf(parts[1]);
+  }
+
+  @Override
+  public VillagerBiome getVillagerBiome() {
+    return this.biome;
+  }
+
+  @Override
+  public Profession getProfession() {
+    return this.profession;
+  }
 
   @Override
   public Identifier getTextureLocation() {

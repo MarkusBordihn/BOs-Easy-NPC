@@ -99,7 +99,7 @@ public class EasyNPCItemAttachmentLayer<
       return;
     }
 
-    EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(entityUUID);
+    EasyNPC<?> easyNPC = LivingEntityManager.getClientEasyNPCEntityByUUID(entityUUID);
     if (easyNPC == null) {
       return;
     }

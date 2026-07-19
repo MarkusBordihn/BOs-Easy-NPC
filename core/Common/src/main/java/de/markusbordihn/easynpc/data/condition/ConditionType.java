@@ -19,6 +19,8 @@
 
 package de.markusbordihn.easynpc.data.condition;
 
+import de.markusbordihn.easynpc.utils.EnumUtils;
+
 public enum ConditionType {
   NONE(ConditionTypeRequirements.NONE),
   SCOREBOARD(ConditionTypeRequirements.NAME_VALUE_OPERATION),
@@ -52,15 +54,7 @@ public enum ConditionType {
   }
 
   public static ConditionType get(String conditionType) {
-    if (conditionType == null || conditionType.isEmpty()) {
-      return ConditionType.NONE;
-    }
-
-    try {
-      return ConditionType.valueOf(conditionType);
-    } catch (IllegalArgumentException ignored) {
-      return ConditionType.NONE;
-    }
+    return EnumUtils.get(ConditionType.class, conditionType, NONE);
   }
 
   public boolean requiresName() {

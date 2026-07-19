@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.data.trading;
 
+import de.markusbordihn.easynpc.utils.EnumUtils;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 
@@ -43,13 +44,6 @@ public enum TradingType {
       };
 
   public static TradingType get(String dialogType) {
-    if (dialogType == null || dialogType.isEmpty()) {
-      return TradingType.NONE;
-    }
-    try {
-      return TradingType.valueOf(dialogType);
-    } catch (IllegalArgumentException e) {
-      return TradingType.NONE;
-    }
+    return EnumUtils.get(TradingType.class, dialogType, NONE);
   }
 }

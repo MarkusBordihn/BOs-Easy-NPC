@@ -28,11 +28,14 @@ public enum EnvironmentalAttributeType implements EntityAttributeTypeInterface {
   FREEFALL,
   NO_GRAVITY;
 
+  private final String tagName = TextUtils.convertToPascalCase(this.name());
+  private final String attributeName = this.name().toLowerCase(Locale.ROOT);
+
   public String getTagName() {
-    return TextUtils.convertToPascalCase(this.name());
+    return this.tagName;
   }
 
   public String getAttributeName() {
-    return this.name().toLowerCase(Locale.ROOT);
+    return this.attributeName;
   }
 }

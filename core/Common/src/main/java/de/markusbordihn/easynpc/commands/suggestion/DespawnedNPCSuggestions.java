@@ -46,7 +46,7 @@ public class DespawnedNPCSuggestions {
 
     Stream<String> uuids =
         npcData.getAllUUIDs().stream()
-            .filter(uuid -> !LivingEntityManager.getNpcEntityMap().containsKey(uuid))
+            .filter(uuid -> LivingEntityManager.getServerEasyNPCEntityByUUID(uuid) == null)
             .filter(
                 uuid -> {
                   if (serverPlayer.isCreative()) {
