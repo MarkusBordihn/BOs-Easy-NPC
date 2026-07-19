@@ -88,8 +88,7 @@ public class FactionHandler {
   }
 
   public static void clearLoadedFactionAssignments(String factionName) {
-    LivingEntityManager.getEasyNPCEntities()
-        .filter(easyNPC -> easyNPC != null && !easyNPC.isClientSideInstance())
+    LivingEntityManager.getServerEasyNPCEntities()
         .forEach(
             easyNPC -> {
               FactionDataCapable<?> factionData = easyNPC.getEasyNPCFactionData();
@@ -101,8 +100,7 @@ public class FactionHandler {
   }
 
   public static void refreshLoadedFactionAssignments(String factionName) {
-    LivingEntityManager.getEasyNPCEntities()
-        .filter(easyNPC -> easyNPC != null && !easyNPC.isClientSideInstance())
+    LivingEntityManager.getServerEasyNPCEntities()
         .forEach(
             easyNPC -> {
               FactionDataCapable<?> factionData = easyNPC.getEasyNPCFactionData();

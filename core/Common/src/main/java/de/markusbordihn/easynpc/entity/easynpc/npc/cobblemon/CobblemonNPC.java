@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.entity.easynpc.npc.cobblemon;
 
 import de.markusbordihn.easynpc.api.npc.raw.PathfinderMobRaw;
+import de.markusbordihn.easynpc.compat.cobblemon.CobblemonSpeciesManager;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
 import de.markusbordihn.easynpc.data.render.RenderDataEntry;
 import de.markusbordihn.easynpc.data.render.RenderType;
@@ -60,7 +61,8 @@ public class CobblemonNPC extends PathfinderMobRaw {
   public void defineSynchedRenderData() {
     this.defineSynchedEntityData(
         de.markusbordihn.easynpc.data.synched.SynchedDataIndex.RENDER_DATA,
-        new RenderDataEntry(RenderType.COBBLEMON_ENTITY, null, "cobblemon:ditto"));
+        new RenderDataEntry(
+            RenderType.COBBLEMON_ENTITY, null, CobblemonSpeciesManager.DEFAULT_MODEL));
   }
 
   @Override

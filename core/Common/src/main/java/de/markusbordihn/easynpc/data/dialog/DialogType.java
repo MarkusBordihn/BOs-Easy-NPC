@@ -19,24 +19,16 @@
 
 package de.markusbordihn.easynpc.data.dialog;
 
+import de.markusbordihn.easynpc.utils.EnumUtils;
+
 public enum DialogType {
-  // @formatter:off
   STANDARD,
   BASIC,
   YES_NO,
   CUSTOM,
   NONE;
 
-  // @formatter:on
-
   public static DialogType get(String dialogType) {
-    if (dialogType == null || dialogType.isEmpty()) {
-      return DialogType.NONE;
-    }
-    try {
-      return DialogType.valueOf(dialogType);
-    } catch (IllegalArgumentException e) {
-      return DialogType.NONE;
-    }
+    return EnumUtils.get(DialogType.class, dialogType, NONE);
   }
 }

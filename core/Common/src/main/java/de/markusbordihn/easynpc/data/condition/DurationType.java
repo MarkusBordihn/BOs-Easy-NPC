@@ -19,6 +19,8 @@
 
 package de.markusbordihn.easynpc.data.condition;
 
+import de.markusbordihn.easynpc.utils.EnumUtils;
+
 public enum DurationType implements ConditionSubTypeEntry {
   PER_MINUTE,
   PER_HOUR,
@@ -28,14 +30,6 @@ public enum DurationType implements ConditionSubTypeEntry {
   LIFETIME;
 
   public static DurationType get(String value) {
-    if (value == null || value.isEmpty()) {
-      return PER_DAY;
-    }
-
-    try {
-      return valueOf(value);
-    } catch (IllegalArgumentException ignored) {
-      return PER_DAY;
-    }
+    return EnumUtils.get(DurationType.class, value, PER_DAY);
   }
 }

@@ -21,9 +21,10 @@ package de.markusbordihn.easynpc.data.skin.variant;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.api.skin.VariantTexture;
+import de.markusbordihn.easynpc.data.profession.Profession;
 import net.minecraft.resources.ResourceLocation;
 
-public enum ZombieVillagerSkinVariant implements VariantTexture {
+public enum ZombieVillagerSkinVariant implements VariantTexture, VillagerVariantData {
   DESERT_ARMORER,
   DESERT_BUTCHER,
   DESERT_CARTOGRAPHER,
@@ -135,6 +136,25 @@ public enum ZombieVillagerSkinVariant implements VariantTexture {
   private static final ResourceLocation TEXTURE =
       new ResourceLocation(
           Constants.MINECRAFT_PREFIX, "textures/entity/zombie_villager/zombie_villager.png");
+
+  private final VillagerBiome biome;
+  private final Profession profession;
+
+  ZombieVillagerSkinVariant() {
+    String[] parts = this.name().split("_", 2);
+    this.biome = VillagerBiome.valueOf(parts[0]);
+    this.profession = Profession.valueOf(parts[1]);
+  }
+
+  @Override
+  public VillagerBiome getVillagerBiome() {
+    return this.biome;
+  }
+
+  @Override
+  public Profession getProfession() {
+    return this.profession;
+  }
 
   @Override
   public ResourceLocation getTextureLocation() {

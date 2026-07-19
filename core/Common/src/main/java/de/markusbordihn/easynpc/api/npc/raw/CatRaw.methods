@@ -10,26 +10,8 @@
       return;
     }
 
-    // Map CatSkinVariant to Minecraft CatVariant
-    ResourceKey<CatVariant> catVariantKey =
-      switch (catSkinVariant) {
-        case ALL_BLACK -> CatVariant.ALL_BLACK;
-        case BLACK -> CatVariant.BLACK;
-        case BRITISH_SHORTHAIR -> CatVariant.BRITISH_SHORTHAIR;
-        case CALICO -> CatVariant.CALICO;
-        case JELLIE -> CatVariant.JELLIE;
-        case OCELOT -> CatVariant.TABBY;
-        case PERSIAN -> CatVariant.PERSIAN;
-        case RAGDOLL -> CatVariant.RAGDOLL;
-        case RED -> CatVariant.RED;
-        case SIAMESE -> CatVariant.SIAMESE;
-        case TABBY -> CatVariant.TABBY;
-        case WHITE -> CatVariant.WHITE;
-      };
-
-    // Get the Holder from the registry and set it
-    CatVariant catVariantHolder =
-      BuiltInRegistries.CAT_VARIANT.get(catVariantKey);
+    ResourceKey<CatVariant> catVariantKey = catSkinVariant.getVanillaVariant();
+    CatVariant catVariantHolder = BuiltInRegistries.CAT_VARIANT.get(catVariantKey);
     if (catVariantHolder != null) {
       this.setVariant(catVariantHolder);
     }

@@ -156,7 +156,7 @@ public class PresetHandler {
     }
 
     UUID finalUuid = uuid != null ? uuid : updatedPresetData.data().getUUID(Entity.UUID_TAG);
-    EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(finalUuid, serverLevel);
+    EasyNPC<?> easyNPC = LivingEntityManager.getServerEasyNPCEntityByUUID(finalUuid, serverLevel);
     if (easyNPC == null) {
       log.error("[{}] Error importing preset, no entity found for {}", serverLevel, finalUuid);
       return false;
@@ -278,7 +278,8 @@ public class PresetHandler {
 
   private static boolean tryUpdateExistingEntity(
       UUID uuid, CompoundTag compoundTag, ServerLevel serverLevel) {
-    EasyNPC<?> existingEasyNPC = LivingEntityManager.getEasyNPCEntityByUUID(uuid, serverLevel);
+    EasyNPC<?> existingEasyNPC =
+        LivingEntityManager.getServerEasyNPCEntityByUUID(uuid, serverLevel);
     if (existingEasyNPC == null) {
       return false;
     }

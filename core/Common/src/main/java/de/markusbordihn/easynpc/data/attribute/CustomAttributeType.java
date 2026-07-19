@@ -24,7 +24,9 @@ import de.markusbordihn.easynpc.utils.TextUtils;
 public enum CustomAttributeType {
   CUSTOM;
 
+  private final String tagName = TextUtils.convertToPascalCase(this.name());
+
   public String getTagName() {
-    return TextUtils.convertToPascalCase(this.name());
+    return this.tagName;
   }
 }

@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.data.action;
 
+import de.markusbordihn.easynpc.utils.EnumUtils;
 import java.util.Locale;
 
 public enum ActionDataType {
@@ -33,6 +34,7 @@ public enum ActionDataType {
   SCOREBOARD;
 
   private final boolean requiresArgument;
+  private final String id = "actionDataType." + this.name().toLowerCase(Locale.ROOT);
 
   ActionDataType() {
     this.requiresArgument = true;
@@ -43,14 +45,7 @@ public enum ActionDataType {
   }
 
   public static ActionDataType get(String actionType) {
-    if (actionType == null || actionType.isEmpty()) {
-      return ActionDataType.NONE;
-    }
-    try {
-      return ActionDataType.valueOf(actionType);
-    } catch (IllegalArgumentException e) {
-      return ActionDataType.NONE;
-    }
+    return EnumUtils.get(ActionDataType.class, actionType, NONE);
   }
 
   public boolean requiresArgument() {
@@ -58,6 +53,6 @@ public enum ActionDataType {
   }
 
   public String getId() {
-    return "actionDataType." + this.name().toLowerCase(Locale.ROOT);
+    return this.id;
   }
 }

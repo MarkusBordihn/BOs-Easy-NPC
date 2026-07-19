@@ -60,11 +60,7 @@ public enum DefaultNPCType implements NPCType {
   ZOMBIE_VILLAGER,
   ZOMBIFIED_PIGLIN;
 
-  private final String registryId;
-
-  DefaultNPCType() {
-    this.registryId = name().toLowerCase(Locale.ROOT);
-  }
+  private final String registryId = this.name().toLowerCase(Locale.ROOT);
 
   public static DefaultNPCType fromRegistryId(String registryId) {
     for (DefaultNPCType type : values()) {
@@ -77,6 +73,6 @@ public enum DefaultNPCType implements NPCType {
 
   @Override
   public String getRegistryId() {
-    return registryId;
+    return this.registryId;
   }
 }

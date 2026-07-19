@@ -19,23 +19,15 @@
 
 package de.markusbordihn.easynpc.data.trading;
 
+import de.markusbordihn.easynpc.utils.EnumUtils;
+
 public enum TradingType {
-  // @formatter:off
   ADVANCED,
   BASIC,
   CUSTOM,
   NONE;
 
-  // @formatter:on
-
   public static TradingType get(String dialogType) {
-    if (dialogType == null || dialogType.isEmpty()) {
-      return TradingType.NONE;
-    }
-    try {
-      return TradingType.valueOf(dialogType);
-    } catch (IllegalArgumentException e) {
-      return TradingType.NONE;
-    }
+    return EnumUtils.get(TradingType.class, dialogType, NONE);
   }
 }

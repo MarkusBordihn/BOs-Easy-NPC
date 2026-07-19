@@ -87,7 +87,7 @@ public class EasyNPCMenu extends AbstractContainerMenu
     this.easyNPC =
         this.level.isClientSide
             ? LivingEntityManager.getClientEasyNPCEntityByUUID(getNpcUUID())
-            : LivingEntityManager.getEasyNPCEntityByUUID(getNpcUUID(), (ServerPlayer) player);
+            : LivingEntityManager.getServerEasyNPCEntityByUUID(getNpcUUID(), (ServerPlayer) player);
     if (this.easyNPC == null) {
       log.error(
           "EasyNPC entity with UUID {} is missing for menu {} with {}",

@@ -63,6 +63,8 @@ public enum SkinModel {
   private static final Set<String> EXCLUDED_FROM_INHERITANCE = Set.of("chilling");
 
   private final boolean hasArmourersWorkshopSupport;
+  private final String modelName =
+      this.name().toLowerCase(Locale.ROOT).replaceAll("[^a-zA-Z0-9/._-]", "").replace("..", "");
 
   SkinModel() {
     this(false);
@@ -115,9 +117,6 @@ public enum SkinModel {
   }
 
   public String getName() {
-    return this.name()
-        .toLowerCase(Locale.ROOT)
-        .replaceAll("[^a-zA-Z0-9/._-]", "")
-        .replace("..", "");
+    return this.modelName;
   }
 }

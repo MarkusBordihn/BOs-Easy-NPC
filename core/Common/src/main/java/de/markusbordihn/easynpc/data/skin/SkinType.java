@@ -19,8 +19,9 @@
 
 package de.markusbordihn.easynpc.data.skin;
 
+import de.markusbordihn.easynpc.utils.EnumUtils;
+
 public enum SkinType {
-  // @formatter:off
   CUSTOM,
   DEFAULT,
   INSECURE_REMOTE_URL,
@@ -29,16 +30,7 @@ public enum SkinType {
   SERVER_SKIN,
   SECURE_REMOTE_URL;
 
-  // @formatter:on
-
   public static SkinType get(String skinType) {
-    if (skinType == null || skinType.isEmpty()) {
-      return SkinType.DEFAULT;
-    }
-    try {
-      return SkinType.valueOf(skinType);
-    } catch (IllegalArgumentException e) {
-      return SkinType.DEFAULT;
-    }
+    return EnumUtils.get(SkinType.class, skinType, DEFAULT);
   }
 }

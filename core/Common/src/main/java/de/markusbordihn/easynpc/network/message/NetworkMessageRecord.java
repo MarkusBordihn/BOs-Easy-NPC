@@ -54,7 +54,7 @@ public interface NetworkMessageRecord {
       return false;
     }
 
-    EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
+    EasyNPC<?> easyNPC = LivingEntityManager.getServerEasyNPCEntityByUUID(uuid, serverPlayer);
     if (easyNPC == null) {
       log.error("Unable to get valid entity with UUID {} for {}", uuid, serverPlayer);
       serverPlayer.sendSystemMessage(
@@ -100,7 +100,7 @@ public interface NetworkMessageRecord {
       log.error("Invalid server player for Easy NPC with UUID {}", uuid);
       return null;
     }
-    return LivingEntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
+    return LivingEntityManager.getServerEasyNPCEntityByUUID(uuid, serverPlayer);
   }
 
   default EasyNPC<?> getEasyNPCAndCheckAccess(final UUID uuid, final ServerPlayer serverPlayer) {

@@ -36,8 +36,8 @@ resolution.
 
 - Install **Easy NPC Bundle**
 - Your launcher will automatically install the required modules:
-    - **Easy NPC Core**
-    - **Easy NPC Config UI** (configuration tools and required networking)
+  - **Easy NPC Core**
+  - **Easy NPC Config UI** (configuration tools and required networking)
 
 ### Option B: Manual install or copied modpacks
 

@@ -19,6 +19,9 @@
 
 package de.markusbordihn.easynpc.data.profession;
 
+import java.util.Locale;
+import net.minecraft.resources.ResourceLocation;
+
 public enum Profession {
   // @formatter:off
   NONE,
@@ -35,6 +38,13 @@ public enum Profession {
   NITWIT,
   SHEPHERD,
   TOOLSMITH,
-  WEAPONSMITH
+  WEAPONSMITH;
   // @formatter:on
+
+  private final ResourceLocation registryKey =
+      new ResourceLocation(this.name().toLowerCase(Locale.ROOT));
+
+  public ResourceLocation getRegistryKey() {
+    return this.registryKey;
+  }
 }

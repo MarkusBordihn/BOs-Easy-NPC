@@ -36,7 +36,8 @@ public class VariantSuggestions {
 
   public static CompletableFuture<Suggestions> suggest(
       CommandContext<CommandSourceStack> context, SuggestionsBuilder build, UUID uuid) {
-    EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(uuid);
+    EasyNPC<?> easyNPC =
+        LivingEntityManager.getServerEasyNPCEntityByUUID(uuid, context.getSource().getLevel());
     if (easyNPC == null) {
       return SharedSuggestionProvider.suggest(new String[0], build);
     }

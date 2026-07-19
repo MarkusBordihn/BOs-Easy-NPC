@@ -88,14 +88,6 @@ import org.apache.logging.log4j.Logger;
 
 public class ModMenuTypes {
 
-  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-
-  private ModMenuTypes() {}
-
-  public static void register() {
-    log.info("{} Menu Types ...", Constants.LOG_REGISTER_PREFIX);
-  }
-
   public static final MenuType<AbilitiesAttributeConfigurationMenuWrapper>
       ABILITIES_ATTRIBUTE_CONFIGURATION_MENU =
           ScreenHandlerRegistry.registerSimple(
@@ -254,7 +246,6 @@ public class ModMenuTypes {
   public static final MenuType<FactionsEditorMenuWrapper> FACTIONS_EDITOR_MENU =
       ScreenHandlerRegistry.registerSimple(
           EditorType.FACTIONS.getId(), FactionsEditorMenuWrapper::new);
-
   public static final MenuType<DialogActionConfigurationMenuWrapper>
       DIALOG_ACTION_CONFIGURATION_MENU =
           ScreenHandlerRegistry.registerSimple(
@@ -329,4 +320,11 @@ public class ModMenuTypes {
       YES_NO_DIALOG_CONFIGURATION_MENU =
           ScreenHandlerRegistry.registerSimple(
               ConfigurationType.YES_NO_DIALOG.getId(), YesNoDialogConfigurationMenuWrapper::new);
+  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+
+  private ModMenuTypes() {}
+
+  public static void register() {
+    log.info("{} Menu Types ...", Constants.LOG_REGISTER_PREFIX);
+  }
 }

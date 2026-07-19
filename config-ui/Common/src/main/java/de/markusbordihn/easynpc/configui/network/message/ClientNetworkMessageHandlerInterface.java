@@ -68,7 +68,7 @@ public interface ClientNetworkMessageHandlerInterface {
       return;
     }
 
-    EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
+    EasyNPC<?> easyNPC = LivingEntityManager.getServerEasyNPCEntityByUUID(uuid, serverPlayer);
     if (easyNPC == null) {
       log.error("Cannot export preset, EasyNPC with UUID {} not found", uuid);
       return;

@@ -99,9 +99,6 @@ public class ModBlocks {
                       .sound(SoundType.METAL)
                       .noOcclusion(),
                   SpawnerType.WORLD_SPAWNER));
-
-  private ModBlocks() {}
-
   public static final RegistryObject<BlockEntityType<EasyNPCSpawnerBlockEntityWrapper>>
       EASY_NPC_SPAWNER_ENTITY =
           BLOCK_ENTITY_TYPES.register(
@@ -115,4 +112,6 @@ public class ModBlocks {
                           EASY_NPC_SPAWNER_SINGLE.get(),
                           EASY_NPC_SPAWNER_WORLD.get())
                       .build(null));
+
+  private ModBlocks() {}
 }

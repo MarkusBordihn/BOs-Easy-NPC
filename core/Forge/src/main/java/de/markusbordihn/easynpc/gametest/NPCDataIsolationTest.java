@@ -38,6 +38,12 @@ public class NPCDataIsolationTest {
   }
 
   @GameTest(template = "gametest.3x3x3")
+  public void testServerRegistryIsolation(GameTestHelper helper) {
+    NPCDataIsolationTestHelper.assertServerRegistryIsolation(helper, humanoid());
+    helper.succeed();
+  }
+
+  @GameTest(template = "gametest.3x3x3")
   public void testPoseIsolation(GameTestHelper helper) {
     NPCDataIsolationTestHelper.assertPoseIsolation(helper, humanoid());
     helper.succeed();

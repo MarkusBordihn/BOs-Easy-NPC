@@ -24,7 +24,9 @@ import java.util.Locale;
 public enum CustomMenuType {
   PRESET_BROWSER;
 
+  private final String menuName = this.name().toLowerCase(Locale.ROOT);
+
   public String getName() {
-    return this.name().toLowerCase(Locale.ROOT);
+    return this.menuName;
   }
 }

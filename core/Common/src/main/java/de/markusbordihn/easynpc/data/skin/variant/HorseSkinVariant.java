@@ -20,10 +20,11 @@
 package de.markusbordihn.easynpc.data.skin.variant;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.api.skin.SaddleableVariant;
 import de.markusbordihn.easynpc.api.skin.VariantTexture;
 import net.minecraft.resources.ResourceLocation;
 
-public enum HorseSkinVariant implements VariantTexture {
+public enum HorseSkinVariant implements VariantTexture, SaddleableVariant {
   WHITE(Constants.MINECRAFT_PREFIX, "textures/entity/horse/horse_white.png"),
   WHITE_SADDLED(Constants.MINECRAFT_PREFIX, "textures/entity/horse/horse_white.png"),
   CREAMY(Constants.MINECRAFT_PREFIX, "textures/entity/horse/horse_creamy.png"),
@@ -48,13 +49,20 @@ public enum HorseSkinVariant implements VariantTexture {
   MULE_SADDLED(Constants.MINECRAFT_PREFIX, "textures/entity/horse/mule.png");
 
   private final ResourceLocation textureLocation;
+  private final boolean saddled;
 
   HorseSkinVariant(String namespace, String path) {
     this.textureLocation = parseTextureLocation(namespace, path);
+    this.saddled = this.name().endsWith("_SADDLED");
+  }
+
+  @Override
+  public boolean isSaddled() {
+    return this.saddled;
   }
 
   @Override
   public ResourceLocation getTextureLocation() {
-    return textureLocation;
+    return this.textureLocation;
   }
 }

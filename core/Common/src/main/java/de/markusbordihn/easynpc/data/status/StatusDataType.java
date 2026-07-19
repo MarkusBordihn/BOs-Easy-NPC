@@ -27,6 +27,7 @@ public enum StatusDataType {
   NPC_DATA_LAST_SAVED(ValueType.TIMESTAMP);
 
   private final ValueType valueType;
+  private final String tagName = this.name().toLowerCase(Locale.ROOT);
 
   StatusDataType(ValueType valueType) {
     this.valueType = valueType;
@@ -44,7 +45,7 @@ public enum StatusDataType {
   }
 
   public String getTagName() {
-    return this.name().toLowerCase(Locale.ROOT);
+    return this.tagName;
   }
 
   public ValueType getValueType() {

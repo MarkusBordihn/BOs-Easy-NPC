@@ -340,10 +340,6 @@ public class EntityDataSerializersManager {
               return value;
             }
           });
-
-  private static final int RECOMMENDED_NBT_SIZE_BYTES = 8192; // 8 KB recommended
-  private static final int WARNING_NBT_SIZE_BYTES = 32768; // 32 KB warning
-  private static final int MAX_NBT_SIZE_BYTES = 2097152; // 2 MB absolute max
   public static final EntityDataSerializer<ActionEventSet> ACTION_EVENT_SET =
       defineSerializer(
           ActionEventSet.class.getSimpleName(),
@@ -539,6 +535,9 @@ public class EntityDataSerializersManager {
               return value;
             }
           });
+  private static final int RECOMMENDED_NBT_SIZE_BYTES = 8192; // 8 KB recommended
+  private static final int WARNING_NBT_SIZE_BYTES = 32768; // 32 KB warning
+  private static final int MAX_NBT_SIZE_BYTES = 2097152; // 2 MB absolute max
 
   private EntityDataSerializersManager() {}
 
