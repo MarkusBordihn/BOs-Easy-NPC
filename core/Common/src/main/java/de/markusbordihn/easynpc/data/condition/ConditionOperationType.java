@@ -19,6 +19,8 @@
 
 package de.markusbordihn.easynpc.data.condition;
 
+import de.markusbordihn.easynpc.utils.EnumUtils;
+
 public enum ConditionOperationType {
   NONE,
   EQUALS,
@@ -29,14 +31,7 @@ public enum ConditionOperationType {
   LESS_THAN_OR_EQUALS;
 
   public static ConditionOperationType get(String operationType) {
-    if (operationType == null || operationType.isEmpty()) {
-      return ConditionOperationType.NONE;
-    }
-    try {
-      return ConditionOperationType.valueOf(operationType);
-    } catch (IllegalArgumentException e) {
-      return ConditionOperationType.NONE;
-    }
+    return EnumUtils.get(ConditionOperationType.class, operationType, NONE);
   }
 
   public String getSymbol() {

@@ -28,11 +28,14 @@ public enum ModMenuType {
   SPAWNER,
   ;
 
+  private final String menuName = this.name().toLowerCase(Locale.ROOT);
+  private final Identifier id = Identifier.fromNamespaceAndPath(Constants.MOD_ID, this.menuName);
+
   public Identifier getId() {
-    return Identifier.fromNamespaceAndPath(Constants.MOD_ID, this.name().toLowerCase(Locale.ROOT));
+    return this.id;
   }
 
   public String getName() {
-    return this.name().toLowerCase(Locale.ROOT);
+    return this.menuName;
   }
 }

@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.data.model;
 
+import de.markusbordihn.easynpc.utils.EnumUtils;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 
@@ -41,13 +42,6 @@ public enum ModelPose {
       };
 
   public static ModelPose get(String modelPose) {
-    if (modelPose == null || modelPose.isEmpty()) {
-      return ModelPose.VANILLA;
-    }
-    try {
-      return ModelPose.valueOf(modelPose);
-    } catch (IllegalArgumentException e) {
-      return ModelPose.VANILLA;
-    }
+    return EnumUtils.get(ModelPose.class, modelPose, VANILLA);
   }
 }

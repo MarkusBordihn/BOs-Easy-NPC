@@ -19,6 +19,8 @@
 
 package de.markusbordihn.easynpc.data.action;
 
+import de.markusbordihn.easynpc.utils.EnumUtils;
+
 public enum ActionEventType {
   NONE,
   ON_BUTTON_CLICK,
@@ -35,13 +37,6 @@ public enum ActionEventType {
   ON_TRADE;
 
   public static ActionEventType get(String actionEventType) {
-    if (actionEventType == null || actionEventType.isEmpty()) {
-      return ActionEventType.NONE;
-    }
-    try {
-      return ActionEventType.valueOf(actionEventType);
-    } catch (IllegalArgumentException e) {
-      return ActionEventType.NONE;
-    }
+    return EnumUtils.get(ActionEventType.class, actionEventType, NONE);
   }
 }

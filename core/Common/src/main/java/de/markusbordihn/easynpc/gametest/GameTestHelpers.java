@@ -55,7 +55,7 @@ public final class GameTestHelpers {
       helper.fail("Spawned entity is not an EasyNPC: " + entity);
       return null;
     }
-    if (LivingEntityManager.getEasyNPCEntityByUUID(easyNPC.getEntityUUID()) == null) {
+    if (LivingEntityManager.getServerEasyNPCEntityByUUID(easyNPC.getEntityUUID()) == null) {
       LivingEntityManager.addEasyNPC(easyNPC);
     }
     return easyNPC;

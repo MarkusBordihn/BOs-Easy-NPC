@@ -138,6 +138,7 @@ if (project.hasProperty('curseforge_project_id') && project.curseforge_project_i
     mainFile.addEnvironment("Client", "Server")
     mainFile.addModLoader('Fabric')
     mainFile.addModLoader('Quilt')
+    mainFile.addOptional('easy-model-entities')
     mainFile.addGameVersion("${project.minecraft_version}")
   }
 }

@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.data.type;
 
+import de.markusbordihn.easynpc.utils.EnumUtils;
 import java.util.Locale;
 
 public enum ValueType {
@@ -27,19 +28,14 @@ public enum ValueType {
   INTEGER,
   STRING;
 
+  private final String typeName = this.name().toLowerCase(Locale.ROOT);
+
   public static ValueType get(String valueType) {
-    if (valueType == null || valueType.isEmpty()) {
-      return ValueType.STRING;
-    }
-    try {
-      return ValueType.valueOf(valueType.toUpperCase(Locale.ROOT));
-    } catch (IllegalArgumentException e) {
-      return ValueType.STRING;
-    }
+    return EnumUtils.getIgnoreCase(ValueType.class, valueType, STRING);
   }
 
   public String getTypeName() {
-    return this.name().toLowerCase(Locale.ROOT);
+    return this.typeName;
   }
 
   public boolean isValidValue(String value) {

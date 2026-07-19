@@ -90,9 +90,6 @@ public class ModMenuTypes {
 
   public static final DeferredRegister<MenuType<?>> MENU_TYPES =
       DeferredRegister.create(ForgeRegistries.MENU_TYPES, Constants.MOD_ID);
-
-  private ModMenuTypes() {}
-
   public static final RegistryObject<MenuType<AbilitiesAttributeConfigurationMenuWrapper>>
       ABILITIES_ATTRIBUTE_CONFIGURATION_MENU =
           MENU_TYPES.register(
@@ -376,4 +373,6 @@ public class ModMenuTypes {
           MENU_TYPES.register(
               ConfigurationType.YES_NO_DIALOG.getName(),
               () -> IForgeMenuType.create(YesNoDialogConfigurationMenuWrapper::new));
+
+  private ModMenuTypes() {}
 }

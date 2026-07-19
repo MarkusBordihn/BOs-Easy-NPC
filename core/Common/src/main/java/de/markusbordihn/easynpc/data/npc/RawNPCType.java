@@ -61,11 +61,7 @@ public enum RawNPCType implements NPCType {
   ZOMBIFIED_PIGLIN;
   // ===== AUTO_GENERATED_END =====
 
-  private final String registryId;
-
-  RawNPCType() {
-    this.registryId = name().toLowerCase(Locale.ROOT) + "_raw";
-  }
+  private final String registryId = this.name().toLowerCase(Locale.ROOT) + "_raw";
 
   public static RawNPCType fromRegistryId(String registryId) {
     for (RawNPCType type : values()) {
@@ -78,6 +74,6 @@ public enum RawNPCType implements NPCType {
 
   @Override
   public String getRegistryId() {
-    return registryId;
+    return this.registryId;
   }
 }

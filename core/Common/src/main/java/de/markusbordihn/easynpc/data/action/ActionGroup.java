@@ -19,6 +19,8 @@
 
 package de.markusbordihn.easynpc.data.action;
 
+import de.markusbordihn.easynpc.utils.EnumUtils;
+
 public enum ActionGroup {
   NONE,
   DISTANCE_NEAR,
@@ -27,13 +29,6 @@ public enum ActionGroup {
   DISTANCE_TOUCH;
 
   public static ActionGroup get(String actionType) {
-    if (actionType == null || actionType.isEmpty()) {
-      return ActionGroup.NONE;
-    }
-    try {
-      return ActionGroup.valueOf(actionType);
-    } catch (IllegalArgumentException e) {
-      return ActionGroup.NONE;
-    }
+    return EnumUtils.get(ActionGroup.class, actionType, NONE);
   }
 }

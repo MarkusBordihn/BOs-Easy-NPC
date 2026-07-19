@@ -24,7 +24,9 @@ import java.util.Locale;
 public enum EntityAttribute {
   SILENT;
 
+  private final String attributeName = this.name().toLowerCase(Locale.ROOT);
+
   public String getAttributeName() {
-    return this.name().toLowerCase(Locale.ROOT);
+    return this.attributeName;
   }
 }

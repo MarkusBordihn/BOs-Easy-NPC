@@ -86,7 +86,7 @@ public class AccessSecurity {
       return null;
     }
 
-    EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
+    EasyNPC<?> easyNPC = LivingEntityManager.getServerEasyNPCEntityByUUID(uuid, serverPlayer);
     if (easyNPC == null) {
       log.error("[{}:{}] Unable to get valid entity!", uuid, serverPlayer);
       return null;
@@ -107,7 +107,8 @@ public class AccessSecurity {
   private static SecurityDecision checkEntityAccess(CommandSourceStack context, UUID uuid) {
     try {
       Entity entity = context.getEntityOrException();
-      EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(uuid, context.getLevel());
+      EasyNPC<?> easyNPC =
+          LivingEntityManager.getServerEasyNPCEntityByUUID(uuid, context.getLevel());
       if (easyNPC != null && easyNPC.getEntity() == entity) {
         return new SecurityDecision(true, SecurityDecisionReason.SAME_ENTITY);
       }

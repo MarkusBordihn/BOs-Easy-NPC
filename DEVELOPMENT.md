@@ -22,19 +22,19 @@ Keeping the modules separate lets us:
 Each of the three top-level folders is its own Gradle build with subprojects per loader:
 
 - core/
-    - Common/ - shared sources and assets
-    - Fabric/ - Fabric-specific sources and Loom configuration
-    - Forge/ - Forge-specific sources and tasks
-    - NeoForge/ - available starting with 1.21.x
+  - Common/ - shared sources and assets
+  - Fabric/ - Fabric-specific sources and Loom configuration
+  - Forge/ - Forge-specific sources and tasks
+  - NeoForge/ - available starting with 1.21.x
 - config-ui/
-    - Common/ - shared UI sources and assets
-    - Fabric/
-    - Forge/
-    - NeoForge/ - available starting with 1.21.x
+  - Common/ - shared UI sources and assets
+  - Fabric/
+  - Forge/
+  - NeoForge/ - available starting with 1.21.x
 - bundle/
-    - Fabric/ - meta package declaring core + config-ui dependencies
-    - Forge/ - meta package declaring core + config-ui dependencies
-    - NeoForge/ - meta package declaring core + config-ui dependencies
+  - Fabric/ - meta package declaring core + config-ui dependencies
+  - Forge/ - meta package declaring core + config-ui dependencies
+  - NeoForge/ - meta package declaring core + config-ui dependencies
 
 Note: The exact set of loader subprojects in your clone may vary by branch/version; check the folder
 tree.
@@ -61,15 +61,15 @@ mavenLocal() repository:
 Coordinates (examples):
 
 - Core group: de.markusbordihn.easynpc
-    - Artifact pattern: easy_npc-<loader>-<mcVersion>
-    - Example (Fabric): de.markusbordihn.easynpc:easy_npc-fabric-1.20.1:<version>
-    - Example (Common, compileOnly): de.markusbordihn.easynpc:easy_npc-common-1.20.1:<version>
+  - Artifact pattern: easy_npc-<loader>-<mcVersion>
+  - Example (Fabric): de.markusbordihn.easynpc:easy_npc-fabric-1.20.1:<version>
+  - Example (Common, compileOnly): de.markusbordihn.easynpc:easy_npc-common-1.20.1:<version>
 - Config UI group: de.markusbordihn.easynpc.configui
-    - Artifact pattern: easy_npc_config_ui-<loader>-<mcVersion>
-    - Example (Fabric): de.markusbordihn.easynpc.configui:easy_npc_config_ui-fabric-1.20.1:<version>
+  - Artifact pattern: easy_npc_config_ui-<loader>-<mcVersion>
+  - Example (Fabric): de.markusbordihn.easynpc.configui:easy_npc_config_ui-fabric-1.20.1:<version>
 - Bundle group: de.markusbordihn.easynpc.bundle
-    - Artifact pattern: easy_npc_bundle-<loader>-<mcVersion>
-    - Example (Fabric): de.markusbordihn.easynpc.bundle:easy_npc_bundle-fabric-1.20.1:<version>
+  - Artifact pattern: easy_npc_bundle-<loader>-<mcVersion>
+  - Example (Fabric): de.markusbordihn.easynpc.bundle:easy_npc_bundle-fabric-1.20.1:<version>
 
 The exact version and groupId come from each project's gradle.properties.
 
@@ -211,19 +211,19 @@ This keeps loader-specific plugins isolated and avoids multi-project configurati
 ## Architecture and rationale
 
 - core
-    - Contains the gameplay/NPC logic and data
-    - Split into Common (shared sources) + loader-specific subprojects (Fabric, Forge, NeoForge
-      where applicable; NeoForge available ≥ 1.21.x)
+  - Contains the gameplay/NPC logic and data
+  - Split into Common (shared sources) + loader-specific subprojects (Fabric, Forge, NeoForge
+    where applicable; NeoForge available ≥ 1.21.x)
 - config-ui
-    - Optional UI layer separated from core
-    - Depends on core artifacts via Maven Local
-    - Benefits: smaller core, optional UI for servers, independent versioning and releases (NeoForge
-      targets available ≥ 1.21.x)
+  - Optional UI layer separated from core
+  - Depends on core artifacts via Maven Local
+  - Benefits: smaller core, optional UI for servers, independent versioning and releases (NeoForge
+    targets available ≥ 1.21.x)
 - bundle
-    - Convenience meta package
-    - Declares core + config-ui as dependencies (no jar-in-jar embedding)
-    - Exists because many users prefer one file instead of managing dependencies via
-      CurseForge/Modrinth launchers (NeoForge bundles available ≥ 1.21.x)
+  - Convenience meta package
+  - Declares core + config-ui as dependencies (no jar-in-jar embedding)
+  - Exists because many users prefer one file instead of managing dependencies via
+    CurseForge/Modrinth launchers (NeoForge bundles available ≥ 1.21.x)
 
 Benefits of the split:
 

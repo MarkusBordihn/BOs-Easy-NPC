@@ -31,10 +31,9 @@ public class ModMenuTypes {
 
   public static final DeferredRegister<MenuType<?>> MENU_TYPES =
       DeferredRegister.create(ForgeRegistries.MENU_TYPES, Constants.MOD_ID);
-
-  private ModMenuTypes() {}
-
   public static final RegistryObject<MenuType<DialogMenuWrapper>> DIALOG_MENU =
       MENU_TYPES.register(
           ModMenuType.DIALOG.getName(), () -> IForgeMenuType.create(DialogMenuWrapper::new));
+
+  private ModMenuTypes() {}
 }

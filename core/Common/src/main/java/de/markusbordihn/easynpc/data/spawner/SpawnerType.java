@@ -30,11 +30,7 @@ public enum SpawnerType implements StringRepresentable {
   SINGLE_SPAWNER,
   WORLD_SPAWNER;
 
-  private final String name;
-
-  SpawnerType() {
-    this.name = this.name().toLowerCase(Locale.ROOT);
-  }
+  private final String name = this.name().toLowerCase(Locale.ROOT);
 
   public String getId() {
     return this.name;

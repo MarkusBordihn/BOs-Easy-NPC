@@ -17,26 +17,13 @@
       return;
     }
 
-    // Map CatSkinVariant to Minecraft CatVariant
-    ResourceKey<CatVariant> catVariantKey =
-        switch (catSkinVariant) {
-          case ALL_BLACK -> CatVariants.ALL_BLACK;
-          case BLACK -> CatVariants.BLACK;
-          case BRITISH_SHORTHAIR -> CatVariants.BRITISH_SHORTHAIR;
-          case CALICO -> CatVariants.CALICO;
-          case JELLIE -> CatVariants.JELLIE;
-          case OCELOT, TABBY -> CatVariants.TABBY;
-          case PERSIAN -> CatVariants.PERSIAN;
-          case RAGDOLL -> CatVariants.RAGDOLL;
-          case RED -> CatVariants.RED;
-          case SIAMESE -> CatVariants.SIAMESE;
-          case WHITE -> CatVariants.WHITE;
-        };
-
-    // Get the Holder from the registry and set it
+    ResourceKey<CatVariant> catVariantKey = catSkinVariant.getVanillaVariant();
     if (this.level() != null) {
       Holder<CatVariant> catVariantHolder =
-          this.level().registryAccess().lookupOrThrow(Registries.CAT_VARIANT).getOrThrow(catVariantKey);
+          this.level()
+              .registryAccess()
+              .lookupOrThrow(Registries.CAT_VARIANT)
+              .getOrThrow(catVariantKey);
       ReflectionUtils.invokeMethod(
           this,
           new String[]{"setVariant", "m_328033_", "method_6882"},
