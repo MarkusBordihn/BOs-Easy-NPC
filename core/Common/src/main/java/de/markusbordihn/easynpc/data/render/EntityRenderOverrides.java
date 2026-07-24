@@ -69,7 +69,7 @@ public record EntityRenderOverrides(
 
   public static EntityRenderOverrides withCustomModel(
       RenderType renderType, EntityType<?> entityType) {
-    return NONE.withRenderType(renderType, entityType);
+    return NONE.withRenderType(renderType, entityType).withHideNameTag(true);
   }
 
   public EntityRenderOverrides withRootRotation(CustomRotation rotation) {

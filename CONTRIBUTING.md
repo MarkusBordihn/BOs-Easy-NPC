@@ -35,8 +35,8 @@ and an otherwise clean mod setup unless requested otherwise by a maintainer.
 Small fixes may be submitted directly. This includes typo fixes, small documentation updates, and
 obvious one-line bug fixes.
 
-For larger changes, please open or comment on an issue before submitting a pull request.
-This applies to new features, refactors, architecture changes, dependency changes, behavior changes,
+For larger changes, please open or comment on an issue before submitting a pull request. This
+applies to new features, refactors, architecture changes, dependency changes, behavior changes,
 broad formatting changes, and other changes with a large review surface.
 
 Large pull requests should link the related issue and stay within the agreed scope. Maintainers may

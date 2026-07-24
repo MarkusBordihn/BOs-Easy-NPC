@@ -39,6 +39,7 @@ public enum ObjectiveType {
   BOW_ATTACK("bow", 4),
   CLOSE_DOOR("close_door", 8),
   CROSSBOW_ATTACK("crossbow", 4),
+  FACTION_HURT_BY_TARGET("faction_hurt_by_target", 2),
   FLEE_CREEPER("creeper", 3),
   FLEE_MOB("mob", 3),
   FLEE_MONSTER("monster", 3),

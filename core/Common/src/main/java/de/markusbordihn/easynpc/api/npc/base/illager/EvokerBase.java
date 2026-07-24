@@ -67,6 +67,11 @@ public class EvokerBase extends EvokerRaw implements BaseEasyNPC<EvokerRaw> {
   }
 
   @Override
+  public boolean canUseHead() {
+    return true;
+  }
+
+  @Override
   public SoundDataSet getDefaultSoundDataSet(SoundDataSet soundDataSet, String variantName) {
     soundDataSet.addDefaultSound(SoundType.AMBIENT, SoundEvents.EVOKER_AMBIENT);
     soundDataSet.addDefaultSound(SoundType.DEATH, SoundEvents.EVOKER_DEATH);

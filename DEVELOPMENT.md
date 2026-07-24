@@ -7,7 +7,8 @@ build-system edge cases across different mod loaders and tooling:
 - config-ui - the optional configuration UI mod, built against core
 - bundle - a convenience meta package that declares core + config-ui as dependencies
 
-Why split? A pure Gradle multi-project setup does not support all combinations of loader plugins (Fabric Loom, ForgeGradle/NeoForge) and publication tasks at once.
+Why split? A pure Gradle multi-project setup does not support all combinations of loader plugins
+(Fabric Loom, ForgeGradle/NeoForge) and publication tasks at once.
 
 Keeping the modules separate lets us:
 
@@ -36,8 +37,7 @@ Each of the three top-level folders is its own Gradle build with subprojects per
   - NeoForge/ - meta package declaring core + config-ui dependencies
 
 Note: The exact set of loader subprojects in your clone may vary by branch/version; check the folder
-tree.
-NeoForge targets start with Minecraft 1.21.x.
+tree. NeoForge targets start with Minecraft 1.21.x.
 
 ### Project overview
 
@@ -49,13 +49,13 @@ NeoForge targets start with Minecraft 1.21.x.
 
 ## Artifact flow (Maven Local) 🔁
 
-Artifacts are exchanged via your local Maven repository (~/.m2/repository) using Gradle's
-mavenLocal () repository:
+Artifacts are exchanged via your local Maven repository (~/.m2/repository) using Gradle's mavenLocal
+() repository:
 
 - Building core publishes core artifacts to Maven Local automatically.
 - Building config-ui resolves core from Maven Local and then publishes config-ui to Maven Local.
-- Building bundle resolves both core and config-ui from Maven Local and creates a meta package
-  per loader (dependencies only, no jar-in-jar).
+- Building bundle resolves both core and config-ui from Maven Local and creates a meta package per
+  loader (dependencies only, no jar-in-jar).
 
 Coordinates (examples):
 
@@ -96,8 +96,8 @@ config-ui > bundle):
   development)
 
 **Performance tip:** Build caches (Gradle cache, Loom cache, Forge mappings cache) are kept intact
-for maximum performance. Only Maven Local artifacts are cleaned when needed.
-The build system uses intelligent dependency change detection (`changing = true` + 5-minute cache)
+for maximum performance. Only Maven Local artifacts are cleaned when needed. The build system uses
+intelligent dependency change detection (`changing = true` + 5-minute cache)
 to automatically detect when core changes and config-ui/bundle need rebuilding.
 
 **Note:** Publishing tasks (modrinth, curseforge) are available in individual project build files
@@ -211,8 +211,8 @@ This keeps loader-specific plugins isolated and avoids multi-project configurati
 
 - core
   - Contains the gameplay/NPC logic and data
-  - Split into Common (shared sources) + loader-specific subprojects (Fabric, Forge, NeoForge
-    where applicable; NeoForge available ≥ 1.21.x)
+  - Split into Common (shared sources) + loader-specific subprojects (Fabric, Forge, NeoForge where
+    applicable; NeoForge available ≥ 1.21.x)
 - config-ui
   - Optional UI layer separated from core
   - Depends on core artifacts via Maven Local
@@ -286,9 +286,8 @@ If Gradle caches are corrupted:
 
 ## Support policy 📣
 
-This repository is maintained as time permits.
-Developer support cannot be provided directly.
-For loader/tooling specifics, please refer to the official channels:
+This repository is maintained as time permits. Developer support cannot be provided directly. For
+loader/tooling specifics, please refer to the official channels:
 
 - Fabric: Fabric Loom, Fabric API, and Fabric Loader docs/support
 - Forge: ForgeGradle/Forge documentation and community support

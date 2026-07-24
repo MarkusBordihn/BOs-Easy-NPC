@@ -199,11 +199,13 @@ public class RendererManager {
     targetEntity.setOnGround(sourceEntity.onGround());
     targetEntity.setDeltaMovement(sourceEntity.getDeltaMovement());
 
-    // Custom name support
+    // Custom name support, needed for name based textures like "jeb_" or "Toast".
     if (sourceEntity.hasCustomName()) {
       targetEntity.setCustomName(sourceEntity.getCustomName());
-      targetEntity.setCustomNameVisible(sourceEntity.isCustomNameVisible());
+    } else if (targetEntity.hasCustomName()) {
+      targetEntity.setCustomName(null);
     }
+    targetEntity.setCustomNameVisible(false);
 
     // Sync entity pose, if available.
     if (sourceEntity.getPose() != targetEntity.getPose()) {

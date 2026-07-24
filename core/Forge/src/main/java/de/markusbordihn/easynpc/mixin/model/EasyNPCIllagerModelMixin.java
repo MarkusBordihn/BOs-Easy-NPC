@@ -24,9 +24,11 @@ import de.markusbordihn.easynpc.client.model.EasyNPCModelManager;
 import de.markusbordihn.easynpc.client.model.EasyNPCModelManagerAccessor;
 import de.markusbordihn.easynpc.client.renderer.entity.state.EasyNPCRenderStateExtension;
 import de.markusbordihn.easynpc.data.model.ModelPartType;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.monster.illager.IllagerModel;
 import net.minecraft.client.renderer.entity.state.IllagerRenderState;
+import net.minecraft.world.entity.monster.illager.AbstractIllager;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -73,8 +75,22 @@ public class EasyNPCIllagerModelMixin<T extends IllagerRenderState>
   private void setupNpcAnimStart(T renderState, CallbackInfo callbackInfo) {
     if (renderState instanceof EasyNPCRenderStateExtension extension
         && EasyNPCModel.setupAnimationStart(extension, this.easyNPC$modelManager)) {
+      this.easyNPC$applyCrossedArms(extension);
       callbackInfo.cancel();
     }
+  }
+
+  @Unique
+  private void easyNPC$applyCrossedArms(EasyNPCRenderStateExtension extension) {
+    EasyNPC<?> easyNPC = EasyNPCModel.getEasyNPC(extension);
+    if (easyNPC == null || !(easyNPC.getEntity() instanceof AbstractIllager illager)) {
+      return;
+    }
+
+    boolean hasCrossedArms = illager.getArmPose() == AbstractIllager.IllagerArmPose.CROSSED;
+    this.arms.visible = hasCrossedArms;
+    this.leftArm.visible = !hasCrossedArms;
+    this.rightArm.visible = !hasCrossedArms;
   }
 
   @Inject(

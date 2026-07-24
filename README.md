@@ -19,19 +19,18 @@
 
 [![Wiki](https://img.shields.io/badge/dynamic/json?label=Wiki&labelColor=black&color=grey&query=title&url=https://api.modrinth.com/v2/project/CgGEe1h3&style=flat&logo=github)][wiki]
 
-Easy NPC provides a simplified system for creating custom NPCs with dialogs, trading,
-and interactions for map makers, RPGs, adventure servers, modpacks, and other mods.
+Easy NPC provides a simplified system for creating custom NPCs with dialogs, trading, and
+interactions for map makers, RPGs, adventure servers, modpacks, and other mods.
 
-This project is the **Easy NPC Bundle**, a launcher convenience package that installs the
-required Easy NPC modules automatically.
+This project is the **Easy NPC Bundle**, a launcher convenience package that installs the required
+Easy NPC modules automatically.
 
 This bundle does not contain the Easy NPC modules themselves.
 
 ## 📦 Installation Overview
 
-Easy NPC is split into multiple modules.
-The bundle exists to simplify installation via launchers that support automatic dependency
-resolution.
+Easy NPC is split into multiple modules. The bundle exists to simplify installation via launchers
+that support automatic dependency resolution.
 
 ### Option A: Launcher install (recommended)
 
@@ -69,8 +68,8 @@ Basic integration for Armourer's Workshop to use skins from the library.
 
 ### [Epic Fight Mod][epic_fight_mod]
 
-Built in support for Epic Fight is included since Easy NPC **6.4.x**.
-No additional integration mod is required.
+Built in support for Epic Fight is included since Easy NPC **6.4.x**. No additional integration mod
+is required.
 
 ### [Immersive Melodies][immersive-melodies]
 
@@ -103,9 +102,8 @@ This approach caused several technical issues:
 - Incompatibilities when only the Easy NPC Core was required as a dependency
 - Increased maintenance and support complexity
 
-Modern launchers already provide dependency resolution.
-Using this mechanism results in a cleaner, more predictable setup and allows Easy NPC modules to be
-updated independently.
+Modern launchers already provide dependency resolution. Using this mechanism results in a cleaner,
+more predictable setup and allows Easy NPC modules to be updated independently.
 
 ## ℹ️ More Information
 
@@ -118,8 +116,8 @@ Please report issues and feature requests over the [issues link][issues]. I'm ha
 ## 🧠 AI Assistance
 
 AI-assisted tools are used to improve documentation, translations, and repetitive code sections.
-This allows more time to be spent on feature development, maintenance, and long-term support.
-All technical concepts, gameplay logic, and final assets are created manually.
+This allows more time to be spent on feature development, maintenance, and long-term support. All
+technical concepts, gameplay logic, and final assets are created manually.
 See [AI ASSISTANCE](AI_ASSISTANCE.md) for full details.
 
 ## ⚖️ License
