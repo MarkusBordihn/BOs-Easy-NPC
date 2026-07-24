@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.entity.easynpc.handlers;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.data.display.DisplayAttributeDataSet;
 import de.markusbordihn.easynpc.data.display.DisplayAttributeType;
 import de.markusbordihn.easynpc.data.display.NameVisibilityType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
@@ -29,6 +30,7 @@ import java.util.Objects;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.scores.Team;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -39,6 +41,8 @@ public class VisibilityHandler {
 
   private static final double NEAR_NAME_VISIBILITY_RANGE = 8.0d;
   private static final double MID_NAME_VISIBILITY_RANGE = 16.0d;
+  private static final long DAY_LENGTH = 24000L;
+  private static final long DAY_TIME_END = 12000L;
 
   private VisibilityHandler() {}
 
@@ -71,100 +75,79 @@ public class VisibilityHandler {
       return isInvisibleToPlayers;
     }
 
-    if (displayAttributeData.hasDisplayAttribute(DisplayAttributeType.VISIBLE)
-        && !displayAttributeData.getDisplayBooleanAttribute(DisplayAttributeType.VISIBLE)) {
+    return !isVisible(
+        easyNPC,
+        displayAttributeData.getDisplayAttributeData(),
+        player,
+        player.level().getDayTime());
+  }
+
+  public static boolean isVisibleToPlayerAtDayTime(
+      final EasyNPC<?> easyNPC, final Player player, final long dayTime) {
+    DisplayAttributeDataCapable<?> displayAttributeData = easyNPC.getEasyNPCDisplayAttributeData();
+    return displayAttributeData == null
+        || isVisible(easyNPC, displayAttributeData.getDisplayAttributeData(), player, dayTime);
+  }
+
+  private static boolean isVisible(
+      final EasyNPC<?> easyNPC,
+      final DisplayAttributeDataSet displayAttributes,
+      final Player player,
+      final long dayTime) {
+
+    return displayAttributes.booleanValue(DisplayAttributeType.VISIBLE)
+        && isVisibleAtDayTime(displayAttributes, player.level(), dayTime)
+        && isVisibleInGameMode(displayAttributes, player)
+        && isVisibleToOwner(easyNPC, displayAttributes, player)
+        && isVisibleToTeam(easyNPC, displayAttributes, player);
+  }
+
+  private static boolean isVisibleAtDayTime(
+      final DisplayAttributeDataSet displayAttributes, final Level level, final long dayTime) {
+    if (level.dimensionType().hasFixedTime()) {
+      return true;
+    }
+
+    boolean isDayTime = dayTime % DAY_LENGTH < DAY_TIME_END;
+    return displayAttributes.booleanValue(
+        isDayTime ? DisplayAttributeType.VISIBLE_AT_DAY : DisplayAttributeType.VISIBLE_AT_NIGHT);
+  }
+
+  private static boolean isVisibleInGameMode(
+      final DisplayAttributeDataSet displayAttributes, final Player player) {
+    if (player.isSpectator()) {
+      return displayAttributes.booleanValue(DisplayAttributeType.VISIBLE_IN_SPECTATOR);
+    }
+
+    if (player.isCreative()) {
+      return displayAttributes.booleanValue(DisplayAttributeType.VISIBLE_IN_CREATIVE);
+    }
+
+    return displayAttributes.booleanValue(DisplayAttributeType.VISIBLE_IN_STANDARD);
+  }
+
+  private static boolean isVisibleToOwner(
+      final EasyNPC<?> easyNPC,
+      final DisplayAttributeDataSet displayAttributes,
+      final Player player) {
+    if (displayAttributes.booleanValue(DisplayAttributeType.VISIBLE_TO_OWNER)) {
       return true;
     }
 
     OwnerDataCapable<?> ownerData = easyNPC.getEasyNPCOwnerData();
-    boolean isOwner =
-        ownerData != null
-            && ownerData.hasNPCOwner()
-            && Objects.equals(ownerData.getOwnerUUID(), player.getUUID());
-    boolean visibleToOwnerEnabled =
-        displayAttributeData.hasDisplayAttribute(DisplayAttributeType.VISIBLE_TO_OWNER)
-            && displayAttributeData.getDisplayBooleanAttribute(
-                DisplayAttributeType.VISIBLE_TO_OWNER);
+    return ownerData == null || !Objects.equals(ownerData.getOwnerUUID(), player.getUUID());
+  }
 
-    if (isOwner && visibleToOwnerEnabled) {
-      return false;
+  private static boolean isVisibleToTeam(
+      final EasyNPC<?> easyNPC,
+      final DisplayAttributeDataSet displayAttributes,
+      final Player player) {
+    if (displayAttributes.booleanValue(DisplayAttributeType.VISIBLE_TO_TEAM)) {
+      return true;
     }
 
-    Team playerTeam = player.getTeam();
     Team npcTeam = easyNPC.getLivingEntity().getTeam();
-    boolean visibleToTeamEnabled =
-        displayAttributeData.hasDisplayAttribute(DisplayAttributeType.VISIBLE_TO_TEAM)
-            && displayAttributeData.getDisplayBooleanAttribute(
-                DisplayAttributeType.VISIBLE_TO_TEAM);
-    if (npcTeam != null
-        && npcTeam.equals(playerTeam)
-        && visibleToTeamEnabled
-        && npcTeam.canSeeFriendlyInvisibles()) {
-      return false;
-    }
-
-    boolean isCreativeMode = player.isCreative();
-    boolean isSpectatorMode = player.isSpectator();
-    boolean isStandardMode = !isCreativeMode && !isSpectatorMode;
-
-    boolean gameModeVisibilitySet = false;
-    boolean visibleInCurrentGameMode = false;
-    if (isCreativeMode
-        && displayAttributeData.hasDisplayAttribute(DisplayAttributeType.VISIBLE_IN_CREATIVE)) {
-      gameModeVisibilitySet = true;
-      visibleInCurrentGameMode =
-          displayAttributeData.getDisplayBooleanAttribute(DisplayAttributeType.VISIBLE_IN_CREATIVE);
-    } else if (isSpectatorMode
-        && displayAttributeData.hasDisplayAttribute(DisplayAttributeType.VISIBLE_IN_SPECTATOR)) {
-      gameModeVisibilitySet = true;
-      visibleInCurrentGameMode =
-          displayAttributeData.getDisplayBooleanAttribute(
-              DisplayAttributeType.VISIBLE_IN_SPECTATOR);
-    } else if (isStandardMode
-        && displayAttributeData.hasDisplayAttribute(DisplayAttributeType.VISIBLE_IN_STANDARD)) {
-      gameModeVisibilitySet = true;
-      visibleInCurrentGameMode =
-          displayAttributeData.getDisplayBooleanAttribute(DisplayAttributeType.VISIBLE_IN_STANDARD);
-    }
-
-    if (gameModeVisibilitySet && visibleInCurrentGameMode) {
-      return false;
-    }
-
-    long dayTime = player.level().getDayTime() % 24000;
-    boolean isDayTime = (dayTime >= 1000 && dayTime <= 13000);
-    boolean isNightTime = !isDayTime;
-    boolean visibleAtDaySet =
-        displayAttributeData.hasDisplayAttribute(DisplayAttributeType.VISIBLE_AT_DAY);
-    boolean visibleAtNightSet =
-        displayAttributeData.hasDisplayAttribute(DisplayAttributeType.VISIBLE_AT_NIGHT);
-
-    if ((isDayTime && visibleAtDaySet) || (isNightTime && visibleAtNightSet)) {
-      boolean visibleAtCurrentTime =
-          isDayTime
-              ? displayAttributeData.getDisplayBooleanAttribute(DisplayAttributeType.VISIBLE_AT_DAY)
-              : displayAttributeData.getDisplayBooleanAttribute(
-                  DisplayAttributeType.VISIBLE_AT_NIGHT);
-
-      if (visibleAtCurrentTime) {
-        return false;
-      }
-
-      if (!gameModeVisibilitySet) {
-        return true;
-      }
-    }
-
-    if (gameModeVisibilitySet && !visibleInCurrentGameMode) {
-      return true;
-    }
-
-    if ((isDayTime && !visibleAtDaySet && visibleAtNightSet)
-        || (isNightTime && !visibleAtNightSet && visibleAtDaySet)) {
-      return true;
-    }
-
-    return false;
+    return npcTeam == null || !npcTeam.equals(player.getTeam());
   }
 
   public static boolean handleIsCustomNameVisible(

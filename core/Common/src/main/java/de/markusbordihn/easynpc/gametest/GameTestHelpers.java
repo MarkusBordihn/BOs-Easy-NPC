@@ -44,7 +44,12 @@ public class GameTestHelpers {
   private GameTestHelpers() {}
 
   public static ServerPlayer mockServerPlayer(GameTestHelper helper, Vec3 position) {
-    ServerPlayer serverPlayer = makeConnectedMockServerPlayer(helper);
+    return mockServerPlayer(helper, position, "test-mock-player");
+  }
+
+  public static ServerPlayer mockServerPlayer(
+      GameTestHelper helper, Vec3 position, String playerName) {
+    ServerPlayer serverPlayer = makeConnectedMockServerPlayer(helper, playerName);
     GameTestHelpers.assertNotNull(helper, "ServerPlayer is null!", serverPlayer);
     serverPlayer.setPos(helper.absoluteVec(position));
     helper.assertEntityPresent(
@@ -52,17 +57,11 @@ public class GameTestHelpers {
     return serverPlayer;
   }
 
-  /**
-   * Mirrors {@link GameTestHelper#makeMockServerPlayerInLevel()} but backs the connection with a
-   * live {@link EmbeddedChannel}. The vanilla helper uses a channel-less connection, which makes
-   * the Forge post-login network sync fail with a {@code Connection.channel()}
-   * NullPointerException.
-   */
-  private static ServerPlayer makeConnectedMockServerPlayer(GameTestHelper helper) {
+  private static ServerPlayer makeConnectedMockServerPlayer(
+      GameTestHelper helper, String playerName) {
     ServerLevel level = helper.getLevel();
     ServerPlayer serverPlayer =
-        new ServerPlayer(
-            level.getServer(), level, new GameProfile(UUID.randomUUID(), "test-mock-player")) {
+        new ServerPlayer(level.getServer(), level, new GameProfile(UUID.randomUUID(), playerName)) {
           @Override
           public boolean isSpectator() {
             return false;
@@ -95,6 +94,7 @@ public class GameTestHelpers {
     if (entity instanceof EasyNPC<?> easyNPC) {
       return easyNPC;
     }
+
     helper.fail("Entity " + entityType + " is not an EasyNPC!");
     return null;
   }
@@ -105,12 +105,14 @@ public class GameTestHelpers {
       helper.fail("EntityType is null!");
       return null;
     }
+
     Player player = helper.makeMockPlayer();
     T entity = (T) entityType.create(player.level());
     if (entity == null) {
       helper.fail("Entity for " + entityType + " is null!");
       return null;
     }
+
     if (!player.level().addFreshEntity(entity)) {
       helper.fail("Failed to spawn entity " + entityType + "!");
       return null;
@@ -121,17 +123,13 @@ public class GameTestHelpers {
 
   public static void assertEquals(
       GameTestHelper helper, String message, Object expected, Object actual) {
-    if (expected.equals(actual)) {
-      helper.succeed();
-    } else {
-      helper.fail(message);
+    if (!expected.equals(actual)) {
+      helper.fail(message + " (expected: " + expected + ", actual: " + actual + ")");
     }
   }
 
   public static void assertTrue(GameTestHelper helper, String message, boolean condition) {
-    if (condition) {
-      helper.succeed();
-    } else {
+    if (!condition) {
       helper.fail(message);
     }
   }

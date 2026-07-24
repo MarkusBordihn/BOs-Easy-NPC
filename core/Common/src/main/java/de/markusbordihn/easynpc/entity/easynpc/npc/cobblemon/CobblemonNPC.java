@@ -24,6 +24,7 @@ import de.markusbordihn.easynpc.compat.cobblemon.CobblemonSpeciesManager;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
 import de.markusbordihn.easynpc.data.render.RenderDataEntry;
 import de.markusbordihn.easynpc.data.render.RenderType;
+import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;
@@ -60,7 +61,7 @@ public class CobblemonNPC extends PathfinderMobRaw {
   @Override
   public void defineSynchedRenderData() {
     this.defineSynchedEntityData(
-        de.markusbordihn.easynpc.data.synched.SynchedDataIndex.RENDER_DATA,
+        SynchedDataIndex.RENDER_DATA,
         new RenderDataEntry(
             RenderType.COBBLEMON_ENTITY, null, CobblemonSpeciesManager.DEFAULT_MODEL));
   }

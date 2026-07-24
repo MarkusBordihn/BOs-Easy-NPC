@@ -85,16 +85,23 @@ public class EquipmentConfigurationMenu extends ConfigurationMenu {
 
     // Player Companion Amor Slots (left / slot: 3 - 0)
     ModelDataCapable<?> modelData = this.getEasyNPC().getEasyNPCModelData();
-    if (modelData == null || modelData.canUseArmor()) {
+    boolean canUseArmor = modelData == null || modelData.canUseArmor();
+    boolean canUseHead = canUseArmor || modelData.canUseHead();
+    if (canUseHead) {
       this.loadArmor();
       int playerCompanionEquipmentLeftStartPositionY = 44;
       int playerCompanionEquipmentLeftStartPositionX = 98;
       for (int armorSlot = 3; armorSlot >= 0; armorSlot--) {
+        int armorContainerIndex = 3 - armorSlot;
+        if (!canUseArmor && armorContainerIndex != EquipmentSlot.HEAD.getIndex()) {
+          continue;
+        }
+
         this.addSlot(
             new ArmorSlot(
                 this,
                 this.armorContainer,
-                3 - armorSlot,
+                armorContainerIndex,
                 playerCompanionEquipmentLeftStartPositionX,
                 playerCompanionEquipmentLeftStartPositionY + armorSlot * SLOT_SIZE));
       }

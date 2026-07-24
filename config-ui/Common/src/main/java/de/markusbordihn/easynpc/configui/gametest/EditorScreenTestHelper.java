@@ -110,5 +110,6 @@ public class EditorScreenTestHelper {
             + serverPlayer.containerMenu.getType(),
         menuType,
         serverPlayer.containerMenu.getType());
+    helper.succeed();
   }
 }

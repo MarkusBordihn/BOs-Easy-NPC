@@ -74,8 +74,17 @@ public class EasyNPCIllagerModelMixin<T extends AbstractIllager>
       T illager, float f, float g, float h, float i, float j, CallbackInfo callbackInfo) {
     if (illager instanceof EasyNPC<?> easyNPC
         && EasyNPCModel.setupAnimationStart(easyNPC, this.easyNPC$modelManager)) {
+      this.easyNPC$applyCrossedArms(illager);
       callbackInfo.cancel();
     }
+  }
+
+  @Unique
+  private void easyNPC$applyCrossedArms(AbstractIllager illager) {
+    boolean hasCrossedArms = illager.getArmPose() == AbstractIllager.IllagerArmPose.CROSSED;
+    this.arms.visible = hasCrossedArms;
+    this.leftArm.visible = !hasCrossedArms;
+    this.rightArm.visible = !hasCrossedArms;
   }
 
   @Inject(

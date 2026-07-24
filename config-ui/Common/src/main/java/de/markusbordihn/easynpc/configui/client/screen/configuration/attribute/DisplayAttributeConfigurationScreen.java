@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.configui.client.screen.configuration.attribute;
 
+import de.markusbordihn.easynpc.client.screen.components.SpinButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextField;
 import de.markusbordihn.easynpc.configui.client.renderer.screen.EntityConfigScreenRenderer;
@@ -29,9 +30,13 @@ import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.display.DisplayAttributeType;
 import de.markusbordihn.easynpc.data.render.EntityRenderConfig;
 import de.markusbordihn.easynpc.entity.easynpc.data.DisplayAttributeDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.handlers.VisibilityHandler;
+import de.markusbordihn.easynpc.network.components.TextComponent;
 import de.markusbordihn.easynpc.utils.ValueUtils;
-import java.util.Arrays;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Locale;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
@@ -41,27 +46,26 @@ import net.minecraft.world.entity.player.Inventory;
 public class DisplayAttributeConfigurationScreen<T extends ConfigurationMenu>
     extends AttributeConfigurationScreen<T> {
 
-  private static final HashSet<DisplayAttributeType> TIME_VISIBILITY_ATTRIBUTES =
-      new HashSet<>(
-          Arrays.asList(
-              DisplayAttributeType.VISIBLE_AT_DAY, DisplayAttributeType.VISIBLE_AT_NIGHT));
+  private static final List<DisplayAttributeType> TIME_VISIBILITY_ATTRIBUTES =
+      List.of(DisplayAttributeType.VISIBLE_AT_DAY, DisplayAttributeType.VISIBLE_AT_NIGHT);
 
-  private static final HashSet<DisplayAttributeType> GAMEMODE_VISIBILITY_ATTRIBUTES =
-      new HashSet<>(
-          Arrays.asList(
-              DisplayAttributeType.VISIBLE_IN_CREATIVE,
-              DisplayAttributeType.VISIBLE_IN_SPECTATOR,
-              DisplayAttributeType.VISIBLE_IN_STANDARD));
+  private static final List<DisplayAttributeType> GAMEMODE_VISIBILITY_ATTRIBUTES =
+      List.of(
+          DisplayAttributeType.VISIBLE_IN_STANDARD,
+          DisplayAttributeType.VISIBLE_IN_CREATIVE,
+          DisplayAttributeType.VISIBLE_IN_SPECTATOR);
 
-  private static final HashSet<DisplayAttributeType> SPECIAL_VISIBILITY_ATTRIBUTES =
-      new HashSet<>(
-          Arrays.asList(
-              DisplayAttributeType.VISIBLE_TO_OWNER, DisplayAttributeType.VISIBLE_TO_TEAM));
+  private static final List<DisplayAttributeType> SPECIAL_VISIBILITY_ATTRIBUTES =
+      List.of(DisplayAttributeType.VISIBLE_TO_OWNER, DisplayAttributeType.VISIBLE_TO_TEAM);
+
+  private static final long PREVIEW_DAY_TIME = 6000L;
+  private static final long PREVIEW_NIGHT_TIME = 18000L;
 
   private final HashSet<Checkbox> visibilityCheckboxSet = new HashSet<>();
 
   private EditBox lightLevelBox;
   private Button lightLevelSaveButton;
+  private PreviewTime previewTime = PreviewTime.DAY;
 
   public DisplayAttributeConfigurationScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
@@ -207,6 +211,24 @@ public class DisplayAttributeConfigurationScreen<T extends ConfigurationMenu>
                         this.getEasyNPCUUID(),
                         DisplayAttributeType.INTERACTION_WHEN_INVISIBLE,
                         checkbox.selected())));
+
+    // Preview to verify the configured visibility without changing the world time.
+    this.addRenderableWidget(
+        new SpinButton<>(
+            secondButtonRow + 60,
+            this.buttonTopPos + 215,
+            100,
+            16,
+            new LinkedHashSet<>(List.of(PreviewTime.values())),
+            this.previewTime,
+            spinButton -> this.previewTime = spinButton.get()));
+  }
+
+  private boolean isVisibleInPreview() {
+    return this.minecraft == null
+        || this.minecraft.player == null
+        || VisibilityHandler.isVisibleToPlayerAtDayTime(
+            this.getEasyNPC(), this.minecraft.player, this.previewTime.dayTime);
   }
 
   @Override
@@ -227,13 +249,12 @@ public class DisplayAttributeConfigurationScreen<T extends ConfigurationMenu>
 
     // Calculate section positions
     int timeSectionY = this.buttonTopPos + 65;
-    int specialSectionY = this.buttonTopPos + 150;
+    int specialSectionY = this.buttonTopPos + 145;
 
     // Time visibility section header
     Text.drawConfigString(
         guiGraphics, this.font, "time_visibility_settings", firstButtonRow, timeSectionY, 0x555555);
 
-    // Game mode visibility section header (jetzt in zweiter Spalte)
     Text.drawConfigString(
         guiGraphics,
         this.font,
@@ -251,14 +272,45 @@ public class DisplayAttributeConfigurationScreen<T extends ConfigurationMenu>
         specialSectionY,
         0x555555);
 
-    if (getEasyNPC() != null) {
-      int scale = 30;
-      float rotationYaw = this.leftPos + 50 - this.xMouse;
-      float rotationPitch = this.contentTopPos + 70 - this.yMouse;
-      EntityRenderConfig config =
-          EntityRenderConfig.guiScaled(
-              this.leftPos + 260, this.contentTopPos + 180, scale, rotationYaw, rotationPitch);
-      EntityConfigScreenRenderer.renderEntity(guiGraphics, getEasyNPC(), config);
+    if (getEasyNPC() == null) {
+      return;
+    }
+
+    if (!this.isVisibleInPreview()) {
+      Text.drawConfigString(
+          guiGraphics,
+          this.font,
+          "preview_hidden",
+          secondButtonRow + 80,
+          this.contentTopPos + 150,
+          0x999999);
+      return;
+    }
+
+    int scale = 30;
+    float rotationYaw = this.leftPos + 50 - this.xMouse;
+    float rotationPitch = this.contentTopPos + 70 - this.yMouse;
+    EntityRenderConfig config =
+        EntityRenderConfig.guiScaled(
+            this.leftPos + 260, this.contentTopPos + 190, scale, rotationYaw, rotationPitch);
+    EntityConfigScreenRenderer.renderEntity(guiGraphics, getEasyNPC(), config);
+  }
+
+  private enum PreviewTime {
+    DAY(PREVIEW_DAY_TIME),
+    NIGHT(PREVIEW_NIGHT_TIME);
+
+    private final long dayTime;
+
+    PreviewTime(long dayTime) {
+      this.dayTime = dayTime;
+    }
+
+    @Override
+    public String toString() {
+      return TextComponent.getTranslatedConfigText(
+              "preview_time_" + this.name().toLowerCase(Locale.ROOT))
+          .getString();
     }
   }
 }

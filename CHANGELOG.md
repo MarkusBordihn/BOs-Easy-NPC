@@ -8,6 +8,28 @@ For the full changelog, please go to the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 7.4.0
+
+- Fixed #807 by no longer pulling every same-type NPC within 32 blocks into a "Defend Self" fight.
+- Fixed #805 by evaluating all visibility settings together instead of stopping at the first one.
+- Fixed #804 by keeping the custom name on Doppler NPCs for name based textures and the name tag.
+- Fixed #803 by adjusting assets to match typical Minecraft style instead of generic UI style.
+- Fixed the day and night detection, which counted sunrise as night and sunset as day.
+- Fixed the visibility in the Nether and the End, which used the Overworld time.
+- Fixed the time and game mode visibility checkboxes appearing in a random order.
+- Fixed game tests only being able to fail on their first assertion, which hid later failures.
+- Fixed the "Saddled" horse skin variants, which never showed a saddle.
+- Changed "Visible to Owner" and "Visible to Team" to also follow day, night and game mode.
+- Changed Evoker, Illusioner and Vindicator variants without "Crossed Arms" to keep their arms down.
+- Added a "Defend Faction" objective that attacks whoever hurt a nearby faction member or player.
+- Added a system message when faction members fight each other and the faction stays out of it.
+- Added a head equipment slot for Illagers so their captain banner can be removed or swapped.
+- Added a day and night preview to the display configuration screen.
+- Added unit and game tests for the visibility attributes and the faction defense.
+- Improved the visibility check performance by reading the display attributes only once per check.
+- Improved display attributes from older versions by completing them with their defaults.
+- Improved the attack objective screen by disabling "Protect Owner" and "Defend Faction" when unset.
+
 ### 7.3.0
 
 - Improved skin variants by carrying their data as typed fields instead of parsing variant names.

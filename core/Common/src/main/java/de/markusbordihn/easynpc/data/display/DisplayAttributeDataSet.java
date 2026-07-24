@@ -32,6 +32,10 @@ public record DisplayAttributeDataSet(
 
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
+  public DisplayAttributeDataSet {
+    attributes = withDefaultsForMissingAttributes(attributes);
+  }
+
   public DisplayAttributeDataSet() {
     this(createDefaultAttributes());
   }
@@ -61,6 +65,18 @@ public record DisplayAttributeDataSet(
         DisplayAttributeType.NAME_VISIBILITY,
         new DisplayAttributeEntry(NameVisibilityType.ALWAYS.toString()));
     return map;
+  }
+
+  private static EnumMap<DisplayAttributeType, DisplayAttributeEntry>
+      withDefaultsForMissingAttributes(
+          EnumMap<DisplayAttributeType, DisplayAttributeEntry> attributes) {
+    EnumMap<DisplayAttributeType, DisplayAttributeEntry> mergedAttributes =
+        createDefaultAttributes();
+    if (attributes != null) {
+      mergedAttributes.putAll(attributes);
+    }
+
+    return mergedAttributes;
   }
 
   private static EnumMap<DisplayAttributeType, DisplayAttributeEntry> readAttributesFromList(
@@ -115,6 +131,11 @@ public record DisplayAttributeDataSet(
 
   public DisplayAttributeEntry getAttribute(DisplayAttributeType attributeType) {
     return attributes.get(attributeType);
+  }
+
+  public boolean booleanValue(DisplayAttributeType attributeType) {
+    DisplayAttributeEntry entry = attributes.get(attributeType);
+    return entry != null && entry.booleanValue();
   }
 
   public DisplayAttributeDataSet withAttribute(

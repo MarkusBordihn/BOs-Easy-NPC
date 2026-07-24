@@ -223,9 +223,9 @@ public class ConfigurationMenuHandler {
       case BASE_ATTRIBUTE -> AdditionalScreenData.addBaseAttributes(additionalSyncData, easyNPC);
       case NONE_DIALOG, BASIC_DIALOG, YES_NO_DIALOG, ADVANCED_DIALOG ->
           AdditionalScreenData.addDialogDataSet(additionalSyncData, easyNPC);
-      case ATTACK_OBJECTIVE, BASIC_OBJECTIVE, FLEE_OBJECTIVE, FOLLOW_OBJECTIVE, LOOK_OBJECTIVE ->
+      case BASIC_OBJECTIVE, FLEE_OBJECTIVE, FOLLOW_OBJECTIVE, LOOK_OBJECTIVE ->
           AdditionalScreenData.addObjectiveDataSet(additionalSyncData, easyNPC);
-      case TARGET_OBJECTIVE -> {
+      case ATTACK_OBJECTIVE, TARGET_OBJECTIVE -> {
         AdditionalScreenData.addObjectiveDataSet(additionalSyncData, easyNPC);
         FactionDataCapable<?> factionData = easyNPC.getEasyNPCFactionData();
         if (factionData != null && factionData.hasFactionName()) {

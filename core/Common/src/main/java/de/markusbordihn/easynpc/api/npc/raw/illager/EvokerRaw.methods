@@ -1,0 +1,9 @@
+  @Override
+  public AbstractIllager.IllagerArmPose getArmPose() {
+    AbstractIllager.IllagerArmPose armPose = super.getArmPose();
+    if (armPose == AbstractIllager.IllagerArmPose.CROSSED && !this.hasVariantTypeCrossedArms()) {
+      return AbstractIllager.IllagerArmPose.NEUTRAL;
+    }
+
+    return armPose;
+  }

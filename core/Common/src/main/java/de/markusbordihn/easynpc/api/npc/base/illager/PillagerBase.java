@@ -79,6 +79,11 @@ public class PillagerBase extends PillagerRaw implements BaseEasyNPC<PillagerRaw
   }
 
   @Override
+  public boolean canUseHead() {
+    return true;
+  }
+
+  @Override
   protected void registerGoals() {
     super.registerGoals();
     this.goalSelector.removeAllGoals(goal -> true);
