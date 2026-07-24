@@ -1,42 +1,81 @@
-## AI-Assistance Disclosure
+## 🤖 AI-Assistance Disclosure 1.0
 
-This project contains work created or refined with the assistance of AI-based tools.  
-As a neurodiverse developer with reading and writing difficulties, I use AI to support written
-communication, improve documentation, and assist with translations into languages I do not speak.
-AI is also used for code completion in repetitive or boilerplate scenarios and for generating early
-drafts that I then refine manually.
+This project contains work created or refined with the assistance of AI-based tools.
 
-Using these tools helps me spend significantly more time on feature development, maintenance,
-and long-term project support.
+As a neurodiverse developer with reading and writing difficulties, I use AI primarily as an
+accessibility and productivity tool.
 
-### Scope of AI Usage
+Reading, writing, spelling, and language-related tasks can require significantly more time and
+effort for me. AI helps me identify spelling issues, mixed-up letters, unclear wording, and
+translation problems that I might otherwise miss.
 
-AI tools are used primarily for:
+AI is also used for repetitive development tasks, autocomplete, boilerplate, documentation,
+debugging assistance, and implementation references.
 
-- Rewriting or improving documentation and comments
-- Creating translation drafts
-- Assisting with repetitive or boilerplate code patterns
-- Generating early concept sketches or placeholder ideas for artwork
+AI is used to reduce accessibility barriers and repetitive work, not to replace my own technical or
+creative skills, decision-making, or project ownership.
 
-These AI-generated concepts are used only as references and are not included as final assets.
+### 📌 Scope of AI Usage
 
-### Manual Work and Creative Control
+AI tools may be used for:
 
-All technical concepts, architectural decisions, algorithms, gameplay logic, and final
-implementations are created manually.  
-AI is not used to define system behavior or make engineering decisions, but rather to support
-productivity and clarity where appropriate.
+* Improving documentation, comments, descriptions, and release notes
+* Detecting spelling, wording, and readability issues
+* Creating translation drafts for languages I do not speak
+* Autocomplete, boilerplate, configuration structures, mappings, and other repetitive code patterns
+* Debugging assistance, explanations, and implementation references
+* Early non-visual planning notes or conceptual references
 
-The same applies to artistic work:  
-Final pixel art, 3D models, textures, icons, and other creative assets are hand-crafted.  
-AI may be used to explore ideas at a conceptual level, but final assets are created manually.
+AI-assisted code suggestions are reviewed, tested, and manually adapted before being included in the
+project.
 
-Some artwork may be created by commissioned artists. These assets follow their own copyright terms
-and are normally not AI-generated.
+Architecture, gameplay logic, system behavior, technical decisions, integration, testing, and final
+implementation responsibility remain under my control.
 
-### Licensing
+I do not claim that the project contains no AI-assisted code. AI-assisted tools may provide
+autocomplete, boilerplate, or small implementation suggestions, but the project is not developed
+through autonomous AI generation.
 
-The project’s code is provided under its open-source license.  
-Artistic assets, textures, models, icons, logos, and other visual materials are excluded from the
-open-source license and may not be reused without permission.  
-The use of AI assistance does not change or extend any licensing terms of this project.
+### 🎨 Artwork and Creative Work
+
+I have been creating pixel art and digital game assets manually for over 30 years.
+
+AI tools are not used as a replacement for my artistic skills, experience, or creative process. The
+project prioritizes human-created artwork.
+
+Final visual assets are created by me, contributed by trusted human collaborators with appropriate
+permission, commissioned from artists, or obtained from appropriately licensed sources.
+
+AI-generated visual outputs are not used as final visual assets in official releases. This includes
+pixel art, 3D models, textures, icons, logos, project avatars, promotional graphics, and other final
+graphical assets.
+
+AI may be used to discuss ideas or explore concepts, but AI-generated visual output is not used as a
+substitute for final human-created artwork.
+
+### 🚧 Development Placeholders
+
+During prototypes, experiments, test builds, or alpha versions, temporary placeholder assets may
+occasionally be used to explore ideas or test implementation details.
+
+Historical placeholders may therefore appear in older development history, archived files,
+screenshots, prototypes, or early public previews.
+
+Such placeholders should not be considered final release assets unless they have been replaced,
+recreated, appropriately licensed, or explicitly approved for continued use.
+
+Official releases prioritize human-created, commissioned, manually edited, or otherwise
+appropriately licensed visual assets.
+
+### 📄 Licensing
+
+The project's source code is provided under its respective open-source license.
+
+Artistic assets, textures, models, icons, logos, project avatars, promotional graphics, screenshots,
+and other visual materials are not automatically covered by the open-source code license unless
+explicitly stated otherwise.
+
+These materials may be subject to separate copyright, licensing, or usage restrictions.
+
+The use of AI assistance does not change, extend, or override any licensing or copyright terms that
+apply to the project or its assets.

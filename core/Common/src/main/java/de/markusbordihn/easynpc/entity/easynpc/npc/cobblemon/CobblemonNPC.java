@@ -61,7 +61,7 @@ public class CobblemonNPC extends PathfinderMobRaw {
 
   @Override
   public void defineSynchedRenderData(SynchedEntityData.Builder builder) {
-    defineSynchedEntityData(
+    this.defineSynchedEntityData(
         builder,
         SynchedDataIndex.RENDER_DATA,
         new RenderDataEntry(

@@ -66,6 +66,7 @@ public final class GameTestHelpers {
     if (entity instanceof EasyNPC<?> easyNPC) {
       return easyNPC;
     }
+
     helper.fail("Entity " + entityType + " is not an EasyNPC!");
     return null;
   }
@@ -77,12 +78,14 @@ public final class GameTestHelpers {
       helper.fail("EntityType is null!");
       return null;
     }
+
     Player player = helper.makeMockPlayer(GameType.DEFAULT_MODE);
     T entity = (T) entityType.create((ServerLevel) player.level(), EntitySpawnReason.COMMAND);
     if (entity == null) {
       helper.fail("Entity for " + entityType + " is null!");
       return null;
     }
+
     if (!player.level().addFreshEntity(entity)) {
       helper.fail("Failed to spawn entity " + entityType + "!");
       return null;
@@ -94,7 +97,7 @@ public final class GameTestHelpers {
   public static void assertEquals(
       GameTestHelper helper, String message, Object expected, Object actual) {
     if (!expected.equals(actual)) {
-      helper.fail(message);
+      helper.fail(message + " (expected: " + expected + ", actual: " + actual + ")");
     }
   }
 
@@ -109,6 +112,19 @@ public final class GameTestHelpers {
   }
 
   public static ServerPlayer mockServerPlayer(GameTestHelper helper, Vec3 position) {
+    return createMockServerPlayer(helper, position, "FakePlayer");
+  }
+
+  public static ServerPlayer mockServerPlayer(
+      GameTestHelper helper, Vec3 position, String playerName) {
+    ServerPlayer serverPlayer = createMockServerPlayer(helper, position, playerName);
+    // Add the mock player to the level so entity scans, such as faction member lookups, find it.
+    helper.getLevel().addNewPlayer(serverPlayer);
+    return serverPlayer;
+  }
+
+  private static ServerPlayer createMockServerPlayer(
+      GameTestHelper helper, Vec3 position, String playerName) {
     ServerLevel level = helper.getLevel();
     // Place the mock player at the structure-relative absolute position so it sits inside its own
     // test area (matching the command source position) and stays far from other tests' mock
@@ -116,7 +132,7 @@ public final class GameTestHelpers {
     // keeping player selectors such as @p deterministic across the shared level.
     BlockPos absolutePosition =
         helper.absolutePos(BlockPos.containing(position.x, position.y, position.z));
-    FakePlayer fakePlayer = new FakePlayer(level, absolutePosition);
+    FakePlayer fakePlayer = new FakePlayer(level, absolutePosition, playerName);
     // Attach an unconnected packet listener so command side effects (teleport, feedback) that send
     // client packets do not fail on the mock player, which has no real network connection.
     fakePlayer.connection =

@@ -659,7 +659,7 @@ public class NPCRawTemplate extends Zombie implements EasyNPCBase<Zombie> {
 
   @Override
   public boolean isSaddled() {
-    return false;
+    return this.hasVariantTypeSaddled();
   }
 
   @Override

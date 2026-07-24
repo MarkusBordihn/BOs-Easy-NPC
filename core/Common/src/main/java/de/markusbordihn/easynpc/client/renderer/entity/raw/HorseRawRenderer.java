@@ -33,6 +33,8 @@ import net.minecraft.client.renderer.entity.state.HorseRenderState;
 import net.minecraft.client.resources.model.EquipmentClientInfo.LayerType;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.animal.equine.Horse;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 public class HorseRawRenderer extends AbstractHorseRenderer<Horse, HorseRenderState, HorseModel>
     implements EasyNPCEntityRenderer {
@@ -78,6 +80,12 @@ public class HorseRawRenderer extends AbstractHorseRenderer<Horse, HorseRenderSt
     state.variant = horse.getVariant();
     state.markings = horse.getMarkings();
     state.bodyArmorItem = horse.getBodyArmorItem().copy();
+
+    // "Saddled" skin variants report isSaddled without carrying a saddle item, so the saddle
+    // equipment layer has nothing to render. Supply a saddle so the variant shows its saddle.
+    if (state.saddle.isEmpty() && horse.isSaddled()) {
+      state.saddle = new ItemStack(Items.SADDLE);
+    }
   }
 
   @Override

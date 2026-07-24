@@ -25,6 +25,7 @@
     "model.EasyNPCVillagerModelMixin",
     "model.EasyNPCWolfModelMixin",
     "renderer.CatCollarLayerMixin",
+    "renderer.CustomHeadLayerMixin",
     "renderer.DrownedOuterLayerMixin",
     "renderer.EasyNPCAbstractCubeMobRendererMixin",
     "renderer.EasyNPCEntityRendererMixin",

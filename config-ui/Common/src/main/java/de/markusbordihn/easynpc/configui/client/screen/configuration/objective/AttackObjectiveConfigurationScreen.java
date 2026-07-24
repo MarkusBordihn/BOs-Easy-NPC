@@ -23,7 +23,11 @@ import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.configui.client.screen.components.Checkbox;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.data.objective.ObjectiveType;
+import de.markusbordihn.easynpc.entity.easynpc.data.FactionDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.OwnerDataCapable;
+import de.markusbordihn.easynpc.network.components.TextComponent;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -44,6 +48,7 @@ public class AttackObjectiveConfigurationScreen<T extends ConfigurationMenu>
   protected Checkbox attackVillagerCheckbox;
   protected Checkbox ownerHurtByTargetCheckbox;
   protected Checkbox hurtByTargetCheckbox;
+  protected Checkbox factionHurtByTargetCheckbox;
 
   public AttackObjectiveConfigurationScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
@@ -145,19 +150,57 @@ public class AttackObjectiveConfigurationScreen<T extends ConfigurationMenu>
     // Protection/Defense section
     objectiveEntriesTop += SPACE_BETWEEN_ENTRIES + 10;
 
-    // Owner Hurt By Target (Protect Owner)
-    this.ownerHurtByTargetCheckbox =
-        this.addRenderableWidget(
-            this.getObjectiveCheckbox(
-                objectiveEntriesFirstColumn,
-                objectiveEntriesTop,
-                ObjectiveType.OWNER_HURT_BY_TARGET));
-
     // Hurt By Target (Defend Self)
     this.hurtByTargetCheckbox =
         this.addRenderableWidget(
             this.getObjectiveCheckbox(
-                objectiveEntriesSecondColumn, objectiveEntriesTop, ObjectiveType.HURT_BY_TARGET));
+                objectiveEntriesFirstColumn, objectiveEntriesTop, ObjectiveType.HURT_BY_TARGET));
+    this.hurtByTargetCheckbox.setTooltip(
+        Tooltip.create(
+            TextComponent.getTranslatedConfigText(
+                ObjectiveType.HURT_BY_TARGET.getObjectiveName() + ".tooltip")));
+
+    // Owner Hurt By Target (Protect Owner)
+    this.ownerHurtByTargetCheckbox =
+        this.addRenderableWidget(
+            this.getObjectiveCheckbox(
+                objectiveEntriesSecondColumn,
+                objectiveEntriesTop,
+                ObjectiveType.OWNER_HURT_BY_TARGET));
+    this.setRequirementState(
+        this.ownerHurtByTargetCheckbox, ObjectiveType.OWNER_HURT_BY_TARGET, this.hasOwner());
+
+    // Faction Hurt By Target (Defend Faction)
+    objectiveEntriesTop += SPACE_BETWEEN_ENTRIES;
+    this.factionHurtByTargetCheckbox =
+        this.addRenderableWidget(
+            this.getObjectiveCheckbox(
+                objectiveEntriesFirstColumn,
+                objectiveEntriesTop,
+                ObjectiveType.FACTION_HURT_BY_TARGET));
+    this.setRequirementState(
+        this.factionHurtByTargetCheckbox, ObjectiveType.FACTION_HURT_BY_TARGET, this.hasFaction());
+  }
+
+  private void setRequirementState(
+      Checkbox checkbox, ObjectiveType objectiveType, boolean requirementMet) {
+    checkbox.active = requirementMet;
+    checkbox.setTooltip(
+        Tooltip.create(
+            TextComponent.getTranslatedConfigText(
+                objectiveType.getObjectiveName() + (requirementMet ? ".tooltip" : ".disabled"))));
+  }
+
+  private boolean hasOwner() {
+    OwnerDataCapable<?> ownerData = this.getEasyNPC().getEasyNPCOwnerData();
+    return ownerData != null && ownerData.hasNPCOwner();
+  }
+
+  private boolean hasFaction() {
+    return !this.getAdditionalScreenData()
+        .getData()
+        .getString(FactionDataCapable.DATA_FACTION_NAME_TAG)
+        .isEmpty();
   }
 
   @Override
