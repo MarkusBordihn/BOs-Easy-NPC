@@ -173,6 +173,7 @@ public class DopplerRenderer
     EasyNPC<?> easyNPC = getEasyNPC(renderState);
     if (renderEntity(
         easyNPC, this.getModel(), renderState, poseStack, submitNodeCollector, cameraRenderState)) {
+      this.submitNameTag(renderState, poseStack, submitNodeCollector, cameraRenderState);
       return;
     }
 

@@ -31,10 +31,14 @@ import net.minecraft.stats.Stat;
 public class FakePlayer extends ServerPlayer {
 
   public FakePlayer(final ServerLevel level, final BlockPos blockPos) {
+    this(level, blockPos, "FakePlayer");
+  }
+
+  public FakePlayer(final ServerLevel level, final BlockPos blockPos, final String playerName) {
     super(
         level.getServer(),
         level,
-        new GameProfile(UUID.randomUUID(), "FakePlayer"),
+        new GameProfile(UUID.randomUUID(), playerName),
         ClientInformation.createDefault());
     this.getAdvancements().stopListening();
     this.setPos(blockPos.getX(), blockPos.getY(), blockPos.getZ());

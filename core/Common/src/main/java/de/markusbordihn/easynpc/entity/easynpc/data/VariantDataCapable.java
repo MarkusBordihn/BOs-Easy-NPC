@@ -46,20 +46,21 @@ public interface VariantDataCapable<T extends Mob> extends EasyNPC<T> {
   }
 
   default Enum<?> getSkinVariantType() {
-    return getSkinVariantType(getSynchedEntityData(SynchedDataIndex.VARIANT_TYPE));
+    return this.getSkinVariantType(this.getSynchedEntityData(SynchedDataIndex.VARIANT_TYPE));
   }
 
   default void setSkinVariantType(Enum<?> variant) {
-    if (getSkinVariantType() != variant) {
-      setSynchedEntityData(SynchedDataIndex.VARIANT_TYPE, variant != null ? variant.name() : "");
-      handleSkinVariantTypeChange(variant);
+    if (this.getSkinVariantType() != variant) {
+      this.setSynchedEntityData(
+          SynchedDataIndex.VARIANT_TYPE, variant != null ? variant.name() : "");
+      this.handleSkinVariantTypeChange(variant);
     }
   }
 
   default void setSkinVariantType(String name) {
-    Enum<?> variantType = getSkinVariantType(name);
+    Enum<?> variantType = this.getSkinVariantType(name);
     if (variantType != null) {
-      setSkinVariantType(variantType);
+      this.setSkinVariantType(variantType);
     } else {
       log.error("Unknown variant {} for {}", name, this);
     }
@@ -78,16 +79,16 @@ public interface VariantDataCapable<T extends Mob> extends EasyNPC<T> {
   }
 
   default Stream<String> getSkinVariantTypeNames() {
-    return Stream.of(getSkinVariantTypes()).map(Enum::name);
+    return Stream.of(this.getSkinVariantTypes()).map(Enum::name);
   }
 
   default Component getSkinVariantTypeName() {
-    Enum<?> variant = getSkinVariantType();
-    return variant != null ? TextUtils.normalizeName(variant.name()) : getEntityTypeName();
+    Enum<?> variant = this.getSkinVariantType();
+    return variant != null ? TextUtils.normalizeName(variant.name()) : this.getEntityTypeName();
   }
 
   default boolean hasVariantTypeCrossedArms() {
-    return this.hasVariantTypeCrossedArms(getSkinVariantType());
+    return this.hasVariantTypeCrossedArms(this.getSkinVariantType());
   }
 
   default boolean hasVariantTypeCrossedArms(Enum<?> variant) {
@@ -96,7 +97,7 @@ public interface VariantDataCapable<T extends Mob> extends EasyNPC<T> {
   }
 
   default boolean hasVariantTypeSaddled() {
-    return this.hasVariantTypeSaddled(getSkinVariantType());
+    return this.hasVariantTypeSaddled(this.getSkinVariantType());
   }
 
   default boolean hasVariantTypeSaddled(Enum<?> variant) {
@@ -124,8 +125,8 @@ public interface VariantDataCapable<T extends Mob> extends EasyNPC<T> {
   }
 
   default void defineSynchedVariantData(SynchedEntityData.Builder builder) {
-    defineSynchedEntityData(
-        builder, SynchedDataIndex.VARIANT_TYPE, getDefaultSkinVariantType().name());
+    this.defineSynchedEntityData(
+        builder, SynchedDataIndex.VARIANT_TYPE, this.getDefaultSkinVariantType().name());
   }
 
   default void addAdditionalVariantData(ValueOutput valueOutput) {

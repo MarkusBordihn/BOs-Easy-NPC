@@ -79,6 +79,11 @@ public class VindicatorBase extends VindicatorRaw implements BaseEasyNPC<Vindica
   }
 
   @Override
+  public boolean canUseHead() {
+    return true;
+  }
+
+  @Override
   protected void registerGoals() {
     super.registerGoals();
     this.goalSelector.removeAllGoals(goal -> true);

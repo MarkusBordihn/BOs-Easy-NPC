@@ -25,6 +25,7 @@ import de.markusbordihn.easynpc.entity.easynpc.ai.goal.BowAttackGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.CloseDoorGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.CrossbowAttackGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.CustomDoorInteractGoal;
+import de.markusbordihn.easynpc.entity.easynpc.ai.goal.CustomFactionHurtByTargetGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.CustomLookAtPlayerGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.CustomMeleeAttackGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.CustomOwnerHurtByTargetGoal;
@@ -465,13 +466,13 @@ public class ObjectiveUtils {
             mob, AbstractVillager.class, objectiveDataEntry.isMustSeeTarget());
       case OWNER_HURT_BY_TARGET:
         return new CustomOwnerHurtByTargetGoal<>(easyNPC);
+      case FACTION_HURT_BY_TARGET:
+        return new CustomFactionHurtByTargetGoal<>(easyNPC, objectiveDataEntry.getInterval());
       case HURT_BY_TARGET:
         if (!requiresPathfinderMob(objectiveType, easyNPC)) {
           return null;
         }
-        HurtByTargetGoal hurtByTargetGoal = new HurtByTargetGoal(easyNPC.getPathfinderMob());
-        hurtByTargetGoal.setAlertOthers();
-        return hurtByTargetGoal;
+        return new HurtByTargetGoal(easyNPC.getPathfinderMob());
       default:
         return null;
     }

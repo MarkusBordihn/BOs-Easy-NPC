@@ -67,6 +67,11 @@ public class IllusionerBase extends IllusionerRaw implements BaseEasyNPC<Illusio
   }
 
   @Override
+  public boolean canUseHead() {
+    return true;
+  }
+
+  @Override
   public SoundDataSet getDefaultSoundDataSet(SoundDataSet soundDataSet, String variantName) {
     soundDataSet.addDefaultSound(SoundType.AMBIENT, SoundEvents.ILLUSIONER_AMBIENT);
     soundDataSet.addDefaultSound(SoundType.DEATH, SoundEvents.ILLUSIONER_DEATH);
