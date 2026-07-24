@@ -389,5 +389,6 @@ public class ModMenuTypes {
           MENU_TYPES.register(
               EditorType.FACTIONS.getName(),
               () -> IMenuTypeExtension.create(FactionsEditorMenuWrapper::new));
+
   private ModMenuTypes() {}
 }

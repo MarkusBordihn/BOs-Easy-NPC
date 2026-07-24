@@ -46,6 +46,8 @@ public class EasyNPCHorseModelMixin<T extends AbstractHorse>
   @Shadow @Final private ModelPart rightFrontLeg;
   @Shadow @Final private ModelPart leftFrontLeg;
   @Shadow @Final private ModelPart tail;
+  @Shadow @Final private ModelPart[] saddleParts;
+  @Shadow @Final private ModelPart[] ridingParts;
 
   @Unique private EasyNPCModelManager easyNPC$modelManager;
 
@@ -81,7 +83,21 @@ public class EasyNPCHorseModelMixin<T extends AbstractHorse>
       CallbackInfo callbackInfo) {
     if (entity instanceof EasyNPC<?> easyNPC
         && EasyNPCModel.setupAnimationStart(easyNPC, this.easyNPC$modelManager)) {
+      this.easyNPC$applySaddleVisibility(entity);
       callbackInfo.cancel();
+    }
+  }
+
+  @Unique
+  private void easyNPC$applySaddleVisibility(AbstractHorse horse) {
+    boolean isSaddled = horse.isSaddled();
+    for (ModelPart saddlePart : this.saddleParts) {
+      saddlePart.visible = isSaddled;
+    }
+
+    boolean isRidden = isSaddled && horse.isVehicle();
+    for (ModelPart ridingPart : this.ridingParts) {
+      ridingPart.visible = isRidden;
     }
   }
 

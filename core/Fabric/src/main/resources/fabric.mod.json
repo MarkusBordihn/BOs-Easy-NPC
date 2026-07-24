@@ -29,7 +29,10 @@
       "de.markusbordihn.easynpc.gametest.VillagerVariantTest",
       "de.markusbordihn.easynpc.gametest.FactionObjectiveTest",
       "de.markusbordihn.easynpc.gametest.ExecuteAsUserCommandTest",
-      "de.markusbordihn.easynpc.gametest.PresetCommandSecurityTest"
+      "de.markusbordihn.easynpc.gametest.PresetCommandSecurityTest",
+      "de.markusbordihn.easynpc.gametest.VisibilityAttributeTest",
+      "de.markusbordihn.easynpc.gametest.FactionDefenseTest",
+      "de.markusbordihn.easynpc.gametest.IllagerCrossedArmsTest"
     ]
   },
   "mixins": [

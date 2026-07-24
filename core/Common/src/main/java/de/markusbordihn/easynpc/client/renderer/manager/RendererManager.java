@@ -29,7 +29,6 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -184,11 +183,9 @@ public class RendererManager {
     targetEntity.setOnGround(sourceEntity.onGround());
     targetEntity.setDeltaMovement(sourceEntity.getDeltaMovement());
 
-    // Custom name support
-    if (sourceEntity.hasCustomName()) {
-      targetEntity.setCustomName(sourceEntity.getCustomName());
-      targetEntity.setCustomNameVisible(sourceEntity.isCustomNameVisible());
-    }
+    // Custom name support, needed for name based textures like "jeb_" or "Toast".
+    targetEntity.setCustomName(sourceEntity.getCustomName());
+    targetEntity.setCustomNameVisible(false);
 
     // Sync entity pose, if available.
     if (sourceEntity.getPose() != targetEntity.getPose()) {
@@ -237,8 +234,6 @@ public class RendererManager {
       MultiBufferSource buffer,
       int packedLight) {
     copyCustomLivingEntityData(sourceEntity, targetEntity, entityTypeName);
-    targetEntity.setCustomNameVisible(false);
-    targetEntity.setCustomName(Component.empty());
     ((LivingEntityRenderer) livingEntityRenderer)
         .render(targetEntity, entityYaw, partialTicks, poseStack, buffer, packedLight);
   }

@@ -19,11 +19,18 @@
 
 package de.markusbordihn.easynpc.gametest;
 
+import com.mojang.authlib.GameProfile;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import io.netty.channel.embedded.EmbeddedChannel;
+import java.util.UUID;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.network.Connection;
+import net.minecraft.network.protocol.PacketFlow;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.CommonListenerCookie;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
@@ -38,13 +45,44 @@ public class GameTestHelpers {
 
   private GameTestHelpers() {}
 
-  @SuppressWarnings("deprecation")
   public static ServerPlayer mockServerPlayer(GameTestHelper helper, Vec3 position) {
-    ServerPlayer serverPlayer = helper.makeMockServerPlayerInLevel();
+    return mockServerPlayer(helper, position, "test-mock-player");
+  }
+
+  public static ServerPlayer mockServerPlayer(
+      GameTestHelper helper, Vec3 position, String playerName) {
+    ServerPlayer serverPlayer = makeConnectedMockServerPlayer(helper, playerName);
     GameTestHelpers.assertNotNull(helper, "ServerPlayer is null!", serverPlayer);
     serverPlayer.setPos(helper.absoluteVec(position));
     helper.assertEntityPresent(
         serverPlayer.getType(), new BlockPos((int) position.x, (int) position.y, (int) position.z));
+    return serverPlayer;
+  }
+
+  private static ServerPlayer makeConnectedMockServerPlayer(
+      GameTestHelper helper, String playerName) {
+    ServerLevel level = helper.getLevel();
+    CommonListenerCookie listenerCookie =
+        CommonListenerCookie.createInitial(new GameProfile(UUID.randomUUID(), playerName), false);
+    ServerPlayer serverPlayer =
+        new ServerPlayer(
+            level.getServer(),
+            level,
+            listenerCookie.gameProfile(),
+            listenerCookie.clientInformation()) {
+          @Override
+          public boolean isSpectator() {
+            return false;
+          }
+
+          @Override
+          public boolean isCreative() {
+            return true;
+          }
+        };
+    Connection connection = new Connection(PacketFlow.SERVERBOUND);
+    new EmbeddedChannel(connection);
+    level.getServer().getPlayerList().placeNewPlayer(connection, serverPlayer, listenerCookie);
     return serverPlayer;
   }
 
@@ -64,6 +102,7 @@ public class GameTestHelpers {
     if (entity instanceof EasyNPC<?> easyNPC) {
       return easyNPC;
     }
+
     helper.fail("Entity " + entityType + " is not an EasyNPC!");
     return null;
   }
@@ -75,12 +114,14 @@ public class GameTestHelpers {
       helper.fail("EntityType is null!");
       return null;
     }
+
     Player player = helper.makeMockPlayer(GameType.DEFAULT_MODE);
     T entity = (T) entityType.create(player.level());
     if (entity == null) {
       helper.fail("Entity for " + entityType + " is null!");
       return null;
     }
+
     if (!player.level().addFreshEntity(entity)) {
       helper.fail("Failed to spawn entity " + entityType + "!");
       return null;
@@ -92,7 +133,7 @@ public class GameTestHelpers {
   public static void assertEquals(
       GameTestHelper helper, String message, Object expected, Object actual) {
     if (!expected.equals(actual)) {
-      helper.fail(message);
+      helper.fail(message + " (expected: " + expected + ", actual: " + actual + ")");
     }
   }
 

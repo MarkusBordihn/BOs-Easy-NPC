@@ -79,19 +79,23 @@ public class EquipmentConfigurationContainerScreen<T extends ConfigurationMenu>
     // Equipment Slots
     int slotPositionTop = this.contentTopPos + 20;
     ModelDataCapable<?> modelData = this.getEasyNPC().getEasyNPCModelData();
-    if (modelData.canUseArmor()) {
+    boolean canUseArmor = modelData.canUseArmor();
+    boolean canUseHead = canUseArmor || modelData.canUseHead();
+    if (canUseHead) {
       int equipmentSlotLeft = this.contentLeftPos + 75;
       this.createVisibleEquipmentSlotCheckbox(
           equipmentSlotLeft, slotPositionTop + 2, EquipmentSlot.HEAD);
 
-      this.createVisibleEquipmentSlotCheckbox(
-          equipmentSlotLeft, slotPositionTop + 20, EquipmentSlot.CHEST);
+      if (canUseArmor) {
+        this.createVisibleEquipmentSlotCheckbox(
+            equipmentSlotLeft, slotPositionTop + 20, EquipmentSlot.CHEST);
 
-      this.createVisibleEquipmentSlotCheckbox(
-          equipmentSlotLeft, slotPositionTop + 38, EquipmentSlot.LEGS);
+        this.createVisibleEquipmentSlotCheckbox(
+            equipmentSlotLeft, slotPositionTop + 38, EquipmentSlot.LEGS);
 
-      this.createVisibleEquipmentSlotCheckbox(
-          equipmentSlotLeft, slotPositionTop + 55, EquipmentSlot.FEET);
+        this.createVisibleEquipmentSlotCheckbox(
+            equipmentSlotLeft, slotPositionTop + 55, EquipmentSlot.FEET);
+      }
     }
   }
 
@@ -115,9 +119,11 @@ public class EquipmentConfigurationContainerScreen<T extends ConfigurationMenu>
 
     int slotPositionTop = this.contentTopPos + 20;
 
-    // Armors Slots Left
+    // Armor Slots Left. Head-only entities (e.g. illagers with a banner) show a single head slot.
     ModelDataCapable<?> modelData = this.getEasyNPC().getEasyNPCModelData();
-    if (modelData == null || modelData.canUseArmor()) {
+    boolean canUseArmor = modelData == null || modelData.canUseArmor();
+    boolean canUseHead = canUseArmor || modelData.canUseHead();
+    if (canUseHead) {
       Graphics.blit(
           guiGraphics,
           Constants.TEXTURE_INVENTORY,
@@ -126,7 +132,7 @@ public class EquipmentConfigurationContainerScreen<T extends ConfigurationMenu>
           7,
           7,
           18,
-          72);
+          canUseArmor ? 72 : 18);
     }
 
     // Main Hand Slot Left

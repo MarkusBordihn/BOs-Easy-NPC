@@ -74,6 +74,10 @@ public interface ModelDataCapable<T extends Mob>
     return false;
   }
 
+  default boolean canUseHead() {
+    return false;
+  }
+
   default boolean canUseMainHand() {
     return true;
   }

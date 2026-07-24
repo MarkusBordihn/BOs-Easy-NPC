@@ -421,6 +421,7 @@ public class ModMenuTypes {
               ConfigurationType.YES_NO_DIALOG.getId(),
               new MenuType<>(YesNoDialogConfigurationMenuWrapper::new, FeatureFlagSet.of()));
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+
   private ModMenuTypes() {}
 
   public static void register() {

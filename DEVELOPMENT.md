@@ -7,8 +7,8 @@ build-system edge cases across different mod loaders and tooling:
 - config-ui - the optional configuration UI mod, built against core
 - bundle - a convenience meta package that declares core + config-ui as dependencies
 
-Why split? A pure Gradle multi-project setup does not support all combinations of loader plugins (
-Fabric Loom, ForgeGradle/NeoForge) and publication tasks at once.
+Why split? A pure Gradle multi-project setup does not support all combinations of loader plugins
+(Fabric Loom, ForgeGradle/NeoForge) and publication tasks at once.
 
 Keeping the modules separate lets us:
 
@@ -22,23 +22,22 @@ Keeping the modules separate lets us:
 Each of the three top-level folders is its own Gradle build with subprojects per loader:
 
 - core/
-    - Common/ - shared sources and assets
-    - Fabric/ - Fabric-specific sources and Loom configuration
-    - Forge/ - Forge-specific sources and tasks
-    - NeoForge/ - available starting with 1.21.x
+  - Common/ - shared sources and assets
+  - Fabric/ - Fabric-specific sources and Loom configuration
+  - Forge/ - Forge-specific sources and tasks
+  - NeoForge/ - available starting with 1.21.x
 - config-ui/
-    - Common/ - shared UI sources and assets
-    - Fabric/
-    - Forge/
-    - NeoForge/ - available starting with 1.21.x
+  - Common/ - shared UI sources and assets
+  - Fabric/
+  - Forge/
+  - NeoForge/ - available starting with 1.21.x
 - bundle/
-    - Fabric/ - meta package declaring core + config-ui dependencies
-    - Forge/ - meta package declaring core + config-ui dependencies
-    - NeoForge/ - meta package declaring core + config-ui dependencies
+  - Fabric/ - meta package declaring core + config-ui dependencies
+  - Forge/ - meta package declaring core + config-ui dependencies
+  - NeoForge/ - meta package declaring core + config-ui dependencies
 
 Note: The exact set of loader subprojects in your clone may vary by branch/version; check the folder
-tree.
-NeoForge targets start with Minecraft 1.21.x.
+tree. NeoForge targets start with Minecraft 1.21.x.
 
 ### Project overview
 
@@ -50,26 +49,26 @@ NeoForge targets start with Minecraft 1.21.x.
 
 ## Artifact flow (Maven Local) 🔁
 
-Artifacts are exchanged via your local Maven repository (~/.m2/repository) using Gradle's
-mavenLocal() repository:
+Artifacts are exchanged via your local Maven repository (~/.m2/repository) using Gradle's mavenLocal
+() repository:
 
 - Building core publishes core artifacts to Maven Local automatically.
 - Building config-ui resolves core from Maven Local and then publishes config-ui to Maven Local.
-- Building bundle resolves both core and config-ui from Maven Local and creates a meta package
-  per loader (dependencies only, no jar-in-jar).
+- Building bundle resolves both core and config-ui from Maven Local and creates a meta package per
+  loader (dependencies only, no jar-in-jar).
 
 Coordinates (examples):
 
 - Core group: de.markusbordihn.easynpc
-    - Artifact pattern: easy_npc-<loader>-<mcVersion>
-    - Example (Fabric): de.markusbordihn.easynpc:easy_npc-fabric-1.20.1:<version>
-    - Example (Common, compileOnly): de.markusbordihn.easynpc:easy_npc-common-1.20.1:<version>
+  - Artifact pattern: easy_npc-<loader>-<mcVersion>
+  - Example (Fabric): de.markusbordihn.easynpc:easy_npc-fabric-1.20.1:<version>
+  - Example (Common, compileOnly): de.markusbordihn.easynpc:easy_npc-common-1.20.1:<version>
 - Config UI group: de.markusbordihn.easynpc.configui
-    - Artifact pattern: easy_npc_config_ui-<loader>-<mcVersion>
-    - Example (Fabric): de.markusbordihn.easynpc.configui:easy_npc_config_ui-fabric-1.20.1:<version>
+  - Artifact pattern: easy_npc_config_ui-<loader>-<mcVersion>
+  - Example (Fabric): de.markusbordihn.easynpc.configui:easy_npc_config_ui-fabric-1.20.1:<version>
 - Bundle group: de.markusbordihn.easynpc.bundle
-    - Artifact pattern: easy_npc_bundle-<loader>-<mcVersion>
-    - Example (Fabric): de.markusbordihn.easynpc.bundle:easy_npc_bundle-fabric-1.20.1:<version>
+  - Artifact pattern: easy_npc_bundle-<loader>-<mcVersion>
+  - Example (Fabric): de.markusbordihn.easynpc.bundle:easy_npc_bundle-fabric-1.20.1:<version>
 
 The exact version and groupId come from each project's gradle.properties.
 
@@ -97,8 +96,8 @@ config-ui > bundle):
   development)
 
 **Performance tip:** Build caches (Gradle cache, Loom cache, Forge mappings cache) are kept intact
-for maximum performance. Only Maven Local artifacts are cleaned when needed.
-The build system uses intelligent dependency change detection (`changing = true` + 5-minute cache)
+for maximum performance. Only Maven Local artifacts are cleaned when needed. The build system uses
+intelligent dependency change detection (`changing = true` + 5-minute cache)
 to automatically detect when core changes and config-ui/bundle need rebuilding.
 
 **Note:** Publishing tasks (modrinth, curseforge) are available in individual project build files
@@ -211,19 +210,19 @@ This keeps loader-specific plugins isolated and avoids multi-project configurati
 ## Architecture and rationale
 
 - core
-    - Contains the gameplay/NPC logic and data
-    - Split into Common (shared sources) + loader-specific subprojects (Fabric, Forge, NeoForge
-      where applicable; NeoForge available ≥ 1.21.x)
+  - Contains the gameplay/NPC logic and data
+  - Split into Common (shared sources) + loader-specific subprojects (Fabric, Forge, NeoForge where
+    applicable; NeoForge available ≥ 1.21.x)
 - config-ui
-    - Optional UI layer separated from core
-    - Depends on core artifacts via Maven Local
-    - Benefits: smaller core, optional UI for servers, independent versioning and releases (NeoForge
-      targets available ≥ 1.21.x)
+  - Optional UI layer separated from core
+  - Depends on core artifacts via Maven Local
+  - Benefits: smaller core, optional UI for servers, independent versioning and releases (NeoForge
+    targets available ≥ 1.21.x)
 - bundle
-    - Convenience meta package
-    - Declares core + config-ui as dependencies (no jar-in-jar embedding)
-    - Exists because many users prefer one file instead of managing dependencies via
-      CurseForge/Modrinth launchers (NeoForge bundles available ≥ 1.21.x)
+  - Convenience meta package
+  - Declares core + config-ui as dependencies (no jar-in-jar embedding)
+  - Exists because many users prefer one file instead of managing dependencies via
+    CurseForge/Modrinth launchers (NeoForge bundles available ≥ 1.21.x)
 
 Benefits of the split:
 
@@ -287,9 +286,8 @@ If Gradle caches are corrupted:
 
 ## Support policy 📣
 
-This repository is maintained as time permits.
-Developer support cannot be provided directly.
-For loader/tooling specifics, please refer to the official channels:
+This repository is maintained as time permits. Developer support cannot be provided directly. For
+loader/tooling specifics, please refer to the official channels:
 
 - Fabric: Fabric Loom, Fabric API, and Fabric Loader docs/support
 - Forge: ForgeGradle/Forge documentation and community support

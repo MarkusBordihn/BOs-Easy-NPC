@@ -142,6 +142,11 @@ public class DopplerRenderer<E extends PathfinderMob>
       MultiBufferSource bufferSource,
       int packedLight) {
     if (renderEntity(entity, entityYaw, partialTicks, poseStack, bufferSource, packedLight)) {
+      if (this.shouldShowName(entity)) {
+        this.renderNameTag(
+            entity, entity.getDisplayName(), poseStack, bufferSource, packedLight, partialTicks);
+      }
+
       return;
     }
 
