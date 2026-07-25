@@ -82,11 +82,12 @@ public class FactionData extends SavedData {
   }
 
   public static FactionData get(MinecraftServer server) {
-    if (server == null || server.overworld() == null) {
-      log.error("Cannot get FactionData: MinecraftServer or Overworld is not available");
-      throw new IllegalStateException("Overworld must be loaded before accessing FactionData");
+    if (server == null) {
+      log.error("Cannot get FactionData: MinecraftServer is null");
+      throw new IllegalArgumentException("MinecraftServer cannot be null");
     }
-    return server.overworld().getDataStorage().computeIfAbsent(TYPE);
+
+    return ServerSavedDataMigration.getOrMigrateFromOverworld(server, TYPE);
   }
 
   public static void init(MinecraftServer server) {

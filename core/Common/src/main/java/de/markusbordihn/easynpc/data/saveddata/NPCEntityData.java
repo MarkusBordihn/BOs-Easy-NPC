@@ -110,12 +110,8 @@ public class NPCEntityData extends SavedData {
       log.error("Cannot get NPCEntityData: MinecraftServer is null");
       throw new IllegalArgumentException("MinecraftServer cannot be null");
     }
-    if (server.overworld() == null) {
-      log.error("Cannot get NPCEntityData: Overworld is not yet loaded");
-      throw new IllegalStateException("Overworld must be loaded before accessing NPCEntityData");
-    }
-    NPCEntityData data = server.overworld().getDataStorage().computeIfAbsent(TYPE);
 
+    NPCEntityData data = ServerSavedDataMigration.getOrMigrateFromOverworld(server, TYPE);
     if (data.npcFileStorage == null) {
       data.npcFileStorage = new NPCFileStorage(Constants.WORLD_DIR);
     }
