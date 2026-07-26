@@ -30,7 +30,8 @@ public record PresetMetadata(
     long modified,
     String description,
     String entityTypeId,
-    String variantType) {
+    String variantType,
+    PresetAccess access) {
 
   public static final String TAG_NAME = "name";
   public static final String TAG_CATEGORY = "category";
@@ -41,6 +42,7 @@ public record PresetMetadata(
   public static final String TAG_DESCRIPTION = "description";
   public static final String TAG_ENTITY_TYPE_ID = "entityTypeId";
   public static final String TAG_VARIANT_TYPE = "variantType";
+  public static final String TAG_ACCESS = "access";
 
   public static final String DEFAULT_NAME = "Unnamed Preset";
   public static final String DEFAULT_CATEGORY = "Custom";
@@ -70,7 +72,9 @@ public record PresetMetadata(
     if (description == null) {
       description = DEFAULT_DESCRIPTION;
     }
-    // entityTypeId and variantType are optional, can be null
+    if (access == null) {
+      access = PresetAccess.PUBLIC;
+    }
   }
 
   public static PresetMetadata createDefault() {
@@ -83,7 +87,8 @@ public record PresetMetadata(
         System.currentTimeMillis(),
         DEFAULT_DESCRIPTION,
         null,
-        null);
+        null,
+        PresetAccess.PUBLIC);
   }
 
   public static PresetMetadata getDefault() {
@@ -100,7 +105,8 @@ public record PresetMetadata(
         System.currentTimeMillis(),
         DEFAULT_DESCRIPTION,
         null,
-        null);
+        null,
+        PresetAccess.PUBLIC);
   }
 
   public static PresetMetadata fromCompoundTag(CompoundTag tag) {
@@ -117,7 +123,8 @@ public record PresetMetadata(
         tag.contains(TAG_MODIFIED) ? tag.getLong(TAG_MODIFIED) : System.currentTimeMillis(),
         tag.contains(TAG_DESCRIPTION) ? tag.getString(TAG_DESCRIPTION) : DEFAULT_DESCRIPTION,
         tag.contains(TAG_ENTITY_TYPE_ID) ? tag.getString(TAG_ENTITY_TYPE_ID) : null,
-        tag.contains(TAG_VARIANT_TYPE) ? tag.getString(TAG_VARIANT_TYPE) : null);
+        tag.contains(TAG_VARIANT_TYPE) ? tag.getString(TAG_VARIANT_TYPE) : null,
+        PresetAccess.get(tag.contains(TAG_ACCESS) ? tag.getString(TAG_ACCESS) : null));
   }
 
   public static PresetMetadata fromPresetData(CompoundTag presetData) {
@@ -169,6 +176,9 @@ public record PresetMetadata(
     if (variantType != null && !variantType.isEmpty()) {
       tag.putString(TAG_VARIANT_TYPE, variantType);
     }
+    if (access != PresetAccess.PUBLIC) {
+      tag.putString(TAG_ACCESS, access.name());
+    }
 
     return tag;
   }
@@ -183,7 +193,8 @@ public record PresetMetadata(
         modifiedTime,
         description,
         entityTypeId,
-        variantType);
+        variantType,
+        access);
   }
 
   public PresetMetadata withCurrentModifiedTime() {
@@ -200,7 +211,8 @@ public record PresetMetadata(
         System.currentTimeMillis(),
         description,
         entityTypeId,
-        variantType);
+        variantType,
+        access);
   }
 
   public PresetMetadata withCategory(String newCategory) {
@@ -213,7 +225,8 @@ public record PresetMetadata(
         System.currentTimeMillis(),
         description,
         entityTypeId,
-        variantType);
+        variantType,
+        access);
   }
 
   public PresetMetadata withVersion(String newVersion) {
@@ -226,7 +239,8 @@ public record PresetMetadata(
         System.currentTimeMillis(),
         description,
         entityTypeId,
-        variantType);
+        variantType,
+        access);
   }
 
   public PresetMetadata withAuthor(String newAuthor) {
@@ -239,7 +253,8 @@ public record PresetMetadata(
         System.currentTimeMillis(),
         description,
         entityTypeId,
-        variantType);
+        variantType,
+        access);
   }
 
   public PresetMetadata withDescription(String newDescription) {
@@ -252,7 +267,22 @@ public record PresetMetadata(
         System.currentTimeMillis(),
         newDescription,
         entityTypeId,
-        variantType);
+        variantType,
+        access);
+  }
+
+  public PresetMetadata withAccess(PresetAccess newAccess) {
+    return new PresetMetadata(
+        name,
+        category,
+        version,
+        author,
+        created,
+        System.currentTimeMillis(),
+        description,
+        entityTypeId,
+        variantType,
+        newAccess);
   }
 
   public PresetMetadata withPreviewData(String newEntityTypeId, String newVariantType) {
@@ -265,6 +295,7 @@ public record PresetMetadata(
         modified,
         description,
         newEntityTypeId,
-        newVariantType);
+        newVariantType,
+        access);
   }
 }

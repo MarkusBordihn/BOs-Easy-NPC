@@ -103,15 +103,22 @@ public class RenderHandler {
     RenderType renderType =
         easyModelNPC ? RenderType.EASY_MODEL_ENTITY : RenderType.COBBLEMON_ENTITY;
 
+    ResourceLocation modelId = ResourceLocation.tryParse(entityModel);
+    if (modelId == null) {
+      log.error("[{}] Invalid model '{}', rejecting.", easyNPC, entityModel);
+      return false;
+    }
+
     if (!IntegrationRegistry.hasModels(integrationId)) {
       log.warn(
           "[{}] Model list for integration '{}' not loaded yet, accepting {} without validation.",
           easyNPC,
           integrationId,
           entityModel);
-    } else {
-      ResourceLocation modelId = ResourceLocation.tryParse(entityModel);
-      if (modelId == null || !IntegrationRegistry.getModels(integrationId).contains(modelId)) {
+    } else if (!IntegrationRegistry.getModels(integrationId).contains(modelId)) {
+      ResourceLocation speciesId =
+          easyModelNPC ? modelId : CobblemonSpeciesManager.getBaseSpeciesId(modelId);
+      if (easyModelNPC || !IntegrationRegistry.getModels(integrationId).contains(speciesId)) {
         log.error(
             "[{}] Unknown model '{}' for integration '{}', rejecting.",
             easyNPC,
@@ -119,6 +126,12 @@ public class RenderHandler {
             integrationId);
         return false;
       }
+
+      log.warn(
+          "[{}] Using unverified aspects {} for Cobblemon species '{}'.",
+          easyNPC,
+          CobblemonSpeciesManager.getVariantAspects(modelId),
+          speciesId);
     }
 
     log.debug("[{}] Setting render entity model to {}", easyNPC, entityModel);

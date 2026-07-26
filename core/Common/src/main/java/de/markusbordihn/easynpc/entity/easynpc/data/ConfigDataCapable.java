@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.entity.easynpc.data;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import java.util.List;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Mob;
 
@@ -28,13 +29,28 @@ public interface ConfigDataCapable<T extends Mob> extends EasyNPC<T> {
 
   String DATA_EASY_NPC_DATA_VERSION_TAG = "EasyNPCVersion";
 
+  List<String> LEGACY_DATA_MARKER_TAGS =
+      List.of(
+          ActionEventDataCapable.DATA_ACTION_DATA_TAG,
+          DialogDataCapable.DATA_DIALOG_DATA_TAG,
+          NavigationDataCapable.DATA_NAVIGATION_TAG,
+          ObjectiveDataCapable.DATA_OBJECTIVE_DATA_TAG,
+          OwnerDataCapable.DATA_OWNER_TAG);
+
+  private static boolean hasStoredEasyNPCData(CompoundTag compoundTag) {
+    for (String markerTag : LEGACY_DATA_MARKER_TAGS) {
+      if (compoundTag.contains(markerTag)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   default void addAdditionalConfigData(CompoundTag compoundTag) {
     compoundTag.putInt(DATA_EASY_NPC_DATA_VERSION_TAG, Constants.NPC_DATA_VERSION);
   }
 
   default void readAdditionalConfigData(CompoundTag compoundTag) {
-
-    // Read Easy NPC Data Version to check for compatibility issues.
     if (compoundTag.contains(DATA_EASY_NPC_DATA_VERSION_TAG)) {
       int npcDataVersion = compoundTag.getInt(DATA_EASY_NPC_DATA_VERSION_TAG);
       if (npcDataVersion > Constants.NPC_DATA_VERSION) {
@@ -50,11 +66,13 @@ public interface ConfigDataCapable<T extends Mob> extends EasyNPC<T> {
             this);
       }
       this.setNPCDataVersion(npcDataVersion);
-    } else {
+    } else if (hasStoredEasyNPCData(compoundTag)) {
       log.warn(
           "Legacy Easy NPC Data for {}. Data may not be compatible with the current version.",
           this);
       this.setNPCDataVersion(-1);
+    } else {
+      this.setNPCDataVersion(Constants.NPC_DATA_VERSION);
     }
   }
 }

@@ -20,10 +20,12 @@
 package de.markusbordihn.easynpc.compat.cobblemon;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Set;
 import net.minecraft.resources.ResourceLocation;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class CobblemonSpeciesManagerTest {
@@ -36,7 +38,7 @@ class CobblemonSpeciesManagerTest {
 
   @Test
   void testGetBaseSpeciesIdWithGenderVariant() {
-    ResourceLocation modelKey = new ResourceLocation("cobblemon", "pikachu_female");
+    ResourceLocation modelKey = new ResourceLocation("cobblemon", "pikachu.female");
     assertEquals(
         new ResourceLocation("cobblemon", "pikachu"),
         CobblemonSpeciesManager.getBaseSpeciesId(modelKey));
@@ -44,7 +46,7 @@ class CobblemonSpeciesManagerTest {
 
   @Test
   void testGetBaseSpeciesIdWithGenderAndShinyVariant() {
-    ResourceLocation modelKey = new ResourceLocation("cobblemon", "charizard_female_shiny");
+    ResourceLocation modelKey = new ResourceLocation("cobblemon", "charizard.female.shiny");
     assertEquals(
         new ResourceLocation("cobblemon", "charizard"),
         CobblemonSpeciesManager.getBaseSpeciesId(modelKey));
@@ -52,13 +54,43 @@ class CobblemonSpeciesManagerTest {
 
   @Test
   void testGetBaseSpeciesIdWithUnderscoreInSpeciesName() {
-    ResourceLocation modelKey = new ResourceLocation("cobblemon", "mr_mime_female_shiny");
+    ResourceLocation modelKey = new ResourceLocation("cobblemon", "mr_mime.female.shiny");
     assertEquals(
         new ResourceLocation("cobblemon", "mr_mime"),
         CobblemonSpeciesManager.getBaseSpeciesId(modelKey));
 
     ResourceLocation baseKey = new ResourceLocation("cobblemon", "tapu_koko");
     assertEquals(baseKey, CobblemonSpeciesManager.getBaseSpeciesId(baseKey));
+  }
+
+  @Test
+  @DisplayName("An aspect keeps its underscores instead of being split into several aspects")
+  void testAspectWithUnderscore() {
+    ResourceLocation modelKey = new ResourceLocation("cobblemon", "wooloo.color-light_blue.shiny");
+    assertEquals(
+        new ResourceLocation("cobblemon", "wooloo"),
+        CobblemonSpeciesManager.getBaseSpeciesId(modelKey));
+    assertEquals(
+        Set.of("color-light_blue", CobblemonSpeciesManager.VARIANT_SHINY),
+        CobblemonSpeciesManager.getVariantAspects(modelKey));
+  }
+
+  @Test
+  @DisplayName("Models stored before the separator changed are still resolved")
+  void testLegacyVariantKeysStillResolve() {
+    ResourceLocation aipom = new ResourceLocation("cobblemon", "aipom");
+    assertEquals(
+        aipom,
+        CobblemonSpeciesManager.getBaseSpeciesId(
+            new ResourceLocation("cobblemon", "aipom_female_shiny")));
+    assertEquals(
+        Set.of(CobblemonSpeciesManager.VARIANT_FEMALE, CobblemonSpeciesManager.VARIANT_SHINY),
+        CobblemonSpeciesManager.getVariantAspects(
+            new ResourceLocation("cobblemon", "aipom_female_shiny")));
+    assertEquals(
+        new ResourceLocation("cobblemon", "mr_mime"),
+        CobblemonSpeciesManager.getBaseSpeciesId(
+            new ResourceLocation("cobblemon", "mr_mime_shiny")));
   }
 
   @Test
@@ -69,22 +101,22 @@ class CobblemonSpeciesManagerTest {
     assertEquals(
         Set.of(CobblemonSpeciesManager.VARIANT_FEMALE),
         CobblemonSpeciesManager.getVariantAspects(
-            new ResourceLocation("cobblemon", "pikachu_female")));
+            new ResourceLocation("cobblemon", "pikachu.female")));
     assertEquals(
         Set.of(CobblemonSpeciesManager.VARIANT_FEMALE, CobblemonSpeciesManager.VARIANT_SHINY),
         CobblemonSpeciesManager.getVariantAspects(
-            new ResourceLocation("cobblemon", "charizard_female_shiny")));
+            new ResourceLocation("cobblemon", "charizard.female.shiny")));
   }
 
   @Test
   void testCreateVariantKey() {
     ResourceLocation speciesId = new ResourceLocation("cobblemon", "pikachu");
     assertEquals(
-        new ResourceLocation("cobblemon", "pikachu_female"),
+        new ResourceLocation("cobblemon", "pikachu.female"),
         CobblemonSpeciesManager.createVariantKey(
             speciesId, CobblemonSpeciesManager.VARIANT_FEMALE));
     assertEquals(
-        new ResourceLocation("cobblemon", "pikachu_female_shiny"),
+        new ResourceLocation("cobblemon", "pikachu.female.shiny"),
         CobblemonSpeciesManager.createVariantKey(
             speciesId,
             CobblemonSpeciesManager.VARIANT_FEMALE,
@@ -102,5 +134,36 @@ class CobblemonSpeciesManagerTest {
     assertEquals(
         Set.of(CobblemonSpeciesManager.VARIANT_SHINY),
         CobblemonSpeciesManager.getVariantAspects(variantKey));
+  }
+
+  @Test
+  @DisplayName("A variant is resolved to its species even when it is a known model itself")
+  void testVariantIsNotMistakenForSpecies() {
+    ResourceLocation aipom = new ResourceLocation("cobblemon", "aipom");
+    CobblemonSpeciesManager.setKnownSpecies(Set.of(aipom));
+    try {
+      for (String variant : new String[] {"aipom.shiny", "aipom.female", "aipom.female.shiny"}) {
+        ResourceLocation modelKey = new ResourceLocation("cobblemon", variant);
+        assertEquals(aipom, CobblemonSpeciesManager.getBaseSpeciesId(modelKey));
+      }
+    } finally {
+      CobblemonSpeciesManager.setKnownSpecies(Set.of());
+    }
+  }
+
+  @Test
+  @DisplayName("Aspects which cannot be part of a model name are rejected")
+  void testUnsupportedAspectsAreRejected() {
+    assertTrue(CobblemonSpeciesManager.isSupportedAspect("color-white"));
+    assertTrue(CobblemonSpeciesManager.isSupportedAspect(CobblemonSpeciesManager.VARIANT_SHINY));
+
+    assertTrue(CobblemonSpeciesManager.isSupportedAspect("color-light_blue"));
+
+    assertFalse(CobblemonSpeciesManager.isSupportedAspect("color-white shiny"));
+    assertFalse(CobblemonSpeciesManager.isSupportedAspect("Color-White"));
+    assertFalse(CobblemonSpeciesManager.isSupportedAspect("form/alola"));
+    assertFalse(CobblemonSpeciesManager.isSupportedAspect("form.alola"));
+    assertFalse(CobblemonSpeciesManager.isSupportedAspect(""));
+    assertFalse(CobblemonSpeciesManager.isSupportedAspect(null));
   }
 }

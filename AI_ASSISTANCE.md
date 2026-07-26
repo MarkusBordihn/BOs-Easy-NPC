@@ -5,9 +5,9 @@ This project contains work created or refined with the assistance of AI-based to
 As a neurodiverse developer with reading and writing difficulties, I use AI primarily as an
 accessibility and productivity tool.
 
-Reading, writing, spelling, and language-related tasks can require significantly more time and effort
-for me. AI helps me identify spelling issues, mixed-up letters, unclear wording, and translation
-problems that I might otherwise miss.
+Reading, writing, spelling, and language-related tasks can require significantly more time and
+effort for me. AI helps me identify spelling issues, mixed-up letters, unclear wording, and
+translation problems that I might otherwise miss.
 
 AI is also used for repetitive development tasks, autocomplete, boilerplate, documentation,
 debugging assistance, and implementation references.
@@ -40,8 +40,8 @@ through autonomous AI generation.
 
 I have been creating pixel art and digital game assets manually for over 30 years.
 
-AI tools are not used as a replacement for my artistic skills, experience, or creative process.
-The project prioritizes human-created artwork.
+AI tools are not used as a replacement for my artistic skills, experience, or creative process. The
+project prioritizes human-created artwork.
 
 Final visual assets are created by me, contributed by trusted human collaborators with appropriate
 permission, commissioned from artists, or obtained from appropriately licensed sources.
@@ -64,8 +64,8 @@ screenshots, prototypes, or early public previews.
 Such placeholders should not be considered final release assets unless they have been replaced,
 recreated, appropriately licensed, or explicitly approved for continued use.
 
-Official releases prioritize human-created, commissioned, manually edited, or otherwise appropriately
-licensed visual assets.
+Official releases prioritize human-created, commissioned, manually edited, or otherwise
+appropriately licensed visual assets.
 
 ### 📄 Licensing
 

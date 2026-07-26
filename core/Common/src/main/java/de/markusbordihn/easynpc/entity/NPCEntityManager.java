@@ -31,6 +31,7 @@ import java.util.Optional;
 import java.util.UUID;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -85,6 +86,15 @@ public class NPCEntityManager {
       return;
     }
     getNPCEntityData().updateRemovalReason(entityUUID, reason);
+  }
+
+  public static <T extends Mob> boolean updateOwner(EasyNPC<T> easyNPC, LivingEntity owner) {
+    if (!validateServer() || easyNPC == null) {
+      return false;
+    }
+
+    getNPCEntityData().updateOwner(easyNPC, owner);
+    return true;
   }
 
   public static void saveAllDirtyNPCs() {

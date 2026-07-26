@@ -10,9 +10,18 @@ subprojects {
     mavenCentral()
     mavenLocal()
     maven {
-      url = "https://www.cursemaven.com"
+      name = "Modrinth"
+      url = "https://api.modrinth.com/maven"
       content {
-        includeGroup "curse.maven"
+        includeGroup "maven.modrinth"
+      }
+    }
+    maven {
+      name = "Xaero"
+      url = "https://chocolateminecraft.com/maven"
+      content {
+        includeGroup "xaero.minimap"
+        includeGroup "xaero.lib"
       }
     }
   }
@@ -38,7 +47,14 @@ subprojects {
 
   tasks.register("prepareKotlinBuildScriptModel") {}
 
-  // Local Easy Model Entities common artifact (compile); null falls back to CurseForge.
+  // Development helper mods like JEI or Xaero's Minimap are left out of game test runs, because
+  // they are not needed there and can crash the game test server.
+  ext.isGameTestRun = gradle.startParameter.taskNames.any {
+    def taskName = it.toLowerCase()
+    return taskName.contains('gametest') || taskName.contains('fullcheck')
+  }
+
+  // Local Easy Model Entities common artifact (compile); null falls back to Modrinth.
   ext.findLocalEasyModelEntities = { ->
     def version = project.findProperty('easy_model_entities_version')
     if (version == null) {
@@ -58,7 +74,7 @@ subprojects {
     return mavenLocalJar.exists() ? mavenLocalJar : null
   }
 
-  // Local Easy Model Entities loader artifact (runtime); null falls back to CurseForge.
+  // Local Easy Model Entities loader artifact (runtime); null falls back to Modrinth.
   ext.findLocalEasyModelEntitiesLoader = { String loader ->
     def version = project.findProperty('easy_model_entities_version')
     if (version == null) {
@@ -81,6 +97,8 @@ subprojects {
     }
   }
 }
+
+apply from: "$rootDir/../gradle/tasks/updateModVersions.gradle"
 
 tasks.register('allGameTests') {
   group = 'verification'

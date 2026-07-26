@@ -69,12 +69,12 @@ dependencies {
     changing = true
   }
 
-  // Easy Model Entities (Easy Model NPC support), local-first with CurseForge fallback.
+  // Easy Model Entities (Easy Model NPC support), local-first with Modrinth fallback.
   def easyModelEntitiesForgeRuntime = findLocalEasyModelEntitiesLoader('forge')
   if (easyModelEntitiesForgeRuntime != null) {
     runtimeOnly fg.deobf(easyModelEntitiesForgeRuntime)
-  } else if (project.hasProperty('forge_easy_model_entities_mod') && project.forge_easy_model_entities_mod) {
-    runtimeOnly fg.deobf("curse.maven:easy_model_entities-forge-1539533:${project.forge_easy_model_entities_mod}")
+  } else if (project.hasProperty('forge_easy_model_entities_version') && project.forge_easy_model_entities_version) {
+    runtimeOnly fg.deobf("maven.modrinth:easy-model-entities:${project.forge_easy_model_entities_version}")
   }
 }
 

@@ -54,6 +54,7 @@ class ClientGameEventHandler {
   public static void onTagsUpdated(TagsUpdatedEvent event) {
     if (CompatConstants.MOD_COBBLEMON_LOADED) {
       CobblemonLoader.setFemaleVariantFilter(CobblemonVariantHelper::hasFemaleVariant);
+      CobblemonLoader.setAspectProvider(CobblemonVariantHelper::getAvailableAspects);
       CobblemonLoader.register();
     }
     if (CompatConstants.MOD_EASY_MODEL_ENTITIES_LOADED) {

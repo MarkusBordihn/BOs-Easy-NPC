@@ -297,6 +297,7 @@
   "text.easy_npc.config.look": "Mirar",
   "text.easy_npc.config.look_at_animal": "Mirar Animal",
   "text.easy_npc.config.look_at_entity_by_uuid": "Mirar Entidad por UUID",
+  "text.easy_npc.config.look_at_item": "Mirar Objeto",
   "text.easy_npc.config.look_at_mob": "Mirar Mob",
   "text.easy_npc.config.look_at_owner": "Mirar Propietario",
   "text.easy_npc.config.look_at_player": "Mirar Jugador",

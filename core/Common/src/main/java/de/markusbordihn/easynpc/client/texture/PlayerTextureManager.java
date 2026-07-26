@@ -43,6 +43,7 @@ public class PlayerTextureManager {
   private static final Map<TextureModelKey, SkinType> textureSkinTypeCache =
       new ConcurrentHashMap<>();
   private static final Map<UUID, Long> textureReloadProtection = new ConcurrentHashMap<>();
+  private static final Set<UUID> revalidatedTextures = ConcurrentHashMap.newKeySet();
   private static final String LOG_PREFIX = "[Player Texture Manager] ";
   private static final long RELOAD_PROTECTION_TIME = 60000;
 
@@ -81,6 +82,7 @@ public class PlayerTextureManager {
       if (!hasTextureSkinData(textureModelKey)) {
         textureSkinTypeCache.put(textureModelKey, skinData.getSkinType());
       }
+      revalidateTexture(textureModelKey, skinData);
       return resourceLocation;
     }
 
@@ -145,6 +147,55 @@ public class PlayerTextureManager {
     return null;
   }
 
+  private static void revalidateTexture(
+      TextureModelKey textureModelKey, SkinDataCapable<?> skinData) {
+    UUID playerUUID = textureModelKey.getUUID();
+    if (!revalidatedTextures.add(playerUUID)) {
+      return;
+    }
+
+    Path textureDataFolder = PlayerSkinDataFiles.getPlayerSkinDataFolder(skinData.getSkinModel());
+    if (textureDataFolder == null) {
+      return;
+    }
+
+    String cachedTextureSource =
+        TextureCacheManager.getCachedTextureSource(textureModelKey, textureDataFolder);
+    if (cachedTextureSource == null) {
+      return;
+    }
+
+    AsyncTextureLoader.revalidatePlayerTextureAsync(
+        textureModelKey,
+        playerUUID,
+        textureDataFolder,
+        cachedTextureSource,
+        skinData.getSkinType());
+  }
+
+  static void updateTexture(
+      TextureModelKey textureModelKey, ResourceLocation resourceLocation, SkinType skinType) {
+    textureCache.put(textureModelKey, resourceLocation);
+    textureSkinTypeCache.put(textureModelKey, skinType);
+  }
+
+  public static boolean refreshTexture(TextureModelKey textureModelKey) {
+    Path textureDataFolder =
+        PlayerSkinDataFiles.getPlayerSkinDataFolder(textureModelKey.getSkinModel());
+    if (textureDataFolder == null) {
+      return false;
+    }
+
+    TextureCacheManager.removeCachedTexture(textureModelKey, textureDataFolder);
+    TextureRegistrationQueue.getInstance().clear(Set.of(textureModelKey));
+    textureCache.remove(textureModelKey);
+    textureSkinTypeCache.remove(textureModelKey);
+    textureReloadProtection.remove(textureModelKey.getUUID());
+    revalidatedTextures.remove(textureModelKey.getUUID());
+    log.info("{} Dropped cached player texture for {}", LOG_PREFIX, textureModelKey);
+    return true;
+  }
+
   public static void registerTexture(SkinModel skinModel, File textureFile) {
     registerTexture(TextureManager.getTextureModelKey(skinModel, textureFile), textureFile);
   }
@@ -160,6 +211,7 @@ public class PlayerTextureManager {
   public static void clearTextureCache() {
     TextureRegistrationQueue.getInstance().clear(textureCache.keySet());
     textureReloadProtection.clear();
+    revalidatedTextures.clear();
     textureCache.clear();
     textureSkinTypeCache.clear();
   }

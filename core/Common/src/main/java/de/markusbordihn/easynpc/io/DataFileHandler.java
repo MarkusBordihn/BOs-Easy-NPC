@@ -39,11 +39,12 @@ import org.apache.logging.log4j.Logger;
 
 public class DataFileHandler {
 
+  public static final String RESOURCE_NAMESPACED_PRESET_PATH = Constants.MOD_ID + "/preset";
+  public static final String RESOURCE_PRESET_PATH = "preset";
+  public static final String RESOURCE_DEFAULT_PRESET_PATH = "default_preset";
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   protected static final String BACKUP_FOLDER_NAME = "backup";
   protected static final String CACHE_FOLDER_NAME = "cache";
-  protected static final String RESOURCE_PRESET_PATH = "preset";
-  protected static final String RESOURCE_DEFAULT_PRESET_PATH = "default_preset";
   protected static final String RESOURCE_POSES_PATH = "poses";
   protected static final String RESOURCE_TEXTURES_ENTITY_PATH = "textures/entity";
   private static final Pattern VALID_PRESET_FILENAME_PATTERN = Pattern.compile("[a-zA-Z0-9/._-]+");
@@ -89,11 +90,9 @@ public class DataFileHandler {
     if (result.isEmpty() || !VALID_PRESET_FILENAME_PATTERN.matcher(result).matches()) {
       return null;
     }
-    // Check if already has a valid preset extension - if so, keep it
     if (PresetExportFormat.hasPresetExtension(result)) {
       return result;
     }
-    // Only add default extension if no preset extension present
     return result + PresetExportFormat.getDefault().getFileExtension();
   }
 
@@ -240,7 +239,6 @@ public class DataFileHandler {
       return false;
     }
 
-    // Skip if file already exists and overwrite is not requested
     if (targetFile.exists() && !overwriteExisting) {
       log.debug("Skipping copy of {} to {} - file already exists", resourceLocation, targetFile);
       return true;
@@ -272,7 +270,6 @@ public class DataFileHandler {
       return false;
     }
 
-    // Skip if file already exists and overwrite is not requested
     if (targetFile.exists() && !overwriteExisting) {
       log.debug("Skipping copy of {} to {} - file already exists", resourceLocation, targetFile);
       return true;

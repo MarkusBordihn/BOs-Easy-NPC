@@ -24,6 +24,7 @@ import com.cobblemon.mod.common.api.pokemon.PokemonSpecies;
 import com.cobblemon.mod.common.client.entity.PokemonClientDelegate;
 import com.cobblemon.mod.common.client.render.models.blockbench.pokemon.PokemonPoseableModel;
 import com.cobblemon.mod.common.client.render.models.blockbench.repository.PokemonModelRepository;
+import com.cobblemon.mod.common.entity.PoseType;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.Gender;
 import com.cobblemon.mod.common.pokemon.Pokemon;
@@ -41,11 +42,14 @@ import de.markusbordihn.easynpc.data.render.RenderType;
 import de.markusbordihn.easynpc.data.skin.variant.DopplerSkinVariant;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.NavigationDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.RenderDataCapable;
 import de.markusbordihn.easynpc.mixin.renderer.MobRendererInvoker;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -65,21 +69,36 @@ public class CobblemonNPCRenderer<E extends PathfinderMob>
       DopplerSkinVariant.DOPPLER.getTextureLocation();
   private static final float GUI_PREVIEW_PROFILE_SCALE_FACTOR = 1.15F;
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-  private static final Map<ResourceLocation, PokemonEntity> cobblemonEntityCache = new HashMap<>();
+  private static final int MAX_CACHED_COBBLEMON_ENTITIES = 64;
+
+  private static final Map<CobblemonProxyKey, PokemonEntity> cobblemonEntityCache =
+      new LinkedHashMap<>(16, 0.75F, true) {
+        @Override
+        protected boolean removeEldestEntry(Map.Entry<CobblemonProxyKey, PokemonEntity> eldest) {
+          return this.size() > MAX_CACHED_COBBLEMON_ENTITIES;
+        }
+      };
+
   private static final Map<ResourceLocation, Boolean> invalidSpeciesCache = new HashMap<>();
   private static final Map<ResourceLocation, Float> guiPreviewScaleCache = new HashMap<>();
+
+  private static final Map<ResourceLocation, Set<String>> speciesAspectCache = new HashMap<>();
+
+  private record CobblemonProxyKey(UUID entityUUID, ResourceLocation modelKey) {}
 
   public CobblemonNPCRenderer(
       EntityRendererProvider.Context context, ModelLayerLocation modelLayerLocation) {
     super(context, new DopplerModel<>(context.bakeLayer(modelLayerLocation)), 0.5F);
   }
 
-  private static PokemonEntity getOrCreateCobblemonEntity(ResourceLocation modelKey, Level level) {
+  private static PokemonEntity getOrCreateCobblemonEntity(
+      UUID entityUUID, ResourceLocation modelKey, Level level) {
     if (invalidSpeciesCache.containsKey(modelKey)) {
       return null;
     }
 
-    PokemonEntity cached = cobblemonEntityCache.get(modelKey);
+    CobblemonProxyKey proxyKey = new CobblemonProxyKey(entityUUID, modelKey);
+    PokemonEntity cached = cobblemonEntityCache.get(proxyKey);
     if (cached != null && cached.isAlive()) {
       return cached;
     }
@@ -104,8 +123,8 @@ public class CobblemonNPCRenderer<E extends PathfinderMob>
       entity.setInvulnerable(true);
       entity.setTicksLived(100);
       entity.hideNameRendering();
-      syncEntityData(cobblemonInstance, entity);
-      cobblemonEntityCache.put(modelKey, entity);
+      syncEntityData(cobblemonInstance, entity, modelKey);
+      cobblemonEntityCache.put(proxyKey, entity);
       return entity;
     } catch (Exception exception) {
       log.error("Failed to create Cobblemon entity for species {}", modelKey, exception);
@@ -114,13 +133,18 @@ public class CobblemonNPCRenderer<E extends PathfinderMob>
     }
   }
 
-  private static void syncEntityData(Pokemon cobblemonInstance, PokemonEntity entity) {
+  private static void syncEntityData(
+      Pokemon cobblemonInstance, PokemonEntity entity, ResourceLocation modelKey) {
     entity
         .getEntityData()
         .set(
             PokemonEntity.getSPECIES(),
             cobblemonInstance.getSpecies().getResourceIdentifier().toString());
-    entity.getEntityData().set(PokemonEntity.getASPECTS(), cobblemonInstance.getAspects());
+
+    Set<String> aspects =
+        speciesAspectCache.computeIfAbsent(
+            modelKey, key -> Set.copyOf(cobblemonInstance.getAspects()));
+    entity.getEntityData().set(PokemonEntity.getASPECTS(), aspects);
   }
 
   private static void applyVariantAspects(Pokemon cobblemonInstance, ResourceLocation modelKey) {
@@ -175,13 +199,39 @@ public class CobblemonNPCRenderer<E extends PathfinderMob>
   }
 
   private static void syncCobblemonRenderState(
-      PathfinderMob sourceEntity, PokemonEntity cobblemonEntity) {
+      EasyNPC<?> easyNPC, PathfinderMob sourceEntity, PokemonEntity cobblemonEntity) {
     int renderAge = sourceEntity.tickCount + 100;
     cobblemonEntity.setTicksLived(renderAge);
+
+    boolean isMoving = isMoving(sourceEntity);
+    cobblemonEntity.getEntityData().set(PokemonEntity.getMOVING(), isMoving);
+    cobblemonEntity
+        .getEntityData()
+        .set(PokemonEntity.getPOSE_TYPE(), getPoseType(easyNPC, sourceEntity, isMoving));
+
     if (cobblemonEntity.getDelegate() instanceof PokemonClientDelegate clientDelegate) {
       clientDelegate.setCurrentEntity(cobblemonEntity);
       clientDelegate.updateAge(renderAge);
     }
+  }
+
+  private static boolean isMoving(PathfinderMob sourceEntity) {
+    return sourceEntity.walkDist - sourceEntity.walkDistO > 0.003F
+        || sourceEntity.getDeltaMovement().horizontalDistanceSqr() > 1.0E-6;
+  }
+
+  private static PoseType getPoseType(
+      EasyNPC<?> easyNPC, PathfinderMob sourceEntity, boolean isMoving) {
+    if (sourceEntity.isInWater()) {
+      return isMoving ? PoseType.SWIM : PoseType.FLOAT;
+    }
+
+    NavigationDataCapable<?> navigationData = easyNPC.getEasyNPCNavigationData();
+    if (navigationData != null && navigationData.isFlying()) {
+      return isMoving ? PoseType.FLY : PoseType.HOVER;
+    }
+
+    return isMoving ? PoseType.WALK : PoseType.STAND;
   }
 
   private boolean renderCobblemon(
@@ -213,7 +263,8 @@ public class CobblemonNPCRenderer<E extends PathfinderMob>
       return false;
     }
 
-    PokemonEntity cobblemonEntity = getOrCreateCobblemonEntity(speciesId, entity.level());
+    PokemonEntity cobblemonEntity =
+        getOrCreateCobblemonEntity(entity.getUUID(), speciesId, entity.level());
     if (cobblemonEntity == null) {
       return false;
     }
@@ -226,7 +277,7 @@ public class CobblemonNPCRenderer<E extends PathfinderMob>
 
     try {
       cobblemonEntity.setCustomNameVisible(false);
-      syncCobblemonRenderState(entity, cobblemonEntity);
+      syncCobblemonRenderState(easyNPC, entity, cobblemonEntity);
 
       if (IntegrationRegistry.isGuiPreviewMode()) {
         float previewScale = getGuiPreviewScale(speciesId, cobblemonEntity);
@@ -311,4 +362,6 @@ public class CobblemonNPCRenderer<E extends PathfinderMob>
     }
     super.render(entity, entityYaw, partialTicks, poseStack, bufferSource, packedLight);
   }
+
+  private record CobblemonProxy(ResourceLocation modelKey, PokemonEntity entity) {}
 }

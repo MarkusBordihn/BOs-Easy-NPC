@@ -25,7 +25,7 @@ import org.apache.logging.log4j.Logger;
 
 public enum ServerDataIndex {
 
-  // General Data Index (0-19) @formatter:off
+  // General Data Index (0-19)
   DATA_0,
   DATA_1,
   DATA_2,
@@ -55,8 +55,10 @@ public enum ServerDataIndex {
   OBJECTIVE_PLAYER_SET,
   OBJECTIVE_ENTITY_SET,
   PRESET_UUID,
+  CUSTOM_IDENTIFIER,
+  RESTORE_ON_OWNER_LOGIN,
   FACTION_NAME,
-  UNKNOWN; // @formatter:on
+  UNKNOWN;
 
   public static final int MAX_FREE_INDEX = 20;
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);

@@ -294,6 +294,7 @@
   "text.easy_npc.config.look": "看向",
   "text.easy_npc.config.look_at_animal": "看向动物",
   "text.easy_npc.config.look_at_entity_by_uuid": "看向有指定UUID的实体",
+  "text.easy_npc.config.look_at_item": "看向物品",
   "text.easy_npc.config.look_at_mob": "看向生物",
   "text.easy_npc.config.look_at_owner": "看向Owner",
   "text.easy_npc.config.look_at_player": "看向玩家",

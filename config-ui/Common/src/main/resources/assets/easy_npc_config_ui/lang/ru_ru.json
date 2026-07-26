@@ -297,6 +297,7 @@
   "text.easy_npc.config.look": "Смотреть",
   "text.easy_npc.config.look_at_animal": "Смотреть на животное",
   "text.easy_npc.config.look_at_entity_by_uuid": "Смотреть на сущность по UUID",
+  "text.easy_npc.config.look_at_item": "Смотреть на предмет",
   "text.easy_npc.config.look_at_mob": "Смотреть на моба",
   "text.easy_npc.config.look_at_owner": "Смотреть на владельца",
   "text.easy_npc.config.look_at_player": "Смотреть на игрока",

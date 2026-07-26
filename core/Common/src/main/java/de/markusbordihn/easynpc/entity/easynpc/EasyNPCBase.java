@@ -207,6 +207,9 @@ public interface EasyNPCBase<E extends Mob>
     if (!this.isServerSideInstance()) {
       return;
     }
+
+    this.getMob().setPersistenceRequired();
+
     ServerDataCapable<E> serverData = getEasyNPCServerData();
     if (serverData == null) {
       log.error("No server data available for {}", this.getEntityUUID());

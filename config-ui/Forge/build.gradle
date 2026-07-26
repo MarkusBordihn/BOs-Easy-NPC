@@ -118,42 +118,48 @@ dependencies {
   testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.1'
   testImplementation 'org.junit.jupiter:junit-jupiter-params:5.10.1'
 
-  // Additional helpful Mods for development (runtime dependency)
-  if (project.hasProperty('forge_jei_mod') && project.forge_jei_mod) {
-    runtimeOnly fg.deobf("curse.maven:jei-238222:${project.forge_jei_mod}")
+  // Additional helpful Mods for development (runtime dependency, skipped for game tests)
+  if (!isGameTestRun && project.hasProperty('forge_jei_version') && project.forge_jei_version) {
+    runtimeOnly fg.deobf("maven.modrinth:jei:${project.forge_jei_version}")
   }
-  if (project.hasProperty('forge_xaeros_minimap_mod') && project.forge_xaeros_minimap_mod) {
-    runtimeOnly fg.deobf("curse.maven:xaeros_minimap-263420:${project.forge_xaeros_minimap_mod}")
+  if (!isGameTestRun && project.hasProperty('forge_xaeros_minimap_version') && project.forge_xaeros_minimap_version) {
+    runtimeOnly("xaero.minimap:xaerominimap-forge-${project.minecraft_version}:${project.forge_xaeros_minimap_version}:dev") {
+      transitive = false
+    }
+    runtimeOnly("xaero.lib:xaerolib-forge-${project.minecraft_version}:${project.forge_xaerolib_version}:dev") {
+      transitive = false
+    }
   }
 
   // Easy Model Entities (runtime dependency)
   def easyModelEntitiesForgeRuntime = findLocalEasyModelEntitiesLoader('forge')
   if (easyModelEntitiesForgeRuntime != null) {
     runtimeOnly fg.deobf(easyModelEntitiesForgeRuntime)
-  } else if (project.hasProperty('forge_easy_model_entities_mod') && project.forge_easy_model_entities_mod) {
-    runtimeOnly fg.deobf("curse.maven:easy-model-entities-1539533:${project.forge_easy_model_entities_mod}")
+  } else if (project.hasProperty('forge_easy_model_entities_version') && project.forge_easy_model_entities_version) {
+    runtimeOnly fg.deobf("maven.modrinth:easy-model-entities:${project.forge_easy_model_entities_version}")
   }
 
   // Epic Fight Mod (for testing)
-  runtimeOnly fg.deobf("curse.maven:epic-fight-mod-405076:8049910")
+  runtimeOnly fg.deobf("maven.modrinth:epic-fight:${project.forge_epic_fight_version}")
 
   // Test dependencies
-  // runtimeOnly fg.deobf("curse.maven:armourers-workshop-229523:6701559")
-  // runtimeOnly fg.deobf("curse.maven:geckolib-388172:6920925")
+  // runtimeOnly fg.deobf("maven.modrinth:armourers-workshop:3.4.0-beta.3+1.20.1-forge")
+  // GeckoLib uses the same version number across Minecraft versions, so pin the Modrinth version id
+  // runtimeOnly fg.deobf("maven.modrinth:geckolib:aC5KMoNg")
 
   // Bug Testing
-  // runtimeOnly fg.deobf("curse.maven:naturalist-627986:6863943")
-  runtimeOnly fg.deobf("curse.maven:framework-549225:6531428")
-  // runtimeOnly fg.deobf("curse.maven:just-enough-guns-820727:6808139")
-  // runtimeOnly fg.deobf("curse.maven:create-328085:7178761")
+  // runtimeOnly fg.deobf("maven.modrinth:naturalist:5.0pre3-forge")
+  // runtimeOnly fg.deobf("maven.modrinth:just-enough-guns:0.14.1")
+  // runtimeOnly fg.deobf("maven.modrinth:create:mc1.20.1-6.0.8")
 
-  // Cobblemon (Testing)
-  // runtimeOnly fg.deobf("curse.maven:kotlin-for-forge-351264:7291067")
-  // runtimeOnly fg.deobf("curse.maven:cobblemon-687131:5375390")
+  // Cobblemon (Testing, requires Kotlin for Forge + Architectury at runtime)
+  // runtimeOnly fg.deobf("maven.modrinth:cobblemon:${project.forge_cobblemon_version}")
+  // runtimeOnly fg.deobf("maven.modrinth:kotlin-for-forge:${project.forge_kotlin_for_forge_version}")
+  // runtimeOnly fg.deobf("maven.modrinth:architectury-api:${project.forge_architectury_version}")
 
   // Just enough Guns (Testing)
-  // runtimeOnly fg.deobf("curse.maven:just-enough-guns-820727:6808139")
-  // runtimeOnly fg.deobf("curse.maven:geckolib-388172:6920925")
+  // runtimeOnly fg.deobf("maven.modrinth:just-enough-guns:0.14.1")
+  // runtimeOnly fg.deobf("maven.modrinth:geckolib:aC5KMoNg")
 }
 
 tasks.withType(JavaCompile).configureEach {

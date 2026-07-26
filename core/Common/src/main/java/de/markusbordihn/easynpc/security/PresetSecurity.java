@@ -25,14 +25,22 @@ import de.markusbordihn.easynpc.data.preset.PresetType;
 import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.OwnerDataCapable;
+import de.markusbordihn.easynpc.io.DataFileHandler;
 import java.util.UUID;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class PresetSecurity {
 
-  private static final String DATA_PRESET_PATH_PREFIX = "preset/";
-  private static final String DEFAULT_PRESET_PATH_PREFIX = "default_preset/";
+  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+
+  private static final String NAMESPACED_DATA_PRESET_PATH_PREFIX =
+      DataFileHandler.RESOURCE_NAMESPACED_PRESET_PATH + "/";
+  private static final String DATA_PRESET_PATH_PREFIX = DataFileHandler.RESOURCE_PRESET_PATH + "/";
+  private static final String DEFAULT_PRESET_PATH_PREFIX =
+      DataFileHandler.RESOURCE_DEFAULT_PRESET_PATH + "/";
 
   private PresetSecurity() {}
 
@@ -46,23 +54,48 @@ public class PresetSecurity {
       return new SecurityDecision(true, SecurityDecisionReason.SERVER_SOURCE);
     }
 
-    if (!resourceLocation.getNamespace().equals(Constants.MOD_ID)
-        || PresetExportFormat.getPresetExportFormat(resourceLocation.getPath())
-            == PresetExportFormat.UNKNOWN) {
+    if (PresetExportFormat.getPresetExportFormat(resourceLocation.getPath())
+        == PresetExportFormat.UNKNOWN) {
+      log.warn(
+          "Rejected preset {}, because {} is not a known preset file format.",
+          resourceLocation,
+          resourceLocation.getPath());
       return new SecurityDecision(false, SecurityDecisionReason.INVALID_RESOURCE);
     }
 
-    String path = resourceLocation.getPath();
     boolean allowedPath =
         presetType == PresetType.DATA
-            ? path.startsWith(DATA_PRESET_PATH_PREFIX)
-            : path.startsWith(DEFAULT_PRESET_PATH_PREFIX);
+            ? isAllowedDataPresetPath(resourceLocation)
+            : isAllowedDefaultPresetPath(resourceLocation);
+    if (!allowedPath) {
+      log.warn(
+          "Rejected {} preset {}, because it is not below the expected {} folder.",
+          presetType,
+          resourceLocation,
+          presetType == PresetType.DATA
+              ? NAMESPACED_DATA_PRESET_PATH_PREFIX
+              : DEFAULT_PRESET_PATH_PREFIX);
+    }
 
     return new SecurityDecision(
         allowedPath,
         allowedPath
             ? SecurityDecisionReason.SERVER_SOURCE
             : SecurityDecisionReason.INVALID_RESOURCE);
+  }
+
+  private static boolean isAllowedDataPresetPath(ResourceLocation resourceLocation) {
+    if (resourceLocation.getPath().startsWith(NAMESPACED_DATA_PRESET_PATH_PREFIX)) {
+      return true;
+    }
+
+    return Constants.MOD_ID.equals(resourceLocation.getNamespace())
+        && resourceLocation.getPath().startsWith(DATA_PRESET_PATH_PREFIX);
+  }
+
+  private static boolean isAllowedDefaultPresetPath(ResourceLocation resourceLocation) {
+    return Constants.MOD_ID.equals(resourceLocation.getNamespace())
+        && resourceLocation.getPath().startsWith(DEFAULT_PRESET_PATH_PREFIX);
   }
 
   public static PresetTrustLevel getTrustLevel(

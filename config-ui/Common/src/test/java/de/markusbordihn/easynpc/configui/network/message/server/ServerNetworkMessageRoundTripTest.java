@@ -31,6 +31,7 @@ import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataEntry;
 import de.markusbordihn.easynpc.data.objective.ObjectiveType;
 import de.markusbordihn.easynpc.data.position.CustomPosition;
+import de.markusbordihn.easynpc.data.preset.PresetAccess;
 import de.markusbordihn.easynpc.data.preset.PresetExportFormat;
 import de.markusbordihn.easynpc.data.preset.PresetMetadata;
 import de.markusbordihn.easynpc.data.preset.PresetType;
@@ -146,7 +147,7 @@ class ServerNetworkMessageRoundTripTest {
     UUID uuid = UUID.randomUUID();
     UUID dialogId = UUID.randomUUID();
     DialogDataEntry dialogDataEntry = new DialogDataEntry("intro", "Intro", "Hello");
-    ObjectiveDataEntry objective = new ObjectiveDataEntry(ObjectiveType.LOOK_AT_PLAYER, 7);
+    ObjectiveDataEntry objective = new ObjectiveDataEntry(ObjectiveType.LOOK_AT_PLAYER);
 
     SaveDialogMessage dialog =
         roundTrip(
@@ -162,7 +163,9 @@ class ServerNetworkMessageRoundTripTest {
     assertEquals(dialogDataEntry.createTag(), dialog.dialogDataEntry().createTag());
     assertEquals(dialogId, removeDialog.dialogId());
     assertEquals(ObjectiveType.LOOK_AT_PLAYER, objectiveMessage.objectiveDataEntry().getType());
-    assertEquals(7, objectiveMessage.objectiveDataEntry().getPriority());
+    assertEquals(
+        ObjectiveType.LOOK_AT_PLAYER.getDefaultPriority(),
+        objectiveMessage.objectiveDataEntry().getPriority());
   }
 
   @Test
@@ -204,7 +207,16 @@ class ServerNetworkMessageRoundTripTest {
     presetData.putString("id", "easy_npc:humanoid");
     PresetMetadata metadata =
         new PresetMetadata(
-            "Guard", "Test", "1.0.0", "Tester", 1L, 2L, "desc", "easy_npc:humanoid", "STEVE");
+            "Guard",
+            "Test",
+            "1.0.0",
+            "Tester",
+            1L,
+            2L,
+            "desc",
+            "easy_npc:humanoid",
+            "STEVE",
+            PresetAccess.PUBLIC);
 
     ImportPresetMessage importMessage =
         roundTrip(

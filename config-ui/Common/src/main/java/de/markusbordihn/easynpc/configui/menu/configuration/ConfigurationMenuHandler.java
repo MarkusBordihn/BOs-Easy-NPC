@@ -27,6 +27,7 @@ import de.markusbordihn.easynpc.configui.menu.configuration.equipment.EquipmentC
 import de.markusbordihn.easynpc.configui.menu.configuration.trading.AdvancedTradingConfigurationMenu;
 import de.markusbordihn.easynpc.configui.menu.configuration.trading.BasicTradingConfigurationMenu;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
+import de.markusbordihn.easynpc.data.preset.PresetMetadata;
 import de.markusbordihn.easynpc.data.screen.ScreenData;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
@@ -39,10 +40,13 @@ import de.markusbordihn.easynpc.security.FeatureSecurity;
 import de.markusbordihn.easynpc.security.NpcFeature;
 import de.markusbordihn.easynpc.security.SecurityManager;
 import de.markusbordihn.easynpc.utils.CompoundTagUtils;
+import java.util.Comparator;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -56,6 +60,14 @@ import net.minecraft.world.inventory.MenuType;
 
 public class ConfigurationMenuHandler {
 
+  private static Set<ResourceLocation> listedPresets(
+      Set<ResourceLocation> presets, Function<ResourceLocation, PresetMetadata> metadataProvider) {
+    return presets.stream()
+        .sorted(Comparator.comparing(ResourceLocation::toString))
+        .filter(preset -> metadataProvider.apply(preset).access().isListedForPlayers())
+        .collect(Collectors.toCollection(LinkedHashSet::new));
+  }
+
   public static MenuProvider getMenuProvider(
       final ConfigurationType configurationType,
       final EasyNPC<?> easyNPC,
@@ -63,7 +75,6 @@ public class ConfigurationMenuHandler {
       final ScreenData screenData) {
     final Component displayName = getConfigurationTitle(configurationType, easyNPC);
 
-    // Special configuration menu for equipment
     if (configurationType == ConfigurationType.EQUIPMENT) {
       return new MenuProvider() {
         @Override
@@ -123,7 +134,6 @@ public class ConfigurationMenuHandler {
       };
     }
 
-    // Default configuration menu
     return new MenuProvider() {
       @Override
       public AbstractContainerMenu createMenu(
@@ -149,10 +159,8 @@ public class ConfigurationMenuHandler {
       final ServerPlayer serverPlayer,
       final int pageIndex) {
 
-    // Get basic data for configuration menu.
     final UUID npcUUID = easyNPC.getEntityUUID();
 
-    // Additional data for specific configuration menu.
     final CompoundTag additionalSyncData = new CompoundTag();
     switch (configurationType) {
       case DEFAULT_POSE -> {
@@ -179,7 +187,10 @@ public class ConfigurationMenuHandler {
       }
       case CUSTOM_PRESET_IMPORT -> {
         CustomPresetDataFiles.refreshPresetResourceLocations();
-        Set<ResourceLocation> customPresets = CustomPresetDataFiles.getPresetResourceLocationSet();
+        Set<ResourceLocation> customPresets =
+            listedPresets(
+                CustomPresetDataFiles.getPresetResourceLocationSet(),
+                CustomPresetDataFiles::getPresetMetadata);
         additionalSyncData.put(
             "CustomPresets", CompoundTagUtils.writeResourceLocations(customPresets));
         addBlockedConfigurationsForTypes(
@@ -192,7 +203,10 @@ public class ConfigurationMenuHandler {
       }
       case WORLD_PRESET_IMPORT -> {
         WorldPresetDataFiles.refreshPresetResourceLocations();
-        Set<ResourceLocation> worldPresets = WorldPresetDataFiles.getPresetResourceLocationSet();
+        Set<ResourceLocation> worldPresets =
+            listedPresets(
+                WorldPresetDataFiles.getPresetResourceLocationSet(),
+                WorldPresetDataFiles::getPresetMetadata);
         additionalSyncData.put(
             "WorldPresets", CompoundTagUtils.writeResourceLocations(worldPresets));
         addBlockedConfigurationsForTypes(
@@ -255,16 +269,7 @@ public class ConfigurationMenuHandler {
             ConfigurationType.BASE_ATTRIBUTE,
             ConfigurationType.COMBAT_ATTRIBUTE);
       }
-      case CUSTOM_PRESET_EXPORT, WORLD_PRESET_EXPORT -> {
-        addBlockedConfigurationsForTypes(
-            additionalSyncData,
-            serverPlayer,
-            easyNPC,
-            ConfigurationType.LOCAL_PRESET_EXPORT,
-            ConfigurationType.CUSTOM_PRESET_EXPORT,
-            ConfigurationType.WORLD_PRESET_EXPORT);
-      }
-      case LOCAL_PRESET_EXPORT -> {
+      case CUSTOM_PRESET_EXPORT, WORLD_PRESET_EXPORT, LOCAL_PRESET_EXPORT -> {
         addBlockedConfigurationsForTypes(
             additionalSyncData,
             serverPlayer,

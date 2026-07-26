@@ -108,46 +108,45 @@ dependencies {
   testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.1'
   testImplementation 'org.junit.jupiter:junit-jupiter-params:5.10.1'
 
-  // Additional helpful Mods for development (runtime dependency)
-  if (project.hasProperty('forge_jei_mod') && project.forge_jei_mod) {
-    runtimeOnly fg.deobf("curse.maven:jei-238222:${project.forge_jei_mod}")
+  // Additional helpful Mods for development (runtime dependency, skipped for game tests)
+  if (!isGameTestRun && project.hasProperty('forge_jei_version') && project.forge_jei_version) {
+    runtimeOnly fg.deobf("maven.modrinth:jei:${project.forge_jei_version}")
   }
-  if (project.hasProperty('forge_xaeros_minimap_mod') && project.forge_xaeros_minimap_mod) {
-    runtimeOnly fg.deobf("curse.maven:xaeros_minimap-263420:${project.forge_xaeros_minimap_mod}")
+  if (!isGameTestRun && project.hasProperty('forge_xaeros_minimap_version') && project.forge_xaeros_minimap_version) {
+    runtimeOnly("xaero.minimap:xaerominimap-forge-${project.minecraft_version}:${project.forge_xaeros_minimap_version}:dev") {
+      transitive = false
+    }
+    runtimeOnly("xaero.lib:xaerolib-forge-${project.minecraft_version}:${project.forge_xaerolib_version}:dev") {
+      transitive = false
+    }
   }
 
   // Epic Fight Mod (for testing)
-  compileOnly fg.deobf("curse.maven:epic-fight-mod-405076:8049910")
+  compileOnly fg.deobf("maven.modrinth:epic-fight:${project.forge_epic_fight_version}")
 
-  // Cobblemon (compileOnly for Cobblemon NPC support)
-  compileOnly fg.deobf("curse.maven:cobblemon-687131:5375390")
+  // Cobblemon (compileOnly for Cobblemon NPC support, requires Kotlin for Forge + Architectury at runtime)
+  compileOnly fg.deobf("maven.modrinth:cobblemon:${project.forge_cobblemon_version}")
+  //runtimeOnly fg.deobf("maven.modrinth:cobblemon:${project.forge_cobblemon_version}")
+  //runtimeOnly fg.deobf("maven.modrinth:kotlin-for-forge:${project.forge_kotlin_for_forge_version}")
+  //runtimeOnly fg.deobf("maven.modrinth:architectury-api:${project.forge_architectury_version}")
 
   // Easy Model Entities (API support)
   def easyModelEntitiesLocal = findLocalEasyModelEntities()
   if (easyModelEntitiesLocal != null) {
     compileOnly files(easyModelEntitiesLocal)
     testCompileOnly files(easyModelEntitiesLocal)
-  } else if (project.hasProperty('forge_easy_model_entities_mod') && project.forge_easy_model_entities_mod) {
-    compileOnly fg.deobf("curse.maven:easy-model-entities-1539533:${project.forge_easy_model_entities_mod}")
-    testCompileOnly fg.deobf("curse.maven:easy-model-entities-1539533:${project.forge_easy_model_entities_mod}")
+  } else if (project.hasProperty('forge_easy_model_entities_version') && project.forge_easy_model_entities_version) {
+    compileOnly fg.deobf("maven.modrinth:easy-model-entities:${project.forge_easy_model_entities_version}")
+    testCompileOnly fg.deobf("maven.modrinth:easy-model-entities:${project.forge_easy_model_entities_version}")
   }
 
   // Easy Model Entities (runtime dependency)
   def easyModelEntitiesForgeRuntime = findLocalEasyModelEntitiesLoader('forge')
   if (easyModelEntitiesForgeRuntime != null) {
     runtimeOnly fg.deobf(easyModelEntitiesForgeRuntime)
-  } else if (project.hasProperty('forge_easy_model_entities_mod') && project.forge_easy_model_entities_mod) {
-    runtimeOnly fg.deobf("curse.maven:easy-model-entities-1539533:${project.forge_easy_model_entities_mod}")
+  } else if (project.hasProperty('forge_easy_model_entities_version') && project.forge_easy_model_entities_version) {
+    runtimeOnly fg.deobf("maven.modrinth:easy-model-entities:${project.forge_easy_model_entities_version}")
   }
-
-  // FTB Quests (for testing)
-  runtimeOnly fg.deobf("curse.maven:ftb-library-forge-404465:5282375")
-  runtimeOnly fg.deobf("curse.maven:ftb-teams-forge-404468:4623116")
-  runtimeOnly fg.deobf("curse.maven:architectury-api-419699:4663010")
-  runtimeOnly fg.deobf("curse.maven:ftb-quests-forge-289412:6829212")
-
-  // Grimoire of Gaia (for testing)
-  runtimeOnly fg.deobf("curse.maven:grimoire-of-gaia-228948:7187135")
 }
 
 mixin {

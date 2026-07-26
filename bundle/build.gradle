@@ -9,14 +9,19 @@ subprojects {
   repositories {
     mavenCentral()
     mavenLocal()
-    repositories {
-      mavenCentral()
-      mavenLocal()
-      maven {
-        url = "https://www.cursemaven.com"
-        content {
-          includeGroup "curse.maven"
-        }
+    maven {
+      name = "Modrinth"
+      url = "https://api.modrinth.com/maven"
+      content {
+        includeGroup "maven.modrinth"
+      }
+    }
+    maven {
+      name = "Xaero"
+      url = "https://chocolateminecraft.com/maven"
+      content {
+        includeGroup "xaero.minimap"
+        includeGroup "xaero.lib"
       }
     }
   }
@@ -39,7 +44,7 @@ subprojects {
 
   tasks.register("prepareKotlinBuildScriptModel") {}
 
-  // Local Easy Model Entities loader artifact (runtime); null falls back to CurseForge.
+  // Local Easy Model Entities loader artifact (runtime); null falls back to Modrinth.
   ext.findLocalEasyModelEntitiesLoader = { String loader ->
     def version = project.findProperty('easy_model_entities_version')
     if (version == null) {
@@ -62,6 +67,8 @@ subprojects {
     }
   }
 }
+
+apply from: "$rootDir/../gradle/tasks/updateModVersions.gradle"
 
 tasks.register('fullCheck') {
   group = 'verification'

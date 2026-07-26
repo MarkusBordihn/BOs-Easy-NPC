@@ -22,10 +22,12 @@ package de.markusbordihn.easynpc.api.handler;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.npc.NPCRemovalReason;
 import de.markusbordihn.easynpc.data.npc.SavedNPCEntityEntry;
+import de.markusbordihn.easynpc.data.preset.PresetType;
 import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.NPCEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.handler.PresetHandler;
+import de.markusbordihn.easynpc.security.CommandSecurity;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
@@ -34,6 +36,7 @@ import net.minecraft.nbt.DoubleTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -65,6 +68,41 @@ public class EasyNPCEntityHandler {
     return NPCEntityManager.getNPCsByCustomIdentifier(customIdentifier);
   }
 
+  public static Collection<SavedNPCEntityEntry> getByCustomIdentifierNamespace(String namespace) {
+    return NPCEntityManager.getNPCsByCustomIdentifierNamespace(namespace);
+  }
+
+  public static Optional<EasyNPC<?>> spawnFromPreset(
+      ResourceLocation preset,
+      ServerLevel serverLevel,
+      Vec3 position,
+      UUID uuid,
+      ServerPlayer owner) {
+    return spawnFromPreset(PresetType.DATA, preset, serverLevel, position, uuid, owner);
+  }
+
+  public static Optional<EasyNPC<?>> spawnFromPreset(
+      PresetType presetType,
+      ResourceLocation preset,
+      ServerLevel serverLevel,
+      Vec3 position,
+      UUID uuid,
+      ServerPlayer owner) {
+    if (preset == null || serverLevel == null) {
+      log.error("Cannot spawn preset {} in level {}", preset, serverLevel);
+      return Optional.empty();
+    }
+
+    return PresetHandler.importPresetAndGetEntity(
+        serverLevel,
+        presetType,
+        preset,
+        position,
+        uuid,
+        CommandSecurity.getServerActorContext(),
+        owner);
+  }
+
   public static boolean despawn(EasyNPC<?> easyNPC, NPCRemovalReason reason) {
     if (easyNPC == null) {
       log.error("Cannot despawn null EasyNPC");
@@ -91,7 +129,9 @@ public class EasyNPCEntityHandler {
       log.error("Cannot spawn NPC {}: no saved data found", uuid);
       return false;
     }
-    return PresetHandler.importPreset(serverLevel, entry.get().npcData());
+
+    return PresetHandler.importPreset(
+        serverLevel, entry.get().npcData(), entry.get().metadata().ownerUUID());
   }
 
   public static boolean spawn(UUID uuid, ServerLevel serverLevel, Vec3 position) {
@@ -100,12 +140,13 @@ public class EasyNPCEntityHandler {
       log.error("Cannot spawn NPC {}: no saved data found", uuid);
       return false;
     }
+
     CompoundTag npcData = entry.get().npcData().copy();
     ListTag posTag = new ListTag();
     posTag.add(DoubleTag.valueOf(position.x));
     posTag.add(DoubleTag.valueOf(position.y));
     posTag.add(DoubleTag.valueOf(position.z));
     npcData.put("Pos", posTag);
-    return PresetHandler.importPreset(serverLevel, npcData);
+    return PresetHandler.importPreset(serverLevel, npcData, entry.get().metadata().ownerUUID());
   }
 }

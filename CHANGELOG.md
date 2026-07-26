@@ -2,11 +2,53 @@
 
 ## Note
 
-This change log includes the summarized changes.
-For the full changelog, please go to the [GitHub History][history] instead.
+This change log includes the summarized changes. For the full changelog, please go to
+the [GitHub History][history] instead.
 
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
+
+### 7.5.0
+
+- Fixed #814 by giving every Cobblemon NPC its own animation state instead of one per species.
+- Fixed #813 by letting "Move back to Home" work at any distance instead of only near its home.
+- Fixed #812 by checking once per session whether a player changed their skin.
+- Fixed #810 by accepting Cobblemon aspects of resource packs instead of only "shiny" and "female".
+- Fixed a single or boss spawner spawning without any limit when its preset carried no stored NPC.
+- Fixed the "Legacy Easy NPC Data" warning appearing for newly created NPCs.
+- Fixed missing transparency corrections for old 64x32 skins, which showed layer artifacts.
+- Fixed the player skin screen freezing for a moment while a player name was looked up.
+- Fixed the "Reset look at ..." objective label, which read "Reset loot at ..." in some languages.
+- Fixed the "No Gravity" attribute being ignored after a preset import, which let NPCs fall.
+- Fixed the Fabric game tests, which crashed on start because of the development helper mods.
+- Fixed NPCs losing their owner when they were spawned again after a despawn.
+- Fixed objectives being deleted from an NPC when the mod providing them was missing at start.
+- Fixed importing a preset without a stored id, which spawned an NPC without owner and home.
+- Fixed "Follow owner" and "Look at owner" keeping their old target after the owner was changed.
+- Fixed attack targets staying assigned to an NPC after the targeted entity was gone.
+- Fixed the "Look at Item" objective, which could be stored but never did anything.
+- Fixed the NPC data isolation and trading persistence game tests, which never ran on Fabric.
+- Changed the movement objectives to a fixed order: flee, follow, return home, then stroll. NPCs
+  with several movement objectives may therefore behave differently than before.
+- Changed inserting a preset into a vanilla monster spawner to keep its delay, count and range.
+- Changed "Follow owner" and "Look at owner" without a chosen target to follow the owner of the NPC.
+- Changed datapack presets to `easy_npc/preset/`, the old folder still works, but only for easy_npc.
+- Changed the preset browser to always list its entries in the same order.
+- Removed the experimental user-defined NPCs; the extra config file is no longer read or created.
+- Removed the unused `SERVER_SKIN` skin type.
+- Added a reload button to each entry of the player skin screen, to fetch a single skin again.
+- Added the reason to the log whenever an NPC is removed, so an unexpected despawn can be traced.
+- Added suggestions to `/easy_npc render set species`.
+- Added support for presets from other mods, which no longer have to use the `easy_npc` namespace.
+- Added a preset visibility that hides a preset from the preset browser and the NPC screens.
+- Added a teleport distance and a resting spot offset to the follow objectives.
+- Added item tags, a "can be scared" option and a "only without owner" option to "Follow item".
+- Added an item field to the look objectives, so an NPC can watch a chosen dropped item.
+- Added an identifier per NPC, so a mod can find its own NPCs again.
+- Added an option to spawn an NPC again when its owner logs in.
+- Improved the model name parsing, which mistook a species ending in "_shiny" for a variant.
+- Improved following of flying NPCs, which now steer directly when there is no path through the air.
+- Improved third party support with an API for presets, own objectives and objective configuration.
 
 ### 7.4.0
 
@@ -86,15 +128,14 @@ Check the [upgrade guide][upgrade_guide] for more information.
   rebuilding the full custom texture cache.
 - Improved the `Attackable by Players/Monsters/Factions` combat attributes to work independently of
   `Invulnerable`, each opening a targeted hole for its own attacker group.
-- Improved preset command and network handling by splitting the large handlers into smaller
-  focused import, export and feature-specific components.
+- Improved preset command and network handling by splitting the large handlers into smaller focused
+  import, export and feature-specific components.
 - Added Easy Model Entities Support.
 - Added faction manager and faction editor screens to create, color and delete factions and manage
   hostile relations, protected by the new `FACTION_MANAGEMENT` security feature.
 - Added new `Misc` attributes tab as home for the NPC faction assignment.
 - Added reusable warning and help icon components for inline hints with tooltips.
-- Added additional unit and game tests for factions, target objectives and Cobblemon model
-  variants.
+- Added additional unit and game tests for factions, target objectives and Cobblemon model variants.
 
 ### 6.25.0
 
@@ -196,8 +237,8 @@ adjust their custom dialog backgrounds if they are using custom ones.
 
 ### 6.18.0
 
-Note: This update changes the internal data format for conditions and actions,
-which may reset / remove legacy existing execution-limit entries without stored IDs.
+Note: This update changes the internal data format for conditions and actions, which may reset /
+remove legacy existing execution-limit entries without stored IDs.
 
 - Fixed #745 by adding conditions for actions to allow more complex and dynamic behavior.
 - Fixed #652 by adding dialog button tooltip for longer texts.
@@ -257,9 +298,8 @@ which may reset / remove legacy existing execution-limit entries without stored 
 
 ### 6.13.0 (Security and Permissions Updates)
 
-Notes: This update includes better security checks and permissions for multiplayer environments.
-It allows to execute server commands which can be potentially dangerous if used with malicious
-intent.
+Notes: This update includes better security checks and permissions for multiplayer environments. It
+allows to execute server commands which can be potentially dangerous if used with malicious intent.
 
 **The update splits the model root data and logic from the rest of the model part data and logic,
 which mean it may reset the root rotation and scaling of existing NPCs to the default values.**
@@ -329,8 +369,8 @@ which mean it may reset the root rotation and scaling of existing NPCs to the de
 - Fixed #597 by adding additional Flee goals for fleeing from players, villagers, monsters, ...
 - Fixed pose loading to read directly from mod resources instead of copying files to disk.
 - Fixed duplicate `saveNPC` calls on entity join by checking existing registry entry first.
-- Added `despawn` and `spawn` commands to remove and re-spawn NPCs by UUID with configurable
-  removal reasons.
+- Added `despawn` and `spawn` commands to remove and re-spawn NPCs by UUID with configurable removal
+  reasons.
 - Added `ModelPoseAPI` and `EasyNPCEntityHandler` public API classes for controlling NPC poses and
   managing NPCs programmatically from external mods.
 - Added pose data files for all supported NPC types.
@@ -339,12 +379,12 @@ which mean it may reset the root rotation and scaling of existing NPCs to the de
 - Added `EasyNPCLookControl` and `EasyNPCBodyRotationControl` to respect locked root rotation.
 - Added synced owner change and dimension change to the NPC entity data index.
 - Added EasyNPCItemAttachmentLayer into various entity renderers.
-- Added dedicated `Flee Objective` configuration tab with objectives for fleeing creepers,
-  monsters, mobs, players, villagers and the sun.
-- Added `FOLLOW_ITEM` objective to the follow objectives tab to make NPCs follow item entities
-  by resource location (e.g. `minecraft:apple`).
-- Added `LookAtEntityByUUIDGoal` and enabled the look-at-entity-by-UUID and look-at-owner
-  objectives in the look objectives screen.
+- Added dedicated `Flee Objective` configuration tab with objectives for fleeing creepers, monsters,
+  mobs, players, villagers and the sun.
+- Added `FOLLOW_ITEM` objective to the follow objectives tab to make NPCs follow item entities by
+  resource location (e.g. `minecraft:apple`).
+- Added `LookAtEntityByUUIDGoal` and enabled the look-at-entity-by-UUID and look-at-owner objectives
+  in the look objectives screen.
 - Added `persistent` flag to `SynchedDataIndex` so that transient indices (e.g. crossbow charge,
   model animation) no longer trigger dirty-save marking.
 - Added configurable `customParticlesEnabled` flag to `SlimeBase` for API consumers.
@@ -530,31 +570,29 @@ which mean it may reset the root rotation and scaling of existing NPCs to the de
 
 ### 6.1.0 ✨
 
-This is a major release. Please back up your worlds and NPC data before updating.
-This version contains many improvements, optimizations, and internal changes that
-are **not fully compatible** with earlier releases.
+This is a major release. Please back up your worlds and NPC data before updating. This version
+contains many improvements, optimizations, and internal changes that are **not fully compatible**
+with earlier releases.
 
 ⚠️ Breaking changes
 
-- Existing NPCs and their configuration data from versions before 6.1.0 may not
-  load correctly or may require manual adjustments.
+- Existing NPCs and their configuration data from versions before 6.1.0 may not load correctly or
+  may require manual adjustments.
 - Internal data formats and some behaviors have been refactored to support new use-cases.
 
 🧩 New modular structure
 
 Easy NPC is now split into three separate mods:
 
-- **Easy NPC** – Bundle that includes both Core and Configuration UI for a
-  plug‑and‑play experience.
-- **Easy NPC: Core** – Lightweight runtime and logic for NPCs, with minimal
-  dependencies. Intended for servers, modpacks, and developers.
-- **Easy NPC: Configuration UI** – Standalone configuration interface for
-  creating and editing NPCs. Can be installed on clients that need the UI.
+- **Easy NPC** – Bundle that includes both Core and Configuration UI for a plug‑and‑play experience.
+- **Easy NPC: Core** – Lightweight runtime and logic for NPCs, with minimal dependencies. Intended
+  for servers, modpacks, and developers.
+- **Easy NPC: Configuration UI** – Standalone configuration interface for creating and editing NPCs.
+  Can be installed on clients that need the UI.
 
 🎯 Why this change?
 
-- Allows servers and modpacks to ship only the **Core** mod on the server side
-  for a leaner setup.
+- Allows servers and modpacks to ship only the **Core** mod on the server side for a leaner setup.
 - Reduces memory usage and load times when the UI is not required everywhere.
 - Makes development and testing faster by separating UI and core logic.
 

@@ -23,6 +23,7 @@ import de.markusbordihn.easynpc.data.attribute.EntityAttributes;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 
@@ -78,6 +79,12 @@ public interface AttributeDataCapable<E extends Mob> extends EasyNPC<E> {
   }
 
   default void readAdditionalAttributeData(CompoundTag compoundTag) {
-    this.setEntityAttributes(new EntityAttributes(compoundTag));
+    EntityAttributes entityAttributes = new EntityAttributes(compoundTag);
+    this.setEntityAttributes(entityAttributes);
+
+    LivingEntity livingEntity = this.getLivingEntity();
+    if (livingEntity != null) {
+      livingEntity.setNoGravity(entityAttributes.getEnvironmentalAttributes().noGravity());
+    }
   }
 }
