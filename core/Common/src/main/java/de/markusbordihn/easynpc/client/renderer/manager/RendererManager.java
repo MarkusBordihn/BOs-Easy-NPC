@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.client.renderer.manager;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.access.WalkAnimationAccessHelper;
 import java.util.HashMap;
 import java.util.Map;
 import net.minecraft.client.Minecraft;
@@ -218,6 +219,11 @@ public class RendererManager {
     targetEntity.oAttackAnim = sourceEntity.oAttackAnim;
     targetEntity.walkDist = sourceEntity.walkDist;
     targetEntity.walkDistO = sourceEntity.walkDistO;
+
+    // Limb swing support.
+    if (targetEntity.walkAnimation instanceof WalkAnimationAccessHelper walkAnimationAccess) {
+      walkAnimationAccess.copyFrom(sourceEntity.walkAnimation);
+    }
 
     // Hand item support.
     targetEntity.setItemInHand(InteractionHand.MAIN_HAND, sourceEntity.getMainHandItem());

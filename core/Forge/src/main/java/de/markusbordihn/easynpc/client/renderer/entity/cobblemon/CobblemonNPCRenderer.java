@@ -84,8 +84,6 @@ public class CobblemonNPCRenderer<E extends PathfinderMob>
 
   private static final Map<ResourceLocation, Set<String>> speciesAspectCache = new HashMap<>();
 
-  private record CobblemonProxyKey(UUID entityUUID, ResourceLocation modelKey) {}
-
   public CobblemonNPCRenderer(
       EntityRendererProvider.Context context, ModelLayerLocation modelLayerLocation) {
     super(context, new DopplerModel<>(context.bakeLayer(modelLayerLocation)), 0.5F);
@@ -362,6 +360,8 @@ public class CobblemonNPCRenderer<E extends PathfinderMob>
     }
     super.render(entity, entityYaw, partialTicks, poseStack, bufferSource, packedLight);
   }
+
+  private record CobblemonProxyKey(UUID entityUUID, ResourceLocation modelKey) {}
 
   private record CobblemonProxy(ResourceLocation modelKey, PokemonEntity entity) {}
 }
