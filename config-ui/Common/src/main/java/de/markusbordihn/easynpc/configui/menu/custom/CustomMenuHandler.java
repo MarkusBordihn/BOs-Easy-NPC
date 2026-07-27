@@ -33,6 +33,9 @@ import de.markusbordihn.easynpc.security.CommandSecurity;
 import de.markusbordihn.easynpc.security.FeatureSecurity;
 import de.markusbordihn.easynpc.utils.CompoundTagUtils;
 import java.nio.file.Path;
+import java.util.Comparator;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -50,6 +53,10 @@ public class CustomMenuHandler {
 
   private CustomMenuHandler() {}
 
+  private static List<ResourceLocation> sortedPresets(Set<ResourceLocation> presets) {
+    return presets.stream().sorted(Comparator.comparing(ResourceLocation::toString)).toList();
+  }
+
   public static ScreenData getScreenData(
       final CustomMenuType customMenuType, final ServerPlayer serverPlayer) {
     CompoundTag additionalData = new CompoundTag();
@@ -64,12 +71,16 @@ public class CustomMenuHandler {
 
       // WORLD Presets (server-side world folder)
       WorldPresetDataFiles.refreshPresetResourceLocations();
-      Set<ResourceLocation> worldPresets = WorldPresetDataFiles.getPresetResourceLocationSet();
-      additionalData.put("WorldPresets", CompoundTagUtils.writeResourceLocations(worldPresets));
+      Set<ResourceLocation> worldPresets = new LinkedHashSet<>();
       CompoundTag worldMetadata = new CompoundTag();
       CompoundTag worldData = new CompoundTag();
-      for (ResourceLocation preset : worldPresets) {
+      for (ResourceLocation preset :
+          sortedPresets(WorldPresetDataFiles.getPresetResourceLocationSet())) {
         PresetMetadata metadata = WorldPresetDataFiles.getPresetMetadata(preset);
+        if (!metadata.access().isListedForPlayers()) {
+          continue;
+        }
+        worldPresets.add(preset);
         worldMetadata.put(preset.toString(), metadata.toCompoundTag());
         Path presetPath = WorldPresetDataFiles.getPresetsResourceLocationPath(preset);
         if (presetPath != null) {
@@ -79,17 +90,22 @@ public class CustomMenuHandler {
           }
         }
       }
+      additionalData.put("WorldPresets", CompoundTagUtils.writeResourceLocations(worldPresets));
       additionalData.put("WorldPresetsMetadata", worldMetadata);
       additionalData.put("WorldPresetsData", worldData);
 
       // CUSTOM Presets (server-side config folder)
       CustomPresetDataFiles.refreshPresetResourceLocations();
-      Set<ResourceLocation> customPresets = CustomPresetDataFiles.getPresetResourceLocationSet();
-      additionalData.put("CustomPresets", CompoundTagUtils.writeResourceLocations(customPresets));
+      Set<ResourceLocation> customPresets = new LinkedHashSet<>();
       CompoundTag customMetadata = new CompoundTag();
       CompoundTag customData = new CompoundTag();
-      for (ResourceLocation preset : customPresets) {
+      for (ResourceLocation preset :
+          sortedPresets(CustomPresetDataFiles.getPresetResourceLocationSet())) {
         PresetMetadata metadata = CustomPresetDataFiles.getPresetMetadata(preset);
+        if (!metadata.access().isListedForPlayers()) {
+          continue;
+        }
+        customPresets.add(preset);
         customMetadata.put(preset.toString(), metadata.toCompoundTag());
         Path presetPath = CustomPresetDataFiles.getPresetsResourceLocationPath(preset);
         if (presetPath != null) {
@@ -99,20 +115,26 @@ public class CustomMenuHandler {
           }
         }
       }
+      additionalData.put("CustomPresets", CompoundTagUtils.writeResourceLocations(customPresets));
       additionalData.put("CustomPresetsMetadata", customMetadata);
       additionalData.put("CustomPresetsData", customData);
 
       // DATA Presets (datapacks)
-      Set<ResourceLocation> dataPresets =
-          DataPresetDataFiles.getPresetResourceLocations(serverPlayer.getServer())
-              .collect(Collectors.toSet());
-      additionalData.put("DataPresets", CompoundTagUtils.writeResourceLocations(dataPresets));
+      Set<ResourceLocation> dataPresets = new LinkedHashSet<>();
       CompoundTag dataMetadata = new CompoundTag();
-      for (ResourceLocation preset : dataPresets) {
+      for (ResourceLocation preset :
+          sortedPresets(
+              DataPresetDataFiles.getPresetResourceLocations(serverPlayer.getServer())
+                  .collect(Collectors.toSet()))) {
         PresetMetadata metadata =
             DataPresetDataFiles.getPresetMetadata(serverPlayer.getServer(), preset);
+        if (!metadata.access().isListedForPlayers()) {
+          continue;
+        }
+        dataPresets.add(preset);
         dataMetadata.put(preset.toString(), metadata.toCompoundTag());
       }
+      additionalData.put("DataPresets", CompoundTagUtils.writeResourceLocations(dataPresets));
       additionalData.put("DataPresetsMetadata", dataMetadata);
     }
 

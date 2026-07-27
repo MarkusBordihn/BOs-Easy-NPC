@@ -1,0 +1,140 @@
+import groovy.json.JsonSlurper
+import groovy.xml.XmlSlurper
+
+ext.modrinthSlugs = [
+    'jei'                : 'jei',
+    'easy_model_entities': 'easy-model-entities',
+    'epic_fight'         : 'epic-fight',
+    'cobblemon'          : 'cobblemon',
+    'kotlin_for_forge'   : 'kotlin-for-forge',
+    'architectury'       : 'architectury-api'
+]
+
+// Projects publishing one version per loader under the same version number need an explicit suffix,
+// otherwise the Modrinth Maven picks an arbitrary loader.
+ext.modrinthLoaderSuffixRequired = ['jei', 'cobblemon', 'easy_model_entities'] as Set
+
+// Xaero's mods are not fully published on Modrinth, XaeroLib has no release there at all.
+ext.xaeroArtifacts = [
+    'xaeros_minimap': 'xaero/minimap/xaerominimap',
+    'xaerolib'      : 'xaero/lib/xaerolib'
+]
+
+tasks.register('updateModVersions') {
+  group = "build"
+  description = 'Updates the compatibility mod versions in gradle.properties'
+  notCompatibleWithConfigurationCache('Queries the Modrinth and Xaero APIs at execution time')
+
+  doLast {
+    def propertiesFile = file("$projectDir/gradle.properties")
+    if (!propertiesFile.exists()) {
+      println "⚠️ No gradle.properties found in ${projectDir}"
+      return
+    }
+
+    def dryRun = project.hasProperty('modVersionsDryRun')
+    def minecraftVersion = project.minecraft_version
+    def propertyLines = propertiesFile.readLines()
+    def updates = [:]
+
+    ['forge', 'fabric', 'neoforge'].each { loader ->
+      modrinthSlugs.each { modKey, slug ->
+        def propertyName = "${loader}_${modKey}_version"
+        if (!project.hasProperty(propertyName)) {
+          return
+        }
+
+        def latestVersion = fetchLatestModrinthVersion(slug, loader, minecraftVersion)
+        if (latestVersion != null && modrinthLoaderSuffixRequired.contains(modKey)) {
+          latestVersion = "${latestVersion}-${loader}"
+        }
+        collectUpdate(updates, propertyName, latestVersion)
+      }
+
+      xaeroArtifacts.each { modKey, artifactPath ->
+        def propertyName = "${loader}_${modKey}_version"
+        if (!project.hasProperty(propertyName)) {
+          return
+        }
+
+        collectUpdate(updates, propertyName, fetchLatestXaeroVersion(artifactPath, loader, minecraftVersion))
+      }
+    }
+
+    if (updates.isEmpty()) {
+      println "All compatibility mod versions are up to date."
+      return
+    }
+
+    if (dryRun) {
+      println "Dry run, ${updates.size()} update(s) not written."
+      return
+    }
+
+    def updatedLines = propertyLines.collect { line ->
+      def propertyName = updates.keySet().find { line.startsWith("${it}=") }
+
+      propertyName != null ? "${propertyName}=${updates.get(propertyName)}" : line
+    }
+    propertiesFile.write(updatedLines.join(System.lineSeparator()) + System.lineSeparator())
+
+    println "Updated ${updates.size()} version(s) in ${propertiesFile}"
+  }
+}
+
+def collectUpdate(Map updates, String propertyName, String latestVersion) {
+  if (latestVersion == null) {
+    return
+  }
+
+  def currentVersion = project.property(propertyName)
+  if (latestVersion == currentVersion) {
+    println "  ${propertyName}: up to date (${currentVersion})"
+    return
+  }
+
+  println "  ${propertyName}: ${currentVersion} -> ${latestVersion}"
+  updates.put(propertyName, latestVersion)
+}
+
+def openModVersionStream(String requestUrl) {
+  def connection = new URL(requestUrl).openConnection()
+  connection.setRequestProperty('User-Agent', 'MarkusBordihn/BOs-Easy-NPC (Gradle)')
+  connection.setConnectTimeout(10000)
+  connection.setReadTimeout(10000)
+
+  return connection.getInputStream()
+}
+
+def fetchLatestModrinthVersion(String slug, String loader, String minecraftVersion) {
+  def query = "loaders=" + URLEncoder.encode("[\"${loader}\"]", 'UTF-8') +
+      "&game_versions=" + URLEncoder.encode("[\"${minecraftVersion}\"]", 'UTF-8')
+
+  try {
+    def versions = new JsonSlurper()
+        .parse(openModVersionStream("https://api.modrinth.com/v2/project/${slug}/version?${query}") as InputStream)
+    if (versions.isEmpty()) {
+      println "⚠️ No ${loader} version for Minecraft ${minecraftVersion} found on Modrinth: ${slug}"
+      return null
+    }
+
+    return versions.first().version_number
+  } catch (Exception e) {
+    println "⚠️ Could not query Modrinth for ${slug} (${loader}): ${e.message}"
+    return null
+  }
+}
+
+def fetchLatestXaeroVersion(String artifactPath, String loader, String minecraftVersion) {
+  def metadataUrl =
+      "https://chocolateminecraft.com/maven/${artifactPath}-${loader}-${minecraftVersion}/maven-metadata.xml"
+
+  try {
+    def metadata = new XmlSlurper().parse(openModVersionStream(metadataUrl) as InputStream)
+
+    return metadata.versioning.release.text()
+  } catch (Exception e) {
+    println "⚠️ Could not query Xaero's maven for ${artifactPath} (${loader}): ${e.message}"
+    return null
+  }
+}

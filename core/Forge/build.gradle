@@ -112,12 +112,17 @@ dependencies {
   testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.1'
   testImplementation 'org.junit.jupiter:junit-jupiter-params:5.10.1'
 
-  // Additional helpful Mods for development (runtime dependency)
-  if (project.hasProperty('forge_jei_mod') && project.forge_jei_mod) {
-    runtimeOnly "curse.maven:jei-238222:${project.forge_jei_mod}"
+  // Additional helpful Mods for development (runtime dependency, skipped for game tests)
+  if (!isGameTestRun && project.hasProperty('forge_jei_version') && project.forge_jei_version) {
+    runtimeOnly fg.deobf("maven.modrinth:jei:${project.forge_jei_version}")
   }
-  if (project.hasProperty('forge_xaeros_minimap_mod') && project.forge_xaeros_minimap_mod) {
-    runtimeOnly "curse.maven:xaeros_minimap-263420:${project.forge_xaeros_minimap_mod}"
+  if (!isGameTestRun && project.hasProperty('forge_xaeros_minimap_version') && project.forge_xaeros_minimap_version) {
+    runtimeOnly(fg.deobf("xaero.minimap:xaerominimap-forge-${project.minecraft_version}:${project.forge_xaeros_minimap_version}")) {
+      transitive = false
+    }
+    runtimeOnly(fg.deobf("xaero.lib:xaerolib-forge-${project.minecraft_version}:${project.forge_xaerolib_version}")) {
+      transitive = false
+    }
   }
 
   // Hack fix for now, force jopt-simple to be exactly 5.0.4 because Mojang ships that version, but some transitive dependencies request 6.0+
@@ -128,17 +133,17 @@ dependencies {
   if (easyModelEntitiesLocal != null) {
     compileOnly files(easyModelEntitiesLocal)
     testCompileOnly files(easyModelEntitiesLocal)
-  } else if (project.hasProperty('forge_easy_model_entities_mod') && project.forge_easy_model_entities_mod) {
-    compileOnly fg.deobf("curse.maven:easy-model-entities-1539533:${project.forge_easy_model_entities_mod}")
-    testCompileOnly fg.deobf("curse.maven:easy-model-entities-1539533:${project.forge_easy_model_entities_mod}")
+  } else if (project.hasProperty('forge_easy_model_entities_version') && project.forge_easy_model_entities_version) {
+    compileOnly fg.deobf("maven.modrinth:easy-model-entities:${project.forge_easy_model_entities_version}")
+    testCompileOnly fg.deobf("maven.modrinth:easy-model-entities:${project.forge_easy_model_entities_version}")
   }
 
   // Easy Model Entities (runtime dependency)
   def easyModelEntitiesForgeRuntime = findLocalEasyModelEntitiesLoader('forge')
   if (easyModelEntitiesForgeRuntime != null) {
     runtimeOnly fg.deobf(easyModelEntitiesForgeRuntime)
-  } else if (project.hasProperty('forge_easy_model_entities_mod') && project.forge_easy_model_entities_mod) {
-    runtimeOnly fg.deobf("curse.maven:easy-model-entities-1539533:${project.forge_easy_model_entities_mod}")
+  } else if (project.hasProperty('forge_easy_model_entities_version') && project.forge_easy_model_entities_version) {
+    runtimeOnly fg.deobf("maven.modrinth:easy-model-entities:${project.forge_easy_model_entities_version}")
   }
 }
 

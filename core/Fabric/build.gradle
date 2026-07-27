@@ -24,33 +24,39 @@ dependencies {
   testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.1'
   testImplementation 'org.junit.jupiter:junit-jupiter-params:5.10.1'
 
-  // Additional helpful Mods for development (runtime dependency)
-  if (project.hasProperty('fabric_jei_mod') && project.fabric_jei_mod) {
-    modRuntimeOnly("curse.maven:jei-238222:${project.fabric_jei_mod}")
+  // Additional helpful Mods for development (runtime dependency, skipped for game tests)
+  if (!isGameTestRun && project.hasProperty('fabric_jei_version') && project.fabric_jei_version) {
+    modLocalRuntime("maven.modrinth:jei:${project.fabric_jei_version}")
   }
-  if (project.hasProperty('fabric_xaeros_minimap_mod') && project.fabric_xaeros_minimap_mod) {
-    modRuntimeOnly("curse.maven:xaeros_minimap-263420:${project.fabric_xaeros_minimap_mod}")
+  if (!isGameTestRun && project.hasProperty('fabric_xaeros_minimap_version') && project.fabric_xaeros_minimap_version) {
+    modLocalRuntime("xaero.minimap:xaerominimap-fabric-${project.minecraft_version}:${project.fabric_xaeros_minimap_version}") {
+      transitive = false
+    }
+    modLocalRuntime("xaero.lib:xaerolib-fabric-${project.minecraft_version}:${project.fabric_xaerolib_version}") {
+      transitive = false
+    }
   }
 
-  // Cobblemon integration
-  modCompileOnly("curse.maven:cobblemon-687131:7553235")
+  // Cobblemon (compileOnly for Cobblemon NPC support, requires Fabric API at runtime)
+  modCompileOnly("maven.modrinth:cobblemon:${project.fabric_cobblemon_version}")
+  //modRuntimeOnly("maven.modrinth:cobblemon:${project.fabric_cobblemon_version}")
 
   // Easy Model Entities (API support)
   def easyModelEntitiesLocal = findLocalEasyModelEntities()
   if (easyModelEntitiesLocal != null) {
     compileOnly files(easyModelEntitiesLocal)
     testCompileOnly files(easyModelEntitiesLocal)
-  } else if (project.hasProperty('fabric_easy_model_entities_mod') && project.fabric_easy_model_entities_mod) {
-    modCompileOnly("curse.maven:easy-model-entities-1539533:${project.fabric_easy_model_entities_mod}")
-    testCompileOnly("curse.maven:easy-model-entities-1539533:${project.fabric_easy_model_entities_mod}")
+  } else if (project.hasProperty('fabric_easy_model_entities_version') && project.fabric_easy_model_entities_version) {
+    modCompileOnly("maven.modrinth:easy-model-entities:${project.fabric_easy_model_entities_version}")
+    testCompileOnly("maven.modrinth:easy-model-entities:${project.fabric_easy_model_entities_version}")
   }
 
   // Easy Model Entities (runtime dependency)
   def easyModelEntitiesFabricRuntime = findLocalEasyModelEntitiesLoader('fabric')
   if (easyModelEntitiesFabricRuntime != null) {
     modRuntimeOnly easyModelEntitiesFabricRuntime
-  } else if (project.hasProperty('fabric_easy_model_entities_mod') && project.fabric_easy_model_entities_mod) {
-    modRuntimeOnly("curse.maven:easy-model-entities-1539533:${project.fabric_easy_model_entities_mod}")
+  } else if (project.hasProperty('fabric_easy_model_entities_version') && project.fabric_easy_model_entities_version) {
+    modRuntimeOnly("maven.modrinth:easy-model-entities:${project.fabric_easy_model_entities_version}")
   }
 }
 

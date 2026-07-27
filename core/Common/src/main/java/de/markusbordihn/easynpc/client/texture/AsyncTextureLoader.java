@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.client.texture;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.data.skin.SkinType;
 import de.markusbordihn.easynpc.utils.PlayersUtils;
 import java.nio.file.Path;
 import java.util.Map;
@@ -152,6 +153,45 @@ public class AsyncTextureLoader {
             });
 
     return future;
+  }
+
+  public static void revalidatePlayerTextureAsync(
+      TextureModelKey key,
+      UUID playerUUID,
+      Path targetDirectory,
+      String cachedTextureSource,
+      SkinType skinType) {
+    CompletableFuture.supplyAsync(
+            () -> PlayersUtils.getUserTexture(playerUUID), textureLoadExecutor)
+        .thenAccept(
+            url -> {
+              if (url == null || url.isEmpty() || url.equals(cachedTextureSource)) {
+                return;
+              }
+
+              log.info(
+                  "{} Player {} changed the skin, replacing cached texture {}",
+                  LOG_PREFIX,
+                  playerUUID,
+                  key);
+              TextureCacheManager.removeCachedTexture(key, targetDirectory);
+              loadTextureAsync(key, url, targetDirectory)
+                  .thenAccept(
+                      resourceLocation -> {
+                        if (resourceLocation != null) {
+                          PlayerTextureManager.updateTexture(key, resourceLocation, skinType);
+                        }
+                      });
+            })
+        .exceptionally(
+            throwable -> {
+              log.warn(
+                  "{} Unable to revalidate player texture for {}: {}",
+                  LOG_PREFIX,
+                  playerUUID,
+                  throwable.getMessage());
+              return null;
+            });
   }
 
   private static void processQueue() {

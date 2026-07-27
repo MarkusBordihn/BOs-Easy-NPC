@@ -24,12 +24,10 @@ import de.markusbordihn.easynpc.compat.CompatConstants;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
@@ -50,8 +48,6 @@ public class ModEntityType {
       new EnumMap<>(ModNPCEntityType.class);
   public static final Map<ModCustomEntityType, DeferredHolder<EntityType<?>, EntityType<?>>>
       CUSTOM_TYPE = new EnumMap<>(ModCustomEntityType.class);
-  public static final Map<UserDefinedEntityType, DeferredHolder<EntityType<?>, EntityType<?>>>
-      USER_DEFINED_TYPE = new ConcurrentHashMap<>();
   public static final Map<EpicFightEntityType, DeferredHolder<EntityType<?>, EntityType<?>>>
       EPIC_FIGHT_TYPE = new HashMap<>();
   public static final Map<CobblemonEntityType, DeferredHolder<EntityType<?>, EntityType<?>>>
@@ -91,23 +87,6 @@ public class ModEntityType {
     }
     log.info("Registered {} custom entity types.", CUSTOM_TYPE.size());
 
-    // Initialize user-defined NPC registry
-    UserDefinedEntityRegistry.initialize();
-
-    // Register user-defined NPCs from configuration file
-    for (UserDefinedEntityType type : UserDefinedEntityRegistry.getAvailableEntityTypes()) {
-      log.debug("Registering user-defined entity type {}", type.getResourceKey());
-      DeferredHolder<EntityType<?>, EntityType<?>> registryObject =
-          ENTITY_TYPES.register(
-              type.getId(), () -> type.getBuilder().build(type.getResourceKey().toString()));
-
-      USER_DEFINED_TYPE.put(type, registryObject);
-    }
-    if (!USER_DEFINED_TYPE.isEmpty()) {
-      log.info("Registered {} user-defined entity types.", USER_DEFINED_TYPE.size());
-    }
-
-    // Register Epic Fight entity types if the mod is loaded
     if (CompatConstants.MOD_EPIC_FIGHT_LOADED) {
       for (EpicFightEntityType type : EpicFightEntityType.values()) {
         log.debug("Registering Epic Fight entity type {}", type.getResourceKey());
@@ -168,18 +147,6 @@ public class ModEntityType {
     return (EntityType<T>) CUSTOM_TYPE.get(type).get();
   }
 
-  public static <T extends Entity> EntityType<T> getConfigurableEntityType(
-      UserDefinedEntityType type) {
-    if (!USER_DEFINED_TYPE.containsKey(type)) {
-      throw new IllegalArgumentException(
-          "Invalid configured entity type '"
-              + type
-              + "'! Supported types are "
-              + USER_DEFINED_TYPE.keySet());
-    }
-    return (EntityType<T>) USER_DEFINED_TYPE.get(type).get();
-  }
-
   @SubscribeEvent
   public static void entityAttributeCreation(EntityAttributeCreationEvent event) {
 
@@ -213,125 +180,6 @@ public class ModEntityType {
             type.getAttributes().build());
       } else {
         log.warn("Custom entity type {} does not have attributes defined!", type.getResourceKey());
-      }
-    }
-
-    // User-defined NPCs from configuration file - now safe to access .get()
-    for (Map.Entry<UserDefinedEntityType, DeferredHolder<EntityType<?>, EntityType<?>>> entry :
-        USER_DEFINED_TYPE.entrySet()) {
-      UserDefinedEntityType type = entry.getKey();
-      EntityType<?> entityType = entry.getValue().get(); // Safe to call .get() now
-      EntityType<?> baseEntityType = type.getBaseEntityType();
-
-      // Register the resolved entity type with the UserDefinedEntityRegistry
-      UserDefinedEntityRegistry.registerEntityType(type, entityType);
-
-      // Determine which attributes to use based on the base entity type
-      try {
-        boolean attributesFound = false;
-
-        // Try to find matching raw entity type
-        for (ModRawEntityType rawType : ModRawEntityType.values()) {
-          if (RAW_TYPE.get(rawType).get() == baseEntityType) {
-            if (rawType.getAttributes() != null) {
-              event.put(
-                  (EntityType<? extends LivingEntity>) entityType, rawType.getAttributes().build());
-              attributesFound = true;
-              log.debug(
-                  "Used raw entity type {} attributes for user-defined entity {}",
-                  rawType.getId(),
-                  type.getId());
-              break;
-            }
-          }
-        }
-
-        // Try to find matching NPC entity type
-        if (!attributesFound) {
-          for (ModNPCEntityType npcType : ModNPCEntityType.values()) {
-            if (NPC_TYPE.get(npcType).get() == baseEntityType) {
-              if (npcType.getAttributes() != null) {
-                event.put(
-                    (EntityType<? extends LivingEntity>) entityType,
-                    npcType.getAttributes().build());
-                attributesFound = true;
-                log.debug(
-                    "Used NPC entity type {} attributes for user-defined entity {}",
-                    npcType.getId(),
-                    type.getId());
-                break;
-              }
-            }
-          }
-        }
-
-        // Try to find matching custom entity type
-        if (!attributesFound) {
-          for (ModCustomEntityType customType : ModCustomEntityType.values()) {
-            if (CUSTOM_TYPE.get(customType).get() == baseEntityType) {
-              if (customType.getAttributes() != null) {
-                event.put(
-                    (EntityType<? extends LivingEntity>) entityType,
-                    customType.getAttributes().build());
-                attributesFound = true;
-                log.debug(
-                    "Used custom entity type {} attributes for user-defined entity {}",
-                    customType.getId(),
-                    type.getId());
-                break;
-              }
-            }
-          }
-        }
-
-        // Fallback: Use vanilla entity attributes if available
-        if (!attributesFound) {
-          AttributeSupplier.Builder vanillaAttributes =
-              VanillaEntityAttributeHelper.getVanillaAttributesForEntityType(baseEntityType);
-          if (vanillaAttributes != null) {
-            event.put((EntityType<? extends LivingEntity>) entityType, vanillaAttributes.build());
-            attributesFound = true;
-            log.info(
-                "Used vanilla attributes for user-defined entity {} with base type {}",
-                type.getId(),
-                baseEntityType);
-          }
-        }
-
-        if (!attributesFound) {
-          log.error(
-              "No attributes found for user-defined entity {} with base type {} - this will cause crashes!",
-              type.getId(),
-              baseEntityType);
-
-          // Emergency fallback: Use generic living entity attributes
-          event.put(
-              (EntityType<? extends LivingEntity>) entityType,
-              net.minecraft.world.entity.LivingEntity.createLivingAttributes().build());
-          log.warn("Using emergency fallback attributes for user-defined entity {}", type.getId());
-        }
-
-      } catch (Exception e) {
-        log.error(
-            "Failed to set attributes for user-defined entity {}: {}",
-            type.getId(),
-            e.getMessage(),
-            e);
-
-        // Emergency fallback in case of any error
-        try {
-          event.put(
-              (EntityType<? extends LivingEntity>) entityType,
-              net.minecraft.world.entity.LivingEntity.createLivingAttributes().build());
-          log.warn(
-              "Applied emergency fallback attributes for user-defined entity {} due to error",
-              type.getId());
-        } catch (Exception fallbackError) {
-          log.error(
-              "Even emergency fallback failed for user-defined entity {}: {}",
-              type.getId(),
-              fallbackError.getMessage());
-        }
       }
     }
 

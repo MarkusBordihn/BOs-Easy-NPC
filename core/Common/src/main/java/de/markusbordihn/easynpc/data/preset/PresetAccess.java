@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Markus Bordihn
+ * Copyright 2026 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,44 +17,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.data.npc;
+package de.markusbordihn.easynpc.data.preset;
 
 import de.markusbordihn.easynpc.Constants;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.EntityType;
+import java.util.Locale;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public record UserDefinedConfiguration(
-    String id,
-    String name,
-    EntityType<?> baseEntityType,
-    float width,
-    float height,
-    String description) {
+public enum PresetAccess {
+  PUBLIC,
+  RESTRICTED,
+  INTERNAL;
 
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-  private static final float DEFAULT_WIDTH = 0.6F;
-  private static final float DEFAULT_HEIGHT = 1.95F;
 
-  public UserDefinedConfiguration(
-      String id, String name, EntityType<?> baseEntityType, String description) {
-    this(id, name, baseEntityType, DEFAULT_WIDTH, DEFAULT_HEIGHT, description);
+  public static PresetAccess get(String presetAccess) {
+    if (presetAccess == null || presetAccess.isEmpty()) {
+      return PUBLIC;
+    }
+
+    try {
+      return PresetAccess.valueOf(presetAccess.toUpperCase(Locale.ROOT));
+    } catch (IllegalArgumentException e) {
+      log.warn("Unknown preset access {}, using {} instead.", presetAccess, PUBLIC);
+      return PUBLIC;
+    }
   }
 
-  public String getBaseEntityTypeId() {
-    ResourceLocation resourceLocation = BuiltInRegistries.ENTITY_TYPE.getKey(baseEntityType);
-    return resourceLocation.toString();
+  public boolean isListedForPlayers() {
+    return this == PUBLIC;
   }
 
-  public boolean isValid() {
-    return id != null
-        && !id.trim().isEmpty()
-        && name != null
-        && !name.trim().isEmpty()
-        && baseEntityType != null
-        && width > 0
-        && height > 0;
+  public boolean isUsableByCommand() {
+    return this != INTERNAL;
   }
 }

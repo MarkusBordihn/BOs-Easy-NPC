@@ -349,6 +349,7 @@
   "text.easy_npc.config.look": "Schauen",
   "text.easy_npc.config.look_at_animal": "Schau auf Tier",
   "text.easy_npc.config.look_at_entity_by_uuid": "Schau auf Entität mit UUID",
+  "text.easy_npc.config.look_at_item": "Schau auf Item",
   "text.easy_npc.config.look_at_mob": "Schau auf Mob",
   "text.easy_npc.config.look_at_owner": "Schau auf Besitzer",
   "text.easy_npc.config.look_at_player": "Schau auf Spieler",

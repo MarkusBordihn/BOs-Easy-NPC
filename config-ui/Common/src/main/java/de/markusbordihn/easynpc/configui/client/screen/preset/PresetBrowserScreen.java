@@ -42,6 +42,7 @@ import de.markusbordihn.easynpc.security.PresetTrustLevel;
 import de.markusbordihn.easynpc.security.SecurityManager;
 import de.markusbordihn.easynpc.utils.CompoundTagUtils;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Function;
@@ -121,7 +122,6 @@ public class PresetBrowserScreen extends CustomScreen<PresetBrowserMenu, Additio
 
     this.infoBoxHeight = Math.min((int) (this.height * 0.22f), 70);
 
-    // Spawn Buttons
     this.spawnAsNewButton =
         this.addRenderableWidget(
             new TextButton(
@@ -155,7 +155,6 @@ public class PresetBrowserScreen extends CustomScreen<PresetBrowserMenu, Additio
     this.spawnAsNewButton.active = entry != null;
     this.spawnAsNewButton.visible = entry != null;
 
-    // Show "Spawn Original" button only if preset has UUID
     boolean hasUUID =
         entry != null
             && entry.getPresetData() != null
@@ -204,7 +203,7 @@ public class PresetBrowserScreen extends CustomScreen<PresetBrowserMenu, Additio
       return LocalPresetDataFiles.getPresetDisplayName(preset, metadata)
               .toLowerCase()
               .contains(searchFilter)
-          || preset.getPath().toLowerCase().contains(searchFilter)
+          || preset.toString().toLowerCase().contains(searchFilter)
           || metadata.description().toLowerCase().contains(searchFilter)
           || metadata.category().toLowerCase().contains(searchFilter)
           || metadata.author().toLowerCase().contains(searchFilter);
@@ -223,19 +222,16 @@ public class PresetBrowserScreen extends CustomScreen<PresetBrowserMenu, Additio
   }
 
   private void loadPresets() {
-    // Always load LOCAL presets from client-side config folder
     loadPresetsOfType(
         PresetType.LOCAL,
         LocalPresetDataFiles.getPresetResourceLocations(),
         LocalPresetDataFiles::getPresetMetadata);
 
-    // Always load DEFAULT presets from client-side JAR
     loadPresetsOfType(
         PresetType.DEFAULT,
         ClientDefaultPresetDataFiles.getDefaultPresetResourceLocations(),
         ClientDefaultPresetDataFiles::getPresetMetadata);
 
-    // Load server-synced preset lists if available
     if (this.getAdditionalScreenData() != null) {
       loadPresetsFromServerSync();
     }
@@ -325,13 +321,16 @@ public class PresetBrowserScreen extends CustomScreen<PresetBrowserMenu, Additio
     if (!currentFilter.matches(type)) {
       return;
     }
-    presets.forEach(
-        preset -> {
-          PresetMetadata metadata = metadataProvider.apply(preset);
-          if (matchesFilters(preset, metadata, type)) {
-            this.presetListWidget.addEntry(new PresetListEntry(preset, metadata, type, this));
-          }
-        });
+
+    presets
+        .sorted(Comparator.comparing(ResourceLocation::toString))
+        .forEach(
+            preset -> {
+              PresetMetadata metadata = metadataProvider.apply(preset);
+              if (matchesFilters(preset, metadata, type)) {
+                this.presetListWidget.addEntry(new PresetListEntry(preset, metadata, type, this));
+              }
+            });
   }
 
   private void spawnPreset(boolean withOriginal) {
@@ -339,7 +338,6 @@ public class PresetBrowserScreen extends CustomScreen<PresetBrowserMenu, Additio
       return;
     }
 
-    // Show confirmation dialog if spawning with original UUID
     if (withOriginal) {
       showConfirmationDialog();
     } else {
@@ -352,7 +350,6 @@ public class PresetBrowserScreen extends CustomScreen<PresetBrowserMenu, Additio
       return;
     }
 
-    // Get UUID from preset data
     String uuid = "Unknown";
     if (this.selectedEntry.getPresetData() != null
         && this.selectedEntry.getPresetData().data() != null
@@ -384,13 +381,11 @@ public class PresetBrowserScreen extends CustomScreen<PresetBrowserMenu, Additio
         withOriginal ? "with original UUID/position" : "as new NPC",
         this.selectedEntry.getPreset());
 
-    // For LOCAL presets, send the complete PresetData to the server
     if (this.selectedEntry.getPresetType() == PresetType.LOCAL
         && this.selectedEntry.getPresetData() != null) {
       NetworkMessageHandlerManager.getServerHandler()
           .spawnPresetWithData(this.selectedEntry.getPresetData(), withOriginal);
     } else {
-      // For other preset types (CUSTOM, DATA, WORLD, DEFAULT), just send the preset reference
       NetworkMessageHandlerManager.getServerHandler()
           .spawnPreset(
               this.selectedEntry.getPresetType(), this.selectedEntry.getPreset(), withOriginal);
@@ -401,17 +396,14 @@ public class PresetBrowserScreen extends CustomScreen<PresetBrowserMenu, Additio
 
   @Override
   public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-    // Render parent (includes background from CustomScreen)
     super.render(guiGraphics, mouseX, mouseY, partialTicks);
 
-    // Render search box on top of everything
     if (this.searchBox != null) {
       this.searchBox.render(guiGraphics, mouseX, mouseY, partialTicks);
     }
 
     this.presetListWidget.render(guiGraphics, mouseX, mouseY, partialTicks);
 
-    // Render selected preset details
     if (this.selectedEntry != null) {
       this.renderPresetTitle(guiGraphics);
       this.renderPreviewPanels(guiGraphics, mouseX, mouseY);

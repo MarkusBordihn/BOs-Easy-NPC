@@ -76,12 +76,17 @@ public class BaseEasyNPCSpawner extends BaseSpawner {
 
     // Store preset data and extract UUIDs
     if (presetData != null && presetData.hasValidData()) {
-      // Store preset data (Entity UUID is guaranteed by PresetDataUtils.fromSpawnData)
       this.storedPresetData = presetData;
-
-      // Extract UUIDs (both guaranteed to be present)
       this.easyNPCPresetUUID = presetData.getPresetUUID();
       this.easyNPCUUID = presetData.getEntityUUID();
+      if (this.easyNPCUUID == null && usesUniqueEntity()) {
+        this.easyNPCUUID = UUID.randomUUID();
+        this.storedPresetData.data().putUUID(ENTITY_UUID_TAG, this.easyNPCUUID);
+        log.debug(
+            "[Spawner] Preset without entity UUID at {}, using generated UUID {}",
+            blockPos,
+            this.easyNPCUUID);
+      }
 
       log.debug(
           "[Spawner] Setting spawn data at {} for type {} (PresetUUID: {}, EntityUUID: {})",
@@ -299,6 +304,11 @@ public class BaseEasyNPCSpawner extends BaseSpawner {
     }
   }
 
+  private boolean usesUniqueEntity() {
+    return this.spawnerType == SpawnerType.SINGLE_SPAWNER
+        || this.spawnerType == SpawnerType.BOSS_SPAWNER;
+  }
+
   private boolean canSpawnBasedOnConditions(Level level, BlockPos blockPos) {
     if (!hasEasyNPC() || this.storedPresetData == null) {
       return false;
@@ -321,17 +331,19 @@ public class BaseEasyNPCSpawner extends BaseSpawner {
 
         return entityCount < getMaxNearbyEntities();
       }
-    } else {
-      // SINGLE_SPAWNER and BOSS_SPAWNER use Entity UUID to check if specific entity is alive
-      if (this.easyNPCUUID != null) {
-        if (level instanceof ServerLevel serverLevel) {
-          Entity entity = serverLevel.getEntity(this.easyNPCUUID);
-          return entity == null || !entity.isAlive();
-        } else {
-          EasyNPC<?> easyNPC = LivingEntityManager.getClientEasyNPCEntityByUUID(this.easyNPCUUID);
-          return easyNPC == null || !easyNPC.getLivingEntity().isAlive();
-        }
+    } else if (usesUniqueEntity()) {
+      // SINGLE_SPAWNER and BOSS_SPAWNER use Entity UUID to check if specific entity is alive.
+      if (this.easyNPCUUID == null) {
+        return false;
       }
+
+      if (level instanceof ServerLevel serverLevel) {
+        Entity entity = serverLevel.getEntity(this.easyNPCUUID);
+        return entity == null || !entity.isAlive();
+      }
+
+      EasyNPC<?> easyNPC = LivingEntityManager.getClientEasyNPCEntityByUUID(this.easyNPCUUID);
+      return easyNPC == null || !easyNPC.getLivingEntity().isAlive();
     }
 
     return true;
@@ -375,7 +387,6 @@ public class BaseEasyNPCSpawner extends BaseSpawner {
 
   @Override
   public CompoundTag save(CompoundTag compoundTag) {
-    // Call super first
     CompoundTag savedTag = super.save(compoundTag);
 
     // Save stored preset data

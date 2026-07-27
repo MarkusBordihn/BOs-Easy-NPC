@@ -120,6 +120,41 @@ multi-project plugin conflicts.
 **Note:** Build caches (Loom, Forge mappings, Gradle cache) are intentionally kept to maximize build
 speed. Use individual project's `clean` task if you need to delete build directories.
 
+## Compatibility mods 🧩
+
+Compatibility and development mods (JEI, Cobblemon, Epic Fight, Easy Model Entities) are resolved
+from the [Modrinth Maven](https://support.modrinth.com/en/articles/8801191-modrinth-maven) using the
+coordinate format `maven.modrinth:<slug>:<version>`. Their versions live in each project's
+`gradle.properties` as `<loader>_<mod>_version`.
+
+Some projects publish one version per loader under the same version number (JEI, Cobblemon, Easy
+Model Entities). For those, the loader suffix is mandatory (`19.42.0.379-neoforge`), otherwise the
+Modrinth Maven returns an arbitrary loader. Mods whose version number already contains the loader or
+Minecraft version (Epic Fight, Architectury) are used as-is. If a version number is ambiguous across
+Minecraft versions (GeckoLib, for example), use the Modrinth version id instead of the version
+number.
+
+Xaero's Minimap comes from Xaero's own maven (`https://chocolateminecraft.com/maven`) instead,
+because it requires XaeroLib since 25.3.x and XaeroLib has no release on Modrinth. Both are declared
+explicitly with `transitive = false`, otherwise the POM would drag its own Fabric Loader and Fabric
+API versions onto the runtime classpath. On Forge, the `:dev` classifier already provides the
+Mojang-mapped jar, so no `fg.deobf` is needed.
+
+Cobblemon needs Kotlin for Forge and the Architectury API at runtime on NeoForge, and the Fabric API
+on Fabric. The NeoForge dependencies sit next to the Cobblemon entry and must be uncommented
+together with it.
+
+To refresh all versions to the latest 1.21.1 release:
+
+```sh
+./gradlew -p core updateModVersions -PmodVersionsDryRun
+./gradlew -p core updateModVersions
+```
+
+The task is available in `core`, `config-ui` and `bundle`, queries the Modrinth API and Xaero's
+maven metadata and rewrites the `*_version` properties in place. It is intentionally not part of
+`build` or `fullCheck`.
+
 ## Quick start (cross‑platform) 🚀
 
 > [!IMPORTANT]

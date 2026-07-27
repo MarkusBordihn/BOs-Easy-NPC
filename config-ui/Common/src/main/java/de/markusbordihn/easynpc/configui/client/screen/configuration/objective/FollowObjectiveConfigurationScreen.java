@@ -78,7 +78,7 @@ public class FollowObjectiveConfigurationScreen<T extends ConfigurationMenu>
                 objectiveDataSet.hasObjective(ObjectiveType.FOLLOW_OWNER),
                 checkbox -> {
                   ObjectiveDataEntry objectiveDataEntry =
-                      new ObjectiveDataEntry(ObjectiveType.FOLLOW_OWNER, 6);
+                      new ObjectiveDataEntry(ObjectiveType.FOLLOW_OWNER);
                   objectiveDataEntry.setTargetOwnerUUID(ownerData.getOwnerUUID());
                   if (checkbox.selected()) {
                     NetworkMessageHandlerManager.getServerHandler()
@@ -104,7 +104,7 @@ public class FollowObjectiveConfigurationScreen<T extends ConfigurationMenu>
                 objectiveDataSet.hasObjective(ObjectiveType.FOLLOW_PLAYER),
                 checkbox -> {
                   ObjectiveDataEntry objectiveDataEntry =
-                      new ObjectiveDataEntry(ObjectiveType.FOLLOW_PLAYER, 7);
+                      new ObjectiveDataEntry(ObjectiveType.FOLLOW_PLAYER);
                   if (followPlayerName != null) {
                     objectiveDataEntry.setTargetPlayerName(followPlayerName.getValue());
                     followPlayerName.setEditable(checkbox.selected());
@@ -177,7 +177,7 @@ public class FollowObjectiveConfigurationScreen<T extends ConfigurationMenu>
                 objectiveDataSet.hasObjective(ObjectiveType.FOLLOW_ENTITY_BY_UUID),
                 checkbox -> {
                   ObjectiveDataEntry objectiveDataEntry =
-                      new ObjectiveDataEntry(ObjectiveType.FOLLOW_ENTITY_BY_UUID, 7);
+                      new ObjectiveDataEntry(ObjectiveType.FOLLOW_ENTITY_BY_UUID);
                   if (followEntityUUID != null) {
                     if (!followEntityUUID.getValue().isEmpty()) {
                       UUID entityUUID = null;
@@ -233,7 +233,7 @@ public class FollowObjectiveConfigurationScreen<T extends ConfigurationMenu>
                 objectiveEntriesTop - 1,
                 onPress -> {
                   ObjectiveDataEntry objectiveDataEntry =
-                      new ObjectiveDataEntry(ObjectiveType.FOLLOW_ENTITY_BY_UUID, 7);
+                      new ObjectiveDataEntry(ObjectiveType.FOLLOW_ENTITY_BY_UUID);
                   objectiveDataEntry.setTargetEntityUUID(
                       !followEntityUUID.getValue().isEmpty()
                           ? UUID.fromString(followEntityUUID.getValue())
@@ -262,7 +262,7 @@ public class FollowObjectiveConfigurationScreen<T extends ConfigurationMenu>
                 objectiveDataSet.hasObjective(ObjectiveType.FOLLOW_ITEM),
                 checkbox -> {
                   ObjectiveDataEntry objectiveDataEntry =
-                      new ObjectiveDataEntry(ObjectiveType.FOLLOW_ITEM, 7);
+                      new ObjectiveDataEntry(ObjectiveType.FOLLOW_ITEM);
                   if (followItemId != null) {
                     objectiveDataEntry.setTargetItemTag(followItemId.getValue());
                     followItemId.setEditable(checkbox.selected());
@@ -303,7 +303,7 @@ public class FollowObjectiveConfigurationScreen<T extends ConfigurationMenu>
                 objectiveEntriesTop - 1,
                 onPress -> {
                   ObjectiveDataEntry objectiveDataEntry =
-                      new ObjectiveDataEntry(ObjectiveType.FOLLOW_ITEM, 7);
+                      new ObjectiveDataEntry(ObjectiveType.FOLLOW_ITEM);
                   objectiveDataEntry.setTargetItemTag(this.followItemId.getValue());
                   NetworkMessageHandlerManager.getServerHandler()
                       .addOrUpdateObjective(this.getEasyNPCUUID(), objectiveDataEntry);

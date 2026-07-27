@@ -207,7 +207,7 @@ public interface ObjectiveDataCapable<T extends Mob> extends EasyNPC<T> {
       return;
     }
     log.debug("Register attribute based objectives for {}", this);
-    ObjectiveDataEntry floatObjective = new ObjectiveDataEntry(ObjectiveType.FLOAT, 0);
+    ObjectiveDataEntry floatObjective = new ObjectiveDataEntry(ObjectiveType.FLOAT);
     EntityAttributes attributeData = this.getEasyNPCAttributeData().getEntityAttributes();
     if (attributeData.getEnvironmentalAttributes().canFloat()) {
       if (!this.hasObjective(floatObjective)) {
@@ -219,8 +219,8 @@ public interface ObjectiveDataCapable<T extends Mob> extends EasyNPC<T> {
 
     boolean canCloseDoor = attributeData.getMovementAttributes().canCloseDoor();
     boolean canOpenDoor = attributeData.getMovementAttributes().canOpenDoor();
-    ObjectiveDataEntry closeDoorObjective = new ObjectiveDataEntry(ObjectiveType.CLOSE_DOOR, 8);
-    ObjectiveDataEntry openDoorObjective = new ObjectiveDataEntry(ObjectiveType.OPEN_DOOR, 8);
+    ObjectiveDataEntry closeDoorObjective = new ObjectiveDataEntry(ObjectiveType.CLOSE_DOOR);
+    ObjectiveDataEntry openDoorObjective = new ObjectiveDataEntry(ObjectiveType.OPEN_DOOR);
     if (canOpenDoor) {
       if (!this.hasObjective(openDoorObjective)) {
         this.addOrUpdateCustomObjective(openDoorObjective);
@@ -271,11 +271,12 @@ public interface ObjectiveDataCapable<T extends Mob> extends EasyNPC<T> {
     }
 
     boolean addedCustomObjective = false;
+    boolean hasValidTarget = objectiveDataEntry.hasValidTarget(this);
 
     Goal goal = objectiveDataEntry.getGoal(this);
     if (goal != null) {
       GoalSelector goalSelector = this.getEntityGoalSelector();
-      if (!objectiveDataEntry.hasValidTarget(this)) {
+      if (!hasValidTarget) {
         if (this.hasObjective(objectiveDataEntry.getId()) && objectiveDataEntry.isRegistered()) {
           log.debug(
               "Removing existing goal {} for {} because target was not found. Will try later again.",
@@ -293,15 +294,24 @@ public interface ObjectiveDataCapable<T extends Mob> extends EasyNPC<T> {
 
     Goal target = objectiveDataEntry.getTarget(this);
     if (target != null) {
-      log.debug("- Adding target goal {} for {}", target, this);
       GoalSelector targetSelector = this.getEntityTargetSelector();
-      targetSelector.removeGoal(target);
-      targetSelector.addGoal(objectiveDataEntry.getPriority(), target);
-      addedCustomObjective = true;
+      if (!hasValidTarget) {
+        log.debug(
+            "Removing existing target goal {} for {} because target was not found. Will try later"
+                + " again.",
+            target,
+            this);
+        targetSelector.removeGoal(target);
+      } else {
+        log.debug("- Adding target goal {} for {}", target, this);
+        targetSelector.removeGoal(target);
+        targetSelector.addGoal(objectiveDataEntry.getPriority(), target);
+        addedCustomObjective = true;
+      }
     }
 
     if (!addedCustomObjective && goal == null && target == null) {
-      if (objectiveDataEntry.hasValidTarget(this)) {
+      if (hasValidTarget && !objectiveDataEntry.isAwaitingRegistration()) {
         log.debug(
             "- Objective {} is not compatible with {} and will not be retried.",
             objectiveDataEntry.getType(),
@@ -315,6 +325,25 @@ public interface ObjectiveDataCapable<T extends Mob> extends EasyNPC<T> {
     // Add objective data to set, regardless if goal or target was added.
     getObjectiveDataSet().addObjective(objectiveDataEntry);
     return objectiveDataEntry.isRegistered();
+  }
+
+  default boolean rebuildCustomObjective(ObjectiveDataEntry objectiveDataEntry) {
+    if (objectiveDataEntry == null || this.isClientSideInstance()) {
+      return false;
+    }
+
+    Goal previousGoal = objectiveDataEntry.getGoal(this);
+    if (previousGoal != null) {
+      this.getEntityGoalSelector().removeGoal(previousGoal);
+    }
+
+    Goal previousTarget = objectiveDataEntry.getTarget(this);
+    if (previousTarget != null) {
+      this.getEntityTargetSelector().removeGoal(previousTarget);
+    }
+
+    objectiveDataEntry.setRegistered(false);
+    return this.addOrUpdateCustomObjective(objectiveDataEntry);
   }
 
   default void handleCustomObjectiveBaseTick() {
@@ -374,9 +403,9 @@ public interface ObjectiveDataCapable<T extends Mob> extends EasyNPC<T> {
 
   default void registerStandardObjectives() {
     log.debug("Register standard objectives for {}", this);
-    this.addOrUpdateCustomObjective(new ObjectiveDataEntry(ObjectiveType.LOOK_AT_RESET, 10));
-    this.addOrUpdateCustomObjective(new ObjectiveDataEntry(ObjectiveType.LOOK_AT_PLAYER, 9));
-    this.addOrUpdateCustomObjective(new ObjectiveDataEntry(ObjectiveType.LOOK_AT_MOB, 10));
+    this.addOrUpdateCustomObjective(new ObjectiveDataEntry(ObjectiveType.LOOK_AT_RESET));
+    this.addOrUpdateCustomObjective(new ObjectiveDataEntry(ObjectiveType.LOOK_AT_PLAYER));
+    this.addOrUpdateCustomObjective(new ObjectiveDataEntry(ObjectiveType.LOOK_AT_MOB));
   }
 
   default void defineCustomObjectiveData() {

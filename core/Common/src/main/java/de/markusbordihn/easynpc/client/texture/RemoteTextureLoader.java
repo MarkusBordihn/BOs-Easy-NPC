@@ -193,14 +193,9 @@ public class RemoteTextureLoader {
       return CompletableFuture.completedFuture(null);
     }
 
-    // Apply legacy support if needed
-    if ((textureModelKey.getSkinModel() == SkinModel.HUMANOID
-            || textureModelKey.getSkinModel() == SkinModel.HUMANOID_SLIM)
-        && nativeImage.getWidth() == 64
-        && nativeImage.getHeight() == 32) {
-      log.info(
-          "{} Processing legacy image from 64x32 to 64x64 for {}", LOG_PREFIX, textureModelKey);
-      nativeImage = TextureImageLoader.getNativeImageFromLegacyImage(nativeImage);
+    if (textureModelKey.getSkinModel() == SkinModel.HUMANOID
+        || textureModelKey.getSkinModel() == SkinModel.HUMANOID_SLIM) {
+      nativeImage = TextureImageLoader.processPlayerSkin(nativeImage);
     }
 
     // Store to cache file for future use (async to not block texture registration)
@@ -208,6 +203,7 @@ public class RemoteTextureLoader {
     File cacheFile = targetDirectory.resolve(TextureNameHelper.getFileName(uuid)).toFile();
     try {
       nativeImage.writeToFile(cacheFile.toPath());
+      TextureCacheManager.setCachedTextureSource(textureModelKey, targetDirectory, remoteUrl);
       log.info("{} Cached downloaded texture as {} for {}", LOG_PREFIX, cacheFile, textureModelKey);
     } catch (IOException exception) {
       log.warn(

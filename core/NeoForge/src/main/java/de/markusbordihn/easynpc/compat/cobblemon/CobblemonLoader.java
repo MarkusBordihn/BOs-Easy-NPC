@@ -26,7 +26,10 @@ import de.markusbordihn.easynpc.compat.IntegrationModelProvider;
 import de.markusbordihn.easynpc.compat.IntegrationRegistry;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import net.minecraft.resources.ResourceLocation;
 import org.apache.logging.log4j.LogManager;
@@ -36,10 +39,8 @@ public class CobblemonLoader implements IntegrationModelProvider {
 
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private static final CobblemonLoader INSTANCE = new CobblemonLoader();
-
-  // The default filter keeps all female variants so the server-side list stays a superset for
-  // model validation; the client injects a resolver-based filter for the actual selection list.
   private static Predicate<ResourceLocation> femaleVariantFilter = speciesId -> true;
+  private static Function<ResourceLocation, Set<String>> aspectProvider = speciesId -> Set.of();
 
   private List<ResourceLocation> cachedModels;
 
@@ -48,6 +49,12 @@ public class CobblemonLoader implements IntegrationModelProvider {
   public static void setFemaleVariantFilter(Predicate<ResourceLocation> filter) {
     if (filter != null) {
       femaleVariantFilter = filter;
+    }
+  }
+
+  public static void setAspectProvider(Function<ResourceLocation, Set<String>> provider) {
+    if (provider != null) {
+      aspectProvider = provider;
     }
   }
 
@@ -61,8 +68,10 @@ public class CobblemonLoader implements IntegrationModelProvider {
 
   private static List<ResourceLocation> loadSpeciesModels() {
     List<ResourceLocation> speciesModels = new ArrayList<>();
+    Set<ResourceLocation> speciesIds = new LinkedHashSet<>();
     for (Species species : PokemonSpecies.INSTANCE.getImplemented()) {
       ResourceLocation speciesId = species.getResourceIdentifier();
+      speciesIds.add(speciesId);
       speciesModels.add(speciesId);
       speciesModels.add(
           CobblemonSpeciesManager.createVariantKey(
@@ -78,9 +87,26 @@ public class CobblemonLoader implements IntegrationModelProvider {
                 CobblemonSpeciesManager.VARIANT_FEMALE,
                 CobblemonSpeciesManager.VARIANT_SHINY));
       }
+      addAspectVariants(speciesModels, speciesId);
     }
+    CobblemonSpeciesManager.setKnownSpecies(speciesIds);
     speciesModels.sort(Comparator.comparing(ResourceLocation::toString));
     return speciesModels;
+  }
+
+  private static void addAspectVariants(
+      List<ResourceLocation> speciesModels, ResourceLocation speciesId) {
+    for (String aspect : aspectProvider.apply(speciesId)) {
+      if (CobblemonSpeciesManager.VARIANT_SHINY.equals(aspect)
+          || CobblemonSpeciesManager.VARIANT_FEMALE.equals(aspect)
+          || !CobblemonSpeciesManager.isSupportedAspect(aspect)) {
+        continue;
+      }
+      speciesModels.add(CobblemonSpeciesManager.createVariantKey(speciesId, aspect));
+      speciesModels.add(
+          CobblemonSpeciesManager.createVariantKey(
+              speciesId, aspect, CobblemonSpeciesManager.VARIANT_SHINY));
+    }
   }
 
   @Override

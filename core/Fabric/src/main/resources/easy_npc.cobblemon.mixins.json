@@ -1,0 +1,13 @@
+{
+  "required": false,
+  "minVersion": "0.8",
+  "package": "de.markusbordihn.easynpc.mixin.compat.cobblemon",
+  "compatibilityLevel": "JAVA_21",
+  "plugin": "de.markusbordihn.easynpc.compat.cobblemon.CobblemonMixinPlugin",
+  "mixins": [
+    "CobblemonScannableMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

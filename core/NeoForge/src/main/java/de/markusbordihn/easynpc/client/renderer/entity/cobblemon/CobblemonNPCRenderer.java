@@ -20,15 +20,13 @@
 package de.markusbordihn.easynpc.client.renderer.entity.cobblemon;
 
 import com.cobblemon.mod.common.CobblemonEntities;
-import com.cobblemon.mod.common.api.pokemon.PokemonSpecies;
 import com.cobblemon.mod.common.client.entity.PokemonClientDelegate;
 import com.cobblemon.mod.common.client.render.VaryingRenderableResolver;
 import com.cobblemon.mod.common.client.render.models.blockbench.PosableModel;
 import com.cobblemon.mod.common.client.render.models.blockbench.repository.VaryingModelRepository;
+import com.cobblemon.mod.common.entity.PoseType;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
-import com.cobblemon.mod.common.pokemon.Gender;
 import com.cobblemon.mod.common.pokemon.Pokemon;
-import com.cobblemon.mod.common.pokemon.Species;
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.model.custom.DopplerModel;
@@ -37,17 +35,21 @@ import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCLivingEntityRender
 import de.markusbordihn.easynpc.client.renderer.manager.EntityTypeManager;
 import de.markusbordihn.easynpc.client.renderer.manager.RendererManager;
 import de.markusbordihn.easynpc.compat.IntegrationRegistry;
+import de.markusbordihn.easynpc.compat.cobblemon.CobblemonPokemonResolver;
 import de.markusbordihn.easynpc.compat.cobblemon.CobblemonSpeciesManager;
 import de.markusbordihn.easynpc.data.render.RenderType;
 import de.markusbordihn.easynpc.data.skin.variant.DopplerSkinVariant;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.NavigationDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.RenderDataCapable;
 import de.markusbordihn.easynpc.mixin.renderer.MobRendererInvoker;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -67,37 +69,45 @@ public class CobblemonNPCRenderer<E extends PathfinderMob>
       DopplerSkinVariant.DOPPLER.getTextureLocation();
   private static final float GUI_PREVIEW_PROFILE_SCALE_FACTOR = 1.15F;
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-  private static final Map<ResourceLocation, PokemonEntity> cobblemonEntityCache = new HashMap<>();
+  private static final int MAX_CACHED_COBBLEMON_ENTITIES = 64;
+
+  private static final Map<CobblemonProxyKey, PokemonEntity> cobblemonEntityCache =
+      new LinkedHashMap<>(16, 0.75F, true) {
+        @Override
+        protected boolean removeEldestEntry(Map.Entry<CobblemonProxyKey, PokemonEntity> eldest) {
+          return this.size() > MAX_CACHED_COBBLEMON_ENTITIES;
+        }
+      };
+
   private static final Map<ResourceLocation, Boolean> invalidSpeciesCache = new HashMap<>();
   private static final Map<ResourceLocation, Float> guiPreviewScaleCache = new HashMap<>();
+
+  private static final Map<ResourceLocation, Set<String>> speciesAspectCache = new HashMap<>();
 
   public CobblemonNPCRenderer(
       EntityRendererProvider.Context context, ModelLayerLocation modelLayerLocation) {
     super(context, new DopplerModel<>(context.bakeLayer(modelLayerLocation)), 0.5F);
   }
 
-  private static PokemonEntity getOrCreateCobblemonEntity(ResourceLocation modelKey, Level level) {
+  private static PokemonEntity getOrCreateCobblemonEntity(
+      UUID entityUUID, ResourceLocation modelKey, Level level) {
     if (invalidSpeciesCache.containsKey(modelKey)) {
       return null;
     }
 
-    PokemonEntity cached = cobblemonEntityCache.get(modelKey);
+    CobblemonProxyKey proxyKey = new CobblemonProxyKey(entityUUID, modelKey);
+    PokemonEntity cached = cobblemonEntityCache.get(proxyKey);
     if (cached != null && cached.isAlive()) {
       return cached;
     }
 
-    ResourceLocation speciesId = CobblemonSpeciesManager.getBaseSpeciesId(modelKey);
-    Species species = PokemonSpecies.INSTANCE.getByIdentifier(speciesId);
-    if (species == null) {
-      log.warn("Unknown Cobblemon species: {}", speciesId);
+    Pokemon cobblemonInstance = CobblemonPokemonResolver.resolvePokemon(modelKey);
+    if (cobblemonInstance == null) {
       invalidSpeciesCache.put(modelKey, Boolean.TRUE);
       return null;
     }
 
     try {
-      Pokemon cobblemonInstance = new Pokemon();
-      cobblemonInstance.setSpecies(species);
-      applyVariantAspects(cobblemonInstance, modelKey);
       PokemonEntity entity = new PokemonEntity(level, cobblemonInstance, CobblemonEntities.POKEMON);
       entity.setNoAi(true);
       entity.setSilent(true);
@@ -106,8 +116,8 @@ public class CobblemonNPCRenderer<E extends PathfinderMob>
       entity.setInvulnerable(true);
       entity.setTicksLived(100);
       entity.hideNameRendering();
-      syncEntityData(cobblemonInstance, entity);
-      cobblemonEntityCache.put(modelKey, entity);
+      syncEntityData(cobblemonInstance, entity, modelKey);
+      cobblemonEntityCache.put(proxyKey, entity);
       return entity;
     } catch (Exception exception) {
       log.error("Failed to create Cobblemon entity for species {}", modelKey, exception);
@@ -116,28 +126,18 @@ public class CobblemonNPCRenderer<E extends PathfinderMob>
     }
   }
 
-  private static void syncEntityData(Pokemon cobblemonInstance, PokemonEntity entity) {
+  private static void syncEntityData(
+      Pokemon cobblemonInstance, PokemonEntity entity, ResourceLocation modelKey) {
     entity
         .getEntityData()
         .set(
             PokemonEntity.getSPECIES(),
             cobblemonInstance.getSpecies().getResourceIdentifier().toString());
-    entity.getEntityData().set(PokemonEntity.getASPECTS(), cobblemonInstance.getAspects());
-  }
 
-  private static void applyVariantAspects(Pokemon cobblemonInstance, ResourceLocation modelKey) {
-    Set<String> variantAspects = CobblemonSpeciesManager.getVariantAspects(modelKey);
-    float maleRatio = cobblemonInstance.getSpecies().getMaleRatio();
-    if (maleRatio > 0.0F && maleRatio < 1.0F) {
-      cobblemonInstance.setGender(
-          variantAspects.contains(CobblemonSpeciesManager.VARIANT_FEMALE)
-              ? Gender.FEMALE
-              : Gender.MALE);
-    }
-    if (variantAspects.contains(CobblemonSpeciesManager.VARIANT_SHINY)) {
-      cobblemonInstance.setShiny(true);
-    }
-    cobblemonInstance.updateAspects();
+    Set<String> aspects =
+        speciesAspectCache.computeIfAbsent(
+            modelKey, key -> Set.copyOf(cobblemonInstance.getAspects()));
+    entity.getEntityData().set(PokemonEntity.getASPECTS(), aspects);
   }
 
   private static float getGuiPreviewScale(
@@ -185,22 +185,50 @@ public class CobblemonNPCRenderer<E extends PathfinderMob>
   }
 
   private static void syncCobblemonRenderState(
-      PathfinderMob sourceEntity, PokemonEntity cobblemonEntity, ResourceLocation modelKey) {
+      EasyNPC<?> easyNPC,
+      PathfinderMob sourceEntity,
+      PokemonEntity cobblemonEntity,
+      ResourceLocation modelKey) {
     int renderAge = sourceEntity.tickCount + 100;
     cobblemonEntity.setTicksLived(renderAge);
+
+    boolean isMoving = isMoving(sourceEntity);
+    PoseType poseType = getPoseType(easyNPC, sourceEntity, isMoving);
+    cobblemonEntity.getEntityData().set(PokemonEntity.getMOVING(), isMoving);
+    cobblemonEntity.getEntityData().set(PokemonEntity.getPOSE_TYPE(), poseType);
+
     if (cobblemonEntity.getDelegate() instanceof PokemonClientDelegate clientDelegate) {
       clientDelegate.setCurrentEntity(cobblemonEntity);
-      // The client delegate is the PosableState that drives model and texture selection. Feed it
-      // the
-      // pokemon aspects plus the female / shiny variant tokens so the varying model repository
-      // resolves the matching variant; this preview entity is never ticked, so Cobblemon never
-      // fills
-      // the delegate from the entity data on its own.
+      // The delegate is the state that resolves model, texture and layers, and it is only filled
+      // from the entity data while the entity is ticked, which never happens for this render
+      // entity.
       Set<String> aspects = new HashSet<>(cobblemonEntity.getPokemon().getAspects());
       aspects.addAll(CobblemonSpeciesManager.getVariantAspects(modelKey));
       clientDelegate.setCurrentAspects(aspects);
       clientDelegate.updateAge(renderAge);
+      // For the same reason the pose has to be selected here, otherwise the NPC keeps the idle
+      // pose and glides over the ground while it moves.
+      clientDelegate.setPoseToFirstSuitable(poseType);
     }
+  }
+
+  private static boolean isMoving(PathfinderMob sourceEntity) {
+    return sourceEntity.walkDist - sourceEntity.walkDistO > 0.003F
+        || sourceEntity.getDeltaMovement().horizontalDistanceSqr() > 1.0E-6;
+  }
+
+  private static PoseType getPoseType(
+      EasyNPC<?> easyNPC, PathfinderMob sourceEntity, boolean isMoving) {
+    if (sourceEntity.isInWater()) {
+      return isMoving ? PoseType.SWIM : PoseType.FLOAT;
+    }
+
+    NavigationDataCapable<?> navigationData = easyNPC.getEasyNPCNavigationData();
+    if (navigationData != null && navigationData.isFlying()) {
+      return isMoving ? PoseType.FLY : PoseType.HOVER;
+    }
+
+    return isMoving ? PoseType.WALK : PoseType.STAND;
   }
 
   private boolean renderCobblemon(
@@ -232,7 +260,8 @@ public class CobblemonNPCRenderer<E extends PathfinderMob>
       return false;
     }
 
-    PokemonEntity cobblemonEntity = getOrCreateCobblemonEntity(speciesId, entity.level());
+    PokemonEntity cobblemonEntity =
+        getOrCreateCobblemonEntity(entity.getUUID(), speciesId, entity.level());
     if (cobblemonEntity == null) {
       return false;
     }
@@ -245,7 +274,7 @@ public class CobblemonNPCRenderer<E extends PathfinderMob>
 
     try {
       cobblemonEntity.setCustomNameVisible(false);
-      syncCobblemonRenderState(entity, cobblemonEntity, speciesId);
+      syncCobblemonRenderState(easyNPC, entity, cobblemonEntity, speciesId);
 
       if (IntegrationRegistry.isGuiPreviewMode()) {
         float previewScale = getGuiPreviewScale(speciesId, cobblemonEntity);
@@ -331,4 +360,8 @@ public class CobblemonNPCRenderer<E extends PathfinderMob>
     }
     super.render(entity, entityYaw, partialTicks, poseStack, bufferSource, packedLight);
   }
+
+  private record CobblemonProxyKey(UUID entityUUID, ResourceLocation modelKey) {}
+
+  private record CobblemonProxy(ResourceLocation modelKey, PokemonEntity entity) {}
 }

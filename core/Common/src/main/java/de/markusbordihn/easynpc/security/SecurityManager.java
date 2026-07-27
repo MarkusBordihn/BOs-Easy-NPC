@@ -74,7 +74,7 @@ public class SecurityManager {
         presetType,
         targetUuid,
         CommandSecurity.getActorContext(serverPlayer),
-        serverPlayer);
+        serverPlayer != null ? serverPlayer.getUUID() : null);
   }
 
   public static PresetSanitizationResult sanitizePresetImport(
@@ -83,14 +83,10 @@ public class SecurityManager {
       PresetType presetType,
       UUID targetUuid,
       ActorSecurityContext actorSecurityContext,
-      ServerPlayer owner) {
+      UUID ownerUuid) {
     PresetAuthority presetAuthority =
         PresetSecurity.getPresetAuthority(
-            serverLevel,
-            presetType,
-            targetUuid,
-            actorSecurityContext,
-            owner != null ? owner.getUUID() : null);
+            serverLevel, presetType, targetUuid, actorSecurityContext, ownerUuid);
     PresetSanitizationResult result = PresetSanitizer.sanitize(compoundTag, presetAuthority);
     if (result.changed()) {
       log.debug(

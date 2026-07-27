@@ -63,7 +63,8 @@ public class PresetSuggestions {
   public static CompletableFuture<Suggestions> suggestData(
       CommandContext<CommandSourceStack> context, SuggestionsBuilder build) {
     return SharedSuggestionProvider.suggestResource(
-        DataPresetDataFiles.getPresetResourceLocations(context.getSource().getServer()), build);
+        DataPresetDataFiles.getUsablePresetResourceLocations(context.getSource().getServer()),
+        build);
   }
 
   public static CompletableFuture<Suggestions> suggestDefault(

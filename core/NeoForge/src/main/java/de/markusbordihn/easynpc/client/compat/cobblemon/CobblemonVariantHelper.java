@@ -23,41 +23,62 @@ import com.cobblemon.mod.common.client.render.ModelAssetVariation;
 import com.cobblemon.mod.common.client.render.VaryingRenderableResolver;
 import com.cobblemon.mod.common.client.render.models.blockbench.repository.VaryingModelRepository;
 import de.markusbordihn.easynpc.compat.cobblemon.CobblemonSpeciesManager;
-import java.util.HashSet;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import net.minecraft.resources.ResourceLocation;
 
 public final class CobblemonVariantHelper {
 
-  private static Set<ResourceLocation> femaleVariantSpecies;
+  private static Map<ResourceLocation, Set<String>> speciesAspects;
 
   private CobblemonVariantHelper() {}
 
   public static boolean hasFemaleVariant(ResourceLocation speciesId) {
-    if (femaleVariantSpecies == null) {
-      femaleVariantSpecies = loadFemaleVariantSpecies();
-    }
-    return femaleVariantSpecies == null || femaleVariantSpecies.contains(speciesId);
+    return hasAspect(speciesId, CobblemonSpeciesManager.VARIANT_FEMALE);
   }
 
-  private static Set<ResourceLocation> loadFemaleVariantSpecies() {
+  public static boolean hasAspect(ResourceLocation speciesId, String aspect) {
+    Map<ResourceLocation, Set<String>> aspectsBySpecies = getSpeciesAspects();
+    if (aspectsBySpecies == null) {
+      return true;
+    }
+    return aspectsBySpecies.getOrDefault(speciesId, Set.of()).contains(aspect);
+  }
+
+  public static Set<String> getAvailableAspects(ResourceLocation speciesId) {
+    Map<ResourceLocation, Set<String>> aspectsBySpecies = getSpeciesAspects();
+    if (aspectsBySpecies == null) {
+      return Set.of();
+    }
+    return aspectsBySpecies.getOrDefault(speciesId, Set.of());
+  }
+
+  private static Map<ResourceLocation, Set<String>> getSpeciesAspects() {
+    if (speciesAspects == null) {
+      speciesAspects = loadSpeciesAspects();
+    }
+    return speciesAspects;
+  }
+
+  private static Map<ResourceLocation, Set<String>> loadSpeciesAspects() {
     Map<ResourceLocation, VaryingRenderableResolver> variations =
         VaryingModelRepository.INSTANCE.getVariations();
     if (variations.isEmpty()) {
-      // Model repository is not loaded yet; keep all variants and retry on the next call.
       return null;
     }
 
-    Set<ResourceLocation> speciesWithFemaleVariant = new HashSet<>();
+    Map<ResourceLocation, Set<String>> aspectsBySpecies = new HashMap<>();
     for (Map.Entry<ResourceLocation, VaryingRenderableResolver> entry : variations.entrySet()) {
+      Set<String> aspects = new LinkedHashSet<>();
       for (ModelAssetVariation variation : entry.getValue().getVariations()) {
-        if (variation.getAspects().contains(CobblemonSpeciesManager.VARIANT_FEMALE)) {
-          speciesWithFemaleVariant.add(entry.getKey());
-          break;
-        }
+        aspects.addAll(variation.getAspects());
+      }
+      if (!aspects.isEmpty()) {
+        aspectsBySpecies.put(entry.getKey(), aspects);
       }
     }
-    return speciesWithFemaleVariant;
+    return aspectsBySpecies;
   }
 }

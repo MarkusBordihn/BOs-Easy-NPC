@@ -30,6 +30,8 @@ import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
 import java.util.List;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -40,7 +42,14 @@ public interface PresetDataCapable<T extends Mob> extends EasyNPC<T> {
 
   ServerDataAccessor<UUID> CUSTOM_DATA_PRESET_UUID =
       ServerEntityData.defineId(ServerDataIndex.PRESET_UUID, EntityDataSerializersManager.UUID);
+  ServerDataAccessor<String> CUSTOM_DATA_CUSTOM_IDENTIFIER =
+      ServerEntityData.defineId(ServerDataIndex.CUSTOM_IDENTIFIER, EntityDataSerializers.STRING);
+  ServerDataAccessor<Boolean> CUSTOM_DATA_RESTORE_ON_OWNER_LOGIN =
+      ServerEntityData.defineId(
+          ServerDataIndex.RESTORE_ON_OWNER_LOGIN, EntityDataSerializers.BOOLEAN);
   String PRESET_UUID_TAG = "PresetUUID";
+  String CUSTOM_IDENTIFIER_TAG = "CustomIdentifier";
+  String RESTORE_ON_OWNER_LOGIN_TAG = "RestoreOnOwnerLogin";
   String PRESET_METADATA_TAG = "PresetMetadata";
   String ENTITY_UUID_TAG = "UUID";
 
@@ -62,7 +71,6 @@ public interface PresetDataCapable<T extends Mob> extends EasyNPC<T> {
 
   default void importPresetData(CompoundTag compoundTag) {
 
-    // Skip import if no data is or no entity is available.
     if (compoundTag == null || compoundTag.isEmpty() || this.getEntity() == null) {
       return;
     }
@@ -90,32 +98,26 @@ public interface PresetDataCapable<T extends Mob> extends EasyNPC<T> {
       this.getEasyNPCFactionData().applyFactionToScoreboard();
     }
 
-    // If preset contains id and pos then we can import it directly, otherwise we
-    // need to merge it with existing data.
+    // Presets without id and pos have to be merged with the existing data instead of imported.
     if (!compoundTag.contains(Entity.UUID_TAG) || !compoundTag.contains("Pos")) {
       CompoundTag existingCompoundTag = this.serializePresetData();
 
-      // Remove existing dialog data.
       if (existingCompoundTag.contains(DialogDataCapable.DATA_DIALOG_DATA_TAG)) {
         existingCompoundTag.remove(DialogDataCapable.DATA_DIALOG_DATA_TAG);
       }
 
-      // Remove existing model data.
       if (existingCompoundTag.contains(ModelDataCapable.EASY_NPC_DATA_MODEL_DATA_TAG)) {
         existingCompoundTag.remove(ModelDataCapable.EASY_NPC_DATA_MODEL_DATA_TAG);
       }
 
-      // Remove existing skin data.
       if (existingCompoundTag.contains(SkinDataCapable.EASY_NPC_DATA_SKIN_DATA_TAG)) {
         existingCompoundTag.remove(SkinDataCapable.EASY_NPC_DATA_SKIN_DATA_TAG);
       }
 
-      // Remove existing render data.
       if (existingCompoundTag.contains(RenderDataCapable.DATA_RENDER_DATA_TAG)) {
         existingCompoundTag.remove(RenderDataCapable.DATA_RENDER_DATA_TAG);
       }
 
-      // Remove existing action data.
       if (existingCompoundTag.contains(ActionEventDataCapable.DATA_ACTION_DATA_TAG)) {
         existingCompoundTag.remove(ActionEventDataCapable.DATA_ACTION_DATA_TAG);
       }
@@ -128,10 +130,8 @@ public interface PresetDataCapable<T extends Mob> extends EasyNPC<T> {
       compoundTag.remove(volatileField);
     }
 
-    // Import preset data to entity.
     this.getEntity().load(compoundTag);
 
-    // Ensure entity is alive with full health after import
     if (this.getEntity() instanceof LivingEntity livingEntity) {
       float maxHealth =
           livingEntity.getAttribute(Attributes.MAX_HEALTH) != null
@@ -150,13 +150,11 @@ public interface PresetDataCapable<T extends Mob> extends EasyNPC<T> {
       return compoundTag;
     }
 
-    // Add Entity type id to the preset data.
     String entityTypeId = this.getEntityTypeId();
     if (entityTypeId != null) {
       compoundTag.putString(Entity.ID_TAG, entityTypeId);
     }
 
-    // Entity saved data
     CompoundTag entityData = this.getEntity().saveWithoutId(compoundTag);
 
     // Add Preset UUID for unique identification (after saveWithoutId to prevent overwriting)
@@ -173,7 +171,6 @@ public interface PresetDataCapable<T extends Mob> extends EasyNPC<T> {
       entityData.remove(entityDataFieldName);
     }
 
-    // Add preset metadata if not already present
     if (!entityData.contains(PRESET_METADATA_TAG)) {
       String presetName = PresetMetadata.DEFAULT_NAME;
       if (this.getEntity().hasCustomName() && this.getEntity().getCustomName() != null) {
@@ -202,19 +199,66 @@ public interface PresetDataCapable<T extends Mob> extends EasyNPC<T> {
     getEasyNPCServerData().setServerEntityData(CUSTOM_DATA_PRESET_UUID, uuid);
   }
 
+  default ResourceLocation getCustomIdentifier() {
+    String customIdentifier =
+        getEasyNPCServerData().getServerEntityData(CUSTOM_DATA_CUSTOM_IDENTIFIER);
+    if (customIdentifier == null || customIdentifier.isEmpty()) {
+      return null;
+    }
+
+    return ResourceLocation.tryParse(customIdentifier);
+  }
+
+  default void setCustomIdentifier(ResourceLocation customIdentifier) {
+    getEasyNPCServerData()
+        .setServerEntityData(
+            CUSTOM_DATA_CUSTOM_IDENTIFIER,
+            customIdentifier != null ? customIdentifier.toString() : "");
+  }
+
+  default boolean getRestoreOnOwnerLogin() {
+    return Boolean.TRUE.equals(
+        getEasyNPCServerData().getServerEntityData(CUSTOM_DATA_RESTORE_ON_OWNER_LOGIN));
+  }
+
+  default void setRestoreOnOwnerLogin(boolean restoreOnOwnerLogin) {
+    getEasyNPCServerData()
+        .setServerEntityData(CUSTOM_DATA_RESTORE_ON_OWNER_LOGIN, restoreOnOwnerLogin);
+  }
+
   default void defineCustomPresetData() {
     getEasyNPCServerData().defineServerEntityData(CUSTOM_DATA_PRESET_UUID, null);
+    getEasyNPCServerData().defineServerEntityData(CUSTOM_DATA_CUSTOM_IDENTIFIER, "");
+    getEasyNPCServerData().defineServerEntityData(CUSTOM_DATA_RESTORE_ON_OWNER_LOGIN, false);
   }
 
   default void addAdditionalPresetData(CompoundTag compoundTag) {
-    if (this.isServerSideInstance() && this.getPresetUUID() != null) {
+    if (!this.isServerSideInstance()) {
+      return;
+    }
+
+    if (this.getPresetUUID() != null) {
       compoundTag.putUUID(PRESET_UUID_TAG, this.getPresetUUID());
+    }
+    ResourceLocation customIdentifier = this.getCustomIdentifier();
+    if (customIdentifier != null) {
+      compoundTag.putString(CUSTOM_IDENTIFIER_TAG, customIdentifier.toString());
+    }
+    if (this.getRestoreOnOwnerLogin()) {
+      compoundTag.putBoolean(RESTORE_ON_OWNER_LOGIN_TAG, true);
     }
   }
 
   default void readAdditionalPresetData(CompoundTag compoundTag) {
     if (compoundTag.hasUUID(PRESET_UUID_TAG)) {
       this.setPresetUUID(compoundTag.getUUID(PRESET_UUID_TAG));
+    }
+    if (compoundTag.contains(CUSTOM_IDENTIFIER_TAG)) {
+      this.setCustomIdentifier(
+          ResourceLocation.tryParse(compoundTag.getString(CUSTOM_IDENTIFIER_TAG)));
+    }
+    if (compoundTag.contains(RESTORE_ON_OWNER_LOGIN_TAG)) {
+      this.setRestoreOnOwnerLogin(compoundTag.getBoolean(RESTORE_ON_OWNER_LOGIN_TAG));
     }
   }
 }

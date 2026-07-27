@@ -20,26 +20,33 @@
 package de.markusbordihn.easynpc.compat.cobblemon;
 
 import de.markusbordihn.easynpc.compat.CompatConstants;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 import net.minecraft.resources.ResourceLocation;
 
 public final class CobblemonSpeciesManager {
 
   public static final String INTEGRATION_ID = CompatConstants.MOD_COBBLEMON_ID;
-
   public static final String DEFAULT_MODEL = INTEGRATION_ID + ":ditto";
-
   public static final String VARIANT_FEMALE = "female";
   public static final String VARIANT_SHINY = "shiny";
 
   private static final List<String> VARIANT_TOKENS = List.of(VARIANT_FEMALE, VARIANT_SHINY);
+  private static final char ASPECT_SEPARATOR = '.';
+  private static final Pattern SUPPORTED_ASPECT = Pattern.compile("[a-z0-9_-]+");
+
+  private static Set<ResourceLocation> knownSpecies = Set.of();
 
   private CobblemonSpeciesManager() {}
 
+  public static boolean isSupportedAspect(String aspect) {
+    return aspect != null && !aspect.isEmpty() && SUPPORTED_ASPECT.matcher(aspect).matches();
+  }
+
   public static ResourceLocation getBaseSpeciesId(ResourceLocation modelKey) {
-    String basePath = stripVariantTokens(modelKey.getPath(), null);
+    String basePath = splitSpeciesPath(modelKey, null);
     if (basePath.equals(modelKey.getPath())) {
       return modelKey;
     }
@@ -47,21 +54,67 @@ public final class CobblemonSpeciesManager {
   }
 
   public static Set<String> getVariantAspects(ResourceLocation modelKey) {
-    Set<String> variantAspects = new HashSet<>();
-    stripVariantTokens(modelKey.getPath(), variantAspects);
+    Set<String> variantAspects = new LinkedHashSet<>();
+    splitSpeciesPath(modelKey, variantAspects);
     return variantAspects;
+  }
+
+  public static boolean isGenderMutable(float maleRatio) {
+    return maleRatio > 0.0F && maleRatio < 1.0F;
+  }
+
+  public static boolean shouldApplyFemaleGender(Set<String> variantAspects) {
+    return variantAspects.contains(VARIANT_FEMALE);
+  }
+
+  public static boolean shouldApplyShiny(Set<String> variantAspects) {
+    return variantAspects.contains(VARIANT_SHINY);
   }
 
   public static ResourceLocation createVariantKey(
       ResourceLocation speciesId, String... variantTokens) {
     StringBuilder path = new StringBuilder(speciesId.getPath());
     for (String variantToken : variantTokens) {
-      path.append('_').append(variantToken);
+      path.append(ASPECT_SEPARATOR).append(variantToken);
     }
     return ResourceLocation.fromNamespaceAndPath(speciesId.getNamespace(), path.toString());
   }
 
-  private static String stripVariantTokens(String path, Set<String> collectedTokens) {
+  public static void setKnownSpecies(Set<ResourceLocation> species) {
+    knownSpecies = species != null ? Set.copyOf(species) : Set.of();
+  }
+
+  private static boolean isKnownSpecies(ResourceLocation speciesId) {
+    return knownSpecies.contains(speciesId);
+  }
+
+  private static String splitSpeciesPath(ResourceLocation modelKey, Set<String> collectedAspects) {
+    String path = modelKey.getPath();
+
+    int separatorIndex = path.indexOf(ASPECT_SEPARATOR);
+    if (separatorIndex > 0) {
+      if (collectedAspects != null) {
+        collectAspects(path.substring(separatorIndex + 1), collectedAspects);
+      }
+      return path.substring(0, separatorIndex);
+    }
+
+    if (isKnownSpecies(modelKey)) {
+      return path;
+    }
+
+    return stripKnownVariantTokens(path, collectedAspects);
+  }
+
+  private static void collectAspects(String aspectPath, Set<String> collectedAspects) {
+    for (String aspect : aspectPath.split("\\" + ASPECT_SEPARATOR)) {
+      if (!aspect.isEmpty()) {
+        collectedAspects.add(aspect);
+      }
+    }
+  }
+
+  private static String stripKnownVariantTokens(String path, Set<String> collectedAspects) {
     boolean stripped = true;
     while (stripped) {
       stripped = false;
@@ -69,8 +122,8 @@ public final class CobblemonSpeciesManager {
         String variantSuffix = '_' + variantToken;
         if (path.endsWith(variantSuffix)) {
           path = path.substring(0, path.length() - variantSuffix.length());
-          if (collectedTokens != null) {
-            collectedTokens.add(variantToken);
+          if (collectedAspects != null) {
+            collectedAspects.add(variantToken);
           }
           stripped = true;
         }

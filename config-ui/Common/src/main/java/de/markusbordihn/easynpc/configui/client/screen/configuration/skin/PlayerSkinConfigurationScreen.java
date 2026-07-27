@@ -29,6 +29,7 @@ import de.markusbordihn.easynpc.client.texture.TextureModelKey;
 import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.configui.client.renderer.screen.EntityConfigScreenRenderer;
 import de.markusbordihn.easynpc.configui.client.screen.components.Checkbox;
+import de.markusbordihn.easynpc.configui.client.screen.components.ReloadButton;
 import de.markusbordihn.easynpc.configui.client.screen.components.SkinSelectionButton;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
@@ -45,6 +46,8 @@ import de.markusbordihn.easynpc.validator.NameValidator;
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
@@ -126,7 +129,6 @@ public class PlayerSkinConfigurationScreen<T extends ConfigurationMenu>
 
   private void renderSkinEntity(
       GuiGraphics guiGraphics, int x, int y, SkinModel skinModel, UUID textureUUID) {
-    // Skin details
     TextureModelKey textureModelKey = new TextureModelKey(textureUUID, skinModel);
     SkinType skinType = PlayerTextureManager.getTextureSkinType(textureModelKey);
 
@@ -153,6 +155,14 @@ public class PlayerSkinConfigurationScreen<T extends ConfigurationMenu>
         this.yMouse);
 
     skinButtons.add(skinButton);
+    skinButtons.add(
+        new ReloadButton(
+            x + 10,
+            y - 81,
+            12,
+            12,
+            null,
+            onPress -> PlayerTextureManager.refreshTexture(textureModelKey)));
   }
 
   private void clearTextureSkinLocation() {
@@ -171,23 +181,29 @@ public class PlayerSkinConfigurationScreen<T extends ConfigurationMenu>
         return;
       }
 
-      UUID playerUUID = PlayersUtils.getUserUUID(textureSkinLocationValue);
-      if (playerUUID == null) {
-        this.errorMessage = "invalid_player_uuid";
-        return;
-      }
-
-      log.debug("Setting player texture to {} with UUID {}", textureSkinLocationValue, playerUUID);
-      TextureManager.clearLastErrorMessage();
-      this.errorMessage = "";
-      NetworkMessageHandlerManager.getServerHandler()
-          .setSkin(
-              this.getEasyNPCUUID(),
-              SkinDataEntry.createPlayerSkin(textureSkinLocationValue, playerUUID));
-
       this.addTextureSettingsButton.active = false;
       this.formerTextureSkinLocation = textureSkinLocationValue;
       updateNextTextureSkinLocationChange();
+      CompletableFuture.supplyAsync(() -> PlayersUtils.getUserUUID(textureSkinLocationValue))
+          .thenAcceptAsync(
+              playerUUID -> {
+                if (playerUUID == null) {
+                  this.errorMessage = "invalid_player_uuid";
+                  return;
+                }
+
+                log.debug(
+                    "Setting player texture to {} with UUID {}",
+                    textureSkinLocationValue,
+                    playerUUID);
+                TextureManager.clearLastErrorMessage();
+                this.errorMessage = "";
+                NetworkMessageHandlerManager.getServerHandler()
+                    .setSkin(
+                        this.getEasyNPCUUID(),
+                        SkinDataEntry.createPlayerSkin(textureSkinLocationValue, playerUUID));
+              },
+              Minecraft.getInstance());
     }
   }
 

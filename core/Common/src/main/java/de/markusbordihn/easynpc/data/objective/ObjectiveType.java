@@ -38,6 +38,7 @@ public enum ObjectiveType {
   AVOID_SUN("avoid_sun", 2),
   BOW_ATTACK("bow", 4),
   CLOSE_DOOR("close_door", 8),
+  CUSTOM("custom", 5, true),
   CROSSBOW_ATTACK("crossbow", 4),
   FACTION_HURT_BY_TARGET("faction_hurt_by_target", 2),
   FLEE_CREEPER("creeper", 3),
@@ -62,18 +63,18 @@ public enum ObjectiveType {
   LOOK_AT_RESET("reset", 9, false),
   LOOK_RANDOM_AROUND("random", 10, false),
   MELEE_ATTACK("melee", 2),
-  MOVE_BACK_TO_HOME("back_home", 3),
-  MOVE_BACK_TO_VILLAGE("back_village", 3),
-  MOVE_THROUGH_VILLAGE("through_village", 5),
+  MOVE_BACK_TO_HOME("back_home", 8),
+  MOVE_BACK_TO_VILLAGE("back_village", 8),
+  MOVE_THROUGH_VILLAGE("through_village", 9),
   NONE("none", false),
   OPEN_DOOR("open_door", 8),
   OWNER_HURT_BY_TARGET("owner_hurt_by_target", 2),
   PANIC("panic", 1),
-  RANDOM_STROLL_AROUND_HOME("around_home", 2),
-  RANDOM_STROLL_IN_VILLAGE("in_village", 2),
-  RANDOM_STROLL("stroll", 5),
+  RANDOM_STROLL_AROUND_HOME("around_home", 10),
+  RANDOM_STROLL_IN_VILLAGE("in_village", 10),
+  RANDOM_STROLL("stroll", 11),
   RANDOM_SWIMMING("swimming", 4),
-  WATER_AVOIDING_RANDOM_STROLL("avoid_water", 5),
+  WATER_AVOIDING_RANDOM_STROLL("avoid_water", 11),
   ZOMBIE_ATTACK("zombie", 2);
 
   private final String friendlyName;
@@ -100,7 +101,7 @@ public enum ObjectiveType {
       return ObjectiveType.NONE;
     }
     try {
-      return ObjectiveType.valueOf(objectiveType);
+      return ObjectiveType.valueOf(objectiveType.toUpperCase(Locale.ROOT));
     } catch (IllegalArgumentException e) {
       return ObjectiveType.NONE;
     }

@@ -26,6 +26,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.phys.Vec3;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class ObjectiveDataEntryTest {
@@ -97,5 +100,173 @@ class ObjectiveDataEntryTest {
 
     ObjectiveDataEntry restored = new ObjectiveDataEntry(entry.createTag());
     assertEquals(ObjectiveType.ATTACK_HOSTILE_FACTIONS.name(), restored.getId());
+  }
+
+  @Test
+  @DisplayName("A follow owner objective targets an owner even without an explicit owner UUID")
+  void testOwnerTargetWithoutExplicitOwnerUUID() {
+    ObjectiveDataEntry followOwner = new ObjectiveDataEntry(ObjectiveType.FOLLOW_OWNER);
+    assertNull(followOwner.getTargetOwnerUUID());
+    assertTrue(followOwner.hasOwnerTarget());
+
+    ObjectiveDataEntry lookAtOwner = new ObjectiveDataEntry(ObjectiveType.LOOK_AT_OWNER);
+    assertTrue(lookAtOwner.hasOwnerTarget());
+  }
+
+  @Test
+  @DisplayName("An unset target owner UUID stays unset through a save/load round trip")
+  void testUnsetTargetOwnerUUIDIsNotPersisted() {
+    ObjectiveDataEntry entry = new ObjectiveDataEntry(ObjectiveType.FOLLOW_OWNER);
+    CompoundTag compoundTag = entry.createTag();
+
+    assertFalse(compoundTag.contains(ObjectiveDataEntry.DATA_TARGET_OWNER_UUID_TAG));
+    assertNull(new ObjectiveDataEntry(compoundTag).getTargetOwnerUUID());
+  }
+
+  @Test
+  @DisplayName("Objectives without an owner target are unaffected by the owner fallback")
+  void testNonOwnerObjectivesHaveNoOwnerTarget() {
+    assertFalse(new ObjectiveDataEntry(ObjectiveType.FOLLOW_PLAYER).hasOwnerTarget());
+    assertFalse(new ObjectiveDataEntry(ObjectiveType.RANDOM_STROLL).hasOwnerTarget());
+  }
+
+  @Test
+  @DisplayName("Follow tuning survives a save/load round trip")
+  void testFollowTuningRoundTrip() {
+    ObjectiveDataEntry entry =
+        new ObjectiveDataEntry(ObjectiveType.FOLLOW_OWNER)
+            .setStopDistance(3.5F)
+            .setStartDistance(48.0F)
+            .setTeleportDistance(24.0F)
+            .setFollowOffset(new Vec3(1.5D, 2.0D, -0.5D));
+
+    ObjectiveDataEntry restored = new ObjectiveDataEntry(entry.createTag());
+    assertEquals(3.5F, restored.getStopDistance());
+    assertEquals(48.0F, restored.getStartDistance());
+    assertEquals(24.0F, restored.getTeleportDistance());
+    assertEquals(new Vec3(1.5D, 2.0D, -0.5D), restored.getFollowOffset());
+  }
+
+  @Test
+  @DisplayName("Following has no distance limit and no follow offset by default")
+  void testFollowDefaults() {
+    ObjectiveDataEntry entry = new ObjectiveDataEntry(ObjectiveType.FOLLOW_OWNER);
+
+    assertEquals(0.0F, entry.getStartDistance());
+    assertEquals(12.0F, entry.getTeleportDistance());
+    assertEquals(Vec3.ZERO, entry.getFollowOffset());
+    assertFalse(entry.createTag().contains(ObjectiveDataEntry.DATA_FOLLOW_OFFSET_TAG));
+  }
+
+  @Test
+  @DisplayName("Negative distances are rejected instead of silently breaking the goal")
+  void testNegativeValuesAreClamped() {
+    ObjectiveDataEntry entry =
+        new ObjectiveDataEntry(ObjectiveType.FOLLOW_OWNER)
+            .setStopDistance(-5.0F)
+            .setTeleportDistance(-1.0F)
+            .setProbability(2.5F);
+
+    assertEquals(0.0F, entry.getStopDistance());
+    assertEquals(0.0F, entry.getTeleportDistance());
+    assertEquals(1.0F, entry.getProbability());
+  }
+
+  @Test
+  @DisplayName("Built-in objectives always use the priority of their type")
+  void testBuiltInObjectivesIgnoreStoredPriority() {
+    ObjectiveDataEntry entry = new ObjectiveDataEntry(ObjectiveType.MOVE_BACK_TO_HOME);
+    entry.setPriority(3);
+
+    assertEquals(ObjectiveType.MOVE_BACK_TO_HOME.getDefaultPriority(), entry.getPriority());
+    assertEquals(
+        ObjectiveType.MOVE_BACK_TO_HOME.getDefaultPriority(),
+        new ObjectiveDataEntry(entry.createTag()).getPriority());
+  }
+
+  @Test
+  @DisplayName("Custom objectives keep the priority contributed by their mod")
+  void testCustomObjectivePriorityIsClamped() {
+    ObjectiveDataEntry entry =
+        new ObjectiveDataEntry(ResourceLocation.fromNamespaceAndPath("example", "objective"))
+            .setPriority(-3);
+
+    assertEquals(0, entry.getPriority());
+  }
+
+  @Test
+  @DisplayName("Tempt options survive a save/load round trip")
+  void testTemptOptionsRoundTrip() {
+    ObjectiveDataEntry entry = new ObjectiveDataEntry(ObjectiveType.FOLLOW_ITEM);
+    entry.setTargetItemTag("#minecraft:flowers");
+    entry.setCanScare(true).setOnlyWithoutOwner(true);
+
+    ObjectiveDataEntry restored = new ObjectiveDataEntry(entry.createTag());
+    assertEquals("#minecraft:flowers", restored.getTargetItemTag());
+    assertTrue(restored.getCanScare());
+    assertTrue(restored.getOnlyWithoutOwner());
+  }
+
+  @Test
+  @DisplayName("The looked at item survives a save/load round trip")
+  void testLookAtItemRoundTrip() {
+    ObjectiveDataEntry entry = new ObjectiveDataEntry(ObjectiveType.LOOK_AT_ITEM);
+    entry.setTargetItemTag("minecraft:apple");
+
+    ObjectiveDataEntry restored = new ObjectiveDataEntry(entry.createTag());
+    assertEquals(ObjectiveType.LOOK_AT_ITEM, restored.getType());
+    assertEquals("minecraft:apple", restored.getTargetItemTag());
+    assertEquals(ObjectiveType.LOOK_AT_ITEM.getDefaultPriority(), restored.getPriority());
+    assertFalse(restored.hasTravelObjective());
+  }
+
+  @Test
+  @DisplayName("A changed value drops the cached goal so it gets rebuilt")
+  void testSetterInvalidatesRegistration() {
+    ObjectiveDataEntry entry = new ObjectiveDataEntry(ObjectiveType.FOLLOW_OWNER);
+    entry.setRegistered(true);
+
+    entry.setStopDistance(4.0F);
+    assertFalse(entry.isRegistered());
+  }
+
+  @Test
+  @DisplayName("An objective type from a currently absent mod survives a save/load round trip")
+  void testUnresolvedTypeSurvivesRoundTrip() {
+    CompoundTag storedTag = new CompoundTag();
+    storedTag.putString(ObjectiveDataEntry.DATA_TYPE_TAG, "othermod:hover_follow");
+    storedTag.putInt(ObjectiveDataEntry.DATA_PRIORITY_TAG, 7);
+
+    ObjectiveDataEntry entry = new ObjectiveDataEntry(storedTag);
+    assertEquals(ObjectiveType.NONE, entry.getType());
+    assertTrue(entry.hasUnresolvedType());
+    assertEquals("othermod:hover_follow", entry.getTypeName());
+    assertEquals("othermod:hover_follow", entry.getId());
+
+    CompoundTag savedTag = entry.createTag();
+    assertEquals("othermod:hover_follow", savedTag.getString(ObjectiveDataEntry.DATA_TYPE_TAG));
+    assertEquals(7, savedTag.getInt(ObjectiveDataEntry.DATA_PRIORITY_TAG));
+  }
+
+  @Test
+  @DisplayName("An explicit NONE type is not mistaken for an unresolved type")
+  void testExplicitNoneTypeIsNotUnresolved() {
+    CompoundTag storedTag = new CompoundTag();
+    storedTag.putString(ObjectiveDataEntry.DATA_TYPE_TAG, ObjectiveType.NONE.name());
+
+    ObjectiveDataEntry entry = new ObjectiveDataEntry(storedTag);
+    assertEquals(ObjectiveType.NONE, entry.getType());
+    assertFalse(entry.hasUnresolvedType());
+  }
+
+  @Test
+  @DisplayName("A lower case type name still resolves to its objective type")
+  void testTypeLookupIsCaseInsensitive() {
+    CompoundTag storedTag = new CompoundTag();
+    storedTag.putString(ObjectiveDataEntry.DATA_TYPE_TAG, "follow_owner");
+
+    ObjectiveDataEntry entry = new ObjectiveDataEntry(storedTag);
+    assertEquals(ObjectiveType.FOLLOW_OWNER, entry.getType());
+    assertFalse(entry.hasUnresolvedType());
   }
 }

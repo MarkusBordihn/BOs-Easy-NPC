@@ -42,6 +42,7 @@ public class RandomStrollAroundHomeGoal<T extends EasyNPC<?>> extends Goal {
   private final PathfinderMob pathfinderMob;
   private final double speedModifier;
   private final int interval;
+  private Vec3 wantedPosition;
 
   public RandomStrollAroundHomeGoal(T easyNPCEntity, double speedModifier) {
     this.navigationData = easyNPCEntity.getEasyNPCNavigationData();
@@ -61,11 +62,8 @@ public class RandomStrollAroundHomeGoal<T extends EasyNPC<?>> extends Goal {
     }
 
     if (this.pathfinderMob != null) {
-      Vec3 vec3 = this.getPosition();
-      if (vec3 == null) {
-        return false;
-      }
-      return this.pathfinderMob.getNavigation().moveTo(vec3.x, vec3.y, vec3.z, this.speedModifier);
+      this.wantedPosition = this.getPosition();
+      return this.wantedPosition != null;
     }
 
     MoveControl moveControl = this.mob.getMoveControl();
@@ -91,7 +89,15 @@ public class RandomStrollAroundHomeGoal<T extends EasyNPC<?>> extends Goal {
 
   @Override
   public void start() {
-    if (this.pathfinderMob == null) {
+    if (this.pathfinderMob != null && this.wantedPosition != null) {
+      this.pathfinderMob
+          .getNavigation()
+          .moveTo(
+              this.wantedPosition.x,
+              this.wantedPosition.y,
+              this.wantedPosition.z,
+              this.speedModifier);
+    } else if (this.pathfinderMob == null) {
       BlockPos homePos = this.navigationData.getHomePosition();
       RandomSource random = this.mob.getRandom();
 
