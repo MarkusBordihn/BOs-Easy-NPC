@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:function",
+  "function": "easy_npc:spawned_n_p_c_has_home_position",
+  "environment": "minecraft:default",
+  "structure": "easy_npc:gametest.3x3x3",
+  "max_ticks": 100
+}

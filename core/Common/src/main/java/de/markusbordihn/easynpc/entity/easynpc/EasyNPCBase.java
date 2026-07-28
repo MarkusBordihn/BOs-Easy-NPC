@@ -114,8 +114,8 @@ public interface EasyNPCBase<E extends Mob>
 
     // Set default navigation data.
     NavigationDataCapable<?> navigationData = getEasyNPCNavigationData();
-    if (navigationData != null && !navigationData.hasHomePosition()) {
-      navigationData.setHomePosition(this.getEntity().blockPosition());
+    if (navigationData != null) {
+      navigationData.applyDefaultNPCHomePosition();
     }
 
     // Skip next steps if NPC was already finalized.
@@ -211,6 +211,9 @@ public interface EasyNPCBase<E extends Mob>
     if (!this.isServerSideInstance()) {
       return;
     }
+
+    this.getMob().setPersistenceRequired();
+
     ServerDataCapable<E> serverData = getEasyNPCServerData();
     if (serverData == null) {
       log.error("No server data available for {}", this.getEntityUUID());

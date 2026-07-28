@@ -29,7 +29,6 @@ public enum SkinType {
   INSECURE_REMOTE_URL,
   NONE,
   PLAYER_SKIN,
-  SERVER_SKIN,
   SECURE_REMOTE_URL;
 
   public static final StreamCodec<RegistryFriendlyByteBuf, SkinType> STREAM_CODEC =

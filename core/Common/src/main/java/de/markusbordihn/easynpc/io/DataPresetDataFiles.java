@@ -22,6 +22,8 @@ package de.markusbordihn.easynpc.io;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.preset.PresetMetadata;
 import java.io.InputStream;
+import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
@@ -33,23 +35,55 @@ public class DataPresetDataFiles {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
+  private static final long REFRESH_COOLDOWN_MS = 5000;
+  private static List<Identifier> cachedUsablePresets;
+  private static long lastAccessRefreshTime = 0;
+
   private DataPresetDataFiles() {}
 
   public static Stream<Identifier> getPresetIdentifiers(MinecraftServer minecraftServer) {
     try {
-      return minecraftServer
-          .getResourceManager()
-          .listResources(
+      return Stream.concat(
+          listPresets(
+              minecraftServer,
+              DataFileHandler.RESOURCE_NAMESPACED_PRESET_PATH,
+              DataFileHandler::isPresetFile),
+          listPresets(
+              minecraftServer,
               DataFileHandler.RESOURCE_PRESET_PATH,
               resourceLocation ->
                   resourceLocation.getNamespace().equals(Constants.MOD_ID)
-                      && DataFileHandler.isPresetFile(resourceLocation))
-          .keySet()
-          .stream();
+                      && DataFileHandler.isPresetFile(resourceLocation)));
     } catch (Exception e) {
-      log.error("Could not get default preset resource locations:", e);
+      log.error("Could not get data preset resource locations:", e);
     }
     return Stream.empty();
+  }
+
+  private static Stream<Identifier> listPresets(
+      MinecraftServer minecraftServer, String resourcePath, Predicate<Identifier> filter) {
+    return minecraftServer
+        .getResourceManager()
+        .listResources(resourcePath, filter)
+        .keySet()
+        .stream();
+  }
+
+  public static Stream<Identifier> getUsablePresetIdentifiers(MinecraftServer minecraftServer) {
+    long currentTime = System.currentTimeMillis();
+    if (cachedUsablePresets == null || currentTime - lastAccessRefreshTime >= REFRESH_COOLDOWN_MS) {
+      cachedUsablePresets =
+          getPresetIdentifiers(minecraftServer)
+              .filter(
+                  resourceLocation ->
+                      getPresetMetadata(minecraftServer, resourceLocation)
+                          .access()
+                          .isUsableByCommand())
+              .toList();
+      lastAccessRefreshTime = currentTime;
+    }
+
+    return cachedUsablePresets.stream();
   }
 
   public static PresetMetadata getPresetMetadata(

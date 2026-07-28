@@ -32,3 +32,9 @@ jobs:
 
       - name: Run Core Unit Tests
         run: ./gradlew -p core :Common:test --no-daemon
+
+      - name: Build Core and Publish to Maven Local
+        run: ./gradlew -p core :Common:build publishToMavenLocal --no-daemon
+
+      - name: Run Config UI Unit Tests
+        run: ./gradlew -p config-ui :Common:test --no-daemon

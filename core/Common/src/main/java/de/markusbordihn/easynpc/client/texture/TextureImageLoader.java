@@ -52,12 +52,57 @@ public class TextureImageLoader {
       return null;
     }
 
-    if (legacySupport && nativeImage.getWidth() == 64 && nativeImage.getHeight() == 32) {
-      log.info("{} Processing legacy image {} from 64x32 to 64x64 ...", LOG_PREFIX, nativeImage);
-      nativeImage = getNativeImageFromLegacyImage(nativeImage);
+    return legacySupport ? processPlayerSkin(nativeImage) : nativeImage;
+  }
+
+  public static NativeImage processPlayerSkin(NativeImage nativeImage) {
+    if (nativeImage.getWidth() != 64) {
+      return nativeImage;
     }
 
+    if (nativeImage.getHeight() == 32) {
+      log.info("{} Processing legacy image {} from 64x32 to 64x64 ...", LOG_PREFIX, nativeImage);
+      return getNativeImageFromLegacyImage(nativeImage);
+    }
+
+    if (nativeImage.getHeight() == 64) {
+      applySkinAlphaCorrections(nativeImage, false);
+    }
     return nativeImage;
+  }
+
+  private static void applySkinAlphaCorrections(NativeImage nativeImage, boolean convertedLegacy) {
+    setNoAlpha(nativeImage, 0, 0, 32, 16);
+    if (convertedLegacy) {
+      removeOpaqueTransparency(nativeImage, 32, 0, 64, 32);
+    }
+    setNoAlpha(nativeImage, 0, 16, 64, 32);
+    setNoAlpha(nativeImage, 16, 48, 48, 64);
+  }
+
+  private static void setNoAlpha(NativeImage nativeImage, int fromX, int fromY, int toX, int toY) {
+    for (int x = fromX; x < toX; x++) {
+      for (int y = fromY; y < toY; y++) {
+        nativeImage.setPixel(x, y, nativeImage.getPixel(x, y) | 0xFF000000);
+      }
+    }
+  }
+
+  private static void removeOpaqueTransparency(
+      NativeImage nativeImage, int fromX, int fromY, int toX, int toY) {
+    for (int x = fromX; x < toX; x++) {
+      for (int y = fromY; y < toY; y++) {
+        if ((nativeImage.getPixel(x, y) >> 24 & 0xFF) < 128) {
+          return;
+        }
+      }
+    }
+
+    for (int x = fromX; x < toX; x++) {
+      for (int y = fromY; y < toY; y++) {
+        nativeImage.setPixel(x, y, nativeImage.getPixel(x, y) & 0xFFFFFF);
+      }
+    }
   }
 
   public static NativeImage getNativeImageFromLegacyImage(NativeImage legacyNativeImage) {
@@ -77,6 +122,7 @@ public class TextureImageLoader {
     nativeImage.copyRect(44, 20, -8, 32, 4, 12, true, false);
     nativeImage.copyRect(48, 20, -16, 32, 4, 12, true, false);
     nativeImage.copyRect(52, 20, -8, 32, 4, 12, true, false);
+    applySkinAlphaCorrections(nativeImage, true);
     return nativeImage;
   }
 }

@@ -55,6 +55,9 @@ public interface EasyNPC<E extends Mob> extends EasyNPCDataAccessors<E>, Npc {
 
   Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
+  Identifier DEFAULT_CUSTOM_NPC_IDENTIFIER =
+      Identifier.fromNamespaceAndPath(Constants.MOD_ID, "general");
+
   Random randomNumber = new Random();
 
   int getNPCDataVersion();
@@ -128,77 +131,48 @@ public interface EasyNPC<E extends Mob> extends EasyNPCDataAccessors<E>, Npc {
   }
 
   default Identifier getCustomNPCIdentifier() {
-    return Identifier.fromNamespaceAndPath(Constants.MOD_ID, "general");
+    if (this.getEasyNPCPresetData() != null) {
+      Identifier customIdentifier = this.getEasyNPCPresetData().getCustomIdentifier();
+      if (customIdentifier != null) {
+        return customIdentifier;
+      }
+    }
+
+    return DEFAULT_CUSTOM_NPC_IDENTIFIER;
   }
 
   default CrossbowAttackMob getCrossbowAttackMob() {
     return EasyNPCEntityAccess.getCrossbowAttackMob(this);
   }
 
-  /**
-   * Handle the event when a player joins.
-   *
-   * @param serverPlayer The server player that is joining.
-   */
   default void handlePlayerJoinEvent(ServerPlayer serverPlayer) {
     EasyNPCEventHandler.handlePlayerJoinEvent(this, serverPlayer);
   }
 
-  /**
-   * Handle the event when a player leaves.
-   *
-   * @param serverPlayer The server player that is leaving.
-   */
   default void handlePlayerLeaveEvent(ServerPlayer serverPlayer) {
     EasyNPCEventHandler.handlePlayerLeaveEvent(this, serverPlayer);
   }
 
-  /**
-   * Handle the event when a living entity joins.
-   *
-   * @param livingEntity The living entity that is joining.
-   */
   default void handleLivingEntityJoinEvent(LivingEntity livingEntity) {
     EasyNPCEventHandler.handleLivingEntityJoinEvent(this, livingEntity);
   }
 
-  /**
-   * Handle the event when a living entity leaves.
-   *
-   * @param livingEntity The living entity that is leaving.
-   */
   default void handleLivingEntityLeaveEvent(LivingEntity livingEntity) {
     EasyNPCEventHandler.handleLivingEntityLeaveEvent(this, livingEntity);
   }
 
-  /**
-   * Handle the event when the EasyNPC is joining.
-   *
-   * @param entity The EasyNPC entity that is joining.
-   */
   default void handleEasyNPCJoinEvent(EasyNPC<?> entity) {
     EasyNPCEventHandler.handleEasyNPCJoinEvent(this, entity);
   }
 
-  /**
-   * Handle the event when the EasyNPC is leaving.
-   *
-   * @param entity The EasyNPC that is leaving.
-   */
   default void handleEasyNPCLeaveEvent(EasyNPC<?> entity) {
     EasyNPCEventHandler.handleEasyNPCLeaveEvent(this, entity);
   }
 
-  /**
-   * Handle the event when the EasyNPC is dying.
-   *
-   * @param damageSource The source of the damage.
-   */
   default void handleDieEvent(DamageSource damageSource) {
     EasyNPCEventHandler.handleDieEvent(this, damageSource);
   }
 
-  /** Handle the event when the EasyNPC is killed over command or admin action. */
   default void handleKillEvent() {
     EasyNPCEventHandler.handleKillEvent(this);
   }
@@ -212,12 +186,6 @@ public interface EasyNPC<E extends Mob> extends EasyNPCDataAccessors<E>, Npc {
     EasyNPCEventHandler.handleChangeDimensionEvent(this, TeleportTransition);
   }
 
-  /**
-   * Handle the event when the EasyNPC is hurt.
-   *
-   * @param damageSource The source of the damage.
-   * @param damage The amount of damage taken.
-   */
   default void handleHurtEvent(DamageSource damageSource, float damage) {
     EasyNPCEventHandler.handleHurtEvent(this, damageSource, damage);
   }
@@ -232,12 +200,6 @@ public interface EasyNPC<E extends Mob> extends EasyNPCDataAccessors<E>, Npc {
   <T> void defineSynchedEntityData(
       SynchedEntityData.Builder builder, SynchedDataIndex synchedDataIndex, T defaultData);
 
-  /**
-   * Set the synched entity data for the EasyNPC.
-   *
-   * @param synchedDataIndex The index of the synched data.
-   * @param data The data to set.
-   */
   default <T> void setSynchedEntityData(SynchedDataIndex synchedDataIndex, T data) {
     if (synchedDataIndex.persistent) {
       StatusDataCapable<?> statusData = getEasyNPCStatusData();
@@ -248,33 +210,11 @@ public interface EasyNPC<E extends Mob> extends EasyNPCDataAccessors<E>, Npc {
     setSynchedEntityData(synchedDataIndex, data, false);
   }
 
-  /**
-   * Set the synched entity data for the EasyNPC.
-   *
-   * @param synchedDataIndex The index of the synched data.
-   * @param data The data to set.
-   */
   <T> void setSynchedEntityData(SynchedDataIndex synchedDataIndex, T data, boolean forceUpdate);
 
-  /**
-   * Get the synched entity data for the EasyNPC.
-   *
-   * @param synchedDataIndex The index of the synched data.
-   * @return The data at the specified index.
-   */
   <T> T getSynchedEntityData(SynchedDataIndex synchedDataIndex);
 
-  /**
-   * Get the entity goal selector for the EasyNPC.
-   *
-   * @return The entity goal selector.
-   */
   GoalSelector getEntityGoalSelector();
 
-  /**
-   * Get the entity target selector for the EasyNPC.
-   *
-   * @return The entity target selector.
-   */
   GoalSelector getEntityTargetSelector();
 }

@@ -49,6 +49,7 @@ public class PresetListEntry extends ObjectSelectionList.Entry<PresetListEntry> 
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private static final int PREVIEW_BOX_SIZE = 24;
+  private static final String OWN_NAMESPACE = de.markusbordihn.easynpc.Constants.MOD_ID;
 
   private final Identifier preset;
   private final PresetMetadata metadata;
@@ -72,7 +73,6 @@ public class PresetListEntry extends ObjectSelectionList.Entry<PresetListEntry> 
 
   private void loadPresetData() {
     try {
-      // LOCAL presets can be loaded directly from client files
       if (this.presetType == PresetType.LOCAL) {
         this.presetData = LocalPresetDataFiles.loadPresetData(this.preset);
 
@@ -85,7 +85,6 @@ public class PresetListEntry extends ObjectSelectionList.Entry<PresetListEntry> 
         return;
       }
 
-      // DEFAULT presets can be loaded directly from client JAR
       if (this.presetType == PresetType.DEFAULT) {
         this.presetData = ClientDefaultPresetDataFiles.loadDefaultPresetData(this.preset);
 
@@ -98,7 +97,6 @@ public class PresetListEntry extends ObjectSelectionList.Entry<PresetListEntry> 
         return;
       }
 
-      // For other preset types (CUSTOM, DATA, WORLD), try to get server instance
       MinecraftServer server = Minecraft.getInstance().getSingleplayerServer();
 
       if (server != null) {
@@ -249,10 +247,15 @@ public class PresetListEntry extends ObjectSelectionList.Entry<PresetListEntry> 
         scaledY + lineHeight,
         0x3F3F3F);
 
+    String versionLine = this.metadata.version();
+    if (!OWN_NAMESPACE.equals(this.preset.getNamespace())) {
+      versionLine = versionLine + "  @" + this.preset.getNamespace();
+    }
+
     Text.drawString(
         guiGraphics,
         this.screen.getFont(),
-        this.metadata.version(),
+        versionLine,
         scaledX,
         scaledY + lineHeight * 2,
         0x3F3F3F);

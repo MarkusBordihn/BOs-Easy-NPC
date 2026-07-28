@@ -42,7 +42,7 @@ public class ModelPoseAPI {
   private ModelPoseAPI() {}
 
   /**
-   * Sets a named pose on the NPC by its full ResourceLocation (e.g.
+   * Sets a named pose on the NPC by its full Identifier (e.g.
    * "easy_npc:pose/humanoid_slim/sitting").
    *
    * @return true if the pose was successfully applied
@@ -52,7 +52,7 @@ public class ModelPoseAPI {
   }
 
   /**
-   * Sets a named pose on the NPC by short name (e.g. "sitting"). Resolves the full ResourceLocation
+   * Sets a named pose on the NPC by short name (e.g. "sitting"). Resolves the full Identifier
    * against the NPC's SkinModel automatically.
    *
    * @return true if the pose was successfully applied
@@ -98,7 +98,7 @@ public class ModelPoseAPI {
     PoseManager.resetModelPose(npc);
   }
 
-  /** Returns the current named pose ResourceLocation string, or empty if no named pose is set. */
+  /** Returns the current named pose Identifier string, or empty if no named pose is set. */
   public static String getCurrentPoseName(EasyNPC<?> npc) {
     if (npc == null) {
       return "";

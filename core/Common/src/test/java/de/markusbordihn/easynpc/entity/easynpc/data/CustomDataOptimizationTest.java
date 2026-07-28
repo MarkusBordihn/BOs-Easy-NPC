@@ -117,7 +117,7 @@ class CustomDataOptimizationTest {
         TagValueInput.create(ProblemReporter.DISCARDING, RegistryAccess.EMPTY, savedTag);
     target.readAdditionalNavigationData(valueInput);
 
-    assertFalse(target.hasHomePosition());
+    assertFalse(target.hasNPCHomePosition());
   }
 
   @Test

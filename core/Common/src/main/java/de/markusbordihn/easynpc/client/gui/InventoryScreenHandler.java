@@ -114,6 +114,14 @@ public class InventoryScreenHandler {
       int top,
       int right,
       int bottom) {
+    renderState.lightCoords = FULL_BRIGHT;
+
+    // Vanilla sanitizes the render state before rendering it inside a screen, otherwise a glowing
+    // entity (e.g. from the NPC wand) is drawn as a white silhouette, because the outline batch is
+    // only ever flushed by the level renderer.
+    renderState.outlineColor = EntityRenderState.NO_OUTLINE;
+    renderState.shadowPieces.clear();
+
     guiGraphics.entity(
         renderState, (float) size, translation, rotation, entityRotation, left, top, right, bottom);
   }

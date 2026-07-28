@@ -27,6 +27,7 @@ import de.markusbordihn.easynpc.component.ModDataComponents;
 import de.markusbordihn.easynpc.config.Config;
 import de.markusbordihn.easynpc.debug.DebugManager;
 import de.markusbordihn.easynpc.entity.ModEntityType;
+import de.markusbordihn.easynpc.gametest.ModGameTests;
 import de.markusbordihn.easynpc.io.DataFileHandler;
 import de.markusbordihn.easynpc.item.ModItems;
 import de.markusbordihn.easynpc.menu.MenuHandler;
@@ -99,6 +100,9 @@ public class EasyNPCMain {
 
     log.info("{} Mod Data Components ...", Constants.LOG_REGISTER_PREFIX);
     ModDataComponents.DATA_COMPONENTS.register(modEventBus);
+
+    log.info("{} Game Test Functions ...", Constants.LOG_REGISTER_PREFIX);
+    ModGameTests.register(modEventBus);
 
     log.info("{} Network Handler ...", Constants.LOG_REGISTER_PREFIX);
     modEventBus.addListener(

@@ -63,7 +63,8 @@ public class EasyModelNPC extends PathfinderMobRaw {
         .add(Attributes.ATTACK_KNOCKBACK, 0.0D)
         .add(Attributes.ATTACK_SPEED, 0.0D)
         .add(Attributes.ARMOR, 0.0D)
-        .add(Attributes.ARMOR_TOUGHNESS, 0.0D);
+        .add(Attributes.ARMOR_TOUGHNESS, 0.0D)
+        .add(Attributes.TEMPT_RANGE, 10.0D);
   }
 
   public Identifier getEasyModelProfileId() {

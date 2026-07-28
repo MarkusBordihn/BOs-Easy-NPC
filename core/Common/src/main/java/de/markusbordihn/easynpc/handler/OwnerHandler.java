@@ -22,10 +22,14 @@ package de.markusbordihn.easynpc.handler;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataEntry;
 import de.markusbordihn.easynpc.data.objective.ObjectiveType;
-import de.markusbordihn.easynpc.data.saveddata.NPCEntityData;
+import de.markusbordihn.easynpc.entity.NPCEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ObjectiveDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.OwnerDataCapable;
+import java.util.EnumSet;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
 import net.minecraft.world.entity.LivingEntity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -33,6 +37,9 @@ import org.apache.logging.log4j.Logger;
 public class OwnerHandler {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+
+  private static final Set<ObjectiveType> OWNER_OBJECTIVE_TYPES =
+      EnumSet.of(ObjectiveType.FOLLOW_OWNER, ObjectiveType.LOOK_AT_OWNER);
 
   private OwnerHandler() {}
 
@@ -54,30 +61,48 @@ public class OwnerHandler {
     }
 
     log.debug("[{}] Setting owner to {}", easyNPC, owner);
-    ownerData.setNPCOwnerUUID(owner.getUUID());
-    NPCEntityData.get().updateOwner(easyNPC, owner);
-
-    // Update objective data if follow owner objective is active.
-    ObjectiveDataCapable<?> objectiveData = easyNPC.getEasyNPCObjectiveData();
-    if (objectiveData != null && objectiveData.hasObjective(ObjectiveType.FOLLOW_OWNER)) {
-      ObjectiveDataEntry objectiveDataEntry =
-          objectiveData.getObjective(ObjectiveType.FOLLOW_OWNER);
-      if (objectiveDataEntry.getTargetOwnerUUID() == null
-          || objectiveDataEntry.getTargetOwnerUUID() != owner.getUUID()) {
-        log.debug("[{}] Update follow owner objective to {}", easyNPC, owner);
-        objectiveDataEntry.setTargetOwnerUUID(owner.getUUID());
-        objectiveData.removeObjective(ObjectiveType.FOLLOW_OWNER);
-        objectiveData.addObjective(objectiveDataEntry);
-      }
+    if (!NPCEntityManager.updateOwner(easyNPC, owner)) {
+      log.error("[{}] Unable to update the owner index for {}!", easyNPC, owner);
+      return false;
     }
 
+    ownerData.setNPCOwnerUUID(owner.getUUID());
+    rebuildOwnerObjectives(easyNPC, owner.getUUID());
     return true;
   }
 
+  private static void rebuildOwnerObjectives(EasyNPC<?> easyNPC, UUID ownerUUID) {
+    ObjectiveDataCapable<?> objectiveData = easyNPC.getEasyNPCObjectiveData();
+    if (objectiveData == null) {
+      return;
+    }
+
+    for (ObjectiveType objectiveType : OWNER_OBJECTIVE_TYPES) {
+      ObjectiveDataEntry objectiveDataEntry = objectiveData.getObjective(objectiveType);
+      if (objectiveDataEntry == null) {
+        continue;
+      }
+
+      if (ownerUUID != null
+          && objectiveDataEntry.getTargetOwnerUUID() != null
+          && !Objects.equals(objectiveDataEntry.getTargetOwnerUUID(), ownerUUID)) {
+        log.debug("[{}] Update {} objective to {}", easyNPC, objectiveType, ownerUUID);
+        objectiveDataEntry.setTargetOwnerUUID(ownerUUID);
+      }
+
+      objectiveData.rebuildCustomObjective(objectiveDataEntry);
+    }
+  }
+
   public static boolean removeOwner(EasyNPC<?> easyNPC) {
+    if (easyNPC == null) {
+      log.error("Error removing owner from a non-existing NPC!");
+      return false;
+    }
+
     OwnerDataCapable<?> ownerData = easyNPC.getEasyNPCOwnerData();
     if (ownerData == null) {
-      log.error("[{}] No owner data available for setting owner!", easyNPC);
+      log.error("[{}] No owner data available for removing owner!", easyNPC);
       return false;
     }
 
@@ -87,8 +112,13 @@ public class OwnerHandler {
     }
 
     log.debug("[{}] Removing owner ...", easyNPC);
+    if (!NPCEntityManager.updateOwner(easyNPC, null)) {
+      log.error("[{}] Unable to update the owner index!", easyNPC);
+      return false;
+    }
+
     ownerData.setNPCOwner(null);
-    NPCEntityData.get().updateOwner(easyNPC, null);
+    rebuildOwnerObjectives(easyNPC, null);
     return true;
   }
 }

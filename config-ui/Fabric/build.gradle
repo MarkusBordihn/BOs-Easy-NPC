@@ -71,11 +71,11 @@ dependencies {
   testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.1'
   testImplementation 'org.junit.jupiter:junit-jupiter-params:5.10.1'
 
-  // Additional helpful Mods for development (runtime dependency)
-  if (project.hasProperty('fabric_jei_mod') && project.fabric_jei_mod) {
+  // Additional helpful Mods for development (runtime dependency, skipped for game tests)
+  if (!isGameTestRun && project.hasProperty('fabric_jei_mod') && project.fabric_jei_mod) {
     modRuntimeOnly("curse.maven:jei-238222:${project.fabric_jei_mod}")
   }
-  if (project.hasProperty('fabric_xaeros_minimap_mod') && project.fabric_xaeros_minimap_mod) {
+  if (!isGameTestRun && project.hasProperty('fabric_xaeros_minimap_mod') && project.fabric_xaeros_minimap_mod) {
     modRuntimeOnly("curse.maven:xaeros_minimap-263420:${project.fabric_xaeros_minimap_mod}")
   }
 

@@ -23,6 +23,8 @@ import com.mojang.blaze3d.platform.NativeImage;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.UUID;
 import net.minecraft.resources.Identifier;
@@ -34,6 +36,7 @@ public class TextureCacheManager {
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private static final String LOG_PREFIX = "[Texture Cache Manager]";
   private static final String FILE_EXTENSION_PNG = ".png";
+  private static final String FILE_EXTENSION_SOURCE = ".source";
 
   private TextureCacheManager() {}
 
@@ -170,5 +173,62 @@ public class TextureCacheManager {
   private static File getCachedTextureFile(TextureModelKey textureModelKey, Path targetDirectory) {
     String fileName = String.format("%s.png", textureModelKey.getUUID());
     return targetDirectory.resolve(fileName).toFile();
+  }
+
+  private static File getCachedTextureSourceFile(
+      TextureModelKey textureModelKey, Path targetDirectory) {
+    String fileName = String.format("%s%s", textureModelKey.getUUID(), FILE_EXTENSION_SOURCE);
+    return targetDirectory.resolve(fileName).toFile();
+  }
+
+  public static String getCachedTextureSource(
+      TextureModelKey textureModelKey, Path targetDirectory) {
+    File file = getCachedTextureSourceFile(textureModelKey, targetDirectory);
+    if (!file.exists()) {
+      return null;
+    }
+
+    try {
+      return Files.readString(file.toPath()).trim();
+    } catch (IOException e) {
+      log.warn(
+          "{} Unable to read texture source for {}: {}",
+          LOG_PREFIX,
+          textureModelKey,
+          e.getMessage());
+      return null;
+    }
+  }
+
+  public static void setCachedTextureSource(
+      TextureModelKey textureModelKey, Path targetDirectory, String textureSource) {
+    if (textureSource == null || textureSource.isEmpty()) {
+      return;
+    }
+
+    try {
+      Files.writeString(
+          getCachedTextureSourceFile(textureModelKey, targetDirectory).toPath(), textureSource);
+    } catch (IOException e) {
+      log.warn(
+          "{} Unable to store texture source for {}: {}",
+          LOG_PREFIX,
+          textureModelKey,
+          e.getMessage());
+    }
+  }
+
+  public static boolean removeCachedTexture(TextureModelKey textureModelKey, Path targetDirectory) {
+    try {
+      Files.deleteIfExists(getCachedTextureSourceFile(textureModelKey, targetDirectory).toPath());
+      return Files.deleteIfExists(getCachedTextureFile(textureModelKey, targetDirectory).toPath());
+    } catch (IOException e) {
+      log.error(
+          "{} Unable to remove cached texture for {}: {}",
+          LOG_PREFIX,
+          textureModelKey,
+          e.getMessage());
+      return false;
+    }
   }
 }
