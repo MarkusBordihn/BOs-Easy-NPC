@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.handler;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.data.preset.PresetAccess;
 import de.markusbordihn.easynpc.data.preset.PresetData;
 import de.markusbordihn.easynpc.data.preset.PresetExportFormat;
 import de.markusbordihn.easynpc.data.preset.PresetMetadata;
@@ -46,6 +47,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.function.BiFunction;
 import net.minecraft.core.BlockPos;
@@ -101,7 +103,27 @@ public class PresetHandler {
     PresetData presetData =
         loadPresetFromSource(presetType, presetLocation, serverLevel.getServer());
     return presetData != null
+        && isAccessAllowed(presetData, actorSecurityContext)
         && importPreset(serverLevel, presetData, position, uuid, actorSecurityContext, owner);
+  }
+
+  private static boolean isAccessAllowed(
+      PresetData presetData, ActorSecurityContext actorSecurityContext) {
+    if (actorSecurityContext == null || actorSecurityContext.player() == null) {
+      return true;
+    }
+
+    PresetAccess presetAccess = presetData.metadata().access();
+    if (presetAccess.isUsableByCommand()) {
+      return true;
+    }
+
+    log.warn(
+        "Blocked {} preset {} for player {}",
+        presetAccess,
+        presetData.location(),
+        actorSecurityContext.player().getName().getString());
+    return false;
   }
 
   public static boolean importPreset(
@@ -126,18 +148,37 @@ public class PresetHandler {
       UUID uuid,
       ActorSecurityContext actorSecurityContext,
       ServerPlayer owner) {
+    return importPresetAndGetEntity(
+            serverLevel, presetData, position, uuid, actorSecurityContext, owner)
+        .isPresent();
+  }
+
+  public static Optional<EasyNPC<?>> importPresetAndGetEntity(
+      ServerLevel serverLevel,
+      PresetData presetData,
+      Vec3 position,
+      UUID uuid,
+      ActorSecurityContext actorSecurityContext,
+      ServerPlayer owner) {
     if (presetData == null || !presetData.hasValidData()) {
       log.error("[{}] Invalid preset data for import", serverLevel);
-      return false;
+      return Optional.empty();
     }
 
     PresetData updatedPresetData = presetData;
     if (position != null) {
       updatedPresetData = updatedPresetData.withPosition(position);
     }
-    if (uuid != null) {
-      updatedPresetData = updatedPresetData.withUUID(uuid);
+
+    // Exports strip the UUID, so without one the entity could be spawned but never found again.
+    UUID entityUUID = uuid;
+    if (entityUUID == null) {
+      entityUUID = CompoundTagUtils.readUUID(presetData.data(), UUID_TAG);
     }
+    if (entityUUID == null) {
+      entityUUID = UUID.randomUUID();
+    }
+    updatedPresetData = updatedPresetData.withUUID(entityUUID);
 
     PresetSanitizationResult sanitizationResult =
         SecurityManager.sanitizePresetImport(
@@ -146,7 +187,7 @@ public class PresetHandler {
             updatedPresetData.presetType(),
             uuid,
             actorSecurityContext,
-            owner);
+            owner != null ? owner.getUUID() : null);
     updatedPresetData =
         PresetData.create(
             updatedPresetData.name(),
@@ -157,22 +198,38 @@ public class PresetHandler {
             updatedPresetData.metadata());
 
     if (!importPresetData(serverLevel, updatedPresetData.data())) {
-      return false;
+      return Optional.empty();
     }
 
-    UUID finalUuid =
-        uuid != null ? uuid : CompoundTagUtils.readUUID(updatedPresetData.data(), UUID_TAG);
-    EasyNPC<?> easyNPC = LivingEntityManager.getServerEasyNPCEntityByUUID(finalUuid, serverLevel);
+    EasyNPC<?> easyNPC = LivingEntityManager.getServerEasyNPCEntityByUUID(entityUUID, serverLevel);
     if (easyNPC == null) {
-      log.error("[{}] Error importing preset, no entity found for {}", serverLevel, finalUuid);
-      return false;
+      log.error("[{}] Error importing preset, no entity found for {}", serverLevel, entityUUID);
+      return Optional.empty();
     }
 
     configureImportedEntity(easyNPC, position, owner);
     sendImportSanitizationWarnings(
         actorSecurityContext != null ? actorSecurityContext.player() : null, sanitizationResult);
 
-    return true;
+    return Optional.of(easyNPC);
+  }
+
+  public static Optional<EasyNPC<?>> importPresetAndGetEntity(
+      ServerLevel serverLevel,
+      PresetType presetType,
+      Identifier presetLocation,
+      Vec3 position,
+      UUID uuid,
+      ActorSecurityContext actorSecurityContext,
+      ServerPlayer owner) {
+    PresetData presetData =
+        loadPresetFromSource(presetType, presetLocation, serverLevel.getServer());
+    if (presetData == null || !isAccessAllowed(presetData, actorSecurityContext)) {
+      return Optional.empty();
+    }
+
+    return importPresetAndGetEntity(
+        serverLevel, presetData, position, uuid, actorSecurityContext, owner);
   }
 
   private static void sendImportSanitizationWarnings(
@@ -219,16 +276,26 @@ public class PresetHandler {
     if (position != null) {
       NavigationDataCapable<?> navigationData = easyNPC.getEasyNPCNavigationData();
       if (navigationData != null && !easyNPC.getEntity().position().equals(position)) {
-        navigationData.setHomePosition(
+        navigationData.setNPCHomePosition(
             new BlockPos((int) position.x, (int) position.y, (int) position.z));
       }
     }
   }
 
   public static boolean importPreset(ServerLevel serverLevel, CompoundTag compoundTag) {
+    return importPreset(serverLevel, compoundTag, null);
+  }
+
+  public static boolean importPreset(
+      ServerLevel serverLevel, CompoundTag compoundTag, UUID ownerUUID) {
     PresetSanitizationResult sanitizationResult =
         SecurityManager.sanitizePresetImport(
-            serverLevel, compoundTag, null, null, CommandSecurity.getServerActorContext(), null);
+            serverLevel,
+            compoundTag,
+            null,
+            null,
+            CommandSecurity.getServerActorContext(),
+            ownerUUID);
     return importPresetData(serverLevel, sanitizationResult.sanitizedTag());
   }
 

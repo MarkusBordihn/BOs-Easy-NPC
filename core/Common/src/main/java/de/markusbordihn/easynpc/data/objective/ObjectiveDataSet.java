@@ -22,8 +22,8 @@ package de.markusbordihn.easynpc.data.objective;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
@@ -52,9 +52,9 @@ public class ObjectiveDataSet {
         }
       };
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-  private final HashMap<String, ObjectiveDataEntry> objectives = new HashMap<>();
-  private final HashSet<String> targetedPlayerSet = new HashSet<>();
-  private final HashSet<UUID> targetedEntitySet = new HashSet<>();
+  private final LinkedHashMap<String, ObjectiveDataEntry> objectives = new LinkedHashMap<>();
+  private final LinkedHashSet<String> targetedPlayerSet = new LinkedHashSet<>();
+  private final LinkedHashSet<UUID> targetedEntitySet = new LinkedHashSet<>();
   private boolean hasEntityTarget = false;
   private boolean hasObjectives = false;
   private boolean hasOwnerTarget = false;
@@ -67,8 +67,13 @@ public class ObjectiveDataSet {
     this.load(compoundTag);
   }
 
+  private static boolean isStorable(ObjectiveDataEntry objectiveDataEntry) {
+    return objectiveDataEntry.getType() != ObjectiveType.NONE
+        || objectiveDataEntry.hasUnresolvedType();
+  }
+
   public Set<ObjectiveDataEntry> getObjectives() {
-    return new HashSet<>(this.objectives.values());
+    return new LinkedHashSet<>(this.objectives.values());
   }
 
   public ObjectiveDataEntry getOrCreateObjective(ObjectiveType objectiveType) {
@@ -121,7 +126,7 @@ public class ObjectiveDataSet {
   }
 
   public void addObjective(ObjectiveDataEntry objectiveDataEntry) {
-    if (objectiveDataEntry == null || objectiveDataEntry.getType() == ObjectiveType.NONE) {
+    if (objectiveDataEntry == null || !isStorable(objectiveDataEntry)) {
       return;
     }
     this.objectives.put(objectiveDataEntry.getId(), objectiveDataEntry);
@@ -188,7 +193,6 @@ public class ObjectiveDataSet {
   }
 
   private void updateTargetFlags() {
-    // Clear existing target sets
     this.targetedPlayerSet.clear();
     this.targetedEntitySet.clear();
 
@@ -201,12 +205,10 @@ public class ObjectiveDataSet {
         continue;
       }
 
-      // Check if we have any travel objectives
       if (objectiveDataEntry.hasTravelObjective()) {
         hasTravelObjectives = true;
       }
 
-      // Check if we have any object with a targeted player or entity.
       if (objectiveDataEntry.hasPlayerTarget()) {
         targetedPlayerSet.add(objectiveDataEntry.getTargetPlayerName());
         hasPlayerTargetObjective = true;
@@ -218,7 +220,6 @@ public class ObjectiveDataSet {
       }
     }
 
-    // Update target flags
     this.hasTravelTarget = hasTravelObjectives;
     this.hasPlayerTarget = hasPlayerTargetObjective;
     this.hasEntityTarget = hasEntityTargetObjective;
@@ -231,7 +232,6 @@ public class ObjectiveDataSet {
       return;
     }
 
-    // Clear existing objectives
     this.clear();
 
     // Load objectives
@@ -246,10 +246,10 @@ public class ObjectiveDataSet {
   public CompoundTag save(CompoundTag compoundTag) {
     ListTag objectiveDataList = new ListTag();
     for (ObjectiveDataEntry objectiveDataEntry : this.objectives.values()) {
-      // Skip empty objectives
-      if (objectiveDataEntry == null || objectiveDataEntry.getType() == ObjectiveType.NONE) {
+      if (objectiveDataEntry == null || !isStorable(objectiveDataEntry)) {
         continue;
       }
+
       objectiveDataList.add(objectiveDataEntry.createTag());
     }
     compoundTag.put(DATA_OBJECTIVE_DATA_SET_TAG, objectiveDataList);

@@ -57,7 +57,8 @@ public class IronGolemBase extends IronGolemRaw implements BaseEasyNPC<IronGolem
         .add(Attributes.KNOCKBACK_RESISTANCE, 1.0D)
         .add(Attributes.MAX_HEALTH, 100.0D)
         .add(Attributes.MOVEMENT_SPEED, 0.25F)
-        .add(Attributes.SPAWN_REINFORCEMENTS_CHANCE, 0.0D);
+        .add(Attributes.SPAWN_REINFORCEMENTS_CHANCE, 0.0D)
+        .add(Attributes.TEMPT_RANGE, 10.0D);
   }
 
   @Override

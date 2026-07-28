@@ -220,6 +220,8 @@ public class NPCRawTemplate extends Zombie implements EasyNPCBase<Zombie> {
   }
 
   private final EnumMap<TickerType, Integer> tickerMap = new EnumMap<>(TickerType.class);
+  private final java.util.Map<net.minecraft.resources.Identifier, Integer> customTickerMap =
+      new java.util.HashMap<>();
   private final EnumMap<StatusDataType, Boolean> statusDataFlagMap =
       new EnumMap<>(StatusDataType.class);
   private final EnumMap<StatusDataType, Long> statusDataTimestampMap =
@@ -270,6 +272,16 @@ public class NPCRawTemplate extends Zombie implements EasyNPCBase<Zombie> {
   @Override
   public void setTicker(TickerType tickerType, int ticker) {
     this.tickerMap.put(tickerType, ticker);
+  }
+
+  @Override
+  public int getCustomTicker(net.minecraft.resources.Identifier tickerId) {
+    return this.customTickerMap.getOrDefault(tickerId, 0);
+  }
+
+  @Override
+  public void setCustomTicker(net.minecraft.resources.Identifier tickerId, int ticker) {
+    this.customTickerMap.put(tickerId, ticker);
   }
 
   @Override
@@ -633,15 +645,12 @@ public class NPCRawTemplate extends Zombie implements EasyNPCBase<Zombie> {
   public void baseTick() {
     super.baseTick();
 
-    // Early exit for client side and dead entities.
     if (this.isClientSideInstance() || !this.isAlive()) {
       return;
     }
 
-    // Handle custom objective base tick.
     this.handleCustomObjectiveBaseTick();
 
-    // Handle base tick for specific conditions.
     this.handleBaseTick();
   }
 
@@ -716,13 +725,11 @@ public class NPCRawTemplate extends Zombie implements EasyNPCBase<Zombie> {
   public EntityDimensions getDefaultDimensions(Pose pose) {
     EntityDimensions baseDimensions = super.getDefaultDimensions(pose);
 
-    // Default model scale
     CustomScale defaultScale = getDefaultModelScale();
     if (defaultScale != null && defaultScale.hasChanged()) {
       baseDimensions = baseDimensions.scale(defaultScale.x(), defaultScale.y());
     }
 
-    // Root scale
     CustomScale rootScale = getModelRootData().scale();
     if (rootScale.x() != 1.0f || rootScale.y() != 1.0f) {
       baseDimensions = baseDimensions.scale(rootScale.x(), rootScale.y());

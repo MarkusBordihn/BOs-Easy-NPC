@@ -111,11 +111,11 @@ public class ImportPresetConfigurationScreen<T extends ConfigurationMenu>
   }
 
   public String getPresetFileName(Identifier resourceLocation) {
-    this.getSkinModel();
+    String skinModelFolder = "/" + this.getSkinModel().toString().toLowerCase(Locale.ROOT) + "/";
+    String path = resourceLocation.getPath();
+    int skinModelIndex = path.lastIndexOf(skinModelFolder);
     String fileName =
-        resourceLocation
-            .getPath()
-            .replace("preset/" + getSkinModel().toString().toLowerCase(Locale.ROOT) + "/", "");
+        skinModelIndex >= 0 ? path.substring(skinModelIndex + skinModelFolder.length()) : path;
 
     return PresetExportFormat.removePresetExtension(fileName);
   }
@@ -188,7 +188,6 @@ public class ImportPresetConfigurationScreen<T extends ConfigurationMenu>
           Tooltip.create(TextComponent.getTranslatedConfigText("menu.tooltip.no_permission")));
     }
 
-    // Import button
     this.importPresetButton =
         this.addRenderableWidget(
             new ImportButton(
@@ -203,7 +202,6 @@ public class ImportPresetConfigurationScreen<T extends ConfigurationMenu>
                   }
                 }));
 
-    // Preset Selection List
     this.presetSelectionList =
         new ImportPresetConfigurationScreen<T>.ImportFileSelectionList(this.minecraft);
     this.presetSelectionList.updateSizeAndPosition(
@@ -231,7 +229,6 @@ public class ImportPresetConfigurationScreen<T extends ConfigurationMenu>
     int fileListHeight = fileListTop + 110;
     int fileListWidth = this.leftPos + 290;
 
-    // File Selection List
     guiGraphics.fill(
         this.contentLeftPos - 1,
         fileListTop - 1,
@@ -310,7 +307,6 @@ public class ImportPresetConfigurationScreen<T extends ConfigurationMenu>
         return;
       }
 
-      // Display "No presets found" message.
       Text.drawConfigStringShadow(
           guiGraphics,
           ImportPresetConfigurationScreen.this.font,
@@ -337,7 +333,6 @@ public class ImportPresetConfigurationScreen<T extends ConfigurationMenu>
 
         int y = this.getY();
 
-        // File Selection List Header
         int fileListTop = ImportPresetConfigurationScreen.this.topPos + 55;
         int fileListWidth = ImportPresetConfigurationScreen.this.leftPos + 290;
         guiGraphics.fill(
@@ -361,7 +356,6 @@ public class ImportPresetConfigurationScreen<T extends ConfigurationMenu>
             fileListTop,
             Constants.FONT_COLOR_WHITE);
 
-        // Display file name.
         Text.drawStringShadow(
             guiGraphics,
             ImportPresetConfigurationScreen.this.font,
@@ -386,7 +380,6 @@ public class ImportPresetConfigurationScreen<T extends ConfigurationMenu>
         ImportPresetConfigurationScreen.ImportFileSelectionList.this.setSelected(this);
         Screen.log.debug("Selected file {}.", this.resourceLocation);
 
-        // Set selected preset.
         ImportPresetConfigurationScreen.updateSelectedPreset(this.resourceLocation);
       }
 

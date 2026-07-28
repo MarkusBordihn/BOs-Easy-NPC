@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.gametest;
 
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.server.player.FakePlayer;
+import io.netty.channel.embedded.EmbeddedChannel;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
@@ -129,12 +130,16 @@ public final class GameTestHelpers {
     BlockPos absolutePosition =
         helper.absolutePos(BlockPos.containing(position.x, position.y, position.z));
     FakePlayer fakePlayer = new FakePlayer(level, absolutePosition, playerName);
-    // Attach an unconnected packet listener so command side effects (teleport, feedback) that send
-    // client packets do not fail on the mock player, which has no real network connection.
+    // Attach a packet listener so command side effects (teleport, feedback) that send client
+    // packets do not fail on the mock player, which has no real network connection. The connection
+    // is backed by an in-memory channel because loaders inspect channel attributes of every player
+    // each tick, which would fail on a channel-less connection.
+    Connection connection = new Connection(PacketFlow.CLIENTBOUND);
+    new EmbeddedChannel(connection);
     fakePlayer.connection =
         new ServerGamePacketListenerImpl(
             level.getServer(),
-            new Connection(PacketFlow.CLIENTBOUND),
+            connection,
             fakePlayer,
             CommonListenerCookie.createInitial(fakePlayer.getGameProfile(), false));
     registerInPlayerList(level.getServer().getPlayerList(), fakePlayer);

@@ -29,6 +29,10 @@ subprojects {
     }
   }
 
+  configurations.named('testRuntimeOnly') {
+    setExtendsFrom([])
+  }
+
   tasks.register('wrapper', Wrapper) {
     gradleVersion = '9.6.1'
     distributionType = Wrapper.DistributionType.BIN

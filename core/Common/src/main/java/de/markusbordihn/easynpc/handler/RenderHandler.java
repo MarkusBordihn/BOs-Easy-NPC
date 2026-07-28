@@ -118,12 +118,28 @@ public class RenderHandler {
       entityModel = resolvedModel;
     } else if (IntegrationRegistry.hasModels(integrationId)
         && !IntegrationRegistry.getModels(integrationId).contains(entityModel)) {
-      log.error(
-          "[{}] Unknown model '{}' for integration '{}', rejecting.",
+      if (easyModelNPC) {
+        log.error(
+            "[{}] Unknown model '{}' for integration '{}', rejecting.",
+            easyNPC,
+            entityModel,
+            integrationId);
+        return false;
+      }
+      Identifier speciesId = CobblemonSpeciesManager.getBaseSpeciesId(modelResourceLocation);
+      if (!IntegrationRegistry.getModels(integrationId).contains(speciesId.toString())) {
+        log.error(
+            "[{}] Unknown model '{}' for integration '{}', rejecting.",
+            easyNPC,
+            entityModel,
+            integrationId);
+        return false;
+      }
+      log.warn(
+          "[{}] Using unverified aspects {} for Cobblemon species '{}'.",
           easyNPC,
-          entityModel,
-          integrationId);
-      return false;
+          CobblemonSpeciesManager.getVariantAspects(modelResourceLocation),
+          speciesId);
     }
 
     log.debug("[{}] Setting render entity model to {}", easyNPC, entityModel);

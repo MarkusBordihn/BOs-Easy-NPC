@@ -191,8 +191,8 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
 
     // Home position
     NavigationDataCapable<?> navigationData = getEasyNPC().getEasyNPCNavigationData();
-    if (navigationData != null && navigationData.hasHomePosition()) {
-      BlockPos blockPos = navigationData.getHomePosition();
+    if (navigationData != null && navigationData.hasNPCHomePosition()) {
+      BlockPos blockPos = navigationData.getNPCHomePosition();
       Text.drawString(
           guiGraphics,
           this.font,

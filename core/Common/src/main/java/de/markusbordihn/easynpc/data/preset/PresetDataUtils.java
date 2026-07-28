@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.data.preset;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.component.DataComponents;
 import de.markusbordihn.easynpc.data.attribute.LegacyAttributeConverter;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.security.SecurityManager;
 import de.markusbordihn.easynpc.utils.CompoundTagUtils;
 import java.util.Optional;
@@ -206,6 +207,11 @@ public class PresetDataUtils {
     entity.load(
         TagValueInput.create(ProblemReporter.DISCARDING, serverLevel.registryAccess(), entityData));
     entity.setPos(blockPos.getX() + 0.5, blockPos.getY(), blockPos.getZ() + 0.5);
+
+    // Replace the home position carried over from the preset with the actual spawn position.
+    if (entity instanceof EasyNPC<?> easyNPC && easyNPC.getEasyNPCNavigationData() != null) {
+      easyNPC.getEasyNPCNavigationData().setNPCHomePosition(blockPos);
+    }
 
     // Ensure entity spawns alive with full health
     if (entity instanceof LivingEntity livingEntity) {

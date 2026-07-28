@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:function",
+  "function": "easy_npc_config_ui:custom_skin_configuration_screen",
+  "environment": "minecraft:default",
+  "structure": "easy_npc_config_ui:gametest.3x3x3",
+  "max_ticks": 100
+}

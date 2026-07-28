@@ -44,16 +44,22 @@ public interface NavigationDataCapable<T extends Mob> extends EasyNPC<T> {
   String DATA_NAVIGATION_TAG = "Navigation";
   int TRAVEL_EVENT_TICK = 20;
 
-  default BlockPos getHomePosition() {
+  default BlockPos getNPCHomePosition() {
     return getSynchedEntityData(SynchedDataIndex.NAVIGATION_HOME_POSITION);
   }
 
-  default void setHomePosition(BlockPos blockPos) {
+  default void setNPCHomePosition(BlockPos blockPos) {
     setSynchedEntityData(SynchedDataIndex.NAVIGATION_HOME_POSITION, blockPos);
   }
 
-  default boolean hasHomePosition() {
-    return this.getHomePosition() != null && !this.getHomePosition().equals(BlockPos.ZERO);
+  default boolean hasNPCHomePosition() {
+    return this.getNPCHomePosition() != null && !this.getNPCHomePosition().equals(BlockPos.ZERO);
+  }
+
+  default void applyDefaultNPCHomePosition() {
+    if (!this.hasNPCHomePosition()) {
+      this.setNPCHomePosition(this.getEntity().blockPosition());
+    }
   }
 
   default void setPosition(Vec3 pos) {
@@ -114,8 +120,8 @@ public interface NavigationDataCapable<T extends Mob> extends EasyNPC<T> {
 
   default void addAdditionalNavigationData(ValueOutput valueOutput) {
     CompoundTag navigationTag = new CompoundTag();
-    if (this.hasHomePosition()) {
-      navigationTag.put(DATA_HOME_TAG, CompoundTagUtils.writeBlockPos(this.getHomePosition()));
+    if (this.hasNPCHomePosition()) {
+      navigationTag.put(DATA_HOME_TAG, CompoundTagUtils.writeBlockPos(this.getNPCHomePosition()));
     }
     if (!navigationTag.isEmpty()) {
       valueOutput.store(DATA_NAVIGATION_TAG, CompoundTag.CODEC, navigationTag);
@@ -132,7 +138,7 @@ public interface NavigationDataCapable<T extends Mob> extends EasyNPC<T> {
     // Read navigation data.
     CompoundTag navigationTag = compoundTagData.get();
     if (navigationTag.contains(DATA_HOME_TAG)) {
-      this.setHomePosition(
+      this.setNPCHomePosition(
           CompoundTagUtils.readBlockPos(navigationTag.getCompoundOrEmpty(DATA_HOME_TAG)));
     }
   }

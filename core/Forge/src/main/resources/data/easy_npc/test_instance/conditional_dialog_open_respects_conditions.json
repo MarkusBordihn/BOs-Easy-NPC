@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:function",
+  "function": "easy_npc:conditional_dialog_open_respects_conditions",
+  "environment": "minecraft:default",
+  "structure": "easy_npc:gametest.3x3x3",
+  "max_ticks": 100
+}

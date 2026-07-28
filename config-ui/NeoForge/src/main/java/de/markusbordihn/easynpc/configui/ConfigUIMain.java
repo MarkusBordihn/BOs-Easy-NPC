@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.configui;
 
 import de.markusbordihn.easynpc.configui.debug.DebugManager;
+import de.markusbordihn.easynpc.configui.gametest.ModGameTests;
 import de.markusbordihn.easynpc.configui.item.ModItems;
 import de.markusbordihn.easynpc.configui.menu.MenuHandler;
 import de.markusbordihn.easynpc.configui.menu.MenuManager;
@@ -62,6 +63,9 @@ public class ConfigUIMain {
 
     log.info("{} Menu Types ...", Constants.LOG_REGISTER_PREFIX);
     ModMenuTypes.MENU_TYPES.register(modEventBus);
+
+    log.info("{} Game Test Functions ...", Constants.LOG_REGISTER_PREFIX);
+    ModGameTests.register(modEventBus);
 
     log.info("{} Menu Handler ...", Constants.LOG_REGISTER_PREFIX);
     MenuManager.registerMenuHandler(new MenuHandler());

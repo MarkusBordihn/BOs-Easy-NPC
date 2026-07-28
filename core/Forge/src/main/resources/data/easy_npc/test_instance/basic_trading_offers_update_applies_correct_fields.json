@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:function",
+  "function": "easy_npc:basic_trading_offers_update_applies_correct_fields",
+  "environment": "minecraft:default",
+  "structure": "easy_npc:gametest.3x3x3",
+  "max_ticks": 100
+}

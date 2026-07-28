@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.entity.easynpc.ai.goal;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.ai.control.JumpEasyNPCMoveControl;
 import de.markusbordihn.easynpc.entity.easynpc.data.NavigationDataCapable;
+import de.markusbordihn.easynpc.handler.PlacementHandler;
 import java.util.EnumSet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
@@ -35,17 +36,23 @@ import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
+import net.minecraft.world.phys.Vec3;
 
 public class FollowLivingEntityGoal extends Goal {
 
   private static final int COMBAT_COOLDOWN_DURATION = 3 * 20;
+  private static final int PATH_RECALCULATION_DELAY = 10;
+  private static final int TELEPORT_ATTEMPTS = 10;
+  private static final float NO_DISTANCE_LIMIT = 0.0F;
 
   private final Mob mob;
   private final NavigationDataCapable<?> navigationData;
   private final LivingEntity livingEntity;
   private final double speedModifier;
   private final float stopDistance;
-  private final float startDistance;
+  private final float maxFollowDistance;
+  private final float teleportDistance;
+  private final Vec3 followOffset;
   private final boolean canFly;
   private final boolean canJump;
   private final PathNavigation pathNavigation;
@@ -59,13 +66,18 @@ public class FollowLivingEntityGoal extends Goal {
       LivingEntity livingEntity,
       double speedModifier,
       float stopDistance,
-      float startDistance) {
+      float maxFollowDistance,
+      float teleportDistance,
+      Vec3 followOffset) {
     this.mob = easyNPC.getMob();
     this.navigationData = easyNPC.getEasyNPCNavigationData();
     this.livingEntity = livingEntity;
     this.speedModifier = speedModifier;
     this.stopDistance = stopDistance;
-    this.startDistance = startDistance;
+    this.maxFollowDistance =
+        maxFollowDistance > stopDistance ? maxFollowDistance : NO_DISTANCE_LIMIT;
+    this.teleportDistance = teleportDistance;
+    this.followOffset = followOffset != null ? followOffset : Vec3.ZERO;
     this.canFly = this.navigationData.canFly();
     this.canJump = this.navigationData.canJump();
     this.pathNavigation = this.mob.getNavigation();
@@ -73,36 +85,70 @@ public class FollowLivingEntityGoal extends Goal {
     this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
   }
 
-  @Override
-  public boolean canUse() {
+  private Vec3 getTargetPosition() {
+    Vec3 targetPosition = this.livingEntity.position();
+    if (this.followOffset.lengthSqr() == 0.0D) {
+      return targetPosition;
+    }
+
+    float targetYaw = this.livingEntity.getYRot() * Mth.DEG_TO_RAD;
+    double sin = Mth.sin(targetYaw);
+    double cos = Mth.cos(targetYaw);
+    return targetPosition.add(
+        -sin * this.followOffset.z - cos * this.followOffset.x,
+        this.followOffset.y,
+        cos * this.followOffset.z - sin * this.followOffset.x);
+  }
+
+  private double distanceToTargetSqr() {
+    return this.mob.position().distanceToSqr(this.getTargetPosition());
+  }
+
+  private boolean isOnCombatCooldown() {
     if (this.mob.getTarget() != null) {
       this.combatCooldownTicks = COMBAT_COOLDOWN_DURATION;
-      return false;
+      return true;
     }
+
     if (this.combatCooldownTicks > 0) {
       this.combatCooldownTicks--;
+      return true;
+    }
+
+    return false;
+  }
+
+  @Override
+  public boolean canUse() {
+    if (this.isOnCombatCooldown()) {
       return false;
     }
-    double distanceSq = this.mob.distanceToSqr(this.livingEntity);
-    return this.mob.isAlive()
-        && this.livingEntity != null
-        && this.livingEntity.isAlive()
-        && distanceSq > this.stopDistance * this.stopDistance
-        && distanceSq < this.startDistance * this.startDistance;
+
+    if (this.livingEntity == null || !this.livingEntity.isAlive() || !this.mob.isAlive()) {
+      return false;
+    }
+
+    double distanceSq = this.distanceToTargetSqr();
+    if (distanceSq <= this.stopDistance * this.stopDistance) {
+      return false;
+    }
+
+    return this.maxFollowDistance <= NO_DISTANCE_LIMIT
+        || distanceSq < this.maxFollowDistance * this.maxFollowDistance;
   }
 
   @Override
   public boolean canContinueToUse() {
-    if (this.mob.getTarget() != null) {
-      this.combatCooldownTicks = COMBAT_COOLDOWN_DURATION;
+    if (this.isOnCombatCooldown()) {
       return false;
     }
-    if (this.combatCooldownTicks > 0) {
-      this.combatCooldownTicks--;
+
+    if (this.livingEntity == null) {
       return false;
     }
+
     return !this.pathNavigation.isDone()
-        && this.mob.distanceToSqr(this.livingEntity) > this.stopDistance * this.stopDistance;
+        && this.distanceToTargetSqr() > this.stopDistance * this.stopDistance;
   }
 
   @Override
@@ -125,66 +171,89 @@ public class FollowLivingEntityGoal extends Goal {
   @Override
   public void tick() {
     this.mob.getLookControl().setLookAt(this.livingEntity, 10.0F, this.mob.getMaxHeadXRot());
-    if (--this.timeToRecalcPath <= 0) {
-      this.timeToRecalcPath = this.adjustedTickDelay(10);
-      if (!this.mob.isLeashed() && !this.mob.isPassenger()) {
-        if (this.mob.distanceToSqr(this.livingEntity) >= 144.0D) {
-          this.teleportToLivingEntity();
-        } else if (this.canJump
-            && this.mob.getMoveControl() instanceof JumpEasyNPCMoveControl jumpMoveControl) {
-          double dx = this.livingEntity.getX() - this.mob.getX();
-          double dz = this.livingEntity.getZ() - this.mob.getZ();
-          jumpMoveControl.setDirection(
-              (float) (Mth.atan2(dz, dx) * (180.0 / Math.PI)) - 90.0F, false);
-          jumpMoveControl.setWantedMovement(this.speedModifier);
-        } else {
-          this.pathNavigation.moveTo(this.livingEntity, this.speedModifier);
-        }
-      }
+    if (--this.timeToRecalcPath > 0) {
+      return;
+    }
+
+    this.timeToRecalcPath = this.adjustedTickDelay(PATH_RECALCULATION_DELAY);
+    if (this.mob.isLeashed() || this.mob.isPassenger()) {
+      return;
+    }
+
+    Vec3 targetPosition = this.getTargetPosition();
+    if (this.teleportDistance > NO_DISTANCE_LIMIT
+        && this.mob.position().distanceToSqr(targetPosition)
+            >= this.teleportDistance * this.teleportDistance) {
+      this.teleportTo(targetPosition);
+      return;
+    }
+
+    if (this.canJump
+        && this.mob.getMoveControl() instanceof JumpEasyNPCMoveControl jumpMoveControl) {
+      double dx = targetPosition.x - this.mob.getX();
+      double dz = targetPosition.z - this.mob.getZ();
+      jumpMoveControl.setDirection((float) (Mth.atan2(dz, dx) * (180.0 / Math.PI)) - 90.0F, false);
+      jumpMoveControl.setWantedMovement(this.speedModifier);
+      return;
+    }
+
+    if (!this.pathNavigation.moveTo(
+            targetPosition.x, targetPosition.y, targetPosition.z, this.speedModifier)
+        && this.canFly) {
+      // A flying NPC regularly has no path through open air, so steer it directly instead.
+      this.mob
+          .getMoveControl()
+          .setWantedPosition(
+              targetPosition.x, targetPosition.y, targetPosition.z, this.speedModifier);
     }
   }
 
-  private void teleportToLivingEntity() {
-    BlockPos blockPos = this.livingEntity.blockPosition();
+  private void teleportTo(Vec3 targetPosition) {
+    BlockPos blockPos = BlockPos.containing(targetPosition);
 
-    for (int i = 0; i < 10; ++i) {
-      int j = this.randomIntInclusive(-3, 3);
-      int k = this.randomIntInclusive(-1, 1);
-      int l = this.randomIntInclusive(-3, 3);
-      boolean flag =
-          this.maybeTeleportTo(blockPos.getX() + j, blockPos.getY() + k, blockPos.getZ() + l);
-      if (flag) {
+    for (int i = 0; i < TELEPORT_ATTEMPTS; ++i) {
+      int offsetX = this.randomIntInclusive(-3, 3);
+      int offsetY = this.randomIntInclusive(-1, 1);
+      int offsetZ = this.randomIntInclusive(-3, 3);
+      if (this.maybeTeleportTo(
+          targetPosition,
+          blockPos.getX() + offsetX,
+          blockPos.getY() + offsetY,
+          blockPos.getZ() + offsetZ)) {
         return;
       }
     }
   }
 
-  private boolean maybeTeleportTo(int posX, int posY, int posZ) {
-    if (Math.abs(posX - this.livingEntity.getX()) < 2.0D
-        && Math.abs(posZ - this.livingEntity.getZ()) < 2.0D) {
+  private boolean maybeTeleportTo(Vec3 targetPosition, int posX, int posY, int posZ) {
+    if (Math.abs(posX - targetPosition.x) < 2.0D && Math.abs(posZ - targetPosition.z) < 2.0D) {
       return false;
-    } else if (!this.canTeleportTo(new BlockPos(posX, posY, posZ))) {
-      return false;
-    } else {
-      this.mob.snapTo(posX + 0.5D, posY, posZ + 0.5D, this.mob.getYRot(), this.mob.getXRot());
-      this.pathNavigation.stop();
-      return true;
     }
+
+    if (!this.canTeleportTo(new BlockPos(posX, posY, posZ))) {
+      return false;
+    }
+
+    this.mob.snapTo(posX + 0.5D, posY, posZ + 0.5D, this.mob.getYRot(), this.mob.getXRot());
+    this.pathNavigation.stop();
+    return true;
   }
 
   private boolean canTeleportTo(BlockPos blockPos) {
-    PathType blockPathTypes = WalkNodeEvaluator.getPathTypeStatic(this.mob, blockPos.mutable());
-    if (!this.canFly && blockPathTypes != PathType.WALKABLE) {
-      return false;
-    } else {
-      BlockState blockState = this.level.getBlockState(blockPos.below());
-      if (!this.canFly && blockState.getBlock() instanceof LeavesBlock) {
+    if (!this.canFly) {
+      PathType blockPathTypes = WalkNodeEvaluator.getPathTypeStatic(this.mob, blockPos.mutable());
+      if (blockPathTypes != PathType.WALKABLE) {
         return false;
-      } else {
-        BlockPos targetBlockPos = blockPos.subtract(this.mob.blockPosition());
-        return this.level.noCollision(this.mob, this.mob.getBoundingBox().move(targetBlockPos));
+      }
+
+      BlockState blockState = this.level.getBlockState(blockPos.below());
+      if (blockState.getBlock() instanceof LeavesBlock) {
+        return false;
       }
     }
+
+    return PlacementHandler.isFree(
+        this.level, blockPos, this.mob.getDimensions(this.mob.getPose()));
   }
 
   private int randomIntInclusive(int fromRange, int toRange) {

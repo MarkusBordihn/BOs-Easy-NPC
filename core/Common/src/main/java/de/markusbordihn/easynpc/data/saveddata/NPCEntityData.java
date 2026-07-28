@@ -348,15 +348,7 @@ public class NPCEntityData extends SavedData {
     NPCEntityMetadata old = metadata.get(uuid);
     if (old == null || Objects.equals(old.dimension(), newDimension)) return;
     removeFromIndex(entriesByDimension, old.dimension(), uuid);
-    metadata.put(
-        uuid,
-        new NPCEntityMetadata(
-            old.ownerUUID(),
-            old.entityType(),
-            newDimension,
-            old.presetUUID(),
-            old.customIdentifier(),
-            old.removalReason()));
+    metadata.put(uuid, old.withDimension(newDimension));
     entriesByDimension.computeIfAbsent(newDimension, k -> new HashSet<>()).add(uuid);
     setDirty();
   }
@@ -367,15 +359,7 @@ public class NPCEntityData extends SavedData {
     NPCEntityMetadata old = metadata.get(uuid);
     if (old == null || Objects.equals(old.ownerUUID(), newOwnerUUID)) return;
     removeFromIndex(entriesByOwner, old.ownerUUID(), uuid);
-    metadata.put(
-        uuid,
-        new NPCEntityMetadata(
-            newOwnerUUID,
-            old.entityType(),
-            old.dimension(),
-            old.presetUUID(),
-            old.customIdentifier(),
-            old.removalReason()));
+    metadata.put(uuid, old.withOwnerUUID(newOwnerUUID));
     if (newOwnerUUID != null) {
       entriesByOwner.computeIfAbsent(newOwnerUUID, k -> new HashSet<>()).add(uuid);
     }
@@ -385,15 +369,7 @@ public class NPCEntityData extends SavedData {
   public void updateRemovalReason(UUID uuid, NPCRemovalReason reason) {
     NPCEntityMetadata old = metadata.get(uuid);
     if (old == null) return;
-    metadata.put(
-        uuid,
-        new NPCEntityMetadata(
-            old.ownerUUID(),
-            old.entityType(),
-            old.dimension(),
-            old.presetUUID(),
-            old.customIdentifier(),
-            reason));
+    metadata.put(uuid, old.withRemovalReason(reason));
     setDirty();
   }
 

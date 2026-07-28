@@ -38,6 +38,7 @@ import de.markusbordihn.easynpc.config.Config;
 import de.markusbordihn.easynpc.debug.DebugManager;
 import de.markusbordihn.easynpc.entity.LivingEntityEvents;
 import de.markusbordihn.easynpc.entity.ModEntityType;
+import de.markusbordihn.easynpc.gametest.ModGameTests;
 import de.markusbordihn.easynpc.io.DataFileHandler;
 import de.markusbordihn.easynpc.item.ModItems;
 import de.markusbordihn.easynpc.menu.MenuHandler;
@@ -63,7 +64,9 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.EntityLeaveLevelEvent;
+import net.minecraftforge.event.server.ServerStartedEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
+import net.minecraftforge.event.server.ServerStoppingEvent;
 import net.minecraftforge.eventbus.api.bus.BusGroup;
 import net.minecraftforge.eventbus.api.listener.Priority;
 import net.minecraftforge.fml.common.Mod;
@@ -133,6 +136,9 @@ public class EasyNPCMain {
     log.info("{} Mod Data Components ...", Constants.LOG_REGISTER_PREFIX);
     ModDataComponents.DATA_COMPONENTS.register(modBusGroup);
 
+    log.info("{} Game Test Functions ...", Constants.LOG_REGISTER_PREFIX);
+    ModGameTests.register(modBusGroup);
+
     log.info("{} Network Handler ...", Constants.LOG_REGISTER_PREFIX);
     NetworkMessageHandlerManager.registerClientHandler(new ClientNetworkMessageHandler());
 
@@ -151,6 +157,8 @@ public class EasyNPCMain {
     // Register GAME bus events
     RegisterCommandsEvent.BUS.addListener(this::registerCommands);
     ServerStartingEvent.BUS.addListener(this::onServerStarting);
+    ServerStartedEvent.BUS.addListener(this::onServerStarted);
+    ServerStoppingEvent.BUS.addListener(this::onServerStopping);
     TickEvent.ServerTickEvent.Post.BUS.addListener(this::onServerTick);
     EntityJoinLevelEvent.BUS.addListener(Priority.HIGHEST, this::onEntityJoinLevel);
     EntityLeaveLevelEvent.BUS.addListener(Priority.HIGHEST, this::onEntityLeaveLevel);
@@ -223,6 +231,14 @@ public class EasyNPCMain {
     if (CompatConstants.MOD_EASY_MODEL_ENTITIES_LOADED) {
       EasyModelEntitiesLoader.register();
     }
+  }
+
+  private void onServerStarted(final ServerStartedEvent event) {
+    ServerEvents.handleServerStarted(event.getServer());
+  }
+
+  private void onServerStopping(final ServerStoppingEvent event) {
+    ServerEvents.handleServerStopping(event.getServer());
   }
 
   private void onServerTick(final TickEvent.ServerTickEvent event) {

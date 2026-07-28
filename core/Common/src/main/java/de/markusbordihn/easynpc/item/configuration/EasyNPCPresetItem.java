@@ -24,24 +24,23 @@ import de.markusbordihn.easynpc.access.SpawnerAccessHelper;
 import de.markusbordihn.easynpc.block.entity.EasyNPCSpawnerBlockEntity;
 import de.markusbordihn.easynpc.data.preset.PresetData;
 import de.markusbordihn.easynpc.data.preset.PresetDataUtils;
-import de.markusbordihn.easynpc.data.spawner.SpawnerType;
 import de.markusbordihn.easynpc.entity.easynpc.data.PresetDataCapable;
+import de.markusbordihn.easynpc.handler.PlacementHandler;
 import de.markusbordihn.easynpc.level.BaseEasyNPCSpawner;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import de.markusbordihn.easynpc.utils.CompoundTagUtils;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.BlockPos.MutableBlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
@@ -55,7 +54,6 @@ import net.minecraft.world.level.SpawnData;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.SpawnerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -130,7 +128,6 @@ public class EasyNPCPresetItem extends Item {
       return InteractionResult.FAIL;
     }
 
-    // Check for Spawner Block
     BlockPos blockPos = useOnContext.getClickedPos();
     BlockEntity blockEntity = level.getBlockEntity(blockPos);
     if (blockEntity instanceof SpawnerBlockEntity spawnerBlockEntity) {
@@ -140,7 +137,7 @@ public class EasyNPCPresetItem extends Item {
             PresetDataUtils.toSpawnData(presetData, level, useOnContext.getPlayer());
         log.debug(
             "Set spawn data {} for spawner {} at {}", spawnData, spawnerBlockEntity, blockPos);
-        spawnerAccess.initializeSpawnerData(SpawnerType.SINGLE_SPAWNER, spawnData);
+        spawnerAccess.setSpawnDataDirect(level, blockPos, spawnData);
         spawnerBlockEntity.setChanged();
         itemStack.shrink(1);
         return InteractionResult.CONSUME;
@@ -150,7 +147,6 @@ public class EasyNPCPresetItem extends Item {
       }
     }
 
-    // Check for NPC Spawner Block
     if (blockEntity instanceof EasyNPCSpawnerBlockEntity easyNPCSpawnerBlockEntity) {
       BaseEasyNPCSpawner baseEasyNPCSpawner = easyNPCSpawnerBlockEntity.getSpawner();
       SpawnData spawnData =
@@ -168,22 +164,21 @@ public class EasyNPCPresetItem extends Item {
       return InteractionResult.CONSUME;
     }
 
-    // Find next free position in x and z direction and spawn entity
-    Iterable<MutableBlockPos> possibleSpawnPositions =
-        BlockPos.spiralAround(useOnContext.getClickedPos(), 4, Direction.NORTH, Direction.EAST);
-    for (MutableBlockPos possibleSpawnPosition : possibleSpawnPositions) {
-      AABB aabb = new AABB(possibleSpawnPosition).inflate(0.1);
-      BlockPos targetBlockPos =
-          new BlockPos(
-              possibleSpawnPosition.getX(),
-              possibleSpawnPosition.getY() + 1,
-              possibleSpawnPosition.getZ());
-      if (level.getBlockState(targetBlockPos.above()).isAir()
-          && level.getEntitiesOfClass(Entity.class, aabb).isEmpty()
-          && PresetDataUtils.spawnEntity(
-              presetData, level, blockPos.above(), useOnContext.getPlayer())) {
-        return InteractionResult.SUCCESS;
-      }
+    // Find next free position nearby and spawn entity
+    Optional<BlockPos> spawnPosition =
+        PlacementHandler.findSafeSpawnNear(
+            level,
+            useOnContext.getClickedPos().above(),
+            EntityDimensions.scalable(0.6F, 1.8F),
+            PlacementHandler.DEFAULT_SEARCH_RADIUS,
+            candidate ->
+                level.getBlockState(candidate.above()).isAir()
+                    && PlacementHandler.isUnoccupied(
+                        level, candidate, EntityDimensions.scalable(0.6F, 1.8F)));
+    if (spawnPosition.isPresent()
+        && PresetDataUtils.spawnEntity(
+            presetData, level, spawnPosition.get(), useOnContext.getPlayer())) {
+      return InteractionResult.SUCCESS;
     }
 
     log.error("Found no valid spawn placement for preset data: {}", presetData);
