@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.entity.easynpc.data;
 
 import de.markusbordihn.easynpc.data.ticker.TickerType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Mob;
 
 public interface TickerDataCapable<T extends Mob> extends EasyNPC<T> {
@@ -44,5 +45,26 @@ public interface TickerDataCapable<T extends Mob> extends EasyNPC<T> {
 
   default void increaseTicker(TickerType tickerType, int value) {
     setTicker(tickerType, getTicker(tickerType) + value);
+  }
+
+  int getCustomTicker(Identifier tickerId);
+
+  void setCustomTicker(Identifier tickerId, int value);
+
+  default boolean checkAndIncreaseCustomTicker(Identifier tickerId, int value) {
+    int tickerValue = getCustomTicker(tickerId);
+    if (tickerValue >= value) {
+      return true;
+    }
+    increaseCustomTicker(tickerId, 1);
+    return false;
+  }
+
+  default void resetCustomTicker(Identifier tickerId) {
+    setCustomTicker(tickerId, 0);
+  }
+
+  default void increaseCustomTicker(Identifier tickerId, int value) {
+    setCustomTicker(tickerId, getCustomTicker(tickerId) + value);
   }
 }

@@ -97,11 +97,11 @@ dependencies {
   testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.1'
   testImplementation 'org.junit.jupiter:junit-jupiter-params:5.10.1'
 
-  // Additional helpful Mods for development (runtime dependency)
-  if (project.hasProperty('forge_jei_mod') && project.forge_jei_mod) {
+  // Additional helpful Mods for development (runtime dependency, skipped for game tests)
+  if (!isGameTestRun && project.hasProperty('forge_jei_mod') && project.forge_jei_mod) {
     runtimeOnly "curse.maven:jei-238222:${project.forge_jei_mod}"
   }
-  if (project.hasProperty('forge_xaeros_minimap_mod') && project.forge_xaeros_minimap_mod) {
+  if (!isGameTestRun && project.hasProperty('forge_xaeros_minimap_mod') && project.forge_xaeros_minimap_mod) {
     runtimeOnly "curse.maven:xaeros_minimap-263420:${project.forge_xaeros_minimap_mod}"
   }
 
@@ -171,6 +171,11 @@ tasks.matching { it.name == 'runGameTestServer' }.configureEach {
 tasks.named('jar', Jar).configure {
   // Ensure jar runs after test tasks since both use the same output directory
   mustRunAfter tasks.named('compileTestJava'), tasks.named('processTestResources')
+
+  // Test instances are a data pack registry and would otherwise be loaded in every world, which
+  // makes the game tests selectable through the /test command. Development runs read the source
+  // set output instead of this jar and therefore keep them.
+  exclude 'data/*/test_instance/**'
 
   manifest {
     attributes([

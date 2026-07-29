@@ -28,8 +28,11 @@ import de.markusbordihn.easynpc.data.ticker.TickerType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.server.player.FakePlayer;
 import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.Map;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.GoalSelector;
@@ -67,6 +70,7 @@ class TickerDataCapableTest {
   private static final class TestTickerData implements EasyNPC<Mob>, TickerDataCapable<Mob> {
 
     private final EnumMap<TickerType, Integer> tickerMap = new EnumMap<>(TickerType.class);
+    private final Map<Identifier, Integer> customTickerMap = new HashMap<>();
     private int npcDataVersion;
 
     @Override
@@ -77,6 +81,16 @@ class TickerDataCapableTest {
     @Override
     public void setTicker(TickerType tickerType, int value) {
       this.tickerMap.put(tickerType, value);
+    }
+
+    @Override
+    public int getCustomTicker(Identifier tickerId) {
+      return this.customTickerMap.getOrDefault(tickerId, 0);
+    }
+
+    @Override
+    public void setCustomTicker(Identifier tickerId, int value) {
+      this.customTickerMap.put(tickerId, value);
     }
 
     @Override

@@ -29,6 +29,10 @@ subprojects {
     }
   }
 
+  configurations.named('testRuntimeOnly') {
+    setExtendsFrom([])
+  }
+
   tasks.register('wrapper', Wrapper) {
     gradleVersion = '9.6.1'
     distributionType = Wrapper.DistributionType.BIN
@@ -56,6 +60,12 @@ subprojects {
       downloadSources = true
       downloadJavadoc = true
     }
+  }
+
+  // Disable Development helper mods like JEI or Xaero's Minimap for game test run.
+  ext.isGameTestRun = gradle.startParameter.taskNames.any {
+    def taskName = it.toLowerCase()
+    return taskName.contains('gametest') || taskName.contains('fullcheck')
   }
 
   // Local Easy Model Entities common artifact (compile); null falls back to CurseForge.

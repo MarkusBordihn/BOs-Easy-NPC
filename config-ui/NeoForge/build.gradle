@@ -74,11 +74,11 @@ dependencies {
   testImplementation 'org.junit.jupiter:junit-jupiter-params:5.10.1'
   testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.10.1'
 
-  // Additional helpful Mods for development (runtime dependency)
-  if (project.hasProperty('neoforge_jei_mod') && project.neoforge_jei_mod) {
+  // Additional helpful Mods for development (runtime dependency, skipped for game tests)
+  if (!isGameTestRun && project.hasProperty('neoforge_jei_mod') && project.neoforge_jei_mod) {
     runtimeOnly "curse.maven:jei-238222:${project.neoforge_jei_mod}"
   }
-  if (project.hasProperty('neoforge_xaeros_minimap_mod') && project.neoforge_xaeros_minimap_mod) {
+  if (!isGameTestRun && project.hasProperty('neoforge_xaeros_minimap_mod') && project.neoforge_xaeros_minimap_mod) {
     runtimeOnly "curse.maven:xaeros_minimap-263420:${project.neoforge_xaeros_minimap_mod}"
   }
 

@@ -65,7 +65,8 @@ public class GhastBase extends GhastRaw implements BaseEasyNPC<GhastRaw> {
         .add(Attributes.MAX_HEALTH, 16.0D)
         .add(Attributes.MOVEMENT_SPEED, 0.3F)
         .add(Attributes.FLYING_SPEED, 0.4F)
-        .add(Attributes.SPAWN_REINFORCEMENTS_CHANCE, 0.0D);
+        .add(Attributes.SPAWN_REINFORCEMENTS_CHANCE, 0.0D)
+        .add(Attributes.TEMPT_RANGE, 10.0D);
   }
 
   @Override

@@ -20,7 +20,6 @@
 package de.markusbordihn.easynpc.client.renderer;
 
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.client.renderer.entity.EntityRendererUtils;
 import de.markusbordihn.easynpc.client.renderer.entity.ModCustomEntityRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.ModEpicFightEntityRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.ModNPCEntityRenderer;
@@ -29,8 +28,6 @@ import de.markusbordihn.easynpc.client.renderer.entity.easymodelentities.EasyMod
 import de.markusbordihn.easynpc.compat.CompatConstants;
 import de.markusbordihn.easynpc.entity.EasyModelEntitiesEntityType;
 import de.markusbordihn.easynpc.entity.ModEntityType;
-import de.markusbordihn.easynpc.entity.UserDefinedEntityRegistry;
-import de.markusbordihn.easynpc.entity.UserDefinedEntityType;
 import java.util.function.Function;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.world.entity.Entity;
@@ -73,18 +70,7 @@ public class EntityRenderer {
           context -> renderer.getRenderer().apply(context));
     }
 
-    // Register user-defined entity renderer
-    for (UserDefinedEntityType type : UserDefinedEntityRegistry.getAvailableEntityTypes()) {
-      EntityType<?> entityType = UserDefinedEntityRegistry.getRegisteredEntityType(type);
-      if (entityType != null) {
-        registerEntityRendererWithProvider(
-            event,
-            entityType,
-            context -> createRendererForBaseType(context, type.getBaseEntityType()));
-      }
-    }
-
-    // Register Epic Fight mod entity renderers
+    // Epic Fight NPCs
     if (CompatConstants.MOD_EPIC_FIGHT_LOADED) {
       for (ModEpicFightEntityRenderer renderer : ModEpicFightEntityRenderer.values()) {
         registerEntityRendererSafe(
@@ -115,65 +101,5 @@ public class EntityRenderer {
     } else {
       log.warn("Attempted to register renderer for null or absent RegistryObject");
     }
-  }
-
-  @SuppressWarnings({"unchecked"})
-  private static <T extends Entity> void registerEntityRendererWithProvider(
-      EntityRenderersEvent.RegisterRenderers event,
-      EntityType<?> entityType,
-      Function<EntityRendererProvider.Context, ?> rendererFactory) {
-
-    EntityRendererProvider<T> provider =
-        context ->
-            (net.minecraft.client.renderer.entity.EntityRenderer<T, ?>)
-                rendererFactory.apply(context);
-
-    event.registerEntityRenderer((EntityType<T>) entityType, provider);
-  }
-
-  private static net.minecraft.client.renderer.entity.EntityRenderer<?, ?>
-      createRendererForBaseType(
-          EntityRendererProvider.Context context, EntityType<?> baseEntityType) {
-
-    // Try to find matching renderer from existing mod renderers
-    for (ModRawEntityRenderer renderer : ModRawEntityRenderer.values()) {
-      var registryObject = ModEntityType.RAW_TYPE.get(renderer.getEntityType());
-      if (registryObject != null
-          && registryObject.isPresent()
-          && registryObject.get() == baseEntityType) {
-        return renderer.getRenderer().apply(context);
-      }
-    }
-
-    for (ModNPCEntityRenderer renderer : ModNPCEntityRenderer.values()) {
-      var registryObject = ModEntityType.NPC_TYPE.get(renderer.getEntityType());
-      if (registryObject != null
-          && registryObject.isPresent()
-          && registryObject.get() == baseEntityType) {
-        return renderer.getRenderer().apply(context);
-      }
-    }
-
-    for (ModCustomEntityRenderer renderer : ModCustomEntityRenderer.values()) {
-      var registryObject = ModEntityType.CUSTOM_TYPE.get(renderer.getEntityType());
-      if (registryObject != null
-          && registryObject.isPresent()
-          && registryObject.get() == baseEntityType) {
-        return renderer.getRenderer().apply(context);
-      }
-    }
-
-    // Try to find vanilla renderer factory
-    Function<
-            EntityRendererProvider.Context,
-            net.minecraft.client.renderer.entity.EntityRenderer<?, ?>>
-        rendererFactory = EntityRendererUtils.getVanillaRendererFactory(baseEntityType);
-
-    if (rendererFactory != null) {
-      return rendererFactory.apply(context);
-    }
-
-    // Ultimate fallback - use a basic humanoid renderer
-    return EntityRendererUtils.createFallbackRenderer(context, baseEntityType);
   }
 }

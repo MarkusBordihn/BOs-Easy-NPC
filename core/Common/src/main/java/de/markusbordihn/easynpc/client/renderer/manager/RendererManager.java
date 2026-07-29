@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.client.renderer.manager;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.access.WalkAnimationAccessHelper;
 import java.util.HashMap;
 import java.util.Map;
 import net.minecraft.client.Minecraft;
@@ -236,6 +237,10 @@ public class RendererManager {
     targetEntity.attackAnim = sourceEntity.attackAnim;
     targetEntity.oAttackAnim = sourceEntity.oAttackAnim;
 
+    // Limb swing support.
+    if (targetEntity.walkAnimation instanceof WalkAnimationAccessHelper walkAnimationAccess) {
+      walkAnimationAccess.copyFrom(sourceEntity.walkAnimation);
+    }
     // Hand item support.
     targetEntity.setItemInHand(InteractionHand.MAIN_HAND, sourceEntity.getMainHandItem());
     targetEntity.setItemInHand(InteractionHand.OFF_HAND, sourceEntity.getOffhandItem());

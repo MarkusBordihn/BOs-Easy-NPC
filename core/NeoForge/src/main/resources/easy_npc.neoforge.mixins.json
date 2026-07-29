@@ -45,6 +45,7 @@
     "entity.RaiderMixin",
     "entity.SlimeMixin",
     "entity.VillagerMixin",
+    "entity.WalkAnimationStateMixin",
     "entity.WitchMixin",
     "menu.MerchantMenuMixin",
     "spawner.BaseSpawnerMixin",

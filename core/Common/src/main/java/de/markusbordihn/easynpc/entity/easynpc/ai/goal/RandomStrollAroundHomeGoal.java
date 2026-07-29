@@ -42,6 +42,7 @@ public class RandomStrollAroundHomeGoal<T extends EasyNPC<?>> extends Goal {
   private final PathfinderMob pathfinderMob;
   private final double speedModifier;
   private final int interval;
+  private Vec3 wantedPosition;
 
   public RandomStrollAroundHomeGoal(T easyNPCEntity, double speedModifier) {
     this.navigationData = easyNPCEntity.getEasyNPCNavigationData();
@@ -55,17 +56,14 @@ public class RandomStrollAroundHomeGoal<T extends EasyNPC<?>> extends Goal {
   @Override
   public boolean canUse() {
     if (this.mob.isVehicle()
-        || !this.navigationData.hasHomePosition()
+        || !this.navigationData.hasNPCHomePosition()
         || this.mob.getRandom().nextInt(reducedTickDelay(this.interval)) != 0) {
       return false;
     }
 
     if (this.pathfinderMob != null) {
-      Vec3 vec3 = this.getPosition();
-      if (vec3 == null) {
-        return false;
-      }
-      return this.pathfinderMob.getNavigation().moveTo(vec3.x, vec3.y, vec3.z, this.speedModifier);
+      this.wantedPosition = this.getPosition();
+      return this.wantedPosition != null;
     }
 
     MoveControl moveControl = this.mob.getMoveControl();
@@ -91,8 +89,16 @@ public class RandomStrollAroundHomeGoal<T extends EasyNPC<?>> extends Goal {
 
   @Override
   public void start() {
-    if (this.pathfinderMob == null) {
-      BlockPos homePos = this.navigationData.getHomePosition();
+    if (this.pathfinderMob != null && this.wantedPosition != null) {
+      this.pathfinderMob
+          .getNavigation()
+          .moveTo(
+              this.wantedPosition.x,
+              this.wantedPosition.y,
+              this.wantedPosition.z,
+              this.speedModifier);
+    } else if (this.pathfinderMob == null) {
+      BlockPos homePos = this.navigationData.getNPCHomePosition();
       RandomSource random = this.mob.getRandom();
 
       double x, y, z;
@@ -148,7 +154,7 @@ public class RandomStrollAroundHomeGoal<T extends EasyNPC<?>> extends Goal {
   }
 
   protected Vec3 getPositionTowardsHome() {
-    BlockPos homeBlockPos = this.navigationData.getHomePosition();
+    BlockPos homeBlockPos = this.navigationData.getNPCHomePosition();
     Vec3 homePosition = new Vec3(homeBlockPos.getX(), homeBlockPos.getY(), homeBlockPos.getZ());
     if (this.navigationData.isFlying()) {
       BlockPos blockPos = this.pathfinderMob.blockPosition();

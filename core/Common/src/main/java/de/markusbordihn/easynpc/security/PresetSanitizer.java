@@ -23,10 +23,12 @@ import de.markusbordihn.easynpc.data.action.ActionDataEntry;
 import de.markusbordihn.easynpc.data.action.ActionDataType;
 import de.markusbordihn.easynpc.data.attribute.EntityAttributes;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataSet;
+import de.markusbordihn.easynpc.data.preset.PresetMetadata;
 import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.NavigationDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.ObjectiveDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.OwnerDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.PresetDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.TradingDataCapable;
 import de.markusbordihn.easynpc.utils.CompoundTagUtils;
 import java.util.ArrayList;
@@ -91,8 +93,19 @@ public class PresetSanitizer {
     sanitizedTag.remove("Pos");
     sanitizedTag.remove("Rotation");
     removeActionAuthority(sanitizedTag);
+    resetPresetAccess(sanitizedTag);
 
     return sanitizedTag;
+  }
+
+  private static void resetPresetAccess(CompoundTag compoundTag) {
+    if (!compoundTag.contains(PresetDataCapable.PRESET_METADATA_TAG)) {
+      return;
+    }
+
+    compoundTag
+        .getCompoundOrEmpty(PresetDataCapable.PRESET_METADATA_TAG)
+        .remove(PresetMetadata.TAG_ACCESS);
   }
 
   private static void removeActionAuthority(CompoundTag compoundTag) {

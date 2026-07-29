@@ -52,7 +52,7 @@ public class NavigationCommand extends Command {
                                               Coordinates coordinates =
                                                   Vec3Argument.getCoordinates(
                                                       context, ARG_POSITION);
-                                              return setHomePosition(
+                                              return setNPCHomePosition(
                                                   context.getSource(),
                                                   EasyNPCArgument.getEntityWithAccess(
                                                       context, NPC_TARGET_ARG),
@@ -87,7 +87,7 @@ public class NavigationCommand extends Command {
                                         context, NPC_TARGET_ARG)))));
   }
 
-  private static int setHomePosition(
+  private static int setNPCHomePosition(
       CommandSourceStack context, EasyNPC<?> easyNPC, Vec3 position) {
     if (easyNPC == null || position == null || position.equals(Vec3.ZERO)) {
       return Command.FAILURE;
@@ -101,7 +101,7 @@ public class NavigationCommand extends Command {
 
     // Set home position for EasyNPC entity by UUID.
     BlockPos blockPos = new BlockPos((int) position.x, (int) position.y, (int) position.z);
-    navigationData.setHomePosition(blockPos);
+    navigationData.setNPCHomePosition(blockPos);
     return sendSuccessMessage(
         context,
         "Set home position for EasyNPC "

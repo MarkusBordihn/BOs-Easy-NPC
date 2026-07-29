@@ -30,9 +30,11 @@ import de.markusbordihn.easynpc.entity.easynpc.ai.goal.CustomLookAtPlayerGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.CustomMeleeAttackGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.CustomOwnerHurtByTargetGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.CustomPanicGoal;
+import de.markusbordihn.easynpc.entity.easynpc.ai.goal.CustomTemptGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.FollowLivingEntityGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.GunAttackGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.LookAtEntityByUUIDGoal;
+import de.markusbordihn.easynpc.entity.easynpc.ai.goal.LookAtItemGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.MoveBackToHomeGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.RandomStrollAroundGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.RandomStrollAroundHomeGoal;
@@ -42,8 +44,10 @@ import de.markusbordihn.easynpc.entity.easynpc.data.FactionDataCapable;
 import de.markusbordihn.easynpc.handler.FactionHandler;
 import java.util.UUID;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -57,7 +61,6 @@ import net.minecraft.world.entity.ai.goal.MoveThroughVillageGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.RandomSwimmingGoal;
 import net.minecraft.world.entity.ai.goal.RestrictSunGoal;
-import net.minecraft.world.entity.ai.goal.TemptGoal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
@@ -68,6 +71,7 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.npc.villager.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -77,6 +81,50 @@ public class ObjectiveUtils {
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   private ObjectiveUtils() {}
+
+  private static Ingredient resolveTargetItems(ObjectiveDataEntry objectiveDataEntry) {
+    String targetItemTag = objectiveDataEntry.getTargetItemTag();
+    if (targetItemTag == null || targetItemTag.isEmpty()) {
+      return null;
+    }
+
+    if (targetItemTag.startsWith("#")) {
+      Identifier tagLocation = Identifier.tryParse(targetItemTag.substring(1));
+      if (tagLocation == null) {
+        log.debug("Unable to parse item tag {} for {}!", targetItemTag, objectiveDataEntry);
+        return null;
+      }
+
+      return BuiltInRegistries.ITEM
+          .get(TagKey.create(Registries.ITEM, tagLocation))
+          .map(Ingredient::of)
+          .orElse(null);
+    }
+
+    Identifier itemLocation = Identifier.tryParse(targetItemTag);
+    Item item =
+        itemLocation != null
+            ? BuiltInRegistries.ITEM.getOptional(itemLocation).orElse(Items.AIR)
+            : Items.AIR;
+    if (item == Items.AIR) {
+      log.debug("Unable to find item {} for {}!", targetItemTag, objectiveDataEntry);
+      return null;
+    }
+
+    return Ingredient.of(item);
+  }
+
+  private static FollowLivingEntityGoal createFollowGoal(
+      ObjectiveDataEntry objectiveDataEntry, EasyNPC<?> easyNPC, LivingEntity target) {
+    return new FollowLivingEntityGoal(
+        easyNPC,
+        target,
+        objectiveDataEntry.getSpeedModifier(),
+        objectiveDataEntry.getStopDistance(),
+        objectiveDataEntry.getStartDistance(),
+        objectiveDataEntry.getTeleportDistance(),
+        objectiveDataEntry.getFollowOffset());
+  }
 
   private static boolean requiresPathfinderMob(ObjectiveType objectiveType, EasyNPC<?> easyNPC) {
     if (easyNPC.getPathfinderMob() == null) {
@@ -95,15 +143,21 @@ public class ObjectiveUtils {
     ObjectiveType objectiveType = objectiveDataEntry.getType();
 
     switch (objectiveType) {
+      case CUSTOM:
+        ObjectiveGoalFactory goalFactory =
+            ObjectiveRegistry.get(objectiveDataEntry.getCustomObjectiveId());
+        if (goalFactory == null) {
+          log.debug(
+              "Custom objective {} is not registered yet for {}!",
+              objectiveDataEntry.getCustomObjectiveId(),
+              easyNPC.getEntity());
+          return null;
+        }
+        return goalFactory.createGoal(objectiveDataEntry, easyNPC);
       case FOLLOW_PLAYER:
         ServerPlayer targetServerPlayer = objectiveDataEntry.getTargetPlayer();
         if (targetServerPlayer != null && !targetServerPlayer.isRemoved()) {
-          return new FollowLivingEntityGoal(
-              easyNPC,
-              targetServerPlayer,
-              objectiveDataEntry.getSpeedModifier(),
-              objectiveDataEntry.getStopDistance(),
-              objectiveDataEntry.getStartDistance());
+          return createFollowGoal(objectiveDataEntry, easyNPC, targetServerPlayer);
         } else {
           log.debug(
               "Unable to find valid player {} for {}!",
@@ -113,12 +167,7 @@ public class ObjectiveUtils {
         break;
       case FOLLOW_OWNER:
         if (targetOwner instanceof LivingEntity livingEntity && !livingEntity.isRemoved()) {
-          return new FollowLivingEntityGoal(
-              easyNPC,
-              livingEntity,
-              objectiveDataEntry.getSpeedModifier(),
-              objectiveDataEntry.getStopDistance(),
-              objectiveDataEntry.getStartDistance());
+          return createFollowGoal(objectiveDataEntry, easyNPC, livingEntity);
         } else {
           log.debug(
               "Unable to find valid owner {} for {} with {}!",
@@ -130,12 +179,7 @@ public class ObjectiveUtils {
       case FOLLOW_ENTITY_BY_UUID:
         LivingEntity targetEntityMob = objectiveDataEntry.getTargetEntity(easyNPC);
         if (targetEntityMob != null && !targetEntityMob.isRemoved()) {
-          return new FollowLivingEntityGoal(
-              easyNPC,
-              targetEntityMob,
-              objectiveDataEntry.getSpeedModifier(),
-              objectiveDataEntry.getStopDistance(),
-              objectiveDataEntry.getStartDistance());
+          return createFollowGoal(objectiveDataEntry, easyNPC, targetEntityMob);
         } else {
           log.debug(
               "Unable to find living entity {} for {}!",
@@ -147,17 +191,15 @@ public class ObjectiveUtils {
         if (!requiresPathfinderMob(objectiveType, easyNPC)) {
           return null;
         }
-        String itemTag = objectiveDataEntry.getTargetItemTag();
-        if (itemTag != null && !itemTag.isEmpty()) {
-          Item item = BuiltInRegistries.ITEM.getOptional(Identifier.parse(itemTag)).orElse(null);
-          if (item != null && item != net.minecraft.world.item.Items.AIR) {
-            return new TemptGoal(
-                easyNPC.getPathfinderMob(),
-                objectiveDataEntry.getSpeedModifier(),
-                Ingredient.of(item),
-                false);
-          }
-          log.debug("Unable to find item {} for {}!", itemTag, objectiveDataEntry);
+        Ingredient temptItems = resolveTargetItems(objectiveDataEntry);
+        if (temptItems != null) {
+          return new CustomTemptGoal(
+              easyNPC,
+              easyNPC.getPathfinderMob(),
+              objectiveDataEntry.getSpeedModifier(),
+              temptItems,
+              objectiveDataEntry.getCanScare(),
+              objectiveDataEntry.getOnlyWithoutOwner());
         }
         break;
       case RANDOM_STROLL:
@@ -281,6 +323,12 @@ public class ObjectiveUtils {
         }
         log.debug("No valid owner for LOOK_AT_OWNER objective!");
         break;
+      case LOOK_AT_ITEM:
+        Ingredient lookAtItems = resolveTargetItems(objectiveDataEntry);
+        if (lookAtItems != null) {
+          return new LookAtItemGoal<>(easyNPC, lookAtItems, objectiveDataEntry.getLookDistance());
+        }
+        break;
       case LOOK_RANDOM_AROUND:
         return new RandomLookAroundGoal(easyNPC.getMob());
       case PANIC:
@@ -357,6 +405,12 @@ public class ObjectiveUtils {
     ObjectiveType objectiveType = objectiveDataEntry.getType();
 
     switch (objectiveType) {
+      case CUSTOM:
+        ObjectiveGoalFactory targetFactory =
+            ObjectiveRegistry.get(objectiveDataEntry.getCustomObjectiveId());
+        return targetFactory != null
+            ? targetFactory.createTarget(objectiveDataEntry, easyNPC)
+            : null;
       case ATTACK_ANIMAL:
         return new NearestAttackableTargetGoal<>(
             mob, Animal.class, objectiveDataEntry.isMustSeeTarget());

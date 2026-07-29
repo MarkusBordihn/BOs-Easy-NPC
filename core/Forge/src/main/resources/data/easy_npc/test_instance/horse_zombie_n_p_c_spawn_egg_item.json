@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:function",
+  "function": "easy_npc:horse_zombie_n_p_c_spawn_egg_item",
+  "environment": "minecraft:default",
+  "structure": "easy_npc:gametest.3x3x3",
+  "max_ticks": 100
+}

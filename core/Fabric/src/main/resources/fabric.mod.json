@@ -22,15 +22,22 @@
       "de.markusbordihn.easynpc.EasyNPCClient"
     ],
     "fabric-gametest": [
+      "de.markusbordihn.easynpc.gametest.SmokeTest",
       "de.markusbordihn.easynpc.gametest.ConditionEvaluationTest",
+      "de.markusbordihn.easynpc.gametest.DialogScreenTest",
+      "de.markusbordihn.easynpc.gametest.ModSpawnEggItemTest",
+      "de.markusbordihn.easynpc.gametest.NPCDataIsolationTest",
       "de.markusbordihn.easynpc.gametest.TradingPersistenceTest",
       "de.markusbordihn.easynpc.gametest.VillagerVariantTest",
       "de.markusbordihn.easynpc.gametest.FactionObjectiveTest",
       "de.markusbordihn.easynpc.gametest.ExecuteAsUserCommandTest",
       "de.markusbordihn.easynpc.gametest.PresetCommandSecurityTest",
       "de.markusbordihn.easynpc.gametest.VisibilityAttributeTest",
+      "de.markusbordihn.easynpc.gametest.EnvironmentalAttributeTest",
       "de.markusbordihn.easynpc.gametest.FactionDefenseTest",
-      "de.markusbordihn.easynpc.gametest.IllagerCrossedArmsTest"
+      "de.markusbordihn.easynpc.gametest.IllagerCrossedArmsTest",
+      "de.markusbordihn.easynpc.gametest.NPCEntityLifecycleTest",
+      "de.markusbordihn.easynpc.gametest.NavigationHomePositionTest"
     ]
   },
   "mixins": [

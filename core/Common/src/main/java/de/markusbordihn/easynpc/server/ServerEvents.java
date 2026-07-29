@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.server;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.backup.BackupManager;
 import de.markusbordihn.easynpc.entity.NPCEntityManager;
+import de.markusbordihn.easynpc.handler.OwnerLoginRestoreHandler;
 import de.markusbordihn.easynpc.io.DataFileHandler;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.storage.LevelResource;
@@ -41,10 +42,8 @@ public class ServerEvents {
 
     log.info("{} Server is starting Events ...", Constants.LOG_REGISTER_PREFIX);
 
-    // Set world directory for server.
     Constants.WORLD_DIR = minecraftServer.getWorldPath(LevelResource.ROOT);
 
-    // Prepare custom data directory for server.
     DataFileHandler.registerServerDataFiles(minecraftServer);
   }
 
@@ -66,6 +65,8 @@ public class ServerEvents {
 
     // Perform backup each hour.
     BackupManager.performBackup();
+
+    OwnerLoginRestoreHandler.handleServerTick(minecraftServer);
   }
 
   public static void handleServerStopping(MinecraftServer minecraftServer) {
@@ -75,7 +76,6 @@ public class ServerEvents {
 
     log.info("{} Server is stopping, saving all dirty NPCs...", Constants.LOG_REGISTER_PREFIX);
 
-    // Save all dirty NPCs before server stops
     NPCEntityManager.saveAllDirtyNPCs();
   }
 }

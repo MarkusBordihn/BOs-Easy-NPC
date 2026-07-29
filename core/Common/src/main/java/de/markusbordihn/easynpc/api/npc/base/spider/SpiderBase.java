@@ -59,7 +59,8 @@ public class SpiderBase extends SpiderRaw implements BaseEasyNPC<SpiderRaw> {
         .add(Attributes.FOLLOW_RANGE, 32.0D)
         .add(Attributes.KNOCKBACK_RESISTANCE, 0.0D)
         .add(Attributes.MAX_HEALTH, 20.0D)
-        .add(Attributes.MOVEMENT_SPEED, 0.3F);
+        .add(Attributes.MOVEMENT_SPEED, 0.3F)
+        .add(Attributes.TEMPT_RANGE, 10.0D);
   }
 
   @Override

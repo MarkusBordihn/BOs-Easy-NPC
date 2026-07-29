@@ -24,6 +24,7 @@ import com.mojang.brigadier.builder.ArgumentBuilder;
 import de.markusbordihn.easynpc.commands.Command;
 import de.markusbordihn.easynpc.commands.arguments.EasyNPCArgument;
 import de.markusbordihn.easynpc.commands.arguments.EntityTypeArgument;
+import de.markusbordihn.easynpc.commands.suggestion.RenderModelSuggestions;
 import de.markusbordihn.easynpc.commands.suggestion.RenderTypeSuggestions;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
 import de.markusbordihn.easynpc.data.render.RenderType;
@@ -82,6 +83,7 @@ public class RenderCommand extends Command {
                             Commands.argument(NPC_TARGET_ARG, EasyNPCArgument.npc())
                                 .then(
                                     Commands.argument(SPECIES_ARG, StringArgumentType.string())
+                                        .suggests(RenderModelSuggestions::suggest)
                                         .executes(
                                             context ->
                                                 setRenderEntityModel(

@@ -10,5 +10,6 @@
         .add(net.minecraft.world.entity.ai.attributes.Attributes.MAX_HEALTH, 16.0D)
         .add(net.minecraft.world.entity.ai.attributes.Attributes.MOVEMENT_SPEED, 0.3F)
         .add(net.minecraft.world.entity.ai.attributes.Attributes.FLYING_SPEED, 0.4F)
-        .add(net.minecraft.world.entity.ai.attributes.Attributes.SPAWN_REINFORCEMENTS_CHANCE, 0.0D);
+        .add(net.minecraft.world.entity.ai.attributes.Attributes.SPAWN_REINFORCEMENTS_CHANCE, 0.0D)
+        .add(net.minecraft.world.entity.ai.attributes.Attributes.TEMPT_RANGE, 10.0D);
   }

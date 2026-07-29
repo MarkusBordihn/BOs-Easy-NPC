@@ -68,8 +68,8 @@ public class PresetDetailsView {
         0x3F3F3F);
 
     if (easyNPC.getEasyNPCNavigationData() != null
-        && easyNPC.getEasyNPCNavigationData().hasHomePosition()) {
-      var homePos = easyNPC.getEasyNPCNavigationData().getHomePosition();
+        && easyNPC.getEasyNPCNavigationData().hasNPCHomePosition()) {
+      var homePos = easyNPC.getEasyNPCNavigationData().getNPCHomePosition();
       Text.drawString(
           guiGraphics,
           font,

@@ -8,6 +8,66 @@ the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 7.5.0
+
+- Fixed #814 by giving every Cobblemon NPC its own animation state instead of one per species.
+- Fixed #813 by letting "Move back to Home" work at any distance instead of only near its home.
+- Fixed #812 by checking once per session whether a player changed their skin.
+- Fixed #810 by accepting Cobblemon aspects of resource packs instead of only "shiny" and "female".
+- Fixed the home position of an NPC always reading as unset, which hid "Home" in the configuration
+  screen, skipped it on save and stopped "Move back to Home" and "Stroll around Home" from working.
+- Fixed NPCs spawned from a preset, the preset browser or a respawn never getting a home position.
+- Fixed an NPC spawned from the preset browser keeping the home position of the world the preset was
+  exported from instead of using its spawn position.
+- Fixed NPCs being drawn as a white silhouette with a shadow in the configuration, skin and preset
+  screens while they were highlighted by the Easy NPC Wand.
+- Fixed the server crashing when an NPC with a "Tempt" objective ticked its goals.
+- Fixed a single or boss spawner spawning without any limit when its preset carried no stored NPC.
+- Fixed the "Legacy Easy NPC Data" warning appearing for newly created NPCs.
+- Fixed missing transparency corrections for old 64x32 skins, which showed layer artifacts.
+- Fixed the player skin screen freezing for a moment while a player name was looked up.
+- Fixed the "Reset look at ..." objective label, which read "Reset loot at ..." in some languages.
+- Fixed the "No Gravity" attribute being ignored after a preset import, which let NPCs fall.
+- Fixed the Fabric game tests, which crashed on start because of the development helper mods.
+- Fixed NPCs losing their owner when they were spawned again after a despawn.
+- Fixed objectives being deleted from an NPC when the mod providing them was missing at start.
+- Fixed importing a preset without a stored id, which spawned an NPC without owner and home.
+- Fixed "Follow owner" and "Look at owner" keeping their old target after the owner was changed.
+- Fixed attack targets staying assigned to an NPC after the targeted entity was gone.
+- Fixed the "Look at Item" objective, which could be stored but never did anything.
+- Fixed walking animation for Doppler NPC and 3rd party models.
+- Fixed Forge never running its server start-up step, which left NPC tracking, factions and the
+  custom identifier index empty for the whole session.
+- Fixed Forge development runs starting without any mixins, which disabled the vanilla entity
+  adjustments and crashed when a Fox NPC was spawned.
+- Changed the movement objectives to a fixed order: flee, follow, return home, then stroll. NPCs
+  with several movement objectives may therefore behave differently than before.
+- Changed inserting a preset into a vanilla monster spawner to keep its delay, count and range.
+- Changed "Follow owner" and "Look at owner" without a chosen target to follow the owner of the NPC.
+- Changed datapack presets to `easy_npc/preset/`, the old folder still works, but only for easy_npc.
+- Changed the preset browser to always list its entries in the same order.
+- Removed the experimental user-defined NPCs; the extra config file is no longer read or created.
+- Removed the unused `SERVER_SKIN` skin type.
+- Added a new game test structure to support game tests in 1.21.11 and higher.
+- Added a reload button to each entry of the player skin screen, to fetch a single skin again.
+- Added the reason to the log whenever an NPC is removed, so an unexpected despawn can be traced.
+- Added suggestions to `/easy_npc render set species`.
+- Added support for presets from other mods, which no longer have to use the `easy_npc` namespace.
+- Added a preset visibility that hides a preset from the preset browser and the NPC screens.
+- Added a teleport distance and a resting spot offset to the follow objectives.
+- Added item tags, a "can be scared" option and a "only without owner" option to "Follow item".
+- Added an item field to the look objectives, so an NPC can watch a chosen dropped item.
+- Added an identifier per NPC, so a mod can find its own NPCs again.
+- Added an option to spawn an NPC again when its owner logs in.
+- Added game tests for NeoForge, which had none, and restored the spawn egg, dialog screen, data
+  isolation and smoke tests that were dropped during the update to 1.21.11.
+- Added game tests for every configuration and editor screen, covering all three mod loaders.
+- Added game tests for the home position, covering the spawn default, the stored value and
+  reloading.
+- Improved the model name parsing, which mistook a species ending in "_shiny" for a variant.
+- Improved following of flying NPCs, which now steer directly when there is no path through the air.
+- Improved third party support with an API for presets, own objectives and objective configuration.
+
 ### 7.4.0
 
 - Fixed #807 by no longer pulling every same-type NPC within 32 blocks into a "Defend Self" fight.
