@@ -29,6 +29,7 @@ import de.markusbordihn.easynpc.data.render.RenderDataEntry;
 import de.markusbordihn.easynpc.data.render.RenderType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ConfigurationDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.NavigationDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.RenderDataCapable;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
@@ -142,6 +143,12 @@ public class RenderHandler {
                 EasyModelEntitiesManager.getProfileId(entityModel))
             : null;
     renderData.setRenderData(new RenderDataEntry(renderType, null, entityModel, modelType));
+
+    // The navigation type can be derived from the model, so it has to follow a model change.
+    NavigationDataCapable<?> navigationData = easyNPC.getEasyNPCNavigationData();
+    if (navigationData != null) {
+      navigationData.refreshNavigation();
+    }
     return true;
   }
 }

@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.data;
 
+import de.markusbordihn.easynpc.api.event.EasyNPCEventRegistry;
 import de.markusbordihn.easynpc.data.dialog.DialogButtonEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
@@ -104,6 +105,7 @@ public interface DialogDataCapable<T extends Mob> extends EasyNPC<T> {
       getDialogDataSet().recordDialogExecution(dialog, serverPlayer, this.getLivingEntity());
     }
     MenuManager.getMenuHandler().openDialogMenu(serverPlayer, this, dialogId, 0);
+    EasyNPCEventRegistry.fireDialogOpened(this, serverPlayer, dialog);
   }
 
   default boolean openDialogIfConditionsMet(ServerPlayer serverPlayer, UUID dialogId) {

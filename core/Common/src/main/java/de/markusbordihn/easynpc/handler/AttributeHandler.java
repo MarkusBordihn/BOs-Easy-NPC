@@ -30,6 +30,7 @@ import de.markusbordihn.easynpc.data.attribute.InteractionAttributeType;
 import de.markusbordihn.easynpc.data.attribute.InteractionAttributes;
 import de.markusbordihn.easynpc.data.attribute.MovementAttributeType;
 import de.markusbordihn.easynpc.data.attribute.MovementAttributes;
+import de.markusbordihn.easynpc.data.attribute.NavigationType;
 import de.markusbordihn.easynpc.data.display.DisplayAttributeType;
 import de.markusbordihn.easynpc.data.type.ValueType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
@@ -246,7 +247,55 @@ public class AttributeHandler {
       objectiveData.registerAttributeBasedObjectives();
     }
     if (navigationData != null) {
-      navigationData.refreshGroundNavigation();
+      navigationData.refreshNavigation();
+    }
+    return true;
+  }
+
+  public static boolean setMovementAttribute(
+      EasyNPC<?> easyNPC, MovementAttributeType attributeType, double value) {
+    if (easyNPC == null || attributeType == null) {
+      return false;
+    }
+    AttributeDataCapable<?> attributeData = easyNPC.getEasyNPCAttributeData();
+    if (attributeData == null || attributeData.getEntityAttributes() == null) {
+      return false;
+    }
+    EntityAttributes entityAttributes = attributeData.getEntityAttributes();
+    MovementAttributes attributes = entityAttributes.getMovementAttributes();
+    log.debug("Changing moving attribute {}={} for {}", attributeType, value, easyNPC);
+    if (attributeType == MovementAttributeType.HOVER_HEIGHT) {
+      entityAttributes.setMovementAttributes(attributes.withHoverHeight(value));
+    } else {
+      log.error("Unimplemented moving attribute {} for {}", attributeType, easyNPC);
+      return false;
+    }
+
+    attributeData.refreshEntityAttributes();
+    return true;
+  }
+
+  public static boolean setNavigationType(EasyNPC<?> easyNPC, NavigationType navigationType) {
+    if (easyNPC == null || navigationType == null) {
+      return false;
+    }
+    AttributeDataCapable<?> attributeData = easyNPC.getEasyNPCAttributeData();
+    if (attributeData == null || attributeData.getEntityAttributes() == null) {
+      return false;
+    }
+    EntityAttributes entityAttributes = attributeData.getEntityAttributes();
+    MovementAttributes attributes = entityAttributes.getMovementAttributes();
+    log.debug("Changing navigation type to {} for {}", navigationType, easyNPC);
+    entityAttributes.setMovementAttributes(attributes.withNavigationType(navigationType));
+
+    attributeData.refreshEntityAttributes();
+    ObjectiveDataCapable<?> objectiveData = easyNPC.getEasyNPCObjectiveData();
+    if (objectiveData != null) {
+      objectiveData.registerAttributeBasedObjectives();
+    }
+    NavigationDataCapable<?> navigationData = easyNPC.getEasyNPCNavigationData();
+    if (navigationData != null) {
+      navigationData.refreshNavigation();
     }
     return true;
   }

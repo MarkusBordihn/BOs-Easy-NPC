@@ -19,7 +19,7 @@
 
 package de.markusbordihn.easynpc.data.skin;
 
-import java.util.Locale;
+import de.markusbordihn.easynpc.utils.ResourceNameNormalizer;
 import java.util.Set;
 
 public enum SkinModel {
@@ -63,8 +63,7 @@ public enum SkinModel {
   private static final Set<String> EXCLUDED_FROM_INHERITANCE = Set.of("chilling");
 
   private final boolean hasArmourersWorkshopSupport;
-  private final String modelName =
-      this.name().toLowerCase(Locale.ROOT).replaceAll("[^a-zA-Z0-9/._-]", "").replace("..", "");
+  private final String modelName = ResourceNameNormalizer.toResourcePath(this.name());
 
   SkinModel() {
     this(false);

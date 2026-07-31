@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.data.condition;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -58,6 +59,62 @@ class ConditionDataEntryTest {
         new ConditionDataEntry(
             ConditionType.SCOREBOARD, ConditionOperationType.GREATER_THAN, "test", 5);
     assertTrue(entryWithOperation.isValid());
+  }
+
+  @Test
+  @DisplayName("A target NPC survives the tag round-trip and stays optional")
+  void testTargetUuidRoundTrip() {
+    UUID targetUUID = UUID.fromString("11111111-2222-3333-4444-555555555555");
+    ConditionDataEntry entry =
+        new ConditionDataEntry(
+                ConditionType.NPC_STATE, ConditionOperationType.EQUALS, "easy_npc:quest", 1)
+            .withTargetUUID(targetUUID);
+
+    assertTrue(entry.hasTargetUUID());
+    assertEquals(targetUUID, new ConditionDataEntry(entry.createTag()).targetUUID());
+
+    ConditionDataEntry entryWithoutTarget = entry.withTargetUUID(null);
+    assertFalse(entryWithoutTarget.hasTargetUUID());
+    assertFalse(entryWithoutTarget.createTag().contains(ConditionDataEntry.DATA_TARGET_UUID_TAG));
+  }
+
+  @Test
+  @DisplayName("The condition id is derived from the content and stays the same in every JVM")
+  void testIdIsContentBased() {
+    ConditionDataEntry entry =
+        new ConditionDataEntry(
+            ConditionType.SCOREBOARD, ConditionOperationType.EQUALS, "test_score", 5);
+
+    assertEquals(UUID.fromString("3ffef54f-1bc5-3edf-804e-4bdc593a7e9b"), entry.getId());
+    assertEquals(
+        UUID.fromString("96d1160a-7cca-3094-a7a0-93d247bf972b"),
+        new ConditionDataEntry(
+                ConditionType.WEATHER, WeatherType.RAIN, ConditionOperationType.NONE, "", 0)
+            .getId());
+  }
+
+  @Test
+  @DisplayName("The condition id survives the tag round-trip")
+  void testIdRoundTrip() {
+    ConditionDataEntry entry =
+        new ConditionDataEntry(
+                ConditionType.SCOREBOARD, ConditionOperationType.EQUALS, " test_score ", 5)
+            .withTargetUUID(UUID.fromString("11111111-2222-3333-4444-555555555555"));
+
+    assertEquals(entry.getId(), new ConditionDataEntry(entry.createTag()).getId());
+  }
+
+  @Test
+  @DisplayName("Conditions that differ in any component get their own id")
+  void testIdDiffersPerComponent() {
+    ConditionDataEntry entry =
+        new ConditionDataEntry(ConditionType.SCOREBOARD, ConditionOperationType.EQUALS, "test", 5);
+
+    assertNotEquals(entry.getId(), entry.withValue(6).getId());
+    assertNotEquals(entry.getId(), entry.withName("other").getId());
+    assertNotEquals(entry.getId(), entry.withConditionType(ConditionType.PLAYER_TAG).getId());
+    assertNotEquals(
+        entry.getId(), entry.withOperationType(ConditionOperationType.GREATER_THAN).getId());
   }
 
   @Test

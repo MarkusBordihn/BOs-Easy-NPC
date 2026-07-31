@@ -31,14 +31,14 @@ public class SpinButton<T> extends CustomButton {
   private final TextButton previousButton;
   private final TextButton nextButton;
   private final TextButton textButton;
-  private final List<T> values;
+  private final List<T> values = new ArrayList<>();
   private final OnChange<T> onChange;
   private int currentIndex;
 
   public SpinButton(
       int x, int y, int width, int height, Set<T> values, T initialValue, OnChange<T> onChange) {
     super(x, y, width, height);
-    this.values = new ArrayList<>(values);
+    this.values.addAll(values);
     this.currentIndex = Math.max(0, this.values.indexOf(initialValue));
     this.onChange = onChange;
 
@@ -83,6 +83,13 @@ public class SpinButton<T> extends CustomButton {
     return this.values.isEmpty() ? null : this.values.get(this.currentIndex);
   }
 
+  public void setValues(Set<T> values, T selectedValue) {
+    this.values.clear();
+    this.values.addAll(values);
+    this.currentIndex = Math.max(0, this.values.indexOf(selectedValue));
+    updateButtonStates();
+  }
+
   @Override
   public void renderButton(GuiGraphics guiGraphics, int left, int top, float partialTicks) {
     this.previousButton.renderButton(guiGraphics, left, top, partialTicks);
@@ -97,6 +104,10 @@ public class SpinButton<T> extends CustomButton {
 
   @Override
   public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    if (!this.visible || !this.active) {
+      return false;
+    }
+
     return this.previousButton.mouseClicked(mouseX, mouseY, button)
         || this.nextButton.mouseClicked(mouseX, mouseY, button)
         || this.textButton.mouseClicked(mouseX, mouseY, button);

@@ -30,6 +30,7 @@ import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
+import de.markusbordihn.easynpc.utils.ResourceNameNormalizer;
 import java.util.EnumMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -50,6 +51,8 @@ public class PoseManager {
   private static final String LOG_PREFIX = "[Pose Manager]";
 
   private static final Map<ResourceLocation, Animation> poseDataMap = new ConcurrentHashMap<>();
+  private static final Map<ResourceLocation, ResourceLocation> legacyPoseLocations =
+      new ConcurrentHashMap<>();
   private static final Map<ResourceLocation, EnumMap<ModelPartType, CustomRotation>>
       cachedRotations = new ConcurrentHashMap<>();
   private static final Map<ResourceLocation, EnumMap<ModelPartType, CustomPosition>>
@@ -59,6 +62,7 @@ public class PoseManager {
 
   public static void clearPoseData() {
     poseDataMap.clear();
+    legacyPoseLocations.clear();
     cachedRotations.clear();
     cachedPositions.clear();
     log.info("{} Cleared all pose data.", LOG_PREFIX);
@@ -80,7 +84,26 @@ public class PoseManager {
             animation.getName());
         continue;
       }
-      registerPoseData(getResourceLocation(skinModel, animation), animation);
+      ResourceLocation resourceLocation = getResourceLocation(skinModel, animation);
+      registerPoseData(resourceLocation, animation);
+      registerLegacyResourceLocation(skinModel, animation, resourceLocation);
+    }
+  }
+
+  private static void registerLegacyResourceLocation(
+      SkinModel skinModel, Animation animation, ResourceLocation resourceLocation) {
+    String legacyName =
+        animation.getName().replaceAll("[^a-zA-Z0-9_.-]", "").toLowerCase(Locale.ROOT);
+    if (legacyName.isEmpty() || resourceLocation == null) {
+      return;
+    }
+
+    ResourceLocation legacyResourceLocation =
+        new ResourceLocation(
+            Constants.MOD_ID,
+            TEXTURE_PREFIX + skinModel.name().toLowerCase(Locale.ROOT) + "/" + legacyName);
+    if (!legacyResourceLocation.equals(resourceLocation)) {
+      legacyPoseLocations.put(legacyResourceLocation, resourceLocation);
     }
   }
 
@@ -90,7 +113,7 @@ public class PoseManager {
           TEXTURE_PREFIX
               + skinModel.name().toLowerCase(Locale.ROOT)
               + "/"
-              + animation.getName().replaceAll("[^a-zA-Z0-9_.-]", "").toLowerCase(Locale.ROOT);
+              + ResourceNameNormalizer.toResourcePath(animation.getName());
       return new ResourceLocation(Constants.MOD_ID, resourcePath);
     } catch (Exception exception) {
       log.error(
@@ -107,7 +130,14 @@ public class PoseManager {
     if (resourceLocation == null) {
       return null;
     }
-    return poseDataMap.get(resourceLocation);
+
+    Animation animation = poseDataMap.get(resourceLocation);
+    if (animation != null) {
+      return animation;
+    }
+
+    ResourceLocation legacyResourceLocation = legacyPoseLocations.get(resourceLocation);
+    return legacyResourceLocation != null ? poseDataMap.get(legacyResourceLocation) : null;
   }
 
   public static Set<ResourceLocation> getPoseDataKeys() {

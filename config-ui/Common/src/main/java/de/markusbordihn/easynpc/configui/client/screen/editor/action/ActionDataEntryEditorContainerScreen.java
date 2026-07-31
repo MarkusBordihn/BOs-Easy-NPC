@@ -34,6 +34,7 @@ import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.Actio
 import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.CloseDialogEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.CommandActionEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.InteractBlockEntry;
+import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.NpcStateEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.OpenDefaultDialogEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.OpenNamedDialogEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.OpenTradingScreenEntry;
@@ -430,6 +431,9 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
         this.actionEntryWidget =
             new ScoreboardEntry(this.actionDataEntry, this.actionDataSet, this);
         break;
+      case NPC_STATE:
+        this.actionEntryWidget = new NpcStateEntry(this.actionDataEntry, this.actionDataSet, this);
+        break;
       default:
         this.actionEntryWidget = null;
         log.error("Unsupported action data type {}!", this.actionDataType);
@@ -480,9 +484,10 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
 
     if (this.saveButton != null) {
       this.saveButton.active =
-          (this.actionDataType != this.actionDataEntry.actionDataType()
-                  && this.actionDataEntry.actionDataType() != ActionDataType.NONE)
-              || (this.actionEntryWidget != null && this.actionEntryWidget.hasChanged());
+          ((this.actionDataType != this.actionDataEntry.actionDataType()
+                      && this.actionDataEntry.actionDataType() != ActionDataType.NONE)
+                  || (this.actionEntryWidget != null && this.actionEntryWidget.hasChanged()))
+              && (this.actionEntryWidget == null || this.actionEntryWidget.isValid());
     }
 
     if (this.deleteButton != null) {

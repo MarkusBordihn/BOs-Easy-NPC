@@ -21,9 +21,11 @@ package de.markusbordihn.easynpc.configui.network.message.server;
 
 import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.data.dialog.DialogButtonEntry;
+import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.DialogDataCapable;
+import de.markusbordihn.easynpc.network.components.TextComponent;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import de.markusbordihn.easynpc.security.CommandPermissionLevel;
 import de.markusbordihn.easynpc.security.SecurityManager;
@@ -128,6 +130,21 @@ public record SaveDialogButtonMessage(
       return;
     }
 
+    DialogDataEntry dialogDataEntry = dialogData.getDialogDataSet().getDialog(this.dialogId);
+    if (dialogDataEntry.hasConflictingDialogButton(
+        this.dialogButtonId, sanitizedDialogButtonEntry)) {
+      log.warn(
+          "Blocked dialog button save for dialog {} for {} from {} because the label {} is already used by another button",
+          this.dialogId,
+          easyNPC,
+          serverPlayer,
+          sanitizedDialogButtonEntry.label());
+      serverPlayer.sendSystemMessage(
+          TextComponent.getTranslatedText(
+              "dialog.button.duplicate_label", sanitizedDialogButtonEntry.label()));
+      return;
+    }
+
     if (this.dialogButtonId == null) {
       log.info(
           "Add new dialog button {} for dialog {} for {} from {}",
@@ -135,10 +152,7 @@ public record SaveDialogButtonMessage(
           dialogId,
           easyNPC,
           serverPlayer);
-      dialogData
-          .getDialogDataSet()
-          .getDialog(this.dialogId)
-          .setDialogButton(sanitizedDialogButtonEntry);
+      dialogDataEntry.setDialogButton(sanitizedDialogButtonEntry);
     } else {
       log.info(
           "Edit existing dialog button {} for dialog {} for {} from {}",
@@ -146,10 +160,7 @@ public record SaveDialogButtonMessage(
           dialogId,
           easyNPC,
           serverPlayer);
-      dialogData
-          .getDialogDataSet()
-          .getDialog(this.dialogId)
-          .setDialogButton(this.dialogButtonId, sanitizedDialogButtonEntry);
+      dialogDataEntry.setDialogButton(this.dialogButtonId, sanitizedDialogButtonEntry);
     }
   }
 }

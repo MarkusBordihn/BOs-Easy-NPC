@@ -62,6 +62,11 @@ public class SecurityManager {
     return PresetSecurity.validateResourceLocation(presetType, resourceLocation);
   }
 
+  public static PresetType resolvePresetResourceType(
+      ResourceLocation resourceLocation, PresetType presetType) {
+    return PresetSecurity.resolveResourcePresetType(resourceLocation, presetType);
+  }
+
   public static PresetSanitizationResult sanitizePresetImport(
       ServerLevel serverLevel,
       CompoundTag compoundTag,

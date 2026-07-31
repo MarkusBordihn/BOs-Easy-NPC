@@ -25,6 +25,7 @@ import de.markusbordihn.easynpc.data.skin.variant.HumanoidSkinVariant;
 import de.markusbordihn.easynpc.data.skin.variant.VillagerVariantData;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.utils.EnumUtils;
 import de.markusbordihn.easynpc.utils.TextUtils;
 import java.util.stream.Stream;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -68,7 +69,8 @@ public interface VariantDataCapable<T extends Mob> extends EasyNPC<T> {
   }
 
   default Enum<?> getSkinVariantType(String name) {
-    return HumanoidSkinVariant.valueOf(name);
+    HumanoidSkinVariant humanoidSkinVariant = EnumUtils.get(HumanoidSkinVariant.class, name, null);
+    return humanoidSkinVariant != null ? humanoidSkinVariant : this.getDefaultSkinVariantType();
   }
 
   default Enum<?>[] getSkinVariantTypes() {
@@ -130,11 +132,21 @@ public interface VariantDataCapable<T extends Mob> extends EasyNPC<T> {
   }
 
   default void readAdditionalVariantData(CompoundTag compoundTag) {
-    if (compoundTag.contains(EASY_NPC_DATA_VARIANT_TYPE_TAG)) {
-      String variantType = compoundTag.getString(EASY_NPC_DATA_VARIANT_TYPE_TAG);
-      if (!variantType.isEmpty()) {
-        this.setSkinVariantType(this.getSkinVariantType(variantType));
-      }
+    if (!compoundTag.contains(EASY_NPC_DATA_VARIANT_TYPE_TAG)) {
+      return;
     }
+
+    String variantType = compoundTag.getString(EASY_NPC_DATA_VARIANT_TYPE_TAG);
+    if (variantType.isEmpty()) {
+      return;
+    }
+
+    Enum<?> skinVariantType = this.getSkinVariantType(variantType);
+    if (!skinVariantType.name().equals(variantType)) {
+      log.warn(
+          "Unknown variant {} for {}, using {} instead", variantType, this, skinVariantType.name());
+    }
+
+    this.setSkinVariantType(skinVariantType);
   }
 }

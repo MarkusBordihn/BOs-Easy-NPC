@@ -23,9 +23,13 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.condition.ConditionDataSet;
 import de.markusbordihn.easynpc.security.CommandPermissionLevel;
 import de.markusbordihn.easynpc.utils.CompoundTagUtils;
+import java.nio.charset.StandardCharsets;
+import java.util.TreeSet;
 import java.util.UUID;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import org.apache.logging.log4j.LogManager;
@@ -62,8 +66,16 @@ public record ActionDataEntry(
   }
 
   public ActionDataEntry(CompoundTag compoundTag) {
+    this(compoundTag, UUID.randomUUID());
+  }
+
+  public ActionDataEntry(CompoundTag compoundTag, int position) {
+    this(compoundTag, deriveId(compoundTag, position));
+  }
+
+  private ActionDataEntry(CompoundTag compoundTag, UUID fallbackId) {
     this(
-        compoundTag.contains(DATA_ID_TAG) ? compoundTag.getUUID(DATA_ID_TAG) : UUID.randomUUID(),
+        compoundTag.contains(DATA_ID_TAG) ? compoundTag.getUUID(DATA_ID_TAG) : fallbackId,
         ActionDataType.get(compoundTag.getString(DATA_TYPE_TAG)),
         compoundTag.contains(ConditionDataSet.CONDITION_DATA_SET_TAG)
             ? new ConditionDataSet(compoundTag.getCompound(ConditionDataSet.CONDITION_DATA_SET_TAG))
@@ -138,6 +150,38 @@ public record ActionDataEntry(
         DEFAULT_PERMISSION_LEVEL);
   }
 
+  public static UUID deriveId(CompoundTag compoundTag, int position) {
+    StringBuilder identity = new StringBuilder().append(position).append(':');
+    appendIdentity(identity, compoundTag);
+
+    return UUID.nameUUIDFromBytes(identity.toString().getBytes(StandardCharsets.UTF_8));
+  }
+
+  private static void appendIdentity(StringBuilder identity, Tag tag) {
+    if (tag instanceof CompoundTag compoundTag) {
+      identity.append('{');
+      for (String key : new TreeSet<>(compoundTag.getAllKeys())) {
+        identity.append(key).append('=');
+        appendIdentity(identity, compoundTag.get(key));
+        identity.append(';');
+      }
+      identity.append('}');
+      return;
+    }
+
+    if (tag instanceof ListTag listTag) {
+      identity.append('[');
+      for (Tag entryTag : listTag) {
+        appendIdentity(identity, entryTag);
+        identity.append(',');
+      }
+      identity.append(']');
+      return;
+    }
+
+    identity.append(tag);
+  }
+
   private static int checkPermissionLevel(int permissionLevel) {
     if (permissionLevel < MIN_PERMISSION_LEVEL) {
       log.warn(
@@ -186,6 +230,19 @@ public record ActionDataEntry(
         this.command,
         this.targetUUID,
         blockPos,
+        this.executeAsUser,
+        this.enableDebug,
+        this.permissionLevel);
+  }
+
+  public ActionDataEntry withTargetUUID(UUID targetUUID) {
+    return new ActionDataEntry(
+        this.id,
+        this.actionDataType,
+        this.conditionDataSet,
+        this.command,
+        targetUUID,
+        this.blockPos,
         this.executeAsUser,
         this.enableDebug,
         this.permissionLevel);
@@ -268,11 +325,6 @@ public record ActionDataEntry(
         && (!this.actionDataType.requiresArgument()
             || this.hasCommandAndNotEmpty()
             || this.hasBlockPos());
-  }
-
-  @SuppressWarnings("unused")
-  public ActionDataEntry create(CompoundTag compoundTag) {
-    return new ActionDataEntry(compoundTag);
   }
 
   public CompoundTag write(CompoundTag compoundTag) {

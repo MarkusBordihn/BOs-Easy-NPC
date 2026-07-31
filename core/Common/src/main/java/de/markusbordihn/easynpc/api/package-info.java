@@ -35,6 +35,10 @@
  * <ul>
  *   <li>{@link de.markusbordihn.easynpc.api.npc} - Raw NPC classes that can be extended to create
  *       custom NPC types
+ *   <li>{@link de.markusbordihn.easynpc.api.condition} - Register an own condition type, so dialogs
+ *       and actions can be gated on the data of another mod
+ *   <li>{@link de.markusbordihn.easynpc.api.event} - React to an opened dialog, an executed action
+ *       or a changed NPC state
  * </ul>
  *
  * <h2>Usage Example</h2>
@@ -52,6 +56,19 @@
  * }</pre>
  *
  * <p>Then register your custom NPC entity with your mod loader (Forge/Fabric/NeoForge).
+ *
+ * <p>To gate a dialog on own data, register a condition once during mod setup and reference its id
+ * from the condition of the dialog button:
+ *
+ * <pre>{@code
+ * ConditionRegistry.register(
+ *     new ResourceLocation("my_mod", "has_quest"),
+ *     (conditionDataEntry, serverPlayer, npcContext) -> MyQuests.isActive(serverPlayer));
+ * }</pre>
+ *
+ * <p>A condition that cannot be answered on the client keeps {@code isAvailableOnClient()} at
+ * {@code false}; the server then sends a lock for the dialog button instead of letting it look
+ * available.
  *
  * <h2>Documentation</h2>
  *

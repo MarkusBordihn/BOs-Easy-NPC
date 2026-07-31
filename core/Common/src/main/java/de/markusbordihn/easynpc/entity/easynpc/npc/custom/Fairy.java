@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.entity.easynpc.npc.custom;
 
 import de.markusbordihn.easynpc.api.npc.raw.PathfinderMobRaw;
+import de.markusbordihn.easynpc.data.attribute.NavigationType;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
 import de.markusbordihn.easynpc.data.scale.CustomScale;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
@@ -34,9 +35,6 @@ import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.control.FlyingMoveControl;
-import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
-import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.animal.Parrot.Variant;
 import net.minecraft.world.level.Level;
 
@@ -52,7 +50,6 @@ public class Fairy extends PathfinderMobRaw {
 
   public Fairy(EntityType<? extends PathfinderMob> entityType, Level level, Enum<?> variantType) {
     super(entityType, level, variantType);
-    this.moveControl = new FlyingMoveControl(this, 20, true);
   }
 
   public static AttributeSupplier.Builder createAttributes() {
@@ -70,8 +67,8 @@ public class Fairy extends PathfinderMobRaw {
   }
 
   @Override
-  protected PathNavigation createNavigation(Level level) {
-    return new FlyingPathNavigation(this, level);
+  public NavigationType defaultNavigationType() {
+    return NavigationType.FLYING;
   }
 
   @Override
@@ -121,11 +118,6 @@ public class Fairy extends PathfinderMobRaw {
   @Override
   public int getEntityDialogScaling() {
     return 75;
-  }
-
-  @Override
-  public boolean canFly() {
-    return true;
   }
 
   @Override

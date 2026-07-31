@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.api.npc.base.ghast;
 
 import de.markusbordihn.easynpc.api.npc.BaseEasyNPC;
 import de.markusbordihn.easynpc.api.npc.raw.GhastRaw;
+import de.markusbordihn.easynpc.data.attribute.NavigationType;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
 import de.markusbordihn.easynpc.data.skin.variant.GhastSkinVariant;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
@@ -34,9 +35,6 @@ import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.control.FlyingMoveControl;
-import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
-import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.animal.FlyingAnimal;
 import net.minecraft.world.entity.monster.Ghast;
 import net.minecraft.world.level.Level;
@@ -52,7 +50,6 @@ public class GhastBase extends GhastRaw implements BaseEasyNPC<GhastRaw> {
   public GhastBase(EntityType<? extends Ghast> entityType, Level level, Enum<?> variantType) {
     super(entityType, level, variantType);
     this.setInvulnerable(true);
-    this.moveControl = new FlyingMoveControl(this, 20, true);
   }
 
   public static AttributeSupplier.Builder createAttributes() {
@@ -71,13 +68,8 @@ public class GhastBase extends GhastRaw implements BaseEasyNPC<GhastRaw> {
   }
 
   @Override
-  protected PathNavigation createNavigation(Level level) {
-    return new FlyingPathNavigation(this, level);
-  }
-
-  @Override
-  public boolean canFly() {
-    return true;
+  public NavigationType defaultNavigationType() {
+    return NavigationType.FLYING;
   }
 
   @Override

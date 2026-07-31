@@ -20,7 +20,9 @@
 package de.markusbordihn.easynpc.data.action;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
@@ -29,7 +31,7 @@ import net.minecraft.nbt.ListTag;
 public final class ActionDataSet {
 
   public static final String ACTION_DATA_SET_TAG = "ActionDataSet";
-  private final Set<ActionDataEntry> actionDataEntries = new LinkedHashSet<>();
+  private final List<ActionDataEntry> actionDataEntries = new ArrayList<>();
 
   public ActionDataSet() {}
 
@@ -43,7 +45,7 @@ public final class ActionDataSet {
   }
 
   public void add(ActionDataEntry actionDataEntry) {
-    if (actionDataEntry != null) {
+    if (actionDataEntry != null && !this.actionDataEntries.contains(actionDataEntry)) {
       this.actionDataEntries.add(actionDataEntry);
     }
   }
@@ -68,24 +70,12 @@ public final class ActionDataSet {
       return;
     }
 
-    ArrayList<ActionDataEntry> indexedActionDataSet = new ArrayList<>(this.actionDataEntries);
-    int index = -1;
-
-    for (int i = 0; i < indexedActionDataSet.size(); i++) {
-      if (indexedActionDataSet.get(i).id().equals(actionDataEntryId)) {
-        index = i;
-        break;
-      }
-    }
-
-    if (index >= 0) {
-      indexedActionDataSet.set(index, actionDataEntry);
+    int position = this.getPosition(actionDataEntryId);
+    if (position >= 0) {
+      this.actionDataEntries.set(position, actionDataEntry);
     } else {
-      indexedActionDataSet.add(actionDataEntry);
+      this.actionDataEntries.add(actionDataEntry);
     }
-
-    this.actionDataEntries.clear();
-    this.actionDataEntries.addAll(indexedActionDataSet);
   }
 
   @SuppressWarnings("unused")
@@ -97,12 +87,8 @@ public final class ActionDataSet {
     if (position <= 0) {
       return;
     }
-    ArrayList<ActionDataEntry> indexedActionDataSet = new ArrayList<>(this.actionDataEntries);
-    ActionDataEntry previousActionDataEntry = indexedActionDataSet.get(position - 1);
-    indexedActionDataSet.set(position - 1, actionDataEntry);
-    indexedActionDataSet.set(position, previousActionDataEntry);
-    this.actionDataEntries.clear();
-    this.actionDataEntries.addAll(indexedActionDataSet);
+
+    Collections.swap(this.actionDataEntries, position - 1, position);
   }
 
   @SuppressWarnings("unused")
@@ -114,12 +100,8 @@ public final class ActionDataSet {
     if (position < 0 || position >= this.actionDataEntries.size() - 1) {
       return;
     }
-    ArrayList<ActionDataEntry> indexedActionDataSet = new ArrayList<>(this.actionDataEntries);
-    ActionDataEntry nextActionDataEntry = indexedActionDataSet.get(position + 1);
-    indexedActionDataSet.set(position + 1, actionDataEntry);
-    indexedActionDataSet.set(position, nextActionDataEntry);
-    this.actionDataEntries.clear();
-    this.actionDataEntries.addAll(indexedActionDataSet);
+
+    Collections.swap(this.actionDataEntries, position, position + 1);
   }
 
   public boolean isEmpty() {
@@ -143,7 +125,7 @@ public final class ActionDataSet {
   }
 
   public Set<ActionDataEntry> getEntries() {
-    return this.actionDataEntries;
+    return Collections.unmodifiableSet(new LinkedHashSet<>(this.actionDataEntries));
   }
 
   public ActionDataEntry getEntry(UUID actionDataEntryId) {
@@ -167,16 +149,16 @@ public final class ActionDataSet {
   }
 
   public int getPosition(ActionDataEntry actionDataEntry) {
-    if (actionDataEntry == null) {
-      return -1;
-    }
-    int position = 0;
-    for (ActionDataEntry entry : this.actionDataEntries) {
-      if (entry.id().equals(actionDataEntry.id())) {
+    return actionDataEntry != null ? this.getPosition(actionDataEntry.id()) : -1;
+  }
+
+  private int getPosition(UUID actionDataEntryId) {
+    for (int position = 0; position < this.actionDataEntries.size(); position++) {
+      if (this.actionDataEntries.get(position).id().equals(actionDataEntryId)) {
         return position;
       }
-      position++;
     }
+
     return -1;
   }
 
@@ -204,7 +186,7 @@ public final class ActionDataSet {
     this.actionDataEntries.clear();
     for (int i = 0; i < actionDataList.size(); i++) {
       CompoundTag actionDataEntryTag = actionDataList.getCompound(i);
-      ActionDataEntry actionDataEntry = new ActionDataEntry(actionDataEntryTag);
+      ActionDataEntry actionDataEntry = new ActionDataEntry(actionDataEntryTag, i);
       this.actionDataEntries.add(actionDataEntry);
     }
     return this;

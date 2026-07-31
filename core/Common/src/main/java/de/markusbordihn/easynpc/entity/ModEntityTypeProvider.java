@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.entity;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 
 public interface ModEntityTypeProvider {
 
@@ -30,4 +31,6 @@ public interface ModEntityTypeProvider {
   EntityType.Builder<? extends Entity> getBuilder();
 
   ResourceKey<EntityType<?>> getResourceKey();
+
+  AttributeSupplier.Builder getAttributes();
 }

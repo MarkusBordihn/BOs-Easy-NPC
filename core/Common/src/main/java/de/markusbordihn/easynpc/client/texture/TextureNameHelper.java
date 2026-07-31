@@ -20,12 +20,14 @@
 package de.markusbordihn.easynpc.client.texture;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.utils.ResourceNameNormalizer;
 import java.util.Locale;
 import java.util.UUID;
 
 public class TextureNameHelper {
 
   private static final String TEXTURE_PREFIX = Constants.MOD_ID + "_client_texture_";
+  private static final String TEXTURE_FILE_NAME_FALLBACK_PREFIX = "texture";
 
   private TextureNameHelper() {}
 
@@ -34,7 +36,7 @@ public class TextureNameHelper {
   }
 
   public static String getResourceName(String name, String type) {
-    return (TEXTURE_PREFIX + type + "_" + name.replaceAll("[^a-zA-Z0-9_.-]", ""))
+    return (TEXTURE_PREFIX + type + "_" + ResourceNameNormalizer.toResourcePath(name))
         .toLowerCase(Locale.ROOT);
   }
 
@@ -43,6 +45,6 @@ public class TextureNameHelper {
   }
 
   public static String getFileName(String name) {
-    return name.replaceAll("[^a-zA-Z0-9_.-]", "") + ".png";
+    return ResourceNameNormalizer.toFileName(name, TEXTURE_FILE_NAME_FALLBACK_PREFIX) + ".png";
   }
 }

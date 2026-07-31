@@ -26,17 +26,42 @@ public enum ActionEventType {
   ON_BUTTON_CLICK,
   ON_CLOSE_DIALOG,
   ON_DEATH,
-  ON_DISTANCE_CLOSE,
-  ON_DISTANCE_NEAR,
-  ON_DISTANCE_TOUCH,
-  ON_DISTANCE_VERY_CLOSE,
+  ON_DISTANCE_CLOSE(ActionGroup.DISTANCE_CLOSE, 8.0D),
+  ON_DISTANCE_FAR(ActionGroup.DISTANCE_FAR, 32.0D),
+  ON_DISTANCE_NEAR(ActionGroup.DISTANCE_NEAR, 16.0D),
+  ON_DISTANCE_TOUCH(ActionGroup.DISTANCE_TOUCH, 1.25D),
+  ON_DISTANCE_VERY_CLOSE(ActionGroup.DISTANCE_VERY_CLOSE, 4.0D),
   ON_HURT,
   ON_INTERACTION,
   ON_KILL,
   ON_OPEN_DIALOG,
   ON_TRADE;
 
+  private final ActionGroup actionGroup;
+  private final double triggerDistance;
+
+  ActionEventType() {
+    this(ActionGroup.NONE, 0.0D);
+  }
+
+  ActionEventType(ActionGroup actionGroup, double triggerDistance) {
+    this.actionGroup = actionGroup;
+    this.triggerDistance = triggerDistance;
+  }
+
   public static ActionEventType get(String actionEventType) {
     return EnumUtils.get(ActionEventType.class, actionEventType, NONE);
+  }
+
+  public ActionGroup getActionGroup() {
+    return this.actionGroup;
+  }
+
+  public double getTriggerDistance() {
+    return this.triggerDistance;
+  }
+
+  public boolean isDistanceEvent() {
+    return this.actionGroup != ActionGroup.NONE;
   }
 }

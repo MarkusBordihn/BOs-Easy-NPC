@@ -7,10 +7,13 @@ import de.markusbordihn.easynpc.commands.Command;
 import de.markusbordihn.easynpc.commands.arguments.EasyNPCArgument;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataEntry;
 import de.markusbordihn.easynpc.data.objective.ObjectiveType;
+import de.markusbordihn.easynpc.data.objective.factory.BuiltInObjectiveFactories;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ObjectiveDataCapable;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.stream.Collectors;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -20,19 +23,29 @@ public class AttackObjective extends Command {
 
   private static final String OBJECTIVE_NAME = "attack";
   private static final String TARGET_ARGUMENT = "target";
+  private static final String ATTACK_TYPE_PREFIX = "ATTACK_";
 
+  private static final Map<ObjectiveType, ProtectionObjective> PROTECTION_OBJECTIVES =
+      new LinkedHashMap<>();
   private static final SuggestionProvider<CommandSourceStack> SUGGEST_ATTACK_TARGETS =
       (context, builder) ->
           SharedSuggestionProvider.suggest(
               Arrays.stream(ObjectiveType.values())
-                  .filter(
-                      objectiveType ->
-                          objectiveType.name().startsWith("ATTACK_")
-                              || objectiveType == ObjectiveType.HURT_BY_TARGET
-                              || objectiveType == ObjectiveType.OWNER_HURT_BY_TARGET)
+                  .filter(BuiltInObjectiveFactories::isTargetObjective)
                   .map(AttackObjective::getFriendlyTargetName)
                   .collect(Collectors.toList()),
               builder);
+
+  static {
+    PROTECTION_OBJECTIVES.put(
+        ObjectiveType.OWNER_HURT_BY_TARGET,
+        new ProtectionObjective("protect_owner", "Protect Owner"));
+    PROTECTION_OBJECTIVES.put(
+        ObjectiveType.HURT_BY_TARGET, new ProtectionObjective("defend_self", "Defend Self"));
+    PROTECTION_OBJECTIVES.put(
+        ObjectiveType.FACTION_HURT_BY_TARGET,
+        new ProtectionObjective("defend_faction", "Defend Faction"));
+  }
 
   private AttackObjective() {}
 
@@ -100,9 +113,7 @@ public class AttackObjective extends Command {
 
     boolean removedAny = false;
     for (ObjectiveType objectiveType : ObjectiveType.values()) {
-      if (objectiveType.name().startsWith("ATTACK_")
-          || objectiveType == ObjectiveType.HURT_BY_TARGET
-          || objectiveType == ObjectiveType.OWNER_HURT_BY_TARGET) {
+      if (BuiltInObjectiveFactories.isTargetObjective(objectiveType)) {
         if (objectiveData.removeCustomObjective(objectiveType)) {
           removedAny = true;
         }
@@ -146,7 +157,8 @@ public class AttackObjective extends Command {
 
     // List standard attack targets
     for (ObjectiveType objectiveType : ObjectiveType.values()) {
-      if (objectiveType.name().startsWith("ATTACK_")) {
+      if (BuiltInObjectiveFactories.isTargetObjective(objectiveType)
+          && !PROTECTION_OBJECTIVES.containsKey(objectiveType)) {
         objectiveData
             .getObjectiveEntry(objectiveType)
             .ifPresent(
@@ -156,20 +168,20 @@ public class AttackObjective extends Command {
     }
 
     // List protection targets
-    objectiveData
-        .getObjectiveEntry(ObjectiveType.OWNER_HURT_BY_TARGET)
-        .ifPresent(
-            objective ->
-                sendSuccessMessage(
-                    context,
-                    "> " + getFriendlyTargetName(objective.getType()) + " (Protect Owner)"));
-
-    objectiveData
-        .getObjectiveEntry(ObjectiveType.HURT_BY_TARGET)
-        .ifPresent(
-            objective ->
-                sendSuccessMessage(
-                    context, "> " + getFriendlyTargetName(objective.getType()) + " (Defend Self)"));
+    for (Map.Entry<ObjectiveType, ProtectionObjective> protectionEntry :
+        PROTECTION_OBJECTIVES.entrySet()) {
+      objectiveData
+          .getObjectiveEntry(protectionEntry.getKey())
+          .ifPresent(
+              objective ->
+                  sendSuccessMessage(
+                      context,
+                      "> "
+                          + protectionEntry.getValue().friendlyName()
+                          + " ("
+                          + protectionEntry.getValue().label()
+                          + ")"));
+    }
 
     return Command.SINGLE_SUCCESS;
   }
@@ -217,9 +229,7 @@ public class AttackObjective extends Command {
 
     boolean hasAnyAttackObjective = false;
     for (ObjectiveType objectiveType : ObjectiveType.values()) {
-      if (objectiveType.name().startsWith("ATTACK_")
-          || objectiveType == ObjectiveType.HURT_BY_TARGET
-          || objectiveType == ObjectiveType.OWNER_HURT_BY_TARGET) {
+      if (BuiltInObjectiveFactories.isTargetObjective(objectiveType)) {
         if (objectiveData.hasObjective(objectiveType)) {
           hasAnyAttackObjective = true;
           break;
@@ -240,12 +250,13 @@ public class AttackObjective extends Command {
       return "";
     }
 
-    if (objectiveType == ObjectiveType.HURT_BY_TARGET) {
-      return "defend_self";
-    } else if (objectiveType == ObjectiveType.OWNER_HURT_BY_TARGET) {
-      return "protect_owner";
-    } else if (objectiveType.name().startsWith("ATTACK_")) {
-      return objectiveType.name().substring(7).toLowerCase();
+    ProtectionObjective protectionObjective = PROTECTION_OBJECTIVES.get(objectiveType);
+    if (protectionObjective != null) {
+      return protectionObjective.friendlyName();
+    }
+
+    if (objectiveType.name().startsWith(ATTACK_TYPE_PREFIX)) {
+      return objectiveType.name().substring(ATTACK_TYPE_PREFIX.length()).toLowerCase(Locale.ROOT);
     }
 
     return objectiveType.getObjectiveName();
@@ -256,18 +267,21 @@ public class AttackObjective extends Command {
       return null;
     }
 
-    targetName = targetName.toLowerCase();
-
-    if ("defend_self".equals(targetName)) {
-      return ObjectiveType.HURT_BY_TARGET;
-    } else if ("protect_owner".equals(targetName)) {
-      return ObjectiveType.OWNER_HURT_BY_TARGET;
-    } else {
-      try {
-        return ObjectiveType.valueOf("ATTACK_" + targetName.toUpperCase(Locale.ROOT));
-      } catch (IllegalArgumentException e) {
-        return null;
+    String friendlyTargetName = targetName.toLowerCase(Locale.ROOT);
+    for (Map.Entry<ObjectiveType, ProtectionObjective> protectionEntry :
+        PROTECTION_OBJECTIVES.entrySet()) {
+      if (protectionEntry.getValue().friendlyName().equals(friendlyTargetName)) {
+        return protectionEntry.getKey();
       }
     }
+
+    String attackTypeName = ATTACK_TYPE_PREFIX + friendlyTargetName.toUpperCase(Locale.ROOT);
+    try {
+      return ObjectiveType.valueOf(attackTypeName);
+    } catch (IllegalArgumentException e) {
+      return null;
+    }
   }
+
+  private record ProtectionObjective(String friendlyName, String label) {}
 }

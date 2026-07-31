@@ -19,7 +19,6 @@
 
 package de.markusbordihn.easynpc.data.screen;
 
-import de.markusbordihn.easynpc.condition.ConditionManager;
 import de.markusbordihn.easynpc.data.action.ActionEventSet;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
 import de.markusbordihn.easynpc.data.condition.ConditionDataEntry;
@@ -28,7 +27,6 @@ import de.markusbordihn.easynpc.data.dialog.DialogButtonEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.data.dialog.DialogTextData;
-import de.markusbordihn.easynpc.data.execution.ExecutionId;
 import de.markusbordihn.easynpc.data.scoreboard.ScoreboardData;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import java.util.HashSet;
@@ -48,6 +46,14 @@ public class AdditionalScreenData implements AdditionalScreenDataInterface {
   private static final String SCOREBOARD_DATA_TAG = "ScoreboardData";
   private static final String DIALOG_BUTTON_LOCK_DATA_TAG = "DialogButtonLockData";
   private static final String EXECUTION_LIMIT_DATA_TAG = "ExecutionLimitData";
+  private static final Set<String> PROCESSED_DATA_TAGS =
+      Set.of(
+          ACTION_EVENT_DATA_TAG,
+          ACTION_EVENT_TYPE_TAG,
+          DIALOG_DATA_TAG,
+          SCOREBOARD_DATA_TAG,
+          DIALOG_BUTTON_LOCK_DATA_TAG,
+          EXECUTION_LIMIT_DATA_TAG);
 
   private final ActionEventSet actionEventSet;
   private final ActionEventType actionEventType;
@@ -66,14 +72,13 @@ public class AdditionalScreenData implements AdditionalScreenDataInterface {
     this.lockedDialogButtons = getLockedDialogButtons(compoundTag);
     this.lockedExecutionLimitActions = getLockedExecutionLimitActions(compoundTag);
 
-    // Store remaining data and remove already processed data.
-    this.data = compoundTag;
-    this.data.remove(ACTION_EVENT_DATA_TAG);
-    this.data.remove(ACTION_EVENT_TYPE_TAG);
-    this.data.remove(DIALOG_DATA_TAG);
-    this.data.remove(SCOREBOARD_DATA_TAG);
-    this.data.remove(DIALOG_BUTTON_LOCK_DATA_TAG);
-    this.data.remove(EXECUTION_LIMIT_DATA_TAG);
+    // Keep the remaining data in an own tag, so that the tag of the caller stays complete.
+    this.data = new CompoundTag();
+    for (String dataTag : compoundTag.getAllKeys()) {
+      if (!PROCESSED_DATA_TAGS.contains(dataTag)) {
+        this.data.put(dataTag, compoundTag.get(dataTag));
+      }
+    }
   }
 
   public static void addActionEventType(CompoundTag compoundTag, ActionEventType actionEventType) {
@@ -173,64 +178,15 @@ public class AdditionalScreenData implements AdditionalScreenDataInterface {
       DialogDataSet dialogDataSet,
       ServerPlayer serverPlayer,
       EasyNPC<?> easyNPC) {
-    if (compoundTag == null
-        || dialogDataSet == null
-        || !dialogDataSet.hasDialog()
-        || serverPlayer == null) {
+    if (DialogLockSnapshot.hasNoLockableDialog(compoundTag, dialogDataSet, serverPlayer)) {
       return;
     }
 
-    ListTag lockedButtons = new ListTag();
-    for (DialogDataEntry dialogEntry : dialogDataSet.getDialogsByLabel()) {
-      if (dialogEntry == null) {
-        continue;
-      }
-      for (DialogButtonEntry buttonEntry : dialogEntry.getDialogButtons()) {
-        if (buttonEntry == null
-            || !buttonEntry.hasConditions()
-            || areServerOnlyConditionsAvailable(
-                dialogEntry.getId(), buttonEntry, serverPlayer, easyNPC)) {
-          continue;
-        }
-        lockedButtons.add(NbtUtils.createUUID(buttonEntry.id()));
-      }
-    }
-
+    ListTag lockedButtons =
+        DialogLockSnapshot.collectLockedDialogButtons(dialogDataSet, serverPlayer, easyNPC);
     if (!lockedButtons.isEmpty()) {
       compoundTag.put(DIALOG_BUTTON_LOCK_DATA_TAG, lockedButtons);
     }
-  }
-
-  private static ExecutionId buttonExecutionId(
-      UUID dialogId, DialogButtonEntry buttonEntry, EasyNPC<?> easyNPC) {
-    return ExecutionId.dialogButton(
-        easyNPC != null ? easyNPC.getEntity() : null, dialogId, buttonEntry.id());
-  }
-
-  private static boolean areServerOnlyConditionsAvailable(
-      UUID dialogId, DialogButtonEntry buttonEntry, ServerPlayer serverPlayer, EasyNPC<?> easyNPC) {
-    ExecutionId executionId = buttonExecutionId(dialogId, buttonEntry, easyNPC);
-    for (ConditionDataEntry condition : buttonEntry.conditions()) {
-      if (requiresServerLockSnapshot(condition)
-          && !ConditionManager.evaluate(
-              condition,
-              serverPlayer,
-              executionId,
-              easyNPC != null ? easyNPC.getLivingEntity() : null)) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  private static boolean requiresServerLockSnapshot(ConditionDataEntry condition) {
-    if (condition == null) {
-      return false;
-    }
-    return switch (condition.conditionType()) {
-      case SCOREBOARD, ADVANCEMENT, PLAYER_TAG, TEAM, GAMEMODE -> true;
-      default -> false;
-    };
   }
 
   public static void addExecutionLimitData(
@@ -238,48 +194,15 @@ public class AdditionalScreenData implements AdditionalScreenDataInterface {
       DialogDataSet dialogDataSet,
       ServerPlayer serverPlayer,
       EasyNPC<?> easyNPC) {
-    if (compoundTag == null
-        || dialogDataSet == null
-        || !dialogDataSet.hasDialog()
-        || serverPlayer == null) {
+    if (DialogLockSnapshot.hasNoLockableDialog(compoundTag, dialogDataSet, serverPlayer)) {
       return;
     }
 
-    ListTag lockedActions = new ListTag();
-    for (DialogDataEntry dialogEntry : dialogDataSet.getDialogsByLabel()) {
-      if (dialogEntry == null) {
-        continue;
-      }
-      for (DialogButtonEntry buttonEntry : dialogEntry.getDialogButtons()) {
-        if (buttonEntry == null
-            || !buttonEntry.hasConditions()
-            || isExecutionLimitAvailable(dialogEntry.getId(), buttonEntry, serverPlayer, easyNPC)) {
-          continue;
-        }
-        lockedActions.add(NbtUtils.createUUID(buttonEntry.id()));
-      }
-    }
-
+    ListTag lockedActions =
+        DialogLockSnapshot.collectLockedExecutionLimits(dialogDataSet, serverPlayer, easyNPC);
     if (!lockedActions.isEmpty()) {
       compoundTag.put(EXECUTION_LIMIT_DATA_TAG, lockedActions);
     }
-  }
-
-  private static boolean isExecutionLimitAvailable(
-      UUID dialogId, DialogButtonEntry buttonEntry, ServerPlayer serverPlayer, EasyNPC<?> easyNPC) {
-    ExecutionId executionId = buttonExecutionId(dialogId, buttonEntry, easyNPC);
-    for (ConditionDataEntry condition : buttonEntry.conditions()) {
-      if (condition.conditionType() == ConditionType.EXECUTION_LIMIT
-          && !ConditionManager.evaluate(
-              condition,
-              serverPlayer,
-              executionId,
-              easyNPC != null ? easyNPC.getLivingEntity() : null)) {
-        return false;
-      }
-    }
-
-    return true;
   }
 
   public static Set<UUID> getLockedExecutionLimitActions(CompoundTag compoundTag) {

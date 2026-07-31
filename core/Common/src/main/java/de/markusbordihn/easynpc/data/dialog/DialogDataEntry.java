@@ -29,6 +29,8 @@ import java.util.concurrent.ThreadLocalRandom;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public final class DialogDataEntry {
 
@@ -41,6 +43,7 @@ public final class DialogDataEntry {
   public static final String DATA_TEXTS_TAG = "Texts";
   public static final String DATA_TEXT_TAG = "Text";
   public static final int MAX_DIALOG_LABEL_LENGTH = 32;
+  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private Set<DialogButtonEntry> dialogButtons = new LinkedHashSet<>();
   private Set<DialogTextData> dialogTexts = new LinkedHashSet<>();
   private Set<ConditionDataEntry> conditions = new LinkedHashSet<>();
@@ -69,7 +72,7 @@ public final class DialogDataEntry {
 
   public DialogDataEntry(
       String label, String name, String text, Set<DialogButtonEntry> dialogButtons) {
-    this.label = DialogUtils.generateButtonLabel(label != null && !label.isEmpty() ? label : name);
+    this.label = DialogUtils.generateButtonLabel(label, name);
     this.id = UUID.nameUUIDFromBytes(this.label.getBytes());
     this.name = name != null ? name.trim() : this.label;
     this.dialogButtons = dialogButtons != null ? dialogButtons : new LinkedHashSet<>();
@@ -86,16 +89,8 @@ public final class DialogDataEntry {
   }
 
   public void setLabel(String label) {
-    this.label =
-        DialogUtils.generateButtonLabel(label != null && !label.isEmpty() ? label : this.name);
+    this.label = DialogUtils.generateButtonLabel(label, this.name);
     this.id = UUID.nameUUIDFromBytes(this.label.getBytes());
-  }
-
-  @SuppressWarnings("unused")
-  public String getLabel(int maxLength) {
-    return this.label.length() > maxLength
-        ? this.label.substring(0, maxLength - 1) + '…'
-        : this.label;
   }
 
   public String getName() {
@@ -201,12 +196,33 @@ public final class DialogDataEntry {
     return null;
   }
 
-  @SuppressWarnings("unused")
   public void setDialogButton(DialogButtonEntry dialogButtonEntry) {
     this.setDialogButton(dialogButtonEntry.id(), dialogButtonEntry);
   }
 
+  public boolean hasConflictingDialogButton(
+      UUID replacedDialogButtonId, DialogButtonEntry dialogButtonEntry) {
+    if (dialogButtonEntry == null) {
+      return false;
+    }
+    for (DialogButtonEntry button : this.dialogButtons) {
+      if (button.id().equals(dialogButtonEntry.id())
+          && !button.id().equals(replacedDialogButtonId)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   public void setDialogButton(UUID dialogButtonId, DialogButtonEntry dialogButtonEntry) {
+    if (this.hasConflictingDialogButton(dialogButtonId, dialogButtonEntry)) {
+      log.error(
+          "Dialog button label '{}' is already used by another button of dialog {}.",
+          dialogButtonEntry.label(),
+          this.label);
+      return;
+    }
+
     if (dialogButtonId != null) {
       for (DialogButtonEntry button : this.dialogButtons) {
         if (button.id().equals(dialogButtonId)) {

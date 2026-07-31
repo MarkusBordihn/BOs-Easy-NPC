@@ -4,12 +4,12 @@ import de.markusbordihn.easynpc.client.screen.components.SpinButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextField;
 import de.markusbordihn.easynpc.configui.Constants;
+import de.markusbordihn.easynpc.configui.client.screen.editor.TargetType;
 import de.markusbordihn.easynpc.configui.client.screen.editor.action.ActionDataEntryEditorContainerScreen;
 import de.markusbordihn.easynpc.data.action.ActionDataEntry;
 import de.markusbordihn.easynpc.data.action.ActionDataSet;
 import de.markusbordihn.easynpc.data.action.ActionDataType;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
-import java.util.LinkedHashSet;
 import java.util.UUID;
 import net.minecraft.client.gui.GuiGraphics;
 
@@ -73,9 +73,6 @@ public class OpenNamedDialogEntry extends ActionEntryWidget {
     this.dialogNameTextField.setResponder(this::validateDialogName);
 
     // Target Type Selector
-    LinkedHashSet<TargetType> targetTypes = new LinkedHashSet<>();
-    targetTypes.add(TargetType.SELF);
-    targetTypes.add(TargetType.UUID);
     this.targetTypeButton =
         this.screen.addActionEntryWidget(
             new SpinButton<>(
@@ -83,7 +80,7 @@ public class OpenNamedDialogEntry extends ActionEntryWidget {
                 this.dialogNameTextField.getY() + this.dialogNameTextField.getHeight() + 2,
                 80,
                 16,
-                targetTypes,
+                TargetType.valueSet(),
                 this.targetType,
                 this::onTargetTypeChange));
 
@@ -96,7 +93,7 @@ public class OpenNamedDialogEntry extends ActionEntryWidget {
                 this.targetTypeButton.getY(),
                 220,
                 16));
-    this.targetUuidTextField.setMaxLength(36);
+    this.targetUuidTextField.setMaxLength(TargetType.MAX_UUID_LENGTH);
     this.targetUuidTextField.setValue(
         hasActionData && this.actionDataEntry.targetUUID() != null
             ? this.actionDataEntry.targetUUID().toString()
@@ -187,10 +184,5 @@ public class OpenNamedDialogEntry extends ActionEntryWidget {
     }
 
     return dialogNameChanged || targetTypeChanged || targetUuidChanged;
-  }
-
-  private enum TargetType {
-    SELF,
-    UUID
   }
 }

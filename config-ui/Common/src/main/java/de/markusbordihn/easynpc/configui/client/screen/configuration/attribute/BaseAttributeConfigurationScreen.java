@@ -93,7 +93,6 @@ public class BaseAttributeConfigurationScreen<T extends ConfigurationMenu>
     // Attribute data
     LivingEntity livingEntity = this.getEasyNPC().getLivingEntity();
 
-    // Max Health
     this.maxHealthSlider =
         createAttributeSlider(
             sliderXPos,
@@ -113,7 +112,6 @@ public class BaseAttributeConfigurationScreen<T extends ConfigurationMenu>
                         Attributes.MAX_HEALTH,
                         slider.getTargetDoubleValue()));
 
-    // Follow Range
     sliderYPos += sliderYSpace;
     this.followRangeSlider =
         createAttributeSlider(
@@ -134,7 +132,6 @@ public class BaseAttributeConfigurationScreen<T extends ConfigurationMenu>
                         Attributes.FOLLOW_RANGE,
                         slider.getTargetDoubleValue()));
 
-    // Knock-back Resistance
     sliderYPos += sliderYSpace;
     this.knockbackResistanceSlider =
         createAttributeSlider(
@@ -155,7 +152,6 @@ public class BaseAttributeConfigurationScreen<T extends ConfigurationMenu>
                         Attributes.KNOCKBACK_RESISTANCE,
                         slider.getTargetDoubleValue()));
 
-    // Movement Speed
     if (livingEntity.getAttribute(Attributes.MOVEMENT_SPEED) != null) {
       sliderYPos += sliderYSpace;
       this.movementSpeedSlider =
@@ -178,8 +174,9 @@ public class BaseAttributeConfigurationScreen<T extends ConfigurationMenu>
                           slider.getTargetDoubleValue()));
     }
 
-    // Flying Speed
-    if (livingEntity.getAttribute(Attributes.FLYING_SPEED) != null) {
+    // Flying Speed, only relevant while the NPC uses a flying navigation.
+    if (livingEntity.getAttribute(Attributes.FLYING_SPEED) != null
+        && this.getEasyNPC().getEasyNPCNavigationData().canFly()) {
       sliderYPos += sliderYSpace;
       this.flyingSpeedSlider =
           createAttributeSlider(
@@ -201,7 +198,6 @@ public class BaseAttributeConfigurationScreen<T extends ConfigurationMenu>
                           slider.getTargetDoubleValue()));
     }
 
-    // Attack Damage
     sliderYPos += sliderYSpace;
     this.attackDamageSlider =
         createAttributeSlider(
@@ -222,7 +218,6 @@ public class BaseAttributeConfigurationScreen<T extends ConfigurationMenu>
                         Attributes.ATTACK_DAMAGE,
                         slider.getTargetDoubleValue()));
 
-    // Attack Knock-back
     sliderYPos += sliderYSpace;
     this.attackKnockbackSlider =
         createAttributeSlider(
@@ -243,7 +238,6 @@ public class BaseAttributeConfigurationScreen<T extends ConfigurationMenu>
                         Attributes.ATTACK_KNOCKBACK,
                         slider.getTargetDoubleValue()));
 
-    // Attack Speed
     if (livingEntity.getAttribute(Attributes.ATTACK_SPEED) != null) {
       sliderYPos += sliderYSpace;
       this.attackSpeedSlider =
@@ -266,7 +260,6 @@ public class BaseAttributeConfigurationScreen<T extends ConfigurationMenu>
                           slider.getTargetDoubleValue()));
     }
 
-    // Armor
     sliderYPos += sliderYSpace;
     this.armorSlider =
         createAttributeSlider(
@@ -285,7 +278,6 @@ public class BaseAttributeConfigurationScreen<T extends ConfigurationMenu>
                     .entityBaseAttributeChange(
                         this.getEasyNPCUUID(), Attributes.ARMOR, slider.getTargetDoubleValue()));
 
-    // Armor Toughness
     sliderYPos += sliderYSpace;
     this.armorToughnessSlider =
         createAttributeSlider(

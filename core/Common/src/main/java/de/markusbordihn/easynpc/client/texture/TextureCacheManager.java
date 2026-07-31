@@ -24,6 +24,7 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.UUID;
@@ -167,7 +168,7 @@ public class TextureCacheManager {
     try {
       return UUID.fromString(fileName.substring(0, fileName.indexOf('.')));
     } catch (IllegalArgumentException e) {
-      return UUID.nameUUIDFromBytes(fileName.getBytes());
+      return UUID.nameUUIDFromBytes(fileName.getBytes(StandardCharsets.UTF_8));
     }
   }
 

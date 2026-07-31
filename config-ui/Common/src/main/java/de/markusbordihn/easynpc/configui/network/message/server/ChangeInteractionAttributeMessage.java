@@ -75,13 +75,11 @@ public record ChangeInteractionAttributeMessage(
       return;
     }
 
-    if (booleanValue == null && doubleValue == null && integerValue == null) {
-      log.error("Invalid value for {} for {} from {}", attributeType, easyNPC, serverPlayer);
+    if (this.booleanValue == null) {
+      log.error("Invalid value for {} for {} from {}", this.attributeType, easyNPC, serverPlayer);
       return;
     }
 
-    if (booleanValue != null) {
-      AttributeHandler.setInteractionAttribute(easyNPC, attributeType, booleanValue);
-    }
+    AttributeHandler.setInteractionAttribute(easyNPC, this.attributeType, this.booleanValue);
   }
 }

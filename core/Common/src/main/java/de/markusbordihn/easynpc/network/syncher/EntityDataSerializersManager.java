@@ -37,6 +37,7 @@ import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.data.scale.CustomScale;
 import de.markusbordihn.easynpc.data.skin.SkinDataEntry;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
+import de.markusbordihn.easynpc.data.state.StateDataSet;
 import de.markusbordihn.easynpc.data.trading.TradingDataSet;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -356,6 +357,25 @@ public class EntityDataSerializersManager {
 
             @Override
             public ActionEventSet copy(ActionEventSet value) {
+              return value;
+            }
+          });
+  public static final EntityDataSerializer<StateDataSet> STATE_DATA_SET =
+      defineSerializer(
+          StateDataSet.class.getSimpleName(),
+          new EntityDataSerializer<>() {
+            @Override
+            public void write(FriendlyByteBuf buffer, StateDataSet value) {
+              buffer.writeNbt(validateAndGetNbt(value.createTag(), "StateDataSet"));
+            }
+
+            @Override
+            public StateDataSet read(FriendlyByteBuf buffer) {
+              return new StateDataSet(buffer.readNbt());
+            }
+
+            @Override
+            public StateDataSet copy(StateDataSet value) {
               return value;
             }
           });

@@ -32,9 +32,11 @@ import de.markusbordihn.easynpc.data.attribute.EntityAttribute;
 import de.markusbordihn.easynpc.data.attribute.EnvironmentalAttributeType;
 import de.markusbordihn.easynpc.data.attribute.InteractionAttributeType;
 import de.markusbordihn.easynpc.data.attribute.MovementAttributeType;
+import de.markusbordihn.easynpc.data.attribute.NavigationType;
 import de.markusbordihn.easynpc.data.display.DisplayAttributeType;
 import java.util.UUID;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 
 public interface ServerAttributeNetworkMessageHandlerInterface {
@@ -103,15 +105,32 @@ public interface ServerAttributeNetworkMessageHandlerInterface {
     }
   }
 
-  default void entityBaseAttributeChange(UUID uuid, Attribute attribute, Double value) {
-    if (uuid != null
-        && attribute != null
-        && value != null
-        && BuiltInRegistries.ATTRIBUTE.getKey(attribute) != null) {
-      Double roundedValue = Math.round(value * 100.0) / 100.0;
+  default void movementAttributeChange(
+      UUID uuid, MovementAttributeType attributeType, Double doubleValue) {
+    if (uuid != null && attributeType != null && doubleValue != null) {
       NetworkHandlerManager.sendMessageToServer(
-          new ChangeEntityBaseAttributeMessage(
-              uuid, BuiltInRegistries.ATTRIBUTE.getKey(attribute), roundedValue));
+          new ChangeMovementAttributeMessage(uuid, attributeType, doubleValue));
     }
+  }
+
+  default void navigationTypeChange(UUID uuid, NavigationType navigationType) {
+    if (uuid != null && navigationType != null) {
+      NetworkHandlerManager.sendMessageToServer(
+          new ChangeMovementAttributeMessage(uuid, navigationType));
+    }
+  }
+
+  default void entityBaseAttributeChange(UUID uuid, Attribute attribute, Double value) {
+    if (uuid == null || attribute == null || value == null) {
+      return;
+    }
+
+    ResourceLocation attributeId = BuiltInRegistries.ATTRIBUTE.getKey(attribute);
+    if (attributeId == null) {
+      return;
+    }
+
+    NetworkHandlerManager.sendMessageToServer(
+        new ChangeEntityBaseAttributeMessage(uuid, attributeId, Math.round(value * 100.0) / 100.0));
   }
 }

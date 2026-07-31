@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.handlers;
 
+import de.markusbordihn.easynpc.api.event.EasyNPCEventRegistry;
 import de.markusbordihn.easynpc.condition.ConditionManager;
 import de.markusbordihn.easynpc.data.action.ActionDataEntry;
 import de.markusbordihn.easynpc.data.action.ActionDataSet;
@@ -36,6 +37,9 @@ import de.markusbordihn.easynpc.entity.easynpc.handlers.action.ActionValidator;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.action.executor.CommandActionExecutor;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.action.executor.DialogActionExecutor;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.action.executor.ScoreboardActionExecutor;
+import de.markusbordihn.easynpc.entity.easynpc.handlers.action.executor.StateActionExecutor;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -51,6 +55,13 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 
 public interface ActionHandler<E extends Mob> extends EasyNPC<E> {
+
+  // Widest range first, so an empty range can skip the narrower ones inside it.
+  List<ActionEventType> DISTANCE_ACTION_EVENT_TYPES =
+      Arrays.stream(ActionEventType.values())
+          .filter(ActionEventType::isDistanceEvent)
+          .sorted(Comparator.comparingDouble(ActionEventType::getTriggerDistance).reversed())
+          .toList();
 
   private static boolean hasFallbackCondition(ActionDataEntry actionDataEntry) {
     return actionDataEntry.conditionDataSet() != null
@@ -87,79 +98,29 @@ public interface ActionHandler<E extends Mob> extends EasyNPC<E> {
       return;
     }
 
-    boolean skipPlayerDistanceCheck = false;
+    double emptyBelowDistance = 0.0D;
 
-    if (actionEventData.hasActionEvent(ActionEventType.ON_DISTANCE_NEAR)) {
-      List<? extends Player> listOfPlayers = this.getPlayersInRange(16.0D);
-      if (listOfPlayers == null || listOfPlayers.isEmpty()) {
-        ActionManager.removeActionGroup(mob, ActionGroup.DISTANCE_NEAR);
-        skipPlayerDistanceCheck = true;
-      } else {
-        ActionDataSet actionDataSet =
-            actionEventData.getActionDataSet(ActionEventType.ON_DISTANCE_NEAR);
-        for (Player player : listOfPlayers) {
-          if (player instanceof ServerPlayer serverPlayer
-              && !ActionManager.containsPlayer(mob, ActionGroup.DISTANCE_NEAR, serverPlayer)) {
-            this.executeActions(actionDataSet, serverPlayer);
-            ActionManager.addPlayer(mob, ActionGroup.DISTANCE_NEAR, serverPlayer);
-          }
-        }
+    for (ActionEventType actionEventType : DISTANCE_ACTION_EVENT_TYPES) {
+      if (!actionEventData.hasActionEvent(actionEventType)) {
+        continue;
       }
-    }
 
-    if (actionEventData.hasActionEvent(ActionEventType.ON_DISTANCE_CLOSE)) {
+      ActionGroup actionGroup = actionEventType.getActionGroup();
+      double triggerDistance = actionEventType.getTriggerDistance();
       List<? extends Player> listOfPlayers =
-          skipPlayerDistanceCheck ? null : this.getPlayersInRange(8.0D);
+          triggerDistance <= emptyBelowDistance ? null : this.getPlayersInRange(triggerDistance);
       if (listOfPlayers == null || listOfPlayers.isEmpty()) {
-        ActionManager.removeActionGroup(mob, ActionGroup.DISTANCE_CLOSE);
-        skipPlayerDistanceCheck = true;
-      } else {
-        ActionDataSet actionDataSet =
-            actionEventData.getActionDataSet(ActionEventType.ON_DISTANCE_CLOSE);
-        for (Player player : listOfPlayers) {
-          if (player instanceof ServerPlayer serverPlayer
-              && !ActionManager.containsPlayer(mob, ActionGroup.DISTANCE_CLOSE, serverPlayer)) {
-            this.executeActions(actionDataSet, serverPlayer);
-            ActionManager.addPlayer(mob, ActionGroup.DISTANCE_CLOSE, serverPlayer);
-          }
-        }
+        ActionManager.removeActionGroup(mob, actionGroup);
+        emptyBelowDistance = triggerDistance;
+        continue;
       }
-    }
 
-    if (actionEventData.hasActionEvent(ActionEventType.ON_DISTANCE_VERY_CLOSE)) {
-      List<? extends Player> listOfPlayers =
-          skipPlayerDistanceCheck ? null : this.getPlayersInRange(4.0D);
-      if (listOfPlayers == null || listOfPlayers.isEmpty()) {
-        ActionManager.removeActionGroup(mob, ActionGroup.DISTANCE_VERY_CLOSE);
-        skipPlayerDistanceCheck = true;
-      } else {
-        ActionDataSet actionDataSet =
-            actionEventData.getActionDataSet(ActionEventType.ON_DISTANCE_VERY_CLOSE);
-        for (Player player : listOfPlayers) {
-          if (player instanceof ServerPlayer serverPlayer
-              && !ActionManager.containsPlayer(
-                  mob, ActionGroup.DISTANCE_VERY_CLOSE, serverPlayer)) {
-            this.executeActions(actionDataSet, serverPlayer);
-            ActionManager.addPlayer(mob, ActionGroup.DISTANCE_VERY_CLOSE, serverPlayer);
-          }
-        }
-      }
-    }
-
-    if (actionEventData.hasActionEvent(ActionEventType.ON_DISTANCE_TOUCH)) {
-      List<? extends Player> listOfPlayers =
-          skipPlayerDistanceCheck ? null : this.getPlayersInRange(1.25D);
-      if (listOfPlayers == null || listOfPlayers.isEmpty()) {
-        ActionManager.removeActionGroup(mob, ActionGroup.DISTANCE_TOUCH);
-      } else {
-        ActionDataSet actionDataSet =
-            actionEventData.getActionDataSet(ActionEventType.ON_DISTANCE_TOUCH);
-        for (Player player : listOfPlayers) {
-          if (player instanceof ServerPlayer serverPlayer
-              && !ActionManager.containsPlayer(mob, ActionGroup.DISTANCE_TOUCH, serverPlayer)) {
-            this.executeActions(actionDataSet, serverPlayer);
-            ActionManager.addPlayer(mob, ActionGroup.DISTANCE_TOUCH, serverPlayer);
-          }
+      ActionDataSet actionDataSet = actionEventData.getActionDataSet(actionEventType);
+      for (Player player : listOfPlayers) {
+        if (player instanceof ServerPlayer serverPlayer
+            && !ActionManager.containsPlayer(mob, actionGroup, serverPlayer)) {
+          this.executeActions(actionDataSet, serverPlayer);
+          ActionManager.addPlayer(mob, actionGroup, serverPlayer);
         }
       }
     }
@@ -412,6 +373,9 @@ public interface ActionHandler<E extends Mob> extends EasyNPC<E> {
           log.warn("Skipping SCOREBOARD action because no ServerPlayer is available");
         }
         break;
+      case NPC_STATE:
+        StateActionExecutor.execute(actionDataEntry, this);
+        break;
       default:
         log.warn(
             "Unknown action type {} for action {}",
@@ -426,5 +390,7 @@ public interface ActionHandler<E extends Mob> extends EasyNPC<E> {
           serverPlayer,
           ExecutionId.action(this.getEntity(), actionDataEntry.id()));
     }
+
+    EasyNPCEventRegistry.fireActionExecuted(this, serverPlayer, actionDataEntry);
   }
 }
