@@ -105,6 +105,7 @@
   "text.easy_npc.item.npc_coin": "NPC currency item for quests, checks, trades and custom rewards.",
   "text.easy_npc.item.npc_key": "NPC key item for quests, checks, access control and custom locks.",
   "text.easy_npc.item.npc_red_token": "Red NPC token for quests, checks, trades and custom rewards.",
+  "text.easy_npc.dialog.button.duplicate_label": "The button label %s is already used by another button of this dialog.",
   "text.easy_npc.dialog.button.locked": "You don't meet the requirements for this option yet.",
   "text.easy_npc.locked": "Locked",
   "text.easy_npc.not_implemented": "Not implemented yet!",

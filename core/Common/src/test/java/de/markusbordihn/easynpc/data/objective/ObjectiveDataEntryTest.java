@@ -173,6 +173,41 @@ class ObjectiveDataEntryTest {
   }
 
   @Test
+  @DisplayName("Values loaded from a tag are clamped like values set through the API")
+  void testValuesFromTagAreClamped() {
+    CompoundTag compoundTag = new CompoundTag();
+    compoundTag.putString(ObjectiveDataEntry.DATA_TYPE_TAG, ObjectiveType.FOLLOW_OWNER.name());
+    compoundTag.putDouble(ObjectiveDataEntry.DATA_SPEED_MODIFIER_TAG, -1.0D);
+    compoundTag.putFloat(ObjectiveDataEntry.DATA_START_DISTANCE_TAG, -3.0F);
+    compoundTag.putFloat(ObjectiveDataEntry.DATA_STOP_DISTANCE_TAG, -5.0F);
+    compoundTag.putFloat(ObjectiveDataEntry.DATA_TELEPORT_DISTANCE_TAG, -1.0F);
+    compoundTag.putFloat(ObjectiveDataEntry.DATA_PROBABILITY_TAG, 2.5F);
+    compoundTag.putInt(ObjectiveDataEntry.DATA_INTERVAL_TAG, 0);
+
+    ObjectiveDataEntry entry = new ObjectiveDataEntry(compoundTag);
+
+    assertEquals(0.0D, entry.getSpeedModifier());
+    assertEquals(0.0F, entry.getStartDistance());
+    assertEquals(0.0F, entry.getStopDistance());
+    assertEquals(0.0F, entry.getTeleportDistance());
+    assertEquals(1.0F, entry.getProbability());
+    assertEquals(1, entry.getInterval());
+  }
+
+  @Test
+  @DisplayName("A loaded objective no longer reads from the tag it was loaded from")
+  void testLoadedValuesAreIndependentOfTheTag() {
+    CompoundTag compoundTag = new CompoundTag();
+    compoundTag.putString(ObjectiveDataEntry.DATA_TYPE_TAG, ObjectiveType.RANDOM_STROLL.name());
+    compoundTag.putBoolean(ObjectiveDataEntry.DATA_CAN_DEAL_WITH_DOORS_TAG, true);
+
+    ObjectiveDataEntry entry = new ObjectiveDataEntry(compoundTag);
+    compoundTag.putBoolean(ObjectiveDataEntry.DATA_CAN_DEAL_WITH_DOORS_TAG, false);
+
+    assertTrue(entry.getCanDealWithDoors().getAsBoolean());
+  }
+
+  @Test
   @DisplayName("Built-in objectives always use the priority of their type")
   void testBuiltInObjectivesIgnoreStoredPriority() {
     ObjectiveDataEntry entry = new ObjectiveDataEntry(ObjectiveType.MOVE_BACK_TO_HOME);

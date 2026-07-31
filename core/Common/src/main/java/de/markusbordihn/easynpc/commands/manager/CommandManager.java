@@ -47,6 +47,7 @@ import de.markusbordihn.easynpc.server.commands.SkinCommand;
 import de.markusbordihn.easynpc.server.commands.SoundCommand;
 import de.markusbordihn.easynpc.server.commands.SpawnCommand;
 import de.markusbordihn.easynpc.server.commands.SpawnerCommand;
+import de.markusbordihn.easynpc.server.commands.StateCommand;
 import de.markusbordihn.easynpc.server.commands.StatsCommand;
 import de.markusbordihn.easynpc.server.commands.TestCommand;
 import de.markusbordihn.easynpc.server.commands.TradingCommand;
@@ -97,6 +98,7 @@ public class CommandManager {
             .then(SoundCommand.register())
             .then(SpawnCommand.register())
             .then(SpawnerCommand.register())
+            .then(StateCommand.register())
             .then(StatsCommand.register())
             .then(TestCommand.register())
             .then(TradingCommand.register()));

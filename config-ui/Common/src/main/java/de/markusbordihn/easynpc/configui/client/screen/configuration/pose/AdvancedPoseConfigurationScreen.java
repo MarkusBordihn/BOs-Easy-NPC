@@ -45,15 +45,14 @@ public class AdvancedPoseConfigurationScreen<T extends ConfigurationMenu>
   }
 
   private RangeSliderButton createVisibilityRotationPositionSlider(
-      int left, int top, ModelPartType modelPartType, String label) {
+      int left, int top, ModelPartType modelPartType) {
 
     // Model Part Rotation
-    RangeSliderButton sliderRotationButtonX = createRotationSlider(left, top, modelPartType, label);
+    RangeSliderButton sliderRotationButtonX = createRotationSlider(left, top, modelPartType);
 
     // Model Part Position
     RangeSliderButton sliderPositionButtonX =
-        createPositionSliderCompact(
-            left, top + sliderRotationButtonX.getHeight(), modelPartType, label);
+        createPositionSlider(left, top + sliderRotationButtonX.getHeight(), modelPartType);
 
     // Model Part Visibility
     boolean modelPartVisibility = this.modelData.getModelPartVisibility(modelPartType);
@@ -89,8 +88,7 @@ public class AdvancedPoseConfigurationScreen<T extends ConfigurationMenu>
     int partsOnRow = 0;
     for (ModelPartType modelPartType : modelPartTypes) {
       RangeSliderButton slider =
-          createVisibilityRotationPositionSlider(
-              sliderLeftPos, sliderTopPos, modelPartType, modelPartType.name().toLowerCase());
+          createVisibilityRotationPositionSlider(sliderLeftPos, sliderTopPos, modelPartType);
       sliders.put(modelPartType, slider);
 
       sliderLeftPos += sliderLeftSpace;

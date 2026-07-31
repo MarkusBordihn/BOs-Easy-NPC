@@ -12,3 +12,8 @@
         .add(net.minecraft.world.entity.ai.attributes.Attributes.FLYING_SPEED, 0.4F)
         .add(net.minecraft.world.entity.ai.attributes.Attributes.SPAWN_REINFORCEMENTS_CHANCE, 0.0D);
   }
+
+  @Override
+  public de.markusbordihn.easynpc.data.attribute.NavigationType defaultNavigationType() {
+    return de.markusbordihn.easynpc.data.attribute.NavigationType.FLYING;
+  }

@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.api.npc.base;
 
 import de.markusbordihn.easynpc.api.npc.BaseEasyNPC;
 import de.markusbordihn.easynpc.api.npc.raw.VexRaw;
+import de.markusbordihn.easynpc.data.attribute.NavigationType;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
 import de.markusbordihn.easynpc.data.skin.variant.VexSkinVariant;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
@@ -60,6 +61,11 @@ public class VexBase extends VexRaw implements BaseEasyNPC<VexRaw> {
         .add(Attributes.MAX_HEALTH, 14.0D)
         .add(Attributes.MOVEMENT_SPEED, 0.25D)
         .add(Attributes.SPAWN_REINFORCEMENTS_CHANCE, 0.0D);
+  }
+
+  @Override
+  public NavigationType defaultNavigationType() {
+    return NavigationType.FLYING;
   }
 
   @Override

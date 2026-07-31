@@ -76,6 +76,8 @@ public class ConditionManager {
       case GAMEMODE -> GamemodeCondition.evaluate(conditionDataEntry, serverPlayer);
       case TIME_OF_DAY -> TimeOfDayCondition.evaluate(conditionDataEntry, serverPlayer.level());
       case WEATHER -> WeatherCondition.evaluate(conditionDataEntry, serverPlayer.level());
+      case NPC_STATE -> NpcStateCondition.evaluate(conditionDataEntry, npcContext);
+      case CUSTOM -> CustomCondition.evaluate(conditionDataEntry, serverPlayer, npcContext);
       case FALLBACK -> true;
       case NONE -> true;
     };

@@ -26,11 +26,13 @@ import de.markusbordihn.easymodelentities.api.client.EasyModelEntitiesClientApi;
 import de.markusbordihn.easymodelentities.api.client.EasyModelPartAnimator;
 import de.markusbordihn.easymodelentities.api.client.EasyModelPartPoseListener;
 import de.markusbordihn.easymodelentities.api.data.client.EasyModelEntityRenderOptions;
+import de.markusbordihn.easymodelentities.api.data.client.EasyModelHeadLook;
 import de.markusbordihn.easymodelentities.api.data.client.EasyModelItemAnchor;
 import de.markusbordihn.easymodelentities.api.data.client.EasyModelPartPose;
 import de.markusbordihn.easymodelentities.api.data.client.EasyModelPartTransform;
 import de.markusbordihn.easymodelentities.data.model.Vec3f;
 import de.markusbordihn.easymodelentities.data.model.bake.ModelBounds;
+import de.markusbordihn.easymodelentities.data.profile.ModelBodyType;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.model.custom.DopplerModel;
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
@@ -70,6 +72,8 @@ public class EasyModelNPCRenderer<E extends PathfinderMob>
   protected static final ResourceLocation DEFAULT_TEXTURE =
       DopplerSkinVariant.DOPPLER.getTextureLocation();
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+  private static final float HOVER_BOB_SPEED = 0.08F;
+  private static final float HOVER_BOB_PIXELS = 0.6F;
   private static final Map<ResourceLocation, Boolean> invalidProfileCache =
       new ConcurrentHashMap<>();
   private static final Map<ResourceLocation, Float> guiPreviewScaleCache =
@@ -99,27 +103,57 @@ public class EasyModelNPCRenderer<E extends PathfinderMob>
     guiPreviewScaleCache.clear();
   }
 
-  private static EasyModelPartAnimator createPartAnimator(EasyModelNPC easyModelNPC) {
+  private static boolean isFloatingModel(EasyModelNPC easyModelNPC) {
+    ResourceLocation profileId = easyModelNPC.getEasyModelProfileId();
+    return profileId != null
+        && EasyModelEntitiesClientApi.getBodyType(profileId)
+            .filter(bodyType -> bodyType == ModelBodyType.FLOATING)
+            .isPresent();
+  }
+
+  private static EasyModelPartTransform createModelPartTransform(
+      EasyModelNPC easyModelNPC, ModelPartType modelPartType) {
+    CustomRotation rotation = easyModelNPC.getModelPartRotation(modelPartType);
+    CustomPosition position = easyModelNPC.getModelPartPosition(modelPartType);
+    CustomScale scale = easyModelNPC.getModelPartScale(modelPartType);
+    boolean visible = easyModelNPC.getModelPartVisibility(modelPartType);
+    return new EasyModelPartTransform(rotation.x(), rotation.y(), rotation.z())
+        .withOffset(position.x(), position.y(), position.z())
+        .withScale(scale.x(), scale.y(), scale.z())
+        .withVisible(visible);
+  }
+
+  private static EasyModelPartTransform createHoverTransform(float ageInTicks) {
+    return EasyModelPartTransform.NONE.withOffset(
+        0.0F, Mth.sin(ageInTicks * HOVER_BOB_SPEED) * HOVER_BOB_PIXELS, 0.0F);
+  }
+
+  private static EasyModelPartAnimator createPartAnimator(
+      EasyModelNPC easyModelNPC, boolean hasModelChanges, boolean isFloating) {
     return context -> {
       ModelPartType modelPartType = EasyModelEntitiesManager.getModelPartType(context.partName());
-      if (modelPartType == ModelPartType.UNKNOWN) {
-        return EasyModelPartTransform.NONE;
+      EasyModelPartTransform partTransform =
+          hasModelChanges && modelPartType != ModelPartType.UNKNOWN
+              ? createModelPartTransform(easyModelNPC, modelPartType)
+              : EasyModelPartTransform.NONE;
+      if (isFloating && modelPartType == ModelPartType.ROOT) {
+        return partTransform.add(createHoverTransform(context.ageInTicks()));
       }
-      CustomRotation rotation = easyModelNPC.getModelPartRotation(modelPartType);
-      CustomPosition position = easyModelNPC.getModelPartPosition(modelPartType);
-      CustomScale scale = easyModelNPC.getModelPartScale(modelPartType);
-      boolean visible = easyModelNPC.getModelPartVisibility(modelPartType);
-      return new EasyModelPartTransform(rotation.x(), rotation.y(), rotation.z())
-          .withOffset(position.x(), position.y(), position.z())
-          .withScale(scale.x(), scale.y(), scale.z())
-          .withVisible(visible);
+      return partTransform;
     };
   }
 
   private static EasyModelEntityRenderOptions createRenderOptions(EasyModelNPC easyModelNPC) {
     EasyModelEntityRenderOptions renderOptions = EasyModelEntityRenderOptions.DEFAULT;
-    if (easyModelNPC.hasChangedModel()) {
-      renderOptions = renderOptions.withPartAnimator(createPartAnimator(easyModelNPC));
+    boolean hasModelChanges = easyModelNPC.hasChangedModel();
+    boolean isFloating = isFloatingModel(easyModelNPC);
+    if (hasModelChanges || isFloating) {
+      renderOptions =
+          renderOptions.withPartAnimator(
+              createPartAnimator(easyModelNPC, hasModelChanges, isFloating));
+    }
+    if (easyModelNPC.getModelPartRotation(ModelPartType.HEAD).hasChangedRotation()) {
+      renderOptions = renderOptions.withHeadLook(EasyModelHeadLook.NONE);
     }
     return renderOptions;
   }

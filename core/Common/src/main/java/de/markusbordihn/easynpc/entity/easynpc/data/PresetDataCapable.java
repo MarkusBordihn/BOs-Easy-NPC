@@ -92,6 +92,9 @@ public interface PresetDataCapable<T extends Mob> extends EasyNPC<T> {
     if (this.getEasyNPCDialogData() != null) {
       this.getEasyNPCDialogData().clearDialogDataSet();
     }
+    if (this.getEasyNPCStateData() != null) {
+      this.getEasyNPCStateData().clearStateDataSet();
+    }
     if (this.getEasyNPCFactionData() != null) {
       // Remove scoreboard membership before the import may change the entity UUID.
       this.getEasyNPCFactionData().setFactionName("");

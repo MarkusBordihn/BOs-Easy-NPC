@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.api.npc.raw;
 import static java.util.Objects.hash;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.data.attribute.NavigationType;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
 import de.markusbordihn.easynpc.data.model.ModelType;
 import de.markusbordihn.easynpc.data.npc.NPCType;
@@ -71,7 +72,12 @@ import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.control.BodyRotationControl;
+import net.minecraft.world.entity.ai.control.MoveControl;
+import net.minecraft.world.entity.ai.control.SmoothSwimmingMoveControl;
 import net.minecraft.world.entity.ai.goal.GoalSelector;
+import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
+import net.minecraft.world.entity.ai.navigation.PathNavigation;
+import net.minecraft.world.entity.ai.navigation.WaterBoundPathNavigation;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -238,6 +244,8 @@ public class NPCRawTemplate extends Zombie implements EasyNPCBase<Zombie> {
   private SynchedEntityData synchedEntityData;
   private Player tradingPlayer;
   private FakePlayer fakePlayer;
+  private NavigationType appliedNavigationType;
+  private MoveControl defaultMoveControl;
 
   public NPCRawTemplate(EntityType<? extends Zombie> entityType, Level level, Enum<?> variant) {
     super(entityType, level);
@@ -762,6 +770,50 @@ public class NPCRawTemplate extends Zombie implements EasyNPCBase<Zombie> {
   @Override
   protected BodyRotationControl createBodyControl() {
     return new de.markusbordihn.easynpc.entity.easynpc.ai.control.EasyNPCBodyRotationControl(this);
+  }
+
+  @Override
+  protected PathNavigation createNavigation(Level level) {
+    // Called from the Mob constructor, where the synched data may not exist yet. The navigation is
+    // rebuilt on the first base tick, so falling back to the vanilla navigation is safe here.
+    if (this.synchedEntityData == null) {
+      return super.createNavigation(level);
+    }
+
+    return switch (this.getNavigationType()) {
+      case FLYING -> new FlyingPathNavigation(this, level);
+      case AQUATIC -> new WaterBoundPathNavigation(this, level);
+      default -> super.createNavigation(level);
+    };
+  }
+
+  @Override
+  public NavigationType getAppliedNavigationType() {
+    return this.appliedNavigationType;
+  }
+
+  @Override
+  public void refreshNavigation() {
+    if (this.defaultMoveControl == null) {
+      this.defaultMoveControl = this.moveControl;
+    }
+
+    NavigationType navigationType = this.getNavigationType();
+    this.navigation = this.createNavigation(this.level());
+    switch (navigationType) {
+      case FLYING ->
+          this.moveControl =
+              new de.markusbordihn.easynpc.entity.easynpc.ai.control.EasyNPCFlyingMoveControl(this);
+      case AQUATIC ->
+          this.moveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.02F, 0.1F, true);
+      default -> this.moveControl = this.defaultMoveControl;
+    }
+    if (navigationType != NavigationType.FLYING) {
+      this.restoreGravityFromAttributes();
+    }
+    this.appliedNavigationType = navigationType;
+    this.refreshGroundNavigation();
+    this.navigation.stop();
   }
 
   @Override

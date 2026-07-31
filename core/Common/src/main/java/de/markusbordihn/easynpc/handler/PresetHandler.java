@@ -24,6 +24,7 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.preset.PresetAccess;
 import de.markusbordihn.easynpc.data.preset.PresetData;
 import de.markusbordihn.easynpc.data.preset.PresetExportFormat;
+import de.markusbordihn.easynpc.data.preset.PresetInheritance;
 import de.markusbordihn.easynpc.data.preset.PresetMetadata;
 import de.markusbordihn.easynpc.data.preset.PresetType;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
@@ -405,6 +406,29 @@ public class PresetHandler {
 
   private static PresetData loadPresetFromSource(
       PresetType presetType, ResourceLocation presetLocation, MinecraftServer minecraftServer) {
+    CompoundTag compoundTag = loadPresetCompoundTag(presetType, presetLocation, minecraftServer);
+    if (compoundTag == null) {
+      return null;
+    }
+
+    CompoundTag resolvedCompoundTag =
+        PresetInheritance.resolve(
+            compoundTag,
+            presetLocation,
+            parentLocation ->
+                loadPresetCompoundTag(
+                    SecurityManager.resolvePresetResourceType(parentLocation, presetType),
+                    parentLocation,
+                    minecraftServer));
+    if (resolvedCompoundTag == null) {
+      return null;
+    }
+
+    return PresetData.fromCompoundTag(presetLocation, presetType, resolvedCompoundTag);
+  }
+
+  private static CompoundTag loadPresetCompoundTag(
+      PresetType presetType, ResourceLocation presetLocation, MinecraftServer minecraftServer) {
     if (presetLocation == null || minecraftServer == null) {
       return null;
     }
@@ -469,11 +493,7 @@ public class PresetHandler {
           }
         };
 
-    if (compoundTag == null) {
-      return null;
-    }
-
-    return PresetData.fromCompoundTag(presetLocation, presetType, compoundTag);
+    return compoundTag;
   }
 
   private static CompoundTag loadFromFile(Path presetFile, ResourceLocation presetLocation) {

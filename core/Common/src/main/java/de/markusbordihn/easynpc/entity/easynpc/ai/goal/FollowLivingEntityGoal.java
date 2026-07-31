@@ -30,7 +30,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -53,9 +52,6 @@ public class FollowLivingEntityGoal extends Goal {
   private final float maxFollowDistance;
   private final float teleportDistance;
   private final Vec3 followOffset;
-  private final boolean canFly;
-  private final boolean canJump;
-  private final PathNavigation pathNavigation;
   private final LevelReader level;
   private float oldWaterCost;
   private int timeToRecalcPath;
@@ -78,9 +74,6 @@ public class FollowLivingEntityGoal extends Goal {
         maxFollowDistance > stopDistance ? maxFollowDistance : NO_DISTANCE_LIMIT;
     this.teleportDistance = teleportDistance;
     this.followOffset = followOffset != null ? followOffset : Vec3.ZERO;
-    this.canFly = this.navigationData.canFly();
-    this.canJump = this.navigationData.canJump();
-    this.pathNavigation = this.mob.getNavigation();
     this.level = easyNPC.getEntityServerLevel();
     this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
   }
@@ -147,7 +140,7 @@ public class FollowLivingEntityGoal extends Goal {
       return false;
     }
 
-    return !this.pathNavigation.isDone()
+    return !this.mob.getNavigation().isDone()
         && this.distanceToTargetSqr() > this.stopDistance * this.stopDistance;
   }
 
@@ -162,7 +155,7 @@ public class FollowLivingEntityGoal extends Goal {
 
   @Override
   public void stop() {
-    this.pathNavigation.stop();
+    this.mob.getNavigation().stop();
     if (this.mob instanceof PathfinderMob pathfinderMob) {
       pathfinderMob.setPathfindingMalus(PathType.WATER, this.oldWaterCost);
     }
@@ -188,7 +181,7 @@ public class FollowLivingEntityGoal extends Goal {
       return;
     }
 
-    if (this.canJump
+    if (this.navigationData.canJump()
         && this.mob.getMoveControl() instanceof JumpEasyNPCMoveControl jumpMoveControl) {
       double dx = targetPosition.x - this.mob.getX();
       double dz = targetPosition.z - this.mob.getZ();
@@ -197,9 +190,10 @@ public class FollowLivingEntityGoal extends Goal {
       return;
     }
 
-    if (!this.pathNavigation.moveTo(
-            targetPosition.x, targetPosition.y, targetPosition.z, this.speedModifier)
-        && this.canFly) {
+    if (!this.mob
+            .getNavigation()
+            .moveTo(targetPosition.x, targetPosition.y, targetPosition.z, this.speedModifier)
+        && this.navigationData.canFly()) {
       // A flying NPC regularly has no path through open air, so steer it directly instead.
       this.mob
           .getMoveControl()
@@ -235,12 +229,12 @@ public class FollowLivingEntityGoal extends Goal {
     }
 
     this.mob.moveTo(posX + 0.5D, posY, posZ + 0.5D, this.mob.getYRot(), this.mob.getXRot());
-    this.pathNavigation.stop();
+    this.mob.getNavigation().stop();
     return true;
   }
 
   private boolean canTeleportTo(BlockPos blockPos) {
-    if (!this.canFly) {
+    if (!this.navigationData.canFly()) {
       PathType blockPathTypes = WalkNodeEvaluator.getPathTypeStatic(this.mob, blockPos.mutable());
       if (blockPathTypes != PathType.WALKABLE) {
         return false;

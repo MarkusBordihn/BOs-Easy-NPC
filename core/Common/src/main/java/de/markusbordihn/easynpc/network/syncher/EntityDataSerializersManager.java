@@ -41,6 +41,7 @@ import de.markusbordihn.easynpc.data.skin.SkinDataEntry;
 import de.markusbordihn.easynpc.data.skin.SkinType;
 import de.markusbordihn.easynpc.data.skin.SkinUUID;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
+import de.markusbordihn.easynpc.data.state.StateDataSet;
 import de.markusbordihn.easynpc.data.trading.TradingDataSet;
 import de.markusbordihn.easynpc.data.trading.TradingType;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelPositionDataCapable;
@@ -71,6 +72,10 @@ public class EntityDataSerializersManager {
       defineSerializer(
           ActionEventSet.class.getSimpleName(),
           EntityDataSerializer.forValueType(ActionEventSet.STREAM_CODEC));
+  public static final EntityDataSerializer<StateDataSet> STATE_DATA_SET =
+      defineSerializer(
+          StateDataSet.class.getSimpleName(),
+          EntityDataSerializer.forValueType(StateDataSet.STREAM_CODEC));
   public static final EntityDataSerializer<DialogDataSet> DIALOG_DATA_SET =
       defineSerializer(
           DialogDataSet.class.getSimpleName(),

@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.configui.client.screen.configuration.attribute;
 
 import de.markusbordihn.easynpc.client.screen.components.RangeSliderButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
+import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.configui.client.screen.components.Checkbox;
 import de.markusbordihn.easynpc.configui.client.screen.components.HelpIcon;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
@@ -31,7 +32,9 @@ import de.markusbordihn.easynpc.data.attribute.EntityAttributes;
 import de.markusbordihn.easynpc.data.attribute.EnvironmentalAttributeType;
 import de.markusbordihn.easynpc.data.attribute.InteractionAttributeType;
 import de.markusbordihn.easynpc.data.attribute.MovementAttributeType;
+import de.markusbordihn.easynpc.data.attribute.NavigationType;
 import de.markusbordihn.easynpc.entity.easynpc.data.AttributeDataCapable;
+import de.markusbordihn.easynpc.network.components.TextComponent;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -45,9 +48,28 @@ public class AbilitiesAttributeConfigurationScreen<T extends ConfigurationMenu>
   private Checkbox closeDoorCheckbox;
   private Checkbox passDoorCheckbox;
   private boolean passDoorValue;
+  private TextButton navigationTypeButton;
+  private RangeSliderButton hoverHeightSlider;
+  private NavigationType navigationType;
 
   public AbilitiesAttributeConfigurationScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
+  }
+
+  private static String getNavigationTypeLabel(NavigationType navigationType) {
+    return "navigation_type_" + navigationType.getAttributeName();
+  }
+
+  private static NavigationType getNextNavigationType(NavigationType navigationType) {
+    NavigationType[] navigationTypes = NavigationType.values();
+    return navigationTypes[(navigationType.ordinal() + 1) % navigationTypes.length];
+  }
+
+  private void refreshHoverHeightSlider() {
+    this.hoverHeightSlider.visible =
+        this.navigationType == NavigationType.FLYING
+            || (this.navigationType == NavigationType.DEFAULT
+                && this.getEasyNPC().getEasyNPCNavigationData().canFly());
   }
 
   private void refreshPassDoorCheckbox() {
@@ -215,6 +237,41 @@ public class AbilitiesAttributeConfigurationScreen<T extends ConfigurationMenu>
                     .entityAttributeChange(
                         this.getEasyNPCUUID(), EntityAttribute.SILENT, checkbox.selected())));
 
+    this.navigationType = entityAttributes.getMovementAttributes().navigationType();
+    this.navigationTypeButton =
+        this.addRenderableWidget(
+            new TextButton(
+                firstButtonRow + 135,
+                this.buttonTopPos + 145,
+                80,
+                getNavigationTypeLabel(this.navigationType),
+                onPress -> {
+                  this.navigationType = getNextNavigationType(this.navigationType);
+                  this.navigationTypeButton.setMessage(
+                      TextComponent.getTextComponent(getNavigationTypeLabel(this.navigationType)));
+                  NetworkMessageHandlerManager.getServerHandler()
+                      .navigationTypeChange(this.getEasyNPCUUID(), this.navigationType);
+                  this.refreshHoverHeightSlider();
+                }));
+
+    this.hoverHeightSlider =
+        this.addRenderableWidget(
+            new RangeSliderButton(
+                firstButtonRow + 135,
+                this.buttonTopPos + 168,
+                entityAttributes.getMovementAttributes().hoverHeight(),
+                0.0D,
+                16.0D,
+                0.0D,
+                0.5D,
+                slider ->
+                    NetworkMessageHandlerManager.getServerHandler()
+                        .movementAttributeChange(
+                            this.getEasyNPCUUID(),
+                            MovementAttributeType.HOVER_HEIGHT,
+                            slider.getTargetDoubleValue())));
+    this.refreshHoverHeightSlider();
+
     this.healthRegenerationSlider =
         this.addRenderableWidget(
             new RangeSliderButton(
@@ -239,6 +296,24 @@ public class AbilitiesAttributeConfigurationScreen<T extends ConfigurationMenu>
 
     int sliderXOffset = -125;
     int sliderYOffset = 3;
+
+    if (this.navigationTypeButton != null) {
+      Text.drawConfigString(
+          guiGraphics,
+          this.font,
+          "navigation_type",
+          this.navigationTypeButton.getX() + sliderXOffset,
+          this.navigationTypeButton.getY() + sliderYOffset);
+    }
+
+    if (this.hoverHeightSlider != null && this.hoverHeightSlider.visible) {
+      Text.drawConfigString(
+          guiGraphics,
+          this.font,
+          "hover_height",
+          this.hoverHeightSlider.getX() + sliderXOffset,
+          this.hoverHeightSlider.getY() + sliderYOffset);
+    }
 
     if (this.healthRegenerationSlider != null) {
       Text.drawConfigString(

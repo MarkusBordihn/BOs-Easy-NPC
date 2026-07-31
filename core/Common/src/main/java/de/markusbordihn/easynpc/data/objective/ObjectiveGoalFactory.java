@@ -24,10 +24,16 @@ import net.minecraft.world.entity.ai.goal.Goal;
 
 public interface ObjectiveGoalFactory {
 
-  Goal createGoal(ObjectiveDataEntry objectiveDataEntry, EasyNPC<?> easyNPC);
+  default Goal createGoal(ObjectiveDataEntry objectiveDataEntry, EasyNPC<?> easyNPC) {
+    return null;
+  }
 
   default Goal createTarget(ObjectiveDataEntry objectiveDataEntry, EasyNPC<?> easyNPC) {
     return null;
+  }
+
+  default boolean isCompatible(EasyNPC<?> easyNPC) {
+    return true;
   }
 
   default int getDefaultPriority() {

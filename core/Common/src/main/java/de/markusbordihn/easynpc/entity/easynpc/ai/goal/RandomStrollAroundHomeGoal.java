@@ -156,7 +156,7 @@ public class RandomStrollAroundHomeGoal<T extends EasyNPC<?>> extends Goal {
   protected Vec3 getPositionTowardsHome() {
     BlockPos homeBlockPos = this.navigationData.getHomePosition();
     Vec3 homePosition = new Vec3(homeBlockPos.getX(), homeBlockPos.getY(), homeBlockPos.getZ());
-    if (this.navigationData.isFlying()) {
+    if (this.navigationData.canFly()) {
       BlockPos blockPos = this.pathfinderMob.blockPosition();
       int homePositionDifference = (int) (homePosition.y - blockPos.getY());
       int flyingZ = 0;

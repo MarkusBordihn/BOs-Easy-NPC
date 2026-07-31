@@ -90,13 +90,11 @@ public record ChangeEnvironmentalAttributeMessage(
       return;
     }
 
-    if (booleanValue == null && doubleValue == null && integerValue == null) {
-      log.error("Invalid value for {} for {} from {}", attributeType, easyNPC, serverPlayer);
+    if (this.booleanValue == null) {
+      log.error("Invalid value for {} for {} from {}", this.attributeType, easyNPC, serverPlayer);
       return;
     }
 
-    if (booleanValue != null) {
-      AttributeHandler.setEnvironmentalAttribute(easyNPC, attributeType, booleanValue);
-    }
+    AttributeHandler.setEnvironmentalAttribute(easyNPC, this.attributeType, this.booleanValue);
   }
 }

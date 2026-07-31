@@ -45,23 +45,21 @@ public class CustomPoseConfigurationScreen<T extends ConfigurationMenu>
   }
 
   private RangeSliderButton createVisibilityPositionScaleRotationSlider(
-      int left, int top, ModelPartType modelPartType, String label) {
+      int left, int top, ModelPartType modelPartType) {
 
     // Model Part Rotation
-    RangeSliderButton sliderRotationButtonX = createRotationSlider(left, top, modelPartType, label);
+    RangeSliderButton sliderRotationButtonX = createRotationSlider(left, top, modelPartType);
 
     // Model Part Scale
     RangeSliderButton sliderScaleButtonX =
-        createScaleSliderCompact(
-            left, top + sliderRotationButtonX.getHeight(), modelPartType, label);
+        createScaleSlider(left, top + sliderRotationButtonX.getHeight(), modelPartType);
 
     // Model Part Position
     RangeSliderButton sliderPositionButtonX =
-        createPositionSliderCompact(
+        createPositionSlider(
             left,
             top + sliderRotationButtonX.getHeight() + sliderScaleButtonX.getHeight(),
-            modelPartType,
-            label);
+            modelPartType);
 
     // Model Part Visibility
     boolean modelPartVisibility = this.modelData.getModelPartVisibility(modelPartType);
@@ -97,8 +95,7 @@ public class CustomPoseConfigurationScreen<T extends ConfigurationMenu>
     int partsOnRow = 0;
     for (ModelPartType modelPartType : modelPartTypes) {
       RangeSliderButton slider =
-          createVisibilityPositionScaleRotationSlider(
-              sliderLeftPos, sliderTopPos, modelPartType, modelPartType.name().toLowerCase());
+          createVisibilityPositionScaleRotationSlider(sliderLeftPos, sliderTopPos, modelPartType);
       sliders.put(modelPartType, slider);
 
       sliderLeftPos += sliderLeftSpace;

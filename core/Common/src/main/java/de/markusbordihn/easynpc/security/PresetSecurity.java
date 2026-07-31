@@ -84,6 +84,20 @@ public class PresetSecurity {
             : SecurityDecisionReason.INVALID_RESOURCE);
   }
 
+  public static PresetType resolveResourcePresetType(
+      ResourceLocation resourceLocation, PresetType presetType) {
+    if (resourceLocation == null
+        || (presetType != PresetType.DATA && presetType != PresetType.DEFAULT)) {
+      return presetType;
+    }
+
+    if (isAllowedDataPresetPath(resourceLocation)) {
+      return PresetType.DATA;
+    }
+
+    return isAllowedDefaultPresetPath(resourceLocation) ? PresetType.DEFAULT : presetType;
+  }
+
   private static boolean isAllowedDataPresetPath(ResourceLocation resourceLocation) {
     if (resourceLocation.getPath().startsWith(NAMESPACED_DATA_PRESET_PATH_PREFIX)) {
       return true;

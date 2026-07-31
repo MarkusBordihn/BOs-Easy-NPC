@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.entity.easynpc.data;
 
 import de.markusbordihn.easynpc.data.attribute.EntityAttributes;
 import de.markusbordihn.easynpc.data.attribute.MovementAttributes;
+import de.markusbordihn.easynpc.data.attribute.NavigationType;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.data.ticker.TickerType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
@@ -64,10 +65,7 @@ public interface NavigationDataCapable<T extends Mob> extends EasyNPC<T> {
       return;
     }
 
-    EntityAttributes attributeData =
-        this.getEasyNPCAttributeData() != null
-            ? this.getEasyNPCAttributeData().getEntityAttributes()
-            : null;
+    EntityAttributes attributeData = this.getNavigationEntityAttributes();
     if (attributeData != null && attributeData.hasMovementAttributes()) {
       MovementAttributes movementAttributes = attributeData.getMovementAttributes();
       boolean canOpenDoor = movementAttributes.canOpenDoor();
@@ -97,8 +95,71 @@ public interface NavigationDataCapable<T extends Mob> extends EasyNPC<T> {
     defineSynchedEntityData(builder, SynchedDataIndex.NAVIGATION_HOME_POSITION, BlockPos.ZERO);
   }
 
+  default NavigationType defaultNavigationType() {
+    return NavigationType.GROUND;
+  }
+
+  default NavigationType getNavigationType() {
+    MovementAttributes movementAttributes = this.getMovementAttributes();
+    if (movementAttributes == null
+        || movementAttributes.navigationType() == NavigationType.DEFAULT) {
+      return this.defaultNavigationType();
+    }
+
+    return movementAttributes.navigationType();
+  }
+
+  default double defaultHoverHeight() {
+    return 0.0D;
+  }
+
+  default double getHoverHeight() {
+    MovementAttributes movementAttributes = this.getMovementAttributes();
+    if (movementAttributes == null || movementAttributes.hoverHeight() <= 0.0D) {
+      return this.defaultHoverHeight();
+    }
+
+    return movementAttributes.hoverHeight();
+  }
+
+  private EntityAttributes getNavigationEntityAttributes() {
+    return this.getEasyNPCAttributeData() != null
+        ? this.getEasyNPCAttributeData().getEntityAttributes()
+        : null;
+  }
+
+  default MovementAttributes getMovementAttributes() {
+    EntityAttributes attributeData = this.getNavigationEntityAttributes();
+    if (attributeData == null || !attributeData.hasMovementAttributes()) {
+      return null;
+    }
+
+    return attributeData.getMovementAttributes();
+  }
+
+  default NavigationType getAppliedNavigationType() {
+    return NavigationType.DEFAULT;
+  }
+
+  default void refreshNavigation() {
+    this.refreshGroundNavigation();
+  }
+
+  default void restoreGravityFromAttributes() {
+    EntityAttributes attributeData = this.getNavigationEntityAttributes();
+    if (attributeData != null && this.getLivingEntity() != null) {
+      this.getLivingEntity().setNoGravity(attributeData.getEnvironmentalAttributes().noGravity());
+    }
+  }
+
+  default void refreshNavigationIfChanged() {
+    if (this.getAppliedNavigationType() != this.getNavigationType()) {
+      this.refreshNavigation();
+    }
+  }
+
   default boolean canFly() {
-    return false;
+    return this.getNavigationType() == NavigationType.FLYING;
   }
 
   default boolean isFlying() {

@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.entity.easynpc.npc.easymodelentities;
 
 import de.markusbordihn.easynpc.api.npc.raw.PathfinderMobRaw;
 import de.markusbordihn.easynpc.compat.easymodelentities.EasyModelEntitiesManager;
+import de.markusbordihn.easynpc.data.attribute.NavigationType;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
 import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.model.ModelType;
@@ -70,6 +71,20 @@ public class EasyModelNPC extends PathfinderMobRaw {
       this.cachedProfileId = EasyModelEntitiesManager.getProfileId(entityModel);
     }
     return this.cachedProfileId;
+  }
+
+  @Override
+  public NavigationType defaultNavigationType() {
+    return EasyModelEntitiesManager.isFloatingProfile(this.getEasyModelProfileId())
+        ? NavigationType.FLYING
+        : NavigationType.GROUND;
+  }
+
+  @Override
+  public double defaultHoverHeight() {
+    return EasyModelEntitiesManager.isFloatingProfile(this.getEasyModelProfileId())
+        ? EasyModelEntitiesManager.DEFAULT_HOVER_HEIGHT
+        : 0.0D;
   }
 
   @Override

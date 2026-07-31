@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.io;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.preset.PresetExportFormat;
+import de.markusbordihn.easynpc.utils.ResourceNameNormalizer;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -48,6 +49,7 @@ public class DataFileHandler {
   protected static final String RESOURCE_POSES_PATH = "poses";
   protected static final String RESOURCE_TEXTURES_ENTITY_PATH = "textures/entity";
   private static final Pattern VALID_PRESET_FILENAME_PATTERN = Pattern.compile("[a-zA-Z0-9/._-]+");
+  private static final String PRESET_FILE_NAME_FALLBACK_PREFIX = "preset";
 
   private DataFileHandler() {}
 
@@ -86,7 +88,7 @@ public class DataFileHandler {
     if (fileName == null || fileName.isEmpty()) {
       return null;
     }
-    String result = fileName.replaceAll("[^a-zA-Z0-9/._-]", "").replace("..", "").replace("/", "_");
+    String result = ResourceNameNormalizer.toFileName(fileName, PRESET_FILE_NAME_FALLBACK_PREFIX);
     if (result.isEmpty() || !VALID_PRESET_FILENAME_PATTERN.matcher(result).matches()) {
       return null;
     }

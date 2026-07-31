@@ -22,11 +22,21 @@ package de.markusbordihn.easynpc.configui.client.screen.configuration.actions;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
+import java.util.List;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
 public class DistanceActionConfigurationScreen<T extends ConfigurationMenu>
     extends ActionConfigurationScreen<T> {
+
+  private static final List<ActionEventType> DISTANCE_ACTION_EVENT_TYPES =
+      List.of(
+          ActionEventType.ON_DISTANCE_FAR,
+          ActionEventType.ON_DISTANCE_NEAR,
+          ActionEventType.ON_DISTANCE_CLOSE,
+          ActionEventType.ON_DISTANCE_VERY_CLOSE,
+          ActionEventType.ON_DISTANCE_TOUCH);
+  private static final int ACTION_BUTTON_SPACING = 40;
 
   public DistanceActionConfigurationScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
@@ -39,36 +49,15 @@ public class DistanceActionConfigurationScreen<T extends ConfigurationMenu>
     // Default button stats
     this.distanceActionButton.active = false;
 
-    // On Near Distance Action
-    this.addRenderableWidget(
-        this.getActionDataButton(
-            this.contentLeftPos,
-            this.contentTopPos + 10,
-            ActionEventType.ON_DISTANCE_NEAR,
-            ConfigurationType.DISTANCE_ACTION));
-
-    // On Close Distance Action
-    this.addRenderableWidget(
-        this.getActionDataButton(
-            this.contentLeftPos,
-            this.contentTopPos + 60,
-            ActionEventType.ON_DISTANCE_CLOSE,
-            ConfigurationType.DISTANCE_ACTION));
-
-    // On Very Close Distance Action
-    this.addRenderableWidget(
-        this.getActionDataButton(
-            this.contentLeftPos,
-            this.contentTopPos + 110,
-            ActionEventType.ON_DISTANCE_VERY_CLOSE,
-            ConfigurationType.DISTANCE_ACTION));
-
-    // On Touch Distance Action
-    this.addRenderableWidget(
-        this.getActionDataButton(
-            this.contentLeftPos,
-            this.contentTopPos + 160,
-            ActionEventType.ON_DISTANCE_TOUCH,
-            ConfigurationType.DISTANCE_ACTION));
+    int actionButtonTop = this.contentTopPos + 10;
+    for (ActionEventType actionEventType : DISTANCE_ACTION_EVENT_TYPES) {
+      this.addRenderableWidget(
+          this.getActionDataButton(
+              this.contentLeftPos,
+              actionButtonTop,
+              actionEventType,
+              ConfigurationType.DISTANCE_ACTION));
+      actionButtonTop += ACTION_BUTTON_SPACING;
+    }
   }
 }

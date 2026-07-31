@@ -53,6 +53,18 @@ public record OpenDialogButtonEditorMessage(UUID uuid, UUID dialogId, UUID dialo
         buffer.readUUID(), buffer.readUUID(), buffer.readUUID());
   }
 
+  private static DialogButtonEntry createUnusedDialogButton(DialogDataEntry dialogDataEntry) {
+    int buttonNumber = dialogDataEntry.getNumberOfDialogButtons() + 1;
+    DialogButtonEntry dialogButton =
+        new DialogButtonEntry("Button " + buttonNumber, DialogButtonType.DEFAULT);
+
+    while (dialogDataEntry.hasDialogButton(dialogButton.id())) {
+      dialogButton = new DialogButtonEntry("Button " + ++buttonNumber, DialogButtonType.DEFAULT);
+    }
+
+    return dialogButton;
+  }
+
   @Override
   public void write(final FriendlyByteBuf buffer) {
     buffer.writeUUID(this.uuid);
@@ -106,8 +118,7 @@ public record OpenDialogButtonEditorMessage(UUID uuid, UUID dialogId, UUID dialo
 
     UUID newDialogButtonId = this.dialogButtonId;
     if (this.dialogButtonId != null && this.dialogButtonId.equals(EMPTY_UUID)) {
-      DialogButtonEntry newDialogButton =
-          new DialogButtonEntry("Button " + RANDOM.nextInt(1000), DialogButtonType.DEFAULT);
+      DialogButtonEntry newDialogButton = createUnusedDialogButton(dialogDataEntry);
       log.info(
           "Created new dialog button {} for dialog {} for {} from {}",
           newDialogButton,

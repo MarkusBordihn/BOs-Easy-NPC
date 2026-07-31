@@ -25,7 +25,6 @@ import de.markusbordihn.easymodelentities.data.profile.EasyModelEntityProfile;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.compat.IntegrationModelProvider;
 import de.markusbordihn.easynpc.compat.IntegrationRegistry;
-import de.markusbordihn.easynpc.data.model.ModelType;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -40,7 +39,7 @@ public class EasyModelEntitiesLoader implements IntegrationModelProvider {
 
   private static boolean reloadListenerRegistered = false;
 
-  private List<ResourceLocation> cachedModels;
+  private volatile List<ResourceLocation> cachedModels;
 
   private EasyModelEntitiesLoader() {}
 
@@ -55,7 +54,7 @@ public class EasyModelEntitiesLoader implements IntegrationModelProvider {
       reloadListenerRegistered = true;
       EasyModelReloadEvents.onProfileReload(
           () -> {
-            INSTANCE.cachedModels = null;
+            INSTANCE.cachedModels = loadProfileModels();
             IntegrationRegistry.invalidate(EasyModelEntitiesManager.INTEGRATION_ID);
           });
     }
@@ -66,8 +65,10 @@ public class EasyModelEntitiesLoader implements IntegrationModelProvider {
     List<ResourceLocation> profileIds = new ArrayList<>();
     for (EasyModelEntityProfile profile : EasyModelEntitiesApi.listProfiles()) {
       profileIds.add(profile.id());
-      ModelType modelType = EasyModelEntitiesManager.getModelType(profile.bodyType().name());
-      EasyModelEntitiesManager.registerProfileModelType(profile.id(), modelType);
+      String bodyTypeName = profile.bodyType().name();
+      EasyModelEntitiesManager.registerProfileModelType(
+          profile.id(), EasyModelEntitiesManager.getModelType(bodyTypeName));
+      EasyModelEntitiesManager.registerProfileBodyType(profile.id(), bodyTypeName);
     }
     profileIds.sort(Comparator.comparing(ResourceLocation::toString));
     return profileIds;
@@ -80,18 +81,14 @@ public class EasyModelEntitiesLoader implements IntegrationModelProvider {
 
   @Override
   public List<String> getAvailableModels() {
-    if (cachedModels == null || cachedModels.isEmpty()) {
-      log.debug("Re-Loading Easy Model Entities profiles ...");
-      List<ResourceLocation> profileModels = loadProfileModels();
-      if (!profileModels.isEmpty()) {
-        this.cachedModels = profileModels;
-        log.debug("Loaded {} Easy Model Entities profiles", cachedModels.size());
+    List<ResourceLocation> models = this.cachedModels;
+    if (models == null) {
+      models = loadProfileModels();
+      this.cachedModels = models;
+      if (!models.isEmpty()) {
+        log.debug("Loaded {} Easy Model Entities profiles", models.size());
       }
     }
-
-    if (cachedModels == null) {
-      return List.of();
-    }
-    return cachedModels.stream().map(ResourceLocation::toString).toList();
+    return models.stream().map(ResourceLocation::toString).toList();
   }
 }

@@ -26,18 +26,14 @@ import de.markusbordihn.easynpc.data.dialog.DialogButtonEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.data.preset.PresetType;
-import de.markusbordihn.easynpc.data.screen.ScreenData;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.menu.dialog.DialogMenu;
 import de.markusbordihn.easynpc.security.CommandPermissionLevel;
 import de.markusbordihn.easynpc.security.CommandSecurity;
 import de.markusbordihn.easynpc.security.FeatureSecurity;
 import de.markusbordihn.easynpc.security.NpcFeature;
 import de.markusbordihn.easynpc.security.NpcSecurityRole;
 import java.util.LinkedHashSet;
-import java.util.Objects;
 import java.util.Set;
-import java.util.UUID;
 import net.minecraft.server.level.ServerPlayer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -72,28 +68,6 @@ class MessageSecurity {
 
     logBlockedFeature(action, null, serverPlayer, feature);
     return false;
-  }
-
-  static boolean checkDialogSession(final UUID uuid, final ServerPlayer serverPlayer) {
-    return checkDialogSession(uuid, null, serverPlayer);
-  }
-
-  static boolean checkDialogSession(
-      final UUID uuid, final UUID dialogId, final ServerPlayer serverPlayer) {
-    if (uuid == null || serverPlayer == null) {
-      return false;
-    }
-
-    if (!(serverPlayer.containerMenu instanceof DialogMenu dialogMenu)) {
-      return false;
-    }
-
-    ScreenData screenData = dialogMenu.getScreenData();
-    if (screenData == null || !uuid.equals(screenData.uuid())) {
-      return false;
-    }
-
-    return dialogId == null || Objects.equals(dialogId, screenData.dialogId());
   }
 
   static ActionDataSet sanitizeActionDataSet(

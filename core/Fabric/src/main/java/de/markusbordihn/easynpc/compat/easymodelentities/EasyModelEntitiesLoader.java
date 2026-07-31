@@ -25,7 +25,6 @@ import de.markusbordihn.easymodelentities.data.profile.EasyModelEntityProfile;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.compat.IntegrationModelProvider;
 import de.markusbordihn.easynpc.compat.IntegrationRegistry;
-import de.markusbordihn.easynpc.data.model.ModelType;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -55,7 +54,7 @@ public class EasyModelEntitiesLoader implements IntegrationModelProvider {
       reloadListenerRegistered = true;
       EasyModelReloadEvents.onProfileReload(
           () -> {
-            INSTANCE.cachedModels = null;
+            INSTANCE.cachedModels = loadProfileModels();
             IntegrationRegistry.invalidate(EasyModelEntitiesManager.INTEGRATION_ID);
           });
     }
@@ -66,8 +65,10 @@ public class EasyModelEntitiesLoader implements IntegrationModelProvider {
     List<ResourceLocation> profileIds = new ArrayList<>();
     for (EasyModelEntityProfile profile : EasyModelEntitiesApi.listProfiles()) {
       profileIds.add(profile.id());
-      ModelType modelType = EasyModelEntitiesManager.getModelType(profile.bodyType().name());
-      EasyModelEntitiesManager.registerProfileModelType(profile.id(), modelType);
+      String bodyTypeName = profile.bodyType().name();
+      EasyModelEntitiesManager.registerProfileModelType(
+          profile.id(), EasyModelEntitiesManager.getModelType(bodyTypeName));
+      EasyModelEntitiesManager.registerProfileBodyType(profile.id(), bodyTypeName);
     }
     profileIds.sort(Comparator.comparing(ResourceLocation::toString));
     return profileIds;
