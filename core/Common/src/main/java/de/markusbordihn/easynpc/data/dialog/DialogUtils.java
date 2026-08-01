@@ -19,23 +19,28 @@
 
 package de.markusbordihn.easynpc.data.dialog;
 
+import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.action.ActionDataEntry;
 import de.markusbordihn.easynpc.data.action.ActionDataSet;
 import de.markusbordihn.easynpc.data.action.ActionDataType;
 import de.markusbordihn.easynpc.data.scoreboard.ScoreboardData;
 import de.markusbordihn.easynpc.network.components.TextComponent;
+import de.markusbordihn.easynpc.utils.ResourceNameNormalizer;
 import de.markusbordihn.easynpc.utils.TextFormattingCodes;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import net.minecraft.client.gui.Font;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class DialogUtils {
 
@@ -44,6 +49,8 @@ public class DialogUtils {
   private static final Pattern SCORE_PATTERN = Pattern.compile("@score\\(([a-zA-Z0-9_.-]+)\\)");
   private static final int MAX_DIALOG_LINE_LENGTH = 178;
   private static final int MAX_SMALL_BUTTON_NAME_LENGTH = 20;
+  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+  private static final Set<String> reportedLabelChanges = ConcurrentHashMap.newKeySet();
 
   protected DialogUtils() {}
 
@@ -113,39 +120,52 @@ public class DialogUtils {
     return generateLabel(name, "button", DialogButtonEntry.MAX_BUTTON_LABEL_LENGTH);
   }
 
+  public static String generateButtonLabel(String label, String fallbackName) {
+    if (label == null || label.isEmpty()) {
+      return generateButtonLabel(fallbackName);
+    }
+
+    String generatedLabel = generateButtonLabel(label);
+    if (!generatedLabel.equals(label) && reportedLabelChanges.add(label)) {
+      log.warn(
+          "Normalized dialog label '{}' to '{}', use the normalized label to reference it.",
+          label,
+          generatedLabel);
+    }
+
+    return generatedLabel;
+  }
+
   public static String generateDialogLabel(String name) {
     return generateLabel(name, "dialog", DialogDataEntry.MAX_DIALOG_LABEL_LENGTH);
   }
 
   private static String generateLabel(String name, String type, int maxLength) {
     if (name == null || name.isEmpty()) {
-      // Generate random label name
       return type
           + "_"
           + UUID.randomUUID().toString().substring(0, 8).replace("-", "").toLowerCase(Locale.ROOT);
     }
-    String label = name.trim().toLowerCase(Locale.ROOT);
-    label = label.replace(" ", "_");
-    label = label.replaceAll("[^a-z0-9_]", "");
-    return label.length() > maxLength ? label.substring(0, maxLength) : label;
+
+    return ResourceNameNormalizer.toIdentifier(name.trim(), type, maxLength);
   }
 
-  public static int getNumbersOfDialogLines(Component component, Font font) {
-    return getNumbersOfDialogLines(component, MAX_DIALOG_LINE_LENGTH, font);
+  public static int getNumberOfDialogLines(Component component, Font font) {
+    return getNumberOfDialogLines(component, MAX_DIALOG_LINE_LENGTH, font);
   }
 
-  public static int getNumbersOfDialogLines(String text, Font font) {
-    return getNumbersOfDialogLines(text, MAX_DIALOG_LINE_LENGTH, font);
+  public static int getNumberOfDialogLines(String text, Font font) {
+    return getNumberOfDialogLines(text, MAX_DIALOG_LINE_LENGTH, font);
   }
 
-  public static int getNumbersOfDialogLines(String text, int maxLineLength, Font font) {
+  public static int getNumberOfDialogLines(String text, int maxLineLength, Font font) {
     if (text == null || text.isEmpty()) {
       return 0;
     }
-    return getNumbersOfDialogLines(TextComponent.getText(text), maxLineLength, font);
+    return getNumberOfDialogLines(TextComponent.getText(text), maxLineLength, font);
   }
 
-  public static int getNumbersOfDialogLines(Component component, int maxLineLength, Font font) {
+  public static int getNumberOfDialogLines(Component component, int maxLineLength, Font font) {
     return font.split(component, maxLineLength).size();
   }
 
@@ -227,7 +247,7 @@ public class DialogUtils {
     }
 
     // Calculate the number of lines.
-    int numberOfLines = getNumbersOfDialogLines(dialogText, font);
+    int numberOfLines = getNumberOfDialogLines(dialogText, font);
     if (hasDialogMacros) {
       numberOfLines += 20;
     }

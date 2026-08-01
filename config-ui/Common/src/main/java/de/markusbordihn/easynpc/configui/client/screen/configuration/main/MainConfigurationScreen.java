@@ -45,7 +45,7 @@ import de.markusbordihn.easynpc.data.display.DisplayAttributeType;
 import de.markusbordihn.easynpc.data.display.NameVisibilityType;
 import de.markusbordihn.easynpc.data.render.EntityRenderConfig;
 import de.markusbordihn.easynpc.data.render.RenderDataEntry;
-import de.markusbordihn.easynpc.data.skin.SkinType;
+import de.markusbordihn.easynpc.data.render.RenderType;
 import de.markusbordihn.easynpc.entity.easynpc.data.DisplayAttributeDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.NavigationDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.OwnerDataCapable;
@@ -75,6 +75,7 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
 
   public static final int BUTTON_HEIGHT = 18;
   public static final int BUTTON_WIDTH = 97;
+  private static final float ENTITY_TEXT_SCALE = 0.75f;
   private static final Map<String, ConfigurationType> menuButtons = new LinkedHashMap<>();
 
   static {
@@ -105,6 +106,10 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
   public MainConfigurationScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
     this.showCloseButton = true;
+  }
+
+  private static String formatPosition(BlockPos blockPos) {
+    return blockPos.getX() + ", " + blockPos.getY() + ", " + blockPos.getZ();
   }
 
   @Override
@@ -158,101 +163,84 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
         this.yMouse);
     IntegrationRegistry.setGuiPreviewMode(false);
 
-    // Scale entity texts
-    float scaleEntityTypeText = 0.75f;
     guiGraphics.pose().pushMatrix();
-    guiGraphics.pose().scale(scaleEntityTypeText, scaleEntityTypeText);
+    guiGraphics.pose().scale(ENTITY_TEXT_SCALE, ENTITY_TEXT_SCALE);
 
-    // Entity UUID.
     Text.drawString(
         guiGraphics,
         this.font,
-        "UUID: " + getEasyNPCEntity().getUUID(),
-        Math.round((this.contentLeftPos + 1) / scaleEntityTypeText),
-        Math.round((this.buttonTopPos + 1) / scaleEntityTypeText));
-
-    // Entity Type
+        "UUID: " + this.getEasyNPCEntity().getUUID(),
+        Math.round((this.contentLeftPos + 1) / ENTITY_TEXT_SCALE),
+        Math.round((this.buttonTopPos + 1) / ENTITY_TEXT_SCALE));
     Text.drawString(
         guiGraphics,
         this.font,
-        getEasyNPCEntity().getType().getDescription(),
-        Math.round((this.contentLeftPos + 3) / scaleEntityTypeText),
-        Math.round((this.avatarTopPos + 4) / scaleEntityTypeText));
+        this.getEasyNPCEntity().getType().getDescription(),
+        Math.round((this.contentLeftPos + 3) / ENTITY_TEXT_SCALE),
+        Math.round((this.avatarTopPos + 4) / ENTITY_TEXT_SCALE));
 
-    // Entity Owner, if available.
-    OwnerDataCapable<?> ownerData = getEasyNPC().getEasyNPCOwnerData();
+    OwnerDataCapable<?> ownerData = this.getEasyNPC().getEasyNPCOwnerData();
     if (ownerData != null) {
-      Text.drawString(
+      this.drawAvatarInfo(
           guiGraphics,
-          this.font,
-          "Owner: " + (ownerData.hasNPCOwner() ? ownerData.getNPCOwnerName() : "-"),
-          Math.round((this.contentLeftPos + 3) / scaleEntityTypeText),
-          Math.round((this.avatarTopPos + 15) / scaleEntityTypeText));
+          15,
+          "Owner: " + (ownerData.hasNPCOwner() ? ownerData.getNPCOwnerName() : "-"));
     }
 
-    // Home position
-    NavigationDataCapable<?> navigationData = getEasyNPC().getEasyNPCNavigationData();
+    NavigationDataCapable<?> navigationData = this.getEasyNPC().getEasyNPCNavigationData();
     if (navigationData != null && navigationData.hasNPCHomePosition()) {
-      BlockPos blockPos = navigationData.getNPCHomePosition();
-      Text.drawString(
-          guiGraphics,
-          this.font,
-          "Home: " + blockPos.getX() + ", " + blockPos.getY() + ", " + blockPos.getZ(),
-          Math.round((this.contentLeftPos + 3) / scaleEntityTypeText),
-          Math.round((this.avatarTopPos + 23) / scaleEntityTypeText));
+      this.drawAvatarInfo(
+          guiGraphics, 23, "Home: " + formatPosition(navigationData.getNPCHomePosition()));
     }
 
-    // Team
-    Text.drawString(
+    this.drawAvatarInfo(
         guiGraphics,
-        this.font,
+        31,
         "Team: "
-            + (getEasyNPCEntity().getTeam() != null ? getEasyNPCEntity().getTeam().getName() : "-"),
-        Math.round((this.contentLeftPos + 3) / scaleEntityTypeText),
-        Math.round((this.avatarTopPos + 31) / scaleEntityTypeText));
-
-    // Entity Health
-    Text.drawString(
+            + (this.getEasyNPCEntity().getTeam() != null
+                ? this.getEasyNPCEntity().getTeam().getName()
+                : "-"));
+    this.drawAvatarInfo(
         guiGraphics,
-        this.font,
+        39,
         "HP: "
-            + getEasyNPCLivingEntity().getHealth()
+            + this.getEasyNPCLivingEntity().getHealth()
             + "/"
-            + getEasyNPCLivingEntity().getMaxHealth(),
-        Math.round((this.contentLeftPos + 3) / scaleEntityTypeText),
-        Math.round((this.avatarTopPos + 39) / scaleEntityTypeText));
+            + this.getEasyNPCLivingEntity().getMaxHealth());
 
-    // Entity Level and Experience
-    ProgressionDataCapable<?> progressionData = getEasyNPC().getEasyNPCProgressionData();
+    ProgressionDataCapable<?> progressionData = this.getEasyNPC().getEasyNPCProgressionData();
     if (progressionData != null && progressionData.getExperience() > 1) {
-      Text.drawString(
+      this.drawAvatarInfo(
           guiGraphics,
-          this.font,
+          47,
           "Level: "
               + progressionData.getExperienceLevel()
               + " (XP: "
               + progressionData.getExperience()
               + "/"
               + progressionData.getExperienceForNextLevel()
-              + ")",
-          Math.round((this.contentLeftPos + 3) / scaleEntityTypeText),
-          Math.round((this.avatarTopPos + 47) / scaleEntityTypeText));
+              + ")");
     }
 
-    // Current position
-    BlockPos blockPos = getEasyNPCEntity().getOnPos();
-    Text.drawString(
+    this.drawAvatarInfo(
         guiGraphics,
-        this.font,
-        "Pos: " + blockPos.getX() + ", " + blockPos.getY() + ", " + blockPos.getZ(),
-        Math.round((this.contentLeftPos + 3) / scaleEntityTypeText),
-        Math.round((this.avatarTopPos + this.avatarHeight - 8) / scaleEntityTypeText));
+        this.avatarHeight - 8,
+        "Pos: " + formatPosition(this.getEasyNPCEntity().getOnPos()));
 
     guiGraphics.pose().popMatrix();
 
     if (this.colorPickerPopup != null) {
       this.colorPickerPopup.render(guiGraphics, x, y, partialTicks);
     }
+  }
+
+  private void drawAvatarInfo(GuiGraphicsExtractor guiGraphics, int topOffset, String text) {
+    Text.drawString(
+        guiGraphics,
+        this.font,
+        text,
+        Math.round((this.contentLeftPos + 3) / ENTITY_TEXT_SCALE),
+        Math.round((this.avatarTopPos + topOffset) / ENTITY_TEXT_SCALE));
   }
 
   @Override
@@ -318,6 +306,11 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
         0xffaaaaaa);
   }
 
+  private void openConfiguration(ConfigurationType configurationType) {
+    NetworkMessageHandlerManager.getServerHandler()
+        .openConfiguration(this.getEasyNPCUUID(), configurationType);
+  }
+
   private void defineImportExportButtons() {
     // Import Button — opens local import screen (always accessible)
     Button importButton =
@@ -328,11 +321,7 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
                 97,
                 16,
                 "import",
-                onPress ->
-                    NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(
-                            this.getEasyNPCUUID(), ConfigurationType.LOCAL_PRESET_IMPORT)));
-    importButton.active = true;
+                onPress -> this.openConfiguration(ConfigurationType.LOCAL_PRESET_IMPORT)));
 
     // Export Button
     Button exportButton =
@@ -343,10 +332,7 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
                 97,
                 16,
                 "export",
-                onPress ->
-                    NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(
-                            this.getEasyNPCUUID(), ConfigurationType.LOCAL_PRESET_EXPORT)));
+                onPress -> this.openConfiguration(ConfigurationType.LOCAL_PRESET_EXPORT)));
     if (this.isConfigurationBlockedByPermission(ConfigurationType.LOCAL_PRESET_EXPORT)) {
       exportButton.active = false;
       exportButton.setTooltip(
@@ -472,30 +458,15 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
                 110,
                 14,
                 "edit_skin",
-                onPress -> {
-                  SkinType skinType = skinData.getSkinType();
-                  switch (skinType) {
-                    case NONE:
-                      NetworkMessageHandlerManager.getServerHandler()
-                          .openConfiguration(this.getEasyNPCUUID(), ConfigurationType.NONE_SKIN);
-                      break;
-                    case PLAYER_SKIN:
-                      NetworkMessageHandlerManager.getServerHandler()
-                          .openConfiguration(this.getEasyNPCUUID(), ConfigurationType.PLAYER_SKIN);
-                      break;
-                    case SECURE_REMOTE_URL, INSECURE_REMOTE_URL:
-                      NetworkMessageHandlerManager.getServerHandler()
-                          .openConfiguration(this.getEasyNPCUUID(), ConfigurationType.URL_SKIN);
-                      break;
-                    case CUSTOM:
-                      NetworkMessageHandlerManager.getServerHandler()
-                          .openConfiguration(this.getEasyNPCUUID(), ConfigurationType.CUSTOM_SKIN);
-                      break;
-                    default:
-                      NetworkMessageHandlerManager.getServerHandler()
-                          .openConfiguration(this.getEasyNPCUUID(), ConfigurationType.DEFAULT_SKIN);
-                  }
-                }));
+                onPress ->
+                    this.openConfiguration(
+                        switch (skinData.getSkinType()) {
+                          case NONE -> ConfigurationType.NONE_SKIN;
+                          case PLAYER_SKIN -> ConfigurationType.PLAYER_SKIN;
+                          case SECURE_REMOTE_URL, INSECURE_REMOTE_URL -> ConfigurationType.URL_SKIN;
+                          case CUSTOM -> ConfigurationType.CUSTOM_SKIN;
+                          default -> ConfigurationType.DEFAULT_SKIN;
+                        })));
     editSkinButton.active = this.supportsConfigurationType(ConfigurationType.SKIN);
   }
 
@@ -515,27 +486,14 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
                 "change_model",
                 onPress -> {
                   if (this.supportsConfigurationType(ConfigurationType.COBBLEMON_MODEL)) {
-                    NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(
-                            this.getEasyNPCUUID(), ConfigurationType.COBBLEMON_MODEL);
+                    this.openConfiguration(ConfigurationType.COBBLEMON_MODEL);
                   } else if (this.supportsConfigurationType(
                       ConfigurationType.EASY_MODEL_ENTITIES_MODEL)) {
-                    NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(
-                            this.getEasyNPCUUID(), ConfigurationType.EASY_MODEL_ENTITIES_MODEL);
+                    this.openConfiguration(ConfigurationType.EASY_MODEL_ENTITIES_MODEL);
+                  } else if (renderDataSet.getRenderType() == RenderType.CUSTOM_ENTITY) {
+                    this.openConfiguration(ConfigurationType.CUSTOM_MODEL);
                   } else {
-                    switch (renderDataSet.getRenderType()) {
-                      case CUSTOM_ENTITY:
-                        NetworkMessageHandlerManager.getServerHandler()
-                            .openConfiguration(
-                                this.getEasyNPCUUID(), ConfigurationType.CUSTOM_MODEL);
-                        break;
-                      default:
-                        NetworkMessageHandlerManager.getServerHandler()
-                            .openConfiguration(
-                                this.getEasyNPCUUID(), ConfigurationType.DEFAULT_MODEL);
-                        break;
-                    }
+                    this.openConfiguration(ConfigurationType.DEFAULT_MODEL);
                   }
                 }));
     changeModelButton.active =
@@ -572,9 +530,7 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
                     buttonY,
                     BUTTON_WIDTH,
                     buttonName,
-                    onPress ->
-                        NetworkMessageHandlerManager.getServerHandler()
-                            .openConfiguration(this.getEasyNPCUUID(), configurationType)));
+                    onPress -> this.openConfiguration(configurationType)));
         button.active = ExperimentalFeaturesState.isEnabled() && !permissionBlocked;
         experimentalButtons.add(button);
       } else {
@@ -585,9 +541,7 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
                     buttonY,
                     BUTTON_WIDTH,
                     buttonName,
-                    onPress ->
-                        NetworkMessageHandlerManager.getServerHandler()
-                            .openConfiguration(this.getEasyNPCUUID(), configurationType)));
+                    onPress -> this.openConfiguration(configurationType)));
         boolean typeSupported = this.supportsConfigurationType(configurationType);
         button.active = typeSupported && !permissionBlocked;
         if (typeSupported && permissionBlocked) {
@@ -619,29 +573,23 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
   }
 
   private void respawnNPC() {
-    Minecraft minecraft = this.minecraft;
-    if (minecraft == null) {
-      return;
-    }
-
-    minecraft.setScreen(
-        new ConfirmScreen(
-            confirmed -> {
-              if (confirmed) {
-                NetworkMessageHandlerManager.getServerHandler().respawnNPC(this.getEasyNPCUUID());
-                minecraft.setScreen(null);
-              } else {
-                minecraft.setScreen(this);
-              }
-            },
-            TextComponent.getTranslatedConfigText("respawnNPC.confirmQuestion"),
-            TextComponent.getTranslatedConfigText(
-                "respawnNPC.confirmWarning", getEasyNPCEntity().getDisplayName()),
-            TextComponent.getTranslatedConfigText("respawnNPC.respawnButton"),
-            CommonComponents.GUI_CANCEL));
+    this.confirmAction(
+        "respawnNPC.confirmQuestion",
+        "respawnNPC.confirmWarning",
+        "respawnNPC.respawnButton",
+        () -> NetworkMessageHandlerManager.getServerHandler().respawnNPC(this.getEasyNPCUUID()));
   }
 
   private void deleteNPC() {
+    this.confirmAction(
+        "removeNPC.deleteQuestion",
+        "removeNPC.deleteWarning",
+        "removeNPC.deleteButton",
+        () -> NetworkMessageHandlerManager.getServerHandler().removeNPC(this.getEasyNPCUUID()));
+  }
+
+  private void confirmAction(
+      String questionKey, String warningKey, String confirmKey, Runnable confirmedAction) {
     Minecraft minecraft = this.minecraft;
     if (minecraft == null) {
       return;
@@ -651,16 +599,16 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
         new ConfirmScreen(
             confirmed -> {
               if (confirmed) {
-                NetworkMessageHandlerManager.getServerHandler().removeNPC(this.getEasyNPCUUID());
+                confirmedAction.run();
                 minecraft.setScreen(null);
               } else {
                 minecraft.setScreen(this);
               }
             },
-            TextComponent.getTranslatedConfigText("removeNPC.deleteQuestion"),
+            TextComponent.getTranslatedConfigText(questionKey),
             TextComponent.getTranslatedConfigText(
-                "removeNPC.deleteWarning", getEasyNPCEntity().getDisplayName()),
-            TextComponent.getTranslatedConfigText("removeNPC.deleteButton"),
+                warningKey, this.getEasyNPCEntity().getDisplayName()),
+            TextComponent.getTranslatedConfigText(confirmKey),
             CommonComponents.GUI_CANCEL));
   }
 

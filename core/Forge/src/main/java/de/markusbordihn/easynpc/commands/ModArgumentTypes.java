@@ -24,6 +24,7 @@ import de.markusbordihn.easynpc.commands.arguments.DialogArgument;
 import de.markusbordihn.easynpc.commands.arguments.EasyNPCArgument;
 import de.markusbordihn.easynpc.commands.arguments.EntityTypeArgument;
 import de.markusbordihn.easynpc.commands.arguments.EquipmentSlotArgument;
+import de.markusbordihn.easynpc.commands.arguments.StateArgument;
 import net.minecraft.commands.synchronization.ArgumentTypeInfo;
 import net.minecraft.commands.synchronization.ArgumentTypeInfos;
 import net.minecraft.commands.synchronization.SingletonArgumentInfo;
@@ -64,6 +65,12 @@ public class ModArgumentTypes {
                   ArgumentTypeInfos.registerByClass(
                       EquipmentSlotArgument.class,
                       SingletonArgumentInfo.contextFree(EquipmentSlotArgument::new)));
+  public static final RegistryObject<SingletonArgumentInfo<StateArgument>> STATE_ARGUMENT =
+      COMMAND_ARGUMENT_TYPES.register(
+          "state",
+          () ->
+              ArgumentTypeInfos.registerByClass(
+                  StateArgument.class, SingletonArgumentInfo.contextFree(StateArgument::new)));
 
   private ModArgumentTypes() {}
 }

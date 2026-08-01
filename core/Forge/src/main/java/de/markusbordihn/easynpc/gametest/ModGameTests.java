@@ -253,6 +253,82 @@ public final class ModGameTests {
         () -> NavigationHomePositionTest::testHomePositionSurvivesSaveAndLoad);
 
     TEST_FUNCTIONS.register(
+        "every_command_argument_can_be_synchronized",
+        () -> CommandArgumentTypeTest::testEveryCommandArgumentCanBeSynchronized);
+
+    TEST_FUNCTIONS.register(
+        "duplicate_button_label_is_rejected",
+        () -> DialogButtonIdentityTest::testDuplicateButtonLabelIsRejected);
+    TEST_FUNCTIONS.register(
+        "button_identity_survives_save_and_load",
+        () -> DialogButtonIdentityTest::testButtonIdentitySurvivesSaveAndLoad);
+    TEST_FUNCTIONS.register(
+        "edited_button_label_stays_addressable",
+        () -> DialogButtonIdentityTest::testEditedButtonLabelStaysAddressable);
+
+    TEST_FUNCTIONS.register(
+        "distance_actions_trigger_per_range",
+        () -> DistanceActionTest::testDistanceActionsTriggerPerRange);
+    TEST_FUNCTIONS.register(
+        "distance_actions_run_once_per_player",
+        () -> DistanceActionTest::testDistanceActionsRunOncePerPlayer);
+    TEST_FUNCTIONS.register(
+        "distance_actions_trigger_again_after_leaving",
+        () -> DistanceActionTest::testDistanceActionsTriggerAgainAfterLeaving);
+
+    TEST_FUNCTIONS.register(
+        "navigation_type_changes_the_navigation",
+        () -> NavigationTypeTest::testNavigationTypeChangesTheNavigation);
+    TEST_FUNCTIONS.register(
+        "navigation_is_only_refreshed_on_change",
+        () -> NavigationTypeTest::testNavigationIsOnlyRefreshedOnChange);
+    TEST_FUNCTIONS.register(
+        "gravity_is_restored_after_flying",
+        () -> NavigationTypeTest::testGravityIsRestoredAfterFlying);
+    TEST_FUNCTIONS.register(
+        "hover_height_stays_in_range", () -> NavigationTypeTest::testHoverHeightStaysInRange);
+    TEST_FUNCTIONS.register(
+        "navigation_type_survives_preset_import",
+        () -> NavigationTypeTest::testNavigationTypeSurvivesPresetImport);
+
+    TEST_FUNCTIONS.register(
+        "state_action_applies_every_operation",
+        () -> NpcStateTest::testStateActionAppliesEveryOperation);
+    TEST_FUNCTIONS.register(
+        "invalid_state_action_is_ignored", () -> NpcStateTest::testInvalidStateActionIsIgnored);
+    TEST_FUNCTIONS.register(
+        "debug_action_still_writes_the_state",
+        () -> NpcStateTest::testDebugActionStillWritesTheState);
+    TEST_FUNCTIONS.register(
+        "state_survives_save_and_load", () -> NpcStateTest::testStateSurvivesSaveAndLoad);
+    TEST_FUNCTIONS.register(
+        "state_condition_locks_dialog_button",
+        () -> NpcStateTest::testStateConditionLocksDialogButton);
+    TEST_FUNCTIONS.register(
+        "state_is_reset_on_preset_import", () -> NpcStateTest::testStateIsResetOnPresetImport);
+    TEST_FUNCTIONS.register(
+        "state_change_notifies_listener", () -> NpcStateTest::testStateChangeNotifiesListener);
+    TEST_FUNCTIONS.register(
+        "forge_keeper_preset_uses_states", () -> NpcStateTest::testForgeKeeperPresetUsesStates);
+
+    TEST_FUNCTIONS.register(
+        "every_objective_type_creates_its_goal",
+        () -> ObjectiveGoalCreationTest::testEveryObjectiveTypeCreatesItsGoal);
+    TEST_FUNCTIONS.register(
+        "every_objective_type_survives_ticking",
+        () -> ObjectiveGoalCreationTest::testEveryObjectiveTypeSurvivesTicking);
+
+    TEST_FUNCTIONS.register(
+        "objective_values_from_preset_are_clamped",
+        () -> ObjectivePresetTest::testObjectiveValuesFromPresetAreClamped);
+    TEST_FUNCTIONS.register(
+        "player_target_objective_is_registered_on_join",
+        () -> ObjectivePresetTest::testPlayerTargetObjectiveIsRegisteredOnJoin);
+    TEST_FUNCTIONS.register(
+        "entity_target_objective_is_released_on_leave",
+        () -> ObjectivePresetTest::testEntityTargetObjectiveIsReleasedOnLeave);
+
+    TEST_FUNCTIONS.register(
         "command_block_preset_import",
         () -> PresetCommandSecurityTest::testCommandBlockPresetImport);
     TEST_FUNCTIONS.register(

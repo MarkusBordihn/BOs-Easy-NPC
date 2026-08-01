@@ -151,7 +151,7 @@ public class ModEntityType {
       if (type.getAttributes() != null) {
         event.put(
             (EntityType<? extends LivingEntity>) RAW_TYPE.get(type).get(),
-            type.getAttributes().build());
+            ModEntityAttributes.buildWithNavigationAttributes(type));
       } else {
         log.warn("Raw entity type {} does not have attributes defined!", type.getResourceKey());
       }
@@ -162,7 +162,7 @@ public class ModEntityType {
       if (type.getAttributes() != null) {
         event.put(
             (EntityType<? extends LivingEntity>) NPC_TYPE.get(type).get(),
-            type.getAttributes().build());
+            ModEntityAttributes.buildWithNavigationAttributes(type));
       } else {
         log.warn("NPC entity type {} does not have attributes defined!", type.getResourceKey());
       }
@@ -173,7 +173,7 @@ public class ModEntityType {
       if (type.getAttributes() != null) {
         event.put(
             (EntityType<? extends LivingEntity>) CUSTOM_TYPE.get(type).get(),
-            type.getAttributes().build());
+            ModEntityAttributes.buildWithNavigationAttributes(type));
       } else {
         log.warn("Custom entity type {} does not have attributes defined!", type.getResourceKey());
       }
@@ -184,7 +184,7 @@ public class ModEntityType {
         if (type.getAttributes() != null) {
           event.put(
               (EntityType<? extends LivingEntity>) EPIC_FIGHT_TYPE.get(type).get(),
-              type.getAttributes().build());
+              ModEntityAttributes.buildWithNavigationAttributes(type));
         } else {
           log.warn(
               "Epic Fight entity type {} does not have attributes defined!", type.getResourceKey());
@@ -197,7 +197,7 @@ public class ModEntityType {
         if (type.getAttributes() != null) {
           event.put(
               (EntityType<? extends LivingEntity>) COBBLEMON_TYPE.get(type).get(),
-              type.getAttributes().build());
+              ModEntityAttributes.buildWithNavigationAttributes(type));
         } else {
           log.warn(
               "Cobblemon entity type {} does not have attributes defined!", type.getResourceKey());
@@ -210,7 +210,7 @@ public class ModEntityType {
         if (type.getAttributes() != null) {
           event.put(
               (EntityType<? extends LivingEntity>) EASY_MODEL_ENTITIES_TYPE.get(type).get(),
-              type.getAttributes().build());
+              ModEntityAttributes.buildWithNavigationAttributes(type));
         } else {
           log.warn(
               "Easy Model Entities entity type {} does not have attributes defined!",

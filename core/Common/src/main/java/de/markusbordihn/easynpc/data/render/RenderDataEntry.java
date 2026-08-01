@@ -128,10 +128,6 @@ public record RenderDataEntry(
     return new RenderDataEntry(renderType, renderEntityType, renderEntityModel, renderModelType);
   }
 
-  public RenderDataEntry create(CompoundTag compoundTag) {
-    return new RenderDataEntry(compoundTag);
-  }
-
   public CompoundTag write(CompoundTag compoundTag) {
     if (this.renderType != RenderType.DEFAULT) {
       compoundTag.putString(DATA_RENDER_TYPE_TAG, this.renderType.name());

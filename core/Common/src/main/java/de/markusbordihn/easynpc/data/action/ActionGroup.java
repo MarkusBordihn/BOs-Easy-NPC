@@ -23,6 +23,7 @@ import de.markusbordihn.easynpc.utils.EnumUtils;
 
 public enum ActionGroup {
   NONE,
+  DISTANCE_FAR,
   DISTANCE_NEAR,
   DISTANCE_CLOSE,
   DISTANCE_VERY_CLOSE,

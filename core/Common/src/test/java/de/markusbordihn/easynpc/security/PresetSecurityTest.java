@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.security;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -33,6 +34,10 @@ class PresetSecurityTest {
     return PresetSecurity.validateResourceLocation(
             presetType, Identifier.tryParse(resourceLocation))
         .allowed();
+  }
+
+  private static PresetType resolveType(PresetType presetType, String resourceLocation) {
+    return PresetSecurity.resolveResourcePresetType(Identifier.parse(resourceLocation), presetType);
   }
 
   @Test
@@ -71,5 +76,28 @@ class PresetSecurityTest {
     assertTrue(isAllowed(PresetType.CUSTOM, "othermod:anywhere/companion.npc.nbt"));
     assertTrue(isAllowed(PresetType.WORLD, "othermod:anywhere/companion.npc.nbt"));
     assertTrue(isAllowed(PresetType.LOCAL, "othermod:anywhere/companion.npc.nbt"));
+  }
+
+  @Test
+  @DisplayName("A preset from resources is read as the type its folder belongs to")
+  void testResourcePresetTypeIsResolvedByFolder() {
+    assertEquals(
+        PresetType.DEFAULT,
+        resolveType(PresetType.DATA, "easy_npc:default_preset/villager/builder.npc.snbt"));
+    assertEquals(
+        PresetType.DATA,
+        resolveType(PresetType.DEFAULT, "othermod:easy_npc/preset/companion.npc.nbt"));
+    assertEquals(
+        PresetType.DATA, resolveType(PresetType.DATA, "easy_npc:preset/humanoid/villager.npc.nbt"));
+  }
+
+  @Test
+  @DisplayName("A preset outside of the resource folders keeps its own type and stays blocked")
+  void testUnknownResourcePathKeepsItsType() {
+    assertEquals(
+        PresetType.DATA, resolveType(PresetType.DATA, "othermod:anywhere/companion.npc.nbt"));
+    assertEquals(
+        PresetType.CUSTOM, resolveType(PresetType.CUSTOM, "easy_npc:default_preset/x.npc.snbt"));
+    assertFalse(isAllowed(PresetType.DATA, "othermod:anywhere/companion.npc.nbt"));
   }
 }

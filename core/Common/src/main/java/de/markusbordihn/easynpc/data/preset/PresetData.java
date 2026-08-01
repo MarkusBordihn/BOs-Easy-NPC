@@ -52,7 +52,9 @@ public record PresetData(
     PresetMetadata metadata) {
   public static final String ID = "preset_data";
   public static final String EMPTY_NAME = "Empty";
+  public static final String DATA_TAG = "data";
   public static final String ENTITY_TYPE_TAG = "EntityType";
+  public static final String PARENT_TAG = "Parent";
   public static final String PRESET_TAG = "Preset";
   public static final String PRESET_UUID_TAG = "PresetUUID";
   public static final String ID_TAG = "id";
@@ -160,6 +162,10 @@ public record PresetData(
         metadata);
   }
 
+  public static boolean usesEntityDataWrapper(CompoundTag compoundTag) {
+    return compoundTag != null && compoundTag.contains(DATA_TAG) && !compoundTag.contains(ID_TAG);
+  }
+
   private static CompoundTag ensurePresetUUID(CompoundTag data) {
     if (data == null) {
       return data;
@@ -181,8 +187,8 @@ public record PresetData(
     }
 
     CompoundTag entityData =
-        compoundTag.contains("data") && !compoundTag.contains(ID_TAG)
-            ? compoundTag.getCompound("data").orElse(compoundTag)
+        usesEntityDataWrapper(compoundTag)
+            ? compoundTag.getCompound(DATA_TAG).orElse(compoundTag)
             : compoundTag;
     if (!entityData.contains(ID_TAG)) {
       log.error("Missing entity ID tag in preset data: {}", compoundTag);

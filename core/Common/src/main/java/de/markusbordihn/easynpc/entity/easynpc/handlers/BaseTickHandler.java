@@ -2,6 +2,7 @@ package de.markusbordihn.easynpc.entity.easynpc.handlers;
 
 import de.markusbordihn.easynpc.data.ticker.TickerType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.data.NavigationDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.TickerDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.TradingDataCapable;
 import net.minecraft.world.entity.Entity;
@@ -24,6 +25,12 @@ public interface BaseTickHandler<E extends Mob> extends EasyNPC<E> {
       if (tickerData.checkAndIncreaseTicker(TickerType.ATTRIBUTE_BASE_TICK, ATTRIBUTE_BASE_TICK)) {
         AttributeHandler<E> attributeHandler = this.getEasyNPCAttributeHandler();
         attributeHandler.checkAttributeActions();
+
+        // The navigation type can be derived from a data pack, which may load after the entity.
+        NavigationDataCapable<E> navigationData = this.getEasyNPCNavigationData();
+        if (navigationData != null && !entity.level().isClientSide()) {
+          navigationData.refreshNavigationIfChanged();
+        }
         tickerData.resetTicker(TickerType.ATTRIBUTE_BASE_TICK);
       }
 

@@ -1,4 +1,4 @@
-# Changelog for Easy NPC: Core (1.21.11)
+# Changelog for Easy NPC: Core (26.1.2)
 
 ## Note
 
@@ -7,6 +7,24 @@ the [GitHub History][history] instead.
 
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
+
+### 7.6.0
+
+- Fixed flying NPCs like Allay, Vex and Ghast moving on the ground instead of flying.
+- Fixed dialogs and buttons with the same or a non-latin label sharing one id and needing a relink.
+- Fixed preset export, dialog, pose and texture names dropping umlauts and accents or failing.
+- Fixed conditions not being editable on a dedicated server and untranslated condition texts.
+- Fixed Easy Model Entities NPCs not turning their head and their model list ignoring a `/reload`.
+- Fixed objectives being switched off for good when their target entity was missing.
+- Changed dialog and button labels, preset, pose and texture names to convert special characters.
+- Changed the required Easy Model Entities version to 1.7.0, floating models now hover by default.
+- Added NPC states with number, yes/no and text values, usable as condition, action and command.
+- Added a "Navigation" and a "Hover height" setting to switch any NPC between ground and flying.
+- Added a parent preset reference, so a preset can build on another one and only override changes.
+- Added the state driven "Forge Keeper" preset.
+- Added custom conditions and dialog, action and state events for other mods.
+- Added "On Far Distance" as a distance action, which triggers at 32 blocks.
+- Improved floating Easy Model Entities models, which now bob up and down.
 
 ### 7.5.0
 

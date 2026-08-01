@@ -22,7 +22,9 @@ package de.markusbordihn.easynpc.entity.easynpc.data;
 import de.markusbordihn.easynpc.data.attribute.EntityAttributes;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataEntry;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataSet;
+import de.markusbordihn.easynpc.data.objective.ObjectiveGoalFactory;
 import de.markusbordihn.easynpc.data.objective.ObjectiveType;
+import de.markusbordihn.easynpc.data.objective.factory.ObjectiveFactoryResolver;
 import de.markusbordihn.easynpc.data.server.ServerDataAccessor;
 import de.markusbordihn.easynpc.data.server.ServerDataIndex;
 import de.markusbordihn.easynpc.data.server.ServerEntityData;
@@ -74,35 +76,41 @@ public interface ObjectiveDataCapable<T extends Mob> extends EasyNPC<T> {
   }
 
   default boolean hasObjective(String objectiveId) {
-    return getObjectiveDataSet() != null && getObjectiveDataSet().hasObjective(objectiveId);
+    ObjectiveDataSet objectiveDataSet = this.getObjectiveDataSet();
+    return objectiveDataSet != null && objectiveDataSet.hasObjective(objectiveId);
   }
 
   default boolean hasObjective(ObjectiveType objectiveType) {
-    return getObjectiveDataSet() != null && getObjectiveDataSet().hasObjective(objectiveType);
+    ObjectiveDataSet objectiveDataSet = this.getObjectiveDataSet();
+    return objectiveDataSet != null && objectiveDataSet.hasObjective(objectiveType);
   }
 
   default boolean hasObjective(ObjectiveDataEntry objectiveDataEntry) {
-    return getObjectiveDataSet() != null
-        && getObjectiveDataSet().hasObjective(objectiveDataEntry.getId());
+    ObjectiveDataSet objectiveDataSet = this.getObjectiveDataSet();
+    return objectiveDataSet != null && objectiveDataSet.hasObjective(objectiveDataEntry.getId());
   }
 
   default boolean hasObjectives() {
-    return getObjectiveDataSet() != null && getObjectiveDataSet().hasObjectives();
+    ObjectiveDataSet objectiveDataSet = this.getObjectiveDataSet();
+    return objectiveDataSet != null && objectiveDataSet.hasObjectives();
   }
 
   default boolean hasObjectives(Set<ObjectiveType> objectiveTypes) {
-    return getObjectiveDataSet() != null && getObjectiveDataSet().hasObjectives(objectiveTypes);
+    ObjectiveDataSet objectiveDataSet = this.getObjectiveDataSet();
+    return objectiveDataSet != null && objectiveDataSet.hasObjectives(objectiveTypes);
   }
 
   default ObjectiveDataEntry getObjective(ObjectiveType objectiveType) {
-    return getObjectiveDataSet() != null && objectiveType != null
-        ? getObjectiveDataSet().getObjective(objectiveType)
+    ObjectiveDataSet objectiveDataSet = this.getObjectiveDataSet();
+    return objectiveDataSet != null && objectiveType != null
+        ? objectiveDataSet.getObjective(objectiveType)
         : null;
   }
 
   default Optional<ObjectiveDataEntry> getObjectiveEntry(ObjectiveType objectiveType) {
-    return getObjectiveDataSet() != null
-        ? Optional.ofNullable(getObjectiveDataSet().getObjective(objectiveType))
+    ObjectiveDataSet objectiveDataSet = this.getObjectiveDataSet();
+    return objectiveDataSet != null
+        ? Optional.ofNullable(objectiveDataSet.getObjective(objectiveType))
         : Optional.empty();
   }
 
@@ -121,39 +129,68 @@ public interface ObjectiveDataCapable<T extends Mob> extends EasyNPC<T> {
   }
 
   default boolean hasTravelTargetObjectives() {
-    return getObjectiveDataSet() != null && getObjectiveDataSet().hasTravelTarget();
+    ObjectiveDataSet objectiveDataSet = this.getObjectiveDataSet();
+    return objectiveDataSet != null && objectiveDataSet.hasTravelTarget();
   }
 
   default boolean hasPlayerTargetObjectives() {
-    return getObjectiveDataSet() != null && getObjectiveDataSet().hasPlayerTarget();
+    ObjectiveDataSet objectiveDataSet = this.getObjectiveDataSet();
+    return objectiveDataSet != null && objectiveDataSet.hasPlayerTarget();
   }
 
   default boolean hasEntityTargetObjectives() {
-    return getObjectiveDataSet() != null && getObjectiveDataSet().hasEntityTarget();
+    ObjectiveDataSet objectiveDataSet = this.getObjectiveDataSet();
+    return objectiveDataSet != null && objectiveDataSet.hasEntityTarget();
   }
 
   default boolean hasOwnerTargetObjectives() {
-    return getObjectiveDataSet() != null && getObjectiveDataSet().hasOwnerTarget();
+    ObjectiveDataSet objectiveDataSet = this.getObjectiveDataSet();
+    return objectiveDataSet != null && objectiveDataSet.hasOwnerTarget();
   }
 
   default void onEasyNPCJoinUpdateObjective(EasyNPC<?> easyNPC) {
-    if (this.hasEntityTargetObjectives()
-        && !this.getObjectiveDataSet().hasValidTarget(this)
-        && getObjectiveDataSet().isTargetedEntity(easyNPC.getEntityUUID())) {
-      this.refreshCustomObjectives();
-    }
+    this.refreshOnTargetEntityJoin(easyNPC.getEntityUUID());
   }
 
   default void onEasyNPCLeaveUpdateObjective(EasyNPC<?> easyNPC) {
+    this.refreshOnTargetEntityLeave(easyNPC.getEntityUUID());
+  }
+
+  default void onLivingEntityJoinUpdateObjective(LivingEntity livingEntity) {
+    this.refreshOnTargetEntityJoin(livingEntity.getUUID());
+  }
+
+  default void onLivingEntityLeaveUpdateObjective(LivingEntity livingEntity) {
+    this.refreshOnTargetEntityLeave(livingEntity.getUUID());
+  }
+
+  default void onPlayerJoinUpdateObjective(ServerPlayer serverPlayer) {
+    this.refreshOnTargetPlayerChange(serverPlayer);
+  }
+
+  default void onPlayerLeaveUpdateObjective(ServerPlayer serverPlayer) {
+    this.refreshOnTargetPlayerChange(serverPlayer);
+  }
+
+  private void refreshOnTargetEntityJoin(UUID entityUUID) {
+    ObjectiveDataSet objectiveDataSet = this.getObjectiveDataSet();
     if (this.hasEntityTargetObjectives()
-        && getObjectiveDataSet().isTargetedEntity(easyNPC.getEntityUUID())) {
+        && !objectiveDataSet.hasValidTarget(this)
+        && objectiveDataSet.isTargetedEntity(entityUUID)) {
       this.refreshCustomObjectives();
     }
   }
 
-  default void onPlayerJoinUpdateObjective(ServerPlayer serverPlayer) {
+  private void refreshOnTargetEntityLeave(UUID entityUUID) {
+    if (this.hasEntityTargetObjectives()
+        && this.getObjectiveDataSet().isTargetedEntity(entityUUID)) {
+      this.refreshCustomObjectives();
+    }
+  }
+
+  private void refreshOnTargetPlayerChange(ServerPlayer serverPlayer) {
     if ((this.hasOwnerTargetObjectives() || this.hasPlayerTargetObjectives())
-        && (isObjectiveOwner(serverPlayer) || isObjectiveTargetedPlayer(serverPlayer))) {
+        && (this.isObjectiveOwner(serverPlayer) || this.isObjectiveTargetedPlayer(serverPlayer))) {
       this.refreshCustomObjectives();
     }
   }
@@ -165,28 +202,6 @@ public interface ObjectiveDataCapable<T extends Mob> extends EasyNPC<T> {
 
   private boolean isObjectiveTargetedPlayer(ServerPlayer serverPlayer) {
     return this.getObjectiveDataSet().isTargetedPlayer(serverPlayer.getName().getString());
-  }
-
-  default void onPlayerLeaveUpdateObjective(ServerPlayer serverPlayer) {
-    if ((this.hasOwnerTargetObjectives() || this.hasPlayerTargetObjectives())
-        && (isObjectiveOwner(serverPlayer) || isObjectiveTargetedPlayer(serverPlayer))) {
-      this.refreshCustomObjectives();
-    }
-  }
-
-  default void onLivingEntityJoinUpdateObjective(LivingEntity livingEntity) {
-    if (this.hasEntityTargetObjectives()
-        && !this.getObjectiveDataSet().hasValidTarget(this)
-        && this.getObjectiveDataSet().isTargetedEntity(livingEntity.getUUID())) {
-      this.refreshCustomObjectives();
-    }
-  }
-
-  default void onLivingEntityLeaveUpdateObjective(LivingEntity livingEntity) {
-    if (this.hasEntityTargetObjectives()
-        && this.getObjectiveDataSet().isTargetedEntity(livingEntity.getUUID())) {
-      this.refreshCustomObjectives();
-    }
   }
 
   default void refreshCustomObjectives() {
@@ -209,34 +224,23 @@ public interface ObjectiveDataCapable<T extends Mob> extends EasyNPC<T> {
       return;
     }
     log.debug("Register attribute based objectives for {}", this);
-    ObjectiveDataEntry floatObjective = new ObjectiveDataEntry(ObjectiveType.FLOAT);
     EntityAttributes attributeData = this.getEasyNPCAttributeData().getEntityAttributes();
-    if (attributeData.getEnvironmentalAttributes().canFloat()) {
-      if (!this.hasObjective(floatObjective)) {
-        this.addOrUpdateCustomObjective(floatObjective);
-      }
-    } else if (this.hasObjective(floatObjective)) {
-      this.removeCustomObjective(floatObjective);
-    }
+    this.syncAttributeBasedObjective(
+        attributeData.getEnvironmentalAttributes().canFloat(), ObjectiveType.FLOAT);
+    this.syncAttributeBasedObjective(
+        attributeData.getMovementAttributes().canOpenDoor(), ObjectiveType.OPEN_DOOR);
+    this.syncAttributeBasedObjective(
+        attributeData.getMovementAttributes().canCloseDoor(), ObjectiveType.CLOSE_DOOR);
+  }
 
-    boolean canCloseDoor = attributeData.getMovementAttributes().canCloseDoor();
-    boolean canOpenDoor = attributeData.getMovementAttributes().canOpenDoor();
-    ObjectiveDataEntry closeDoorObjective = new ObjectiveDataEntry(ObjectiveType.CLOSE_DOOR);
-    ObjectiveDataEntry openDoorObjective = new ObjectiveDataEntry(ObjectiveType.OPEN_DOOR);
-    if (canOpenDoor) {
-      if (!this.hasObjective(openDoorObjective)) {
-        this.addOrUpdateCustomObjective(openDoorObjective);
+  private void syncAttributeBasedObjective(boolean enabled, ObjectiveType objectiveType) {
+    ObjectiveDataEntry objectiveDataEntry = new ObjectiveDataEntry(objectiveType);
+    if (enabled) {
+      if (!this.hasObjective(objectiveDataEntry)) {
+        this.addOrUpdateCustomObjective(objectiveDataEntry);
       }
-    } else if (this.hasObjective(openDoorObjective)) {
-      this.removeCustomObjective(openDoorObjective);
-    }
-
-    if (canCloseDoor) {
-      if (!this.hasObjective(closeDoorObjective)) {
-        this.addOrUpdateCustomObjective(closeDoorObjective);
-      }
-    } else if (this.hasObjective(closeDoorObjective)) {
-      this.removeCustomObjective(closeDoorObjective);
+    } else if (this.hasObjective(objectiveDataEntry)) {
+      this.removeCustomObjective(objectiveDataEntry);
     }
   }
 
@@ -313,13 +317,7 @@ public interface ObjectiveDataCapable<T extends Mob> extends EasyNPC<T> {
     }
 
     if (!addedCustomObjective && goal == null && target == null) {
-      if (hasValidTarget && !objectiveDataEntry.isAwaitingRegistration()) {
-        log.debug(
-            "- Objective {} is not compatible with {} and will not be retried.",
-            objectiveDataEntry.getType(),
-            this);
-        objectiveDataEntry.setRegistered(true);
-      }
+      this.handleUnusedObjective(objectiveDataEntry, hasValidTarget);
     } else {
       objectiveDataEntry.setRegistered(addedCustomObjective);
     }
@@ -327,6 +325,31 @@ public interface ObjectiveDataCapable<T extends Mob> extends EasyNPC<T> {
     // Add objective data to set, regardless if goal or target was added.
     getObjectiveDataSet().addObjective(objectiveDataEntry);
     return objectiveDataEntry.isRegistered();
+  }
+
+  private void handleUnusedObjective(
+      ObjectiveDataEntry objectiveDataEntry, boolean hasValidTarget) {
+    if (!hasValidTarget || objectiveDataEntry.isAwaitingRegistration()) {
+      return;
+    }
+
+    ObjectiveGoalFactory goalFactory = ObjectiveFactoryResolver.resolve(objectiveDataEntry);
+    if (goalFactory != null && !goalFactory.isCompatible(this)) {
+      log.debug(
+          "- Objective {} is not compatible with {} and will not be retried.",
+          objectiveDataEntry.getType(),
+          this);
+      objectiveDataEntry.setRegistered(true);
+      return;
+    }
+
+    if (objectiveDataEntry.markUnusableObjectiveLogged()) {
+      log.warn(
+          "- Objective {} of {} could not be created and will be retried later, please check its"
+              + " configuration!",
+          objectiveDataEntry.getType(),
+          this);
+    }
   }
 
   default boolean rebuildCustomObjective(ObjectiveDataEntry objectiveDataEntry) {

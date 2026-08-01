@@ -28,10 +28,9 @@ import de.markusbordihn.easynpc.configui.client.screen.components.WarningIcon;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataEntry;
+import de.markusbordihn.easynpc.data.objective.ObjectiveGroup;
 import de.markusbordihn.easynpc.data.objective.ObjectiveType;
 import de.markusbordihn.easynpc.network.components.TextComponent;
-import java.util.EnumSet;
-import java.util.Set;
 import java.util.UUID;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
@@ -41,14 +40,6 @@ import net.minecraft.world.entity.player.Inventory;
 
 public class TargetObjectiveConfigurationScreen<T extends ConfigurationMenu>
     extends ObjectiveConfigurationScreen<T> {
-
-  private static final Set<ObjectiveType> ATTACK_OBJECTIVES =
-      EnumSet.of(
-          ObjectiveType.MELEE_ATTACK,
-          ObjectiveType.ZOMBIE_ATTACK,
-          ObjectiveType.BOW_ATTACK,
-          ObjectiveType.CROSSBOW_ATTACK,
-          ObjectiveType.GUN_ATTACK);
 
   protected Checkbox attackHostileFactionsCheckbox;
   protected Checkbox attackPlayerByNameCheckbox;
@@ -146,7 +137,7 @@ public class TargetObjectiveConfigurationScreen<T extends ConfigurationMenu>
   }
 
   private boolean hasAnyAttackObjective() {
-    for (ObjectiveType attackObjectiveType : ATTACK_OBJECTIVES) {
+    for (ObjectiveType attackObjectiveType : ObjectiveGroup.ATTACK_TYPE) {
       if (this.objectiveDataSet.hasObjective(attackObjectiveType)) {
         return true;
       }
