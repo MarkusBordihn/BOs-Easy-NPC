@@ -29,7 +29,9 @@ jobs:
         run: chmod +x gradlew
 
       - name: Prepare Minecraft dependencies
-        run: ./gradlew -p core :Forge:syncMavenizer --no-daemon
+        run: |
+          ./gradlew -p core :Forge:syncMavenizer --no-daemon
+          ./gradlew -p config-ui :Forge:syncMavenizer --no-daemon
 
       - name: Run Core GameTests (Forge)
         run: ./gradlew -p core Forge:runGameTestServer --no-daemon
