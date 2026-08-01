@@ -142,4 +142,32 @@ class DialogUtilsTest {
   void testMaxDialogLabelLength() {
     assertEquals(32, DialogDataEntry.MAX_DIALOG_LABEL_LENGTH);
   }
+
+  @Test
+  @DisplayName("Labels keep umlauts and accents as readable text")
+  void testGenerateLabel_specialCharacters() {
+    assertEquals("haendler_begruessung", DialogUtils.generateDialogLabel("Händler Begrüßung"));
+    assertEquals("cafe", DialogUtils.generateButtonLabel("Café"));
+    assertEquals("ja_bitte", DialogUtils.generateButtonLabel("Ja, bitte!"));
+  }
+
+  @Test
+  @DisplayName("Labels for non latin names are stable instead of empty")
+  void testGenerateLabel_nonLatinName() {
+    String label = DialogUtils.generateDialogLabel("Модель");
+
+    assertFalse(label.isEmpty());
+    assertTrue(label.startsWith("dialog_"));
+    assertEquals(label, DialogUtils.generateDialogLabel("Модель"));
+    assertNotEquals(label, DialogUtils.generateDialogLabel("モデル"));
+  }
+
+  @Test
+  @DisplayName("Existing labels are not changed when they are read again")
+  void testGenerateLabel_existingLabelsStayStable() {
+    assertEquals("hndler_begrung", DialogUtils.generateDialogLabel("hndler_begrung"));
+    assertEquals("main", DialogUtils.generateDialogLabel("main"));
+    assertEquals("quest_1", DialogUtils.generateButtonLabel("quest_1"));
+    assertEquals("a__b", DialogUtils.generateButtonLabel("a__b"));
+  }
 }

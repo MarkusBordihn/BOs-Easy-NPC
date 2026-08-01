@@ -30,6 +30,7 @@ import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
+import de.markusbordihn.easynpc.utils.ResourceNameNormalizer;
 import java.util.EnumMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -50,6 +51,8 @@ public class PoseManager {
   private static final String LOG_PREFIX = "[Pose Manager]";
 
   private static final Map<Identifier, Animation> poseDataMap = new ConcurrentHashMap<>();
+  private static final Map<Identifier, Identifier> legacyPoseIdentifiers =
+      new ConcurrentHashMap<>();
   private static final Map<Identifier, EnumMap<ModelPartType, CustomRotation>> cachedRotations =
       new ConcurrentHashMap<>();
   private static final Map<Identifier, EnumMap<ModelPartType, CustomPosition>> cachedPositions =
@@ -59,6 +62,7 @@ public class PoseManager {
 
   public static void clearPoseData() {
     poseDataMap.clear();
+    legacyPoseIdentifiers.clear();
     cachedRotations.clear();
     cachedPositions.clear();
     log.info("{} Cleared all pose data.", LOG_PREFIX);
@@ -80,7 +84,26 @@ public class PoseManager {
             animation.getName());
         continue;
       }
-      registerPoseData(getIdentifier(skinModel, animation), animation);
+      Identifier identifier = getIdentifier(skinModel, animation);
+      registerPoseData(identifier, animation);
+      registerLegacyIdentifier(skinModel, animation, identifier);
+    }
+  }
+
+  private static void registerLegacyIdentifier(
+      SkinModel skinModel, Animation animation, Identifier identifier) {
+    String legacyName =
+        animation.getName().replaceAll("[^a-zA-Z0-9_.-]", "").toLowerCase(Locale.ROOT);
+    if (legacyName.isEmpty() || identifier == null) {
+      return;
+    }
+
+    Identifier legacyIdentifier =
+        Identifier.fromNamespaceAndPath(
+            Constants.MOD_ID,
+            TEXTURE_PREFIX + skinModel.name().toLowerCase(Locale.ROOT) + "/" + legacyName);
+    if (!legacyIdentifier.equals(identifier)) {
+      legacyPoseIdentifiers.put(legacyIdentifier, identifier);
     }
   }
 
@@ -90,7 +113,7 @@ public class PoseManager {
           TEXTURE_PREFIX
               + skinModel.name().toLowerCase(Locale.ROOT)
               + "/"
-              + animation.getName().replaceAll("[^a-zA-Z0-9_.-]", "").toLowerCase(Locale.ROOT);
+              + ResourceNameNormalizer.toResourcePath(animation.getName());
       return Identifier.fromNamespaceAndPath(Constants.MOD_ID, resourcePath);
     } catch (Exception exception) {
       log.error(
@@ -107,7 +130,14 @@ public class PoseManager {
     if (resourceLocation == null) {
       return null;
     }
-    return poseDataMap.get(resourceLocation);
+
+    Animation animation = poseDataMap.get(resourceLocation);
+    if (animation != null) {
+      return animation;
+    }
+
+    Identifier legacyIdentifier = legacyPoseIdentifiers.get(resourceLocation);
+    return legacyIdentifier != null ? poseDataMap.get(legacyIdentifier) : null;
   }
 
   public static Set<Identifier> getPoseDataKeys() {

@@ -43,10 +43,11 @@ public class ScoreboardCondition {
       Scoreboard scoreboard = serverPlayer.level().getScoreboard();
       Objective objective = scoreboard.getObjective(conditionDataEntry.name());
       if (objective == null) {
-        log.debug(
-            "Scoreboard objective '{}' not found for player {}",
-            conditionDataEntry.name(),
-            serverPlayer.getName().getString());
+        if (ConditionWarnings.shouldReport("scoreboard:" + conditionDataEntry.name())) {
+          log.warn(
+              "Scoreboard objective '{}' does not exist, every dialog and action using it stays hidden.",
+              conditionDataEntry.name());
+        }
         return false;
       }
 

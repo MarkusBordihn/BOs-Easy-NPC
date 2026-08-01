@@ -204,4 +204,40 @@ class DialogDataEntryTest {
     assertEquals(DurationType.PER_DAY, loadedCondition.subType());
     assertEquals(1, loadedCondition.value());
   }
+
+  @Test
+  @DisplayName("Name and text keep every character while the label is converted")
+  void testSpecialCharactersInNameAndText() {
+    DialogDataEntry entry =
+        new DialogDataEntry(null, "Händler Begrüßung", "Willkommen, mein Freund! 🐢");
+
+    assertEquals("Händler Begrüßung", entry.getName());
+    assertEquals("Willkommen, mein Freund! 🐢", entry.getText());
+    assertEquals("haendler_begruessung", entry.getLabel());
+  }
+
+  @Test
+  @DisplayName("Dialogs with non latin names get their own label and id")
+  void testNonLatinNamesGetSeparateIds() {
+    DialogDataEntry cyrillic = new DialogDataEntry(null, "Модель", "Текст");
+    DialogDataEntry japanese = new DialogDataEntry(null, "モデル", "テキスト");
+
+    assertFalse(cyrillic.getLabel().isEmpty());
+    assertFalse(japanese.getLabel().isEmpty());
+    assertNotEquals(cyrillic.getLabel(), japanese.getLabel());
+    assertNotEquals(cyrillic.getId(), japanese.getId());
+    assertEquals("Модель", cyrillic.getName());
+  }
+
+  @Test
+  @DisplayName("Stored labels and ids survive a reload unchanged")
+  void testStoredLabelsStayStable() {
+    DialogDataEntry original = new DialogDataEntry("hndler_begrung", "Händler", "Hallo");
+    CompoundTag tag = new CompoundTag();
+    original.save(tag);
+    DialogDataEntry reloaded = new DialogDataEntry(tag);
+
+    assertEquals("hndler_begrung", reloaded.getLabel());
+    assertEquals(original.getId(), reloaded.getId());
+  }
 }

@@ -21,14 +21,13 @@ package de.markusbordihn.easynpc.handler;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataEntry;
+import de.markusbordihn.easynpc.data.objective.ObjectiveGroup;
 import de.markusbordihn.easynpc.data.objective.ObjectiveType;
 import de.markusbordihn.easynpc.entity.NPCEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ObjectiveDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.OwnerDataCapable;
-import java.util.EnumSet;
 import java.util.Objects;
-import java.util.Set;
 import java.util.UUID;
 import net.minecraft.world.entity.LivingEntity;
 import org.apache.logging.log4j.LogManager;
@@ -37,9 +36,6 @@ import org.apache.logging.log4j.Logger;
 public class OwnerHandler {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-
-  private static final Set<ObjectiveType> OWNER_OBJECTIVE_TYPES =
-      EnumSet.of(ObjectiveType.FOLLOW_OWNER, ObjectiveType.LOOK_AT_OWNER);
 
   private OwnerHandler() {}
 
@@ -77,7 +73,7 @@ public class OwnerHandler {
       return;
     }
 
-    for (ObjectiveType objectiveType : OWNER_OBJECTIVE_TYPES) {
+    for (ObjectiveType objectiveType : ObjectiveGroup.OWNER_TARGET) {
       ObjectiveDataEntry objectiveDataEntry = objectiveData.getObjective(objectiveType);
       if (objectiveDataEntry == null) {
         continue;

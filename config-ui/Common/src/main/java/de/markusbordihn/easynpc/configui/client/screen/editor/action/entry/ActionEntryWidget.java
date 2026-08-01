@@ -39,4 +39,8 @@ public class ActionEntryWidget {
   public boolean hasChanged() {
     return false;
   }
+
+  public boolean isValid() {
+    return true;
+  }
 }

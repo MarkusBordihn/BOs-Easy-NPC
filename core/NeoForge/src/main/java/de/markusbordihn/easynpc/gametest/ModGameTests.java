@@ -364,6 +364,113 @@ public final class ModGameTests {
         DEFAULT_STRUCTURE);
 
     register(
+        "every_command_argument_can_be_synchronized",
+        CommandArgumentTypeTest::testEveryCommandArgumentCanBeSynchronized,
+        SMOKE_STRUCTURE);
+
+    register(
+        "duplicate_button_label_is_rejected",
+        DialogButtonIdentityTest::testDuplicateButtonLabelIsRejected,
+        DEFAULT_STRUCTURE);
+    register(
+        "button_identity_survives_save_and_load",
+        DialogButtonIdentityTest::testButtonIdentitySurvivesSaveAndLoad,
+        DEFAULT_STRUCTURE);
+    register(
+        "edited_button_label_stays_addressable",
+        DialogButtonIdentityTest::testEditedButtonLabelStaysAddressable,
+        DEFAULT_STRUCTURE);
+
+    register(
+        "distance_actions_trigger_per_range",
+        DistanceActionTest::testDistanceActionsTriggerPerRange,
+        DEFAULT_STRUCTURE);
+    register(
+        "distance_actions_run_once_per_player",
+        DistanceActionTest::testDistanceActionsRunOncePerPlayer,
+        DEFAULT_STRUCTURE);
+    register(
+        "distance_actions_trigger_again_after_leaving",
+        DistanceActionTest::testDistanceActionsTriggerAgainAfterLeaving,
+        DEFAULT_STRUCTURE);
+
+    register(
+        "navigation_type_changes_the_navigation",
+        NavigationTypeTest::testNavigationTypeChangesTheNavigation,
+        DEFAULT_STRUCTURE);
+    register(
+        "navigation_is_only_refreshed_on_change",
+        NavigationTypeTest::testNavigationIsOnlyRefreshedOnChange,
+        DEFAULT_STRUCTURE);
+    register(
+        "gravity_is_restored_after_flying",
+        NavigationTypeTest::testGravityIsRestoredAfterFlying,
+        DEFAULT_STRUCTURE);
+    register(
+        "hover_height_stays_in_range",
+        NavigationTypeTest::testHoverHeightStaysInRange,
+        DEFAULT_STRUCTURE);
+    register(
+        "navigation_type_survives_preset_import",
+        NavigationTypeTest::testNavigationTypeSurvivesPresetImport,
+        DEFAULT_STRUCTURE);
+
+    register(
+        "state_action_applies_every_operation",
+        NpcStateTest::testStateActionAppliesEveryOperation,
+        DEFAULT_STRUCTURE);
+    register(
+        "invalid_state_action_is_ignored",
+        NpcStateTest::testInvalidStateActionIsIgnored,
+        DEFAULT_STRUCTURE);
+    register(
+        "debug_action_still_writes_the_state",
+        NpcStateTest::testDebugActionStillWritesTheState,
+        DEFAULT_STRUCTURE);
+    register(
+        "state_survives_save_and_load",
+        NpcStateTest::testStateSurvivesSaveAndLoad,
+        DEFAULT_STRUCTURE);
+    register(
+        "state_condition_locks_dialog_button",
+        NpcStateTest::testStateConditionLocksDialogButton,
+        DEFAULT_STRUCTURE);
+    register(
+        "state_is_reset_on_preset_import",
+        NpcStateTest::testStateIsResetOnPresetImport,
+        DEFAULT_STRUCTURE);
+    register(
+        "state_change_notifies_listener",
+        NpcStateTest::testStateChangeNotifiesListener,
+        DEFAULT_STRUCTURE);
+    register(
+        "forge_keeper_preset_uses_states",
+        NpcStateTest::testForgeKeeperPresetUsesStates,
+        DEFAULT_STRUCTURE);
+
+    register(
+        "every_objective_type_creates_its_goal",
+        ObjectiveGoalCreationTest::testEveryObjectiveTypeCreatesItsGoal,
+        DEFAULT_STRUCTURE);
+    register(
+        "every_objective_type_survives_ticking",
+        ObjectiveGoalCreationTest::testEveryObjectiveTypeSurvivesTicking,
+        DEFAULT_STRUCTURE);
+
+    register(
+        "objective_values_from_preset_are_clamped",
+        ObjectivePresetTest::testObjectiveValuesFromPresetAreClamped,
+        DEFAULT_STRUCTURE);
+    register(
+        "player_target_objective_is_registered_on_join",
+        ObjectivePresetTest::testPlayerTargetObjectiveIsRegisteredOnJoin,
+        DEFAULT_STRUCTURE);
+    register(
+        "entity_target_objective_is_released_on_leave",
+        ObjectivePresetTest::testEntityTargetObjectiveIsReleasedOnLeave,
+        DEFAULT_STRUCTURE);
+
+    register(
         "command_block_preset_import",
         PresetCommandSecurityTest::testCommandBlockPresetImport,
         DEFAULT_STRUCTURE);

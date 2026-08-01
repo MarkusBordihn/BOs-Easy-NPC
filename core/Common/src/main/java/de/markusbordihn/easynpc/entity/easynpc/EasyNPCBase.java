@@ -41,6 +41,7 @@ import de.markusbordihn.easynpc.entity.easynpc.data.RenderDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.ServerDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.SoundDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.StateDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.StatusDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.TickerDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.TradingDataCapable;
@@ -80,6 +81,7 @@ public interface EasyNPCBase<E extends Mob>
         ServerDataCapable<E>,
         SkinDataCapable<E>,
         SoundDataCapable<E>,
+        StateDataCapable<E>,
         StatusDataCapable<E>,
         TickerDataCapable<E>,
         TradingDataCapable<E>,
@@ -234,6 +236,10 @@ public interface EasyNPCBase<E extends Mob>
     if (objectiveData != null) {
       objectiveData.defineCustomObjectiveData();
     }
+    StateDataCapable<E> stateData = getEasyNPCStateData();
+    if (stateData != null) {
+      stateData.defineCustomStateData();
+    }
     PresetDataCapable<E> presetData = getEasyNPCPresetData();
     if (presetData != null) {
       presetData.defineCustomPresetData();
@@ -313,6 +319,10 @@ public interface EasyNPCBase<E extends Mob>
     SoundDataCapable<E> soundData = getEasyNPCSoundData();
     if (soundData != null) {
       soundData.addAdditionalSoundData(valueOutput);
+    }
+    StateDataCapable<E> stateData = getEasyNPCStateData();
+    if (stateData != null) {
+      stateData.addAdditionalStateData(valueOutput);
     }
     StatusDataCapable<E> statusData = getEasyNPCStatusData();
     if (statusData != null) {
@@ -405,6 +415,10 @@ public interface EasyNPCBase<E extends Mob>
     if (soundData != null) {
       soundData.readAdditionalSoundData(valueInput);
     }
+    StateDataCapable<E> stateData = getEasyNPCStateData();
+    if (stateData != null) {
+      stateData.readAdditionalStateData(valueInput);
+    }
     StatusDataCapable<E> statusData = getEasyNPCStatusData();
     if (statusData != null) {
       statusData.readAdditionalStatusData(valueInput);
@@ -422,7 +436,7 @@ public interface EasyNPCBase<E extends Mob>
 
     // Refresh navigation data after all data is loaded.
     if (navigationData != null) {
-      navigationData.refreshGroundNavigation();
+      navigationData.refreshNavigation();
     }
   }
 }

@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.utils;
 
 import de.markusbordihn.easynpc.Constants;
+import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -127,6 +128,18 @@ public class ValueUtils {
       }
     }
     return 0.0;
+  }
+
+  public static UUID getUuidValue(String value) {
+    if (value == null || value.trim().isEmpty()) {
+      return null;
+    }
+
+    try {
+      return UUID.fromString(value.trim());
+    } catch (IllegalArgumentException ignored) {
+      return null;
+    }
   }
 
   public static Integer getIntValue(String value) {

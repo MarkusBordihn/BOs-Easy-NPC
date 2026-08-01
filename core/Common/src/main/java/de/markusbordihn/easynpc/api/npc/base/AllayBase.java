@@ -20,6 +20,7 @@ package de.markusbordihn.easynpc.api.npc.base;
 
 import de.markusbordihn.easynpc.api.npc.BaseEasyNPC;
 import de.markusbordihn.easynpc.api.npc.raw.AllayRaw;
+import de.markusbordihn.easynpc.data.attribute.NavigationType;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
 import de.markusbordihn.easynpc.data.skin.variant.AllaySkinVariant;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
@@ -60,6 +61,11 @@ public class AllayBase extends AllayRaw implements BaseEasyNPC<AllayRaw> {
         .add(Attributes.MOVEMENT_SPEED, 0.6F)
         .add(Attributes.SPAWN_REINFORCEMENTS_CHANCE, 0.0D)
         .add(Attributes.TEMPT_RANGE, 10.0D);
+  }
+
+  @Override
+  public NavigationType defaultNavigationType() {
+    return NavigationType.FLYING;
   }
 
   @Override

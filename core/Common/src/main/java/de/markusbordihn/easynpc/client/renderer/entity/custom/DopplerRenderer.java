@@ -46,6 +46,15 @@ public class DopplerRenderer
     this.addLayer(new SkullHeadRenderLayer<>(this));
   }
 
+  private static void applyNPCRotationToImitatedModel(
+      HumanoidRenderState npcRenderState, EntityRenderState imitatedModelRenderState) {
+    if (imitatedModelRenderState instanceof LivingEntityRenderState livingEntityRenderState) {
+      livingEntityRenderState.bodyRot = npcRenderState.bodyRot;
+      livingEntityRenderState.yRot = npcRenderState.yRot;
+      livingEntityRenderState.xRot = npcRenderState.xRot;
+    }
+  }
+
   private static boolean renderEntity(
       EasyNPC<?> entity,
       EntityModel<?> entityModel,
@@ -96,18 +105,12 @@ public class DopplerRenderer
         RendererManager.copyCustomLivingEntityData(
             entity.getPathfinderMob(), customEntity, entityTypeName);
 
-        // Sync body rotation with head rotation for proper mouse following in screens
-        if (RendererManager.isScreenRendering()) {
-          customEntity.yBodyRot = customEntity.getYHeadRot();
-          customEntity.yBodyRotO = customEntity.yHeadRotO;
-        }
-
-        // Create render state AFTER copying data
         LivingEntityRenderState livingEntityRenderState =
             livingEntityRenderer.createRenderState(customEntity, 1.0F);
         if (livingEntityRenderState instanceof EasyNPCRenderStateExtension extension) {
           extension.setEasyNpcUUID(easyNPC.getEntityUUID());
         }
+        applyNPCRotationToImitatedModel(renderState, livingEntityRenderState);
 
         livingEntityRenderer.submit(
             livingEntityRenderState, poseStack, submitNodeCollector, cameraRenderState);
@@ -135,6 +138,7 @@ public class DopplerRenderer
       try {
         RendererManager.copyCustomLivingEntityData(
             entity.getPathfinderMob(), customEntity, entityTypeName);
+        applyNPCRotationToImitatedModel(renderState, entityRenderState);
         entityRenderer.submit(entityRenderState, poseStack, submitNodeCollector, cameraRenderState);
         return true;
       } catch (Exception exception) {

@@ -22,15 +22,20 @@ Check the [upgrade guide][upgrade_guide] for more information.
 - Fixed #812 by checking once per session whether a player changed their skin.
 - Fixed #810 by accepting Cobblemon aspects of resource packs instead of only "shiny" and "female".
 - Fixed the server crashing when an NPC with a "Tempt" objective ticked its goals.
+- Fixed flying NPCs like Allay, Vex and Ghast moving on the ground instead of flying.
+- Fixed dialogs and buttons with the same or a non-latin label sharing one id and needing a relink.
+- Fixed preset export, dialog, pose and texture names dropping umlauts and accents or failing.
+- Fixed conditions not being editable on a dedicated server and untranslated condition texts.
 - Fixed a single or boss spawner spawning without any limit when its preset carried no stored NPC.
+- Fixed Easy Model Entities NPCs not turning their head and their model list ignoring a `/reload`.
 - Fixed the "Legacy Easy NPC Data" warning appearing for newly created NPCs.
 - Fixed missing transparency corrections for old 64x32 skins, which showed layer artifacts.
 - Fixed the player skin screen freezing for a moment while a player name was looked up.
 - Fixed the "Reset look at ..." objective label, which read "Reset loot at ..." in some languages.
-- Fixed the "No Gravity" attribute being ignored after a preset import, which let NPCs fall.
 - Fixed the Fabric game tests, which crashed on start because of the development helper mods.
 - Fixed NPCs losing their owner when they were spawned again after a despawn.
 - Fixed objectives being deleted from an NPC when the mod providing them was missing at start.
+- Fixed objectives being switched off for good when their target entity was missing.
 - Fixed importing a preset without a stored id, which spawned an NPC without owner and home.
 - Fixed "Follow owner" and "Look at owner" keeping their old target after the owner was changed.
 - Fixed attack targets staying assigned to an NPC after the targeted entity was gone.
@@ -42,10 +47,10 @@ Check the [upgrade guide][upgrade_guide] for more information.
   adjustments and crashed when a Fox NPC was spawned.
 - Changed the movement objectives to a fixed order: flee, follow, return home, then stroll. NPCs
   with several movement objectives may therefore behave differently than before.
-- Changed inserting a preset into a vanilla monster spawner to keep its delay, count and range.
-- Changed "Follow owner" and "Look at owner" without a chosen target to follow the owner of the NPC.
+- Changed dialog and button labels, preset, pose and texture names to convert special characters.
 - Changed datapack presets to `easy_npc/preset/`, the old folder still works, but only for easy_npc.
 - Changed the preset browser to always list its entries in the same order.
+- Changed the required Easy Model Entities version to 1.7.0, floating models now hover by default.
 - Removed the experimental user-defined NPCs; the extra config file is no longer read or created.
 - Removed the unused `SERVER_SKIN` skin type.
 - Added new gametest strcuture to support gametest in 1.21.11 and higher.
@@ -59,6 +64,12 @@ Check the [upgrade guide][upgrade_guide] for more information.
 - Added an item field to the look objectives, so an NPC can watch a chosen dropped item.
 - Added an identifier per NPC, so a mod can find its own NPCs again.
 - Added an option to spawn an NPC again when its owner logs in.
+- Added NPC states with number, yes/no and text values, usable as condition, action and command.
+- Added a "Navigation" and a "Hover height" setting to switch any NPC between ground and flying.
+- Added a parent preset reference, so a preset can build on another one and only override changes.
+- Added the state driven "Forge Keeper" preset.
+- Added custom conditions and dialog, action and state events for other mods.
+- Added "On Far Distance" as a distance action, which triggers at 32 blocks.
 - Added game tests for NeoForge, which had none, and restored the spawn egg, dialog screen, data
   isolation and smoke tests that were dropped during the update to 1.21.11.
 - Added game tests for every configuration and editor screen, covering all three mod loaders.
@@ -66,6 +77,7 @@ Check the [upgrade guide][upgrade_guide] for more information.
   reloading.
 - Improved the model name parsing, which mistook a species ending in "_shiny" for a variant.
 - Improved following of flying NPCs, which now steer directly when there is no path through the air.
+- Improved floating Easy Model Entities models, which now bob up and down.
 - Improved third party support with an API for presets, own objectives and objective configuration.
 
 ### 7.4.0

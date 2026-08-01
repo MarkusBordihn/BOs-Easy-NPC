@@ -79,17 +79,19 @@ dependencies {
   if (easyModelEntitiesLocal != null) {
     compileOnly files(easyModelEntitiesLocal)
     testCompileOnly files(easyModelEntitiesLocal)
-  } else if (project.hasProperty('neoforge_easy_model_entities_mod') && project.neoforge_easy_model_entities_mod) {
-    compileOnly "curse.maven:easy-model-entities-1539533:${project.neoforge_easy_model_entities_mod}"
-    testCompileOnly "curse.maven:easy-model-entities-1539533:${project.neoforge_easy_model_entities_mod}"
+  } else if (project.hasProperty('neoforge_easy_model_entities_version')
+      && project.neoforge_easy_model_entities_version) {
+    compileOnly "maven.modrinth:easy-model-entities:${project.neoforge_easy_model_entities_version}"
+    testCompileOnly "maven.modrinth:easy-model-entities:${project.neoforge_easy_model_entities_version}"
   }
 
   // Easy Model Entities (runtime dependency)
   def easyModelEntitiesNeoForgeRuntime = findLocalEasyModelEntitiesLoader('neoforge')
   if (easyModelEntitiesNeoForgeRuntime != null) {
     runtimeOnly easyModelEntitiesNeoForgeRuntime
-  } else if (project.hasProperty('neoforge_easy_model_entities_mod') && project.neoforge_easy_model_entities_mod) {
-    runtimeOnly "curse.maven:easy-model-entities-1539533:${project.neoforge_easy_model_entities_mod}"
+  } else if (project.hasProperty('neoforge_easy_model_entities_version')
+      && project.neoforge_easy_model_entities_version) {
+    runtimeOnly "maven.modrinth:easy-model-entities:${project.neoforge_easy_model_entities_version}"
   }
 }
 

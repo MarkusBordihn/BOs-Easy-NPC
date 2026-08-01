@@ -65,6 +65,7 @@ public class ClientConditionEvaluator {
       case ENTITY_HEALTH -> evaluateEntityHealth(conditionDataEntry, npcContext);
       case TIME_OF_DAY -> TimeOfDayCondition.evaluate(conditionDataEntry, player.level());
       case WEATHER -> WeatherCondition.evaluate(conditionDataEntry, player.level());
+      case CUSTOM -> CustomCondition.evaluateOnClient(conditionDataEntry, player, npcContext);
       default -> true;
     };
   }

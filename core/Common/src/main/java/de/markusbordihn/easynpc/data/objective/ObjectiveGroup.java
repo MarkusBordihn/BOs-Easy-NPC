@@ -38,23 +38,17 @@ public class ObjectiveGroup {
           ObjectiveType.FOLLOW_OWNER,
           ObjectiveType.FOLLOW_PLAYER);
 
-  public static final Set<ObjectiveType> ATTACK_TARGET =
-      EnumSet.of(
-          ObjectiveType.ATTACK_PLAYER,
-          ObjectiveType.ATTACK_PLAYER_WITHOUT_OWNER,
-          ObjectiveType.ATTACK_VILLAGER,
-          ObjectiveType.ATTACK_ANIMAL,
-          ObjectiveType.ATTACK_MONSTER,
-          ObjectiveType.ATTACK_MOB,
-          ObjectiveType.ATTACK_MOB_WITHOUT_CREEPER);
+  public static final Set<ObjectiveType> OWNER_TARGET =
+      EnumSet.of(ObjectiveType.FOLLOW_OWNER, ObjectiveType.LOOK_AT_OWNER);
 
-  public static final Set<ObjectiveType> FLEE_TARGET =
+  public static final Set<ObjectiveType> PLAYER_TARGET =
+      EnumSet.of(ObjectiveType.FOLLOW_PLAYER, ObjectiveType.ATTACK_PLAYER_BY_NAME);
+
+  public static final Set<ObjectiveType> ENTITY_TARGET =
       EnumSet.of(
-          ObjectiveType.FLEE_CREEPER,
-          ObjectiveType.FLEE_MOB,
-          ObjectiveType.FLEE_MONSTER,
-          ObjectiveType.FLEE_PLAYER,
-          ObjectiveType.FLEE_VILLAGER);
+          ObjectiveType.FOLLOW_ENTITY_BY_UUID,
+          ObjectiveType.LOOK_AT_ENTITY_BY_UUID,
+          ObjectiveType.ATTACK_ENTITY_BY_UUID);
 
   private ObjectiveGroup() {}
 }

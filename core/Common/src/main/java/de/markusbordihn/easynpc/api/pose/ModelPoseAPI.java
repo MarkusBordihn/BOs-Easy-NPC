@@ -27,6 +27,7 @@ import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
+import de.markusbordihn.easynpc.utils.ResourceNameNormalizer;
 import java.util.EnumMap;
 import java.util.Locale;
 import java.util.Set;
@@ -72,7 +73,7 @@ public class ModelPoseAPI {
             "pose/"
                 + skinModel.name().toLowerCase(Locale.ROOT)
                 + "/"
-                + poseName.replaceAll("[^a-zA-Z0-9_.-]", "").toLowerCase(Locale.ROOT));
+                + ResourceNameNormalizer.toResourcePath(poseName));
     return PoseManager.setModelPose(npc, poseId);
   }
 

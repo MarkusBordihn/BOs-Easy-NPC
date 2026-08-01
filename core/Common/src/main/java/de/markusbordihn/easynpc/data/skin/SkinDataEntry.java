@@ -138,10 +138,6 @@ public record SkinDataEntry(
         this.name, this.url, this.uuid, this.type, disableLayers, this.content, this.timestamp);
   }
 
-  public SkinDataEntry create(CompoundTag compoundTag) {
-    return new SkinDataEntry(compoundTag);
-  }
-
   public CompoundTag write(CompoundTag compoundTag) {
     compoundTag.putString(DATA_NAME_TAG, this.name);
     compoundTag.putString(DATA_TYPE_TAG, this.type.name());

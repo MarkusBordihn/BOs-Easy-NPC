@@ -26,7 +26,9 @@ public enum MovementAttributeType implements EntityAttributeTypeInterface {
   CAN_CLOSE_DOOR,
   CAN_OPEN_DOOR,
   CAN_PASS_DOOR,
-  CAN_USE_NETHER_PORTAL;
+  CAN_USE_NETHER_PORTAL,
+  HOVER_HEIGHT,
+  NAVIGATION_TYPE;
 
   private final String tagName = TextUtils.convertToPascalCase(this.name());
   private final String attributeName = this.name().toLowerCase(Locale.ROOT);

@@ -24,6 +24,7 @@ import de.markusbordihn.easynpc.commands.arguments.DialogArgument;
 import de.markusbordihn.easynpc.commands.arguments.EasyNPCArgument;
 import de.markusbordihn.easynpc.commands.arguments.EntityTypeArgument;
 import de.markusbordihn.easynpc.commands.arguments.EquipmentSlotArgument;
+import de.markusbordihn.easynpc.commands.arguments.StateArgument;
 import net.fabricmc.fabric.api.command.v2.ArgumentTypeRegistry;
 import net.minecraft.commands.synchronization.SingletonArgumentInfo;
 import net.minecraft.resources.Identifier;
@@ -49,5 +50,9 @@ public class ModArgumentTypes {
         Identifier.fromNamespaceAndPath(Constants.MOD_ID, "equipment_slot"),
         EquipmentSlotArgument.class,
         SingletonArgumentInfo.contextFree(EquipmentSlotArgument::new));
+    ArgumentTypeRegistry.registerArgumentType(
+        Identifier.fromNamespaceAndPath(Constants.MOD_ID, "state"),
+        StateArgument.class,
+        SingletonArgumentInfo.contextFree(StateArgument::new));
   }
 }

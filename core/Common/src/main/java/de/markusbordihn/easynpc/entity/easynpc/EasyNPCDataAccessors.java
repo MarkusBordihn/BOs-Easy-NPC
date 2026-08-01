@@ -39,6 +39,7 @@ import de.markusbordihn.easynpc.entity.easynpc.data.RenderDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.ServerDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.SoundDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.StateDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.StatusDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.TickerDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.TradingDataCapable;
@@ -85,6 +86,10 @@ public interface EasyNPCDataAccessors<E extends Mob> {
 
   default SkinDataCapable<E> getEasyNPCSkinData() {
     return this instanceof SkinDataCapable<E> skinData ? skinData : null;
+  }
+
+  default StateDataCapable<E> getEasyNPCStateData() {
+    return this instanceof StateDataCapable<E> stateData ? stateData : null;
   }
 
   default ModelDataCapable<E> getEasyNPCModelData() {

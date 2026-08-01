@@ -19,15 +19,17 @@ jobs:
         with:
           java-version: '21'
           distribution: 'temurin'
-          cache: gradle
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
-          cache-read-only: ${{ github.ref != 'refs/heads/main' && github.ref != 'refs/heads/master' }}
+          cache-read-only: ${{ github.event_name == 'pull_request' }}
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
+
+      - name: Prepare Minecraft dependencies
+        run: ./gradlew syncMavenizer --no-daemon
 
       - name: Gradle Build Test Core
         run: ./gradlew -p core build --no-daemon
