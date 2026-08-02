@@ -35,7 +35,11 @@ public final class EasyModelEntitiesManager {
   public static final String DEFAULT_PROFILE =
       "easy_model_entities_examples:entity/little_explorer";
 
+  public static final String FLOATING_BODY_TYPE = "FLOATING";
+  public static final double DEFAULT_HOVER_HEIGHT = 2.0D;
+
   private static final Map<Identifier, ModelType> PROFILE_MODEL_TYPES = new ConcurrentHashMap<>();
+  private static final Map<Identifier, String> PROFILE_BODY_TYPES = new ConcurrentHashMap<>();
 
   private static volatile Function<Identifier, EntityDimensions> profileDimensionsProvider;
 
@@ -57,12 +61,27 @@ public final class EasyModelEntitiesManager {
     }
   }
 
+  public static void registerProfileBodyType(Identifier profileId, String bodyTypeName) {
+    if (profileId != null && bodyTypeName != null && !bodyTypeName.isEmpty()) {
+      PROFILE_BODY_TYPES.put(profileId, bodyTypeName.toUpperCase(Locale.ROOT));
+    }
+  }
+
   public static void clearProfileModelTypes() {
     PROFILE_MODEL_TYPES.clear();
+    PROFILE_BODY_TYPES.clear();
   }
 
   public static ModelType getProfileModelType(Identifier profileId) {
     return PROFILE_MODEL_TYPES.getOrDefault(profileId, ModelType.HUMANOID);
+  }
+
+  public static String getProfileBodyType(Identifier profileId) {
+    return PROFILE_BODY_TYPES.get(profileId);
+  }
+
+  public static boolean isFloatingProfile(Identifier profileId) {
+    return FLOATING_BODY_TYPE.equals(PROFILE_BODY_TYPES.get(profileId));
   }
 
   public static Identifier getProfileId(String entityModel) {

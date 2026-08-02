@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.data.condition;
 
+import de.markusbordihn.easynpc.data.state.StateValueType;
 import de.markusbordihn.easynpc.utils.EnumUtils;
 
 public enum ConditionType {
@@ -37,7 +38,9 @@ public enum ConditionType {
   GAMEMODE(ConditionTypeRequirements.NAME_ONLY),
   TIME_OF_DAY(ConditionTypeRequirements.VALUE_AND_OPERATION),
   WEATHER(ConditionTypeRequirements.NONE, WeatherType.class),
+  NPC_STATE(ConditionTypeRequirements.NAME_VALUE_OPERATION, StateValueType.class),
   FALLBACK(ConditionTypeRequirements.NONE),
+  CUSTOM(ConditionTypeRequirements.NONE),
   ;
 
   private final ConditionTypeRequirements requirements;

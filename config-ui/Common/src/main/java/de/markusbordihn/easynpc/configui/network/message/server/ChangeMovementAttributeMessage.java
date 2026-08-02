@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.configui.network.message.server;
 
 import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.data.attribute.MovementAttributeType;
+import de.markusbordihn.easynpc.data.attribute.NavigationType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.handler.AttributeHandler;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
@@ -38,7 +39,8 @@ public record ChangeMovementAttributeMessage(
     MovementAttributeType attributeType,
     Boolean booleanValue,
     Double doubleValue,
-    Integer integerValue)
+    Integer integerValue,
+    NavigationType navigationType)
     implements NetworkMessageRecord {
 
   public static final Identifier MESSAGE_ID =
@@ -51,7 +53,16 @@ public record ChangeMovementAttributeMessage(
 
   public ChangeMovementAttributeMessage(
       final UUID uuid, final MovementAttributeType attributeType, final Boolean value) {
-    this(uuid, attributeType, value, 0d, 0);
+    this(uuid, attributeType, value, 0d, 0, NavigationType.DEFAULT);
+  }
+
+  public ChangeMovementAttributeMessage(
+      final UUID uuid, final MovementAttributeType attributeType, final Double value) {
+    this(uuid, attributeType, false, value, 0, NavigationType.DEFAULT);
+  }
+
+  public ChangeMovementAttributeMessage(final UUID uuid, final NavigationType navigationType) {
+    this(uuid, MovementAttributeType.NAVIGATION_TYPE, false, 0d, 0, navigationType);
   }
 
   public static ChangeMovementAttributeMessage create(final FriendlyByteBuf buffer) {
@@ -60,7 +71,8 @@ public record ChangeMovementAttributeMessage(
         buffer.readEnum(MovementAttributeType.class),
         buffer.readBoolean(),
         buffer.readDouble(),
-        buffer.readInt());
+        buffer.readInt(),
+        buffer.readEnum(NavigationType.class));
   }
 
   @Override
@@ -70,6 +82,7 @@ public record ChangeMovementAttributeMessage(
     buffer.writeBoolean(this.booleanValue);
     buffer.writeDouble(this.doubleValue);
     buffer.writeInt(this.integerValue);
+    buffer.writeEnum(this.navigationType);
   }
 
   @Override
@@ -94,13 +107,24 @@ public record ChangeMovementAttributeMessage(
       return;
     }
 
-    if (booleanValue == null && doubleValue == null && integerValue == null) {
-      log.error("Invalid value for {} for {} from {}", attributeType, easyNPC, serverPlayer);
+    if (this.attributeType == MovementAttributeType.NAVIGATION_TYPE) {
+      AttributeHandler.setNavigationType(easyNPC, this.navigationType);
       return;
     }
 
-    if (booleanValue != null) {
-      AttributeHandler.setMovementAttribute(easyNPC, attributeType, booleanValue);
+    if (this.attributeType == MovementAttributeType.HOVER_HEIGHT) {
+      if (this.doubleValue == null) {
+        log.error("Invalid value for {} for {} from {}", this.attributeType, easyNPC, serverPlayer);
+        return;
+      }
+      AttributeHandler.setMovementAttribute(easyNPC, this.attributeType, this.doubleValue);
+      return;
     }
+
+    if (this.booleanValue == null) {
+      log.error("Invalid value for {} for {} from {}", this.attributeType, easyNPC, serverPlayer);
+      return;
+    }
+    AttributeHandler.setMovementAttribute(easyNPC, this.attributeType, this.booleanValue);
   }
 }

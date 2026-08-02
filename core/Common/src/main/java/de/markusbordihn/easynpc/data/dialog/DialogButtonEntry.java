@@ -130,10 +130,11 @@ public record DialogButtonEntry(
   }
 
   public DialogButtonEntry withLabel(String label) {
+    String normalizedLabel = DialogUtils.generateButtonLabel(label, this.name);
     return new DialogButtonEntry(
-        UUIDUtils.textToUUID(label != null && !label.isEmpty() ? label : name),
+        UUIDUtils.textToUUID(normalizedLabel),
         this.name,
-        label,
+        normalizedLabel,
         this.type,
         this.actionDataSet,
         this.conditions,

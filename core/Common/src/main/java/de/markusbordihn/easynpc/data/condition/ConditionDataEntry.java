@@ -19,8 +19,11 @@
 
 package de.markusbordihn.easynpc.data.condition;
 
+import de.markusbordihn.easynpc.utils.CompoundTagUtils;
+import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.Identifier;
 
 public record ConditionDataEntry(
     ConditionType conditionType,
@@ -29,15 +32,19 @@ public record ConditionDataEntry(
     String name,
     int value,
     String customData,
-    String customDataComponent) {
+    String customDataComponent,
+    Identifier customConditionId,
+    UUID targetUUID) {
 
   public static final ConditionDataEntry EMPTY =
       new ConditionDataEntry(ConditionType.NONE, ConditionOperationType.NONE);
+  public static final String DATA_TARGET_UUID_TAG = "TargetUUID";
   public static final String DATA_TYPE_TAG = "Type";
   public static final String DATA_SUB_TYPE_TAG = "SubType";
   public static final String DATA_OPERATION_TAG = "Operation";
   public static final String DATA_NAME_TAG = "Name";
   public static final String DATA_CUSTOM_DATA_COMPONENT_TAG = "CustomDataComponent";
+  public static final String DATA_CUSTOM_CONDITION_ID_TAG = "CustomConditionId";
   public static final String DATA_CUSTOM_DATA_TAG = "CustomData";
   public static final String DATA_LEGACY_TEXT_TAG = "Text";
   public static final String DATA_VALUE_TAG = "Value";
@@ -50,7 +57,13 @@ public record ConditionDataEntry(
         compoundTag.getString(DATA_NAME_TAG).orElse(""),
         compoundTag.getInt(DATA_VALUE_TAG).orElse(0),
         compoundTag.getString(DATA_CUSTOM_DATA_TAG).orElse(""),
-        compoundTag.getString(DATA_CUSTOM_DATA_COMPONENT_TAG).orElse(""));
+        compoundTag.getString(DATA_CUSTOM_DATA_COMPONENT_TAG).orElse(""),
+        compoundTag.contains(DATA_CUSTOM_CONDITION_ID_TAG)
+            ? Identifier.tryParse(compoundTag.getString(DATA_CUSTOM_CONDITION_ID_TAG).orElse(""))
+            : null,
+        compoundTag.contains(DATA_TARGET_UUID_TAG)
+            ? CompoundTagUtils.readUUID(compoundTag, DATA_TARGET_UUID_TAG)
+            : null);
   }
 
   public ConditionDataEntry(ConditionType conditionType) {
@@ -59,6 +72,19 @@ public record ConditionDataEntry(
 
   public ConditionDataEntry(ConditionType conditionType, ConditionOperationType operationType) {
     this(conditionType, null, operationType, "", 0);
+  }
+
+  public ConditionDataEntry(Identifier customConditionId) {
+    this(
+        ConditionType.CUSTOM,
+        null,
+        ConditionOperationType.NONE,
+        "",
+        0,
+        "",
+        "",
+        customConditionId,
+        null);
   }
 
   public ConditionDataEntry(
@@ -72,7 +98,7 @@ public record ConditionDataEntry(
       ConditionOperationType operationType,
       String name,
       int value) {
-    this(conditionType, subType, operationType, name, value, "", "");
+    this(conditionType, subType, operationType, name, value, "", "", null, null);
   }
 
   private static ConditionType getConditionType(CompoundTag compoundTag) {
@@ -90,12 +116,28 @@ public record ConditionDataEntry(
   }
 
   public UUID getId() {
-    String idString = DATA_TYPE_TAG + hashCode();
-    return UUID.nameUUIDFromBytes(idString.getBytes());
+    String identity =
+        String.join(
+            ":",
+            this.conditionType != null ? this.conditionType.name() : "",
+            this.subType instanceof Enum<?> subTypeEnum ? subTypeEnum.name() : "",
+            this.operationType != null ? this.operationType.name() : "",
+            this.name != null ? this.name.trim() : "",
+            String.valueOf(this.value),
+            this.customData != null ? this.customData.trim() : "",
+            this.customDataComponent != null ? this.customDataComponent.trim() : "",
+            this.customConditionId != null ? this.customConditionId.toString() : "",
+            this.targetUUID != null ? this.targetUUID.toString() : "");
+
+    return UUID.nameUUIDFromBytes(identity.getBytes(StandardCharsets.UTF_8));
   }
 
   public boolean hasName() {
     return this.name != null && !this.name.isEmpty();
+  }
+
+  public boolean hasCustomConditionId() {
+    return this.customConditionId != null;
   }
 
   public boolean hasCustomData() {
@@ -104,6 +146,10 @@ public record ConditionDataEntry(
 
   public boolean hasCustomDataComponent() {
     return this.customDataComponent != null && !this.customDataComponent.trim().isEmpty();
+  }
+
+  public boolean hasTargetUUID() {
+    return this.targetUUID != null;
   }
 
   public boolean hasValidUuidName() {
@@ -139,6 +185,11 @@ public record ConditionDataEntry(
       case TIME_OF_DAY ->
           this.operationType != null && this.operationType != ConditionOperationType.NONE;
       case WEATHER -> this.subType != null;
+      case NPC_STATE ->
+          hasName()
+              && this.operationType != null
+              && this.operationType != ConditionOperationType.NONE;
+      case CUSTOM -> hasCustomConditionId();
       case FALLBACK -> true;
       default -> true;
     };
@@ -152,7 +203,9 @@ public record ConditionDataEntry(
         this.name,
         this.value,
         this.customData,
-        this.customDataComponent);
+        this.customDataComponent,
+        this.customConditionId,
+        this.targetUUID);
   }
 
   public ConditionDataEntry withSubType(ConditionSubTypeEntry subType) {
@@ -163,7 +216,9 @@ public record ConditionDataEntry(
         this.name,
         this.value,
         this.customData,
-        this.customDataComponent);
+        this.customDataComponent,
+        this.customConditionId,
+        this.targetUUID);
   }
 
   public ConditionDataEntry withOperationType(ConditionOperationType operationType) {
@@ -174,7 +229,9 @@ public record ConditionDataEntry(
         this.name,
         this.value,
         this.customData,
-        this.customDataComponent);
+        this.customDataComponent,
+        this.customConditionId,
+        this.targetUUID);
   }
 
   public ConditionDataEntry withName(String name) {
@@ -185,7 +242,9 @@ public record ConditionDataEntry(
         name,
         this.value,
         this.customData,
-        this.customDataComponent);
+        this.customDataComponent,
+        this.customConditionId,
+        this.targetUUID);
   }
 
   public ConditionDataEntry withValue(int value) {
@@ -196,7 +255,9 @@ public record ConditionDataEntry(
         this.name,
         value,
         this.customData,
-        this.customDataComponent);
+        this.customDataComponent,
+        this.customConditionId,
+        this.targetUUID);
   }
 
   public ConditionDataEntry withCustomData(String customData) {
@@ -207,7 +268,9 @@ public record ConditionDataEntry(
         this.name,
         this.value,
         customData,
-        this.customDataComponent);
+        this.customDataComponent,
+        this.customConditionId,
+        this.targetUUID);
   }
 
   public ConditionDataEntry withCustomDataComponent(String customDataComponent) {
@@ -218,11 +281,35 @@ public record ConditionDataEntry(
         this.name,
         this.value,
         this.customData,
-        customDataComponent);
+        customDataComponent,
+        this.customConditionId,
+        this.targetUUID);
   }
 
-  public ConditionDataEntry create(CompoundTag compoundTag) {
-    return new ConditionDataEntry(compoundTag);
+  public ConditionDataEntry withCustomConditionId(Identifier customConditionId) {
+    return new ConditionDataEntry(
+        this.conditionType,
+        this.subType,
+        this.operationType,
+        this.name,
+        this.value,
+        this.customData,
+        this.customDataComponent,
+        customConditionId,
+        this.targetUUID);
+  }
+
+  public ConditionDataEntry withTargetUUID(UUID targetUUID) {
+    return new ConditionDataEntry(
+        this.conditionType,
+        this.subType,
+        this.operationType,
+        this.name,
+        this.value,
+        this.customData,
+        this.customDataComponent,
+        this.customConditionId,
+        targetUUID);
   }
 
   public CompoundTag write(CompoundTag compoundTag) {
@@ -243,8 +330,14 @@ public record ConditionDataEntry(
     if (hasCustomDataComponent()) {
       compoundTag.putString(DATA_CUSTOM_DATA_COMPONENT_TAG, this.customDataComponent.trim());
     }
+    if (hasCustomConditionId()) {
+      compoundTag.putString(DATA_CUSTOM_CONDITION_ID_TAG, this.customConditionId.toString());
+    }
     if (hasCustomData()) {
       compoundTag.putString(DATA_CUSTOM_DATA_TAG, this.customData.trim());
+    }
+    if (hasTargetUUID()) {
+      CompoundTagUtils.writeUUID(compoundTag, DATA_TARGET_UUID_TAG, this.targetUUID);
     }
 
     return compoundTag;

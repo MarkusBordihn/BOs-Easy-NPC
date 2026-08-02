@@ -1,0 +1,253 @@
+{
+  PresetMetadata:{
+    author:"Kaworru",
+    category:"Quest",
+    created:1784073600000L,
+    description:"A smith that remembers what happens at his forge through NPC states: a lit or banked fire, how many orders he already took and which blade he is working on. Every dialog reacts to those states, so the NPC changes for everyone who visits it.",
+    entityTypeId:"easy_npc:humanoid",
+    modified:1784073600000L,
+    name:"Forge Keeper",
+    variantType:"KNIGHT_02",
+    version:"1.0.0"
+  },
+  data:{
+    ActionData:{
+      ActionEventSet:{
+        ON_DISTANCE_FAR:[{
+          Cmd:"/playsound minecraft:block.fire.ambient master @initiator ~ ~ ~ 0.3 0.8",Type:"COMMAND"
+        }],
+        ON_INTERACTION:[{
+          Type:"OPEN_DEFAULT_DIALOG"
+        }],
+        ActionPermissionLevel:4
+      }
+    },
+    ArmorDropChances:[0.085f,0.085f,0.085f,0.085f],
+    ArmorItems:[{},{},{},{
+      Count:1b,id:"minecraft:leather_boots",tag:{
+        Damage:0
+      }
+    }],
+    Attributes:[{
+      Base:0.5d,Name:"minecraft:generic.movement_speed"
+    },{
+      Base:1.0d,Name:"minecraft:generic.attack_damage"
+    },{
+      Base:16.0d,Name:"minecraft:generic.follow_range"
+    }],
+    Brain:{
+      memories:{}
+    },
+    CanPickUpLoot:0b,
+    CanUpdate:1b,
+    CustomName:'{"color":"#D97A3C","text":"Forge Keeper"}',
+    CustomNameVisible:1b,
+    DialogData:{
+      DialogDataSet:[{
+        Conditions:[{
+          Name:"orders_taken",Operation:"GREATER_THAN_OR_EQUALS",Type:"NPC_STATE",Value:3
+        }],
+        Label:"booked_out",Name:"Booked Out",Priority:10,Texts:[{
+          Text:"Three blades on the bench already, @initiator. Come back when I cleared one of them.\\n\\nThe forge remembers every order, even after I close for the night."
+        }]
+      },{
+        Buttons:[{
+          Actions:[{
+            Cmd:"toggle forge_lit",Type:"NPC_STATE"
+          },{
+            Cmd:"/playsound minecraft:item.flintandsteel.use master @a ~ ~ ~ 1 1",Type:"COMMAND"
+          },{
+            Cmd:"fire_lit",Type:"OPEN_NAMED_DIALOG"
+          }],Conditions:[{
+            Name:"forge_lit",Operation:"EQUALS",SubType:"FLAG",Type:"NPC_STATE"
+          }],Label:"button_light",Name:"Light the forge"
+        },{
+          Actions:[{
+            Cmd:"toggle forge_lit",Type:"NPC_STATE"
+          },{
+            Cmd:"/playsound minecraft:block.fire.extinguish master @a ~ ~ ~ 1 1",Type:"COMMAND"
+          },{
+            Cmd:"fire_banked",Type:"OPEN_NAMED_DIALOG"
+          }],Conditions:[{
+            Name:"forge_lit",Operation:"EQUALS",SubType:"FLAG",Type:"NPC_STATE",Value:1
+          }],Label:"button_bank",Name:"Bank the fire"
+        },{
+          Actions:[{
+            Cmd:"increase orders_taken 1",Type:"NPC_STATE"
+          },{
+            Cmd:"set current_order longsword",Type:"NPC_STATE"
+          },{
+            Cmd:"/playsound minecraft:block.anvil.use master @a ~ ~ ~ 1 1",Type:"COMMAND"
+          },{
+            Cmd:"order_taken",Type:"OPEN_NAMED_DIALOG"
+          }],Conditions:[{
+            Name:"forge_lit",Operation:"EQUALS",SubType:"FLAG",Type:"NPC_STATE",Value:1
+          },{
+            Name:"orders_taken",Operation:"LESS_THAN",Type:"NPC_STATE",Value:3
+          }],Label:"button_order",Name:"Order a longsword"
+        },{
+          Actions:[{
+            Cmd:"current_work",Type:"OPEN_NAMED_DIALOG"
+          }],Conditions:[{
+            CustomData:"longsword",Name:"current_order",Operation:"EQUALS",Type:"NPC_STATE"
+          }],Label:"button_progress",Name:"What are you working on?"
+        },{
+          Actions:[{
+            Cmd:"remove current_order",Type:"NPC_STATE"
+          },{
+            Cmd:"decrease orders_taken 1",Type:"NPC_STATE"
+          },{
+            Cmd:"order_cleared",Type:"OPEN_NAMED_DIALOG"
+          }],Conditions:[{
+            Name:"orders_taken",Operation:"GREATER_THAN_OR_EQUALS",Type:"NPC_STATE",Value:1
+          }],Label:"button_clear",Name:"Take a blade off the bench"
+        },{
+          Actions:[{
+            Cmd:"farewell",Type:"OPEN_NAMED_DIALOG"
+          }],Label:"button_leave",Name:"I'll leave you to it"
+        }],Label:"default",Name:"At the Forge",Priority:5,Texts:[{
+          Text:"Welcome to my forge, @initiator.\\n\\nThe fire has to burn before I take an order, and I never keep more than three blades on the bench.\\n\\nWhatever you change here stays with me, not with you."
+        }]
+      },{
+        Label:"fire_lit",Name:"Fire Lit",Priority:-1,Texts:[{
+          Text:"The coals catch and the bellows breathe. Now we can work, @initiator."
+        }]
+      },{
+        Label:"fire_banked",Name:"Fire Banked",Priority:-1,Texts:[{
+          Text:"Ash over the coals, the fire keeps until morning. No orders until it burns again."
+        }]
+      },{
+        Label:"order_taken",Name:"Order Taken",Priority:-1,Texts:[{
+          Text:"A longsword it is. Onto the bench with it, next to the others."
+        }]
+      },{
+        Label:"current_work",Name:"Current Work",Priority:-1,Texts:[{
+          Text:"A longsword, @initiator. Folded twice, edge not set yet. Ask again after the next heat."
+        }]
+      },{
+        Label:"order_cleared",Name:"Order Cleared",Priority:-1,Texts:[{
+          Text:"Off the bench it goes. That frees a place for the next blade."
+        }]
+      },{
+        Label:"farewell",Name:"Farewell",Priority:-1,Texts:[{
+          Text:"Mind the sparks on your way out, @initiator."
+        }]
+      }],
+      Type:"STANDARD"
+    },
+    DisplayAttribute:[{
+      Bool:1b,Type:"VISIBLE"
+    },{
+      Bool:1b,Type:"VISIBLE_AT_DAY"
+    },{
+      Bool:1b,Type:"VISIBLE_AT_NIGHT"
+    },{
+      Bool:1b,Type:"VISIBLE_IN_CREATIVE"
+    },{
+      Bool:1b,Type:"VISIBLE_IN_SPECTATOR"
+    },{
+      Bool:1b,Type:"VISIBLE_IN_STANDARD"
+    },{
+      Bool:1b,Type:"VISIBLE_TO_OWNER"
+    },{
+      Bool:1b,Type:"VISIBLE_TO_TEAM"
+    },{
+      Int:7,Type:"LIGHT_LEVEL"
+    },{
+      Text:"ALWAYS",Type:"NAME_VISIBILITY"
+    }],
+    EasyNPCVersion:3,
+    EntityAttribute:{
+      CanBeHitByProjectile:0b,
+      CanBeLeashed:0b,
+      CanBreatheUnderwater:1b,
+      CanCloseDoor:0b,
+      CanFloat:0b,
+      CanOpenDoor:0b,
+      CanPassDoor:0b,
+      CanUseNetherPortal:0b,
+      Freefall:0b,
+      HealthRegeneration:0.0d,
+      IsAttackableByMonsters:0b,
+      IsAttackableByPlayers:0b,
+      IsInvulnerable:1b,
+      IsPushable:0b,
+      NoGravity:0b,
+      PushEntities:0b
+    },
+    HandDropChances:[0.085f,0.085f],
+    HandItems:[{
+      Count:1b,id:"minecraft:iron_ingot"
+    },{
+      Count:1b,id:"minecraft:iron_pickaxe",tag:{
+        Damage:0
+      }
+    }],
+    Health:20.0f,
+    Invulnerable:1b,
+    LeftHanded:0b,
+    ModelData:{
+      DefaultPose:"STANDING",
+      Position:{},
+      Rotation:{},
+      Scale:{},
+      Visible:{}
+    },
+    Navigation:{
+      Home:{
+        X:0,
+        Y:64,
+        Z:0
+      }
+    },
+    ObjectiveData:{
+      HasObjectives:1b,
+      ObjectiveDataSet:[{
+        Prio:9,Type:"LOOK_AT_PLAYER"
+      },{
+        Prio:9,Type:"LOOK_AT_RESET"
+      }]
+    },
+    Offers:{
+      Inventory:{},
+      Recipes:{
+        Recipes:[]
+      }
+    },
+    OnGround:1b,
+    PersistenceRequired:0b,
+    PresetUUID:[I;-575969029,-1363127146,-1151208861,1392982841],
+    Profession:"NONE",
+    RenderData:{},
+    SkinData:{
+      Content:"",
+      DisableLayers:0b,
+      Name:"",
+      Timestamp:1784073600000L,
+      Type:"DEFAULT",
+      URL:"",
+      UUID:[I;0,0,0,0]
+    },
+    SoundData:{
+      SoundDataSet:[{
+        Name:"minecraft:entity.player.death",Type:"DEATH"
+      },{
+        Name:"minecraft:entity.player.hurt",Type:"HURT"
+      }]
+    },
+    Status:{
+      finalized:1b
+    },
+    TradingData:{
+      TradingDataSet:{
+        LastReset:0L,
+        MaxUses:64,
+        ResetsEveryMin:0,
+        RewardedXP:0,
+        Type:"NONE"
+      }
+    },
+    VariantType:"KNIGHT_02",
+    id:"easy_npc:humanoid"
+  }
+}

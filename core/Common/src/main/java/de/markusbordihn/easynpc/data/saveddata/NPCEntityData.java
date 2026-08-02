@@ -146,7 +146,7 @@ public class NPCEntityData extends SavedData {
     setDirty();
 
     if (npcFileStorage != null && entry.npcData() != null) {
-      npcFileStorage.markDirty(uuid, entry.npcData());
+      this.npcFileStorage.markDirty(uuid, entry.npcData());
     }
   }
 
@@ -162,7 +162,7 @@ public class NPCEntityData extends SavedData {
     }
 
     if (npcFileStorage != null) {
-      npcFileStorage.delete(uuid);
+      this.npcFileStorage.delete(uuid);
     }
   }
 
@@ -181,7 +181,7 @@ public class NPCEntityData extends SavedData {
       return Optional.empty();
     }
 
-    Optional<CompoundTag> npcData = npcFileStorage.load(uuid);
+    Optional<CompoundTag> npcData = this.npcFileStorage.load(uuid);
     if (npcData.isEmpty()) {
       log.warn("NPC file missing for UUID {}, removing from index", uuid);
       this.metadata.remove(uuid);
@@ -211,72 +211,75 @@ public class NPCEntityData extends SavedData {
   }
 
   public Set<UUID> getAllUUIDs() {
-    return Collections.unmodifiableSet(metadata.keySet());
+    return Collections.unmodifiableSet(this.metadata.keySet());
   }
 
   public boolean hasEntry(UUID uuid) {
-    return uuid != null && metadata.containsKey(uuid);
+    return uuid != null && this.metadata.containsKey(uuid);
   }
 
   public Optional<NPCEntityMetadata> getMetadata(UUID uuid) {
     if (uuid == null) {
       return Optional.empty();
     }
-    return Optional.ofNullable(metadata.get(uuid));
+    return Optional.ofNullable(this.metadata.get(uuid));
   }
 
   public Set<String> getAllEntityTypes() {
-    return Collections.unmodifiableSet(entriesByType.keySet());
+    return Collections.unmodifiableSet(this.entriesByType.keySet());
   }
 
   public Set<String> getAllDimensions() {
-    return Collections.unmodifiableSet(entriesByDimension.keySet());
+    return Collections.unmodifiableSet(this.entriesByDimension.keySet());
   }
 
   public Set<Identifier> getAllCustomIdentifiers() {
-    return Collections.unmodifiableSet(entriesByCustomIdentifier.keySet());
+    return Collections.unmodifiableSet(this.entriesByCustomIdentifier.keySet());
   }
 
   public Set<String> getAllCustomIdentifierNamespaces() {
-    return Collections.unmodifiableSet(entriesByCustomIdentifierNamespace.keySet());
+    return Collections.unmodifiableSet(this.entriesByCustomIdentifierNamespace.keySet());
   }
 
   public Collection<SavedNPCEntityEntry> getEntriesByOwner(UUID ownerUUID) {
     return ownerUUID != null
-        ? resolveEntries(entriesByOwner.get(ownerUUID))
+        ? resolveEntries(this.entriesByOwner.get(ownerUUID))
         : Collections.emptyList();
   }
 
   public Collection<SavedNPCEntityEntry> getEntriesByType(String type) {
-    return type != null ? resolveEntries(entriesByType.get(type)) : Collections.emptyList();
+    return type != null ? resolveEntries(this.entriesByType.get(type)) : Collections.emptyList();
   }
 
   public Collection<SavedNPCEntityEntry> getEntriesByDimension(String dimension) {
     return dimension != null
-        ? resolveEntries(entriesByDimension.get(dimension))
+        ? resolveEntries(this.entriesByDimension.get(dimension))
         : Collections.emptyList();
   }
 
   public Collection<SavedNPCEntityEntry> getEntriesByPreset(UUID presetUUID) {
     return presetUUID != null
-        ? resolveEntries(entriesByPreset.get(presetUUID))
+        ? resolveEntries(this.entriesByPreset.get(presetUUID))
         : Collections.emptyList();
   }
 
   public Collection<SavedNPCEntityEntry> getEntriesByCustomIdentifier(Identifier customIdentifier) {
     return customIdentifier != null
-        ? resolveEntries(entriesByCustomIdentifier.get(customIdentifier))
+        ? resolveEntries(this.entriesByCustomIdentifier.get(customIdentifier))
         : Collections.emptyList();
   }
 
   public Collection<SavedNPCEntityEntry> getEntriesByCustomIdentifierNamespace(String namespace) {
     return namespace != null
-        ? resolveEntries(entriesByCustomIdentifierNamespace.get(namespace))
+        ? resolveEntries(this.entriesByCustomIdentifierNamespace.get(namespace))
         : Collections.emptyList();
   }
 
   private Collection<SavedNPCEntityEntry> resolveEntries(Set<UUID> uuids) {
-    if (uuids == null || uuids.isEmpty()) return Collections.emptyList();
+    if (uuids == null || uuids.isEmpty()) {
+      return Collections.emptyList();
+    }
+
     return uuids.stream()
         .map(this::getEntry)
         .filter(Optional::isPresent)
@@ -285,11 +288,16 @@ public class NPCEntityData extends SavedData {
   }
 
   private <K> void removeFromIndex(Map<K, Set<UUID>> map, K key, UUID uuid) {
-    if (key == null) return;
+    if (key == null) {
+      return;
+    }
+
     Set<UUID> set = map.get(key);
     if (set != null) {
       set.remove(uuid);
-      if (set.isEmpty()) map.remove(key);
+      if (set.isEmpty()) {
+        map.remove(key);
+      }
     }
   }
 
@@ -299,19 +307,21 @@ public class NPCEntityData extends SavedData {
     }
 
     if (meta.hasOwner()) {
-      entriesByOwner.computeIfAbsent(meta.ownerUUID(), k -> new HashSet<>()).add(entityUUID);
+      this.entriesByOwner.computeIfAbsent(meta.ownerUUID(), k -> new HashSet<>()).add(entityUUID);
     }
 
     if (meta.hasEntityType()) {
-      entriesByType.computeIfAbsent(meta.entityType(), k -> new HashSet<>()).add(entityUUID);
+      this.entriesByType.computeIfAbsent(meta.entityType(), k -> new HashSet<>()).add(entityUUID);
     }
 
     if (meta.hasDimension()) {
-      entriesByDimension.computeIfAbsent(meta.dimension(), k -> new HashSet<>()).add(entityUUID);
+      this.entriesByDimension
+          .computeIfAbsent(meta.dimension(), k -> new HashSet<>())
+          .add(entityUUID);
     }
 
     if (meta.hasPreset()) {
-      entriesByPreset.computeIfAbsent(meta.presetUUID(), k -> new HashSet<>()).add(entityUUID);
+      this.entriesByPreset.computeIfAbsent(meta.presetUUID(), k -> new HashSet<>()).add(entityUUID);
     }
 
     if (meta.hasCustomIdentifier()) {
@@ -326,52 +336,66 @@ public class NPCEntityData extends SavedData {
   }
 
   private void removeCachedMaps(UUID entityUUID, NPCEntityMetadata meta) {
-    if (meta == null) return;
-    removeFromIndex(entriesByOwner, meta.ownerUUID(), entityUUID);
-    removeFromIndex(entriesByType, meta.entityType(), entityUUID);
-    removeFromIndex(entriesByDimension, meta.dimension(), entityUUID);
-    removeFromIndex(entriesByPreset, meta.presetUUID(), entityUUID);
+    if (meta == null) {
+      return;
+    }
+
+    removeFromIndex(this.entriesByOwner, meta.ownerUUID(), entityUUID);
+    removeFromIndex(this.entriesByType, meta.entityType(), entityUUID);
+    removeFromIndex(this.entriesByDimension, meta.dimension(), entityUUID);
+    removeFromIndex(this.entriesByPreset, meta.presetUUID(), entityUUID);
     if (meta.hasCustomIdentifier()) {
-      removeFromIndex(entriesByCustomIdentifier, meta.customIdentifier(), entityUUID);
+      removeFromIndex(this.entriesByCustomIdentifier, meta.customIdentifier(), entityUUID);
       removeFromIndex(
-          entriesByCustomIdentifierNamespace, meta.customIdentifier().getNamespace(), entityUUID);
+          this.entriesByCustomIdentifierNamespace,
+          meta.customIdentifier().getNamespace(),
+          entityUUID);
     }
   }
 
   public <E extends Mob> void updateDimension(EasyNPC<E> easyNPC, ServerLevel serverLevel) {
     UUID uuid = easyNPC.getEntityUUID();
     String newDimension = serverLevel.dimension().identifier().toString();
-    NPCEntityMetadata old = metadata.get(uuid);
-    if (old == null || Objects.equals(old.dimension(), newDimension)) return;
-    removeFromIndex(entriesByDimension, old.dimension(), uuid);
-    metadata.put(uuid, old.withDimension(newDimension));
-    entriesByDimension.computeIfAbsent(newDimension, k -> new HashSet<>()).add(uuid);
+    NPCEntityMetadata old = this.metadata.get(uuid);
+    if (old == null || Objects.equals(old.dimension(), newDimension)) {
+      return;
+    }
+
+    removeFromIndex(this.entriesByDimension, old.dimension(), uuid);
+    this.metadata.put(uuid, old.withDimension(newDimension));
+    this.entriesByDimension.computeIfAbsent(newDimension, k -> new HashSet<>()).add(uuid);
     setDirty();
   }
 
   public <E extends Mob> void updateOwner(EasyNPC<E> easyNPC, LivingEntity owner) {
     UUID uuid = easyNPC.getEntityUUID();
     UUID newOwnerUUID = owner != null ? owner.getUUID() : null;
-    NPCEntityMetadata old = metadata.get(uuid);
-    if (old == null || Objects.equals(old.ownerUUID(), newOwnerUUID)) return;
-    removeFromIndex(entriesByOwner, old.ownerUUID(), uuid);
-    metadata.put(uuid, old.withOwnerUUID(newOwnerUUID));
+    NPCEntityMetadata old = this.metadata.get(uuid);
+    if (old == null || Objects.equals(old.ownerUUID(), newOwnerUUID)) {
+      return;
+    }
+
+    removeFromIndex(this.entriesByOwner, old.ownerUUID(), uuid);
+    this.metadata.put(uuid, old.withOwnerUUID(newOwnerUUID));
     if (newOwnerUUID != null) {
-      entriesByOwner.computeIfAbsent(newOwnerUUID, k -> new HashSet<>()).add(uuid);
+      this.entriesByOwner.computeIfAbsent(newOwnerUUID, k -> new HashSet<>()).add(uuid);
     }
     setDirty();
   }
 
   public void updateRemovalReason(UUID uuid, NPCRemovalReason reason) {
-    NPCEntityMetadata old = metadata.get(uuid);
-    if (old == null) return;
-    metadata.put(uuid, old.withRemovalReason(reason));
+    NPCEntityMetadata old = this.metadata.get(uuid);
+    if (old == null) {
+      return;
+    }
+
+    this.metadata.put(uuid, old.withRemovalReason(reason));
     setDirty();
   }
 
   public int saveAllDirtyNPCs() {
     if (npcFileStorage != null) {
-      return npcFileStorage.saveAllDirty();
+      return this.npcFileStorage.saveAllDirty();
     }
     return 0;
   }

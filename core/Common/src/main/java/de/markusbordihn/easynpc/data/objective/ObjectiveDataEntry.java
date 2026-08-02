@@ -24,7 +24,6 @@ import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.OwnerDataCapable;
 import de.markusbordihn.easynpc.utils.CompoundTagUtils;
-import java.util.Locale;
 import java.util.UUID;
 import java.util.function.BooleanSupplier;
 import net.minecraft.nbt.CompoundTag;
@@ -123,6 +122,7 @@ public final class ObjectiveDataEntry {
   private String targetTeamName;
   private String targetEntityTag;
   private String targetItemTag;
+  private boolean unusableObjectiveLogged = false;
 
   public ObjectiveDataEntry() {}
 
@@ -367,7 +367,17 @@ public final class ObjectiveDataEntry {
     if (!isRegistered) {
       this.goal = null;
       this.target = null;
+      this.unusableObjectiveLogged = false;
     }
+  }
+
+  public boolean markUnusableObjectiveLogged() {
+    if (this.unusableObjectiveLogged) {
+      return false;
+    }
+
+    this.unusableObjectiveLogged = true;
+    return true;
   }
 
   public String getTargetPlayerName() {
@@ -501,22 +511,17 @@ public final class ObjectiveDataEntry {
   }
 
   public boolean hasOwnerTarget() {
-    return this.getType() == ObjectiveType.FOLLOW_OWNER
-        || this.getType() == ObjectiveType.LOOK_AT_OWNER;
+    return ObjectiveGroup.OWNER_TARGET.contains(this.getType());
   }
 
   public boolean hasPlayerTarget() {
-    return (this.getType() == ObjectiveType.FOLLOW_PLAYER
-            || this.getType() == ObjectiveType.ATTACK_PLAYER_BY_NAME)
+    return ObjectiveGroup.PLAYER_TARGET.contains(this.getType())
         && this.targetPlayerName != null
         && !this.targetPlayerName.isEmpty();
   }
 
   public boolean hasEntityTarget() {
-    return (this.getType() == ObjectiveType.FOLLOW_ENTITY_BY_UUID
-            || this.getType() == ObjectiveType.LOOK_AT_ENTITY_BY_UUID
-            || this.getType() == ObjectiveType.ATTACK_ENTITY_BY_UUID)
-        && this.targetEntityUUID != null;
+    return ObjectiveGroup.ENTITY_TARGET.contains(this.getType()) && this.targetEntityUUID != null;
   }
 
   public boolean hasValidTarget(EasyNPC<?> easyNPC) {
@@ -576,7 +581,7 @@ public final class ObjectiveDataEntry {
       this.customObjectiveId =
           Identifier.tryParse(compoundTag.getString(DATA_CUSTOM_OBJECTIVE_ID_TAG).orElse(""));
     }
-    this.priority = compoundTag.getInt(DATA_PRIORITY_TAG).orElse(DEFAULT_PRIORITY);
+    this.setPriority(compoundTag.getInt(DATA_PRIORITY_TAG).orElse(DEFAULT_PRIORITY));
 
     // Restore id, if no id is set, use the objective type.
     if (compoundTag.contains(DATA_ID_TAG)
@@ -609,20 +614,20 @@ public final class ObjectiveDataEntry {
 
     // Additional parameters
     if (compoundTag.contains(DATA_SPEED_MODIFIER_TAG)) {
-      this.speedModifier =
-          compoundTag.getDouble(DATA_SPEED_MODIFIER_TAG).orElse(DEFAULT_SPEED_MODIFIER);
+      this.setSpeedModifier(
+          compoundTag.getDouble(DATA_SPEED_MODIFIER_TAG).orElse(DEFAULT_SPEED_MODIFIER));
     }
     if (compoundTag.contains(DATA_START_DISTANCE_TAG)) {
-      this.startDistance =
-          compoundTag.getFloat(DATA_START_DISTANCE_TAG).orElse(DEFAULT_START_DISTANCE);
+      this.setStartDistance(
+          compoundTag.getFloat(DATA_START_DISTANCE_TAG).orElse(DEFAULT_START_DISTANCE));
     }
     if (compoundTag.contains(DATA_STOP_DISTANCE_TAG)) {
-      this.stopDistance =
-          compoundTag.getFloat(DATA_STOP_DISTANCE_TAG).orElse(DEFAULT_STOP_DISTANCE);
+      this.setStopDistance(
+          compoundTag.getFloat(DATA_STOP_DISTANCE_TAG).orElse(DEFAULT_STOP_DISTANCE));
     }
     if (compoundTag.contains(DATA_TELEPORT_DISTANCE_TAG)) {
-      this.teleportDistance =
-          compoundTag.getFloat(DATA_TELEPORT_DISTANCE_TAG).orElse(DEFAULT_TELEPORT_DISTANCE);
+      this.setTeleportDistance(
+          compoundTag.getFloat(DATA_TELEPORT_DISTANCE_TAG).orElse(DEFAULT_TELEPORT_DISTANCE));
     }
     ListTag followOffsetTag = compoundTag.getListOrEmpty(DATA_FOLLOW_OFFSET_TAG);
     if (followOffsetTag.size() == 3) {
@@ -640,38 +645,33 @@ public final class ObjectiveDataEntry {
       this.canScare = compoundTag.getBoolean(DATA_CAN_SCARE_TAG).orElse(DEFAULT_CAN_SCARE);
     }
     if (compoundTag.contains(DATA_DISTANCE_TO_POI_TAG)) {
-      this.distanceToPoi =
-          compoundTag.getInt(DATA_DISTANCE_TO_POI_TAG).orElse(DEFAULT_DISTANCE_TO_POI);
+      this.setDistanceToPoi(
+          compoundTag.getInt(DATA_DISTANCE_TO_POI_TAG).orElse(DEFAULT_DISTANCE_TO_POI));
     }
-    if (compoundTag.contains(DATA_LOOK_DISTANCE_TAG)) {
-      this.lookDistance =
-          compoundTag.getFloat(DATA_LOOK_DISTANCE_TAG).orElse(DEFAULT_LOOK_DISTANCE);
-    }
-    if (compoundTag.contains(DATA_ATTACK_INTERVAL_TAG)) {
-      this.attackInterval =
-          compoundTag.getInt(DATA_ATTACK_INTERVAL_TAG).orElse(DEFAULT_ATTACK_INTERVAL);
-    }
-    if (compoundTag.contains(DATA_ATTACK_RADIUS_TAG)) {
-      this.attackRadius =
-          compoundTag.getFloat(DATA_ATTACK_RADIUS_TAG).orElse(DEFAULT_ATTACK_RADIUS);
-    }
-    if (compoundTag.contains(DATA_INTERVAL_TAG)) {
-      this.interval = compoundTag.getInt(DATA_INTERVAL_TAG).orElse(DEFAULT_INTERVAL);
-    }
-    if (compoundTag.contains(DATA_PROBABILITY_TAG)) {
-      this.probability = compoundTag.getFloat(DATA_PROBABILITY_TAG).orElse(DEFAULT_PROBABILITY);
-    }
-
     if (compoundTag.contains(DATA_ONLY_AT_NIGHT_TAG)) {
       this.onlyAtNight =
           compoundTag.getBoolean(DATA_ONLY_AT_NIGHT_TAG).orElse(DEFAULT_ONLY_AT_NIGHT);
     }
     if (compoundTag.contains(DATA_CAN_DEAL_WITH_DOORS_TAG)) {
-      this.canDealWithDoors =
-          () ->
-              compoundTag
-                  .getBoolean(DATA_CAN_DEAL_WITH_DOORS_TAG)
-                  .orElse(DEFAULT_CAN_DEAL_WITH_DOORS.getAsBoolean());
+      this.setCanDealWithDoors(
+          compoundTag
+              .getBoolean(DATA_CAN_DEAL_WITH_DOORS_TAG)
+              .orElse(DEFAULT_CAN_DEAL_WITH_DOORS.getAsBoolean()));
+    }
+    if (compoundTag.contains(DATA_LOOK_DISTANCE_TAG)) {
+      this.setLookDistance(
+          compoundTag.getFloat(DATA_LOOK_DISTANCE_TAG).orElse(DEFAULT_LOOK_DISTANCE));
+    }
+    if (compoundTag.contains(DATA_ATTACK_INTERVAL_TAG)) {
+      this.setAttackInterval(
+          compoundTag.getInt(DATA_ATTACK_INTERVAL_TAG).orElse(DEFAULT_ATTACK_INTERVAL));
+    }
+    if (compoundTag.contains(DATA_ATTACK_RADIUS_TAG)) {
+      this.setAttackRadius(
+          compoundTag.getFloat(DATA_ATTACK_RADIUS_TAG).orElse(DEFAULT_ATTACK_RADIUS));
+    }
+    if (compoundTag.contains(DATA_INTERVAL_TAG)) {
+      this.setInterval(compoundTag.getInt(DATA_INTERVAL_TAG).orElse(DEFAULT_INTERVAL));
     }
     if (compoundTag.contains(DATA_MUST_SEE_TARGET_TAG)) {
       this.mustSeeTarget =
@@ -680,6 +680,9 @@ public final class ObjectiveDataEntry {
     if (compoundTag.contains(DATA_MUST_REACH_TARGET_TAG)) {
       this.mustReachTarget =
           compoundTag.getBoolean(DATA_MUST_REACH_TARGET_TAG).orElse(DEFAULT_MUST_REACH_TARGET);
+    }
+    if (compoundTag.contains(DATA_PROBABILITY_TAG)) {
+      this.setProbability(compoundTag.getFloat(DATA_PROBABILITY_TAG).orElse(DEFAULT_PROBABILITY));
     }
   }
 
@@ -692,10 +695,7 @@ public final class ObjectiveDataEntry {
     compoundTag.putInt(DATA_PRIORITY_TAG, this.priority);
 
     // Store id only if it is not the same as the objective type.
-    if (this.id != null
-        && !this.id.isEmpty()
-        && !this.id.equals(typeName)
-        && !this.id.toUpperCase(Locale.ROOT).equals(typeName.toUpperCase(Locale.ROOT))) {
+    if (this.id != null && !this.id.isEmpty() && !this.id.equalsIgnoreCase(typeName)) {
       compoundTag.putString(DATA_ID_TAG, this.id);
     }
 
@@ -752,7 +752,7 @@ public final class ObjectiveDataEntry {
       compoundTag.putInt(DATA_DISTANCE_TO_POI_TAG, this.distanceToPoi);
     }
     if (this.canDealWithDoors.getAsBoolean()) {
-      compoundTag.putBoolean(DATA_CAN_DEAL_WITH_DOORS_TAG, this.canDealWithDoors.getAsBoolean());
+      compoundTag.putBoolean(DATA_CAN_DEAL_WITH_DOORS_TAG, true);
     }
     if (this.lookDistance != DEFAULT_LOOK_DISTANCE) {
       compoundTag.putFloat(DATA_LOOK_DISTANCE_TAG, this.lookDistance);

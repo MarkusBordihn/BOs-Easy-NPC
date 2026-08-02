@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Markus Bordihn
+ * Copyright 2026 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,30 +17,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.data.objective;
+package de.markusbordihn.easynpc.gametest;
 
-public enum ObjectiveTarget {
-  // @formatter:off
-  CUSTOM,
-  ANIMAL,
-  IRON_GOLEM,
-  MOB,
-  PILLAGER,
-  PLAYER,
-  RAIDER,
-  VILLAGER,
-  NONE;
+import net.fabricmc.fabric.api.gametest.v1.GameTest;
+import net.minecraft.gametest.framework.GameTestHelper;
 
-  // @formatter:on
+@SuppressWarnings("unused")
+public class CommandArgumentTypeTest {
 
-  public static ObjectiveTarget get(String objectiveTarget) {
-    if (objectiveTarget == null || objectiveTarget.isEmpty()) {
-      return ObjectiveTarget.NONE;
-    }
-    try {
-      return ObjectiveTarget.valueOf(objectiveTarget);
-    } catch (IllegalArgumentException e) {
-      return ObjectiveTarget.NONE;
-    }
+  @GameTest(structure = "easy_npc:gametest.1x1x1")
+  public void testEveryCommandArgumentCanBeSynchronized(GameTestHelper helper) {
+    CommandArgumentTypeTestHelper.assertEveryCommandArgumentCanBeSynchronized(helper);
+    helper.succeed();
   }
 }

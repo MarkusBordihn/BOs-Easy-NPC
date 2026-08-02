@@ -20,92 +20,86 @@
 package de.markusbordihn.easynpc.config;
 
 import de.markusbordihn.easynpc.Constants;
-import java.util.HashSet;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 final class RenderEntityTypeSupportDefaults {
 
   static final Set<String> KNOWN_UNSUPPORTED_ENTITY_TYPES =
-      new HashSet<>(
-          List.of(
-              Constants.MINECRAFT_RESOURCE_PREFIX + "bat",
-              Constants.MINECRAFT_RESOURCE_PREFIX + "ender_dragon",
-              Constants.MINECRAFT_RESOURCE_PREFIX + "magma_cube",
-              Constants.MINECRAFT_RESOURCE_PREFIX + "phantom",
-              Constants.MINECRAFT_RESOURCE_PREFIX + "slime"));
+      vanilla("bat", "ender_dragon", "magma_cube", "phantom", "slime");
   static final Set<String> KNOWN_SUPPORTED_ENTITY_TYPES =
-      new HashSet<>(
-          List.of(
-              Constants.MINECRAFT_RESOURCE_PREFIX + "axolotl",
-              Constants.MINECRAFT_RESOURCE_PREFIX + "bee",
-              Constants.MINECRAFT_RESOURCE_PREFIX + "blaze",
-              Constants.MINECRAFT_RESOURCE_PREFIX + "cat",
-              Constants.MINECRAFT_RESOURCE_PREFIX + "cave_spider",
-              Constants.MINECRAFT_RESOURCE_PREFIX + "chicken",
-              Constants.MINECRAFT_RESOURCE_PREFIX + "cod",
-              Constants.MINECRAFT_RESOURCE_PREFIX + "cow",
-              Constants.MINECRAFT_RESOURCE_PREFIX + "creeper",
-              Constants.MINECRAFT_RESOURCE_PREFIX + "dolphin",
-              Constants.MINECRAFT_RESOURCE_PREFIX + "donkey",
-              Constants.MINECRAFT_RESOURCE_PREFIX + "drowned",
-              Constants.MINECRAFT_RESOURCE_PREFIX + "elder_guardian",
-              Constants.MINECRAFT_RESOURCE_PREFIX + "enderman",
-              Constants.MINECRAFT_RESOURCE_PREFIX + "endermite",
-              Constants.MINECRAFT_RESOURCE_PREFIX + "evoker",
-              Constants.MINECRAFT_RESOURCE_PREFIX + "fox",
-              Constants.MINECRAFT_RESOURCE_PREFIX + "giant",
-              Constants.MINECRAFT_RESOURCE_PREFIX + "glow_squid",
-              Constants.MINECRAFT_RESOURCE_PREFIX + "goat",
-              Constants.MINECRAFT_RESOURCE_PREFIX + "guardian",
-              Constants.MINECRAFT_RESOURCE_PREFIX + "hoglin",
-              Constants.MINECRAFT_RESOURCE_PREFIX + "horse",
-              Constants.MINECRAFT_RESOURCE_PREFIX + "husk",
-              Constants.MINECRAFT_RESOURCE_PREFIX + "illusioner",
-              Constants.MINECRAFT_RESOURCE_PREFIX + "iron_golem",
-              Constants.MINECRAFT_RESOURCE_PREFIX + "llama",
-              Constants.MINECRAFT_RESOURCE_PREFIX + "mooshroom",
-              Constants.MINECRAFT_RESOURCE_PREFIX + "mule",
-              Constants.MINECRAFT_RESOURCE_PREFIX + "ocelot",
-              Constants.MINECRAFT_RESOURCE_PREFIX + "panda",
-              Constants.MINECRAFT_RESOURCE_PREFIX + "parrot",
-              Constants.MINECRAFT_RESOURCE_PREFIX + "pig",
-              Constants.MINECRAFT_RESOURCE_PREFIX + "piglin",
-              Constants.MINECRAFT_RESOURCE_PREFIX + "piglin_brute",
-              Constants.MINECRAFT_RESOURCE_PREFIX + "pillager",
-              Constants.MINECRAFT_RESOURCE_PREFIX + "polar_bear",
-              Constants.MINECRAFT_RESOURCE_PREFIX + "pufferfish",
-              Constants.MINECRAFT_RESOURCE_PREFIX + "rabbit",
-              Constants.MINECRAFT_RESOURCE_PREFIX + "ravager",
-              Constants.MINECRAFT_RESOURCE_PREFIX + "salmon",
-              Constants.MINECRAFT_RESOURCE_PREFIX + "sheep",
-              Constants.MINECRAFT_RESOURCE_PREFIX + "shulker",
-              Constants.MINECRAFT_RESOURCE_PREFIX + "silverfish",
-              Constants.MINECRAFT_RESOURCE_PREFIX + "skeleton",
-              Constants.MINECRAFT_RESOURCE_PREFIX + "skeleton_horse",
-              Constants.MINECRAFT_RESOURCE_PREFIX + "snow_golem",
-              Constants.MINECRAFT_RESOURCE_PREFIX + "spider",
-              Constants.MINECRAFT_RESOURCE_PREFIX + "squid",
-              Constants.MINECRAFT_RESOURCE_PREFIX + "stray",
-              Constants.MINECRAFT_RESOURCE_PREFIX + "strider",
-              Constants.MINECRAFT_RESOURCE_PREFIX + "trader_llama",
-              Constants.MINECRAFT_RESOURCE_PREFIX + "tropical_fish",
-              Constants.MINECRAFT_RESOURCE_PREFIX + "turtle",
-              Constants.MINECRAFT_RESOURCE_PREFIX + "vex",
-              Constants.MINECRAFT_RESOURCE_PREFIX + "villager",
-              Constants.MINECRAFT_RESOURCE_PREFIX + "vindicator",
-              Constants.MINECRAFT_RESOURCE_PREFIX + "wandering_trader",
-              Constants.MINECRAFT_RESOURCE_PREFIX + "witch",
-              Constants.MINECRAFT_RESOURCE_PREFIX + "wither",
-              Constants.MINECRAFT_RESOURCE_PREFIX + "wither_skeleton",
-              Constants.MINECRAFT_RESOURCE_PREFIX + "wolf",
-              Constants.MINECRAFT_RESOURCE_PREFIX + "zoglin",
-              Constants.MINECRAFT_RESOURCE_PREFIX + "zombie",
-              Constants.MINECRAFT_RESOURCE_PREFIX + "zombie_horse",
-              Constants.MINECRAFT_RESOURCE_PREFIX + "zombie_villager",
-              Constants.MINECRAFT_RESOURCE_PREFIX + "zombified_piglin"));
+      vanilla(
+          "axolotl",
+          "bee",
+          "blaze",
+          "cat",
+          "cave_spider",
+          "chicken",
+          "cod",
+          "cow",
+          "creeper",
+          "dolphin",
+          "donkey",
+          "drowned",
+          "elder_guardian",
+          "enderman",
+          "endermite",
+          "evoker",
+          "fox",
+          "giant",
+          "glow_squid",
+          "goat",
+          "guardian",
+          "hoglin",
+          "horse",
+          "husk",
+          "illusioner",
+          "iron_golem",
+          "llama",
+          "mooshroom",
+          "mule",
+          "ocelot",
+          "panda",
+          "parrot",
+          "pig",
+          "piglin",
+          "piglin_brute",
+          "pillager",
+          "polar_bear",
+          "pufferfish",
+          "rabbit",
+          "ravager",
+          "salmon",
+          "sheep",
+          "shulker",
+          "silverfish",
+          "skeleton",
+          "skeleton_horse",
+          "snow_golem",
+          "spider",
+          "squid",
+          "stray",
+          "strider",
+          "trader_llama",
+          "tropical_fish",
+          "turtle",
+          "vex",
+          "villager",
+          "vindicator",
+          "wandering_trader",
+          "witch",
+          "wither",
+          "wither_skeleton",
+          "wolf",
+          "zoglin",
+          "zombie",
+          "zombie_horse",
+          "zombie_villager",
+          "zombified_piglin");
   static final Set<String> KNOWN_UNSUPPORTED_THIRD_PARTY_ENTITY_TYPES =
-      new HashSet<>(
+      Set.copyOf(
           List.of(
               "ad_astra:ice_spit",
               "ad_astra:lander",
@@ -452,7 +446,7 @@ final class RenderEntityTypeSupportDefaults {
               "wom:antitheus_darkness",
               "wom:enderblast"));
   static final Set<String> KNOWN_SUPPORTED_THIRD_PARTY_ENTITY_TYPES =
-      new HashSet<>(
+      Set.copyOf(
           List.of(
               "alexsmobs:alligator_snapping_turtle",
               "alexsmobs:anaconda",
@@ -1129,4 +1123,10 @@ final class RenderEntityTypeSupportDefaults {
               "wildbackport:warden"));
 
   private RenderEntityTypeSupportDefaults() {}
+
+  private static Set<String> vanilla(String... entityNames) {
+    return Arrays.stream(entityNames)
+        .map(entityName -> Constants.MINECRAFT_RESOURCE_PREFIX + entityName)
+        .collect(Collectors.toUnmodifiableSet());
+  }
 }

@@ -58,6 +58,7 @@ public enum ServerDataIndex {
   CUSTOM_IDENTIFIER,
   RESTORE_ON_OWNER_LOGIN,
   FACTION_NAME,
+  NPC_STATE,
   UNKNOWN;
 
   public static final int MAX_FREE_INDEX = 20;

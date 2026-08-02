@@ -21,10 +21,12 @@ package de.markusbordihn.easynpc.data.action;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import net.minecraft.nbt.CompoundTag;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class ActionDataSetTest {
@@ -54,6 +56,108 @@ class ActionDataSetTest {
 
     reloaded.remove(entryId);
     assertFalse(reloaded.contains(entryId));
+  }
+
+  private ActionDataSet createOrderedActionDataSet(ActionDataEntry... entries) {
+    ActionDataSet actionDataSet = new ActionDataSet();
+    for (ActionDataEntry entry : entries) {
+      actionDataSet.add(entry);
+    }
+    return actionDataSet;
+  }
+
+  private ActionDataEntry createCommandEntry(String command) {
+    return new ActionDataEntry(ActionDataType.COMMAND, null, command);
+  }
+
+  @Test
+  @DisplayName("Replacing an entry keeps it at its position")
+  void testPutKeepsPosition() {
+    ActionDataEntry firstEntry = createCommandEntry("/say first");
+    ActionDataEntry secondEntry = createCommandEntry("/say second");
+    ActionDataEntry thirdEntry = createCommandEntry("/say third");
+    ActionDataSet actionDataSet = createOrderedActionDataSet(firstEntry, secondEntry, thirdEntry);
+
+    ActionDataEntry updatedEntry = secondEntry.withCommand("/say updated");
+    actionDataSet.put(secondEntry.id(), updatedEntry);
+
+    assertEquals(3, actionDataSet.size());
+    assertEquals(1, actionDataSet.getPosition(updatedEntry));
+    assertEquals("/say updated", actionDataSet.getEntry(secondEntry.id()).command());
+    assertEquals(2, actionDataSet.getPosition(thirdEntry));
+  }
+
+  @Test
+  @DisplayName("An unknown entry is appended instead of replacing another one")
+  void testPutAppendsUnknownEntry() {
+    ActionDataEntry firstEntry = createCommandEntry("/say first");
+    ActionDataEntry secondEntry = createCommandEntry("/say second");
+    ActionDataSet actionDataSet = createOrderedActionDataSet(firstEntry);
+
+    actionDataSet.put(secondEntry.id(), secondEntry);
+
+    assertEquals(2, actionDataSet.size());
+    assertEquals(0, actionDataSet.getPosition(firstEntry));
+    assertEquals(1, actionDataSet.getPosition(secondEntry));
+  }
+
+  @Test
+  @DisplayName("Moving an entry up and down swaps it with its neighbour")
+  void testMoveUpAndMoveDownChangeOrder() {
+    ActionDataEntry firstEntry = createCommandEntry("/say first");
+    ActionDataEntry secondEntry = createCommandEntry("/say second");
+    ActionDataEntry thirdEntry = createCommandEntry("/say third");
+    ActionDataSet actionDataSet = createOrderedActionDataSet(firstEntry, secondEntry, thirdEntry);
+
+    actionDataSet.moveUp(thirdEntry);
+    assertEquals(1, actionDataSet.getPosition(thirdEntry));
+    assertEquals(2, actionDataSet.getPosition(secondEntry));
+
+    actionDataSet.moveDown(firstEntry);
+    assertEquals(1, actionDataSet.getPosition(firstEntry));
+    assertEquals(0, actionDataSet.getPosition(thirdEntry));
+    assertEquals(3, actionDataSet.size());
+  }
+
+  @Test
+  @DisplayName("Moving beyond the first or last position is ignored")
+  void testMoveBeyondBoundsIsIgnored() {
+    ActionDataEntry firstEntry = createCommandEntry("/say first");
+    ActionDataEntry secondEntry = createCommandEntry("/say second");
+    ActionDataSet actionDataSet = createOrderedActionDataSet(firstEntry, secondEntry);
+
+    actionDataSet.moveUp(firstEntry);
+    actionDataSet.moveDown(secondEntry);
+    actionDataSet.moveUp(createCommandEntry("/say unknown"));
+
+    assertEquals(2, actionDataSet.size());
+    assertEquals(0, actionDataSet.getPosition(firstEntry));
+    assertEquals(1, actionDataSet.getPosition(secondEntry));
+  }
+
+  @Test
+  @DisplayName("The order of the actions survives a save/load round trip")
+  void testOrderSurvivesSaveAndLoad() {
+    ActionDataEntry firstEntry = createCommandEntry("/say first");
+    ActionDataEntry secondEntry = createCommandEntry("/say second");
+    ActionDataEntry thirdEntry = createCommandEntry("/say third");
+    ActionDataSet actionDataSet = createOrderedActionDataSet(firstEntry, secondEntry, thirdEntry);
+    actionDataSet.moveUp(thirdEntry);
+
+    ActionDataSet reloaded = new ActionDataSet(actionDataSet.createTag());
+
+    assertEquals(
+        List.of("/say first", "/say third", "/say second"),
+        reloaded.getEntries().stream().map(ActionDataEntry::command).toList());
+  }
+
+  @Test
+  @DisplayName("The same entry is not added twice")
+  void testIdenticalEntryIsNotAddedTwice() {
+    ActionDataEntry entry = createCommandEntry("/say once");
+    ActionDataSet actionDataSet = createOrderedActionDataSet(entry, entry);
+
+    assertEquals(1, actionDataSet.size());
   }
 
   @Test

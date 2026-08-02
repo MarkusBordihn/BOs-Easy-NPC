@@ -46,6 +46,10 @@ public enum ConditionOperationType {
     };
   }
 
+  public boolean isEqualityOperation() {
+    return this == EQUALS || this == NOT_EQUALS;
+  }
+
   public boolean evaluate(int value1, int value2) {
     return switch (this) {
       case EQUALS -> value1 == value2;

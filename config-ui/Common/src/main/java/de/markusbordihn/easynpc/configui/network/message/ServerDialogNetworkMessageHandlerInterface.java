@@ -128,10 +128,10 @@ public interface ServerDialogNetworkMessageHandlerInterface {
   }
 
   default void openDialogEditor(UUID uuid) {
-    openDialogEditor(uuid, new UUID(0L, 0L));
+    openDialogEditor(uuid, Constants.EMPTY_UUID);
   }
 
   default void openDialogButtonEditor(UUID uuid, UUID dialogId) {
-    openDialogButtonEditor(uuid, dialogId, new UUID(0L, 0L));
+    openDialogButtonEditor(uuid, dialogId, Constants.EMPTY_UUID);
   }
 }

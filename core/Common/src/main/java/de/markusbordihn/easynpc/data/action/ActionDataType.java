@@ -31,7 +31,8 @@ public enum ActionDataType {
   OPEN_DEFAULT_DIALOG(false),
   OPEN_NAMED_DIALOG,
   OPEN_NAMED_DIALOG_CONDITIONAL,
-  SCOREBOARD;
+  SCOREBOARD,
+  NPC_STATE;
 
   private final boolean requiresArgument;
   private final String id = "actionDataType." + this.name().toLowerCase(Locale.ROOT);

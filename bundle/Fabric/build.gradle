@@ -54,8 +54,9 @@ dependencies {
   def easyModelEntitiesFabricRuntime = findLocalEasyModelEntitiesLoader('fabric')
   if (easyModelEntitiesFabricRuntime != null) {
     runtimeOnly easyModelEntitiesFabricRuntime
-  } else if (project.hasProperty('fabric_easy_model_entities_mod') && project.fabric_easy_model_entities_mod) {
-    runtimeOnly("curse.maven:easy_model_entities-fabric-1539534:${project.fabric_easy_model_entities_mod}")
+  } else if (project.hasProperty('fabric_easy_model_entities_version')
+      && project.fabric_easy_model_entities_version) {
+    runtimeOnly("maven.modrinth:easy-model-entities:${project.fabric_easy_model_entities_version}")
   }
 }
 

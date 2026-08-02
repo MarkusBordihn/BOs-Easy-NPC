@@ -46,7 +46,6 @@ public class ActionEventSet {
       };
   private final EnumMap<ActionEventType, ActionDataSet> actionsMap =
       new EnumMap<>(ActionEventType.class);
-  private boolean hasDistanceActionEvent = false;
 
   public ActionEventSet() {}
 
@@ -59,7 +58,6 @@ public class ActionEventSet {
         && actionEventType != ActionEventType.NONE
         && actionDataSet != null) {
       this.actionsMap.put(actionEventType, actionDataSet);
-      this.updateHasDistanceAction();
     }
   }
 
@@ -78,21 +76,8 @@ public class ActionEventSet {
     return false;
   }
 
-  public void updateHasDistanceAction() {
-    this.hasDistanceActionEvent =
-        (this.actionsMap.containsKey(ActionEventType.ON_DISTANCE_NEAR)
-                && !this.actionsMap.get(ActionEventType.ON_DISTANCE_NEAR).isEmpty())
-            || (this.actionsMap.containsKey(ActionEventType.ON_DISTANCE_CLOSE)
-                && !this.actionsMap.get(ActionEventType.ON_DISTANCE_CLOSE).isEmpty())
-            || (this.actionsMap.containsKey(ActionEventType.ON_DISTANCE_VERY_CLOSE)
-                && !this.actionsMap.get(ActionEventType.ON_DISTANCE_VERY_CLOSE).isEmpty())
-            || (this.actionsMap.containsKey(ActionEventType.ON_DISTANCE_TOUCH)
-                && !this.actionsMap.get(ActionEventType.ON_DISTANCE_TOUCH).isEmpty());
-  }
-
   public void clear() {
     this.actionsMap.clear();
-    this.hasDistanceActionEvent = false;
   }
 
   public void load(CompoundTag compoundTag) {
@@ -112,7 +97,6 @@ public class ActionEventSet {
         this.actionsMap.put(actionEventType, actionDataEntryList);
       }
     }
-    this.updateHasDistanceAction();
   }
 
   public CompoundTag save(CompoundTag compoundTag) {
@@ -132,10 +116,6 @@ public class ActionEventSet {
 
   @Override
   public String toString() {
-    return "ActionEventSet [ hasDistanceActionEvent="
-        + this.hasDistanceActionEvent
-        + ", "
-        + this.actionsMap
-        + "]";
+    return "ActionEventSet [" + this.actionsMap + "]";
   }
 }

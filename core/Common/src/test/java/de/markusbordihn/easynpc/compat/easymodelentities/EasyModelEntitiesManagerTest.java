@@ -20,6 +20,8 @@
 package de.markusbordihn.easynpc.compat.easymodelentities;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.model.ModelType;
@@ -41,6 +43,23 @@ class EasyModelEntitiesManagerTest {
     assertEquals(defaultProfile, EasyModelEntitiesManager.getProfileId(null));
     assertEquals(defaultProfile, EasyModelEntitiesManager.getProfileId(""));
     assertEquals(defaultProfile, EasyModelEntitiesManager.getProfileId("invalid profile id!"));
+  }
+
+  @Test
+  void isFloatingProfileDetectsFloatingBodyType() {
+    Identifier floatingProfile = Identifier.fromNamespaceAndPath("my_pack", "wisp");
+    Identifier groundProfile = Identifier.fromNamespaceAndPath("my_pack", "explorer");
+    EasyModelEntitiesManager.registerProfileBodyType(floatingProfile, "FLOATING");
+    EasyModelEntitiesManager.registerProfileBodyType(groundProfile, "BIPED");
+
+    assertTrue(EasyModelEntitiesManager.isFloatingProfile(floatingProfile));
+    assertFalse(EasyModelEntitiesManager.isFloatingProfile(groundProfile));
+    assertFalse(
+        EasyModelEntitiesManager.isFloatingProfile(
+            Identifier.fromNamespaceAndPath("my_pack", "unknown")));
+
+    EasyModelEntitiesManager.clearProfileModelTypes();
+    assertFalse(EasyModelEntitiesManager.isFloatingProfile(floatingProfile));
   }
 
   @Test

@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.server;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.backup.BackupManager;
+import de.markusbordihn.easynpc.condition.ConditionWarnings;
 import de.markusbordihn.easynpc.entity.NPCEntityManager;
 import de.markusbordihn.easynpc.handler.OwnerLoginRestoreHandler;
 import de.markusbordihn.easynpc.io.DataFileHandler;
@@ -44,6 +45,7 @@ public class ServerEvents {
 
     Constants.WORLD_DIR = minecraftServer.getWorldPath(LevelResource.ROOT);
 
+    ConditionWarnings.reset();
     DataFileHandler.registerServerDataFiles(minecraftServer);
   }
 

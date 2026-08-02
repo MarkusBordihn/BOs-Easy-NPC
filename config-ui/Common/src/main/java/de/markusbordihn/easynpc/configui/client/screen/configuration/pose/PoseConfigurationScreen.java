@@ -44,6 +44,9 @@ import net.minecraft.world.entity.player.Inventory;
 
 public class PoseConfigurationScreen<T extends ConfigurationMenu> extends ConfigurationScreen<T> {
 
+  private static final int AXIS_X = 0;
+  private static final int AXIS_Y = 1;
+  private static final int AXIS_Z = 2;
   protected static boolean followCursor = true;
   protected final ModelDataCapable<?> modelData;
   protected Button defaultPoseButton;
@@ -115,206 +118,109 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
             }));
   }
 
-  protected RangeSliderButton createRotationSlider(
-      int left, int top, ModelPartType modelPart, String label) {
-    int sliderWidth = 34;
-    int sliderHeight = 16;
-    int sliderLeftPosition = left + 10;
-
-    // Model Part Rotation
+  protected RangeSliderButton createRotationSlider(int left, int top, ModelPartType modelPart) {
     CustomRotation modelPartRotation = this.modelData.getModelPartRotation(modelPart);
-    RangeSliderButton sliderButtonX =
-        this.addRenderableWidget(
-            new RangeSliderButton(
-                sliderLeftPosition,
-                top,
-                sliderWidth,
-                sliderHeight,
-                Math.toDegrees(modelPartRotation.x()),
-                0,
-                SliderButton.Type.DEGREE,
-                false,
-                slider -> {
-                  CustomRotation currentModelPartRotation =
-                      this.modelData.getModelPartRotation(modelPart);
-                  NetworkMessageHandlerManager.getServerHandler()
-                      .modelRotationChange(
-                          this.getEasyNPCUUID(),
-                          modelPart,
-                          new CustomRotation(
-                              (float) Math.toRadians(slider.getTargetValue()),
-                              currentModelPartRotation.y(),
-                              currentModelPartRotation.z()));
-                }));
-    RangeSliderButton sliderButtonY =
-        this.addRenderableWidget(
-            new RangeSliderButton(
-                sliderButtonX.getX() + sliderButtonX.getWidth(),
-                top,
-                sliderWidth,
-                sliderHeight,
-                Math.toDegrees(modelPartRotation.y()),
-                0,
-                SliderButton.Type.DEGREE,
-                false,
-                slider -> {
-                  CustomRotation currentModelPartRotation =
-                      this.modelData.getModelPartRotation(modelPart);
-                  NetworkMessageHandlerManager.getServerHandler()
-                      .modelRotationChange(
-                          this.getEasyNPCUUID(),
-                          modelPart,
-                          new CustomRotation(
-                              currentModelPartRotation.x(),
-                              (float) Math.toRadians(slider.getTargetValue()),
-                              currentModelPartRotation.z()));
-                }));
-    RangeSliderButton sliderButtonZ =
-        this.addRenderableWidget(
-            new RangeSliderButton(
-                sliderButtonY.getX() + sliderButtonY.getWidth(),
-                top,
-                sliderWidth,
-                sliderHeight,
-                Math.toDegrees(modelPartRotation.z()),
-                0,
-                SliderButton.Type.DEGREE,
-                false,
-                slider -> {
-                  CustomRotation currentModelPartRotation =
-                      this.modelData.getModelPartRotation(modelPart);
-                  NetworkMessageHandlerManager.getServerHandler()
-                      .modelRotationChange(
-                          this.getEasyNPCUUID(),
-                          modelPart,
-                          new CustomRotation(
-                              currentModelPartRotation.x(),
-                              currentModelPartRotation.y(),
-                              (float) Math.toRadians(slider.getTargetValue())));
-                }));
-
-    // Slider Edit / Done Button
-    this.addRenderableWidget(
-        new TextButton(
-            left,
-            top,
-            10,
-            RangeSliderButton.EDIT_TEXT,
-            button -> {
-              if (button.getMessage() == RangeSliderButton.EDIT_TEXT) {
-                sliderButtonX.showTextField();
-                sliderButtonY.showTextField();
-                sliderButtonZ.showTextField();
-                button.setMessage(RangeSliderButton.DONE_TEXT);
-              } else {
-                sliderButtonX.showSliderButton();
-                sliderButtonY.showSliderButton();
-                sliderButtonZ.showSliderButton();
-                button.setMessage(RangeSliderButton.EDIT_TEXT);
-              }
-            }));
-
-    // Slider reset button
-    int resetButtonLeftPosition = sliderButtonZ.getX() + sliderButtonZ.getWidth();
-    this.addRenderableWidget(
-        new TextButton(
-            resetButtonLeftPosition,
-            top,
-            10,
-            TextComponent.getText("↺"),
-            button -> {
-              sliderButtonX.reset();
-              sliderButtonY.reset();
-              sliderButtonZ.reset();
-              NetworkMessageHandlerManager.getServerHandler()
-                  .modelRotationChange(this.getEasyNPCUUID(), modelPart, CustomRotation.DEFAULT);
-            }));
-
-    return sliderButtonX;
+    return this.createAxisSlider(
+        left,
+        top,
+        SliderButton.Type.DEGREE,
+        new double[] {
+          Math.toDegrees(modelPartRotation.x()),
+          Math.toDegrees(modelPartRotation.y()),
+          Math.toDegrees(modelPartRotation.z())
+        },
+        (axis, degreeValue) -> {
+          CustomRotation currentRotation = this.modelData.getModelPartRotation(modelPart);
+          float radianValue = (float) Math.toRadians(degreeValue);
+          NetworkMessageHandlerManager.getServerHandler()
+              .modelRotationChange(
+                  this.getEasyNPCUUID(),
+                  modelPart,
+                  new CustomRotation(
+                      axis == AXIS_X ? radianValue : currentRotation.x(),
+                      axis == AXIS_Y ? radianValue : currentRotation.y(),
+                      axis == AXIS_Z ? radianValue : currentRotation.z()));
+        },
+        () ->
+            NetworkMessageHandlerManager.getServerHandler()
+                .modelRotationChange(this.getEasyNPCUUID(), modelPart, CustomRotation.DEFAULT));
   }
 
-  protected RangeSliderButton createPositionSliderCompact(
-      int left, int top, ModelPartType modelPartType, String label) {
-    return createPositionSlider(left, top, modelPartType, label, true);
+  protected RangeSliderButton createPositionSlider(int left, int top, ModelPartType modelPartType) {
+    CustomPosition modelPartPosition = this.modelData.getModelPartPosition(modelPartType);
+    return this.createAxisSlider(
+        left,
+        top,
+        SliderButton.Type.POSITION,
+        new double[] {modelPartPosition.x(), modelPartPosition.y(), modelPartPosition.z()},
+        (axis, value) -> {
+          CustomPosition currentPosition = this.modelData.getModelPartPosition(modelPartType);
+          NetworkMessageHandlerManager.getServerHandler()
+              .modelPositionChange(
+                  this.getEasyNPCUUID(),
+                  modelPartType,
+                  new CustomPosition(
+                      axis == AXIS_X ? value : currentPosition.x(),
+                      axis == AXIS_Y ? value : currentPosition.y(),
+                      axis == AXIS_Z ? value : currentPosition.z()));
+        },
+        () ->
+            NetworkMessageHandlerManager.getServerHandler()
+                .modelPositionChange(this.getEasyNPCUUID(), modelPartType, CustomPosition.DEFAULT));
   }
 
-  protected RangeSliderButton createPositionSlider(
-      int left, int top, ModelPartType modelPartType, String label, boolean compact) {
+  protected RangeSliderButton createScaleSlider(int left, int top, ModelPartType modelPartType) {
+    CustomScale modelPartScale = this.modelData.getModelPartScale(modelPartType);
+    return this.createAxisSlider(
+        left,
+        top,
+        SliderButton.Type.SCALE,
+        new double[] {modelPartScale.x(), modelPartScale.y(), modelPartScale.z()},
+        (axis, value) -> {
+          CustomScale currentScale = this.modelData.getModelPartScale(modelPartType);
+          NetworkMessageHandlerManager.getServerHandler()
+              .modelScaleChange(
+                  this.getEasyNPCUUID(),
+                  modelPartType,
+                  new CustomScale(
+                      axis == AXIS_X ? value : currentScale.x(),
+                      axis == AXIS_Y ? value : currentScale.y(),
+                      axis == AXIS_Z ? value : currentScale.z()));
+        },
+        () ->
+            NetworkMessageHandlerManager.getServerHandler()
+                .modelScaleChange(this.getEasyNPCUUID(), modelPartType, CustomScale.DEFAULT));
+  }
+
+  private RangeSliderButton createAxisSlider(
+      int left,
+      int top,
+      SliderButton.Type sliderType,
+      double[] axisValues,
+      AxisValueSetter axisValueSetter,
+      Runnable resetAction) {
     int sliderWidth = 34;
     int sliderHeight = 16;
     int sliderLeftPosition = left + 10;
+    RangeSliderButton[] axisSliders = new RangeSliderButton[axisValues.length];
 
-    // Model Part Position.
-    CustomPosition modelPartPosition = this.modelData.getModelPartPosition(modelPartType);
-    RangeSliderButton sliderButtonX =
-        this.addRenderableWidget(
-            new RangeSliderButton(
-                sliderLeftPosition,
-                top,
-                sliderWidth,
-                sliderHeight,
-                modelPartPosition.x(),
-                0,
-                SliderButton.Type.POSITION,
-                false,
-                slider -> {
-                  CustomPosition currentModelPartPosition =
-                      this.modelData.getModelPartPosition(modelPartType);
-                  NetworkMessageHandlerManager.getServerHandler()
-                      .modelPositionChange(
-                          this.getEasyNPCUUID(),
-                          modelPartType,
-                          new CustomPosition(
-                              slider.getTargetValue(),
-                              currentModelPartPosition.y(),
-                              currentModelPartPosition.z()));
-                }));
-    RangeSliderButton sliderButtonY =
-        this.addRenderableWidget(
-            new RangeSliderButton(
-                sliderButtonX.getX() + sliderButtonX.getWidth(),
-                top,
-                sliderWidth,
-                sliderHeight,
-                modelPartPosition.y(),
-                0,
-                SliderButton.Type.POSITION,
-                false,
-                slider -> {
-                  CustomPosition currentModelPartPosition =
-                      this.modelData.getModelPartPosition(modelPartType);
-                  NetworkMessageHandlerManager.getServerHandler()
-                      .modelPositionChange(
-                          this.getEasyNPCUUID(),
-                          modelPartType,
-                          new CustomPosition(
-                              currentModelPartPosition.x(),
-                              slider.getTargetValue(),
-                              currentModelPartPosition.z()));
-                }));
-    RangeSliderButton sliderButtonZ =
-        this.addRenderableWidget(
-            new RangeSliderButton(
-                sliderButtonY.getX() + sliderButtonY.getWidth(),
-                top,
-                sliderWidth,
-                sliderHeight,
-                modelPartPosition.z(),
-                0,
-                SliderButton.Type.POSITION,
-                false,
-                slider -> {
-                  CustomPosition currentModelPartPosition =
-                      this.modelData.getModelPartPosition(modelPartType);
-                  NetworkMessageHandlerManager.getServerHandler()
-                      .modelPositionChange(
-                          this.getEasyNPCUUID(),
-                          modelPartType,
-                          new CustomPosition(
-                              currentModelPartPosition.x(),
-                              currentModelPartPosition.y(),
-                              slider.getTargetValue()));
-                }));
+    for (int axis = 0; axis < axisValues.length; axis++) {
+      int changedAxis = axis;
+      RangeSliderButton axisSlider =
+          this.addRenderableWidget(
+              new RangeSliderButton(
+                  sliderLeftPosition,
+                  top,
+                  sliderWidth,
+                  sliderHeight,
+                  axisValues[axis],
+                  0,
+                  sliderType,
+                  false,
+                  slider -> axisValueSetter.set(changedAxis, slider.getTargetValue())));
+      axisSliders[axis] = axisSlider;
+      sliderLeftPosition = axisSlider.getX() + axisSlider.getWidth();
+    }
 
     // Slider Edit / Done Button
     this.addRenderableWidget(
@@ -324,160 +230,33 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
             10,
             RangeSliderButton.EDIT_TEXT,
             button -> {
-              if (button.getMessage() == RangeSliderButton.EDIT_TEXT) {
-                sliderButtonX.showTextField();
-                sliderButtonY.showTextField();
-                sliderButtonZ.showTextField();
-                button.setMessage(RangeSliderButton.DONE_TEXT);
-              } else {
-                sliderButtonX.showSliderButton();
-                sliderButtonY.showSliderButton();
-                sliderButtonZ.showSliderButton();
-                button.setMessage(RangeSliderButton.EDIT_TEXT);
+              boolean showTextField = button.getMessage() == RangeSliderButton.EDIT_TEXT;
+              for (RangeSliderButton axisSlider : axisSliders) {
+                if (showTextField) {
+                  axisSlider.showTextField();
+                } else {
+                  axisSlider.showSliderButton();
+                }
               }
+              button.setMessage(
+                  showTextField ? RangeSliderButton.DONE_TEXT : RangeSliderButton.EDIT_TEXT);
             }));
 
     // Slider reset button
-    int resetButtonLeftPosition = sliderButtonZ.getX() + sliderButtonZ.getWidth();
     this.addRenderableWidget(
         new TextButton(
-            resetButtonLeftPosition,
+            sliderLeftPosition,
             top,
             10,
             TextComponent.getText("↺"),
             button -> {
-              sliderButtonX.reset();
-              sliderButtonY.reset();
-              sliderButtonZ.reset();
-              NetworkMessageHandlerManager.getServerHandler()
-                  .modelPositionChange(
-                      this.getEasyNPCUUID(), modelPartType, CustomPosition.DEFAULT);
-            }));
-
-    return sliderButtonX;
-  }
-
-  protected RangeSliderButton createScaleSliderCompact(
-      int left, int top, ModelPartType modelPartType, String label) {
-    return createScaleSlider(left, top, modelPartType, label, true);
-  }
-
-  protected RangeSliderButton createScaleSlider(
-      int left, int top, ModelPartType modelPartType, String label, boolean compact) {
-    int sliderWidth = 34;
-    int sliderHeight = 16;
-    int sliderLeftScale = left + 10;
-
-    // Model Part Scale.
-    CustomScale modelPartScale = this.modelData.getModelPartScale(modelPartType);
-    RangeSliderButton sliderButtonX =
-        this.addRenderableWidget(
-            new RangeSliderButton(
-                sliderLeftScale,
-                top,
-                sliderWidth,
-                sliderHeight,
-                modelPartScale.x(),
-                0,
-                SliderButton.Type.SCALE,
-                false,
-                slider -> {
-                  CustomScale currentModelPartScale =
-                      this.modelData.getModelPartScale(modelPartType);
-                  NetworkMessageHandlerManager.getServerHandler()
-                      .modelScaleChange(
-                          this.getEasyNPCUUID(),
-                          modelPartType,
-                          new CustomScale(
-                              slider.getTargetValue(),
-                              currentModelPartScale.y(),
-                              currentModelPartScale.z()));
-                }));
-    RangeSliderButton sliderButtonY =
-        this.addRenderableWidget(
-            new RangeSliderButton(
-                sliderButtonX.getX() + sliderButtonX.getWidth(),
-                top,
-                sliderWidth,
-                sliderHeight,
-                modelPartScale.y(),
-                0,
-                SliderButton.Type.SCALE,
-                false,
-                slider -> {
-                  CustomScale currentModelPartScale =
-                      this.modelData.getModelPartScale(modelPartType);
-                  NetworkMessageHandlerManager.getServerHandler()
-                      .modelScaleChange(
-                          this.getEasyNPCUUID(),
-                          modelPartType,
-                          new CustomScale(
-                              currentModelPartScale.x(),
-                              slider.getTargetValue(),
-                              currentModelPartScale.z()));
-                }));
-    RangeSliderButton sliderButtonZ =
-        this.addRenderableWidget(
-            new RangeSliderButton(
-                sliderButtonY.getX() + sliderButtonY.getWidth(),
-                top,
-                sliderWidth,
-                sliderHeight,
-                modelPartScale.z(),
-                0,
-                SliderButton.Type.SCALE,
-                false,
-                slider -> {
-                  CustomScale currentModelPartScale =
-                      this.modelData.getModelPartScale(modelPartType);
-                  NetworkMessageHandlerManager.getServerHandler()
-                      .modelScaleChange(
-                          this.getEasyNPCUUID(),
-                          modelPartType,
-                          new CustomScale(
-                              currentModelPartScale.x(),
-                              currentModelPartScale.y(),
-                              slider.getTargetValue()));
-                }));
-
-    // Slider Edit / Done Button
-    this.addRenderableWidget(
-        new TextButton(
-            left,
-            top,
-            10,
-            RangeSliderButton.EDIT_TEXT,
-            button -> {
-              if (button.getMessage() == RangeSliderButton.EDIT_TEXT) {
-                sliderButtonX.showTextField();
-                sliderButtonY.showTextField();
-                sliderButtonZ.showTextField();
-                button.setMessage(RangeSliderButton.DONE_TEXT);
-              } else {
-                sliderButtonX.showSliderButton();
-                sliderButtonY.showSliderButton();
-                sliderButtonZ.showSliderButton();
-                button.setMessage(RangeSliderButton.EDIT_TEXT);
+              for (RangeSliderButton axisSlider : axisSliders) {
+                axisSlider.reset();
               }
+              resetAction.run();
             }));
 
-    // Slider reset button
-    int resetButtonLeftScale = sliderButtonZ.getX() + sliderButtonZ.getWidth();
-    this.addRenderableWidget(
-        new TextButton(
-            resetButtonLeftScale,
-            top,
-            10,
-            TextComponent.getText("↺"),
-            button -> {
-              sliderButtonX.reset();
-              sliderButtonY.reset();
-              sliderButtonZ.reset();
-              NetworkMessageHandlerManager.getServerHandler()
-                  .modelScaleChange(this.getEasyNPCUUID(), modelPartType, CustomScale.DEFAULT);
-            }));
-
-    return sliderButtonX;
+    return axisSliders[0];
   }
 
   @Override
@@ -543,5 +322,10 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
 
   protected float getPreviewRotationPitch(float mouseRelativePitch, EntityRenderConfig config) {
     return followCursor ? mouseRelativePitch : (config.top() + config.bottom()) / 2.0f;
+  }
+
+  @FunctionalInterface
+  protected interface AxisValueSetter {
+    void set(int axis, float value);
   }
 }

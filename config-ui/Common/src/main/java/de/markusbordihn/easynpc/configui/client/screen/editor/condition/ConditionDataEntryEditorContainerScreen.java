@@ -38,6 +38,7 @@ import de.markusbordihn.easynpc.configui.client.screen.editor.condition.entry.Ex
 import de.markusbordihn.easynpc.configui.client.screen.editor.condition.entry.GamemodeConditionEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.condition.entry.HasItemConditionEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.condition.entry.NpcHealthConditionEntry;
+import de.markusbordihn.easynpc.configui.client.screen.editor.condition.entry.NpcStateConditionEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.condition.entry.PlayerHealthConditionEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.condition.entry.ScoreboardConditionEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.condition.entry.TimeOfDayConditionEntry;
@@ -106,6 +107,18 @@ public class ConditionDataEntryEditorContainerScreen<T extends EditorMenu> exten
     this.context.openConditionListEditor();
   }
 
+  private boolean isSelectableConditionType(ConditionType conditionType) {
+    if (conditionType == ConditionType.NONE) {
+      return false;
+    }
+
+    if (conditionType == ConditionType.CUSTOM) {
+      return this.conditionType == ConditionType.CUSTOM;
+    }
+
+    return true;
+  }
+
   protected void changeConditionType(SpinButton<?> spinButton) {
     this.conditionType = (ConditionType) spinButton.get();
     this.clearWidgets();
@@ -120,7 +133,8 @@ public class ConditionDataEntryEditorContainerScreen<T extends EditorMenu> exten
     ConditionDataEntry newEntry =
         this.conditionEntryWidget != null
             ? this.conditionEntryWidget.getConditionDataEntry()
-            : new ConditionDataEntry(this.conditionType);
+            : new ConditionDataEntry(this.conditionType)
+                .withCustomConditionId(this.conditionDataEntry.customConditionId());
     this.conditionDataSet.put(this.conditionDataEntryId, newEntry);
     this.context.saveConditionDataSet(this.conditionDataSet);
   }
@@ -193,7 +207,7 @@ public class ConditionDataEntryEditorContainerScreen<T extends EditorMenu> exten
                 this.contextButton.getX() + this.contextButton.getWidth(),
                 this.topPos + 7,
                 140,
-                "Conditions",
+                "dialog.conditions",
                 onPress -> this.navigateToConditionDataEditor()));
 
     this.conditionTypeButton =
@@ -204,7 +218,7 @@ public class ConditionDataEntryEditorContainerScreen<T extends EditorMenu> exten
                 160,
                 16,
                 Arrays.stream(ConditionType.values())
-                    .filter(type -> type != ConditionType.NONE)
+                    .filter(this::isSelectableConditionType)
                     .sorted()
                     .collect(Collectors.toCollection(LinkedHashSet::new)),
                 this.conditionType,
@@ -299,7 +313,12 @@ public class ConditionDataEntryEditorContainerScreen<T extends EditorMenu> exten
         this.conditionEntryWidget =
             new WeatherConditionEntry(this.conditionDataEntry, this.conditionDataSet, this);
         break;
+      case NPC_STATE:
+        this.conditionEntryWidget =
+            new NpcStateConditionEntry(this.conditionDataEntry, this.conditionDataSet, this);
+        break;
       case FALLBACK:
+      case CUSTOM:
         this.conditionEntryWidget = null;
         break;
       default:
