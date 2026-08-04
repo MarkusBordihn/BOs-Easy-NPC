@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.commands.manager;
 
 import com.mojang.brigadier.CommandDispatcher;
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.server.commands.AnimationCommand;
 import de.markusbordihn.easynpc.server.commands.DebugCommand;
 import de.markusbordihn.easynpc.server.commands.DeleteCommand;
 import de.markusbordihn.easynpc.server.commands.DespawnCommand;
@@ -72,6 +73,7 @@ public class CommandManager {
         Constants.MOD_NAME);
     commandDispatcher.register(
         Commands.literal(Constants.MOD_COMMAND)
+            .then(AnimationCommand.register())
             .then(DebugCommand.register())
             .then(DeleteCommand.register())
             .then(DespawnCommand.register())

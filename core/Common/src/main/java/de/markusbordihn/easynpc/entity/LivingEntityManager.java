@@ -109,7 +109,6 @@ public class LivingEntityManager {
     npcEntityMapServer.remove(uuid, easyNPC);
     clearObjectiveEventInterest(easyNPC);
 
-    // Remove Easy NPC from preset map if available.
     PresetDataCapable<?> presetData = easyNPC.getEasyNPCPresetData();
     if (presetData != null && presetData.hasPresetUUID()) {
       UUID presetUUID = presetData.getPresetUUID();
@@ -280,6 +279,10 @@ public class LivingEntityManager {
     return npcEntityMapServer.values().stream();
   }
 
+  public static Stream<EasyNPC<?>> getClientEasyNPCEntities() {
+    return npcEntityMapClient.values().stream();
+  }
+
   public static ServerPlayer getPlayerByUUID(UUID uuid, ServerLevel serverLevel) {
     if (uuid == null || serverLevel == null) {
       return null;
@@ -300,13 +303,6 @@ public class LivingEntityManager {
 
   public static Stream<String> getUUIDStrings() {
     return npcEntityMapServer.keySet().stream().map(UUID::toString);
-  }
-
-  public static Stream<String> getUUIDStringsByOwner(ServerPlayer serverPlayer) {
-    Map<UUID, Entity> npcEntityMapByOwner = getEntityMapByOwner(serverPlayer);
-    return npcEntityMapByOwner != null
-        ? npcEntityMapByOwner.keySet().stream().map(UUID::toString)
-        : Stream.empty();
   }
 
   public static Map<UUID, Entity> getEntityMapByOwner(ServerPlayer serverPlayer) {
@@ -374,7 +370,6 @@ public class LivingEntityManager {
       return true;
     }
 
-    // Perform more specific checks
     if (entity instanceof EasyNPC<?> easyNPC && easyNPC instanceof OwnerDataCapable<?> ownerData) {
       UUID uuid = ownerData.getOwnerUUID();
       return uuid != null && uuid.equals(serverPlayer.getUUID());

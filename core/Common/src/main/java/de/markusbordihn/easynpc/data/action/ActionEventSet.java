@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.data.action;
 
+import de.markusbordihn.easynpc.utils.CompoundTagUtils;
 import java.util.EnumMap;
 import java.util.Map.Entry;
 import net.minecraft.nbt.CompoundTag;
@@ -67,10 +68,8 @@ public class ActionEventSet {
       return;
     }
 
-    // Clear existing actions
     this.clear();
 
-    // Load actions data
     CompoundTag actionDataSetTag = compoundTag.getCompound(DATA_ACTION_EVENT_SET_TAG);
     for (ActionEventType actionEventType : ActionEventType.values()) {
       ActionDataSet actionDataEntryList =
@@ -88,7 +87,7 @@ public class ActionEventSet {
       ActionDataSet actionDataSet = entry.getValue();
       actionDataSet.save(actionsTag, actionEventType.name());
     }
-    compoundTag.put(DATA_ACTION_EVENT_SET_TAG, actionsTag);
+    CompoundTagUtils.putIfNotEmpty(compoundTag, DATA_ACTION_EVENT_SET_TAG, actionsTag);
     return compoundTag;
   }
 

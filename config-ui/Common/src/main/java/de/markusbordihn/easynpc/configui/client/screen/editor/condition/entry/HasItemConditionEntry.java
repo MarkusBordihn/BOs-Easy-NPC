@@ -35,6 +35,8 @@ import net.minecraft.client.gui.GuiGraphics;
 
 public class HasItemConditionEntry extends ConditionEntryWidget {
 
+  private static final int HINT_WIDTH = 285;
+
   private final ConditionType conditionType;
   private TextField itemNameTextField;
   private TextField customDataTextField;
@@ -124,14 +126,14 @@ public class HasItemConditionEntry extends ConditionEntryWidget {
               new Checkbox(
                   editorLeft,
                   editorTop + 84,
-                  "config.condition.has_item_in_hand.main_hand",
+                  "condition.has_item_in_hand.main_hand",
                   mainHandSelected));
       this.offHandCheckbox =
           this.screen.addConditionEntryWidget(
               new Checkbox(
                   editorLeft + 155,
                   editorTop + 84,
-                  "config.condition.has_item_in_hand.off_hand",
+                  "condition.has_item_in_hand.off_hand",
                   offHandSelected));
     }
   }
@@ -181,12 +183,13 @@ public class HasItemConditionEntry extends ConditionEntryWidget {
           editorTop + 44,
           Constants.FONT_COLOR_BLACK);
       int hintTop = this.conditionType == ConditionType.HAS_ITEM_IN_HAND ? 104 : 84;
-      Text.drawConfigString(
+      Text.drawConfigStringWrapped(
           guiGraphics,
           this.font,
           "condition.has_item.custom_data_hint",
           editorLeft,
           editorTop + hintTop,
+          HINT_WIDTH,
           Constants.FONT_COLOR_DEFAULT);
     }
   }

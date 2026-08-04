@@ -68,7 +68,7 @@ public interface ProfessionDataCapable<T extends Mob> extends EasyNPC<T> {
   }
 
   default void addAdditionalProfessionData(CompoundTag compoundTag) {
-    if (this.getProfession() != null) {
+    if (this.getProfession() != null && this.getProfession() != this.getDefaultProfession()) {
       compoundTag.putString(DATA_PROFESSION_TAG, this.getProfession().name());
     }
   }

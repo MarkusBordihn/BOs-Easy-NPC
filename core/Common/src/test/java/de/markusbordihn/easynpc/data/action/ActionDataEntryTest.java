@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.data.action;
 import static org.junit.jupiter.api.Assertions.*;
 
 import de.markusbordihn.easynpc.security.CommandPermissionLevel;
+import java.util.List;
 import java.util.UUID;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -201,5 +202,19 @@ class ActionDataEntryTest {
     ActionDataEntry decoded = new ActionDataEntry(tag);
 
     assertEquals(expectedId, decoded.id());
+  }
+
+  @Test
+  void testMessageRequiresTextInMessageData() {
+    ActionDataEntry emptyMessage = new ActionDataEntry(ActionDataType.MESSAGE);
+    ActionDataEntry message =
+        emptyMessage.withMessageActionData(
+            MessageActionData.DEFAULT.withTexts(List.of("Hello", "Welcome")));
+
+    assertFalse(emptyMessage.isValidAndNotEmpty());
+    assertTrue(message.isValidAndNotEmpty());
+    assertFalse(message.createTag().contains(ActionDataEntry.DATA_COMMAND_TAG));
+    assertEquals(
+        message.messageActionData(), new ActionDataEntry(message.createTag()).messageActionData());
   }
 }

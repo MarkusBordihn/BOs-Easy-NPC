@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.network;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import de.markusbordihn.easynpc.network.message.client.OpenMenuCallbackMessage;
+import de.markusbordihn.easynpc.network.message.client.SpeechBubbleMessage;
 import de.markusbordihn.easynpc.network.message.client.SyncDataMessage;
 import de.markusbordihn.easynpc.network.message.server.ExecuteActionEventMessage;
 import de.markusbordihn.easynpc.network.message.server.ExecuteDialogButtonActionMessage;
@@ -96,6 +97,9 @@ public class NetworkHandlerManager {
 
     networkHandler.registerClientNetworkMessage(
         SyncDataMessage.MESSAGE_ID, SyncDataMessage.class, SyncDataMessage::create);
+
+    networkHandler.registerClientNetworkMessage(
+        SpeechBubbleMessage.MESSAGE_ID, SpeechBubbleMessage.class, SpeechBubbleMessage::create);
   }
 
   public static void registerServerNetworkHandler() {

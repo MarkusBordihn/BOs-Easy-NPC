@@ -44,9 +44,11 @@ public class LivingEntityEvents {
 
     if (livingEntity instanceof EasyNPC<?> easyNPC) {
       LivingEntityManager.addEasyNPC(easyNPC);
-      if (!livingEntity.level().isClientSide()
-          && NPCEntityManager.getNPC(easyNPC.getEntityUUID()).isEmpty()) {
-        NPCEntityManager.saveNPC(easyNPC);
+      if (!livingEntity.level().isClientSide()) {
+        if (!NPCEntityManager.hasStoredNPC(easyNPC.getEntityUUID())) {
+          NPCEntityManager.saveNPC(easyNPC);
+        }
+        NPCEntityManager.evictFromCache(easyNPC.getEntityUUID());
       }
     } else if (livingEntity instanceof ServerPlayer serverPlayer) {
       LivingEntityManager.addServerPlayer(serverPlayer);
@@ -81,8 +83,7 @@ public class LivingEntityEvents {
               livingEntity.blockPosition(),
               livingEntity.level().dimension().location(),
               removalReason);
-          NPCEntityManager.saveNPC(easyNPC);
-          NPCEntityManager.updateRemovalReason(easyNPC.getEntityUUID(), removalReason);
+          NPCEntityManager.saveNPC(easyNPC, removalReason);
         }
       }
       LivingEntityManager.removeEasyNPC(easyNPC);

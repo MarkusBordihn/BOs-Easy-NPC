@@ -62,7 +62,7 @@ public class Checkbox extends AbstractButton {
   }
 
   public Checkbox(int left, int top, String label, boolean selected) {
-    this(left, top, TextComponent.getTranslatedText(label), selected, true);
+    this(left, top, TextComponent.getTextComponent(label), selected, true);
   }
 
   public Checkbox(int left, int top, Component component, boolean selected, boolean showLabel) {

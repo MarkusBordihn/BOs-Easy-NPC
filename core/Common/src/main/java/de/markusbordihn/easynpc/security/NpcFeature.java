@@ -24,6 +24,8 @@ public enum NpcFeature {
   TRADING("Trading"),
   COMMAND_ACTION("Commands"),
   SCOREBOARD_ACTION("Scoreboard actions"),
+  MESSAGE_ACTION("Message actions"),
+  CUSTOM_ACTION("Custom actions"),
   INTERACT_BLOCK_ACTION("Block actions"),
   OPEN_TRADING_ACTION("Trading actions"),
   OBJECTIVE("Objectives"),

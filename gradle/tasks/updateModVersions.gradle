@@ -10,10 +10,6 @@ ext.modrinthSlugs = [
     'architectury'       : 'architectury-api'
 ]
 
-// Projects publishing one version per loader under the same version number need an explicit suffix,
-// otherwise the Modrinth Maven picks an arbitrary loader.
-ext.modrinthLoaderSuffixRequired = ['jei', 'cobblemon', 'easy_model_entities'] as Set
-
 // Xaero's mods are not fully published on Modrinth, XaeroLib has no 1.20.1 release there at all.
 ext.xaeroArtifacts = [
     'xaeros_minimap': 'xaero/minimap/xaerominimap',
@@ -44,11 +40,7 @@ tasks.register('updateModVersions') {
           return
         }
 
-        def latestVersion = fetchLatestModrinthVersion(slug, loader, minecraftVersion)
-        if (latestVersion != null && modrinthLoaderSuffixRequired.contains(modKey)) {
-          latestVersion = "${latestVersion}-${loader}"
-        }
-        collectUpdate(updates, propertyName, latestVersion)
+        collectUpdate(updates, propertyName, fetchLatestModrinthVersion(slug, loader, minecraftVersion))
       }
 
       xaeroArtifacts.each { modKey, artifactPath ->
@@ -118,7 +110,8 @@ def fetchLatestModrinthVersion(String slug, String loader, String minecraftVersi
       return null
     }
 
-    return versions.first().version_number
+    // Several loaders can share one version number, the Modrinth Maven then picks an arbitrary one.
+    return versions.first().id
   } catch (Exception e) {
     println "⚠️ Could not query Modrinth for ${slug} (${loader}): ${e.message}"
     return null

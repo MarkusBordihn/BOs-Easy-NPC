@@ -20,7 +20,7 @@
 package de.markusbordihn.easynpc.server.commands;
 
 import com.mojang.brigadier.builder.ArgumentBuilder;
-import de.markusbordihn.easynpc.client.pose.PoseManager;
+import de.markusbordihn.easynpc.api.pose.ModelPoseAPI;
 import de.markusbordihn.easynpc.commands.Command;
 import de.markusbordihn.easynpc.commands.arguments.EasyNPCArgument;
 import de.markusbordihn.easynpc.commands.suggestion.PoseSuggestions;
@@ -84,15 +84,14 @@ public class PoseCommand extends Command {
   }
 
   private static int resetPose(CommandSourceStack context, EasyNPC<?> easyNPC) {
-    PoseManager.resetModelPose(easyNPC);
+    ModelPoseAPI.resetPose(easyNPC);
     return sendSuccessMessage(
         context, "Resetting pose for Easy NPC " + easyNPC.getEntityUUID() + " !");
   }
 
   private static int setPose(
       CommandSourceStack context, EasyNPC<?> easyNPC, ResourceLocation resourceLocation) {
-    // Set pose for Easy NPC (looks up animation and stores pose name)
-    if (PoseManager.setModelPose(easyNPC, resourceLocation)) {
+    if (ModelPoseAPI.setPose(easyNPC, resourceLocation)) {
       return sendSuccessMessage(
           context,
           "Setting pose " + resourceLocation + " for Easy NPC " + easyNPC.getEntityUUID() + " !");
@@ -120,7 +119,7 @@ public class PoseCommand extends Command {
     BlockPos targetPos = new BlockPos((int) position.x, (int) position.y, (int) position.z);
     MoveToPositionGoal<E> moveGoal =
         new MoveToPositionGoal<>(
-            (E) easyNPC, targetPos, 1.0, () -> PoseManager.setModelPose(easyNPC, resourceLocation));
+            (E) easyNPC, targetPos, 1.0, () -> ModelPoseAPI.setPose(easyNPC, resourceLocation));
 
     easyNPC.getEntityGoalSelector().addGoal(1, moveGoal);
 

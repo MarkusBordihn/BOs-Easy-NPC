@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.entity.easynpc.handlers;
 
 import de.markusbordihn.easynpc.api.event.EasyNPCEventRegistry;
 import de.markusbordihn.easynpc.condition.ConditionManager;
+import de.markusbordihn.easynpc.data.action.ActionContext;
 import de.markusbordihn.easynpc.data.action.ActionDataEntry;
 import de.markusbordihn.easynpc.data.action.ActionDataSet;
 import de.markusbordihn.easynpc.data.action.ActionDataType;
@@ -29,18 +30,30 @@ import de.markusbordihn.easynpc.data.action.ActionGroup;
 import de.markusbordihn.easynpc.data.action.ActionManager;
 import de.markusbordihn.easynpc.data.condition.ConditionType;
 import de.markusbordihn.easynpc.data.execution.ExecutionId;
+import de.markusbordihn.easynpc.data.status.StatusDataType;
+import de.markusbordihn.easynpc.data.ticker.TickerType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.OwnerDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.StatusDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.TickerDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.TradingDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.action.ActionValidator;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.action.executor.CommandActionExecutor;
+import de.markusbordihn.easynpc.entity.easynpc.handlers.action.executor.CustomActionDispatcher;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.action.executor.DialogActionExecutor;
+import de.markusbordihn.easynpc.entity.easynpc.handlers.action.executor.MessageActionExecutor;
+import de.markusbordihn.easynpc.entity.easynpc.handlers.action.executor.ModelAnimationActionExecutor;
+import de.markusbordihn.easynpc.entity.easynpc.handlers.action.executor.PoseActionExecutor;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.action.executor.ScoreboardActionExecutor;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.action.executor.StateActionExecutor;
+import de.markusbordihn.easynpc.handler.EnvironmentChangeTracker;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
@@ -50,11 +63,11 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 
 public interface ActionHandler<E extends Mob> extends EasyNPC<E> {
+  double INTERVAL_ACTION_RANGE = 16.0D;
 
   // Widest range first, so an empty range can skip the narrower ones inside it.
   List<ActionEventType> DISTANCE_ACTION_EVENT_TYPES =
@@ -63,18 +76,32 @@ public interface ActionHandler<E extends Mob> extends EasyNPC<E> {
           .sorted(Comparator.comparingDouble(ActionEventType::getTriggerDistance).reversed())
           .toList();
 
+  List<ActionEventType> INTERVAL_ACTION_EVENT_TYPES =
+      Arrays.stream(ActionEventType.values())
+          .filter(ActionEventType::isIntervalEvent)
+          .sorted(Comparator.comparingInt(ActionEventType::getIntervalSeconds))
+          .toList();
+
+  Map<ActionEventType, TickerType> INTERVAL_ACTION_TICKERS =
+      Map.of(
+          ActionEventType.ON_INTERVAL_INSTANT, TickerType.INTERVAL_ACTION_INSTANT,
+          ActionEventType.ON_INTERVAL_SHORT, TickerType.INTERVAL_ACTION_SHORT,
+          ActionEventType.ON_INTERVAL_NORMAL, TickerType.INTERVAL_ACTION_NORMAL,
+          ActionEventType.ON_INTERVAL_LONG, TickerType.INTERVAL_ACTION_LONG,
+          ActionEventType.ON_INTERVAL_VERY_LONG, TickerType.INTERVAL_ACTION_VERY_LONG);
+
   private static boolean hasFallbackCondition(ActionDataEntry actionDataEntry) {
     return actionDataEntry.conditionDataSet() != null
         && actionDataEntry.conditionDataSet().getConditions().stream()
             .anyMatch(condition -> condition.conditionType() == ConditionType.FALLBACK);
   }
 
-  default List<? extends Player> getPlayersInRange(Double range) {
-    Entity entity = this.getEntity();
-    return this.getEntityLevel().players().stream()
-        .filter(EntitySelector.NO_SPECTATORS)
-        .filter(player -> entity.closerThan(player, range))
-        .toList();
+  private static int getIntervalThreshold(ActionEventType actionEventType) {
+    // The base tick body runs every BASE_TICK + 1 ticks and checkAndIncreaseTicker needs one
+    // additional call after the threshold is reached.
+    float baseTickPeriod = BaseTickHandler.BASE_TICK + 1.0F;
+    return Math.max(
+        0, Math.round(actionEventType.getIntervalSeconds() * 20.0F / baseTickPeriod) - 1);
   }
 
   default void checkTradingActions() {
@@ -107,8 +134,10 @@ public interface ActionHandler<E extends Mob> extends EasyNPC<E> {
 
       ActionGroup actionGroup = actionEventType.getActionGroup();
       double triggerDistance = actionEventType.getTriggerDistance();
-      List<? extends Player> listOfPlayers =
-          triggerDistance <= emptyBelowDistance ? null : this.getPlayersInRange(triggerDistance);
+      List<ServerPlayer> listOfPlayers =
+          triggerDistance <= emptyBelowDistance
+              ? null
+              : this.getServerPlayersInRange(triggerDistance);
       if (listOfPlayers == null || listOfPlayers.isEmpty()) {
         ActionManager.removeActionGroup(mob, actionGroup);
         emptyBelowDistance = triggerDistance;
@@ -116,16 +145,212 @@ public interface ActionHandler<E extends Mob> extends EasyNPC<E> {
       }
 
       ActionDataSet actionDataSet = actionEventData.getActionDataSet(actionEventType);
-      for (Player player : listOfPlayers) {
-        if (player instanceof ServerPlayer serverPlayer
-            && !ActionManager.containsPlayer(mob, actionGroup, serverPlayer)) {
-          this.executeActions(actionDataSet, serverPlayer);
+      ActionContext actionContext = ActionContext.of(actionEventType, null, listOfPlayers);
+      for (ServerPlayer serverPlayer : listOfPlayers) {
+        if (!ActionManager.containsPlayer(mob, actionGroup, serverPlayer)) {
+          this.executeActions(actionDataSet, actionContext.withInitiator(serverPlayer));
           ActionManager.addPlayer(mob, actionGroup, serverPlayer);
         }
       }
     }
 
     this.getProfiler().pop();
+  }
+
+  default ServerPlayer getNearestServerPlayerInRange(double range) {
+    Entity entity = this.getEntity();
+    return this.getEntityLevel().players().stream()
+        .filter(EntitySelector.NO_SPECTATORS)
+        .filter(ServerPlayer.class::isInstance)
+        .map(ServerPlayer.class::cast)
+        .filter(player -> entity.closerThan(player, range))
+        .min(Comparator.comparingDouble(entity::distanceToSqr))
+        .orElse(null);
+  }
+
+  default List<ServerPlayer> getServerPlayersInRange(double range) {
+    Entity entity = this.getEntity();
+    return this.getEntityLevel().players().stream()
+        .filter(EntitySelector.NO_SPECTATORS)
+        .filter(ServerPlayer.class::isInstance)
+        .map(ServerPlayer.class::cast)
+        .filter(player -> entity.closerThan(player, range))
+        .sorted(Comparator.comparingDouble(entity::distanceToSqr))
+        .toList();
+  }
+
+  default ServerPlayer getPreferredServerPlayer(List<ServerPlayer> candidates) {
+    if (candidates == null || candidates.isEmpty()) {
+      return null;
+    }
+
+    OwnerDataCapable<E> ownerData = this.getEasyNPCOwnerData();
+    if (ownerData != null && ownerData.hasNPCOwner()) {
+      for (ServerPlayer candidate : candidates) {
+        if (ownerData.isNPCOwner(candidate)) {
+          return candidate;
+        }
+      }
+    }
+
+    return candidates.get(0);
+  }
+
+  default ActionContext buildActionContext(ActionEventType actionEventType, double range) {
+    List<ServerPlayer> audience = this.getServerPlayersInRange(range);
+    return ActionContext.of(actionEventType, this.getPreferredServerPlayer(audience), audience);
+  }
+
+  default void checkIntervalActions() {
+    this.getProfiler().push("npcCheckIntervalActions");
+
+    Mob mob = this.getMob();
+    ActionEventDataCapable<E> actionEventData = this.getEasyNPCActionEventData();
+    TickerDataCapable<E> tickerData = this.getEasyNPCTickerData();
+    if (actionEventData != null && tickerData != null && mob != null && !mob.isDeadOrDying()) {
+      List<ServerPlayer> audience = null;
+
+      for (ActionEventType actionEventType : INTERVAL_ACTION_EVENT_TYPES) {
+        if (!actionEventData.hasActionEvent(actionEventType)) {
+          continue;
+        }
+
+        // Pause the interval while no player is in range.
+        if (audience == null) {
+          audience = this.getServerPlayersInRange(INTERVAL_ACTION_RANGE);
+          if (audience.isEmpty()) {
+            break;
+          }
+        }
+
+        TickerType tickerType = INTERVAL_ACTION_TICKERS.get(actionEventType);
+        int threshold = getIntervalThreshold(actionEventType);
+        if (!tickerData.checkAndIncreaseTicker(tickerType, threshold)) {
+          continue;
+        }
+
+        this.executeRandomAction(
+            actionEventData.getActionDataSet(actionEventType),
+            ActionContext.of(actionEventType, this.getPreferredServerPlayer(audience), audience));
+
+        int jitter = threshold / 10;
+        tickerData.setTicker(
+            tickerType, jitter > 0 ? mob.getRandom().nextInt(2 * jitter + 1) - jitter : 0);
+      }
+    }
+
+    this.getProfiler().pop();
+  }
+
+  default void checkEnvironmentActions() {
+    ActionEventDataCapable<E> actionEventData = this.getEasyNPCActionEventData();
+    if (actionEventData == null) {
+      return;
+    }
+
+    if (actionEventData.hasActionEvent(ActionEventType.ON_TIME_CHANGE)
+        && EnvironmentChangeTracker.hasDayTimeChanged(this.getEntityLevel())) {
+      actionEventData.handleActionEvent(
+          ActionEventType.ON_TIME_CHANGE,
+          this.buildActionContext(ActionEventType.ON_TIME_CHANGE, INTERVAL_ACTION_RANGE));
+    }
+
+    if (actionEventData.hasActionEvent(ActionEventType.ON_WEATHER_CHANGE)
+        && EnvironmentChangeTracker.hasWeatherChanged(this.getEntityLevel())) {
+      actionEventData.handleActionEvent(
+          ActionEventType.ON_WEATHER_CHANGE,
+          this.buildActionContext(ActionEventType.ON_WEATHER_CHANGE, INTERVAL_ACTION_RANGE));
+    }
+  }
+
+  default void checkSpawnAction() {
+    ActionEventDataCapable<E> actionEventData = this.getEasyNPCActionEventData();
+    StatusDataCapable<E> statusData = this.getEasyNPCStatusData();
+    if (actionEventData == null
+        || statusData == null
+        || !actionEventData.hasActionEvent(ActionEventType.ON_SPAWN)
+        || statusData.getStatusDataFlag(StatusDataType.SPAWN_ACTION_FIRED)) {
+      return;
+    }
+
+    // Wait for a player, so a spawn message of an NPC created far away is not lost.
+    List<ServerPlayer> audience = this.getServerPlayersInRange(INTERVAL_ACTION_RANGE);
+    if (audience.isEmpty()) {
+      return;
+    }
+
+    statusData.setStatusDataFlag(StatusDataType.SPAWN_ACTION_FIRED, true);
+    actionEventData.handleActionEvent(
+        ActionEventType.ON_SPAWN,
+        ActionContext.of(
+            ActionEventType.ON_SPAWN, this.getPreferredServerPlayer(audience), audience));
+  }
+
+  default void executeRandomAction(ActionDataSet actionDataSet, ServerPlayer serverPlayer) {
+    this.executeRandomAction(actionDataSet, ActionContext.of(serverPlayer));
+  }
+
+  /** Uses the first audience member with at least one matching action as the initiator. */
+  default void executeRandomAction(ActionDataSet actionDataSet, ActionContext actionContext) {
+    if (actionDataSet == null || actionDataSet.isEmpty()) {
+      return;
+    }
+
+    ActionEventType actionEventType = actionContext.eventType();
+    for (ServerPlayer serverPlayer : this.getInitiatorCandidates(actionContext)) {
+      List<ActionDataEntry> candidates = new ArrayList<>();
+      for (ActionDataEntry actionDataEntry : actionDataSet.getEntries()) {
+        if (!actionEventType.allowsActionDataType(actionDataEntry.actionDataType())) {
+          log.warn(
+              "Ignoring {} action of {}, which is not allowed for {}.",
+              actionDataEntry.actionDataType(),
+              this.getEntity(),
+              actionEventType);
+          continue;
+        }
+
+        if (this.validateActionData(actionDataEntry, serverPlayer)) {
+          candidates.add(actionDataEntry);
+        }
+      }
+
+      if (candidates.isEmpty()) {
+        continue;
+      }
+
+      this.executeAction(
+          candidates.get(this.getMob().getRandom().nextInt(candidates.size())),
+          actionContext.withInitiator(serverPlayer));
+      return;
+    }
+  }
+
+  private List<ServerPlayer> getInitiatorCandidates(ActionContext actionContext) {
+    if (!actionContext.hasAudience()) {
+      return Collections.singletonList(actionContext.initiator());
+    }
+
+    if (!actionContext.hasInitiator()) {
+      return actionContext.audience();
+    }
+
+    List<ServerPlayer> candidates = new ArrayList<>();
+    candidates.add(actionContext.initiator());
+    for (ServerPlayer serverPlayer : actionContext.audience()) {
+      if (serverPlayer != actionContext.initiator()) {
+        candidates.add(serverPlayer);
+      }
+    }
+    return candidates;
+  }
+
+  private boolean validateActionData(ActionDataEntry actionDataEntry, ServerPlayer serverPlayer) {
+    if (serverPlayer != null) {
+      return ActionValidator.validateActionData(
+          actionDataEntry, serverPlayer, this.getLivingEntity());
+    }
+
+    return ActionValidator.validateActionDataWithoutPlayer(actionDataEntry, this.getLivingEntity());
   }
 
   default void interactWithBlock(BlockPos blockPos) {
@@ -163,10 +388,15 @@ public interface ActionHandler<E extends Mob> extends EasyNPC<E> {
   }
 
   default void executeActions(ActionDataSet actionDataSet, ServerPlayer serverPlayer) {
+    this.executeActions(actionDataSet, ActionContext.of(serverPlayer));
+  }
+
+  default void executeActions(ActionDataSet actionDataSet, ActionContext actionContext) {
     if (actionDataSet == null || actionDataSet.isEmpty()) {
       return;
     }
 
+    ServerPlayer serverPlayer = actionContext.initiator();
     boolean anyRegularFired = false;
     ActionDataEntry closeDialogAction = null;
     boolean hasScreenAction = false;
@@ -175,12 +405,7 @@ public interface ActionHandler<E extends Mob> extends EasyNPC<E> {
         continue;
       }
 
-      boolean isValid =
-          serverPlayer != null
-              ? ActionValidator.validateActionData(
-                  actionDataEntry, serverPlayer, this.getLivingEntity())
-              : ActionValidator.validateActionDataWithoutPlayer(actionDataEntry);
-      if (!isValid) {
+      if (!this.validateActionData(actionDataEntry, serverPlayer)) {
         continue;
       }
       anyRegularFired = true;
@@ -226,14 +451,11 @@ public interface ActionHandler<E extends Mob> extends EasyNPC<E> {
         hasScreenAction = true;
       }
 
-      this.executeAction(actionDataEntry, serverPlayer);
+      this.executeAction(actionDataEntry, actionContext);
     }
 
     if (closeDialogAction != null && !hasScreenAction) {
-      if (ActionValidator.validateActionData(
-          closeDialogAction, serverPlayer, this.getLivingEntity())) {
-        this.executeAction(closeDialogAction, serverPlayer);
-      }
+      this.executeAction(closeDialogAction, actionContext);
     }
 
     if (!anyRegularFired) {
@@ -244,12 +466,7 @@ public interface ActionHandler<E extends Mob> extends EasyNPC<E> {
           continue;
         }
 
-        boolean isValid =
-            serverPlayer != null
-                ? ActionValidator.validateActionData(
-                    actionDataEntry, serverPlayer, this.getLivingEntity())
-                : ActionValidator.validateActionDataWithoutPlayer(actionDataEntry);
-        if (!isValid) {
+        if (!this.validateActionData(actionDataEntry, serverPlayer)) {
           continue;
         }
 
@@ -272,20 +489,25 @@ public interface ActionHandler<E extends Mob> extends EasyNPC<E> {
           hasFallbackScreenAction = true;
         }
 
-        this.executeAction(actionDataEntry, serverPlayer);
+        this.executeAction(actionDataEntry, actionContext);
       }
 
       if (fallbackCloseDialogAction != null && !hasFallbackScreenAction) {
-        this.executeAction(fallbackCloseDialogAction, serverPlayer);
+        this.executeAction(fallbackCloseDialogAction, actionContext);
       }
     }
   }
 
   default void executeAction(ActionDataEntry actionDataEntry, ServerPlayer serverPlayer) {
+    this.executeAction(actionDataEntry, ActionContext.of(serverPlayer));
+  }
+
+  default void executeAction(ActionDataEntry actionDataEntry, ActionContext actionContext) {
     if (actionDataEntry == null || !actionDataEntry.isValidAndNotEmpty()) {
       return;
     }
 
+    ServerPlayer serverPlayer = actionContext.initiator();
     switch (actionDataEntry.actionDataType()) {
       case NONE:
         break;
@@ -374,7 +596,36 @@ public interface ActionHandler<E extends Mob> extends EasyNPC<E> {
         }
         break;
       case NPC_STATE:
-        StateActionExecutor.execute(actionDataEntry, this);
+        StateActionExecutor.execute(actionDataEntry, this, actionContext);
+        break;
+      case SET_POSE:
+        if (!PoseActionExecutor.setPose(actionDataEntry, this)) {
+          log.warn("Unable to set pose {} for {}", actionDataEntry.poseId(), this.getEntity());
+        }
+        break;
+      case RESET_POSE:
+        PoseActionExecutor.resetPose(this);
+        break;
+      case PLAY_ANIMATION:
+        if (!ModelAnimationActionExecutor.play(actionDataEntry, this)) {
+          log.warn("Unable to play animation for {}", this.getEntity());
+        }
+        break;
+      case STOP_ANIMATION:
+        if (!ModelAnimationActionExecutor.stop(actionDataEntry, this)) {
+          log.warn("Unable to stop animation for {}", this.getEntity());
+        }
+        break;
+      case RESTART_ANIMATION:
+        if (!ModelAnimationActionExecutor.restart(this)) {
+          log.warn("Unable to restart animation for {}", this.getEntity());
+        }
+        break;
+      case MESSAGE:
+        MessageActionExecutor.execute(actionDataEntry, this, actionContext);
+        break;
+      case CUSTOM:
+        CustomActionDispatcher.execute(actionDataEntry, this, actionContext);
         break;
       default:
         log.warn(
@@ -391,6 +642,6 @@ public interface ActionHandler<E extends Mob> extends EasyNPC<E> {
           ExecutionId.action(this.getEntity(), actionDataEntry.id()));
     }
 
-    EasyNPCEventRegistry.fireActionExecuted(this, serverPlayer, actionDataEntry);
+    EasyNPCEventRegistry.fireActionExecuted(this, actionDataEntry, actionContext);
   }
 }

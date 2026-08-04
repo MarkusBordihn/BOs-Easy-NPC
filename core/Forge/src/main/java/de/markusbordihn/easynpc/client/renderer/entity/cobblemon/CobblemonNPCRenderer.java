@@ -34,6 +34,7 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.model.custom.DopplerModel;
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCLivingEntityRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.SpeechBubbleRenderer;
 import de.markusbordihn.easynpc.client.renderer.manager.EntityTypeManager;
 import de.markusbordihn.easynpc.client.renderer.manager.RendererManager;
 import de.markusbordihn.easynpc.compat.IntegrationRegistry;
@@ -351,6 +352,10 @@ public class CobblemonNPCRenderer<E extends PathfinderMob>
       if (this.shouldShowName(entity)) {
         this.renderNameTag(entity, entity.getDisplayName(), poseStack, bufferSource, packedLight);
       }
+
+      // This branch never reaches EntityRenderer#render, where the speech bubble mixin is attached.
+      SpeechBubbleRenderer.render(entity, poseStack, bufferSource, packedLight);
+
       Entity leashHolder = entity.getLeashHolder();
       if (leashHolder != null) {
         ((MobRendererInvoker) this)

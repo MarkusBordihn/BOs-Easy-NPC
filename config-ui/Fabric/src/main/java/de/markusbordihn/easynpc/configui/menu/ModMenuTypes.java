@@ -24,6 +24,7 @@ import de.markusbordihn.easynpc.configui.data.editor.EditorType;
 import de.markusbordihn.easynpc.configui.menu.configuration.action.BasicActionConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.action.DialogActionConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.action.DistanceActionConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.configui.menu.configuration.action.IntervalActionConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.attribute.AbilitiesAttributeConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.attribute.BaseAttributeConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.attribute.CombatAttributeConfigurationMenuWrapper;
@@ -260,6 +261,11 @@ public class ModMenuTypes {
           ScreenHandlerRegistry.registerSimple(
               ConfigurationType.DISTANCE_ACTION.getId(),
               DistanceActionConfigurationMenuWrapper::new);
+  public static final MenuType<IntervalActionConfigurationMenuWrapper>
+      INTERVAL_ACTION_CONFIGURATION_MENU =
+          ScreenHandlerRegistry.registerSimple(
+              ConfigurationType.INTERVAL_ACTION.getId(),
+              IntervalActionConfigurationMenuWrapper::new);
   public static final MenuType<EquipmentConfigurationMenuWrapper> EQUIPMENT_CONFIGURATION_MENU =
       ScreenHandlerRegistry.registerSimple(
           ConfigurationType.EQUIPMENT.getId(), EquipmentConfigurationMenuWrapper::new);

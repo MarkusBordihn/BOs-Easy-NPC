@@ -66,10 +66,11 @@ public record InteractionAttributes(
   }
 
   public CompoundTag encode(CompoundTag compoundTag) {
-    compoundTag.putBoolean(IS_PUSHABLE_TAG, this.isPushable);
-    compoundTag.putBoolean(CAN_BE_HIT_BY_PROJECTILE_TAG, this.canBeHitByProjectile);
-    compoundTag.putBoolean(CAN_BE_LEASHED_TAG, this.canBeLeashed);
-    compoundTag.putBoolean(PUSH_ENTITIES_TAG, this.pushEntities);
+    AttributeTagUtils.putIfTrue(compoundTag, IS_PUSHABLE_TAG, this.isPushable);
+    AttributeTagUtils.putIfTrue(
+        compoundTag, CAN_BE_HIT_BY_PROJECTILE_TAG, this.canBeHitByProjectile);
+    AttributeTagUtils.putIfTrue(compoundTag, CAN_BE_LEASHED_TAG, this.canBeLeashed);
+    AttributeTagUtils.putIfTrue(compoundTag, PUSH_ENTITIES_TAG, this.pushEntities);
     return compoundTag;
   }
 }

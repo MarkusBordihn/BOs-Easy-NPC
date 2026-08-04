@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.data.sound;
 
+import de.markusbordihn.easynpc.utils.CompoundTagUtils;
 import java.util.EnumMap;
 import java.util.Map;
 import net.minecraft.nbt.CompoundTag;
@@ -79,7 +80,6 @@ public class SoundDataSet {
       return;
     }
 
-    // Load sound data entries
     overrideSounds.clear();
     ListTag soundListTag = compoundTag.getList(DATA_SOUND_DATA_SET_TAG, 10);
     for (int i = 0; i < soundListTag.size(); i++) {
@@ -103,7 +103,7 @@ public class SoundDataSet {
       SoundDataEntry soundDataEntry = entry.getValue();
       soundListTag.add(soundDataEntry.createTag());
     }
-    compoundTag.put(DATA_SOUND_DATA_SET_TAG, soundListTag);
+    CompoundTagUtils.putIfNotEmpty(compoundTag, DATA_SOUND_DATA_SET_TAG, soundListTag);
 
     return compoundTag;
   }

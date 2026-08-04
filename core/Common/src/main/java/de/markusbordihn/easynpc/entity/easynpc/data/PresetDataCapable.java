@@ -80,7 +80,8 @@ public interface PresetDataCapable<T extends Mob> extends EasyNPC<T> {
     if (this.getEasyNPCModelData() != null) {
       this.getEasyNPCModelData().setModelPose(ModelPose.VANILLA);
     }
-    if (this.getEasyNPCActionEventData() != null) {
+    if (this.getEasyNPCActionEventData() != null
+        && compoundTag.contains(ActionEventDataCapable.DATA_ACTION_DATA_TAG)) {
       this.getEasyNPCActionEventData().clearActionEventSet();
     }
     if (this.getEasyNPCDialogData() != null) {
@@ -115,14 +116,13 @@ public interface PresetDataCapable<T extends Mob> extends EasyNPC<T> {
         existingCompoundTag.remove(RenderDataCapable.DATA_RENDER_DATA_TAG);
       }
 
-      if (existingCompoundTag.contains(ActionEventDataCapable.DATA_ACTION_DATA_TAG)) {
+      if (compoundTag.contains(ActionEventDataCapable.DATA_ACTION_DATA_TAG)) {
         existingCompoundTag.remove(ActionEventDataCapable.DATA_ACTION_DATA_TAG);
       }
 
       compoundTag = existingCompoundTag.merge(compoundTag);
     }
 
-    // Remove volatile fields that could cause issues (e.g. dead state)
     for (String volatileField : ENTITY_DATA_VOLATILE_FIELDS) {
       compoundTag.remove(volatileField);
     }
@@ -163,7 +163,6 @@ public interface PresetDataCapable<T extends Mob> extends EasyNPC<T> {
     // Add Entity UUID for spawner tracking (single/boss spawner)
     entityData.putUUID(ENTITY_UUID_TAG, this.getEntity().getUUID());
 
-    // Clean up and optimize entity data for smaller memory footprint
     for (String entityDataFieldName : ENTITY_DATA_VOLATILE_FIELDS) {
       entityData.remove(entityDataFieldName);
     }

@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.data.progression;
 
+import de.markusbordihn.easynpc.utils.CompoundTagUtils;
 import net.minecraft.nbt.CompoundTag;
 
 public record ProgressionData(
@@ -29,8 +30,12 @@ public record ProgressionData(
   public static final String ENTITY_EXPERIENCE_LEVEL_TAG = "EntityExperienceLevel";
   public static final String ATTRIBUTE_SCALING_ENABLED_TAG = "AttributeScalingEnabled";
 
+  public static final int DEFAULT_EXPERIENCE = 1;
+  public static final int DEFAULT_EXPERIENCE_LEVEL = 1;
+  public static final boolean DEFAULT_ATTRIBUTE_SCALING_ENABLED = false;
+
   public ProgressionData() {
-    this(1, 1, false);
+    this(DEFAULT_EXPERIENCE, DEFAULT_EXPERIENCE_LEVEL, DEFAULT_ATTRIBUTE_SCALING_ENABLED);
   }
 
   public static ProgressionData decode(CompoundTag compoundTag) {
@@ -39,17 +44,27 @@ public record ProgressionData(
     }
     CompoundTag progressionTag = compoundTag.getCompound(DATA_PROGRESSION_TAG);
     return new ProgressionData(
-        progressionTag.getInt(ENTITY_EXPERIENCE_TAG),
-        progressionTag.getInt(ENTITY_EXPERIENCE_LEVEL_TAG),
+        progressionTag.contains(ENTITY_EXPERIENCE_TAG)
+            ? progressionTag.getInt(ENTITY_EXPERIENCE_TAG)
+            : DEFAULT_EXPERIENCE,
+        progressionTag.contains(ENTITY_EXPERIENCE_LEVEL_TAG)
+            ? progressionTag.getInt(ENTITY_EXPERIENCE_LEVEL_TAG)
+            : DEFAULT_EXPERIENCE_LEVEL,
         progressionTag.getBoolean(ATTRIBUTE_SCALING_ENABLED_TAG));
   }
 
   public CompoundTag encode(CompoundTag compoundTag) {
     CompoundTag progressionTag = new CompoundTag();
-    progressionTag.putInt(ENTITY_EXPERIENCE_TAG, experience());
-    progressionTag.putInt(ENTITY_EXPERIENCE_LEVEL_TAG, experienceLevel());
-    progressionTag.putBoolean(ATTRIBUTE_SCALING_ENABLED_TAG, attributeScalingEnabled());
-    compoundTag.put(DATA_PROGRESSION_TAG, progressionTag);
+    if (experience() != DEFAULT_EXPERIENCE) {
+      progressionTag.putInt(ENTITY_EXPERIENCE_TAG, experience());
+    }
+    if (experienceLevel() != DEFAULT_EXPERIENCE_LEVEL) {
+      progressionTag.putInt(ENTITY_EXPERIENCE_LEVEL_TAG, experienceLevel());
+    }
+    if (attributeScalingEnabled() != DEFAULT_ATTRIBUTE_SCALING_ENABLED) {
+      progressionTag.putBoolean(ATTRIBUTE_SCALING_ENABLED_TAG, attributeScalingEnabled());
+    }
+    CompoundTagUtils.putIfNotEmpty(compoundTag, DATA_PROGRESSION_TAG, progressionTag);
     return compoundTag;
   }
 

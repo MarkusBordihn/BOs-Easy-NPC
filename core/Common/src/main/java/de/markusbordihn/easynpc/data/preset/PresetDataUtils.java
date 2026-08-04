@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.data.preset;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.security.SecurityManager;
 import java.util.Optional;
 import net.minecraft.core.BlockPos;
@@ -189,10 +190,14 @@ public class PresetDataUtils {
       entityData.remove(ENTITY_UUID_TAG);
     }
 
-    entity.load(entityData);
+    if (entity instanceof EasyNPC<?> easyNPC && easyNPC.getEasyNPCPresetData() != null) {
+      easyNPC.registerEasyNPCDefaultData();
+      easyNPC.getEasyNPCPresetData().importPresetData(entityData);
+    } else {
+      entity.load(entityData);
+    }
     entity.moveTo(blockPos.getX() + 0.5, blockPos.getY(), blockPos.getZ() + 0.5);
 
-    // Ensure entity spawns alive with full health
     if (entity instanceof LivingEntity livingEntity) {
       float maxHealth =
           livingEntity.getAttribute(Attributes.MAX_HEALTH) != null

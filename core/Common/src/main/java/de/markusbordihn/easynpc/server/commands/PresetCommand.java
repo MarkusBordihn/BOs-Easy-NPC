@@ -34,6 +34,7 @@ public class PresetCommand extends Command {
     return Commands.literal(COMMAND_NAME)
         .requires(cs -> cs.hasPermission(Commands.LEVEL_GAMEMASTERS))
         .then(PresetExportCommand.register())
+        .then(PresetGenerateCommand.register())
         .then(PresetImportCommand.register())
         .then(PresetImportCommand.registerNew())
         .then(PresetImportCommand.registerWithOwner());

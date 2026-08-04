@@ -32,12 +32,16 @@
   "accessWidener": "easynpcconfig.accesswidener",
   "depends": {
     "fabricloader": ">=0.18.3",
-    "fabric-api": ">=0.92.6+1.20.1",
+    "fabric-api": ">=0.92.9+1.20.1",
     "minecraft": "1.20.1",
     "java": ">=17",
     "easy_npc": ">=${version} <${nextMajorVersion}"
   },
   "suggests": {
-    "tooltipfix": "*"
+    "tooltipfix": "*",
+    "easy_model_entities": ">=2.0.0 <3.0.0"
+  },
+  "breaks": {
+    "easy_model_entities": "<2.0.0 || >=3.0.0"
   }
 }

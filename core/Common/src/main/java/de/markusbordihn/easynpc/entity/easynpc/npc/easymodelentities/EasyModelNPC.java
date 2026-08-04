@@ -21,19 +21,23 @@ package de.markusbordihn.easynpc.entity.easynpc.npc.easymodelentities;
 
 import de.markusbordihn.easynpc.api.npc.raw.PathfinderMobRaw;
 import de.markusbordihn.easynpc.compat.easymodelentities.EasyModelEntitiesManager;
+import de.markusbordihn.easynpc.compat.easymodelentities.EasyModelEntitiesManager.ProfileDimensions;
 import de.markusbordihn.easynpc.data.attribute.NavigationType;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
 import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.model.ModelType;
 import de.markusbordihn.easynpc.data.render.RenderDataEntry;
 import de.markusbordihn.easynpc.data.render.RenderType;
+import de.markusbordihn.easynpc.data.scale.CustomScale;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import java.util.Objects;
 import java.util.Set;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
@@ -44,6 +48,8 @@ public class EasyModelNPC extends PathfinderMobRaw {
 
   private String cachedProfileModel;
   private ResourceLocation cachedProfileId;
+  private ResourceLocation dimensionsProfileId;
+  private ProfileDimensions profileDimensions;
 
   public EasyModelNPC(EntityType<? extends PathfinderMob> entityType, Level level) {
     super(entityType, level, VariantType.EASY_MODEL_NPC);
@@ -60,6 +66,45 @@ public class EasyModelNPC extends PathfinderMobRaw {
         .add(Attributes.ATTACK_SPEED, 0.0D)
         .add(Attributes.ARMOR, 0.0D)
         .add(Attributes.ARMOR_TOUGHNESS, 0.0D);
+  }
+
+  @Override
+  public void aiStep() {
+    super.aiStep();
+
+    ResourceLocation profileId = this.getEasyModelProfileId();
+    ProfileDimensions dimensions = EasyModelEntitiesManager.getProfileDimensions(profileId);
+    if (!Objects.equals(this.dimensionsProfileId, profileId)
+        || !Objects.equals(this.profileDimensions, dimensions)) {
+      this.dimensionsProfileId = profileId;
+      this.profileDimensions = dimensions;
+      this.refreshDimensions();
+    }
+  }
+
+  @Override
+  public EntityDimensions getDimensions(Pose pose) {
+    ProfileDimensions dimensions =
+        EasyModelEntitiesManager.getProfileDimensions(this.getEasyModelProfileId());
+    if (dimensions == null) {
+      return super.getDimensions(pose);
+    }
+
+    CustomScale rootScale = this.getModelRootData().scale();
+    return EntityDimensions.scalable(
+        dimensions.width() * rootScale.x(), dimensions.height() * rootScale.y());
+  }
+
+  @Override
+  protected float getStandingEyeHeight(Pose pose, EntityDimensions dimensions) {
+    ProfileDimensions profileDimensions =
+        EasyModelEntitiesManager.getProfileDimensions(this.getEasyModelProfileId());
+    if (profileDimensions == null) {
+      return super.getStandingEyeHeight(pose, dimensions);
+    }
+
+    float eyeHeight = profileDimensions.eyeHeight() * this.getModelRootData().scale().y();
+    return Math.min(eyeHeight, dimensions.height);
   }
 
   public ResourceLocation getEasyModelProfileId() {

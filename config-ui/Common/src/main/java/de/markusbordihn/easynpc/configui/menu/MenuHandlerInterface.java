@@ -35,6 +35,7 @@ import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationTypeHelper;
 import de.markusbordihn.easynpc.data.screen.ScreenData;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.npc.easymodelentities.EasyModelNPC;
 import de.markusbordihn.easynpc.security.FeatureSecurity;
 import de.markusbordihn.easynpc.security.NpcFeature;
 import de.markusbordihn.easynpc.security.SecurityManager;
@@ -58,16 +59,13 @@ public interface MenuHandlerInterface {
       final EasyNPC<?> easyNPC,
       final int pageIndex) {
 
-    // Check for access rights.
     if (!AccessManager.hasAccess(serverPlayer, easyNPC)) {
       return;
     }
 
-    // Handle configuration type alias.
     final ConfigurationType configurationTypeAlias =
         ConfigurationTypeHelper.resolveConfigurationTypeAlias(configurationType, easyNPC);
 
-    // Get menu type for configuration type.
     final MenuType<? extends ConfigurationMenu> menuType =
         getMenuTypeByConfigurationType(configurationTypeAlias);
     if (menuType == null) {
@@ -76,12 +74,10 @@ public interface MenuHandlerInterface {
       return;
     }
 
-    // Additional data for specific configuration menu.
     final ScreenData screenData =
         ConfigurationMenuHandler.getScreenData(
             configurationTypeAlias, easyNPC, serverPlayer, pageIndex);
 
-    // Get menu provider for configuration type and open configuration menu.
     final MenuProvider menuProvider =
         ConfigurationMenuHandler.getMenuProvider(
             configurationTypeAlias, easyNPC, menuType, screenData);
@@ -101,12 +97,10 @@ public interface MenuHandlerInterface {
       final EditorType formerEditorType,
       final int pageIndex) {
 
-    // Check for access rights.
     if (!AccessManager.hasAccess(serverPlayer, easyNPC)) {
       return;
     }
 
-    // Additional data for specific configuration menu.
     CompoundTag additionalSyncData = new CompoundTag();
     AdditionalScreenData.addActionEventType(additionalSyncData, actionEventType);
     AdditionalScreenData.addConfigurationType(additionalSyncData, configurationType);
@@ -116,7 +110,6 @@ public interface MenuHandlerInterface {
       AdditionalScreenData.addTradingOfferActionDataSet(additionalSyncData, easyNPC, pageIndex);
     }
 
-    // Compute blocked action types for this player.
     Set<ActionDataType> blockedActionTypes = new HashSet<>();
     for (ActionDataType type : ActionDataType.values()) {
       NpcFeature feature = FeatureSecurity.getFeature(type);
@@ -124,6 +117,11 @@ public interface MenuHandlerInterface {
           && !SecurityManager.checkFeatureAccess(serverPlayer, easyNPC, feature).allowed()) {
         blockedActionTypes.add(type);
       }
+    }
+    if (!(easyNPC instanceof EasyModelNPC)) {
+      blockedActionTypes.add(ActionDataType.PLAY_ANIMATION);
+      blockedActionTypes.add(ActionDataType.STOP_ANIMATION);
+      blockedActionTypes.add(ActionDataType.RESTART_ANIMATION);
     }
     AdditionalScreenData.addBlockedActionTypes(additionalSyncData, blockedActionTypes);
 
@@ -187,19 +185,16 @@ public interface MenuHandlerInterface {
       final int pageIndex,
       CompoundTag additionalSyncData) {
 
-    // Check for access rights.
     if (!AccessManager.hasAccess(serverPlayer, easyNPC)) {
       return;
     }
 
-    // Get menu type for configuration type.
     final MenuType<? extends EditorMenu> menuType = getMenuTypeByEditorType(editorType);
     if (menuType == null) {
       log.error("Unknown editor {} for {} from {}", editorType, easyNPC, serverPlayer);
       return;
     }
 
-    // Additional data for specific configuration menu.
     final ScreenData screenData =
         EditorMenuHandler.getScreenData(
             editorType,
@@ -211,7 +206,6 @@ public interface MenuHandlerInterface {
             pageIndex,
             additionalSyncData);
 
-    // Get menu provider for configuration type and open configuration menu.
     final MenuProvider menuProvider =
         EditorMenuHandler.getMenuProvider(editorType, easyNPC, menuType, screenData);
     final UUID npcUUID = easyNPC.getEntityUUID();
@@ -226,10 +220,8 @@ public interface MenuHandlerInterface {
       return;
     }
 
-    // Get screen data for custom menu
     final ScreenData screenData = CustomMenuHandler.getScreenData(customMenuType, serverPlayer);
 
-    // Get menu provider for custom menu type and open menu
     MenuProvider menuProvider =
         CustomMenuHandler.getMenuProvider(customMenuType, menuType, screenData);
     if (menuProvider == null) {

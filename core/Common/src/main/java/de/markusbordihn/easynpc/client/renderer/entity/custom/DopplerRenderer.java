@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.model.custom.DopplerModel;
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.SpeechBubbleRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.layers.SkullHeadRenderLayer;
 import de.markusbordihn.easynpc.client.renderer.manager.EntityTypeManager;
 import de.markusbordihn.easynpc.client.renderer.manager.RendererManager;
@@ -45,12 +46,10 @@ public class DopplerRenderer<E extends PathfinderMob>
       MultiBufferSource buffer,
       int packedLight) {
 
-    // We only take care of EasyNPC entities.
     if (!(entity instanceof EasyNPC<?> easyNPC)) {
       return false;
     }
 
-    // Get render data.
     RenderDataCapable<?> renderData = easyNPC.getEasyNPCRenderData();
     if (renderData == null
         || renderData.getRenderDataEntry() == null
@@ -58,21 +57,17 @@ public class DopplerRenderer<E extends PathfinderMob>
       return false;
     }
 
-    // Get custom render data.
     EntityType<? extends Entity> renderEntityType =
         renderData.getRenderDataEntry().getRenderEntityType();
 
-    // Get custom entity for render custom .
     PathfinderMob customEntity =
         EntityTypeManager.getPathfinderMob(renderEntityType, entity.level());
     if (customEntity == null) {
       return false;
     }
 
-    // Get entity type name.
     String entityTypeName = EntityTypeManager.getEntityTypeName(renderEntityType);
 
-    // Render custom entity over living render, if supported.
     LivingEntityRenderer<?, ?> livingEntityRenderer =
         RendererManager.getLivingEntityRenderer(renderEntityType, customEntity);
     if (livingEntityRenderer != null) {
@@ -99,7 +94,6 @@ public class DopplerRenderer<E extends PathfinderMob>
       }
     }
 
-    // Alternative render custom entity over entity render, if supported.
     EntityRenderer<E> entityRenderer =
         (EntityRenderer<E>) RendererManager.getEntityRenderer(renderEntityType, customEntity);
     if (entityRenderer != null) {
@@ -116,7 +110,6 @@ public class DopplerRenderer<E extends PathfinderMob>
       }
     }
 
-    // Give up rendering, if no custom renderer is available.
     return false;
   }
 
@@ -145,6 +138,9 @@ public class DopplerRenderer<E extends PathfinderMob>
       if (this.shouldShowName(entity)) {
         this.renderNameTag(entity, entity.getDisplayName(), poseStack, bufferSource, packedLight);
       }
+
+      // This branch never reaches EntityRenderer#render, where the speech bubble mixin is attached.
+      SpeechBubbleRenderer.render(entity, poseStack, bufferSource, packedLight);
 
       return;
     }

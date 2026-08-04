@@ -20,19 +20,24 @@
 package de.markusbordihn.easynpc.entity.easynpc.data;
 
 import de.markusbordihn.easynpc.api.event.EasyNPCEventRegistry;
+import de.markusbordihn.easynpc.data.action.ActionContext;
+import de.markusbordihn.easynpc.data.action.ActionEventType;
 import de.markusbordihn.easynpc.data.server.ServerDataAccessor;
 import de.markusbordihn.easynpc.data.server.ServerDataIndex;
 import de.markusbordihn.easynpc.data.server.ServerEntityData;
 import de.markusbordihn.easynpc.data.state.StateDataSet;
 import de.markusbordihn.easynpc.data.state.StateEntry;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.handlers.BaseTickHandler;
 import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
 import java.util.Objects;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.level.Level;
 
 public interface StateDataCapable<E extends Mob> extends EasyNPC<E> {
+  long STATE_CHANGE_ACTION_INTERVAL_TICKS = BaseTickHandler.BASE_TICK + 1L;
 
   ServerDataAccessor<StateDataSet> CUSTOM_DATA_STATE_DATA_SET =
       ServerEntityData.defineId(
@@ -69,6 +74,11 @@ public interface StateDataCapable<E extends Mob> extends EasyNPC<E> {
   }
 
   default void setState(ResourceLocation stateId, StateEntry stateEntry) {
+    this.setState(stateId, stateEntry, ActionContext.EMPTY);
+  }
+
+  default void setState(
+      ResourceLocation stateId, StateEntry stateEntry, ActionContext actionContext) {
     StateDataSet stateDataSet = this.getStateDataSet();
     if (stateDataSet == null) {
       return;
@@ -79,8 +89,32 @@ public interface StateDataCapable<E extends Mob> extends EasyNPC<E> {
     this.setStateDataSet(stateDataSet);
 
     StateEntry currentStateEntry = stateDataSet.get(stateId);
-    if (!Objects.equals(previousStateEntry, currentStateEntry)) {
-      EasyNPCEventRegistry.fireStateChanged(this, stateId, previousStateEntry, currentStateEntry);
+    if (Objects.equals(previousStateEntry, currentStateEntry)) {
+      return;
+    }
+
+    ActionContext stateChangeContext =
+        (actionContext != null ? actionContext : ActionContext.EMPTY)
+            .withEventType(ActionEventType.ON_STATE_CHANGE)
+            .withSourceId(stateId);
+    EasyNPCEventRegistry.fireStateChanged(
+        this, stateId, previousStateEntry, currentStateEntry, stateChangeContext);
+
+    ActionEventDataCapable<E> actionEventData = this.getEasyNPCActionEventData();
+    if (actionEventData == null) {
+      return;
+    }
+
+    Level entityLevel = this.getEntityLevel();
+    long currentTick = entityLevel != null ? entityLevel.getGameTime() : 0L;
+    if (!stateDataSet.tryStartActionEvent(currentTick, STATE_CHANGE_ACTION_INTERVAL_TICKS)) {
+      return;
+    }
+
+    try {
+      actionEventData.handleActionEvent(ActionEventType.ON_STATE_CHANGE, stateChangeContext);
+    } finally {
+      stateDataSet.finishActionEvent();
     }
   }
 

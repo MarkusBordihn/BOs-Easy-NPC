@@ -35,7 +35,14 @@ import net.minecraft.world.entity.Pose;
 
 public class EntityScreenRenderer {
 
+  private static int screenRenderDepth;
+
   protected EntityScreenRenderer() {}
+
+  public static boolean isRenderingEntityOnScreen() {
+    return screenRenderDepth > 0;
+  }
+
 
   public static void renderEntity(
       GuiGraphics guiGraphics, EasyNPC<?> easyNPC, EntityRenderConfig config) {
@@ -48,16 +55,20 @@ public class EntityScreenRenderer {
     EntityRenderState backupState = new EntityRenderState(livingEntity, easyNPC);
     applyRenderModifications(easyNPC, config);
 
-    InventoryScreen.renderEntityInInventoryFollowsMouse(
-        guiGraphics,
-        config.x(),
-        config.y(),
-        config.scale(),
-        config.rotationYaw(),
-        config.rotationPitch(),
-        livingEntity);
-
-    restoreEntityState(easyNPC, backupState);
+    screenRenderDepth++;
+    try {
+      InventoryScreen.renderEntityInInventoryFollowsMouse(
+          guiGraphics,
+          config.x(),
+          config.y(),
+          config.scale(),
+          config.rotationYaw(),
+          config.rotationPitch(),
+          livingEntity);
+    } finally {
+      screenRenderDepth--;
+      restoreEntityState(easyNPC, backupState);
+    }
   }
 
   protected static void applyRenderModifications(EasyNPC<?> easyNPC, EntityRenderConfig config) {

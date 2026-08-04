@@ -41,6 +41,8 @@ public class StateDataSet {
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   private final Map<ResourceLocation, StateEntry> stateEntries = new LinkedHashMap<>();
+  private boolean actionEventInProgress;
+  private long lastActionEventTick = Long.MIN_VALUE;
 
   public StateDataSet() {}
 
@@ -93,8 +95,30 @@ public class StateDataSet {
     this.stateEntries.clear();
   }
 
+  public boolean tryStartActionEvent(long currentTick, long minimumIntervalTicks) {
+    if (this.actionEventInProgress) {
+      return false;
+    }
+
+    if (this.lastActionEventTick != Long.MIN_VALUE
+        && currentTick >= this.lastActionEventTick
+        && currentTick - this.lastActionEventTick < minimumIntervalTicks) {
+      return false;
+    }
+
+    this.actionEventInProgress = true;
+    this.lastActionEventTick = currentTick;
+    return true;
+  }
+
+  public void finishActionEvent() {
+    this.actionEventInProgress = false;
+  }
+
   public void load(CompoundTag compoundTag) {
     this.clear();
+    this.actionEventInProgress = false;
+    this.lastActionEventTick = Long.MIN_VALUE;
     if (compoundTag == null || !compoundTag.contains(DATA_STATE_DATA_SET_TAG)) {
       return;
     }

@@ -25,20 +25,30 @@ import de.markusbordihn.easymodelentities.api.EasyModelReloadEvents;
 import de.markusbordihn.easymodelentities.api.client.EasyModelEntitiesClientApi;
 import de.markusbordihn.easymodelentities.api.client.EasyModelPartAnimator;
 import de.markusbordihn.easymodelentities.api.client.EasyModelPartPoseListener;
+import de.markusbordihn.easymodelentities.api.data.EasyModelAnimation;
+import de.markusbordihn.easymodelentities.api.data.EasyModelBodyType;
+import de.markusbordihn.easymodelentities.api.data.EasyModelVec3f;
+import de.markusbordihn.easymodelentities.api.data.client.EasyModelAnimationPlaybackMode;
+import de.markusbordihn.easymodelentities.api.data.client.EasyModelAnimationSwitchTiming;
+import de.markusbordihn.easymodelentities.api.data.client.EasyModelAnimationTransition;
+import de.markusbordihn.easymodelentities.api.data.client.EasyModelBounds;
 import de.markusbordihn.easymodelentities.api.data.client.EasyModelEntityRenderOptions;
 import de.markusbordihn.easymodelentities.api.data.client.EasyModelHeadLook;
 import de.markusbordihn.easymodelentities.api.data.client.EasyModelItemAnchor;
+import de.markusbordihn.easymodelentities.api.data.client.EasyModelPartAnimationMode;
 import de.markusbordihn.easymodelentities.api.data.client.EasyModelPartPose;
 import de.markusbordihn.easymodelentities.api.data.client.EasyModelPartTransform;
-import de.markusbordihn.easymodelentities.data.model.Vec3f;
-import de.markusbordihn.easymodelentities.data.model.bake.ModelBounds;
-import de.markusbordihn.easymodelentities.data.profile.ModelBodyType;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.model.custom.DopplerModel;
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.SpeechBubbleRenderer;
 import de.markusbordihn.easynpc.client.renderer.manager.EntityTypeManager;
 import de.markusbordihn.easynpc.compat.IntegrationRegistry;
 import de.markusbordihn.easynpc.compat.easymodelentities.EasyModelEntitiesManager;
+import de.markusbordihn.easynpc.data.model.ModelAnimationBehavior;
+import de.markusbordihn.easynpc.data.model.ModelAnimationOperation;
+import de.markusbordihn.easynpc.data.model.ModelAnimationRequest;
+import de.markusbordihn.easynpc.data.model.ModelAnimationSwitchTiming;
 import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.position.CustomPosition;
 import de.markusbordihn.easynpc.data.render.RenderType;
@@ -49,7 +59,9 @@ import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.RenderDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.npc.easymodelentities.EasyModelNPC;
 import de.markusbordihn.easynpc.mixin.renderer.MobRendererInvoker;
+import java.util.Collections;
 import java.util.Map;
+import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.ItemInHandRenderer;
@@ -78,6 +90,8 @@ public class EasyModelNPCRenderer<E extends PathfinderMob>
       new ConcurrentHashMap<>();
   private static final Map<ResourceLocation, Float> guiPreviewScaleCache =
       new ConcurrentHashMap<>();
+  private static final Map<Entity, Integer> handledAnimationRequests =
+      Collections.synchronizedMap(new WeakHashMap<>());
   private static boolean reloadListenerRegistered = false;
 
   private final ItemInHandRenderer itemInHandRenderer;
@@ -107,7 +121,7 @@ public class EasyModelNPCRenderer<E extends PathfinderMob>
     ResourceLocation profileId = easyModelNPC.getEasyModelProfileId();
     return profileId != null
         && EasyModelEntitiesClientApi.getBodyType(profileId)
-            .filter(bodyType -> bodyType == ModelBodyType.FLOATING)
+            .filter(bodyType -> bodyType == EasyModelBodyType.FLOATING)
             .isPresent();
   }
 
@@ -155,7 +169,83 @@ public class EasyModelNPCRenderer<E extends PathfinderMob>
     if (easyModelNPC.getModelPartRotation(ModelPartType.HEAD).hasChangedRotation()) {
       renderOptions = renderOptions.withHeadLook(EasyModelHeadLook.NONE);
     }
+    ModelAnimationBehavior behavior = easyModelNPC.getModelAnimationBehavior();
+    boolean manualAnimation =
+        easyModelNPC.getModelAnimationRequest().operation() == ModelAnimationOperation.PLAY;
+    if (!manualAnimation
+        && (behavior == ModelAnimationBehavior.NONE
+            || (behavior == ModelAnimationBehavior.DEFAULT && hasModelChanges))) {
+      renderOptions = renderOptions.withPartAnimationMode(EasyModelPartAnimationMode.REPLACE);
+    }
     return renderOptions;
+  }
+
+  private static ModelAnimationRequest prepareAnimationPlayback(
+      Entity entity, EasyModelNPC easyModelNPC) {
+    ModelAnimationRequest request = easyModelNPC.getModelAnimationRequest();
+    if (!request.isPresent()
+        || handledAnimationRequests.getOrDefault(entity, 0) == request.sequence()) {
+      return null;
+    }
+
+    boolean staleOneShot =
+        (request.operation() == ModelAnimationOperation.RESTART
+                || (request.operation() == ModelAnimationOperation.PLAY
+                    && toEasyModelPlaybackMode(request) == EasyModelAnimationPlaybackMode.ONCE))
+            && entity.level().getGameTime() - request.issuedGameTime() > 20L;
+    if (staleOneShot) {
+      handledAnimationRequests.put(entity, request.sequence());
+      return null;
+    }
+
+    EasyModelAnimationTransition transition = toEasyModelTransition(request);
+    switch (request.operation()) {
+      case PLAY:
+        EasyModelAnimation animation =
+            EasyModelAnimation.parse(request.animationName()).orElse(null);
+        if (animation == null) {
+          handledAnimationRequests.put(entity, request.sequence());
+          return null;
+        }
+        EasyModelEntitiesClientApi.playAnimation(
+            entity, animation, toEasyModelPlaybackMode(request), transition);
+        break;
+      case STOP:
+        EasyModelEntitiesClientApi.stopAnimation(entity, transition);
+        break;
+      case RESTART:
+        EasyModelEntitiesClientApi.restartAnimation(entity);
+        break;
+      default:
+        handledAnimationRequests.put(entity, request.sequence());
+        return null;
+    }
+    return request;
+  }
+
+  private static EasyModelAnimationTransition toEasyModelTransition(ModelAnimationRequest request) {
+    EasyModelAnimationSwitchTiming timing =
+        request.transition().timing() == ModelAnimationSwitchTiming.AFTER_CURRENT
+            ? EasyModelAnimationSwitchTiming.AFTER_CURRENT
+            : EasyModelAnimationSwitchTiming.IMMEDIATE;
+    return new EasyModelAnimationTransition(timing, request.transition().blendDurationTicks());
+  }
+
+  private static EasyModelAnimationPlaybackMode toEasyModelPlaybackMode(
+      ModelAnimationRequest request) {
+    return switch (request.playbackMode()) {
+      case LOOP -> EasyModelAnimationPlaybackMode.LOOP;
+      case ONCE -> EasyModelAnimationPlaybackMode.ONCE;
+    };
+  }
+
+  private static void markAnimationRequestHandled(
+      Entity entity, ModelAnimationRequest request, boolean rendered) {
+    if (request == null || !rendered) {
+      return;
+    }
+
+    handledAnimationRequests.put(entity, request.sequence());
   }
 
   private static void applyRootRotation(
@@ -260,7 +350,7 @@ public class EasyModelNPCRenderer<E extends PathfinderMob>
 
     poseStack.pushPose();
     partPose.applyTo(poseStack);
-    Vec3f localOffset = itemAnchor.localOffset();
+    EasyModelVec3f localOffset = itemAnchor.localOffset();
     poseStack.translate(localOffset.x() / 16.0f, localOffset.y() / 16.0f, localOffset.z() / 16.0f);
     poseStack.mulPose(Axis.XP.rotationDegrees(-90.0f));
     poseStack.mulPose(Axis.YP.rotationDegrees(180.0f));
@@ -340,7 +430,7 @@ public class EasyModelNPCRenderer<E extends PathfinderMob>
       PoseStack poseStack,
       MultiBufferSource buffer,
       int packedLight) {
-    ModelBounds bounds = EasyModelEntitiesClientApi.getDisplayedBounds(profileId).orElse(null);
+    EasyModelBounds bounds = EasyModelEntitiesClientApi.getDisplayedBounds(profileId).orElse(null);
     if (bounds == null) {
       return false;
     }
@@ -392,6 +482,7 @@ public class EasyModelNPCRenderer<E extends PathfinderMob>
       }
     }
     HandPoseCapture handPoseCapture = createHandPoseCapture(entity, profileId);
+    ModelAnimationRequest animationRequest = prepareAnimationPlayback(entity, easyModelNPC);
     EasyModelEntityRenderOptions renderOptions = createRenderOptions(easyModelNPC);
     if (handPoseCapture != null) {
       renderOptions = renderOptions.withPartPoseListener(handPoseCapture);
@@ -406,6 +497,7 @@ public class EasyModelNPCRenderer<E extends PathfinderMob>
             bodyYaw,
             partialTicks,
             renderOptions);
+    markAnimationRequestHandled(entity, animationRequest, rendered);
     if (scaled || rotated) {
       poseStack.popPose();
     }
@@ -440,6 +532,10 @@ public class EasyModelNPCRenderer<E extends PathfinderMob>
       if (this.shouldShowName(entity)) {
         this.renderNameTag(entity, entity.getDisplayName(), poseStack, bufferSource, packedLight);
       }
+
+      // This branch never reaches EntityRenderer#render, where the speech bubble mixin is attached.
+      SpeechBubbleRenderer.render(entity, poseStack, bufferSource, packedLight);
+
       Entity leashHolder = entity.getLeashHolder();
       if (leashHolder != null) {
         ((MobRendererInvoker) this)

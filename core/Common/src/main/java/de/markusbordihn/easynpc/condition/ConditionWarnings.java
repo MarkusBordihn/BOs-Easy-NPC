@@ -19,10 +19,16 @@
 
 package de.markusbordihn.easynpc.condition;
 
+import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.data.condition.ConditionDataEntry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import net.minecraft.world.entity.LivingEntity;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ConditionWarnings {
+  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   private static final Set<String> reportedSources = ConcurrentHashMap.newKeySet();
 
@@ -30,6 +36,17 @@ public class ConditionWarnings {
 
   public static boolean shouldReport(String source) {
     return source != null && reportedSources.add(source);
+  }
+
+  public static void reportMissingPlayer(
+      ConditionDataEntry conditionDataEntry, LivingEntity npcContext) {
+    String entityType = npcContext != null ? npcContext.getType().toString() : "unknown";
+    if (shouldReport("missingPlayer:" + entityType + ":" + conditionDataEntry.conditionType())) {
+      log.warn(
+          "Condition {} of {} needs a player and is never met for an event without one.",
+          conditionDataEntry.conditionType(),
+          entityType);
+    }
   }
 
   public static void reset() {

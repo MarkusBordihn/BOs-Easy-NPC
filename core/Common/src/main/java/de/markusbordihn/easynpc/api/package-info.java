@@ -35,8 +35,10 @@
  * <ul>
  *   <li>{@link de.markusbordihn.easynpc.api.npc} - Raw NPC classes that can be extended to create
  *       custom NPC types
- *   <li>{@link de.markusbordihn.easynpc.api.condition} - Register an own condition type, so dialogs
- *       and actions can be gated on the data of another mod
+ *   <li>{@link de.markusbordihn.easynpc.api.action} - Execute NPC actions from code and register
+ *       custom action types for presets
+ *   <li>{@link de.markusbordihn.easynpc.api.condition} - Register custom condition types for
+ *       dialogs and actions
  *   <li>{@link de.markusbordihn.easynpc.api.event} - React to an opened dialog, an executed action
  *       or a changed NPC state
  * </ul>
@@ -68,7 +70,20 @@
  *
  * <p>A condition that cannot be answered on the client keeps {@code isAvailableOnClient()} at
  * {@code false}; the server then sends a lock for the dialog button instead of letting it look
- * available.
+ * available. An event without an initiator passes {@code null} as the server player. Conditions
+ * that require a player must return {@code false} in that case.
+ *
+ * <p>Use the action handler to execute NPC behavior programmatically:
+ *
+ * <pre>{@code
+ * EasyNPCActionHandler.say(easyNPC, "Good to see you again!");
+ * EasyNPCActionHandler.say(easyNPC, List.of("Hello!", "Welcome back!"));
+ * EasyNPCActionHandler.showSpeechBubble(easyNPC, "text.my_mod.npc.greeting");
+ * EasyNPCActionHandler.sayTo(easyNPC, serverPlayer, "This one is only for you.");
+ * }</pre>
+ *
+ * <p>For events that apply to several players, {@code ActionContext} contains both the initiator
+ * and the full audience.
  *
  * <h2>Documentation</h2>
  *

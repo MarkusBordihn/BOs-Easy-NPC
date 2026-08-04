@@ -4,6 +4,7 @@
   "package": "de.markusbordihn.easynpc.mixin",
   "compatibilityLevel": "JAVA_17",
   "client": [
+    "compat.mobhealthbar.MobHealthBarMixin",
     "model.EasyNPCAllayModelMixin",
     "model.EasyNPCCatModelMixin",
     "model.EasyNPCChickenModelMixin",

@@ -26,6 +26,7 @@ import de.markusbordihn.easynpc.data.display.NameVisibilityType;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.data.type.ValueType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.utils.CompoundTagUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Mob;
 
@@ -52,7 +53,6 @@ public interface DisplayAttributeDataCapable<E extends Mob> extends EasyNPC<E> {
 
   default void syncDisplayAttributesToEntity(DisplayAttributeDataSet displayAttributeDataSet) {
 
-    // Sync customNameVisible property from NAME_VISIBILITY attribute
     if (displayAttributeDataSet.hasAttribute(DisplayAttributeType.NAME_VISIBILITY)) {
       DisplayAttributeEntry nameVisibilityEntry =
           displayAttributeDataSet.getAttribute(DisplayAttributeType.NAME_VISIBILITY);
@@ -143,7 +143,8 @@ public interface DisplayAttributeDataCapable<E extends Mob> extends EasyNPC<E> {
   default void addAdditionalDisplayAttributeData(CompoundTag compoundTag) {
     DisplayAttributeDataSet displayAttributeData = getDisplayAttributeData();
     if (displayAttributeData != null) {
-      compoundTag.put(DATA_DISPLAY_ATTRIBUTE_TAG, displayAttributeData.save());
+      CompoundTagUtils.putIfNotEmpty(
+          compoundTag, DATA_DISPLAY_ATTRIBUTE_TAG, displayAttributeData.save());
     }
   }
 }

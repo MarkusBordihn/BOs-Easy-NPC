@@ -43,7 +43,14 @@
       "de.markusbordihn.easynpc.gametest.ObjectivePresetTest",
       "de.markusbordihn.easynpc.gametest.CommandArgumentTypeTest",
       "de.markusbordihn.easynpc.gametest.NavigationTypeTest",
-      "de.markusbordihn.easynpc.gametest.DistanceActionTest"
+      "de.markusbordihn.easynpc.gametest.DistanceActionTest",
+      "de.markusbordihn.easynpc.gametest.IntervalActionAudienceTest",
+      "de.markusbordihn.easynpc.gametest.PresetRoundTripTest",
+      "de.markusbordihn.easynpc.gametest.PresetDefaultBaselineTest",
+      "de.markusbordihn.easynpc.gametest.BasePresetTest",
+      "de.markusbordihn.easynpc.gametest.DefaultPresetRoundTripTest",
+      "de.markusbordihn.easynpc.gametest.StoredDataTest",
+      "de.markusbordihn.easynpc.gametest.PresetSpawnTest"
     ]
   },
   "mixins": [
@@ -52,11 +59,15 @@
   "accessWidener": "easynpc.accesswidener",
   "depends": {
     "fabricloader": ">=0.18.3",
-    "fabric-api": ">=0.92.6+1.20.1",
+    "fabric-api": ">=0.92.9+1.20.1",
     "minecraft": "1.20.1",
     "java": ">=17"
   },
   "suggests": {
-    "tooltipfix": "*"
+    "tooltipfix": "*",
+    "easy_model_entities": ">=2.0.0 <3.0.0"
+  },
+  "breaks": {
+    "easy_model_entities": "<2.0.0 || >=3.0.0"
   }
 }

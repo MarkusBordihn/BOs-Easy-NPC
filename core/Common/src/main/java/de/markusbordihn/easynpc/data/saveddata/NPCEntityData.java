@@ -203,6 +203,29 @@ public class NPCEntityData extends SavedData {
     return uuid != null && this.metadata.containsKey(uuid);
   }
 
+  public void evictFromCache(UUID uuid) {
+    if (npcFileStorage != null && uuid != null) {
+      this.npcFileStorage.evictFromCache(uuid);
+    }
+  }
+
+  public boolean hasCompleteEntry(UUID uuid) {
+    NPCEntityMetadata meta = uuid != null ? this.metadata.get(uuid) : null;
+    if (meta == null) {
+      return false;
+    }
+
+    if (npcFileStorage == null || npcFileStorage.exists(uuid)) {
+      return true;
+    }
+
+    log.warn("NPC file missing for UUID {}, removing from index", uuid);
+    this.metadata.remove(uuid);
+    removeCachedMaps(uuid, meta);
+    setDirty();
+    return false;
+  }
+
   public Optional<NPCEntityMetadata> getMetadata(UUID uuid) {
     if (uuid == null) {
       return Optional.empty();

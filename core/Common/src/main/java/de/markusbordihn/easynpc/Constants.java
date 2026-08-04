@@ -57,6 +57,8 @@ public final class Constants {
       new ResourceLocation(MINECRAFT_PREFIX, "textures/gui/container/inventory.png");
   public static final ResourceLocation TEXTURE_SPAWNER =
       new ResourceLocation(Constants.MOD_ID, "textures/gui/spawner.png");
+  public static final ResourceLocation TEXTURE_SPEECH_BUBBLE =
+      new ResourceLocation(Constants.MOD_ID, "textures/gui/speech_bubble.png");
   public static final String TEXT_PREFIX = "text." + MOD_ID + ".";
   public static final String CONTAINER_PREFIX = TEXT_PREFIX + "container.";
   public static final String TEXT_CONFIG_PREFIX = TEXT_PREFIX + "config.";

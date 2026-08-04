@@ -44,7 +44,7 @@ public class ClientEventHandler {
             CobblemonLoader.register();
           }
           if (CompatConstants.MOD_EASY_MODEL_ENTITIES_LOADED) {
-            EasyModelEntitiesLoader.register();
+            EasyModelEntitiesLoader.registerClient();
           }
         });
     ClientPlayConnectionEvents.DISCONNECT.register(ClientEventHandler::onDisconnect);

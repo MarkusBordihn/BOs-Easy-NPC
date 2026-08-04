@@ -21,7 +21,6 @@ public interface BaseTickHandler<E extends Mob> extends EasyNPC<E> {
     if (tickerData.checkAndIncreaseTicker(TickerType.BASE_TICK, BASE_TICK)) {
       Entity entity = this.getEntity();
 
-      // Check for attribute relevant actions.
       if (tickerData.checkAndIncreaseTicker(TickerType.ATTRIBUTE_BASE_TICK, ATTRIBUTE_BASE_TICK)) {
         AttributeHandler<E> attributeHandler = this.getEasyNPCAttributeHandler();
         attributeHandler.checkAttributeActions();
@@ -34,11 +33,13 @@ public interface BaseTickHandler<E extends Mob> extends EasyNPC<E> {
         tickerData.resetTicker(TickerType.ATTRIBUTE_BASE_TICK);
       }
 
-      // Check distance for additional actions.
       ActionHandler<E> actionHandler = this.getEasyNPCActionHandler();
       actionHandler.checkDistanceActions();
 
-      // Check if we have a trading inventory and update it.
+      actionHandler.checkSpawnAction();
+      actionHandler.checkIntervalActions();
+      actionHandler.checkEnvironmentActions();
+
       if (tickerData.checkAndIncreaseTicker(TickerType.TRADING_BASE_TICK, TRADING_BASE_TICK)) {
         TradingDataCapable<E> tradingData = this.getEasyNPCTradingData();
         if (tradingData != null && tradingData.hasTradingData()) {
@@ -48,7 +49,6 @@ public interface BaseTickHandler<E extends Mob> extends EasyNPC<E> {
         tickerData.resetTicker(TickerType.TRADING_BASE_TICK);
       }
 
-      // Check if entity can breathe underwater.
       if (entity.isInWater()
           && this.getEasyNPCAttributeData()
               .getEntityAttributes()
