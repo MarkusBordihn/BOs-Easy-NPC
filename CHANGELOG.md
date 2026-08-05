@@ -8,6 +8,39 @@ the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 7.6.0
+
+- Fixed unclear mod conflict errors for duplicate entity data tracker IDs.
+- Fixed third-party health bars rendering over NPC previews in configuration and dialog screens.
+- Fixed Doppler and Easy Model Entities NPCs using default hitboxes instead of their model size.
+- Fixed the `/easy_npc` commands suggesting no NPC UUIDs at all on a server.
+- Fixed the pose list of the "Set Pose" action drawing over its input field.
+- Fixed the untranslated "Loop", "After current" and "Action Data Type" labels of the action editor.
+- Fixed the missing hint text of the "Chance" condition.
+- Fixed long condition hints running out of the editor screen instead of wrapping.
+- Fixed the misaligned help icons and text buttons of the "Message" action.
+- Fixed changes to the "Set Pose", "Play Animation" and "Stop Animation" actions not being saveable.
+- Fixed the speech bubble text sitting closer to its upper border than to its lower one.
+- Changed the NPC suggestions to list the crosshair NPC first and only own NPCs without permissions.
+- Changed a preset export to only store what differs from a new NPC, without position or owner.
+- Changed a preset without objectives or actions to fall back to the defaults of its NPC type.
+- Changed events without a player, like "On Spawn" or "On Kill", to check their conditions. An
+  action there with a player based condition, for example a scoreboard or item, no longer runs.
+- Changed a time based action to pick the owner as `@initiator` whenever the owner is nearby.
+- Changed speech bubbles to stay visible from 5 up to 18 seconds, depending on the text length.
+- Changed the "Set Pose" action to only show its input field for the "custom" pose entry.
+- Added time based actions on five fixed steps, from every ~1 second up to every ~15 minutes.
+- Added a "Message" action for chat, system message and speech bubble text without a command.
+- Added text variants, a sender name, a recipient and translation keys to the "Message" action.
+- Added the speech bubble graphic as `easy_npc:textures/gui/speech_bubble.png` for resource packs.
+- Added a "Chance" condition in percent and a "Relationship" condition for owner and faction.
+- Added spawn, owner login, state change, day / night, weather and the missing "On Trade" events.
+- Added a base preset per NPC type under `easy_npc:api/preset/base/`, usable as a parent preset.
+- Added the "Wandering Companion" preset, a talkative NPC built from time based messages.
+- Added an action registry, an action handler, a preset validator and richer event data for mods.
+- Added a tooltip with name, type and distance to every NPC suggestion of the `/easy_npc` commands.
+- Improved the NPC suggestions, which appear without typing and tolerate a near miss of one block.
+
 ### 7.5.0
 
 - Fixed #814 by giving every Cobblemon NPC its own animation state instead of one per species.
@@ -15,13 +48,10 @@ Check the [upgrade guide][upgrade_guide] for more information.
 - Fixed #812 by checking once per session whether a player changed their skin.
 - Fixed #810 by accepting Cobblemon aspects of resource packs instead of only "shiny" and "female".
 - Fixed NPCs losing their owner, home and "No Gravity" setting after a respawn or a preset import.
-- Fixed "Follow owner", "Look at owner" and attack targets keeping a gone or changed target.
-- Fixed objectives being removed or switched off for good when their target or mod was missing.
+- Fixed objectives keeping a gone target and being switched off when their target or mod was gone.
 - Fixed flying NPCs like Allay, Vex and Ghast moving on the ground instead of flying.
-- Fixed dialogs and buttons with the same or a non-latin label sharing one id and needing a relink.
-- Fixed preset export, dialog, pose and texture names dropping umlauts and accents or failing.
+- Fixed dialog, button, preset, pose and texture names with duplicates or special characters.
 - Fixed conditions not being editable on a dedicated server and untranslated condition texts.
-- Fixed a single or boss spawner spawning without any limit when its preset carried no stored NPC.
 - Fixed Easy Model Entities NPCs not turning their head and their model list ignoring a `/reload`.
 - Fixed the "Legacy Easy NPC Data" warning appearing for newly created NPCs.
 - Fixed missing transparency corrections for old 64x32 skins, which showed layer artifacts.
@@ -32,21 +62,15 @@ Check the [upgrade guide][upgrade_guide] for more information.
 - Fixed walking animation for Doppler NPC and 3rd party models.
 - Changed the movement objectives to a fixed order: flee, follow, return home, then stroll. NPCs
   with several movement objectives may therefore behave differently than before.
-- Changed dialog and button labels, preset, pose and texture names to convert special characters.
 - Changed datapack presets to `easy_npc/preset/`, the old folder still works, but only for easy_npc.
-- Changed "Follow owner" and "Look at owner" without a chosen target to follow the owner of the NPC.
-- Changed inserting a preset into a vanilla monster spawner to keep its delay, count and range.
 - Changed the required Easy Model Entities version to 1.7.0, floating models now hover by default.
 - Removed the experimental user-defined NPCs and the unused `SERVER_SKIN` skin type.
 - Added NPC states with number, yes/no and text values, usable as condition, action and command.
 - Added a "Navigation" and a "Hover height" setting to switch any NPC between ground and flying.
-- Added a parent preset reference, so a preset can build on another one and only override changes.
-- Added presets from other mods, a preset visibility and the state driven "Forge Keeper" preset.
-- Added more objective options, like item tags, a teleport distance and an item to look at.
-- Added custom conditions, dialog, action and state events and an identifier for other mods.
+- Added parent presets, presets from other mods, a preset visibility and the "Forge Keeper" preset.
+- Added custom conditions, events, an NPC identifier and more objective options for other mods.
 - Added "On Far Distance" at 32 blocks and an option to spawn an NPC again when its owner logs in.
-- Improved flying NPCs, which now steer directly when there is no path, and floating models bob.
-- Improved third party support with an API for presets, own objectives and objective configuration.
+- Improved flying navigation and third party support with an API for presets and own objectives.
 
 ### 7.4.0
 

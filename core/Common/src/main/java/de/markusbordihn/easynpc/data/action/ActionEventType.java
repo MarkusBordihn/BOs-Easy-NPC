@@ -20,6 +20,8 @@
 package de.markusbordihn.easynpc.data.action;
 
 import de.markusbordihn.easynpc.utils.EnumUtils;
+import java.util.EnumSet;
+import java.util.Set;
 
 public enum ActionEventType {
   NONE,
@@ -33,20 +35,45 @@ public enum ActionEventType {
   ON_DISTANCE_VERY_CLOSE(ActionGroup.DISTANCE_VERY_CLOSE, 4.0D),
   ON_HURT,
   ON_INTERACTION,
+  ON_INTERVAL_INSTANT(1),
+  ON_INTERVAL_LONG(300),
+  ON_INTERVAL_NORMAL(60),
+  ON_INTERVAL_SHORT(10),
+  ON_INTERVAL_VERY_LONG(900),
   ON_KILL,
   ON_OPEN_DIALOG,
-  ON_TRADE;
+  ON_OWNER_LOGIN,
+  ON_SPAWN,
+  ON_STATE_CHANGE,
+  ON_TIME_CHANGE,
+  ON_TRADE,
+  ON_WEATHER_CHANGE;
+
+  // A second is too short for anything a player would notice more than once, so the fastest
+  // interval stays limited to the cheap actions other systems build on.
+  private static final Set<ActionDataType> INSTANT_INTERVAL_ACTION_TYPES =
+      EnumSet.of(ActionDataType.NPC_STATE, ActionDataType.CUSTOM);
 
   private final ActionGroup actionGroup;
   private final double triggerDistance;
+  private final int intervalSeconds;
 
   ActionEventType() {
-    this(ActionGroup.NONE, 0.0D);
+    this(ActionGroup.NONE, 0.0D, 0);
+  }
+
+  ActionEventType(int intervalSeconds) {
+    this(ActionGroup.NONE, 0.0D, intervalSeconds);
   }
 
   ActionEventType(ActionGroup actionGroup, double triggerDistance) {
+    this(actionGroup, triggerDistance, 0);
+  }
+
+  ActionEventType(ActionGroup actionGroup, double triggerDistance, int intervalSeconds) {
     this.actionGroup = actionGroup;
     this.triggerDistance = triggerDistance;
+    this.intervalSeconds = intervalSeconds;
   }
 
   public static ActionEventType get(String actionEventType) {
@@ -61,7 +88,19 @@ public enum ActionEventType {
     return this.triggerDistance;
   }
 
+  public int getIntervalSeconds() {
+    return this.intervalSeconds;
+  }
+
   public boolean isDistanceEvent() {
     return this.actionGroup != ActionGroup.NONE;
+  }
+
+  public boolean isIntervalEvent() {
+    return this.intervalSeconds > 0;
+  }
+
+  public boolean allowsActionDataType(ActionDataType actionDataType) {
+    return this != ON_INTERVAL_INSTANT || INSTANT_INTERVAL_ACTION_TYPES.contains(actionDataType);
   }
 }

@@ -33,3 +33,10 @@ mandatory = true
 versionRange = "[${file.jarVersion},${file.nextMajorVersion})"
 ordering = "AFTER"
 side = "BOTH"
+
+[[dependencies.easy_npc_config_ui]]
+modId = "easy_model_entities"
+type = "optional"
+versionRange = "[2.0.0,3.0.0)"
+ordering = "AFTER"
+side = "BOTH"

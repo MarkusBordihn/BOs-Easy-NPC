@@ -31,8 +31,10 @@ import org.junit.jupiter.api.Test;
 
 class StateDataSetTest {
 
-  private static final ResourceLocation PHASE = ResourceLocation.fromNamespaceAndPath("test_mod", "phase");
-  private static final ResourceLocation STAGE = ResourceLocation.fromNamespaceAndPath("test_mod", "stage");
+  private static final ResourceLocation PHASE =
+      ResourceLocation.fromNamespaceAndPath("test_mod", "phase");
+  private static final ResourceLocation STAGE =
+      ResourceLocation.fromNamespaceAndPath("test_mod", "stage");
 
   @Test
   void testNumberAndTextRoundTrip() {
@@ -72,7 +74,8 @@ class StateDataSetTest {
   void testEntryLimit() {
     StateDataSet stateDataSet = new StateDataSet();
     for (int i = 0; i < StateDataSet.MAX_STATE_ENTRIES; i++) {
-      stateDataSet.set(ResourceLocation.fromNamespaceAndPath("test_mod", "state_" + i), StateEntry.of(i));
+      stateDataSet.set(
+          ResourceLocation.fromNamespaceAndPath("test_mod", "state_" + i), StateEntry.of(i));
     }
 
     stateDataSet.set(PHASE, StateEntry.of(1));
@@ -125,5 +128,30 @@ class StateDataSetTest {
     assertFalse(StateEntry.of(false).asFlag());
     assertTrue(StateEntry.of("intro").asFlag());
     assertFalse(StateEntry.of("").asFlag());
+  }
+
+  @Test
+  @DisplayName("State actions cannot re-enter and are throttled between base ticks")
+  void testActionEventGuard() {
+    StateDataSet stateDataSet = new StateDataSet();
+
+    assertTrue(stateDataSet.tryStartActionEvent(100L, 17L));
+    assertFalse(stateDataSet.tryStartActionEvent(100L, 17L));
+    stateDataSet.finishActionEvent();
+
+    assertFalse(stateDataSet.tryStartActionEvent(116L, 17L));
+    assertTrue(stateDataSet.tryStartActionEvent(117L, 17L));
+    stateDataSet.finishActionEvent();
+  }
+
+  @Test
+  @DisplayName("A backwards game clock resets the state action throttle")
+  void testActionEventGuardHandlesBackwardsClock() {
+    StateDataSet stateDataSet = new StateDataSet();
+
+    assertTrue(stateDataSet.tryStartActionEvent(100L, 17L));
+    stateDataSet.finishActionEvent();
+
+    assertTrue(stateDataSet.tryStartActionEvent(5L, 17L));
   }
 }

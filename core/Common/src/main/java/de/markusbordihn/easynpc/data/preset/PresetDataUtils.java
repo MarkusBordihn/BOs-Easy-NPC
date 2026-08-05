@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.data.preset;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.component.DataComponents;
 import de.markusbordihn.easynpc.data.attribute.LegacyAttributeConverter;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.security.SecurityManager;
 import java.util.Optional;
 import net.minecraft.core.BlockPos;
@@ -151,18 +152,8 @@ public class PresetDataUtils {
     }
 
     PresetData presetData = itemStack.get(DataComponents.PRESET_DATA);
-    if (presetData == null) {
-      return PresetData.EMPTY;
-    }
 
-    String entityTypeId = presetData.data().getString(PresetData.ENTITY_TYPE_TAG);
-    EntityType<?> entityType = EntityType.byString(entityTypeId).orElse(null);
-
-    if (entityType == null) {
-      return PresetData.EMPTY;
-    }
-
-    return presetData;
+    return presetData != null && presetData.hasValidData() ? presetData : PresetData.EMPTY;
   }
 
   public static boolean spawnEntity(PresetData presetData, Level level, BlockPos blockPos) {
@@ -191,10 +182,14 @@ public class PresetDataUtils {
     // Convert legacy (pre-1.21) attribute NBT from imported presets to the 1.21 format.
     LegacyAttributeConverter.convertLegacyAttributes(entityData);
 
-    entity.load(entityData);
+    if (entity instanceof EasyNPC<?> easyNPC && easyNPC.getEasyNPCPresetData() != null) {
+      easyNPC.registerEasyNPCDefaultData();
+      easyNPC.getEasyNPCPresetData().importPresetData(entityData);
+    } else {
+      entity.load(entityData);
+    }
     entity.moveTo(blockPos.getX() + 0.5, blockPos.getY(), blockPos.getZ() + 0.5);
 
-    // Ensure entity spawns alive with full health
     if (entity instanceof LivingEntity livingEntity) {
       float maxHealth =
           livingEntity.getAttribute(Attributes.MAX_HEALTH) != null

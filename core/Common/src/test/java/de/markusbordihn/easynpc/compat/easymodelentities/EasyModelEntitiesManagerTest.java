@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.compat.easymodelentities;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import de.markusbordihn.easynpc.data.model.ModelPartType;
@@ -56,10 +57,43 @@ class EasyModelEntitiesManagerTest {
     assertTrue(EasyModelEntitiesManager.isFloatingProfile(floatingProfile));
     assertFalse(EasyModelEntitiesManager.isFloatingProfile(groundProfile));
     assertFalse(
-        EasyModelEntitiesManager.isFloatingProfile(ResourceLocation.fromNamespaceAndPath("my_pack", "unknown")));
+        EasyModelEntitiesManager.isFloatingProfile(
+            ResourceLocation.fromNamespaceAndPath("my_pack", "unknown")));
 
     EasyModelEntitiesManager.clearProfileModelTypes();
     assertFalse(EasyModelEntitiesManager.isFloatingProfile(floatingProfile));
+  }
+
+  @Test
+  void profileDimensionsAreRegisteredAndCleared() {
+    ResourceLocation profileId = ResourceLocation.fromNamespaceAndPath("my_pack", "large_model");
+    EasyModelEntitiesManager.registerProfileDimensions(profileId, 1.5F, 3.0F, 2.6F);
+
+    EasyModelEntitiesManager.ProfileDimensions dimensions =
+        EasyModelEntitiesManager.getProfileDimensions(profileId);
+    assertEquals(1.5F, dimensions.width());
+    assertEquals(3.0F, dimensions.height());
+    assertEquals(2.6F, dimensions.eyeHeight());
+
+    EasyModelEntitiesManager.clearProfileModelTypes();
+    assertNull(EasyModelEntitiesManager.getProfileDimensions(profileId));
+  }
+
+  @Test
+  void clearingClientModelMetadataPreservesServerDimensions() {
+    ResourceLocation profileId = ResourceLocation.fromNamespaceAndPath("my_pack", "floating_model");
+    EasyModelEntitiesManager.registerProfileModelType(profileId, ModelType.SLIME);
+    EasyModelEntitiesManager.registerProfileBodyType(profileId, "FLOATING");
+    EasyModelEntitiesManager.registerProfileDimensions(profileId, 1.0F, 2.0F, 1.5F);
+
+    EasyModelEntitiesManager.clearProfileModelMetadata();
+
+    assertEquals(ModelType.HUMANOID, EasyModelEntitiesManager.getProfileModelType(profileId));
+    assertNull(EasyModelEntitiesManager.getProfileBodyType(profileId));
+    assertEquals(
+        new EasyModelEntitiesManager.ProfileDimensions(1.0F, 2.0F, 1.5F),
+        EasyModelEntitiesManager.getProfileDimensions(profileId));
+    EasyModelEntitiesManager.clearProfileModelTypes();
   }
 
   @Test

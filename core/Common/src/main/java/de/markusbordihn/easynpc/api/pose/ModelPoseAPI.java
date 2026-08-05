@@ -29,35 +29,35 @@ import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
 import de.markusbordihn.easynpc.utils.ResourceNameNormalizer;
 import java.util.EnumMap;
+import java.util.LinkedHashMap;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Pose;
 
-/**
- * Public API for setting and querying NPC poses. Use this class from external mods and dialog
- * actions to control NPC poses programmatically.
- */
 public class ModelPoseAPI {
+  public static final ResourceLocation VANILLA_STANDING =
+      ResourceLocation.fromNamespaceAndPath("minecraft", "standing");
+  public static final ResourceLocation VANILLA_CROUCHING =
+      ResourceLocation.fromNamespaceAndPath("minecraft", "crouching");
+  public static final ResourceLocation VANILLA_SLEEPING =
+      ResourceLocation.fromNamespaceAndPath("minecraft", "sleeping");
+  public static final ResourceLocation VANILLA_SWIMMING =
+      ResourceLocation.fromNamespaceAndPath("minecraft", "swimming");
+  private static final Map<ResourceLocation, Pose> VANILLA_POSES = createVanillaPoses();
 
   private ModelPoseAPI() {}
 
-  /**
-   * Sets a named pose on the NPC by its full ResourceLocation (e.g.
-   * "easy_npc:pose/humanoid_slim/sitting").
-   *
-   * @return true if the pose was successfully applied
-   */
   public static boolean setPose(EasyNPC<?> npc, ResourceLocation poseId) {
+    Pose vanillaPose = VANILLA_POSES.get(poseId);
+    if (vanillaPose != null) {
+      return setVanillaPose(npc, vanillaPose);
+    }
     return PoseManager.setModelPose(npc, poseId);
   }
 
-  /**
-   * Sets a named pose on the NPC by short name (e.g. "sitting"). Resolves the full ResourceLocation
-   * against the NPC's SkinModel automatically.
-   *
-   * @return true if the pose was successfully applied
-   */
   public static boolean setPose(EasyNPC<?> npc, String poseName) {
     if (npc == null || poseName == null || poseName.isEmpty()) {
       return false;
@@ -77,29 +77,27 @@ public class ModelPoseAPI {
     return PoseManager.setModelPose(npc, poseId);
   }
 
-  /** Sets a vanilla Pose on the NPC (STANDING, CROUCHING, etc.). */
-  public static void setVanillaPose(EasyNPC<?> npc, Pose pose) {
+  public static boolean setVanillaPose(EasyNPC<?> npc, Pose pose) {
     if (npc == null || pose == null) {
-      return;
+      return false;
     }
     ModelDataCapable<?> modelData = npc.getEasyNPCModelData();
-    if (modelData != null) {
-      modelData.setModelPose(ModelPose.VANILLA);
-      modelData.setModelPoseName("");
-      npc.getEntity().setPose(pose);
-
-      // Clear leftover rotation/position data from previous custom poses
-      modelData.setModelPartRotation(new EnumMap<>(ModelPartType.class));
-      modelData.setModelPartPosition(new EnumMap<>(ModelPartType.class));
+    if (modelData == null) {
+      return false;
     }
+
+    modelData.setModelPose(ModelPose.VANILLA);
+    modelData.setModelPoseName("");
+    npc.getEntity().setPose(pose);
+    modelData.setModelPartRotation(new EnumMap<>(ModelPartType.class));
+    modelData.setModelPartPosition(new EnumMap<>(ModelPartType.class));
+    return true;
   }
 
-  /** Resets the NPC to the default standing pose with no custom model data. */
   public static void resetPose(EasyNPC<?> npc) {
     PoseManager.resetModelPose(npc);
   }
 
-  /** Returns the current named pose ResourceLocation string, or empty if no named pose is set. */
   public static String getCurrentPoseName(EasyNPC<?> npc) {
     if (npc == null) {
       return "";
@@ -108,7 +106,6 @@ public class ModelPoseAPI {
     return modelData != null ? modelData.getModelPoseName() : "";
   }
 
-  /** Returns the current ModelPose mode (VANILLA, DEFAULT, or CUSTOM). */
   public static ModelPose getCurrentPoseMode(EasyNPC<?> npc) {
     if (npc == null) {
       return ModelPose.VANILLA;
@@ -117,12 +114,10 @@ public class ModelPoseAPI {
     return modelData != null ? modelData.getModelPose() : ModelPose.VANILLA;
   }
 
-  /** Returns all available named poses for a given skin model. */
   public static Set<ResourceLocation> getAvailablePoses(SkinModel skinModel) {
     return PoseManager.getPoseDataKeysForModel(skinModel);
   }
 
-  /** Returns all available named poses for the NPC's skin model. */
   public static Set<ResourceLocation> getAvailablePoses(EasyNPC<?> npc) {
     if (npc == null) {
       return Set.of();
@@ -132,5 +127,26 @@ public class ModelPoseAPI {
       return Set.of();
     }
     return PoseManager.getPoseDataKeysForModel(skinData.getSkinModel());
+  }
+
+  public static Set<ResourceLocation> getVanillaPoseIds() {
+    return VANILLA_POSES.keySet();
+  }
+
+  public static boolean isVanillaPose(ResourceLocation poseId) {
+    return VANILLA_POSES.containsKey(poseId);
+  }
+
+  public static Optional<Pose> getVanillaPose(ResourceLocation poseId) {
+    return Optional.ofNullable(VANILLA_POSES.get(poseId));
+  }
+
+  private static Map<ResourceLocation, Pose> createVanillaPoses() {
+    Map<ResourceLocation, Pose> poses = new LinkedHashMap<>();
+    poses.put(VANILLA_STANDING, Pose.STANDING);
+    poses.put(VANILLA_CROUCHING, Pose.CROUCHING);
+    poses.put(VANILLA_SLEEPING, Pose.SLEEPING);
+    poses.put(VANILLA_SWIMMING, Pose.SWIMMING);
+    return Map.copyOf(poses);
   }
 }

@@ -24,6 +24,7 @@ import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.sound.SoundType;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.utils.CompoundTagUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -62,12 +63,23 @@ public interface SoundDataCapable<E extends Mob> extends EasyNPC<E> {
     setSoundDataSet(new SoundDataSet());
   }
 
+  default SoundDataSet getResolvedSoundDataSet() {
+    SoundDataSet soundDataSet = this.getSoundDataSet();
+    if (soundDataSet != null && !soundDataSet.isEmpty()) {
+      return soundDataSet;
+    }
+
+    VariantDataCapable<E> variantData = this.getEasyNPCVariantData();
+    Enum<?> variant = variantData != null ? variantData.getSkinVariantType() : null;
+    return this.getDefaultSoundDataSet(new SoundDataSet(), variant != null ? variant.name() : "");
+  }
+
   default boolean hasDefaultSound(SoundType soundType) {
-    return this.getSoundDataSet().hasSound(soundType);
+    return this.getResolvedSoundDataSet().hasSound(soundType);
   }
 
   default SoundDataEntry getDefaultSound(SoundType soundType) {
-    return this.getSoundDataSet().getSound(soundType);
+    return this.getResolvedSoundDataSet().getSound(soundType);
   }
 
   default SoundEvent getDefaultSoundEvent(SoundType soundType) {
@@ -156,21 +168,14 @@ public interface SoundDataCapable<E extends Mob> extends EasyNPC<E> {
   }
 
   default void addAdditionalSoundData(CompoundTag compoundTag) {
-    CompoundTag soundDataTag = new CompoundTag();
-
     SoundDataSet soundDataSet = this.getSoundDataSet();
-    if (soundDataSet != null && !soundDataSet.isEmpty()) {
-      soundDataSet.save(soundDataTag);
-    } else {
-      VariantDataCapable<E> variantData = this.getEasyNPCVariantData();
-      SoundDataSet defaultSoundDataSet =
-          this.getDefaultSoundDataSet(
-              new SoundDataSet(),
-              variantData != null ? variantData.getSkinVariantType().name() : "");
-      defaultSoundDataSet.save(soundDataTag);
+    if (soundDataSet == null) {
+      return;
     }
 
-    compoundTag.put(EASY_NPC_DATA_SOUND_DATA_TAG, soundDataTag);
+    CompoundTag soundDataTag = new CompoundTag();
+    soundDataSet.save(soundDataTag);
+    CompoundTagUtils.putIfNotEmpty(compoundTag, EASY_NPC_DATA_SOUND_DATA_TAG, soundDataTag);
   }
 
   default void readAdditionalSoundData(CompoundTag compoundTag) {
@@ -180,7 +185,11 @@ public interface SoundDataCapable<E extends Mob> extends EasyNPC<E> {
 
     CompoundTag soundDataTag = compoundTag.getCompound(EASY_NPC_DATA_SOUND_DATA_TAG);
     if (soundDataTag.contains(SoundDataSet.DATA_SOUND_DATA_SET_TAG)) {
-      SoundDataSet soundDataSet = new SoundDataSet(soundDataTag);
+      VariantDataCapable<E> variantData = this.getEasyNPCVariantData();
+      Enum<?> variant = variantData != null ? variantData.getSkinVariantType() : null;
+      SoundDataSet soundDataSet =
+          this.getDefaultSoundDataSet(new SoundDataSet(), variant != null ? variant.name() : "");
+      soundDataSet.load(soundDataTag);
       this.setSoundDataSet(soundDataSet);
     }
   }

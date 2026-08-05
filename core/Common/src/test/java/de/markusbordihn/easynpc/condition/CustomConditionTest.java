@@ -36,7 +36,8 @@ import org.junit.jupiter.api.Test;
 class CustomConditionTest {
 
   private static ConditionDataEntry conditionFor(String path) {
-    return new ConditionDataEntry(ResourceLocation.fromNamespaceAndPath("custom_condition_test", path));
+    return new ConditionDataEntry(
+        ResourceLocation.fromNamespaceAndPath("custom_condition_test", path));
   }
 
   private static ConditionEvaluator clientCapableEvaluator(BooleanSupplier clientResult) {

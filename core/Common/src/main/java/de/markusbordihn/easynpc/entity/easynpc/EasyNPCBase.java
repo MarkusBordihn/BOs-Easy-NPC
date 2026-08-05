@@ -101,7 +101,11 @@ public interface EasyNPCBase<E extends Mob>
     log.debug("Register default variant for {} with variant {} ...", this, variant);
     VariantDataCapable<E> variantData = getEasyNPCVariantData();
     if (variantData != null) {
-      variantData.setSkinVariantType(variant);
+      if (variantData.getSkinVariantType() == variant) {
+        variantData.handleSkinVariantTypeChange(variant);
+      } else {
+        variantData.setSkinVariantType(variant);
+      }
     }
     SoundDataCapable<E> soundData = getEasyNPCSoundData();
     if (soundData != null) {
@@ -112,28 +116,14 @@ public interface EasyNPCBase<E extends Mob>
   default SpawnGroupData finalizeEasyNPCSpawn(SpawnGroupData spawnGroupData) {
     log.debug("Finalize spawn for {} ...", this);
 
-    // Set default navigation data.
     NavigationDataCapable<?> navigationData = getEasyNPCNavigationData();
     if (navigationData != null && !navigationData.hasHomePosition()) {
       navigationData.setHomePosition(this.getEntity().blockPosition());
     }
 
-    // Skip next steps if NPC was already finalized.
     StatusDataCapable<?> statusData = getEasyNPCStatusData();
     if (statusData == null || !statusData.getStatusDataFlag(StatusDataType.FINALIZED)) {
-      log.debug("Register default data for {} ...", this);
-
-      // Register standard Objectives
-      ObjectiveDataCapable<E> objectiveData = getEasyNPCObjectiveData();
-      if (objectiveData != null) {
-        objectiveData.registerStandardObjectives();
-      }
-
-      // Add default action interaction events
-      ActionEventDataCapable<E> actionEventData = getEasyNPCActionEventData();
-      if (actionEventData != null) {
-        actionEventData.registerDefaultActionInteractionEvents();
-      }
+      registerEasyNPCDefaultData();
     } else {
       log.debug("Skip default data registration for {} ...", this);
     }
@@ -148,7 +138,6 @@ public interface EasyNPCBase<E extends Mob>
       variantData.defineSynchedVariantData(builder);
     }
 
-    // Define all other synced data.
     ActionEventDataCapable<E> actionEventData = getEasyNPCActionEventData();
     if (actionEventData != null) {
       actionEventData.defineSynchedActionData(builder);
@@ -349,7 +338,6 @@ public interface EasyNPCBase<E extends Mob>
       variantData.readAdditionalVariantData(compoundTag);
     }
 
-    // Read all other synced data.
     ActionEventDataCapable<E> actionEventData = getEasyNPCActionEventData();
     if (actionEventData != null) {
       actionEventData.readAdditionalActionData(compoundTag);
@@ -423,13 +411,11 @@ public interface EasyNPCBase<E extends Mob>
       tradingData.readAdditionalTradingData(compoundTag, provider);
     }
 
-    // Register Objectives after all data is loaded.
     ObjectiveDataCapable<E> objectiveData = getEasyNPCObjectiveData();
     if (objectiveData != null) {
       objectiveData.readAdditionalObjectiveData(compoundTag);
     }
 
-    // Refresh navigation data after all data is loaded.
     if (navigationData != null) {
       navigationData.refreshNavigation();
     }

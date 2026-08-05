@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_21",
   "refmap": "easy_npc.refmap.json",
   "client": [
+    "compat.mobhealthbar.MobHealthBarMixin",
     "model.EasyNPCAllayModelMixin",
     "model.EasyNPCCatModelMixin",
     "model.EasyNPCChickenModelMixin",

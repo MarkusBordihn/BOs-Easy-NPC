@@ -44,8 +44,10 @@ import org.junit.jupiter.api.Test;
 
 class StateDataCapableTest {
 
-  private static final ResourceLocation QUEST = ResourceLocation.fromNamespaceAndPath("test_mod", "quest_progress");
-  private static final ResourceLocation STAGE = ResourceLocation.fromNamespaceAndPath("test_mod", "stage");
+  private static final ResourceLocation QUEST =
+      ResourceLocation.fromNamespaceAndPath("test_mod", "quest_progress");
+  private static final ResourceLocation STAGE =
+      ResourceLocation.fromNamespaceAndPath("test_mod", "stage");
 
   @Test
   void testNumberTextAndFlagAccessors() {

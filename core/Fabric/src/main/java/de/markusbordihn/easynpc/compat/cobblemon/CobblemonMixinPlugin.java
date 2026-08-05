@@ -52,15 +52,9 @@ public class CobblemonMixinPlugin implements IMixinConfigPlugin {
 
   @Override
   public void preApply(
-      String targetClassName,
-      ClassNode targetClass,
-      String mixinClassName,
-      IMixinInfo mixinInfo) {}
+      String targetClassName, ClassNode targetClass, String mixinClassName, IMixinInfo mixinInfo) {}
 
   @Override
   public void postApply(
-      String targetClassName,
-      ClassNode targetClass,
-      String mixinClassName,
-      IMixinInfo mixinInfo) {}
+      String targetClassName, ClassNode targetClass, String mixinClassName, IMixinInfo mixinInfo) {}
 }

@@ -23,6 +23,8 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.npc.NPCType;
 import de.markusbordihn.easynpc.data.npc.RawNPCType;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
+import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.ObjectiveDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.StatusDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.event.EasyNPCEventHandler;
 import de.markusbordihn.easynpc.server.player.FakePlayer;
@@ -66,6 +68,18 @@ public interface EasyNPC<E extends Mob> extends EasyNPCDataAccessors<E>, Npc {
 
   default NPCType getNPCType() {
     return RawNPCType.GENERIC;
+  }
+
+  default void registerEasyNPCDefaultData() {
+    ObjectiveDataCapable<E> objectiveData = this.getEasyNPCObjectiveData();
+    if (objectiveData != null) {
+      objectiveData.registerStandardObjectives();
+    }
+
+    ActionEventDataCapable<E> actionEventData = this.getEasyNPCActionEventData();
+    if (actionEventData != null) {
+      actionEventData.registerDefaultActionInteractionEvents();
+    }
   }
 
   FakePlayer getFakePlayer(ServerLevel level, BlockPos blockPos);

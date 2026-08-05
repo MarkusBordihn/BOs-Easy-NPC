@@ -47,6 +47,8 @@ public record ConditionDataEntry(
   public static final String DATA_CUSTOM_DATA_TAG = "CustomData";
   public static final String DATA_LEGACY_TEXT_TAG = "Text";
   public static final String DATA_VALUE_TAG = "Value";
+  public static final int MIN_CHANCE_PERCENTAGE = 1;
+  public static final int MAX_CHANCE_PERCENTAGE = 100;
 
   public ConditionDataEntry(CompoundTag compoundTag) {
     this(
@@ -177,6 +179,7 @@ public record ConditionDataEntry(
               && this.operationType != null
               && this.operationType != ConditionOperationType.NONE;
       case EXECUTION_LIMIT -> this.value > 0 && this.subType != null;
+      case CHANCE -> this.value >= MIN_CHANCE_PERCENTAGE && this.value <= MAX_CHANCE_PERCENTAGE;
       case HAS_ITEM_IN_INVENTORY, HAS_ITEM_IN_HAND, ADVANCEMENT, PLAYER_TAG, TEAM, GAMEMODE ->
           hasName();
       case EXPERIENCE_LEVEL, PLAYER_HEALTH, NPC_HEALTH ->
@@ -187,7 +190,7 @@ public record ConditionDataEntry(
               && hasValidUuidName();
       case TIME_OF_DAY ->
           this.operationType != null && this.operationType != ConditionOperationType.NONE;
-      case WEATHER -> this.subType != null;
+      case WEATHER, RELATIONSHIP -> this.subType != null;
       case NPC_STATE ->
           hasName()
               && this.operationType != null

@@ -109,16 +109,12 @@ public interface ModelDataCapable<T extends Mob>
 
     if (this.getModelPose() != ModelPose.VANILLA && this.hasChangedModel()) {
       modelDataTag.putString(EASY_NPC_DATA_MODEL_POSE_TAG, this.getModelPose().name());
-      modelDataTag.putString(EASY_NPC_DATA_MODEL_DEFAULT_POSE_TAG, Pose.STANDING.name());
       String poseName = this.getModelPoseName();
       if (poseName != null && !poseName.isEmpty()) {
         modelDataTag.putString(EASY_NPC_DATA_MODEL_POSE_NAME_TAG, poseName);
       }
-    } else {
-      modelDataTag.putString(EASY_NPC_DATA_MODEL_POSE_TAG, ModelPose.VANILLA.name());
-      modelDataTag.putString(
-          EASY_NPC_DATA_MODEL_DEFAULT_POSE_TAG,
-          this.getDefaultPose() != null ? this.getDefaultPose().name() : Pose.STANDING.name());
+    } else if (this.getDefaultPose() != null && this.getDefaultPose() != Pose.STANDING) {
+      modelDataTag.putString(EASY_NPC_DATA_MODEL_DEFAULT_POSE_TAG, this.getDefaultPose().name());
     }
 
     this.addAdditionalModelAnimationData(compoundTag);

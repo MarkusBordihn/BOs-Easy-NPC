@@ -19,16 +19,31 @@
 
 package de.markusbordihn.easynpc.api.event;
 
+import de.markusbordihn.easynpc.data.action.ActionContext;
 import de.markusbordihn.easynpc.data.state.StateEntry;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import net.minecraft.resources.ResourceLocation;
 
 @FunctionalInterface
 public interface StateEventListener {
-
+  /**
+   * @deprecated Implement {@link #onStateChanged(EasyNPC, ResourceLocation, StateEntry, StateEntry,
+   *     ActionContext)}, which also carries the triggering player and every affected player.
+   */
+  @Deprecated(since = "7.6.0")
   void onStateChanged(
       EasyNPC<?> easyNPC,
       ResourceLocation stateId,
       StateEntry previousStateEntry,
       StateEntry currentStateEntry);
+
+  /** The context contains all affected players and has an empty audience when none are nearby. */
+  default void onStateChanged(
+      EasyNPC<?> easyNPC,
+      ResourceLocation stateId,
+      StateEntry previousStateEntry,
+      StateEntry currentStateEntry,
+      ActionContext actionContext) {
+    this.onStateChanged(easyNPC, stateId, previousStateEntry, currentStateEntry);
+  }
 }

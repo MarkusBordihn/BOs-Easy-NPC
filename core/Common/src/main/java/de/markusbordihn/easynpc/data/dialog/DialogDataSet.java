@@ -25,6 +25,7 @@ import de.markusbordihn.easynpc.data.condition.ConditionDataEntry;
 import de.markusbordihn.easynpc.data.condition.ConditionType;
 import de.markusbordihn.easynpc.data.execution.ExecutionId;
 import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
+import de.markusbordihn.easynpc.utils.CompoundTagUtils;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -85,7 +86,6 @@ public class DialogDataSet {
   }
 
   public boolean addDialog(DialogDataEntry dialogData) {
-    // Pre-check dialog data, before adding it to the dialog set.
     if (dialogData == null) {
       log.error("Dialog data is null, please check your dialog data!");
       return false;
@@ -106,7 +106,6 @@ public class DialogDataSet {
     String dialogLabel = dialogData.getLabel();
     UUID dialogId = dialogData.getId();
 
-    // Warn about duplicated dialog ids
     DialogDataEntry existingDialogData = this.dialogByIdMap.getOrDefault(dialogId, null);
     if (existingDialogData != null && !existingDialogData.equals(dialogData)) {
       log.warn(
@@ -289,12 +288,10 @@ public class DialogDataSet {
       return;
     }
 
-    // Load dialog type
     if (compoundTag.contains(DATA_TYPE_TAG)) {
       this.dialogType = DialogType.valueOf(compoundTag.getString(DATA_TYPE_TAG));
     }
 
-    // Load dialog data
     this.dialogByLabelMap.clear();
     this.dialogByIdMap.clear();
     ListTag dialogListTag = compoundTag.getList(DATA_DIALOG_DATA_SET_TAG, 10);
@@ -308,7 +305,6 @@ public class DialogDataSet {
   public CompoundTag save(CompoundTag compoundTag) {
     ListTag dialogListTag = new ListTag();
     for (DialogDataEntry dialogData : this.dialogByLabelMap.values()) {
-      // Skip empty dialog data
       if (dialogData == null
           || dialogData.getId() == null
           || dialogData.getLabel() == null
@@ -317,22 +313,27 @@ public class DialogDataSet {
       }
       dialogListTag.add(dialogData.createTag());
     }
-    compoundTag.put(DATA_DIALOG_DATA_SET_TAG, dialogListTag);
-
-    // Handle dialog type to avoid wrong dialog types after using the dialog editor.
-    if ((this.dialogType == DialogType.BASIC && this.dialogByIdMap.size() > 1)
-        || (this.dialogType == DialogType.YES_NO && this.dialogByIdMap.size() > 3)) {
-      this.dialogType = DialogType.STANDARD;
-    } else if (this.dialogByIdMap.isEmpty()) {
-      this.dialogType = DialogType.NONE;
-    } else if (this.dialogType != DialogType.BASIC
-        && this.dialogType != DialogType.YES_NO
-        && this.dialogType != DialogType.STANDARD) {
-      this.dialogType = DialogType.CUSTOM;
-    }
-    compoundTag.putString(DATA_TYPE_TAG, this.dialogType.name());
+    CompoundTagUtils.putIfNotEmpty(compoundTag, DATA_DIALOG_DATA_SET_TAG, dialogListTag);
+    compoundTag.putString(DATA_TYPE_TAG, this.resolveDialogType().name());
 
     return compoundTag;
+  }
+
+  private DialogType resolveDialogType() {
+    if ((this.dialogType == DialogType.BASIC && this.dialogByIdMap.size() > 1)
+        || (this.dialogType == DialogType.YES_NO && this.dialogByIdMap.size() > 3)) {
+      return DialogType.STANDARD;
+    }
+    if (this.dialogByIdMap.isEmpty()) {
+      return DialogType.NONE;
+    }
+    if (this.dialogType != DialogType.BASIC
+        && this.dialogType != DialogType.YES_NO
+        && this.dialogType != DialogType.STANDARD) {
+      return DialogType.CUSTOM;
+    }
+
+    return this.dialogType;
   }
 
   public CompoundTag createTag() {

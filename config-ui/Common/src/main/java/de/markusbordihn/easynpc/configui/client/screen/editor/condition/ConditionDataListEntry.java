@@ -37,13 +37,11 @@ import net.minecraft.network.chat.Component;
 
 public class ConditionDataListEntry extends ObjectSelectionList.Entry<ConditionDataListEntry> {
 
-  // Column position constants
   public static final int ID_LEFT_POS = 0;
   public static final int TYPE_LEFT_POS = 22;
   public static final int VALUE_LEFT_POS = 110;
   public static final int OPTIONS_LEFT_POS = 250;
 
-  // Layout constants
   private static final int ENTRY_HEIGHT = 21;
   private static final int FIELD_LEFT_OFFSET = 5;
   private static final int FIELD_TOP_OFFSET = 5;
@@ -53,7 +51,6 @@ public class ConditionDataListEntry extends ObjectSelectionList.Entry<ConditionD
   private static final int VALUE_MAX_LENGTH = 21;
   private static final int LIST_WIDTH = 309;
 
-  // Color constants
   private static final int COLOR_SEPARATOR_LINE = 0xffaaaaaa;
   private static final int COLOR_COLUMN_SEPARATOR = 0xff666666;
 
@@ -187,6 +184,7 @@ public class ConditionDataListEntry extends ObjectSelectionList.Entry<ConditionD
               this.conditionDataEntry.subType() != null
                   ? ((Enum<?>) this.conditionDataEntry.subType()).name()
                   : "-";
+          case RELATIONSHIP -> buildRelationshipPreview(this.conditionDataEntry);
           case ENTITY_HEALTH ->
               this.conditionDataEntry.operationType().getSymbol()
                   + " "
@@ -216,6 +214,19 @@ public class ConditionDataListEntry extends ObjectSelectionList.Entry<ConditionD
         + " ("
         + ((Enum<?>) conditionDataEntry.subType()).name()
         + ")";
+  }
+
+  private String buildRelationshipPreview(ConditionDataEntry conditionDataEntry) {
+    if (conditionDataEntry.subType() == null) {
+      return "-";
+    }
+
+    String relationshipName = ((Enum<?>) conditionDataEntry.subType()).name();
+    if (!conditionDataEntry.hasName()) {
+      return relationshipName;
+    }
+
+    return relationshipName + " (" + conditionDataEntry.name() + ")";
   }
 
   private String buildItemPreview(ConditionDataEntry conditionDataEntry) {

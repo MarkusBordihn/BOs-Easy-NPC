@@ -24,7 +24,8 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 
-public record ModelAnimationData(ModelAnimationBehavior behavior) {
+public record ModelAnimationData(
+    ModelAnimationBehavior behavior, ModelAnimationRequest playbackRequest) {
 
   public static final String DATA_BEHAVIOR_TAG = "Behavior";
   public static final ModelAnimationData DEFAULT =
@@ -44,19 +45,30 @@ public record ModelAnimationData(ModelAnimationBehavior behavior) {
         }
       };
 
+  public ModelAnimationData {
+    behavior = behavior != null ? behavior : ModelAnimationBehavior.SMART;
+    playbackRequest = playbackRequest != null ? playbackRequest : ModelAnimationRequest.NONE;
+  }
+
   public ModelAnimationData() {
-    this(ModelAnimationBehavior.SMART);
+    this(ModelAnimationBehavior.SMART, ModelAnimationRequest.NONE);
+  }
+
+  public ModelAnimationData(ModelAnimationBehavior behavior) {
+    this(behavior, ModelAnimationRequest.NONE);
   }
 
   public ModelAnimationData(CompoundTag compoundTag) {
     this(
         compoundTag.contains(DATA_BEHAVIOR_TAG)
             ? ModelAnimationBehavior.get(compoundTag.getString(DATA_BEHAVIOR_TAG))
-            : ModelAnimationBehavior.SMART);
+            : ModelAnimationBehavior.SMART,
+        ModelAnimationRequest.NONE);
   }
 
   public static ModelAnimationData decode(FriendlyByteBuf buffer) {
-    return new ModelAnimationData(buffer.readEnum(ModelAnimationBehavior.class));
+    return new ModelAnimationData(
+        buffer.readEnum(ModelAnimationBehavior.class), ModelAnimationRequest.decode(buffer));
   }
 
   public boolean hasChanged() {
@@ -73,5 +85,6 @@ public record ModelAnimationData(ModelAnimationBehavior behavior) {
 
   public void encode(FriendlyByteBuf buffer) {
     buffer.writeEnum(this.behavior);
+    this.playbackRequest.encode(buffer);
   }
 }

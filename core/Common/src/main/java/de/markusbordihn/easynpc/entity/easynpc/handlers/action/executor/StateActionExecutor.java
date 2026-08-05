@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.entity.easynpc.handlers.action.executor;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.data.action.ActionContext;
 import de.markusbordihn.easynpc.data.action.ActionDataEntry;
 import de.markusbordihn.easynpc.data.state.StateActionCommand;
 import de.markusbordihn.easynpc.data.state.StateEntry;
@@ -71,7 +72,8 @@ public class StateActionExecutor {
     return targetStateData;
   }
 
-  public static void execute(ActionDataEntry actionDataEntry, EasyNPC<?> easyNPC) {
+  public static void execute(
+      ActionDataEntry actionDataEntry, EasyNPC<?> easyNPC, ActionContext actionContext) {
     StateDataCapable<?> stateData = resolveTargetStateData(actionDataEntry, easyNPC);
     if (stateData == null) {
       return;
@@ -105,7 +107,7 @@ public class StateActionExecutor {
 
     StateEntry previousStateEntry = stateData.getState(stateId);
     StateEntry updatedStateEntry = stateActionCommand.apply(previousStateEntry);
-    stateData.setState(stateId, updatedStateEntry);
+    stateData.setState(stateId, updatedStateEntry, actionContext);
 
     if (actionDataEntry.enableDebug()) {
       log.info(

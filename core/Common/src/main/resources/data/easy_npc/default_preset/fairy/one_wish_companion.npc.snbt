@@ -16,190 +16,76 @@
         ON_INTERACTION:[{
           Type:"OPEN_DEFAULT_DIALOG"
         }]
-      },
-      ActionPermissionLevel:4
+      }
     },
-    ArmorDropChances:[0.085f,0.085f,0.085f,0.085f],
-    ArmorItems:[{},{},{},{}],
     Attributes:[{
+      Base:0.6d,Name:"minecraft:generic.flying_speed"
+    },{
       Base:16.0d,Name:"minecraft:generic.max_health"
     },{
-      Base:32.0d,Name:"minecraft:generic.follow_range"
-    },{
       Base:0.3d,Name:"minecraft:generic.movement_speed"
-    },{
-      Base:0.6d,Name:"minecraft:generic.flying_speed"
     }],
-    Brain:{
-      memories:{}
-    },
-    CanPickUpLoot:0b,
-    CanUpdate:1b,
     CustomName:'{"color":"#7DDCFF","text":"Luma, the Wish Fairy"}',
-    CustomNameVisible:1b,
     DialogData:{
       DialogDataSet:[{
-        Label:"wish_granted",Name:"Wish Granted",Priority:-1,Texts:[{
-          Text:"A shimmer of starlight gathers at your feet, @initiator. Your companion has found you. Treat them kindly; some wishes have paws."
-        }]
-      },{
-        Label:"farewell",Name:"Farewell",Priority:-1,Texts:[{
-          Text:"May your path stay bright, @initiator."
-        }]
-      },{
         Buttons:[{
           Actions:[{
-            Cmd:"/execute as @initiator at @s run summon minecraft:wolf ~ ~ ~ {Tags:[\"easy_npc_wish_wolf\"],CollarColor:10,Sitting:0b,PersistenceRequired:1b}",
-            Type:"COMMAND"
+            Cmd:'/execute as @initiator at @s run summon minecraft:wolf ~ ~ ~ {Tags:["easy_npc_wish_wolf"],CollarColor:10,Sitting:0b,PersistenceRequired:1b}',Type:"COMMAND"
           },{
-            Cmd:"/execute as @initiator at @s run data modify entity @e[type=minecraft:wolf,tag=easy_npc_wish_wolf,sort=nearest,limit=1,distance=..2] Owner set from entity @s UUID",
-            Type:"COMMAND"
+            Cmd:"/execute as @initiator at @s run data modify entity @e[type=minecraft:wolf,tag=easy_npc_wish_wolf,sort=nearest,limit=1,distance=..2] Owner set from entity @s UUID",Type:"COMMAND"
           },{
-            Cmd:"/execute at @initiator run tag @e[type=minecraft:wolf,tag=easy_npc_wish_wolf,sort=nearest,limit=1,distance=..2] remove easy_npc_wish_wolf",
-            Type:"COMMAND"
+            Cmd:"/execute at @initiator run tag @e[type=minecraft:wolf,tag=easy_npc_wish_wolf,sort=nearest,limit=1,distance=..2] remove easy_npc_wish_wolf",Type:"COMMAND"
           },{
-            Cmd:"/playsound minecraft:block.amethyst_block.chime master @initiator ~ ~ ~ 1 1.4",
-            Type:"COMMAND"
+            Cmd:"/playsound minecraft:block.amethyst_block.chime master @initiator ~ ~ ~ 1 1.4",Type:"COMMAND"
           },{
             Cmd:"wish_granted",Type:"OPEN_NAMED_DIALOG"
-          }],
-          Conditions:[{
+          }],Conditions:[{
             SubType:"LIFETIME",Type:"EXECUTION_LIMIT",Value:1
-          }],
-          Label:"wish_companion",
-          Name:"I wish for a loyal companion"
+          }],Label:"wish_companion",Name:"I wish for a loyal companion"
         },{
           Actions:[{
             Cmd:"farewell",Type:"OPEN_NAMED_DIALOG"
-          }],
-          Label:"leave",
-          Name:"Maybe later"
-        }],
-        Label:"default",
-        Name:"One Small Wish",
-        Texts:[{
-          Text:"Hello, @initiator. I can grant one small wish to every traveler who finds me.\\n\\nIf your heart asks for company, I can call a loyal wolf companion to your side. Choose carefully; a true wish only blooms once."
+          }],Label:"leave",Name:"Maybe later"
+        }],Label:"default",Name:"One Small Wish",Texts:[{
+          Text:"Hello, @initiator. I can summon one wolf companion for you. This wish can only be used once."
+        }]
+      },{
+        Name:"Wish Granted",Priority:-1,Texts:[{
+          Text:"Your companion is here, @initiator. Take good care of them."
+        }]
+      },{
+        Name:"Farewell",Priority:-1,Texts:[{
+          Text:"Come back if you change your mind, @initiator."
         }]
       }],
       Type:"CUSTOM"
     },
     DisplayAttribute:[{
-      Bool:1b,Type:"VISIBLE"
-    },{
-      Bool:1b,Type:"VISIBLE_AT_DAY"
-    },{
-      Bool:1b,Type:"VISIBLE_AT_NIGHT"
-    },{
-      Bool:1b,Type:"VISIBLE_IN_CREATIVE"
-    },{
-      Bool:1b,Type:"VISIBLE_IN_SPECTATOR"
-    },{
-      Bool:1b,Type:"VISIBLE_IN_STANDARD"
-    },{
-      Bool:1b,Type:"VISIBLE_TO_OWNER"
-    },{
-      Bool:1b,Type:"VISIBLE_TO_TEAM"
-    },{
       Int:12,Type:"LIGHT_LEVEL"
-    },{
-      Text:"ALWAYS",Type:"NAME_VISIBILITY"
     }],
     EasyNPCVersion:3,
     EntityAttribute:{
-      CanBeHitByProjectile:0b,
-      CanBeLeashed:0b,
-      CanBreatheUnderwater:0b,
-      CanCloseDoor:0b,
       CanFloat:1b,
-      CanOpenDoor:0b,
-      CanPassDoor:0b,
-      CanUseNetherPortal:0b,
       Freefall:1b,
-      HealthRegeneration:0.0d,
-      IsAttackableByMonsters:0b,
-      IsAttackableByPlayers:0b,
-      IsInvulnerable:1b,
-      IsPushable:0b,
-      NoGravity:1b,
-      PushEntities:0b
+      NoGravity:1b
     },
-    HandDropChances:[0.085f,0.085f],
     HandItems:[{
       Count:1b,id:"minecraft:amethyst_shard"
     },{}],
-    Health:16.0f,
     Invulnerable:1b,
-    LeftHanded:0b,
-    ModelData:{
-      DefaultPose:"STANDING",
-      Position:{},
-      Rotation:{},
-      Scale:{},
-      Visible:{}
-    },
-    Navigation:{
-      Home:{
-        X:0,
-        Y:64,
-        Z:0
-      }
-    },
+    NoGravity:1b,
     ObjectiveData:{
       HasObjectives:1b,
       ObjectiveDataSet:[{
-        Prio:9,Type:"LOOK_AT_PLAYER"
+        Type:"LOOK_AT_PLAYER"
       },{
-        Prio:9,Type:"LOOK_AT_RESET"
+        Type:"LOOK_AT_RESET"
       }]
     },
-    Offers:{
-      Inventory:{},
-      Recipes:{
-        Recipes:[]
-      }
-    },
-    OnGround:0b,
     PersistenceRequired:0b,
     PresetUUID:[I;1433272887,-1929344189,-1436572416,1798133224],
-    Profession:"NONE",
-    RenderData:{},
     SkinData:{
-      Content:"",
-      DisableLayers:0b,
-      Name:"BLUE",
-      Timestamp:1782072000000L,
-      Type:"DEFAULT",
-      URL:"",
-      UUID:[I;0,0,0,0]
-    },
-    SoundData:{
-      SoundDataSet:[{
-        Name:"minecraft:entity.parrot.ambient",Type:"AMBIENT"
-      },{
-        Name:"minecraft:entity.parrot.death",Type:"DEATH"
-      },{
-        Name:"minecraft:entity.parrot.eat",Type:"EAT"
-      },{
-        Name:"minecraft:entity.parrot.hurt",Type:"HURT"
-      },{
-        Name:"minecraft:entity.villager.trade",Type:"TRADE"
-      },{
-        Name:"minecraft:entity.villager.yes",Type:"TRADE_YES"
-      },{
-        Name:"minecraft:entity.villager.no",Type:"TRADE_NO"
-      }]
-    },
-    Status:{
-      finalized:1b
-    },
-    TradingData:{
-      TradingDataSet:{
-        LastReset:0L,
-        MaxUses:64,
-        ResetsEveryMin:0,
-        RewardedXP:0,
-        Type:"NONE"
-      }
+      Name:"BLUE"
     },
     VariantType:"BLUE",
     id:"easy_npc:fairy"

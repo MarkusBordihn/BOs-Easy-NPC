@@ -171,8 +171,11 @@ public record DisplayAttributeDataSet(
       return listTag;
     }
 
+    EnumMap<DisplayAttributeType, DisplayAttributeEntry> defaultAttributes =
+        createDefaultAttributes();
     for (var entry : attributes.entrySet()) {
-      if (entry.getKey() == DisplayAttributeType.NONE) {
+      if (entry.getKey() == DisplayAttributeType.NONE
+          || entry.getValue().equals(defaultAttributes.get(entry.getKey()))) {
         continue;
       }
       CompoundTag entryTag = new CompoundTag();

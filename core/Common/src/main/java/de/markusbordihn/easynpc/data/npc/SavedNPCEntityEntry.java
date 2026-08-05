@@ -36,6 +36,11 @@ public record SavedNPCEntityEntry(
   private static final String DATA_METADATA_TAG = "Metadata";
 
   public static <T extends Mob> SavedNPCEntityEntry fromEasyNPC(EasyNPC<T> easyNPC) {
+    return fromEasyNPC(easyNPC, NPCRemovalReason.NONE);
+  }
+
+  public static <T extends Mob> SavedNPCEntityEntry fromEasyNPC(
+      EasyNPC<T> easyNPC, NPCRemovalReason removalReason) {
     if (easyNPC == null || easyNPC.getEntity() == null) {
       log.error("Cannot create SavedNPCEntityEntry from null EasyNPC or null entity");
       return null;
@@ -47,9 +52,12 @@ public record SavedNPCEntityEntry(
       return null;
     }
 
-    NPCEntityMetadata metadata = NPCEntityMetadata.fromEasyNPC(easyNPC);
-    return new SavedNPCEntityEntry(
-        easyNPC.getEntityUUID(), presetData.serializePresetData(), metadata);
+    NPCEntityMetadata metadata =
+        NPCEntityMetadata.fromEasyNPC(easyNPC).withRemovalReason(removalReason);
+    CompoundTag npcData = presetData.serializePresetData();
+    npcData.remove(PresetDataCapable.PRESET_METADATA_TAG);
+
+    return new SavedNPCEntityEntry(easyNPC.getEntityUUID(), npcData, metadata);
   }
 
   public static SavedNPCEntityEntry load(CompoundTag compoundTag) {

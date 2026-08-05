@@ -23,6 +23,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import de.markusbordihn.easynpc.api.event.EasyNPCEventRegistry;
 import de.markusbordihn.easynpc.api.event.StateEventListener;
+import de.markusbordihn.easynpc.data.action.ActionContext;
 import de.markusbordihn.easynpc.data.action.ActionDataEntry;
 import de.markusbordihn.easynpc.data.action.ActionDataSet;
 import de.markusbordihn.easynpc.data.action.ActionDataType;
@@ -310,7 +311,8 @@ public class NpcStateTestHelper {
     easyNPC
         .getEasyNPCActionHandler()
         .executeAction(
-            new ActionDataEntry(ActionDataType.NPC_STATE, command, false, enableDebug), null);
+            new ActionDataEntry(ActionDataType.NPC_STATE, command, false, enableDebug),
+            ActionContext.EMPTY);
   }
 
   private static DialogButtonEntry questButton() {

@@ -47,12 +47,10 @@ public class ActionUtils {
     }
     String output = command;
 
-    // Add slash to command if missing.
     if (!command.startsWith("/")) {
       command = "/" + command;
     }
 
-    // Handle specific short-cuts for commands.
     if (command.startsWith(MACRO_ERROR_MESSAGE)) {
       output = output.replace(MACRO_ERROR_MESSAGE, "").trim();
       output = COMMAND_DISPLAY_TITLE + escapeJson(output) + "\",\"color\":\"dark_red\"}";
@@ -67,13 +65,20 @@ public class ActionUtils {
       output = COMMAND_DISPLAY_TITLE + escapeJson(output) + "\",\"color\":\"green\"}";
     }
 
-    // Replace NPC macros.
+    return parseMacros(output, entity, player);
+  }
+
+  public static String parseMacros(String text, LivingEntity entity, ServerPlayer player) {
+    if (text == null || text.isEmpty()) {
+      return "";
+    }
+    String output = text;
+
     if (entity != null) {
       output = output.replace(MACRO_NPC_UUID, entity.getUUID().toString());
       output = output.replace(MACRO_NPC, entity.getName().getString());
     }
 
-    // Replace player macros.
     if (player != null) {
       output = output.replace(MACRO_INITIATOR_UUID, player.getUUID().toString());
       output = output.replace(MACRO_INITIATOR, player.getName().getString());

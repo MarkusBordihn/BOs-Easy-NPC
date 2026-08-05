@@ -22,7 +22,10 @@ package de.markusbordihn.easynpc.commands.suggestion;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import de.markusbordihn.easynpc.api.pose.ModelPoseAPI;
 import de.markusbordihn.easynpc.client.pose.PoseManager;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.SharedSuggestionProvider;
@@ -33,6 +36,9 @@ public class PoseSuggestions {
 
   public static CompletableFuture<Suggestions> suggest(
       CommandContext<CommandSourceStack> context, SuggestionsBuilder build) {
-    return SharedSuggestionProvider.suggestResource(PoseManager.getPoseDataKeys(), build);
+    Set<net.minecraft.resources.ResourceLocation> poses = new LinkedHashSet<>();
+    poses.addAll(ModelPoseAPI.getVanillaPoseIds());
+    poses.addAll(PoseManager.getPoseDataKeys());
+    return SharedSuggestionProvider.suggestResource(poses, build);
   }
 }

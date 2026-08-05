@@ -1,0 +1,56 @@
+{
+  PresetMetadata:{
+    access:"INTERNAL",
+    author:"Easy NPC",
+    category:"Base",
+    created:1L,
+    description:"",
+    entityTypeId:"easy_npc:orc_warrior",
+    modified:1L,
+    name:"entity.easy_npc.orc_warrior Base",
+    variantType:"ORC_WARRIOR",
+    version:"1.0.0"
+  },
+  data:{
+    ActionData:{
+      ActionEventSet:{
+        ON_INTERACTION:[{
+          Type:"OPEN_DEFAULT_DIALOG"
+        },{
+          Type:"OPEN_TRADING_SCREEN"
+        }]
+      }
+    },
+    ArmorDropChances:[0.085f,0.085f,0.085f,0.085f],
+    ArmorItems:[{},{},{},{}],
+    Brain:{
+      memories:{}
+    },
+    CanPickUpLoot:0b,
+    CustomNameVisible:1b,
+    EasyNPCVersion:3,
+    HandDropChances:[0.085f,0.085f],
+    HandItems:[{},{}],
+    Invulnerable:0b,
+    LeftHanded:0b,
+    ModelData:{},
+    ObjectiveData:{
+      ObjectiveDataSet:[{
+        Type:"LOOK_AT_RESET"
+      },{
+        Type:"LOOK_AT_PLAYER"
+      },{
+        Type:"LOOK_AT_MOB"
+      }]
+    },
+    PersistenceRequired:1b,
+    SkinData:{
+      Type:"DEFAULT"
+    },
+    Status:{
+      finalized:1b
+    },
+    VariantType:"ORC_WARRIOR",
+    id:"easy_npc:orc_warrior"
+  }
+}

@@ -112,8 +112,14 @@ public record SpawnPresetMessage(
     boolean success;
 
     if (this.presetData != null) {
+      var resolvedPresetData =
+          PresetHandler.resolveParentPresets(
+              this.presetData,
+              this.resourceLocation,
+              this.presetType,
+              serverPlayer.serverLevel().getServer());
       var presetDataObj =
-          PresetData.fromCompoundTag(this.resourceLocation, this.presetType, this.presetData);
+          PresetData.fromCompoundTag(this.resourceLocation, this.presetType, resolvedPresetData);
       if (presetDataObj != null && presetDataObj.hasValidData()) {
         success =
             PresetHandler.importPreset(

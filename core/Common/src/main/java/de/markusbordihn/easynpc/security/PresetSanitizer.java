@@ -373,6 +373,10 @@ public class PresetSanitizer {
           new PresetFeatureNotice(NpcFeature.COMMAND_ACTION, PresetFeatureStatus.BLOCKED);
       case SCOREBOARD_ACTION_REMOVED ->
           new PresetFeatureNotice(NpcFeature.SCOREBOARD_ACTION, PresetFeatureStatus.BLOCKED);
+      case MESSAGE_ACTION_REMOVED ->
+          new PresetFeatureNotice(NpcFeature.MESSAGE_ACTION, PresetFeatureStatus.BLOCKED);
+      case CUSTOM_ACTION_REMOVED ->
+          new PresetFeatureNotice(NpcFeature.CUSTOM_ACTION, PresetFeatureStatus.BLOCKED);
       case BLOCK_ACTION_REMOVED ->
           new PresetFeatureNotice(NpcFeature.INTERACT_BLOCK_ACTION, PresetFeatureStatus.BLOCKED);
       case TRADING_ACTION_REMOVED ->
@@ -398,6 +402,8 @@ public class PresetSanitizer {
     return switch (actionDataType) {
       case COMMAND -> PresetSanitizationNotice.COMMAND_ACTION_REMOVED;
       case SCOREBOARD -> PresetSanitizationNotice.SCOREBOARD_ACTION_REMOVED;
+      case MESSAGE -> PresetSanitizationNotice.MESSAGE_ACTION_REMOVED;
+      case CUSTOM -> PresetSanitizationNotice.CUSTOM_ACTION_REMOVED;
       case INTERACT_BLOCK -> PresetSanitizationNotice.BLOCK_ACTION_REMOVED;
       case OPEN_TRADING_SCREEN -> PresetSanitizationNotice.TRADING_ACTION_REMOVED;
       default -> null;

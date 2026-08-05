@@ -41,6 +41,10 @@ public class PresetSecurity {
   private static final String DATA_PRESET_PATH_PREFIX = DataFileHandler.RESOURCE_PRESET_PATH + "/";
   private static final String DEFAULT_PRESET_PATH_PREFIX =
       DataFileHandler.RESOURCE_DEFAULT_PRESET_PATH + "/";
+  private static final String NAMESPACED_API_PRESET_PATH_PREFIX =
+      DataFileHandler.RESOURCE_NAMESPACED_API_PRESET_PATH + "/";
+  private static final String API_PRESET_PATH_PREFIX =
+      DataFileHandler.RESOURCE_API_PRESET_PATH + "/";
 
   private PresetSecurity() {}
 
@@ -99,12 +103,14 @@ public class PresetSecurity {
   }
 
   private static boolean isAllowedDataPresetPath(ResourceLocation resourceLocation) {
-    if (resourceLocation.getPath().startsWith(NAMESPACED_DATA_PRESET_PATH_PREFIX)) {
+    if (resourceLocation.getPath().startsWith(NAMESPACED_DATA_PRESET_PATH_PREFIX)
+        || resourceLocation.getPath().startsWith(NAMESPACED_API_PRESET_PATH_PREFIX)) {
       return true;
     }
 
     return Constants.MOD_ID.equals(resourceLocation.getNamespace())
-        && resourceLocation.getPath().startsWith(DATA_PRESET_PATH_PREFIX);
+        && (resourceLocation.getPath().startsWith(DATA_PRESET_PATH_PREFIX)
+            || resourceLocation.getPath().startsWith(API_PRESET_PATH_PREFIX));
   }
 
   private static boolean isAllowedDefaultPresetPath(ResourceLocation resourceLocation) {

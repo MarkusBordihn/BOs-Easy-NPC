@@ -64,10 +64,10 @@ public record EnvironmentalAttributes(
   }
 
   public CompoundTag encode(CompoundTag compoundTag) {
-    compoundTag.putBoolean(BREATHE_UNDERWATER_TAG, this.canBreatheUnderwater);
-    compoundTag.putBoolean(FLOAT_TAG, this.canFloat);
-    compoundTag.putBoolean(FREEFALL_TAG, this.freefall);
-    compoundTag.putBoolean(NO_GRAVITY_TAG, this.noGravity);
+    AttributeTagUtils.putIfTrue(compoundTag, BREATHE_UNDERWATER_TAG, this.canBreatheUnderwater);
+    AttributeTagUtils.putIfTrue(compoundTag, FLOAT_TAG, this.canFloat);
+    AttributeTagUtils.putIfTrue(compoundTag, FREEFALL_TAG, this.freefall);
+    AttributeTagUtils.putIfTrue(compoundTag, NO_GRAVITY_TAG, this.noGravity);
     return compoundTag;
   }
 }

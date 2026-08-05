@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.mixin.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.client.model.EasyNPCModel;
+import de.markusbordihn.easynpc.client.renderer.entity.SpeechBubbleRenderer;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.DisplayAttributeDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
@@ -96,6 +97,21 @@ public class EasyNPCEntityRendererMixin<T extends Entity> {
     if (entity instanceof EasyNPC<?> easyNPC
         && easyNPC.getEasyNPCModelData() instanceof ModelDataCapable) {
       EasyNPCModel.renderEntityNameTag(easyNPC, easyNPC.getEasyNPCModelData(), poseStack);
+    }
+  }
+
+  // Deliberately not attached to renderNameTag, which vanilla only calls for a visible name tag.
+  @Inject(method = "render", at = @At("TAIL"))
+  private void onRender(
+      T entity,
+      float entityYaw,
+      float partialTicks,
+      PoseStack poseStack,
+      MultiBufferSource multiBufferSource,
+      int packedLight,
+      CallbackInfo ci) {
+    if (entity instanceof EasyNPC<?>) {
+      SpeechBubbleRenderer.render(entity, poseStack, multiBufferSource, packedLight);
     }
   }
 }

@@ -44,8 +44,10 @@ import org.junit.jupiter.api.Test;
 
 class PresetInheritanceTest {
 
-  private static final ResourceLocation CHILD = ResourceLocation.fromNamespaceAndPath("test_mod", "child");
-  private static final ResourceLocation PARENT = ResourceLocation.fromNamespaceAndPath("test_mod", "parent");
+  private static final ResourceLocation CHILD =
+      ResourceLocation.fromNamespaceAndPath("test_mod", "child");
+  private static final ResourceLocation PARENT =
+      ResourceLocation.fromNamespaceAndPath("test_mod", "parent");
   private static final ResourceLocation GRANDPARENT =
       ResourceLocation.fromNamespaceAndPath("test_mod", "grandparent");
 

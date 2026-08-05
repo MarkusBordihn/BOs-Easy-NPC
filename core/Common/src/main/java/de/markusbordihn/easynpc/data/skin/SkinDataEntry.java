@@ -28,13 +28,8 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 
 public record SkinDataEntry(
-    String name,
-    String url,
-    UUID uuid,
-    SkinType type,
-    boolean disableLayers,
-    String content,
-    long timestamp) {
+    String name, String url, UUID uuid, SkinType type, boolean disableLayers, long timestamp) {
+  public static final String DATA_TIMESTAMP_TAG = "Timestamp";
 
   public static final StreamCodec<RegistryFriendlyByteBuf, SkinDataEntry> STREAM_CODEC =
       new StreamCodec<>() {
@@ -57,14 +52,13 @@ public record SkinDataEntry(
   static final String DATA_UUID_TAG = "UUID";
   static final String DATA_DISABLE_LAYERS_TAG = "DisableLayers";
   static final String DATA_CONTENT_TAG = "Content";
-  static final String DATA_TIMESTAMP_TAG = "Timestamp";
 
   public SkinDataEntry() {
-    this("", "", Constants.BLANK_UUID, SkinType.DEFAULT, false, "", System.currentTimeMillis());
+    this("", "", Constants.BLANK_UUID, SkinType.DEFAULT, false, System.currentTimeMillis());
   }
 
   public SkinDataEntry(final String name, final String url, final UUID uuid, final SkinType type) {
-    this(name, url, uuid, type, false, "", System.currentTimeMillis());
+    this(name, url, uuid, type, false, System.currentTimeMillis());
   }
 
   public SkinDataEntry(final CompoundTag compoundTag) {
@@ -77,7 +71,6 @@ public record SkinDataEntry(
         SkinType.get(compoundTag.getString(DATA_TYPE_TAG)),
         compoundTag.contains(DATA_DISABLE_LAYERS_TAG)
             && compoundTag.getBoolean(DATA_DISABLE_LAYERS_TAG),
-        compoundTag.contains(DATA_CONTENT_TAG) ? compoundTag.getString(DATA_CONTENT_TAG) : "",
         compoundTag.contains(DATA_TIMESTAMP_TAG)
             ? compoundTag.getLong(DATA_TIMESTAMP_TAG)
             : System.currentTimeMillis());
@@ -93,7 +86,7 @@ public record SkinDataEntry(
 
   public static SkinDataEntry createCustomSkin(UUID skinUUID, boolean disableLayers) {
     return new SkinDataEntry(
-        "", "", skinUUID, SkinType.CUSTOM, disableLayers, "", System.currentTimeMillis());
+        "", "", skinUUID, SkinType.CUSTOM, disableLayers, System.currentTimeMillis());
   }
 
   public static SkinDataEntry createPlayerSkin(String playerName, UUID playerUUID) {
@@ -112,36 +105,43 @@ public record SkinDataEntry(
 
   public SkinDataEntry withName(final String name) {
     return new SkinDataEntry(
-        name, this.url, this.uuid, this.type, this.disableLayers, this.content, this.timestamp);
+        name, this.url, this.uuid, this.type, this.disableLayers, this.timestamp);
   }
 
   public SkinDataEntry withType(final SkinType type) {
     return new SkinDataEntry(
-        this.name, this.url, this.uuid, type, this.disableLayers, this.content, this.timestamp);
+        this.name, this.url, this.uuid, type, this.disableLayers, this.timestamp);
   }
 
   public SkinDataEntry withURL(final String url) {
     return new SkinDataEntry(
-        this.name, url, this.uuid, this.type, this.disableLayers, this.content, this.timestamp);
+        this.name, url, this.uuid, this.type, this.disableLayers, this.timestamp);
   }
 
   public SkinDataEntry withUUID(final UUID uuid) {
     return new SkinDataEntry(
-        this.name, this.url, uuid, this.type, this.disableLayers, this.content, this.timestamp);
+        this.name, this.url, uuid, this.type, this.disableLayers, this.timestamp);
   }
 
   public SkinDataEntry withDisableLayers(final boolean disableLayers) {
     return new SkinDataEntry(
-        this.name, this.url, this.uuid, this.type, disableLayers, this.content, this.timestamp);
+        this.name, this.url, this.uuid, this.type, disableLayers, this.timestamp);
   }
 
   public CompoundTag write(CompoundTag compoundTag) {
-    compoundTag.putString(DATA_NAME_TAG, this.name);
     compoundTag.putString(DATA_TYPE_TAG, this.type.name());
-    compoundTag.putString(DATA_URL_TAG, this.url);
-    compoundTag.putUUID(DATA_UUID_TAG, this.uuid);
-    compoundTag.putBoolean(DATA_DISABLE_LAYERS_TAG, this.disableLayers);
-    compoundTag.putString(DATA_CONTENT_TAG, this.content);
+    if (this.name != null && !this.name.isEmpty()) {
+      compoundTag.putString(DATA_NAME_TAG, this.name);
+    }
+    if (this.url != null && !this.url.isEmpty()) {
+      compoundTag.putString(DATA_URL_TAG, this.url);
+    }
+    if (this.uuid != null && !Constants.BLANK_UUID.equals(this.uuid)) {
+      compoundTag.putUUID(DATA_UUID_TAG, this.uuid);
+    }
+    if (this.disableLayers) {
+      compoundTag.putBoolean(DATA_DISABLE_LAYERS_TAG, true);
+    }
     compoundTag.putLong(DATA_TIMESTAMP_TAG, this.timestamp);
     return compoundTag;
   }

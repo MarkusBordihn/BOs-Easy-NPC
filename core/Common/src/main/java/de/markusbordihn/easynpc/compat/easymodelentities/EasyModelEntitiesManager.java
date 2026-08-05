@@ -19,9 +19,11 @@
 
 package de.markusbordihn.easynpc.compat.easymodelentities;
 
+import de.markusbordihn.easynpc.api.animation.ModelAnimationInfo;
 import de.markusbordihn.easynpc.compat.CompatConstants;
 import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.model.ModelType;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -39,6 +41,9 @@ public final class EasyModelEntitiesManager {
   private static final Map<ResourceLocation, ModelType> PROFILE_MODEL_TYPES =
       new ConcurrentHashMap<>();
   private static final Map<ResourceLocation, String> PROFILE_BODY_TYPES = new ConcurrentHashMap<>();
+  private static final Map<ResourceLocation, ProfileDimensions> PROFILE_DIMENSIONS =
+      new ConcurrentHashMap<>();
+  private static AnimationProvider animationProvider = profileId -> List.of();
 
   private EasyModelEntitiesManager() {}
 
@@ -54,7 +59,19 @@ public final class EasyModelEntitiesManager {
     }
   }
 
+  public static void registerProfileDimensions(
+      ResourceLocation profileId, float width, float height, float eyeHeight) {
+    if (profileId != null && width > 0.0F && height > 0.0F) {
+      PROFILE_DIMENSIONS.put(profileId, new ProfileDimensions(width, height, eyeHeight));
+    }
+  }
+
   public static void clearProfileModelTypes() {
+    clearProfileModelMetadata();
+    PROFILE_DIMENSIONS.clear();
+  }
+
+  public static void clearProfileModelMetadata() {
     PROFILE_MODEL_TYPES.clear();
     PROFILE_BODY_TYPES.clear();
   }
@@ -67,8 +84,20 @@ public final class EasyModelEntitiesManager {
     return PROFILE_BODY_TYPES.get(profileId);
   }
 
+  public static ProfileDimensions getProfileDimensions(ResourceLocation profileId) {
+    return PROFILE_DIMENSIONS.get(profileId);
+  }
+
   public static boolean isFloatingProfile(ResourceLocation profileId) {
     return FLOATING_BODY_TYPE.equals(PROFILE_BODY_TYPES.get(profileId));
+  }
+
+  public static void setAnimationProvider(AnimationProvider provider) {
+    animationProvider = provider != null ? provider : profileId -> List.of();
+  }
+
+  public static List<ModelAnimationInfo> listAnimations(ResourceLocation profileId) {
+    return profileId != null ? List.copyOf(animationProvider.listAnimations(profileId)) : List.of();
   }
 
   public static ResourceLocation getProfileId(String entityModel) {
@@ -108,4 +137,11 @@ public final class EasyModelEntitiesManager {
       default -> ModelPartType.get(partName);
     };
   }
+
+  @FunctionalInterface
+  public interface AnimationProvider {
+    List<ModelAnimationInfo> listAnimations(ResourceLocation profileId);
+  }
+
+  public record ProfileDimensions(float width, float height, float eyeHeight) {}
 }

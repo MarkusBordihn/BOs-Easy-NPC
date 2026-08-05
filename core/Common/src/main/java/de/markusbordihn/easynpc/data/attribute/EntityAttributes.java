@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.data.attribute;
 
 import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
+import de.markusbordihn.easynpc.utils.CompoundTagUtils;
 import java.util.EnumMap;
 import java.util.Map;
 import net.minecraft.nbt.CompoundTag;
@@ -148,7 +149,7 @@ public class EntityAttributes {
             movementAttributes.encode(entityAttributeTag);
           }
         });
-    compoundTag.put(ENTITY_ATTRIBUTE_TAG, entityAttributeTag);
+    CompoundTagUtils.putIfNotEmpty(compoundTag, ENTITY_ATTRIBUTE_TAG, entityAttributeTag);
     return compoundTag;
   }
 
