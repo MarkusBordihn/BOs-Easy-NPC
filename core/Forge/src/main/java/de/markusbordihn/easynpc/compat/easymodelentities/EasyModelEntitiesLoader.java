@@ -21,8 +21,12 @@ package de.markusbordihn.easynpc.compat.easymodelentities;
 
 import de.markusbordihn.easymodelentities.api.EasyModelEntitiesApi;
 import de.markusbordihn.easymodelentities.api.EasyModelReloadEvents;
-import de.markusbordihn.easymodelentities.data.profile.EasyModelEntityProfile;
+import de.markusbordihn.easymodelentities.api.client.EasyModelEntitiesClientApi;
+import de.markusbordihn.easymodelentities.api.data.EasyModelBodyType;
+import de.markusbordihn.easymodelentities.api.data.EasyModelProfileInfo;
+import de.markusbordihn.easymodelentities.api.data.EasyModelProfileType;
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.api.animation.ModelAnimationInfo;
 import de.markusbordihn.easynpc.compat.IntegrationModelProvider;
 import de.markusbordihn.easynpc.compat.IntegrationRegistry;
 import java.util.ArrayList;
@@ -38,6 +42,7 @@ public class EasyModelEntitiesLoader implements IntegrationModelProvider {
   private static final EasyModelEntitiesLoader INSTANCE = new EasyModelEntitiesLoader();
 
   private static boolean reloadListenerRegistered = false;
+  private static boolean clientReloadListenerRegistered = false;
 
   private volatile List<Identifier> cachedModels;
 
@@ -49,8 +54,6 @@ public class EasyModelEntitiesLoader implements IntegrationModelProvider {
       log.info("Loaded {} Easy Model Entities profiles", INSTANCE.cachedModels.size());
     }
     IntegrationRegistry.register(INSTANCE);
-    EasyModelEntitiesManager.registerProfileDimensionsProvider(
-        profileId -> EasyModelEntitiesApi.getProfileEntityDimensions(profileId).orElse(null));
 
     if (!reloadListenerRegistered) {
       reloadListenerRegistered = true;
@@ -62,18 +65,66 @@ public class EasyModelEntitiesLoader implements IntegrationModelProvider {
     }
   }
 
+  public static void registerClient() {
+    register();
+    loadRenderableModels();
+    if (clientReloadListenerRegistered) {
+      return;
+    }
+
+    clientReloadListenerRegistered = true;
+    EasyModelEntitiesManager.setAnimationProvider(
+        profileId ->
+            EasyModelEntitiesClientApi.listAnimations(profileId).stream()
+                .map(
+                    info ->
+                        new ModelAnimationInfo(
+                            info.name(),
+                            info.durationTicks(),
+                            info.loop(),
+                            info.frameCount(),
+                            info.keyframeCount(),
+                            info.animatedBoneCount()))
+                .toList());
+    EasyModelReloadEvents.onRenderProfileReload(EasyModelEntitiesLoader::loadRenderableModels);
+  }
+
+  private static void loadRenderableModels() {
+    INSTANCE.cachedModels = EasyModelEntitiesClientApi.listRenderableEntityProfileIds();
+    EasyModelEntitiesManager.clearProfileModelMetadata();
+    for (Identifier profileId : INSTANCE.cachedModels) {
+      EasyModelEntitiesClientApi.getBodyType(profileId)
+          .ifPresent(bodyType -> registerProfileModelMetadata(profileId, bodyType));
+    }
+    IntegrationRegistry.invalidate(EasyModelEntitiesManager.INTEGRATION_ID);
+  }
+
   private static List<Identifier> loadProfileModels() {
     EasyModelEntitiesManager.clearProfileModelTypes();
     List<Identifier> profileIds = new ArrayList<>();
-    for (EasyModelEntityProfile profile : EasyModelEntitiesApi.listProfiles()) {
+    for (EasyModelProfileInfo profile : EasyModelEntitiesApi.listProfileInfos()) {
+      if (profile.modelType() != EasyModelProfileType.ENTITY) {
+        continue;
+      }
+
       profileIds.add(profile.id());
-      String bodyTypeName = profile.bodyType().name();
-      EasyModelEntitiesManager.registerProfileModelType(
-          profile.id(), EasyModelEntitiesManager.getModelType(bodyTypeName));
-      EasyModelEntitiesManager.registerProfileBodyType(profile.id(), bodyTypeName);
+      registerProfileModelMetadata(profile.id(), profile.bodyType());
+      EasyModelEntitiesManager.registerProfileDimensions(
+          profile.id(),
+          profile.dimensions().width(),
+          profile.dimensions().height(),
+          profile.standingEyeHeight());
     }
     profileIds.sort(Comparator.comparing(Identifier::toString));
     return profileIds;
+  }
+
+  private static void registerProfileModelMetadata(
+      Identifier profileId, EasyModelBodyType bodyType) {
+    String bodyTypeName = bodyType.name();
+    EasyModelEntitiesManager.registerProfileModelType(
+        profileId, EasyModelEntitiesManager.getModelType(bodyTypeName));
+    EasyModelEntitiesManager.registerProfileBodyType(profileId, bodyTypeName);
   }
 
   @Override

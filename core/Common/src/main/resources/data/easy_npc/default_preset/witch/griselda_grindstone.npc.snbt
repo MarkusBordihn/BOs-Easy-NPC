@@ -1,0 +1,152 @@
+{
+  PresetMetadata:{
+    author:"Kaworru",
+    category:"General",
+    created:1778627096335L,
+    description:"A suspicious witch who offers restricted item upgrades. Each trade can trigger custom actions, such as commands, messages, or special effects.",
+    entityTypeId:"easy_npc:witch",
+    modified:1778627096335L,
+    name:"Griselda Grindstone",
+    variantType:"WITCH",
+    version:"1.0.0"
+  },
+  data:{
+    Attributes:[{
+      Base:32.0d,Name:"minecraft:generic.follow_range"
+    },{
+      Base:26.0d,Name:"minecraft:generic.max_health"
+    },{
+      Base:0.25d,Name:"minecraft:generic.movement_speed"
+    }],
+    CanJoinRaid:1b,
+    CustomName:'{"color":"#FF681F","text":"Griselda Grindstone"}',
+    DialogData:{
+      DialogDataSet:[{
+        Buttons:[{
+          Actions:[{
+            Type:"OPEN_TRADING_SCREEN"
+          }],Label:"enhance",Name:"Enhance it. I accept the suspicious magic."
+        },{
+          Actions:[{
+            Type:"CLOSE_DIALOG"
+          }],Label:"no_thanks",Name:"No thanks, this feels illegal."
+        }],Name:"Default",Texts:[{
+          Text:"Hello @initiator, I can improve your wooden tools...
+
+Just give me the item and one stone block.
+
+No questions. No refunds. Probably safe."
+        }]
+      }],
+      Type:"CUSTOM"
+    },
+    EasyNPCVersion:3,
+    ForgeData:{},
+    ObjectiveData:{
+      HasObjectives:1b,
+      ObjectiveDataSet:[{
+        Type:"LOOK_AT_PLAYER"
+      },{
+        Type:"LOOK_AT_MOB"
+      },{
+        Type:"LOOK_AT_RESET"
+      }]
+    },
+    Offers:{
+      Inventory:{},
+      Recipes:{
+        Recipes:[{
+          buy:{
+            Count:1b,id:"minecraft:wooden_axe",tag:{
+              Damage:0
+            }
+          },buyB:{
+            Count:1b,id:"minecraft:cobblestone"
+          },demand:0,maxUses:1,priceMultiplier:1.0f,rewardExp:1b,sell:{
+            Count:1b,id:"minecraft:stone_axe",tag:{
+              Damage:0
+            }
+          },specialPrice:0,uses:0,xp:1
+        },{
+          buy:{
+            Count:1b,id:"minecraft:wooden_hoe",tag:{
+              Damage:0
+            }
+          },buyB:{
+            Count:1b,id:"minecraft:cobblestone"
+          },demand:0,maxUses:2,priceMultiplier:1.0f,rewardExp:1b,sell:{
+            Count:1b,id:"minecraft:stone_hoe",tag:{
+              Damage:0
+            }
+          },specialPrice:0,uses:0,xp:1
+        },{
+          buy:{
+            Count:1b,id:"minecraft:wooden_sword",tag:{
+              Damage:0
+            }
+          },buyB:{
+            Count:1b,id:"minecraft:cobblestone"
+          },demand:0,maxUses:3,priceMultiplier:1.0f,rewardExp:1b,sell:{
+            Count:1b,id:"minecraft:stone_sword",tag:{
+              Damage:0
+            }
+          },specialPrice:0,uses:0,xp:1
+        },{
+          buy:{
+            Count:1b,id:"minecraft:wooden_shovel",tag:{
+              Damage:0
+            }
+          },buyB:{
+            Count:1b,id:"minecraft:cobblestone"
+          },demand:0,maxUses:4,priceMultiplier:1.0f,rewardExp:1b,sell:{
+            Count:1b,id:"minecraft:stone_shovel",tag:{
+              Damage:0
+            }
+          },specialPrice:0,uses:0,xp:1
+        },{
+          buy:{
+            Count:1b,id:"minecraft:wooden_pickaxe",tag:{
+              Damage:0
+            }
+          },buyB:{
+            Count:1b,id:"minecraft:cobblestone"
+          },demand:0,maxUses:5,priceMultiplier:1.0f,rewardExp:1b,sell:{
+            Count:1b,id:"minecraft:stone_pickaxe",tag:{
+              Damage:0
+            }
+          },specialPrice:0,uses:0,xp:1
+        }]
+      }
+    },
+    PersistenceRequired:0b,
+    PresetUUID:[I;951701129,-336378758,-1206656841,-2042273487],
+    TradingData:{
+      TradingDataSet:{
+        LastReset:0L,
+        OfferActions:[{
+          ActionDataSet:[{
+            Cmd:"/say Stone axe delivered. Trees are now in danger.",Type:"COMMAND"
+          }],Index:0
+        },{
+          ActionDataSet:[{
+            Cmd:"/say  Stone hoe delivered. The dirt never agreed to this.",Type:"COMMAND"
+          }],Index:1
+        },{
+          ActionDataSet:[{
+            Cmd:"/say Stone sword delivered. It is sharp. Try not to learn that personally.",Type:"COMMAND"
+          }],Index:2
+        },{
+          ActionDataSet:[{
+            Cmd:"/say Stone shovel delivered. Perfect for holes, graves, and bad decisions.",Type:"COMMAND"
+          }],Index:3
+        },{
+          ActionDataSet:[{
+            Cmd:"/say Stone pickaxe delivered. Rocks will now be processed against their will.",Type:"COMMAND"
+          }],Index:4
+        }],
+        Type:"ADVANCED"
+      }
+    },
+    id:"easy_npc:witch"
+  }
+}

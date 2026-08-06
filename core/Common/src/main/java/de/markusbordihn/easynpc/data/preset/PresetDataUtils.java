@@ -23,6 +23,7 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.component.DataComponents;
 import de.markusbordihn.easynpc.data.attribute.LegacyAttributeConverter;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.data.NavigationDataCapable;
 import de.markusbordihn.easynpc.security.SecurityManager;
 import de.markusbordihn.easynpc.utils.CompoundTagUtils;
 import java.util.Optional;
@@ -60,9 +61,12 @@ public class PresetDataUtils {
     "HurtByTimestamp",
     "HurtTime",
     "Motion",
-    "OnGround"
+    "OnGround",
+    "PersistenceRequired"
   };
-  private static final String[] POSITION_TAGS = {"Pos", "Rotation"};
+  private static final String[] POSITION_TAGS = {
+    "Pos", "Rotation", NavigationDataCapable.DATA_NAVIGATION_TAG
+  };
   private static final String ENTITY_UUID_TAG = "UUID";
 
   private PresetDataUtils() {}
@@ -162,18 +166,8 @@ public class PresetDataUtils {
     }
 
     PresetData presetData = itemStack.get(DataComponents.PRESET_DATA);
-    if (presetData == null) {
-      return PresetData.EMPTY;
-    }
 
-    String entityTypeId = presetData.data().getString(PresetData.ENTITY_TYPE_TAG).orElse("");
-    EntityType<?> entityType = EntityType.byString(entityTypeId).orElse(null);
-
-    if (entityType == null) {
-      return PresetData.EMPTY;
-    }
-
-    return presetData;
+    return presetData != null && presetData.hasValidData() ? presetData : PresetData.EMPTY;
   }
 
   public static boolean spawnEntity(PresetData presetData, Level level, BlockPos blockPos) {
@@ -204,8 +198,14 @@ public class PresetDataUtils {
 
     LegacyAttributeConverter.convertLegacyAttributes(entityData);
 
-    entity.load(
-        TagValueInput.create(ProblemReporter.DISCARDING, serverLevel.registryAccess(), entityData));
+    if (entity instanceof EasyNPC<?> easyNPC && easyNPC.getEasyNPCPresetData() != null) {
+      easyNPC.registerEasyNPCDefaultData();
+      easyNPC.getEasyNPCPresetData().importPresetData(entityData);
+    } else {
+      entity.load(
+          TagValueInput.create(
+              ProblemReporter.DISCARDING, serverLevel.registryAccess(), entityData));
+    }
     entity.setPos(blockPos.getX() + 0.5, blockPos.getY(), blockPos.getZ() + 0.5);
 
     // Replace the home position carried over from the preset with the actual spawn position.
@@ -213,7 +213,6 @@ public class PresetDataUtils {
       easyNPC.getEasyNPCNavigationData().setNPCHomePosition(blockPos);
     }
 
-    // Ensure entity spawns alive with full health
     if (entity instanceof LivingEntity livingEntity) {
       float maxHealth =
           livingEntity.getAttribute(Attributes.MAX_HEALTH) != null

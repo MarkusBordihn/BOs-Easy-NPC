@@ -15,35 +15,19 @@
       ActionEventSet:{
         ON_INTERACTION:[{
           Type:"OPEN_DEFAULT_DIALOG"
-        }],
-        ActionPermissionLevel:4
+        }]
       }
     },
-    ArmorDropChances:[0.085f,0.085f,0.085f,0.085f],
-    ArmorItems:[{},{},{},{}],
     Attributes:[{
-      Base:0.5d,Name:"minecraft:generic.movement_speed"
-    },{
       Base:1.0d,Name:"minecraft:generic.attack_damage"
     },{
       Base:16.0d,Name:"minecraft:generic.follow_range"
+    },{
+      Base:0.5d,Name:"minecraft:generic.movement_speed"
     }],
-    Brain:{
-      memories:{}
-    },
-    CanPickUpLoot:0b,
-    CanUpdate:1b,
     CustomName:'{"color":"#4FA3D1","text":"Threshold Warden"}',
-    CustomNameVisible:1b,
     DialogData:{
       DialogDataSet:[{
-        Conditions:[{
-          Name:"warden",Type:"TEAM"
-        }],
-        Label:"order",Name:"Order Welcome",Priority:10,Texts:[{
-          Text:"The Order welcomes you home, @initiator. The inner keep stands open to you."
-        }]
-      },{
         Buttons:[{
           Actions:[{
             Cmd:"/playsound minecraft:block.iron_door.open master @a ~ ~ ~ 1 1",Type:"COMMAND"
@@ -92,53 +76,19 @@
           Text:"Ah, a proven veteran. No seal needed for one of your standing the armory is yours to browse."
         }]
       },{
-        Label:"farewell",Name:"Farewell",Priority:-1,Texts:[{
+        Conditions:[{
+          Name:"warden",Type:"TEAM"
+        }],Label:"order",Name:"Order Welcome",Priority:10,Texts:[{
+          Text:"The Order welcomes you home, @initiator. The inner keep stands open to you."
+        }]
+      },{
+        Name:"Farewell",Priority:-1,Texts:[{
           Text:"Safe travels, @initiator. The gate remains, should you return prepared."
         }]
       }],
       Type:"STANDARD"
     },
-    DisplayAttribute:[{
-      Bool:1b,Type:"VISIBLE"
-    },{
-      Bool:1b,Type:"VISIBLE_AT_DAY"
-    },{
-      Bool:1b,Type:"VISIBLE_AT_NIGHT"
-    },{
-      Bool:1b,Type:"VISIBLE_IN_CREATIVE"
-    },{
-      Bool:1b,Type:"VISIBLE_IN_SPECTATOR"
-    },{
-      Bool:1b,Type:"VISIBLE_IN_STANDARD"
-    },{
-      Bool:1b,Type:"VISIBLE_TO_OWNER"
-    },{
-      Bool:1b,Type:"VISIBLE_TO_TEAM"
-    },{
-      Int:7,Type:"LIGHT_LEVEL"
-    },{
-      Text:"ALWAYS",Type:"NAME_VISIBILITY"
-    }],
     EasyNPCVersion:3,
-    EntityAttribute:{
-      CanBeHitByProjectile:0b,
-      CanBeLeashed:0b,
-      CanBreatheUnderwater:0b,
-      CanCloseDoor:0b,
-      CanFloat:0b,
-      CanOpenDoor:0b,
-      CanPassDoor:0b,
-      CanUseNetherPortal:0b,
-      Freefall:0b,
-      HealthRegeneration:0.0d,
-      IsAttackableByMonsters:0b,
-      IsAttackableByPlayers:0b,
-      IsInvulnerable:1b,
-      IsPushable:0b,
-      NoGravity:0b,
-      PushEntities:0b
-    },
-    HandDropChances:[0.085f,0.085f],
     HandItems:[{
       Count:1b,id:"minecraft:iron_sword",tag:{
         Damage:0
@@ -148,69 +98,23 @@
         Damage:0
       }
     }],
-    Health:20.0f,
     Invulnerable:1b,
-    LeftHanded:0b,
-    ModelData:{
-      DefaultPose:"STANDING",
-      Position:{},
-      Rotation:{},
-      Scale:{},
-      Visible:{}
-    },
-    Navigation:{
-      Home:{
-        X:0,
-        Y:64,
-        Z:0
-      }
-    },
     ObjectiveData:{
       HasObjectives:1b,
       ObjectiveDataSet:[{
-        Prio:9,Type:"LOOK_AT_PLAYER"
+        Type:"LOOK_AT_PLAYER"
       },{
-        Prio:9,Type:"LOOK_AT_RESET"
+        Type:"LOOK_AT_RESET"
       }]
     },
-    Offers:{
-      Inventory:{},
-      Recipes:{
-        Recipes:[]
-      }
-    },
-    OnGround:1b,
     PersistenceRequired:0b,
     PresetUUID:[I;1414812756,-1985943042,-1342177280,861217859],
-    Profession:"NONE",
-    RenderData:{},
-    SkinData:{
-      Content:"",
-      DisableLayers:0b,
-      Name:"",
-      Timestamp:1780600000000L,
-      Type:"DEFAULT",
-      URL:"",
-      UUID:[I;0,0,0,0]
-    },
     SoundData:{
       SoundDataSet:[{
         Name:"minecraft:entity.player.death",Type:"DEATH"
       },{
         Name:"minecraft:entity.player.hurt",Type:"HURT"
       }]
-    },
-    Status:{
-      finalized:1b
-    },
-    TradingData:{
-      TradingDataSet:{
-        LastReset:0L,
-        MaxUses:64,
-        ResetsEveryMin:0,
-        RewardedXP:0,
-        Type:"NONE"
-      }
     },
     VariantType:"KNIGHT_01",
     id:"easy_npc:humanoid"

@@ -23,6 +23,7 @@ import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.actions.BasicActionConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.actions.DialogActionConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.actions.DistanceActionConfigurationScreenWrapper;
+import de.markusbordihn.easynpc.configui.client.screen.configuration.actions.IntervalActionConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.attribute.AbilitiesAttributeConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.attribute.BaseAttributeConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.attribute.CombatAttributeConfigurationScreenWrapper;
@@ -215,6 +216,9 @@ public class ClientScreens {
           MenuScreens.register(
               ModMenuTypes.DISTANCE_ACTION_CONFIGURATION_MENU.get(),
               DistanceActionConfigurationScreenWrapper::new);
+          MenuScreens.register(
+              ModMenuTypes.INTERVAL_ACTION_CONFIGURATION_MENU.get(),
+              IntervalActionConfigurationScreenWrapper::new);
           MenuScreens.register(
               ModMenuTypes.EQUIPMENT_CONFIGURATION_MENU.get(),
               EquipmentConfigurationContainerScreenWrapper::new);

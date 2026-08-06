@@ -539,6 +539,112 @@ public final class ModGameTests {
         "main_visibility_is_respected",
         VisibilityAttributeTest::testMainVisibilityIsRespected,
         DEFAULT_STRUCTURE);
+
+    register(
+        "base_preset_exists_for_every_spawn_egg",
+        BasePresetTest::testBasePresetExistsForEverySpawnEgg,
+        DEFAULT_STRUCTURE);
+    register(
+        "base_presets_are_written", BasePresetTest::testBasePresetsAreWritten, DEFAULT_STRUCTURE);
+    register(
+        "shipped_base_presets_are_up_to_date",
+        BasePresetTest::testShippedBasePresetsAreUpToDate,
+        DEFAULT_STRUCTURE);
+    register(
+        "base_preset_is_usable_as_parent",
+        BasePresetTest::testBasePresetIsUsableAsParent,
+        DEFAULT_STRUCTURE);
+
+    register(
+        "default_presets_are_valid",
+        DefaultPresetRoundTripTest::testDefaultPresetsAreValid,
+        DEFAULT_STRUCTURE);
+    register(
+        "default_presets_survive_regeneration",
+        DefaultPresetRoundTripTest::testDefaultPresetsSurviveRegeneration,
+        DEFAULT_STRUCTURE);
+
+    register(
+        "audience_contains_every_player_in_range",
+        IntervalActionAudienceTest::testAudienceContainsEveryPlayerInRange,
+        DEFAULT_STRUCTURE);
+    register(
+        "owner_is_preferred_as_initiator",
+        IntervalActionAudienceTest::testOwnerIsPreferredAsInitiator,
+        DEFAULT_STRUCTURE);
+    register(
+        "owner_condition_limits_the_event",
+        IntervalActionAudienceTest::testOwnerConditionLimitsTheEvent,
+        DEFAULT_STRUCTURE);
+    register(
+        "nothing_fires_without_the_owner",
+        IntervalActionAudienceTest::testNothingFiresWithoutTheOwner,
+        DEFAULT_STRUCTURE);
+
+    register(
+        "missing_objective_data_keeps_default_objectives",
+        PresetDefaultBaselineTest::testMissingObjectiveDataKeepsDefaultObjectives,
+        DEFAULT_STRUCTURE);
+    register(
+        "empty_objective_data_removes_all_objectives",
+        PresetDefaultBaselineTest::testEmptyObjectiveDataRemovesAllObjectives,
+        DEFAULT_STRUCTURE);
+    register(
+        "custom_objective_data_replaces_default_objectives",
+        PresetDefaultBaselineTest::testCustomObjectiveDataReplacesDefaultObjectives,
+        DEFAULT_STRUCTURE);
+
+    register(
+        "preset_survives_round_trip",
+        PresetRoundTripTest::testPresetSurvivesRoundTrip,
+        DEFAULT_STRUCTURE);
+    register(
+        "preset_survives_round_trip_for_villager",
+        PresetRoundTripTest::testPresetSurvivesRoundTripForVillager,
+        DEFAULT_STRUCTURE);
+    register(
+        "configuration_survives_round_trip",
+        PresetRoundTripTest::testConfigurationSurvivesRoundTrip,
+        DEFAULT_STRUCTURE);
+    register("export_is_compact", PresetRoundTripTest::testExportIsCompact, DEFAULT_STRUCTURE);
+    register(
+        "export_is_compact_for_villager",
+        PresetRoundTripTest::testExportIsCompactForVillager,
+        DEFAULT_STRUCTURE);
+
+    register(
+        "preset_item_spawns_configured_n_p_c",
+        PresetSpawnTest::testPresetItemSpawnsConfiguredNPC,
+        DEFAULT_STRUCTURE);
+    register(
+        "preset_item_spawns_configured_villager",
+        PresetSpawnTest::testPresetItemSpawnsConfiguredVillager,
+        DEFAULT_STRUCTURE);
+    register(
+        "spawner_spawns_configured_n_p_c",
+        PresetSpawnTest::testSpawnerSpawnsConfiguredNPC,
+        DEFAULT_STRUCTURE);
+
+    register(
+        "npc_without_stored_sounds_still_has_sounds",
+        StoredDataTest::testNpcWithoutStoredSoundsStillHasSounds,
+        DEFAULT_STRUCTURE);
+    register(
+        "villager_without_stored_sounds_still_has_sounds",
+        StoredDataTest::testVillagerWithoutStoredSoundsStillHasSounds,
+        DEFAULT_STRUCTURE);
+    register(
+        "unchanged_sounds_are_not_stored",
+        StoredDataTest::testUnchangedSoundsAreNotStored,
+        DEFAULT_STRUCTURE);
+    register(
+        "objectives_survive_without_target_flags",
+        StoredDataTest::testObjectivesSurviveWithoutTargetFlags,
+        DEFAULT_STRUCTURE);
+    register(
+        "unchanged_npc_stores_no_boilerplate",
+        StoredDataTest::testUnchangedNpcStoresNoBoilerplate,
+        DEFAULT_STRUCTURE);
   }
 
   private ModGameTests() {}

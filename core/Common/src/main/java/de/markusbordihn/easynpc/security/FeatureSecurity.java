@@ -78,6 +78,8 @@ public class FeatureSecurity {
     return switch (type) {
       case COMMAND -> NpcFeature.COMMAND_ACTION;
       case SCOREBOARD -> NpcFeature.SCOREBOARD_ACTION;
+      case MESSAGE -> NpcFeature.MESSAGE_ACTION;
+      case CUSTOM -> NpcFeature.CUSTOM_ACTION;
       case INTERACT_BLOCK -> NpcFeature.INTERACT_BLOCK_ACTION;
       case OPEN_TRADING_SCREEN -> NpcFeature.OPEN_TRADING_ACTION;
       case CLOSE_DIALOG, OPEN_DEFAULT_DIALOG, OPEN_NAMED_DIALOG -> NpcFeature.DIALOG;
@@ -93,7 +95,8 @@ public class FeatureSecurity {
     return switch (configurationType) {
       case TRADING, BASIC_TRADING, ADVANCED_TRADING, CUSTOM_TRADING, NONE_TRADING ->
           NpcFeature.TRADING;
-      case BASIC_ACTION, DIALOG_ACTION, DISTANCE_ACTION -> NpcFeature.COMMAND_ACTION;
+      case BASIC_ACTION, DIALOG_ACTION, DISTANCE_ACTION, INTERVAL_ACTION ->
+          NpcFeature.COMMAND_ACTION;
       case BASIC_OBJECTIVE, ATTACK_OBJECTIVE, FLEE_OBJECTIVE, FOLLOW_OBJECTIVE, LOOK_OBJECTIVE ->
           NpcFeature.OBJECTIVE;
       case DEFAULT_POSITION -> NpcFeature.POSITION;

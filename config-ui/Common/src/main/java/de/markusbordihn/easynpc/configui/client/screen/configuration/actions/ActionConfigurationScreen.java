@@ -40,6 +40,7 @@ public class ActionConfigurationScreen<T extends ConfigurationMenu> extends Conf
   protected Button basicActionButton = null;
   protected Button dialogActionButton = null;
   protected Button distanceActionButton = null;
+  protected Button intervalActionButton = null;
 
   public ActionConfigurationScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
@@ -49,7 +50,6 @@ public class ActionConfigurationScreen<T extends ConfigurationMenu> extends Conf
   public void init() {
     super.init();
 
-    // Action Types
     this.basicActionButton =
         this.addRenderableWidget(
             new TextButton(
@@ -82,6 +82,17 @@ public class ActionConfigurationScreen<T extends ConfigurationMenu> extends Conf
                     NetworkMessageHandlerManager.getServerHandler()
                         .openConfiguration(
                             this.getEasyNPCUUID(), ConfigurationType.DISTANCE_ACTION)));
+    this.intervalActionButton =
+        this.addRenderableWidget(
+            new TextButton(
+                this.distanceActionButton.getX() + this.distanceActionButton.getWidth(),
+                this.buttonTopPos,
+                80,
+                "interval_actions",
+                onPress ->
+                    NetworkMessageHandlerManager.getServerHandler()
+                        .openConfiguration(
+                            this.getEasyNPCUUID(), ConfigurationType.INTERVAL_ACTION)));
   }
 
   protected Button getActionDataButton(

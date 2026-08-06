@@ -19,15 +19,15 @@
 
 package de.markusbordihn.easynpc.compat.easymodelentities;
 
+import de.markusbordihn.easynpc.api.animation.ModelAnimationInfo;
 import de.markusbordihn.easynpc.compat.CompatConstants;
 import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.model.ModelType;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.entity.EntityDimensions;
 
 public final class EasyModelEntitiesManager {
 
@@ -40,19 +40,15 @@ public final class EasyModelEntitiesManager {
 
   private static final Map<Identifier, ModelType> PROFILE_MODEL_TYPES = new ConcurrentHashMap<>();
   private static final Map<Identifier, String> PROFILE_BODY_TYPES = new ConcurrentHashMap<>();
+  private static final Map<Identifier, ProfileDimensions> PROFILE_DIMENSIONS =
+      new ConcurrentHashMap<>();
 
-  private static volatile Function<Identifier, EntityDimensions> profileDimensionsProvider;
+  private static volatile AnimationProvider animationProvider = profileId -> List.of();
 
   private EasyModelEntitiesManager() {}
 
-  public static void registerProfileDimensionsProvider(
-      Function<Identifier, EntityDimensions> provider) {
-    profileDimensionsProvider = provider;
-  }
-
-  public static EntityDimensions getProfileDimensions(Identifier profileId) {
-    Function<Identifier, EntityDimensions> provider = profileDimensionsProvider;
-    return provider != null && profileId != null ? provider.apply(profileId) : null;
+  public static ProfileDimensions getProfileDimensions(Identifier profileId) {
+    return PROFILE_DIMENSIONS.get(profileId);
   }
 
   public static void registerProfileModelType(Identifier profileId, ModelType modelType) {
@@ -67,7 +63,21 @@ public final class EasyModelEntitiesManager {
     }
   }
 
+  public static void registerProfileDimensions(
+      Identifier profileId, float width, float height, float eyeHeight) {
+    if (profileId != null && width > 0.0F && height > 0.0F) {
+      PROFILE_DIMENSIONS.put(profileId, new ProfileDimensions(width, height, eyeHeight));
+    }
+  }
+
   public static void clearProfileModelTypes() {
+    clearProfileModelMetadata();
+    PROFILE_DIMENSIONS.clear();
+  }
+
+  // The client reload only knows the renderable profiles, so the server side dimensions of a
+  // profile without a render profile have to survive it.
+  public static void clearProfileModelMetadata() {
     PROFILE_MODEL_TYPES.clear();
     PROFILE_BODY_TYPES.clear();
   }
@@ -82,6 +92,14 @@ public final class EasyModelEntitiesManager {
 
   public static boolean isFloatingProfile(Identifier profileId) {
     return FLOATING_BODY_TYPE.equals(PROFILE_BODY_TYPES.get(profileId));
+  }
+
+  public static void setAnimationProvider(AnimationProvider provider) {
+    animationProvider = provider != null ? provider : profileId -> List.of();
+  }
+
+  public static List<ModelAnimationInfo> listAnimations(Identifier profileId) {
+    return profileId != null ? List.copyOf(animationProvider.listAnimations(profileId)) : List.of();
   }
 
   public static Identifier getProfileId(String entityModel) {
@@ -121,4 +139,11 @@ public final class EasyModelEntitiesManager {
       default -> ModelPartType.get(partName);
     };
   }
+
+  @FunctionalInterface
+  public interface AnimationProvider {
+    List<ModelAnimationInfo> listAnimations(Identifier profileId);
+  }
+
+  public record ProfileDimensions(float width, float height, float eyeHeight) {}
 }

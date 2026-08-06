@@ -19,35 +19,33 @@
 
 package de.markusbordihn.easynpc.commands.suggestion;
 
-import com.mojang.brigadier.context.CommandContext;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.brigadier.suggestion.Suggestions;
-import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import com.mojang.brigadier.context.StringRange;
+import com.mojang.brigadier.suggestion.Suggestion;
 import de.markusbordihn.easynpc.entity.LivingEntityManager;
-import java.util.concurrent.CompletableFuture;
-import java.util.stream.Stream;
+import java.util.List;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.SharedSuggestionProvider;
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.permissions.Permissions;
 
 public class EasyNPCSuggestions {
 
   private EasyNPCSuggestions() {}
 
-  public static Stream<String> suggestUUID(ServerPlayer serverPlayer) {
-    return serverPlayer.isCreative()
-        ? LivingEntityManager.getUUIDStrings()
-        : LivingEntityManager.getUUIDStringsByOwner(serverPlayer);
-  }
+  public static List<Suggestion> suggestNPCTargets(
+      final SharedSuggestionProvider suggestionProvider,
+      final StringRange stringRange,
+      final String filterPrefix) {
+    // The dedicated server console uses the same argument type, but has no client-side view.
+    if (suggestionProvider instanceof CommandSourceStack) {
+      return LivingEntityManager.getUUIDStrings()
+          .filter(uuid -> uuid.startsWith(filterPrefix))
+          .map(uuid -> new Suggestion(stringRange, uuid))
+          .toList();
+    }
 
-  public static Stream<String> suggestUUID(String startWith) {
-    return LivingEntityManager.getUUIDStrings().filter(uuid -> uuid.startsWith(startWith));
-  }
-
-  public static CompletableFuture<Suggestions> suggestUUID(
-      CommandContext<CommandSourceStack> context, SuggestionsBuilder build)
-      throws CommandSyntaxException {
-    ServerPlayer serverPlayer = context.getSource().getPlayerOrException();
-    return SharedSuggestionProvider.suggest(suggestUUID(serverPlayer), build);
+    return ClientTargetSuggestions.suggestNPCTargets(
+        stringRange,
+        filterPrefix,
+        suggestionProvider.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER));
   }
 }

@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.entity.easynpc.npc.easymodelentities;
 
 import de.markusbordihn.easynpc.api.npc.raw.PathfinderMobRaw;
 import de.markusbordihn.easynpc.compat.easymodelentities.EasyModelEntitiesManager;
+import de.markusbordihn.easynpc.compat.easymodelentities.EasyModelEntitiesManager.ProfileDimensions;
 import de.markusbordihn.easynpc.data.attribute.NavigationType;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
 import de.markusbordihn.easynpc.data.model.ModelPartType;
@@ -49,6 +50,8 @@ public class EasyModelNPC extends PathfinderMobRaw {
 
   private String cachedProfileModel;
   private Identifier cachedProfileId;
+  private Identifier dimensionsProfileId;
+  private ProfileDimensions profileDimensions;
 
   public EasyModelNPC(EntityType<? extends PathfinderMob> entityType, Level level) {
     super(entityType, level, VariantType.EASY_MODEL_NPC);
@@ -68,6 +71,20 @@ public class EasyModelNPC extends PathfinderMobRaw {
         .add(Attributes.TEMPT_RANGE, 10.0D);
   }
 
+  @Override
+  public void aiStep() {
+    super.aiStep();
+
+    Identifier profileId = this.getEasyModelProfileId();
+    ProfileDimensions dimensions = EasyModelEntitiesManager.getProfileDimensions(profileId);
+    if (!Objects.equals(this.dimensionsProfileId, profileId)
+        || !Objects.equals(this.profileDimensions, dimensions)) {
+      this.dimensionsProfileId = profileId;
+      this.profileDimensions = dimensions;
+      this.refreshDimensions();
+    }
+  }
+
   public Identifier getEasyModelProfileId() {
     RenderDataEntry renderDataEntry = this.getEasyNPCRenderData().getRenderDataEntry();
     String entityModel = renderDataEntry != null ? renderDataEntry.getRenderEntityModel() : null;
@@ -80,16 +97,16 @@ public class EasyModelNPC extends PathfinderMobRaw {
 
   @Override
   public EntityDimensions getDefaultDimensions(Pose pose) {
-    EntityDimensions dimensions =
+    ProfileDimensions dimensions =
         EasyModelEntitiesManager.getProfileDimensions(this.getEasyModelProfileId());
     if (dimensions == null) {
       return super.getDefaultDimensions(pose);
     }
-    CustomScale rootScale = getModelRootData().scale();
-    if (rootScale.x() != 1.0f || rootScale.y() != 1.0f) {
-      dimensions = dimensions.scale(rootScale.x(), rootScale.y());
-    }
-    return dimensions;
+
+    CustomScale rootScale = this.getModelRootData().scale();
+    float height = dimensions.height() * rootScale.y();
+    return EntityDimensions.scalable(dimensions.width() * rootScale.x(), height)
+        .withEyeHeight(Math.min(dimensions.eyeHeight() * rootScale.y(), height));
   }
 
   @Override

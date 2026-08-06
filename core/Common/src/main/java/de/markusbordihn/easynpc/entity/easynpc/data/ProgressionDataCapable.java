@@ -229,13 +229,17 @@ public interface ProgressionDataCapable<E extends Mob> extends EasyNPC<E> {
   }
 
   default void addAdditionalProgressionData(ValueOutput valueOutput) {
-    ProgressionData progressionData = getProgressionData();
-    if (progressionData != null) {
-      CompoundTag compoundTag = progressionData.encode(new CompoundTag());
-      valueOutput.store(
-          ProgressionData.DATA_PROGRESSION_TAG,
-          CompoundTag.CODEC,
-          compoundTag.getCompoundOrEmpty(ProgressionData.DATA_PROGRESSION_TAG));
+    ProgressionData progressionData = this.getProgressionData();
+    if (progressionData == null) {
+      return;
+    }
+
+    CompoundTag progressionTag =
+        progressionData
+            .encode(new CompoundTag())
+            .getCompoundOrEmpty(ProgressionData.DATA_PROGRESSION_TAG);
+    if (!progressionTag.isEmpty()) {
+      valueOutput.store(ProgressionData.DATA_PROGRESSION_TAG, CompoundTag.CODEC, progressionTag);
     }
   }
 

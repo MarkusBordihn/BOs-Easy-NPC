@@ -20,52 +20,38 @@
             },{
               Name:"minecraft:gold_ingot",Operation:"NOT_EQUALS",SubType:"MAIN_HAND",Type:"HAS_ITEM_IN_HAND"
             }]
-          },Id:[I;1308280512,2114866386,-1704433833,1144367593],Type:"COMMAND"
+          },Type:"COMMAND"
         },{
           Cmd:"/say Ah, the gleam is true. Gold in hand, fate in motion. Come, see my wares.",ConditionDataSet:{
             ConditionDataSet:[{
               Name:"minecraft:gold_ingot",SubType:"MAIN_HAND",Type:"HAS_ITEM_IN_HAND"
             }]
-          },Id:[I;-391084314,1648640999,-1163052732,-1621332530],Type:"COMMAND"
+          },Type:"COMMAND"
         },{
           ConditionDataSet:{
             ConditionDataSet:[{
               Name:"minecraft:gold_ingot",SubType:"MAIN_HAND",Type:"HAS_ITEM_IN_HAND"
             }]
-          },Id:[I;498231359,-2103947541,-1503050505,-1384707507],Type:"OPEN_TRADING_SCREEN"
+          },Type:"OPEN_TRADING_SCREEN"
         },{
           Cmd:"/say No gold ingot, no bargain. Return when your pockets carry its shine.",ConditionDataSet:{
             ConditionDataSet:[{
               Type:"FALLBACK"
             }]
-          },Id:[I;-552462355,1696088327,-1150384563,1574782809],Type:"COMMAND"
+          },Type:"COMMAND"
         }]
       }
     },
-    ArmorDropChances:[0.085f,0.085f,0.085f,0.085f],
-    ArmorItems:[{},{},{},{}],
     Attributes:[{
       Base:1.0d,Name:"minecraft:generic.attack_damage"
     },{
-      Base:0.5d,Name:"minecraft:generic.movement_speed"
-    },{
-      Base:0.0d,Name:"minecraft:zombie.spawn_reinforcements"
-    },{
       Base:0.0d,Name:"minecraft:generic.attack_speed"
     },{
-      Base:0.0d,Name:"epicfight:stun_armor"
+      Base:32.0d,Name:"minecraft:generic.follow_range"
     },{
-      Base:32.0d,Modifiers:[{
-        Amount:0.06729389355102194d,Name:"Random spawn bonus",Operation:1,UUID:[I;811058858,-1187689207,-1178132722,-1301116708]
-      }],Name:"minecraft:generic.follow_range"
+      Base:0.5d,Name:"minecraft:generic.movement_speed"
     }],
-    Brain:{
-      memories:{}
-    },
-    CanPickUpLoot:1b,
-    CanUpdate:1b,
     CustomName:'{"color":"#FFFF00","text":"Goldmere"}',
-    CustomNameVisible:1b,
     DialogData:{
       DialogDataSet:[{
         Label:"default",Name:"Basic Dialog",Texts:[{
@@ -74,78 +60,21 @@
       }],
       Type:"BASIC"
     },
-    DisplayAttribute:[{
-      Bool:1b,Type:"VISIBLE"
-    },{
-      Bool:1b,Type:"VISIBLE_AT_DAY"
-    },{
-      Bool:1b,Type:"VISIBLE_AT_NIGHT"
-    },{
-      Bool:1b,Type:"VISIBLE_IN_CREATIVE"
-    },{
-      Bool:1b,Type:"VISIBLE_IN_SPECTATOR"
-    },{
-      Bool:1b,Type:"VISIBLE_IN_STANDARD"
-    },{
-      Bool:1b,Type:"VISIBLE_TO_OWNER"
-    },{
-      Bool:1b,Type:"VISIBLE_TO_TEAM"
-    },{
-      Int:7,Type:"LIGHT_LEVEL"
-    },{
-      Text:"ALWAYS",Type:"NAME_VISIBILITY"
-    }],
     EasyNPCVersion:3,
-    EntityAttribute:{
-      CanBeHitByProjectile:0b,
-      CanBeLeashed:0b,
-      CanBreatheUnderwater:0b,
-      CanCloseDoor:0b,
-      CanFloat:0b,
-      CanOpenDoor:0b,
-      CanPassDoor:0b,
-      CanUseNetherPortal:0b,
-      Freefall:0b,
-      HealthRegeneration:0.0d,
-      IsAttackableByMonsters:0b,
-      IsAttackableByPlayers:0b,
-      IsInvulnerable:1b,
-      IsPushable:0b,
-      NoGravity:0b,
-      PushEntities:0b
-    },
-    ForgeCaps:{},
-    HandDropChances:[0.085f,0.085f],
     HandItems:[{
       Count:1b,id:"minecraft:golden_sword",tag:{
         Damage:0
       }
     },{}],
-    Inventory:[],
     Invulnerable:0b,
-    LeftHanded:0b,
-    ModelData:{
-      DefaultPose:"STANDING",
-      Position:{},
-      Rotation:{},
-      Scale:{},
-      Visible:{}
-    },
-    Navigation:{
-      Home:{
-        X:29,
-        Y:65,
-        Z:-58
-      }
-    },
     ObjectiveData:{
       HasObjectives:1b,
       ObjectiveDataSet:[{
-        Prio:9,Type:"LOOK_AT_PLAYER"
+        Type:"LOOK_AT_PLAYER"
       },{
-        Prio:10,Type:"LOOK_AT_MOB"
+        Type:"LOOK_AT_MOB"
       },{
-        Prio:10,Type:"LOOK_AT_RESET"
+        Type:"LOOK_AT_RESET"
       }]
     },
     Offers:{
@@ -202,40 +131,16 @@
         }]
       }
     },
-    OnGround:1b,
     PersistenceRequired:0b,
     PresetUUID:[I;1975103284,-1161476883,-1997739220,132189165],
-    Profession:"NONE",
-    Progression:{
-      AttributeScalingEnabled:0b,
-      EntityExperience:1,
-      EntityExperienceLevel:1
-    },
-    RenderData:{},
     SkinData:{
-      Content:"",
-      DisableLayers:0b,
-      Name:"PIGLIN_BRUTE",
-      Timestamp:1780272611825L,
-      Type:"DEFAULT",
-      URL:"",
-      UUID:[I;0,0,0,0]
+      Name:"PIGLIN_BRUTE"
     },
-    SoundData:{
-      SoundDataSet:[]
-    },
-    Status:{
-      finalized:1b,
-      npc_data_last_saved:1780341606311L,
-      npc_data_last_update:1780559098402L
-    },
-    TimeInOverworld:0,
     TradingData:{
       TradingDataSet:{
         LastReset:0L,
         MaxUses:2,
         ResetsEveryMin:15,
-        RewardedXP:0,
         Type:"BASIC"
       }
     },

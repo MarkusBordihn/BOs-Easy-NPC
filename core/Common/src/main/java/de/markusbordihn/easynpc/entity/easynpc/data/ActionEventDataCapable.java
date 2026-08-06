@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.data;
 
+import de.markusbordihn.easynpc.data.action.ActionContext;
 import de.markusbordihn.easynpc.data.action.ActionDataEntry;
 import de.markusbordihn.easynpc.data.action.ActionDataSet;
 import de.markusbordihn.easynpc.data.action.ActionDataType;
@@ -144,7 +145,6 @@ public interface ActionEventDataCapable<E extends Mob> extends EasyNPC<E> {
   }
 
   default void readAdditionalActionData(ValueInput valueInput) {
-    // Early exit if no action data is available
     Optional<CompoundTag> compoundTagData =
         valueInput.read(DATA_ACTION_DATA_TAG, CompoundTag.CODEC);
     if (compoundTagData.isEmpty()) {
@@ -167,7 +167,6 @@ public interface ActionEventDataCapable<E extends Mob> extends EasyNPC<E> {
   default void registerDefaultActionInteractionEvents() {
     log.debug("Register default action interaction events for {} ...", this);
 
-    // Get existing action event set or create a new one
     ActionEventSet actionEventSet =
         this.hasActionEventSet() ? this.getActionEventSet() : new ActionEventSet();
     ActionDataSet actionDataSet =
@@ -188,24 +187,22 @@ public interface ActionEventDataCapable<E extends Mob> extends EasyNPC<E> {
   }
 
   default void handleActionEvent(ActionEventType actionEventType) {
-    if (!this.hasActionEvent(actionEventType)) {
-      return;
-    }
-
-    ActionHandler<E> actionHandler = this.getEasyNPCActionHandler();
-    if (actionHandler != null) {
-      actionHandler.executeActions(this.getActionDataSet(actionEventType), null);
-    }
+    this.handleActionEvent(actionEventType, ActionContext.of(actionEventType, null));
   }
 
   default void handleActionEvent(ActionEventType actionEventType, ServerPlayer serverPlayer) {
+    this.handleActionEvent(actionEventType, ActionContext.of(actionEventType, serverPlayer));
+  }
+
+  default void handleActionEvent(ActionEventType actionEventType, ActionContext actionContext) {
     if (!this.hasActionEvent(actionEventType)) {
       return;
     }
 
     ActionHandler<E> actionHandler = this.getEasyNPCActionHandler();
     if (actionHandler != null) {
-      actionHandler.executeActions(this.getActionDataSet(actionEventType), serverPlayer);
+      actionHandler.executeActions(
+          this.getActionDataSet(actionEventType), actionContext.withEventType(actionEventType));
     }
   }
 }

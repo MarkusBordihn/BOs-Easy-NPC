@@ -77,6 +77,6 @@ public record ChangeModelAnimationDataMessage(UUID uuid, ModelAnimationData anim
     }
 
     log.debug("Change animation data {} for {} from {}", this.animationData, easyNPC, serverPlayer);
-    capable.setModelAnimationData(this.animationData);
+    capable.setModelAnimationBehavior(this.animationData.behavior());
   }
 }

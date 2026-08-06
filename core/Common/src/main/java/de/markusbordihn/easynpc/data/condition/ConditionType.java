@@ -21,11 +21,14 @@ package de.markusbordihn.easynpc.data.condition;
 
 import de.markusbordihn.easynpc.data.state.StateValueType;
 import de.markusbordihn.easynpc.utils.EnumUtils;
+import java.util.EnumSet;
+import java.util.Set;
 
 public enum ConditionType {
   NONE(ConditionTypeRequirements.NONE),
   SCOREBOARD(ConditionTypeRequirements.NAME_VALUE_OPERATION),
   EXECUTION_LIMIT(ConditionTypeRequirements.VALUE_ONLY, DurationType.class),
+  CHANCE(ConditionTypeRequirements.VALUE_ONLY),
   HAS_ITEM_IN_INVENTORY(ConditionTypeRequirements.NAME_ONLY),
   HAS_ITEM_IN_HAND(ConditionTypeRequirements.NAME_ONLY, HandItemType.class),
   ADVANCEMENT(ConditionTypeRequirements.NAME_ONLY),
@@ -39,9 +42,23 @@ public enum ConditionType {
   TIME_OF_DAY(ConditionTypeRequirements.VALUE_AND_OPERATION),
   WEATHER(ConditionTypeRequirements.NONE, WeatherType.class),
   NPC_STATE(ConditionTypeRequirements.NAME_VALUE_OPERATION, StateValueType.class),
+  RELATIONSHIP(ConditionTypeRequirements.NONE, RelationshipType.class),
   FALLBACK(ConditionTypeRequirements.NONE),
   CUSTOM(ConditionTypeRequirements.NONE),
   ;
+
+  /** Conditions outside this set require an initiator. */
+  private static final Set<ConditionType> PLAYER_INDEPENDENT_TYPES =
+      EnumSet.of(
+          NONE,
+          NPC_HEALTH,
+          ENTITY_HEALTH,
+          NPC_STATE,
+          TIME_OF_DAY,
+          WEATHER,
+          CHANCE,
+          FALLBACK,
+          CUSTOM);
 
   private final ConditionTypeRequirements requirements;
   private final Class<? extends ConditionSubTypeEntry> subTypeClass;
@@ -70,6 +87,10 @@ public enum ConditionType {
 
   public boolean requiresOperation() {
     return this.requirements.requiresOperation();
+  }
+
+  public boolean requiresPlayer() {
+    return !PLAYER_INDEPENDENT_TYPES.contains(this);
   }
 
   public boolean hasSubTypes() {

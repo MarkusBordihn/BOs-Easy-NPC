@@ -23,6 +23,7 @@ import java.util.Locale;
 
 public enum StatusDataType {
   FINALIZED(ValueType.BOOLEAN),
+  SPAWN_ACTION_FIRED(ValueType.BOOLEAN),
   NPC_DATA_LAST_UPDATE(ValueType.TIMESTAMP),
   NPC_DATA_LAST_SAVED(ValueType.TIMESTAMP);
 

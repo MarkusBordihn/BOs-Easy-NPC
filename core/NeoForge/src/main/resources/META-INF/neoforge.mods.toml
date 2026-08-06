@@ -27,5 +27,12 @@ versionRange = "[26.1.2,26.2)"
 ordering = "NONE"
 side = "BOTH"
 
+[[dependencies.easy_npc]]
+modId = "easy_model_entities"
+type = "optional"
+versionRange = "[2.0.0,3.0.0)"
+ordering = "AFTER"
+side = "BOTH"
+
 [[mixins]]
 config = "easy_npc.neoforge.mixins.json"

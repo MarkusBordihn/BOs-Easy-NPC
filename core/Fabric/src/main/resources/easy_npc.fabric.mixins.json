@@ -5,9 +5,10 @@
   "compatibilityLevel": "JAVA_25",
   "refmap": "easy_npc.refmap.json",
   "client": [
-    "client.gui.InventoryScreenMixin", "model.EasyNPCAdultFelineModelMixin",
-    "model.EasyNPCAllayModelMixin", "model.EasyNPCChickenModelMixin",
-    "model.EasyNPCCreeperModelMixin", "model.EasyNPCFelineModelMixin", "model.EasyNPCFoxModelMixin",
+    "client.gui.InventoryScreenMixin", "compat.mobhealthbar.MobHealthBarMixin",
+    "model.EasyNPCAdultFelineModelMixin", "model.EasyNPCAllayModelMixin",
+    "model.EasyNPCChickenModelMixin", "model.EasyNPCCreeperModelMixin",
+    "model.EasyNPCFelineModelMixin", "model.EasyNPCFoxModelMixin",
     "model.EasyNPCGhastModelMixin", "model.EasyNPCHorseModelMixin",
     "model.EasyNPCHumanoidModelMixin", "model.EasyNPCIllagerModelMixin",
     "model.EasyNPCIronGolemModelMixin", "model.EasyNPCPlayerModelMixin",

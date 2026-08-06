@@ -21,16 +21,22 @@ package de.markusbordihn.easynpc.entity.easynpc.npc.custom;
 
 import de.markusbordihn.easynpc.api.npc.raw.PathfinderMobRaw;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
+import de.markusbordihn.easynpc.data.render.RenderDataEntry;
+import de.markusbordihn.easynpc.data.render.RenderType;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
 
 public class Doppler extends PathfinderMobRaw {
-
   public static final String ID = "doppler";
+
+  private EntityType<? extends Entity> dimensionsEntityType;
 
   public Doppler(EntityType<? extends PathfinderMob> entityType, Level level) {
     this(entityType, level, VariantType.DOPPLER);
@@ -52,6 +58,32 @@ public class Doppler extends PathfinderMobRaw {
         .add(Attributes.ARMOR, 0.0D)
         .add(Attributes.ARMOR_TOUGHNESS, 0.0D)
         .add(Attributes.TEMPT_RANGE, 10.0D);
+  }
+
+  @Override
+  public void aiStep() {
+    super.aiStep();
+
+    EntityType<? extends Entity> renderEntityType = this.getRenderEntityType();
+    if (this.dimensionsEntityType != renderEntityType) {
+      this.dimensionsEntityType = renderEntityType;
+      this.refreshDimensions();
+    }
+  }
+
+  @Override
+  public EntityDimensions getDefaultDimensions(Pose pose) {
+    EntityType<? extends Entity> renderEntityType = this.getRenderEntityType();
+    return renderEntityType != null
+        ? renderEntityType.getDimensions()
+        : super.getDefaultDimensions(pose);
+  }
+
+  private EntityType<? extends Entity> getRenderEntityType() {
+    RenderDataEntry renderDataEntry = this.getRenderDataEntry();
+    return renderDataEntry != null && renderDataEntry.getRenderType() == RenderType.CUSTOM_ENTITY
+        ? renderDataEntry.getRenderEntityType()
+        : null;
   }
 
   @Override

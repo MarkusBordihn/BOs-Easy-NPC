@@ -1,0 +1,52 @@
+/*
+ * Copyright 2026 Markus Bordihn
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+ * associated documentation files (the "Software"), to deal in the Software without restriction,
+ * including without limitation the rights to use, copy, modify, merge, publish, distribute,
+ * sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all copies or
+ * substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
+ * NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+
+package de.markusbordihn.easynpc.api.preset;
+
+public enum PresetValidationRule {
+  ANIMATION_ACTION_WITHOUT_NAME,
+  ANIMATION_BLEND_OUT_OF_RANGE,
+  COMMAND_ACTION_WITHOUT_COMMAND,
+  CONTROL_CHARACTER_IN_TEXT,
+  DIALOG_LABEL_TOO_LONG,
+  DIALOG_WITHOUT_TEXT,
+  DUPLICATE_DIALOG_LABEL,
+  EMPTY_PRESET,
+  IDENTITY_DATA_PRESENT,
+  MALFORMED_CUSTOM_ACTION_ID,
+  MALFORMED_CUSTOM_CONDITION_ID,
+  MALFORMED_ENTITY_TYPE,
+  MALFORMED_PARENT,
+  MALFORMED_SNBT,
+  MESSAGE_ACTION_WITHOUT_TEXT,
+  MISSING_ENTITY_TYPE,
+  MIXED_PRESET_SHAPE,
+  OBJECTIVE_VALUE_OUT_OF_RANGE,
+  OUTDATED_DATA_VERSION,
+  POSE_ACTION_WITHOUT_POSE,
+  UNKNOWN_ACTION_TYPE,
+  UNKNOWN_CONDITION_TYPE,
+  UNKNOWN_CUSTOM_ACTION_ID,
+  UNKNOWN_CUSTOM_CONDITION_ID,
+  UNKNOWN_DIALOG_BUTTON_TARGET,
+  UNKNOWN_ENTITY_TYPE,
+  UNKNOWN_METADATA_ACCESS,
+  UNKNOWN_OBJECTIVE_TYPE,
+  UNRESOLVED_PARENT;
+}

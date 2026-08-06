@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.model.custom.DopplerModel;
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.SpeechBubbleRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.layers.SkullHeadRenderLayer;
 import de.markusbordihn.easynpc.client.renderer.entity.state.EasyNPCRenderStateExtension;
 import de.markusbordihn.easynpc.client.renderer.manager.EntityTypeManager;
@@ -63,12 +64,10 @@ public class DopplerRenderer
       SubmitNodeCollector submitNodeCollector,
       CameraRenderState cameraRenderState) {
 
-    // We only take care of EasyNPC entities.
     if (!(entity instanceof EasyNPC<?> easyNPC)) {
       return false;
     }
 
-    // Get render data.
     RenderDataCapable<?> renderData = easyNPC.getEasyNPCRenderData();
     if (renderData == null
         || renderData.getRenderDataEntry() == null
@@ -76,21 +75,17 @@ public class DopplerRenderer
       return false;
     }
 
-    // Get custom render data.
     EntityType<? extends Entity> renderEntityType =
         renderData.getRenderDataEntry().getRenderEntityType();
 
-    // Get custom entity for render custom .
     PathfinderMob customEntity =
         EntityTypeManager.getPathfinderMob(renderEntityType, entity.getEntityLevel());
     if (customEntity == null) {
       return false;
     }
 
-    // Get entity type name.
     String entityTypeName = EntityTypeManager.getEntityTypeName(renderEntityType);
 
-    // Render custom entity over living render, if supported.
     LivingEntityRenderer<
             LivingEntity, LivingEntityRenderState, EntityModel<? super LivingEntityRenderState>>
         livingEntityRenderer =
@@ -126,7 +121,6 @@ public class DopplerRenderer
       }
     }
 
-    // Alternative render custom entity over entity render, if supported.
     EntityRenderer<Entity, EntityRenderState> entityRenderer =
         (EntityRenderer<Entity, EntityRenderState>)
             RendererManager.getEntityRenderer(renderEntityType, customEntity);
@@ -149,7 +143,6 @@ public class DopplerRenderer
       }
     }
 
-    // Give up rendering, if no custom renderer is available.
     return false;
   }
 
@@ -178,6 +171,10 @@ public class DopplerRenderer
     if (renderEntity(
         easyNPC, this.getModel(), renderState, poseStack, submitNodeCollector, cameraRenderState)) {
       this.submitNameDisplay(renderState, poseStack, submitNodeCollector, cameraRenderState);
+
+      // This branch never reaches EntityRenderer#submit, where the speech bubble mixin is attached.
+      SpeechBubbleRenderer.submit(renderState, poseStack, submitNodeCollector, cameraRenderState);
+
       return;
     }
 

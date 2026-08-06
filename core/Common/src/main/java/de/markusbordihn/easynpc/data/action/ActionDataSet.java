@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.data.action;
 
+import de.markusbordihn.easynpc.utils.CompoundTagUtils;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashSet;
@@ -195,7 +196,7 @@ public final class ActionDataSet {
   public void save(CompoundTag compoundTag, String listName) {
     ListTag actionDataList = new ListTag();
     this.save(actionDataList);
-    compoundTag.put(listName, actionDataList);
+    CompoundTagUtils.putIfNotEmpty(compoundTag, listName, actionDataList);
   }
 
   public void save(ListTag actionDataList) {
@@ -206,7 +207,7 @@ public final class ActionDataSet {
       if (actionDataEntry == null || !actionDataEntry.isValidAndNotEmpty()) {
         continue;
       }
-      actionDataList.add(actionDataEntry.createTag());
+      actionDataList.add(actionDataEntry.createTag(actionDataList.size()));
     }
   }
 

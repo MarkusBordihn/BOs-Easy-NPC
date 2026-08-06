@@ -22,7 +22,10 @@ package de.markusbordihn.easynpc.server;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.backup.BackupManager;
 import de.markusbordihn.easynpc.condition.ConditionWarnings;
+import de.markusbordihn.easynpc.data.preset.PresetReference;
 import de.markusbordihn.easynpc.entity.NPCEntityManager;
+import de.markusbordihn.easynpc.entity.easynpc.handlers.action.executor.MessageActionExecutor;
+import de.markusbordihn.easynpc.handler.EnvironmentChangeTracker;
 import de.markusbordihn.easynpc.handler.OwnerLoginRestoreHandler;
 import de.markusbordihn.easynpc.io.DataFileHandler;
 import net.minecraft.server.MinecraftServer;
@@ -46,6 +49,9 @@ public class ServerEvents {
     Constants.WORLD_DIR = minecraftServer.getWorldPath(LevelResource.ROOT);
 
     ConditionWarnings.reset();
+    EnvironmentChangeTracker.reset();
+    PresetReference.clearCache();
+    MessageActionExecutor.clearKnownPlayerNames();
     DataFileHandler.registerServerDataFiles(minecraftServer);
   }
 
@@ -69,6 +75,7 @@ public class ServerEvents {
     BackupManager.performBackup();
 
     OwnerLoginRestoreHandler.handleServerTick(minecraftServer);
+    EnvironmentChangeTracker.handleServerTick(minecraftServer);
   }
 
   public static void handleServerStopping(MinecraftServer minecraftServer) {
@@ -79,5 +86,7 @@ public class ServerEvents {
     log.info("{} Server is stopping, saving all dirty NPCs...", Constants.LOG_REGISTER_PREFIX);
 
     NPCEntityManager.saveAllDirtyNPCs();
+    EnvironmentChangeTracker.reset();
+    PresetReference.clearCache();
   }
 }

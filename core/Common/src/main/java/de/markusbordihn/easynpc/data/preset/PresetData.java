@@ -186,6 +186,15 @@ public record PresetData(
       return null;
     }
 
+    if (compoundTag.contains(PARENT_TAG)) {
+      log.error(
+          "Preset {} still references the parent preset {}, "
+              + "it was loaded without resolving its parent presets",
+          location,
+          compoundTag.getString(PARENT_TAG));
+      return null;
+    }
+
     CompoundTag entityData =
         usesEntityDataWrapper(compoundTag)
             ? compoundTag.getCompound(DATA_TAG).orElse(compoundTag)
