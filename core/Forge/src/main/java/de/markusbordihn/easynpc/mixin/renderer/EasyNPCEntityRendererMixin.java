@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.mixin.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.client.model.EasyNPCModel;
+import de.markusbordihn.easynpc.client.renderer.entity.SpeechBubbleRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.state.EasyNPCRenderStateExtension;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.DisplayAttributeDataCapable;
@@ -94,5 +95,16 @@ public class EasyNPCEntityRendererMixin<T extends Entity, S extends EntityRender
     if (renderState instanceof EasyNPCRenderStateExtension renderStateExtension) {
       EasyNPCModel.renderEntityNameTag(renderStateExtension, poseStack);
     }
+  }
+
+  // Deliberately not attached to submitNameTag, which vanilla only calls for a visible name tag.
+  @Inject(method = "submit", at = @At("TAIL"))
+  private void onSubmit(
+      S renderState,
+      PoseStack poseStack,
+      SubmitNodeCollector submitNodeCollector,
+      CameraRenderState cameraRenderState,
+      CallbackInfo ci) {
+    SpeechBubbleRenderer.submit(renderState, poseStack, submitNodeCollector, cameraRenderState);
   }
 }

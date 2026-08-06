@@ -53,8 +53,17 @@ public class ActionValidator {
         npcContext);
   }
 
-  public static boolean validateActionDataWithoutPlayer(ActionDataEntry actionDataEntry) {
-    return actionDataEntry != null && actionDataEntry.isValidAndNotEmpty();
+  public static boolean validateActionDataWithoutPlayer(
+      ActionDataEntry actionDataEntry, LivingEntity npcContext) {
+    if (actionDataEntry == null || !actionDataEntry.isValidAndNotEmpty()) {
+      return false;
+    }
+
+    return ConditionManager.evaluateAll(
+        actionDataEntry.conditionDataSet().getConditions(),
+        null,
+        ExecutionId.action(npcContext, actionDataEntry.id()),
+        npcContext);
   }
 
   public static boolean validateServerSide(ServerPlayer serverPlayer) {

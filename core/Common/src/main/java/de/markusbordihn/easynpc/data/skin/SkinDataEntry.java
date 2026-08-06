@@ -58,7 +58,7 @@ public record SkinDataEntry(
   static final String DATA_UUID_TAG = "UUID";
   static final String DATA_DISABLE_LAYERS_TAG = "DisableLayers";
   static final String DATA_CONTENT_TAG = "Content";
-  static final String DATA_TIMESTAMP_TAG = "Timestamp";
+  public static final String DATA_TIMESTAMP_TAG = "Timestamp";
 
   public SkinDataEntry() {
     this("", "", Constants.BLANK_UUID, SkinType.DEFAULT, false, "", System.currentTimeMillis());
@@ -139,12 +139,22 @@ public record SkinDataEntry(
   }
 
   public CompoundTag write(CompoundTag compoundTag) {
-    compoundTag.putString(DATA_NAME_TAG, this.name);
     compoundTag.putString(DATA_TYPE_TAG, this.type.name());
-    compoundTag.putString(DATA_URL_TAG, this.url);
-    CompoundTagUtils.writeUUID(compoundTag, DATA_UUID_TAG, this.uuid);
-    compoundTag.putBoolean(DATA_DISABLE_LAYERS_TAG, this.disableLayers);
-    compoundTag.putString(DATA_CONTENT_TAG, this.content);
+    if (this.name != null && !this.name.isEmpty()) {
+      compoundTag.putString(DATA_NAME_TAG, this.name);
+    }
+    if (this.url != null && !this.url.isEmpty()) {
+      compoundTag.putString(DATA_URL_TAG, this.url);
+    }
+    if (this.uuid != null && !Constants.BLANK_UUID.equals(this.uuid)) {
+      CompoundTagUtils.writeUUID(compoundTag, DATA_UUID_TAG, this.uuid);
+    }
+    if (this.disableLayers) {
+      compoundTag.putBoolean(DATA_DISABLE_LAYERS_TAG, true);
+    }
+    if (this.content != null && !this.content.isEmpty()) {
+      compoundTag.putString(DATA_CONTENT_TAG, this.content);
+    }
     compoundTag.putLong(DATA_TIMESTAMP_TAG, this.timestamp);
     return compoundTag;
   }

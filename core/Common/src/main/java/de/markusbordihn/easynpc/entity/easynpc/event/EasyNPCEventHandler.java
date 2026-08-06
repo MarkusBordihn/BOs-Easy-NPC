@@ -25,6 +25,7 @@ import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.ObjectiveDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.OwnerDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.TradingDataCapable;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
@@ -40,6 +41,12 @@ public final class EasyNPCEventHandler {
     ObjectiveDataCapable<E> objectiveData = easyNPC.getEasyNPCObjectiveData();
     if (objectiveData != null) {
       objectiveData.onPlayerJoinUpdateObjective(serverPlayer);
+    }
+
+    OwnerDataCapable<E> ownerData = easyNPC.getEasyNPCOwnerData();
+    ActionEventDataCapable<E> actionEventData = easyNPC.getEasyNPCActionEventData();
+    if (ownerData != null && actionEventData != null && ownerData.isNPCOwner(serverPlayer)) {
+      actionEventData.handleActionEvent(ActionEventType.ON_OWNER_LOGIN, serverPlayer);
     }
   }
 

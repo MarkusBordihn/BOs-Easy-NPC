@@ -583,7 +583,6 @@ public final class ObjectiveDataEntry {
     }
     this.setPriority(compoundTag.getInt(DATA_PRIORITY_TAG).orElse(DEFAULT_PRIORITY));
 
-    // Restore id, if no id is set, use the objective type.
     if (compoundTag.contains(DATA_ID_TAG)
         && !compoundTag.getString(DATA_ID_TAG).orElse("").isEmpty()) {
       this.id = compoundTag.getString(DATA_ID_TAG).orElse(this.objectiveType.name());
@@ -592,7 +591,6 @@ public final class ObjectiveDataEntry {
           this.customObjectiveId != null ? this.customObjectiveId.toString() : this.getTypeName();
     }
 
-    // Targeting parameters
     if (compoundTag.contains(DATA_TARGET_ENTITY_UUID_TAG)) {
       this.targetEntityUUID = CompoundTagUtils.readUUID(compoundTag, DATA_TARGET_ENTITY_UUID_TAG);
     }
@@ -612,7 +610,6 @@ public final class ObjectiveDataEntry {
       this.targetItemTag = compoundTag.getString(DATA_TARGET_ITEM_TAG).orElse(null);
     }
 
-    // Additional parameters
     if (compoundTag.contains(DATA_SPEED_MODIFIER_TAG)) {
       this.setSpeedModifier(
           compoundTag.getDouble(DATA_SPEED_MODIFIER_TAG).orElse(DEFAULT_SPEED_MODIFIER));
@@ -692,14 +689,14 @@ public final class ObjectiveDataEntry {
     if (this.customObjectiveId != null) {
       compoundTag.putString(DATA_CUSTOM_OBJECTIVE_ID_TAG, this.customObjectiveId.toString());
     }
-    compoundTag.putInt(DATA_PRIORITY_TAG, this.priority);
+    if (this.objectiveType == ObjectiveType.CUSTOM || this.objectiveType == ObjectiveType.NONE) {
+      compoundTag.putInt(DATA_PRIORITY_TAG, this.priority);
+    }
 
-    // Store id only if it is not the same as the objective type.
     if (this.id != null && !this.id.isEmpty() && !this.id.equalsIgnoreCase(typeName)) {
       compoundTag.putString(DATA_ID_TAG, this.id);
     }
 
-    // Targeting parameters
     if (this.targetEntityUUID != null) {
       CompoundTagUtils.writeUUID(compoundTag, DATA_TARGET_ENTITY_UUID_TAG, this.targetEntityUUID);
     }
@@ -719,7 +716,6 @@ public final class ObjectiveDataEntry {
       compoundTag.putString(DATA_TARGET_ITEM_TAG, this.targetItemTag);
     }
 
-    // Additional parameters
     if (this.speedModifier != DEFAULT_SPEED_MODIFIER) {
       compoundTag.putDouble(DATA_SPEED_MODIFIER_TAG, this.speedModifier);
     }

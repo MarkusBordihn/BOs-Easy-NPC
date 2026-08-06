@@ -36,6 +36,8 @@ import net.minecraft.client.gui.GuiGraphics;
 
 public class HasItemConditionEntry extends ConditionEntryWidget {
 
+  private static final int HINT_WIDTH = 285;
+
   private final ConditionType conditionType;
   private TextField itemNameTextField;
   private TextField customDataTextField;
@@ -200,12 +202,13 @@ public class HasItemConditionEntry extends ConditionEntryWidget {
           editorTop + 44,
           Constants.FONT_COLOR_BLACK);
       int hintTop = this.conditionType == ConditionType.HAS_ITEM_IN_HAND ? 124 : 104;
-      Text.drawConfigString(
+      Text.drawConfigStringWrapped(
           guiGraphics,
           this.font,
           "condition.has_item.custom_data_hint",
           editorLeft,
           editorTop + hintTop,
+          HINT_WIDTH,
           Constants.FONT_COLOR_DEFAULT);
     }
   }

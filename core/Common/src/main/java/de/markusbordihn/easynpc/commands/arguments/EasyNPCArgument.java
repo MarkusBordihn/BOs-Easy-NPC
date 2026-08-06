@@ -41,7 +41,6 @@ import java.util.concurrent.CompletableFuture;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.commands.arguments.selector.EntitySelector;
-import net.minecraft.server.permissions.Permissions;
 import net.minecraft.world.entity.Entity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -66,7 +65,6 @@ public class EasyNPCArgument implements ArgumentType<EntitySelector> {
       final CommandContext<CommandSourceStack> context, final String name)
       throws CommandSyntaxException {
 
-    // Get the entity and check if it has access.
     EasyNPC<?> easyNPC = getEntitiesWithAccess(context, name).stream().findFirst().orElse(null);
     if (easyNPC == null) {
       throw NO_ENTITIES_FOUND.create();
@@ -79,7 +77,6 @@ public class EasyNPCArgument implements ArgumentType<EntitySelector> {
       final CommandContext<CommandSourceStack> context, final String name)
       throws CommandSyntaxException {
 
-    // Get all entities and filter out the ones without access.
     Collection<? extends EasyNPC<?>> easyNPCs = getEntities(context, name);
     easyNPCs =
         easyNPCs.stream()
@@ -134,7 +131,6 @@ public class EasyNPCArgument implements ArgumentType<EntitySelector> {
   public EntitySelector parse(final StringReader stringReader) throws CommandSyntaxException {
     EasyNPCSelectorParser entitySelectorParser = new EasyNPCSelectorParser(stringReader);
 
-    // Extract UUID from string, validate it and request data sync.
     String input = stringReader.getRemaining();
     if (input != null && !input.startsWith("@") && input.length() == 36) {
       UUID uuid = UUIDUtils.parseUUID(input);
@@ -156,10 +152,7 @@ public class EasyNPCArgument implements ArgumentType<EntitySelector> {
     StringReader stringReader = new StringReader(suggestionsBuilder.getInput());
     stringReader.setCursor(suggestionsBuilder.getStart());
     EasyNPCSelectorParser easyNPCSelectorParser =
-        new EasyNPCSelectorParser(
-            stringReader,
-            context.getSource() instanceof CommandSourceStack commandSourceStack
-                && commandSourceStack.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER));
+        new EasyNPCSelectorParser(stringReader, sharedSuggestionProvider);
     try {
       easyNPCSelectorParser.parse();
     } catch (CommandSyntaxException exception) {

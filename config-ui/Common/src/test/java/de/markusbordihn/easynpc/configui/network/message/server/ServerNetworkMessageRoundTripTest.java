@@ -99,7 +99,7 @@ class ServerNetworkMessageRoundTripTest {
             UUID.randomUUID(),
             SkinType.SECURE_REMOTE_URL,
             true,
-            "content",
+            "",
             123L);
 
     ChangeSkinMessage loaded =

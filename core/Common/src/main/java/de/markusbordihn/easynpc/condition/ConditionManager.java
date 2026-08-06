@@ -26,6 +26,7 @@ import de.markusbordihn.easynpc.data.execution.ExecutionId;
 import java.util.Set;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -49,14 +50,26 @@ public class ConditionManager {
       ServerPlayer serverPlayer,
       ExecutionId executionId,
       LivingEntity npcContext) {
-    if (conditionDataEntry == null || !conditionDataEntry.isValid() || serverPlayer == null) {
+    if (conditionDataEntry == null || !conditionDataEntry.isValid()) {
       return false;
     }
+
+    if (serverPlayer == null && conditionDataEntry.conditionType().requiresPlayer()) {
+      ConditionWarnings.reportMissingPlayer(conditionDataEntry, npcContext);
+      return false;
+    }
+
+    Level level =
+        serverPlayer != null
+            ? serverPlayer.level()
+            : npcContext != null ? npcContext.level() : null;
 
     return switch (conditionDataEntry.conditionType()) {
       case SCOREBOARD -> ScoreboardCondition.evaluate(conditionDataEntry, serverPlayer);
       case EXECUTION_LIMIT ->
           ExecutionLimitCondition.evaluate(conditionDataEntry, serverPlayer, executionId);
+      case CHANCE ->
+          ChanceCondition.evaluate(conditionDataEntry, level != null ? level.getRandom() : null);
       case HAS_ITEM_IN_INVENTORY ->
           HasItemInInventoryCondition.evaluate(conditionDataEntry, serverPlayer);
       case HAS_ITEM_IN_HAND -> HasItemInHandCondition.evaluate(conditionDataEntry, serverPlayer);
@@ -74,9 +87,11 @@ public class ConditionManager {
       case PLAYER_TAG -> PlayerTagCondition.evaluate(conditionDataEntry, serverPlayer);
       case TEAM -> TeamCondition.evaluate(conditionDataEntry, serverPlayer);
       case GAMEMODE -> GamemodeCondition.evaluate(conditionDataEntry, serverPlayer);
-      case TIME_OF_DAY -> TimeOfDayCondition.evaluate(conditionDataEntry, serverPlayer.level());
-      case WEATHER -> WeatherCondition.evaluate(conditionDataEntry, serverPlayer.level());
+      case TIME_OF_DAY -> TimeOfDayCondition.evaluate(conditionDataEntry, level);
+      case WEATHER -> WeatherCondition.evaluate(conditionDataEntry, level);
       case NPC_STATE -> NpcStateCondition.evaluate(conditionDataEntry, npcContext);
+      case RELATIONSHIP ->
+          RelationshipCondition.evaluate(conditionDataEntry, serverPlayer, npcContext);
       case CUSTOM -> CustomCondition.evaluate(conditionDataEntry, serverPlayer, npcContext);
       case FALLBACK -> true;
       case NONE -> true;
@@ -95,7 +110,7 @@ public class ConditionManager {
       ServerPlayer serverPlayer,
       ExecutionId executionId,
       LivingEntity npcContext) {
-    if (conditionDataEntries == null || conditionDataEntries.isEmpty() || serverPlayer == null) {
+    if (conditionDataEntries == null || conditionDataEntries.isEmpty()) {
       return true;
     }
 

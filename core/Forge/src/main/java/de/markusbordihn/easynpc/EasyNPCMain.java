@@ -187,7 +187,7 @@ public class EasyNPCMain {
 
   private void onTagsUpdated(final TagsUpdatedEvent event) {
     if (CompatConstants.MOD_EASY_MODEL_ENTITIES_LOADED) {
-      EasyModelEntitiesLoader.register();
+      EasyModelEntitiesLoader.registerClient();
     }
   }
 

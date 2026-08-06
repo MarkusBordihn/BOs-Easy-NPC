@@ -38,6 +38,11 @@ public class TradingDataSet {
   public static final String DATA_TYPE_TAG = "Type";
   public static final String DATA_OFFER_ACTIONS_TAG = "OfferActions";
   public static final String DATA_OFFER_ACTION_INDEX_TAG = "Index";
+  public static final TradingType DEFAULT_TRADING_TYPE = TradingType.NONE;
+  public static final int DEFAULT_MAX_USES = 64;
+  public static final int DEFAULT_REWARDED_XP = 0;
+  public static final int DEFAULT_RESETS_EVERY_MIN = 0;
+  public static final long DEFAULT_LAST_RESET = 0;
   public static final StreamCodec<RegistryFriendlyByteBuf, TradingDataSet> STREAM_CODEC =
       new StreamCodec<>() {
         @Override
@@ -54,11 +59,11 @@ public class TradingDataSet {
         }
       };
   private final HashMap<Integer, ActionDataSet> offerActions = new HashMap<>();
-  private TradingType tradingType = TradingType.NONE;
-  private int maxUses = 64;
-  private int rewardedXP = 0;
-  private int resetsEveryMin = 0;
-  private long lastReset = 0;
+  private TradingType tradingType = DEFAULT_TRADING_TYPE;
+  private int maxUses = DEFAULT_MAX_USES;
+  private int rewardedXP = DEFAULT_REWARDED_XP;
+  private int resetsEveryMin = DEFAULT_RESETS_EVERY_MIN;
+  private long lastReset = DEFAULT_LAST_RESET;
 
   public TradingDataSet() {}
 
@@ -137,9 +142,10 @@ public class TradingDataSet {
     }
 
     CompoundTag tradingData = compoundTag.getCompoundOrEmpty(DATA_TRADING_DATA_SET_TAG);
-    this.maxUses = tradingData.getInt(DATA_TRADING_MAX_USES_TAG).orElse(64);
-    this.rewardedXP = tradingData.getInt(DATA_TRADING_REWARDED_XP_TAG).orElse(0);
-    this.resetsEveryMin = tradingData.getInt(DATA_TRADING_RESETS_EVERY_MIN_TAG).orElse(0);
+    this.maxUses = tradingData.getInt(DATA_TRADING_MAX_USES_TAG).orElse(DEFAULT_MAX_USES);
+    this.rewardedXP = tradingData.getInt(DATA_TRADING_REWARDED_XP_TAG).orElse(DEFAULT_REWARDED_XP);
+    this.resetsEveryMin =
+        tradingData.getInt(DATA_TRADING_RESETS_EVERY_MIN_TAG).orElse(DEFAULT_RESETS_EVERY_MIN);
     this.lastReset =
         tradingData.contains(DATA_TRADING_LAST_RESET_TAG)
             ? tradingData.getLong(DATA_TRADING_LAST_RESET_TAG).orElse(System.currentTimeMillis())
@@ -163,11 +169,19 @@ public class TradingDataSet {
 
   public CompoundTag save(CompoundTag compoundTag) {
     CompoundTag tradingData = new CompoundTag();
-    tradingData.putInt(DATA_TRADING_MAX_USES_TAG, this.maxUses);
-    tradingData.putInt(DATA_TRADING_REWARDED_XP_TAG, this.rewardedXP);
-    tradingData.putInt(DATA_TRADING_RESETS_EVERY_MIN_TAG, this.resetsEveryMin);
+    if (this.maxUses != DEFAULT_MAX_USES) {
+      tradingData.putInt(DATA_TRADING_MAX_USES_TAG, this.maxUses);
+    }
+    if (this.rewardedXP != DEFAULT_REWARDED_XP) {
+      tradingData.putInt(DATA_TRADING_REWARDED_XP_TAG, this.rewardedXP);
+    }
+    if (this.resetsEveryMin != DEFAULT_RESETS_EVERY_MIN) {
+      tradingData.putInt(DATA_TRADING_RESETS_EVERY_MIN_TAG, this.resetsEveryMin);
+    }
     tradingData.putLong(DATA_TRADING_LAST_RESET_TAG, this.lastReset);
-    tradingData.putString(DATA_TYPE_TAG, this.tradingType.name());
+    if (this.tradingType != DEFAULT_TRADING_TYPE) {
+      tradingData.putString(DATA_TYPE_TAG, this.tradingType.name());
+    }
 
     if (!this.offerActions.isEmpty()) {
       ListTag offerActionsList = new ListTag();

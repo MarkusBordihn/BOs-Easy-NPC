@@ -19,13 +19,24 @@
 
 package de.markusbordihn.easynpc.api.event;
 
+import de.markusbordihn.easynpc.data.action.ActionContext;
 import de.markusbordihn.easynpc.data.action.ActionDataEntry;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import net.minecraft.server.level.ServerPlayer;
 
 @FunctionalInterface
 public interface ActionEventListener {
-
+  /**
+   * @deprecated Implement {@link #onActionExecuted(EasyNPC, ActionDataEntry, ActionContext)}, which
+   *     also carries every player affected by the event.
+   */
+  @Deprecated(since = "7.6.0")
   void onActionExecuted(
       EasyNPC<?> easyNPC, ServerPlayer serverPlayer, ActionDataEntry actionDataEntry);
+
+  /** The context contains the initiator and every player affected by the event. */
+  default void onActionExecuted(
+      EasyNPC<?> easyNPC, ActionDataEntry actionDataEntry, ActionContext actionContext) {
+    this.onActionExecuted(easyNPC, actionContext.initiator(), actionDataEntry);
+  }
 }

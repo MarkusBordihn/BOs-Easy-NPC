@@ -131,12 +131,14 @@ public record MovementAttributes(
   }
 
   public CompoundTag encode(CompoundTag compoundTag) {
-    compoundTag.putBoolean(CAN_OPEN_DOOR_TAG, this.canOpenDoor);
-    compoundTag.putBoolean(CAN_CLOSE_DOOR_TAG, this.canCloseDoor);
-    compoundTag.putBoolean(CAN_PASS_DOOR_TAG, this.canPassDoor);
-    compoundTag.putBoolean(CAN_USE_NETHER_PORTAL_TAG, this.canUseNetherPortal);
-    compoundTag.putString(NAVIGATION_TYPE_TAG, this.navigationType.name());
-    compoundTag.putDouble(HOVER_HEIGHT_TAG, this.hoverHeight);
+    AttributeTagUtils.putIfTrue(compoundTag, CAN_OPEN_DOOR_TAG, this.canOpenDoor);
+    AttributeTagUtils.putIfTrue(compoundTag, CAN_CLOSE_DOOR_TAG, this.canCloseDoor);
+    AttributeTagUtils.putIfTrue(compoundTag, CAN_PASS_DOOR_TAG, this.canPassDoor);
+    AttributeTagUtils.putIfTrue(compoundTag, CAN_USE_NETHER_PORTAL_TAG, this.canUseNetherPortal);
+    if (this.navigationType != NavigationType.DEFAULT) {
+      compoundTag.putString(NAVIGATION_TYPE_TAG, this.navigationType.name());
+    }
+    AttributeTagUtils.putIfNotZero(compoundTag, HOVER_HEIGHT_TAG, this.hoverHeight);
     return compoundTag;
   }
 }

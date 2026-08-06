@@ -43,6 +43,9 @@ public class DataFileHandler {
   public static final String RESOURCE_NAMESPACED_PRESET_PATH = Constants.MOD_ID + "/preset";
   public static final String RESOURCE_PRESET_PATH = "preset";
   public static final String RESOURCE_DEFAULT_PRESET_PATH = "default_preset";
+  public static final String RESOURCE_NAMESPACED_API_PRESET_PATH = Constants.MOD_ID + "/api/preset";
+  public static final String RESOURCE_API_PRESET_PATH = "api/preset";
+  public static final String RESOURCE_BASE_PRESET_PATH = RESOURCE_API_PRESET_PATH + "/base";
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   protected static final String BACKUP_FOLDER_NAME = "backup";
   protected static final String CACHE_FOLDER_NAME = "cache";

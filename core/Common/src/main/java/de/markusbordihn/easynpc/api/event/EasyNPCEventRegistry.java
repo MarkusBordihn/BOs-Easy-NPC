@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.api.event;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.data.action.ActionContext;
 import de.markusbordihn.easynpc.data.action.ActionDataEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.data.state.StateEntry;
@@ -87,13 +88,23 @@ public class EasyNPCEventRegistry {
       Identifier stateId,
       StateEntry previousStateEntry,
       StateEntry currentStateEntry) {
+    fireStateChanged(easyNPC, stateId, previousStateEntry, currentStateEntry, ActionContext.EMPTY);
+  }
+
+  public static void fireStateChanged(
+      EasyNPC<?> easyNPC,
+      Identifier stateId,
+      StateEntry previousStateEntry,
+      StateEntry currentStateEntry,
+      ActionContext actionContext) {
     if (stateEventListeners.isEmpty() || easyNPC == null || stateId == null) {
       return;
     }
 
     for (StateEventListener stateEventListener : stateEventListeners) {
       try {
-        stateEventListener.onStateChanged(easyNPC, stateId, previousStateEntry, currentStateEntry);
+        stateEventListener.onStateChanged(
+            easyNPC, stateId, previousStateEntry, currentStateEntry, actionContext);
       } catch (Exception e) {
         log.error("State event listener {} failed for {}", stateEventListener, easyNPC, e);
       }
@@ -117,13 +128,18 @@ public class EasyNPCEventRegistry {
 
   public static void fireActionExecuted(
       EasyNPC<?> easyNPC, ServerPlayer serverPlayer, ActionDataEntry actionDataEntry) {
+    fireActionExecuted(easyNPC, actionDataEntry, ActionContext.of(serverPlayer));
+  }
+
+  public static void fireActionExecuted(
+      EasyNPC<?> easyNPC, ActionDataEntry actionDataEntry, ActionContext actionContext) {
     if (actionEventListeners.isEmpty() || easyNPC == null) {
       return;
     }
 
     for (ActionEventListener actionEventListener : actionEventListeners) {
       try {
-        actionEventListener.onActionExecuted(easyNPC, serverPlayer, actionDataEntry);
+        actionEventListener.onActionExecuted(easyNPC, actionDataEntry, actionContext);
       } catch (Exception e) {
         log.error("Action event listener {} failed for {}", actionEventListener, easyNPC, e);
       }

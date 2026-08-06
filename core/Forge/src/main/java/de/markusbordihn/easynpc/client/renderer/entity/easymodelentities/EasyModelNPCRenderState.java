@@ -22,12 +22,14 @@ package de.markusbordihn.easynpc.client.renderer.entity.easymodelentities;
 import de.markusbordihn.easymodelentities.api.data.client.EasyModelItemAnchor;
 import de.markusbordihn.easymodelentities.client.render.EasyModelEntityRenderState;
 import de.markusbordihn.easynpc.client.renderer.entity.state.EasyNPCGuiRenderStateExtension;
+import de.markusbordihn.easynpc.client.renderer.entity.state.EasyNPCRenderStateExtension;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
+import java.util.UUID;
 import net.minecraft.resources.Identifier;
 
 @SuppressWarnings("java:S1104")
 public class EasyModelNPCRenderState extends EasyModelEntityRenderState
-    implements EasyNPCGuiRenderStateExtension {
+    implements EasyNPCGuiRenderStateExtension, EasyNPCRenderStateExtension {
 
   public final ItemStackRenderState mainHandItem = new ItemStackRenderState();
   public final ItemStackRenderState offHandItem = new ItemStackRenderState();
@@ -44,8 +46,31 @@ public class EasyModelNPCRenderState extends EasyModelEntityRenderState
   public EasyModelItemAnchor offHandAnchor;
   public boolean mainArmLeft;
 
+  private UUID easyNpcUUID;
+  private Identifier easyNpcTexture;
+
   @Override
   public void applyGuiRotationsAndScale(float xRotation, float yRotation) {
     this.entityYaw = 180.0f + xRotation * 20.0f;
+  }
+
+  @Override
+  public UUID getEasyNpcUUID() {
+    return this.easyNpcUUID;
+  }
+
+  @Override
+  public void setEasyNpcUUID(UUID uuid) {
+    this.easyNpcUUID = uuid;
+  }
+
+  @Override
+  public Identifier getEasyNpcTexture() {
+    return this.easyNpcTexture;
+  }
+
+  @Override
+  public void setEasyNpcTexture(Identifier texture) {
+    this.easyNpcTexture = texture;
   }
 }

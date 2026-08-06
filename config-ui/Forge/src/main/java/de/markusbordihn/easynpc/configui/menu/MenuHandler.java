@@ -116,6 +116,8 @@ public class MenuHandler implements MenuHandlerInterface {
     configurationMenuMap.put(
         ConfigurationType.DISTANCE_ACTION, ModMenuTypes.DISTANCE_ACTION_CONFIGURATION_MENU.get());
     configurationMenuMap.put(
+        ConfigurationType.INTERVAL_ACTION, ModMenuTypes.INTERVAL_ACTION_CONFIGURATION_MENU.get());
+    configurationMenuMap.put(
         ConfigurationType.EQUIPMENT, ModMenuTypes.EQUIPMENT_CONFIGURATION_MENU.get());
     configurationMenuMap.put(
         ConfigurationType.FOLLOW_OBJECTIVE, ModMenuTypes.FOLLOW_OBJECTIVE_CONFIGURATION_MENU.get());

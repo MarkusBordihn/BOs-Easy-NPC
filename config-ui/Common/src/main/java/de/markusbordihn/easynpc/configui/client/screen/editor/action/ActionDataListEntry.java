@@ -40,13 +40,11 @@ import net.minecraft.network.chat.Component;
 
 public class ActionDataListEntry extends ObjectSelectionList.Entry<ActionDataListEntry> {
 
-  // Column position constants
   public static final int ID_LEFT_POS = 0;
   public static final int TYPE_LEFT_POS = 22;
   public static final int VALUE_LEFT_POS = 130;
   public static final int OPTIONS_LEFT_POS = 230;
 
-  // Layout constants
   private static final int ENTRY_HEIGHT = 21;
   private static final int FIELD_LEFT_OFFSET = 5;
   private static final int FIELD_TOP_OFFSET = 8;
@@ -56,7 +54,6 @@ public class ActionDataListEntry extends ObjectSelectionList.Entry<ActionDataLis
   private static final int VALUE_MAX_LENGTH = 16;
   private static final int LIST_WIDTH = 309;
 
-  // Color constants
   private static final int COLOR_SEPARATOR_LINE = 0xffaaaaaa;
   private static final int COLOR_COLUMN_SEPARATOR = 0xff666666;
 
@@ -136,7 +133,7 @@ public class ActionDataListEntry extends ObjectSelectionList.Entry<ActionDataLis
 
   @Override
   public Component getNarration() {
-    return TextComponent.getText(this.actionDataType.name() + ":" + this.actionDataEntry.command());
+    return TextComponent.getText(this.actionDataType.name() + ":" + this.getValuePreview());
   }
 
   @Override
@@ -208,11 +205,15 @@ public class ActionDataListEntry extends ObjectSelectionList.Entry<ActionDataLis
       GuiGraphics guiGraphics, int fieldsLeft, int fieldTop, int mouseX, int mouseY) {
     if (this.actionDataType == ActionDataType.COMMAND
         || this.actionDataType == ActionDataType.OPEN_NAMED_DIALOG
-        || this.actionDataType == ActionDataType.OPEN_NAMED_DIALOG_CONDITIONAL) {
+        || this.actionDataType == ActionDataType.OPEN_NAMED_DIALOG_CONDITIONAL
+        || this.actionDataType == ActionDataType.MESSAGE
+        || this.actionDataType == ActionDataType.CUSTOM
+        || this.actionDataType == ActionDataType.SET_POSE
+        || this.actionDataType == ActionDataType.PLAY_ANIMATION) {
       Text.drawLimitedHoverString(
           guiGraphics,
           this.font,
-          this.actionDataEntry.command(),
+          this.getValuePreview(),
           fieldsLeft + VALUE_LEFT_POS + 2,
           fieldTop,
           Constants.FONT_COLOR_BLACK,
@@ -241,6 +242,23 @@ public class ActionDataListEntry extends ObjectSelectionList.Entry<ActionDataLis
           fieldTop,
           Constants.FONT_COLOR_BLACK);
     }
+  }
+
+  private String getValuePreview() {
+    if (this.actionDataType == ActionDataType.MESSAGE
+        && this.actionDataEntry.messageActionData().hasTexts()) {
+      return this.actionDataEntry.messageActionData().texts().get(0);
+    }
+
+    if (this.actionDataType == ActionDataType.SET_POSE) {
+      return this.actionDataEntry.poseId();
+    }
+
+    if (this.actionDataType == ActionDataType.PLAY_ANIMATION) {
+      return this.actionDataEntry.modelAnimationActionData().animationName();
+    }
+
+    return this.actionDataEntry.command();
   }
 
   public void renderSeparatorLines(GuiGraphics guiGraphics, int top) {

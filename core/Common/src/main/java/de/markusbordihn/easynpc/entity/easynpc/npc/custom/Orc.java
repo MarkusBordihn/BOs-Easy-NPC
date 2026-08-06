@@ -91,14 +91,14 @@ public class Orc extends PathfinderMobRaw {
 
   @Override
   public SoundDataSet getDefaultSoundDataSet(SoundDataSet soundDataSet, String variantName) {
-    soundDataSet.addSound(SoundType.AMBIENT, SoundEvents.ZOGLIN_AMBIENT);
-    soundDataSet.addSound(SoundType.DEATH, SoundEvents.ZOGLIN_ATTACK);
-    soundDataSet.addSound(SoundType.EAT, SoundEvents.PLAYER_BURP);
-    soundDataSet.addSound(SoundType.HURT, SoundEvents.ZOGLIN_HURT);
-    soundDataSet.addSound(SoundType.STEP, SoundEvents.ZOGLIN_STEP);
-    soundDataSet.addSound(SoundType.TRADE, SoundEvents.VILLAGER_TRADE);
-    soundDataSet.addSound(SoundType.TRADE_YES, SoundEvents.VILLAGER_YES);
-    soundDataSet.addSound(SoundType.TRADE_NO, SoundEvents.VILLAGER_NO);
+    soundDataSet.addDefaultSound(SoundType.AMBIENT, SoundEvents.ZOGLIN_AMBIENT);
+    soundDataSet.addDefaultSound(SoundType.DEATH, SoundEvents.ZOGLIN_ATTACK);
+    soundDataSet.addDefaultSound(SoundType.EAT, SoundEvents.PLAYER_BURP);
+    soundDataSet.addDefaultSound(SoundType.HURT, SoundEvents.ZOGLIN_HURT);
+    soundDataSet.addDefaultSound(SoundType.STEP, SoundEvents.ZOGLIN_STEP);
+    soundDataSet.addDefaultSound(SoundType.TRADE, SoundEvents.VILLAGER_TRADE);
+    soundDataSet.addDefaultSound(SoundType.TRADE_YES, SoundEvents.VILLAGER_YES);
+    soundDataSet.addDefaultSound(SoundType.TRADE_NO, SoundEvents.VILLAGER_NO);
     return soundDataSet;
   }
 }

@@ -379,6 +379,91 @@ public final class ModGameTests {
     TEST_FUNCTIONS.register(
         "main_visibility_is_respected",
         () -> VisibilityAttributeTest::testMainVisibilityIsRespected);
+
+    TEST_FUNCTIONS.register(
+        "base_preset_exists_for_every_spawn_egg",
+        () -> BasePresetTest::testBasePresetExistsForEverySpawnEgg);
+    TEST_FUNCTIONS.register(
+        "base_presets_are_written",
+        () -> BasePresetTest::testBasePresetsAreWritten);
+    TEST_FUNCTIONS.register(
+        "shipped_base_presets_are_up_to_date",
+        () -> BasePresetTest::testShippedBasePresetsAreUpToDate);
+    TEST_FUNCTIONS.register(
+        "base_preset_is_usable_as_parent",
+        () -> BasePresetTest::testBasePresetIsUsableAsParent);
+
+    TEST_FUNCTIONS.register(
+        "default_presets_are_valid",
+        () -> DefaultPresetRoundTripTest::testDefaultPresetsAreValid);
+    TEST_FUNCTIONS.register(
+        "default_presets_survive_regeneration",
+        () -> DefaultPresetRoundTripTest::testDefaultPresetsSurviveRegeneration);
+
+    TEST_FUNCTIONS.register(
+        "audience_contains_every_player_in_range",
+        () -> IntervalActionAudienceTest::testAudienceContainsEveryPlayerInRange);
+    TEST_FUNCTIONS.register(
+        "owner_is_preferred_as_initiator",
+        () -> IntervalActionAudienceTest::testOwnerIsPreferredAsInitiator);
+    TEST_FUNCTIONS.register(
+        "owner_condition_limits_the_event",
+        () -> IntervalActionAudienceTest::testOwnerConditionLimitsTheEvent);
+    TEST_FUNCTIONS.register(
+        "nothing_fires_without_the_owner",
+        () -> IntervalActionAudienceTest::testNothingFiresWithoutTheOwner);
+
+    TEST_FUNCTIONS.register(
+        "missing_objective_data_keeps_default_objectives",
+        () -> PresetDefaultBaselineTest::testMissingObjectiveDataKeepsDefaultObjectives);
+    TEST_FUNCTIONS.register(
+        "empty_objective_data_removes_all_objectives",
+        () -> PresetDefaultBaselineTest::testEmptyObjectiveDataRemovesAllObjectives);
+    TEST_FUNCTIONS.register(
+        "custom_objective_data_replaces_default_objectives",
+        () -> PresetDefaultBaselineTest::testCustomObjectiveDataReplacesDefaultObjectives);
+
+    TEST_FUNCTIONS.register(
+        "preset_survives_round_trip",
+        () -> PresetRoundTripTest::testPresetSurvivesRoundTrip);
+    TEST_FUNCTIONS.register(
+        "preset_survives_round_trip_for_villager",
+        () -> PresetRoundTripTest::testPresetSurvivesRoundTripForVillager);
+    TEST_FUNCTIONS.register(
+        "configuration_survives_round_trip",
+        () -> PresetRoundTripTest::testConfigurationSurvivesRoundTrip);
+    TEST_FUNCTIONS.register(
+        "export_is_compact",
+        () -> PresetRoundTripTest::testExportIsCompact);
+    TEST_FUNCTIONS.register(
+        "export_is_compact_for_villager",
+        () -> PresetRoundTripTest::testExportIsCompactForVillager);
+
+    TEST_FUNCTIONS.register(
+        "preset_item_spawns_configured_n_p_c",
+        () -> PresetSpawnTest::testPresetItemSpawnsConfiguredNPC);
+    TEST_FUNCTIONS.register(
+        "preset_item_spawns_configured_villager",
+        () -> PresetSpawnTest::testPresetItemSpawnsConfiguredVillager);
+    TEST_FUNCTIONS.register(
+        "spawner_spawns_configured_n_p_c",
+        () -> PresetSpawnTest::testSpawnerSpawnsConfiguredNPC);
+
+    TEST_FUNCTIONS.register(
+        "npc_without_stored_sounds_still_has_sounds",
+        () -> StoredDataTest::testNpcWithoutStoredSoundsStillHasSounds);
+    TEST_FUNCTIONS.register(
+        "villager_without_stored_sounds_still_has_sounds",
+        () -> StoredDataTest::testVillagerWithoutStoredSoundsStillHasSounds);
+    TEST_FUNCTIONS.register(
+        "unchanged_sounds_are_not_stored",
+        () -> StoredDataTest::testUnchangedSoundsAreNotStored);
+    TEST_FUNCTIONS.register(
+        "objectives_survive_without_target_flags",
+        () -> StoredDataTest::testObjectivesSurviveWithoutTargetFlags);
+    TEST_FUNCTIONS.register(
+        "unchanged_npc_stores_no_boilerplate",
+        () -> StoredDataTest::testUnchangedNpcStoresNoBoilerplate);
   }
 
   private ModGameTests() {}

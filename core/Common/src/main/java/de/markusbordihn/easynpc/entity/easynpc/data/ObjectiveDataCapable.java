@@ -258,7 +258,6 @@ public interface ObjectiveDataCapable<T extends Mob> extends EasyNPC<T> {
       addOrUpdateCustomObjective(objectiveDataEntry);
     }
 
-    // Reset targets if any target objective was registered.
     if (!targetSelector.getAvailableGoals().isEmpty()) {
       log.debug("- Register reset universal anger target for {}", this);
       targetSelector.addGoal(4, new ResetUniversalAngerTargetGoal<>(this, false));
@@ -322,7 +321,6 @@ public interface ObjectiveDataCapable<T extends Mob> extends EasyNPC<T> {
       objectiveDataEntry.setRegistered(addedCustomObjective);
     }
 
-    // Add objective data to set, regardless if goal or target was added.
     getObjectiveDataSet().addObjective(objectiveDataEntry);
     return objectiveDataEntry.isRegistered();
   }
@@ -448,17 +446,6 @@ public interface ObjectiveDataCapable<T extends Mob> extends EasyNPC<T> {
       if (objectiveDataSet != null) {
         objectiveDataSet.save(objectiveTag);
       }
-
-      objectiveTag.putBoolean(DATA_HAS_OBJECTIVE_TAG, this.hasObjectives());
-      if (this.hasTravelTargetObjectives()) {
-        objectiveTag.putBoolean(DATA_HAS_TRAVEL_TARGET_TAG, this.hasTravelTargetObjectives());
-      }
-      if (this.hasPlayerTargetObjectives()) {
-        objectiveTag.putBoolean(DATA_HAS_PLAYER_TARGET_TAG, this.hasPlayerTargetObjectives());
-      }
-      if (this.hasEntityTargetObjectives()) {
-        objectiveTag.putBoolean(DATA_HAS_ENTITY_TARGET_TAG, this.hasEntityTargetObjectives());
-      }
     }
 
     valueOutput.store(DATA_OBJECTIVE_DATA_TAG, CompoundTag.CODEC, objectiveTag);
@@ -472,11 +459,12 @@ public interface ObjectiveDataCapable<T extends Mob> extends EasyNPC<T> {
     }
 
     CompoundTag objectiveDataTag = compoundTagData.get();
-    if (objectiveDataTag.contains(ObjectiveDataSet.DATA_OBJECTIVE_DATA_SET_TAG)) {
-      ObjectiveDataSet objectiveDataSet = new ObjectiveDataSet(objectiveDataTag);
-      this.setObjectiveDataSet(objectiveDataSet);
-      this.registerCustomObjectives();
-    }
+    ObjectiveDataSet objectiveDataSet =
+        objectiveDataTag.contains(ObjectiveDataSet.DATA_OBJECTIVE_DATA_SET_TAG)
+            ? new ObjectiveDataSet(objectiveDataTag)
+            : new ObjectiveDataSet();
+    this.setObjectiveDataSet(objectiveDataSet);
+    this.registerCustomObjectives();
 
     // Re-Register standard objectives for legacy NPCs.
     if (this.getNPCDataVersion() == -1) {

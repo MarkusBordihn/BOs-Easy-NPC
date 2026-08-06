@@ -36,7 +36,13 @@ import net.minecraft.world.entity.Pose;
 
 public class EntityScreenRenderer {
 
+  private static int screenRenderDepth;
+
   protected EntityScreenRenderer() {}
+
+  public static boolean isRenderingEntityOnScreen() {
+    return screenRenderDepth > 0;
+  }
 
   public static void renderEntity(
       GuiGraphics guiGraphics,
@@ -53,19 +59,23 @@ public class EntityScreenRenderer {
     EntityRenderState backupState = new EntityRenderState(livingEntity, easyNPC);
     applyRenderModifications(easyNPC, config);
 
-    InventoryScreen.renderEntityInInventoryFollowsMouse(
-        guiGraphics,
-        config.left(),
-        config.top(),
-        config.right(),
-        config.bottom(),
-        config.scale(),
-        config.yOffset(),
-        mouseX,
-        mouseY,
-        livingEntity);
-
-    restoreEntityState(easyNPC, backupState);
+    screenRenderDepth++;
+    try {
+      InventoryScreen.renderEntityInInventoryFollowsMouse(
+          guiGraphics,
+          config.left(),
+          config.top(),
+          config.right(),
+          config.bottom(),
+          config.scale(),
+          config.yOffset(),
+          mouseX,
+          mouseY,
+          livingEntity);
+    } finally {
+      screenRenderDepth--;
+      restoreEntityState(easyNPC, backupState);
+    }
   }
 
   public static void renderEntityRaw(

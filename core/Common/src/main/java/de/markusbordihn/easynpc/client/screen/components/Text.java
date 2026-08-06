@@ -128,6 +128,22 @@ public class Text {
         guiGraphics, font, TextComponent.getTranslatedConfigText(translationKey), x, y, color);
   }
 
+  public static void drawConfigStringWrapped(
+      GuiGraphics guiGraphics,
+      Font font,
+      String translationKey,
+      int x,
+      int y,
+      int maxWidth,
+      int color) {
+    int lineY = y;
+    for (FormattedCharSequence line :
+        font.split(TextComponent.getTranslatedConfigText(translationKey), maxWidth)) {
+      drawString(guiGraphics, font, line, x, lineY, color);
+      lineY += font.lineHeight;
+    }
+  }
+
   public static void drawConfigStringShadow(
       GuiGraphics guiGraphics, Font font, String translationKey, int x, int y, int color) {
     drawStringShadow(

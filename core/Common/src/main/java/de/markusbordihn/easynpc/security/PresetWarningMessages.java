@@ -50,6 +50,8 @@ public class PresetWarningMessages {
       case ACTION_PERMISSION_CLAMPED, COMMAND_PERMISSION_CLAMPED -> "Command levels were reduced.";
       case TRADING_REMOVED -> "Trading was removed.";
       case COMMAND_ACTION_REMOVED -> "Command actions were removed.";
+      case MESSAGE_ACTION_REMOVED -> "Message actions were removed.";
+      case CUSTOM_ACTION_REMOVED -> "Custom actions were removed.";
       case SCOREBOARD_ACTION_REMOVED -> "Scoreboard actions were removed.";
       case BLOCK_ACTION_REMOVED -> "Block actions were removed.";
       case TRADING_ACTION_REMOVED -> "Trading actions were removed.";

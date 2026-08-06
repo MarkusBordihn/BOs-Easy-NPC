@@ -6,6 +6,7 @@
   "refmap": "easy_npc.refmap.json",
   "client": [
     "client.gui.InventoryScreenMixin",
+    "compat.mobhealthbar.MobHealthBarMixin",
     "model.EasyNPCAllayModelMixin",
     "model.EasyNPCChickenModelMixin",
     "model.EasyNPCCreeperModelMixin",

@@ -1,0 +1,85 @@
+{
+  PresetMetadata:{
+    author:"Easy NPC",
+    category:"Companion",
+    created:1785110400000L,
+    description:"A talkative companion that comments on the weather, the time of day and its own mood without any command or script. Every line is a MESSAGE action on a time based event, filtered by weather and time conditions and thinned out with the chance condition.",
+    entityTypeId:"easy_npc:humanoid",
+    modified:1785110400000L,
+    name:"Wandering Companion",
+    variantType:"STEVE",
+    version:"1.0.0"
+  },
+  data:{
+    ActionData:{
+      ActionEventSet:{
+        ON_HURT:[{
+          Msg:{T:4b,Texts:["<red>Ouch!</red>"]},Type:"MESSAGE"
+        }],
+        ON_INTERACTION:[{
+          Type:"OPEN_DEFAULT_DIALOG"
+        }],
+        ON_INTERVAL_NORMAL:[{
+          ConditionDataSet:{
+            ConditionDataSet:[{
+              SubType:"RAIN",Type:"WEATHER"
+            },{
+              Type:"CHANCE",Value:50
+            }]
+          },Msg:{T:5b,Texts:["Pretty wet today, @initiator."]},Type:"MESSAGE"
+        },{
+          ConditionDataSet:{
+            ConditionDataSet:[{
+              SubType:"THUNDER",Type:"WEATHER"
+            }]
+          },Msg:{T:4b,Texts:["<gray>That thunder is far too close.</gray>"]},Type:"MESSAGE"
+        },{
+          ConditionDataSet:{
+            ConditionDataSet:[{
+              Operation:"GREATER_THAN_OR_EQUALS",Type:"TIME_OF_DAY",Value:13000
+            },{
+              Type:"CHANCE",Value:50
+            }]
+          },Msg:{T:4b,Texts:["<gray>The stars are out. Good night for walking.</gray>"]},Type:"MESSAGE"
+        },{
+          ConditionDataSet:{
+            ConditionDataSet:[{
+              Type:"CHANCE",Value:30
+            }]
+          },Msg:{T:1b,Texts:["Nice day for a walk."]},Type:"MESSAGE"
+        }],
+        ON_INTERVAL_VERY_LONG:[{
+          Msg:{T:5b,Texts:["You know, there used to be a tower right here.","My feet have seen more roads than most maps."]},Type:"MESSAGE"
+        }],
+        ON_OWNER_LOGIN:[{
+          Msg:{T:5b,Texts:["Good to see you again, @initiator."]},Type:"MESSAGE"
+        }],
+        ON_WEATHER_CHANGE:[{
+          Msg:{T:1b,Texts:["Something is brewing up there..."]},Type:"MESSAGE"
+        }]
+      }
+    },
+    CustomName:'{"color":"#7AC4D9","text":"Wandering Companion"}',
+    DialogData:{
+      DialogDataSet:[{
+        Label:"default",Name:"Greeting",Priority:10,Texts:[{
+          Text:"Hello @initiator. I talk a lot, but I always keep up."
+        },{
+          Text:"There you are, @initiator. Ready for the next stretch?"
+        }]
+      }],
+      Type:"BASIC"
+    },
+    EasyNPCVersion:3,
+    ObjectiveData:{
+      HasObjectives:1b,ObjectiveDataSet:[{
+        Type:"LOOK_AT_PLAYER"
+      },{
+        Type:"LOOK_AT_RESET"
+      },{
+        Type:"RANDOM_STROLL"
+      }]
+    },
+    id:"easy_npc:humanoid"
+  }
+}

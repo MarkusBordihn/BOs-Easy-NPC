@@ -67,6 +67,56 @@ class ActionEventTypeTest {
   }
 
   @Test
+  @DisplayName("Only interval events carry an interval")
+  void testOnlyIntervalEventsHaveAnInterval() {
+    for (ActionEventType actionEventType : ActionEventType.values()) {
+      if (actionEventType.isIntervalEvent()) {
+        assertTrue(
+            actionEventType.getIntervalSeconds() > 0, actionEventType + " must have an interval");
+        assertFalse(
+            actionEventType.isDistanceEvent(),
+            actionEventType + " must not be a distance event at the same time");
+      } else {
+        assertEquals(
+            0,
+            actionEventType.getIntervalSeconds(),
+            actionEventType + " must not have an interval");
+      }
+    }
+  }
+
+  @Test
+  @DisplayName("The interval events are checked from the shortest to the longest interval")
+  void testIntervalEventsAreCheckedShortestFirst() {
+    List<ActionEventType> checkOrder = ActionHandler.INTERVAL_ACTION_EVENT_TYPES;
+
+    assertEquals(
+        EnumSet.copyOf(
+            Arrays.stream(ActionEventType.values())
+                .filter(ActionEventType::isIntervalEvent)
+                .toList()),
+        EnumSet.copyOf(checkOrder));
+    for (int i = 1; i < checkOrder.size(); i++) {
+      assertTrue(
+          checkOrder.get(i - 1).getIntervalSeconds() < checkOrder.get(i).getIntervalSeconds(),
+          checkOrder.get(i - 1) + " must be checked before " + checkOrder.get(i));
+    }
+  }
+
+  @Test
+  @DisplayName("Every interval event has its own ticker")
+  void testIntervalEventsHaveTheirOwnTicker() {
+    assertEquals(
+        ActionHandler.INTERVAL_ACTION_EVENT_TYPES.size(),
+        Set.copyOf(ActionHandler.INTERVAL_ACTION_TICKERS.values()).size());
+    for (ActionEventType actionEventType : ActionHandler.INTERVAL_ACTION_EVENT_TYPES) {
+      assertTrue(
+          ActionHandler.INTERVAL_ACTION_TICKERS.containsKey(actionEventType),
+          actionEventType + " must have a ticker");
+    }
+  }
+
+  @Test
   @DisplayName("The distance events are checked from the widest to the narrowest range")
   void testDistanceEventsAreCheckedWidestFirst() {
     List<ActionEventType> checkOrder = ActionHandler.DISTANCE_ACTION_EVENT_TYPES;
@@ -97,6 +147,30 @@ class ActionEventTypeTest {
       assertTrue(
           actionEventSet.hasActionEvent(actionEventType),
           actionEventType + " must keep its action data");
+    }
+  }
+
+  @Test
+  @DisplayName("The fastest interval only allows state and custom actions")
+  void testInstantIntervalLimitsActionDataTypes() {
+    assertTrue(ActionEventType.ON_INTERVAL_INSTANT.allowsActionDataType(ActionDataType.NPC_STATE));
+    assertTrue(ActionEventType.ON_INTERVAL_INSTANT.allowsActionDataType(ActionDataType.CUSTOM));
+    assertFalse(ActionEventType.ON_INTERVAL_INSTANT.allowsActionDataType(ActionDataType.COMMAND));
+    assertFalse(ActionEventType.ON_INTERVAL_INSTANT.allowsActionDataType(ActionDataType.MESSAGE));
+  }
+
+  @Test
+  @DisplayName("Every other event allows all action data types")
+  void testOtherEventsAllowAllActionDataTypes() {
+    for (ActionEventType actionEventType : ActionEventType.values()) {
+      if (actionEventType == ActionEventType.ON_INTERVAL_INSTANT) {
+        continue;
+      }
+      for (ActionDataType actionDataType : ActionDataType.values()) {
+        assertTrue(
+            actionEventType.allowsActionDataType(actionDataType),
+            actionEventType + " must allow " + actionDataType);
+      }
     }
   }
 }
