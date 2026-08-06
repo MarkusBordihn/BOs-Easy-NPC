@@ -35,8 +35,7 @@ public class ActionRegistry {
 
   private ActionRegistry() {}
 
-  public static void register(
-      Identifier actionId, CustomActionExecutor customActionExecutor) {
+  public static void register(Identifier actionId, CustomActionExecutor customActionExecutor) {
     if (actionId == null || customActionExecutor == null) {
       log.error("Unable to register action {} with executor {}", actionId, customActionExecutor);
       return;

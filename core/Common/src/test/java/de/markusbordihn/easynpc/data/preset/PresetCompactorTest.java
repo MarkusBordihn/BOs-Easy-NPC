@@ -285,14 +285,12 @@ class PresetCompactorTest {
     reference.put(
         "attributes",
         attributes(
-            attribute("minecraft:movement_speed", 0.6D),
-            attribute("minecraft:max_health", 20.0D)));
+            attribute("minecraft:movement_speed", 0.6D), attribute("minecraft:max_health", 20.0D)));
     CompoundTag entityData = reference.copy();
     entityData.put(
         "attributes",
         attributes(
-            attribute("minecraft:movement_speed", 0.7D),
-            attribute("minecraft:max_health", 20.0D)));
+            attribute("minecraft:movement_speed", 0.7D), attribute("minecraft:max_health", 20.0D)));
 
     CompoundTag compacted = PresetCompactor.compact(entityData, reference);
     CompoundTag expanded = PresetCompactor.expand(compacted, reference);

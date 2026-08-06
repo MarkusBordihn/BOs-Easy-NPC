@@ -108,8 +108,7 @@ final class PresetDialogValidator {
           context,
           issues);
 
-      ListTag buttonActions =
-          dialogButton.getListOrEmpty(DialogButtonEntry.DATA_ACTIONS_TAG);
+      ListTag buttonActions = dialogButton.getListOrEmpty(DialogButtonEntry.DATA_ACTIONS_TAG);
       for (int actionIndex = 0; actionIndex < buttonActions.size(); actionIndex++) {
         PresetActionValidator.validateActionEntry(
             buttonActions.getCompoundOrEmpty(actionIndex),

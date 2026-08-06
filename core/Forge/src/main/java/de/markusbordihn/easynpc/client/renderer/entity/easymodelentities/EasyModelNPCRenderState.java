@@ -23,8 +23,8 @@ import de.markusbordihn.easymodelentities.api.data.client.EasyModelItemAnchor;
 import de.markusbordihn.easymodelentities.client.render.EasyModelEntityRenderState;
 import de.markusbordihn.easynpc.client.renderer.entity.state.EasyNPCGuiRenderStateExtension;
 import de.markusbordihn.easynpc.client.renderer.entity.state.EasyNPCRenderStateExtension;
-import net.minecraft.client.renderer.item.ItemStackRenderState;
 import java.util.UUID;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.resources.Identifier;
 
 @SuppressWarnings("java:S1104")

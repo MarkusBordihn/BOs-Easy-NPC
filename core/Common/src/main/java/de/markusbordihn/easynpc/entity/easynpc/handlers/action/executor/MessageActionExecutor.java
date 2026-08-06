@@ -289,7 +289,6 @@ public class MessageActionExecutor {
     // looked up once per session.
     return knownPlayerNames.computeIfAbsent(
         senderName.toLowerCase(Locale.ROOT),
-        name ->
-            minecraftServer.services().nameToIdCache().get(name).isPresent());
+        name -> minecraftServer.services().nameToIdCache().get(name).isPresent());
   }
 }

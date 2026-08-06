@@ -171,8 +171,7 @@ public class PresetCompactor {
       return false;
     }
 
-    Identifier attributeId =
-        Identifier.tryParse(attributeTag.getStringOr(ATTRIBUTE_NAME_TAG, ""));
+    Identifier attributeId = Identifier.tryParse(attributeTag.getStringOr(ATTRIBUTE_NAME_TAG, ""));
     if (attributeId == null) {
       return false;
     }

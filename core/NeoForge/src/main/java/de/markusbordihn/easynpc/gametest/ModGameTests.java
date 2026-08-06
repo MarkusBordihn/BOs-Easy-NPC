@@ -545,9 +545,7 @@ public final class ModGameTests {
         BasePresetTest::testBasePresetExistsForEverySpawnEgg,
         DEFAULT_STRUCTURE);
     register(
-        "base_presets_are_written",
-        BasePresetTest::testBasePresetsAreWritten,
-        DEFAULT_STRUCTURE);
+        "base_presets_are_written", BasePresetTest::testBasePresetsAreWritten, DEFAULT_STRUCTURE);
     register(
         "shipped_base_presets_are_up_to_date",
         BasePresetTest::testShippedBasePresetsAreUpToDate,
@@ -608,10 +606,7 @@ public final class ModGameTests {
         "configuration_survives_round_trip",
         PresetRoundTripTest::testConfigurationSurvivesRoundTrip,
         DEFAULT_STRUCTURE);
-    register(
-        "export_is_compact",
-        PresetRoundTripTest::testExportIsCompact,
-        DEFAULT_STRUCTURE);
+    register("export_is_compact", PresetRoundTripTest::testExportIsCompact, DEFAULT_STRUCTURE);
     register(
         "export_is_compact_for_villager",
         PresetRoundTripTest::testExportIsCompactForVillager,

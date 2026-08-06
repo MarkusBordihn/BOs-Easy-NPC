@@ -52,13 +52,13 @@ public record SkinDataEntry(
                   skinDataEntry.createTag(), "SkinDataEntry"));
         }
       };
+  public static final String DATA_TIMESTAMP_TAG = "Timestamp";
   static final String DATA_NAME_TAG = "Name";
   static final String DATA_TYPE_TAG = "Type";
   static final String DATA_URL_TAG = "URL";
   static final String DATA_UUID_TAG = "UUID";
   static final String DATA_DISABLE_LAYERS_TAG = "DisableLayers";
   static final String DATA_CONTENT_TAG = "Content";
-  public static final String DATA_TIMESTAMP_TAG = "Timestamp";
 
   public SkinDataEntry() {
     this("", "", Constants.BLANK_UUID, SkinType.DEFAULT, false, "", System.currentTimeMillis());

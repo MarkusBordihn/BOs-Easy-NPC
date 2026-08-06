@@ -26,8 +26,8 @@ import de.markusbordihn.easynpc.io.DataFileHandler;
 import java.nio.file.Path;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.server.permissions.Permissions;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.permissions.Permissions;
 
 class PresetGenerateCommand extends Command {
 

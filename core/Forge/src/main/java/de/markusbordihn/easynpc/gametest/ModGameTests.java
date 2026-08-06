@@ -384,18 +384,15 @@ public final class ModGameTests {
         "base_preset_exists_for_every_spawn_egg",
         () -> BasePresetTest::testBasePresetExistsForEverySpawnEgg);
     TEST_FUNCTIONS.register(
-        "base_presets_are_written",
-        () -> BasePresetTest::testBasePresetsAreWritten);
+        "base_presets_are_written", () -> BasePresetTest::testBasePresetsAreWritten);
     TEST_FUNCTIONS.register(
         "shipped_base_presets_are_up_to_date",
         () -> BasePresetTest::testShippedBasePresetsAreUpToDate);
     TEST_FUNCTIONS.register(
-        "base_preset_is_usable_as_parent",
-        () -> BasePresetTest::testBasePresetIsUsableAsParent);
+        "base_preset_is_usable_as_parent", () -> BasePresetTest::testBasePresetIsUsableAsParent);
 
     TEST_FUNCTIONS.register(
-        "default_presets_are_valid",
-        () -> DefaultPresetRoundTripTest::testDefaultPresetsAreValid);
+        "default_presets_are_valid", () -> DefaultPresetRoundTripTest::testDefaultPresetsAreValid);
     TEST_FUNCTIONS.register(
         "default_presets_survive_regeneration",
         () -> DefaultPresetRoundTripTest::testDefaultPresetsSurviveRegeneration);
@@ -424,17 +421,14 @@ public final class ModGameTests {
         () -> PresetDefaultBaselineTest::testCustomObjectiveDataReplacesDefaultObjectives);
 
     TEST_FUNCTIONS.register(
-        "preset_survives_round_trip",
-        () -> PresetRoundTripTest::testPresetSurvivesRoundTrip);
+        "preset_survives_round_trip", () -> PresetRoundTripTest::testPresetSurvivesRoundTrip);
     TEST_FUNCTIONS.register(
         "preset_survives_round_trip_for_villager",
         () -> PresetRoundTripTest::testPresetSurvivesRoundTripForVillager);
     TEST_FUNCTIONS.register(
         "configuration_survives_round_trip",
         () -> PresetRoundTripTest::testConfigurationSurvivesRoundTrip);
-    TEST_FUNCTIONS.register(
-        "export_is_compact",
-        () -> PresetRoundTripTest::testExportIsCompact);
+    TEST_FUNCTIONS.register("export_is_compact", () -> PresetRoundTripTest::testExportIsCompact);
     TEST_FUNCTIONS.register(
         "export_is_compact_for_villager",
         () -> PresetRoundTripTest::testExportIsCompactForVillager);
@@ -446,8 +440,7 @@ public final class ModGameTests {
         "preset_item_spawns_configured_villager",
         () -> PresetSpawnTest::testPresetItemSpawnsConfiguredVillager);
     TEST_FUNCTIONS.register(
-        "spawner_spawns_configured_n_p_c",
-        () -> PresetSpawnTest::testSpawnerSpawnsConfiguredNPC);
+        "spawner_spawns_configured_n_p_c", () -> PresetSpawnTest::testSpawnerSpawnsConfiguredNPC);
 
     TEST_FUNCTIONS.register(
         "npc_without_stored_sounds_still_has_sounds",
@@ -456,8 +449,7 @@ public final class ModGameTests {
         "villager_without_stored_sounds_still_has_sounds",
         () -> StoredDataTest::testVillagerWithoutStoredSoundsStillHasSounds);
     TEST_FUNCTIONS.register(
-        "unchanged_sounds_are_not_stored",
-        () -> StoredDataTest::testUnchangedSoundsAreNotStored);
+        "unchanged_sounds_are_not_stored", () -> StoredDataTest::testUnchangedSoundsAreNotStored);
     TEST_FUNCTIONS.register(
         "objectives_survive_without_target_flags",
         () -> StoredDataTest::testObjectivesSurviveWithoutTargetFlags);

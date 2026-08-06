@@ -290,10 +290,7 @@ class PresetNormalizerTest {
 
     PresetNormalizer.normalize(entityData);
     ListTag keptModifiers =
-        entityData
-            .getListOrEmpty("attributes")
-            .getCompoundOrEmpty(0)
-            .getListOrEmpty("modifiers");
+        entityData.getListOrEmpty("attributes").getCompoundOrEmpty(0).getListOrEmpty("modifiers");
 
     assertEquals(1, keptModifiers.size());
     assertEquals(

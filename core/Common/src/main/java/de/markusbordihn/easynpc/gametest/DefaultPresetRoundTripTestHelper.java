@@ -165,10 +165,7 @@ public class DefaultPresetRoundTripTestHelper {
   }
 
   private static void writePreset(
-      GameTestHelper helper,
-      File targetFolder,
-      Identifier presetLocation,
-      CompoundTag presetTag) {
+      GameTestHelper helper, File targetFolder, Identifier presetLocation, CompoundTag presetTag) {
     String relativePath =
         presetLocation
             .getPath()
