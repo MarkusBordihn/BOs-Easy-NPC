@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.entity.easynpc.data;
 
 import de.markusbordihn.easynpc.data.model.ModelAnimationBehavior;
 import de.markusbordihn.easynpc.data.model.ModelAnimationData;
+import de.markusbordihn.easynpc.data.model.ModelAnimationRequest;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import net.minecraft.nbt.CompoundTag;
@@ -51,7 +52,16 @@ public interface ModelAnimationDataCapable<T extends Mob> extends EasyNPC<T> {
   }
 
   default void setModelAnimationBehavior(ModelAnimationBehavior behavior) {
-    setModelAnimationData(new ModelAnimationData(behavior));
+    setModelAnimationData(
+        new ModelAnimationData(behavior, getModelAnimationData().playbackRequest()));
+  }
+
+  default ModelAnimationRequest getModelAnimationRequest() {
+    return getModelAnimationData().playbackRequest();
+  }
+
+  default void setModelAnimationRequest(ModelAnimationRequest request) {
+    setModelAnimationData(new ModelAnimationData(getModelAnimationBehavior(), request));
   }
 
   default void defineSynchedModelAnimationData(SynchedEntityData.Builder builder) {

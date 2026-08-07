@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.data.attribute;
 
 import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
+import de.markusbordihn.easynpc.utils.CompoundTagUtils;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Optional;
@@ -154,11 +155,11 @@ public class EntityAttributes {
   }
 
   public void save(ValueOutput valueOutput) {
-    CompoundTag compoundTag = save(new CompoundTag());
-    valueOutput.store(
-        ENTITY_ATTRIBUTE_TAG,
-        CompoundTag.CODEC,
-        compoundTag.getCompoundOrEmpty(ENTITY_ATTRIBUTE_TAG));
+    CompoundTag entityAttributeTag =
+        save(new CompoundTag()).getCompoundOrEmpty(ENTITY_ATTRIBUTE_TAG);
+    if (!entityAttributeTag.isEmpty()) {
+      valueOutput.store(ENTITY_ATTRIBUTE_TAG, CompoundTag.CODEC, entityAttributeTag);
+    }
   }
 
   public CompoundTag save(CompoundTag compoundTag) {
@@ -175,7 +176,7 @@ public class EntityAttributes {
             movementAttributes.encode(entityAttributeTag);
           }
         });
-    compoundTag.put(ENTITY_ATTRIBUTE_TAG, entityAttributeTag);
+    CompoundTagUtils.putIfNotEmpty(compoundTag, ENTITY_ATTRIBUTE_TAG, entityAttributeTag);
     return compoundTag;
   }
 

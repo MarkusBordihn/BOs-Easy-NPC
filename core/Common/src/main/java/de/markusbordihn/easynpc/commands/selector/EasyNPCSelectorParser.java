@@ -28,17 +28,21 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.commands.suggestion.EasyNPCSuggestions;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
-import java.util.stream.Stream;
+import java.util.stream.Collectors;
+import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.commands.arguments.selector.EntitySelectorParser;
+import net.minecraft.server.permissions.Permissions;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class EasyNPCSelectorParser extends EntitySelectorParser {
-
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+
+  private final SharedSuggestionProvider suggestionProvider;
 
   public EasyNPCSelectorParser(StringReader stringReader) {
     this(stringReader, true);
@@ -46,13 +50,21 @@ public class EasyNPCSelectorParser extends EntitySelectorParser {
 
   public EasyNPCSelectorParser(StringReader stringReader, boolean allowSelectors) {
     super(stringReader, allowSelectors);
+    this.suggestionProvider = null;
+  }
+
+  public EasyNPCSelectorParser(
+      StringReader stringReader, SharedSuggestionProvider suggestionProvider) {
+    super(
+        stringReader,
+        suggestionProvider.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER));
+    this.suggestionProvider = suggestionProvider;
   }
 
   @Override
   public CompletableFuture<Suggestions> fillSuggestions(
       SuggestionsBuilder suggestionsBuilder, Consumer<SuggestionsBuilder> consumer) {
 
-    // Define suggestion string range
     StringRange stringRange =
         StringRange.between(suggestionsBuilder.getStart(), suggestionsBuilder.getInput().length());
 
@@ -77,28 +89,18 @@ public class EasyNPCSelectorParser extends EntitySelectorParser {
       log.error("Failed to get suggestions:", e);
     }
 
-    // Add known UUIDs to suggestions
+    // Add the known NPCs in front of the selectors, replacing the plain vanilla entries.
     String argument = suggestionsBuilder.getRemainingLowerCase();
-    if (argument != null && !argument.isEmpty() && !argument.startsWith("@")) {
-      Stream<String> possibleUUIDs = EasyNPCSuggestions.suggestUUID(argument);
-      if (possibleUUIDs != null) {
-        possibleUUIDs.forEach(
-            uuid -> {
-              for (Suggestion suggestion : suggestionsList) {
-                if (suggestion.getText().equals(uuid)) {
-                  return;
-                }
-              }
-              suggestionsList.add(
-                  new Suggestion(
-                      StringRange.between(
-                          suggestionsBuilder.getStart(), suggestionsBuilder.getInput().length()),
-                      uuid));
-            });
-      }
+    if (this.suggestionProvider != null && (argument == null || !argument.startsWith("@"))) {
+      List<Suggestion> npcSuggestions =
+          EasyNPCSuggestions.suggestNPCTargets(
+              this.suggestionProvider, stringRange, argument != null ? argument : "");
+      Set<String> npcSuggestionTexts =
+          npcSuggestions.stream().map(Suggestion::getText).collect(Collectors.toSet());
+      suggestionsList.removeIf(suggestion -> npcSuggestionTexts.contains(suggestion.getText()));
+      suggestionsList.addAll(0, npcSuggestions);
     }
 
-    // Build new suggestions with the combined list.
     CompletableFuture<Suggestions> suggestions =
         CompletableFuture.completedFuture(new Suggestions(stringRange, suggestionsList));
     this.setSuggestions((suggestionsBuilder1, consumer1) -> suggestions);

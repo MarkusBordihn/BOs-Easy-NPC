@@ -97,7 +97,6 @@ public interface DisplayAttributeDataCapable<E extends Mob> extends EasyNPC<E> {
 
   default void syncDisplayAttributesToEntity(DisplayAttributeDataSet displayAttributeDataSet) {
 
-    // Sync customNameVisible property from NAME_VISIBILITY attribute
     if (displayAttributeDataSet.hasAttribute(DisplayAttributeType.NAME_VISIBILITY)) {
       DisplayAttributeEntry nameVisibilityEntry =
           displayAttributeDataSet.getAttribute(DisplayAttributeType.NAME_VISIBILITY);
@@ -176,11 +175,15 @@ public interface DisplayAttributeDataCapable<E extends Mob> extends EasyNPC<E> {
   }
 
   default void addAdditionalDisplayAttributeData(ValueOutput valueOutput) {
-    DisplayAttributeDataSet displayAttributeData = getDisplayAttributeData();
+    DisplayAttributeDataSet displayAttributeData = this.getDisplayAttributeData();
+    if (displayAttributeData == null) {
+      return;
+    }
 
-    if (displayAttributeData != null) {
+    ListTag displayAttributeTag = displayAttributeData.save();
+    if (!displayAttributeTag.isEmpty()) {
       valueOutput.store(
-          DATA_DISPLAY_ATTRIBUTE_TAG, CompoundTagUtils.LIST_TAG_CODEC, displayAttributeData.save());
+          DATA_DISPLAY_ATTRIBUTE_TAG, CompoundTagUtils.LIST_TAG_CODEC, displayAttributeTag);
     }
   }
 

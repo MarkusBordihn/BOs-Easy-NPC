@@ -287,4 +287,12 @@ public class CompoundTagUtils {
 
     parent.put(key, child);
   }
+
+  public static void putIfNotEmpty(CompoundTag parent, String key, ListTag child) {
+    if (parent == null || key == null || key.isEmpty() || child == null || child.isEmpty()) {
+      return;
+    }
+
+    parent.put(key, child);
+  }
 }

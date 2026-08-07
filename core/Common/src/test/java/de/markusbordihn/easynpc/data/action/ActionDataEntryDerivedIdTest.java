@@ -20,8 +20,10 @@
 package de.markusbordihn.easynpc.data.action;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
+import java.util.List;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import org.junit.jupiter.api.DisplayName;
@@ -70,6 +72,54 @@ class ActionDataEntryDerivedIdTest {
     assertNotEquals(
         ActionDataEntry.deriveId(this.createActionTag("say hello"), 0),
         ActionDataEntry.deriveId(this.createActionTag("say goodbye"), 0));
+  }
+
+  @Test
+  @DisplayName("Optional fields at their default value never reach the tag")
+  void testDefaultFieldsAreNotWritten() {
+    CompoundTag compoundTag = new ActionDataEntry(ActionDataType.COMMAND, "say hello").createTag();
+
+    assertFalse(compoundTag.contains(ActionDataEntry.DATA_MESSAGE_TAG));
+    assertFalse(compoundTag.contains(ActionDataEntry.DATA_PERMISSION_LEVEL_TAG));
+    assertFalse(compoundTag.contains(ActionDataEntry.DATA_EXECUTE_AS_USER_TAG));
+    assertFalse(compoundTag.contains(ActionDataEntry.DATA_DEBUG_TAG));
+  }
+
+  private CompoundTag createIdentityTag(ActionDataEntry actionDataEntry) {
+    CompoundTag compoundTag = actionDataEntry.createTag();
+    compoundTag.remove(ActionDataEntry.DATA_ID_TAG);
+    return compoundTag;
+  }
+
+  @Test
+  @DisplayName("Default message action data does not change an existing derived id")
+  void testDerivedIdIsUnaffectedByTheDefaultMessageActionData() {
+    ActionDataEntry entry =
+        new ActionDataEntry(ActionDataType.COMMAND, "say hello")
+            .withMessageActionData(MessageActionData.DEFAULT);
+
+    assertEquals(
+        ActionDataEntry.deriveId(this.createActionTag("say hello"), 0),
+        ActionDataEntry.deriveId(this.createIdentityTag(entry), 0));
+  }
+
+  @Test
+  @DisplayName("Non-default message action data is part of the identity")
+  void testDerivedIdChangesWithNonDefaultMessageActionData() {
+    ActionDataEntry entry =
+        new ActionDataEntry(ActionDataType.MESSAGE)
+            .withMessageActionData(MessageActionData.DEFAULT.withTexts(List.of("hello")));
+
+    assertNotEquals(
+        ActionDataEntry.deriveId(this.createIdentityTag(entry), 0),
+        ActionDataEntry.deriveId(
+            this.createIdentityTag(
+                entry.withMessageActionData(
+                    entry
+                        .messageActionData()
+                        .withShowInNearbyChat(false)
+                        .withShowAsSpeechBubble(true))),
+            0));
   }
 
   @Test

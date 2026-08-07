@@ -31,6 +31,7 @@ import de.markusbordihn.easynpc.configui.client.screen.components.DeleteButton;
 import de.markusbordihn.easynpc.configui.client.screen.components.DialogButton;
 import de.markusbordihn.easynpc.configui.client.screen.components.SaveButton;
 import de.markusbordihn.easynpc.configui.client.screen.editor.condition.entry.AdvancementConditionEntry;
+import de.markusbordihn.easynpc.configui.client.screen.editor.condition.entry.ChanceConditionEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.condition.entry.ConditionEntryWidget;
 import de.markusbordihn.easynpc.configui.client.screen.editor.condition.entry.EntityHealthConditionEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.condition.entry.ExecutionLimitConditionEntry;
@@ -40,6 +41,7 @@ import de.markusbordihn.easynpc.configui.client.screen.editor.condition.entry.Ha
 import de.markusbordihn.easynpc.configui.client.screen.editor.condition.entry.NpcHealthConditionEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.condition.entry.NpcStateConditionEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.condition.entry.PlayerHealthConditionEntry;
+import de.markusbordihn.easynpc.configui.client.screen.editor.condition.entry.RelationshipConditionEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.condition.entry.ScoreboardConditionEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.condition.entry.TimeOfDayConditionEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.condition.entry.WeatherConditionEntry;
@@ -65,6 +67,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
 public class ConditionDataEntryEditorContainerScreen<T extends EditorMenu> extends EditorScreen<T> {
+
+  private static final int HINT_WIDTH = 285;
 
   private final ConditionDataEntry conditionDataEntry;
   private final ConditionDataSet conditionDataSet;
@@ -265,6 +269,10 @@ public class ConditionDataEntryEditorContainerScreen<T extends EditorMenu> exten
         this.conditionEntryWidget =
             new ExecutionLimitConditionEntry(this.conditionDataEntry, this.conditionDataSet, this);
         break;
+      case CHANCE:
+        this.conditionEntryWidget =
+            new ChanceConditionEntry(this.conditionDataEntry, this.conditionDataSet, this);
+        break;
       case HAS_ITEM_IN_INVENTORY:
       case HAS_ITEM_IN_HAND:
         this.conditionEntryWidget =
@@ -317,6 +325,10 @@ public class ConditionDataEntryEditorContainerScreen<T extends EditorMenu> exten
         this.conditionEntryWidget =
             new NpcStateConditionEntry(this.conditionDataEntry, this.conditionDataSet, this);
         break;
+      case RELATIONSHIP:
+        this.conditionEntryWidget =
+            new RelationshipConditionEntry(this.conditionDataEntry, this.conditionDataSet, this);
+        break;
       case FALLBACK:
       case CUSTOM:
         this.conditionEntryWidget = null;
@@ -361,37 +373,24 @@ public class ConditionDataEntryEditorContainerScreen<T extends EditorMenu> exten
         this.topPos + 30,
         Constants.FONT_COLOR_BLACK);
 
-    if (this.conditionType == ConditionType.FALLBACK) {
-      Text.drawConfigString(
-          guiGraphics,
-          this.font,
-          "condition.fallback.info",
-          this.leftPos + 10,
-          this.topPos + 50,
-          Constants.FONT_COLOR_DEFAULT);
-      Text.drawConfigString(
-          guiGraphics,
-          this.font,
-          "condition.hint.fallback",
-          this.leftPos + 10,
-          this.topPos + 62,
-          Constants.FONT_COLOR_DEFAULT);
-    } else {
-      Text.drawConfigString(
-          guiGraphics,
-          this.font,
-          this.context.helpTextKey(),
-          this.leftPos + 10,
-          this.topPos + 50,
-          Constants.FONT_COLOR_DEFAULT);
-      Text.drawConfigString(
-          guiGraphics,
-          this.font,
-          "condition.hint." + this.conditionType.name().toLowerCase(),
-          this.leftPos + 10,
-          this.topPos + 62,
-          Constants.FONT_COLOR_DEFAULT);
-    }
+    boolean fallbackCondition = this.conditionType == ConditionType.FALLBACK;
+    Text.drawConfigString(
+        guiGraphics,
+        this.font,
+        fallbackCondition ? "condition.fallback.info" : this.context.helpTextKey(),
+        this.leftPos + 10,
+        this.topPos + 48,
+        Constants.FONT_COLOR_DEFAULT);
+    Text.drawConfigStringWrapped(
+        guiGraphics,
+        this.font,
+        fallbackCondition
+            ? "condition.hint.fallback"
+            : "condition.hint." + this.conditionType.name().toLowerCase(),
+        this.leftPos + 10,
+        this.topPos + 59,
+        HINT_WIDTH,
+        Constants.FONT_COLOR_DEFAULT);
 
     if (this.conditionEntryWidget != null) {
       this.conditionEntryWidget.render(guiGraphics, this.leftPos + 10, this.contentTop + 55);

@@ -76,6 +76,11 @@ public class NPCFileStorage {
       return Optional.empty();
     }
 
+    CompoundTag pending = dirtyNPCs.get(uuid);
+    if (pending != null) {
+      return Optional.of(pending);
+    }
+
     CompoundTag cached = cache.get(uuid);
     if (cached != null) {
       return Optional.of(cached);
@@ -101,7 +106,6 @@ public class NPCFileStorage {
   public void markDirty(UUID uuid, CompoundTag data) {
     if (uuid != null && data != null) {
       dirtyNPCs.put(uuid, data);
-      cache.put(uuid, data);
     }
   }
 
@@ -121,7 +125,6 @@ public class NPCFileStorage {
       NbtIo.writeCompressed(data, tempFile);
       Files.move(tempFile, npcFile, StandardCopyOption.REPLACE_EXISTING);
 
-      cache.put(uuid, data);
       log.debug("Saved NPC data for UUID {} to file {}", uuid, npcFile);
       return true;
     } catch (IOException e) {

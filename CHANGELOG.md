@@ -10,21 +10,36 @@ Check the [upgrade guide][upgrade_guide] for more information.
 
 ### 7.6.0
 
-- Fixed flying NPCs like Allay, Vex and Ghast moving on the ground instead of flying.
-- Fixed dialogs and buttons with the same or a non-latin label sharing one id and needing a relink.
-- Fixed preset export, dialog, pose and texture names dropping umlauts and accents or failing.
-- Fixed conditions not being editable on a dedicated server and untranslated condition texts.
-- Fixed Easy Model Entities NPCs not turning their head and their model list ignoring a `/reload`.
-- Fixed objectives being switched off for good when their target entity was missing.
-- Changed dialog and button labels, preset, pose and texture names to convert special characters.
-- Changed the required Easy Model Entities version to 1.7.0, floating models now hover by default.
-- Added NPC states with number, yes/no and text values, usable as condition, action and command.
-- Added a "Navigation" and a "Hover height" setting to switch any NPC between ground and flying.
-- Added a parent preset reference, so a preset can build on another one and only override changes.
-- Added the state driven "Forge Keeper" preset.
-- Added custom conditions and dialog, action and state events for other mods.
-- Added "On Far Distance" as a distance action, which triggers at 32 blocks.
-- Improved floating Easy Model Entities models, which now bob up and down.
+- Fixed unclear mod conflict errors for duplicate entity data tracker IDs.
+- Fixed third-party health bars rendering over NPC previews in configuration and dialog screens.
+- Fixed Doppler and Easy Model Entities NPCs using default hitboxes instead of their model size.
+- Fixed the `/easy_npc` commands suggesting no NPC UUIDs at all on a server.
+- Fixed the pose list of the "Set Pose" action drawing over its input field.
+- Fixed the untranslated "Loop", "After current" and "Action Data Type" labels of the action editor.
+- Fixed the missing hint text of the "Chance" condition.
+- Fixed long condition hints running out of the editor screen instead of wrapping.
+- Fixed the misaligned help icons and text buttons of the "Message" action.
+- Fixed changes to the "Set Pose", "Play Animation" and "Stop Animation" actions not being saveable.
+- Fixed the speech bubble text sitting closer to its upper border than to its lower one.
+- Changed the NPC suggestions to list the crosshair NPC first and only own NPCs without permissions.
+- Changed a preset export to only store what differs from a new NPC, without position or owner.
+- Changed a preset without objectives or actions to fall back to the defaults of its NPC type.
+- Changed events without a player, like "On Spawn" or "On Kill", to check their conditions.
+  An action there with a player based condition, for example a scoreboard or item, no longer runs.
+- Changed a time based action to pick the owner as `@initiator` whenever the owner is nearby.
+- Changed speech bubbles to stay visible from 5 up to 18 seconds, depending on the text length.
+- Changed the "Set Pose" action to only show its input field for the "custom" pose entry.
+- Added time based actions on five fixed steps, from every ~1 second up to every ~15 minutes.
+- Added a "Message" action for chat, system message and speech bubble text without a command.
+- Added text variants, a sender name, a recipient and translation keys to the "Message" action.
+- Added the speech bubble graphic as `easy_npc:textures/gui/speech_bubble.png` for resource packs.
+- Added a "Chance" condition in percent and a "Relationship" condition for owner and faction.
+- Added spawn, owner login, state change, day / night, weather and the missing "On Trade" events.
+- Added a base preset per NPC type under `easy_npc:api/preset/base/`, usable as a parent preset.
+- Added the "Wandering Companion" preset, a talkative NPC built from time based messages.
+- Added an action registry, an action handler, a preset validator and richer event data for mods.
+- Added a tooltip with name, type and distance to every NPC suggestion of the `/easy_npc` commands.
+- Improved the NPC suggestions, which appear without typing and tolerate a near miss of one block.
 
 ### 7.5.0
 

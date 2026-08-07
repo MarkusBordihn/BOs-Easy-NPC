@@ -32,7 +32,14 @@ public enum ActionDataType {
   OPEN_NAMED_DIALOG,
   OPEN_NAMED_DIALOG_CONDITIONAL,
   SCOREBOARD,
-  NPC_STATE;
+  NPC_STATE,
+  SET_POSE,
+  RESET_POSE(false),
+  PLAY_ANIMATION,
+  STOP_ANIMATION(false),
+  RESTART_ANIMATION(false),
+  MESSAGE,
+  CUSTOM;
 
   private final boolean requiresArgument;
   private final String id = "actionDataType." + this.name().toLowerCase(Locale.ROOT);

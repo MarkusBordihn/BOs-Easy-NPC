@@ -33,13 +33,19 @@ import de.markusbordihn.easynpc.configui.client.screen.components.SaveButton;
 import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.ActionEntryWidget;
 import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.CloseDialogEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.CommandActionEntry;
+import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.CustomActionEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.InteractBlockEntry;
+import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.MessageActionEntry;
+import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.ModelAnimationActionEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.NpcStateEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.OpenDefaultDialogEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.OpenNamedDialogEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.OpenTradingScreenEntry;
+import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.PoseActionEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.ScoreboardEntry;
+import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.SimpleVisualActionEntry;
 import de.markusbordihn.easynpc.configui.data.editor.EditorType;
+import de.markusbordihn.easynpc.configui.data.screen.AdditionalScreenData;
 import de.markusbordihn.easynpc.configui.menu.editor.EditorMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.action.ActionDataEntry;
@@ -132,7 +138,10 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
     Set<ActionDataType> blockedTypes = getBlockedActionTypes();
     return Arrays.stream(ActionDataType.values())
         .filter(type -> type != ActionDataType.NONE)
-        .filter(type -> !blockedTypes.contains(type))
+        .filter(
+            type -> type != ActionDataType.CUSTOM || this.actionDataType == ActionDataType.CUSTOM)
+        .filter(type -> this.actionEventType.allowsActionDataType(type))
+        .filter(type -> !blockedTypes.contains(type) || type == this.actionDataType)
         .filter(
             type -> {
               if (!requiresServerPlayer) {
@@ -145,8 +154,7 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
   }
 
   private Set<ActionDataType> getBlockedActionTypes() {
-    de.markusbordihn.easynpc.configui.data.screen.AdditionalScreenData additionalScreenData =
-        this.getAdditionalScreenData();
+    AdditionalScreenData additionalScreenData = this.getAdditionalScreenData();
     if (additionalScreenData == null) {
       return Set.of();
     }
@@ -167,7 +175,11 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
   }
 
   private boolean requiresServerPlayer(ActionEventType actionEventType) {
-    return actionEventType != ActionEventType.ON_KILL;
+    return actionEventType != ActionEventType.ON_KILL
+        && actionEventType != ActionEventType.ON_SPAWN
+        && actionEventType != ActionEventType.ON_STATE_CHANGE
+        && actionEventType != ActionEventType.ON_TIME_CHANGE
+        && actionEventType != ActionEventType.ON_WEATHER_CHANGE;
   }
 
   public boolean currentEventRequiresServerPlayer() {
@@ -320,7 +332,6 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
                 "<",
                 onPress -> navigateToActionDataEditor()));
 
-    // Level 1 Navigation Buttons
     this.navigationLevelOne =
         this.addRenderableWidget(
             new ActionsButton(
@@ -330,7 +341,6 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
                 "Actions",
                 onPress -> navigateToActionDataEditor()));
 
-    // Level 2 Navigation Buttons
     int actionDataEntryPosition = this.actionDataSet.getPosition(this.actionDataEntry);
     this.navigationLevelTwo =
         this.addRenderableWidget(
@@ -400,7 +410,6 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
                 "cancel",
                 onPress -> navigateToActionDataEditor()));
 
-    // Handle edit options based on action entry type
     switch (this.actionDataType) {
       case CLOSE_DIALOG:
         this.actionEntryWidget =
@@ -434,6 +443,30 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
       case NPC_STATE:
         this.actionEntryWidget = new NpcStateEntry(this.actionDataEntry, this.actionDataSet, this);
         break;
+      case SET_POSE:
+        this.actionEntryWidget =
+            new PoseActionEntry(this.actionDataEntry, this.actionDataSet, this);
+        break;
+      case RESET_POSE:
+      case RESTART_ANIMATION:
+        this.actionEntryWidget =
+            new SimpleVisualActionEntry(
+                this.actionDataEntry, this.actionDataSet, this, this.actionDataType);
+        break;
+      case PLAY_ANIMATION:
+      case STOP_ANIMATION:
+        this.actionEntryWidget =
+            new ModelAnimationActionEntry(
+                this.actionDataEntry, this.actionDataSet, this, this.actionDataType);
+        break;
+      case MESSAGE:
+        this.actionEntryWidget =
+            new MessageActionEntry(this.actionDataEntry, this.actionDataSet, this);
+        break;
+      case CUSTOM:
+        this.actionEntryWidget =
+            new CustomActionEntry(this.actionDataEntry, this.actionDataSet, this);
+        break;
       default:
         this.actionEntryWidget = null;
         log.error("Unsupported action data type {}!", this.actionDataType);
@@ -466,10 +499,10 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
     int editorLeft = this.leftPos + 10;
     int editorTop = this.contentTop + 25;
 
-    Text.drawString(
+    Text.drawConfigString(
         guiGraphics,
         this.font,
-        "Action Data Type:",
+        "action.type",
         this.leftPos + 10,
         this.topPos + 30,
         Constants.FONT_COLOR_BLACK);

@@ -24,6 +24,7 @@ import de.markusbordihn.easynpc.configui.data.editor.EditorType;
 import de.markusbordihn.easynpc.configui.menu.configuration.action.BasicActionConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.action.DialogActionConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.action.DistanceActionConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.configui.menu.configuration.action.IntervalActionConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.attribute.AbilitiesAttributeConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.attribute.BaseAttributeConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.attribute.CombatAttributeConfigurationMenuWrapper;
@@ -332,6 +333,12 @@ public class ModMenuTypes {
               BuiltInRegistries.MENU,
               ConfigurationType.DISTANCE_ACTION.getId(),
               new MenuType<>(DistanceActionConfigurationMenuWrapper::new, FeatureFlagSet.of()));
+  public static final MenuType<IntervalActionConfigurationMenuWrapper>
+      INTERVAL_ACTION_CONFIGURATION_MENU =
+          Registry.register(
+              BuiltInRegistries.MENU,
+              ConfigurationType.INTERVAL_ACTION.getId(),
+              new MenuType<>(IntervalActionConfigurationMenuWrapper::new, FeatureFlagSet.of()));
   public static final MenuType<EquipmentConfigurationMenuWrapper> EQUIPMENT_CONFIGURATION_MENU =
       Registry.register(
           BuiltInRegistries.MENU,

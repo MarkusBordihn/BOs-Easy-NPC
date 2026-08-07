@@ -40,6 +40,9 @@ class ActionDataTypeTest {
         ActionDataType.OPEN_NAMED_DIALOG_CONDITIONAL,
         ActionDataType.get("OPEN_NAMED_DIALOG_CONDITIONAL"));
     assertEquals(ActionDataType.SCOREBOARD, ActionDataType.get("SCOREBOARD"));
+    assertEquals(ActionDataType.NPC_STATE, ActionDataType.get("NPC_STATE"));
+    assertEquals(ActionDataType.MESSAGE, ActionDataType.get("MESSAGE"));
+    assertEquals(ActionDataType.CUSTOM, ActionDataType.get("CUSTOM"));
   }
 
   @Test
@@ -65,6 +68,9 @@ class ActionDataTypeTest {
     assertTrue(ActionDataType.OPEN_NAMED_DIALOG.requiresArgument());
     assertTrue(ActionDataType.OPEN_NAMED_DIALOG_CONDITIONAL.requiresArgument());
     assertTrue(ActionDataType.SCOREBOARD.requiresArgument());
+    assertTrue(ActionDataType.NPC_STATE.requiresArgument());
+    assertTrue(ActionDataType.MESSAGE.requiresArgument());
+    assertTrue(ActionDataType.CUSTOM.requiresArgument());
     assertTrue(ActionDataType.NONE.requiresArgument());
   }
 
@@ -85,6 +91,9 @@ class ActionDataTypeTest {
         "actionDataType.open_named_dialog_conditional",
         ActionDataType.OPEN_NAMED_DIALOG_CONDITIONAL.getId());
     assertEquals("actionDataType.scoreboard", ActionDataType.SCOREBOARD.getId());
+    assertEquals("actionDataType.npc_state", ActionDataType.NPC_STATE.getId());
+    assertEquals("actionDataType.message", ActionDataType.MESSAGE.getId());
+    assertEquals("actionDataType.custom", ActionDataType.CUSTOM.getId());
   }
 
   @Test

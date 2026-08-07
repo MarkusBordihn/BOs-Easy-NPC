@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.data.sound;
 
 import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
+import de.markusbordihn.easynpc.utils.CompoundTagUtils;
 import java.util.EnumMap;
 import java.util.Map;
 import net.minecraft.core.Holder;
@@ -106,7 +107,6 @@ public class SoundDataSet {
       return;
     }
 
-    // Load sound data entries
     overrideSounds.clear();
     ListTag soundListTag = compoundTag.getListOrEmpty(DATA_SOUND_DATA_SET_TAG);
     for (int i = 0; i < soundListTag.size(); i++) {
@@ -130,7 +130,7 @@ public class SoundDataSet {
       SoundDataEntry soundDataEntry = entry.getValue();
       soundListTag.add(soundDataEntry.createTag());
     }
-    compoundTag.put(DATA_SOUND_DATA_SET_TAG, soundListTag);
+    CompoundTagUtils.putIfNotEmpty(compoundTag, DATA_SOUND_DATA_SET_TAG, soundListTag);
 
     return compoundTag;
   }

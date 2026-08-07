@@ -45,8 +45,10 @@ public record CombatAttributes(
   public static final String HEALTH_REGENERATION_TAG =
       CombatAttributeType.HEALTH_REGENERATION.getTagName();
 
+  public static final boolean DEFAULT_IS_INVULNERABLE = true;
+
   public CombatAttributes() {
-    this(false, false, false, true, false, false, 0.0);
+    this(false, false, false, DEFAULT_IS_INVULNERABLE, false, false, 0.0);
   }
 
   public static CombatAttributes decode(CompoundTag compoundTag) {
@@ -54,7 +56,7 @@ public record CombatAttributes(
         compoundTag.getBoolean(IS_ATTACKABLE_BY_PLAYERS_TAG).orElse(false),
         compoundTag.getBoolean(IS_ATTACKABLE_BY_MONSTERS_TAG).orElse(false),
         compoundTag.getBoolean(IS_ATTACKABLE_BY_FACTIONS_TAG).orElse(false),
-        compoundTag.getBoolean(IS_INVULNERABLE_TAG).orElse(true),
+        compoundTag.getBoolean(IS_INVULNERABLE_TAG).orElse(DEFAULT_IS_INVULNERABLE),
         compoundTag.getBoolean(IS_KNOCKBACK_RESISTANT_TAG).orElse(false),
         compoundTag.getBoolean(IS_EXPLOSION_RESISTANT_TAG).orElse(false),
         compoundTag.getDouble(HEALTH_REGENERATION_TAG).orElse(0.0));
@@ -138,13 +140,20 @@ public record CombatAttributes(
   }
 
   public CompoundTag encode(CompoundTag compoundTag) {
-    compoundTag.putBoolean(IS_ATTACKABLE_BY_PLAYERS_TAG, isAttackableByPlayers());
-    compoundTag.putBoolean(IS_ATTACKABLE_BY_MONSTERS_TAG, isAttackableByMonsters());
-    compoundTag.putBoolean(IS_ATTACKABLE_BY_FACTIONS_TAG, isAttackableByFactions());
-    compoundTag.putBoolean(IS_INVULNERABLE_TAG, isInvulnerable());
-    compoundTag.putBoolean(IS_KNOCKBACK_RESISTANT_TAG, isKnockbackResistant());
-    compoundTag.putBoolean(IS_EXPLOSION_RESISTANT_TAG, isExplosionResistant());
-    compoundTag.putDouble(HEALTH_REGENERATION_TAG, healthRegeneration());
+    AttributeTagUtils.putIfTrue(
+        compoundTag, IS_ATTACKABLE_BY_PLAYERS_TAG, this.isAttackableByPlayers());
+    AttributeTagUtils.putIfTrue(
+        compoundTag, IS_ATTACKABLE_BY_MONSTERS_TAG, this.isAttackableByMonsters());
+    AttributeTagUtils.putIfTrue(
+        compoundTag, IS_ATTACKABLE_BY_FACTIONS_TAG, this.isAttackableByFactions());
+    if (this.isInvulnerable() != DEFAULT_IS_INVULNERABLE) {
+      compoundTag.putBoolean(IS_INVULNERABLE_TAG, this.isInvulnerable());
+    }
+    AttributeTagUtils.putIfTrue(
+        compoundTag, IS_KNOCKBACK_RESISTANT_TAG, this.isKnockbackResistant());
+    AttributeTagUtils.putIfTrue(
+        compoundTag, IS_EXPLOSION_RESISTANT_TAG, this.isExplosionResistant());
+    AttributeTagUtils.putIfNotZero(compoundTag, HEALTH_REGENERATION_TAG, this.healthRegeneration());
     return compoundTag;
   }
 }

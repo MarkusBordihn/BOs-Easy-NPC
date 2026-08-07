@@ -36,7 +36,7 @@ public interface NetworkHandlerInterface {
 
   Logger log = LogManager.getLogger(Constants.LOG_NAME);
   String LOG_PREFIX = "[NetworkHandler]";
-  int PROTOCOL_VERSION = 30;
+  int PROTOCOL_VERSION = 31;
 
   <M extends NetworkMessageRecord> void registerClientNetworkMessageHandler(
       final CustomPacketPayload.Type<M> type,

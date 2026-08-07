@@ -40,6 +40,8 @@ public class PresetInheritance {
 
   private static final List<String> IDENTITY_TAGS =
       List.of(PresetData.UUID_TAG, PresetData.PRESET_UUID_TAG);
+  private static final List<String> NON_INHERITED_METADATA_TAGS =
+      List.of(PresetMetadata.TAG_NAME, PresetMetadata.TAG_CATEGORY, PresetMetadata.TAG_ACCESS);
   private static final List<String> ENTITY_TYPE_SPECIFIC_TAGS =
       List.of(
           VariantDataCapable.EASY_NPC_DATA_VARIANT_TYPE_TAG,
@@ -147,8 +149,7 @@ public class PresetInheritance {
   private static void removeInheritedIdentity(CompoundTag compoundTag) {
     IDENTITY_TAGS.forEach(compoundTag::remove);
     removeFrom(compoundTag, PresetData.DATA_TAG, IDENTITY_TAGS);
-    removeFrom(
-        compoundTag, PresetDataCapable.PRESET_METADATA_TAG, List.of(PresetMetadata.TAG_NAME));
+    removeFrom(compoundTag, PresetDataCapable.PRESET_METADATA_TAG, NON_INHERITED_METADATA_TAGS);
   }
 
   private static void removeInheritedLook(CompoundTag compoundTag) {

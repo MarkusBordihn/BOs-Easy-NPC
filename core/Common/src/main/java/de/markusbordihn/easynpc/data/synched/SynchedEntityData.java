@@ -51,7 +51,22 @@ public final class SynchedEntityData {
       T defaultData) {
     EntityDataAccessor<T> entityDataAccessor =
         (EntityDataAccessor<T>) this.entityDataAccessorMap.get(synchedDataIndex);
-    builder.define(entityDataAccessor, defaultData);
+    try {
+      builder.define(entityDataAccessor, defaultData);
+    } catch (IllegalArgumentException exception) {
+      if (exception.getMessage() != null
+          && exception.getMessage().startsWith("Duplicate id value for")) {
+        log.error(
+            "Unable to register synced Easy NPC data {} with ID {} for {} because this ID is "
+                + "already in use. This is a mod conflict. Another mod most likely registered a "
+                + "fixed entity data ID instead of using Minecraft's automatic ID allocation. "
+                + "Easy NPC cannot create this entity.",
+            synchedDataIndex,
+            entityDataAccessor.id(),
+            this.entityClass.getName());
+      }
+      throw exception;
+    }
   }
 
   public <T> T get(SynchedDataIndex synchedDataIndex) {

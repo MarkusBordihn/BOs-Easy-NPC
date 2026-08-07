@@ -70,9 +70,10 @@ public class EnvironmentalAttributeTestHelper {
 
     // Presets without the vanilla flag must still be resolved over the stored attribute.
     presetTag.remove(VANILLA_NO_GRAVITY_TAG);
-    presetTag
-        .getCompoundOrEmpty(EntityAttributes.ENTITY_ATTRIBUTE_TAG)
-        .putBoolean(EnvironmentalAttributes.NO_GRAVITY_TAG, noGravity);
+    CompoundTag entityAttributeTag =
+        presetTag.getCompoundOrEmpty(EntityAttributes.ENTITY_ATTRIBUTE_TAG);
+    entityAttributeTag.putBoolean(EnvironmentalAttributes.NO_GRAVITY_TAG, noGravity);
+    presetTag.put(EntityAttributes.ENTITY_ATTRIBUTE_TAG, entityAttributeTag);
 
     easyNPC.getEasyNPCPresetData().importPresetData(presetTag);
   }

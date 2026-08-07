@@ -40,7 +40,13 @@ public class EntityScreenRenderer {
   private static final AtomicInteger RENDER_ENTITY_ID =
       new AtomicInteger(Integer.MAX_VALUE - 100000);
 
+  private static int screenRenderDepth;
+
   protected EntityScreenRenderer() {}
+
+  public static boolean isRenderingEntityOnScreen() {
+    return screenRenderDepth > 0;
+  }
 
   /**
    * Assigns a unique render-only entity ID, if none has been assigned yet. GUI preview entities are
@@ -72,19 +78,23 @@ public class EntityScreenRenderer {
     EntityRenderState backupState = new EntityRenderState(livingEntity, easyNPC);
     applyRenderModifications(easyNPC, config);
 
-    InventoryScreen.extractEntityInInventoryFollowsMouse(
-        guiGraphics,
-        config.left(),
-        config.top(),
-        config.right(),
-        config.bottom(),
-        config.scale(),
-        config.yOffset(),
-        mouseX,
-        mouseY,
-        livingEntity);
-
-    restoreEntityState(easyNPC, backupState);
+    screenRenderDepth++;
+    try {
+      InventoryScreen.extractEntityInInventoryFollowsMouse(
+          guiGraphics,
+          config.left(),
+          config.top(),
+          config.right(),
+          config.bottom(),
+          config.scale(),
+          config.yOffset(),
+          mouseX,
+          mouseY,
+          livingEntity);
+    } finally {
+      screenRenderDepth--;
+      restoreEntityState(easyNPC, backupState);
+    }
   }
 
   public static void renderEntityRaw(

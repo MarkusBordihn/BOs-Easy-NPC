@@ -59,16 +59,32 @@ public class NPCEntityManager {
   }
 
   public static <T extends Mob> void saveNPC(EasyNPC<T> easyNPC) {
+    saveNPC(easyNPC, NPCRemovalReason.NONE);
+  }
+
+  public static <T extends Mob> void saveNPC(EasyNPC<T> easyNPC, NPCRemovalReason removalReason) {
     if (!validateServer() || easyNPC == null) {
       return;
     }
 
     easyNPC.getEasyNPCStatusData().markNPCDataUpdated();
-    SavedNPCEntityEntry entry = SavedNPCEntityEntry.fromEasyNPC(easyNPC);
+    SavedNPCEntityEntry entry = SavedNPCEntityEntry.fromEasyNPC(easyNPC, removalReason);
     if (entry != null) {
       getNPCEntityData().putEntry(entry.entityUUID(), entry);
       easyNPC.getEasyNPCStatusData().markNPCDataSaved();
       log.debug("{} Saved NPC entity: {}", LOG_PREFIX, entry.entityUUID());
+    }
+  }
+
+  public static boolean hasStoredNPC(UUID entityUUID) {
+    return validateServer()
+        && entityUUID != null
+        && getNPCEntityData().hasCompleteEntry(entityUUID);
+  }
+
+  public static void evictFromCache(UUID entityUUID) {
+    if (validateServer() && entityUUID != null) {
+      getNPCEntityData().evictFromCache(entityUUID);
     }
   }
 

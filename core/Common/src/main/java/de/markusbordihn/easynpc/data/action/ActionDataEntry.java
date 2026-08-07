@@ -30,6 +30,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import org.apache.logging.log4j.LogManager;
@@ -44,9 +45,15 @@ public record ActionDataEntry(
     BlockPos blockPos,
     boolean executeAsUser,
     boolean enableDebug,
-    int permissionLevel) {
+    int permissionLevel,
+    MessageActionData messageActionData,
+    String poseId,
+    ModelAnimationActionData modelAnimationActionData) {
 
   public static final String DATA_ID_TAG = "Id";
+  public static final String DATA_MESSAGE_TAG = "Msg";
+  public static final String DATA_POSE_TAG = "Pose";
+  public static final String DATA_ANIMATION_TAG = "Anim";
   public static final String DATA_COMMAND_TAG = "Cmd";
   public static final String DATA_DEBUG_TAG = "Debug";
   public static final String DATA_EXECUTE_AS_USER_TAG = "ExecAsUser";
@@ -60,6 +67,41 @@ public record ActionDataEntry(
   public static final int MIN_PERMISSION_LEVEL = CommandPermissionLevel.ALL.minecraftLevel();
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private static final String DEFAULT_COMMAND = "";
+
+  public ActionDataEntry {
+    poseId = poseId == null ? "" : poseId.trim();
+    messageActionData = messageActionData != null ? messageActionData : MessageActionData.DEFAULT;
+    modelAnimationActionData =
+        modelAnimationActionData != null
+            ? modelAnimationActionData
+            : ModelAnimationActionData.DEFAULT;
+  }
+
+  public ActionDataEntry(
+      UUID id,
+      ActionDataType actionDataType,
+      ConditionDataSet conditionDataSet,
+      String command,
+      UUID targetUUID,
+      BlockPos blockPos,
+      boolean executeAsUser,
+      boolean enableDebug,
+      int permissionLevel,
+      MessageActionData messageActionData) {
+    this(
+        id,
+        actionDataType,
+        conditionDataSet,
+        command,
+        targetUUID,
+        blockPos,
+        executeAsUser,
+        enableDebug,
+        permissionLevel,
+        messageActionData,
+        "",
+        ModelAnimationActionData.DEFAULT);
+  }
 
   public ActionDataEntry() {
     this(ActionDataType.COMMAND);
@@ -98,7 +140,14 @@ public record ActionDataEntry(
             && compoundTag.getBoolean(DATA_DEBUG_TAG).orElse(false),
         compoundTag.contains(DATA_PERMISSION_LEVEL_TAG)
             ? checkPermissionLevel(compoundTag.getInt(DATA_PERMISSION_LEVEL_TAG).orElse(0))
-            : DEFAULT_PERMISSION_LEVEL);
+            : DEFAULT_PERMISSION_LEVEL,
+        compoundTag.contains(DATA_MESSAGE_TAG)
+            ? MessageActionData.fromTag(compoundTag.getCompoundOrEmpty(DATA_MESSAGE_TAG))
+            : MessageActionData.DEFAULT,
+        compoundTag.getString(DATA_POSE_TAG).orElse(""),
+        compoundTag.contains(DATA_ANIMATION_TAG)
+            ? ModelAnimationActionData.fromTag(compoundTag.getCompoundOrEmpty(DATA_ANIMATION_TAG))
+            : ModelAnimationActionData.DEFAULT);
   }
 
   public ActionDataEntry(ActionDataType actionDataType) {
@@ -138,7 +187,10 @@ public record ActionDataEntry(
         BlockPos.ZERO,
         executeAsUser,
         enableDebug,
-        permissionLevel);
+        permissionLevel,
+        MessageActionData.DEFAULT,
+        "",
+        ModelAnimationActionData.DEFAULT);
   }
 
   public ActionDataEntry(ActionDataType actionDataType, UUID targetUUID, String command) {
@@ -151,7 +203,10 @@ public record ActionDataEntry(
         BlockPos.ZERO,
         false,
         false,
-        DEFAULT_PERMISSION_LEVEL);
+        DEFAULT_PERMISSION_LEVEL,
+        MessageActionData.DEFAULT,
+        "",
+        ModelAnimationActionData.DEFAULT);
   }
 
   public static UUID deriveId(CompoundTag compoundTag, int position) {
@@ -223,7 +278,10 @@ public record ActionDataEntry(
         this.blockPos,
         this.executeAsUser,
         this.enableDebug,
-        this.permissionLevel);
+        this.permissionLevel,
+        this.messageActionData,
+        this.poseId,
+        this.modelAnimationActionData);
   }
 
   public ActionDataEntry withBlockPos(BlockPos blockPos) {
@@ -236,7 +294,10 @@ public record ActionDataEntry(
         blockPos,
         this.executeAsUser,
         this.enableDebug,
-        this.permissionLevel);
+        this.permissionLevel,
+        this.messageActionData,
+        this.poseId,
+        this.modelAnimationActionData);
   }
 
   public ActionDataEntry withTargetUUID(UUID targetUUID) {
@@ -249,7 +310,10 @@ public record ActionDataEntry(
         this.blockPos,
         this.executeAsUser,
         this.enableDebug,
-        this.permissionLevel);
+        this.permissionLevel,
+        this.messageActionData,
+        this.poseId,
+        this.modelAnimationActionData);
   }
 
   public ActionDataEntry withCommand(String command) {
@@ -262,7 +326,10 @@ public record ActionDataEntry(
         this.blockPos,
         this.executeAsUser,
         this.enableDebug,
-        this.permissionLevel);
+        this.permissionLevel,
+        this.messageActionData,
+        this.poseId,
+        this.modelAnimationActionData);
   }
 
   public ActionDataEntry withConditionDataSet(ConditionDataSet conditionDataSet) {
@@ -275,7 +342,10 @@ public record ActionDataEntry(
         this.blockPos,
         this.executeAsUser,
         this.enableDebug,
-        this.permissionLevel);
+        this.permissionLevel,
+        this.messageActionData,
+        this.poseId,
+        this.modelAnimationActionData);
   }
 
   public ActionDataEntry withExecuteAsUser(boolean executeAsUser) {
@@ -288,7 +358,10 @@ public record ActionDataEntry(
         this.blockPos,
         executeAsUser,
         this.enableDebug,
-        this.permissionLevel);
+        this.permissionLevel,
+        this.messageActionData,
+        this.poseId,
+        this.modelAnimationActionData);
   }
 
   public ActionDataEntry withPermissionLevel(int permissionLevel) {
@@ -301,7 +374,59 @@ public record ActionDataEntry(
         this.blockPos,
         this.executeAsUser,
         this.enableDebug,
-        checkPermissionLevel(permissionLevel));
+        checkPermissionLevel(permissionLevel),
+        this.messageActionData,
+        this.poseId,
+        this.modelAnimationActionData);
+  }
+
+  public ActionDataEntry withMessageActionData(MessageActionData messageActionData) {
+    return new ActionDataEntry(
+        this.id,
+        this.actionDataType,
+        this.conditionDataSet,
+        this.command,
+        this.targetUUID,
+        this.blockPos,
+        this.executeAsUser,
+        this.enableDebug,
+        this.permissionLevel,
+        messageActionData,
+        this.poseId,
+        this.modelAnimationActionData);
+  }
+
+  public ActionDataEntry withPoseId(String poseId) {
+    return new ActionDataEntry(
+        this.id,
+        this.actionDataType,
+        this.conditionDataSet,
+        this.command,
+        this.targetUUID,
+        this.blockPos,
+        this.executeAsUser,
+        this.enableDebug,
+        this.permissionLevel,
+        this.messageActionData,
+        poseId,
+        this.modelAnimationActionData);
+  }
+
+  public ActionDataEntry withModelAnimationActionData(
+      ModelAnimationActionData modelAnimationActionData) {
+    return new ActionDataEntry(
+        this.id,
+        this.actionDataType,
+        this.conditionDataSet,
+        this.command,
+        this.targetUUID,
+        this.blockPos,
+        this.executeAsUser,
+        this.enableDebug,
+        this.permissionLevel,
+        this.messageActionData,
+        this.poseId,
+        modelAnimationActionData);
   }
 
   public String getAction(LivingEntity entity, ServerPlayer serverPlayer) {
@@ -325,47 +450,72 @@ public record ActionDataEntry(
   }
 
   public boolean isValidAndNotEmpty() {
-    return this.actionDataType != ActionDataType.NONE
-        && (!this.actionDataType.requiresArgument()
-            || this.hasCommandAndNotEmpty()
-            || this.hasBlockPos());
+    if (this.actionDataType == ActionDataType.NONE) {
+      return false;
+    }
+
+    if (this.actionDataType == ActionDataType.MESSAGE) {
+      return this.messageActionData.hasTexts();
+    }
+
+    if (this.actionDataType == ActionDataType.SET_POSE) {
+      return Identifier.tryParse(this.poseId) != null;
+    }
+
+    if (this.actionDataType == ActionDataType.PLAY_ANIMATION) {
+      return this.modelAnimationActionData.hasAnimationName();
+    }
+
+    return !this.actionDataType.requiresArgument()
+        || this.hasCommandAndNotEmpty()
+        || this.hasBlockPos();
   }
 
   public CompoundTag write(CompoundTag compoundTag) {
     CompoundTagUtils.writeUUID(compoundTag, DATA_ID_TAG, this.id);
     compoundTag.putString(DATA_TYPE_TAG, this.actionDataType.name());
 
-    // Save target UUID if present.
     if (this.targetUUID != null) {
       CompoundTagUtils.writeUUID(compoundTag, DATA_TARGET_UUID_TAG, this.targetUUID);
     }
 
-    // Only save block position if it is different from default.
     if (this.blockPos != BlockPos.ZERO) {
       compoundTag.put(DATA_BLOCK_POS_TAG, CompoundTagUtils.writeBlockPos(this.blockPos));
     }
 
-    // Save command, if it is not empty.
     if (this.command != null && !this.command.trim().isEmpty()) {
       compoundTag.putString(DATA_COMMAND_TAG, this.command.trim());
     }
 
-    // Only save execute as user if it is true.
     if (this.executeAsUser) {
       compoundTag.putBoolean(DATA_EXECUTE_AS_USER_TAG, true);
     }
 
-    // Only save debug if it is true.
     if (this.enableDebug) {
       compoundTag.putBoolean(DATA_DEBUG_TAG, true);
     }
 
-    // Only save permission level if it is different from default.
     if (this.permissionLevel != DEFAULT_PERMISSION_LEVEL) {
       compoundTag.putInt(DATA_PERMISSION_LEVEL_TAG, this.permissionLevel);
     }
 
-    // Store condition data set, if it is not empty.
+    if (this.actionDataType == ActionDataType.MESSAGE
+        && !this.messageActionData.equals(MessageActionData.DEFAULT)) {
+      compoundTag.put(DATA_MESSAGE_TAG, this.messageActionData.createTag());
+    }
+
+    if (this.actionDataType == ActionDataType.SET_POSE && !this.poseId.isBlank()) {
+      compoundTag.putString(DATA_POSE_TAG, this.poseId.trim());
+    }
+
+    if (this.actionDataType == ActionDataType.PLAY_ANIMATION
+        || this.actionDataType == ActionDataType.STOP_ANIMATION) {
+      CompoundTag animationTag = this.modelAnimationActionData.createTag();
+      if (!animationTag.isEmpty()) {
+        compoundTag.put(DATA_ANIMATION_TAG, animationTag);
+      }
+    }
+
     if (!this.conditionDataSet.isEmpty()) {
       this.conditionDataSet.save(compoundTag);
     }
@@ -375,5 +525,16 @@ public record ActionDataEntry(
 
   public CompoundTag createTag() {
     return this.write(new CompoundTag());
+  }
+
+  public CompoundTag createTag(int position) {
+    CompoundTag compoundTag = this.write(new CompoundTag());
+    compoundTag.remove(DATA_ID_TAG);
+
+    if (!this.id.equals(deriveId(compoundTag, position))) {
+      CompoundTagUtils.writeUUID(compoundTag, DATA_ID_TAG, this.id);
+    }
+
+    return compoundTag;
   }
 }

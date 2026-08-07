@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.configui.client.screen.configuration.pose;
 
+import de.markusbordihn.easynpc.api.pose.ModelPoseAPI;
 import de.markusbordihn.easynpc.client.pose.PoseManager;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
@@ -68,13 +69,20 @@ public class DefaultPoseConfigurationScreen<T extends ConfigurationMenu>
   private void updatePoseButtonStates() {
     String currentPoseName = this.modelData.getModelPoseName();
     if (resetPoseButton != null) {
-      resetPoseButton.active = this.modelData.getModelPose() != ModelPose.VANILLA;
+      resetPoseButton.active =
+          this.modelData.getModelPose() != ModelPose.VANILLA
+              || this.getEasyNPCEntity().getPose() != Pose.STANDING;
     }
     for (int i = 0; i < poseButtons.size(); i++) {
       int globalIndex = i + scrollOffset;
       if (globalIndex < poseKeys.size()) {
         Identifier poseId = poseKeys.get(globalIndex);
-        poseButtons.get(i).active = !poseId.toString().equals(currentPoseName);
+        Pose vanillaPose = ModelPoseAPI.getVanillaPose(poseId).orElse(null);
+        poseButtons.get(i).active =
+            vanillaPose != null
+                ? this.modelData.getModelPose() != ModelPose.VANILLA
+                    || this.getEasyNPCEntity().getPose() != vanillaPose
+                : !poseId.toString().equals(currentPoseName);
       }
     }
   }
@@ -101,7 +109,6 @@ public class DefaultPoseConfigurationScreen<T extends ConfigurationMenu>
 
     this.defaultPoseButton.active = false;
 
-    // Discover available poses for this NPC's skin model
     SkinModel skinModel = this.getSkinModel();
 
     // Prefer server-synced pose list (required for dedicated server setups)
@@ -123,7 +130,6 @@ public class DefaultPoseConfigurationScreen<T extends ConfigurationMenu>
       }
     }
 
-    // Fallback to local PoseManager
     if (availablePoses == null || availablePoses.isEmpty()) {
       availablePoses =
           skinModel != null
@@ -132,6 +138,7 @@ public class DefaultPoseConfigurationScreen<T extends ConfigurationMenu>
     }
 
     poseKeys.clear();
+    poseKeys.addAll(ModelPoseAPI.getVanillaPoseIds());
     poseKeys.addAll(availablePoses);
     poseButtons.clear();
 
@@ -139,7 +146,6 @@ public class DefaultPoseConfigurationScreen<T extends ConfigurationMenu>
     int col2Left = poseButtonLeft + BUTTON_WIDTH + COLUMN_SPACING;
     int resetButtonWidth = BUTTON_WIDTH * COLUMNS + COLUMN_SPACING;
 
-    // Reset Pose Button (spans both columns)
     this.resetPoseButton =
         this.addRenderableWidget(
             new TextButton(
@@ -165,7 +171,6 @@ public class DefaultPoseConfigurationScreen<T extends ConfigurationMenu>
                   this.updatePoseButtonStates();
                 }));
 
-    // Pose buttons in two columns, mouse-wheel-scrollable
     int visibleCount = Math.min(poseKeys.size() - scrollOffset, MAX_VISIBLE_BUTTONS);
     for (int i = 0; i < visibleCount; i++) {
       int globalIndex = i + scrollOffset;
@@ -185,17 +190,30 @@ public class DefaultPoseConfigurationScreen<T extends ConfigurationMenu>
                   BUTTON_WIDTH,
                   Component.literal(displayName),
                   btn -> {
-                    NetworkMessageHandlerManager.getServerHandler()
-                        .namedPoseChange(this.getEasyNPCUUID(), poseId);
-                    this.modelData.setModelPoseName(poseId.toString());
+                    Pose vanillaPose = ModelPoseAPI.getVanillaPose(poseId).orElse(null);
+                    if (vanillaPose != null) {
+                      NetworkMessageHandlerManager.getServerHandler()
+                          .poseChange(this.getEasyNPCUUID(), vanillaPose);
+                      this.getEasyNPCEntity().setPose(vanillaPose);
+                      this.modelData.setModelPose(ModelPose.VANILLA);
+                      this.modelData.setModelPoseName("");
+                    } else {
+                      NetworkMessageHandlerManager.getServerHandler()
+                          .namedPoseChange(this.getEasyNPCUUID(), poseId);
+                      this.modelData.setModelPoseName(poseId.toString());
+                    }
+                    boolean lockRotation = vanillaPose == null;
                     if (this.lockRotationCheckbox != null
-                        && !this.lockRotationCheckbox.selected()) {
-                      this.lockRotationCheckbox.setSelected(true);
+                        && this.lockRotationCheckbox.selected() != lockRotation) {
+                      this.lockRotationCheckbox.setSelected(lockRotation);
                       NetworkMessageHandlerManager.getServerHandler()
                           .modelRotationChange(
                               this.getEasyNPCUUID(),
                               ModelPartType.ROOT,
-                              this.modelData.getModelRootData().rotation().withLocked(true));
+                              this.modelData
+                                  .getModelRootData()
+                                  .rotation()
+                                  .withLocked(lockRotation));
                     }
                     this.updatePoseButtonStates();
                   }));
@@ -204,14 +222,11 @@ public class DefaultPoseConfigurationScreen<T extends ConfigurationMenu>
 
     this.updatePoseButtonStates();
 
-    // Animation Behavior Button
     this.addRenderableWidget(
         this.createAnimationBehaviorButton(this.contentLeftPos + 30, this.contentTopPos + 190));
 
-    // Follow Cursor Toggle Button
     this.createFollowCursorToggleButton(this.contentLeftPos + 134, this.contentTopPos);
 
-    // Lock Rotation Checkbox
     this.createLockRotationCheckbox(this.contentLeftPos + 160, this.contentTopPos + 190);
   }
 
@@ -220,13 +235,10 @@ public class DefaultPoseConfigurationScreen<T extends ConfigurationMenu>
       GuiGraphicsExtractor guiGraphics, int x, int y, float partialTicks) {
     super.extractRenderState(guiGraphics, x, y, partialTicks);
 
-    // Backup entity information
     boolean entityInvisible = this.getEasyNPCEntity().isInvisible();
 
-    // Adjust entity information for rendering
     this.getEasyNPCEntity().setInvisible(false);
 
-    // Render Entity
     EntityRenderConfig renderConfig =
         EntityRenderConfig.guiScaled(this.contentLeftPos + 70, this.contentTopPos + 140, 36);
     EntityConfigScreenRenderer.renderEntityRaw(
@@ -236,10 +248,8 @@ public class DefaultPoseConfigurationScreen<T extends ConfigurationMenu>
         this.getPreviewRotationYaw(this.xMouse, renderConfig),
         this.getPreviewRotationPitch(this.yMouse, renderConfig));
 
-    // Restore entity information
     this.getEasyNPCEntity().setInvisible(entityInvisible);
 
-    // Scroll indicator when more poses exist than the visible window
     if (poseKeys.size() > MAX_VISIBLE_BUTTONS) {
       int totalRows = (poseKeys.size() + COLUMNS - 1) / COLUMNS;
       int currentRow = scrollOffset / COLUMNS;
@@ -265,7 +275,6 @@ public class DefaultPoseConfigurationScreen<T extends ConfigurationMenu>
       GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
     super.extractBackground(guiGraphics, mouseX, mouseY, partialTicks);
 
-    // Entity
     guiGraphics.fill(
         this.contentLeftPos,
         this.contentTopPos,
@@ -279,7 +288,6 @@ public class DefaultPoseConfigurationScreen<T extends ConfigurationMenu>
         this.contentTopPos + 206,
         0xffaaaaaa);
 
-    // Base
     guiGraphics.fill(
         this.contentLeftPos + 1,
         this.contentTopPos + 145,
@@ -293,7 +301,6 @@ public class DefaultPoseConfigurationScreen<T extends ConfigurationMenu>
         this.contentTopPos + 150,
         0xaa888888);
 
-    // Animation label
     Text.drawConfigString(
         guiGraphics, this.font, "animation", this.contentLeftPos + 46, this.contentTopPos + 179);
   }

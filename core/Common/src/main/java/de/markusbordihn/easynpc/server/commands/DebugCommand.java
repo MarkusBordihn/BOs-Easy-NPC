@@ -182,8 +182,6 @@ public class DebugCommand extends Command {
         + skinDataEntry.uuid()
         + ", disableLayers="
         + skinDataEntry.disableLayers()
-        + ", contentLength="
-        + skinDataEntry.content().length()
         + ", timestamp="
         + skinDataEntry.timestamp();
   }

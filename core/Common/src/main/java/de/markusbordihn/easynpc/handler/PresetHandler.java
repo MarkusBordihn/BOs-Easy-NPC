@@ -22,10 +22,14 @@ package de.markusbordihn.easynpc.handler;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.preset.PresetAccess;
+import de.markusbordihn.easynpc.data.preset.PresetCompactor;
 import de.markusbordihn.easynpc.data.preset.PresetData;
+import de.markusbordihn.easynpc.data.preset.PresetDataUtils;
 import de.markusbordihn.easynpc.data.preset.PresetExportFormat;
 import de.markusbordihn.easynpc.data.preset.PresetInheritance;
 import de.markusbordihn.easynpc.data.preset.PresetMetadata;
+import de.markusbordihn.easynpc.data.preset.PresetNormalizer;
+import de.markusbordihn.easynpc.data.preset.PresetReference;
 import de.markusbordihn.easynpc.data.preset.PresetType;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.entity.LivingEntityManager;
@@ -311,12 +315,17 @@ public class PresetHandler {
       return false;
     }
 
-    UUID existingUUID = CompoundTagUtils.readUUID(compoundTag, UUID_TAG);
-    if (existingUUID != null && tryUpdateExistingEntity(existingUUID, compoundTag, serverLevel)) {
+    CompoundTag expandedCompoundTag =
+        PresetCompactor.expand(
+            compoundTag, PresetReference.getReferenceTag(entityType, serverLevel));
+
+    UUID existingUUID = CompoundTagUtils.readUUID(expandedCompoundTag, UUID_TAG);
+    if (existingUUID != null
+        && tryUpdateExistingEntity(existingUUID, expandedCompoundTag, serverLevel)) {
       return true;
     }
 
-    return createAndImportNewEntity(entityType, compoundTag, serverLevel);
+    return createAndImportNewEntity(entityType, expandedCompoundTag, serverLevel);
   }
 
   private static boolean validateImportParameters(
@@ -396,6 +405,7 @@ public class PresetHandler {
     }
 
     try {
+      easyNPCEntity.registerEasyNPCDefaultData();
       presetData.importPresetData(compoundTag);
       if (!serverLevel.addFreshEntity(easyNPCEntity.getEntity())) {
         entity.discard();
@@ -419,14 +429,7 @@ public class PresetHandler {
     }
 
     CompoundTag resolvedCompoundTag =
-        PresetInheritance.resolve(
-            compoundTag,
-            presetLocation,
-            parentLocation ->
-                loadPresetCompoundTag(
-                    SecurityManager.resolvePresetResourceType(parentLocation, presetType),
-                    parentLocation,
-                    minecraftServer));
+        resolveParentPresets(compoundTag, presetLocation, presetType, minecraftServer);
     if (resolvedCompoundTag == null) {
       return null;
     }
@@ -434,7 +437,22 @@ public class PresetHandler {
     return PresetData.fromCompoundTag(presetLocation, presetType, resolvedCompoundTag);
   }
 
-  private static CompoundTag loadPresetCompoundTag(
+  public static CompoundTag resolveParentPresets(
+      CompoundTag compoundTag,
+      Identifier presetLocation,
+      PresetType presetType,
+      MinecraftServer minecraftServer) {
+    return PresetInheritance.resolve(
+        compoundTag,
+        presetLocation,
+        parentLocation ->
+            loadPresetCompoundTag(
+                SecurityManager.resolvePresetResourceType(parentLocation, presetType),
+                parentLocation,
+                minecraftServer));
+  }
+
+  public static CompoundTag loadPresetCompoundTag(
       PresetType presetType, Identifier presetLocation, MinecraftServer minecraftServer) {
     if (presetLocation == null || minecraftServer == null) {
       return null;
@@ -531,8 +549,16 @@ public class PresetHandler {
       return false;
     }
 
+    CompoundTag resolvedCompoundTag =
+        resolveParentPresets(
+            compoundTag, presetLocation, PresetType.LOCAL, serverLevel.getServer());
+    if (resolvedCompoundTag == null) {
+      log.error("[{}] Error resolving parent presets of local preset", serverLevel);
+      return false;
+    }
+
     PresetData presetData =
-        PresetData.fromCompoundTag(presetLocation, PresetType.LOCAL, compoundTag);
+        PresetData.fromCompoundTag(presetLocation, PresetType.LOCAL, resolvedCompoundTag);
     if (presetData == null || !presetData.hasValidData()) {
       log.error("[{}] Error converting local preset to PresetData", serverLevel);
       return false;
@@ -573,14 +599,38 @@ public class PresetHandler {
       return false;
     }
 
-    CompoundTag compoundTag =
-        SecurityManager.sanitizePresetExport(presetData.serializePresetData());
+    CompoundTag compoundTag = prepareExportData(easyNPC);
     if (compoundTag == null || compoundTag.isEmpty()) {
       log.error("[{}] Error exporting custom preset {}!", easyNPC, file);
       return false;
     }
 
     return PresetFileHandler.save(file, compoundTag);
+  }
+
+  public static CompoundTag prepareExportData(EasyNPC<?> easyNPC) {
+    PresetDataCapable<?> presetData = easyNPC.getEasyNPCPresetData();
+    if (presetData == null) {
+      log.error("[{}] Error no preset data available!", easyNPC);
+      return null;
+    }
+
+    CompoundTag compoundTag =
+        SecurityManager.sanitizePresetExport(presetData.serializePresetData());
+    if (compoundTag == null || compoundTag.isEmpty()) {
+      return compoundTag;
+    }
+
+    PresetDataUtils.cleanupEntityData(compoundTag, PresetDataUtils.CleanupMode.FULL);
+    PresetNormalizer.normalize(compoundTag);
+
+    if (easyNPC.getEntity().level() instanceof ServerLevel serverLevel) {
+      CompoundTag referenceTag =
+          PresetReference.getReferenceTag(easyNPC.getEntity().getType(), serverLevel);
+      return PresetCompactor.compact(compoundTag, referenceTag);
+    }
+
+    return compoundTag;
   }
 
   @SuppressWarnings("unused")
@@ -611,19 +661,13 @@ public class PresetHandler {
   }
 
   private static CompoundTag serializeAndCopyPresetData(EasyNPC<?> easyNPC) {
-    PresetDataCapable<?> presetDataCapable = easyNPC.getEasyNPCPresetData();
-    if (presetDataCapable == null) {
-      log.error("[{}] No preset data available!", easyNPC);
-      return null;
-    }
-
-    CompoundTag originalPresetData = presetDataCapable.serializePresetData();
-    if (originalPresetData == null || originalPresetData.isEmpty()) {
+    CompoundTag presetData = prepareExportData(easyNPC);
+    if (presetData == null || presetData.isEmpty()) {
       log.error("[{}] Error serializing preset data!", easyNPC);
       return null;
     }
 
-    return SecurityManager.sanitizePresetExport(originalPresetData);
+    return presetData;
   }
 
   private static PresetMetadata extractAndEnrichMetadata(

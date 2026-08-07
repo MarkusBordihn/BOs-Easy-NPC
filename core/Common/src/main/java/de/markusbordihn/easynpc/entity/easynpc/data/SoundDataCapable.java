@@ -65,12 +65,23 @@ public interface SoundDataCapable<E extends Mob> extends EasyNPC<E> {
     setSoundDataSet(new SoundDataSet());
   }
 
+  default SoundDataSet getResolvedSoundDataSet() {
+    SoundDataSet soundDataSet = this.getSoundDataSet();
+    if (soundDataSet != null && !soundDataSet.isEmpty()) {
+      return soundDataSet;
+    }
+
+    VariantDataCapable<E> variantData = this.getEasyNPCVariantData();
+    Enum<?> variant = variantData != null ? variantData.getSkinVariantType() : null;
+    return this.getDefaultSoundDataSet(new SoundDataSet(), variant != null ? variant.name() : "");
+  }
+
   default boolean hasDefaultSound(SoundType soundType) {
-    return this.getSoundDataSet().hasSound(soundType);
+    return this.getResolvedSoundDataSet().hasSound(soundType);
   }
 
   default SoundDataEntry getDefaultSound(SoundType soundType) {
-    return this.getSoundDataSet().getSound(soundType);
+    return this.getResolvedSoundDataSet().getSound(soundType);
   }
 
   default SoundEvent getDefaultSoundEvent(SoundType soundType) {
@@ -159,21 +170,16 @@ public interface SoundDataCapable<E extends Mob> extends EasyNPC<E> {
   }
 
   default void addAdditionalSoundData(ValueOutput valueOutput) {
-    CompoundTag soundDataTag = new CompoundTag();
-
     SoundDataSet soundDataSet = this.getSoundDataSet();
-    if (soundDataSet != null && !soundDataSet.isEmpty()) {
-      soundDataSet.save(soundDataTag);
-    } else {
-      VariantDataCapable<E> variantData = this.getEasyNPCVariantData();
-      SoundDataSet defaultSoundDataSet =
-          this.getDefaultSoundDataSet(
-              new SoundDataSet(),
-              variantData != null ? variantData.getSkinVariantType().name() : "");
-      defaultSoundDataSet.save(soundDataTag);
+    if (soundDataSet == null) {
+      return;
     }
 
-    valueOutput.store(EASY_NPC_DATA_SOUND_DATA_TAG, CompoundTag.CODEC, soundDataTag);
+    CompoundTag soundDataTag = new CompoundTag();
+    soundDataSet.save(soundDataTag);
+    if (!soundDataTag.isEmpty()) {
+      valueOutput.store(EASY_NPC_DATA_SOUND_DATA_TAG, CompoundTag.CODEC, soundDataTag);
+    }
   }
 
   default void readAdditionalSoundData(ValueInput valueInput) {
@@ -185,7 +191,11 @@ public interface SoundDataCapable<E extends Mob> extends EasyNPC<E> {
 
     CompoundTag soundDataTag = compoundTagData.get();
     if (soundDataTag.contains(SoundDataSet.DATA_SOUND_DATA_SET_TAG)) {
-      SoundDataSet soundDataSet = new SoundDataSet(soundDataTag);
+      VariantDataCapable<E> variantData = this.getEasyNPCVariantData();
+      Enum<?> variant = variantData != null ? variantData.getSkinVariantType() : null;
+      SoundDataSet soundDataSet =
+          this.getDefaultSoundDataSet(new SoundDataSet(), variant != null ? variant.name() : "");
+      soundDataSet.load(soundDataTag);
       this.setSoundDataSet(soundDataSet);
     }
   }
