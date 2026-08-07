@@ -156,6 +156,7 @@ if (project.hasProperty('curseforge_project_id') && project.curseforge_project_i
     mainFile.releaseType = "${project.curseforge_release_type}"
     mainFile.addEnvironment("Client", "Server")
     mainFile.addModLoader('NeoForge')
+    mainFile.addOptional('easy-model-entities')
     mainFile.addGameVersion("${project.minecraft_version}")
   }
 }
