@@ -8,7 +8,7 @@ the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
-### 7.7.0
+### 7.6.0
 
 - Fixed unclear mod conflict errors for duplicate entity data tracker IDs.
 - Fixed third-party health bars rendering over NPC previews in configuration and dialog screens.
@@ -29,8 +29,6 @@ Check the [upgrade guide][upgrade_guide] for more information.
 - Changed a time based action to pick the owner as `@initiator` whenever the owner is nearby.
 - Changed speech bubbles to stay visible from 5 up to 18 seconds, depending on the text length.
 - Changed the "Set Pose" action to only show its input field for the "custom" pose entry.
-- Changed the required Easy Model Entities version to 2.0.1.
-- Changed the required Forge version to 64.1.0.
 - Added time based actions on five fixed steps, from every ~1 second up to every ~15 minutes.
 - Added a "Message" action for chat, system message and speech bubble text without a command.
 - Added text variants, a sender name, a recipient and translation keys to the "Message" action.
@@ -42,24 +40,6 @@ Check the [upgrade guide][upgrade_guide] for more information.
 - Added an action registry, an action handler, a preset validator and richer event data for mods.
 - Added a tooltip with name, type and distance to every NPC suggestion of the `/easy_npc` commands.
 - Improved the NPC suggestions, which appear without typing and tolerate a near miss of one block.
-
-### 7.6.0
-
-- Fixed flying NPCs like Allay, Vex and Ghast moving on the ground instead of flying.
-- Fixed dialogs and buttons with the same or a non-latin label sharing one id and needing a relink.
-- Fixed preset export, dialog, pose and texture names dropping umlauts and accents or failing.
-- Fixed conditions not being editable on a dedicated server and untranslated condition texts.
-- Fixed Easy Model Entities NPCs not turning their head and their model list ignoring a `/reload`.
-- Fixed objectives being switched off for good when their target entity was missing.
-- Changed dialog and button labels, preset, pose and texture names to convert special characters.
-- Changed the required Easy Model Entities version to 1.7.0, floating models now hover by default.
-- Added NPC states with number, yes/no and text values, usable as condition, action and command.
-- Added a "Navigation" and a "Hover height" setting to switch any NPC between ground and flying.
-- Added a parent preset reference, so a preset can build on another one and only override changes.
-- Added the state driven "Forge Keeper" preset.
-- Added custom conditions and dialog, action and state events for other mods.
-- Added "On Far Distance" as a distance action, which triggers at 32 blocks.
-- Improved floating Easy Model Entities models, which now bob up and down.
 
 ### 7.5.0
 

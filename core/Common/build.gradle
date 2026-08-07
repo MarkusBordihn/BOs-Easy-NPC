@@ -17,6 +17,20 @@ neoForge {
 dependencies {
   compileOnly group: 'org.spongepowered', name: 'mixin', version: '0.8.7'
 
+  def easyModelEntitiesLocal = findLocalEasyModelEntities()
+  if (easyModelEntitiesLocal != null) {
+    compileOnly files(easyModelEntitiesLocal)
+    testCompileOnly files(easyModelEntitiesLocal)
+  } else {
+    def easyModelEntitiesFallback = ['forge', 'fabric', 'neoforge']
+        .collect { loader -> project.findProperty("${loader}_easy_model_entities_version") }
+        .find { version -> version }
+    if (easyModelEntitiesFallback) {
+      compileOnly "maven.modrinth:easy-model-entities:${easyModelEntitiesFallback}"
+      testCompileOnly "maven.modrinth:easy-model-entities:${easyModelEntitiesFallback}"
+    }
+  }
+
   // JUnit 5 for unit testing
   testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.1'
   testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.1'
