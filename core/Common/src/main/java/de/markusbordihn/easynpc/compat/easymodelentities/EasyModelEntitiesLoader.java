@@ -48,21 +48,26 @@ public class EasyModelEntitiesLoader implements IntegrationModelProvider {
 
   private EasyModelEntitiesLoader() {}
 
+  public static void registerProfileReloadListener() {
+    if (reloadListenerRegistered) {
+      return;
+    }
+
+    reloadListenerRegistered = true;
+    EasyModelReloadEvents.onProfileReload(
+        () -> {
+          INSTANCE.cachedModels = loadProfileModels();
+          log.info("Loaded {} Easy Model Entities profiles", INSTANCE.cachedModels.size());
+          IntegrationRegistry.invalidate(EasyModelEntitiesManager.INTEGRATION_ID);
+        });
+  }
+
   public static void register() {
-    INSTANCE.cachedModels = loadProfileModels();
-    if (!INSTANCE.cachedModels.isEmpty()) {
-      log.info("Loaded {} Easy Model Entities profiles", INSTANCE.cachedModels.size());
+    registerProfileReloadListener();
+    if (INSTANCE.cachedModels == null || INSTANCE.cachedModels.isEmpty()) {
+      INSTANCE.cachedModels = loadProfileModels();
     }
     IntegrationRegistry.register(INSTANCE);
-
-    if (!reloadListenerRegistered) {
-      reloadListenerRegistered = true;
-      EasyModelReloadEvents.onProfileReload(
-          () -> {
-            INSTANCE.cachedModels = loadProfileModels();
-            IntegrationRegistry.invalidate(EasyModelEntitiesManager.INTEGRATION_ID);
-          });
-    }
   }
 
   public static void registerClient() {
