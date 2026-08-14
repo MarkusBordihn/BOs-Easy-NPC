@@ -27,6 +27,8 @@ import de.markusbordihn.easynpc.entity.NPCEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.action.executor.MessageActionExecutor;
 import de.markusbordihn.easynpc.handler.EnvironmentChangeTracker;
 import de.markusbordihn.easynpc.handler.OwnerLoginRestoreHandler;
+import de.markusbordihn.easynpc.handler.PauseManager;
+import de.markusbordihn.easynpc.handler.PlayerIdleTracker;
 import de.markusbordihn.easynpc.io.DataFileHandler;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.storage.LevelResource;
@@ -50,6 +52,7 @@ public class ServerEvents {
 
     ConditionWarnings.reset();
     EnvironmentChangeTracker.reset();
+    PauseManager.reset();
     PresetReference.clearCache();
     MessageActionExecutor.clearKnownPlayerNames();
     DataFileHandler.registerServerDataFiles(minecraftServer);
@@ -76,6 +79,7 @@ public class ServerEvents {
 
     OwnerLoginRestoreHandler.handleServerTick(minecraftServer);
     EnvironmentChangeTracker.handleServerTick(minecraftServer);
+    PlayerIdleTracker.handleServerTick(minecraftServer);
   }
 
   public static void handleServerStopping(MinecraftServer minecraftServer) {
@@ -87,6 +91,8 @@ public class ServerEvents {
 
     NPCEntityManager.saveAllDirtyNPCs();
     EnvironmentChangeTracker.reset();
+    PauseManager.reset();
+    PlayerIdleTracker.reset();
     PresetReference.clearCache();
   }
 }

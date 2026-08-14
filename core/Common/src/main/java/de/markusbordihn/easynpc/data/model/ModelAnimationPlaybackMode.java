@@ -23,7 +23,8 @@ import de.markusbordihn.easynpc.utils.EnumUtils;
 
 public enum ModelAnimationPlaybackMode {
   ONCE,
-  LOOP;
+  LOOP,
+  REPEAT;
 
   public static ModelAnimationPlaybackMode get(String value) {
     return EnumUtils.get(ModelAnimationPlaybackMode.class, value, ONCE);

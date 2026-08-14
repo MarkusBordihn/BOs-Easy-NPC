@@ -28,6 +28,8 @@ class DurationTypeTest {
   @Test
   void testGet() {
     assertEquals(DurationType.PER_MINUTE, DurationType.get("PER_MINUTE"));
+    assertEquals(DurationType.PER_5_MINUTES, DurationType.get("PER_5_MINUTES"));
+    assertEquals(DurationType.PER_15_MINUTES, DurationType.get("PER_15_MINUTES"));
     assertEquals(DurationType.PER_HOUR, DurationType.get("PER_HOUR"));
     assertEquals(DurationType.PER_DAY, DurationType.get("PER_DAY"));
     assertEquals(DurationType.PER_WEEK, DurationType.get("PER_WEEK"));

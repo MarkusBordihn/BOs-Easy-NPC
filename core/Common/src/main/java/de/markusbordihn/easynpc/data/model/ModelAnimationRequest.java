@@ -26,7 +26,7 @@ import net.minecraft.network.FriendlyByteBuf;
 public record ModelAnimationRequest(
     ModelAnimationOperation operation,
     String animationName,
-    ModelAnimationPlaybackMode playbackMode,
+    ModelAnimationPlayback playback,
     ModelAnimationTransition transition,
     int sequence,
     long issuedGameTime) {
@@ -35,7 +35,7 @@ public record ModelAnimationRequest(
       new ModelAnimationRequest(
           ModelAnimationOperation.NONE,
           "",
-          ModelAnimationPlaybackMode.ONCE,
+          ModelAnimationPlayback.DEFAULT,
           ModelAnimationTransition.DEFAULT,
           0,
           0L);
@@ -43,7 +43,7 @@ public record ModelAnimationRequest(
   public ModelAnimationRequest {
     operation = Objects.requireNonNull(operation, "operation");
     animationName = animationName == null ? "" : animationName.trim().toLowerCase(Locale.ROOT);
-    playbackMode = playbackMode == null ? ModelAnimationPlaybackMode.ONCE : playbackMode;
+    playback = playback == null ? ModelAnimationPlayback.DEFAULT : playback;
     transition = transition == null ? ModelAnimationTransition.DEFAULT : transition;
   }
 
@@ -51,7 +51,10 @@ public record ModelAnimationRequest(
     return new ModelAnimationRequest(
         buffer.readEnum(ModelAnimationOperation.class),
         buffer.readUtf(256),
-        buffer.readEnum(ModelAnimationPlaybackMode.class),
+        new ModelAnimationPlayback(
+            buffer.readEnum(ModelAnimationPlaybackMode.class),
+            buffer.readVarInt(),
+            buffer.readFloat()),
         new ModelAnimationTransition(
             buffer.readEnum(ModelAnimationSwitchTiming.class), buffer.readFloat()),
         buffer.readVarInt(),
@@ -61,7 +64,9 @@ public record ModelAnimationRequest(
   public void encode(FriendlyByteBuf buffer) {
     buffer.writeEnum(this.operation);
     buffer.writeUtf(this.animationName, 256);
-    buffer.writeEnum(this.playbackMode);
+    buffer.writeEnum(this.playback.mode());
+    buffer.writeVarInt(this.playback.repeatCount());
+    buffer.writeFloat(this.playback.durationTicks());
     buffer.writeEnum(this.transition.timing());
     buffer.writeFloat(this.transition.blendDurationTicks());
     buffer.writeVarInt(this.sequence);

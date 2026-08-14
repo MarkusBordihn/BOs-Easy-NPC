@@ -204,6 +204,26 @@ public interface NavigationDataCapable<T extends Mob> extends EasyNPC<T> {
     }
   }
 
+  default boolean isImmovable() {
+    AttributeDataCapable<?> attributeData = this.getEasyNPCAttributeData();
+    return attributeData != null
+        && attributeData.getEntityAttributes() != null
+        && attributeData.getEntityAttributes().getMovementAttributes().isImmovable();
+  }
+
+  default boolean anchorImmovablePosition() {
+    if (!this.isImmovable()) {
+      return false;
+    }
+
+    Mob mob = this.getMob();
+    mob.setDeltaMovement(Vec3.ZERO);
+    if (!mob.getNavigation().isDone()) {
+      mob.getNavigation().stop();
+    }
+    return true;
+  }
+
   default void handleNavigationTravelEvent(Vec3 vec3) {
     TickerDataCapable<?> tickerData = this.getEasyNPCTickerData();
 

@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.data.action;
 
+import de.markusbordihn.easynpc.data.model.ModelAnimationPlayback;
 import de.markusbordihn.easynpc.data.model.ModelAnimationPlaybackMode;
 import de.markusbordihn.easynpc.data.model.ModelAnimationSwitchTiming;
 import de.markusbordihn.easynpc.data.model.ModelAnimationTransition;
@@ -26,26 +27,26 @@ import java.util.Locale;
 import net.minecraft.nbt.CompoundTag;
 
 public record ModelAnimationActionData(
-    String animationName,
-    ModelAnimationPlaybackMode playbackMode,
-    ModelAnimationTransition transition) {
+    String animationName, ModelAnimationPlayback playback, ModelAnimationTransition transition) {
 
   public static final ModelAnimationActionData DEFAULT =
       new ModelAnimationActionData(
-          "", ModelAnimationPlaybackMode.ONCE, ModelAnimationTransition.DEFAULT);
+          "", ModelAnimationPlayback.DEFAULT, ModelAnimationTransition.DEFAULT);
   public static final String DATA_NAME_TAG = "Name";
   public static final String DATA_LOOP_TAG = "Loop";
+  public static final String DATA_REPEAT_TAG = "Repeat";
+  public static final String DATA_DURATION_TAG = "Duration";
   public static final String DATA_AFTER_CURRENT_TAG = "After";
   public static final String DATA_BLEND_TAG = "Blend";
 
   public ModelAnimationActionData {
     animationName = animationName == null ? "" : animationName.trim().toLowerCase(Locale.ROOT);
-    playbackMode = playbackMode == null ? ModelAnimationPlaybackMode.ONCE : playbackMode;
+    playback = playback == null ? ModelAnimationPlayback.DEFAULT : playback;
     transition = transition == null ? ModelAnimationTransition.DEFAULT : transition;
   }
 
   public ModelAnimationActionData(String animationName) {
-    this(animationName, ModelAnimationPlaybackMode.ONCE, ModelAnimationTransition.DEFAULT);
+    this(animationName, ModelAnimationPlayback.DEFAULT, ModelAnimationTransition.DEFAULT);
   }
 
   public static ModelAnimationActionData fromTag(CompoundTag compoundTag) {
@@ -63,10 +64,25 @@ public record ModelAnimationActionData(
             : ModelAnimationTransition.DEFAULT_BLEND_DURATION_TICKS;
     return new ModelAnimationActionData(
         compoundTag.getStringOr(DATA_NAME_TAG, ""),
+        playbackFromTag(compoundTag),
+        new ModelAnimationTransition(timing, blend));
+  }
+
+  private static ModelAnimationPlayback playbackFromTag(CompoundTag compoundTag) {
+    float durationTicks = compoundTag.getFloatOr(DATA_DURATION_TAG, 0.0F);
+    if (compoundTag.contains(DATA_REPEAT_TAG)) {
+      return new ModelAnimationPlayback(
+          ModelAnimationPlaybackMode.REPEAT,
+          compoundTag.getIntOr(DATA_REPEAT_TAG, 0),
+          durationTicks);
+    }
+
+    return new ModelAnimationPlayback(
         compoundTag.getBooleanOr(DATA_LOOP_TAG, false)
             ? ModelAnimationPlaybackMode.LOOP
             : ModelAnimationPlaybackMode.ONCE,
-        new ModelAnimationTransition(timing, blend));
+        ModelAnimationPlayback.DEFAULT_REPEAT_COUNT,
+        durationTicks);
   }
 
   public CompoundTag createTag() {
@@ -74,8 +90,14 @@ public record ModelAnimationActionData(
     if (!this.animationName.isEmpty()) {
       compoundTag.putString(DATA_NAME_TAG, this.animationName);
     }
-    if (this.playbackMode == ModelAnimationPlaybackMode.LOOP) {
+    if (this.playback.mode() == ModelAnimationPlaybackMode.LOOP) {
       compoundTag.putBoolean(DATA_LOOP_TAG, true);
+    }
+    if (this.playback.mode() == ModelAnimationPlaybackMode.REPEAT) {
+      compoundTag.putInt(DATA_REPEAT_TAG, this.playback.repeatCount());
+    }
+    if (this.playback.hasDurationLimit()) {
+      compoundTag.putFloat(DATA_DURATION_TAG, this.playback.durationTicks());
     }
     if (this.transition.timing() == ModelAnimationSwitchTiming.AFTER_CURRENT) {
       compoundTag.putBoolean(DATA_AFTER_CURRENT_TAG, true);

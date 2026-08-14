@@ -121,12 +121,26 @@ public final class ActionDataSet {
     return false;
   }
 
+  public boolean hasActionDataType(ActionDataType actionDataType) {
+    for (ActionDataEntry actionDataEntry : this.actionDataEntries) {
+      if (actionDataEntry.actionDataType() == actionDataType
+          && actionDataEntry.isValidAndNotEmpty()) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   public int size() {
     return this.actionDataEntries.size();
   }
 
   public Set<ActionDataEntry> getEntries() {
     return Collections.unmodifiableSet(new LinkedHashSet<>(this.actionDataEntries));
+  }
+
+  public List<ActionDataEntry> getOrderedEntries() {
+    return List.copyOf(this.actionDataEntries);
   }
 
   public ActionDataEntry getEntry(UUID actionDataEntryId) {

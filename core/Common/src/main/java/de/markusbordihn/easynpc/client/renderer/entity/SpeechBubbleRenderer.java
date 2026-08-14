@@ -50,9 +50,12 @@ public class SpeechBubbleRenderer {
   private static final float BODY_BORDER = 8.0F;
   private static final float BODY_SIZE = 32.0F;
   private static final float BUBBLE_DEPTH_BEHIND_TEXT = -0.03F;
+  private static final float LATERAL_TAIL_THRESHOLD = 0.5F;
   private static final float NAME_TAG_CLEARANCE = 0.3F;
   private static final float PADDING_X = 6.0F;
   private static final float PADDING_Y = 5.0F;
+  private static final float SIDE_TAIL_HEIGHT = 16.0F;
+  private static final float SIDE_TAIL_WIDTH = 8.0F;
   private static final float TAIL_HEIGHT = 8.0F;
   private static final float TAIL_U = 32.0F;
   private static final float TAIL_WIDTH = 16.0F;
@@ -130,9 +133,6 @@ public class SpeechBubbleRenderer {
     float contentHeight = (lines.size() - 1) * (float) LINE_HEIGHT + GLYPH_HEIGHT;
     float bubbleWidth = Math.max(contentWidth + 2.0F * PADDING_X, 2.0F * BODY_BORDER);
     float bubbleHeight = Math.max(contentHeight + 2.0F * PADDING_Y, 2.0F * BODY_BORDER);
-    float bubbleBottom = -TAIL_HEIGHT;
-    float bubbleTop = bubbleBottom - bubbleHeight;
-    float bubbleLeft = -bubbleWidth / 2.0F;
 
     Vec3 nameTagOffset =
         entity
@@ -142,11 +142,79 @@ public class SpeechBubbleRenderer {
       return;
     }
 
+    Vec3 entityPosition = entity.getPosition(partialTick);
+    Vec3 cameraPosition = cameraRenderState.pos;
+    float anchorHeight = (float) (nameTagOffset.y + 0.5D) + NAME_TAG_CLEARANCE;
+    double entityToCameraX = cameraPosition.x - entityPosition.x;
+    double entityToCameraZ = cameraPosition.z - entityPosition.z;
+    double entityHorizontalDistanceToCamera = Math.hypot(entityToCameraX, entityToCameraZ);
+    float cameraClearance =
+        SpeechBubblePlacement.cameraClearance(
+            entity.getBbWidth(), entityHorizontalDistanceToCamera);
+    double clearanceRatio =
+        entityHorizontalDistanceToCamera > 0.0D
+            ? cameraClearance / entityHorizontalDistanceToCamera
+            : 0.0D;
+    double anchorOffsetX = nameTagOffset.x + entityToCameraX * clearanceRatio;
+    double anchorOffsetZ = nameTagOffset.z + entityToCameraZ * clearanceRatio;
+    double horizontalDistanceToCamera = entityHorizontalDistanceToCamera - cameraClearance;
+    double distanceToCamera =
+        Math.hypot(horizontalDistanceToCamera, entityPosition.y + anchorHeight - cameraPosition.y);
+
+    int fieldOfViewDegrees = minecraft.options.fov().get();
+    float scaleForDistance = SpeechBubblePlacement.scaleForDistance(distanceToCamera);
+    double maxVerticalOffset =
+        SpeechBubblePlacement.maxOffsetWithinLimit(
+            horizontalDistanceToCamera,
+            SpeechBubblePlacement.elevationLimitRadians(fieldOfViewDegrees));
+
+    float extentAboveAnchor = TAIL_HEIGHT + bubbleHeight;
+    float requiredAnchorDrop =
+        SpeechBubblePlacement.requiredAnchorDrop(
+            entityPosition.y
+                + anchorHeight
+                + extentAboveAnchor * scaleForDistance
+                - cameraPosition.y,
+            maxVerticalOffset);
+    float maxAnchorDrop = Math.max(0.0F, anchorHeight - entity.getBbHeight());
+    float lateralProgress =
+        SpeechBubblePlacement.lateralProgress(requiredAnchorDrop, maxAnchorDrop);
+
+    float placedAnchorHeight =
+        SpeechBubblePlacement.lerp(
+            lateralProgress,
+            anchorHeight - Math.min(requiredAnchorDrop, maxAnchorDrop),
+            entity.getEyeHeight());
+    float bubbleCenterX =
+        SpeechBubblePlacement.lerp(
+            lateralProgress,
+            0.0F,
+            SpeechBubblePlacement.lateralClearancePixels(entity.getBbWidth(), scaleForDistance)
+                + SIDE_TAIL_WIDTH
+                + bubbleWidth / 2.0F);
+    float bubbleCenterY =
+        SpeechBubblePlacement.lerp(lateralProgress, -(TAIL_HEIGHT + bubbleHeight / 2.0F), 0.0F);
+
+    float bubbleScale =
+        SpeechBubblePlacement.fitScale(
+            scaleForDistance,
+            maxVerticalOffset - (entityPosition.y + placedAnchorHeight - cameraPosition.y),
+            SpeechBubblePlacement.maxOffsetWithinLimit(
+                horizontalDistanceToCamera,
+                SpeechBubblePlacement.azimuthLimitRadians(
+                    fieldOfViewDegrees,
+                    minecraft.getWindow().getWidth(),
+                    minecraft.getWindow().getHeight())),
+            bubbleHeight / 2.0F - bubbleCenterY,
+            bubbleWidth / 2.0F + bubbleCenterX);
+
+    float bubbleTop = bubbleCenterY - bubbleHeight / 2.0F;
+    float bubbleLeft = bubbleCenterX - bubbleWidth / 2.0F;
+
     poseStack.pushPose();
-    poseStack.translate(
-        nameTagOffset.x, nameTagOffset.y + 0.5D + NAME_TAG_CLEARANCE, nameTagOffset.z);
+    poseStack.translate(anchorOffsetX, placedAnchorHeight, anchorOffsetZ);
     poseStack.mulPose(cameraRenderState.orientation);
-    poseStack.scale(0.025F, -0.025F, 0.025F);
+    poseStack.scale(bubbleScale, -bubbleScale, bubbleScale);
 
     submitNodeCollector.submitCustomGeometry(
         poseStack,
@@ -161,14 +229,25 @@ public class SpeechBubbleRenderer {
               bubbleHeight,
               packedLight,
               textAlpha);
-          renderBubbleTail(pose.pose(), consumer, bubbleBottom, packedLight, textAlpha);
+          if (lateralProgress < LATERAL_TAIL_THRESHOLD) {
+            renderBubbleTail(
+                pose.pose(),
+                consumer,
+                bubbleCenterX,
+                bubbleTop + bubbleHeight,
+                packedLight,
+                textAlpha);
+          } else {
+            renderSideBubbleTail(
+                pose.pose(), consumer, bubbleLeft, bubbleCenterY, packedLight, textAlpha);
+          }
         });
 
     float lineY = bubbleTop + PADDING_Y;
     for (FormattedCharSequence line : lines) {
       submitNodeCollector.submitText(
           poseStack,
-          -font.width(line) / 2.0F,
+          bubbleCenterX - font.width(line) / 2.0F,
           lineY,
           line,
           false,
@@ -232,13 +311,18 @@ public class SpeechBubbleRenderer {
   }
 
   private static void renderBubbleTail(
-      Matrix4f pose, VertexConsumer consumer, float top, int packedLight, int alpha) {
+      Matrix4f pose,
+      VertexConsumer consumer,
+      float centerX,
+      float top,
+      int packedLight,
+      int alpha) {
     quad(
         pose,
         consumer,
-        -TAIL_WIDTH / 2.0F,
+        centerX - TAIL_WIDTH / 2.0F,
         top,
-        TAIL_WIDTH / 2.0F,
+        centerX + TAIL_WIDTH / 2.0F,
         top + TAIL_HEIGHT,
         TAIL_U,
         0.0F,
@@ -246,6 +330,27 @@ public class SpeechBubbleRenderer {
         TAIL_HEIGHT,
         packedLight,
         alpha);
+  }
+
+  private static void renderSideBubbleTail(
+      Matrix4f pose,
+      VertexConsumer consumer,
+      float right,
+      float centerY,
+      int packedLight,
+      int alpha) {
+    float left = right - SIDE_TAIL_WIDTH;
+    float top = centerY - SIDE_TAIL_HEIGHT / 2.0F;
+    float bottom = centerY + SIDE_TAIL_HEIGHT / 2.0F;
+    float u0 = TAIL_U / TEXTURE_SIZE;
+    float u1 = (TAIL_U + TAIL_WIDTH) / TEXTURE_SIZE;
+    float v = TAIL_HEIGHT / TEXTURE_SIZE;
+
+    // Same sprite as the downward tail, rotated by 90 degrees through the vertex order.
+    vertex(pose, consumer, left, top, u0, v, packedLight, alpha);
+    vertex(pose, consumer, left, bottom, u1, v, packedLight, alpha);
+    vertex(pose, consumer, right, bottom, u1, 0.0F, packedLight, alpha);
+    vertex(pose, consumer, right, top, u0, 0.0F, packedLight, alpha);
   }
 
   private static void quad(

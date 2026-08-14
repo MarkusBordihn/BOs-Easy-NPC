@@ -48,10 +48,12 @@ public record ActionDataEntry(
     int permissionLevel,
     MessageActionData messageActionData,
     String poseId,
-    ModelAnimationActionData modelAnimationActionData) {
+    ModelAnimationActionData modelAnimationActionData,
+    SoundActionData soundActionData) {
 
   public static final String DATA_ID_TAG = "Id";
   public static final String DATA_MESSAGE_TAG = "Msg";
+  public static final String DATA_SOUND_TAG = "Snd";
   public static final String DATA_POSE_TAG = "Pose";
   public static final String DATA_ANIMATION_TAG = "Anim";
   public static final String DATA_COMMAND_TAG = "Cmd";
@@ -75,6 +77,7 @@ public record ActionDataEntry(
         modelAnimationActionData != null
             ? modelAnimationActionData
             : ModelAnimationActionData.DEFAULT;
+    soundActionData = soundActionData != null ? soundActionData : SoundActionData.DEFAULT;
   }
 
   public ActionDataEntry(
@@ -100,7 +103,8 @@ public record ActionDataEntry(
         permissionLevel,
         messageActionData,
         "",
-        ModelAnimationActionData.DEFAULT);
+        ModelAnimationActionData.DEFAULT,
+        SoundActionData.DEFAULT);
   }
 
   public ActionDataEntry() {
@@ -147,7 +151,10 @@ public record ActionDataEntry(
         compoundTag.getString(DATA_POSE_TAG).orElse(""),
         compoundTag.contains(DATA_ANIMATION_TAG)
             ? ModelAnimationActionData.fromTag(compoundTag.getCompoundOrEmpty(DATA_ANIMATION_TAG))
-            : ModelAnimationActionData.DEFAULT);
+            : ModelAnimationActionData.DEFAULT,
+        compoundTag.contains(DATA_SOUND_TAG)
+            ? SoundActionData.fromTag(compoundTag.getCompoundOrEmpty(DATA_SOUND_TAG))
+            : SoundActionData.DEFAULT);
   }
 
   public ActionDataEntry(ActionDataType actionDataType) {
@@ -190,7 +197,8 @@ public record ActionDataEntry(
         permissionLevel,
         MessageActionData.DEFAULT,
         "",
-        ModelAnimationActionData.DEFAULT);
+        ModelAnimationActionData.DEFAULT,
+        SoundActionData.DEFAULT);
   }
 
   public ActionDataEntry(ActionDataType actionDataType, UUID targetUUID, String command) {
@@ -206,7 +214,8 @@ public record ActionDataEntry(
         DEFAULT_PERMISSION_LEVEL,
         MessageActionData.DEFAULT,
         "",
-        ModelAnimationActionData.DEFAULT);
+        ModelAnimationActionData.DEFAULT,
+        SoundActionData.DEFAULT);
   }
 
   public static UUID deriveId(CompoundTag compoundTag, int position) {
@@ -281,7 +290,8 @@ public record ActionDataEntry(
         this.permissionLevel,
         this.messageActionData,
         this.poseId,
-        this.modelAnimationActionData);
+        this.modelAnimationActionData,
+        this.soundActionData);
   }
 
   public ActionDataEntry withBlockPos(BlockPos blockPos) {
@@ -297,7 +307,8 @@ public record ActionDataEntry(
         this.permissionLevel,
         this.messageActionData,
         this.poseId,
-        this.modelAnimationActionData);
+        this.modelAnimationActionData,
+        this.soundActionData);
   }
 
   public ActionDataEntry withTargetUUID(UUID targetUUID) {
@@ -313,7 +324,8 @@ public record ActionDataEntry(
         this.permissionLevel,
         this.messageActionData,
         this.poseId,
-        this.modelAnimationActionData);
+        this.modelAnimationActionData,
+        this.soundActionData);
   }
 
   public ActionDataEntry withCommand(String command) {
@@ -329,7 +341,8 @@ public record ActionDataEntry(
         this.permissionLevel,
         this.messageActionData,
         this.poseId,
-        this.modelAnimationActionData);
+        this.modelAnimationActionData,
+        this.soundActionData);
   }
 
   public ActionDataEntry withConditionDataSet(ConditionDataSet conditionDataSet) {
@@ -345,7 +358,8 @@ public record ActionDataEntry(
         this.permissionLevel,
         this.messageActionData,
         this.poseId,
-        this.modelAnimationActionData);
+        this.modelAnimationActionData,
+        this.soundActionData);
   }
 
   public ActionDataEntry withExecuteAsUser(boolean executeAsUser) {
@@ -361,7 +375,8 @@ public record ActionDataEntry(
         this.permissionLevel,
         this.messageActionData,
         this.poseId,
-        this.modelAnimationActionData);
+        this.modelAnimationActionData,
+        this.soundActionData);
   }
 
   public ActionDataEntry withPermissionLevel(int permissionLevel) {
@@ -377,7 +392,8 @@ public record ActionDataEntry(
         checkPermissionLevel(permissionLevel),
         this.messageActionData,
         this.poseId,
-        this.modelAnimationActionData);
+        this.modelAnimationActionData,
+        this.soundActionData);
   }
 
   public ActionDataEntry withMessageActionData(MessageActionData messageActionData) {
@@ -393,7 +409,8 @@ public record ActionDataEntry(
         this.permissionLevel,
         messageActionData,
         this.poseId,
-        this.modelAnimationActionData);
+        this.modelAnimationActionData,
+        this.soundActionData);
   }
 
   public ActionDataEntry withPoseId(String poseId) {
@@ -409,7 +426,8 @@ public record ActionDataEntry(
         this.permissionLevel,
         this.messageActionData,
         poseId,
-        this.modelAnimationActionData);
+        this.modelAnimationActionData,
+        this.soundActionData);
   }
 
   public ActionDataEntry withModelAnimationActionData(
@@ -426,7 +444,25 @@ public record ActionDataEntry(
         this.permissionLevel,
         this.messageActionData,
         this.poseId,
-        modelAnimationActionData);
+        modelAnimationActionData,
+        this.soundActionData);
+  }
+
+  public ActionDataEntry withSoundActionData(SoundActionData soundActionData) {
+    return new ActionDataEntry(
+        this.id,
+        this.actionDataType,
+        this.conditionDataSet,
+        this.command,
+        this.targetUUID,
+        this.blockPos,
+        this.executeAsUser,
+        this.enableDebug,
+        this.permissionLevel,
+        this.messageActionData,
+        this.poseId,
+        this.modelAnimationActionData,
+        soundActionData);
   }
 
   public String getAction(LivingEntity entity, ServerPlayer serverPlayer) {
@@ -466,6 +502,14 @@ public record ActionDataEntry(
       return this.modelAnimationActionData.hasAnimationName();
     }
 
+    if (this.actionDataType == ActionDataType.SOUND) {
+      return this.soundActionData.hasSoundId();
+    }
+
+    if (this.actionDataType == ActionDataType.WAIT) {
+      return WaitDuration.parse(this.command).isValid();
+    }
+
     return !this.actionDataType.requiresArgument()
         || this.hasCommandAndNotEmpty()
         || this.hasBlockPos();
@@ -502,6 +546,11 @@ public record ActionDataEntry(
     if (this.actionDataType == ActionDataType.MESSAGE
         && !this.messageActionData.equals(MessageActionData.DEFAULT)) {
       compoundTag.put(DATA_MESSAGE_TAG, this.messageActionData.createTag());
+    }
+
+    if (this.actionDataType == ActionDataType.SOUND
+        && !this.soundActionData.equals(SoundActionData.DEFAULT)) {
+      compoundTag.put(DATA_SOUND_TAG, this.soundActionData.createTag());
     }
 
     if (this.actionDataType == ActionDataType.SET_POSE && !this.poseId.isBlank()) {
