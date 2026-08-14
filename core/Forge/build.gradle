@@ -2,7 +2,7 @@ plugins {
   id 'maven-publish'
   id 'net.minecraftforge.accesstransformers' version '5.0.1'
   id 'net.minecraftforge.gradle' version '[7.0.17,8)'
-  id 'net.darkhax.curseforgegradle' version '1.2.30'
+  id 'net.darkhax.curseforgegradle' version '1.2.28'
   id 'nu.studer.credentials' version '3.0'
   id "com.modrinth.minotaur" version "2.+"
 }
