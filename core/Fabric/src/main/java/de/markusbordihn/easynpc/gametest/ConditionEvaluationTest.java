@@ -51,6 +51,12 @@ public class ConditionEvaluationTest {
   }
 
   @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testShortExecutionLimitIntervalsEnforced(GameTestHelper helper) {
+    ConditionEvaluationTestHelper.assertShortExecutionLimitIntervalsEnforced(helper);
+    helper.succeed();
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testConditionalDialogOpenRespectsConditions(GameTestHelper helper) {
     ConditionEvaluationTestHelper.assertConditionalDialogOpenRespectsConditions(helper);
     helper.succeed();

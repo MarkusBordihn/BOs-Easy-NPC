@@ -43,7 +43,33 @@ public final class EasyModelEntitiesManager {
   private static final Map<ResourceLocation, String> PROFILE_BODY_TYPES = new ConcurrentHashMap<>();
   private static final Map<ResourceLocation, ProfileDimensions> PROFILE_DIMENSIONS =
       new ConcurrentHashMap<>();
-  private static AnimationProvider animationProvider = profileId -> List.of();
+  private static final AnimationProvider EMPTY_ANIMATION_PROVIDER =
+      new AnimationProvider() {
+        @Override
+        public List<ModelAnimationInfo> listAnimations(ResourceLocation profileId) {
+          return List.of();
+        }
+
+        @Override
+        public List<String> listAnimationVariants(ResourceLocation profileId, String baseName) {
+          return List.of();
+        }
+      };
+  private static final TextureProvider EMPTY_TEXTURE_PROVIDER =
+      new TextureProvider() {
+        @Override
+        public List<String> listTextureSlots(ResourceLocation profileId) {
+          return List.of();
+        }
+
+        @Override
+        public List<ResourceLocation> listTextureVariants(ResourceLocation profileId, String slot) {
+          return List.of();
+        }
+      };
+
+  private static AnimationProvider animationProvider = EMPTY_ANIMATION_PROVIDER;
+  private static TextureProvider textureProvider = EMPTY_TEXTURE_PROVIDER;
 
   private EasyModelEntitiesManager() {}
 
@@ -93,11 +119,32 @@ public final class EasyModelEntitiesManager {
   }
 
   public static void setAnimationProvider(AnimationProvider provider) {
-    animationProvider = provider != null ? provider : profileId -> List.of();
+    animationProvider = provider != null ? provider : EMPTY_ANIMATION_PROVIDER;
   }
 
   public static List<ModelAnimationInfo> listAnimations(ResourceLocation profileId) {
     return profileId != null ? List.copyOf(animationProvider.listAnimations(profileId)) : List.of();
+  }
+
+  public static List<String> listAnimationVariants(ResourceLocation profileId, String baseName) {
+    return profileId != null && baseName != null && !baseName.isEmpty()
+        ? List.copyOf(animationProvider.listAnimationVariants(profileId, baseName))
+        : List.of();
+  }
+
+  public static void setTextureProvider(TextureProvider provider) {
+    textureProvider = provider != null ? provider : EMPTY_TEXTURE_PROVIDER;
+  }
+
+  public static List<String> listTextureSlots(ResourceLocation profileId) {
+    return profileId != null ? List.copyOf(textureProvider.listTextureSlots(profileId)) : List.of();
+  }
+
+  public static List<ResourceLocation> listTextureVariants(
+      ResourceLocation profileId, String slot) {
+    return profileId != null && slot != null && !slot.isEmpty()
+        ? List.copyOf(textureProvider.listTextureVariants(profileId, slot))
+        : List.of();
   }
 
   public static ResourceLocation getProfileId(String entityModel) {
@@ -138,9 +185,16 @@ public final class EasyModelEntitiesManager {
     };
   }
 
-  @FunctionalInterface
   public interface AnimationProvider {
     List<ModelAnimationInfo> listAnimations(ResourceLocation profileId);
+
+    List<String> listAnimationVariants(ResourceLocation profileId, String baseName);
+  }
+
+  public interface TextureProvider {
+    List<String> listTextureSlots(ResourceLocation profileId);
+
+    List<ResourceLocation> listTextureVariants(ResourceLocation profileId, String slot);
   }
 
   public record ProfileDimensions(float width, float height, float eyeHeight) {}

@@ -55,7 +55,6 @@ import net.minecraft.world.entity.player.Inventory;
 
 public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScreenData> {
 
-  private static final int MAX_NUMBER_OF_PIXEL_PER_LINE = 192;
   private static final int MAX_NUMBER_OF_DIALOG_LINES = 10;
   private static final int MAX_TOTAL_DIALOG_LINES = 100;
   private static DialogScreenLayout dialogScreenLayout = DialogScreenLayout.UNKNOWN;
@@ -165,7 +164,7 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
 
     this.dialogComponent = TextComponent.getText(dialogText);
     this.cachedDialogComponents =
-        this.font.split(this.dialogComponent, MAX_NUMBER_OF_PIXEL_PER_LINE);
+        this.font.split(this.dialogComponent, DialogUtils.MAX_DIALOG_LINE_LENGTH);
     this.numberOfDialogLines = Math.min(MAX_TOTAL_DIALOG_LINES, this.cachedDialogComponents.size());
     this.cachedLineLengths = new int[this.cachedDialogComponents.size()];
     for (int line = 0; line < this.cachedDialogComponents.size(); line++) {
@@ -385,7 +384,7 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
 
     setDialogScreenLayout(
         DialogUtils.getDialogScreenLayout(
-            this.getDialogData(), this.font, this.getVisibleDialogButtonEntries()));
+            this.dialogComponent, this.font, this.getVisibleDialogButtonEntries()));
     log.debug(
         "Prepare Dialog Screen {} with page index {} for {} with {} line(s) and layout {}",
         this.getDialogUUID(),
@@ -462,7 +461,7 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
     }
     setDialogScreenLayout(
         DialogUtils.getDialogScreenLayout(
-            this.getDialogData(), this.font, this.getVisibleDialogButtonEntries()));
+            this.dialogComponent, this.font, this.getVisibleDialogButtonEntries()));
     this.renderDialogButtons();
   }
 

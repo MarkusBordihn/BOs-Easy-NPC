@@ -25,6 +25,7 @@ import de.markusbordihn.easynpc.data.action.ActionDataSet;
 import de.markusbordihn.easynpc.data.action.ActionDataType;
 import de.markusbordihn.easynpc.data.action.ActionEventSet;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
+import de.markusbordihn.easynpc.data.action.PendingActionSet;
 import de.markusbordihn.easynpc.data.server.ServerDataAccessor;
 import de.markusbordihn.easynpc.data.server.ServerDataIndex;
 import de.markusbordihn.easynpc.data.server.ServerEntityData;
@@ -46,6 +47,9 @@ public interface ActionEventDataCapable<E extends Mob> extends EasyNPC<E> {
           ServerDataIndex.ACTION_EVENT_SET, EntityDataSerializersManager.ACTION_EVENT_SET);
   ServerDataAccessor<Integer> CUSTOM_DATA_ACTION_PERMISSION_LEVEL =
       ServerEntityData.defineId(ServerDataIndex.ACTION_PERMISSION_LEVEL, EntityDataSerializers.INT);
+  ServerDataAccessor<PendingActionSet> CUSTOM_DATA_PENDING_ACTION_SET =
+      ServerEntityData.defineId(
+          ServerDataIndex.PENDING_ACTION_SET, EntityDataSerializersManager.PENDING_ACTION_SET);
 
   String DATA_ACTION_DATA_TAG = "ActionData";
   String DATA_ACTION_PERMISSION_LEVEL_TAG = "ActionPermissionLevel";
@@ -56,6 +60,7 @@ public interface ActionEventDataCapable<E extends Mob> extends EasyNPC<E> {
 
   default void setActionEventSet(ActionEventSet actions) {
     getEasyNPCServerData().setServerEntityData(CUSTOM_DATA_ACTION_EVENT_SET, actions);
+    this.cancelPendingActionSet();
   }
 
   default boolean hasActionEvent(ActionEventType actionEventType) {
@@ -76,6 +81,7 @@ public interface ActionEventDataCapable<E extends Mob> extends EasyNPC<E> {
 
   default void clearActionEventSet() {
     getEasyNPCServerData().setServerEntityData(CUSTOM_DATA_ACTION_EVENT_SET, new ActionEventSet());
+    this.cancelPendingActionSet();
   }
 
   default int getActionPermissionLevel() {
@@ -104,10 +110,30 @@ public interface ActionEventDataCapable<E extends Mob> extends EasyNPC<E> {
 
   default void defineSynchedActionData(SynchedEntityData.Builder builder) {}
 
+  default PendingActionSet getPendingActionSet() {
+    return getEasyNPCServerData().getServerEntityData(CUSTOM_DATA_PENDING_ACTION_SET);
+  }
+
+  default void setPendingActionSet(PendingActionSet pendingActionSet) {
+    getEasyNPCServerData()
+        .setServerEntityData(
+            CUSTOM_DATA_PENDING_ACTION_SET,
+            pendingActionSet != null ? pendingActionSet : new PendingActionSet());
+  }
+
+  default void cancelPendingActionSet() {
+    PendingActionSet pendingActionSet = this.getPendingActionSet();
+    if (pendingActionSet != null) {
+      pendingActionSet.clear();
+    }
+  }
+
   default void defineCustomActionData() {
     getEasyNPCServerData()
         .defineServerEntityData(CUSTOM_DATA_ACTION_EVENT_SET, new ActionEventSet());
     getEasyNPCServerData().defineServerEntityData(CUSTOM_DATA_ACTION_PERMISSION_LEVEL, 0);
+    getEasyNPCServerData()
+        .defineServerEntityData(CUSTOM_DATA_PENDING_ACTION_SET, new PendingActionSet());
   }
 
   default void addAdditionalActionData(CompoundTag compoundTag) {
@@ -120,6 +146,11 @@ public interface ActionEventDataCapable<E extends Mob> extends EasyNPC<E> {
       }
       if (this.getActionPermissionLevel() != 0) {
         actionDataTag.putInt(DATA_ACTION_PERMISSION_LEVEL_TAG, this.getActionPermissionLevel());
+      }
+
+      PendingActionSet pendingActionSet = this.getPendingActionSet();
+      if (pendingActionSet != null) {
+        pendingActionSet.save(actionDataTag);
       }
     }
 
@@ -141,11 +172,6 @@ public interface ActionEventDataCapable<E extends Mob> extends EasyNPC<E> {
   }
 
   default void readAdditionalActionData(CompoundTag compoundTag) {
-
-    if (!compoundTag.contains(DATA_ACTION_DATA_TAG)) {
-      return;
-    }
-
     CompoundTag actionDataTag = compoundTag.getCompound(DATA_ACTION_DATA_TAG);
 
     if (actionDataTag.contains(ActionEventSet.DATA_ACTION_EVENT_SET_TAG)) {
@@ -156,6 +182,8 @@ public interface ActionEventDataCapable<E extends Mob> extends EasyNPC<E> {
     if (actionDataTag.contains(DATA_ACTION_PERMISSION_LEVEL_TAG)) {
       this.setActionPermissionLevel(actionDataTag.getInt(DATA_ACTION_PERMISSION_LEVEL_TAG));
     }
+
+    this.setPendingActionSet(new PendingActionSet(actionDataTag));
   }
 
   default void registerDefaultActionInteractionEvents() {

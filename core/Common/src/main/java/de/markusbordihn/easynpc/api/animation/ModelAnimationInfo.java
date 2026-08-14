@@ -21,8 +21,18 @@ package de.markusbordihn.easynpc.api.animation;
 
 public record ModelAnimationInfo(
     String name,
+    String baseName,
     float durationTicks,
     boolean loop,
     int frameCount,
     int keyframeCount,
-    int animatedBoneCount) {}
+    int animatedBoneCount) {
+
+  public ModelAnimationInfo {
+    baseName = baseName == null || baseName.isEmpty() ? name : baseName;
+  }
+
+  public boolean isVariant() {
+    return !this.name.equals(this.baseName);
+  }
+}

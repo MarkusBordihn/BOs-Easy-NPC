@@ -228,6 +228,19 @@ public class AbilitiesAttributeConfigurationScreen<T extends ConfigurationMenu>
 
     this.addRenderableWidget(
         new Checkbox(
+            secondButtonRow,
+            this.buttonTopPos + 105,
+            MovementAttributeType.IS_IMMOVABLE.getAttributeName(),
+            entityAttributes.getMovementAttributes().isImmovable(),
+            checkbox ->
+                NetworkMessageHandlerManager.getServerHandler()
+                    .movementAttributeChange(
+                        this.getEasyNPCUUID(),
+                        MovementAttributeType.IS_IMMOVABLE,
+                        checkbox.selected())));
+
+    this.addRenderableWidget(
+        new Checkbox(
             firstButtonRow,
             this.buttonTopPos + 125,
             EntityAttribute.SILENT.getAttributeName(),

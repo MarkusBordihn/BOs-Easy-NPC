@@ -166,6 +166,7 @@ if (project.hasProperty('curseforge_project_id') && project.curseforge_project_i
     mainFile.addEnvironment("Client", "Server")
     mainFile.addModLoader('NeoForge')
     mainFile.addRequirement('easy-npc-core')
+    mainFile.addOptional('easy-model-entities')
     mainFile.addGameVersion("${project.minecraft_version}")
   }
 }
@@ -184,6 +185,7 @@ if (project.hasProperty('modrinth_project_id') && project.modrinth_project_id) {
     loaders = ["neoforge"]
     dependencies {
       required.project "easy-npc-core"
+      optional.project "easy-model-entities"
     }
   }
 }

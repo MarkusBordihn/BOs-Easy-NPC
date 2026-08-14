@@ -25,6 +25,7 @@ import de.markusbordihn.easynpc.data.action.ActionDataEntry;
 import de.markusbordihn.easynpc.data.action.ActionDataType;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
 import de.markusbordihn.easynpc.data.action.MessageActionData;
+import de.markusbordihn.easynpc.data.action.SoundActionData;
 import de.markusbordihn.easynpc.data.action.SpeechBubbleManager;
 import de.markusbordihn.easynpc.data.state.StateEntry;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
@@ -36,6 +37,7 @@ import de.markusbordihn.easynpc.entity.easynpc.handlers.ActionHandler;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.action.executor.DialogActionExecutor;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.action.executor.MessageActionExecutor;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.action.executor.ScoreboardActionExecutor;
+import de.markusbordihn.easynpc.entity.easynpc.handlers.action.executor.SoundActionExecutor;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import de.markusbordihn.easynpc.utils.TextUtils;
 import java.util.Collection;
@@ -43,6 +45,7 @@ import java.util.List;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundSource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -161,6 +164,25 @@ public class EasyNPCActionHandler {
         actionContext != null ? actionContext : ActionContext.EMPTY,
         SpeechBubbleManager.DEFAULT_DURATION_TICKS);
     return true;
+  }
+
+  public static boolean playSound(EasyNPC<?> easyNPC, String soundId) {
+    return playSound(easyNPC, new SoundActionData(soundId));
+  }
+
+  public static boolean playSound(
+      EasyNPC<?> easyNPC, String soundId, SoundSource soundSource, float volume, float pitch) {
+    return playSound(easyNPC, new SoundActionData(soundId, soundSource, volume, pitch));
+  }
+
+  public static boolean playSound(EasyNPC<?> easyNPC, SoundActionData soundActionData) {
+    if (!isUsable(easyNPC) || soundActionData == null || !soundActionData.hasSoundId()) {
+      log.error("Unable to play sound {} for {}", soundActionData, easyNPC);
+      return false;
+    }
+
+    return SoundActionExecutor.play(
+        new ActionDataEntry(ActionDataType.SOUND).withSoundActionData(soundActionData), easyNPC);
   }
 
   public static boolean setState(

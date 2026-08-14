@@ -28,7 +28,8 @@ public record MovementAttributes(
     boolean canPassDoor,
     boolean canUseNetherPortal,
     NavigationType navigationType,
-    double hoverHeight)
+    double hoverHeight,
+    boolean isImmovable)
     implements EntityAttributesInterface {
 
   public static final String CAN_OPEN_DOOR_TAG = MovementAttributeType.CAN_OPEN_DOOR.getTagName();
@@ -39,6 +40,7 @@ public record MovementAttributes(
   public static final String NAVIGATION_TYPE_TAG =
       MovementAttributeType.NAVIGATION_TYPE.getTagName();
   public static final String HOVER_HEIGHT_TAG = MovementAttributeType.HOVER_HEIGHT.getTagName();
+  public static final String IS_IMMOVABLE_TAG = MovementAttributeType.IS_IMMOVABLE.getTagName();
   public static final double MAX_HOVER_HEIGHT = 16.0D;
 
   public MovementAttributes {
@@ -52,12 +54,19 @@ public record MovementAttributes(
   }
 
   public MovementAttributes() {
-    this(false, false, false, false, NavigationType.DEFAULT, 0.0D);
+    this(false, false, false, false, NavigationType.DEFAULT, 0.0D, false);
   }
 
   public MovementAttributes(
       boolean canOpenDoor, boolean canCloseDoor, boolean canPassDoor, boolean canUseNetherPortal) {
-    this(canOpenDoor, canCloseDoor, canPassDoor, canUseNetherPortal, NavigationType.DEFAULT, 0.0D);
+    this(
+        canOpenDoor,
+        canCloseDoor,
+        canPassDoor,
+        canUseNetherPortal,
+        NavigationType.DEFAULT,
+        0.0D,
+        false);
   }
 
   public static MovementAttributes decode(CompoundTag compoundTag) {
@@ -67,7 +76,8 @@ public record MovementAttributes(
         compoundTag.getBoolean(CAN_PASS_DOOR_TAG),
         compoundTag.getBoolean(CAN_USE_NETHER_PORTAL_TAG),
         NavigationType.fromName(compoundTag.getString(NAVIGATION_TYPE_TAG)),
-        compoundTag.getDouble(HOVER_HEIGHT_TAG));
+        compoundTag.getDouble(HOVER_HEIGHT_TAG),
+        compoundTag.getBoolean(IS_IMMOVABLE_TAG));
   }
 
   public MovementAttributes withCanOpenDoor(boolean canOpenDoor) {
@@ -77,7 +87,8 @@ public record MovementAttributes(
         this.canPassDoor,
         this.canUseNetherPortal,
         this.navigationType,
-        this.hoverHeight);
+        this.hoverHeight,
+        this.isImmovable);
   }
 
   public MovementAttributes withCanCloseDoor(boolean canCloseDoor) {
@@ -87,7 +98,8 @@ public record MovementAttributes(
         this.canPassDoor,
         this.canUseNetherPortal,
         this.navigationType,
-        this.hoverHeight);
+        this.hoverHeight,
+        this.isImmovable);
   }
 
   public MovementAttributes withCanPassDoor(boolean canPassDoor) {
@@ -97,7 +109,8 @@ public record MovementAttributes(
         canPassDoor,
         this.canUseNetherPortal,
         this.navigationType,
-        this.hoverHeight);
+        this.hoverHeight,
+        this.isImmovable);
   }
 
   public MovementAttributes withCanUseNetherPortal(boolean canUseNetherPortal) {
@@ -107,7 +120,8 @@ public record MovementAttributes(
         this.canPassDoor,
         canUseNetherPortal,
         this.navigationType,
-        this.hoverHeight);
+        this.hoverHeight,
+        this.isImmovable);
   }
 
   public MovementAttributes withNavigationType(NavigationType navigationType) {
@@ -117,7 +131,8 @@ public record MovementAttributes(
         this.canPassDoor,
         this.canUseNetherPortal,
         navigationType,
-        this.hoverHeight);
+        this.hoverHeight,
+        this.isImmovable);
   }
 
   public MovementAttributes withHoverHeight(double hoverHeight) {
@@ -127,7 +142,19 @@ public record MovementAttributes(
         this.canPassDoor,
         this.canUseNetherPortal,
         this.navigationType,
-        hoverHeight);
+        hoverHeight,
+        this.isImmovable);
+  }
+
+  public MovementAttributes withIsImmovable(boolean isImmovable) {
+    return new MovementAttributes(
+        this.canOpenDoor,
+        this.canCloseDoor,
+        this.canPassDoor,
+        this.canUseNetherPortal,
+        this.navigationType,
+        this.hoverHeight,
+        isImmovable);
   }
 
   public CompoundTag encode(CompoundTag compoundTag) {
@@ -139,6 +166,7 @@ public record MovementAttributes(
       compoundTag.putString(NAVIGATION_TYPE_TAG, this.navigationType.name());
     }
     AttributeTagUtils.putIfNotZero(compoundTag, HOVER_HEIGHT_TAG, this.hoverHeight);
+    AttributeTagUtils.putIfTrue(compoundTag, IS_IMMOVABLE_TAG, this.isImmovable);
     return compoundTag;
   }
 }

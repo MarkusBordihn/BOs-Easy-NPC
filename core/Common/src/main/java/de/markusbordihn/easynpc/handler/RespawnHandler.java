@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.handler;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.data.preset.PresetNormalizer;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.PresetDataCapable;
 import net.minecraft.nbt.CompoundTag;
@@ -48,6 +49,7 @@ public class RespawnHandler {
       return false;
     }
     CompoundTag compoundTag = presetData.serializePresetData();
+    PresetNormalizer.removePendingActionData(compoundTag);
     EntityType<?> entityType = easyNPC.getEntity().getType();
 
     // Create new entity with cleaned preset data

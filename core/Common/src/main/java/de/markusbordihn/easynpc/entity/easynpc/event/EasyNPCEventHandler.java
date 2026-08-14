@@ -27,6 +27,7 @@ import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.ObjectiveDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.OwnerDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.TradingDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.handlers.PendingActionHandler;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
@@ -93,6 +94,11 @@ public final class EasyNPCEventHandler {
     TradingDataCapable<E> tradingData = easyNPC.getEasyNPCTradingData();
     if (tradingData != null) {
       tradingData.stopMerchantTrading();
+    }
+
+    PendingActionHandler<E> pendingActionHandler = easyNPC.getEasyNPCPendingActionHandler();
+    if (pendingActionHandler != null) {
+      pendingActionHandler.cancelPendingActions();
     }
 
     ActionEventDataCapable<E> actionEventData = easyNPC.getEasyNPCActionEventData();

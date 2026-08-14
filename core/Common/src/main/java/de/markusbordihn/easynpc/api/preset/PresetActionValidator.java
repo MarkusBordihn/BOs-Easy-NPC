@@ -25,6 +25,8 @@ import de.markusbordihn.easynpc.data.action.ActionEventSet;
 import de.markusbordihn.easynpc.data.action.CustomActionCommand;
 import de.markusbordihn.easynpc.data.action.MessageActionData;
 import de.markusbordihn.easynpc.data.action.ModelAnimationActionData;
+import de.markusbordihn.easynpc.data.action.SoundActionData;
+import de.markusbordihn.easynpc.data.action.WaitDuration;
 import de.markusbordihn.easynpc.data.condition.ConditionDataSet;
 import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventDataCapable;
 import java.util.List;
@@ -107,6 +109,15 @@ final class PresetActionValidator {
     } else if (actionDataType == ActionDataType.STOP_ANIMATION) {
       validateAnimationBlend(
           actionEntry.getCompound(ActionDataEntry.DATA_ANIMATION_TAG), path, issues);
+    } else if (actionDataType == ActionDataType.SOUND) {
+      if (!SoundActionData.fromTag(actionEntry.getCompound(ActionDataEntry.DATA_SOUND_TAG))
+          .hasSoundId()) {
+        issues.add(
+            PresetValidationIssue.error(
+                PresetValidationRule.SOUND_ACTION_WITHOUT_SOUND,
+                path,
+                "The sound action needs a valid sound id"));
+      }
     } else if (actionDataType.requiresArgument()
         && actionEntry.getString(ActionDataEntry.DATA_COMMAND_TAG).isBlank()
         && !actionEntry.contains(ActionDataEntry.DATA_BLOCK_POS_TAG)) {
@@ -120,6 +131,10 @@ final class PresetActionValidator {
     if (actionDataType == ActionDataType.CUSTOM) {
       validateCustomActionId(
           actionEntry.getString(ActionDataEntry.DATA_COMMAND_TAG), path, context, issues);
+    }
+
+    if (actionDataType == ActionDataType.WAIT) {
+      validateWaitDuration(actionEntry.getString(ActionDataEntry.DATA_COMMAND_TAG), path, issues);
     }
 
     if (actionDataType != ActionDataType.MESSAGE) {
@@ -170,6 +185,35 @@ final class PresetActionValidator {
           PresetValidationSupport.childPath(
               path, ActionDataEntry.DATA_MESSAGE_TAG + "/Texts[" + index + "]"),
           issues);
+    }
+  }
+
+  private static void validateWaitDuration(
+      String command, String path, List<PresetValidationIssue> issues) {
+    if (command.isBlank()) {
+      return;
+    }
+
+    long ticks = WaitDuration.parseUnclampedTicks(command);
+    if (ticks == WaitDuration.INVALID_TICKS) {
+      issues.add(
+          PresetValidationIssue.error(
+              PresetValidationRule.WAIT_ACTION_WITH_INVALID_DURATION,
+              path,
+              "The wait duration '" + command + "' is not a duration like '20s', '400t' or '5m'"));
+      return;
+    }
+
+    if (ticks > WaitDuration.MAX_TICKS) {
+      issues.add(
+          PresetValidationIssue.warning(
+              PresetValidationRule.WAIT_ACTION_DURATION_OUT_OF_RANGE,
+              path,
+              "The wait duration '"
+                  + command
+                  + "' is shortened to "
+                  + WaitDuration.MAX_TICKS
+                  + " ticks"));
     }
   }
 

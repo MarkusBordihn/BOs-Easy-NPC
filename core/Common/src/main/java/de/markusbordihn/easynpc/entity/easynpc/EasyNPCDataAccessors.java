@@ -45,6 +45,7 @@ import de.markusbordihn.easynpc.entity.easynpc.data.TradingDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.VariantDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.ActionHandler;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.AttributeHandler;
+import de.markusbordihn.easynpc.entity.easynpc.handlers.PendingActionHandler;
 import net.minecraft.world.entity.Mob;
 
 public interface EasyNPCDataAccessors<E extends Mob> {
@@ -153,5 +154,11 @@ public interface EasyNPCDataAccessors<E extends Mob> {
 
   default AttributeHandler<E> getEasyNPCAttributeHandler() {
     return this instanceof AttributeHandler<E> attributeHandler ? attributeHandler : null;
+  }
+
+  default PendingActionHandler<E> getEasyNPCPendingActionHandler() {
+    return this instanceof PendingActionHandler<E> pendingActionHandler
+        ? pendingActionHandler
+        : null;
   }
 }
