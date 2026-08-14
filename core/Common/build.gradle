@@ -22,7 +22,22 @@ minecraft {
 dependencies {
   compileOnly group: 'org.spongepowered', name: 'mixin', version: '0.8.7'
 
-  // Easy Model NPC support lives in the loader modules; Common stays free of the optional mod.
+  def easyModelEntitiesLocal = findLocalEasyModelEntities()
+  if (easyModelEntitiesLocal != null) {
+    compileOnly files(easyModelEntitiesLocal)
+    testCompileOnly files(easyModelEntitiesLocal)
+  } else {
+    def easyModelEntitiesFallback = ['forge', 'fabric', 'neoforge']
+        .collect { loader -> project.findProperty("${loader}_easy_model_entities_version") }
+        .find { version -> version }
+    if (!easyModelEntitiesFallback) {
+      throw new GradleException(
+          "Easy Model Entities is needed to compile, but neither a local jar was found nor is a " +
+              "<loader>_easy_model_entities_version property set in gradle.properties.")
+    }
+    compileOnly "maven.modrinth:easy-model-entities:${easyModelEntitiesFallback}"
+    testCompileOnly "maven.modrinth:easy-model-entities:${easyModelEntitiesFallback}"
+  }
 
   // JUnit 5 for unit testing
   testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.1'

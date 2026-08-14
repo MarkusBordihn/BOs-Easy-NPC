@@ -86,7 +86,8 @@ public record ConfigurationData(
                   ConfigurationType.NONE_SKIN,
                   ConfigurationType.SCALING,
                   ConfigurationType.DEFAULT_ROTATION),
-              ConfigurationType.CUSTOM_MODEL));
+              ConfigurationType.CUSTOM_MODEL),
+          EnumSet.of(ConfigurationType.SCALING, ConfigurationType.DEFAULT_ROTATION));
   public static final ConfigurationData COBBLEMON =
       new ConfigurationData(
           include(

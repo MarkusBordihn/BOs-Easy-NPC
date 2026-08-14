@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.network.syncher;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.action.ActionEventSet;
+import de.markusbordihn.easynpc.data.action.PendingActionSet;
 import de.markusbordihn.easynpc.data.attribute.EntityAttributes;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.data.display.DisplayAttributeDataSet;
@@ -357,6 +358,25 @@ public class EntityDataSerializersManager {
 
             @Override
             public ActionEventSet copy(ActionEventSet value) {
+              return value;
+            }
+          });
+  public static final EntityDataSerializer<PendingActionSet> PENDING_ACTION_SET =
+      defineSerializer(
+          PendingActionSet.class.getSimpleName(),
+          new EntityDataSerializer<>() {
+            @Override
+            public void write(FriendlyByteBuf buffer, PendingActionSet value) {
+              buffer.writeNbt(validateAndGetNbt(value.createTag(), "PendingActionSet"));
+            }
+
+            @Override
+            public PendingActionSet read(FriendlyByteBuf buffer) {
+              return new PendingActionSet(buffer.readNbt());
+            }
+
+            @Override
+            public PendingActionSet copy(PendingActionSet value) {
               return value;
             }
           });

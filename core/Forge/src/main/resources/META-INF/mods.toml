@@ -37,7 +37,7 @@ side = "BOTH"
 [[dependencies.easy_npc]]
 modId = "easy_model_entities"
 mandatory = false
-versionRange = "[2.0.0,3.0.0)"
+versionRange = "[2.1.0,3.0.0)"
 ordering = "AFTER"
 side = "BOTH"
 

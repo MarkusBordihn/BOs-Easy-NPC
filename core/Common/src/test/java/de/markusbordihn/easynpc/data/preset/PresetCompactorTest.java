@@ -67,6 +67,21 @@ class PresetCompactorTest {
     return actionEventSet;
   }
 
+  private static CompoundTag attribute(String name, double baseValue) {
+    CompoundTag attribute = new CompoundTag();
+    attribute.putString("Name", name);
+    attribute.putDouble("Base", baseValue);
+    return attribute;
+  }
+
+  private static ListTag attributes(CompoundTag... attributes) {
+    ListTag attributeList = new ListTag();
+    for (CompoundTag attribute : attributes) {
+      attributeList.add(attribute);
+    }
+    return attributeList;
+  }
+
   @Test
   @DisplayName("An attribute at the default of its NPC type is dropped without a reference entry")
   void testUnlistedDefaultAttributeIsDropped() {
@@ -90,23 +105,7 @@ class PresetCompactorTest {
 
     CompoundTag compacted = PresetCompactor.compact(entityData, reference);
 
-    assertEquals(
-        40.0D, compacted.getList("Attributes", 10).getCompound(0).getDouble("Base"));
-  }
-
-  private static CompoundTag attribute(String name, double baseValue) {
-    CompoundTag attribute = new CompoundTag();
-    attribute.putString("Name", name);
-    attribute.putDouble("Base", baseValue);
-    return attribute;
-  }
-
-  private static ListTag attributes(CompoundTag... attributes) {
-    ListTag attributeList = new ListTag();
-    for (CompoundTag attribute : attributes) {
-      attributeList.add(attribute);
-    }
-    return attributeList;
+    assertEquals(40.0D, compacted.getList("Attributes", 10).getCompound(0).getDouble("Base"));
   }
 
   @Test

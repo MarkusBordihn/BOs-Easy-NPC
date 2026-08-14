@@ -25,6 +25,7 @@ import de.markusbordihn.easynpc.data.server.ServerDataAccessor;
 import de.markusbordihn.easynpc.data.server.ServerDataIndex;
 import de.markusbordihn.easynpc.data.server.ServerEntityData;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.handlers.PendingActionHandler;
 import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
 import java.util.List;
 import java.util.UUID;
@@ -79,6 +80,10 @@ public interface PresetDataCapable<T extends Mob> extends EasyNPC<T> {
     }
     if (this.getEasyNPCModelData() != null) {
       this.getEasyNPCModelData().setModelPose(ModelPose.VANILLA);
+    }
+    PendingActionHandler<T> pendingActionHandler = this.getEasyNPCPendingActionHandler();
+    if (pendingActionHandler != null) {
+      pendingActionHandler.cancelPendingActions();
     }
     if (this.getEasyNPCActionEventData() != null
         && compoundTag.contains(ActionEventDataCapable.DATA_ACTION_DATA_TAG)) {

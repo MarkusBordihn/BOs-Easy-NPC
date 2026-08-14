@@ -81,6 +81,10 @@ public class MessageActionEntry extends ActionEntryWidget {
     super(actionDataEntry, actionDataSet, screen);
   }
 
+  private static int centeredTop(int labelTop, int widgetHeight) {
+    return labelTop + LABEL_HEIGHT / 2 - widgetHeight / 2;
+  }
+
   @Override
   public void init(int editorLeft, int editorTop) {
     MessageActionData messageActionData = this.currentMessageActionData();
@@ -190,10 +194,6 @@ public class MessageActionEntry extends ActionEntryWidget {
             editorTop + TARGET_SECOND_ROW_TOP,
             "action.message.target.bubble",
             messageActionData.showAsSpeechBubble());
-  }
-
-  private static int centeredTop(int labelTop, int widgetHeight) {
-    return labelTop + LABEL_HEIGHT / 2 - widgetHeight / 2;
   }
 
   private int helpIconLeft(int editorLeft, String labelTranslationKey) {

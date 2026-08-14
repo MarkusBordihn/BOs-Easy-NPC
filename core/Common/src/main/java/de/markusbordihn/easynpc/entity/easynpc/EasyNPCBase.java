@@ -48,6 +48,7 @@ import de.markusbordihn.easynpc.entity.easynpc.data.VariantDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.ActionHandler;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.AttributeHandler;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.BaseTickHandler;
+import de.markusbordihn.easynpc.entity.easynpc.handlers.PendingActionHandler;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.Saddleable;
@@ -71,6 +72,7 @@ public interface EasyNPCBase<E extends Mob>
         NavigationDataCapable<E>,
         ObjectiveDataCapable<E>,
         OwnerDataCapable<E>,
+        PendingActionHandler<E>,
         PresetDataCapable<E>,
         ProfessionDataCapable<E>,
         ProgressionDataCapable<E>,

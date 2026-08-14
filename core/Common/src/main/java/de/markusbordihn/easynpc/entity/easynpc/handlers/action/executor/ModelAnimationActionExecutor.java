@@ -22,7 +22,6 @@ package de.markusbordihn.easynpc.entity.easynpc.handlers.action.executor;
 import de.markusbordihn.easynpc.api.animation.ModelAnimationAPI;
 import de.markusbordihn.easynpc.data.action.ActionDataEntry;
 import de.markusbordihn.easynpc.data.action.ModelAnimationActionData;
-import de.markusbordihn.easynpc.data.model.ModelAnimationTransition;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 
 public final class ModelAnimationActionExecutor {
@@ -34,7 +33,7 @@ public final class ModelAnimationActionExecutor {
     return ModelAnimationAPI.playAnimation(
         easyNPC,
         animationData.animationName(),
-        animationData.playbackMode(),
+        animationData.playback(),
         animationData.transition());
   }
 

@@ -50,7 +50,14 @@
       "de.markusbordihn.easynpc.gametest.BasePresetTest",
       "de.markusbordihn.easynpc.gametest.DefaultPresetRoundTripTest",
       "de.markusbordihn.easynpc.gametest.StoredDataTest",
-      "de.markusbordihn.easynpc.gametest.PresetSpawnTest"
+      "de.markusbordihn.easynpc.gametest.PresetSpawnTest",
+      "de.markusbordihn.easynpc.gametest.TradingActionTest",
+      "de.markusbordihn.easynpc.gametest.WaitActionTest",
+      "de.markusbordihn.easynpc.gametest.SoundActionTest",
+      "de.markusbordihn.easynpc.gametest.PauseTest",
+      "de.markusbordihn.easynpc.gametest.PlayerIdleTest",
+      "de.markusbordihn.easynpc.gametest.ImmovableAttributeTest",
+      "de.markusbordihn.easynpc.gametest.FallbackActionTest"
     ]
   },
   "mixins": [
@@ -65,9 +72,9 @@
   },
   "suggests": {
     "tooltipfix": "*",
-    "easy_model_entities": ">=2.0.0 <3.0.0"
+    "easy_model_entities": ">=2.1.0 <3.0.0"
   },
   "breaks": {
-    "easy_model_entities": "<2.0.0 || >=3.0.0"
+    "easy_model_entities": "<2.1.0 || >=3.0.0"
   }
 }

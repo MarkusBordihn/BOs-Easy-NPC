@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.data.attribute;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import net.minecraft.nbt.CompoundTag;
@@ -32,12 +33,26 @@ class MovementAttributesTest {
   @DisplayName("All movement attributes survive an encode and decode round trip")
   void testEncodeDecodeRoundTrip() {
     MovementAttributes movementAttributes =
-        new MovementAttributes(true, false, true, false, NavigationType.FLYING, 2.5D);
+        new MovementAttributes(true, false, true, false, NavigationType.FLYING, 2.5D, true);
 
     MovementAttributes decoded =
         MovementAttributes.decode(movementAttributes.encode(new CompoundTag()));
 
     assertEquals(movementAttributes, decoded);
+    assertTrue(decoded.isImmovable());
+  }
+
+  @Test
+  @DisplayName("Data saved before the immovable attribute existed keeps the NPC movable")
+  void testLegacyDataDecodesToMovable() {
+    CompoundTag legacyTag = new CompoundTag();
+    legacyTag.putBoolean(MovementAttributes.CAN_OPEN_DOOR_TAG, true);
+
+    assertFalse(MovementAttributes.decode(legacyTag).isImmovable());
+    assertFalse(
+        new MovementAttributes()
+            .encode(new CompoundTag())
+            .contains(MovementAttributes.IS_IMMOVABLE_TAG));
   }
 
   @Test

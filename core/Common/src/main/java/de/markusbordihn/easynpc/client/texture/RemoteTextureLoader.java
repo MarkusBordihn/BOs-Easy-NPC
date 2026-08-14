@@ -35,6 +35,7 @@ import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -85,6 +86,7 @@ public class RemoteTextureLoader {
 
     HttpURLConnection connection = null;
     NativeImage nativeImage = null;
+    byte[] imageBytes = null;
 
     try {
       URL remoteImageURL = new URL(remoteUrl);
@@ -157,7 +159,7 @@ public class RemoteTextureLoader {
       }
 
       try (InputStream inputStream = connection.getInputStream()) {
-        byte[] imageBytes = readLimited(inputStream, MAX_DOWNLOAD_SIZE);
+        imageBytes = readLimited(inputStream, MAX_DOWNLOAD_SIZE);
         nativeImage = NativeImage.read(new ByteArrayInputStream(imageBytes));
       }
 
@@ -193,16 +195,11 @@ public class RemoteTextureLoader {
       return CompletableFuture.completedFuture(null);
     }
 
-    if (textureModelKey.getSkinModel() == SkinModel.HUMANOID
-        || textureModelKey.getSkinModel() == SkinModel.HUMANOID_SLIM) {
-      nativeImage = TextureImageLoader.processPlayerSkin(nativeImage);
-    }
-
-    // Store to cache file for future use (async to not block texture registration)
+    // Cache the downloaded image itself, so that later runs can apply the current processing.
     UUID uuid = textureModelKey.getUUID();
     File cacheFile = targetDirectory.resolve(TextureNameHelper.getFileName(uuid)).toFile();
     try {
-      nativeImage.writeToFile(cacheFile.toPath());
+      Files.write(cacheFile.toPath(), imageBytes);
       TextureCacheManager.setCachedTextureSource(textureModelKey, targetDirectory, remoteUrl);
       log.info("{} Cached downloaded texture as {} for {}", LOG_PREFIX, cacheFile, textureModelKey);
     } catch (IOException exception) {
@@ -211,6 +208,11 @@ public class RemoteTextureLoader {
           LOG_PREFIX,
           cacheFile,
           exception.getMessage());
+    }
+
+    if (textureModelKey.getSkinModel() == SkinModel.HUMANOID
+        || textureModelKey.getSkinModel() == SkinModel.HUMANOID_SLIM) {
+      nativeImage = TextureImageLoader.processPlayerSkin(nativeImage);
     }
 
     return TextureRegistrationHelper.registerTextureAsync(textureModelKey, nativeImage);

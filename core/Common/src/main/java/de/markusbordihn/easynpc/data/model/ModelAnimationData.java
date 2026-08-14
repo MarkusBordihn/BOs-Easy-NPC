@@ -25,7 +25,6 @@ import net.minecraft.network.FriendlyByteBuf;
 public record ModelAnimationData(
     ModelAnimationBehavior behavior, ModelAnimationRequest playbackRequest) {
 
-
   public static final String DATA_BEHAVIOR_TAG = "Behavior";
   public static final ModelAnimationData DEFAULT =
       new ModelAnimationData(ModelAnimationBehavior.SMART);

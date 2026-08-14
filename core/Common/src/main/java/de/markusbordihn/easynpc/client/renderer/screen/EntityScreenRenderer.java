@@ -43,7 +43,6 @@ public class EntityScreenRenderer {
     return screenRenderDepth > 0;
   }
 
-
   public static void renderEntity(
       GuiGraphics guiGraphics, EasyNPC<?> easyNPC, EntityRenderConfig config) {
     if (easyNPC == null || easyNPC.getLivingEntity() == null) {

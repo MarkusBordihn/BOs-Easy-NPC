@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.compat;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.compat.easymodelentities.EasyModelEntitiesLoader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -42,11 +43,15 @@ public interface CompatHandlerInterface {
         CompatConstants.MOD_COBBLEMON_ID,
         CompatConstants.MOD_COBBLEMON_LOADED);
     CompatConstants.MOD_EASY_MODEL_ENTITIES_LOADED =
-        isModLoaded(CompatConstants.MOD_EASY_MODEL_ENTITIES_ID);
+        isModLoaded(CompatConstants.MOD_EASY_MODEL_ENTITIES_ID)
+            && EasyModelEntitiesLoader.isSupportedApiVersion();
     logFoundMod(
         CompatConstants.MOD_EASY_MODEL_ENTITIES_NAME,
         CompatConstants.MOD_EASY_MODEL_ENTITIES_ID,
         CompatConstants.MOD_EASY_MODEL_ENTITIES_LOADED);
+    if (CompatConstants.MOD_EASY_MODEL_ENTITIES_LOADED) {
+      EasyModelEntitiesLoader.registerProfileReloadListener();
+    }
   }
 
   default void logFoundMod(String modName, String modId, boolean modLoaded) {

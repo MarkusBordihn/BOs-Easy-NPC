@@ -82,5 +82,6 @@ public record ChangeTradingOfferActionMessage(
     }
 
     tradingData.getTradingDataSet().setOfferAction(this.offerIndex, sanitizedDataSet);
+    tradingData.updateTradingDataSet();
   }
 }

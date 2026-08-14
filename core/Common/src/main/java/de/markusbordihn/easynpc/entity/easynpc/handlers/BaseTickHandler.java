@@ -5,6 +5,7 @@ import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.NavigationDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.TickerDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.TradingDataCapable;
+import de.markusbordihn.easynpc.handler.PauseManager;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
 
@@ -16,6 +17,17 @@ public interface BaseTickHandler<E extends Mob> extends EasyNPC<E> {
 
   default void handleBaseTick() {
     this.getProfiler().push("npcBaseTick");
+
+    if (PauseManager.isPaused(this)) {
+      PauseManager.enforcePause(this);
+      this.getProfiler().pop();
+      return;
+    }
+
+    PendingActionHandler<E> pendingActionHandler = this.getEasyNPCPendingActionHandler();
+    if (pendingActionHandler != null) {
+      pendingActionHandler.tickPendingActions();
+    }
 
     TickerDataCapable<E> tickerData = this.getEasyNPCTickerData();
     if (tickerData.checkAndIncreaseTicker(TickerType.BASE_TICK, BASE_TICK)) {

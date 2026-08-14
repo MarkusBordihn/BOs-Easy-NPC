@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.api.animation;
 import de.markusbordihn.easynpc.compat.CompatConstants;
 import de.markusbordihn.easynpc.compat.easymodelentities.EasyModelEntitiesManager;
 import de.markusbordihn.easynpc.data.model.ModelAnimationOperation;
+import de.markusbordihn.easynpc.data.model.ModelAnimationPlayback;
 import de.markusbordihn.easynpc.data.model.ModelAnimationPlaybackMode;
 import de.markusbordihn.easynpc.data.model.ModelAnimationRequest;
 import de.markusbordihn.easynpc.data.model.ModelAnimationTransition;
@@ -37,7 +38,7 @@ public final class ModelAnimationAPI {
   public static final int MAX_ANIMATION_NAME_LENGTH = 256;
   private static final String NAMED_PREFIX = "named:";
   private static final Set<String> STANDARD_ANIMATIONS =
-      Set.of("auto", "idle", "walk", "run", "hurt", "death", "swim", "fly", "attack");
+      Set.of("auto", "idle", "walk", "run", "hurt", "death", "swim", "fly", "attack", "sit");
 
   private ModelAnimationAPI() {}
 
@@ -49,7 +50,7 @@ public final class ModelAnimationAPI {
 
   public static boolean playAnimation(EasyNPC<?> npc, String animationName) {
     return playAnimation(
-        npc, animationName, ModelAnimationPlaybackMode.ONCE, ModelAnimationTransition.DEFAULT);
+        npc, animationName, ModelAnimationPlayback.DEFAULT, ModelAnimationTransition.DEFAULT);
   }
 
   public static boolean playAnimation(
@@ -57,12 +58,19 @@ public final class ModelAnimationAPI {
       String animationName,
       ModelAnimationPlaybackMode playbackMode,
       ModelAnimationTransition transition) {
+    return playAnimation(npc, animationName, ModelAnimationPlayback.of(playbackMode), transition);
+  }
+
+  public static boolean playAnimation(
+      EasyNPC<?> npc,
+      String animationName,
+      ModelAnimationPlayback playback,
+      ModelAnimationTransition transition) {
     String normalizedName = normalizeAnimationName(animationName);
     if (normalizedName.isEmpty()) {
       return false;
     }
-    return issueRequest(
-        npc, ModelAnimationOperation.PLAY, normalizedName, playbackMode, transition);
+    return issueRequest(npc, ModelAnimationOperation.PLAY, normalizedName, playback, transition);
   }
 
   public static boolean stopAnimation(EasyNPC<?> npc) {
@@ -71,7 +79,7 @@ public final class ModelAnimationAPI {
 
   public static boolean stopAnimation(EasyNPC<?> npc, ModelAnimationTransition transition) {
     return issueRequest(
-        npc, ModelAnimationOperation.STOP, "", ModelAnimationPlaybackMode.ONCE, transition);
+        npc, ModelAnimationOperation.STOP, "", ModelAnimationPlayback.DEFAULT, transition);
   }
 
   public static boolean restartAnimation(EasyNPC<?> npc) {
@@ -79,7 +87,7 @@ public final class ModelAnimationAPI {
         npc,
         ModelAnimationOperation.RESTART,
         "",
-        ModelAnimationPlaybackMode.ONCE,
+        ModelAnimationPlayback.DEFAULT,
         ModelAnimationTransition.DEFAULT);
   }
 
@@ -88,6 +96,14 @@ public final class ModelAnimationAPI {
       return List.of();
     }
     return EasyModelEntitiesManager.listAnimations(easyModelNPC.getEasyModelProfileId());
+  }
+
+  public static List<String> listAnimationVariants(EasyNPC<?> npc, String baseName) {
+    if (!(npc instanceof EasyModelNPC easyModelNPC) || !supportsAnimations(npc)) {
+      return List.of();
+    }
+    return EasyModelEntitiesManager.listAnimationVariants(
+        easyModelNPC.getEasyModelProfileId(), baseName);
   }
 
   public static String normalizeAnimationName(String animationName) {
@@ -112,10 +128,10 @@ public final class ModelAnimationAPI {
       EasyNPC<?> npc,
       ModelAnimationOperation operation,
       String animationName,
-      ModelAnimationPlaybackMode playbackMode,
+      ModelAnimationPlayback playback,
       ModelAnimationTransition transition) {
     if (!supportsAnimations(npc)
-        || playbackMode == null
+        || playback == null
         || transition == null
         || !(npc instanceof ModelAnimationDataCapable<?> animationData)) {
       return false;
@@ -127,7 +143,7 @@ public final class ModelAnimationAPI {
         new ModelAnimationRequest(
             operation,
             animationName,
-            playbackMode,
+            playback,
             transition,
             sequence,
             npc.getEntity().level().getGameTime()));

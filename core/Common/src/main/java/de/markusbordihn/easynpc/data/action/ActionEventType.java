@@ -52,7 +52,9 @@ public enum ActionEventType {
   // A second is too short for anything a player would notice more than once, so the fastest
   // interval stays limited to the cheap actions other systems build on.
   private static final Set<ActionDataType> INSTANT_INTERVAL_ACTION_TYPES =
-      EnumSet.of(ActionDataType.NPC_STATE, ActionDataType.CUSTOM);
+      EnumSet.of(ActionDataType.NPC_STATE, ActionDataType.SOUND, ActionDataType.CUSTOM);
+
+  private static final Set<ActionEventType> EVENT_TYPES_REMOVING_THE_ENTITY = EnumSet.of(ON_DEATH);
 
   private final ActionGroup actionGroup;
   private final double triggerDistance;
@@ -101,6 +103,10 @@ public enum ActionEventType {
   }
 
   public boolean allowsActionDataType(ActionDataType actionDataType) {
+    if (actionDataType == ActionDataType.WAIT && EVENT_TYPES_REMOVING_THE_ENTITY.contains(this)) {
+      return false;
+    }
+
     return this != ON_INTERVAL_INSTANT || INSTANT_INTERVAL_ACTION_TYPES.contains(actionDataType);
   }
 }

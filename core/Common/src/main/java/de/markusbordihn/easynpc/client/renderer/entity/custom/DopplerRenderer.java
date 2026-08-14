@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.model.custom.DopplerModel;
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCLivingEntityRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.SpeechBubbleRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.layers.SkullHeadRenderLayer;
 import de.markusbordihn.easynpc.client.renderer.manager.EntityTypeManager;
@@ -71,7 +72,10 @@ public class DopplerRenderer<E extends PathfinderMob>
     LivingEntityRenderer<?, ?> livingEntityRenderer =
         RendererManager.getLivingEntityRenderer(renderEntityType, customEntity);
     if (livingEntityRenderer != null) {
+      poseStack.pushPose();
       try {
+        EasyNPCLivingEntityRenderer.handleRotation(easyNPC, poseStack);
+        EasyNPCLivingEntityRenderer.handleScale(easyNPC, poseStack);
         RendererManager.renderLivingEntity(
             entity,
             customEntity,
@@ -91,14 +95,19 @@ public class DopplerRenderer<E extends PathfinderMob>
             exception);
         EntityTypeManager.addUnsupportedEntityType(renderEntityType);
         return false;
+      } finally {
+        poseStack.popPose();
       }
     }
 
     EntityRenderer<E> entityRenderer =
         (EntityRenderer<E>) RendererManager.getEntityRenderer(renderEntityType, customEntity);
     if (entityRenderer != null) {
+      poseStack.pushPose();
       try {
         RendererManager.copyCustomLivingEntityData(entity, customEntity, entityTypeName);
+        EasyNPCLivingEntityRenderer.handleRotation(easyNPC, poseStack);
+        EasyNPCLivingEntityRenderer.handleScale(easyNPC, poseStack);
         entityRenderer.render(
             (E) customEntity, entityYaw, partialTicks, poseStack, buffer, packedLight);
         return true;
@@ -107,6 +116,8 @@ public class DopplerRenderer<E extends PathfinderMob>
             "Failed to render custom entity {} ({}):", customEntity, renderEntityType, exception);
         EntityTypeManager.addUnsupportedEntityType(renderEntityType);
         return false;
+      } finally {
+        poseStack.popPose();
       }
     }
 

@@ -28,11 +28,15 @@ import de.markusbordihn.easynpc.data.action.ActionDataSet;
 import de.markusbordihn.easynpc.data.action.ActionDataType;
 import de.markusbordihn.easynpc.data.action.ActionEventSet;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
+import de.markusbordihn.easynpc.data.action.ActionExecutionState;
+import de.markusbordihn.easynpc.data.action.PendingActionChain;
+import de.markusbordihn.easynpc.data.action.PendingActionSet;
 import de.markusbordihn.easynpc.data.skin.SkinDataEntry;
 import de.markusbordihn.easynpc.data.status.StatusDataType;
 import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.StatusDataCapable;
+import java.util.List;
 import java.util.UUID;
 import net.minecraft.SharedConstants;
 import net.minecraft.nbt.CompoundTag;
@@ -78,6 +82,19 @@ class PresetNormalizerTest {
     CompoundTag entityData = new CompoundTag();
     entityData.put(ActionEventDataCapable.DATA_ACTION_DATA_TAG, actionEventSet.createTag());
     return entityData;
+  }
+
+  private static PendingActionSet pendingActionSet() {
+    PendingActionSet pendingActionSet = new PendingActionSet();
+    pendingActionSet.schedule(
+        new PendingActionChain(
+            ActionEventType.ON_INTERACTION,
+            40,
+            UUID.randomUUID(),
+            List.of(new ActionDataEntry(ActionDataType.COMMAND, "say a")),
+            List.of(),
+            ActionExecutionState.EMPTY));
+    return pendingActionSet;
   }
 
   private static UUID firstActionId(CompoundTag entityData) {
@@ -298,5 +315,44 @@ class PresetNormalizerTest {
 
     assertEquals(1, keptModifiers.size());
     assertEquals("Custom range bonus", keptModifiers.getCompound(0).getString("Name"));
+  }
+
+  @Test
+  @DisplayName("A running action chain is dropped, the action event set is kept")
+  void testPendingActionsAreDropped() {
+    CompoundTag entityData = actionEventData();
+    pendingActionSet().save(actionDataTag(entityData));
+    assertTrue(actionDataTag(entityData).contains(PendingActionSet.DATA_PENDING_ACTION_SET_TAG));
+
+    PresetNormalizer.normalize(entityData);
+
+    assertFalse(actionDataTag(entityData).contains(PendingActionSet.DATA_PENDING_ACTION_SET_TAG));
+    assertEquals(1, actionEntries(entityData).size());
+  }
+
+  @Test
+  @DisplayName("The action data is dropped when only a running action chain was stored")
+  void testActionDataWithOnlyPendingActionsIsDropped() {
+    CompoundTag entityData = new CompoundTag();
+    entityData.put(
+        ActionEventDataCapable.DATA_ACTION_DATA_TAG, pendingActionSet().save(new CompoundTag()));
+
+    PresetNormalizer.normalize(entityData);
+
+    assertFalse(entityData.contains(ActionEventDataCapable.DATA_ACTION_DATA_TAG));
+  }
+
+  @Test
+  @DisplayName("The action data of a normalized preset is still compacted as a whole")
+  void testActionDataIsCompactedAfterNormalize() {
+    CompoundTag entityData = actionEventData();
+    pendingActionSet().save(actionDataTag(entityData));
+    CompoundTag reference = actionEventData();
+
+    PresetNormalizer.normalize(entityData);
+    PresetNormalizer.normalize(reference);
+    CompoundTag compacted = PresetCompactor.compact(entityData, reference);
+
+    assertFalse(compacted.contains(ActionEventDataCapable.DATA_ACTION_DATA_TAG));
   }
 }

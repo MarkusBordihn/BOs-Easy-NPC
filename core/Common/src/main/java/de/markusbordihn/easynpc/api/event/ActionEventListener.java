@@ -31,7 +31,6 @@ public interface ActionEventListener {
    *     also carries every player affected by the event.
    */
   @Deprecated(since = "7.6.0")
-
   void onActionExecuted(
       EasyNPC<?> easyNPC, ServerPlayer serverPlayer, ActionDataEntry actionDataEntry);
 

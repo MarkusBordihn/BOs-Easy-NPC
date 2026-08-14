@@ -24,6 +24,7 @@ import de.markusbordihn.easynpc.data.action.ActionDataSet;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.handlers.PendingActionHandler;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import de.markusbordihn.easynpc.security.CommandPermissionLevel;
 import de.markusbordihn.easynpc.security.SecurityManager;
@@ -98,5 +99,10 @@ public record ChangeActionEventMessage(
         serverPlayer,
         permissionLevel);
     actionEventData.getActionEventSet().setActionEvent(actionEventType, sanitizedDataSet);
+
+    PendingActionHandler<?> pendingActionHandler = easyNPC.getEasyNPCPendingActionHandler();
+    if (pendingActionHandler != null) {
+      pendingActionHandler.cancelPendingActions();
+    }
   }
 }

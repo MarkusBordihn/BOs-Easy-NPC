@@ -28,6 +28,7 @@ import de.markusbordihn.easymodelentities.api.client.EasyModelPartPoseListener;
 import de.markusbordihn.easymodelentities.api.data.EasyModelAnimation;
 import de.markusbordihn.easymodelentities.api.data.EasyModelBodyType;
 import de.markusbordihn.easymodelentities.api.data.EasyModelVec3f;
+import de.markusbordihn.easymodelentities.api.data.client.EasyModelAnimationPlayback;
 import de.markusbordihn.easymodelentities.api.data.client.EasyModelAnimationPlaybackMode;
 import de.markusbordihn.easymodelentities.api.data.client.EasyModelAnimationSwitchTiming;
 import de.markusbordihn.easymodelentities.api.data.client.EasyModelAnimationTransition;
@@ -39,18 +40,23 @@ import de.markusbordihn.easymodelentities.api.data.client.EasyModelPartAnimation
 import de.markusbordihn.easymodelentities.api.data.client.EasyModelPartPose;
 import de.markusbordihn.easymodelentities.api.data.client.EasyModelPartTransform;
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.api.texture.ModelTextureAPI;
 import de.markusbordihn.easynpc.client.model.custom.DopplerModel;
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.SpeechBubbleRenderer;
 import de.markusbordihn.easynpc.client.renderer.manager.EntityTypeManager;
 import de.markusbordihn.easynpc.compat.IntegrationRegistry;
+import de.markusbordihn.easynpc.compat.easymodelentities.EasyModelEntitiesLoader;
 import de.markusbordihn.easynpc.compat.easymodelentities.EasyModelEntitiesManager;
 import de.markusbordihn.easynpc.data.model.ModelAnimationBehavior;
 import de.markusbordihn.easynpc.data.model.ModelAnimationOperation;
+import de.markusbordihn.easynpc.data.model.ModelAnimationPlayback;
+import de.markusbordihn.easynpc.data.model.ModelAnimationPlaybackMode;
 import de.markusbordihn.easynpc.data.model.ModelAnimationRequest;
 import de.markusbordihn.easynpc.data.model.ModelAnimationSwitchTiming;
 import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.position.CustomPosition;
+import de.markusbordihn.easynpc.data.render.ModelTextureSetting;
 import de.markusbordihn.easynpc.data.render.RenderType;
 import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.data.scale.CustomScale;
@@ -177,6 +183,12 @@ public class EasyModelNPCRenderer<E extends PathfinderMob>
             || (behavior == ModelAnimationBehavior.DEFAULT && hasModelChanges))) {
       renderOptions = renderOptions.withPartAnimationMode(EasyModelPartAnimationMode.REPLACE);
     }
+    ModelTextureSetting textureSetting = ModelTextureAPI.getTextureSetting(easyModelNPC);
+    if (!textureSetting.isEmpty()) {
+      renderOptions =
+          renderOptions.withTextureSetting(
+              EasyModelEntitiesLoader.toEasyModelTextureSetting(textureSetting));
+    }
     return renderOptions;
   }
 
@@ -191,7 +203,7 @@ public class EasyModelNPCRenderer<E extends PathfinderMob>
     boolean staleOneShot =
         (request.operation() == ModelAnimationOperation.RESTART
                 || (request.operation() == ModelAnimationOperation.PLAY
-                    && toEasyModelPlaybackMode(request) == EasyModelAnimationPlaybackMode.ONCE))
+                    && request.playback().isSingleRun()))
             && entity.level().getGameTime() - request.issuedGameTime() > 20L;
     if (staleOneShot) {
       handledAnimationRequests.put(entity, request.sequence());
@@ -208,7 +220,7 @@ public class EasyModelNPCRenderer<E extends PathfinderMob>
           return null;
         }
         EasyModelEntitiesClientApi.playAnimation(
-            entity, animation, toEasyModelPlaybackMode(request), transition);
+            entity, animation, toEasyModelPlayback(request), transition);
         break;
       case STOP:
         EasyModelEntitiesClientApi.stopAnimation(entity, transition);
@@ -231,10 +243,17 @@ public class EasyModelNPCRenderer<E extends PathfinderMob>
     return new EasyModelAnimationTransition(timing, request.transition().blendDurationTicks());
   }
 
+  private static EasyModelAnimationPlayback toEasyModelPlayback(ModelAnimationRequest request) {
+    ModelAnimationPlayback playback = request.playback();
+    return new EasyModelAnimationPlayback(
+        toEasyModelPlaybackMode(playback.mode()), playback.repeatCount(), playback.durationTicks());
+  }
+
   private static EasyModelAnimationPlaybackMode toEasyModelPlaybackMode(
-      ModelAnimationRequest request) {
-    return switch (request.playbackMode()) {
+      ModelAnimationPlaybackMode playbackMode) {
+    return switch (playbackMode) {
       case LOOP -> EasyModelAnimationPlaybackMode.LOOP;
+      case REPEAT -> EasyModelAnimationPlaybackMode.REPEAT;
       case ONCE -> EasyModelAnimationPlaybackMode.ONCE;
     };
   }

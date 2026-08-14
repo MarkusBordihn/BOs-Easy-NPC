@@ -49,7 +49,8 @@ public class DialogScreenTest {
     easyNPC.getEasyNPCDialogData().setDialogDataSet(new DialogDataSet());
     GameTestHelpers.assertNotNull(helper, "DialogData is null!", easyNPC.getEasyNPCDialogData());
     UUID dialogId =
-        DialogScreenTestHelper.mockOpenDialog(serverPlayer, easyNPC, ModMenuTypes.DIALOG_MENU.get());
+        DialogScreenTestHelper.mockOpenDialog(
+            serverPlayer, easyNPC, ModMenuTypes.DIALOG_MENU.get());
     GameTestHelpers.assertNotNull(helper, "DialogId is null!", dialogId);
 
     GameTestHelpers.assertTrue(
@@ -69,7 +70,8 @@ public class DialogScreenTest {
     easyNPC.getEasyNPCDialogData().setDialogDataSet(dialogDataSet);
     GameTestHelpers.assertNotNull(helper, "DialogData is null!", easyNPC.getEasyNPCDialogData());
     UUID dialogId =
-        DialogScreenTestHelper.mockOpenDialog(serverPlayer, easyNPC, ModMenuTypes.DIALOG_MENU.get());
+        DialogScreenTestHelper.mockOpenDialog(
+            serverPlayer, easyNPC, ModMenuTypes.DIALOG_MENU.get());
     GameTestHelpers.assertNotNull(helper, "DialogId is null!", dialogId);
 
     GameTestHelpers.assertTrue(
@@ -95,7 +97,8 @@ public class DialogScreenTest {
     easyNPC.getEasyNPCDialogData().setDialogDataSet(dialogDataSet);
     GameTestHelpers.assertNotNull(helper, "DialogData is null!", easyNPC.getEasyNPCDialogData());
     UUID dialogId =
-        DialogScreenTestHelper.mockOpenDialog(serverPlayer, easyNPC, ModMenuTypes.DIALOG_MENU.get());
+        DialogScreenTestHelper.mockOpenDialog(
+            serverPlayer, easyNPC, ModMenuTypes.DIALOG_MENU.get());
     GameTestHelpers.assertNotNull(helper, "DialogId is null!", dialogId);
 
     GameTestHelpers.assertTrue(

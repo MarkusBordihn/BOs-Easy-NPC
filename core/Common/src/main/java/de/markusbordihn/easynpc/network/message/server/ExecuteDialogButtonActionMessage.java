@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.network.message.server;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.condition.ConditionManager;
+import de.markusbordihn.easynpc.data.action.ActionContext;
 import de.markusbordihn.easynpc.data.action.ActionDataSet;
 import de.markusbordihn.easynpc.data.dialog.DialogButtonEntry;
 import de.markusbordihn.easynpc.data.execution.ExecutionId;
@@ -141,7 +142,11 @@ public record ExecuteDialogButtonActionMessage(UUID uuid, UUID dialogId, UUID di
       return;
     }
 
-    actionHandler.executeActions(actionDataSet, serverPlayer);
+    actionHandler.executeActions(
+        actionDataSet,
+        ActionContext.of(serverPlayer)
+            .withSourceId(
+                new ResourceLocation(Constants.MOD_ID, "dialog_button/" + this.dialogButtonId)));
 
     ConditionManager.recordExecutions(dialogButtonEntry.conditions(), serverPlayer, executionId);
   }

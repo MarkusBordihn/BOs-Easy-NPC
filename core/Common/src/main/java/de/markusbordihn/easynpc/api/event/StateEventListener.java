@@ -31,7 +31,6 @@ public interface StateEventListener {
    *     ActionContext)}, which also carries the triggering player and every affected player.
    */
   @Deprecated(since = "7.6.0")
-
   void onStateChanged(
       EasyNPC<?> easyNPC,
       ResourceLocation stateId,

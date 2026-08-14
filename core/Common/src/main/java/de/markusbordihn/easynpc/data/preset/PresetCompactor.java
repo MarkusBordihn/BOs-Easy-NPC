@@ -155,7 +155,9 @@ public class PresetCompactor {
   private static AttributeSupplier getEntityTypeDefaults(CompoundTag entityData) {
     EntityType<?> entityType =
         EntityType.byString(entityData.getString(Entity.ID_TAG)).orElse(null);
-    return entityType != null ? DefaultAttributes.getSupplier(asLivingEntityType(entityType)) : null;
+    return entityType != null
+        ? DefaultAttributes.getSupplier(asLivingEntityType(entityType))
+        : null;
   }
 
   @SuppressWarnings("unchecked")

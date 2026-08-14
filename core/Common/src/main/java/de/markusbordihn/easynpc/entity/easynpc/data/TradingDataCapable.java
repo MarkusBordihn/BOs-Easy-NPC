@@ -19,15 +19,19 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.data;
 
+import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.data.action.ActionContext;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.data.trading.TradingDataSet;
 import de.markusbordihn.easynpc.data.trading.TradingType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.handlers.ActionHandler;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -225,6 +229,10 @@ public interface TradingDataCapable<E extends Mob> extends EasyNPC<E>, Merchant 
   }
 
   default void notifyTrade(MerchantOffer merchantOffer) {
+    this.handleTradeNotification(merchantOffer);
+  }
+
+  default void handleTradeNotification(MerchantOffer merchantOffer) {
     merchantOffer.increaseUses();
     this.getMob().ambientSoundTime = -this.getMob().getAmbientSoundInterval();
     this.rewardTradeXp(merchantOffer);
@@ -241,20 +249,26 @@ public interface TradingDataCapable<E extends Mob> extends EasyNPC<E>, Merchant 
       if (actionEventData != null) {
         actionEventData.handleActionEvent(ActionEventType.ON_TRADE, serverPlayer);
       }
-      // Fire per-offer action if configured for the specific offer index.
       int offerIndex =
           this.getTradingOffers() != null ? this.getTradingOffers().indexOf(merchantOffer) : -1;
       if (offerIndex >= 0 && this.getTradingDataSet().hasOfferAction(offerIndex)) {
-        var actionHandler = this.getEasyNPCActionHandler();
+        ActionHandler<E> actionHandler = this.getEasyNPCActionHandler();
         if (actionHandler != null) {
           actionHandler.executeActions(
-              this.getTradingDataSet().getOfferAction(offerIndex), serverPlayer);
+              this.getTradingDataSet().getOfferAction(offerIndex),
+              ActionContext.of(ActionEventType.ON_TRADE, serverPlayer)
+                  .withSourceId(
+                      new ResourceLocation(Constants.MOD_ID, "trading_offer/" + offerIndex)));
         }
       }
     }
   }
 
   default void notifyTradeUpdated(ItemStack itemStack) {
+    this.handleTradeUpdatedNotification(itemStack);
+  }
+
+  default void handleTradeUpdatedNotification(ItemStack itemStack) {
     if (!this.isClientSideInstance()
         && this.getMob().ambientSoundTime > -this.getMob().getAmbientSoundInterval() + 20) {
       this.getMob().ambientSoundTime = -this.getMob().getAmbientSoundInterval();

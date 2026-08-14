@@ -32,6 +32,7 @@ import de.markusbordihn.easynpc.data.ticker.TickerType;
 import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.ResetUniversalAngerTargetGoal;
+import de.markusbordihn.easynpc.handler.PauseManager;
 import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
 import java.util.HashSet;
 import java.util.Optional;
@@ -223,12 +224,13 @@ public interface ObjectiveDataCapable<T extends Mob> extends EasyNPC<T> {
     }
     log.debug("Register attribute based objectives for {}", this);
     EntityAttributes attributeData = this.getEasyNPCAttributeData().getEntityAttributes();
+    boolean canMove = !attributeData.getMovementAttributes().isImmovable();
     this.syncAttributeBasedObjective(
-        attributeData.getEnvironmentalAttributes().canFloat(), ObjectiveType.FLOAT);
+        canMove && attributeData.getEnvironmentalAttributes().canFloat(), ObjectiveType.FLOAT);
     this.syncAttributeBasedObjective(
-        attributeData.getMovementAttributes().canOpenDoor(), ObjectiveType.OPEN_DOOR);
+        canMove && attributeData.getMovementAttributes().canOpenDoor(), ObjectiveType.OPEN_DOOR);
     this.syncAttributeBasedObjective(
-        attributeData.getMovementAttributes().canCloseDoor(), ObjectiveType.CLOSE_DOOR);
+        canMove && attributeData.getMovementAttributes().canCloseDoor(), ObjectiveType.CLOSE_DOOR);
   }
 
   private void syncAttributeBasedObjective(boolean enabled, ObjectiveType objectiveType) {
@@ -368,6 +370,10 @@ public interface ObjectiveDataCapable<T extends Mob> extends EasyNPC<T> {
   }
 
   default void handleCustomObjectiveBaseTick() {
+    if (PauseManager.isPaused(this)) {
+      return;
+    }
+
     TickerDataCapable<?> tickerData = this.getEasyNPCTickerData();
     if (tickerData.checkAndIncreaseTicker(
         TickerType.CUSTOM_OBJECTIVE_DELAYED_REGISTRATION,
