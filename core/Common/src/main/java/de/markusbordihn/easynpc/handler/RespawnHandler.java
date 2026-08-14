@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.handler;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.data.preset.PresetNormalizer;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.PresetDataCapable;
 import de.markusbordihn.easynpc.utils.CompoundTagUtils;
@@ -52,6 +53,7 @@ public class RespawnHandler {
       return false;
     }
     CompoundTag compoundTag = presetData.serializePresetData();
+    PresetNormalizer.removePendingActionData(compoundTag);
     EntityType<?> entityType = easyNPC.getEntity().getType();
 
     // Create new entity with saved data

@@ -39,6 +39,8 @@ public enum ActionDataType {
   STOP_ANIMATION(false),
   RESTART_ANIMATION(false),
   MESSAGE,
+  SOUND,
+  WAIT,
   CUSTOM;
 
   private final boolean requiresArgument;

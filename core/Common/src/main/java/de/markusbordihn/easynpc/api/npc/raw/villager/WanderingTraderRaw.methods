@@ -1,0 +1,9 @@
+  @Override
+  public void notifyTrade(MerchantOffer merchantOffer) {
+    this.handleTradeNotification(merchantOffer);
+  }
+
+  @Override
+  public void notifyTradeUpdated(ItemStack itemStack) {
+    this.handleTradeUpdatedNotification(itemStack);
+  }

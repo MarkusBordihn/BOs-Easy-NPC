@@ -209,7 +209,9 @@ public class ActionDataListEntry extends ObjectSelectionList.Entry<ActionDataLis
         || this.actionDataType == ActionDataType.MESSAGE
         || this.actionDataType == ActionDataType.CUSTOM
         || this.actionDataType == ActionDataType.SET_POSE
-        || this.actionDataType == ActionDataType.PLAY_ANIMATION) {
+        || this.actionDataType == ActionDataType.PLAY_ANIMATION
+        || this.actionDataType == ActionDataType.SOUND
+        || this.actionDataType == ActionDataType.WAIT) {
       Text.drawLimitedHoverString(
           guiGraphics,
           this.font,
@@ -256,6 +258,10 @@ public class ActionDataListEntry extends ObjectSelectionList.Entry<ActionDataLis
 
     if (this.actionDataType == ActionDataType.PLAY_ANIMATION) {
       return this.actionDataEntry.modelAnimationActionData().animationName();
+    }
+
+    if (this.actionDataType == ActionDataType.SOUND) {
+      return this.actionDataEntry.soundActionData().soundId();
     }
 
     return this.actionDataEntry.command();

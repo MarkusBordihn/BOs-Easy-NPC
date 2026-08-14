@@ -67,6 +67,14 @@ dependencies {
   // Regular dependencies for development mode (runClient/runServer)
   runtimeOnly(group: 'de.markusbordihn.easynpc', name: "easy_npc-neoforge-${project.minecraft_version}", version: "${project.version}")
   runtimeOnly(group: 'de.markusbordihn.easynpc.configui', name: "easy_npc_config_ui-neoforge-${project.minecraft_version}", version: "${project.version}")
+
+  // Easy Model Entities (Easy Model NPC support), local-first with Modrinth fallback.
+  def easyModelEntitiesNeoForgeRuntime = findLocalEasyModelEntitiesLoader('neoforge')
+  if (easyModelEntitiesNeoForgeRuntime != null) {
+    runtimeOnly easyModelEntitiesNeoForgeRuntime
+  } else if (project.hasProperty('neoforge_easy_model_entities_version') && project.neoforge_easy_model_entities_version) {
+    runtimeOnly "maven.modrinth:easy-model-entities:${project.neoforge_easy_model_entities_version}"
+  }
 }
 
 // NeoGradle compiles the game, but we don't want to add our common code to the game's code
@@ -149,6 +157,7 @@ if (project.hasProperty('curseforge_project_id') && project.curseforge_project_i
     mainFile.releaseType = "${project.curseforge_release_type}"
     mainFile.addEnvironment("Client", "Server")
     mainFile.addModLoader('NeoForge')
+    mainFile.addOptional('easy-model-entities')
     mainFile.addGameVersion("${project.minecraft_version}")
     mainFile.addRequirement('easy-npc-core', 'easy-npc-config-ui')
   }
@@ -169,6 +178,7 @@ if (project.hasProperty('modrinth_project_id') && project.modrinth_project_id) {
     dependencies {
       required.project "easy-npc-core"
       required.project "easy-npc-config-ui"
+      optional.project "easy-model-entities"
     }
   }
 }

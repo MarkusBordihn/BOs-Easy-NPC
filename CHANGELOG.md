@@ -8,6 +8,36 @@ the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 7.7.7
+
+- Fixed #821 by keeping the transparency of 64x64 skins, which Fresh Moves needs for its eyes. Skins
+  downloaded before need a reload over the button in the player skin screen.
+- Fixed #818 by running trade actions for Villager and Wandering Trader NPCs as well.
+- Fixed a dialog with several text variants switching its speech bubble size every second.
+- Fixed the skin cache storing the processed image instead of the original download.
+- Fixed the untranslated interval names, like `PER_DAY`, of the "Execution Limit" condition.
+- Fixed the `sit` animation of Easy Model NPCs, which never used the built-in sitting pose.
+- Fixed the speech bubble being cut off by the head of an NPC when a player stood close to it.
+- Changed speech bubbles to keep their screen size and to move down or aside when a player is close.
+- Changed the speech bubble text to render 20% larger than a name tag.
+- Changed a time based action set with a "Wait" action to run in order instead of picking one entry.
+- Changed dialog texts to wrap later, so an existing dialog can switch to the wider screen layout.
+- Changed fallback actions to skip screen actions without a player, like the regular actions do.
+- Changed the minimum Easy Model Entities version to 2.1.0, older versions disable the integration.
+- Added a "Wait" action, which pauses the following actions of an event for a chosen duration.
+- Added the "Countdown Timekeeper" preset, a speech bubble count to ten ending in sound and sparks.
+- Added scaling and rotation for Doppler NPCs behind the "Experimental Features" checkbox. Both only
+  affect the visible model of entities that accept it, and never the hitbox.
+- Added a "Sound" action, which plays a sound at the NPC with sound category, volume and pitch.
+- Added "Every 5 Minutes" and "Every 15 Minutes" to the "Execution Limit" condition.
+- Added a "Player Idle" condition, which checks how long a player has not moved.
+- Added an "Immovable" attribute, which keeps an NPC in place against pushing and knockback.
+- Added `/easy_npc pause` to pause a single NPC or all NPCs; the global pause ends with the server.
+- Added API access to the sound action, the pause state and the idle time of a player.
+- Added a texture override per model slot for Easy Model NPCs over `/easy_npc render texture`.
+- Added a "Repeat" playback mode with a count and a time limit to the "Play Animation" action.
+- Added API access to animation variants, texture slots and textures of Easy Model NPCs.
+
 ### 7.6.0
 
 - Fixed unclear mod conflict errors for duplicate entity data tracker IDs.

@@ -44,7 +44,21 @@
       "de.markusbordihn.easynpc.gametest.ObjectivePresetTest",
       "de.markusbordihn.easynpc.gametest.CommandArgumentTypeTest",
       "de.markusbordihn.easynpc.gametest.NavigationTypeTest",
-      "de.markusbordihn.easynpc.gametest.DistanceActionTest"
+      "de.markusbordihn.easynpc.gametest.DistanceActionTest",
+      "de.markusbordihn.easynpc.gametest.IntervalActionAudienceTest",
+      "de.markusbordihn.easynpc.gametest.PresetRoundTripTest",
+      "de.markusbordihn.easynpc.gametest.PresetDefaultBaselineTest",
+      "de.markusbordihn.easynpc.gametest.BasePresetTest",
+      "de.markusbordihn.easynpc.gametest.DefaultPresetRoundTripTest",
+      "de.markusbordihn.easynpc.gametest.StoredDataTest",
+      "de.markusbordihn.easynpc.gametest.PresetSpawnTest",
+      "de.markusbordihn.easynpc.gametest.TradingActionTest",
+      "de.markusbordihn.easynpc.gametest.WaitActionTest",
+      "de.markusbordihn.easynpc.gametest.SoundActionTest",
+      "de.markusbordihn.easynpc.gametest.PauseTest",
+      "de.markusbordihn.easynpc.gametest.PlayerIdleTest",
+      "de.markusbordihn.easynpc.gametest.ImmovableAttributeTest",
+      "de.markusbordihn.easynpc.gametest.FallbackActionTest"
     ]
   },
   "mixins": [
@@ -58,6 +72,10 @@
     "java": ">=21"
   },
   "suggests": {
-    "tooltipfix": "*"
+    "tooltipfix": "*",
+    "easy_model_entities": ">=2.1.0 <3.0.0"
+  },
+  "breaks": {
+    "easy_model_entities": "<2.1.0 || >=3.0.0"
   }
 }

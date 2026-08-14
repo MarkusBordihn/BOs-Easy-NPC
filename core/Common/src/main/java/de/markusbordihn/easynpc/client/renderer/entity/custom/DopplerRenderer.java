@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.model.custom.DopplerModel;
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCLivingEntityRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.SpeechBubbleRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.layers.SkullHeadRenderLayer;
 import de.markusbordihn.easynpc.client.renderer.entity.state.EasyNPCRenderStateExtension;
@@ -95,6 +96,7 @@ public class DopplerRenderer
                     EntityModel<? super LivingEntityRenderState>>)
                 RendererManager.getLivingEntityRenderer(renderEntityType, customEntity);
     if (livingEntityRenderer != null) {
+      poseStack.pushPose();
       try {
         // Copy entity data FIRST, so the render state gets the correct rotation
         RendererManager.copyCustomLivingEntityData(
@@ -107,6 +109,9 @@ public class DopplerRenderer
         }
         applyNPCRotationToImitatedModel(renderState, livingEntityRenderState);
 
+        EasyNPCLivingEntityRenderer.handleRotation(easyNPC, poseStack);
+        EasyNPCLivingEntityRenderer.handleScale(easyNPC, poseStack);
+
         livingEntityRenderer.submit(
             livingEntityRenderState, poseStack, submitNodeCollector, cameraRenderState);
         return true;
@@ -118,6 +123,8 @@ public class DopplerRenderer
             exception);
         EntityTypeManager.addUnsupportedEntityType(renderEntityType);
         return false;
+      } finally {
+        poseStack.popPose();
       }
     }
 
@@ -129,10 +136,13 @@ public class DopplerRenderer
       extension.setEasyNpcUUID(easyNPC.getEntityUUID());
     }
     if (entityRenderer != null) {
+      poseStack.pushPose();
       try {
         RendererManager.copyCustomLivingEntityData(
             entity.getPathfinderMob(), customEntity, entityTypeName);
         applyNPCRotationToImitatedModel(renderState, entityRenderState);
+        EasyNPCLivingEntityRenderer.handleRotation(easyNPC, poseStack);
+        EasyNPCLivingEntityRenderer.handleScale(easyNPC, poseStack);
         entityRenderer.submit(entityRenderState, poseStack, submitNodeCollector, cameraRenderState);
         return true;
       } catch (Exception exception) {
@@ -140,6 +150,8 @@ public class DopplerRenderer
             "Failed to render custom entity {} ({}):", customEntity, renderEntityType, exception);
         EntityTypeManager.addUnsupportedEntityType(renderEntityType);
         return false;
+      } finally {
+        poseStack.popPose();
       }
     }
 

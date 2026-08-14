@@ -44,10 +44,10 @@ import org.apache.logging.log4j.Logger;
 
 public class DialogUtils {
 
+  public static final int MAX_DIALOG_LINE_LENGTH = 192;
   private static final String MACRO_NPC_STRING = "@npc";
   private static final String MACRO_INITIATOR_STRING = "@initiator";
   private static final Pattern SCORE_PATTERN = Pattern.compile("@score\\(([a-zA-Z0-9_.-]+)\\)");
-  private static final int MAX_DIALOG_LINE_LENGTH = 178;
   private static final int MAX_SMALL_BUTTON_NAME_LENGTH = 20;
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private static final Set<String> reportedLabelChanges = ConcurrentHashMap.newKeySet();
@@ -230,24 +230,28 @@ public class DialogUtils {
     if (dialogData == null) {
       return DialogScreenLayout.UNKNOWN;
     }
-    boolean hasText = !dialogData.getText().isBlank();
-    int numberOfButtons = dialogButtons != null ? dialogButtons.size() : 0;
 
-    if (!hasText) {
+    return getDialogScreenLayout(dialogData.getDialogText(), font, dialogButtons);
+  }
+
+  public static DialogScreenLayout getDialogScreenLayout(
+      Component dialogText, Font font, List<DialogButtonEntry> dialogButtons) {
+    if (dialogText == null || dialogText.getString().isBlank()) {
       return DialogScreenLayout.UNKNOWN;
     }
+    int numberOfButtons = dialogButtons != null ? dialogButtons.size() : 0;
 
     // Check if we could use a compact layout or if we need to use a full layout.
-    Component dialogText = dialogData.getDialogText();
     boolean hasDialogMacros = hasDialogMacros(dialogText);
 
     // Check if we need to parse line breaks.
-    if (TextFormattingCodes.hasTextLinebreakCodes(dialogText)) {
-      dialogText = TextFormattingCodes.parseTextLineBreaks(dialogText);
-    }
+    Component parsedDialogText =
+        TextFormattingCodes.hasTextLinebreakCodes(dialogText)
+            ? TextFormattingCodes.parseTextLineBreaks(dialogText)
+            : dialogText;
 
     // Calculate the number of lines.
-    int numberOfLines = getNumberOfDialogLines(dialogText, font);
+    int numberOfLines = getNumberOfDialogLines(parsedDialogText, font);
     if (hasDialogMacros) {
       numberOfLines += 20;
     }

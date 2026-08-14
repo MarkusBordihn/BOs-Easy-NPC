@@ -62,6 +62,13 @@ class PresetValidatorTest {
     return presetWithActionEntry(actionEntry);
   }
 
+  private static CompoundTag presetWithWaitAction(String duration) {
+    CompoundTag actionEntry = new CompoundTag();
+    actionEntry.putString(ActionDataEntry.DATA_TYPE_TAG, ActionDataType.WAIT.name());
+    actionEntry.putString(ActionDataEntry.DATA_COMMAND_TAG, duration);
+    return presetWithActionEntry(actionEntry);
+  }
+
   private static CompoundTag presetWithActionCondition(CompoundTag conditionEntry) {
     ListTag conditionEntries = new ListTag();
     conditionEntries.add(conditionEntry);
@@ -388,5 +395,37 @@ class PresetValidatorTest {
 
     assertTrue(report.isValid());
     assertTrue(hasRule(report, PresetValidationRule.UNKNOWN_CUSTOM_ACTION_ID));
+  }
+
+  @Test
+  @DisplayName("A wait action with a readable duration is valid")
+  void testWaitActionWithDurationIsValid() {
+    assertTrue(PresetValidator.validate(presetWithWaitAction("20s")).isValid());
+    assertFalse(
+        hasRule(
+            PresetValidator.validate(presetWithWaitAction("400t")),
+            PresetValidationRule.WAIT_ACTION_WITH_INVALID_DURATION));
+  }
+
+  @Test
+  @DisplayName("A wait action without a readable duration is rejected")
+  void testWaitActionWithoutDurationIsRejected() {
+    assertTrue(
+        hasRule(
+            PresetValidator.validate(presetWithWaitAction("soon")),
+            PresetValidationRule.WAIT_ACTION_WITH_INVALID_DURATION));
+    assertTrue(
+        hasRule(
+            PresetValidator.validate(presetWithWaitAction("")),
+            PresetValidationRule.COMMAND_ACTION_WITHOUT_COMMAND));
+  }
+
+  @Test
+  @DisplayName("A wait action above the duration limit is only a warning")
+  void testWaitActionAboveLimitIsWarning() {
+    PresetValidationReport report = PresetValidator.validate(presetWithWaitAction("9999m"));
+
+    assertTrue(report.isValid());
+    assertTrue(hasRule(report, PresetValidationRule.WAIT_ACTION_DURATION_OUT_OF_RANGE));
   }
 }

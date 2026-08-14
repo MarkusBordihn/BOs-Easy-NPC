@@ -47,6 +47,11 @@ public final class ConditionEvaluationTest {
     helper.succeed();
   }
 
+  public static void testShortExecutionLimitIntervalsEnforced(GameTestHelper helper) {
+    ConditionEvaluationTestHelper.assertShortExecutionLimitIntervalsEnforced(helper);
+    helper.succeed();
+  }
+
   public static void testConditionalDialogOpenRespectsConditions(GameTestHelper helper) {
     ConditionEvaluationTestHelper.assertConditionalDialogOpenRespectsConditions(helper);
     helper.succeed();

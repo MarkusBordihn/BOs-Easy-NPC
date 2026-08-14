@@ -23,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import de.markusbordihn.easynpc.data.model.ModelAnimationPlayback;
 import de.markusbordihn.easynpc.data.model.ModelAnimationPlaybackMode;
 import de.markusbordihn.easynpc.data.model.ModelAnimationSwitchTiming;
 import de.markusbordihn.easynpc.data.model.ModelAnimationTransition;
@@ -62,7 +63,7 @@ class VisualActionDataTest {
     ModelAnimationActionData animationData =
         new ModelAnimationActionData(
             "idle",
-            ModelAnimationPlaybackMode.LOOP,
+            ModelAnimationPlayback.of(ModelAnimationPlaybackMode.LOOP),
             new ModelAnimationTransition(ModelAnimationSwitchTiming.AFTER_CURRENT, 10.0F));
     ActionDataEntry entry =
         new ActionDataEntry(ActionDataType.PLAY_ANIMATION)

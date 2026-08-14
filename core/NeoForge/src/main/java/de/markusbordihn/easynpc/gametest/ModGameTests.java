@@ -69,6 +69,10 @@ public final class ModGameTests {
         ConditionEvaluationTest::testButtonExecutionLimitEnforced,
         DEFAULT_STRUCTURE);
     register(
+        "short_execution_limit_intervals_enforced",
+        ConditionEvaluationTest::testShortExecutionLimitIntervalsEnforced,
+        DEFAULT_STRUCTURE);
+    register(
         "conditional_dialog_open_respects_conditions",
         ConditionEvaluationTest::testConditionalDialogOpenRespectsConditions,
         DEFAULT_STRUCTURE);
@@ -645,6 +649,131 @@ public final class ModGameTests {
         "unchanged_npc_stores_no_boilerplate",
         StoredDataTest::testUnchangedNpcStoresNoBoilerplate,
         DEFAULT_STRUCTURE);
+
+    register(
+        "fallback_stays_out_when_a_regular_action_fired",
+        FallbackActionTest::testFallbackStaysOutWhenARegularActionFired,
+        DEFAULT_STRUCTURE);
+    register(
+        "fallback_runs_without_a_wait",
+        FallbackActionTest::testFallbackRunsWithoutAWait,
+        DEFAULT_STRUCTURE);
+    register(
+        "fallback_runs_only_once", FallbackActionTest::testFallbackRunsOnlyOnce, DEFAULT_STRUCTURE);
+    register(
+        "screen_action_without_a_player_is_skipped",
+        FallbackActionTest::testScreenActionWithoutAPlayerIsSkipped,
+        DEFAULT_STRUCTURE);
+
+    register(
+        "immovable_n_p_c_is_not_pushed",
+        ImmovableAttributeTest::testImmovableNPCIsNotPushed,
+        DEFAULT_STRUCTURE);
+    register(
+        "immovable_n_p_c_loses_its_movement_objectives",
+        ImmovableAttributeTest::testImmovableNPCLosesItsMovementObjectives,
+        DEFAULT_STRUCTURE);
+
+    register(
+        "pause_and_resume_of_a_single_n_p_c",
+        PauseTest::testPauseAndResumeOfASingleNPC,
+        DEFAULT_STRUCTURE);
+    register(
+        "paused_n_p_c_skips_its_base_tick",
+        PauseTest::testPausedNPCSkipsItsBaseTick,
+        DEFAULT_STRUCTURE);
+    register(
+        "pause_survives_save_and_load", PauseTest::testPauseSurvivesSaveAndLoad, DEFAULT_STRUCTURE);
+    register(
+        "global_pause_covers_every_n_p_c",
+        PauseTest::testGlobalPauseCoversEveryNPC,
+        DEFAULT_STRUCTURE);
+    register(
+        "global_resume_keeps_individual_pause",
+        PauseTest::testGlobalResumeKeepsIndividualPause,
+        DEFAULT_STRUCTURE);
+    register(
+        "global_pause_ends_with_the_server",
+        PauseTest::testGlobalPauseEndsWithTheServer,
+        DEFAULT_STRUCTURE);
+
+    register(
+        "idle_time_grows_while_the_player_stands_still",
+        PlayerIdleTest::testIdleTimeGrowsWhileThePlayerStandsStill,
+        DEFAULT_STRUCTURE);
+    register(
+        "movement_resets_the_idle_time",
+        PlayerIdleTest::testMovementResetsTheIdleTime,
+        DEFAULT_STRUCTURE);
+    register(
+        "idle_time_of_an_unknown_player_is_zero",
+        PlayerIdleTest::testIdleTimeOfAnUnknownPlayerIsZero,
+        DEFAULT_STRUCTURE);
+
+    register(
+        "sound_action_plays_a_known_sound",
+        SoundActionTest::testSoundActionPlaysAKnownSound,
+        DEFAULT_STRUCTURE);
+    register(
+        "sound_action_keeps_its_source_volume_and_pitch",
+        SoundActionTest::testSoundActionKeepsItsSourceVolumeAndPitch,
+        DEFAULT_STRUCTURE);
+    register(
+        "sound_action_without_a_valid_sound_is_skipped",
+        SoundActionTest::testSoundActionWithoutAValidSoundIsSkipped,
+        DEFAULT_STRUCTURE);
+
+    register(
+        "trade_actions_trigger_for_humanoid",
+        TradingActionTest::testTradeActionsTriggerForHumanoid,
+        DEFAULT_STRUCTURE);
+    register(
+        "trade_actions_trigger_for_villager",
+        TradingActionTest::testTradeActionsTriggerForVillager,
+        DEFAULT_STRUCTURE);
+    register(
+        "trade_actions_trigger_for_wandering_trader",
+        TradingActionTest::testTradeActionsTriggerForWanderingTrader,
+        DEFAULT_STRUCTURE);
+
+    register(
+        "wait_delays_the_following_actions",
+        WaitActionTest::testWaitDelaysTheFollowingActions,
+        DEFAULT_STRUCTURE);
+    register(
+        "remaining_wait_survives_save_and_load",
+        WaitActionTest::testRemainingWaitSurvivesSaveAndLoad,
+        DEFAULT_STRUCTURE);
+    register(
+        "second_trigger_is_discarded",
+        WaitActionTest::testSecondTriggerIsDiscarded,
+        DEFAULT_STRUCTURE);
+    register(
+        "different_events_run_in_parallel",
+        WaitActionTest::testDifferentEventsRunInParallel,
+        DEFAULT_STRUCTURE);
+    register(
+        "interval_set_with_wait_runs_in_order",
+        WaitActionTest::testIntervalSetWithWaitRunsInOrder,
+        DEFAULT_STRUCTURE);
+    register(
+        "interval_set_without_wait_picks_one_entry",
+        WaitActionTest::testIntervalSetWithoutWaitPicksOneEntry,
+        DEFAULT_STRUCTURE);
+    register(
+        "screen_action_is_kept_over_the_wait",
+        WaitActionTest::testScreenActionIsKeptOverTheWait,
+        DEFAULT_STRUCTURE);
+    register(
+        "fallback_runs_once_after_the_wait",
+        WaitActionTest::testFallbackRunsOnceAfterTheWait,
+        DEFAULT_STRUCTURE);
+    register(
+        "preset_import_cancels_the_chain",
+        WaitActionTest::testPresetImportCancelsTheChain,
+        DEFAULT_STRUCTURE);
+    register(
+        "death_cancels_the_chain", WaitActionTest::testDeathCancelsTheChain, DEFAULT_STRUCTURE);
   }
 
   private ModGameTests() {}

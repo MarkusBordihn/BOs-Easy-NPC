@@ -30,11 +30,15 @@ import de.markusbordihn.easynpc.data.action.ActionDataEntry;
 import de.markusbordihn.easynpc.data.action.ActionDataSet;
 import de.markusbordihn.easynpc.data.action.ActionDataType;
 import de.markusbordihn.easynpc.data.action.ModelAnimationActionData;
+import de.markusbordihn.easynpc.data.model.ModelAnimationPlayback;
 import de.markusbordihn.easynpc.data.model.ModelAnimationPlaybackMode;
 import de.markusbordihn.easynpc.data.model.ModelAnimationSwitchTiming;
 import de.markusbordihn.easynpc.data.model.ModelAnimationTransition;
+import de.markusbordihn.easynpc.network.components.TextComponent;
 import de.markusbordihn.easynpc.utils.ValueUtils;
+import java.util.EnumSet;
 import java.util.LinkedHashSet;
+import java.util.Locale;
 import net.minecraft.client.gui.GuiGraphics;
 
 public class ModelAnimationActionEntry extends ActionEntryWidget {
@@ -42,7 +46,9 @@ public class ModelAnimationActionEntry extends ActionEntryWidget {
   private final ActionDataType actionDataType;
   private TextField animationNameField;
   private TextField blendTicksField;
-  private Checkbox loopCheckbox;
+  private TextField repeatCountField;
+  private TextField durationTicksField;
+  private SpinButton<ModelAnimationPlaybackMode> playbackModeButton;
   private Checkbox afterCurrentCheckbox;
 
   public ModelAnimationActionEntry(
@@ -93,13 +99,31 @@ public class ModelAnimationActionEntry extends ActionEntryWidget {
               selected,
               button -> this.animationNameField.setValue(button.get())));
 
-      this.loopCheckbox =
+      this.playbackModeButton =
           this.screen.addActionEntryWidget(
-              new Checkbox(
+              new SpinButton<>(
                   editorLeft,
                   editorTop + 45,
-                  "loop",
-                  data.playbackMode() == ModelAnimationPlaybackMode.LOOP));
+                  100,
+                  16,
+                  EnumSet.allOf(ModelAnimationPlaybackMode.class),
+                  data.playback().mode(),
+                  null));
+      this.playbackModeButton.setLabelProvider(
+          playbackMode ->
+              TextComponent.getTranslatedConfigText(playbackMode.name().toLowerCase(Locale.ROOT)));
+
+      this.repeatCountField =
+          this.screen.addActionEntryWidget(
+              new TextField(this.font, editorLeft + 105, editorTop + 95, 40, 16));
+      this.repeatCountField.setFilter(ValueUtils::isNumericValue);
+      this.repeatCountField.setValue(String.valueOf(data.playback().repeatCount()));
+
+      this.durationTicksField =
+          this.screen.addActionEntryWidget(
+              new TextField(this.font, editorLeft + 105, editorTop + 120, 40, 16));
+      this.durationTicksField.setFilter(ValueUtils::isFloatValue);
+      this.durationTicksField.setValue(String.valueOf(data.playback().durationTicks()));
     }
 
     this.afterCurrentCheckbox =
@@ -135,6 +159,24 @@ public class ModelAnimationActionEntry extends ActionEntryWidget {
         editorLeft + 2,
         editorTop + 73,
         Constants.FONT_COLOR_DEFAULT);
+    if (this.actionDataType != ActionDataType.PLAY_ANIMATION) {
+      return;
+    }
+
+    Text.drawConfigString(
+        guiGraphics,
+        this.font,
+        "action.animation.repeat_count",
+        editorLeft + 2,
+        editorTop + 98,
+        Constants.FONT_COLOR_DEFAULT);
+    Text.drawConfigString(
+        guiGraphics,
+        this.font,
+        "action.animation.duration",
+        editorLeft + 2,
+        editorTop + 123,
+        Constants.FONT_COLOR_DEFAULT);
   }
 
   @Override
@@ -164,14 +206,28 @@ public class ModelAnimationActionEntry extends ActionEntryWidget {
             this.animationNameField != null
                 ? ModelAnimationAPI.normalizeAnimationName(this.animationNameField.getValue())
                 : "",
-            this.loopCheckbox != null && this.loopCheckbox.selected()
-                ? ModelAnimationPlaybackMode.LOOP
-                : ModelAnimationPlaybackMode.ONCE,
+            this.getPlayback(),
             new ModelAnimationTransition(
                 this.afterCurrentCheckbox.selected()
                     ? ModelAnimationSwitchTiming.AFTER_CURRENT
                     : ModelAnimationSwitchTiming.IMMEDIATE,
                 blendTicks));
     return new ActionDataEntry(this.actionDataType).withModelAnimationActionData(data);
+  }
+
+  private ModelAnimationPlayback getPlayback() {
+    if (this.playbackModeButton == null) {
+      return ModelAnimationPlayback.DEFAULT;
+    }
+
+    int repeatCount =
+        this.repeatCountField.getValue().isEmpty()
+            ? ModelAnimationPlayback.DEFAULT_REPEAT_COUNT
+            : Integer.parseInt(this.repeatCountField.getValue());
+    float durationTicks =
+        this.durationTicksField.getValue().isEmpty()
+            ? ModelAnimationPlayback.UNLIMITED_DURATION_TICKS
+            : Float.parseFloat(this.durationTicksField.getValue());
+    return new ModelAnimationPlayback(this.playbackModeButton.get(), repeatCount, durationTicks);
   }
 }

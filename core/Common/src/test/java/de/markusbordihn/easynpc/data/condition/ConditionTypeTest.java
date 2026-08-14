@@ -127,7 +127,7 @@ class ConditionTypeTest {
     assertEquals(3, handSubTypes.length);
 
     ConditionSubTypeEntry[] durationSubTypes = ConditionType.EXECUTION_LIMIT.getSubTypes();
-    assertEquals(6, durationSubTypes.length);
+    assertEquals(8, durationSubTypes.length);
 
     ConditionSubTypeEntry[] noSubTypes = ConditionType.HAS_ITEM_IN_INVENTORY.getSubTypes();
     assertEquals(0, noSubTypes.length);

@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.network.syncher;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.action.ActionEventSet;
+import de.markusbordihn.easynpc.data.action.PendingActionSet;
 import de.markusbordihn.easynpc.data.attribute.EntityAttributes;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.data.display.DisplayAttributeDataSet;
@@ -77,6 +78,10 @@ public class EntityDataSerializersManager {
       defineSerializer(
           CompoundTag.class.getSimpleName(),
           EntityDataSerializer.forValueType(ByteBufCodecs.COMPOUND_TAG));
+  public static final EntityDataSerializer<PendingActionSet> PENDING_ACTION_SET =
+      defineSerializer(
+          PendingActionSet.class.getSimpleName(),
+          EntityDataSerializer.forValueType(PendingActionSet.STREAM_CODEC));
   public static final EntityDataSerializer<StateDataSet> STATE_DATA_SET =
       defineSerializer(
           StateDataSet.class.getSimpleName(),

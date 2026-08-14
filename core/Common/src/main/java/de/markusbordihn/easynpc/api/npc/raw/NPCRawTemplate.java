@@ -566,7 +566,7 @@ public class NPCRawTemplate extends Zombie implements EasyNPCBase<Zombie> {
 
   @Override
   public boolean isPushable() {
-    return getEntityAttributes().getInteractionAttributes().isPushable();
+    return !this.isImmovable() && getEntityAttributes().getInteractionAttributes().isPushable();
   }
 
   @Override
@@ -577,7 +577,7 @@ public class NPCRawTemplate extends Zombie implements EasyNPCBase<Zombie> {
 
   @Override
   protected void pushEntities() {
-    if (getEntityAttributes().getInteractionAttributes().pushEntities()) {
+    if (!this.isImmovable() && getEntityAttributes().getInteractionAttributes().pushEntities()) {
       super.pushEntities();
     }
   }
@@ -589,7 +589,7 @@ public class NPCRawTemplate extends Zombie implements EasyNPCBase<Zombie> {
 
   @Override
   public void knockback(double strength, double x, double z) {
-    if (getEntityAttributes().getCombatAttributes().isKnockbackResistant()) {
+    if (this.isImmovable() || getEntityAttributes().getCombatAttributes().isKnockbackResistant()) {
       return;
     }
     super.knockback(strength, x, z);
@@ -664,6 +664,9 @@ public class NPCRawTemplate extends Zombie implements EasyNPCBase<Zombie> {
 
   @Override
   public void travel(Vec3 vec3) {
+    if (this.anchorImmovablePosition()) {
+      return;
+    }
     this.handleNavigationTravelEvent(vec3);
     super.travel(vec3);
   }

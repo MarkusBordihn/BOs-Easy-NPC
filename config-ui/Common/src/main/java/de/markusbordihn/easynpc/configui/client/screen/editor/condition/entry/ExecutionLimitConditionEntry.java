@@ -32,8 +32,10 @@ import de.markusbordihn.easynpc.data.condition.ConditionDataSet;
 import de.markusbordihn.easynpc.data.condition.ConditionOperationType;
 import de.markusbordihn.easynpc.data.condition.ConditionType;
 import de.markusbordihn.easynpc.data.condition.DurationType;
+import de.markusbordihn.easynpc.network.components.TextComponent;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
+import java.util.Locale;
 import java.util.stream.Collectors;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -81,6 +83,10 @@ public class ExecutionLimitConditionEntry extends ConditionEntryWidget {
                     .collect(Collectors.toCollection(LinkedHashSet::new)),
                 durationType,
                 button -> {}));
+    this.durationTypeButton.setLabelProvider(
+        value ->
+            TextComponent.getTranslatedConfigText(
+                "executionInterval." + value.name().toLowerCase(Locale.ROOT)));
 
     ReloadButton resetCurrentPlayerButton =
         this.screen.addConditionEntryWidget(

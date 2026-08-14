@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.data.preset;
 
 import de.markusbordihn.easynpc.data.action.ActionDataEntry;
 import de.markusbordihn.easynpc.data.action.ActionEventSet;
+import de.markusbordihn.easynpc.data.action.PendingActionSet;
 import de.markusbordihn.easynpc.data.skin.SkinDataEntry;
 import de.markusbordihn.easynpc.data.status.StatusDataType;
 import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventDataCapable;
@@ -65,7 +66,27 @@ public class PresetNormalizer {
     NON_PRESET_ENTITY_TAGS.forEach(entityData::remove);
     removeSkinTimestamp(entityData);
     sortAttributes(entityData);
+    removePendingActionData(entityData);
     removeActionIdentifiers(entityData);
+  }
+
+  public static void removePendingActionData(CompoundTag entityData) {
+    if (!entityData.contains(ActionEventDataCapable.DATA_ACTION_DATA_TAG)) {
+      return;
+    }
+
+    CompoundTag actionDataTag =
+        entityData.getCompoundOrEmpty(ActionEventDataCapable.DATA_ACTION_DATA_TAG);
+    if (!actionDataTag.contains(PendingActionSet.DATA_PENDING_ACTION_SET_TAG)) {
+      return;
+    }
+
+    actionDataTag.remove(PendingActionSet.DATA_PENDING_ACTION_SET_TAG);
+    if (actionDataTag.isEmpty()) {
+      entityData.remove(ActionEventDataCapable.DATA_ACTION_DATA_TAG);
+    } else {
+      entityData.put(ActionEventDataCapable.DATA_ACTION_DATA_TAG, actionDataTag);
+    }
   }
 
   static void removeStatusRuntimeData(CompoundTag entityData) {
