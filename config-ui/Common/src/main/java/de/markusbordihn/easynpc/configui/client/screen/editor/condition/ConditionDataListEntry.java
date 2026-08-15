@@ -185,6 +185,11 @@ public class ConditionDataListEntry extends ObjectSelectionList.Entry<ConditionD
               this.conditionDataEntry.operationType().getSymbol()
                   + " "
                   + this.conditionDataEntry.value();
+          case PLAYER_IDLE ->
+              this.conditionDataEntry.operationType().getSymbol()
+                  + " "
+                  + this.conditionDataEntry.value()
+                  + "s";
           case WEATHER ->
               this.conditionDataEntry.subType() != null
                   ? ((Enum<?>) this.conditionDataEntry.subType()).name()

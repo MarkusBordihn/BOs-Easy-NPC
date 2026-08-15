@@ -71,11 +71,13 @@ public class ExecutionLimitCondition {
     if (conditionSubTypeEntry instanceof DurationType durationType) {
       return switch (durationType) {
         case PER_MINUTE -> ExecutionInterval.PER_MINUTE;
+        case PER_5_MINUTES -> ExecutionInterval.PER_5_MINUTES;
+        case PER_15_MINUTES -> ExecutionInterval.PER_15_MINUTES;
         case PER_HOUR -> ExecutionInterval.PER_HOUR;
+        case PER_DAY -> ExecutionInterval.PER_DAY;
         case PER_WEEK -> ExecutionInterval.PER_WEEK;
         case PER_MONTH -> ExecutionInterval.PER_MONTH;
         case LIFETIME -> ExecutionInterval.LIFETIME;
-        default -> ExecutionInterval.PER_DAY;
       };
     }
     return ExecutionInterval.PER_DAY;

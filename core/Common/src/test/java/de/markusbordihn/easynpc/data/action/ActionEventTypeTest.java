@@ -163,7 +163,8 @@ class ActionEventTypeTest {
   @DisplayName("Every other event allows all action data types")
   void testOtherEventsAllowAllActionDataTypes() {
     for (ActionEventType actionEventType : ActionEventType.values()) {
-      if (actionEventType == ActionEventType.ON_INTERVAL_INSTANT) {
+      if (actionEventType == ActionEventType.ON_INTERVAL_INSTANT
+          || actionEventType == ActionEventType.ON_DEATH) {
         continue;
       }
       for (ActionDataType actionDataType : ActionDataType.values()) {
@@ -171,6 +172,21 @@ class ActionEventTypeTest {
             actionEventType.allowsActionDataType(actionDataType),
             actionEventType + " must allow " + actionDataType);
       }
+    }
+  }
+
+  @Test
+  @DisplayName("The death event allows every action data type but a wait")
+  void testDeathEventDisallowsWaitActionDataType() {
+    for (ActionDataType actionDataType : ActionDataType.values()) {
+      if (actionDataType == ActionDataType.WAIT) {
+        assertFalse(ActionEventType.ON_DEATH.allowsActionDataType(actionDataType));
+        continue;
+      }
+
+      assertTrue(
+          ActionEventType.ON_DEATH.allowsActionDataType(actionDataType),
+          ActionEventType.ON_DEATH + " must allow " + actionDataType);
     }
   }
 }

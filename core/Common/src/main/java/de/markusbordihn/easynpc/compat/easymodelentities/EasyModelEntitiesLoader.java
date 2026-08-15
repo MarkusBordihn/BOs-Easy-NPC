@@ -19,19 +19,27 @@
 
 package de.markusbordihn.easynpc.compat.easymodelentities;
 
+import de.markusbordihn.easymodelentities.api.EasyModelApiContract;
 import de.markusbordihn.easymodelentities.api.EasyModelEntitiesApi;
 import de.markusbordihn.easymodelentities.api.EasyModelReloadEvents;
 import de.markusbordihn.easymodelentities.api.client.EasyModelEntitiesClientApi;
 import de.markusbordihn.easymodelentities.api.data.EasyModelBodyType;
 import de.markusbordihn.easymodelentities.api.data.EasyModelProfileInfo;
 import de.markusbordihn.easymodelentities.api.data.EasyModelProfileType;
+import de.markusbordihn.easymodelentities.api.data.EasyModelTextureBlend;
+import de.markusbordihn.easymodelentities.api.data.EasyModelTextureSetting;
+import de.markusbordihn.easymodelentities.api.data.EasyModelTextureSlot;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.api.animation.ModelAnimationInfo;
 import de.markusbordihn.easynpc.compat.IntegrationModelProvider;
 import de.markusbordihn.easynpc.compat.IntegrationRegistry;
+import de.markusbordihn.easynpc.data.render.ModelTextureBlend;
+import de.markusbordihn.easynpc.data.render.ModelTextureSetting;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import net.minecraft.resources.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -40,6 +48,8 @@ public class EasyModelEntitiesLoader implements IntegrationModelProvider {
 
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private static final EasyModelEntitiesLoader INSTANCE = new EasyModelEntitiesLoader();
+  private static final int REQUIRED_API_MAJOR_VERSION = 2;
+  private static final int REQUIRED_API_MINOR_VERSION = 1;
 
   private static boolean reloadListenerRegistered = false;
   private static boolean clientReloadListenerRegistered = false;
@@ -47,6 +57,49 @@ public class EasyModelEntitiesLoader implements IntegrationModelProvider {
   private volatile List<Identifier> cachedModels;
 
   private EasyModelEntitiesLoader() {}
+
+  public static boolean isSupportedApiVersion() {
+    String apiVersion;
+    try {
+      apiVersion = EasyModelApiContract.apiVersion();
+    } catch (Throwable throwable) {
+      log.error(
+          "Unable to read the Easy Model Entities API version, integration will be disabled!",
+          throwable);
+      return false;
+    }
+
+    if (matchesRequiredApiVersion(apiVersion)) {
+      return true;
+    }
+
+    log.error(
+        "Easy Model Entities API version {} is not supported, {}.{}.x or newer within major "
+            + "version {} is required, integration will be disabled!",
+        apiVersion,
+        REQUIRED_API_MAJOR_VERSION,
+        REQUIRED_API_MINOR_VERSION,
+        REQUIRED_API_MAJOR_VERSION);
+    return false;
+  }
+
+  private static boolean matchesRequiredApiVersion(String apiVersion) {
+    if (apiVersion == null) {
+      return false;
+    }
+
+    String[] versionParts = apiVersion.trim().split("\\.");
+    if (versionParts.length < 2) {
+      return false;
+    }
+
+    try {
+      return Integer.parseInt(versionParts[0]) == REQUIRED_API_MAJOR_VERSION
+          && Integer.parseInt(versionParts[1]) >= REQUIRED_API_MINOR_VERSION;
+    } catch (NumberFormatException e) {
+      return false;
+    }
+  }
 
   public static void registerProfileReloadListener() {
     if (reloadListenerRegistered) {
@@ -79,19 +132,66 @@ public class EasyModelEntitiesLoader implements IntegrationModelProvider {
 
     clientReloadListenerRegistered = true;
     EasyModelEntitiesManager.setAnimationProvider(
-        profileId ->
-            EasyModelEntitiesClientApi.listAnimations(profileId).stream()
+        new EasyModelEntitiesManager.AnimationProvider() {
+          @Override
+          public List<ModelAnimationInfo> listAnimations(Identifier profileId) {
+            return EasyModelEntitiesClientApi.listAnimations(profileId).stream()
                 .map(
                     info ->
                         new ModelAnimationInfo(
                             info.name(),
+                            info.baseName(),
                             info.durationTicks(),
                             info.loop(),
                             info.frameCount(),
                             info.keyframeCount(),
                             info.animatedBoneCount()))
-                .toList());
+                .toList();
+          }
+
+          @Override
+          public List<String> listAnimationVariants(Identifier profileId, String baseName) {
+            return EasyModelEntitiesClientApi.listAnimationVariants(profileId, baseName);
+          }
+        });
+    EasyModelEntitiesManager.setTextureProvider(
+        new EasyModelEntitiesManager.TextureProvider() {
+          @Override
+          public List<String> listTextureSlots(Identifier profileId) {
+            return EasyModelEntitiesClientApi.listTextureSlots(profileId);
+          }
+
+          @Override
+          public List<Identifier> listTextureVariants(Identifier profileId, String slot) {
+            return EasyModelEntitiesClientApi.listTextureVariants(profileId, slot);
+          }
+        });
     EasyModelReloadEvents.onRenderProfileReload(EasyModelEntitiesLoader::loadRenderableModels);
+  }
+
+  public static EasyModelTextureSetting toEasyModelTextureSetting(
+      ModelTextureSetting textureSetting) {
+    if (textureSetting == null || textureSetting.isEmpty()) {
+      return EasyModelTextureSetting.EMPTY;
+    }
+
+    Map<String, EasyModelTextureSlot> slots = new LinkedHashMap<>();
+    textureSetting
+        .slots()
+        .forEach(
+            (slot, textureSlot) ->
+                slots.put(
+                    slot,
+                    new EasyModelTextureSlot(
+                        textureSlot.texture(), toEasyModelTextureBlend(textureSlot.blend()))));
+    return new EasyModelTextureSetting(slots);
+  }
+
+  private static EasyModelTextureBlend toEasyModelTextureBlend(ModelTextureBlend blend) {
+    return switch (blend) {
+      case TRANSLUCENT -> EasyModelTextureBlend.TRANSLUCENT;
+      case CUTOUT -> EasyModelTextureBlend.CUTOUT;
+    };
   }
 
   private static void loadRenderableModels() {

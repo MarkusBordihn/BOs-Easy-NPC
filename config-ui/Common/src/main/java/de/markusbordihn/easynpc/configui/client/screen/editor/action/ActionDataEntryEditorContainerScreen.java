@@ -44,6 +44,8 @@ import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.OpenT
 import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.PoseActionEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.ScoreboardEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.SimpleVisualActionEntry;
+import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.SoundActionEntry;
+import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.WaitActionEntry;
 import de.markusbordihn.easynpc.configui.data.editor.EditorType;
 import de.markusbordihn.easynpc.configui.data.screen.AdditionalScreenData;
 import de.markusbordihn.easynpc.configui.menu.editor.EditorMenu;
@@ -462,6 +464,14 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
       case MESSAGE:
         this.actionEntryWidget =
             new MessageActionEntry(this.actionDataEntry, this.actionDataSet, this);
+        break;
+      case SOUND:
+        this.actionEntryWidget =
+            new SoundActionEntry(this.actionDataEntry, this.actionDataSet, this);
+        break;
+      case WAIT:
+        this.actionEntryWidget =
+            new WaitActionEntry(this.actionDataEntry, this.actionDataSet, this);
         break;
       case CUSTOM:
         this.actionEntryWidget =

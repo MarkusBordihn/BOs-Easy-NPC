@@ -23,6 +23,8 @@ import de.markusbordihn.easynpc.utils.EnumUtils;
 
 public enum ExecutionInterval {
   PER_MINUTE(60_000L),
+  PER_5_MINUTES(300_000L),
+  PER_15_MINUTES(900_000L),
   PER_HOUR(3_600_000L),
   PER_DAY(86_400_000L),
   PER_WEEK(604_800_000L),

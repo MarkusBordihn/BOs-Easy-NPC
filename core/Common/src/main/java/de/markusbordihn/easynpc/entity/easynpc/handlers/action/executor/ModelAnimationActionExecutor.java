@@ -33,7 +33,7 @@ public final class ModelAnimationActionExecutor {
     return ModelAnimationAPI.playAnimation(
         easyNPC,
         animationData.animationName(),
-        animationData.playbackMode(),
+        animationData.playback(),
         animationData.transition());
   }
 

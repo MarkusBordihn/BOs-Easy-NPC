@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.network.message.server;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.data.action.ActionContext;
 import de.markusbordihn.easynpc.data.action.ActionDataSet;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
@@ -119,6 +120,7 @@ public record ExecuteActionEventMessage(UUID uuid, ActionEventType actionEventTy
       return;
     }
 
-    actionHandler.executeActions(actionDataSet, serverPlayer);
+    actionHandler.executeActions(
+        actionDataSet, ActionContext.of(this.actionEventType, serverPlayer));
   }
 }

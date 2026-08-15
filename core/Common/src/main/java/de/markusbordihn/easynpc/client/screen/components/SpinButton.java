@@ -23,9 +23,11 @@ import de.markusbordihn.easynpc.network.components.TextComponent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.network.chat.Component;
 
 public class SpinButton<T> extends CustomButton {
 
@@ -34,6 +36,7 @@ public class SpinButton<T> extends CustomButton {
   private final TextButton textButton;
   private final List<T> values = new ArrayList<>();
   private final OnChange<T> onChange;
+  private Function<T, Component> labelProvider = value -> TextComponent.getText(value.toString());
   private int currentIndex;
 
   public SpinButton(
@@ -84,6 +87,10 @@ public class SpinButton<T> extends CustomButton {
     return this.values.isEmpty() ? null : this.values.get(this.currentIndex);
   }
 
+  public void setLabelProvider(Function<T, Component> labelProvider) {
+    this.labelProvider = labelProvider;
+  }
+
   public void setValues(Set<T> values, T selectedValue) {
     this.values.clear();
     this.values.addAll(values);
@@ -100,7 +107,7 @@ public class SpinButton<T> extends CustomButton {
 
     T value = get();
     if (value != null) {
-      this.textButton.setMessage(TextComponent.getText(value.toString()));
+      this.textButton.setMessage(this.labelProvider.apply(value));
     }
   }
 

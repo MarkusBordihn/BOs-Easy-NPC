@@ -41,6 +41,7 @@ import de.markusbordihn.easynpc.configui.client.screen.editor.condition.entry.Ha
 import de.markusbordihn.easynpc.configui.client.screen.editor.condition.entry.NpcHealthConditionEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.condition.entry.NpcStateConditionEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.condition.entry.PlayerHealthConditionEntry;
+import de.markusbordihn.easynpc.configui.client.screen.editor.condition.entry.PlayerIdleConditionEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.condition.entry.RelationshipConditionEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.condition.entry.ScoreboardConditionEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.condition.entry.TimeOfDayConditionEntry;
@@ -312,6 +313,10 @@ public class ConditionDataEntryEditorContainerScreen<T extends EditorMenu> exten
       case GAMEMODE:
         this.conditionEntryWidget =
             new GamemodeConditionEntry(this.conditionDataEntry, this.conditionDataSet, this);
+        break;
+      case PLAYER_IDLE:
+        this.conditionEntryWidget =
+            new PlayerIdleConditionEntry(this.conditionDataEntry, this.conditionDataSet, this);
         break;
       case TIME_OF_DAY:
         this.conditionEntryWidget =

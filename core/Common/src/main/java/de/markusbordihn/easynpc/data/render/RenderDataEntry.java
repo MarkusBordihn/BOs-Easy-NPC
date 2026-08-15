@@ -36,7 +36,8 @@ public record RenderDataEntry(
     RenderType renderType,
     EntityType<? extends Entity> renderEntityType,
     String renderEntityModel,
-    ModelType renderModelType) {
+    ModelType renderModelType,
+    ModelTextureSetting renderTextureSetting) {
 
   public static final StreamCodec<RegistryFriendlyByteBuf, RenderDataEntry> STREAM_CODEC =
       new StreamCodec<>() {
@@ -57,7 +58,13 @@ public record RenderDataEntry(
   static final String DATA_RENDER_ENTITY_TYPE_TAG = "EntityType";
   static final String DATA_RENDER_ENTITY_MODEL_TAG = "EntityModel";
   static final String DATA_RENDER_MODEL_TYPE_TAG = "ModelType";
+  static final String DATA_RENDER_TEXTURE_SETTING_TAG = "TextureSetting";
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+
+  public RenderDataEntry {
+    renderTextureSetting =
+        renderTextureSetting == null ? ModelTextureSetting.EMPTY : renderTextureSetting;
+  }
 
   public RenderDataEntry() {
     this(RenderType.DEFAULT, null, null, null);
@@ -75,6 +82,19 @@ public record RenderDataEntry(
     this(renderType, renderEntityType, renderEntityModel, null);
   }
 
+  public RenderDataEntry(
+      final RenderType renderType,
+      final EntityType<? extends Entity> renderEntityType,
+      final String renderEntityModel,
+      final ModelType renderModelType) {
+    this(
+        renderType,
+        renderEntityType,
+        renderEntityModel,
+        renderModelType,
+        ModelTextureSetting.EMPTY);
+  }
+
   public RenderDataEntry(final CompoundTag compoundTag) {
     this(
         compoundTag.contains(DATA_RENDER_TYPE_TAG)
@@ -90,7 +110,8 @@ public record RenderDataEntry(
         compoundTag.contains(DATA_RENDER_ENTITY_MODEL_TAG)
             ? compoundTag.getString(DATA_RENDER_ENTITY_MODEL_TAG).orElse(null)
             : null,
-        parseModelType(compoundTag));
+        parseModelType(compoundTag),
+        ModelTextureSetting.fromTag(compoundTag.get(DATA_RENDER_TEXTURE_SETTING_TAG)));
   }
 
   private static ModelType parseModelType(final CompoundTag compoundTag) {
@@ -107,9 +128,10 @@ public record RenderDataEntry(
   public RenderDataEntry withRenderType(final RenderType renderType) {
     return new RenderDataEntry(
         renderType,
-        renderType == RenderType.DEFAULT ? null : renderEntityType,
-        renderEntityModel,
-        renderModelType);
+        renderType == RenderType.DEFAULT ? null : this.renderEntityType,
+        this.renderEntityModel,
+        this.renderModelType,
+        this.renderTextureSetting);
   }
 
   public RenderDataEntry withRenderEntityType(final EntityType<? extends Entity> renderEntityType) {
@@ -129,7 +151,21 @@ public record RenderDataEntry(
   }
 
   public RenderDataEntry withRenderModelType(final ModelType renderModelType) {
-    return new RenderDataEntry(renderType, renderEntityType, renderEntityModel, renderModelType);
+    return new RenderDataEntry(
+        this.renderType,
+        this.renderEntityType,
+        this.renderEntityModel,
+        renderModelType,
+        this.renderTextureSetting);
+  }
+
+  public RenderDataEntry withRenderTextureSetting(final ModelTextureSetting renderTextureSetting) {
+    return new RenderDataEntry(
+        this.renderType,
+        this.renderEntityType,
+        this.renderEntityModel,
+        this.renderModelType,
+        renderTextureSetting);
   }
 
   public CompoundTag write(CompoundTag compoundTag) {
@@ -148,6 +184,10 @@ public record RenderDataEntry(
 
     if (this.renderModelType != null) {
       compoundTag.putString(DATA_RENDER_MODEL_TYPE_TAG, this.renderModelType.name());
+    }
+
+    if (!this.renderTextureSetting.isEmpty()) {
+      compoundTag.put(DATA_RENDER_TEXTURE_SETTING_TAG, this.renderTextureSetting.createTag());
     }
 
     return compoundTag;
@@ -175,5 +215,9 @@ public record RenderDataEntry(
 
   public ModelType getRenderModelType() {
     return renderModelType;
+  }
+
+  public ModelTextureSetting getRenderTextureSetting() {
+    return renderTextureSetting;
   }
 }

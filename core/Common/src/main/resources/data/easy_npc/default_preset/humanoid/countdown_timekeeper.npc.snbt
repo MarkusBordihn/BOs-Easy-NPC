@@ -1,0 +1,99 @@
+{
+  PresetMetadata:{
+    author:"Easy NPC",
+    category:"General",
+    created:1786492800000L,
+    description:"A timekeeper that shows how the WAIT action turns an action set into a timeline. The dialog button starts a speech bubble countdown from one to ten, one second apart, and ends with a sound and a burst of particles. A second press is ignored while the count is still running.",
+    entityTypeId:"easy_npc:humanoid",
+    modified:1786492800000L,
+    name:"Countdown Timekeeper",
+    variantType:"STEVE",
+    version:"1.0.0"
+  },
+  data:{
+    ActionData:{
+      ActionEventSet:{
+        ON_INTERACTION:[{
+          Type:"OPEN_DEFAULT_DIALOG"
+        }],
+        ON_INTERVAL_VERY_LONG:[{
+          Msg:{T:4b,Texts:["The sand is running low."]},Type:"MESSAGE"
+        },{
+          Cmd:"5s",Type:"WAIT"
+        },{
+          Msg:{T:4b,Texts:["I will turn the glass again."]},Type:"MESSAGE"
+        }]
+      }
+    },
+    CustomName:'{"color":"#D9B26F","text":"Countdown Timekeeper"}',
+    DialogData:{
+      DialogDataSet:[{
+        Buttons:[{
+          Actions:[{
+            Type:"CLOSE_DIALOG"
+          },{
+            Msg:{T:4b,Texts:["Watch the sand, @initiator."]},Type:"MESSAGE"
+          },{
+            Cmd:"2s",Type:"WAIT"
+          },{
+            Msg:{T:4b,Texts:["One."]},Type:"MESSAGE"
+          },{
+            Cmd:"1s",Type:"WAIT"
+          },{
+            Msg:{T:4b,Texts:["Two."]},Type:"MESSAGE"
+          },{
+            Cmd:"1s",Type:"WAIT"
+          },{
+            Msg:{T:4b,Texts:["Three."]},Type:"MESSAGE"
+          },{
+            Cmd:"1s",Type:"WAIT"
+          },{
+            Msg:{T:4b,Texts:["Four."]},Type:"MESSAGE"
+          },{
+            Cmd:"1s",Type:"WAIT"
+          },{
+            Msg:{T:4b,Texts:["Five."]},Type:"MESSAGE"
+          },{
+            Cmd:"1s",Type:"WAIT"
+          },{
+            Msg:{T:4b,Texts:["Six."]},Type:"MESSAGE"
+          },{
+            Cmd:"1s",Type:"WAIT"
+          },{
+            Msg:{T:4b,Texts:["Seven."]},Type:"MESSAGE"
+          },{
+            Cmd:"1s",Type:"WAIT"
+          },{
+            Msg:{T:4b,Texts:["Eight."]},Type:"MESSAGE"
+          },{
+            Cmd:"1s",Type:"WAIT"
+          },{
+            Msg:{T:4b,Texts:["Nine."]},Type:"MESSAGE"
+          },{
+            Cmd:"1s",Type:"WAIT"
+          },{
+            Msg:{T:4b,Texts:["<gold>Ten!</gold>"]},Type:"MESSAGE"
+          },{
+            Cmd:"/playsound minecraft:entity.player.levelup master @a ~ ~ ~ 1 1.2",Type:"COMMAND"
+          },{
+            Cmd:"/particle minecraft:end_rod ~ ~1 ~ 0.3 0.5 0.3 0.02 25",Type:"COMMAND"
+          },{
+            Msg:{T:5b,Texts:["A full count, @initiator. The glass is empty."]},Type:"MESSAGE"
+          }],Label:"button_countdown",Name:"Count to ten"
+        }],Label:"default",Name:"Timekeeper",Priority:10,Texts:[{
+          Text:"I keep the small hours, @initiator. Ask me for a count and stay where you are."
+        }]
+      }],
+      Type:"CUSTOM"
+    },
+    EasyNPCVersion:3,
+    ObjectiveData:{
+      HasObjectives:1b,ObjectiveDataSet:[{
+        Type:"LOOK_AT_PLAYER"
+      },{
+        Type:"LOOK_AT_RESET"
+      }]
+    },
+    id:"easy_npc:humanoid"
+  }
+}

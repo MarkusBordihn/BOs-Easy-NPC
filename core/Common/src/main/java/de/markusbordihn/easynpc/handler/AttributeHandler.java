@@ -44,6 +44,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -237,6 +238,12 @@ public class AttributeHandler {
           entityAttributes.setMovementAttributes(attributes.withCanPassDoor(value));
       case CAN_USE_NETHER_PORTAL ->
           entityAttributes.setMovementAttributes(attributes.withCanUseNetherPortal(value));
+      case IS_IMMOVABLE -> {
+        entityAttributes.setMovementAttributes(attributes.withIsImmovable(value));
+        if (value && easyNPC.getLivingEntity() != null) {
+          easyNPC.getLivingEntity().setDeltaMovement(Vec3.ZERO);
+        }
+      }
       default -> {
         log.error("Unimplemented moving attribute {} for {}", attributeType, easyNPC);
         return false;

@@ -23,6 +23,8 @@ import de.markusbordihn.easynpc.utils.EnumUtils;
 
 public enum DurationType implements ConditionSubTypeEntry {
   PER_MINUTE,
+  PER_5_MINUTES,
+  PER_15_MINUTES,
   PER_HOUR,
   PER_DAY,
   PER_WEEK,

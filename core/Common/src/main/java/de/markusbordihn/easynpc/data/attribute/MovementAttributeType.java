@@ -28,6 +28,7 @@ public enum MovementAttributeType implements EntityAttributeTypeInterface {
   CAN_PASS_DOOR,
   CAN_USE_NETHER_PORTAL,
   HOVER_HEIGHT,
+  IS_IMMOVABLE,
   NAVIGATION_TYPE;
 
   private final String tagName = TextUtils.convertToPascalCase(this.name());

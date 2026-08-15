@@ -47,6 +47,9 @@ public final class ModGameTests {
         "button_execution_limit_enforced",
         () -> ConditionEvaluationTest::testButtonExecutionLimitEnforced);
     TEST_FUNCTIONS.register(
+        "short_execution_limit_intervals_enforced",
+        () -> ConditionEvaluationTest::testShortExecutionLimitIntervalsEnforced);
+    TEST_FUNCTIONS.register(
         "conditional_dialog_open_respects_conditions",
         () -> ConditionEvaluationTest::testConditionalDialogOpenRespectsConditions);
     TEST_FUNCTIONS.register(
@@ -456,6 +459,92 @@ public final class ModGameTests {
     TEST_FUNCTIONS.register(
         "unchanged_npc_stores_no_boilerplate",
         () -> StoredDataTest::testUnchangedNpcStoresNoBoilerplate);
+
+    TEST_FUNCTIONS.register(
+        "fallback_stays_out_when_a_regular_action_fired",
+        () -> FallbackActionTest::testFallbackStaysOutWhenARegularActionFired);
+    TEST_FUNCTIONS.register(
+        "fallback_runs_without_a_wait", () -> FallbackActionTest::testFallbackRunsWithoutAWait);
+    TEST_FUNCTIONS.register(
+        "fallback_runs_only_once", () -> FallbackActionTest::testFallbackRunsOnlyOnce);
+    TEST_FUNCTIONS.register(
+        "screen_action_without_a_player_is_skipped",
+        () -> FallbackActionTest::testScreenActionWithoutAPlayerIsSkipped);
+
+    TEST_FUNCTIONS.register(
+        "immovable_n_p_c_is_not_pushed", () -> ImmovableAttributeTest::testImmovableNPCIsNotPushed);
+    TEST_FUNCTIONS.register(
+        "immovable_n_p_c_loses_its_movement_objectives",
+        () -> ImmovableAttributeTest::testImmovableNPCLosesItsMovementObjectives);
+
+    TEST_FUNCTIONS.register(
+        "pause_and_resume_of_a_single_n_p_c", () -> PauseTest::testPauseAndResumeOfASingleNPC);
+    TEST_FUNCTIONS.register(
+        "paused_n_p_c_skips_its_base_tick", () -> PauseTest::testPausedNPCSkipsItsBaseTick);
+    TEST_FUNCTIONS.register(
+        "pause_survives_save_and_load", () -> PauseTest::testPauseSurvivesSaveAndLoad);
+    TEST_FUNCTIONS.register(
+        "global_pause_covers_every_n_p_c", () -> PauseTest::testGlobalPauseCoversEveryNPC);
+    TEST_FUNCTIONS.register(
+        "global_resume_keeps_individual_pause",
+        () -> PauseTest::testGlobalResumeKeepsIndividualPause);
+    TEST_FUNCTIONS.register(
+        "global_pause_ends_with_the_server", () -> PauseTest::testGlobalPauseEndsWithTheServer);
+
+    TEST_FUNCTIONS.register(
+        "idle_time_grows_while_the_player_stands_still",
+        () -> PlayerIdleTest::testIdleTimeGrowsWhileThePlayerStandsStill);
+    TEST_FUNCTIONS.register(
+        "movement_resets_the_idle_time", () -> PlayerIdleTest::testMovementResetsTheIdleTime);
+    TEST_FUNCTIONS.register(
+        "idle_time_of_an_unknown_player_is_zero",
+        () -> PlayerIdleTest::testIdleTimeOfAnUnknownPlayerIsZero);
+
+    TEST_FUNCTIONS.register(
+        "sound_action_plays_a_known_sound", () -> SoundActionTest::testSoundActionPlaysAKnownSound);
+    TEST_FUNCTIONS.register(
+        "sound_action_keeps_its_source_volume_and_pitch",
+        () -> SoundActionTest::testSoundActionKeepsItsSourceVolumeAndPitch);
+    TEST_FUNCTIONS.register(
+        "sound_action_without_a_valid_sound_is_skipped",
+        () -> SoundActionTest::testSoundActionWithoutAValidSoundIsSkipped);
+
+    TEST_FUNCTIONS.register(
+        "trade_actions_trigger_for_humanoid",
+        () -> TradingActionTest::testTradeActionsTriggerForHumanoid);
+    TEST_FUNCTIONS.register(
+        "trade_actions_trigger_for_villager",
+        () -> TradingActionTest::testTradeActionsTriggerForVillager);
+    TEST_FUNCTIONS.register(
+        "trade_actions_trigger_for_wandering_trader",
+        () -> TradingActionTest::testTradeActionsTriggerForWanderingTrader);
+
+    TEST_FUNCTIONS.register(
+        "wait_delays_the_following_actions",
+        () -> WaitActionTest::testWaitDelaysTheFollowingActions);
+    TEST_FUNCTIONS.register(
+        "remaining_wait_survives_save_and_load",
+        () -> WaitActionTest::testRemainingWaitSurvivesSaveAndLoad);
+    TEST_FUNCTIONS.register(
+        "second_trigger_is_discarded", () -> WaitActionTest::testSecondTriggerIsDiscarded);
+    TEST_FUNCTIONS.register(
+        "different_events_run_in_parallel", () -> WaitActionTest::testDifferentEventsRunInParallel);
+    TEST_FUNCTIONS.register(
+        "interval_set_with_wait_runs_in_order",
+        () -> WaitActionTest::testIntervalSetWithWaitRunsInOrder);
+    TEST_FUNCTIONS.register(
+        "interval_set_without_wait_picks_one_entry",
+        () -> WaitActionTest::testIntervalSetWithoutWaitPicksOneEntry);
+    TEST_FUNCTIONS.register(
+        "screen_action_is_kept_over_the_wait",
+        () -> WaitActionTest::testScreenActionIsKeptOverTheWait);
+    TEST_FUNCTIONS.register(
+        "fallback_runs_once_after_the_wait",
+        () -> WaitActionTest::testFallbackRunsOnceAfterTheWait);
+    TEST_FUNCTIONS.register(
+        "preset_import_cancels_the_chain", () -> WaitActionTest::testPresetImportCancelsTheChain);
+    TEST_FUNCTIONS.register(
+        "death_cancels_the_chain", () -> WaitActionTest::testDeathCancelsTheChain);
   }
 
   private ModGameTests() {}

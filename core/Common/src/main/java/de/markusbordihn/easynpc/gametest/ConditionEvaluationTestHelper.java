@@ -170,6 +170,32 @@ public class ConditionEvaluationTestHelper {
             ExecutionId.dialogButton(npcId, dialogId, otherButton.id())));
   }
 
+  public static void assertShortExecutionLimitIntervalsEnforced(GameTestHelper helper) {
+    ServerPlayer serverPlayer = GameTestHelpers.mockServerPlayer(helper, new Vec3(1, 2, 1));
+    UUID npcId = UUID.randomUUID();
+
+    for (DurationType durationType :
+        new DurationType[] {DurationType.PER_5_MINUTES, DurationType.PER_15_MINUTES}) {
+      ConditionDataEntry oncePerInterval =
+          new ConditionDataEntry(
+              ConditionType.EXECUTION_LIMIT, durationType, ConditionOperationType.NONE, "", 1);
+      Set<ConditionDataEntry> conditions = new LinkedHashSet<>();
+      conditions.add(oncePerInterval);
+      ExecutionId executionId = ExecutionId.action(npcId, UUID.randomUUID());
+
+      GameTestHelpers.assertTrue(
+          helper,
+          "The first execution of a " + durationType + " limit should be allowed",
+          ConditionManager.evaluateAll(conditions, serverPlayer, executionId));
+      ConditionManager.recordExecutions(conditions, serverPlayer, executionId);
+
+      GameTestHelpers.assertTrue(
+          helper,
+          "The second execution within the " + durationType + " window should be blocked",
+          !ConditionManager.evaluateAll(conditions, serverPlayer, executionId));
+    }
+  }
+
   public static void assertDefaultDialogExecutionLimitEnforced(
       GameTestHelper helper, EntityType<?> entityType) {
     ServerPlayer serverPlayer = GameTestHelpers.mockServerPlayer(helper, new Vec3(1, 2, 1));

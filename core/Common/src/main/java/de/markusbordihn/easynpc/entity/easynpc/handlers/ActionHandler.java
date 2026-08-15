@@ -26,8 +26,11 @@ import de.markusbordihn.easynpc.data.action.ActionDataEntry;
 import de.markusbordihn.easynpc.data.action.ActionDataSet;
 import de.markusbordihn.easynpc.data.action.ActionDataType;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
+import de.markusbordihn.easynpc.data.action.ActionExecutionState;
 import de.markusbordihn.easynpc.data.action.ActionGroup;
 import de.markusbordihn.easynpc.data.action.ActionManager;
+import de.markusbordihn.easynpc.data.action.PendingActionChain;
+import de.markusbordihn.easynpc.data.action.WaitDuration;
 import de.markusbordihn.easynpc.data.condition.ConditionType;
 import de.markusbordihn.easynpc.data.execution.ExecutionId;
 import de.markusbordihn.easynpc.data.status.StatusDataType;
@@ -46,6 +49,7 @@ import de.markusbordihn.easynpc.entity.easynpc.handlers.action.executor.MessageA
 import de.markusbordihn.easynpc.entity.easynpc.handlers.action.executor.ModelAnimationActionExecutor;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.action.executor.PoseActionExecutor;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.action.executor.ScoreboardActionExecutor;
+import de.markusbordihn.easynpc.entity.easynpc.handlers.action.executor.SoundActionExecutor;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.action.executor.StateActionExecutor;
 import de.markusbordihn.easynpc.handler.EnvironmentChangeTracker;
 import java.util.ArrayList;
@@ -102,6 +106,22 @@ public interface ActionHandler<E extends Mob> extends EasyNPC<E> {
     float baseTickPeriod = BaseTickHandler.BASE_TICK + 1.0F;
     return Math.max(
         0, Math.round(actionEventType.getIntervalSeconds() * 20.0F / baseTickPeriod) - 1);
+  }
+
+  private static boolean isScreenAction(ActionDataType actionDataType) {
+    return actionDataType == ActionDataType.OPEN_DEFAULT_DIALOG
+        || actionDataType == ActionDataType.OPEN_NAMED_DIALOG
+        || actionDataType == ActionDataType.OPEN_NAMED_DIALOG_CONDITIONAL
+        || actionDataType == ActionDataType.OPEN_TRADING_SCREEN;
+  }
+
+  private static boolean containsScreenAction(List<ActionDataEntry> actionDataEntries) {
+    for (ActionDataEntry actionDataEntry : actionDataEntries) {
+      if (isScreenAction(actionDataEntry.actionDataType())) {
+        return true;
+      }
+    }
+    return false;
   }
 
   default void checkTradingActions() {
@@ -297,6 +317,12 @@ public interface ActionHandler<E extends Mob> extends EasyNPC<E> {
     }
 
     ActionEventType actionEventType = actionContext.eventType();
+    if (actionEventType.allowsActionDataType(ActionDataType.WAIT)
+        && actionDataSet.hasActionDataType(ActionDataType.WAIT)) {
+      this.executeActions(actionDataSet, actionContext);
+      return;
+    }
+
     for (ServerPlayer serverPlayer : this.getInitiatorCandidates(actionContext)) {
       List<ActionDataEntry> candidates = new ArrayList<>();
       for (ActionDataEntry actionDataEntry : actionDataSet.getEntries()) {
@@ -406,51 +432,105 @@ public interface ActionHandler<E extends Mob> extends EasyNPC<E> {
       return;
     }
 
-    ServerPlayer serverPlayer = actionContext.initiator();
-    boolean anyRegularFired = false;
-    ActionDataEntry closeDialogAction = null;
-    boolean hasScreenAction = false;
-    for (ActionDataEntry actionDataEntry : actionDataSet.getEntries()) {
+    PendingActionHandler<E> pendingActionHandler = this.getEasyNPCPendingActionHandler();
+    if (pendingActionHandler != null
+        && actionDataSet.hasActionDataType(ActionDataType.WAIT)
+        && pendingActionHandler.hasPendingAction(
+            actionContext.eventType(), actionContext.sourceId())) {
+      log.debug(
+          "Ignoring {} actions of {} while a previous chain of the same event is still running.",
+          actionContext.eventType(),
+          this.getEntity());
+      return;
+    }
+
+    List<ActionDataEntry> mainActions = new ArrayList<>();
+    List<ActionDataEntry> fallbackActions = new ArrayList<>();
+    for (ActionDataEntry actionDataEntry : actionDataSet.getOrderedEntries()) {
       if (hasFallbackCondition(actionDataEntry)) {
+        fallbackActions.add(actionDataEntry);
+      } else {
+        mainActions.add(actionDataEntry);
+      }
+    }
+
+    this.executeActionSequence(
+        mainActions, fallbackActions, actionContext, ActionExecutionState.EMPTY);
+  }
+
+  default void executeActionSequence(
+      List<ActionDataEntry> remainingActions,
+      List<ActionDataEntry> fallbackActions,
+      ActionContext actionContext,
+      ActionExecutionState executionState) {
+    ActionExecutionState state =
+        this.executeActionPassOrPark(
+            remainingActions, fallbackActions, actionContext, executionState);
+    if (state == null || state.anyRegularFired() || fallbackActions.isEmpty()) {
+      return;
+    }
+
+    this.executeActionPassOrPark(
+        fallbackActions, List.of(), actionContext, ActionExecutionState.EMPTY);
+  }
+
+  private ActionExecutionState executeActionPassOrPark(
+      List<ActionDataEntry> actions,
+      List<ActionDataEntry> fallbackActions,
+      ActionContext actionContext,
+      ActionExecutionState executionState) {
+    ServerPlayer serverPlayer = actionContext.initiator();
+    ActionExecutionState state = executionState;
+
+    for (int position = 0; position < actions.size(); position++) {
+      ActionDataEntry actionDataEntry = actions.get(position);
+      ActionDataType actionType = actionDataEntry.actionDataType();
+      if (!actionContext.eventType().allowsActionDataType(actionType)) {
+        log.warn(
+            "Ignoring {} action of {}, which is not allowed for {}.",
+            actionType,
+            this.getEntity(),
+            actionContext.eventType());
         continue;
       }
 
       if (!this.validateActionData(actionDataEntry, serverPlayer)) {
         continue;
       }
-      anyRegularFired = true;
 
-      ActionDataType actionType = actionDataEntry.actionDataType();
-
-      if (actionType == ActionDataType.CLOSE_DIALOG) {
-        if (closeDialogAction == null) {
-          closeDialogAction = actionDataEntry;
-        } else {
-          log.warn("Multiple close dialog actions found in action data set {}!", actionDataSet);
+      if (actionType == ActionDataType.WAIT) {
+        if (this.parkActionSequence(
+            actionDataEntry,
+            actions.subList(position + 1, actions.size()),
+            fallbackActions,
+            actionContext,
+            state)) {
+          return null;
         }
         continue;
       }
 
-      if (actionType == ActionDataType.OPEN_DEFAULT_DIALOG
-          || actionType == ActionDataType.OPEN_NAMED_DIALOG
-          || actionType == ActionDataType.OPEN_NAMED_DIALOG_CONDITIONAL
-          || actionType == ActionDataType.OPEN_TRADING_SCREEN) {
-        if (hasScreenAction) {
+      state = state.withAnyRegularFired();
+
+      if (actionType == ActionDataType.CLOSE_DIALOG) {
+        if (state.hasDeferredCloseDialogAction()) {
+          log.warn("Multiple close dialog actions found in action data set {}!", actions);
+        } else {
+          state = state.withDeferredCloseDialogAction(actionDataEntry);
+        }
+        continue;
+      }
+
+      if (isScreenAction(actionType)) {
+        if (state.hasScreenAction()) {
           log.debug(
               "Ignoring {}. Multiple screen actions found in action data set {}! Only the first valid will be executed.",
               actionType,
-              actionDataSet);
+              actions);
           continue;
         }
 
-        if ((actionType == ActionDataType.OPEN_DEFAULT_DIALOG
-                && !this.getEasyNPCDialogData().hasDialog())
-            || ((actionType == ActionDataType.OPEN_NAMED_DIALOG
-                    || actionType == ActionDataType.OPEN_NAMED_DIALOG_CONDITIONAL)
-                && actionDataEntry.targetUUID() == null
-                && !this.getEasyNPCDialogData().hasDialog(actionDataEntry.command()))
-            || (actionType == ActionDataType.OPEN_TRADING_SCREEN
-                && !this.getEasyNPCTradingData().hasTradingData())) {
+        if (!this.hasScreenActionData(actionDataEntry)) {
           log.debug(
               "Ignoring {} action because no valid data are available: {}",
               actionType,
@@ -458,54 +538,77 @@ public interface ActionHandler<E extends Mob> extends EasyNPC<E> {
           continue;
         }
 
-        hasScreenAction = true;
+        state = state.withScreenAction();
       }
 
       this.executeAction(actionDataEntry, actionContext);
     }
 
-    if (closeDialogAction != null && !hasScreenAction) {
-      this.executeAction(closeDialogAction, actionContext);
+    if (state.hasDeferredCloseDialogAction() && !state.hasScreenAction()) {
+      this.executeAction(state.deferredCloseDialogAction(), actionContext);
+      state = state.withDeferredCloseDialogAction(null);
     }
 
-    if (!anyRegularFired) {
-      ActionDataEntry fallbackCloseDialogAction = null;
-      boolean hasFallbackScreenAction = false;
-      for (ActionDataEntry actionDataEntry : actionDataSet.getEntries()) {
-        if (!hasFallbackCondition(actionDataEntry)) {
-          continue;
-        }
+    return state;
+  }
 
-        if (!this.validateActionData(actionDataEntry, serverPlayer)) {
-          continue;
-        }
-
-        ActionDataType actionType = actionDataEntry.actionDataType();
-
-        if (actionType == ActionDataType.CLOSE_DIALOG) {
-          if (fallbackCloseDialogAction == null) {
-            fallbackCloseDialogAction = actionDataEntry;
-          }
-          continue;
-        }
-
-        if (actionType == ActionDataType.OPEN_DEFAULT_DIALOG
-            || actionType == ActionDataType.OPEN_NAMED_DIALOG
-            || actionType == ActionDataType.OPEN_NAMED_DIALOG_CONDITIONAL
-            || actionType == ActionDataType.OPEN_TRADING_SCREEN) {
-          if (hasFallbackScreenAction) {
-            continue;
-          }
-          hasFallbackScreenAction = true;
-        }
-
-        this.executeAction(actionDataEntry, actionContext);
-      }
-
-      if (fallbackCloseDialogAction != null && !hasFallbackScreenAction) {
-        this.executeAction(fallbackCloseDialogAction, actionContext);
-      }
+  private ActionExecutionState flushDeferredCloseDialog(
+      ActionExecutionState state,
+      List<ActionDataEntry> pendingActions,
+      List<ActionDataEntry> fallbackActions,
+      ActionContext actionContext) {
+    if (!state.hasDeferredCloseDialogAction()
+        || state.hasScreenAction()
+        || containsScreenAction(pendingActions)
+        || containsScreenAction(fallbackActions)) {
+      return state;
     }
+
+    this.executeAction(state.deferredCloseDialogAction(), actionContext);
+    return state.withDeferredCloseDialogAction(null);
+  }
+
+  private boolean parkActionSequence(
+      ActionDataEntry waitActionDataEntry,
+      List<ActionDataEntry> pendingActions,
+      List<ActionDataEntry> fallbackActions,
+      ActionContext actionContext,
+      ActionExecutionState state) {
+    PendingActionHandler<E> pendingActionHandler = this.getEasyNPCPendingActionHandler();
+    WaitDuration waitDuration = WaitDuration.parse(waitActionDataEntry.command());
+    if (pendingActionHandler == null || !waitDuration.isValid()) {
+      return false;
+    }
+
+    ActionExecutionState parkedState =
+        this.flushDeferredCloseDialog(state, pendingActions, fallbackActions, actionContext);
+    ServerPlayer serverPlayer = actionContext.initiator();
+    pendingActionHandler.schedulePendingAction(
+        new PendingActionChain(
+            actionContext.eventType(),
+            actionContext.sourceId(),
+            waitDuration.ticks(),
+            serverPlayer != null ? serverPlayer.getUUID() : null,
+            pendingActions,
+            fallbackActions,
+            parkedState));
+
+    return true;
+  }
+
+  private boolean hasScreenActionData(ActionDataEntry actionDataEntry) {
+    ActionDataType actionType = actionDataEntry.actionDataType();
+    if (actionType == ActionDataType.OPEN_DEFAULT_DIALOG) {
+      return this.getEasyNPCDialogData().hasDialog();
+    }
+
+    if (actionType == ActionDataType.OPEN_NAMED_DIALOG
+        || actionType == ActionDataType.OPEN_NAMED_DIALOG_CONDITIONAL) {
+      return actionDataEntry.targetUUID() != null
+          || this.getEasyNPCDialogData().hasDialog(actionDataEntry.command());
+    }
+
+    return this.getEasyNPCTradingData().hasTradingData();
   }
 
   default void executeAction(ActionDataEntry actionDataEntry, ServerPlayer serverPlayer) {
@@ -634,8 +737,13 @@ public interface ActionHandler<E extends Mob> extends EasyNPC<E> {
       case MESSAGE:
         MessageActionExecutor.execute(actionDataEntry, this, actionContext);
         break;
+      case SOUND:
+        SoundActionExecutor.play(actionDataEntry, this);
+        break;
       case CUSTOM:
         CustomActionDispatcher.execute(actionDataEntry, this, actionContext);
+        break;
+      case WAIT:
         break;
       default:
         log.warn(

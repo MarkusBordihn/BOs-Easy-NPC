@@ -20,11 +20,15 @@
 package de.markusbordihn.easynpc.server.commands;
 
 import com.mojang.brigadier.arguments.FloatArgumentType;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import de.markusbordihn.easynpc.api.animation.ModelAnimationAPI;
 import de.markusbordihn.easynpc.commands.Command;
 import de.markusbordihn.easynpc.commands.arguments.EasyNPCArgument;
+import de.markusbordihn.easynpc.data.model.ModelAnimationPlayback;
 import de.markusbordihn.easynpc.data.model.ModelAnimationPlaybackMode;
 import de.markusbordihn.easynpc.data.model.ModelAnimationSwitchTiming;
 import de.markusbordihn.easynpc.data.model.ModelAnimationTransition;
@@ -41,6 +45,10 @@ public final class AnimationCommand extends Command {
   private static final String MODE_ARG = "mode";
   private static final String TIMING_ARG = "timing";
   private static final String BLEND_TICKS_ARG = "blend_ticks";
+  private static final String REPEAT_COUNT_ARG = "repeat_count";
+  private static final String DURATION_TICKS_ARG = "duration_ticks";
+  private static final String[] MODE_SUGGESTIONS = {"once", "loop", "repeat"};
+  private static final String[] TIMING_SUGGESTIONS = {"immediate", "after_current"};
 
   private AnimationCommand() {}
 
@@ -71,72 +79,34 @@ public final class AnimationCommand extends Command {
                             ModelAnimationAPI.standardAnimations().stream()
                                 .sorted(Comparator.naturalOrder()),
                             builder))
-                .executes(
-                    context ->
-                        play(
-                            context.getSource(),
-                            EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG),
-                            StringArgumentType.getString(context, ANIMATION_ARG),
-                            ModelAnimationPlaybackMode.ONCE,
-                            ModelAnimationTransition.DEFAULT))
+                .executes(AnimationCommand::play)
                 .then(
                     Commands.argument(MODE_ARG, StringArgumentType.word())
                         .suggests(
                             (context, builder) ->
-                                SharedSuggestionProvider.suggest(
-                                    new String[] {"once", "loop"}, builder))
-                        .executes(
-                            context ->
-                                play(
-                                    context.getSource(),
-                                    EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG),
-                                    StringArgumentType.getString(context, ANIMATION_ARG),
-                                    playbackMode(
-                                        context.getSource(),
-                                        StringArgumentType.getString(context, MODE_ARG)),
-                                    ModelAnimationTransition.DEFAULT))
+                                SharedSuggestionProvider.suggest(MODE_SUGGESTIONS, builder))
+                        .executes(AnimationCommand::play)
                         .then(
                             Commands.argument(TIMING_ARG, StringArgumentType.word())
                                 .suggests(
                                     (context, builder) ->
                                         SharedSuggestionProvider.suggest(
-                                            new String[] {"immediate", "after_current"}, builder))
-                                .executes(
-                                    context ->
-                                        play(
-                                            context.getSource(),
-                                            EasyNPCArgument.getEntityWithAccess(
-                                                context, NPC_TARGET_ARG),
-                                            StringArgumentType.getString(context, ANIMATION_ARG),
-                                            playbackMode(
-                                                context.getSource(),
-                                                StringArgumentType.getString(context, MODE_ARG)),
-                                            transition(
-                                                context.getSource(),
-                                                StringArgumentType.getString(context, TIMING_ARG),
-                                                ModelAnimationTransition
-                                                    .DEFAULT_BLEND_DURATION_TICKS)))
+                                            TIMING_SUGGESTIONS, builder))
+                                .executes(AnimationCommand::play)
                                 .then(
                                     Commands.argument(
                                             BLEND_TICKS_ARG, FloatArgumentType.floatArg(0.0F))
-                                        .executes(
-                                            context ->
-                                                play(
-                                                    context.getSource(),
-                                                    EasyNPCArgument.getEntityWithAccess(
-                                                        context, NPC_TARGET_ARG),
-                                                    StringArgumentType.getString(
-                                                        context, ANIMATION_ARG),
-                                                    playbackMode(
-                                                        context.getSource(),
-                                                        StringArgumentType.getString(
-                                                            context, MODE_ARG)),
-                                                    transition(
-                                                        context.getSource(),
-                                                        StringArgumentType.getString(
-                                                            context, TIMING_ARG),
-                                                        FloatArgumentType.getFloat(
-                                                            context, BLEND_TICKS_ARG))))))));
+                                        .executes(AnimationCommand::play)
+                                        .then(
+                                            Commands.argument(
+                                                    REPEAT_COUNT_ARG,
+                                                    IntegerArgumentType.integer(1))
+                                                .executes(AnimationCommand::play)
+                                                .then(
+                                                    Commands.argument(
+                                                            DURATION_TICKS_ARG,
+                                                            FloatArgumentType.floatArg(0.0F))
+                                                        .executes(AnimationCommand::play)))))));
   }
 
   private static ArgumentBuilder<CommandSourceStack, ?> stopArguments() {
@@ -151,8 +121,7 @@ public final class AnimationCommand extends Command {
             Commands.argument(TIMING_ARG, StringArgumentType.word())
                 .suggests(
                     (context, builder) ->
-                        SharedSuggestionProvider.suggest(
-                            new String[] {"immediate", "after_current"}, builder))
+                        SharedSuggestionProvider.suggest(TIMING_SUGGESTIONS, builder))
                 .executes(
                     context ->
                         stop(
@@ -195,21 +164,53 @@ public final class AnimationCommand extends Command {
     }
   }
 
-  private static int play(
-      CommandSourceStack context,
-      EasyNPC<?> easyNPC,
-      String animationName,
-      ModelAnimationPlaybackMode playbackMode,
-      ModelAnimationTransition transition) {
+  private static int play(CommandContext<CommandSourceStack> context)
+      throws CommandSyntaxException {
+    CommandSourceStack source = context.getSource();
+    ModelAnimationPlaybackMode playbackMode =
+        playbackMode(source, optionalArgument(context, MODE_ARG, String.class, "once"));
+    ModelAnimationTransition transition =
+        transition(
+            source,
+            optionalArgument(context, TIMING_ARG, String.class, "immediate"),
+            optionalArgument(
+                context,
+                BLEND_TICKS_ARG,
+                Float.class,
+                ModelAnimationTransition.DEFAULT_BLEND_DURATION_TICKS));
     if (playbackMode == null || transition == null) {
       return FAILURE;
     }
 
-    if (!ModelAnimationAPI.playAnimation(easyNPC, animationName, playbackMode, transition)) {
-      return sendFailureMessage(context, "Unable to play animation for " + easyNPC);
+    ModelAnimationPlayback playback =
+        new ModelAnimationPlayback(
+            playbackMode,
+            optionalArgument(
+                context,
+                REPEAT_COUNT_ARG,
+                Integer.class,
+                ModelAnimationPlayback.DEFAULT_REPEAT_COUNT),
+            optionalArgument(
+                context,
+                DURATION_TICKS_ARG,
+                Float.class,
+                ModelAnimationPlayback.UNLIMITED_DURATION_TICKS));
+    EasyNPC<?> easyNPC = EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG);
+    String animationName = StringArgumentType.getString(context, ANIMATION_ARG);
+    if (!ModelAnimationAPI.playAnimation(easyNPC, animationName, playback, transition)) {
+      return sendFailureMessage(source, "Unable to play animation for " + easyNPC);
     }
 
-    return sendSuccessMessage(context, "Playing animation " + animationName + " for " + easyNPC);
+    return sendSuccessMessage(source, "Playing animation " + animationName + " for " + easyNPC);
+  }
+
+  private static <T> T optionalArgument(
+      CommandContext<CommandSourceStack> context, String name, Class<T> type, T fallbackValue) {
+    try {
+      return context.getArgument(name, type);
+    } catch (IllegalArgumentException exception) {
+      return fallbackValue;
+    }
   }
 
   private static int stop(

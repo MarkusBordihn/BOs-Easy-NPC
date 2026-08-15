@@ -51,8 +51,11 @@ public class EasyNPCLivingEntityRenderer {
       int packedLight) {}
 
   public static void handleScale(LivingEntityRenderState renderState, PoseStack poseStack) {
-    EasyNPC<?> easyNPC = getEasyNPC(renderState);
-    if (easyNPC == null) {
+    handleScale(getEasyNPC(renderState), poseStack);
+  }
+
+  public static void handleScale(EasyNPC<?> easyNPC, PoseStack poseStack) {
+    if (easyNPC == null || poseStack == null) {
       return;
     }
 
