@@ -34,7 +34,7 @@ public class SkeletonRawRenderer extends SkeletonRenderer implements EasyNPCEnti
 
   public SkeletonRawRenderer(EntityRendererProvider.Context context) {
     super(context);
-    this.addLayer(new SkullHeadRenderLayer<>(this));
+    this.addLayer(new SkullHeadRenderLayer<>(this, context.getItemInHandRenderer()));
   }
 
   @Override

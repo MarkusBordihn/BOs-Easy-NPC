@@ -28,6 +28,7 @@ import de.markusbordihn.easynpc.data.preset.PresetDataUtils;
 import de.markusbordihn.easynpc.data.sound.SoundType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.DialogDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.NavigationDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.SoundDataCapable;
 import de.markusbordihn.easynpc.handler.PresetHandler;
 import java.util.List;
@@ -80,6 +81,22 @@ public class PresetSpawnTestHelper {
     assertSpawnKeepsConfigurationAndDefaults(helper, entityType, presetData, "spawner");
   }
 
+  public static void assertPresetImportSetsHome(GameTestHelper helper, EntityType<?> entityType) {
+    PresetData presetData = createCompactPreset(helper, entityType);
+    BlockPos spawnPosition = helper.absolutePos(SPAWN_POSITION);
+    Vec3 spawnLocation = Vec3.atBottomCenterOf(spawnPosition);
+
+    GameTestHelpers.assertTrue(
+        helper,
+        "Importing a preset must spawn an NPC",
+        PresetHandler.importPreset(helper.getLevel(), presetData, spawnLocation, null, null));
+
+    Mob spawnedEntity = findSpawnedNPC(helper, entityType, spawnPosition);
+    GameTestHelpers.assertNotNull(helper, "The imported preset must spawn its NPC", spawnedEntity);
+    assertHomePosition(helper, (EasyNPC<?>) spawnedEntity, spawnPosition, "imported preset");
+    spawnedEntity.discard();
+  }
+
   private static PresetData createCompactPreset(GameTestHelper helper, EntityType<?> entityType) {
     EasyNPC<?> sourceNPC = GameTestHelpers.mockEasyNPC(helper, entityType, SOURCE_NPC_POSITION);
     sourceNPC.registerEasyNPCDefaultData();
@@ -114,6 +131,7 @@ public class PresetSpawnTestHelper {
         helper, "The " + spawnSource + " must spawn the configured NPC", spawnedEntity);
 
     EasyNPC<?> spawnedNPC = (EasyNPC<?>) spawnedEntity;
+    assertHomePosition(helper, spawnedNPC, spawnPosition, spawnSource);
     GameTestHelpers.assertNotNull(
         helper,
         "The NPC of the " + spawnSource + " must keep its objective",
@@ -138,6 +156,15 @@ public class PresetSpawnTestHelper {
         spawnedEntity.isAlive() && spawnedEntity.getHealth() == spawnedEntity.getMaxHealth());
 
     spawnedEntity.discard();
+  }
+
+  private static void assertHomePosition(
+      GameTestHelper helper, EasyNPC<?> easyNPC, BlockPos expectedPosition, String spawnSource) {
+    NavigationDataCapable<?> navigationData = easyNPC.getEasyNPCNavigationData();
+    GameTestHelpers.assertTrue(
+        helper,
+        "The NPC of the " + spawnSource + " must use its spawn position as home",
+        navigationData != null && expectedPosition.equals(navigationData.getHomePosition()));
   }
 
   private static Mob findSpawnedNPC(

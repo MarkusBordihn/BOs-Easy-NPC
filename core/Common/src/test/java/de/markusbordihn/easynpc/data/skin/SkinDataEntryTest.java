@@ -21,11 +21,13 @@ package de.markusbordihn.easynpc.data.skin;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import de.markusbordihn.easynpc.Constants;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -79,6 +81,27 @@ class SkinDataEntryTest {
     assertEquals(SKIN_URL, skinDataEntry.url());
     assertEquals(remoteSkin.uuid(), skinDataEntry.uuid());
     assertEquals(SkinType.SECURE_REMOTE_URL, skinDataEntry.type());
+  }
+
+  @Test
+  @DisplayName("A resource location skin survives a round trip")
+  void testResourceLocationSkinSurvivesRoundTrip() {
+    ResourceLocation texture = new ResourceLocation("example", "textures/entity/npc.png");
+
+    SkinDataEntry skinDataEntry =
+        new SkinDataEntry(SkinDataEntry.createResourceLocationSkin(texture).createTag());
+
+    assertEquals(texture, skinDataEntry.texture());
+    assertEquals(SkinType.RESOURCE_LOCATION, skinDataEntry.type());
+  }
+
+  @Test
+  @DisplayName("An invalid texture location is ignored")
+  void testInvalidTextureLocationIsIgnored() {
+    CompoundTag compoundTag = new SkinDataEntry().createTag();
+    compoundTag.putString(SkinDataEntry.DATA_TEXTURE_TAG, "Invalid Texture Location");
+
+    assertNull(new SkinDataEntry(compoundTag).texture());
   }
 
   @Test

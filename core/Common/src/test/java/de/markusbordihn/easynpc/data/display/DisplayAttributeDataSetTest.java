@@ -26,6 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.EnumMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -89,5 +90,31 @@ class DisplayAttributeDataSetTest {
 
     assertFalse(reloadedDataSet.getAttribute(DisplayAttributeType.VISIBLE_AT_NIGHT).booleanValue());
     assertTrue(reloadedDataSet.getAttribute(DisplayAttributeType.VISIBLE_AT_DAY).booleanValue());
+  }
+
+  @Test
+  @DisplayName("A fully transparent opacity survives a save and reload cycle")
+  void fullyTransparentOpacitySurvivesSaveAndReload() {
+    DisplayAttributeDataSet dataSet =
+        DisplayAttributeDataSet.createDefault()
+            .withAttribute(
+                DisplayAttributeType.OPACITY,
+                new DisplayAttributeEntry(DisplayAttributeType.MIN_OPACITY));
+
+    DisplayAttributeDataSet reloadedDataSet = new DisplayAttributeDataSet(dataSet.save());
+
+    assertEquals(
+        DisplayAttributeType.MIN_OPACITY,
+        reloadedDataSet.getAttribute(DisplayAttributeType.OPACITY).intValue());
+  }
+
+  @Test
+  @DisplayName("An unchanged data set keeps the default opacity out of the saved tag")
+  void unchangedDataSetKeepsTheDefaultOpacityOutOfTheSavedTag() {
+    for (Tag entry : DisplayAttributeDataSet.createDefault().save()) {
+      assertFalse(
+          DisplayAttributeType.OPACITY.name().equals(((CompoundTag) entry).getString("Type")),
+          "A default opacity must not be written");
+    }
   }
 }

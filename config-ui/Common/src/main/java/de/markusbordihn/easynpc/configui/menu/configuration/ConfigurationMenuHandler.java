@@ -278,7 +278,7 @@ public class ConfigurationMenuHandler {
             ConfigurationType.CUSTOM_PRESET_EXPORT,
             ConfigurationType.WORLD_PRESET_EXPORT);
       }
-      case SKIN, NONE_SKIN, DEFAULT_SKIN, PLAYER_SKIN, CUSTOM_SKIN, URL_SKIN -> {
+      case SKIN, ADVANCED_SKIN, DEFAULT_SKIN, PLAYER_SKIN, CUSTOM_SKIN, URL_SKIN -> {
         addBlockedConfigurationsForTypes(
             additionalSyncData, serverPlayer, easyNPC, ConfigurationType.URL_SKIN);
       }

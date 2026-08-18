@@ -68,13 +68,19 @@ public class EntityConfigScreenRenderer extends EntityScreenRenderer {
     }
 
     SkinDataCapable<?> skinData = easyNPC.getEasyNPCSkinData();
-    if (skinData != null && (overrides.skinType() != null || overrides.skinUUID() != null)) {
+    if (skinData != null
+        && (overrides.skinType() != null
+            || overrides.skinUUID() != null
+            || overrides.skinTexture() != null)) {
       SkinDataEntry skinDataEntry = skinData.getSkinDataEntry();
       if (overrides.skinType() != null) {
         skinDataEntry = skinDataEntry.withType(overrides.skinType());
       }
       if (overrides.skinUUID() != null) {
         skinDataEntry = skinDataEntry.withUUID(overrides.skinUUID());
+      }
+      if (overrides.skinTexture() != null) {
+        skinDataEntry = skinDataEntry.withTexture(overrides.skinTexture());
       }
       skinData.setSkinDataEntry(skinDataEntry);
     }

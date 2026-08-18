@@ -34,7 +34,7 @@ public class DrownedRawRenderer extends DrownedRenderer implements EasyNPCEntity
 
   public DrownedRawRenderer(EntityRendererProvider.Context context) {
     super(context);
-    this.addLayer(new SkullHeadRenderLayer<>(this));
+    this.addLayer(new SkullHeadRenderLayer<>(this, context.getItemInHandRenderer()));
   }
 
   @Override

@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.data.preset;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.data.NavigationDataCapable;
 import de.markusbordihn.easynpc.security.SecurityManager;
 import java.util.Optional;
 import net.minecraft.core.BlockPos;
@@ -197,6 +198,12 @@ public class PresetDataUtils {
       entity.load(entityData);
     }
     entity.moveTo(blockPos.getX() + 0.5, blockPos.getY(), blockPos.getZ() + 0.5);
+    if (entity instanceof EasyNPC<?> easyNPC) {
+      NavigationDataCapable<?> navigationData = easyNPC.getEasyNPCNavigationData();
+      if (navigationData != null) {
+        navigationData.setHomePositionIfMissing(blockPos);
+      }
+    }
 
     if (entity instanceof LivingEntity livingEntity) {
       float maxHealth =

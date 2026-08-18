@@ -65,6 +65,8 @@ public class DisplayAttributeConfigurationScreen<T extends ConfigurationMenu>
 
   private EditBox lightLevelBox;
   private Button lightLevelSaveButton;
+  private EditBox opacityBox;
+  private Button opacitySaveButton;
   private PreviewTime previewTime = PreviewTime.DAY;
 
   public DisplayAttributeConfigurationScreen(T menu, Inventory inventory, Component component) {
@@ -121,6 +123,43 @@ public class DisplayAttributeConfigurationScreen<T extends ConfigurationMenu>
                   }
                 }));
     this.lightLevelSaveButton.active = false;
+
+    this.opacityBox =
+        this.addRenderableWidget(
+            new TextField(
+                this.font,
+                secondButtonRow + 100,
+                this.buttonTopPos + 25,
+                24,
+                displayAttributeData.getDisplayIntAttribute(DisplayAttributeType.OPACITY),
+                3));
+    this.opacityBox.setResponder(
+        value -> {
+          if (this.opacitySaveButton != null) {
+            this.opacitySaveButton.active =
+                ValueUtils.isNumericValue(
+                        value, DisplayAttributeType.MIN_OPACITY, DisplayAttributeType.MAX_OPACITY)
+                    && ValueUtils.getIntValue(value)
+                        != this.getEasyNPC()
+                            .getEasyNPCDisplayAttributeData()
+                            .getDisplayIntAttribute(DisplayAttributeType.OPACITY);
+          }
+        });
+    this.opacitySaveButton =
+        this.addRenderableWidget(
+            new SaveButton(
+                this.opacityBox.getX() + this.opacityBox.getWidth() + 2,
+                this.opacityBox.getY() - 1,
+                onPress -> {
+                  int opacity = Integer.parseInt(this.opacityBox.getValue());
+                  if (opacity >= DisplayAttributeType.MIN_OPACITY
+                      && opacity <= DisplayAttributeType.MAX_OPACITY) {
+                    NetworkMessageHandlerManager.getServerHandler()
+                        .changeDisplayAttribute(
+                            this.getEasyNPCUUID(), DisplayAttributeType.OPACITY, opacity);
+                  }
+                }));
+    this.opacitySaveButton.active = false;
 
     // Main is visible attribute
     Checkbox isVisibleCheckbox =
@@ -245,6 +284,15 @@ public class DisplayAttributeConfigurationScreen<T extends ConfigurationMenu>
           "light_level",
           this.lightLevelBox.getX() - 100,
           this.lightLevelBox.getY() + 4);
+    }
+
+    if (this.opacityBox != null) {
+      Text.drawConfigString(
+          guiGraphics,
+          this.font,
+          "opacity",
+          this.opacityBox.getX() - 100,
+          this.opacityBox.getY() + 4);
     }
 
     // Calculate section positions

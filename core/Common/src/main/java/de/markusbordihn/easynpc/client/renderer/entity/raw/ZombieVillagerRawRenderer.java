@@ -36,7 +36,7 @@ public class ZombieVillagerRawRenderer extends ZombieVillagerRenderer
 
   public ZombieVillagerRawRenderer(EntityRendererProvider.Context context) {
     super(context);
-    this.addLayer(new SkullHeadRenderLayer<>(this));
+    this.addLayer(new SkullHeadRenderLayer<>(this, context.getItemInHandRenderer()));
   }
 
   @Override

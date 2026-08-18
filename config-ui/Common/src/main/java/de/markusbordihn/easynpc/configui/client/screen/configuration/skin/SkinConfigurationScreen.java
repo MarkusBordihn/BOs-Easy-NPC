@@ -41,7 +41,7 @@ public class SkinConfigurationScreen<T extends ConfigurationMenu> extends Config
   protected static int nextTextureSkinLocationChange =
       (int) java.time.Instant.now().getEpochSecond();
   protected static int nextSkinReload = (int) java.time.Instant.now().getEpochSecond();
-  protected Button noneSkinButton = null;
+  protected Button advancedSkinButton = null;
   protected Button customSkinButton = null;
   protected Button defaultSkinButton = null;
   protected Button playerSkinButton = null;
@@ -97,20 +97,10 @@ public class SkinConfigurationScreen<T extends ConfigurationMenu> extends Config
     super.init();
 
     // Skin Types
-    this.noneSkinButton =
-        this.addRenderableWidget(
-            new TextButton(
-                this.buttonLeftPos,
-                this.buttonTopPos,
-                44,
-                "disable_skin",
-                onPress ->
-                    NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(this.getEasyNPCUUID(), ConfigurationType.NONE_SKIN)));
     this.defaultSkinButton =
         this.addRenderableWidget(
             new TextButton(
-                this.noneSkinButton.getX() + this.noneSkinButton.getWidth(),
+                this.buttonLeftPos,
                 this.buttonTopPos,
                 64,
                 "default",
@@ -147,6 +137,17 @@ public class SkinConfigurationScreen<T extends ConfigurationMenu> extends Config
                 onPress ->
                     NetworkMessageHandlerManager.getServerHandler()
                         .openConfiguration(this.getEasyNPCUUID(), ConfigurationType.CUSTOM_SKIN)));
+    this.advancedSkinButton =
+        this.addRenderableWidget(
+            new TextButton(
+                this.customSkinButton.getX() + this.customSkinButton.getWidth(),
+                this.buttonTopPos,
+                56,
+                "advanced_skin",
+                onPress ->
+                    NetworkMessageHandlerManager.getServerHandler()
+                        .openConfiguration(
+                            this.getEasyNPCUUID(), ConfigurationType.ADVANCED_SKIN)));
 
     // Clear former error messages, if any.
     TextureManager.clearLastErrorMessage();
@@ -158,6 +159,7 @@ public class SkinConfigurationScreen<T extends ConfigurationMenu> extends Config
     if (!configurationData.supportsConfigurationType(ConfigurationType.PLAYER_SKIN)) {
       this.urlSkinButton.setX(this.defaultSkinButton.getX() + this.defaultSkinButton.getWidth());
       this.customSkinButton.setX(this.urlSkinButton.getX() + this.urlSkinButton.getWidth());
+      this.advancedSkinButton.setX(this.customSkinButton.getX() + this.customSkinButton.getWidth());
       this.playerSkinButton.visible = false;
     }
   }
@@ -170,9 +172,9 @@ public class SkinConfigurationScreen<T extends ConfigurationMenu> extends Config
     this.defaultSkinButton.active =
         configurationData.supportsConfigurationType(ConfigurationType.SKIN)
             && configurationData.supportsConfigurationType(ConfigurationType.DEFAULT_SKIN);
-    this.noneSkinButton.active =
+    this.advancedSkinButton.active =
         configurationData.supportsConfigurationType(ConfigurationType.SKIN)
-            && configurationData.supportsConfigurationType(ConfigurationType.NONE_SKIN);
+            && configurationData.supportsConfigurationType(ConfigurationType.ADVANCED_SKIN);
     this.playerSkinButton.active =
         configurationData.supportsConfigurationType(ConfigurationType.SKIN)
             && configurationData.supportsConfigurationType(ConfigurationType.PLAYER_SKIN);

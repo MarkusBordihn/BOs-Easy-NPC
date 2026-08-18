@@ -59,9 +59,9 @@ import de.markusbordihn.easynpc.configui.client.screen.configuration.preset.Impo
 import de.markusbordihn.easynpc.configui.client.screen.configuration.preset.ImportWorldPresetConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.rotation.DefaultRotationConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.scaling.ScalingConfigurationScreenWrapper;
+import de.markusbordihn.easynpc.configui.client.screen.configuration.skin.AdvancedSkinConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.skin.CustomSkinConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.skin.DefaultSkinConfigurationScreenWrapper;
-import de.markusbordihn.easynpc.configui.client.screen.configuration.skin.NoneSkinConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.skin.PlayerSkinConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.skin.UrlSkinConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.trading.AdvancedTradingConfigurationContainerScreenWrapper;
@@ -216,7 +216,7 @@ public class ClientScreens {
     MenuScreens.register(
         ModMenuTypes.NONE_DIALOG_CONFIGURATION_MENU, NoneDialogConfigurationScreenWrapper::new);
     MenuScreens.register(
-        ModMenuTypes.NONE_SKIN_CONFIGURATION_MENU, NoneSkinConfigurationScreenWrapper::new);
+        ModMenuTypes.ADVANCED_SKIN_CONFIGURATION_MENU, AdvancedSkinConfigurationScreenWrapper::new);
     MenuScreens.register(
         ModMenuTypes.NONE_TRADING_CONFIGURATION_MENU,
         NoneTradingConfigurationContainerScreenWrapper::new);

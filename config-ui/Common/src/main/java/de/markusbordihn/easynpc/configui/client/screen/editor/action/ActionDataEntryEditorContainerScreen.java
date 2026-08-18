@@ -37,7 +37,9 @@ import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.Custo
 import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.InteractBlockEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.MessageActionEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.ModelAnimationActionEntry;
+import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.MoveActionEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.NpcStateEntry;
+import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.OpacityActionEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.OpenDefaultDialogEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.OpenNamedDialogEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.action.entry.OpenTradingScreenEntry;
@@ -472,6 +474,16 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
       case WAIT:
         this.actionEntryWidget =
             new WaitActionEntry(this.actionDataEntry, this.actionDataSet, this);
+        break;
+      case MOVE_TO:
+      case MOVE_TO_AND_WAIT:
+        this.actionEntryWidget =
+            new MoveActionEntry(
+                this.actionDataEntry, this.actionDataSet, this, this.actionDataType);
+        break;
+      case SET_OPACITY:
+        this.actionEntryWidget =
+            new OpacityActionEntry(this.actionDataEntry, this.actionDataSet, this);
         break;
       case CUSTOM:
         this.actionEntryWidget =

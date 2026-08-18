@@ -42,6 +42,7 @@ import de.markusbordihn.easymodelentities.api.data.client.EasyModelPartTransform
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.api.texture.ModelTextureAPI;
 import de.markusbordihn.easynpc.client.model.custom.DopplerModel;
+import de.markusbordihn.easynpc.client.renderer.OpacityBufferSource;
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.SpeechBubbleRenderer;
 import de.markusbordihn.easynpc.client.renderer.manager.EntityTypeManager;
@@ -411,12 +412,14 @@ public class EasyModelNPCRenderer<E extends PathfinderMob>
     }
 
     float bodyYaw = Mth.rotLerp(partialTicks, entity.yBodyRotO, entity.yBodyRot);
+    MultiBufferSource entityBuffer = OpacityBufferSource.wrapIfNeeded(entity, buffer);
 
     try {
       boolean rendered;
       if (IntegrationRegistry.isGuiPreviewMode()) {
         rendered =
-            renderPreview(easyModelNPC, entity, profileId, bodyYaw, poseStack, buffer, packedLight);
+            renderPreview(
+                easyModelNPC, entity, profileId, bodyYaw, poseStack, entityBuffer, packedLight);
       } else {
         rendered =
             renderInWorld(
@@ -426,7 +429,7 @@ public class EasyModelNPCRenderer<E extends PathfinderMob>
                 bodyYaw,
                 partialTicks,
                 poseStack,
-                buffer,
+                entityBuffer,
                 packedLight);
       }
 

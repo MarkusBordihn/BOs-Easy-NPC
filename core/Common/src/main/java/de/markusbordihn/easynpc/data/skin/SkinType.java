@@ -27,6 +27,7 @@ public enum SkinType {
   INSECURE_REMOTE_URL,
   NONE,
   PLAYER_SKIN,
+  RESOURCE_LOCATION,
   SECURE_REMOTE_URL;
 
   public static SkinType get(String skinType) {

@@ -25,6 +25,7 @@ import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.data.scale.CustomScale;
 import de.markusbordihn.easynpc.data.skin.SkinType;
 import java.util.UUID;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Pose;
 
@@ -39,12 +40,13 @@ public record EntityRenderOverrides(
     EntityType<?> renderEntityType,
     SkinType skinType,
     UUID skinUUID,
+    ResourceLocation skinTexture,
     Enum<?> variant,
     Profession profession) {
 
   public static final EntityRenderOverrides NONE =
       new EntityRenderOverrides(
-          null, null, null, null, null, null, null, null, null, null, null, null);
+          null, null, null, null, null, null, null, null, null, null, null, null, null);
 
   public static final EntityRenderOverrides HIDE_NAME_TAG = NONE.withHideNameTag(true);
 
@@ -57,6 +59,12 @@ public record EntityRenderOverrides(
 
   public static EntityRenderOverrides withSkin(SkinType skinType, UUID skinUUID) {
     return HIDE_NAME_TAG_RESET_ROOT.withSkinType(skinType).withSkinUUID(skinUUID);
+  }
+
+  public static EntityRenderOverrides withTexture(ResourceLocation skinTexture) {
+    return HIDE_NAME_TAG_RESET_ROOT
+        .withSkinType(SkinType.RESOURCE_LOCATION)
+        .withSkinTexture(skinTexture);
   }
 
   public static EntityRenderOverrides withVariant(Enum<?> variant, Profession profession) {
@@ -87,6 +95,7 @@ public record EntityRenderOverrides(
         this.renderEntityType,
         this.skinType,
         this.skinUUID,
+        this.skinTexture,
         this.variant,
         this.profession);
   }
@@ -103,6 +112,7 @@ public record EntityRenderOverrides(
         this.renderEntityType,
         this.skinType,
         this.skinUUID,
+        this.skinTexture,
         this.variant,
         this.profession);
   }
@@ -119,6 +129,7 @@ public record EntityRenderOverrides(
         this.renderEntityType,
         this.skinType,
         this.skinUUID,
+        this.skinTexture,
         this.variant,
         this.profession);
   }
@@ -135,6 +146,7 @@ public record EntityRenderOverrides(
         this.renderEntityType,
         this.skinType,
         this.skinUUID,
+        this.skinTexture,
         this.variant,
         this.profession);
   }
@@ -151,6 +163,7 @@ public record EntityRenderOverrides(
         this.renderEntityType,
         this.skinType,
         this.skinUUID,
+        this.skinTexture,
         this.variant,
         this.profession);
   }
@@ -167,6 +180,7 @@ public record EntityRenderOverrides(
         this.renderEntityType,
         this.skinType,
         this.skinUUID,
+        this.skinTexture,
         this.variant,
         this.profession);
   }
@@ -183,6 +197,7 @@ public record EntityRenderOverrides(
         entityType,
         this.skinType,
         this.skinUUID,
+        this.skinTexture,
         this.variant,
         this.profession);
   }
@@ -199,6 +214,7 @@ public record EntityRenderOverrides(
         this.renderEntityType,
         skinType,
         this.skinUUID,
+        this.skinTexture,
         this.variant,
         this.profession);
   }
@@ -215,6 +231,24 @@ public record EntityRenderOverrides(
         this.renderEntityType,
         this.skinType,
         skinUUID,
+        this.skinTexture,
+        this.variant,
+        this.profession);
+  }
+
+  public EntityRenderOverrides withSkinTexture(ResourceLocation skinTexture) {
+    return new EntityRenderOverrides(
+        this.rootRotation,
+        this.rootScale,
+        this.modelPose,
+        this.entityPose,
+        this.invisible,
+        this.hideNameTag,
+        this.renderType,
+        this.renderEntityType,
+        this.skinType,
+        this.skinUUID,
+        skinTexture,
         this.variant,
         this.profession);
   }
@@ -231,6 +265,7 @@ public record EntityRenderOverrides(
         this.renderEntityType,
         this.skinType,
         this.skinUUID,
+        this.skinTexture,
         variant,
         this.profession);
   }
@@ -247,6 +282,7 @@ public record EntityRenderOverrides(
         this.renderEntityType,
         this.skinType,
         this.skinUUID,
+        this.skinTexture,
         this.variant,
         profession);
   }

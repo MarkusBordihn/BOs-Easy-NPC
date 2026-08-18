@@ -70,8 +70,12 @@ public class PendingActionSet {
     this.chains.put(chainKey, pendingActionChain);
   }
 
+  public PendingActionChain remove(ActionEventType actionEventType, ResourceLocation sourceId) {
+    return this.chains.remove(chainKey(actionEventType, sourceId));
+  }
+
   public void cancel(ActionEventType actionEventType, ResourceLocation sourceId) {
-    this.chains.remove(chainKey(actionEventType, sourceId));
+    this.remove(actionEventType, sourceId);
   }
 
   public void clear() {

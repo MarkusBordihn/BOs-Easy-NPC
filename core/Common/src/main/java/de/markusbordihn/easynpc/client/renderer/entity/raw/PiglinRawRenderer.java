@@ -40,7 +40,7 @@ public class PiglinRawRenderer extends PiglinRenderer implements EasyNPCEntityRe
         ModelLayers.PIGLIN_INNER_ARMOR,
         ModelLayers.PIGLIN_OUTER_ARMOR,
         false); // zombifiedPiglin
-    this.addLayer(new SkullHeadRenderLayer<>(this));
+    this.addLayer(new SkullHeadRenderLayer<>(this, context.getItemInHandRenderer()));
   }
 
   @Override

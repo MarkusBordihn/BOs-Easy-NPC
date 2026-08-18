@@ -8,6 +8,21 @@ the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 7.8.0
+
+- Fixed smaller text and UI issues.
+- Changed an NPC that is already standing at its target position to finish the movement right away.
+- Changed the "None" skin tab to "Advanced", which now holds "Disable Skin" and the texture field.
+- Added a "Move to" action, which sends an NPC to a position, a player, its owner or its home.
+- Added a "Move to and Wait" action, which runs the following actions only after the arrival.
+- Added an arrival radius, a timeout and an optional teleport to both move actions.
+- Added an "Opacity" attribute from 0 to 100, which fades body, armor and hand items together.
+- Added a "Set Opacity" action, which turns an NPC into a ghost or hides it completely.
+- Added the "Lantern Wraith" preset, a ghost walking a square with a short line at every corner.
+- Added API access to the move actions and the opacity of an NPC.
+- Added a "Resource Location" skin type, which renders any texture of a mod or a resource pack.
+- Added an "Advanced" skin tab, which previews the NPC with the entered texture before applying it.
+
 ### 7.7.7
 
 - Fixed #821 by keeping the transparency of 64x64 skins, which Fresh Moves needs for its eyes. Skins

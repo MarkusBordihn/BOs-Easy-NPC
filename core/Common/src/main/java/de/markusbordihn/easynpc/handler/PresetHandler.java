@@ -275,9 +275,8 @@ public class PresetHandler {
 
     if (position != null) {
       NavigationDataCapable<?> navigationData = easyNPC.getEasyNPCNavigationData();
-      if (navigationData != null && !easyNPC.getEntity().position().equals(position)) {
-        navigationData.setHomePosition(
-            new BlockPos((int) position.x, (int) position.y, (int) position.z));
+      if (navigationData != null) {
+        navigationData.setHomePositionIfMissing(BlockPos.containing(position));
       }
     }
   }
