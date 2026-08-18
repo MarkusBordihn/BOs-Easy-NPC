@@ -34,7 +34,7 @@ public class HuskRawRenderer extends ZombieRenderer implements EasyNPCEntityRend
 
   public HuskRawRenderer(EntityRendererProvider.Context context) {
     super(context);
-    this.addLayer(new SkullHeadRenderLayer<>(this));
+    this.addLayer(new SkullHeadRenderLayer<>(this, context.getItemInHandRenderer()));
   }
 
   @Override

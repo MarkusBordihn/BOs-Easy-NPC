@@ -458,7 +458,7 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
                 onPress ->
                     this.openConfiguration(
                         switch (skinData.getSkinType()) {
-                          case NONE -> ConfigurationType.NONE_SKIN;
+                          case NONE, RESOURCE_LOCATION -> ConfigurationType.ADVANCED_SKIN;
                           case PLAYER_SKIN -> ConfigurationType.PLAYER_SKIN;
                           case SECURE_REMOTE_URL, INSECURE_REMOTE_URL -> ConfigurationType.URL_SKIN;
                           case CUSTOM -> ConfigurationType.CUSTOM_SKIN;

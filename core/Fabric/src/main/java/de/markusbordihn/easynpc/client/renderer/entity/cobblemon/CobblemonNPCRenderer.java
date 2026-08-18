@@ -30,6 +30,7 @@ import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.model.custom.DopplerModel;
+import de.markusbordihn.easynpc.client.renderer.OpacityBufferSource;
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCLivingEntityRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.SpeechBubbleRenderer;
@@ -273,6 +274,8 @@ public class CobblemonNPCRenderer<E extends PathfinderMob>
       return false;
     }
 
+    MultiBufferSource entityBuffer = OpacityBufferSource.wrapIfNeeded(entity, buffer);
+
     try {
       cobblemonEntity.setCustomNameVisible(false);
       syncCobblemonRenderState(easyNPC, entity, cobblemonEntity, speciesId);
@@ -298,7 +301,7 @@ public class CobblemonNPCRenderer<E extends PathfinderMob>
             entityYaw,
             partialTicks,
             poseStack,
-            buffer,
+            entityBuffer,
             packedLight);
         poseStack.popPose();
       } else {
@@ -313,7 +316,7 @@ public class CobblemonNPCRenderer<E extends PathfinderMob>
             entityYaw,
             partialTicks,
             poseStack,
-            buffer,
+            entityBuffer,
             packedLight);
         poseStack.popPose();
       }

@@ -30,16 +30,20 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.SkullModelBase;
+import net.minecraft.client.renderer.ItemInHandRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.SkullBlockRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
+import net.minecraft.client.renderer.entity.layers.CustomHeadLayer;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ResolvableProfile;
 import net.minecraft.world.level.block.AbstractSkullBlock;
@@ -53,11 +57,14 @@ public class SkullHeadRenderLayer<T extends LivingEntity, M extends EntityModel<
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private static final Set<Item> FAILED_HEAD_ITEMS = ConcurrentHashMap.newKeySet();
 
+  private final ItemInHandRenderer itemInHandRenderer;
   private Map<SkullBlock.Type, SkullModelBase> skullModelCache;
   private boolean renderingDisabled;
 
-  public SkullHeadRenderLayer(RenderLayerParent<T, M> renderer) {
+  public SkullHeadRenderLayer(
+      RenderLayerParent<T, M> renderer, ItemInHandRenderer itemInHandRenderer) {
     super(renderer);
+    this.itemInHandRenderer = itemInHandRenderer;
   }
 
   private static ResolvableProfile extractProfile(ItemStack itemStack) {
@@ -87,13 +94,24 @@ public class SkullHeadRenderLayer<T extends LivingEntity, M extends EntityModel<
     }
 
     ItemStack headItem = entity.getItemBySlot(EquipmentSlot.HEAD);
-    if (headItem.isEmpty()
-        || !(headItem.getItem() instanceof BlockItem blockItem)
-        || !(blockItem.getBlock() instanceof AbstractSkullBlock skullBlock)) {
+    if (headItem.isEmpty()) {
       return;
     }
 
     if (!(this.getParentModel() instanceof HumanoidModel<?> humanoidParentModel)) {
+      return;
+    }
+
+    Item item = headItem.getItem();
+    if (item instanceof ArmorItem armorItem
+        && armorItem.getEquipmentSlot() == EquipmentSlot.HEAD) {
+      return;
+    }
+
+    if (!(item instanceof BlockItem blockItem)
+        || !(blockItem.getBlock() instanceof AbstractSkullBlock skullBlock)) {
+      renderHeadItem(
+          entity, headItem, humanoidParentModel, poseStack, buffer, packedLight);
       return;
     }
 
@@ -136,6 +154,45 @@ public class SkullHeadRenderLayer<T extends LivingEntity, M extends EntityModel<
           modelData.getModelType(),
           this.getParentModel().getClass().getName(),
           skullType,
+          exception);
+    } finally {
+      poseStack.popPose();
+    }
+  }
+
+  private void renderHeadItem(
+      T entity,
+      ItemStack headItem,
+      HumanoidModel<?> humanoidParentModel,
+      PoseStack poseStack,
+      MultiBufferSource buffer,
+      int packedLight) {
+    Item item = headItem.getItem();
+    if (FAILED_HEAD_ITEMS.contains(item)) {
+      return;
+    }
+
+    poseStack.pushPose();
+    try {
+      humanoidParentModel.head.translateAndRotate(poseStack);
+      CustomHeadLayer.translateToHead(poseStack, false);
+      this.itemInHandRenderer.renderItem(
+          entity, headItem, ItemDisplayContext.HEAD, false, poseStack, buffer, packedLight);
+    } catch (LinkageError error) {
+      this.renderingDisabled = true;
+      log.error(
+          "Disabling Easy NPC head item rendering for entity {} ({}) with item {} after linkage error.",
+          entity.getType(),
+          entity.getUUID(),
+          item,
+          error);
+    } catch (RuntimeException exception) {
+      FAILED_HEAD_ITEMS.add(item);
+      log.error(
+          "Skipping Easy NPC head item {} on entity {} ({}) after render error.",
+          item,
+          entity.getType(),
+          entity.getUUID(),
           exception);
     } finally {
       poseStack.popPose();

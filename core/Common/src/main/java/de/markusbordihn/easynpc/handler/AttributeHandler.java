@@ -39,6 +39,7 @@ import de.markusbordihn.easynpc.entity.easynpc.data.DisplayAttributeDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.NavigationDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.ObjectiveDataCapable;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -133,6 +134,26 @@ public class AttributeHandler {
     ValueType valueType = attributeType.getValueType();
     attributeData.setDisplayAttribute(attributeType, valueType, value);
     return true;
+  }
+
+  public static int getOpacity(EasyNPC<?> easyNPC) {
+    DisplayAttributeDataCapable<?> attributeData =
+        easyNPC != null ? easyNPC.getEasyNPCDisplayAttributeData() : null;
+    if (attributeData == null) {
+      return DisplayAttributeType.DEFAULT_OPACITY;
+    }
+
+    return Mth.clamp(
+        attributeData.getDisplayIntAttribute(DisplayAttributeType.OPACITY),
+        DisplayAttributeType.MIN_OPACITY,
+        DisplayAttributeType.MAX_OPACITY);
+  }
+
+  public static boolean setOpacity(EasyNPC<?> easyNPC, int opacity) {
+    return setDisplayAttribute(
+        easyNPC,
+        DisplayAttributeType.OPACITY,
+        Mth.clamp(opacity, DisplayAttributeType.MIN_OPACITY, DisplayAttributeType.MAX_OPACITY));
   }
 
   public static boolean setEnvironmentalAttribute(

@@ -50,6 +50,12 @@ public interface NavigationDataCapable<T extends Mob> extends EasyNPC<T> {
     setSynchedEntityData(SynchedDataIndex.NAVIGATION_HOME_POSITION, blockPos);
   }
 
+  default void setHomePositionIfMissing(BlockPos blockPos) {
+    if (!this.hasHomePosition()) {
+      this.setHomePosition(blockPos);
+    }
+  }
+
   default boolean hasHomePosition() {
     return this.getHomePosition() != null && !this.getHomePosition().equals(BlockPos.ZERO);
   }

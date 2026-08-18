@@ -26,6 +26,8 @@ import de.markusbordihn.easynpc.data.action.ActionDataEntry;
 import de.markusbordihn.easynpc.data.action.ActionDataType;
 import de.markusbordihn.easynpc.data.action.ActionEventSet;
 import de.markusbordihn.easynpc.data.action.MessageActionData;
+import de.markusbordihn.easynpc.data.action.MoveActionData;
+import de.markusbordihn.easynpc.data.action.MoveTargetType;
 import de.markusbordihn.easynpc.data.condition.ConditionDataEntry;
 import de.markusbordihn.easynpc.data.condition.ConditionDataSet;
 import de.markusbordihn.easynpc.data.condition.ConditionType;
@@ -34,9 +36,11 @@ import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.data.preset.PresetData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.DialogDataCapable;
+import de.markusbordihn.easynpc.utils.CompoundTagUtils;
 import java.util.List;
 import java.util.Set;
 import net.minecraft.SharedConstants;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.server.Bootstrap;
@@ -66,6 +70,31 @@ class PresetValidatorTest {
     CompoundTag actionEntry = new CompoundTag();
     actionEntry.putString(ActionDataEntry.DATA_TYPE_TAG, ActionDataType.WAIT.name());
     actionEntry.putString(ActionDataEntry.DATA_COMMAND_TAG, duration);
+    return presetWithActionEntry(actionEntry);
+  }
+
+  private static CompoundTag presetWithMoveAction(
+      MoveTargetType targetType, BlockPos blockPos, int timeoutTicks) {
+    CompoundTag moveTag = new CompoundTag();
+    moveTag.putString(MoveActionData.DATA_TARGET_TYPE_TAG, targetType.name());
+    if (timeoutTicks != 0) {
+      moveTag.putInt(MoveActionData.DATA_TIMEOUT_TAG, timeoutTicks);
+    }
+
+    CompoundTag actionEntry = new CompoundTag();
+    actionEntry.putString(ActionDataEntry.DATA_TYPE_TAG, ActionDataType.MOVE_TO.name());
+    actionEntry.put(ActionDataEntry.DATA_MOVE_TAG, moveTag);
+    if (blockPos != null) {
+      actionEntry.put(ActionDataEntry.DATA_BLOCK_POS_TAG, CompoundTagUtils.writeBlockPos(blockPos));
+    }
+
+    return presetWithActionEntry(actionEntry);
+  }
+
+  private static CompoundTag presetWithOpacityAction(String opacity) {
+    CompoundTag actionEntry = new CompoundTag();
+    actionEntry.putString(ActionDataEntry.DATA_TYPE_TAG, ActionDataType.SET_OPACITY.name());
+    actionEntry.putString(ActionDataEntry.DATA_COMMAND_TAG, opacity);
     return presetWithActionEntry(actionEntry);
   }
 
@@ -427,5 +456,57 @@ class PresetValidatorTest {
 
     assertTrue(report.isValid());
     assertTrue(hasRule(report, PresetValidationRule.WAIT_ACTION_DURATION_OUT_OF_RANGE));
+  }
+
+  @Test
+  @DisplayName("A move action without a position is rejected")
+  void testMoveActionWithoutPositionIsRejected() {
+    assertTrue(
+        hasRule(
+            PresetValidator.validate(presetWithMoveAction(MoveTargetType.POSITION, null, 0)),
+            PresetValidationRule.MOVE_ACTION_WITHOUT_POSITION));
+    assertTrue(
+        hasRule(
+            PresetValidator.validate(
+                presetWithMoveAction(MoveTargetType.RELATIVE, BlockPos.ZERO, 0)),
+            PresetValidationRule.MOVE_ACTION_WITHOUT_POSITION));
+  }
+
+  @Test
+  @DisplayName("A move action without a position target does not need one")
+  void testMoveActionWithoutPositionTargetIsValid() {
+    assertTrue(
+        PresetValidator.validate(presetWithMoveAction(MoveTargetType.INITIATOR, null, 0))
+            .isValid());
+    assertTrue(
+        PresetValidator.validate(
+                presetWithMoveAction(MoveTargetType.POSITION, new BlockPos(8, 64, 8), 0))
+            .isValid());
+  }
+
+  @Test
+  @DisplayName("A move action above the timeout limit is only a warning")
+  void testMoveActionAboveTimeoutLimitIsWarning() {
+    PresetValidationReport report =
+        PresetValidator.validate(
+            presetWithMoveAction(
+                MoveTargetType.HOME, null, MoveActionData.MAX_TIMEOUT_TICKS + 100));
+
+    assertTrue(report.isValid());
+    assertTrue(hasRule(report, PresetValidationRule.MOVE_ACTION_TIMEOUT_OUT_OF_RANGE));
+  }
+
+  @Test
+  @DisplayName("An opacity action outside of the allowed range is rejected")
+  void testOpacityActionOutsideOfRangeIsRejected() {
+    assertTrue(
+        hasRule(
+            PresetValidator.validate(presetWithOpacityAction("120")),
+            PresetValidationRule.OPACITY_ACTION_WITH_INVALID_VALUE));
+    assertTrue(
+        hasRule(
+            PresetValidator.validate(presetWithOpacityAction("half")),
+            PresetValidationRule.OPACITY_ACTION_WITH_INVALID_VALUE));
+    assertTrue(PresetValidator.validate(presetWithOpacityAction("40")).isValid());
   }
 }

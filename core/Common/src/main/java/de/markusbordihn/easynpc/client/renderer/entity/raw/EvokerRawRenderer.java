@@ -42,7 +42,7 @@ public class EvokerRawRenderer<T extends SpellcasterIllager> extends EvokerRende
   public EvokerRawRenderer(
       EntityRendererProvider.Context context, boolean useVanillaItemInHandLayer) {
     super(context);
-    this.addLayer(new SkullHeadRenderLayer<>(this));
+    this.addLayer(new SkullHeadRenderLayer<>(this, context.getItemInHandRenderer()));
     if (!useVanillaItemInHandLayer) {
       this.layers.removeIf(ItemInHandLayer.class::isInstance);
       this.addLayer(new EasyNPCItemAttachmentLayer<>(this, context.getItemInHandRenderer()));

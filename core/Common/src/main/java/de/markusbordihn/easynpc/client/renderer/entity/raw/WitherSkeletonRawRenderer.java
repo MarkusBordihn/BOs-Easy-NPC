@@ -35,7 +35,7 @@ public class WitherSkeletonRawRenderer extends WitherSkeletonRenderer
 
   public WitherSkeletonRawRenderer(EntityRendererProvider.Context context) {
     super(context);
-    this.addLayer(new SkullHeadRenderLayer<>(this));
+    this.addLayer(new SkullHeadRenderLayer<>(this, context.getItemInHandRenderer()));
   }
 
   @Override

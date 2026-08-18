@@ -26,9 +26,18 @@ import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.ResourceLocation;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public record SkinDataEntry(
-    String name, String url, UUID uuid, SkinType type, boolean disableLayers, long timestamp) {
+    String name,
+    String url,
+    UUID uuid,
+    SkinType type,
+    boolean disableLayers,
+    long timestamp,
+    ResourceLocation texture) {
   public static final String DATA_TIMESTAMP_TAG = "Timestamp";
 
   public static final StreamCodec<RegistryFriendlyByteBuf, SkinDataEntry> STREAM_CODEC =
@@ -51,7 +60,8 @@ public record SkinDataEntry(
   static final String DATA_URL_TAG = "URL";
   static final String DATA_UUID_TAG = "UUID";
   static final String DATA_DISABLE_LAYERS_TAG = "DisableLayers";
-  static final String DATA_CONTENT_TAG = "Content";
+  static final String DATA_TEXTURE_TAG = "Texture";
+  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   public SkinDataEntry() {
     this("", "", Constants.BLANK_UUID, SkinType.DEFAULT, false, System.currentTimeMillis());
@@ -59,6 +69,16 @@ public record SkinDataEntry(
 
   public SkinDataEntry(final String name, final String url, final UUID uuid, final SkinType type) {
     this(name, url, uuid, type, false, System.currentTimeMillis());
+  }
+
+  public SkinDataEntry(
+      final String name,
+      final String url,
+      final UUID uuid,
+      final SkinType type,
+      final boolean disableLayers,
+      final long timestamp) {
+    this(name, url, uuid, type, disableLayers, timestamp, null);
   }
 
   public SkinDataEntry(final CompoundTag compoundTag) {
@@ -73,7 +93,21 @@ public record SkinDataEntry(
             && compoundTag.getBoolean(DATA_DISABLE_LAYERS_TAG),
         compoundTag.contains(DATA_TIMESTAMP_TAG)
             ? compoundTag.getLong(DATA_TIMESTAMP_TAG)
-            : System.currentTimeMillis());
+            : System.currentTimeMillis(),
+        parseTexture(compoundTag));
+  }
+
+  private static ResourceLocation parseTexture(final CompoundTag compoundTag) {
+    if (!compoundTag.contains(DATA_TEXTURE_TAG)) {
+      return null;
+    }
+
+    String textureLocation = compoundTag.getString(DATA_TEXTURE_TAG);
+    ResourceLocation texture = ResourceLocation.tryParse(textureLocation);
+    if (texture == null) {
+      log.warn("Ignoring invalid skin texture location {}!", textureLocation);
+    }
+    return texture;
   }
 
   public static SkinDataEntry createNoneSkin() {
@@ -93,6 +127,17 @@ public record SkinDataEntry(
     return new SkinDataEntry(playerName, "", playerUUID, SkinType.PLAYER_SKIN);
   }
 
+  public static SkinDataEntry createResourceLocationSkin(ResourceLocation texture) {
+    return new SkinDataEntry(
+        "",
+        "",
+        Constants.BLANK_UUID,
+        SkinType.RESOURCE_LOCATION,
+        false,
+        System.currentTimeMillis(),
+        texture);
+  }
+
   public static SkinDataEntry createRemoteSkin(String skinURL) {
     return new SkinDataEntry(
         "",
@@ -105,27 +150,32 @@ public record SkinDataEntry(
 
   public SkinDataEntry withName(final String name) {
     return new SkinDataEntry(
-        name, this.url, this.uuid, this.type, this.disableLayers, this.timestamp);
+        name, this.url, this.uuid, this.type, this.disableLayers, this.timestamp, this.texture);
   }
 
   public SkinDataEntry withType(final SkinType type) {
     return new SkinDataEntry(
-        this.name, this.url, this.uuid, type, this.disableLayers, this.timestamp);
+        this.name, this.url, this.uuid, type, this.disableLayers, this.timestamp, this.texture);
   }
 
   public SkinDataEntry withURL(final String url) {
     return new SkinDataEntry(
-        this.name, url, this.uuid, this.type, this.disableLayers, this.timestamp);
+        this.name, url, this.uuid, this.type, this.disableLayers, this.timestamp, this.texture);
   }
 
   public SkinDataEntry withUUID(final UUID uuid) {
     return new SkinDataEntry(
-        this.name, this.url, uuid, this.type, this.disableLayers, this.timestamp);
+        this.name, this.url, uuid, this.type, this.disableLayers, this.timestamp, this.texture);
   }
 
   public SkinDataEntry withDisableLayers(final boolean disableLayers) {
     return new SkinDataEntry(
-        this.name, this.url, this.uuid, this.type, disableLayers, this.timestamp);
+        this.name, this.url, this.uuid, this.type, disableLayers, this.timestamp, this.texture);
+  }
+
+  public SkinDataEntry withTexture(final ResourceLocation texture) {
+    return new SkinDataEntry(
+        this.name, this.url, this.uuid, this.type, this.disableLayers, this.timestamp, texture);
   }
 
   public CompoundTag write(CompoundTag compoundTag) {
@@ -141,6 +191,9 @@ public record SkinDataEntry(
     }
     if (this.disableLayers) {
       compoundTag.putBoolean(DATA_DISABLE_LAYERS_TAG, true);
+    }
+    if (this.texture != null) {
+      compoundTag.putString(DATA_TEXTURE_TAG, this.texture.toString());
     }
     compoundTag.putLong(DATA_TIMESTAMP_TAG, this.timestamp);
     return compoundTag;

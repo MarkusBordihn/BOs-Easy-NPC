@@ -21,8 +21,10 @@ package de.markusbordihn.easynpc.data.action;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.condition.ConditionDataSet;
+import de.markusbordihn.easynpc.data.display.DisplayAttributeType;
 import de.markusbordihn.easynpc.security.CommandPermissionLevel;
 import de.markusbordihn.easynpc.utils.CompoundTagUtils;
+import de.markusbordihn.easynpc.utils.ValueUtils;
 import java.nio.charset.StandardCharsets;
 import java.util.TreeSet;
 import java.util.UUID;
@@ -49,11 +51,13 @@ public record ActionDataEntry(
     MessageActionData messageActionData,
     String poseId,
     ModelAnimationActionData modelAnimationActionData,
-    SoundActionData soundActionData) {
+    SoundActionData soundActionData,
+    MoveActionData moveActionData) {
 
   public static final String DATA_ID_TAG = "Id";
   public static final String DATA_MESSAGE_TAG = "Msg";
   public static final String DATA_SOUND_TAG = "Snd";
+  public static final String DATA_MOVE_TAG = "Move";
   public static final String DATA_POSE_TAG = "Pose";
   public static final String DATA_ANIMATION_TAG = "Anim";
   public static final String DATA_COMMAND_TAG = "Cmd";
@@ -78,6 +82,7 @@ public record ActionDataEntry(
             ? modelAnimationActionData
             : ModelAnimationActionData.DEFAULT;
     soundActionData = soundActionData != null ? soundActionData : SoundActionData.DEFAULT;
+    moveActionData = moveActionData != null ? moveActionData : MoveActionData.DEFAULT;
   }
 
   public ActionDataEntry(
@@ -104,7 +109,8 @@ public record ActionDataEntry(
         messageActionData,
         "",
         ModelAnimationActionData.DEFAULT,
-        SoundActionData.DEFAULT);
+        SoundActionData.DEFAULT,
+        MoveActionData.DEFAULT);
   }
 
   public ActionDataEntry() {
@@ -150,7 +156,10 @@ public record ActionDataEntry(
             : ModelAnimationActionData.DEFAULT,
         compoundTag.contains(DATA_SOUND_TAG)
             ? SoundActionData.fromTag(compoundTag.getCompound(DATA_SOUND_TAG))
-            : SoundActionData.DEFAULT);
+            : SoundActionData.DEFAULT,
+        compoundTag.contains(DATA_MOVE_TAG)
+            ? MoveActionData.fromTag(compoundTag.getCompound(DATA_MOVE_TAG))
+            : MoveActionData.DEFAULT);
   }
 
   public ActionDataEntry(ActionDataType actionDataType) {
@@ -194,7 +203,8 @@ public record ActionDataEntry(
         MessageActionData.DEFAULT,
         "",
         ModelAnimationActionData.DEFAULT,
-        SoundActionData.DEFAULT);
+        SoundActionData.DEFAULT,
+        MoveActionData.DEFAULT);
   }
 
   public ActionDataEntry(ActionDataType actionDataType, UUID targetUUID, String command) {
@@ -211,7 +221,8 @@ public record ActionDataEntry(
         MessageActionData.DEFAULT,
         "",
         ModelAnimationActionData.DEFAULT,
-        SoundActionData.DEFAULT);
+        SoundActionData.DEFAULT,
+        MoveActionData.DEFAULT);
   }
 
   public static UUID deriveId(CompoundTag compoundTag, int position) {
@@ -287,7 +298,8 @@ public record ActionDataEntry(
         this.messageActionData,
         this.poseId,
         this.modelAnimationActionData,
-        this.soundActionData);
+        this.soundActionData,
+        this.moveActionData);
   }
 
   public ActionDataEntry withBlockPos(BlockPos blockPos) {
@@ -304,7 +316,8 @@ public record ActionDataEntry(
         this.messageActionData,
         this.poseId,
         this.modelAnimationActionData,
-        this.soundActionData);
+        this.soundActionData,
+        this.moveActionData);
   }
 
   public ActionDataEntry withTargetUUID(UUID targetUUID) {
@@ -321,7 +334,8 @@ public record ActionDataEntry(
         this.messageActionData,
         this.poseId,
         this.modelAnimationActionData,
-        this.soundActionData);
+        this.soundActionData,
+        this.moveActionData);
   }
 
   public ActionDataEntry withCommand(String command) {
@@ -338,7 +352,8 @@ public record ActionDataEntry(
         this.messageActionData,
         this.poseId,
         this.modelAnimationActionData,
-        this.soundActionData);
+        this.soundActionData,
+        this.moveActionData);
   }
 
   public ActionDataEntry withConditionDataSet(ConditionDataSet conditionDataSet) {
@@ -355,7 +370,8 @@ public record ActionDataEntry(
         this.messageActionData,
         this.poseId,
         this.modelAnimationActionData,
-        this.soundActionData);
+        this.soundActionData,
+        this.moveActionData);
   }
 
   public ActionDataEntry withExecuteAsUser(boolean executeAsUser) {
@@ -372,7 +388,8 @@ public record ActionDataEntry(
         this.messageActionData,
         this.poseId,
         this.modelAnimationActionData,
-        this.soundActionData);
+        this.soundActionData,
+        this.moveActionData);
   }
 
   public ActionDataEntry withPermissionLevel(int permissionLevel) {
@@ -389,7 +406,8 @@ public record ActionDataEntry(
         this.messageActionData,
         this.poseId,
         this.modelAnimationActionData,
-        this.soundActionData);
+        this.soundActionData,
+        this.moveActionData);
   }
 
   public ActionDataEntry withMessageActionData(MessageActionData messageActionData) {
@@ -406,7 +424,8 @@ public record ActionDataEntry(
         messageActionData,
         this.poseId,
         this.modelAnimationActionData,
-        this.soundActionData);
+        this.soundActionData,
+        this.moveActionData);
   }
 
   public ActionDataEntry withPoseId(String poseId) {
@@ -423,7 +442,8 @@ public record ActionDataEntry(
         this.messageActionData,
         poseId,
         this.modelAnimationActionData,
-        this.soundActionData);
+        this.soundActionData,
+        this.moveActionData);
   }
 
   public ActionDataEntry withModelAnimationActionData(
@@ -441,7 +461,8 @@ public record ActionDataEntry(
         this.messageActionData,
         this.poseId,
         modelAnimationActionData,
-        this.soundActionData);
+        this.soundActionData,
+        this.moveActionData);
   }
 
   public ActionDataEntry withSoundActionData(SoundActionData soundActionData) {
@@ -458,7 +479,26 @@ public record ActionDataEntry(
         this.messageActionData,
         this.poseId,
         this.modelAnimationActionData,
-        soundActionData);
+        soundActionData,
+        this.moveActionData);
+  }
+
+  public ActionDataEntry withMoveActionData(MoveActionData moveActionData) {
+    return new ActionDataEntry(
+        this.id,
+        this.actionDataType,
+        this.conditionDataSet,
+        this.command,
+        this.targetUUID,
+        this.blockPos,
+        this.executeAsUser,
+        this.enableDebug,
+        this.permissionLevel,
+        this.messageActionData,
+        this.poseId,
+        this.modelAnimationActionData,
+        this.soundActionData,
+        moveActionData);
   }
 
   public String getAction(LivingEntity entity, ServerPlayer serverPlayer) {
@@ -506,6 +546,16 @@ public record ActionDataEntry(
       return WaitDuration.parse(this.command).isValid();
     }
 
+    if (this.actionDataType == ActionDataType.MOVE_TO
+        || this.actionDataType == ActionDataType.MOVE_TO_AND_WAIT) {
+      return this.moveActionData.hasResolvableTarget(this.blockPos);
+    }
+
+    if (this.actionDataType == ActionDataType.SET_OPACITY) {
+      return ValueUtils.isNumericValue(
+          this.command, DisplayAttributeType.MIN_OPACITY, DisplayAttributeType.MAX_OPACITY);
+    }
+
     return !this.actionDataType.requiresArgument()
         || this.hasCommandAndNotEmpty()
         || this.hasBlockPos();
@@ -547,6 +597,12 @@ public record ActionDataEntry(
     if (this.actionDataType == ActionDataType.SOUND
         && !this.soundActionData.equals(SoundActionData.DEFAULT)) {
       compoundTag.put(DATA_SOUND_TAG, this.soundActionData.createTag());
+    }
+
+    if ((this.actionDataType == ActionDataType.MOVE_TO
+            || this.actionDataType == ActionDataType.MOVE_TO_AND_WAIT)
+        && !this.moveActionData.equals(MoveActionData.DEFAULT)) {
+      compoundTag.put(DATA_MOVE_TAG, this.moveActionData.createTag());
     }
 
     if (this.actionDataType == ActionDataType.SET_POSE && !this.poseId.isBlank()) {

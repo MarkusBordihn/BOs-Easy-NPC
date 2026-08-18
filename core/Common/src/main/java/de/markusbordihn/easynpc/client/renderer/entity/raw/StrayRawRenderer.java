@@ -34,7 +34,7 @@ public class StrayRawRenderer extends StrayRenderer implements EasyNPCEntityRend
 
   public StrayRawRenderer(EntityRendererProvider.Context context) {
     super(context);
-    this.addLayer(new SkullHeadRenderLayer<>(this));
+    this.addLayer(new SkullHeadRenderLayer<>(this, context.getItemInHandRenderer()));
   }
 
   @Override

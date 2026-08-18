@@ -3,6 +3,7 @@ package de.markusbordihn.easynpc.client.renderer.entity.custom;
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.model.custom.DopplerModel;
+import de.markusbordihn.easynpc.client.renderer.OpacityBufferSource;
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCLivingEntityRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.SpeechBubbleRenderer;
@@ -36,7 +37,7 @@ public class DopplerRenderer<E extends PathfinderMob>
   public DopplerRenderer(
       EntityRendererProvider.Context context, ModelLayerLocation modelLayerLocation) {
     super(context, new DopplerModel<>(context.bakeLayer(modelLayerLocation)), 0.5F);
-    this.addLayer(new SkullHeadRenderLayer<>(this));
+    this.addLayer(new SkullHeadRenderLayer<>(this, context.getItemInHandRenderer()));
   }
 
   private boolean renderEntity(
@@ -68,6 +69,7 @@ public class DopplerRenderer<E extends PathfinderMob>
     }
 
     String entityTypeName = EntityTypeManager.getEntityTypeName(renderEntityType);
+    MultiBufferSource entityBuffer = OpacityBufferSource.wrapIfNeeded(entity, buffer);
 
     LivingEntityRenderer<?, ?> livingEntityRenderer =
         RendererManager.getLivingEntityRenderer(renderEntityType, customEntity);
@@ -84,7 +86,7 @@ public class DopplerRenderer<E extends PathfinderMob>
             entityYaw,
             partialTicks,
             poseStack,
-            buffer,
+            entityBuffer,
             packedLight);
         return true;
       } catch (Exception exception) {
@@ -109,7 +111,7 @@ public class DopplerRenderer<E extends PathfinderMob>
         EasyNPCLivingEntityRenderer.handleRotation(easyNPC, poseStack);
         EasyNPCLivingEntityRenderer.handleScale(easyNPC, poseStack);
         entityRenderer.render(
-            (E) customEntity, entityYaw, partialTicks, poseStack, buffer, packedLight);
+            (E) customEntity, entityYaw, partialTicks, poseStack, entityBuffer, packedLight);
         return true;
       } catch (Exception exception) {
         log.error(

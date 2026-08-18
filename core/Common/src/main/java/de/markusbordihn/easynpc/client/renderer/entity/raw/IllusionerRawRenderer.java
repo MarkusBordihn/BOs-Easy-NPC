@@ -37,7 +37,7 @@ public class IllusionerRawRenderer extends IllusionerRenderer implements EasyNPC
   public IllusionerRawRenderer(EntityRendererProvider.Context context) {
     super(context);
     this.layers.removeIf(ItemInHandLayer.class::isInstance);
-    this.addLayer(new SkullHeadRenderLayer<>(this));
+    this.addLayer(new SkullHeadRenderLayer<>(this, context.getItemInHandRenderer()));
     this.addLayer(new EasyNPCItemAttachmentLayer<>(this, context.getItemInHandRenderer()));
   }
 

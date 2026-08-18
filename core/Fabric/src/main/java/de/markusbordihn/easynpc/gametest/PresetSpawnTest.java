@@ -53,4 +53,10 @@ public class PresetSpawnTest {
     PresetSpawnTestHelper.assertSpawnerSpawnsConfiguredNPC(helper, humanoid());
     helper.succeed();
   }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testPresetImportSetsHome(GameTestHelper helper) {
+    PresetSpawnTestHelper.assertPresetImportSetsHome(helper, humanoid());
+    helper.succeed();
+  }
 }

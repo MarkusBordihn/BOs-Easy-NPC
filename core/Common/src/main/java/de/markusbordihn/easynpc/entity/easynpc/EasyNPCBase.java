@@ -119,8 +119,8 @@ public interface EasyNPCBase<E extends Mob>
     log.debug("Finalize spawn for {} ...", this);
 
     NavigationDataCapable<?> navigationData = getEasyNPCNavigationData();
-    if (navigationData != null && !navigationData.hasHomePosition()) {
-      navigationData.setHomePosition(this.getEntity().blockPosition());
+    if (navigationData != null) {
+      navigationData.setHomePositionIfMissing(this.getEntity().blockPosition());
     }
 
     StatusDataCapable<?> statusData = getEasyNPCStatusData();

@@ -23,9 +23,9 @@ import de.markusbordihn.easynpc.configui.menu.ModMenuTypes;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import net.minecraft.world.entity.player.Inventory;
 
-public class NoneSkinConfigurationMenuWrapper extends ConfigurationMenu {
+public class AdvancedSkinConfigurationMenuWrapper extends ConfigurationMenu {
 
-  public NoneSkinConfigurationMenuWrapper(final int windowId, final Inventory playerInventory) {
-    super(ModMenuTypes.NONE_SKIN_CONFIGURATION_MENU, windowId, playerInventory);
+  public AdvancedSkinConfigurationMenuWrapper(final int windowId, final Inventory playerInventory) {
+    super(ModMenuTypes.ADVANCED_SKIN_CONFIGURATION_MENU, windowId, playerInventory);
   }
 }

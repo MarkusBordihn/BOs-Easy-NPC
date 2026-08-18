@@ -25,6 +25,7 @@ import de.markusbordihn.easynpc.data.action.ActionDataEntry;
 import de.markusbordihn.easynpc.data.action.ActionDataType;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
 import de.markusbordihn.easynpc.data.action.MessageActionData;
+import de.markusbordihn.easynpc.data.action.MoveActionData;
 import de.markusbordihn.easynpc.data.action.SoundActionData;
 import de.markusbordihn.easynpc.data.action.SpeechBubbleManager;
 import de.markusbordihn.easynpc.data.state.StateEntry;
@@ -36,12 +37,15 @@ import de.markusbordihn.easynpc.entity.easynpc.data.TradingDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.ActionHandler;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.action.executor.DialogActionExecutor;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.action.executor.MessageActionExecutor;
+import de.markusbordihn.easynpc.entity.easynpc.handlers.action.executor.MoveActionExecutor;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.action.executor.ScoreboardActionExecutor;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.action.executor.SoundActionExecutor;
+import de.markusbordihn.easynpc.handler.AttributeHandler;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import de.markusbordihn.easynpc.utils.TextUtils;
 import java.util.Collection;
 import java.util.List;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -183,6 +187,53 @@ public class EasyNPCActionHandler {
 
     return SoundActionExecutor.play(
         new ActionDataEntry(ActionDataType.SOUND).withSoundActionData(soundActionData), easyNPC);
+  }
+
+  public static boolean moveTo(EasyNPC<?> easyNPC, BlockPos blockPos) {
+    return moveTo(easyNPC, blockPos, MoveActionData.DEFAULT, ActionContext.EMPTY, null);
+  }
+
+  public static boolean moveTo(
+      EasyNPC<?> easyNPC, BlockPos blockPos, MoveActionData moveActionData) {
+    return moveTo(easyNPC, blockPos, moveActionData, ActionContext.EMPTY, null);
+  }
+
+  public static boolean moveTo(
+      EasyNPC<?> easyNPC, BlockPos blockPos, MoveActionData moveActionData, Runnable onArrival) {
+    return moveTo(easyNPC, blockPos, moveActionData, ActionContext.EMPTY, onArrival);
+  }
+
+  public static boolean moveTo(
+      EasyNPC<?> easyNPC,
+      BlockPos blockPos,
+      MoveActionData moveActionData,
+      ActionContext actionContext,
+      Runnable onArrival) {
+    if (!isUsable(easyNPC) || moveActionData == null) {
+      log.error("Unable to move {} to {}", easyNPC, blockPos);
+      return false;
+    }
+
+    ActionDataEntry actionDataEntry =
+        new ActionDataEntry(ActionDataType.MOVE_TO).withMoveActionData(moveActionData);
+    return MoveActionExecutor.move(
+        blockPos != null ? actionDataEntry.withBlockPos(blockPos) : actionDataEntry,
+        easyNPC,
+        actionContext != null ? actionContext : ActionContext.EMPTY,
+        onArrival);
+  }
+
+  public static boolean setOpacity(EasyNPC<?> easyNPC, int opacity) {
+    if (!isUsable(easyNPC)) {
+      log.error("Unable to set the opacity of {} to {}", easyNPC, opacity);
+      return false;
+    }
+
+    return AttributeHandler.setOpacity(easyNPC, opacity);
+  }
+
+  public static int getOpacity(EasyNPC<?> easyNPC) {
+    return AttributeHandler.getOpacity(easyNPC);
   }
 
   public static boolean setState(

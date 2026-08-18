@@ -40,7 +40,7 @@ public class OrcRenderer<E extends Orc> extends HumanoidMobRenderer<E, OrcModel<
   public OrcRenderer(
       EntityRendererProvider.Context context, ModelLayerLocation modelLayerLocation) {
     super(context, new OrcModel<>(context.bakeLayer(modelLayerLocation)), 0.3F);
-    this.addLayer(new SkullHeadRenderLayer<>(this));
+    this.addLayer(new SkullHeadRenderLayer<>(this, context.getItemInHandRenderer()));
   }
 
   @Override

@@ -53,7 +53,7 @@ public class PlayerRenderer<T extends PathfinderMob> extends LivingEntityRendere
                 context.bakeLayer(
                     slim ? ModelLayers.PLAYER_SLIM_OUTER_ARMOR : ModelLayers.PLAYER_OUTER_ARMOR)),
             context.getModelManager()));
-    this.addLayer(new SkullHeadRenderLayer<>(this));
+    this.addLayer(new SkullHeadRenderLayer<>(this, context.getItemInHandRenderer()));
     if (useVanillaItemInHandLayer) {
       this.addLayer(new ItemInHandLayer<>(this, context.getItemInHandRenderer()));
     } else {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Markus Bordihn
+ * Copyright 2026 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,17 +17,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.configui.client.screen.configuration.skin;
+package de.markusbordihn.easynpc.mixin.renderer;
 
-import de.markusbordihn.easynpc.configui.menu.configuration.skin.NoneSkinConfigurationMenuWrapper;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Inventory;
+import de.markusbordihn.easynpc.client.renderer.RenderTypeTextureAccessor;
+import java.util.Optional;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.resources.ResourceLocation;
+import org.spongepowered.asm.mixin.Final;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 
-public class NoneSkinConfigurationScreenWrapper
-    extends NoneSkinConfigurationScreen<NoneSkinConfigurationMenuWrapper> {
+@Mixin(targets = "net.minecraft.client.renderer.RenderType$CompositeRenderType")
+public abstract class CompositeRenderTypeMixin implements RenderTypeTextureAccessor {
 
-  public NoneSkinConfigurationScreenWrapper(
-      NoneSkinConfigurationMenuWrapper menu, Inventory inventory, Component component) {
-    super(menu, inventory, component);
+  @Shadow @Final private RenderType.CompositeState state;
+
+  @Override
+  public Optional<ResourceLocation> easyNPC$getTexture() {
+    return ((RenderTypeTextureAccessor) (Object) this.state).easyNPC$getTexture();
   }
 }

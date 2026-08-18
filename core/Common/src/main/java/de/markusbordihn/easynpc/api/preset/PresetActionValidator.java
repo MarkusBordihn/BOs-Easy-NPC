@@ -25,11 +25,16 @@ import de.markusbordihn.easynpc.data.action.ActionEventSet;
 import de.markusbordihn.easynpc.data.action.CustomActionCommand;
 import de.markusbordihn.easynpc.data.action.MessageActionData;
 import de.markusbordihn.easynpc.data.action.ModelAnimationActionData;
+import de.markusbordihn.easynpc.data.action.MoveActionData;
 import de.markusbordihn.easynpc.data.action.SoundActionData;
 import de.markusbordihn.easynpc.data.action.WaitDuration;
 import de.markusbordihn.easynpc.data.condition.ConditionDataSet;
+import de.markusbordihn.easynpc.data.display.DisplayAttributeType;
 import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventDataCapable;
+import de.markusbordihn.easynpc.utils.CompoundTagUtils;
+import de.markusbordihn.easynpc.utils.ValueUtils;
 import java.util.List;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -118,6 +123,11 @@ final class PresetActionValidator {
                 path,
                 "The sound action needs a valid sound id"));
       }
+    } else if (actionDataType == ActionDataType.MOVE_TO
+        || actionDataType == ActionDataType.MOVE_TO_AND_WAIT) {
+      validateMoveAction(actionEntry, path, issues);
+    } else if (actionDataType == ActionDataType.SET_OPACITY) {
+      validateOpacityValue(actionEntry.getString(ActionDataEntry.DATA_COMMAND_TAG), path, issues);
     } else if (actionDataType.requiresArgument()
         && actionEntry.getString(ActionDataEntry.DATA_COMMAND_TAG).isBlank()
         && !actionEntry.contains(ActionDataEntry.DATA_BLOCK_POS_TAG)) {
@@ -185,6 +195,63 @@ final class PresetActionValidator {
           PresetValidationSupport.childPath(
               path, ActionDataEntry.DATA_MESSAGE_TAG + "/Texts[" + index + "]"),
           issues);
+    }
+  }
+
+  private static void validateMoveAction(
+      CompoundTag actionEntry, String path, List<PresetValidationIssue> issues) {
+    CompoundTag moveTag = actionEntry.getCompound(ActionDataEntry.DATA_MOVE_TAG);
+    MoveActionData moveActionData = MoveActionData.fromTag(moveTag);
+    BlockPos blockPos =
+        actionEntry.contains(ActionDataEntry.DATA_BLOCK_POS_TAG)
+            ? CompoundTagUtils.readBlockPos(
+                actionEntry.getCompound(ActionDataEntry.DATA_BLOCK_POS_TAG))
+            : null;
+    if (!moveActionData.hasResolvableTarget(blockPos)) {
+      issues.add(
+          PresetValidationIssue.error(
+              PresetValidationRule.MOVE_ACTION_WITHOUT_POSITION,
+              path,
+              "The move action with the target "
+                  + moveActionData.targetType()
+                  + " needs a position"));
+    }
+
+    if (!moveTag.contains(MoveActionData.DATA_TIMEOUT_TAG)) {
+      return;
+    }
+
+    int timeoutTicks = moveTag.getInt(MoveActionData.DATA_TIMEOUT_TAG);
+    if (timeoutTicks < MoveActionData.MIN_TIMEOUT_TICKS
+        || timeoutTicks > MoveActionData.MAX_TIMEOUT_TICKS) {
+      issues.add(
+          PresetValidationIssue.warning(
+              PresetValidationRule.MOVE_ACTION_TIMEOUT_OUT_OF_RANGE,
+              path,
+              "The move timeout of "
+                  + timeoutTicks
+                  + " ticks is limited to "
+                  + MoveActionData.MIN_TIMEOUT_TICKS
+                  + " - "
+                  + MoveActionData.MAX_TIMEOUT_TICKS
+                  + " ticks"));
+    }
+  }
+
+  private static void validateOpacityValue(
+      String command, String path, List<PresetValidationIssue> issues) {
+    if (!ValueUtils.isNumericValue(
+        command, DisplayAttributeType.MIN_OPACITY, DisplayAttributeType.MAX_OPACITY)) {
+      issues.add(
+          PresetValidationIssue.error(
+              PresetValidationRule.OPACITY_ACTION_WITH_INVALID_VALUE,
+              path,
+              "The opacity '"
+                  + command
+                  + "' is not a value between "
+                  + DisplayAttributeType.MIN_OPACITY
+                  + " and "
+                  + DisplayAttributeType.MAX_OPACITY));
     }
   }
 

@@ -311,12 +311,12 @@ public class ConfigurationScreenTest {
   }
 
   @GameTest(template = "easy_npc:gametest.3x3x3")
-  public void testOpenNoneSkinConfigurationScreen(GameTestHelper helper) {
+  public void testOpenAdvancedSkinConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
         ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
-        ConfigurationType.NONE_SKIN,
-        ModMenuTypes.NONE_SKIN_CONFIGURATION_MENU.get());
+        ConfigurationType.ADVANCED_SKIN,
+        ModMenuTypes.ADVANCED_SKIN_CONFIGURATION_MENU.get());
   }
 
   @GameTest(template = "easy_npc:gametest.3x3x3")

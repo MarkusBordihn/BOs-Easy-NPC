@@ -47,6 +47,8 @@ import de.markusbordihn.easynpc.entity.easynpc.handlers.action.executor.CustomAc
 import de.markusbordihn.easynpc.entity.easynpc.handlers.action.executor.DialogActionExecutor;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.action.executor.MessageActionExecutor;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.action.executor.ModelAnimationActionExecutor;
+import de.markusbordihn.easynpc.entity.easynpc.handlers.action.executor.MoveActionExecutor;
+import de.markusbordihn.easynpc.entity.easynpc.handlers.action.executor.OpacityActionExecutor;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.action.executor.PoseActionExecutor;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.action.executor.ScoreboardActionExecutor;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.action.executor.SoundActionExecutor;
@@ -60,6 +62,7 @@ import java.util.List;
 import java.util.Map;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
@@ -72,6 +75,7 @@ import net.minecraft.world.phys.Vec3;
 
 public interface ActionHandler<E extends Mob> extends EasyNPC<E> {
   double INTERVAL_ACTION_RANGE = 16.0D;
+  int ARRIVAL_GRACE_TICKS = 20;
 
   // Widest range first, so an empty range can skip the narrower ones inside it.
   List<ActionEventType> DISTANCE_ACTION_EVENT_TYPES =
@@ -93,6 +97,28 @@ public interface ActionHandler<E extends Mob> extends EasyNPC<E> {
           ActionEventType.ON_INTERVAL_NORMAL, TickerType.INTERVAL_ACTION_NORMAL,
           ActionEventType.ON_INTERVAL_LONG, TickerType.INTERVAL_ACTION_LONG,
           ActionEventType.ON_INTERVAL_VERY_LONG, TickerType.INTERVAL_ACTION_VERY_LONG);
+
+  private static boolean hasBlockingActionDataType(ActionDataSet actionDataSet) {
+    for (ActionDataType blockingActionDataType : ActionDataType.getBlockingTypes()) {
+      if (actionDataSet.hasActionDataType(blockingActionDataType)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  private static boolean hasAllowedBlockingActionDataType(
+      ActionDataSet actionDataSet, ActionEventType actionEventType) {
+    for (ActionDataType blockingActionDataType : ActionDataType.getBlockingTypes()) {
+      if (actionEventType.allowsActionDataType(blockingActionDataType)
+          && actionDataSet.hasActionDataType(blockingActionDataType)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
 
   private static boolean hasFallbackCondition(ActionDataEntry actionDataEntry) {
     return actionDataEntry.conditionDataSet() != null
@@ -317,8 +343,7 @@ public interface ActionHandler<E extends Mob> extends EasyNPC<E> {
     }
 
     ActionEventType actionEventType = actionContext.eventType();
-    if (actionEventType.allowsActionDataType(ActionDataType.WAIT)
-        && actionDataSet.hasActionDataType(ActionDataType.WAIT)) {
+    if (hasAllowedBlockingActionDataType(actionDataSet, actionEventType)) {
       this.executeActions(actionDataSet, actionContext);
       return;
     }
@@ -434,7 +459,7 @@ public interface ActionHandler<E extends Mob> extends EasyNPC<E> {
 
     PendingActionHandler<E> pendingActionHandler = this.getEasyNPCPendingActionHandler();
     if (pendingActionHandler != null
-        && actionDataSet.hasActionDataType(ActionDataType.WAIT)
+        && hasBlockingActionDataType(actionDataSet)
         && pendingActionHandler.hasPendingAction(
             actionContext.eventType(), actionContext.sourceId())) {
       log.debug(
@@ -512,6 +537,16 @@ public interface ActionHandler<E extends Mob> extends EasyNPC<E> {
 
       state = state.withAnyRegularFired();
 
+      if (actionType == ActionDataType.MOVE_TO_AND_WAIT
+          && this.parkActionSequenceUntilArrival(
+              actionDataEntry,
+              actions.subList(position + 1, actions.size()),
+              fallbackActions,
+              actionContext,
+              state)) {
+        return null;
+      }
+
       if (actionType == ActionDataType.CLOSE_DIALOG) {
         if (state.hasDeferredCloseDialogAction()) {
           log.warn("Multiple close dialog actions found in action data set {}!", actions);
@@ -588,6 +623,43 @@ public interface ActionHandler<E extends Mob> extends EasyNPC<E> {
             actionContext.eventType(),
             actionContext.sourceId(),
             waitDuration.ticks(),
+            serverPlayer != null ? serverPlayer.getUUID() : null,
+            pendingActions,
+            fallbackActions,
+            parkedState));
+
+    return true;
+  }
+
+  private boolean parkActionSequenceUntilArrival(
+      ActionDataEntry moveActionDataEntry,
+      List<ActionDataEntry> pendingActions,
+      List<ActionDataEntry> fallbackActions,
+      ActionContext actionContext,
+      ActionExecutionState state) {
+    PendingActionHandler<E> pendingActionHandler = this.getEasyNPCPendingActionHandler();
+    if (pendingActionHandler == null) {
+      return false;
+    }
+
+    ActionEventType actionEventType = actionContext.eventType();
+    ResourceLocation sourceId = actionContext.sourceId();
+    if (!MoveActionExecutor.move(
+        moveActionDataEntry,
+        this,
+        actionContext,
+        () -> pendingActionHandler.resumePendingActionEarly(actionEventType, sourceId))) {
+      return false;
+    }
+
+    ActionExecutionState parkedState =
+        this.flushDeferredCloseDialog(state, pendingActions, fallbackActions, actionContext);
+    ServerPlayer serverPlayer = actionContext.initiator();
+    pendingActionHandler.schedulePendingAction(
+        new PendingActionChain(
+            actionEventType,
+            sourceId,
+            moveActionDataEntry.moveActionData().timeoutTicks() + ARRIVAL_GRACE_TICKS,
             serverPlayer != null ? serverPlayer.getUUID() : null,
             pendingActions,
             fallbackActions,
@@ -742,6 +814,19 @@ public interface ActionHandler<E extends Mob> extends EasyNPC<E> {
         break;
       case CUSTOM:
         CustomActionDispatcher.execute(actionDataEntry, this, actionContext);
+        break;
+      case MOVE_TO:
+      case MOVE_TO_AND_WAIT:
+        if (!MoveActionExecutor.move(actionDataEntry, this, actionContext, null)) {
+          log.warn(
+              "Unable to move {} to the target of action {}", this.getEntity(), actionDataEntry);
+        }
+        break;
+      case SET_OPACITY:
+        if (!OpacityActionExecutor.setOpacity(actionDataEntry, this)) {
+          log.warn(
+              "Unable to set the opacity of {} for action {}", this.getEntity(), actionDataEntry);
+        }
         break;
       case WAIT:
         break;
