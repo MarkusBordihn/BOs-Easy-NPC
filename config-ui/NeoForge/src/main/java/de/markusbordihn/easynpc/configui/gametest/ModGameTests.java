@@ -71,6 +71,10 @@ public final class ModGameTests {
         ConfigurationScreenTest::testAdvancedPoseConfigurationScreen,
         DEFAULT_STRUCTURE);
     register(
+        "advanced_skin_configuration_screen",
+        ConfigurationScreenTest::testAdvancedSkinConfigurationScreen,
+        DEFAULT_STRUCTURE);
+    register(
         "advanced_trading_configuration_screen",
         ConfigurationScreenTest::testAdvancedTradingConfigurationScreen,
         DEFAULT_STRUCTURE);
@@ -213,10 +217,6 @@ public final class ModGameTests {
     register(
         "none_dialog_configuration_screen",
         ConfigurationScreenTest::testNoneDialogConfigurationScreen,
-        DEFAULT_STRUCTURE);
-    register(
-        "none_skin_configuration_screen",
-        ConfigurationScreenTest::testNoneSkinConfigurationScreen,
         DEFAULT_STRUCTURE);
     register(
         "none_trading_configuration_screen",

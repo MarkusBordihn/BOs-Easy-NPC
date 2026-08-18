@@ -39,14 +39,17 @@ public class MoveToPositionGoal<T extends EasyNPC<?>> extends Goal {
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private static final String LOG_PREFIX = "[Move To Position Goal]";
   private static final int TELEPORT_DISTANCE = 32;
-  private static final int TIMEOUT_TICKS = 200;
-  private static final float STOP_DISTANCE = 1.5F;
+  private static final int DEFAULT_TIMEOUT_TICKS = 200;
+  private static final float DEFAULT_ARRIVAL_RADIUS = 1.5F;
 
   private final NavigationDataCapable<?> navigationData;
   private final Mob mob;
   private final PathfinderMob pathfinderMob;
   private final BlockPos targetPos;
   private final double speedModifier;
+  private final float arrivalRadius;
+  private final int timeoutTicks;
+  private final boolean teleportOnTimeout;
   private final Runnable onArrival;
   private final boolean canJump;
   private int ticksRunning;
@@ -54,11 +57,32 @@ public class MoveToPositionGoal<T extends EasyNPC<?>> extends Goal {
 
   public MoveToPositionGoal(
       T easyNPC, BlockPos targetPos, double speedModifier, Runnable onArrival) {
+    this(
+        easyNPC,
+        targetPos,
+        speedModifier,
+        DEFAULT_ARRIVAL_RADIUS,
+        DEFAULT_TIMEOUT_TICKS,
+        true,
+        onArrival);
+  }
+
+  public MoveToPositionGoal(
+      T easyNPC,
+      BlockPos targetPos,
+      double speedModifier,
+      float arrivalRadius,
+      int timeoutTicks,
+      boolean teleportOnTimeout,
+      Runnable onArrival) {
     this.navigationData = easyNPC.getEasyNPCNavigationData();
     this.mob = easyNPC.getMob();
     this.pathfinderMob = easyNPC.getPathfinderMob();
     this.targetPos = targetPos;
     this.speedModifier = speedModifier;
+    this.arrivalRadius = arrivalRadius;
+    this.timeoutTicks = timeoutTicks;
+    this.teleportOnTimeout = teleportOnTimeout;
     this.onArrival = onArrival;
     this.canJump = this.navigationData != null && this.navigationData.canJump();
     this.setFlags(EnumSet.of(Goal.Flag.MOVE));
@@ -66,12 +90,12 @@ public class MoveToPositionGoal<T extends EasyNPC<?>> extends Goal {
 
   @Override
   public boolean canUse() {
-    return this.targetPos != null && !this.arrived && !reachedTarget();
+    return this.targetPos != null && !this.arrived;
   }
 
   @Override
   public boolean canContinueToUse() {
-    return !this.arrived && !reachedTarget() && this.ticksRunning < TIMEOUT_TICKS;
+    return !this.arrived && !reachedTarget() && this.ticksRunning < this.timeoutTicks;
   }
 
   @Override
@@ -79,8 +103,13 @@ public class MoveToPositionGoal<T extends EasyNPC<?>> extends Goal {
     this.ticksRunning = 0;
     this.arrived = false;
 
+    if (reachedTarget()) {
+      arrive();
+      return;
+    }
+
     double distance = this.mob.position().distanceTo(Vec3.atCenterOf(this.targetPos));
-    if (distance > TELEPORT_DISTANCE) {
+    if (this.teleportOnTimeout && distance > TELEPORT_DISTANCE) {
       teleportAndArrive();
       return;
     }
@@ -113,8 +142,8 @@ public class MoveToPositionGoal<T extends EasyNPC<?>> extends Goal {
       return;
     }
 
-    if (this.ticksRunning >= TIMEOUT_TICKS) {
-      log.debug("{} Timeout reached, teleporting to {}", LOG_PREFIX, this.targetPos);
+    if (this.ticksRunning >= this.timeoutTicks) {
+      log.debug("{} Timeout reached for target position {}", LOG_PREFIX, this.targetPos);
       teleportAndArrive();
     }
   }
@@ -127,11 +156,11 @@ public class MoveToPositionGoal<T extends EasyNPC<?>> extends Goal {
   private boolean reachedTarget() {
     BlockPos blockPos = this.mob.blockPosition();
     Vec3i vec3i = new Vec3i(blockPos.getX(), blockPos.getY(), blockPos.getZ());
-    return this.targetPos.closerThan(vec3i, STOP_DISTANCE);
+    return this.targetPos.closerThan(vec3i, this.arrivalRadius);
   }
 
   private void teleportAndArrive() {
-    if (this.navigationData != null) {
+    if (this.teleportOnTimeout && this.navigationData != null) {
       this.navigationData.setPosition(
           new Vec3(
               this.targetPos.getX() + 0.5, this.targetPos.getY(), this.targetPos.getZ() + 0.5));

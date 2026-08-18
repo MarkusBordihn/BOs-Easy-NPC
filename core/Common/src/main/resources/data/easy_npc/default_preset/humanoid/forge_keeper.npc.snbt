@@ -22,7 +22,7 @@
       }
     },
     ArmorItems:[{},{},{},{
-      Count:1b,id:"minecraft:leather_boots",tag:{
+      Count:1b,id:"minecraft:anvil",tag:{
         Damage:0
       }
     }],

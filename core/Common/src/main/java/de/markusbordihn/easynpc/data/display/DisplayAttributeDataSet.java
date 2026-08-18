@@ -79,6 +79,9 @@ public record DisplayAttributeDataSet(
     map.put(
         DisplayAttributeType.NAME_VISIBILITY,
         new DisplayAttributeEntry(NameVisibilityType.ALWAYS.toString()));
+    map.put(
+        DisplayAttributeType.OPACITY,
+        new DisplayAttributeEntry(DisplayAttributeType.DEFAULT_OPACITY));
     return map;
   }
 

@@ -59,6 +59,8 @@ public class PlayerSkinConfigurationScreen<T extends ConfigurationMenu>
 
   private static final float SKIN_NAME_SCALING = 0.7f;
   private static final int ADD_SKIN_DELAY = 20;
+  private static final int RELOAD_BUTTON_HEIGHT = 16;
+  private static final int RELOAD_BUTTON_WIDTH = 20;
   protected Button addTextureSettingsButton = null;
   protected EditBox textureSkinLocationBox;
   private boolean canTextureSkinLocationChange = true;
@@ -157,10 +159,10 @@ public class PlayerSkinConfigurationScreen<T extends ConfigurationMenu>
     skinButtons.add(skinButton);
     skinButtons.add(
         new ReloadButton(
-            x + 10,
-            y - 81,
-            12,
-            12,
+            skinButton.getX() + skinButton.getWidth() - RELOAD_BUTTON_WIDTH,
+            skinButton.getY() + skinButton.getHeight() - RELOAD_BUTTON_HEIGHT,
+            RELOAD_BUTTON_WIDTH,
+            RELOAD_BUTTON_HEIGHT,
             null,
             onPress -> PlayerTextureManager.refreshTexture(textureModelKey)));
   }

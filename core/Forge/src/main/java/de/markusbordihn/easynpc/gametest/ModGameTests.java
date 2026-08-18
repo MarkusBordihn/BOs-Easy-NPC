@@ -444,6 +444,8 @@ public final class ModGameTests {
         () -> PresetSpawnTest::testPresetItemSpawnsConfiguredVillager);
     TEST_FUNCTIONS.register(
         "spawner_spawns_configured_n_p_c", () -> PresetSpawnTest::testSpawnerSpawnsConfiguredNPC);
+    TEST_FUNCTIONS.register(
+        "preset_import_sets_home", () -> PresetSpawnTest::testPresetImportSetsHome);
 
     TEST_FUNCTIONS.register(
         "npc_without_stored_sounds_still_has_sounds",
@@ -476,6 +478,38 @@ public final class ModGameTests {
     TEST_FUNCTIONS.register(
         "immovable_n_p_c_loses_its_movement_objectives",
         () -> ImmovableAttributeTest::testImmovableNPCLosesItsMovementObjectives);
+
+    TEST_FUNCTIONS.register(
+        "move_keeps_the_chain_running", () -> MoveActionTest::testMoveKeepsTheChainRunning);
+    TEST_FUNCTIONS.register(
+        "move_and_wait_parks_the_chain", () -> MoveActionTest::testMoveAndWaitParksTheChain);
+    TEST_FUNCTIONS.register(
+        "arrival_resumes_the_chain", () -> MoveActionTest::testArrivalResumesTheChain);
+    TEST_FUNCTIONS.register(
+        "timeout_resumes_the_chain", () -> MoveActionTest::testTimeoutResumesTheChain);
+    TEST_FUNCTIONS.register(
+        "immovable_n_p_c_does_not_block_the_chain",
+        () -> MoveActionTest::testImmovableNPCDoesNotBlockTheChain);
+    TEST_FUNCTIONS.register(
+        "second_move_replaces_the_first_goal",
+        () -> MoveActionTest::testSecondMoveReplacesTheFirstGoal);
+    TEST_FUNCTIONS.register(
+        "move_without_target_is_skipped", () -> MoveActionTest::testMoveWithoutTargetIsSkipped);
+
+    TEST_FUNCTIONS.register(
+        "new_n_p_c_is_fully_opaque", () -> OpacityAttributeTest::testNewNPCIsFullyOpaque);
+    TEST_FUNCTIONS.register(
+        "opacity_action_changes_the_attribute",
+        () -> OpacityAttributeTest::testOpacityActionChangesTheAttribute);
+    TEST_FUNCTIONS.register(
+        "fully_transparent_opacity_survives_save_and_load",
+        () -> OpacityAttributeTest::testFullyTransparentOpacitySurvivesSaveAndLoad);
+    TEST_FUNCTIONS.register(
+        "opacity_is_exported_with_the_preset",
+        () -> OpacityAttributeTest::testOpacityIsExportedWithThePreset);
+    TEST_FUNCTIONS.register(
+        "opacity_is_clamped_to_the_allowed_range",
+        () -> OpacityAttributeTest::testOpacityIsClampedToTheAllowedRange);
 
     TEST_FUNCTIONS.register(
         "pause_and_resume_of_a_single_n_p_c", () -> PauseTest::testPauseAndResumeOfASingleNPC);

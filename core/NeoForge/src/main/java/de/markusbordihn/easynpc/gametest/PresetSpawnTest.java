@@ -50,4 +50,9 @@ public final class PresetSpawnTest {
     PresetSpawnTestHelper.assertSpawnerSpawnsConfiguredNPC(helper, humanoid());
     helper.succeed();
   }
+
+  public static void testPresetImportSetsHome(GameTestHelper helper) {
+    PresetSpawnTestHelper.assertPresetImportSetsHome(helper, humanoid());
+    helper.succeed();
+  }
 }

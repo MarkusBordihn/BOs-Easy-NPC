@@ -628,6 +628,8 @@ public final class ModGameTests {
         "spawner_spawns_configured_n_p_c",
         PresetSpawnTest::testSpawnerSpawnsConfiguredNPC,
         DEFAULT_STRUCTURE);
+    register(
+        "preset_import_sets_home", PresetSpawnTest::testPresetImportSetsHome, DEFAULT_STRUCTURE);
 
     register(
         "npc_without_stored_sounds_still_has_sounds",
@@ -672,6 +674,52 @@ public final class ModGameTests {
     register(
         "immovable_n_p_c_loses_its_movement_objectives",
         ImmovableAttributeTest::testImmovableNPCLosesItsMovementObjectives,
+        DEFAULT_STRUCTURE);
+
+    register(
+        "move_keeps_the_chain_running",
+        MoveActionTest::testMoveKeepsTheChainRunning,
+        DEFAULT_STRUCTURE);
+    register(
+        "move_and_wait_parks_the_chain",
+        MoveActionTest::testMoveAndWaitParksTheChain,
+        DEFAULT_STRUCTURE);
+    register(
+        "arrival_resumes_the_chain", MoveActionTest::testArrivalResumesTheChain, DEFAULT_STRUCTURE);
+    register(
+        "timeout_resumes_the_chain", MoveActionTest::testTimeoutResumesTheChain, DEFAULT_STRUCTURE);
+    register(
+        "immovable_n_p_c_does_not_block_the_chain",
+        MoveActionTest::testImmovableNPCDoesNotBlockTheChain,
+        DEFAULT_STRUCTURE);
+    register(
+        "second_move_replaces_the_first_goal",
+        MoveActionTest::testSecondMoveReplacesTheFirstGoal,
+        DEFAULT_STRUCTURE);
+    register(
+        "move_without_target_is_skipped",
+        MoveActionTest::testMoveWithoutTargetIsSkipped,
+        DEFAULT_STRUCTURE);
+
+    register(
+        "new_n_p_c_is_fully_opaque",
+        OpacityAttributeTest::testNewNPCIsFullyOpaque,
+        DEFAULT_STRUCTURE);
+    register(
+        "opacity_action_changes_the_attribute",
+        OpacityAttributeTest::testOpacityActionChangesTheAttribute,
+        DEFAULT_STRUCTURE);
+    register(
+        "fully_transparent_opacity_survives_save_and_load",
+        OpacityAttributeTest::testFullyTransparentOpacitySurvivesSaveAndLoad,
+        DEFAULT_STRUCTURE);
+    register(
+        "opacity_is_exported_with_the_preset",
+        OpacityAttributeTest::testOpacityIsExportedWithThePreset,
+        DEFAULT_STRUCTURE);
+    register(
+        "opacity_is_clamped_to_the_allowed_range",
+        OpacityAttributeTest::testOpacityIsClampedToTheAllowedRange,
         DEFAULT_STRUCTURE);
 
     register(

@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.mixin.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import de.markusbordihn.easynpc.client.renderer.OpacitySubmitNodeCollector;
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCLivingEntityRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.state.EasyNPCRenderStateExtension;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
@@ -33,6 +34,7 @@ import net.minecraft.world.entity.LivingEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -59,6 +61,21 @@ public class EasyNPCLivingEntityRendererMixin {
           renderState,
           (LivingEntityRenderer<?, ?, ?>) (Object) this);
     }
+  }
+
+  @ModifyVariable(
+      method =
+          "submit(Lnet/minecraft/client/renderer/entity/state/LivingEntityRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/renderer/state/CameraRenderState;)V",
+      at = @At("HEAD"),
+      argsOnly = true,
+      index = 3)
+  private SubmitNodeCollector wrapSubmitNodeCollectorForOpacity(
+      SubmitNodeCollector submitNodeCollector,
+      LivingEntityRenderState renderState,
+      PoseStack poseStack,
+      SubmitNodeCollector originalSubmitNodeCollector,
+      CameraRenderState cameraRenderState) {
+    return OpacitySubmitNodeCollector.wrapIfNeeded(renderState, submitNodeCollector);
   }
 
   @Inject(

@@ -58,7 +58,9 @@
       "de.markusbordihn.easynpc.gametest.PauseTest",
       "de.markusbordihn.easynpc.gametest.PlayerIdleTest",
       "de.markusbordihn.easynpc.gametest.ImmovableAttributeTest",
-      "de.markusbordihn.easynpc.gametest.FallbackActionTest"
+      "de.markusbordihn.easynpc.gametest.FallbackActionTest",
+      "de.markusbordihn.easynpc.gametest.MoveActionTest",
+      "de.markusbordihn.easynpc.gametest.OpacityAttributeTest"
     ]
   },
   "mixins": [

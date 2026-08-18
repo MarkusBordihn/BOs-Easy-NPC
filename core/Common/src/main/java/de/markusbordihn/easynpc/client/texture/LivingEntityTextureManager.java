@@ -49,11 +49,18 @@ public class LivingEntityTextureManager {
     return RemoteTextureManager.getOrCreateTextureWithDefault(entity, defaultTexture);
   }
 
+  public static Identifier getResourceLocationTexture(
+      SkinDataCapable<?> entity, Identifier defaultTexture) {
+    Identifier texture = entity.getSkinDataEntry().texture();
+    return texture != null ? texture : defaultTexture;
+  }
+
   public static Identifier getEntityTexture(EasyNPC<?> easyNPC, Identifier defaultTexture) {
     SkinDataCapable<?> skinData = easyNPC.getEasyNPCSkinData();
     return switch (skinData.getSkinType()) {
       case NONE -> Constants.BLANK_ENTITY_TEXTURE;
       case CUSTOM -> getCustomTexture(skinData, defaultTexture);
+      case RESOURCE_LOCATION -> getResourceLocationTexture(skinData, defaultTexture);
       case SECURE_REMOTE_URL, INSECURE_REMOTE_URL -> getRemoteTexture(skinData, defaultTexture);
       default ->
           getTextureByVariant(easyNPC.getEasyNPCVariantData().getSkinVariantType(), defaultTexture);
@@ -65,6 +72,7 @@ public class LivingEntityTextureManager {
     return switch (skinData.getSkinType()) {
       case NONE -> Constants.BLANK_ENTITY_TEXTURE;
       case CUSTOM -> getCustomTexture(skinData, defaultTexture);
+      case RESOURCE_LOCATION -> getResourceLocationTexture(skinData, defaultTexture);
       case PLAYER_SKIN -> getPlayerTexture(skinData, defaultTexture);
       case SECURE_REMOTE_URL, INSECURE_REMOTE_URL -> getRemoteTexture(skinData, defaultTexture);
       default ->
@@ -78,6 +86,7 @@ public class LivingEntityTextureManager {
     return switch (skinData.getSkinType()) {
       case NONE -> Constants.BLANK_ENTITY_TEXTURE;
       case CUSTOM -> getCustomTexture(skinData, defaultTexture);
+      case RESOURCE_LOCATION -> getResourceLocationTexture(skinData, defaultTexture);
       case SECURE_REMOTE_URL, INSECURE_REMOTE_URL -> getRemoteTexture(skinData, defaultTexture);
       default -> defaultTextureSupplier.get();
     };

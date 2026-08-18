@@ -20,7 +20,10 @@
 package de.markusbordihn.easynpc.data.action;
 
 import de.markusbordihn.easynpc.utils.EnumUtils;
+import java.util.Collections;
+import java.util.EnumSet;
 import java.util.Locale;
+import java.util.Set;
 
 public enum ActionDataType {
   NONE,
@@ -41,7 +44,13 @@ public enum ActionDataType {
   MESSAGE,
   SOUND,
   WAIT,
-  CUSTOM;
+  CUSTOM,
+  MOVE_TO,
+  MOVE_TO_AND_WAIT,
+  SET_OPACITY;
+
+  private static final Set<ActionDataType> BLOCKING_ACTION_TYPES =
+      Collections.unmodifiableSet(EnumSet.of(WAIT, MOVE_TO_AND_WAIT));
 
   private final boolean requiresArgument;
   private final String id = "actionDataType." + this.name().toLowerCase(Locale.ROOT);
@@ -58,8 +67,16 @@ public enum ActionDataType {
     return EnumUtils.get(ActionDataType.class, actionType, NONE);
   }
 
+  public static Set<ActionDataType> getBlockingTypes() {
+    return BLOCKING_ACTION_TYPES;
+  }
+
   public boolean requiresArgument() {
     return this.requiresArgument;
+  }
+
+  public boolean isBlocking() {
+    return BLOCKING_ACTION_TYPES.contains(this);
   }
 
   public String getId() {

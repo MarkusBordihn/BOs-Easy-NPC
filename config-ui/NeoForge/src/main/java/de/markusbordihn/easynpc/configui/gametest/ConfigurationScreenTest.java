@@ -380,12 +380,12 @@ public final class ConfigurationScreenTest {
     helper.succeed();
   }
 
-  public static void testNoneSkinConfigurationScreen(GameTestHelper helper) {
+  public static void testAdvancedSkinConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
         ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
-        ConfigurationType.NONE_SKIN,
-        ModMenuTypes.NONE_SKIN_CONFIGURATION_MENU.get());
+        ConfigurationType.ADVANCED_SKIN,
+        ModMenuTypes.ADVANCED_SKIN_CONFIGURATION_MENU.get());
     helper.succeed();
   }
 
