@@ -108,7 +108,7 @@ class GhostPatrolPresetTest {
     for (int i = 0; i < attributes.size(); i++) {
       CompoundTag attribute = attributes.getCompound(i);
       if ("minecraft:generic.movement_speed".equals(attribute.getString("Name"))) {
-        assertEquals(0.4D, attribute.getDouble("Base"));
+        assertEquals(0.3D, attribute.getDouble("Base"));
         hasMovementSpeed = true;
       }
     }
