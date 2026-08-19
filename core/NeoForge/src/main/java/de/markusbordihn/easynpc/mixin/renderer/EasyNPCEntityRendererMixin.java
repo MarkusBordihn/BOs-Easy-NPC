@@ -23,8 +23,10 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.client.model.EasyNPCModel;
 import de.markusbordihn.easynpc.client.renderer.entity.SpeechBubbleRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.state.EasyNPCRenderStateExtension;
+import de.markusbordihn.easynpc.data.display.DisplayAttributeType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.DisplayAttributeDataCapable;
+import de.markusbordihn.easynpc.handler.AttributeHandler;
 import de.markusbordihn.easynpc.utils.ItemUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.SubmitNodeCollector;
@@ -54,7 +56,7 @@ public class EasyNPCEntityRendererMixin<T extends Entity, S extends EntityRender
       double y,
       double z,
       CallbackInfoReturnable<Boolean> cir) {
-    if (entity instanceof EasyNPC<?>) {
+    if (entity instanceof EasyNPC<?> easyNPC) {
       var player = Minecraft.getInstance().player;
       if (player == null) {
         return;
@@ -68,7 +70,10 @@ public class EasyNPCEntityRendererMixin<T extends Entity, S extends EntityRender
         }
       }
 
-      boolean isInvisible = entity.isInvisible() || entity.isInvisibleTo(player);
+      boolean isInvisible =
+          entity.isInvisible()
+              || entity.isInvisibleTo(player)
+              || AttributeHandler.getOpacity(easyNPC) <= DisplayAttributeType.MIN_OPACITY;
       if (isInvisible) {
         cir.setReturnValue(false);
       }

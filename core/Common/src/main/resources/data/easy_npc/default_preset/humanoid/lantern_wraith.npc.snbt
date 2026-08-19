@@ -1,0 +1,103 @@
+{
+  PresetMetadata:{
+    author:"Easy NPC",
+    category:"General",
+    created:1786492800000L,
+    description:"A ghost that shows the OPACITY attribute and the MOVE_TO_AND_WAIT action together. The dialog button sends it around a six block square, relative to its own position, with a short line at every corner and a fade at the end. A second press is ignored while the round is still running.",
+    entityTypeId:"easy_npc:humanoid",
+    modified:1786492800000L,
+    name:"Lantern Wraith",
+    variantType:"ARI",
+    version:"1.0.0"
+  },
+  data:{
+    ActionData:{
+      ActionEventSet:{
+        ON_INTERACTION:[{
+          Type:"OPEN_DEFAULT_DIALOG"
+        }],
+        ON_INTERVAL_VERY_LONG:[{
+          Msg:{T:4b,Texts:["The lantern is burning low."]},Type:"MESSAGE"
+        },{
+          Cmd:"3s",Type:"WAIT"
+        },{
+          Msg:{T:4b,Texts:["I will walk the square again soon."]},Type:"MESSAGE"
+        }]
+      }
+    },
+    Attributes:[{
+      Base:0.3d,Name:"minecraft:generic.movement_speed"
+    }],
+    CustomName:'{"color":"#9FD8E0","text":"Lantern Wraith"}',
+    DialogData:{
+      DialogDataSet:[{
+        Buttons:[{
+          Actions:[{
+            Type:"CLOSE_DIALOG"
+          },{
+            Msg:{T:4b,Texts:["Keep the lantern in sight, @initiator."]},Type:"MESSAGE"
+          },{
+            BlockPos:{X:6,Y:0,Z:0},Move:{Radius:1.5f,Target:"RELATIVE",Teleport:1b,Timeout:400},Type:"MOVE_TO_AND_WAIT"
+          },{
+            Msg:{T:4b,Texts:["First corner. The stones are still warm here."]},Type:"MESSAGE"
+          },{
+            BlockPos:{X:0,Y:0,Z:6},Move:{Radius:1.5f,Target:"RELATIVE",Teleport:1b,Timeout:400},Type:"MOVE_TO_AND_WAIT"
+          },{
+            Msg:{T:4b,Texts:["Second corner. Something passed through last night."]},Type:"MESSAGE"
+          },{
+            BlockPos:{X:-6,Y:0,Z:0},Move:{Radius:1.5f,Target:"RELATIVE",Teleport:1b,Timeout:400},Type:"MOVE_TO_AND_WAIT"
+          },{
+            Msg:{T:4b,Texts:["Third corner. The light does not reach this side."]},Type:"MESSAGE"
+          },{
+            BlockPos:{X:0,Y:0,Z:-6},Move:{Radius:1.5f,Target:"RELATIVE",Teleport:1b,Timeout:400},Type:"MOVE_TO_AND_WAIT"
+          },{
+            Msg:{T:4b,Texts:["Back where we started. The square holds."]},Type:"MESSAGE"
+          },{
+            Cmd:"15",Type:"SET_OPACITY"
+          },{
+            Cmd:"/particle minecraft:soul ~ ~1 ~ 0.3 0.5 0.3 0.01 20",Type:"COMMAND"
+          },{
+            Cmd:"3s",Type:"WAIT"
+          },{
+            Cmd:"40",Type:"SET_OPACITY"
+          },{
+            Msg:{T:5b,Texts:["The round is walked, @initiator. Ask me again when the light fades."]},Type:"MESSAGE"
+          }],Label:"button_patrol",Name:"Walk the square"
+        }],Label:"default",Name:"Wraith",Priority:10,Texts:[{
+          Text:"I walk a square around this place, @initiator. Ask me to start and follow the lantern."
+        }]
+      }],
+      Type:"CUSTOM"
+    },
+    DisplayAttribute:[{
+      Int:40,Type:"OPACITY"
+    }],
+    EasyNPCVersion:3,
+    EntityAttribute:{
+      CanFloat:1b
+    },
+    HandItems:[{
+      Count:1b,id:"minecraft:soul_lantern"
+    },{
+      Count:1b,id:"minecraft:soul_torch"
+    }],
+    Invulnerable:1b,
+    ObjectiveData:{
+      HasObjectives:1b,
+      HasTravelTarget:1b,
+      ObjectiveDataSet:[{
+        Type:"LOOK_AT_PLAYER"
+      },{
+        Type:"MOVE_BACK_TO_HOME"
+      },{
+        Type:"LOOK_AT_RESET"
+      }]
+    },
+    PersistenceRequired:0b,
+    SkinData:{
+      Name:"ARI"
+    },
+    VariantType:"ARI",
+    id:"easy_npc:humanoid"
+  }
+}

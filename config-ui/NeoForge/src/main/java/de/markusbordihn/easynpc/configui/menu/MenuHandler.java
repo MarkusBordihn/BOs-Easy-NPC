@@ -130,7 +130,7 @@ public class MenuHandler implements MenuHandlerInterface {
     configurationMenuMap.put(
         ConfigurationType.NONE_DIALOG, ModMenuTypes.NONE_DIALOG_CONFIGURATION_MENU.get());
     configurationMenuMap.put(
-        ConfigurationType.NONE_SKIN, ModMenuTypes.NONE_SKIN_CONFIGURATION_MENU.get());
+        ConfigurationType.ADVANCED_SKIN, ModMenuTypes.ADVANCED_SKIN_CONFIGURATION_MENU.get());
     configurationMenuMap.put(
         ConfigurationType.NONE_TRADING, ModMenuTypes.NONE_TRADING_CONFIGURATION_MENU.get());
     configurationMenuMap.put(

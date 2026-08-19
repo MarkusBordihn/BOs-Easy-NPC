@@ -17,17 +17,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.configui.client.screen.configuration.skin;
+package de.markusbordihn.easynpc.configui.menu.configuration.skin;
 
-import de.markusbordihn.easynpc.configui.menu.configuration.skin.NoneSkinConfigurationMenuWrapper;
-import net.minecraft.network.chat.Component;
+import de.markusbordihn.easynpc.configui.menu.ModMenuTypes;
+import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import net.minecraft.world.entity.player.Inventory;
 
-public class NoneSkinConfigurationScreenWrapper
-    extends NoneSkinConfigurationScreen<NoneSkinConfigurationMenuWrapper> {
+public class AdvancedSkinConfigurationMenuWrapper extends ConfigurationMenu {
 
-  public NoneSkinConfigurationScreenWrapper(
-      NoneSkinConfigurationMenuWrapper menu, Inventory inventory, Component component) {
-    super(menu, inventory, component);
+  public AdvancedSkinConfigurationMenuWrapper(final int windowId, final Inventory playerInventory) {
+    super(ModMenuTypes.ADVANCED_SKIN_CONFIGURATION_MENU, windowId, playerInventory);
   }
 }

@@ -42,6 +42,7 @@ import de.markusbordihn.easymodelentities.api.data.client.EasyModelPartTransform
 import de.markusbordihn.easymodelentities.client.render.EasyModelEntityRenderBackend;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.api.texture.ModelTextureAPI;
+import de.markusbordihn.easynpc.client.renderer.OpacitySubmitNodeCollector;
 import de.markusbordihn.easynpc.client.renderer.manager.EntityTypeManager;
 import de.markusbordihn.easynpc.compat.IntegrationRegistry;
 import de.markusbordihn.easynpc.compat.easymodelentities.EasyModelEntitiesLoader;
@@ -425,6 +426,8 @@ public class EasyModelNPCRenderer<E extends PathfinderMob>
       PoseStack poseStack,
       SubmitNodeCollector submitNodeCollector,
       CameraRenderState cameraRenderState) {
+    SubmitNodeCollector modelSubmitNodeCollector =
+        OpacitySubmitNodeCollector.wrapIfNeeded(renderState, submitNodeCollector);
     if (renderState.easyModelRenderState != null) {
       poseStack.pushPose();
       if (renderState.previewScale > 0.0f) {
@@ -444,7 +447,7 @@ public class EasyModelNPCRenderer<E extends PathfinderMob>
       }
       try {
         EasyModelEntityRenderBackend.render(
-            renderState, poseStack, submitNodeCollector, renderState.lightCoords);
+            renderState, poseStack, modelSubmitNodeCollector, renderState.lightCoords);
       } catch (Exception exception) {
         if (renderState.profileId != null) {
           invalidProfileCache.put(renderState.profileId, Boolean.TRUE);
@@ -452,7 +455,7 @@ public class EasyModelNPCRenderer<E extends PathfinderMob>
         log.error(
             "Failed to render Easy Model Entities profile {}:", renderState.profileId, exception);
       }
-      renderHandItems(renderState, poseStack, submitNodeCollector);
+      renderHandItems(renderState, poseStack, modelSubmitNodeCollector);
       poseStack.popPose();
     }
     super.submit(renderState, poseStack, submitNodeCollector, cameraRenderState);

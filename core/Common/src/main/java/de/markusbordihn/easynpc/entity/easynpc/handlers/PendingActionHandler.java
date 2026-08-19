@@ -52,6 +52,18 @@ public interface PendingActionHandler<E extends Mob> extends EasyNPC<E> {
     }
   }
 
+  default boolean resumePendingActionEarly(ActionEventType actionEventType, Identifier sourceId) {
+    PendingActionSet pendingActionSet = this.getPendingActions();
+    PendingActionChain pendingActionChain =
+        pendingActionSet != null ? pendingActionSet.remove(actionEventType, sourceId) : null;
+    if (pendingActionChain == null) {
+      return false;
+    }
+
+    this.resumePendingAction(pendingActionChain);
+    return true;
+  }
+
   default void cancelPendingActions() {
     PendingActionSet pendingActionSet = this.getPendingActions();
     if (pendingActionSet != null) {

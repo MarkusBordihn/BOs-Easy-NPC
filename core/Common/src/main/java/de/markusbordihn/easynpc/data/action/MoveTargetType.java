@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Markus Bordihn
+ * Copyright 2026 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,17 +17,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.configui.client.screen.configuration.skin;
+package de.markusbordihn.easynpc.data.action;
 
-import de.markusbordihn.easynpc.configui.menu.configuration.skin.NoneSkinConfigurationMenuWrapper;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Inventory;
+import de.markusbordihn.easynpc.utils.EnumUtils;
+import java.util.Locale;
 
-public class NoneSkinConfigurationScreenWrapper
-    extends NoneSkinConfigurationScreen<NoneSkinConfigurationMenuWrapper> {
+public enum MoveTargetType {
+  POSITION(true),
+  RELATIVE(true),
+  INITIATOR(false),
+  OWNER(false),
+  HOME(false);
 
-  public NoneSkinConfigurationScreenWrapper(
-      NoneSkinConfigurationMenuWrapper menu, Inventory inventory, Component component) {
-    super(menu, inventory, component);
+  private final boolean requiresPosition;
+  private final String id = "moveTargetType." + this.name().toLowerCase(Locale.ROOT);
+
+  MoveTargetType(boolean requiresPosition) {
+    this.requiresPosition = requiresPosition;
+  }
+
+  public static MoveTargetType get(String moveTargetType) {
+    return EnumUtils.getIgnoreCase(MoveTargetType.class, moveTargetType, POSITION);
+  }
+
+  public boolean requiresPosition() {
+    return this.requiresPosition;
+  }
+
+  public String getId() {
+    return this.id;
   }
 }

@@ -60,9 +60,9 @@ import de.markusbordihn.easynpc.configui.menu.configuration.preset.ImportLocalPr
 import de.markusbordihn.easynpc.configui.menu.configuration.preset.ImportWorldPresetConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.rotation.DefaultRotationConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.scaling.ScalingConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.configui.menu.configuration.skin.AdvancedSkinConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.skin.CustomSkinConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.skin.DefaultSkinConfigurationMenuWrapper;
-import de.markusbordihn.easynpc.configui.menu.configuration.skin.NoneSkinConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.skin.PlayerSkinConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.skin.UrlSkinConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.trading.AdvancedTradingConfigurationMenuWrapper;
@@ -378,11 +378,12 @@ public class ModMenuTypes {
           BuiltInRegistries.MENU,
           ConfigurationType.NONE_DIALOG.getId(),
           new MenuType<>(NoneDialogConfigurationMenuWrapper::new, FeatureFlagSet.of()));
-  public static final MenuType<NoneSkinConfigurationMenuWrapper> NONE_SKIN_CONFIGURATION_MENU =
-      Registry.register(
-          BuiltInRegistries.MENU,
-          ConfigurationType.NONE_SKIN.getId(),
-          new MenuType<>(NoneSkinConfigurationMenuWrapper::new, FeatureFlagSet.of()));
+  public static final MenuType<AdvancedSkinConfigurationMenuWrapper>
+      ADVANCED_SKIN_CONFIGURATION_MENU =
+          Registry.register(
+              BuiltInRegistries.MENU,
+              ConfigurationType.ADVANCED_SKIN.getId(),
+              new MenuType<>(AdvancedSkinConfigurationMenuWrapper::new, FeatureFlagSet.of()));
   public static final MenuType<NoneTradingConfigurationMenuWrapper>
       NONE_TRADING_CONFIGURATION_MENU =
           Registry.register(
