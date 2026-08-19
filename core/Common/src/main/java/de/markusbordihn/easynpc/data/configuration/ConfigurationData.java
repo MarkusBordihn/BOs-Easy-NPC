@@ -83,7 +83,7 @@ public record ConfigurationData(
                   ConfigurationType.CUSTOM_SKIN,
                   ConfigurationType.PLAYER_SKIN,
                   ConfigurationType.URL_SKIN,
-                  ConfigurationType.NONE_SKIN,
+                  ConfigurationType.ADVANCED_SKIN,
                   ConfigurationType.SCALING,
                   ConfigurationType.DEFAULT_ROTATION),
               ConfigurationType.CUSTOM_MODEL),
@@ -103,7 +103,7 @@ public record ConfigurationData(
                   ConfigurationType.CUSTOM_SKIN,
                   ConfigurationType.PLAYER_SKIN,
                   ConfigurationType.URL_SKIN,
-                  ConfigurationType.NONE_SKIN,
+                  ConfigurationType.ADVANCED_SKIN,
                   ConfigurationType.SCALING),
               ConfigurationType.COBBLEMON_MODEL));
   public static final ConfigurationData EASY_MODEL =
@@ -119,7 +119,7 @@ public record ConfigurationData(
                   ConfigurationType.CUSTOM_SKIN,
                   ConfigurationType.PLAYER_SKIN,
                   ConfigurationType.URL_SKIN,
-                  ConfigurationType.NONE_SKIN),
+                  ConfigurationType.ADVANCED_SKIN),
               ConfigurationType.EASY_MODEL_ENTITIES_MODEL));
   public static final ConfigurationData EASY_MODEL_HUMANOID =
       new ConfigurationData(

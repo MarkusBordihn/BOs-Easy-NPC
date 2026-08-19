@@ -103,7 +103,7 @@ public enum ActionEventType {
   }
 
   public boolean allowsActionDataType(ActionDataType actionDataType) {
-    if (actionDataType == ActionDataType.WAIT && EVENT_TYPES_REMOVING_THE_ENTITY.contains(this)) {
+    if (actionDataType.isBlocking() && EVENT_TYPES_REMOVING_THE_ENTITY.contains(this)) {
       return false;
     }
 

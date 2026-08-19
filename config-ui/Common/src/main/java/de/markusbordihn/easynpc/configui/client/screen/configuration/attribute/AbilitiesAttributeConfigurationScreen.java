@@ -215,7 +215,7 @@ public class AbilitiesAttributeConfigurationScreen<T extends ConfigurationMenu>
 
     this.addRenderableWidget(
         new Checkbox(
-            firstButtonRow,
+            secondButtonRow,
             this.buttonTopPos + 105,
             MovementAttributeType.CAN_USE_NETHER_PORTAL.getAttributeName(),
             entityAttributes.getMovementAttributes().canUseNetherPortal(),
@@ -228,7 +228,7 @@ public class AbilitiesAttributeConfigurationScreen<T extends ConfigurationMenu>
 
     this.addRenderableWidget(
         new Checkbox(
-            secondButtonRow,
+            firstButtonRow,
             this.buttonTopPos + 105,
             MovementAttributeType.IS_IMMOVABLE.getAttributeName(),
             entityAttributes.getMovementAttributes().isImmovable(),

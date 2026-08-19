@@ -49,6 +49,9 @@ public final class ModGameTests {
         "advanced_pose_configuration_screen",
         () -> ConfigurationScreenTest::testAdvancedPoseConfigurationScreen);
     TEST_FUNCTIONS.register(
+        "advanced_skin_configuration_screen",
+        () -> ConfigurationScreenTest::testAdvancedSkinConfigurationScreen);
+    TEST_FUNCTIONS.register(
         "advanced_trading_configuration_screen",
         () -> ConfigurationScreenTest::testAdvancedTradingConfigurationScreen);
     TEST_FUNCTIONS.register(
@@ -155,9 +158,6 @@ public final class ModGameTests {
     TEST_FUNCTIONS.register(
         "none_dialog_configuration_screen",
         () -> ConfigurationScreenTest::testNoneDialogConfigurationScreen);
-    TEST_FUNCTIONS.register(
-        "none_skin_configuration_screen",
-        () -> ConfigurationScreenTest::testNoneSkinConfigurationScreen);
     TEST_FUNCTIONS.register(
         "none_trading_configuration_screen",
         () -> ConfigurationScreenTest::testNoneTradingConfigurationScreen);

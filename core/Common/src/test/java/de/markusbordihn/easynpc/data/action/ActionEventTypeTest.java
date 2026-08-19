@@ -176,10 +176,11 @@ class ActionEventTypeTest {
   }
 
   @Test
-  @DisplayName("The death event allows every action data type but a wait")
-  void testDeathEventDisallowsWaitActionDataType() {
+  @DisplayName("The death event allows every action data type but the blocking ones")
+  void testDeathEventDisallowsBlockingActionDataTypes() {
     for (ActionDataType actionDataType : ActionDataType.values()) {
-      if (actionDataType == ActionDataType.WAIT) {
+      if (actionDataType == ActionDataType.WAIT
+          || actionDataType == ActionDataType.MOVE_TO_AND_WAIT) {
         assertFalse(ActionEventType.ON_DEATH.allowsActionDataType(actionDataType));
         continue;
       }

@@ -19,7 +19,9 @@
     "renderer.DrownedOuterLayerMixin",
     "renderer.EasyNPCEntityRendererMixin", "renderer.EasyNPCLivingEntityRendererMixin",
     "renderer.EasyNPCSlimeRendererMixin", "renderer.HumanoidArmorLayerMixin",
-    "renderer.SkeletonClothingLayerMixin", "renderer.VillagerProfessionLayerMixin",
+    "renderer.RenderSetupMixin", "renderer.RenderTypeMixin",
+    "renderer.SkeletonClothingLayerMixin", "renderer.TextureBindingMixin",
+    "renderer.VillagerProfessionLayerMixin",
     "renderer.state.EasyNPCLivingEntityRenderStateMixin"
   ],
   "mixins": [

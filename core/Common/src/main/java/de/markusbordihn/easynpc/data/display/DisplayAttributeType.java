@@ -34,7 +34,12 @@ public enum DisplayAttributeType {
   VISIBLE_TO_TEAM(ValueType.BOOLEAN),
   INTERACTION_WHEN_INVISIBLE(ValueType.BOOLEAN),
   LIGHT_LEVEL(ValueType.INTEGER),
-  NAME_VISIBILITY(ValueType.STRING);
+  NAME_VISIBILITY(ValueType.STRING),
+  OPACITY(ValueType.INTEGER);
+
+  public static final int MIN_OPACITY = 0;
+  public static final int MAX_OPACITY = 100;
+  public static final int DEFAULT_OPACITY = 100;
 
   private final ValueType valueType;
   private final String attributeName = this.name().toLowerCase(Locale.ROOT);

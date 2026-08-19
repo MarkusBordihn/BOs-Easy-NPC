@@ -3,6 +3,7 @@ package de.markusbordihn.easynpc.client.renderer.entity.custom;
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.model.custom.DopplerModel;
+import de.markusbordihn.easynpc.client.renderer.OpacitySubmitNodeCollector;
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCLivingEntityRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.SpeechBubbleRenderer;
@@ -86,6 +87,8 @@ public class DopplerRenderer
     }
 
     String entityTypeName = EntityTypeManager.getEntityTypeName(renderEntityType);
+    SubmitNodeCollector entitySubmitNodeCollector =
+        OpacitySubmitNodeCollector.wrapIfNeeded(easyNPC, submitNodeCollector);
 
     LivingEntityRenderer<
             LivingEntity, LivingEntityRenderState, EntityModel<? super LivingEntityRenderState>>
@@ -113,7 +116,7 @@ public class DopplerRenderer
         EasyNPCLivingEntityRenderer.handleScale(easyNPC, poseStack);
 
         livingEntityRenderer.submit(
-            livingEntityRenderState, poseStack, submitNodeCollector, cameraRenderState);
+            livingEntityRenderState, poseStack, entitySubmitNodeCollector, cameraRenderState);
         return true;
       } catch (Exception exception) {
         log.error(
@@ -143,7 +146,8 @@ public class DopplerRenderer
         applyNPCRotationToImitatedModel(renderState, entityRenderState);
         EasyNPCLivingEntityRenderer.handleRotation(easyNPC, poseStack);
         EasyNPCLivingEntityRenderer.handleScale(easyNPC, poseStack);
-        entityRenderer.submit(entityRenderState, poseStack, submitNodeCollector, cameraRenderState);
+        entityRenderer.submit(
+            entityRenderState, poseStack, entitySubmitNodeCollector, cameraRenderState);
         return true;
       } catch (Exception exception) {
         log.error(

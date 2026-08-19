@@ -28,7 +28,6 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.BannerItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 
@@ -70,7 +69,7 @@ public class ArmorSlot extends Slot {
 
   @Override
   public boolean mayPlace(ItemStack itemStack) {
-    if (this.equipmentSlot == EquipmentSlot.HEAD && itemStack.getItem() instanceof BannerItem) {
+    if (this.equipmentSlot == EquipmentSlot.HEAD) {
       return true;
     }
 

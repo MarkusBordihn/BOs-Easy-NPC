@@ -57,10 +57,14 @@ public interface NavigationDataCapable<T extends Mob> extends EasyNPC<T> {
     return this.getNPCHomePosition() != null && !this.getNPCHomePosition().equals(BlockPos.ZERO);
   }
 
-  default void applyDefaultNPCHomePosition() {
+  default void setNPCHomePositionIfMissing(BlockPos blockPos) {
     if (!this.hasNPCHomePosition()) {
-      this.setNPCHomePosition(this.getEntity().blockPosition());
+      this.setNPCHomePosition(blockPos);
     }
+  }
+
+  default void applyDefaultNPCHomePosition() {
+    this.setNPCHomePositionIfMissing(this.getEntity().blockPosition());
   }
 
   default void setPosition(Vec3 pos) {

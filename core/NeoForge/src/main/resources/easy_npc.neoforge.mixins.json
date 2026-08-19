@@ -32,7 +32,10 @@
     "renderer.EasyNPCLivingEntityRendererMixin",
     "renderer.EasyNPCSlimeRendererMixin",
     "renderer.HumanoidArmorLayerMixin",
+    "renderer.RenderSetupMixin",
+    "renderer.RenderTypeMixin",
     "renderer.SkeletonClothingLayerMixin",
+    "renderer.TextureBindingMixin",
     "renderer.VillagerProfessionLayerMixin",
     "renderer.state.EasyNPCLivingEntityRenderStateMixin"
   ],

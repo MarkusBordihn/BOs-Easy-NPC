@@ -58,7 +58,9 @@
       "de.markusbordihn.easynpc.gametest.PauseTest",
       "de.markusbordihn.easynpc.gametest.PlayerIdleTest",
       "de.markusbordihn.easynpc.gametest.ImmovableAttributeTest",
-      "de.markusbordihn.easynpc.gametest.FallbackActionTest"
+      "de.markusbordihn.easynpc.gametest.FallbackActionTest",
+      "de.markusbordihn.easynpc.gametest.MoveActionTest",
+      "de.markusbordihn.easynpc.gametest.OpacityAttributeTest"
     ]
   },
   "mixins": [
@@ -73,9 +75,9 @@
   },
   "suggests": {
     "tooltipfix": "*",
-    "easy_model_entities": ">=2.1.0 <3.0.0"
+    "easy_model_entities": ">=2.2.0 <3.0.0"
   },
   "breaks": {
-    "easy_model_entities": "<2.1.0 || >=3.0.0"
+    "easy_model_entities": "<2.2.0 || >=3.0.0"
   }
 }
