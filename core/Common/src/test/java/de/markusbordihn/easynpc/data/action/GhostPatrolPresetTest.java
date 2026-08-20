@@ -128,8 +128,7 @@ class GhostPatrolPresetTest {
       }
       assertEquals(MoveTargetType.RELATIVE, actionDataEntry.moveActionData().targetType());
       assertEquals(
-          MoveActionData.DEFAULT_SPEED_MODIFIER,
-          actionDataEntry.moveActionData().speedModifier());
+          MoveActionData.DEFAULT_SPEED_MODIFIER, actionDataEntry.moveActionData().speedModifier());
       assertTrue(
           actionDataEntry.isValidAndNotEmpty(),
           "Move action " + actionDataEntry + " must resolve a target");

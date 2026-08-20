@@ -56,6 +56,9 @@ public record SavedNPCEntityEntry(
         NPCEntityMetadata.fromEasyNPC(easyNPC).withRemovalReason(removalReason);
     CompoundTag npcData = presetData.serializePresetData();
     npcData.remove(PresetDataCapable.PRESET_METADATA_TAG);
+    if (!presetData.hasPresetUUID()) {
+      npcData.remove(PresetDataCapable.PRESET_UUID_TAG);
+    }
 
     return new SavedNPCEntityEntry(easyNPC.getEntityUUID(), npcData, metadata);
   }

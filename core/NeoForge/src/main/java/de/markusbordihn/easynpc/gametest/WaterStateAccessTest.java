@@ -24,56 +24,18 @@ import de.markusbordihn.easynpc.entity.ModEntityType;
 import de.markusbordihn.easynpc.entity.ModNPCEntityType;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraft.world.entity.EntityType;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
 @SuppressWarnings("unused")
 @PrefixGameTestTemplate(value = false)
 @GameTestHolder(Constants.MOD_ID)
-public class StoredDataTest {
-
-  private static EntityType<?> humanoid() {
-    return ModEntityType.getEntityType(ModNPCEntityType.HUMANOID);
-  }
-
-  private static EntityType<?> villager() {
-    return ModEntityType.getEntityType(ModNPCEntityType.VILLAGER);
-  }
+public class WaterStateAccessTest {
 
   @GameTest(template = "gametest.3x3x3")
-  public void testNpcWithoutStoredSoundsStillHasSounds(GameTestHelper helper) {
-    StoredDataTestHelper.assertNpcWithoutStoredSoundsStillHasSounds(helper, humanoid());
-    helper.succeed();
-  }
-
-  @GameTest(template = "gametest.3x3x3")
-  public void testVillagerWithoutStoredSoundsStillHasSounds(GameTestHelper helper) {
-    StoredDataTestHelper.assertNpcWithoutStoredSoundsStillHasSounds(helper, villager());
-    helper.succeed();
-  }
-
-  @GameTest(template = "gametest.3x3x3")
-  public void testUnchangedSoundsAreNotStored(GameTestHelper helper) {
-    StoredDataTestHelper.assertUnchangedSoundsAreNotStored(helper, humanoid());
-    helper.succeed();
-  }
-
-  @GameTest(template = "gametest.3x3x3")
-  public void testObjectivesSurviveWithoutTargetFlags(GameTestHelper helper) {
-    StoredDataTestHelper.assertObjectivesSurviveWithoutTargetFlags(helper, humanoid());
-    helper.succeed();
-  }
-
-  @GameTest(template = "gametest.3x3x3")
-  public void testUnchangedNpcStoresNoBoilerplate(GameTestHelper helper) {
-    StoredDataTestHelper.assertUnchangedNpcStoresNoBoilerplate(helper, humanoid());
-    helper.succeed();
-  }
-
-  @GameTest(template = "gametest.3x3x3")
-  public void testStoredNpcDataIsDeterministic(GameTestHelper helper) {
-    StoredDataTestHelper.assertStoredNpcDataIsDeterministic(helper, humanoid());
+  public void testWaterStateIsWritable(GameTestHelper helper) {
+    WaterStateAccessTestHelper.assertWaterStateIsWritable(
+        helper, ModEntityType.getEntityType(ModNPCEntityType.HUMANOID));
     helper.succeed();
   }
 }

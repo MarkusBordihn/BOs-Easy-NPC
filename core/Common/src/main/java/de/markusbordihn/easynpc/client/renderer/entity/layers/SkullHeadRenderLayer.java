@@ -103,15 +103,13 @@ public class SkullHeadRenderLayer<T extends LivingEntity, M extends EntityModel<
     }
 
     Item item = headItem.getItem();
-    if (item instanceof ArmorItem armorItem
-        && armorItem.getEquipmentSlot() == EquipmentSlot.HEAD) {
+    if (item instanceof ArmorItem armorItem && armorItem.getEquipmentSlot() == EquipmentSlot.HEAD) {
       return;
     }
 
     if (!(item instanceof BlockItem blockItem)
         || !(blockItem.getBlock() instanceof AbstractSkullBlock skullBlock)) {
-      renderHeadItem(
-          entity, headItem, humanoidParentModel, poseStack, buffer, packedLight);
+      renderHeadItem(entity, headItem, humanoidParentModel, poseStack, buffer, packedLight);
       return;
     }
 
