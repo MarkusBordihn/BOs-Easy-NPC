@@ -65,4 +65,10 @@ public class StoredDataTest {
     StoredDataTestHelper.assertUnchangedNpcStoresNoBoilerplate(helper, humanoid());
     helper.succeed();
   }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testStoredNpcDataIsDeterministic(GameTestHelper helper) {
+    StoredDataTestHelper.assertStoredNpcDataIsDeterministic(helper, humanoid());
+    helper.succeed();
+  }
 }

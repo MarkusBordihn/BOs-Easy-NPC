@@ -38,6 +38,7 @@
   "mixins": [
     "entity.CreeperMixin",
     "entity.EndermanMixin",
+    "entity.EntityWaterStateMixin",
     "entity.EpicFightEquipmentMixin",
     "entity.FoxMixin",
     "entity.PiglinMixin",
