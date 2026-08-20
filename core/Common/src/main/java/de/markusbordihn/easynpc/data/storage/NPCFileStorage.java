@@ -46,6 +46,7 @@ public class NPCFileStorage {
   private final Path storageFolder;
   private final Map<UUID, CompoundTag> cache = new ConcurrentHashMap<>();
   private final Map<UUID, CompoundTag> dirtyNPCs = new ConcurrentHashMap<>();
+  private final Map<UUID, CompoundTag> lastSavedData = new ConcurrentHashMap<>();
 
   public NPCFileStorage(Path worldPath) {
     this.storageFolder = worldPath.resolve(Constants.MOD_ID).resolve(NPCS_FOLDER);
@@ -95,6 +96,7 @@ public class NPCFileStorage {
     try {
       CompoundTag data = NbtIo.readCompressed(npcFile, NbtAccounter.unlimitedHeap());
       cache.put(uuid, data);
+      this.lastSavedData.put(uuid, data);
       log.debug("Loaded NPC data for UUID {} from file {}", uuid, npcFile);
       return Optional.of(data);
     } catch (IOException e) {
@@ -104,9 +106,16 @@ public class NPCFileStorage {
   }
 
   public void markDirty(UUID uuid, CompoundTag data) {
-    if (uuid != null && data != null) {
-      dirtyNPCs.put(uuid, data);
+    if (uuid == null || data == null) {
+      return;
     }
+
+    if (data.equals(this.lastSavedData.get(uuid))) {
+      this.dirtyNPCs.remove(uuid);
+      return;
+    }
+
+    this.dirtyNPCs.put(uuid, data);
   }
 
   public boolean save(UUID uuid, CompoundTag data) {
@@ -124,6 +133,7 @@ public class NPCFileStorage {
       Path tempFile = npcFile.getParent().resolve(uuid.toString() + ".tmp");
       NbtIo.writeCompressed(data, tempFile);
       Files.move(tempFile, npcFile, StandardCopyOption.REPLACE_EXISTING);
+      this.lastSavedData.put(uuid, data);
 
       log.debug("Saved NPC data for UUID {} to file {}", uuid, npcFile);
       return true;
@@ -165,6 +175,7 @@ public class NPCFileStorage {
 
     cache.remove(uuid);
     dirtyNPCs.remove(uuid);
+    this.lastSavedData.remove(uuid);
 
     Path npcFile = getNPCFilePath(uuid);
     if (!Files.exists(npcFile)) {

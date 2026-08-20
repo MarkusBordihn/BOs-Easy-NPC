@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.client.renderer.manager;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.access.WalkAnimationAccessHelper;
+import de.markusbordihn.easynpc.access.WaterStateAccessHelper;
 import java.util.HashMap;
 import java.util.Map;
 import net.minecraft.client.Minecraft;
@@ -199,6 +200,10 @@ public class RendererManager {
     // Additional entity data.
     targetEntity.setOnGround(sourceEntity.onGround());
     targetEntity.setDeltaMovement(sourceEntity.getDeltaMovement());
+
+    if (targetEntity instanceof WaterStateAccessHelper waterStateAccess) {
+      waterStateAccess.setWasTouchingWater(sourceEntity.isInWater());
+    }
 
     // Custom name support, needed for name based textures like "jeb_" or "Toast".
     if (sourceEntity.hasCustomName()) {
