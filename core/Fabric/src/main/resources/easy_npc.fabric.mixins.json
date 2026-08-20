@@ -41,6 +41,7 @@
   "mixins": [
     "entity.CreeperMixin",
     "entity.EndermanMixin",
+    "entity.EntityWaterStateMixin",
     "entity.FoxMixin",
     "entity.PiglinMixin",
     "entity.RaiderMixin",

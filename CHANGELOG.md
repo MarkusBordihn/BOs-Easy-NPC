@@ -8,6 +8,13 @@ the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 7.8.1
+
+- Fixed #827 by rendering fish NPCs in water upright instead of always flopping on their side.
+- Fixed #828 by keeping a damaged NPC from blocking the world save, it now falls back to defaults.
+- Fixed a restored NPC picking up a random preset ID that changed with every save.
+- Changed NPC data to only be written to disk when it actually changed.
+
 ### 7.8.0
 
 - Fixed smaller text and UI issues.

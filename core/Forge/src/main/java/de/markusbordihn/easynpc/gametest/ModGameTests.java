@@ -461,6 +461,11 @@ public final class ModGameTests {
     TEST_FUNCTIONS.register(
         "unchanged_npc_stores_no_boilerplate",
         () -> StoredDataTest::testUnchangedNpcStoresNoBoilerplate);
+    TEST_FUNCTIONS.register(
+        "stored_npc_data_is_deterministic", () -> StoredDataTest::testStoredNpcDataIsDeterministic);
+
+    TEST_FUNCTIONS.register(
+        "water_state_is_writable", () -> WaterStateAccessTest::testWaterStateIsWritable);
 
     TEST_FUNCTIONS.register(
         "fallback_stays_out_when_a_regular_action_fired",

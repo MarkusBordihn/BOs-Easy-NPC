@@ -241,91 +241,112 @@ public interface EasyNPCBase<E extends Mob>
     }
   }
 
+  default void handleEasyNPCData(String dataName, Runnable dataOperation) {
+    try {
+      dataOperation.run();
+    } catch (Exception exception) {
+      log.error(
+          "Failed to handle {} data for {} ({}), using defaults instead!",
+          dataName,
+          this,
+          this.getEntityUUID(),
+          exception);
+    }
+  }
+
   default void addEasyNPCBaseAdditionalSaveData(
       ValueOutput valueOutput, HolderLookup.Provider provider) {
     ActionEventDataCapable<E> actionEventData = getEasyNPCActionEventData();
     if (actionEventData != null) {
-      actionEventData.addAdditionalActionData(valueOutput);
+      this.handleEasyNPCData(
+          "action event", () -> actionEventData.addAdditionalActionData(valueOutput));
     }
     AttackDataCapable<E> attackData = getEasyNPCAttackData();
     if (attackData != null) {
-      attackData.addAdditionalAttackData(valueOutput);
+      this.handleEasyNPCData("attack", () -> attackData.addAdditionalAttackData(valueOutput));
     }
     AttributeDataCapable<E> attributeData = getEasyNPCAttributeData();
     if (attributeData != null) {
-      attributeData.addAdditionalAttributeData(valueOutput);
+      this.handleEasyNPCData(
+          "attribute", () -> attributeData.addAdditionalAttributeData(valueOutput));
     }
     ConfigDataCapable<E> configData = getEasyNPCConfigData();
     if (configData != null) {
-      configData.addAdditionalConfigData(valueOutput);
+      this.handleEasyNPCData("config", () -> configData.addAdditionalConfigData(valueOutput));
     }
     DialogDataCapable<E> dialogData = getEasyNPCDialogData();
     if (dialogData != null) {
-      dialogData.addAdditionalDialogData(valueOutput);
+      this.handleEasyNPCData("dialog", () -> dialogData.addAdditionalDialogData(valueOutput));
     }
     DisplayAttributeDataCapable<E> displayAttributeData = getEasyNPCDisplayAttributeData();
     if (displayAttributeData != null) {
-      displayAttributeData.addAdditionalDisplayAttributeData(valueOutput);
+      this.handleEasyNPCData(
+          "display attribute",
+          () -> displayAttributeData.addAdditionalDisplayAttributeData(valueOutput));
     }
     FactionDataCapable<E> factionData = getEasyNPCFactionData();
     if (factionData != null) {
-      factionData.addAdditionalFactionData(valueOutput);
+      this.handleEasyNPCData("faction", () -> factionData.addAdditionalFactionData(valueOutput));
     }
     ModelDataCapable<E> modelData = getEasyNPCModelData();
     if (modelData != null) {
-      modelData.addAdditionalModelData(valueOutput);
+      this.handleEasyNPCData("model", () -> modelData.addAdditionalModelData(valueOutput));
     }
     NavigationDataCapable<E> navigationData = getEasyNPCNavigationData();
     if (navigationData != null) {
-      navigationData.addAdditionalNavigationData(valueOutput);
+      this.handleEasyNPCData(
+          "navigation", () -> navigationData.addAdditionalNavigationData(valueOutput));
     }
     ObjectiveDataCapable<E> objectiveData = getEasyNPCObjectiveData();
     if (objectiveData != null) {
-      objectiveData.addAdditionalObjectiveData(valueOutput);
+      this.handleEasyNPCData(
+          "objective", () -> objectiveData.addAdditionalObjectiveData(valueOutput));
     }
     OwnerDataCapable<E> ownerData = getEasyNPCOwnerData();
     if (ownerData != null) {
-      ownerData.addAdditionalOwnerData(valueOutput);
+      this.handleEasyNPCData("owner", () -> ownerData.addAdditionalOwnerData(valueOutput));
     }
     PresetDataCapable<E> presetData = getEasyNPCPresetData();
     if (presetData != null) {
-      presetData.addAdditionalPresetData(valueOutput);
+      this.handleEasyNPCData("preset", () -> presetData.addAdditionalPresetData(valueOutput));
     }
     ProfessionDataCapable<E> professionData = getEasyNPCProfessionData();
     if (professionData != null) {
-      professionData.addAdditionalProfessionData(valueOutput);
+      this.handleEasyNPCData(
+          "profession", () -> professionData.addAdditionalProfessionData(valueOutput));
     }
     ProgressionDataCapable<E> progressionData = getEasyNPCProgressionData();
     if (progressionData != null) {
-      progressionData.addAdditionalProgressionData(valueOutput);
+      this.handleEasyNPCData(
+          "progression", () -> progressionData.addAdditionalProgressionData(valueOutput));
     }
     RenderDataCapable<E> renderData = getEasyNPCRenderData();
     if (renderData != null) {
-      renderData.addAdditionalRenderData(valueOutput);
+      this.handleEasyNPCData("render", () -> renderData.addAdditionalRenderData(valueOutput));
     }
     SkinDataCapable<E> skinData = getEasyNPCSkinData();
     if (skinData != null) {
-      skinData.addAdditionalSkinData(valueOutput);
+      this.handleEasyNPCData("skin", () -> skinData.addAdditionalSkinData(valueOutput));
     }
     SoundDataCapable<E> soundData = getEasyNPCSoundData();
     if (soundData != null) {
-      soundData.addAdditionalSoundData(valueOutput);
+      this.handleEasyNPCData("sound", () -> soundData.addAdditionalSoundData(valueOutput));
     }
     StateDataCapable<E> stateData = getEasyNPCStateData();
     if (stateData != null) {
-      stateData.addAdditionalStateData(valueOutput);
+      this.handleEasyNPCData("state", () -> stateData.addAdditionalStateData(valueOutput));
     }
     StatusDataCapable<E> statusData = getEasyNPCStatusData();
     if (statusData != null) {
-      statusData.addAdditionalStatusData(valueOutput);
+      this.handleEasyNPCData("status", () -> statusData.addAdditionalStatusData(valueOutput));
     }
     TradingDataCapable<E> tradingData = getEasyNPCTradingData();
     if (tradingData != null) {
-      tradingData.addAdditionalTradingData(valueOutput);
+      this.handleEasyNPCData("trading", () -> tradingData.addAdditionalTradingData(valueOutput));
     }
     VariantDataCapable<E> variantData = getEasyNPCVariantData();
     if (variantData != null) {
-      variantData.addAdditionalVariantData(valueOutput);
+      this.handleEasyNPCData("variant", () -> variantData.addAdditionalVariantData(valueOutput));
     }
   }
 
@@ -334,97 +355,106 @@ public interface EasyNPCBase<E extends Mob>
     // First read important data to ensure that all other data can be linked to the variant.
     ConfigDataCapable<E> configData = getEasyNPCConfigData();
     if (configData != null) {
-      configData.readAdditionalConfigData(valueInput);
+      this.handleEasyNPCData("config", () -> configData.readAdditionalConfigData(valueInput));
     }
     VariantDataCapable<E> variantData = getEasyNPCVariantData();
     if (variantData != null) {
-      variantData.readAdditionalVariantData(valueInput);
+      this.handleEasyNPCData("variant", () -> variantData.readAdditionalVariantData(valueInput));
     }
 
     ActionEventDataCapable<E> actionEventData = getEasyNPCActionEventData();
     if (actionEventData != null) {
-      actionEventData.readAdditionalActionData(valueInput);
+      this.handleEasyNPCData(
+          "action event", () -> actionEventData.readAdditionalActionData(valueInput));
     }
     AttackDataCapable<E> attackData = getEasyNPCAttackData();
     if (attackData != null) {
-      attackData.readAdditionalAttackData(valueInput);
+      this.handleEasyNPCData("attack", () -> attackData.readAdditionalAttackData(valueInput));
     }
     AttributeDataCapable<E> attributeData = getEasyNPCAttributeData();
     if (attributeData != null) {
-      attributeData.readAdditionalAttributeData(valueInput);
+      this.handleEasyNPCData(
+          "attribute", () -> attributeData.readAdditionalAttributeData(valueInput));
     }
     DialogDataCapable<E> dialogData = getEasyNPCDialogData();
     if (dialogData != null) {
-      dialogData.readAdditionalDialogData(valueInput);
+      this.handleEasyNPCData("dialog", () -> dialogData.readAdditionalDialogData(valueInput));
     }
     DisplayAttributeDataCapable<E> displayAttributeData = getEasyNPCDisplayAttributeData();
     if (displayAttributeData != null) {
-      displayAttributeData.readAdditionalDisplayAttributeData(valueInput);
+      this.handleEasyNPCData(
+          "display attribute",
+          () -> displayAttributeData.readAdditionalDisplayAttributeData(valueInput));
     }
     InventoryDataCapable<E> inventoryData = getEasyNPCInventoryData();
     if (inventoryData != null) {
-      inventoryData.readAdditionalInventoryData(valueInput);
+      this.handleEasyNPCData(
+          "inventory", () -> inventoryData.readAdditionalInventoryData(valueInput));
     }
     FactionDataCapable<E> factionData = getEasyNPCFactionData();
     if (factionData != null) {
-      factionData.readAdditionalFactionData(valueInput);
+      this.handleEasyNPCData("faction", () -> factionData.readAdditionalFactionData(valueInput));
     }
     ModelDataCapable<E> modelData = getEasyNPCModelData();
     if (modelData != null) {
-      modelData.readAdditionalModelData(valueInput);
+      this.handleEasyNPCData("model", () -> modelData.readAdditionalModelData(valueInput));
     }
     NavigationDataCapable<E> navigationData = getEasyNPCNavigationData();
     if (navigationData != null) {
-      navigationData.readAdditionalNavigationData(valueInput);
+      this.handleEasyNPCData(
+          "navigation", () -> navigationData.readAdditionalNavigationData(valueInput));
     }
     OwnerDataCapable<E> ownerData = getEasyNPCOwnerData();
     if (ownerData != null) {
-      ownerData.readAdditionalOwnerData(valueInput);
+      this.handleEasyNPCData("owner", () -> ownerData.readAdditionalOwnerData(valueInput));
     }
     PresetDataCapable<E> presetData = getEasyNPCPresetData();
     if (presetData != null) {
-      presetData.readAdditionalPresetData(valueInput);
+      this.handleEasyNPCData("preset", () -> presetData.readAdditionalPresetData(valueInput));
     }
     ProfessionDataCapable<E> professionData = getEasyNPCProfessionData();
     if (professionData != null) {
-      professionData.readAdditionalProfessionData(valueInput);
+      this.handleEasyNPCData(
+          "profession", () -> professionData.readAdditionalProfessionData(valueInput));
     }
     ProgressionDataCapable<E> progressionData = getEasyNPCProgressionData();
     if (progressionData != null) {
-      progressionData.readAdditionalProgressionData(valueInput);
+      this.handleEasyNPCData(
+          "progression", () -> progressionData.readAdditionalProgressionData(valueInput));
     }
     RenderDataCapable<E> renderData = getEasyNPCRenderData();
     if (renderData != null) {
-      renderData.readAdditionalRenderData(valueInput);
+      this.handleEasyNPCData("render", () -> renderData.readAdditionalRenderData(valueInput));
     }
     SkinDataCapable<E> skinData = getEasyNPCSkinData();
     if (skinData != null) {
-      skinData.readAdditionalSkinData(valueInput);
+      this.handleEasyNPCData("skin", () -> skinData.readAdditionalSkinData(valueInput));
     }
     SoundDataCapable<E> soundData = getEasyNPCSoundData();
     if (soundData != null) {
-      soundData.readAdditionalSoundData(valueInput);
+      this.handleEasyNPCData("sound", () -> soundData.readAdditionalSoundData(valueInput));
     }
     StateDataCapable<E> stateData = getEasyNPCStateData();
     if (stateData != null) {
-      stateData.readAdditionalStateData(valueInput);
+      this.handleEasyNPCData("state", () -> stateData.readAdditionalStateData(valueInput));
     }
     StatusDataCapable<E> statusData = getEasyNPCStatusData();
     if (statusData != null) {
-      statusData.readAdditionalStatusData(valueInput);
+      this.handleEasyNPCData("status", () -> statusData.readAdditionalStatusData(valueInput));
     }
     TradingDataCapable<E> tradingData = getEasyNPCTradingData();
     if (tradingData != null) {
-      tradingData.readAdditionalTradingData(valueInput);
+      this.handleEasyNPCData("trading", () -> tradingData.readAdditionalTradingData(valueInput));
     }
 
     ObjectiveDataCapable<E> objectiveData = getEasyNPCObjectiveData();
     if (objectiveData != null) {
-      objectiveData.readAdditionalObjectiveData(valueInput);
+      this.handleEasyNPCData(
+          "objective", () -> objectiveData.readAdditionalObjectiveData(valueInput));
     }
 
     if (navigationData != null) {
-      navigationData.refreshNavigation();
+      this.handleEasyNPCData("navigation refresh", navigationData::refreshNavigation);
     }
   }
 }

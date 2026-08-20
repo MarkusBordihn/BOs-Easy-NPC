@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.gametest;
 
+import de.markusbordihn.easynpc.data.npc.SavedNPCEntityEntry;
 import de.markusbordihn.easynpc.data.objective.ObjectiveType;
 import de.markusbordihn.easynpc.data.sound.SoundType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
@@ -90,6 +91,24 @@ public class StoredDataTestHelper {
         helper,
         "The target flags of the objectives must be derived again",
         !targetNPC.getEasyNPCObjectiveData().hasPlayerTargetObjectives());
+  }
+
+  public static void assertStoredNpcDataIsDeterministic(
+      GameTestHelper helper, EntityType<?> entityType) {
+    EasyNPC<?> easyNPC = GameTestHelpers.mockEasyNPC(helper, entityType, NPC_POSITION);
+    easyNPC.registerEasyNPCDefaultData();
+
+    SavedNPCEntityEntry firstEntry = SavedNPCEntityEntry.fromEasyNPC(easyNPC);
+    SavedNPCEntityEntry secondEntry = SavedNPCEntityEntry.fromEasyNPC(easyNPC);
+
+    GameTestHelpers.assertTrue(
+        helper,
+        "An unchanged NPC must store the same data on every save",
+        firstEntry.npcData().equals(secondEntry.npcData()));
+    GameTestHelpers.assertTrue(
+        helper,
+        "An NPC without own preset must not store a preset id",
+        !firstEntry.npcData().contains(PresetDataCapable.PRESET_UUID_TAG));
   }
 
   public static void assertUnchangedNpcStoresNoBoilerplate(
