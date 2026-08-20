@@ -651,6 +651,15 @@ public final class ModGameTests {
         "unchanged_npc_stores_no_boilerplate",
         StoredDataTest::testUnchangedNpcStoresNoBoilerplate,
         DEFAULT_STRUCTURE);
+    register(
+        "stored_npc_data_is_deterministic",
+        StoredDataTest::testStoredNpcDataIsDeterministic,
+        DEFAULT_STRUCTURE);
+
+    register(
+        "water_state_is_writable",
+        WaterStateAccessTest::testWaterStateIsWritable,
+        DEFAULT_STRUCTURE);
 
     register(
         "fallback_stays_out_when_a_regular_action_fired",
