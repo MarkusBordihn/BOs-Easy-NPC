@@ -1,6 +1,6 @@
 plugins {
   id 'maven-publish'
-  id 'net.minecraftforge.gradle' version '7.0.0-beta.48'
+  id 'net.minecraftforge.gradle' version '7.0.35'
   id 'net.darkhax.curseforgegradle' version '1.1.28'
   id 'nu.studer.credentials' version '3.0'
   id "com.modrinth.minotaur" version "2.+"
@@ -88,6 +88,15 @@ dependencies {
       && project.forge_easy_model_entities_version) {
     runtimeOnly "maven.modrinth:easy-model-entities:${project.forge_easy_model_entities_version}"
   }
+}
+
+// ForgeGradle derives the "runsJson" output of its slimeLauncherMetadata tasks from their own
+// "outputDirectory" output, which Gradle 9.7 refuses to evaluate before the task has run. Both
+// values are set explicitly here so no output property is mapped from another one.
+tasks.matching { it.name.startsWith('slimeLauncherMetadataFor') }.configureEach {
+  def metadataDir = layout.buildDirectory.dir("forgegradle/${name}")
+  outputDirectory.set(metadataDir)
+  runsJson.set(metadataDir.map { it.dir("launcher").file("runs.json") })
 }
 
 tasks.named('compileJava', JavaCompile).configure {

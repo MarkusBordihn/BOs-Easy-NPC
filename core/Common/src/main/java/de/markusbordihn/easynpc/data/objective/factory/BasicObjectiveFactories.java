@@ -24,13 +24,13 @@ import static de.markusbordihn.easynpc.data.objective.factory.BuiltInObjectiveFa
 
 import de.markusbordihn.easynpc.data.objective.ObjectiveType;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.CustomPanicGoal;
+import de.markusbordihn.easynpc.entity.easynpc.ai.goal.CustomRandomSwimmingGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.MoveBackToHomeGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.RandomStrollAroundGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.RandomStrollAroundHomeGoal;
 import net.minecraft.world.entity.ai.goal.GolemRandomStrollInVillageGoal;
 import net.minecraft.world.entity.ai.goal.MoveBackToVillageGoal;
 import net.minecraft.world.entity.ai.goal.MoveThroughVillageGoal;
-import net.minecraft.world.entity.ai.goal.RandomSwimmingGoal;
 import net.minecraft.world.entity.ai.goal.RestrictSunGoal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 
@@ -94,7 +94,7 @@ final class BasicObjectiveFactories {
         ObjectiveType.RANDOM_SWIMMING,
         requiresPathfinderMob(
             (objectiveDataEntry, easyNPC) ->
-                new RandomSwimmingGoal(
+                new CustomRandomSwimmingGoal(
                     easyNPC.getPathfinderMob(),
                     objectiveDataEntry.getSpeedModifier(),
                     objectiveDataEntry.getInterval())));

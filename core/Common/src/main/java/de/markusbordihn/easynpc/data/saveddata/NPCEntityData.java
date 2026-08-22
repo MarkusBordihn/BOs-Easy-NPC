@@ -439,15 +439,10 @@ public class NPCEntityData extends SavedData {
     compoundTag.put(DATA_METADATA_TAG, metadataTag);
 
     int savedFiles = saveAllDirtyNPCs();
-    if (savedFiles > 0) {
-      log.debug(
-          "Saved metadata for {} NPC entities to index and {} dirty NPC files",
-          this.metadata.size(),
-          savedFiles);
-    } else {
-      log.debug(
-          "Saved metadata for {} NPC entities to index (no dirty files)", this.metadata.size());
-    }
+    log.debug(
+        "Saved metadata for {} NPC entities to index and {} dirty NPC files",
+        this.metadata.size(),
+        savedFiles);
 
     return compoundTag;
   }

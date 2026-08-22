@@ -34,6 +34,7 @@ import de.markusbordihn.easynpc.data.attribute.InteractionAttributeType;
 import de.markusbordihn.easynpc.data.attribute.MovementAttributeType;
 import de.markusbordihn.easynpc.data.attribute.NavigationType;
 import de.markusbordihn.easynpc.entity.easynpc.data.AttributeDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.NavigationDataCapable;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -50,6 +51,8 @@ public class AbilitiesAttributeConfigurationScreen<T extends ConfigurationMenu>
   private boolean passDoorValue;
   private TextButton navigationTypeButton;
   private RangeSliderButton hoverHeightSlider;
+  private RangeSliderButton swimDepthBelowSurfaceSlider;
+  private RangeSliderButton swimHeightAboveFloorSlider;
   private NavigationType navigationType;
 
   public AbilitiesAttributeConfigurationScreen(T menu, Inventory inventory, Component component) {
@@ -65,11 +68,17 @@ public class AbilitiesAttributeConfigurationScreen<T extends ConfigurationMenu>
     return navigationTypes[(navigationType.ordinal() + 1) % navigationTypes.length];
   }
 
-  private void refreshHoverHeightSlider() {
+  private void refreshNavigationSliders() {
+    NavigationDataCapable<?> navigationData = this.getEasyNPC().getEasyNPCNavigationData();
     this.hoverHeightSlider.visible =
         this.navigationType == NavigationType.FLYING
-            || (this.navigationType == NavigationType.DEFAULT
-                && this.getEasyNPC().getEasyNPCNavigationData().canFly());
+            || (this.navigationType == NavigationType.DEFAULT && navigationData.canFly());
+
+    boolean isAquatic =
+        this.navigationType == NavigationType.AQUATIC
+            || (this.navigationType == NavigationType.DEFAULT && navigationData.canSwim());
+    this.swimDepthBelowSurfaceSlider.visible = isAquatic;
+    this.swimHeightAboveFloorSlider.visible = isAquatic;
   }
 
   private void refreshPassDoorCheckbox() {
@@ -264,7 +273,7 @@ public class AbilitiesAttributeConfigurationScreen<T extends ConfigurationMenu>
                       TextComponent.getTextComponent(getNavigationTypeLabel(this.navigationType)));
                   NetworkMessageHandlerManager.getServerHandler()
                       .navigationTypeChange(this.getEasyNPCUUID(), this.navigationType);
-                  this.refreshHoverHeightSlider();
+                  this.refreshNavigationSliders();
                 }));
 
     this.hoverHeightSlider =
@@ -283,7 +292,41 @@ public class AbilitiesAttributeConfigurationScreen<T extends ConfigurationMenu>
                             this.getEasyNPCUUID(),
                             MovementAttributeType.HOVER_HEIGHT,
                             slider.getTargetDoubleValue())));
-    this.refreshHoverHeightSlider();
+
+    this.swimDepthBelowSurfaceSlider =
+        this.addRenderableWidget(
+            new RangeSliderButton(
+                firstButtonRow + 135,
+                this.buttonTopPos + 168,
+                entityAttributes.getMovementAttributes().swimDepthBelowSurface(),
+                0.0D,
+                32.0D,
+                0.0D,
+                0.5D,
+                slider ->
+                    NetworkMessageHandlerManager.getServerHandler()
+                        .movementAttributeChange(
+                            this.getEasyNPCUUID(),
+                            MovementAttributeType.SWIM_DEPTH_BELOW_SURFACE,
+                            slider.getTargetDoubleValue())));
+
+    this.swimHeightAboveFloorSlider =
+        this.addRenderableWidget(
+            new RangeSliderButton(
+                firstButtonRow + 135,
+                this.buttonTopPos + 189,
+                entityAttributes.getMovementAttributes().swimHeightAboveFloor(),
+                0.0D,
+                16.0D,
+                0.0D,
+                0.5D,
+                slider ->
+                    NetworkMessageHandlerManager.getServerHandler()
+                        .movementAttributeChange(
+                            this.getEasyNPCUUID(),
+                            MovementAttributeType.SWIM_HEIGHT_ABOVE_FLOOR,
+                            slider.getTargetDoubleValue())));
+    this.refreshNavigationSliders();
 
     this.healthRegenerationSlider =
         this.addRenderableWidget(
@@ -326,6 +369,24 @@ public class AbilitiesAttributeConfigurationScreen<T extends ConfigurationMenu>
           "hover_height",
           this.hoverHeightSlider.getX() + sliderXOffset,
           this.hoverHeightSlider.getY() + sliderYOffset);
+    }
+
+    if (this.swimDepthBelowSurfaceSlider != null && this.swimDepthBelowSurfaceSlider.visible) {
+      Text.drawConfigString(
+          guiGraphics,
+          this.font,
+          "swim_depth_below_surface",
+          this.swimDepthBelowSurfaceSlider.getX() + sliderXOffset,
+          this.swimDepthBelowSurfaceSlider.getY() + sliderYOffset);
+    }
+
+    if (this.swimHeightAboveFloorSlider != null && this.swimHeightAboveFloorSlider.visible) {
+      Text.drawConfigString(
+          guiGraphics,
+          this.font,
+          "swim_height_above_floor",
+          this.swimHeightAboveFloorSlider.getX() + sliderXOffset,
+          this.swimHeightAboveFloorSlider.getY() + sliderYOffset);
     }
 
     if (this.healthRegenerationSlider != null) {

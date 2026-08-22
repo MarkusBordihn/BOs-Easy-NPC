@@ -42,6 +42,7 @@ public class NPCFileStorage {
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private static final String NPCS_FOLDER = "npcs";
   private static final String NPC_FILE_EXTENSION = ".npc.nbt";
+  private static final long SLOW_FILE_WRITE_MILLISECONDS = 250;
 
   private final Path storageFolder;
   private final Map<UUID, CompoundTag> cache = new ConcurrentHashMap<>();
@@ -129,13 +130,22 @@ public class NPCFileStorage {
 
   private boolean saveToFile(UUID uuid, CompoundTag data) {
     Path npcFile = getNPCFilePath(uuid);
+    long startTime = System.currentTimeMillis();
     try {
       Path tempFile = npcFile.getParent().resolve(uuid.toString() + ".tmp");
       NbtIo.writeCompressed(data, tempFile);
       Files.move(tempFile, npcFile, StandardCopyOption.REPLACE_EXISTING);
       this.lastSavedData.put(uuid, data);
 
-      log.debug("Saved NPC data for UUID {} to file {}", uuid, npcFile);
+      long duration = System.currentTimeMillis() - startTime;
+      if (duration >= SLOW_FILE_WRITE_MILLISECONDS) {
+        log.warn(
+            "Writing NPC file {} took {} ms, disk or scanner is slowing the save down!",
+            npcFile,
+            duration);
+      } else {
+        log.debug("Saved NPC data for UUID {} to file {}", uuid, npcFile);
+      }
       return true;
     } catch (IOException e) {
       log.error("Failed to save NPC file for UUID {}", uuid, e);
@@ -145,18 +155,26 @@ public class NPCFileStorage {
 
   public int saveAllDirty() {
     // Snapshot to avoid ConcurrentModificationException - new entries during save are kept
-    Map<UUID, CompoundTag> snapshot = new HashMap<>(dirtyNPCs);
+    Map<UUID, CompoundTag> snapshot = new HashMap<>(this.dirtyNPCs);
+    if (snapshot.isEmpty()) {
+      return 0;
+    }
+
+    long startTime = System.currentTimeMillis();
     int savedCount = 0;
     for (Map.Entry<UUID, CompoundTag> entry : snapshot.entrySet()) {
       if (saveToFile(entry.getKey(), entry.getValue())) {
-        dirtyNPCs.remove(entry.getKey(), entry.getValue());
+        this.dirtyNPCs.remove(entry.getKey(), entry.getValue());
         savedCount++;
       }
     }
 
-    if (savedCount > 0) {
-      log.debug("Saved {} dirty NPC files out of {}", savedCount, snapshot.size());
-    }
+    log.info(
+        "Saved {} of {} NPC files to {} in {} ms",
+        savedCount,
+        snapshot.size(),
+        this.storageFolder,
+        System.currentTimeMillis() - startTime);
     return savedCount;
   }
 
