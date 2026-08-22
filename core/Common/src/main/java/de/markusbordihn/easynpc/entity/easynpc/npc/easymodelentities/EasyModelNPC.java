@@ -120,9 +120,15 @@ public class EasyModelNPC extends PathfinderMobRaw {
 
   @Override
   public NavigationType defaultNavigationType() {
-    return EasyModelEntitiesManager.isFloatingProfile(this.getEasyModelProfileId())
-        ? NavigationType.FLYING
-        : NavigationType.GROUND;
+    Identifier profileId = this.getEasyModelProfileId();
+    if (EasyModelEntitiesManager.isFloatingProfile(profileId)) {
+      return NavigationType.FLYING;
+    }
+    if (EasyModelEntitiesManager.isAquaticProfile(profileId)) {
+      return NavigationType.AQUATIC;
+    }
+
+    return NavigationType.GROUND;
   }
 
   @Override

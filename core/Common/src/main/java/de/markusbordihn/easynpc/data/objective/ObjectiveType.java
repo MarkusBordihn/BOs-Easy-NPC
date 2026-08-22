@@ -73,7 +73,7 @@ public enum ObjectiveType {
   RANDOM_STROLL_AROUND_HOME("around_home", 10),
   RANDOM_STROLL_IN_VILLAGE("in_village", 10),
   RANDOM_STROLL("stroll", 11),
-  RANDOM_SWIMMING("swimming", 4),
+  RANDOM_SWIMMING("swimming", 10),
   WATER_AVOIDING_RANDOM_STROLL("avoid_water", 11),
   ZOMBIE_ATTACK("zombie", 2);
 

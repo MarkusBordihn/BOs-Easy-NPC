@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Markus Bordihn
+ * Copyright 2026 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,30 +17,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.data.attribute;
+package de.markusbordihn.easynpc.entity.easynpc.ai.control;
 
-import de.markusbordihn.easynpc.utils.TextUtils;
-import java.util.Locale;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.control.SmoothSwimmingLookControl;
 
-public enum MovementAttributeType implements EntityAttributeTypeInterface {
-  CAN_CLOSE_DOOR,
-  CAN_OPEN_DOOR,
-  CAN_PASS_DOOR,
-  CAN_USE_NETHER_PORTAL,
-  HOVER_HEIGHT,
-  IS_IMMOVABLE,
-  NAVIGATION_TYPE,
-  SWIM_DEPTH_BELOW_SURFACE,
-  SWIM_HEIGHT_ABOVE_FLOOR;
+public class EasyNPCSwimmingLookControl extends SmoothSwimmingLookControl {
 
-  private final String tagName = TextUtils.convertToPascalCase(this.name());
-  private final String attributeName = this.name().toLowerCase(Locale.ROOT);
+  private static final int MAX_Y_ROTATION_FROM_CENTER = 10;
 
-  public String getTagName() {
-    return this.tagName;
+  public EasyNPCSwimmingLookControl(Mob mob) {
+    super(mob, MAX_Y_ROTATION_FROM_CENTER);
   }
 
-  public String getAttributeName() {
-    return this.attributeName;
+  @Override
+  public void tick() {
+    if (EasyNPCLookControl.isRotationLocked(this.mob)) {
+      return;
+    }
+
+    if (this.mob.getNavigation().isDone()) {
+      super.tick();
+      return;
+    }
+
+    float swimmingXRot = this.mob.getXRot();
+    super.tick();
+    this.mob.setXRot(swimmingXRot);
   }
 }

@@ -8,6 +8,29 @@ the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 7.9.0
+
+- Fixed modded fish NPCs, like the ones of Tide 2, spinning around instead of swimming upright.
+- Fixed "Navigation: Automatic" using ground movement for water NPCs and aquatic model NPCs.
+- Fixed the "Random Swimming" objective never moving an NPC that uses aquatic navigation.
+- Fixed a swimming NPC shaking or twitching in place instead of holding its tilt and swim depth.
+- Fixed a swimming NPC turning in circles forever when it could not reach its next path point.
+- Fixed an NPC that fell into water never getting out of it again.
+- Fixed a following NPC searching a new path every tick while its target was unreachable.
+- Fixed the "Move to" actions stopping short of a raised target or not starting while in the air.
+- Fixed "Move back to Home" ignoring height differences and never returning from beyond 32 blocks.
+- Fixed the "Opacity" input field being too narrow to show a value of 100.
+- Fixed a damaged NPC with an Easy Model Entities model never flashing red.
+- Changed modded water NPCs to swim level, vanilla water mobs keep their tilt as before.
+- Changed the "Move to" actions to walk up to 48 blocks and to teleport only beyond that range.
+- Changed "Move to" and "Move back to Home" to give up after three seconds without progress.
+- Changed the timeout of a "Move to" action to count real ticks, it ran twice as long before.
+- Changed a new "Random Swimming" objective to rank below following, fleeing and attack goals.
+- Changed "Opacity" of an NPC with an Easy Model Entities model to be applied by that mod itself.
+- Changed the minimum Easy Model Entities version to 2.3.0, older versions disable the integration.
+- Added "Depth below surface" and "Height above floor" sliders for the swim level of an NPC.
+- Added log entries for the NPC files written on a world save, with a warning above 250 ms each.
+
 ### 7.8.1
 
 - Fixed #827 by rendering fish NPCs in water upright instead of always flopping on their side.
