@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Markus Bordihn
+ * Copyright 2026 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,34 +17,42 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.entity.easynpc.ai.control;
+package de.markusbordihn.easynpc.entity.easynpc.ai.navigation;
 
-import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.ai.control.LookControl;
+import net.minecraft.world.entity.ai.navigation.WaterBoundPathNavigation;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 
-public class EasyNPCLookControl extends LookControl {
+public class EasyNPCWaterBoundPathNavigation extends WaterBoundPathNavigation {
 
-  public EasyNPCLookControl(Mob mob) {
-    super(mob);
-  }
+  private static final int MAX_TICKS_WITHOUT_NODE_PROGRESS = 60;
 
-  static boolean isRotationLocked(Mob mob) {
-    if (!(mob instanceof EasyNPC<?> easyNPC)) {
-      return false;
-    }
+  private int trackedNodeIndex = -1;
+  private int trackedNodeTick;
 
-    ModelDataCapable<?> modelData = easyNPC.getEasyNPCModelData();
-    return modelData != null && modelData.getModelRootData().isRotationLocked();
+  public EasyNPCWaterBoundPathNavigation(Mob mob, Level level) {
+    super(mob, level);
   }
 
   @Override
-  public void tick() {
-    if (isRotationLocked(this.mob)) {
+  protected void doStuckDetection(Vec3 position) {
+    super.doStuckDetection(position);
+    if (this.path == null || this.path.isDone()) {
+      this.trackedNodeIndex = -1;
       return;
     }
 
-    super.tick();
+    int nextNodeIndex = this.path.getNextNodeIndex();
+    if (nextNodeIndex != this.trackedNodeIndex) {
+      this.trackedNodeIndex = nextNodeIndex;
+      this.trackedNodeTick = this.tick;
+      return;
+    }
+
+    if (this.tick - this.trackedNodeTick > MAX_TICKS_WITHOUT_NODE_PROGRESS) {
+      this.trackedNodeIndex = -1;
+      this.stop();
+    }
   }
 }

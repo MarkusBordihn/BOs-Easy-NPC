@@ -36,6 +36,7 @@ public final class EasyModelEntitiesManager {
       "easy_model_entities_examples:entity/little_explorer";
 
   public static final String FLOATING_BODY_TYPE = "FLOATING";
+  public static final String AQUATIC_BODY_TYPE = "AQUATIC";
   public static final double DEFAULT_HOVER_HEIGHT = 2.0D;
 
   private static final Map<ResourceLocation, ModelType> PROFILE_MODEL_TYPES =
@@ -116,6 +117,10 @@ public final class EasyModelEntitiesManager {
 
   public static boolean isFloatingProfile(ResourceLocation profileId) {
     return FLOATING_BODY_TYPE.equals(PROFILE_BODY_TYPES.get(profileId));
+  }
+
+  public static boolean isAquaticProfile(ResourceLocation profileId) {
+    return AQUATIC_BODY_TYPE.equals(PROFILE_BODY_TYPES.get(profileId));
   }
 
   public static void setAnimationProvider(AnimationProvider provider) {

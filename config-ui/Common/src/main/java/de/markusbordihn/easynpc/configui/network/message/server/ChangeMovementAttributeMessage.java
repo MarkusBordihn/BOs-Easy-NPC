@@ -99,7 +99,9 @@ public record ChangeMovementAttributeMessage(
       return;
     }
 
-    if (this.attributeType == MovementAttributeType.HOVER_HEIGHT) {
+    if (this.attributeType == MovementAttributeType.HOVER_HEIGHT
+        || this.attributeType == MovementAttributeType.SWIM_DEPTH_BELOW_SURFACE
+        || this.attributeType == MovementAttributeType.SWIM_HEIGHT_ABOVE_FLOOR) {
       if (this.doubleValue == null) {
         log.error("Invalid value for {} for {} from {}", this.attributeType, easyNPC, serverPlayer);
         return;

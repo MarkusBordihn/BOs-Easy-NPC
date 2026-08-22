@@ -22,6 +22,8 @@ package de.markusbordihn.easynpc.entity.easynpc.data;
 import de.markusbordihn.easynpc.data.attribute.EntityAttributes;
 import de.markusbordihn.easynpc.data.attribute.MovementAttributes;
 import de.markusbordihn.easynpc.data.attribute.NavigationType;
+import de.markusbordihn.easynpc.data.render.RenderDataEntry;
+import de.markusbordihn.easynpc.data.render.RenderType;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.data.ticker.TickerType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
@@ -29,7 +31,12 @@ import de.markusbordihn.easynpc.utils.CompoundTagUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
+import net.minecraft.tags.FluidTags;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -89,6 +96,38 @@ public interface NavigationDataCapable<T extends Mob> extends EasyNPC<T> {
     }
   }
 
+  default void handleWaterEscapeTick() {
+    GroundPathNavigation groundPathNavigation = this.getGroundPathNavigation();
+    if (groundPathNavigation == null) {
+      return;
+    }
+
+    Mob mob = this.getMob();
+    if (!mob.isInWater() || mob.canBreatheUnderwater() || this.isImmovable()) {
+      if (groundPathNavigation.canFloat() != this.configuredCanFloat()) {
+        this.refreshGroundNavigation();
+      }
+
+      return;
+    }
+
+    if (!groundPathNavigation.canFloat()) {
+      groundPathNavigation.setCanFloat(true);
+      groundPathNavigation.stop();
+    }
+
+    if (mob.getFluidHeight(FluidTags.WATER) > mob.getFluidJumpThreshold()) {
+      mob.getJumpControl().jump();
+    }
+  }
+
+  private boolean configuredCanFloat() {
+    EntityAttributes attributeData = this.getNavigationEntityAttributes();
+    return attributeData == null
+        || !attributeData.hasMovementAttributes()
+        || attributeData.getEnvironmentalAttributes().canFloat();
+  }
+
   default GroundPathNavigation getGroundPathNavigation() {
     if (this instanceof Mob mob
         && mob.getNavigation() instanceof GroundPathNavigation groundPathNavigation) {
@@ -102,7 +141,34 @@ public interface NavigationDataCapable<T extends Mob> extends EasyNPC<T> {
   }
 
   default NavigationType defaultNavigationType() {
-    return NavigationType.GROUND;
+    return this.rendersAsWaterCreature() ? NavigationType.AQUATIC : NavigationType.GROUND;
+  }
+
+  default boolean rendersAsWaterCreature() {
+    RenderDataCapable<?> renderData = this.getEasyNPCRenderData();
+    RenderDataEntry renderDataEntry = renderData != null ? renderData.getRenderDataEntry() : null;
+    if (renderDataEntry == null || renderDataEntry.getRenderType() != RenderType.CUSTOM_ENTITY) {
+      return false;
+    }
+
+    EntityType<? extends Entity> renderEntityType = renderDataEntry.getRenderEntityType();
+    if (renderEntityType == null) {
+      return false;
+    }
+
+    return hasWaterMobCategory(renderEntityType) || spawnsInWater(renderEntityType);
+  }
+
+  private static boolean hasWaterMobCategory(EntityType<? extends Entity> entityType) {
+    MobCategory mobCategory = entityType.getCategory();
+    return mobCategory == MobCategory.WATER_CREATURE
+        || mobCategory == MobCategory.WATER_AMBIENT
+        || mobCategory == MobCategory.UNDERGROUND_WATER_CREATURE
+        || mobCategory == MobCategory.AXOLOTLS;
+  }
+
+  private static boolean spawnsInWater(EntityType<? extends Entity> entityType) {
+    return SpawnPlacements.getPlacementType(entityType) == SpawnPlacements.Type.IN_WATER;
   }
 
   default NavigationType getNavigationType() {
@@ -126,6 +192,32 @@ public interface NavigationDataCapable<T extends Mob> extends EasyNPC<T> {
     }
 
     return movementAttributes.hoverHeight();
+  }
+
+  default double defaultSwimDepthBelowSurface() {
+    return 0.0D;
+  }
+
+  default double getSwimDepthBelowSurface() {
+    MovementAttributes movementAttributes = this.getMovementAttributes();
+    if (movementAttributes == null || movementAttributes.swimDepthBelowSurface() <= 0.0D) {
+      return this.defaultSwimDepthBelowSurface();
+    }
+
+    return movementAttributes.swimDepthBelowSurface();
+  }
+
+  default double defaultSwimHeightAboveFloor() {
+    return 0.0D;
+  }
+
+  default double getSwimHeightAboveFloor() {
+    MovementAttributes movementAttributes = this.getMovementAttributes();
+    if (movementAttributes == null || movementAttributes.swimHeightAboveFloor() <= 0.0D) {
+      return this.defaultSwimHeightAboveFloor();
+    }
+
+    return movementAttributes.swimHeightAboveFloor();
   }
 
   private EntityAttributes getNavigationEntityAttributes() {
@@ -166,6 +258,10 @@ public interface NavigationDataCapable<T extends Mob> extends EasyNPC<T> {
 
   default boolean canFly() {
     return this.getNavigationType() == NavigationType.FLYING;
+  }
+
+  default boolean canSwim() {
+    return this.getNavigationType() == NavigationType.AQUATIC;
   }
 
   default boolean isFlying() {

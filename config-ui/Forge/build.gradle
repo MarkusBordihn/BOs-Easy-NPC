@@ -148,6 +148,9 @@ dependencies {
   // runtimeOnly fg.deobf("maven.modrinth:geckolib:aC5KMoNg")
 
   // Bug Testing
+  // Tide uses the same version number across Minecraft versions, so pin the Modrinth version id
+  runtimeOnly fg.deobf("maven.modrinth:tide:umdDq2ok")
+  runtimeOnly fg.deobf("maven.modrinth:cloth-config:11.1.136+forge")
   // runtimeOnly fg.deobf("maven.modrinth:naturalist:5.0pre3-forge")
   // runtimeOnly fg.deobf("maven.modrinth:just-enough-guns:0.14.1")
   // runtimeOnly fg.deobf("maven.modrinth:create:mc1.20.1-6.0.8")

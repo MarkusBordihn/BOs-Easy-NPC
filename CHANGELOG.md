@@ -8,6 +8,40 @@ the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 7.9.0
+
+- Fixed modded fish NPCs, like the ones of Tide 2, spinning around instead of swimming upright.
+- Fixed "Navigation: Automatic" using ground movement for fish and other water NPCs.
+- Fixed "Navigation: Automatic" using ground movement for Guardians, Drowned and modded water mobs.
+- Fixed "Navigation: Automatic" ignoring an aquatic Easy Model Entities model of an NPC.
+- Fixed the "Random Swimming" objective never moving an NPC that uses aquatic navigation.
+- Fixed a swimming NPC shaking in place instead of keeping its swim tilt.
+- Fixed a swimming NPC turning in circles forever when it could not reach its next path point.
+- Fixed a swimming NPC twitching up and down while it was looking at a nearby player.
+- Fixed a swimming NPC jittering up and down while it held its configured swim depth.
+- Fixed the swim tilt of Tide fish NPCs flickering back to zero every tick while they were rendered.
+- Fixed an NPC that fell into water never getting out of it again.
+- Fixed the "Opacity" input field being too narrow to show a value of 100.
+- Fixed the "Move to" actions ignoring height differences and stopping short of a raised target.
+- Fixed a "Move to" action never starting when the NPC was in the air at that moment.
+- Fixed "Move back to Home" stopping short of a home that sits at a different height.
+- Fixed an NPC never walking back to a home that is more than 32 blocks away.
+- Fixed a following NPC searching a new path every tick while its target was unreachable.
+- Fixed a damaged NPC with an Easy Model Entities model never flashing red.
+- Changed modded water NPCs to swim level, vanilla water mobs keep their tilt as before.
+- Changed the "Move to" actions to walk up to 48 blocks and to teleport only beyond that range.
+- Changed a "Move to" action to end early when the NPC makes no progress for three seconds.
+- Changed the timeout of a "Move to" action to count real ticks, it ran twice as long before.
+- Changed a "Move back to Home" attempt to stop early when the NPC makes no progress.
+- Changed a new "Random Swimming" objective to rank below following, fleeing and attack goals.
+  Existing NPCs keep their stored priority and need it raised by hand.
+- Changed "Opacity" of an NPC with an Easy Model Entities model to be applied by that mod itself.
+- Changed the minimum Easy Model Entities version to 2.3.0, older versions disable the integration.
+- Added a "Depth below surface" slider, which keeps a swimming NPC that far under the water surface.
+- Added a "Height above floor" slider, which keeps a swimming NPC that far above the ground.
+- Added log entries showing how many NPC files were written on a world save and how long it took.
+- Added a warning to the log when writing a single NPC file takes longer than 250 ms.
+
 ### 7.8.1
 
 - Fixed #827 by rendering fish NPCs in water upright instead of always flopping on their side.

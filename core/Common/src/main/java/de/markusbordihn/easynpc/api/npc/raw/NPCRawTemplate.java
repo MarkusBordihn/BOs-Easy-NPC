@@ -37,6 +37,9 @@ import de.markusbordihn.easynpc.data.synched.SynchedEntityData;
 import de.markusbordihn.easynpc.data.ticker.TickerType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPCBase;
+import de.markusbordihn.easynpc.entity.easynpc.ai.control.EasyNPCSwimmingLookControl;
+import de.markusbordihn.easynpc.entity.easynpc.ai.control.EasyNPCSwimmingMoveControl;
+import de.markusbordihn.easynpc.entity.easynpc.ai.navigation.EasyNPCWaterBoundPathNavigation;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.AttackHandler;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.InteractionHandler;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.VisibilityHandler;
@@ -72,12 +75,11 @@ import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.control.BodyRotationControl;
+import net.minecraft.world.entity.ai.control.LookControl;
 import net.minecraft.world.entity.ai.control.MoveControl;
-import net.minecraft.world.entity.ai.control.SmoothSwimmingMoveControl;
 import net.minecraft.world.entity.ai.goal.GoalSelector;
 import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
-import net.minecraft.world.entity.ai.navigation.WaterBoundPathNavigation;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ProjectileWeaponItem;
@@ -86,6 +88,7 @@ import net.minecraft.world.item.trading.MerchantOffers;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -243,6 +246,7 @@ public class NPCRawTemplate extends Zombie implements EasyNPCBase<Zombie> {
   private FakePlayer fakePlayer;
   private NavigationType appliedNavigationType;
   private MoveControl defaultMoveControl;
+  private LookControl defaultLookControl;
 
   public NPCRawTemplate(EntityType<? extends Zombie> entityType, Level level, Enum<?> variant) {
     super(entityType, level);
@@ -343,6 +347,7 @@ public class NPCRawTemplate extends Zombie implements EasyNPCBase<Zombie> {
       }
     } else {
       this.updatePersistentAnger((ServerLevel) this.level(), true);
+      this.handleWaterEscapeTick();
     }
   }
 
@@ -798,7 +803,7 @@ public class NPCRawTemplate extends Zombie implements EasyNPCBase<Zombie> {
 
     return switch (this.getNavigationType()) {
       case FLYING -> new FlyingPathNavigation(this, level);
-      case AQUATIC -> new WaterBoundPathNavigation(this, level);
+      case AQUATIC -> new EasyNPCWaterBoundPathNavigation(this, level);
       default -> super.createNavigation(level);
     };
   }
@@ -813,20 +818,33 @@ public class NPCRawTemplate extends Zombie implements EasyNPCBase<Zombie> {
     if (this.defaultMoveControl == null) {
       this.defaultMoveControl = this.moveControl;
     }
+    if (this.defaultLookControl == null) {
+      this.defaultLookControl = this.lookControl;
+    }
 
     NavigationType navigationType = this.getNavigationType();
     this.navigation = this.createNavigation(this.level());
     switch (navigationType) {
-      case FLYING ->
-          this.moveControl =
-              new de.markusbordihn.easynpc.entity.easynpc.ai.control.EasyNPCFlyingMoveControl(this);
-      case AQUATIC ->
-          this.moveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.02F, 0.1F, true);
-      default -> this.moveControl = this.defaultMoveControl;
+      case FLYING -> {
+        this.moveControl =
+            new de.markusbordihn.easynpc.entity.easynpc.ai.control.EasyNPCFlyingMoveControl(this);
+        this.lookControl = this.defaultLookControl;
+      }
+      case AQUATIC -> {
+        this.moveControl = new EasyNPCSwimmingMoveControl(this);
+        this.lookControl = new EasyNPCSwimmingLookControl(this);
+      }
+      default -> {
+        this.moveControl = this.defaultMoveControl;
+        this.lookControl = this.defaultLookControl;
+      }
     }
     if (navigationType != NavigationType.FLYING) {
       this.restoreGravityFromAttributes();
     }
+    this.setPathfindingMalus(
+        BlockPathTypes.WATER,
+        navigationType == NavigationType.AQUATIC ? 0.0F : BlockPathTypes.WATER.getMalus());
     this.appliedNavigationType = navigationType;
     this.refreshGroundNavigation();
     this.navigation.stop();

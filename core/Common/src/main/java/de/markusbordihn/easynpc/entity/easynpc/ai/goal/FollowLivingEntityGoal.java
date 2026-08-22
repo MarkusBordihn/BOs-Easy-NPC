@@ -41,6 +41,7 @@ public class FollowLivingEntityGoal extends Goal {
 
   private static final int COMBAT_COOLDOWN_DURATION = 3 * 20;
   private static final int PATH_RECALCULATION_DELAY = 10;
+  private static final int PATH_FAILURE_COOLDOWN_TICKS = 20;
   private static final int TELEPORT_ATTEMPTS = 10;
   private static final float NO_DISTANCE_LIMIT = 0.0F;
 
@@ -56,6 +57,7 @@ public class FollowLivingEntityGoal extends Goal {
   private float oldWaterCost;
   private int timeToRecalcPath;
   private int combatCooldownTicks = 0;
+  private int pathFailureCooldownTicks = 0;
 
   public FollowLivingEntityGoal(
       EasyNPC<?> easyNPC,
@@ -114,6 +116,11 @@ public class FollowLivingEntityGoal extends Goal {
   @Override
   public boolean canUse() {
     if (this.isOnCombatCooldown()) {
+      return false;
+    }
+
+    if (this.pathFailureCooldownTicks > 0) {
+      this.pathFailureCooldownTicks--;
       return false;
     }
 
@@ -190,16 +197,22 @@ public class FollowLivingEntityGoal extends Goal {
       return;
     }
 
-    if (!this.mob
-            .getNavigation()
-            .moveTo(targetPosition.x, targetPosition.y, targetPosition.z, this.speedModifier)
-        && this.navigationData.canFly()) {
+    if (this.mob
+        .getNavigation()
+        .moveTo(targetPosition.x, targetPosition.y, targetPosition.z, this.speedModifier)) {
+      return;
+    }
+
+    if (this.navigationData.canFly()) {
       // A flying NPC regularly has no path through open air, so steer it directly instead.
       this.mob
           .getMoveControl()
           .setWantedPosition(
               targetPosition.x, targetPosition.y, targetPosition.z, this.speedModifier);
+      return;
     }
+
+    this.pathFailureCooldownTicks = PATH_FAILURE_COOLDOWN_TICKS;
   }
 
   private void teleportTo(Vec3 targetPosition) {

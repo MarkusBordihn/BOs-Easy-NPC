@@ -384,7 +384,7 @@ public class RangeSliderButton extends AbstractWidget {
 
   @Override
   public boolean mouseClicked(double mouseX, double mouseY, int button) {
-    if (!this.active) {
+    if (!this.active || !this.visible) {
       return false;
     }
 

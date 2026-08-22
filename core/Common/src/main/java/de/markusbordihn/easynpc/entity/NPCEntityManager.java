@@ -118,6 +118,7 @@ public class NPCEntityManager {
       return;
     }
 
+    long startTime = System.currentTimeMillis();
     int savedCount =
         LivingEntityManager.getServerEasyNPCEntities()
             .mapToInt(
@@ -132,7 +133,11 @@ public class NPCEntityManager {
             .sum();
 
     if (savedCount > 0) {
-      log.debug("{} Saved {} dirty NPC(s) to persistent storage", LOG_PREFIX, savedCount);
+      log.info(
+          "{} Collected {} changed NPC(s) for persistent storage in {} ms",
+          LOG_PREFIX,
+          savedCount,
+          System.currentTimeMillis() - startTime);
     }
   }
 

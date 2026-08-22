@@ -292,11 +292,17 @@ public class AttributeHandler {
     EntityAttributes entityAttributes = attributeData.getEntityAttributes();
     MovementAttributes attributes = entityAttributes.getMovementAttributes();
     log.debug("Changing moving attribute {}={} for {}", attributeType, value, easyNPC);
-    if (attributeType == MovementAttributeType.HOVER_HEIGHT) {
-      entityAttributes.setMovementAttributes(attributes.withHoverHeight(value));
-    } else {
-      log.error("Unimplemented moving attribute {} for {}", attributeType, easyNPC);
-      return false;
+    switch (attributeType) {
+      case HOVER_HEIGHT ->
+          entityAttributes.setMovementAttributes(attributes.withHoverHeight(value));
+      case SWIM_DEPTH_BELOW_SURFACE ->
+          entityAttributes.setMovementAttributes(attributes.withSwimDepthBelowSurface(value));
+      case SWIM_HEIGHT_ABOVE_FLOOR ->
+          entityAttributes.setMovementAttributes(attributes.withSwimHeightAboveFloor(value));
+      default -> {
+        log.error("Unimplemented moving attribute {} for {}", attributeType, easyNPC);
+        return false;
+      }
     }
 
     attributeData.refreshEntityAttributes();

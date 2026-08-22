@@ -24,14 +24,19 @@ import de.markusbordihn.easynpc.entity.easynpc.ai.control.JumpEasyNPCMoveControl
 import de.markusbordihn.easynpc.entity.easynpc.data.NavigationDataCapable;
 import java.util.EnumSet;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Vec3i;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.level.pathfinder.Path;
+import net.minecraft.world.phys.Vec3;
 
 public class MoveBackToHomeGoal<T extends EasyNPC<?>> extends Goal {
 
   private static final int DEFAULT_INTERVAL = 60;
+  private static final int PATHFINDING_RANGE = 48;
+  private static final float MIN_VERTICAL_ARRIVAL_DISTANCE = 2.0F;
+  private static final int TICKS_WITHOUT_PROGRESS_LIMIT = 60;
+  private static final double PROGRESS_DISTANCE = 0.5D;
 
   private final float stopDistance;
   private final NavigationDataCapable<?> navigationData;
@@ -39,9 +44,9 @@ public class MoveBackToHomeGoal<T extends EasyNPC<?>> extends Goal {
   private final double speedModifier;
   private final int interval;
   private final boolean canJump;
-  protected double wantedX;
-  protected double wantedY;
-  protected double wantedZ;
+  private BlockPos homeTargetPos;
+  private Vec3 lastProgressPosition;
+  private int ticksWithoutProgress;
 
   public MoveBackToHomeGoal(T easyNPCEntity, double speedModifier, float stopDistance) {
     this(easyNPCEntity, speedModifier, stopDistance, DEFAULT_INTERVAL);
@@ -63,14 +68,18 @@ public class MoveBackToHomeGoal<T extends EasyNPC<?>> extends Goal {
     if (this.mob.isVehicle()
         || this.mob.getRandom().nextInt(reducedTickDelay(this.interval)) != 0
         || (this.mob.isAggressive() && this.mob.getTarget() != null)
-        || reachedHome()) {
+        || this.navigationData == null
+        || !this.navigationData.hasHomePosition()) {
       return false;
     }
 
-    BlockPos blockPos = this.navigationData.getHomePosition();
-    this.wantedX = blockPos.getX();
-    this.wantedY = blockPos.getY();
-    this.wantedZ = blockPos.getZ();
+    this.homeTargetPos =
+        GroundTargetResolver.resolveGroundTarget(this.mob, this.navigationData.getHomePosition());
+    return !reachedHome();
+  }
+
+  @Override
+  public boolean requiresUpdateEveryTick() {
     return true;
   }
 
@@ -78,20 +87,42 @@ public class MoveBackToHomeGoal<T extends EasyNPC<?>> extends Goal {
   public boolean canContinueToUse() {
     return !this.mob.getNavigation().isDone()
         && !this.mob.isVehicle()
-        && this.mob.getTarget() == null;
+        && this.mob.getTarget() == null
+        && this.ticksWithoutProgress < TICKS_WITHOUT_PROGRESS_LIMIT
+        && !reachedHome();
   }
 
   @Override
   public void start() {
+    this.ticksWithoutProgress = 0;
+    this.lastProgressPosition = this.mob.position();
+
     if (this.canJump
         && this.mob.getMoveControl() instanceof JumpEasyNPCMoveControl jumpMoveControl) {
-      double dx = this.wantedX - this.mob.getX();
-      double dz = this.wantedZ - this.mob.getZ();
+      double dx = this.homeTargetPos.getX() + 0.5 - this.mob.getX();
+      double dz = this.homeTargetPos.getZ() + 0.5 - this.mob.getZ();
       jumpMoveControl.setDirection((float) (Mth.atan2(dz, dx) * (180.0 / Math.PI)) - 90.0F, false);
       jumpMoveControl.setWantedMovement(this.speedModifier);
-    } else {
-      this.mob.getNavigation().moveTo(this.wantedX, this.wantedY, this.wantedZ, this.speedModifier);
+      return;
     }
+
+    Path path = this.mob.getNavigation().createPath(this.homeTargetPos, 1, PATHFINDING_RANGE);
+    if (path != null) {
+      this.mob.getNavigation().moveTo(path, this.speedModifier);
+    }
+  }
+
+  @Override
+  public void tick() {
+    Vec3 position = this.mob.position();
+    if (position.distanceToSqr(this.lastProgressPosition)
+        > PROGRESS_DISTANCE * PROGRESS_DISTANCE) {
+      this.lastProgressPosition = position;
+      this.ticksWithoutProgress = 0;
+      return;
+    }
+
+    this.ticksWithoutProgress++;
   }
 
   @Override
@@ -105,8 +136,17 @@ public class MoveBackToHomeGoal<T extends EasyNPC<?>> extends Goal {
       return true;
     }
 
-    BlockPos blockPos = this.mob.blockPosition();
-    Vec3i vec3i = new Vec3i(blockPos.getX(), blockPos.getY(), blockPos.getZ());
-    return this.navigationData.getHomePosition().closerThan(vec3i, this.stopDistance);
+    BlockPos blockPos =
+        this.homeTargetPos != null ? this.homeTargetPos : this.navigationData.getHomePosition();
+    Vec3 position = this.mob.position();
+    double distanceX = blockPos.getX() + 0.5 - position.x;
+    double distanceZ = blockPos.getZ() + 0.5 - position.z;
+    double stopDistanceSqr = (double) this.stopDistance * this.stopDistance;
+    if (distanceX * distanceX + distanceZ * distanceZ > stopDistanceSqr) {
+      return false;
+    }
+
+    return Math.abs(blockPos.getY() - position.y)
+        <= Math.max(this.stopDistance, MIN_VERTICAL_ARRIVAL_DISTANCE);
   }
 }
