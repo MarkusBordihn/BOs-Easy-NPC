@@ -49,7 +49,7 @@ public class EasyModelEntitiesLoader implements IntegrationModelProvider {
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private static final EasyModelEntitiesLoader INSTANCE = new EasyModelEntitiesLoader();
   private static final int REQUIRED_API_MAJOR_VERSION = 2;
-  private static final int REQUIRED_API_MINOR_VERSION = 1;
+  private static final int REQUIRED_API_MINOR_VERSION = 3;
 
   private static boolean reloadListenerRegistered = false;
   private static boolean clientReloadListenerRegistered = false;

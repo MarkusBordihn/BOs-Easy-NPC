@@ -49,6 +49,7 @@ import de.markusbordihn.easynpc.client.renderer.manager.EntityTypeManager;
 import de.markusbordihn.easynpc.compat.IntegrationRegistry;
 import de.markusbordihn.easynpc.compat.easymodelentities.EasyModelEntitiesLoader;
 import de.markusbordihn.easynpc.compat.easymodelentities.EasyModelEntitiesManager;
+import de.markusbordihn.easynpc.data.display.DisplayAttributeType;
 import de.markusbordihn.easynpc.data.model.ModelAnimationBehavior;
 import de.markusbordihn.easynpc.data.model.ModelAnimationOperation;
 import de.markusbordihn.easynpc.data.model.ModelAnimationPlayback;
@@ -65,6 +66,7 @@ import de.markusbordihn.easynpc.data.skin.variant.DopplerSkinVariant;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.RenderDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.npc.easymodelentities.EasyModelNPC;
+import de.markusbordihn.easynpc.handler.AttributeHandler;
 import de.markusbordihn.easynpc.mixin.renderer.MobRendererInvoker;
 import java.util.Collections;
 import java.util.Map;
@@ -189,6 +191,10 @@ public class EasyModelNPCRenderer<E extends PathfinderMob>
       renderOptions =
           renderOptions.withTextureSetting(
               EasyModelEntitiesLoader.toEasyModelTextureSetting(textureSetting));
+    }
+    int opacity = AttributeHandler.getOpacity(easyModelNPC);
+    if (opacity < DisplayAttributeType.MAX_OPACITY) {
+      renderOptions = renderOptions.withOpacity(opacity / (float) DisplayAttributeType.MAX_OPACITY);
     }
     return renderOptions;
   }
@@ -334,6 +340,7 @@ public class EasyModelNPCRenderer<E extends PathfinderMob>
       return;
     }
 
+    MultiBufferSource itemBuffer = OpacityBufferSource.wrapIfNeeded(entity, buffer);
     HumanoidArm mainArm = entity.getMainArm();
     renderHandItem(
         entity,
@@ -342,7 +349,7 @@ public class EasyModelNPCRenderer<E extends PathfinderMob>
         handPoseCapture.mainHandPose,
         mainArm,
         poseStack,
-        buffer,
+        itemBuffer,
         packedLight);
     renderHandItem(
         entity,
@@ -351,7 +358,7 @@ public class EasyModelNPCRenderer<E extends PathfinderMob>
         handPoseCapture.offHandPose,
         mainArm.getOpposite(),
         poseStack,
-        buffer,
+        itemBuffer,
         packedLight);
   }
 
@@ -412,14 +419,12 @@ public class EasyModelNPCRenderer<E extends PathfinderMob>
     }
 
     float bodyYaw = Mth.rotLerp(partialTicks, entity.yBodyRotO, entity.yBodyRot);
-    MultiBufferSource entityBuffer = OpacityBufferSource.wrapIfNeeded(entity, buffer);
 
     try {
       boolean rendered;
       if (IntegrationRegistry.isGuiPreviewMode()) {
         rendered =
-            renderPreview(
-                easyModelNPC, entity, profileId, bodyYaw, poseStack, entityBuffer, packedLight);
+            renderPreview(easyModelNPC, entity, profileId, bodyYaw, poseStack, buffer, packedLight);
       } else {
         rendered =
             renderInWorld(
@@ -429,7 +434,7 @@ public class EasyModelNPCRenderer<E extends PathfinderMob>
                 bodyYaw,
                 partialTicks,
                 poseStack,
-                entityBuffer,
+                buffer,
                 packedLight);
       }
 
@@ -479,7 +484,12 @@ public class EasyModelNPCRenderer<E extends PathfinderMob>
             profileId, poseStack, buffer, packedLight, bodyYaw, renderOptions);
     poseStack.popPose();
     if (rendered) {
-      renderHandItems(entity, handPoseCapture, poseStack, buffer, packedLight);
+      renderHandItems(
+          entity,
+          handPoseCapture,
+          poseStack,
+          OpacityBufferSource.wrapIfNeeded(entity, buffer),
+          packedLight);
     }
     return rendered;
   }
@@ -524,7 +534,12 @@ public class EasyModelNPCRenderer<E extends PathfinderMob>
       poseStack.popPose();
     }
     if (rendered) {
-      renderHandItems(entity, handPoseCapture, poseStack, buffer, packedLight);
+      renderHandItems(
+          entity,
+          handPoseCapture,
+          poseStack,
+          OpacityBufferSource.wrapIfNeeded(entity, buffer),
+          packedLight);
     }
     return rendered;
   }

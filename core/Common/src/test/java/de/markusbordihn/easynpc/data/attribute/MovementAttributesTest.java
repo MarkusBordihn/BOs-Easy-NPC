@@ -33,7 +33,8 @@ class MovementAttributesTest {
   @DisplayName("All movement attributes survive an encode and decode round trip")
   void testEncodeDecodeRoundTrip() {
     MovementAttributes movementAttributes =
-        new MovementAttributes(true, false, true, false, NavigationType.FLYING, 2.5D, true);
+        new MovementAttributes(
+            true, false, true, false, NavigationType.AQUATIC, 2.5D, 4.0D, 1.5D, true);
 
     MovementAttributes decoded =
         MovementAttributes.decode(movementAttributes.encode(new CompoundTag()));
@@ -125,6 +126,54 @@ class MovementAttributesTest {
     compoundTag.putDouble(MovementAttributes.HOVER_HEIGHT_TAG, Double.NaN);
 
     assertEquals(0.0D, MovementAttributes.decode(compoundTag).hoverHeight());
+  }
+
+  @Test
+  @DisplayName("A swim distance outside the allowed range is capped")
+  void testSwimDistancesAreLimited() {
+    assertEquals(
+        MovementAttributes.MAX_SWIM_DEPTH_BELOW_SURFACE,
+        new MovementAttributes().withSwimDepthBelowSurface(1024.0D).swimDepthBelowSurface());
+    assertEquals(
+        0.0D, new MovementAttributes().withSwimDepthBelowSurface(-5.0D).swimDepthBelowSurface());
+    assertEquals(
+        0.0D,
+        new MovementAttributes().withSwimDepthBelowSurface(Double.NaN).swimDepthBelowSurface());
+    assertEquals(
+        MovementAttributes.MAX_SWIM_HEIGHT_ABOVE_FLOOR,
+        new MovementAttributes().withSwimHeightAboveFloor(1024.0D).swimHeightAboveFloor());
+    assertEquals(
+        0.0D, new MovementAttributes().withSwimHeightAboveFloor(-5.0D).swimHeightAboveFloor());
+    assertEquals(
+        MovementAttributes.MAX_SWIM_HEIGHT_ABOVE_FLOOR,
+        new MovementAttributes()
+            .withSwimHeightAboveFloor(Double.POSITIVE_INFINITY)
+            .swimHeightAboveFloor());
+  }
+
+  @Test
+  @DisplayName("A swim distance outside the allowed range is also capped while loading")
+  void testSwimDistancesAreLimitedOnDecode() {
+    CompoundTag compoundTag = new CompoundTag();
+    compoundTag.putDouble(MovementAttributes.SWIM_DEPTH_BELOW_SURFACE_TAG, Double.NaN);
+    compoundTag.putDouble(MovementAttributes.SWIM_HEIGHT_ABOVE_FLOOR_TAG, 1024.0D);
+
+    MovementAttributes decoded = MovementAttributes.decode(compoundTag);
+
+    assertEquals(0.0D, decoded.swimDepthBelowSurface());
+    assertEquals(MovementAttributes.MAX_SWIM_HEIGHT_ABOVE_FLOOR, decoded.swimHeightAboveFloor());
+  }
+
+  @Test
+  @DisplayName("Data saved before the swim distances existed keeps them unset")
+  void testLegacyDataDecodesWithoutSwimDistances() {
+    CompoundTag legacyTag = new CompoundTag();
+    legacyTag.putBoolean(MovementAttributes.CAN_OPEN_DOOR_TAG, true);
+
+    MovementAttributes decoded = MovementAttributes.decode(legacyTag);
+
+    assertEquals(0.0D, decoded.swimDepthBelowSurface());
+    assertEquals(0.0D, decoded.swimHeightAboveFloor());
   }
 
   @Test

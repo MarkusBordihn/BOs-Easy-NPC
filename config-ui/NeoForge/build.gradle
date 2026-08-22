@@ -89,6 +89,13 @@ dependencies {
     runtimeOnly "maven.modrinth:easy-model-entities:${project.neoforge_easy_model_entities_version}"
   }
 
+  // Tide (for testing, requires Cloth Config at runtime)
+  // Tide uses the same version number across Minecraft versions, so pin the Modrinth version id
+  if (!isGameTestRun) {
+    runtimeOnly "maven.modrinth:tide:1ki6UyqV"
+    runtimeOnly "maven.modrinth:cloth-config:15.0.140+neoforge"
+  }
+
   // Test dependencies
   // runtimeOnly "maven.modrinth:create:6.0.10+mc1.21.1"
 }

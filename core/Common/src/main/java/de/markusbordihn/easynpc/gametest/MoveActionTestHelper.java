@@ -46,7 +46,7 @@ public class MoveActionTestHelper {
       StateIdentifier.parse("gametest_move_second");
   private static final Vec3 NPC_POSITION = new Vec3(1, 2, 1);
   private static final BlockPos NEARBY_OFFSET = new BlockPos(0, 1, 0);
-  private static final BlockPos UNREACHABLE_OFFSET = new BlockPos(0, 40, 0);
+  private static final BlockPos UNREACHABLE_OFFSET = new BlockPos(0, -40, 0);
   private static final int TIMEOUT_TICKS = MoveActionData.MIN_TIMEOUT_TICKS;
   private static final int BACKSTOP_TICKS = TIMEOUT_TICKS + 200;
 
