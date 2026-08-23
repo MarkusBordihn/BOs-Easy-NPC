@@ -47,6 +47,7 @@ import de.markusbordihn.easynpc.client.renderer.manager.EntityTypeManager;
 import de.markusbordihn.easynpc.compat.IntegrationRegistry;
 import de.markusbordihn.easynpc.compat.easymodelentities.EasyModelEntitiesLoader;
 import de.markusbordihn.easynpc.compat.easymodelentities.EasyModelEntitiesManager;
+import de.markusbordihn.easynpc.data.display.DisplayAttributeType;
 import de.markusbordihn.easynpc.data.model.ModelAnimationBehavior;
 import de.markusbordihn.easynpc.data.model.ModelAnimationOperation;
 import de.markusbordihn.easynpc.data.model.ModelAnimationPlayback;
@@ -59,6 +60,7 @@ import de.markusbordihn.easynpc.data.render.ModelTextureSetting;
 import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.data.scale.CustomScale;
 import de.markusbordihn.easynpc.entity.easynpc.npc.easymodelentities.EasyModelNPC;
+import de.markusbordihn.easynpc.handler.AttributeHandler;
 import java.util.Collections;
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -227,6 +229,10 @@ public class EasyModelNPCRenderer<E extends PathfinderMob>
       renderOptions =
           renderOptions.withTextureSetting(
               EasyModelEntitiesLoader.toEasyModelTextureSetting(textureSetting));
+    }
+    int opacity = AttributeHandler.getOpacity(easyModelNPC);
+    if (opacity < DisplayAttributeType.MAX_OPACITY) {
+      renderOptions = renderOptions.withOpacity(opacity / (float) DisplayAttributeType.MAX_OPACITY);
     }
     return renderOptions;
   }
@@ -426,8 +432,6 @@ public class EasyModelNPCRenderer<E extends PathfinderMob>
       PoseStack poseStack,
       SubmitNodeCollector submitNodeCollector,
       CameraRenderState cameraRenderState) {
-    SubmitNodeCollector modelSubmitNodeCollector =
-        OpacitySubmitNodeCollector.wrapIfNeeded(renderState, submitNodeCollector);
     if (renderState.easyModelRenderState != null) {
       poseStack.pushPose();
       if (renderState.previewScale > 0.0f) {
@@ -447,7 +451,7 @@ public class EasyModelNPCRenderer<E extends PathfinderMob>
       }
       try {
         EasyModelEntityRenderBackend.render(
-            renderState, poseStack, modelSubmitNodeCollector, renderState.lightCoords);
+            renderState, poseStack, submitNodeCollector, renderState.lightCoords);
       } catch (Exception exception) {
         if (renderState.profileId != null) {
           invalidProfileCache.put(renderState.profileId, Boolean.TRUE);
@@ -455,7 +459,10 @@ public class EasyModelNPCRenderer<E extends PathfinderMob>
         log.error(
             "Failed to render Easy Model Entities profile {}:", renderState.profileId, exception);
       }
-      renderHandItems(renderState, poseStack, modelSubmitNodeCollector);
+      renderHandItems(
+          renderState,
+          poseStack,
+          OpacitySubmitNodeCollector.wrapIfNeeded(renderState, submitNodeCollector));
       poseStack.popPose();
     }
     super.submit(renderState, poseStack, submitNodeCollector, cameraRenderState);

@@ -36,6 +36,8 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.animal.dolphin.Dolphin;
+import net.minecraft.world.entity.animal.fish.WaterAnimal;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -182,8 +184,14 @@ public class RendererManager {
     targetEntity.setYRot(sourceEntity.getYRot());
     targetEntity.yRotO = sourceEntity.yRotO;
 
-    targetEntity.setXRot(sourceEntity.getXRot());
-    targetEntity.xRotO = sourceEntity.xRotO;
+    boolean rendersPitchAsSwimTilt =
+        targetEntity instanceof WaterAnimal && !(targetEntity instanceof Dolphin);
+    if (rendersPitchAsSwimTilt) {
+      targetEntity.xRotO = targetEntity.getXRot();
+    } else {
+      targetEntity.setXRot(sourceEntity.getXRot());
+      targetEntity.xRotO = sourceEntity.xRotO;
+    }
 
     targetEntity.setYHeadRot(sourceEntity.getYHeadRot());
 

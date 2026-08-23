@@ -89,10 +89,16 @@ public class ServerEvents {
 
     log.info("{} Server is stopping, saving all dirty NPCs...", Constants.LOG_REGISTER_PREFIX);
 
+    long startTime = System.currentTimeMillis();
     NPCEntityManager.saveAllDirtyNPCs();
     EnvironmentChangeTracker.reset();
     PauseManager.reset();
     PlayerIdleTracker.reset();
     PresetReference.clearCache();
+
+    log.info(
+        "{} Server stop handling finished in {} ms",
+        Constants.LOG_REGISTER_PREFIX,
+        System.currentTimeMillis() - startTime);
   }
 }

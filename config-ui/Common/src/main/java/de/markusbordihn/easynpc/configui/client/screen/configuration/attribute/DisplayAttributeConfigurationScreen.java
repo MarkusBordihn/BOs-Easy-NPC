@@ -130,7 +130,7 @@ public class DisplayAttributeConfigurationScreen<T extends ConfigurationMenu>
                 this.font,
                 secondButtonRow + 100,
                 this.buttonTopPos + 25,
-                24,
+                30,
                 displayAttributeData.getDisplayIntAttribute(DisplayAttributeType.OPACITY),
                 3));
     this.opacityBox.setResponder(

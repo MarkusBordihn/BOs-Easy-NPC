@@ -118,6 +118,15 @@ dependencies {
   }
 }
 
+// ForgeGradle derives the "runsJson" output of its slimeLauncherMetadata tasks from their own
+// "outputDirectory" output, which Gradle 9.7 refuses to evaluate before the task has run. Both
+// values are set explicitly here so no output property is mapped from another one.
+tasks.matching { it.name.startsWith('slimeLauncherMetadataFor') }.configureEach {
+  def metadataDir = layout.buildDirectory.dir("forgegradle/${name}")
+  outputDirectory.set(metadataDir)
+  runsJson.set(metadataDir.map { it.dir("launcher").file("runs.json") })
+}
+
 tasks.withType(JavaCompile).configureEach {
   source(project(":Common").sourceSets.main.allSource)
   if (name == 'compileTestJava') {

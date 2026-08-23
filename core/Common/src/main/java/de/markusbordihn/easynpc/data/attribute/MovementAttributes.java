@@ -29,6 +29,8 @@ public record MovementAttributes(
     boolean canUseNetherPortal,
     NavigationType navigationType,
     double hoverHeight,
+    double swimDepthBelowSurface,
+    double swimHeightAboveFloor,
     boolean isImmovable)
     implements EntityAttributesInterface {
 
@@ -40,8 +42,14 @@ public record MovementAttributes(
   public static final String NAVIGATION_TYPE_TAG =
       MovementAttributeType.NAVIGATION_TYPE.getTagName();
   public static final String HOVER_HEIGHT_TAG = MovementAttributeType.HOVER_HEIGHT.getTagName();
+  public static final String SWIM_DEPTH_BELOW_SURFACE_TAG =
+      MovementAttributeType.SWIM_DEPTH_BELOW_SURFACE.getTagName();
+  public static final String SWIM_HEIGHT_ABOVE_FLOOR_TAG =
+      MovementAttributeType.SWIM_HEIGHT_ABOVE_FLOOR.getTagName();
   public static final String IS_IMMOVABLE_TAG = MovementAttributeType.IS_IMMOVABLE.getTagName();
   public static final double MAX_HOVER_HEIGHT = 16.0D;
+  public static final double MAX_SWIM_DEPTH_BELOW_SURFACE = 32.0D;
+  public static final double MAX_SWIM_HEIGHT_ABOVE_FLOOR = 16.0D;
 
   public MovementAttributes {
     if (navigationType == null) {
@@ -50,11 +58,13 @@ public record MovementAttributes(
 
     // A hover height reaches the movement control unchecked, where anything outside this range
     // would move the NPC to an invalid position.
-    hoverHeight = Double.isNaN(hoverHeight) ? 0.0D : Mth.clamp(hoverHeight, 0.0D, MAX_HOVER_HEIGHT);
+    hoverHeight = clampDistance(hoverHeight, MAX_HOVER_HEIGHT);
+    swimDepthBelowSurface = clampDistance(swimDepthBelowSurface, MAX_SWIM_DEPTH_BELOW_SURFACE);
+    swimHeightAboveFloor = clampDistance(swimHeightAboveFloor, MAX_SWIM_HEIGHT_ABOVE_FLOOR);
   }
 
   public MovementAttributes() {
-    this(false, false, false, false, NavigationType.DEFAULT, 0.0D, false);
+    this(false, false, false, false, NavigationType.DEFAULT, 0.0D, 0.0D, 0.0D, false);
   }
 
   public MovementAttributes(
@@ -66,7 +76,13 @@ public record MovementAttributes(
         canUseNetherPortal,
         NavigationType.DEFAULT,
         0.0D,
+        0.0D,
+        0.0D,
         false);
+  }
+
+  private static double clampDistance(double distance, double maxDistance) {
+    return Double.isNaN(distance) ? 0.0D : Mth.clamp(distance, 0.0D, maxDistance);
   }
 
   public static MovementAttributes decode(CompoundTag compoundTag) {
@@ -77,6 +93,8 @@ public record MovementAttributes(
         compoundTag.getBoolean(CAN_USE_NETHER_PORTAL_TAG).orElse(false),
         NavigationType.fromName(compoundTag.getString(NAVIGATION_TYPE_TAG).orElse("")),
         compoundTag.getDouble(HOVER_HEIGHT_TAG).orElse(0.0D),
+        compoundTag.getDouble(SWIM_DEPTH_BELOW_SURFACE_TAG).orElse(0.0D),
+        compoundTag.getDouble(SWIM_HEIGHT_ABOVE_FLOOR_TAG).orElse(0.0D),
         compoundTag.getBoolean(IS_IMMOVABLE_TAG).orElse(false));
   }
 
@@ -88,6 +106,8 @@ public record MovementAttributes(
         this.canUseNetherPortal,
         this.navigationType,
         this.hoverHeight,
+        this.swimDepthBelowSurface,
+        this.swimHeightAboveFloor,
         this.isImmovable);
   }
 
@@ -99,6 +119,8 @@ public record MovementAttributes(
         this.canUseNetherPortal,
         this.navigationType,
         this.hoverHeight,
+        this.swimDepthBelowSurface,
+        this.swimHeightAboveFloor,
         this.isImmovable);
   }
 
@@ -110,6 +132,8 @@ public record MovementAttributes(
         this.canUseNetherPortal,
         this.navigationType,
         this.hoverHeight,
+        this.swimDepthBelowSurface,
+        this.swimHeightAboveFloor,
         this.isImmovable);
   }
 
@@ -121,6 +145,8 @@ public record MovementAttributes(
         canUseNetherPortal,
         this.navigationType,
         this.hoverHeight,
+        this.swimDepthBelowSurface,
+        this.swimHeightAboveFloor,
         this.isImmovable);
   }
 
@@ -132,6 +158,8 @@ public record MovementAttributes(
         this.canUseNetherPortal,
         navigationType,
         this.hoverHeight,
+        this.swimDepthBelowSurface,
+        this.swimHeightAboveFloor,
         this.isImmovable);
   }
 
@@ -143,6 +171,34 @@ public record MovementAttributes(
         this.canUseNetherPortal,
         this.navigationType,
         hoverHeight,
+        this.swimDepthBelowSurface,
+        this.swimHeightAboveFloor,
+        this.isImmovable);
+  }
+
+  public MovementAttributes withSwimDepthBelowSurface(double swimDepthBelowSurface) {
+    return new MovementAttributes(
+        this.canOpenDoor,
+        this.canCloseDoor,
+        this.canPassDoor,
+        this.canUseNetherPortal,
+        this.navigationType,
+        this.hoverHeight,
+        swimDepthBelowSurface,
+        this.swimHeightAboveFloor,
+        this.isImmovable);
+  }
+
+  public MovementAttributes withSwimHeightAboveFloor(double swimHeightAboveFloor) {
+    return new MovementAttributes(
+        this.canOpenDoor,
+        this.canCloseDoor,
+        this.canPassDoor,
+        this.canUseNetherPortal,
+        this.navigationType,
+        this.hoverHeight,
+        this.swimDepthBelowSurface,
+        swimHeightAboveFloor,
         this.isImmovable);
   }
 
@@ -154,6 +210,8 @@ public record MovementAttributes(
         this.canUseNetherPortal,
         this.navigationType,
         this.hoverHeight,
+        this.swimDepthBelowSurface,
+        this.swimHeightAboveFloor,
         isImmovable);
   }
 
@@ -166,6 +224,10 @@ public record MovementAttributes(
       compoundTag.putString(NAVIGATION_TYPE_TAG, this.navigationType.name());
     }
     AttributeTagUtils.putIfNotZero(compoundTag, HOVER_HEIGHT_TAG, this.hoverHeight);
+    AttributeTagUtils.putIfNotZero(
+        compoundTag, SWIM_DEPTH_BELOW_SURFACE_TAG, this.swimDepthBelowSurface);
+    AttributeTagUtils.putIfNotZero(
+        compoundTag, SWIM_HEIGHT_ABOVE_FLOOR_TAG, this.swimHeightAboveFloor);
     AttributeTagUtils.putIfTrue(compoundTag, IS_IMMOVABLE_TAG, this.isImmovable);
     return compoundTag;
   }
