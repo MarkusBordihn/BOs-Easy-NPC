@@ -126,6 +126,7 @@
   "text.easy_npc.config.navigation_type_flying": "Летающая",
   "text.easy_npc.config.navigation_type_aquatic": "Водная",
   "text.easy_npc.config.hover_height": "Высота парения",
+  "text.easy_npc.config.min_hover_height": "Мин. высота парения",
   "text.easy_npc.config.cancel": "Отмена",
   "text.easy_npc.config.change_model": "Сменить модель",
   "text.easy_npc.config.change_model.tooltip.only_doppler": "Изменение модели доступно только для Doppler, Cobblemon и Easy Model NPC",

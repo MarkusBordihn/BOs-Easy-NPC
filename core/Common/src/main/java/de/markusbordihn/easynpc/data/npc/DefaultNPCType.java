@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.data.npc;
 
+import de.markusbordihn.easynpc.utils.EnumUtils;
 import java.util.Locale;
 
 public enum DefaultNPCType implements NPCType {
@@ -63,12 +64,7 @@ public enum DefaultNPCType implements NPCType {
   private final String registryId = this.name().toLowerCase(Locale.ROOT);
 
   public static DefaultNPCType fromRegistryId(String registryId) {
-    for (DefaultNPCType type : values()) {
-      if (type.registryId.equals(registryId)) {
-        return type;
-      }
-    }
-    return null;
+    return EnumUtils.getIgnoreCase(DefaultNPCType.class, registryId, null);
   }
 
   @Override

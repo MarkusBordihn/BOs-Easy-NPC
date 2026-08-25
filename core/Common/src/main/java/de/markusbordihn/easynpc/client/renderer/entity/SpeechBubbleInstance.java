@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Markus Bordihn
+ * Copyright 2026 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,40 +17,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.data.scoreboard;
+package de.markusbordihn.easynpc.client.renderer.entity;
 
-import de.markusbordihn.easynpc.utils.EnumUtils;
-import java.util.Locale;
+import java.util.List;
+import java.util.UUID;
+import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.world.phys.Vec3;
 
-public enum ScoreboardOperation {
-  INCREASE("action.increase_value"),
-  DECREASE("action.decrease_value"),
-  SET("action.set_value");
-
-  private final String commandName = this.name().toLowerCase(Locale.ROOT);
-  private final String translationKey;
-
-  ScoreboardOperation(String translationKey) {
-    this.translationKey = translationKey;
-  }
-
-  public static ScoreboardOperation fromCommandName(String commandName) {
-    return EnumUtils.getIgnoreCase(ScoreboardOperation.class, commandName, INCREASE);
-  }
-
-  public static ScoreboardOperation fromCommand(String command) {
-    if (command == null || command.isEmpty()) {
-      return INCREASE;
-    }
-    String[] parts = command.split(":", 2);
-    return fromCommandName(parts[0]);
-  }
-
-  public String getCommandName() {
-    return this.commandName;
-  }
-
-  public String getTranslationKey() {
-    return this.translationKey;
-  }
-}
+public record SpeechBubbleInstance(
+    UUID uuid,
+    List<FormattedCharSequence> lines,
+    Vec3 entityPosition,
+    double anchorOffsetX,
+    double anchorOffsetZ,
+    float placedAnchorHeight,
+    float bubbleScale,
+    float bubbleWidthPixels,
+    float bubbleHeightPixels,
+    float bubbleCenterPixelsX,
+    float bubbleCenterPixelsY,
+    float lateralProgress,
+    double cameraSpaceRight,
+    double cameraSpaceUp,
+    double cameraSpaceDepth,
+    double cameraSpaceHalfWidth,
+    double cameraSpaceHalfHeight,
+    int packedLight,
+    int textAlpha) {}

@@ -34,7 +34,7 @@ class MovementAttributesTest {
   void testEncodeDecodeRoundTrip() {
     MovementAttributes movementAttributes =
         new MovementAttributes(
-            true, false, true, false, NavigationType.AQUATIC, 2.5D, 4.0D, 1.5D, true);
+            true, false, true, false, NavigationType.AQUATIC, 2.5D, 1.0D, 4.0D, 1.5D, true);
 
     MovementAttributes decoded =
         MovementAttributes.decode(movementAttributes.encode(new CompoundTag()));
@@ -126,6 +126,42 @@ class MovementAttributesTest {
     compoundTag.putDouble(MovementAttributes.HOVER_HEIGHT_TAG, Double.NaN);
 
     assertEquals(0.0D, MovementAttributes.decode(compoundTag).hoverHeight());
+  }
+
+  @Test
+  @DisplayName("A minimum hover height outside the allowed range is capped")
+  void testMinHoverHeightIsLimited() {
+    assertEquals(
+        MovementAttributes.MAX_HOVER_HEIGHT,
+        new MovementAttributes().withMinHoverHeight(1024.0D).minHoverHeight());
+    assertEquals(0.0D, new MovementAttributes().withMinHoverHeight(-5.0D).minHoverHeight());
+    assertEquals(0.0D, new MovementAttributes().withMinHoverHeight(Double.NaN).minHoverHeight());
+  }
+
+  @Test
+  @DisplayName("The minimum hover height is kept independent of the fixed hover height")
+  void testMinHoverHeightIsIndependentOfHoverHeight() {
+    MovementAttributes movementAttributes =
+        new MovementAttributes().withHoverHeight(3.0D).withMinHoverHeight(1.5D);
+
+    MovementAttributes decoded =
+        MovementAttributes.decode(movementAttributes.encode(new CompoundTag()));
+
+    assertEquals(3.0D, decoded.hoverHeight());
+    assertEquals(1.5D, decoded.minHoverHeight());
+  }
+
+  @Test
+  @DisplayName("Data saved before the minimum hover height existed keeps it unset")
+  void testLegacyDataDecodesWithoutMinHoverHeight() {
+    CompoundTag legacyTag = new CompoundTag();
+    legacyTag.putDouble(MovementAttributes.HOVER_HEIGHT_TAG, 2.0D);
+
+    assertEquals(0.0D, MovementAttributes.decode(legacyTag).minHoverHeight());
+    assertFalse(
+        new MovementAttributes()
+            .encode(new CompoundTag())
+            .contains(MovementAttributes.MIN_HOVER_HEIGHT_TAG));
   }
 
   @Test

@@ -47,6 +47,8 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataSerializer;
@@ -61,268 +63,39 @@ public class EntityDataSerializersManager {
   private static final Map<String, EntityDataSerializer<?>> ENTITY_DATA_SERIALIZERS =
       new LinkedHashMap<>();
   public static final EntityDataSerializer<DisplayAttributeDataSet> DISPLAY_ATTRIBUTE =
-      defineSerializer(
-          DisplayAttributeDataSet.class.getSimpleName(),
-          new EntityDataSerializer<>() {
-            @Override
-            public void write(FriendlyByteBuf buffer, DisplayAttributeDataSet value) {
-              value.encode(buffer);
-            }
-
-            @Override
-            public DisplayAttributeDataSet read(FriendlyByteBuf buffer) {
-              return DisplayAttributeDataSet.decode(buffer);
-            }
-
-            @Override
-            public DisplayAttributeDataSet copy(DisplayAttributeDataSet value) {
-              return value;
-            }
-          });
-  public static final EntityDataSerializer<ModelPose> MODEL_POSE =
-      defineSerializer(
-          ModelPose.class.getSimpleName(),
-          new EntityDataSerializer<>() {
-            @Override
-            public void write(FriendlyByteBuf buffer, ModelPose modelPose) {
-              buffer.writeEnum(modelPose);
-            }
-
-            @Override
-            public ModelPose read(FriendlyByteBuf buffer) {
-              return buffer.readEnum(ModelPose.class);
-            }
-
-            @Override
-            public ModelPose copy(ModelPose value) {
-              return value;
-            }
-          });
+      bufferSerializer(
+          DisplayAttributeDataSet.class,
+          DisplayAttributeDataSet::encode,
+          DisplayAttributeDataSet::decode);
+  public static final EntityDataSerializer<ModelPose> MODEL_POSE = enumSerializer(ModelPose.class);
   public static final EntityDataSerializer<ModelAnimationData> MODEL_ANIMATION_DATA =
-      defineSerializer(
-          ModelAnimationData.class.getSimpleName(),
-          new EntityDataSerializer<>() {
-            @Override
-            public void write(FriendlyByteBuf buffer, ModelAnimationData animationData) {
-              animationData.encode(buffer);
-            }
-
-            @Override
-            public ModelAnimationData read(FriendlyByteBuf buffer) {
-              return ModelAnimationData.decode(buffer);
-            }
-
-            @Override
-            public ModelAnimationData copy(ModelAnimationData value) {
-              return value;
-            }
-          });
+      bufferSerializer(
+          ModelAnimationData.class, ModelAnimationData::encode, ModelAnimationData::decode);
   public static final EntityDataSerializer<RootModelData> ROOT_MODEL_DATA =
-      defineSerializer(
-          RootModelData.class.getSimpleName(),
-          new EntityDataSerializer<>() {
-            @Override
-            public void write(FriendlyByteBuf buffer, RootModelData value) {
-              value.encode(buffer);
-            }
-
-            @Override
-            public RootModelData read(FriendlyByteBuf buffer) {
-              return RootModelData.decode(buffer);
-            }
-
-            @Override
-            public RootModelData copy(RootModelData value) {
-              return value;
-            }
-          });
+      bufferSerializer(RootModelData.class, RootModelData::encode, RootModelData::decode);
   public static final EntityDataSerializer<Profession> PROFESSION =
-      defineSerializer(
-          Profession.class.getSimpleName(),
-          new EntityDataSerializer<>() {
-            @Override
-            public void write(FriendlyByteBuf buffer, Profession value) {
-              buffer.writeEnum(value);
-            }
-
-            @Override
-            public Profession read(FriendlyByteBuf buffer) {
-              return buffer.readEnum(Profession.class);
-            }
-
-            @Override
-            public Profession copy(Profession value) {
-              return value;
-            }
-          });
+      enumSerializer(Profession.class);
   public static final EntityDataSerializer<Map<ModelPartType, CustomRotation>> MODEL_PART_ROTATION =
-      defineSerializer(
-          ModelPartType.class.getSimpleName() + ":CustomRotation",
-          new EntityDataSerializer<>() {
-            @Override
-            public void write(FriendlyByteBuf buffer, Map<ModelPartType, CustomRotation> value) {
-              buffer.writeVarInt(value.size());
-              for (Map.Entry<ModelPartType, CustomRotation> entry : value.entrySet()) {
-                buffer.writeEnum(entry.getKey());
-                entry.getValue().encode(buffer);
-              }
-            }
-
-            @Override
-            public Map<ModelPartType, CustomRotation> read(FriendlyByteBuf buffer) {
-              int size = buffer.readVarInt();
-              Map<ModelPartType, CustomRotation> value = new EnumMap<>(ModelPartType.class);
-              for (int i = 0; i < size; i++) {
-                value.put(buffer.readEnum(ModelPartType.class), CustomRotation.decode(buffer));
-              }
-              return value;
-            }
-
-            @Override
-            public Map<ModelPartType, CustomRotation> copy(
-                Map<ModelPartType, CustomRotation> value) {
-              return new EnumMap<>(value);
-            }
-          });
+      enumMapSerializer(
+          ModelPartType.class, "CustomRotation", CustomRotation::encode, CustomRotation::decode);
   public static final EntityDataSerializer<Map<ModelPartType, CustomPosition>> MODEL_PART_POSITION =
-      defineSerializer(
-          ModelPartType.class.getSimpleName() + ":CustomPosition",
-          new EntityDataSerializer<>() {
-            @Override
-            public void write(FriendlyByteBuf buffer, Map<ModelPartType, CustomPosition> value) {
-              buffer.writeVarInt(value.size());
-              for (Map.Entry<ModelPartType, CustomPosition> entry : value.entrySet()) {
-                buffer.writeEnum(entry.getKey());
-                entry.getValue().encode(buffer);
-              }
-            }
-
-            @Override
-            public Map<ModelPartType, CustomPosition> read(FriendlyByteBuf buffer) {
-              int size = buffer.readVarInt();
-              Map<ModelPartType, CustomPosition> value = new EnumMap<>(ModelPartType.class);
-              for (int i = 0; i < size; i++) {
-                value.put(buffer.readEnum(ModelPartType.class), CustomPosition.decode(buffer));
-              }
-              return value;
-            }
-
-            @Override
-            public Map<ModelPartType, CustomPosition> copy(
-                Map<ModelPartType, CustomPosition> value) {
-              return new EnumMap<>(value);
-            }
-          });
+      enumMapSerializer(
+          ModelPartType.class, "CustomPosition", CustomPosition::encode, CustomPosition::decode);
   public static final EntityDataSerializer<Map<ModelPartType, CustomScale>> MODEL_PART_SCALE =
-      defineSerializer(
-          ModelPartType.class.getSimpleName() + ":CustomScale",
-          new EntityDataSerializer<>() {
-            @Override
-            public void write(FriendlyByteBuf buffer, Map<ModelPartType, CustomScale> value) {
-              buffer.writeVarInt(value.size());
-              for (Map.Entry<ModelPartType, CustomScale> entry : value.entrySet()) {
-                buffer.writeEnum(entry.getKey());
-                entry.getValue().encode(buffer);
-              }
-            }
-
-            @Override
-            public Map<ModelPartType, CustomScale> read(FriendlyByteBuf buffer) {
-              int size = buffer.readVarInt();
-              Map<ModelPartType, CustomScale> value = new EnumMap<>(ModelPartType.class);
-              for (int i = 0; i < size; i++) {
-                value.put(buffer.readEnum(ModelPartType.class), CustomScale.decode(buffer));
-              }
-              return value;
-            }
-
-            @Override
-            public Map<ModelPartType, CustomScale> copy(Map<ModelPartType, CustomScale> value) {
-              return new EnumMap<>(value);
-            }
-          });
+      enumMapSerializer(
+          ModelPartType.class, "CustomScale", CustomScale::encode, CustomScale::decode);
   public static final EntityDataSerializer<Map<ModelPartType, Boolean>> MODEL_PART_VISIBILITY =
-      defineSerializer(
-          ModelPartType.class.getSimpleName() + ":Visibility",
-          new EntityDataSerializer<>() {
-            @Override
-            public void write(FriendlyByteBuf buffer, Map<ModelPartType, Boolean> value) {
-              buffer.writeVarInt(value.size());
-              for (Map.Entry<ModelPartType, Boolean> entry : value.entrySet()) {
-                buffer.writeEnum(entry.getKey());
-                buffer.writeBoolean(entry.getValue());
-              }
-            }
-
-            @Override
-            public Map<ModelPartType, Boolean> read(FriendlyByteBuf buffer) {
-              int size = buffer.readVarInt();
-              Map<ModelPartType, Boolean> value = new EnumMap<>(ModelPartType.class);
-              for (int i = 0; i < size; i++) {
-                value.put(buffer.readEnum(ModelPartType.class), buffer.readBoolean());
-              }
-              return value;
-            }
-
-            @Override
-            public Map<ModelPartType, Boolean> copy(Map<ModelPartType, Boolean> value) {
-              return new EnumMap<>(value);
-            }
-          });
+      enumMapSerializer(
+          ModelPartType.class,
+          "Visibility",
+          (visible, buffer) -> buffer.writeBoolean(visible),
+          FriendlyByteBuf::readBoolean);
   public static final EntityDataSerializer<HashSet<UUID>> TARGETED_ENTITY_HASH_SET =
-      defineSerializer(
-          HashSet.class.getSimpleName() + ":" + UUID.class.getSimpleName(),
-          new EntityDataSerializer<>() {
-            @Override
-            public void write(FriendlyByteBuf buffer, HashSet<UUID> value) {
-              buffer.writeVarInt(value.size());
-              for (UUID entry : value) {
-                buffer.writeUUID(entry);
-              }
-            }
-
-            @Override
-            public HashSet<UUID> read(FriendlyByteBuf buffer) {
-              int size = buffer.readVarInt();
-              HashSet<UUID> value = new HashSet<>();
-              for (int i = 0; i < size; i++) {
-                value.add(buffer.readUUID());
-              }
-              return value;
-            }
-
-            @Override
-            public HashSet<UUID> copy(HashSet<UUID> value) {
-              return value;
-            }
-          });
+      hashSetSerializer(
+          UUID.class, (uuid, buffer) -> buffer.writeUUID(uuid), FriendlyByteBuf::readUUID);
   public static final EntityDataSerializer<HashSet<String>> TARGETED_PLAYER_HASH_SET =
-      defineSerializer(
-          HashSet.class.getSimpleName() + ":" + String.class.getSimpleName(),
-          new EntityDataSerializer<>() {
-            @Override
-            public void write(FriendlyByteBuf buffer, HashSet<String> value) {
-              buffer.writeVarInt(value.size());
-              for (String entry : value) {
-                buffer.writeUtf(entry);
-              }
-            }
-
-            @Override
-            public HashSet<String> read(FriendlyByteBuf buffer) {
-              int size = buffer.readVarInt();
-              HashSet<String> value = new HashSet<>();
-              for (int i = 0; i < size; i++) {
-                value.add(buffer.readUtf());
-              }
-              return value;
-            }
-
-            @Override
-            public HashSet<String> copy(HashSet<String> value) {
-              return value;
-            }
-          });
+      hashSetSerializer(
+          String.class, (name, buffer) -> buffer.writeUtf(name), FriendlyByteBuf::readUtf);
   public static final EntityDataSerializer<UUID> UUID =
       defineSerializer(
           UUID.class.getSimpleName(),
@@ -343,243 +116,189 @@ public class EntityDataSerializersManager {
             }
           });
   public static final EntityDataSerializer<ActionEventSet> ACTION_EVENT_SET =
-      defineSerializer(
-          ActionEventSet.class.getSimpleName(),
-          new EntityDataSerializer<>() {
-            @Override
-            public void write(FriendlyByteBuf buffer, ActionEventSet value) {
-              buffer.writeNbt(validateAndGetNbt(value.createTag(), "ActionEventSet"));
-            }
-
-            @Override
-            public ActionEventSet read(FriendlyByteBuf buffer) {
-              return new ActionEventSet(buffer.readNbt());
-            }
-
-            @Override
-            public ActionEventSet copy(ActionEventSet value) {
-              return value;
-            }
-          });
+      nbtSerializer(ActionEventSet.class, ActionEventSet::createTag, ActionEventSet::new);
   public static final EntityDataSerializer<PendingActionSet> PENDING_ACTION_SET =
-      defineSerializer(
-          PendingActionSet.class.getSimpleName(),
-          new EntityDataSerializer<>() {
-            @Override
-            public void write(FriendlyByteBuf buffer, PendingActionSet value) {
-              buffer.writeNbt(validateAndGetNbt(value.createTag(), "PendingActionSet"));
-            }
-
-            @Override
-            public PendingActionSet read(FriendlyByteBuf buffer) {
-              return new PendingActionSet(buffer.readNbt());
-            }
-
-            @Override
-            public PendingActionSet copy(PendingActionSet value) {
-              return value;
-            }
-          });
+      nbtSerializer(PendingActionSet.class, PendingActionSet::createTag, PendingActionSet::new);
   public static final EntityDataSerializer<StateDataSet> STATE_DATA_SET =
-      defineSerializer(
-          StateDataSet.class.getSimpleName(),
-          new EntityDataSerializer<>() {
-            @Override
-            public void write(FriendlyByteBuf buffer, StateDataSet value) {
-              buffer.writeNbt(validateAndGetNbt(value.createTag(), "StateDataSet"));
-            }
-
-            @Override
-            public StateDataSet read(FriendlyByteBuf buffer) {
-              return new StateDataSet(buffer.readNbt());
-            }
-
-            @Override
-            public StateDataSet copy(StateDataSet value) {
-              return value;
-            }
-          });
+      nbtSerializer(StateDataSet.class, StateDataSet::createTag, StateDataSet::new);
   public static final EntityDataSerializer<DialogDataSet> DIALOG_DATA_SET =
-      defineSerializer(
-          DialogDataSet.class.getSimpleName(),
-          new EntityDataSerializer<>() {
-            @Override
-            public void write(FriendlyByteBuf buffer, DialogDataSet value) {
-              buffer.writeNbt(validateAndGetNbt(value.createTag(), "DialogDataSet"));
-            }
-
-            @Override
-            public DialogDataSet read(FriendlyByteBuf buffer) {
-              return new DialogDataSet(buffer.readNbt());
-            }
-
-            @Override
-            public DialogDataSet copy(DialogDataSet value) {
-              return value;
-            }
-          });
+      nbtSerializer(DialogDataSet.class, DialogDataSet::createTag, DialogDataSet::new);
   public static final EntityDataSerializer<EntityAttributes> ENTITY_ATTRIBUTES =
-      defineSerializer(
-          EntityAttributes.class.getSimpleName(),
-          new EntityDataSerializer<>() {
-            @Override
-            public void write(FriendlyByteBuf buffer, EntityAttributes value) {
-              buffer.writeNbt(validateAndGetNbt(value.createTag(), "EntityAttributes"));
-            }
-
-            @Override
-            public EntityAttributes read(FriendlyByteBuf buffer) {
-              return new EntityAttributes(buffer.readNbt());
-            }
-
-            @Override
-            public EntityAttributes copy(EntityAttributes value) {
-              return value;
-            }
-          });
+      nbtSerializer(EntityAttributes.class, EntityAttributes::createTag, EntityAttributes::new);
   public static final EntityDataSerializer<ProgressionData> PROGRESSION =
-      defineSerializer(
-          ProgressionData.class.getSimpleName(),
-          new EntityDataSerializer<>() {
-            @Override
-            public void write(FriendlyByteBuf buffer, ProgressionData value) {
-              CompoundTag tag = new CompoundTag();
-              buffer.writeNbt(validateAndGetNbt(value.encode(tag), "ProgressionData"));
+      nbtSerializer(
+          ProgressionData.class,
+          value -> value.encode(new CompoundTag()),
+          compoundTag -> {
+            if (compoundTag == null) {
+              return new ProgressionData();
             }
 
-            @Override
-            public ProgressionData read(FriendlyByteBuf buffer) {
-              CompoundTag compoundTag = buffer.readNbt();
-              return compoundTag != null
-                  ? ProgressionData.decode(compoundTag)
-                  : new ProgressionData();
-            }
-
-            @Override
-            public ProgressionData copy(ProgressionData value) {
-              return value;
-            }
+            return ProgressionData.decode(compoundTag);
           });
   public static final EntityDataSerializer<MerchantOffers> MERCHANT_OFFERS =
-      defineSerializer(
-          MerchantOffers.class.getSimpleName(),
-          new EntityDataSerializer<>() {
-            @Override
-            public void write(FriendlyByteBuf buffer, MerchantOffers value) {
-              buffer.writeNbt(validateAndGetNbt(value.createTag(), "MerchantOffers"));
+      nbtSerializer(
+          MerchantOffers.class,
+          MerchantOffers::createTag,
+          compoundTag -> {
+            if (compoundTag == null) {
+              return new MerchantOffers();
             }
 
-            @Override
-            public MerchantOffers read(FriendlyByteBuf buffer) {
-              CompoundTag compoundTag = buffer.readNbt();
-              return compoundTag != null ? new MerchantOffers(compoundTag) : new MerchantOffers();
-            }
-
-            @Override
-            public MerchantOffers copy(MerchantOffers value) {
-              return value;
-            }
+            return new MerchantOffers(compoundTag);
           });
   public static final EntityDataSerializer<ObjectiveDataSet> OBJECTIVE_DATA_SET =
-      defineSerializer(
-          ObjectiveDataSet.class.getSimpleName(),
-          new EntityDataSerializer<>() {
-            @Override
-            public void write(FriendlyByteBuf buffer, ObjectiveDataSet value) {
-              buffer.writeNbt(validateAndGetNbt(value.createTag(), "ObjectiveDataSet"));
-            }
-
-            @Override
-            public ObjectiveDataSet read(FriendlyByteBuf buffer) {
-              return new ObjectiveDataSet(buffer.readNbt());
-            }
-
-            @Override
-            public ObjectiveDataSet copy(ObjectiveDataSet value) {
-              return value;
-            }
-          });
+      nbtSerializer(ObjectiveDataSet.class, ObjectiveDataSet::createTag, ObjectiveDataSet::new);
   public static final EntityDataSerializer<RenderDataEntry> RENDER_DATA_SET =
-      defineSerializer(
-          RenderDataEntry.class.getSimpleName(),
-          new EntityDataSerializer<>() {
-            @Override
-            public void write(FriendlyByteBuf buffer, RenderDataEntry value) {
-              buffer.writeNbt(validateAndGetNbt(value.createTag(), "RenderDataEntry"));
-            }
-
-            @Override
-            public RenderDataEntry read(FriendlyByteBuf buffer) {
-              return new RenderDataEntry(buffer.readNbt());
-            }
-
-            @Override
-            public RenderDataEntry copy(RenderDataEntry value) {
-              return value;
-            }
-          });
+      nbtSerializer(RenderDataEntry.class, RenderDataEntry::createTag, RenderDataEntry::new);
   public static final EntityDataSerializer<SkinDataEntry> SKIN_DATA_ENTRY =
-      defineSerializer(
-          SkinDataEntry.class.getSimpleName(),
-          new EntityDataSerializer<>() {
-            @Override
-            public void write(FriendlyByteBuf buffer, SkinDataEntry value) {
-              buffer.writeNbt(validateAndGetNbt(value.createTag(), "SkinDataEntry"));
-            }
-
-            @Override
-            public SkinDataEntry read(FriendlyByteBuf buffer) {
-              return new SkinDataEntry(buffer.readNbt());
-            }
-
-            @Override
-            public SkinDataEntry copy(SkinDataEntry value) {
-              return value;
-            }
-          });
+      nbtSerializer(SkinDataEntry.class, SkinDataEntry::createTag, SkinDataEntry::new);
   public static final EntityDataSerializer<SoundDataSet> SOUND_DATA_SET =
-      defineSerializer(
-          SoundDataSet.class.getSimpleName(),
-          new EntityDataSerializer<>() {
-            @Override
-            public void write(FriendlyByteBuf buffer, SoundDataSet value) {
-              buffer.writeNbt(validateAndGetNbt(value.createTag(), "SoundDataSet"));
-            }
-
-            @Override
-            public SoundDataSet read(FriendlyByteBuf buffer) {
-              return new SoundDataSet(buffer.readNbt());
-            }
-
-            @Override
-            public SoundDataSet copy(SoundDataSet value) {
-              return value;
-            }
-          });
+      nbtSerializer(SoundDataSet.class, SoundDataSet::createTag, SoundDataSet::new);
   public static final EntityDataSerializer<TradingDataSet> TRADING_DATA_SET =
-      defineSerializer(
-          TradingDataSet.class.getSimpleName(),
-          new EntityDataSerializer<>() {
-            @Override
-            public void write(FriendlyByteBuf buffer, TradingDataSet value) {
-              buffer.writeNbt(validateAndGetNbt(value.createTag(), "TradingDataSet"));
-            }
-
-            @Override
-            public TradingDataSet read(FriendlyByteBuf buffer) {
-              return new TradingDataSet(buffer.readNbt());
-            }
-
-            @Override
-            public TradingDataSet copy(TradingDataSet value) {
-              return value;
-            }
-          });
+      nbtSerializer(TradingDataSet.class, TradingDataSet::createTag, TradingDataSet::new);
   private static final int RECOMMENDED_NBT_SIZE_BYTES = 8192; // 8 KB recommended
   private static final int WARNING_NBT_SIZE_BYTES = 32768; // 32 KB warning
   private static final int MAX_NBT_SIZE_BYTES = 2097152; // 2 MB absolute max
 
   private EntityDataSerializersManager() {}
+
+  private static <T> EntityDataSerializer<T> bufferSerializer(
+      final Class<T> dataClass,
+      final BiConsumer<T, FriendlyByteBuf> encoder,
+      final Function<FriendlyByteBuf, T> decoder) {
+    return defineSerializer(
+        dataClass.getSimpleName(),
+        new EntityDataSerializer<>() {
+          @Override
+          public void write(FriendlyByteBuf buffer, T value) {
+            encoder.accept(value, buffer);
+          }
+
+          @Override
+          public T read(FriendlyByteBuf buffer) {
+            return decoder.apply(buffer);
+          }
+
+          @Override
+          public T copy(T value) {
+            return value;
+          }
+        });
+  }
+
+  private static <T extends Enum<T>> EntityDataSerializer<T> enumSerializer(
+      final Class<T> enumClass) {
+    return defineSerializer(
+        enumClass.getSimpleName(),
+        new EntityDataSerializer<>() {
+          @Override
+          public void write(FriendlyByteBuf buffer, T value) {
+            buffer.writeEnum(value);
+          }
+
+          @Override
+          public T read(FriendlyByteBuf buffer) {
+            return buffer.readEnum(enumClass);
+          }
+
+          @Override
+          public T copy(T value) {
+            return value;
+          }
+        });
+  }
+
+  private static <T> EntityDataSerializer<T> nbtSerializer(
+      final Class<T> dataClass,
+      final Function<T, CompoundTag> encoder,
+      final Function<CompoundTag, T> decoder) {
+    final String dataType = dataClass.getSimpleName();
+    return defineSerializer(
+        dataType,
+        new EntityDataSerializer<>() {
+          @Override
+          public void write(FriendlyByteBuf buffer, T value) {
+            buffer.writeNbt(validateAndGetNbt(encoder.apply(value), dataType));
+          }
+
+          @Override
+          public T read(FriendlyByteBuf buffer) {
+            return decoder.apply(buffer.readNbt());
+          }
+
+          @Override
+          public T copy(T value) {
+            return value;
+          }
+        });
+  }
+
+  private static <K extends Enum<K>, V> EntityDataSerializer<Map<K, V>> enumMapSerializer(
+      final Class<K> keyClass,
+      final String valueName,
+      final BiConsumer<V, FriendlyByteBuf> encoder,
+      final Function<FriendlyByteBuf, V> decoder) {
+    return defineSerializer(
+        keyClass.getSimpleName() + ":" + valueName,
+        new EntityDataSerializer<>() {
+          @Override
+          public void write(FriendlyByteBuf buffer, Map<K, V> value) {
+            buffer.writeVarInt(value.size());
+            for (Map.Entry<K, V> entry : value.entrySet()) {
+              buffer.writeEnum(entry.getKey());
+              encoder.accept(entry.getValue(), buffer);
+            }
+          }
+
+          @Override
+          public Map<K, V> read(FriendlyByteBuf buffer) {
+            int size = buffer.readVarInt();
+            Map<K, V> value = new EnumMap<>(keyClass);
+            for (int i = 0; i < size; i++) {
+              value.put(buffer.readEnum(keyClass), decoder.apply(buffer));
+            }
+            return value;
+          }
+
+          @Override
+          public Map<K, V> copy(Map<K, V> value) {
+            return new EnumMap<>(value);
+          }
+        });
+  }
+
+  private static <T> EntityDataSerializer<HashSet<T>> hashSetSerializer(
+      final Class<T> elementClass,
+      final BiConsumer<T, FriendlyByteBuf> encoder,
+      final Function<FriendlyByteBuf, T> decoder) {
+    return defineSerializer(
+        HashSet.class.getSimpleName() + ":" + elementClass.getSimpleName(),
+        new EntityDataSerializer<>() {
+          @Override
+          public void write(FriendlyByteBuf buffer, HashSet<T> value) {
+            buffer.writeVarInt(value.size());
+            for (T entry : value) {
+              encoder.accept(entry, buffer);
+            }
+          }
+
+          @Override
+          public HashSet<T> read(FriendlyByteBuf buffer) {
+            int size = buffer.readVarInt();
+            HashSet<T> value = new HashSet<>();
+            for (int i = 0; i < size; i++) {
+              value.add(decoder.apply(buffer));
+            }
+            return value;
+          }
+
+          @Override
+          public HashSet<T> copy(HashSet<T> value) {
+            return value;
+          }
+        });
+  }
 
   private static CompoundTag validateAndGetNbt(CompoundTag tag, String dataType) {
     if (tag == null || !log.isDebugEnabled()) {

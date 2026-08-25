@@ -29,6 +29,7 @@ public record MovementAttributes(
     boolean canUseNetherPortal,
     NavigationType navigationType,
     double hoverHeight,
+    double minHoverHeight,
     double swimDepthBelowSurface,
     double swimHeightAboveFloor,
     boolean isImmovable)
@@ -42,6 +43,8 @@ public record MovementAttributes(
   public static final String NAVIGATION_TYPE_TAG =
       MovementAttributeType.NAVIGATION_TYPE.getTagName();
   public static final String HOVER_HEIGHT_TAG = MovementAttributeType.HOVER_HEIGHT.getTagName();
+  public static final String MIN_HOVER_HEIGHT_TAG =
+      MovementAttributeType.MIN_HOVER_HEIGHT.getTagName();
   public static final String SWIM_DEPTH_BELOW_SURFACE_TAG =
       MovementAttributeType.SWIM_DEPTH_BELOW_SURFACE.getTagName();
   public static final String SWIM_HEIGHT_ABOVE_FLOOR_TAG =
@@ -59,12 +62,13 @@ public record MovementAttributes(
     // A hover height reaches the movement control unchecked, where anything outside this range
     // would move the NPC to an invalid position.
     hoverHeight = clampDistance(hoverHeight, MAX_HOVER_HEIGHT);
+    minHoverHeight = clampDistance(minHoverHeight, MAX_HOVER_HEIGHT);
     swimDepthBelowSurface = clampDistance(swimDepthBelowSurface, MAX_SWIM_DEPTH_BELOW_SURFACE);
     swimHeightAboveFloor = clampDistance(swimHeightAboveFloor, MAX_SWIM_HEIGHT_ABOVE_FLOOR);
   }
 
   public MovementAttributes() {
-    this(false, false, false, false, NavigationType.DEFAULT, 0.0D, 0.0D, 0.0D, false);
+    this(false, false, false, false, NavigationType.DEFAULT, 0.0D, 0.0D, 0.0D, 0.0D, false);
   }
 
   public MovementAttributes(
@@ -75,6 +79,7 @@ public record MovementAttributes(
         canPassDoor,
         canUseNetherPortal,
         NavigationType.DEFAULT,
+        0.0D,
         0.0D,
         0.0D,
         0.0D,
@@ -93,6 +98,7 @@ public record MovementAttributes(
         compoundTag.getBoolean(CAN_USE_NETHER_PORTAL_TAG),
         NavigationType.fromName(compoundTag.getString(NAVIGATION_TYPE_TAG)),
         compoundTag.getDouble(HOVER_HEIGHT_TAG),
+        compoundTag.getDouble(MIN_HOVER_HEIGHT_TAG),
         compoundTag.getDouble(SWIM_DEPTH_BELOW_SURFACE_TAG),
         compoundTag.getDouble(SWIM_HEIGHT_ABOVE_FLOOR_TAG),
         compoundTag.getBoolean(IS_IMMOVABLE_TAG));
@@ -106,6 +112,7 @@ public record MovementAttributes(
         this.canUseNetherPortal,
         this.navigationType,
         this.hoverHeight,
+        this.minHoverHeight,
         this.swimDepthBelowSurface,
         this.swimHeightAboveFloor,
         this.isImmovable);
@@ -119,6 +126,7 @@ public record MovementAttributes(
         this.canUseNetherPortal,
         this.navigationType,
         this.hoverHeight,
+        this.minHoverHeight,
         this.swimDepthBelowSurface,
         this.swimHeightAboveFloor,
         this.isImmovable);
@@ -132,6 +140,7 @@ public record MovementAttributes(
         this.canUseNetherPortal,
         this.navigationType,
         this.hoverHeight,
+        this.minHoverHeight,
         this.swimDepthBelowSurface,
         this.swimHeightAboveFloor,
         this.isImmovable);
@@ -145,6 +154,7 @@ public record MovementAttributes(
         canUseNetherPortal,
         this.navigationType,
         this.hoverHeight,
+        this.minHoverHeight,
         this.swimDepthBelowSurface,
         this.swimHeightAboveFloor,
         this.isImmovable);
@@ -158,6 +168,7 @@ public record MovementAttributes(
         this.canUseNetherPortal,
         navigationType,
         this.hoverHeight,
+        this.minHoverHeight,
         this.swimDepthBelowSurface,
         this.swimHeightAboveFloor,
         this.isImmovable);
@@ -171,6 +182,21 @@ public record MovementAttributes(
         this.canUseNetherPortal,
         this.navigationType,
         hoverHeight,
+        this.minHoverHeight,
+        this.swimDepthBelowSurface,
+        this.swimHeightAboveFloor,
+        this.isImmovable);
+  }
+
+  public MovementAttributes withMinHoverHeight(double minHoverHeight) {
+    return new MovementAttributes(
+        this.canOpenDoor,
+        this.canCloseDoor,
+        this.canPassDoor,
+        this.canUseNetherPortal,
+        this.navigationType,
+        this.hoverHeight,
+        minHoverHeight,
         this.swimDepthBelowSurface,
         this.swimHeightAboveFloor,
         this.isImmovable);
@@ -184,6 +210,7 @@ public record MovementAttributes(
         this.canUseNetherPortal,
         this.navigationType,
         this.hoverHeight,
+        this.minHoverHeight,
         swimDepthBelowSurface,
         this.swimHeightAboveFloor,
         this.isImmovable);
@@ -197,6 +224,7 @@ public record MovementAttributes(
         this.canUseNetherPortal,
         this.navigationType,
         this.hoverHeight,
+        this.minHoverHeight,
         this.swimDepthBelowSurface,
         swimHeightAboveFloor,
         this.isImmovable);
@@ -210,6 +238,7 @@ public record MovementAttributes(
         this.canUseNetherPortal,
         this.navigationType,
         this.hoverHeight,
+        this.minHoverHeight,
         this.swimDepthBelowSurface,
         this.swimHeightAboveFloor,
         isImmovable);
@@ -224,6 +253,7 @@ public record MovementAttributes(
       compoundTag.putString(NAVIGATION_TYPE_TAG, this.navigationType.name());
     }
     AttributeTagUtils.putIfNotZero(compoundTag, HOVER_HEIGHT_TAG, this.hoverHeight);
+    AttributeTagUtils.putIfNotZero(compoundTag, MIN_HOVER_HEIGHT_TAG, this.minHoverHeight);
     AttributeTagUtils.putIfNotZero(
         compoundTag, SWIM_DEPTH_BELOW_SURFACE_TAG, this.swimDepthBelowSurface);
     AttributeTagUtils.putIfNotZero(

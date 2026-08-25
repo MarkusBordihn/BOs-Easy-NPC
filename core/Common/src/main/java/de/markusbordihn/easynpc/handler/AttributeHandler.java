@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.handler;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.data.attribute.BaseAttributeType;
 import de.markusbordihn.easynpc.data.attribute.CombatAttributeType;
 import de.markusbordihn.easynpc.data.attribute.CombatAttributes;
 import de.markusbordihn.easynpc.data.attribute.EntityAttribute;
@@ -295,6 +296,8 @@ public class AttributeHandler {
     switch (attributeType) {
       case HOVER_HEIGHT ->
           entityAttributes.setMovementAttributes(attributes.withHoverHeight(value));
+      case MIN_HOVER_HEIGHT ->
+          entityAttributes.setMovementAttributes(attributes.withMinHoverHeight(value));
       case SWIM_DEPTH_BELOW_SURFACE ->
           entityAttributes.setMovementAttributes(attributes.withSwimDepthBelowSurface(value));
       case SWIM_HEIGHT_ABOVE_FLOOR ->
@@ -363,52 +366,24 @@ public class AttributeHandler {
       return false;
     }
     AttributeDataCapable<?> attributeData = easyNPC.getEasyNPCAttributeData();
-    if (attributeData != null) {
-      switch (attribute.toString()) {
-        case "minecraft:generic.max_health":
-          attributeData.setBaseAttribute(Attributes.MAX_HEALTH, value);
-          LivingEntity livingEntity = easyNPC.getLivingEntity();
-          if (livingEntity != null) {
-            livingEntity.setHealth(value.floatValue());
-          }
-          break;
-        case "minecraft:generic.follow_range":
-          attributeData.setBaseAttribute(Attributes.FOLLOW_RANGE, value);
-          break;
-        case "minecraft:generic.knockback_resistance":
-          attributeData.setBaseAttribute(Attributes.KNOCKBACK_RESISTANCE, value);
-          break;
-        case "minecraft:generic.movement_speed":
-          attributeData.setBaseAttribute(Attributes.MOVEMENT_SPEED, value);
-          break;
-        case "minecraft:generic.flying_speed":
-          attributeData.setBaseAttribute(Attributes.FLYING_SPEED, value);
-          break;
-        case "minecraft:generic.attack_damage":
-          attributeData.setBaseAttribute(Attributes.ATTACK_DAMAGE, value);
-          break;
-        case "minecraft:generic.attack_knockback":
-          attributeData.setBaseAttribute(Attributes.ATTACK_KNOCKBACK, value);
-          break;
-        case "minecraft:generic.attack_speed":
-          attributeData.setBaseAttribute(Attributes.ATTACK_SPEED, value);
-          break;
-        case "minecraft:generic.armor":
-          attributeData.setBaseAttribute(Attributes.ARMOR, value);
-          break;
-        case "minecraft:generic.armor_toughness":
-          attributeData.setBaseAttribute(Attributes.ARMOR_TOUGHNESS, value);
-          break;
-        case "minecraft:generic.luck":
-          attributeData.setBaseAttribute(Attributes.LUCK, value);
-          break;
-        default:
-          log.error("Unimplemented base attribute {} for {}", attribute, easyNPC);
-          return false;
-      }
-      return true;
+    if (attributeData == null) {
+      return false;
     }
-    return false;
+
+    BaseAttributeType baseAttributeType = BaseAttributeType.fromResourceLocation(attribute);
+    if (baseAttributeType == null) {
+      log.error("Unimplemented base attribute {} for {}", attribute, easyNPC);
+      return false;
+    }
+
+    attributeData.setBaseAttribute(baseAttributeType.getAttribute(), value);
+    if (baseAttributeType == BaseAttributeType.MAX_HEALTH) {
+      LivingEntity livingEntity = easyNPC.getLivingEntity();
+      if (livingEntity != null) {
+        livingEntity.setHealth(value.floatValue());
+      }
+    }
+    return true;
   }
 
   public static void handleDefaultAttributes(Mob mob) {

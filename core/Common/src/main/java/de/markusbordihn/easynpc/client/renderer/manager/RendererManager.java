@@ -35,6 +35,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.animal.Dolphin;
 import net.minecraft.world.entity.animal.WaterAnimal;
@@ -58,9 +59,8 @@ public class RendererManager {
 
   public static LivingEntityRenderer<
           ? extends LivingEntity, ? extends EntityModel<? extends LivingEntity>>
-      getLivingEntityRenderer(
-          EntityType<? extends Entity> entityType, PathfinderMob pathfinderMob) {
-    if (entityType == null || pathfinderMob == null) {
+      getLivingEntityRenderer(EntityType<? extends Entity> entityType, Mob renderEntity) {
+    if (entityType == null || renderEntity == null) {
       return null;
     }
 
@@ -72,14 +72,14 @@ public class RendererManager {
     }
 
     // Try to register entity renderer, if not available.
-    registerLivingEntityRenderer(entityType, pathfinderMob);
+    registerLivingEntityRenderer(entityType, renderEntity);
 
     return livingEntityRendererMap.get(entityType);
   }
 
   public static EntityRenderer<? extends Entity> getEntityRenderer(
-      EntityType<?> entityType, PathfinderMob pathfinderMob) {
-    if (entityType == null || pathfinderMob == null) {
+      EntityType<?> entityType, Mob renderEntity) {
+    if (entityType == null || renderEntity == null) {
       return null;
     }
 
@@ -90,16 +90,15 @@ public class RendererManager {
     }
 
     // Try to register entity renderer, if not available.
-    registerEntityRenderer(entityType, pathfinderMob);
+    registerEntityRenderer(entityType, renderEntity);
 
     return entityRendererMap.get(entityType);
   }
 
   public static LivingEntityRenderer<
           ? extends LivingEntity, ? extends EntityModel<? extends LivingEntity>>
-      registerLivingEntityRenderer(
-          EntityType<? extends Entity> entityType, PathfinderMob pathfinderMob) {
-    if (entityType == null || pathfinderMob == null) {
+      registerLivingEntityRenderer(EntityType<? extends Entity> entityType, Mob renderEntity) {
+    if (entityType == null || renderEntity == null) {
       return null;
     }
 
@@ -111,7 +110,7 @@ public class RendererManager {
     EntityRenderDispatcher entityRenderDispatcher =
         Minecraft.getInstance().getEntityRenderDispatcher();
     EntityRenderer<? extends Entity> entityRenderer =
-        entityRenderDispatcher.getRenderer(pathfinderMob);
+        entityRenderDispatcher.getRenderer(renderEntity);
     if (entityRenderer
         instanceof
         LivingEntityRenderer<? extends LivingEntity, ? extends EntityModel<? extends Entity>>
@@ -132,8 +131,8 @@ public class RendererManager {
   }
 
   public static EntityRenderer<? extends Entity> registerEntityRenderer(
-      EntityType<? extends Entity> entityType, PathfinderMob pathfinderMob) {
-    if (entityType == null || pathfinderMob == null) {
+      EntityType<? extends Entity> entityType, Mob renderEntity) {
+    if (entityType == null || renderEntity == null) {
       return null;
     }
 
@@ -145,7 +144,7 @@ public class RendererManager {
     EntityRenderDispatcher entityRenderDispatcher =
         Minecraft.getInstance().getEntityRenderDispatcher();
     EntityRenderer<? extends Entity> entityRenderer =
-        entityRenderDispatcher.getRenderer(pathfinderMob);
+        entityRenderDispatcher.getRenderer(renderEntity);
 
     log.debug("{} Registering entity renderer {} for {}", LOG_PREFIX, entityRenderer, entityType);
     entityRendererMap.put(entityType, entityRenderer);

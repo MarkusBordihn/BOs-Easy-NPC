@@ -20,16 +20,45 @@
 package de.markusbordihn.easynpc.data.attribute;
 
 import de.markusbordihn.easynpc.utils.TextUtils;
+import java.util.Arrays;
 import java.util.Locale;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 
 public enum BaseAttributeType {
-  ATTACK_DAMAGE,
-  ATTACK_KNOCKBACK,
-  FOLLOW_RANGE,
-  KNOCKBACK_RESISTANCE;
+  ATTACK_DAMAGE(Attributes.ATTACK_DAMAGE),
+  ATTACK_KNOCKBACK(Attributes.ATTACK_KNOCKBACK),
+  FOLLOW_RANGE(Attributes.FOLLOW_RANGE),
+  KNOCKBACK_RESISTANCE(Attributes.KNOCKBACK_RESISTANCE),
+  MAX_HEALTH(Attributes.MAX_HEALTH),
+  MOVEMENT_SPEED(Attributes.MOVEMENT_SPEED),
+  FLYING_SPEED(Attributes.FLYING_SPEED),
+  ATTACK_SPEED(Attributes.ATTACK_SPEED),
+  ARMOR(Attributes.ARMOR),
+  ARMOR_TOUGHNESS(Attributes.ARMOR_TOUGHNESS),
+  LUCK(Attributes.LUCK);
 
+  private final Attribute attribute;
   private final String attributeName = this.name().toLowerCase(Locale.ROOT);
   private final String tagName = TextUtils.convertToCamelCase(this.name());
+  private final ResourceLocation resourceLocation =
+      new ResourceLocation("generic." + this.attributeName);
+
+  BaseAttributeType(Attribute attribute) {
+    this.attribute = attribute;
+  }
+
+  public static BaseAttributeType fromResourceLocation(ResourceLocation resourceLocation) {
+    return Lookup.BY_RESOURCE_LOCATION.get(resourceLocation);
+  }
+
+  public Attribute getAttribute() {
+    return this.attribute;
+  }
 
   public String getAttributeName() {
     return this.attributeName;
@@ -37,5 +66,19 @@ public enum BaseAttributeType {
 
   public String getTagName() {
     return this.tagName;
+  }
+
+  public ResourceLocation getResourceLocation() {
+    return this.resourceLocation;
+  }
+
+  private static final class Lookup {
+
+    private static final Map<ResourceLocation, BaseAttributeType> BY_RESOURCE_LOCATION =
+        Arrays.stream(values())
+            .collect(
+                Collectors.toMap(BaseAttributeType::getResourceLocation, Function.identity()));
+
+    private Lookup() {}
   }
 }
