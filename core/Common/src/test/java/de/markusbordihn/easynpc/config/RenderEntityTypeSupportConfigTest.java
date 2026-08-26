@@ -23,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import de.markusbordihn.easynpc.client.renderer.manager.EntityTypeManager;
 import java.util.HashSet;
+import java.util.Properties;
 import java.util.Set;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -189,12 +190,25 @@ class RenderEntityTypeSupportConfigTest {
     }
 
     @Test
-    @DisplayName("Known unsupported vanilla entities should include non-PathfinderMob entities")
+    @DisplayName("Known unsupported vanilla entities should include non-renderable entities")
     void shouldIncludeKnownUnsupportedVanilla() {
       Set<String> entityTypes = RenderEntityTypeSupportDefaults.KNOWN_UNSUPPORTED_ENTITY_TYPES;
       assertTrue(entityTypes.contains("minecraft:ender_dragon"), "Should contain ender_dragon");
-      assertTrue(entityTypes.contains("minecraft:bat"), "Should contain bat");
       assertTrue(entityTypes.contains("minecraft:phantom"), "Should contain phantom");
+    }
+
+    @Test
+    @DisplayName("The bat is supported and no longer listed as unsupported")
+    void shouldSupportBat() {
+      assertTrue(
+          RenderEntityTypeSupportDefaults.KNOWN_SUPPORTED_ENTITY_TYPES.contains("minecraft:bat"),
+          "Should contain bat");
+      assertFalse(
+          RenderEntityTypeSupportDefaults.KNOWN_UNSUPPORTED_ENTITY_TYPES.contains("minecraft:bat"),
+          "Should no longer list bat as unsupported");
+      assertFalse(
+          EntityTypeManager.shouldFilterEntityTypeByName("minecraft:bat"),
+          "Should not be caught by the name pattern filter");
     }
 
     @Test
@@ -206,6 +220,58 @@ class RenderEntityTypeSupportConfigTest {
           RenderEntityTypeSupportDefaults.KNOWN_SUPPORTED_THIRD_PARTY_ENTITY_TYPES.isEmpty());
       assertFalse(
           RenderEntityTypeSupportDefaults.KNOWN_UNSUPPORTED_THIRD_PARTY_ENTITY_TYPES.isEmpty());
+    }
+  }
+
+  @Nested
+  @DisplayName("Changed Default Migration")
+  class ChangedDefaultMigrationTests {
+
+    @Test
+    @DisplayName("An outdated config file drops the stored value of a changed default")
+    void shouldResetStoredValueOfChangedDefault() {
+      Properties properties = new Properties();
+      properties.setProperty("minecraft:bat", "false");
+      properties.setProperty("minecraft:zombie", "false");
+
+      RenderEntityTypeSupportConfig.resetEntityTypesWithChangedDefault(properties);
+
+      assertFalse(properties.containsKey("minecraft:bat"), "Should drop the outdated bat entry");
+      assertEquals(
+          "false", properties.getProperty("minecraft:zombie"), "Should keep unrelated entries");
+      assertEquals(
+          Integer.toString(RenderEntityTypeSupportConfig.CONFIG_VERSION),
+          properties.getProperty(RenderEntityTypeSupportConfig.CONFIG_VERSION_KEY),
+          "Should stamp the current config version");
+    }
+
+    @Test
+    @DisplayName("An up-to-date config file keeps every stored value")
+    void shouldKeepStoredValuesOfCurrentConfigVersion() {
+      Properties properties = new Properties();
+      properties.setProperty(
+          RenderEntityTypeSupportConfig.CONFIG_VERSION_KEY,
+          Integer.toString(RenderEntityTypeSupportConfig.CONFIG_VERSION));
+      properties.setProperty("minecraft:bat", "false");
+
+      RenderEntityTypeSupportConfig.resetEntityTypesWithChangedDefault(properties);
+
+      assertEquals(
+          "false",
+          properties.getProperty("minecraft:bat"),
+          "Should keep a value the user changed after the migration");
+    }
+
+    @Test
+    @DisplayName("Every changed default is listed as supported or unsupported")
+    void changedDefaultsShouldBeKnownEntityTypes() {
+      for (String entityType : RenderEntityTypeSupportDefaults.ENTITY_TYPES_WITH_CHANGED_DEFAULT) {
+        assertTrue(
+            RenderEntityTypeSupportDefaults.KNOWN_SUPPORTED_ENTITY_TYPES.contains(entityType)
+                || RenderEntityTypeSupportDefaults.KNOWN_UNSUPPORTED_ENTITY_TYPES.contains(
+                    entityType),
+            "Changed default should be a known entity type - found: " + entityType);
+      }
     }
   }
 
@@ -224,17 +290,15 @@ class RenderEntityTypeSupportConfigTest {
         }
       }
 
-      if (!redundantEntries.isEmpty()) {
-        System.out.println(
-            "INFO: "
-                + redundantEntries.size()
-                + " unsupported third-party entries are redundant with name pattern filter:");
-        redundantEntries.stream().sorted().forEach(e -> System.out.println("  - " + e));
-      }
+      assertTrue(
+          redundantEntries.isEmpty(),
+          "Unsupported third-party entries are already covered by the name pattern filter and "
+              + "should be removed from the list: "
+              + redundantEntries.stream().sorted().toList());
     }
 
     @Test
-    @DisplayName("Supported third-party entities caught by name pattern are documented")
+    @DisplayName("Only documented supported third-party entities are caught by name patterns")
     void supportedThirdPartyWithPatternConflictsAreDocumented() {
       Set<String> conflictingEntries = new HashSet<>();
       for (String entityType :
@@ -244,13 +308,11 @@ class RenderEntityTypeSupportConfigTest {
         }
       }
 
-      if (!conflictingEntries.isEmpty()) {
-        System.out.println(
-            "INFO: "
-                + conflictingEntries.size()
-                + " supported entities match name patterns (safe due to config priority):");
-        conflictingEntries.stream().sorted().forEach(e -> System.out.println("  - " + e));
-      }
+      assertEquals(
+          Set.of("ob_core:obsidian_shard", "simple_mobs:imp_bomb", "simple_mobs:tail_dart"),
+          conflictingEntries,
+          "A new name pattern hides a supported entity type, which only the explicit config entry "
+              + "still re-enables");
     }
 
     @Test

@@ -113,6 +113,7 @@ public record ChangeMovementAttributeMessage(
     }
 
     if (this.attributeType == MovementAttributeType.HOVER_HEIGHT
+        || this.attributeType == MovementAttributeType.MIN_HOVER_HEIGHT
         || this.attributeType == MovementAttributeType.SWIM_DEPTH_BELOW_SURFACE
         || this.attributeType == MovementAttributeType.SWIM_HEIGHT_ABOVE_FLOOR) {
       if (this.doubleValue == null) {

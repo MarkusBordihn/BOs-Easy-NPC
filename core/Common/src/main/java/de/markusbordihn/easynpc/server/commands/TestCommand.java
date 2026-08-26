@@ -65,7 +65,7 @@ public class TestCommand extends Command {
                                 .suggests(
                                     (context, builder) -> {
                                       for (ModRawEntityType type : ModRawEntityType.values()) {
-                                        builder.suggest(type.name().toLowerCase());
+                                        builder.suggest(type.name().toLowerCase(Locale.ROOT));
                                       }
                                       return builder.buildFuture();
                                     })
@@ -94,7 +94,7 @@ public class TestCommand extends Command {
                                 .suggests(
                                     (context, builder) -> {
                                       for (ModNPCEntityType type : ModNPCEntityType.values()) {
-                                        builder.suggest(type.name().toLowerCase());
+                                        builder.suggest(type.name().toLowerCase(Locale.ROOT));
                                       }
                                       return builder.buildFuture();
                                     })
@@ -124,7 +124,7 @@ public class TestCommand extends Command {
                                     (context, builder) -> {
                                       for (ModCustomEntityType type :
                                           ModCustomEntityType.values()) {
-                                        builder.suggest(type.name().toLowerCase());
+                                        builder.suggest(type.name().toLowerCase(Locale.ROOT));
                                       }
                                       return builder.buildFuture();
                                     })

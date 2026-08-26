@@ -24,7 +24,9 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.access.WalkAnimationAccessHelper;
 import de.markusbordihn.easynpc.access.WaterStateAccessHelper;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -35,6 +37,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.animal.Dolphin;
 import net.minecraft.world.entity.animal.WaterAnimal;
@@ -53,14 +56,14 @@ public class RendererManager {
           LivingEntityRenderer<
               ? extends LivingEntity, ? extends EntityModel<? extends LivingEntity>>>
       livingEntityRendererMap = new HashMap<>();
+  private static final Set<EntityType<? extends Entity>> untickableEntityTypes = new HashSet<>();
 
   private RendererManager() {}
 
   public static LivingEntityRenderer<
           ? extends LivingEntity, ? extends EntityModel<? extends LivingEntity>>
-      getLivingEntityRenderer(
-          EntityType<? extends Entity> entityType, PathfinderMob pathfinderMob) {
-    if (entityType == null || pathfinderMob == null) {
+      getLivingEntityRenderer(EntityType<? extends Entity> entityType, Mob renderEntity) {
+    if (entityType == null || renderEntity == null) {
       return null;
     }
 
@@ -72,14 +75,14 @@ public class RendererManager {
     }
 
     // Try to register entity renderer, if not available.
-    registerLivingEntityRenderer(entityType, pathfinderMob);
+    registerLivingEntityRenderer(entityType, renderEntity);
 
     return livingEntityRendererMap.get(entityType);
   }
 
   public static EntityRenderer<? extends Entity> getEntityRenderer(
-      EntityType<?> entityType, PathfinderMob pathfinderMob) {
-    if (entityType == null || pathfinderMob == null) {
+      EntityType<?> entityType, Mob renderEntity) {
+    if (entityType == null || renderEntity == null) {
       return null;
     }
 
@@ -90,16 +93,15 @@ public class RendererManager {
     }
 
     // Try to register entity renderer, if not available.
-    registerEntityRenderer(entityType, pathfinderMob);
+    registerEntityRenderer(entityType, renderEntity);
 
     return entityRendererMap.get(entityType);
   }
 
   public static LivingEntityRenderer<
           ? extends LivingEntity, ? extends EntityModel<? extends LivingEntity>>
-      registerLivingEntityRenderer(
-          EntityType<? extends Entity> entityType, PathfinderMob pathfinderMob) {
-    if (entityType == null || pathfinderMob == null) {
+      registerLivingEntityRenderer(EntityType<? extends Entity> entityType, Mob renderEntity) {
+    if (entityType == null || renderEntity == null) {
       return null;
     }
 
@@ -111,7 +113,7 @@ public class RendererManager {
     EntityRenderDispatcher entityRenderDispatcher =
         Minecraft.getInstance().getEntityRenderDispatcher();
     EntityRenderer<? extends Entity> entityRenderer =
-        entityRenderDispatcher.getRenderer(pathfinderMob);
+        entityRenderDispatcher.getRenderer(renderEntity);
     if (entityRenderer
         instanceof
         LivingEntityRenderer<? extends LivingEntity, ? extends EntityModel<? extends Entity>>
@@ -132,8 +134,8 @@ public class RendererManager {
   }
 
   public static EntityRenderer<? extends Entity> registerEntityRenderer(
-      EntityType<? extends Entity> entityType, PathfinderMob pathfinderMob) {
-    if (entityType == null || pathfinderMob == null) {
+      EntityType<? extends Entity> entityType, Mob renderEntity) {
+    if (entityType == null || renderEntity == null) {
       return null;
     }
 
@@ -145,11 +147,31 @@ public class RendererManager {
     EntityRenderDispatcher entityRenderDispatcher =
         Minecraft.getInstance().getEntityRenderDispatcher();
     EntityRenderer<? extends Entity> entityRenderer =
-        entityRenderDispatcher.getRenderer(pathfinderMob);
+        entityRenderDispatcher.getRenderer(renderEntity);
 
     log.debug("{} Registering entity renderer {} for {}", LOG_PREFIX, entityRenderer, entityType);
     entityRendererMap.put(entityType, entityRenderer);
     return entityRenderer;
+  }
+
+  private static void advanceRenderEntityAnimation(
+      PathfinderMob sourceEntity, Entity renderEntity) {
+    if (renderEntity.tickCount == sourceEntity.tickCount
+        || untickableEntityTypes.contains(renderEntity.getType())) {
+      return;
+    }
+
+    renderEntity.setPos(sourceEntity.getX(), sourceEntity.getY(), sourceEntity.getZ());
+    try {
+      renderEntity.tick();
+    } catch (Exception exception) {
+      log.warn(
+          "{} Failed to tick render entity {}, it will stay in a static pose:",
+          LOG_PREFIX,
+          renderEntity,
+          exception);
+      untickableEntityTypes.add(renderEntity.getType());
+    }
   }
 
   public static void copyCustomEntityData(
@@ -161,7 +183,8 @@ public class RendererManager {
       return;
     }
 
-    // Synchronize entity tick count.
+    advanceRenderEntityAnimation(sourceEntity, targetEntity);
+
     targetEntity.tickCount = sourceEntity.tickCount;
 
     // Adjust entity rotation.

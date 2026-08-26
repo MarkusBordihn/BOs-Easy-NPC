@@ -44,7 +44,6 @@ import de.markusbordihn.easynpc.api.texture.ModelTextureAPI;
 import de.markusbordihn.easynpc.client.model.custom.DopplerModel;
 import de.markusbordihn.easynpc.client.renderer.OpacityBufferSource;
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
-import de.markusbordihn.easynpc.client.renderer.entity.SpeechBubbleRenderer;
 import de.markusbordihn.easynpc.client.renderer.manager.EntityTypeManager;
 import de.markusbordihn.easynpc.compat.IntegrationRegistry;
 import de.markusbordihn.easynpc.compat.easymodelentities.EasyModelEntitiesLoader;
@@ -570,9 +569,6 @@ public class EasyModelNPCRenderer<E extends PathfinderMob>
         this.renderNameTag(
             entity, entity.getDisplayName(), poseStack, bufferSource, packedLight, partialTicks);
       }
-
-      // This branch never reaches EntityRenderer#render, where the speech bubble mixin is attached.
-      SpeechBubbleRenderer.render(entity, poseStack, bufferSource, packedLight);
 
       Entity leashHolder = entity.getLeashHolder();
       if (leashHolder != null) {

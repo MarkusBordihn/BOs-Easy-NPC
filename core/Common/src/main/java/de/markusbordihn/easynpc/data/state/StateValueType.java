@@ -33,6 +33,8 @@ public enum StateValueType implements ConditionSubTypeEntry {
   FLAG,
   TEXT;
 
+  private final String commandName = this.name().toLowerCase(Locale.ROOT);
+
   public static StateValueType get(String stateValueType) {
     return EnumUtils.get(StateValueType.class, stateValueType, NUMBER);
   }
@@ -68,7 +70,7 @@ public enum StateValueType implements ConditionSubTypeEntry {
   }
 
   public String getCommandName() {
-    return this.name().toLowerCase(Locale.ROOT);
+    return this.commandName;
   }
 
   public StateEntry parse(String value) {

@@ -32,6 +32,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.level.Level;
@@ -44,10 +45,74 @@ public class EntityTypeManager {
   public static final float GUI_PREVIEW_MAX_SCALE_FACTOR = 3.0f;
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private static final String LOG_PREFIX = "[Entity Type Manager]";
+  private static final Set<String> FILTERED_ENTITY_TYPE_PREFIXES =
+      Set.of(Constants.MOD_ID, "mythicmounts:");
+  private static final Set<String> FILTERED_ENTITY_TYPE_SUFFIXES =
+      Set.of(
+          ":boat",
+          ":seat",
+          "_arrow",
+          "_ball",
+          "_beam",
+          "_blast",
+          "_blob",
+          "_boat",
+          "_bolt",
+          "_bomb",
+          "_bubble",
+          "_bullet",
+          "_charge",
+          "_cloud",
+          "_contraption",
+          "_crystal",
+          "_dart",
+          "_display",
+          "_egg",
+          "_fireball",
+          "_flare",
+          "_item",
+          "_marker",
+          "_missile",
+          "_mortar",
+          "_needle",
+          "_orb",
+          "_painting",
+          "_parachute",
+          "_part",
+          "_pearl",
+          "_pellet",
+          "_piece",
+          "_projectile",
+          "_rocket",
+          "_seat",
+          "_shake",
+          "_shard",
+          "_shot",
+          "_snowball",
+          "_spawner",
+          "_spear",
+          "_spike",
+          "_tentacle",
+          "_thrown",
+          "_vortex",
+          "effect");
+  private static final Set<String> FILTERED_ENTITY_TYPE_PARTS =
+      Set.of(
+          ":projectile",
+          ":spell_",
+          "_attack",
+          "effect_",
+          "falling_",
+          "flash_",
+          "hitbox",
+          "minecart",
+          "multi_part",
+          "throwable_",
+          "thrown_");
   private static final Set<EntityType<? extends Entity>> unknownEntityTypes = new HashSet<>();
   private static final Set<EntityType<? extends Entity>> supportedEntityTypes = new HashSet<>();
   private static final Set<EntityType<? extends Entity>> unsupportedEntityTypes = new HashSet<>();
-  private static final Map<EntityType<? extends Entity>, PathfinderMob> pathfinderMobMap =
+  private static final Map<EntityType<? extends Entity>, Mob> renderEntityMap =
       new ConcurrentHashMap<>();
   private static final Map<EntityType<? extends Entity>, Float> scaleFactorMap =
       new ConcurrentHashMap<>();
@@ -201,31 +266,36 @@ public class EntityTypeManager {
   }
 
   public static PathfinderMob getPathfinderMob(EntityType<?> entityType, Level level) {
+    return getRenderEntity(entityType, level) instanceof PathfinderMob pathfinderMob
+        ? pathfinderMob
+        : null;
+  }
+
+  public static Mob getRenderEntity(EntityType<?> entityType, Level level) {
     if (entityType == null) {
       return null;
     }
 
     // Check if entity type is already registered and still valid.
-    PathfinderMob pathfinderMob = pathfinderMobMap.get(entityType);
-    if (pathfinderMob != null) {
-      if (pathfinderMob.isAlive()) {
-        if (pathfinderMob.level() != level) {
+    Mob renderEntity = renderEntityMap.get(entityType);
+    if (renderEntity != null) {
+      if (renderEntity.isAlive()) {
+        if (renderEntity.level() != level) {
           try {
             Field levelField = Entity.class.getDeclaredField("level");
             levelField.setAccessible(true);
-            levelField.set(pathfinderMob, level);
+            levelField.set(renderEntity, level);
           } catch (Exception e) {
-            log.error("{} Failed to update level for PathfinderMob {}", LOG_PREFIX, pathfinderMob);
+            log.error("{} Failed to update level for render entity {}", LOG_PREFIX, renderEntity);
           }
         }
-        return pathfinderMob;
+        return renderEntity;
       } else {
-        log.debug("{} PathfinderMob {} is removed, re-creating it.", LOG_PREFIX, pathfinderMob);
-        pathfinderMobMap.remove(entityType);
+        log.debug("{} Render entity {} is removed, re-creating it.", LOG_PREFIX, renderEntity);
+        renderEntityMap.remove(entityType);
       }
     }
 
-    // Check if entity type is supported and created entity is a PathfinderMob.
     if (!isUnsupportedEntityType(entityType)) {
       Entity entity;
       try {
@@ -237,28 +307,23 @@ public class EntityTypeManager {
         return null;
       }
 
-      if (entity instanceof PathfinderMob newPathfinderMob) {
-        log.debug(
-            "{} Registering PathfinderMob {} for {}", LOG_PREFIX, newPathfinderMob, entityType);
+      if (entity instanceof Mob newRenderEntity) {
+        log.debug("{} Registering render entity {} for {}", LOG_PREFIX, newRenderEntity, entityType);
 
         // For better performance we disable AI, sound and physics for the fake entity.
-        newPathfinderMob.setNoAi(true);
-        newPathfinderMob.setSilent(true);
-        newPathfinderMob.noPhysics = true;
+        newRenderEntity.setNoAi(true);
+        newRenderEntity.setSilent(true);
+        newRenderEntity.noPhysics = true;
 
-        // Register new PathfinderMob for entity type.
-        pathfinderMobMap.put(entityType, newPathfinderMob);
+        renderEntityMap.put(entityType, newRenderEntity);
 
         // Make sure to add supported entity type if it was unknown before.
         if (!isSupportedEntityType(entityType)) {
           addSupportedEntityType(entityType);
         }
-        return newPathfinderMob;
+        return newRenderEntity;
       } else {
-        log.debug(
-            "{} Entity type {} is not a PathfinderMob, marking as unsupported.",
-            LOG_PREFIX,
-            entityType);
+        log.debug("{} Entity type {} is not a Mob, marking as unsupported.", LOG_PREFIX, entityType);
         if (entity != null) {
           entity.discard();
         }
@@ -281,55 +346,25 @@ public class EntityTypeManager {
     if (entityTypeLocation == null || entityTypeLocation.isEmpty()) {
       return true;
     }
-    return entityTypeLocation.startsWith(Constants.MOD_ID)
-        || entityTypeLocation.startsWith("mythicmounts:")
-        || entityTypeLocation.endsWith("_arrow")
-        || entityTypeLocation.endsWith("_ball")
-        || entityTypeLocation.endsWith("_beam")
-        || entityTypeLocation.endsWith("_blast")
-        || entityTypeLocation.endsWith("_blob")
-        || entityTypeLocation.endsWith("_boat")
-        || entityTypeLocation.endsWith("_bolt")
-        || entityTypeLocation.endsWith("_bomb")
-        || entityTypeLocation.endsWith("_bubble")
-        || entityTypeLocation.endsWith("_bullet")
-        || entityTypeLocation.endsWith("_charge")
-        || entityTypeLocation.endsWith("_cloud")
-        || entityTypeLocation.endsWith("_crystal")
-        || entityTypeLocation.endsWith("_dart")
-        || entityTypeLocation.endsWith("_display")
-        || entityTypeLocation.endsWith("_egg")
-        || entityTypeLocation.endsWith("_fireball")
-        || entityTypeLocation.endsWith("_flare")
-        || entityTypeLocation.endsWith("_marker")
-        || entityTypeLocation.endsWith("_missile")
-        || entityTypeLocation.endsWith("_mortar")
-        || entityTypeLocation.endsWith("_needle")
-        || entityTypeLocation.endsWith("_orb")
-        || entityTypeLocation.endsWith("_parachute")
-        || entityTypeLocation.endsWith("_part")
-        || entityTypeLocation.endsWith("_pearl")
-        || entityTypeLocation.endsWith("_pellet")
-        || entityTypeLocation.endsWith("_piece")
-        || entityTypeLocation.endsWith("_projectile")
-        || entityTypeLocation.endsWith("_shard")
-        || entityTypeLocation.endsWith("_shot")
-        || entityTypeLocation.endsWith("_snowball")
-        || entityTypeLocation.endsWith("_spawner")
-        || entityTypeLocation.endsWith("_spear")
-        || entityTypeLocation.endsWith("_spike")
-        || entityTypeLocation.endsWith("_tentacle")
-        || entityTypeLocation.endsWith("_thrown")
-        || entityTypeLocation.endsWith("_vortex")
-        || entityTypeLocation.endsWith("effect")
-        || entityTypeLocation.contains(":projectile")
-        || entityTypeLocation.endsWith(":boat")
-        || entityTypeLocation.contains("_attack")
-        || entityTypeLocation.contains("multi_part")
-        || entityTypeLocation.contains("effect_")
-        || entityTypeLocation.contains("falling_")
-        || entityTypeLocation.contains("flash_")
-        || entityTypeLocation.contains("minecart")
-        || entityTypeLocation.contains(":spell_");
+
+    for (String prefix : FILTERED_ENTITY_TYPE_PREFIXES) {
+      if (entityTypeLocation.startsWith(prefix)) {
+        return true;
+      }
+    }
+
+    for (String suffix : FILTERED_ENTITY_TYPE_SUFFIXES) {
+      if (entityTypeLocation.endsWith(suffix)) {
+        return true;
+      }
+    }
+
+    for (String part : FILTERED_ENTITY_TYPE_PARTS) {
+      if (entityTypeLocation.contains(part)) {
+        return true;
+      }
+    }
+
+    return false;
   }
 }

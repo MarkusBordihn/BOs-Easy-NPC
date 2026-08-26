@@ -20,14 +20,18 @@
 package de.markusbordihn.easynpc.client;
 
 import de.markusbordihn.easynpc.client.compat.cobblemon.CobblemonVariantHelper;
+import de.markusbordihn.easynpc.client.renderer.entity.SpeechBubbleFrameRenderer;
 import de.markusbordihn.easynpc.compat.CompatConstants;
 import de.markusbordihn.easynpc.compat.cobblemon.CobblemonLoader;
 import de.markusbordihn.easynpc.compat.easymodelentities.EasyModelEntitiesLoader;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.client.renderer.MultiBufferSource;
 
 public class ClientEventHandler {
 
@@ -48,6 +52,23 @@ public class ClientEventHandler {
           }
         });
     ClientPlayConnectionEvents.DISCONNECT.register(ClientEventHandler::onDisconnect);
+    WorldRenderEvents.AFTER_ENTITIES.register(ClientEventHandler::onAfterEntities);
+  }
+
+  public static void onAfterEntities(WorldRenderContext context) {
+    Minecraft minecraft = Minecraft.getInstance();
+    if (context.world() != minecraft.level
+        || !(context.consumers() instanceof MultiBufferSource.BufferSource bufferSource)) {
+      return;
+    }
+
+    SpeechBubbleFrameRenderer.renderFrame(
+        minecraft,
+        context.matrixStack(),
+        bufferSource,
+        context.camera(),
+        context.projectionMatrix(),
+        context.tickCounter().getGameTimeDeltaPartialTick(false));
   }
 
   public static void onClientStarted(Minecraft client) {

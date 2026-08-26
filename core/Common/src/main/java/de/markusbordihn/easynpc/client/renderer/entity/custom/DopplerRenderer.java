@@ -6,7 +6,6 @@ import de.markusbordihn.easynpc.client.model.custom.DopplerModel;
 import de.markusbordihn.easynpc.client.renderer.OpacityBufferSource;
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCLivingEntityRenderer;
-import de.markusbordihn.easynpc.client.renderer.entity.SpeechBubbleRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.layers.SkullHeadRenderLayer;
 import de.markusbordihn.easynpc.client.renderer.manager.EntityTypeManager;
 import de.markusbordihn.easynpc.client.renderer.manager.RendererManager;
@@ -23,6 +22,7 @@ import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -62,8 +62,7 @@ public class DopplerRenderer<E extends PathfinderMob>
     EntityType<? extends Entity> renderEntityType =
         renderData.getRenderDataEntry().getRenderEntityType();
 
-    PathfinderMob customEntity =
-        EntityTypeManager.getPathfinderMob(renderEntityType, entity.level());
+    Mob customEntity = EntityTypeManager.getRenderEntity(renderEntityType, entity.level());
     if (customEntity == null) {
       return false;
     }
@@ -152,9 +151,6 @@ public class DopplerRenderer<E extends PathfinderMob>
         this.renderNameTag(
             entity, entity.getDisplayName(), poseStack, bufferSource, packedLight, partialTicks);
       }
-
-      // This branch never reaches EntityRenderer#render, where the speech bubble mixin is attached.
-      SpeechBubbleRenderer.render(entity, poseStack, bufferSource, packedLight);
 
       return;
     }

@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.client;
 
 import de.markusbordihn.easynpc.client.compat.cobblemon.CobblemonVariantHelper;
+import de.markusbordihn.easynpc.client.renderer.entity.SpeechBubbleFrameRenderer;
 import de.markusbordihn.easynpc.compat.CompatConstants;
 import de.markusbordihn.easynpc.compat.cobblemon.CobblemonLoader;
 import de.markusbordihn.easynpc.compat.easymodelentities.EasyModelEntitiesLoader;
@@ -29,6 +30,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
+import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import net.neoforged.neoforge.event.TagsUpdatedEvent;
 
 @EventBusSubscriber(value = Dist.CLIENT)
@@ -46,6 +48,22 @@ class ClientGameEventHandler {
   @SubscribeEvent
   public static void onClientTick(ClientTickEvent.Post event) {
     ClientEvents.handleClientTickEvent();
+  }
+
+  @SubscribeEvent
+  public static void onRenderLevelStage(RenderLevelStageEvent event) {
+    if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_ENTITIES) {
+      return;
+    }
+
+    Minecraft minecraft = Minecraft.getInstance();
+    SpeechBubbleFrameRenderer.renderFrame(
+        minecraft,
+        event.getPoseStack(),
+        minecraft.renderBuffers().bufferSource(),
+        event.getCamera(),
+        event.getProjectionMatrix(),
+        event.getPartialTick().getGameTimeDeltaPartialTick(false));
   }
 
   @SubscribeEvent

@@ -293,14 +293,14 @@ public class CustomModelConfigurationScreen<T extends ConfigurationMenu>
     EntityType<?> currentEntityType = renderDataSet.getRenderEntityType();
     customModelButton.active = currentEntityType == null || !(currentEntityType.equals(entityType));
 
+    int previewScale = Math.round(30 / EntityTypeManager.getScaleFactor(entityType));
+    int previewCenterPos =
+        y - 2 - Math.round(this.getEasyNPC().getLivingEntity().getBbHeight() / 2f * previewScale);
+
     EntityConfigScreenRenderer.renderEntity(
         guiGraphics,
         this.getEasyNPC(),
-        EntityRenderConfig.customModel(
-            x + 5,
-            y - 30,
-            Math.round(30 / EntityTypeManager.getScaleFactor(entityType)),
-            entityType),
+        EntityRenderConfig.customModel(x + 5, previewCenterPos, previewScale, entityType),
         this.xMouse,
         this.yMouse);
 

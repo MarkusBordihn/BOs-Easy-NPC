@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.gametest;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.entity.ModCustomEntityType;
 import de.markusbordihn.easynpc.entity.ModEntityType;
 import de.markusbordihn.easynpc.entity.ModNPCEntityType;
 import net.minecraft.gametest.framework.GameTest;
@@ -33,6 +34,10 @@ public class NavigationTypeTest {
 
   private static EntityType<?> humanoid() {
     return ModEntityType.getEntityType(ModNPCEntityType.HUMANOID);
+  }
+
+  private static EntityType<?> doppler() {
+    return ModEntityType.getEntityType(ModCustomEntityType.DOPPLER);
   }
 
   @GameTest(template = "easy_npc:gametest.3x3x3")
@@ -56,6 +61,18 @@ public class NavigationTypeTest {
   @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testHoverHeightStaysInRange(GameTestHelper helper) {
     NavigationTypeTestHelper.assertHoverHeightStaysInRange(helper, humanoid());
+    helper.succeed();
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testMinHoverHeightStaysInRange(GameTestHelper helper) {
+    NavigationTypeTestHelper.assertMinHoverHeightStaysInRange(helper, humanoid());
+    helper.succeed();
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testRenderEntityTypeSelectsTheNavigation(GameTestHelper helper) {
+    NavigationTypeTestHelper.assertRenderEntityTypeSelectsTheNavigation(helper, doppler());
     helper.succeed();
   }
 
