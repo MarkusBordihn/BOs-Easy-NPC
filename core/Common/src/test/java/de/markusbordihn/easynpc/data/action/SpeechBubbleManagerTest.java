@@ -20,6 +20,8 @@
 package de.markusbordihn.easynpc.data.action;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.UUID;
 import net.minecraft.network.chat.Component;
@@ -59,5 +61,19 @@ class SpeechBubbleManagerTest {
 
     assertEquals(190, SpeechBubbleManager.get(uuid).durationTicks());
     SpeechBubbleManager.remove(uuid);
+  }
+
+  @Test
+  @DisplayName("Speech bubbles are only reported as present while one is shown")
+  void testIsEmpty() {
+    SpeechBubbleManager.clear();
+    assertTrue(SpeechBubbleManager.isEmpty());
+
+    UUID uuid = UUID.randomUUID();
+    SpeechBubbleManager.show(uuid, Component.literal("Hello"), 20);
+    assertFalse(SpeechBubbleManager.isEmpty());
+
+    SpeechBubbleManager.remove(uuid);
+    assertTrue(SpeechBubbleManager.isEmpty());
   }
 }

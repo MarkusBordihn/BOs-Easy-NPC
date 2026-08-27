@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.gametest;
 
+import de.markusbordihn.easynpc.entity.ModCustomEntityType;
 import de.markusbordihn.easynpc.entity.ModEntityType;
 import de.markusbordihn.easynpc.entity.ModNPCEntityType;
 import net.minecraft.gametest.framework.GameTestHelper;
@@ -30,6 +31,10 @@ public final class NavigationTypeTest {
 
   private static EntityType<?> humanoid() {
     return ModEntityType.getEntityType(ModNPCEntityType.HUMANOID);
+  }
+
+  private static EntityType<?> doppler() {
+    return ModEntityType.getEntityType(ModCustomEntityType.DOPPLER);
   }
 
   public static void testNavigationTypeChangesTheNavigation(GameTestHelper helper) {
@@ -49,6 +54,16 @@ public final class NavigationTypeTest {
 
   public static void testHoverHeightStaysInRange(GameTestHelper helper) {
     NavigationTypeTestHelper.assertHoverHeightStaysInRange(helper, humanoid());
+    helper.succeed();
+  }
+
+  public static void testMinHoverHeightStaysInRange(GameTestHelper helper) {
+    NavigationTypeTestHelper.assertMinHoverHeightStaysInRange(helper, humanoid());
+    helper.succeed();
+  }
+
+  public static void testRenderEntityTypeSelectsTheNavigation(GameTestHelper helper) {
+    NavigationTypeTestHelper.assertRenderEntityTypeSelectsTheNavigation(helper, doppler());
     helper.succeed();
   }
 

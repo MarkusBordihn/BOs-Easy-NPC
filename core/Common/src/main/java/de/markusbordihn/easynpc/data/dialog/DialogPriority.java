@@ -19,6 +19,8 @@
 
 package de.markusbordihn.easynpc.data.dialog;
 
+import java.util.Locale;
+
 public final class DialogPriority {
 
   public static final int MANUAL_ONLY = -1;
@@ -35,7 +37,7 @@ public final class DialogPriority {
       return FALLBACK;
     }
 
-    return switch (label.toLowerCase().trim()) {
+    return switch (label.toLowerCase(Locale.ROOT).trim()) {
       case "default", "start", "welcome", "greeting", "intro", "introduction" -> HIGH;
       case "main", "question", "help", "info", "information", "talk", "conversation" -> NORMAL;
       case "bye", "goodbye", "farewell", "exit", "leave", "thanks", "thankyou", "idle", "random" ->

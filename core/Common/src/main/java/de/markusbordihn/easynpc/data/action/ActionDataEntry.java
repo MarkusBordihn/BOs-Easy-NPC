@@ -289,220 +289,77 @@ public record ActionDataEntry(
   }
 
   public ActionDataEntry withId(UUID id) {
-    return new ActionDataEntry(
-        id,
-        this.actionDataType,
-        this.conditionDataSet,
-        this.command,
-        this.targetUUID,
-        this.blockPos,
-        this.executeAsUser,
-        this.enableDebug,
-        this.permissionLevel,
-        this.messageActionData,
-        this.poseId,
-        this.modelAnimationActionData,
-        this.soundActionData,
-        this.moveActionData);
+    Builder builder = new Builder(this);
+    builder.id = id;
+    return builder.build();
   }
 
   public ActionDataEntry withBlockPos(BlockPos blockPos) {
-    return new ActionDataEntry(
-        this.id,
-        this.actionDataType,
-        this.conditionDataSet,
-        this.command,
-        this.targetUUID,
-        blockPos,
-        this.executeAsUser,
-        this.enableDebug,
-        this.permissionLevel,
-        this.messageActionData,
-        this.poseId,
-        this.modelAnimationActionData,
-        this.soundActionData,
-        this.moveActionData);
+    Builder builder = new Builder(this);
+    builder.blockPos = blockPos;
+    return builder.build();
   }
 
   public ActionDataEntry withTargetUUID(UUID targetUUID) {
-    return new ActionDataEntry(
-        this.id,
-        this.actionDataType,
-        this.conditionDataSet,
-        this.command,
-        targetUUID,
-        this.blockPos,
-        this.executeAsUser,
-        this.enableDebug,
-        this.permissionLevel,
-        this.messageActionData,
-        this.poseId,
-        this.modelAnimationActionData,
-        this.soundActionData,
-        this.moveActionData);
+    Builder builder = new Builder(this);
+    builder.targetUUID = targetUUID;
+    return builder.build();
   }
 
   public ActionDataEntry withCommand(String command) {
-    return new ActionDataEntry(
-        this.id,
-        this.actionDataType,
-        this.conditionDataSet,
-        command != null ? command : "",
-        this.targetUUID,
-        this.blockPos,
-        this.executeAsUser,
-        this.enableDebug,
-        this.permissionLevel,
-        this.messageActionData,
-        this.poseId,
-        this.modelAnimationActionData,
-        this.soundActionData,
-        this.moveActionData);
+    Builder builder = new Builder(this);
+    builder.command = command != null ? command : DEFAULT_COMMAND;
+    return builder.build();
   }
 
   public ActionDataEntry withConditionDataSet(ConditionDataSet conditionDataSet) {
-    return new ActionDataEntry(
-        this.id,
-        this.actionDataType,
-        conditionDataSet != null ? conditionDataSet : new ConditionDataSet(),
-        this.command,
-        this.targetUUID,
-        this.blockPos,
-        this.executeAsUser,
-        this.enableDebug,
-        this.permissionLevel,
-        this.messageActionData,
-        this.poseId,
-        this.modelAnimationActionData,
-        this.soundActionData,
-        this.moveActionData);
+    Builder builder = new Builder(this);
+    builder.conditionDataSet =
+        conditionDataSet != null ? conditionDataSet : new ConditionDataSet();
+    return builder.build();
   }
 
   public ActionDataEntry withExecuteAsUser(boolean executeAsUser) {
-    return new ActionDataEntry(
-        this.id,
-        this.actionDataType,
-        this.conditionDataSet,
-        this.command,
-        this.targetUUID,
-        this.blockPos,
-        executeAsUser,
-        this.enableDebug,
-        this.permissionLevel,
-        this.messageActionData,
-        this.poseId,
-        this.modelAnimationActionData,
-        this.soundActionData,
-        this.moveActionData);
+    Builder builder = new Builder(this);
+    builder.executeAsUser = executeAsUser;
+    return builder.build();
   }
 
   public ActionDataEntry withPermissionLevel(int permissionLevel) {
-    return new ActionDataEntry(
-        this.id,
-        this.actionDataType,
-        this.conditionDataSet,
-        this.command,
-        this.targetUUID,
-        this.blockPos,
-        this.executeAsUser,
-        this.enableDebug,
-        checkPermissionLevel(permissionLevel),
-        this.messageActionData,
-        this.poseId,
-        this.modelAnimationActionData,
-        this.soundActionData,
-        this.moveActionData);
+    Builder builder = new Builder(this);
+    builder.permissionLevel = checkPermissionLevel(permissionLevel);
+    return builder.build();
   }
 
   public ActionDataEntry withMessageActionData(MessageActionData messageActionData) {
-    return new ActionDataEntry(
-        this.id,
-        this.actionDataType,
-        this.conditionDataSet,
-        this.command,
-        this.targetUUID,
-        this.blockPos,
-        this.executeAsUser,
-        this.enableDebug,
-        this.permissionLevel,
-        messageActionData,
-        this.poseId,
-        this.modelAnimationActionData,
-        this.soundActionData,
-        this.moveActionData);
+    Builder builder = new Builder(this);
+    builder.messageActionData = messageActionData;
+    return builder.build();
   }
 
   public ActionDataEntry withPoseId(String poseId) {
-    return new ActionDataEntry(
-        this.id,
-        this.actionDataType,
-        this.conditionDataSet,
-        this.command,
-        this.targetUUID,
-        this.blockPos,
-        this.executeAsUser,
-        this.enableDebug,
-        this.permissionLevel,
-        this.messageActionData,
-        poseId,
-        this.modelAnimationActionData,
-        this.soundActionData,
-        this.moveActionData);
+    Builder builder = new Builder(this);
+    builder.poseId = poseId;
+    return builder.build();
   }
 
   public ActionDataEntry withModelAnimationActionData(
       ModelAnimationActionData modelAnimationActionData) {
-    return new ActionDataEntry(
-        this.id,
-        this.actionDataType,
-        this.conditionDataSet,
-        this.command,
-        this.targetUUID,
-        this.blockPos,
-        this.executeAsUser,
-        this.enableDebug,
-        this.permissionLevel,
-        this.messageActionData,
-        this.poseId,
-        modelAnimationActionData,
-        this.soundActionData,
-        this.moveActionData);
+    Builder builder = new Builder(this);
+    builder.modelAnimationActionData = modelAnimationActionData;
+    return builder.build();
   }
 
   public ActionDataEntry withSoundActionData(SoundActionData soundActionData) {
-    return new ActionDataEntry(
-        this.id,
-        this.actionDataType,
-        this.conditionDataSet,
-        this.command,
-        this.targetUUID,
-        this.blockPos,
-        this.executeAsUser,
-        this.enableDebug,
-        this.permissionLevel,
-        this.messageActionData,
-        this.poseId,
-        this.modelAnimationActionData,
-        soundActionData,
-        this.moveActionData);
+    Builder builder = new Builder(this);
+    builder.soundActionData = soundActionData;
+    return builder.build();
   }
 
   public ActionDataEntry withMoveActionData(MoveActionData moveActionData) {
-    return new ActionDataEntry(
-        this.id,
-        this.actionDataType,
-        this.conditionDataSet,
-        this.command,
-        this.targetUUID,
-        this.blockPos,
-        this.executeAsUser,
-        this.enableDebug,
-        this.permissionLevel,
-        this.messageActionData,
-        this.poseId,
-        this.modelAnimationActionData,
-        this.soundActionData,
-        moveActionData);
+    Builder builder = new Builder(this);
+    builder.moveActionData = moveActionData;
+    return builder.build();
   }
 
   public String getAction(LivingEntity entity, ServerPlayer serverPlayer) {
@@ -641,5 +498,58 @@ public record ActionDataEntry(
     }
 
     return compoundTag;
+  }
+
+  private static final class Builder {
+
+    private UUID id;
+    private ActionDataType actionDataType;
+    private ConditionDataSet conditionDataSet;
+    private String command;
+    private UUID targetUUID;
+    private BlockPos blockPos;
+    private boolean executeAsUser;
+    private boolean enableDebug;
+    private int permissionLevel;
+    private MessageActionData messageActionData;
+    private String poseId;
+    private ModelAnimationActionData modelAnimationActionData;
+    private SoundActionData soundActionData;
+    private MoveActionData moveActionData;
+
+    private Builder(ActionDataEntry actionDataEntry) {
+      this.id = actionDataEntry.id;
+      this.actionDataType = actionDataEntry.actionDataType;
+      this.conditionDataSet = actionDataEntry.conditionDataSet;
+      this.command = actionDataEntry.command;
+      this.targetUUID = actionDataEntry.targetUUID;
+      this.blockPos = actionDataEntry.blockPos;
+      this.executeAsUser = actionDataEntry.executeAsUser;
+      this.enableDebug = actionDataEntry.enableDebug;
+      this.permissionLevel = actionDataEntry.permissionLevel;
+      this.messageActionData = actionDataEntry.messageActionData;
+      this.poseId = actionDataEntry.poseId;
+      this.modelAnimationActionData = actionDataEntry.modelAnimationActionData;
+      this.soundActionData = actionDataEntry.soundActionData;
+      this.moveActionData = actionDataEntry.moveActionData;
+    }
+
+    private ActionDataEntry build() {
+      return new ActionDataEntry(
+          this.id,
+          this.actionDataType,
+          this.conditionDataSet,
+          this.command,
+          this.targetUUID,
+          this.blockPos,
+          this.executeAsUser,
+          this.enableDebug,
+          this.permissionLevel,
+          this.messageActionData,
+          this.poseId,
+          this.modelAnimationActionData,
+          this.soundActionData,
+          this.moveActionData);
+    }
   }
 }

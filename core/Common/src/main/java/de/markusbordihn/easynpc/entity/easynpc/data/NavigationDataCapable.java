@@ -35,10 +35,14 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.SpawnPlacementTypes;
 import net.minecraft.world.entity.SpawnPlacements;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.attributes.DefaultAttributes;
 import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -149,22 +153,56 @@ public interface NavigationDataCapable<T extends Mob> extends EasyNPC<T> {
   }
 
   default NavigationType defaultNavigationType() {
-    return this.rendersAsWaterCreature() ? NavigationType.AQUATIC : NavigationType.GROUND;
+    if (this.rendersAsWaterCreature()) {
+      return NavigationType.AQUATIC;
+    }
+
+    if (this.rendersAsFlyingCreature()) {
+      return NavigationType.FLYING;
+    }
+
+    return NavigationType.GROUND;
   }
 
-  default boolean rendersAsWaterCreature() {
+  private EntityType<? extends Entity> getCustomRenderEntityType() {
     RenderDataCapable<?> renderData = this.getEasyNPCRenderData();
     RenderDataEntry renderDataEntry = renderData != null ? renderData.getRenderDataEntry() : null;
     if (renderDataEntry == null || renderDataEntry.getRenderType() != RenderType.CUSTOM_ENTITY) {
-      return false;
+      return null;
     }
 
-    EntityType<? extends Entity> renderEntityType = renderDataEntry.getRenderEntityType();
+    return renderDataEntry.getRenderEntityType();
+  }
+
+  default boolean rendersAsWaterCreature() {
+    EntityType<? extends Entity> renderEntityType = this.getCustomRenderEntityType();
     if (renderEntityType == null) {
       return false;
     }
 
     return hasWaterMobCategory(renderEntityType) || spawnsInWater(renderEntityType);
+  }
+
+  default boolean rendersAsFlyingCreature() {
+    EntityType<? extends Entity> renderEntityType = this.getCustomRenderEntityType();
+    if (renderEntityType == null) {
+      return false;
+    }
+
+    return renderEntityType.getCategory() == MobCategory.AMBIENT
+        || hasFlyingSpeedAttribute(renderEntityType);
+  }
+
+  private static boolean hasFlyingSpeedAttribute(EntityType<? extends Entity> entityType) {
+    AttributeSupplier attributeSupplier =
+        DefaultAttributes.getSupplier(asLivingEntityType(entityType));
+    return attributeSupplier != null && attributeSupplier.hasAttribute(Attributes.FLYING_SPEED);
+  }
+
+  @SuppressWarnings("unchecked")
+  private static EntityType<? extends LivingEntity> asLivingEntityType(
+      EntityType<? extends Entity> entityType) {
+    return (EntityType<? extends LivingEntity>) entityType;
   }
 
   private static boolean hasWaterMobCategory(EntityType<? extends Entity> entityType) {
@@ -200,6 +238,19 @@ public interface NavigationDataCapable<T extends Mob> extends EasyNPC<T> {
     }
 
     return movementAttributes.hoverHeight();
+  }
+
+  default double defaultMinHoverHeight() {
+    return 0.0D;
+  }
+
+  default double getMinHoverHeight() {
+    MovementAttributes movementAttributes = this.getMovementAttributes();
+    if (movementAttributes == null || movementAttributes.minHoverHeight() <= 0.0D) {
+      return this.defaultMinHoverHeight();
+    }
+
+    return movementAttributes.minHoverHeight();
   }
 
   default double defaultSwimDepthBelowSurface() {

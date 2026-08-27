@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Markus Bordihn
+ * Copyright 2026 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,40 +17,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.data.scoreboard;
+package de.markusbordihn.easynpc.config;
 
 import de.markusbordihn.easynpc.utils.EnumUtils;
 import java.util.Locale;
 
-public enum ScoreboardOperation {
-  INCREASE("action.increase_value"),
-  DECREASE("action.decrease_value"),
-  SET("action.set_value");
+public enum SpeechBubbleOcclusionMode {
+  GHOST,
+  ALWAYS,
+  NEVER;
 
-  private final String commandName = this.name().toLowerCase(Locale.ROOT);
-  private final String translationKey;
+  private final String configValue = this.name().toLowerCase(Locale.ROOT);
 
-  ScoreboardOperation(String translationKey) {
-    this.translationKey = translationKey;
-  }
-
-  public static ScoreboardOperation fromCommandName(String commandName) {
-    return EnumUtils.getIgnoreCase(ScoreboardOperation.class, commandName, INCREASE);
-  }
-
-  public static ScoreboardOperation fromCommand(String command) {
-    if (command == null || command.isEmpty()) {
-      return INCREASE;
+  public static SpeechBubbleOcclusionMode fromConfigValue(
+      String configValue, SpeechBubbleOcclusionMode defaultMode) {
+    if (configValue == null) {
+      return defaultMode;
     }
-    String[] parts = command.split(":", 2);
-    return fromCommandName(parts[0]);
+
+    return EnumUtils.getIgnoreCase(
+        SpeechBubbleOcclusionMode.class, configValue.trim(), defaultMode);
   }
 
-  public String getCommandName() {
-    return this.commandName;
-  }
-
-  public String getTranslationKey() {
-    return this.translationKey;
+  public String getConfigValue() {
+    return this.configValue;
   }
 }

@@ -61,7 +61,8 @@
       "de.markusbordihn.easynpc.gametest.FallbackActionTest",
       "de.markusbordihn.easynpc.gametest.MoveActionTest",
       "de.markusbordihn.easynpc.gametest.OpacityAttributeTest",
-      "de.markusbordihn.easynpc.gametest.WaterStateAccessTest"
+      "de.markusbordihn.easynpc.gametest.WaterStateAccessTest",
+      "de.markusbordihn.easynpc.gametest.RenderEntityTypeTest"
     ]
   },
   "mixins": [

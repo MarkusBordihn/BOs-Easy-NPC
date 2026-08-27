@@ -122,18 +122,17 @@ class EntityTypeManagerTest {
     }
 
     @ParameterizedTest
-    @DisplayName("Entities with 'thrown' prefix are NOT caught by _thrown suffix pattern")
+    @DisplayName("Entities with a 'thrown' prefix are caught by the thrown_ contains pattern")
     @ValueSource(
         strings = {
           "twilightforest:thrown_wep",
           "twilightforest:thrown_ice",
           "twilightforest:thrown_block"
         })
-    void thrownPrefixEntitiesAreNotCaughtBySuffixPattern(String entityTypeLocation) {
-      assertFalse(
+    void thrownPrefixEntitiesAreCaughtByContainsPattern(String entityTypeLocation) {
+      assertTrue(
           EntityTypeManager.shouldFilterEntityTypeByName(entityTypeLocation),
-          "Entity with 'thrown_' prefix should NOT be caught by '_thrown' suffix: "
-              + entityTypeLocation);
+          "Should filter: " + entityTypeLocation);
     }
   }
 
@@ -401,7 +400,12 @@ class EntityTypeManagerTest {
           "mowziesmobs:earth_spike",
           "mowziesmobs:fissure_piece",
           "blueprint:falling_block",
-          "amendments:falling_lantern"
+          "amendments:falling_lantern",
+          "twilightforest:magic_painting",
+          "twilightforest:thrown_wep",
+          "twilightforest:thrown_ice",
+          "twilightforest:thrown_block",
+          "another_furniture:seat"
         })
     void shouldFilterByNamePattern(String entityTypeLocation) {
       assertTrue(
@@ -437,10 +441,6 @@ class EntityTypeManagerTest {
           "twilightforest:protection_box",
           "twilightforest:chain_block",
           "twilightforest:cube_of_annihilation",
-          "twilightforest:magic_painting",
-          "twilightforest:thrown_wep",
-          "twilightforest:thrown_ice",
-          "twilightforest:thrown_block",
           "cataclysm:cursed_sandstorm",
           "cataclysm:storm_serpent",
           "cataclysm:void_howitzer",
@@ -497,7 +497,6 @@ class EntityTypeManagerTest {
           "decorative_blocks:dummy_entity",
           "bclib:chair",
           "ascended_quark:stool",
-          "another_furniture:seat",
           "supplementaries:hat_stand",
           "supplementaries:cannonball",
           "mynethersdelight:strider_rock",

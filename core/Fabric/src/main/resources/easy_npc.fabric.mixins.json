@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_21",
   "refmap": "easy_npc.refmap.json",
   "client": [
+    "client.gui.GuiEntityRendererMixin",
     "client.gui.InventoryScreenMixin",
     "compat.mobhealthbar.MobHealthBarMixin",
     "model.EasyNPCAllayModelMixin",

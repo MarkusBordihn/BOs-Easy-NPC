@@ -23,16 +23,21 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.renderer.entity.state.EasyNPCRenderStateExtension;
+import de.markusbordihn.easynpc.client.renderer.screen.EntityScreenRenderer;
+import de.markusbordihn.easynpc.config.ClientSpeechBubbleConfig;
+import de.markusbordihn.easynpc.config.SpeechBubbleOcclusionMode;
 import de.markusbordihn.easynpc.data.action.SpeechBubbleManager;
 import de.markusbordihn.easynpc.data.action.SpeechBubbleManager.SpeechBubbleEntry;
 import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import java.util.ArrayList;
 import java.util.List;
+import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.network.chat.Component;
@@ -42,14 +47,15 @@ import net.minecraft.world.entity.EntityAttachment;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
+import org.joml.Vector3fc;
 
 public class SpeechBubbleRenderer {
 
-  private static final double MAX_RENDER_DISTANCE = 64.0D;
-  private static final double MAX_RENDER_DISTANCE_DISCRETE = 32.0D;
+  private static final double DISCRETE_RENDER_DISTANCE_FACTOR = 0.5D;
   private static final float BODY_BORDER = 8.0F;
   private static final float BODY_SIZE = 32.0F;
   private static final float BUBBLE_DEPTH_BEHIND_TEXT = -0.03F;
+  private static final float GHOST_TEXT_OPACITY_FACTOR = 1.4F;
   private static final float LATERAL_TAIL_THRESHOLD = 0.5F;
   private static final float NAME_TAG_CLEARANCE = 0.3F;
   private static final float PADDING_X = 6.0F;
@@ -66,6 +72,7 @@ public class SpeechBubbleRenderer {
   private static final int MAX_LINES = 5;
   private static final int MIN_TEXT_ALPHA = 4;
   private static final int TEXT_COLOR = 0x202020;
+  private static final int TEXT_ORDER_ABOVE_BUBBLE_BODY = 1;
 
   private SpeechBubbleRenderer() {}
 
@@ -74,7 +81,8 @@ public class SpeechBubbleRenderer {
       PoseStack poseStack,
       SubmitNodeCollector submitNodeCollector,
       CameraRenderState cameraRenderState) {
-    if (!(renderState instanceof EasyNPCRenderStateExtension extension)
+    if (EntityScreenRenderer.isRenderingEntityOnScreen()
+        || !(renderState instanceof EasyNPCRenderStateExtension extension)
         || extension.getEasyNpcUUID() == null) {
       return;
     }
@@ -97,30 +105,35 @@ public class SpeechBubbleRenderer {
       SubmitNodeCollector submitNodeCollector,
       CameraRenderState cameraRenderState,
       int packedLight) {
-    SpeechBubbleEntry speechBubbleEntry = SpeechBubbleManager.get(entity.getUUID());
-    if (speechBubbleEntry == null) {
-      return;
-    }
+    SpeechBubbleFrameRenderer.submit(
+        entity, poseStack, submitNodeCollector, cameraRenderState, packedLight);
+  }
 
-    Minecraft minecraft = Minecraft.getInstance();
+  public static SpeechBubbleInstance measure(
+      Entity entity,
+      SpeechBubbleEntry speechBubbleEntry,
+      Minecraft minecraft,
+      float partialTick,
+      int packedLight) {
     if (minecraft.player == null
         || entity.isInvisibleTo(minecraft.player)
         || (entity instanceof LivingEntity livingEntity && livingEntity.isDeadOrDying())) {
-      return;
+      return null;
     }
 
-    double maxRenderDistance =
-        entity.isDiscrete() ? MAX_RENDER_DISTANCE_DISCRETE : MAX_RENDER_DISTANCE;
+    double maxRenderDistance = ClientSpeechBubbleConfig.MAX_RENDER_DISTANCE_BLOCKS;
+    if (entity.isDiscrete()) {
+      maxRenderDistance *= DISCRETE_RENDER_DISTANCE_FACTOR;
+    }
     if (minecraft.getEntityRenderDispatcher().distanceToSqr(entity)
         > maxRenderDistance * maxRenderDistance) {
-      return;
+      return null;
     }
 
-    float partialTick = minecraft.getDeltaTracker().getGameTimeDeltaPartialTick(false);
     float opacity = speechBubbleEntry.getOpacity(SpeechBubbleManager.currentTick() + partialTick);
     int textAlpha = (int) (opacity * 255.0F);
     if (textAlpha < MIN_TEXT_ALPHA) {
-      return;
+      return null;
     }
 
     Font font = minecraft.font;
@@ -139,11 +152,12 @@ public class SpeechBubbleRenderer {
             .getAttachments()
             .getNullable(EntityAttachment.NAME_TAG, 0, entity.getViewYRot(partialTick));
     if (nameTagOffset == null) {
-      return;
+      return null;
     }
 
+    Camera camera = minecraft.gameRenderer.getMainCamera();
     Vec3 entityPosition = entity.getPosition(partialTick);
-    Vec3 cameraPosition = cameraRenderState.pos;
+    Vec3 cameraPosition = camera.position();
     float anchorHeight = (float) (nameTagOffset.y + 0.5D) + NAME_TAG_CLEARANCE;
     double entityToCameraX = cameraPosition.x - entityPosition.x;
     double entityToCameraZ = cameraPosition.z - entityPosition.z;
@@ -208,17 +222,130 @@ public class SpeechBubbleRenderer {
             bubbleHeight / 2.0F - bubbleCenterY,
             bubbleWidth / 2.0F + bubbleCenterX);
 
-    float bubbleTop = bubbleCenterY - bubbleHeight / 2.0F;
-    float bubbleLeft = bubbleCenterX - bubbleWidth / 2.0F;
+    boolean hasDownwardTail = lateralProgress < LATERAL_TAIL_THRESHOLD;
+    float localLeft =
+        bubbleCenterX - bubbleWidth / 2.0F - (hasDownwardTail ? 0.0F : SIDE_TAIL_WIDTH);
+    float localRight = bubbleCenterX + bubbleWidth / 2.0F;
+    float localTop = bubbleCenterY - bubbleHeight / 2.0F;
+    float localBottom =
+        bubbleCenterY + bubbleHeight / 2.0F + (hasDownwardTail ? TAIL_HEIGHT : 0.0F);
+
+    double anchorToCameraX = entityPosition.x + anchorOffsetX - cameraPosition.x;
+    double anchorToCameraY = entityPosition.y + placedAnchorHeight - cameraPosition.y;
+    double anchorToCameraZ = entityPosition.z + anchorOffsetZ - cameraPosition.z;
+    Vector3fc lookVector = camera.forwardVector();
+    Vector3fc upVector = camera.upVector();
+    Vector3fc leftVector = camera.leftVector();
+    double cameraSpaceDepth =
+        anchorToCameraX * lookVector.x()
+            + anchorToCameraY * lookVector.y()
+            + anchorToCameraZ * lookVector.z();
+    double anchorSpaceUp =
+        anchorToCameraX * upVector.x()
+            + anchorToCameraY * upVector.y()
+            + anchorToCameraZ * upVector.z();
+    double anchorSpaceRight =
+        -(anchorToCameraX * leftVector.x()
+            + anchorToCameraY * leftVector.y()
+            + anchorToCameraZ * leftVector.z());
+
+    return new SpeechBubbleInstance(
+        entity.getUUID(),
+        lines,
+        entityPosition,
+        anchorOffsetX,
+        anchorOffsetZ,
+        placedAnchorHeight,
+        bubbleScale,
+        bubbleWidth,
+        bubbleHeight,
+        bubbleCenterX,
+        bubbleCenterY,
+        lateralProgress,
+        anchorSpaceRight + bubbleScale * (localLeft + localRight) / 2.0D,
+        anchorSpaceUp - bubbleScale * (localTop + localBottom) / 2.0D,
+        cameraSpaceDepth,
+        bubbleScale * (localRight - localLeft) / 2.0D,
+        bubbleScale * (localBottom - localTop) / 2.0D,
+        packedLight,
+        textAlpha);
+  }
+
+  public static void draw(
+      SpeechBubbleInstance speechBubbleInstance,
+      PoseStack poseStack,
+      SubmitNodeCollector submitNodeCollector,
+      CameraRenderState cameraRenderState,
+      float offsetPixelsX,
+      float offsetPixelsY) {
+    float bubbleScale = speechBubbleInstance.bubbleScale();
 
     poseStack.pushPose();
-    poseStack.translate(anchorOffsetX, placedAnchorHeight, anchorOffsetZ);
+    poseStack.translate(
+        speechBubbleInstance.anchorOffsetX(),
+        speechBubbleInstance.placedAnchorHeight(),
+        speechBubbleInstance.anchorOffsetZ());
     poseStack.mulPose(cameraRenderState.orientation);
     poseStack.scale(bubbleScale, -bubbleScale, bubbleScale);
 
+    int textAlpha = speechBubbleInstance.textAlpha();
+    SpeechBubbleOcclusionMode occlusionMode = ClientSpeechBubbleConfig.OCCLUSION_MODE;
+
+    if (occlusionMode != SpeechBubbleOcclusionMode.NEVER) {
+      int ghostBodyAlpha =
+          occlusionMode == SpeechBubbleOcclusionMode.ALWAYS
+              ? textAlpha
+              : (int) (textAlpha * ClientSpeechBubbleConfig.GHOST_OPACITY / 100.0F);
+      drawBubblePass(
+          speechBubbleInstance,
+          poseStack,
+          submitNodeCollector,
+          RenderTypes.textSeeThrough(Constants.TEXTURE_SPEECH_BUBBLE),
+          Font.DisplayMode.SEE_THROUGH,
+          ghostBodyAlpha,
+          Math.min(textAlpha, (int) (ghostBodyAlpha * GHOST_TEXT_OPACITY_FACTOR)),
+          offsetPixelsX,
+          offsetPixelsY);
+    }
+
+    if (occlusionMode != SpeechBubbleOcclusionMode.ALWAYS) {
+      drawBubblePass(
+          speechBubbleInstance,
+          poseStack,
+          submitNodeCollector,
+          RenderTypes.text(Constants.TEXTURE_SPEECH_BUBBLE),
+          Font.DisplayMode.NORMAL,
+          textAlpha,
+          textAlpha,
+          offsetPixelsX,
+          offsetPixelsY);
+    }
+
+    poseStack.popPose();
+  }
+
+  private static void drawBubblePass(
+      SpeechBubbleInstance speechBubbleInstance,
+      PoseStack poseStack,
+      SubmitNodeCollector submitNodeCollector,
+      RenderType bubbleRenderType,
+      Font.DisplayMode displayMode,
+      int bodyAlpha,
+      int textAlpha,
+      float offsetPixelsX,
+      float offsetPixelsY) {
+    float bubbleWidth = speechBubbleInstance.bubbleWidthPixels();
+    float bubbleHeight = speechBubbleInstance.bubbleHeightPixels();
+    float bubbleCenterX = speechBubbleInstance.bubbleCenterPixelsX() + offsetPixelsX;
+    float bubbleCenterY = speechBubbleInstance.bubbleCenterPixelsY() + offsetPixelsY;
+    float bubbleTop = bubbleCenterY - bubbleHeight / 2.0F;
+    float bubbleLeft = bubbleCenterX - bubbleWidth / 2.0F;
+    boolean hasDownwardTail = speechBubbleInstance.lateralProgress() < LATERAL_TAIL_THRESHOLD;
+    int packedLight = speechBubbleInstance.packedLight();
+
     submitNodeCollector.submitCustomGeometry(
         poseStack,
-        RenderTypes.text(Constants.TEXTURE_SPEECH_BUBBLE),
+        bubbleRenderType,
         (pose, consumer) -> {
           renderBubbleBody(
               pose.pose(),
@@ -228,38 +355,39 @@ public class SpeechBubbleRenderer {
               bubbleWidth,
               bubbleHeight,
               packedLight,
-              textAlpha);
-          if (lateralProgress < LATERAL_TAIL_THRESHOLD) {
+              bodyAlpha);
+          if (hasDownwardTail) {
             renderBubbleTail(
                 pose.pose(),
                 consumer,
                 bubbleCenterX,
                 bubbleTop + bubbleHeight,
                 packedLight,
-                textAlpha);
+                bodyAlpha);
           } else {
             renderSideBubbleTail(
-                pose.pose(), consumer, bubbleLeft, bubbleCenterY, packedLight, textAlpha);
+                pose.pose(), consumer, bubbleLeft, bubbleCenterY, packedLight, bodyAlpha);
           }
         });
 
+    Font font = Minecraft.getInstance().font;
     float lineY = bubbleTop + PADDING_Y;
-    for (FormattedCharSequence line : lines) {
-      submitNodeCollector.submitText(
-          poseStack,
-          bubbleCenterX - font.width(line) / 2.0F,
-          lineY,
-          line,
-          false,
-          Font.DisplayMode.NORMAL,
-          packedLight,
-          TEXT_COLOR | (textAlpha << 24),
-          0,
-          0);
+    for (FormattedCharSequence line : speechBubbleInstance.lines()) {
+      submitNodeCollector
+          .order(TEXT_ORDER_ABOVE_BUBBLE_BODY)
+          .submitText(
+              poseStack,
+              bubbleCenterX - font.width(line) / 2.0F,
+              lineY,
+              line,
+              false,
+              displayMode,
+              packedLight,
+              TEXT_COLOR | (textAlpha << 24),
+              0,
+              0);
       lineY += LINE_HEIGHT;
     }
-
-    poseStack.popPose();
   }
 
   private static List<FormattedCharSequence> splitIntoLines(Font font, Component text) {

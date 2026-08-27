@@ -38,6 +38,7 @@ import de.markusbordihn.easynpc.entity.easynpc.data.NavigationDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.OwnerDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.PresetDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.VariantDataCapable;
 import de.markusbordihn.easynpc.io.CustomPresetDataFiles;
 import de.markusbordihn.easynpc.io.PresetFileHandler;
 import de.markusbordihn.easynpc.io.WorldPresetDataFiles;
@@ -466,54 +467,52 @@ public class PresetHandler {
       return null;
     }
 
-    CompoundTag compoundTag =
-        switch (presetType) {
-          case CUSTOM ->
-              loadFromFile(
-                  CustomPresetDataFiles.getPresetsIdentifierPath(presetLocation), presetLocation);
-          case WORLD ->
-              loadFromFile(
-                  WorldPresetDataFiles.getPresetsIdentifierPath(presetLocation), presetLocation);
-          case DATA, DEFAULT -> {
-            try {
-              var resource = minecraftServer.getResourceManager().getResource(presetLocation);
-              if (resource.isEmpty()) {
-                log.error("{} preset resource not found at {}", presetType, presetLocation);
-                yield null;
-              }
-              try (var inputStream = resource.get().open()) {
-                PresetExportFormat format =
-                    PresetExportFormat.getPresetExportFormat(presetLocation.getPath());
-                if (format == PresetExportFormat.SNBT) {
-                  String content = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
-                  yield TagParser.parseCompoundFully(content);
-                } else if (format == PresetExportFormat.NBT) {
-                  yield NbtIo.readCompressed(inputStream, NbtAccounter.unlimitedHeap());
-                } else {
-                  log.error("Unknown preset format for {}", presetLocation);
-                  yield null;
-                }
-              }
-            } catch (IOException exception) {
-              log.error(
-                  "Error reading {} preset resource {}", presetType, presetLocation, exception);
-              yield null;
-            } catch (CommandSyntaxException exception) {
-              log.error(
-                  "Error parsing SNBT {} preset resource {}",
-                  presetType,
-                  presetLocation,
-                  exception);
-              yield null;
-            }
-          }
-          default -> {
-            log.error("Unsupported preset type for loading: {}", presetType);
-            yield null;
-          }
-        };
+    return switch (presetType) {
+      case CUSTOM ->
+          loadFromFile(
+              CustomPresetDataFiles.getPresetsIdentifierPath(presetLocation), presetLocation);
+      case WORLD ->
+          loadFromFile(
+              WorldPresetDataFiles.getPresetsIdentifierPath(presetLocation), presetLocation);
+      case DATA, DEFAULT -> loadFromResource(presetType, presetLocation, minecraftServer);
+      default -> {
+        log.error("Unsupported preset type for loading: {}", presetType);
+        yield null;
+      }
+    };
+  }
 
-    return compoundTag;
+  private static CompoundTag loadFromResource(
+      PresetType presetType, Identifier presetLocation, MinecraftServer minecraftServer) {
+    try {
+      var resource = minecraftServer.getResourceManager().getResource(presetLocation);
+      if (resource.isEmpty()) {
+        log.error("{} preset resource not found at {}", presetType, presetLocation);
+        return null;
+      }
+
+      try (var inputStream = resource.get().open()) {
+        PresetExportFormat format =
+            PresetExportFormat.getPresetExportFormat(presetLocation.getPath());
+        if (format == PresetExportFormat.SNBT) {
+          return TagParser.parseCompoundFully(
+              new String(inputStream.readAllBytes(), StandardCharsets.UTF_8));
+        }
+
+        if (format == PresetExportFormat.NBT) {
+          return NbtIo.readCompressed(inputStream, NbtAccounter.unlimitedHeap());
+        }
+
+        log.error("Unknown preset format for {}", presetLocation);
+        return null;
+      }
+    } catch (IOException exception) {
+      log.error("Error reading {} preset resource {}", presetType, presetLocation, exception);
+      return null;
+    } catch (CommandSyntaxException exception) {
+      log.error("Error parsing SNBT {} preset resource {}", presetType, presetLocation, exception);
+      return null;
+    }
   }
 
   private static CompoundTag loadFromFile(Path presetFile, Identifier presetLocation) {
@@ -690,8 +689,7 @@ public class PresetHandler {
   }
 
   private static String extractVariantType(EasyNPC<?> easyNPC) {
-    if (easyNPC
-        instanceof de.markusbordihn.easynpc.entity.easynpc.data.VariantDataCapable<?> variantData) {
+    if (easyNPC instanceof VariantDataCapable<?> variantData) {
       Enum<?> variant = variantData.getSkinVariantType();
       if (variant != null) {
         return variant.name();

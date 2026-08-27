@@ -29,6 +29,7 @@ public enum MovementAttributeType implements EntityAttributeTypeInterface {
   CAN_USE_NETHER_PORTAL,
   HOVER_HEIGHT,
   IS_IMMOVABLE,
+  MIN_HOVER_HEIGHT,
   NAVIGATION_TYPE,
   SWIM_DEPTH_BELOW_SURFACE,
   SWIM_HEIGHT_ABOVE_FLOOR;
