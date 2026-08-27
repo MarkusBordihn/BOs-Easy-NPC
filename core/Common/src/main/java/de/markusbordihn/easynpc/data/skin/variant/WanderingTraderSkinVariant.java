@@ -28,7 +28,7 @@ public enum WanderingTraderSkinVariant implements VariantTexture {
 
   private static final Identifier TEXTURE =
       Identifier.fromNamespaceAndPath(
-          Constants.MINECRAFT_PREFIX, "textures/entity/wandering_trader.png");
+          Constants.MINECRAFT_PREFIX, "textures/entity/wandering_trader/wandering_trader.png");
 
   @Override
   public Identifier getTextureLocation() {

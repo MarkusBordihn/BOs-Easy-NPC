@@ -48,6 +48,14 @@ public class EntityScreenRenderer {
     return screenRenderDepth > 0;
   }
 
+  public static void beginEntityScreenRender() {
+    screenRenderDepth++;
+  }
+
+  public static void endEntityScreenRender() {
+    screenRenderDepth--;
+  }
+
   /**
    * Assigns a unique render-only entity ID, if none has been assigned yet. GUI preview entities are
    * never added to a level, so in MC 26.2 {@code Entity.getId()} throws {@code
@@ -78,7 +86,7 @@ public class EntityScreenRenderer {
     EntityRenderState backupState = new EntityRenderState(livingEntity, easyNPC);
     applyRenderModifications(easyNPC, config);
 
-    screenRenderDepth++;
+    beginEntityScreenRender();
     try {
       InventoryScreen.extractEntityInInventoryFollowsMouse(
           guiGraphics,
@@ -92,7 +100,7 @@ public class EntityScreenRenderer {
           mouseY,
           livingEntity);
     } finally {
-      screenRenderDepth--;
+      endEntityScreenRender();
       restoreEntityState(easyNPC, backupState);
     }
   }

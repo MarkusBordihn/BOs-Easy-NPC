@@ -45,12 +45,30 @@ public class EasyNPCFlyingMoveControl extends FlyingMoveControl {
 
   @Override
   public void tick() {
+    double minHoverHeight = this.getMinHoverHeight();
     double hoverHeight = this.getHoverHeight();
-    if (hoverHeight <= 0.0D) {
+    if (hoverHeight > 0.0D) {
+      this.tickFixedHover(Math.max(hoverHeight, minHoverHeight));
+      return;
+    }
+
+    if (minHoverHeight <= 0.0D) {
       super.tick();
       return;
     }
 
+    double minHoverTargetY = this.getHoverTargetY(minHoverHeight);
+    if (this.operation == MoveControl.Operation.MOVE_TO) {
+      this.wantedY = Math.max(this.wantedY, minHoverTargetY);
+      super.tick();
+      return;
+    }
+
+    super.tick();
+    this.applyMinHoverCorrection(minHoverTargetY);
+  }
+
+  private void tickFixedHover(double hoverHeight) {
     double hoverTargetY = this.getHoverTargetY(hoverHeight);
     if (this.operation == MoveControl.Operation.MOVE_TO) {
       this.wantedY =
@@ -66,6 +84,13 @@ public class EasyNPCFlyingMoveControl extends FlyingMoveControl {
   private double getHoverHeight() {
     if (this.mob instanceof NavigationDataCapable<?> navigationData) {
       return navigationData.getHoverHeight();
+    }
+    return 0.0D;
+  }
+
+  private double getMinHoverHeight() {
+    if (this.mob instanceof NavigationDataCapable<?> navigationData) {
+      return navigationData.getMinHoverHeight();
     }
     return 0.0D;
   }
@@ -96,6 +121,20 @@ public class EasyNPCFlyingMoveControl extends FlyingMoveControl {
     this.mob.setDeltaMovement(
         deltaMovement.x,
         Mth.clamp(heightDifference * HOVER_EASING, -HOVER_MAX_SPEED, HOVER_MAX_SPEED),
+        deltaMovement.z);
+  }
+
+  private void applyMinHoverCorrection(double minHoverTargetY) {
+    double heightDifference = minHoverTargetY - this.mob.getY();
+    if (heightDifference <= HOVER_TOLERANCE) {
+      return;
+    }
+
+    Vec3 deltaMovement = this.mob.getDeltaMovement();
+    this.mob.setDeltaMovement(
+        deltaMovement.x,
+        Math.max(
+            deltaMovement.y, Mth.clamp(heightDifference * HOVER_EASING, 0.0D, HOVER_MAX_SPEED)),
         deltaMovement.z);
   }
 }

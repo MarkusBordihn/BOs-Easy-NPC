@@ -123,6 +123,7 @@
   "text.easy_npc.config.navigation_type_flying": "飞行",
   "text.easy_npc.config.navigation_type_aquatic": "水中",
   "text.easy_npc.config.hover_height": "悬停高度",
+  "text.easy_npc.config.min_hover_height": "最低悬停高度",
   "text.easy_npc.config.cancel": "取消",
   "text.easy_npc.config.change_model": "改变模型",
   "text.easy_npc.config.change_model.tooltip.only_doppler": "模型更改仅适用于多普勒、Cobblemon 和 Easy Model NPC",

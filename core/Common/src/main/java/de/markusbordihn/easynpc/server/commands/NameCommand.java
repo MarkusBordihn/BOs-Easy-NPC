@@ -156,7 +156,7 @@ public class NameCommand extends Command {
               + " to "
               + name
               + " with color "
-              + chatFormatting.name().toLowerCase());
+              + chatFormatting.name().toLowerCase(Locale.ROOT));
     }
     return 0;
   }
@@ -191,9 +191,9 @@ public class NameCommand extends Command {
               + " to "
               + name
               + " with color "
-              + chatFormatting.name().toLowerCase()
+              + chatFormatting.name().toLowerCase(Locale.ROOT)
               + " and visibility "
-              + visibility.name().toLowerCase());
+              + visibility.name().toLowerCase(Locale.ROOT));
     }
     return 0;
   }
@@ -223,7 +223,8 @@ public class NameCommand extends Command {
     int color = textColor != null ? textColor.getValue() : -1;
     if (NameHandler.setCustomName(easyNPC, nameText, color, visibility)) {
       return sendSuccessMessage(
-          context, "Set color of " + easyNPC + " name to " + chatFormatting.name().toLowerCase());
+          context,
+          "Set color of " + easyNPC + " name to " + chatFormatting.name().toLowerCase(Locale.ROOT));
     }
     return 0;
   }
@@ -247,7 +248,11 @@ public class NameCommand extends Command {
     String nameText = currentName.getString();
     if (NameHandler.setCustomName(easyNPC, nameText, -1, visibility)) {
       return sendSuccessMessage(
-          context, "Set visibility of " + easyNPC + " name to " + visibility.name().toLowerCase());
+          context,
+          "Set visibility of "
+              + easyNPC
+              + " name to "
+              + visibility.name().toLowerCase(Locale.ROOT));
     }
     return 0;
   }

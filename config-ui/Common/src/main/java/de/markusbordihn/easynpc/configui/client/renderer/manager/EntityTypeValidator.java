@@ -51,7 +51,7 @@ public class EntityTypeValidator {
       }
 
       if (entityType != null) {
-        EntityTypeManager.getPathfinderMob(entityType, level);
+        EntityTypeManager.getRenderEntity(entityType, level);
         processed++;
       }
     }

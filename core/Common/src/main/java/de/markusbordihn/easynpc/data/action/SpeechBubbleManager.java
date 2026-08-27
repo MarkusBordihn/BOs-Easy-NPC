@@ -84,6 +84,10 @@ public class SpeechBubbleManager {
     return speechBubbleEntry;
   }
 
+  public static boolean isEmpty() {
+    return speechBubbles.isEmpty();
+  }
+
   public static void remove(UUID uuid) {
     if (uuid != null) {
       speechBubbles.remove(uuid);

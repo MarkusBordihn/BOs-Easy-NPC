@@ -8,6 +8,20 @@ the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 7.10.0
+
+- Fixed #829 by allowing bats and other non-walking mobs as the render entity of a Doppler NPC.
+- Fixed the Wandering Trader NPC rendering without its texture.
+- Fixed NPCs rendered as a bat, frog or warden showing a static pose instead of their animation.
+- Fixed the NPC name tag showing above the previews in the "Custom Models" configuration.
+- Fixed speech bubbles being cut off by walls, doorframes and the NPC's own body.
+- Fixed the previews in the "Custom Models" configuration.
+- Changed the previews in the "Custom Models" configuration to stand on a common ground line.
+- Changed overlapping speech bubbles to move apart and to stay visible when the NPC is off-screen.
+- Changed "Navigation: Automatic" to use flying movement for NPCs rendered as a flying mob.
+- Changed the render entity list to hide seats, paintings, thrown items and other non-mob entities.
+- Added a "Min. hover height" slider for flying NPCs and client settings for speech bubbles.
+
 ### 7.9.0
 
 - Fixed modded fish NPCs, like the ones of Tide 2, spinning around instead of swimming upright.

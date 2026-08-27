@@ -168,6 +168,7 @@
   "text.easy_npc.config.navigation_type_flying": "Fliegend",
   "text.easy_npc.config.navigation_type_aquatic": "Wasser",
   "text.easy_npc.config.hover_height": "Schwebehöhe",
+  "text.easy_npc.config.min_hover_height": "Min. Schwebehöhe",
   "text.easy_npc.config.swim_depth_below_surface": "Tiefe unter Wasser",
   "text.easy_npc.config.swim_height_above_floor": "Höhe über Grund",
   "text.easy_npc.config.cancel": "Abbrechen",

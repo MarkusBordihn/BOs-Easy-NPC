@@ -23,6 +23,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 import net.minecraft.ChatFormatting;
@@ -42,7 +43,7 @@ public class ColorSuggestions implements SuggestionProvider<CommandSourceStack> 
     return SharedSuggestionProvider.suggest(
         Stream.of(ChatFormatting.values())
             .filter(formatting -> TextColor.fromLegacyFormat(formatting) != null)
-            .map(formatting -> formatting.name().toLowerCase()),
+            .map(formatting -> formatting.name().toLowerCase(Locale.ROOT)),
         builder);
   }
 }

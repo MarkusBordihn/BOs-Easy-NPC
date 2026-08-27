@@ -51,6 +51,7 @@ public class AbilitiesAttributeConfigurationScreen<T extends ConfigurationMenu>
   private boolean passDoorValue;
   private TextButton navigationTypeButton;
   private RangeSliderButton hoverHeightSlider;
+  private RangeSliderButton minHoverHeightSlider;
   private RangeSliderButton swimDepthBelowSurfaceSlider;
   private RangeSliderButton swimHeightAboveFloorSlider;
   private NavigationType navigationType;
@@ -70,9 +71,11 @@ public class AbilitiesAttributeConfigurationScreen<T extends ConfigurationMenu>
 
   private void refreshNavigationSliders() {
     NavigationDataCapable<?> navigationData = this.getEasyNPC().getEasyNPCNavigationData();
-    this.hoverHeightSlider.visible =
+    boolean isFlying =
         this.navigationType == NavigationType.FLYING
             || (this.navigationType == NavigationType.DEFAULT && navigationData.canFly());
+    this.hoverHeightSlider.visible = isFlying;
+    this.minHoverHeightSlider.visible = isFlying;
 
     boolean isAquatic =
         this.navigationType == NavigationType.AQUATIC
@@ -293,6 +296,23 @@ public class AbilitiesAttributeConfigurationScreen<T extends ConfigurationMenu>
                             MovementAttributeType.HOVER_HEIGHT,
                             slider.getTargetDoubleValue())));
 
+    this.minHoverHeightSlider =
+        this.addRenderableWidget(
+            new RangeSliderButton(
+                firstButtonRow + 135,
+                this.buttonTopPos + 189,
+                entityAttributes.getMovementAttributes().minHoverHeight(),
+                0.0D,
+                16.0D,
+                0.0D,
+                0.5D,
+                slider ->
+                    NetworkMessageHandlerManager.getServerHandler()
+                        .movementAttributeChange(
+                            this.getEasyNPCUUID(),
+                            MovementAttributeType.MIN_HOVER_HEIGHT,
+                            slider.getTargetDoubleValue())));
+
     this.swimDepthBelowSurfaceSlider =
         this.addRenderableWidget(
             new RangeSliderButton(
@@ -370,6 +390,15 @@ public class AbilitiesAttributeConfigurationScreen<T extends ConfigurationMenu>
           "hover_height",
           this.hoverHeightSlider.getX() + sliderXOffset,
           this.hoverHeightSlider.getY() + sliderYOffset);
+    }
+
+    if (this.minHoverHeightSlider != null && this.minHoverHeightSlider.visible) {
+      Text.drawConfigString(
+          guiGraphics,
+          this.font,
+          "min_hover_height",
+          this.minHoverHeightSlider.getX() + sliderXOffset,
+          this.minHoverHeightSlider.getY() + sliderYOffset);
     }
 
     if (this.swimDepthBelowSurfaceSlider != null && this.swimDepthBelowSurfaceSlider.visible) {

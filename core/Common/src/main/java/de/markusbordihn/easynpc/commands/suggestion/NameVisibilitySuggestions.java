@@ -24,6 +24,7 @@ import com.mojang.brigadier.suggestion.SuggestionProvider;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import de.markusbordihn.easynpc.data.display.NameVisibilityType;
+import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 import net.minecraft.commands.CommandSourceStack;
@@ -39,6 +40,7 @@ public class NameVisibilitySuggestions implements SuggestionProvider<CommandSour
   public CompletableFuture<Suggestions> getSuggestions(
       CommandContext<CommandSourceStack> context, SuggestionsBuilder builder) {
     return SharedSuggestionProvider.suggest(
-        Stream.of(NameVisibilityType.values()).map(type -> type.name().toLowerCase()), builder);
+        Stream.of(NameVisibilityType.values()).map(type -> type.name().toLowerCase(Locale.ROOT)),
+        builder);
   }
 }

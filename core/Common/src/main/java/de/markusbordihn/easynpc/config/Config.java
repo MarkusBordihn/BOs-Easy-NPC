@@ -63,6 +63,7 @@ public class Config {
   public static void registerClientConfig() {
     log.info("{} Registering client configuration ...", LOG_PREFIX);
     ClientDialogConfig.registerConfig();
+    ClientSpeechBubbleConfig.registerConfig();
   }
 
   public static void registerServerConfig() {
@@ -204,6 +205,15 @@ public class Config {
       }
     }
     properties.setProperty(key, Boolean.toString(defaultValue));
+    return defaultValue;
+  }
+
+  protected static String parseConfigValue(
+      final Properties properties, final String key, final String defaultValue) {
+    if (properties.containsKey(key)) {
+      return properties.getProperty(key).trim();
+    }
+    properties.setProperty(key, defaultValue);
     return defaultValue;
   }
 

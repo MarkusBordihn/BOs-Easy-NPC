@@ -23,12 +23,15 @@ import de.markusbordihn.easynpc.data.attribute.EnvironmentalAttributeType;
 import de.markusbordihn.easynpc.data.attribute.MovementAttributeType;
 import de.markusbordihn.easynpc.data.attribute.MovementAttributes;
 import de.markusbordihn.easynpc.data.attribute.NavigationType;
+import de.markusbordihn.easynpc.data.render.RenderType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.ai.control.EasyNPCFlyingMoveControl;
 import de.markusbordihn.easynpc.entity.easynpc.data.NavigationDataCapable;
 import de.markusbordihn.easynpc.handler.AttributeHandler;
+import de.markusbordihn.easynpc.handler.RenderHandler;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
 import net.minecraft.world.entity.ai.navigation.WaterBoundPathNavigation;
@@ -141,6 +144,96 @@ public class NavigationTypeTestHelper {
         "A hover height above the limit must be capped",
         MovementAttributes.MAX_HOVER_HEIGHT,
         navigationData.getHoverHeight());
+  }
+
+  public static void assertMinHoverHeightStaysInRange(
+      GameTestHelper helper, EntityType<?> entityType) {
+    EasyNPC<?> easyNPC = GameTestHelpers.mockEasyNPC(helper, entityType, NPC_POSITION);
+    NavigationDataCapable<?> navigationData = easyNPC.getEasyNPCNavigationData();
+
+    AttributeHandler.setMovementAttribute(
+        easyNPC, MovementAttributeType.MIN_HOVER_HEIGHT, Double.NaN);
+    GameTestHelpers.assertEquals(
+        helper,
+        "A minimum hover height that is not a number must not reach the movement control",
+        0.0D,
+        navigationData.getMinHoverHeight());
+
+    AttributeHandler.setMovementAttribute(easyNPC, MovementAttributeType.MIN_HOVER_HEIGHT, 4096.0D);
+    GameTestHelpers.assertEquals(
+        helper,
+        "A minimum hover height above the limit must be capped",
+        MovementAttributes.MAX_HOVER_HEIGHT,
+        navigationData.getMinHoverHeight());
+
+    AttributeHandler.setMovementAttribute(easyNPC, MovementAttributeType.MIN_HOVER_HEIGHT, 2.0D);
+    AttributeHandler.setMovementAttribute(easyNPC, MovementAttributeType.HOVER_HEIGHT, 5.0D);
+    GameTestHelpers.assertEquals(
+        helper,
+        "A fixed hover height must not change the minimum hover height",
+        2.0D,
+        navigationData.getMinHoverHeight());
+    GameTestHelpers.assertEquals(
+        helper,
+        "A minimum hover height must not change the fixed hover height",
+        5.0D,
+        navigationData.getHoverHeight());
+  }
+
+  public static void assertRenderEntityTypeSelectsTheNavigation(
+      GameTestHelper helper, EntityType<?> entityType) {
+    EasyNPC<?> easyNPC = GameTestHelpers.mockEasyNPC(helper, entityType, NPC_POSITION);
+    NavigationDataCapable<?> navigationData = easyNPC.getEasyNPCNavigationData();
+    RenderHandler.setRenderType(easyNPC, RenderType.CUSTOM_ENTITY);
+
+    assertRenderEntityTypeUsesNavigationType(
+        helper, easyNPC, EntityTypes.BAT, NavigationType.FLYING);
+    GameTestHelpers.assertTrue(
+        helper,
+        "An NPC rendered as bat must use the flying path navigation",
+        easyNPC.getMob().getNavigation() instanceof FlyingPathNavigation);
+
+    assertRenderEntityTypeUsesNavigationType(
+        helper, easyNPC, EntityTypes.BEE, NavigationType.FLYING);
+    assertRenderEntityTypeUsesNavigationType(
+        helper, easyNPC, EntityTypes.PARROT, NavigationType.FLYING);
+    assertRenderEntityTypeUsesNavigationType(
+        helper, easyNPC, EntityTypes.COD, NavigationType.AQUATIC);
+    assertRenderEntityTypeUsesNavigationType(
+        helper, easyNPC, EntityTypes.COW, NavigationType.GROUND);
+    GameTestHelpers.assertTrue(
+        helper,
+        "An NPC rendered as cow must use the ground path navigation",
+        easyNPC.getMob().getNavigation() instanceof GroundPathNavigation);
+
+    AttributeHandler.setNavigationType(easyNPC, NavigationType.GROUND);
+    RenderHandler.setRenderEntity(easyNPC, EntityTypes.BAT);
+    navigationData.refreshNavigationIfChanged();
+    GameTestHelpers.assertEquals(
+        helper,
+        "An explicitly chosen navigation type must win over the rendered entity type",
+        NavigationType.GROUND,
+        navigationData.getNavigationType());
+  }
+
+  private static void assertRenderEntityTypeUsesNavigationType(
+      GameTestHelper helper,
+      EasyNPC<?> easyNPC,
+      EntityType<?> renderEntityType,
+      NavigationType navigationType) {
+    NavigationDataCapable<?> navigationData = easyNPC.getEasyNPCNavigationData();
+    RenderHandler.setRenderEntity(easyNPC, renderEntityType);
+    navigationData.refreshNavigationIfChanged();
+
+    GameTestHelpers.assertEquals(
+        helper,
+        "An NPC rendered as "
+            + EntityType.getKey(renderEntityType)
+            + " must default to the "
+            + navigationType
+            + " navigation",
+        navigationType,
+        navigationData.getNavigationType());
   }
 
   public static void assertNavigationTypeSurvivesPresetImport(
