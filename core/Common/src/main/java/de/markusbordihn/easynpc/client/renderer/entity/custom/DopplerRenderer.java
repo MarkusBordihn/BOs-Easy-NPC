@@ -6,7 +6,6 @@ import de.markusbordihn.easynpc.client.model.custom.DopplerModel;
 import de.markusbordihn.easynpc.client.renderer.OpacitySubmitNodeCollector;
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCLivingEntityRenderer;
-import de.markusbordihn.easynpc.client.renderer.entity.SpeechBubbleRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.layers.SkullHeadRenderLayer;
 import de.markusbordihn.easynpc.client.renderer.entity.state.EasyNPCRenderStateExtension;
 import de.markusbordihn.easynpc.client.renderer.manager.EntityTypeManager;
@@ -30,6 +29,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -80,8 +80,7 @@ public class DopplerRenderer
     EntityType<? extends Entity> renderEntityType =
         renderData.getRenderDataEntry().getRenderEntityType();
 
-    PathfinderMob customEntity =
-        EntityTypeManager.getPathfinderMob(renderEntityType, entity.getEntityLevel());
+    Mob customEntity = EntityTypeManager.getRenderEntity(renderEntityType, entity.getEntityLevel());
     if (customEntity == null) {
       return false;
     }
@@ -187,10 +186,6 @@ public class DopplerRenderer
     if (renderEntity(
         easyNPC, this.getModel(), renderState, poseStack, submitNodeCollector, cameraRenderState)) {
       this.submitNameDisplay(renderState, poseStack, submitNodeCollector, cameraRenderState);
-
-      // This branch never reaches EntityRenderer#submit, where the speech bubble mixin is attached.
-      SpeechBubbleRenderer.submit(renderState, poseStack, submitNodeCollector, cameraRenderState);
-
       return;
     }
 

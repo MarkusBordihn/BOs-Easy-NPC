@@ -415,8 +415,29 @@ public final class ModGameTests {
         NavigationTypeTest::testHoverHeightStaysInRange,
         DEFAULT_STRUCTURE);
     register(
+        "min_hover_height_stays_in_range",
+        NavigationTypeTest::testMinHoverHeightStaysInRange,
+        DEFAULT_STRUCTURE);
+    register(
+        "render_entity_type_selects_the_navigation",
+        NavigationTypeTest::testRenderEntityTypeSelectsTheNavigation,
+        DEFAULT_STRUCTURE);
+    register(
         "navigation_type_survives_preset_import",
         NavigationTypeTest::testNavigationTypeSurvivesPresetImport,
+        DEFAULT_STRUCTURE);
+
+    register(
+        "bat_is_available_as_render_entity",
+        RenderEntityTypeTest::testBatIsAvailableAsRenderEntity,
+        DEFAULT_STRUCTURE);
+    register(
+        "pathfinder_mob_lookup_stays_type_safe",
+        RenderEntityTypeTest::testPathfinderMobLookupStaysTypeSafe,
+        DEFAULT_STRUCTURE);
+    register(
+        "render_entity_is_reused_per_entity_type",
+        RenderEntityTypeTest::testRenderEntityIsReusedPerEntityType,
         DEFAULT_STRUCTURE);
 
     register(

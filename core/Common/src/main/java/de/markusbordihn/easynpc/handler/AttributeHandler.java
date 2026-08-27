@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.handler;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.data.attribute.BaseAttributeType;
 import de.markusbordihn.easynpc.data.attribute.CombatAttributeType;
 import de.markusbordihn.easynpc.data.attribute.CombatAttributes;
 import de.markusbordihn.easynpc.data.attribute.EntityAttribute;
@@ -38,8 +39,6 @@ import de.markusbordihn.easynpc.entity.easynpc.data.AttributeDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.DisplayAttributeDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.NavigationDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.ObjectiveDataCapable;
-import net.minecraft.core.Holder;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -297,6 +296,8 @@ public class AttributeHandler {
     switch (attributeType) {
       case HOVER_HEIGHT ->
           entityAttributes.setMovementAttributes(attributes.withHoverHeight(value));
+      case MIN_HOVER_HEIGHT ->
+          entityAttributes.setMovementAttributes(attributes.withMinHoverHeight(value));
       case SWIM_DEPTH_BELOW_SURFACE ->
           entityAttributes.setMovementAttributes(attributes.withSwimDepthBelowSurface(value));
       case SWIM_HEIGHT_ABOVE_FLOOR ->
@@ -364,33 +365,25 @@ public class AttributeHandler {
       return false;
     }
     AttributeDataCapable<?> attributeData = easyNPC.getEasyNPCAttributeData();
-    if (attributeData != null) {
-      if (attribute == Attributes.MAX_HEALTH.value()) {
-        attributeData.setBaseAttribute(Attributes.MAX_HEALTH, value);
-        LivingEntity livingEntity = easyNPC.getLivingEntity();
-        if (livingEntity != null) {
-          livingEntity.setHealth(value.floatValue());
-        }
-      } else if (attribute == Attributes.FOLLOW_RANGE.value()
-          || attribute == Attributes.KNOCKBACK_RESISTANCE.value()
-          || attribute == Attributes.MOVEMENT_SPEED.value()
-          || attribute == Attributes.FLYING_SPEED.value()
-          || attribute == Attributes.ATTACK_DAMAGE.value()
-          || attribute == Attributes.ATTACK_KNOCKBACK.value()
-          || attribute == Attributes.ATTACK_SPEED.value()
-          || attribute == Attributes.ARMOR.value()
-          || attribute == Attributes.ARMOR_TOUGHNESS.value()
-          || attribute == Attributes.LUCK.value()) {
-        Holder<Attribute> attributeHolder = BuiltInRegistries.ATTRIBUTE.wrapAsHolder(attribute);
-        attributeData.setBaseAttribute(attributeHolder, value);
-      } else {
-        log.error("Unsupported base attribute {} for {}", attribute, easyNPC);
-        return false;
-      }
-      return true;
+    if (attributeData == null) {
+      log.error("Missing attribute data for {}", easyNPC);
+      return false;
     }
-    log.error("Missing attribute data for {}", easyNPC);
-    return false;
+
+    BaseAttributeType baseAttributeType = BaseAttributeType.fromAttribute(attribute);
+    if (baseAttributeType == null) {
+      log.error("Unimplemented base attribute {} for {}", attribute, easyNPC);
+      return false;
+    }
+
+    attributeData.setBaseAttribute(baseAttributeType.getAttribute(), value);
+    if (baseAttributeType == BaseAttributeType.MAX_HEALTH) {
+      LivingEntity livingEntity = easyNPC.getLivingEntity();
+      if (livingEntity != null) {
+        livingEntity.setHealth(value.floatValue());
+      }
+    }
+    return true;
   }
 
   public static void handleDefaultAttributes(Mob mob) {

@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.data.npc;
 
+import de.markusbordihn.easynpc.utils.EnumUtils;
 import java.util.Locale;
 
 public enum RawNPCType implements NPCType {
@@ -61,15 +62,19 @@ public enum RawNPCType implements NPCType {
   ZOMBIFIED_PIGLIN;
   // ===== AUTO_GENERATED_END =====
 
-  private final String registryId = this.name().toLowerCase(Locale.ROOT) + "_raw";
+  private static final String REGISTRY_ID_SUFFIX = "_raw";
+
+  private final String registryId = this.name().toLowerCase(Locale.ROOT) + REGISTRY_ID_SUFFIX;
 
   public static RawNPCType fromRegistryId(String registryId) {
-    for (RawNPCType type : values()) {
-      if (type.registryId.equals(registryId)) {
-        return type;
-      }
+    if (registryId == null || !registryId.endsWith(REGISTRY_ID_SUFFIX)) {
+      return null;
     }
-    return null;
+
+    return EnumUtils.getIgnoreCase(
+        RawNPCType.class,
+        registryId.substring(0, registryId.length() - REGISTRY_ID_SUFFIX.length()),
+        null);
   }
 
   @Override

@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.client;
 
+import de.markusbordihn.easynpc.client.renderer.entity.SpeechBubbleFrameRenderer;
 import de.markusbordihn.easynpc.client.renderer.manager.EntityTypeManager;
 import de.markusbordihn.easynpc.client.texture.TextureRegistrationQueue;
 import de.markusbordihn.easynpc.data.action.SpeechBubbleManager;
@@ -38,6 +39,7 @@ public class ClientEvents {
   public static void handleWorldUnloadEvent() {
     DialogDataManager.clearDialogDataSets();
     SpeechBubbleManager.clear();
+    SpeechBubbleFrameRenderer.clear();
     clearTextureCaches();
   }
 

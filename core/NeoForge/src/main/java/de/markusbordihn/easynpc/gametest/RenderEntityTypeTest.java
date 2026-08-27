@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Markus Bordihn
+ * Copyright 2026 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,40 +17,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.data.scoreboard;
+package de.markusbordihn.easynpc.gametest;
 
-import de.markusbordihn.easynpc.utils.EnumUtils;
-import java.util.Locale;
+import net.minecraft.gametest.framework.GameTestHelper;
 
-public enum ScoreboardOperation {
-  INCREASE("action.increase_value"),
-  DECREASE("action.decrease_value"),
-  SET("action.set_value");
+public final class RenderEntityTypeTest {
 
-  private final String commandName = this.name().toLowerCase(Locale.ROOT);
-  private final String translationKey;
+  private RenderEntityTypeTest() {}
 
-  ScoreboardOperation(String translationKey) {
-    this.translationKey = translationKey;
+  public static void testBatIsAvailableAsRenderEntity(GameTestHelper helper) {
+    RenderEntityTypeTestHelper.assertBatIsAvailableAsRenderEntity(helper);
+    helper.succeed();
   }
 
-  public static ScoreboardOperation fromCommandName(String commandName) {
-    return EnumUtils.getIgnoreCase(ScoreboardOperation.class, commandName, INCREASE);
+  public static void testPathfinderMobLookupStaysTypeSafe(GameTestHelper helper) {
+    RenderEntityTypeTestHelper.assertPathfinderMobLookupStaysTypeSafe(helper);
+    helper.succeed();
   }
 
-  public static ScoreboardOperation fromCommand(String command) {
-    if (command == null || command.isEmpty()) {
-      return INCREASE;
-    }
-    String[] parts = command.split(":", 2);
-    return fromCommandName(parts[0]);
-  }
-
-  public String getCommandName() {
-    return this.commandName;
-  }
-
-  public String getTranslationKey() {
-    return this.translationKey;
+  public static void testRenderEntityIsReusedPerEntityType(GameTestHelper helper) {
+    RenderEntityTypeTestHelper.assertRenderEntityIsReusedPerEntityType(helper);
+    helper.succeed();
   }
 }

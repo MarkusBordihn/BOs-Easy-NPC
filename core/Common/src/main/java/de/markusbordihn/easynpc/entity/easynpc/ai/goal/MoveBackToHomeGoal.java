@@ -116,8 +116,7 @@ public class MoveBackToHomeGoal<T extends EasyNPC<?>> extends Goal {
   @Override
   public void tick() {
     Vec3 position = this.mob.position();
-    if (position.distanceToSqr(this.lastProgressPosition)
-        > PROGRESS_DISTANCE * PROGRESS_DISTANCE) {
+    if (position.distanceToSqr(this.lastProgressPosition) > PROGRESS_DISTANCE * PROGRESS_DISTANCE) {
       this.lastProgressPosition = position;
       this.ticksWithoutProgress = 0;
       return;

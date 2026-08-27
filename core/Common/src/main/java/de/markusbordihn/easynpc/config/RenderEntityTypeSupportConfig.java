@@ -21,7 +21,6 @@ package de.markusbordihn.easynpc.config;
 
 import java.io.File;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
@@ -35,6 +34,8 @@ Render Entity Type Support Configuration
 Please note that this configuration file only includes confirmed entity types.
 If an entity type is not listed here, it doesn't mean it's automatically supported or unsupported!
 """;
+  public static final String CONFIG_VERSION_KEY = "config_version";
+  public static final int CONFIG_VERSION = 1;
   private static final Set<String> supportedEntityTypes = new HashSet<>();
   private static final Set<String> unsupportedEntityTypes = new HashSet<>();
 
@@ -53,13 +54,8 @@ If an entity type is not listed here, it doesn't mean it's automatically support
   }
 
   private static void initializeDefaultEntityTypes() {
-    supportedEntityTypes.addAll(RenderEntityTypeSupportDefaults.KNOWN_SUPPORTED_ENTITY_TYPES);
-    supportedEntityTypes.addAll(
-        RenderEntityTypeSupportDefaults.KNOWN_SUPPORTED_THIRD_PARTY_ENTITY_TYPES);
-
-    unsupportedEntityTypes.addAll(RenderEntityTypeSupportDefaults.KNOWN_UNSUPPORTED_ENTITY_TYPES);
-    unsupportedEntityTypes.addAll(
-        RenderEntityTypeSupportDefaults.KNOWN_UNSUPPORTED_THIRD_PARTY_ENTITY_TYPES);
+    supportedEntityTypes.addAll(RenderEntityTypeSupportDefaults.SUPPORTED_ENTITY_TYPES);
+    unsupportedEntityTypes.addAll(RenderEntityTypeSupportDefaults.UNSUPPORTED_ENTITY_TYPES);
   }
 
   public static void parseConfigFile() {
@@ -67,23 +63,16 @@ If an entity type is not listed here, it doesn't mean it's automatically support
     Properties properties = readConfigFile(configFile);
     Properties unmodifiedProperties = (Properties) properties.clone();
 
+    resetEntityTypesWithChangedDefault(properties);
+
     // Parse known entity types and update them based on configuration overrides.
-    for (Set<String> entityTypes :
-        List.of(
-            RenderEntityTypeSupportDefaults.KNOWN_UNSUPPORTED_ENTITY_TYPES,
-            RenderEntityTypeSupportDefaults.KNOWN_SUPPORTED_ENTITY_TYPES,
-            RenderEntityTypeSupportDefaults.KNOWN_UNSUPPORTED_THIRD_PARTY_ENTITY_TYPES,
-            RenderEntityTypeSupportDefaults.KNOWN_SUPPORTED_THIRD_PARTY_ENTITY_TYPES)) {
-      boolean defaultValue =
-          entityTypes == RenderEntityTypeSupportDefaults.KNOWN_SUPPORTED_ENTITY_TYPES
-              || entityTypes
-                  == RenderEntityTypeSupportDefaults.KNOWN_SUPPORTED_THIRD_PARTY_ENTITY_TYPES;
-      parseKnownEntityTypes(properties, entityTypes, defaultValue);
-    }
+    parseKnownEntityTypes(properties, RenderEntityTypeSupportDefaults.SUPPORTED_ENTITY_TYPES, true);
+    parseKnownEntityTypes(
+        properties, RenderEntityTypeSupportDefaults.UNSUPPORTED_ENTITY_TYPES, false);
 
     // Parse the rest of the configuration file.
     for (String entityType : properties.stringPropertyNames()) {
-      if (isKnownEntityType(entityType)) {
+      if (CONFIG_VERSION_KEY.equals(entityType) || isKnownEntityType(entityType)) {
         continue;
       }
       if (isInvalidEntityType(entityType)) {
@@ -100,6 +89,19 @@ If an entity type is not listed here, it doesn't mean it's automatically support
 
     // Update config file if needed
     updateConfigFileIfChanged(configFile, CONFIG_FILE_HEADER, properties, unmodifiedProperties);
+  }
+
+  static void resetEntityTypesWithChangedDefault(Properties properties) {
+    if (parseConfigValue(properties, CONFIG_VERSION_KEY, 0) >= CONFIG_VERSION) {
+      return;
+    }
+
+    for (String entityType : RenderEntityTypeSupportDefaults.ENTITY_TYPES_WITH_CHANGED_DEFAULT) {
+      if (properties.remove(entityType) != null) {
+        log.info("Reset entity type {} in {} to its new default.", entityType, CONFIG_FILE_NAME);
+      }
+    }
+    properties.setProperty(CONFIG_VERSION_KEY, Integer.toString(CONFIG_VERSION));
   }
 
   private static void parseKnownEntityTypes(
@@ -145,12 +147,8 @@ If an entity type is not listed here, it doesn't mean it's automatically support
   }
 
   private static boolean isKnownEntityType(String entityType) {
-    return RenderEntityTypeSupportDefaults.KNOWN_SUPPORTED_ENTITY_TYPES.contains(entityType)
-        || RenderEntityTypeSupportDefaults.KNOWN_UNSUPPORTED_ENTITY_TYPES.contains(entityType)
-        || RenderEntityTypeSupportDefaults.KNOWN_SUPPORTED_THIRD_PARTY_ENTITY_TYPES.contains(
-            entityType)
-        || RenderEntityTypeSupportDefaults.KNOWN_UNSUPPORTED_THIRD_PARTY_ENTITY_TYPES.contains(
-            entityType);
+    return RenderEntityTypeSupportDefaults.SUPPORTED_ENTITY_TYPES.contains(entityType)
+        || RenderEntityTypeSupportDefaults.UNSUPPORTED_ENTITY_TYPES.contains(entityType);
   }
 
   private static boolean isInvalidEntityType(String entityType) {

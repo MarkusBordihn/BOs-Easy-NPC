@@ -44,6 +44,14 @@ public class EntityScreenRenderer {
     return screenRenderDepth > 0;
   }
 
+  public static void beginEntityScreenRender() {
+    screenRenderDepth++;
+  }
+
+  public static void endEntityScreenRender() {
+    screenRenderDepth--;
+  }
+
   public static void renderEntity(
       GuiGraphicsExtractor guiGraphics,
       EasyNPC<?> easyNPC,
@@ -59,7 +67,7 @@ public class EntityScreenRenderer {
     EntityRenderState backupState = new EntityRenderState(livingEntity, easyNPC);
     applyRenderModifications(easyNPC, config);
 
-    screenRenderDepth++;
+    beginEntityScreenRender();
     try {
       InventoryScreen.extractEntityInInventoryFollowsMouse(
           guiGraphics,
@@ -73,7 +81,7 @@ public class EntityScreenRenderer {
           mouseY,
           livingEntity);
     } finally {
-      screenRenderDepth--;
+      endEntityScreenRender();
       restoreEntityState(easyNPC, backupState);
     }
   }
