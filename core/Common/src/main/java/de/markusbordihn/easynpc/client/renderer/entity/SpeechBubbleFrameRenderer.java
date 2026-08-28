@@ -58,8 +58,7 @@ public class SpeechBubbleFrameRenderer {
       Entity entity,
       PoseStack poseStack,
       SubmitNodeCollector submitNodeCollector,
-      CameraRenderState cameraRenderState,
-      int packedLight) {
+      CameraRenderState cameraRenderState) {
     SpeechBubbleEntry speechBubbleEntry = SpeechBubbleManager.get(entity.getUUID());
     if (speechBubbleEntry == null) {
       return;
@@ -71,8 +70,7 @@ public class SpeechBubbleFrameRenderer {
             entity,
             speechBubbleEntry,
             minecraft,
-            minecraft.getDeltaTracker().getGameTimeDeltaPartialTick(false),
-            packedLight);
+            minecraft.getDeltaTracker().getGameTimeDeltaPartialTick(false));
     if (speechBubbleInstance == null) {
       return;
     }
