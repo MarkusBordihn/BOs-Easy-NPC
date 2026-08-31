@@ -76,8 +76,7 @@ public enum BaseAttributeType {
 
     private static final Map<ResourceLocation, BaseAttributeType> BY_RESOURCE_LOCATION =
         Arrays.stream(values())
-            .collect(
-                Collectors.toMap(BaseAttributeType::getResourceLocation, Function.identity()));
+            .collect(Collectors.toMap(BaseAttributeType::getResourceLocation, Function.identity()));
 
     private Lookup() {}
   }

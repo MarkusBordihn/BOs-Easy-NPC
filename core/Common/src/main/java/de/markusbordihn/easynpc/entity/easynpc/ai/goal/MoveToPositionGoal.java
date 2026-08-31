@@ -118,8 +118,7 @@ public class MoveToPositionGoal<T extends EasyNPC<?>> extends Goal {
     this.closestDistanceToTarget = Double.MAX_VALUE;
     this.lastProgressPosition = this.mob.position();
     this.arrived = false;
-    this.navigationTargetPos =
-        GroundTargetResolver.resolveGroundTarget(this.mob, this.targetPos);
+    this.navigationTargetPos = GroundTargetResolver.resolveGroundTarget(this.mob, this.targetPos);
     this.jumpControlled =
         this.canJump && this.mob.getMoveControl() instanceof JumpEasyNPCMoveControl;
 

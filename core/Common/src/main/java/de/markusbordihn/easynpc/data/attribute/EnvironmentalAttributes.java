@@ -43,9 +43,9 @@ public record EnvironmentalAttributes(
         compoundTag.getBoolean(NO_GRAVITY_TAG));
   }
 
-  public EnvironmentalAttributes withCanBreathUnderwater(boolean canBreathUnderwater) {
+  public EnvironmentalAttributes withCanBreatheUnderwater(boolean canBreatheUnderwater) {
     return new EnvironmentalAttributes(
-        canBreathUnderwater, this.canFloat, this.freefall, this.noGravity);
+        canBreatheUnderwater, this.canFloat, this.freefall, this.noGravity);
   }
 
   public EnvironmentalAttributes withCanFloat(boolean canFloat) {

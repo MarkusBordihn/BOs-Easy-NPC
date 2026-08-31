@@ -23,6 +23,7 @@
     ],
     "fabric-gametest": [
       "de.markusbordihn.easynpc.gametest.SmokeTest",
+      "de.markusbordihn.easynpc.gametest.BackupTest",
       "de.markusbordihn.easynpc.gametest.DialogScreenTest",
       "de.markusbordihn.easynpc.gametest.ModSpawnEggItemTest",
       "de.markusbordihn.easynpc.gametest.ConditionEvaluationTest",
@@ -36,6 +37,7 @@
       "de.markusbordihn.easynpc.gametest.FactionDefenseTest",
       "de.markusbordihn.easynpc.gametest.IllagerCrossedArmsTest",
       "de.markusbordihn.easynpc.gametest.NPCEntityLifecycleTest",
+      "de.markusbordihn.easynpc.gametest.NPCMassLifecycleTest",
       "de.markusbordihn.easynpc.gametest.NPCDataIsolationTest",
       "de.markusbordihn.easynpc.gametest.TradingPersistenceTest",
       "de.markusbordihn.easynpc.gametest.NpcStateTest",

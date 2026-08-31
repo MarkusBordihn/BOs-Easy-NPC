@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.data.action;
 
+import de.markusbordihn.easynpc.utils.TextFormattingCodes;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -41,8 +42,11 @@ public class SpeechBubbleManager {
       return;
     }
 
-    int readableDurationTicks = Math.max(durationTicks, calculateReadingDurationTicks(text));
-    speechBubbles.put(uuid, new SpeechBubbleEntry(text, clientTick.get(), readableDurationTicks));
+    Component displayedText = TextFormattingCodes.parseTextCodes(text);
+    int readableDurationTicks =
+        Math.max(durationTicks, calculateReadingDurationTicks(displayedText));
+    speechBubbles.put(
+        uuid, new SpeechBubbleEntry(displayedText, clientTick.get(), readableDurationTicks));
   }
 
   public static void tick() {

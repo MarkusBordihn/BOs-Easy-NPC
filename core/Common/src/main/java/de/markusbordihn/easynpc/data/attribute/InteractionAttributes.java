@@ -50,9 +50,9 @@ public record InteractionAttributes(
         isPushable, this.canBeHitByProjectile, this.canBeLeashed, this.pushEntities);
   }
 
-  public InteractionAttributes withIsPickable(boolean isPickable) {
+  public InteractionAttributes withCanBeHitByProjectile(boolean canBeHitByProjectile) {
     return new InteractionAttributes(
-        this.isPushable, isPickable, this.canBeLeashed, this.pushEntities);
+        this.isPushable, canBeHitByProjectile, this.canBeLeashed, this.pushEntities);
   }
 
   public InteractionAttributes withCanBeLeashed(boolean canBeLeashed) {

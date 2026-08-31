@@ -59,6 +59,15 @@ public class ConfigUIMenu extends AbstractContainerMenu
       final int containerId,
       final Inventory playerInventory,
       final CompoundTag data) {
+    this(menuType, containerId, playerInventory, data, true);
+  }
+
+  protected ConfigUIMenu(
+      final MenuType<?> menuType,
+      final int containerId,
+      final Inventory playerInventory,
+      final CompoundTag data,
+      final boolean requiresEasyNPC) {
     super(menuType, containerId);
 
     this.player = playerInventory.player;
@@ -83,16 +92,17 @@ public class ConfigUIMenu extends AbstractContainerMenu
       log.warn("Additional screen data is missing menu {} with {}", menuType, this.screenData);
     }
 
+    if (!requiresEasyNPC) {
+      this.easyNPC = null;
+      return;
+    }
+
     this.easyNPC =
         this.level.isClientSide()
             ? LivingEntityManager.getClientEasyNPCEntityByUUID(getNpcUUID())
             : LivingEntityManager.getServerEasyNPCEntityByUUID(getNpcUUID(), (ServerPlayer) player);
     if (this.easyNPC == null) {
-      log.error(
-          "EasyNPC entity with UUID {} is missing for menu {} with {}",
-          getNpcUUID(),
-          menuType,
-          this.screenData);
+      log.error("EasyNPC entity with UUID {} is missing for menu {}", getNpcUUID(), menuType);
     }
   }
 

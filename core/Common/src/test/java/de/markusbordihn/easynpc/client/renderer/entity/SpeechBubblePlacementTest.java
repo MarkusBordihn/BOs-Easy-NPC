@@ -28,7 +28,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import de.markusbordihn.easynpc.client.renderer.entity.SpeechBubblePlacement.OverlapOffsets;
 import de.markusbordihn.easynpc.client.renderer.entity.SpeechBubblePlacement.ScreenRect;
 import java.util.Arrays;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -465,10 +464,7 @@ class SpeechBubblePlacementTest {
     void shouldFallBackToASidewaysPush() {
       OverlapOffsets overlapOffsets =
           resolve(
-              new float[] {0.0F, 0.0F},
-              new float[] {0.0F, 0.0F},
-              0.05F,
-              new float[] {0.1F, 0.1F});
+              new float[] {0.0F, 0.0F}, new float[] {0.0F, 0.0F}, 0.05F, new float[] {0.1F, 0.1F});
 
       assertEquals(0.05F, overlapOffsets.offsetsY()[1], 1.0e-5F);
       assertTrue(overlapOffsets.offsetsX()[1] > 0.0F, "no sideways push");

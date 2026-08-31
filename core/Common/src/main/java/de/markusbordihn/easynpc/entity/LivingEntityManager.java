@@ -20,15 +20,18 @@
 package de.markusbordihn.easynpc.entity;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.data.npc.NPCRemovalReason;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ObjectiveDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.OwnerDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.PresetDataCapable;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
@@ -87,13 +90,13 @@ public class LivingEntityManager {
 
     updateObjectiveEventInterest(easyNPC);
 
-    for (Set<EasyNPC<?>> listeners : entityEventListeners.values()) {
-      for (EasyNPC<?> easyNPCChild : listeners) {
-        if (easyNPCChild != easyNPC) {
-          easyNPCChild.handleEasyNPCJoinEvent(easyNPC);
-        }
-      }
-    }
+    notifyAllListeners(
+        entityEventListeners,
+        listener -> {
+          if (listener != easyNPC) {
+            listener.handleEasyNPCJoinEvent(easyNPC);
+          }
+        });
   }
 
   public static void removeEasyNPC(EasyNPC<?> easyNPC) {
@@ -120,13 +123,13 @@ public class LivingEntityManager {
           });
     }
 
-    for (Set<EasyNPC<?>> listeners : entityEventListeners.values()) {
-      for (EasyNPC<?> easyNPCChild : listeners) {
-        if (easyNPCChild != easyNPC) {
-          easyNPCChild.handleEasyNPCLeaveEvent(easyNPC);
-        }
-      }
-    }
+    notifyAllListeners(
+        entityEventListeners,
+        listener -> {
+          if (listener != easyNPC) {
+            listener.handleEasyNPCLeaveEvent(easyNPC);
+          }
+        });
   }
 
   public static void addLivingEntity(LivingEntity livingEntity) {
@@ -134,12 +137,9 @@ public class LivingEntityManager {
       log.trace("{} [Add] Living entity {}: {}", LOG_PREFIX, livingEntity, livingEntity.getUUID());
     }
 
-    Set<EasyNPC<?>> listeners = entityEventListeners.get(livingEntity.level().dimension());
-    if (listeners != null) {
-      for (EasyNPC<?> easyNPC : listeners) {
-        easyNPC.handleLivingEntityJoinEvent(livingEntity);
-      }
-    }
+    notifyListeners(
+        entityEventListeners.get(livingEntity.level().dimension()),
+        listener -> listener.handleLivingEntityJoinEvent(livingEntity));
   }
 
   public static void removeLivingEntity(LivingEntity livingEntity) {
@@ -148,12 +148,9 @@ public class LivingEntityManager {
           "{} [Remove] Living entity {}: {}", LOG_PREFIX, livingEntity, livingEntity.getUUID());
     }
 
-    Set<EasyNPC<?>> listeners = entityEventListeners.get(livingEntity.level().dimension());
-    if (listeners != null) {
-      for (EasyNPC<?> easyNPC : listeners) {
-        easyNPC.handleLivingEntityLeaveEvent(livingEntity);
-      }
-    }
+    notifyListeners(
+        entityEventListeners.get(livingEntity.level().dimension()),
+        listener -> listener.handleLivingEntityLeaveEvent(livingEntity));
   }
 
   public static void addServerPlayer(ServerPlayer serverPlayer) {
@@ -161,11 +158,8 @@ public class LivingEntityManager {
     playerMap.put(serverPlayer.getUUID(), serverPlayer);
     playerNameMap.put(serverPlayer.getName().getString(), serverPlayer);
 
-    for (Set<EasyNPC<?>> listeners : playerEventListeners.values()) {
-      for (EasyNPC<?> easyNPC : listeners) {
-        easyNPC.handlePlayerJoinEvent(serverPlayer);
-      }
-    }
+    notifyAllListeners(
+        playerEventListeners, listener -> listener.handlePlayerJoinEvent(serverPlayer));
   }
 
   public static void removeServerPlayer(ServerPlayer serverPlayer) {
@@ -173,10 +167,26 @@ public class LivingEntityManager {
     playerMap.remove(serverPlayer.getUUID());
     playerNameMap.remove(serverPlayer.getName().getString());
 
-    for (Set<EasyNPC<?>> listeners : playerEventListeners.values()) {
-      for (EasyNPC<?> easyNPC : listeners) {
-        easyNPC.handlePlayerLeaveEvent(serverPlayer);
-      }
+    notifyAllListeners(
+        playerEventListeners, listener -> listener.handlePlayerLeaveEvent(serverPlayer));
+  }
+
+  private static void notifyAllListeners(
+      ConcurrentHashMap<ResourceKey<Level>, Set<EasyNPC<?>>> listeners,
+      Consumer<EasyNPC<?>> notification) {
+    for (Set<EasyNPC<?>> dimensionListeners : listeners.values()) {
+      notifyListeners(dimensionListeners, notification);
+    }
+  }
+
+  private static void notifyListeners(
+      Set<EasyNPC<?>> listeners, Consumer<EasyNPC<?>> notification) {
+    if (listeners == null || listeners.isEmpty()) {
+      return;
+    }
+
+    for (EasyNPC<?> listener : List.copyOf(listeners)) {
+      notification.accept(listener);
     }
   }
 
@@ -199,11 +209,18 @@ public class LivingEntityManager {
       ResourceKey<Level> dimension,
       EasyNPC<?> easyNPC,
       boolean interested) {
-    // Drop any stale membership (e.g. a previous dimension) before re-adding.
-    removeFromListeners(listeners, easyNPC);
     if (interested && dimension != null) {
-      listeners.computeIfAbsent(dimension, key -> ConcurrentHashMap.newKeySet()).add(easyNPC);
+      Set<EasyNPC<?>> dimensionListeners =
+          listeners.computeIfAbsent(dimension, key -> ConcurrentHashMap.newKeySet());
+      if (dimensionListeners.contains(easyNPC)) {
+        return;
+      }
+      removeFromListeners(listeners, easyNPC);
+      dimensionListeners.add(easyNPC);
+      return;
     }
+
+    removeFromListeners(listeners, easyNPC);
   }
 
   private static void removeFromListeners(
@@ -381,6 +398,7 @@ public class LivingEntityManager {
   public static void discardEasyNPCEntityByUUID(UUID uuid, ServerLevel serverLevel) {
     EasyNPC<?> easyNPC = getServerEasyNPCEntityByUUID(uuid, serverLevel);
     if (easyNPC != null && easyNPC.getMob() != null) {
+      NPCEntityManager.markIntentionalRemoval(uuid, NPCRemovalReason.UNLOADED_BY_ACTION);
       easyNPC.getMob().discard();
       npcEntityMapServer.remove(uuid);
     } else {

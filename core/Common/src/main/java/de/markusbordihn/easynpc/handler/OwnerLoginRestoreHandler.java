@@ -52,7 +52,6 @@ public class OwnerLoginRestoreHandler {
   private static final Set<NPCRemovalReason> RESTORABLE_REMOVAL_REASONS =
       EnumSet.of(
           NPCRemovalReason.DESPAWNED,
-          NPCRemovalReason.UNLOADED_TO_CHUNK,
           NPCRemovalReason.UNLOADED_WITH_PLAYER,
           NPCRemovalReason.UNLOADED_BY_PLAYER,
           NPCRemovalReason.UNLOADED_BY_SERVER,

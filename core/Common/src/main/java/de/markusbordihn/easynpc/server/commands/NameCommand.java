@@ -218,7 +218,8 @@ public class NameCommand extends Command {
     int color = chatFormatting.getColor() != null ? chatFormatting.getColor() : -1;
     if (NameHandler.setCustomName(easyNPC, nameText, color, visibility)) {
       return sendSuccessMessage(
-          context, "Set color of " + easyNPC + " name to " + chatFormatting.name().toLowerCase(Locale.ROOT));
+          context,
+          "Set color of " + easyNPC + " name to " + chatFormatting.name().toLowerCase(Locale.ROOT));
     }
     return 0;
   }
@@ -242,7 +243,11 @@ public class NameCommand extends Command {
     String nameText = currentName.getString();
     if (NameHandler.setCustomName(easyNPC, nameText, -1, visibility)) {
       return sendSuccessMessage(
-          context, "Set visibility of " + easyNPC + " name to " + visibility.name().toLowerCase(Locale.ROOT));
+          context,
+          "Set visibility of "
+              + easyNPC
+              + " name to "
+              + visibility.name().toLowerCase(Locale.ROOT));
     }
     return 0;
   }

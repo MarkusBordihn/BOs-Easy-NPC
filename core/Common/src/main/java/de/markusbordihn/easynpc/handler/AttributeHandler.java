@@ -173,7 +173,7 @@ public class AttributeHandler {
     log.debug("Changing environmental attribute {}={} for {}", attributeType, value, easyNPC);
     switch (attributeType) {
       case CAN_BREATHE_UNDERWATER ->
-          entityAttributes.setEnvironmentalAttributes(attributes.withCanBreathUnderwater(value));
+          entityAttributes.setEnvironmentalAttributes(attributes.withCanBreatheUnderwater(value));
       case CAN_FLOAT -> {
         entityAttributes.setEnvironmentalAttributes(attributes.withCanFloat(value));
         if (objectiveData != null) {
@@ -223,7 +223,7 @@ public class AttributeHandler {
       case IS_PUSHABLE ->
           entityAttributes.setInteractionAttributes(attributes.withIsPushable(value));
       case CAN_BE_HIT_BY_PROJECTILE ->
-          entityAttributes.setInteractionAttributes(attributes.withIsPickable(value));
+          entityAttributes.setInteractionAttributes(attributes.withCanBeHitByProjectile(value));
       case PUSH_ENTITIES ->
           entityAttributes.setInteractionAttributes(attributes.withPushEntities(value));
       default -> {

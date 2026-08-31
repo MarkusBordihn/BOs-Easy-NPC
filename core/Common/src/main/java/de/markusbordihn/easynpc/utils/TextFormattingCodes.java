@@ -102,6 +102,20 @@ public class TextFormattingCodes {
     return text;
   }
 
+  public static Component parseTextCodes(Component translatedComponent) {
+    if (translatedComponent == null) {
+      return null;
+    }
+
+    String translatedText = translatedComponent.getString();
+    String parsedText = parseTextFormattingCodes(parseTextLineBreaks(translatedText));
+    if (translatedText.equals(parsedText)) {
+      return translatedComponent;
+    }
+
+    return TextComponent.getText(parsedText);
+  }
+
   public static boolean hasTextLinebreakCodes(Component component) {
     return component != null && hasTextLinebreakCodes(component.getString());
   }
