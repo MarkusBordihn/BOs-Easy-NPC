@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.configui.network.message.server;
 
+import de.markusbordihn.easynpc.api.handler.EasyNPCEntityHandler;
 import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
@@ -65,6 +66,6 @@ public record RemoveNPCMessage(UUID uuid) implements NetworkMessageRecord {
     }
 
     log.info("Removing Easy NPC {} requested by {}", easyNPC, serverPlayer);
-    easyNPC.getEntity().discard();
+    EasyNPCEntityHandler.delete(easyNPC);
   }
 }

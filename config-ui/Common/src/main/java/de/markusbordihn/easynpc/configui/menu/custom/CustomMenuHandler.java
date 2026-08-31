@@ -84,7 +84,7 @@ public class CustomMenuHandler {
         worldMetadata.put(preset.toString(), metadata.toCompoundTag());
         Path presetPath = WorldPresetDataFiles.getPresetsResourceLocationPath(preset);
         if (presetPath != null) {
-          CompoundTag presetTag = PresetFileHandler.loadNbt(presetPath.toFile());
+          CompoundTag presetTag = PresetFileHandler.load(presetPath.toFile());
           if (presetTag != null) {
             worldData.put(preset.toString(), presetTag);
           }
@@ -109,7 +109,7 @@ public class CustomMenuHandler {
         customMetadata.put(preset.toString(), metadata.toCompoundTag());
         Path presetPath = CustomPresetDataFiles.getPresetsResourceLocationPath(preset);
         if (presetPath != null) {
-          CompoundTag presetTag = PresetFileHandler.loadNbt(presetPath.toFile());
+          CompoundTag presetTag = PresetFileHandler.load(presetPath.toFile());
           if (presetTag != null) {
             customData.put(preset.toString(), presetTag);
           }

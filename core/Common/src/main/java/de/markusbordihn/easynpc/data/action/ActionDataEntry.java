@@ -310,8 +310,7 @@ public record ActionDataEntry(
 
   public ActionDataEntry withConditionDataSet(ConditionDataSet conditionDataSet) {
     Builder builder = new Builder(this);
-    builder.conditionDataSet =
-        conditionDataSet != null ? conditionDataSet : new ConditionDataSet();
+    builder.conditionDataSet = conditionDataSet != null ? conditionDataSet : new ConditionDataSet();
     return builder.build();
   }
 

@@ -29,6 +29,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -188,7 +189,7 @@ public class NPCEntityData extends SavedData {
       return Collections.emptyList();
     }
 
-    return this.metadata.keySet().stream()
+    return List.copyOf(this.metadata.keySet()).stream()
         .map(this::getEntry)
         .filter(Optional::isPresent)
         .map(Optional::get)
@@ -200,7 +201,7 @@ public class NPCEntityData extends SavedData {
   }
 
   public Set<UUID> getAllUUIDs() {
-    return Collections.unmodifiableSet(this.metadata.keySet());
+    return Set.copyOf(this.metadata.keySet());
   }
 
   public boolean hasEntry(UUID uuid) {
@@ -238,19 +239,19 @@ public class NPCEntityData extends SavedData {
   }
 
   public Set<String> getAllEntityTypes() {
-    return Collections.unmodifiableSet(this.entriesByType.keySet());
+    return Set.copyOf(this.entriesByType.keySet());
   }
 
   public Set<String> getAllDimensions() {
-    return Collections.unmodifiableSet(this.entriesByDimension.keySet());
+    return Set.copyOf(this.entriesByDimension.keySet());
   }
 
   public Set<ResourceLocation> getAllCustomIdentifiers() {
-    return Collections.unmodifiableSet(this.entriesByCustomIdentifier.keySet());
+    return Set.copyOf(this.entriesByCustomIdentifier.keySet());
   }
 
   public Set<String> getAllCustomIdentifierNamespaces() {
-    return Collections.unmodifiableSet(this.entriesByCustomIdentifierNamespace.keySet());
+    return Set.copyOf(this.entriesByCustomIdentifierNamespace.keySet());
   }
 
   public Collection<SavedNPCEntityEntry> getEntriesByOwner(UUID ownerUUID) {
@@ -293,7 +294,7 @@ public class NPCEntityData extends SavedData {
       return Collections.emptyList();
     }
 
-    return uuids.stream()
+    return List.copyOf(uuids).stream()
         .map(this::getEntry)
         .filter(Optional::isPresent)
         .map(Optional::get)
@@ -398,7 +399,7 @@ public class NPCEntityData extends SavedData {
 
   public void updateRemovalReason(UUID uuid, NPCRemovalReason reason) {
     NPCEntityMetadata old = this.metadata.get(uuid);
-    if (old == null) {
+    if (old == null || old.removalReason() == reason) {
       return;
     }
 

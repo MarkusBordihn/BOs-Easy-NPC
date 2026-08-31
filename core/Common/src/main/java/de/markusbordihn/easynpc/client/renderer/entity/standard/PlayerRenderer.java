@@ -3,6 +3,7 @@ package de.markusbordihn.easynpc.client.renderer.entity.standard;
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.client.model.EasyNPCModelManager;
 import de.markusbordihn.easynpc.client.model.EasyNPCModelManagerAccessor;
+import de.markusbordihn.easynpc.client.model.ModModelLayers;
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.layers.EasyNPCItemAttachmentLayer;
 import de.markusbordihn.easynpc.client.renderer.entity.layers.SkullHeadRenderLayer;
@@ -41,7 +42,7 @@ public class PlayerRenderer<T extends PathfinderMob> extends LivingEntityRendere
     super(
         context,
         new PlayerModel<>(
-            context.bakeLayer(slim ? ModelLayers.PLAYER_SLIM : ModelLayers.PLAYER), slim),
+            context.bakeLayer(slim ? ModModelLayers.HUMANOID_SLIM : ModModelLayers.HUMANOID), slim),
         0.5F);
     this.addLayer(
         new HumanoidArmorLayer<>(

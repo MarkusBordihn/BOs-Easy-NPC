@@ -23,6 +23,7 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.backup.BackupManager;
 import de.markusbordihn.easynpc.condition.ConditionWarnings;
 import de.markusbordihn.easynpc.data.preset.PresetReference;
+import de.markusbordihn.easynpc.entity.NPCChurnTracker;
 import de.markusbordihn.easynpc.entity.NPCEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.action.executor.MessageActionExecutor;
 import de.markusbordihn.easynpc.handler.EnvironmentChangeTracker;
@@ -50,8 +51,10 @@ public class ServerEvents {
 
     Constants.WORLD_DIR = minecraftServer.getWorldPath(LevelResource.ROOT);
 
+    BackupManager.reset();
     ConditionWarnings.reset();
     EnvironmentChangeTracker.reset();
+    NPCChurnTracker.reset();
     PauseManager.reset();
     PresetReference.clearCache();
     MessageActionExecutor.clearKnownPlayerNames();
@@ -91,7 +94,9 @@ public class ServerEvents {
 
     long startTime = System.currentTimeMillis();
     NPCEntityManager.saveAllDirtyNPCs();
+    BackupManager.reset();
     EnvironmentChangeTracker.reset();
+    NPCChurnTracker.reset();
     PauseManager.reset();
     PlayerIdleTracker.reset();
     PresetReference.clearCache();

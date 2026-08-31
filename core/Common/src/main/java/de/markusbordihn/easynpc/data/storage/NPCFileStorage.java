@@ -70,7 +70,11 @@ public class NPCFileStorage {
   }
 
   public boolean exists(UUID uuid) {
-    return Files.exists(getNPCFilePath(uuid));
+    if (uuid == null) {
+      return false;
+    }
+
+    return this.dirtyNPCs.containsKey(uuid) || Files.exists(getNPCFilePath(uuid));
   }
 
   public Optional<CompoundTag> load(UUID uuid) {

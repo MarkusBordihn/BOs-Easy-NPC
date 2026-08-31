@@ -308,7 +308,8 @@ public class EntityTypeManager {
       }
 
       if (entity instanceof Mob newRenderEntity) {
-        log.debug("{} Registering render entity {} for {}", LOG_PREFIX, newRenderEntity, entityType);
+        log.debug(
+            "{} Registering render entity {} for {}", LOG_PREFIX, newRenderEntity, entityType);
 
         // For better performance we disable AI, sound and physics for the fake entity.
         newRenderEntity.setNoAi(true);
@@ -323,7 +324,8 @@ public class EntityTypeManager {
         }
         return newRenderEntity;
       } else {
-        log.debug("{} Entity type {} is not a Mob, marking as unsupported.", LOG_PREFIX, entityType);
+        log.debug(
+            "{} Entity type {} is not a Mob, marking as unsupported.", LOG_PREFIX, entityType);
         if (entity != null) {
           entity.discard();
         }

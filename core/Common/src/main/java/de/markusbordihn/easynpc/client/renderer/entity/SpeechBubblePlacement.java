@@ -199,8 +199,7 @@ public final class SpeechBubblePlacement {
           float appliedOffsetY = offsetsY[index];
           if (lowerOffsetY <= upperOffsetY) {
             appliedOffsetY =
-                clamp(
-                    offsetsY[index] + verticalDirection * overlapY, lowerOffsetY, upperOffsetY);
+                clamp(offsetsY[index] + verticalDirection * overlapY, lowerOffsetY, upperOffsetY);
           }
 
           float resolvedOverlapY = (appliedOffsetY - offsetsY[index]) * verticalDirection;

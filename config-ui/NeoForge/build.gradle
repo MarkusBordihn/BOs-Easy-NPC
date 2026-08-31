@@ -159,6 +159,13 @@ tasks.named('build') {
   finalizedBy 'publishToMavenLocal'
 }
 
+// The game test world is persistent, so every run would inherit the NPCs of all previous runs.
+tasks.matching { it.name == 'runGameTestServer' }.configureEach {
+  doFirst {
+    delete project.file('runs/gameTestServer/world')
+  }
+}
+
 // CurseForge Publishing
 if (project.hasProperty('curseforge_project_id') && project.curseforge_project_id) {
   tasks.register('curseforge', net.darkhax.curseforgegradle.TaskPublishCurseForge) {

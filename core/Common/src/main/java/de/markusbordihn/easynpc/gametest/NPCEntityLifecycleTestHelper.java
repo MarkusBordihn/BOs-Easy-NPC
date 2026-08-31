@@ -31,7 +31,9 @@ import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ObjectiveDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.OwnerDataCapable;
 import de.markusbordihn.easynpc.handler.OwnerHandler;
+import de.markusbordihn.easynpc.handler.RespawnHandler;
 import java.util.Collection;
+import java.util.Optional;
 import java.util.UUID;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.resources.ResourceLocation;
@@ -45,6 +47,16 @@ public class NPCEntityLifecycleTestHelper {
 
   private static boolean containsNPC(Collection<SavedNPCEntityEntry> entries, UUID entityUUID) {
     return entries.stream().anyMatch(entry -> entityUUID.equals(entry.entityUUID()));
+  }
+
+  private static NPCRemovalReason getStoredRemovalReason(GameTestHelper helper, UUID entityUUID) {
+    Optional<SavedNPCEntityEntry> entry = NPCEntityManager.getNPC(entityUUID);
+    if (entry.isEmpty() || entry.get().metadata() == null) {
+      helper.fail("NPC " + entityUUID + " is missing from the NPC index");
+      return null;
+    }
+
+    return entry.get().metadata().removalReason();
   }
 
   // A loader without the server started event makes every NPC query silently return nothing.
@@ -210,6 +222,89 @@ public class NPCEntityLifecycleTestHelper {
               + serverPlayer.getUUID()
               + ", got "
               + (ownerData != null ? ownerData.getOwnerUUID() : null));
+    }
+  }
+
+  public static void assertRemovalReasonIsResetOnRespawn(
+      GameTestHelper helper, EntityType<?> entityType) {
+    EasyNPC<?> easyNPC = GameTestHelpers.mockEasyNPC(helper, entityType, new Vec3(1, 2, 1));
+    NPCEntityManager.saveNPC(easyNPC);
+
+    UUID entityUUID = easyNPC.getEntityUUID();
+    if (!EasyNPCEntityHandler.despawn(easyNPC, NPCRemovalReason.DESPAWNED)) {
+      helper.fail("Failed to despawn the NPC");
+      return;
+    }
+
+    if (getStoredRemovalReason(helper, entityUUID) != NPCRemovalReason.DESPAWNED) {
+      helper.fail("Despawned NPC should be stored with the despawn removal reason");
+      return;
+    }
+
+    if (!EasyNPCEntityHandler.spawn(entityUUID, helper.getLevel())) {
+      helper.fail("Failed to respawn the NPC");
+      return;
+    }
+
+    NPCRemovalReason removalReason = getStoredRemovalReason(helper, entityUUID);
+    if (removalReason != NPCRemovalReason.NONE) {
+      helper.fail("Respawned NPC still uses the removal reason " + removalReason);
+    }
+  }
+
+  public static void assertDeletedNPCIsNotRestorableForOwner(
+      GameTestHelper helper, EntityType<?> entityType) {
+    ServerPlayer serverPlayer =
+        GameTestHelpers.mockServerPlayer(helper, new Vec3(2, 2, 1), "delete-restore-player");
+    EasyNPC<?> despawnedNPC = GameTestHelpers.mockEasyNPC(helper, entityType, new Vec3(1, 2, 1));
+    EasyNPC<?> deletedNPC = GameTestHelpers.mockEasyNPC(helper, entityType, new Vec3(1, 2, 1));
+    NPCEntityManager.saveNPC(despawnedNPC);
+    NPCEntityManager.saveNPC(deletedNPC);
+    OwnerHandler.setOwner(despawnedNPC, serverPlayer);
+    OwnerHandler.setOwner(deletedNPC, serverPlayer);
+
+    UUID despawnedUUID = despawnedNPC.getEntityUUID();
+    UUID deletedUUID = deletedNPC.getEntityUUID();
+    if (!EasyNPCEntityHandler.despawn(despawnedNPC, NPCRemovalReason.UNLOADED_BY_PLAYER)) {
+      helper.fail("Failed to despawn the NPC");
+      return;
+    }
+
+    if (!EasyNPCEntityHandler.delete(deletedNPC)) {
+      helper.fail("Failed to delete the NPC");
+      return;
+    }
+
+    Collection<SavedNPCEntityEntry> ownedNPCs =
+        NPCEntityManager.getNPCsByOwner(serverPlayer.getUUID());
+    if (!containsNPC(ownedNPCs, despawnedUUID)) {
+      helper.fail("Despawned NPC " + despawnedUUID + " must stay restorable for its owner");
+      return;
+    }
+
+    if (containsNPC(ownedNPCs, deletedUUID) || NPCEntityManager.getNPC(deletedUUID).isPresent()) {
+      helper.fail("Deleted NPC " + deletedUUID + " is still stored and returns on the owner login");
+    }
+  }
+
+  public static void assertRespawnKeepsIndexEntry(GameTestHelper helper, EntityType<?> entityType) {
+    EasyNPC<?> easyNPC = GameTestHelpers.mockEasyNPC(helper, entityType, new Vec3(1, 2, 1));
+    NPCEntityManager.saveNPC(easyNPC);
+
+    UUID entityUUID = easyNPC.getEntityUUID();
+    if (!RespawnHandler.respawnNPC(easyNPC, helper.getLevel())) {
+      helper.fail("Failed to respawn the NPC");
+      return;
+    }
+
+    if (LivingEntityManager.getServerEasyNPCEntityByUUID(entityUUID, helper.getLevel()) == null) {
+      helper.fail("Respawned NPC " + entityUUID + " was not found in the world");
+      return;
+    }
+
+    NPCRemovalReason removalReason = getStoredRemovalReason(helper, entityUUID);
+    if (removalReason != NPCRemovalReason.NONE) {
+      helper.fail("Respawn must not mark the NPC as removed, got " + removalReason);
     }
   }
 }

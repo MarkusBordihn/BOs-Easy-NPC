@@ -17,47 +17,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.data.npc;
+package de.markusbordihn.easynpc.gametest;
 
-import net.minecraft.world.entity.Entity;
+import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.entity.ModEntityType;
+import de.markusbordihn.easynpc.entity.ModNPCEntityType;
+import net.minecraft.gametest.framework.GameTest;
+import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.world.entity.EntityType;
+import net.minecraftforge.gametest.GameTestHolder;
 
-public enum NPCRemovalReason {
-  NONE,
-  KILLED,
-  DESPAWNED,
-  UNLOADED_TO_CHUNK,
-  UNLOADED_WITH_PLAYER,
-  UNLOADED_BY_PLAYER,
-  UNLOADED_BY_SERVER,
-  UNLOADED_BY_ACTION,
-  CHANGED_DIMENSION,
-  DELETED;
+@SuppressWarnings("unused")
+@GameTestHolder(Constants.MOD_ID)
+public class BackupTest {
 
-  public static NPCRemovalReason fromRemovalReason(Entity.RemovalReason removalReason) {
-    if (removalReason == null) {
-      return NONE;
-    }
-    return switch (removalReason) {
-      case KILLED -> KILLED;
-      case DISCARDED -> DESPAWNED;
-      case UNLOADED_TO_CHUNK -> UNLOADED_TO_CHUNK;
-      case UNLOADED_WITH_PLAYER -> UNLOADED_WITH_PLAYER;
-      case CHANGED_DIMENSION -> CHANGED_DIMENSION;
-    };
+  private static EntityType<?> humanoid() {
+    return ModEntityType.getEntityType(ModNPCEntityType.HUMANOID);
   }
 
-  public static NPCRemovalReason fromString(String value) {
-    if (value == null || value.isEmpty()) {
-      return NONE;
-    }
-    try {
-      return valueOf(value);
-    } catch (IllegalArgumentException e) {
-      return NONE;
-    }
+  @GameTest(template = "easy_npc:gametest.3x3x3", timeoutTicks = 1200, batch = "backupSpread")
+  public void testBackupIsSpreadOverTicks(GameTestHelper helper) {
+    BackupTestHelper.assertBackupIsSpreadOverTicks(helper, humanoid());
+    helper.succeed();
   }
 
-  public boolean isDespawnReason() {
-    return this != NONE && this != DELETED;
+  @GameTest(template = "easy_npc:gametest.3x3x3", timeoutTicks = 1200, batch = "backupRestore")
+  public void testBackupRestoresDeletedNPCs(GameTestHelper helper) {
+    BackupTestHelper.assertBackupRestoresDeletedNPCs(helper, humanoid());
+    helper.succeed();
   }
 }

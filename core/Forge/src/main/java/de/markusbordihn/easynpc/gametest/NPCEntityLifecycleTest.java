@@ -76,4 +76,22 @@ public class NPCEntityLifecycleTest {
     NPCEntityLifecycleTestHelper.assertRespawnKeepsOwner(helper, humanoid());
     helper.succeed();
   }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testRemovalReasonIsResetOnRespawn(GameTestHelper helper) {
+    NPCEntityLifecycleTestHelper.assertRemovalReasonIsResetOnRespawn(helper, humanoid());
+    helper.succeed();
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testDeletedNPCIsNotRestorableForOwner(GameTestHelper helper) {
+    NPCEntityLifecycleTestHelper.assertDeletedNPCIsNotRestorableForOwner(helper, humanoid());
+    helper.succeed();
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testRespawnKeepsIndexEntry(GameTestHelper helper) {
+    NPCEntityLifecycleTestHelper.assertRespawnKeepsIndexEntry(helper, humanoid());
+    helper.succeed();
+  }
 }

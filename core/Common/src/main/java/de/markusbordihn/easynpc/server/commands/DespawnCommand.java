@@ -57,16 +57,25 @@ public class DespawnCommand extends Command {
                             (context, builder) ->
                                 SharedSuggestionProvider.suggest(
                                     Arrays.stream(NPCRemovalReason.values())
-                                        .filter(r -> r != NPCRemovalReason.NONE)
+                                        .filter(NPCRemovalReason::isDespawnReason)
                                         .map(NPCRemovalReason::name),
                                     builder))
                         .executes(
                             context ->
-                                despawn(
+                                despawnWithReason(
                                     context.getSource(),
                                     EasyNPCArgument.getEntitiesWithAccess(context, NPC_TARGETS_ARG),
-                                    NPCRemovalReason.fromString(
-                                        StringArgumentType.getString(context, REASON_ARG))))));
+                                    StringArgumentType.getString(context, REASON_ARG)))));
+  }
+
+  private static int despawnWithReason(
+      CommandSourceStack context, Collection<? extends EasyNPC<?>> easyNPCs, String reason) {
+    NPCRemovalReason removalReason = NPCRemovalReason.fromString(reason);
+    if (!removalReason.isDespawnReason()) {
+      return sendFailureMessage(context, reason + " is not a valid despawn reason!");
+    }
+
+    return despawn(context, easyNPCs, removalReason);
   }
 
   private static int despawn(

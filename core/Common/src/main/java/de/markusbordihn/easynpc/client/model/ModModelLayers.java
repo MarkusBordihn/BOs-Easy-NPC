@@ -20,7 +20,10 @@
 package de.markusbordihn.easynpc.client.model;
 
 import de.markusbordihn.easynpc.Constants;
+import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.model.geom.builders.CubeDeformation;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.resources.ResourceLocation;
 
 public class ModModelLayers {
@@ -34,6 +37,20 @@ public class ModModelLayers {
   public static final ModelLayerLocation ORC =
       new ModelLayerLocation(
           ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "orc"), "main");
+  public static final ModelLayerLocation HUMANOID =
+      new ModelLayerLocation(
+          ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "humanoid"), "main");
+  public static final ModelLayerLocation HUMANOID_SLIM =
+      new ModelLayerLocation(
+          ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "humanoid_slim"), "main");
 
   private ModModelLayers() {}
+
+  public static LayerDefinition createHumanoidLayer() {
+    return LayerDefinition.create(PlayerModel.createMesh(CubeDeformation.NONE, false), 64, 64);
+  }
+
+  public static LayerDefinition createHumanoidSlimLayer() {
+    return LayerDefinition.create(PlayerModel.createMesh(CubeDeformation.NONE, true), 64, 64);
+  }
 }

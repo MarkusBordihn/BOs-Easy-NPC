@@ -32,10 +32,9 @@ public enum StateOperation {
   TOGGLE,
   REMOVE;
 
-  private final String commandName = this.name().toLowerCase(Locale.ROOT);
-
   private static final int DEFAULT_AMOUNT = 1;
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+  private final String commandName = this.name().toLowerCase(Locale.ROOT);
 
   public static StateOperation get(String stateOperation) {
     return EnumUtils.getIgnoreCase(StateOperation.class, stateOperation, SET);

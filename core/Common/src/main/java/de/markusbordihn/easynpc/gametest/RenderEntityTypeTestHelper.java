@@ -37,10 +37,8 @@ public class RenderEntityTypeTestHelper {
         helper, "Bat must be available as render entity for the Doppler", renderEntity);
     GameTestHelpers.assertTrue(
         helper, "Bat render entity must be a vanilla Bat", renderEntity instanceof Bat);
-    GameTestHelpers.assertTrue(
-        helper, "Bat render entity must have no AI", renderEntity.isNoAi());
-    GameTestHelpers.assertTrue(
-        helper, "Bat render entity must be silent", renderEntity.isSilent());
+    GameTestHelpers.assertTrue(helper, "Bat render entity must have no AI", renderEntity.isNoAi());
+    GameTestHelpers.assertTrue(helper, "Bat render entity must be silent", renderEntity.isSilent());
     GameTestHelpers.assertTrue(
         helper, "Bat render entity must have no physics", renderEntity.noPhysics);
     GameTestHelpers.assertTrue(

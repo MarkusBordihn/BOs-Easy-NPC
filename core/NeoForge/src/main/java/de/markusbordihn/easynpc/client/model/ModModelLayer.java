@@ -43,5 +43,8 @@ public class ModModelLayer {
     event.registerLayerDefinition(ModModelLayers.DOPPLER, DopplerModel::createBodyLayer);
     event.registerLayerDefinition(ModModelLayers.FAIRY, FairyModel::createBodyLayer);
     event.registerLayerDefinition(ModModelLayers.ORC, OrcModel::createBodyLayer);
+    event.registerLayerDefinition(ModModelLayers.HUMANOID, ModModelLayers::createHumanoidLayer);
+    event.registerLayerDefinition(
+        ModModelLayers.HUMANOID_SLIM, ModModelLayers::createHumanoidSlimLayer);
   }
 }

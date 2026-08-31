@@ -108,8 +108,22 @@ public class EasyNPCEntityHandler {
       log.error("Cannot despawn null EasyNPC");
       return false;
     }
-    NPCEntityManager.saveNPC(easyNPC);
-    NPCEntityManager.updateRemovalReason(easyNPC.getEntityUUID(), reason);
+    NPCRemovalReason removalReason =
+        reason == null || reason == NPCRemovalReason.NONE ? NPCRemovalReason.DESPAWNED : reason;
+    NPCEntityManager.saveNPC(easyNPC, removalReason);
+    NPCEntityManager.markIntentionalRemoval(easyNPC.getEntityUUID(), removalReason);
+    easyNPC.getEntity().discard();
+    return true;
+  }
+
+  public static boolean delete(EasyNPC<?> easyNPC) {
+    if (easyNPC == null) {
+      log.error("Cannot delete null EasyNPC");
+      return false;
+    }
+    UUID entityUUID = easyNPC.getEntityUUID();
+    NPCEntityManager.removeNPC(entityUUID);
+    NPCEntityManager.markIntentionalRemoval(entityUUID, NPCRemovalReason.DELETED);
     easyNPC.getEntity().discard();
     return true;
   }

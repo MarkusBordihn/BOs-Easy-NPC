@@ -89,6 +89,30 @@ class NPCFileStorageTest {
   }
 
   @Test
+  void testPendingWriteCountsAsExistingFile() {
+    NPCFileStorage storage = new NPCFileStorage(this.worldPath);
+    UUID uuid = UUID.randomUUID();
+    assertFalse(storage.exists(uuid));
+
+    storage.markDirty(uuid, createNPCData("Villager"));
+    assertTrue(storage.exists(uuid));
+
+    storage.saveAllDirty();
+    assertTrue(storage.exists(uuid));
+  }
+
+  @Test
+  void testDeletedNPCDoesNotExist() {
+    NPCFileStorage storage = new NPCFileStorage(this.worldPath);
+    UUID uuid = UUID.randomUUID();
+
+    storage.markDirty(uuid, createNPCData("Villager"));
+    storage.saveAllDirty();
+    assertTrue(storage.delete(uuid));
+    assertFalse(storage.exists(uuid));
+  }
+
+  @Test
   void testDeleteResetsChangeDetection() {
     NPCFileStorage storage = new NPCFileStorage(this.worldPath);
     UUID uuid = UUID.randomUUID();
