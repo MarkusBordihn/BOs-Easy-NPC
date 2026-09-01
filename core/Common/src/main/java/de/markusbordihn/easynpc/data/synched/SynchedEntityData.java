@@ -40,8 +40,8 @@ public final class SynchedEntityData {
     this.entityDataAccessorMap = entityDataAccessorMap;
     log.debug(
         "Initialized SynchedEntityData for {} ({}) with {}",
-        entity,
-        entityClass,
+        entity.getUUID(),
+        this.entityClass.getName(),
         this.entityDataAccessorMap);
   }
 

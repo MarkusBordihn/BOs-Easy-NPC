@@ -231,6 +231,13 @@ sourceSets.test {
   java.destinationDirectory = mainOutputDir
 }
 
+// The game test world is persistent, so every run would inherit the NPCs of all previous runs.
+tasks.matching { it.name == 'runGameTestServer' }.configureEach {
+  doFirst {
+    delete project.file('run/gametest/world')
+  }
+}
+
 // CurseForge Publishing
 if (project.hasProperty('curseforge_project_id') && project.curseforge_project_id) {
   tasks.register('curseforge', net.darkhax.curseforgegradle.TaskPublishCurseForge) {

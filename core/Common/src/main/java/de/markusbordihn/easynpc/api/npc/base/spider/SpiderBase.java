@@ -45,7 +45,7 @@ public class SpiderBase extends SpiderRaw implements BaseEasyNPC<SpiderRaw> {
     this.setInvulnerable(true);
     this.getEntityAttributes()
         .setEnvironmentalAttributes(
-            this.getEntityAttributes().getEnvironmentalAttributes().withCanBreathUnderwater(true));
+            this.getEntityAttributes().getEnvironmentalAttributes().withCanBreatheUnderwater(true));
     this.refreshGroundNavigation();
   }
 

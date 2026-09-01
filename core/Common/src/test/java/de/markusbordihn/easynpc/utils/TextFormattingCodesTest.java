@@ -21,12 +21,30 @@ package de.markusbordihn.easynpc.utils;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import net.minecraft.network.chat.Component;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 class TextFormattingCodesTest {
+
+  @Test
+  void testParseTextCodes_keepsComponentWithoutCodes() {
+    Component component = Component.literal("plain text");
+    assertSame(component, TextFormattingCodes.parseTextCodes(component));
+  }
+
+  @Test
+  void testParseTextCodes_parsesColorTagsAndLineBreaks() {
+    Component component = Component.literal("<gold>Gold</gold><br>Next");
+    assertEquals("§6Gold§0\nNext", TextFormattingCodes.parseTextCodes(component).getString());
+  }
+
+  @Test
+  void testParseTextCodes_nullComponent() {
+    assertNull(TextFormattingCodes.parseTextCodes(null));
+  }
 
   @Test
   void testHasTextFormattingCodes_withColorTag() {

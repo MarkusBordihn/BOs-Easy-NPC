@@ -39,5 +39,9 @@ public class ModModelLayer {
     ModelLayerRegistry.registerModelLayer(ModModelLayers.DOPPLER, DopplerModel::createBodyLayer);
     ModelLayerRegistry.registerModelLayer(ModModelLayers.FAIRY, FairyModel::createBodyLayer);
     ModelLayerRegistry.registerModelLayer(ModModelLayers.ORC, OrcModel::createBodyLayer);
+    ModelLayerRegistry.registerModelLayer(
+        ModModelLayers.HUMANOID, ModModelLayers::createHumanoidLayer);
+    ModelLayerRegistry.registerModelLayer(
+        ModModelLayers.HUMANOID_SLIM, ModModelLayers::createHumanoidSlimLayer);
   }
 }

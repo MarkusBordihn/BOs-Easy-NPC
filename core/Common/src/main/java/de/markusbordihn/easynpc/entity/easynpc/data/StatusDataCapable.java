@@ -32,6 +32,10 @@ public interface StatusDataCapable<T extends Mob> extends EasyNPC<T> {
 
   String DATA_STATUS_DATA_TAG = "Status";
 
+  private static long currentTimeAfter(long earlierTimestamp) {
+    return Math.max(System.currentTimeMillis(), earlierTimestamp + 1);
+  }
+
   EnumMap<StatusDataType, Boolean> getStatusDataFlags();
 
   EnumMap<StatusDataType, Long> getStatusDataTimestamps();
@@ -58,11 +62,18 @@ public interface StatusDataCapable<T extends Mob> extends EasyNPC<T> {
   }
 
   default void markNPCDataUpdated() {
-    setStatusDataTimestamp(StatusDataType.NPC_DATA_LAST_UPDATE, System.currentTimeMillis());
+    setStatusDataTimestamp(
+        StatusDataType.NPC_DATA_LAST_UPDATE,
+        currentTimeAfter(getStatusDataTimestamp(StatusDataType.NPC_DATA_LAST_SAVED)));
   }
 
   default void markNPCDataSaved() {
-    setStatusDataTimestamp(StatusDataType.NPC_DATA_LAST_SAVED, System.currentTimeMillis());
+    long lastUpdate = getStatusDataTimestamp(StatusDataType.NPC_DATA_LAST_UPDATE);
+    if (lastUpdate <= getStatusDataTimestamp(StatusDataType.NPC_DATA_LAST_SAVED)) {
+      return;
+    }
+
+    setStatusDataTimestamp(StatusDataType.NPC_DATA_LAST_SAVED, lastUpdate);
   }
 
   default void addAdditionalStatusData(ValueOutput valueOutput) {

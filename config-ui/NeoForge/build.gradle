@@ -42,6 +42,7 @@ neoForge {
 
     gameTestServer {
       type = 'gameTestServer'
+      gameDirectory = project.file('run/gametest')
       systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
     }
   }
@@ -162,6 +163,13 @@ tasks.named('build') {
 test {
   useJUnitPlatform()
   failOnNoDiscoveredTests = false
+}
+
+// The game test world is persistent, so every run would inherit the NPCs of all previous runs.
+tasks.matching { it.name == 'runGameTestServer' }.configureEach {
+  doFirst {
+    delete project.file('run/gametest/world')
+  }
 }
 
 // CurseForge Publishing

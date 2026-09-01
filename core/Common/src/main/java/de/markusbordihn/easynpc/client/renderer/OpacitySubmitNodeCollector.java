@@ -111,7 +111,7 @@ public class OpacitySubmitNodeCollector implements SubmitNodeCollector {
   }
 
   private static boolean hasColorElement(RenderType renderType) {
-    return renderType.format() == DefaultVertexFormat.ENTITY;
+    return renderType.format().contains(DefaultVertexFormat.COLOR_SEMANTIC_NAME);
   }
 
   private static RenderType toTranslucentRenderType(RenderType renderType) {

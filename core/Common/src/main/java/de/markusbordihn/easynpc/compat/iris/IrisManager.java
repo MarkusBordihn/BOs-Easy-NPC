@@ -21,13 +21,15 @@ package de.markusbordihn.easynpc.compat.iris;
 
 import de.markusbordihn.easynpc.Constants;
 import java.lang.reflect.Method;
+import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class IrisManager {
 
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-  private static final String API_CLASS_NAME = "net.irisshaders.iris.api.v0.IrisApi";
+  private static final List<String> API_CLASS_NAMES =
+      List.of("net.irisshaders.iris.api.v0.IrisApi", "net.coderbot.iris.api.v0.IrisApi");
   private static final String PIPELINES_CLASS_NAME = "net.irisshaders.iris.pipeline.IrisPipelines";
   private static final String RENDER_PIPELINE_CLASS_NAME =
       "com.mojang.blaze3d.pipeline.RenderPipeline";
@@ -48,8 +50,10 @@ public class IrisManager {
 
     try {
       return (boolean) shaderPackInUseMethod.invoke(apiInstance);
-    } catch (ReflectiveOperationException | ClassCastException exception) {
-      log.error("Unable to read the Iris shader pack state: {}", exception.getMessage());
+    } catch (ReflectiveOperationException | ClassCastException | LinkageError exception) {
+      log.error(
+          "Unable to read the Iris shader pack state, assuming no shader pack is in use: {}",
+          exception.getMessage());
       shaderPackInUseMethod = null;
       return false;
     }
@@ -65,19 +69,33 @@ public class IrisManager {
     } catch (ReflectiveOperationException exception) {
       log.debug("Unable to map a render pipeline for Iris: {}", exception.getMessage());
       return false;
+    } catch (LinkageError error) {
+      log.warn("Unable to link the Iris render pipeline mapping: {}", error.getMessage());
+      return false;
     }
   }
 
   private static void resolveApi() {
     apiResolved = true;
 
-    try {
-      Class<?> apiClass = Class.forName(API_CLASS_NAME);
-      apiInstance = apiClass.getMethod("getInstance").invoke(null);
-      shaderPackInUseMethod = apiClass.getMethod("isShaderPackInUse");
-      log.info("{} Iris shader pack detection ...", Constants.LOG_REGISTER_PREFIX);
-    } catch (ReflectiveOperationException exception) {
-      log.debug("Iris API is not available: {}", exception.getMessage());
+    for (String apiClassName : API_CLASS_NAMES) {
+      try {
+        Class<?> apiClass = Class.forName(apiClassName);
+        apiInstance = apiClass.getMethod("getInstance").invoke(null);
+        shaderPackInUseMethod = apiClass.getMethod("isShaderPackInUse");
+        log.info(
+            "{} Iris shader pack detection over {} ...",
+            Constants.LOG_REGISTER_PREFIX,
+            apiClassName);
+        return;
+      } catch (ReflectiveOperationException exception) {
+        log.debug("Iris API {} is not available: {}", apiClassName, exception.getMessage());
+      } catch (LinkageError error) {
+        log.warn(
+            "Found a broken Iris or Oculus installation, {} could not be linked: {}",
+            apiClassName,
+            error.getMessage());
+      }
     }
   }
 }

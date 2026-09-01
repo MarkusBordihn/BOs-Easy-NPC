@@ -40,7 +40,7 @@ public class StrayBase extends StrayRaw implements BaseEasyNPC<StrayRaw> {
     this.setInvulnerable(true);
     this.getEntityAttributes()
         .setEnvironmentalAttributes(
-            this.getEntityAttributes().getEnvironmentalAttributes().withCanBreathUnderwater(true));
+            this.getEntityAttributes().getEnvironmentalAttributes().withCanBreatheUnderwater(true));
   }
 
   public static AttributeSupplier.Builder createAttributes() {

@@ -245,6 +245,28 @@ public final class ModGameTests {
         () -> NPCEntityLifecycleTest::testCustomIdentifierIsQueryable);
     TEST_FUNCTIONS.register(
         "respawn_keeps_owner", () -> NPCEntityLifecycleTest::testRespawnKeepsOwner);
+    TEST_FUNCTIONS.register(
+        "removal_reason_is_reset_on_respawn",
+        () -> NPCEntityLifecycleTest::testRemovalReasonIsResetOnRespawn);
+    TEST_FUNCTIONS.register(
+        "deleted_n_p_c_is_not_restorable_for_owner",
+        () -> NPCEntityLifecycleTest::testDeletedNPCIsNotRestorableForOwner);
+    TEST_FUNCTIONS.register(
+        "respawn_keeps_index_entry", () -> NPCEntityLifecycleTest::testRespawnKeepsIndexEntry);
+
+    TEST_FUNCTIONS.register(
+        "backup_is_spread_over_ticks", () -> BackupTest::testBackupIsSpreadOverTicks);
+    TEST_FUNCTIONS.register(
+        "backup_restores_deleted_n_p_cs", () -> BackupTest::testBackupRestoresDeletedNPCs);
+
+    TEST_FUNCTIONS.register(
+        "mass_spawn_stays_responsive", () -> NPCMassLifecycleTest::testMassSpawnStaysResponsive);
+    TEST_FUNCTIONS.register(
+        "mass_player_leave_stays_responsive",
+        () -> NPCMassLifecycleTest::testMassPlayerLeaveStaysResponsive);
+    TEST_FUNCTIONS.register(
+        "mass_removal_stays_responsive",
+        () -> NPCMassLifecycleTest::testMassRemovalStaysResponsive);
 
     TEST_FUNCTIONS.register(
         "spawned_n_p_c_has_home_position",

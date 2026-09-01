@@ -41,8 +41,6 @@ import de.markusbordihn.easynpc.entity.easynpc.handlers.action.executor.MoveActi
 import de.markusbordihn.easynpc.entity.easynpc.handlers.action.executor.ScoreboardActionExecutor;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.action.executor.SoundActionExecutor;
 import de.markusbordihn.easynpc.handler.AttributeHandler;
-import de.markusbordihn.easynpc.network.components.TextComponent;
-import de.markusbordihn.easynpc.utils.TextUtils;
 import java.util.Collection;
 import java.util.List;
 import net.minecraft.core.BlockPos;
@@ -122,7 +120,7 @@ public class EasyNPCActionHandler {
 
   public static boolean showSpeechBubble(
       EasyNPC<?> easyNPC, List<String> texts, int durationTicks) {
-    Component message = toMessage(easyNPC, selectText(texts));
+    Component message = toMessage(easyNPC, selectText(texts), null);
     if (message == null) {
       return false;
     }
@@ -149,7 +147,9 @@ public class EasyNPCActionHandler {
       List<String> texts,
       MessageActionData messageActionData,
       ActionContext actionContext) {
-    Component message = toMessage(easyNPC, selectText(texts));
+    ActionContext resolvedActionContext =
+        actionContext != null ? actionContext : ActionContext.EMPTY;
+    Component message = toMessage(easyNPC, selectText(texts), resolvedActionContext.initiator());
     if (message == null) {
       return false;
     }
@@ -158,7 +158,7 @@ public class EasyNPCActionHandler {
         easyNPC,
         message,
         messageActionData,
-        actionContext != null ? actionContext : ActionContext.EMPTY,
+        resolvedActionContext,
         SpeechBubbleManager.DEFAULT_DURATION_TICKS);
     return true;
   }
@@ -361,7 +361,7 @@ public class EasyNPCActionHandler {
     return MessageActionData.DEFAULT.withTexts(texts).selectText();
   }
 
-  private static Component toMessage(EasyNPC<?> easyNPC, String text) {
+  private static Component toMessage(EasyNPC<?> easyNPC, String text, ServerPlayer initiator) {
     if (!isUsable(easyNPC)) {
       log.error("Unable to let {} say {}", easyNPC, text);
       return null;
@@ -372,11 +372,7 @@ public class EasyNPCActionHandler {
       return null;
     }
 
-    if (TextUtils.isTranslationKey(text)) {
-      return TextComponent.getTextComponentRaw(text, true);
-    }
-
-    return TextComponent.getText(text);
+    return MessageActionExecutor.parseText(text, initiator, easyNPC.getLivingEntity());
   }
 
   private static boolean isUsable(EasyNPC<?> easyNPC) {

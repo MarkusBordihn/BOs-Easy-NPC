@@ -26,24 +26,25 @@ import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.platform.CompareOp;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.client.renderer.RenderTypeTextureAccessor;
 import de.markusbordihn.easynpc.compat.iris.IrisManager;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.rendertype.RenderSetup;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.resources.Identifier;
 
-public class SpeechBubbleRenderTypes {
+public final class SpeechBubbleRenderTypes {
 
-  private static final RenderPipeline OCCLUDED_PIPELINE = createDepthWritingOccludedPipeline();
-
+  private static final RenderPipeline OCCLUDED_PIPELINE = createOccludedPipeline();
   private static final boolean SHADER_MAPPING_AVAILABLE =
       IrisManager.copyShaderMapping(RenderPipelines.TEXT, OCCLUDED_PIPELINE);
-
   private static final RenderType OCCLUDED =
       RenderType.create(
-          Constants.MOD_ID + ":speech_bubble_occluded",
+          Constants.MOD_PREFIX_ID + "speech_bubble_occluded",
           RenderSetup.builder(OCCLUDED_PIPELINE)
-              .withTexture("Sampler0", Constants.TEXTURE_SPEECH_BUBBLE)
+              .withTexture(
+                  RenderTypeTextureAccessor.PRIMARY_TEXTURE_SAMPLER,
+                  Constants.TEXTURE_SPEECH_BUBBLE)
               .useLightmap()
               .createRenderSetup());
 
@@ -57,7 +58,7 @@ public class SpeechBubbleRenderTypes {
     return OCCLUDED;
   }
 
-  private static RenderPipeline createDepthWritingOccludedPipeline() {
+  private static RenderPipeline createOccludedPipeline() {
     RenderPipeline textPipeline = RenderPipelines.TEXT;
     RenderPipeline.Builder builder =
         RenderPipeline.builder()
@@ -69,7 +70,7 @@ public class SpeechBubbleRenderTypes {
             .withPolygonMode(textPipeline.getPolygonMode())
             .withCull(textPipeline.isCull())
             .withPrimitiveTopology(textPipeline.getPrimitiveTopology())
-            .withDepthStencilState(new DepthStencilState(CompareOp.LESS_THAN, true));
+            .withDepthStencilState(new DepthStencilState(CompareOp.LESS_THAN, false));
 
     for (String shaderDefine : textPipeline.getShaderDefines().flags()) {
       builder.withShaderDefine(shaderDefine);

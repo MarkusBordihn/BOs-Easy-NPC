@@ -45,7 +45,7 @@ public class SkeletonBase extends SkeletonRaw implements BaseEasyNPC<SkeletonRaw
     this.setInvulnerable(true);
     this.getEntityAttributes()
         .setEnvironmentalAttributes(
-            this.getEntityAttributes().getEnvironmentalAttributes().withCanBreathUnderwater(true));
+            this.getEntityAttributes().getEnvironmentalAttributes().withCanBreatheUnderwater(true));
   }
 
   public static AttributeSupplier.Builder createAttributes() {

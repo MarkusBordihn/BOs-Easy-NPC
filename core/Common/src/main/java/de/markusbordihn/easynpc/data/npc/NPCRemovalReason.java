@@ -30,7 +30,8 @@ public enum NPCRemovalReason {
   UNLOADED_BY_PLAYER,
   UNLOADED_BY_SERVER,
   UNLOADED_BY_ACTION,
-  CHANGED_DIMENSION;
+  CHANGED_DIMENSION,
+  DELETED;
 
   public static NPCRemovalReason fromRemovalReason(Entity.RemovalReason removalReason) {
     if (removalReason == null) {
@@ -54,5 +55,9 @@ public enum NPCRemovalReason {
     } catch (IllegalArgumentException e) {
       return NONE;
     }
+  }
+
+  public boolean isDespawnReason() {
+    return this != NONE && this != DELETED;
   }
 }
