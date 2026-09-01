@@ -237,7 +237,11 @@ public class MessageActionExecutor {
 
   private static Component parseMessage(
       ActionDataEntry actionDataEntry, ServerPlayer serverPlayer, LivingEntity npcContext) {
-    String text = actionDataEntry.messageActionData().selectText();
+    return parseText(actionDataEntry.messageActionData().selectText(), serverPlayer, npcContext);
+  }
+
+  public static Component parseText(
+      String text, ServerPlayer serverPlayer, LivingEntity npcContext) {
     if (text == null || text.trim().isEmpty()) {
       return null;
     }

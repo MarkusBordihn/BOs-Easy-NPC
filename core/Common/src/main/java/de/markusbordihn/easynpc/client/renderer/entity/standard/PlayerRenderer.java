@@ -3,6 +3,7 @@ package de.markusbordihn.easynpc.client.renderer.entity.standard;
 import de.markusbordihn.easynpc.api.skin.VariantTexture;
 import de.markusbordihn.easynpc.client.model.EasyNPCModelManager;
 import de.markusbordihn.easynpc.client.model.EasyNPCModelManagerAccessor;
+import de.markusbordihn.easynpc.client.model.ModModelLayers;
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.layers.EasyNPCItemAttachmentLayer;
 import de.markusbordihn.easynpc.client.renderer.entity.layers.SkullHeadRenderLayer;
@@ -49,7 +50,7 @@ public class PlayerRenderer
     super(
         context,
         new PlayerModel(
-            context.bakeLayer(slim ? ModelLayers.PLAYER_SLIM : ModelLayers.PLAYER), slim),
+            context.bakeLayer(slim ? ModModelLayers.HUMANOID_SLIM : ModModelLayers.HUMANOID), slim),
         0.5F);
     this.addLayer(
         new HumanoidArmorLayer<>(

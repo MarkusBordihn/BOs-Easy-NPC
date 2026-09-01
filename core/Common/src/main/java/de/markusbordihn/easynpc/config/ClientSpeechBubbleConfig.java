@@ -35,6 +35,8 @@ occlusionMode: How speech bubbles behind blocks are drawn (default: ghost)
   always: the whole bubble is always drawn on top of the world
   never:  hidden parts are cut off by the world
 ghostOpacity: Opacity of the hidden parts in percent, 0 - 100 (default: 60)
+minLightLevel: Lowest light level a speech bubble is drawn with, 0 - 15 (default: 7)
+  0 lets a speech bubble go as dark as its surroundings, 15 keeps it always fully lit
 maxRenderDistance: Maximum distance in blocks to render a speech bubble (default: 64)
 overlapResolutionEnabled: Move overlapping speech bubbles apart (default: true)
 
@@ -42,9 +44,11 @@ overlapResolutionEnabled: Move overlapping speech bubbles apart (default: true)
 
   public static final int MIN_RENDER_DISTANCE = 8;
   public static final int MAX_RENDER_DISTANCE = 128;
+  public static final int LIGHT_LEVEL_LIMIT = 15;
 
   public static SpeechBubbleOcclusionMode OCCLUSION_MODE = SpeechBubbleOcclusionMode.GHOST;
   public static int GHOST_OPACITY = 60;
+  public static int MIN_LIGHT_LEVEL = 7;
   public static int MAX_RENDER_DISTANCE_BLOCKS = 64;
   public static boolean OVERLAP_RESOLUTION_ENABLED = true;
 
@@ -64,6 +68,11 @@ overlapResolutionEnabled: Move overlapping speech bubbles apart (default: true)
             OCCLUSION_MODE);
     GHOST_OPACITY =
         Math.max(0, Math.min(100, parseConfigValue(properties, "ghostOpacity", GHOST_OPACITY)));
+    MIN_LIGHT_LEVEL =
+        Math.max(
+            0,
+            Math.min(
+                LIGHT_LEVEL_LIMIT, parseConfigValue(properties, "minLightLevel", MIN_LIGHT_LEVEL)));
     MAX_RENDER_DISTANCE_BLOCKS =
         Math.max(
             MIN_RENDER_DISTANCE,

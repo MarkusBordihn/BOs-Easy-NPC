@@ -20,7 +20,9 @@
 package de.markusbordihn.easynpc.handler;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.data.npc.NPCRemovalReason;
 import de.markusbordihn.easynpc.data.preset.PresetNormalizer;
+import de.markusbordihn.easynpc.entity.NPCEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.PresetDataCapable;
 import de.markusbordihn.easynpc.utils.CompoundTagUtils;
@@ -76,6 +78,8 @@ public class RespawnHandler {
     CompoundTagUtils.fixLegacyCustomName(entity);
 
     // Remove old entity
+    NPCEntityManager.markIntentionalRemoval(
+        easyNPC.getEntityUUID(), NPCRemovalReason.UNLOADED_BY_ACTION);
     easyNPC.getEntity().discard();
 
     // Respawn new entity

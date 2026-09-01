@@ -64,79 +64,79 @@ public record CombatAttributes(
 
   public CombatAttributes withHealthRegeneration(double healthRegeneration) {
     return new CombatAttributes(
-        isAttackableByPlayers,
-        isAttackableByMonsters,
-        isAttackableByFactions,
-        isInvulnerable,
-        isKnockbackResistant,
-        isExplosionResistant,
+        this.isAttackableByPlayers,
+        this.isAttackableByMonsters,
+        this.isAttackableByFactions,
+        this.isInvulnerable,
+        this.isKnockbackResistant,
+        this.isExplosionResistant,
         healthRegeneration);
   }
 
   public CombatAttributes withIsAttackableByPlayers(boolean isAttackableByPlayers) {
     return new CombatAttributes(
         isAttackableByPlayers,
-        isAttackableByMonsters,
-        isAttackableByFactions,
-        isInvulnerable,
-        isKnockbackResistant,
-        isExplosionResistant,
-        healthRegeneration);
+        this.isAttackableByMonsters,
+        this.isAttackableByFactions,
+        this.isInvulnerable,
+        this.isKnockbackResistant,
+        this.isExplosionResistant,
+        this.healthRegeneration);
   }
 
   public CombatAttributes withIsAttackableByMonsters(boolean isAttackableByMonsters) {
     return new CombatAttributes(
-        isAttackableByPlayers,
+        this.isAttackableByPlayers,
         isAttackableByMonsters,
-        isAttackableByFactions,
-        isInvulnerable,
-        isKnockbackResistant,
-        isExplosionResistant,
-        healthRegeneration);
+        this.isAttackableByFactions,
+        this.isInvulnerable,
+        this.isKnockbackResistant,
+        this.isExplosionResistant,
+        this.healthRegeneration);
   }
 
   public CombatAttributes withIsAttackableByFactions(boolean isAttackableByFactions) {
     return new CombatAttributes(
-        isAttackableByPlayers,
-        isAttackableByMonsters,
+        this.isAttackableByPlayers,
+        this.isAttackableByMonsters,
         isAttackableByFactions,
-        isInvulnerable,
-        isKnockbackResistant,
-        isExplosionResistant,
-        healthRegeneration);
+        this.isInvulnerable,
+        this.isKnockbackResistant,
+        this.isExplosionResistant,
+        this.healthRegeneration);
   }
 
   public CombatAttributes withIsInvulnerable(boolean isInvulnerable) {
     return new CombatAttributes(
-        isAttackableByPlayers,
-        isAttackableByMonsters,
-        isAttackableByFactions,
+        this.isAttackableByPlayers,
+        this.isAttackableByMonsters,
+        this.isAttackableByFactions,
         isInvulnerable,
-        isKnockbackResistant,
-        isExplosionResistant,
-        healthRegeneration);
+        this.isKnockbackResistant,
+        this.isExplosionResistant,
+        this.healthRegeneration);
   }
 
   public CombatAttributes withIsKnockbackResistant(boolean isKnockbackResistant) {
     return new CombatAttributes(
-        isAttackableByPlayers,
-        isAttackableByMonsters,
-        isAttackableByFactions,
-        isInvulnerable,
+        this.isAttackableByPlayers,
+        this.isAttackableByMonsters,
+        this.isAttackableByFactions,
+        this.isInvulnerable,
         isKnockbackResistant,
-        isExplosionResistant,
-        healthRegeneration);
+        this.isExplosionResistant,
+        this.healthRegeneration);
   }
 
   public CombatAttributes withIsExplosionResistant(boolean isExplosionResistant) {
     return new CombatAttributes(
-        isAttackableByPlayers,
-        isAttackableByMonsters,
-        isAttackableByFactions,
-        isInvulnerable,
-        isKnockbackResistant,
+        this.isAttackableByPlayers,
+        this.isAttackableByMonsters,
+        this.isAttackableByFactions,
+        this.isInvulnerable,
+        this.isKnockbackResistant,
         isExplosionResistant,
-        healthRegeneration);
+        this.healthRegeneration);
   }
 
   public CompoundTag encode(CompoundTag compoundTag) {

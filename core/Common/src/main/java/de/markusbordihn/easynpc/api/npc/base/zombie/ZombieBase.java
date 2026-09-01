@@ -46,7 +46,7 @@ public class ZombieBase extends ZombieRaw implements BaseEasyNPC<ZombieRaw> {
     this.setInvulnerable(true);
     this.getEntityAttributes()
         .setEnvironmentalAttributes(
-            this.getEntityAttributes().getEnvironmentalAttributes().withCanBreathUnderwater(true));
+            this.getEntityAttributes().getEnvironmentalAttributes().withCanBreatheUnderwater(true));
     this.refreshGroundNavigation();
   }
 

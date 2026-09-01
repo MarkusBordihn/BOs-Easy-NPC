@@ -25,6 +25,7 @@ import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.NavigationDataCapable;
 import de.markusbordihn.easynpc.handler.OwnerLoginRestoreHandler;
 import de.markusbordihn.easynpc.menu.MenuManager;
+import java.util.UUID;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -52,10 +53,13 @@ public class LivingEntityEvents {
         if (navigationData != null) {
           navigationData.applyDefaultNPCHomePosition();
         }
-        if (!NPCEntityManager.hasStoredNPC(easyNPC.getEntityUUID())) {
+        UUID entityUUID = easyNPC.getEntityUUID();
+        if (NPCEntityManager.hasStoredNPC(entityUUID)) {
+          NPCEntityManager.updateRemovalReason(entityUUID, NPCRemovalReason.NONE);
+        } else {
           NPCEntityManager.saveNPC(easyNPC);
         }
-        NPCEntityManager.evictFromCache(easyNPC.getEntityUUID());
+        NPCEntityManager.evictFromCache(entityUUID);
       }
     } else if (livingEntity instanceof ServerPlayer serverPlayer) {
       LivingEntityManager.addServerPlayer(serverPlayer);
@@ -72,8 +76,10 @@ public class LivingEntityEvents {
 
     if (livingEntity instanceof EasyNPC<?> easyNPC) {
       if (!livingEntity.level().isClientSide()) {
+        NPCRemovalReason intentionalReason =
+            NPCEntityManager.takeIntentionalRemovalReason(easyNPC.getEntityUUID());
         Entity.RemovalReason reason = livingEntity.getRemovalReason();
-        if (reason == Entity.RemovalReason.DISCARDED) {
+        if (intentionalReason == null && reason == Entity.RemovalReason.DISCARDED) {
           log.warn(
               "{} {} was discarded at {} in {} without being saved, its latest changes are lost!",
               LOG_PREFIX,
@@ -81,8 +87,9 @@ public class LivingEntityEvents {
               livingEntity.blockPosition(),
               livingEntity.level().dimension().identifier());
         } else {
-          NPCRemovalReason removalReason = NPCRemovalReason.fromRemovalReason(reason);
-          log.info(
+          NPCRemovalReason removalReason =
+              intentionalReason != null ? intentionalReason : resolveRemovalReason(reason);
+          log.debug(
               "{} Removed {} ({}) at {} in {} with reason {}.",
               LOG_PREFIX,
               easyNPC,
@@ -90,7 +97,12 @@ public class LivingEntityEvents {
               livingEntity.blockPosition(),
               livingEntity.level().dimension().identifier(),
               removalReason);
-          NPCEntityManager.saveNPC(easyNPC, removalReason);
+          if (intentionalReason == null) {
+            NPCEntityManager.saveNPC(easyNPC, removalReason);
+            if (removalReason == NPCRemovalReason.UNLOADED_TO_CHUNK) {
+              NPCChurnTracker.trackChunkUnload(easyNPC);
+            }
+          }
         }
       }
       LivingEntityManager.removeEasyNPC(easyNPC);
@@ -100,5 +112,13 @@ public class LivingEntityEvents {
     } else {
       LivingEntityManager.removeLivingEntity(livingEntity);
     }
+  }
+
+  private static NPCRemovalReason resolveRemovalReason(Entity.RemovalReason removalReason) {
+    if (removalReason == null) {
+      return NPCRemovalReason.UNLOADED_TO_CHUNK;
+    }
+
+    return NPCRemovalReason.fromRemovalReason(removalReason);
   }
 }

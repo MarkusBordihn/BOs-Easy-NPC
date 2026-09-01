@@ -200,6 +200,13 @@ tasks.named('build') {
   finalizedBy tasks.named('publishToMavenLocal')
 }
 
+// The game test world is persistent, so every run would inherit the NPCs of all previous runs.
+tasks.matching { it.name == 'runGameTestServer' }.configureEach {
+  doFirst {
+    delete project.file('run/gametest/world')
+  }
+}
+
 test {
   useJUnitPlatform()
   exclude '**/*'

@@ -604,6 +604,21 @@ public class PresetHandler {
     return PresetFileHandler.save(file, compoundTag);
   }
 
+  public static boolean exportBackup(EasyNPC<?> easyNPC, File file) {
+    if (easyNPC == null || file == null) {
+      log.error("[{}] Error exporting backup {} !", easyNPC, file);
+      return false;
+    }
+
+    CompoundTag compoundTag = prepareBackupData(easyNPC);
+    if (compoundTag == null || compoundTag.isEmpty()) {
+      log.error("[{}] Error exporting backup {}!", easyNPC, file);
+      return false;
+    }
+
+    return PresetFileHandler.save(file, compoundTag);
+  }
+
   public static CompoundTag prepareExportData(EasyNPC<?> easyNPC) {
     PresetDataCapable<?> presetData = easyNPC.getEasyNPCPresetData();
     if (presetData == null) {
@@ -611,13 +626,30 @@ public class PresetHandler {
       return null;
     }
 
-    CompoundTag compoundTag =
-        SecurityManager.sanitizePresetExport(presetData.serializePresetData());
+    return finalizeExportData(
+        easyNPC,
+        SecurityManager.sanitizePresetExport(presetData.serializePresetData()),
+        PresetDataUtils.CleanupMode.FULL);
+  }
+
+  private static CompoundTag prepareBackupData(EasyNPC<?> easyNPC) {
+    PresetDataCapable<?> presetData = easyNPC.getEasyNPCPresetData();
+    if (presetData == null) {
+      log.error("[{}] Error no preset data available!", easyNPC);
+      return null;
+    }
+
+    return finalizeExportData(
+        easyNPC, presetData.serializePresetData(), PresetDataUtils.CleanupMode.RUNTIME_ONLY);
+  }
+
+  private static CompoundTag finalizeExportData(
+      EasyNPC<?> easyNPC, CompoundTag compoundTag, PresetDataUtils.CleanupMode cleanupMode) {
     if (compoundTag == null || compoundTag.isEmpty()) {
       return compoundTag;
     }
 
-    PresetDataUtils.cleanupEntityData(compoundTag, PresetDataUtils.CleanupMode.FULL);
+    PresetDataUtils.cleanupEntityData(compoundTag, cleanupMode);
     PresetNormalizer.normalize(compoundTag);
 
     if (easyNPC.getEntity().level() instanceof ServerLevel serverLevel) {
