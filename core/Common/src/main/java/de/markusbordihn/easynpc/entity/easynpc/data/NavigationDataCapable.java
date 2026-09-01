@@ -57,6 +57,30 @@ public interface NavigationDataCapable<T extends Mob> extends EasyNPC<T> {
   String DATA_NAVIGATION_TAG = "Navigation";
   int TRAVEL_EVENT_TICK = 20;
 
+  private static boolean hasFlyingSpeedAttribute(EntityType<? extends Entity> entityType) {
+    AttributeSupplier attributeSupplier =
+        DefaultAttributes.getSupplier(asLivingEntityType(entityType));
+    return attributeSupplier != null && attributeSupplier.hasAttribute(Attributes.FLYING_SPEED);
+  }
+
+  @SuppressWarnings("unchecked")
+  private static EntityType<? extends LivingEntity> asLivingEntityType(
+      EntityType<? extends Entity> entityType) {
+    return (EntityType<? extends LivingEntity>) entityType;
+  }
+
+  private static boolean hasWaterMobCategory(EntityType<? extends Entity> entityType) {
+    MobCategory mobCategory = entityType.getCategory();
+    return mobCategory == MobCategory.WATER_CREATURE
+        || mobCategory == MobCategory.WATER_AMBIENT
+        || mobCategory == MobCategory.UNDERGROUND_WATER_CREATURE
+        || mobCategory == MobCategory.AXOLOTLS;
+  }
+
+  private static boolean spawnsInWater(EntityType<? extends Entity> entityType) {
+    return SpawnPlacements.getPlacementType(entityType) == SpawnPlacementTypes.IN_WATER;
+  }
+
   default BlockPos getNPCHomePosition() {
     return getSynchedEntityData(SynchedDataIndex.NAVIGATION_HOME_POSITION);
   }
@@ -191,30 +215,6 @@ public interface NavigationDataCapable<T extends Mob> extends EasyNPC<T> {
 
     return renderEntityType.getCategory() == MobCategory.AMBIENT
         || hasFlyingSpeedAttribute(renderEntityType);
-  }
-
-  private static boolean hasFlyingSpeedAttribute(EntityType<? extends Entity> entityType) {
-    AttributeSupplier attributeSupplier =
-        DefaultAttributes.getSupplier(asLivingEntityType(entityType));
-    return attributeSupplier != null && attributeSupplier.hasAttribute(Attributes.FLYING_SPEED);
-  }
-
-  @SuppressWarnings("unchecked")
-  private static EntityType<? extends LivingEntity> asLivingEntityType(
-      EntityType<? extends Entity> entityType) {
-    return (EntityType<? extends LivingEntity>) entityType;
-  }
-
-  private static boolean hasWaterMobCategory(EntityType<? extends Entity> entityType) {
-    MobCategory mobCategory = entityType.getCategory();
-    return mobCategory == MobCategory.WATER_CREATURE
-        || mobCategory == MobCategory.WATER_AMBIENT
-        || mobCategory == MobCategory.UNDERGROUND_WATER_CREATURE
-        || mobCategory == MobCategory.AXOLOTLS;
-  }
-
-  private static boolean spawnsInWater(EntityType<? extends Entity> entityType) {
-    return SpawnPlacements.getPlacementType(entityType) == SpawnPlacementTypes.IN_WATER;
   }
 
   default NavigationType getNavigationType() {

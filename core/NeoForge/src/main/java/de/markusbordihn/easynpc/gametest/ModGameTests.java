@@ -52,6 +52,7 @@ public final class ModGameTests {
 
   private static final List<TestEntry> TEST_ENTRIES = new ArrayList<>();
   private static final int DEFAULT_MAX_TICKS = 100;
+  private static final int EXTENDED_MAX_TICKS = 1200;
   private static final Identifier DEFAULT_STRUCTURE = Identifier.parse("easy_npc:gametest.3x3x3");
   private static final Identifier SMOKE_STRUCTURE = Identifier.parse("easy_npc:gametest.1x1x1");
 
@@ -353,6 +354,45 @@ public final class ModGameTests {
         DEFAULT_STRUCTURE);
     register(
         "respawn_keeps_owner", NPCEntityLifecycleTest::testRespawnKeepsOwner, DEFAULT_STRUCTURE);
+    register(
+        "removal_reason_is_reset_on_respawn",
+        NPCEntityLifecycleTest::testRemovalReasonIsResetOnRespawn,
+        DEFAULT_STRUCTURE);
+    register(
+        "deleted_n_p_c_is_not_restorable_for_owner",
+        NPCEntityLifecycleTest::testDeletedNPCIsNotRestorableForOwner,
+        DEFAULT_STRUCTURE);
+    register(
+        "respawn_keeps_index_entry",
+        NPCEntityLifecycleTest::testRespawnKeepsIndexEntry,
+        DEFAULT_STRUCTURE);
+
+    register(
+        "backup_is_spread_over_ticks",
+        BackupTest::testBackupIsSpreadOverTicks,
+        DEFAULT_STRUCTURE,
+        EXTENDED_MAX_TICKS);
+    register(
+        "backup_restores_deleted_n_p_cs",
+        BackupTest::testBackupRestoresDeletedNPCs,
+        DEFAULT_STRUCTURE,
+        EXTENDED_MAX_TICKS);
+
+    register(
+        "mass_spawn_stays_responsive",
+        NPCMassLifecycleTest::testMassSpawnStaysResponsive,
+        DEFAULT_STRUCTURE,
+        EXTENDED_MAX_TICKS);
+    register(
+        "mass_player_leave_stays_responsive",
+        NPCMassLifecycleTest::testMassPlayerLeaveStaysResponsive,
+        DEFAULT_STRUCTURE,
+        EXTENDED_MAX_TICKS);
+    register(
+        "mass_removal_stays_responsive",
+        NPCMassLifecycleTest::testMassRemovalStaysResponsive,
+        DEFAULT_STRUCTURE,
+        EXTENDED_MAX_TICKS);
 
     register(
         "spawned_n_p_c_has_home_position",
@@ -868,7 +908,13 @@ public final class ModGameTests {
 
   private static void register(
       String name, Consumer<GameTestHelper> testFunction, Identifier structure) {
-    TEST_ENTRIES.add(new TestEntry(TEST_FUNCTIONS.register(name, () -> testFunction), structure));
+    register(name, testFunction, structure, DEFAULT_MAX_TICKS);
+  }
+
+  private static void register(
+      String name, Consumer<GameTestHelper> testFunction, Identifier structure, int maxTicks) {
+    TEST_ENTRIES.add(
+        new TestEntry(TEST_FUNCTIONS.register(name, () -> testFunction), structure, maxTicks));
   }
 
   @SubscribeEvent
@@ -883,11 +929,12 @@ public final class ModGameTests {
           testEntry.testFunction().getId(),
           new FunctionGameTestInstance(
               testEntry.testFunction().getKey(),
-              new TestData<>(environment, testEntry.structure(), DEFAULT_MAX_TICKS, 0, true)));
+              new TestData<>(environment, testEntry.structure(), testEntry.maxTicks(), 0, true)));
     }
   }
 
   private record TestEntry(
       DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> testFunction,
-      Identifier structure) {}
+      Identifier structure,
+      int maxTicks) {}
 }

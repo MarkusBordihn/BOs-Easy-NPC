@@ -36,6 +36,6 @@ public class PresetBrowserMenu extends ConfigUIMenu {
       final int containerId,
       final Inventory playerInventory,
       final CompoundTag data) {
-    super(menuType, containerId, playerInventory, data);
+    super(menuType, containerId, playerInventory, data, false);
   }
 }

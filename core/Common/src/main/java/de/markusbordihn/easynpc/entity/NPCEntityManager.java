@@ -24,11 +24,15 @@ import de.markusbordihn.easynpc.data.npc.NPCRemovalReason;
 import de.markusbordihn.easynpc.data.npc.SavedNPCEntityEntry;
 import de.markusbordihn.easynpc.data.saveddata.FactionData;
 import de.markusbordihn.easynpc.data.saveddata.NPCEntityData;
+import de.markusbordihn.easynpc.data.status.StatusDataType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.data.StatusDataCapable;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.LivingEntity;
@@ -41,6 +45,8 @@ public class NPCEntityManager {
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   protected static final String LOG_PREFIX = "[NPC Entity Manager]";
 
+  private static final Map<UUID, NPCRemovalReason> intentionalRemovals = new ConcurrentHashMap<>();
+
   private static MinecraftServer currentServer;
 
   private NPCEntityManager() {}
@@ -52,6 +58,7 @@ public class NPCEntityManager {
     }
 
     currentServer = server;
+    intentionalRemovals.clear();
     NPCEntityData.init(server);
     FactionData.init(server);
     log.info(
@@ -67,13 +74,18 @@ public class NPCEntityManager {
       return;
     }
 
-    easyNPC.getEasyNPCStatusData().markNPCDataUpdated();
+    StatusDataCapable<T> statusData = easyNPC.getEasyNPCStatusData();
+    long previousSavedTimestamp =
+        statusData.getStatusDataTimestamp(StatusDataType.NPC_DATA_LAST_SAVED);
+    statusData.markNPCDataSaved();
     SavedNPCEntityEntry entry = SavedNPCEntityEntry.fromEasyNPC(easyNPC, removalReason);
-    if (entry != null) {
-      getNPCEntityData().putEntry(entry.entityUUID(), entry);
-      easyNPC.getEasyNPCStatusData().markNPCDataSaved();
-      log.debug("{} Saved NPC entity: {}", LOG_PREFIX, entry.entityUUID());
+    if (entry == null) {
+      statusData.setStatusDataTimestamp(StatusDataType.NPC_DATA_LAST_SAVED, previousSavedTimestamp);
+      return;
     }
+
+    getNPCEntityData().putEntry(entry.entityUUID(), entry);
+    log.debug("{} Saved NPC entity: {}", LOG_PREFIX, entry.entityUUID());
   }
 
   public static boolean hasStoredNPC(UUID entityUUID) {
@@ -95,6 +107,20 @@ public class NPCEntityManager {
 
     getNPCEntityData().removeEntry(entityUUID);
     log.debug("{} Removed NPC entity: {}", LOG_PREFIX, entityUUID);
+  }
+
+  public static void markIntentionalRemoval(UUID entityUUID, NPCRemovalReason reason) {
+    if (entityUUID != null && reason != null && reason != NPCRemovalReason.NONE) {
+      intentionalRemovals.put(entityUUID, reason);
+    }
+  }
+
+  public static NPCRemovalReason takeIntentionalRemovalReason(UUID entityUUID) {
+    if (entityUUID == null) {
+      return null;
+    }
+
+    return intentionalRemovals.remove(entityUUID);
   }
 
   public static void updateRemovalReason(UUID entityUUID, NPCRemovalReason reason) {

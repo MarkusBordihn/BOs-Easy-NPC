@@ -42,6 +42,7 @@ loom {
       server()
       name "Game Test"
       vmArg "-Dfabric-api.gametest"
+      runDir("run/gametest")
     }
   }
 }
@@ -124,6 +125,13 @@ publishing {
 tasks.named('build') {
   dependsOn 'remapJar'
   finalizedBy tasks.named('publishToMavenLocal')
+}
+
+// The game test world is persistent, so every run would inherit the NPCs of all previous runs.
+tasks.matching { it.name == 'runGameTest' }.configureEach {
+  doFirst {
+    delete project.file('run/gametest/world')
+  }
 }
 
 test {

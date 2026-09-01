@@ -24,6 +24,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.renderer.entity.state.EasyNPCRenderStateExtension;
 import de.markusbordihn.easynpc.client.renderer.screen.EntityScreenRenderer;
+import de.markusbordihn.easynpc.compat.iris.IrisManager;
 import de.markusbordihn.easynpc.config.ClientSpeechBubbleConfig;
 import de.markusbordihn.easynpc.config.SpeechBubbleOcclusionMode;
 import de.markusbordihn.easynpc.data.action.SpeechBubbleManager;
@@ -35,6 +36,7 @@ import java.util.List;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
@@ -66,13 +68,17 @@ public class SpeechBubbleRenderer {
   private static final float TAIL_U = 32.0F;
   private static final float TAIL_WIDTH = 16.0F;
   private static final float TEXTURE_SIZE = 64.0F;
+  private static final int BODY_ORDER_OCCLUDED = 1;
+  private static final int BODY_ORDER_UNOCCLUDED = 0;
   private static final int GLYPH_HEIGHT = 8;
   private static final int LINE_HEIGHT = 10;
   private static final int MAX_LINE_WIDTH = 160;
   private static final int MAX_LINES = 5;
   private static final int MIN_TEXT_ALPHA = 4;
   private static final int TEXT_COLOR = 0x202020;
-  private static final int TEXT_ORDER_ABOVE_BUBBLE_BODY = 1;
+  private static final int TEXT_ORDER_OCCLUDED = 2;
+  private static final int TEXT_ORDER_UNOCCLUDED = 3;
+  private static final int TEXT_PACKED_LIGHT = LightTexture.pack(0, 0);
 
   private SpeechBubbleRenderer() {}
 
@@ -267,7 +273,9 @@ public class SpeechBubbleRenderer {
         cameraSpaceDepth,
         bubbleScale * (localRight - localLeft) / 2.0D,
         bubbleScale * (localBottom - localTop) / 2.0D,
-        packedLight,
+        LightTexture.pack(
+            Math.max(LightTexture.block(packedLight), ClientSpeechBubbleConfig.MIN_LIGHT_LEVEL),
+            Math.max(LightTexture.sky(packedLight), ClientSpeechBubbleConfig.MIN_LIGHT_LEVEL)),
         textAlpha);
   }
 
@@ -288,50 +296,149 @@ public class SpeechBubbleRenderer {
     poseStack.mulPose(cameraRenderState.orientation);
     poseStack.scale(bubbleScale, -bubbleScale, bubbleScale);
 
+    drawBubble(speechBubbleInstance, poseStack, submitNodeCollector, offsetPixelsX, offsetPixelsY);
+
+    poseStack.popPose();
+  }
+
+  private static void drawBubble(
+      SpeechBubbleInstance speechBubbleInstance,
+      PoseStack poseStack,
+      SubmitNodeCollector submitNodeCollector,
+      float offsetPixelsX,
+      float offsetPixelsY) {
+    if (IrisManager.isShaderPackInUse()) {
+      drawDepthTestedBubble(
+          speechBubbleInstance, poseStack, submitNodeCollector, offsetPixelsX, offsetPixelsY);
+      return;
+    }
+
+    drawSeeThroughBubble(
+        speechBubbleInstance, poseStack, submitNodeCollector, offsetPixelsX, offsetPixelsY);
+  }
+
+  private static void drawSeeThroughBubble(
+      SpeechBubbleInstance speechBubbleInstance,
+      PoseStack poseStack,
+      SubmitNodeCollector submitNodeCollector,
+      float offsetPixelsX,
+      float offsetPixelsY) {
     int textAlpha = speechBubbleInstance.textAlpha();
     SpeechBubbleOcclusionMode occlusionMode = ClientSpeechBubbleConfig.OCCLUSION_MODE;
+    boolean drawOccludedPass = occlusionMode != SpeechBubbleOcclusionMode.NEVER;
 
-    if (occlusionMode != SpeechBubbleOcclusionMode.NEVER) {
-      int ghostBodyAlpha =
-          occlusionMode == SpeechBubbleOcclusionMode.ALWAYS
-              ? textAlpha
-              : (int) (textAlpha * ClientSpeechBubbleConfig.GHOST_OPACITY / 100.0F);
-      drawBubblePass(
+    if (drawOccludedPass) {
+      int occludedBodyAlpha = occludedBodyAlpha(occlusionMode, textAlpha);
+      drawBubbleBody(
           speechBubbleInstance,
           poseStack,
           submitNodeCollector,
           RenderTypes.textSeeThrough(Constants.TEXTURE_SPEECH_BUBBLE),
+          BODY_ORDER_UNOCCLUDED,
+          occludedBodyAlpha,
+          offsetPixelsX,
+          offsetPixelsY);
+      drawBubbleText(
+          speechBubbleInstance,
+          poseStack,
+          submitNodeCollector,
           Font.DisplayMode.SEE_THROUGH,
-          ghostBodyAlpha,
-          Math.min(textAlpha, (int) (ghostBodyAlpha * GHOST_TEXT_OPACITY_FACTOR)),
+          TEXT_ORDER_OCCLUDED,
+          Math.min(textAlpha, (int) (occludedBodyAlpha * GHOST_TEXT_OPACITY_FACTOR)),
           offsetPixelsX,
           offsetPixelsY);
     }
 
     if (occlusionMode != SpeechBubbleOcclusionMode.ALWAYS) {
-      drawBubblePass(
+      drawBubbleBody(
           speechBubbleInstance,
           poseStack,
           submitNodeCollector,
           RenderTypes.text(Constants.TEXTURE_SPEECH_BUBBLE),
-          Font.DisplayMode.NORMAL,
+          BODY_ORDER_UNOCCLUDED,
           textAlpha,
+          offsetPixelsX,
+          offsetPixelsY);
+      drawBubbleText(
+          speechBubbleInstance,
+          poseStack,
+          submitNodeCollector,
+          Font.DisplayMode.NORMAL,
+          TEXT_ORDER_UNOCCLUDED,
           textAlpha,
           offsetPixelsX,
           offsetPixelsY);
     }
-
-    poseStack.popPose();
   }
 
-  private static void drawBubblePass(
+  private static void drawDepthTestedBubble(
+      SpeechBubbleInstance speechBubbleInstance,
+      PoseStack poseStack,
+      SubmitNodeCollector submitNodeCollector,
+      float offsetPixelsX,
+      float offsetPixelsY) {
+    int textAlpha = speechBubbleInstance.textAlpha();
+    SpeechBubbleOcclusionMode occlusionMode = ClientSpeechBubbleConfig.OCCLUSION_MODE;
+
+    drawBubbleBody(
+        speechBubbleInstance,
+        poseStack,
+        submitNodeCollector,
+        RenderTypes.text(Constants.TEXTURE_SPEECH_BUBBLE),
+        BODY_ORDER_UNOCCLUDED,
+        textAlpha,
+        offsetPixelsX,
+        offsetPixelsY);
+
+    if (occlusionMode != SpeechBubbleOcclusionMode.NEVER
+        && SpeechBubbleRenderTypes.isShaderMappingAvailable()) {
+      int occludedBodyAlpha = occludedBodyAlpha(occlusionMode, textAlpha);
+      drawBubbleBody(
+          speechBubbleInstance,
+          poseStack,
+          submitNodeCollector,
+          SpeechBubbleRenderTypes.occluded(),
+          BODY_ORDER_OCCLUDED,
+          occludedBodyAlpha,
+          offsetPixelsX,
+          offsetPixelsY);
+      drawBubbleText(
+          speechBubbleInstance,
+          poseStack,
+          submitNodeCollector,
+          Font.DisplayMode.SEE_THROUGH,
+          TEXT_ORDER_OCCLUDED,
+          Math.min(textAlpha, (int) (occludedBodyAlpha * GHOST_TEXT_OPACITY_FACTOR)),
+          offsetPixelsX,
+          offsetPixelsY);
+    }
+
+    drawBubbleText(
+        speechBubbleInstance,
+        poseStack,
+        submitNodeCollector,
+        Font.DisplayMode.NORMAL,
+        TEXT_ORDER_UNOCCLUDED,
+        textAlpha,
+        offsetPixelsX,
+        offsetPixelsY);
+  }
+
+  private static int occludedBodyAlpha(SpeechBubbleOcclusionMode occlusionMode, int textAlpha) {
+    if (occlusionMode == SpeechBubbleOcclusionMode.GHOST) {
+      return (int) (textAlpha * ClientSpeechBubbleConfig.GHOST_OPACITY / 100.0F);
+    }
+
+    return textAlpha;
+  }
+
+  private static void drawBubbleBody(
       SpeechBubbleInstance speechBubbleInstance,
       PoseStack poseStack,
       SubmitNodeCollector submitNodeCollector,
       RenderType bubbleRenderType,
-      Font.DisplayMode displayMode,
+      int bodyOrder,
       int bodyAlpha,
-      int textAlpha,
       float offsetPixelsX,
       float offsetPixelsY) {
     float bubbleWidth = speechBubbleInstance.bubbleWidthPixels();
@@ -343,38 +450,53 @@ public class SpeechBubbleRenderer {
     boolean hasDownwardTail = speechBubbleInstance.lateralProgress() < LATERAL_TAIL_THRESHOLD;
     int packedLight = speechBubbleInstance.packedLight();
 
-    submitNodeCollector.submitCustomGeometry(
-        poseStack,
-        bubbleRenderType,
-        (pose, consumer) -> {
-          renderBubbleBody(
-              pose.pose(),
-              consumer,
-              bubbleLeft,
-              bubbleTop,
-              bubbleWidth,
-              bubbleHeight,
-              packedLight,
-              bodyAlpha);
-          if (hasDownwardTail) {
-            renderBubbleTail(
-                pose.pose(),
-                consumer,
-                bubbleCenterX,
-                bubbleTop + bubbleHeight,
-                packedLight,
-                bodyAlpha);
-          } else {
-            renderSideBubbleTail(
-                pose.pose(), consumer, bubbleLeft, bubbleCenterY, packedLight, bodyAlpha);
-          }
-        });
+    submitNodeCollector
+        .order(bodyOrder)
+        .submitCustomGeometry(
+            poseStack,
+            bubbleRenderType,
+            (pose, consumer) -> {
+              renderBubbleBody(
+                  pose.pose(),
+                  consumer,
+                  bubbleLeft,
+                  bubbleTop,
+                  bubbleWidth,
+                  bubbleHeight,
+                  packedLight,
+                  bodyAlpha);
+              if (hasDownwardTail) {
+                renderBubbleTail(
+                    pose.pose(),
+                    consumer,
+                    bubbleCenterX,
+                    bubbleTop + bubbleHeight,
+                    packedLight,
+                    bodyAlpha);
+              } else {
+                renderSideBubbleTail(
+                    pose.pose(), consumer, bubbleLeft, bubbleCenterY, packedLight, bodyAlpha);
+              }
+            });
+  }
+
+  private static void drawBubbleText(
+      SpeechBubbleInstance speechBubbleInstance,
+      PoseStack poseStack,
+      SubmitNodeCollector submitNodeCollector,
+      Font.DisplayMode displayMode,
+      int textOrder,
+      int textAlpha,
+      float offsetPixelsX,
+      float offsetPixelsY) {
+    float bubbleCenterX = speechBubbleInstance.bubbleCenterPixelsX() + offsetPixelsX;
+    float bubbleCenterY = speechBubbleInstance.bubbleCenterPixelsY() + offsetPixelsY;
 
     Font font = Minecraft.getInstance().font;
-    float lineY = bubbleTop + PADDING_Y;
+    float lineY = bubbleCenterY - speechBubbleInstance.bubbleHeightPixels() / 2.0F + PADDING_Y;
     for (FormattedCharSequence line : speechBubbleInstance.lines()) {
       submitNodeCollector
-          .order(TEXT_ORDER_ABOVE_BUBBLE_BODY)
+          .order(textOrder)
           .submitText(
               poseStack,
               bubbleCenterX - font.width(line) / 2.0F,
@@ -382,7 +504,7 @@ public class SpeechBubbleRenderer {
               line,
               false,
               displayMode,
-              packedLight,
+              TEXT_PACKED_LIGHT,
               TEXT_COLOR | (textAlpha << 24),
               0,
               0);
@@ -474,7 +596,6 @@ public class SpeechBubbleRenderer {
     float u1 = (TAIL_U + TAIL_WIDTH) / TEXTURE_SIZE;
     float v = TAIL_HEIGHT / TEXTURE_SIZE;
 
-    // Same sprite as the downward tail, rotated by 90 degrees through the vertex order.
     vertex(pose, consumer, left, top, u0, v, packedLight, alpha);
     vertex(pose, consumer, left, bottom, u1, v, packedLight, alpha);
     vertex(pose, consumer, right, bottom, u1, 0.0F, packedLight, alpha);

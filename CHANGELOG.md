@@ -8,6 +8,23 @@ the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 7.11.0
+
+- Fixed #828 by no longer freezing the server on logout when NPCs follow or watch the player.
+- Fixed #831 by moving routine NPC removal messages to the debug log.
+- Fixed #832 by making humanoid NPCs ignore custom player models, animations and poses.
+- Fixed hourly NPC backups stuttering on large worlds and retaining timestamps of removed NPCs.
+- Fixed hourly NPC backups losing the identity, owner and position of the backed-up NPC.
+- Fixed owner-login restoration duplicating, repeatedly restoring, reviving or moving unloaded NPCs.
+- Fixed NPC index and file synchronization issues causing lost NPCs, crashes or false warnings.
+- Fixed stale NPC data after unloading, avoided redundant writes and added repeated-unload warnings.
+- Fixed the preset browser failing to list custom and world presets saved in the SNBT format.
+- Fixed speech bubbles losing their text and turning translucent with Iris shaders.
+- Fixed the "Opacity" of an NPC being ignored while a shader pack is active.
+- Fixed text formatting and macro parsing for translated speech bubbles and mod API texts.
+- Fixed speech bubbles and their text staying hidden behind blocks while a shader pack is active.
+- Added `minLightLevel` to keep speech bubbles readable in dark surroundings.
+
 ### 7.10.0
 
 - Fixed #829 by allowing bats and other non-walking mobs as the render entity of a Doppler NPC.

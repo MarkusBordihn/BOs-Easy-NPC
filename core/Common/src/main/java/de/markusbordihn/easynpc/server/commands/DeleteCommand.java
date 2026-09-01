@@ -21,9 +21,9 @@ package de.markusbordihn.easynpc.server.commands;
 
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import de.markusbordihn.easynpc.access.AccessManager;
+import de.markusbordihn.easynpc.api.handler.EasyNPCEntityHandler;
 import de.markusbordihn.easynpc.commands.Command;
 import de.markusbordihn.easynpc.commands.arguments.EasyNPCArgument;
-import de.markusbordihn.easynpc.entity.NPCEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import java.util.Collection;
 import java.util.UUID;
@@ -51,9 +51,9 @@ public class DeleteCommand extends Command {
     for (EasyNPC<?> easyNPC : easyNPCs) {
       UUID uuid = easyNPC.getEntityUUID();
       if (AccessManager.hasAccess(context, uuid)) {
-        NPCEntityManager.removeNPC(uuid);
-        easyNPC.getEntity().discard();
-        deletedEntities++;
+        if (EasyNPCEntityHandler.delete(easyNPC)) {
+          deletedEntities++;
+        }
       } else {
         sendFailureMessage(context, "You are not allowed to delete the Easy NPC " + uuid + " !");
       }

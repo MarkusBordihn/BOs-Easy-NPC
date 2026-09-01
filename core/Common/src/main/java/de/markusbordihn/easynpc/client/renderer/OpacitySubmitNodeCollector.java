@@ -19,8 +19,8 @@
 
 package de.markusbordihn.easynpc.client.renderer;
 
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexFormatElement;
 import de.markusbordihn.easynpc.client.renderer.entity.state.EasyNPCRenderStateExtension;
 import de.markusbordihn.easynpc.data.display.DisplayAttributeType;
 import de.markusbordihn.easynpc.entity.LivingEntityManager;
@@ -106,7 +106,7 @@ public class OpacitySubmitNodeCollector implements SubmitNodeCollector {
   }
 
   private static boolean hasColorElement(RenderType renderType) {
-    return renderType.format() == DefaultVertexFormat.NEW_ENTITY;
+    return renderType.format().contains(VertexFormatElement.COLOR);
   }
 
   private static RenderType toTranslucentRenderType(RenderType renderType) {

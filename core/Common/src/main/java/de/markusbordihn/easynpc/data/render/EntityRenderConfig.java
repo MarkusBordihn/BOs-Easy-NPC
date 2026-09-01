@@ -166,8 +166,7 @@ public record EntityRenderConfig(
         scale,
         rotationYaw,
         rotationPitch,
-        EntityRenderOverrides.withCustomModel(RenderType.CUSTOM, entityType)
-            .withHideNameTag(true));
+        EntityRenderOverrides.withCustomModel(RenderType.CUSTOM, entityType).withHideNameTag(true));
   }
 
   public static EntityRenderConfig withOverrides(
