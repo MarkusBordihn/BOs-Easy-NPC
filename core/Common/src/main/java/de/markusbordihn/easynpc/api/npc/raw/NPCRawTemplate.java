@@ -31,6 +31,7 @@ import de.markusbordihn.easynpc.data.scale.CustomScale;
 import de.markusbordihn.easynpc.data.server.ServerEntityData;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.data.skin.variant.ZombieSkinVariant;
+import de.markusbordihn.easynpc.data.sound.SoundType;
 import de.markusbordihn.easynpc.data.status.StatusDataType;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.data.synched.SynchedEntityData;
@@ -82,6 +83,7 @@ import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ProjectileWeaponItem;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.item.trading.MerchantOffers;
@@ -348,6 +350,7 @@ public class NPCRawTemplate extends Zombie implements EasyNPCBase<Zombie> {
     } else {
       this.updatePersistentAnger((ServerLevel) this.level(), true);
       this.handleWaterEscapeTick();
+      this.handleBlockedVehicleMountingTick();
     }
   }
 
@@ -592,6 +595,12 @@ public class NPCRawTemplate extends Zombie implements EasyNPCBase<Zombie> {
   }
 
   @Override
+  protected boolean canRide(Entity entity) {
+    return !this.getEntityAttributes().getInteractionAttributes().blockVehicleMounting()
+        && super.canRide(entity);
+  }
+
+  @Override
   protected void pushEntities() {
     if (!this.isImmovable() && getEntityAttributes().getInteractionAttributes().pushEntities()) {
       super.pushEntities();
@@ -651,6 +660,29 @@ public class NPCRawTemplate extends Zombie implements EasyNPCBase<Zombie> {
   @Override
   public SoundEvent getDeathSound() {
     return this.getDefaultDeathSound();
+  }
+
+  @Override
+  public SoundEvent getEatingSound(ItemStack itemStack) {
+    return this.getDefaultSoundEvent(SoundType.EAT, super.getEatingSound(itemStack));
+  }
+
+  @Override
+  public SoundEvent getDrinkingSound(ItemStack itemStack) {
+    return this.getDefaultSoundEvent(SoundType.DRINKING, super.getDrinkingSound(itemStack));
+  }
+
+  @Override
+  protected SoundEvent getSwimSound() {
+    return this.getDefaultSoundEvent(SoundType.SWIM, super.getSwimSound());
+  }
+
+  @Override
+  public LivingEntity.Fallsounds getFallSounds() {
+    LivingEntity.Fallsounds fallSounds = super.getFallSounds();
+    return new LivingEntity.Fallsounds(
+        this.getDefaultSoundEvent(SoundType.FALL_DAMAGE_SMALL, fallSounds.small()),
+        this.getDefaultSoundEvent(SoundType.FALL_DAMAGE_BIG, fallSounds.big()));
   }
 
   @Override

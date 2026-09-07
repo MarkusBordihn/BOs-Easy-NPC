@@ -91,7 +91,9 @@ public class EasyNPCPresetItem extends Item {
     CompoundTag compoundTag = itemStack.getOrCreateTag();
     compoundTag.putString(ENTITY_TYPE_TAG, entityType.toString());
     PresetDataUtils.cleanupEntityData(presetData, PresetDataUtils.CleanupMode.FULL);
-    compoundTag.put(PRESET_TAG, SecurityManager.sanitizePresetExport(presetData));
+    compoundTag.put(
+        PRESET_TAG,
+        PresetDataUtils.removeEntityUUID(SecurityManager.sanitizePresetExport(presetData)));
   }
 
   public static String getCustomName(ItemStack itemStack) {

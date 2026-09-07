@@ -25,7 +25,8 @@ import net.minecraft.resources.ResourceLocation;
 
 public enum FoxSkinVariant implements VariantTexture {
   RED(Constants.MINECRAFT_PREFIX, "textures/entity/fox/fox.png"),
-  SNOW(Constants.MINECRAFT_PREFIX, "textures/entity/fox/snow_fox.png");
+  SNOW(Constants.MINECRAFT_PREFIX, "textures/entity/fox/snow_fox.png"),
+  MARBLE(Constants.MOD_ID, "textures/entity/fox/fox_marble.png");
 
   private final ResourceLocation textureLocation;
 

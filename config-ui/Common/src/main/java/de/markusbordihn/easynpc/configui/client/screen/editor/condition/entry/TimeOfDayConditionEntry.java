@@ -54,20 +54,8 @@ public class TimeOfDayConditionEntry extends ConditionEntryWidget {
     int currentValue = hasData ? this.conditionDataEntry.value() : TimeOfDayPreset.DAY.ticks();
 
     this.operationTypeButton =
-        this.screen.addConditionEntryWidget(
-            new SpinButton<>(
-                editorLeft + 110,
-                editorTop,
-                180,
-                16,
-                Arrays.stream(ConditionOperationType.values())
-                    .filter(type -> type != ConditionOperationType.NONE)
-                    .sorted()
-                    .collect(Collectors.toCollection(LinkedHashSet::new)),
-                hasData
-                    ? this.conditionDataEntry.operationType()
-                    : ConditionOperationType.GREATER_THAN_OR_EQUALS,
-                button -> {}));
+        this.addComparisonOperationButton(
+            editorLeft + 110, editorTop, hasData, ConditionOperationType.GREATER_THAN_OR_EQUALS);
 
     this.valueTextField =
         this.screen.addConditionEntryWidget(

@@ -82,6 +82,14 @@ public class PresetDataUtils {
     return entityData;
   }
 
+  public static CompoundTag removeEntityUUID(CompoundTag entityData) {
+    if (entityData != null) {
+      entityData.remove(ENTITY_UUID_TAG);
+    }
+
+    return entityData;
+  }
+
   public static SpawnData toSpawnData(PresetData presetData) {
     if (presetData == null || !presetData.hasValidData()) {
       return new SpawnData();
@@ -142,7 +150,8 @@ public class PresetDataUtils {
     itemTag.putString(PresetData.ENTITY_TYPE_TAG, entityTypeRegistryName.toString());
 
     CompoundTag cleanedData = cleanupEntityData(presetData.data().copy(), CleanupMode.FULL);
-    itemTag.put(PresetData.PRESET_TAG, SecurityManager.sanitizePresetExport(cleanedData));
+    itemTag.put(
+        PresetData.PRESET_TAG, removeEntityUUID(SecurityManager.sanitizePresetExport(cleanedData)));
 
     return itemStack;
   }
@@ -186,10 +195,7 @@ public class PresetDataUtils {
       return false;
     }
 
-    CompoundTag entityData = sanitizedPresetData.data().copy();
-    if (entityData.contains(ENTITY_UUID_TAG)) {
-      entityData.remove(ENTITY_UUID_TAG);
-    }
+    CompoundTag entityData = removeEntityUUID(sanitizedPresetData.data().copy());
 
     if (entity instanceof EasyNPC<?> easyNPC && easyNPC.getEasyNPCPresetData() != null) {
       easyNPC.registerEasyNPCDefaultData();

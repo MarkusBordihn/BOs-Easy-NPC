@@ -26,6 +26,8 @@ import de.markusbordihn.easynpc.data.type.ValueType;
 import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.DisplayAttributeDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.OwnerDataCapable;
+import de.markusbordihn.easynpc.handler.OwnerHandler;
 import de.markusbordihn.easynpc.handler.PresetHandler;
 import de.markusbordihn.easynpc.io.BackupDataFiles;
 import de.markusbordihn.easynpc.io.PresetFileHandler;
@@ -39,12 +41,14 @@ import java.util.function.Predicate;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.phys.Vec3;
 
 public class BackupTestHelper {
 
   private static final Vec3 NPC_POSITION = new Vec3(1, 2, 1);
+  private static final Vec3 OWNER_POSITION = new Vec3(2, 2, 1);
   private static final String SPREAD_NAME_PREFIX = "Backup Spread ";
   private static final String RESTORE_NAME_PREFIX = "Backup Restore ";
   private static final int NPC_COUNT = BackupManager.BACKUP_BATCH_SIZE_PER_TICK + 2;
@@ -86,11 +90,22 @@ public class BackupTestHelper {
   public static void assertBackupRestoresDeletedNPCs(
       GameTestHelper helper, EntityType<?> entityType) {
     List<EasyNPC<?>> spawnedNPCs = spawnNamedNPCs(helper, entityType, RESTORE_NAME_PREFIX);
+    ServerPlayer serverPlayer =
+        GameTestHelpers.mockServerPlayer(helper, OWNER_POSITION, "backup-restore-player");
+    UUID ownerUUID = serverPlayer.getUUID();
+    for (EasyNPC<?> easyNPC : spawnedNPCs) {
+      GameTestHelpers.assertTrue(
+          helper,
+          "Failed to set the owner of " + easyNPC.getEntityUUID(),
+          OwnerHandler.setOwner(easyNPC, serverPlayer));
+    }
 
     BackupManager.startBackupRun();
     drainBackupRun(helper);
 
     List<String> npcNames = new ArrayList<>(NPC_COUNT);
+    List<UUID> npcUUIDs = new ArrayList<>(NPC_COUNT);
+    List<Vec3> npcPositions = new ArrayList<>(NPC_COUNT);
     List<File> backupFiles = new ArrayList<>(NPC_COUNT);
     for (EasyNPC<?> easyNPC : spawnedNPCs) {
       File backupFile = getBackupFile(easyNPC.getEntityUUID());
@@ -99,6 +114,8 @@ public class BackupTestHelper {
           "The backup file for " + easyNPC.getEntityUUID() + " is missing",
           backupFile != null && backupFile.isFile());
       npcNames.add(easyNPC.getEntity().getCustomName().getString());
+      npcUUIDs.add(easyNPC.getEntityUUID());
+      npcPositions.add(easyNPC.getEntity().position());
       backupFiles.add(backupFile);
       EasyNPCEntityHandler.delete(easyNPC);
     }
@@ -121,7 +138,8 @@ public class BackupTestHelper {
           PresetHandler.importPreset(helper.getLevel(), backupTag));
     }
 
-    for (String npcName : npcNames) {
+    for (int i = 0; i < npcNames.size(); i++) {
+      String npcName = npcNames.get(i);
       EasyNPC<?> restoredNPC = findNPCWithName(npcName);
       GameTestHelpers.assertNotNull(
           helper, "The NPC " + npcName + " was not restored from its backup", restoredNPC);
@@ -131,6 +149,21 @@ public class BackupTestHelper {
           LIGHT_LEVEL,
           ((DisplayAttributeDataCapable<?>) restoredNPC)
               .getDisplayIntAttribute(DisplayAttributeType.LIGHT_LEVEL));
+      GameTestHelpers.assertEquals(
+          helper,
+          "The restored NPC " + npcName + " lost its UUID",
+          npcUUIDs.get(i),
+          restoredNPC.getEntityUUID());
+      GameTestHelpers.assertEquals(
+          helper,
+          "The restored NPC " + npcName + " lost its position",
+          npcPositions.get(i),
+          restoredNPC.getEntity().position());
+      GameTestHelpers.assertEquals(
+          helper,
+          "The restored NPC " + npcName + " lost its owner",
+          ownerUUID,
+          ((OwnerDataCapable<?>) restoredNPC).getOwnerUUID());
     }
   }
 

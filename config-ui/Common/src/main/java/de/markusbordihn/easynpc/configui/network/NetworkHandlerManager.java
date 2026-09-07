@@ -34,6 +34,7 @@ import de.markusbordihn.easynpc.configui.network.message.server.ChangeEnvironmen
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeFactionColorMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeFactionMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeFactionRelationMessage;
+import de.markusbordihn.easynpc.configui.network.message.server.ChangeHomePositionMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeInteractionAttributeMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeModelAnimationDataMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeModelEquipmentVisibilityMessage;
@@ -50,6 +51,7 @@ import de.markusbordihn.easynpc.configui.network.message.server.ChangePositionMe
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeProfessionMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeRendererMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeSkinMessage;
+import de.markusbordihn.easynpc.configui.network.message.server.ChangeSoundMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeTradingOfferActionMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeTradingTypeMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.CreateFactionMessage;
@@ -240,6 +242,11 @@ public class NetworkHandlerManager {
         ChangeEnvironmentalAttributeMessage::create);
 
     networkHandler.registerServerNetworkMessage(
+        ChangeHomePositionMessage.MESSAGE_ID,
+        ChangeHomePositionMessage.class,
+        ChangeHomePositionMessage::create);
+
+    networkHandler.registerServerNetworkMessage(
         ChangeInteractionAttributeMessage.MESSAGE_ID,
         ChangeInteractionAttributeMessage.class,
         ChangeInteractionAttributeMessage::create);
@@ -312,6 +319,9 @@ public class NetworkHandlerManager {
 
     networkHandler.registerServerNetworkMessage(
         ChangeSkinMessage.MESSAGE_ID, ChangeSkinMessage.class, ChangeSkinMessage::create);
+
+    networkHandler.registerServerNetworkMessage(
+        ChangeSoundMessage.MESSAGE_ID, ChangeSoundMessage.class, ChangeSoundMessage::create);
 
     networkHandler.registerServerNetworkMessage(
         ChangeTradingTypeMessage.MESSAGE_ID,

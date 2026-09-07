@@ -17,29 +17,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.config;
+package de.markusbordihn.easynpc.configui.menu.configuration.sound;
 
-import de.markusbordihn.easynpc.utils.EnumUtils;
-import java.util.Locale;
+import de.markusbordihn.easynpc.configui.menu.ModMenuTypes;
+import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
+import net.minecraft.world.entity.player.Inventory;
 
-public enum SpeechBubbleOcclusionMode {
-  GHOST,
-  ALWAYS,
-  NEVER;
+public class CombatSoundConfigurationMenuWrapper extends ConfigurationMenu {
 
-  private final String configValue = this.name().toLowerCase(Locale.ROOT);
-
-  public static SpeechBubbleOcclusionMode fromConfigValue(
-      String configValue, SpeechBubbleOcclusionMode defaultMode) {
-    if (configValue == null) {
-      return defaultMode;
-    }
-
-    return EnumUtils.getIgnoreCase(
-        SpeechBubbleOcclusionMode.class, configValue.trim(), defaultMode);
-  }
-
-  public String getConfigValue() {
-    return this.configValue;
+  public CombatSoundConfigurationMenuWrapper(final int windowId, final Inventory playerInventory) {
+    super(ModMenuTypes.COMBAT_SOUND_CONFIGURATION_MENU, windowId, playerInventory);
   }
 }

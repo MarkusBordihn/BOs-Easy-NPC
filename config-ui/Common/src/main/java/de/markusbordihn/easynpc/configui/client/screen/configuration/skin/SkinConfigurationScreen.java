@@ -19,13 +19,16 @@
 
 package de.markusbordihn.easynpc.configui.client.screen.configuration.skin;
 
+import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.client.texture.TextureManager;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.ConfigurationScreen;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
+import de.markusbordihn.easynpc.data.profession.Profession;
 import de.markusbordihn.easynpc.entity.easynpc.data.ConfigurationDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.ProfessionDataCapable;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +41,8 @@ import net.minecraft.world.entity.player.Inventory;
 public class SkinConfigurationScreen<T extends ConfigurationMenu> extends ConfigurationScreen<T> {
 
   protected static final int SKIN_PREVIEW_WIDTH = 60;
+  private static final int PROFESSION_ARROW_WIDTH = 14;
+  private static final int PROFESSION_LABEL_WIDTH = 72;
   protected static int nextTextureSkinLocationChange =
       (int) java.time.Instant.now().getEpochSecond();
   protected static int nextSkinReload = (int) java.time.Instant.now().getEpochSecond();
@@ -50,6 +55,8 @@ public class SkinConfigurationScreen<T extends ConfigurationMenu> extends Config
   protected Button skinNextButton = null;
   protected Button skinPreviousPageButton = null;
   protected Button skinNextPageButton = null;
+  protected Button professionPreviousButton = null;
+  protected Button professionNextButton = null;
   protected int skinStartIndex = 0;
   protected int numOfSkins = 0;
   protected int maxSkinsPerPage = 5;
@@ -75,6 +82,66 @@ public class SkinConfigurationScreen<T extends ConfigurationMenu> extends Config
       this.skinNextPageButton.active =
           this.skinStartIndex + 1 + this.maxSkinsPerPage < this.numOfSkins;
     }
+  }
+
+  protected void defineProfessionButtons(int left, int top) {
+    ProfessionDataCapable<?> professionData = this.getEasyNPC().getEasyNPCProfessionData();
+    if (professionData == null || !professionData.hasProfessions()) {
+      return;
+    }
+
+    Tooltip professionTooltip = Tooltip.create(TextComponent.getTranslatedConfigText("profession"));
+    this.professionPreviousButton =
+        this.addRenderableWidget(
+            new TextButton(
+                left, top, PROFESSION_ARROW_WIDTH, "<", onPress -> this.cycleProfession(-1)));
+    this.professionPreviousButton.setTooltip(professionTooltip);
+    this.professionNextButton =
+        this.addRenderableWidget(
+            new TextButton(
+                left + PROFESSION_ARROW_WIDTH + PROFESSION_LABEL_WIDTH,
+                top,
+                PROFESSION_ARROW_WIDTH,
+                ">",
+                onPress -> this.cycleProfession(1)));
+    this.professionNextButton.setTooltip(professionTooltip);
+  }
+
+  private void cycleProfession(int offset) {
+    ProfessionDataCapable<?> professionData = this.getEasyNPC().getEasyNPCProfessionData();
+    Profession[] professions = professionData.getProfessions();
+    if (professions.length == 0) {
+      return;
+    }
+
+    int currentIndex = 0;
+    for (int index = 0; index < professions.length; index++) {
+      if (professions[index] == professionData.getProfession()) {
+        currentIndex = index;
+        break;
+      }
+    }
+
+    NetworkMessageHandlerManager.getServerHandler()
+        .changeProfession(
+            this.getEasyNPCUUID(),
+            professions[Math.floorMod(currentIndex + offset, professions.length)]);
+  }
+
+  private void renderProfessionName(GuiGraphics guiGraphics) {
+    if (this.professionPreviousButton == null) {
+      return;
+    }
+
+    Component professionName = this.getEasyNPC().getEasyNPCProfessionData().getProfessionName();
+    Text.drawString(
+        guiGraphics,
+        this.font,
+        professionName,
+        this.professionPreviousButton.getX()
+            + PROFESSION_ARROW_WIDTH
+            + Math.max(0, (PROFESSION_LABEL_WIDTH - this.font.width(professionName)) / 2),
+        this.professionPreviousButton.getY() + 4);
   }
 
   protected void renderSkinSelectionBackground(GuiGraphics guiGraphics) {
@@ -281,5 +348,7 @@ public class SkinConfigurationScreen<T extends ConfigurationMenu> extends Config
         skinButton.render(guiGraphics, x, y, partialTicks);
       }
     }
+
+    this.renderProfessionName(guiGraphics);
   }
 }

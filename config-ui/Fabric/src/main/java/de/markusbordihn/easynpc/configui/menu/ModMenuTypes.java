@@ -65,6 +65,10 @@ import de.markusbordihn.easynpc.configui.menu.configuration.skin.CustomSkinConfi
 import de.markusbordihn.easynpc.configui.menu.configuration.skin.DefaultSkinConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.skin.PlayerSkinConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.skin.UrlSkinConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.configui.menu.configuration.sound.BasicSoundConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.configui.menu.configuration.sound.CombatSoundConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.configui.menu.configuration.sound.InteractionSoundConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.configui.menu.configuration.sound.TradeSoundConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.trading.AdvancedTradingConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.trading.BasicTradingConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.trading.CustomTradingConfigurationMenuWrapper;
@@ -155,6 +159,9 @@ public class ModMenuTypes {
   public static final MenuType<BasicPoseConfigurationMenuWrapper> BASIC_POSE_CONFIGURATION_MENU =
       ScreenHandlerRegistry.registerSimple(
           ConfigurationType.BASIC_POSE.getId(), BasicPoseConfigurationMenuWrapper::new);
+  public static final MenuType<BasicSoundConfigurationMenuWrapper> BASIC_SOUND_CONFIGURATION_MENU =
+      ScreenHandlerRegistry.registerSimple(
+          ConfigurationType.BASIC_SOUND.getId(), BasicSoundConfigurationMenuWrapper::new);
   public static final MenuType<BasicTradingConfigurationMenuWrapper>
       BASIC_TRADING_CONFIGURATION_MENU =
           ScreenHandlerRegistry.registerSimple(
@@ -167,6 +174,10 @@ public class ModMenuTypes {
           ScreenHandlerRegistry.registerSimple(
               ConfigurationType.COMBAT_ATTRIBUTE.getId(),
               CombatAttributeConfigurationMenuWrapper::new);
+  public static final MenuType<CombatSoundConfigurationMenuWrapper>
+      COMBAT_SOUND_CONFIGURATION_MENU =
+          ScreenHandlerRegistry.registerSimple(
+              ConfigurationType.COMBAT_SOUND.getId(), CombatSoundConfigurationMenuWrapper::new);
   public static final MenuType<ExportCustomPresetConfigurationMenuWrapper>
       CUSTOM_EXPORT_PRESET_CONFIGURATION_MENU =
           ScreenHandlerRegistry.registerSimple(
@@ -261,6 +272,14 @@ public class ModMenuTypes {
           ScreenHandlerRegistry.registerSimple(
               ConfigurationType.DISTANCE_ACTION.getId(),
               DistanceActionConfigurationMenuWrapper::new);
+  public static final MenuType<InteractionSoundConfigurationMenuWrapper>
+      INTERACTION_SOUND_CONFIGURATION_MENU =
+          ScreenHandlerRegistry.registerSimple(
+              ConfigurationType.INTERACTION_SOUND.getId(),
+              InteractionSoundConfigurationMenuWrapper::new);
+  public static final MenuType<TradeSoundConfigurationMenuWrapper> TRADE_SOUND_CONFIGURATION_MENU =
+      ScreenHandlerRegistry.registerSimple(
+          ConfigurationType.TRADE_SOUND.getId(), TradeSoundConfigurationMenuWrapper::new);
   public static final MenuType<IntervalActionConfigurationMenuWrapper>
       INTERVAL_ACTION_CONFIGURATION_MENU =
           ScreenHandlerRegistry.registerSimple(

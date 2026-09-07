@@ -37,7 +37,9 @@ import de.markusbordihn.easynpc.data.objective.ObjectiveDataSet;
 import de.markusbordihn.easynpc.data.saveddata.FactionData;
 import de.markusbordihn.easynpc.data.scoreboard.ScoreboardData;
 import de.markusbordihn.easynpc.data.screen.AdditionalScreenDataInterface;
+import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.data.SoundDataCapable;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -61,6 +63,7 @@ public class AdditionalScreenData implements AdditionalScreenDataInterface {
   private static final String BLOCKED_ACTION_TYPES_TAG = "BlockedActionTypes";
   private static final String FACTION_REGISTRY_TAG = "FactionRegistry";
   private static final String SCOREBOARD_DATA_TAG = "ScoreboardData";
+  private static final String SOUND_DATA_TAG = "SoundData";
   private static final String TRADING_OFFER_ACTION_DATA_TAG = "TradingOfferActionData";
 
   private final ActionEventSet actionEventSet;
@@ -72,6 +75,7 @@ public class AdditionalScreenData implements AdditionalScreenDataInterface {
   private final EditorType editorType;
   private final ObjectiveDataSet objectiveDataSet;
   private final ScoreboardData scoreboardData;
+  private final SoundDataSet soundDataSet;
 
   public AdditionalScreenData(CompoundTag compoundTag) {
     // Processing know data.
@@ -83,6 +87,7 @@ public class AdditionalScreenData implements AdditionalScreenDataInterface {
     this.editorType = getEditorType(compoundTag);
     this.objectiveDataSet = getObjectiveDataSet(compoundTag);
     this.scoreboardData = getScoreboardData(compoundTag);
+    this.soundDataSet = getSoundDataSet(compoundTag);
 
     // Store remaining data and remove already processed data.
     this.data = compoundTag;
@@ -94,6 +99,7 @@ public class AdditionalScreenData implements AdditionalScreenDataInterface {
     this.data.remove(EDITOR_TYPE_TAG);
     this.data.remove(OBJECTIVE_DATA_TAG);
     this.data.remove(SCOREBOARD_DATA_TAG);
+    this.data.remove(SOUND_DATA_TAG);
   }
 
   public static void addActionEventType(CompoundTag compoundTag, ActionEventType actionEventType) {
@@ -169,6 +175,32 @@ public class AdditionalScreenData implements AdditionalScreenDataInterface {
 
   public static boolean hasBaseAttributes(CompoundTag compoundTag) {
     return compoundTag != null && compoundTag.contains(BASE_ATTRIBUTES_DATA_TAG);
+  }
+
+  public static void addSoundDataSet(CompoundTag compoundTag, EasyNPC<?> easyNPC) {
+    if (compoundTag == null || easyNPC == null) {
+      return;
+    }
+
+    SoundDataCapable<?> soundData = easyNPC.getEasyNPCSoundData();
+    if (soundData == null) {
+      return;
+    }
+
+    compoundTag.put(SOUND_DATA_TAG, soundData.getResolvedSoundDataSet().createCompleteTag());
+  }
+
+  public static SoundDataSet getSoundDataSet(CompoundTag compoundTag) {
+    SoundDataSet soundDataSet = new SoundDataSet();
+    if (hasSoundDataSet(compoundTag)) {
+      soundDataSet.loadComplete(compoundTag.getCompound(SOUND_DATA_TAG));
+    }
+
+    return soundDataSet;
+  }
+
+  public static boolean hasSoundDataSet(CompoundTag compoundTag) {
+    return compoundTag != null && compoundTag.contains(SOUND_DATA_TAG);
   }
 
   public static void addConfigurationType(
@@ -398,6 +430,10 @@ public class AdditionalScreenData implements AdditionalScreenDataInterface {
 
   public BaseAttributes getBaseAttributes() {
     return this.baseAttributes;
+  }
+
+  public SoundDataSet getSoundDataSet() {
+    return this.soundDataSet;
   }
 
   public ConfigurationType getConfigurationType() {

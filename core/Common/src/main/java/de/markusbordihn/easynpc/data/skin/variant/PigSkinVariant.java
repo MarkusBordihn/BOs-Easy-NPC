@@ -25,7 +25,8 @@ import net.minecraft.resources.ResourceLocation;
 
 public enum PigSkinVariant implements VariantTexture {
   PIG(Constants.MINECRAFT_PREFIX, "textures/entity/pig/pig.png"),
-  SPOTTED(Constants.MOD_ID, "textures/entity/pig/pig_spotted.png");
+  SPOTTED(Constants.MOD_ID, "textures/entity/pig/pig_spotted.png"),
+  BOAR(Constants.MOD_ID, "textures/entity/pig/pig_boar.png");
 
   private final ResourceLocation textureLocation;
 

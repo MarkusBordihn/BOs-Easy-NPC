@@ -72,6 +72,20 @@ public class EasyNPCEntityHandler {
     return NPCEntityManager.getNPCsByCustomIdentifierNamespace(namespace);
   }
 
+  public static Optional<EasyNPC<?>> find(UUID uuid, ServerLevel serverLevel) {
+    if (uuid == null || serverLevel == null) {
+      log.error("Cannot look up NPC {} in level {}", uuid, serverLevel);
+      return Optional.empty();
+    }
+
+    EasyNPC<?> easyNPC = LivingEntityManager.getServerEasyNPCEntityByUUID(uuid, serverLevel);
+    if (easyNPC == null || easyNPC.getEntity().isRemoved()) {
+      return Optional.empty();
+    }
+
+    return Optional.of(easyNPC);
+  }
+
   public static Optional<EasyNPC<?>> spawnFromPreset(
       ResourceLocation preset,
       ServerLevel serverLevel,
@@ -88,6 +102,28 @@ public class EasyNPCEntityHandler {
       Vec3 position,
       UUID uuid,
       ServerPlayer owner) {
+    return spawnFromPreset(presetType, preset, serverLevel, position, uuid, owner, null);
+  }
+
+  public static Optional<EasyNPC<?>> spawnFromPreset(
+      ResourceLocation preset,
+      ServerLevel serverLevel,
+      Vec3 position,
+      UUID uuid,
+      ServerPlayer owner,
+      ResourceLocation customIdentifier) {
+    return spawnFromPreset(
+        PresetType.DATA, preset, serverLevel, position, uuid, owner, customIdentifier);
+  }
+
+  public static Optional<EasyNPC<?>> spawnFromPreset(
+      PresetType presetType,
+      ResourceLocation preset,
+      ServerLevel serverLevel,
+      Vec3 position,
+      UUID uuid,
+      ServerPlayer owner,
+      ResourceLocation customIdentifier) {
     if (preset == null || serverLevel == null) {
       log.error("Cannot spawn preset {} in level {}", preset, serverLevel);
       return Optional.empty();
@@ -100,7 +136,8 @@ public class EasyNPCEntityHandler {
         position,
         uuid,
         CommandSecurity.getServerActorContext(),
-        owner);
+        owner,
+        customIdentifier);
   }
 
   public static boolean despawn(EasyNPC<?> easyNPC, NPCRemovalReason reason) {
@@ -125,6 +162,27 @@ public class EasyNPCEntityHandler {
     NPCEntityManager.removeNPC(entityUUID);
     NPCEntityManager.markIntentionalRemoval(entityUUID, NPCRemovalReason.DELETED);
     easyNPC.getEntity().discard();
+    return true;
+  }
+
+  public static boolean delete(UUID uuid, ServerLevel serverLevel) {
+    if (uuid == null) {
+      log.error("Cannot delete NPC without a unique id");
+      return false;
+    }
+
+    EasyNPC<?> easyNPC = LivingEntityManager.getServerEasyNPCEntityByUUID(uuid, serverLevel);
+    if (easyNPC != null) {
+      return delete(easyNPC);
+    }
+
+    if (NPCEntityManager.getNPC(uuid).isEmpty()) {
+      log.error("Cannot delete NPC {}: no saved data found", uuid);
+      return false;
+    }
+
+    NPCEntityManager.removeNPC(uuid);
+    NPCEntityManager.markIntentionalRemoval(uuid, NPCRemovalReason.DELETED);
     return true;
   }
 

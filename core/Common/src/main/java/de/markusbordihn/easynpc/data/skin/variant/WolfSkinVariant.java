@@ -26,7 +26,8 @@ import net.minecraft.resources.ResourceLocation;
 public enum WolfSkinVariant implements VariantTexture {
   WOLF(Constants.MINECRAFT_PREFIX, "textures/entity/wolf/wolf.png"),
   TAMED(Constants.MINECRAFT_PREFIX, "textures/entity/wolf/wolf_tame.png"),
-  ANGRY(Constants.MINECRAFT_PREFIX, "textures/entity/wolf/wolf_angry.png");
+  ANGRY(Constants.MINECRAFT_PREFIX, "textures/entity/wolf/wolf_angry.png"),
+  BRINDLE(Constants.MOD_ID, "textures/entity/wolf/wolf_brindle.png");
 
   private final ResourceLocation textureLocation;
 

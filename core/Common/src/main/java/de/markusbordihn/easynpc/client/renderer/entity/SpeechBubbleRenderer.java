@@ -24,7 +24,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.compat.iris.IrisManager;
 import de.markusbordihn.easynpc.config.ClientSpeechBubbleConfig;
-import de.markusbordihn.easynpc.config.SpeechBubbleOcclusionMode;
+import de.markusbordihn.easynpc.config.OcclusionMode;
 import de.markusbordihn.easynpc.data.action.SpeechBubbleManager;
 import de.markusbordihn.easynpc.data.action.SpeechBubbleManager.SpeechBubbleEntry;
 import java.util.ArrayList;
@@ -271,7 +271,7 @@ public class SpeechBubbleRenderer {
       MultiBufferSource bufferSource,
       float offsetPixelsX,
       float offsetPixelsY) {
-    SpeechBubbleOcclusionMode occlusionMode = ClientSpeechBubbleConfig.OCCLUSION_MODE;
+    OcclusionMode occlusionMode = ClientSpeechBubbleConfig.OCCLUSION_MODE;
     if (IrisManager.isShaderPackInUse()) {
       drawDepthTestedBubble(
           speechBubbleInstance, pose, bufferSource, occlusionMode, offsetPixelsX, offsetPixelsY);
@@ -286,12 +286,12 @@ public class SpeechBubbleRenderer {
       SpeechBubbleInstance speechBubbleInstance,
       Matrix4f pose,
       MultiBufferSource bufferSource,
-      SpeechBubbleOcclusionMode occlusionMode,
+      OcclusionMode occlusionMode,
       float offsetPixelsX,
       float offsetPixelsY) {
     int textAlpha = speechBubbleInstance.textAlpha();
 
-    if (occlusionMode != SpeechBubbleOcclusionMode.NEVER) {
+    if (occlusionMode != OcclusionMode.NEVER) {
       int occludedBodyAlpha = occludedBodyAlpha(occlusionMode, textAlpha);
       drawBubbleBody(
           speechBubbleInstance,
@@ -310,7 +310,7 @@ public class SpeechBubbleRenderer {
           offsetPixelsY);
     }
 
-    if (occlusionMode != SpeechBubbleOcclusionMode.ALWAYS) {
+    if (occlusionMode != OcclusionMode.ALWAYS) {
       drawBubbleBody(
           speechBubbleInstance,
           pose,
@@ -333,7 +333,7 @@ public class SpeechBubbleRenderer {
       SpeechBubbleInstance speechBubbleInstance,
       Matrix4f pose,
       MultiBufferSource bufferSource,
-      SpeechBubbleOcclusionMode occlusionMode,
+      OcclusionMode occlusionMode,
       float offsetPixelsX,
       float offsetPixelsY) {
     int textAlpha = speechBubbleInstance.textAlpha();
@@ -352,7 +352,7 @@ public class SpeechBubbleRenderer {
         offsetPixelsX,
         offsetPixelsY);
 
-    if (occlusionMode != SpeechBubbleOcclusionMode.NEVER) {
+    if (occlusionMode != OcclusionMode.NEVER) {
       int occludedBodyAlpha = occludedBodyAlpha(occlusionMode, textAlpha);
       drawBubbleBody(
           speechBubbleInstance,
@@ -381,8 +381,8 @@ public class SpeechBubbleRenderer {
         offsetPixelsY);
   }
 
-  private static int occludedBodyAlpha(SpeechBubbleOcclusionMode occlusionMode, int textAlpha) {
-    if (occlusionMode == SpeechBubbleOcclusionMode.GHOST) {
+  private static int occludedBodyAlpha(OcclusionMode occlusionMode, int textAlpha) {
+    if (occlusionMode == OcclusionMode.GHOST) {
       return (int) (textAlpha * ClientSpeechBubbleConfig.GHOST_OPACITY / 100.0F);
     }
 

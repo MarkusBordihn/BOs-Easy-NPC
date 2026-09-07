@@ -23,12 +23,13 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.display.DisplayAttributeDataSet;
 import de.markusbordihn.easynpc.data.display.DisplayAttributeType;
 import de.markusbordihn.easynpc.data.display.NameVisibilityType;
+import de.markusbordihn.easynpc.data.highlight.NPCHighlightManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.DisplayAttributeDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.OwnerDataCapable;
+import de.markusbordihn.easynpc.utils.ItemUtils;
 import java.util.Objects;
 import net.minecraft.client.Minecraft;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.scores.Team;
@@ -48,10 +49,6 @@ public class VisibilityHandler {
 
   public static boolean handleIsInvisible(final EasyNPC<?> easyNPC, final boolean isInvisible) {
 
-    if (easyNPC.getLivingEntity().hasEffect(MobEffects.GLOWING)) {
-      return false;
-    }
-
     DisplayAttributeDataCapable<?> displayAttributeData = easyNPC.getEasyNPCDisplayAttributeData();
     if (displayAttributeData != null
         && displayAttributeData.hasDisplayAttribute(DisplayAttributeType.VISIBLE)
@@ -65,8 +62,7 @@ public class VisibilityHandler {
   public static boolean handleIsInvisibleToPlayer(
       final EasyNPC<?> easyNPC, final Player player, final boolean isInvisibleToPlayers) {
 
-    // Glow effect overrides all visibility settings
-    if (easyNPC.getLivingEntity().hasEffect(MobEffects.GLOWING)) {
+    if (isHighlightedForPlayer(easyNPC, player)) {
       return false;
     }
 
@@ -80,6 +76,15 @@ public class VisibilityHandler {
         displayAttributeData.getDisplayAttributeData(),
         player,
         player.level().getDayTime());
+  }
+
+  private static boolean isHighlightedForPlayer(final EasyNPC<?> easyNPC, final Player player) {
+    if (ItemUtils.isPlayerHoldingEasyNPCWand(player)) {
+      return true;
+    }
+
+    return easyNPC.getEntity().level().isClientSide()
+        && NPCHighlightManager.isHighlighted(easyNPC.getEntity().getUUID());
   }
 
   public static boolean isVisibleToPlayerAtDayTime(

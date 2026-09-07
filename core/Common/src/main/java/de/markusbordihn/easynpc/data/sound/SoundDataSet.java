@@ -20,16 +20,20 @@
 package de.markusbordihn.easynpc.data.sound;
 
 import de.markusbordihn.easynpc.utils.CompoundTagUtils;
+import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 
 public class SoundDataSet {
 
   public static final String DATA_SOUND_DATA_SET_TAG = "SoundDataSet";
+  public static final String DATA_DEFAULT_SOUND_DATA_SET_TAG = "DefaultSoundDataSet";
 
   private final Map<SoundType, SoundDataEntry> defaultSounds = new EnumMap<>(SoundType.class);
   private final Map<SoundType, SoundDataEntry> overrideSounds = new EnumMap<>(SoundType.class);
@@ -38,6 +42,18 @@ public class SoundDataSet {
 
   public SoundDataSet(CompoundTag compoundTag) {
     this.load(compoundTag);
+  }
+
+  public SoundDataSet(SoundDataSet soundDataSet) {
+    this.defaultSounds.putAll(soundDataSet.defaultSounds);
+    this.overrideSounds.putAll(soundDataSet.overrideSounds);
+  }
+
+  private static boolean isSameSound(SoundDataEntry soundDataEntry, SoundDataEntry otherEntry) {
+    return soundDataEntry.getSoundEvent().equals(otherEntry.getSoundEvent())
+        && soundDataEntry.getVolume() == otherEntry.getVolume()
+        && soundDataEntry.getPitch() == otherEntry.getPitch()
+        && soundDataEntry.isEnabled() == otherEntry.isEnabled();
   }
 
   public boolean hasSound(SoundType type) {
@@ -49,15 +65,36 @@ public class SoundDataSet {
   }
 
   public void addSound(SoundType type, ResourceLocation resourceLocation) {
+    this.addSound(
+        type,
+        resourceLocation,
+        SoundDataEntry.DEFAULT_VOLUME,
+        SoundDataEntry.DEFAULT_PITCH,
+        SoundDataEntry.DEFAULT_ENABLED);
+  }
+
+  public void addSound(
+      SoundType type,
+      ResourceLocation resourceLocation,
+      float volume,
+      float pitch,
+      boolean enabled) {
     if (resourceLocation == null || resourceLocation.toString().isEmpty()) {
       return;
     }
-    if (defaultSounds.containsKey(type)
-        && defaultSounds.get(type).getSoundEvent().getLocation().equals(resourceLocation)) {
-      overrideSounds.remove(type);
+
+    SoundDataEntry soundDataEntry =
+        new SoundDataEntry(type, resourceLocation, volume, pitch, enabled);
+    SoundDataEntry defaultSoundDataEntry = this.defaultSounds.get(type);
+    if (defaultSoundDataEntry != null && isSameSound(defaultSoundDataEntry, soundDataEntry)) {
+      this.overrideSounds.remove(type);
     } else {
-      overrideSounds.put(type, new SoundDataEntry(type, resourceLocation));
+      this.overrideSounds.put(type, soundDataEntry);
     }
+  }
+
+  public void removeSound(SoundType type) {
+    this.overrideSounds.remove(type);
   }
 
   public void addDefaultSound(SoundType type, SoundEvent soundEvent) {
@@ -75,40 +112,68 @@ public class SoundDataSet {
     return overrideSounds.containsKey(type) ? overrideSounds.get(type) : defaultSounds.get(type);
   }
 
+  private static List<SoundDataEntry> readSoundEntries(CompoundTag compoundTag, String tagName) {
+    List<SoundDataEntry> soundDataEntries = new ArrayList<>();
+    ListTag soundListTag = compoundTag.getList(tagName, Tag.TAG_COMPOUND);
+    for (int i = 0; i < soundListTag.size(); i++) {
+      SoundDataEntry soundDataEntry = new SoundDataEntry(soundListTag.getCompound(i));
+      if (soundDataEntry.getType() != null && soundDataEntry.getSoundEvent() != null) {
+        soundDataEntries.add(soundDataEntry);
+      }
+    }
+    return soundDataEntries;
+  }
+
+  private static void writeSoundEntries(
+      CompoundTag compoundTag, String tagName, Map<SoundType, SoundDataEntry> soundEntries) {
+    ListTag soundListTag = new ListTag();
+    for (SoundDataEntry soundDataEntry : soundEntries.values()) {
+      soundListTag.add(soundDataEntry.createTag());
+    }
+    CompoundTagUtils.putIfNotEmpty(compoundTag, tagName, soundListTag);
+  }
+
   public void load(CompoundTag compoundTag) {
     if (!compoundTag.contains(DATA_SOUND_DATA_SET_TAG)) {
       return;
     }
 
-    overrideSounds.clear();
-    ListTag soundListTag = compoundTag.getList(DATA_SOUND_DATA_SET_TAG, 10);
-    for (int i = 0; i < soundListTag.size(); i++) {
-      CompoundTag soundDataTag = soundListTag.getCompound(i);
-      SoundDataEntry soundDataEntry = new SoundDataEntry(soundDataTag);
-      SoundType type = soundDataEntry.getType();
-      SoundEvent event = soundDataEntry.getSoundEvent();
-      if (type == null || event == null) {
-        continue;
-      }
-      if (!defaultSounds.containsKey(type)
-          || !defaultSounds.get(type).getSoundEvent().equals(event)) {
-        overrideSounds.put(type, soundDataEntry);
+    this.overrideSounds.clear();
+    for (SoundDataEntry soundDataEntry : readSoundEntries(compoundTag, DATA_SOUND_DATA_SET_TAG)) {
+      SoundDataEntry defaultSoundDataEntry = this.defaultSounds.get(soundDataEntry.getType());
+      if (defaultSoundDataEntry == null || !isSameSound(defaultSoundDataEntry, soundDataEntry)) {
+        this.overrideSounds.put(soundDataEntry.getType(), soundDataEntry);
       }
     }
   }
 
-  public CompoundTag save(CompoundTag compoundTag) {
-    ListTag soundListTag = new ListTag();
-    for (Map.Entry<SoundType, SoundDataEntry> entry : overrideSounds.entrySet()) {
-      SoundDataEntry soundDataEntry = entry.getValue();
-      soundListTag.add(soundDataEntry.createTag());
+  public void loadComplete(CompoundTag compoundTag) {
+    this.defaultSounds.clear();
+    for (SoundDataEntry soundDataEntry :
+        readSoundEntries(compoundTag, DATA_DEFAULT_SOUND_DATA_SET_TAG)) {
+      this.defaultSounds.put(soundDataEntry.getType(), soundDataEntry);
     }
-    CompoundTagUtils.putIfNotEmpty(compoundTag, DATA_SOUND_DATA_SET_TAG, soundListTag);
+
+    this.load(compoundTag);
+  }
+
+  public CompoundTag save(CompoundTag compoundTag) {
+    writeSoundEntries(compoundTag, DATA_SOUND_DATA_SET_TAG, this.overrideSounds);
 
     return compoundTag;
   }
 
+  public CompoundTag saveComplete(CompoundTag compoundTag) {
+    writeSoundEntries(compoundTag, DATA_DEFAULT_SOUND_DATA_SET_TAG, this.defaultSounds);
+
+    return this.save(compoundTag);
+  }
+
   public CompoundTag createTag() {
     return this.save(new CompoundTag());
+  }
+
+  public CompoundTag createCompleteTag() {
+    return this.saveComplete(new CompoundTag());
   }
 }

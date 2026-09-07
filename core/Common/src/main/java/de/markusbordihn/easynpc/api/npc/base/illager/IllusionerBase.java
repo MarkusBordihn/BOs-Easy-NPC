@@ -76,8 +76,6 @@ public class IllusionerBase extends IllusionerRaw implements BaseEasyNPC<Illusio
     soundDataSet.addDefaultSound(SoundType.AMBIENT, SoundEvents.ILLUSIONER_AMBIENT);
     soundDataSet.addDefaultSound(SoundType.DEATH, SoundEvents.ILLUSIONER_DEATH);
     soundDataSet.addDefaultSound(SoundType.HURT, SoundEvents.ILLUSIONER_HURT);
-    soundDataSet.addDefaultSound(SoundType.CAST_SPELL, SoundEvents.ILLUSIONER_CAST_SPELL);
-    soundDataSet.addDefaultSound(SoundType.CELEBRATE, SoundEvents.PILLAGER_CELEBRATE);
     soundDataSet.addDefaultSound(SoundType.TRADE, SoundEvents.VILLAGER_TRADE);
     soundDataSet.addDefaultSound(SoundType.TRADE_YES, SoundEvents.VILLAGER_YES);
     soundDataSet.addDefaultSound(SoundType.TRADE_NO, SoundEvents.VILLAGER_NO);

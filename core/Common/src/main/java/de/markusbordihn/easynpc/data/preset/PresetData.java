@@ -46,6 +46,8 @@ public record PresetData(
   public static final String PARENT_TAG = "Parent";
   public static final String PRESET_TAG = "Preset";
   public static final String PRESET_UUID_TAG = "PresetUUID";
+  public static final String POSITION_TAG = "Pos";
+  public static final String ROTATION_TAG = "Rotation";
   public static final PresetData EMPTY =
       new PresetData(
           EMPTY_NAME,
@@ -182,8 +184,20 @@ public record PresetData(
     posTag.add(DoubleTag.valueOf(position.x));
     posTag.add(DoubleTag.valueOf(position.y));
     posTag.add(DoubleTag.valueOf(position.z));
-    updatedData.put("Pos", posTag);
+    updatedData.put(POSITION_TAG, posTag);
     return new PresetData(name, entityType, updatedData, location, presetType, metadata);
+  }
+
+  public PresetData withoutPosition() {
+    if (this.data == null || !this.data.contains(POSITION_TAG)) {
+      return this;
+    }
+
+    CompoundTag updatedData = this.data.copy();
+    updatedData.remove(POSITION_TAG);
+    updatedData.remove(ROTATION_TAG);
+    return new PresetData(
+        this.name, this.entityType, updatedData, this.location, this.presetType, this.metadata);
   }
 
   public PresetData withUUID(UUID uuid) {

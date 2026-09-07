@@ -33,6 +33,7 @@ import de.markusbordihn.easynpc.data.preset.PresetReference;
 import de.markusbordihn.easynpc.data.preset.PresetType;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.entity.LivingEntityManager;
+import de.markusbordihn.easynpc.entity.NPCEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.NavigationDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.OwnerDataCapable;
@@ -161,25 +162,38 @@ public class PresetHandler {
       UUID uuid,
       ActorSecurityContext actorSecurityContext,
       ServerPlayer owner) {
+    return importPresetAndGetEntity(
+        serverLevel, presetData, position, uuid, actorSecurityContext, owner, null);
+  }
+
+  public static Optional<EasyNPC<?>> importPresetAndGetEntity(
+      ServerLevel serverLevel,
+      PresetData presetData,
+      Vec3 position,
+      UUID uuid,
+      ActorSecurityContext actorSecurityContext,
+      ServerPlayer owner,
+      ResourceLocation customIdentifier) {
     if (presetData == null || !presetData.hasValidData()) {
       log.error("[{}] Invalid preset data for import", serverLevel);
       return Optional.empty();
     }
 
-    PresetData updatedPresetData = presetData;
-    if (position != null) {
-      updatedPresetData = updatedPresetData.withPosition(position);
-    }
-
-    // Exports strip the UUID, so without one the entity could be spawned but never found again.
-    UUID entityUUID = uuid;
-    if (entityUUID == null && presetData.data().hasUUID(Entity.UUID_TAG)) {
-      entityUUID = presetData.data().getUUID(Entity.UUID_TAG);
-    }
+    UUID storedEntityUUID = presetData.getEntityUUID();
+    UUID entityUUID = uuid != null ? uuid : storedEntityUUID;
     if (entityUUID == null) {
       entityUUID = UUID.randomUUID();
     }
-    updatedPresetData = updatedPresetData.withUUID(entityUUID);
+
+    PresetData updatedPresetData =
+        dropPositionOfForeignIdentity(presetData, entityUUID, storedEntityUUID);
+    Vec3 importPosition = position;
+    if (importPosition == null
+        && !updatedPresetData.data().contains(PresetData.POSITION_TAG)
+        && LivingEntityManager.getServerEasyNPCEntityByUUID(entityUUID, serverLevel) == null) {
+      importPosition = getActorPosition(actorSecurityContext, owner);
+    }
+    updatedPresetData = updatedPresetData.withPosition(importPosition).withUUID(entityUUID);
 
     PresetSanitizationResult sanitizationResult =
         SecurityManager.sanitizePresetImport(
@@ -198,7 +212,7 @@ public class PresetHandler {
             updatedPresetData.presetType(),
             updatedPresetData.metadata());
 
-    if (!importPresetData(serverLevel, updatedPresetData.data())) {
+    if (!importPresetData(serverLevel, updatedPresetData.data(), customIdentifier)) {
       return Optional.empty();
     }
 
@@ -208,7 +222,7 @@ public class PresetHandler {
       return Optional.empty();
     }
 
-    configureImportedEntity(easyNPC, position, owner);
+    configureImportedEntity(easyNPC, importPosition, owner);
     sendImportSanitizationWarnings(
         actorSecurityContext != null ? actorSecurityContext.player() : null, sanitizationResult);
 
@@ -223,6 +237,19 @@ public class PresetHandler {
       UUID uuid,
       ActorSecurityContext actorSecurityContext,
       ServerPlayer owner) {
+    return importPresetAndGetEntity(
+        serverLevel, presetType, presetLocation, position, uuid, actorSecurityContext, owner, null);
+  }
+
+  public static Optional<EasyNPC<?>> importPresetAndGetEntity(
+      ServerLevel serverLevel,
+      PresetType presetType,
+      ResourceLocation presetLocation,
+      Vec3 position,
+      UUID uuid,
+      ActorSecurityContext actorSecurityContext,
+      ServerPlayer owner,
+      ResourceLocation customIdentifier) {
     PresetData presetData =
         loadPresetFromSource(presetType, presetLocation, serverLevel.getServer());
     if (presetData == null || !isAccessAllowed(presetData, actorSecurityContext)) {
@@ -230,7 +257,29 @@ public class PresetHandler {
     }
 
     return importPresetAndGetEntity(
-        serverLevel, presetData, position, uuid, actorSecurityContext, owner);
+        serverLevel, presetData, position, uuid, actorSecurityContext, owner, customIdentifier);
+  }
+
+  private static PresetData dropPositionOfForeignIdentity(
+      PresetData presetData, UUID entityUUID, UUID storedEntityUUID) {
+    if (entityUUID.equals(storedEntityUUID)) {
+      return presetData;
+    }
+
+    return presetData.withoutPosition();
+  }
+
+  private static Vec3 getActorPosition(
+      ActorSecurityContext actorSecurityContext, ServerPlayer owner) {
+    if (owner != null) {
+      return owner.position();
+    }
+
+    if (actorSecurityContext != null && actorSecurityContext.player() != null) {
+      return actorSecurityContext.player().position();
+    }
+
+    return null;
   }
 
   private static void sendImportSanitizationWarnings(
@@ -270,7 +319,7 @@ public class PresetHandler {
     if (serverPlayer != null) {
       OwnerDataCapable<?> ownerData = easyNPC.getEasyNPCOwnerData();
       if (ownerData != null && !ownerData.hasNPCOwner()) {
-        ownerData.setNPCOwner(serverPlayer);
+        OwnerHandler.setOwner(easyNPC, serverPlayer);
       }
     }
 
@@ -288,6 +337,7 @@ public class PresetHandler {
 
   public static boolean importPreset(
       ServerLevel serverLevel, CompoundTag compoundTag, UUID ownerUUID) {
+    UUID resolvedOwnerUUID = ownerUUID != null ? ownerUUID : getStoredOwnerUUID(compoundTag);
     PresetSanitizationResult sanitizationResult =
         SecurityManager.sanitizePresetImport(
             serverLevel,
@@ -295,11 +345,30 @@ public class PresetHandler {
             null,
             null,
             CommandSecurity.getServerActorContext(),
-            ownerUUID);
-    return importPresetData(serverLevel, sanitizationResult.sanitizedTag());
+            resolvedOwnerUUID);
+    return importPresetData(serverLevel, sanitizationResult.sanitizedTag(), null);
   }
 
-  private static boolean importPresetData(ServerLevel serverLevel, CompoundTag compoundTag) {
+  private static UUID getStoredOwnerUUID(CompoundTag compoundTag) {
+    if (compoundTag == null) {
+      return null;
+    }
+
+    if (compoundTag.hasUUID(OwnerDataCapable.DATA_OWNER_TAG)) {
+      return compoundTag.getUUID(OwnerDataCapable.DATA_OWNER_TAG);
+    }
+
+    if (!compoundTag.hasUUID(Entity.UUID_TAG)) {
+      return null;
+    }
+
+    return NPCEntityManager.getNPC(compoundTag.getUUID(Entity.UUID_TAG))
+        .map(savedEntry -> savedEntry.metadata().ownerUUID())
+        .orElse(null);
+  }
+
+  private static boolean importPresetData(
+      ServerLevel serverLevel, CompoundTag compoundTag, ResourceLocation customIdentifier) {
     if (!validateImportParameters(serverLevel, compoundTag)) {
       return false;
     }
@@ -318,11 +387,12 @@ public class PresetHandler {
             ? expandedCompoundTag.getUUID(Entity.UUID_TAG)
             : null;
     if (existingUUID != null
-        && tryUpdateExistingEntity(existingUUID, expandedCompoundTag, serverLevel)) {
+        && tryUpdateExistingEntity(
+            existingUUID, expandedCompoundTag, serverLevel, customIdentifier)) {
       return true;
     }
 
-    return createAndImportNewEntity(entityType, expandedCompoundTag, serverLevel);
+    return createAndImportNewEntity(entityType, expandedCompoundTag, serverLevel, customIdentifier);
   }
 
   private static boolean validateImportParameters(
@@ -357,7 +427,10 @@ public class PresetHandler {
   }
 
   private static boolean tryUpdateExistingEntity(
-      UUID uuid, CompoundTag compoundTag, ServerLevel serverLevel) {
+      UUID uuid,
+      CompoundTag compoundTag,
+      ServerLevel serverLevel,
+      ResourceLocation customIdentifier) {
     EasyNPC<?> existingEasyNPC =
         LivingEntityManager.getServerEasyNPCEntityByUUID(uuid, serverLevel);
     if (existingEasyNPC == null) {
@@ -370,6 +443,10 @@ public class PresetHandler {
         && existingEasyNPC.getEasyNPCPresetData() != null) {
       log.debug("[{}] Update preset data for existing entity {}!", serverLevel, existingEasyNPC);
       existingEasyNPC.getEasyNPCPresetData().importPresetData(compoundTag);
+      if (customIdentifier != null) {
+        existingEasyNPC.getEasyNPCPresetData().setCustomIdentifier(customIdentifier);
+      }
+
       return true;
     }
 
@@ -378,7 +455,10 @@ public class PresetHandler {
   }
 
   private static boolean createAndImportNewEntity(
-      EntityType<?> entityType, CompoundTag compoundTag, ServerLevel serverLevel) {
+      EntityType<?> entityType,
+      CompoundTag compoundTag,
+      ServerLevel serverLevel,
+      ResourceLocation customIdentifier) {
     Entity entity = entityType.create(serverLevel);
     if (entity == null) {
       log.error("[{}] Failed to create entity of type {}", serverLevel, entityType);
@@ -401,6 +481,9 @@ public class PresetHandler {
     try {
       easyNPCEntity.registerEasyNPCDefaultData();
       presetData.importPresetData(compoundTag);
+      if (customIdentifier != null) {
+        presetData.setCustomIdentifier(customIdentifier);
+      }
       if (!serverLevel.addFreshEntity(easyNPCEntity.getEntity())) {
         entity.discard();
         log.error("[{}] Error spawning entity", easyNPCEntity);
@@ -584,13 +667,25 @@ public class PresetHandler {
       return false;
     }
 
-    PresetDataCapable<?> presetData = easyNPC.getEasyNPCPresetData();
-    if (presetData == null) {
-      log.error("[{}] Error no preset data available!", easyNPC);
+    return savePreset(easyNPC, file, prepareExportData(easyNPC));
+  }
+
+  public static boolean exportBackupPreset(EasyNPC<?> easyNPC, File file) {
+    if (easyNPC == null || file == null) {
+      log.error("[{}] Error exporting backup preset {} !", easyNPC, file);
       return false;
     }
 
     CompoundTag compoundTag = prepareExportData(easyNPC);
+    OwnerDataCapable<?> ownerData = easyNPC.getEasyNPCOwnerData();
+    if (compoundTag != null && ownerData != null && ownerData.hasNPCOwner()) {
+      compoundTag.putUUID(OwnerDataCapable.DATA_OWNER_TAG, ownerData.getOwnerUUID());
+    }
+
+    return savePreset(easyNPC, file, compoundTag);
+  }
+
+  private static boolean savePreset(EasyNPC<?> easyNPC, File file, CompoundTag compoundTag) {
     if (compoundTag == null || compoundTag.isEmpty()) {
       log.error("[{}] Error exporting custom preset {}!", easyNPC, file);
       return false;
@@ -612,7 +707,7 @@ public class PresetHandler {
       return compoundTag;
     }
 
-    PresetDataUtils.cleanupEntityData(compoundTag, PresetDataUtils.CleanupMode.FULL);
+    PresetDataUtils.cleanupEntityData(compoundTag, PresetDataUtils.CleanupMode.RUNTIME_ONLY);
     PresetNormalizer.normalize(compoundTag);
 
     if (easyNPC.getEntity().level() instanceof ServerLevel serverLevel) {

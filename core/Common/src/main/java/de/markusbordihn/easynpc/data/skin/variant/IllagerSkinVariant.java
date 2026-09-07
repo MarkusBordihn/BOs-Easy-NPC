@@ -31,7 +31,9 @@ public enum IllagerSkinVariant implements VariantTexture, CrossedArmsVariant {
   ILLUSIONER_CROSSED_ARMS(Constants.MINECRAFT_PREFIX, "textures/entity/illager/illusioner.png"),
   PILLAGER(Constants.MINECRAFT_PREFIX, "textures/entity/illager/pillager.png"),
   VINDICATOR(Constants.MINECRAFT_PREFIX, "textures/entity/illager/vindicator.png"),
-  VINDICATOR_CROSSED_ARMS(Constants.MINECRAFT_PREFIX, "textures/entity/illager/vindicator.png");
+  VINDICATOR_CROSSED_ARMS(Constants.MINECRAFT_PREFIX, "textures/entity/illager/vindicator.png"),
+  HUNTER(Constants.MOD_ID, "textures/entity/illager/illager_hunter.png"),
+  HUNTER_CROSSED_ARMS(Constants.MOD_ID, "textures/entity/illager/illager_hunter.png");
 
   private final ResourceLocation textureLocation;
   private final boolean crossedArms;

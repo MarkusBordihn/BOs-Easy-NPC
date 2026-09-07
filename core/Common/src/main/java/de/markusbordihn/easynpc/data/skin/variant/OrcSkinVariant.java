@@ -25,7 +25,8 @@ import net.minecraft.resources.ResourceLocation;
 
 public enum OrcSkinVariant implements VariantTexture {
   ORC(Constants.MOD_ID, "textures/entity/orc/orc_default.png"),
-  ORC_WARRIOR(Constants.MOD_ID, "textures/entity/orc/orc_warrior.png");
+  ORC_WARRIOR(Constants.MOD_ID, "textures/entity/orc/orc_warrior.png"),
+  ORC_SHAMAN(Constants.MOD_ID, "textures/entity/orc/orc_shaman.png");
 
   private final ResourceLocation textureLocation;
 

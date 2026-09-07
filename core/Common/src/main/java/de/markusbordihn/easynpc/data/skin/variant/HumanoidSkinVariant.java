@@ -37,7 +37,8 @@ public enum HumanoidSkinVariant implements VariantTexture {
   PROFESSOR_01(Constants.MOD_ID, "textures/entity/humanoid/professor_01.png"),
   SECURITY_01(Constants.MOD_ID, "textures/entity/humanoid/security_01.png"),
   KNIGHT_01(Constants.MOD_ID, "textures/entity/humanoid/knight_01.png"),
-  KNIGHT_02(Constants.MOD_ID, "textures/entity/humanoid/knight_02.png");
+  KNIGHT_02(Constants.MOD_ID, "textures/entity/humanoid/knight_02.png"),
+  FARMER_01(Constants.MOD_ID, "textures/entity/humanoid/farmer_01.png");
 
   private final ResourceLocation textureLocation;
 

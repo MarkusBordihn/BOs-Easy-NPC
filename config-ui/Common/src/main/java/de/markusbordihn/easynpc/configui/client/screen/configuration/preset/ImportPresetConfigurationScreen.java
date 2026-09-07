@@ -37,7 +37,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ObjectSelectionList;
-import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.ConfirmScreen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -147,11 +146,8 @@ public class ImportPresetConfigurationScreen<T extends ConfigurationMenu>
                     NetworkMessageHandlerManager.getServerHandler()
                         .openConfiguration(
                             this.getEasyNPCUUID(), ConfigurationType.DEFAULT_PRESET_IMPORT)));
-    if (this.isConfigurationBlockedByPermission(ConfigurationType.DEFAULT_PRESET_IMPORT)) {
-      this.defaultImportPresetButton.active = false;
-      this.defaultImportPresetButton.setTooltip(
-          Tooltip.create(TextComponent.getTranslatedConfigText("menu.tooltip.no_permission")));
-    }
+    this.blockButtonWithoutPermission(
+        this.defaultImportPresetButton, ConfigurationType.DEFAULT_PRESET_IMPORT);
 
     this.worldImportPresetButton =
         this.addRenderableWidget(
@@ -164,11 +160,8 @@ public class ImportPresetConfigurationScreen<T extends ConfigurationMenu>
                     NetworkMessageHandlerManager.getServerHandler()
                         .openConfiguration(
                             this.getEasyNPCUUID(), ConfigurationType.WORLD_PRESET_IMPORT)));
-    if (this.isConfigurationBlockedByPermission(ConfigurationType.WORLD_PRESET_IMPORT)) {
-      this.worldImportPresetButton.active = false;
-      this.worldImportPresetButton.setTooltip(
-          Tooltip.create(TextComponent.getTranslatedConfigText("menu.tooltip.no_permission")));
-    }
+    this.blockButtonWithoutPermission(
+        this.worldImportPresetButton, ConfigurationType.WORLD_PRESET_IMPORT);
 
     this.customImportPresetButton =
         this.addRenderableWidget(
@@ -181,11 +174,8 @@ public class ImportPresetConfigurationScreen<T extends ConfigurationMenu>
                     NetworkMessageHandlerManager.getServerHandler()
                         .openConfiguration(
                             this.getEasyNPCUUID(), ConfigurationType.CUSTOM_PRESET_IMPORT)));
-    if (this.isConfigurationBlockedByPermission(ConfigurationType.CUSTOM_PRESET_IMPORT)) {
-      this.customImportPresetButton.active = false;
-      this.customImportPresetButton.setTooltip(
-          Tooltip.create(TextComponent.getTranslatedConfigText("menu.tooltip.no_permission")));
-    }
+    this.blockButtonWithoutPermission(
+        this.customImportPresetButton, ConfigurationType.CUSTOM_PRESET_IMPORT);
 
     this.importPresetButton =
         this.addRenderableWidget(

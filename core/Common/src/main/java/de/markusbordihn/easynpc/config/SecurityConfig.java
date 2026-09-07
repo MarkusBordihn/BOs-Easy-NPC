@@ -52,7 +52,9 @@ unsafeNpcCommands: Command roots blocked from NPC command execution while blockU
 executeAsUserCommandAllowList.<LEVEL>: Command roots allowed for execute-as-user actions up to LEVEL
 npcSpawnRateLimitCreative: Max new NPCs a creative (non-admin) player may spawn via browser per minute (default: 5)
 npcSpawnRateLimitAdmin: Max new NPCs an admin player may spawn via browser per minute (default: 20)
-Feature values use enum names: NORMAL_PLAYER, CREATIVE_PLAYER, ADMIN, SERVER_TRUSTED.
+Role values use enum names: NORMAL_PLAYER, CREATIVE_PLAYER, ADMIN, SERVER_TRUSTED.
+npcHighlightMinimumRole: Minimum role which sees the NPC wand highlight without holding a wand (default: ADMIN)
+npcHighlightForOwner: Also shows the NPC wand highlight to the owner of the highlighted NPC (default: true)
 feature.SPAWN_NPC: Minimum role required to spawn new NPCs from the preset browser (default: CREATIVE_PLAYER)
 feature.WORLD_PRESET: Minimum role required to import/export world presets (default: CREATIVE_PLAYER)
 feature.CUSTOM_PRESET: Minimum role required to import/export custom server presets (default: CREATIVE_PLAYER)
@@ -77,6 +79,8 @@ feature.URL_RESOURCE: Minimum role required to use URL-based skin loading (defau
   public static Set<String> UNSAFE_NPC_COMMANDS = UnsafeNpcCommand.defaultCommandNames();
   public static int NPC_SPAWN_RATE_LIMIT_CREATIVE = 5;
   public static int NPC_SPAWN_RATE_LIMIT_ADMIN = 20;
+  public static NpcSecurityRole NPC_HIGHLIGHT_MINIMUM_ROLE = NpcSecurityRole.ADMIN;
+  public static boolean NPC_HIGHLIGHT_FOR_OWNER = true;
 
   static {
     DEFAULT_FEATURE_ROLES.put(NpcFeature.DIALOG, NpcSecurityRole.NORMAL_PLAYER);
@@ -93,6 +97,7 @@ feature.URL_RESOURCE: Minimum role required to use URL-based skin loading (defau
     DEFAULT_FEATURE_ROLES.put(NpcFeature.POSITION, NpcSecurityRole.CREATIVE_PLAYER);
     DEFAULT_FEATURE_ROLES.put(NpcFeature.COMBAT_ATTRIBUTE, NpcSecurityRole.CREATIVE_PLAYER);
     DEFAULT_FEATURE_ROLES.put(NpcFeature.BASE_ATTRIBUTE, NpcSecurityRole.CREATIVE_PLAYER);
+    DEFAULT_FEATURE_ROLES.put(NpcFeature.SOUND, NpcSecurityRole.CREATIVE_PLAYER);
     DEFAULT_FEATURE_ROLES.put(NpcFeature.SPAWN_NPC, NpcSecurityRole.CREATIVE_PLAYER);
     DEFAULT_FEATURE_ROLES.put(NpcFeature.WORLD_PRESET, NpcSecurityRole.CREATIVE_PLAYER);
     DEFAULT_FEATURE_ROLES.put(NpcFeature.CUSTOM_PRESET, NpcSecurityRole.CREATIVE_PLAYER);
@@ -138,6 +143,10 @@ feature.URL_RESOURCE: Minimum role required to use URL-based skin loading (defau
         parseConfigValue(properties, "npcSpawnRateLimitCreative", NPC_SPAWN_RATE_LIMIT_CREATIVE);
     NPC_SPAWN_RATE_LIMIT_ADMIN =
         parseConfigValue(properties, "npcSpawnRateLimitAdmin", NPC_SPAWN_RATE_LIMIT_ADMIN);
+    NPC_HIGHLIGHT_MINIMUM_ROLE =
+        parseConfigValue(properties, "npcHighlightMinimumRole", NPC_HIGHLIGHT_MINIMUM_ROLE);
+    NPC_HIGHLIGHT_FOR_OWNER =
+        parseConfigValue(properties, "npcHighlightForOwner", NPC_HIGHLIGHT_FOR_OWNER);
     for (Map.Entry<NpcFeature, NpcSecurityRole> entry : DEFAULT_FEATURE_ROLES.entrySet()) {
       FEATURE_ROLES.put(
           entry.getKey(),

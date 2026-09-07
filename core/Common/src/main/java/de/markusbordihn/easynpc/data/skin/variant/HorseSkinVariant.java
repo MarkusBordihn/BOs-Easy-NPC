@@ -46,7 +46,9 @@ public enum HorseSkinVariant implements VariantTexture, SaddleableVariant {
   DONKEY(Constants.MINECRAFT_PREFIX, "textures/entity/horse/donkey.png"),
   DONKEY_SADDLED(Constants.MINECRAFT_PREFIX, "textures/entity/horse/donkey.png"),
   MULE(Constants.MINECRAFT_PREFIX, "textures/entity/horse/mule.png"),
-  MULE_SADDLED(Constants.MINECRAFT_PREFIX, "textures/entity/horse/mule.png");
+  MULE_SADDLED(Constants.MINECRAFT_PREFIX, "textures/entity/horse/mule.png"),
+  PINTO(Constants.MOD_ID, "textures/entity/horse/horse_pinto.png"),
+  PINTO_SADDLED(Constants.MOD_ID, "textures/entity/horse/horse_pinto.png");
 
   private final ResourceLocation textureLocation;
   private final boolean saddled;
