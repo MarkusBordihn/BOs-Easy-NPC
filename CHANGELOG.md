@@ -8,6 +8,18 @@ the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 7.12.1
+
+- Fixed #836 by always showing "Restore", including datapack presets, with a reason tooltip.
+- Fixed preset import and export messages missing, wrong or not warning about replaced NPCs.
+- Fixed the preset browser reloading on each keystroke, leaking NPCs and clearing the selection.
+- Fixed the preset list sorting, filter order and layout clipping options in small windows.
+- Fixed `/easy_npc preset import data` without a position importing it as a default preset.
+- Fixed spawn rate limit leaks, unstable preset IDs and "Spawn New" stacking NPCs on one spot.
+- Changed "Restore" to refuse instead of spawning a copy when it is not permitted.
+- Added sorting, a match count, reload, auto-close, the NPC ID and tooltips for presets and skins.
+- Added `matching <pattern>` batch imports with limits, a confirmation and a clickable position.
+
 ### 7.12.0
 
 - Fixed #833 by showing Easy NPC Wand outlines only to the wand holder, owner and admins.

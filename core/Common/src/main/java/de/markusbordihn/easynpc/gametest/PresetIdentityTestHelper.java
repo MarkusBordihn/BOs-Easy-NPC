@@ -24,7 +24,9 @@ import de.markusbordihn.easynpc.data.preset.PresetData;
 import de.markusbordihn.easynpc.data.preset.PresetDataUtils;
 import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.handler.ImportOutcome;
 import de.markusbordihn.easynpc.handler.PresetHandler;
+import de.markusbordihn.easynpc.handler.PresetImportResult;
 import de.markusbordihn.easynpc.item.configuration.EasyNPCPresetItem;
 import de.markusbordihn.easynpc.security.CommandSecurity;
 import java.util.UUID;
@@ -165,6 +167,87 @@ public class PresetIdentityTestHelper {
         LivingEntityManager.getServerEasyNPCEntities().count());
   }
 
+  public static void assertExportExposesIdentity(GameTestHelper helper, EntityType<?> entityType) {
+    EasyNPC<?> easyNPC = GameTestHelpers.mockEasyNPC(helper, entityType, SOURCE_NPC_POSITION);
+    easyNPC.registerEasyNPCDefaultData();
+
+    PresetData presetData = new PresetData(entityType, PresetHandler.prepareExportData(easyNPC));
+    GameTestHelpers.assertEquals(
+        helper,
+        "The exported preset must expose the NPC UUID",
+        easyNPC.getEntityUUID(),
+        presetData.getEntityUUID());
+    GameTestHelpers.assertEquals(
+        helper,
+        "The exported preset must expose the NPC position",
+        easyNPC.getEntity().position(),
+        presetData.getPosition());
+  }
+
+  public static void assertImportReportsCreatedEntity(
+      GameTestHelper helper, EntityType<?> entityType) {
+    EasyNPC<?> sourceNPC = GameTestHelpers.mockEasyNPC(helper, entityType, SOURCE_NPC_POSITION);
+    sourceNPC.registerEasyNPCDefaultData();
+
+    PresetData presetData = new PresetData(entityType, PresetHandler.prepareExportData(sourceNPC));
+    PresetImportResult importResult =
+        importWithReport(helper, presetData, helper.absoluteVec(SPAWN_POSITION), UUID.randomUUID());
+
+    GameTestHelpers.assertEquals(
+        helper,
+        "The import of a new UUID must report a created NPC",
+        ImportOutcome.CREATED,
+        importResult.outcome());
+    GameTestHelpers.assertTrue(
+        helper,
+        "The import of a new UUID must not report a preserved identity",
+        !importResult.identityPreserved());
+  }
+
+  public static void assertImportReportsUpdatedEntity(
+      GameTestHelper helper, EntityType<?> entityType) {
+    EasyNPC<?> easyNPC = GameTestHelpers.mockEasyNPC(helper, entityType, SOURCE_NPC_POSITION);
+    easyNPC.registerEasyNPCDefaultData();
+
+    PresetData presetData = new PresetData(entityType, PresetHandler.prepareExportData(easyNPC));
+    PresetImportResult importResult =
+        importWithReport(helper, presetData, null, easyNPC.getEntityUUID());
+
+    GameTestHelpers.assertEquals(
+        helper,
+        "The import into an existing NPC of the same type must report an update",
+        ImportOutcome.UPDATED_EXISTING,
+        importResult.outcome());
+    GameTestHelpers.assertTrue(
+        helper,
+        "The import under the stored UUID must report a preserved identity",
+        importResult.identityPreserved());
+  }
+
+  public static void assertImportReportsReplacedEntity(
+      GameTestHelper helper, EntityType<?> entityType, EntityType<?> otherEntityType) {
+    EasyNPC<?> sourceNPC = GameTestHelpers.mockEasyNPC(helper, entityType, SOURCE_NPC_POSITION);
+    sourceNPC.registerEasyNPCDefaultData();
+    EasyNPC<?> targetNPC =
+        GameTestHelpers.mockEasyNPC(helper, otherEntityType, TARGET_NPC_POSITION);
+    targetNPC.registerEasyNPCDefaultData();
+
+    PresetData presetData = new PresetData(entityType, PresetHandler.prepareExportData(sourceNPC));
+    UUID targetUUID = targetNPC.getEntityUUID();
+    PresetImportResult importResult = importWithReport(helper, presetData, null, targetUUID);
+
+    GameTestHelpers.assertEquals(
+        helper,
+        "The import into an existing NPC of another type must report a replacement",
+        ImportOutcome.REPLACED_EXISTING,
+        importResult.outcome());
+    GameTestHelpers.assertEquals(
+        helper,
+        "The replacement must use the requested UUID",
+        targetUUID,
+        findNPC(helper, targetUUID).getEntityUUID());
+  }
+
   public static void assertPresetItemDropsIdentity(
       GameTestHelper helper, EntityType<?> entityType) {
     EasyNPC<?> easyNPC = GameTestHelpers.mockEasyNPC(helper, entityType, SOURCE_NPC_POSITION);
@@ -184,6 +267,18 @@ public class PresetIdentityTestHelper {
         helper,
         "The preset item must not carry the NPC position",
         !itemPreset.contains(PresetData.POSITION_TAG));
+  }
+
+  private static PresetImportResult importWithReport(
+      GameTestHelper helper, PresetData presetData, Vec3 position, UUID entityUUID) {
+    return PresetHandler.importPresetWithReport(
+        helper.getLevel(),
+        presetData,
+        position,
+        entityUUID,
+        CommandSecurity.getServerActorContext(),
+        null,
+        null);
   }
 
   private static EasyNPC<?> findNPC(GameTestHelper helper, UUID entityUUID) {

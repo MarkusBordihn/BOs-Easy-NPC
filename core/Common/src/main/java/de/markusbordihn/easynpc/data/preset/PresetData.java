@@ -20,11 +20,13 @@
 package de.markusbordihn.easynpc.data.preset;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.entity.easynpc.data.OwnerDataCapable;
 import de.markusbordihn.easynpc.io.CustomPresetDataFiles;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.DoubleTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -221,5 +223,24 @@ public record PresetData(
       return null;
     }
     return data.getUUID(Entity.UUID_TAG);
+  }
+
+  public UUID getOwnerUUID() {
+    if (this.data == null || !this.data.hasUUID(OwnerDataCapable.DATA_OWNER_TAG)) {
+      return null;
+    }
+    return this.data.getUUID(OwnerDataCapable.DATA_OWNER_TAG);
+  }
+
+  public Vec3 getPosition() {
+    if (this.data == null || !this.data.contains(POSITION_TAG, Tag.TAG_LIST)) {
+      return null;
+    }
+
+    ListTag positionTag = this.data.getList(POSITION_TAG, Tag.TAG_DOUBLE);
+    if (positionTag.size() != 3) {
+      return null;
+    }
+    return new Vec3(positionTag.getDouble(0), positionTag.getDouble(1), positionTag.getDouble(2));
   }
 }

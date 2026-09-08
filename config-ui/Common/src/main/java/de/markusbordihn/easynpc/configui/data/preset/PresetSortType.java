@@ -17,41 +17,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.security;
+package de.markusbordihn.easynpc.configui.data.preset;
 
-import de.markusbordihn.easynpc.Constants;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Locale;
 import java.util.Set;
-import net.minecraft.network.chat.Component;
+import java.util.stream.Collectors;
 
-public class PresetWarningMessages {
+public enum PresetSortType {
+  NAME,
+  TYPE,
+  ENTITY_TYPE,
+  DATE;
 
-  private static final String NOTICE_PREFIX = Constants.TEXT_PREFIX + "preset.sanitize.";
-
-  private PresetWarningMessages() {}
-
-  public static List<Component> toPlayerMessages(PresetSanitizationResult result) {
-    if (result == null || result.notices() == null || result.notices().isEmpty()) {
-      return List.of();
-    }
-
-    Set<String> messageKeys = new LinkedHashSet<>();
-    for (PresetSanitizationNotice notice : result.notices()) {
-      messageKeys.add(getMessageKey(notice));
-    }
-
-    List<Component> messages = new ArrayList<>();
-    for (String messageKey : messageKeys) {
-      messages.add(Component.translatable(messageKey));
-    }
-
-    return messages;
+  public static Set<PresetSortType> getAllSortTypes() {
+    return Arrays.stream(values()).collect(Collectors.toCollection(LinkedHashSet::new));
   }
 
-  public static String getMessageKey(PresetSanitizationNotice notice) {
-    return NOTICE_PREFIX + notice.name().toLowerCase(Locale.ROOT);
+  public String getTranslationKey() {
+    return "preset_browser.sort." + this.name().toLowerCase(Locale.ROOT);
   }
 }

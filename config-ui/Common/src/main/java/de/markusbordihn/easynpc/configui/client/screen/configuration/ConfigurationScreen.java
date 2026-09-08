@@ -158,9 +158,16 @@ public class ConfigurationScreen<T extends ConfigUIMenu>
       return;
     }
 
+    this.blockButtonWithReason(button, "menu.tooltip.no_permission");
+  }
+
+  protected void blockButtonWithReason(Button button, String reasonTranslationKey) {
+    if (button == null) {
+      return;
+    }
+
     button.active = false;
-    button.setTooltip(
-        Tooltip.create(TextComponent.getTranslatedConfigText("menu.tooltip.no_permission")));
+    button.setTooltip(Tooltip.create(TextComponent.getTranslatedConfigText(reasonTranslationKey)));
   }
 
   protected boolean supportsConfigurationType(ConfigurationType configurationType) {

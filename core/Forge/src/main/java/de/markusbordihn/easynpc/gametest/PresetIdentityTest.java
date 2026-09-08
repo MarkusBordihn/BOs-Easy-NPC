@@ -37,6 +37,10 @@ public class PresetIdentityTest {
     return ModEntityType.getEntityType(ModNPCEntityType.HUMANOID);
   }
 
+  private static EntityType<?> villager() {
+    return ModEntityType.getEntityType(ModNPCEntityType.VILLAGER);
+  }
+
   @GameTest(template = "gametest.3x3x3")
   public void testExportKeepsIdentity(GameTestHelper helper) {
     PresetIdentityTestHelper.assertExportKeepsIdentity(helper, humanoid());
@@ -58,6 +62,30 @@ public class PresetIdentityTest {
   @GameTest(template = "gametest.3x3x3")
   public void testImportKeepsTargetPosition(GameTestHelper helper) {
     PresetIdentityTestHelper.assertImportKeepsTargetPosition(helper, humanoid());
+    helper.succeed();
+  }
+
+  @GameTest(template = "gametest.3x3x3")
+  public void testExportExposesIdentity(GameTestHelper helper) {
+    PresetIdentityTestHelper.assertExportExposesIdentity(helper, humanoid());
+    helper.succeed();
+  }
+
+  @GameTest(template = "gametest.3x3x3")
+  public void testImportReportsCreatedEntity(GameTestHelper helper) {
+    PresetIdentityTestHelper.assertImportReportsCreatedEntity(helper, humanoid());
+    helper.succeed();
+  }
+
+  @GameTest(template = "gametest.3x3x3")
+  public void testImportReportsUpdatedEntity(GameTestHelper helper) {
+    PresetIdentityTestHelper.assertImportReportsUpdatedEntity(helper, humanoid());
+    helper.succeed();
+  }
+
+  @GameTest(template = "gametest.3x3x3")
+  public void testImportReportsReplacedEntity(GameTestHelper helper) {
+    PresetIdentityTestHelper.assertImportReportsReplacedEntity(helper, humanoid(), villager());
     helper.succeed();
   }
 

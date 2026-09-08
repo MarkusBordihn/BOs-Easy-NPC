@@ -23,18 +23,20 @@ import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.configui.client.screen.components.DrawBoxWithBorder;
 import de.markusbordihn.easynpc.data.preset.PresetData;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.network.components.TextComponent;
 import de.markusbordihn.easynpc.security.PresetFeatureNotice;
 import de.markusbordihn.easynpc.security.PresetFeaturePreview;
 import de.markusbordihn.easynpc.security.PresetFeatureStatus;
+import de.markusbordihn.easynpc.utils.TextUtils;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.phys.Vec3;
 
 public class PresetDetailsView {
 
   private static final float TEXT_SCALE = 0.8f;
-  private static final String CHECKMARK = "\u2713";
-  private static final String CROSS = "\u2715";
+  private static final String ARROW = "\u2192";
 
   private PresetDetailsView() {}
 
@@ -50,7 +52,13 @@ public class PresetDetailsView {
       int height) {
     DrawBoxWithBorder.draw(guiGraphics, x, y, width, height);
     if (easyNPC == null) {
-      Text.drawString(guiGraphics, font, Component.literal("No NPC Data"), x + 5, y + 5, 0x3F3F3F);
+      Text.drawString(
+          guiGraphics,
+          font,
+          TextComponent.getTranslatedConfigText("preset_browser.details.no_data"),
+          x + 5,
+          y + 5,
+          0x3F3F3F);
       return;
     }
 
@@ -65,19 +73,19 @@ public class PresetDetailsView {
     Text.drawString(
         guiGraphics,
         font,
-        Component.literal("Type: " + easyNPC.getEntityTypeId()),
+        TextComponent.getTranslatedConfigText(
+            "preset_browser.details.type", easyNPC.getEntityTypeId()),
         scaledX,
         scaledY + lineHeight * line++,
         0x3F3F3F);
 
-    if (easyNPC.getEasyNPCNavigationData() != null
-        && easyNPC.getEasyNPCNavigationData().hasHomePosition()) {
-      var homePos = easyNPC.getEasyNPCNavigationData().getHomePosition();
+    Vec3 position = presetData != null ? presetData.getPosition() : null;
+    if (position != null) {
       Text.drawString(
           guiGraphics,
           font,
-          Component.literal(
-              "Pos: " + homePos.getX() + ", " + homePos.getY() + ", " + homePos.getZ()),
+          TextComponent.getTranslatedConfigText(
+              "preset_browser.details.pos", TextUtils.formatPosition(position)),
           scaledX,
           scaledY + lineHeight * line++,
           0x3F3F3F);
@@ -87,7 +95,8 @@ public class PresetDetailsView {
       Text.drawString(
           guiGraphics,
           font,
-          Component.literal("Owner: " + easyNPC.getEasyNPCOwnerData().getNPCOwnerName()),
+          TextComponent.getTranslatedConfigText(
+              "preset_browser.details.owner", easyNPC.getEasyNPCOwnerData().getNPCOwnerName()),
           scaledX,
           scaledY + lineHeight * line++,
           0x3F3F3F);
@@ -97,7 +106,8 @@ public class PresetDetailsView {
       Text.drawString(
           guiGraphics,
           font,
-          Component.literal("Skin: " + easyNPC.getEasyNPCSkinData().getSkinType()),
+          TextComponent.getTranslatedConfigText(
+              "preset_browser.details.skin", easyNPC.getEasyNPCSkinData().getSkinType().name()),
           scaledX,
           scaledY + lineHeight * line++,
           0x3F3F3F);
@@ -125,7 +135,8 @@ public class PresetDetailsView {
         Text.drawString(
             guiGraphics,
             font,
-            Component.literal("+" + remainingNotices + " more"),
+            TextComponent.getTranslatedConfigText(
+                "preset_browser.details.more_notices", String.valueOf(remainingNotices)),
             scaledX,
             scaledY + lineHeight * line,
             0x7F7F7F);
@@ -145,17 +156,25 @@ public class PresetDetailsView {
 
   private static Component getSecurityComponent(PresetFeatureNotice notice) {
     return switch (notice.status()) {
-      case ALLOWED -> Component.literal(CHECKMARK + " " + notice.feature().displayName());
+      case ALLOWED ->
+          TextComponent.getTranslatedConfigText(
+              "preset_browser.details.notice_allowed", notice.feature().displayName());
       case BLOCKED ->
-          Component.literal(CROSS + " ")
-              .append(
-                  Component.literal(notice.feature().displayName())
-                      .withStyle(style -> style.withStrikethrough(true)));
+          TextComponent.getTranslatedConfigText(
+              "preset_browser.details.notice_blocked",
+              Component.literal(notice.feature().displayName())
+                  .withStyle(style -> style.withStrikethrough(true)));
       case REDUCED ->
-          Component.literal(
-              "! "
-                  + notice.feature().displayName()
-                  + (notice.commandLevel() != null ? " \u2192 " + notice.commandLevel() : ""));
+          TextComponent.getTranslatedConfigText(
+              "preset_browser.details.notice_reduced", getReducedFeatureText(notice));
     };
+  }
+
+  private static String getReducedFeatureText(PresetFeatureNotice notice) {
+    if (notice.commandLevel() == null) {
+      return notice.feature().displayName();
+    }
+
+    return notice.feature().displayName() + " " + ARROW + " " + notice.commandLevel();
   }
 }

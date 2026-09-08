@@ -17,41 +17,39 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.security;
+package de.markusbordihn.easynpc.configui.client.screen.preset;
 
-import de.markusbordihn.easynpc.Constants;
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
-import net.minecraft.network.chat.Component;
+import de.markusbordihn.easynpc.configui.data.preset.PresetSortType;
 
-public class PresetWarningMessages {
+public class PresetBrowserState {
 
-  private static final String NOTICE_PREFIX = Constants.TEXT_PREFIX + "preset.sanitize.";
+  private static boolean autoCloseEnabled = true;
+  private static PresetSortType sortType = PresetSortType.NAME;
+  private static boolean sortDescending = false;
 
-  private PresetWarningMessages() {}
+  private PresetBrowserState() {}
 
-  public static List<Component> toPlayerMessages(PresetSanitizationResult result) {
-    if (result == null || result.notices() == null || result.notices().isEmpty()) {
-      return List.of();
-    }
-
-    Set<String> messageKeys = new LinkedHashSet<>();
-    for (PresetSanitizationNotice notice : result.notices()) {
-      messageKeys.add(getMessageKey(notice));
-    }
-
-    List<Component> messages = new ArrayList<>();
-    for (String messageKey : messageKeys) {
-      messages.add(Component.translatable(messageKey));
-    }
-
-    return messages;
+  public static boolean isAutoCloseEnabled() {
+    return autoCloseEnabled;
   }
 
-  public static String getMessageKey(PresetSanitizationNotice notice) {
-    return NOTICE_PREFIX + notice.name().toLowerCase(Locale.ROOT);
+  public static void setAutoCloseEnabled(boolean value) {
+    autoCloseEnabled = value;
+  }
+
+  public static PresetSortType getSortType() {
+    return sortType;
+  }
+
+  public static void setSortType(PresetSortType value) {
+    sortType = value;
+  }
+
+  public static boolean isSortDescending() {
+    return sortDescending;
+  }
+
+  public static void setSortDescending(boolean value) {
+    sortDescending = value;
   }
 }

@@ -19,7 +19,9 @@
 
 package de.markusbordihn.easynpc.server.commands;
 
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
+import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import de.markusbordihn.easynpc.commands.Command;
@@ -42,6 +44,7 @@ import net.minecraft.world.phys.Vec3;
 
 class PresetImportCommand extends Command {
 
+  private static final String CONFIRM_ARG = "confirm";
   private static final String CUSTOM_ARG = "custom";
   private static final String DATA_ARG = "data";
   private static final String DEFAULT_ARG = "default";
@@ -50,6 +53,8 @@ class PresetImportCommand extends Command {
   private static final String IMPORT_WITH_OWNER_ARG = "import_with_owner";
   private static final String LOCAL_ARG = "local";
   private static final String LOCATION_ARG = "location";
+  private static final String MATCHING_ARG = "matching";
+  private static final String PATTERN_ARG = "pattern";
   private static final String PRESET_ARG = "preset";
   private static final String UUID_ARG = "uuid";
   private static final String WORLD_ARG = "world";
@@ -62,27 +67,27 @@ class PresetImportCommand extends Command {
             Commands.literal(LOCAL_ARG).executes(context -> importLocalPreset(context.getSource())))
         .then(
             importBranch(
+                PresetType.CUSTOM,
                 CUSTOM_ARG,
                 PresetSuggestions::suggestCustom,
-                PresetImportCommand::importCustomPreset,
                 PresetImportCommand::importCustomPreset))
         .then(
             importBranch(
+                PresetType.DATA,
                 DATA_ARG,
                 PresetSuggestions::suggestData,
-                PresetImportCommand::importDefaultPreset,
                 PresetImportCommand::importDataPreset))
         .then(
             importBranch(
+                PresetType.DEFAULT,
                 DEFAULT_ARG,
                 PresetSuggestions::suggestDefault,
-                PresetImportCommand::importDefaultPreset,
                 PresetImportCommand::importDefaultPreset))
         .then(
             importBranch(
+                PresetType.WORLD,
                 WORLD_ARG,
                 PresetSuggestions::suggestWorld,
-                PresetImportCommand::importWorldPreset,
                 PresetImportCommand::importWorldPreset));
   }
 
@@ -90,27 +95,27 @@ class PresetImportCommand extends Command {
     return Commands.literal(IMPORT_NEW_ARG)
         .then(
             importNewBranch(
+                PresetType.CUSTOM,
                 CUSTOM_ARG,
                 PresetSuggestions::suggestCustom,
-                PresetImportCommand::importCustomPreset,
                 PresetImportCommand::importCustomPreset))
         .then(
             importNewBranch(
+                PresetType.DATA,
                 DATA_ARG,
                 PresetSuggestions::suggestData,
-                PresetImportCommand::importDefaultPreset,
                 PresetImportCommand::importDataPreset))
         .then(
             importNewBranch(
+                PresetType.DEFAULT,
                 DEFAULT_ARG,
                 PresetSuggestions::suggestDefault,
-                PresetImportCommand::importDefaultPreset,
                 PresetImportCommand::importDefaultPreset))
         .then(
             importNewBranch(
+                PresetType.WORLD,
                 WORLD_ARG,
                 PresetSuggestions::suggestWorld,
-                PresetImportCommand::importWorldPreset,
                 PresetImportCommand::importWorldPreset));
   }
 
@@ -137,17 +142,18 @@ class PresetImportCommand extends Command {
   }
 
   private static ArgumentBuilder<CommandSourceStack, ?> importBranch(
-      String presetType,
+      PresetType presetType,
+      String presetLiteral,
       SuggestionProvider<CommandSourceStack> suggestions,
-      PresetImporter importWithoutPosition,
-      PresetImporter importWithPosition) {
-    return Commands.literal(presetType)
+      PresetImporter presetImporter) {
+    return Commands.literal(presetLiteral)
+        .then(matchingBranch(presetType, true))
         .then(
             Commands.argument(PRESET_ARG, ResourceLocationArgument.id())
                 .suggests(suggestions)
                 .executes(
                     context ->
-                        importWithoutPosition.importPreset(
+                        presetImporter.importPreset(
                             context.getSource(),
                             ResourceLocationArgument.getId(context, PRESET_ARG),
                             null,
@@ -157,7 +163,7 @@ class PresetImportCommand extends Command {
                     Commands.argument(LOCATION_ARG, Vec3Argument.vec3())
                         .executes(
                             context ->
-                                importWithPosition.importPreset(
+                                presetImporter.importPreset(
                                     context.getSource(),
                                     ResourceLocationArgument.getId(context, PRESET_ARG),
                                     getPosition(context),
@@ -167,7 +173,7 @@ class PresetImportCommand extends Command {
                             Commands.argument(UUID_ARG, UuidArgument.uuid())
                                 .executes(
                                     context ->
-                                        importWithPosition.importPreset(
+                                        presetImporter.importPreset(
                                             context.getSource(),
                                             ResourceLocationArgument.getId(context, PRESET_ARG),
                                             getPosition(context),
@@ -176,17 +182,18 @@ class PresetImportCommand extends Command {
   }
 
   private static ArgumentBuilder<CommandSourceStack, ?> importNewBranch(
-      String presetType,
+      PresetType presetType,
+      String presetLiteral,
       SuggestionProvider<CommandSourceStack> suggestions,
-      PresetImporter importWithoutPosition,
-      PresetImporter importWithPosition) {
-    return Commands.literal(presetType)
+      PresetImporter presetImporter) {
+    return Commands.literal(presetLiteral)
+        .then(matchingBranch(presetType, false))
         .then(
             Commands.argument(PRESET_ARG, ResourceLocationArgument.id())
                 .suggests(suggestions)
                 .executes(
                     context ->
-                        importWithoutPosition.importPreset(
+                        presetImporter.importPreset(
                             context.getSource(),
                             ResourceLocationArgument.getId(context, PRESET_ARG),
                             null,
@@ -196,7 +203,7 @@ class PresetImportCommand extends Command {
                     Commands.argument(LOCATION_ARG, Vec3Argument.vec3())
                         .executes(
                             context ->
-                                importWithPosition.importPreset(
+                                presetImporter.importPreset(
                                     context.getSource(),
                                     ResourceLocationArgument.getId(context, PRESET_ARG),
                                     getPosition(context),
@@ -224,6 +231,49 @@ class PresetImportCommand extends Command {
                                             getPosition(context),
                                             UUID.randomUUID(),
                                             EntityArgument.getPlayer(context, PLAYER_ARG))))));
+  }
+
+  private static ArgumentBuilder<CommandSourceStack, ?> matchingBranch(
+      PresetType presetType, boolean keepIdentity) {
+    RequiredArgumentBuilder<CommandSourceStack, String> patternArgument =
+        Commands.argument(PATTERN_ARG, StringArgumentType.string())
+            .executes(context -> importMatching(context, presetType, keepIdentity, false, false))
+            .then(
+                Commands.literal(CONFIRM_ARG)
+                    .executes(
+                        context -> importMatching(context, presetType, keepIdentity, false, true)));
+    if (!keepIdentity) {
+      patternArgument.then(
+          Commands.argument(LOCATION_ARG, Vec3Argument.vec3())
+              .executes(context -> importMatching(context, presetType, keepIdentity, true, false))
+              .then(
+                  Commands.literal(CONFIRM_ARG)
+                      .executes(
+                          context ->
+                              importMatching(context, presetType, keepIdentity, true, true))));
+    }
+
+    return Commands.literal(MATCHING_ARG).then(patternArgument);
+  }
+
+  private static int importMatching(
+      CommandContext<CommandSourceStack> context,
+      PresetType presetType,
+      boolean keepIdentity,
+      boolean withPosition,
+      boolean confirmed) {
+    Vec3 position = null;
+    if (!keepIdentity) {
+      position = withPosition ? getPosition(context) : context.getSource().getPosition();
+    }
+
+    return PresetBatchImportCommand.importMatching(
+        context.getSource(),
+        presetType,
+        StringArgumentType.getString(context, PATTERN_ARG),
+        position,
+        keepIdentity,
+        confirmed);
   }
 
   private static Vec3 getPosition(CommandContext<CommandSourceStack> context) {

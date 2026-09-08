@@ -21,6 +21,8 @@ package de.markusbordihn.easynpc.configui.data.preset;
 
 import de.markusbordihn.easynpc.data.preset.PresetType;
 import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -40,15 +42,19 @@ public enum PresetFilterType {
   }
 
   public static Set<PresetFilterType> getAllFilters() {
-    return Arrays.stream(values()).collect(Collectors.toSet());
+    return Arrays.stream(values()).collect(Collectors.toCollection(LinkedHashSet::new));
   }
 
   public static Set<String> getFilterNames() {
-    return Stream.of(values()).map(Enum::name).collect(Collectors.toSet());
+    return Stream.of(values()).map(Enum::name).collect(Collectors.toCollection(LinkedHashSet::new));
   }
 
   public PresetType getPresetType() {
     return presetType;
+  }
+
+  public String getTranslationKey() {
+    return "preset_browser.filter." + this.name().toLowerCase(Locale.ROOT);
   }
 
   public boolean matches(PresetType type) {

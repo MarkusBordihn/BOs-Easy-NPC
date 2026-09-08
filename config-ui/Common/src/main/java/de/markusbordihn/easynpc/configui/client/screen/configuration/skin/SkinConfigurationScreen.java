@@ -233,26 +233,25 @@ public class SkinConfigurationScreen<T extends ConfigurationMenu> extends Config
 
   private void checkAccess() {
     ConfigurationDataCapable<?> configurationData = this.getEasyNPC().getEasyNPCConfigurationData();
-    this.customSkinButton.active =
+    this.updateSkinButton(
+        this.defaultSkinButton, configurationData, ConfigurationType.DEFAULT_SKIN);
+    this.updateSkinButton(this.playerSkinButton, configurationData, ConfigurationType.PLAYER_SKIN);
+    this.updateSkinButton(this.customSkinButton, configurationData, ConfigurationType.CUSTOM_SKIN);
+    this.updateSkinButton(
+        this.advancedSkinButton, configurationData, ConfigurationType.ADVANCED_SKIN);
+    this.updateSkinButton(this.urlSkinButton, configurationData, ConfigurationType.URL_SKIN);
+    this.blockButtonWithoutPermission(this.urlSkinButton, ConfigurationType.URL_SKIN);
+  }
+
+  private void updateSkinButton(
+      Button skinButton,
+      ConfigurationDataCapable<?> configurationData,
+      ConfigurationType configurationType) {
+    skinButton.active =
         configurationData.supportsConfigurationType(ConfigurationType.SKIN)
-            && configurationData.supportsConfigurationType(ConfigurationType.CUSTOM_SKIN);
-    this.defaultSkinButton.active =
-        configurationData.supportsConfigurationType(ConfigurationType.SKIN)
-            && configurationData.supportsConfigurationType(ConfigurationType.DEFAULT_SKIN);
-    this.advancedSkinButton.active =
-        configurationData.supportsConfigurationType(ConfigurationType.SKIN)
-            && configurationData.supportsConfigurationType(ConfigurationType.ADVANCED_SKIN);
-    this.playerSkinButton.active =
-        configurationData.supportsConfigurationType(ConfigurationType.SKIN)
-            && configurationData.supportsConfigurationType(ConfigurationType.PLAYER_SKIN);
-    this.urlSkinButton.active =
-        configurationData.supportsConfigurationType(ConfigurationType.SKIN)
-            && configurationData.supportsConfigurationType(ConfigurationType.URL_SKIN)
-            && !this.isConfigurationBlockedByPermission(ConfigurationType.URL_SKIN);
-    if (!this.urlSkinButton.active
-        && this.isConfigurationBlockedByPermission(ConfigurationType.URL_SKIN)) {
-      this.urlSkinButton.setTooltip(
-          Tooltip.create(TextComponent.getTranslatedConfigText("menu.tooltip.no_permission")));
+            && configurationData.supportsConfigurationType(configurationType);
+    if (!skinButton.active) {
+      this.blockButtonWithReason(skinButton, "menu.tooltip.not_supported");
     }
   }
 

@@ -17,41 +17,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.security;
+package de.markusbordihn.easynpc.configui.client;
 
-import de.markusbordihn.easynpc.Constants;
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
+import de.markusbordihn.easynpc.handler.PresetFeedback;
+import java.util.UUID;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 
-public class PresetWarningMessages {
+public class ClientPresetFeedback {
 
-  private static final String NOTICE_PREFIX = Constants.TEXT_PREFIX + "preset.sanitize.";
+  private ClientPresetFeedback() {}
 
-  private PresetWarningMessages() {}
-
-  public static List<Component> toPlayerMessages(PresetSanitizationResult result) {
-    if (result == null || result.notices() == null || result.notices().isEmpty()) {
-      return List.of();
-    }
-
-    Set<String> messageKeys = new LinkedHashSet<>();
-    for (PresetSanitizationNotice notice : result.notices()) {
-      messageKeys.add(getMessageKey(notice));
-    }
-
-    List<Component> messages = new ArrayList<>();
-    for (String messageKey : messageKeys) {
-      messages.add(Component.translatable(messageKey));
-    }
-
-    return messages;
+  public static void sendExportResult(String fileName, UUID uuid) {
+    sendMessage(PresetFeedback.exportResult(fileName, uuid));
+    sendMessage(PresetFeedback.exportHint());
   }
 
-  public static String getMessageKey(PresetSanitizationNotice notice) {
-    return NOTICE_PREFIX + notice.name().toLowerCase(Locale.ROOT);
+  public static void sendExportFailed(String fileName) {
+    sendMessage(PresetFeedback.exportFailed(fileName));
+  }
+
+  private static void sendMessage(Component message) {
+    LocalPlayer player = Minecraft.getInstance().player;
+    if (player != null) {
+      player.sendSystemMessage(message);
+    }
   }
 }

@@ -24,9 +24,9 @@ import de.markusbordihn.easynpc.configui.client.renderer.screen.EntityConfigScre
 import de.markusbordihn.easynpc.configui.client.screen.components.DrawBoxWithBorder;
 import de.markusbordihn.easynpc.data.render.EntityRenderConfig;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.network.components.TextComponent;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.network.chat.Component;
 
 public class PresetPreviewView {
 
@@ -51,7 +51,7 @@ public class PresetPreviewView {
       Text.drawString(
           guiGraphics,
           font,
-          Component.literal("Preview not available"),
+          TextComponent.getTranslatedConfigText("preset_browser.preview.unavailable"),
           x + 10,
           previewY,
           0x3F3F3F);

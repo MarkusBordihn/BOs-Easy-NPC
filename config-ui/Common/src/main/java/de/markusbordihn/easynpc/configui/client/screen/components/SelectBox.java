@@ -290,8 +290,7 @@ public class SelectBox<T> extends AbstractWidget {
     }
 
     this.scrollOffset =
-        Mth.clamp(
-            this.scrollOffset - (int) Math.signum(delta), 0, this.getMaxScrollOffset());
+        Mth.clamp(this.scrollOffset - (int) Math.signum(delta), 0, this.getMaxScrollOffset());
     return true;
   }
 
@@ -311,7 +310,9 @@ public class SelectBox<T> extends AbstractWidget {
 
   @Override
   public boolean charTyped(char character, int modifiers) {
-    return this.open && this.searchField != null && this.searchField.charTyped(character, modifiers);
+    return this.open
+        && this.searchField != null
+        && this.searchField.charTyped(character, modifiers);
   }
 
   @Override

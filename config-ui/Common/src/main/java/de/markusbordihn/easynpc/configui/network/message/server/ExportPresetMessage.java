@@ -27,7 +27,6 @@ import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
@@ -75,7 +74,5 @@ public record ExportPresetMessage(
 
     NetworkMessageHandlerManager.getClientHandler()
         .exportClientPreset(this.uuid, fileName, serverPlayer, this.exportFormat, this.metadata);
-    serverPlayer.sendSystemMessage(
-        Component.literal("Preset exported. Server-specific data was not included."));
   }
 }
