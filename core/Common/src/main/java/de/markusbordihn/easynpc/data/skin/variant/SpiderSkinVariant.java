@@ -25,7 +25,8 @@ import net.minecraft.resources.Identifier;
 
 public enum SpiderSkinVariant implements VariantTexture {
   CAVE_SPIDER(Constants.MINECRAFT_PREFIX, "textures/entity/spider/cave_spider.png"),
-  SPIDER(Constants.MINECRAFT_PREFIX, "textures/entity/spider/spider.png");
+  SPIDER(Constants.MINECRAFT_PREFIX, "textures/entity/spider/spider.png"),
+  WIDOW(Constants.MOD_ID, "textures/entity/spider/spider_widow.png");
 
   private final Identifier textureLocation;
 

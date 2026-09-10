@@ -27,7 +27,8 @@ public enum PigSkinVariant implements VariantTexture {
   COLD(Constants.MINECRAFT_PREFIX, "textures/entity/pig/cold_pig.png"),
   TEMPERATE(Constants.MINECRAFT_PREFIX, "textures/entity/pig/temperate_pig.png"),
   WARM(Constants.MINECRAFT_PREFIX, "textures/entity/pig/warm_pig.png"),
-  SPOTTED(Constants.MOD_ID, "textures/entity/pig/pig_spotted.png");
+  SPOTTED(Constants.MOD_ID, "textures/entity/pig/pig_spotted.png"),
+  BOAR(Constants.MOD_ID, "textures/entity/pig/pig_boar.png");
 
   private final Identifier textureLocation;
 
@@ -37,6 +38,6 @@ public enum PigSkinVariant implements VariantTexture {
 
   @Override
   public Identifier getTextureLocation() {
-    return textureLocation;
+    return this.textureLocation;
   }
 }

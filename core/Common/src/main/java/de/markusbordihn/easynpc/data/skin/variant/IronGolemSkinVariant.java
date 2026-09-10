@@ -24,17 +24,23 @@ import de.markusbordihn.easynpc.api.skin.VariantTexture;
 import net.minecraft.resources.Identifier;
 
 public enum IronGolemSkinVariant implements VariantTexture {
-  IRON_GOLEM,
-  IRON_GOLEM_CRACKINESS_HIGH,
-  IRON_GOLEM_CRACKINESS_MEDIUM,
-  IRON_GOLEM_CRACKINESS_LOW;
+  IRON_GOLEM(Constants.MINECRAFT_PREFIX, "textures/entity/iron_golem/iron_golem.png"),
+  IRON_GOLEM_CRACKINESS_HIGH(
+      Constants.MINECRAFT_PREFIX, "textures/entity/iron_golem/iron_golem.png"),
+  IRON_GOLEM_CRACKINESS_MEDIUM(
+      Constants.MINECRAFT_PREFIX, "textures/entity/iron_golem/iron_golem.png"),
+  IRON_GOLEM_CRACKINESS_LOW(
+      Constants.MINECRAFT_PREFIX, "textures/entity/iron_golem/iron_golem.png"),
+  COPPER(Constants.MOD_ID, "textures/entity/iron_golem/iron_golem_copper.png");
 
-  private static final Identifier TEXTURE =
-      Identifier.fromNamespaceAndPath(
-          Constants.MINECRAFT_PREFIX, "textures/entity/iron_golem/iron_golem.png");
+  private final Identifier textureLocation;
+
+  IronGolemSkinVariant(String namespace, String path) {
+    this.textureLocation = parseTextureLocation(namespace, path);
+  }
 
   @Override
   public Identifier getTextureLocation() {
-    return TEXTURE;
+    return this.textureLocation;
   }
 }

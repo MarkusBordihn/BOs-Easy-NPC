@@ -20,10 +20,18 @@
 package de.markusbordihn.easynpc.utils;
 
 import de.markusbordihn.easynpc.network.components.TextComponent;
+import de.markusbordihn.easynpc.security.CommandPermissionLevel;
+import de.markusbordihn.easynpc.security.CommandSecurity;
 import java.util.Locale;
 import java.util.regex.Pattern;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.phys.Vec3;
 
 public class TextUtils {
 
@@ -34,6 +42,46 @@ public class TextUtils {
 
   public static boolean isTranslationKey(String text) {
     return text != null && !text.isEmpty() && TRANSLATION_KEY_PATTERN.matcher(text).matches();
+  }
+
+  public static String formatPosition(Vec3 position) {
+    if (position == null) {
+      return "";
+    }
+
+    return BlockPos.containing(position).toShortString();
+  }
+
+  public static Component formatTeleportPosition(Vec3 position, ServerPlayer serverPlayer) {
+    if (position == null) {
+      return TextComponent.getBlankText();
+    }
+
+    return formatTeleportPosition(BlockPos.containing(position), serverPlayer);
+  }
+
+  public static Component formatTeleportPosition(BlockPos blockPos, ServerPlayer serverPlayer) {
+    if (blockPos == null) {
+      return TextComponent.getBlankText();
+    }
+
+    MutableComponent positionText = TextComponent.getText(blockPos.toShortString());
+    if (!CommandSecurity.getPlayerPermissionLevel(serverPlayer)
+        .allows(CommandPermissionLevel.GAMEMASTERS)) {
+      return positionText;
+    }
+
+    String teleportCommand =
+        "/tp @s " + blockPos.getX() + " " + blockPos.getY() + " " + blockPos.getZ();
+    return positionText.withStyle(
+        style ->
+            style
+                .withColor(ChatFormatting.GREEN)
+                .withUnderlined(true)
+                .withClickEvent(new ClickEvent.SuggestCommand(teleportCommand))
+                .withHoverEvent(
+                    new HoverEvent.ShowText(
+                        Component.translatable("chat.coordinates.tooltip"))));
   }
 
   public static Component normalizeName(String name) {

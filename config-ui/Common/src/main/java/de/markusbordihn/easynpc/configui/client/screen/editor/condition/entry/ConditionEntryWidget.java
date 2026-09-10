@@ -19,9 +19,11 @@
 
 package de.markusbordihn.easynpc.configui.client.screen.editor.condition.entry;
 
+import de.markusbordihn.easynpc.client.screen.components.SpinButton;
 import de.markusbordihn.easynpc.configui.client.screen.editor.condition.ConditionDataEntryEditorContainerScreen;
 import de.markusbordihn.easynpc.data.condition.ConditionDataEntry;
 import de.markusbordihn.easynpc.data.condition.ConditionDataSet;
+import de.markusbordihn.easynpc.data.condition.ConditionOperationType;
 import de.markusbordihn.easynpc.data.condition.ConditionType;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -45,6 +47,19 @@ public class ConditionEntryWidget {
   protected boolean hasConditionData(ConditionType conditionType) {
     return this.conditionDataEntry != null
         && this.conditionDataEntry.conditionType() == conditionType;
+  }
+
+  protected SpinButton<ConditionOperationType> addComparisonOperationButton(
+      int left, int top, boolean hasConditionData, ConditionOperationType defaultOperationType) {
+    return this.screen.addConditionEntryWidget(
+        new SpinButton<>(
+            left,
+            top,
+            180,
+            16,
+            ConditionOperationType.comparisonOperations(),
+            hasConditionData ? this.conditionDataEntry.operationType() : defaultOperationType,
+            button -> {}));
   }
 
   public void init(int editorLeft, int editorTop) {}

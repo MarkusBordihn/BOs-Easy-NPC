@@ -78,7 +78,6 @@ public class IronGolemBase extends IronGolemRaw implements BaseEasyNPC<IronGolem
 
   @Override
   public SoundDataSet getDefaultSoundDataSet(SoundDataSet soundDataSet, String variantName) {
-    soundDataSet.addDefaultSound(SoundType.DAMAGE, SoundEvents.IRON_GOLEM_DAMAGE);
     soundDataSet.addDefaultSound(SoundType.DEATH, SoundEvents.IRON_GOLEM_DEATH);
     soundDataSet.addDefaultSound(SoundType.HURT, SoundEvents.IRON_GOLEM_HURT);
     soundDataSet.addDefaultSound(SoundType.STEP, SoundEvents.IRON_GOLEM_STEP);

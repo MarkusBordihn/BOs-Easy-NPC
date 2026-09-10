@@ -88,6 +88,7 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
     menuButtons.put("position", ConfigurationType.DEFAULT_POSITION);
     menuButtons.put("rotation", ConfigurationType.DEFAULT_ROTATION);
     menuButtons.put("scaling", ConfigurationType.SCALING);
+    menuButtons.put("sound", ConfigurationType.BASIC_SOUND);
     menuButtons.put("trading", ConfigurationType.TRADING);
   }
 
@@ -108,8 +109,16 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
     this.showCloseButton = true;
   }
 
-  private static String formatPosition(BlockPos blockPos) {
+  public static String formatPosition(BlockPos blockPos) {
     return blockPos.getX() + ", " + blockPos.getY() + ", " + blockPos.getZ();
+  }
+
+  public static String getHomePositionLabel(NavigationDataCapable<?> navigationData) {
+    if (navigationData == null || !navigationData.hasNPCHomePosition()) {
+      return "Home: -";
+    }
+
+    return "Home: " + formatPosition(navigationData.getNPCHomePosition());
   }
 
   @Override
@@ -188,8 +197,7 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
 
     NavigationDataCapable<?> navigationData = this.getEasyNPC().getEasyNPCNavigationData();
     if (navigationData != null && navigationData.hasNPCHomePosition()) {
-      this.drawAvatarInfo(
-          guiGraphics, 23, "Home: " + formatPosition(navigationData.getNPCHomePosition()));
+      this.drawAvatarInfo(guiGraphics, 23, getHomePositionLabel(navigationData));
     }
 
     this.drawAvatarInfo(

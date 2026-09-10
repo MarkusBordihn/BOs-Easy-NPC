@@ -24,13 +24,17 @@ import de.markusbordihn.easynpc.api.skin.VariantTexture;
 import net.minecraft.resources.Identifier;
 
 public enum WitchSkinVariant implements VariantTexture {
-  WITCH;
+  WITCH(Constants.MINECRAFT_PREFIX, "textures/entity/witch.png"),
+  CRIMSON(Constants.MOD_ID, "textures/entity/witch/witch_crimson.png");
 
-  private static final Identifier TEXTURE =
-      Identifier.fromNamespaceAndPath(Constants.MINECRAFT_PREFIX, "textures/entity/witch.png");
+  private final Identifier textureLocation;
+
+  WitchSkinVariant(String namespace, String path) {
+    this.textureLocation = parseTextureLocation(namespace, path);
+  }
 
   @Override
   public Identifier getTextureLocation() {
-    return TEXTURE;
+    return this.textureLocation;
   }
 }

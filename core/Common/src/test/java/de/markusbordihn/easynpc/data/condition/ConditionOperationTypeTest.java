@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.data.condition;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class ConditionOperationTypeTest {
@@ -102,7 +103,25 @@ class ConditionOperationTypeTest {
     assertEquals(">=", ConditionOperationType.GREATER_THAN_OR_EQUALS.getSymbol());
     assertEquals("<", ConditionOperationType.LESS_THAN.getSymbol());
     assertEquals("<=", ConditionOperationType.LESS_THAN_OR_EQUALS.getSymbol());
+    assertEquals("exists", ConditionOperationType.EXISTS.getSymbol());
+    assertEquals("!exists", ConditionOperationType.NOT_EXISTS.getSymbol());
     assertEquals("", ConditionOperationType.NONE.getSymbol());
+  }
+
+  @Test
+  @DisplayName("The comparison operations exclude the existence operations")
+  void testComparisonOperations() {
+    assertFalse(
+        ConditionOperationType.comparisonOperations().contains(ConditionOperationType.NONE));
+    assertFalse(
+        ConditionOperationType.comparisonOperations().contains(ConditionOperationType.EXISTS));
+    assertFalse(
+        ConditionOperationType.comparisonOperations().contains(ConditionOperationType.NOT_EXISTS));
+    assertTrue(
+        ConditionOperationType.comparisonOperations().contains(ConditionOperationType.EQUALS));
+    assertEquals(
+        ConditionOperationType.EQUALS,
+        ConditionOperationType.comparisonOperations().iterator().next());
   }
 
   @Test

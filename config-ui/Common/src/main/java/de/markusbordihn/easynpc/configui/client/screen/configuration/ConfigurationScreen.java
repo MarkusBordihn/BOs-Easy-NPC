@@ -35,6 +35,7 @@ import java.util.Collections;
 import java.util.List;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -150,6 +151,23 @@ public class ConfigurationScreen<T extends ConfigUIMenu>
     }
 
     return false;
+  }
+
+  protected void blockButtonWithoutPermission(Button button, ConfigurationType configurationType) {
+    if (button == null || !this.isConfigurationBlockedByPermission(configurationType)) {
+      return;
+    }
+
+    this.blockButtonWithReason(button, "menu.tooltip.no_permission");
+  }
+
+  protected void blockButtonWithReason(Button button, String reasonTranslationKey) {
+    if (button == null) {
+      return;
+    }
+
+    button.active = false;
+    button.setTooltip(Tooltip.create(TextComponent.getTranslatedConfigText(reasonTranslationKey)));
   }
 
   protected boolean supportsConfigurationType(ConfigurationType configurationType) {

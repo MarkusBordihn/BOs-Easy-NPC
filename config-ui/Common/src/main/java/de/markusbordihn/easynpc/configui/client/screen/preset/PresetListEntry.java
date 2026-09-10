@@ -33,6 +33,8 @@ import de.markusbordihn.easynpc.handler.PresetHandler;
 import de.markusbordihn.easynpc.io.ClientDefaultPresetDataFiles;
 import de.markusbordihn.easynpc.io.LocalPresetDataFiles;
 import de.markusbordihn.easynpc.security.PresetFeaturePreview;
+import de.markusbordihn.easynpc.utils.UUIDUtils;
+import java.util.UUID;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ObjectSelectionList;
@@ -42,6 +44,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -58,6 +61,9 @@ public class PresetListEntry extends ObjectSelectionList.Entry<PresetListEntry> 
   private PresetData presetData;
   private PresetFeaturePreview securityPreview;
   private EasyNPC<?> previewNPC;
+  private UUID storedEntityUUID;
+  private UUID storedPresetUUID;
+  private Vec3 storedPosition;
 
   public PresetListEntry(
       Identifier preset,
@@ -69,6 +75,30 @@ public class PresetListEntry extends ObjectSelectionList.Entry<PresetListEntry> 
     this.presetType = presetType;
     this.screen = screen;
     loadPresetData();
+    loadStoredIdentity();
+  }
+
+  private void loadStoredIdentity() {
+    PresetData identitySource = this.presetData;
+    if (identitySource == null || !identitySource.hasData()) {
+      CompoundTag identityTag = this.screen.getPresetIdentityFromSync(this.preset);
+      if (identityTag == null) {
+        return;
+      }
+
+      identitySource =
+          new PresetData(
+              this.preset.getPath(),
+              null,
+              identityTag,
+              this.preset,
+              this.presetType,
+              this.metadata);
+    }
+
+    this.storedEntityUUID = identitySource.getEntityUUID();
+    this.storedPresetUUID = identitySource.getPresetUUID();
+    this.storedPosition = identitySource.getPosition();
   }
 
   private void loadPresetData() {
@@ -184,6 +214,22 @@ public class PresetListEntry extends ObjectSelectionList.Entry<PresetListEntry> 
     return previewNPC;
   }
 
+  public UUID getStoredEntityUUID() {
+    return this.storedEntityUUID;
+  }
+
+  public UUID getStoredPresetUUID() {
+    return this.storedPresetUUID;
+  }
+
+  public Vec3 getStoredPosition() {
+    return this.storedPosition;
+  }
+
+  public boolean hasStoredIdentity() {
+    return this.storedEntityUUID != null;
+  }
+
   @Override
   public void renderContent(
       GuiGraphics guiGraphics, int mouseX, int mouseY, boolean isMouseOver, float partialTicks) {
@@ -245,6 +291,9 @@ public class PresetListEntry extends ObjectSelectionList.Entry<PresetListEntry> 
     String versionLine = this.metadata.version();
     if (!OWN_NAMESPACE.equals(this.preset.getNamespace())) {
       versionLine = versionLine + "  @" + this.preset.getNamespace();
+    }
+    if (this.storedEntityUUID != null) {
+      versionLine = versionLine + "  #" + UUIDUtils.shortId(this.storedEntityUUID);
     }
 
     Text.drawString(

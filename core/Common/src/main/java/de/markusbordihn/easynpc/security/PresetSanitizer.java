@@ -88,10 +88,7 @@ public class PresetSanitizer {
     }
 
     CompoundTag sanitizedTag = compoundTag.copy();
-    sanitizedTag.remove("UUID");
     sanitizedTag.remove(OwnerDataCapable.DATA_OWNER_TAG);
-    sanitizedTag.remove("Pos");
-    sanitizedTag.remove("Rotation");
     removeActionAuthority(sanitizedTag);
     resetPresetAccess(sanitizedTag);
 

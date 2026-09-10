@@ -41,7 +41,8 @@ public enum CatSkinVariant implements VariantTexture {
   RED(Constants.MINECRAFT_PREFIX, "textures/entity/cat/red.png", CatVariants.RED),
   SIAMESE(Constants.MINECRAFT_PREFIX, "textures/entity/cat/siamese.png", CatVariants.SIAMESE),
   TABBY(Constants.MINECRAFT_PREFIX, "textures/entity/cat/tabby.png", CatVariants.TABBY),
-  WHITE(Constants.MINECRAFT_PREFIX, "textures/entity/cat/white.png", CatVariants.WHITE);
+  WHITE(Constants.MINECRAFT_PREFIX, "textures/entity/cat/white.png", CatVariants.WHITE),
+  BENGAL(Constants.MOD_ID, "textures/entity/cat/cat_bengal.png", CatVariants.TABBY);
 
   private final Identifier textureLocation;
   private final ResourceKey<CatVariant> vanillaVariant;

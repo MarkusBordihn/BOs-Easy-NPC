@@ -65,6 +65,10 @@ import de.markusbordihn.easynpc.configui.menu.configuration.skin.CustomSkinConfi
 import de.markusbordihn.easynpc.configui.menu.configuration.skin.DefaultSkinConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.skin.PlayerSkinConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.skin.UrlSkinConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.configui.menu.configuration.sound.BasicSoundConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.configui.menu.configuration.sound.CombatSoundConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.configui.menu.configuration.sound.InteractionSoundConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.configui.menu.configuration.sound.TradeSoundConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.trading.AdvancedTradingConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.trading.BasicTradingConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.trading.CustomTradingConfigurationMenuWrapper;
@@ -183,6 +187,11 @@ public class ModMenuTypes {
           BuiltInRegistries.MENU,
           ConfigurationType.BASIC_POSE.getId(),
           new MenuType<>(BasicPoseConfigurationMenuWrapper::new, FeatureFlagSet.of()));
+  public static final MenuType<BasicSoundConfigurationMenuWrapper> BASIC_SOUND_CONFIGURATION_MENU =
+      Registry.register(
+          BuiltInRegistries.MENU,
+          ConfigurationType.BASIC_SOUND.getId(),
+          new MenuType<>(BasicSoundConfigurationMenuWrapper::new, FeatureFlagSet.of()));
   public static final MenuType<BasicTradingConfigurationMenuWrapper>
       BASIC_TRADING_CONFIGURATION_MENU =
           Registry.register(
@@ -200,6 +209,12 @@ public class ModMenuTypes {
               BuiltInRegistries.MENU,
               ConfigurationType.COMBAT_ATTRIBUTE.getId(),
               new MenuType<>(CombatAttributeConfigurationMenuWrapper::new, FeatureFlagSet.of()));
+  public static final MenuType<CombatSoundConfigurationMenuWrapper>
+      COMBAT_SOUND_CONFIGURATION_MENU =
+          Registry.register(
+              BuiltInRegistries.MENU,
+              ConfigurationType.COMBAT_SOUND.getId(),
+              new MenuType<>(CombatSoundConfigurationMenuWrapper::new, FeatureFlagSet.of()));
   public static final MenuType<ExportCustomPresetConfigurationMenuWrapper>
       CUSTOM_EXPORT_PRESET_CONFIGURATION_MENU =
           Registry.register(
@@ -333,6 +348,17 @@ public class ModMenuTypes {
               BuiltInRegistries.MENU,
               ConfigurationType.DISTANCE_ACTION.getId(),
               new MenuType<>(DistanceActionConfigurationMenuWrapper::new, FeatureFlagSet.of()));
+  public static final MenuType<InteractionSoundConfigurationMenuWrapper>
+      INTERACTION_SOUND_CONFIGURATION_MENU =
+          Registry.register(
+              BuiltInRegistries.MENU,
+              ConfigurationType.INTERACTION_SOUND.getId(),
+              new MenuType<>(InteractionSoundConfigurationMenuWrapper::new, FeatureFlagSet.of()));
+  public static final MenuType<TradeSoundConfigurationMenuWrapper> TRADE_SOUND_CONFIGURATION_MENU =
+      Registry.register(
+          BuiltInRegistries.MENU,
+          ConfigurationType.TRADE_SOUND.getId(),
+          new MenuType<>(TradeSoundConfigurationMenuWrapper::new, FeatureFlagSet.of()));
   public static final MenuType<IntervalActionConfigurationMenuWrapper>
       INTERVAL_ACTION_CONFIGURATION_MENU =
           Registry.register(

@@ -24,9 +24,7 @@ import de.markusbordihn.easynpc.configui.client.screen.configuration.Configurati
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
-import de.markusbordihn.easynpc.network.components.TextComponent;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -71,11 +69,7 @@ public class AttributeConfigurationScreen<T extends ConfigurationMenu>
                     NetworkMessageHandlerManager.getServerHandler()
                         .openConfiguration(
                             this.getEasyNPCUUID(), ConfigurationType.BASE_ATTRIBUTE)));
-    if (this.isConfigurationBlockedByPermission(ConfigurationType.BASE_ATTRIBUTE)) {
-      this.baseAttributeButton.active = false;
-      this.baseAttributeButton.setTooltip(
-          Tooltip.create(TextComponent.getTranslatedConfigText("menu.tooltip.no_permission")));
-    }
+    this.blockButtonWithoutPermission(this.baseAttributeButton, ConfigurationType.BASE_ATTRIBUTE);
 
     this.combatAttributeButton =
         this.addRenderableWidget(
@@ -88,11 +82,8 @@ public class AttributeConfigurationScreen<T extends ConfigurationMenu>
                     NetworkMessageHandlerManager.getServerHandler()
                         .openConfiguration(
                             this.getEasyNPCUUID(), ConfigurationType.COMBAT_ATTRIBUTE)));
-    if (this.isConfigurationBlockedByPermission(ConfigurationType.COMBAT_ATTRIBUTE)) {
-      this.combatAttributeButton.active = false;
-      this.combatAttributeButton.setTooltip(
-          Tooltip.create(TextComponent.getTranslatedConfigText("menu.tooltip.no_permission")));
-    }
+    this.blockButtonWithoutPermission(
+        this.combatAttributeButton, ConfigurationType.COMBAT_ATTRIBUTE);
 
     this.displayAttributeButton =
         this.addRenderableWidget(

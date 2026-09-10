@@ -22,19 +22,24 @@ package de.markusbordihn.easynpc.configui.network.message.server;
 import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.data.preset.PresetData;
 import de.markusbordihn.easynpc.data.preset.PresetType;
+import de.markusbordihn.easynpc.handler.PlacementHandler;
+import de.markusbordihn.easynpc.handler.PresetFeedback;
 import de.markusbordihn.easynpc.handler.PresetHandler;
+import de.markusbordihn.easynpc.handler.PresetImportResult;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
+import de.markusbordihn.easynpc.security.CommandSecurity;
 import de.markusbordihn.easynpc.security.FeatureSecurity;
 import de.markusbordihn.easynpc.security.NpcFeature;
 import de.markusbordihn.easynpc.security.SpawnRateLimiter;
+import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.phys.Vec3;
 
 public record SpawnPresetMessage(
     PresetType presetType,
@@ -91,59 +96,75 @@ public record SpawnPresetMessage(
       return;
     }
 
+    if (this.useOriginalData
+        && !FeatureSecurity.checkActorFeatureAccess(serverPlayer, NpcFeature.POSITION).allowed()) {
+      serverPlayer.sendSystemMessage(PresetFeedback.restoreDenied());
+      return;
+    }
+
     if (!SpawnRateLimiter.checkAndRecord(serverPlayer)) {
       log.warn(
           "Rate-limited NPC spawn attempt by {}. Adjust security.cfg keys npcSpawnRateLimitCreative or npcSpawnRateLimitAdmin to change this.",
           serverPlayer.getName());
       serverPlayer.sendSystemMessage(
-          Component.literal(
-              "NPC spawn rate limit reached. Please wait before spawning more NPCs."));
+          PresetFeedback.spawnRateLimited(SpawnRateLimiter.spawnLimit(serverPlayer)));
       return;
     }
 
-    var playerLook = serverPlayer.getLookAngle();
-    var spawnPos = serverPlayer.position().add(playerLook.x * 3, 0, playerLook.z * 3);
-    boolean canUseOriginalData =
-        useOriginalData
-            && FeatureSecurity.checkActorFeatureAccess(serverPlayer, NpcFeature.POSITION).allowed();
-    var uuid = canUseOriginalData ? null : java.util.UUID.randomUUID();
-    var position = canUseOriginalData ? null : spawnPos;
+    UUID uuid = this.useOriginalData ? null : UUID.randomUUID();
+    Vec3 position = this.useOriginalData ? null : findSpawnPosition(serverPlayer);
 
-    boolean success;
+    PresetImportResult importResult =
+        this.presetData != null
+            ? this.importClientPresetData(serverPlayer, position, uuid)
+            : PresetHandler.importPresetWithReport(
+                serverPlayer.level(),
+                this.presetType,
+                this.resourceLocation,
+                position,
+                uuid,
+                CommandSecurity.getActorContext(serverPlayer),
+                serverPlayer);
 
-    if (this.presetData != null) {
-      var resolvedPresetData =
-          PresetHandler.resolveParentPresets(
-              this.presetData,
-              this.resourceLocation,
-              this.presetType,
-              serverPlayer.level().getServer());
-      var presetDataObj =
-          PresetData.fromCompoundTag(this.resourceLocation, this.presetType, resolvedPresetData);
-      if (presetDataObj != null && presetDataObj.hasValidData()) {
-        success =
-            PresetHandler.importPreset(
-                serverPlayer.level(), presetDataObj, position, uuid, serverPlayer);
-      } else {
-        log.error("Invalid preset data for {}", this.resourceLocation);
-        success = false;
-      }
-    } else {
-      success =
-          PresetHandler.importPreset(
-              serverPlayer.level(),
-              this.presetType,
-              this.resourceLocation,
-              position,
-              uuid,
-              serverPlayer);
-    }
-
-    if (!success) {
+    if (!importResult.success()) {
       log.error(
           "Failed to spawn preset {} for player {}",
           this.resourceLocation,
           serverPlayer.getName().getString());
     }
+
+    PresetFeedback.sendImportResult(serverPlayer, importResult, this.resourceLocation);
+  }
+
+  private static Vec3 findSpawnPosition(ServerPlayer serverPlayer) {
+    Vec3 playerLook = serverPlayer.getLookAngle();
+    return PlacementHandler.findFreePositionNear(
+        serverPlayer.level(),
+        serverPlayer.position().add(playerLook.x * 3, 0, playerLook.z * 3));
+  }
+
+  private PresetImportResult importClientPresetData(
+      ServerPlayer serverPlayer, Vec3 position, UUID uuid) {
+    CompoundTag resolvedPresetData =
+        PresetHandler.resolveParentPresets(
+            this.presetData,
+            this.resourceLocation,
+            this.presetType,
+            serverPlayer.level().getServer());
+    PresetData resolvedPreset =
+        PresetData.fromCompoundTag(this.resourceLocation, this.presetType, resolvedPresetData);
+    if (resolvedPreset == null || !resolvedPreset.hasValidData()) {
+      log.error("Invalid preset data for {}", this.resourceLocation);
+      return PresetImportResult.FAILED;
+    }
+
+    return PresetHandler.importPresetWithReport(
+        serverPlayer.level(),
+        resolvedPreset,
+        position,
+        uuid,
+        CommandSecurity.getActorContext(serverPlayer),
+        serverPlayer,
+        null);
   }
 }

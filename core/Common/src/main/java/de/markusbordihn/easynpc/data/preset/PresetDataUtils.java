@@ -64,9 +64,7 @@ public class PresetDataUtils {
     "OnGround",
     "PersistenceRequired"
   };
-  private static final String[] POSITION_TAGS = {
-    "Pos", "Rotation", NavigationDataCapable.DATA_NAVIGATION_TAG
-  };
+  private static final String[] POSITION_TAGS = {"Pos", "Rotation"};
   private static final String ENTITY_UUID_TAG = "UUID";
 
   private PresetDataUtils() {}
@@ -83,11 +81,20 @@ public class PresetDataUtils {
     for (String tag : RUNTIME_STATE_TAGS) {
       entityData.remove(tag);
     }
+    entityData.remove(NavigationDataCapable.DATA_NAVIGATION_TAG);
 
     if (mode == CleanupMode.FULL) {
       for (String tag : POSITION_TAGS) {
         entityData.remove(tag);
       }
+    }
+
+    return entityData;
+  }
+
+  public static CompoundTag removeEntityUUID(CompoundTag entityData) {
+    if (entityData != null) {
+      entityData.remove(ENTITY_UUID_TAG);
     }
 
     return entityData;
@@ -155,7 +162,7 @@ public class PresetDataUtils {
         DataComponents.PRESET_DATA,
         new PresetData(
             presetData.entityType(),
-            cleanupEntityData(presetData.data().copy(), CleanupMode.FULL)));
+            removeEntityUUID(cleanupEntityData(presetData.data().copy(), CleanupMode.FULL))));
 
     return itemStack;
   }
@@ -191,10 +198,7 @@ public class PresetDataUtils {
       return false;
     }
 
-    CompoundTag entityData = sanitizedPresetData.data().copy();
-    if (entityData.contains(ENTITY_UUID_TAG)) {
-      entityData.remove(ENTITY_UUID_TAG);
-    }
+    CompoundTag entityData = removeEntityUUID(sanitizedPresetData.data().copy());
 
     LegacyAttributeConverter.convertLegacyAttributes(entityData);
 

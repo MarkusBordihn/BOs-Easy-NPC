@@ -23,6 +23,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.component.DataComponents;
+import de.markusbordihn.easynpc.entity.easynpc.data.OwnerDataCapable;
 import de.markusbordihn.easynpc.io.CustomPresetDataFiles;
 import de.markusbordihn.easynpc.utils.CompoundTagUtils;
 import java.util.Optional;
@@ -59,6 +60,8 @@ public record PresetData(
   public static final String PRESET_UUID_TAG = "PresetUUID";
   public static final String ID_TAG = "id";
   public static final String UUID_TAG = "UUID";
+  public static final String POSITION_TAG = "Pos";
+  public static final String ROTATION_TAG = "Rotation";
   public static final PresetData EMPTY =
       new PresetData(
           EMPTY_NAME,
@@ -287,8 +290,20 @@ public record PresetData(
     posTag.add(DoubleTag.valueOf(position.x));
     posTag.add(DoubleTag.valueOf(position.y));
     posTag.add(DoubleTag.valueOf(position.z));
-    updatedData.put("Pos", posTag);
+    updatedData.put(POSITION_TAG, posTag);
     return new PresetData(name, entityType, updatedData, location, presetType, metadata);
+  }
+
+  public PresetData withoutPosition() {
+    if (this.data == null || !this.data.contains(POSITION_TAG)) {
+      return this;
+    }
+
+    CompoundTag updatedData = this.data.copy();
+    updatedData.remove(POSITION_TAG);
+    updatedData.remove(ROTATION_TAG);
+    return new PresetData(
+        this.name, this.entityType, updatedData, this.location, this.presetType, this.metadata);
   }
 
   public PresetData withUUID(UUID uuid) {
@@ -312,5 +327,27 @@ public record PresetData(
       return null;
     }
     return CompoundTagUtils.readUUID(data, UUID_TAG);
+  }
+
+  public UUID getOwnerUUID() {
+    if (this.data == null) {
+      return null;
+    }
+    return CompoundTagUtils.readUUID(this.data, OwnerDataCapable.DATA_OWNER_TAG);
+  }
+
+  public Vec3 getPosition() {
+    if (this.data == null) {
+      return null;
+    }
+
+    ListTag positionTag = this.data.getListOrEmpty(POSITION_TAG);
+    if (positionTag.size() != 3) {
+      return null;
+    }
+    return new Vec3(
+        positionTag.getDouble(0).orElse(0.0D),
+        positionTag.getDouble(1).orElse(0.0D),
+        positionTag.getDouble(2).orElse(0.0D));
   }
 }

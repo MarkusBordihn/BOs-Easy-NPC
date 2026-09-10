@@ -21,14 +21,12 @@ package de.markusbordihn.easynpc.mixin.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.client.model.EasyNPCModel;
+import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCRenderVisibility;
+import de.markusbordihn.easynpc.client.renderer.entity.NameTagRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.SpeechBubbleRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.state.EasyNPCRenderStateExtension;
-import de.markusbordihn.easynpc.data.display.DisplayAttributeType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.DisplayAttributeDataCapable;
-import de.markusbordihn.easynpc.handler.AttributeHandler;
-import de.markusbordihn.easynpc.utils.ItemUtils;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -45,8 +43,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(EntityRenderer.class)
 public class EasyNPCEntityRendererMixin<T extends Entity, S extends EntityRenderState> {
 
-  private static final double NPC_WAND_RENDER_RANGE = 32.0d;
-
   @Inject(method = "shouldRender", at = @At("HEAD"), cancellable = true)
   private void onShouldRender(
       T entity,
@@ -55,27 +51,9 @@ public class EasyNPCEntityRendererMixin<T extends Entity, S extends EntityRender
       double y,
       double z,
       CallbackInfoReturnable<Boolean> cir) {
-    if (entity instanceof EasyNPC<?> easyNPC) {
-      var player = Minecraft.getInstance().player;
-      if (player == null) {
-        return;
-      }
-
-      if (ItemUtils.isPlayerHoldingEasyNPCWand(player)) {
-        double distanceSquared = entity.distanceToSqr(player);
-        if (distanceSquared <= NPC_WAND_RENDER_RANGE * NPC_WAND_RENDER_RANGE) {
-          cir.setReturnValue(true);
-          return;
-        }
-      }
-
-      boolean isInvisible =
-          entity.isInvisible()
-              || entity.isInvisibleTo(player)
-              || AttributeHandler.getOpacity(easyNPC) <= DisplayAttributeType.MIN_OPACITY;
-      if (isInvisible) {
-        cir.setReturnValue(false);
-      }
+    Boolean shouldRender = EasyNPCRenderVisibility.resolveShouldRenderOverride(entity);
+    if (shouldRender != null) {
+      cir.setReturnValue(shouldRender);
     }
   }
 
@@ -91,14 +69,15 @@ public class EasyNPCEntityRendererMixin<T extends Entity, S extends EntityRender
   }
 
   @Inject(method = "submitNameTag", at = @At("HEAD"), cancellable = true)
-  private void onRenderNameTag(
+  private void onSubmitNameTag(
       S renderState,
       PoseStack poseStack,
       SubmitNodeCollector submitNodeCollector,
       CameraRenderState cameraRenderState,
       CallbackInfo ci) {
-    if (renderState instanceof EasyNPCRenderStateExtension renderStateExtension) {
-      EasyNPCModel.renderEntityNameTag(renderStateExtension, poseStack);
+    if (renderState instanceof EasyNPCRenderStateExtension) {
+      NameTagRenderer.submit(renderState, poseStack, submitNodeCollector, cameraRenderState);
+      ci.cancel();
     }
   }
 

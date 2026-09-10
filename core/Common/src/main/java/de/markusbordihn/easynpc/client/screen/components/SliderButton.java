@@ -160,11 +160,37 @@ public class SliderButton extends AbstractSliderButton {
       float maxValue,
       SliderButton.OnChange onChange,
       Type type) {
+    this(
+        x,
+        y,
+        width,
+        height,
+        name,
+        initValue,
+        minValue,
+        maxValue,
+        getStepSize(type),
+        onChange,
+        type);
+  }
+
+  public SliderButton(
+      int x,
+      int y,
+      int width,
+      int height,
+      Component name,
+      float initValue,
+      float minValue,
+      float maxValue,
+      float stepSize,
+      SliderButton.OnChange onChange,
+      Type type) {
     super(x, y, width, height, name, initValue);
     this.initValue = initValue;
     this.minValue = minValue;
     this.maxValue = maxValue;
-    this.stepSize = getStepSize(type);
+    this.stepSize = stepSize;
     this.valueFraction = maxValue - minValue;
     this.value = (this.initValue - minValue) / this.valueFraction;
     if ((this.minValue == 0 && this.maxValue == 360)

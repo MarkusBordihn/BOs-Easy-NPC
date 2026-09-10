@@ -27,7 +27,8 @@ public enum AllaySkinVariant implements VariantTexture {
   ALLAY(Constants.MINECRAFT_PREFIX, "textures/entity/allay/allay.png"),
   LAVA(Constants.MOD_ID, "textures/entity/allay/allay_lava.png"),
   GRASSLAND(Constants.MOD_ID, "textures/entity/allay/allay_grassland.png"),
-  WATER(Constants.MOD_ID, "textures/entity/allay/allay_water.png");
+  WATER(Constants.MOD_ID, "textures/entity/allay/allay_water.png"),
+  AMETHYST(Constants.MOD_ID, "textures/entity/allay/allay_amethyst.png");
 
   private final Identifier textureLocation;
 

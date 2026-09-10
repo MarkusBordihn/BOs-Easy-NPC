@@ -21,9 +21,11 @@ package de.markusbordihn.easynpc.io;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.data.preset.PresetData;
 import de.markusbordihn.easynpc.data.preset.PresetExportFormat;
 import de.markusbordihn.easynpc.data.preset.PresetMetadata;
 import de.markusbordihn.easynpc.entity.easynpc.data.PresetDataCapable;
+import de.markusbordihn.easynpc.utils.CompoundTagUtils;
 import de.markusbordihn.easynpc.utils.SnbtFormatter;
 import java.io.File;
 import java.io.FileWriter;
@@ -31,6 +33,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.NbtIo;
@@ -66,6 +69,28 @@ public class PresetFileHandler {
         yield new CompoundTag();
       }
     };
+  }
+
+  public static CompoundTag loadWithStablePresetUUID(File file) {
+    CompoundTag compoundTag = load(file);
+    if (compoundTag == null || compoundTag.isEmpty()) {
+      return compoundTag;
+    }
+
+    CompoundTag entityData =
+        PresetData.usesEntityDataWrapper(compoundTag)
+            ? compoundTag.getCompoundOrEmpty(PresetData.DATA_TAG)
+            : compoundTag;
+    if (CompoundTagUtils.readUUID(entityData, PresetData.PRESET_UUID_TAG) != null) {
+      return compoundTag;
+    }
+
+    CompoundTagUtils.writeUUID(entityData, PresetData.PRESET_UUID_TAG, UUID.randomUUID());
+    if (!save(file, compoundTag)) {
+      log.warn("Unable to store the preset UUID in {}, it will change on every load", file);
+    }
+
+    return compoundTag;
   }
 
   public static CompoundTag loadNbt(File file) {

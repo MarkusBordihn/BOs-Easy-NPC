@@ -108,6 +108,10 @@ public interface EasyNPC<E extends Mob> extends EasyNPCDataAccessors<E>, Npc {
     return EasyNPCEntityAccess.isServerSide(this);
   }
 
+  static boolean isUsableServerSideInstance(EasyNPC<?> easyNPC) {
+    return easyNPC != null && !easyNPC.isClientSideInstance();
+  }
+
   default LivingEntity getLivingEntity() {
     return EasyNPCEntityAccess.getLivingEntity(this);
   }

@@ -29,6 +29,7 @@
     "renderer.CustomHeadLayerMixin",
     "renderer.DrownedOuterLayerMixin",
     "renderer.EasyNPCEntityRendererMixin",
+    "renderer.EasyNPCHighlightMixin",
     "renderer.EasyNPCLivingEntityRendererMixin",
     "renderer.EasyNPCSlimeRendererMixin",
     "renderer.HumanoidArmorLayerMixin",

@@ -461,6 +461,26 @@ public final class ModGameTests {
         () -> PresetDefaultBaselineTest::testCustomObjectiveDataReplacesDefaultObjectives);
 
     TEST_FUNCTIONS.register(
+        "export_keeps_identity", () -> PresetIdentityTest::testExportKeepsIdentity);
+    TEST_FUNCTIONS.register(
+        "import_restores_deleted_n_p_c", () -> PresetIdentityTest::testImportRestoresDeletedNPC);
+    TEST_FUNCTIONS.register(
+        "import_new_creates_new_identity",
+        () -> PresetIdentityTest::testImportNewCreatesNewIdentity);
+    TEST_FUNCTIONS.register(
+        "import_keeps_target_position", () -> PresetIdentityTest::testImportKeepsTargetPosition);
+    TEST_FUNCTIONS.register(
+        "export_exposes_identity", () -> PresetIdentityTest::testExportExposesIdentity);
+    TEST_FUNCTIONS.register(
+        "import_reports_created_entity", () -> PresetIdentityTest::testImportReportsCreatedEntity);
+    TEST_FUNCTIONS.register(
+        "import_reports_updated_entity", () -> PresetIdentityTest::testImportReportsUpdatedEntity);
+    TEST_FUNCTIONS.register(
+        "import_reports_replaced_entity", () -> PresetIdentityTest::testImportReportsReplacedEntity);
+    TEST_FUNCTIONS.register(
+        "preset_item_drops_identity", () -> PresetIdentityTest::testPresetItemDropsIdentity);
+
+    TEST_FUNCTIONS.register(
         "preset_survives_round_trip", () -> PresetRoundTripTest::testPresetSurvivesRoundTrip);
     TEST_FUNCTIONS.register(
         "preset_survives_round_trip_for_villager",
