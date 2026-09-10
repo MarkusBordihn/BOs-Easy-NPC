@@ -161,6 +161,9 @@ public class DefaultPresetRoundTripTestHelper {
     CompoundTag sharedEntityData = entityData.copy();
     sharedEntityData.remove(PresetDataCapable.PRESET_METADATA_TAG);
     sharedEntityData.remove(NavigationDataCapable.DATA_NAVIGATION_TAG);
+    sharedEntityData.remove(Entity.UUID_TAG);
+    sharedEntityData.remove(PresetData.POSITION_TAG);
+    sharedEntityData.remove(PresetData.ROTATION_TAG);
     preset.put(PresetData.DATA_TAG, sharedEntityData);
     return preset;
   }

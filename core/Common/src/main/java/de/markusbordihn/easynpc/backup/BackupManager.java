@@ -140,7 +140,7 @@ public class BackupManager {
     }
 
     File backupFile = backupFilePath.toFile();
-    if (PresetHandler.exportPreset(easyNPC, backupFile)) {
+    if (PresetHandler.exportBackupPreset(easyNPC, backupFile)) {
       lastNPCBackupTime.put(uuid, System.currentTimeMillis());
     } else {
       log.error("{} Backup failed for {}", LOG_PREFIX, easyNPC);

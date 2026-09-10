@@ -24,6 +24,7 @@ import de.markusbordihn.easynpc.data.preset.PresetMetadata;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
+import de.markusbordihn.easynpc.handler.PresetFeedback;
 import de.markusbordihn.easynpc.handler.PresetHandler;
 import de.markusbordihn.easynpc.io.CustomPresetDataFiles;
 import de.markusbordihn.easynpc.io.PresetFileHandler;
@@ -34,7 +35,6 @@ import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
@@ -127,10 +127,10 @@ public record ExportCustomPresetServerMessage(UUID uuid, String name, PresetMeta
           easyNPC,
           skinModel,
           presetFile);
+      serverPlayer.sendSystemMessage(PresetFeedback.exportFailed(presetFile.getName()));
       return;
     }
 
-    serverPlayer.sendSystemMessage(
-        Component.literal("Preset exported to server. Server-specific data was not included."));
+    PresetFeedback.sendExportResult(serverPlayer, presetFile.getName(), this.uuid);
   }
 }

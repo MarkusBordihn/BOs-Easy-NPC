@@ -21,8 +21,12 @@ package de.markusbordihn.easynpc.configui.menu.custom;
 
 import de.markusbordihn.easynpc.configui.data.custom.CustomMenuType;
 import de.markusbordihn.easynpc.configui.menu.preset.PresetBrowserMenu;
+import de.markusbordihn.easynpc.data.preset.PresetData;
 import de.markusbordihn.easynpc.data.preset.PresetMetadata;
+import de.markusbordihn.easynpc.data.preset.PresetType;
 import de.markusbordihn.easynpc.data.screen.ScreenData;
+import de.markusbordihn.easynpc.entity.easynpc.data.OwnerDataCapable;
+import de.markusbordihn.easynpc.handler.PresetHandler;
 import de.markusbordihn.easynpc.io.CustomPresetDataFiles;
 import de.markusbordihn.easynpc.io.DataPresetDataFiles;
 import de.markusbordihn.easynpc.io.PresetFileHandler;
@@ -31,6 +35,7 @@ import de.markusbordihn.easynpc.network.components.TextComponent;
 import de.markusbordihn.easynpc.security.ActorSecurityContext;
 import de.markusbordihn.easynpc.security.CommandSecurity;
 import de.markusbordihn.easynpc.security.FeatureSecurity;
+import de.markusbordihn.easynpc.security.NpcFeature;
 import de.markusbordihn.easynpc.utils.CompoundTagUtils;
 import java.nio.file.Path;
 import java.util.Comparator;
@@ -40,9 +45,13 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.DoubleTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -57,6 +66,46 @@ public class CustomMenuHandler {
     return presets.stream().sorted(Comparator.comparing(ResourceLocation::toString)).toList();
   }
 
+  private static void putPresetIdentity(
+      CompoundTag identityData,
+      ResourceLocation preset,
+      PresetType presetType,
+      CompoundTag presetTag) {
+    PresetData presetData = PresetData.fromCompoundTag(preset, presetType, presetTag);
+    if (presetData == null) {
+      return;
+    }
+
+    CompoundTag identityTag = new CompoundTag();
+    UUID entityUUID = presetData.getEntityUUID();
+    if (entityUUID != null) {
+      identityTag.putUUID(Entity.UUID_TAG, entityUUID);
+    }
+
+    UUID presetUUID = presetData.getPresetUUID();
+    if (presetUUID != null) {
+      identityTag.putUUID(PresetData.PRESET_UUID_TAG, presetUUID);
+    }
+
+    UUID ownerUUID = presetData.getOwnerUUID();
+    if (ownerUUID != null) {
+      identityTag.putUUID(OwnerDataCapable.DATA_OWNER_TAG, ownerUUID);
+    }
+
+    Vec3 position = presetData.getPosition();
+    if (position != null) {
+      ListTag positionTag = new ListTag();
+      positionTag.add(DoubleTag.valueOf(position.x));
+      positionTag.add(DoubleTag.valueOf(position.y));
+      positionTag.add(DoubleTag.valueOf(position.z));
+      identityTag.put(PresetData.POSITION_TAG, positionTag);
+    }
+
+    if (!identityTag.isEmpty()) {
+      identityData.put(preset.toString(), identityTag);
+    }
+  }
+
   public static ScreenData getScreenData(
       final CustomMenuType customMenuType, final ServerPlayer serverPlayer) {
     CompoundTag additionalData = new CompoundTag();
@@ -68,6 +117,10 @@ public class CustomMenuHandler {
       additionalData.putString(
           "SecurityCommandLevel",
           actorSecurityContext != null ? actorSecurityContext.permissionLevel().name() : "ALL");
+      additionalData.putBoolean(
+          "CanRestoreIdentity",
+          FeatureSecurity.checkActorFeatureAccess(serverPlayer, NpcFeature.POSITION).allowed());
+      CompoundTag presetsIdentity = new CompoundTag();
 
       // WORLD Presets (server-side world folder)
       WorldPresetDataFiles.refreshPresetResourceLocations();
@@ -87,6 +140,7 @@ public class CustomMenuHandler {
           CompoundTag presetTag = PresetFileHandler.load(presetPath.toFile());
           if (presetTag != null) {
             worldData.put(preset.toString(), presetTag);
+            putPresetIdentity(presetsIdentity, preset, PresetType.WORLD, presetTag);
           }
         }
       }
@@ -112,6 +166,7 @@ public class CustomMenuHandler {
           CompoundTag presetTag = PresetFileHandler.load(presetPath.toFile());
           if (presetTag != null) {
             customData.put(preset.toString(), presetTag);
+            putPresetIdentity(presetsIdentity, preset, PresetType.CUSTOM, presetTag);
           }
         }
       }
@@ -133,9 +188,15 @@ public class CustomMenuHandler {
         }
         dataPresets.add(preset);
         dataMetadata.put(preset.toString(), metadata.toCompoundTag());
+        putPresetIdentity(
+            presetsIdentity,
+            preset,
+            PresetType.DATA,
+            PresetHandler.loadPresetCompoundTag(PresetType.DATA, preset, serverPlayer.getServer()));
       }
       additionalData.put("DataPresets", CompoundTagUtils.writeResourceLocations(dataPresets));
       additionalData.put("DataPresetsMetadata", dataMetadata);
+      additionalData.put("PresetsIdentity", presetsIdentity);
     }
 
     return new ScreenData(UUID.randomUUID(), null, null, null, null, 0, additionalData);

@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.entity.easynpc;
 
+import de.markusbordihn.easynpc.data.sound.SoundType;
 import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.AttackDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.AttributeDataCapable;
@@ -142,6 +143,13 @@ public interface EasyNPCDataAccessors<E extends Mob> {
 
   default SoundDataCapable<E> getEasyNPCSoundData() {
     return this instanceof SoundDataCapable<E> soundData ? soundData : null;
+  }
+
+  default void playDefaultSoundIfAvailable(SoundType soundType) {
+    SoundDataCapable<E> soundData = this.getEasyNPCSoundData();
+    if (soundData != null) {
+      soundData.playDefaultSound(soundType);
+    }
   }
 
   default VariantDataCapable<E> getEasyNPCVariantData() {

@@ -25,10 +25,6 @@ import de.markusbordihn.easynpc.client.renderer.entity.SpeechBubblePlacement.Scr
 import de.markusbordihn.easynpc.config.ClientSpeechBubbleConfig;
 import de.markusbordihn.easynpc.data.action.SpeechBubbleManager;
 import de.markusbordihn.easynpc.data.action.SpeechBubbleManager.SpeechBubbleEntry;
-import de.markusbordihn.easynpc.data.display.DisplayAttributeType;
-import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.handler.AttributeHandler;
-import de.markusbordihn.easynpc.utils.ItemUtils;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -37,7 +33,6 @@ import java.util.Map;
 import java.util.UUID;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
@@ -45,7 +40,6 @@ import org.joml.Matrix4f;
 
 public class SpeechBubbleFrameRenderer {
 
-  private static final double NPC_WAND_RENDER_RANGE = 32.0D;
   private static final float OFFSET_SMOOTHING = 0.25F;
   private static final Map<UUID, float[]> smoothedOffsets = new HashMap<>();
 
@@ -76,7 +70,8 @@ public class SpeechBubbleFrameRenderer {
 
     for (Entity entity : minecraft.level.entitiesForRendering()) {
       SpeechBubbleEntry speechBubbleEntry = SpeechBubbleManager.get(entity.getUUID());
-      if (speechBubbleEntry == null || !isSpeechBubbleVisible(entity, minecraft.player)) {
+      if (speechBubbleEntry == null
+          || !EasyNPCRenderVisibility.isVisibleTo(entity, minecraft.player)) {
         continue;
       }
 
@@ -210,20 +205,5 @@ public class SpeechBubbleFrameRenderer {
     offsets[0] = SpeechBubblePlacement.approach(offsets[0], targetX, OFFSET_SMOOTHING);
     offsets[1] = SpeechBubblePlacement.approach(offsets[1], targetY, OFFSET_SMOOTHING);
     return offsets;
-  }
-
-  private static boolean isSpeechBubbleVisible(Entity entity, LocalPlayer player) {
-    if (!(entity instanceof EasyNPC<?> easyNPC)) {
-      return false;
-    }
-
-    if (ItemUtils.isPlayerHoldingEasyNPCWand(player)
-        && entity.distanceToSqr(player) <= NPC_WAND_RENDER_RANGE * NPC_WAND_RENDER_RANGE) {
-      return true;
-    }
-
-    return !entity.isInvisible()
-        && !entity.isInvisibleTo(player)
-        && AttributeHandler.getOpacity(easyNPC) > DisplayAttributeType.MIN_OPACITY;
   }
 }

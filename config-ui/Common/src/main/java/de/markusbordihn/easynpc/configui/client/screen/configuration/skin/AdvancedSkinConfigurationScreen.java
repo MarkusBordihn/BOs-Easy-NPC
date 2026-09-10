@@ -151,6 +151,8 @@ public class AdvancedSkinConfigurationScreen<T extends ConfigurationMenu>
                                 ? SkinDataEntry.createNoneSkin()
                                 : restoreSkinDataEntry(formerSkinDataEntry, variantData))));
 
+    this.defineProfessionButtons(this.contentLeftPos + 185, this.contentTopPos + 35);
+
     this.textureLocationBox =
         new TextField(this.font, this.contentLeftPos, this.contentTopPos + 70, 180);
     this.textureLocationBox.setMaxLength(255);

@@ -27,10 +27,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.UUID;
+import net.minecraft.SharedConstants;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.NbtIo;
+import net.minecraft.server.Bootstrap;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -42,6 +45,12 @@ class PresetFileHandlerTest {
 
   private File nbtFile;
   private CompoundTag testPresetData;
+
+  @BeforeAll
+  static void bootstrap() {
+    SharedConstants.tryDetectVersion();
+    Bootstrap.bootStrap();
+  }
 
   @BeforeEach
   void setUp() throws IOException {
@@ -151,6 +160,48 @@ class PresetFileHandlerTest {
     assertEquals("minecraft:zombie", loaded.getString("id"));
 
     snbtFile.delete();
+  }
+
+  @Test
+  @DisplayName("Should store a generated preset UUID in the file instead of minting a new one")
+  void testPresetUUIDStaysStableAcrossLoads() throws IOException {
+    NbtIo.writeCompressed(testPresetData, nbtFile.toPath());
+
+    CompoundTag firstLoad = PresetFileHandler.loadWithStablePresetUUID(nbtFile);
+    CompoundTag secondLoad = PresetFileHandler.loadWithStablePresetUUID(nbtFile);
+
+    assertTrue(firstLoad.getCompound("data").hasUUID("PresetUUID"));
+    assertEquals(
+        firstLoad.getCompound("data").getUUID("PresetUUID"),
+        secondLoad.getCompound("data").getUUID("PresetUUID"));
+    assertEquals(
+        firstLoad.getCompound("data").getUUID("PresetUUID"),
+        NbtIo.readCompressed(nbtFile.toPath(), NbtAccounter.unlimitedHeap()).getCompound("data").getUUID("PresetUUID"));
+  }
+
+  @Test
+  @DisplayName("Should keep an existing preset UUID untouched")
+  void testExistingPresetUUIDIsKept() throws IOException {
+    UUID presetUUID = UUID.randomUUID();
+    testPresetData.getCompound("data").putUUID("PresetUUID", presetUUID);
+    NbtIo.writeCompressed(testPresetData, nbtFile.toPath());
+
+    CompoundTag loaded = PresetFileHandler.loadWithStablePresetUUID(nbtFile);
+
+    assertEquals(presetUUID, loaded.getCompound("data").getUUID("PresetUUID"));
+  }
+
+  @Test
+  @DisplayName("Should store the generated preset UUID at root level for the legacy format")
+  void testPresetUUIDForLegacyFormat() throws IOException {
+    CompoundTag legacyPresetData = new CompoundTag();
+    legacyPresetData.putString("id", "minecraft:zombie");
+    NbtIo.writeCompressed(legacyPresetData, nbtFile.toPath());
+
+    CompoundTag loaded = PresetFileHandler.loadWithStablePresetUUID(nbtFile);
+
+    assertTrue(loaded.hasUUID("PresetUUID"));
+    assertEquals(loaded.getUUID("PresetUUID"), NbtIo.readCompressed(nbtFile.toPath(), NbtAccounter.unlimitedHeap()).getUUID("PresetUUID"));
   }
 
   @Test

@@ -25,7 +25,8 @@ import net.minecraft.resources.ResourceLocation;
 
 public enum GhastSkinVariant implements VariantTexture {
   GHAST(Constants.MINECRAFT_PREFIX, "textures/entity/ghast/ghast.png"),
-  GHAST_SHOOTING(Constants.MINECRAFT_PREFIX, "textures/entity/ghast/ghast_shooting.png");
+  GHAST_SHOOTING(Constants.MINECRAFT_PREFIX, "textures/entity/ghast/ghast_shooting.png"),
+  SOUL(Constants.MOD_ID, "textures/entity/ghast/ghast_soul.png");
 
   private final ResourceLocation textureLocation;
 

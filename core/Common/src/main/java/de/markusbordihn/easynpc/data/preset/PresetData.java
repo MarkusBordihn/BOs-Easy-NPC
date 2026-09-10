@@ -23,6 +23,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.component.DataComponents;
+import de.markusbordihn.easynpc.entity.easynpc.data.OwnerDataCapable;
 import de.markusbordihn.easynpc.io.CustomPresetDataFiles;
 import java.util.Optional;
 import java.util.UUID;
@@ -31,6 +32,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.DoubleTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -57,6 +59,8 @@ public record PresetData(
   public static final String PARENT_TAG = "Parent";
   public static final String PRESET_TAG = "Preset";
   public static final String PRESET_UUID_TAG = "PresetUUID";
+  public static final String POSITION_TAG = "Pos";
+  public static final String ROTATION_TAG = "Rotation";
   public static final PresetData EMPTY =
       new PresetData(
           EMPTY_NAME,
@@ -285,8 +289,20 @@ public record PresetData(
     posTag.add(DoubleTag.valueOf(position.x));
     posTag.add(DoubleTag.valueOf(position.y));
     posTag.add(DoubleTag.valueOf(position.z));
-    updatedData.put("Pos", posTag);
+    updatedData.put(POSITION_TAG, posTag);
     return new PresetData(name, entityType, updatedData, location, presetType, metadata);
+  }
+
+  public PresetData withoutPosition() {
+    if (this.data == null || !this.data.contains(POSITION_TAG)) {
+      return this;
+    }
+
+    CompoundTag updatedData = this.data.copy();
+    updatedData.remove(POSITION_TAG);
+    updatedData.remove(ROTATION_TAG);
+    return new PresetData(
+        this.name, this.entityType, updatedData, this.location, this.presetType, this.metadata);
   }
 
   public PresetData withUUID(UUID uuid) {
@@ -310,5 +326,24 @@ public record PresetData(
       return null;
     }
     return data.getUUID(Entity.UUID_TAG);
+  }
+
+  public UUID getOwnerUUID() {
+    if (this.data == null || !this.data.hasUUID(OwnerDataCapable.DATA_OWNER_TAG)) {
+      return null;
+    }
+    return this.data.getUUID(OwnerDataCapable.DATA_OWNER_TAG);
+  }
+
+  public Vec3 getPosition() {
+    if (this.data == null || !this.data.contains(POSITION_TAG, Tag.TAG_LIST)) {
+      return null;
+    }
+
+    ListTag positionTag = this.data.getList(POSITION_TAG, Tag.TAG_DOUBLE);
+    if (positionTag.size() != 3) {
+      return null;
+    }
+    return new Vec3(positionTag.getDouble(0), positionTag.getDouble(1), positionTag.getDouble(2));
   }
 }

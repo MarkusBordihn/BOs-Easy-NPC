@@ -34,6 +34,7 @@ public enum NpcFeature {
   POSITION("Position"),
   COMBAT_ATTRIBUTE("Combat attributes"),
   BASE_ATTRIBUTE("Base attributes"),
+  SOUND("Sounds"),
   SPAWN_NPC("Spawn NPC"),
   WORLD_PRESET("World preset import/export"),
   CUSTOM_PRESET("Custom preset import/export"),

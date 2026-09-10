@@ -27,7 +27,8 @@ public enum SkeletonSkinVariant implements VariantTexture {
   SKELETON(Constants.MINECRAFT_PREFIX, "textures/entity/skeleton/skeleton.png"),
   STRAY(Constants.MINECRAFT_PREFIX, "textures/entity/skeleton/stray.png"),
   WITHER_SKELETON(Constants.MINECRAFT_PREFIX, "textures/entity/skeleton/wither_skeleton.png"),
-  BOGGED(Constants.MINECRAFT_PREFIX, "textures/entity/skeleton/bogged.png");
+  BOGGED(Constants.MINECRAFT_PREFIX, "textures/entity/skeleton/bogged.png"),
+  MOSSY(Constants.MOD_ID, "textures/entity/skeleton/skeleton_mossy.png");
 
   private final ResourceLocation textureLocation;
 

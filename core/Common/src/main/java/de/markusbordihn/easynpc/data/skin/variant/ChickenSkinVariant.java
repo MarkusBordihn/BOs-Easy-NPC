@@ -24,14 +24,17 @@ import de.markusbordihn.easynpc.api.skin.VariantTexture;
 import net.minecraft.resources.ResourceLocation;
 
 public enum ChickenSkinVariant implements VariantTexture {
-  WHITE;
+  WHITE(Constants.MINECRAFT_PREFIX, "textures/entity/chicken.png"),
+  SPECKLED(Constants.MOD_ID, "textures/entity/chicken/chicken_speckled.png");
 
-  private static final ResourceLocation TEXTURE =
-      ResourceLocation.fromNamespaceAndPath(
-          Constants.MINECRAFT_PREFIX, "textures/entity/chicken.png");
+  private final ResourceLocation textureLocation;
+
+  ChickenSkinVariant(String namespace, String path) {
+    this.textureLocation = parseTextureLocation(namespace, path);
+  }
 
   @Override
   public ResourceLocation getTextureLocation() {
-    return TEXTURE;
+    return this.textureLocation;
   }
 }

@@ -25,7 +25,8 @@ import net.minecraft.resources.ResourceLocation;
 
 public enum VexSkinVariant implements VariantTexture {
   VEX(Constants.MINECRAFT_PREFIX, "textures/entity/illager/vex.png"),
-  CHARGED(Constants.MINECRAFT_PREFIX, "textures/entity/illager/vex_charging.png");
+  CHARGED(Constants.MINECRAFT_PREFIX, "textures/entity/illager/vex_charging.png"),
+  SHADOW(Constants.MOD_ID, "textures/entity/vex/vex_shadow.png");
 
   private final ResourceLocation textureLocation;
 

@@ -19,7 +19,6 @@
 
 package de.markusbordihn.easynpc.client.model;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.client.model.armpose.ModelArmPoseUtils;
 import de.markusbordihn.easynpc.data.display.DisplayAttributeType;
 import de.markusbordihn.easynpc.data.model.ModelAnimationBehavior;
@@ -98,11 +97,6 @@ public class EasyNPCModel {
     }
 
     return easyNPC.getLivingEntity().level().getBrightness(LightLayer.BLOCK, blockPos);
-  }
-
-  public static void renderEntityNameTag(
-      final EasyNPC<?> easyNPC, final ModelDataCapable<?> modelData, final PoseStack poseStack) {
-    // No-op
   }
 
   public static void setupAnimationEnd(

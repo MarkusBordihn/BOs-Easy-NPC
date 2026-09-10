@@ -22,8 +22,11 @@ package de.markusbordihn.easynpc.configui.network.message.server;
 import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.data.preset.PresetType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.handler.PresetFeedback;
 import de.markusbordihn.easynpc.handler.PresetHandler;
+import de.markusbordihn.easynpc.handler.PresetImportResult;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
+import de.markusbordihn.easynpc.security.CommandSecurity;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -85,30 +88,33 @@ public record ImportPresetMessage(
       return;
     }
 
-    switch (this.presetType) {
-      case LOCAL:
-        PresetHandler.importLocalPreset(
-            serverPlayer.serverLevel(),
-            this.compoundTag,
-            this.resourceLocation,
-            easyNPC.getEntity().position(),
-            this.uuid,
-            serverPlayer);
-        break;
-      case CUSTOM:
-      case DATA:
-      case DEFAULT:
-      case WORLD:
-        PresetHandler.importPreset(
-            serverPlayer.serverLevel(),
-            this.presetType,
-            this.resourceLocation,
-            easyNPC.getEntity().position(),
-            this.uuid,
-            serverPlayer);
-        break;
-      default:
-        log.error("Invalid preset type {} from {}", this.presetType, serverPlayer);
+    PresetImportResult importResult =
+        switch (this.presetType) {
+          case LOCAL ->
+              PresetHandler.importLocalPresetWithReport(
+                  serverPlayer.serverLevel(),
+                  this.compoundTag,
+                  this.resourceLocation,
+                  easyNPC.getEntity().position(),
+                  this.uuid,
+                  serverPlayer);
+          case CUSTOM, DATA, DEFAULT, WORLD ->
+              PresetHandler.importPresetWithReport(
+                  serverPlayer.serverLevel(),
+                  this.presetType,
+                  this.resourceLocation,
+                  easyNPC.getEntity().position(),
+                  this.uuid,
+                  CommandSecurity.getActorContext(serverPlayer),
+                  serverPlayer);
+          default -> null;
+        };
+
+    if (importResult == null) {
+      log.error("Invalid preset type {} from {}", this.presetType, serverPlayer);
+      return;
     }
+
+    PresetFeedback.sendImportResult(serverPlayer, importResult, this.resourceLocation);
   }
 }

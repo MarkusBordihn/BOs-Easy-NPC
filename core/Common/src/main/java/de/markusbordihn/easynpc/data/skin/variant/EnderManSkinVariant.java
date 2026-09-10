@@ -24,14 +24,17 @@ import de.markusbordihn.easynpc.api.skin.VariantTexture;
 import net.minecraft.resources.ResourceLocation;
 
 public enum EnderManSkinVariant implements VariantTexture {
-  ENDERMAN;
+  ENDERMAN(Constants.MINECRAFT_PREFIX, "textures/entity/enderman/enderman.png"),
+  FROST(Constants.MOD_ID, "textures/entity/ender_man/ender_man_frost.png");
 
-  private static final ResourceLocation TEXTURE =
-      ResourceLocation.fromNamespaceAndPath(
-          Constants.MINECRAFT_PREFIX, "textures/entity/enderman/enderman.png");
+  private final ResourceLocation textureLocation;
+
+  EnderManSkinVariant(String namespace, String path) {
+    this.textureLocation = parseTextureLocation(namespace, path);
+  }
 
   @Override
   public ResourceLocation getTextureLocation() {
-    return TEXTURE;
+    return this.textureLocation;
   }
 }

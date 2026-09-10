@@ -89,12 +89,16 @@ public interface SoundDataCapable<E extends Mob> extends EasyNPC<E> {
     return this.getDefaultSound(soundType).getSoundEvent();
   }
 
-  default void playDefaultTradeUpdatedSound(boolean yesSound) {
-    if (yesSound) {
-      this.playDefaultSound(SoundType.TRADE_YES);
-    } else {
-      this.playDefaultSound(SoundType.TRADE_NO);
+  default SoundEvent getDefaultSoundEvent(SoundType soundType, SoundEvent fallbackSoundEvent) {
+    if (!this.hasDefaultSound(soundType)) {
+      return fallbackSoundEvent;
     }
+
+    SoundDataEntry soundDataEntry = this.getDefaultSound(soundType);
+    if (!soundDataEntry.isEnabled() || soundDataEntry.getSoundEvent() == null) {
+      return fallbackSoundEvent;
+    }
+    return soundDataEntry.getSoundEvent();
   }
 
   default void playDefaultAmbientSound() {

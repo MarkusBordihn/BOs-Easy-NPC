@@ -29,6 +29,7 @@
     "renderer.DrownedOuterLayerMixin",
     "renderer.EasyNPCEntityRendererMixin",
     "renderer.EasyNPCGhastRendererMixin",
+    "renderer.EasyNPCHighlightMixin",
     "renderer.EasyNPCLivingEntityRendererMixin",
     "renderer.EasyNPCSlimeRendererMixin",
     "renderer.EmptyTextureStateShardMixin",

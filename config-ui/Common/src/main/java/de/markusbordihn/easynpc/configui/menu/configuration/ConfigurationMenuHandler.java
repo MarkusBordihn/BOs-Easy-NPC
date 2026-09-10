@@ -241,6 +241,8 @@ public class ConfigurationMenuHandler {
       case BASIC_ACTION, DIALOG_ACTION, DISTANCE_ACTION ->
           AdditionalScreenData.addActionEventSet(additionalSyncData, easyNPC);
       case BASE_ATTRIBUTE -> AdditionalScreenData.addBaseAttributes(additionalSyncData, easyNPC);
+      case BASIC_SOUND, COMBAT_SOUND, INTERACTION_SOUND, TRADE_SOUND ->
+          AdditionalScreenData.addSoundDataSet(additionalSyncData, easyNPC);
       case NONE_DIALOG, BASIC_DIALOG, YES_NO_DIALOG, ADVANCED_DIALOG ->
           AdditionalScreenData.addDialogDataSet(additionalSyncData, easyNPC);
       case BASIC_OBJECTIVE, FLEE_OBJECTIVE, FOLLOW_OBJECTIVE, LOOK_OBJECTIVE ->

@@ -24,14 +24,17 @@ import de.markusbordihn.easynpc.api.skin.VariantTexture;
 import net.minecraft.resources.ResourceLocation;
 
 public enum WanderingTraderSkinVariant implements VariantTexture {
-  WANDERING_TRADER;
+  WANDERING_TRADER(Constants.MINECRAFT_PREFIX, "textures/entity/wandering_trader.png"),
+  CRIMSON(Constants.MOD_ID, "textures/entity/wandering_trader/wandering_trader_crimson.png");
 
-  private static final ResourceLocation TEXTURE =
-      ResourceLocation.fromNamespaceAndPath(
-          Constants.MINECRAFT_PREFIX, "textures/entity/wandering_trader.png");
+  private final ResourceLocation textureLocation;
+
+  WanderingTraderSkinVariant(String namespace, String path) {
+    this.textureLocation = parseTextureLocation(namespace, path);
+  }
 
   @Override
   public ResourceLocation getTextureLocation() {
-    return TEXTURE;
+    return this.textureLocation;
   }
 }

@@ -102,10 +102,10 @@ class PresetSanitizerTest {
     CompoundTag actionEntryTag =
         actionDataTag.getList("Entries", net.minecraft.nbt.Tag.TAG_COMPOUND).getCompound(0);
 
-    assertFalse(sanitizedTag.contains(Entity.UUID_TAG));
+    assertTrue(sanitizedTag.contains(Entity.UUID_TAG));
     assertFalse(sanitizedTag.contains(OwnerDataCapable.DATA_OWNER_TAG));
-    assertFalse(sanitizedTag.contains("Pos"));
-    assertFalse(sanitizedTag.contains("Rotation"));
+    assertTrue(sanitizedTag.contains("Pos"));
+    assertTrue(sanitizedTag.contains("Rotation"));
     assertFalse(actionDataTag.contains(ActionEventDataCapable.DATA_ACTION_PERMISSION_LEVEL_TAG));
     assertEquals(
         CommandPermissionLevel.ADMINS.minecraftLevel(),

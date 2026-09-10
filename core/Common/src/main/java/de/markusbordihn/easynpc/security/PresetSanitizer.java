@@ -37,7 +37,6 @@ import java.util.Map;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.world.entity.Entity;
 
 public class PresetSanitizer {
 
@@ -88,10 +87,7 @@ public class PresetSanitizer {
     }
 
     CompoundTag sanitizedTag = compoundTag.copy();
-    sanitizedTag.remove(Entity.UUID_TAG);
     sanitizedTag.remove(OwnerDataCapable.DATA_OWNER_TAG);
-    sanitizedTag.remove("Pos");
-    sanitizedTag.remove("Rotation");
     removeActionAuthority(sanitizedTag);
     resetPresetAccess(sanitizedTag);
 

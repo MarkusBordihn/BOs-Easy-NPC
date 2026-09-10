@@ -25,6 +25,9 @@ import net.minecraft.client.gui.components.ObjectSelectionList;
 
 public class PresetList extends ObjectSelectionList<PresetListEntry> {
 
+  private static final int ROW_MARGIN = 3;
+  private static final int SCROLLBAR_WIDTH = 6;
+
   public PresetList(Minecraft minecraft, int width, int height, int y0, int itemHeight) {
     super(minecraft, width, height, y0, itemHeight);
     this.setRenderHeader(false, 0);
@@ -36,21 +39,22 @@ public class PresetList extends ObjectSelectionList<PresetListEntry> {
   }
 
   @Override
+  public int getRowLeft() {
+    return this.getX() + ROW_MARGIN;
+  }
+
+  @Override
   public int getRowWidth() {
-    return this.width - 10;
+    return this.width - SCROLLBAR_WIDTH - ROW_MARGIN * 2;
   }
 
   @Override
   protected int getScrollbarPosition() {
-    return this.getRowLeft() + this.getRowWidth() + 5;
+    return this.getX() + this.width - SCROLLBAR_WIDTH;
   }
 
   @Override
   protected void renderListBackground(GuiGraphics guiGraphics) {
     // Do not render list background.
-  }
-
-  public void removed() {
-    this.children().forEach(PresetListEntry::cleanup);
   }
 }

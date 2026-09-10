@@ -65,7 +65,11 @@ public class MenuHandler implements MenuHandlerInterface {
     configurationMenuMap.put(
         ConfigurationType.BASIC_TRADING, ModMenuTypes.BASIC_TRADING_CONFIGURATION_MENU);
     configurationMenuMap.put(
+        ConfigurationType.BASIC_SOUND, ModMenuTypes.BASIC_SOUND_CONFIGURATION_MENU);
+    configurationMenuMap.put(
         ConfigurationType.COMBAT_ATTRIBUTE, ModMenuTypes.COMBAT_ATTRIBUTE_CONFIGURATION_MENU);
+    configurationMenuMap.put(
+        ConfigurationType.COMBAT_SOUND, ModMenuTypes.COMBAT_SOUND_CONFIGURATION_MENU);
     configurationMenuMap.put(
         ConfigurationType.CUSTOM_POSE, ModMenuTypes.CUSTOM_POSE_CONFIGURATION_MENU);
     configurationMenuMap.put(
@@ -106,6 +110,10 @@ public class MenuHandler implements MenuHandlerInterface {
         ConfigurationType.DISPLAY_ATTRIBUTE, ModMenuTypes.DISPLAY_ATTRIBUTE_CONFIGURATION_MENU);
     configurationMenuMap.put(
         ConfigurationType.DISTANCE_ACTION, ModMenuTypes.DISTANCE_ACTION_CONFIGURATION_MENU);
+    configurationMenuMap.put(
+        ConfigurationType.INTERACTION_SOUND, ModMenuTypes.INTERACTION_SOUND_CONFIGURATION_MENU);
+    configurationMenuMap.put(
+        ConfigurationType.TRADE_SOUND, ModMenuTypes.TRADE_SOUND_CONFIGURATION_MENU);
     configurationMenuMap.put(
         ConfigurationType.INTERVAL_ACTION, ModMenuTypes.INTERVAL_ACTION_CONFIGURATION_MENU);
     configurationMenuMap.put(

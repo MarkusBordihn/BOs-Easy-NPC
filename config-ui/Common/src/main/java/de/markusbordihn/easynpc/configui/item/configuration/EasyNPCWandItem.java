@@ -19,13 +19,20 @@
 
 package de.markusbordihn.easynpc.configui.item.configuration;
 
+import de.markusbordihn.easynpc.config.SecurityConfig;
 import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.configui.menu.MenuManager;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPCBase;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.OwnerDataCapable;
+import de.markusbordihn.easynpc.network.NetworkHandlerManager;
 import de.markusbordihn.easynpc.network.components.TextComponent;
+import de.markusbordihn.easynpc.network.message.client.HighlightEasyNPCMessage;
+import de.markusbordihn.easynpc.security.CommandSecurity;
+import de.markusbordihn.easynpc.security.FeatureSecurity;
+import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -34,8 +41,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -53,33 +58,69 @@ public class EasyNPCWandItem extends Item {
 
   public static final String ID = "easy_npc_wand";
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-  private static final int GLOWING_DURATION = 4 * 20;
+  private static final int HIGHLIGHT_DURATION_TICKS = 4 * 20;
+  private static final int HIGHLIGHT_INTERVAL_TICKS = 30;
   private static final double HIGHLIGHT_RADIUS = 32.0d;
+  private static final double HIGHLIGHT_RECEIVER_RADIUS = 64.0d;
 
   public EasyNPCWandItem(Properties properties) {
     super(properties);
   }
 
-  private void highlightEasyNPC(EasyNPCBase<?> easyNPC) {
-    if (easyNPC instanceof Mob mob) {
-      mob.addEffect(
-          new MobEffectInstance(MobEffects.GLOWING, GLOWING_DURATION, 0, false, false, true));
+  private static void sendHighlight(ServerPlayer serverPlayer, List<Mob> easyNPCs) {
+    if (easyNPCs.isEmpty()) {
+      return;
     }
+
+    NetworkHandlerManager.sendMessageToPlayer(
+        new HighlightEasyNPCMessage(
+            easyNPCs.stream().map(Entity::getUUID).toList(), HIGHLIGHT_DURATION_TICKS),
+        serverPlayer);
+  }
+
+  private static List<Mob> getOwnedEasyNPCs(List<Mob> easyNPCs, ServerPlayer serverPlayer) {
+    List<Mob> ownedEasyNPCs = new ArrayList<>();
+    for (Mob mob : easyNPCs) {
+      OwnerDataCapable<?> ownerData = ((EasyNPCBase<?>) mob).getEasyNPCOwnerData();
+      if (ownerData != null && serverPlayer.getUUID().equals(ownerData.getOwnerUUID())) {
+        ownedEasyNPCs.add(mob);
+      }
+    }
+
+    return ownedEasyNPCs;
   }
 
   @Override
   public void inventoryTick(
       ItemStack itemStack, Level level, Entity entity, int slot, boolean selected) {
-    if (selected
-        && level instanceof ServerLevel serverLevel
-        && entity instanceof ServerPlayer serverPlayer
-        && !(serverPlayer.containerMenu instanceof ConfigurationMenu)
-        && level.getGameTime() % 30 == 0) {
-      AABB searchArea = serverPlayer.getBoundingBox().inflate(HIGHLIGHT_RADIUS);
-      for (Mob pathfinderMob :
-          serverLevel.getEntitiesOfClass(
-              Mob.class, searchArea, mob -> mob.isAlive() && mob instanceof EasyNPCBase<?>)) {
-        highlightEasyNPC((EasyNPCBase<?>) pathfinderMob);
+    if (!selected
+        || !(level instanceof ServerLevel serverLevel)
+        || !(entity instanceof ServerPlayer serverPlayer)
+        || serverPlayer.containerMenu instanceof ConfigurationMenu
+        || level.getGameTime() % HIGHLIGHT_INTERVAL_TICKS != 0) {
+      return;
+    }
+
+    List<Mob> easyNPCs =
+        serverLevel.getEntitiesOfClass(
+            Mob.class,
+            serverPlayer.getBoundingBox().inflate(HIGHLIGHT_RADIUS),
+            mob -> mob.isAlive() && mob instanceof EasyNPCBase<?>);
+    if (easyNPCs.isEmpty()) {
+      return;
+    }
+
+    sendHighlight(serverPlayer, easyNPCs);
+    for (ServerPlayer nearbyPlayer :
+        serverLevel.getEntitiesOfClass(
+            ServerPlayer.class,
+            serverPlayer.getBoundingBox().inflate(HIGHLIGHT_RECEIVER_RADIUS),
+            otherPlayer -> otherPlayer != serverPlayer)) {
+      if (FeatureSecurity.getRole(CommandSecurity.getActorContext(nearbyPlayer))
+          .allows(SecurityConfig.NPC_HIGHLIGHT_MINIMUM_ROLE)) {
+        sendHighlight(nearbyPlayer, easyNPCs);
+      } else if (SecurityConfig.NPC_HIGHLIGHT_FOR_OWNER) {
+        sendHighlight(nearbyPlayer, getOwnedEasyNPCs(easyNPCs, nearbyPlayer));
       }
     }
   }

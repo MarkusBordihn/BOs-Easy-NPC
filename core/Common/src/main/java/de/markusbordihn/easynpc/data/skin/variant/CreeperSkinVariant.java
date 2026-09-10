@@ -24,15 +24,18 @@ import de.markusbordihn.easynpc.api.skin.VariantTexture;
 import net.minecraft.resources.ResourceLocation;
 
 public enum CreeperSkinVariant implements VariantTexture {
-  CREEPER,
-  CHARGED;
+  CREEPER(Constants.MINECRAFT_PREFIX, "textures/entity/creeper/creeper.png"),
+  CHARGED(Constants.MINECRAFT_PREFIX, "textures/entity/creeper/creeper.png"),
+  FROST(Constants.MOD_ID, "textures/entity/creeper/creeper_frost.png");
 
-  private static final ResourceLocation TEXTURE =
-      ResourceLocation.fromNamespaceAndPath(
-          Constants.MINECRAFT_PREFIX, "textures/entity/creeper/creeper.png");
+  private final ResourceLocation textureLocation;
+
+  CreeperSkinVariant(String namespace, String path) {
+    this.textureLocation = parseTextureLocation(namespace, path);
+  }
 
   @Override
   public ResourceLocation getTextureLocation() {
-    return TEXTURE;
+    return this.textureLocation;
   }
 }

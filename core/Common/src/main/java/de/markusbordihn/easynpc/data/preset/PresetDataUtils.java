@@ -84,6 +84,14 @@ public class PresetDataUtils {
     return entityData;
   }
 
+  public static CompoundTag removeEntityUUID(CompoundTag entityData) {
+    if (entityData != null) {
+      entityData.remove(ENTITY_UUID_TAG);
+    }
+
+    return entityData;
+  }
+
   public static SpawnData toSpawnData(PresetData presetData) {
     if (presetData == null || !presetData.hasValidData()) {
       return new SpawnData();
@@ -142,7 +150,7 @@ public class PresetDataUtils {
         DataComponents.PRESET_DATA,
         new PresetData(
             presetData.entityType(),
-            cleanupEntityData(presetData.data().copy(), CleanupMode.FULL)));
+            removeEntityUUID(cleanupEntityData(presetData.data().copy(), CleanupMode.FULL))));
 
     return itemStack;
   }
@@ -175,10 +183,7 @@ public class PresetDataUtils {
       return false;
     }
 
-    CompoundTag entityData = sanitizedPresetData.data().copy();
-    if (entityData.contains(ENTITY_UUID_TAG)) {
-      entityData.remove(ENTITY_UUID_TAG);
-    }
+    CompoundTag entityData = removeEntityUUID(sanitizedPresetData.data().copy());
 
     // Convert legacy (pre-1.21) attribute NBT from imported presets to the 1.21 format.
     LegacyAttributeConverter.convertLegacyAttributes(entityData);

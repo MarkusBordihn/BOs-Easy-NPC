@@ -20,6 +20,10 @@
 package de.markusbordihn.easynpc.data.condition;
 
 import de.markusbordihn.easynpc.utils.EnumUtils;
+import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public enum ConditionOperationType {
   NONE,
@@ -28,10 +32,18 @@ public enum ConditionOperationType {
   GREATER_THAN,
   GREATER_THAN_OR_EQUALS,
   LESS_THAN,
-  LESS_THAN_OR_EQUALS;
+  LESS_THAN_OR_EQUALS,
+  EXISTS,
+  NOT_EXISTS;
 
   public static ConditionOperationType get(String operationType) {
     return EnumUtils.get(ConditionOperationType.class, operationType, NONE);
+  }
+
+  public static Set<ConditionOperationType> comparisonOperations() {
+    return Arrays.stream(values())
+        .filter(operationType -> operationType != NONE && !operationType.isExistenceOperation())
+        .collect(Collectors.toCollection(LinkedHashSet::new));
   }
 
   public String getSymbol() {
@@ -42,12 +54,18 @@ public enum ConditionOperationType {
       case GREATER_THAN_OR_EQUALS -> ">=";
       case LESS_THAN -> "<";
       case LESS_THAN_OR_EQUALS -> "<=";
+      case EXISTS -> "exists";
+      case NOT_EXISTS -> "!exists";
       default -> "";
     };
   }
 
   public boolean isEqualityOperation() {
     return this == EQUALS || this == NOT_EQUALS;
+  }
+
+  public boolean isExistenceOperation() {
+    return this == EXISTS || this == NOT_EXISTS;
   }
 
   public boolean evaluate(int value1, int value2) {

@@ -162,6 +162,8 @@ public class CustomSkinConfigurationScreen<T extends ConfigurationMenu>
     CustomTextureManager.ensureTextureCacheLoaded(skinModel);
     this.numOfSkins = CustomTextureManager.getCustomTextureCacheKeys(skinModel).size();
 
+    this.defineProfessionButtons(this.contentLeftPos + 185, this.contentTopPos + 85);
+
     // Skin Navigation Buttons
     defineSkinNavigationButtons();
 

@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.entity.easynpc.data;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.action.ActionContext;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
+import de.markusbordihn.easynpc.data.sound.SoundType;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.data.trading.TradingDataSet;
 import de.markusbordihn.easynpc.data.trading.TradingType;
@@ -169,6 +170,10 @@ public interface TradingDataCapable<E extends Mob> extends EasyNPC<E>, Merchant 
   default void handleTradeNotification(MerchantOffer merchantOffer) {
     merchantOffer.increaseUses();
     this.getMob().ambientSoundTime = -this.getMob().getAmbientSoundInterval();
+    if (!this.isClientSideInstance()) {
+      this.playDefaultSoundIfAvailable(SoundType.TRADE);
+    }
+
     this.rewardTradeXp(merchantOffer);
     MerchantOffers updatedOffers = this.getMerchantTradingOffers();
     if (updatedOffers != null && !updatedOffers.isEmpty()) {
@@ -205,8 +210,8 @@ public interface TradingDataCapable<E extends Mob> extends EasyNPC<E>, Merchant 
     if (!this.isClientSideInstance()
         && this.getMob().ambientSoundTime > -this.getMob().getAmbientSoundInterval() + 20) {
       this.getMob().ambientSoundTime = -this.getMob().getAmbientSoundInterval();
-      SoundDataCapable<E> soundData = getEasyNPCSoundData();
-      soundData.playDefaultTradeUpdatedSound(!itemStack.isEmpty());
+      this.playDefaultSoundIfAvailable(
+          itemStack.isEmpty() ? SoundType.TRADE_NO : SoundType.TRADE_YES);
     }
   }
 

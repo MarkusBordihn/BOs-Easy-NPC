@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.data.preset;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import org.junit.jupiter.api.Test;
@@ -241,6 +242,25 @@ class PresetDataUtilsTest {
 
     CompoundTag preservedNested = data.getCompound("CustomData");
     assertTrue(preservedNested.contains("Fire"), "Fire in nested structures should be preserved");
+  }
+
+  @Test
+  void testRemoveEntityUUIDKeepsPresetUUID() {
+    CompoundTag data = new CompoundTag();
+    data.putString("id", "minecraft:zombie");
+    data.putUUID("UUID", UUID.randomUUID());
+    data.putUUID("PresetUUID", UUID.randomUUID());
+
+    PresetDataUtils.removeEntityUUID(data);
+
+    assertFalse(data.contains("UUID"), "Entity UUID should be removed");
+    assertTrue(data.contains("PresetUUID"), "Preset UUID should be preserved");
+    assertTrue(data.contains("id"), "Entity ID should be preserved");
+  }
+
+  @Test
+  void testRemoveEntityUUIDNull() {
+    assertNull(PresetDataUtils.removeEntityUUID(null), "Should return null for null input");
   }
 
   @Test
