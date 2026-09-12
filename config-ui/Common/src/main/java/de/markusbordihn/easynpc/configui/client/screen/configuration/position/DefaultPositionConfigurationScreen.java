@@ -23,6 +23,7 @@ import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.client.screen.components.TextField;
 import de.markusbordihn.easynpc.configui.client.screen.components.Checkbox;
+import de.markusbordihn.easynpc.configui.client.screen.configuration.main.MainConfigurationScreen;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.attribute.EntityAttributes;
@@ -32,6 +33,7 @@ import de.markusbordihn.easynpc.utils.ValueUtils;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.phys.Vec3;
@@ -40,6 +42,7 @@ public class DefaultPositionConfigurationScreen<T extends ConfigurationMenu>
     extends PositionConfigurationScreen<T> {
 
   private static final float POSITION_STEPS = 0.5f;
+  private static final int HOME_POSITION_BUTTON_WIDTH = 140;
   protected EditBox positionXBox;
   protected EditBox positionYBox;
   protected EditBox positionZBox;
@@ -54,6 +57,8 @@ public class DefaultPositionConfigurationScreen<T extends ConfigurationMenu>
   protected Button positionYPlusButton;
   protected Button positionZMinusButton;
   protected Button positionZPlusButton;
+  protected Button setHomePositionButton;
+  protected Button resetHomePositionButton;
 
   public DefaultPositionConfigurationScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
@@ -228,6 +233,33 @@ public class DefaultPositionConfigurationScreen<T extends ConfigurationMenu>
                             checkbox.selected())));
 
     this.positionFreefallCheckbox.active = !attributeData.getEnvironmentalAttributes().noGravity();
+
+    this.setHomePositionButton =
+        this.addRenderableWidget(
+            new TextButton(
+                this.positionXMinusButton.getX(),
+                positionTopPos + 55,
+                HOME_POSITION_BUTTON_WIDTH,
+                "set_home_position",
+                button ->
+                    NetworkMessageHandlerManager.getServerHandler()
+                        .homePositionChange(
+                            this.getEasyNPCUUID(), this.getEasyNPCEntity().blockPosition())));
+    this.resetHomePositionButton =
+        this.addRenderableWidget(
+            new TextButton(
+                this.setHomePositionButton.getX() + HOME_POSITION_BUTTON_WIDTH + 3,
+                positionTopPos + 55,
+                HOME_POSITION_BUTTON_WIDTH,
+                "reset_home_position",
+                button ->
+                    NetworkMessageHandlerManager.getServerHandler()
+                        .homePositionChange(this.getEasyNPCUUID(), BlockPos.ZERO)));
+  }
+
+  private String getHomePositionLabel() {
+    return MainConfigurationScreen.getHomePositionLabel(
+        this.getEasyNPC().getEasyNPCNavigationData());
   }
 
   @Override
@@ -254,5 +286,12 @@ public class DefaultPositionConfigurationScreen<T extends ConfigurationMenu>
         "Position Z",
         this.positionZBox.getX() + 5,
         this.positionZBox.getY() - 10);
+
+    Text.drawString(
+        guiGraphics,
+        this.font,
+        this.getHomePositionLabel(),
+        this.setHomePositionButton.getX(),
+        this.setHomePositionButton.getY() - 12);
   }
 }

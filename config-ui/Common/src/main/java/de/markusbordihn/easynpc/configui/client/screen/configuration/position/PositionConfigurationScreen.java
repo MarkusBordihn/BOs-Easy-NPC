@@ -34,6 +34,10 @@ import net.minecraft.world.entity.player.Inventory;
 public class PositionConfigurationScreen<T extends ConfigurationMenu>
     extends ConfigurationScreen<T> {
 
+  private static final int BACKGROUND_WIDTH = 333;
+  private static final int BACKGROUND_HEIGHT = 112;
+  private static final int BACKGROUND_TEXTURE_HEIGHT = 80;
+
   protected Button defaultPositionButton;
 
   public PositionConfigurationScreen(T menu, Inventory inventory, Component component) {
@@ -62,6 +66,8 @@ public class PositionConfigurationScreen<T extends ConfigurationMenu>
   @Override
   public void renderDefaultScreenBg(
       GuiGraphicsExtractor guiGraphics, int leftPos, int topPos, boolean compactMode) {
+    int topSliceHeight = BACKGROUND_HEIGHT / 2;
+    int bottomSliceHeight = BACKGROUND_HEIGHT - topSliceHeight;
     Graphics.blit(
         guiGraphics,
         Constants.TEXTURE_CONFIG_SCREEN_BACKGROUND_SMALL,
@@ -69,8 +75,19 @@ public class PositionConfigurationScreen<T extends ConfigurationMenu>
         topPos,
         1,
         1,
-        333,
-        80,
+        BACKGROUND_WIDTH,
+        topSliceHeight,
+        512,
+        256);
+    Graphics.blit(
+        guiGraphics,
+        Constants.TEXTURE_CONFIG_SCREEN_BACKGROUND_SMALL,
+        leftPos,
+        topPos + topSliceHeight,
+        1,
+        1 + BACKGROUND_TEXTURE_HEIGHT - bottomSliceHeight,
+        BACKGROUND_WIDTH,
+        bottomSliceHeight,
         512,
         256);
   }

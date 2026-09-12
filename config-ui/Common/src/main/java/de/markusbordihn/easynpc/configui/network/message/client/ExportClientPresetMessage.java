@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.configui.network.message.client;
 
 import de.markusbordihn.easynpc.configui.Constants;
+import de.markusbordihn.easynpc.configui.client.ClientPresetFeedback;
 import de.markusbordihn.easynpc.data.preset.PresetExportFormat;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.io.CustomPresetDataFiles;
@@ -114,6 +115,10 @@ public record ExportClientPresetMessage(
           uuid,
           skinModel,
           presetFile);
+      ClientPresetFeedback.sendExportFailed(presetFile.getName());
+      return;
     }
+
+    ClientPresetFeedback.sendExportResult(presetFile.getName(), this.uuid);
   }
 }

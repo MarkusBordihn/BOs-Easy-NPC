@@ -46,7 +46,7 @@ overlapResolutionEnabled: Move overlapping speech bubbles apart (default: true)
   public static final int MAX_RENDER_DISTANCE = 128;
   public static final int LIGHT_LEVEL_LIMIT = 15;
 
-  public static SpeechBubbleOcclusionMode OCCLUSION_MODE = SpeechBubbleOcclusionMode.GHOST;
+  public static OcclusionMode OCCLUSION_MODE = OcclusionMode.GHOST;
   public static int GHOST_OPACITY = 60;
   public static int MIN_LIGHT_LEVEL = 7;
   public static int MAX_RENDER_DISTANCE_BLOCKS = 64;
@@ -63,22 +63,19 @@ overlapResolutionEnabled: Move overlapping speech bubbles apart (default: true)
     Properties unmodifiedProperties = (Properties) properties.clone();
 
     OCCLUSION_MODE =
-        SpeechBubbleOcclusionMode.fromConfigValue(
+        OcclusionMode.fromConfigValue(
             parseConfigValue(properties, "occlusionMode", OCCLUSION_MODE.getConfigValue()),
             OCCLUSION_MODE);
-    GHOST_OPACITY =
-        Math.max(0, Math.min(100, parseConfigValue(properties, "ghostOpacity", GHOST_OPACITY)));
+    GHOST_OPACITY = parseConfigValue(properties, "ghostOpacity", GHOST_OPACITY, 0, 100);
     MIN_LIGHT_LEVEL =
-        Math.max(
-            0,
-            Math.min(
-                LIGHT_LEVEL_LIMIT, parseConfigValue(properties, "minLightLevel", MIN_LIGHT_LEVEL)));
+        parseConfigValue(properties, "minLightLevel", MIN_LIGHT_LEVEL, 0, LIGHT_LEVEL_LIMIT);
     MAX_RENDER_DISTANCE_BLOCKS =
-        Math.max(
+        parseConfigValue(
+            properties,
+            "maxRenderDistance",
+            MAX_RENDER_DISTANCE_BLOCKS,
             MIN_RENDER_DISTANCE,
-            Math.min(
-                MAX_RENDER_DISTANCE,
-                parseConfigValue(properties, "maxRenderDistance", MAX_RENDER_DISTANCE_BLOCKS)));
+            MAX_RENDER_DISTANCE);
     OVERLAP_RESOLUTION_ENABLED =
         parseConfigValue(properties, "overlapResolutionEnabled", OVERLAP_RESOLUTION_ENABLED);
 

@@ -29,6 +29,7 @@ import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.data.display.DisplayAttributeType;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataEntry;
 import de.markusbordihn.easynpc.data.objective.ObjectiveType;
+import de.markusbordihn.easynpc.data.preset.PresetData;
 import de.markusbordihn.easynpc.data.type.ValueType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventDataCapable;
@@ -42,6 +43,7 @@ import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.phys.Vec3;
 
@@ -71,8 +73,6 @@ public class PresetRoundTripTestHelper {
           "EntityAttribute",
           "TradingData",
           "SoundData",
-          "Pos",
-          "Rotation",
           "Owner",
           "Navigation");
 
@@ -100,9 +100,14 @@ public class PresetRoundTripTestHelper {
 
     CompoundTag exportedTag = PresetHandler.prepareExportData(sourceNPC);
 
+    CompoundTag importedTag = exportedTag.copy();
+    importedTag.remove(Entity.TAG_UUID);
+    importedTag.remove(PresetData.POSITION_TAG);
+    importedTag.remove(PresetData.ROTATION_TAG);
+
     EasyNPC<?> targetNPC = GameTestHelpers.mockEasyNPC(helper, entityType, TARGET_NPC_POSITION);
     targetNPC.registerEasyNPCDefaultData();
-    ((PresetDataCapable<?>) targetNPC).importPresetData(exportedTag.copy());
+    ((PresetDataCapable<?>) targetNPC).importPresetData(importedTag);
 
     CompoundTag reExportedTag = PresetHandler.prepareExportData(targetNPC);
 

@@ -37,6 +37,7 @@ import java.util.List;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.phys.Vec3;
 
@@ -160,6 +161,9 @@ public class DefaultPresetRoundTripTestHelper {
     CompoundTag sharedEntityData = entityData.copy();
     sharedEntityData.remove(PresetDataCapable.PRESET_METADATA_TAG);
     sharedEntityData.remove(NavigationDataCapable.DATA_NAVIGATION_TAG);
+    sharedEntityData.remove(Entity.TAG_UUID);
+    sharedEntityData.remove(PresetData.POSITION_TAG);
+    sharedEntityData.remove(PresetData.ROTATION_TAG);
     preset.put(PresetData.DATA_TAG, sharedEntityData);
     return preset;
   }

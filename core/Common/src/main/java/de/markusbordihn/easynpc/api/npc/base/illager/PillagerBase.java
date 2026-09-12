@@ -67,7 +67,6 @@ public class PillagerBase extends PillagerRaw implements BaseEasyNPC<PillagerRaw
     soundDataSet.addDefaultSound(SoundType.AMBIENT, SoundEvents.PILLAGER_AMBIENT);
     soundDataSet.addDefaultSound(SoundType.DEATH, SoundEvents.PILLAGER_DEATH);
     soundDataSet.addDefaultSound(SoundType.HURT, SoundEvents.PILLAGER_HURT);
-    soundDataSet.addDefaultSound(SoundType.CELEBRATE, SoundEvents.PILLAGER_CELEBRATE);
     soundDataSet.addDefaultSound(SoundType.TRADE, SoundEvents.VILLAGER_TRADE);
     soundDataSet.addDefaultSound(SoundType.TRADE_YES, SoundEvents.VILLAGER_YES);
     soundDataSet.addDefaultSound(SoundType.TRADE_NO, SoundEvents.VILLAGER_NO);

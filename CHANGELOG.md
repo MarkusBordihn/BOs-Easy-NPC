@@ -8,6 +8,42 @@ the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 7.12.1
+
+- Fixed #836 by always showing "Restore", including datapack presets, with a reason tooltip.
+- Fixed preset import and export messages missing, wrong or not warning about replaced NPCs.
+- Fixed the preset browser reloading on each keystroke, leaking NPCs and clearing the selection.
+- Fixed selection box drop-down lists being covered by the checkboxes and labels behind them.
+- Fixed the preset list sorting, filter order and layout clipping options in small windows.
+- Fixed `/easy_npc preset import data` without a position importing it as a default preset.
+- Fixed spawn rate limit leaks, unstable preset IDs and "Spawn New" stacking NPCs on one spot.
+- Changed "Restore" to refuse instead of spawning a copy when it is not permitted.
+- Added sorting, a match count, reload, auto-close, the NPC ID and tooltips for presets and skins.
+- Added `matching <pattern>` batch imports with limits, a confirmation and a clickable position.
+
+### 7.12.0
+
+- Fixed #833 by showing Easy NPC Wand outlines only to the wand holder, owner and admins.
+  Other players no longer see the outlines and invisible NPCs stay hidden for them.
+- Fixed #834 by adding "Set Home Here" and "Reset Home" buttons to the position configuration.
+- Fixed #835 by keeping the NPC ID and position in exported presets, so imports restore the same
+  NPC.
+- Fixed preset imports and spawn eggs losing the owner's list entry and owner objectives.
+- Fixed NPCs restored from an automatic backup losing their owner and becoming ownerless.
+- Fixed selection lists showing only their first six entries and hiding the rest.
+- Changed importing a preset to update the original NPC at its stored position instead of adding a
+  copy; use "Import as new NPC" or the preset item to create a separate NPC.
+- Changed completed trades to play the "Trade completed" sound, which stayed silent before.
+- Changed the API dialog call to report an unknown dialog label instead of always reporting success.
+- Changed NPCs without arms to carry held items at the head or body instead of hiding them.
+- Changed the optional Easy Model Entities dependency to require version 2.4.0 or newer.
+- Added a "Sound" configuration with sounds for dialogs, speech, swimming, eating and fall damage.
+- Added a searchable sound selection with volume and pitch sliders to the "Sound" configuration.
+- Added a "Block Vehicles" option to keep NPCs out of boats, minecarts and modded chairs.
+- Added the profession selection to all skin configurations and a new built-in skin per NPC type.
+- Added client settings to hide name tags behind walls and `highlightEnabled` for wand outlines.
+- Added an "Exists" condition operation and API access to NPC movement, actions and presets.
+
 ### 7.11.0
 
 - Fixed #828 by no longer freezing the server on logout when NPCs follow or watch the player.

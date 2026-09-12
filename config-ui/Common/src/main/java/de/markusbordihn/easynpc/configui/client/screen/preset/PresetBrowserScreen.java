@@ -22,10 +22,13 @@ package de.markusbordihn.easynpc.configui.client.screen.preset;
 import de.markusbordihn.easynpc.client.screen.components.SpinButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
-import de.markusbordihn.easynpc.client.screen.components.TextField;
 import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.configui.client.screen.CustomScreen;
+import de.markusbordihn.easynpc.configui.client.screen.components.Checkbox;
+import de.markusbordihn.easynpc.configui.client.screen.components.ReloadButton;
+import de.markusbordihn.easynpc.configui.client.screen.components.SearchField;
 import de.markusbordihn.easynpc.configui.data.preset.PresetFilterType;
+import de.markusbordihn.easynpc.configui.data.preset.PresetSortType;
 import de.markusbordihn.easynpc.configui.data.screen.AdditionalScreenData;
 import de.markusbordihn.easynpc.configui.menu.preset.PresetBrowserMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
@@ -33,7 +36,9 @@ import de.markusbordihn.easynpc.data.preset.PresetData;
 import de.markusbordihn.easynpc.data.preset.PresetMetadata;
 import de.markusbordihn.easynpc.data.preset.PresetType;
 import de.markusbordihn.easynpc.io.ClientDefaultPresetDataFiles;
+import de.markusbordihn.easynpc.io.CustomPresetDataFiles;
 import de.markusbordihn.easynpc.io.LocalPresetDataFiles;
+import de.markusbordihn.easynpc.network.components.TextComponent;
 import de.markusbordihn.easynpc.security.CommandPermissionLevel;
 import de.markusbordihn.easynpc.security.NpcSecurityRole;
 import de.markusbordihn.easynpc.security.PresetAuthority;
@@ -41,14 +46,20 @@ import de.markusbordihn.easynpc.security.PresetFeaturePreview;
 import de.markusbordihn.easynpc.security.PresetTrustLevel;
 import de.markusbordihn.easynpc.security.SecurityManager;
 import de.markusbordihn.easynpc.utils.CompoundTagUtils;
+import de.markusbordihn.easynpc.utils.UUIDUtils;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Locale;
 import java.util.Set;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Stream;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.ConfirmScreen;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -62,21 +73,55 @@ public class PresetBrowserScreen extends CustomScreen<PresetBrowserMenu, Additio
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  private static final int PREVIEW_Y = 90;
+  private static final int PREVIEW_Y = 84;
+  private static final int LIST_X = 5;
+  private static final int LIST_WIDTH = 150;
+  private static final int FILTER_Y = 24;
+  private static final int SORT_Y = 43;
+  private static final int COUNT_Y = 62;
+  private static final int LIST_Y = 72;
+  private static final int LIST_BOTTOM_MARGIN = 10;
+  private static final int CHECKBOX_HEIGHT = 16;
+  private static final int INFO_BOX_MIN_HEIGHT = 30;
+  private static final int INFO_BOX_MAX_HEIGHT = 70;
+  private static final int SPAWN_COOLDOWN_TICKS = 10;
+  private static final String[] NO_SEARCH_TERMS = new String[0];
+
+  private final List<PresetListEntry> presetEntries = new ArrayList<>();
   private PresetList presetListWidget;
   private PresetListEntry selectedEntry;
   private Button spawnAsNewButton;
   private Button spawnWithOriginalButton;
-  private TextField searchBox;
+  private TextButton sortDirectionButton;
+  private Checkbox autoCloseCheckbox;
+  private SearchField searchBox;
   private PresetFilterType currentFilter = PresetFilterType.ALL;
-  private String searchFilter = "";
+  private String[] searchTerms = NO_SEARCH_TERMS;
   private int infoBoxHeight;
+  private long lastSpawnTick;
 
   public PresetBrowserScreen(PresetBrowserMenu menu, Inventory inventory, Component component) {
     super(menu, inventory, component, 328, 243);
     this.showCloseButton = true;
     this.renderBackground = false;
     this.renderDefaultScreenBackground = false;
+  }
+
+  private static String displayName(PresetListEntry entry) {
+    return LocalPresetDataFiles.getPresetDisplayName(entry.getPreset(), entry.getMetadata())
+        .toLowerCase(Locale.ROOT);
+  }
+
+  private static Component sortDirectionLabel() {
+    return TextComponent.getText(PresetBrowserState.isSortDescending() ? "↓" : "↑");
+  }
+
+  private static Component sortDirectionTooltip() {
+    if (PresetBrowserState.isSortDescending()) {
+      return TextComponent.getTranslatedConfigText("preset_browser.sort_descending");
+    }
+
+    return TextComponent.getTranslatedConfigText("preset_browser.sort_ascending");
   }
 
   @Override
@@ -88,65 +133,121 @@ public class PresetBrowserScreen extends CustomScreen<PresetBrowserMenu, Additio
   protected void init() {
     super.init();
 
-    int listWidth = 150;
-    int listX = 5;
-    int listY = 55;
-    int filterY = 30;
-
-    this.addRenderableWidget(
+    SpinButton<PresetFilterType> filterButton =
         new SpinButton<>(
-            listX,
-            filterY,
+            LIST_X,
+            FILTER_Y,
             68,
             16,
-            PresetFilterType.getFilterNames(),
-            PresetFilterType.ALL.name(),
+            PresetFilterType.getAllFilters(),
+            PresetFilterType.ALL,
             button -> {
-              this.currentFilter = PresetFilterType.valueOf(button.get());
-              refreshPresetList();
-            }));
+              this.currentFilter = button.get();
+              this.applyFilters();
+            });
+    filterButton.setLabelProvider(
+        filterType -> TextComponent.getTranslatedConfigText(filterType.getTranslationKey()));
+    this.addRenderableWidget(filterButton);
 
-    this.searchBox = new TextField(this.font, listX + 73, filterY, listWidth - 65);
+    int searchBoxX = LIST_X + 73;
+    this.searchBox =
+        new SearchField(this.font, searchBoxX, FILTER_Y, LIST_X + LIST_WIDTH - searchBoxX - 12, 16);
     this.searchBox.setMaxLength(50);
-    this.searchBox.setHint(Component.translatable("text.easy_npc.config.preset_browser.search"));
+    this.searchBox.setHint(TextComponent.getTranslatedConfigText("preset_browser.search"));
     this.searchBox.setResponder(
         text -> {
-          this.searchFilter = text.toLowerCase();
-          refreshPresetList();
+          this.updateSearchTerms(text);
+          this.applyFilters();
         });
     this.addRenderableWidget(this.searchBox);
 
-    this.presetListWidget = new PresetList(this.minecraft, listWidth, this.height - 65, listY, 30);
+    SpinButton<PresetSortType> sortButton =
+        new SpinButton<>(
+            LIST_X,
+            SORT_Y,
+            105,
+            16,
+            PresetSortType.getAllSortTypes(),
+            PresetBrowserState.getSortType(),
+            button -> {
+              PresetBrowserState.setSortType(button.get());
+              this.applyFilters();
+            });
+    sortButton.setLabelProvider(
+        sortType -> TextComponent.getTranslatedConfigText(sortType.getTranslationKey()));
+    this.addRenderableWidget(sortButton);
+
+    this.sortDirectionButton =
+        this.addRenderableWidget(
+            new TextButton(
+                LIST_X + 108,
+                SORT_Y,
+                16,
+                sortDirectionLabel(),
+                button -> {
+                  PresetBrowserState.setSortDescending(!PresetBrowserState.isSortDescending());
+                  this.sortDirectionButton.setMessage(sortDirectionLabel());
+                  this.sortDirectionButton.setTooltip(Tooltip.create(sortDirectionTooltip()));
+                  this.applyFilters();
+                }));
+    this.sortDirectionButton.setTooltip(Tooltip.create(sortDirectionTooltip()));
+
+    this.addRenderableWidget(
+        new ReloadButton(
+            LIST_X + LIST_WIDTH - 20, SORT_Y, 20, 16, "", button -> this.reloadPresets()));
+
+    this.presetListWidget =
+        new PresetList(
+            this.minecraft, LIST_WIDTH, this.height - LIST_Y - LIST_BOTTOM_MARGIN, LIST_Y, 30);
+    this.presetListWidget.setX(LIST_X);
     this.addWidget(this.presetListWidget);
 
-    this.infoBoxHeight = Math.min((int) (this.height * 0.22f), 70);
+    int rightPanelX = LIST_X + LIST_WIDTH + 15;
+    int buttonWidth = (this.width - rightPanelX - 15) / 2;
+    int checkboxY = this.height - LIST_BOTTOM_MARGIN - CHECKBOX_HEIGHT;
+    int buttonY = checkboxY - TextButton.DEFAULT_HEIGHT - 6;
+    this.infoBoxHeight =
+        Math.max(
+            INFO_BOX_MIN_HEIGHT,
+            Math.min(buttonY - (PREVIEW_Y - 45 + 115) - 5, INFO_BOX_MAX_HEIGHT));
 
     this.spawnAsNewButton =
         this.addRenderableWidget(
             new TextButton(
-                listX + listWidth + 15,
-                this.height - 35,
-                (this.width - (listX + listWidth + 15) - 10 - 5) / 2,
+                rightPanelX,
+                buttonY,
+                buttonWidth,
                 "preset_browser.spawn_new",
-                button -> spawnPreset(false)));
-    this.spawnAsNewButton.active = false;
-    this.spawnAsNewButton.visible = false;
+                button -> this.spawnPreset(false)));
+    this.spawnAsNewButton.setTooltip(
+        Tooltip.create(TextComponent.getTranslatedConfigText("preset_browser.spawn_new_tooltip")));
 
     this.spawnWithOriginalButton =
         this.addRenderableWidget(
             new TextButton(
-                this.spawnAsNewButton.getX() + this.spawnAsNewButton.getWidth() + 5,
-                this.spawnAsNewButton.getY(),
-                this.spawnAsNewButton.getWidth(),
+                rightPanelX + buttonWidth + 5,
+                buttonY,
+                buttonWidth,
                 "preset_browser.spawn_original",
-                button -> spawnPreset(true)));
-    this.spawnWithOriginalButton.active = false;
-    this.spawnWithOriginalButton.visible = false;
-    loadPresets();
+                button -> this.spawnPreset(true)));
+
+    this.autoCloseCheckbox =
+        this.addRenderableWidget(
+            new Checkbox(
+                rightPanelX,
+                checkboxY,
+                TextComponent.getTranslatedConfigText("preset_browser.auto_close"),
+                PresetBrowserState.isAutoCloseEnabled(),
+                true,
+                checkbox -> PresetBrowserState.setAutoCloseEnabled(checkbox.selected())));
+
+    this.selectEntry(null);
+    this.loadPresetEntries();
+    this.applyFilters();
   }
 
   public boolean isSelected(Identifier preset) {
-    return selectedEntry != null && selectedEntry.getPreset().equals(preset);
+    return this.selectedEntry != null && this.selectedEntry.getPreset().equals(preset);
   }
 
   public PresetList getPresetListWidget() {
@@ -157,14 +258,51 @@ public class PresetBrowserScreen extends CustomScreen<PresetBrowserMenu, Additio
     this.selectedEntry = entry;
     this.spawnAsNewButton.active = entry != null;
     this.spawnAsNewButton.visible = entry != null;
+    this.spawnWithOriginalButton.visible = entry != null;
+    this.updateRestoreButton(entry);
+  }
 
-    boolean hasUUID =
-        entry != null
-            && entry.getPresetData() != null
-            && entry.getPresetData().data() != null
-            && CompoundTagUtils.readUUID(entry.getPresetData().data(), "UUID") != null;
-    this.spawnWithOriginalButton.active = hasUUID;
-    this.spawnWithOriginalButton.visible = hasUUID;
+  private void updateRestoreButton(PresetListEntry entry) {
+    if (entry == null) {
+      this.spawnWithOriginalButton.active = false;
+      this.spawnWithOriginalButton.setTooltip(null);
+      return;
+    }
+
+    if (!entry.hasStoredIdentity()) {
+      if (entry.getPresetData() == null) {
+        this.blockRestoreButton("preset_browser.restore_unavailable_no_data");
+      } else {
+        this.blockRestoreButton("preset_browser.restore_unavailable_no_identity");
+      }
+      return;
+    }
+
+    if (!this.canRestoreIdentity()) {
+      this.blockRestoreButton("preset_browser.restore_unavailable_no_permission");
+      return;
+    }
+
+    this.spawnWithOriginalButton.active = true;
+    this.spawnWithOriginalButton.setTooltip(
+        Tooltip.create(
+            TextComponent.getTranslatedConfigText(
+                "preset_browser.restore_tooltip", UUIDUtils.shortId(entry.getStoredEntityUUID()))));
+  }
+
+  private void blockRestoreButton(String reasonKey) {
+    this.spawnWithOriginalButton.active = false;
+    this.spawnWithOriginalButton.setTooltip(
+        Tooltip.create(TextComponent.getTranslatedConfigText(reasonKey)));
+  }
+
+  public boolean canRestoreIdentity() {
+    if (this.getAdditionalScreenData() == null
+        || this.getAdditionalScreenData().getData() == null) {
+      return true;
+    }
+
+    return this.getAdditionalScreenData().getData().getBooleanOr("CanRestoreIdentity", true);
   }
 
   public PresetFeaturePreview createSecurityPreview(PresetData presetData) {
@@ -197,76 +335,134 @@ public class PresetBrowserScreen extends CustomScreen<PresetBrowserMenu, Additio
         null, commandPermissionLevel, PresetTrustLevel.UNTRUSTED_PLAYER, role);
   }
 
-  private boolean matchesFilters(Identifier preset, PresetMetadata metadata, PresetType type) {
-    if (!currentFilter.matches(type)) {
+  private void updateSearchTerms(String text) {
+    String normalizedSearch = text.toLowerCase(Locale.ROOT).trim();
+    if (normalizedSearch.isEmpty()) {
+      this.searchTerms = NO_SEARCH_TERMS;
+      return;
+    }
+
+    this.searchTerms = normalizedSearch.split("\\s+");
+  }
+
+  private boolean matchesFilters(PresetListEntry entry) {
+    if (!this.currentFilter.matches(entry.getPresetType())) {
       return false;
     }
 
-    if (!searchFilter.isEmpty()) {
-      return LocalPresetDataFiles.getPresetDisplayName(preset, metadata)
-              .toLowerCase()
-              .contains(searchFilter)
-          || preset.toString().toLowerCase().contains(searchFilter)
-          || metadata.description().toLowerCase().contains(searchFilter)
-          || metadata.category().toLowerCase().contains(searchFilter)
-          || metadata.author().toLowerCase().contains(searchFilter);
+    if (this.searchTerms.length == 0) {
+      return true;
+    }
+
+    PresetMetadata metadata = entry.getMetadata();
+    String searchableText =
+        (LocalPresetDataFiles.getPresetDisplayName(entry.getPreset(), metadata)
+                + ' '
+                + entry.getPreset()
+                + ' '
+                + metadata.description()
+                + ' '
+                + metadata.category()
+                + ' '
+                + metadata.author())
+            .toLowerCase(Locale.ROOT);
+
+    for (String searchTerm : this.searchTerms) {
+      if (!searchableText.contains(searchTerm)) {
+        return false;
+      }
     }
 
     return true;
   }
 
-  private void refreshPresetList() {
-    this.presetListWidget.clearEntries();
-    this.selectedEntry = null;
-    this.spawnAsNewButton.active = false;
-    this.spawnWithOriginalButton.active = false;
-    this.spawnWithOriginalButton.visible = false;
-    loadPresets();
+  private Comparator<PresetListEntry> presetComparator() {
+    Comparator<PresetListEntry> byName = Comparator.comparing(PresetBrowserScreen::displayName);
+    Comparator<PresetListEntry> comparator =
+        switch (PresetBrowserState.getSortType()) {
+          case NAME -> byName;
+          case TYPE ->
+              Comparator.comparing((PresetListEntry entry) -> entry.getPresetType().name())
+                  .thenComparing(byName);
+          case ENTITY_TYPE ->
+              Comparator.comparing(
+                      (PresetListEntry entry) -> entry.getMetadata().entityTypeId(),
+                      Comparator.nullsLast(Comparator.naturalOrder()))
+                  .thenComparing(byName);
+          case DATE ->
+              Comparator.comparingLong((PresetListEntry entry) -> entry.getMetadata().created())
+                  .thenComparing(byName);
+        };
+
+    if (PresetBrowserState.isSortDescending()) {
+      return comparator.reversed();
+    }
+
+    return comparator;
   }
 
-  private void loadPresets() {
-    loadPresetsOfType(
+  private void applyFilters() {
+    this.presetListWidget.replaceEntries(
+        this.presetEntries.stream()
+            .filter(this::matchesFilters)
+            .sorted(this.presetComparator())
+            .toList());
+
+    if (this.selectedEntry != null
+        && !this.presetListWidget.children().contains(this.selectedEntry)) {
+      this.selectEntry(null);
+    }
+  }
+
+  private void reloadPresets() {
+    CustomPresetDataFiles.refreshPresetIdentifiers();
+    this.selectEntry(null);
+    this.loadPresetEntries();
+    this.applyFilters();
+  }
+
+  private void loadPresetEntries() {
+    this.presetEntries.forEach(PresetListEntry::cleanup);
+    this.presetEntries.clear();
+
+    collectPresets(
         PresetType.LOCAL,
         LocalPresetDataFiles.getPresetIdentifiers(),
         LocalPresetDataFiles::getPresetMetadata);
 
-    loadPresetsOfType(
+    collectPresets(
         PresetType.DEFAULT,
         ClientDefaultPresetDataFiles.getDefaultPresetIdentifiers(),
         ClientDefaultPresetDataFiles::getPresetMetadata);
 
-    if (this.getAdditionalScreenData() != null) {
-      loadPresetsFromServerSync();
+    if (this.getAdditionalScreenData() == null) {
+      return;
     }
+
+    collectPresets(
+        PresetType.CUSTOM,
+        loadPresetListFromAdditionalData("CustomPresets").stream(),
+        preset -> loadMetadataFromAdditionalData("CustomPresetsMetadata", preset));
+
+    collectPresets(
+        PresetType.DATA,
+        loadPresetListFromAdditionalData("DataPresets").stream(),
+        preset -> loadMetadataFromAdditionalData("DataPresetsMetadata", preset));
+
+    collectPresets(
+        PresetType.WORLD,
+        loadPresetListFromAdditionalData("WorldPresets").stream(),
+        preset -> loadMetadataFromAdditionalData("WorldPresetsMetadata", preset));
   }
 
-  private void loadPresetsFromServerSync() {
-    // Load CUSTOM presets (server config/easy_npc/preset)
-    Set<Identifier> customPresets = loadPresetListFromAdditionalData("CustomPresets");
-    if (!customPresets.isEmpty()) {
-      loadPresetsOfType(
-          PresetType.CUSTOM,
-          customPresets.stream(),
-          preset -> loadMetadataFromAdditionalData("CustomPresetsMetadata", preset));
-    }
-
-    // Load DATA presets (datapacks)
-    Set<Identifier> dataPresets = loadPresetListFromAdditionalData("DataPresets");
-    if (!dataPresets.isEmpty()) {
-      loadPresetsOfType(
-          PresetType.DATA,
-          dataPresets.stream(),
-          preset -> loadMetadataFromAdditionalData("DataPresetsMetadata", preset));
-    }
-
-    // Load WORLD presets
-    Set<Identifier> worldPresets = loadPresetListFromAdditionalData("WorldPresets");
-    if (!worldPresets.isEmpty()) {
-      loadPresetsOfType(
-          PresetType.WORLD,
-          worldPresets.stream(),
-          preset -> loadMetadataFromAdditionalData("WorldPresetsMetadata", preset));
-    }
+  private void collectPresets(
+      PresetType presetType,
+      Stream<Identifier> presets,
+      Function<Identifier, PresetMetadata> metadataProvider) {
+    presets.forEach(
+        preset ->
+            this.presetEntries.add(
+                new PresetListEntry(preset, metadataProvider.apply(preset), presetType, this)));
   }
 
   public CompoundTag getPresetDataFromSync(Identifier preset, PresetType presetType) {
@@ -290,6 +486,21 @@ public class PresetBrowserScreen extends CustomScreen<PresetBrowserMenu, Additio
     return presetTag.isEmpty() ? null : presetTag;
   }
 
+  public CompoundTag getPresetIdentityFromSync(Identifier preset) {
+    if (this.getAdditionalScreenData() == null) {
+      return null;
+    }
+
+    CompoundTag presetsIdentity = this.getAdditionalScreenData().get("PresetsIdentity");
+    String presetKey = preset.toString();
+    if (presetsIdentity == null || !presetsIdentity.contains(presetKey)) {
+      return null;
+    }
+
+    CompoundTag identityTag = presetsIdentity.getCompoundOrEmpty(presetKey);
+    return identityTag.isEmpty() ? null : identityTag;
+  }
+
   private Set<Identifier> loadPresetListFromAdditionalData(String key) {
     if (this.getAdditionalScreenData() == null) {
       return Collections.emptySet();
@@ -300,7 +511,7 @@ public class PresetBrowserScreen extends CustomScreen<PresetBrowserMenu, Additio
       return Collections.emptySet();
     }
 
-    return new HashSet<>(CompoundTagUtils.readIdentifiers(listTag));
+    return new LinkedHashSet<>(CompoundTagUtils.readIdentifiers(listTag));
   }
 
   private PresetMetadata loadMetadataFromAdditionalData(String metadataKey, Identifier preset) {
@@ -317,34 +528,21 @@ public class PresetBrowserScreen extends CustomScreen<PresetBrowserMenu, Additio
         metadataMap.getCompound(preset.toString()).orElse(new CompoundTag()));
   }
 
-  private void loadPresetsOfType(
-      PresetType type,
-      Stream<Identifier> presets,
-      Function<Identifier, PresetMetadata> metadataProvider) {
-    if (!currentFilter.matches(type)) {
-      return;
-    }
-
-    presets
-        .sorted(Comparator.comparing(Identifier::toString))
-        .forEach(
-            preset -> {
-              PresetMetadata metadata = metadataProvider.apply(preset);
-              if (matchesFilters(preset, metadata, type)) {
-                this.presetListWidget.addEntry(new PresetListEntry(preset, metadata, type, this));
-              }
-            });
-  }
-
   private void spawnPreset(boolean withOriginal) {
-    if (this.selectedEntry == null) {
+    if (this.selectedEntry == null || this.minecraft == null || this.minecraft.level == null) {
       return;
     }
 
+    long gameTime = this.minecraft.level.getGameTime();
+    if (gameTime - this.lastSpawnTick < SPAWN_COOLDOWN_TICKS) {
+      return;
+    }
+
+    this.lastSpawnTick = gameTime;
     if (withOriginal) {
-      showConfirmationDialog();
+      this.showConfirmationDialog();
     } else {
-      executeSpawn(false);
+      this.executeSpawn(false);
     }
   }
 
@@ -353,28 +551,24 @@ public class PresetBrowserScreen extends CustomScreen<PresetBrowserMenu, Additio
       return;
     }
 
-    String uuid = "Unknown";
-    if (this.selectedEntry.getPresetData() != null
-        && this.selectedEntry.getPresetData().data() != null) {
-      java.util.UUID presetUUID =
-          CompoundTagUtils.readUUID(this.selectedEntry.getPresetData().data(), "UUID");
-      if (presetUUID != null) {
-        uuid = presetUUID.toString();
-      }
+    UUID entityUUID = this.selectedEntry.getStoredEntityUUID();
+    if (entityUUID == null) {
+      return;
     }
 
     this.minecraft.setScreen(
         new ConfirmScreen(
             confirmed -> {
               if (confirmed) {
-                executeSpawn(true);
+                this.executeSpawn(true);
               }
               this.minecraft.setScreen(this);
             },
-            Component.translatable("text.easy_npc.config.preset_browser.confirm_title"),
-            Component.translatable("text.easy_npc.config.preset_browser.confirm_message", uuid),
-            Component.translatable("text.easy_npc.config.preset_browser.confirm_yes"),
-            Component.translatable("text.easy_npc.config.preset_browser.confirm_no")));
+            TextComponent.getTranslatedConfigText("preset_browser.confirm_title"),
+            TextComponent.getTranslatedConfigText(
+                "preset_browser.confirm_message", entityUUID.toString()),
+            TextComponent.getTranslatedConfigText("preset_browser.confirm_yes"),
+            TextComponent.getTranslatedConfigText("preset_browser.confirm_no")));
   }
 
   private void executeSpawn(boolean withOriginal) {
@@ -403,7 +597,9 @@ public class PresetBrowserScreen extends CustomScreen<PresetBrowserMenu, Additio
               this.selectedEntry.getPresetType(), this.selectedEntry.getPreset(), withOriginal);
     }
 
-    this.onClose();
+    if (this.autoCloseCheckbox.selected()) {
+      this.onClose();
+    }
   }
 
   @Override
@@ -418,10 +614,42 @@ public class PresetBrowserScreen extends CustomScreen<PresetBrowserMenu, Additio
     }
 
     this.presetListWidget.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
+    this.renderListStatus(guiGraphics);
 
     if (this.selectedEntry != null) {
       this.renderPresetTitle(guiGraphics);
       this.renderPreviewPanels(guiGraphics, mouseX, mouseY);
+    } else {
+      Text.drawString(
+          guiGraphics,
+          this.font,
+          TextComponent.getTranslatedConfigText("preset_browser.select_hint"),
+          LIST_X + LIST_WIDTH + 20,
+          PREVIEW_Y,
+          0x3F3F3F);
+    }
+  }
+
+  private void renderListStatus(GuiGraphicsExtractor guiGraphics) {
+    Text.drawString(
+        guiGraphics,
+        this.font,
+        TextComponent.getTranslatedConfigText(
+            "preset_browser.count",
+            String.valueOf(this.presetListWidget.children().size()),
+            String.valueOf(this.presetEntries.size())),
+        LIST_X + 2,
+        COUNT_Y,
+        0x3F3F3F);
+
+    if (this.presetListWidget.children().isEmpty()) {
+      Text.drawString(
+          guiGraphics,
+          this.font,
+          TextComponent.getTranslatedConfigText("preset_browser.empty"),
+          LIST_X + 4,
+          LIST_Y + 10,
+          0x3F3F3F);
     }
   }
 
@@ -435,7 +663,7 @@ public class PresetBrowserScreen extends CustomScreen<PresetBrowserMenu, Additio
         LocalPresetDataFiles.getPresetDisplayName(
             this.selectedEntry.getPreset(), this.selectedEntry.getMetadata()),
         this.spawnAsNewButton.getX() + 5,
-        PREVIEW_Y - 55,
+        PREVIEW_Y - 56,
         0x3F3F3F);
   }
 
@@ -472,22 +700,16 @@ public class PresetBrowserScreen extends CustomScreen<PresetBrowserMenu, Additio
     PresetInfoView.render(
         guiGraphics,
         this.font,
-        this.selectedEntry.getPreset(),
-        this.selectedEntry.getMetadata(),
+        this.selectedEntry,
         rightPanelX,
         previewBoxY + 115,
         rightPanelWidth,
         this.infoBoxHeight);
-
-    this.spawnAsNewButton.setY(previewBoxY + 115 + this.infoBoxHeight + 5);
-    this.spawnWithOriginalButton.setY(this.spawnAsNewButton.getY());
   }
 
   @Override
   public void removed() {
-    if (this.presetListWidget != null) {
-      this.presetListWidget.removed();
-    }
+    this.presetEntries.forEach(PresetListEntry::cleanup);
     super.removed();
   }
 

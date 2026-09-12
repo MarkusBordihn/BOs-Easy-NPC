@@ -66,6 +66,10 @@ public class SpeechBubbleFrameRenderer {
     }
 
     Minecraft minecraft = Minecraft.getInstance();
+    if (!EasyNPCRenderVisibility.isVisibleTo(entity, minecraft.player)) {
+      return;
+    }
+
     SpeechBubbleInstance speechBubbleInstance =
         SpeechBubbleRenderer.measure(
             entity,

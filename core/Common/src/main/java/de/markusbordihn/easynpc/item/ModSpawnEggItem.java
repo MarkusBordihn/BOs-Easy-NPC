@@ -21,7 +21,7 @@ package de.markusbordihn.easynpc.item;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.data.OwnerDataCapable;
+import de.markusbordihn.easynpc.handler.OwnerHandler;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -111,12 +111,8 @@ public class ModSpawnEggItem extends SpawnEggItem {
             !Objects.equals(blockPos, blockPos1) && direction == Direction.UP);
 
     if (entity != null) {
-      // Set owner data for the entity if it is an EasyNPC.
       if (entity instanceof EasyNPC<?> easyNPC && player != null) {
-        OwnerDataCapable<?> ownerData = easyNPC.getEasyNPCOwnerData();
-        if (ownerData != null) {
-          ownerData.setNPCOwnerUUID(player.getUUID());
-        }
+        OwnerHandler.setOwner(easyNPC, player);
       }
 
       itemStack.shrink(1);

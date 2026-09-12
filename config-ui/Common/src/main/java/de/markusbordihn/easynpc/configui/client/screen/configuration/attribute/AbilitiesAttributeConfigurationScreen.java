@@ -228,6 +228,21 @@ public class AbilitiesAttributeConfigurationScreen<T extends ConfigurationMenu>
     this.addRenderableWidget(
         new Checkbox(
             secondButtonRow,
+            this.buttonTopPos + 85,
+            InteractionAttributeType.BLOCK_VEHICLE_MOUNTING.getAttributeName(),
+            entityAttributes.getInteractionAttributes().blockVehicleMounting(),
+            checkbox ->
+                NetworkMessageHandlerManager.getServerHandler()
+                    .interactionAttributeChange(
+                        this.getEasyNPCUUID(),
+                        InteractionAttributeType.BLOCK_VEHICLE_MOUNTING,
+                        checkbox.selected())));
+    this.addRenderableWidget(
+        new HelpIcon(this.leftPos + 296, this.buttonTopPos + 87, "block_vehicle_mounting.tooltip"));
+
+    this.addRenderableWidget(
+        new Checkbox(
+            secondButtonRow,
             this.buttonTopPos + 105,
             MovementAttributeType.CAN_USE_NETHER_PORTAL.getAttributeName(),
             entityAttributes.getMovementAttributes().canUseNetherPortal(),

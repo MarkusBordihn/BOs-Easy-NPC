@@ -77,8 +77,6 @@ public class EvokerBase extends EvokerRaw implements BaseEasyNPC<EvokerRaw> {
     soundDataSet.addDefaultSound(SoundType.AMBIENT, SoundEvents.EVOKER_AMBIENT);
     soundDataSet.addDefaultSound(SoundType.DEATH, SoundEvents.EVOKER_DEATH);
     soundDataSet.addDefaultSound(SoundType.HURT, SoundEvents.EVOKER_HURT);
-    soundDataSet.addDefaultSound(SoundType.CAST_SPELL, SoundEvents.EVOKER_CAST_SPELL);
-    soundDataSet.addDefaultSound(SoundType.CELEBRATE, SoundEvents.EVOKER_CELEBRATE);
     soundDataSet.addDefaultSound(SoundType.TRADE, SoundEvents.VILLAGER_TRADE);
     soundDataSet.addDefaultSound(SoundType.TRADE_YES, SoundEvents.VILLAGER_YES);
     soundDataSet.addDefaultSound(SoundType.TRADE_NO, SoundEvents.VILLAGER_NO);

@@ -22,13 +22,18 @@ package de.markusbordihn.easynpc.api.preset;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.preset.PresetData;
+import de.markusbordihn.easynpc.data.preset.PresetType;
 import de.markusbordihn.easynpc.entity.easynpc.data.ConfigDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.OwnerDataCapable;
+import de.markusbordihn.easynpc.handler.PresetHandler;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.TagParser;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.MinecraftServer;
 
 public class PresetValidator {
 
@@ -106,6 +111,58 @@ public class PresetValidator {
                   ROOT_PATH,
                   "The preset is not readable: " + exception.getMessage())));
     }
+  }
+
+  public static PresetValidationReport validateWithParents(
+      MinecraftServer minecraftServer, PresetType presetType, Identifier presetLocation) {
+    return validateWithParents(
+        minecraftServer,
+        presetType,
+        presetLocation,
+        PresetValidationContext.forServer(
+            BuiltInRegistries.ENTITY_TYPE.keySet().stream()
+                .map(Identifier::toString)
+                .collect(Collectors.toSet())));
+  }
+
+  public static PresetValidationReport validateWithParents(
+      MinecraftServer minecraftServer,
+      PresetType presetType,
+      Identifier presetLocation,
+      PresetValidationContext context) {
+    CompoundTag presetTag =
+        PresetHandler.loadPresetCompoundTag(presetType, presetLocation, minecraftServer);
+    if (presetTag == null) {
+      return new PresetValidationReport(
+          List.of(
+              PresetValidationIssue.error(
+                  PresetValidationRule.EMPTY_PRESET,
+                  ROOT_PATH,
+                  "The preset " + presetLocation + " could not be loaded")));
+    }
+
+    CompoundTag resolvedPresetTag =
+        PresetHandler.resolveParentPresets(presetTag, presetLocation, presetType, minecraftServer);
+    if (resolvedPresetTag == null) {
+      return new PresetValidationReport(List.of(unresolvedParentIssue(presetTag)));
+    }
+
+    return validate(resolvedPresetTag, context);
+  }
+
+  private static PresetValidationIssue unresolvedParentIssue(CompoundTag presetTag) {
+    String parent = presetTag.getStringOr(PresetData.PARENT_TAG, "");
+    if (Identifier.tryParse(parent) == null) {
+      return PresetValidationIssue.error(
+          PresetValidationRule.MALFORMED_PARENT,
+          PresetData.PARENT_TAG,
+          "The parent preset id '" + parent + "' is not a valid resource location");
+    }
+
+    return PresetValidationIssue.error(
+        PresetValidationRule.UNRESOLVED_PARENT,
+        PresetData.PARENT_TAG,
+        "The parent preset " + parent + " is missing, builds a cycle or nests too deep");
   }
 
   private static void validateParent(CompoundTag presetTag, List<PresetValidationIssue> issues) {

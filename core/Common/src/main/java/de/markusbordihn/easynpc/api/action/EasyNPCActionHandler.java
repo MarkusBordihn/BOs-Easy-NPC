@@ -24,8 +24,10 @@ import de.markusbordihn.easynpc.data.action.ActionContext;
 import de.markusbordihn.easynpc.data.action.ActionDataEntry;
 import de.markusbordihn.easynpc.data.action.ActionDataType;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
+import de.markusbordihn.easynpc.data.action.ActionExecutionState;
 import de.markusbordihn.easynpc.data.action.MessageActionData;
 import de.markusbordihn.easynpc.data.action.MoveActionData;
+import de.markusbordihn.easynpc.data.action.PendingActionChain;
 import de.markusbordihn.easynpc.data.action.SoundActionData;
 import de.markusbordihn.easynpc.data.action.SpeechBubbleManager;
 import de.markusbordihn.easynpc.data.state.StateEntry;
@@ -35,6 +37,7 @@ import de.markusbordihn.easynpc.entity.easynpc.data.DialogDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.StateDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.TradingDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.ActionHandler;
+import de.markusbordihn.easynpc.entity.easynpc.handlers.PendingActionHandler;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.action.executor.DialogActionExecutor;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.action.executor.MessageActionExecutor;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.action.executor.MoveActionExecutor;
@@ -180,7 +183,9 @@ public class EasyNPCActionHandler {
   }
 
   public static boolean playSound(EasyNPC<?> easyNPC, SoundActionData soundActionData) {
-    if (!isUsable(easyNPC) || soundActionData == null || !soundActionData.hasSoundId()) {
+    if (!EasyNPC.isUsableServerSideInstance(easyNPC)
+        || soundActionData == null
+        || !soundActionData.hasSoundId()) {
       log.error("Unable to play sound {} for {}", soundActionData, easyNPC);
       return false;
     }
@@ -209,7 +214,7 @@ public class EasyNPCActionHandler {
       MoveActionData moveActionData,
       ActionContext actionContext,
       Runnable onArrival) {
-    if (!isUsable(easyNPC) || moveActionData == null) {
+    if (!EasyNPC.isUsableServerSideInstance(easyNPC) || moveActionData == null) {
       log.error("Unable to move {} to {}", easyNPC, blockPos);
       return false;
     }
@@ -224,7 +229,7 @@ public class EasyNPCActionHandler {
   }
 
   public static boolean setOpacity(EasyNPC<?> easyNPC, int opacity) {
-    if (!isUsable(easyNPC)) {
+    if (!EasyNPC.isUsableServerSideInstance(easyNPC)) {
       log.error("Unable to set the opacity of {} to {}", easyNPC, opacity);
       return false;
     }
@@ -238,7 +243,7 @@ public class EasyNPCActionHandler {
 
   public static boolean setState(
       EasyNPC<?> easyNPC, Identifier stateId, StateEntry stateEntry, ServerPlayer initiator) {
-    if (!isUsable(easyNPC) || stateId == null || stateEntry == null) {
+    if (!EasyNPC.isUsableServerSideInstance(easyNPC) || stateId == null || stateEntry == null) {
       log.error("Unable to set state {} of {} to {}", stateId, easyNPC, stateEntry);
       return false;
     }
@@ -268,7 +273,7 @@ public class EasyNPCActionHandler {
 
   public static boolean openDialog(
       EasyNPC<?> easyNPC, ServerPlayer serverPlayer, String dialogLabel) {
-    if (!isUsable(easyNPC) || serverPlayer == null) {
+    if (!EasyNPC.isUsableServerSideInstance(easyNPC) || serverPlayer == null) {
       log.error("Unable to open a dialog of {} for {}", easyNPC, serverPlayer);
       return false;
     }
@@ -285,6 +290,11 @@ public class EasyNPCActionHandler {
       return true;
     }
 
+    if (!dialogData.hasDialog(dialogLabel)) {
+      log.error("Unable to open the dialog {}: {} has no such dialog", dialogLabel, easyNPC);
+      return false;
+    }
+
     DialogActionExecutor.openNamedDialog(
         new ActionDataEntry(ActionDataType.OPEN_NAMED_DIALOG, dialogLabel),
         serverPlayer,
@@ -292,8 +302,27 @@ public class EasyNPCActionHandler {
     return true;
   }
 
+  public static boolean openDialogIfConditionsMet(
+      EasyNPC<?> easyNPC, ServerPlayer serverPlayer, String dialogLabel) {
+    if (!EasyNPC.isUsableServerSideInstance(easyNPC)
+        || serverPlayer == null
+        || dialogLabel == null
+        || dialogLabel.isEmpty()) {
+      log.error("Unable to open the dialog {} of {} for {}", dialogLabel, easyNPC, serverPlayer);
+      return false;
+    }
+
+    DialogDataCapable<?> dialogData = easyNPC.getEasyNPCDialogData();
+    if (dialogData == null || !dialogData.hasDialog(dialogLabel)) {
+      log.error("Unable to open the dialog {}: {} has no such dialog", dialogLabel, easyNPC);
+      return false;
+    }
+
+    return dialogData.openDialogIfConditionsMet(serverPlayer, dialogData.getDialogId(dialogLabel));
+  }
+
   public static boolean openTradingScreen(EasyNPC<?> easyNPC, ServerPlayer serverPlayer) {
-    if (!isUsable(easyNPC) || serverPlayer == null) {
+    if (!EasyNPC.isUsableServerSideInstance(easyNPC) || serverPlayer == null) {
       log.error("Unable to open the trading screen of {} for {}", easyNPC, serverPlayer);
       return false;
     }
@@ -310,7 +339,10 @@ public class EasyNPCActionHandler {
 
   public static boolean updateScoreboard(
       EasyNPC<?> easyNPC, ServerPlayer serverPlayer, String command) {
-    if (!isUsable(easyNPC) || serverPlayer == null || command == null || command.isEmpty()) {
+    if (!EasyNPC.isUsableServerSideInstance(easyNPC)
+        || serverPlayer == null
+        || command == null
+        || command.isEmpty()) {
       log.error("Unable to update the scoreboard of {} with {}", serverPlayer, command);
       return false;
     }
@@ -325,7 +357,7 @@ public class EasyNPCActionHandler {
   /** Runs the entry as it is, without checking the conditions attached to it. */
   public static boolean execute(
       EasyNPC<?> easyNPC, ActionDataEntry actionDataEntry, ActionContext actionContext) {
-    if (!isUsable(easyNPC) || actionDataEntry == null) {
+    if (!EasyNPC.isUsableServerSideInstance(easyNPC) || actionDataEntry == null) {
       log.error("Unable to execute action {} for {}", actionDataEntry, easyNPC);
       return false;
     }
@@ -344,7 +376,7 @@ public class EasyNPCActionHandler {
   /** Runs the stored action set of the event, including the conditions attached to its entries. */
   public static boolean trigger(
       EasyNPC<?> easyNPC, ActionEventType actionEventType, ActionContext actionContext) {
-    if (!isUsable(easyNPC) || actionEventType == null) {
+    if (!EasyNPC.isUsableServerSideInstance(easyNPC) || actionEventType == null) {
       log.error("Unable to trigger event {} for {}", actionEventType, easyNPC);
       return false;
     }
@@ -360,6 +392,53 @@ public class EasyNPCActionHandler {
     return true;
   }
 
+  public static boolean schedule(
+      EasyNPC<?> easyNPC, Identifier sourceId, int ticks, List<ActionDataEntry> actionDataEntries) {
+    if (!EasyNPC.isUsableServerSideInstance(easyNPC)
+        || sourceId == null
+        || actionDataEntries == null
+        || actionDataEntries.isEmpty()) {
+      log.error("Unable to schedule the actions {} of {}", sourceId, easyNPC);
+      return false;
+    }
+
+    PendingActionHandler<?> pendingActionHandler = easyNPC.getEasyNPCPendingActionHandler();
+    if (pendingActionHandler == null) {
+      log.error("Unable to schedule the actions {}: {} has no pending actions", sourceId, easyNPC);
+      return false;
+    }
+
+    pendingActionHandler.schedulePendingAction(
+        new PendingActionChain(
+            ActionEventType.NONE,
+            sourceId,
+            ticks,
+            null,
+            actionDataEntries,
+            List.of(),
+            ActionExecutionState.EMPTY));
+    return pendingActionHandler.hasPendingAction(ActionEventType.NONE, sourceId);
+  }
+
+  public static boolean cancelScheduled(EasyNPC<?> easyNPC, Identifier sourceId) {
+    if (!hasScheduled(easyNPC, sourceId)) {
+      return false;
+    }
+
+    easyNPC.getEasyNPCPendingActionHandler().cancelPendingAction(ActionEventType.NONE, sourceId);
+    return true;
+  }
+
+  public static boolean hasScheduled(EasyNPC<?> easyNPC, Identifier sourceId) {
+    if (!EasyNPC.isUsableServerSideInstance(easyNPC) || sourceId == null) {
+      return false;
+    }
+
+    PendingActionHandler<?> pendingActionHandler = easyNPC.getEasyNPCPendingActionHandler();
+    return pendingActionHandler != null
+        && pendingActionHandler.hasPendingAction(ActionEventType.NONE, sourceId);
+  }
+
   private static List<String> toTextList(String text) {
     return text != null ? List.of(text) : List.of();
   }
@@ -369,7 +448,7 @@ public class EasyNPCActionHandler {
   }
 
   private static Component toMessage(EasyNPC<?> easyNPC, String text, ServerPlayer initiator) {
-    if (!isUsable(easyNPC)) {
+    if (!EasyNPC.isUsableServerSideInstance(easyNPC)) {
       log.error("Unable to let {} say {}", easyNPC, text);
       return null;
     }
@@ -380,9 +459,5 @@ public class EasyNPCActionHandler {
     }
 
     return MessageActionExecutor.parseText(text, initiator, easyNPC.getLivingEntity());
-  }
-
-  private static boolean isUsable(EasyNPC<?> easyNPC) {
-    return easyNPC != null && !easyNPC.isClientSideInstance();
   }
 }

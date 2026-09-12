@@ -28,9 +28,6 @@ import de.markusbordihn.easynpc.data.condition.ConditionDataEntry;
 import de.markusbordihn.easynpc.data.condition.ConditionDataSet;
 import de.markusbordihn.easynpc.data.condition.ConditionOperationType;
 import de.markusbordihn.easynpc.data.condition.ConditionType;
-import java.util.Arrays;
-import java.util.LinkedHashSet;
-import java.util.stream.Collectors;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 public class ScoreboardConditionEntry extends ConditionEntryWidget {
@@ -58,20 +55,8 @@ public class ScoreboardConditionEntry extends ConditionEntryWidget {
                 hasConditionData ? this.conditionDataEntry.name() : "",
                 64));
     this.operationTypeButton =
-        this.screen.addConditionEntryWidget(
-            new SpinButton<>(
-                editorLeft + 110,
-                editorTop + 25,
-                180,
-                16,
-                Arrays.stream(ConditionOperationType.values())
-                    .filter(type -> type != ConditionOperationType.NONE)
-                    .sorted()
-                    .collect(Collectors.toCollection(LinkedHashSet::new)),
-                hasConditionData
-                    ? this.conditionDataEntry.operationType()
-                    : ConditionOperationType.EQUALS,
-                button -> {}));
+        this.addComparisonOperationButton(
+            editorLeft + 110, editorTop + 25, hasConditionData, ConditionOperationType.EQUALS);
     this.valueTextField =
         this.screen.addConditionEntryWidget(
             new TextField(

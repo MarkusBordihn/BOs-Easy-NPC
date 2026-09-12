@@ -149,6 +149,7 @@ public class FactionEditorScreen<T extends EditorMenu> extends EditorScreen<T> {
   @Override
   public void init() {
     super.init();
+    this.deferOverlayRendering = true;
 
     this.factionDataEntries =
         AdditionalScreenData.getFactionData(this.getAdditionalScreenData().getData());
@@ -403,6 +404,8 @@ public class FactionEditorScreen<T extends EditorMenu> extends EditorScreen<T> {
           hostileFactionTop + 2);
       hostileFactionTop += ROW_HEIGHT;
     }
+
+    this.extractOverlayRenderState(guiGraphics, x, y, partialTicks);
 
     if (this.colorPickerPopup != null) {
       this.colorPickerPopup.render(guiGraphics, x, y, partialTicks);

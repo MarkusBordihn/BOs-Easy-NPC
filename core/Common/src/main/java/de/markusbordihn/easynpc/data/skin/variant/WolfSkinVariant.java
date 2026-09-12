@@ -50,7 +50,8 @@ public enum WolfSkinVariant implements VariantTexture {
   RUSTY_ANGRY(Constants.MINECRAFT_PREFIX, "textures/entity/wolf/wolf_rusty_angry.png"),
   WOODS(Constants.MINECRAFT_PREFIX, "textures/entity/wolf/wolf_woods.png"),
   WOODS_TAMED(Constants.MINECRAFT_PREFIX, "textures/entity/wolf/wolf_woods_tame.png"),
-  WOODS_ANGRY(Constants.MINECRAFT_PREFIX, "textures/entity/wolf/wolf_woods_angry.png");
+  WOODS_ANGRY(Constants.MINECRAFT_PREFIX, "textures/entity/wolf/wolf_woods_angry.png"),
+  BRINDLE(Constants.MOD_ID, "textures/entity/wolf/wolf_brindle.png");
 
   private final Identifier textureLocation;
 
@@ -60,6 +61,6 @@ public enum WolfSkinVariant implements VariantTexture {
 
   @Override
   public Identifier getTextureLocation() {
-    return textureLocation;
+    return this.textureLocation;
   }
 }
