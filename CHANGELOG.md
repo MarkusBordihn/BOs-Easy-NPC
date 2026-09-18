@@ -8,6 +8,15 @@ the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 7.12.2
+
+- Fixed the Fairy hitbox being far too small, so its name tag and speech bubble sat in its body.
+- Fixed malformed network packets disconnecting players instead of being ignored.
+- Fixed invalid NPC positions, scales and attributes from being applied.
+- Changed Fairy NPCs to take up the space of their model, so they collide and can be clicked.
+- Changed oversized names and durations to be rejected instead of stored.
+- Changed the network protocol version, so client and server must run the same mod version.
+
 ### 7.12.1
 
 - Fixed #836 by always showing "Restore", including datapack presets, with a reason tooltip.

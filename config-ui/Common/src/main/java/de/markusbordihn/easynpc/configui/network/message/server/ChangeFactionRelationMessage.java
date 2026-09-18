@@ -39,8 +39,8 @@ public record ChangeFactionRelationMessage(
   public static ChangeFactionRelationMessage create(final FriendlyByteBuf buffer) {
     return new ChangeFactionRelationMessage(
         buffer.readUUID(),
-        buffer.readUtf(),
-        buffer.readUtf(),
+        buffer.readUtf(MAX_NAME_LENGTH),
+        buffer.readUtf(MAX_NAME_LENGTH),
         buffer.readBoolean(),
         buffer.readBoolean());
   }

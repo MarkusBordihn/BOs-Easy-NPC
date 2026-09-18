@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.network.message.client;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.highlight.NPCHighlightManager;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
@@ -33,9 +34,14 @@ public record HighlightEasyNPCMessage(List<UUID> uuids, int durationTicks)
   public static final ResourceLocation MESSAGE_ID =
       new ResourceLocation(Constants.MOD_ID, "highlight_easy_npc");
 
+  public static final int MAXIMUM_UUIDS = 256;
+  public static final int MAXIMUM_DURATION_TICKS = 24000;
+
   public static HighlightEasyNPCMessage create(final FriendlyByteBuf buffer) {
     return new HighlightEasyNPCMessage(
-        buffer.readList(FriendlyByteBuf::readUUID), buffer.readVarInt());
+        buffer.readCollection(
+            FriendlyByteBuf.limitValue(ArrayList::new, MAXIMUM_UUIDS), FriendlyByteBuf::readUUID),
+        buffer.readVarInt());
   }
 
   @Override
@@ -52,12 +58,13 @@ public record HighlightEasyNPCMessage(List<UUID> uuids, int durationTicks)
   @Override
   public void handleClient() {
     if (this.uuids == null || this.uuids.isEmpty()) {
-      log.error("Invalid highlight request with {} NPCs", this.uuids);
+      log.error("Invalid highlight request for {} NPCs", this.uuids);
       return;
     }
 
+    int highlightDurationTicks = Math.min(this.durationTicks, MAXIMUM_DURATION_TICKS);
     for (UUID uuid : this.uuids) {
-      NPCHighlightManager.highlight(uuid, this.durationTicks);
+      NPCHighlightManager.highlight(uuid, highlightDurationTicks);
     }
   }
 }

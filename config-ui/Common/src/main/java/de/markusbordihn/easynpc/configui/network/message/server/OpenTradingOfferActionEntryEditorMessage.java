@@ -42,7 +42,7 @@ public record OpenTradingOfferActionEntryEditorMessage(
     return new OpenTradingOfferActionEntryEditorMessage(
         buffer.readUUID(),
         buffer.readInt(),
-        buffer.readEnum(ConfigurationType.class),
+        NetworkMessageRecord.readEnum(buffer, ConfigurationType.class),
         buffer.readUUID());
   }
 

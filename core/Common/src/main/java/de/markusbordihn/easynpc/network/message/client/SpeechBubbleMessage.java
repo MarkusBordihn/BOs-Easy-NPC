@@ -33,6 +33,8 @@ public record SpeechBubbleMessage(UUID uuid, Component text, int durationTicks)
   public static final ResourceLocation MESSAGE_ID =
       new ResourceLocation(Constants.MOD_ID, "speech_bubble");
 
+  public static final int MAXIMUM_DURATION_TICKS = 24000;
+
   public static SpeechBubbleMessage create(final FriendlyByteBuf buffer) {
     return new SpeechBubbleMessage(buffer.readUUID(), buffer.readComponent(), buffer.readVarInt());
   }
@@ -56,6 +58,7 @@ public record SpeechBubbleMessage(UUID uuid, Component text, int durationTicks)
       return;
     }
 
-    SpeechBubbleManager.show(this.uuid, this.text, this.durationTicks);
+    SpeechBubbleManager.show(
+        this.uuid, this.text, Math.min(this.durationTicks, MAXIMUM_DURATION_TICKS));
   }
 }

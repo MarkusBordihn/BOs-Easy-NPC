@@ -36,7 +36,7 @@ public record CreateFactionMessage(UUID uuid, String factionName) implements Net
       new ResourceLocation(Constants.MOD_ID, "create_faction");
 
   public static CreateFactionMessage create(final FriendlyByteBuf buffer) {
-    return new CreateFactionMessage(buffer.readUUID(), buffer.readUtf());
+    return new CreateFactionMessage(buffer.readUUID(), buffer.readUtf(MAX_NAME_LENGTH));
   }
 
   @Override

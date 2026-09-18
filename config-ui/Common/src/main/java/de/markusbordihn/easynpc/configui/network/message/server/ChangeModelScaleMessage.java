@@ -38,10 +38,13 @@ public record ChangeModelScaleMessage(UUID uuid, ModelPartType modelPartType, Cu
   public static final ResourceLocation MESSAGE_ID =
       new ResourceLocation(Constants.MOD_ID, "change_model_scale");
 
+  public static final float MINIMUM_SCALE = 0.0f;
+  public static final float MAXIMUM_SCALE = 10.0f;
+
   public static ChangeModelScaleMessage create(final FriendlyByteBuf buffer) {
     return new ChangeModelScaleMessage(
         buffer.readUUID(),
-        buffer.readEnum(ModelPartType.class),
+        NetworkMessageRecord.readEnum(buffer, ModelPartType.class),
         new CustomScale(buffer.readFloat(), buffer.readFloat(), buffer.readFloat()));
   }
 
@@ -71,8 +74,11 @@ public record ChangeModelScaleMessage(UUID uuid, ModelPartType modelPartType, Cu
       return;
     }
 
-    if (this.scale == null) {
-      log.error("Invalid scale for {} from {}", easyNPC, serverPlayer);
+    if (this.scale == null
+        || !NetworkMessageRecord.isInRange(this.scale.x(), MINIMUM_SCALE, MAXIMUM_SCALE)
+        || !NetworkMessageRecord.isInRange(this.scale.y(), MINIMUM_SCALE, MAXIMUM_SCALE)
+        || !NetworkMessageRecord.isInRange(this.scale.z(), MINIMUM_SCALE, MAXIMUM_SCALE)) {
+      log.error("Invalid scale {} for {} from {}", this.scale, easyNPC, serverPlayer);
       return;
     }
 
@@ -83,15 +89,17 @@ public record ChangeModelScaleMessage(UUID uuid, ModelPartType modelPartType, Cu
     }
 
     log.debug(
-        "Change {} scale to {}° for {} from {}", modelPartType, this.scale, easyNPC, serverPlayer);
+        "Change {} scale to {} for {} from {}",
+        this.modelPartType,
+        this.scale,
+        easyNPC,
+        serverPlayer);
 
-    // Set common properties for all cases except ROOT.
     if (this.modelPartType != ModelPartType.ROOT) {
       easyNPC.getEntity().setPose(Pose.STANDING);
       modelData.setModelPose(ModelPose.CUSTOM);
     }
 
-    // Apply scale change based on the model part.
     modelData.setModelPartScale(this.modelPartType, this.scale);
 
     if (!modelData.hasChangedModel()) {

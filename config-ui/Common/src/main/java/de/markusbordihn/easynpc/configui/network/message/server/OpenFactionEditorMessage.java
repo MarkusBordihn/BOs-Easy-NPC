@@ -40,7 +40,7 @@ public record OpenFactionEditorMessage(UUID uuid, String factionName)
       new ResourceLocation(Constants.MOD_ID, "open_faction_editor");
 
   public static OpenFactionEditorMessage create(final FriendlyByteBuf buffer) {
-    return new OpenFactionEditorMessage(buffer.readUUID(), buffer.readUtf());
+    return new OpenFactionEditorMessage(buffer.readUUID(), buffer.readUtf(MAX_NAME_LENGTH));
   }
 
   @Override

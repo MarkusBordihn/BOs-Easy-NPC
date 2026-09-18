@@ -41,7 +41,7 @@ public record ExportPresetMessage(
     return new ExportPresetMessage(
         buffer.readUUID(),
         buffer.readUtf(),
-        buffer.readEnum(PresetExportFormat.class),
+        NetworkMessageRecord.readEnum(buffer, PresetExportFormat.class),
         PresetMetadata.fromCompoundTag(buffer.readNbt()));
   }
 

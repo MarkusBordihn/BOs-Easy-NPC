@@ -36,7 +36,8 @@ public record ChangeProfessionMessage(UUID uuid, Profession profession)
       new ResourceLocation(Constants.MOD_ID, "change_profession");
 
   public static ChangeProfessionMessage create(final FriendlyByteBuf buffer) {
-    return new ChangeProfessionMessage(buffer.readUUID(), buffer.readEnum(Profession.class));
+    return new ChangeProfessionMessage(
+        buffer.readUUID(), NetworkMessageRecord.readEnum(buffer, Profession.class));
   }
 
   @Override

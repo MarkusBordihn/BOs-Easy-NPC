@@ -37,7 +37,8 @@ public record ChangeFactionColorMessage(UUID uuid, String factionName, String co
       new ResourceLocation(Constants.MOD_ID, "change_faction_color");
 
   public static ChangeFactionColorMessage create(final FriendlyByteBuf buffer) {
-    return new ChangeFactionColorMessage(buffer.readUUID(), buffer.readUtf(), buffer.readUtf());
+    return new ChangeFactionColorMessage(
+        buffer.readUUID(), buffer.readUtf(MAX_NAME_LENGTH), buffer.readUtf(MAX_NAME_LENGTH));
   }
 
   @Override

@@ -37,7 +37,8 @@ public record ChangeTradingTypeMessage(UUID uuid, TradingType tradingType)
       new ResourceLocation(Constants.MOD_ID, "change_trading_type");
 
   public static ChangeTradingTypeMessage create(final FriendlyByteBuf buffer) {
-    return new ChangeTradingTypeMessage(buffer.readUUID(), buffer.readEnum(TradingType.class));
+    return new ChangeTradingTypeMessage(
+        buffer.readUUID(), NetworkMessageRecord.readEnum(buffer, TradingType.class));
   }
 
   @Override

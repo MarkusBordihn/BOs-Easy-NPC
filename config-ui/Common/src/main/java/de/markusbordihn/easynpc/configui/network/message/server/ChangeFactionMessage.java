@@ -35,7 +35,7 @@ public record ChangeFactionMessage(UUID uuid, String factionName) implements Net
       new ResourceLocation(Constants.MOD_ID, "change_faction");
 
   public static ChangeFactionMessage create(final FriendlyByteBuf buffer) {
-    return new ChangeFactionMessage(buffer.readUUID(), buffer.readUtf());
+    return new ChangeFactionMessage(buffer.readUUID(), buffer.readUtf(MAX_NAME_LENGTH));
   }
 
   @Override

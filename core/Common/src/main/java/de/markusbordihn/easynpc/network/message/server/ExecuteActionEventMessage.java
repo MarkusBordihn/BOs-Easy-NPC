@@ -39,7 +39,8 @@ public record ExecuteActionEventMessage(UUID uuid, ActionEventType actionEventTy
       new ResourceLocation(Constants.MOD_ID, "trigger_action_event");
 
   public static ExecuteActionEventMessage create(final FriendlyByteBuf buffer) {
-    return new ExecuteActionEventMessage(buffer.readUUID(), buffer.readEnum(ActionEventType.class));
+    return new ExecuteActionEventMessage(
+        buffer.readUUID(), NetworkMessageRecord.readEnum(buffer, ActionEventType.class));
   }
 
   private static boolean isDialogActionEvent(final ActionEventType actionEventType) {

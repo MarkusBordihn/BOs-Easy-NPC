@@ -43,7 +43,7 @@ public record ImportPresetMessage(
   public static ImportPresetMessage create(final FriendlyByteBuf buffer) {
     return new ImportPresetMessage(
         buffer.readUUID(),
-        buffer.readEnum(PresetType.class),
+        NetworkMessageRecord.readEnum(buffer, PresetType.class),
         buffer.readBoolean() ? buffer.readNbt() : null,
         buffer.readResourceLocation());
   }

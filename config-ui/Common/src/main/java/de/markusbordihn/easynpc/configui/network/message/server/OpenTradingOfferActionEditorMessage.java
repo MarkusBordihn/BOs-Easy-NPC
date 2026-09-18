@@ -40,7 +40,9 @@ public record OpenTradingOfferActionEditorMessage(
 
   public static OpenTradingOfferActionEditorMessage create(final FriendlyByteBuf buffer) {
     return new OpenTradingOfferActionEditorMessage(
-        buffer.readUUID(), buffer.readInt(), buffer.readEnum(ConfigurationType.class));
+        buffer.readUUID(),
+        buffer.readInt(),
+        NetworkMessageRecord.readEnum(buffer, ConfigurationType.class));
   }
 
   @Override

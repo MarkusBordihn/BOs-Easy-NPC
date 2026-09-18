@@ -85,11 +85,13 @@ public class NetworkHandler implements NetworkHandlerInterface {
         registrationID,
         networkMessage,
         M::write,
-        creator,
+        NetworkMessageRecord.guardedDecoder(messageID, creator),
         (message, contextSupplier) -> {
           NetworkEvent.Context context = contextSupplier.get();
           context.enqueueWork(
-              () -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> message::handleClient));
+              NetworkMessageRecord.guardedHandler(
+                  messageID,
+                  () -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> message::handleClient)));
           context.setPacketHandled(true);
         },
         Optional.of(NetworkDirection.PLAY_TO_CLIENT));
@@ -106,14 +108,13 @@ public class NetworkHandler implements NetworkHandlerInterface {
         registrationID,
         networkMessage,
         M::write,
-        creator,
+        NetworkMessageRecord.guardedDecoder(messageID, creator),
         (message, contextSupplier) -> {
           NetworkEvent.Context context = contextSupplier.get();
           context.enqueueWork(
-              () -> {
-                message.handleServer(context.getSender());
-                context.setPacketHandled(true);
-              });
+              NetworkMessageRecord.guardedHandler(
+                  messageID, () -> message.handleServer(context.getSender())));
+          context.setPacketHandled(true);
         },
         Optional.of(NetworkDirection.PLAY_TO_SERVER));
   }

@@ -31,6 +31,7 @@ public record DisplayAttributeDataSet(
     EnumMap<DisplayAttributeType, DisplayAttributeEntry> attributes) {
 
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+  private static final int MAX_STRING_VALUE_LENGTH = 256;
 
   public DisplayAttributeDataSet {
     attributes = withDefaultsForMissingAttributes(attributes);
@@ -110,6 +111,11 @@ public record DisplayAttributeDataSet(
 
   public static DisplayAttributeDataSet decode(FriendlyByteBuf buffer) {
     int size = buffer.readVarInt();
+    if (size < 0 || size > DisplayAttributeType.values().length) {
+      log.error("Received invalid display attribute count {}", size);
+      return createDefault();
+    }
+
     EnumMap<DisplayAttributeType, DisplayAttributeEntry> map =
         new EnumMap<>(DisplayAttributeType.class);
 
@@ -117,7 +123,7 @@ public record DisplayAttributeDataSet(
       DisplayAttributeType type = buffer.readEnum(DisplayAttributeType.class);
       boolean boolValue = buffer.readBoolean();
       int intValue = buffer.readVarInt();
-      String stringValue = buffer.readUtf();
+      String stringValue = buffer.readUtf(MAX_STRING_VALUE_LENGTH);
 
       if (type == DisplayAttributeType.NONE) {
         continue;

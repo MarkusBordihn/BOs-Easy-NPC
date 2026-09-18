@@ -30,28 +30,17 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
 public record ChangeInteractionAttributeMessage(
-    UUID uuid,
-    InteractionAttributeType attributeType,
-    Boolean booleanValue,
-    Double doubleValue,
-    Integer integerValue)
+    UUID uuid, InteractionAttributeType attributeType, Boolean booleanValue)
     implements NetworkMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
       new ResourceLocation(Constants.MOD_ID, "change_interaction_attribute");
 
-  public ChangeInteractionAttributeMessage(
-      final UUID uuid, final InteractionAttributeType attributeType, final Boolean value) {
-    this(uuid, attributeType, value, 0d, 0);
-  }
-
   public static ChangeInteractionAttributeMessage create(final FriendlyByteBuf buffer) {
     return new ChangeInteractionAttributeMessage(
         buffer.readUUID(),
-        buffer.readEnum(InteractionAttributeType.class),
-        buffer.readBoolean(),
-        buffer.readDouble(),
-        buffer.readInt());
+        NetworkMessageRecord.readEnum(buffer, InteractionAttributeType.class),
+        buffer.readBoolean());
   }
 
   @Override
@@ -59,8 +48,6 @@ public record ChangeInteractionAttributeMessage(
     buffer.writeUUID(this.uuid);
     buffer.writeEnum(this.attributeType);
     buffer.writeBoolean(this.booleanValue);
-    buffer.writeDouble(this.doubleValue);
-    buffer.writeInt(this.integerValue);
   }
 
   @Override
@@ -75,7 +62,7 @@ public record ChangeInteractionAttributeMessage(
       return;
     }
 
-    if (this.booleanValue == null) {
+    if (this.attributeType == null || this.booleanValue == null) {
       log.error("Invalid value for {} for {} from {}", this.attributeType, easyNPC, serverPlayer);
       return;
     }

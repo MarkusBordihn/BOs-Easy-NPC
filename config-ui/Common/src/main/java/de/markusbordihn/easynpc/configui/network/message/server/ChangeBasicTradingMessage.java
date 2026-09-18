@@ -40,7 +40,9 @@ public record ChangeBasicTradingMessage(
 
   public static ChangeBasicTradingMessage create(final FriendlyByteBuf buffer) {
     return new ChangeBasicTradingMessage(
-        buffer.readUUID(), buffer.readEnum(TradingValueType.class), buffer.readInt());
+        buffer.readUUID(),
+        NetworkMessageRecord.readEnum(buffer, TradingValueType.class),
+        buffer.readInt());
   }
 
   @Override

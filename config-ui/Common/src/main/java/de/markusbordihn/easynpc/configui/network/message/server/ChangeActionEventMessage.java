@@ -43,7 +43,7 @@ public record ChangeActionEventMessage(
   public static ChangeActionEventMessage create(final FriendlyByteBuf buffer) {
     return new ChangeActionEventMessage(
         buffer.readUUID(),
-        buffer.readEnum(ActionEventType.class),
+        NetworkMessageRecord.readEnum(buffer, ActionEventType.class),
         new ActionDataSet(buffer.readNbt()));
   }
 

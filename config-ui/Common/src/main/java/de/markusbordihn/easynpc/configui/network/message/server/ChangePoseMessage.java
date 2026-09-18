@@ -38,7 +38,8 @@ public record ChangePoseMessage(UUID uuid, Pose pose) implements NetworkMessageR
       new ResourceLocation(Constants.MOD_ID, "change_pose");
 
   public static ChangePoseMessage create(final FriendlyByteBuf buffer) {
-    return new ChangePoseMessage(buffer.readUUID(), buffer.readEnum(Pose.class));
+    return new ChangePoseMessage(
+        buffer.readUUID(), NetworkMessageRecord.readEnum(buffer, Pose.class));
   }
 
   @Override

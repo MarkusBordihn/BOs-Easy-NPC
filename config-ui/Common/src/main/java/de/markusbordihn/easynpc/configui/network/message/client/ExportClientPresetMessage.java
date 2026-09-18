@@ -48,10 +48,10 @@ public record ExportClientPresetMessage(
     return new ExportClientPresetMessage(
         buffer.readUUID(),
         buffer.readUtf(),
-        buffer.readEnum(SkinModel.class),
+        NetworkMessageRecord.readEnum(buffer, SkinModel.class),
         buffer.readUtf(),
         buffer.readNbt(),
-        buffer.readEnum(PresetExportFormat.class));
+        NetworkMessageRecord.readEnum(buffer, PresetExportFormat.class));
   }
 
   @Override

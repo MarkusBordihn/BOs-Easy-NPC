@@ -39,7 +39,9 @@ public record ChangeModelVisibilityMessage(UUID uuid, ModelPartType modelPartTyp
 
   public static ChangeModelVisibilityMessage create(final FriendlyByteBuf buffer) {
     return new ChangeModelVisibilityMessage(
-        buffer.readUUID(), buffer.readEnum(ModelPartType.class), buffer.readBoolean());
+        buffer.readUUID(),
+        NetworkMessageRecord.readEnum(buffer, ModelPartType.class),
+        buffer.readBoolean());
   }
 
   @Override

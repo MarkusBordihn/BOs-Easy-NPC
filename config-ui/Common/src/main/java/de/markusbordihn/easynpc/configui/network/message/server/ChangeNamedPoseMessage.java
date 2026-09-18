@@ -34,7 +34,7 @@ public record ChangeNamedPoseMessage(UUID uuid, String poseId) implements Networ
       new ResourceLocation(Constants.MOD_ID, "change_named_pose");
 
   public static ChangeNamedPoseMessage create(final FriendlyByteBuf buffer) {
-    return new ChangeNamedPoseMessage(buffer.readUUID(), buffer.readUtf());
+    return new ChangeNamedPoseMessage(buffer.readUUID(), buffer.readUtf(MAX_NAME_LENGTH));
   }
 
   @Override

@@ -39,7 +39,8 @@ public record ResetExecutionLimitMessage(ExecutionId executionId, boolean allPla
 
   public static ResetExecutionLimitMessage create(final FriendlyByteBuf buffer) {
     return new ResetExecutionLimitMessage(
-        new ExecutionId(buffer.readEnum(ExecutionType.class), buffer.readUUID()),
+        new ExecutionId(
+            NetworkMessageRecord.readEnum(buffer, ExecutionType.class), buffer.readUUID()),
         buffer.readBoolean());
   }
 

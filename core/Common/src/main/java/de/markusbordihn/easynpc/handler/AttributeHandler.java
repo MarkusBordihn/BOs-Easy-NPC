@@ -43,7 +43,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.attributes.RangedAttribute;
 import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -362,6 +364,18 @@ public class AttributeHandler {
     return false;
   }
 
+  private static boolean isValidAttributeValue(Attribute attribute, double value) {
+    if (!Double.isFinite(value)) {
+      return false;
+    }
+
+    if (attribute instanceof RangedAttribute rangedAttribute) {
+      return value >= rangedAttribute.getMinValue() && value <= rangedAttribute.getMaxValue();
+    }
+
+    return true;
+  }
+
   public static boolean setBaseAttribute(
       EasyNPC<?> easyNPC, ResourceLocation attribute, Double value) {
     if (easyNPC == null || attribute == null || value == null) {
@@ -375,6 +389,11 @@ public class AttributeHandler {
     BaseAttributeType baseAttributeType = BaseAttributeType.fromResourceLocation(attribute);
     if (baseAttributeType == null) {
       log.error("Unimplemented base attribute {} for {}", attribute, easyNPC);
+      return false;
+    }
+
+    if (!isValidAttributeValue(baseAttributeType.getAttribute(), value)) {
+      log.error("Invalid value {} for base attribute {} for {}", value, attribute, easyNPC);
       return false;
     }
 

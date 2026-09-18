@@ -62,11 +62,18 @@ public class NetworkHandler implements NetworkHandlerInterface {
       final ResourceLocation messageID,
       final Class<M> networkMessageRecord,
       final Function<FriendlyByteBuf, M> creator) {
+    final Function<FriendlyByteBuf, M> guardedCreator =
+        NetworkMessageRecord.guardedDecoder(messageID, creator);
     if (!ClientPlayNetworking.registerGlobalReceiver(
         messageID,
         (client, channelHandler, buffer, responseSender) -> {
-          M networkMessage = creator.apply(buffer);
-          client.execute(networkMessage::handleClient);
+          M networkMessage = guardedCreator.apply(buffer);
+          if (networkMessage == null) {
+            return;
+          }
+
+          client.execute(
+              NetworkMessageRecord.guardedHandler(messageID, networkMessage::handleClient));
         })) {
       log.error("Failed to register client network message handler for {}", messageID);
     } else {
@@ -79,11 +86,19 @@ public class NetworkHandler implements NetworkHandlerInterface {
       final ResourceLocation messageID,
       final Class<M> networkMessageRecord,
       final Function<FriendlyByteBuf, M> creator) {
+    final Function<FriendlyByteBuf, M> guardedCreator =
+        NetworkMessageRecord.guardedDecoder(messageID, creator);
     if (!ServerPlayNetworking.registerGlobalReceiver(
         messageID,
         (server, serverPlayer, channelHandler, buffer, responseSender) -> {
-          M networkMessage = creator.apply(buffer);
-          server.execute(() -> networkMessage.handleServer(serverPlayer));
+          M networkMessage = guardedCreator.apply(buffer);
+          if (networkMessage == null) {
+            return;
+          }
+
+          server.execute(
+              NetworkMessageRecord.guardedHandler(
+                  messageID, () -> networkMessage.handleServer(serverPlayer)));
         })) {
       log.error("Failed to register server network message handler for {}", messageID);
     } else {
