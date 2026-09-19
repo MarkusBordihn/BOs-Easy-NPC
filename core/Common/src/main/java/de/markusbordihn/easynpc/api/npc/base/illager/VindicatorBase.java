@@ -66,7 +66,6 @@ public class VindicatorBase extends VindicatorRaw implements BaseEasyNPC<Vindica
     soundDataSet.addDefaultSound(SoundType.AMBIENT, SoundEvents.VINDICATOR_AMBIENT);
     soundDataSet.addDefaultSound(SoundType.DEATH, SoundEvents.VINDICATOR_DEATH);
     soundDataSet.addDefaultSound(SoundType.HURT, SoundEvents.VINDICATOR_HURT);
-    soundDataSet.addDefaultSound(SoundType.CELEBRATE, SoundEvents.VINDICATOR_CELEBRATE);
     soundDataSet.addDefaultSound(SoundType.TRADE, SoundEvents.VILLAGER_TRADE);
     soundDataSet.addDefaultSound(SoundType.TRADE_YES, SoundEvents.VILLAGER_YES);
     soundDataSet.addDefaultSound(SoundType.TRADE_NO, SoundEvents.VILLAGER_NO);

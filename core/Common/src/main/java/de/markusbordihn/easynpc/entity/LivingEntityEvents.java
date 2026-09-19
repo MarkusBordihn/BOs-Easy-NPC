@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.entity;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.api.event.EasyNPCEventRegistry;
 import de.markusbordihn.easynpc.data.npc.NPCRemovalReason;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.NavigationDataCapable;
@@ -60,6 +61,7 @@ public class LivingEntityEvents {
           NPCEntityManager.saveNPC(easyNPC);
         }
         NPCEntityManager.evictFromCache(entityUUID);
+        EasyNPCEventRegistry.fireNPCSpawned(easyNPC);
       }
     } else if (livingEntity instanceof ServerPlayer serverPlayer) {
       LivingEntityManager.addServerPlayer(serverPlayer);
@@ -79,6 +81,8 @@ public class LivingEntityEvents {
         NPCRemovalReason intentionalReason =
             NPCEntityManager.takeIntentionalRemovalReason(easyNPC.getEntityUUID());
         Entity.RemovalReason reason = livingEntity.getRemovalReason();
+        NPCRemovalReason removalReason =
+            intentionalReason != null ? intentionalReason : resolveRemovalReason(reason);
         if (intentionalReason == null && reason == Entity.RemovalReason.DISCARDED) {
           log.warn(
               "{} {} was discarded at {} in {} without being saved, its latest changes are lost!",
@@ -87,8 +91,6 @@ public class LivingEntityEvents {
               livingEntity.blockPosition(),
               livingEntity.level().dimension().identifier());
         } else {
-          NPCRemovalReason removalReason =
-              intentionalReason != null ? intentionalReason : resolveRemovalReason(reason);
           log.debug(
               "{} Removed {} ({}) at {} in {} with reason {}.",
               LOG_PREFIX,
@@ -104,6 +106,7 @@ public class LivingEntityEvents {
             }
           }
         }
+        EasyNPCEventRegistry.fireNPCRemoved(easyNPC, removalReason);
       }
       LivingEntityManager.removeEasyNPC(easyNPC);
     } else if (livingEntity instanceof ServerPlayer serverPlayer) {

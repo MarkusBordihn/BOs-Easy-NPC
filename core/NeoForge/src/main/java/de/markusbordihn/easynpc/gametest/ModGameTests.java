@@ -660,6 +660,41 @@ public final class ModGameTests {
         DEFAULT_STRUCTURE);
 
     register(
+        "export_keeps_identity", PresetIdentityTest::testExportKeepsIdentity, DEFAULT_STRUCTURE);
+    register(
+        "import_restores_deleted_n_p_c",
+        PresetIdentityTest::testImportRestoresDeletedNPC,
+        DEFAULT_STRUCTURE);
+    register(
+        "import_new_creates_new_identity",
+        PresetIdentityTest::testImportNewCreatesNewIdentity,
+        DEFAULT_STRUCTURE);
+    register(
+        "import_keeps_target_position",
+        PresetIdentityTest::testImportKeepsTargetPosition,
+        DEFAULT_STRUCTURE);
+    register(
+        "export_exposes_identity",
+        PresetIdentityTest::testExportExposesIdentity,
+        DEFAULT_STRUCTURE);
+    register(
+        "import_reports_created_entity",
+        PresetIdentityTest::testImportReportsCreatedEntity,
+        DEFAULT_STRUCTURE);
+    register(
+        "import_reports_updated_entity",
+        PresetIdentityTest::testImportReportsUpdatedEntity,
+        DEFAULT_STRUCTURE);
+    register(
+        "import_reports_replaced_entity",
+        PresetIdentityTest::testImportReportsReplacedEntity,
+        DEFAULT_STRUCTURE);
+    register(
+        "preset_item_drops_identity",
+        PresetIdentityTest::testPresetItemDropsIdentity,
+        DEFAULT_STRUCTURE);
+
+    register(
         "preset_survives_round_trip",
         PresetRoundTripTest::testPresetSurvivesRoundTrip,
         DEFAULT_STRUCTURE);

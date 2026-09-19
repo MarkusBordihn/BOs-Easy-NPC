@@ -65,6 +65,10 @@ import de.markusbordihn.easynpc.configui.menu.configuration.skin.CustomSkinConfi
 import de.markusbordihn.easynpc.configui.menu.configuration.skin.DefaultSkinConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.skin.PlayerSkinConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.skin.UrlSkinConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.configui.menu.configuration.sound.BasicSoundConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.configui.menu.configuration.sound.CombatSoundConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.configui.menu.configuration.sound.InteractionSoundConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.configui.menu.configuration.sound.TradeSoundConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.trading.AdvancedTradingConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.trading.BasicTradingConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.trading.CustomTradingConfigurationMenuWrapper;
@@ -171,6 +175,11 @@ public class ModMenuTypes {
           MENU_TYPES.register(
               ConfigurationType.BASIC_POSE.getName(),
               () -> IForgeMenuType.create(BasicPoseConfigurationMenuWrapper::new));
+  public static final RegistryObject<MenuType<BasicSoundConfigurationMenuWrapper>>
+      BASIC_SOUND_CONFIGURATION_MENU =
+          MENU_TYPES.register(
+              ConfigurationType.BASIC_SOUND.getName(),
+              () -> IForgeMenuType.create(BasicSoundConfigurationMenuWrapper::new));
   public static final RegistryObject<MenuType<BasicTradingConfigurationMenuWrapper>>
       BASIC_TRADING_CONFIGURATION_MENU =
           MENU_TYPES.register(
@@ -181,6 +190,11 @@ public class ModMenuTypes {
           MENU_TYPES.register(
               ConfigurationType.COMBAT_ATTRIBUTE.getName(),
               () -> IForgeMenuType.create(CombatAttributeConfigurationMenuWrapper::new));
+  public static final RegistryObject<MenuType<CombatSoundConfigurationMenuWrapper>>
+      COMBAT_SOUND_CONFIGURATION_MENU =
+          MENU_TYPES.register(
+              ConfigurationType.COMBAT_SOUND.getName(),
+              () -> IForgeMenuType.create(CombatSoundConfigurationMenuWrapper::new));
   public static final RegistryObject<MenuType<CustomPoseConfigurationMenuWrapper>>
       CUSTOM_POSE_CONFIGURATION_MENU =
           MENU_TYPES.register(
@@ -296,6 +310,16 @@ public class ModMenuTypes {
           MENU_TYPES.register(
               ConfigurationType.DISTANCE_ACTION.getName(),
               () -> IForgeMenuType.create(DistanceActionConfigurationMenuWrapper::new));
+  public static final RegistryObject<MenuType<InteractionSoundConfigurationMenuWrapper>>
+      INTERACTION_SOUND_CONFIGURATION_MENU =
+          MENU_TYPES.register(
+              ConfigurationType.INTERACTION_SOUND.getName(),
+              () -> IForgeMenuType.create(InteractionSoundConfigurationMenuWrapper::new));
+  public static final RegistryObject<MenuType<TradeSoundConfigurationMenuWrapper>>
+      TRADE_SOUND_CONFIGURATION_MENU =
+          MENU_TYPES.register(
+              ConfigurationType.TRADE_SOUND.getName(),
+              () -> IForgeMenuType.create(TradeSoundConfigurationMenuWrapper::new));
   public static final RegistryObject<MenuType<IntervalActionConfigurationMenuWrapper>>
       INTERVAL_ACTION_CONFIGURATION_MENU =
           MENU_TYPES.register(

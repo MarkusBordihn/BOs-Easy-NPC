@@ -24,7 +24,8 @@ import de.markusbordihn.easynpc.api.skin.VariantTexture;
 import net.minecraft.resources.Identifier;
 
 public enum SlimeSkinVariant implements VariantTexture {
-  SLIME(Constants.MINECRAFT_PREFIX, "textures/entity/slime/slime.png");
+  SLIME(Constants.MINECRAFT_PREFIX, "textures/entity/slime/slime.png"),
+  STRAWBERRY(Constants.MOD_ID, "textures/entity/slime/slime_strawberry.png");
 
   private final Identifier textureLocation;
 

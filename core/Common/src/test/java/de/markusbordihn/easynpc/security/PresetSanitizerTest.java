@@ -111,10 +111,10 @@ class PresetSanitizerTest {
             .getCompound(0)
             .orElse(new CompoundTag());
 
-    assertFalse(sanitizedTag.contains("UUID"));
+    assertTrue(sanitizedTag.contains("UUID"));
     assertFalse(sanitizedTag.contains(OwnerDataCapable.DATA_OWNER_TAG));
-    assertFalse(sanitizedTag.contains("Pos"));
-    assertFalse(sanitizedTag.contains("Rotation"));
+    assertTrue(sanitizedTag.contains("Pos"));
+    assertTrue(sanitizedTag.contains("Rotation"));
     assertFalse(actionDataTag.contains(ActionEventDataCapable.DATA_ACTION_PERMISSION_LEVEL_TAG));
     assertEquals(
         CommandPermissionLevel.ADMINS.minecraftLevel(),

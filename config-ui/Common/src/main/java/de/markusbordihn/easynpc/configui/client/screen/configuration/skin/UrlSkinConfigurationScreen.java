@@ -314,6 +314,8 @@ public class UrlSkinConfigurationScreen<T extends ConfigurationMenu>
                         this.getEasyNPCUUID(),
                         skinData.getSkinDataEntry().withDisableLayers(checkbox.selected()))));
 
+    this.defineProfessionButtons(this.contentLeftPos + 185, this.contentTopPos + 85);
+
     // Skin Navigation Buttons
     defineSkinNavigationButtons();
   }

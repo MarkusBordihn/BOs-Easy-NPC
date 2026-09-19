@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.network;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
+import de.markusbordihn.easynpc.network.message.client.HighlightEasyNPCMessage;
 import de.markusbordihn.easynpc.network.message.client.OpenMenuCallbackMessage;
 import de.markusbordihn.easynpc.network.message.client.SpeechBubbleMessage;
 import de.markusbordihn.easynpc.network.message.client.SyncDataMessage;
@@ -114,6 +115,12 @@ public class NetworkHandlerManager {
         SpeechBubbleMessage.STREAM_CODEC,
         SpeechBubbleMessage.class,
         SpeechBubbleMessage::create);
+
+    networkHandler.registerClientNetworkMessage(
+        HighlightEasyNPCMessage.PAYLOAD_TYPE,
+        HighlightEasyNPCMessage.STREAM_CODEC,
+        HighlightEasyNPCMessage.class,
+        HighlightEasyNPCMessage::create);
   }
 
   public static void registerServerNetworkHandler() {

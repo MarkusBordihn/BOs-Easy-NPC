@@ -63,6 +63,8 @@ public class Config {
   public static void registerClientConfig() {
     log.info("{} Registering client configuration ...", LOG_PREFIX);
     ClientDialogConfig.registerConfig();
+    ClientHighlightConfig.registerConfig();
+    ClientNameTagConfig.registerConfig();
     ClientSpeechBubbleConfig.registerConfig();
   }
 
@@ -180,6 +182,15 @@ public class Config {
     }
     properties.setProperty(key, Integer.toString(defaultValue));
     return defaultValue;
+  }
+
+  protected static int parseConfigValue(
+      final Properties properties,
+      final String key,
+      final int defaultValue,
+      final int minValue,
+      final int maxValue) {
+    return Math.max(minValue, Math.min(maxValue, parseConfigValue(properties, key, defaultValue)));
   }
 
   protected static short parseConfigValue(

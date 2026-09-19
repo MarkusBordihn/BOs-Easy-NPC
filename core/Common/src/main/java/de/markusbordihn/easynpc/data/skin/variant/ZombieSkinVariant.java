@@ -26,7 +26,8 @@ import net.minecraft.resources.Identifier;
 public enum ZombieSkinVariant implements VariantTexture {
   ZOMBIE(Constants.MINECRAFT_PREFIX, "textures/entity/zombie/zombie.png"),
   HUSK(Constants.MINECRAFT_PREFIX, "textures/entity/zombie/husk.png"),
-  DROWNED(Constants.MINECRAFT_PREFIX, "textures/entity/zombie/drowned.png");
+  DROWNED(Constants.MINECRAFT_PREFIX, "textures/entity/zombie/drowned.png"),
+  CHARRED(Constants.MOD_ID, "textures/entity/zombie/zombie_charred.png");
 
   private final Identifier textureLocation;
 

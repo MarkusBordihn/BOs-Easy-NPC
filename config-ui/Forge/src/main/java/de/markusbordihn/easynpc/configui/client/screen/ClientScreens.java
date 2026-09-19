@@ -64,6 +64,10 @@ import de.markusbordihn.easynpc.configui.client.screen.configuration.skin.Custom
 import de.markusbordihn.easynpc.configui.client.screen.configuration.skin.DefaultSkinConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.skin.PlayerSkinConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.skin.UrlSkinConfigurationScreenWrapper;
+import de.markusbordihn.easynpc.configui.client.screen.configuration.sound.BasicSoundConfigurationScreenWrapper;
+import de.markusbordihn.easynpc.configui.client.screen.configuration.sound.CombatSoundConfigurationScreenWrapper;
+import de.markusbordihn.easynpc.configui.client.screen.configuration.sound.InteractionSoundConfigurationScreenWrapper;
+import de.markusbordihn.easynpc.configui.client.screen.configuration.sound.TradeSoundConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.trading.AdvancedTradingConfigurationContainerScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.trading.BasicTradingConfigurationContainerScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.trading.CustomTradingConfigurationContainerScreenWrapper;
@@ -148,8 +152,14 @@ public class ClientScreens {
               ModMenuTypes.BASIC_TRADING_CONFIGURATION_MENU.get(),
               BasicTradingConfigurationContainerScreenWrapper::new);
           MenuScreens.register(
+              ModMenuTypes.BASIC_SOUND_CONFIGURATION_MENU.get(),
+              BasicSoundConfigurationScreenWrapper::new);
+          MenuScreens.register(
               ModMenuTypes.COMBAT_ATTRIBUTE_CONFIGURATION_MENU.get(),
               CombatAttributeConfigurationScreenWrapper::new);
+          MenuScreens.register(
+              ModMenuTypes.COMBAT_SOUND_CONFIGURATION_MENU.get(),
+              CombatSoundConfigurationScreenWrapper::new);
           MenuScreens.register(
               ModMenuTypes.CUSTOM_EXPORT_PRESET_CONFIGURATION_MENU.get(),
               ExportCustomPresetConfigurationScreenWrapper::new);
@@ -216,6 +226,12 @@ public class ClientScreens {
           MenuScreens.register(
               ModMenuTypes.DISTANCE_ACTION_CONFIGURATION_MENU.get(),
               DistanceActionConfigurationScreenWrapper::new);
+          MenuScreens.register(
+              ModMenuTypes.INTERACTION_SOUND_CONFIGURATION_MENU.get(),
+              InteractionSoundConfigurationScreenWrapper::new);
+          MenuScreens.register(
+              ModMenuTypes.TRADE_SOUND_CONFIGURATION_MENU.get(),
+              TradeSoundConfigurationScreenWrapper::new);
           MenuScreens.register(
               ModMenuTypes.INTERVAL_ACTION_CONFIGURATION_MENU.get(),
               IntervalActionConfigurationScreenWrapper::new);

@@ -47,6 +47,7 @@ public final class ResourceNameNormalizer {
   private static final Pattern COMBINING_MARKS = Pattern.compile("\\p{M}+");
   private static final Pattern VALID_IDENTIFIER = Pattern.compile("[a-z0-9_]+");
   private static final Pattern VALID_RESOURCE_PATH = Pattern.compile("[a-z0-9_./-]+");
+  private static final Pattern VALID_RESOURCE_PATH_PATTERN = Pattern.compile("[a-z0-9_./*-]+");
   private static final Pattern VALID_FILE_NAME = Pattern.compile("[a-zA-Z0-9_.-]+");
   private static final Pattern INVALID_IDENTIFIER_CHARACTERS = Pattern.compile("[^a-z0-9_]+");
   private static final Pattern INVALID_RESOURCE_PATH_CHARACTERS = Pattern.compile("[^a-z0-9_./-]+");
@@ -54,6 +55,7 @@ public final class ResourceNameNormalizer {
   private static final Pattern REPEATED_UNDERSCORES = Pattern.compile("_{2,}");
   private static final Pattern LEADING_OR_TRAILING_SEPARATORS = Pattern.compile("^[_.-]+|[_.-]+$");
   private static final String RELATIVE_SEGMENT = "..";
+  private static final int MINIMUM_PATTERN_PREFIX_LENGTH = 3;
   private static final int HASH_SEED = 0x811c9dc5;
   private static final int HASH_PRIME = 0x01000193;
 
@@ -92,6 +94,35 @@ public final class ResourceNameNormalizer {
         collapse(
             INVALID_RESOURCE_PATH_CHARACTERS.matcher(transliterate(value, true)).replaceAll("_"));
     return joinSegments(resourcePath);
+  }
+
+  public static Pattern toPresetPathPattern(String value) {
+    if (value == null || value.isEmpty()) {
+      return null;
+    }
+
+    String path = value.toLowerCase(Locale.ROOT);
+    if (!VALID_RESOURCE_PATH_PATTERN.matcher(path).matches() || hasRelativeSegment(path)) {
+      return null;
+    }
+
+    int firstWildcard = path.indexOf('*');
+    if (firstWildcard >= 0 && firstWildcard < MINIMUM_PATTERN_PREFIX_LENGTH) {
+      return null;
+    }
+
+    StringBuilder regularExpression = new StringBuilder();
+    String[] literals = path.split("\\*", -1);
+    for (int i = 0; i < literals.length; i++) {
+      if (i > 0) {
+        regularExpression.append(".*");
+      }
+      if (!literals[i].isEmpty()) {
+        regularExpression.append(Pattern.quote(literals[i]));
+      }
+    }
+
+    return Pattern.compile(regularExpression.toString());
   }
 
   public static String toFileName(String value) {

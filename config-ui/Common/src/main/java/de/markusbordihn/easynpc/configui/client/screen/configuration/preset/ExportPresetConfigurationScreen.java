@@ -24,10 +24,8 @@ import de.markusbordihn.easynpc.configui.client.screen.configuration.Configurati
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
-import de.markusbordihn.easynpc.network.components.TextComponent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -71,11 +69,8 @@ public class ExportPresetConfigurationScreen<T extends ConfigurationMenu>
                     NetworkMessageHandlerManager.getServerHandler()
                         .openConfiguration(
                             getEasyNPCUUID(), ConfigurationType.LOCAL_PRESET_EXPORT)));
-    if (this.isConfigurationBlockedByPermission(ConfigurationType.LOCAL_PRESET_EXPORT)) {
-      this.localExportPresetButton.active = false;
-      this.localExportPresetButton.setTooltip(
-          Tooltip.create(TextComponent.getTranslatedConfigText("menu.tooltip.no_permission")));
-    }
+    this.blockButtonWithoutPermission(
+        this.localExportPresetButton, ConfigurationType.LOCAL_PRESET_EXPORT);
 
     // Custom Export tab — hidden in single-player (same dir as local), visible on servers
     if (!singlePlayer) {
@@ -90,11 +85,8 @@ public class ExportPresetConfigurationScreen<T extends ConfigurationMenu>
                       NetworkMessageHandlerManager.getServerHandler()
                           .openConfiguration(
                               getEasyNPCUUID(), ConfigurationType.CUSTOM_PRESET_EXPORT)));
-      if (this.isConfigurationBlockedByPermission(ConfigurationType.CUSTOM_PRESET_EXPORT)) {
-        this.customExportPresetButton.active = false;
-        this.customExportPresetButton.setTooltip(
-            Tooltip.create(TextComponent.getTranslatedConfigText("menu.tooltip.no_permission")));
-      }
+      this.blockButtonWithoutPermission(
+          this.customExportPresetButton, ConfigurationType.CUSTOM_PRESET_EXPORT);
     }
 
     int worldButtonX =
@@ -112,10 +104,7 @@ public class ExportPresetConfigurationScreen<T extends ConfigurationMenu>
                     NetworkMessageHandlerManager.getServerHandler()
                         .openConfiguration(
                             getEasyNPCUUID(), ConfigurationType.WORLD_PRESET_EXPORT)));
-    if (this.isConfigurationBlockedByPermission(ConfigurationType.WORLD_PRESET_EXPORT)) {
-      this.worldExportPresetButton.active = false;
-      this.worldExportPresetButton.setTooltip(
-          Tooltip.create(TextComponent.getTranslatedConfigText("menu.tooltip.no_permission")));
-    }
+    this.blockButtonWithoutPermission(
+        this.worldExportPresetButton, ConfigurationType.WORLD_PRESET_EXPORT);
   }
 }

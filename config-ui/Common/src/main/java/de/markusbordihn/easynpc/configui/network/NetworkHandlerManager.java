@@ -35,6 +35,7 @@ import de.markusbordihn.easynpc.configui.network.message.server.ChangeEnvironmen
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeFactionColorMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeFactionMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeFactionRelationMessage;
+import de.markusbordihn.easynpc.configui.network.message.server.ChangeHomePositionMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeInteractionAttributeMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeModelAnimationDataMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeModelEquipmentVisibilityMessage;
@@ -51,6 +52,7 @@ import de.markusbordihn.easynpc.configui.network.message.server.ChangePositionMe
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeProfessionMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeRendererMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeSkinMessage;
+import de.markusbordihn.easynpc.configui.network.message.server.ChangeSoundMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeTradingOfferActionMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeTradingTypeMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.CreateFactionMessage;
@@ -271,6 +273,12 @@ public class NetworkHandlerManager {
         ChangeEnvironmentalAttributeMessage::create);
 
     networkHandler.registerServerNetworkMessage(
+        ChangeHomePositionMessage.PAYLOAD_TYPE,
+        ChangeHomePositionMessage.STREAM_CODEC,
+        ChangeHomePositionMessage.class,
+        ChangeHomePositionMessage::create);
+
+    networkHandler.registerServerNetworkMessage(
         ChangeInteractionAttributeMessage.PAYLOAD_TYPE,
         ChangeInteractionAttributeMessage.STREAM_CODEC,
         ChangeInteractionAttributeMessage.class,
@@ -365,6 +373,12 @@ public class NetworkHandlerManager {
         ChangeSkinMessage.STREAM_CODEC,
         ChangeSkinMessage.class,
         ChangeSkinMessage::create);
+
+    networkHandler.registerServerNetworkMessage(
+        ChangeSoundMessage.PAYLOAD_TYPE,
+        ChangeSoundMessage.STREAM_CODEC,
+        ChangeSoundMessage.class,
+        ChangeSoundMessage::create);
 
     networkHandler.registerServerNetworkMessage(
         ChangeTradingTypeMessage.PAYLOAD_TYPE,

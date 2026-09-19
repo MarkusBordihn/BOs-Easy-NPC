@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.client.screen;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.components.CloseButton;
+import de.markusbordihn.easynpc.client.screen.components.OverlayWidget;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.data.screen.AdditionalScreenDataInterface;
 import de.markusbordihn.easynpc.data.screen.ScreenData;
@@ -30,6 +31,7 @@ import java.util.UUID;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -58,6 +60,7 @@ public class Screen<
   protected int rightPos;
   protected int bottomPos;
   protected boolean renderBackground = true;
+  protected boolean deferOverlayRendering = false;
   protected boolean showCloseButton = true;
   protected boolean renderDefaultScreenBackground = true;
   protected Button closeButton = null;
@@ -163,6 +166,25 @@ public class Screen<
     this.xMouse = x;
     this.yMouse = y;
     super.extractRenderState(guiGraphics, x, y, partialTicks);
+    if (!this.deferOverlayRendering) {
+      this.extractOverlayRenderState(guiGraphics, x, y, partialTicks);
+    }
+  }
+
+  protected void extractOverlayRenderState(
+      GuiGraphicsExtractor guiGraphics, int x, int y, float partialTicks) {
+    boolean stratumStarted = false;
+    for (GuiEventListener child : this.children()) {
+      if (!(child instanceof OverlayWidget overlayWidget) || !overlayWidget.hasOverlay()) {
+        continue;
+      }
+
+      if (!stratumStarted) {
+        guiGraphics.nextStratum();
+        stratumStarted = true;
+      }
+      overlayWidget.renderOverlay(guiGraphics, x, y, partialTicks);
+    }
   }
 
   @Override

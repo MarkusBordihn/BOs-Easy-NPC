@@ -31,6 +31,7 @@ public interface ServerNetworkMessageHandlerInterface
         ServerModelRenderSkinNetworkMessageHandlerInterface,
         ServerObjectiveActionNetworkMessageHandlerInterface,
         ServerPresetNetworkMessageHandlerInterface,
+        ServerSoundNetworkMessageHandlerInterface,
         ServerTradingNetworkMessageHandlerInterface {
 
   Logger log = LogManager.getLogger(Constants.LOG_NAME);

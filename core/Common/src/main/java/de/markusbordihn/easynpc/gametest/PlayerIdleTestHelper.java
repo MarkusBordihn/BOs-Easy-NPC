@@ -24,7 +24,6 @@ import de.markusbordihn.easynpc.condition.PlayerIdleCondition;
 import de.markusbordihn.easynpc.data.condition.ConditionDataEntry;
 import de.markusbordihn.easynpc.data.condition.ConditionOperationType;
 import de.markusbordihn.easynpc.data.condition.ConditionType;
-import de.markusbordihn.easynpc.handler.PlayerIdleTracker;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.Vec3;
@@ -50,7 +49,6 @@ public class PlayerIdleTestHelper {
   }
 
   public static void assertIdleTimeGrowsWhileThePlayerStandsStill(GameTestHelper helper) {
-    PlayerIdleTracker.reset();
     ServerPlayer serverPlayer = GameTestHelpers.mockServerPlayer(helper, PLAYER_POSITION);
 
     helper.runAfterDelay(
@@ -77,7 +75,6 @@ public class PlayerIdleTestHelper {
   }
 
   public static void assertMovementResetsTheIdleTime(GameTestHelper helper) {
-    PlayerIdleTracker.reset();
     ServerPlayer serverPlayer = GameTestHelpers.mockServerPlayer(helper, PLAYER_POSITION);
 
     helper
@@ -102,8 +99,6 @@ public class PlayerIdleTestHelper {
   }
 
   public static void assertIdleTimeOfAnUnknownPlayerIsZero(GameTestHelper helper) {
-    PlayerIdleTracker.reset();
-
     GameTestHelpers.assertEquals(
         helper, "An unknown player must not have any idle time", 0L, idleTicks(null));
     GameTestHelpers.assertTrue(

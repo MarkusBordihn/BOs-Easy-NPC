@@ -48,10 +48,16 @@ creativePlayerCommandLevel: Max command level for creative non-admin imports (de
 maxAdminImportedCommandLevel: Max command level for admin imports (default: ADMINS)
 serverTrustedCommandLevel: Max command level for server-side trusted imports without player context (default: ADMINS)
 blockUnsafeNpcCommands: Blocks critical server management commands from NPC command execution (default: true)
-npcSpawnRateLimitCreative: Max new NPCs a creative (non-admin) player may spawn via browser per minute (default: 5)
-npcSpawnRateLimitAdmin: Max new NPCs an admin player may spawn via browser per minute (default: 20)
-Feature values use enum names: NORMAL_PLAYER, CREATIVE_PLAYER, ADMIN, SERVER_TRUSTED.
+npcSpawnRateLimitCreative: Max new NPCs a creative (non-admin) player may spawn via browser or batch import per minute (default: 5)
+npcSpawnRateLimitAdmin: Max new NPCs an admin player may spawn via browser or batch import per minute (default: 20)
+npcPresetBatchLimit: Max presets a single "matching <pattern>" import may process (default: 10, range: 1-64)
+npcPresetBatchCooldown: Seconds a player has to wait between two batch imports (default: 30, range: 0-3600)
+npcPresetBatchConfirmThreshold: Max matches a batch import runs without an explicit confirm (default: 5)
+Role values use enum names: NORMAL_PLAYER, CREATIVE_PLAYER, ADMIN, SERVER_TRUSTED.
+npcHighlightMinimumRole: Minimum role which sees the NPC wand highlight without holding a wand (default: ADMIN)
+npcHighlightForOwner: Also shows the NPC wand highlight to the owner of the highlighted NPC (default: true)
 feature.SPAWN_NPC: Minimum role required to spawn new NPCs from the preset browser (default: CREATIVE_PLAYER)
+feature.POSITION: Minimum role required to restore an NPC with its stored ID and position (default: CREATIVE_PLAYER)
 feature.WORLD_PRESET: Minimum role required to import/export world presets (default: CREATIVE_PLAYER)
 feature.CUSTOM_PRESET: Minimum role required to import/export custom server presets (default: CREATIVE_PLAYER)
 feature.LOCAL_PRESET: Minimum role required to export presets locally to the client (default: NORMAL_PLAYER)
@@ -75,6 +81,11 @@ feature.URL_RESOURCE: Minimum role required to use URL-based skin loading (defau
   public static Set<String> UNSAFE_NPC_COMMANDS = UnsafeNpcCommand.defaultCommandNames();
   public static int NPC_SPAWN_RATE_LIMIT_CREATIVE = 5;
   public static int NPC_SPAWN_RATE_LIMIT_ADMIN = 20;
+  public static int NPC_PRESET_BATCH_LIMIT = 10;
+  public static int NPC_PRESET_BATCH_COOLDOWN = 30;
+  public static int NPC_PRESET_BATCH_CONFIRM_THRESHOLD = 5;
+  public static NpcSecurityRole NPC_HIGHLIGHT_MINIMUM_ROLE = NpcSecurityRole.ADMIN;
+  public static boolean NPC_HIGHLIGHT_FOR_OWNER = true;
 
   static {
     DEFAULT_FEATURE_ROLES.put(NpcFeature.DIALOG, NpcSecurityRole.NORMAL_PLAYER);
@@ -91,6 +102,7 @@ feature.URL_RESOURCE: Minimum role required to use URL-based skin loading (defau
     DEFAULT_FEATURE_ROLES.put(NpcFeature.POSITION, NpcSecurityRole.CREATIVE_PLAYER);
     DEFAULT_FEATURE_ROLES.put(NpcFeature.COMBAT_ATTRIBUTE, NpcSecurityRole.CREATIVE_PLAYER);
     DEFAULT_FEATURE_ROLES.put(NpcFeature.BASE_ATTRIBUTE, NpcSecurityRole.CREATIVE_PLAYER);
+    DEFAULT_FEATURE_ROLES.put(NpcFeature.SOUND, NpcSecurityRole.CREATIVE_PLAYER);
     DEFAULT_FEATURE_ROLES.put(NpcFeature.SPAWN_NPC, NpcSecurityRole.CREATIVE_PLAYER);
     DEFAULT_FEATURE_ROLES.put(NpcFeature.WORLD_PRESET, NpcSecurityRole.CREATIVE_PLAYER);
     DEFAULT_FEATURE_ROLES.put(NpcFeature.CUSTOM_PRESET, NpcSecurityRole.CREATIVE_PLAYER);
@@ -136,6 +148,21 @@ feature.URL_RESOURCE: Minimum role required to use URL-based skin loading (defau
         parseConfigValue(properties, "npcSpawnRateLimitCreative", NPC_SPAWN_RATE_LIMIT_CREATIVE);
     NPC_SPAWN_RATE_LIMIT_ADMIN =
         parseConfigValue(properties, "npcSpawnRateLimitAdmin", NPC_SPAWN_RATE_LIMIT_ADMIN);
+    NPC_PRESET_BATCH_LIMIT =
+        parseConfigValue(properties, "npcPresetBatchLimit", NPC_PRESET_BATCH_LIMIT, 1, 64);
+    NPC_PRESET_BATCH_COOLDOWN =
+        parseConfigValue(properties, "npcPresetBatchCooldown", NPC_PRESET_BATCH_COOLDOWN, 0, 3600);
+    NPC_PRESET_BATCH_CONFIRM_THRESHOLD =
+        parseConfigValue(
+            properties,
+            "npcPresetBatchConfirmThreshold",
+            NPC_PRESET_BATCH_CONFIRM_THRESHOLD,
+            0,
+            64);
+    NPC_HIGHLIGHT_MINIMUM_ROLE =
+        parseConfigValue(properties, "npcHighlightMinimumRole", NPC_HIGHLIGHT_MINIMUM_ROLE);
+    NPC_HIGHLIGHT_FOR_OWNER =
+        parseConfigValue(properties, "npcHighlightForOwner", NPC_HIGHLIGHT_FOR_OWNER);
     for (Map.Entry<NpcFeature, NpcSecurityRole> entry : DEFAULT_FEATURE_ROLES.entrySet()) {
       FEATURE_ROLES.put(
           entry.getKey(),

@@ -24,6 +24,7 @@ import de.markusbordihn.easynpc.client.renderer.manager.EntityTypeManager;
 import de.markusbordihn.easynpc.client.texture.TextureRegistrationQueue;
 import de.markusbordihn.easynpc.data.action.SpeechBubbleManager;
 import de.markusbordihn.easynpc.data.dialog.DialogDataManager;
+import de.markusbordihn.easynpc.data.highlight.NPCHighlightManager;
 import de.markusbordihn.easynpc.io.DataFileHandler;
 import net.minecraft.client.Minecraft;
 
@@ -40,12 +41,14 @@ public class ClientEvents {
     DialogDataManager.clearDialogDataSets();
     SpeechBubbleManager.clear();
     SpeechBubbleFrameRenderer.clear();
+    NPCHighlightManager.clear();
     clearTextureCaches();
   }
 
   public static void handleClientTickEvent() {
     TextureRegistrationQueue.getInstance().processPendingRegistrations();
     SpeechBubbleManager.tick();
+    NPCHighlightManager.tick();
   }
 
   private static void clearTextureCaches() {

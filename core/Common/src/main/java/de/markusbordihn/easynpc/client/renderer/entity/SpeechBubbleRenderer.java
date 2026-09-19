@@ -26,7 +26,7 @@ import de.markusbordihn.easynpc.client.renderer.entity.state.EasyNPCRenderStateE
 import de.markusbordihn.easynpc.client.renderer.screen.EntityScreenRenderer;
 import de.markusbordihn.easynpc.compat.iris.IrisManager;
 import de.markusbordihn.easynpc.config.ClientSpeechBubbleConfig;
-import de.markusbordihn.easynpc.config.SpeechBubbleOcclusionMode;
+import de.markusbordihn.easynpc.config.OcclusionMode;
 import de.markusbordihn.easynpc.data.action.SpeechBubbleManager;
 import de.markusbordihn.easynpc.data.action.SpeechBubbleManager.SpeechBubbleEntry;
 import de.markusbordihn.easynpc.entity.LivingEntityManager;
@@ -315,8 +315,8 @@ public class SpeechBubbleRenderer {
       float offsetPixelsX,
       float offsetPixelsY) {
     int textAlpha = speechBubbleInstance.textAlpha();
-    SpeechBubbleOcclusionMode occlusionMode = ClientSpeechBubbleConfig.OCCLUSION_MODE;
-    boolean drawOccludedPass = occlusionMode != SpeechBubbleOcclusionMode.NEVER;
+    OcclusionMode occlusionMode = ClientSpeechBubbleConfig.OCCLUSION_MODE;
+    boolean drawOccludedPass = occlusionMode != OcclusionMode.NEVER;
 
     if (drawOccludedPass) {
       int occludedBodyAlpha = occludedBodyAlpha(occlusionMode, textAlpha);
@@ -340,7 +340,7 @@ public class SpeechBubbleRenderer {
           offsetPixelsY);
     }
 
-    if (occlusionMode != SpeechBubbleOcclusionMode.ALWAYS) {
+    if (occlusionMode != OcclusionMode.ALWAYS) {
       drawBubbleBody(
           speechBubbleInstance,
           poseStack,
@@ -369,7 +369,7 @@ public class SpeechBubbleRenderer {
       float offsetPixelsX,
       float offsetPixelsY) {
     int textAlpha = speechBubbleInstance.textAlpha();
-    SpeechBubbleOcclusionMode occlusionMode = ClientSpeechBubbleConfig.OCCLUSION_MODE;
+    OcclusionMode occlusionMode = ClientSpeechBubbleConfig.OCCLUSION_MODE;
 
     drawBubbleBody(
         speechBubbleInstance,
@@ -381,7 +381,7 @@ public class SpeechBubbleRenderer {
         offsetPixelsX,
         offsetPixelsY);
 
-    if (occlusionMode != SpeechBubbleOcclusionMode.NEVER
+    if (occlusionMode != OcclusionMode.NEVER
         && SpeechBubbleRenderTypes.isShaderMappingAvailable()) {
       int occludedBodyAlpha = occludedBodyAlpha(occlusionMode, textAlpha);
       drawBubbleBody(
@@ -415,8 +415,8 @@ public class SpeechBubbleRenderer {
         offsetPixelsY);
   }
 
-  private static int occludedBodyAlpha(SpeechBubbleOcclusionMode occlusionMode, int textAlpha) {
-    if (occlusionMode == SpeechBubbleOcclusionMode.GHOST) {
+  private static int occludedBodyAlpha(OcclusionMode occlusionMode, int textAlpha) {
+    if (occlusionMode == OcclusionMode.GHOST) {
       return (int) (textAlpha * ClientSpeechBubbleConfig.GHOST_OPACITY / 100.0F);
     }
 

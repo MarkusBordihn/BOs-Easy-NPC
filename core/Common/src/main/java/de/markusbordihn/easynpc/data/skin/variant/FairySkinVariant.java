@@ -26,7 +26,8 @@ import net.minecraft.resources.Identifier;
 public enum FairySkinVariant implements VariantTexture {
   GREEN(Constants.MOD_ID, "textures/entity/fairy/fairy_green.png"),
   RED(Constants.MOD_ID, "textures/entity/fairy/fairy_red.png"),
-  BLUE(Constants.MOD_ID, "textures/entity/fairy/fairy_blue.png");
+  BLUE(Constants.MOD_ID, "textures/entity/fairy/fairy_blue.png"),
+  VIOLET(Constants.MOD_ID, "textures/entity/fairy/fairy_violet.png");
 
   private final Identifier textureLocation;
 

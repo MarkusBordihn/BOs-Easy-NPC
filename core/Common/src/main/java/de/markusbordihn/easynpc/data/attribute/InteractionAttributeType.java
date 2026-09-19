@@ -23,6 +23,7 @@ import de.markusbordihn.easynpc.utils.TextUtils;
 import java.util.Locale;
 
 public enum InteractionAttributeType implements EntityAttributeTypeInterface {
+  BLOCK_VEHICLE_MOUNTING,
   CAN_BE_HIT_BY_PROJECTILE,
   CAN_BE_LEASHED,
   IS_PUSHABLE,

@@ -28,9 +28,6 @@ import de.markusbordihn.easynpc.data.condition.ConditionDataEntry;
 import de.markusbordihn.easynpc.data.condition.ConditionDataSet;
 import de.markusbordihn.easynpc.data.condition.ConditionOperationType;
 import de.markusbordihn.easynpc.data.condition.ConditionType;
-import java.util.Arrays;
-import java.util.LinkedHashSet;
-import java.util.stream.Collectors;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 public class EntityHealthConditionEntry extends ConditionEntryWidget {
@@ -50,20 +47,8 @@ public class EntityHealthConditionEntry extends ConditionEntryWidget {
   public void init(int editorLeft, int editorTop) {
     boolean hasData = hasConditionData(ConditionType.ENTITY_HEALTH);
     this.operationTypeButton =
-        this.screen.addConditionEntryWidget(
-            new SpinButton<>(
-                editorLeft + 110,
-                editorTop,
-                180,
-                16,
-                Arrays.stream(ConditionOperationType.values())
-                    .filter(type -> type != ConditionOperationType.NONE)
-                    .sorted()
-                    .collect(Collectors.toCollection(LinkedHashSet::new)),
-                hasData
-                    ? this.conditionDataEntry.operationType()
-                    : ConditionOperationType.LESS_THAN_OR_EQUALS,
-                button -> {}));
+        this.addComparisonOperationButton(
+            editorLeft + 110, editorTop, hasData, ConditionOperationType.LESS_THAN_OR_EQUALS);
     this.valueTextField =
         this.screen.addConditionEntryWidget(
             new TextField(

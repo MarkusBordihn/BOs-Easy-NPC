@@ -23,6 +23,7 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.action.ActionContext;
 import de.markusbordihn.easynpc.data.action.ActionDataEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
+import de.markusbordihn.easynpc.data.npc.NPCRemovalReason;
 import de.markusbordihn.easynpc.data.state.StateEntry;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import java.util.List;
@@ -41,6 +42,8 @@ public class EasyNPCEventRegistry {
   private static final List<ActionEventListener> actionEventListeners =
       new CopyOnWriteArrayList<>();
   private static final List<StateEventListener> stateEventListeners = new CopyOnWriteArrayList<>();
+  private static final List<EntityLifecycleListener> entityLifecycleListeners =
+      new CopyOnWriteArrayList<>();
 
   private EasyNPCEventRegistry() {}
 
@@ -81,6 +84,51 @@ public class EasyNPCEventRegistry {
 
   public static void unregisterStateEventListener(StateEventListener stateEventListener) {
     stateEventListeners.remove(stateEventListener);
+  }
+
+  public static void registerEntityLifecycleListener(
+      EntityLifecycleListener entityLifecycleListener) {
+    if (entityLifecycleListener == null) {
+      log.error("Unable to register a null entity lifecycle listener");
+      return;
+    }
+
+    entityLifecycleListeners.add(entityLifecycleListener);
+  }
+
+  public static void unregisterEntityLifecycleListener(
+      EntityLifecycleListener entityLifecycleListener) {
+    entityLifecycleListeners.remove(entityLifecycleListener);
+  }
+
+  public static void fireNPCSpawned(EasyNPC<?> easyNPC) {
+    if (entityLifecycleListeners.isEmpty() || easyNPC == null) {
+      return;
+    }
+
+    for (EntityLifecycleListener entityLifecycleListener : entityLifecycleListeners) {
+      try {
+        entityLifecycleListener.onNPCSpawned(easyNPC);
+      } catch (Exception e) {
+        log.error(
+            "Entity lifecycle listener {} failed for {}", entityLifecycleListener, easyNPC, e);
+      }
+    }
+  }
+
+  public static void fireNPCRemoved(EasyNPC<?> easyNPC, NPCRemovalReason removalReason) {
+    if (entityLifecycleListeners.isEmpty() || easyNPC == null) {
+      return;
+    }
+
+    for (EntityLifecycleListener entityLifecycleListener : entityLifecycleListeners) {
+      try {
+        entityLifecycleListener.onNPCRemoved(easyNPC, removalReason);
+      } catch (Exception e) {
+        log.error(
+            "Entity lifecycle listener {} failed for {}", entityLifecycleListener, easyNPC, e);
+      }
+    }
   }
 
   public static void fireStateChanged(

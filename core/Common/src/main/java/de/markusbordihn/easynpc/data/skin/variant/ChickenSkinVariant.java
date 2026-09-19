@@ -26,7 +26,8 @@ import net.minecraft.resources.Identifier;
 public enum ChickenSkinVariant implements VariantTexture {
   COLD(Constants.MINECRAFT_PREFIX, "textures/entity/chicken/chicken_cold.png"),
   TEMPERATE(Constants.MINECRAFT_PREFIX, "textures/entity/chicken/chicken_temperate.png"),
-  WARM(Constants.MINECRAFT_PREFIX, "textures/entity/chicken/chicken_warm.png");
+  WARM(Constants.MINECRAFT_PREFIX, "textures/entity/chicken/chicken_warm.png"),
+  SPECKLED(Constants.MOD_ID, "textures/entity/chicken/chicken_speckled.png");
 
   private final Identifier textureLocation;
 
@@ -36,6 +37,6 @@ public enum ChickenSkinVariant implements VariantTexture {
 
   @Override
   public Identifier getTextureLocation() {
-    return textureLocation;
+    return this.textureLocation;
   }
 }

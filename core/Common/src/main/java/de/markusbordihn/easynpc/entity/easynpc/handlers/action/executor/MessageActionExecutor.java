@@ -25,6 +25,7 @@ import de.markusbordihn.easynpc.data.action.ActionUtils;
 import de.markusbordihn.easynpc.data.action.MessageActionData;
 import de.markusbordihn.easynpc.data.action.MessageRecipientScope;
 import de.markusbordihn.easynpc.data.action.SpeechBubbleManager;
+import de.markusbordihn.easynpc.data.sound.SoundType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.OwnerDataCapable;
 import de.markusbordihn.easynpc.network.NetworkHandlerManager;
@@ -123,6 +124,8 @@ public class MessageActionExecutor {
     if (receivers.isEmpty()) {
       return;
     }
+
+    easyNPC.playDefaultSoundIfAvailable(SoundType.SPEECH);
 
     Component chatMessage =
         messageActionData.showInNearbyChat()

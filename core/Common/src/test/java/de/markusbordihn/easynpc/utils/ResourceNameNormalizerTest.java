@@ -22,9 +22,12 @@ package de.markusbordihn.easynpc.utils;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.UUID;
+import java.util.regex.Pattern;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -141,5 +144,53 @@ class ResourceNameNormalizerTest {
     assertEquals(
         "preset_" + ResourceNameNormalizer.hash(""),
         ResourceNameNormalizer.toFileName("", "preset"));
+  }
+
+  @Test
+  @DisplayName("A preset pattern matches only the names covered by its wildcard")
+  void presetPatternMatchesWildcardNames() {
+    Pattern pattern = ResourceNameNormalizer.toPresetPathPattern("test_case_*");
+    assertNotNull(pattern);
+    assertTrue(pattern.matcher("test_case_1").matches());
+    assertTrue(pattern.matcher("test_case_123213_alpha").matches());
+    assertFalse(pattern.matcher("other_test_case_1").matches());
+    assertFalse(pattern.matcher("test_cas").matches());
+  }
+
+  @Test
+  @DisplayName("A preset pattern without wildcard matches a single name")
+  void presetPatternWithoutWildcardMatchesSingleName() {
+    Pattern pattern = ResourceNameNormalizer.toPresetPathPattern("test_case_1");
+    assertNotNull(pattern);
+    assertTrue(pattern.matcher("test_case_1").matches());
+    assertFalse(pattern.matcher("test_case_12").matches());
+  }
+
+  @Test
+  @DisplayName("Preset patterns are matched literally instead of as regular expressions")
+  void presetPatternIsMatchedLiterally() {
+    Pattern pattern = ResourceNameNormalizer.toPresetPathPattern("a.b-c*");
+    assertNotNull(pattern);
+    assertTrue(pattern.matcher("a.b-c1").matches());
+    assertFalse(pattern.matcher("axb-c1").matches());
+  }
+
+  @Test
+  @DisplayName("Preset patterns need at least three fixed characters before the wildcard")
+  void presetPatternNeedsFixedPrefix() {
+    assertNull(ResourceNameNormalizer.toPresetPathPattern("*"));
+    assertNull(ResourceNameNormalizer.toPresetPathPattern("a*"));
+    assertNull(ResourceNameNormalizer.toPresetPathPattern("ab*"));
+    assertNotNull(ResourceNameNormalizer.toPresetPathPattern("abc*"));
+  }
+
+  @Test
+  @DisplayName("Preset patterns reject unsupported characters and relative segments")
+  void presetPatternRejectsUnsupportedInput() {
+    assertNull(ResourceNameNormalizer.toPresetPathPattern(null));
+    assertNull(ResourceNameNormalizer.toPresetPathPattern(""));
+    assertNull(ResourceNameNormalizer.toPresetPathPattern("test case*"));
+    assertNull(ResourceNameNormalizer.toPresetPathPattern("test_(case)*"));
+    assertNull(ResourceNameNormalizer.toPresetPathPattern("../preset*"));
   }
 }

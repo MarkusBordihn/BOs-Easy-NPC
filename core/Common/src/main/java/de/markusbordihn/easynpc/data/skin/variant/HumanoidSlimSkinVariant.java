@@ -33,7 +33,8 @@ public enum HumanoidSlimSkinVariant implements VariantTexture {
   STEVE(Constants.MINECRAFT_PREFIX, "textures/entity/player/slim/steve.png"),
   SUNNY(Constants.MINECRAFT_PREFIX, "textures/entity/player/slim/sunny.png"),
   ZURI(Constants.MINECRAFT_PREFIX, "textures/entity/player/slim/zuri.png"),
-  KAWORRU(Constants.MOD_ID, "textures/entity/humanoid_slim/kaworru.png");
+  KAWORRU(Constants.MOD_ID, "textures/entity/humanoid_slim/kaworru.png"),
+  MAGE_01(Constants.MOD_ID, "textures/entity/humanoid_slim/mage_01.png");
 
   private final Identifier textureLocation;
 

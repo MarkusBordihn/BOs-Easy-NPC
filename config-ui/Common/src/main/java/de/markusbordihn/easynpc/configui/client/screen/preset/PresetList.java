@@ -26,6 +26,8 @@ import net.minecraft.client.gui.components.ObjectSelectionList;
 
 public class PresetList extends ObjectSelectionList<PresetListEntry> {
 
+  private static final int ROW_MARGIN = 3;
+
   public PresetList(Minecraft minecraft, int width, int height, int y0, int entryHeight) {
     super(minecraft, width, height, y0, entryHeight);
   }
@@ -35,8 +37,18 @@ public class PresetList extends ObjectSelectionList<PresetListEntry> {
   }
 
   @Override
+  public int getRowLeft() {
+    return this.getX() + ROW_MARGIN;
+  }
+
+  @Override
   public int getRowWidth() {
-    return this.width;
+    return this.width - SCROLLBAR_WIDTH - ROW_MARGIN * 2;
+  }
+
+  @Override
+  protected int scrollBarX() {
+    return this.getRight() - SCROLLBAR_WIDTH;
   }
 
   @Override
@@ -44,20 +56,11 @@ public class PresetList extends ObjectSelectionList<PresetListEntry> {
       GuiGraphicsExtractor guiGraphics, PresetListEntry entry, int color) {
     DrawBoxWithBorder.draw(
         guiGraphics,
-        entry.getX() + 3,
+        entry.getX(),
         entry.getY(),
-        entry.getWidth() - 3,
+        entry.getWidth(),
         entry.getHeight(),
         color,
         -16777216);
-  }
-
-  public void clearEntries() {
-    this.children().forEach(PresetListEntry::cleanup);
-    super.clearEntries();
-  }
-
-  public void removed() {
-    this.children().forEach(PresetListEntry::cleanup);
   }
 }

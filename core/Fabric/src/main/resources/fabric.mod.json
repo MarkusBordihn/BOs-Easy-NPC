@@ -49,6 +49,7 @@
       "de.markusbordihn.easynpc.gametest.DistanceActionTest",
       "de.markusbordihn.easynpc.gametest.IntervalActionAudienceTest",
       "de.markusbordihn.easynpc.gametest.PresetRoundTripTest",
+      "de.markusbordihn.easynpc.gametest.PresetIdentityTest",
       "de.markusbordihn.easynpc.gametest.PresetDefaultBaselineTest",
       "de.markusbordihn.easynpc.gametest.BasePresetTest",
       "de.markusbordihn.easynpc.gametest.DefaultPresetRoundTripTest",
@@ -79,9 +80,9 @@
   },
   "suggests": {
     "tooltipfix": "*",
-    "easy_model_entities": ">=2.3.0 <3.0.0"
+    "easy_model_entities": ">=2.4.0 <3.0.0"
   },
   "breaks": {
-    "easy_model_entities": "<2.3.0 || >=3.0.0"
+    "easy_model_entities": "<2.4.0 || >=3.0.0"
   }
 }

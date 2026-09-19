@@ -64,7 +64,12 @@ public class NpcStateCondition {
   }
 
   public static boolean matches(ConditionDataEntry conditionDataEntry, StateEntry stateEntry) {
-    boolean negated = conditionDataEntry.operationType() == ConditionOperationType.NOT_EQUALS;
+    ConditionOperationType operationType = conditionDataEntry.operationType();
+    if (operationType.isExistenceOperation()) {
+      return (stateEntry != null) == (operationType == ConditionOperationType.EXISTS);
+    }
+
+    boolean negated = operationType == ConditionOperationType.NOT_EQUALS;
 
     return switch (valueTypeOf(conditionDataEntry)) {
       case TEXT -> {
@@ -79,9 +84,8 @@ public class NpcStateCondition {
         yield negated != matches;
       }
       case NUMBER ->
-          conditionDataEntry
-              .operationType()
-              .evaluate(stateEntry != null ? stateEntry.asNumber() : 0, conditionDataEntry.value());
+          operationType.evaluate(
+              stateEntry != null ? stateEntry.asNumber() : 0, conditionDataEntry.value());
     };
   }
 

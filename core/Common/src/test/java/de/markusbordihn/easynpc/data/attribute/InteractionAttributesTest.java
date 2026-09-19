@@ -45,19 +45,24 @@ class InteractionAttributesTest {
     assertFalse(interactionAttributes.canBeHitByProjectile());
     assertFalse(interactionAttributes.canBeLeashed());
     assertFalse(interactionAttributes.pushEntities());
+    assertFalse(interactionAttributes.blockVehicleMounting());
   }
 
   @Test
   @DisplayName("Changed interaction attributes survive a round trip")
   void testChangedAttributesSurviveRoundTrip() {
     InteractionAttributes interactionAttributes =
-        new InteractionAttributes().withIsPushable(true).withCanBeLeashed(true);
+        new InteractionAttributes()
+            .withIsPushable(true)
+            .withCanBeLeashed(true)
+            .withBlockVehicleMounting(true);
 
     InteractionAttributes restored =
         InteractionAttributes.decode(interactionAttributes.encode(new CompoundTag()));
 
     assertTrue(restored.isPushable());
     assertTrue(restored.canBeLeashed());
+    assertTrue(restored.blockVehicleMounting());
     assertFalse(restored.canBeHitByProjectile());
     assertFalse(restored.pushEntities());
   }

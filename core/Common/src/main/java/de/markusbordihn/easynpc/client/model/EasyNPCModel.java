@@ -19,7 +19,6 @@
 
 package de.markusbordihn.easynpc.client.model;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.client.model.armpose.ModelArmPoseUtils;
 import de.markusbordihn.easynpc.client.renderer.entity.state.EasyNPCRenderStateExtension;
 import de.markusbordihn.easynpc.data.display.DisplayAttributeType;
@@ -31,14 +30,10 @@ import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.DisplayAttributeDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
-import de.markusbordihn.easynpc.entity.easynpc.handlers.VisibilityHandler;
 import java.util.UUID;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.LightLayer;
 
 public class EasyNPCModel {
@@ -127,30 +122,6 @@ public class EasyNPCModel {
     }
 
     return easyNPC.getLivingEntity().level().getBrightness(LightLayer.BLOCK, blockPos);
-  }
-
-  public static boolean renderEntityNameTag(
-      final EasyNPCRenderStateExtension extension, final PoseStack poseStack) {
-    if (extension == null) {
-      return true;
-    }
-
-    // Get EasyNPC
-    EasyNPC<?> easyNPC = getEasyNPC(extension);
-    if (easyNPC == null) {
-      return true;
-    }
-
-    // Check if name tag should be rendered at all.
-    LocalPlayer player = Minecraft.getInstance().player;
-    Entity entity = easyNPC.getEntity();
-    if (player != null
-        && !VisibilityHandler.handleIsCustomNameVisibleToPlayer(
-            easyNPC, player, entity.isCustomNameVisible(), player.distanceToSqr(entity))) {
-      return false;
-    }
-
-    return true;
   }
 
   public static void setupAnimationEnd(

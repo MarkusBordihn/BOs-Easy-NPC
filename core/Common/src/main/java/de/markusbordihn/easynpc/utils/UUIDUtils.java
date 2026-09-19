@@ -59,6 +59,14 @@ public class UUIDUtils {
     return UUID.randomUUID();
   }
 
+  public static String shortId(UUID uuid) {
+    if (uuid == null) {
+      return "";
+    }
+
+    return uuid.toString().substring(0, 8);
+  }
+
   public static UUID parseUUID(String text) {
     if (text == null || text.length() != 36) {
       return null;

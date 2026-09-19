@@ -226,6 +226,8 @@ public class AttributeHandler {
           entityAttributes.setInteractionAttributes(attributes.withCanBeHitByProjectile(value));
       case PUSH_ENTITIES ->
           entityAttributes.setInteractionAttributes(attributes.withPushEntities(value));
+      case BLOCK_VEHICLE_MOUNTING ->
+          entityAttributes.setInteractionAttributes(attributes.withBlockVehicleMounting(value));
       default -> {
         log.error("Unimplemented interaction attribute {} for {}", attributeType, easyNPC);
         return false;

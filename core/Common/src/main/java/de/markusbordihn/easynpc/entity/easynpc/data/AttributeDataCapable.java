@@ -81,6 +81,19 @@ public interface AttributeDataCapable<E extends Mob> extends EasyNPC<E> {
     }
   }
 
+  default void handleBlockedVehicleMountingTick() {
+    Mob mob = this.getMob();
+    if (mob == null || !mob.isPassenger()) {
+      return;
+    }
+
+    EntityAttributes entityAttributes = this.getEntityAttributes();
+    if (entityAttributes != null
+        && entityAttributes.getInteractionAttributes().blockVehicleMounting()) {
+      mob.stopRiding();
+    }
+  }
+
   default void readAdditionalAttributeData(ValueInput valueInput) {
     EntityAttributes entityAttributes = new EntityAttributes(valueInput);
     this.setEntityAttributes(entityAttributes);

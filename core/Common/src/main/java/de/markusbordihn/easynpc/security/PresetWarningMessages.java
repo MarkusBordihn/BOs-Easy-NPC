@@ -19,46 +19,39 @@
 
 package de.markusbordihn.easynpc.security;
 
+import de.markusbordihn.easynpc.Constants;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
+import net.minecraft.network.chat.Component;
 
 public class PresetWarningMessages {
 
+  private static final String NOTICE_PREFIX = Constants.TEXT_PREFIX + "preset.sanitize.";
+
   private PresetWarningMessages() {}
 
-  public static List<String> toPlayerMessages(PresetSanitizationResult result) {
+  public static List<Component> toPlayerMessages(PresetSanitizationResult result) {
     if (result == null || result.notices() == null || result.notices().isEmpty()) {
       return List.of();
     }
 
-    Set<String> messages = new LinkedHashSet<>();
+    Set<String> messageKeys = new LinkedHashSet<>();
     for (PresetSanitizationNotice notice : result.notices()) {
-      String message = getMessage(notice);
-      if (message != null) {
-        messages.add(message);
-      }
+      messageKeys.add(getMessageKey(notice));
     }
 
-    return new ArrayList<>(messages);
+    List<Component> messages = new ArrayList<>();
+    for (String messageKey : messageKeys) {
+      messages.add(Component.translatable(messageKey));
+    }
+
+    return messages;
   }
 
-  private static String getMessage(PresetSanitizationNotice notice) {
-    return switch (notice) {
-      case OWNER_REWRITTEN, OWNER_REMOVED -> "Owner data was updated.";
-      case ACTION_PERMISSION_CLAMPED, COMMAND_PERMISSION_CLAMPED -> "Command levels were reduced.";
-      case TRADING_REMOVED -> "Trading was removed.";
-      case COMMAND_ACTION_REMOVED -> "Command actions were removed.";
-      case MESSAGE_ACTION_REMOVED -> "Message actions were removed.";
-      case CUSTOM_ACTION_REMOVED -> "Custom actions were removed.";
-      case SCOREBOARD_ACTION_REMOVED -> "Scoreboard actions were removed.";
-      case BLOCK_ACTION_REMOVED -> "Block actions were removed.";
-      case TRADING_ACTION_REMOVED -> "Trading actions were removed.";
-      case OBJECTIVE_REMOVED -> "Objectives were removed.";
-      case MOVEMENT_REMOVED -> "Movement data was removed.";
-      case POSITION_REMOVED -> "Position data was removed.";
-      case ATTRIBUTE_REMOVED -> "Some attribute data was removed.";
-    };
+  public static String getMessageKey(PresetSanitizationNotice notice) {
+    return NOTICE_PREFIX + notice.name().toLowerCase(Locale.ROOT);
   }
 }

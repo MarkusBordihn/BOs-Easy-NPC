@@ -155,6 +155,33 @@ class NpcStateConditionTest {
   }
 
   @Test
+  @DisplayName("A state set to zero exists, a state that was never set does not")
+  void testExistenceOperations() {
+    assertTrue(
+        NpcStateCondition.matches(
+            numberCondition(ConditionOperationType.EXISTS, 0), StateEntry.of(0)));
+    assertFalse(NpcStateCondition.matches(numberCondition(ConditionOperationType.EXISTS, 0), null));
+    assertTrue(
+        NpcStateCondition.matches(numberCondition(ConditionOperationType.NOT_EXISTS, 0), null));
+    assertFalse(
+        NpcStateCondition.matches(
+            numberCondition(ConditionOperationType.NOT_EXISTS, 0), StateEntry.of(0)));
+  }
+
+  @Test
+  @DisplayName("The existence operations ignore the value type and the compared value")
+  void testExistenceOperationsIgnoreValue() {
+    assertTrue(
+        NpcStateCondition.matches(
+            textCondition(ConditionOperationType.EXISTS, "intro"), StateEntry.of("outro")));
+    assertTrue(
+        NpcStateCondition.matches(
+            flagCondition(ConditionOperationType.EXISTS, true), StateEntry.of(0)));
+    assertTrue(
+        NpcStateCondition.matches(flagCondition(ConditionOperationType.NOT_EXISTS, true), null));
+  }
+
+  @Test
   void testEvaluateWithoutNpcContext() {
     assertFalse(
         NpcStateCondition.evaluate(numberCondition(ConditionOperationType.EQUALS, 0), null));

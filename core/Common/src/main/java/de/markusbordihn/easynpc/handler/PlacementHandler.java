@@ -37,8 +37,25 @@ public class PlacementHandler {
 
   public static final int DEFAULT_SEARCH_RADIUS = 4;
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+  private static final EntityDimensions DEFAULT_SPAWN_DIMENSIONS =
+      EntityDimensions.scalable(0.6F, 1.8F);
 
   private PlacementHandler() {}
+
+  public static Vec3 findFreePositionNear(Level level, Vec3 position) {
+    if (level == null || position == null) {
+      return position;
+    }
+
+    return findSafeSpawnNear(
+            level,
+            BlockPos.containing(position),
+            DEFAULT_SPAWN_DIMENSIONS,
+            DEFAULT_SEARCH_RADIUS,
+            candidate -> isUnoccupied(level, candidate, DEFAULT_SPAWN_DIMENSIONS))
+        .map(Vec3::atBottomCenterOf)
+        .orElse(position);
+  }
 
   public static Optional<BlockPos> findSafeSpawnNear(
       LevelReader level, Vec3 position, EntityDimensions dimensions) {

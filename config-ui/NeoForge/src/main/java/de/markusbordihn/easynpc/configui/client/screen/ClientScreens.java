@@ -64,6 +64,10 @@ import de.markusbordihn.easynpc.configui.client.screen.configuration.skin.Custom
 import de.markusbordihn.easynpc.configui.client.screen.configuration.skin.DefaultSkinConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.skin.PlayerSkinConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.skin.UrlSkinConfigurationScreenWrapper;
+import de.markusbordihn.easynpc.configui.client.screen.configuration.sound.BasicSoundConfigurationScreenWrapper;
+import de.markusbordihn.easynpc.configui.client.screen.configuration.sound.CombatSoundConfigurationScreenWrapper;
+import de.markusbordihn.easynpc.configui.client.screen.configuration.sound.InteractionSoundConfigurationScreenWrapper;
+import de.markusbordihn.easynpc.configui.client.screen.configuration.sound.TradeSoundConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.trading.AdvancedTradingConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.trading.BasicTradingConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.trading.CustomTradingConfigurationScreenWrapper;
@@ -137,8 +141,14 @@ public class ClientScreens {
         ModMenuTypes.BASIC_TRADING_CONFIGURATION_MENU.get(),
         BasicTradingConfigurationScreenWrapper::new);
     event.register(
+        ModMenuTypes.BASIC_SOUND_CONFIGURATION_MENU.get(),
+        BasicSoundConfigurationScreenWrapper::new);
+    event.register(
         ModMenuTypes.COMBAT_ATTRIBUTE_CONFIGURATION_MENU.get(),
         CombatAttributeConfigurationScreenWrapper::new);
+    event.register(
+        ModMenuTypes.COMBAT_SOUND_CONFIGURATION_MENU.get(),
+        CombatSoundConfigurationScreenWrapper::new);
     event.register(
         ModMenuTypes.CUSTOM_EXPORT_PRESET_CONFIGURATION_MENU.get(),
         ExportCustomPresetConfigurationScreenWrapper::new);
@@ -196,6 +206,12 @@ public class ClientScreens {
     event.register(
         ModMenuTypes.DISTANCE_ACTION_CONFIGURATION_MENU.get(),
         DistanceActionConfigurationScreenWrapper::new);
+    event.register(
+        ModMenuTypes.INTERACTION_SOUND_CONFIGURATION_MENU.get(),
+        InteractionSoundConfigurationScreenWrapper::new);
+    event.register(
+        ModMenuTypes.TRADE_SOUND_CONFIGURATION_MENU.get(),
+        TradeSoundConfigurationScreenWrapper::new);
     event.register(
         ModMenuTypes.INTERVAL_ACTION_CONFIGURATION_MENU.get(),
         IntervalActionConfigurationScreenWrapper::new);

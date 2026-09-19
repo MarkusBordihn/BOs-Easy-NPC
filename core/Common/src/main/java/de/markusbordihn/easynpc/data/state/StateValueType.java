@@ -94,7 +94,9 @@ public enum StateValueType implements ConditionSubTypeEntry {
   }
 
   public boolean supports(ConditionOperationType operationType) {
-    return this == NUMBER || operationType.isEqualityOperation();
+    return this == NUMBER
+        || operationType.isEqualityOperation()
+        || operationType.isExistenceOperation();
   }
 
   public Set<ConditionOperationType> supportedOperationTypes() {

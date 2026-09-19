@@ -25,68 +25,106 @@ import java.util.Deque;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
 import net.minecraft.server.level.ServerPlayer;
 
 public class SpawnRateLimiter {
 
   static final long WINDOW_MS = 60_000L;
   private static final Map<UUID, Deque<Long>> spawnLog = new ConcurrentHashMap<>();
+  private static final AtomicLong lastSweep = new AtomicLong();
 
   private SpawnRateLimiter() {}
 
   public static boolean checkAndRecord(ServerPlayer serverPlayer) {
+    return checkAndRecord(serverPlayer.getUUID(), spawnLimit(serverPlayer));
+  }
+
+  public static int checkAndRecord(ServerPlayer serverPlayer, int count) {
+    return checkAndRecord(serverPlayer.getUUID(), spawnLimit(serverPlayer), count);
+  }
+
+  public static int spawnLimit(ServerPlayer serverPlayer) {
     ActorSecurityContext actorContext = CommandSecurity.getActorContext(serverPlayer);
 
-    return checkAndRecord(
-        serverPlayer.getUUID(),
-        actorContext != null && actorContext.admin()
-            ? SecurityConfig.NPC_SPAWN_RATE_LIMIT_ADMIN
-            : SecurityConfig.NPC_SPAWN_RATE_LIMIT_CREATIVE);
+    return actorContext != null && actorContext.admin()
+        ? SecurityConfig.NPC_SPAWN_RATE_LIMIT_ADMIN
+        : SecurityConfig.NPC_SPAWN_RATE_LIMIT_CREATIVE;
+  }
+
+  static int checkAndRecord(UUID uuid, int limit, int count) {
+    if (count <= 0) {
+      return 0;
+    }
+
+    long now = System.currentTimeMillis();
+    sweepExpired(now);
+    int[] grantedSpawns = new int[1];
+    spawnLog.compute(
+        uuid,
+        (playerUuid, spawnTimestamps) -> {
+          Deque<Long> activeTimestamps = pruneExpired(spawnTimestamps, now);
+          grantedSpawns[0] = Math.max(0, Math.min(count, limit - activeTimestamps.size()));
+          for (int i = 0; i < grantedSpawns[0]; i++) {
+            activeTimestamps.addLast(now);
+          }
+
+          return activeTimestamps.isEmpty() ? null : activeTimestamps;
+        });
+
+    return grantedSpawns[0];
   }
 
   static boolean checkAndRecord(UUID uuid, int limit) {
-    long now = System.currentTimeMillis();
-    Deque<Long> log = spawnLog.computeIfAbsent(uuid, k -> new ArrayDeque<>());
-    synchronized (log) {
-      while (!log.isEmpty() && now - log.peekFirst() > WINDOW_MS) {
-        log.pollFirst();
-      }
-      if (log.size() >= limit) {
-        return false;
-      }
-
-      log.addLast(now);
-    }
-
-    return true;
+    return checkAndRecord(uuid, limit, 1) > 0;
   }
 
   public static int remainingSpawns(ServerPlayer serverPlayer) {
-    ActorSecurityContext actorContext = CommandSecurity.getActorContext(serverPlayer);
-
-    return remainingSpawns(
-        serverPlayer.getUUID(),
-        actorContext != null && actorContext.admin()
-            ? SecurityConfig.NPC_SPAWN_RATE_LIMIT_ADMIN
-            : SecurityConfig.NPC_SPAWN_RATE_LIMIT_CREATIVE);
+    return remainingSpawns(serverPlayer.getUUID(), spawnLimit(serverPlayer));
   }
 
   static int remainingSpawns(UUID uuid, int limit) {
-    Deque<Long> log = spawnLog.get(uuid);
-    if (log == null) {
-      return limit;
-    }
-
     long now = System.currentTimeMillis();
-    synchronized (log) {
-      while (!log.isEmpty() && now - log.peekFirst() > WINDOW_MS) {
-        log.pollFirst();
-      }
-      return Math.max(0, limit - log.size());
-    }
+    int[] availableSpawns = new int[1];
+    spawnLog.compute(
+        uuid,
+        (playerUuid, spawnTimestamps) -> {
+          Deque<Long> activeTimestamps = pruneExpired(spawnTimestamps, now);
+          availableSpawns[0] = Math.max(0, limit - activeTimestamps.size());
+
+          return activeTimestamps.isEmpty() ? null : activeTimestamps;
+        });
+
+    return availableSpawns[0];
   }
 
   public static void clearPlayer(UUID playerUuid) {
     spawnLog.remove(playerUuid);
+  }
+
+  private static Deque<Long> pruneExpired(Deque<Long> spawnTimestamps, long now) {
+    if (spawnTimestamps == null) {
+      return new ArrayDeque<>();
+    }
+
+    while (!spawnTimestamps.isEmpty() && now - spawnTimestamps.peekFirst() > WINDOW_MS) {
+      spawnTimestamps.pollFirst();
+    }
+
+    return spawnTimestamps;
+  }
+
+  private static void sweepExpired(long now) {
+    long previousSweep = lastSweep.get();
+    if (now - previousSweep < WINDOW_MS || !lastSweep.compareAndSet(previousSweep, now)) {
+      return;
+    }
+
+    for (UUID playerUuid : spawnLog.keySet()) {
+      spawnLog.computeIfPresent(
+          playerUuid,
+          (playerKey, spawnTimestamps) ->
+              pruneExpired(spawnTimestamps, now).isEmpty() ? null : spawnTimestamps);
+    }
   }
 }

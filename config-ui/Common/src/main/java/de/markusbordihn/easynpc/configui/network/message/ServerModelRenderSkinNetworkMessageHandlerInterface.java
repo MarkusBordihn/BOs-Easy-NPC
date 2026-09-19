@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.configui.network.message;
 
 import de.markusbordihn.easynpc.configui.network.NetworkHandlerManager;
+import de.markusbordihn.easynpc.configui.network.message.server.ChangeHomePositionMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeModelAnimationDataMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeModelEquipmentVisibilityMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeModelPositionMessage;
@@ -41,6 +42,7 @@ import de.markusbordihn.easynpc.data.scale.CustomScale;
 import de.markusbordihn.easynpc.data.skin.SkinDataEntry;
 import java.util.Optional;
 import java.util.UUID;
+import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -71,6 +73,12 @@ public interface ServerModelRenderSkinNetworkMessageHandlerInterface {
   default void positionChange(UUID uuid, Vec3 pos) {
     if (uuid != null && pos != null) {
       NetworkHandlerManager.sendMessageToServer(new ChangePositionMessage(uuid, pos));
+    }
+  }
+
+  default void homePositionChange(UUID uuid, BlockPos homePosition) {
+    if (uuid != null && homePosition != null) {
+      NetworkHandlerManager.sendMessageToServer(new ChangeHomePositionMessage(uuid, homePosition));
     }
   }
 

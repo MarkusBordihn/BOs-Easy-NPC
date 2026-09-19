@@ -104,7 +104,7 @@ public class NpcStateConditionEntry extends ConditionEntryWidget {
                 hasConditionData
                     ? this.conditionDataEntry.operationType()
                     : ConditionOperationType.EQUALS,
-                button -> {}));
+                button -> this.applyValueWidgets()));
 
     this.valueTextField =
         this.screen.addConditionEntryWidget(
@@ -180,13 +180,18 @@ public class NpcStateConditionEntry extends ConditionEntryWidget {
     this.applyValueWidgets();
   }
 
+  private boolean isExistenceOperation() {
+    return this.operationTypeButton.get().isExistenceOperation();
+  }
+
   private void applyValueWidgets() {
+    boolean hasValue = !this.isExistenceOperation();
     this.valueTextField.setFilter(
         this.currentValueType == StateValueType.TEXT
             ? value -> value.length() <= StateEntry.MAX_TEXT_VALUE_LENGTH
             : ValueUtils::isNumericValue);
-    this.valueTextField.setVisible(this.currentValueType != StateValueType.FLAG);
-    this.valueCheckbox.visible = this.currentValueType == StateValueType.FLAG;
+    this.valueTextField.setVisible(hasValue && this.currentValueType != StateValueType.FLAG);
+    this.valueCheckbox.visible = hasValue && this.currentValueType == StateValueType.FLAG;
   }
 
   @Override
@@ -212,13 +217,16 @@ public class NpcStateConditionEntry extends ConditionEntryWidget {
         editorLeft,
         editorTop + 54,
         Constants.FONT_COLOR_BLACK);
-    Text.drawConfigString(
-        guiGraphics,
-        this.font,
-        this.valueLabel(),
-        editorLeft,
-        editorTop + 79,
-        Constants.FONT_COLOR_BLACK);
+    if (!this.isExistenceOperation()) {
+      Text.drawConfigString(
+          guiGraphics,
+          this.font,
+          this.valueLabel(),
+          editorLeft,
+          editorTop + 79,
+          Constants.FONT_COLOR_BLACK);
+    }
+
     Text.drawConfigString(
         guiGraphics,
         this.font,
@@ -259,11 +267,17 @@ public class NpcStateConditionEntry extends ConditionEntryWidget {
             this.nameTextField.getValue(),
             this.numberValue())
         .withCustomData(
-            this.currentValueType == StateValueType.TEXT ? this.valueTextField.getValue() : "")
+            this.currentValueType == StateValueType.TEXT && !this.isExistenceOperation()
+                ? this.valueTextField.getValue()
+                : "")
         .withTargetUUID(this.targetUUID());
   }
 
   private int numberValue() {
+    if (this.isExistenceOperation()) {
+      return 0;
+    }
+
     if (this.currentValueType == StateValueType.FLAG) {
       return this.valueCheckbox.selected() ? 1 : 0;
     }

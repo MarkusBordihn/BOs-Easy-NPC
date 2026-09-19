@@ -26,7 +26,8 @@ import net.minecraft.resources.Identifier;
 public enum PiglinSkinVariant implements VariantTexture {
   PIGLIN(Constants.MINECRAFT_PREFIX, "textures/entity/piglin/piglin.png"),
   PIGLIN_BRUTE(Constants.MINECRAFT_PREFIX, "textures/entity/piglin/piglin_brute.png"),
-  ZOMBIFIED_PIGLIN(Constants.MINECRAFT_PREFIX, "textures/entity/piglin/zombified_piglin.png");
+  ZOMBIFIED_PIGLIN(Constants.MINECRAFT_PREFIX, "textures/entity/piglin/zombified_piglin.png"),
+  WARPAINT(Constants.MOD_ID, "textures/entity/piglin/piglin_warpaint.png");
 
   private final Identifier textureLocation;
 
