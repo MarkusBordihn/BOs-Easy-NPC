@@ -40,6 +40,8 @@ public record ChangePositionMessage(UUID uuid, Vec3 pos) implements NetworkMessa
   public static final StreamCodec<RegistryFriendlyByteBuf, ChangePositionMessage> STREAM_CODEC =
       StreamCodec.of((buffer, message) -> message.write(buffer), ChangePositionMessage::create);
 
+  public static final double MAXIMUM_COORDINATE = 3.0E7;
+
   public static ChangePositionMessage create(final FriendlyByteBuf buffer) {
     return new ChangePositionMessage(
         buffer.readUUID(), new Vec3(buffer.readDouble(), buffer.readDouble(), buffer.readDouble()));
@@ -75,8 +77,11 @@ public record ChangePositionMessage(UUID uuid, Vec3 pos) implements NetworkMessa
       return;
     }
 
-    if (this.pos == null) {
-      log.error("Invalid pos for {} from {}", easyNPC, serverPlayer);
+    if (this.pos == null
+        || !NetworkMessageRecord.isInRange(this.pos.x, -MAXIMUM_COORDINATE, MAXIMUM_COORDINATE)
+        || !NetworkMessageRecord.isInRange(this.pos.y, -MAXIMUM_COORDINATE, MAXIMUM_COORDINATE)
+        || !NetworkMessageRecord.isInRange(this.pos.z, -MAXIMUM_COORDINATE, MAXIMUM_COORDINATE)) {
+      log.error("Invalid pos {} for {} from {}", this.pos, easyNPC, serverPlayer);
       return;
     }
 

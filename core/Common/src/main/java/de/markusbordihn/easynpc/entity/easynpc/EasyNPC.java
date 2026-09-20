@@ -62,6 +62,10 @@ public interface EasyNPC<E extends Mob> extends EasyNPCDataAccessors<E>, Npc {
 
   Random randomNumber = new Random();
 
+  static boolean isUsableServerSideInstance(EasyNPC<?> easyNPC) {
+    return easyNPC != null && !easyNPC.isClientSideInstance();
+  }
+
   int getNPCDataVersion();
 
   void setNPCDataVersion(int version);
@@ -106,10 +110,6 @@ public interface EasyNPC<E extends Mob> extends EasyNPCDataAccessors<E>, Npc {
 
   default boolean isServerSideInstance() {
     return EasyNPCEntityAccess.isServerSide(this);
-  }
-
-  static boolean isUsableServerSideInstance(EasyNPC<?> easyNPC) {
-    return easyNPC != null && !easyNPC.isClientSideInstance();
   }
 
   default LivingEntity getLivingEntity() {

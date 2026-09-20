@@ -60,12 +60,19 @@ public record SpawnPresetMessage(
   }
 
   public static SpawnPresetMessage create(final FriendlyByteBuf buffer) {
-    PresetType presetType = buffer.readEnum(PresetType.class);
+    PresetType presetType = NetworkMessageRecord.readEnum(buffer, PresetType.class);
     ResourceLocation resourceLocation = buffer.readResourceLocation();
     boolean useOriginalData = buffer.readBoolean();
     boolean hasPresetData = buffer.readBoolean();
     CompoundTag presetData = hasPresetData ? buffer.readNbt() : null;
     return new SpawnPresetMessage(presetType, resourceLocation, useOriginalData, presetData);
+  }
+
+  private static Vec3 findSpawnPosition(ServerPlayer serverPlayer) {
+    Vec3 playerLook = serverPlayer.getLookAngle();
+    return PlacementHandler.findFreePositionNear(
+        serverPlayer.serverLevel(),
+        serverPlayer.position().add(playerLook.x * 3, 0, playerLook.z * 3));
   }
 
   @Override
@@ -134,13 +141,6 @@ public record SpawnPresetMessage(
     }
 
     PresetFeedback.sendImportResult(serverPlayer, importResult, this.resourceLocation);
-  }
-
-  private static Vec3 findSpawnPosition(ServerPlayer serverPlayer) {
-    Vec3 playerLook = serverPlayer.getLookAngle();
-    return PlacementHandler.findFreePositionNear(
-        serverPlayer.serverLevel(),
-        serverPlayer.position().add(playerLook.x * 3, 0, playerLook.z * 3));
   }
 
   private PresetImportResult importClientPresetData(

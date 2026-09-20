@@ -45,9 +45,9 @@ public record ChangeNameMessage(
   public static ChangeNameMessage create(final FriendlyByteBuf buffer) {
     return new ChangeNameMessage(
         buffer.readUUID(),
-        buffer.readUtf(),
+        buffer.readUtf(MAX_NAME_LENGTH),
         buffer.readInt(),
-        buffer.readEnum(NameVisibilityType.class));
+        NetworkMessageRecord.readEnum(buffer, NameVisibilityType.class));
   }
 
   @Override

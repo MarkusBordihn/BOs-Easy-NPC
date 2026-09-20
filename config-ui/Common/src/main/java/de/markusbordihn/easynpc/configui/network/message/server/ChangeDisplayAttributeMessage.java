@@ -63,11 +63,11 @@ public record ChangeDisplayAttributeMessage(
   public static ChangeDisplayAttributeMessage create(final FriendlyByteBuf buffer) {
     return new ChangeDisplayAttributeMessage(
         buffer.readUUID(),
-        buffer.readEnum(DisplayAttributeType.class),
-        buffer.readEnum(ValueType.class),
+        NetworkMessageRecord.readEnum(buffer, DisplayAttributeType.class),
+        NetworkMessageRecord.readEnum(buffer, ValueType.class),
         buffer.readBoolean(),
         buffer.readInt(),
-        buffer.readUtf());
+        buffer.readUtf(MAX_NAME_LENGTH));
   }
 
   @Override

@@ -44,7 +44,8 @@ public record ChangePoseMessage(UUID uuid, Pose pose) implements NetworkMessageR
       StreamCodec.of((buffer, message) -> message.write(buffer), ChangePoseMessage::create);
 
   public static ChangePoseMessage create(final FriendlyByteBuf buffer) {
-    return new ChangePoseMessage(buffer.readUUID(), buffer.readEnum(Pose.class));
+    return new ChangePoseMessage(
+        buffer.readUUID(), NetworkMessageRecord.readEnum(buffer, Pose.class));
   }
 
   @Override

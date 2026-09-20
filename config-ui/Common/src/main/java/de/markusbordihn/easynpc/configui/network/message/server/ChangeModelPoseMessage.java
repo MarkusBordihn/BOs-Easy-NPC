@@ -43,7 +43,8 @@ public record ChangeModelPoseMessage(UUID uuid, ModelPose modelPose)
       StreamCodec.of((buffer, message) -> message.write(buffer), ChangeModelPoseMessage::create);
 
   public static ChangeModelPoseMessage create(final FriendlyByteBuf buffer) {
-    return new ChangeModelPoseMessage(buffer.readUUID(), buffer.readEnum(ModelPose.class));
+    return new ChangeModelPoseMessage(
+        buffer.readUUID(), NetworkMessageRecord.readEnum(buffer, ModelPose.class));
   }
 
   @Override

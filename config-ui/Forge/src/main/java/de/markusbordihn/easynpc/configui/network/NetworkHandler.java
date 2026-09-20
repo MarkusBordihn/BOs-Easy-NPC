@@ -90,7 +90,19 @@ public class NetworkHandler implements NetworkHandlerInterface {
         .consumerNetworkThread(
             (message, context) -> {
               context.enqueueWork(
-                  () -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> message::handleClient));
+                  () -> {
+                    if (message == null) {
+                      log.warn("Received null client message, ignoring packet");
+                      return;
+                    }
+
+                    NetworkMessageRecord.guardedHandler(
+                            type.id(),
+                            () ->
+                                DistExecutor.unsafeRunWhenOn(
+                                    Dist.CLIENT, () -> message::handleClient))
+                        .run();
+                  });
               context.setPacketHandled(true);
             })
         .add();
@@ -110,7 +122,23 @@ public class NetworkHandler implements NetworkHandlerInterface {
         .decoder(creator::apply)
         .consumerNetworkThread(
             (message, context) -> {
-              context.enqueueWork(() -> message.handleServer(context.getSender()));
+              context.enqueueWork(
+                  () -> {
+                    if (message == null) {
+                      log.warn("Received null message, ignoring packet");
+                      return;
+                    }
+
+                    ServerPlayer sender = context.getSender();
+                    if (sender == null) {
+                      log.error("Unable to get valid player for network message {}", message);
+                      return;
+                    }
+
+                    NetworkMessageRecord.guardedHandler(
+                            type.id(), () -> message.handleServer(sender))
+                        .run();
+                  });
               context.setPacketHandled(true);
             })
         .add();

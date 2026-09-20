@@ -72,11 +72,11 @@ public record ChangeEntityAttributeMessage(
   public static ChangeEntityAttributeMessage create(final FriendlyByteBuf buffer) {
     return new ChangeEntityAttributeMessage(
         buffer.readUUID(),
-        buffer.readEnum(EntityAttribute.class),
+        NetworkMessageRecord.readEnum(buffer, EntityAttribute.class),
         buffer.readBoolean(),
         buffer.readFloat(),
         buffer.readInt(),
-        buffer.readUtf());
+        buffer.readUtf(MAX_NAME_LENGTH));
   }
 
   @Override

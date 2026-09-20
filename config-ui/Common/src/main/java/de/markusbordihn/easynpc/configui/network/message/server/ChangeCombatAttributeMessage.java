@@ -64,8 +64,8 @@ public record ChangeCombatAttributeMessage(
   public static ChangeCombatAttributeMessage create(final FriendlyByteBuf buffer) {
     return new ChangeCombatAttributeMessage(
         buffer.readUUID(),
-        buffer.readEnum(CombatAttributeType.class),
-        buffer.readEnum(ValueType.class),
+        NetworkMessageRecord.readEnum(buffer, CombatAttributeType.class),
+        NetworkMessageRecord.readEnum(buffer, ValueType.class),
         buffer.readBoolean(),
         buffer.readDouble(),
         buffer.readInt());

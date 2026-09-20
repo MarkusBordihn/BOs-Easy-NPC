@@ -83,11 +83,12 @@ public class NetworkHandler implements NetworkHandlerInterface {
     if (!ClientPlayNetworking.registerGlobalReceiver(
         type,
         (payload, context) -> {
-          if (payload != null) {
-            payload.handleClient();
-          } else {
+          if (payload == null) {
             log.warn("Received null client payload, ignoring packet");
+            return;
           }
+
+          NetworkMessageRecord.guardedHandler(type.id(), payload::handleClient).run();
         })) {
       log.error("Failed to register client network message handler {}:", type);
     } else {
@@ -104,11 +105,14 @@ public class NetworkHandler implements NetworkHandlerInterface {
     if (!ServerPlayNetworking.registerGlobalReceiver(
         type,
         (payload, context) -> {
-          if (payload != null) {
-            payload.handleServer(context.player());
-          } else {
+          if (payload == null) {
             log.warn("Received null server payload, ignoring packet");
+            return;
           }
+
+          NetworkMessageRecord.guardedHandler(
+                  type.id(), () -> payload.handleServer(context.player()))
+              .run();
         })) {
       log.error("Failed to register server network message handler {}:", type);
     } else {

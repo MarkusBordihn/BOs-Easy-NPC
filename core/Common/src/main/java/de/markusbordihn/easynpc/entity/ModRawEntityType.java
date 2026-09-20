@@ -71,6 +71,7 @@ public enum ModRawEntityType implements ModEntityTypeProvider {
               (EntityType<AllayRaw> type, Level level) -> new AllayRaw(type, level),
               MobCategory.MISC)
           .sized(0.35F, 0.6F)
+          .eyeHeight(0.36F)
           .clientTrackingRange(12),
       AllayRaw::createAttributes),
   BOGGED(
@@ -79,6 +80,7 @@ public enum ModRawEntityType implements ModEntityTypeProvider {
               (EntityType<BoggedRaw> type, Level level) -> new BoggedRaw(type, level),
               MobCategory.MONSTER)
           .sized(0.6F, 1.99F)
+          .eyeHeight(1.74F)
           .clientTrackingRange(12),
       BoggedRaw::createAttributes),
   CAT(
@@ -86,6 +88,7 @@ public enum ModRawEntityType implements ModEntityTypeProvider {
       EntityType.Builder.of(
               (EntityType<CatRaw> type, Level level) -> new CatRaw(type, level), MobCategory.MISC)
           .sized(0.6F, 0.7F)
+          .eyeHeight(0.35F)
           .clientTrackingRange(12),
       CatRaw::createAttributes),
   CHICKEN(
@@ -94,6 +97,7 @@ public enum ModRawEntityType implements ModEntityTypeProvider {
               (EntityType<ChickenRaw> type, Level level) -> new ChickenRaw(type, level),
               MobCategory.MISC)
           .sized(0.4F, 0.7F)
+          .eyeHeight(0.644F)
           .clientTrackingRange(12),
       ChickenRaw::createAttributes),
   CREEPER(
@@ -110,6 +114,7 @@ public enum ModRawEntityType implements ModEntityTypeProvider {
               (EntityType<DrownedRaw> type, Level level) -> new DrownedRaw(type, level),
               MobCategory.MONSTER)
           .sized(0.6F, 1.95F)
+          .eyeHeight(1.74F)
           .clientTrackingRange(12),
       DrownedRaw::createAttributes),
   FOX(
@@ -117,6 +122,7 @@ public enum ModRawEntityType implements ModEntityTypeProvider {
       EntityType.Builder.of(
               (EntityType<FoxRaw> type, Level level) -> new FoxRaw(type, level), MobCategory.MISC)
           .sized(0.6F, 0.7F)
+          .eyeHeight(0.4F)
           .clientTrackingRange(12),
       FoxRaw::createAttributes),
   GHAST(
@@ -125,6 +131,7 @@ public enum ModRawEntityType implements ModEntityTypeProvider {
               (EntityType<GhastRaw> type, Level level) -> new GhastRaw(type, level),
               MobCategory.MISC)
           .sized(4.0F, 4.0F)
+          .eyeHeight(2.6F)
           .fireImmune()
           .clientTrackingRange(12),
       GhastRaw::createAttributes),
@@ -134,6 +141,7 @@ public enum ModRawEntityType implements ModEntityTypeProvider {
               (EntityType<HorseRaw> type, Level level) -> new HorseRaw(type, level),
               MobCategory.MISC)
           .sized(1.4F, 1.6F)
+          .eyeHeight(1.52F)
           .clientTrackingRange(12),
       HorseRaw::createBaseHorseAttributes),
   ILLUSIONER(
@@ -158,6 +166,7 @@ public enum ModRawEntityType implements ModEntityTypeProvider {
               (EntityType<EnderManRaw> type, Level level) -> new EnderManRaw(type, level),
               MobCategory.MONSTER)
           .sized(0.6F, 2.9F)
+          .eyeHeight(2.55F)
           .clientTrackingRange(12),
       EnderManRaw::createAttributes),
   PIGLIN(
@@ -166,6 +175,7 @@ public enum ModRawEntityType implements ModEntityTypeProvider {
               (EntityType<PiglinRaw> type, Level level) -> new PiglinRaw(type, level),
               MobCategory.MONSTER)
           .sized(0.6F, 1.95F)
+          .eyeHeight(1.79F)
           .clientTrackingRange(12),
       PiglinRaw::createAttributes),
   PIGLIN_BRUTE(
@@ -174,6 +184,7 @@ public enum ModRawEntityType implements ModEntityTypeProvider {
               (EntityType<PiglinBruteRaw> type, Level level) -> new PiglinBruteRaw(type, level),
               MobCategory.MONSTER)
           .sized(0.6F, 1.95F)
+          .eyeHeight(1.79F)
           .clientTrackingRange(12),
       PiglinBruteRaw::createAttributes),
   ZOMBIFIED_PIGLIN(
@@ -183,6 +194,7 @@ public enum ModRawEntityType implements ModEntityTypeProvider {
                   new ZombifiedPiglinRaw(type, level),
               MobCategory.MONSTER)
           .sized(0.6F, 1.95F)
+          .eyeHeight(1.79F)
           .clientTrackingRange(12),
       ZombifiedPiglinRaw::createAttributes),
   EVOKER(
@@ -213,7 +225,8 @@ public enum ModRawEntityType implements ModEntityTypeProvider {
       EntityType.Builder.of(
               (EntityType<SkeletonRaw> type, Level level) -> new SkeletonRaw(type, level),
               MobCategory.MONSTER)
-          .sized(0.6F, 1.95F)
+          .sized(0.6F, 1.99F)
+          .eyeHeight(1.74F)
           .clientTrackingRange(12),
       SkeletonRaw::createAttributes),
   STRAY(
@@ -221,7 +234,8 @@ public enum ModRawEntityType implements ModEntityTypeProvider {
       EntityType.Builder.of(
               (EntityType<StrayRaw> type, Level level) -> new StrayRaw(type, level),
               MobCategory.MONSTER)
-          .sized(0.6F, 1.95F)
+          .sized(0.6F, 1.99F)
+          .eyeHeight(1.74F)
           .clientTrackingRange(12),
       StrayRaw::createAttributes),
   WITHER_SKELETON(
@@ -231,6 +245,7 @@ public enum ModRawEntityType implements ModEntityTypeProvider {
                   new WitherSkeletonRaw(type, level),
               MobCategory.MONSTER)
           .sized(0.7F, 2.4F)
+          .eyeHeight(2.1F)
           .clientTrackingRange(12),
       WitherSkeletonRaw::createAttributes),
   SPIDER(
@@ -239,6 +254,7 @@ public enum ModRawEntityType implements ModEntityTypeProvider {
               (EntityType<SpiderRaw> type, Level level) -> new SpiderRaw(type, level),
               MobCategory.MONSTER)
           .sized(1.4F, 0.9F)
+          .eyeHeight(0.65F)
           .clientTrackingRange(12),
       SpiderRaw::createAttributes),
   SLIME(
@@ -247,6 +263,7 @@ public enum ModRawEntityType implements ModEntityTypeProvider {
               (EntityType<SlimeRaw> type, Level level) -> new SlimeRaw(type, level),
               MobCategory.MISC)
           .sized(0.52F, 0.52F)
+          .eyeHeight(0.325F)
           .clientTrackingRange(12),
       SlimeRaw::createAttributes),
   VEX(
@@ -254,6 +271,7 @@ public enum ModRawEntityType implements ModEntityTypeProvider {
       EntityType.Builder.of(
               (EntityType<VexRaw> type, Level level) -> new VexRaw(type, level), MobCategory.MISC)
           .sized(0.4F, 0.8F)
+          .eyeHeight(0.51875F)
           .clientTrackingRange(12),
       VexRaw::createAttributes),
   VILLAGER(
@@ -262,6 +280,7 @@ public enum ModRawEntityType implements ModEntityTypeProvider {
               (EntityType<VillagerRaw> type, Level level) -> new VillagerRaw(type, level),
               MobCategory.MISC)
           .sized(0.6F, 1.95F)
+          .eyeHeight(1.62F)
           .clientTrackingRange(12),
       VillagerRaw::createAttributes),
   WANDERING_TRADER(
@@ -271,6 +290,7 @@ public enum ModRawEntityType implements ModEntityTypeProvider {
                   new WanderingTraderRaw(type, level),
               MobCategory.MISC)
           .sized(0.6F, 1.95F)
+          .eyeHeight(1.62F)
           .clientTrackingRange(12),
       Villager::createAttributes),
   VINDICATOR(
@@ -287,6 +307,7 @@ public enum ModRawEntityType implements ModEntityTypeProvider {
               (EntityType<WitchRaw> type, Level level) -> new WitchRaw(type, level),
               MobCategory.MONSTER)
           .sized(0.6F, 1.95F)
+          .eyeHeight(1.62F)
           .clientTrackingRange(12),
       WitchRaw::createAttributes),
   WOLF(
@@ -294,6 +315,7 @@ public enum ModRawEntityType implements ModEntityTypeProvider {
       EntityType.Builder.of(
               (EntityType<WolfRaw> type, Level level) -> new WolfRaw(type, level), MobCategory.MISC)
           .sized(0.6F, 0.85F)
+          .eyeHeight(0.68F)
           .clientTrackingRange(12),
       WolfRaw::createAttributes),
   ZOMBIE(
@@ -302,6 +324,7 @@ public enum ModRawEntityType implements ModEntityTypeProvider {
               (EntityType<ZombieRaw> type, Level level) -> new ZombieRaw(type, level),
               MobCategory.MONSTER)
           .sized(0.6F, 1.95F)
+          .eyeHeight(1.74F)
           .clientTrackingRange(12),
       ZombieRaw::createAttributes),
   HUSK(
@@ -310,6 +333,7 @@ public enum ModRawEntityType implements ModEntityTypeProvider {
               (EntityType<HuskRaw> type, Level level) -> new HuskRaw(type, level),
               MobCategory.MONSTER)
           .sized(0.6F, 1.95F)
+          .eyeHeight(1.74F)
           .clientTrackingRange(12),
       HuskRaw::createAttributes),
   ZOMBIE_VILLAGER(
@@ -319,6 +343,7 @@ public enum ModRawEntityType implements ModEntityTypeProvider {
                   new ZombieVillagerRaw(type, level),
               MobCategory.MONSTER)
           .sized(0.6F, 1.95F)
+          .eyeHeight(1.74F)
           .clientTrackingRange(12),
       ZombieVillagerRaw::createAttributes);
 

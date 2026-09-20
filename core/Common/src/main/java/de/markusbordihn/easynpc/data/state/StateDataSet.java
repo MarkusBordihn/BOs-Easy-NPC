@@ -50,9 +50,8 @@ public class StateDataSet {
         @Override
         public void encode(
             RegistryFriendlyByteBuf registryFriendlyByteBuf, StateDataSet stateDataSet) {
-          registryFriendlyByteBuf.writeNbt(
-              EntityDataSerializersManager.validateAndGetNbt(
-                  stateDataSet.createTag(), "StateDataSet"));
+          EntityDataSerializersManager.writeSizeLimitedNbt(
+              registryFriendlyByteBuf, stateDataSet.createTag(), "StateDataSet");
         }
       };
 

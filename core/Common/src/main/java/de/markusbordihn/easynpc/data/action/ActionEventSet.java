@@ -40,9 +40,8 @@ public class ActionEventSet {
         @Override
         public void encode(
             RegistryFriendlyByteBuf registryFriendlyByteBuf, ActionEventSet actionEventSet) {
-          registryFriendlyByteBuf.writeNbt(
-              EntityDataSerializersManager.validateAndGetNbt(
-                  actionEventSet.createTag(), "ActionEventSet"));
+          EntityDataSerializersManager.writeSizeLimitedNbt(
+              registryFriendlyByteBuf, actionEventSet.createTag(), "ActionEventSet");
         }
       };
   private final EnumMap<ActionEventType, ActionDataSet> actionsMap =

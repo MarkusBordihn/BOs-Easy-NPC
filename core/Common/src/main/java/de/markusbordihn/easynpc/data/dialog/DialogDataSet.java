@@ -54,9 +54,8 @@ public class DialogDataSet {
         @Override
         public void encode(
             RegistryFriendlyByteBuf registryFriendlyByteBuf, DialogDataSet dialogDataSet) {
-          registryFriendlyByteBuf.writeNbt(
-              EntityDataSerializersManager.validateAndGetNbt(
-                  dialogDataSet.createTag(), "DialogDataSet"));
+          EntityDataSerializersManager.writeSizeLimitedNbt(
+              registryFriendlyByteBuf, dialogDataSet.createTag(), "DialogDataSet");
         }
       };
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);

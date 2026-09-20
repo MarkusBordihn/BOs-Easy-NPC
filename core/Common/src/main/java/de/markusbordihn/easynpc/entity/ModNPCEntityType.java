@@ -73,6 +73,7 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
       DefaultNPCType.ALLAY.getRegistryId(),
       EntityType.Builder.of(AllayNPC::new, MobCategory.MISC)
           .sized(0.35F, 0.6F)
+          .eyeHeight(0.36F)
           .clientTrackingRange(12),
       AllayNPC::createAttributes),
   BOGGED(
@@ -80,19 +81,22 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
       EntityType.Builder.of(
               (EntityType<BoggedNPC> type, Level level) -> new BoggedNPC(type, level),
               MobCategory.MONSTER)
-          .sized(0.6F, 1.95F)
+          .sized(0.6F, 1.99F)
+          .eyeHeight(1.74F)
           .clientTrackingRange(12),
       BoggedNPC::createAttributes),
   CAT(
       DefaultNPCType.CAT.getRegistryId(),
       EntityType.Builder.of(CatNPC::new, MobCategory.MISC)
           .sized(0.6F, 0.7F)
+          .eyeHeight(0.35F)
           .clientTrackingRange(12),
       CatNPC::createAttributes),
   CHICKEN(
       DefaultNPCType.CHICKEN.getRegistryId(),
       EntityType.Builder.of(ChickenNPC::new, MobCategory.MISC)
           .sized(0.4F, 0.7F)
+          .eyeHeight(0.644F)
           .clientTrackingRange(12),
       ChickenNPC::createAttributes),
   CREEPER(
@@ -105,12 +109,14 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
       DefaultNPCType.DROWNED.getRegistryId(),
       EntityType.Builder.of(DrownedNPC::new, MobCategory.MONSTER)
           .sized(0.6F, 1.95F)
+          .eyeHeight(1.74F)
           .clientTrackingRange(12),
       DrownedNPC::createAttributes),
   ENDERMAN(
       DefaultNPCType.ENDERMAN.getRegistryId(),
       EntityType.Builder.of(EnderManNPC::new, MobCategory.MONSTER)
           .sized(0.6F, 2.9F)
+          .eyeHeight(2.55F)
           .clientTrackingRange(12),
       EnderManNPC::createAttributes),
   EVOKER(
@@ -123,30 +129,35 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
       DefaultNPCType.FOX.getRegistryId(),
       EntityType.Builder.of(FoxNPC::new, MobCategory.MISC)
           .sized(0.6F, 0.7F)
+          .eyeHeight(0.4F)
           .clientTrackingRange(12),
       FoxNPC::createAttributes),
   GHAST(
       DefaultNPCType.GHAST.getRegistryId(),
       EntityType.Builder.of(GhastNPC::new, MobCategory.MONSTER)
           .sized(4.0F, 4.0F)
+          .eyeHeight(2.6F)
           .clientTrackingRange(12),
       GhastNPC::createAttributes),
   HORSE(
       DefaultNPCType.HORSE.getRegistryId(),
       EntityType.Builder.of(HorseNPC::new, MobCategory.MISC)
           .sized(1.4F, 1.6F)
+          .eyeHeight(1.52F)
           .clientTrackingRange(12),
       HorseNPC::createBaseHorseAttributes),
   HORSE_SKELETON(
       DefaultNPCType.SKELETON_HORSE.getRegistryId(),
       EntityType.Builder.of(SkeletonHorseNPC::new, MobCategory.MONSTER)
           .sized(1.4F, 1.6F)
+          .eyeHeight(1.52F)
           .clientTrackingRange(12),
       HorseNPC::createBaseHorseAttributes),
   HORSE_ZOMBIE(
       DefaultNPCType.ZOMBIE_HORSE.getRegistryId(),
       EntityType.Builder.of(ZombieHorseNPC::new, MobCategory.MONSTER)
           .sized(1.4F, 1.6F)
+          .eyeHeight(1.52F)
           .clientTrackingRange(12),
       HorseNPC::createBaseHorseAttributes),
   HUMANOID(
@@ -177,18 +188,21 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
       DefaultNPCType.PIGLIN.getRegistryId(),
       EntityType.Builder.of(PiglinNPC::new, MobCategory.MONSTER)
           .sized(0.6F, 1.95F)
+          .eyeHeight(1.79F)
           .clientTrackingRange(12),
       PiglinNPC::createAttributes),
   PIGLIN_BRUTE(
       DefaultNPCType.PIGLIN_BRUTE.getRegistryId(),
       EntityType.Builder.of(PiglinBruteNPC::new, MobCategory.MONSTER)
           .sized(0.6F, 1.95F)
+          .eyeHeight(1.79F)
           .clientTrackingRange(12),
       PiglinBruteNPC::createAttributes),
   PIGLIN_ZOMBIFIED(
       DefaultNPCType.ZOMBIFIED_PIGLIN.getRegistryId(),
       EntityType.Builder.of(ZombifiedPiglinNPC::new, MobCategory.MONSTER)
           .sized(0.6F, 1.95F)
+          .eyeHeight(1.79F)
           .clientTrackingRange(12),
       ZombifiedPiglinNPC::createAttributes),
   PIG(
@@ -206,19 +220,22 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
   SKELETON(
       DefaultNPCType.SKELETON.getRegistryId(),
       EntityType.Builder.of(SkeletonNPC::new, MobCategory.MONSTER)
-          .sized(0.6F, 1.95F)
+          .sized(0.6F, 1.99F)
+          .eyeHeight(1.74F)
           .clientTrackingRange(12),
       SkeletonNPC::createAttributes),
   STRAY(
       DefaultNPCType.STRAY.getRegistryId(),
       EntityType.Builder.of(StrayNPC::new, MobCategory.MONSTER)
-          .sized(0.6F, 1.95F)
+          .sized(0.6F, 1.99F)
+          .eyeHeight(1.74F)
           .clientTrackingRange(12),
       StrayNPC::createAttributes),
   WITHER_SKELETON(
       DefaultNPCType.WITHER_SKELETON.getRegistryId(),
       EntityType.Builder.of(WitherSkeletonNPC::new, MobCategory.MONSTER)
           .sized(0.7F, 2.4F)
+          .eyeHeight(2.1F)
           .clientTrackingRange(12),
       WitherSkeletonNPC::createAttributes),
   SLIME(
@@ -227,36 +244,42 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
               (EntityType<SlimeNPC> type, Level level) -> new SlimeNPC(type, level),
               MobCategory.MONSTER)
           .sized(0.52F, 0.52F)
+          .eyeHeight(0.325F)
           .clientTrackingRange(12),
       SlimeNPC::createAttributes),
   SPIDER(
       DefaultNPCType.SPIDER.getRegistryId(),
       EntityType.Builder.of(SpiderNPC::new, MobCategory.MONSTER)
           .sized(1.4F, 0.9F)
+          .eyeHeight(0.65F)
           .clientTrackingRange(12),
       SpiderNPC::createAttributes),
   CAVE_SPIDER(
       DefaultNPCType.CAVE_SPIDER.getRegistryId(),
       EntityType.Builder.of(CaveSpiderNPC::new, MobCategory.MONSTER)
           .sized(0.7F, 0.5F)
+          .eyeHeight(0.45F)
           .clientTrackingRange(12),
       SpiderNPC::createAttributes),
   VILLAGER(
       DefaultNPCType.VILLAGER.getRegistryId(),
       EntityType.Builder.of(VillagerNPC::new, MobCategory.MISC)
           .sized(0.6F, 1.95F)
+          .eyeHeight(1.62F)
           .clientTrackingRange(12),
       VillagerNPC::createAttributes),
   WANDERING_TRADER(
       DefaultNPCType.WANDERING_TRADER.getRegistryId(),
       EntityType.Builder.of(WanderingTraderNPC::new, MobCategory.MISC)
           .sized(0.6F, 1.95F)
+          .eyeHeight(1.62F)
           .clientTrackingRange(12),
       WanderingTraderNPC::createAttributes),
   VEX(
       DefaultNPCType.VEX.getRegistryId(),
       EntityType.Builder.of(VexNPC::new, MobCategory.MONSTER)
           .sized(0.4F, 0.8F)
+          .eyeHeight(0.51875F)
           .clientTrackingRange(12),
       VexNPC::createAttributes),
   VINDICATOR(
@@ -269,30 +292,35 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
       DefaultNPCType.WITCH.getRegistryId(),
       EntityType.Builder.of(WitchNPC::new, MobCategory.MONSTER)
           .sized(0.6F, 1.95F)
+          .eyeHeight(1.62F)
           .clientTrackingRange(12),
       WitchNPC::createAttributes),
   WOLF(
       DefaultNPCType.WOLF.getRegistryId(),
       EntityType.Builder.of(WolfNPC::new, MobCategory.MISC)
           .sized(0.6F, 0.85F)
+          .eyeHeight(0.68F)
           .clientTrackingRange(12),
       WolfNPC::createAttributes),
   ZOMBIE(
       DefaultNPCType.ZOMBIE.getRegistryId(),
       EntityType.Builder.of(ZombieNPC::new, MobCategory.MONSTER)
           .sized(0.6F, 1.95F)
+          .eyeHeight(1.74F)
           .clientTrackingRange(12),
       ZombieNPC::createAttributes),
   ZOMBIE_HUSK(
       DefaultNPCType.HUSK.getRegistryId(),
       EntityType.Builder.of(HuskNPC::new, MobCategory.MONSTER)
           .sized(0.6F, 1.95F)
+          .eyeHeight(1.74F)
           .clientTrackingRange(12),
       HuskNPC::createAttributes),
   ZOMBIE_VILLAGER(
       DefaultNPCType.ZOMBIE_VILLAGER.getRegistryId(),
       EntityType.Builder.of(ZombieVillagerNPC::new, MobCategory.MONSTER)
           .sized(0.6F, 1.95F)
+          .eyeHeight(1.74F)
           .clientTrackingRange(12),
       ZombieVillagerNPC::createAttributes);
 

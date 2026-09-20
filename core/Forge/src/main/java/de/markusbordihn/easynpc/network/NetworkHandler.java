@@ -96,7 +96,13 @@ public class NetworkHandler implements NetworkHandlerInterface {
                       log.warn("Received null client message, ignoring packet");
                       return;
                     }
-                    DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> message::handleClient);
+
+                    NetworkMessageRecord.guardedHandler(
+                            type.id(),
+                            () ->
+                                DistExecutor.unsafeRunWhenOn(
+                                    Dist.CLIENT, () -> message::handleClient))
+                        .run();
                   });
               context.setPacketHandled(true);
             })
@@ -123,12 +129,16 @@ public class NetworkHandler implements NetworkHandlerInterface {
                       log.warn("Received null message, ignoring packet");
                       return;
                     }
+
                     ServerPlayer sender = context.getSender();
-                    if (sender instanceof ServerPlayer) {
-                      message.handleServer(sender);
-                    } else {
+                    if (sender == null) {
                       log.error("Unable to get valid player for network message {}", message);
+                      return;
                     }
+
+                    NetworkMessageRecord.guardedHandler(
+                            type.id(), () -> message.handleServer(sender))
+                        .run();
                   });
               context.setPacketHandled(true);
             })

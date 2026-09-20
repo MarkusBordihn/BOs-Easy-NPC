@@ -176,7 +176,9 @@ class PresetFileHandlerTest {
         secondLoad.getCompound("data").getUUID("PresetUUID"));
     assertEquals(
         firstLoad.getCompound("data").getUUID("PresetUUID"),
-        NbtIo.readCompressed(nbtFile.toPath(), NbtAccounter.unlimitedHeap()).getCompound("data").getUUID("PresetUUID"));
+        NbtIo.readCompressed(nbtFile.toPath(), NbtAccounter.unlimitedHeap())
+            .getCompound("data")
+            .getUUID("PresetUUID"));
   }
 
   @Test
@@ -201,7 +203,9 @@ class PresetFileHandlerTest {
     CompoundTag loaded = PresetFileHandler.loadWithStablePresetUUID(nbtFile);
 
     assertTrue(loaded.hasUUID("PresetUUID"));
-    assertEquals(loaded.getUUID("PresetUUID"), NbtIo.readCompressed(nbtFile.toPath(), NbtAccounter.unlimitedHeap()).getUUID("PresetUUID"));
+    assertEquals(
+        loaded.getUUID("PresetUUID"),
+        NbtIo.readCompressed(nbtFile.toPath(), NbtAccounter.unlimitedHeap()).getUUID("PresetUUID"));
   }
 
   @Test

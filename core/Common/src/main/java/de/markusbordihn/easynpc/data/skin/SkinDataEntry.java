@@ -50,9 +50,8 @@ public record SkinDataEntry(
         @Override
         public void encode(
             RegistryFriendlyByteBuf registryFriendlyByteBuf, SkinDataEntry skinDataEntry) {
-          registryFriendlyByteBuf.writeNbt(
-              EntityDataSerializersManager.validateAndGetNbt(
-                  skinDataEntry.createTag(), "SkinDataEntry"));
+          EntityDataSerializersManager.writeSizeLimitedNbt(
+              registryFriendlyByteBuf, skinDataEntry.createTag(), "SkinDataEntry");
         }
       };
   static final String DATA_NAME_TAG = "Name";

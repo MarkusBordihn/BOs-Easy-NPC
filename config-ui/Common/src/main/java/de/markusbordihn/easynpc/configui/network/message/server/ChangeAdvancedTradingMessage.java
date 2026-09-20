@@ -50,7 +50,7 @@ public record ChangeAdvancedTradingMessage(
     return new ChangeAdvancedTradingMessage(
         buffer.readUUID(),
         buffer.readInt(),
-        buffer.readEnum(TradingValueType.class),
+        NetworkMessageRecord.readEnum(buffer, TradingValueType.class),
         buffer.readFloat());
   }
 

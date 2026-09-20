@@ -42,7 +42,7 @@ public record RemoveFactionEntryMessage(UUID uuid, String factionName)
       StreamCodec.of((buffer, message) -> message.write(buffer), RemoveFactionEntryMessage::create);
 
   public static RemoveFactionEntryMessage create(final FriendlyByteBuf buffer) {
-    return new RemoveFactionEntryMessage(buffer.readUUID(), buffer.readUtf());
+    return new RemoveFactionEntryMessage(buffer.readUUID(), buffer.readUtf(MAX_NAME_LENGTH));
   }
 
   @Override
