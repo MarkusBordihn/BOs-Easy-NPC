@@ -45,7 +45,9 @@ public record ExportCustomPresetServerMessage(UUID uuid, String name, PresetMeta
 
   public static ExportCustomPresetServerMessage create(final FriendlyByteBuf buffer) {
     return new ExportCustomPresetServerMessage(
-        buffer.readUUID(), buffer.readUtf(), PresetMetadata.fromCompoundTag(buffer.readNbt()));
+        buffer.readUUID(),
+        buffer.readUtf(MAX_NAME_LENGTH),
+        PresetMetadata.fromCompoundTag(buffer.readNbt()));
   }
 
   @Override

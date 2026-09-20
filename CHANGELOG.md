@@ -11,10 +11,10 @@ Check the [upgrade guide][upgrade_guide] for more information.
 ### 7.12.2
 
 - Fixed the Fairy hitbox being far too small, so its name tag and speech bubble sat in its body.
+- Fixed scaled NPCs keeping their old hitbox and eye level, so hits, clicks and looking missed.
 - Fixed malformed network packets disconnecting players instead of being ignored.
-- Fixed invalid NPC positions, scales and attributes from being applied.
+- Fixed invalid NPC positions, scales, attributes, names and durations from being applied.
 - Changed Fairy NPCs to take up the space of their model, so they collide and can be clicked.
-- Changed oversized names and durations to be rejected instead of stored.
 - Changed the network protocol version, so client and server must run the same mod version.
 
 ### 7.12.1

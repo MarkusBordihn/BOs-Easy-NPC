@@ -51,7 +51,6 @@ public interface ModelRootDataCapable<T extends Mob> extends EasyNPC<T> {
   default void setModelRootScale(CustomScale scale) {
     RootModelData current = getModelRootData();
     setModelRootData(new RootModelData(current.rotation(), scale));
-    this.getEntity().refreshDimensions();
   }
 
   default boolean hasChangedModelRoot() {

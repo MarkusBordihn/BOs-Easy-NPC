@@ -28,11 +28,9 @@ import de.markusbordihn.easynpc.data.skin.variant.FairySkinVariant;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.sound.SoundType;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;
-import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.Parrot.Variant;
@@ -118,11 +116,6 @@ public class Fairy extends PathfinderMobRaw {
   @Override
   public int getEntityDialogScaling() {
     return 75;
-  }
-
-  @Override
-  protected float getStandingEyeHeight(Pose pose, EntityDimensions dimensions) {
-    return dimensions.height * 0.85F;
   }
 
   @Override

@@ -54,6 +54,7 @@ import java.util.UUID;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.server.level.ServerLevel;
@@ -237,7 +238,6 @@ public class NPCRawTemplate extends Zombie implements EasyNPCBase<Zombie> {
   private final EnumMap<StatusDataType, Long> statusDataTimestampMap =
       new EnumMap<>(StatusDataType.class);
   protected MerchantOffers merchantTradingOffers;
-  private boolean clientDimensionsRefreshed = false;
   private ServerEntityData serverEntityData;
   private int attackAnimationTick;
   private int npcDataVersion = -1;
@@ -340,12 +340,6 @@ public class NPCRawTemplate extends Zombie implements EasyNPCBase<Zombie> {
       this.updateSwingTime();
       if (this.attackAnimationTick > 0) {
         --this.attackAnimationTick;
-      }
-
-      // Refresh client dimensions on second tick to ensure model data is synced.
-      if (!this.clientDimensionsRefreshed && this.tickCount > 1) {
-        this.refreshDimensions();
-        this.clientDimensionsRefreshed = true;
       }
     } else {
       this.updatePersistentAnger((ServerLevel) this.level(), true);
@@ -788,6 +782,23 @@ public class NPCRawTemplate extends Zombie implements EasyNPCBase<Zombie> {
   }
 
   @Override
+  public void onSyncedDataUpdated(EntityDataAccessor<?> entityDataAccessor) {
+    super.onSyncedDataUpdated(entityDataAccessor);
+
+    if (entityDataAccessor.equals(entityDataAccessorMap.get(SynchedDataIndex.MODEL_ROOT_DATA))) {
+      this.refreshDimensions();
+    }
+  }
+
+  @Override
+  public void recreateFromPacket(ClientboundAddEntityPacket addEntityPacket) {
+    super.recreateFromPacket(addEntityPacket);
+
+    // Entity(EntityType, Level) caches EntityType.getDimensions without calling getDimensions.
+    this.refreshDimensions();
+  }
+
+  @Override
   public void addAdditionalSaveData(CompoundTag compoundTag) {
     super.addAdditionalSaveData(compoundTag);
     this.addPersistentAngerSaveData(compoundTag);
@@ -799,6 +810,23 @@ public class NPCRawTemplate extends Zombie implements EasyNPCBase<Zombie> {
     super.readAdditionalSaveData(compoundTag);
     this.readPersistentAngerSaveData(this.level(), compoundTag);
     this.readEasyNPCBaseAdditionalSaveData(compoundTag);
+  }
+
+  @Override
+  public void load(CompoundTag compoundTag) {
+    super.load(compoundTag);
+
+    // Runs while Entity#firstTick is true, so Entity.refreshDimensions skips its block push-out.
+    this.refreshDimensions();
+  }
+
+  @Override
+  protected float getStandingEyeHeight(Pose pose, EntityDimensions dimensions) {
+    // Ghast.getStandingEyeHeight and siblings return a constant that ignores the dimensions.
+    EntityDimensions unscaledDimensions = super.getDimensions(pose);
+    float scaleFactor = dimensions.height / unscaledDimensions.height;
+
+    return super.getStandingEyeHeight(pose, unscaledDimensions) * scaleFactor;
   }
 
   @Override

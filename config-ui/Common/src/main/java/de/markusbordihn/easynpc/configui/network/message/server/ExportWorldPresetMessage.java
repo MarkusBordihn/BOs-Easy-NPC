@@ -45,7 +45,9 @@ public record ExportWorldPresetMessage(UUID uuid, String name, PresetMetadata me
 
   public static ExportWorldPresetMessage create(final FriendlyByteBuf buffer) {
     return new ExportWorldPresetMessage(
-        buffer.readUUID(), buffer.readUtf(), PresetMetadata.fromCompoundTag(buffer.readNbt()));
+        buffer.readUUID(),
+        buffer.readUtf(MAX_NAME_LENGTH),
+        PresetMetadata.fromCompoundTag(buffer.readNbt()));
   }
 
   @Override

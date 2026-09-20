@@ -26,6 +26,7 @@ import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.menu.dialog.DialogMenu;
 import io.netty.buffer.Unpooled;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
 import java.util.function.Function;
@@ -79,6 +80,16 @@ public interface NetworkMessageRecord {
     }
 
     return constants[ordinal];
+  }
+
+  // FriendlyByteBuf.readOptional wraps the value with Optional.of, which rejects a failed read.
+  static <E extends Enum<E>> Optional<E> readOptionalEnum(
+      final FriendlyByteBuf buffer, final Class<E> enumClass) {
+    if (!buffer.readBoolean()) {
+      return Optional.empty();
+    }
+
+    return Optional.ofNullable(readEnum(buffer, enumClass));
   }
 
   static boolean isInRange(final double value, final double min, final double max) {

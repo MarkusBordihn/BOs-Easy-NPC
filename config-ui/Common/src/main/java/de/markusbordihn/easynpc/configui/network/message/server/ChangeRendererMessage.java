@@ -44,7 +44,7 @@ public record ChangeRendererMessage(
   public static ChangeRendererMessage create(final FriendlyByteBuf buffer) {
     return new ChangeRendererMessage(
         buffer.readUUID(),
-        buffer.readOptional(buf -> NetworkMessageRecord.readEnum(buf, RenderType.class)),
+        NetworkMessageRecord.readOptionalEnum(buffer, RenderType.class),
         EntityType.byString(buffer.readUtf(MAX_NAME_LENGTH)),
         Optional.of(buffer.readUtf(MAX_NAME_LENGTH)).filter(modelName -> !modelName.isEmpty()));
   }
