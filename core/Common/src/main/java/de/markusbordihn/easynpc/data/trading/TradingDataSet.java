@@ -53,9 +53,8 @@ public class TradingDataSet {
         @Override
         public void encode(
             RegistryFriendlyByteBuf registryFriendlyByteBuf, TradingDataSet tradingDataSet) {
-          registryFriendlyByteBuf.writeNbt(
-              EntityDataSerializersManager.validateAndGetNbt(
-                  tradingDataSet.createTag(), "TradingDataSet"));
+          EntityDataSerializersManager.writeSizeLimitedNbt(
+              registryFriendlyByteBuf, tradingDataSet.createTag(), "TradingDataSet");
         }
       };
   private final HashMap<Integer, ActionDataSet> offerActions = new HashMap<>();

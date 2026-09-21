@@ -48,9 +48,8 @@ public class PendingActionSet {
         @Override
         public void encode(
             RegistryFriendlyByteBuf registryFriendlyByteBuf, PendingActionSet pendingActionSet) {
-          registryFriendlyByteBuf.writeNbt(
-              EntityDataSerializersManager.validateAndGetNbt(
-                  pendingActionSet.createTag(), "PendingActionSet"));
+          EntityDataSerializersManager.writeSizeLimitedNbt(
+              registryFriendlyByteBuf, pendingActionSet.createTag(), "PendingActionSet");
         }
       };
 

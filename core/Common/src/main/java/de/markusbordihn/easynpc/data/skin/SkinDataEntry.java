@@ -51,9 +51,8 @@ public record SkinDataEntry(
         @Override
         public void encode(
             RegistryFriendlyByteBuf registryFriendlyByteBuf, SkinDataEntry skinDataEntry) {
-          registryFriendlyByteBuf.writeNbt(
-              EntityDataSerializersManager.validateAndGetNbt(
-                  skinDataEntry.createTag(), "SkinDataEntry"));
+          EntityDataSerializersManager.writeSizeLimitedNbt(
+              registryFriendlyByteBuf, skinDataEntry.createTag(), "SkinDataEntry");
         }
       };
   public static final String DATA_TIMESTAMP_TAG = "Timestamp";

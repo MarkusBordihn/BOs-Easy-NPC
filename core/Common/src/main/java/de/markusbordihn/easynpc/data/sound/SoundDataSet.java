@@ -48,9 +48,8 @@ public class SoundDataSet {
         @Override
         public void encode(
             RegistryFriendlyByteBuf registryFriendlyByteBuf, SoundDataSet soundDataSet) {
-          registryFriendlyByteBuf.writeNbt(
-              EntityDataSerializersManager.validateAndGetNbt(
-                  soundDataSet.createTag(), "SoundDataSet"));
+          EntityDataSerializersManager.writeSizeLimitedNbt(
+              registryFriendlyByteBuf, soundDataSet.createTag(), "SoundDataSet");
         }
       };
 

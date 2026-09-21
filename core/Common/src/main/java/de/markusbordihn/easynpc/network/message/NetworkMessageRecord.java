@@ -26,8 +26,10 @@ import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.menu.dialog.DialogMenu;
 import io.netty.buffer.Unpooled;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
+import java.util.function.Function;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -43,6 +45,57 @@ public interface NetworkMessageRecord extends CustomPacketPayload {
   UUID EMPTY_UUID = new UUID(0L, 0L);
 
   Random RANDOM = new Random();
+
+  int MAX_NAME_LENGTH = 256;
+
+  static <M extends NetworkMessageRecord> Function<FriendlyByteBuf, M> guardedDecoder(
+      final Identifier messageID, final Function<FriendlyByteBuf, M> creator) {
+    return buffer -> {
+      try {
+        return creator.apply(buffer);
+      } catch (Exception exception) {
+        // Netty thread, client-triggerable at will: a stacktrace per packet would flood the log.
+        log.error("Dropped malformed network message {}: {}", messageID, exception.toString());
+        return null;
+      }
+    };
+  }
+
+  static Runnable guardedHandler(final Identifier messageID, final Runnable handler) {
+    return () -> {
+      try {
+        handler.run();
+      } catch (Exception exception) {
+        log.error("Failed to handle network message {}", messageID, exception);
+      }
+    };
+  }
+
+  // FriendlyByteBuf.writeEnum sends Enum#ordinal as a VarInt and readEnum indexes it unchecked.
+  static <E extends Enum<E>> E readEnum(final FriendlyByteBuf buffer, final Class<E> enumClass) {
+    int ordinal = buffer.readVarInt();
+    E[] constants = enumClass.getEnumConstants();
+    if (ordinal < 0 || ordinal >= constants.length) {
+      log.error("Received out of range ordinal {} for {}", ordinal, enumClass.getSimpleName());
+      return null;
+    }
+
+    return constants[ordinal];
+  }
+
+  // FriendlyByteBuf.readOptional wraps the value with Optional.of, which rejects a failed read.
+  static <E extends Enum<E>> Optional<E> readOptionalEnum(
+      final FriendlyByteBuf buffer, final Class<E> enumClass) {
+    if (!buffer.readBoolean()) {
+      return Optional.empty();
+    }
+
+    return Optional.ofNullable(readEnum(buffer, enumClass));
+  }
+
+  static boolean isInRange(final double value, final double min, final double max) {
+    return Double.isFinite(value) && value >= min && value <= max;
+  }
 
   static boolean checkAccess(final UUID uuid, final ServerPlayer serverPlayer) {
     if (uuid == null || uuid.equals(EMPTY_UUID)) {

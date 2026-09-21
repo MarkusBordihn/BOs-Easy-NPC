@@ -74,7 +74,8 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
       EntityType.Builder.of(
               (EntityType<AllayNPC> type, Level level) -> new AllayNPC(type, level),
               MobCategory.MISC)
-          .sized(0.5F, 0.5F)
+          .sized(0.35F, 0.6F)
+          .eyeHeight(0.36F)
           .clientTrackingRange(12),
       AllayNPC::createAttributes),
   BOGGED(
@@ -82,7 +83,8 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
       EntityType.Builder.of(
               (EntityType<BoggedNPC> type, Level level) -> new BoggedNPC(type, level),
               MobCategory.MONSTER)
-          .sized(0.6F, 1.95F)
+          .sized(0.6F, 1.99F)
+          .eyeHeight(1.74F)
           .clientTrackingRange(12),
       BoggedNPC::createAttributes),
   CAT(
@@ -90,6 +92,7 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
       EntityType.Builder.of(
               (EntityType<CatNPC> type, Level level) -> new CatNPC(type, level), MobCategory.MISC)
           .sized(0.6F, 0.7F)
+          .eyeHeight(0.35F)
           .clientTrackingRange(12),
       CatNPC::createAttributes),
   CHICKEN(
@@ -98,6 +101,7 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
               (EntityType<ChickenNPC> type, Level level) -> new ChickenNPC(type, level),
               MobCategory.MISC)
           .sized(0.4F, 0.7F)
+          .eyeHeight(0.644F)
           .clientTrackingRange(12),
       ChickenNPC::createAttributes),
   CREEPER(
@@ -114,6 +118,7 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
               (EntityType<DrownedNPC> type, Level level) -> new DrownedNPC(type, level),
               MobCategory.MONSTER)
           .sized(0.6F, 1.95F)
+          .eyeHeight(1.74F)
           .clientTrackingRange(12),
       DrownedNPC::createAttributes),
   ENDERMAN(
@@ -122,6 +127,7 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
               (EntityType<EnderManNPC> type, Level level) -> new EnderManNPC(type, level),
               MobCategory.MONSTER)
           .sized(0.6F, 2.9F)
+          .eyeHeight(2.55F)
           .clientTrackingRange(12),
       EnderManNPC::createAttributes),
   EVOKER(
@@ -137,6 +143,7 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
       EntityType.Builder.of(
               (EntityType<FoxNPC> type, Level level) -> new FoxNPC(type, level), MobCategory.MISC)
           .sized(0.6F, 0.7F)
+          .eyeHeight(0.4F)
           .clientTrackingRange(12),
       FoxNPC::createAttributes),
   GHAST(
@@ -145,6 +152,7 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
               (EntityType<GhastNPC> type, Level level) -> new GhastNPC(type, level),
               MobCategory.MONSTER)
           .sized(4.0F, 4.0F)
+          .eyeHeight(2.6F)
           .clientTrackingRange(12),
       GhastNPC::createAttributes),
   HORSE(
@@ -153,6 +161,7 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
               (EntityType<HorseNPC> type, Level level) -> new HorseNPC(type, level),
               MobCategory.MISC)
           .sized(1.4F, 1.6F)
+          .eyeHeight(1.52F)
           .clientTrackingRange(12),
       HorseNPC::createBaseHorseAttributes),
   HORSE_SKELETON(
@@ -161,6 +170,7 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
               (EntityType<SkeletonHorseNPC> type, Level level) -> new SkeletonHorseNPC(type, level),
               MobCategory.MONSTER)
           .sized(1.4F, 1.6F)
+          .eyeHeight(1.52F)
           .clientTrackingRange(12),
       HorseNPC::createBaseHorseAttributes),
   HORSE_ZOMBIE(
@@ -169,6 +179,7 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
               (EntityType<ZombieHorseNPC> type, Level level) -> new ZombieHorseNPC(type, level),
               MobCategory.MONSTER)
           .sized(1.4F, 1.6F)
+          .eyeHeight(1.52F)
           .clientTrackingRange(12),
       HorseNPC::createBaseHorseAttributes),
   HUMANOID(
@@ -209,6 +220,7 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
               (EntityType<PiglinNPC> type, Level level) -> new PiglinNPC(type, level),
               MobCategory.MONSTER)
           .sized(0.6F, 1.95F)
+          .eyeHeight(1.79F)
           .clientTrackingRange(12),
       PiglinNPC::createAttributes),
   PIGLIN_BRUTE(
@@ -217,6 +229,7 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
               (EntityType<PiglinBruteNPC> type, Level level) -> new PiglinBruteNPC(type, level),
               MobCategory.MONSTER)
           .sized(0.6F, 1.95F)
+          .eyeHeight(1.79F)
           .clientTrackingRange(12),
       PiglinBruteNPC::createAttributes),
   PIGLIN_ZOMBIFIED(
@@ -226,6 +239,7 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
                   new ZombifiedPiglinNPC(type, level),
               MobCategory.MONSTER)
           .sized(0.6F, 1.95F)
+          .eyeHeight(1.79F)
           .clientTrackingRange(12),
       ZombifiedPiglinNPC::createAttributes),
   PIG(
@@ -248,7 +262,8 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
       EntityType.Builder.of(
               (EntityType<SkeletonNPC> type, Level level) -> new SkeletonNPC(type, level),
               MobCategory.MONSTER)
-          .sized(0.6F, 1.95F)
+          .sized(0.6F, 1.99F)
+          .eyeHeight(1.74F)
           .clientTrackingRange(12),
       SkeletonNPC::createAttributes),
   STRAY(
@@ -256,7 +271,8 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
       EntityType.Builder.of(
               (EntityType<StrayNPC> type, Level level) -> new StrayNPC(type, level),
               MobCategory.MONSTER)
-          .sized(0.6F, 1.95F)
+          .sized(0.6F, 1.99F)
+          .eyeHeight(1.74F)
           .clientTrackingRange(12),
       StrayNPC::createAttributes),
   WITHER_SKELETON(
@@ -266,6 +282,7 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
                   new WitherSkeletonNPC(type, level),
               MobCategory.MONSTER)
           .sized(0.7F, 2.4F)
+          .eyeHeight(2.1F)
           .clientTrackingRange(12),
       WitherSkeletonNPC::createAttributes),
   SLIME(
@@ -274,6 +291,7 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
               (EntityType<SlimeNPC> type, Level level) -> new SlimeNPC(type, level),
               MobCategory.MONSTER)
           .sized(0.52F, 0.52F)
+          .eyeHeight(0.325F)
           .clientTrackingRange(12),
       SlimeNPC::createAttributes),
   SPIDER(
@@ -282,6 +300,7 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
               (EntityType<SpiderNPC> type, Level level) -> new SpiderNPC(type, level),
               MobCategory.MONSTER)
           .sized(1.4F, 0.9F)
+          .eyeHeight(0.65F)
           .clientTrackingRange(12),
       SpiderNPC::createAttributes),
   CAVE_SPIDER(
@@ -290,6 +309,7 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
               (EntityType<CaveSpiderNPC> type, Level level) -> new CaveSpiderNPC(type, level),
               MobCategory.MONSTER)
           .sized(0.7F, 0.5F)
+          .eyeHeight(0.45F)
           .clientTrackingRange(12),
       SpiderNPC::createAttributes),
   VILLAGER(
@@ -298,6 +318,7 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
               (EntityType<VillagerNPC> type, Level level) -> new VillagerNPC(type, level),
               MobCategory.MISC)
           .sized(0.6F, 1.95F)
+          .eyeHeight(1.62F)
           .clientTrackingRange(12),
       VillagerNPC::createAttributes),
   WANDERING_TRADER(
@@ -307,6 +328,7 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
                   new WanderingTraderNPC(type, level),
               MobCategory.MISC)
           .sized(0.6F, 1.95F)
+          .eyeHeight(1.62F)
           .clientTrackingRange(12),
       WanderingTraderNPC::createAttributes),
   VEX(
@@ -315,6 +337,7 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
               (EntityType<VexNPC> type, Level level) -> new VexNPC(type, level),
               MobCategory.MONSTER)
           .sized(0.4F, 0.8F)
+          .eyeHeight(0.51875F)
           .clientTrackingRange(12),
       VexNPC::createAttributes),
   VINDICATOR(
@@ -331,6 +354,7 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
               (EntityType<WitchNPC> type, Level level) -> new WitchNPC(type, level),
               MobCategory.MONSTER)
           .sized(0.6F, 1.95F)
+          .eyeHeight(1.62F)
           .clientTrackingRange(12),
       WitchNPC::createAttributes),
   WOLF(
@@ -338,6 +362,7 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
       EntityType.Builder.of(
               (EntityType<WolfNPC> type, Level level) -> new WolfNPC(type, level), MobCategory.MISC)
           .sized(0.6F, 0.85F)
+          .eyeHeight(0.68F)
           .clientTrackingRange(12),
       WolfNPC::createAttributes),
   ZOMBIE(
@@ -346,6 +371,7 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
               (EntityType<ZombieNPC> type, Level level) -> new ZombieNPC(type, level),
               MobCategory.MONSTER)
           .sized(0.6F, 1.95F)
+          .eyeHeight(1.74F)
           .clientTrackingRange(12),
       ZombieNPC::createAttributes),
   ZOMBIE_HUSK(
@@ -354,6 +380,7 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
               (EntityType<HuskNPC> type, Level level) -> new HuskNPC(type, level),
               MobCategory.MONSTER)
           .sized(0.6F, 1.95F)
+          .eyeHeight(1.74F)
           .clientTrackingRange(12),
       HuskNPC::createAttributes),
   ZOMBIE_VILLAGER(
@@ -363,6 +390,7 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
                   new ZombieVillagerNPC(type, level),
               MobCategory.MONSTER)
           .sized(0.6F, 1.95F)
+          .eyeHeight(1.74F)
           .clientTrackingRange(12),
       ZombieVillagerNPC::createAttributes);
 
