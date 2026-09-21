@@ -34,14 +34,15 @@ import net.minecraft.resources.Identifier;
 public record HighlightEasyNPCMessage(List<UUID> uuids, int durationTicks)
     implements NetworkMessageRecord {
 
-  public static final int MAXIMUM_UUIDS = 256;
-
   public static final Identifier MESSAGE_ID =
       Identifier.fromNamespaceAndPath(Constants.MOD_ID, "highlight_easy_npc");
   public static final CustomPacketPayload.Type<HighlightEasyNPCMessage> PAYLOAD_TYPE =
       new Type<>(MESSAGE_ID);
   public static final StreamCodec<RegistryFriendlyByteBuf, HighlightEasyNPCMessage> STREAM_CODEC =
       StreamCodec.of((buffer, message) -> message.write(buffer), HighlightEasyNPCMessage::create);
+
+  public static final int MAXIMUM_UUIDS = 256;
+  public static final int MAXIMUM_DURATION_TICKS = 24000;
 
   public static HighlightEasyNPCMessage create(final FriendlyByteBuf buffer) {
     return new HighlightEasyNPCMessage(
@@ -69,12 +70,13 @@ public record HighlightEasyNPCMessage(List<UUID> uuids, int durationTicks)
   @Override
   public void handleClient() {
     if (this.uuids == null || this.uuids.isEmpty()) {
-      log.error("Invalid highlight request with {} NPCs", this.uuids);
+      log.error("Invalid highlight request for {} NPCs", this.uuids);
       return;
     }
 
+    int highlightDurationTicks = Math.min(this.durationTicks, MAXIMUM_DURATION_TICKS);
     for (UUID uuid : this.uuids) {
-      NPCHighlightManager.highlight(uuid, this.durationTicks);
+      NPCHighlightManager.highlight(uuid, highlightDurationTicks);
     }
   }
 }

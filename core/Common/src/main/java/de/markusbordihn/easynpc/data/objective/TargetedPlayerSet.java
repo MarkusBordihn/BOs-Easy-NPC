@@ -19,9 +19,13 @@
 
 package de.markusbordihn.easynpc.data.objective;
 
+import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
 import java.util.HashSet;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class TargetedPlayerSet {
 
@@ -31,6 +35,11 @@ public class TargetedPlayerSet {
         public HashSet<String> decode(RegistryFriendlyByteBuf registryFriendlyByteBuf) {
           int size = registryFriendlyByteBuf.readVarInt();
           HashSet<String> values = new HashSet<>();
+          if (size < 0 || size > EntityDataSerializersManager.MAX_HASH_SET_ENTRIES) {
+            log.error("Received invalid entry count {} for targeted players", size);
+            return values;
+          }
+
           for (int i = 0; i < size; i++) {
             values.add(registryFriendlyByteBuf.readUtf());
           }
@@ -46,6 +55,7 @@ public class TargetedPlayerSet {
           }
         }
       };
+  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   private TargetedPlayerSet() {}
 }

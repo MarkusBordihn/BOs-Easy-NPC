@@ -42,7 +42,7 @@ public record CreateFactionMessage(UUID uuid, String factionName) implements Net
       StreamCodec.of((buffer, message) -> message.write(buffer), CreateFactionMessage::create);
 
   public static CreateFactionMessage create(final FriendlyByteBuf buffer) {
-    return new CreateFactionMessage(buffer.readUUID(), buffer.readUtf());
+    return new CreateFactionMessage(buffer.readUUID(), buffer.readUtf(MAX_NAME_LENGTH));
   }
 
   @Override

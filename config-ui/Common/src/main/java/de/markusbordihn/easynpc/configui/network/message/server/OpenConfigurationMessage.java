@@ -45,7 +45,9 @@ public record OpenConfigurationMessage(
 
   public static OpenConfigurationMessage create(final FriendlyByteBuf buffer) {
     return new OpenConfigurationMessage(
-        buffer.readUUID(), buffer.readEnum(ConfigurationType.class), buffer.readInt());
+        buffer.readUUID(),
+        NetworkMessageRecord.readEnum(buffer, ConfigurationType.class),
+        buffer.readInt());
   }
 
   @Override

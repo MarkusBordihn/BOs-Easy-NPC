@@ -89,7 +89,14 @@ public class NetworkHandler implements NetworkHandlerInterface {
     payloadRegistrar.playToClient(
         type,
         codec,
-        (customPacketPayload, playPayloadContext) -> customPacketPayload.handleClient());
+        (customPacketPayload, playPayloadContext) -> {
+          if (customPacketPayload == null) {
+            log.warn("Received null client payload, ignoring packet");
+            return;
+          }
+
+          NetworkMessageRecord.guardedHandler(type.id(), customPacketPayload::handleClient).run();
+        });
   }
 
   @Override
@@ -103,11 +110,19 @@ public class NetworkHandler implements NetworkHandlerInterface {
         type,
         codec,
         (customPacketPayload, playPayloadContext) -> {
-          if (playPayloadContext.player() instanceof ServerPlayer serverPlayer) {
-            customPacketPayload.handleServer(serverPlayer);
-          } else {
-            log.error("Unable to get valid player for network message {}", customPacketPayload);
+          if (customPacketPayload == null) {
+            log.warn("Received null server payload, ignoring packet");
+            return;
           }
+
+          if (!(playPayloadContext.player() instanceof ServerPlayer serverPlayer)) {
+            log.error("Unable to get valid player for network message {}", customPacketPayload);
+            return;
+          }
+
+          NetworkMessageRecord.guardedHandler(
+                  type.id(), () -> customPacketPayload.handleServer(serverPlayer))
+              .run();
         });
   }
 

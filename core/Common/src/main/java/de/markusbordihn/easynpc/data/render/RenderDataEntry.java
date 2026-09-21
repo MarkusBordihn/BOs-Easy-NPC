@@ -49,9 +49,8 @@ public record RenderDataEntry(
         @Override
         public void encode(
             RegistryFriendlyByteBuf registryFriendlyByteBuf, RenderDataEntry renderDataEntry) {
-          registryFriendlyByteBuf.writeNbt(
-              EntityDataSerializersManager.validateAndGetNbt(
-                  renderDataEntry.createTag(), "RenderDataEntry"));
+          EntityDataSerializersManager.writeSizeLimitedNbt(
+              registryFriendlyByteBuf, renderDataEntry.createTag(), "RenderDataEntry");
         }
       };
   static final String DATA_RENDER_TYPE_TAG = "Type";

@@ -48,8 +48,8 @@ public record ChangeSoundMessage(
   public static ChangeSoundMessage create(final FriendlyByteBuf buffer) {
     return new ChangeSoundMessage(
         buffer.readUUID(),
-        buffer.readEnum(SoundType.class),
-        buffer.readUtf(),
+        NetworkMessageRecord.readEnum(buffer, SoundType.class),
+        buffer.readUtf(MAX_NAME_LENGTH),
         buffer.readFloat(),
         buffer.readFloat(),
         buffer.readBoolean());

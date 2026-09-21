@@ -46,9 +46,8 @@ public class ObjectiveDataSet {
         @Override
         public void encode(
             RegistryFriendlyByteBuf registryFriendlyByteBuf, ObjectiveDataSet objectiveDataSet) {
-          registryFriendlyByteBuf.writeNbt(
-              EntityDataSerializersManager.validateAndGetNbt(
-                  objectiveDataSet.createTag(), "ObjectiveDataSet"));
+          EntityDataSerializersManager.writeSizeLimitedNbt(
+              registryFriendlyByteBuf, objectiveDataSet.createTag(), "ObjectiveDataSet");
         }
       };
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);

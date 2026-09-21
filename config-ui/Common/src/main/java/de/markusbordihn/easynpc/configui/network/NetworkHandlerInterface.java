@@ -36,7 +36,7 @@ public interface NetworkHandlerInterface {
 
   Logger log = LogManager.getLogger(Constants.LOG_NAME);
   String LOG_PREFIX = "[NetworkHandler]";
-  int PROTOCOL_VERSION = 30;
+  int PROTOCOL_VERSION = 31;
 
   <M extends NetworkMessageRecord> void registerClientNetworkMessageHandler(
       final CustomPacketPayload.Type<M> type,
@@ -212,7 +212,8 @@ public interface NetworkHandlerInterface {
         return;
       }
       try {
-        registerServerNetworkMessageHandler(type, codec, networkMessage, creator);
+        registerServerNetworkMessageHandler(
+            type, codec, networkMessage, NetworkMessageRecord.guardedDecoder(type.id(), creator));
         addRegisteredServerMessage(type, networkMessage);
       } catch (Exception e) {
         log.error(
@@ -253,7 +254,8 @@ public interface NetworkHandlerInterface {
         return;
       }
       try {
-        registerClientNetworkMessageHandler(type, codec, networkMessage, creator);
+        registerClientNetworkMessageHandler(
+            type, codec, networkMessage, NetworkMessageRecord.guardedDecoder(type.id(), creator));
         addRegisteredClientMessage(type, networkMessage);
       } catch (Exception e) {
         log.error(

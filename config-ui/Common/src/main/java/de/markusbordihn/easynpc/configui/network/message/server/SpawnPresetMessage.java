@@ -60,7 +60,7 @@ public record SpawnPresetMessage(
   }
 
   public static SpawnPresetMessage create(final FriendlyByteBuf buffer) {
-    PresetType presetType = buffer.readEnum(PresetType.class);
+    PresetType presetType = NetworkMessageRecord.readEnum(buffer, PresetType.class);
     Identifier resourceLocation = buffer.readIdentifier();
     boolean useOriginalData = buffer.readBoolean();
     boolean hasPresetData = buffer.readBoolean();

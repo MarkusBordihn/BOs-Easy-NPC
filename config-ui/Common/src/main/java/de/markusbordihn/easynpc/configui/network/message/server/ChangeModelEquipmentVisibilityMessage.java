@@ -47,7 +47,9 @@ public record ChangeModelEquipmentVisibilityMessage(
 
   public static ChangeModelEquipmentVisibilityMessage create(final FriendlyByteBuf buffer) {
     return new ChangeModelEquipmentVisibilityMessage(
-        buffer.readUUID(), buffer.readEnum(EquipmentSlot.class), buffer.readBoolean());
+        buffer.readUUID(),
+        NetworkMessageRecord.readEnum(buffer, EquipmentSlot.class),
+        buffer.readBoolean());
   }
 
   @Override

@@ -52,11 +52,11 @@ public record ExportClientPresetMessage(
   public static ExportClientPresetMessage create(final FriendlyByteBuf buffer) {
     return new ExportClientPresetMessage(
         buffer.readUUID(),
-        buffer.readUtf(),
-        buffer.readEnum(SkinModel.class),
-        buffer.readUtf(),
+        buffer.readUtf(MAX_NAME_LENGTH),
+        NetworkMessageRecord.readEnum(buffer, SkinModel.class),
+        buffer.readUtf(MAX_NAME_LENGTH),
         buffer.readNbt(),
-        buffer.readEnum(PresetExportFormat.class));
+        NetworkMessageRecord.readEnum(buffer, PresetExportFormat.class));
   }
 
   @Override

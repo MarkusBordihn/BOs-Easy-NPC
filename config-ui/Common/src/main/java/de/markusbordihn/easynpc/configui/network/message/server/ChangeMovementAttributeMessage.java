@@ -68,11 +68,11 @@ public record ChangeMovementAttributeMessage(
   public static ChangeMovementAttributeMessage create(final FriendlyByteBuf buffer) {
     return new ChangeMovementAttributeMessage(
         buffer.readUUID(),
-        buffer.readEnum(MovementAttributeType.class),
+        NetworkMessageRecord.readEnum(buffer, MovementAttributeType.class),
         buffer.readBoolean(),
         buffer.readDouble(),
         buffer.readInt(),
-        buffer.readEnum(NavigationType.class));
+        NetworkMessageRecord.readEnum(buffer, NavigationType.class));
   }
 
   @Override

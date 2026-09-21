@@ -53,6 +53,7 @@ import java.util.Objects;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData.Builder;
@@ -242,7 +243,6 @@ public class NPCRawTemplate extends Zombie
   private final EnumMap<StatusDataType, Long> statusDataTimestampMap =
       new EnumMap<>(StatusDataType.class);
   protected MerchantOffers merchantTradingOffers;
-  private boolean clientDimensionsRefreshed = false;
   private ServerEntityData serverEntityData;
   private int attackAnimationTick;
   private int npcDataVersion = -1;
@@ -345,11 +345,6 @@ public class NPCRawTemplate extends Zombie
       this.updateSwingTime();
       if (this.attackAnimationTick > 0) {
         --this.attackAnimationTick;
-      }
-
-      if (!this.clientDimensionsRefreshed && this.tickCount > 1) {
-        this.refreshDimensions();
-        this.clientDimensionsRefreshed = true;
       }
     } else {
       this.updatePersistentAnger((ServerLevel) this.level(), true);
@@ -767,6 +762,23 @@ public class NPCRawTemplate extends Zombie
   }
 
   @Override
+  public void onSyncedDataUpdated(EntityDataAccessor<?> entityDataAccessor) {
+    super.onSyncedDataUpdated(entityDataAccessor);
+
+    if (entityDataAccessor.equals(entityDataAccessorMap.get(SynchedDataIndex.MODEL_ROOT_DATA))) {
+      this.refreshDimensions();
+    }
+  }
+
+  @Override
+  public void recreateFromPacket(ClientboundAddEntityPacket addEntityPacket) {
+    super.recreateFromPacket(addEntityPacket);
+
+    // Entity(EntityType, Level) caches EntityType.getDimensions without calling getDimensions.
+    this.refreshDimensions();
+  }
+
+  @Override
   public void addAdditionalSaveData(ValueOutput valueOutput) {
     super.addAdditionalSaveData(valueOutput);
     this.addPersistentAngerSaveData(valueOutput);
@@ -778,6 +790,14 @@ public class NPCRawTemplate extends Zombie
     super.readAdditionalSaveData(valueInput);
     this.readPersistentAngerSaveData(this.level(), valueInput);
     this.readEasyNPCBaseAdditionalSaveData(valueInput, this.registryAccess());
+  }
+
+  @Override
+  public void load(ValueInput valueInput) {
+    super.load(valueInput);
+
+    // Runs while Entity#firstTick is true, so Entity.refreshDimensions skips its block push-out.
+    this.refreshDimensions();
   }
 
   @Override
