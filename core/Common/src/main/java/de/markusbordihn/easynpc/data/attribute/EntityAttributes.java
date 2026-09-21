@@ -43,9 +43,8 @@ public class EntityAttributes {
         @Override
         public void encode(
             RegistryFriendlyByteBuf registryFriendlyByteBuf, EntityAttributes value) {
-          registryFriendlyByteBuf.writeNbt(
-              EntityDataSerializersManager.validateAndGetNbt(
-                  value.createTag(), "EntityAttributes"));
+          EntityDataSerializersManager.writeSizeLimitedNbt(
+              registryFriendlyByteBuf, value.createTag(), "EntityAttributes");
         }
       };
   private final Map<EntityAttributeType, EntityAttributesInterface> attributeMap =

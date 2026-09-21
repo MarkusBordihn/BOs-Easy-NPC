@@ -198,11 +198,7 @@ public class PresetBrowserScreen extends CustomScreen<PresetBrowserMenu, Additio
 
     this.presetListWidget =
         new PresetList(
-            this.minecraft,
-            LIST_WIDTH,
-            this.height - LIST_Y - LIST_BOTTOM_MARGIN,
-            LIST_Y,
-            30);
+            this.minecraft, LIST_WIDTH, this.height - LIST_Y - LIST_BOTTOM_MARGIN, LIST_Y, 30);
     this.presetListWidget.setX(LIST_X);
     this.addWidget(this.presetListWidget);
 

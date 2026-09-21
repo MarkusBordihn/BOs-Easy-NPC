@@ -50,7 +50,7 @@ public record ChangeModelPositionMessage(
   public static ChangeModelPositionMessage create(final FriendlyByteBuf buffer) {
     return new ChangeModelPositionMessage(
         buffer.readUUID(),
-        buffer.readEnum(ModelPartType.class),
+        NetworkMessageRecord.readEnum(buffer, ModelPartType.class),
         new CustomPosition(buffer.readFloat(), buffer.readFloat(), buffer.readFloat()));
   }
 

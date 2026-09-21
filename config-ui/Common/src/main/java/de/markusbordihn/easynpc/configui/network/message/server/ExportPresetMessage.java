@@ -46,8 +46,8 @@ public record ExportPresetMessage(
   public static ExportPresetMessage create(final FriendlyByteBuf buffer) {
     return new ExportPresetMessage(
         buffer.readUUID(),
-        buffer.readUtf(),
-        buffer.readEnum(PresetExportFormat.class),
+        buffer.readUtf(MAX_NAME_LENGTH),
+        NetworkMessageRecord.readEnum(buffer, PresetExportFormat.class),
         PresetMetadata.fromCompoundTag(buffer.readNbt()));
   }
 

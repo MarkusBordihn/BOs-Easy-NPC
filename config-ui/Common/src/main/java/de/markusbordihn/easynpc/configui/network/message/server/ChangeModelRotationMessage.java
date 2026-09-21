@@ -50,7 +50,7 @@ public record ChangeModelRotationMessage(
   public static ChangeModelRotationMessage create(final FriendlyByteBuf buffer) {
     return new ChangeModelRotationMessage(
         buffer.readUUID(),
-        buffer.readEnum(ModelPartType.class),
+        NetworkMessageRecord.readEnum(buffer, ModelPartType.class),
         new CustomRotation(
             buffer.readFloat(), buffer.readFloat(), buffer.readFloat(), buffer.readBoolean()));
   }

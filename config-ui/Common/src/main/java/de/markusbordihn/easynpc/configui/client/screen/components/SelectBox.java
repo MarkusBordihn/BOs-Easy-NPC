@@ -108,10 +108,6 @@ public class SelectBox<T> extends AbstractWidget {
     }
   }
 
-  public void setSearchable(boolean searchable) {
-    this.searchable = searchable;
-  }
-
   public void setCustomValueFactory(Function<String, SelectOption<T>> customValueFactory) {
     this.customValueFactory = customValueFactory;
   }
@@ -139,6 +135,10 @@ public class SelectBox<T> extends AbstractWidget {
 
   private boolean isSearchable() {
     return this.searchable != null ? this.searchable : this.options.size() > SEARCH_THRESHOLD;
+  }
+
+  public void setSearchable(boolean searchable) {
+    this.searchable = searchable;
   }
 
   private int getVisibleEntries() {

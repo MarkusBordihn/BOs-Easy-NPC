@@ -39,11 +39,13 @@ import de.markusbordihn.easynpc.entity.easynpc.data.AttributeDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.DisplayAttributeDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.NavigationDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.ObjectiveDataCapable;
+import net.minecraft.core.Holder;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.attributes.RangedAttribute;
 import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -362,6 +364,18 @@ public class AttributeHandler {
     return false;
   }
 
+  private static boolean isValidAttributeValue(Holder<Attribute> attribute, double value) {
+    if (!Double.isFinite(value)) {
+      return false;
+    }
+
+    if (attribute.value() instanceof RangedAttribute rangedAttribute) {
+      return value >= rangedAttribute.getMinValue() && value <= rangedAttribute.getMaxValue();
+    }
+
+    return true;
+  }
+
   public static boolean setBaseAttribute(EasyNPC<?> easyNPC, Attribute attribute, Double value) {
     if (easyNPC == null || attribute == null || value == null) {
       return false;
@@ -375,6 +389,11 @@ public class AttributeHandler {
     BaseAttributeType baseAttributeType = BaseAttributeType.fromAttribute(attribute);
     if (baseAttributeType == null) {
       log.error("Unimplemented base attribute {} for {}", attribute, easyNPC);
+      return false;
+    }
+
+    if (!isValidAttributeValue(baseAttributeType.getAttribute(), value)) {
+      log.error("Invalid value {} for base attribute {} for {}", value, attribute, easyNPC);
       return false;
     }
 
