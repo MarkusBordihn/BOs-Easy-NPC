@@ -329,10 +329,10 @@ public class EasyModelNPCRenderer<E extends PathfinderMob>
     }
     poseStack.translate(0.0f, renderState.rootPivotY, 0.0f);
     if (xDegrees != 0.0f) {
-      poseStack.mulPose(Axis.XP.rotationDegrees(xDegrees));
+      poseStack.rotateDegrees(Axis.XP, xDegrees);
     }
     if (zDegrees != 0.0f) {
-      poseStack.mulPose(Axis.ZP.rotationDegrees(zDegrees));
+      poseStack.rotateDegrees(Axis.ZP, zDegrees);
     }
     poseStack.translate(0.0f, -renderState.rootPivotY, 0.0f);
   }
@@ -545,8 +545,8 @@ public class EasyModelNPCRenderer<E extends PathfinderMob>
     partPose.applyTo(poseStack);
     EasyModelVec3f localOffset = anchor.localOffset();
     poseStack.translate(localOffset.x() / 16.0f, localOffset.y() / 16.0f, localOffset.z() / 16.0f);
-    poseStack.mulPose(Axis.XP.rotationDegrees(-90.0f));
-    poseStack.mulPose(Axis.YP.rotationDegrees(180.0f));
+    poseStack.rotateDegrees(Axis.XP, -90.0f);
+    poseStack.rotateDegrees(Axis.YP, 180.0f);
     itemRenderState.submit(
         poseStack, submitNodeCollector, renderState.lightCoords, OverlayTexture.NO_OVERLAY, 0);
     poseStack.popPose();

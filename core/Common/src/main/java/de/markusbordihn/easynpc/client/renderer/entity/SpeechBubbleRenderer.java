@@ -284,7 +284,7 @@ public class SpeechBubbleRenderer {
         speechBubbleInstance.anchorOffsetX(),
         speechBubbleInstance.placedAnchorHeight(),
         speechBubbleInstance.anchorOffsetZ());
-    poseStack.mulPose(cameraRenderState.orientation);
+    poseStack.rotate(cameraRenderState.orientation);
     poseStack.scale(bubbleScale, -bubbleScale, bubbleScale);
 
     drawBubble(speechBubbleInstance, poseStack, submitNodeCollector, offsetPixelsX, offsetPixelsY);

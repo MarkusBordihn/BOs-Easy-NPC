@@ -115,9 +115,9 @@ public class BaseEasyNPCSpawnerBlockEntityRenderer<T extends EasyNPCSpawnerBlock
     poseStack.pushPose();
     poseStack.translate(0.5F, 0.0F, 0.5F);
     poseStack.translate(0.0F, 0.4F, 0.0F);
-    poseStack.mulPose(Axis.YP.rotationDegrees(renderState.spinInterpolated));
+    poseStack.rotateDegrees(Axis.YP, renderState.spinInterpolated);
     poseStack.translate(0.0F, -0.2F, 0.0F);
-    poseStack.mulPose(Axis.XP.rotationDegrees(-30.0F));
+    poseStack.rotateDegrees(Axis.XP, -30.0F);
     poseStack.scale(renderState.scale, renderState.scale, renderState.scale);
     this.entityRenderer.submit(
         renderState.entityRenderState,

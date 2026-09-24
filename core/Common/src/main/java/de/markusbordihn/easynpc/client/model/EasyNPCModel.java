@@ -271,8 +271,8 @@ public class EasyNPCModel {
         float swingProgress = 0.0F;
         if (easyNPC != null && easyNPC.getLivingEntity() != null) {
           var livingEntity = easyNPC.getLivingEntity();
-          if (livingEntity.swinging) {
-            swingProgress = Mth.clamp(livingEntity.swingTime / 6.0F, 0.0F, 1.0F);
+          if (livingEntity.isSwinging()) {
+            swingProgress = Mth.clamp(livingEntity.getSwingAnimation(1.0F), 0.0F, 1.0F);
             swingProgress = Mth.sin(swingProgress * (float) Math.PI);
           }
         }

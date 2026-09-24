@@ -8,7 +8,7 @@ modId = "easy_npc_bundle"
 version = "${file.jarVersion}"
 displayName = "Easy NPC: Bundle"
 displayURL = "https://github.com/MarkusBordihn/BOs-Easy-NPC"
-logoFile = "logo.png"
+iconFile = "logo.png"
 credits = ""
 authors = "Markus Bordihn"
 description = '''
@@ -31,7 +31,7 @@ side = "BOTH"
 [[dependencies.easy_npc_bundle]]
 modId = "minecraft"
 type = "required"
-versionRange = "[26.2,26.3)"
+versionRange = "[26.3,26.4)"
 ordering = "NONE"
 side = "BOTH"
 

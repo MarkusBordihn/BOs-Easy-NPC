@@ -38,7 +38,7 @@ public class WitherSkeletonBase extends WitherSkeletonRaw
 
   public WitherSkeletonBase(EntityType<? extends WitherSkeleton> entityType, Level level) {
     super(entityType, level);
-    this.setInvulnerable(true);
+    this.setPermanentlyInvulnerable(true);
     this.getEntityAttributes()
         .setEnvironmentalAttributes(
             this.getEntityAttributes().getEnvironmentalAttributes().withCanBreatheUnderwater(true));

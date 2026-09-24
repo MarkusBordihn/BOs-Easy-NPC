@@ -64,7 +64,7 @@ public class DataPresetDataFiles {
       MinecraftServer minecraftServer, String resourcePath, Predicate<Identifier> filter) {
     return minecraftServer
         .getResourceManager()
-        .listResources(resourcePath, filter)
+        .listResources(resourcePath, filter::test)
         .keySet()
         .stream();
   }

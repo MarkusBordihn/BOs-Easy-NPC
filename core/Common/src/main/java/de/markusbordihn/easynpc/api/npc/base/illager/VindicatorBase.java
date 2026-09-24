@@ -42,7 +42,7 @@ public class VindicatorBase extends VindicatorRaw implements BaseEasyNPC<Vindica
 
   public VindicatorBase(EntityType<? extends Vindicator> entityType, Level level, Enum<?> variant) {
     super(entityType, level, variant);
-    this.setInvulnerable(true);
+    this.setPermanentlyInvulnerable(true);
     this.refreshGroundNavigation();
   }
 

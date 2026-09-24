@@ -19,13 +19,11 @@
 
 package de.markusbordihn.easynpc.client.renderer.entity;
 
-import com.mojang.blaze3d.pipeline.BindGroupLayout;
-import com.mojang.blaze3d.pipeline.ColorTargetState;
-import com.mojang.blaze3d.pipeline.DepthStencilState;
-import com.mojang.blaze3d.pipeline.RenderPipeline;
-import com.mojang.blaze3d.platform.CompareOp;
-import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.renderpearl.api.pipeline.CompareOp;
+import com.mojang.renderpearl.api.pipeline.DepthStencilState;
+import com.mojang.renderpearl.api.pipeline.RenderPipeline;
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.client.renderer.RenderPipelineCopy;
 import de.markusbordihn.easynpc.client.renderer.RenderTypeTextureAccessor;
 import de.markusbordihn.easynpc.compat.iris.IrisManager;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -59,40 +57,10 @@ public final class SpeechBubbleRenderTypes {
   }
 
   private static RenderPipeline createOccludedPipeline() {
-    RenderPipeline textPipeline = RenderPipelines.TEXT;
-    RenderPipeline.Builder builder =
-        RenderPipeline.builder()
-            .withLocation(
-                Identifier.fromNamespaceAndPath(
-                    Constants.MOD_ID, "pipeline/speech_bubble_occluded"))
-            .withVertexShader(textPipeline.getVertexShader())
-            .withFragmentShader(textPipeline.getFragmentShader())
-            .withPolygonMode(textPipeline.getPolygonMode())
-            .withCull(textPipeline.isCull())
-            .withPrimitiveTopology(textPipeline.getPrimitiveTopology())
-            .withDepthStencilState(new DepthStencilState(CompareOp.LESS_THAN, false));
-
-    for (String shaderDefine : textPipeline.getShaderDefines().flags()) {
-      builder.withShaderDefine(shaderDefine);
-    }
-    for (BindGroupLayout bindGroupLayout : textPipeline.getBindGroupLayouts()) {
-      builder.withBindGroupLayout(bindGroupLayout);
-    }
-
-    ColorTargetState[] colorTargetStates = textPipeline.getColorTargetStates();
-    for (int index = 0; index < colorTargetStates.length; index++) {
-      if (colorTargetStates[index] == null) {
-        builder.withUnusedColorTargetState(index);
-      } else {
-        builder.withColorTargetState(index, colorTargetStates[index]);
-      }
-    }
-
-    VertexFormat[] vertexFormatBindings = textPipeline.getVertexFormatBindings();
-    for (int index = 0; index < vertexFormatBindings.length; index++) {
-      builder.withVertexBinding(index, vertexFormatBindings[index]);
-    }
-
-    return builder.build();
+    return RenderPipelineCopy.builder(
+            RenderPipelines.TEXT,
+            Identifier.fromNamespaceAndPath(Constants.MOD_ID, "pipeline/speech_bubble_occluded"))
+        .withDepthStencilState(new DepthStencilState(CompareOp.LESS_THAN, false))
+        .build();
   }
 }

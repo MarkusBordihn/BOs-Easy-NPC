@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.configui.client.screen.configuration.dialog;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.configui.client.screen.components.AddButton;
@@ -293,7 +294,7 @@ public class AdvancedDialogConfigurationScreen<T extends ConfigurationMenu>
         this.copyLabelButton.mouseClicked(mouseButtonEvent, doubleClick);
         this.editButton.mouseClicked(mouseButtonEvent, doubleClick);
         this.textEditButton.mouseClicked(mouseButtonEvent, doubleClick);
-        return mouseButtonEvent.button() == 0;
+        return mouseButtonEvent.button() == InputConstants.MOUSE_BUTTON_LEFT;
       }
 
       @Override

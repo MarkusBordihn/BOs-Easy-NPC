@@ -42,7 +42,7 @@ public class EvokerBase extends EvokerRaw implements BaseEasyNPC<EvokerRaw> {
 
   public EvokerBase(EntityType<? extends Evoker> entityType, Level level, Enum<?> variant) {
     super(entityType, level, variant);
-    this.setInvulnerable(true);
+    this.setPermanentlyInvulnerable(true);
     this.refreshGroundNavigation();
   }
 

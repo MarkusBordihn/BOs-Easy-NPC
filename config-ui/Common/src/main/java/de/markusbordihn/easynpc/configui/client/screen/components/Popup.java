@@ -19,12 +19,12 @@
 
 package de.markusbordihn.easynpc.configui.client.screen.components;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.util.Mth;
-import org.lwjgl.glfw.GLFW;
 
 public abstract class Popup {
 
@@ -118,7 +118,7 @@ public abstract class Popup {
       return false;
     }
 
-    if (keyEvent.input() == GLFW.GLFW_KEY_ESCAPE) {
+    if (keyEvent.input() == InputConstants.KEY_ESCAPE) {
       this.close();
       return true;
     }

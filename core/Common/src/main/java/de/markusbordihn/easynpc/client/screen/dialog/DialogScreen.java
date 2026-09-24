@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.client.screen.dialog;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.renderer.screen.EntityScreenRenderer;
 import de.markusbordihn.easynpc.client.screen.Screen;
@@ -586,11 +587,11 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
 
   @Override
   public boolean keyPressed(KeyEvent keyEvent) {
-    if (keyEvent.input() != 256 && this.isTypewriterActive()) {
+    if (keyEvent.input() != InputConstants.KEY_ESCAPE && this.isTypewriterActive()) {
       this.pageFullyRevealed = true;
     }
 
-    if (keyEvent.input() == 256 && !this.cachedDialogOptions.allowEscClose()) {
+    if (keyEvent.input() == InputConstants.KEY_ESCAPE && !this.cachedDialogOptions.allowEscClose()) {
       return true;
     }
 

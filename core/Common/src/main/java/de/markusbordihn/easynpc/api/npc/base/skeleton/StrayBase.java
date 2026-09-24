@@ -37,7 +37,7 @@ public class StrayBase extends StrayRaw implements BaseEasyNPC<StrayRaw> {
 
   public StrayBase(EntityType<? extends Stray> entityType, Level level) {
     super(entityType, level);
-    this.setInvulnerable(true);
+    this.setPermanentlyInvulnerable(true);
     this.getEntityAttributes()
         .setEnvironmentalAttributes(
             this.getEntityAttributes().getEnvironmentalAttributes().withCanBreatheUnderwater(true));

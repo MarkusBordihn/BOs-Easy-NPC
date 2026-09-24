@@ -44,7 +44,7 @@ public class ChickenBase extends ChickenRaw implements BaseEasyNPC<ChickenRaw> {
 
   public ChickenBase(EntityType<? extends Chicken> entityType, Level level, Enum<?> variantType) {
     super(entityType, level, variantType);
-    this.setInvulnerable(true);
+    this.setPermanentlyInvulnerable(true);
     this.refreshGroundNavigation();
   }
 

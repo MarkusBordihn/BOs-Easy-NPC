@@ -36,6 +36,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Prediction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EntityType;
@@ -87,7 +88,7 @@ public class EasyNPCPresetEmptyItem extends Item {
       ItemStack presetItemStack = createPresetItemStack(easyNPC);
       if (!presetItemStack.isEmpty()) {
         if (!player.getInventory().add(presetItemStack)) {
-          player.drop(presetItemStack, false);
+          player.drop(presetItemStack, false, Prediction.PREDICTED);
         }
         return InteractionResult.SUCCESS;
       }
@@ -139,7 +140,7 @@ public class EasyNPCPresetEmptyItem extends Item {
             if (!presetItemStack.isEmpty()) {
               Player player = useOnContext.getPlayer();
               if (!player.getInventory().add(presetItemStack)) {
-                player.drop(presetItemStack, false);
+                player.drop(presetItemStack, false, Prediction.PREDICTED);
               }
               return InteractionResult.SUCCESS;
             }

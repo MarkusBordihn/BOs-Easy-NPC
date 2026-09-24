@@ -342,7 +342,6 @@ public class NPCRawTemplate extends Zombie
     super.aiStep();
 
     if (this.isClientSideInstance()) {
-      this.updateSwingTime();
       if (this.attackAnimationTick > 0) {
         --this.attackAnimationTick;
       }
@@ -596,7 +595,7 @@ public class NPCRawTemplate extends Zombie
   }
 
   @Override
-  public boolean isInvulnerable() {
+  public boolean isPermanentlyInvulnerable() {
     return getEntityAttributes().getCombatAttributes().isInvulnerable();
   }
 

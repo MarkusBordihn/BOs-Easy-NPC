@@ -30,19 +30,19 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.monster.EnderMan;
+import net.minecraft.world.entity.monster.Enderman;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
 public class EnderManBase extends EnderManRaw implements BaseEasyNPC<EnderManRaw> {
 
-  public EnderManBase(EntityType<? extends EnderMan> entityType, Level level) {
+  public EnderManBase(EntityType<? extends Enderman> entityType, Level level) {
     this(entityType, level, EnderManSkinVariant.ENDERMAN);
   }
 
-  public EnderManBase(EntityType<? extends EnderMan> entityType, Level level, Enum<?> variantType) {
+  public EnderManBase(EntityType<? extends Enderman> entityType, Level level, Enum<?> variantType) {
     super(entityType, level, variantType);
-    this.setInvulnerable(true);
+    this.setPermanentlyInvulnerable(true);
     this.refreshGroundNavigation();
   }
 

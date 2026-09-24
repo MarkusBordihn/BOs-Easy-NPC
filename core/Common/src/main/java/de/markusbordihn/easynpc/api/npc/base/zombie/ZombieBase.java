@@ -42,7 +42,7 @@ public class ZombieBase extends ZombieRaw implements BaseEasyNPC<ZombieRaw> {
 
   public ZombieBase(EntityType<? extends Zombie> entityType, Level level, Enum<?> variantType) {
     super(entityType, level, variantType);
-    this.setInvulnerable(true);
+    this.setPermanentlyInvulnerable(true);
     this.getEntityAttributes()
         .setEnvironmentalAttributes(
             this.getEntityAttributes().getEnvironmentalAttributes().withCanBreatheUnderwater(true));

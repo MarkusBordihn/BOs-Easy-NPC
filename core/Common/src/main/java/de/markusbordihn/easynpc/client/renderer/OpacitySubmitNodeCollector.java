@@ -34,7 +34,6 @@ import java.util.Optional;
 import java.util.UUID;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.model.Model;
-import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
@@ -48,8 +47,9 @@ import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.state.level.QuadParticleRenderState;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.texture.UvMapping;
 import net.minecraft.client.resources.model.geometry.BakedQuad;
+import net.minecraft.client.resources.model.geometry.ItemQuads;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
@@ -125,7 +125,7 @@ public class OpacitySubmitNodeCollector implements SubmitNodeCollector {
 
     Identifier textureLocation = texture.get();
     if (renderType == RenderTypes.armorCutoutNoCull(textureLocation)) {
-      return RenderTypes.armorTranslucent(textureLocation);
+      return ArmorRenderTypes.armorTranslucent(textureLocation);
     }
 
     if (renderType == RenderTypes.entitySolid(textureLocation)
@@ -146,6 +146,22 @@ public class OpacitySubmitNodeCollector implements SubmitNodeCollector {
 
     if (renderType == Sheets.cutoutItemSheet()) {
       return Sheets.translucentItemSheet();
+    }
+
+    if (renderType == Sheets.cutoutBlockItemGlintSheet()) {
+      return Sheets.translucentBlockItemGlintSheet();
+    }
+
+    if (renderType == Sheets.cutoutItemGlintSheet()) {
+      return Sheets.translucentItemGlintSheet();
+    }
+
+    if (renderType == Sheets.cutoutBlockItemGlintSpecialSheet()) {
+      return Sheets.translucentBlockItemGlintSpecialSheet();
+    }
+
+    if (renderType == Sheets.cutoutItemGlintSpecialSheet()) {
+      return Sheets.translucentItemGlintSpecialSheet();
     }
 
     return renderType;
@@ -170,8 +186,10 @@ public class OpacitySubmitNodeCollector implements SubmitNodeCollector {
                   materialInfo.sprite(),
                   materialInfo.layer(),
                   toTranslucentItemRenderType(materialInfo.itemRenderType()),
+                  toTranslucentItemRenderType(materialInfo.itemGlintRenderType()),
+                  toTranslucentItemRenderType(materialInfo.itemGlintSpecialRenderType()),
                   materialInfo.isTinted() ? materialInfo.tintIndex() : untintedLayerIndex,
-                  materialInfo.shade(),
+                  materialInfo.shadeDirectionOverride(),
                   materialInfo.lightEmission())));
     }
 
@@ -209,9 +227,8 @@ public class OpacitySubmitNodeCollector implements SubmitNodeCollector {
       int packedLight,
       int packedOverlay,
       int color,
-      TextureAtlasSprite textureAtlasSprite,
-      int outlineColor,
-      ModelFeatureRenderer.CrumblingOverlay crumblingOverlay) {
+      UvMapping uvMapping,
+      int outlineColor) {
     if (!hasColorElement(renderType)) {
       this.collector.submitModel(
           model,
@@ -221,9 +238,8 @@ public class OpacitySubmitNodeCollector implements SubmitNodeCollector {
           packedLight,
           packedOverlay,
           color,
-          textureAtlasSprite,
-          outlineColor,
-          crumblingOverlay);
+          uvMapping,
+          outlineColor);
       return;
     }
 
@@ -235,46 +251,22 @@ public class OpacitySubmitNodeCollector implements SubmitNodeCollector {
         packedLight,
         packedOverlay,
         ARGB.multiplyAlpha(color, this.alpha),
-        textureAtlasSprite,
-        outlineColor,
-        crumblingOverlay);
+        uvMapping,
+        outlineColor);
   }
 
   @Override
-  public void submitModelPart(
-      ModelPart modelPart,
+  public <S> void submitCrumblingOverlay(
+      Model<? super S> model,
+      S state,
       PoseStack poseStack,
       RenderType renderType,
       int packedLight,
       int packedOverlay,
-      TextureAtlasSprite textureAtlasSprite,
       int color,
-      ModelFeatureRenderer.CrumblingOverlay crumblingOverlay,
-      int outlineColor) {
-    if (!hasColorElement(renderType)) {
-      this.collector.submitModelPart(
-          modelPart,
-          poseStack,
-          renderType,
-          packedLight,
-          packedOverlay,
-          textureAtlasSprite,
-          color,
-          crumblingOverlay,
-          outlineColor);
-      return;
-    }
-
-    this.collector.submitModelPart(
-        modelPart,
-        poseStack,
-        this.translucentRenderType(renderType),
-        packedLight,
-        packedOverlay,
-        textureAtlasSprite,
-        ARGB.multiplyAlpha(color, this.alpha),
-        crumblingOverlay,
-        outlineColor);
+      ModelFeatureRenderer.CrumblingOverlay crumblingOverlay) {
+    this.collector.submitCrumblingOverlay(
+        model, state, poseStack, renderType, packedLight, packedOverlay, color, crumblingOverlay);
   }
 
   @Override
@@ -285,7 +277,7 @@ public class OpacitySubmitNodeCollector implements SubmitNodeCollector {
       int packedOverlay,
       int outlineColor,
       int[] tintLayers,
-      List<BakedQuad> quads,
+      ItemQuads quads,
       ItemStackRenderState.FoilType foilType) {
     int untintedLayerIndex = tintLayers.length;
     this.collector.submitItem(
@@ -295,7 +287,7 @@ public class OpacitySubmitNodeCollector implements SubmitNodeCollector {
         packedOverlay,
         outlineColor,
         this.fadeTintLayers(tintLayers, untintedLayerIndex),
-        fadeQuads(quads, untintedLayerIndex),
+        ItemQuads.split(fadeQuads(quads.all(), untintedLayerIndex)),
         foilType);
   }
 
@@ -344,6 +336,20 @@ public class OpacitySubmitNodeCollector implements SubmitNodeCollector {
   }
 
   @Override
+  public void submitTextBackground(
+      PoseStack poseStack,
+      float x0,
+      float y0,
+      float x1,
+      float y1,
+      int color,
+      Font.DisplayMode displayMode,
+      int packedLight) {
+    this.collector.submitTextBackground(
+        poseStack, x0, y0, x1, y1, color, displayMode, packedLight);
+  }
+
+  @Override
   public void submitFlame(
       PoseStack poseStack, EntityRenderState renderState, Quaternionf rotation) {
     this.collector.submitFlame(poseStack, renderState, rotation);
@@ -375,8 +381,11 @@ public class OpacitySubmitNodeCollector implements SubmitNodeCollector {
 
   @Override
   public void submitBreakingBlockModel(
-      PoseStack poseStack, List<BlockStateModelPart> parts, int progress) {
-    this.collector.submitBreakingBlockModel(poseStack, parts, progress);
+      PoseStack poseStack,
+      List<BlockStateModelPart> parts,
+      int progress,
+      boolean isBlockTranslucent) {
+    this.collector.submitBreakingBlockModel(poseStack, parts, progress, isBlockTranslucent);
   }
 
   @Override

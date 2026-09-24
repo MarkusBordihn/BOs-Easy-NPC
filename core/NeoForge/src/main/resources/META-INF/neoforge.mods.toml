@@ -8,7 +8,7 @@ modId = "easy_npc"
 version = "${file.jarVersion}"
 displayName = "Easy NPC"
 displayURL = "https://www.curseforge.com/minecraft/mc-mods/easy-npc"
-logoFile = "logo.png"
+iconFile = "logo.png"
 credits = ""
 authors = "Markus Bordihn"
 description = '''Create easily NPCs for your world or for your mods.'''
@@ -23,7 +23,7 @@ side = "BOTH"
 [[dependencies.easy_npc]]
 modId = "minecraft"
 type = "required"
-versionRange = "[26.2,26.3)"
+versionRange = "[26.3,26.4)"
 ordering = "NONE"
 side = "BOTH"
 

@@ -44,7 +44,7 @@ public class CatBase extends CatRaw implements BaseEasyNPC<CatRaw> {
 
   public CatBase(EntityType<? extends Cat> entityType, Level level, Enum<?> variantType) {
     super(entityType, level, variantType);
-    this.setInvulnerable(true);
+    this.setPermanentlyInvulnerable(true);
     this.refreshGroundNavigation();
   }
 

@@ -42,7 +42,7 @@ public class SpiderBase extends SpiderRaw implements BaseEasyNPC<SpiderRaw> {
 
   public SpiderBase(EntityType<? extends Spider> entityType, Level level, Enum<?> variantType) {
     super(entityType, level, variantType);
-    this.setInvulnerable(true);
+    this.setPermanentlyInvulnerable(true);
     this.getEntityAttributes()
         .setEnvironmentalAttributes(
             this.getEntityAttributes().getEnvironmentalAttributes().withCanBreatheUnderwater(true));

@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.configui.client.screen.configuration.preset;
 
+import com.mojang.blaze3d.Blaze3D;
 import de.markusbordihn.easynpc.client.screen.components.SpinButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextField;
@@ -43,7 +44,6 @@ import net.minecraft.client.gui.screens.ConfirmScreen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
-import net.minecraft.util.Util;
 import net.minecraft.world.entity.player.Inventory;
 
 public class ExportLocalPresetConfigurationScreen<T extends ConfigurationMenu>
@@ -159,7 +159,7 @@ public class ExportLocalPresetConfigurationScreen<T extends ConfigurationMenu>
                 140,
                 20,
                 "open_export_folder",
-                button -> Util.getPlatform().openFile(localPresetFile.getParentFile())));
+                button -> Blaze3D.openPath(localPresetFile.getParentFile().toPath())));
   }
 
   private void showSnbtWarning() {

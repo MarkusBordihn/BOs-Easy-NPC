@@ -274,13 +274,13 @@ public class EasyNPCItemAttachmentLayer<
           attachment.offsetX() / 16.0F, attachment.offsetY() / 16.0F, attachment.offsetZ() / 16.0F);
 
       if (attachment.rotX() != 0.0F) {
-        poseStack.mulPose(Axis.XP.rotation(attachment.rotX()));
+        poseStack.rotate(Axis.XP, attachment.rotX());
       }
       if (attachment.rotY() != 0.0F) {
-        poseStack.mulPose(Axis.YP.rotation(attachment.rotY()));
+        poseStack.rotate(Axis.YP, attachment.rotY());
       }
       if (attachment.rotZ() != 0.0F) {
-        poseStack.mulPose(Axis.ZP.rotation(attachment.rotZ()));
+        poseStack.rotate(Axis.ZP, attachment.rotZ());
       }
 
       float scale = attachment.scale();

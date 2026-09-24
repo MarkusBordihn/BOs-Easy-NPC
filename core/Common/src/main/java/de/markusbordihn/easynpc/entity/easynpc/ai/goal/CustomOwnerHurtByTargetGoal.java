@@ -86,6 +86,6 @@ public class CustomOwnerHurtByTargetGoal<T extends EasyNPC<?>> extends TargetGoa
     }
 
     // Standard validity checks
-    return target.isAlive() && !target.isInvulnerable() && target != this.mob;
+    return target.isAlive() && !target.isPermanentlyInvulnerable() && target != this.mob;
   }
 }

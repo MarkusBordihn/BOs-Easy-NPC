@@ -46,7 +46,7 @@ public class WanderingTraderBase extends WanderingTraderRaw
   public WanderingTraderBase(
       EntityType<? extends WanderingTrader> entityType, Level level, Enum<?> variantType) {
     super(entityType, level, variantType);
-    this.setInvulnerable(true);
+    this.setPermanentlyInvulnerable(true);
     this.refreshGroundNavigation();
   }
 

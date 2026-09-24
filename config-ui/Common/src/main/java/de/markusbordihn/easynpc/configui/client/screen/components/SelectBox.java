@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.configui.client.screen.components;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import de.markusbordihn.easynpc.client.screen.components.OverlayWidget;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextField;
@@ -38,7 +39,6 @@ import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
-import org.lwjgl.glfw.GLFW;
 
 public class SelectBox<T> extends AbstractWidget implements OverlayWidget {
 
@@ -263,7 +263,7 @@ public class SelectBox<T> extends AbstractWidget implements OverlayWidget {
   public boolean mouseClicked(MouseButtonEvent mouseButtonEvent, boolean doubleClick) {
     double mouseX = mouseButtonEvent.x();
     double mouseY = mouseButtonEvent.y();
-    if (!this.active || !this.visible || mouseButtonEvent.button() != 0) {
+    if (!this.active || !this.visible || mouseButtonEvent.button() != InputConstants.MOUSE_BUTTON_LEFT) {
       return false;
     }
 
@@ -312,7 +312,7 @@ public class SelectBox<T> extends AbstractWidget implements OverlayWidget {
       return false;
     }
 
-    if (keyEvent.input() == GLFW.GLFW_KEY_ESCAPE) {
+    if (keyEvent.input() == InputConstants.KEY_ESCAPE) {
       this.closeDropdown();
       return true;
     }

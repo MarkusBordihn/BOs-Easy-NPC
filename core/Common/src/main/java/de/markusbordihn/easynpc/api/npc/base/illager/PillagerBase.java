@@ -42,7 +42,7 @@ public class PillagerBase extends PillagerRaw implements BaseEasyNPC<PillagerRaw
 
   public PillagerBase(EntityType<? extends Pillager> entityType, Level level, Enum<?> variant) {
     super(entityType, level, variant);
-    this.setInvulnerable(true);
+    this.setPermanentlyInvulnerable(true);
     this.refreshGroundNavigation();
   }
 

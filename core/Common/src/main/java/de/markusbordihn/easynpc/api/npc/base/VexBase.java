@@ -43,7 +43,7 @@ public class VexBase extends VexRaw implements BaseEasyNPC<VexRaw> {
 
   public VexBase(EntityType<? extends Vex> entityType, Level level, Enum<?> variantType) {
     super(entityType, level, variantType);
-    this.setInvulnerable(true);
+    this.setPermanentlyInvulnerable(true);
     this.refreshGroundNavigation();
   }
 

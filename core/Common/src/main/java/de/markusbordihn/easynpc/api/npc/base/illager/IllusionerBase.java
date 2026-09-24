@@ -42,7 +42,7 @@ public class IllusionerBase extends IllusionerRaw implements BaseEasyNPC<Illusio
 
   public IllusionerBase(EntityType<? extends Illusioner> entityType, Level level, Enum<?> variant) {
     super(entityType, level, variant);
-    this.setInvulnerable(true);
+    this.setPermanentlyInvulnerable(true);
     this.refreshGroundNavigation();
   }
 

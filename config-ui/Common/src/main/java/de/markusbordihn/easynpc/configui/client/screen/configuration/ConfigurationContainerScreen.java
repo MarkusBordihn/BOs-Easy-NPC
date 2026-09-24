@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.configui.client.screen.configuration;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.configui.client.screen.ContainerScreen;
@@ -83,7 +84,7 @@ public class ConfigurationContainerScreen<T extends ConfigUIMenu> extends Contai
   @Override
   public boolean keyPressed(KeyEvent keyEvent) {
     // Capture ALT + left arrow key to navigate back to main screen
-    if (keyEvent.key() == 263 && keyEvent.hasAltDown()) {
+    if (keyEvent.key() == InputConstants.KEY_LEFT && keyEvent.hasAltDown()) {
       showMainScreen();
       return true;
     }

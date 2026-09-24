@@ -42,7 +42,7 @@ public class AllayBase extends AllayRaw implements BaseEasyNPC<AllayRaw> {
 
   public AllayBase(EntityType<? extends Allay> entityType, Level level, Enum<?> variantType) {
     super(entityType, level, variantType);
-    this.setInvulnerable(true);
+    this.setPermanentlyInvulnerable(true);
     this.refreshGroundNavigation();
   }
 

@@ -95,7 +95,7 @@ public class VillagerBase extends VillagerRaw implements BaseEasyNPC<VillagerRaw
 
   public VillagerBase(EntityType<? extends Villager> entityType, Level level, Enum<?> variantType) {
     super(entityType, level, variantType);
-    this.setInvulnerable(true);
+    this.setPermanentlyInvulnerable(true);
   }
 
   public static AttributeSupplier.Builder createAttributes() {

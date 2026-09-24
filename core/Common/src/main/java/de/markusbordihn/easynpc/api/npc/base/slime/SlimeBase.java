@@ -51,7 +51,7 @@ public class SlimeBase extends SlimeRaw implements BaseEasyNPC<SlimeRaw> {
       EntityType<? extends Slime> entityType, Level level, Enum<?> variantType, int size) {
     super(entityType, level, variantType);
     this.setSize(size, false);
-    this.setInvulnerable(true);
+    this.setPermanentlyInvulnerable(true);
     this.moveControl = new JumpEasyNPCMoveControl(this);
     this.refreshGroundNavigation();
   }

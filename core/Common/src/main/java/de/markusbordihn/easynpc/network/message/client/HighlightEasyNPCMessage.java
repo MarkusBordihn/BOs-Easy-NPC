@@ -22,11 +22,14 @@ package de.markusbordihn.easynpc.network.message.client;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.highlight.NPCHighlightManager;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
+import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
@@ -43,17 +46,18 @@ public record HighlightEasyNPCMessage(List<UUID> uuids, int durationTicks)
 
   public static final int MAXIMUM_UUIDS = 256;
   public static final int MAXIMUM_DURATION_TICKS = 24000;
+  private static final StreamCodec<ByteBuf, List<UUID>> UUIDS_DECODER =
+      ByteBufCodecs.collection(ArrayList::new, UUIDUtil.STREAM_CODEC, MAXIMUM_UUIDS);
+  private static final StreamCodec<ByteBuf, List<UUID>> UUIDS_ENCODER =
+      ByteBufCodecs.collection(ArrayList::new, UUIDUtil.STREAM_CODEC);
 
   public static HighlightEasyNPCMessage create(final FriendlyByteBuf buffer) {
-    return new HighlightEasyNPCMessage(
-        buffer.readCollection(
-            FriendlyByteBuf.limitValue(ArrayList::new, MAXIMUM_UUIDS), entry -> entry.readUUID()),
-        buffer.readVarInt());
+    return new HighlightEasyNPCMessage(UUIDS_DECODER.decode(buffer), buffer.readVarInt());
   }
 
   @Override
   public void write(FriendlyByteBuf buffer) {
-    buffer.writeCollection(this.uuids, (target, uuid) -> target.writeUUID(uuid));
+    UUIDS_ENCODER.encode(buffer, this.uuids);
     buffer.writeVarInt(this.durationTicks);
   }
 

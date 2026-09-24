@@ -50,6 +50,7 @@ public class EasyNPCEntityRendererMixin<T extends Entity, S extends EntityRender
       double x,
       double y,
       double z,
+      float partialTicks,
       CallbackInfoReturnable<Boolean> cir) {
     Boolean shouldRender = EasyNPCRenderVisibility.resolveShouldRenderOverride(entity);
     if (shouldRender != null) {

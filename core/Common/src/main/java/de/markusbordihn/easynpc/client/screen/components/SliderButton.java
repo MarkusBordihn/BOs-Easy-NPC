@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.client.screen.components;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import net.minecraft.client.InputType;
@@ -320,8 +321,8 @@ public class SliderButton extends AbstractSliderButton {
   @Override
   public boolean keyPressed(KeyEvent keyEvent) {
     int keyCode = keyEvent.input();
-    if (keyCode == 263 || keyCode == 262) {
-      float step = keyCode == 263 ? -1.0F : 1.0F;
+    if (keyCode == InputConstants.KEY_LEFT || keyCode == InputConstants.KEY_RIGHT) {
+      float step = keyCode == InputConstants.KEY_LEFT ? -1.0F : 1.0F;
       double incrementalSteps = step * this.getStepSize();
       this.setTargetValue(this.value + incrementalSteps);
     }

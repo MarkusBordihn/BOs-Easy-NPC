@@ -55,9 +55,10 @@ tasks.register('generateRawNPCs') {
       ],
       [
           id       : "enderman_raw",
-          class    : "net.minecraft.world.entity.monster.EnderMan",
+          class    : "net.minecraft.world.entity.monster.Enderman",
           className: "EnderManRaw",
-          baseClass: "EnderMan",
+          baseClass: "Enderman",
+          skinModel: "ENDER_MAN",
           modelType: "ENDERMAN",
           variant  : "EnderManSkinVariant.ENDERMAN"
       ],

@@ -45,7 +45,7 @@ class TradingUtilsLegacyMigrationTest {
     SharedConstants.tryDetectVersion();
     Bootstrap.bootStrap();
     BuiltInRegistries.DATA_COMPONENT_INITIALIZERS
-        .build(VanillaRegistries.createLookup())
+        .build(VanillaRegistries.createWorldLookup())
         .forEach(DataComponentInitializers.PendingComponents::apply);
   }
 

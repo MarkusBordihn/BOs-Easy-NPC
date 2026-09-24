@@ -1,4 +1,4 @@
-# Changelog for Easy NPC: Core (26.2)
+# Changelog for Easy NPC: Core (26.3)
 
 ## Note
 

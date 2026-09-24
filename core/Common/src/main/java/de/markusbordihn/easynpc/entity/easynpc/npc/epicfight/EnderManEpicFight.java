@@ -23,7 +23,7 @@ import de.markusbordihn.easynpc.api.npc.raw.EnderManRaw;
 import de.markusbordihn.easynpc.compat.CompatConstants;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.monster.EnderMan;
+import net.minecraft.world.entity.monster.Enderman;
 import net.minecraft.world.level.Level;
 
 public class EnderManEpicFight extends EnderManRaw {
@@ -31,12 +31,12 @@ public class EnderManEpicFight extends EnderManRaw {
   public static final String ID =
       CompatConstants.MOD_EPIC_FIGHT_PREFIX + EnderManRaw.NPC_TYPE.getRegistryId();
 
-  public EnderManEpicFight(EntityType<? extends EnderMan> entityType, Level level) {
+  public EnderManEpicFight(EntityType<? extends Enderman> entityType, Level level) {
     super(entityType, level);
   }
 
   public EnderManEpicFight(
-      EntityType<? extends EnderMan> entityType, Level level, Enum<?> variant) {
+      EntityType<? extends Enderman> entityType, Level level, Enum<?> variant) {
     super(entityType, level, variant);
   }
 

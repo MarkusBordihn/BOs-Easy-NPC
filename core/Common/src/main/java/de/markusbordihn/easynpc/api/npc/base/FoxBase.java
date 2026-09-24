@@ -42,7 +42,7 @@ public class FoxBase extends FoxRaw implements BaseEasyNPC<FoxRaw> {
 
   public FoxBase(EntityType<? extends Fox> entityType, Level level, Enum<?> variantType) {
     super(entityType, level, variantType);
-    this.setInvulnerable(true);
+    this.setPermanentlyInvulnerable(true);
     this.refreshGroundNavigation();
   }
 

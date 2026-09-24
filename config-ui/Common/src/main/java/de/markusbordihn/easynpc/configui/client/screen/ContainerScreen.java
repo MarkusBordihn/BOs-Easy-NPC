@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.configui.client.screen;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.components.CloseButton;
 import de.markusbordihn.easynpc.configui.data.screen.AdditionalScreenData;
@@ -35,7 +36,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.lwjgl.glfw.GLFW;
+import org.lwjgl.sdl.SDLMouse;
 
 public class ContainerScreen<T extends ConfigUIMenu> extends AbstractContainerScreen<T>
     implements ScreenInterface {
@@ -106,7 +107,8 @@ public class ContainerScreen<T extends ConfigUIMenu> extends AbstractContainerSc
 
     // Set mouse position to former position, to avoid mouse jumps.
     if (formerMouseX > 0 && formerMouseY > 0) {
-      GLFW.glfwSetCursorPos(minecraftInstance.getWindow().handle(), formerMouseX, formerMouseY);
+      SDLMouse.SDL_WarpMouseInWindow(
+          minecraftInstance.getWindow().handle(), (float) formerMouseX, (float) formerMouseY);
       resetFormerMousePosition();
     }
 
@@ -167,9 +169,14 @@ public class ContainerScreen<T extends ConfigUIMenu> extends AbstractContainerSc
   @Override
   public boolean keyPressed(KeyEvent keyEvent) {
     int keyCode = keyEvent.input();
-    if (keyCode != 257 && keyCode != 335 && keyCode != 69 && keyCode != 73) {
+    if (keyCode != InputConstants.KEY_RETURN
+        && keyCode != InputConstants.KEY_NUMPADENTER
+        && keyCode != InputConstants.KEY_E
+        && keyCode != InputConstants.KEY_I) {
       return super.keyPressed(keyEvent);
     }
-    return keyCode == 257 || keyCode == 335 || keyCode == 73;
+    return keyCode == InputConstants.KEY_RETURN
+        || keyCode == InputConstants.KEY_NUMPADENTER
+        || keyCode == InputConstants.KEY_I;
   }
 }

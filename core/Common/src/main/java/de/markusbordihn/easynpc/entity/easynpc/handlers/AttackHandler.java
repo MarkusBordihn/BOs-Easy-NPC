@@ -26,7 +26,9 @@ import de.markusbordihn.easynpc.entity.easynpc.EasyNPCBase;
 import de.markusbordihn.easynpc.handler.FactionHandler;
 import de.markusbordihn.easynpc.item.ModItemTags;
 import java.util.Optional;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Holder.Reference;
+import net.minecraft.core.component.BlockTransformer;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
@@ -41,7 +43,6 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
-import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.BowItem;
 import net.minecraft.world.item.CrossbowItem;
 import net.minecraft.world.item.Item;
@@ -49,6 +50,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ProjectileWeaponItem;
+import net.minecraft.world.item.component.BlockTransformers;
 import net.minecraft.world.item.component.ChargedProjectiles;
 
 public class AttackHandler {
@@ -73,8 +75,9 @@ public class AttackHandler {
       return true;
     }
 
-    // Check for AxeItem
-    if (itemStack.getItem() instanceof AxeItem) {
+    // Check for axe items, which are identified by their axe block transformer.
+    Holder<BlockTransformer> blockTransformer = itemStack.get(DataComponents.BLOCK_TRANSFORMER);
+    if (blockTransformer != null && blockTransformer.is(BlockTransformers.AXE)) {
       return true;
     }
 

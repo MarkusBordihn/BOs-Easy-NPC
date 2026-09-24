@@ -408,7 +408,8 @@ public interface ActionHandler<E extends Mob> extends EasyNPC<E> {
     LivingEntity livingEntity = this.getLivingEntity();
     if (livingEntity != null && !this.isClientSideInstance()) {
       this.lookAtBlock(blockPos);
-      livingEntity.swing(InteractionHand.MAIN_HAND);
+      livingEntity.swing(
+          InteractionHand.MAIN_HAND, livingEntity.getMainHandItem().getInteractAnimation(), false);
       if (!livingEntity.getMainHandItem().isEmpty()) {
         this.getEntityServerLevel()
             .getBlockState(blockPos)

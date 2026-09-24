@@ -30,6 +30,7 @@
     EntityAttribute:{
       CanBreatheUnderwater:1b
     },
+    FreezingTime:-1,
     Invulnerable:1b,
     LeftHanded:0b,
     ModelData:{},

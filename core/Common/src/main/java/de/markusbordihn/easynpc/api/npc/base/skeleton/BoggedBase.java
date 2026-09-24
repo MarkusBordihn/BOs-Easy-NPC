@@ -37,7 +37,7 @@ public class BoggedBase extends BoggedRaw implements BaseEasyNPC<BoggedRaw> {
 
   public BoggedBase(EntityType<? extends Bogged> entityType, Level level) {
     super(entityType, level);
-    this.setInvulnerable(true);
+    this.setPermanentlyInvulnerable(true);
     this.getEntityAttributes()
         .setEnvironmentalAttributes(
             this.getEntityAttributes().getEnvironmentalAttributes().withCanBreatheUnderwater(true));

@@ -42,7 +42,7 @@ public class WolfBase extends WolfRaw implements BaseEasyNPC<WolfRaw> {
 
   public WolfBase(EntityType<? extends Wolf> entityType, Level level, Enum<?> variantType) {
     super(entityType, level, variantType);
-    this.setInvulnerable(true);
+    this.setPermanentlyInvulnerable(true);
     this.refreshGroundNavigation();
   }
 

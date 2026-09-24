@@ -42,7 +42,7 @@ public class CreeperBase extends CreeperRaw implements BaseEasyNPC<CreeperRaw> {
 
   public CreeperBase(EntityType<? extends Creeper> entityType, Level level, Enum<?> variantType) {
     super(entityType, level, variantType);
-    this.setInvulnerable(true);
+    this.setPermanentlyInvulnerable(true);
     this.refreshGroundNavigation();
   }
 

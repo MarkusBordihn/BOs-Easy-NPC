@@ -44,7 +44,7 @@ public class WitchBase extends WitchRaw implements BaseEasyNPC<WitchRaw> {
 
   public WitchBase(EntityType<? extends Witch> entityType, Level level, Enum<?> variantType) {
     super(entityType, level, variantType);
-    this.setInvulnerable(true);
+    this.setPermanentlyInvulnerable(true);
     this.refreshGroundNavigation();
   }
 

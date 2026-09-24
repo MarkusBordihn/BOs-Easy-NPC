@@ -156,10 +156,10 @@ public class EasyNPCLivingEntityRenderer {
       float pivotY = easyNPC.getLivingEntity().getBbHeight() * 0.5f;
       poseStack.translate(0.0f, pivotY, 0.0f);
       if (xDeg != 0.0f) {
-        poseStack.mulPose(Axis.XP.rotationDegrees(xDeg));
+        poseStack.rotateDegrees(Axis.XP, xDeg);
       }
       if (zDeg != 0.0f) {
-        poseStack.mulPose(Axis.ZP.rotationDegrees(zDeg));
+        poseStack.rotateDegrees(Axis.ZP, zDeg);
       }
       poseStack.translate(0.0f, -pivotY, 0.0f);
     }

@@ -42,7 +42,7 @@ public class DrownedBase extends DrownedRaw implements BaseEasyNPC<DrownedRaw> {
 
   public DrownedBase(EntityType<? extends Drowned> entityType, Level level, Enum<?> variantType) {
     super(entityType, level, variantType);
-    this.setInvulnerable(true);
+    this.setPermanentlyInvulnerable(true);
     this.getEntityAttributes()
         .setEnvironmentalAttributes(
             this.getEntityAttributes().getEnvironmentalAttributes().withCanBreatheUnderwater(true));

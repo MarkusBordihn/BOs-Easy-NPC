@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.client.renderer.manager;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.access.LivingEntitySwingStateAccessHelper;
 import de.markusbordihn.easynpc.access.WalkAnimationAccessHelper;
 import de.markusbordihn.easynpc.access.WaterStateAccessHelper;
 import java.util.HashMap;
@@ -271,8 +272,9 @@ public class RendererManager {
     targetEntity.yBodyRotO = sourceEntity.yBodyRotO;
 
     // Adjust animation position and speed.
-    targetEntity.attackAnim = sourceEntity.attackAnim;
-    targetEntity.oAttackAnim = sourceEntity.oAttackAnim;
+    if (targetEntity instanceof LivingEntitySwingStateAccessHelper swingStateAccess) {
+      swingStateAccess.copySwingStateFrom(sourceEntity);
+    }
 
     // Limb swing support.
     if (targetEntity.walkAnimation instanceof WalkAnimationAccessHelper walkAnimationAccess) {

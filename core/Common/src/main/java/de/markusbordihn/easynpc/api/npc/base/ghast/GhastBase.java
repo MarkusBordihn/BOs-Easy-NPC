@@ -47,7 +47,7 @@ public class GhastBase extends GhastRaw implements BaseEasyNPC<GhastRaw> {
 
   public GhastBase(EntityType<? extends Ghast> entityType, Level level, Enum<?> variantType) {
     super(entityType, level, variantType);
-    this.setInvulnerable(true);
+    this.setPermanentlyInvulnerable(true);
   }
 
   public static AttributeSupplier.Builder createAttributes() {

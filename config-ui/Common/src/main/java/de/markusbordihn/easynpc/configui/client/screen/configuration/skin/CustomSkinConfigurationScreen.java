@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.configui.client.screen.configuration.skin;
 
+import com.mojang.blaze3d.Blaze3D;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.client.texture.CustomTextureManager;
@@ -46,7 +47,6 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.Util;
 import net.minecraft.world.entity.player.Inventory;
 
 public class CustomSkinConfigurationScreen<T extends ConfigurationMenu>
@@ -177,7 +177,7 @@ public class CustomSkinConfigurationScreen<T extends ConfigurationMenu>
                   263,
                   "open_textures_folder",
                   skinModel.toString(),
-                  onPress -> Util.getPlatform().openFile(skinModelFolder.toFile())));
+                  onPress -> Blaze3D.openPath(skinModelFolder)));
     }
 
     // Skin Reload Button

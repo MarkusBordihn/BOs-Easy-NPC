@@ -32,7 +32,7 @@ public class IrisManager {
       List.of("net.irisshaders.iris.api.v0.IrisApi", "net.coderbot.iris.api.v0.IrisApi");
   private static final String PIPELINES_CLASS_NAME = "net.irisshaders.iris.pipeline.IrisPipelines";
   private static final String RENDER_PIPELINE_CLASS_NAME =
-      "com.mojang.blaze3d.pipeline.RenderPipeline";
+      "com.mojang.renderpearl.api.pipeline.RenderPipeline";
 
   private static Object apiInstance;
   private static Method shaderPackInUseMethod;

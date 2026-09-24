@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.configui.client.screen.editor.condition;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import de.markusbordihn.easynpc.client.screen.components.DrawBorder;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.configui.Constants;
@@ -117,7 +118,7 @@ public class ConditionDataListEntry extends ObjectSelectionList.Entry<ConditionD
     super.mouseClicked(mouseButtonEvent, doubleClick);
     this.editButton.mouseClicked(mouseButtonEvent, doubleClick);
     this.deleteButton.mouseClicked(mouseButtonEvent, doubleClick);
-    return mouseButtonEvent.button() == 0;
+    return mouseButtonEvent.button() == InputConstants.MOUSE_BUTTON_LEFT;
   }
 
   @Override

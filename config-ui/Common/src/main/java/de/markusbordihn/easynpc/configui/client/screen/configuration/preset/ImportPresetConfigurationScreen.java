@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.configui.client.screen.configuration.preset;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import de.markusbordihn.easynpc.client.screen.Screen;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
@@ -365,7 +366,7 @@ public class ImportPresetConfigurationScreen<T extends ConfigurationMenu>
 
       @Override
       public boolean mouseClicked(MouseButtonEvent mouseButtonEvent, boolean doubleClick) {
-        if (mouseButtonEvent.button() == 0) {
+        if (mouseButtonEvent.button() == InputConstants.MOUSE_BUTTON_LEFT) {
           this.select();
           return true;
         } else {

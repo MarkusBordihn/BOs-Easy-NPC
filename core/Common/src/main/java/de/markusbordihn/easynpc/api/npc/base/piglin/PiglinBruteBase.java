@@ -42,7 +42,7 @@ public class PiglinBruteBase extends PiglinBruteRaw implements BaseEasyNPC<Pigli
 
   public PiglinBruteBase(EntityType<? extends PiglinBrute> entityType, Level level) {
     super(entityType, level);
-    this.setInvulnerable(true);
+    this.setPermanentlyInvulnerable(true);
   }
 
   public static AttributeSupplier.Builder createAttributes() {

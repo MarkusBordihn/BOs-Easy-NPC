@@ -70,7 +70,7 @@ public class NameTagRenderer {
 
     poseStack.pushPose();
     poseStack.translate(nameTagAttachment.x, nameTagAttachment.y + 0.5d, nameTagAttachment.z);
-    poseStack.mulPose(cameraRenderState.orientation);
+    poseStack.rotate(cameraRenderState.orientation);
     poseStack.scale(NAME_TAG_SCALE, -NAME_TAG_SCALE, NAME_TAG_SCALE);
 
     if (occlusionMode == OcclusionMode.NEVER) {

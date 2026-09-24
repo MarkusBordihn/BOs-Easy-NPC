@@ -45,6 +45,7 @@ import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.SignBlockEntity;
 import net.minecraft.world.level.block.entity.SignText;
+import net.minecraft.world.level.block.entity.SignTextSlot;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class TestCommand extends Command {
@@ -258,10 +259,12 @@ public class TestCommand extends Command {
     BlockEntity blockEntity = level.getBlockEntity(signPos);
     if (blockEntity instanceof SignBlockEntity sign) {
       sign.setText(
-          new SignText()
-              .setMessage(0, Component.literal("EntityType:"))
-              .setMessage(1, Component.literal(entityType.toShortString())),
-          false);
+          SignText.EMPTY
+              .asMutable()
+              .setLine(0, Component.literal("EntityType:"))
+              .setLine(1, Component.literal(entityType.toShortString()))
+              .asImmutable(),
+          SignTextSlot.BACK);
       sign.setChanged();
     }
 
