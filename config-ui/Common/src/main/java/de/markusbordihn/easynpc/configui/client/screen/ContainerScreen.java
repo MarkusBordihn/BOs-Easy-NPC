@@ -108,7 +108,7 @@ public class ContainerScreen<T extends ConfigUIMenu> extends AbstractContainerSc
     // Set mouse position to former position, to avoid mouse jumps.
     if (formerMouseX > 0 && formerMouseY > 0) {
       SDLMouse.SDL_WarpMouseInWindow(
-          minecraftInstance.getWindow().handle(), (float) formerMouseX, (float) formerMouseY);
+          this.minecraftInstance.getWindow().handle(), (float) formerMouseX, (float) formerMouseY);
       resetFormerMousePosition();
     }
 

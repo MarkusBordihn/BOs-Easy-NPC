@@ -75,7 +75,7 @@ public class AttackHandler {
       return true;
     }
 
-    // Check for axe items, which are identified by their axe block transformer.
+    // Minecraft 26.3 removed AxeItem, so untagged axes are detected by their block transformer.
     Holder<BlockTransformer> blockTransformer = itemStack.get(DataComponents.BLOCK_TRANSFORMER);
     if (blockTransformer != null && blockTransformer.is(BlockTransformers.AXE)) {
       return true;

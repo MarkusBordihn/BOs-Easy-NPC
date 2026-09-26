@@ -30,10 +30,6 @@ public final class RenderPipelineCopy {
 
   private RenderPipelineCopy() {}
 
-  /**
-   * Creates a pipeline builder with all states of the source pipeline, including shaders, shader
-   * defines with their values, bind group layouts, color targets and vertex bindings.
-   */
   public static RenderPipeline.Builder builder(RenderPipeline source, Identifier location) {
     List<ColorTargetState> colorTargetStates = source.getColorTargetStates();
     List<VertexFormat> vertexFormatBindings = source.getVertexFormatBindings();

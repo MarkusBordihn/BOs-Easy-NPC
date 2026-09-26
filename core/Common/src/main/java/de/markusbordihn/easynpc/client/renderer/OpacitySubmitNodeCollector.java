@@ -345,8 +345,7 @@ public class OpacitySubmitNodeCollector implements SubmitNodeCollector {
       int color,
       Font.DisplayMode displayMode,
       int packedLight) {
-    this.collector.submitTextBackground(
-        poseStack, x0, y0, x1, y1, color, displayMode, packedLight);
+    this.collector.submitTextBackground(poseStack, x0, y0, x1, y1, color, displayMode, packedLight);
   }
 
   @Override

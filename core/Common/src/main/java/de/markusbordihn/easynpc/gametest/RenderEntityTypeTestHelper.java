@@ -21,7 +21,6 @@ package de.markusbordihn.easynpc.gametest;
 
 import de.markusbordihn.easynpc.client.renderer.manager.EntityTypeManager;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;

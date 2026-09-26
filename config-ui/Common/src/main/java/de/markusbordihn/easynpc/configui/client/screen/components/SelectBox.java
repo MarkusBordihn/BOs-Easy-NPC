@@ -263,7 +263,9 @@ public class SelectBox<T> extends AbstractWidget implements OverlayWidget {
   public boolean mouseClicked(MouseButtonEvent mouseButtonEvent, boolean doubleClick) {
     double mouseX = mouseButtonEvent.x();
     double mouseY = mouseButtonEvent.y();
-    if (!this.active || !this.visible || mouseButtonEvent.button() != InputConstants.MOUSE_BUTTON_LEFT) {
+    if (!this.active
+        || !this.visible
+        || mouseButtonEvent.button() != InputConstants.MOUSE_BUTTON_LEFT) {
       return false;
     }
 

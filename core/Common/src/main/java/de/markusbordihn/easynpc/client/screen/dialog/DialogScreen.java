@@ -591,7 +591,8 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
       this.pageFullyRevealed = true;
     }
 
-    if (keyEvent.input() == InputConstants.KEY_ESCAPE && !this.cachedDialogOptions.allowEscClose()) {
+    if (keyEvent.input() == InputConstants.KEY_ESCAPE
+        && !this.cachedDialogOptions.allowEscClose()) {
       return true;
     }
 
