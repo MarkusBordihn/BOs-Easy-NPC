@@ -46,7 +46,7 @@ public class HorseRawRenderer extends AbstractHorseRenderer<Horse, HorseModel<Ho
 
   @Override
   public ResourceLocation getTextureLocation(Horse entity) {
-    return getTextureLocationWithConfig(entity);
+    return this.getTextureLocationWithConfig(entity);
   }
 
   @Override

@@ -58,7 +58,7 @@ public record ChangeSkinMessage(UUID uuid, SkinDataEntry skinDataEntry)
 
   @Override
   public void handleServer(final ServerPlayer serverPlayer) {
-    EasyNPC<?> easyNPC = getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
+    EasyNPC<?> easyNPC = this.getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
     if (easyNPC == null || this.skinDataEntry == null || easyNPC.getEasyNPCSkinData() == null) {
       log.error("Skin validation failed for {} from {}", easyNPC, serverPlayer);
       return;
@@ -87,7 +87,7 @@ public record ChangeSkinMessage(UUID uuid, SkinDataEntry skinDataEntry)
 
     if (!SkinHandler.setSkin(easyNPC, this.skinDataEntry)) {
       log.error(
-          "Failed changing skin data entry:{} for {} from {}",
+          "Failed changing skin data entry {} for {} from {}",
           this.skinDataEntry,
           easyNPC,
           serverPlayer);

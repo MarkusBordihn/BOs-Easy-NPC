@@ -143,10 +143,12 @@ public final class EasyNPCEventHandler {
     if (damageSource.getEntity() instanceof ServerPlayer serverPlayer) {
       return serverPlayer;
     }
+
     if (damageSource.getDirectEntity() instanceof Projectile projectile
         && projectile.getOwner() instanceof ServerPlayer serverPlayerOfProjectile) {
       return serverPlayerOfProjectile;
     }
+
     return null;
   }
 }

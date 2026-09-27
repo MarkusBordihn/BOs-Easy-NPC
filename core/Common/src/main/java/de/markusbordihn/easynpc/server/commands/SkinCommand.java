@@ -37,7 +37,7 @@ public class SkinCommand extends Command {
 
   public static ArgumentBuilder<CommandSourceStack, ?> register() {
     return Commands.literal("skin")
-        .requires(cs -> cs.hasPermission(Commands.LEVEL_ALL))
+        .requires(commandSourceStack -> commandSourceStack.hasPermission(Commands.LEVEL_ALL))
         .then(
             Commands.literal("set")
                 .then(
@@ -149,7 +149,7 @@ public class SkinCommand extends Command {
       return sendFailureMessage(context, "Invalid EasyNPC target");
     }
 
-    var skinData = easyNPC.getEasyNPCSkinData();
+    SkinDataCapable<?> skinData = easyNPC.getEasyNPCSkinData();
     if (skinData == null) {
       return sendFailureMessage(context, "EasyNPC has no skin data");
     }

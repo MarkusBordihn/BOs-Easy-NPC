@@ -77,18 +77,14 @@ public class DisplayAttributeConfigurationScreen<T extends ConfigurationMenu>
   public void init() {
     super.init();
 
-    // Default button stats
     this.displayAttributeButton.active = false;
 
-    // Button rows
     int firstButtonRow = this.leftPos + 10;
     int secondButtonRow = this.leftPos + 160;
 
-    // Attribute data
     DisplayAttributeDataCapable<?> displayAttributeData =
         this.getEasyNPC().getEasyNPCDisplayAttributeData();
 
-    // Light Level
     this.lightLevelBox =
         this.addRenderableWidget(
             new TextField(
@@ -161,7 +157,6 @@ public class DisplayAttributeConfigurationScreen<T extends ConfigurationMenu>
                 }));
     this.opacitySaveButton.active = false;
 
-    // Main is visible attribute
     Checkbox isVisibleCheckbox =
         this.addRenderableWidget(
             new Checkbox(
@@ -177,7 +172,6 @@ public class DisplayAttributeConfigurationScreen<T extends ConfigurationMenu>
                           this.getEasyNPCUUID(), DisplayAttributeType.VISIBLE, checkbox.selected());
                 }));
 
-    // Add time-based visibility attributes with header
     int checkboxTopPos = this.buttonTopPos + 65;
     int gamemodeCheckboxTopPos = checkboxTopPos;
     checkboxTopPos += 15;
@@ -199,7 +193,6 @@ public class DisplayAttributeConfigurationScreen<T extends ConfigurationMenu>
       checkboxTopPos += 20;
     }
 
-    // Add game mode visibility attributes with header
     for (DisplayAttributeType displayAttributeType : GAMEMODE_VISIBILITY_ATTRIBUTES) {
       Checkbox visibilityCheckbox =
           new Checkbox(
@@ -216,7 +209,6 @@ public class DisplayAttributeConfigurationScreen<T extends ConfigurationMenu>
       gamemodeCheckboxTopPos += 20;
     }
 
-    // Add special visibility attributes with header
     int specialSectionY = Math.max(checkboxTopPos, gamemodeCheckboxTopPos) + 5;
     checkboxTopPos = specialSectionY + 15;
 
@@ -295,11 +287,9 @@ public class DisplayAttributeConfigurationScreen<T extends ConfigurationMenu>
           this.opacityBox.getY() + 4);
     }
 
-    // Calculate section positions
     int timeSectionY = this.buttonTopPos + 65;
     int specialSectionY = this.buttonTopPos + 145;
 
-    // Time visibility section header
     Text.drawConfigString(
         guiGraphics, this.font, "time_visibility_settings", firstButtonRow, timeSectionY, 0x555555);
 
@@ -311,7 +301,6 @@ public class DisplayAttributeConfigurationScreen<T extends ConfigurationMenu>
         timeSectionY,
         0x555555);
 
-    // Special visibility section header
     Text.drawConfigString(
         guiGraphics,
         this.font,
@@ -320,7 +309,7 @@ public class DisplayAttributeConfigurationScreen<T extends ConfigurationMenu>
         specialSectionY,
         0x555555);
 
-    if (getEasyNPC() == null) {
+    if (this.getEasyNPC() == null) {
       return;
     }
 
@@ -341,7 +330,7 @@ public class DisplayAttributeConfigurationScreen<T extends ConfigurationMenu>
     EntityRenderConfig config =
         EntityRenderConfig.guiScaled(
             this.leftPos + 260, this.contentTopPos + 190, scale, rotationYaw, rotationPitch);
-    EntityConfigScreenRenderer.renderEntity(guiGraphics, getEasyNPC(), config);
+    EntityConfigScreenRenderer.renderEntity(guiGraphics, this.getEasyNPC(), config);
   }
 
   private enum PreviewTime {

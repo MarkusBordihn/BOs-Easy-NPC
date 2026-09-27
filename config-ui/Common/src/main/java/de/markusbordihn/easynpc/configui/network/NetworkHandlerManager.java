@@ -148,6 +148,7 @@ public class NetworkHandlerManager {
       log.error("Failed to register client network handler!");
       return;
     }
+
     log.info("Registering client network handler ...");
 
     networkHandler.registerClientNetworkMessage(
@@ -168,6 +169,7 @@ public class NetworkHandlerManager {
       log.error("Failed to register server network handler!");
       return;
     }
+
     log.info("Registering server network handler ...");
 
     networkHandler.registerServerNetworkMessage(

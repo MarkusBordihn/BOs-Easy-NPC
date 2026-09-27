@@ -37,15 +37,15 @@ public interface SkinDataCapable<T extends Mob> extends EasyNPC<T> {
   }
 
   default String getSkinURL() {
-    return getSkinDataEntry().url();
+    return this.getSkinDataEntry().url();
   }
 
   default UUID getSkinUUID() {
-    return getSkinDataEntry().uuid();
+    return this.getSkinDataEntry().uuid();
   }
 
   default SkinType getSkinType() {
-    return getSkinDataEntry().type();
+    return this.getSkinDataEntry().type();
   }
 
   default SkinModel getSkinModel() {
@@ -53,32 +53,29 @@ public interface SkinDataCapable<T extends Mob> extends EasyNPC<T> {
   }
 
   default SkinDataEntry getSkinDataEntry() {
-    return getSynchedEntityData(SynchedDataIndex.SKIN_DATA);
+    return this.getSynchedEntityData(SynchedDataIndex.SKIN_DATA);
   }
 
   default void setSkinDataEntry(SkinDataEntry skinDataEntry) {
-    setSynchedEntityData(SynchedDataIndex.SKIN_DATA, skinDataEntry);
+    this.setSynchedEntityData(SynchedDataIndex.SKIN_DATA, skinDataEntry);
   }
 
   default void defineSynchedSkinData() {
-    defineSynchedEntityData(SynchedDataIndex.SKIN_DATA, new SkinDataEntry());
+    this.defineSynchedEntityData(SynchedDataIndex.SKIN_DATA, new SkinDataEntry());
   }
 
   default void addAdditionalSkinData(CompoundTag compoundTag) {
     CompoundTag skinTag = new CompoundTag();
-    getSkinDataEntry().write(skinTag);
+    this.getSkinDataEntry().write(skinTag);
     compoundTag.put(EASY_NPC_DATA_SKIN_DATA_TAG, skinTag);
   }
 
   default void readAdditionalSkinData(CompoundTag compoundTag) {
-
-    // Early exit if no skin data is available.
     if (!compoundTag.contains(EASY_NPC_DATA_SKIN_DATA_TAG)) {
       log.debug("No skin data available for {}.", this);
       return;
     }
 
-    // Load skin data from new format
     SkinDataEntry skinDataEntry =
         new SkinDataEntry(compoundTag.getCompound(EASY_NPC_DATA_SKIN_DATA_TAG));
     this.setSkinDataEntry(skinDataEntry);

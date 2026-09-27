@@ -116,7 +116,6 @@ public class EasyNPCMain {
                 }));
     NetworkMessageHandlerManager.registerClientHandler(new ClientNetworkMessageHandler());
 
-    // Initialize the client mod initializer
     DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> new EasyNPCClient(modEventBus));
   }
 }

@@ -35,8 +35,8 @@ public class ImportWorldPresetConfigurationScreen<T extends ConfigurationMenu>
 
   public ImportWorldPresetConfigurationScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
-    importPresetButtonLabel = "import_world_preset";
-    importPresetHeaderLabel = "preset_world_for";
+    this.importPresetButtonLabel = "import_world_preset";
+    this.importPresetHeaderLabel = "preset_world_for";
     this.worldPresets =
         CompoundTagUtils.readResourceLocations(
                 this.getAdditionalScreenData().getList("WorldPresets"))
@@ -50,17 +50,15 @@ public class ImportWorldPresetConfigurationScreen<T extends ConfigurationMenu>
   @Override
   public void loadPreset(ResourceLocation resourceLocation) {
     NetworkMessageHandlerManager.getServerHandler()
-        .importWorldPreset(getEasyNPCUUID(), resourceLocation);
+        .importWorldPreset(this.getEasyNPCUUID(), resourceLocation);
   }
 
   @Override
   public void init() {
     super.init();
 
-    // Default button stats
     this.worldImportPresetButton.active = false;
 
-    // Update worlds presets
     ImportPresetConfigurationScreen.updatePresets(this.worldPresets.stream().toList());
     this.presetSelectionList.updatePresets();
   }

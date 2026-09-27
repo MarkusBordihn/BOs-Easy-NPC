@@ -38,27 +38,24 @@ public class CustomSkinDataFiles {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   protected static final String DATA_FOLDER_NAME = "skin";
-  protected static final String TEMPLATE_PREFIX = "_template.png";
+  protected static final String TEMPLATE_SUFFIX = "_template.png";
 
   private CustomSkinDataFiles() {}
 
   public static void registerCustomSkinData() {
     log.debug("{} custom skin data ...", Constants.LOG_REGISTER_PREFIX);
 
-    // Prepare skin data folder
     Path skinDataFolder = getCustomSkinDataFolder();
     if (skinDataFolder == null) {
       return;
     }
 
-    // Prepare skin model folders
     for (SkinModel skinModel : SkinModel.values()) {
       Path skinModelFolder = getCustomSkinDataFolder(skinModel);
       if (skinModelFolder == null) {
         continue;
       }
 
-      // Get all skin template files from this mod's resources only (filter by namespace).
       String skinModelName = skinModel.getName();
       Map<ResourceLocation, Resource> resourceLocations =
           Minecraft.getInstance()
@@ -67,19 +64,14 @@ public class CustomSkinDataFiles {
                   DataFileHandler.RESOURCE_TEXTURES_ENTITY_PATH + "/" + skinModelName,
                   fileName ->
                       fileName.getNamespace().equals(Constants.MOD_ID)
-                          && fileName.toString().endsWith(TEMPLATE_PREFIX));
+                          && fileName.toString().endsWith(TEMPLATE_SUFFIX));
 
-      // Copy all template files to the custom skin model folder.
       for (ResourceLocation resourceLocation : resourceLocations.keySet()) {
         File skinModelTemplateFile =
             skinModelFolder
                 .resolve(DataFileHandler.getFileNameFromResourceLocation(resourceLocation))
                 .toFile();
-        boolean success = DataFileHandler.copyResourceFile(resourceLocation, skinModelTemplateFile);
-        if (success && !skinModelTemplateFile.exists()) {
-          log.debug(
-              "Copied skin model template file {} to {}", resourceLocation, skinModelTemplateFile);
-        }
+        DataFileHandler.copyResourceFile(resourceLocation, skinModelTemplateFile);
       }
     }
 
@@ -139,21 +131,7 @@ public class CustomSkinDataFiles {
   }
 
   public static Path getCustomSkinDataFolder(SkinModel skinModel) {
-    Path skinDataFolder = getCustomSkinDataFolder();
-    if (skinDataFolder == null) {
-      return null;
-    }
-    String skinModelName = skinModel.getName();
-    Path skinDataFolderPath = skinDataFolder.resolve(skinModelName);
-    try {
-      if (Files.exists(skinDataFolderPath) && Files.isDirectory(skinDataFolderPath)) {
-        return skinDataFolderPath;
-      }
-      log.debug("Created new skin data folder {} at {}!", skinModelName, skinDataFolderPath);
-      return Files.createDirectories(skinDataFolderPath);
-    } catch (IOException e) {
-      log.error("Error creating skin data folder {} at {}:", skinModelName, skinDataFolderPath, e);
-    }
-    return null;
+    return DataFileHandler.getOrCreateSubdirectory(
+        getCustomSkinDataFolder(), skinModel.getName(), "skin data");
   }
 }

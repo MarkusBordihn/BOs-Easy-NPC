@@ -53,7 +53,7 @@ public class EasyNPCIronGolemModelMixin<T extends IronGolem>
   }
 
   @Inject(method = "<init>(Lnet/minecraft/client/model/geom/ModelPart;)V", at = @At("TAIL"))
-  private void easyNpcModel(ModelPart modelPart, CallbackInfo callbackInfo) {
+  private void easyNPC$initModelManager(ModelPart modelPart, CallbackInfo callbackInfo) {
     this.easyNPC$modelManager =
         new EasyNPCModelManager(modelPart)
             .defineModelPart(ModelPartType.HEAD, this.head)
@@ -68,7 +68,7 @@ public class EasyNPCIronGolemModelMixin<T extends IronGolem>
       method = "setupAnim(Lnet/minecraft/world/entity/animal/IronGolem;FFFFF)V",
       at = @At("HEAD"),
       cancellable = true)
-  private void setupNpcAnimStart(
+  private void easyNPC$setupAnimStart(
       T entity,
       float limbSwing,
       float limbSwingAmount,
@@ -85,7 +85,7 @@ public class EasyNPCIronGolemModelMixin<T extends IronGolem>
   @Inject(
       method = "setupAnim(Lnet/minecraft/world/entity/animal/IronGolem;FFFFF)V",
       at = @At("TAIL"))
-  private void setupNpcAnimEnd(
+  private void easyNPC$setupAnimEnd(
       T entity,
       float limbSwing,
       float limbSwingAmount,

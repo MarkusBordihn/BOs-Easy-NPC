@@ -64,7 +64,7 @@ public record SaveDialogButtonMessage(
 
   @Override
   public void handleServer(final ServerPlayer serverPlayer) {
-    EasyNPC<?> easyNPC = getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
+    EasyNPC<?> easyNPC = this.getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
     if (easyNPC == null) {
       return;
     }
@@ -93,7 +93,7 @@ public record SaveDialogButtonMessage(
 
     if (!dialogData.hasDialog(this.dialogId)) {
       log.error(
-          "Unknown dialog button editor request for dialog {} for {} from {}",
+          "Unknown dialog for dialog button save request for dialog {} for {} from {}",
           this.dialogId,
           easyNPC,
           serverPlayer);
@@ -124,7 +124,7 @@ public record SaveDialogButtonMessage(
     if (sanitizedDialogButtonEntry == null) {
       log.warn(
           "Blocked dialog button save for dialog {} for {} from {} because it contains an action type blocked by security.cfg feature settings",
-          dialogId,
+          this.dialogId,
           easyNPC,
           serverPlayer);
       return;
@@ -149,7 +149,7 @@ public record SaveDialogButtonMessage(
       log.info(
           "Add new dialog button {} for dialog {} for {} from {}",
           sanitizedDialogButtonEntry,
-          dialogId,
+          this.dialogId,
           easyNPC,
           serverPlayer);
       dialogDataEntry.setDialogButton(sanitizedDialogButtonEntry);
@@ -157,7 +157,7 @@ public record SaveDialogButtonMessage(
       log.info(
           "Edit existing dialog button {} for dialog {} for {} from {}",
           sanitizedDialogButtonEntry,
-          dialogId,
+          this.dialogId,
           easyNPC,
           serverPlayer);
       dialogDataEntry.setDialogButton(this.dialogButtonId, sanitizedDialogButtonEntry);

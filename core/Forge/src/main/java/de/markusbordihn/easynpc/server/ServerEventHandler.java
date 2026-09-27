@@ -53,12 +53,12 @@ public class ServerEventHandler {
   }
 
   @SubscribeEvent
-  public static void handleServerAboutToStopEvent(ServerStoppingEvent event) {
+  public static void handleServerStoppingEvent(ServerStoppingEvent event) {
     ServerEvents.handleServerStopping(event.getServer());
   }
 
   @SubscribeEvent
-  public static void onServerTick(ServerTickEvent.ServerTickEvent event) {
+  public static void onServerTick(ServerTickEvent event) {
     if (event.phase == TickEvent.Phase.END) {
       ServerEvents.handleServerTick(ServerLifecycleHooks.getCurrentServer());
     }

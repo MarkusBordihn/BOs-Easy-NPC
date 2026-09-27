@@ -41,7 +41,7 @@ public class DeleteButton extends SpriteButton {
         left,
         top,
         width,
-        DEFAULT_HEIGHT,
+        height,
         width > DEFAULT_WIDTH_SMALL ? "delete" : "",
         TEXTURE,
         SPRITE_X,

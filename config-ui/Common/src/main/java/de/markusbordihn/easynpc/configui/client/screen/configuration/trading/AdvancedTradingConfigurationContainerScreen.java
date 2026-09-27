@@ -117,14 +117,11 @@ public class AdvancedTradingConfigurationContainerScreen<T extends Configuration
   public void init() {
     super.init();
 
-    // Default button stats
     this.advancedTradesButton.active = false;
 
-    // Trading Data
     TradingDataCapable<?> tradingData = this.getEasyNPC().getEasyNPCTradingData();
     TradingDataSet tradingDataSet = tradingData.getTradingDataSet();
 
-    // Adding trading edit boxes for advanced trading configuration
     int editBoxPositionX = this.contentLeftPos + 134;
     int editBoxPositionY = this.topPos + AdvancedTradingConfigurationMenu.TRADING_START_POSITION_Y;
     MerchantOffers merchantOffers = tradingData.getTradingOffers();
@@ -143,7 +140,6 @@ public class AdvancedTradingConfigurationContainerScreen<T extends Configuration
           (!merchantOffer.getBaseCostA().isEmpty() || !merchantOffer.getCostB().isEmpty())
               && !merchantOffer.getResult().isEmpty();
 
-      // Max Uses Edit Box
       EditBox maxUsesEditBox =
           new PositiveNumberField(this.font, editBoxPositionX, editBoxPositionY, 32);
       maxUsesEditBox.setMaxLength(4);
@@ -151,24 +147,24 @@ public class AdvancedTradingConfigurationContainerScreen<T extends Configuration
           merchantOffer.getMaxUses() > 0 ? merchantOffer.getMaxUses() + "" : "16");
       maxUsesEditBox.setResponder(
           text ->
-              onMaxUsesEditBoxChanged(tradingOfferIndex, text, merchantOffer.getMaxUses() + ""));
+              this.onMaxUsesEditBoxChanged(
+                  tradingOfferIndex, text, merchantOffer.getMaxUses() + ""));
       maxUsesEditBox.setEditable(hasValidOffer);
-      maxUsesEditBoxes.put(tradingOfferIndex, maxUsesEditBox);
+      this.maxUsesEditBoxes.put(tradingOfferIndex, maxUsesEditBox);
       this.addRenderableWidget(maxUsesEditBox);
 
-      // Reward Exp Edit Box
       EditBox rewardExpEditBox =
           new TextField(this.font, editBoxPositionX + 37, editBoxPositionY, 26);
       rewardExpEditBox.setMaxLength(3);
       rewardExpEditBox.setValue(merchantOffer.getXp() >= 0 ? merchantOffer.getXp() + "" : "0");
       rewardExpEditBox.setResponder(
-          text -> onRewardExpEditBoxChanged(tradingOfferIndex, text, merchantOffer.getXp() + ""));
+          text ->
+              this.onRewardExpEditBoxChanged(tradingOfferIndex, text, merchantOffer.getXp() + ""));
       rewardExpEditBox.setFilter(ValueUtils::isNumericValue);
       rewardExpEditBox.setEditable(hasValidOffer);
-      rewardExpEditBoxes.put(tradingOfferIndex, rewardExpEditBox);
+      this.rewardExpEditBoxes.put(tradingOfferIndex, rewardExpEditBox);
       this.addRenderableWidget(rewardExpEditBox);
 
-      // Price Multiplier Edit Box
       EditBox priceMultiplierEditBox =
           new TextField(this.font, editBoxPositionX + 68, editBoxPositionY, 32);
       priceMultiplierEditBox.setMaxLength(4);
@@ -176,26 +172,25 @@ public class AdvancedTradingConfigurationContainerScreen<T extends Configuration
           merchantOffer.getPriceMultiplier() >= 0 ? merchantOffer.getPriceMultiplier() + "" : "0");
       priceMultiplierEditBox.setResponder(
           text ->
-              onPriceMultiplierEditBoxChanged(
+              this.onPriceMultiplierEditBoxChanged(
                   tradingOfferIndex, text, merchantOffer.getPriceMultiplier() + ""));
       priceMultiplierEditBox.setFilter(ValueUtils::isFloatValue);
       priceMultiplierEditBox.setEditable(hasValidOffer);
-      priceMultiplierEditBoxes.put(tradingOfferIndex, priceMultiplierEditBox);
+      this.priceMultiplierEditBoxes.put(tradingOfferIndex, priceMultiplierEditBox);
       this.addRenderableWidget(priceMultiplierEditBox);
 
-      // Demand Edit Box
       EditBox demandEditBox =
           new TextField(this.font, editBoxPositionX + 106, editBoxPositionY, 20);
       demandEditBox.setMaxLength(2);
       demandEditBox.setValue(merchantOffer.getDemand() >= 0 ? merchantOffer.getDemand() + "" : "0");
       demandEditBox.setResponder(
-          text -> onDemandEditBoxChanged(tradingOfferIndex, text, merchantOffer.getDemand() + ""));
+          text ->
+              this.onDemandEditBoxChanged(tradingOfferIndex, text, merchantOffer.getDemand() + ""));
       demandEditBox.setFilter(ValueUtils::isNumericValue);
       demandEditBox.setEditable(hasValidOffer);
-      demandEditBoxes.put(tradingOfferIndex, demandEditBox);
+      this.demandEditBoxes.put(tradingOfferIndex, demandEditBox);
       this.addRenderableWidget(demandEditBox);
 
-      // Per-offer action button
       final int capturedOfferIndex = tradingOfferIndex;
       this.addRenderableWidget(
           new AddButton(
@@ -213,7 +208,6 @@ public class AdvancedTradingConfigurationContainerScreen<T extends Configuration
       editBoxPositionY += 19;
     }
 
-    // Reset Every Min Edit Box
     this.resetsEveryMinEditBox =
         new TextField(this.font, this.contentLeftPos + 166, this.contentTopPos + 169, 32);
     this.resetsEveryMinEditBox.setMaxLength(3);
@@ -222,7 +216,6 @@ public class AdvancedTradingConfigurationContainerScreen<T extends Configuration
     this.resetsEveryMinEditBox.setFilter(ValueUtils::isNumericValue);
     this.addRenderableWidget(this.resetsEveryMinEditBox);
 
-    // Reset Trades Button
     this.addRenderableWidget(
         new TextButton(
             this.contentLeftPos + 166,
@@ -233,7 +226,6 @@ public class AdvancedTradingConfigurationContainerScreen<T extends Configuration
                 NetworkMessageHandlerManager.getServerHandler()
                     .resetTradingOffers(this.getEasyNPCUUID())));
 
-    // Page navigation Buttons
     this.previousPageButton =
         this.addRenderableWidget(
             new TextButton(
@@ -266,7 +258,6 @@ public class AdvancedTradingConfigurationContainerScreen<T extends Configuration
   public void containerTick() {
     super.containerTick();
 
-    // Control page navigation buttons
     if (this.navigationTicker++ > NAVIGATION_TICKER) {
       if (this.previousPageButton != null) {
         this.previousPageButton.active = this.menu.getPageIndex() > 0;
@@ -285,28 +276,24 @@ public class AdvancedTradingConfigurationContainerScreen<T extends Configuration
         int tradingOfferIndex =
             (this.menu.getPageIndex() * AdvancedTradingConfigurationMenu.TRADING_OFFERS_PER_PAGE)
                 + tradingOffer;
-        boolean hasValidOffer = isValidOffer(tradingOfferIndex);
+        boolean hasValidOffer = this.isValidOffer(tradingOfferIndex);
 
-        // Max Uses Edit Box
-        EditBox maxUsesEditBox = maxUsesEditBoxes.get(tradingOfferIndex);
+        EditBox maxUsesEditBox = this.maxUsesEditBoxes.get(tradingOfferIndex);
         if (maxUsesEditBox != null) {
           maxUsesEditBox.setEditable(hasValidOffer);
         }
 
-        // Reward Exp Edit Box
-        EditBox rewardExpEditBox = rewardExpEditBoxes.get(tradingOfferIndex);
+        EditBox rewardExpEditBox = this.rewardExpEditBoxes.get(tradingOfferIndex);
         if (rewardExpEditBox != null) {
           rewardExpEditBox.setEditable(hasValidOffer);
         }
 
-        // Price Multiplier Edit Box
-        EditBox priceMultiplierEditBox = priceMultiplierEditBoxes.get(tradingOfferIndex);
+        EditBox priceMultiplierEditBox = this.priceMultiplierEditBoxes.get(tradingOfferIndex);
         if (priceMultiplierEditBox != null) {
           priceMultiplierEditBox.setEditable(hasValidOffer);
         }
 
-        // Demand Edit Box
-        EditBox demandEditBox = demandEditBoxes.get(tradingOfferIndex);
+        EditBox demandEditBox = this.demandEditBoxes.get(tradingOfferIndex);
         if (demandEditBox != null) {
           demandEditBox.setEditable(hasValidOffer);
         }
@@ -336,7 +323,7 @@ public class AdvancedTradingConfigurationContainerScreen<T extends Configuration
   protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
     super.renderBg(guiGraphics, partialTicks, mouseX, mouseY);
 
-    // Render Legend (without translation / not enough space for translation)
+    // Legend stays untranslated, there is not enough space for translated labels.
     int legendTopPositionY = this.contentTopPos + 2;
     Text.drawString(
         guiGraphics, this.font, "Cost A", this.leftPos + 10, legendTopPositionY, 0xA04040);
@@ -354,7 +341,6 @@ public class AdvancedTradingConfigurationContainerScreen<T extends Configuration
 
     MerchantOffers merchantOffers = this.getEasyNPC().getEasyNPCTradingData().getTradingOffers();
 
-    // Render Trading Slots
     int slotPositionX =
         this.leftPos + AdvancedTradingConfigurationMenu.TRADING_START_POSITION_X - 1;
     int slotPositionY = this.topPos + AdvancedTradingConfigurationMenu.TRADING_START_POSITION_Y - 1;
@@ -362,7 +348,6 @@ public class AdvancedTradingConfigurationContainerScreen<T extends Configuration
         tradingOffer < AdvancedTradingConfigurationMenu.TRADING_OFFERS_PER_PAGE;
         tradingOffer++) {
 
-      // Offer Label
       int tradingOfferIndex =
           (this.menu.getPageIndex() * AdvancedTradingConfigurationMenu.TRADING_OFFERS_PER_PAGE)
               + tradingOffer;
@@ -374,7 +359,6 @@ public class AdvancedTradingConfigurationContainerScreen<T extends Configuration
           slotPositionY + 5,
           0x404040);
 
-      // Item A Slot
       int itemASlotTopPosition = slotPositionY;
       Graphics.blit(
           guiGraphics,
@@ -386,7 +370,6 @@ public class AdvancedTradingConfigurationContainerScreen<T extends Configuration
           18,
           18);
 
-      // "+" Label
       Text.drawString(
           guiGraphics,
           this.font,
@@ -395,7 +378,6 @@ public class AdvancedTradingConfigurationContainerScreen<T extends Configuration
           itemASlotTopPosition + 5,
           0x404040);
 
-      // Item B Slot
       int itemBSlotLeftPosition =
           slotPositionX
               + AdvancedTradingConfigurationMenu.TRADING_SLOT_SIZE
@@ -411,7 +393,6 @@ public class AdvancedTradingConfigurationContainerScreen<T extends Configuration
           18,
           18);
 
-      // "=" Label
       Text.drawString(
           guiGraphics,
           this.font,
@@ -420,7 +401,6 @@ public class AdvancedTradingConfigurationContainerScreen<T extends Configuration
           itemBSlotTopPosition + 5,
           0x404040);
 
-      // Result Slot
       Graphics.blit(
           guiGraphics,
           Constants.TEXTURE_INVENTORY,
@@ -434,7 +414,6 @@ public class AdvancedTradingConfigurationContainerScreen<T extends Configuration
           18,
           18);
 
-      // Uses / MaxUses label
       if (merchantOffers != null && tradingOfferIndex < merchantOffers.size()) {
         MerchantOffer offer = merchantOffers.get(tradingOfferIndex);
         Text.drawString(
@@ -449,7 +428,6 @@ public class AdvancedTradingConfigurationContainerScreen<T extends Configuration
       slotPositionY += AdvancedTradingConfigurationMenu.TRADING_SLOT_SIZE + 1;
     }
 
-    // Player Inventory Slots
     Graphics.blit(
         guiGraphics,
         Constants.TEXTURE_INVENTORY,
@@ -460,7 +438,6 @@ public class AdvancedTradingConfigurationContainerScreen<T extends Configuration
         162,
         54);
 
-    // Player Hotbar Slots
     Graphics.blit(
         guiGraphics,
         Constants.TEXTURE_INVENTORY,
@@ -471,7 +448,6 @@ public class AdvancedTradingConfigurationContainerScreen<T extends Configuration
         162,
         18);
 
-    // Render Reset Every Min Label
     Text.drawConfigString(
         guiGraphics,
         this.font,

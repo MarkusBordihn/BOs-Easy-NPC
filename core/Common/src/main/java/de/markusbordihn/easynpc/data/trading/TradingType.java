@@ -27,7 +27,7 @@ public enum TradingType {
   CUSTOM,
   NONE;
 
-  public static TradingType get(String dialogType) {
-    return EnumUtils.get(TradingType.class, dialogType, NONE);
+  public static TradingType get(String tradingType) {
+    return EnumUtils.get(TradingType.class, tradingType, NONE);
   }
 }

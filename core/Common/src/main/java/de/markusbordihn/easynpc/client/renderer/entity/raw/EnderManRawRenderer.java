@@ -39,7 +39,7 @@ public class EnderManRawRenderer extends EndermanRenderer implements EasyNPCEnti
 
   @Override
   public ResourceLocation getTextureLocation(EnderMan entity) {
-    return getTextureLocationWithConfig(entity);
+    return this.getTextureLocationWithConfig(entity);
   }
 
   @Override

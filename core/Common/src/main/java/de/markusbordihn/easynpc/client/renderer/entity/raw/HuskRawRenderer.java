@@ -39,7 +39,7 @@ public class HuskRawRenderer extends ZombieRenderer implements EasyNPCEntityRend
 
   @Override
   public ResourceLocation getTextureLocation(Zombie entity) {
-    return getTextureLocationWithConfig(entity);
+    return this.getTextureLocationWithConfig(entity);
   }
 
   @Override

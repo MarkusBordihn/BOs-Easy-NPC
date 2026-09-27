@@ -36,17 +36,17 @@ public interface ModelScaleDataCapable<T extends Mob> extends ModelRootDataCapab
 
   default EnumMap<ModelPartType, CustomScale> getModelPartScale() {
     EnumMap<ModelPartType, CustomScale> modelPartMap =
-        getSynchedEntityData(SynchedDataIndex.MODEL_SCALE);
+        this.getSynchedEntityData(SynchedDataIndex.MODEL_SCALE);
     if (modelPartMap == null) {
       modelPartMap = new EnumMap<>(ModelPartType.class);
-      setModelPartScale(modelPartMap);
+      this.setModelPartScale(modelPartMap);
     }
     return modelPartMap;
   }
 
   default void setModelPartScale(EnumMap<ModelPartType, CustomScale> modelPartMap) {
     if (modelPartMap != null) {
-      setSynchedEntityData(SynchedDataIndex.MODEL_SCALE, modelPartMap, true);
+      this.setSynchedEntityData(SynchedDataIndex.MODEL_SCALE, modelPartMap, true);
     }
   }
 
@@ -56,22 +56,22 @@ public interface ModelScaleDataCapable<T extends Mob> extends ModelRootDataCapab
     }
 
     if (modelPartType == ModelPartType.ROOT) {
-      setModelRootScale(scale);
+      this.setModelRootScale(scale);
       return;
     }
 
-    EnumMap<ModelPartType, CustomScale> modelPartMap = getModelPartScale();
+    EnumMap<ModelPartType, CustomScale> modelPartMap = this.getModelPartScale();
     modelPartMap.put(modelPartType, scale);
     this.setModelPartScale(new EnumMap<>(modelPartMap));
   }
 
   default CustomScale getModelPartScale(ModelPartType modelPartType) {
-    EnumMap<ModelPartType, CustomScale> modelPartMap = getModelPartScale();
+    EnumMap<ModelPartType, CustomScale> modelPartMap = this.getModelPartScale();
     return modelPartMap.getOrDefault(modelPartType, DEFAULT_MODEL_PART_SCALE);
   }
 
   default boolean hasChangedModelScale() {
-    EnumMap<ModelPartType, CustomScale> modelPartMap = getModelPartScale();
+    EnumMap<ModelPartType, CustomScale> modelPartMap = this.getModelPartScale();
     for (Map.Entry<ModelPartType, CustomScale> entry : modelPartMap.entrySet()) {
       if (entry.getValue().hasChanged()) {
         return true;
@@ -86,12 +86,12 @@ public interface ModelScaleDataCapable<T extends Mob> extends ModelRootDataCapab
   }
 
   default void defineSynchedModelScaleData() {
-    defineSynchedEntityData(SynchedDataIndex.MODEL_SCALE, new EnumMap<>(ModelPartType.class));
+    this.defineSynchedEntityData(SynchedDataIndex.MODEL_SCALE, new EnumMap<>(ModelPartType.class));
   }
 
   default void addAdditionalModelScaleData(CompoundTag compoundTag) {
     CompoundTag positionsTag = new CompoundTag();
-    EnumMap<ModelPartType, CustomScale> modelPartMap = getModelPartScale();
+    EnumMap<ModelPartType, CustomScale> modelPartMap = this.getModelPartScale();
     for (Map.Entry<ModelPartType, CustomScale> entry : modelPartMap.entrySet()) {
       if (entry.getValue() != null && entry.getValue().hasChanged()) {
         positionsTag.put(entry.getKey().getTagName(), entry.getValue().save());
@@ -113,6 +113,6 @@ public interface ModelScaleDataCapable<T extends Mob> extends ModelRootDataCapab
         modelPartMap.put(modelPartType, new CustomScale(modelPartType, positionTag));
       }
     }
-    setModelPartScale(modelPartMap);
+    this.setModelPartScale(modelPartMap);
   }
 }

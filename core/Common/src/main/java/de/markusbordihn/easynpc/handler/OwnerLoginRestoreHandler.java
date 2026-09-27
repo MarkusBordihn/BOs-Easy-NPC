@@ -37,7 +37,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -81,6 +80,7 @@ public class OwnerLoginRestoreHandler {
             dueOwners.add(ownerUUID);
             return 0;
           }
+
           return remainingTicks - 1;
         });
 
@@ -132,7 +132,7 @@ public class OwnerLoginRestoreHandler {
       UUID entityUUID, ServerPlayer serverPlayer, ServerLevel serverLevel) {
     Optional<BlockPos> spawnPosition =
         PlacementHandler.findSafeSpawnNear(
-            serverLevel, serverPlayer.position(), EntityDimensions.scalable(0.6F, 1.8F));
+            serverLevel, serverPlayer.position(), PlacementHandler.DEFAULT_SPAWN_DIMENSIONS);
     if (spawnPosition.isEmpty()) {
       log.warn("Found no free spot to restore NPC {} near {}", entityUUID, serverPlayer.position());
       return false;

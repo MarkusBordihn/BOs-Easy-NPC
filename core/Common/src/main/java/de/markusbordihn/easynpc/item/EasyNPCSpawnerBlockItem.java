@@ -42,9 +42,8 @@ public class EasyNPCSpawnerBlockItem extends BlockItem {
       ItemStack itemStack, Level level, List<Component> tooltip, TooltipFlag flag) {
     super.appendHoverText(itemStack, level, tooltip, flag);
 
-    // Add additional information to the tooltip.
-    if (spawnerType != null) {
-      tooltip.add(Component.translatable(spawnerType.getDescriptionId()));
+    if (this.spawnerType != null) {
+      tooltip.add(Component.translatable(this.spawnerType.getDescriptionId()));
     }
   }
 }

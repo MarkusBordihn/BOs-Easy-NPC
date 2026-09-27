@@ -50,22 +50,22 @@ public class NPCFileStorage {
 
   public NPCFileStorage(Path worldPath) {
     this.storageFolder = worldPath.resolve(Constants.MOD_ID).resolve(NPCS_FOLDER);
-    ensureStorageFolderExists();
+    this.ensureStorageFolderExists();
   }
 
   private void ensureStorageFolderExists() {
     try {
-      if (!Files.exists(storageFolder)) {
-        Files.createDirectories(storageFolder);
-        log.info("Created NPC storage folder at {}", storageFolder);
+      if (!Files.exists(this.storageFolder)) {
+        Files.createDirectories(this.storageFolder);
+        log.info("Created NPC storage folder at {}", this.storageFolder);
       }
     } catch (IOException e) {
-      log.error("Failed to create NPC storage folder at {}", storageFolder, e);
+      log.error("Failed to create NPC storage folder at {}", this.storageFolder, e);
     }
   }
 
   public Path getNPCFilePath(UUID uuid) {
-    return storageFolder.resolve(uuid.toString() + NPC_FILE_EXTENSION);
+    return this.storageFolder.resolve(uuid.toString() + NPC_FILE_EXTENSION);
   }
 
   public boolean exists(UUID uuid) {
@@ -73,7 +73,7 @@ public class NPCFileStorage {
       return false;
     }
 
-    return this.dirtyNPCs.containsKey(uuid) || Files.exists(getNPCFilePath(uuid));
+    return this.dirtyNPCs.containsKey(uuid) || Files.exists(this.getNPCFilePath(uuid));
   }
 
   public Optional<CompoundTag> load(UUID uuid) {
@@ -81,17 +81,17 @@ public class NPCFileStorage {
       return Optional.empty();
     }
 
-    CompoundTag pending = dirtyNPCs.get(uuid);
+    CompoundTag pending = this.dirtyNPCs.get(uuid);
     if (pending != null) {
       return Optional.of(pending);
     }
 
-    CompoundTag cached = cache.get(uuid);
+    CompoundTag cached = this.cache.get(uuid);
     if (cached != null) {
       return Optional.of(cached);
     }
 
-    Path npcFile = getNPCFilePath(uuid);
+    Path npcFile = this.getNPCFilePath(uuid);
     if (!Files.exists(npcFile)) {
       log.debug("NPC file not found for UUID {}", uuid);
       return Optional.empty();
@@ -99,7 +99,7 @@ public class NPCFileStorage {
 
     try {
       CompoundTag data = NbtIo.readCompressed(npcFile.toFile());
-      cache.put(uuid, data);
+      this.cache.put(uuid, data);
       this.lastSavedData.put(uuid, data);
       log.debug("Loaded NPC data for UUID {} from file {}", uuid, npcFile);
       return Optional.of(data);
@@ -128,11 +128,11 @@ public class NPCFileStorage {
       return false;
     }
 
-    return saveToFile(uuid, data);
+    return this.saveToFile(uuid, data);
   }
 
   private boolean saveToFile(UUID uuid, CompoundTag data) {
-    Path npcFile = getNPCFilePath(uuid);
+    Path npcFile = this.getNPCFilePath(uuid);
     long startTime = System.currentTimeMillis();
     try {
       Path tempFile = npcFile.getParent().resolve(uuid + ".tmp");
@@ -166,7 +166,7 @@ public class NPCFileStorage {
     long startTime = System.currentTimeMillis();
     int savedCount = 0;
     for (Map.Entry<UUID, CompoundTag> entry : snapshot.entrySet()) {
-      if (saveToFile(entry.getKey(), entry.getValue())) {
+      if (this.saveToFile(entry.getKey(), entry.getValue())) {
         this.dirtyNPCs.remove(entry.getKey(), entry.getValue());
         savedCount++;
       }
@@ -182,11 +182,11 @@ public class NPCFileStorage {
   }
 
   public int getDirtyCount() {
-    return dirtyNPCs.size();
+    return this.dirtyNPCs.size();
   }
 
   public boolean isDirty(UUID uuid) {
-    return dirtyNPCs.containsKey(uuid);
+    return this.dirtyNPCs.containsKey(uuid);
   }
 
   public boolean delete(UUID uuid) {
@@ -194,11 +194,11 @@ public class NPCFileStorage {
       return false;
     }
 
-    cache.remove(uuid);
-    dirtyNPCs.remove(uuid);
+    this.cache.remove(uuid);
+    this.dirtyNPCs.remove(uuid);
     this.lastSavedData.remove(uuid);
 
-    Path npcFile = getNPCFilePath(uuid);
+    Path npcFile = this.getNPCFilePath(uuid);
     if (!Files.exists(npcFile)) {
       return true;
     }
@@ -214,20 +214,20 @@ public class NPCFileStorage {
   }
 
   public void clearCache() {
-    cache.clear();
+    this.cache.clear();
     log.debug("Cleared NPC file storage cache");
   }
 
   public void evictFromCache(UUID uuid) {
-    cache.remove(uuid);
+    this.cache.remove(uuid);
   }
 
   public int getCacheSize() {
-    return cache.size();
+    return this.cache.size();
   }
 
   public Stream<UUID> getAllStoredNPCUUIDs() {
-    try (Stream<Path> pathStream = Files.list(storageFolder)) {
+    try (Stream<Path> pathStream = Files.list(this.storageFolder)) {
       return pathStream
           .filter(Files::isRegularFile)
           .filter(path -> path.toString().endsWith(NPC_FILE_EXTENSION))

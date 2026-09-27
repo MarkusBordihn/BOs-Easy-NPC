@@ -33,6 +33,7 @@ import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
+import org.lwjgl.glfw.GLFW;
 
 public class SelectBox<T> extends AbstractWidget {
 
@@ -300,7 +301,7 @@ public class SelectBox<T> extends AbstractWidget {
       return false;
     }
 
-    if (keyCode == 256) {
+    if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
       this.closeDropdown();
       return true;
     }

@@ -25,7 +25,6 @@
     "renderer.CompositeRenderTypeMixin",
     "renderer.CompositeStateMixin",
     "renderer.EasyNPCEntityRendererMixin",
-    "renderer.EasyNPCGhastRendererMixin",
     "renderer.EasyNPCHighlightMixin",
     "renderer.EasyNPCLivingEntityRendererMixin",
     "renderer.EasyNPCSlimeRendererMixin",

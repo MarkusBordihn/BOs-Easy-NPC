@@ -2,22 +2,18 @@
   public void handleSkinVariantTypeChange(Enum<?> variant) {
     VillagerData villagerData = this.getVillagerData();
 
-    // Update profession if available
-    VillagerProfession profession = getVillagerProfession(variant);
+    VillagerProfession profession = this.getVillagerProfession(variant);
     if (profession != null) {
       villagerData = villagerData.setProfession(profession);
     }
 
-    // Update type if available
-    VillagerType type = getVillagerType(variant);
+    VillagerType type = this.getVillagerType(variant);
     if (type != null) {
       villagerData = villagerData.setType(type);
     }
 
-    // Apply updated villager data
     this.setVillagerData(villagerData);
 
-    // Refresh brain to apply possible changes
     if (this.level() instanceof ServerLevel serverLevel) {
       this.refreshBrain(serverLevel);
     }
@@ -25,10 +21,10 @@
 
   @Override
   public MerchantOffers getOffers() {
-    // Use the TradingDataCapable default implementation for better control
     if (this.getMerchantTradingOffers() == null) {
       this.updateMerchantTradingOffers();
     }
+
     return this.getMerchantTradingOffers();
   }
 

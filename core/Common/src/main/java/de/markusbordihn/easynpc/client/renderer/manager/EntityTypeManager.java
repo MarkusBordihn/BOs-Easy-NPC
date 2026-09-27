@@ -21,7 +21,6 @@ package de.markusbordihn.easynpc.client.renderer.manager;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.config.RenderEntityTypeSupportConfig;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -167,7 +166,6 @@ public class EntityTypeManager {
         continue;
       }
 
-      // Auto-filter unknown entities by common non-mob name patterns.
       if (shouldFilterEntityTypeByName(entityTypeLocation)) {
         autoFilteredCount++;
         continue;
@@ -260,6 +258,7 @@ public class EntityTypeManager {
     if (entityHeight <= 0f) {
       return 0f;
     }
+
     float scaleFactor = calculateGuiPreviewScaleFactor(entityHeight);
     return Math.max(0f, (GUI_PREVIEW_TARGET_HEIGHT - scaleFactor * entityHeight) / 2f);
   }
@@ -275,24 +274,17 @@ public class EntityTypeManager {
       return null;
     }
 
-    // Check if entity type is already registered and still valid.
     Mob renderEntity = renderEntityMap.get(entityType);
     if (renderEntity != null) {
-      if (renderEntity.isAlive()) {
-        if (renderEntity.level() != level) {
-          try {
-            Field levelField = Entity.class.getDeclaredField("level");
-            levelField.setAccessible(true);
-            levelField.set(renderEntity, level);
-          } catch (Exception e) {
-            log.error("{} Failed to update level for render entity {}", LOG_PREFIX, renderEntity);
-          }
-        }
+      if (renderEntity.isAlive() && renderEntity.level() == level) {
         return renderEntity;
-      } else {
-        log.debug("{} Render entity {} is removed, re-creating it.", LOG_PREFIX, renderEntity);
-        renderEntityMap.remove(entityType);
       }
+
+      log.debug(
+          "{} Render entity {} is removed or bound to another level, re-creating it.",
+          LOG_PREFIX,
+          renderEntity);
+      renderEntityMap.remove(entityType);
     }
 
     if (!isUnsupportedEntityType(entityType)) {
@@ -317,7 +309,6 @@ public class EntityTypeManager {
 
         renderEntityMap.put(entityType, newRenderEntity);
 
-        // Make sure to add supported entity type if it was unknown before.
         if (!isSupportedEntityType(entityType)) {
           addSupportedEntityType(entityType);
         }

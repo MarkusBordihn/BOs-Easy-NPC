@@ -71,30 +71,30 @@ public class CustomSkinConfigurationScreen<T extends ConfigurationMenu>
 
     int positionTop = 144;
     int skinPosition = 0;
-    skinButtons = new ArrayList<>();
+    this.skinButtons = new ArrayList<>();
 
     SkinDataCapable<?> skinData = this.getEasyNPC().getEasyNPCSkinData();
     SkinModel skinModel = skinData.getSkinModel();
-    Set<UUID> textures = CustomTextureManager.getCustomTextureCacheKeys(skinModel, searchFilter);
+    Set<UUID> textures =
+        CustomTextureManager.getCustomTextureCacheKeys(skinModel, this.searchFilter);
     this.numOfSkins = textures.size();
 
     Object[] textureKeys = textures.toArray();
 
-    // Check Skin buttons state, if number of skins changed.
     if (this.lastNumOfSkins != this.numOfSkins) {
-      checkSkinNavigationButtonState();
+      this.checkSkinNavigationButtonState();
       this.lastNumOfSkins = this.numOfSkins;
     }
 
-    for (int i = skinStartIndex; i < this.numOfSkins && i < skinStartIndex + maxSkinsPerPage; i++) {
+    for (int i = this.skinStartIndex;
+        i < this.numOfSkins && i < this.skinStartIndex + this.maxSkinsPerPage;
+        i++) {
       int left = this.leftPos + 32 + (skinPosition * SKIN_PREVIEW_WIDTH);
       int top = this.topPos + 65 + positionTop;
 
-      // Render Skins
       UUID textureKey = (UUID) textureKeys[i];
       this.renderSkinEntity(guiGraphics, left, top, textureKey);
 
-      // Render skin name
       int topNamePos = Math.round((top - 76f) / SKIN_NAME_SCALING);
       int leftNamePos = Math.round((left - 21f) / SKIN_NAME_SCALING);
       int scaledMouseX = Math.round(mouseX / SKIN_NAME_SCALING);
@@ -129,7 +129,8 @@ public class CustomSkinConfigurationScreen<T extends ConfigurationMenu>
                         this.getEasyNPCUUID(),
                         SkinDataEntry.createCustomSkin(
                             textureUUID,
-                            disableLayersCheckbox != null && disableLayersCheckbox.selected())));
+                            this.disableLayersCheckbox != null
+                                && this.disableLayersCheckbox.selected())));
 
     SkinDataCapable<?> skinData = this.getEasyNPC().getEasyNPCSkinData();
     UUID skinUUID = skinData.getSkinUUID();
@@ -146,20 +147,17 @@ public class CustomSkinConfigurationScreen<T extends ConfigurationMenu>
             y - 40 - this.yMouse,
             EntityRenderOverrides.withSkin(SkinType.CUSTOM, textureUUID)));
 
-    skinButtons.add(skinButton);
+    this.skinButtons.add(skinButton);
   }
 
   @Override
   public void init() {
     super.init();
 
-    // Default button stats
     this.customSkinButton.active = false;
 
-    // Description text
-    setDescriptionText("custom_skin.text");
+    this.setDescriptionText("custom_skin.text");
 
-    // Entity specific information.
     SkinDataCapable<?> skinData = this.getEasyNPC().getEasyNPCSkinData();
     SkinModel skinModel = skinData.getSkinModel();
     CustomTextureManager.ensureTextureCacheLoaded(skinModel);
@@ -167,8 +165,7 @@ public class CustomSkinConfigurationScreen<T extends ConfigurationMenu>
 
     this.defineProfessionButtons(this.contentLeftPos + 185, this.contentTopPos + 85);
 
-    // Skin Navigation Buttons
-    defineSkinNavigationButtons();
+    this.defineSkinNavigationButtons();
 
     Path skinModelFolder = CustomSkinDataFiles.getCustomSkinDataFolder(skinModel);
     if (skinModelFolder != null) {
@@ -183,7 +180,6 @@ public class CustomSkinConfigurationScreen<T extends ConfigurationMenu>
                   onPress -> Util.getPlatform().openFile(skinModelFolder.toFile())));
     }
 
-    // Skin Reload Button
     this.skinReloadButton =
         this.addRenderableWidget(
             new ReloadButton(
@@ -198,14 +194,12 @@ public class CustomSkinConfigurationScreen<T extends ConfigurationMenu>
                       (int) java.time.Instant.now().getEpochSecond() + ADD_SKIN_RELOAD_DELAY;
                 }));
 
-    // Skin Search Field
     this.skinSearchField =
         this.addRenderableWidget(
             new SearchField(
                 this.font, this.contentLeftPos + 100, this.contentTopPos + 190, 100, 14));
     this.skinSearchField.setResponder(this::onSearchFieldChanged);
 
-    // Disable Layers Checkbox
     this.disableLayersCheckbox =
         this.addRenderableWidget(
             new Checkbox(
@@ -224,10 +218,8 @@ public class CustomSkinConfigurationScreen<T extends ConfigurationMenu>
   public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
     super.render(guiGraphics, x, y, partialTicks);
 
-    // Description text
-    renderDescriptionText(guiGraphics, this.contentLeftPos + 5, this.contentTopPos + 5);
+    this.renderDescriptionText(guiGraphics, this.contentLeftPos + 5, this.contentTopPos + 5);
 
-    // Throttle the skin reload button.
     if (this.skinReloadButton != null) {
       boolean canSkinReload =
           java.time.Instant.now().getEpochSecond() >= CustomSkinConfigurationScreen.nextSkinReload;
@@ -243,7 +235,6 @@ public class CustomSkinConfigurationScreen<T extends ConfigurationMenu>
       this.skinReloadButton.active = canSkinReload;
     }
 
-    // Skins
     this.renderSkins(guiGraphics, x, y);
   }
 

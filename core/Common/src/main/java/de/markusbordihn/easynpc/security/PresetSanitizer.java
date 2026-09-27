@@ -22,9 +22,11 @@ package de.markusbordihn.easynpc.security;
 import de.markusbordihn.easynpc.data.action.ActionDataEntry;
 import de.markusbordihn.easynpc.data.action.ActionDataType;
 import de.markusbordihn.easynpc.data.attribute.EntityAttributes;
+import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataSet;
 import de.markusbordihn.easynpc.data.preset.PresetMetadata;
 import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.DialogDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.NavigationDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.ObjectiveDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.OwnerDataCapable;
@@ -294,12 +296,13 @@ public class PresetSanitizer {
   }
 
   private static boolean hasDialogData(CompoundTag compoundTag) {
-    if (!compoundTag.contains("DialogData")) {
+    if (!compoundTag.contains(DialogDataCapable.DATA_DIALOG_DATA_TAG)) {
       return false;
     }
-    CompoundTag dialogData = compoundTag.getCompound("DialogData");
-    return dialogData.contains("DialogDataSet")
-        && !dialogData.getList("DialogDataSet", Tag.TAG_COMPOUND).isEmpty();
+
+    CompoundTag dialogData = compoundTag.getCompound(DialogDataCapable.DATA_DIALOG_DATA_TAG);
+    return dialogData.contains(DialogDataSet.DATA_DIALOG_DATA_SET_TAG)
+        && !dialogData.getList(DialogDataSet.DATA_DIALOG_DATA_SET_TAG, Tag.TAG_COMPOUND).isEmpty();
   }
 
   private static boolean hasObjectiveData(CompoundTag compoundTag) {

@@ -39,7 +39,7 @@ public class CreeperRawRenderer extends CreeperRenderer implements EasyNPCEntity
 
   @Override
   public ResourceLocation getTextureLocation(Creeper entity) {
-    return getTextureLocationWithConfig(entity);
+    return this.getTextureLocationWithConfig(entity);
   }
 
   @Override

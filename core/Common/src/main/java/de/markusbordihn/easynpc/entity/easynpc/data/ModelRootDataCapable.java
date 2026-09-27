@@ -32,44 +32,45 @@ public interface ModelRootDataCapable<T extends Mob> extends EasyNPC<T> {
   String EASY_NPC_DATA_MODEL_ROOT_TAG = "Root";
 
   default RootModelData getModelRootData() {
-    RootModelData data = getSynchedEntityData(SynchedDataIndex.MODEL_ROOT_DATA);
+    RootModelData data = this.getSynchedEntityData(SynchedDataIndex.MODEL_ROOT_DATA);
 
     return data != null ? data : RootModelData.DEFAULT;
   }
 
   default void setModelRootData(RootModelData data) {
     if (data != null) {
-      setSynchedEntityData(SynchedDataIndex.MODEL_ROOT_DATA, data, true);
+      this.setSynchedEntityData(SynchedDataIndex.MODEL_ROOT_DATA, data, true);
     }
   }
 
   default void setModelRootRotation(CustomRotation rotation) {
-    RootModelData current = getModelRootData();
-    setModelRootData(new RootModelData(rotation, current.scale()));
+    RootModelData current = this.getModelRootData();
+    this.setModelRootData(new RootModelData(rotation, current.scale()));
   }
 
   default void setModelRootScale(CustomScale scale) {
-    RootModelData current = getModelRootData();
-    setModelRootData(new RootModelData(current.rotation(), scale));
+    RootModelData current = this.getModelRootData();
+    this.setModelRootData(new RootModelData(current.rotation(), scale));
   }
 
   default boolean hasChangedModelRoot() {
-    return getModelRootData().hasChanged();
+    return this.getModelRootData().hasChanged();
   }
 
   default void defineSynchedModelRootData() {
-    defineSynchedEntityData(SynchedDataIndex.MODEL_ROOT_DATA, RootModelData.DEFAULT);
+    this.defineSynchedEntityData(SynchedDataIndex.MODEL_ROOT_DATA, RootModelData.DEFAULT);
   }
 
   default void addAdditionalModelRootData(CompoundTag modelDataTag) {
-    if (hasChangedModelRoot()) {
-      modelDataTag.put(EASY_NPC_DATA_MODEL_ROOT_TAG, getModelRootData().save());
+    if (this.hasChangedModelRoot()) {
+      modelDataTag.put(EASY_NPC_DATA_MODEL_ROOT_TAG, this.getModelRootData().save());
     }
   }
 
   default void readAdditionalModelRootData(CompoundTag modelDataTag) {
     if (modelDataTag.contains(EASY_NPC_DATA_MODEL_ROOT_TAG)) {
-      setModelRootData(RootModelData.load(modelDataTag.getCompound(EASY_NPC_DATA_MODEL_ROOT_TAG)));
+      this.setModelRootData(
+          RootModelData.load(modelDataTag.getCompound(EASY_NPC_DATA_MODEL_ROOT_TAG)));
     }
   }
 }

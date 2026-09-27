@@ -130,7 +130,6 @@ public class FollowObjective extends Command {
       return Command.FAILURE;
     }
 
-    // List follow objectives
     sendSuccessMessage(context, "Follow objectives for " + easyNPC + ":");
     objectiveData
         .getObjectiveEntry(ObjectiveType.FOLLOW_OWNER)
@@ -160,13 +159,11 @@ public class FollowObjective extends Command {
       return Command.FAILURE;
     }
 
-    // Get owner data
     OwnerDataCapable<?> ownerData = easyNPC.getEasyNPCOwnerData();
     if (ownerData == null || !ownerData.hasNPCOwner() || ownerData.getOwnerUUID() == null) {
       return sendFailureMessageNoOwnerData(context, easyNPC);
     }
 
-    // Add or update follow owner objective
     ObjectiveDataEntry objectiveDataEntry = new ObjectiveDataEntry(ObjectiveType.FOLLOW_OWNER);
     objectiveDataEntry.setTargetOwnerUUID(ownerData.getOwnerUUID());
     if (!objectiveData.addOrUpdateCustomObjective(objectiveDataEntry)) {
@@ -183,7 +180,6 @@ public class FollowObjective extends Command {
       return Command.FAILURE;
     }
 
-    // Add or update follow player objective
     ObjectiveDataEntry objectiveDataEntry = new ObjectiveDataEntry(ObjectiveType.FOLLOW_PLAYER);
     objectiveDataEntry.setTargetPlayerName(serverPlayer.getName().getString());
     if (!objectiveData.addOrUpdateCustomObjective(objectiveDataEntry)) {
@@ -201,17 +197,15 @@ public class FollowObjective extends Command {
       return Command.FAILURE;
     }
 
-    // Avoid adding the same entity as target
     if (entity.getUUID().equals(easyNPC.getEntityUUID())) {
       return sendFailureMessage(context, "Error adding follow entity objective for itself!");
     }
 
-    // Add or update follow player objective
     ObjectiveDataEntry objectiveDataEntry =
         new ObjectiveDataEntry(ObjectiveType.FOLLOW_ENTITY_BY_UUID);
     objectiveDataEntry.setTargetEntityUUID(entity.getUUID());
     if (!objectiveData.addOrUpdateCustomObjective(objectiveDataEntry)) {
-      return sendFailureMessage(context, "Error adding or updating follow player objective!");
+      return sendFailureMessage(context, "Error adding or updating follow entity objective!");
     }
 
     return sendSuccessMessage(
@@ -226,6 +220,7 @@ public class FollowObjective extends Command {
       sendFailureMessageNoObjectiveData(context, easyNPC);
       return null;
     }
+
     return objectiveData;
   }
 

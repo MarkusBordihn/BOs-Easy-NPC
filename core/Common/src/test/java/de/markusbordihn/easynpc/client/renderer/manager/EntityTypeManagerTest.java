@@ -306,14 +306,18 @@ class EntityTypeManagerTest {
     @Test
     @DisplayName("Should not filter entity that partially matches but does not meet criteria")
     void shouldNotFilterPartialMatches() {
-      // "arrow_maker" contains "arrow" but does not END with "_arrow"
-      assertFalse(EntityTypeManager.shouldFilterEntityTypeByName("somemod:arrow_maker"));
-      // "boat_captain" starts with "boat" but does not match ":boat" at end or "_boat"
-      assertFalse(EntityTypeManager.shouldFilterEntityTypeByName("somemod:boat_captain"));
-      // "crystal_golem" contains "crystal" but does not END with "_crystal"
-      assertFalse(EntityTypeManager.shouldFilterEntityTypeByName("somemod:crystal_golem"));
-      // "bomb_thrower" contains "bomb" but does not END with "_bomb"
-      assertFalse(EntityTypeManager.shouldFilterEntityTypeByName("somemod:bomb_thrower"));
+      assertFalse(
+          EntityTypeManager.shouldFilterEntityTypeByName("somemod:arrow_maker"),
+          "\"arrow_maker\" does not end with \"_arrow\"");
+      assertFalse(
+          EntityTypeManager.shouldFilterEntityTypeByName("somemod:boat_captain"),
+          "\"boat_captain\" does not end with \":boat\" or \"_boat\"");
+      assertFalse(
+          EntityTypeManager.shouldFilterEntityTypeByName("somemod:crystal_golem"),
+          "\"crystal_golem\" does not end with \"_crystal\"");
+      assertFalse(
+          EntityTypeManager.shouldFilterEntityTypeByName("somemod:bomb_thrower"),
+          "\"bomb_thrower\" does not end with \"_bomb\"");
     }
 
     @Test

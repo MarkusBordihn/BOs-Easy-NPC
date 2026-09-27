@@ -27,7 +27,6 @@ import net.minecraft.world.item.Item;
 
 public class ModItemTags {
 
-  // Ranged Weapon Tags
   public static final TagKey<Item> RANGED_WEAPON_BOW =
       TagKey.create(
           BuiltInRegistries.ITEM.key(),

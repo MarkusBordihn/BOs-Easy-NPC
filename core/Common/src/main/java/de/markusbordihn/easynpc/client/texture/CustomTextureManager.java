@@ -91,13 +91,11 @@ public class CustomTextureManager {
 
   public static ResourceLocation getOrCreateTextureWithDefault(
       SkinDataCapable<?> skinData, ResourceLocation defaultResourceLocation) {
-    // Check if we have a skin UUID otherwise we assume that the texture is unknown.
     UUID skinUUID = skinData.getSkinUUID();
     if (skinUUID.equals(Constants.BLANK_UUID)) {
       return defaultResourceLocation;
     }
 
-    // Check if there is already any cached resource location.
     TextureModelKey textureModelKey = new TextureModelKey(skinUUID, skinData.getSkinModel());
     ResourceLocation resourceLocation = textureCache.get(textureModelKey);
     if (resourceLocation != null) {
@@ -117,16 +115,15 @@ public class CustomTextureManager {
     if (lastAttempt != null && System.currentTimeMillis() - lastAttempt < RELOAD_PROTECTION_TIME) {
       return null;
     }
+
     textureReloadProtection.put(skinUUID, System.currentTimeMillis());
 
-    // Get the skin model and texture data folder
     SkinModel skinModel = skinData.getSkinModel();
     Path textureDataFolder = CustomSkinDataFiles.getCustomSkinDataFolder(skinModel);
     if (textureDataFolder == null) {
       return null;
     }
 
-    // Search the local texture cache directory for any matching texture.
     ResourceLocation localTextureCache =
         TextureManager.searchCachedTexture(textureModelKey, textureDataFolder);
     if (localTextureCache != null) {
@@ -134,7 +131,6 @@ public class CustomTextureManager {
       return localTextureCache;
     }
 
-    // Log error if texture could not be loaded.
     log.error(
         "{} Unable to load custom texture {} {} from {}",
         LOG_PREFIX,
@@ -142,7 +138,6 @@ public class CustomTextureManager {
         skinUUID,
         textureDataFolder);
 
-    // Send error message to the user.
     Player player = Minecraft.getInstance().player;
     if (player != null) {
       player.displayClientMessage(

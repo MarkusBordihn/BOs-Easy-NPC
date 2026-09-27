@@ -19,11 +19,11 @@
 
 package de.markusbordihn.easynpc.gametest;
 
+import static de.markusbordihn.easynpc.gametest.GameTestEntityTypes.humanoid;
+
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.data.dialog.DialogUtils;
-import de.markusbordihn.easynpc.entity.ModEntityType;
-import de.markusbordihn.easynpc.entity.ModNPCEntityType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.menu.ModMenuTypes;
 import de.markusbordihn.easynpc.menu.dialog.DialogMenu;
@@ -39,14 +39,12 @@ import net.minecraftforge.gametest.PrefixGameTestTemplate;
 @PrefixGameTestTemplate(value = false)
 @GameTestHolder(Constants.MOD_ID)
 public class DialogScreenTest {
-  @GameTest(template = "gametest.3x3x3")
-  public void testOpenDialog(GameTestHelper helper) {
-    ServerPlayer serverPlayer = GameTestHelpers.mockServerPlayer(helper, new Vec3(1, 2, 1));
-    EasyNPC<?> easyNPC =
-        GameTestHelpers.mockEasyNPC(
-            helper, ModEntityType.getEntityType(ModNPCEntityType.HUMANOID), new Vec3(2, 2, 2));
 
-    easyNPC.getEasyNPCDialogData().setDialogDataSet(new DialogDataSet());
+  private static void assertDialogOpens(GameTestHelper helper, DialogDataSet dialogDataSet) {
+    ServerPlayer serverPlayer = GameTestHelpers.mockServerPlayer(helper, new Vec3(1, 2, 1));
+    EasyNPC<?> easyNPC = GameTestHelpers.mockEasyNPC(helper, humanoid(), new Vec3(2, 2, 2));
+
+    easyNPC.getEasyNPCDialogData().setDialogDataSet(dialogDataSet);
     GameTestHelpers.assertNotNull(helper, "DialogData is null!", easyNPC.getEasyNPCDialogData());
     UUID dialogId =
         DialogScreenTestHelper.mockOpenDialog(
@@ -55,55 +53,30 @@ public class DialogScreenTest {
 
     GameTestHelpers.assertTrue(
         helper, "Dialog is not open!", serverPlayer.containerMenu instanceof DialogMenu);
+  }
 
+  @GameTest(template = "gametest.3x3x3")
+  public void testOpenDialog(GameTestHelper helper) {
+    assertDialogOpens(helper, new DialogDataSet());
     helper.succeed();
   }
 
   @GameTest(template = "gametest.3x3x3")
   public void testOpenBasicDialog(GameTestHelper helper) {
-    ServerPlayer serverPlayer = GameTestHelpers.mockServerPlayer(helper, new Vec3(1, 2, 1));
-    EasyNPC<?> easyNPC =
-        GameTestHelpers.mockEasyNPC(
-            helper, ModEntityType.getEntityType(ModNPCEntityType.HUMANOID), new Vec3(2, 2, 2));
-
-    DialogDataSet dialogDataSet = DialogUtils.getBasicDialog("Hello, I'm a test NPC!");
-    easyNPC.getEasyNPCDialogData().setDialogDataSet(dialogDataSet);
-    GameTestHelpers.assertNotNull(helper, "DialogData is null!", easyNPC.getEasyNPCDialogData());
-    UUID dialogId =
-        DialogScreenTestHelper.mockOpenDialog(
-            serverPlayer, easyNPC, ModMenuTypes.DIALOG_MENU.get());
-    GameTestHelpers.assertNotNull(helper, "DialogId is null!", dialogId);
-
-    GameTestHelpers.assertTrue(
-        helper, "Dialog is not open!", serverPlayer.containerMenu instanceof DialogMenu);
-
+    assertDialogOpens(helper, DialogUtils.getBasicDialog("Hello, I'm a test NPC!"));
     helper.succeed();
   }
 
   @GameTest(template = "gametest.3x3x3")
   public void testOpenYesNoDialog(GameTestHelper helper) {
-    ServerPlayer serverPlayer = GameTestHelpers.mockServerPlayer(helper, new Vec3(1, 2, 1));
-    EasyNPC<?> easyNPC =
-        GameTestHelpers.mockEasyNPC(
-            helper, ModEntityType.getEntityType(ModNPCEntityType.HUMANOID), new Vec3(2, 2, 2));
-
-    DialogDataSet dialogDataSet =
+    assertDialogOpens(
+        helper,
         DialogUtils.getYesNoDialog(
             "Do you like to test the Yes/No dialog?",
             "Yes, I like to test it!",
             "No, I don't like to test it!",
             "You have selected Yes!",
-            "You have selected No!");
-    easyNPC.getEasyNPCDialogData().setDialogDataSet(dialogDataSet);
-    GameTestHelpers.assertNotNull(helper, "DialogData is null!", easyNPC.getEasyNPCDialogData());
-    UUID dialogId =
-        DialogScreenTestHelper.mockOpenDialog(
-            serverPlayer, easyNPC, ModMenuTypes.DIALOG_MENU.get());
-    GameTestHelpers.assertNotNull(helper, "DialogId is null!", dialogId);
-
-    GameTestHelpers.assertTrue(
-        helper, "Dialog is not open!", serverPlayer.containerMenu instanceof DialogMenu);
-
+            "You have selected No!"));
     helper.succeed();
   }
 }

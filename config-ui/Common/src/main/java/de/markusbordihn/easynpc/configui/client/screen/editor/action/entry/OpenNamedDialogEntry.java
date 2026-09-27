@@ -41,6 +41,7 @@ public class OpenNamedDialogEntry extends ActionEntryWidget {
     if (dialogName == null || dialogName.isEmpty()) {
       return;
     }
+
     this.showInvalidDialogName =
         this.targetType != TargetType.SELF
             || this.dialogDataSet == null
@@ -52,6 +53,7 @@ public class OpenNamedDialogEntry extends ActionEntryWidget {
       this.showInvalidUuid = false;
       return;
     }
+
     try {
       UUID.fromString(uuidString);
       this.showInvalidUuid = false;
@@ -62,9 +64,8 @@ public class OpenNamedDialogEntry extends ActionEntryWidget {
 
   @Override
   public void init(int editorLeft, int editorTop) {
-    boolean hasActionData = hasActionData(this.actionDataType);
+    boolean hasActionData = this.hasActionData(this.actionDataType);
 
-    // Named Dialog Value
     this.dialogNameTextField =
         this.screen.addActionEntryWidget(
             new TextField(this.font, editorLeft + 1, editorTop + 40, 301, 16));
@@ -72,7 +73,6 @@ public class OpenNamedDialogEntry extends ActionEntryWidget {
     this.dialogNameTextField.setValue(hasActionData ? this.actionDataEntry.command() : "");
     this.dialogNameTextField.setResponder(this::validateDialogName);
 
-    // Target Type Selector
     this.targetTypeButton =
         this.screen.addActionEntryWidget(
             new SpinButton<>(
@@ -84,7 +84,6 @@ public class OpenNamedDialogEntry extends ActionEntryWidget {
                 this.targetType,
                 this::onTargetTypeChange));
 
-    // Target UUID Field (only visible for CUSTOM)
     this.targetUuidTextField =
         this.screen.addActionEntryWidget(
             new TextField(
@@ -152,22 +151,20 @@ public class OpenNamedDialogEntry extends ActionEntryWidget {
         return new ActionDataEntry(this.actionDataType, this.dialogNameTextField.getValue());
       }
     }
+
     return new ActionDataEntry(this.actionDataType, this.dialogNameTextField.getValue());
   }
 
   @Override
   public boolean hasChanged() {
-    // Invalid dialog name for self target type, no changes allowed.
     if (this.showInvalidDialogName && this.targetType == TargetType.SELF) {
       return false;
     }
 
-    // Invalid UUID for uuid target type, no changes allowed.
     if (this.showInvalidUuid && this.targetType == TargetType.UUID) {
       return false;
     }
 
-    // Check for changes for the different fields.
     boolean dialogNameChanged =
         this.dialogNameTextField != null
             && !this.dialogNameTextField.getValue().equals(this.actionDataEntry.command());

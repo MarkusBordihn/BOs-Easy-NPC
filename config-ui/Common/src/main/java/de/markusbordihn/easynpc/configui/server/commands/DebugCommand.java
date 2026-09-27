@@ -34,7 +34,8 @@ public class DebugCommand extends Command {
 
   public static ArgumentBuilder<CommandSourceStack, ?> register() {
     return Commands.literal("debug")
-        .requires(cs -> cs.hasPermission(Commands.LEVEL_GAMEMASTERS))
+        .requires(
+            commandSourceStack -> commandSourceStack.hasPermission(Commands.LEVEL_GAMEMASTERS))
         .then(
             Commands.literal("config")
                 .then(
@@ -46,25 +47,25 @@ public class DebugCommand extends Command {
                                     BoolArgumentType.getBool(context, "enable")))));
   }
 
-  public static int setDebug(CommandSourceStack context, boolean enable) {
+  public static int setDebug(CommandSourceStack commandSourceStack, boolean enable) {
     if (enable) {
       sendSuccessMessage(
-          context,
+          commandSourceStack,
           "► Enable debug for "
               + Constants.MOD_NAME
               + ", please check debug.log for the full output.",
           ChatFormatting.GREEN);
       sendSuccessMessage(
-          context,
-          "> Use '/"
-              + de.markusbordihn.easynpc.configui.Constants.MOD_COMMAND
-              + " debug config false' to disable the debug!",
+          commandSourceStack,
+          "> Use '/" + Constants.MOD_COMMAND + " debug config false' to disable the debug!",
           ChatFormatting.WHITE);
     } else {
       sendSuccessMessage(
-          context, "■ Disable debug for " + Constants.MOD_NAME + "!", ChatFormatting.RED);
+          commandSourceStack,
+          "■ Disable debug for " + Constants.MOD_NAME + "!",
+          ChatFormatting.RED);
       sendSuccessMessage(
-          context,
+          commandSourceStack,
           "> Please check the latest.log and/or debug.log for the full output.",
           ChatFormatting.WHITE);
     }

@@ -47,14 +47,11 @@ public class ReloadHandler {
       return false;
     }
 
-    // Save entity and entity type
     CompoundTag compoundTag = easyNPC.getEntity().saveWithoutId(new CompoundTag());
 
-    // Reload entity data
     log.debug("Reloading NPC {} at position {}", easyNPC.getEntityUUID(), entity.position());
     entity.load(compoundTag);
 
-    // Force update visibility for all players
     entity.refreshDimensions();
     return true;
   }

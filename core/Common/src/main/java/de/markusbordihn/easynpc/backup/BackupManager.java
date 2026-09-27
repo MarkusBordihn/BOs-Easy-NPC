@@ -58,6 +58,7 @@ public class BackupManager {
     if (backupTicks++ < BACKUP_CHECK_INTERVAL_TICKS) {
       return;
     }
+
     backupTicks = 0;
 
     if (!shouldPerformBackup()) {

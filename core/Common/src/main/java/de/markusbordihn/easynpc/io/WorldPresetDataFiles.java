@@ -61,30 +61,26 @@ public class WorldPresetDataFiles {
   }
 
   public static Path getPresetDataFolder(SkinModel skinModel) {
-    Path presetDataFolder = getPresetDataFolder();
-    String skinModelName = skinModel.name();
-    if (!skinModelName.isEmpty()) {
-      Path path = presetDataFolder.resolve(skinModelName.toLowerCase(Locale.ROOT));
-      try {
-        Files.createDirectories(path);
-      } catch (IOException e) {
-        log.error("Could not create preset model folder {}:", path, e);
-      }
-      return path;
+    Path path = getPresetDataFolder().resolve(skinModel.name().toLowerCase(Locale.ROOT));
+    try {
+      Files.createDirectories(path);
+    } catch (IOException e) {
+      log.error("Could not create preset model folder {}:", path, e);
     }
-    return null;
+    return path;
   }
 
-  @SuppressWarnings("unused")
   public static File getPresetFile(SkinModel skinModel, String fileName) {
     Path presetModelFolder = getPresetDataFolder(skinModel);
-    if (presetModelFolder == null || fileName == null || fileName.isEmpty()) {
+    if (fileName == null || fileName.isEmpty()) {
       return null;
     }
+
     String sanitizedFileName = DataFileHandler.getPresetFileName(fileName);
     if (sanitizedFileName == null) {
       return null;
     }
+
     return presetModelFolder.resolve(sanitizedFileName).toFile();
   }
 
@@ -92,32 +88,15 @@ public class WorldPresetDataFiles {
     return presetResourceLocationMap.keySet().stream();
   }
 
-  @SuppressWarnings("unused")
   public static Set<ResourceLocation> getPresetResourceLocationSet() {
     return presetResourceLocationMap.keySet();
   }
 
-  @SuppressWarnings("unused")
   public static void refreshPresetResourceLocations() {
     Path presetDataFolder = getPresetDataFolder();
     presetResourceLocationMap.clear();
-    try (Stream<Path> filesStream = Files.walk(presetDataFolder)) {
-      filesStream
-          .filter(DataFileHandler::isPresetFile)
-          .forEach(
-              path -> {
-                ResourceLocation resourceLocation =
-                    new ResourceLocation(
-                        Constants.MOD_ID,
-                        DATA_FOLDER_NAME
-                            + '/'
-                            + presetDataFolder
-                                .relativize(path)
-                                .toString()
-                                .replace("\\", "/")
-                                .toLowerCase(Locale.ROOT));
-                presetResourceLocationMap.put(resourceLocation, path);
-              });
+    try {
+      DataFileHandler.forEachPresetFile(presetDataFolder, presetResourceLocationMap::put);
     } catch (IOException exception) {
       log.error("Could not read world preset data folder {}:", presetDataFolder, exception);
     }
@@ -136,7 +115,6 @@ public class WorldPresetDataFiles {
     return path;
   }
 
-  @SuppressWarnings("unused")
   public static PresetMetadata getPresetMetadata(ResourceLocation resourceLocation) {
     Path presetPath = getPresetsResourceLocationPath(resourceLocation);
     if (presetPath == null) {

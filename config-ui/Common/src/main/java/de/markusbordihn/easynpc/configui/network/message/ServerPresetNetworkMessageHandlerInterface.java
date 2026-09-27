@@ -54,7 +54,7 @@ public interface ServerPresetNetworkMessageHandlerInterface {
   }
 
   default void exportPreset(UUID uuid, String name) {
-    exportPreset(uuid, name, PresetExportFormat.getDefault(), PresetMetadata.getDefault());
+    this.exportPreset(uuid, name, PresetExportFormat.getDefault(), PresetMetadata.getDefault());
   }
 
   default void exportPreset(
@@ -79,20 +79,20 @@ public interface ServerPresetNetworkMessageHandlerInterface {
   }
 
   default void importCustomPreset(UUID uuid, ResourceLocation resourceLocation) {
-    importPreset(uuid, PresetType.CUSTOM, resourceLocation);
+    this.importPreset(uuid, PresetType.CUSTOM, resourceLocation);
   }
 
   default void importDefaultPreset(UUID uuid, ResourceLocation resourceLocation) {
-    importPreset(uuid, PresetType.DEFAULT, resourceLocation);
+    this.importPreset(uuid, PresetType.DEFAULT, resourceLocation);
   }
 
   default void importLocalPreset(
       UUID uuid, CompoundTag compoundTag, ResourceLocation resourceLocation) {
-    importPreset(uuid, PresetType.LOCAL, compoundTag, resourceLocation);
+    this.importPreset(uuid, PresetType.LOCAL, compoundTag, resourceLocation);
   }
 
   default void importWorldPreset(UUID uuid, ResourceLocation resourceLocation) {
-    importPreset(uuid, PresetType.WORLD, resourceLocation);
+    this.importPreset(uuid, PresetType.WORLD, resourceLocation);
   }
 
   default void spawnPreset(

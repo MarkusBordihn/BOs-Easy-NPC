@@ -72,7 +72,6 @@ public record ExportClientPresetMessage(
   @Override
   public void handleClient() {
     if (this.uuid == null
-        || this.uuid.toString().isEmpty()
         || this.name == null
         || this.name.isEmpty()
         || this.skinModel == null
@@ -93,17 +92,17 @@ public record ExportClientPresetMessage(
 
     log.info(
         "Exporting EasyNPC {} with UUID {} and skin {} to {} (Format: {})",
-        name,
-        uuid,
-        skinModel,
+        this.name,
+        this.uuid,
+        this.skinModel,
         presetFile,
-        exportFormat);
-    if (!PresetFileHandler.save(presetFile, data)) {
+        this.exportFormat);
+    if (!PresetFileHandler.save(presetFile, this.data)) {
       log.error(
           "Failed to export EasyNPC {} with UUID {} and skin {} to {}",
-          name,
-          uuid,
-          skinModel,
+          this.name,
+          this.uuid,
+          this.skinModel,
           presetFile);
       ClientPresetFeedback.sendExportFailed(presetFile.getName());
       return;

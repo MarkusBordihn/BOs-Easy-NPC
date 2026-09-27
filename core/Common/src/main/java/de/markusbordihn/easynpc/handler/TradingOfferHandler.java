@@ -20,7 +20,10 @@
 package de.markusbordihn.easynpc.handler;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.data.trading.TradingType;
 import de.markusbordihn.easynpc.entity.easynpc.data.TradingDataCapable;
+import java.util.function.Function;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.item.trading.MerchantOffers;
 import org.apache.logging.log4j.LogManager;
@@ -35,7 +38,7 @@ public class TradingOfferHandler {
   private static void updateTradingOffer(
       TradingDataCapable<?> tradingData,
       int tradingOfferIndex,
-      java.util.function.Function<MerchantOffer, MerchantOffer> updater) {
+      Function<MerchantOffer, MerchantOffer> updater) {
     MerchantOffers merchantOffers = tradingData.getTradingOffers();
     if (merchantOffers == null
         || merchantOffers.isEmpty()
@@ -47,6 +50,7 @@ public class TradingOfferHandler {
     if (merchantOffer == null) {
       return;
     }
+
     merchantOffers.set(tradingOfferIndex, updater.apply(merchantOffer));
     tradingData.setTradingOffers(merchantOffers);
   }
@@ -120,9 +124,7 @@ public class TradingOfferHandler {
   }
 
   public static void updateBasicTradingOffers(TradingDataCapable<?> tradingData) {
-    if (!tradingData
-        .getTradingDataSet()
-        .isType(de.markusbordihn.easynpc.data.trading.TradingType.BASIC)) {
+    if (!tradingData.getTradingDataSet().isType(TradingType.BASIC)) {
       return;
     }
 
@@ -152,12 +154,11 @@ public class TradingOfferHandler {
   }
 
   private static boolean isValidTradingOffer(
-      net.minecraft.world.item.ItemStack itemA,
-      net.minecraft.world.item.ItemStack itemB,
-      net.minecraft.world.item.ItemStack itemResult) {
+      ItemStack itemA, ItemStack itemB, ItemStack itemResult) {
     if (itemResult == null || (itemA == null && itemB == null)) {
       return false;
     }
+
     return ((itemA != null && !itemA.isEmpty()) || (itemB != null && !itemB.isEmpty()))
         && !itemResult.isEmpty();
   }

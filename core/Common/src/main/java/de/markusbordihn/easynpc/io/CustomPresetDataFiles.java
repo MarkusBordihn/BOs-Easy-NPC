@@ -24,9 +24,7 @@ import de.markusbordihn.easynpc.data.preset.PresetMetadata;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -65,22 +63,8 @@ public class CustomPresetDataFiles {
   }
 
   public static Path getPresetDataFolder(SkinModel skinModel) {
-    Path skinDataFolder = getPresetDataFolder();
-    if (skinDataFolder == null) {
-      return null;
-    }
-    String skinModelName = skinModel.getName();
-    Path presetDataFolderPath = skinDataFolder.resolve(skinModelName);
-    try {
-      if (Files.exists(presetDataFolderPath) && Files.isDirectory(presetDataFolderPath)) {
-        return presetDataFolderPath;
-      }
-      log.debug("Creating preset data folder {} at {} ...", skinModelName, presetDataFolderPath);
-      return Files.createDirectories(presetDataFolderPath);
-    } catch (IOException exception) {
-      log.error("Could not create preset data folder {}:", skinDataFolder, exception);
-    }
-    return null;
+    return DataFileHandler.getOrCreateSubdirectory(
+        getPresetDataFolder(), skinModel.getName(), "preset data");
   }
 
   public static File getPresetFile(SkinModel skinModel, String fileName) {
@@ -88,10 +72,12 @@ public class CustomPresetDataFiles {
     if (presetModelFolder == null || fileName == null || fileName.isEmpty()) {
       return null;
     }
+
     String sanitizedFileName = DataFileHandler.getPresetFileName(fileName);
     if (sanitizedFileName == null) {
       return null;
     }
+
     return presetModelFolder.resolve(sanitizedFileName).toFile();
   }
 
@@ -112,7 +98,6 @@ public class CustomPresetDataFiles {
     return presetResourceLocationMap.keySet().stream();
   }
 
-  @SuppressWarnings("unused")
   public static Set<ResourceLocation> getPresetResourceLocationSet() {
     return presetResourceLocationMap.keySet();
   }
@@ -122,24 +107,10 @@ public class CustomPresetDataFiles {
     if (presetDataFolder == null) {
       return;
     }
+
     presetResourceLocationMap.clear();
-    try (Stream<Path> filesStream = Files.walk(presetDataFolder)) {
-      filesStream
-          .filter(DataFileHandler::isPresetFile)
-          .forEach(
-              path -> {
-                ResourceLocation resourceLocation =
-                    new ResourceLocation(
-                        Constants.MOD_ID,
-                        DATA_FOLDER_NAME
-                            + '/'
-                            + presetDataFolder
-                                .relativize(path)
-                                .toString()
-                                .replace("\\", "/")
-                                .toLowerCase(Locale.ROOT));
-                presetResourceLocationMap.put(resourceLocation, path);
-              });
+    try {
+      DataFileHandler.forEachPresetFile(presetDataFolder, presetResourceLocationMap::put);
     } catch (IOException exception) {
       log.error("Could not read custom preset data folder {}:", presetDataFolder, exception);
     }
@@ -158,7 +129,6 @@ public class CustomPresetDataFiles {
     return path;
   }
 
-  @SuppressWarnings("unused")
   public static PresetMetadata getPresetMetadata(ResourceLocation resourceLocation) {
     Path presetPath = getPresetsResourceLocationPath(resourceLocation);
     if (presetPath == null) {
@@ -170,7 +140,6 @@ public class CustomPresetDataFiles {
     return PresetFileHandler.extractMetadata(compoundTag);
   }
 
-  @SuppressWarnings("unused")
   public static String getPresetDisplayName(
       ResourceLocation resourceLocation, PresetMetadata metadata) {
     return PresetFileHandler.getDisplayName(resourceLocation, metadata);

@@ -37,7 +37,7 @@ public class AllayRawRenderer extends AllayRenderer implements EasyNPCEntityRend
 
   @Override
   public ResourceLocation getTextureLocation(Allay entity) {
-    return getTextureLocationWithConfig(entity);
+    return this.getTextureLocationWithConfig(entity);
   }
 
   @Override

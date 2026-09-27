@@ -50,7 +50,7 @@ public enum PresetFilterType {
   }
 
   public PresetType getPresetType() {
-    return presetType;
+    return this.presetType;
   }
 
   public String getTranslationKey() {
@@ -58,6 +58,6 @@ public enum PresetFilterType {
   }
 
   public boolean matches(PresetType type) {
-    return presetType == null || presetType == type;
+    return this.presetType == null || this.presetType == type;
   }
 }

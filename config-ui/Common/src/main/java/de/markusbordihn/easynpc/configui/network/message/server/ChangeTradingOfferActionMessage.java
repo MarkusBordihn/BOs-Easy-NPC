@@ -56,7 +56,7 @@ public record ChangeTradingOfferActionMessage(
 
   @Override
   public void handleServer(final ServerPlayer serverPlayer) {
-    EasyNPC<?> easyNPC = getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
+    EasyNPC<?> easyNPC = this.getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
     if (easyNPC == null || this.offerIndex < 0 || this.actionDataSet == null) {
       return;
     }
@@ -75,7 +75,7 @@ public record ChangeTradingOfferActionMessage(
     if (sanitizedDataSet == null) {
       log.warn(
           "Blocked trading offer action change for offer {} of {} from {} because it contains an action type blocked by security.cfg feature settings",
-          offerIndex,
+          this.offerIndex,
           easyNPC,
           serverPlayer);
       return;

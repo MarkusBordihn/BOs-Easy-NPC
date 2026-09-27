@@ -39,7 +39,7 @@ public class CatRawRenderer extends CatRenderer implements EasyNPCEntityRenderer
 
   @Override
   public ResourceLocation getTextureLocation(Cat entity) {
-    return getTextureLocationWithConfig(entity);
+    return this.getTextureLocationWithConfig(entity);
   }
 
   @Override

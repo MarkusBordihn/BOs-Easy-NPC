@@ -19,12 +19,12 @@
 
 package de.markusbordihn.easynpc.gametest;
 
+import static de.markusbordihn.easynpc.gametest.GameTestEntityTypes.humanoid;
+import static de.markusbordihn.easynpc.gametest.GameTestEntityTypes.villager;
+
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.entity.ModEntityType;
-import de.markusbordihn.easynpc.entity.ModNPCEntityType;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraft.world.entity.EntityType;
 import net.minecraftforge.gametest.GameTestHolder;
 import net.minecraftforge.gametest.PrefixGameTestTemplate;
 
@@ -33,16 +33,8 @@ import net.minecraftforge.gametest.PrefixGameTestTemplate;
 @GameTestHolder(Constants.MOD_ID)
 public class StoredDataTest {
 
-  private static EntityType<?> humanoid() {
-    return ModEntityType.getEntityType(ModNPCEntityType.HUMANOID);
-  }
-
-  private static EntityType<?> villager() {
-    return ModEntityType.getEntityType(ModNPCEntityType.VILLAGER);
-  }
-
   @GameTest(template = "gametest.3x3x3")
-  public void testNpcWithoutStoredSoundsStillHasSounds(GameTestHelper helper) {
+  public void testNPCWithoutStoredSoundsStillHasSounds(GameTestHelper helper) {
     StoredDataTestHelper.assertNpcWithoutStoredSoundsStillHasSounds(helper, humanoid());
     helper.succeed();
   }
@@ -66,13 +58,13 @@ public class StoredDataTest {
   }
 
   @GameTest(template = "gametest.3x3x3")
-  public void testUnchangedNpcStoresNoBoilerplate(GameTestHelper helper) {
+  public void testUnchangedNPCStoresNoBoilerplate(GameTestHelper helper) {
     StoredDataTestHelper.assertUnchangedNpcStoresNoBoilerplate(helper, humanoid());
     helper.succeed();
   }
 
   @GameTest(template = "gametest.3x3x3")
-  public void testStoredNpcDataIsDeterministic(GameTestHelper helper) {
+  public void testStoredNPCDataIsDeterministic(GameTestHelper helper) {
     StoredDataTestHelper.assertStoredNpcDataIsDeterministic(helper, humanoid());
     helper.succeed();
   }

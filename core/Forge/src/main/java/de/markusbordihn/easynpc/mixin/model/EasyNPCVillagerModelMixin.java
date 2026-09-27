@@ -51,7 +51,7 @@ public class EasyNPCVillagerModelMixin<T extends Entity> implements EasyNPCModel
   }
 
   @Inject(method = "<init>(Lnet/minecraft/client/model/geom/ModelPart;)V", at = @At("TAIL"))
-  private void easyNpcModel(ModelPart modelPart, CallbackInfo callbackInfo) {
+  private void easyNPC$initModelManager(ModelPart modelPart, CallbackInfo callbackInfo) {
     this.easyNPC$modelManager =
         new EasyNPCModelManager(modelPart)
             .defineModelPart(ModelPartType.HAT, this.hat)
@@ -66,7 +66,7 @@ public class EasyNPCVillagerModelMixin<T extends Entity> implements EasyNPCModel
       method = "setupAnim(Lnet/minecraft/world/entity/Entity;FFFFF)V",
       at = @At("HEAD"),
       cancellable = true)
-  private void setupNpcAnimStart(
+  private void easyNPC$setupAnimStart(
       T entity,
       float limbSwing,
       float limbSwingAmount,
@@ -81,7 +81,7 @@ public class EasyNPCVillagerModelMixin<T extends Entity> implements EasyNPCModel
   }
 
   @Inject(method = "setupAnim(Lnet/minecraft/world/entity/Entity;FFFFF)V", at = @At("TAIL"))
-  private void setupNpcAnimEnd(
+  private void easyNPC$setupAnimEnd(
       T entity,
       float limbSwing,
       float limbSwingAmount,

@@ -45,7 +45,6 @@ class ConditionDataList extends ObjectSelectionList<ConditionDataListEntry> {
     this.setRenderBackground(false);
     this.setRenderTopAndBottom(false);
 
-    // Add entries
     int topPos = top + 4;
     if (conditionDataSet != null) {
       for (ConditionDataEntry conditionDataEntry : conditionDataSet.getConditions()) {
@@ -59,7 +58,5 @@ class ConditionDataList extends ObjectSelectionList<ConditionDataListEntry> {
 
   @Override
   protected void renderSelection(
-      GuiGraphics guiGraphics, int unused1, int unused2, int unused3, int unused4, int unused5) {
-    // Nothing to render
-  }
+      GuiGraphics guiGraphics, int unused1, int unused2, int unused3, int unused4, int unused5) {}
 }

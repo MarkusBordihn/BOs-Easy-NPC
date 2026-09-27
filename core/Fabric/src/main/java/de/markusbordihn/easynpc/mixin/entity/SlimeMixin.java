@@ -44,10 +44,10 @@ public class SlimeMixin {
       MobSpawnType spawnType,
       SpawnGroupData spawnGroupData,
       CompoundTag dataTag,
-      CallbackInfoReturnable<SpawnGroupData> cir) {
+      CallbackInfoReturnable<SpawnGroupData> callbackInfoReturnable) {
     Slime slime = (Slime) (Object) this;
     if (slime instanceof EasyNPC<?>) {
-      cir.setReturnValue(spawnGroupData);
+      callbackInfoReturnable.setReturnValue(spawnGroupData);
     }
   }
 }

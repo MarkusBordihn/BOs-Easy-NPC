@@ -42,14 +42,15 @@ public class EasyNPCLivingEntityRendererMixin {
       method = "shouldShowName(Lnet/minecraft/world/entity/LivingEntity;)Z",
       at = @At("HEAD"),
       cancellable = true)
-  private void onShouldShowName(LivingEntity entity, CallbackInfoReturnable<Boolean> cir) {
+  private void onShouldShowName(
+      LivingEntity entity, CallbackInfoReturnable<Boolean> callbackInfoReturnable) {
     if (entity instanceof EasyNPC<?> easyNPC) {
       var player = Minecraft.getInstance().player;
       if (player != null) {
         boolean shouldShowName =
             VisibilityHandler.handleIsCustomNameVisibleToPlayer(
                 easyNPC, player, entity.isCustomNameVisible());
-        cir.setReturnValue(shouldShowName);
+        callbackInfoReturnable.setReturnValue(shouldShowName);
       }
     }
   }
@@ -82,7 +83,7 @@ public class EasyNPCLivingEntityRendererMixin {
       PoseStack poseStack,
       MultiBufferSource bufferSource,
       int packedLight,
-      CallbackInfo ci) {
+      CallbackInfo callbackInfo) {
     if (entity instanceof EasyNPC<?> easyNPC) {
       EasyNPCLivingEntityRenderer.handleRenderStart(easyNPC, poseStack, bufferSource, packedLight);
     }
@@ -99,7 +100,7 @@ public class EasyNPCLivingEntityRendererMixin {
       PoseStack poseStack,
       MultiBufferSource bufferSource,
       int packedLight,
-      CallbackInfo ci) {
+      CallbackInfo callbackInfo) {
     if (entity instanceof EasyNPC<?> easyNPC) {
       EasyNPCLivingEntityRenderer.handleRenderEnd(easyNPC, poseStack, bufferSource, packedLight);
     }
@@ -115,7 +116,7 @@ public class EasyNPCLivingEntityRendererMixin {
       float bodyYaw,
       float ageInTicks,
       float partialTick,
-      CallbackInfo ci) {
+      CallbackInfo callbackInfo) {
     if (entity instanceof EasyNPC<?> easyNPC) {
       EasyNPCLivingEntityRenderer.handleRotation(easyNPC, poseStack);
       EasyNPCLivingEntityRenderer.handleScale(easyNPC, poseStack);

@@ -53,31 +53,31 @@ public record CustomModelConfig(
   }
 
   public boolean hasCustomModel() {
-    return modelLayer != null;
+    return this.modelLayer != null;
   }
 
   public ModelLayerLocation getModelLayer() {
-    return modelLayer;
+    return this.modelLayer;
   }
 
   public ResourceLocation getCustomTexture() {
-    return customTexture;
+    return this.customTexture;
   }
 
   public boolean shouldUseEntityTexture() {
-    return renderMode == RenderMode.OVERLAY_USE_ENTITY_TEXTURE
-        || renderMode == RenderMode.REPLACEMENT_USE_ENTITY_TEXTURE;
+    return this.renderMode == RenderMode.OVERLAY_USE_ENTITY_TEXTURE
+        || this.renderMode == RenderMode.REPLACEMENT_USE_ENTITY_TEXTURE;
   }
 
   public boolean shouldUseVariantTexture() {
-    return renderMode == RenderMode.OVERLAY_USE_VARIANT_TEXTURE
-        || renderMode == RenderMode.REPLACEMENT_USE_VARIANT_TEXTURE;
+    return this.renderMode == RenderMode.OVERLAY_USE_VARIANT_TEXTURE
+        || this.renderMode == RenderMode.REPLACEMENT_USE_VARIANT_TEXTURE;
   }
 
   public boolean shouldHideOriginal() {
-    return renderMode == RenderMode.REPLACEMENT
-        || renderMode == RenderMode.REPLACEMENT_USE_ENTITY_TEXTURE
-        || renderMode == RenderMode.REPLACEMENT_USE_VARIANT_TEXTURE;
+    return this.renderMode == RenderMode.REPLACEMENT
+        || this.renderMode == RenderMode.REPLACEMENT_USE_ENTITY_TEXTURE
+        || this.renderMode == RenderMode.REPLACEMENT_USE_VARIANT_TEXTURE;
   }
 
   enum RenderMode {

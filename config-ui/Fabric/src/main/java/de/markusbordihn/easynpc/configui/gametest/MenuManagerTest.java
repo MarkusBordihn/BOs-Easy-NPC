@@ -48,14 +48,14 @@ public class MenuManagerTest {
   @GameTest(template = "easy_npc:gametest.1x1x1")
   public void testMissingEditorType(GameTestHelper helper) {
     MenuHandlerInterface menuHandlerInterface = MenuManager.getMenuHandler();
-    for (EditorType editorTypeType : EditorType.values()) {
-      if (!editorTypeType.hasMenu()) {
+    for (EditorType editorType : EditorType.values()) {
+      if (!editorType.hasMenu()) {
         continue;
       }
       GameTestHelpers.assertNotNull(
           helper,
-          "Menu type for editor type " + editorTypeType + " is missing!",
-          menuHandlerInterface.getMenuTypeByEditorType(editorTypeType));
+          "Menu type for editor type " + editorType + " is missing!",
+          menuHandlerInterface.getMenuTypeByEditorType(editorType));
     }
     helper.succeed();
   }

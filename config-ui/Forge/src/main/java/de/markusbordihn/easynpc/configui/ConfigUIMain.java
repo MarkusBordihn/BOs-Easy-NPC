@@ -93,7 +93,6 @@ public class ConfigUIMain {
                 }));
     NetworkMessageHandlerManager.registerClientHandler(new ClientNetworkMessageHandler());
 
-    // Initialize the client mod initializer
     DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> new ConfigUIClient(modEventBus));
   }
 }

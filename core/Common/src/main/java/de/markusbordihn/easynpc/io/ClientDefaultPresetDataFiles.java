@@ -47,14 +47,12 @@ public class ClientDefaultPresetDataFiles {
       return cachedPresetLocations.stream();
     }
 
-    // Load index file
     InputStream indexStream = ClientDefaultPresetDataFiles.class.getResourceAsStream(INDEX_PATH);
     if (indexStream == null) {
       log.error("DEFAULT preset index file not found: {}", INDEX_PATH);
       return Stream.empty();
     }
 
-    // Read index file line by line
     List<ResourceLocation> presetLocations = new ArrayList<>();
     try (BufferedReader reader = new BufferedReader(new InputStreamReader(indexStream))) {
       String line;
@@ -75,7 +73,6 @@ public class ClientDefaultPresetDataFiles {
         }
       }
 
-      // Cache loaded preset locations
       cachedPresetLocations = presetLocations;
       log.info("Loaded {} DEFAULT presets", presetLocations.size());
     } catch (Exception e) {
@@ -101,13 +98,13 @@ public class ClientDefaultPresetDataFiles {
         return null;
       }
 
-      // Create PresetData from loaded CompoundTag
       PresetData presetData =
           PresetData.fromCompoundTag(resourceLocation, PresetType.DEFAULT, compoundTag);
       if (presetData == null || !presetData.hasValidData()) {
         log.error("Invalid PresetData for: {}", resourceLocation);
         return null;
       }
+
       return presetData;
     } catch (Exception e) {
       log.error("Failed to load DEFAULT preset {}: {}", resourceLocation, e.getMessage());

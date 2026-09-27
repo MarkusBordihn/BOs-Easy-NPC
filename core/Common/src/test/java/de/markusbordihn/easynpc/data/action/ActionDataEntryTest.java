@@ -87,9 +87,10 @@ class ActionDataEntryTest {
 
   @Test
   void testComplexDataEncodeDecode() {
-    BlockPos testPos = new BlockPos(100, 64, 200);
+    BlockPos testBlockPosition = new BlockPos(100, 64, 200);
     ActionDataEntry original =
-        new ActionDataEntry(ActionDataType.COMMAND, "test", 2, false, false).withBlockPos(testPos);
+        new ActionDataEntry(ActionDataType.COMMAND, "test", 2, false, false)
+            .withBlockPos(testBlockPosition);
 
     CompoundTag tag = original.createTag();
     ActionDataEntry decoded = new ActionDataEntry(tag);
@@ -169,14 +170,14 @@ class ActionDataEntryTest {
 
   @Test
   void testLegacyTagWithoutIdGeneratesRandomUuid() {
-    ActionDataEntry legacyEntry = new ActionDataEntry(createLegacyActionTag("legacy"));
+    ActionDataEntry legacyEntry = new ActionDataEntry(this.createLegacyActionTag("legacy"));
 
     assertNotNull(legacyEntry.id());
   }
 
   @Test
   void testIdenticalLegacyTagsWithoutIdGenerateDifferentUuids() {
-    CompoundTag legacyTag = createLegacyActionTag("legacy");
+    CompoundTag legacyTag = this.createLegacyActionTag("legacy");
 
     ActionDataEntry entry1 = new ActionDataEntry(legacyTag);
     ActionDataEntry entry2 = new ActionDataEntry(legacyTag);
@@ -186,7 +187,7 @@ class ActionDataEntryTest {
 
   @Test
   void testLegacyTagGeneratedUuidStaysStableAfterSaveRoundTrip() {
-    ActionDataEntry original = new ActionDataEntry(createLegacyActionTag("legacy"));
+    ActionDataEntry original = new ActionDataEntry(this.createLegacyActionTag("legacy"));
 
     ActionDataEntry decoded = new ActionDataEntry(original.createTag());
 
@@ -196,7 +197,7 @@ class ActionDataEntryTest {
   @Test
   void testStoredUuidIsPreservedWhenPresent() {
     UUID expectedId = UUID.randomUUID();
-    CompoundTag tag = createLegacyActionTag("legacy");
+    CompoundTag tag = this.createLegacyActionTag("legacy");
     tag.putUUID(ActionDataEntry.DATA_ID_TAG, expectedId);
 
     ActionDataEntry decoded = new ActionDataEntry(tag);

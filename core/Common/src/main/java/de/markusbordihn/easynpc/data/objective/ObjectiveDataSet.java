@@ -27,6 +27,7 @@ import java.util.Set;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -70,6 +71,7 @@ public class ObjectiveDataSet {
       }
       return objectiveDataEntry;
     }
+
     return new ObjectiveDataEntry(objectiveType, priority);
   }
 
@@ -82,6 +84,7 @@ public class ObjectiveDataSet {
     if (objectiveDataEntry != null && objectiveDataEntry.getType() != ObjectiveType.NONE) {
       return objectiveDataEntry;
     }
+
     return null;
   }
 
@@ -91,7 +94,7 @@ public class ObjectiveDataSet {
   }
 
   public boolean hasObjective(ObjectiveType objectiveType) {
-    return hasObjective(objectiveType.name());
+    return this.hasObjective(objectiveType.name());
   }
 
   public boolean hasObjectives() {
@@ -111,6 +114,7 @@ public class ObjectiveDataSet {
     if (objectiveDataEntry == null || !isStorable(objectiveDataEntry)) {
       return;
     }
+
     this.objectives.put(objectiveDataEntry.getId(), objectiveDataEntry);
     this.updateTargetFlags();
   }
@@ -162,6 +166,7 @@ public class ObjectiveDataSet {
       if (objectiveDataEntry == null || objectiveDataEntry.getType() == ObjectiveType.NONE) {
         continue;
       }
+
       if (!objectiveDataEntry.hasValidTarget(easyNPC)) {
         return false;
       }
@@ -192,10 +197,10 @@ public class ObjectiveDataSet {
       }
 
       if (objectiveDataEntry.hasPlayerTarget()) {
-        targetedPlayerSet.add(objectiveDataEntry.getTargetPlayerName());
+        this.targetedPlayerSet.add(objectiveDataEntry.getTargetPlayerName());
         hasPlayerTargetObjective = true;
       } else if (objectiveDataEntry.hasEntityTarget()) {
-        targetedEntitySet.add(objectiveDataEntry.getTargetEntityUUID());
+        this.targetedEntitySet.add(objectiveDataEntry.getTargetEntityUUID());
         hasEntityTargetObjective = true;
       } else if (objectiveDataEntry.hasOwnerTarget()) {
         hasOwnerTargetObjective = true;
@@ -216,7 +221,7 @@ public class ObjectiveDataSet {
 
     this.clear();
 
-    ListTag objectiveDataList = compoundTag.getList(DATA_OBJECTIVE_DATA_SET_TAG, 10);
+    ListTag objectiveDataList = compoundTag.getList(DATA_OBJECTIVE_DATA_SET_TAG, Tag.TAG_COMPOUND);
     for (int i = 0; i < objectiveDataList.size(); i++) {
       CompoundTag objectiveDataTag = objectiveDataList.getCompound(i);
       ObjectiveDataEntry objectiveDataEntry = new ObjectiveDataEntry(objectiveDataTag);

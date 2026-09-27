@@ -39,6 +39,7 @@ public class DefaultPresetDataFiles {
       log.warn("Cannot get default preset resource locations: server is null");
       return Stream.empty();
     }
+
     return getPresetResourceLocations(minecraftServer.getResourceManager());
   }
 

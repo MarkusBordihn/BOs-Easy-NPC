@@ -47,8 +47,9 @@ public class ZombifiedPiglinRawRenderer extends PiglinRenderer implements EasyNP
   @Override
   public ResourceLocation getTextureLocation(Mob entity) {
     if (entity instanceof EasyNPC<?> easyNPC) {
-      return getEntityTexture(easyNPC);
+      return this.getEntityTexture(easyNPC);
     }
+
     return DEFAULT_TEXTURE;
   }
 

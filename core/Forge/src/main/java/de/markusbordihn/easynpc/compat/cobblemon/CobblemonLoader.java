@@ -102,6 +102,7 @@ public class CobblemonLoader implements IntegrationModelProvider {
           || !CobblemonSpeciesManager.isSupportedAspect(aspect)) {
         continue;
       }
+
       speciesModels.add(CobblemonSpeciesManager.createVariantKey(speciesId, aspect));
       speciesModels.add(
           CobblemonSpeciesManager.createVariantKey(
@@ -116,15 +117,15 @@ public class CobblemonLoader implements IntegrationModelProvider {
 
   @Override
   public List<ResourceLocation> getAvailableModels() {
-    if (cachedModels == null || cachedModels.isEmpty()) {
+    if (this.cachedModels == null || this.cachedModels.isEmpty()) {
       log.debug("Re-Loading Cobblemon Species Models ...");
       List<ResourceLocation> speciesModels = loadSpeciesModels();
       if (!speciesModels.isEmpty()) {
         this.cachedModels = speciesModels;
-        log.debug("Loaded {} Cobblemon Species Models", cachedModels.size());
+        log.debug("Loaded {} Cobblemon Species Models", this.cachedModels.size());
       }
     }
 
-    return cachedModels != null ? cachedModels : List.of();
+    return this.cachedModels != null ? this.cachedModels : List.of();
   }
 }

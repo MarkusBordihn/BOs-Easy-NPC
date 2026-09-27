@@ -58,53 +58,45 @@ public class AttackObjectiveConfigurationScreen<T extends ConfigurationMenu>
   public void init() {
     super.init();
 
-    // Default button stats
     this.attackObjectiveButton.active = false;
 
     int objectiveEntriesTop = this.contentTopPos + 15;
     int objectiveEntriesFirstColumn = this.contentLeftPos + 5;
     int objectiveEntriesSecondColumn = this.contentLeftPos + 145;
 
-    // Melee Attacks
     this.meleeAttackCheckbox =
         this.addRenderableWidget(
             this.getObjectiveCheckbox(
                 objectiveEntriesFirstColumn, objectiveEntriesTop, ObjectiveType.MELEE_ATTACK));
 
-    // Zombie Attack
     this.zombieAttackCheckbox =
         this.addRenderableWidget(
             this.getObjectiveCheckbox(
                 objectiveEntriesSecondColumn, objectiveEntriesTop, ObjectiveType.ZOMBIE_ATTACK));
 
-    // Crossbow Attack
     objectiveEntriesTop += SPACE_BETWEEN_ENTRIES;
     this.crossbowAttackCheckbox =
         this.addRenderableWidget(
             this.getObjectiveCheckbox(
                 objectiveEntriesFirstColumn, objectiveEntriesTop, ObjectiveType.CROSSBOW_ATTACK));
 
-    // Bow Attack
     this.bowAttackCheckbox =
         this.addRenderableWidget(
             this.getObjectiveCheckbox(
                 objectiveEntriesSecondColumn, objectiveEntriesTop, ObjectiveType.BOW_ATTACK));
 
-    // Gun Attack
     objectiveEntriesTop += SPACE_BETWEEN_ENTRIES;
     this.gunAttackCheckbox =
         this.addRenderableWidget(
             this.getObjectiveCheckbox(
                 objectiveEntriesFirstColumn, objectiveEntriesTop, ObjectiveType.GUN_ATTACK));
 
-    // Attack Player
     objectiveEntriesTop += SPACE_BETWEEN_ENTRIES + 10;
     this.attackPlayerCheckbox =
         this.addRenderableWidget(
             this.getObjectiveCheckbox(
                 objectiveEntriesFirstColumn, objectiveEntriesTop, ObjectiveType.ATTACK_PLAYER));
 
-    // Attack Player (w/o Owner)
     this.attackPlayerWithoutOwnerCheckbox =
         this.addRenderableWidget(
             this.getObjectiveCheckbox(
@@ -112,34 +104,29 @@ public class AttackObjectiveConfigurationScreen<T extends ConfigurationMenu>
                 objectiveEntriesTop,
                 ObjectiveType.ATTACK_PLAYER_WITHOUT_OWNER));
 
-    // Attack Villager
     objectiveEntriesTop += SPACE_BETWEEN_ENTRIES;
     this.attackVillagerCheckbox =
         this.addRenderableWidget(
             this.getObjectiveCheckbox(
                 objectiveEntriesFirstColumn, objectiveEntriesTop, ObjectiveType.ATTACK_VILLAGER));
 
-    // Attack Animal
     objectiveEntriesTop += SPACE_BETWEEN_ENTRIES;
     this.attackAnimalCheckbox =
         this.addRenderableWidget(
             this.getObjectiveCheckbox(
                 objectiveEntriesFirstColumn, objectiveEntriesTop, ObjectiveType.ATTACK_ANIMAL));
 
-    // Attack Monster
     this.attackMonsterCheckbox =
         this.addRenderableWidget(
             this.getObjectiveCheckbox(
                 objectiveEntriesSecondColumn, objectiveEntriesTop, ObjectiveType.ATTACK_MONSTER));
 
-    // Attack Mob
     objectiveEntriesTop += SPACE_BETWEEN_ENTRIES;
     this.attackMobCheckbox =
         this.addRenderableWidget(
             this.getObjectiveCheckbox(
                 objectiveEntriesFirstColumn, objectiveEntriesTop, ObjectiveType.ATTACK_MOB));
 
-    // Attack Mob w/o Creeper
     this.attackMobWithoutCreeperCheckbox =
         this.addRenderableWidget(
             this.getObjectiveCheckbox(
@@ -147,10 +134,8 @@ public class AttackObjectiveConfigurationScreen<T extends ConfigurationMenu>
                 objectiveEntriesTop,
                 ObjectiveType.ATTACK_MOB_WITHOUT_CREEPER));
 
-    // Protection/Defense section
     objectiveEntriesTop += SPACE_BETWEEN_ENTRIES + 10;
 
-    // Hurt By Target (Defend Self)
     this.hurtByTargetCheckbox =
         this.addRenderableWidget(
             this.getObjectiveCheckbox(
@@ -160,7 +145,6 @@ public class AttackObjectiveConfigurationScreen<T extends ConfigurationMenu>
             TextComponent.getTranslatedConfigText(
                 ObjectiveType.HURT_BY_TARGET.getObjectiveName() + ".tooltip")));
 
-    // Owner Hurt By Target (Protect Owner)
     this.ownerHurtByTargetCheckbox =
         this.addRenderableWidget(
             this.getObjectiveCheckbox(
@@ -170,7 +154,6 @@ public class AttackObjectiveConfigurationScreen<T extends ConfigurationMenu>
     this.setRequirementState(
         this.ownerHurtByTargetCheckbox, ObjectiveType.OWNER_HURT_BY_TARGET, this.hasOwner());
 
-    // Faction Hurt By Target (Defend Faction)
     objectiveEntriesTop += SPACE_BETWEEN_ENTRIES;
     this.factionHurtByTargetCheckbox =
         this.addRenderableWidget(

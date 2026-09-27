@@ -71,6 +71,7 @@ public final class ModelTextureAPI {
     if (!(npc instanceof EasyModelNPC easyModelNPC) || !supportsTextures(npc)) {
       return List.of();
     }
+
     return EasyModelEntitiesManager.listTextureSlots(easyModelNPC.getEasyModelProfileId());
   }
 
@@ -78,6 +79,7 @@ public final class ModelTextureAPI {
     if (!(npc instanceof EasyModelNPC easyModelNPC) || !supportsTextures(npc)) {
       return List.of();
     }
+
     return EasyModelEntitiesManager.listTextureVariants(easyModelNPC.getEasyModelProfileId(), slot);
   }
 

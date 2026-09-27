@@ -42,7 +42,8 @@ public abstract class EasyNPCPlayerModelMixin<T extends LivingEntity>
   @Shadow @Final public ModelPart jacket;
 
   @Inject(method = "<init>(Lnet/minecraft/client/model/geom/ModelPart;Z)V", at = @At("RETURN"))
-  private void easyNpcPlayerModel(ModelPart modelPart, boolean slim, CallbackInfo callbackInfo) {
+  private void easyNPC$initModelManager(
+      ModelPart modelPart, boolean slim, CallbackInfo callbackInfo) {
     EasyNPCModelManager modelManager = this.easyNPC$getModelManager();
     if (modelManager != null) {
       modelManager

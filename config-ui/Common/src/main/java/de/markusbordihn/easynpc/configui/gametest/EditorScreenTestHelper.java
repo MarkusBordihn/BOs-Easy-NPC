@@ -48,32 +48,25 @@ public class EditorScreenTestHelper {
       EditorType editorType,
       EasyNPC<?> easyNPC,
       MenuType<? extends EditorMenu> menuType) {
-
-    // Check if the dialog data is null and create a basic dialog if needed.
+    UUID dialogId = null;
     DialogDataCapable<?> dialogData = easyNPC.getEasyNPCDialogData();
     if (dialogData != null) {
       DialogDataSet dialogDataSet = DialogUtils.getBasicDialog("Test Dialog");
       dialogData.setDialogDataSet(dialogDataSet);
+      dialogId =
+          dialogData.getDialogDataSet().getDialogsByLabel().stream()
+              .findFirst()
+              .map(DialogDataEntry::getId)
+              .orElse(null);
     }
 
-    // Define the menu provider and open the menu.
     MenuProvider menuProvider =
         EditorMenuHandler.getMenuProvider(
             editorType,
             easyNPC,
             menuType,
             EditorMenuHandler.getScreenData(
-                editorType,
-                easyNPC,
-                dialogData.getDialogDataSet().getDialogsByLabel().stream()
-                    .findFirst()
-                    .map(DialogDataEntry::getId)
-                    .orElse(null),
-                null,
-                null,
-                null,
-                0,
-                new CompoundTag()));
+                editorType, easyNPC, dialogId, null, null, null, 0, new CompoundTag()));
     UUID menuId = MenuManager.registerMenu(easyNPC.getEntityUUID(), menuProvider, serverPlayer);
     MenuManager.openMenu(menuId, serverPlayer);
     return menuId;
@@ -84,20 +77,16 @@ public class EditorScreenTestHelper {
       EntityType<? extends PathfinderMob> npcEntityType,
       EditorType editorType,
       MenuType<? extends EditorMenu> menuType) {
-    // Get a mock player and spawn a humanoid NPC.
     ServerPlayer serverPlayer = GameTestHelpers.mockServerPlayer(helper, new Vec3(1, 2, 1));
     EasyNPC<?> easyNPC = GameTestHelpers.mockEasyNPC(helper, npcEntityType, new Vec3(2, 2, 2));
 
-    // Close previous dialog, if any.
     if (serverPlayer.hasContainerOpen()) {
       serverPlayer.closeContainer();
     }
 
-    // Prepare and open Dialog
-    UUID dialogId = mockOpenEditorScreen(serverPlayer, editorType, easyNPC, menuType);
-    GameTestHelpers.assertNotNull(helper, "DialogId is null!", dialogId);
+    UUID menuId = mockOpenEditorScreen(serverPlayer, editorType, easyNPC, menuType);
+    GameTestHelpers.assertNotNull(helper, "Menu ID is null!", menuId);
 
-    // Check if dialog is open.
     GameTestHelpers.assertTrue(
         helper,
         "Editor Screen " + menuType + " is not open!",

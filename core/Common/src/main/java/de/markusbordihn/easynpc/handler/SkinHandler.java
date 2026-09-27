@@ -50,7 +50,6 @@ public class SkinHandler {
     log.debug("[{}] Setting skin to {}", easyNPC, skinDataEntry);
     skinData.setSkinDataEntry(skinDataEntry);
 
-    // Handle variant for DEFAULT skin type
     if (skinDataEntry.type() == SkinType.DEFAULT && !skinDataEntry.name().isEmpty()) {
       VariantDataCapable<?> variantData = skinData.getEasyNPCVariantData();
       if (variantData != null) {

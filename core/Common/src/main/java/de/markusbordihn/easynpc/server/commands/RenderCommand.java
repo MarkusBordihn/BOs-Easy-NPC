@@ -190,7 +190,6 @@ public class RenderCommand extends Command {
       return 0;
     }
 
-    // Set render type.
     if (!RenderHandler.setRenderType(easyNPC, renderType)) {
       return sendFailureMessage(
           context, "Failed to set render type " + renderType + " for EasyNPC " + easyNPC);

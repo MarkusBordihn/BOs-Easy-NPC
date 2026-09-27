@@ -75,7 +75,7 @@ public class MoveBackToHomeGoal<T extends EasyNPC<?>> extends Goal {
 
     this.homeTargetPos =
         GroundTargetResolver.resolveGroundTarget(this.mob, this.navigationData.getHomePosition());
-    return !reachedHome();
+    return !this.reachedHome();
   }
 
   @Override
@@ -89,7 +89,7 @@ public class MoveBackToHomeGoal<T extends EasyNPC<?>> extends Goal {
         && !this.mob.isVehicle()
         && this.mob.getTarget() == null
         && this.ticksWithoutProgress < TICKS_WITHOUT_PROGRESS_LIMIT
-        && !reachedHome();
+        && !this.reachedHome();
   }
 
   @Override

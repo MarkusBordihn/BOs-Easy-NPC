@@ -53,7 +53,7 @@ public record OpenDialogEditorMessage(UUID uuid, UUID dialogId) implements Netwo
 
   @Override
   public void handleServer(final ServerPlayer serverPlayer) {
-    EasyNPC<?> easyNPC = getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
+    EasyNPC<?> easyNPC = this.getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
     if (easyNPC == null) {
       return;
     }
@@ -79,7 +79,7 @@ public record OpenDialogEditorMessage(UUID uuid, UUID dialogId) implements Netwo
       newDialogId = newDialogData.getId();
     } else if (!dialogData.hasDialog(this.dialogId)) {
       log.error(
-          "Unknown dialog button editor request for dialog {} for {} from {}",
+          "Unknown dialog editor request for dialog {} for {} from {}",
           this.dialogId,
           easyNPC,
           serverPlayer);
@@ -87,8 +87,7 @@ public record OpenDialogEditorMessage(UUID uuid, UUID dialogId) implements Netwo
       return;
     }
 
-    log.info(
-        "Open dialog editor with for dialog {} for {} from {}", newDialogId, easyNPC, serverPlayer);
+    log.info("Open dialog editor for dialog {} for {} from {}", newDialogId, easyNPC, serverPlayer);
     MenuManager.getMenuHandler()
         .openEditorMenu(EditorType.DIALOG, serverPlayer, easyNPC, newDialogId, 0);
   }

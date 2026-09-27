@@ -29,11 +29,10 @@ import net.minecraft.world.item.Items;
 
 public class ItemUtils {
 
-  private static final String CONFIG_UI_MOD_ID = "easy_npc_config_ui";
   private static final ResourceLocation EASY_NPC_WAND_RESOURCE_LOCATION =
       new ResourceLocation(Constants.MOD_ID, "easy_npc_wand");
   private static final ResourceLocation EASY_NPC_WAND_CONFIG_UI_RESOURCE_LOCATION =
-      new ResourceLocation(CONFIG_UI_MOD_ID, "easy_npc_wand");
+      new ResourceLocation(Constants.MOD_EASY_NPC_CONFIG_UI_ID, "easy_npc_wand");
   private static final ResourceLocation MOVE_EASY_NPC_RESOURCE_LOCATION =
       new ResourceLocation(Constants.MOD_ID, "move_easy_npc");
   private static final ResourceLocation EASY_NPC_PRESET_EMPTY_RESOURCE_LOCATION =
@@ -80,10 +79,9 @@ public class ItemUtils {
 
   public static Item getEasyNPCWandItem() {
     if (cachedEasyNpcWandItem == null) {
-      // Try config-ui namespace first (where the wand is actually registered)
+      // The wand is registered by config-ui; the core namespace is only a fallback.
       cachedEasyNpcWandItem = BuiltInRegistries.ITEM.get(EASY_NPC_WAND_CONFIG_UI_RESOURCE_LOCATION);
       if (cachedEasyNpcWandItem == null || cachedEasyNpcWandItem == Items.AIR) {
-        // Fallback to core namespace
         cachedEasyNpcWandItem = BuiltInRegistries.ITEM.get(EASY_NPC_WAND_RESOURCE_LOCATION);
       }
     }

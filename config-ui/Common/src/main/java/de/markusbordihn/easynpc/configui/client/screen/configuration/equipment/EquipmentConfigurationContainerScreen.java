@@ -38,7 +38,6 @@ import net.minecraft.world.entity.player.Inventory;
 public class EquipmentConfigurationContainerScreen<T extends ConfigurationMenu>
     extends ConfigurationContainerScreen<T> {
 
-  // Buttons
   protected Button defaultEquipmentButton;
 
   public EquipmentConfigurationContainerScreen(T menu, Inventory inventory, Component component) {
@@ -64,7 +63,6 @@ public class EquipmentConfigurationContainerScreen<T extends ConfigurationMenu>
   public void init() {
     super.init();
 
-    // Default button
     int buttonWidth = 80;
     this.defaultEquipmentButton =
         this.addRenderableWidget(
@@ -72,11 +70,9 @@ public class EquipmentConfigurationContainerScreen<T extends ConfigurationMenu>
                 this.buttonLeftPos, this.buttonTopPos, buttonWidth, "equipment", button -> {}));
     this.defaultEquipmentButton.active = false;
 
-    // Basic Position
     this.inventoryLabelX = 8;
     this.inventoryLabelY = this.imageHeight - 92;
 
-    // Equipment Slots
     int slotPositionTop = this.contentTopPos + 20;
     ModelDataCapable<?> modelData = this.getEasyNPC().getEasyNPCModelData();
     boolean canUseArmor = modelData.canUseArmor();
@@ -122,7 +118,7 @@ public class EquipmentConfigurationContainerScreen<T extends ConfigurationMenu>
 
     int slotPositionTop = this.contentTopPos + 20;
 
-    // Armor Slots Left. Head-only entities (e.g. illagers with a banner) show a single head slot.
+    // Head-only entities (e.g. illagers with a banner) show a single head slot.
     ModelDataCapable<?> modelData = this.getEasyNPC().getEasyNPCModelData();
     boolean canUseArmor = modelData == null || modelData.canUseArmor();
     boolean canUseHead = canUseArmor || modelData.canUseHead();
@@ -138,7 +134,6 @@ public class EquipmentConfigurationContainerScreen<T extends ConfigurationMenu>
           canUseArmor ? 72 : 18);
     }
 
-    // Main Hand Slot Left
     if (modelData == null || modelData.canUseMainHand()) {
       Graphics.blit(
           guiGraphics,
@@ -151,7 +146,6 @@ public class EquipmentConfigurationContainerScreen<T extends ConfigurationMenu>
           18);
     }
 
-    // Off-Hand Slot Right
     if (modelData == null || modelData.canUseOffHand()) {
       Graphics.blit(
           guiGraphics,
@@ -164,7 +158,6 @@ public class EquipmentConfigurationContainerScreen<T extends ConfigurationMenu>
           18);
     }
 
-    // Player Inventory Slots
     Graphics.blit(
         guiGraphics,
         Constants.TEXTURE_INVENTORY,
@@ -175,7 +168,6 @@ public class EquipmentConfigurationContainerScreen<T extends ConfigurationMenu>
         162,
         54);
 
-    // Player Hotbar Slots
     Graphics.blit(
         guiGraphics,
         Constants.TEXTURE_INVENTORY,
@@ -186,7 +178,6 @@ public class EquipmentConfigurationContainerScreen<T extends ConfigurationMenu>
         162,
         18);
 
-    // Entity
     guiGraphics.fill(
         this.contentLeftPos + 109,
         slotPositionTop - 8,

@@ -47,19 +47,12 @@ public class MobGoalSelectorManager {
       return;
     }
 
-    // Add default goals for all mobs.
-    if (goalSelector != null) {
-      // Empty for now, but can be used to add custom goals in the future.
-    }
-
-    // Add default target goals for all mobs.
     if (targetSelector != null) {
       addTargetingGoals(mob, targetSelector);
     }
   }
 
   private static void addTargetingGoals(Mob mob, GoalSelector targetSelector) {
-    // Define NPCs as potential targets for hostile mobs.
     if (!mob.getType().getCategory().isFriendly() && REGISTERED_TARGETING_MOBS.add(mob)) {
       targetSelector.addGoal(
           4,

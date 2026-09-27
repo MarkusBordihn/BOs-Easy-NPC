@@ -50,6 +50,7 @@ public final class CobblemonSpeciesManager {
     if (basePath.equals(modelKey.getPath())) {
       return modelKey;
     }
+
     return new ResourceLocation(modelKey.getNamespace(), basePath);
   }
 

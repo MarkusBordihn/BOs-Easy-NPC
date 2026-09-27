@@ -24,18 +24,16 @@ import de.markusbordihn.easynpc.data.execution.ExecutionId;
 import de.markusbordihn.easynpc.data.execution.ExecutionType;
 import de.markusbordihn.easynpc.data.saveddata.ActionExecutionTracker;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
+import net.minecraft.commands.Commands;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public record ResetExecutionLimitMessage(ExecutionId executionId, boolean allPlayers)
     implements NetworkMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
       new ResourceLocation(Constants.MOD_ID, "reset_execution_limit");
-  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   public static ResetExecutionLimitMessage create(final FriendlyByteBuf buffer) {
     return new ResetExecutionLimitMessage(
@@ -64,12 +62,13 @@ public record ResetExecutionLimitMessage(ExecutionId executionId, boolean allPla
 
     ActionExecutionTracker tracker = ActionExecutionTracker.get(serverPlayer.serverLevel());
     if (this.allPlayers) {
-      if (!serverPlayer.hasPermissions(2)) {
+      if (!serverPlayer.hasPermissions(Commands.LEVEL_GAMEMASTERS)) {
         log.warn(
             "Player {} tried to reset executions for all players without permission",
             serverPlayer.getName().getString());
         return;
       }
+
       tracker.resetExecutionForAllPlayers(this.executionId);
       log.info(
           "Player {} reset execution limit for all players for execution {}",

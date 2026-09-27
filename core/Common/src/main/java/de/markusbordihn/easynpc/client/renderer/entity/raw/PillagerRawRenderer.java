@@ -50,7 +50,7 @@ public class PillagerRawRenderer extends PillagerRenderer implements EasyNPCEnti
 
   @Override
   public ResourceLocation getTextureLocation(Pillager entity) {
-    return getTextureLocationWithConfig(entity);
+    return this.getTextureLocationWithConfig(entity);
   }
 
   @Override

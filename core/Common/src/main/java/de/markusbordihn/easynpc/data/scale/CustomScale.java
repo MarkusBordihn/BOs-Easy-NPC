@@ -24,6 +24,7 @@ import java.util.List;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.FloatTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 
 public record CustomScale(float x, float y, float z) {
@@ -31,7 +32,7 @@ public record CustomScale(float x, float y, float z) {
   public static final CustomScale DEFAULT = new CustomScale(1.0f, 1.0f, 1.0f);
 
   public CustomScale(ModelPartType modelPartType, CompoundTag compoundTag) {
-    this(compoundTag.getList(modelPartType.getTagName(), 5));
+    this(compoundTag.getList(modelPartType.getTagName(), Tag.TAG_FLOAT));
   }
 
   public CustomScale(ListTag listTag) {
@@ -65,7 +66,7 @@ public record CustomScale(float x, float y, float z) {
   }
 
   public boolean hasChanged() {
-    return hasChanged(1, 1, 1);
+    return this.hasChanged(1, 1, 1);
   }
 
   public boolean hasChanged(float x, float y, float z) {

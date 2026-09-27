@@ -47,7 +47,9 @@ public class ProgressionAttributeHandler {
   private ProgressionAttributeHandler() {}
 
   public static void applyLevelScaling(EasyNPC<?> easyNPC) {
-    if (easyNPC == null) return;
+    if (easyNPC == null) {
+      return;
+    }
 
     ProgressionDataCapable<?> progressionData = easyNPC.getEasyNPCProgressionData();
     if (progressionData == null || !progressionData.isAttributeScalingEnabled()) {
@@ -86,7 +88,10 @@ public class ProgressionAttributeHandler {
   }
 
   public static void removeLevelScaling(EasyNPC<?> easyNPC) {
-    if (easyNPC == null) return;
+    if (easyNPC == null) {
+      return;
+    }
+
     log.debug("Removing level-based attribute modifiers for {}", easyNPC);
     removeAttributeModifier(easyNPC, Attributes.MAX_HEALTH, HEALTH_MODIFIER_UUID);
     removeAttributeModifier(easyNPC, Attributes.ATTACK_DAMAGE, ATTACK_DAMAGE_MODIFIER_UUID);
@@ -107,10 +112,14 @@ public class ProgressionAttributeHandler {
       int baseValue,
       int maxValue) {
     AttributeInstance attributeInstance = easyNPC.getLivingEntity().getAttribute(attribute);
-    if (attributeInstance == null) return;
+    if (attributeInstance == null) {
+      return;
+    }
 
     int adjustment = progressionData.getAttributeAdjustment(baseValue, maxValue);
-    if (adjustment <= 0) return;
+    if (adjustment <= 0) {
+      return;
+    }
 
     if (attributeInstance.getModifier(modifierUUID) != null) {
       attributeInstance.removeModifier(modifierUUID);

@@ -30,49 +30,51 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 public interface AttributeDataCapable<E extends Mob> extends EasyNPC<E> {
 
   default void setBaseAttribute(Attribute attribute, double value) {
-    if (attribute == null || getLivingEntity().getAttribute(attribute) == null) {
+    if (attribute == null || this.getLivingEntity().getAttribute(attribute) == null) {
       return;
     }
-    getLivingEntity().getAttribute(attribute).setBaseValue(value);
+
+    this.getLivingEntity().getAttribute(attribute).setBaseValue(value);
   }
 
   default double getBaseAttribute(Attribute attribute) {
-    if (attribute == null || getLivingEntity().getAttribute(attribute) == null) {
+    if (attribute == null || this.getLivingEntity().getAttribute(attribute) == null) {
       return 0.0;
     }
-    return getLivingEntity().getAttribute(attribute).getBaseValue();
+
+    return this.getLivingEntity().getAttribute(attribute).getBaseValue();
   }
 
   default EntityAttributes getEntityAttributes() {
-    return getSynchedEntityData(SynchedDataIndex.ENTITY_ATTRIBUTES);
+    return this.getSynchedEntityData(SynchedDataIndex.ENTITY_ATTRIBUTES);
   }
 
   default void setEntityAttributes(EntityAttributes entityAttributes) {
-    setSynchedEntityData(SynchedDataIndex.ENTITY_ATTRIBUTES, entityAttributes);
+    this.setSynchedEntityData(SynchedDataIndex.ENTITY_ATTRIBUTES, entityAttributes);
   }
 
   default void refreshEntityAttributes() {
-    EntityAttributes entityAttributes = getEntityAttributes();
+    EntityAttributes entityAttributes = this.getEntityAttributes();
     if (entityAttributes != null) {
-      setEntityAttributes(new EntityAttributes());
-      setEntityAttributes(entityAttributes);
+      this.setEntityAttributes(new EntityAttributes());
+      this.setEntityAttributes(entityAttributes);
     }
   }
 
   default boolean getAttributeSilent() {
-    return getEntity().isSilent();
+    return this.getEntity().isSilent();
   }
 
   default void setAttributeSilent(boolean silent) {
-    getEntity().setSilent(silent);
+    this.getEntity().setSilent(silent);
   }
 
   default void defineSynchedAttributeData() {
-    defineSynchedEntityData(SynchedDataIndex.ENTITY_ATTRIBUTES, new EntityAttributes());
+    this.defineSynchedEntityData(SynchedDataIndex.ENTITY_ATTRIBUTES, new EntityAttributes());
   }
 
   default void addAdditionalAttributeData(CompoundTag compoundTag) {
-    EntityAttributes entityAttributes = getEntityAttributes();
+    EntityAttributes entityAttributes = this.getEntityAttributes();
     if (entityAttributes != null) {
       entityAttributes.save(compoundTag);
     }

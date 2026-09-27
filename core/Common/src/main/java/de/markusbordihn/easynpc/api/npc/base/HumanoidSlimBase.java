@@ -79,7 +79,7 @@ public class HumanoidSlimBase extends PathfinderMobRaw implements BaseEasyNPC<Pa
     try {
       return HumanoidSlimSkinVariant.valueOf(name);
     } catch (IllegalArgumentException e) {
-      return getDefaultSkinVariantType();
+      return this.getDefaultSkinVariantType();
     }
   }
 

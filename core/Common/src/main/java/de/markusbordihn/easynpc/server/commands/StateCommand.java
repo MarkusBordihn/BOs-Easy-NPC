@@ -46,7 +46,8 @@ public class StateCommand extends Command {
 
   public static ArgumentBuilder<CommandSourceStack, ?> register() {
     return Commands.literal("state")
-        .requires(cs -> cs.hasPermission(Commands.LEVEL_GAMEMASTERS))
+        .requires(
+            commandSourceStack -> commandSourceStack.hasPermission(Commands.LEVEL_GAMEMASTERS))
         .then(Commands.literal("get").then(stateArgument(StateCommand::getState)))
         .then(
             Commands.literal("list")

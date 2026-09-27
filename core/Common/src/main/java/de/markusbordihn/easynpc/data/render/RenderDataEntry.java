@@ -95,6 +95,7 @@ public record RenderDataEntry(
     if (!compoundTag.contains(DATA_RENDER_MODEL_TYPE_TAG)) {
       return null;
     }
+
     try {
       return ModelType.valueOf(compoundTag.getString(DATA_RENDER_MODEL_TYPE_TAG));
     } catch (IllegalArgumentException exception) {
@@ -171,30 +172,26 @@ public record RenderDataEntry(
   }
 
   public CompoundTag createTag() {
-    return write(new CompoundTag());
-  }
-
-  public CompoundTag save(CompoundTag compoundTag) {
-    return write(compoundTag);
+    return this.write(new CompoundTag());
   }
 
   public RenderType getRenderType() {
-    return renderType;
+    return this.renderType;
   }
 
   public EntityType<? extends Entity> getRenderEntityType() {
-    return renderEntityType;
+    return this.renderEntityType;
   }
 
   public String getRenderEntityModel() {
-    return renderEntityModel;
+    return this.renderEntityModel;
   }
 
   public ModelType getRenderModelType() {
-    return renderModelType;
+    return this.renderModelType;
   }
 
   public ModelTextureSetting getRenderTextureSetting() {
-    return renderTextureSetting;
+    return this.renderTextureSetting;
   }
 }

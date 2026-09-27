@@ -22,10 +22,7 @@ package de.markusbordihn.easynpc.client.renderer.entity.custom;
 import de.markusbordihn.easynpc.client.model.custom.OrcModel;
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.layers.SkullHeadRenderLayer;
-import de.markusbordihn.easynpc.client.texture.CustomTextureManager;
-import de.markusbordihn.easynpc.client.texture.RemoteTextureManager;
 import de.markusbordihn.easynpc.data.skin.variant.OrcSkinVariant;
-import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.npc.custom.Orc;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -45,18 +42,11 @@ public class OrcRenderer<E extends Orc> extends HumanoidMobRenderer<E, OrcModel<
 
   @Override
   public ResourceLocation getTextureLocation(E entity) {
-    return getEntityTexture(entity);
+    return this.getEntityTexture(entity);
   }
 
+  @Override
   public ResourceLocation getDefaultTexture() {
     return DEFAULT_TEXTURE;
-  }
-
-  public ResourceLocation getCustomTexture(SkinDataCapable<?> entity) {
-    return CustomTextureManager.getOrCreateTextureWithDefault(entity, getDefaultTexture());
-  }
-
-  public ResourceLocation getRemoteTexture(SkinDataCapable<?> entity) {
-    return RemoteTextureManager.getOrCreateTextureWithDefault(entity, getDefaultTexture());
   }
 }

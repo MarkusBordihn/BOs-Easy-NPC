@@ -100,10 +100,12 @@ public abstract class Popup {
     if (!this.visible) {
       return false;
     }
+
     if (!contains(mouseX, mouseY, this.x, this.y, this.getPanelWidth(), this.getPanelHeight())) {
       this.close();
       return true;
     }
+
     this.onMouseClicked(mouseX, mouseY, button);
     return true;
   }

@@ -48,7 +48,6 @@ public class BaseEasyNPCSpawnerBlockEntityRenderer<T extends EasyNPCSpawnerBlock
       MultiBufferSource bufferSource,
       int packedLight,
       int packedOverlay) {
-    // Check if the spawner has a valid entity and ignore non-valid entities.
     BaseSpawner baseSpawner = baseEasyNPCSpawnerBlockEntity.getSpawner();
     if (!(baseSpawner instanceof BaseEasyNPCSpawner baseEasyNPCSpawner)
         || !baseEasyNPCSpawner.hasEasyNPC()) {

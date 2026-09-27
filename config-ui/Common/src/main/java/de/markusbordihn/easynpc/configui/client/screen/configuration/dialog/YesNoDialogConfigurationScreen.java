@@ -67,21 +67,17 @@ public class YesNoDialogConfigurationScreen<T extends ConfigurationMenu>
   public void init() {
     super.init();
 
-    // Default button stats
     this.yesNoDialogButton.active = false;
 
-    // Dialog Data
     DialogDataEntry questionDialogData = this.getDialogDataSet().getDialog("question");
     DialogDataEntry yesDialogData = this.getDialogDataSet().getDialog("yes_answer");
     DialogDataEntry noDialogData = this.getDialogDataSet().getDialog("no_answer");
 
-    // Dialog Buttons
     DialogButtonEntry yesButtonData =
         questionDialogData == null ? null : questionDialogData.getDialogButton(YES_BUTTON_LABEL);
     DialogButtonEntry noButtonData =
         questionDialogData == null ? null : questionDialogData.getDialogButton(NO_BUTTON_LABEL);
 
-    // Question Text (copy from basic text if not set)
     this.questionDialogValue = questionDialogData == null ? "" : questionDialogData.getText();
     if (this.questionDialogValue.isEmpty()
         && this.getDialogDataSet().getType() == DialogType.BASIC) {
@@ -92,18 +88,15 @@ public class YesNoDialogConfigurationScreen<T extends ConfigurationMenu>
       }
     }
 
-    // Save notification for buttons
     if (questionDialogData == null) {
       this.showSaveNotificationForButtons = true;
     }
 
-    // Dialog
     this.mainDialogBox = new TextField(this.font, this.contentLeftPos, this.topPos + 50, 300);
     this.mainDialogBox.setMaxLength(512);
     this.mainDialogBox.setValue(this.questionDialogValue);
     this.addRenderableWidget(this.mainDialogBox);
 
-    // Question Dialog Buttons
     this.yesDialogButton =
         this.addRenderableWidget(
             new TextButton(
@@ -119,10 +112,11 @@ public class YesNoDialogConfigurationScreen<T extends ConfigurationMenu>
                     if (yesButtonId != null) {
                       NetworkMessageHandlerManager.getServerHandler()
                           .openDialogButtonEditor(
-                              getEasyNPCUUID(), questionDialogData.getId(), yesButtonId);
+                              this.getEasyNPCUUID(), questionDialogData.getId(), yesButtonId);
                     } else {
                       NetworkMessageHandlerManager.getServerHandler()
-                          .openDialogButtonEditor(getEasyNPCUUID(), questionDialogData.getId());
+                          .openDialogButtonEditor(
+                              this.getEasyNPCUUID(), questionDialogData.getId());
                     }
                   }
                 }));
@@ -142,29 +136,27 @@ public class YesNoDialogConfigurationScreen<T extends ConfigurationMenu>
                     if (noButtonId != null) {
                       NetworkMessageHandlerManager.getServerHandler()
                           .openDialogButtonEditor(
-                              getEasyNPCUUID(), questionDialogData.getId(), noButtonId);
+                              this.getEasyNPCUUID(), questionDialogData.getId(), noButtonId);
                     } else {
                       NetworkMessageHandlerManager.getServerHandler()
-                          .openDialogButtonEditor(getEasyNPCUUID(), questionDialogData.getId());
+                          .openDialogButtonEditor(
+                              this.getEasyNPCUUID(), questionDialogData.getId());
                     }
                   }
                 }));
 
-    // Yes Dialog
     this.yesDialogValue = yesDialogData == null ? "" : yesDialogData.getText();
     this.yesDialogBox = new TextField(this.font, this.contentLeftPos, this.topPos + 130, 300);
     this.yesDialogBox.setMaxLength(255);
     this.yesDialogBox.setValue(this.yesDialogValue);
     this.addRenderableWidget(this.yesDialogBox);
 
-    // No Dialog
     this.noDialogValue = noDialogData == null ? "" : noDialogData.getText();
     this.noDialogBox = new TextField(this.font, this.contentLeftPos, this.topPos + 170, 300);
     this.noDialogBox.setMaxLength(255);
     this.noDialogBox.setValue(this.noDialogValue);
     this.addRenderableWidget(this.noDialogBox);
 
-    // Save Button
     this.saveButton =
         this.addRenderableWidget(
             new SaveButton(
@@ -180,7 +172,6 @@ public class YesNoDialogConfigurationScreen<T extends ConfigurationMenu>
                           this.yesDialogBox.getValue(),
                           this.noDialogBox.getValue());
 
-                  // Check if we have a question dialog and add yes/no buttons if not available.
                   if (questionDialogData != null) {
                     Set<DialogButtonEntry> dialogButtonEntrySet =
                         questionDialogData.getDialogButtons();
@@ -196,7 +187,6 @@ public class YesNoDialogConfigurationScreen<T extends ConfigurationMenu>
                           dialogDataSet.getDialog("question").getDialogButton(NO_BUTTON_LABEL));
                     }
 
-                    // Update dialog buttons for question dialog
                     dialogDataSet.getDialog("question").setDialogButtons(dialogButtonEntrySet);
                   }
 
@@ -204,12 +194,11 @@ public class YesNoDialogConfigurationScreen<T extends ConfigurationMenu>
                   this.yesDialogValue = this.yesDialogBox.getValue();
                   this.noDialogValue = this.noDialogBox.getValue();
                   NetworkMessageHandlerManager.getServerHandler()
-                      .saveDialogSet(getEasyNPCUUID(), dialogDataSet);
+                      .saveDialogSet(this.getEasyNPCUUID(), dialogDataSet);
                   NetworkMessageHandlerManager.getServerHandler()
-                      .openConfiguration(getEasyNPCUUID(), ConfigurationType.YES_NO_DIALOG);
+                      .openConfiguration(this.getEasyNPCUUID(), ConfigurationType.YES_NO_DIALOG);
                 }));
 
-    // Cancel Button
     this.cancelButton =
         this.addRenderableWidget(
             new CancelButton(
@@ -223,7 +212,6 @@ public class YesNoDialogConfigurationScreen<T extends ConfigurationMenu>
   public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
     super.render(guiGraphics, x, y, partialTicks);
 
-    // Edit box Labels
     Text.drawConfigString(
         guiGraphics, this.font, "question", this.contentLeftPos, this.topPos + 40);
 
@@ -243,7 +231,6 @@ public class YesNoDialogConfigurationScreen<T extends ConfigurationMenu>
           guiGraphics, this.font, "no_answer", this.contentLeftPos, this.noDialogBox.getY() - 12);
     }
 
-    // Save notification
     if (this.showSaveNotificationForButtons) {
       Text.drawConfigString(
           guiGraphics,
@@ -266,14 +253,14 @@ public class YesNoDialogConfigurationScreen<T extends ConfigurationMenu>
               || !this.noDialogBox.getValue().equals(this.noDialogValue);
     }
 
-    if (yesDialogButton != null && this.getDialogDataSet() != null) {
-      yesDialogButton.active =
+    if (this.yesDialogButton != null && this.getDialogDataSet() != null) {
+      this.yesDialogButton.active =
           this.getDialogDataSet().hasDialog("question")
               && this.getDialogDataSet().getDialog("question").hasDialogButton(YES_BUTTON_LABEL);
     }
 
-    if (noDialogButton != null && this.getDialogDataSet() != null) {
-      noDialogButton.active =
+    if (this.noDialogButton != null && this.getDialogDataSet() != null) {
+      this.noDialogButton.active =
           this.getDialogDataSet().hasDialog("question")
               && this.getDialogDataSet().getDialog("question").hasDialogButton(NO_BUTTON_LABEL);
     }

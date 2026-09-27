@@ -45,30 +45,26 @@ public class EntityRenderer {
   private EntityRenderer() {}
 
   public static void register(EntityRenderersEvent.RegisterRenderers event) {
-    log.info("{} Entity Renders ...", Constants.LOG_REGISTER_PREFIX);
+    log.info("{} Entity Renderers ...", Constants.LOG_REGISTER_PREFIX);
 
-    // Raw entities (for modding only)
     for (ModRawEntityRenderer renderer : ModRawEntityRenderer.values()) {
       event.registerEntityRenderer(
           ModEntityType.getEntityType(renderer.getEntityType()),
           context -> renderer.getRenderer().apply(context));
     }
 
-    // Pre-defined NPCs
     for (ModNPCEntityRenderer renderer : ModNPCEntityRenderer.values()) {
       event.registerEntityRenderer(
           ModEntityType.getEntityType(renderer.getEntityType()),
           context -> renderer.getRenderer().apply(context));
     }
 
-    // Custom NPCs
     for (ModCustomEntityRenderer renderer : ModCustomEntityRenderer.values()) {
       event.registerEntityRenderer(
           ModEntityType.getEntityType(renderer.getEntityType()),
           context -> renderer.getRenderer().apply(context));
     }
 
-    // Epic Fight NPCs
     if (CompatConstants.MOD_EPIC_FIGHT_LOADED) {
       for (ModEpicFightEntityRenderer renderer : ModEpicFightEntityRenderer.values()) {
         event.registerEntityRenderer(
@@ -77,14 +73,12 @@ public class EntityRenderer {
       }
     }
 
-    // Cobblemon NPCs
     if (CompatConstants.MOD_COBBLEMON_LOADED) {
       event.registerEntityRenderer(
           ModEntityType.getEntityType(CobblemonEntityType.COBBLEMON_NPC),
           context -> new CobblemonNPCRenderer<>(context, ModModelLayers.DOPPLER));
     }
 
-    // Easy Model Entities NPCs
     if (CompatConstants.MOD_EASY_MODEL_ENTITIES_LOADED) {
       event.registerEntityRenderer(
           ModEntityType.getEntityType(EasyModelEntitiesEntityType.EASY_MODEL_NPC),

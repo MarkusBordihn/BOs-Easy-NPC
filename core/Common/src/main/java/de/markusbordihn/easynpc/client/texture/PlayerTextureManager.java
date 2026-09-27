@@ -69,13 +69,11 @@ public class PlayerTextureManager {
 
   public static ResourceLocation getOrCreateTextureWithDefault(
       SkinDataCapable<?> skinData, ResourceLocation defaultResourceLocation) {
-    // Check if we have a skin UUID otherwise we assume that the texture is unknown.
     UUID skinUUID = skinData.getSkinUUID();
     if (skinUUID.equals(Constants.BLANK_UUID)) {
       return defaultResourceLocation;
     }
 
-    // Check if there is already any cached resource location.
     TextureModelKey textureModelKey = new TextureModelKey(skinUUID, skinData.getSkinModel());
     ResourceLocation resourceLocation = textureCache.get(textureModelKey);
     if (resourceLocation != null) {
@@ -93,7 +91,6 @@ public class PlayerTextureManager {
   private static ResourceLocation createTexture(
       TextureModelKey textureModelKey, SkinDataCapable<?> skinData, UUID playerUUID) {
 
-    // Get the skin model and texture data folder
     SkinModel skinModel = skinData.getSkinModel();
     Path textureDataFolder = PlayerSkinDataFiles.getPlayerSkinDataFolder(skinModel);
     if (textureDataFolder == null) {
@@ -121,6 +118,7 @@ public class PlayerTextureManager {
     if (lastAttempt != null && currentTime - lastAttempt < RELOAD_PROTECTION_TIME) {
       return null;
     }
+
     textureReloadProtection.put(playerUUID, currentTime);
 
     AsyncTextureLoader.loadPlayerTextureAsync(textureModelKey, playerUUID, textureDataFolder)

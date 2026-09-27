@@ -36,8 +36,8 @@ public class ImportLocalPresetConfigurationScreen<T extends ConfigurationMenu>
 
   public ImportLocalPresetConfigurationScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
-    importPresetButtonLabel = "import_local_preset";
-    importPresetHeaderLabel = "preset_local_for";
+    this.importPresetButtonLabel = "import_local_preset";
+    this.importPresetHeaderLabel = "preset_local_for";
   }
 
   private void reloadLocalPresets() {
@@ -59,7 +59,7 @@ public class ImportLocalPresetConfigurationScreen<T extends ConfigurationMenu>
       }
 
       NetworkMessageHandlerManager.getServerHandler()
-          .importLocalPreset(getEasyNPCUUID(), compoundTag, resourceLocation);
+          .importLocalPreset(this.getEasyNPCUUID(), compoundTag, resourceLocation);
     } catch (Exception e) {
       log.error("Failed to import local preset file {}:", resourceLocation, e);
     }
@@ -78,8 +78,8 @@ public class ImportLocalPresetConfigurationScreen<T extends ConfigurationMenu>
             20,
             20,
             "",
-            button -> reloadLocalPresets()));
+            button -> this.reloadLocalPresets()));
 
-    reloadLocalPresets();
+    this.reloadLocalPresets();
   }
 }

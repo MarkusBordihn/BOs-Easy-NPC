@@ -102,7 +102,7 @@ public class MoveToPositionGoal<T extends EasyNPC<?>> extends Goal {
 
   @Override
   public boolean canContinueToUse() {
-    return !this.arrived && !reachedTarget() && this.ticksRunning < this.timeoutTicks;
+    return !this.arrived && !this.reachedTarget() && this.ticksRunning < this.timeoutTicks;
   }
 
   @Override
@@ -122,14 +122,14 @@ public class MoveToPositionGoal<T extends EasyNPC<?>> extends Goal {
     this.jumpControlled =
         this.canJump && this.mob.getMoveControl() instanceof JumpEasyNPCMoveControl;
 
-    if (reachedTarget()) {
-      arrive();
+    if (this.reachedTarget()) {
+      this.arrive();
       return;
     }
 
     double distance = this.mob.position().distanceTo(Vec3.atCenterOf(this.navigationTargetPos));
     if (this.teleportOnTimeout && distance > PATHFINDING_RANGE) {
-      teleportAndArrive();
+      this.teleportAndArrive();
       return;
     }
 
@@ -140,7 +140,7 @@ public class MoveToPositionGoal<T extends EasyNPC<?>> extends Goal {
       jumpMoveControl.setDirection((float) (Mth.atan2(dz, dx) * (180.0 / Math.PI)) - 90.0F, false);
       jumpMoveControl.setWantedMovement(this.speedModifier);
     } else {
-      startNavigation();
+      this.startNavigation();
     }
 
     log.debug("{} NPC moving to position {}", LOG_PREFIX, this.navigationTargetPos);
@@ -150,14 +150,14 @@ public class MoveToPositionGoal<T extends EasyNPC<?>> extends Goal {
   public void tick() {
     this.ticksRunning++;
 
-    if (reachedTarget()) {
-      arrive();
+    if (this.reachedTarget()) {
+      this.arrive();
       return;
     }
 
     if (this.ticksRunning >= this.timeoutTicks) {
       log.debug("{} Timeout reached for target position {}", LOG_PREFIX, this.targetPos);
-      teleportAndArrive();
+      this.teleportAndArrive();
       return;
     }
 
@@ -166,16 +166,16 @@ public class MoveToPositionGoal<T extends EasyNPC<?>> extends Goal {
     }
 
     this.ticksSincePathUpdate++;
-    updateProgress();
+    this.updateProgress();
 
     if (this.ticksWithoutProgress >= TICKS_WITHOUT_PROGRESS_LIMIT) {
       log.debug("{} NPC is not getting closer to target position {}", LOG_PREFIX, this.targetPos);
-      teleportAndArrive();
+      this.teleportAndArrive();
       return;
     }
 
     if (this.mob.getNavigation().isDone() && this.ticksSincePathUpdate >= REPATH_INTERVAL_TICKS) {
-      startNavigation();
+      this.startNavigation();
     }
   }
 
@@ -230,7 +230,7 @@ public class MoveToPositionGoal<T extends EasyNPC<?>> extends Goal {
       this.navigationData.setPosition(
           new Vec3(blockPos.getX() + 0.5, blockPos.getY(), blockPos.getZ() + 0.5));
     }
-    arrive();
+    this.arrive();
   }
 
   private void arrive() {

@@ -40,7 +40,7 @@ public class SoundCommand extends Command {
 
   public static ArgumentBuilder<CommandSourceStack, ?> register() {
     return Commands.literal("sound")
-        .requires(cs -> cs.hasPermission(Commands.LEVEL_ALL))
+        .requires(commandSourceStack -> commandSourceStack.hasPermission(Commands.LEVEL_ALL))
         .then(
             Commands.literal("set")
                 .then(
@@ -80,7 +80,6 @@ public class SoundCommand extends Command {
       return sendFailureMessageNoSoundDataSet(context, easyNPC);
     }
 
-    // Set sound type and refresh data set.
     soundDataSet.addSound(soundType, sound);
     soundData.refreshSoundDataSet();
 

@@ -46,7 +46,7 @@ public record DialogTextData(UUID id, String text, boolean isTranslationKey) {
   }
 
   public Component getDialogText() {
-    return TextComponent.getTextComponentRaw(this.text, isTranslationKey);
+    return TextComponent.getTextComponentRaw(this.text, this.isTranslationKey);
   }
 
   public CompoundTag write(CompoundTag compoundTag) {
@@ -58,12 +58,12 @@ public record DialogTextData(UUID id, String text, boolean isTranslationKey) {
   public String toString() {
     return "DialogTextData{"
         + "id="
-        + id
+        + this.id
         + ", text='"
-        + text
+        + this.text
         + '\''
         + ", isTranslationKey="
-        + isTranslationKey
+        + this.isTranslationKey
         + '}';
   }
 }

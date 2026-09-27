@@ -40,6 +40,7 @@ import net.minecraft.client.renderer.entity.layers.CustomHeadLayer;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ArmorItem;
@@ -70,9 +71,10 @@ public class SkullHeadRenderLayer<T extends LivingEntity, M extends EntityModel<
 
   private static GameProfile extractGameProfile(ItemStack itemStack) {
     CompoundTag tag = itemStack.getTag();
-    if (tag != null && tag.contains("SkullOwner", 10)) {
+    if (tag != null && tag.contains("SkullOwner", Tag.TAG_COMPOUND)) {
       return NbtUtils.readGameProfile(tag.getCompound("SkullOwner"));
     }
+
     return null;
   }
 
@@ -114,12 +116,12 @@ public class SkullHeadRenderLayer<T extends LivingEntity, M extends EntityModel<
 
     if (!(item instanceof BlockItem blockItem)
         || !(blockItem.getBlock() instanceof AbstractSkullBlock skullBlock)) {
-      renderHeadItem(entity, headItem, humanoidParentModel, poseStack, buffer, packedLight);
+      this.renderHeadItem(entity, headItem, humanoidParentModel, poseStack, buffer, packedLight);
       return;
     }
 
     SkullBlock.Type skullType = skullBlock.getType();
-    SkullModelBase skullModel = getOrCreateSkullModel(skullType);
+    SkullModelBase skullModel = this.getOrCreateSkullModel(skullType);
     if (skullModel == null) {
       return;
     }
@@ -204,10 +206,10 @@ public class SkullHeadRenderLayer<T extends LivingEntity, M extends EntityModel<
   }
 
   private SkullModelBase getOrCreateSkullModel(SkullBlock.Type type) {
-    if (skullModelCache == null) {
-      skullModelCache =
+    if (this.skullModelCache == null) {
+      this.skullModelCache =
           SkullBlockRenderer.createSkullRenderers(Minecraft.getInstance().getEntityModels());
     }
-    return skullModelCache.get(type);
+    return this.skullModelCache.get(type);
   }
 }

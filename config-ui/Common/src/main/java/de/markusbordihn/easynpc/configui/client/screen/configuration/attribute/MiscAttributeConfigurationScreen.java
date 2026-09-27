@@ -59,13 +59,11 @@ public class MiscAttributeConfigurationScreen<T extends ConfigurationMenu>
   public void init() {
     super.init();
 
-    // Default button stats
     this.miscAttributeButton.active = false;
 
     int factionEntriesTop = this.contentTopPos + 20;
     int factionEntriesSecondColumn = this.contentLeftPos + 100;
 
-    // NPC faction selection based on the known factions.
     String savedFactionName =
         this.getAdditionalScreenData()
             .getData()

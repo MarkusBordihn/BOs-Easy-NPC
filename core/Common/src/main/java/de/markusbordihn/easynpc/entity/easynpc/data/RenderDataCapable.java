@@ -31,7 +31,7 @@ public interface RenderDataCapable<E extends Mob> extends EasyNPC<E> {
   String DATA_RENDER_DATA_TAG = "RenderData";
 
   default void defineSynchedRenderData() {
-    defineSynchedEntityData(SynchedDataIndex.RENDER_DATA, new RenderDataEntry());
+    this.defineSynchedEntityData(SynchedDataIndex.RENDER_DATA, new RenderDataEntry());
   }
 
   default RenderDataEntry getRenderDataEntry() {
@@ -54,8 +54,6 @@ public interface RenderDataCapable<E extends Mob> extends EasyNPC<E> {
   }
 
   default void readAdditionalRenderData(CompoundTag compoundTag) {
-
-    // Early exit if no render data is available.
     if (!compoundTag.contains(DATA_RENDER_DATA_TAG)) {
       return;
     }

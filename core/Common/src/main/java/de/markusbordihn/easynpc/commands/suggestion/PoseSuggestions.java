@@ -29,16 +29,17 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.resources.ResourceLocation;
 
 public class PoseSuggestions {
 
   private PoseSuggestions() {}
 
   public static CompletableFuture<Suggestions> suggest(
-      CommandContext<CommandSourceStack> context, SuggestionsBuilder build) {
-    Set<net.minecraft.resources.ResourceLocation> poses = new LinkedHashSet<>();
+      CommandContext<CommandSourceStack> context, SuggestionsBuilder suggestionsBuilder) {
+    Set<ResourceLocation> poses = new LinkedHashSet<>();
     poses.addAll(ModelPoseAPI.getVanillaPoseIds());
     poses.addAll(PoseManager.getPoseDataKeys());
-    return SharedSuggestionProvider.suggestResource(poses, build);
+    return SharedSuggestionProvider.suggestResource(poses, suggestionsBuilder);
   }
 }

@@ -23,6 +23,7 @@ import de.markusbordihn.easynpc.client.screen.components.SpriteButton;
 import de.markusbordihn.easynpc.configui.Constants;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button.OnPress;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 public class DialogButtonButton extends SpriteButton {
@@ -38,12 +39,12 @@ public class DialogButtonButton extends SpriteButton {
 
   private final boolean hasCondition;
 
-  public DialogButtonButton(int left, int top, int width, String label, OnPress onPress) {
+  public DialogButtonButton(int left, int top, int width, Component label, OnPress onPress) {
     this(left, top, width, label, false, onPress);
   }
 
   public DialogButtonButton(
-      int left, int top, int width, String label, boolean hasCondition, OnPress onPress) {
+      int left, int top, int width, Component label, boolean hasCondition, OnPress onPress) {
     super(
         left,
         top,

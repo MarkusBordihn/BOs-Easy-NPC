@@ -52,9 +52,9 @@ public record CreateFactionMessage(UUID uuid, String factionName) implements Net
 
   @Override
   public void handleServer(final ServerPlayer serverPlayer) {
-    EasyNPC<?> easyNPC = getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
+    EasyNPC<?> easyNPC = this.getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
     if (easyNPC == null || !FactionNameValidator.isValid(this.factionName)) {
-      log.error("Invalid data to create faction for {}: ", this);
+      log.error("Invalid data to create faction for {}", this);
       return;
     }
 

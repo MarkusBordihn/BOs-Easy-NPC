@@ -216,14 +216,6 @@ public enum ModelType {
   private final ItemAttachmentPoint mainHandAttachment;
   private final ItemAttachmentPoint offHandAttachment;
 
-  ModelType(Set<ModelPartType> modelParts) {
-    this(modelParts, false, null, null);
-  }
-
-  ModelType(Set<ModelPartType> modelParts, boolean requiresHatSync) {
-    this(modelParts, requiresHatSync, null, null);
-  }
-
   ModelType(
       Set<ModelPartType> modelParts,
       boolean requiresHatSync,
@@ -236,16 +228,17 @@ public enum ModelType {
   }
 
   public Set<ModelPartType> getModelParts() {
-    return modelParts;
+    return this.modelParts;
   }
 
   public Set<ModelPartType> getPrimaryModelParts() {
-    if (modelParts.size() > PRIMARY_LIMIT) {
-      return modelParts.stream()
+    if (this.modelParts.size() > PRIMARY_LIMIT) {
+      return this.modelParts.stream()
           .limit(PRIMARY_LIMIT)
           .collect(Collectors.toCollection(() -> EnumSet.noneOf(ModelPartType.class)));
     }
-    return modelParts;
+
+    return this.modelParts;
   }
 
   public boolean requiresHatSync() {
@@ -253,18 +246,14 @@ public enum ModelType {
   }
 
   public ItemAttachmentPoint getMainHandAttachment() {
-    return mainHandAttachment;
+    return this.mainHandAttachment;
   }
 
   public ItemAttachmentPoint getOffHandAttachment() {
-    return offHandAttachment;
+    return this.offHandAttachment;
   }
 
-  /**
-   * Returns true if this model type has custom item attachment points defined. Model types that
-   * return false don't support held items.
-   */
   public boolean hasItemAttachment() {
-    return mainHandAttachment != null || offHandAttachment != null;
+    return this.mainHandAttachment != null || this.offHandAttachment != null;
   }
 }

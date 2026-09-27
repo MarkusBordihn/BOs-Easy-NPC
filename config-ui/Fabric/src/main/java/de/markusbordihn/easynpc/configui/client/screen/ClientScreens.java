@@ -19,7 +19,6 @@
 
 package de.markusbordihn.easynpc.configui.client.screen;
 
-import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.actions.BasicActionConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.actions.DialogActionConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.actions.DistanceActionConfigurationScreenWrapper;
@@ -85,12 +84,8 @@ import de.markusbordihn.easynpc.configui.client.screen.editor.faction.FactionsEd
 import de.markusbordihn.easynpc.configui.client.screen.preset.PresetBrowserScreen;
 import de.markusbordihn.easynpc.configui.menu.ModMenuTypes;
 import net.minecraft.client.gui.screens.MenuScreens;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class ClientScreens {
-
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   private ClientScreens() {}
 

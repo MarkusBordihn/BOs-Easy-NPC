@@ -23,7 +23,7 @@ public class PositionCommand extends Command {
 
   public static ArgumentBuilder<CommandSourceStack, ?> register() {
     return Commands.literal("position")
-        .requires(cs -> cs.hasPermission(Commands.LEVEL_ALL))
+        .requires(commandSourceStack -> commandSourceStack.hasPermission(Commands.LEVEL_ALL))
         .then(
             Commands.argument(NPC_TARGETS_ARG, EasyNPCArgument.npc())
                 .then(
@@ -71,6 +71,7 @@ public class PositionCommand extends Command {
                                                             context.getSource(),
                                                             "Invalid model part " + partString);
                                                       }
+
                                                       Collection<? extends EasyNPC<?>> easyNPCs =
                                                           EasyNPCArgument.getEntitiesWithAccess(
                                                               context, NPC_TARGETS_ARG);

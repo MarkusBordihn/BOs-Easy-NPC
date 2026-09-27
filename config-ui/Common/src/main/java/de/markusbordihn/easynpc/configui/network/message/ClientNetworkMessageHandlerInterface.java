@@ -54,7 +54,7 @@ public interface ClientNetworkMessageHandlerInterface {
 
   default void exportClientPreset(
       final UUID uuid, final String name, final ServerPlayer serverPlayer) {
-    exportClientPreset(
+    this.exportClientPreset(
         uuid, name, serverPlayer, PresetExportFormat.getDefault(), PresetMetadata.getDefault());
   }
 

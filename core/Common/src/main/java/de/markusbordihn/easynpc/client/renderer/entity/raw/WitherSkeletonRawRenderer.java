@@ -40,7 +40,7 @@ public class WitherSkeletonRawRenderer extends WitherSkeletonRenderer
 
   @Override
   public ResourceLocation getTextureLocation(AbstractSkeleton entity) {
-    return getTextureLocationWithConfig(entity);
+    return this.getTextureLocationWithConfig(entity);
   }
 
   @Override

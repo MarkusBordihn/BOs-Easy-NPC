@@ -46,14 +46,12 @@ public class BasicObjectiveConfigurationScreen<T extends ConfigurationMenu>
   public void init() {
     super.init();
 
-    // Default button stats
     this.basicObjectiveButton.active = false;
 
     int objectiveEntriesTop = this.contentTopPos + 5;
     int objectiveEntriesFirstColumn = this.contentLeftPos + 5;
     int objectiveEntriesSecondColumn = this.contentLeftPos + 145;
 
-    // Stroll Random Around
     this.strollRandomAroundCheckbox =
         this.addRenderableWidget(
             this.getObjectiveCheckbox(
@@ -62,7 +60,6 @@ public class BasicObjectiveConfigurationScreen<T extends ConfigurationMenu>
                 ObjectiveType.RANDOM_STROLL,
                 0.8D));
 
-    // Water Avoiding Random Stroll
     objectiveEntriesTop += SPACE_BETWEEN_ENTRIES;
     this.waterAvoidingRandomStrollCheckbox =
         this.addRenderableWidget(
@@ -71,7 +68,6 @@ public class BasicObjectiveConfigurationScreen<T extends ConfigurationMenu>
                 objectiveEntriesTop,
                 ObjectiveType.WATER_AVOIDING_RANDOM_STROLL));
 
-    // Move Through Village
     objectiveEntriesTop += SPACE_BETWEEN_ENTRIES;
     this.moveThroughVillageCheckbox =
         this.addRenderableWidget(
@@ -80,7 +76,6 @@ public class BasicObjectiveConfigurationScreen<T extends ConfigurationMenu>
                 objectiveEntriesTop,
                 ObjectiveType.MOVE_THROUGH_VILLAGE));
 
-    // Move Back To Village
     objectiveEntriesTop += SPACE_BETWEEN_ENTRIES;
     this.moveBackToVillageCheckbox =
         this.addRenderableWidget(
@@ -89,7 +84,6 @@ public class BasicObjectiveConfigurationScreen<T extends ConfigurationMenu>
                 objectiveEntriesTop,
                 ObjectiveType.MOVE_BACK_TO_VILLAGE));
 
-    // Move Back To Home
     this.moveBackToHomeCheckbox =
         this.addRenderableWidget(
             this.getObjectiveCheckbox(
@@ -97,7 +91,6 @@ public class BasicObjectiveConfigurationScreen<T extends ConfigurationMenu>
                 objectiveEntriesTop,
                 ObjectiveType.MOVE_BACK_TO_HOME));
 
-    // Random Stroll In Village
     objectiveEntriesTop += SPACE_BETWEEN_ENTRIES;
     this.randomStrollInVillageCheckbox =
         this.addRenderableWidget(
@@ -106,7 +99,6 @@ public class BasicObjectiveConfigurationScreen<T extends ConfigurationMenu>
                 objectiveEntriesTop,
                 ObjectiveType.RANDOM_STROLL_IN_VILLAGE));
 
-    // Random Stroll Around Home
     this.randomStrollAroundHomeCheckbox =
         this.addRenderableWidget(
             this.getObjectiveCheckbox(
@@ -114,21 +106,18 @@ public class BasicObjectiveConfigurationScreen<T extends ConfigurationMenu>
                 objectiveEntriesTop,
                 ObjectiveType.RANDOM_STROLL_AROUND_HOME));
 
-    // Random Swimming
     objectiveEntriesTop += SPACE_BETWEEN_ENTRIES;
     this.randomSwimmingCheckbox =
         this.addRenderableWidget(
             this.getObjectiveCheckbox(
                 objectiveEntriesFirstColumn, objectiveEntriesTop, ObjectiveType.RANDOM_SWIMMING));
 
-    // Panic
     objectiveEntriesTop += SPACE_BETWEEN_ENTRIES;
     this.panicCheckbox =
         this.addRenderableWidget(
             this.getObjectiveCheckbox(
                 objectiveEntriesFirstColumn, objectiveEntriesTop, ObjectiveType.PANIC, 1.0D));
 
-    // Avoid Sun
     objectiveEntriesTop += SPACE_BETWEEN_ENTRIES;
     this.avoidSunCheckbox =
         this.addRenderableWidget(

@@ -53,31 +53,31 @@ public class SafeMerchantData<E extends Mob> implements Merchant {
 
   @Override
   public Player getTradingPlayer() {
-    return tradingData.getTradingPlayer();
+    return this.tradingData.getTradingPlayer();
   }
 
   @Override
   public void setTradingPlayer(Player player) {
-    tradingData.setTradingPlayer(player);
+    this.tradingData.setTradingPlayer(player);
   }
 
   @Override
   public MerchantOffers getOffers() {
-    return tradingData.getOffers();
+    return this.tradingData.getOffers();
   }
 
   @Override
   public void overrideOffers(MerchantOffers merchantOffers) {
-    tradingData.overrideOffers(merchantOffers);
+    this.tradingData.overrideOffers(merchantOffers);
   }
 
   @Override
   public void notifyTrade(MerchantOffer merchantOffer) {
     try {
-      tradingData.notifyTrade(merchantOffer);
+      this.tradingData.notifyTrade(merchantOffer);
     } catch (AbstractMethodError e) {
       merchantOffer.increaseUses();
-      if (tradingData.getTradingPlayer() instanceof ServerPlayer serverPlayer) {
+      if (this.tradingData.getTradingPlayer() instanceof ServerPlayer serverPlayer) {
         log.debug("Trade {} completed for {}", merchantOffer, serverPlayer.getName().getString());
       }
     }
@@ -86,7 +86,7 @@ public class SafeMerchantData<E extends Mob> implements Merchant {
   @Override
   public void notifyTradeUpdated(ItemStack itemStack) {
     try {
-      tradingData.notifyTradeUpdated(itemStack);
+      this.tradingData.notifyTradeUpdated(itemStack);
     } catch (AbstractMethodError e) {
       // Expected for some TradingDataCapable implementations
     }
@@ -95,7 +95,7 @@ public class SafeMerchantData<E extends Mob> implements Merchant {
   @Override
   public int getVillagerXp() {
     try {
-      return tradingData.getVillagerXp();
+      return this.tradingData.getVillagerXp();
     } catch (AbstractMethodError e) {
       return DEFAULT_VILLAGER_XP;
     }
@@ -104,7 +104,7 @@ public class SafeMerchantData<E extends Mob> implements Merchant {
   @Override
   public void overrideXp(int xp) {
     try {
-      tradingData.overrideXp(xp);
+      this.tradingData.overrideXp(xp);
     } catch (AbstractMethodError e) {
       // Expected for some TradingDataCapable implementations
     }
@@ -113,7 +113,7 @@ public class SafeMerchantData<E extends Mob> implements Merchant {
   @Override
   public boolean showProgressBar() {
     try {
-      return tradingData.showProgressBar();
+      return this.tradingData.showProgressBar();
     } catch (AbstractMethodError e) {
       return DEFAULT_SHOW_PROGRESS_BAR;
     }
@@ -122,7 +122,7 @@ public class SafeMerchantData<E extends Mob> implements Merchant {
   @Override
   public SoundEvent getNotifyTradeSound() {
     try {
-      return tradingData.getNotifyTradeSound();
+      return this.tradingData.getNotifyTradeSound();
     } catch (AbstractMethodError e) {
       return SoundEvents.VILLAGER_TRADE;
     }
@@ -130,7 +130,7 @@ public class SafeMerchantData<E extends Mob> implements Merchant {
 
   @Override
   public boolean isClientSide() {
-    return tradingData.isClientSideInstance();
+    return this.tradingData.isClientSideInstance();
   }
 
   @Override
@@ -151,7 +151,9 @@ public class SafeMerchantData<E extends Mob> implements Merchant {
           offers.size());
       serverPlayer.openMenu(
           new SimpleMenuProvider(
-              (id, inventory, p) -> new MerchantMenu(id, inventory, this), name));
+              (menuContainerId, inventory, menuPlayer) ->
+                  new MerchantMenu(menuContainerId, inventory, this),
+              name));
 
       serverPlayer.sendMerchantOffers(
           serverPlayer.containerMenu.containerId,

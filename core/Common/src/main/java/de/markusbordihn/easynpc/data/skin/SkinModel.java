@@ -77,6 +77,7 @@ public enum SkinModel {
     if (skinModel == null || skinModel.isEmpty()) {
       return SkinModel.HUMANOID;
     }
+
     try {
       return SkinModel.valueOf(skinModel);
     } catch (IllegalArgumentException e) {

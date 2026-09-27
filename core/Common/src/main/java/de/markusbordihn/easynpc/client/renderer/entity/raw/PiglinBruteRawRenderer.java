@@ -45,7 +45,7 @@ public class PiglinBruteRawRenderer extends PiglinRenderer implements EasyNPCEnt
 
   @Override
   public ResourceLocation getTextureLocation(Mob entity) {
-    return getTextureLocationWithConfig(entity);
+    return this.getTextureLocationWithConfig(entity);
   }
 
   @Override

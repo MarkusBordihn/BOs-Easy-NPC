@@ -27,23 +27,23 @@ import net.minecraft.world.entity.Mob;
 public interface ServerDataCapable<E extends Mob> extends EasyNPC<E> {
 
   default <T> void setServerEntityData(ServerDataAccessor<T> entityDataAccessor, T entityData) {
-    getServerEntityData().set(entityDataAccessor, entityData);
-    StatusDataCapable<E> statusData = getEasyNPCStatusData();
+    this.getServerEntityData().set(entityDataAccessor, entityData);
+    StatusDataCapable<E> statusData = this.getEasyNPCStatusData();
     if (statusData != null) {
       statusData.markNPCDataUpdated();
     }
   }
 
   default <T> T getServerEntityData(ServerDataAccessor<T> entityDataAccessor) {
-    return getServerEntityData().get(entityDataAccessor);
+    return this.getServerEntityData().get(entityDataAccessor);
   }
 
   default <T> void defineServerEntityData(ServerDataAccessor<T> entityDataAccessor, T entityData) {
-    getServerEntityData().define(entityDataAccessor, entityData);
+    this.getServerEntityData().define(entityDataAccessor, entityData);
   }
 
   default boolean hasServerEntityData() {
-    return getServerEntityData() != null;
+    return this.getServerEntityData() != null;
   }
 
   void defineServerEntityData();

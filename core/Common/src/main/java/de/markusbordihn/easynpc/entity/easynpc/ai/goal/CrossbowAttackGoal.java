@@ -80,7 +80,7 @@ public class CrossbowAttackGoal<T extends EasyNPC<?>> extends Goal {
       this.pathfinderMob.stopUsingItem();
       this.crossbowAttackMob.setChargingCrossbow(false);
       ItemStack useItem = this.pathfinderMob.getUseItem();
-      clearChargedProjectiles(useItem);
+      this.clearChargedProjectiles(useItem);
     }
   }
 
@@ -160,7 +160,7 @@ public class CrossbowAttackGoal<T extends EasyNPC<?>> extends Goal {
       ItemStack crossbowInHand =
           this.pathfinderMob.getItemInHand(
               AttackHandler.getCrossbowHoldingHand(this.pathfinderMob));
-      clearChargedProjectiles(crossbowInHand);
+      this.clearChargedProjectiles(crossbowInHand);
       this.crossbowState = CrossbowState.UNCHARGED;
     }
   }

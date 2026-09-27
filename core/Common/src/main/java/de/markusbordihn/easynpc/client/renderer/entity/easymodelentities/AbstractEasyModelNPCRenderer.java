@@ -20,7 +20,6 @@
 package de.markusbordihn.easynpc.client.renderer.entity.easymodelentities;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Axis;
 import de.markusbordihn.easymodelentities.api.EasyModelReloadEvents;
 import de.markusbordihn.easymodelentities.api.client.EasyModelEntitiesClientApi;
 import de.markusbordihn.easymodelentities.api.client.EasyModelPartAnimator;
@@ -40,6 +39,7 @@ import de.markusbordihn.easynpc.api.texture.ModelTextureAPI;
 import de.markusbordihn.easynpc.client.model.custom.DopplerModel;
 import de.markusbordihn.easynpc.client.renderer.OpacityBufferSource;
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCLivingEntityRenderer;
 import de.markusbordihn.easynpc.client.renderer.manager.EntityTypeManager;
 import de.markusbordihn.easynpc.compat.IntegrationRegistry;
 import de.markusbordihn.easynpc.compat.easymodelentities.EasyModelEntitiesLoader;
@@ -104,6 +104,7 @@ public abstract class AbstractEasyModelNPCRenderer<E extends PathfinderMob>
     if (reloadListenerRegistered) {
       return;
     }
+
     reloadListenerRegistered = true;
     EasyModelReloadEvents.onProfileReload(AbstractEasyModelNPCRenderer::clearCaches);
     EasyModelReloadEvents.onRenderProfileReload(AbstractEasyModelNPCRenderer::clearCaches);
@@ -150,6 +151,7 @@ public abstract class AbstractEasyModelNPCRenderer<E extends PathfinderMob>
       if (isFloating && modelPartType == ModelPartType.ROOT) {
         return partTransform.add(createHoverTransform(context.ageInTicks()));
       }
+
       return partTransform;
     };
   }
@@ -216,6 +218,7 @@ public abstract class AbstractEasyModelNPCRenderer<E extends PathfinderMob>
           handledAnimationRequests.put(entity, request.sequence());
           return null;
         }
+
         EasyModelEntitiesClientApi.playAnimation(
             entity, animation, toEasyModelPlayback(request), transition);
         break;
@@ -262,29 +265,6 @@ public abstract class AbstractEasyModelNPCRenderer<E extends PathfinderMob>
     }
 
     handledAnimationRequests.put(entity, request.sequence());
-  }
-
-  private static void applyRootRotation(
-      EasyModelNPC easyModelNPC, PoseStack poseStack, float pivotY) {
-    CustomRotation rootRotation = easyModelNPC.getModelRootData().rotation();
-    if (!rootRotation.hasChangedRotation()) {
-      return;
-    }
-
-    float rotationXDegrees = (float) Math.toDegrees(rootRotation.x());
-    float rotationZDegrees = (float) Math.toDegrees(rootRotation.z());
-    if (rotationXDegrees == 0.0f && rotationZDegrees == 0.0f) {
-      return;
-    }
-
-    poseStack.translate(0.0f, pivotY, 0.0f);
-    if (rotationXDegrees != 0.0f) {
-      poseStack.mulPose(Axis.XP.rotationDegrees(rotationXDegrees));
-    }
-    if (rotationZDegrees != 0.0f) {
-      poseStack.mulPose(Axis.ZP.rotationDegrees(rotationZDegrees));
-    }
-    poseStack.translate(0.0f, -pivotY, 0.0f);
   }
 
   private static float getGuiPreviewScale(
@@ -373,7 +353,8 @@ public abstract class AbstractEasyModelNPCRenderer<E extends PathfinderMob>
         Math.max(0f, (EntityTypeManager.GUI_PREVIEW_TARGET_HEIGHT - displayedHeight) / 2f);
     poseStack.pushPose();
     poseStack.translate(0.0, yLift, 0.0);
-    applyRootRotation(easyModelNPC, poseStack, displayedHeight * 0.5f);
+    EasyNPCLivingEntityRenderer.applyRootRotation(
+        easyModelNPC.getModelRootData().rotation(), poseStack, displayedHeight * 0.5f);
     poseStack.scale(
         previewScale * rootScale.x(), previewScale * rootScale.y(), previewScale * rootScale.z());
     boolean rendered =
@@ -402,7 +383,8 @@ public abstract class AbstractEasyModelNPCRenderer<E extends PathfinderMob>
     boolean rotated = easyModelNPC.getModelRootData().rotation().hasChangedRotation();
     if (scaled || rotated) {
       poseStack.pushPose();
-      applyRootRotation(easyModelNPC, poseStack, entity.getBbHeight() * 0.5f);
+      EasyNPCLivingEntityRenderer.applyRootRotation(
+          easyModelNPC.getModelRootData().rotation(), poseStack, entity.getBbHeight() * 0.5f);
       if (scaled) {
         poseStack.scale(rootScale.x(), rootScale.y(), rootScale.z());
       }

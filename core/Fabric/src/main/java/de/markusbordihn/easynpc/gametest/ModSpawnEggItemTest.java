@@ -29,8 +29,6 @@ import net.minecraft.gametest.framework.GameTestHelper;
 @SuppressWarnings("unused")
 public class ModSpawnEggItemTest {
 
-  public ModSpawnEggItemTest() {}
-
   @GameTest(template = "easy_npc:gametest.3x3x3")
   public static void useAllayNPCSpawnEggItem(GameTestHelper helper) {
     ModSpawnEggItemTestHelper.useSpawnEggItem(

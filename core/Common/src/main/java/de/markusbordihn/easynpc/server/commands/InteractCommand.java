@@ -59,6 +59,7 @@ public class InteractCommand extends Command {
     if (actionHandler == null) {
       return sendFailureMessageNoData(context, easyNPC, "action handler data");
     }
+
     actionHandler.interactWithBlock(blockPos);
     return sendSuccessMessage(context, easyNPC + " interacted with block at " + blockPos);
   }

@@ -54,7 +54,7 @@ public class EasyNPCIllagerModelMixin<T extends AbstractIllager>
   }
 
   @Inject(method = "<init>(Lnet/minecraft/client/model/geom/ModelPart;)V", at = @At("TAIL"))
-  private void easyNpcModel(ModelPart modelPart, CallbackInfo callbackInfo) {
+  private void easyNPC$initModelManager(ModelPart modelPart, CallbackInfo callbackInfo) {
     this.easyNPC$modelManager =
         new EasyNPCModelManager(modelPart)
             .defineModelPart(ModelPartType.HEAD, this.head)
@@ -70,8 +70,14 @@ public class EasyNPCIllagerModelMixin<T extends AbstractIllager>
       method = "setupAnim(Lnet/minecraft/world/entity/monster/AbstractIllager;FFFFF)V",
       at = @At("HEAD"),
       cancellable = true)
-  private void setupNpcAnimStart(
-      T illager, float f, float g, float h, float i, float j, CallbackInfo callbackInfo) {
+  private void easyNPC$setupAnimStart(
+      T illager,
+      float limbSwing,
+      float limbSwingAmount,
+      float ageInTicks,
+      float netHeadYaw,
+      float headPitch,
+      CallbackInfo callbackInfo) {
     if (illager instanceof EasyNPC<?> easyNPC
         && EasyNPCModel.setupAnimationStart(easyNPC, this.easyNPC$modelManager)) {
       this.easyNPC$applyCrossedArms(illager);
@@ -90,8 +96,14 @@ public class EasyNPCIllagerModelMixin<T extends AbstractIllager>
   @Inject(
       method = "setupAnim(Lnet/minecraft/world/entity/monster/AbstractIllager;FFFFF)V",
       at = @At("TAIL"))
-  private void setupNpcAnimEnd(
-      T illager, float f, float g, float h, float i, float j, CallbackInfo callbackInfo) {
+  private void easyNPC$setupAnimEnd(
+      T illager,
+      float limbSwing,
+      float limbSwingAmount,
+      float ageInTicks,
+      float netHeadYaw,
+      float headPitch,
+      CallbackInfo callbackInfo) {
     if (illager instanceof EasyNPC<?> easyNPC) {
       EasyNPCModel.setupAnimationEnd(easyNPC, this.easyNPC$modelManager);
     }

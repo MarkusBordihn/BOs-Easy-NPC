@@ -63,6 +63,7 @@ public class FactionData extends SavedData {
       log.error("Cannot get FactionData: MinecraftServer or Overworld is not available");
       throw new IllegalStateException("Overworld must be loaded before accessing FactionData");
     }
+
     return server
         .overworld()
         .getDataStorage()
@@ -81,6 +82,7 @@ public class FactionData extends SavedData {
     if (instance == null) {
       throw new IllegalStateException("FactionData not initialized. Call init(server) first.");
     }
+
     return instance;
   }
 
@@ -88,6 +90,7 @@ public class FactionData extends SavedData {
     if (!FactionNameValidator.isValid(factionName) || this.factions.containsKey(factionName)) {
       return false;
     }
+
     this.factions.put(factionName, new FactionDataEntry(factionName));
     this.setDirty();
     return true;
@@ -97,6 +100,7 @@ public class FactionData extends SavedData {
     if (this.factions.remove(factionName) == null) {
       return false;
     }
+
     for (FactionDataEntry factionDataEntry : this.factions.values()) {
       factionDataEntry.removeHostileFaction(factionName);
     }
@@ -125,6 +129,7 @@ public class FactionData extends SavedData {
     if (factionDataEntry == null || color == null || !color.isColor()) {
       return false;
     }
+
     factionDataEntry.setColor(color);
     this.setDirty();
     return true;
@@ -135,6 +140,7 @@ public class FactionData extends SavedData {
     if (factionDataEntry == null || !factionDataEntry.addHostileFaction(hostileFactionName)) {
       return false;
     }
+
     this.setDirty();
     return true;
   }
@@ -144,6 +150,7 @@ public class FactionData extends SavedData {
     if (factionDataEntry == null || !factionDataEntry.removeHostileFaction(hostileFactionName)) {
       return false;
     }
+
     this.setDirty();
     return true;
   }
@@ -156,6 +163,7 @@ public class FactionData extends SavedData {
         || factionName.equals(targetName)) {
       return false;
     }
+
     FactionDataEntry factionDataEntry = this.factions.get(factionName);
     return factionDataEntry != null && factionDataEntry.isHostileTo(targetName);
   }

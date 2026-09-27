@@ -31,20 +31,21 @@ public interface TickerDataCapable<T extends Mob> extends EasyNPC<T> {
   void setTicker(TickerType tickerType, int value);
 
   default boolean checkAndIncreaseTicker(TickerType tickerType, int value) {
-    int tickerValue = getTicker(tickerType);
+    int tickerValue = this.getTicker(tickerType);
     if (tickerValue >= value) {
       return true;
     }
-    increaseTicker(tickerType, 1);
+
+    this.increaseTicker(tickerType, 1);
     return false;
   }
 
   default void resetTicker(TickerType tickerType) {
-    setTicker(tickerType, 0);
+    this.setTicker(tickerType, 0);
   }
 
   default void increaseTicker(TickerType tickerType, int value) {
-    setTicker(tickerType, getTicker(tickerType) + value);
+    this.setTicker(tickerType, this.getTicker(tickerType) + value);
   }
 
   int getCustomTicker(ResourceLocation tickerId);
@@ -52,19 +53,20 @@ public interface TickerDataCapable<T extends Mob> extends EasyNPC<T> {
   void setCustomTicker(ResourceLocation tickerId, int value);
 
   default boolean checkAndIncreaseCustomTicker(ResourceLocation tickerId, int value) {
-    int tickerValue = getCustomTicker(tickerId);
+    int tickerValue = this.getCustomTicker(tickerId);
     if (tickerValue >= value) {
       return true;
     }
-    increaseCustomTicker(tickerId, 1);
+
+    this.increaseCustomTicker(tickerId, 1);
     return false;
   }
 
   default void resetCustomTicker(ResourceLocation tickerId) {
-    setCustomTicker(tickerId, 0);
+    this.setCustomTicker(tickerId, 0);
   }
 
   default void increaseCustomTicker(ResourceLocation tickerId, int value) {
-    setCustomTicker(tickerId, getCustomTicker(tickerId) + value);
+    this.setCustomTicker(tickerId, this.getCustomTicker(tickerId) + value);
   }
 }

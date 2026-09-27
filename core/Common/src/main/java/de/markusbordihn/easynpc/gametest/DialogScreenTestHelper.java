@@ -32,10 +32,10 @@ import net.minecraft.world.inventory.MenuType;
 
 public class DialogScreenTestHelper {
 
+  private DialogScreenTestHelper() {}
+
   public static UUID mockOpenDialog(
       ServerPlayer serverPlayer, EasyNPC<?> easyNPC, MenuType<? extends DialogMenu> menuType) {
-
-    // Define the menu provider and open the menu.
     MenuProvider menuProvider =
         DialogMenuHandler.getMenuProvider(
             easyNPC,

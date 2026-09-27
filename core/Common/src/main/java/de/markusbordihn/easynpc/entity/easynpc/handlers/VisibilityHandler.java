@@ -226,7 +226,6 @@ public class VisibilityHandler {
       return fallbackVisibility;
     }
 
-    // Check distance first
     double distanceSquared = easyNPC.getEntity().distanceToSqr(player);
     double rangeSquared = range * range;
     if (distanceSquared > rangeSquared) {

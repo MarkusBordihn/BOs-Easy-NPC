@@ -29,7 +29,6 @@ import net.minecraft.client.gui.GuiGraphics;
 public class ColorPickerPopup extends Popup {
 
   public static final int COLUMNS = 8;
-  public static final int ROWS = 4;
   public static final int SWATCH_SIZE = 14;
   public static final int SWATCH_GAP = 2;
   public static final int[] PALETTE = createPalette();
@@ -78,15 +77,23 @@ public class ColorPickerPopup extends Popup {
 
   private static int[] createPalette() {
     return new int[] {
-      // Grayscale ramp.
       0xFFFFFF, 0xD4D4D4, 0xAAAAAA, 0x808080, 0x555555, 0x2B2B2B, 0x151515, 0x000000,
-      // Vibrant hues.
       0xFF0000, 0xFF7F00, 0xFFFF00, 0x7FFF00, 0x00FF00, 0x00FFFF, 0x0000FF, 0xFF00FF,
-      // Dark / muted tones.
       0x8B0000, 0xB5651D, 0x808000, 0x006400, 0x008080, 0x000080, 0x4B0082, 0x800080,
-      // Pastel tones.
       0xFF9999, 0xFFCC99, 0xFFFF99, 0xCCFF99, 0x99FFCC, 0x99FFFF, 0x99CCFF, 0xFF99FF
     };
+  }
+
+  private static int getSwatchBorderColor(boolean selected, boolean hovered) {
+    if (selected) {
+      return 0xFFFFFFFF;
+    }
+
+    if (hovered) {
+      return 0xFFFFFFAA;
+    }
+
+    return 0xFF000000;
   }
 
   public void toggle(
@@ -142,6 +149,7 @@ public class ColorPickerPopup extends Popup {
     if (this.suppressResponder) {
       return;
     }
+
     Integer color = ColorUtils.parseRgbColor(this.hexField.getValue());
     if (color != null) {
       this.selectedColor = color;
@@ -174,9 +182,14 @@ public class ColorPickerPopup extends Popup {
       boolean hovered = contains(mouseX, mouseY, swatchX, swatchY, SWATCH_SIZE, SWATCH_SIZE);
       boolean selected = color == this.selectedColor;
 
-      int borderColor = selected ? 0xFFFFFFFF : (hovered ? 0xFFFFFFAA : 0xFF000000);
       DrawBoxWithBorder.draw(
-          guiGraphics, swatchX, swatchY, SWATCH_SIZE, SWATCH_SIZE, 0xFF000000 | color, borderColor);
+          guiGraphics,
+          swatchX,
+          swatchY,
+          SWATCH_SIZE,
+          SWATCH_SIZE,
+          0xFF000000 | color,
+          getSwatchBorderColor(selected, hovered));
     }
 
     if (!this.showHexField) {
@@ -212,6 +225,7 @@ public class ColorPickerPopup extends Popup {
         this.hexField.setFocused(true);
         return;
       }
+
       this.hexField.setFocused(false);
     }
 

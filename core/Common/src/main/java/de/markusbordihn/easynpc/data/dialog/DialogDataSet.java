@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import org.apache.logging.log4j.LogManager;
@@ -61,8 +62,9 @@ public class DialogDataSet {
       log.error("Dialog data is null, please check your dialog data!");
       return;
     }
+
     if (this.hasDialog(dialogId)) {
-      removeDialog(dialogId);
+      this.removeDialog(dialogId);
     }
     this.addDialog(dialogData);
   }
@@ -72,14 +74,17 @@ public class DialogDataSet {
       log.error("Dialog data is null, please check your dialog data!");
       return false;
     }
+
     if (dialogData.getId() == null) {
       log.error("Dialog id is null, please check your dialog data!");
       return false;
     }
+
     if (dialogData.getLabel() == null) {
       log.error("Dialog label is null, please check your dialog data!");
       return false;
     }
+
     if (dialogData.getText() == null || dialogData.getText().isEmpty()) {
       log.error("Dialog text is null or empty, please check your dialog data!");
       return false;
@@ -88,7 +93,7 @@ public class DialogDataSet {
     String dialogLabel = dialogData.getLabel();
     UUID dialogId = dialogData.getId();
 
-    DialogDataEntry existingDialogData = this.dialogByIdMap.getOrDefault(dialogId, null);
+    DialogDataEntry existingDialogData = this.dialogByIdMap.get(dialogId);
     if (existingDialogData != null && !existingDialogData.equals(dialogData)) {
       log.warn(
           "Duplicated dialog with id {} found, will overwrite existing dialog {} with {}!",
@@ -103,7 +108,7 @@ public class DialogDataSet {
   }
 
   public boolean removeDialog(UUID dialogId) {
-    DialogDataEntry dialogData = this.dialogByIdMap.getOrDefault(dialogId, null);
+    DialogDataEntry dialogData = this.dialogByIdMap.get(dialogId);
     if (dialogData != null) {
       DialogDataEntry formerDialogData = this.dialogByIdMap.remove(dialogData.getId());
       if (formerDialogData != null) {
@@ -111,14 +116,16 @@ public class DialogDataSet {
       }
       return true;
     }
+
     return false;
   }
 
   public boolean removeDialogButton(UUID dialogId, UUID dialogButtonId) {
-    DialogDataEntry dialogData = this.dialogByIdMap.getOrDefault(dialogId, null);
+    DialogDataEntry dialogData = this.dialogByIdMap.get(dialogId);
     if (dialogData != null) {
       return dialogData.removeDialogButton(dialogButtonId);
     }
+
     return false;
   }
 
@@ -129,22 +136,23 @@ public class DialogDataSet {
   }
 
   public Map<String, DialogDataEntry> getDialogByLabelMap() {
-    return dialogByLabelMap;
+    return this.dialogByLabelMap;
   }
 
   public DialogDataEntry getDialog(String label) {
-    return this.dialogByLabelMap.getOrDefault(label, null);
+    return this.dialogByLabelMap.get(label);
   }
 
   public DialogDataEntry getDialog(UUID id) {
-    return this.dialogByIdMap.getOrDefault(id, null);
+    return this.dialogByIdMap.get(id);
   }
 
   public UUID getDialogId(String dialogLabel) {
-    DialogDataEntry dialogData = this.dialogByLabelMap.getOrDefault(dialogLabel, null);
+    DialogDataEntry dialogData = this.dialogByLabelMap.get(dialogLabel);
     if (dialogData != null) {
       return dialogData.getId();
     }
+
     return null;
   }
 
@@ -166,18 +174,19 @@ public class DialogDataSet {
   }
 
   public DialogButtonEntry getDialogButton(UUID dialogId, UUID dialogButtonId) {
-    DialogDataEntry dialogData = this.dialogByIdMap.getOrDefault(dialogId, null);
+    DialogDataEntry dialogData = this.dialogByIdMap.get(dialogId);
     if (dialogData != null) {
       return dialogData.getDialogButton(dialogButtonId);
     }
+
     return null;
   }
 
   public DialogDataEntry getNextAvailableDialog(
       ServerPlayer serverPlayer, LivingEntity npcContext) {
-    return dialogByIdMap.values().stream()
+    return this.dialogByIdMap.values().stream()
         .filter(dialog -> dialog.getPriority() >= DialogPriority.FALLBACK)
-        .filter(dialog -> checkConditions(dialog, serverPlayer, npcContext))
+        .filter(dialog -> this.checkConditions(dialog, serverPlayer, npcContext))
         .sorted(
             Comparator.comparingInt(DialogDataEntry::getPriority)
                 .reversed()
@@ -187,8 +196,8 @@ public class DialogDataSet {
   }
 
   public boolean canOpenDialog(UUID dialogId, ServerPlayer serverPlayer, LivingEntity npcContext) {
-    DialogDataEntry dialog = getDialog(dialogId);
-    return dialog != null && checkConditions(dialog, serverPlayer, npcContext);
+    DialogDataEntry dialog = this.getDialog(dialogId);
+    return dialog != null && this.checkConditions(dialog, serverPlayer, npcContext);
   }
 
   private boolean checkConditions(
@@ -212,15 +221,15 @@ public class DialogDataSet {
       }
 
       boolean conditionResult =
-          evaluateCondition(condition, serverPlayer, dialog.getId(), npcContext);
+          this.evaluateCondition(condition, serverPlayer, dialog.getId(), npcContext);
       log.debug(
-          "Condition check for dialog {}: {} {} {} = {} (result: {})",
+          "Condition check for dialog {}: {} {} {} {} = {}",
           dialog.getLabel(),
           condition.conditionType(),
           condition.name(),
-          condition.operationType().getSymbol() + " " + condition.value(),
-          conditionResult ? "PASS" : "FAIL",
-          conditionResult);
+          condition.operationType().getSymbol(),
+          condition.value(),
+          conditionResult ? "PASS" : "FAIL");
 
       if (!conditionResult) {
         log.debug(
@@ -257,6 +266,7 @@ public class DialogDataSet {
       log.warn("Encountered NONE condition type, skipping");
       return true;
     }
+
     return ConditionManager.evaluate(
         condition, serverPlayer, ExecutionId.dialog(npcContext, dialogId), npcContext);
   }
@@ -276,7 +286,7 @@ public class DialogDataSet {
 
     this.dialogByLabelMap.clear();
     this.dialogByIdMap.clear();
-    ListTag dialogListTag = compoundTag.getList(DATA_DIALOG_DATA_SET_TAG, 10);
+    ListTag dialogListTag = compoundTag.getList(DATA_DIALOG_DATA_SET_TAG, Tag.TAG_COMPOUND);
     for (int i = 0; i < dialogListTag.size(); ++i) {
       CompoundTag dialogCompoundTag = dialogListTag.getCompound(i);
       DialogDataEntry dialogData = new DialogDataEntry(dialogCompoundTag);
@@ -306,9 +316,11 @@ public class DialogDataSet {
         || (this.dialogType == DialogType.YES_NO && this.dialogByIdMap.size() > 3)) {
       return DialogType.STANDARD;
     }
+
     if (this.dialogByIdMap.isEmpty()) {
       return DialogType.NONE;
     }
+
     if (this.dialogType != DialogType.BASIC
         && this.dialogType != DialogType.YES_NO
         && this.dialogType != DialogType.STANDARD) {

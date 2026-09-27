@@ -67,7 +67,13 @@ public class EasyNPCCreeperModelMixin<T extends Entity> implements EasyNPCModelM
       at = @At("HEAD"),
       cancellable = true)
   private void setupNpcAnimStart(
-      T entity, float f, float g, float h, float i, float j, CallbackInfo callbackInfo) {
+      T entity,
+      float limbSwing,
+      float limbSwingAmount,
+      float ageInTicks,
+      float netHeadYaw,
+      float headPitch,
+      CallbackInfo callbackInfo) {
     if (entity instanceof EasyNPC<?> easyNPC
         && EasyNPCModel.setupAnimationStart(easyNPC, this.easyNPC$modelManager)) {
       callbackInfo.cancel();
@@ -76,7 +82,13 @@ public class EasyNPCCreeperModelMixin<T extends Entity> implements EasyNPCModelM
 
   @Inject(method = "setupAnim(Lnet/minecraft/world/entity/Entity;FFFFF)V", at = @At("TAIL"))
   private void setupNpcAnimEnd(
-      T entity, float f, float g, float h, float i, float j, CallbackInfo callbackInfo) {
+      T entity,
+      float limbSwing,
+      float limbSwingAmount,
+      float ageInTicks,
+      float netHeadYaw,
+      float headPitch,
+      CallbackInfo callbackInfo) {
     if (entity instanceof EasyNPC<?> easyNPC) {
       EasyNPCModel.setupAnimationEnd(easyNPC, this.easyNPC$modelManager);
     }

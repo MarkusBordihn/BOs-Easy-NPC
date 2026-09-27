@@ -53,18 +53,19 @@ public record RemoveObjectiveMessage(UUID uuid, ObjectiveDataEntry objectiveData
 
   @Override
   public void handleServer(final ServerPlayer serverPlayer) {
-    EasyNPC<?> easyNPC = getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
+    EasyNPC<?> easyNPC = this.getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
     if (easyNPC == null || this.objectiveDataEntry == null) {
-      log.error("Invalid data to remove objective for {}: ", this);
+      log.error("Invalid data to remove objective for {}", this);
       return;
     }
+
     if (!MessageSecurity.checkFeatureAccess(
         serverPlayer, easyNPC, NpcFeature.OBJECTIVE, "objective removal")) {
       return;
     }
 
     if (!ObjectiveHandler.removeCustomObjective(easyNPC, this.objectiveDataEntry)) {
-      log.error("Failed to remove objective {} for {}", objectiveDataEntry, easyNPC);
+      log.error("Failed to remove objective {} for {}", this.objectiveDataEntry, easyNPC);
     }
   }
 }

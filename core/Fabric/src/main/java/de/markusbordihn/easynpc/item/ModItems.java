@@ -111,8 +111,6 @@ public class ModItems {
     registerItem(BulletItem.ID, BULLET_ITEM);
 
     log.info("{} Spawn Egg Items ...", Constants.LOG_REGISTER_PREFIX);
-
-    // Register spawn eggs for all NPC entity types.
     for (ModNPCEntityType entityType : ModNPCEntityType.values()) {
       EntityType<?> entityTypeObject = ModEntityType.NPC_TYPE.get(entityType);
       if (entityTypeObject == null) {
@@ -125,7 +123,6 @@ public class ModItems {
     }
     log.info("Registered {} NPC spawn eggs.", NPC_SPAWN_EGGS.size());
 
-    // Register spawn eggs for all custom entity types.
     for (ModCustomEntityType entityType : ModCustomEntityType.values()) {
       EntityType<?> entityTypeObject = ModEntityType.CUSTOM_TYPE.get(entityType);
       if (entityTypeObject == null) {

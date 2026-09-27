@@ -59,7 +59,7 @@ public record ExecuteDialogButtonActionMessage(UUID uuid, UUID dialogId, UUID di
 
   @Override
   public void handleServer(final ServerPlayer serverPlayer) {
-    EasyNPC<?> easyNPC = getEasyNPC(this.uuid, serverPlayer);
+    EasyNPC<?> easyNPC = this.getEasyNPC(this.uuid, serverPlayer);
     if (easyNPC == null) {
       return;
     }
@@ -74,7 +74,7 @@ public record ExecuteDialogButtonActionMessage(UUID uuid, UUID dialogId, UUID di
       return;
     }
 
-    if (!checkDialogSession(this.uuid, this.dialogId, serverPlayer)) {
+    if (!this.checkDialogSession(this.uuid, this.dialogId, serverPlayer)) {
       log.warn(
           "Blocked dialog button action {} for dialog {} for {} from {}",
           this.dialogButtonId,
@@ -100,7 +100,8 @@ public record ExecuteDialogButtonActionMessage(UUID uuid, UUID dialogId, UUID di
       return;
     }
 
-    DialogButtonEntry dialogButtonEntry = dialogData.getDialogButton(dialogId, dialogButtonId);
+    DialogButtonEntry dialogButtonEntry =
+        dialogData.getDialogButton(this.dialogId, this.dialogButtonId);
     if (dialogButtonEntry == null) {
       log.error(
           "Unable to get valid dialog button data for {} and dialog {} from {}",

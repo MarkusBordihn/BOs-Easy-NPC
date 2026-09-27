@@ -39,8 +39,10 @@ public class VillagerRawRenderer extends VillagerRenderer implements EasyNPCEnti
   @Override
   public ResourceLocation getTextureLocation(Villager entity) {
     if (entity instanceof EasyNPC<?> easyNPC) {
-      return getEntityTextureWithDefaultCallback(easyNPC, () -> super.getTextureLocation(entity));
+      return this.getEntityTextureWithDefaultCallback(
+          easyNPC, () -> super.getTextureLocation(entity));
     }
+
     return super.getTextureLocation(entity);
   }
 

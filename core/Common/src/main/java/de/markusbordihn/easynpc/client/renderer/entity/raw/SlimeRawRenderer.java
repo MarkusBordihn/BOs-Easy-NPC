@@ -67,17 +67,17 @@ public class SlimeRawRenderer extends SlimeRenderer implements EasyNPCEntityRend
 
   @Override
   public OriginalModelConfig getOriginalModelConfig() {
-    return originalConfig;
+    return this.originalConfig;
   }
 
   @Override
   public CustomModelConfig getCustomModelConfig() {
-    return customConfig;
+    return this.customConfig;
   }
 
   @Override
   public ResourceLocation getTextureLocation(Slime entity) {
-    return getTextureLocationWithConfig(entity);
+    return this.getTextureLocationWithConfig(entity);
   }
 
   @Override

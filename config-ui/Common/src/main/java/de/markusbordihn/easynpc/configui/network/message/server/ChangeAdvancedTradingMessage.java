@@ -61,7 +61,7 @@ public record ChangeAdvancedTradingMessage(
 
   @Override
   public void handleServer(final ServerPlayer serverPlayer) {
-    EasyNPC<?> easyNPC = getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
+    EasyNPC<?> easyNPC = this.getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
     if (easyNPC == null) {
       return;
     }
@@ -87,8 +87,8 @@ public record ChangeAdvancedTradingMessage(
     if (this.tradingValue < 0.0) {
       log.error(
           "Trading value {} for {} is out of range (>= 0) for {}",
-          tradingValue,
-          tradingValueType,
+          this.tradingValue,
+          this.tradingValueType,
           serverPlayer);
       return;
     }

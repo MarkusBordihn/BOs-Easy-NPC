@@ -57,9 +57,10 @@ public record ScreenData(
       log.error("Unable to decode screen data from compound tag: {}", compoundTag);
       return null;
     }
+
     CompoundTag screenDataTag = compoundTag.getCompound(SCREEN_DATA_TAG);
     UUID uuid = screenDataTag.getUUID(SCREEN_DATA_UUID_TAG);
-    UUID dialogID =
+    UUID dialogId =
         screenDataTag.contains(SCREEN_DATA_DIALOG_ID_TAG)
             ? screenDataTag.getUUID(SCREEN_DATA_DIALOG_ID_TAG)
             : null;
@@ -81,7 +82,7 @@ public record ScreenData(
             ? screenDataTag.getCompound(SCREEN_DATA_ADDITIONAL_DATA_TAG)
             : new CompoundTag();
     return new ScreenData(
-        uuid, dialogID, dialogButtonId, actionDataEntryId, conditionDataEntryId, pageIndex, data);
+        uuid, dialogId, dialogButtonId, actionDataEntryId, conditionDataEntryId, pageIndex, data);
   }
 
   public CompoundTag encode() {

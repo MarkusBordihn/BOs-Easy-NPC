@@ -45,7 +45,7 @@ public class AddButton extends SpriteButton {
         label,
         TEXTURE,
         SPRITE_X,
-        3,
+        SPRITE_Y,
         SPRITE_OFFSET_X,
         SPRITE_OFFSET_Y,
         SPRITE_WIDTH,

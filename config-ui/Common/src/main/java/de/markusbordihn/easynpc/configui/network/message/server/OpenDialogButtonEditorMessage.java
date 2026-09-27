@@ -71,7 +71,7 @@ public record OpenDialogButtonEditorMessage(UUID uuid, UUID dialogId, UUID dialo
 
   @Override
   public void handleServer(final ServerPlayer serverPlayer) {
-    EasyNPC<?> easyNPC = getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
+    EasyNPC<?> easyNPC = this.getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
     if (easyNPC == null) {
       return;
     }
@@ -97,8 +97,8 @@ public record OpenDialogButtonEditorMessage(UUID uuid, UUID dialogId, UUID dialo
     if (dialogDataEntry == null) {
       log.error(
           "Unable to get valid dialog data for dialog {} for {} from {}",
-          easyNPC,
           this.dialogId,
+          easyNPC,
           serverPlayer);
       return;
     }
@@ -114,9 +114,10 @@ public record OpenDialogButtonEditorMessage(UUID uuid, UUID dialogId, UUID dialo
           serverPlayer);
       dialogDataEntry.setDialogButton(newDialogButton);
       newDialogButtonId = newDialogButton.id();
-    } else if (dialogButtonId != null && !dialogData.hasDialogButton(dialogId, dialogButtonId)) {
+    } else if (this.dialogButtonId != null
+        && !dialogData.hasDialogButton(this.dialogId, this.dialogButtonId)) {
       log.error(
-          "Invalid dialog button id {} for {} from {}", dialogButtonId, easyNPC, serverPlayer);
+          "Invalid dialog button id {} for {} from {}", this.dialogButtonId, easyNPC, serverPlayer);
       return;
     }
 
@@ -128,6 +129,6 @@ public record OpenDialogButtonEditorMessage(UUID uuid, UUID dialogId, UUID dialo
         serverPlayer);
     MenuManager.getMenuHandler()
         .openEditorMenu(
-            EditorType.DIALOG_BUTTON, serverPlayer, easyNPC, dialogId, newDialogButtonId, 0);
+            EditorType.DIALOG_BUTTON, serverPlayer, easyNPC, this.dialogId, newDialogButtonId, 0);
   }
 }

@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.configui.client.screen.configuration;
 
+import de.markusbordihn.easynpc.client.screen.Screen;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.configui.client.screen.ScreenInterface;
@@ -41,8 +42,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Inventory;
 
-public class ConfigurationScreen<T extends ConfigUIMenu>
-    extends de.markusbordihn.easynpc.client.screen.Screen<T, AdditionalScreenData>
+public class ConfigurationScreen<T extends ConfigUIMenu> extends Screen<T, AdditionalScreenData>
     implements ScreenInterface {
 
   protected Button homeButton = null;
@@ -67,13 +67,13 @@ public class ConfigurationScreen<T extends ConfigUIMenu>
             this.font,
             formattedCharSequence,
             descriptionLeft,
-            descriptionTop + (line * (font.lineHeight + 2)));
+            descriptionTop + (line * (this.font.lineHeight + 2)));
       }
     }
   }
 
   protected void setDescriptionText(String textId) {
-    setDescriptionText(TextComponent.getTranslatedConfigText(textId));
+    this.setDescriptionText(TextComponent.getTranslatedConfigText(textId));
   }
 
   protected void setDescriptionText(Component component) {
@@ -85,13 +85,11 @@ public class ConfigurationScreen<T extends ConfigUIMenu>
   public void init() {
     super.init();
 
-    // Core Positions
     this.buttonLeftPos = this.leftPos + 13;
     this.buttonTopPos = this.topPos + 3;
     this.contentLeftPos = this.leftPos + 7;
     this.contentTopPos = this.topPos + 23;
 
-    // Home Button
     this.homeButton =
         this.addRenderableWidget(
             new TextButton(
@@ -124,9 +122,8 @@ public class ConfigurationScreen<T extends ConfigUIMenu>
 
   @Override
   public boolean keyPressed(int keyCode, int unused1, int unused2) {
-    // Capture ALT + left arrow key to navigate back to main screen
     if (keyCode == 263 && hasAltDown()) {
-      showMainScreen();
+      this.showMainScreen();
       return true;
     }
 
@@ -193,6 +190,7 @@ public class ConfigurationScreen<T extends ConfigUIMenu>
     if (renderType == RenderType.DEFAULT) {
       return true;
     }
+
     // Easy Model Entities NPCs support pose editing and scaling; the renderer applies the pose
     // (rotation and position) and the root scale to the model.
     if (renderType == RenderType.EASY_MODEL_ENTITY
@@ -200,6 +198,7 @@ public class ConfigurationScreen<T extends ConfigUIMenu>
             || configurationType == ConfigurationType.SCALING)) {
       return true;
     }
+
     return configurationType != ConfigurationType.POSE
         && configurationType != ConfigurationType.SCALING
         && configurationType != ConfigurationType.SKIN;

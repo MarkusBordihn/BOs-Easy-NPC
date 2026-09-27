@@ -63,7 +63,6 @@ public final class Constants {
   public static final int FONT_COLOR_WHITE = 16777215;
   public static final int FONT_COLOR_YELLOW = 16777045;
 
-  // Directories
   public static Path GAME_DIR = Paths.get("").toAbsolutePath();
   public static Path CONFIG_DIR = GAME_DIR.resolve("config");
   public static Path WORLD_DIR = GAME_DIR.resolve("world");

@@ -131,7 +131,7 @@ public interface NetworkMessageRecord {
 
   default FriendlyByteBuf payload() {
     FriendlyByteBuf friendlyByteBuf = new FriendlyByteBuf(Unpooled.buffer());
-    write(friendlyByteBuf);
+    this.write(friendlyByteBuf);
     return friendlyByteBuf;
   }
 
@@ -153,15 +153,16 @@ public interface NetworkMessageRecord {
       log.error("Invalid server player for Easy NPC with UUID {}", uuid);
       return null;
     }
+
     return LivingEntityManager.getServerEasyNPCEntityByUUID(uuid, serverPlayer);
   }
 
   default EasyNPC<?> getEasyNPCAndCheckAccess(final UUID uuid, final ServerPlayer serverPlayer) {
-    return checkAccess(uuid, serverPlayer) ? getEasyNPC(uuid, serverPlayer) : null;
+    return checkAccess(uuid, serverPlayer) ? this.getEasyNPC(uuid, serverPlayer) : null;
   }
 
   default boolean checkDialogSession(final UUID uuid, final ServerPlayer serverPlayer) {
-    return checkDialogSession(uuid, null, serverPlayer);
+    return this.checkDialogSession(uuid, null, serverPlayer);
   }
 
   default boolean checkDialogSession(

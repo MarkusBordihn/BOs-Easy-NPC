@@ -60,6 +60,7 @@ public class CustomPanicGoal<T extends EasyNPC<?>> extends Goal {
     if (this.vanillaPanicGoal != null) {
       return this.vanillaPanicGoal.canUse();
     }
+
     return this.mob.getLastHurtByMob() != null
         || this.mob.isOnFire()
         || this.mob.isInWaterOrBubble();
@@ -70,6 +71,7 @@ public class CustomPanicGoal<T extends EasyNPC<?>> extends Goal {
     if (this.vanillaPanicGoal != null) {
       return this.vanillaPanicGoal.canContinueToUse();
     }
+
     return this.panicTicks > 0;
   }
 
@@ -81,7 +83,7 @@ public class CustomPanicGoal<T extends EasyNPC<?>> extends Goal {
     }
 
     this.panicTicks = PANIC_DURATION_TICKS;
-    moveToRandomPosition();
+    this.moveToRandomPosition();
   }
 
   @Override
@@ -93,7 +95,7 @@ public class CustomPanicGoal<T extends EasyNPC<?>> extends Goal {
 
     this.panicTicks--;
     if (this.panicTicks % 20 == 0) {
-      moveToRandomPosition();
+      this.moveToRandomPosition();
     }
   }
 

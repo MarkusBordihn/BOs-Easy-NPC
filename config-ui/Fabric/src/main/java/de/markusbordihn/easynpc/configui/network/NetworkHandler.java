@@ -77,7 +77,7 @@ public class NetworkHandler implements NetworkHandlerInterface {
         })) {
       log.error("Failed to register client network message handler for {}", messageID);
     } else {
-      logRegisterClientNetworkMessageHandler(messageID, networkMessageRecord);
+      this.logRegisterClientNetworkMessageHandler(messageID, networkMessageRecord);
     }
   }
 
@@ -102,53 +102,53 @@ public class NetworkHandler implements NetworkHandlerInterface {
         })) {
       log.error("Failed to register server network message handler for {}", messageID);
     } else {
-      logRegisterServerNetworkMessageHandler(messageID, networkMessageRecord);
+      this.logRegisterServerNetworkMessageHandler(messageID, networkMessageRecord);
     }
   }
 
   @Override
   public <M extends NetworkMessageRecord> void addClientMessage(
       final ResourceLocation messageID, final Class<M> networkMessage) {
-    clientMessages.put(messageID, networkMessage);
+    this.clientMessages.put(messageID, networkMessage);
   }
 
   @Override
   public <M extends NetworkMessageRecord> void addServerMessage(
       final ResourceLocation messageID, final Class<M> networkMessage) {
-    serverMessages.put(messageID, networkMessage);
+    this.serverMessages.put(messageID, networkMessage);
   }
 
   @Override
   public Map<ResourceLocation, Class<? extends NetworkMessageRecord>> getClientMessages() {
-    return clientMessages;
+    return this.clientMessages;
   }
 
   @Override
   public Map<ResourceLocation, Class<? extends NetworkMessageRecord>> getServerMessages() {
-    return serverMessages;
+    return this.serverMessages;
   }
 
   @Override
   public <M extends NetworkMessageRecord> void addRegisteredClientMessage(
       final ResourceLocation messageID, final Class<M> networkMessage) {
-    registeredClientMessages.put(messageID, networkMessage);
+    this.registeredClientMessages.put(messageID, networkMessage);
   }
 
   @Override
   public <M extends NetworkMessageRecord> void addRegisteredServerMessage(
       final ResourceLocation messageID, final Class<M> networkMessage) {
-    registeredServerMessages.put(messageID, networkMessage);
+    this.registeredServerMessages.put(messageID, networkMessage);
   }
 
   @Override
   public Map<ResourceLocation, Class<? extends NetworkMessageRecord>>
       getRegisteredClientMessages() {
-    return registeredClientMessages;
+    return this.registeredClientMessages;
   }
 
   @Override
   public Map<ResourceLocation, Class<? extends NetworkMessageRecord>>
       getRegisteredServerMessages() {
-    return registeredServerMessages;
+    return this.registeredServerMessages;
   }
 }

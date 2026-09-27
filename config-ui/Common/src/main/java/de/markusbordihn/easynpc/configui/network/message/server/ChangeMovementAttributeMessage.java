@@ -84,7 +84,7 @@ public record ChangeMovementAttributeMessage(
 
   @Override
   public void handleServer(final ServerPlayer serverPlayer) {
-    EasyNPC<?> easyNPC = getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
+    EasyNPC<?> easyNPC = this.getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
     if (easyNPC == null) {
       return;
     }
@@ -107,6 +107,7 @@ public record ChangeMovementAttributeMessage(
         log.error("Invalid value for {} for {} from {}", this.attributeType, easyNPC, serverPlayer);
         return;
       }
+
       AttributeHandler.setMovementAttribute(easyNPC, this.attributeType, this.doubleValue);
       return;
     }
@@ -115,6 +116,7 @@ public record ChangeMovementAttributeMessage(
       log.error("Invalid value for {} for {} from {}", this.attributeType, easyNPC, serverPlayer);
       return;
     }
+
     AttributeHandler.setMovementAttribute(easyNPC, this.attributeType, this.booleanValue);
   }
 }

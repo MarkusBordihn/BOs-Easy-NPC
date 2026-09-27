@@ -37,22 +37,22 @@ public interface ModelRotationDataCapable<T extends Mob> extends ModelRootDataCa
 
   default EnumMap<ModelPartType, CustomRotation> getModelPartRotation() {
     EnumMap<ModelPartType, CustomRotation> modelPartMap =
-        getSynchedEntityData(SynchedDataIndex.MODEL_ROTATION);
+        this.getSynchedEntityData(SynchedDataIndex.MODEL_ROTATION);
     if (modelPartMap == null) {
       modelPartMap = new EnumMap<>(ModelPartType.class);
-      setModelPartRotation(modelPartMap);
+      this.setModelPartRotation(modelPartMap);
     }
     return modelPartMap;
   }
 
   default void setModelPartRotation(EnumMap<ModelPartType, CustomRotation> modelPartMap) {
     if (modelPartMap != null) {
-      setSynchedEntityData(SynchedDataIndex.MODEL_ROTATION, modelPartMap, true);
+      this.setSynchedEntityData(SynchedDataIndex.MODEL_ROTATION, modelPartMap, true);
     }
   }
 
   default void setModelPartRotation(ModelPartType modelPartType, CustomRotation rotation) {
-    EnumMap<ModelPartType, CustomRotation> modelPartMap = getModelPartRotation();
+    EnumMap<ModelPartType, CustomRotation> modelPartMap = this.getModelPartRotation();
     if (modelPartType != null) {
       modelPartMap.put(modelPartType, rotation);
       this.setModelPartRotation(new EnumMap<>(modelPartMap));
@@ -60,18 +60,18 @@ public interface ModelRotationDataCapable<T extends Mob> extends ModelRootDataCa
   }
 
   default CustomRotation getModelPartRotation(ModelPartType modelPartType) {
-    EnumMap<ModelPartType, CustomRotation> modelPartMap = getModelPartRotation();
+    EnumMap<ModelPartType, CustomRotation> modelPartMap = this.getModelPartRotation();
     return modelPartMap.getOrDefault(modelPartType, DEFAULT_MODEL_PART_ROTATION);
   }
 
   default void setModelRotation(float y) {
-    CustomRotation current = getModelRootData().rotation();
-    setModelRotation(current.x(), y, current.z(), current.locked());
+    CustomRotation current = this.getModelRootData().rotation();
+    this.setModelRotation(current.x(), y, current.z(), current.locked());
   }
 
   default void setModelRotation(float x, float y, float z) {
-    CustomRotation current = getModelRootData().rotation();
-    setModelRotation(x, y, z, current.locked());
+    CustomRotation current = this.getModelRootData().rotation();
+    this.setModelRotation(x, y, z, current.locked());
   }
 
   default void setModelRotation(float x, float y, float z, boolean locked) {
@@ -89,11 +89,11 @@ public interface ModelRotationDataCapable<T extends Mob> extends ModelRootDataCa
       livingEntity.yHeadRotO = y;
     }
 
-    setModelRootRotation(new CustomRotation(x, y, z).withLocked(locked));
+    this.setModelRootRotation(new CustomRotation(x, y, z).withLocked(locked));
   }
 
   default boolean hasChangedModelRotation() {
-    for (CustomRotation rotation : getModelPartRotation().values()) {
+    for (CustomRotation rotation : this.getModelPartRotation().values()) {
       if (rotation.hasChanged()) {
         return true;
       }
@@ -103,12 +103,13 @@ public interface ModelRotationDataCapable<T extends Mob> extends ModelRootDataCa
   }
 
   default void defineSynchedModelRotationData() {
-    defineSynchedEntityData(SynchedDataIndex.MODEL_ROTATION, new EnumMap<>(ModelPartType.class));
+    this.defineSynchedEntityData(
+        SynchedDataIndex.MODEL_ROTATION, new EnumMap<>(ModelPartType.class));
   }
 
   default void addAdditionalModelRotationData(CompoundTag compoundTag) {
     CompoundTag rotationsTag = new CompoundTag();
-    EnumMap<ModelPartType, CustomRotation> modelPartMap = getModelPartRotation();
+    EnumMap<ModelPartType, CustomRotation> modelPartMap = this.getModelPartRotation();
     for (Map.Entry<ModelPartType, CustomRotation> entry : modelPartMap.entrySet()) {
       if (entry.getValue() != null && entry.getValue().hasChanged()) {
         rotationsTag.put(entry.getKey().getTagName(), entry.getValue().save());
@@ -130,6 +131,6 @@ public interface ModelRotationDataCapable<T extends Mob> extends ModelRootDataCa
         modelPartMap.put(modelPartType, new CustomRotation(modelPartType, rotationsTag));
       }
     }
-    setModelPartRotation(modelPartMap);
+    this.setModelPartRotation(modelPartMap);
   }
 }

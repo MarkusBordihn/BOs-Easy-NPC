@@ -39,7 +39,7 @@ public class SpiderRawRenderer extends SpiderRenderer<Spider> implements EasyNPC
 
   @Override
   public ResourceLocation getTextureLocation(Spider entity) {
-    return getTextureLocationWithConfig(entity);
+    return this.getTextureLocationWithConfig(entity);
   }
 
   @Override

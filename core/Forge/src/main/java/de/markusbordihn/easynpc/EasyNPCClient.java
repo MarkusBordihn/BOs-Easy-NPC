@@ -37,16 +37,13 @@ public class EasyNPCClient {
   public EasyNPCClient(IEventBus modEventBus) {
     log.info("Initializing {} (Forge-Client) ...", Constants.MOD_NAME);
 
-    // Register event listeners for client-side rendering and UI
     modEventBus.addListener(ModModelLayer::registerEntityLayerDefinitions);
     modEventBus.addListener(BlockEntityRenderer::register);
     modEventBus.addListener(EntityRenderer::register);
     modEventBus.addListener(ClientScreens::registerScreens);
 
-    // Set up networking
     NetworkMessageHandlerManager.registerServerHandler(new ServerNetworkMessageHandler());
 
-    // Register creative tabs
     ModTabs.CREATIVE_TABS.register(modEventBus);
   }
 }

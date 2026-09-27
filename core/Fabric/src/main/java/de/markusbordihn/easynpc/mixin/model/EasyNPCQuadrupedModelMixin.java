@@ -55,12 +55,12 @@ public class EasyNPCQuadrupedModelMixin<T extends Entity> implements EasyNPCMode
   @Inject(method = "<init>(Lnet/minecraft/client/model/geom/ModelPart;ZFFFFI)V", at = @At("TAIL"))
   private void easyNpcModel(
       ModelPart modelPart,
-      boolean p_170858_,
-      float p_170859_,
-      float p_170860_,
-      float p_170861_,
-      float p_170862_,
-      int p_170863_,
+      boolean scaleHead,
+      float babyYHeadOffset,
+      float babyZHeadOffset,
+      float babyHeadScale,
+      float babyBodyScale,
+      int bodyYOffset,
       CallbackInfo callbackInfo) {
     this.easyNPC$modelManager =
         new EasyNPCModelManager(modelPart)

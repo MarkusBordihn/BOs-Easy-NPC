@@ -48,6 +48,7 @@ public class EntityAttributes {
         || compoundTag.getCompound(ENTITY_ATTRIBUTE_TAG).isEmpty()) {
       return;
     }
+
     CompoundTag entityAttributeTag = compoundTag.getCompound(ENTITY_ATTRIBUTE_TAG);
     this.setAttribute(EntityAttributeType.COMBAT, CombatAttributes.decode(entityAttributeTag));
     this.setAttribute(
@@ -58,16 +59,16 @@ public class EntityAttributes {
   }
 
   public boolean hasAttribute(EntityAttributeType entityAttributeType) {
-    return attributeMap.containsKey(entityAttributeType);
+    return this.attributeMap.containsKey(entityAttributeType);
   }
 
   public EntityAttributesInterface getAttribute(EntityAttributeType entityAttributeType) {
-    return attributeMap.get(entityAttributeType);
+    return this.attributeMap.get(entityAttributeType);
   }
 
   public void setAttribute(
       EntityAttributeType entityAttributeType, EntityAttributesInterface attribute) {
-    attributeMap.put(entityAttributeType, attribute);
+    this.attributeMap.put(entityAttributeType, attribute);
   }
 
   public boolean hasCombatAttributes() {
@@ -120,18 +121,11 @@ public class EntityAttributes {
 
   public CompoundTag save(CompoundTag compoundTag) {
     CompoundTag entityAttributeTag = new CompoundTag();
-    attributeMap.forEach(
-        (type, attribute) -> {
-          if (attribute instanceof CombatAttributes combatAttributes) {
-            combatAttributes.encode(entityAttributeTag);
-          } else if (attribute instanceof EnvironmentalAttributes environmentalAttributes) {
-            environmentalAttributes.encode(entityAttributeTag);
-          } else if (attribute instanceof InteractionAttributes interactionAttributes) {
-            interactionAttributes.encode(entityAttributeTag);
-          } else if (attribute instanceof MovementAttributes movementAttributes) {
-            movementAttributes.encode(entityAttributeTag);
-          }
-        });
+    for (EntityAttributesInterface attribute : this.attributeMap.values()) {
+      if (attribute != null) {
+        attribute.encode(entityAttributeTag);
+      }
+    }
     CompoundTagUtils.putIfNotEmpty(compoundTag, ENTITY_ATTRIBUTE_TAG, entityAttributeTag);
     return compoundTag;
   }

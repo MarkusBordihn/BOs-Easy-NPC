@@ -85,6 +85,7 @@ public class EasyNPCFlyingMoveControl extends FlyingMoveControl {
     if (this.mob instanceof NavigationDataCapable<?> navigationData) {
       return navigationData.getHoverHeight();
     }
+
     return 0.0D;
   }
 
@@ -92,6 +93,7 @@ public class EasyNPCFlyingMoveControl extends FlyingMoveControl {
     if (this.mob instanceof NavigationDataCapable<?> navigationData) {
       return navigationData.getMinHoverHeight();
     }
+
     return 0.0D;
   }
 
@@ -106,6 +108,7 @@ public class EasyNPCFlyingMoveControl extends FlyingMoveControl {
       if (!level.getBlockState(blockPos).getCollisionShape(level, blockPos).isEmpty()) {
         return blockPos.getY() + 1.0D + hoverHeight;
       }
+
       blockPos.move(Direction.DOWN);
     }
 

@@ -47,13 +47,13 @@ public class ConfigureCommand extends Command {
                             EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG))));
   }
 
-  private static int configure(CommandSourceStack context, EasyNPC<?> easyNPC)
+  private static int configure(CommandSourceStack commandSourceStack, EasyNPC<?> easyNPC)
       throws CommandSyntaxException {
-    ServerPlayer serverPlayer = context.getPlayerOrException();
+    ServerPlayer serverPlayer = commandSourceStack.getPlayerOrException();
 
     ConfigurationDataCapable<?> configurationData = easyNPC.getEasyNPCConfigurationData();
     if (configurationData == null) {
-      return sendFailureMessage(context, "This EasyNPC does not support configuration!");
+      return sendFailureMessage(commandSourceStack, "This EasyNPC does not support configuration!");
     }
 
     MenuManager.getMenuHandler()

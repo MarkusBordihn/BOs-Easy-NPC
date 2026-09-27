@@ -39,6 +39,7 @@ import de.markusbordihn.easynpc.entity.easynpc.data.DialogDataCapable;
 import de.markusbordihn.easynpc.utils.CompoundTagUtils;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -329,7 +330,7 @@ class PresetValidatorTest {
   void testIdentityDataIsReportedForSharedPresets() {
     CompoundTag presetTag = new CompoundTag();
     presetTag.putString(Entity.ID_TAG, HUMANOID);
-    presetTag.putUUID(Entity.UUID_TAG, java.util.UUID.randomUUID());
+    presetTag.putUUID(Entity.UUID_TAG, UUID.randomUUID());
 
     assertFalse(
         hasRule(PresetValidator.validate(presetTag), PresetValidationRule.IDENTITY_DATA_PRESENT));

@@ -29,9 +29,8 @@ public class CommandActionEntry extends ActionEntryWidget {
 
   @Override
   public void init(int editorLeft, int editorTop) {
-    boolean hasActionData = hasActionData(ActionDataType.COMMAND);
+    boolean hasActionData = this.hasActionData(ActionDataType.COMMAND);
 
-    // Command Value
     this.actionValueTextField =
         this.screen.addActionEntryWidget(
             new TextField(this.font, editorLeft, editorTop + 20, 275, 16));
@@ -39,7 +38,6 @@ public class CommandActionEntry extends ActionEntryWidget {
     this.actionValueTextField.setValue(hasActionData ? this.actionDataEntry.command() : "");
     this.actionValueTextField.setResponder(this::checkForDialogCommand);
 
-    // Execute as User
     boolean executeAsUserValue = hasActionData && this.actionDataEntry.executeAsUser();
     if (this.showExecuteAsUserWarning) {
       executeAsUserValue = false;
@@ -49,7 +47,6 @@ public class CommandActionEntry extends ActionEntryWidget {
         this.screen.addActionEntryWidget(
             new Checkbox(editorLeft, editorTop + 40, "execute_as_player", executeAsUserValue));
 
-    // Disable checkbox if server player is not available
     if (this.showExecuteAsUserWarning) {
       this.executeAsUserCheckbox.active = false;
     }
@@ -61,7 +58,6 @@ public class CommandActionEntry extends ActionEntryWidget {
                 ? "action.executeAsUser.disabled.tooltip"
                 : "action.executeAsUser.tooltip"));
 
-    // Debug
     this.debugCheckbox =
         this.screen.addActionEntryWidget(
             new Checkbox(

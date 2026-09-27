@@ -47,12 +47,10 @@ public class TextureRegistrationHelper {
 
   static ResourceLocation registerTextureOnCurrentThread(
       TextureModelKey textureModelKey, NativeImage nativeImage) {
-    // Using client Texture Manager
     Minecraft client = Minecraft.getInstance();
     net.minecraft.client.renderer.texture.TextureManager textureManager =
         client.getTextureManager();
 
-    // Create dynamic texture from native image.
     DynamicTexture dynamicTexture;
     try {
       dynamicTexture = new DynamicTexture(nativeImage);
@@ -63,7 +61,6 @@ public class TextureRegistrationHelper {
       return null;
     }
 
-    // Register dynamic texture under resource location.
     String resourceName = TextureNameHelper.getResourceName(textureModelKey);
     ResourceLocation resourceLocation = new ResourceLocation(resourceName);
     textureManager.register(resourceLocation, dynamicTexture);

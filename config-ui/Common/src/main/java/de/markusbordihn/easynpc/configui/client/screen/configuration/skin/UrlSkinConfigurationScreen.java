@@ -82,28 +82,27 @@ public class UrlSkinConfigurationScreen<T extends ConfigurationMenu>
 
     int positionTop = 144;
     int skinPosition = 0;
-    skinButtons = new ArrayList<>();
+    this.skinButtons = new ArrayList<>();
     SkinDataCapable<?> skinData = this.getEasyNPC().getEasyNPCSkinData();
     SkinModel skinModel = skinData.getSkinModel();
     Set<UUID> textures = RemoteTextureManager.getTextureCacheKeys(skinModel);
     this.numOfSkins = textures.size();
     Object[] textureKeys = textures.toArray();
 
-    // Check Skin buttons state, if number of skins changed.
     if (this.lastNumOfSkins != this.numOfSkins) {
-      checkSkinNavigationButtonState();
+      this.checkSkinNavigationButtonState();
       this.lastNumOfSkins = this.numOfSkins;
     }
 
-    for (int i = skinStartIndex; i < this.numOfSkins && i < skinStartIndex + maxSkinsPerPage; i++) {
+    for (int i = this.skinStartIndex;
+        i < this.numOfSkins && i < this.skinStartIndex + this.maxSkinsPerPage;
+        i++) {
       int left = this.leftPos + 32 + (skinPosition * SKIN_PREVIEW_WIDTH);
       int top = this.topPos + 65 + positionTop;
 
-      // Render Skins
       UUID textureKey = (UUID) textureKeys[i];
       this.renderSkinEntity(guiGraphics, left, top, skinModel, textureKey);
 
-      // Render skin name
       int topNamePos = Math.round((top - 76) / SKIN_NAME_SCALING);
       int leftNamePos = Math.round((left - 21) / SKIN_NAME_SCALING);
       int scaledMouseX = Math.round(mouseX / SKIN_NAME_SCALING);
@@ -129,11 +128,9 @@ public class UrlSkinConfigurationScreen<T extends ConfigurationMenu>
 
   private void renderSkinEntity(
       GuiGraphics guiGraphics, int x, int y, SkinModel skinModel, UUID textureUUID) {
-    // Skin details
     TextureModelKey textureModelKey = new TextureModelKey(textureUUID, skinModel);
     SkinType skinType = RemoteTextureManager.getTextureSkinType(textureModelKey);
 
-    // Create dynamically button for each skin url.
     Button skinButton =
         new SkinSelectionButton(
             x - 24,
@@ -159,7 +156,7 @@ public class UrlSkinConfigurationScreen<T extends ConfigurationMenu>
             y - 40 - this.yMouse,
             EntityRenderOverrides.withSkin(skinType, textureUUID)));
 
-    skinButtons.add(skinButton);
+    this.skinButtons.add(skinButton);
   }
 
   private void clearTextureSkinLocation() {
@@ -181,7 +178,7 @@ public class UrlSkinConfigurationScreen<T extends ConfigurationMenu>
 
     if (!UrlValidator.isValidUrl(textureSkinLocationValue)) {
       this.errorMessage = "invalid_remote_image";
-      resetCooldownOnError();
+      this.resetCooldownOnError();
       return;
     }
 
@@ -191,7 +188,7 @@ public class UrlSkinConfigurationScreen<T extends ConfigurationMenu>
     } catch (Exception e) {
       log.error("Invalid URL format: {}", textureSkinLocationValue, e);
       this.errorMessage = "invalid_url";
-      resetCooldownOnError();
+      this.resetCooldownOnError();
       return;
     }
 
@@ -218,14 +215,14 @@ public class UrlSkinConfigurationScreen<T extends ConfigurationMenu>
           textureSkinLocationValue,
           throwable.getMessage());
       this.errorMessage = "error_loading_image";
-      resetCooldownOnError();
+      this.resetCooldownOnError();
       return;
     }
 
     if (!Boolean.TRUE.equals(valid)) {
       log.error("Unable to set remote user texture to {}", textureSkinLocationValue);
       this.errorMessage = "invalid_remote_image";
-      resetCooldownOnError();
+      this.resetCooldownOnError();
       return;
     }
 
@@ -255,7 +252,6 @@ public class UrlSkinConfigurationScreen<T extends ConfigurationMenu>
     this.addTextureSettingsButton.active =
         !textureSkinLocationValue.isEmpty() && UrlValidator.isValidUrl(textureSkinLocationValue);
 
-    // Clear button
     this.clearTextureSettingsButton.active = !textureSkinLocationValue.isEmpty();
   }
 
@@ -263,18 +259,14 @@ public class UrlSkinConfigurationScreen<T extends ConfigurationMenu>
   public void init() {
     super.init();
 
-    // Default button stats
     this.urlSkinButton.active = false;
 
-    // Description text
-    setDescriptionText("url_skin.text");
+    this.setDescriptionText("url_skin.text");
 
-    // Entity specific information.
     SkinDataCapable<?> skinData = this.getEasyNPC().getEasyNPCSkinData();
     SkinModel skinModel = skinData.getSkinModel();
     this.numOfSkins = RemoteTextureManager.getTextureCacheKeys(skinModel).size();
 
-    // Texture Skin Location
     this.textureSkinLocationBox =
         new TextField(this.font, this.contentLeftPos, this.contentTopPos + 50, 180);
     this.textureSkinLocationBox.setMaxLength(255);
@@ -282,7 +274,6 @@ public class UrlSkinConfigurationScreen<T extends ConfigurationMenu>
     this.textureSkinLocationBox.setResponder(consumer -> this.validateTextureSkinLocation());
     this.addRenderableWidget(this.textureSkinLocationBox);
 
-    // Add Button
     this.addTextureSettingsButton =
         this.addRenderableWidget(
             new TextButton(
@@ -293,7 +284,6 @@ public class UrlSkinConfigurationScreen<T extends ConfigurationMenu>
                 onPress -> this.addTextureSkinLocation()));
     this.addTextureSettingsButton.active = false;
 
-    // Clear Texture Buttons
     this.clearTextureSettingsButton =
         this.addRenderableWidget(
             new TextButton(
@@ -304,7 +294,6 @@ public class UrlSkinConfigurationScreen<T extends ConfigurationMenu>
                 onPress -> this.clearTextureSkinLocation()));
     this.clearTextureSettingsButton.active = false;
 
-    // Disable Layers Checkbox
     this.addRenderableWidget(
         new Checkbox(
             this.contentLeftPos + 55,
@@ -319,32 +308,28 @@ public class UrlSkinConfigurationScreen<T extends ConfigurationMenu>
 
     this.defineProfessionButtons(this.contentLeftPos + 185, this.contentTopPos + 85);
 
-    // Skin Navigation Buttons
-    defineSkinNavigationButtons();
+    this.defineSkinNavigationButtons();
   }
 
   @Override
   public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
     super.render(guiGraphics, x, y, partialTicks);
 
-    // Description text
-    renderDescriptionText(guiGraphics, this.contentLeftPos + 5, this.contentTopPos + 5);
+    this.renderDescriptionText(guiGraphics, this.contentLeftPos + 5, this.contentTopPos + 5);
 
-    if (addTextureSettingsButton != null) {
+    if (this.addTextureSettingsButton != null) {
       Text.drawConfigString(
           guiGraphics,
           this.font,
           "use_a_skin_url",
           this.contentLeftPos,
-          addTextureSettingsButton.getY() - 10);
+          this.addTextureSettingsButton.getY() - 10);
     }
 
-    // Reload protection
     this.canTextureSkinLocationChange =
         java.time.Instant.now().getEpochSecond()
             >= UrlSkinConfigurationScreen.nextTextureSkinLocationChange;
 
-    // Render Status Symbol and text, if needed.
     if (!this.canTextureSkinLocationChange) {
       guiGraphics.pose().translate(0, 0, 100);
       Graphics.blit(
@@ -368,7 +353,6 @@ public class UrlSkinConfigurationScreen<T extends ConfigurationMenu>
       }
     }
 
-    // Show error messages, if any.
     if (this.errorMessage != null && !this.errorMessage.isEmpty()) {
       Text.drawErrorMessage(
           guiGraphics,
@@ -387,7 +371,6 @@ public class UrlSkinConfigurationScreen<T extends ConfigurationMenu>
           this.imageWidth - 14);
     }
 
-    // Skins
     this.renderSkins(guiGraphics, x, y);
   }
 }

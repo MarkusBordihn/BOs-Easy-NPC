@@ -32,102 +32,109 @@ import net.minecraft.world.entity.Mob;
 public interface ProgressionDataCapable<E extends Mob> extends EasyNPC<E> {
 
   default ProgressionData getProgressionData() {
-    return getSynchedEntityData(SynchedDataIndex.PROGRESSION);
+    return this.getSynchedEntityData(SynchedDataIndex.PROGRESSION);
   }
 
   default void setProgressionData(ProgressionData progressionData) {
-    setSynchedEntityData(SynchedDataIndex.PROGRESSION, progressionData);
+    this.setSynchedEntityData(SynchedDataIndex.PROGRESSION, progressionData);
   }
 
   default int getExperience() {
-    ProgressionData data = getProgressionData();
+    ProgressionData data = this.getProgressionData();
     return data != null ? data.experience() : 1;
   }
 
   default void setExperience(int experience) {
-    ProgressionData oldData = getProgressionData();
+    ProgressionData oldData = this.getProgressionData();
     if (oldData == null) {
       return;
     }
-    int clampedXP =
+
+    int clampedExperience =
         Math.max(
             1,
             Math.min(
                 experience,
                 ProgressionLevelMap.getExperienceForLevel(ProgressionLevelMap.MAX_LEVEL)));
-    int newLevel = ProgressionLevelMap.getLevelForExperience(clampedXP);
+    int newLevel = ProgressionLevelMap.getLevelForExperience(clampedExperience);
     ProgressionData newData =
-        new ProgressionData(clampedXP, newLevel, oldData.attributeScalingEnabled());
-    setProgressionData(newData);
+        new ProgressionData(clampedExperience, newLevel, oldData.attributeScalingEnabled());
+    this.setProgressionData(newData);
     if (oldData.experienceLevel() != newLevel) {
-      onProgressLevelChange(oldData, newData);
+      this.onProgressLevelChange(oldData, newData);
     }
   }
 
   default int getExperienceLevel() {
-    ProgressionData data = getProgressionData();
+    ProgressionData data = this.getProgressionData();
     return data != null ? data.experienceLevel() : 1;
   }
 
   default void setExperienceLevel(int level) {
-    ProgressionData oldData = getProgressionData();
-    if (oldData == null) return;
+    ProgressionData oldData = this.getProgressionData();
+    if (oldData == null) {
+      return;
+    }
+
     int clampedLevel =
         Math.max(ProgressionLevelMap.MIN_LEVEL, Math.min(level, ProgressionLevelMap.MAX_LEVEL));
-    int newXP = ProgressionLevelMap.getExperienceForLevel(clampedLevel);
+    int newExperience = ProgressionLevelMap.getExperienceForLevel(clampedLevel);
     ProgressionData newData =
-        new ProgressionData(newXP, clampedLevel, oldData.attributeScalingEnabled());
-    setProgressionData(newData);
+        new ProgressionData(newExperience, clampedLevel, oldData.attributeScalingEnabled());
+    this.setProgressionData(newData);
     if (oldData.experienceLevel() != clampedLevel) {
-      onProgressLevelChange(oldData, newData);
+      this.onProgressLevelChange(oldData, newData);
     }
   }
 
   default boolean isAttributeScalingEnabled() {
-    ProgressionData data = getProgressionData();
+    ProgressionData data = this.getProgressionData();
     return data != null && data.attributeScalingEnabled();
   }
 
   default void setAttributeScalingEnabled(boolean enabled) {
-    ProgressionData oldData = getProgressionData();
-    if (oldData == null) return;
+    ProgressionData oldData = this.getProgressionData();
+    if (oldData == null) {
+      return;
+    }
+
     ProgressionData newData =
         new ProgressionData(oldData.experience(), oldData.experienceLevel(), enabled);
-    setProgressionData(newData);
+    this.setProgressionData(newData);
     ProgressionAttributeHandler.applyLevelScaling(this);
   }
 
   default void addExperience(int amount) {
-    setExperience(getExperience() + amount);
+    this.setExperience(this.getExperience() + amount);
   }
 
   default void increaseExperience(int experience) {
-    addExperience(experience);
+    this.addExperience(experience);
   }
 
   default void decreaseExperience(int experience) {
-    addExperience(-experience);
+    this.addExperience(-experience);
   }
 
   default void increaseExperienceLevel(int levels) {
-    setExperienceLevel(getExperienceLevel() + levels);
+    this.setExperienceLevel(this.getExperienceLevel() + levels);
   }
 
   default void decreaseExperienceLevel(int levels) {
-    setExperienceLevel(getExperienceLevel() - levels);
+    this.setExperienceLevel(this.getExperienceLevel() - levels);
   }
 
   default void decreaseExperienceAndExperienceLevel() {
-    int currentLevel = getExperienceLevel();
-    decreaseExperience(ProgressionLevelMap.getExperienceDifferenceForLevel(currentLevel));
+    int currentLevel = this.getExperienceLevel();
+    this.decreaseExperience(ProgressionLevelMap.getExperienceDifferenceForLevel(currentLevel));
   }
 
   default boolean isMaxExperienceLevel() {
-    return getExperienceLevel() >= getMaxExperienceLevel();
+    return this.getExperienceLevel() >= this.getMaxExperienceLevel();
   }
 
   default boolean isMinExperienceLevel() {
-    return getExperienceLevel() == getMinExperienceLevel();
+    return this.getExperienceLevel() == this.getMinExperienceLevel();
   }
 
   default int getMaxExperienceLevel() {
@@ -139,15 +146,15 @@ public interface ProgressionDataCapable<E extends Mob> extends EasyNPC<E> {
   }
 
   default int getExperienceForNextLevel() {
-    return ProgressionLevelMap.getExperienceForNextLevel(getExperienceLevel());
+    return ProgressionLevelMap.getExperienceForNextLevel(this.getExperienceLevel());
   }
 
   default int getExperienceForLevel() {
-    return ProgressionLevelMap.getExperienceForLevel(getExperienceLevel());
+    return ProgressionLevelMap.getExperienceForLevel(this.getExperienceLevel());
   }
 
   default int getExperienceProgressToNextLevel() {
-    ProgressionData data = getProgressionData();
+    ProgressionData data = this.getProgressionData();
     return data != null
         ? ProgressionLevelMap.getExperienceProgressToNextLevel(
             data.experience(), data.experienceLevel())
@@ -155,7 +162,7 @@ public interface ProgressionDataCapable<E extends Mob> extends EasyNPC<E> {
   }
 
   default float getProgressPercentageToNextLevel() {
-    ProgressionData data = getProgressionData();
+    ProgressionData data = this.getProgressionData();
     return data != null
         ? ProgressionLevelMap.getProgressPercentageToNextLevel(
             data.experience(), data.experienceLevel())
@@ -163,9 +170,12 @@ public interface ProgressionDataCapable<E extends Mob> extends EasyNPC<E> {
   }
 
   default int getAttributeAdjustment(int baseValue, int maxValue) {
-    int level = getExperienceLevel();
-    if (level == 1 || maxValue == 0 || baseValue >= maxValue) return 0;
-    double factor = (double) (maxValue - baseValue) / getMaxExperienceLevel();
+    int level = this.getExperienceLevel();
+    if (level == 1 || maxValue == 0 || baseValue >= maxValue) {
+      return 0;
+    }
+
+    double factor = (double) (maxValue - baseValue) / this.getMaxExperienceLevel();
     return (int) Math.floor(level * factor + 0.5);
   }
 
@@ -173,20 +183,20 @@ public interface ProgressionDataCapable<E extends Mob> extends EasyNPC<E> {
     int oldLevel = oldData.experienceLevel();
     int newLevel = newData.experienceLevel();
     if (newLevel > oldLevel) {
-      onProgressLevelUp(oldData, newData);
+      this.onProgressLevelUp(oldData, newData);
     } else if (newLevel < oldLevel) {
-      onProgressLevelDown(oldData, newData);
+      this.onProgressLevelDown(oldData, newData);
     }
     ProgressionAttributeHandler.applyLevelScaling(this);
   }
 
   default void onProgressLevelUp(ProgressionData oldData, ProgressionData newData) {
-    if (getEntity().level() instanceof ServerLevel serverLevel) {
+    if (this.getEntity().level() instanceof ServerLevel serverLevel) {
       serverLevel.sendParticles(
           ParticleTypes.ENCHANT,
-          getEntity().getX(),
-          getEntity().getY() + getEntity().getBbHeight() / 2.0,
-          getEntity().getZ(),
+          this.getEntity().getX(),
+          this.getEntity().getY() + this.getEntity().getBbHeight() / 2.0,
+          this.getEntity().getZ(),
           50,
           0.5,
           0.5,
@@ -195,18 +205,18 @@ public interface ProgressionDataCapable<E extends Mob> extends EasyNPC<E> {
     }
     log.debug(
         "{} leveled up from {} to {}!",
-        getEntity(),
+        this.getEntity(),
         oldData.experienceLevel(),
         newData.experienceLevel());
   }
 
   default void onProgressLevelDown(ProgressionData oldData, ProgressionData newData) {
-    if (getEntity().level() instanceof ServerLevel serverLevel) {
+    if (this.getEntity().level() instanceof ServerLevel serverLevel) {
       serverLevel.sendParticles(
           ParticleTypes.SMOKE,
-          getEntity().getX(),
-          getEntity().getY() + getEntity().getBbHeight() / 2.0,
-          getEntity().getZ(),
+          this.getEntity().getX(),
+          this.getEntity().getY() + this.getEntity().getBbHeight() / 2.0,
+          this.getEntity().getZ(),
           50,
           0.5,
           0.5,
@@ -215,17 +225,17 @@ public interface ProgressionDataCapable<E extends Mob> extends EasyNPC<E> {
     }
     log.debug(
         "{} leveled down from {} to {}!",
-        getEntity(),
+        this.getEntity(),
         oldData.experienceLevel(),
         newData.experienceLevel());
   }
 
   default void defineSynchedProgressionData() {
-    defineSynchedEntityData(SynchedDataIndex.PROGRESSION, new ProgressionData());
+    this.defineSynchedEntityData(SynchedDataIndex.PROGRESSION, new ProgressionData());
   }
 
   default void addAdditionalProgressionData(CompoundTag compoundTag) {
-    ProgressionData progressionData = getProgressionData();
+    ProgressionData progressionData = this.getProgressionData();
     if (progressionData != null) {
       progressionData.encode(compoundTag);
     }

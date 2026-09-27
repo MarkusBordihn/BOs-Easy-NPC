@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.mixin.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.SlimeRenderer;
 import net.minecraft.world.entity.monster.Slime;
 import org.spongepowered.asm.mixin.Mixin;
@@ -40,9 +41,9 @@ public class EasyNPCSlimeRendererMixin {
       float entityYaw,
       float partialTicks,
       PoseStack poseStack,
-      net.minecraft.client.renderer.MultiBufferSource buffer,
+      MultiBufferSource buffer,
       int packedLight,
-      CallbackInfo ci) {
+      CallbackInfo callbackInfo) {
     if (entity instanceof EasyNPC<?>) {
       entity.yBodyRot = entity.yHeadRot;
       entity.yBodyRotO = entity.yHeadRotO;

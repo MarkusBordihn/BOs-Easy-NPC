@@ -7,11 +7,8 @@ import de.markusbordihn.easynpc.client.model.ModModelLayers;
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.layers.EasyNPCItemAttachmentLayer;
 import de.markusbordihn.easynpc.client.renderer.entity.layers.SkullHeadRenderLayer;
-import de.markusbordihn.easynpc.client.texture.CustomTextureManager;
-import de.markusbordihn.easynpc.client.texture.RemoteTextureManager;
 import de.markusbordihn.easynpc.data.skin.variant.HumanoidSkinVariant;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
 import net.minecraft.client.model.HumanoidArmorModel;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.model.geom.ModelLayers;
@@ -84,21 +81,14 @@ public class PlayerRenderer<T extends PathfinderMob> extends LivingEntityRendere
   @Override
   public ResourceLocation getTextureLocation(T entity) {
     if (entity instanceof EasyNPC<?> easyNPC) {
-      return getEntityPlayerTexture(easyNPC);
+      return this.getEntityPlayerTexture(easyNPC);
     }
 
     return DEFAULT_TEXTURE;
   }
 
+  @Override
   public ResourceLocation getDefaultTexture() {
     return DEFAULT_TEXTURE;
-  }
-
-  public ResourceLocation getCustomTexture(SkinDataCapable<?> entity) {
-    return CustomTextureManager.getOrCreateTextureWithDefault(entity, getDefaultTexture());
-  }
-
-  public ResourceLocation getRemoteTexture(SkinDataCapable<?> entity) {
-    return RemoteTextureManager.getOrCreateTextureWithDefault(entity, getDefaultTexture());
   }
 }

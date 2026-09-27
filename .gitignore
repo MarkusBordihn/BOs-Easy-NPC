@@ -30,14 +30,13 @@ npm-debug.log
 forge*changelog.txt
 
 # VSCode
-.vscode/launch.json
-.vscode/settings.json
+.vscode
 
 # Ghost Reference Index (local knowledge base sync)
 .ghost-reference-index
 
-# Template placeholder files
-put_your_*_here
+# Client Runtime Interface Toolkit
+.client_runtime_interface_toolkit
 
 # Raw NPC Types (auto-generated)
 /core/Common/src/main/java/de/markusbordihn/easynpc/api/npc/raw/*Raw.java
@@ -49,9 +48,12 @@ put_your_*_here
 # Other
 .DS_Store
 generated
+logs
 *.bak
 *.clip
+*.lock
 *.log
 *.log.gz
+*.local.md
 *.patch.txt
 *.stackdump

@@ -35,8 +35,14 @@ public class ProgressionLevelMap {
   private ProgressionLevelMap() {}
 
   public static int getExperienceForLevel(int level) {
-    if (level <= MIN_LEVEL) return XP_FOR_LEVEL[MIN_LEVEL];
-    if (level >= MAX_LEVEL) return XP_FOR_LEVEL[MAX_LEVEL];
+    if (level <= MIN_LEVEL) {
+      return XP_FOR_LEVEL[MIN_LEVEL];
+    }
+
+    if (level >= MAX_LEVEL) {
+      return XP_FOR_LEVEL[MAX_LEVEL];
+    }
+
     return XP_FOR_LEVEL[level];
   }
 
@@ -49,15 +55,24 @@ public class ProgressionLevelMap {
   }
 
   private static int calculateXpForLevel(int level) {
-    if (level <= 1) return 1;
+    if (level <= 1) {
+      return 1;
+    }
+
     return (int) (Math.pow(level, 2.5) + (level * 10));
   }
 
   public static int getLevelForExperience(int experience) {
-    if (experience <= XP_FOR_LEVEL[MIN_LEVEL]) return MIN_LEVEL;
-    for (int level = MIN_LEVEL; level <= MAX_LEVEL; level++) {
-      if (experience < XP_FOR_LEVEL[level]) return level - 1;
+    if (experience <= XP_FOR_LEVEL[MIN_LEVEL]) {
+      return MIN_LEVEL;
     }
+
+    for (int level = MIN_LEVEL; level <= MAX_LEVEL; level++) {
+      if (experience < XP_FOR_LEVEL[level]) {
+        return level - 1;
+      }
+    }
+
     return MAX_LEVEL;
   }
 
@@ -66,7 +81,10 @@ public class ProgressionLevelMap {
   }
 
   public static float getProgressPercentageToNextLevel(int experience, int level) {
-    if (level >= MAX_LEVEL) return 100.0f;
+    if (level >= MAX_LEVEL) {
+      return 100.0f;
+    }
+
     int currentLevelXP = XP_FOR_LEVEL[level];
     int nextLevelXP = XP_FOR_LEVEL[level + 1];
     int progress = experience - currentLevelXP;

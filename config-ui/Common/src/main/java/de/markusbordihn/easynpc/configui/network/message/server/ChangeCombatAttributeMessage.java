@@ -36,8 +36,7 @@ public record ChangeCombatAttributeMessage(
     CombatAttributeType attributeType,
     ValueType valueType,
     boolean booleanValue,
-    double doubleValue,
-    int integerValue)
+    double doubleValue)
     implements NetworkMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
@@ -45,12 +44,12 @@ public record ChangeCombatAttributeMessage(
 
   public ChangeCombatAttributeMessage(
       final UUID uuid, final CombatAttributeType attributeType, final Boolean value) {
-    this(uuid, attributeType, ValueType.BOOLEAN, value, 0.0d, 0);
+    this(uuid, attributeType, ValueType.BOOLEAN, value, 0.0d);
   }
 
   public ChangeCombatAttributeMessage(
       final UUID uuid, final CombatAttributeType attributeType, final Double value) {
-    this(uuid, attributeType, ValueType.DOUBLE, false, value, 0);
+    this(uuid, attributeType, ValueType.DOUBLE, false, value);
   }
 
   public static ChangeCombatAttributeMessage create(final FriendlyByteBuf buffer) {
@@ -59,8 +58,7 @@ public record ChangeCombatAttributeMessage(
         NetworkMessageRecord.readEnum(buffer, CombatAttributeType.class),
         NetworkMessageRecord.readEnum(buffer, ValueType.class),
         buffer.readBoolean(),
-        buffer.readDouble(),
-        buffer.readInt());
+        buffer.readDouble());
   }
 
   @Override
@@ -70,7 +68,6 @@ public record ChangeCombatAttributeMessage(
     buffer.writeEnum(this.valueType);
     buffer.writeBoolean(this.booleanValue);
     buffer.writeDouble(this.doubleValue);
-    buffer.writeInt(this.integerValue);
   }
 
   @Override
@@ -80,8 +77,13 @@ public record ChangeCombatAttributeMessage(
 
   @Override
   public void handleServer(final ServerPlayer serverPlayer) {
-    EasyNPC<?> easyNPC = getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
+    EasyNPC<?> easyNPC = this.getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
     if (easyNPC == null) {
+      return;
+    }
+
+    if (this.attributeType == null || this.valueType == null) {
+      log.error("Invalid combat attribute for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
@@ -90,13 +92,16 @@ public record ChangeCombatAttributeMessage(
       return;
     }
 
-    switch (valueType) {
-      case BOOLEAN -> AttributeHandler.setCombatAttribute(easyNPC, attributeType, booleanValue);
-      case DOUBLE -> AttributeHandler.setCombatAttribute(easyNPC, attributeType, doubleValue);
+    switch (this.valueType) {
+      case BOOLEAN ->
+          AttributeHandler.setCombatAttribute(easyNPC, this.attributeType, this.booleanValue);
+      case DOUBLE ->
+          AttributeHandler.setCombatAttribute(easyNPC, this.attributeType, this.doubleValue);
       default ->
           log.error(
-              "Invalid combat value type for {} for {} from {}",
-              attributeType,
+              "Invalid combat value type {} for {} for {} from {}",
+              this.valueType,
+              this.attributeType,
               easyNPC,
               serverPlayer);
     }

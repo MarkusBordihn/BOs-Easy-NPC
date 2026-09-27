@@ -116,19 +116,22 @@ public class PoseCommand extends Command {
       return setPose(context, easyNPC, resourceLocation);
     }
 
-    BlockPos targetPos = new BlockPos((int) position.x, (int) position.y, (int) position.z);
-    MoveToPositionGoal<E> moveGoal =
+    BlockPos targetPosition = new BlockPos((int) position.x, (int) position.y, (int) position.z);
+    MoveToPositionGoal<E> moveToPositionGoal =
         new MoveToPositionGoal<>(
-            (E) easyNPC, targetPos, 1.0, () -> ModelPoseAPI.setPose(easyNPC, resourceLocation));
+            (E) easyNPC,
+            targetPosition,
+            1.0,
+            () -> ModelPoseAPI.setPose(easyNPC, resourceLocation));
 
-    easyNPC.getEntityGoalSelector().addGoal(1, moveGoal);
+    easyNPC.getEntityGoalSelector().addGoal(1, moveToPositionGoal);
 
     return sendSuccessMessage(
         context,
         "NPC "
             + easyNPC.getEntityUUID()
             + " moving to "
-            + targetPos
+            + targetPosition
             + " then setting pose "
             + resourceLocation
             + " !");
