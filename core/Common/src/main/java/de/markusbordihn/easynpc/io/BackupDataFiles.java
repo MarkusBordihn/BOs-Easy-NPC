@@ -35,13 +35,11 @@ public class BackupDataFiles {
   private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
   public static void registerBackupData() {
-    // Prepare backup data folder
     Path backupFolder = DataFileHandler.getBackupFolder();
     if (backupFolder == null) {
       return;
     }
 
-    // Prepare backup data folder for today
     Path backupDataFolder = getBackupDataFolder();
     if (backupDataFolder == null) {
       log.error("Backup data folder is null, unable to register backup data!");

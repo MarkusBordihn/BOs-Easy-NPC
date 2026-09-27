@@ -24,7 +24,6 @@ import de.markusbordihn.easynpc.data.action.ActionEventType;
 import de.markusbordihn.easynpc.data.display.DisplayAttributeType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventDataCapable;
-import de.markusbordihn.easynpc.entity.easynpc.data.ConfigurationDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.DisplayAttributeDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.OwnerDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
@@ -51,37 +50,30 @@ public class InteractionHandler {
     if (!(player instanceof ServerPlayer serverPlayer) || hand != InteractionHand.MAIN_HAND) {
       return InteractionResult.PASS;
     }
-    ConfigurationDataCapable<?> configurationData = easyNPC.getEasyNPCConfigurationData();
-    OwnerDataCapable<?> ownerData = easyNPC.getEasyNPCOwnerData();
-    boolean isOwnerOrCreative = serverPlayer.isCreative() || ownerData.isNPCOwner(serverPlayer);
 
-    // Item based actions.
     ItemStack handItemStack = player.getItemInHand(hand);
     if (!handItemStack.isEmpty()) {
       Item handItem = handItemStack.getItem();
 
-      // Handle Easy NPC Wand
       Item easyNPCWand = ItemUtils.getEasyNPCWandItem();
       if (handItem.equals(easyNPCWand)) {
         return InteractionResult.PASS;
       }
 
-      // Handle Move Easy NPC Item
       Item moveEasyNPCItem = ItemUtils.getMoveEasyNPCItem();
       if (handItem.equals(moveEasyNPCItem)) {
         return InteractionResult.PASS;
       }
 
-      // Handle Easy NPC Preset Items
       if (handItem.equals(ItemUtils.getEasyNPCPresetEmptyItem())
           || handItem.equals(ItemUtils.getEasyNPCPresetItem())) {
         return InteractionResult.PASS;
       }
 
-      // Handle Armourer's Workshop items like the NPC wand.
       if (Constants.MOD_ARMOURERS_WORKSHOP_ID.equals(
           BuiltInRegistries.ITEM.getKey(handItem).getNamespace())) {
-        if (isOwnerOrCreative) {
+        OwnerDataCapable<?> ownerData = easyNPC.getEasyNPCOwnerData();
+        if (serverPlayer.isCreative() || ownerData.isNPCOwner(serverPlayer)) {
           SkinDataCapable<?> skinData = easyNPC.getEasyNPCSkinData();
           if (skinData.getSkinModel().hasArmourersWorkshopSupport()) {
             log.debug("Ignore event for Armourer's Workshop Item for {} ...", easyNPC);
@@ -103,7 +95,6 @@ public class InteractionHandler {
       }
     }
 
-    // Block interaction when the NPC is invisible to the player and configured to do so.
     DisplayAttributeDataCapable<?> displayAttributeData = easyNPC.getEasyNPCDisplayAttributeData();
     boolean blockWhenInvisible =
         displayAttributeData != null
@@ -116,7 +107,6 @@ public class InteractionHandler {
       return InteractionResult.PASS;
     }
 
-    // Handle action event data.
     ActionEventDataCapable<?> actionEventData = easyNPC.getEasyNPCActionEventData();
     if (actionEventData != null) {
       actionEventData.handleActionEvent(ActionEventType.ON_INTERACTION, serverPlayer);

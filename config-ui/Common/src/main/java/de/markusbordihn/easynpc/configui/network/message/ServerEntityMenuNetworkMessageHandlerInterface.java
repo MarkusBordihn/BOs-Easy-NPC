@@ -45,7 +45,7 @@ public interface ServerEntityMenuNetworkMessageHandlerInterface {
   }
 
   default void openConfiguration(UUID uuid, ConfigurationType configurationType) {
-    openConfiguration(uuid, configurationType, 0);
+    this.openConfiguration(uuid, configurationType, 0);
   }
 
   default void changeName(

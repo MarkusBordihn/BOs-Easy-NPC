@@ -69,7 +69,6 @@ public class AsyncTextureLoader {
     rateLimitScheduler.scheduleAtFixedRate(
         AsyncTextureLoader::processQueue, 0, 100, TimeUnit.MILLISECONDS);
 
-    // Register shutdown hook to clean up executor services
     Runtime.getRuntime()
         .addShutdownHook(
             new Thread(
@@ -126,7 +125,6 @@ public class AsyncTextureLoader {
       return existing;
     }
 
-    // Asynchronously get the player texture URL
     CompletableFuture.supplyAsync(
             () -> PlayersUtils.getUserTexture(playerUUID), textureLoadExecutor)
         .thenAccept(
@@ -201,13 +199,11 @@ public class AsyncTextureLoader {
         return;
       }
 
-      // Poll the next request from the queue
       TextureLoadRequest request = downloadQueue.poll();
       if (request == null) {
         return;
       }
 
-      // Update last download time and start the download task
       lastDownloadTime = now;
       CompletableFuture.supplyAsync(
               () -> loadRemoteTexture(request.key, request.url, request.targetDirectory),

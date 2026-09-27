@@ -51,16 +51,14 @@ public class ObjectiveHandler {
       return false;
     }
 
-    // Add or update custom objective.
     if (!objectiveData.addOrUpdateCustomObjective(objectiveDataEntry)) {
       log.error("[{}] Error adding or updating custom objective!", easyNPC);
       return false;
     }
 
-    // Show details, if debug is enabled.
     if (log.isDebugEnabled()) {
-      logObjectiveGoals(objectiveData.getEntityGoalSelector().getAvailableGoals());
-      logObjectiveTargets(objectiveData.getEntityTargetSelector().getAvailableGoals());
+      logGoals("Goals", objectiveData.getEntityGoalSelector().getAvailableGoals());
+      logGoals("Targets", objectiveData.getEntityTargetSelector().getAvailableGoals());
     }
 
     return true;
@@ -80,32 +78,23 @@ public class ObjectiveHandler {
       return false;
     }
 
-    // Remove custom objective.
     if (!objectiveData.removeCustomObjective(objectiveDataEntry)) {
       log.error("[{}] Error removing custom objective!", easyNPC);
       return false;
     }
 
-    // Show details, if debug is enabled.
     if (log.isDebugEnabled()) {
-      logObjectiveGoals(objectiveData.getEntityGoalSelector().getAvailableGoals());
-      logObjectiveTargets(objectiveData.getEntityTargetSelector().getAvailableGoals());
+      logGoals("Goals", objectiveData.getEntityGoalSelector().getAvailableGoals());
+      logGoals("Targets", objectiveData.getEntityTargetSelector().getAvailableGoals());
     }
 
     return true;
   }
 
-  public static void logObjectiveGoals(Set<WrappedGoal> goals) {
+  private static void logGoals(String label, Set<WrappedGoal> goals) {
     List<Goal> unwrappedGoals = getUnwrappedGoals(goals);
-    if (goals != null && !goals.isEmpty() && !unwrappedGoals.isEmpty()) {
-      log.debug("Goals: {}", unwrappedGoals);
-    }
-  }
-
-  public static void logObjectiveTargets(Set<WrappedGoal> goals) {
-    List<Goal> unwrappedGoals = getUnwrappedGoals(goals);
-    if (goals != null && !goals.isEmpty() && !unwrappedGoals.isEmpty()) {
-      log.debug("Targets: {}", unwrappedGoals);
+    if (!unwrappedGoals.isEmpty()) {
+      log.debug("{}: {}", label, unwrappedGoals);
     }
   }
 
@@ -113,6 +102,7 @@ public class ObjectiveHandler {
     if (goals == null || goals.isEmpty()) {
       return new ArrayList<>();
     }
+
     List<Goal> unwrappedGoals = new ArrayList<>();
     for (WrappedGoal wrappedGoal : goals) {
       unwrappedGoals.add(wrappedGoal.getGoal());

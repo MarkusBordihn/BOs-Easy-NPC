@@ -19,4 +19,9 @@
 
 package de.markusbordihn.easynpc.data.attribute;
 
-public interface EntityAttributesInterface {}
+import net.minecraft.nbt.CompoundTag;
+
+public interface EntityAttributesInterface {
+
+  CompoundTag encode(CompoundTag compoundTag);
+}

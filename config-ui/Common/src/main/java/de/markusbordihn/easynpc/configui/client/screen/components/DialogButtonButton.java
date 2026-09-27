@@ -41,12 +41,12 @@ public class DialogButtonButton extends SpriteButton {
 
   private final boolean hasCondition;
 
-  public DialogButtonButton(int left, int top, int width, String label, OnPress onPress) {
+  public DialogButtonButton(int left, int top, int width, Component label, OnPress onPress) {
     this(left, top, width, label, false, onPress);
   }
 
   public DialogButtonButton(
-      int left, int top, int width, String label, boolean hasCondition, OnPress onPress) {
+      int left, int top, int width, Component label, boolean hasCondition, OnPress onPress) {
     super(
         left,
         top,

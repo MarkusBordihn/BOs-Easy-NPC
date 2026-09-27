@@ -29,7 +29,6 @@ import de.markusbordihn.easynpc.handler.PresetHandler;
 import de.markusbordihn.easynpc.io.DataFileHandler;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.server.level.ServerPlayer;
 
 class PresetExportCommand extends Command {
 
@@ -116,9 +115,8 @@ class PresetExportCommand extends Command {
       return Command.FAILURE;
     }
 
-    ServerPlayer serverPlayer;
     try {
-      serverPlayer = context.getPlayerOrException();
+      context.getPlayerOrException();
     } catch (CommandSyntaxException e) {
       return sendFailureMessage(context, "This command can only be executed by a player!");
     }
@@ -129,6 +127,7 @@ class PresetExportCommand extends Command {
     if (presetFileName == null) {
       return sendFailureMessage(context, "Invalid preset file name!");
     }
+
     return sendSuccessMessage(
         context,
         "Exporting EasyNPC "

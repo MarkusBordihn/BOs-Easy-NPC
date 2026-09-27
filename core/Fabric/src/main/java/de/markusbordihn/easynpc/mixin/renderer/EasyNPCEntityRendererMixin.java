@@ -50,19 +50,19 @@ public class EasyNPCEntityRendererMixin<T extends Entity, S extends EntityRender
       double x,
       double y,
       double z,
-      CallbackInfoReturnable<Boolean> cir) {
+      CallbackInfoReturnable<Boolean> callbackInfoReturnable) {
     Boolean shouldRender = EasyNPCRenderVisibility.resolveShouldRenderOverride(entity);
     if (shouldRender != null) {
-      cir.setReturnValue(shouldRender);
+      callbackInfoReturnable.setReturnValue(shouldRender);
     }
   }
 
   @Inject(method = "getBlockLightLevel", at = @At("HEAD"), cancellable = true)
   private void onGetBlockLightLevel(
-      T entity, BlockPos blockPos, CallbackInfoReturnable<Integer> cir) {
+      T entity, BlockPos blockPos, CallbackInfoReturnable<Integer> callbackInfoReturnable) {
     if (entity instanceof EasyNPC<?> easyNPC
         && easyNPC.getEasyNPCDisplayAttributeData() instanceof DisplayAttributeDataCapable<?>) {
-      cir.setReturnValue(
+      callbackInfoReturnable.setReturnValue(
           EasyNPCModel.getEntityLightLevel(
               easyNPC, easyNPC.getEasyNPCDisplayAttributeData(), blockPos));
     }
@@ -74,10 +74,10 @@ public class EasyNPCEntityRendererMixin<T extends Entity, S extends EntityRender
       PoseStack poseStack,
       SubmitNodeCollector submitNodeCollector,
       CameraRenderState cameraRenderState,
-      CallbackInfo ci) {
+      CallbackInfo callbackInfo) {
     if (renderState instanceof EasyNPCRenderStateExtension) {
       NameTagRenderer.submit(renderState, poseStack, submitNodeCollector, cameraRenderState);
-      ci.cancel();
+      callbackInfo.cancel();
     }
   }
 
@@ -89,7 +89,7 @@ public class EasyNPCEntityRendererMixin<T extends Entity, S extends EntityRender
       PoseStack poseStack,
       SubmitNodeCollector submitNodeCollector,
       CameraRenderState cameraRenderState,
-      CallbackInfo ci) {
+      CallbackInfo callbackInfo) {
     SpeechBubbleRenderer.submit(renderState, poseStack, submitNodeCollector, cameraRenderState);
   }
 }

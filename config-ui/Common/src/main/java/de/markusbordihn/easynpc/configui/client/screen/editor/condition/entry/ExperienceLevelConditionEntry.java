@@ -44,7 +44,7 @@ public class ExperienceLevelConditionEntry extends ConditionEntryWidget {
 
   @Override
   public void init(int editorLeft, int editorTop) {
-    boolean hasData = hasConditionData(ConditionType.EXPERIENCE_LEVEL);
+    boolean hasData = this.hasConditionData(ConditionType.EXPERIENCE_LEVEL);
     this.operationTypeButton =
         this.addComparisonOperationButton(
             editorLeft + 110, editorTop, hasData, ConditionOperationType.GREATER_THAN_OR_EQUALS);

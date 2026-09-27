@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.data.action;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -40,9 +41,9 @@ class ActionUtilsTest {
   }
 
   @Test
+  @DisplayName("Should not prefix a slash to plain commands")
   void testParseAction_simpleCommand() {
     String result = ActionUtils.parseAction("say hello", null, null);
-    // Returns original output which doesn't have the slash added
     assertEquals("say hello", result);
   }
 

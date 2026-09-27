@@ -40,7 +40,6 @@ public class OrcModel<S extends HumanoidRenderState> extends HumanoidModel<S> {
     MeshDefinition meshDefinition = HumanoidModel.createMesh(CubeDeformation.NONE, 0F);
     PartDefinition partDefinition = meshDefinition.getRoot();
 
-    // Head
     PartDefinition head =
         partDefinition.addOrReplaceChild(
             "head",
@@ -55,7 +54,6 @@ public class OrcModel<S extends HumanoidRenderState> extends HumanoidModel<S> {
                 .addBox(-1.0F, -4.0F, -5.0F, 2.0F, 2.0F, 1.0F, new CubeDeformation(0.0F)),
             PartPose.offset(0.0F, 0.0F, 0.0F));
 
-    // Ears
     PartDefinition ears =
         head.addOrReplaceChild("ears", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
     ears.addOrReplaceChild(
@@ -71,7 +69,6 @@ public class OrcModel<S extends HumanoidRenderState> extends HumanoidModel<S> {
             .addBox(-4.0F, -5.5F, 0.0F, 4.0F, 11.0F, 0.0F, new CubeDeformation(0.0F)),
         PartPose.offsetAndRotation(-4.0F, -5.5F, -0.5F, 0.0F, 0.3927F, 0.0F));
 
-    // Body
     partDefinition.addOrReplaceChild(
         "body",
         CubeListBuilder.create()
@@ -81,7 +78,6 @@ public class OrcModel<S extends HumanoidRenderState> extends HumanoidModel<S> {
             .addBox(-4.0F, 0.0F, -2.5F, 8.0F, 18.0F, 5.0F, new CubeDeformation(0.5F)),
         PartPose.offset(0.0F, 0.0F, 0.0F));
 
-    // Arms
     partDefinition.addOrReplaceChild(
         "left_arm",
         CubeListBuilder.create()
@@ -100,7 +96,6 @@ public class OrcModel<S extends HumanoidRenderState> extends HumanoidModel<S> {
             .addBox(-3.0F, -2.5F, -2.5F, 4.0F, 8.0F, 5.0F, new CubeDeformation(0.0F)),
         PartPose.offset(-5.0F, 2.0F, 0.0F));
 
-    // Legs
     partDefinition.addOrReplaceChild(
         "left_leg",
         CubeListBuilder.create()

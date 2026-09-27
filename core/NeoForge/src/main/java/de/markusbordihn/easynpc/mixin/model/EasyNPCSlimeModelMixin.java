@@ -43,7 +43,7 @@ public class EasyNPCSlimeModelMixin<T extends EntityRenderState>
   }
 
   @Inject(method = "<init>(Lnet/minecraft/client/model/geom/ModelPart;)V", at = @At("TAIL"))
-  private void easyNpcModel(ModelPart modelPart, CallbackInfo callbackInfo) {
+  private void easyNPC$initModelManager(ModelPart modelPart, CallbackInfo callbackInfo) {
     this.easyNPC$modelManager =
         new EasyNPCModelManager(modelPart).defineModelPart(ModelPartType.BODY, "cube");
   }

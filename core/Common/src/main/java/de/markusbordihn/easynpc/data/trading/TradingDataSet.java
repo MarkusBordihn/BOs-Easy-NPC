@@ -61,7 +61,7 @@ public class TradingDataSet {
   private TradingType tradingType = DEFAULT_TRADING_TYPE;
   private int maxUses = DEFAULT_MAX_USES;
   private int rewardedXP = DEFAULT_REWARDED_XP;
-  private int resetsEveryMin = DEFAULT_RESETS_EVERY_MIN;
+  private int resetsEveryMinutes = DEFAULT_RESETS_EVERY_MIN;
   private long lastReset = DEFAULT_LAST_RESET;
 
   public TradingDataSet() {}
@@ -99,11 +99,11 @@ public class TradingDataSet {
   }
 
   public int getResetsEveryMin() {
-    return this.resetsEveryMin;
+    return this.resetsEveryMinutes;
   }
 
-  public void setResetsEveryMin(int resetsEveryMin) {
-    this.resetsEveryMin = resetsEveryMin;
+  public void setResetsEveryMin(int resetsEveryMinutes) {
+    this.resetsEveryMinutes = resetsEveryMinutes;
   }
 
   public long getLastReset() {
@@ -143,7 +143,7 @@ public class TradingDataSet {
     CompoundTag tradingData = compoundTag.getCompoundOrEmpty(DATA_TRADING_DATA_SET_TAG);
     this.maxUses = tradingData.getInt(DATA_TRADING_MAX_USES_TAG).orElse(DEFAULT_MAX_USES);
     this.rewardedXP = tradingData.getInt(DATA_TRADING_REWARDED_XP_TAG).orElse(DEFAULT_REWARDED_XP);
-    this.resetsEveryMin =
+    this.resetsEveryMinutes =
         tradingData.getInt(DATA_TRADING_RESETS_EVERY_MIN_TAG).orElse(DEFAULT_RESETS_EVERY_MIN);
     this.lastReset =
         tradingData.contains(DATA_TRADING_LAST_RESET_TAG)
@@ -174,8 +174,8 @@ public class TradingDataSet {
     if (this.rewardedXP != DEFAULT_REWARDED_XP) {
       tradingData.putInt(DATA_TRADING_REWARDED_XP_TAG, this.rewardedXP);
     }
-    if (this.resetsEveryMin != DEFAULT_RESETS_EVERY_MIN) {
-      tradingData.putInt(DATA_TRADING_RESETS_EVERY_MIN_TAG, this.resetsEveryMin);
+    if (this.resetsEveryMinutes != DEFAULT_RESETS_EVERY_MIN) {
+      tradingData.putInt(DATA_TRADING_RESETS_EVERY_MIN_TAG, this.resetsEveryMinutes);
     }
     tradingData.putLong(DATA_TRADING_LAST_RESET_TAG, this.lastReset);
     if (this.tradingType != DEFAULT_TRADING_TYPE) {

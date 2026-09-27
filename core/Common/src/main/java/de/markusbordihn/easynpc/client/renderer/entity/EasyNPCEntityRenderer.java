@@ -53,24 +53,20 @@ public interface EasyNPCEntityRenderer {
 
   default Identifier getTextureLocationWithConfig(final LivingEntity entity) {
 
-    // Hide original model if custom model replaces it or if explicitly hidden
-    OriginalModelConfig originalConfig = getOriginalModelConfig();
-    if (getCustomModelConfig().shouldHideOriginal() || originalConfig.isHidden()) {
-      return getTransparentTexture();
+    OriginalModelConfig originalConfig = this.getOriginalModelConfig();
+    if (this.getCustomModelConfig().shouldHideOriginal() || originalConfig.isHidden()) {
+      return this.getTransparentTexture();
     }
 
-    // Use custom texture from original model config if available
     if (originalConfig.hasCustomTexture()) {
       return originalConfig.getCustomTexture();
     }
 
-    // Use EasyNPC skin system if entity is an EasyNPC
     if (entity instanceof EasyNPC<?> easyNPC) {
-      return getEntityTexture(easyNPC);
+      return this.getEntityTexture(easyNPC);
     }
 
-    // Fall back to default texture
-    return getDefaultTexture();
+    return this.getDefaultTexture();
   }
 
   default boolean hasEasyNPCRenderState(LivingEntityRenderState livingEntityRenderState) {
@@ -78,19 +74,19 @@ public interface EasyNPCEntityRenderer {
   }
 
   default Identifier getTextureByVariant(final Enum<?> variant) {
-    return LivingEntityTextureManager.getTextureByVariant(variant, getDefaultTexture());
+    return LivingEntityTextureManager.getTextureByVariant(variant, this.getDefaultTexture());
   }
 
   default Identifier getCustomTexture(final SkinDataCapable<?> entity) {
-    return LivingEntityTextureManager.getCustomTexture(entity, getDefaultTexture());
+    return LivingEntityTextureManager.getCustomTexture(entity, this.getDefaultTexture());
   }
 
   default Identifier getPlayerTexture(final SkinDataCapable<?> entity) {
-    return LivingEntityTextureManager.getPlayerTexture(entity, getDefaultTexture());
+    return LivingEntityTextureManager.getPlayerTexture(entity, this.getDefaultTexture());
   }
 
   default Identifier getRemoteTexture(final SkinDataCapable<?> entity) {
-    return LivingEntityTextureManager.getRemoteTexture(entity, getDefaultTexture());
+    return LivingEntityTextureManager.getRemoteTexture(entity, this.getDefaultTexture());
   }
 
   default EasyNPC<?> getEasyNPC(final LivingEntityRenderState livingEntityRenderState) {
@@ -98,42 +94,38 @@ public interface EasyNPCEntityRenderer {
   }
 
   default Identifier getTextureFromRenderState(final LivingEntityRenderState renderState) {
-    return EasyNPCLivingEntityRenderer.getTexture(renderState, getDefaultTexture());
+    return EasyNPCLivingEntityRenderer.getTexture(renderState, this.getDefaultTexture());
   }
 
   default Identifier getTextureFromRenderStateWithConfig(
       final LivingEntityRenderState renderState) {
-    // Hide original model if custom model replaces it or if explicitly hidden
-    OriginalModelConfig originalConfig = getOriginalModelConfig();
-    if (getCustomModelConfig().shouldHideOriginal() || originalConfig.isHidden()) {
-      return getTransparentTexture();
+    OriginalModelConfig originalConfig = this.getOriginalModelConfig();
+    if (this.getCustomModelConfig().shouldHideOriginal() || originalConfig.isHidden()) {
+      return this.getTransparentTexture();
     }
 
-    // Use custom texture from original model config if available
     if (originalConfig.hasCustomTexture()) {
       return originalConfig.getCustomTexture();
     }
 
-    // Use EasyNPC skin system if render state contains EasyNPC data
-    if (hasEasyNPCRenderState(renderState)) {
-      return getTextureFromRenderState(renderState);
+    if (this.hasEasyNPCRenderState(renderState)) {
+      return this.getTextureFromRenderState(renderState);
     }
 
-    // Fall back to default texture
-    return getDefaultTexture();
+    return this.getDefaultTexture();
   }
 
   default Identifier getEntityTexture(final EasyNPC<?> easyNPC) {
-    return LivingEntityTextureManager.getEntityTexture(easyNPC, getDefaultTexture());
+    return LivingEntityTextureManager.getEntityTexture(easyNPC, this.getDefaultTexture());
   }
 
   default Identifier getEntityPlayerTexture(final EasyNPC<?> easyNPC) {
-    return LivingEntityTextureManager.getEntityPlayerTexture(easyNPC, getDefaultTexture());
+    return LivingEntityTextureManager.getEntityPlayerTexture(easyNPC, this.getDefaultTexture());
   }
 
   default Identifier getEntityTextureWithDefaultCallback(
       final EasyNPC<?> easyNPC, final Supplier<Identifier> defaultTextureSupplier) {
     return LivingEntityTextureManager.getEntityTextureWithDefaultCallback(
-        easyNPC, getDefaultTexture(), defaultTextureSupplier);
+        easyNPC, this.getDefaultTexture(), defaultTextureSupplier);
   }
 }

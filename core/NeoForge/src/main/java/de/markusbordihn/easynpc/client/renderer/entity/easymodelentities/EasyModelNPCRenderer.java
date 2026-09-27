@@ -541,6 +541,7 @@ public class EasyModelNPCRenderer<E extends PathfinderMob>
     if (partPose == null) {
       return;
     }
+
     poseStack.pushPose();
     partPose.applyTo(poseStack);
     EasyModelVec3f localOffset = anchor.localOffset();

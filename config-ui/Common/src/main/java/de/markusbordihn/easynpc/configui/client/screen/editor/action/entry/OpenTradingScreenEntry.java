@@ -18,9 +18,7 @@ public class OpenTradingScreenEntry extends ActionEntryWidget {
   }
 
   @Override
-  public void init(int editorLeft, int editorTop) {
-    // No additional fields required for this action
-  }
+  public void init(int editorLeft, int editorTop) {}
 
   @Override
   public void render(GuiGraphicsExtractor guiGraphics, int editorLeft, int editorTop) {
@@ -40,6 +38,6 @@ public class OpenTradingScreenEntry extends ActionEntryWidget {
 
   @Override
   public boolean hasChanged() {
-    return !hasActionData(ActionDataType.OPEN_TRADING_SCREEN);
+    return !this.hasActionData(ActionDataType.OPEN_TRADING_SCREEN);
   }
 }

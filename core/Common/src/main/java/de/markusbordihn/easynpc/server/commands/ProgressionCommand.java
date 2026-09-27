@@ -34,14 +34,16 @@ import net.minecraft.server.permissions.Permissions;
 public class ProgressionCommand extends Command {
 
   private static final String LEVEL_ARG = "level";
-  private static final String XP_ARG = "xp";
+  private static final String EXPERIENCE_ARG = "xp";
   private static final String ENABLED_ARG = "enabled";
 
   private ProgressionCommand() {}
 
   public static ArgumentBuilder<CommandSourceStack, ?> register() {
     return Commands.literal("progression")
-        .requires(cs -> cs.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER))
+        .requires(
+            commandSourceStack ->
+                commandSourceStack.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER))
         .then(
             Commands.literal("get")
                 .then(
@@ -74,7 +76,8 @@ public class ProgressionCommand extends Command {
                         .then(
                             Commands.literal("xp")
                                 .then(
-                                    Commands.argument(XP_ARG, IntegerArgumentType.integer(1))
+                                    Commands.argument(
+                                            EXPERIENCE_ARG, IntegerArgumentType.integer(1))
                                         .executes(
                                             context ->
                                                 setExperience(
@@ -82,7 +85,7 @@ public class ProgressionCommand extends Command {
                                                     EasyNPCArgument.getEntityWithAccess(
                                                         context, NPC_TARGET_ARG),
                                                     IntegerArgumentType.getInteger(
-                                                        context, XP_ARG)))))))
+                                                        context, EXPERIENCE_ARG)))))))
         .then(
             Commands.literal("add")
                 .then(
@@ -90,7 +93,7 @@ public class ProgressionCommand extends Command {
                         .then(
                             Commands.literal("xp")
                                 .then(
-                                    Commands.argument(XP_ARG, IntegerArgumentType.integer())
+                                    Commands.argument(EXPERIENCE_ARG, IntegerArgumentType.integer())
                                         .executes(
                                             context ->
                                                 addExperience(
@@ -98,7 +101,7 @@ public class ProgressionCommand extends Command {
                                                     EasyNPCArgument.getEntityWithAccess(
                                                         context, NPC_TARGET_ARG),
                                                     IntegerArgumentType.getInteger(
-                                                        context, XP_ARG)))))))
+                                                        context, EXPERIENCE_ARG)))))))
         .then(
             Commands.literal("scaling")
                 .then(
@@ -115,7 +118,9 @@ public class ProgressionCommand extends Command {
   }
 
   private static int getProgression(CommandSourceStack context, EasyNPC<?> easyNPC) {
-    if (easyNPC == null) return 0;
+    if (easyNPC == null) {
+      return 0;
+    }
 
     ProgressionDataCapable<?> progressionData = easyNPC.getEasyNPCProgressionData();
     if (progressionData == null) {
@@ -136,7 +141,9 @@ public class ProgressionCommand extends Command {
   }
 
   private static int setLevel(CommandSourceStack context, EasyNPC<?> easyNPC, int level) {
-    if (easyNPC == null) return 0;
+    if (easyNPC == null) {
+      return 0;
+    }
 
     ProgressionDataCapable<?> progressionData = easyNPC.getEasyNPCProgressionData();
     if (progressionData == null) {
@@ -153,7 +160,7 @@ public class ProgressionCommand extends Command {
             easyNPC, oldLevel, level, progressionData.getExperience()));
   }
 
-  private static int setExperience(CommandSourceStack context, EasyNPC<?> easyNPC, int xp) {
+  private static int setExperience(CommandSourceStack context, EasyNPC<?> easyNPC, int experience) {
     if (easyNPC == null) {
       return sendFailureMessage(context, "No NPC found for the given target");
     }
@@ -163,12 +170,13 @@ public class ProgressionCommand extends Command {
       return sendFailureMessage(context, "No progression data available for " + easyNPC);
     }
 
-    int oldXp = progressionData.getExperience();
+    int oldExperience = progressionData.getExperience();
     int oldLevel = progressionData.getExperienceLevel();
-    progressionData.setExperience(xp);
+    progressionData.setExperience(experience);
     int newLevel = progressionData.getExperienceLevel();
 
-    String message = String.format("%s XP changed from %d to %d", easyNPC, oldXp, xp);
+    String message =
+        String.format("%s XP changed from %d to %d", easyNPC, oldExperience, experience);
     if (oldLevel != newLevel) {
       message += String.format(" (Level: %d → %d)", oldLevel, newLevel);
     }
@@ -176,25 +184,28 @@ public class ProgressionCommand extends Command {
     return sendSuccessMessage(context, message);
   }
 
-  private static int addExperience(CommandSourceStack context, EasyNPC<?> easyNPC, int xpAmount) {
-    if (easyNPC == null) return 0;
+  private static int addExperience(
+      CommandSourceStack context, EasyNPC<?> easyNPC, int experienceAmount) {
+    if (easyNPC == null) {
+      return 0;
+    }
 
     ProgressionDataCapable<?> progressionData = easyNPC.getEasyNPCProgressionData();
     if (progressionData == null) {
       return sendFailureMessage(context, "No progression data available for " + easyNPC);
     }
 
-    int oldXp = progressionData.getExperience();
+    int oldExperience = progressionData.getExperience();
     int oldLevel = progressionData.getExperienceLevel();
-    progressionData.addExperience(xpAmount);
+    progressionData.addExperience(experienceAmount);
 
     String message =
         String.format(
             "%s %d XP to %s (%d → %d)",
-            xpAmount >= 0 ? "Added" : "Removed",
-            Math.abs(xpAmount),
+            experienceAmount >= 0 ? "Added" : "Removed",
+            Math.abs(experienceAmount),
             easyNPC,
-            oldXp,
+            oldExperience,
             progressionData.getExperience());
 
     int newLevel = progressionData.getExperienceLevel();
@@ -207,7 +218,9 @@ public class ProgressionCommand extends Command {
 
   private static int setAttributeScaling(
       CommandSourceStack context, EasyNPC<?> easyNPC, boolean enabled) {
-    if (easyNPC == null) return 0;
+    if (easyNPC == null) {
+      return 0;
+    }
 
     ProgressionDataCapable<?> progressionData = easyNPC.getEasyNPCProgressionData();
     if (progressionData == null) {

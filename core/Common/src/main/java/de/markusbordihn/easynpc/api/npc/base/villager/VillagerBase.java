@@ -124,8 +124,9 @@ public class VillagerBase extends VillagerRaw implements BaseEasyNPC<VillagerRaw
     if (component != null) {
       return TextUtils.removeAction(component);
     }
-    Component professionName = getProfessionName();
-    Component variantName = getSkinVariantTypeName();
+
+    Component professionName = this.getProfessionName();
+    Component variantName = this.getSkinVariantTypeName();
     return TextComponent.getText(variantName.getString() + " (" + professionName.getString() + ")");
   }
 
@@ -169,12 +170,9 @@ public class VillagerBase extends VillagerRaw implements BaseEasyNPC<VillagerRaw
 
   @Override
   public void travel(Vec3 vec3) {
-
     this.handleNavigationTravelEvent(vec3);
 
-    // Handle movement for NPC for specific conditions.
     if (this.hasTravelTargetObjectives()) {
-      // Allow travel for NPC, if travel objectives are used.
       super.travel(vec3);
     } else {
       this.calculateEntityAnimation(this.omnidirectionalAirMover());

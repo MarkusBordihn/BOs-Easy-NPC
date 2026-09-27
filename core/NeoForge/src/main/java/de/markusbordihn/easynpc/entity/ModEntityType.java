@@ -57,67 +57,18 @@ public class ModEntityType {
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   static {
-    // Raw entities (for modding only)
-    for (ModRawEntityType type : ModRawEntityType.values()) {
-      log.debug("Registering raw entity type {}", type.getResourceKey());
-      RAW_TYPE.put(
-          type,
-          ENTITY_TYPES.register(
-              type.getId(), () -> type.getBuilder().build(type.getResourceKey())));
-    }
-    log.info("Registered {} raw entity types.", RAW_TYPE.size());
-
-    // Pre-defined NPCs
-    for (ModNPCEntityType type : ModNPCEntityType.values()) {
-      log.debug("Registering NPC entity type {}", type.getResourceKey());
-      NPC_TYPE.put(
-          type,
-          ENTITY_TYPES.register(
-              type.getId(), () -> type.getBuilder().build(type.getResourceKey())));
-    }
-    log.info("Registered {} NPC entity types.", NPC_TYPE.size());
-
-    // Custom NPCs
-    for (ModCustomEntityType type : ModCustomEntityType.values()) {
-      log.debug("Registering custom entity type {}", type.getResourceKey());
-      CUSTOM_TYPE.put(
-          type,
-          ENTITY_TYPES.register(
-              type.getId(), () -> type.getBuilder().build(type.getResourceKey())));
-    }
-    log.info("Registered {} custom entity types.", CUSTOM_TYPE.size());
-
+    registerEntityTypes(ModRawEntityType.values(), RAW_TYPE, "raw");
+    registerEntityTypes(ModNPCEntityType.values(), NPC_TYPE, "NPC");
+    registerEntityTypes(ModCustomEntityType.values(), CUSTOM_TYPE, "custom");
     if (CompatConstants.MOD_EPIC_FIGHT_LOADED) {
-      for (EpicFightEntityType type : EpicFightEntityType.values()) {
-        log.debug("Registering Epic Fight entity type {}", type.getResourceKey());
-        EPIC_FIGHT_TYPE.put(
-            type,
-            ENTITY_TYPES.register(
-                type.getId(), () -> type.getBuilder().build(type.getResourceKey())));
-      }
-      log.info("Registered {} Epic Fight entity types.", EPIC_FIGHT_TYPE.size());
+      registerEntityTypes(EpicFightEntityType.values(), EPIC_FIGHT_TYPE, "Epic Fight");
     }
-
     if (CompatConstants.MOD_COBBLEMON_LOADED) {
-      for (CobblemonEntityType type : CobblemonEntityType.values()) {
-        log.debug("Registering Cobblemon entity type {}", type.getResourceKey());
-        COBBLEMON_TYPE.put(
-            type,
-            ENTITY_TYPES.register(
-                type.getId(), () -> type.getBuilder().build(type.getResourceKey())));
-      }
-      log.info("Registered {} Cobblemon entity types.", COBBLEMON_TYPE.size());
+      registerEntityTypes(CobblemonEntityType.values(), COBBLEMON_TYPE, "Cobblemon");
     }
-
     if (CompatConstants.MOD_EASY_MODEL_ENTITIES_LOADED) {
-      for (EasyModelEntitiesEntityType type : EasyModelEntitiesEntityType.values()) {
-        log.debug("Registering Easy Model Entities entity type {}", type.getResourceKey());
-        EASY_MODEL_ENTITIES_TYPE.put(
-            type,
-            ENTITY_TYPES.register(
-                type.getId(), () -> type.getBuilder().build(type.getResourceKey())));
-      }
-      log.info("Registered {} Easy Model Entities entity types.", EASY_MODEL_ENTITIES_TYPE.size());
+      registerEntityTypes(
+          EasyModelEntitiesEntityType.values(), EASY_MODEL_ENTITIES_TYPE, "Easy Model Entities");
     }
   }
 
@@ -128,6 +79,7 @@ public class ModEntityType {
       throw new IllegalArgumentException(
           "Invalid raw entity type '" + type + "'! Supported types are " + RAW_TYPE.keySet());
     }
+
     return (EntityType<T>) RAW_TYPE.get(type).get();
   }
 
@@ -136,6 +88,7 @@ public class ModEntityType {
       throw new IllegalArgumentException(
           "Invalid NPC entity type '" + type + "'! Supported types are " + NPC_TYPE.keySet());
     }
+
     return (EntityType<T>) NPC_TYPE.get(type).get();
   }
 
@@ -144,82 +97,57 @@ public class ModEntityType {
       throw new IllegalArgumentException(
           "Invalid NPC entity type '" + type + "'! Supported types are " + CUSTOM_TYPE.keySet());
     }
+
     return (EntityType<T>) CUSTOM_TYPE.get(type).get();
   }
 
   @SubscribeEvent
   public static void entityAttributeCreation(EntityAttributeCreationEvent event) {
-
-    // Raw entities (for modding only)
-    for (ModRawEntityType type : ModRawEntityType.values()) {
-      if (type.getAttributes() != null) {
-        event.put(
-            (EntityType<? extends LivingEntity>) RAW_TYPE.get(type).get(),
-            ModEntityAttributes.buildWithNavigationAttributes(type));
-      } else {
-        log.warn("Raw entity type {} does not have attributes defined!", type.getResourceKey());
-      }
-    }
-
-    // Pre-defined NPCs
-    for (ModNPCEntityType type : ModNPCEntityType.values()) {
-      if (type.getAttributes() != null) {
-        event.put(
-            (EntityType<? extends LivingEntity>) NPC_TYPE.get(type).get(),
-            ModEntityAttributes.buildWithNavigationAttributes(type));
-      } else {
-        log.warn("NPC entity type {} does not have attributes defined!", type.getResourceKey());
-      }
-    }
-
-    // Custom NPCs
-    for (ModCustomEntityType type : ModCustomEntityType.values()) {
-      if (type.getAttributes() != null) {
-        event.put(
-            (EntityType<? extends LivingEntity>) CUSTOM_TYPE.get(type).get(),
-            ModEntityAttributes.buildWithNavigationAttributes(type));
-      } else {
-        log.warn("Custom entity type {} does not have attributes defined!", type.getResourceKey());
-      }
-    }
-
+    registerAttributes(event, ModRawEntityType.values(), RAW_TYPE, "Raw");
+    registerAttributes(event, ModNPCEntityType.values(), NPC_TYPE, "NPC");
+    registerAttributes(event, ModCustomEntityType.values(), CUSTOM_TYPE, "Custom");
     if (CompatConstants.MOD_EPIC_FIGHT_LOADED) {
-      for (EpicFightEntityType type : EpicFightEntityType.values()) {
-        if (type.getAttributes() != null) {
-          event.put(
-              (EntityType<? extends LivingEntity>) EPIC_FIGHT_TYPE.get(type).get(),
-              ModEntityAttributes.buildWithNavigationAttributes(type));
-        } else {
-          log.warn(
-              "Epic Fight entity type {} does not have attributes defined!", type.getResourceKey());
-        }
-      }
+      registerAttributes(event, EpicFightEntityType.values(), EPIC_FIGHT_TYPE, "Epic Fight");
     }
-
     if (CompatConstants.MOD_COBBLEMON_LOADED) {
-      for (CobblemonEntityType type : CobblemonEntityType.values()) {
-        if (type.getAttributes() != null) {
-          event.put(
-              (EntityType<? extends LivingEntity>) COBBLEMON_TYPE.get(type).get(),
-              ModEntityAttributes.buildWithNavigationAttributes(type));
-        } else {
-          log.warn(
-              "Cobblemon entity type {} does not have attributes defined!", type.getResourceKey());
-        }
-      }
+      registerAttributes(event, CobblemonEntityType.values(), COBBLEMON_TYPE, "Cobblemon");
     }
-
     if (CompatConstants.MOD_EASY_MODEL_ENTITIES_LOADED) {
-      for (EasyModelEntitiesEntityType type : EasyModelEntitiesEntityType.values()) {
-        if (type.getAttributes() != null) {
-          event.put(
-              (EntityType<? extends LivingEntity>) EASY_MODEL_ENTITIES_TYPE.get(type).get(),
-              ModEntityAttributes.buildWithNavigationAttributes(type));
-        } else {
-          log.warn(
-              "Easy Model Entities entity type {} does not have attributes defined!",
-              type.getResourceKey());
-        }
+      registerAttributes(
+          event,
+          EasyModelEntitiesEntityType.values(),
+          EASY_MODEL_ENTITIES_TYPE,
+          "Easy Model Entities");
+    }
+  }
+
+  private static <E extends ModEntityTypeProvider> void registerEntityTypes(
+      E[] types,
+      Map<E, DeferredHolder<EntityType<?>, EntityType<?>>> registeredTypes,
+      String typeName) {
+    for (E type : types) {
+      log.debug("Registering {} entity type {}", typeName, type.getResourceKey());
+      registeredTypes.put(
+          type,
+          ENTITY_TYPES.register(
+              type.getId(), () -> type.getBuilder().build(type.getResourceKey())));
+    }
+    log.info("Registered {} {} entity types.", registeredTypes.size(), typeName);
+  }
+
+  private static <E extends ModEntityTypeProvider> void registerAttributes(
+      EntityAttributeCreationEvent event,
+      E[] types,
+      Map<E, DeferredHolder<EntityType<?>, EntityType<?>>> registeredTypes,
+      String typeName) {
+    for (E type : types) {
+      if (type.getAttributes() != null) {
+        event.put(
+            (EntityType<? extends LivingEntity>) registeredTypes.get(type).get(),
+            ModEntityAttributes.buildWithNavigationAttributes(type));
+      } else {
+        log.warn(
+            "{} entity type {} does not have attributes defined!", typeName, type.getResourceKey());
       }
     }
   }
@@ -232,6 +160,7 @@ public class ModEntityType {
               + "'! Supported types are "
               + EPIC_FIGHT_TYPE.keySet());
     }
+
     return (EntityType<T>) EPIC_FIGHT_TYPE.get(type).get();
   }
 
@@ -243,6 +172,7 @@ public class ModEntityType {
               + "'! Supported types are "
               + COBBLEMON_TYPE.keySet());
     }
+
     return (EntityType<T>) COBBLEMON_TYPE.get(type).get();
   }
 
@@ -254,6 +184,7 @@ public class ModEntityType {
               + "'! Supported types are "
               + EASY_MODEL_ENTITIES_TYPE.keySet());
     }
+
     return (EntityType<T>) EASY_MODEL_ENTITIES_TYPE.get(type).get();
   }
 }

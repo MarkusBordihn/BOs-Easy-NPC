@@ -22,9 +22,6 @@ package de.markusbordihn.easynpc.io;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.texture.RemoteTextureManager;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -39,26 +36,15 @@ public class RemoteSkinDataFiles {
   public static void registerRemoteSkinData() {
     log.debug("{} remote skin data ...", Constants.LOG_REGISTER_PREFIX);
 
-    // Prepare skin data folder
     Path skinDataFolder = getRemoteSkinDataFolder();
     if (skinDataFolder == null) {
       return;
     }
 
-    // Prepare skin model folders and pre-register textures
     for (SkinModel skinModel : SkinModel.values()) {
-      Path skinModelFolder = getRemoteSkinDataFolder(skinModel);
-      if (skinModelFolder != null
-          && Files.exists(skinModelFolder)
-          && Files.isDirectory(skinModelFolder)) {
-        for (String skinFileName : skinModelFolder.toFile().list()) {
-          Path skinFilePath = skinModelFolder.resolve(skinFileName);
-          File skinFile = skinFilePath.toFile();
-          if (skinFile.exists() && skinFileName.endsWith(".png")) {
-            RemoteTextureManager.registerTexture(skinModel, skinFile);
-          }
-        }
-      }
+      DataFileHandler.forEachPngFile(
+          getRemoteSkinDataFolder(skinModel),
+          skinFile -> RemoteTextureManager.registerTexture(skinModel, skinFile));
     }
   }
 
@@ -67,25 +53,7 @@ public class RemoteSkinDataFiles {
   }
 
   public static Path getRemoteSkinDataFolder(SkinModel skinModel) {
-    Path remoteSkinDataFolder = getRemoteSkinDataFolder();
-    if (remoteSkinDataFolder == null) {
-      return null;
-    }
-    String skinModelName = skinModel.getName();
-    Path skinDataFolderPath = remoteSkinDataFolder.resolve(skinModelName);
-    try {
-      if (Files.exists(skinDataFolderPath) && Files.isDirectory(skinDataFolderPath)) {
-        return skinDataFolderPath;
-      }
-      log.debug("Created new remote skin data folder {} at {}!", skinModelName, skinDataFolderPath);
-      return Files.createDirectories(skinDataFolderPath);
-    } catch (IOException e) {
-      log.error(
-          "Could not create remote skin data folder {} at {}:",
-          skinModelName,
-          remoteSkinDataFolder.resolve(skinModelName),
-          e);
-    }
-    return null;
+    return DataFileHandler.getOrCreateSubdirectory(
+        getRemoteSkinDataFolder(), skinModel.getName(), "remote skin data");
   }
 }

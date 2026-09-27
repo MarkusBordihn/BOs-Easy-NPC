@@ -63,6 +63,7 @@ public class AttributeHandler {
     } else if (valueType == ValueType.DOUBLE && value instanceof Double doubleValue) {
       return setCombatAttribute(easyNPC, attributeType, doubleValue);
     }
+
     return false;
   }
 
@@ -71,10 +72,12 @@ public class AttributeHandler {
     if (easyNPC == null || attributeType == null) {
       return false;
     }
+
     AttributeDataCapable<?> attributeData = easyNPC.getEasyNPCAttributeData();
     if (attributeData == null || attributeData.getEntityAttributes() == null) {
       return false;
     }
+
     EntityAttributes entityAttributes = attributeData.getEntityAttributes();
     CombatAttributes attributes = entityAttributes.getCombatAttributes();
     log.debug("Changing combat attribute {}={} for {}", attributeType, value, easyNPC);
@@ -105,10 +108,12 @@ public class AttributeHandler {
     if (easyNPC == null || attributeType == null) {
       return false;
     }
+
     AttributeDataCapable<?> attributeData = easyNPC.getEasyNPCAttributeData();
     if (attributeData == null || attributeData.getEntityAttributes() == null) {
       return false;
     }
+
     EntityAttributes entityAttributes = attributeData.getEntityAttributes();
     CombatAttributes attributes = entityAttributes.getCombatAttributes();
     log.debug("Changing combat attribute {}={} for {}", attributeType, value, easyNPC);
@@ -129,10 +134,12 @@ public class AttributeHandler {
     if (easyNPC == null || attributeType == null) {
       return false;
     }
+
     DisplayAttributeDataCapable<?> attributeData = easyNPC.getEasyNPCDisplayAttributeData();
     if (attributeData == null) {
       return false;
     }
+
     log.debug("Changing display attribute {}={} for {}", attributeType, value, easyNPC);
     ValueType valueType = attributeType.getValueType();
     attributeData.setDisplayAttribute(attributeType, valueType, value);
@@ -164,10 +171,12 @@ public class AttributeHandler {
     if (easyNPC == null || attributeType == null) {
       return false;
     }
+
     AttributeDataCapable<?> attributeData = easyNPC.getEasyNPCAttributeData();
     if (attributeData == null || attributeData.getEntityAttributes() == null) {
       return false;
     }
+
     EntityAttributes entityAttributes = attributeData.getEntityAttributes();
     EnvironmentalAttributes attributes = entityAttributes.getEnvironmentalAttributes();
     ObjectiveDataCapable<?> objectiveData = easyNPC.getEasyNPCObjectiveData();
@@ -212,10 +221,12 @@ public class AttributeHandler {
     if (easyNPC == null || attributeType == null) {
       return false;
     }
+
     AttributeDataCapable<?> attributeData = easyNPC.getEasyNPCAttributeData();
     if (attributeData == null || attributeData.getEntityAttributes() == null) {
       return false;
     }
+
     EntityAttributes entityAttributes = attributeData.getEntityAttributes();
     InteractionAttributes attributes = entityAttributes.getInteractionAttributes();
     log.debug("Changing interaction attribute {}={} for {}", attributeType, value, easyNPC);
@@ -244,10 +255,12 @@ public class AttributeHandler {
     if (easyNPC == null || attributeType == null) {
       return false;
     }
+
     AttributeDataCapable<?> attributeData = easyNPC.getEasyNPCAttributeData();
     if (attributeData == null || attributeData.getEntityAttributes() == null) {
       return false;
     }
+
     EntityAttributes entityAttributes = attributeData.getEntityAttributes();
     MovementAttributes attributes = entityAttributes.getMovementAttributes();
     ObjectiveDataCapable<?> objectiveData = easyNPC.getEasyNPCObjectiveData();
@@ -274,7 +287,6 @@ public class AttributeHandler {
       }
     }
 
-    // Refresh objectives and navigation data if available.
     attributeData.refreshEntityAttributes();
     if (objectiveData != null) {
       objectiveData.registerAttributeBasedObjectives();
@@ -290,10 +302,12 @@ public class AttributeHandler {
     if (easyNPC == null || attributeType == null) {
       return false;
     }
+
     AttributeDataCapable<?> attributeData = easyNPC.getEasyNPCAttributeData();
     if (attributeData == null || attributeData.getEntityAttributes() == null) {
       return false;
     }
+
     EntityAttributes entityAttributes = attributeData.getEntityAttributes();
     MovementAttributes attributes = entityAttributes.getMovementAttributes();
     log.debug("Changing moving attribute {}={} for {}", attributeType, value, easyNPC);
@@ -320,10 +334,12 @@ public class AttributeHandler {
     if (easyNPC == null || navigationType == null) {
       return false;
     }
+
     AttributeDataCapable<?> attributeData = easyNPC.getEasyNPCAttributeData();
     if (attributeData == null || attributeData.getEntityAttributes() == null) {
       return false;
     }
+
     EntityAttributes entityAttributes = attributeData.getEntityAttributes();
     MovementAttributes attributes = entityAttributes.getMovementAttributes();
     log.debug("Changing navigation type to {} for {}", navigationType, easyNPC);
@@ -346,10 +362,9 @@ public class AttributeHandler {
     if (easyNPC == null || entityAttribute == null) {
       return false;
     }
+
     AttributeDataCapable<?> attributeData = easyNPC.getEasyNPCAttributeData();
     if (attributeData != null) {
-      ObjectiveDataCapable<?> objectiveData = easyNPC.getEasyNPCObjectiveData();
-      NavigationDataCapable<?> navigationData = easyNPC.getEasyNPCNavigationData();
       switch (entityAttribute) {
         case SILENT:
           log.debug("Change silent={} for {}", value, easyNPC);
@@ -361,6 +376,7 @@ public class AttributeHandler {
       }
       return true;
     }
+
     return false;
   }
 
@@ -380,6 +396,7 @@ public class AttributeHandler {
     if (easyNPC == null || attribute == null || value == null) {
       return false;
     }
+
     AttributeDataCapable<?> attributeData = easyNPC.getEasyNPCAttributeData();
     if (attributeData == null) {
       log.error("Missing attribute data for {}", easyNPC);
@@ -412,7 +429,6 @@ public class AttributeHandler {
       return;
     }
 
-    // Ensure that the default attributes are set.
     if (mob.getAttribute(Attributes.SPAWN_REINFORCEMENTS_CHANCE) != null) {
       mob.getAttribute(Attributes.SPAWN_REINFORCEMENTS_CHANCE).setBaseValue(0.0D);
     }

@@ -37,6 +37,7 @@ public enum NPCRemovalReason {
     if (removalReason == null) {
       return NONE;
     }
+
     return switch (removalReason) {
       case KILLED -> KILLED;
       case DISCARDED -> DESPAWNED;
@@ -50,6 +51,7 @@ public enum NPCRemovalReason {
     if (value == null || value.isEmpty()) {
       return NONE;
     }
+
     try {
       return valueOf(value);
     } catch (IllegalArgumentException e) {

@@ -36,7 +36,8 @@ public class EasyNPCSlimeRendererMixin {
       method =
           "scale(Lnet/minecraft/client/renderer/entity/state/SlimeRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;)V",
       at = @At("TAIL"))
-  protected void onScale(SlimeRenderState renderState, PoseStack poseStack, CallbackInfo ci) {
+  protected void onScale(
+      SlimeRenderState renderState, PoseStack poseStack, CallbackInfo callbackInfo) {
     if (renderState instanceof EasyNPCRenderStateExtension) {
       EasyNPCLivingEntityRenderer.handleScale(renderState, poseStack);
       EasyNPCLivingEntityRenderer.handleRotation(renderState, poseStack);

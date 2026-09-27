@@ -70,9 +70,9 @@ public interface ServerModelRenderSkinNetworkMessageHandlerInterface {
     }
   }
 
-  default void positionChange(UUID uuid, Vec3 pos) {
-    if (uuid != null && pos != null) {
-      NetworkHandlerManager.sendMessageToServer(new ChangePositionMessage(uuid, pos));
+  default void positionChange(UUID uuid, Vec3 position) {
+    if (uuid != null && position != null) {
+      NetworkHandlerManager.sendMessageToServer(new ChangePositionMessage(uuid, position));
     }
   }
 

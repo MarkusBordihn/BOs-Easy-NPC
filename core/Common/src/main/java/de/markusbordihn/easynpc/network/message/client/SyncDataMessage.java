@@ -62,7 +62,7 @@ public record SyncDataMessage(UUID uuid, DialogDataSet dialogDataSet)
 
   @Override
   public void handleClient() {
-    if (this.uuid == null || this.uuid.toString().isEmpty()) {
+    if (this.uuid == null) {
       log.error("Invalid UUID {} for {}", this.uuid, this);
       return;
     }

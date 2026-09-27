@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.configui.client.screen;
 
+import de.markusbordihn.easynpc.client.screen.Screen;
 import de.markusbordihn.easynpc.client.screen.components.Graphics;
 import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.data.screen.AdditionalScreenDataInterface;
@@ -32,7 +33,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 public class CustomScreen<
         T extends AbstractContainerMenu & ScreenMenuInterface<D>,
         D extends AdditionalScreenDataInterface>
-    extends de.markusbordihn.easynpc.client.screen.Screen<T, D> {
+    extends Screen<T, D> {
 
   private static final int TITLE_HEIGHT = 19;
 

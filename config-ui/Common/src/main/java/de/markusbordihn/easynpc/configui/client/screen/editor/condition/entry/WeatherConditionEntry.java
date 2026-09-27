@@ -47,7 +47,7 @@ public class WeatherConditionEntry extends ConditionEntryWidget {
   @Override
   public void init(int editorLeft, int editorTop) {
     WeatherType weatherType = WeatherType.CLEAR;
-    if (hasConditionData(ConditionType.WEATHER)
+    if (this.hasConditionData(ConditionType.WEATHER)
         && this.conditionDataEntry.subType() instanceof WeatherType entryWeatherType) {
       weatherType = entryWeatherType;
     }

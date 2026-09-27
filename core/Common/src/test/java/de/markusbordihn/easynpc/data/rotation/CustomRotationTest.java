@@ -160,9 +160,9 @@ class CustomRotationTest {
   @Test
   @DisplayName("Two CustomRotations with the same components should be equal (record semantics)")
   void testEqualityBySameComponents() {
-    CustomRotation r1 = new CustomRotation(1.5f, 0f, 0f, false);
-    CustomRotation r2 = new CustomRotation(1.5f, 0f, 0f, false);
-    assertEquals(r1, r2);
+    CustomRotation firstRotation = new CustomRotation(1.5f, 0f, 0f, false);
+    CustomRotation secondRotation = new CustomRotation(1.5f, 0f, 0f, false);
+    assertEquals(firstRotation, secondRotation);
   }
 
   @Test

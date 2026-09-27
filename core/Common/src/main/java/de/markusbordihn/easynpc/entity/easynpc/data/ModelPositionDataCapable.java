@@ -68,22 +68,22 @@ public interface ModelPositionDataCapable<T extends Mob> extends EasyNPC<T> {
 
   default EnumMap<ModelPartType, CustomPosition> getModelPartPosition() {
     EnumMap<ModelPartType, CustomPosition> modelPartMap =
-        getSynchedEntityData(SynchedDataIndex.MODEL_POSITION);
+        this.getSynchedEntityData(SynchedDataIndex.MODEL_POSITION);
     if (modelPartMap == null) {
       modelPartMap = new EnumMap<>(ModelPartType.class);
-      setModelPartPosition(modelPartMap);
+      this.setModelPartPosition(modelPartMap);
     }
     return modelPartMap;
   }
 
   default void setModelPartPosition(EnumMap<ModelPartType, CustomPosition> modelPartMap) {
     if (modelPartMap != null) {
-      setSynchedEntityData(SynchedDataIndex.MODEL_POSITION, modelPartMap, true);
+      this.setSynchedEntityData(SynchedDataIndex.MODEL_POSITION, modelPartMap, true);
     }
   }
 
   default void setModelPartPosition(ModelPartType modelPartType, CustomPosition Position) {
-    EnumMap<ModelPartType, CustomPosition> modelPartMap = getModelPartPosition();
+    EnumMap<ModelPartType, CustomPosition> modelPartMap = this.getModelPartPosition();
     if (modelPartType != null) {
       modelPartMap.put(modelPartType, Position);
       this.setModelPartPosition(new EnumMap<>(modelPartMap));
@@ -91,12 +91,12 @@ public interface ModelPositionDataCapable<T extends Mob> extends EasyNPC<T> {
   }
 
   default CustomPosition getModelPartPosition(ModelPartType modelPartType) {
-    EnumMap<ModelPartType, CustomPosition> modelPartMap = getModelPartPosition();
+    EnumMap<ModelPartType, CustomPosition> modelPartMap = this.getModelPartPosition();
     return modelPartMap.getOrDefault(modelPartType, DEFAULT_MODEL_PART_POSITION);
   }
 
   default boolean hasChangedModelPosition() {
-    EnumMap<ModelPartType, CustomPosition> modelPartMap = getModelPartPosition();
+    EnumMap<ModelPartType, CustomPosition> modelPartMap = this.getModelPartPosition();
     for (Map.Entry<ModelPartType, CustomPosition> entry : modelPartMap.entrySet()) {
       if (entry.getValue().hasChanged()) {
         return true;
@@ -106,13 +106,13 @@ public interface ModelPositionDataCapable<T extends Mob> extends EasyNPC<T> {
   }
 
   default void defineSynchedModelPositionData(SynchedEntityData.Builder builder) {
-    defineSynchedEntityData(
+    this.defineSynchedEntityData(
         builder, SynchedDataIndex.MODEL_POSITION, new EnumMap<>(ModelPartType.class));
   }
 
   default void addAdditionalModelPositionData(CompoundTag compoundTag) {
     CompoundTag positionsTag = new CompoundTag();
-    EnumMap<ModelPartType, CustomPosition> modelPartMap = getModelPartPosition();
+    EnumMap<ModelPartType, CustomPosition> modelPartMap = this.getModelPartPosition();
     for (Map.Entry<ModelPartType, CustomPosition> entry : modelPartMap.entrySet()) {
       if (entry.getValue() != null && entry.getValue().hasChanged()) {
         positionsTag.put(entry.getKey().getTagName(), entry.getValue().save());
@@ -125,6 +125,7 @@ public interface ModelPositionDataCapable<T extends Mob> extends EasyNPC<T> {
     if (!compoundTag.contains(EASY_NPC_DATA_MODEL_POSITION_TAG)) {
       return;
     }
+
     CompoundTag positionTag = compoundTag.getCompoundOrEmpty(EASY_NPC_DATA_MODEL_POSITION_TAG);
     EnumMap<ModelPartType, CustomPosition> modelPartMap = new EnumMap<>(ModelPartType.class);
     for (String key : positionTag.keySet()) {
@@ -133,6 +134,6 @@ public interface ModelPositionDataCapable<T extends Mob> extends EasyNPC<T> {
         modelPartMap.put(modelPartType, new CustomPosition(modelPartType, positionTag));
       }
     }
-    setModelPartPosition(modelPartMap);
+    this.setModelPartPosition(modelPartMap);
   }
 }

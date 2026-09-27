@@ -98,11 +98,7 @@ public class AttackObjective extends Command {
                                     context.getSource(),
                                     EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG),
                                     StringArgumentType.getString(context, TARGET_ARGUMENT)))))
-        .executes(
-            context ->
-                set(
-                    context.getSource(),
-                    EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG)));
+        .executes(context -> set(context.getSource()));
   }
 
   public static int remove(CommandSourceStack context, EasyNPC<?> easyNPC) {
@@ -155,7 +151,6 @@ public class AttackObjective extends Command {
 
     sendSuccessMessage(context, "Attack targets for " + easyNPC + ":");
 
-    // List standard attack targets
     for (ObjectiveType objectiveType : ObjectiveType.values()) {
       if (BuiltInObjectiveFactories.isTargetObjective(objectiveType)
           && !PROTECTION_OBJECTIVES.containsKey(objectiveType)) {
@@ -167,7 +162,6 @@ public class AttackObjective extends Command {
       }
     }
 
-    // List protection targets
     for (Map.Entry<ObjectiveType, ProtectionObjective> protectionEntry :
         PROTECTION_OBJECTIVES.entrySet()) {
       objectiveData
@@ -186,7 +180,7 @@ public class AttackObjective extends Command {
     return Command.SINGLE_SUCCESS;
   }
 
-  public static int set(CommandSourceStack context, EasyNPC<?> easyNPC) {
+  public static int set(CommandSourceStack context) {
     return sendSuccessMessage(context, "Usage: /objective set attack target <target_type>");
   }
 
@@ -217,6 +211,7 @@ public class AttackObjective extends Command {
       sendFailureMessageNoObjectiveData(context, easyNPC);
       return null;
     }
+
     return objectiveData;
   }
 

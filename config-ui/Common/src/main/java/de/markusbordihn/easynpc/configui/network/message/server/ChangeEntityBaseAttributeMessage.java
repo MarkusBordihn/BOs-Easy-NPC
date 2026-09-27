@@ -71,7 +71,7 @@ public record ChangeEntityBaseAttributeMessage(UUID uuid, Attribute attribute, D
 
   @Override
   public void handleServer(final ServerPlayer serverPlayer) {
-    EasyNPC<?> easyNPC = getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
+    EasyNPC<?> easyNPC = this.getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
     if (easyNPC == null) {
       return;
     }
@@ -81,19 +81,23 @@ public record ChangeEntityBaseAttributeMessage(UUID uuid, Attribute attribute, D
       return;
     }
 
-    if (attribute == null) {
+    if (this.attribute == null) {
       log.error("Invalid base attribute for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
-    if (value == null) {
+    if (this.value == null) {
       log.error(
-          "Invalid value for base attribute {} for {} from {}", attribute, easyNPC, serverPlayer);
+          "Invalid value for base attribute {} for {} from {}",
+          this.attribute,
+          easyNPC,
+          serverPlayer);
       return;
     }
 
-    if (!AttributeHandler.setBaseAttribute(easyNPC, attribute, value)) {
-      log.error("Unable to set base attribute {} for {} from {}", attribute, easyNPC, serverPlayer);
+    if (!AttributeHandler.setBaseAttribute(easyNPC, this.attribute, this.value)) {
+      log.error(
+          "Unable to set base attribute {} for {} from {}", this.attribute, easyNPC, serverPlayer);
     }
   }
 }

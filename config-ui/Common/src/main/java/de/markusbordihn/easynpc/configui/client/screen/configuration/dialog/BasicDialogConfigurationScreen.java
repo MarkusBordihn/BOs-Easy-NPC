@@ -56,21 +56,17 @@ public class BasicDialogConfigurationScreen<T extends ConfigurationMenu>
   public void init() {
     super.init();
 
-    // Default button stats
     this.basicDialogButton.active = false;
 
-    // Cancel Button
     this.addRenderableWidget(
         new CancelButton(
             this.rightPos - 130, this.bottomPos - 40, "cancel", onPress -> this.showMainScreen()));
 
-    // Pre-format text
     this.textComponents =
         this.font.split(
             TextComponent.getTranslatedConfigText("dialog_placeholder"), this.imageWidth - 20);
     this.numberOfTextLines = this.textComponents.size();
 
-    // Dialog
     this.dialogValue = "";
     if (this.hasDialog() && this.getDialogDataSet().getType() == DialogType.BASIC) {
       DialogDataEntry basicDialog =
@@ -84,7 +80,6 @@ public class BasicDialogConfigurationScreen<T extends ConfigurationMenu>
     this.dialogBox.setValue(this.dialogValue);
     this.addRenderableWidget(this.dialogBox);
 
-    // Save Button
     this.saveButton =
         this.addRenderableWidget(
             new SaveButton(
@@ -115,8 +110,8 @@ public class BasicDialogConfigurationScreen<T extends ConfigurationMenu>
             guiGraphics,
             this.font,
             formattedCharSequence,
-            leftPos + 15,
-            topPos + 100 + (line * (font.lineHeight + 2)));
+            this.leftPos + 15,
+            this.topPos + 100 + (line * (this.font.lineHeight + 2)));
       }
     }
   }
@@ -125,8 +120,8 @@ public class BasicDialogConfigurationScreen<T extends ConfigurationMenu>
   public void updateTick() {
     super.updateTick();
 
-    if (saveButton != null) {
-      saveButton.active = !dialogBox.getValue().equals(dialogValue);
+    if (this.saveButton != null) {
+      this.saveButton.active = !this.dialogBox.getValue().equals(this.dialogValue);
     }
   }
 }

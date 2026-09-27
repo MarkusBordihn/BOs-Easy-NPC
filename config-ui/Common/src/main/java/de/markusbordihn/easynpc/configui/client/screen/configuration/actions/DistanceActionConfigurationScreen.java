@@ -46,7 +46,6 @@ public class DistanceActionConfigurationScreen<T extends ConfigurationMenu>
   public void init() {
     super.init();
 
-    // Default button stats
     this.distanceActionButton.active = false;
 
     int actionButtonTop = this.contentTopPos + 10;

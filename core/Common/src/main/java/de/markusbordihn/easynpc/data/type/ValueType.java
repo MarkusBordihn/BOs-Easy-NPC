@@ -66,7 +66,7 @@ public enum ValueType {
   }
 
   public Object parseValue(String value) {
-    if (!isValidValue(value)) {
+    if (!this.isValidValue(value)) {
       throw new IllegalArgumentException("Invalid value '" + value + "' for type " + this);
     }
 

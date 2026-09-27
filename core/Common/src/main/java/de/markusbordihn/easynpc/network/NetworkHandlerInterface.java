@@ -36,7 +36,7 @@ public interface NetworkHandlerInterface {
 
   Logger log = LogManager.getLogger(Constants.LOG_NAME);
   String LOG_PREFIX = "[NetworkHandler]";
-  int PROTOCOL_VERSION = 31;
+  int PROTOCOL_VERSION = 32;
 
   <M extends NetworkMessageRecord> void registerClientNetworkMessageHandler(
       final CustomPacketPayload.Type<M> type,
@@ -87,15 +87,16 @@ public interface NetworkHandlerInterface {
 
   default boolean sendMessageToPlayer(
       final NetworkMessageRecord networkMessageRecord, final ServerPlayer serverPlayer) {
-    if (!hasClientMessage(networkMessageRecord.type())) {
+    if (!this.hasClientMessage(networkMessageRecord.type())) {
       log.error(
           "{} Message {} is not registered as client message",
           LOG_PREFIX,
           networkMessageRecord.type());
       return false;
     }
+
     try {
-      sendToPlayer(networkMessageRecord, serverPlayer);
+      this.sendToPlayer(networkMessageRecord, serverPlayer);
     } catch (Exception e) {
       log.error(
           "{} Failed to send message {} to player {}",
@@ -109,13 +110,14 @@ public interface NetworkHandlerInterface {
   }
 
   default boolean sendMessageToServer(final NetworkMessageRecord networkMessageRecord) {
-    if (!hasServerMessage(networkMessageRecord.type())) {
+    if (!this.hasServerMessage(networkMessageRecord.type())) {
       log.error(
           "{} Message {} is not registered as server message",
           LOG_PREFIX,
           networkMessageRecord.type());
       return false;
     }
+
     if (Minecraft.getInstance().getConnection() == null) {
       log.error(
           "{} Failed to send message {} to server: No connection available",
@@ -123,8 +125,9 @@ public interface NetworkHandlerInterface {
           networkMessageRecord.type());
       return false;
     }
+
     try {
-      sendToServer(networkMessageRecord);
+      this.sendToServer(networkMessageRecord);
     } catch (Exception e) {
       log.error("{} Failed to send message {} to server", LOG_PREFIX, networkMessageRecord.id(), e);
       return false;
@@ -133,26 +136,26 @@ public interface NetworkHandlerInterface {
   }
 
   default boolean hasClientMessage(final CustomPacketPayload.Type<?> messageID) {
-    return getClientMessages().containsKey(messageID);
+    return this.getClientMessages().containsKey(messageID);
   }
 
   default boolean hasServerMessage(final CustomPacketPayload.Type<?> messageID) {
-    return getServerMessages().containsKey(messageID);
+    return this.getServerMessages().containsKey(messageID);
   }
 
   default Class<? extends NetworkMessageRecord> getRegisteredClientMessage(
       final CustomPacketPayload.Type<?> messageID) {
-    return getRegisteredClientMessages().get(messageID);
+    return this.getRegisteredClientMessages().get(messageID);
   }
 
   default Class<? extends NetworkMessageRecord> getRegisteredServerMessage(
       final CustomPacketPayload.Type<?> messageID) {
-    return getRegisteredServerMessages().get(messageID);
+    return this.getRegisteredServerMessages().get(messageID);
   }
 
   default CustomPacketPayload.Type<?> getRegisteredClientMessageId(
       final Class<? extends NetworkMessageRecord> networkMessage) {
-    return getRegisteredClientMessages().entrySet().stream()
+    return this.getRegisteredClientMessages().entrySet().stream()
         .filter(entry -> entry.getValue().equals(networkMessage))
         .map(Map.Entry::getKey)
         .findFirst()
@@ -161,7 +164,7 @@ public interface NetworkHandlerInterface {
 
   default CustomPacketPayload.Type<?> getRegisteredServerMessageId(
       final Class<? extends NetworkMessageRecord> networkMessage) {
-    return getRegisteredServerMessages().entrySet().stream()
+    return this.getRegisteredServerMessages().entrySet().stream()
         .filter(entry -> entry.getValue().equals(networkMessage))
         .map(Map.Entry::getKey)
         .findFirst()
@@ -169,21 +172,21 @@ public interface NetworkHandlerInterface {
   }
 
   default boolean hasRegisteredClientMessage(final CustomPacketPayload.Type<?> messageID) {
-    return getRegisteredClientMessages().containsKey(messageID);
+    return this.getRegisteredClientMessages().containsKey(messageID);
   }
 
   default boolean hasRegisteredClientMessage(
       final Class<? extends NetworkMessageRecord> networkMessage) {
-    return getRegisteredClientMessages().containsValue(networkMessage);
+    return this.getRegisteredClientMessages().containsValue(networkMessage);
   }
 
   default boolean hasRegisteredServerMessage(final CustomPacketPayload.Type<?> messageID) {
-    return getRegisteredServerMessages().containsKey(messageID);
+    return this.getRegisteredServerMessages().containsKey(messageID);
   }
 
   default boolean hasRegisteredServerMessage(
       final Class<? extends NetworkMessageRecord> networkMessage) {
-    return getRegisteredServerMessages().containsValue(networkMessage);
+    return this.getRegisteredServerMessages().containsValue(networkMessage);
   }
 
   default <M extends NetworkMessageRecord> void registerServerNetworkMessage(
@@ -191,30 +194,32 @@ public interface NetworkHandlerInterface {
       final StreamCodec<RegistryFriendlyByteBuf, M> codec,
       final Class<M> networkMessage,
       final Function<FriendlyByteBuf, M> creator) {
-    if (!hasServerMessage(type)) {
-      registerServerPayloadType(type, codec);
+    if (!this.hasServerMessage(type)) {
+      this.registerServerPayloadType(type, codec);
     }
     if (NetworkHandlerManager.isServerNetworkHandler()) {
-      if (hasRegisteredServerMessage(type)) {
+      if (this.hasRegisteredServerMessage(type)) {
         log.error(
             "{} Server network message id {} already registered with {}",
             LOG_PREFIX,
             type,
-            getRegisteredServerMessage(type));
+            this.getRegisteredServerMessage(type));
         return;
       }
-      if (hasRegisteredServerMessage(networkMessage)) {
+
+      if (this.hasRegisteredServerMessage(networkMessage)) {
         log.error(
             "{} Server network message {} already registered with id {}",
             LOG_PREFIX,
             networkMessage,
-            getRegisteredServerMessageId(networkMessage));
+            this.getRegisteredServerMessageId(networkMessage));
         return;
       }
+
       try {
-        registerServerNetworkMessageHandler(
+        this.registerServerNetworkMessageHandler(
             type, codec, networkMessage, NetworkMessageRecord.guardedDecoder(type.id(), creator));
-        addRegisteredServerMessage(type, networkMessage);
+        this.addRegisteredServerMessage(type, networkMessage);
       } catch (Exception e) {
         log.error(
             "{} Failed to register server network message id {} with {}",
@@ -225,7 +230,7 @@ public interface NetworkHandlerInterface {
         return;
       }
     }
-    addServerMessage(type, networkMessage);
+    this.addServerMessage(type, networkMessage);
   }
 
   default <M extends NetworkMessageRecord> void registerClientNetworkMessage(
@@ -233,30 +238,32 @@ public interface NetworkHandlerInterface {
       final StreamCodec<RegistryFriendlyByteBuf, M> codec,
       final Class<M> networkMessage,
       final Function<FriendlyByteBuf, M> creator) {
-    if (!hasClientMessage(type)) {
-      registerClientPayloadType(type, codec);
+    if (!this.hasClientMessage(type)) {
+      this.registerClientPayloadType(type, codec);
     }
     if (NetworkHandlerManager.isClientNetworkHandler()) {
-      if (hasRegisteredClientMessage(type)) {
+      if (this.hasRegisteredClientMessage(type)) {
         log.error(
             "{} Client network message id {} already registered with {}",
             LOG_PREFIX,
             type,
-            getRegisteredClientMessage(type));
+            this.getRegisteredClientMessage(type));
         return;
       }
-      if (hasRegisteredClientMessage(networkMessage)) {
+
+      if (this.hasRegisteredClientMessage(networkMessage)) {
         log.error(
             "{} Client network message {} already registered with id {}",
             LOG_PREFIX,
             networkMessage,
-            getRegisteredClientMessageId(networkMessage));
+            this.getRegisteredClientMessageId(networkMessage));
         return;
       }
+
       try {
-        registerClientNetworkMessageHandler(
+        this.registerClientNetworkMessageHandler(
             type, codec, networkMessage, NetworkMessageRecord.guardedDecoder(type.id(), creator));
-        addRegisteredClientMessage(type, networkMessage);
+        this.addRegisteredClientMessage(type, networkMessage);
       } catch (Exception e) {
         log.error(
             "{} Failed to register client network message id {} with {}",
@@ -267,7 +274,7 @@ public interface NetworkHandlerInterface {
         return;
       }
     }
-    addClientMessage(type, networkMessage);
+    this.addClientMessage(type, networkMessage);
   }
 
   default void logRegisterClientNetworkMessageHandler(

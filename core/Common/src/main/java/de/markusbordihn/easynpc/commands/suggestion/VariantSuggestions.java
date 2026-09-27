@@ -35,16 +35,21 @@ public class VariantSuggestions {
   private VariantSuggestions() {}
 
   public static CompletableFuture<Suggestions> suggest(
-      CommandContext<CommandSourceStack> context, SuggestionsBuilder build, UUID uuid) {
+      CommandContext<CommandSourceStack> context,
+      SuggestionsBuilder suggestionsBuilder,
+      UUID uuid) {
     EasyNPC<?> easyNPC =
         LivingEntityManager.getServerEasyNPCEntityByUUID(uuid, context.getSource().getLevel());
     if (easyNPC == null) {
-      return SharedSuggestionProvider.suggest(new String[0], build);
+      return SharedSuggestionProvider.suggest(new String[0], suggestionsBuilder);
     }
+
     VariantDataCapable<?> variantData = easyNPC.getEasyNPCVariantData();
     if (variantData == null) {
-      return SharedSuggestionProvider.suggest(new String[0], build);
+      return SharedSuggestionProvider.suggest(new String[0], suggestionsBuilder);
     }
-    return SharedSuggestionProvider.suggest(variantData.getSkinVariantTypeNames(), build);
+
+    return SharedSuggestionProvider.suggest(
+        variantData.getSkinVariantTypeNames(), suggestionsBuilder);
   }
 }

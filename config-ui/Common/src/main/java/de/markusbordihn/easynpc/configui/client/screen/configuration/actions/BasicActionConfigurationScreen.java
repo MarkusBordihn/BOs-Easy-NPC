@@ -36,10 +36,8 @@ public class BasicActionConfigurationScreen<T extends ConfigurationMenu>
   public void init() {
     super.init();
 
-    // Default button stats
     this.basicActionButton.active = false;
 
-    // On Interaction Actions
     this.addRenderableWidget(
         this.getActionDataButton(
             this.contentLeftPos,
@@ -47,7 +45,6 @@ public class BasicActionConfigurationScreen<T extends ConfigurationMenu>
             ActionEventType.ON_INTERACTION,
             ConfigurationType.BASIC_ACTION));
 
-    // On Hurt Actions
     this.addRenderableWidget(
         this.getActionDataButton(
             this.contentLeftPos,
@@ -55,7 +52,6 @@ public class BasicActionConfigurationScreen<T extends ConfigurationMenu>
             ActionEventType.ON_HURT,
             ConfigurationType.BASIC_ACTION));
 
-    // On Death Actions
     this.addRenderableWidget(
         this.getActionDataButton(
             this.contentLeftPos,
@@ -63,7 +59,6 @@ public class BasicActionConfigurationScreen<T extends ConfigurationMenu>
             ActionEventType.ON_DEATH,
             ConfigurationType.BASIC_ACTION));
 
-    // On Kill Actions
     this.addRenderableWidget(
         this.getActionDataButton(
             this.contentLeftPos,

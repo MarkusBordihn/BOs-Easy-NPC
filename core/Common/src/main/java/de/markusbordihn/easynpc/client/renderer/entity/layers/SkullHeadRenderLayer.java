@@ -118,7 +118,7 @@ public class SkullHeadRenderLayer<
     }
 
     SkullBlock.Type skullType = skullBlock.getType();
-    SkullModelBase skullModel = getOrCreateSkullModel(skullType);
+    SkullModelBase skullModel = this.getOrCreateSkullModel(skullType);
     if (skullModel == null) {
       return;
     }

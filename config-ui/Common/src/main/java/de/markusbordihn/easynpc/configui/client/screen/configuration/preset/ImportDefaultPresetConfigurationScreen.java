@@ -35,8 +35,8 @@ public class ImportDefaultPresetConfigurationScreen<T extends ConfigurationMenu>
 
   public ImportDefaultPresetConfigurationScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
-    importPresetButtonLabel = "import_default_preset";
-    importPresetHeaderLabel = "preset_default_for";
+    this.importPresetButtonLabel = "import_default_preset";
+    this.importPresetHeaderLabel = "preset_default_for";
     this.defaultPresets =
         CompoundTagUtils.readIdentifiers(this.getAdditionalScreenData().getList("DefaultPresets"))
             .stream()
@@ -49,17 +49,15 @@ public class ImportDefaultPresetConfigurationScreen<T extends ConfigurationMenu>
   @Override
   public void loadPreset(Identifier resourceLocation) {
     NetworkMessageHandlerManager.getServerHandler()
-        .importDefaultPreset(getEasyNPCUUID(), resourceLocation);
+        .importDefaultPreset(this.getEasyNPCUUID(), resourceLocation);
   }
 
   @Override
   public void init() {
     super.init();
 
-    // Default button stats
     this.defaultImportPresetButton.active = false;
 
-    // Update default presets
     updatePresets(this.defaultPresets.stream().toList());
     this.presetSelectionList.updatePresets();
   }

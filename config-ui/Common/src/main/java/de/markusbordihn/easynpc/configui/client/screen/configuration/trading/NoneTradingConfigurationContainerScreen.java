@@ -54,15 +54,12 @@ public class NoneTradingConfigurationContainerScreen<T extends ConfigurationMenu
   public void init() {
     super.init();
 
-    // Default button stats
     this.noneTradesButton.active = false;
 
-    // Cache former dialog Type
     TradingDataCapable<?> tradingData = this.getEasyNPC().getEasyNPCTradingData();
     TradingDataSet tradingDataSet = tradingData.getTradingDataSet();
     setFormerTradingType(tradingDataSet.getType());
 
-    // None Trading Checkbox
     this.noneTradingCheckbox =
         this.addRenderableWidget(
             new Checkbox(
@@ -84,7 +81,6 @@ public class NoneTradingConfigurationContainerScreen<T extends ConfigurationMenu
                   }
                 }));
 
-    // Pre-format text
     this.textComponents =
         this.font.split(
             TextComponent.getTranslatedConfigText("disable_trading_text"), this.imageWidth - 20);
@@ -103,8 +99,8 @@ public class NoneTradingConfigurationContainerScreen<T extends ConfigurationMenu
             guiGraphics,
             this.font,
             formattedCharSequence,
-            leftPos + 15,
-            topPos + 60 + (line * (font.lineHeight + 2)));
+            this.leftPos + 15,
+            this.topPos + 60 + (line * (this.font.lineHeight + 2)));
       }
     }
   }

@@ -27,7 +27,6 @@ import net.minecraft.world.item.Item;
 
 public class ModItemTags {
 
-  // Melee Weapon Tags
   public static final TagKey<Item> MELEE_WEAPON =
       TagKey.create(
           BuiltInRegistries.ITEM.key(),
@@ -41,7 +40,6 @@ public class ModItemTags {
           BuiltInRegistries.ITEM.key(),
           Identifier.fromNamespaceAndPath(Constants.MOD_ID, "melee_weapon/axe"));
 
-  // Ranged Weapon Tags
   public static final TagKey<Item> RANGED_WEAPON_BOW =
       TagKey.create(
           BuiltInRegistries.ITEM.key(),

@@ -65,7 +65,6 @@ public class DopplerRenderer
       PoseStack poseStack,
       SubmitNodeCollector submitNodeCollector,
       CameraRenderState cameraRenderState) {
-
     if (!(entity instanceof EasyNPC<?> easyNPC)) {
       return false;
     }
@@ -168,7 +167,7 @@ public class DopplerRenderer
 
   @Override
   public Identifier getTextureLocation(HumanoidRenderState renderState) {
-    return getTextureFromRenderState(renderState);
+    return this.getTextureFromRenderState(renderState);
   }
 
   @Override
@@ -182,7 +181,7 @@ public class DopplerRenderer
       PoseStack poseStack,
       SubmitNodeCollector submitNodeCollector,
       CameraRenderState cameraRenderState) {
-    EasyNPC<?> easyNPC = getEasyNPC(renderState);
+    EasyNPC<?> easyNPC = this.getEasyNPC(renderState);
     if (renderEntity(
         easyNPC, this.getModel(), renderState, poseStack, submitNodeCollector, cameraRenderState)) {
       this.submitNameDisplay(renderState, poseStack, submitNodeCollector, cameraRenderState);

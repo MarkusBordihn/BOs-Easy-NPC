@@ -41,12 +41,13 @@ public class ColorButton extends CustomButton {
   public void renderButton(
       GuiGraphicsExtractor guiGraphics, int left, int top, float partialTicks) {
     super.renderButton(guiGraphics, left, top, partialTicks);
+
     guiGraphics.fill(
-        getX() + 2,
-        getY() + 2,
-        getX() + getWidth() - 2,
-        getY() + getHeight() - 2,
-        0xFF000000 | getColorValue());
+        this.getX() + 2,
+        this.getY() + 2,
+        this.getX() + this.getWidth() - 2,
+        this.getY() + this.getHeight() - 2,
+        0xFF000000 | this.getColorValue());
   }
 
   public int getColorValue() {

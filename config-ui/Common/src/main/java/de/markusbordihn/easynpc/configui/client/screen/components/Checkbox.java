@@ -101,6 +101,7 @@ public class Checkbox extends AbstractButton {
     this.selected = selected;
   }
 
+  @Override
   public void updateWidgetNarration(NarrationElementOutput narrationElementOutput) {
     narrationElementOutput.add(NarratedElementType.TITLE, this.createNarrationMessage());
     if (this.active) {
@@ -129,7 +130,7 @@ public class Checkbox extends AbstractButton {
         TEXTURE,
         this.getX(),
         this.getY(),
-        this.active ? (this.isHoveredOrFocused() ? 16 : 0) : 32,
+        this.getSpriteOffsetX(),
         this.selected ? 16 : 0,
         16,
         16,
@@ -144,6 +145,18 @@ public class Checkbox extends AbstractButton {
           this.getX() + 18,
           this.getY() + (this.height - 8) / 2);
     }
+  }
+
+  private int getSpriteOffsetX() {
+    if (!this.active) {
+      return 32;
+    }
+
+    if (this.isHoveredOrFocused()) {
+      return 16;
+    }
+
+    return 0;
   }
 
   public interface OnChange {

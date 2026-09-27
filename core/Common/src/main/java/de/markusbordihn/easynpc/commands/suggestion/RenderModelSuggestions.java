@@ -33,8 +33,9 @@ public class RenderModelSuggestions {
   private RenderModelSuggestions() {}
 
   public static CompletableFuture<Suggestions> suggest(
-      CommandContext<CommandSourceStack> context, SuggestionsBuilder build) {
+      CommandContext<CommandSourceStack> context, SuggestionsBuilder suggestionsBuilder) {
     return SharedSuggestionProvider.suggest(
-        IntegrationRegistry.getModels(CobblemonSpeciesManager.INTEGRATION_ID).stream(), build);
+        IntegrationRegistry.getModels(CobblemonSpeciesManager.INTEGRATION_ID).stream(),
+        suggestionsBuilder);
   }
 }

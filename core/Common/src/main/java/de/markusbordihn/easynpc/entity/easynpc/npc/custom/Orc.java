@@ -85,7 +85,7 @@ public class Orc extends PathfinderMobRaw {
     try {
       return OrcSkinVariant.valueOf(name);
     } catch (IllegalArgumentException e) {
-      return getDefaultSkinVariantType();
+      return this.getDefaultSkinVariantType();
     }
   }
 

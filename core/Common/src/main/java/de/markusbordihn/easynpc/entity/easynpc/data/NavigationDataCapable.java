@@ -82,11 +82,11 @@ public interface NavigationDataCapable<T extends Mob> extends EasyNPC<T> {
   }
 
   default BlockPos getNPCHomePosition() {
-    return getSynchedEntityData(SynchedDataIndex.NAVIGATION_HOME_POSITION);
+    return this.getSynchedEntityData(SynchedDataIndex.NAVIGATION_HOME_POSITION);
   }
 
   default void setNPCHomePosition(BlockPos blockPos) {
-    setSynchedEntityData(SynchedDataIndex.NAVIGATION_HOME_POSITION, blockPos);
+    this.setSynchedEntityData(SynchedDataIndex.NAVIGATION_HOME_POSITION, blockPos);
   }
 
   default boolean hasNPCHomePosition() {
@@ -169,11 +169,12 @@ public interface NavigationDataCapable<T extends Mob> extends EasyNPC<T> {
         && mob.getNavigation() instanceof GroundPathNavigation groundPathNavigation) {
       return groundPathNavigation;
     }
+
     return null;
   }
 
   default void defineSynchedNavigationData(SynchedEntityData.Builder builder) {
-    defineSynchedEntityData(builder, SynchedDataIndex.NAVIGATION_HOME_POSITION, BlockPos.ZERO);
+    this.defineSynchedEntityData(builder, SynchedDataIndex.NAVIGATION_HOME_POSITION, BlockPos.ZERO);
   }
 
   default NavigationType defaultNavigationType() {
@@ -324,7 +325,7 @@ public interface NavigationDataCapable<T extends Mob> extends EasyNPC<T> {
   }
 
   default boolean isFlying() {
-    return canFly() && !this.getEntity().onGround();
+    return this.canFly() && !this.getEntity().onGround();
   }
 
   default boolean canJump() {
@@ -379,7 +380,6 @@ public interface NavigationDataCapable<T extends Mob> extends EasyNPC<T> {
   default void handleNavigationTravelEvent(Vec3 vec3) {
     TickerDataCapable<?> tickerData = this.getEasyNPCTickerData();
 
-    // Update basic movement relevant data.
     if (tickerData.checkAndIncreaseTicker(TickerType.TRAVEL_EVENT, TRAVEL_EVENT_TICK)) {
 
       Mob mob = this.getMob();
@@ -391,7 +391,6 @@ public interface NavigationDataCapable<T extends Mob> extends EasyNPC<T> {
               && !blockState.is(Blocks.CARPET.white())
               && !blockState.is(Blocks.CARPET.red()));
 
-      // Handle gravity and movement logic based on environmental attributes
       ObjectiveDataCapable<?> objectiveData = this.getEasyNPCObjectiveData();
       if (!objectiveData.hasTravelTargetObjectives()) {
         AttributeDataCapable<?> attributeData = this.getEasyNPCAttributeData();

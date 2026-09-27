@@ -67,7 +67,7 @@ public interface MenuHandlerInterface {
         ConfigurationTypeHelper.resolveConfigurationTypeAlias(configurationType, easyNPC);
 
     final MenuType<? extends ConfigurationMenu> menuType =
-        getMenuTypeByConfigurationType(configurationTypeAlias);
+        this.getMenuTypeByConfigurationType(configurationTypeAlias);
     if (menuType == null) {
       log.error(
           "Unknown configuration {} for {} from {}", configurationTypeAlias, easyNPC, serverPlayer);
@@ -125,7 +125,7 @@ public interface MenuHandlerInterface {
     }
     AdditionalScreenData.addBlockedActionTypes(additionalSyncData, blockedActionTypes);
 
-    openEditorMenu(
+    this.openEditorMenu(
         editorType,
         serverPlayer,
         easyNPC,
@@ -143,7 +143,7 @@ public interface MenuHandlerInterface {
       final EasyNPC<?> easyNPC,
       final UUID dialogId,
       final int pageIndex) {
-    openEditorMenu(
+    this.openEditorMenu(
         editorType,
         serverPlayer,
         easyNPC,
@@ -162,7 +162,7 @@ public interface MenuHandlerInterface {
       final UUID dialogId,
       final UUID dialogButtonId,
       final int pageIndex) {
-    openEditorMenu(
+    this.openEditorMenu(
         editorType,
         serverPlayer,
         easyNPC,
@@ -189,7 +189,7 @@ public interface MenuHandlerInterface {
       return;
     }
 
-    final MenuType<? extends EditorMenu> menuType = getMenuTypeByEditorType(editorType);
+    final MenuType<? extends EditorMenu> menuType = this.getMenuTypeByEditorType(editorType);
     if (menuType == null) {
       log.error("Unknown editor {} for {} from {}", editorType, easyNPC, serverPlayer);
       return;
@@ -214,7 +214,7 @@ public interface MenuHandlerInterface {
 
   default void openCustomMenu(
       final CustomMenuType customMenuType, final ServerPlayer serverPlayer) {
-    MenuType<? extends ConfigUIMenu> menuType = getMenuTypeByCustomType(customMenuType);
+    MenuType<? extends ConfigUIMenu> menuType = this.getMenuTypeByCustomType(customMenuType);
     if (menuType == null) {
       log.error("Unable to get menu type for custom menu type: {}", customMenuType);
       return;

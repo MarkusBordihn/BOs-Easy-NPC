@@ -80,6 +80,7 @@ class PresetBatchImportCommand extends Command {
       if (!FeatureSecurity.checkActorFeatureAccess(serverPlayer, NpcFeature.SPAWN_NPC).allowed()) {
         return sendFailureMessage(context, PresetFeedback.spawnDenied());
       }
+
       if (keepIdentity
           && !FeatureSecurity.checkActorFeatureAccess(serverPlayer, NpcFeature.POSITION)
               .allowed()) {
@@ -92,6 +93,7 @@ class PresetBatchImportCommand extends Command {
     if (matches.isEmpty()) {
       return sendFailureMessage(context, PresetFeedback.batchNoMatches(pattern));
     }
+
     if (matches.size() > SecurityConfig.NPC_PRESET_BATCH_LIMIT) {
       return sendFailureMessage(
           context,

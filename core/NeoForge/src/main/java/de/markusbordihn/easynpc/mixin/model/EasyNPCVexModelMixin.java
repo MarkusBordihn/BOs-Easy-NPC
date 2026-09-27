@@ -53,7 +53,7 @@ public class EasyNPCVexModelMixin implements EasyNPCModelManagerAccessor {
   }
 
   @Inject(method = "<init>(Lnet/minecraft/client/model/geom/ModelPart;)V", at = @At("TAIL"))
-  private void easyNpcModel(ModelPart modelPart, CallbackInfo callbackInfo) {
+  private void easyNPC$initModelManager(ModelPart modelPart, CallbackInfo callbackInfo) {
     this.easyNPC$modelManager =
         new EasyNPCModelManager(modelPart)
             .defineModelPart(ModelPartType.HEAD, this.head)
@@ -68,7 +68,7 @@ public class EasyNPCVexModelMixin implements EasyNPCModelManagerAccessor {
       method = "setupAnim(Lnet/minecraft/client/renderer/entity/state/VexRenderState;)V",
       at = @At("HEAD"),
       cancellable = true)
-  private void setupNpcAnimStart(VexRenderState renderState, CallbackInfo callbackInfo) {
+  private void easyNPC$setupAnimStart(VexRenderState renderState, CallbackInfo callbackInfo) {
     if (renderState instanceof EasyNPCRenderStateExtension extension
         && EasyNPCModel.setupAnimationStart(extension, this.easyNPC$modelManager)) {
       callbackInfo.cancel();
@@ -78,7 +78,7 @@ public class EasyNPCVexModelMixin implements EasyNPCModelManagerAccessor {
   @Inject(
       method = "setupAnim(Lnet/minecraft/client/renderer/entity/state/VexRenderState;)V",
       at = @At("TAIL"))
-  private void setupNpcAnimEnd(VexRenderState renderState, CallbackInfo callbackInfo) {
+  private void easyNPC$setupAnimEnd(VexRenderState renderState, CallbackInfo callbackInfo) {
     if (renderState instanceof EasyNPCRenderStateExtension extension) {
       EasyNPCModel.setupAnimationEnd(extension, this.easyNPC$modelManager);
     }

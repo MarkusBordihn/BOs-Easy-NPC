@@ -42,13 +42,10 @@ public class CombatAttributeConfigurationScreen<T extends ConfigurationMenu>
   public void init() {
     super.init();
 
-    // Default button stats
     this.combatAttributeButton.active = false;
 
-    // Button rows
     int firstButtonRow = this.leftPos + 10;
 
-    // Attribute data
     AttributeDataCapable<?> attributeData = this.getEasyNPC().getEasyNPCAttributeData();
     EntityAttributes entityAttributes = attributeData.getEntityAttributes();
 

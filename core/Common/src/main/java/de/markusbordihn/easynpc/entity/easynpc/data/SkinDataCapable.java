@@ -41,15 +41,15 @@ public interface SkinDataCapable<T extends Mob> extends EasyNPC<T> {
   }
 
   default String getSkinURL() {
-    return getSkinDataEntry().url();
+    return this.getSkinDataEntry().url();
   }
 
   default UUID getSkinUUID() {
-    return getSkinDataEntry().uuid();
+    return this.getSkinDataEntry().uuid();
   }
 
   default SkinType getSkinType() {
-    return getSkinDataEntry().type();
+    return this.getSkinDataEntry().type();
   }
 
   default SkinModel getSkinModel() {
@@ -57,26 +57,24 @@ public interface SkinDataCapable<T extends Mob> extends EasyNPC<T> {
   }
 
   default SkinDataEntry getSkinDataEntry() {
-    return getSynchedEntityData(SynchedDataIndex.SKIN_DATA);
+    return this.getSynchedEntityData(SynchedDataIndex.SKIN_DATA);
   }
 
   default void setSkinDataEntry(SkinDataEntry skinDataEntry) {
-    setSynchedEntityData(SynchedDataIndex.SKIN_DATA, skinDataEntry);
+    this.setSynchedEntityData(SynchedDataIndex.SKIN_DATA, skinDataEntry);
   }
 
   default void defineSynchedSkinData(SynchedEntityData.Builder builder) {
-    defineSynchedEntityData(builder, SynchedDataIndex.SKIN_DATA, new SkinDataEntry());
+    this.defineSynchedEntityData(builder, SynchedDataIndex.SKIN_DATA, new SkinDataEntry());
   }
 
   default void addAdditionalSkinData(ValueOutput valueOutput) {
     CompoundTag skinTag = new CompoundTag();
-    getSkinDataEntry().write(skinTag);
+    this.getSkinDataEntry().write(skinTag);
     valueOutput.store(EASY_NPC_DATA_SKIN_DATA_TAG, CompoundTag.CODEC, skinTag);
   }
 
   default void readAdditionalSkinData(ValueInput valueInput) {
-
-    // Early exit if no skin data is available.
     Optional<CompoundTag> compoundTagData =
         valueInput.read(EASY_NPC_DATA_SKIN_DATA_TAG, CompoundTag.CODEC);
     if (compoundTagData.isEmpty()) {
@@ -84,7 +82,6 @@ public interface SkinDataCapable<T extends Mob> extends EasyNPC<T> {
       return;
     }
 
-    // Load skin data from new format
     SkinDataEntry skinDataEntry = new SkinDataEntry(compoundTagData.get());
     this.setSkinDataEntry(skinDataEntry);
   }

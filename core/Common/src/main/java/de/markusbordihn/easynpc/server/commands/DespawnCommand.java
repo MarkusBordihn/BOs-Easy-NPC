@@ -42,7 +42,7 @@ public class DespawnCommand extends Command {
 
   public static ArgumentBuilder<CommandSourceStack, ?> register() {
     return Commands.literal("despawn")
-        .requires(cs -> true)
+        .requires(commandSourceStack -> true)
         .then(
             Commands.argument(NPC_TARGETS_ARG, EasyNPCArgument.npc())
                 .executes(

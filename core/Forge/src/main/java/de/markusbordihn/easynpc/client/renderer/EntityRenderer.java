@@ -44,9 +44,8 @@ public class EntityRenderer {
   private EntityRenderer() {}
 
   public static void register(EntityRenderersEvent.RegisterRenderers event) {
-    log.info("{} Entity Renders ...", Constants.LOG_REGISTER_PREFIX);
+    log.info("{} Entity Renderers ...", Constants.LOG_REGISTER_PREFIX);
 
-    // Raw entities (for modding only)
     for (ModRawEntityRenderer renderer : ModRawEntityRenderer.values()) {
       registerEntityRendererSafe(
           event,
@@ -54,7 +53,6 @@ public class EntityRenderer {
           context -> renderer.getRenderer().apply(context));
     }
 
-    // Pre-defined NPCs
     for (ModNPCEntityRenderer renderer : ModNPCEntityRenderer.values()) {
       registerEntityRendererSafe(
           event,
@@ -62,7 +60,6 @@ public class EntityRenderer {
           context -> renderer.getRenderer().apply(context));
     }
 
-    // Custom NPCs
     for (ModCustomEntityRenderer renderer : ModCustomEntityRenderer.values()) {
       registerEntityRendererSafe(
           event,
@@ -70,7 +67,6 @@ public class EntityRenderer {
           context -> renderer.getRenderer().apply(context));
     }
 
-    // Epic Fight NPCs
     if (CompatConstants.MOD_EPIC_FIGHT_LOADED) {
       for (ModEpicFightEntityRenderer renderer : ModEpicFightEntityRenderer.values()) {
         registerEntityRendererSafe(

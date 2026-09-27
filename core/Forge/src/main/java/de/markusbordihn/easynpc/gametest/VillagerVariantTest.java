@@ -19,18 +19,13 @@
 
 package de.markusbordihn.easynpc.gametest;
 
-import de.markusbordihn.easynpc.entity.ModEntityType;
-import de.markusbordihn.easynpc.entity.ModNPCEntityType;
+import static de.markusbordihn.easynpc.gametest.GameTestEntityTypes.villager;
+
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraft.world.entity.EntityType;
 
 public final class VillagerVariantTest {
 
   private VillagerVariantTest() {}
-
-  private static EntityType<?> villager() {
-    return ModEntityType.getEntityType(ModNPCEntityType.VILLAGER);
-  }
 
   public static void testVillagerVariantResolvesProfessionAndType(GameTestHelper helper) {
     VillagerVariantTestHelper.assertVillagerVariantResolvesProfessionAndType(helper, villager());

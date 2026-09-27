@@ -52,6 +52,7 @@ public enum DisplayAttributeType {
     if (displayAttributeType == null || displayAttributeType.isEmpty()) {
       return DisplayAttributeType.NONE;
     }
+
     try {
       return DisplayAttributeType.valueOf(displayAttributeType);
     } catch (IllegalArgumentException e) {

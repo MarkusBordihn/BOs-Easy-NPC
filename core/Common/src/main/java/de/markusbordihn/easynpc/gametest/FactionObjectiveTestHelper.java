@@ -118,7 +118,6 @@ public class FactionObjectiveTestHelper {
     FactionHandler.setFaction(blueNPC, "blue");
     FactionData.get().addHostileFaction("red", "blue");
 
-    // Without the attackable-by-factions attribute, the invulnerable NPC can not be targeted.
     GameTestHelpers.assertTrue(
         helper,
         "Red NPC should not be able to attack blue NPC without attackable-by-factions",
@@ -175,7 +174,6 @@ public class FactionObjectiveTestHelper {
     ServerPlayer serverPlayer = GameTestHelpers.mockServerPlayer(helper, new Vec3(1, 2, 1));
     DamageSource playerAttack = helper.getLevel().damageSources().playerAttack(serverPlayer);
 
-    // Without a faction team membership, the player is still blocked by invulnerability.
     GameTestHelpers.assertTrue(
         helper,
         "Player without faction team should not damage the invulnerable NPC",
@@ -191,14 +189,12 @@ public class FactionObjectiveTestHelper {
         "Player in hostile faction team should damage the invulnerable NPC",
         !blueNPC.getLivingEntity().isInvulnerableTo(helper.getLevel(), playerAttack));
 
-    // Leaving the team restores the invulnerability protection for the player.
     scoreboard.removePlayerFromTeam(serverPlayer.getScoreboardName(), redTeam);
     GameTestHelpers.assertTrue(
         helper,
         "Player without faction team should be blocked again",
         blueNPC.getLivingEntity().isInvulnerableTo(helper.getLevel(), playerAttack));
 
-    // Attackable by players opens player damage independent of the invulnerability protection.
     AttributeHandler.setCombatAttribute(
         blueNPC, CombatAttributeType.IS_ATTACKABLE_BY_PLAYERS, true);
     GameTestHelpers.assertTrue(

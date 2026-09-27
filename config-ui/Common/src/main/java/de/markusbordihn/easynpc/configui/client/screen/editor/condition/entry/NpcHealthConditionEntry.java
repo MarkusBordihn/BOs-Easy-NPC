@@ -44,7 +44,7 @@ public class NpcHealthConditionEntry extends ConditionEntryWidget {
 
   @Override
   public void init(int editorLeft, int editorTop) {
-    boolean hasData = hasConditionData(ConditionType.NPC_HEALTH);
+    boolean hasData = this.hasConditionData(ConditionType.NPC_HEALTH);
     this.operationTypeButton =
         this.addComparisonOperationButton(
             editorLeft + 110, editorTop, hasData, ConditionOperationType.LESS_THAN_OR_EQUALS);

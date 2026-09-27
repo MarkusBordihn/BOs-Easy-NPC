@@ -46,10 +46,8 @@ public class BasicPoseConfigurationScreen<T extends ConfigurationMenu>
 
   private RangeSliderButton createVisibilityRotationSlider(
       int left, int top, ModelPartType modelPartType) {
-    // Model Part Rotation
-    RangeSliderButton sliderRotationButtonX = createRotationSlider(left, top, modelPartType);
+    RangeSliderButton sliderRotationButtonX = this.createRotationSlider(left, top, modelPartType);
 
-    // Model Part Visibility
     boolean modelPartTypeVisibility = this.modelData.getModelPartVisibility(modelPartType);
     this.addRenderableWidget(
         new Checkbox(
@@ -69,23 +67,20 @@ public class BasicPoseConfigurationScreen<T extends ConfigurationMenu>
   public void init() {
     super.init();
 
-    // Default button stats
     this.basicPoseButton.active = false;
 
-    // Position and size
     int sliderLeftDefaultPos = this.contentLeftPos - 3;
     int sliderTopPos = this.contentTopPos + 42;
     int sliderLeftPos = sliderLeftDefaultPos;
     int sliderLeftSpace = 200;
     int sliderTopSpace = 60;
 
-    // Model Parts
     Set<ModelPartType> modelPartTypes = this.modelData.getModelType().getPrimaryModelParts();
     int partsOnRow = 0;
     for (ModelPartType modelPartType : modelPartTypes) {
       RangeSliderButton slider =
-          createVisibilityRotationSlider(sliderLeftPos, sliderTopPos, modelPartType);
-      sliders.put(modelPartType, slider);
+          this.createVisibilityRotationSlider(sliderLeftPos, sliderTopPos, modelPartType);
+      this.sliders.put(modelPartType, slider);
 
       sliderLeftPos += sliderLeftSpace;
       partsOnRow++;
@@ -96,14 +91,11 @@ public class BasicPoseConfigurationScreen<T extends ConfigurationMenu>
       }
     }
 
-    // Animation Behavior Button
     this.addRenderableWidget(
         this.createAnimationBehaviorButton(this.contentLeftPos + 118, this.bottomPos - 26));
 
-    // Follow Cursor Toggle Button
     this.createFollowCursorToggleButton(this.contentLeftPos + 149, this.topPos + 45);
 
-    // Lock Rotation Checkbox
     this.createLockRotationCheckbox(this.contentLeftPos + 125, this.topPos + 28);
 
     // Auto-disable lock rotation only when coming from a named preset (DEFAULT) pose
@@ -124,7 +116,6 @@ public class BasicPoseConfigurationScreen<T extends ConfigurationMenu>
       GuiGraphicsExtractor guiGraphics, int x, int y, float partialTicks) {
     super.extractRenderState(guiGraphics, x, y, partialTicks);
 
-    // Avatar
     EntityRenderConfig renderConfig =
         EntityRenderConfig.guiScaled(this.contentLeftPos + 157, this.contentTopPos + 110, 50);
     EntityConfigScreenRenderer.renderEntityRaw(
@@ -134,9 +125,8 @@ public class BasicPoseConfigurationScreen<T extends ConfigurationMenu>
         this.getPreviewRotationYaw(this.xMouse, renderConfig),
         this.getPreviewRotationPitch(this.yMouse, renderConfig));
 
-    // Model Part texts
-    for (ModelPartType modelPart : sliders.keySet()) {
-      RangeSliderButton slider = sliders.get(modelPart);
+    for (ModelPartType modelPart : this.sliders.keySet()) {
+      RangeSliderButton slider = this.sliders.get(modelPart);
       if (slider != null) {
         Text.drawConfigString(
             guiGraphics,

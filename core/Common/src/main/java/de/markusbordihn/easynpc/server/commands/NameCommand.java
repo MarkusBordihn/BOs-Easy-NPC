@@ -42,7 +42,9 @@ public class NameCommand extends Command {
 
   public static ArgumentBuilder<CommandSourceStack, ?> register() {
     return Commands.literal("name")
-        .requires(cs -> cs.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER))
+        .requires(
+            commandSourceStack ->
+                commandSourceStack.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER))
         .then(
             Commands.literal("set")
                 .then(
@@ -132,6 +134,7 @@ public class NameCommand extends Command {
     if (NameHandler.setCustomName(easyNPC, name, -1, NameVisibilityType.ALWAYS)) {
       return sendSuccessMessage(context, "Set name of " + easyNPC + " to " + name);
     }
+
     return 0;
   }
 
@@ -158,6 +161,7 @@ public class NameCommand extends Command {
               + " with color "
               + chatFormatting.name().toLowerCase(Locale.ROOT));
     }
+
     return 0;
   }
 
@@ -195,6 +199,7 @@ public class NameCommand extends Command {
               + " and visibility "
               + visibility.name().toLowerCase(Locale.ROOT));
     }
+
     return 0;
   }
 
@@ -226,6 +231,7 @@ public class NameCommand extends Command {
           context,
           "Set color of " + easyNPC + " name to " + chatFormatting.name().toLowerCase(Locale.ROOT));
     }
+
     return 0;
   }
 
@@ -254,6 +260,7 @@ public class NameCommand extends Command {
               + " name to "
               + visibility.name().toLowerCase(Locale.ROOT));
     }
+
     return 0;
   }
 
@@ -265,6 +272,7 @@ public class NameCommand extends Command {
     if (NameHandler.setCustomName(easyNPC, "", -1, NameVisibilityType.NEVER)) {
       return sendSuccessMessage(context, "Cleared name of " + easyNPC);
     }
+
     return 0;
   }
 

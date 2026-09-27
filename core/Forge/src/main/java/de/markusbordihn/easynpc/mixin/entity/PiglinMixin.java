@@ -38,9 +38,9 @@ public abstract class PiglinMixin extends AbstractPiglin {
   }
 
   @Inject(method = "customServerAiStep", at = @At("HEAD"), cancellable = true)
-  public void onCustomServerAiStep(CallbackInfo ci) {
+  public void onCustomServerAiStep(CallbackInfo callbackInfo) {
     if ((Object) this instanceof EasyNPC<?> && this.isAlive()) {
-      ci.cancel();
+      callbackInfo.cancel();
     }
   }
 }

@@ -51,12 +51,10 @@ public class ReloadHandler {
       return false;
     }
 
-    // Save entity data using TagValueOutput
     TagValueOutput tagValueOutput = TagValueOutput.createWithoutContext(ProblemReporter.DISCARDING);
     easyNPC.getEntity().saveWithoutId(tagValueOutput);
     CompoundTag compoundTag = tagValueOutput.buildResult();
 
-    // Reload entity data using TagValueInput
     log.debug("Reloading NPC {} at position {}", easyNPC.getEntityUUID(), entity.position());
     entity.load(
         TagValueInput.create(
@@ -65,7 +63,6 @@ public class ReloadHandler {
     // Fix possible legacy custom name.
     CompoundTagUtils.fixLegacyCustomName(entity);
 
-    // Force update visibility for all players
     entity.refreshDimensions();
     return true;
   }

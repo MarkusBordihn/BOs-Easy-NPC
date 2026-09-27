@@ -62,10 +62,10 @@ public record ChangeFactionMessage(UUID uuid, String factionName) implements Net
 
   @Override
   public void handleServer(final ServerPlayer serverPlayer) {
-    EasyNPC<?> easyNPC = getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
+    EasyNPC<?> easyNPC = this.getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
 
     if (easyNPC == null || this.factionName == null) {
-      log.error("Invalid data to change faction for {}: ", this);
+      log.error("Invalid data to change faction for {}", this);
       return;
     }
 

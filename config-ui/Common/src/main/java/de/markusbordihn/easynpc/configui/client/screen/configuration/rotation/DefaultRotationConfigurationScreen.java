@@ -58,10 +58,8 @@ public class DefaultRotationConfigurationScreen<T extends ConfigurationMenu>
   public void init() {
     super.init();
 
-    // Default button stats
     this.defaultRotationButton.active = false;
 
-    // Root Rotations
     ModelDataCapable<?> modelData = this.getEasyNPC().getEasyNPCModelData();
     CustomRotation rootRotation = modelData.getModelRootData().rotation();
 
@@ -70,7 +68,6 @@ public class DefaultRotationConfigurationScreen<T extends ConfigurationMenu>
     int sliderLeftPosition = this.contentLeftPos + 10;
     int sliderTopPosition = this.contentTopPos;
 
-    // Root Rotation X
     RangeSliderButton sliderButtonX =
         this.addRenderableWidget(
             new RangeSliderButton(
@@ -84,11 +81,10 @@ public class DefaultRotationConfigurationScreen<T extends ConfigurationMenu>
                 false,
                 slider -> {
                   CustomRotation current = modelData.getModelRootData().rotation();
-                  sendRotationUpdate(
+                  this.sendRotationUpdate(
                       (float) Math.toRadians(slider.getTargetValue()), current.y(), current.z());
                 }));
 
-    // Root Rotation Y
     RangeSliderButton sliderButtonY =
         this.addRenderableWidget(
             new RangeSliderButton(
@@ -102,10 +98,9 @@ public class DefaultRotationConfigurationScreen<T extends ConfigurationMenu>
                 false,
                 slider -> {
                   CustomRotation current = modelData.getModelRootData().rotation();
-                  sendRotationUpdate(current.x(), slider.getTargetValue(), current.z());
+                  this.sendRotationUpdate(current.x(), slider.getTargetValue(), current.z());
                 }));
 
-    // Root Rotation Z
     RangeSliderButton sliderButtonZ =
         this.addRenderableWidget(
             new RangeSliderButton(
@@ -119,11 +114,10 @@ public class DefaultRotationConfigurationScreen<T extends ConfigurationMenu>
                 false,
                 slider -> {
                   CustomRotation current = modelData.getModelRootData().rotation();
-                  sendRotationUpdate(
+                  this.sendRotationUpdate(
                       current.x(), current.y(), (float) Math.toRadians(slider.getTargetValue()));
                 }));
 
-    // Edit / Done Button
     this.addRenderableWidget(
         new TextButton(
             this.contentLeftPos,
@@ -144,7 +138,6 @@ public class DefaultRotationConfigurationScreen<T extends ConfigurationMenu>
               }
             }));
 
-    // Reset Button
     int resetButtonLeftPosition = sliderButtonZ.getX() + sliderButtonZ.getWidth();
     this.addRenderableWidget(
         new TextButton(
@@ -156,10 +149,9 @@ public class DefaultRotationConfigurationScreen<T extends ConfigurationMenu>
               sliderButtonX.reset();
               sliderButtonY.reset();
               sliderButtonZ.reset();
-              sendRotationUpdate(0, 0, 0);
+              this.sendRotationUpdate(0, 0, 0);
             }));
 
-    // Lock Root Rotation Checkbox
     this.rootRotationCheckbox =
         this.addRenderableWidget(
             new Checkbox(
@@ -196,7 +188,6 @@ public class DefaultRotationConfigurationScreen<T extends ConfigurationMenu>
       GuiGraphicsExtractor guiGraphics, int x, int y, float partialTicks) {
     super.extractRenderState(guiGraphics, x, y, partialTicks);
 
-    // Rotation axis labels
     int labelYPosition = this.contentTopPos + 19;
     Text.drawString(guiGraphics, this.font, "X", this.contentLeftPos + 45, labelYPosition);
     Text.drawString(guiGraphics, this.font, "Y", this.contentLeftPos + 125, labelYPosition);

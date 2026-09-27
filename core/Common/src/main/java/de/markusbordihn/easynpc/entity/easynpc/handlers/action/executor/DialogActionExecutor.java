@@ -42,6 +42,7 @@ public class DialogActionExecutor {
         actionDataEntry, serverPlayer, dialogData != null ? dialogData.getLivingEntity() : null)) {
       return;
     }
+
     if (dialogData != null) {
       dialogData.openDefaultDialog(serverPlayer);
     } else {
@@ -106,6 +107,7 @@ public class DialogActionExecutor {
       serverPlayer.closeContainer();
       return null;
     }
+
     DialogDataCapable<?> targetDialogData = targetNpc.getEasyNPCDialogData();
     if (targetDialogData == null) {
       log.error("No dialog data found for NPC {}", actionDataEntry.targetUUID());

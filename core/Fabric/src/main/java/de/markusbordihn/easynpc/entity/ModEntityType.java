@@ -48,7 +48,6 @@ public class ModEntityType {
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   static {
-    // Raw entities (for modding only)
     for (ModRawEntityType type : ModRawEntityType.values()) {
       log.debug("Registering raw entity type {}", type.getResourceKey());
       RAW_TYPE.put(
@@ -60,7 +59,6 @@ public class ModEntityType {
     }
     log.info("Registered {} raw entity types.", RAW_TYPE.size());
 
-    // Pre-defined NPCs
     for (ModNPCEntityType type : ModNPCEntityType.values()) {
       log.debug("Registering NPC entity type {}", type.getResourceKey());
       NPC_TYPE.put(
@@ -72,7 +70,6 @@ public class ModEntityType {
     }
     log.info("Registered {} NPC entity types.", NPC_TYPE.size());
 
-    // Custom NPCs
     for (ModCustomEntityType type : ModCustomEntityType.values()) {
       log.debug("Registering custom entity type {}", type.getResourceKey());
       CUSTOM_TYPE.put(
@@ -152,7 +149,6 @@ public class ModEntityType {
 
   public static void registerEntityAttributes() {
 
-    // Raw entities (for modding only)
     for (ModRawEntityType type : ModRawEntityType.values()) {
       if (type.getAttributes() != null) {
         FabricDefaultAttributeRegistry.register(
@@ -163,7 +159,6 @@ public class ModEntityType {
       }
     }
 
-    // Pre-defined NPCs
     for (ModNPCEntityType type : ModNPCEntityType.values()) {
       if (type.getAttributes() != null) {
         FabricDefaultAttributeRegistry.register(
@@ -174,7 +169,6 @@ public class ModEntityType {
       }
     }
 
-    // Custom NPCs
     for (ModCustomEntityType type : ModCustomEntityType.values()) {
       if (type.getAttributes() != null) {
         FabricDefaultAttributeRegistry.register(

@@ -39,6 +39,7 @@ public enum ModelArmPose {
     if (armPose == null || armPose.isEmpty()) {
       return ModelArmPose.DEFAULT;
     }
+
     try {
       return ModelArmPose.valueOf(armPose);
     } catch (IllegalArgumentException e) {

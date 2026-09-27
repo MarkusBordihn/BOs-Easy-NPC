@@ -19,24 +19,16 @@
 
 package de.markusbordihn.easynpc.gametest;
 
-import de.markusbordihn.easynpc.entity.ModEntityType;
-import de.markusbordihn.easynpc.entity.ModNPCEntityType;
+import static de.markusbordihn.easynpc.gametest.GameTestEntityTypes.humanoid;
+import static de.markusbordihn.easynpc.gametest.GameTestEntityTypes.villager;
+
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraft.world.entity.EntityType;
 
 public final class StoredDataTest {
 
   private StoredDataTest() {}
 
-  private static EntityType<?> humanoid() {
-    return ModEntityType.getEntityType(ModNPCEntityType.HUMANOID);
-  }
-
-  private static EntityType<?> villager() {
-    return ModEntityType.getEntityType(ModNPCEntityType.VILLAGER);
-  }
-
-  public static void testNpcWithoutStoredSoundsStillHasSounds(GameTestHelper helper) {
+  public static void testNPCWithoutStoredSoundsStillHasSounds(GameTestHelper helper) {
     StoredDataTestHelper.assertNpcWithoutStoredSoundsStillHasSounds(helper, humanoid());
     helper.succeed();
   }
@@ -56,12 +48,12 @@ public final class StoredDataTest {
     helper.succeed();
   }
 
-  public static void testUnchangedNpcStoresNoBoilerplate(GameTestHelper helper) {
+  public static void testUnchangedNPCStoresNoBoilerplate(GameTestHelper helper) {
     StoredDataTestHelper.assertUnchangedNpcStoresNoBoilerplate(helper, humanoid());
     helper.succeed();
   }
 
-  public static void testStoredNpcDataIsDeterministic(GameTestHelper helper) {
+  public static void testStoredNPCDataIsDeterministic(GameTestHelper helper) {
     StoredDataTestHelper.assertStoredNpcDataIsDeterministic(helper, humanoid());
     helper.succeed();
   }

@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.client.texture;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import de.markusbordihn.easynpc.data.skin.SkinModel;
 import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -38,9 +39,7 @@ class TextureErrorHandlerTest {
   @Test
   void testProcessingErrorMessage() {
     TextureErrorHandler.clearLastErrorMessage();
-    TextureModelKey key =
-        new TextureModelKey(
-            UUID.randomUUID(), de.markusbordihn.easynpc.data.skin.SkinModel.HUMANOID, "test");
+    TextureModelKey key = new TextureModelKey(UUID.randomUUID(), SkinModel.HUMANOID, "test");
 
     TextureErrorHandler.processingErrorMessage(
         key, "http://example.com/texture.png", "Invalid format");
@@ -56,9 +55,7 @@ class TextureErrorHandlerTest {
   @Test
   void testUrlLoadErrorMessage() {
     TextureErrorHandler.clearLastErrorMessage();
-    TextureModelKey key =
-        new TextureModelKey(
-            UUID.randomUUID(), de.markusbordihn.easynpc.data.skin.SkinModel.HUMANOID, "test");
+    TextureModelKey key = new TextureModelKey(UUID.randomUUID(), SkinModel.HUMANOID, "test");
 
     TextureErrorHandler.urlLoadErrorMessage(
         key, "http://example.com/texture.png", "Connection timeout");
@@ -73,9 +70,7 @@ class TextureErrorHandlerTest {
 
   @Test
   void testClearErrorMessage() {
-    TextureModelKey key =
-        new TextureModelKey(
-            UUID.randomUUID(), de.markusbordihn.easynpc.data.skin.SkinModel.HUMANOID, "test");
+    TextureModelKey key = new TextureModelKey(UUID.randomUUID(), SkinModel.HUMANOID, "test");
     TextureErrorHandler.processingErrorMessage(key, "http://example.com", "Test error");
 
     assertTrue(TextureErrorHandler.hasLastErrorMessage());
@@ -89,12 +84,8 @@ class TextureErrorHandlerTest {
   @Test
   void testOverwriteErrorMessage() {
     TextureErrorHandler.clearLastErrorMessage();
-    TextureModelKey key1 =
-        new TextureModelKey(
-            UUID.randomUUID(), de.markusbordihn.easynpc.data.skin.SkinModel.HUMANOID, "test1");
-    TextureModelKey key2 =
-        new TextureModelKey(
-            UUID.randomUUID(), de.markusbordihn.easynpc.data.skin.SkinModel.HUMANOID, "test2");
+    TextureModelKey key1 = new TextureModelKey(UUID.randomUUID(), SkinModel.HUMANOID, "test1");
+    TextureModelKey key2 = new TextureModelKey(UUID.randomUUID(), SkinModel.HUMANOID, "test2");
 
     TextureErrorHandler.processingErrorMessage(key1, "http://example.com/1", "First error");
     String firstMessage = TextureErrorHandler.getLastErrorMessage();

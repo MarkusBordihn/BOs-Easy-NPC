@@ -38,6 +38,9 @@ import de.markusbordihn.easynpc.data.synched.SynchedEntityData;
 import de.markusbordihn.easynpc.data.ticker.TickerType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPCBase;
+import de.markusbordihn.easynpc.entity.easynpc.ai.control.EasyNPCBodyRotationControl;
+import de.markusbordihn.easynpc.entity.easynpc.ai.control.EasyNPCFlyingMoveControl;
+import de.markusbordihn.easynpc.entity.easynpc.ai.control.EasyNPCLookControl;
 import de.markusbordihn.easynpc.entity.easynpc.ai.control.EasyNPCSwimmingLookControl;
 import de.markusbordihn.easynpc.entity.easynpc.ai.control.EasyNPCSwimmingMoveControl;
 import de.markusbordihn.easynpc.entity.easynpc.ai.navigation.EasyNPCWaterBoundPathNavigation;
@@ -49,6 +52,8 @@ import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
 import de.markusbordihn.easynpc.server.player.FakePlayer;
 import de.markusbordihn.easynpc.utils.TextUtils;
 import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
@@ -57,6 +62,7 @@ import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData.Builder;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
@@ -120,25 +126,21 @@ public class NPCRawTemplate extends Zombie
   private static final UniformInt PERSISTENT_ANGER_TIME = TimeUtil.rangeOfSeconds(20, 39);
 
   static {
-    // Attack Data
     entityDataAccessorMap.put(
         SynchedDataIndex.ATTACK_IS_CHARGING_CROSSBOW,
         net.minecraft.network.syncher.SynchedEntityData.defineId(
             NPCRawTemplate.class, EntityDataSerializers.BOOLEAN));
 
-    // Attribute Data
     entityDataAccessorMap.put(
         SynchedDataIndex.ENTITY_ATTRIBUTES,
         net.minecraft.network.syncher.SynchedEntityData.defineId(
             NPCRawTemplate.class, EntityDataSerializersManager.ENTITY_ATTRIBUTES));
 
-    // Display Attribute Data
     entityDataAccessorMap.put(
         SynchedDataIndex.DISPLAY_ATTRIBUTE_SET,
         net.minecraft.network.syncher.SynchedEntityData.defineId(
             NPCRawTemplate.class, EntityDataSerializersManager.DISPLAY_ATTRIBUTE));
 
-    // Model Data
     entityDataAccessorMap.put(
         SynchedDataIndex.MODEL_POSE,
         net.minecraft.network.syncher.SynchedEntityData.defineId(
@@ -172,49 +174,41 @@ public class NPCRawTemplate extends Zombie
         net.minecraft.network.syncher.SynchedEntityData.defineId(
             NPCRawTemplate.class, EntityDataSerializersManager.MODEL_PART_VISIBILITY));
 
-    // Navigation Data
     entityDataAccessorMap.put(
         SynchedDataIndex.NAVIGATION_HOME_POSITION,
         net.minecraft.network.syncher.SynchedEntityData.defineId(
             NPCRawTemplate.class, EntityDataSerializers.BLOCK_POS));
 
-    // Owner Data
     entityDataAccessorMap.put(
         SynchedDataIndex.OWNER_REFERENCE,
         net.minecraft.network.syncher.SynchedEntityData.defineId(
             NPCRawTemplate.class, EntityDataSerializers.OPTIONAL_LIVING_ENTITY_REFERENCE));
 
-    // Profession Data
     entityDataAccessorMap.put(
         SynchedDataIndex.PROFESSION,
         net.minecraft.network.syncher.SynchedEntityData.defineId(
             NPCRawTemplate.class, EntityDataSerializersManager.PROFESSION));
 
-    // Progression Data
     entityDataAccessorMap.put(
         SynchedDataIndex.PROGRESSION,
         net.minecraft.network.syncher.SynchedEntityData.defineId(
             NPCRawTemplate.class, EntityDataSerializersManager.PROGRESSION));
 
-    // Render Data
     entityDataAccessorMap.put(
         SynchedDataIndex.RENDER_DATA,
         net.minecraft.network.syncher.SynchedEntityData.defineId(
             NPCRawTemplate.class, EntityDataSerializersManager.RENDER_DATA_ENTRY));
 
-    // Skin Data
     entityDataAccessorMap.put(
         SynchedDataIndex.SKIN_DATA,
         net.minecraft.network.syncher.SynchedEntityData.defineId(
             NPCRawTemplate.class, EntityDataSerializersManager.SKIN_DATA_ENTRY));
 
-    // Sound Data
     entityDataAccessorMap.put(
         SynchedDataIndex.SOUND_DATA_SET,
         net.minecraft.network.syncher.SynchedEntityData.defineId(
             NPCRawTemplate.class, EntityDataSerializersManager.SOUND_DATA_SET));
 
-    // Trading Data
     entityDataAccessorMap.put(
         SynchedDataIndex.TRADING_DATA_SET,
         net.minecraft.network.syncher.SynchedEntityData.defineId(
@@ -228,7 +222,6 @@ public class NPCRawTemplate extends Zombie
         net.minecraft.network.syncher.SynchedEntityData.defineId(
             NPCRawTemplate.class, EntityDataSerializersManager.MERCHANT_OFFERS));
 
-    // Variant Data
     entityDataAccessorMap.put(
         SynchedDataIndex.VARIANT_TYPE,
         net.minecraft.network.syncher.SynchedEntityData.defineId(
@@ -236,8 +229,7 @@ public class NPCRawTemplate extends Zombie
   }
 
   private final EnumMap<TickerType, Integer> tickerMap = new EnumMap<>(TickerType.class);
-  private final java.util.Map<net.minecraft.resources.Identifier, Integer> customTickerMap =
-      new java.util.HashMap<>();
+  private final Map<Identifier, Integer> customTickerMap = new HashMap<>();
   private final EnumMap<StatusDataType, Boolean> statusDataFlagMap =
       new EnumMap<>(StatusDataType.class);
   private final EnumMap<StatusDataType, Long> statusDataTimestampMap =
@@ -257,15 +249,13 @@ public class NPCRawTemplate extends Zombie
 
   public NPCRawTemplate(EntityType<? extends Zombie> entityType, Level level, Enum<?> variant) {
     super(entityType, level);
-    this.lookControl =
-        new de.markusbordihn.easynpc.entity.easynpc.ai.control.EasyNPCLookControl(this);
+    this.lookControl = new EasyNPCLookControl(this);
     this.registerEasyNPCDefaultVariant(variant);
   }
 
   public NPCRawTemplate(EntityType<? extends Zombie> entityType, Level level) {
     super(entityType, level);
-    this.lookControl =
-        new de.markusbordihn.easynpc.entity.easynpc.ai.control.EasyNPCLookControl(this);
+    this.lookControl = new EasyNPCLookControl(this);
   }
 
   @Override
@@ -279,6 +269,7 @@ public class NPCRawTemplate extends Zombie
       this.fakePlayer = new FakePlayer(level, blockPos);
       return this.fakePlayer;
     }
+
     return this.fakePlayer.updatePosition(level, blockPos);
   }
 
@@ -293,12 +284,12 @@ public class NPCRawTemplate extends Zombie
   }
 
   @Override
-  public int getCustomTicker(net.minecraft.resources.Identifier tickerId) {
+  public int getCustomTicker(Identifier tickerId) {
     return this.customTickerMap.getOrDefault(tickerId, 0);
   }
 
   @Override
-  public void setCustomTicker(net.minecraft.resources.Identifier tickerId, int ticker) {
+  public void setCustomTicker(Identifier tickerId, int ticker) {
     this.customTickerMap.put(tickerId, ticker);
   }
 
@@ -451,7 +442,7 @@ public class NPCRawTemplate extends Zombie
       SpawnGroupData spawnGroupData) {
     AttributeHandler.handleDefaultAttributes(this);
     SpawnGroupData result =
-        finalizeEasyNPCSpawn(
+        this.finalizeEasyNPCSpawn(
             super.finalizeSpawn(
                 serverLevelAccessor, difficulty, entitySpawnReason, spawnGroupData));
     this.refreshDimensions();
@@ -562,23 +553,25 @@ public class NPCRawTemplate extends Zombie
 
   @Override
   public boolean canBeLeashed() {
-    return super.canBeLeashed() && getEntityAttributes().getInteractionAttributes().canBeLeashed();
+    return super.canBeLeashed()
+        && this.getEntityAttributes().getInteractionAttributes().canBeLeashed();
   }
 
   @Override
   public boolean isAttackable() {
-    return getEntityAttributes().getCombatAttributes().isAttackableByPlayers()
-        || getEntityAttributes().getCombatAttributes().isAttackableByFactions();
+    return this.getEntityAttributes().getCombatAttributes().isAttackableByPlayers()
+        || this.getEntityAttributes().getCombatAttributes().isAttackableByFactions();
   }
 
   @Override
   public boolean isPushable() {
-    return !this.isImmovable() && getEntityAttributes().getInteractionAttributes().isPushable();
+    return !this.isImmovable()
+        && this.getEntityAttributes().getInteractionAttributes().isPushable();
   }
 
   @Override
   public boolean canBeHitByProjectile() {
-    return getEntityAttributes().getInteractionAttributes().canBeHitByProjectile()
+    return this.getEntityAttributes().getInteractionAttributes().canBeHitByProjectile()
         && this.isAlive();
   }
 
@@ -590,14 +583,15 @@ public class NPCRawTemplate extends Zombie
 
   @Override
   protected void pushEntities() {
-    if (!this.isImmovable() && getEntityAttributes().getInteractionAttributes().pushEntities()) {
+    if (!this.isImmovable()
+        && this.getEntityAttributes().getInteractionAttributes().pushEntities()) {
       super.pushEntities();
     }
   }
 
   @Override
   public boolean isInvulnerable() {
-    return getEntityAttributes().getCombatAttributes().isInvulnerable();
+    return this.getEntityAttributes().getCombatAttributes().isInvulnerable();
   }
 
   @Override
@@ -608,15 +602,17 @@ public class NPCRawTemplate extends Zombie
       DamageSource damageSource,
       float damage,
       boolean comesFromEffect) {
-    if (this.isImmovable() || getEntityAttributes().getCombatAttributes().isKnockbackResistant()) {
+    if (this.isImmovable()
+        || this.getEntityAttributes().getCombatAttributes().isKnockbackResistant()) {
       return;
     }
+
     super.knockback(strength, x, z, damageSource, damage, comesFromEffect);
   }
 
   @Override
   public boolean ignoreExplosion(Explosion explosion) {
-    return getEntityAttributes().getCombatAttributes().isExplosionResistant()
+    return this.getEntityAttributes().getCombatAttributes().isExplosionResistant()
         || super.ignoreExplosion(explosion);
   }
 
@@ -682,7 +678,7 @@ public class NPCRawTemplate extends Zombie
 
   @Override
   protected void handlePortal() {
-    if (getEntityAttributes().getMovementAttributes().canUseNetherPortal()) {
+    if (this.getEntityAttributes().getMovementAttributes().canUseNetherPortal()) {
       super.handlePortal();
     }
   }
@@ -710,6 +706,7 @@ public class NPCRawTemplate extends Zombie
     if (this.anchorImmovablePosition()) {
       return;
     }
+
     this.handleNavigationTravelEvent(vec3);
     super.travel(vec3);
   }
@@ -749,13 +746,12 @@ public class NPCRawTemplate extends Zombie
     try {
       return ZombieSkinVariant.valueOf(name);
     } catch (IllegalArgumentException e) {
-      return getDefaultSkinVariantType();
+      return this.getDefaultSkinVariantType();
     }
   }
 
   @Override
-  protected void defineSynchedData(
-      net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+  protected void defineSynchedData(Builder builder) {
     super.defineSynchedData(builder);
     this.defineEasyNPCBaseSyncedData(builder);
     this.defineEasyNPCBaseServerSideData();
@@ -804,12 +800,12 @@ public class NPCRawTemplate extends Zombie
   public EntityDimensions getDefaultDimensions(Pose pose) {
     EntityDimensions baseDimensions = super.getDefaultDimensions(pose);
 
-    CustomScale defaultScale = getDefaultModelScale();
+    CustomScale defaultScale = this.getDefaultModelScale();
     if (defaultScale != null && defaultScale.hasChanged()) {
       baseDimensions = baseDimensions.scale(defaultScale.x(), defaultScale.y());
     }
 
-    CustomScale rootScale = getModelRootData().scale();
+    CustomScale rootScale = this.getModelRootData().scale();
     if (rootScale.x() != 1.0f || rootScale.y() != 1.0f) {
       baseDimensions = baseDimensions.scale(rootScale.x(), rootScale.y());
     }
@@ -821,7 +817,7 @@ public class NPCRawTemplate extends Zombie
 
   @Override
   protected BodyRotationControl createBodyControl() {
-    return new de.markusbordihn.easynpc.entity.easynpc.ai.control.EasyNPCBodyRotationControl(this);
+    return new EasyNPCBodyRotationControl(this);
   }
 
   @Override
@@ -857,8 +853,7 @@ public class NPCRawTemplate extends Zombie
     this.navigation = this.createNavigation(this.level());
     switch (navigationType) {
       case FLYING -> {
-        this.moveControl =
-            new de.markusbordihn.easynpc.entity.easynpc.ai.control.EasyNPCFlyingMoveControl(this);
+        this.moveControl = new EasyNPCFlyingMoveControl(this);
         this.lookControl = this.defaultLookControl;
       }
       case AQUATIC -> {
@@ -886,9 +881,11 @@ public class NPCRawTemplate extends Zombie
     if (this == object) {
       return true;
     }
+
     if (!(object instanceof EasyNPCBase<?> easyNPCBase)) {
       return false;
     }
+
     return Objects.equals(this.getUUID(), easyNPCBase.getEntityUUID());
   }
 

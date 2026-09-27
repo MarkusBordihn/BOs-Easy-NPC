@@ -48,7 +48,7 @@ public class EasyNPCGhastModelMixin<T extends GhastRenderState>
   }
 
   @Inject(method = "<init>(Lnet/minecraft/client/model/geom/ModelPart;)V", at = @At("TAIL"))
-  private void easyNpcModel(ModelPart modelPart, CallbackInfo callbackInfo) {
+  private void easyNPC$initModelManager(ModelPart modelPart, CallbackInfo callbackInfo) {
     this.easyNPC$modelManager =
         new EasyNPCModelManager(modelPart)
             .defineModelPart(ModelPartType.BODY, EasyNPCModelManager.MODEL_PART_BODY)
@@ -60,7 +60,7 @@ public class EasyNPCGhastModelMixin<T extends GhastRenderState>
       method = "setupAnim(Lnet/minecraft/client/renderer/entity/state/GhastRenderState;)V",
       at = @At("HEAD"),
       cancellable = true)
-  private void setupNpcAnimStart(T renderState, CallbackInfo callbackInfo) {
+  private void easyNPC$setupAnimStart(T renderState, CallbackInfo callbackInfo) {
     if (renderState instanceof EasyNPCRenderStateExtension extension
         && EasyNPCModel.setupAnimationStart(extension, this.easyNPC$modelManager)) {
       callbackInfo.cancel();
@@ -70,7 +70,7 @@ public class EasyNPCGhastModelMixin<T extends GhastRenderState>
   @Inject(
       method = "setupAnim(Lnet/minecraft/client/renderer/entity/state/GhastRenderState;)V",
       at = @At("TAIL"))
-  private void setupNpcAnimEnd(T renderState, CallbackInfo callbackInfo) {
+  private void easyNPC$setupAnimEnd(T renderState, CallbackInfo callbackInfo) {
     if (renderState instanceof EasyNPCRenderStateExtension extension) {
       EasyNPCModel.setupAnimationEnd(extension, this.easyNPC$modelManager);
     }

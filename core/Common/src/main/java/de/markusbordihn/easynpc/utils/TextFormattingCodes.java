@@ -33,43 +33,40 @@ public class TextFormattingCodes {
   private static final Map<String, String> TEXT_COLOR_CODES =
       Util.make(
           new HashMap<>(),
-          map -> {
-            // Color codes
-            map.put("black", "§0");
-            map.put("dark_blue", "§1");
-            map.put("dark_green", "§2");
-            map.put("dark_aqua", "§3");
-            map.put("dark_red", "§4");
-            map.put("dark_purple", "§5");
-            map.put("gold", "§6");
-            map.put("gray", "§7");
-            map.put("dark_gray", "§8");
-            map.put("blue", "§9");
-            map.put("green", "§a");
-            map.put("aqua", "§b");
-            map.put("red", "§c");
-            map.put("light_purple", "§d");
-            map.put("yellow", "§e");
-            map.put("white", "§f");
+          colorCodes -> {
+            colorCodes.put("black", "§0");
+            colorCodes.put("dark_blue", "§1");
+            colorCodes.put("dark_green", "§2");
+            colorCodes.put("dark_aqua", "§3");
+            colorCodes.put("dark_red", "§4");
+            colorCodes.put("dark_purple", "§5");
+            colorCodes.put("gold", "§6");
+            colorCodes.put("gray", "§7");
+            colorCodes.put("dark_gray", "§8");
+            colorCodes.put("blue", "§9");
+            colorCodes.put("green", "§a");
+            colorCodes.put("aqua", "§b");
+            colorCodes.put("red", "§c");
+            colorCodes.put("light_purple", "§d");
+            colorCodes.put("yellow", "§e");
+            colorCodes.put("white", "§f");
           });
 
   private static final Map<String, String> TEXT_FORMATTING_CODES =
       Util.make(
           new HashMap<>(),
-          map -> {
-            // Formatting codes
-            map.put("obfuscated", "§k");
-            map.put("bold", "§l");
-            map.put("strikethrough", "§m");
-            map.put("underline", "§n");
-            map.put("italic", "§o");
-            map.put("reset", "§r");
+          formattingCodes -> {
+            formattingCodes.put("obfuscated", "§k");
+            formattingCodes.put("bold", "§l");
+            formattingCodes.put("strikethrough", "§m");
+            formattingCodes.put("underline", "§n");
+            formattingCodes.put("italic", "§o");
+            formattingCodes.put("reset", "§r");
 
-            // Short codes
-            map.put("b", "§l");
-            map.put("i", "§o");
-            map.put("u", "§n");
-            map.put("s", "§m");
+            formattingCodes.put("b", "§l");
+            formattingCodes.put("i", "§o");
+            formattingCodes.put("u", "§n");
+            formattingCodes.put("s", "§m");
           });
 
   private static final Set<String> textLinebreakCodes = new HashSet<>(List.of("<br>", "\\n"));

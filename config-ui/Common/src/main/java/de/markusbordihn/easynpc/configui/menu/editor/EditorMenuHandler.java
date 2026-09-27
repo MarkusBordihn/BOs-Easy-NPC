@@ -94,9 +94,7 @@ public class EditorMenuHandler {
       case CONDITION_DATA, CONDITION_DATA_ENTRY ->
           AdditionalScreenData.addDialogDataSet(additionalSyncData, easyNPC);
       case FACTIONS, FACTION -> AdditionalScreenData.addFactionData(additionalSyncData);
-      default -> {
-        // Do nothing
-      }
+      default -> {}
     }
     return new ScreenData(
         npcUUID,

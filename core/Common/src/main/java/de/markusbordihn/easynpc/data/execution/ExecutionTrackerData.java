@@ -102,6 +102,6 @@ public record ExecutionTrackerData(Map<UUID, Map<ExecutionId, ExecutionData>> tr
   }
 
   public CompoundTag save() {
-    return save(new CompoundTag());
+    return this.save(new CompoundTag());
   }
 }
