@@ -51,6 +51,8 @@ public class RemoteTextureLoader {
   private static final int READ_TIMEOUT = 30000;
   private static final long MAX_DOWNLOAD_SIZE = 5 * 1024 * 1024;
   private static final int MAX_REDIRECTS = 5;
+  private static final int HTTP_TEMPORARY_REDIRECT = 307;
+  private static final int HTTP_PERMANENT_REDIRECT = 308;
   private static final String USER_AGENT = Constants.MOD_NAME + " Minecraft remote texture loader";
 
   private RemoteTextureLoader() {}
@@ -65,7 +67,6 @@ public class RemoteTextureLoader {
       return CompletableFuture.completedFuture(null);
     }
 
-    // Check for cached texture.
     NativeImage cachedNativeImage =
         TextureCacheManager.getCachedNativeImage(textureModelKey, targetDirectory);
     if (cachedNativeImage != null) {
@@ -77,7 +78,6 @@ public class RemoteTextureLoader {
       return TextureRegistrationHelper.registerTextureAsync(textureModelKey, cachedNativeImage);
     }
 
-    // Start downloading the remote texture.
     log.warn(
         "{} Starting download of remote texture from {} for {}",
         LOG_PREFIX,
@@ -133,6 +133,7 @@ public class RemoteTextureLoader {
               textureModelKey, TextureFailureType.URL_INVALID, error, redirectUrl.toString());
           return CompletableFuture.completedFuture(null);
         }
+
         log.info("{} Following redirect from {} > {}", LOG_PREFIX, remoteUrl, redirectUrl);
         remoteImageURL = redirectUrl;
         remoteUrl = redirectUrl.toString();
@@ -232,14 +233,15 @@ public class RemoteTextureLoader {
     return responseCode == HttpURLConnection.HTTP_MOVED_PERM
         || responseCode == HttpURLConnection.HTTP_MOVED_TEMP
         || responseCode == HttpURLConnection.HTTP_SEE_OTHER
-        || responseCode == 307
-        || responseCode == 308;
+        || responseCode == HTTP_TEMPORARY_REDIRECT
+        || responseCode == HTTP_PERMANENT_REDIRECT;
   }
 
   private static boolean isBlockedAddress(URL url) {
     if (!RemoteTextureConfig.BLOCK_PRIVATE_ADDRESSES) {
       return false;
     }
+
     try {
       for (InetAddress address : InetAddress.getAllByName(url.getHost())) {
         if (address.isLoopbackAddress()
@@ -276,6 +278,7 @@ public class RemoteTextureLoader {
         || responseCode == HttpURLConnection.HTTP_NOT_FOUND) {
       return TextureFailureType.HTTP_CLIENT_ERROR;
     }
+
     return TextureFailureType.NETWORK_ERROR;
   }
 }

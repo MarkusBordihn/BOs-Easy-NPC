@@ -153,15 +153,19 @@ public record PresetData(
       PresetMetadata metadata,
       CompoundTag data,
       EntityType<?> entityType) {
-    this(
-        metadata != null && metadata.name() != null && !metadata.name().isEmpty()
-            ? metadata.name()
-            : (location != null ? location.getPath() : EMPTY_NAME),
-        entityType,
-        data,
-        location,
-        presetType,
-        metadata);
+    this(resolveName(metadata, location), entityType, data, location, presetType, metadata);
+  }
+
+  private static String resolveName(PresetMetadata metadata, ResourceLocation location) {
+    if (metadata != null && metadata.name() != null && !metadata.name().isEmpty()) {
+      return metadata.name();
+    }
+
+    if (location != null) {
+      return location.getPath();
+    }
+
+    return EMPTY_NAME;
   }
 
   public static boolean usesEntityDataWrapper(CompoundTag compoundTag) {
@@ -270,27 +274,30 @@ public record PresetData(
   }
 
   public boolean hasValidData() {
-    return hasEntityType() && hasData();
+    return this.hasEntityType() && this.hasData();
   }
 
   public String getDisplayName() {
-    if (location != null && metadata != null) {
-      return CustomPresetDataFiles.getPresetDisplayName(location, metadata);
+    if (this.location != null && this.metadata != null) {
+      return CustomPresetDataFiles.getPresetDisplayName(this.location, this.metadata);
     }
-    return name;
+
+    return this.name;
   }
 
   public PresetData withPosition(Vec3 position) {
-    if (position == null || data == null) {
+    if (position == null || this.data == null) {
       return this;
     }
-    CompoundTag updatedData = data.copy();
-    ListTag posTag = new ListTag();
-    posTag.add(DoubleTag.valueOf(position.x));
-    posTag.add(DoubleTag.valueOf(position.y));
-    posTag.add(DoubleTag.valueOf(position.z));
-    updatedData.put(POSITION_TAG, posTag);
-    return new PresetData(name, entityType, updatedData, location, presetType, metadata);
+
+    CompoundTag updatedData = this.data.copy();
+    ListTag positionTag = new ListTag();
+    positionTag.add(DoubleTag.valueOf(position.x));
+    positionTag.add(DoubleTag.valueOf(position.y));
+    positionTag.add(DoubleTag.valueOf(position.z));
+    updatedData.put(POSITION_TAG, positionTag);
+    return new PresetData(
+        this.name, this.entityType, updatedData, this.location, this.presetType, this.metadata);
   }
 
   public PresetData withoutPosition() {
@@ -306,32 +313,37 @@ public record PresetData(
   }
 
   public PresetData withUUID(UUID uuid) {
-    if (uuid == null || data == null) {
+    if (uuid == null || this.data == null) {
       return this;
     }
-    CompoundTag updatedData = data.copy();
+
+    CompoundTag updatedData = this.data.copy();
     updatedData.putUUID(Entity.UUID_TAG, uuid);
-    return new PresetData(name, entityType, updatedData, location, presetType, metadata);
+    return new PresetData(
+        this.name, this.entityType, updatedData, this.location, this.presetType, this.metadata);
   }
 
   public UUID getPresetUUID() {
-    if (data == null || !data.hasUUID(PRESET_UUID_TAG)) {
+    if (this.data == null || !this.data.hasUUID(PRESET_UUID_TAG)) {
       return null;
     }
-    return data.getUUID(PRESET_UUID_TAG);
+
+    return this.data.getUUID(PRESET_UUID_TAG);
   }
 
   public UUID getEntityUUID() {
-    if (data == null || !data.hasUUID(Entity.UUID_TAG)) {
+    if (this.data == null || !this.data.hasUUID(Entity.UUID_TAG)) {
       return null;
     }
-    return data.getUUID(Entity.UUID_TAG);
+
+    return this.data.getUUID(Entity.UUID_TAG);
   }
 
   public UUID getOwnerUUID() {
     if (this.data == null || !this.data.hasUUID(OwnerDataCapable.DATA_OWNER_TAG)) {
       return null;
     }
+
     return this.data.getUUID(OwnerDataCapable.DATA_OWNER_TAG);
   }
 
@@ -344,6 +356,7 @@ public record PresetData(
     if (positionTag.size() != 3) {
       return null;
     }
+
     return new Vec3(positionTag.getDouble(0), positionTag.getDouble(1), positionTag.getDouble(2));
   }
 }

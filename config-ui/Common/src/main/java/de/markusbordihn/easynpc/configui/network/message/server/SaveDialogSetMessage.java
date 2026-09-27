@@ -66,19 +66,19 @@ public record SaveDialogSetMessage(UUID uuid, DialogDataSet dialogDataSet)
 
   @Override
   public void handleServer(final ServerPlayer serverPlayer) {
-    EasyNPC<?> easyNPC = getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
+    EasyNPC<?> easyNPC = this.getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
     if (easyNPC == null) {
       return;
     }
 
     if (this.dialogDataSet == null) {
-      log.error("Unable to get dialog data set with message {} from {}", easyNPC, serverPlayer);
+      log.error("Invalid dialog data set for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     DialogDataCapable<?> dialogData = easyNPC.getEasyNPCDialogData();
     if (dialogData == null) {
-      log.error("Unable to get valid entity with UUID {} for {}", easyNPC, serverPlayer);
+      log.error("Invalid dialog data for {} from {}", easyNPC, serverPlayer);
       return;
     }
 

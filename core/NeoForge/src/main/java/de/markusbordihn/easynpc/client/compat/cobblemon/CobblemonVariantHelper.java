@@ -44,6 +44,7 @@ public final class CobblemonVariantHelper {
     if (aspectsBySpecies == null) {
       return true;
     }
+
     return aspectsBySpecies.getOrDefault(speciesId, Set.of()).contains(aspect);
   }
 
@@ -52,6 +53,7 @@ public final class CobblemonVariantHelper {
     if (aspectsBySpecies == null) {
       return Set.of();
     }
+
     return aspectsBySpecies.getOrDefault(speciesId, Set.of());
   }
 

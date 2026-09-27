@@ -160,6 +160,7 @@ public class ItemStackConditionMatcher {
       if (actualValue == null || requiredValue == null) {
         return false;
       }
+
       if (!matchesTag(actualValue, requiredValue)) {
         return false;
       }
@@ -172,6 +173,7 @@ public class ItemStackConditionMatcher {
     if (actual.getId() != required.getId()) {
       return false;
     }
+
     if (actual instanceof CompoundTag actualCompound
         && required instanceof CompoundTag requiredCompound) {
       return containsAll(actualCompound, requiredCompound);

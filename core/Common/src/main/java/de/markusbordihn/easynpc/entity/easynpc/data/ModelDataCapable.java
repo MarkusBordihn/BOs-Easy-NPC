@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.data;
 
+import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.data.model.ModelType;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
@@ -51,19 +52,19 @@ public interface ModelDataCapable<T extends Mob>
   }
 
   default ModelPose getModelPose() {
-    return getSynchedEntityData(SynchedDataIndex.MODEL_POSE);
+    return this.getSynchedEntityData(SynchedDataIndex.MODEL_POSE);
   }
 
   default void setModelPose(ModelPose modelPose) {
-    setSynchedEntityData(SynchedDataIndex.MODEL_POSE, modelPose);
+    this.setSynchedEntityData(SynchedDataIndex.MODEL_POSE, modelPose);
   }
 
   default String getModelPoseName() {
-    return getSynchedEntityData(SynchedDataIndex.MODEL_POSE_NAME);
+    return this.getSynchedEntityData(SynchedDataIndex.MODEL_POSE_NAME);
   }
 
   default void setModelPoseName(String poseName) {
-    setSynchedEntityData(SynchedDataIndex.MODEL_POSE_NAME, poseName != null ? poseName : "");
+    this.setSynchedEntityData(SynchedDataIndex.MODEL_POSE_NAME, poseName != null ? poseName : "");
   }
 
   default ModelType getModelType() {
@@ -87,21 +88,29 @@ public interface ModelDataCapable<T extends Mob>
   }
 
   default boolean hasChangedModel() {
-    return hasChangedModelPosition()
-        || hasChangedModelRotation()
-        || hasChangedModelScale()
-        || hasChangedModelVisibility();
+    return this.hasChangedModelPosition()
+        || this.hasChangedModelRotation()
+        || this.hasChangedModelScale()
+        || this.hasChangedModelVisibility();
+  }
+
+  default boolean hasLockedBodyPose() {
+    if (this.getModelPartRotation(ModelPartType.HEAD).hasChangedRotation()) {
+      return false;
+    }
+
+    return this.getModelPose() == ModelPose.DEFAULT || this.getModelRootData().isRotationLocked();
   }
 
   default void defineSynchedModelData(SynchedEntityData.Builder builder) {
-    defineSynchedEntityData(builder, SynchedDataIndex.MODEL_POSE, ModelPose.VANILLA);
-    defineSynchedEntityData(builder, SynchedDataIndex.MODEL_POSE_NAME, "");
-    defineSynchedModelAnimationData(builder);
-    defineSynchedModelPositionData(builder);
-    defineSynchedModelRootData(builder);
-    defineSynchedModelRotationData(builder);
-    defineSynchedModelScaleData(builder);
-    defineSynchedModelVisibilityData(builder);
+    this.defineSynchedEntityData(builder, SynchedDataIndex.MODEL_POSE, ModelPose.VANILLA);
+    this.defineSynchedEntityData(builder, SynchedDataIndex.MODEL_POSE_NAME, "");
+    this.defineSynchedModelAnimationData(builder);
+    this.defineSynchedModelPositionData(builder);
+    this.defineSynchedModelRootData(builder);
+    this.defineSynchedModelRotationData(builder);
+    this.defineSynchedModelScaleData(builder);
+    this.defineSynchedModelVisibilityData(builder);
   }
 
   default void addAdditionalModelData(CompoundTag compoundTag) {

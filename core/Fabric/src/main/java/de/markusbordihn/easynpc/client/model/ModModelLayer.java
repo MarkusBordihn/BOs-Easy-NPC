@@ -19,23 +19,16 @@
 
 package de.markusbordihn.easynpc.client.model;
 
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.model.custom.DopplerModel;
 import de.markusbordihn.easynpc.client.model.custom.FairyModel;
 import de.markusbordihn.easynpc.client.model.custom.OrcModel;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class ModModelLayer {
-
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   private ModModelLayer() {}
 
   public static void registerEntityLayerDefinitions() {
-    log.info("{} Entity Layer Definitions ...", Constants.LOG_REGISTER_PREFIX);
-
     EntityModelLayerRegistry.registerModelLayer(
         ModModelLayers.DOPPLER, DopplerModel::createBodyLayer);
     EntityModelLayerRegistry.registerModelLayer(ModModelLayers.FAIRY, FairyModel::createBodyLayer);

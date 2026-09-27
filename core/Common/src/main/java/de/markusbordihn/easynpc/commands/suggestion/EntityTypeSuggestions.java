@@ -32,7 +32,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 
 public class EntityTypeSuggestions {
 
-  private static final Set<String> deniedEntityTypes =
+  private static final Set<String> DENIED_ENTITY_TYPES =
       Set.of(
           "minecraft:area_effect_cloud",
           "minecraft:armor_stand",
@@ -84,8 +84,8 @@ public class EntityTypeSuggestions {
   private EntityTypeSuggestions() {}
 
   public static CompletableFuture<Suggestions> suggest(
-      CommandContext<CommandSourceStack> context, SuggestionsBuilder build) {
-    return SharedSuggestionProvider.suggest(getFilteredEntityTypes(), build);
+      CommandContext<CommandSourceStack> context, SuggestionsBuilder suggestionsBuilder) {
+    return SharedSuggestionProvider.suggest(getFilteredEntityTypes(), suggestionsBuilder);
   }
 
   private static Stream<String> getFilteredEntityTypes() {
@@ -96,7 +96,7 @@ public class EntityTypeSuggestions {
                   entityType -> {
                     String entityTypeName = entityType.toString();
                     return !entityTypeName.startsWith("easy_npc")
-                        && !deniedEntityTypes.contains(entityType.toString());
+                        && !DENIED_ENTITY_TYPES.contains(entityTypeName);
                   })
               .map(entityType -> "\"" + entityType + "\"")
               .toList();

@@ -46,11 +46,11 @@ public interface StateDataCapable<E extends Mob> extends EasyNPC<E> {
   String DATA_STATE_TAG = "StateData";
 
   default StateDataSet getStateDataSet() {
-    return getEasyNPCServerData().getServerEntityData(CUSTOM_DATA_STATE_DATA_SET);
+    return this.getEasyNPCServerData().getServerEntityData(CUSTOM_DATA_STATE_DATA_SET);
   }
 
   default void setStateDataSet(StateDataSet stateDataSet) {
-    getEasyNPCServerData().setServerEntityData(CUSTOM_DATA_STATE_DATA_SET, stateDataSet);
+    this.getEasyNPCServerData().setServerEntityData(CUSTOM_DATA_STATE_DATA_SET, stateDataSet);
   }
 
   default StateEntry getState(ResourceLocation stateId) {
@@ -140,11 +140,12 @@ public interface StateDataCapable<E extends Mob> extends EasyNPC<E> {
   }
 
   default void clearStateDataSet() {
-    getEasyNPCServerData().setServerEntityData(CUSTOM_DATA_STATE_DATA_SET, new StateDataSet());
+    this.getEasyNPCServerData().setServerEntityData(CUSTOM_DATA_STATE_DATA_SET, new StateDataSet());
   }
 
   default void defineCustomStateData() {
-    getEasyNPCServerData().defineServerEntityData(CUSTOM_DATA_STATE_DATA_SET, new StateDataSet());
+    this.getEasyNPCServerData()
+        .defineServerEntityData(CUSTOM_DATA_STATE_DATA_SET, new StateDataSet());
   }
 
   default void addAdditionalStateData(CompoundTag compoundTag) {

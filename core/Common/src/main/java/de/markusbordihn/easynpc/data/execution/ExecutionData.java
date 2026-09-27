@@ -42,6 +42,6 @@ public record ExecutionData(int executionCount, long windowStartTime, long lastE
   }
 
   public CompoundTag save() {
-    return save(new CompoundTag());
+    return this.save(new CompoundTag());
   }
 }

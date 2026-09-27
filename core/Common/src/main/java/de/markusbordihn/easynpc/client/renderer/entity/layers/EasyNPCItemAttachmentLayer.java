@@ -69,6 +69,7 @@ public class EasyNPCItemAttachmentLayer<T extends LivingEntity, M extends Entity
     if (model instanceof EasyNPCModelManagerAccessor accessor) {
       return accessor.easyNPC$getModelManager();
     }
+
     return null;
   }
 
@@ -109,9 +110,9 @@ public class EasyNPCItemAttachmentLayer<T extends LivingEntity, M extends Entity
     boolean isRightHanded = entity.getMainArm() == HumanoidArm.RIGHT;
 
     if (!mainHandItem.isEmpty()) {
-      ItemAttachmentPoint attachment = getHandAttachment(modelType, true, isRightHanded);
+      ItemAttachmentPoint attachment = this.getHandAttachment(modelType, true, isRightHanded);
       if (attachment != null && !attachment.isNone()) {
-        renderAttachedItemSafely(
+        this.renderAttachedItemSafely(
             poseStack,
             buffer,
             packedLight,
@@ -128,9 +129,9 @@ public class EasyNPCItemAttachmentLayer<T extends LivingEntity, M extends Entity
     }
 
     if (!offHandItem.isEmpty()) {
-      ItemAttachmentPoint attachment = getHandAttachment(modelType, false, !isRightHanded);
+      ItemAttachmentPoint attachment = this.getHandAttachment(modelType, false, !isRightHanded);
       if (attachment != null && !attachment.isNone()) {
-        renderAttachedItemSafely(
+        this.renderAttachedItemSafely(
             poseStack,
             buffer,
             packedLight,
@@ -174,7 +175,7 @@ public class EasyNPCItemAttachmentLayer<T extends LivingEntity, M extends Entity
     }
 
     try {
-      renderAttachedItem(
+      this.renderAttachedItem(
           poseStack,
           buffer,
           packedLight,

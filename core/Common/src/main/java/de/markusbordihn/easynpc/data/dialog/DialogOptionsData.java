@@ -71,14 +71,7 @@ public record DialogOptionsData(
   }
 
   public static DialogOptionsData getDefault() {
-    return new DialogOptionsData(
-        DialogOptionsConfig.ALLOW_ESC_CLOSE,
-        DialogOptionsConfig.SHOW_CLOSE_BUTTON,
-        DialogOptionsConfig.DISPLAY_AVATAR,
-        null,
-        null,
-        null,
-        DialogOptionsConfig.BUTTON_CONDITION_MODE);
+    return new DialogOptionsData();
   }
 
   public static DialogOptionsData load(CompoundTag compoundTag) {

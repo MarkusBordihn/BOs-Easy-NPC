@@ -84,7 +84,7 @@ public class LivingEntityManager {
     PresetDataCapable<?> presetData = easyNPC.getEasyNPCPresetData();
     if (presetData != null && presetData.hasPresetUUID()) {
       presetMap
-          .computeIfAbsent(presetData.getPresetUUID(), k -> ConcurrentHashMap.newKeySet())
+          .computeIfAbsent(presetData.getPresetUUID(), presetUUID -> ConcurrentHashMap.newKeySet())
           .add(easyNPC);
     }
 
@@ -117,9 +117,9 @@ public class LivingEntityManager {
       UUID presetUUID = presetData.getPresetUUID();
       presetMap.computeIfPresent(
           presetUUID,
-          (k, set) -> {
-            set.remove(easyNPC);
-            return set.isEmpty() ? null : set;
+          (existingPresetUUID, presetNPCs) -> {
+            presetNPCs.remove(easyNPC);
+            return presetNPCs.isEmpty() ? null : presetNPCs;
           });
     }
 
@@ -194,6 +194,7 @@ public class LivingEntityManager {
     if (easyNPC == null || easyNPC.isClientSideInstance()) {
       return;
     }
+
     ResourceKey<Level> dimension = getDimension(easyNPC);
     updateInterest(entityEventListeners, dimension, easyNPC, needsEntityEvents(easyNPC));
     updateInterest(playerEventListeners, dimension, easyNPC, needsPlayerEvents(easyNPC));
@@ -215,6 +216,7 @@ public class LivingEntityManager {
       if (dimensionListeners.contains(easyNPC)) {
         return;
       }
+
       removeFromListeners(listeners, easyNPC);
       dimensionListeners.add(easyNPC);
       return;
@@ -249,14 +251,17 @@ public class LivingEntityManager {
     if (uuid == null || serverLevel == null) {
       return null;
     }
+
     Entity entity = serverLevel.getEntity(uuid);
     if (entity instanceof LivingEntity livingEntity) {
       return livingEntity;
     }
+
     ServerPlayer serverPlayer = getPlayerByUUID(uuid, serverLevel);
     if (serverPlayer != null) {
       return serverPlayer;
     }
+
     EasyNPC<?> easyNPC = getServerEasyNPCEntityByUUID(uuid, serverLevel);
     return easyNPC != null ? easyNPC.getLivingEntity() : null;
   }
@@ -271,10 +276,12 @@ public class LivingEntityManager {
     if (uuid == null || serverLevel == null) {
       return null;
     }
+
     Entity entity = serverLevel.getEntity(uuid);
     if (entity instanceof EasyNPC<?> easyNPC) {
       return easyNPC;
     }
+
     return getServerEasyNPCEntityByUUID(uuid);
   }
 
@@ -282,6 +289,7 @@ public class LivingEntityManager {
     if (uuid == null) {
       return null;
     }
+
     return npcEntityMapServer.getOrDefault(uuid, null);
   }
 
@@ -289,6 +297,7 @@ public class LivingEntityManager {
     if (uuid == null) {
       return null;
     }
+
     return npcEntityMapClient.getOrDefault(uuid, null);
   }
 
@@ -304,10 +313,12 @@ public class LivingEntityManager {
     if (uuid == null || serverLevel == null) {
       return null;
     }
+
     Player player = serverLevel.getPlayerByUUID(uuid);
     if (player instanceof ServerPlayer serverPlayer) {
       return serverPlayer;
     }
+
     return playerMap.getOrDefault(uuid, null);
   }
 
@@ -315,6 +326,7 @@ public class LivingEntityManager {
     if (name == null || name.isEmpty()) {
       return null;
     }
+
     return playerNameMap.getOrDefault(name, null);
   }
 
@@ -365,6 +377,7 @@ public class LivingEntityManager {
     if (presetEntities == null) {
       return 0;
     }
+
     int count = 0;
     for (EasyNPC<?> easyNPC : presetEntities) {
       Level level = easyNPC.getEntityLevel();
@@ -379,6 +392,7 @@ public class LivingEntityManager {
     if (uuid == null || serverPlayer == null) {
       return false;
     }
+
     return hasAccess(serverPlayer.serverLevel().getEntity(uuid), serverPlayer);
   }
 

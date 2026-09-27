@@ -26,6 +26,7 @@ import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.NavigationDataCapable;
 import de.markusbordihn.easynpc.security.SecurityManager;
 import java.util.Optional;
+import java.util.UUID;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -33,6 +34,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -99,7 +101,7 @@ public class PresetDataUtils {
 
     CompoundTag dataCopy = presetData.data().copy();
     if (!dataCopy.hasUUID(ENTITY_UUID_TAG)) {
-      dataCopy.putUUID(ENTITY_UUID_TAG, java.util.UUID.randomUUID());
+      dataCopy.putUUID(ENTITY_UUID_TAG, UUID.randomUUID());
       log.debug("Generated missing Entity UUID in toSpawnData");
     }
 
@@ -203,10 +205,11 @@ public class PresetDataUtils {
     }
 
     if (entity instanceof LivingEntity livingEntity) {
-      float maxHealth =
-          livingEntity.getAttribute(Attributes.MAX_HEALTH) != null
-              ? (float) livingEntity.getAttribute(Attributes.MAX_HEALTH).getValue()
-              : 20.0f;
+      AttributeInstance maxHealthAttribute = livingEntity.getAttribute(Attributes.MAX_HEALTH);
+      float maxHealth = 20.0f;
+      if (maxHealthAttribute != null) {
+        maxHealth = (float) maxHealthAttribute.getValue();
+      }
       livingEntity.setHealth(maxHealth);
       livingEntity.deathTime = 0;
       livingEntity.hurtTime = 0;

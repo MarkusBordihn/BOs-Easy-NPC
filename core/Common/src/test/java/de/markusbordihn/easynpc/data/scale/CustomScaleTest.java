@@ -95,9 +95,9 @@ class CustomScaleTest {
   @Test
   @DisplayName("Two CustomScales with the same components should be equal (record semantics)")
   void testEqualityBySameComponents() {
-    CustomScale s1 = new CustomScale(1.5f, 2f, 0.5f);
-    CustomScale s2 = new CustomScale(1.5f, 2f, 0.5f);
-    assertEquals(s1, s2);
+    CustomScale firstScale = new CustomScale(1.5f, 2f, 0.5f);
+    CustomScale secondScale = new CustomScale(1.5f, 2f, 0.5f);
+    assertEquals(firstScale, secondScale);
   }
 
   @Test

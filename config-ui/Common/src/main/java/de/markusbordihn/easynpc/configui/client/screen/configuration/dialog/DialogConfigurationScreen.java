@@ -43,7 +43,6 @@ public class DialogConfigurationScreen<T extends ConfigurationMenu> extends Conf
   public void init() {
     super.init();
 
-    // Dialog Types
     this.noneDialogButton =
         this.addRenderableWidget(
             new TextButton(

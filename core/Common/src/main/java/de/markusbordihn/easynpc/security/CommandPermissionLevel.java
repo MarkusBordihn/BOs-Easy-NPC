@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.security;
 
+import java.util.Locale;
 import net.minecraft.commands.Commands;
 
 public enum CommandPermissionLevel {
@@ -57,7 +58,7 @@ public enum CommandPermissionLevel {
     }
 
     try {
-      return valueOf(normalizedValue.toUpperCase(java.util.Locale.ROOT));
+      return valueOf(normalizedValue.toUpperCase(Locale.ROOT));
     } catch (IllegalArgumentException exception) {
       return defaultValue;
     }

@@ -33,12 +33,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
 public record ChangeEntityAttributeMessage(
-    UUID uuid,
-    EntityAttribute entityAttribute,
-    Boolean booleanValue,
-    Float floatValue,
-    Integer integerValue,
-    String stringValue)
+    UUID uuid, EntityAttribute entityAttribute, boolean booleanValue)
     implements NetworkMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
@@ -49,34 +44,11 @@ public record ChangeEntityAttributeMessage(
           StreamCodec.of(
               (buffer, message) -> message.write(buffer), ChangeEntityAttributeMessage::create);
 
-  public ChangeEntityAttributeMessage(
-      final UUID uuid, final EntityAttribute entityAttribute, final Boolean value) {
-    this(uuid, entityAttribute, value, 0f, 0, "");
-  }
-
-  public ChangeEntityAttributeMessage(
-      final UUID uuid, final EntityAttribute entityAttribute, final Float value) {
-    this(uuid, entityAttribute, false, value, 0, "");
-  }
-
-  public ChangeEntityAttributeMessage(
-      final UUID uuid, final EntityAttribute entityAttribute, final Integer value) {
-    this(uuid, entityAttribute, false, 0f, value, "");
-  }
-
-  public ChangeEntityAttributeMessage(
-      final UUID uuid, final EntityAttribute entityAttribute, final String value) {
-    this(uuid, entityAttribute, false, 0f, 0, value);
-  }
-
   public static ChangeEntityAttributeMessage create(final FriendlyByteBuf buffer) {
     return new ChangeEntityAttributeMessage(
         buffer.readUUID(),
         NetworkMessageRecord.readEnum(buffer, EntityAttribute.class),
-        buffer.readBoolean(),
-        buffer.readFloat(),
-        buffer.readInt(),
-        buffer.readUtf(MAX_NAME_LENGTH));
+        buffer.readBoolean());
   }
 
   @Override
@@ -84,9 +56,6 @@ public record ChangeEntityAttributeMessage(
     buffer.writeUUID(this.uuid);
     buffer.writeEnum(this.entityAttribute);
     buffer.writeBoolean(this.booleanValue);
-    buffer.writeFloat(this.floatValue);
-    buffer.writeInt(this.integerValue);
-    buffer.writeUtf(this.stringValue);
   }
 
   @Override
@@ -101,30 +70,20 @@ public record ChangeEntityAttributeMessage(
 
   @Override
   public void handleServer(final ServerPlayer serverPlayer) {
-    EasyNPC<?> easyNPC = getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
+    EasyNPC<?> easyNPC = this.getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
     if (easyNPC == null) {
       return;
     }
 
-    if (entityAttribute == null) {
+    if (this.entityAttribute == null) {
       log.error("Invalid entity attribute for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
-    if (booleanValue == null && floatValue == null && integerValue == null && stringValue == null) {
-      log.error("Invalid value for {} for {} from {}", entityAttribute, easyNPC, serverPlayer);
-      return;
-    }
-
-    boolean successfullyChanged = false;
-    if (booleanValue != null) {
-      successfullyChanged =
-          AttributeHandler.setEntityAttribute(easyNPC, entityAttribute, booleanValue);
-    }
-    if (!successfullyChanged) {
+    if (!AttributeHandler.setEntityAttribute(easyNPC, this.entityAttribute, this.booleanValue)) {
       log.error(
           "Unable to change entity attribute {} for {} from {}",
-          entityAttribute,
+          this.entityAttribute,
           easyNPC,
           serverPlayer);
     }

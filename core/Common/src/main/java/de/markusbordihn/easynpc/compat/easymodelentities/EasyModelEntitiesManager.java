@@ -132,9 +132,11 @@ public final class EasyModelEntitiesManager {
   }
 
   public static List<String> listAnimationVariants(ResourceLocation profileId, String baseName) {
-    return profileId != null && baseName != null && !baseName.isEmpty()
-        ? List.copyOf(animationProvider.listAnimationVariants(profileId, baseName))
-        : List.of();
+    if (profileId == null || baseName == null || baseName.isEmpty()) {
+      return List.of();
+    }
+
+    return List.copyOf(animationProvider.listAnimationVariants(profileId, baseName));
   }
 
   public static void setTextureProvider(TextureProvider provider) {
@@ -147,9 +149,11 @@ public final class EasyModelEntitiesManager {
 
   public static List<ResourceLocation> listTextureVariants(
       ResourceLocation profileId, String slot) {
-    return profileId != null && slot != null && !slot.isEmpty()
-        ? List.copyOf(textureProvider.listTextureVariants(profileId, slot))
-        : List.of();
+    if (profileId == null || slot == null || slot.isEmpty()) {
+      return List.of();
+    }
+
+    return List.copyOf(textureProvider.listTextureVariants(profileId, slot));
   }
 
   public static ResourceLocation getProfileId(String entityModel) {
@@ -166,6 +170,7 @@ public final class EasyModelEntitiesManager {
     if (bodyTypeName == null || bodyTypeName.isEmpty()) {
       return ModelType.HUMANOID;
     }
+
     return switch (bodyTypeName.toUpperCase(Locale.ROOT)) {
       case "QUADRUPED", "AMPHIBIOUS", "AQUATIC" -> ModelType.QUADRUPED;
       case "WINGED" -> ModelType.AVIAN;
@@ -180,6 +185,7 @@ public final class EasyModelEntitiesManager {
     if (partName == null || partName.isEmpty()) {
       return ModelPartType.UNKNOWN;
     }
+
     return switch (partName.toLowerCase(Locale.ROOT)) {
       case "front_left_leg" -> ModelPartType.LEFT_FRONT_LEG;
       case "front_right_leg" -> ModelPartType.RIGHT_FRONT_LEG;

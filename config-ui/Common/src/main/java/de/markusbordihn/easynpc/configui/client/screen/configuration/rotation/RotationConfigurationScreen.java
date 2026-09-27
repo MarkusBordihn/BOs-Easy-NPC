@@ -44,7 +44,6 @@ public class RotationConfigurationScreen<T extends ConfigurationMenu>
   public void init() {
     super.init();
 
-    // Rotation Types
     int rotationButtonWidth = 80;
     this.defaultRotationButton =
         this.addRenderableWidget(
@@ -58,7 +57,6 @@ public class RotationConfigurationScreen<T extends ConfigurationMenu>
                         .openConfiguration(
                             this.getEasyNPCUUID(), ConfigurationType.DEFAULT_ROTATION)));
 
-    // Default button stats
     this.defaultRotationButton.active = false;
   }
 

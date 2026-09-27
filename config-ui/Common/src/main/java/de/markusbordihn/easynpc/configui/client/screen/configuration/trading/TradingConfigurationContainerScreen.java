@@ -44,7 +44,6 @@ public class TradingConfigurationContainerScreen<T extends ConfigurationMenu>
   public void init() {
     super.init();
 
-    // Trade Types
     this.noneTradesButton =
         this.addRenderableWidget(
             new TextButton(

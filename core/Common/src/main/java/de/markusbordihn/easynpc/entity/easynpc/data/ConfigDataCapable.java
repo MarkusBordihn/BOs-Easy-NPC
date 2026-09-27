@@ -70,7 +70,7 @@ public interface ConfigDataCapable<T extends Mob> extends EasyNPC<T> {
       log.warn(
           "Legacy Easy NPC Data for {}. Data may not be compatible with the current version.",
           this);
-      this.setNPCDataVersion(-1);
+      this.setNPCDataVersion(LEGACY_NPC_DATA_VERSION);
     } else {
       this.setNPCDataVersion(Constants.NPC_DATA_VERSION);
     }

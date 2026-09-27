@@ -75,7 +75,7 @@ public record ExportWorldPresetMessage(UUID uuid, String name, PresetMetadata me
 
   @Override
   public void handleServer(final ServerPlayer serverPlayer) {
-    EasyNPC<?> easyNPC = getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
+    EasyNPC<?> easyNPC = this.getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
     if (easyNPC == null) {
       return;
     }
@@ -108,18 +108,22 @@ public record ExportWorldPresetMessage(UUID uuid, String name, PresetMetadata me
       return;
     }
 
-    File presetFile = WorldPresetDataFiles.getPresetFile(skinModel, name);
+    File presetFile = WorldPresetDataFiles.getPresetFile(skinModel, this.name);
     if (presetFile == null) {
-      log.error("Failed to get preset file for {} with name {}", skinModel, name);
+      log.error("Failed to get preset file for {} with name {}", skinModel, this.name);
       return;
     }
 
     log.info(
-        "Exporting EasyNPC {} with {} and skin {} to {}", name, easyNPC, skinModel, presetFile);
+        "Exporting EasyNPC {} with {} and skin {} to {}",
+        this.name,
+        easyNPC,
+        skinModel,
+        presetFile);
     if (!PresetFileHandler.saveNbt(presetFile, exportData)) {
       log.error(
           "Failed to export EasyNPC {} with {} and skin {} to {}",
-          name,
+          this.name,
           easyNPC,
           skinModel,
           presetFile);

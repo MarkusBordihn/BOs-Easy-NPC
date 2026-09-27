@@ -24,17 +24,23 @@ import de.markusbordihn.easynpc.data.preset.PresetExportFormat;
 import de.markusbordihn.easynpc.utils.ResourceNameNormalizer;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Locale;
 import java.util.Optional;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.server.packs.resources.ResourceManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -91,13 +97,16 @@ public class DataFileHandler {
     if (fileName == null || fileName.isEmpty()) {
       return null;
     }
+
     String result = ResourceNameNormalizer.toFileName(fileName, PRESET_FILE_NAME_FALLBACK_PREFIX);
     if (result.isEmpty() || !VALID_PRESET_FILENAME_PATTERN.matcher(result).matches()) {
       return null;
     }
+
     if (PresetExportFormat.hasPresetExtension(result)) {
       return result;
     }
+
     return result + PresetExportFormat.getDefault().getFileExtension();
   }
 
@@ -134,99 +143,88 @@ public class DataFileHandler {
   }
 
   public static Path getBackupFolder() {
-    Path backupFolder = Constants.GAME_DIR.resolve(Constants.MOD_ID).resolve(BACKUP_FOLDER_NAME);
-    try {
-      if (Files.exists(backupFolder) && Files.isDirectory(backupFolder)) {
-        return backupFolder;
-      }
-      log.debug("Creating backup folder at {} ...", backupFolder);
-      return Files.createDirectories(backupFolder);
-    } catch (Exception exception) {
-      log.error("There was an error, creating the backup folder:", exception);
-    }
-    return null;
+    return getOrCreateDirectory(
+        Constants.GAME_DIR.resolve(Constants.MOD_ID).resolve(BACKUP_FOLDER_NAME), "backup");
   }
 
   public static Path getCacheFolder() {
-    Path cacheFolder = Constants.GAME_DIR.resolve(Constants.MOD_ID).resolve(CACHE_FOLDER_NAME);
-    try {
-      if (Files.exists(cacheFolder) && Files.isDirectory(cacheFolder)) {
-        return cacheFolder;
-      }
-      log.debug("Creating cache folder at {} ...", cacheFolder);
-      return Files.createDirectories(cacheFolder);
-    } catch (Exception exception) {
-      log.error("There was an error, creating the cache folder:", exception);
-    }
-    return null;
+    return getOrCreateDirectory(
+        Constants.GAME_DIR.resolve(Constants.MOD_ID).resolve(CACHE_FOLDER_NAME), "cache");
   }
 
   public static Path getCustomDataFolder() {
-    Path customDataFolder = Constants.CONFIG_DIR.resolve(Constants.MOD_ID);
-    try {
-      if (Files.exists(customDataFolder) && Files.isDirectory(customDataFolder)) {
-        return customDataFolder;
-      }
-      log.debug("Creating custom data folder at {} ...", customDataFolder);
-      return Files.createDirectories(customDataFolder);
-    } catch (Exception exception) {
-      log.error("There was an error, creating the custom data folder:", exception);
-    }
-    return null;
+    return getOrCreateDirectory(Constants.CONFIG_DIR.resolve(Constants.MOD_ID), "custom data");
   }
 
   public static Path getOrCreateBackupFolder(String dataLabel) {
-    Path backupFolder = getBackupFolder();
-    if (backupFolder == null) {
-      return null;
-    }
-    Path backupFolderPath = backupFolder.resolve(dataLabel);
-    try {
-      if (Files.exists(backupFolderPath) && Files.isDirectory(backupFolderPath)) {
-        return backupFolderPath;
-      }
-      log.debug("Creating backup folder {} at {} ...", dataLabel, backupFolder);
-      return Files.createDirectories(backupFolderPath);
-    } catch (Exception exception) {
-      log.error("There was an error, creating the backup folder {}:", dataLabel, exception);
-    }
-    return null;
+    return getOrCreateSubdirectory(getBackupFolder(), dataLabel, "backup");
   }
 
   public static Path getOrCreateCacheFolder(String dataLabel) {
-    Path cacheFolder = getCacheFolder();
-    if (cacheFolder == null) {
+    return getOrCreateSubdirectory(getCacheFolder(), dataLabel, "cache");
+  }
+
+  public static Path getOrCreateCustomDataFolder(String dataLabel) {
+    return getOrCreateSubdirectory(getCustomDataFolder(), dataLabel, "custom data");
+  }
+
+  public static Path getOrCreateSubdirectory(
+      Path parentDirectory, String directoryName, String folderLabel) {
+    if (parentDirectory == null) {
       return null;
     }
-    Path cacheFolderPath = cacheFolder.resolve(dataLabel);
+
+    return getOrCreateDirectory(parentDirectory.resolve(directoryName), folderLabel);
+  }
+
+  public static Path getOrCreateDirectory(Path directory, String folderLabel) {
     try {
-      if (Files.exists(cacheFolderPath) && Files.isDirectory(cacheFolderPath)) {
-        return cacheFolderPath;
+      if (Files.isDirectory(directory)) {
+        return directory;
       }
-      log.debug("Creating cache folder {} at {} ...", dataLabel, cacheFolder);
-      return Files.createDirectories(cacheFolderPath);
+
+      log.debug("Creating {} folder at {} ...", folderLabel, directory);
+      return Files.createDirectories(directory);
     } catch (Exception exception) {
-      log.error("There was an error, creating the cache folder {}:", dataLabel, exception);
+      log.error(
+          "There was an error, creating the {} folder {}:", folderLabel, directory, exception);
     }
     return null;
   }
 
-  public static Path getOrCreateCustomDataFolder(String dataLabel) {
-    Path customDataFolder = getCustomDataFolder();
-    if (customDataFolder == null) {
-      return null;
+  public static void forEachPresetFile(
+      Path presetDataFolder, BiConsumer<ResourceLocation, Path> presetFileConsumer)
+      throws IOException {
+    try (Stream<Path> filesStream = Files.walk(presetDataFolder)) {
+      filesStream
+          .filter(DataFileHandler::isPresetFile)
+          .forEach(
+              path ->
+                  presetFileConsumer.accept(
+                      ResourceLocation.fromNamespaceAndPath(
+                          Constants.MOD_ID,
+                          RESOURCE_PRESET_PATH
+                              + '/'
+                              + presetDataFolder
+                                  .relativize(path)
+                                  .toString()
+                                  .replace("\\", "/")
+                                  .toLowerCase(Locale.ROOT)),
+                      path));
     }
-    Path customDataFolderPath = customDataFolder.resolve(dataLabel);
-    try {
-      if (Files.exists(customDataFolderPath) && Files.isDirectory(customDataFolderPath)) {
-        return customDataFolderPath;
+  }
+
+  public static void forEachPngFile(Path directory, Consumer<File> pngFileConsumer) {
+    if (directory == null || !Files.isDirectory(directory)) {
+      return;
+    }
+
+    for (String fileName : directory.toFile().list()) {
+      File file = directory.resolve(fileName).toFile();
+      if (file.exists() && fileName.endsWith(".png")) {
+        pngFileConsumer.accept(file);
       }
-      log.debug("Creating custom data folder {} at {} ...", dataLabel, customDataFolder);
-      return Files.createDirectories(customDataFolderPath);
-    } catch (Exception exception) {
-      log.error("There was an error, creating the custom data folder {}:", dataLabel, exception);
     }
-    return null;
   }
 
   public static boolean copyResourceFile(
@@ -236,6 +234,28 @@ public class DataFileHandler {
 
   public static boolean copyResourceFile(
       MinecraftServer minecraftServer,
+      ResourceLocation resourceLocation,
+      File targetFile,
+      boolean overwriteExisting) {
+    return copyResourceFile(
+        minecraftServer.getResourceManager(), resourceLocation, targetFile, overwriteExisting);
+  }
+
+  public static boolean copyResourceFile(ResourceLocation resourceLocation, File targetFile) {
+    return copyResourceFile(resourceLocation, targetFile, false);
+  }
+
+  public static boolean copyResourceFile(
+      ResourceLocation resourceLocation, File targetFile, boolean overwriteExisting) {
+    return copyResourceFile(
+        Minecraft.getInstance().getResourceManager(),
+        resourceLocation,
+        targetFile,
+        overwriteExisting);
+  }
+
+  private static boolean copyResourceFile(
+      ResourceManager resourceManager,
       ResourceLocation resourceLocation,
       File targetFile,
       boolean overwriteExisting) {
@@ -250,39 +270,7 @@ public class DataFileHandler {
     }
 
     try {
-      Optional<Resource> resources =
-          minecraftServer.getResourceManager().getResource(resourceLocation);
-      if (resources.isPresent()) {
-        return copyResourceToFile(resources.get(), targetFile);
-      } else {
-        log.error("Resource {} not found in resource manager", resourceLocation);
-        return false;
-      }
-    } catch (Exception e) {
-      log.error("Failed to load resource {}:", resourceLocation, e);
-      return false;
-    }
-  }
-
-  public static boolean copyResourceFile(ResourceLocation resourceLocation, File targetFile) {
-    return copyResourceFile(resourceLocation, targetFile, false);
-  }
-
-  public static boolean copyResourceFile(
-      ResourceLocation resourceLocation, File targetFile, boolean overwriteExisting) {
-    if (resourceLocation == null || targetFile == null) {
-      log.warn("Cannot copy resource file: resourceLocation or targetFile is null");
-      return false;
-    }
-
-    if (targetFile.exists() && !overwriteExisting) {
-      log.debug("Skipping copy of {} to {} - file already exists", resourceLocation, targetFile);
-      return true;
-    }
-
-    try {
-      Optional<Resource> resources =
-          Minecraft.getInstance().getResourceManager().getResource(resourceLocation);
+      Optional<Resource> resources = resourceManager.getResource(resourceLocation);
       if (resources.isPresent()) {
         return copyResourceToFile(resources.get(), targetFile);
       } else {
@@ -317,6 +305,7 @@ public class DataFileHandler {
     if (resourceLocation == null) {
       return null;
     }
+
     return Paths.get(resourceLocation.getPath()).getFileName().toString();
   }
 }

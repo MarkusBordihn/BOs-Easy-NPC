@@ -96,7 +96,7 @@ public class SoundDataSet {
   }
 
   public boolean hasSound(SoundType type) {
-    return defaultSounds.containsKey(type) || overrideSounds.containsKey(type);
+    return this.defaultSounds.containsKey(type) || this.overrideSounds.containsKey(type);
   }
 
   public void addSound(SoundType type, SoundEvent soundEvent) {
@@ -140,15 +140,20 @@ public class SoundDataSet {
     if (soundEvent == null || soundEvent.getLocation().toString().isEmpty()) {
       return;
     }
-    defaultSounds.put(type, new SoundDataEntry(type, soundEvent.getLocation()));
+
+    this.defaultSounds.put(type, new SoundDataEntry(type, soundEvent.getLocation()));
   }
 
   public boolean isEmpty() {
-    return defaultSounds.isEmpty() && overrideSounds.isEmpty();
+    return this.defaultSounds.isEmpty() && this.overrideSounds.isEmpty();
   }
 
   public SoundDataEntry getSound(SoundType type) {
-    return overrideSounds.containsKey(type) ? overrideSounds.get(type) : defaultSounds.get(type);
+    if (this.overrideSounds.containsKey(type)) {
+      return this.overrideSounds.get(type);
+    }
+
+    return this.defaultSounds.get(type);
   }
 
   public void load(CompoundTag compoundTag) {

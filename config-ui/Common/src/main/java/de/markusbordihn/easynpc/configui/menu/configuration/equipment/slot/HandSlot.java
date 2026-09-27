@@ -20,7 +20,6 @@
 package de.markusbordihn.easynpc.configui.menu.configuration.equipment.slot;
 
 import com.mojang.datafixers.util.Pair;
-import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.configui.menu.configuration.equipment.EquipmentConfigurationMenu;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import net.minecraft.resources.ResourceLocation;
@@ -33,12 +32,8 @@ import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class HandSlot extends Slot {
-
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private static final EquipmentSlot[] SLOT_IDS =
       new EquipmentSlot[] {EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND};
 
@@ -67,6 +62,7 @@ public class HandSlot extends Slot {
     if (itemStack.isEmpty() || easyNPC == null) {
       return false;
     }
+
     EquipmentSlot equipmentSlotForItem =
         easyNPC.getLivingEntity().getEquipmentSlotForItem(itemStack);
     return this.equipmentSlot == EquipmentSlot.OFFHAND
@@ -90,6 +86,7 @@ public class HandSlot extends Slot {
     if (this.equipmentSlot == EquipmentSlot.OFFHAND) {
       return Pair.of(InventoryMenu.BLOCK_ATLAS, InventoryMenu.EMPTY_ARMOR_SLOT_SHIELD);
     }
+
     return null;
   }
 }

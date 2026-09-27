@@ -68,7 +68,7 @@ public abstract class CustomModelRenderLayer<T extends LivingEntity, M extends E
     this.customModel.setupAnim(
         entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 
-    ResourceLocation texture = getTextureLocation(entity);
+    ResourceLocation texture = this.getTextureLocation(entity);
     VertexConsumer vertexConsumer = buffer.getBuffer(RenderType.entityCutoutNoCull(texture));
     this.customModel.renderToBuffer(
         poseStack, vertexConsumer, packedLight, OverlayTexture.NO_OVERLAY);
@@ -76,15 +76,15 @@ public abstract class CustomModelRenderLayer<T extends LivingEntity, M extends E
 
   @Override
   protected ResourceLocation getTextureLocation(T entity) {
-    if (config.shouldUseEntityTexture()
+    if (this.config.shouldUseEntityTexture()
         && entity instanceof EasyNPC<?> easyNPC
         && this.renderer instanceof EasyNPCEntityRenderer easyNPCRenderer) {
       return easyNPCRenderer.getEntityTexture(easyNPC);
-    } else if (config.shouldUseVariantTexture()
+    } else if (this.config.shouldUseVariantTexture()
         && entity instanceof EasyNPC<?> easyNPC
         && this.renderer instanceof EasyNPCEntityRenderer easyNPCRenderer) {
       return easyNPCRenderer.getVariantTexture(easyNPC);
     }
-    return config.getCustomTexture();
+    return this.config.getCustomTexture();
   }
 }

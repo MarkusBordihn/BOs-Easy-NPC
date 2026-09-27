@@ -27,6 +27,7 @@ import de.markusbordihn.easynpc.data.attribute.BaseAttributes;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataSet;
 import de.markusbordihn.easynpc.entity.easynpc.data.ConfigurationDataCapable;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.Screen;
 
 public interface ScreenInterface
     extends de.markusbordihn.easynpc.client.screen.ScreenInterface<AdditionalScreenData> {
@@ -44,8 +45,7 @@ public interface ScreenInterface
   }
 
   @Override
-  default boolean isSwitchingToAnotherEasyNPCScreen(
-      net.minecraft.client.gui.screens.Screen newScreen) {
+  default boolean isSwitchingToAnotherEasyNPCScreen(Screen newScreen) {
     if (newScreen == this) {
       return true;
     }

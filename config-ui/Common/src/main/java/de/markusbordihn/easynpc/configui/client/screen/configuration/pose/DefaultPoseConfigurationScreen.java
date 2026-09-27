@@ -68,34 +68,36 @@ public class DefaultPoseConfigurationScreen<T extends ConfigurationMenu>
 
   private void updatePoseButtonStates() {
     String currentPoseName = this.modelData.getModelPoseName();
-    if (resetPoseButton != null) {
-      resetPoseButton.active =
+    if (this.resetPoseButton != null) {
+      this.resetPoseButton.active =
           this.modelData.getModelPose() != ModelPose.VANILLA
               || this.getEasyNPCEntity().getPose() != Pose.STANDING;
     }
-    for (int i = 0; i < poseButtons.size(); i++) {
-      int globalIndex = i + scrollOffset;
-      if (globalIndex < poseKeys.size()) {
-        ResourceLocation poseId = poseKeys.get(globalIndex);
+    for (int i = 0; i < this.poseButtons.size(); i++) {
+      int globalIndex = i + this.scrollOffset;
+      if (globalIndex < this.poseKeys.size()) {
+        ResourceLocation poseId = this.poseKeys.get(globalIndex);
         Pose vanillaPose = ModelPoseAPI.getVanillaPose(poseId).orElse(null);
-        poseButtons.get(i).active =
-            vanillaPose != null
-                ? this.modelData.getModelPose() != ModelPose.VANILLA
-                    || this.getEasyNPCEntity().getPose() != vanillaPose
-                : !poseId.toString().equals(currentPoseName);
+        if (vanillaPose != null) {
+          this.poseButtons.get(i).active =
+              this.modelData.getModelPose() != ModelPose.VANILLA
+                  || this.getEasyNPCEntity().getPose() != vanillaPose;
+        } else {
+          this.poseButtons.get(i).active = !poseId.toString().equals(currentPoseName);
+        }
       }
     }
   }
 
   @Override
   public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
-    if (poseKeys.size() > MAX_VISIBLE_BUTTONS) {
-      int totalRows = (poseKeys.size() + COLUMNS - 1) / COLUMNS;
+    if (this.poseKeys.size() > MAX_VISIBLE_BUTTONS) {
+      int totalRows = (this.poseKeys.size() + COLUMNS - 1) / COLUMNS;
       int maxScrollOffset = Math.max(0, totalRows - MAX_VISIBLE_ROWS) * COLUMNS;
-      int newOffset = scrollOffset - (int) Math.signum(scrollY) * COLUMNS;
+      int newOffset = this.scrollOffset - (int) Math.signum(scrollY) * COLUMNS;
       int clamped = Math.max(0, Math.min(newOffset, maxScrollOffset));
-      if (clamped != scrollOffset) {
-        scrollOffset = clamped;
+      if (clamped != this.scrollOffset) {
+        this.scrollOffset = clamped;
         this.rebuildWidgets();
       }
       return true;
@@ -119,12 +121,18 @@ public class DefaultPoseConfigurationScreen<T extends ConfigurationMenu>
         availablePoses =
             CompoundTagUtils.readResourceLocations(poseKeysTag).stream()
                 .sorted(
-                    (a, b) -> {
-                      boolean aStanding = a.getPath().endsWith("/standing");
-                      boolean bStanding = b.getPath().endsWith("/standing");
-                      if (aStanding && !bStanding) return -1;
-                      if (!aStanding && bStanding) return 1;
-                      return a.getPath().compareTo(b.getPath());
+                    (firstPose, secondPose) -> {
+                      boolean firstStanding = firstPose.getPath().endsWith("/standing");
+                      boolean secondStanding = secondPose.getPath().endsWith("/standing");
+                      if (firstStanding && !secondStanding) {
+                        return -1;
+                      }
+
+                      if (!firstStanding && secondStanding) {
+                        return 1;
+                      }
+
+                      return firstPose.getPath().compareTo(secondPose.getPath());
                     })
                 .collect(Collectors.toCollection(LinkedHashSet::new));
       }
@@ -137,13 +145,13 @@ public class DefaultPoseConfigurationScreen<T extends ConfigurationMenu>
               : PoseManager.getPoseDataKeys();
     }
 
-    poseKeys.clear();
-    poseKeys.addAll(ModelPoseAPI.getVanillaPoseIds());
-    poseKeys.addAll(availablePoses);
-    poseButtons.clear();
+    this.poseKeys.clear();
+    this.poseKeys.addAll(ModelPoseAPI.getVanillaPoseIds());
+    this.poseKeys.addAll(availablePoses);
+    this.poseButtons.clear();
 
     int poseButtonLeft = this.contentLeftPos + 160;
-    int col2Left = poseButtonLeft + BUTTON_WIDTH + COLUMN_SPACING;
+    int secondColumnLeft = poseButtonLeft + BUTTON_WIDTH + COLUMN_SPACING;
     int resetButtonWidth = BUTTON_WIDTH * COLUMNS + COLUMN_SPACING;
 
     this.resetPoseButton =
@@ -171,15 +179,15 @@ public class DefaultPoseConfigurationScreen<T extends ConfigurationMenu>
                   this.updatePoseButtonStates();
                 }));
 
-    int visibleCount = Math.min(poseKeys.size() - scrollOffset, MAX_VISIBLE_BUTTONS);
+    int visibleCount = Math.min(this.poseKeys.size() - this.scrollOffset, MAX_VISIBLE_BUTTONS);
     for (int i = 0; i < visibleCount; i++) {
-      int globalIndex = i + scrollOffset;
-      ResourceLocation poseId = poseKeys.get(globalIndex);
+      int globalIndex = i + this.scrollOffset;
+      ResourceLocation poseId = this.poseKeys.get(globalIndex);
       String displayName = PoseManager.getPoseDisplayName(poseId);
 
       int row = i / COLUMNS;
-      int col = i % COLUMNS;
-      int x = col == 0 ? poseButtonLeft : col2Left;
+      int column = i % COLUMNS;
+      int x = column == 0 ? poseButtonLeft : secondColumnLeft;
       int y = this.contentTopPos + POSE_LIST_START_Y + row * BUTTON_SPACING;
 
       Button button =
@@ -189,7 +197,7 @@ public class DefaultPoseConfigurationScreen<T extends ConfigurationMenu>
                   y,
                   BUTTON_WIDTH,
                   Component.literal(displayName),
-                  btn -> {
+                  poseButton -> {
                     Pose vanillaPose = ModelPoseAPI.getVanillaPose(poseId).orElse(null);
                     if (vanillaPose != null) {
                       NetworkMessageHandlerManager.getServerHandler()
@@ -217,7 +225,7 @@ public class DefaultPoseConfigurationScreen<T extends ConfigurationMenu>
                     }
                     this.updatePoseButtonStates();
                   }));
-      poseButtons.add(button);
+      this.poseButtons.add(button);
     }
 
     this.updatePoseButtonStates();
@@ -249,9 +257,9 @@ public class DefaultPoseConfigurationScreen<T extends ConfigurationMenu>
 
     this.getEasyNPCEntity().setInvisible(entityInvisible);
 
-    if (poseKeys.size() > MAX_VISIBLE_BUTTONS) {
-      int totalRows = (poseKeys.size() + COLUMNS - 1) / COLUMNS;
-      int currentRow = scrollOffset / COLUMNS;
+    if (this.poseKeys.size() > MAX_VISIBLE_BUTTONS) {
+      int totalRows = (this.poseKeys.size() + COLUMNS - 1) / COLUMNS;
+      int currentRow = this.scrollOffset / COLUMNS;
       String indicator =
           "\u2195 "
               + (currentRow + 1)

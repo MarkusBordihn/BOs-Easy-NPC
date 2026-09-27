@@ -55,15 +55,14 @@ public class TextureCacheManager {
           file,
           textureModelKey);
       NativeImage nativeImage =
-          textureModelKey.getSkinModel() == SkinModel.HUMANOID
-                  || textureModelKey.getSkinModel() == SkinModel.HUMANOID_SLIM
-              ? TextureImageLoader.getNativePlayerImage(file)
-              : TextureImageLoader.getNativeImage(file);
+          TextureImageLoader.getNativeImageForSkinModel(textureModelKey.getSkinModel(), file);
       if (nativeImage == null) {
         return null;
       }
+
       return TextureRegistrationHelper.registerTexture(textureModelKey, nativeImage);
     }
+
     return null;
   }
 
@@ -78,21 +77,16 @@ public class TextureCacheManager {
         LOG_PREFIX,
         file,
         textureModelKey);
-    return textureModelKey.getSkinModel() == SkinModel.HUMANOID
-            || textureModelKey.getSkinModel() == SkinModel.HUMANOID_SLIM
-        ? TextureImageLoader.getNativePlayerImage(file)
-        : TextureImageLoader.getNativeImage(file);
+    return TextureImageLoader.getNativeImageForSkinModel(textureModelKey.getSkinModel(), file);
   }
 
   public static ResourceLocation searchCachedTexture(
       TextureModelKey textureModelKey, Path targetDirectory) {
-    // Check for cached texture and return if found.
     ResourceLocation resourceLocation = getCachedTexture(textureModelKey, targetDirectory);
     if (resourceLocation != null) {
       return resourceLocation;
     }
 
-    // Search for a matching texture file in cache directory.
     UUID textureUUID = textureModelKey.getUUID();
     File[] files = targetDirectory.toFile().listFiles();
     if (files == null) {
@@ -106,10 +100,7 @@ public class TextureCacheManager {
         UUID uuid = getUUIDFromFilename(filename);
         if (textureUUID.equals(uuid)) {
           NativeImage nativeImage =
-              textureModelKey.getSkinModel() == SkinModel.HUMANOID
-                      || textureModelKey.getSkinModel() == SkinModel.HUMANOID_SLIM
-                  ? TextureImageLoader.getNativePlayerImage(file)
-                  : TextureImageLoader.getNativeImage(file);
+              TextureImageLoader.getNativeImageForSkinModel(textureModelKey.getSkinModel(), file);
           if (nativeImage == null) {
             log.error(
                 "{} Unable to load native image from cached texture file {} for {}",
@@ -118,6 +109,7 @@ public class TextureCacheManager {
                 textureModelKey);
             return null;
           }
+
           ResourceLocation textureResourceLocation =
               TextureRegistrationHelper.registerTexture(textureModelKey, nativeImage);
           if (textureResourceLocation != null) {
@@ -154,6 +146,7 @@ public class TextureCacheManager {
           "{} Unable to get UUID for {} and texture file {}!", LOG_PREFIX, skinModel, filename);
       return null;
     }
+
     return new TextureModelKey(uuid, skinModel, filename);
   }
 
@@ -161,10 +154,12 @@ public class TextureCacheManager {
     if (fileName == null || fileName.isEmpty()) {
       return null;
     }
+
     if (!fileName.endsWith(FILE_EXTENSION_PNG)) {
       log.error("{} Unable to get UUID from invalid file name {}!", LOG_PREFIX, fileName);
       return null;
     }
+
     try {
       return UUID.fromString(fileName.substring(0, fileName.indexOf('.')));
     } catch (IllegalArgumentException e) {

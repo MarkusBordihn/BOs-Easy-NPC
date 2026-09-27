@@ -71,7 +71,7 @@ public record ChangeModelVisibilityMessage(UUID uuid, ModelPartType modelPartTyp
 
   @Override
   public void handleServer(final ServerPlayer serverPlayer) {
-    EasyNPC<?> easyNPC = getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
+    EasyNPC<?> easyNPC = this.getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
     if (easyNPC == null) {
       return;
     }
@@ -94,13 +94,11 @@ public record ChangeModelVisibilityMessage(UUID uuid, ModelPartType modelPartTyp
         easyNPC,
         serverPlayer);
 
-    // Set common properties for all cases except ROOT.
     if (this.modelPartType != ModelPartType.ROOT) {
       easyNPC.getEntity().setPose(Pose.STANDING);
       modelData.setModelPose(ModelPose.CUSTOM);
     }
 
-    // Apply visibility change based on the model part.
     modelData.setModelPartVisibility(this.modelPartType, this.visible);
 
     if (!modelData.hasChangedModel()) {

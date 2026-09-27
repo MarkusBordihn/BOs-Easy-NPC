@@ -74,8 +74,8 @@ public class PresetListEntry extends ObjectSelectionList.Entry<PresetListEntry> 
     this.metadata = metadata;
     this.presetType = presetType;
     this.screen = screen;
-    loadPresetData();
-    loadStoredIdentity();
+    this.loadPresetData();
+    this.loadStoredIdentity();
   }
 
   private void loadStoredIdentity() {
@@ -108,7 +108,7 @@ public class PresetListEntry extends ObjectSelectionList.Entry<PresetListEntry> 
 
         if (this.presetData != null && this.presetData.hasValidData()) {
           this.securityPreview = this.screen.createSecurityPreview(this.presetData);
-          loadPreviewNPC();
+          this.loadPreviewNPC();
         } else {
           log.warn("Invalid PresetData for LOCAL preset: {}", this.preset);
         }
@@ -120,7 +120,7 @@ public class PresetListEntry extends ObjectSelectionList.Entry<PresetListEntry> 
 
         if (this.presetData != null && this.presetData.hasValidData()) {
           this.securityPreview = this.screen.createSecurityPreview(this.presetData);
-          loadPreviewNPC();
+          this.loadPreviewNPC();
         } else {
           log.warn("Invalid PresetData for DEFAULT preset: {}", this.preset);
         }
@@ -133,7 +133,7 @@ public class PresetListEntry extends ObjectSelectionList.Entry<PresetListEntry> 
         this.presetData = PresetHandler.loadPreset(this.preset, this.presetType, server);
         if (this.presetData != null && this.presetData.hasValidData()) {
           this.securityPreview = this.screen.createSecurityPreview(this.presetData);
-          loadPreviewNPC();
+          this.loadPreviewNPC();
         } else {
           log.warn("Invalid PresetData for: {}", this.preset);
         }
@@ -143,7 +143,7 @@ public class PresetListEntry extends ObjectSelectionList.Entry<PresetListEntry> 
           this.presetData = PresetData.fromCompoundTag(this.preset, this.presetType, syncedTag);
           if (this.presetData != null && this.presetData.hasValidData()) {
             this.securityPreview = this.screen.createSecurityPreview(this.presetData);
-            loadPreviewNPC();
+            this.loadPreviewNPC();
           } else {
             log.warn("Invalid synced PresetData for: {}", this.preset);
           }
@@ -185,19 +185,19 @@ public class PresetListEntry extends ObjectSelectionList.Entry<PresetListEntry> 
   }
 
   public ResourceLocation getPreset() {
-    return preset;
+    return this.preset;
   }
 
   public PresetMetadata getMetadata() {
-    return metadata;
+    return this.metadata;
   }
 
   public PresetType getPresetType() {
-    return presetType;
+    return this.presetType;
   }
 
   public PresetData getPresetData() {
-    return presetData;
+    return this.presetData;
   }
 
   public PresetFeaturePreview getSecurityPreview() {
@@ -205,7 +205,7 @@ public class PresetListEntry extends ObjectSelectionList.Entry<PresetListEntry> 
   }
 
   public EasyNPC<?> getPreviewNPC() {
-    return previewNPC;
+    return this.previewNPC;
   }
 
   public UUID getStoredEntityUUID() {
@@ -247,8 +247,8 @@ public class PresetListEntry extends ObjectSelectionList.Entry<PresetListEntry> 
     int previewBoxX = left + 1;
     int previewBoxY = top + 1;
 
-    renderPreviewBox(guiGraphics, previewBoxX, previewBoxY, mouseX, mouseY);
-    renderPresetInfo(guiGraphics, left, top);
+    this.renderPreviewBox(guiGraphics, previewBoxX, previewBoxY, mouseX, mouseY);
+    this.renderPresetInfo(guiGraphics, left, top);
   }
 
   private void renderPreviewBox(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY) {

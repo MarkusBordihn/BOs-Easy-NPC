@@ -53,7 +53,7 @@ public class EasyNPCVexModelMixin implements EasyNPCModelManagerAccessor {
   }
 
   @Inject(method = "<init>(Lnet/minecraft/client/model/geom/ModelPart;)V", at = @At("TAIL"))
-  private void easyNpcModel(ModelPart modelPart, CallbackInfo callbackInfo) {
+  private void easyNPC$initModelManager(ModelPart modelPart, CallbackInfo callbackInfo) {
     this.easyNPC$modelManager =
         new EasyNPCModelManager(modelPart)
             .defineModelPart(ModelPartType.HEAD, this.head)
@@ -68,7 +68,7 @@ public class EasyNPCVexModelMixin implements EasyNPCModelManagerAccessor {
       method = "setupAnim(Lnet/minecraft/world/entity/monster/Vex;FFFFF)V",
       at = @At("HEAD"),
       cancellable = true)
-  private void setupNpcAnimStart(
+  private void easyNPC$setupAnimStart(
       Vex entity,
       float limbSwing,
       float limbSwingAmount,
@@ -83,7 +83,7 @@ public class EasyNPCVexModelMixin implements EasyNPCModelManagerAccessor {
   }
 
   @Inject(method = "setupAnim(Lnet/minecraft/world/entity/monster/Vex;FFFFF)V", at = @At("TAIL"))
-  private void setupNpcAnimEnd(
+  private void easyNPC$setupAnimEnd(
       Vex entity,
       float limbSwing,
       float limbSwingAmount,

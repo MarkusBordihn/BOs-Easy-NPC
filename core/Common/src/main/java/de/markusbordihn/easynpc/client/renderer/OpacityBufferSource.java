@@ -82,6 +82,7 @@ public class OpacityBufferSource implements MultiBufferSource {
         || renderType == RenderType.entitySmoothCutout(textureLocation)) {
       return RenderType.entityTranslucentCull(textureLocation);
     }
+
     if (renderType == RenderType.entityCutoutNoCull(textureLocation)
         || renderType == RenderType.entityCutoutNoCullZOffset(textureLocation)
         || renderType == RenderType.armorCutoutNoCull(textureLocation)) {

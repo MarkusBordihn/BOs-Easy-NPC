@@ -71,7 +71,7 @@ public class ExportWorldPresetConfigurationScreen<T extends ConfigurationMenu>
     this.worldExportPresetButton.active = false;
 
     File customPresetFile =
-        CustomPresetDataFiles.getPresetFile(this.getSkinModel(), getEasyNPCUUID());
+        CustomPresetDataFiles.getPresetFile(this.getSkinModel(), this.getEasyNPCUUID());
     String customPresetFileName =
         PresetExportFormat.removePresetExtension(customPresetFile.getName());
 
@@ -131,7 +131,7 @@ public class ExportWorldPresetConfigurationScreen<T extends ConfigurationMenu>
                               .withCategory(this.categorySpinButton.get())
                               .withVersion(this.versionBox.getValue())
                               .withDescription(this.descriptionBox.getValue()));
-                  exportPresetButton.active = false;
+                  this.exportPresetButton.active = false;
                 }));
   }
 
@@ -146,8 +146,8 @@ public class ExportWorldPresetConfigurationScreen<T extends ConfigurationMenu>
             guiGraphics,
             this.font,
             formattedCharSequence,
-            leftPos + 15,
-            topPos + 25 + (line * (font.lineHeight + 2)));
+            this.leftPos + 15,
+            this.topPos + 25 + (line * (this.font.lineHeight + 2)));
       }
     }
 

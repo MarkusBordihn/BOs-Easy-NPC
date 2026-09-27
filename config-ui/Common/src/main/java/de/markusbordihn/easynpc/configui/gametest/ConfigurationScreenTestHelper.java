@@ -43,8 +43,6 @@ public class ConfigurationScreenTestHelper {
       ConfigurationType configurationType,
       EasyNPC<?> easyNPC,
       MenuType<? extends ConfigurationMenu> menuType) {
-
-    // Define the menu provider and open the menu.
     MenuProvider menuProvider =
         ConfigurationMenuHandler.getMenuProvider(
             configurationType,
@@ -61,20 +59,16 @@ public class ConfigurationScreenTestHelper {
       EntityType<? extends PathfinderMob> npcEntityType,
       ConfigurationType configurationType,
       MenuType<? extends ConfigurationMenu> menuType) {
-    // Get a mock player and spawn a humanoid NPC.
     ServerPlayer serverPlayer = GameTestHelpers.mockServerPlayer(helper, new Vec3(1, 2, 1));
     EasyNPC<?> easyNPC = GameTestHelpers.mockEasyNPC(helper, npcEntityType, new Vec3(2, 2, 2));
 
-    // Close previous dialog, if any.
     if (serverPlayer.hasContainerOpen()) {
       serverPlayer.closeContainer();
     }
 
-    // Prepare and open Dialog
-    UUID dialogId = mockOpenConfigurationScreen(serverPlayer, configurationType, easyNPC, menuType);
-    GameTestHelpers.assertNotNull(helper, "DialogId is null!", dialogId);
+    UUID menuId = mockOpenConfigurationScreen(serverPlayer, configurationType, easyNPC, menuType);
+    GameTestHelpers.assertNotNull(helper, "Menu ID is null!", menuId);
 
-    // Check if dialog is open.
     GameTestHelpers.assertTrue(
         helper,
         "Configuration Screen " + menuType + " is not open!",

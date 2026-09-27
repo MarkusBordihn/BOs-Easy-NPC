@@ -32,7 +32,8 @@ public class PresetCommand extends Command {
 
   public static ArgumentBuilder<CommandSourceStack, ?> register() {
     return Commands.literal(COMMAND_NAME)
-        .requires(cs -> cs.hasPermission(Commands.LEVEL_GAMEMASTERS))
+        .requires(
+            commandSourceStack -> commandSourceStack.hasPermission(Commands.LEVEL_GAMEMASTERS))
         .then(PresetExportCommand.register())
         .then(PresetGenerateCommand.register())
         .then(PresetImportCommand.register())

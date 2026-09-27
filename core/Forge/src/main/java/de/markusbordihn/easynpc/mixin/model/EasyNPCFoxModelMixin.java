@@ -53,7 +53,7 @@ public class EasyNPCFoxModelMixin<T extends Fox> implements EasyNPCModelManagerA
   }
 
   @Inject(method = "<init>(Lnet/minecraft/client/model/geom/ModelPart;)V", at = @At("TAIL"))
-  private void easyNpcModel(ModelPart modelPart, CallbackInfo callbackInfo) {
+  private void easyNPC$initModelManager(ModelPart modelPart, CallbackInfo callbackInfo) {
     this.easyNPC$modelManager =
         new EasyNPCModelManager(modelPart)
             .defineModelPart(ModelPartType.HEAD, this.head)
@@ -69,8 +69,14 @@ public class EasyNPCFoxModelMixin<T extends Fox> implements EasyNPCModelManagerA
       method = "setupAnim(Lnet/minecraft/world/entity/animal/Fox;FFFFF)V",
       at = @At("HEAD"),
       cancellable = true)
-  private void setupNpcAnimStart(
-      T fox, float f, float g, float h, float i, float j, CallbackInfo callbackInfo) {
+  private void easyNPC$setupAnimStart(
+      T fox,
+      float limbSwing,
+      float limbSwingAmount,
+      float ageInTicks,
+      float netHeadYaw,
+      float headPitch,
+      CallbackInfo callbackInfo) {
     if (fox instanceof EasyNPC<?> easyNPC
         && EasyNPCModel.setupAnimationStart(easyNPC, this.easyNPC$modelManager)) {
       callbackInfo.cancel();
@@ -78,8 +84,14 @@ public class EasyNPCFoxModelMixin<T extends Fox> implements EasyNPCModelManagerA
   }
 
   @Inject(method = "setupAnim(Lnet/minecraft/world/entity/animal/Fox;FFFFF)V", at = @At("TAIL"))
-  private void setupNpcAnimEnd(
-      T fox, float f, float g, float h, float i, float j, CallbackInfo callbackInfo) {
+  private void easyNPC$setupAnimEnd(
+      T fox,
+      float limbSwing,
+      float limbSwingAmount,
+      float ageInTicks,
+      float netHeadYaw,
+      float headPitch,
+      CallbackInfo callbackInfo) {
     if (fox instanceof EasyNPC<?> easyNPC) {
       EasyNPCModel.setupAnimationEnd(easyNPC, this.easyNPC$modelManager);
     }

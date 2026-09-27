@@ -47,21 +47,17 @@ public class CustomPoseConfigurationScreen<T extends ConfigurationMenu>
   private RangeSliderButton createVisibilityPositionScaleRotationSlider(
       int left, int top, ModelPartType modelPartType) {
 
-    // Model Part Rotation
-    RangeSliderButton sliderRotationButtonX = createRotationSlider(left, top, modelPartType);
+    RangeSliderButton sliderRotationButtonX = this.createRotationSlider(left, top, modelPartType);
 
-    // Model Part Scale
     RangeSliderButton sliderScaleButtonX =
-        createScaleSlider(left, top + sliderRotationButtonX.getHeight(), modelPartType);
+        this.createScaleSlider(left, top + sliderRotationButtonX.getHeight(), modelPartType);
 
-    // Model Part Position
     RangeSliderButton sliderPositionButtonX =
-        createPositionSlider(
+        this.createPositionSlider(
             left,
             top + sliderRotationButtonX.getHeight() + sliderScaleButtonX.getHeight(),
             modelPartType);
 
-    // Model Part Visibility
     boolean modelPartVisibility = this.modelData.getModelPartVisibility(modelPartType);
     this.addRenderableWidget(
         new Checkbox(
@@ -81,22 +77,20 @@ public class CustomPoseConfigurationScreen<T extends ConfigurationMenu>
   public void init() {
     super.init();
 
-    // Default button stats
     this.customPoseButton.active = false;
 
-    // Position and size
     int sliderTopPos = this.contentTopPos + 16;
     int sliderLeftPos = this.contentLeftPos - 3;
     int sliderLeftSpace = 200;
     int sliderTopSpace = 73;
 
-    // Model parts
     Set<ModelPartType> modelPartTypes = this.modelData.getModelType().getPrimaryModelParts();
     int partsOnRow = 0;
     for (ModelPartType modelPartType : modelPartTypes) {
       RangeSliderButton slider =
-          createVisibilityPositionScaleRotationSlider(sliderLeftPos, sliderTopPos, modelPartType);
-      sliders.put(modelPartType, slider);
+          this.createVisibilityPositionScaleRotationSlider(
+              sliderLeftPos, sliderTopPos, modelPartType);
+      this.sliders.put(modelPartType, slider);
 
       sliderLeftPos += sliderLeftSpace;
       partsOnRow++;
@@ -107,14 +101,11 @@ public class CustomPoseConfigurationScreen<T extends ConfigurationMenu>
       }
     }
 
-    // Animation Behavior Button
     this.addRenderableWidget(
         this.createAnimationBehaviorButton(this.contentLeftPos + 118, this.bottomPos - 26));
 
-    // Follow Cursor Toggle Button
     this.createFollowCursorToggleButton(this.contentLeftPos + 149, this.topPos + 45);
 
-    // Lock Rotation Checkbox
     this.createLockRotationCheckbox(this.contentLeftPos + 125, this.topPos + 28);
 
     // Auto-disable lock rotation only when coming from a named preset (DEFAULT) pose
@@ -134,7 +125,6 @@ public class CustomPoseConfigurationScreen<T extends ConfigurationMenu>
   public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
     super.render(guiGraphics, x, y, partialTicks);
 
-    // Avatar
     EntityRenderConfig renderConfig =
         EntityRenderConfig.guiScaled(this.contentLeftPos + 157, this.contentTopPos + 110, 45);
     EntityConfigScreenRenderer.renderEntity(
@@ -144,9 +134,8 @@ public class CustomPoseConfigurationScreen<T extends ConfigurationMenu>
         this.getPreviewRotationYaw(this.xMouse, renderConfig),
         this.getPreviewRotationPitch(this.yMouse, renderConfig));
 
-    // Model Part texts
-    for (ModelPartType modelPartType : sliders.keySet()) {
-      RangeSliderButton slider = sliders.get(modelPartType);
+    for (ModelPartType modelPartType : this.sliders.keySet()) {
+      RangeSliderButton slider = this.sliders.get(modelPartType);
       if (slider != null) {
         Text.drawConfigString(
             guiGraphics,
@@ -162,7 +151,6 @@ public class CustomPoseConfigurationScreen<T extends ConfigurationMenu>
   protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
     super.renderBg(guiGraphics, partialTicks, mouseX, mouseY);
 
-    // Entity
     int backgroundTopPos = this.contentTopPos + 30;
     guiGraphics.fill(
         this.contentLeftPos + 109,
@@ -177,7 +165,6 @@ public class CustomPoseConfigurationScreen<T extends ConfigurationMenu>
         this.contentTopPos + 177,
         0xffaaaaaa);
 
-    // Animation Text
     Text.drawConfigString(
         guiGraphics, this.font, "animation", this.contentLeftPos + 134, this.bottomPos - 37);
   }

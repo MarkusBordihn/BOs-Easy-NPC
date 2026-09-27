@@ -76,18 +76,19 @@ public interface DisplayAttributeDataCapable<E extends Mob> extends EasyNPC<E> {
 
   default DisplayAttributeDataSet getDisplayAttributeData() {
     DisplayAttributeDataSet displayAttributeDataSet =
-        getSynchedEntityData(SynchedDataIndex.DISPLAY_ATTRIBUTE_SET);
+        this.getSynchedEntityData(SynchedDataIndex.DISPLAY_ATTRIBUTE_SET);
     if (displayAttributeDataSet == null) {
       displayAttributeDataSet = DisplayAttributeDataSet.createDefault();
-      setDisplayAttributeData(displayAttributeDataSet);
+      this.setDisplayAttributeData(displayAttributeDataSet);
     }
     return displayAttributeDataSet;
   }
 
   default void setDisplayAttributeData(DisplayAttributeDataSet displayAttributeDataSet) {
     if (displayAttributeDataSet != null) {
-      setSynchedEntityData(SynchedDataIndex.DISPLAY_ATTRIBUTE_SET, displayAttributeDataSet, true);
-      syncDisplayAttributesToEntity(displayAttributeDataSet);
+      this.setSynchedEntityData(
+          SynchedDataIndex.DISPLAY_ATTRIBUTE_SET, displayAttributeDataSet, true);
+      this.syncDisplayAttributesToEntity(displayAttributeDataSet);
     }
   }
 
@@ -100,7 +101,7 @@ public interface DisplayAttributeDataCapable<E extends Mob> extends EasyNPC<E> {
         try {
           NameVisibilityType nameVisibilityType =
               NameVisibilityType.valueOf(nameVisibilityEntry.stringValue());
-          getEntity().setCustomNameVisible(nameVisibilityType != NameVisibilityType.NEVER);
+          this.getEntity().setCustomNameVisible(nameVisibilityType != NameVisibilityType.NEVER);
         } catch (IllegalArgumentException e) {
           log.warn("Invalid name visibility type: {}", nameVisibilityEntry.stringValue());
         }
@@ -109,31 +110,31 @@ public interface DisplayAttributeDataCapable<E extends Mob> extends EasyNPC<E> {
   }
 
   default void clearDisplayAttributeData() {
-    setDisplayAttributeData(DisplayAttributeDataSet.createDefault());
+    this.setDisplayAttributeData(DisplayAttributeDataSet.createDefault());
   }
 
   default boolean hasDisplayAttribute(DisplayAttributeType displayAttributeType) {
-    return getDisplayAttributeData().hasAttribute(displayAttributeType);
+    return this.getDisplayAttributeData().hasAttribute(displayAttributeType);
   }
 
   default boolean getDisplayBooleanAttribute(DisplayAttributeType displayAttributeType) {
-    DisplayAttributeEntry entry = getDisplayAttributeData().getAttribute(displayAttributeType);
+    DisplayAttributeEntry entry = this.getDisplayAttributeData().getAttribute(displayAttributeType);
     return entry != null && entry.booleanValue();
   }
 
   default int getDisplayIntAttribute(DisplayAttributeType displayAttributeType) {
-    DisplayAttributeEntry entry = getDisplayAttributeData().getAttribute(displayAttributeType);
+    DisplayAttributeEntry entry = this.getDisplayAttributeData().getAttribute(displayAttributeType);
     return entry != null ? entry.intValue() : 0;
   }
 
   default String getDisplayStringAttribute(DisplayAttributeType displayAttributeType) {
-    DisplayAttributeEntry entry = getDisplayAttributeData().getAttribute(displayAttributeType);
+    DisplayAttributeEntry entry = this.getDisplayAttributeData().getAttribute(displayAttributeType);
     return entry != null ? entry.stringValue() : "";
   }
 
   default <T extends Enum<T>> T getDisplayEnumAttribute(
       DisplayAttributeType displayAttributeType, Class<T> enumClass) {
-    String enumValue = getDisplayStringAttribute(displayAttributeType);
+    String enumValue = this.getDisplayStringAttribute(displayAttributeType);
     try {
       return Enum.valueOf(enumClass, enumValue);
     } catch (IllegalArgumentException e) {
@@ -156,17 +157,17 @@ public interface DisplayAttributeDataCapable<E extends Mob> extends EasyNPC<E> {
         };
 
     if (newEntry != null) {
-      setDisplayAttributeData(
-          getDisplayAttributeData().withAttribute(displayAttributeType, newEntry));
+      this.setDisplayAttributeData(
+          this.getDisplayAttributeData().withAttribute(displayAttributeType, newEntry));
     }
   }
 
   default void setDisplayAttribute(DisplayAttributeType displayAttributeType, Enum<?> enumValue) {
-    setDisplayAttribute(displayAttributeType, ValueType.STRING, enumValue.toString());
+    this.setDisplayAttribute(displayAttributeType, ValueType.STRING, enumValue.toString());
   }
 
   default void defineSynchedDisplayAttributeData(SynchedEntityData.Builder builder) {
-    defineSynchedEntityData(
+    this.defineSynchedEntityData(
         builder, SynchedDataIndex.DISPLAY_ATTRIBUTE_SET, DisplayAttributeDataSet.createDefault());
   }
 
@@ -177,11 +178,11 @@ public interface DisplayAttributeDataCapable<E extends Mob> extends EasyNPC<E> {
 
     DisplayAttributeDataSet displayAttributeData =
         new DisplayAttributeDataSet(compoundTag.getList(DATA_DISPLAY_ATTRIBUTE_TAG, 10));
-    setDisplayAttributeData(displayAttributeData);
+    this.setDisplayAttributeData(displayAttributeData);
   }
 
   default void addAdditionalDisplayAttributeData(CompoundTag compoundTag) {
-    DisplayAttributeDataSet displayAttributeData = getDisplayAttributeData();
+    DisplayAttributeDataSet displayAttributeData = this.getDisplayAttributeData();
     if (displayAttributeData != null) {
       CompoundTagUtils.putIfNotEmpty(
           compoundTag, DATA_DISPLAY_ATTRIBUTE_TAG, displayAttributeData.save());

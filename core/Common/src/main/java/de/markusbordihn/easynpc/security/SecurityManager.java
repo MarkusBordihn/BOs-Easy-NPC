@@ -161,7 +161,7 @@ public class SecurityManager {
     }
 
     ActorSecurityContext actorSecurityContext = CommandSecurity.getActorContext(serverPlayer);
-    PresetTrustLevel trustLevel = PresetSecurity.getTrustLevel(null, actorSecurityContext);
+    PresetTrustLevel trustLevel = PresetSecurity.getTrustLevel(actorSecurityContext);
     CommandPermissionLevel commandPermissionLevel =
         CommandSecurity.getPresetImportCommandLevel(actorSecurityContext, trustLevel);
     actionEventData.setActionCommandPermissionLevel(commandPermissionLevel);

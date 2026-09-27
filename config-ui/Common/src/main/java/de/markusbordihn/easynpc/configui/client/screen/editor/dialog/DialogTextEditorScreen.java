@@ -54,10 +54,9 @@ public class DialogTextEditorScreen<T extends EditorMenu> extends EditorScreen<T
   }
 
   protected void saveDialogData() {
-    // Save dialog texts
     Set<DialogTextData> validDialogTexts = new HashSet<>();
-    for (TextField textfield : dialogTextFields) {
-      String text = textfield.getValue();
+    for (TextField dialogTextField : this.dialogTextFields) {
+      String text = dialogTextField.getValue();
       if (!text.isEmpty()) {
         validDialogTexts.add(new DialogTextData(text));
       }
@@ -66,7 +65,6 @@ public class DialogTextEditorScreen<T extends EditorMenu> extends EditorScreen<T
     DialogDataEntry dialogDataEntry = this.getDialogData(this.getDialogUUID());
     dialogDataEntry.setDialogTexts(validDialogTexts);
 
-    // Save dialog data
     NetworkMessageHandlerManager.getServerHandler()
         .saveDialog(this.getEasyNPCUUID(), this.getDialogUUID(), dialogDataEntry);
   }
@@ -75,7 +73,6 @@ public class DialogTextEditorScreen<T extends EditorMenu> extends EditorScreen<T
   public void init() {
     super.init();
 
-    // Home Button
     this.homeButton =
         this.addRenderableWidget(
             new TextButton(
@@ -88,7 +85,6 @@ public class DialogTextEditorScreen<T extends EditorMenu> extends EditorScreen<T
                     NetworkMessageHandlerManager.getServerHandler()
                         .openConfiguration(this.getEasyNPCUUID(), ConfigurationType.DIALOG)));
 
-    // Dialog Button
     this.dialogButton =
         this.addRenderableWidget(
             new DialogButton(
@@ -100,7 +96,6 @@ public class DialogTextEditorScreen<T extends EditorMenu> extends EditorScreen<T
                     NetworkMessageHandlerManager.getServerHandler()
                         .openDialogEditor(this.getEasyNPCUUID(), this.getDialogUUID())));
 
-    // Dialog Text Button
     this.dialogTextButton =
         this.addRenderableWidget(
             new DialogButton(
@@ -111,19 +106,17 @@ public class DialogTextEditorScreen<T extends EditorMenu> extends EditorScreen<T
                 onPress -> {}));
     this.dialogTextButton.active = false;
 
-    // Dialog Texts
     int dialogTextIndex = 0;
     int dialogTextLeftPos = this.leftPos + 20;
     int dialogTextTopPos = this.topPos + 50;
     int dialogTextWidth = 290;
 
-    // Get stored dialog texts
     Set<DialogTextData> dialogTexts = this.getDialogData(this.getDialogUUID()).getDialogTexts();
     for (DialogTextData dialogText : dialogTexts) {
       if (dialogTextIndex >= MAX_NUMBER_OF_DIALOG_TEXTS) {
         break;
       }
-      TextField textfield =
+      TextField dialogTextField =
           this.addRenderableWidget(
               new TextField(
                   this.font,
@@ -132,13 +125,12 @@ public class DialogTextEditorScreen<T extends EditorMenu> extends EditorScreen<T
                   dialogTextWidth,
                   dialogText.text(),
                   512));
-      this.dialogTextFields.add(textfield);
+      this.dialogTextFields.add(dialogTextField);
       dialogTextIndex++;
     }
 
-    // Add additional dialog texts, if needed.
     for (int i = dialogTextIndex; i < MAX_NUMBER_OF_DIALOG_TEXTS; i++) {
-      TextField textfield =
+      TextField dialogTextField =
           this.addRenderableWidget(
               new TextField(
                   this.font,
@@ -147,10 +139,9 @@ public class DialogTextEditorScreen<T extends EditorMenu> extends EditorScreen<T
                   dialogTextWidth,
                   "",
                   512));
-      this.dialogTextFields.add(textfield);
+      this.dialogTextFields.add(dialogTextField);
     }
 
-    // Save Button
     this.saveButton =
         this.addRenderableWidget(
             new SaveButton(
@@ -164,7 +155,6 @@ public class DialogTextEditorScreen<T extends EditorMenu> extends EditorScreen<T
                       .openDialogEditor(this.getEasyNPCUUID(), this.getDialogUUID());
                 }));
 
-    // Cancel Button
     this.cancelButton =
         this.addRenderableWidget(
             new CancelButton(
@@ -182,7 +172,7 @@ public class DialogTextEditorScreen<T extends EditorMenu> extends EditorScreen<T
         guiGraphics,
         this.font,
         "dialog.text",
-        leftPos + 10,
+        this.leftPos + 10,
         this.topPos + 34,
         Constants.FONT_COLOR_BLACK);
 
@@ -191,7 +181,7 @@ public class DialogTextEditorScreen<T extends EditorMenu> extends EditorScreen<T
           guiGraphics,
           this.font,
           i + ":",
-          leftPos + 10,
+          this.leftPos + 10,
           this.topPos + 35 + i * 20,
           Constants.FONT_COLOR_BLACK);
     }

@@ -39,9 +39,9 @@ public abstract class EpicFightPatchedEntityRendererMixin {
       PoseStack poseStack,
       Armature armature,
       LivingEntity entity,
-      LivingEntityPatch<?> entitypatch,
+      LivingEntityPatch<?> entityPatch,
       float partialTicks,
-      CallbackInfo ci) {
+      CallbackInfo callbackInfo) {
     if (entity instanceof EasyNPC<?> easyNPC) {
       EasyNPCLivingEntityRenderer.handleRotation(easyNPC, poseStack);
       EasyNPCLivingEntityRenderer.handleScale(easyNPC, poseStack);

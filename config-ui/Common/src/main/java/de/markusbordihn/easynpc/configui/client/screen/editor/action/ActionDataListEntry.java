@@ -61,7 +61,7 @@ public class ActionDataListEntry extends ObjectSelectionList.Entry<ActionDataLis
   private final int topPos;
   private final ActionDataEntry actionDataEntry;
   private final ActionDataType actionDataType;
-  private final int actionDateEntriesSize;
+  private final int actionDataEntriesSize;
   private final EditButton editButton;
   private final DeleteButton deleteButton;
   private final UpDownButton upAndDownButton;
@@ -85,7 +85,7 @@ public class ActionDataListEntry extends ObjectSelectionList.Entry<ActionDataLis
     this.actionDataEntry = actionDataEntry;
     this.actionDataType =
         actionDataEntry != null ? actionDataEntry.actionDataType() : ActionDataType.NONE;
-    this.actionDateEntriesSize = actionDataSet != null ? actionDataSet.getEntries().size() : 1;
+    this.actionDataEntriesSize = actionDataSet != null ? actionDataSet.getEntries().size() : 1;
 
     this.upAndDownButton =
         new UpDownButton(
@@ -178,12 +178,12 @@ public class ActionDataListEntry extends ObjectSelectionList.Entry<ActionDataLis
         fieldTop,
         Constants.FONT_COLOR_BLACK);
 
-    renderValuePreview(guiGraphics, fieldsLeft, fieldTop, mouseX, mouseY);
+    this.renderValuePreview(guiGraphics, fieldsLeft, fieldTop, mouseX, mouseY);
 
     this.upAndDownButton.setY(top);
     this.upAndDownButton.render(guiGraphics, mouseX, mouseY, partialTicks);
     this.upAndDownButton.enableUpButton(entryId > 0);
-    this.upAndDownButton.enableDownButton(entryId < this.actionDateEntriesSize - 1);
+    this.upAndDownButton.enableDownButton(entryId < this.actionDataEntriesSize - 1);
 
     this.editButton.setY(top);
     this.editButton.render(guiGraphics, mouseX, mouseY, partialTicks);

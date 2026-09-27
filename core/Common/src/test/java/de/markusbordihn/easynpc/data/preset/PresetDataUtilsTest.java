@@ -225,12 +225,12 @@ class PresetDataUtilsTest {
     data.putInt("Fire", 100);
 
     CompoundTag nestedData = new CompoundTag();
-    nestedData.putInt("Fire", 50); // Fire in nested structure should NOT be removed
+    nestedData.putInt("Fire", 50);
     data.put("CustomData", nestedData);
 
     ListTag listData = new ListTag();
     CompoundTag listItem = new CompoundTag();
-    listItem.putInt("Fire", 25); // Fire in list items should NOT be removed
+    listItem.putInt("Fire", 25);
     listData.add(listItem);
     data.put("Items", listData);
 

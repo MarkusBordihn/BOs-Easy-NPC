@@ -26,6 +26,7 @@ import java.util.Set;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 
 public class ConditionDataSet {
 
@@ -67,16 +68,17 @@ public class ConditionDataSet {
         return entry;
       }
     }
+
     return null;
   }
 
   public boolean hasCondition(UUID id) {
-    return getCondition(id) != null;
+    return this.getCondition(id) != null;
   }
 
   public void add(ConditionDataEntry conditionDataEntry) {
     if (conditionDataEntry != null && conditionDataEntry.isValid()) {
-      remove(conditionDataEntry.getId());
+      this.remove(conditionDataEntry.getId());
       this.conditionDataEntries.add(conditionDataEntry);
     }
   }
@@ -89,7 +91,8 @@ public class ConditionDataSet {
     if (conditionDataEntryId == null || conditionDataEntry == null) {
       return;
     }
-    remove(conditionDataEntryId);
+
+    this.remove(conditionDataEntryId);
     if (conditionDataEntry.isValid()) {
       this.conditionDataEntries.add(conditionDataEntry);
     }
@@ -97,7 +100,7 @@ public class ConditionDataSet {
 
   public void update(ConditionDataEntry conditionDataEntry) {
     if (conditionDataEntry != null && conditionDataEntry.isValid()) {
-      remove(conditionDataEntry.getId());
+      this.remove(conditionDataEntry.getId());
       this.conditionDataEntries.add(conditionDataEntry);
     }
   }
@@ -110,8 +113,9 @@ public class ConditionDataSet {
     if (compoundTag == null || !compoundTag.contains(CONDITION_DATA_SET_TAG)) {
       return;
     }
+
     this.conditionDataEntries.clear();
-    ListTag conditionDataEntriesTag = compoundTag.getList(CONDITION_DATA_SET_TAG, 10);
+    ListTag conditionDataEntriesTag = compoundTag.getList(CONDITION_DATA_SET_TAG, Tag.TAG_COMPOUND);
     for (int i = 0; i < conditionDataEntriesTag.size(); i++) {
       CompoundTag conditionDataEntryTag = conditionDataEntriesTag.getCompound(i);
       ConditionDataEntry conditionDataEntry = new ConditionDataEntry(conditionDataEntryTag);
@@ -126,11 +130,10 @@ public class ConditionDataSet {
   }
 
   public CompoundTag save(CompoundTag compoundTag, String tag) {
-    if (isEmpty()) {
+    if (this.isEmpty()) {
       return compoundTag;
     }
 
-    // Save condition data entries
     CompoundTag conditionDataSetTag = new CompoundTag();
     ListTag conditionDataEntriesTag = new ListTag();
     for (ConditionDataEntry conditionDataEntry : this.conditionDataEntries) {
@@ -149,7 +152,7 @@ public class ConditionDataSet {
   }
 
   public boolean hasConditionData() {
-    return !isEmpty();
+    return !this.isEmpty();
   }
 
   @Override
@@ -157,9 +160,11 @@ public class ConditionDataSet {
     if (this == object) {
       return true;
     }
-    if (object == null || getClass() != object.getClass()) {
+
+    if (object == null || this.getClass() != object.getClass()) {
       return false;
     }
+
     ConditionDataSet other = (ConditionDataSet) object;
     return this.conditionDataEntries.equals(other.conditionDataEntries);
   }
@@ -171,6 +176,6 @@ public class ConditionDataSet {
 
   @Override
   public String toString() {
-    return "ConditionDataSet[size=" + size() + ", entries=" + this.conditionDataEntries + "]";
+    return "ConditionDataSet[size=" + this.size() + ", entries=" + this.conditionDataEntries + "]";
   }
 }

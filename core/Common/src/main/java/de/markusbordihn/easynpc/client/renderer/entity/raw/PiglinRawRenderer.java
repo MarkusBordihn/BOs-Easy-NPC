@@ -32,6 +32,7 @@ public class PiglinRawRenderer extends PiglinRenderer implements EasyNPCEntityRe
 
   protected static final ResourceLocation DEFAULT_TEXTURE =
       PiglinSkinVariant.PIGLIN.getTextureLocation();
+  private static final boolean ZOMBIFIED_PIGLIN = false;
 
   public PiglinRawRenderer(EntityRendererProvider.Context context) {
     super(
@@ -39,13 +40,13 @@ public class PiglinRawRenderer extends PiglinRenderer implements EasyNPCEntityRe
         ModelLayers.PIGLIN,
         ModelLayers.PIGLIN_INNER_ARMOR,
         ModelLayers.PIGLIN_OUTER_ARMOR,
-        false); // zombifiedPiglin
+        ZOMBIFIED_PIGLIN);
     this.addLayer(new SkullHeadRenderLayer<>(this, context.getItemInHandRenderer()));
   }
 
   @Override
   public ResourceLocation getTextureLocation(Mob entity) {
-    return getTextureLocationWithConfig(entity);
+    return this.getTextureLocationWithConfig(entity);
   }
 
   @Override

@@ -52,7 +52,7 @@ public class EquipmentHandler {
   public static boolean setEquipmentSlotItem(
       EasyNPC<?> easyNPC, EquipmentSlot equipmentSlot, ItemStack itemStack) {
     if (easyNPC == null || equipmentSlot == null || itemStack == null) {
-      log.error("[{}] Error setting owner ", easyNPC);
+      log.error("[{}] Error setting equipment slot {}", easyNPC, equipmentSlot);
       return false;
     }
 

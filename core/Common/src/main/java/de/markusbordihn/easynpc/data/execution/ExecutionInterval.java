@@ -45,6 +45,7 @@ public enum ExecutionInterval {
     if (this == LIFETIME) {
       return false;
     }
+
     return System.currentTimeMillis() - lastExecution >= this.milliseconds;
   }
 

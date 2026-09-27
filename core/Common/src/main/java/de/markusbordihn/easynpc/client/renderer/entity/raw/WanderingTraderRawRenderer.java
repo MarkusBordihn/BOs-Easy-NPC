@@ -38,7 +38,7 @@ public class WanderingTraderRawRenderer extends WanderingTraderRenderer
 
   @Override
   public ResourceLocation getTextureLocation(WanderingTrader entity) {
-    return getTextureLocationWithConfig(entity);
+    return this.getTextureLocationWithConfig(entity);
   }
 
   @Override

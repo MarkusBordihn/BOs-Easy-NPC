@@ -32,6 +32,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.lwjgl.glfw.GLFW;
 
 public class SliderButton extends AbstractSliderButton {
 
@@ -232,12 +233,12 @@ public class SliderButton extends AbstractSliderButton {
   }
 
   public void setDefaultValue(double value) {
-    this.setDefaultValue(Math.round(value * roundFactor) / roundFactor);
+    this.setDefaultValue(Math.round(value * this.roundFactor) / this.roundFactor);
   }
 
   public void setDefaultValue(float value) {
     this.initValue = value;
-    this.value = (this.initValue - minValue) / this.valueFraction;
+    this.value = (this.initValue - this.minValue) / this.valueFraction;
     this.applyValue();
     this.updateMessage();
   }
@@ -278,9 +279,9 @@ public class SliderButton extends AbstractSliderButton {
   }
 
   private void updateTargetValue() {
-    // Round value to round factor.
     this.targetValue =
-        Math.round((this.minValue + (this.valueFraction * this.value)) * roundFactor) / roundFactor;
+        Math.round((this.minValue + (this.valueFraction * this.value)) * this.roundFactor)
+            / this.roundFactor;
   }
 
   private double getStepSize() {
@@ -317,9 +318,9 @@ public class SliderButton extends AbstractSliderButton {
   }
 
   @Override
-  public boolean keyPressed(int keyCode, int unused1, int unused2) {
-    if (keyCode == 263 || keyCode == 262) {
-      float step = keyCode == 263 ? -1.0F : 1.0F;
+  public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+    if (keyCode == GLFW.GLFW_KEY_LEFT || keyCode == GLFW.GLFW_KEY_RIGHT) {
+      float step = keyCode == GLFW.GLFW_KEY_LEFT ? -1.0F : 1.0F;
       double incrementalSteps = step * this.getStepSize();
       this.setTargetValue(this.value + incrementalSteps);
     }
@@ -355,19 +356,20 @@ public class SliderButton extends AbstractSliderButton {
 
     // Slider Handle
     guiGraphics.blitSprite(
-        getSliderHandleSprite(),
+        this.getSliderHandleSprite(),
         this.getX() + (int) (this.value * (this.width - 8)),
         this.getY(),
         8,
         this.getHeight());
 
-    int fgColor = this.active ? Constants.FONT_COLOR_WHITE : Constants.FONT_COLOR_LIGHT_GRAY;
+    int foregroundColor =
+        this.active ? Constants.FONT_COLOR_WHITE : Constants.FONT_COLOR_LIGHT_GRAY;
     guiGraphics.drawCenteredString(
         font,
         this.getMessage(),
         this.getX() + this.width / 2,
         this.getY() + (this.height - 8) / 2,
-        fgColor | Mth.ceil(this.alpha * 255.0F) << 24);
+        foregroundColor | Mth.ceil(this.alpha * 255.0F) << 24);
   }
 
   private ResourceLocation getSliderSprite() {

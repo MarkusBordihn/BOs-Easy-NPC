@@ -110,7 +110,7 @@ public class Doppler extends PathfinderMobRaw {
     try {
       return VariantType.valueOf(name);
     } catch (IllegalArgumentException e) {
-      return getDefaultSkinVariantType();
+      return this.getDefaultSkinVariantType();
     }
   }
 

@@ -55,43 +55,44 @@ public interface ActionEventDataCapable<E extends Mob> extends EasyNPC<E> {
   String DATA_ACTION_PERMISSION_LEVEL_TAG = "ActionPermissionLevel";
 
   default ActionEventSet getActionEventSet() {
-    return getEasyNPCServerData().getServerEntityData(CUSTOM_DATA_ACTION_EVENT_SET);
+    return this.getEasyNPCServerData().getServerEntityData(CUSTOM_DATA_ACTION_EVENT_SET);
   }
 
   default void setActionEventSet(ActionEventSet actions) {
-    getEasyNPCServerData().setServerEntityData(CUSTOM_DATA_ACTION_EVENT_SET, actions);
+    this.getEasyNPCServerData().setServerEntityData(CUSTOM_DATA_ACTION_EVENT_SET, actions);
     this.cancelPendingActionSet();
   }
 
   default boolean hasActionEvent(ActionEventType actionEventType) {
     return actionEventType != null
-        && getActionEventSet() != null
-        && getActionEventSet().hasActionEvent(actionEventType);
+        && this.getActionEventSet() != null
+        && this.getActionEventSet().hasActionEvent(actionEventType);
   }
 
   default ActionDataSet getActionDataSet(ActionEventType actionEventType) {
-    return hasActionEvent(actionEventType)
-        ? getActionEventSet().getActionEvents(actionEventType)
+    return this.hasActionEvent(actionEventType)
+        ? this.getActionEventSet().getActionEvents(actionEventType)
         : null;
   }
 
   default boolean hasActionEventSet() {
-    return getActionEventSet() != null;
+    return this.getActionEventSet() != null;
   }
 
   default void clearActionEventSet() {
-    getEasyNPCServerData().setServerEntityData(CUSTOM_DATA_ACTION_EVENT_SET, new ActionEventSet());
+    this.getEasyNPCServerData()
+        .setServerEntityData(CUSTOM_DATA_ACTION_EVENT_SET, new ActionEventSet());
     this.cancelPendingActionSet();
   }
 
   default int getActionPermissionLevel() {
-    return getEasyNPCServerData().getServerEntityData(CUSTOM_DATA_ACTION_PERMISSION_LEVEL);
+    return this.getEasyNPCServerData().getServerEntityData(CUSTOM_DATA_ACTION_PERMISSION_LEVEL);
   }
 
   default void setActionPermissionLevel(int actionPermissionLevel) {
     CommandPermissionLevel commandPermissionLevel =
         CommandPermissionLevel.fromMinecraftLevel(actionPermissionLevel);
-    getEasyNPCServerData()
+    this.getEasyNPCServerData()
         .setServerEntityData(
             CUSTOM_DATA_ACTION_PERMISSION_LEVEL, commandPermissionLevel.minecraftLevel());
   }
@@ -101,7 +102,7 @@ public interface ActionEventDataCapable<E extends Mob> extends EasyNPC<E> {
   }
 
   default void setActionCommandPermissionLevel(CommandPermissionLevel commandPermissionLevel) {
-    getEasyNPCServerData()
+    this.getEasyNPCServerData()
         .setServerEntityData(
             CUSTOM_DATA_ACTION_PERMISSION_LEVEL,
             (commandPermissionLevel != null ? commandPermissionLevel : CommandPermissionLevel.ALL)
@@ -111,11 +112,11 @@ public interface ActionEventDataCapable<E extends Mob> extends EasyNPC<E> {
   default void defineSynchedActionData(SynchedEntityData.Builder builder) {}
 
   default PendingActionSet getPendingActionSet() {
-    return getEasyNPCServerData().getServerEntityData(CUSTOM_DATA_PENDING_ACTION_SET);
+    return this.getEasyNPCServerData().getServerEntityData(CUSTOM_DATA_PENDING_ACTION_SET);
   }
 
   default void setPendingActionSet(PendingActionSet pendingActionSet) {
-    getEasyNPCServerData()
+    this.getEasyNPCServerData()
         .setServerEntityData(
             CUSTOM_DATA_PENDING_ACTION_SET,
             pendingActionSet != null ? pendingActionSet : new PendingActionSet());
@@ -129,10 +130,10 @@ public interface ActionEventDataCapable<E extends Mob> extends EasyNPC<E> {
   }
 
   default void defineCustomActionData() {
-    getEasyNPCServerData()
+    this.getEasyNPCServerData()
         .defineServerEntityData(CUSTOM_DATA_ACTION_EVENT_SET, new ActionEventSet());
-    getEasyNPCServerData().defineServerEntityData(CUSTOM_DATA_ACTION_PERMISSION_LEVEL, 0);
-    getEasyNPCServerData()
+    this.getEasyNPCServerData().defineServerEntityData(CUSTOM_DATA_ACTION_PERMISSION_LEVEL, 0);
+    this.getEasyNPCServerData()
         .defineServerEntityData(CUSTOM_DATA_PENDING_ACTION_SET, new PendingActionSet());
   }
 

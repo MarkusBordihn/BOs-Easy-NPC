@@ -67,14 +67,12 @@ public class RendererManager {
       return null;
     }
 
-    // Check if entity renderer is already available.
     LivingEntityRenderer<? extends LivingEntity, ? extends EntityModel<? extends LivingEntity>>
         livingEntityRenderer = livingEntityRendererMap.get(entityType);
     if (livingEntityRenderer != null) {
       return livingEntityRenderer;
     }
 
-    // Try to register entity renderer, if not available.
     registerLivingEntityRenderer(entityType, renderEntity);
 
     return livingEntityRendererMap.get(entityType);
@@ -86,13 +84,11 @@ public class RendererManager {
       return null;
     }
 
-    // Check if entity renderer is already available.
     EntityRenderer<? extends Entity> entityRenderer = entityRendererMap.get(entityType);
     if (entityRenderer != null) {
       return entityRenderer;
     }
 
-    // Try to register entity renderer, if not available.
     registerEntityRenderer(entityType, renderEntity);
 
     return entityRendererMap.get(entityType);
@@ -105,7 +101,6 @@ public class RendererManager {
       return null;
     }
 
-    // Check if entity renderer is already available.
     if (livingEntityRendererMap.containsKey(entityType)) {
       return livingEntityRendererMap.get(entityType);
     }
@@ -139,7 +134,6 @@ public class RendererManager {
       return null;
     }
 
-    // Check if entity renderer is already available.
     if (entityRendererMap.containsKey(entityType)) {
       return entityRendererMap.get(entityType);
     }
@@ -187,7 +181,6 @@ public class RendererManager {
 
     targetEntity.tickCount = sourceEntity.tickCount;
 
-    // Adjust entity rotation.
     targetEntity.setYRot(sourceEntity.getYRot());
     targetEntity.yRotO = sourceEntity.yRotO;
 
@@ -212,7 +205,6 @@ public class RendererManager {
     // Sync entity position (to allow proper spawning and de-spawning).
     targetEntity.setPos(sourceEntity.getX(), sourceEntity.getY(), sourceEntity.getZ());
 
-    // Additional entity data.
     targetEntity.setOnGround(sourceEntity.onGround());
     targetEntity.setDeltaMovement(sourceEntity.getDeltaMovement());
 
@@ -228,7 +220,6 @@ public class RendererManager {
     }
     targetEntity.setCustomNameVisible(false);
 
-    // Sync entity pose, if available.
     if (sourceEntity.getPose() != targetEntity.getPose()) {
       targetEntity.setPose(sourceEntity.getPose());
     }
@@ -243,14 +234,11 @@ public class RendererManager {
       return;
     }
 
-    // Adjust basic entity data.
     copyCustomEntityData(sourceEntity, targetEntity, entityTypeName);
 
-    // Adjust entity position and speed.
     targetEntity.yHeadRotO = sourceEntity.yHeadRotO;
     targetEntity.yBodyRotO = sourceEntity.yBodyRotO;
 
-    // Adjust animation position and speed.
     targetEntity.attackAnim = sourceEntity.attackAnim;
     targetEntity.oAttackAnim = sourceEntity.oAttackAnim;
 
@@ -258,12 +246,10 @@ public class RendererManager {
     targetEntity.walkDist = sourceEntity.walkDist;
     targetEntity.walkDistO = sourceEntity.walkDistO;
 
-    // Limb swing support.
     if (targetEntity.walkAnimation instanceof WalkAnimationAccessHelper walkAnimationAccess) {
       walkAnimationAccess.copyFrom(sourceEntity.walkAnimation);
     }
 
-    // Hand item support.
     targetEntity.setItemInHand(InteractionHand.MAIN_HAND, sourceEntity.getMainHandItem());
     targetEntity.setItemInHand(InteractionHand.OFF_HAND, sourceEntity.getOffhandItem());
   }

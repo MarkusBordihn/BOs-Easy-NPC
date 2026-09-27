@@ -35,6 +35,7 @@ import net.minecraft.world.phys.Vec3;
 
 public class TextUtils {
 
+  public static final char LIMIT_INDICATOR = '…';
   private static final String TRANSLATION_KEY_REGEXP = "^[\\w-]+(?:\\.[\\w-]+)*\\.[\\w-]+$";
   private static final Pattern TRANSLATION_KEY_PATTERN = Pattern.compile(TRANSLATION_KEY_REGEXP);
 
@@ -104,12 +105,14 @@ public class TextUtils {
     if (string == null || string.isBlank()) {
       return string;
     }
+
     String trimmedString = string.trim();
     int stringLength = trimmedString.length();
     if (stringLength <= maxSize) {
       return trimmedString;
     }
-    return trimmedString.substring(0, maxSize) + '…';
+
+    return trimmedString.substring(0, maxSize) + LIMIT_INDICATOR;
   }
 
   public static Component removeAction(Component component) {
@@ -125,6 +128,7 @@ public class TextUtils {
     if (text == null || text.isEmpty()) {
       return text;
     }
+
     return text.substring(0, 1).toUpperCase(Locale.ROOT) + convertToCamelCase(text.substring(1));
   }
 
@@ -132,6 +136,7 @@ public class TextUtils {
     if (text == null || text.isEmpty()) {
       return text;
     }
+
     StringBuilder stringBuilder = new StringBuilder();
     boolean nextUpperCase = false;
     for (char character : text.toCharArray()) {

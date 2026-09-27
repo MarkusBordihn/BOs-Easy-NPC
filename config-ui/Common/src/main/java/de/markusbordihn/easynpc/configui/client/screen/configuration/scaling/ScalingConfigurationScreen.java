@@ -32,6 +32,7 @@ import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.render.EntityRenderConfig;
 import de.markusbordihn.easynpc.data.scale.CustomScale;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
+import java.util.function.Consumer;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
@@ -61,7 +62,6 @@ public class ScalingConfigurationScreen<T extends ConfigurationMenu>
   public void init() {
     super.init();
 
-    // Default button
     int buttonWidth = 80;
     this.defaultScaleButton =
         this.addRenderableWidget(
@@ -69,24 +69,20 @@ public class ScalingConfigurationScreen<T extends ConfigurationMenu>
                 this.buttonLeftPos, this.buttonTopPos, buttonWidth, "scaling", button -> {}));
     this.defaultScaleButton.active = false;
 
-    // Basic Position
     int scalePositionLeft = this.contentLeftPos + 165;
     int scalePositionTop = this.contentTopPos + 25;
     int scalePositionSpace = 50;
 
-    // Model Data
     ModelDataCapable<?> modelData = this.getEasyNPC().getEasyNPCModelData();
     CustomScale rootScale = modelData.getModelRootData().scale();
 
-    // Store initial values
     this.lastScaleX = rootScale.x();
     this.lastScaleY = rootScale.y();
     this.lastScaleZ = rootScale.z();
 
-    // Scale Slider Buttons
     this.scaleXSliderButton =
         this.addRenderableWidget(
-            createScaleSlider(
+            this.createScaleSlider(
                 scalePositionLeft,
                 scalePositionTop,
                 rootScale.x(),
@@ -94,7 +90,7 @@ public class ScalingConfigurationScreen<T extends ConfigurationMenu>
 
     this.scaleYSliderButton =
         this.addRenderableWidget(
-            createScaleSlider(
+            this.createScaleSlider(
                 scalePositionLeft,
                 scalePositionTop + scalePositionSpace,
                 rootScale.y(),
@@ -102,13 +98,12 @@ public class ScalingConfigurationScreen<T extends ConfigurationMenu>
 
     this.scaleZSliderButton =
         this.addRenderableWidget(
-            createScaleSlider(
+            this.createScaleSlider(
                 scalePositionLeft,
                 scalePositionTop + scalePositionSpace * 2,
                 rootScale.z(),
                 slider -> this.updateModelScaleProportional('Z')));
 
-    // Proportional Scaling Checkbox (positioned under the sliders)
     this.isScalingLocked =
         Math.abs(rootScale.x() - rootScale.y()) <= 0.01f
             && Math.abs(rootScale.x() - rootScale.z()) <= 0.01f
@@ -124,7 +119,7 @@ public class ScalingConfigurationScreen<T extends ConfigurationMenu>
   }
 
   private RangeSliderButton createScaleSlider(
-      int x, int y, float currentValue, java.util.function.Consumer<SliderButton> onChange) {
+      int x, int y, float currentValue, Consumer<SliderButton> onChange) {
     return new RangeSliderButton(
         x, y, 140, 20, currentValue, 1.0F, SliderButton.Type.SCALE, onChange::accept);
   }
@@ -170,7 +165,6 @@ public class ScalingConfigurationScreen<T extends ConfigurationMenu>
 
       float scalingRatio = 1.0f;
 
-      // Calculate ratio based on which axis changed
       switch (changedAxis) {
         case 'X':
           scalingRatio = currentScaleX / this.lastScaleX;
@@ -217,7 +211,6 @@ public class ScalingConfigurationScreen<T extends ConfigurationMenu>
   public void updateTick() {
     super.updateTick();
 
-    // Force refresh of entity dimensions on the client side.
     if (this.getEasyNPCEntity() != null && this.dimensionUpdateTicker++ > DIMENSION_UPDATE_TICK) {
       this.getEasyNPCEntity().refreshDimensions();
       this.dimensionUpdateTicker = 0;
@@ -242,16 +235,15 @@ public class ScalingConfigurationScreen<T extends ConfigurationMenu>
         this.xMouse,
         this.yMouse);
 
-    drawScaleLabel(guiGraphics, "scale_x", scaleXSliderButton);
-    drawScaleLabel(guiGraphics, "scale_y", scaleYSliderButton);
-    drawScaleLabel(guiGraphics, "scale_z", scaleZSliderButton);
+    this.drawScaleLabel(guiGraphics, "scale_x", this.scaleXSliderButton);
+    this.drawScaleLabel(guiGraphics, "scale_y", this.scaleYSliderButton);
+    this.drawScaleLabel(guiGraphics, "scale_z", this.scaleZSliderButton);
   }
 
   @Override
   protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
     super.renderBg(guiGraphics, partialTicks, mouseX, mouseY);
 
-    // Entity
     guiGraphics.fill(
         this.contentLeftPos,
         this.contentTopPos,
@@ -265,7 +257,6 @@ public class ScalingConfigurationScreen<T extends ConfigurationMenu>
         this.contentTopPos + 206,
         0xffaaaaaa);
 
-    // Scale lines
     int scaleLinesColor = 0xaa555555;
     int scaleLinesTop = this.contentTopPos + 193;
     int scaleLinesLeft = this.contentLeftPos + 4;

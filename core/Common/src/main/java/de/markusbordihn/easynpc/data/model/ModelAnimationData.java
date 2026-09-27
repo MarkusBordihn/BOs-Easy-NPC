@@ -77,9 +77,7 @@ public record ModelAnimationData(
 
   public CompoundTag save() {
     CompoundTag compoundTag = new CompoundTag();
-    if (this.behavior != null) {
-      compoundTag.putString(DATA_BEHAVIOR_TAG, this.behavior.name());
-    }
+    compoundTag.putString(DATA_BEHAVIOR_TAG, this.behavior.name());
     return compoundTag;
   }
 

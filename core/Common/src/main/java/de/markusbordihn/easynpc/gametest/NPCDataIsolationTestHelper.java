@@ -155,21 +155,27 @@ public class NPCDataIsolationTestHelper {
 
     ModelDataCapable<?> data1 = requireModelData(helper, npc1, "NPC1");
     ModelDataCapable<?> data2 = requireModelData(helper, npc2, "NPC2");
-    if (data1 == null || data2 == null) return;
+    if (data1 == null || data2 == null) {
+      return;
+    }
 
-    if (!data1.getModelPoseName().isEmpty())
+    if (!data1.getModelPoseName().isEmpty()) {
       helper.fail("NPC1 initial pose name should be empty, got " + data1.getModelPoseName());
-    if (!data2.getModelPoseName().isEmpty())
+    }
+    if (!data2.getModelPoseName().isEmpty()) {
       helper.fail("NPC2 initial pose name should be empty, got " + data2.getModelPoseName());
+    }
 
     data1.setModelPoseName("custom_red_name");
 
-    if (!"custom_red_name".equals(data1.getModelPoseName()))
+    if (!"custom_red_name".equals(data1.getModelPoseName())) {
       helper.fail(
           "NPC1 pose name after change: expected custom_red_name, got " + data1.getModelPoseName());
-    if (!data2.getModelPoseName().isEmpty())
+    }
+    if (!data2.getModelPoseName().isEmpty()) {
       helper.fail(
           "NPC2 pose name must not be affected by NPC1 change, got " + data2.getModelPoseName());
+    }
   }
 
   public static void assertRotationIsolation(GameTestHelper helper, EntityType<?> entityType) {
@@ -178,36 +184,42 @@ public class NPCDataIsolationTestHelper {
 
     ModelDataCapable<?> data1 = requireModelData(helper, npc1, "NPC1");
     ModelDataCapable<?> data2 = requireModelData(helper, npc2, "NPC2");
-    if (data1 == null || data2 == null) return;
+    if (data1 == null || data2 == null) {
+      return;
+    }
 
     CustomRotation defaultRotation = new CustomRotation(0f, 0f, 0f);
     CustomRotation liftedArmRotation = new CustomRotation(1.5f, 0f, 0f);
 
-    if (!defaultRotation.equals(data1.getModelPartRotation(ModelPartType.RIGHT_ARM)))
+    if (!defaultRotation.equals(data1.getModelPartRotation(ModelPartType.RIGHT_ARM))) {
       helper.fail(
           "NPC1 initial right-arm rotation: expected "
               + defaultRotation
               + ", got "
               + data1.getModelPartRotation(ModelPartType.RIGHT_ARM));
-    if (!defaultRotation.equals(data2.getModelPartRotation(ModelPartType.RIGHT_ARM)))
+    }
+    if (!defaultRotation.equals(data2.getModelPartRotation(ModelPartType.RIGHT_ARM))) {
       helper.fail(
           "NPC2 initial right-arm rotation: expected "
               + defaultRotation
               + ", got "
               + data2.getModelPartRotation(ModelPartType.RIGHT_ARM));
+    }
 
     data1.setModelPartRotation(ModelPartType.RIGHT_ARM, liftedArmRotation);
 
-    if (!liftedArmRotation.equals(data1.getModelPartRotation(ModelPartType.RIGHT_ARM)))
+    if (!liftedArmRotation.equals(data1.getModelPartRotation(ModelPartType.RIGHT_ARM))) {
       helper.fail(
           "NPC1 right-arm rotation after change: expected "
               + liftedArmRotation
               + ", got "
               + data1.getModelPartRotation(ModelPartType.RIGHT_ARM));
-    if (!defaultRotation.equals(data2.getModelPartRotation(ModelPartType.RIGHT_ARM)))
+    }
+    if (!defaultRotation.equals(data2.getModelPartRotation(ModelPartType.RIGHT_ARM))) {
       helper.fail(
           "NPC2 right-arm rotation must not be affected by NPC1 change, got "
               + data2.getModelPartRotation(ModelPartType.RIGHT_ARM));
+    }
   }
 
   public static void assertAnimationIsolation(GameTestHelper helper, EntityType<?> entityType) {
@@ -216,27 +228,33 @@ public class NPCDataIsolationTestHelper {
 
     ModelDataCapable<?> data1 = requireModelData(helper, npc1, "NPC1");
     ModelDataCapable<?> data2 = requireModelData(helper, npc2, "NPC2");
-    if (data1 == null || data2 == null) return;
+    if (data1 == null || data2 == null) {
+      return;
+    }
 
-    if (data1.getModelAnimationBehavior() != ModelAnimationBehavior.SMART)
+    if (data1.getModelAnimationBehavior() != ModelAnimationBehavior.SMART) {
       helper.fail(
           "NPC1 initial animation behavior: expected SMART, got "
               + data1.getModelAnimationBehavior());
-    if (data2.getModelAnimationBehavior() != ModelAnimationBehavior.SMART)
+    }
+    if (data2.getModelAnimationBehavior() != ModelAnimationBehavior.SMART) {
       helper.fail(
           "NPC2 initial animation behavior: expected SMART, got "
               + data2.getModelAnimationBehavior());
+    }
 
     data1.setModelAnimationBehavior(ModelAnimationBehavior.NONE);
 
-    if (data1.getModelAnimationBehavior() != ModelAnimationBehavior.NONE)
+    if (data1.getModelAnimationBehavior() != ModelAnimationBehavior.NONE) {
       helper.fail(
           "NPC1 animation behavior after change: expected NONE, got "
               + data1.getModelAnimationBehavior());
-    if (data2.getModelAnimationBehavior() != ModelAnimationBehavior.SMART)
+    }
+    if (data2.getModelAnimationBehavior() != ModelAnimationBehavior.SMART) {
       helper.fail(
           "NPC2 animation behavior must not be affected by NPC1 change, got "
               + data2.getModelAnimationBehavior());
+    }
   }
 
   public static void assertScaleIsolation(GameTestHelper helper, EntityType<?> entityType) {
@@ -245,36 +263,42 @@ public class NPCDataIsolationTestHelper {
 
     ModelDataCapable<?> data1 = requireModelData(helper, npc1, "NPC1");
     ModelDataCapable<?> data2 = requireModelData(helper, npc2, "NPC2");
-    if (data1 == null || data2 == null) return;
+    if (data1 == null || data2 == null) {
+      return;
+    }
 
     CustomScale defaultScale = new CustomScale(1f, 1f, 1f);
     CustomScale doubleScale = new CustomScale(2f, 2f, 2f);
 
-    if (!defaultScale.equals(data1.getModelRootData().scale()))
+    if (!defaultScale.equals(data1.getModelRootData().scale())) {
       helper.fail(
           "NPC1 initial ROOT scale: expected "
               + defaultScale
               + ", got "
               + data1.getModelRootData().scale());
-    if (!defaultScale.equals(data2.getModelRootData().scale()))
+    }
+    if (!defaultScale.equals(data2.getModelRootData().scale())) {
       helper.fail(
           "NPC2 initial ROOT scale: expected "
               + defaultScale
               + ", got "
               + data2.getModelRootData().scale());
+    }
 
     data1.setModelRootScale(doubleScale);
 
-    if (!doubleScale.equals(data1.getModelRootData().scale()))
+    if (!doubleScale.equals(data1.getModelRootData().scale())) {
       helper.fail(
           "NPC1 ROOT scale after change: expected "
               + doubleScale
               + ", got "
               + data1.getModelRootData().scale());
-    if (!defaultScale.equals(data2.getModelRootData().scale()))
+    }
+    if (!defaultScale.equals(data2.getModelRootData().scale())) {
       helper.fail(
           "NPC2 ROOT scale must not be affected by NPC1 change, got "
               + data2.getModelRootData().scale());
+    }
   }
 
   public static void assertNameUpdate(GameTestHelper helper, EntityType<?> entityType) {
@@ -283,6 +307,7 @@ public class NPCDataIsolationTestHelper {
     if (displayData == null) {
       return;
     }
+
     drainDirtyEntityData(helper, npc, "NPC");
 
     if (!NameHandler.setCustomName(npc, "Ricardo", 0x00FFFF, NameVisibilityType.ALWAYS)) {
@@ -327,6 +352,7 @@ public class NPCDataIsolationTestHelper {
     if (skinData == null || variantData == null) {
       return;
     }
+
     drainDirtyEntityData(helper, npc, "NPC");
 
     if (!SkinHandler.setSkin(npc, SkinDataEntry.createDefaultSkin("ALEX"))) {
@@ -411,24 +437,29 @@ public class NPCDataIsolationTestHelper {
 
     ModelDataCapable<?> data1 = requireModelData(helper, npc1, "NPC1");
     ModelDataCapable<?> data2 = requireModelData(helper, npc2, "NPC2");
-    if (data1 == null || data2 == null) return;
+    if (data1 == null || data2 == null) {
+      return;
+    }
 
-    // Both NPCs must start unlocked.
-    if (data1.getModelRootData().isRotationLocked())
+    if (data1.getModelRootData().isRotationLocked()) {
       helper.fail("NPC1 must start with an unlocked root rotation");
-    if (data2.getModelRootData().isRotationLocked())
+    }
+    if (data2.getModelRootData().isRotationLocked()) {
       helper.fail("NPC2 must start with an unlocked root rotation");
+    }
 
-    // Lock NPC1 root rotation to 90° Y and verify NPC2 is unaffected.
     data1.setModelRootRotation(new CustomRotation(0f, 90f, 0f, true));
 
-    if (!data1.getModelRootData().isRotationLocked())
+    if (!data1.getModelRootData().isRotationLocked()) {
       helper.fail("NPC1 root rotation must be locked after setModelRootRotation");
-    if (data1.getModelRootData().rotation().y() != 90f)
+    }
+    if (data1.getModelRootData().rotation().y() != 90f) {
       helper.fail(
           "NPC1 root rotation Y: expected 90, got " + data1.getModelRootData().rotation().y());
-    if (data2.getModelRootData().isRotationLocked())
+    }
+    if (data2.getModelRootData().isRotationLocked()) {
       helper.fail("NPC2 root rotation must not be affected by NPC1 change");
+    }
   }
 
   public static void assertPositionIsolation(GameTestHelper helper, EntityType<?> entityType) {
@@ -437,36 +468,42 @@ public class NPCDataIsolationTestHelper {
 
     ModelDataCapable<?> data1 = requireModelData(helper, npc1, "NPC1");
     ModelDataCapable<?> data2 = requireModelData(helper, npc2, "NPC2");
-    if (data1 == null || data2 == null) return;
+    if (data1 == null || data2 == null) {
+      return;
+    }
 
     CustomPosition defaultPosition = new CustomPosition(0f, 0f, 0f);
     CustomPosition shiftedPosition = new CustomPosition(0f, 1f, 0f);
 
-    if (!defaultPosition.equals(data1.getModelPartPosition(ModelPartType.ROOT)))
+    if (!defaultPosition.equals(data1.getModelPartPosition(ModelPartType.ROOT))) {
       helper.fail(
           "NPC1 initial ROOT position: expected "
               + defaultPosition
               + ", got "
               + data1.getModelPartPosition(ModelPartType.ROOT));
-    if (!defaultPosition.equals(data2.getModelPartPosition(ModelPartType.ROOT)))
+    }
+    if (!defaultPosition.equals(data2.getModelPartPosition(ModelPartType.ROOT))) {
       helper.fail(
           "NPC2 initial ROOT position: expected "
               + defaultPosition
               + ", got "
               + data2.getModelPartPosition(ModelPartType.ROOT));
+    }
 
     data1.setModelPartPosition(ModelPartType.ROOT, shiftedPosition);
 
-    if (!shiftedPosition.equals(data1.getModelPartPosition(ModelPartType.ROOT)))
+    if (!shiftedPosition.equals(data1.getModelPartPosition(ModelPartType.ROOT))) {
       helper.fail(
           "NPC1 ROOT position after change: expected "
               + shiftedPosition
               + ", got "
               + data1.getModelPartPosition(ModelPartType.ROOT));
-    if (!defaultPosition.equals(data2.getModelPartPosition(ModelPartType.ROOT)))
+    }
+    if (!defaultPosition.equals(data2.getModelPartPosition(ModelPartType.ROOT))) {
       helper.fail(
           "NPC2 ROOT position must not be affected by NPC1 change, got "
               + data2.getModelPartPosition(ModelPartType.ROOT));
+    }
   }
 
   public static void assertVisibilityIsolation(GameTestHelper helper, EntityType<?> entityType) {
@@ -475,18 +512,24 @@ public class NPCDataIsolationTestHelper {
 
     ModelDataCapable<?> data1 = requireModelData(helper, npc1, "NPC1");
     ModelDataCapable<?> data2 = requireModelData(helper, npc2, "NPC2");
-    if (data1 == null || data2 == null) return;
+    if (data1 == null || data2 == null) {
+      return;
+    }
 
-    if (!data1.getModelPartVisibility(ModelPartType.RIGHT_ARM))
+    if (!data1.getModelPartVisibility(ModelPartType.RIGHT_ARM)) {
       helper.fail("NPC1 initial right-arm visibility should be true");
-    if (!data2.getModelPartVisibility(ModelPartType.RIGHT_ARM))
+    }
+    if (!data2.getModelPartVisibility(ModelPartType.RIGHT_ARM)) {
       helper.fail("NPC2 initial right-arm visibility should be true");
+    }
 
     data1.setModelPartVisibility(ModelPartType.RIGHT_ARM, false);
 
-    if (data1.getModelPartVisibility(ModelPartType.RIGHT_ARM))
+    if (data1.getModelPartVisibility(ModelPartType.RIGHT_ARM)) {
       helper.fail("NPC1 right-arm should now be hidden");
-    if (!data2.getModelPartVisibility(ModelPartType.RIGHT_ARM))
+    }
+    if (!data2.getModelPartVisibility(ModelPartType.RIGHT_ARM)) {
       helper.fail("NPC2 right-arm must not be affected by NPC1 change");
+    }
   }
 }

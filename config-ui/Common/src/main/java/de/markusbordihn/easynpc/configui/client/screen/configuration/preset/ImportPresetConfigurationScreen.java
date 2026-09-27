@@ -99,7 +99,7 @@ public class ImportPresetConfigurationScreen<T extends ConfigurationMenu>
                     .getPath()
                     .substring(resourceLocation.getPath().lastIndexOf("/") + 1)),
             TextComponent.getTranslatedConfigText(
-                "preset.importWarning", getEasyNPCEntity().getDisplayName().getString()),
+                "preset.importWarning", this.getEasyNPCEntity().getDisplayName().getString()),
             TextComponent.getTranslatedConfigText("preset.importButton"),
             CommonComponents.GUI_CANCEL));
   }
@@ -109,7 +109,7 @@ public class ImportPresetConfigurationScreen<T extends ConfigurationMenu>
   }
 
   public String getPresetFileName(ResourceLocation resourceLocation) {
-    String skinModelFolder = "/" + getSkinModel().toString().toLowerCase(Locale.ROOT) + "/";
+    String skinModelFolder = "/" + this.getSkinModel().toString().toLowerCase(Locale.ROOT) + "/";
     String path = resourceLocation.getPath();
     int skinModelIndex = path.lastIndexOf(skinModelFolder);
     String fileName =
@@ -184,7 +184,7 @@ public class ImportPresetConfigurationScreen<T extends ConfigurationMenu>
                 this.bottomPos - 40,
                 220,
                 20,
-                importPresetButtonLabel,
+                this.importPresetButtonLabel,
                 button -> {
                   if (selectedPreset != null) {
                     this.loadPresetConfirm(selectedPreset);
@@ -249,7 +249,7 @@ public class ImportPresetConfigurationScreen<T extends ConfigurationMenu>
               resourceLocation -> {
                 ImportPresetConfigurationScreen<T>.ImportFileSelectionList.Entry entry =
                     new ImportPresetConfigurationScreen<T>.ImportFileSelectionList.Entry(
-                        resourceLocation, getSkinModel());
+                        resourceLocation, ImportPresetConfigurationScreen.this.getSkinModel());
                 this.addEntry(entry);
               });
     }
@@ -302,7 +302,7 @@ public class ImportPresetConfigurationScreen<T extends ConfigurationMenu>
       public Entry(ResourceLocation resourceLocation, SkinModel skinModel) {
         this.resourceLocation = resourceLocation;
         this.skinModel = skinModel;
-        this.fileName = getPresetFileName(resourceLocation);
+        this.fileName = ImportPresetConfigurationScreen.this.getPresetFileName(resourceLocation);
       }
 
       public void render(
@@ -334,7 +334,7 @@ public class ImportPresetConfigurationScreen<T extends ConfigurationMenu>
         Text.drawConfigStringShadowWithData(
             guiGraphics,
             ImportPresetConfigurationScreen.this.font,
-            importPresetHeaderLabel,
+            ImportPresetConfigurationScreen.this.importPresetHeaderLabel,
             this.skinModel.getName(),
             ImportPresetConfigurationScreen.this.contentLeftPos + 3,
             fileListTop,
@@ -343,7 +343,7 @@ public class ImportPresetConfigurationScreen<T extends ConfigurationMenu>
         Text.drawStringShadow(
             guiGraphics,
             ImportPresetConfigurationScreen.this.font,
-            fileName,
+            this.fileName,
             ImportPresetConfigurationScreen.ImportFileSelectionList.this.width / 2
                 - ImportPresetConfigurationScreen.this.font.width(this.fileName) / 2,
             y + 1,

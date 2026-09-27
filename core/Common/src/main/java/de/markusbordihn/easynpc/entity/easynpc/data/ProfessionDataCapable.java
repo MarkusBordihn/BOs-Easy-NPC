@@ -38,11 +38,11 @@ public interface ProfessionDataCapable<T extends Mob> extends EasyNPC<T> {
   }
 
   default Profession getProfession() {
-    return getSynchedEntityData(SynchedDataIndex.PROFESSION);
+    return this.getSynchedEntityData(SynchedDataIndex.PROFESSION);
   }
 
   default void setProfession(Profession profession) {
-    setSynchedEntityData(SynchedDataIndex.PROFESSION, profession);
+    this.setSynchedEntityData(SynchedDataIndex.PROFESSION, profession);
   }
 
   default Profession getProfession(String name) {
@@ -58,14 +58,14 @@ public interface ProfessionDataCapable<T extends Mob> extends EasyNPC<T> {
   }
 
   default Component getProfessionName() {
-    Enum<?> profession = getProfession();
+    Enum<?> profession = this.getProfession();
     return profession != null
         ? TextUtils.normalizeName(profession.name())
         : TextComponent.getBlankText();
   }
 
   default void defineSynchedProfessionData(SynchedEntityData.Builder builder) {
-    defineSynchedEntityData(builder, SynchedDataIndex.PROFESSION, getDefaultProfession());
+    this.defineSynchedEntityData(builder, SynchedDataIndex.PROFESSION, this.getDefaultProfession());
   }
 
   default void addAdditionalProfessionData(CompoundTag compoundTag) {

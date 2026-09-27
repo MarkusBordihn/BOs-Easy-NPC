@@ -52,10 +52,11 @@ public class DespawnedNPCSuggestions {
                   if (serverPlayer.isCreative()) {
                     return true;
                   }
-                  Optional<NPCEntityMetadata> meta = npcData.getMetadata(uuid);
-                  return meta.isPresent()
-                      && meta.get().hasOwner()
-                      && meta.get().ownerUUID().equals(serverPlayer.getUUID());
+
+                  Optional<NPCEntityMetadata> metadata = npcData.getMetadata(uuid);
+                  return metadata.isPresent()
+                      && metadata.get().hasOwner()
+                      && metadata.get().ownerUUID().equals(serverPlayer.getUUID());
                 })
             .map(UUID::toString);
 

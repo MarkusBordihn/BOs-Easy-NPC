@@ -33,7 +33,8 @@ public class PresetBrowserCommand {
 
   public static ArgumentBuilder<CommandSourceStack, ?> register() {
     return Commands.literal(COMMAND_NAME)
-        .requires(cs -> cs.hasPermission(Commands.LEVEL_GAMEMASTERS))
+        .requires(
+            commandSourceStack -> commandSourceStack.hasPermission(Commands.LEVEL_GAMEMASTERS))
         .executes(
             context -> {
               MenuManager.getMenuHandler()

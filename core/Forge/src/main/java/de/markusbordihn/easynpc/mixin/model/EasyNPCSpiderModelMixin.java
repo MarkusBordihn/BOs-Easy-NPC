@@ -42,12 +42,6 @@ public class EasyNPCSpiderModelMixin<T extends Entity> implements EasyNPCModelMa
   @Shadow @Final private ModelPart head;
   @Shadow @Final private ModelPart rightFrontLeg;
   @Shadow @Final private ModelPart leftFrontLeg;
-  @Shadow @Final private ModelPart rightMiddleFrontLeg;
-  @Shadow @Final private ModelPart leftMiddleFrontLeg;
-  @Shadow @Final private ModelPart rightMiddleHindLeg;
-  @Shadow @Final private ModelPart leftMiddleHindLeg;
-  @Shadow @Final private ModelPart rightHindLeg;
-  @Shadow @Final private ModelPart leftHindLeg;
 
   @Unique private EasyNPCModelManager easyNPC$modelManager;
 
@@ -57,7 +51,7 @@ public class EasyNPCSpiderModelMixin<T extends Entity> implements EasyNPCModelMa
   }
 
   @Inject(method = "<init>(Lnet/minecraft/client/model/geom/ModelPart;)V", at = @At("TAIL"))
-  private void easyNpcModel(ModelPart modelPart, CallbackInfo callbackInfo) {
+  private void easyNPC$initModelManager(ModelPart modelPart, CallbackInfo callbackInfo) {
     this.easyNPC$modelManager =
         new EasyNPCModelManager(this.root)
             .defineModelPart(ModelPartType.HEAD, this.head)
@@ -69,7 +63,7 @@ public class EasyNPCSpiderModelMixin<T extends Entity> implements EasyNPCModelMa
       method = "setupAnim(Lnet/minecraft/world/entity/Entity;FFFFF)V",
       at = @At("HEAD"),
       cancellable = true)
-  private void setupNpcAnimStart(
+  private void easyNPC$setupAnimStart(
       T entity,
       float limbSwing,
       float limbSwingAmount,
@@ -84,7 +78,7 @@ public class EasyNPCSpiderModelMixin<T extends Entity> implements EasyNPCModelMa
   }
 
   @Inject(method = "setupAnim(Lnet/minecraft/world/entity/Entity;FFFFF)V", at = @At("TAIL"))
-  private void setupNpcAnimEnd(
+  private void easyNPC$setupAnimEnd(
       T entity,
       float limbSwing,
       float limbSwingAmount,

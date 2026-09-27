@@ -38,7 +38,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(AllayModel.class)
 public class EasyNPCAllayModelMixin implements EasyNPCModelManagerAccessor {
 
-  @Shadow @Final private ModelPart root;
   @Shadow @Final private ModelPart head;
   @Shadow @Final private ModelPart body;
   @Shadow @Final private ModelPart right_arm;

@@ -47,19 +47,19 @@ public class EasyNPCEntityRendererMixin<T extends Entity> {
       double x,
       double y,
       double z,
-      CallbackInfoReturnable<Boolean> cir) {
+      CallbackInfoReturnable<Boolean> callbackInfoReturnable) {
     Boolean shouldRender = EasyNPCRenderVisibility.resolveShouldRenderOverride(entity);
     if (shouldRender != null) {
-      cir.setReturnValue(shouldRender);
+      callbackInfoReturnable.setReturnValue(shouldRender);
     }
   }
 
   @Inject(method = "getBlockLightLevel", at = @At("HEAD"), cancellable = true)
   private void onGetBlockLightLevel(
-      T entity, BlockPos blockPos, CallbackInfoReturnable<Integer> cir) {
+      T entity, BlockPos blockPos, CallbackInfoReturnable<Integer> callbackInfoReturnable) {
     if (entity instanceof EasyNPC<?> easyNPC
         && easyNPC.getEasyNPCDisplayAttributeData() instanceof DisplayAttributeDataCapable<?>) {
-      cir.setReturnValue(
+      callbackInfoReturnable.setReturnValue(
           EasyNPCModel.getEntityLightLevel(
               easyNPC, easyNPC.getEasyNPCDisplayAttributeData(), blockPos));
     }
@@ -73,11 +73,11 @@ public class EasyNPCEntityRendererMixin<T extends Entity> {
       MultiBufferSource multiBufferSource,
       int packedLight,
       float partialTick,
-      CallbackInfo ci) {
+      CallbackInfo callbackInfo) {
     if (entity instanceof EasyNPC<?>) {
       NameTagRenderer.render(
           entity, displayName, poseStack, multiBufferSource, packedLight, partialTick);
-      ci.cancel();
+      callbackInfo.cancel();
     }
   }
 }

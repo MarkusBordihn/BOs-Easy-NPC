@@ -70,16 +70,13 @@ public class CustomModelConfigurationScreen<T extends ConfigurationMenu>
   public void init() {
     super.init();
 
-    // Default button stats
     this.customModelButton.active = false;
 
-    // Description text
-    setDescriptionText("custom_model.text");
+    this.setDescriptionText("custom_model.text");
 
-    // Skin Navigation Buttons
-    defineSkinNavigationButtons(this.contentTopPos + 189, this.contentLeftPos, this.rightPos - 29);
+    this.defineSkinNavigationButtons(
+        this.contentTopPos + 189, this.contentLeftPos, this.rightPos - 29);
 
-    // Model Search Field
     EditBox modelSearchField =
         this.addRenderableWidget(
             new SearchField(
@@ -93,23 +90,21 @@ public class CustomModelConfigurationScreen<T extends ConfigurationMenu>
   public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
     super.render(guiGraphics, x, y, partialTicks);
 
-    // Description text
-    renderDescriptionText(guiGraphics, this.contentLeftPos + 5, this.contentTopPos + 20);
+    this.renderDescriptionText(guiGraphics, this.contentLeftPos + 5, this.contentTopPos + 20);
 
-    if (!customModelButtons.isEmpty()) {
-      for (Button skinButton : customModelButtons) {
+    if (!this.customModelButtons.isEmpty()) {
+      for (Button skinButton : this.customModelButtons) {
         skinButton.render(guiGraphics, x, y, partialTicks);
       }
     }
 
-    // Render custom models
     this.renderCustomModels(guiGraphics, x, y);
   }
 
   @Override
   public boolean mouseClicked(double mouseX, double mouseY, int button) {
-    if (!customModelButtons.isEmpty()) {
-      for (Button skinButton : customModelButtons) {
+    if (!this.customModelButtons.isEmpty()) {
+      for (Button skinButton : this.customModelButtons) {
         skinButton.mouseClicked(mouseX, mouseY, button);
       }
     }
@@ -127,7 +122,7 @@ public class CustomModelConfigurationScreen<T extends ConfigurationMenu>
                 20,
                 "<<",
                 onPress -> {
-                  skinStartIndex = Math.max(this.skinStartIndex - MAX_SKINS_PER_PAGE, 0);
+                  this.skinStartIndex = Math.max(this.skinStartIndex - MAX_SKINS_PER_PAGE, 0);
                   this.checkSkinNavigationButtonState();
                 }));
     this.skinPreviousButton =
@@ -139,7 +134,7 @@ public class CustomModelConfigurationScreen<T extends ConfigurationMenu>
                 "<",
                 onPress -> {
                   if (this.skinStartIndex > 0) {
-                    skinStartIndex--;
+                    this.skinStartIndex--;
                   }
                   this.checkSkinNavigationButtonState();
                 }));
@@ -171,7 +166,7 @@ public class CustomModelConfigurationScreen<T extends ConfigurationMenu>
                 onPress -> {
                   if (this.skinStartIndex >= 0
                       && this.skinStartIndex < this.numOfEntities - MAX_SKINS_PER_PAGE) {
-                    skinStartIndex++;
+                    this.skinStartIndex++;
                   }
                   this.checkSkinNavigationButtonState();
                 }));
@@ -179,7 +174,6 @@ public class CustomModelConfigurationScreen<T extends ConfigurationMenu>
   }
 
   private void checkSkinNavigationButtonState() {
-    // Enable / disable buttons depending on the current skin index.
     if (this.skinPreviousButton != null) {
       this.skinPreviousButton.active = this.skinStartIndex > 0;
     }
@@ -215,7 +209,7 @@ public class CustomModelConfigurationScreen<T extends ConfigurationMenu>
 
     int positionTop = 144;
     int skinPosition = 0;
-    customModelButtons = new ArrayList<>();
+    this.customModelButtons = new ArrayList<>();
 
     List<EntityType<? extends Entity>> entityKeys =
         EntityTypeManager.getUnknownAndSupportedEntityTypes();
@@ -231,12 +225,12 @@ public class CustomModelConfigurationScreen<T extends ConfigurationMenu>
     this.numOfEntities = entityKeys.size();
 
     if (this.lastNumOfSkins != this.numOfEntities) {
-      checkSkinNavigationButtonState();
+      this.checkSkinNavigationButtonState();
       this.lastNumOfSkins = this.numOfEntities;
     }
 
-    for (int index = skinStartIndex;
-        index < this.numOfEntities && index < skinStartIndex + MAX_SKINS_PER_PAGE;
+    for (int index = this.skinStartIndex;
+        index < this.numOfEntities && index < this.skinStartIndex + MAX_SKINS_PER_PAGE;
         index++) {
       int left = this.leftPos + 32 + (skinPosition * SKIN_PREVIEW_WIDTH);
       int top = this.topPos + 65 + positionTop;
@@ -304,7 +298,7 @@ public class CustomModelConfigurationScreen<T extends ConfigurationMenu>
         this.xMouse,
         this.yMouse);
 
-    customModelButtons.add(customModelButton);
+    this.customModelButtons.add(customModelButton);
   }
 
   private void renderSkinSelectionBackground(GuiGraphics guiGraphics) {

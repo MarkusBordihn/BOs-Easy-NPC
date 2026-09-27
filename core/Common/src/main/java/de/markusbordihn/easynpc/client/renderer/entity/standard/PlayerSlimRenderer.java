@@ -23,7 +23,7 @@ public class PlayerSlimRenderer extends PlayerRenderer<PathfinderMob> {
   @Override
   public ResourceLocation getTextureLocation(PathfinderMob entity) {
     if (entity instanceof EasyNPC<?> easyNPC) {
-      return getEntityPlayerTexture(easyNPC);
+      return this.getEntityPlayerTexture(easyNPC);
     }
 
     return DEFAULT_TEXTURE;

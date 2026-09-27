@@ -42,10 +42,30 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class EasyNPCCatModelMixin<T extends Cat> extends OcelotModel<T>
     implements EasyNPCModelManagerAccessor {
 
+  @Unique private static final float EASY_NPC_MAX_TAIL_SCALE_DEVIATION = 0.5f;
+  @Unique private static final float EASY_NPC_MAX_TAIL_ROTATION_RADIANS = 0.1f;
   @Unique private EasyNPCModelManager easyNPC$modelManager;
 
   public EasyNPCCatModelMixin(ModelPart modelPart) {
     super(modelPart);
+  }
+
+  @Unique
+  private static boolean easyNPCHasExtremeBodyScale(CustomScale bodyScale) {
+    return bodyScale != null
+        && bodyScale.hasChanged()
+        && Math.abs(bodyScale.x() - 1.0f)
+                + Math.abs(bodyScale.y() - 1.0f)
+                + Math.abs(bodyScale.z() - 1.0f)
+            > EASY_NPC_MAX_TAIL_SCALE_DEVIATION;
+  }
+
+  @Unique
+  private static boolean easyNPCHasBodyRotation(CustomRotation bodyRotation) {
+    return bodyRotation != null
+        && bodyRotation.hasChanged()
+        && Math.abs(bodyRotation.x()) + Math.abs(bodyRotation.y()) + Math.abs(bodyRotation.z())
+            > EASY_NPC_MAX_TAIL_ROTATION_RADIANS;
   }
 
   @Override
@@ -106,38 +126,19 @@ public class EasyNPCCatModelMixin<T extends Cat> extends OcelotModel<T>
     if (modelData == null) {
       return;
     }
+
+    if (easyNPCHasExtremeBodyScale(modelData.getModelPartScale(ModelPartType.BODY))
+        || easyNPCHasBodyRotation(modelData.getModelPartRotation(ModelPartType.BODY))) {
+      this.tail1.visible = false;
+      this.tail2.visible = false;
+      return;
+    }
+
     CustomPosition bodyPosition = modelData.getModelPartPosition(ModelPartType.BODY);
-    CustomScale bodyScale = modelData.getModelPartScale(ModelPartType.BODY);
-    CustomRotation bodyRotation = modelData.getModelPartRotation(ModelPartType.BODY);
-
-    // Check for extreme scale - hide tail if > 0.5 deviation
-    if (bodyScale != null
-        && bodyScale.hasChanged()
-        && Math.abs(bodyScale.x() - 1.0f)
-                + Math.abs(bodyScale.y() - 1.0f)
-                + Math.abs(bodyScale.z() - 1.0f)
-            > 0.5f) {
-      this.tail1.visible = false;
-      this.tail2.visible = false;
-      return;
-    }
-
-    // Check for rotation - hide tail if > ~5 degrees (0.1 radians)
-    if (bodyRotation != null
-        && bodyRotation.hasChanged()
-        && Math.abs(bodyRotation.x()) + Math.abs(bodyRotation.y()) + Math.abs(bodyRotation.z())
-            > 0.1f) {
-      this.tail1.visible = false;
-      this.tail2.visible = false;
-      return;
-    }
-
-    // Only process if body has position change
     if (bodyPosition == null || !bodyPosition.hasChanged()) {
       return;
     }
 
-    // Tail is visible and follows body position
     this.tail1.visible = true;
     this.tail2.visible = true;
     this.tail1.x += bodyPosition.x();

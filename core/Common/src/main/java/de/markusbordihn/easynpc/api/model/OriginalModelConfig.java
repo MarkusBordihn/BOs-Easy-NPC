@@ -43,23 +43,24 @@ public record OriginalModelConfig(ResourceLocation customTexture, RenderMode ren
   }
 
   public boolean isHidden() {
-    return renderMode == RenderMode.HIDDEN;
+    return this.renderMode == RenderMode.HIDDEN;
   }
 
   public boolean hasCustomTexture() {
-    return customTexture != null && renderMode == RenderMode.CUSTOM_TEXTURE;
+    return this.customTexture != null && this.renderMode == RenderMode.CUSTOM_TEXTURE;
   }
 
   public boolean shouldUseVariantTexture() {
-    return renderMode == RenderMode.USE_VARIANT_TEXTURE;
+    return this.renderMode == RenderMode.USE_VARIANT_TEXTURE;
   }
 
   public boolean shouldUseEntityTexture() {
-    return renderMode == RenderMode.USE_ENTITY_TEXTURE || renderMode == RenderMode.DEFAULT;
+    return this.renderMode == RenderMode.USE_ENTITY_TEXTURE
+        || this.renderMode == RenderMode.DEFAULT;
   }
 
   public ResourceLocation getCustomTexture() {
-    return customTexture;
+    return this.customTexture;
   }
 
   enum RenderMode {

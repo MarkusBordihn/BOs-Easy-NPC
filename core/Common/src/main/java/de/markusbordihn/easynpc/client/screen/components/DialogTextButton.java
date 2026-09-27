@@ -45,6 +45,7 @@ public class DialogTextButton extends TextButton {
     if (message == null || message.getString().isEmpty()) {
       return false;
     }
+
     return Minecraft.getInstance().font.width(message)
         > this.width - TEXT_PADDING - this.rightPadding;
   }

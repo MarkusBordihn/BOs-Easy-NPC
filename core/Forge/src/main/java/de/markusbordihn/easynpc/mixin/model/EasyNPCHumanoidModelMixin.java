@@ -60,7 +60,7 @@ public class EasyNPCHumanoidModelMixin<T extends LivingEntity>
   @Inject(
       method = "<init>(Lnet/minecraft/client/model/geom/ModelPart;Ljava/util/function/Function;)V",
       at = @At("TAIL"))
-  private void easyNpcModel(
+  private void easyNPC$initModelManager(
       ModelPart modelPart,
       Function<ResourceLocation, RenderType> renderType,
       CallbackInfo callbackInfo) {
@@ -79,7 +79,7 @@ public class EasyNPCHumanoidModelMixin<T extends LivingEntity>
       method = "setupAnim(Lnet/minecraft/world/entity/LivingEntity;FFFFF)V",
       at = @At("HEAD"),
       cancellable = true)
-  private void setupNpcAnimStart(
+  private void easyNPC$setupAnimStart(
       T livingEntity,
       float limbSwing,
       float limbSwingAmount,
@@ -98,7 +98,7 @@ public class EasyNPCHumanoidModelMixin<T extends LivingEntity>
   }
 
   @Inject(method = "setupAnim(Lnet/minecraft/world/entity/LivingEntity;FFFFF)V", at = @At("TAIL"))
-  private void setupNpcAnimEnd(
+  private void easyNPC$setupAnimEnd(
       T livingEntity,
       float limbSwing,
       float limbSwingAmount,

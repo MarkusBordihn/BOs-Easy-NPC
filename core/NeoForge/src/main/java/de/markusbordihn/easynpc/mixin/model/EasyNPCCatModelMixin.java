@@ -42,6 +42,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class EasyNPCCatModelMixin<T extends Cat> extends OcelotModel<T>
     implements EasyNPCModelManagerAccessor {
 
+  @Unique private static final float MAX_TAIL_SCALE_DEVIATION = 0.5f;
+  @Unique private static final float MAX_TAIL_ROTATION_RADIANS = 0.1f;
+
   @Unique private EasyNPCModelManager easyNPC$modelManager;
 
   public EasyNPCCatModelMixin(ModelPart modelPart) {
@@ -54,7 +57,7 @@ public class EasyNPCCatModelMixin<T extends Cat> extends OcelotModel<T>
   }
 
   @Inject(method = "<init>(Lnet/minecraft/client/model/geom/ModelPart;)V", at = @At("TAIL"))
-  private void easyNpcModel(ModelPart modelPart, CallbackInfo callbackInfo) {
+  private void easyNPC$initModelManager(ModelPart modelPart, CallbackInfo callbackInfo) {
     this.easyNPC$modelManager =
         new EasyNPCModelManager(modelPart)
             .defineModelPart(ModelPartType.HEAD, this.head)
@@ -71,7 +74,7 @@ public class EasyNPCCatModelMixin<T extends Cat> extends OcelotModel<T>
       method = "setupAnim(Lnet/minecraft/world/entity/animal/Cat;FFFFF)V",
       at = @At("HEAD"),
       cancellable = true)
-  private void setupNpcAnimStart(
+  private void easyNPC$setupAnimStart(
       T entity,
       float limbSwing,
       float limbSwingAmount,
@@ -81,13 +84,13 @@ public class EasyNPCCatModelMixin<T extends Cat> extends OcelotModel<T>
       CallbackInfo callbackInfo) {
     if (entity instanceof EasyNPC<?> easyNPC
         && EasyNPCModel.setupAnimationStart(easyNPC, this.easyNPC$modelManager)) {
-      this.easyNPCAdjustTailToBody(easyNPC);
+      this.easyNPC$adjustTailToBody(easyNPC);
       callbackInfo.cancel();
     }
   }
 
   @Inject(method = "setupAnim(Lnet/minecraft/world/entity/animal/Cat;FFFFF)V", at = @At("TAIL"))
-  private void setupNpcAnimEnd(
+  private void easyNPC$setupAnimEnd(
       T entity,
       float limbSwing,
       float limbSwingAmount,
@@ -101,43 +104,40 @@ public class EasyNPCCatModelMixin<T extends Cat> extends OcelotModel<T>
   }
 
   @Unique
-  private void easyNPCAdjustTailToBody(EasyNPC<?> easyNPC) {
+  private void easyNPC$adjustTailToBody(EasyNPC<?> easyNPC) {
     ModelDataCapable<?> modelData = easyNPC.getEasyNPCModelData();
     if (modelData == null) {
       return;
     }
+
     CustomPosition bodyPosition = modelData.getModelPartPosition(ModelPartType.BODY);
     CustomScale bodyScale = modelData.getModelPartScale(ModelPartType.BODY);
     CustomRotation bodyRotation = modelData.getModelPartRotation(ModelPartType.BODY);
 
-    // Check for extreme scale - hide tail if > 0.5 deviation
     if (bodyScale != null
         && bodyScale.hasChanged()
         && Math.abs(bodyScale.x() - 1.0f)
                 + Math.abs(bodyScale.y() - 1.0f)
                 + Math.abs(bodyScale.z() - 1.0f)
-            > 0.5f) {
+            > MAX_TAIL_SCALE_DEVIATION) {
       this.tail1.visible = false;
       this.tail2.visible = false;
       return;
     }
 
-    // Check for rotation - hide tail if > ~5 degrees (0.1 radians)
     if (bodyRotation != null
         && bodyRotation.hasChanged()
         && Math.abs(bodyRotation.x()) + Math.abs(bodyRotation.y()) + Math.abs(bodyRotation.z())
-            > 0.1f) {
+            > MAX_TAIL_ROTATION_RADIANS) {
       this.tail1.visible = false;
       this.tail2.visible = false;
       return;
     }
 
-    // Only process if body has position change
     if (bodyPosition == null || !bodyPosition.hasChanged()) {
       return;
     }
 
-    // Tail is visible and follows body position
     this.tail1.visible = true;
     this.tail2.visible = true;
     this.tail1.x += bodyPosition.x();

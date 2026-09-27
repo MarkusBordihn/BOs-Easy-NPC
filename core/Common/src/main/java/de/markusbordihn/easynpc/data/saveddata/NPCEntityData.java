@@ -75,11 +75,11 @@ public class NPCEntityData extends SavedData {
     for (int i = 0; i < metadataTag.size(); i++) {
       CompoundTag entryTag = metadataTag.getCompound(i);
       UUID uuid = entryTag.getUUID(DATA_METADATA_UUID_TAG);
-      NPCEntityMetadata meta =
+      NPCEntityMetadata entityMetadata =
           NPCEntityMetadata.fromCompoundTag(entryTag.getCompound(DATA_METADATA_DATA_TAG));
-      if (uuid != null && meta != null) {
-        data.metadata.put(uuid, meta);
-        data.updateCachedMaps(uuid, meta);
+      if (uuid != null && entityMetadata != null) {
+        data.metadata.put(uuid, entityMetadata);
+        data.updateCachedMaps(uuid, entityMetadata);
       }
     }
     log.info("Loaded metadata for {} NPC entities from index", data.metadata.size());
@@ -91,10 +91,12 @@ public class NPCEntityData extends SavedData {
       log.error("Cannot get NPCEntityData: MinecraftServer is null");
       throw new IllegalArgumentException("MinecraftServer cannot be null");
     }
+
     if (server.overworld() == null) {
       log.error("Cannot get NPCEntityData: Overworld is not yet loaded");
       throw new IllegalStateException("Overworld must be loaded before accessing NPCEntityData");
     }
+
     NPCEntityData data =
         server
             .overworld()
@@ -117,6 +119,7 @@ public class NPCEntityData extends SavedData {
     if (instance == null) {
       throw new IllegalStateException("NPCEntityData not initialized. Call init(server) first.");
     }
+
     return instance;
   }
 
@@ -128,14 +131,14 @@ public class NPCEntityData extends SavedData {
 
     NPCEntityMetadata oldMetadata = this.metadata.get(uuid);
     if (oldMetadata != null) {
-      removeCachedMaps(uuid, oldMetadata);
+      this.removeCachedMaps(uuid, oldMetadata);
     }
 
     this.metadata.put(uuid, entry.metadata());
-    updateCachedMaps(uuid, entry.metadata());
-    setDirty();
+    this.updateCachedMaps(uuid, entry.metadata());
+    this.setDirty();
 
-    if (npcFileStorage != null && entry.npcData() != null) {
+    if (this.npcFileStorage != null && entry.npcData() != null) {
       this.npcFileStorage.markDirty(uuid, entry.npcData());
     }
   }
@@ -145,13 +148,13 @@ public class NPCEntityData extends SavedData {
       return;
     }
 
-    NPCEntityMetadata meta = this.metadata.remove(uuid);
-    if (meta != null) {
-      removeCachedMaps(uuid, meta);
-      setDirty();
+    NPCEntityMetadata entityMetadata = this.metadata.remove(uuid);
+    if (entityMetadata != null) {
+      this.removeCachedMaps(uuid, entityMetadata);
+      this.setDirty();
     }
 
-    if (npcFileStorage != null) {
+    if (this.npcFileStorage != null) {
       this.npcFileStorage.delete(uuid);
     }
   }
@@ -161,12 +164,12 @@ public class NPCEntityData extends SavedData {
       return Optional.empty();
     }
 
-    NPCEntityMetadata meta = this.metadata.get(uuid);
-    if (meta == null) {
+    NPCEntityMetadata entityMetadata = this.metadata.get(uuid);
+    if (entityMetadata == null) {
       return Optional.empty();
     }
 
-    if (npcFileStorage == null) {
+    if (this.npcFileStorage == null) {
       log.error("NPCFileStorage not initialized");
       return Optional.empty();
     }
@@ -175,16 +178,16 @@ public class NPCEntityData extends SavedData {
     if (npcData.isEmpty()) {
       log.warn("NPC file missing for UUID {}, removing from index", uuid);
       this.metadata.remove(uuid);
-      removeCachedMaps(uuid, meta);
-      setDirty();
+      this.removeCachedMaps(uuid, entityMetadata);
+      this.setDirty();
       return Optional.empty();
     }
 
-    return Optional.of(new SavedNPCEntityEntry(uuid, npcData.get(), meta));
+    return Optional.of(new SavedNPCEntityEntry(uuid, npcData.get(), entityMetadata));
   }
 
   public Collection<SavedNPCEntityEntry> getAllEntries() {
-    if (npcFileStorage == null) {
+    if (this.npcFileStorage == null) {
       log.error("NPCFileStorage not initialized");
       return Collections.emptyList();
     }
@@ -209,25 +212,25 @@ public class NPCEntityData extends SavedData {
   }
 
   public void evictFromCache(UUID uuid) {
-    if (npcFileStorage != null && uuid != null) {
+    if (this.npcFileStorage != null && uuid != null) {
       this.npcFileStorage.evictFromCache(uuid);
     }
   }
 
   public boolean hasCompleteEntry(UUID uuid) {
-    NPCEntityMetadata meta = uuid != null ? this.metadata.get(uuid) : null;
-    if (meta == null) {
+    NPCEntityMetadata entityMetadata = uuid != null ? this.metadata.get(uuid) : null;
+    if (entityMetadata == null) {
       return false;
     }
 
-    if (npcFileStorage == null || npcFileStorage.exists(uuid)) {
+    if (this.npcFileStorage == null || this.npcFileStorage.exists(uuid)) {
       return true;
     }
 
     log.warn("NPC file missing for UUID {}, removing from index", uuid);
     this.metadata.remove(uuid);
-    removeCachedMaps(uuid, meta);
-    setDirty();
+    this.removeCachedMaps(uuid, entityMetadata);
+    this.setDirty();
     return false;
   }
 
@@ -235,6 +238,7 @@ public class NPCEntityData extends SavedData {
     if (uuid == null) {
       return Optional.empty();
     }
+
     return Optional.ofNullable(this.metadata.get(uuid));
   }
 
@@ -256,36 +260,38 @@ public class NPCEntityData extends SavedData {
 
   public Collection<SavedNPCEntityEntry> getEntriesByOwner(UUID ownerUUID) {
     return ownerUUID != null
-        ? resolveEntries(this.entriesByOwner.get(ownerUUID))
+        ? this.resolveEntries(this.entriesByOwner.get(ownerUUID))
         : Collections.emptyList();
   }
 
   public Collection<SavedNPCEntityEntry> getEntriesByType(String type) {
-    return type != null ? resolveEntries(this.entriesByType.get(type)) : Collections.emptyList();
+    return type != null
+        ? this.resolveEntries(this.entriesByType.get(type))
+        : Collections.emptyList();
   }
 
   public Collection<SavedNPCEntityEntry> getEntriesByDimension(String dimension) {
     return dimension != null
-        ? resolveEntries(this.entriesByDimension.get(dimension))
+        ? this.resolveEntries(this.entriesByDimension.get(dimension))
         : Collections.emptyList();
   }
 
   public Collection<SavedNPCEntityEntry> getEntriesByPreset(UUID presetUUID) {
     return presetUUID != null
-        ? resolveEntries(this.entriesByPreset.get(presetUUID))
+        ? this.resolveEntries(this.entriesByPreset.get(presetUUID))
         : Collections.emptyList();
   }
 
   public Collection<SavedNPCEntityEntry> getEntriesByCustomIdentifier(
       ResourceLocation customIdentifier) {
     return customIdentifier != null
-        ? resolveEntries(this.entriesByCustomIdentifier.get(customIdentifier))
+        ? this.resolveEntries(this.entriesByCustomIdentifier.get(customIdentifier))
         : Collections.emptyList();
   }
 
   public Collection<SavedNPCEntityEntry> getEntriesByCustomIdentifierNamespace(String namespace) {
     return namespace != null
-        ? resolveEntries(this.entriesByCustomIdentifierNamespace.get(namespace))
+        ? this.resolveEntries(this.entriesByCustomIdentifierNamespace.get(namespace))
         : Collections.emptyList();
   }
 
@@ -315,54 +321,61 @@ public class NPCEntityData extends SavedData {
     }
   }
 
-  private void updateCachedMaps(UUID entityUUID, NPCEntityMetadata meta) {
-    if (meta == null) {
+  private void updateCachedMaps(UUID entityUUID, NPCEntityMetadata entityMetadata) {
+    if (entityMetadata == null) {
       return;
     }
 
-    if (meta.hasOwner()) {
-      this.entriesByOwner.computeIfAbsent(meta.ownerUUID(), k -> new HashSet<>()).add(entityUUID);
+    if (entityMetadata.hasOwner()) {
+      this.entriesByOwner
+          .computeIfAbsent(entityMetadata.ownerUUID(), ownerUUID -> new HashSet<>())
+          .add(entityUUID);
     }
 
-    if (meta.hasEntityType()) {
-      this.entriesByType.computeIfAbsent(meta.entityType(), k -> new HashSet<>()).add(entityUUID);
+    if (entityMetadata.hasEntityType()) {
+      this.entriesByType
+          .computeIfAbsent(entityMetadata.entityType(), entityType -> new HashSet<>())
+          .add(entityUUID);
     }
 
-    if (meta.hasDimension()) {
+    if (entityMetadata.hasDimension()) {
       this.entriesByDimension
-          .computeIfAbsent(meta.dimension(), k -> new HashSet<>())
+          .computeIfAbsent(entityMetadata.dimension(), dimension -> new HashSet<>())
           .add(entityUUID);
     }
 
-    if (meta.hasPreset()) {
-      this.entriesByPreset.computeIfAbsent(meta.presetUUID(), k -> new HashSet<>()).add(entityUUID);
+    if (entityMetadata.hasPreset()) {
+      this.entriesByPreset
+          .computeIfAbsent(entityMetadata.presetUUID(), presetUUID -> new HashSet<>())
+          .add(entityUUID);
     }
 
-    if (meta.hasCustomIdentifier()) {
-      ResourceLocation customIdentifier = meta.customIdentifier();
-      entriesByCustomIdentifier
-          .computeIfAbsent(customIdentifier, k -> new HashSet<>())
+    if (entityMetadata.hasCustomIdentifier()) {
+      ResourceLocation customIdentifier = entityMetadata.customIdentifier();
+      this.entriesByCustomIdentifier
+          .computeIfAbsent(customIdentifier, identifier -> new HashSet<>())
           .add(entityUUID);
-      entriesByCustomIdentifierNamespace
-          .computeIfAbsent(customIdentifier.getNamespace(), k -> new HashSet<>())
+      this.entriesByCustomIdentifierNamespace
+          .computeIfAbsent(customIdentifier.getNamespace(), namespace -> new HashSet<>())
           .add(entityUUID);
     }
   }
 
-  private void removeCachedMaps(UUID entityUUID, NPCEntityMetadata meta) {
-    if (meta == null) {
+  private void removeCachedMaps(UUID entityUUID, NPCEntityMetadata entityMetadata) {
+    if (entityMetadata == null) {
       return;
     }
 
-    removeFromIndex(this.entriesByOwner, meta.ownerUUID(), entityUUID);
-    removeFromIndex(this.entriesByType, meta.entityType(), entityUUID);
-    removeFromIndex(this.entriesByDimension, meta.dimension(), entityUUID);
-    removeFromIndex(this.entriesByPreset, meta.presetUUID(), entityUUID);
-    if (meta.hasCustomIdentifier()) {
-      removeFromIndex(this.entriesByCustomIdentifier, meta.customIdentifier(), entityUUID);
-      removeFromIndex(
+    this.removeFromIndex(this.entriesByOwner, entityMetadata.ownerUUID(), entityUUID);
+    this.removeFromIndex(this.entriesByType, entityMetadata.entityType(), entityUUID);
+    this.removeFromIndex(this.entriesByDimension, entityMetadata.dimension(), entityUUID);
+    this.removeFromIndex(this.entriesByPreset, entityMetadata.presetUUID(), entityUUID);
+    if (entityMetadata.hasCustomIdentifier()) {
+      this.removeFromIndex(
+          this.entriesByCustomIdentifier, entityMetadata.customIdentifier(), entityUUID);
+      this.removeFromIndex(
           this.entriesByCustomIdentifierNamespace,
-          meta.customIdentifier().getNamespace(),
+          entityMetadata.customIdentifier().getNamespace(),
           entityUUID);
     }
   }
@@ -375,10 +388,10 @@ public class NPCEntityData extends SavedData {
       return;
     }
 
-    removeFromIndex(this.entriesByDimension, old.dimension(), uuid);
+    this.removeFromIndex(this.entriesByDimension, old.dimension(), uuid);
     this.metadata.put(uuid, old.withDimension(newDimension));
-    this.entriesByDimension.computeIfAbsent(newDimension, k -> new HashSet<>()).add(uuid);
-    setDirty();
+    this.entriesByDimension.computeIfAbsent(newDimension, dimension -> new HashSet<>()).add(uuid);
+    this.setDirty();
   }
 
   public <E extends Mob> void updateOwner(EasyNPC<E> easyNPC, LivingEntity owner) {
@@ -389,12 +402,12 @@ public class NPCEntityData extends SavedData {
       return;
     }
 
-    removeFromIndex(this.entriesByOwner, old.ownerUUID(), uuid);
+    this.removeFromIndex(this.entriesByOwner, old.ownerUUID(), uuid);
     this.metadata.put(uuid, old.withOwnerUUID(newOwnerUUID));
     if (newOwnerUUID != null) {
-      this.entriesByOwner.computeIfAbsent(newOwnerUUID, k -> new HashSet<>()).add(uuid);
+      this.entriesByOwner.computeIfAbsent(newOwnerUUID, ownerUUID -> new HashSet<>()).add(uuid);
     }
-    setDirty();
+    this.setDirty();
   }
 
   public void updateRemovalReason(UUID uuid, NPCRemovalReason reason) {
@@ -404,13 +417,14 @@ public class NPCEntityData extends SavedData {
     }
 
     this.metadata.put(uuid, old.withRemovalReason(reason));
-    setDirty();
+    this.setDirty();
   }
 
   public int saveAllDirtyNPCs() {
-    if (npcFileStorage != null) {
+    if (this.npcFileStorage != null) {
       return this.npcFileStorage.saveAllDirty();
     }
+
     return 0;
   }
 
@@ -425,7 +439,7 @@ public class NPCEntityData extends SavedData {
     }
     compoundTag.put(DATA_METADATA_TAG, metadataTag);
 
-    int savedFiles = saveAllDirtyNPCs();
+    int savedFiles = this.saveAllDirtyNPCs();
     log.debug(
         "Saved metadata for {} NPC entities to index and {} dirty NPC files",
         this.metadata.size(),

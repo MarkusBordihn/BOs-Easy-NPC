@@ -182,6 +182,7 @@ public class CobblemonNPCRenderer<E extends PathfinderMob>
     if (modelData == null) {
       return 1.0f;
     }
+
     return modelData.getModelRootData().scale().y();
   }
 
@@ -279,6 +280,7 @@ public class CobblemonNPCRenderer<E extends PathfinderMob>
       cobblemonEntity.setCustomNameVisible(false);
       syncCobblemonRenderState(easyNPC, entity, cobblemonEntity, speciesId);
 
+      poseStack.pushPose();
       if (IntegrationRegistry.isGuiPreviewMode()) {
         float previewScale = getGuiPreviewScale(speciesId, cobblemonEntity);
         float yLift =
@@ -287,43 +289,27 @@ public class CobblemonNPCRenderer<E extends PathfinderMob>
                 (EntityTypeManager.GUI_PREVIEW_TARGET_HEIGHT
                         - previewScale * getRootScaleY(easyNPC) * cobblemonEntity.getBbHeight())
                     / 2f);
-        poseStack.pushPose();
         poseStack.translate(0.0, yLift, 0.0);
         poseStack.scale(previewScale, previewScale, previewScale);
-        EasyNPCLivingEntityRenderer.handleRotation(easyNPC, poseStack);
-        EasyNPCLivingEntityRenderer.handleScale(easyNPC, poseStack);
-        RendererManager.renderLivingEntity(
-            entity,
-            cobblemonEntity,
-            modelString,
-            livingEntityRenderer,
-            entityYaw,
-            partialTicks,
-            poseStack,
-            entityBuffer,
-            packedLight);
-        poseStack.popPose();
-      } else {
-        poseStack.pushPose();
-        EasyNPCLivingEntityRenderer.handleRotation(easyNPC, poseStack);
-        EasyNPCLivingEntityRenderer.handleScale(easyNPC, poseStack);
-        RendererManager.renderLivingEntity(
-            entity,
-            cobblemonEntity,
-            modelString,
-            livingEntityRenderer,
-            entityYaw,
-            partialTicks,
-            poseStack,
-            entityBuffer,
-            packedLight);
-        poseStack.popPose();
       }
+      EasyNPCLivingEntityRenderer.handleRotation(easyNPC, poseStack);
+      EasyNPCLivingEntityRenderer.handleScale(easyNPC, poseStack);
+      RendererManager.renderLivingEntity(
+          entity,
+          cobblemonEntity,
+          modelString,
+          livingEntityRenderer,
+          entityYaw,
+          partialTicks,
+          poseStack,
+          entityBuffer,
+          packedLight);
+      poseStack.popPose();
       return true;
     } catch (Exception exception) {
       log.error("Failed to render Cobblemon entity {} ({}):", modelString, speciesId, exception);
       invalidSpeciesCache.put(speciesId, Boolean.TRUE);
-      cobblemonEntityCache.remove(speciesId);
+      cobblemonEntityCache.remove(new CobblemonProxyKey(entity.getUUID(), speciesId));
       return false;
     }
   }
@@ -331,8 +317,9 @@ public class CobblemonNPCRenderer<E extends PathfinderMob>
   @Override
   public ResourceLocation getTextureLocation(E entity) {
     if (entity instanceof EasyNPC<?> easyNPC) {
-      return getEntityTexture(easyNPC);
+      return this.getEntityTexture(easyNPC);
     }
+
     return DEFAULT_TEXTURE;
   }
 
@@ -349,7 +336,8 @@ public class CobblemonNPCRenderer<E extends PathfinderMob>
       PoseStack poseStack,
       MultiBufferSource bufferSource,
       int packedLight) {
-    if (renderCobblemon(entity, entityYaw, partialTicks, poseStack, bufferSource, packedLight)) {
+    if (this.renderCobblemon(
+        entity, entityYaw, partialTicks, poseStack, bufferSource, packedLight)) {
       if (this.shouldShowName(entity)) {
         this.renderNameTag(
             entity, entity.getDisplayName(), poseStack, bufferSource, packedLight, partialTicks);
@@ -362,10 +350,9 @@ public class CobblemonNPCRenderer<E extends PathfinderMob>
       }
       return;
     }
+
     super.render(entity, entityYaw, partialTicks, poseStack, bufferSource, packedLight);
   }
 
   private record CobblemonProxyKey(UUID entityUUID, ResourceLocation modelKey) {}
-
-  private record CobblemonProxy(ResourceLocation modelKey, PokemonEntity entity) {}
 }

@@ -39,7 +39,7 @@ public class SkeletonRawRenderer extends SkeletonRenderer implements EasyNPCEnti
 
   @Override
   public ResourceLocation getTextureLocation(AbstractSkeleton entity) {
-    return getTextureLocationWithConfig(entity);
+    return this.getTextureLocationWithConfig(entity);
   }
 
   @Override

@@ -41,6 +41,7 @@ import net.minecraft.world.level.BaseSpawner;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.SpawnData;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.gameevent.GameEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -58,7 +59,6 @@ public class BaseEasyNPCSpawner extends BaseSpawner {
   private PresetData storedPresetData;
 
   public BaseEasyNPCSpawner(SpawnerType spawnerType) {
-    super();
     this.spawnerType = spawnerType;
     ((SpawnerAccessHelper) this).initializeSpawnerData(spawnerType, null);
   }
@@ -71,15 +71,13 @@ public class BaseEasyNPCSpawner extends BaseSpawner {
   protected void setNextSpawnData(Level level, BlockPos blockPos, SpawnData spawnData) {
     CompoundTag originalEntityData = spawnData.getEntityToSpawn();
 
-    // Extract PresetData from SpawnData
     PresetData presetData = PresetDataUtils.fromSpawnData(spawnData);
 
-    // Store preset data and extract UUIDs
     if (presetData != null && presetData.hasValidData()) {
       this.storedPresetData = presetData;
       this.easyNPCPresetUUID = presetData.getPresetUUID();
       this.easyNPCUUID = presetData.getEntityUUID();
-      if (this.easyNPCUUID == null && usesUniqueEntity()) {
+      if (this.easyNPCUUID == null && this.usesUniqueEntity()) {
         this.easyNPCUUID = UUID.randomUUID();
         this.storedPresetData.data().putUUID(ENTITY_UUID_TAG, this.easyNPCUUID);
         log.debug(
@@ -96,10 +94,8 @@ public class BaseEasyNPCSpawner extends BaseSpawner {
           this.easyNPCUUID);
     }
 
-    // Clean spawn data
     CompoundTag entityData = originalEntityData.copy();
 
-    // Inject UUIDs from spawner (source of truth)
     if (this.easyNPCPresetUUID != null) {
       entityData.putUUID(PresetData.PRESET_UUID_TAG, this.easyNPCPresetUUID);
     }
@@ -107,14 +103,11 @@ public class BaseEasyNPCSpawner extends BaseSpawner {
       entityData.putUUID(ENTITY_UUID_TAG, this.easyNPCUUID);
     }
 
-    // Update EasyNPC data
-    updateEasyNPCData(entityData);
+    this.updateEasyNPCData(entityData);
 
-    // Always remove position and rotation
     entityData.remove("Pos");
     entityData.remove("Rotation");
 
-    // Handle UUID based on spawner type
     if (this.spawnerType == SpawnerType.GROUP_SPAWNER) {
       entityData.remove(ENTITY_UUID_TAG);
       log.debug(
@@ -125,7 +118,6 @@ public class BaseEasyNPCSpawner extends BaseSpawner {
           "[Spawner] SINGLE/BOSS/DEFAULT_SPAWNER: Use UUID {} for unique entity", this.easyNPCUUID);
     }
 
-    // Create cleaned spawn data
     SpawnData cleanedSpawnData =
         new SpawnData(entityData, spawnData.getCustomSpawnRules(), spawnData.getEquipment());
 
@@ -134,7 +126,7 @@ public class BaseEasyNPCSpawner extends BaseSpawner {
 
   @Override
   public void clientTick(Level level, BlockPos blockPos) {
-    if (!hasEasyNPC() || !canSpawnBasedOnConditions(level, blockPos)) {
+    if (!this.hasEasyNPC() || !this.canSpawnBasedOnConditions(level, blockPos)) {
       return;
     }
 
@@ -143,41 +135,34 @@ public class BaseEasyNPCSpawner extends BaseSpawner {
 
   @Override
   public void serverTick(ServerLevel serverLevel, BlockPos blockPos) {
-    // Non-EasyNPC or DEFAULT_SPAWNER: use vanilla logic
-    if (!hasEasyNPC() || this.spawnerType == SpawnerType.DEFAULT_SPAWNER) {
+    if (!this.hasEasyNPC() || this.spawnerType == SpawnerType.DEFAULT_SPAWNER) {
       super.serverTick(serverLevel, blockPos);
       return;
     }
 
-    // Custom logic for EasyNPC spawners (SINGLE, BOSS, GROUP)
     SpawnerAccessHelper spawnerAccess = (SpawnerAccessHelper) this;
 
-    // Check if player is nearby
-    if (!isNearPlayer(serverLevel, blockPos)) {
+    if (!this.isNearPlayer(serverLevel, blockPos)) {
       return;
     }
 
-    // Handle spawn delay initialization
     if (spawnerAccess.getSpawnDelay() == -1) {
-      resetSpawnDelay(serverLevel);
+      this.resetSpawnDelay(serverLevel);
     }
 
-    // Decrement spawn delay
     if (spawnerAccess.getSpawnDelay() > 0) {
       spawnerAccess.setSpawnDelay(spawnerAccess.getSpawnDelay() - 1);
       return;
     }
 
-    // Check spawn conditions
-    if (!canSpawnBasedOnConditions(serverLevel, blockPos)) {
+    if (!this.canSpawnBasedOnConditions(serverLevel, blockPos)) {
       return;
     }
 
-    // Perform spawn
-    boolean spawned = performSpawn(serverLevel, blockPos);
+    boolean spawned = this.performSpawn(serverLevel, blockPos);
 
     if (spawned) {
-      resetSpawnDelay(serverLevel);
+      this.resetSpawnDelay(serverLevel);
     }
   }
 
@@ -210,7 +195,7 @@ public class BaseEasyNPCSpawner extends BaseSpawner {
     int spawnRange = spawnerAccess.getSpawnRange();
     boolean anySpawned = false;
     for (int i = 0; i < spawnCount; ++i) {
-      if (attemptSpawn(serverLevel, blockPos, random, spawnRange)) {
+      if (this.attemptSpawn(serverLevel, blockPos, random, spawnRange)) {
         anySpawned = true;
       }
     }
@@ -220,31 +205,27 @@ public class BaseEasyNPCSpawner extends BaseSpawner {
 
   private boolean attemptSpawn(
       ServerLevel serverLevel, BlockPos blockPos, RandomSource random, int spawnRange) {
-    // Prepare entity data with correct UUIDs
     CompoundTag entityData = this.storedPresetData.data().copy();
-    prepareEntityDataWithUUIDs(entityData);
+    this.prepareEntityDataWithUUIDs(entityData);
 
-    // Calculate random spawn position
     double spawnX =
         blockPos.getX() + (random.nextDouble() - random.nextDouble()) * (double) spawnRange + 0.5;
     double spawnY = (double) blockPos.getY() + random.nextInt(3) - 1;
     double spawnZ =
         blockPos.getZ() + (random.nextDouble() - random.nextDouble()) * (double) spawnRange + 0.5;
 
-    // Get and validate entity type
-    Optional<EntityType<?>> entityTypeOpt = EntityType.by(entityData);
-    if (entityTypeOpt.isEmpty()) {
+    Optional<EntityType<?>> optionalEntityType = EntityType.by(entityData);
+    if (optionalEntityType.isEmpty()) {
       log.warn("[Spawner] Invalid entity type in preset data");
       return false;
     }
-    EntityType<?> entityType = entityTypeOpt.get();
 
-    // Check collision before spawning
+    EntityType<?> entityType = optionalEntityType.get();
+
     if (!serverLevel.noCollision(entityType.getSpawnAABB(spawnX, spawnY, spawnZ))) {
       return false;
     }
 
-    // Load and configure entity
     Entity entity =
         EntityType.loadEntityRecursive(
             entityData,
@@ -259,7 +240,6 @@ public class BaseEasyNPCSpawner extends BaseSpawner {
       return false;
     }
 
-    // Finalize spawn for Mobs
     if (entity instanceof Mob mob) {
       mob.finalizeSpawn(
           serverLevel,
@@ -268,17 +248,14 @@ public class BaseEasyNPCSpawner extends BaseSpawner {
           null);
     }
 
-    // Try to add entity to world
     if (!serverLevel.tryAddFreshEntityWithPassengers(entity)) {
       log.debug("[Spawner] Failed to add entity to world at {}", entity.blockPosition());
       return false;
     }
 
-    // Spawn effects and animations
     BlockPos spawnPos = entity.blockPosition();
     serverLevel.levelEvent(2004, blockPos, 0);
-    serverLevel.gameEvent(
-        entity, net.minecraft.world.level.gameevent.GameEvent.ENTITY_PLACE, spawnPos);
+    serverLevel.gameEvent(entity, GameEvent.ENTITY_PLACE, spawnPos);
 
     if (entity instanceof Mob mob) {
       mob.spawnAnim();
@@ -289,16 +266,13 @@ public class BaseEasyNPCSpawner extends BaseSpawner {
   }
 
   private void prepareEntityDataWithUUIDs(CompoundTag entityData) {
-    // For GROUP_SPAWNER / WORLD_SPAWNER: generate new entity UUID for each spawn
     if (this.spawnerType == SpawnerType.GROUP_SPAWNER
         || this.spawnerType == SpawnerType.WORLD_SPAWNER) {
       entityData.putUUID(ENTITY_UUID_TAG, UUID.randomUUID());
     } else if (this.easyNPCUUID != null) {
-      // For SINGLE/BOSS/DEFAULT: use stored entity UUID
       entityData.putUUID(ENTITY_UUID_TAG, this.easyNPCUUID);
     }
 
-    // Always set preset UUID
     if (this.easyNPCPresetUUID != null) {
       entityData.putUUID(PresetData.PRESET_UUID_TAG, this.easyNPCPresetUUID);
     }
@@ -310,7 +284,7 @@ public class BaseEasyNPCSpawner extends BaseSpawner {
   }
 
   private boolean canSpawnBasedOnConditions(Level level, BlockPos blockPos) {
-    if (!hasEasyNPC() || this.storedPresetData == null) {
+    if (!this.hasEasyNPC() || this.storedPresetData == null) {
       return false;
     }
 
@@ -329,10 +303,9 @@ public class BaseEasyNPCSpawner extends BaseSpawner {
           entityCount = LivingEntityManager.getEntityCountByPresetUUID(this.easyNPCPresetUUID);
         }
 
-        return entityCount < getMaxNearbyEntities();
+        return entityCount < this.getMaxNearbyEntities();
       }
-    } else if (usesUniqueEntity()) {
-      // SINGLE_SPAWNER and BOSS_SPAWNER use Entity UUID to check if specific entity is alive.
+    } else if (this.usesUniqueEntity()) {
       if (this.easyNPCUUID == null) {
         return false;
       }
@@ -361,7 +334,6 @@ public class BaseEasyNPCSpawner extends BaseSpawner {
   public void load(Level level, BlockPos blockPos, CompoundTag compoundTag) {
     super.load(level, blockPos, compoundTag);
 
-    // Load stored preset data if available
     if (compoundTag.contains(STORED_PRESET_DATA_TAG, 10)) {
       CompoundTag presetDataTag = compoundTag.getCompound(STORED_PRESET_DATA_TAG);
       this.storedPresetData =
@@ -380,7 +352,7 @@ public class BaseEasyNPCSpawner extends BaseSpawner {
       // Fallback: try to load from spawn data (backwards compatibility)
       CompoundTag spawnData = compoundTag.getCompound(SPAWN_DATA_TAG);
       if (spawnData.contains("entity")) {
-        updateEasyNPCData(spawnData.getCompound("entity"));
+        this.updateEasyNPCData(spawnData.getCompound("entity"));
       }
     }
   }
@@ -389,7 +361,6 @@ public class BaseEasyNPCSpawner extends BaseSpawner {
   public CompoundTag save(CompoundTag compoundTag) {
     CompoundTag savedTag = super.save(compoundTag);
 
-    // Save stored preset data
     if (this.storedPresetData != null && this.storedPresetData.hasValidData()) {
       CompoundTag presetDataTag = this.storedPresetData.data().copy();
       savedTag.put(STORED_PRESET_DATA_TAG, presetDataTag);

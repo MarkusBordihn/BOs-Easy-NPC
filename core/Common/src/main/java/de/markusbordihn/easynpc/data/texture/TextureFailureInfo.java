@@ -27,6 +27,6 @@ public record TextureFailureInfo(
   }
 
   public boolean isExpired(long maxAge) {
-    return System.currentTimeMillis() - timestamp > maxAge;
+    return System.currentTimeMillis() - this.timestamp > maxAge;
   }
 }

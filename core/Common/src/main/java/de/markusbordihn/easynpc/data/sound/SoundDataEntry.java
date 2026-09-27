@@ -95,6 +95,7 @@ public class SoundDataEntry {
         this.soundEvent = SoundEvents.GENERIC_SPLASH;
         return;
       }
+
       this.soundEvent =
           BuiltInRegistries.SOUND_EVENT
               .getOptional(location)

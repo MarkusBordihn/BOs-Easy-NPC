@@ -52,6 +52,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Inventory;
+import org.lwjgl.glfw.GLFW;
 
 public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScreenData> {
 
@@ -83,7 +84,7 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
     this.dialogMetaData =
         new DialogMetaData(
             this.getEasyNPC().getLivingEntity(),
-            minecraftInstance != null ? minecraftInstance.player : null,
+            this.minecraftInstance != null ? this.minecraftInstance.player : null,
             this.getAdditionalScreenData() != null
                 ? this.getAdditionalScreenData().getScoreboardData()
                 : null);
@@ -106,7 +107,7 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
     int consumed = 0;
 
     for (int line = pageStart; line < pageEnd; line++) {
-      int textTopPosition = dialogTopPosition + 6 + (line - pageStart) * (font.lineHeight + 2);
+      int textTopPosition = dialogTopPosition + 6 + (line - pageStart) * (this.font.lineHeight + 2);
       int lineLength = this.cachedLineLengths[line];
       int show = Math.min(lineLength, Math.max(0, revealed - consumed));
       FormattedCharSequence formattedCharSequence =
@@ -128,6 +129,7 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
     if (!this.typewriterEnabled || this.pageFullyRevealed) {
       return Integer.MAX_VALUE;
     }
+
     long elapsed = System.currentTimeMillis() - this.pageStartTimeMillis;
     return (int) (elapsed * this.charsPerSecond / 1000L);
   }
@@ -157,6 +159,7 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
     if (dialogData == null) {
       return;
     }
+
     String dialogText = dialogData.getDialogText(this.dialogMetaData);
     if (dialogText == null || dialogText.isBlank()) {
       return;
@@ -177,9 +180,7 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
       return;
     }
 
-    Component fullButtonName =
-        TextComponent.getTextComponentRaw(
-            dialogButtonEntry.name(), dialogButtonEntry.isTranslationKey());
+    Component fullButtonName = dialogButtonEntry.getButtonName(this.dialogMetaData);
 
     DialogTextButton dialogButton =
         new DialogTextButton(
@@ -208,7 +209,7 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
 
     this.dialogButtons.add(dialogButton);
     this.dialogButtonEntries.add(dialogButtonEntry);
-    if (dialogButtonEntry != null && dialogButtonEntry.hasConditions()) {
+    if (dialogButtonEntry.hasConditions()) {
       this.hasConditionalButtons = true;
     }
     this.updateDialogButtonLockState(dialogButton, dialogButtonEntry);
@@ -219,10 +220,11 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
     if (dialogButtonEntry == null || !dialogButtonEntry.hasConditions()) {
       return false;
     }
+
     boolean conditionsMet =
         ClientConditionEvaluator.evaluateAll(
             dialogButtonEntry.conditions(),
-            minecraftInstance != null ? minecraftInstance.player : null,
+            this.minecraftInstance != null ? this.minecraftInstance.player : null,
             this.getEasyNPC() != null ? this.getEasyNPC().getLivingEntity() : null);
     AdditionalScreenData additionalScreenData = this.getAdditionalScreenData();
     boolean executionLimitReached =
@@ -384,7 +386,10 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
 
     setDialogScreenLayout(
         DialogUtils.getDialogScreenLayout(
-            this.dialogComponent, this.font, this.getVisibleDialogButtonEntries()));
+            this.dialogComponent,
+            this.font,
+            this.getVisibleDialogButtonEntries(),
+            this.dialogMetaData));
     log.debug(
         "Prepare Dialog Screen {} with page index {} for {} with {} line(s) and layout {}",
         this.getDialogUUID(),
@@ -404,6 +409,7 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
     if (this.getEasyNPC() == null) {
       return;
     }
+
     super.render(guiGraphics, x, y, partialTicks);
 
     if (!this.cachedDialogOptions.displayAvatar()) {
@@ -456,12 +462,16 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
     if (!this.hasConditionalButtons) {
       return;
     }
+
     for (int i = 0; i < this.dialogButtons.size() && i < this.dialogButtonEntries.size(); i++) {
       this.updateDialogButtonLockState(this.dialogButtons.get(i), this.dialogButtonEntries.get(i));
     }
     setDialogScreenLayout(
         DialogUtils.getDialogScreenLayout(
-            this.dialogComponent, this.font, this.getVisibleDialogButtonEntries()));
+            this.dialogComponent,
+            this.font,
+            this.getVisibleDialogButtonEntries(),
+            this.dialogMetaData));
     this.renderDialogButtons();
   }
 
@@ -587,11 +597,11 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
 
   @Override
   public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-    if (keyCode != 256 && this.isTypewriterActive()) {
+    if (keyCode != GLFW.GLFW_KEY_ESCAPE && this.isTypewriterActive()) {
       this.pageFullyRevealed = true;
     }
 
-    if (keyCode == 256 && !this.cachedDialogOptions.allowEscClose()) {
+    if (keyCode == GLFW.GLFW_KEY_ESCAPE && !this.cachedDialogOptions.allowEscClose()) {
       return true;
     }
 

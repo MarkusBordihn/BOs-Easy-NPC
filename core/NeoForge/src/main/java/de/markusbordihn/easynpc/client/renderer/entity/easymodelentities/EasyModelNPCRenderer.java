@@ -55,6 +55,7 @@ public class EasyModelNPCRenderer<E extends PathfinderMob> extends AbstractEasyM
       }
       return;
     }
+
     super.render(entity, entityYaw, partialTicks, poseStack, bufferSource, packedLight);
   }
 }

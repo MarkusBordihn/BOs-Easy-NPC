@@ -32,55 +32,50 @@ import net.minecraft.commands.SharedSuggestionProvider;
 
 public class PresetSuggestions {
 
-  private static final long REFRESH_COOLDOWN_MS = 5000;
+  private static final long REFRESH_COOLDOWN_MILLISECONDS = 5000;
   private static long lastCustomRefreshTime = 0;
   private static long lastWorldRefreshTime = 0;
 
   private PresetSuggestions() {}
 
   public static CompletableFuture<Suggestions> suggest(
-      CommandContext<CommandSourceStack> context, SuggestionsBuilder build) {
-    long currentTime = System.currentTimeMillis();
-    if (currentTime - lastWorldRefreshTime >= REFRESH_COOLDOWN_MS) {
-      WorldPresetDataFiles.refreshPresetResourceLocations();
-      lastWorldRefreshTime = currentTime;
-    }
-    return SharedSuggestionProvider.suggestResource(
-        WorldPresetDataFiles.getPresetResourceLocations(), build);
+      CommandContext<CommandSourceStack> context, SuggestionsBuilder suggestionsBuilder) {
+    return suggestWorld(context, suggestionsBuilder);
   }
 
   public static CompletableFuture<Suggestions> suggestCustom(
-      CommandContext<CommandSourceStack> context, SuggestionsBuilder build) {
+      CommandContext<CommandSourceStack> context, SuggestionsBuilder suggestionsBuilder) {
     long currentTime = System.currentTimeMillis();
-    if (currentTime - lastCustomRefreshTime >= REFRESH_COOLDOWN_MS) {
+    if (currentTime - lastCustomRefreshTime >= REFRESH_COOLDOWN_MILLISECONDS) {
       CustomPresetDataFiles.refreshPresetResourceLocations();
       lastCustomRefreshTime = currentTime;
     }
     return SharedSuggestionProvider.suggestResource(
-        CustomPresetDataFiles.getPresetResourceLocations(), build);
+        CustomPresetDataFiles.getPresetResourceLocations(), suggestionsBuilder);
   }
 
   public static CompletableFuture<Suggestions> suggestData(
-      CommandContext<CommandSourceStack> context, SuggestionsBuilder build) {
+      CommandContext<CommandSourceStack> context, SuggestionsBuilder suggestionsBuilder) {
     return SharedSuggestionProvider.suggestResource(
         DataPresetDataFiles.getUsablePresetResourceLocations(context.getSource().getServer()),
-        build);
+        suggestionsBuilder);
   }
 
   public static CompletableFuture<Suggestions> suggestDefault(
-      CommandContext<CommandSourceStack> context, SuggestionsBuilder build) {
+      CommandContext<CommandSourceStack> context, SuggestionsBuilder suggestionsBuilder) {
     return SharedSuggestionProvider.suggestResource(
-        DefaultPresetDataFiles.getPresetResourceLocations(context.getSource().getServer()), build);
+        DefaultPresetDataFiles.getPresetResourceLocations(context.getSource().getServer()),
+        suggestionsBuilder);
   }
 
   public static CompletableFuture<Suggestions> suggestWorld(
-      CommandContext<CommandSourceStack> context, SuggestionsBuilder build) {
+      CommandContext<CommandSourceStack> context, SuggestionsBuilder suggestionsBuilder) {
     long currentTime = System.currentTimeMillis();
-    if (currentTime - lastWorldRefreshTime >= REFRESH_COOLDOWN_MS) {
+    if (currentTime - lastWorldRefreshTime >= REFRESH_COOLDOWN_MILLISECONDS) {
       WorldPresetDataFiles.refreshPresetResourceLocations();
       lastWorldRefreshTime = currentTime;
     }
     return SharedSuggestionProvider.suggestResource(
-        WorldPresetDataFiles.getPresetResourceLocations(), build);
+        WorldPresetDataFiles.getPresetResourceLocations(), suggestionsBuilder);
   }
 }

@@ -39,7 +39,7 @@ public class DrownedRawRenderer extends DrownedRenderer implements EasyNPCEntity
 
   @Override
   public ResourceLocation getTextureLocation(Drowned entity) {
-    return getTextureLocationWithConfig(entity);
+    return this.getTextureLocationWithConfig(entity);
   }
 
   @Override

@@ -74,7 +74,7 @@ public record ExecuteActionEventMessage(UUID uuid, ActionEventType actionEventTy
 
   @Override
   public void handleServer(final ServerPlayer serverPlayer) {
-    EasyNPC<?> easyNPC = getEasyNPC(this.uuid, serverPlayer);
+    EasyNPC<?> easyNPC = this.getEasyNPC(this.uuid, serverPlayer);
     if (easyNPC == null) {
       return;
     }
@@ -89,7 +89,7 @@ public record ExecuteActionEventMessage(UUID uuid, ActionEventType actionEventTy
     }
 
     if (!isDialogActionEvent(this.actionEventType)
-        || !checkDialogSession(this.uuid, serverPlayer)) {
+        || !this.checkDialogSession(this.uuid, serverPlayer)) {
       log.warn(
           "Blocked action event {} for {} without valid dialog session from {}",
           this.actionEventType,

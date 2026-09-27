@@ -20,7 +20,7 @@
 package de.markusbordihn.easynpc.validator;
 
 public class NameValidator {
-  private static final String USER_REGEX = "^\\w{2,16}$";
+  private static final String PLAYER_NAME_PATTERN = "^\\w{2,16}$";
 
   private NameValidator() {}
 
@@ -30,6 +30,6 @@ public class NameValidator {
         && name.length() <= 16
         && !name.startsWith("http")
         && !name.equals("htt")
-        && name.matches(USER_REGEX);
+        && name.matches(PLAYER_NAME_PATTERN);
   }
 }

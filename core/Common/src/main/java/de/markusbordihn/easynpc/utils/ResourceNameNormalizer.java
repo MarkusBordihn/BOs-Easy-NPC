@@ -65,6 +65,7 @@ public final class ResourceNameNormalizer {
     if (value == null || value.isEmpty()) {
       return "";
     }
+
     if (VALID_IDENTIFIER.matcher(value).matches()) {
       return value;
     }
@@ -86,6 +87,7 @@ public final class ResourceNameNormalizer {
     if (value == null || value.isEmpty()) {
       return "";
     }
+
     if (VALID_RESOURCE_PATH.matcher(value).matches() && !hasRelativeSegment(value)) {
       return value;
     }
@@ -129,6 +131,7 @@ public final class ResourceNameNormalizer {
     if (value == null || value.isEmpty()) {
       return "";
     }
+
     if (VALID_FILE_NAME.matcher(value).matches() && !value.contains(RELATIVE_SEGMENT)) {
       return value;
     }

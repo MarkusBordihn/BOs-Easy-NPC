@@ -77,7 +77,7 @@ public record ChangeModelRotationMessage(
 
   @Override
   public void handleServer(final ServerPlayer serverPlayer) {
-    EasyNPC<?> easyNPC = getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
+    EasyNPC<?> easyNPC = this.getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
     if (easyNPC == null) {
       return;
     }
@@ -111,13 +111,11 @@ public record ChangeModelRotationMessage(
           easyNPC,
           serverPlayer);
 
-      // Use custom model pose for model part rotation.
       modelData.setModelPartRotation(this.modelPartType, this.rotation);
       easyNPC.getEntity().setPose(Pose.STANDING);
       modelData.setModelPose(ModelPose.CUSTOM);
 
-      if (!modelData.hasChangedModel()
-          || (this.modelPartType == ModelPartType.ROOT && this.rotation.hasChangedRotation())) {
+      if (!modelData.hasChangedModel()) {
         log.debug("Reset custom model pose for {} from {}", easyNPC, serverPlayer);
         modelData.setModelPose(ModelPose.VANILLA);
         easyNPC.getEntity().setPose(Pose.STANDING);

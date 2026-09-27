@@ -24,6 +24,7 @@ import java.util.List;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.FloatTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 
@@ -57,7 +58,7 @@ public record CustomRotation(float x, float y, float z, boolean locked) {
   }
 
   public CustomRotation(ModelPartType modelPartType, CompoundTag compoundTag) {
-    this(compoundTag.getList(modelPartType.getTagName(), 5));
+    this(compoundTag.getList(modelPartType.getTagName(), Tag.TAG_FLOAT));
   }
 
   public CustomRotation(ListTag listTag) {
@@ -90,7 +91,7 @@ public record CustomRotation(float x, float y, float z, boolean locked) {
   }
 
   public boolean hasChanged() {
-    return hasChanged(0, 0, 0);
+    return this.hasChanged(0, 0, 0);
   }
 
   public boolean hasChangedRotation() {
@@ -102,7 +103,7 @@ public record CustomRotation(float x, float y, float z, boolean locked) {
   }
 
   public boolean hasChanged(float x, float y, float z) {
-    return hasChanged(x, y, z, false);
+    return this.hasChanged(x, y, z, false);
   }
 
   public boolean hasChanged(float x, float y, float z, boolean locked) {

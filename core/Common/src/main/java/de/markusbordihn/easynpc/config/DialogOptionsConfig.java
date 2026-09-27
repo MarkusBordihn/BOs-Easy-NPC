@@ -70,6 +70,7 @@ buttonConditionMode: How unavailable conditional dialog buttons are shown: LOCK 
       properties.setProperty(key, parsedValue.name());
       return parsedValue;
     }
+
     properties.setProperty(key, defaultValue.name());
     return defaultValue;
   }

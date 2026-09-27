@@ -39,7 +39,7 @@ public class StrayRawRenderer extends StrayRenderer implements EasyNPCEntityRend
 
   @Override
   public ResourceLocation getTextureLocation(Stray entity) {
-    return getTextureLocationWithConfig(entity);
+    return this.getTextureLocationWithConfig(entity);
   }
 
   @Override

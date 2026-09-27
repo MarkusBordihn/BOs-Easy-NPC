@@ -130,7 +130,7 @@ public class AdvancedSkinConfigurationScreen<T extends ConfigurationMenu>
 
     this.advancedSkinButton.active = false;
 
-    setDescriptionText("advanced_skin.text");
+    this.setDescriptionText("advanced_skin.text");
 
     SkinDataCapable<?> skinData = this.getEasyNPC().getEasyNPCSkinData();
     VariantDataCapable<?> variantData = this.getEasyNPC().getEasyNPCVariantData();
@@ -192,7 +192,7 @@ public class AdvancedSkinConfigurationScreen<T extends ConfigurationMenu>
   public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
     super.render(guiGraphics, x, y, partialTicks);
 
-    renderDescriptionText(guiGraphics, this.contentLeftPos + 5, this.contentTopPos + 5);
+    this.renderDescriptionText(guiGraphics, this.contentLeftPos + 5, this.contentTopPos + 5);
 
     Text.drawConfigString(
         guiGraphics,

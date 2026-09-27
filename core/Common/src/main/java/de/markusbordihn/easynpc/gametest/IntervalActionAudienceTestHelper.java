@@ -42,9 +42,9 @@ public class IntervalActionAudienceTestHelper {
 
   private static final ResourceLocation GREETED_STATE =
       StateIdentifier.parse("gametest_interval_greeted");
-  private static final Vec3 NPC_POSITION = new Vec3(1, 2, 1);
-  private static final Vec3 NEAR_POSITION = new Vec3(2, 2, 1);
-  private static final Vec3 FAR_POSITION = new Vec3(1, 2, 3);
+  private static final Vec3 NPC_POSITION = new Vec3(0, 2, 0);
+  private static final Vec3 NEAR_POSITION = new Vec3(1, 2, 0);
+  private static final Vec3 FAR_POSITION = new Vec3(2, 2, 2);
 
   private IntervalActionAudienceTestHelper() {}
 

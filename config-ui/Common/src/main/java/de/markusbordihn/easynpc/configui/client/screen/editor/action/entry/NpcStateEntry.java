@@ -68,7 +68,7 @@ public class NpcStateEntry extends ActionEntryWidget {
   }
 
   private StateActionCommand parseCommandData() {
-    if (!hasActionData(ActionDataType.NPC_STATE) || this.actionDataEntry.command() == null) {
+    if (!this.hasActionData(ActionDataType.NPC_STATE) || this.actionDataEntry.command() == null) {
       return StateActionCommand.EMPTY;
     }
 
@@ -79,7 +79,7 @@ public class NpcStateEntry extends ActionEntryWidget {
 
   @Override
   public void init(int editorLeft, int editorTop) {
-    boolean hasActionData = hasActionData(ActionDataType.NPC_STATE);
+    boolean hasActionData = this.hasActionData(ActionDataType.NPC_STATE);
     StateActionCommand stateActionCommand = this.parseCommandData();
 
     this.screen.addActionEntryWidget(

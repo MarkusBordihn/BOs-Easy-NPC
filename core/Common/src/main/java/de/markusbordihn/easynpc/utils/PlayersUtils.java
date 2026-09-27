@@ -54,18 +54,18 @@ public class PlayersUtils {
       "https://api.mojang.com/users/profiles/minecraft/%s";
   private static final Map<String, CachedUUID> userUUIDCache = new ConcurrentHashMap<>();
   private static final Map<UUID, Long> sessionServerRequestProtection = new ConcurrentHashMap<>();
-  private static final long SESSION_REQUEST_COOLDOWN = 1000;
-  private static final long NEGATIVE_CACHE_TTL = 5L * 60 * 1000;
-  private static final int CONNECT_TIMEOUT = 5000;
-  private static final int READ_TIMEOUT = 5000;
+  private static final long SESSION_REQUEST_COOLDOWN_MILLISECONDS = 1000;
+  private static final long NEGATIVE_CACHE_DURATION_MILLISECONDS = 5L * 60 * 1000;
+  private static final int CONNECT_TIMEOUT_MILLISECONDS = 5000;
+  private static final int READ_TIMEOUT_MILLISECONDS = 5000;
   private static final int SESSION_PROTECTION_PRUNE_THRESHOLD = 1000;
 
   protected PlayersUtils() {}
 
   private static String fetchString(String urlString) throws IOException {
     URLConnection connection = new URL(urlString).openConnection();
-    connection.setConnectTimeout(CONNECT_TIMEOUT);
-    connection.setReadTimeout(READ_TIMEOUT);
+    connection.setConnectTimeout(CONNECT_TIMEOUT_MILLISECONDS);
+    connection.setReadTimeout(READ_TIMEOUT_MILLISECONDS);
     try (InputStream inputStream = connection.getInputStream()) {
       return IOUtils.toString(inputStream, StandardCharsets.UTF_8);
     }
@@ -97,7 +97,6 @@ public class PlayersUtils {
       }
     }
 
-    // Check cache for already known or failed usernames (failed lookups are cached briefly).
     CachedUUID cachedResult = userUUIDCache.get(username);
     if (cachedResult != null) {
       if (cachedResult.isExpired()) {
@@ -110,7 +109,6 @@ public class PlayersUtils {
       }
     }
 
-    // Get user UUID over API.
     try {
       String url = String.format(API_PROFILE_URL, username);
       String json = fetchString(url);
@@ -138,13 +136,15 @@ public class PlayersUtils {
 
   private static void cacheFailedLookup(String username) {
     userUUIDCache.put(
-        username, new CachedUUID(null, System.currentTimeMillis() + NEGATIVE_CACHE_TTL));
+        username,
+        new CachedUUID(null, System.currentTimeMillis() + NEGATIVE_CACHE_DURATION_MILLISECONDS));
   }
 
   public static UUID getUUIDfromString(String uuidString) {
     if (uuidString == null || uuidString.isEmpty()) {
       return null;
     }
+
     try {
       return UUID.fromString(uuidString);
     } catch (IllegalArgumentException exception) {
@@ -161,10 +161,12 @@ public class PlayersUtils {
     AtomicBoolean requestAllowed = new AtomicBoolean();
     sessionServerRequestProtection.compute(
         userUUID,
-        (key, lastRequest) -> {
-          if (lastRequest != null && currentTime - lastRequest < SESSION_REQUEST_COOLDOWN) {
+        (requestedUUID, lastRequest) -> {
+          if (lastRequest != null
+              && currentTime - lastRequest < SESSION_REQUEST_COOLDOWN_MILLISECONDS) {
             return lastRequest;
           }
+
           requestAllowed.set(true);
           return currentTime;
         });
@@ -177,7 +179,8 @@ public class PlayersUtils {
     if (sessionServerRequestProtection.size() > SESSION_PROTECTION_PRUNE_THRESHOLD) {
       sessionServerRequestProtection
           .entrySet()
-          .removeIf(entry -> currentTime - entry.getValue() > SESSION_REQUEST_COOLDOWN);
+          .removeIf(
+              entry -> currentTime - entry.getValue() > SESSION_REQUEST_COOLDOWN_MILLISECONDS);
     }
 
     String sessionURL = String.format(SESSION_PROFILE_URL, userUUID);
@@ -187,6 +190,7 @@ public class PlayersUtils {
         log.error("Unable to get user texture with {}", sessionURL);
         return null;
       }
+
       return getUserTextureFromSessionResponse(data);
     } catch (IOException ioException) {
       log.error("Unable to get user texture with {}:", sessionURL, ioException);
@@ -202,7 +206,7 @@ public class PlayersUtils {
     }
 
     JsonArray properties = jsonObject.getAsJsonArray("properties");
-    log.debug("getUserTextureFromSessionRequest: {}", properties);
+    log.debug("getUserTextureFromSessionResponse: {}", properties);
     for (JsonElement property : properties) {
       JsonObject propertyObject = property.getAsJsonObject();
       if (propertyObject.has("name")
@@ -244,6 +248,7 @@ public class PlayersUtils {
     if (skinObject != null && skinObject.has("url")) {
       return skinObject.get("url").getAsString();
     }
+
     log.error("Unable to get user texture from texture data: {}", textureDataObject);
     return "";
   }
@@ -266,13 +271,14 @@ public class PlayersUtils {
     if (data == null || data.isEmpty()) {
       return null;
     }
+
     try {
       JsonElement jsonElement = JsonParser.parseString(data);
       if (jsonElement != null && jsonElement.isJsonObject()) {
         return jsonElement.getAsJsonObject();
       }
     } catch (JsonParseException jsonParseException) {
-      log.error("ERROR: Unable to parse json data: {}", data);
+      log.error("Unable to parse json data: {}", data);
     }
     return null;
   }

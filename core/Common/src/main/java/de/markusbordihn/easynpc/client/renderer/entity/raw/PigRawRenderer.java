@@ -66,17 +66,17 @@ public class PigRawRenderer extends PigRenderer implements EasyNPCEntityRenderer
 
   @Override
   public OriginalModelConfig getOriginalModelConfig() {
-    return originalConfig;
+    return this.originalConfig;
   }
 
   @Override
   public CustomModelConfig getCustomModelConfig() {
-    return customConfig;
+    return this.customConfig;
   }
 
   @Override
   public ResourceLocation getTextureLocation(Pig entity) {
-    return getTextureLocationWithConfig(entity);
+    return this.getTextureLocationWithConfig(entity);
   }
 
   @Override

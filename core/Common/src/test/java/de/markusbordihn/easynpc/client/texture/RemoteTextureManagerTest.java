@@ -22,12 +22,17 @@ package de.markusbordihn.easynpc.client.texture;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.sun.net.httpserver.HttpServer;
+import de.markusbordihn.easynpc.data.skin.SkinModel;
+import de.markusbordihn.easynpc.data.texture.TextureFailureType;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -42,7 +47,7 @@ class RemoteTextureManagerTest {
       return;
     }
 
-    try (java.util.stream.Stream<Path> paths = Files.walk(directory)) {
+    try (Stream<Path> paths = Files.walk(directory)) {
       paths
           .sorted(Comparator.reverseOrder())
           .forEach(
@@ -58,9 +63,7 @@ class RemoteTextureManagerTest {
   @BeforeEach
   void setUp() {
     RemoteTextureManager.clearTextureCache();
-    testKey =
-        new TextureModelKey(
-            UUID.randomUUID(), de.markusbordihn.easynpc.data.skin.SkinModel.HUMANOID);
+    this.testKey = new TextureModelKey(UUID.randomUUID(), SkinModel.HUMANOID);
   }
 
   @AfterEach
@@ -70,70 +73,54 @@ class RemoteTextureManagerTest {
 
   @Test
   void testMarkPermanentFailure() {
-    assertFalse(RemoteTextureManager.hasPermanentFailure(testKey));
+    assertFalse(RemoteTextureManager.hasPermanentFailure(this.testKey));
 
     RemoteTextureManager.markPermanentFailure(
-        testKey,
-        de.markusbordihn.easynpc.data.texture.TextureFailureType.INVALID_IMAGE_SIZE,
-        "Test error",
-        "http://test.url");
+        this.testKey, TextureFailureType.INVALID_IMAGE_SIZE, "Test error", "http://test.url");
 
-    assertTrue(RemoteTextureManager.hasPermanentFailure(testKey));
+    assertTrue(RemoteTextureManager.hasPermanentFailure(this.testKey));
   }
 
   @Test
   void testNoRetryForPermanentFailure() {
     RemoteTextureManager.markPermanentFailure(
-        testKey,
-        de.markusbordihn.easynpc.data.texture.TextureFailureType.INVALID_IMAGE_SIZE,
+        this.testKey,
+        TextureFailureType.INVALID_IMAGE_SIZE,
         "Invalid dimensions",
         "http://test.url");
 
-    assertTrue(RemoteTextureManager.hasPermanentFailure(testKey));
+    assertTrue(RemoteTextureManager.hasPermanentFailure(this.testKey));
 
     RemoteTextureManager.markPermanentFailure(
-        testKey,
-        de.markusbordihn.easynpc.data.texture.TextureFailureType.INVALID_IMAGE_SIZE,
+        this.testKey,
+        TextureFailureType.INVALID_IMAGE_SIZE,
         "Invalid dimensions retry",
         "http://test.url");
 
-    assertTrue(RemoteTextureManager.hasPermanentFailure(testKey));
+    assertTrue(RemoteTextureManager.hasPermanentFailure(this.testKey));
   }
 
   @Test
   void testClearSpecificPermanentFailure() {
     RemoteTextureManager.markPermanentFailure(
-        testKey,
-        de.markusbordihn.easynpc.data.texture.TextureFailureType.DECODING_ERROR,
-        "Test error",
-        "http://test.url");
+        this.testKey, TextureFailureType.DECODING_ERROR, "Test error", "http://test.url");
 
-    assertTrue(RemoteTextureManager.hasPermanentFailure(testKey));
+    assertTrue(RemoteTextureManager.hasPermanentFailure(this.testKey));
 
-    RemoteTextureManager.clearPermanentFailure(testKey);
+    RemoteTextureManager.clearPermanentFailure(this.testKey);
 
-    assertFalse(RemoteTextureManager.hasPermanentFailure(testKey));
+    assertFalse(RemoteTextureManager.hasPermanentFailure(this.testKey));
   }
 
   @Test
   void testClearAllPermanentFailures() {
-    TextureModelKey key1 =
-        new TextureModelKey(
-            UUID.randomUUID(), de.markusbordihn.easynpc.data.skin.SkinModel.HUMANOID);
-    TextureModelKey key2 =
-        new TextureModelKey(
-            UUID.randomUUID(), de.markusbordihn.easynpc.data.skin.SkinModel.HUMANOID_SLIM);
+    TextureModelKey key1 = new TextureModelKey(UUID.randomUUID(), SkinModel.HUMANOID);
+    TextureModelKey key2 = new TextureModelKey(UUID.randomUUID(), SkinModel.HUMANOID_SLIM);
 
     RemoteTextureManager.markPermanentFailure(
-        key1,
-        de.markusbordihn.easynpc.data.texture.TextureFailureType.INVALID_IMAGE_SIZE,
-        "Error 1",
-        "http://test1.url");
+        key1, TextureFailureType.INVALID_IMAGE_SIZE, "Error 1", "http://test1.url");
     RemoteTextureManager.markPermanentFailure(
-        key2,
-        de.markusbordihn.easynpc.data.texture.TextureFailureType.DECODING_ERROR,
-        "Error 2",
-        "http://test2.url");
+        key2, TextureFailureType.DECODING_ERROR, "Error 2", "http://test2.url");
 
     assertTrue(RemoteTextureManager.hasPermanentFailure(key1));
     assertTrue(RemoteTextureManager.hasPermanentFailure(key2));
@@ -146,36 +133,25 @@ class RemoteTextureManagerTest {
 
   @Test
   void testPermanentFailureTypes() {
-    assertTrue(
-        de.markusbordihn.easynpc.data.texture.TextureFailureType.INVALID_IMAGE_SIZE.isPermanent());
-    assertTrue(
-        de.markusbordihn.easynpc.data.texture.TextureFailureType.DECODING_ERROR.isPermanent());
-    assertTrue(
-        de.markusbordihn.easynpc.data.texture.TextureFailureType.INVALID_FORMAT.isPermanent());
-    assertTrue(
-        de.markusbordihn.easynpc.data.texture.TextureFailureType.FILE_TOO_LARGE.isPermanent());
-    assertTrue(de.markusbordihn.easynpc.data.texture.TextureFailureType.URL_INVALID.isPermanent());
-    assertTrue(
-        de.markusbordihn.easynpc.data.texture.TextureFailureType.HTTP_CLIENT_ERROR.isPermanent());
-    assertTrue(
-        de.markusbordihn.easynpc.data.texture.TextureFailureType.MAX_RETRIES_EXCEEDED
-            .isPermanent());
+    assertTrue(TextureFailureType.INVALID_IMAGE_SIZE.isPermanent());
+    assertTrue(TextureFailureType.DECODING_ERROR.isPermanent());
+    assertTrue(TextureFailureType.INVALID_FORMAT.isPermanent());
+    assertTrue(TextureFailureType.FILE_TOO_LARGE.isPermanent());
+    assertTrue(TextureFailureType.URL_INVALID.isPermanent());
+    assertTrue(TextureFailureType.HTTP_CLIENT_ERROR.isPermanent());
+    assertTrue(TextureFailureType.MAX_RETRIES_EXCEEDED.isPermanent());
 
-    assertFalse(
-        de.markusbordihn.easynpc.data.texture.TextureFailureType.NETWORK_ERROR.isPermanent());
-    assertFalse(de.markusbordihn.easynpc.data.texture.TextureFailureType.TIMEOUT.isPermanent());
+    assertFalse(TextureFailureType.NETWORK_ERROR.isPermanent());
+    assertFalse(TextureFailureType.TIMEOUT.isPermanent());
   }
 
   @Test
   @DisplayName("Should not mark non-permanent failures as permanent")
   void testNonPermanentFailureNotMarked() {
     RemoteTextureManager.markPermanentFailure(
-        testKey,
-        de.markusbordihn.easynpc.data.texture.TextureFailureType.NETWORK_ERROR,
-        "Network error",
-        "http://test.url");
+        this.testKey, TextureFailureType.NETWORK_ERROR, "Network error", "http://test.url");
 
-    assertFalse(RemoteTextureManager.hasPermanentFailure(testKey));
+    assertFalse(RemoteTextureManager.hasPermanentFailure(this.testKey));
   }
 
   @Test
@@ -183,14 +159,14 @@ class RemoteTextureManagerTest {
   void testRetryAttemptsOnlyIncreaseForScheduledDownloads() {
     String skinUrl = "http://example.com/texture.png";
 
-    assertTrue(RemoteTextureManager.scheduleRetryAttempt(testKey, skinUrl, 0));
-    assertEquals(1, RemoteTextureManager.getRetryAttempts(testKey));
+    assertTrue(RemoteTextureManager.scheduleRetryAttempt(this.testKey, skinUrl, 0));
+    assertEquals(1, RemoteTextureManager.getRetryAttempts(this.testKey));
 
-    assertFalse(RemoteTextureManager.scheduleRetryAttempt(testKey, skinUrl, 59999));
-    assertEquals(1, RemoteTextureManager.getRetryAttempts(testKey));
+    assertFalse(RemoteTextureManager.scheduleRetryAttempt(this.testKey, skinUrl, 59999));
+    assertEquals(1, RemoteTextureManager.getRetryAttempts(this.testKey));
 
-    assertTrue(RemoteTextureManager.scheduleRetryAttempt(testKey, skinUrl, 60000));
-    assertEquals(2, RemoteTextureManager.getRetryAttempts(testKey));
+    assertTrue(RemoteTextureManager.scheduleRetryAttempt(this.testKey, skinUrl, 60000));
+    assertEquals(2, RemoteTextureManager.getRetryAttempts(this.testKey));
   }
 
   @Test
@@ -198,14 +174,14 @@ class RemoteTextureManagerTest {
   void testMaxRetryAttemptsMarkPermanentFailure() {
     String skinUrl = "http://example.com/texture.png";
 
-    assertTrue(RemoteTextureManager.scheduleRetryAttempt(testKey, skinUrl, 0));
-    assertTrue(RemoteTextureManager.scheduleRetryAttempt(testKey, skinUrl, 60000));
-    assertTrue(RemoteTextureManager.scheduleRetryAttempt(testKey, skinUrl, 180000));
-    assertFalse(RemoteTextureManager.hasPermanentFailure(testKey));
+    assertTrue(RemoteTextureManager.scheduleRetryAttempt(this.testKey, skinUrl, 0));
+    assertTrue(RemoteTextureManager.scheduleRetryAttempt(this.testKey, skinUrl, 60000));
+    assertTrue(RemoteTextureManager.scheduleRetryAttempt(this.testKey, skinUrl, 180000));
+    assertFalse(RemoteTextureManager.hasPermanentFailure(this.testKey));
 
-    assertFalse(RemoteTextureManager.scheduleRetryAttempt(testKey, skinUrl, 180001));
+    assertFalse(RemoteTextureManager.scheduleRetryAttempt(this.testKey, skinUrl, 180001));
 
-    assertTrue(RemoteTextureManager.hasPermanentFailure(testKey));
+    assertTrue(RemoteTextureManager.hasPermanentFailure(this.testKey));
   }
 
   @Test
@@ -224,9 +200,9 @@ class RemoteTextureManagerTest {
     try {
       int port = httpServer.getAddress().getPort();
       RemoteTextureLoader.loadRemoteTextureAsync(
-          testKey, "http://localhost:" + port + "/skin.png", tempDirectory);
+          this.testKey, "http://localhost:" + port + "/skin.png", tempDirectory);
 
-      assertTrue(RemoteTextureManager.hasPermanentFailure(testKey));
+      assertTrue(RemoteTextureManager.hasPermanentFailure(this.testKey));
     } finally {
       httpServer.stop(0);
       deleteDirectory(tempDirectory);
@@ -236,11 +212,10 @@ class RemoteTextureManagerTest {
   @Test
   @DisplayName("Should have unique error messages for each failure type")
   void testUniqueFailureMessages() {
-    de.markusbordihn.easynpc.data.texture.TextureFailureType[] types =
-        de.markusbordihn.easynpc.data.texture.TextureFailureType.values();
-    java.util.Set<String> messages = new java.util.HashSet<>();
+    TextureFailureType[] types = TextureFailureType.values();
+    Set<String> messages = new HashSet<>();
 
-    for (de.markusbordihn.easynpc.data.texture.TextureFailureType type : types) {
+    for (TextureFailureType type : types) {
       String message = type.getMessage();
       assertNotNull(message);
       assertFalse(message.isEmpty());

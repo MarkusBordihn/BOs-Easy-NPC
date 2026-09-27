@@ -289,19 +289,16 @@ public class ConditionEvaluationTestHelper {
     dialogDataSet.addDialog(dialog);
     UUID dialogId = dialog.getId();
 
-    // The unconditional open path (getDialog) always resolves the dialog.
     GameTestHelpers.assertTrue(
         helper,
         "Dialog must exist regardless of conditions",
         dialogDataSet.getDialog(dialogId) != null);
 
-    // The conditional open path is blocked while the condition is not met.
     GameTestHelpers.assertTrue(
         helper,
         "Conditional open must be blocked when the dialog condition is not met",
         !dialogDataSet.canOpenDialog(dialogId, serverPlayer, null));
 
-    // The conditional open path is allowed once the condition is met.
     serverPlayer.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.STICK, 1));
     GameTestHelpers.assertTrue(
         helper,
@@ -326,7 +323,6 @@ public class ConditionEvaluationTestHelper {
         "Half NPC health must satisfy a < 75% condition",
         HealthConditionEvaluator.evaluate(ConditionOperationType.LESS_THAN, 75, npcEntity));
 
-    // ENTITY_HEALTH targets a second entity by UUID, resolved from the NPC context level.
     EasyNPC<?> target = GameTestHelpers.mockEasyNPC(helper, entityType, new Vec3(3, 2, 1));
     LivingEntity targetEntity = target.getLivingEntity();
     String targetUuid = targetEntity.getUUID().toString();
@@ -354,7 +350,6 @@ public class ConditionEvaluationTestHelper {
             75,
             HealthConditionEvaluator.resolveByUuid(npcEntity, targetUuid)));
 
-    // An unknown UUID must resolve to null and therefore evaluate to false.
     LivingEntity unknownTarget =
         HealthConditionEvaluator.resolveByUuid(npcEntity, UUID.randomUUID().toString());
     GameTestHelpers.assertTrue(

@@ -21,6 +21,8 @@ package de.markusbordihn.easynpc.data.texture;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.HashSet;
+import java.util.Set;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -84,7 +86,7 @@ class TextureFailureTypeTest {
   @DisplayName("Should have unique messages for all failure types")
   void testUniqueMessages() {
     TextureFailureType[] types = TextureFailureType.values();
-    java.util.Set<String> messages = new java.util.HashSet<>();
+    Set<String> messages = new HashSet<>();
 
     for (TextureFailureType type : types) {
       String message = type.getMessage();

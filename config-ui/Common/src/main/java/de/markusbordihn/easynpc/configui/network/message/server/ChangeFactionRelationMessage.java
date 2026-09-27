@@ -74,14 +74,14 @@ public record ChangeFactionRelationMessage(
 
   @Override
   public void handleServer(final ServerPlayer serverPlayer) {
-    EasyNPC<?> easyNPC = getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
+    EasyNPC<?> easyNPC = this.getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
     if (easyNPC == null
         || this.factionName == null
         || this.factionName.isEmpty()
         || this.targetFactionName == null
         || this.targetFactionName.isEmpty()
         || this.factionName.equals(this.targetFactionName)) {
-      log.error("Invalid data to change faction relation for {}: ", this);
+      log.error("Invalid data to change faction relation for {}", this);
       return;
     }
 

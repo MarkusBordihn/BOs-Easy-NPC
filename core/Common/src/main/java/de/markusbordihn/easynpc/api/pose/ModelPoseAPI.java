@@ -55,6 +55,7 @@ public class ModelPoseAPI {
     if (vanillaPose != null) {
       return setVanillaPose(npc, vanillaPose);
     }
+
     return PoseManager.setModelPose(npc, poseId);
   }
 
@@ -62,10 +63,12 @@ public class ModelPoseAPI {
     if (npc == null || poseName == null || poseName.isEmpty()) {
       return false;
     }
+
     SkinDataCapable<?> skinData = npc.getEasyNPCSkinData();
     if (skinData == null) {
       return false;
     }
+
     SkinModel skinModel = skinData.getSkinModel();
     ResourceLocation poseId =
         ResourceLocation.fromNamespaceAndPath(
@@ -81,6 +84,7 @@ public class ModelPoseAPI {
     if (npc == null || pose == null) {
       return false;
     }
+
     ModelDataCapable<?> modelData = npc.getEasyNPCModelData();
     if (modelData == null) {
       return false;
@@ -102,6 +106,7 @@ public class ModelPoseAPI {
     if (npc == null) {
       return "";
     }
+
     ModelDataCapable<?> modelData = npc.getEasyNPCModelData();
     return modelData != null ? modelData.getModelPoseName() : "";
   }
@@ -110,6 +115,7 @@ public class ModelPoseAPI {
     if (npc == null) {
       return ModelPose.VANILLA;
     }
+
     ModelDataCapable<?> modelData = npc.getEasyNPCModelData();
     return modelData != null ? modelData.getModelPose() : ModelPose.VANILLA;
   }
@@ -122,10 +128,12 @@ public class ModelPoseAPI {
     if (npc == null) {
       return Set.of();
     }
+
     SkinDataCapable<?> skinData = npc.getEasyNPCSkinData();
     if (skinData == null) {
       return Set.of();
     }
+
     return PoseManager.getPoseDataKeysForModel(skinData.getSkinModel());
   }
 

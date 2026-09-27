@@ -50,7 +50,7 @@ public class VindicatorRawRenderer extends VindicatorRenderer implements EasyNPC
 
   @Override
   public ResourceLocation getTextureLocation(Vindicator entity) {
-    return getTextureLocationWithConfig(entity);
+    return this.getTextureLocationWithConfig(entity);
   }
 
   @Override

@@ -22,58 +22,33 @@ package de.markusbordihn.easynpc.data.model;
 import java.util.Locale;
 
 public enum ModelPartType {
-  // Root part (used as base for animations or transformations)
   ROOT("Root"),
-
-  // Head parts
   HEAD("Head"),
   HAT("Hat"),
   HELMET("Helmet"),
-
-  // Body parts
   BODY("Body"),
   CHESTPLATE("Chestplate"),
-
-  // Outer body layer
   BODY_JACKET("BodyJacket"),
-
-  // Arm parts
   RIGHT_ARM("RightArm"),
   LEFT_ARM("LeftArm"),
-  ARMS("Arms"), // combined arms (e.g. crossed arms)
-
-  // Outer arm layers
+  ARMS("Arms"),
   RIGHT_SLEEVE("RightSleeve"),
   LEFT_SLEEVE("LeftSleeve"),
-
-  // Wings
   RIGHT_WING("RightWing"),
   LEFT_WING("LeftWing"),
-
-  // Leg parts
   RIGHT_LEG("RightLeg"),
   LEFT_LEG("LeftLeg"),
   LEGGINGS("Leggings"),
   BOOTS("Boots"),
-
-  // Outer leg layers
   RIGHT_PANTS("RightPants"),
   LEFT_PANTS("LeftPants"),
-
-  // Quadruped front legs
   RIGHT_FRONT_LEG("RightFrontLeg"),
   LEFT_FRONT_LEG("LeftFrontLeg"),
-
-  // Quadruped hind legs
   RIGHT_HIND_LEG("RightHindLeg"),
   LEFT_HIND_LEG("LeftHindLeg"),
-
-  // Tail parts
   TAIL("Tail"),
   TAIL1("Tail1"),
   TAIL2("Tail2"),
-
-  // Fallback / unknown part
   UNKNOWN("Unknown");
 
   public final String tagName;

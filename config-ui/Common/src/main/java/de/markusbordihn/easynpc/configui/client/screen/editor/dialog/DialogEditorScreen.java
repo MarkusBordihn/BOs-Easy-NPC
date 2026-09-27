@@ -88,6 +88,7 @@ public class DialogEditorScreen<T extends EditorMenu> extends EditorScreen<T> {
     if (minecraft == null) {
       return;
     }
+
     minecraft.setScreen(
         new ConfirmScreen(
             confirmed -> {
@@ -410,7 +411,7 @@ public class DialogEditorScreen<T extends EditorMenu> extends EditorScreen<T> {
               buttonLeftPos,
               buttonTopPos,
               buttonWidth,
-              dialogButtonEntry.getButtonName(buttonMaxTextLength).getString(),
+              dialogButtonEntry.getButtonName(buttonMaxTextLength),
               dialogButtonEntry.hasConditions(),
               onPress -> {
                 log.debug("Edit dialog button {}", dialogButtonEntry.id());

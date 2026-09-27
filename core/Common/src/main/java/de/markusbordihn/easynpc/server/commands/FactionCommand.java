@@ -45,7 +45,8 @@ public class FactionCommand extends Command {
 
   public static ArgumentBuilder<CommandSourceStack, ?> register() {
     return Commands.literal("faction")
-        .requires(cs -> cs.hasPermission(Commands.LEVEL_GAMEMASTERS))
+        .requires(
+            commandSourceStack -> commandSourceStack.hasPermission(Commands.LEVEL_GAMEMASTERS))
         .then(
             Commands.literal("create")
                 .then(
@@ -200,9 +201,11 @@ public class FactionCommand extends Command {
     if (!FactionNameValidator.isValid(factionName)) {
       return sendFailureMessage(context, "Faction name '" + factionName + "' is invalid!");
     }
+
     if (!FactionData.get().createFaction(factionName)) {
       return sendFailureMessage(context, "Faction '" + factionName + "' already exists!");
     }
+
     return sendSuccessMessage(context, "Created faction '" + factionName + "'.");
   }
 
@@ -210,6 +213,7 @@ public class FactionCommand extends Command {
     if (!FactionHandler.deleteFaction(factionName)) {
       return sendFailureMessage(context, "Faction '" + factionName + "' does not exist!");
     }
+
     return sendSuccessMessage(context, "Deleted faction '" + factionName + "'.");
   }
 
@@ -223,6 +227,7 @@ public class FactionCommand extends Command {
     if (!FactionHandler.setFactionColor(factionName, color)) {
       return sendFailureMessage(context, "Unable to set color for faction '" + factionName + "'!");
     }
+
     return sendSuccessMessage(
         context, "Set color of faction '" + factionName + "' to " + color.getName() + ".");
   }
@@ -238,6 +243,7 @@ public class FactionCommand extends Command {
               + factionName
               + "'!");
     }
+
     return sendSuccessMessage(
         context, "Faction '" + factionName + "' is now hostile to '" + hostileFactionName + "'.");
   }
@@ -253,6 +259,7 @@ public class FactionCommand extends Command {
               + factionName
               + "'!");
     }
+
     return sendSuccessMessage(
         context,
         "Faction '" + factionName + "' is no longer hostile to '" + hostileFactionName + "'.");
@@ -264,6 +271,7 @@ public class FactionCommand extends Command {
     if (!factionData.hasFaction(factionName) || !factionData.hasFaction(hostileFactionName)) {
       return sendFailureMessage(context, "Both factions must exist for mutual hostility!");
     }
+
     boolean addedForward = factionData.addHostileFaction(factionName, hostileFactionName);
     boolean addedReverse = factionData.addHostileFaction(hostileFactionName, factionName);
     if (!addedForward && !addedReverse) {
@@ -271,6 +279,7 @@ public class FactionCommand extends Command {
           context,
           "Factions '" + factionName + "' and '" + hostileFactionName + "' are already hostile!");
     }
+
     return sendSuccessMessage(
         context,
         "Factions '" + factionName + "' and '" + hostileFactionName + "' are now hostile.");
@@ -282,6 +291,7 @@ public class FactionCommand extends Command {
     if (!factionData.hasFaction(factionName) || !factionData.hasFaction(hostileFactionName)) {
       return sendFailureMessage(context, "Both factions must exist for mutual hostility!");
     }
+
     boolean removedForward = factionData.removeHostileFaction(factionName, hostileFactionName);
     boolean removedReverse = factionData.removeHostileFaction(hostileFactionName, factionName);
     if (!removedForward && !removedReverse) {
@@ -289,6 +299,7 @@ public class FactionCommand extends Command {
           context,
           "Factions '" + factionName + "' and '" + hostileFactionName + "' are not hostile!");
     }
+
     return sendSuccessMessage(
         context,
         "Factions '" + factionName + "' and '" + hostileFactionName + "' are no longer hostile.");
@@ -299,6 +310,7 @@ public class FactionCommand extends Command {
     if (factionDataEntry == null) {
       return sendFailureMessage(context, "Faction '" + factionName + "' does not exist!");
     }
+
     return sendSuccessMessage(
         context,
         "Faction '"
@@ -312,9 +324,11 @@ public class FactionCommand extends Command {
     if (easyNPC == null) {
       return 0;
     }
+
     if (!FactionHandler.setFaction(easyNPC, factionName)) {
       return sendFailureMessage(context, "Failed to set faction for " + easyNPC);
     }
+
     return sendSuccessMessage(
         context, "Faction of " + easyNPC + " was changed to '" + factionName + "'.");
   }
@@ -323,10 +337,12 @@ public class FactionCommand extends Command {
     if (easyNPC == null) {
       return 0;
     }
+
     FactionDataCapable<?> factionData = easyNPC.getEasyNPCFactionData();
     if (factionData == null || !factionData.hasFactionName()) {
       return sendFailureMessage(context, "No faction assigned to " + easyNPC);
     }
+
     return sendSuccessMessage(
         context, easyNPC + " is member of faction '" + factionData.getFactionName() + "'.");
   }
@@ -335,9 +351,11 @@ public class FactionCommand extends Command {
     if (easyNPC == null) {
       return 0;
     }
+
     if (!FactionHandler.removeFaction(easyNPC)) {
       return sendFailureMessage(context, "Failed to remove faction from " + easyNPC);
     }
+
     return sendSuccessMessage(context, "Faction of " + easyNPC + " was removed.");
   }
 }

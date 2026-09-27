@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.client.texture;
 
 import com.mojang.blaze3d.platform.NativeImage;
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.data.skin.SkinModel;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -40,6 +41,12 @@ public class TextureImageLoader {
 
   public static NativeImage getNativePlayerImage(File file) {
     return getNativeImage(file, true);
+  }
+
+  static NativeImage getNativeImageForSkinModel(SkinModel skinModel, File file) {
+    return skinModel == SkinModel.HUMANOID || skinModel == SkinModel.HUMANOID_SLIM
+        ? getNativePlayerImage(file)
+        : getNativeImage(file);
   }
 
   public static NativeImage getNativeImage(File file, boolean legacySupport) {

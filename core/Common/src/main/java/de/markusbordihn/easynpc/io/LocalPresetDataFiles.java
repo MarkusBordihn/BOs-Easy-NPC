@@ -25,7 +25,6 @@ import de.markusbordihn.easynpc.data.preset.PresetMetadata;
 import de.markusbordihn.easynpc.data.preset.PresetType;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import java.nio.file.Path;
-import java.util.Set;
 import java.util.stream.Stream;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -43,37 +42,27 @@ public class LocalPresetDataFiles {
     CustomPresetDataFiles.registerCustomPresetData();
   }
 
-  @SuppressWarnings("unused")
   public static Stream<ResourceLocation> getPresetResourceLocations(SkinModel skinModel) {
     return CustomPresetDataFiles.getPresetResourceLocations(skinModel);
   }
 
-  @SuppressWarnings("unused")
   public static Stream<ResourceLocation> getPresetResourceLocations() {
     return CustomPresetDataFiles.getPresetResourceLocations();
-  }
-
-  @SuppressWarnings("unused")
-  public static Set<ResourceLocation> getPresetResourceLocationSet() {
-    return CustomPresetDataFiles.getPresetResourceLocationSet();
   }
 
   public static Path getPresetsResourceLocationPath(ResourceLocation resourceLocation) {
     return CustomPresetDataFiles.getPresetsResourceLocationPath(resourceLocation);
   }
 
-  @SuppressWarnings("unused")
   public static PresetMetadata getPresetMetadata(ResourceLocation resourceLocation) {
     return CustomPresetDataFiles.getPresetMetadata(resourceLocation);
   }
 
-  @SuppressWarnings("unused")
   public static String getPresetDisplayName(
       ResourceLocation resourceLocation, PresetMetadata metadata) {
     return CustomPresetDataFiles.getPresetDisplayName(resourceLocation, metadata);
   }
 
-  @SuppressWarnings("unused")
   public static PresetData loadPresetData(ResourceLocation resourceLocation) {
     try {
       Path presetPath = getPresetsResourceLocationPath(resourceLocation);

@@ -51,7 +51,7 @@ public class EvokerRawRenderer<T extends SpellcasterIllager> extends EvokerRende
 
   @Override
   public ResourceLocation getTextureLocation(T entity) {
-    return getTextureLocationWithConfig(entity);
+    return this.getTextureLocationWithConfig(entity);
   }
 
   @Override

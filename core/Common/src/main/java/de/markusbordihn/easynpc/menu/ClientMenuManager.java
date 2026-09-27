@@ -38,7 +38,6 @@ public class ClientMenuManager {
     ClientMenuManager.menuId = menuId;
     ClientMenuManager.menuData = menuData;
 
-    // Decode screen data and additional screen data, if available.
     if (ScreenData.hasScreenData(menuData)) {
       ClientMenuManager.screenData = ScreenData.decode(menuData);
       ClientMenuManager.additionalScreenData =

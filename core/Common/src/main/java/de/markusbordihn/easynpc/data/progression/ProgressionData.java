@@ -54,6 +54,7 @@ public record ProgressionData(
     if (!compoundTag.contains(DATA_PROGRESSION_TAG)) {
       return new ProgressionData();
     }
+
     CompoundTag progressionTag = compoundTag.getCompound(DATA_PROGRESSION_TAG);
     return new ProgressionData(
         progressionTag.contains(ENTITY_EXPERIENCE_TAG)

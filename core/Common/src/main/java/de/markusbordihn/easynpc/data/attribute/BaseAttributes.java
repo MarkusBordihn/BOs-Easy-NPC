@@ -19,8 +19,11 @@
 
 package de.markusbordihn.easynpc.data.attribute;
 
+import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 
 public class BaseAttributes {
@@ -31,10 +34,10 @@ public class BaseAttributes {
   public static final String FOLLOW_RANGE_TAG = BaseAttributeType.FOLLOW_RANGE.getTagName();
   public static final String KNOCKBACK_RESISTANCE_TAG =
       BaseAttributeType.KNOCKBACK_RESISTANCE.getTagName();
-  private double attackDamage = 2.0F;
-  private double attackKnockback = 0.0F;
-  private double followRange = 32.0F;
-  private double knockbackResistance = 0.0F;
+  private double attackDamage = 2.0D;
+  private double attackKnockback = 0.0D;
+  private double followRange = 32.0D;
+  private double knockbackResistance = 0.0D;
 
   public BaseAttributes() {}
 
@@ -46,26 +49,26 @@ public class BaseAttributes {
     if (livingEntity == null) {
       return;
     }
-    if (livingEntity.getAttribute(Attributes.FOLLOW_RANGE) != null) {
-      this.setFollowRange(livingEntity.getAttribute(Attributes.FOLLOW_RANGE).getBaseValue());
-    }
-    if (livingEntity.getAttribute(Attributes.KNOCKBACK_RESISTANCE) != null) {
-      this.setKnockbackResistance(
-          livingEntity.getAttribute(Attributes.KNOCKBACK_RESISTANCE).getBaseValue());
-    }
-    if (livingEntity.getAttribute(Attributes.ATTACK_DAMAGE) != null) {
-      this.setAttackDamage(livingEntity.getAttribute(Attributes.ATTACK_DAMAGE).getBaseValue());
-    }
-    if (livingEntity.getAttribute(Attributes.ATTACK_KNOCKBACK) != null) {
-      this.setAttackKnockback(
-          livingEntity.getAttribute(Attributes.ATTACK_KNOCKBACK).getBaseValue());
-    }
+
+    this.setFollowRange(getBaseValue(livingEntity, Attributes.FOLLOW_RANGE, this.followRange));
+    this.setKnockbackResistance(
+        getBaseValue(livingEntity, Attributes.KNOCKBACK_RESISTANCE, this.knockbackResistance));
+    this.setAttackDamage(getBaseValue(livingEntity, Attributes.ATTACK_DAMAGE, this.attackDamage));
+    this.setAttackKnockback(
+        getBaseValue(livingEntity, Attributes.ATTACK_KNOCKBACK, this.attackKnockback));
+  }
+
+  private static double getBaseValue(
+      LivingEntity livingEntity, Holder<Attribute> attribute, double defaultValue) {
+    AttributeInstance attributeInstance = livingEntity.getAttribute(attribute);
+    return attributeInstance != null ? attributeInstance.getBaseValue() : defaultValue;
   }
 
   public void load(final CompoundTag compoundTag) {
     if (!compoundTag.contains(BASE_ATTRIBUTES_TAG)) {
       return;
     }
+
     CompoundTag baseAttributesTag = compoundTag.getCompound(BASE_ATTRIBUTES_TAG);
     if (baseAttributesTag.contains(FOLLOW_RANGE_TAG)) {
       this.setFollowRange(baseAttributesTag.getDouble(FOLLOW_RANGE_TAG));
@@ -83,10 +86,10 @@ public class BaseAttributes {
 
   public CompoundTag save(CompoundTag compoundTag) {
     CompoundTag baseAttributesTag = new CompoundTag();
-    baseAttributesTag.putDouble(FOLLOW_RANGE_TAG, (float) this.getFollowRange());
-    baseAttributesTag.putDouble(KNOCKBACK_RESISTANCE_TAG, (float) this.getKnockbackResistance());
-    baseAttributesTag.putDouble(ATTACK_DAMAGE_TAG, (float) this.getAttackDamage());
-    baseAttributesTag.putDouble(ATTACK_KNOCKBACK_TAG, (float) this.getAttackKnockback());
+    baseAttributesTag.putDouble(FOLLOW_RANGE_TAG, this.getFollowRange());
+    baseAttributesTag.putDouble(KNOCKBACK_RESISTANCE_TAG, this.getKnockbackResistance());
+    baseAttributesTag.putDouble(ATTACK_DAMAGE_TAG, this.getAttackDamage());
+    baseAttributesTag.putDouble(ATTACK_KNOCKBACK_TAG, this.getAttackKnockback());
     compoundTag.put(BASE_ATTRIBUTES_TAG, baseAttributesTag);
     return compoundTag;
   }

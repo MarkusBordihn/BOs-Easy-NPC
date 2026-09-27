@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.data.model;
 import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.data.scale.CustomScale;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 
@@ -51,26 +52,26 @@ public record RootModelData(CustomRotation rotation, CustomScale scale) {
   public static RootModelData load(CompoundTag compoundTag) {
     return new RootModelData(
         compoundTag.contains(ROTATION_TAG)
-            ? new CustomRotation(compoundTag.getList(ROTATION_TAG, 5))
+            ? new CustomRotation(compoundTag.getList(ROTATION_TAG, Tag.TAG_FLOAT))
             : CustomRotation.DEFAULT,
         compoundTag.contains(SCALE_TAG)
-            ? new CustomScale(compoundTag.getList(SCALE_TAG, 5))
+            ? new CustomScale(compoundTag.getList(SCALE_TAG, Tag.TAG_FLOAT))
             : CustomScale.DEFAULT);
   }
 
   public boolean isRotationLocked() {
-    return rotation.locked();
+    return this.rotation.locked();
   }
 
   public boolean hasChanged() {
-    return rotation.hasChanged() || scale.hasChanged();
+    return this.rotation.hasChanged() || this.scale.hasChanged();
   }
 
   public CompoundTag save() {
     CompoundTag compoundTag = new CompoundTag();
-    compoundTag.put(ROTATION_TAG, rotation.save());
-    if (scale.hasChanged()) {
-      compoundTag.put(SCALE_TAG, scale.save());
+    compoundTag.put(ROTATION_TAG, this.rotation.save());
+    if (this.scale.hasChanged()) {
+      compoundTag.put(SCALE_TAG, this.scale.save());
     }
 
     return compoundTag;

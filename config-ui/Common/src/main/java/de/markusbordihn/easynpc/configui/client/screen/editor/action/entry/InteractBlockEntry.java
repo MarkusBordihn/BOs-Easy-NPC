@@ -26,10 +26,9 @@ public class InteractBlockEntry extends ActionEntryWidget {
 
   @Override
   public void init(int editorLeft, int editorTop) {
-    boolean hasActionData = hasActionData(ActionDataType.INTERACT_BLOCK);
+    boolean hasActionData = this.hasActionData(ActionDataType.INTERACT_BLOCK);
     BlockPos blockPos = hasActionData ? this.actionDataEntry.blockPos() : BlockPos.ZERO;
 
-    // Block Position
     this.blockPosXTextField =
         this.screen.addActionEntryWidget(
             new TextField(this.font, editorLeft, editorTop + 20, 70, 16));
@@ -75,7 +74,7 @@ public class InteractBlockEntry extends ActionEntryWidget {
 
   @Override
   public boolean hasChanged() {
-    boolean hasActionData = hasActionData(ActionDataType.INTERACT_BLOCK);
+    boolean hasActionData = this.hasActionData(ActionDataType.INTERACT_BLOCK);
     BlockPos blockPos = hasActionData ? this.actionDataEntry.blockPos() : BlockPos.ZERO;
     return (this.blockPosXTextField != null
             && !this.blockPosXTextField.getValue().equals(String.valueOf(blockPos.getX()))

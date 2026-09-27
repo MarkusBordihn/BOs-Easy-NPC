@@ -45,7 +45,6 @@ public class AttributeConfigurationScreen<T extends ConfigurationMenu>
   public void init() {
     super.init();
 
-    // Objective Types
     this.abilitiesAttributeButton =
         this.addRenderableWidget(
             new TextButton(

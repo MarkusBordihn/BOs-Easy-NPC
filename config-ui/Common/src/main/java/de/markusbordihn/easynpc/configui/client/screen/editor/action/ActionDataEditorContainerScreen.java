@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.configui.client.screen.editor.action;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.configui.Constants;
+import de.markusbordihn.easynpc.configui.client.screen.EditorScreen;
 import de.markusbordihn.easynpc.configui.client.screen.components.ActionsButton;
 import de.markusbordihn.easynpc.configui.client.screen.components.AddButton;
 import de.markusbordihn.easynpc.configui.client.screen.components.DialogButtonButton;
@@ -40,10 +41,8 @@ import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
-public class ActionDataEditorContainerScreen<T extends EditorMenu>
-    extends de.markusbordihn.easynpc.configui.client.screen.EditorScreen<T> {
+public class ActionDataEditorContainerScreen<T extends EditorMenu> extends EditorScreen<T> {
 
-  // Layout constants
   private static final int HOME_BUTTON_X_OFFSET = 3;
   private static final int HOME_BUTTON_Y_OFFSET = 3;
   private static final int HOME_BUTTON_WIDTH = 10;
@@ -61,7 +60,6 @@ public class ActionDataEditorContainerScreen<T extends EditorMenu>
   private static final int ADD_BUTTON_X_OFFSET = 7;
   private static final int ADD_BUTTON_WIDTH = 300;
 
-  // Color constants
   private static final int COLOR_LIST_BACKGROUND = 0xffeeeeee;
   private static final int COLOR_HEADER_BACKGROUND = 0xffaaaaaa;
   private static final int COLOR_FOOTER_BACKGROUND = 0xffc6c6c6;
@@ -85,18 +83,18 @@ public class ActionDataEditorContainerScreen<T extends EditorMenu>
     this.actionEventType = this.getAdditionalScreenData().getActionEventType();
     this.configurationType = this.getAdditionalScreenData().getConfigurationType();
     this.editorType = this.getAdditionalScreenData().getEditorType();
-    this.isDialogButtonContext =
-        this.editorType != null && this.editorType == EditorType.DIALOG_BUTTON;
+    this.isDialogButtonContext = this.editorType == EditorType.DIALOG_BUTTON;
     this.isActionEventContext =
         this.actionEventType != null && this.actionEventType != ActionEventType.NONE;
-    this.isOfferActionContext =
-        this.editorType != null && this.editorType == EditorType.TRADING_OFFER_ACTION;
-    this.actionDataSet = getActionDataSet();
+    this.isOfferActionContext = this.editorType == EditorType.TRADING_OFFER_ACTION;
+    this.actionDataSet = this.getActionDataSet();
   }
 
   private ActionDataSet getActionDataSet() {
     if (this.isActionEventContext) {
-      return this.getAdditionalScreenData().getActionEventSet().getActionEvents(actionEventType);
+      return this.getAdditionalScreenData()
+          .getActionEventSet()
+          .getActionEvents(this.actionEventType);
     } else if (this.isDialogButtonContext) {
       return this.getDialogButtonData().actionDataSet();
     } else if (this.isOfferActionContext) {
@@ -111,7 +109,6 @@ public class ActionDataEditorContainerScreen<T extends EditorMenu>
   public void init() {
     super.init();
 
-    // Home Button
     this.homeButton =
         this.addRenderableWidget(
             new TextButton(
@@ -120,9 +117,8 @@ public class ActionDataEditorContainerScreen<T extends EditorMenu>
                 HOME_BUTTON_WIDTH,
                 HOME_BUTTON_HEIGHT,
                 "<",
-                onPress -> handleBackNavigation()));
+                onPress -> this.handleBackNavigation()));
 
-    // Level 1 Navigation Buttons
     if (this.isActionEventContext) {
       this.navigationLevelOne =
           this.addRenderableWidget(
@@ -131,7 +127,7 @@ public class ActionDataEditorContainerScreen<T extends EditorMenu>
                   this.topPos + HOME_BUTTON_Y_OFFSET,
                   NAVIGATION_BUTTON_WIDTH,
                   this.actionEventType.name(),
-                  onPress -> navigateToActionDataEditor()));
+                  onPress -> this.navigateToActionDataEditor()));
       this.navigationLevelOne.active = false;
     } else if (this.isDialogButtonContext) {
       this.navigationLevelOne =
@@ -140,7 +136,7 @@ public class ActionDataEditorContainerScreen<T extends EditorMenu>
                   this.homeButton.getX() + this.homeButton.getWidth(),
                   this.topPos + HOME_BUTTON_Y_OFFSET,
                   NAVIGATION_BUTTON_WIDTH,
-                  this.getDialogButtonData().getButtonName(21).getString(),
+                  this.getDialogButtonData().getButtonName(21),
                   onPress ->
                       NetworkMessageHandlerManager.getServerHandler()
                           .openDialogButtonEditor(
@@ -155,7 +151,7 @@ public class ActionDataEditorContainerScreen<T extends EditorMenu>
                   this.topPos + HOME_BUTTON_Y_OFFSET,
                   NAVIGATION_BUTTON_WIDTH,
                   "Trade #" + (this.menu.getPageIndex() + 1),
-                  onPress -> navigateToActionDataEditor()));
+                  onPress -> this.navigateToActionDataEditor()));
       this.navigationLevelOne.active = false;
     } else {
       this.navigationLevelOne =
@@ -165,11 +161,10 @@ public class ActionDataEditorContainerScreen<T extends EditorMenu>
                   this.topPos + HOME_BUTTON_Y_OFFSET,
                   NAVIGATION_BUTTON_WIDTH,
                   "Actions",
-                  onPress -> navigateToActionDataEditor()));
+                  onPress -> this.navigateToActionDataEditor()));
       this.navigationLevelOne.active = false;
     }
 
-    // Level 2 Navigation Buttons
     if (this.isDialogButtonContext) {
       this.navigationLevelTwo =
           this.addRenderableWidget(
@@ -178,11 +173,10 @@ public class ActionDataEditorContainerScreen<T extends EditorMenu>
                   this.topPos + HOME_BUTTON_Y_OFFSET,
                   NAVIGATION_BUTTON_WIDTH,
                   "Actions",
-                  onPress -> navigateToActionDataEditor()));
+                  onPress -> this.navigateToActionDataEditor()));
       this.navigationLevelTwo.active = false;
     }
 
-    // New Action Data Entry Button
     this.newActionDataEntryButton =
         this.addRenderableWidget(
             new AddButton(
@@ -190,9 +184,8 @@ public class ActionDataEditorContainerScreen<T extends EditorMenu>
                 this.topPos + FOOTER_Y_OFFSET,
                 ADD_BUTTON_WIDTH,
                 "action.add",
-                onPress -> handleNewActionDataEntry()));
+                onPress -> this.handleNewActionDataEntry()));
 
-    // Action Data List
     this.actionDataList =
         new ActionDataList(
             this.actionDataSet,
@@ -214,13 +207,17 @@ public class ActionDataEditorContainerScreen<T extends EditorMenu>
       NetworkMessageHandlerManager.getServerHandler()
           .openTradingOfferActionEditor(
               this.getEasyNPCUUID(), this.menu.getPageIndex(), this.configurationType);
-    } else if (configurationType != null && configurationType != ConfigurationType.NONE) {
+    } else if (this.configurationType != null && this.configurationType != ConfigurationType.NONE) {
       NetworkMessageHandlerManager.getServerHandler()
-          .openActionDataEditor(this.getEasyNPCUUID(), actionEventType, configurationType);
+          .openActionDataEditor(
+              this.getEasyNPCUUID(), this.actionEventType, this.configurationType);
     } else if (this.isDialogButtonContext) {
       NetworkMessageHandlerManager.getServerHandler()
           .openActionDataEditor(
-              this.getEasyNPCUUID(), editorType, this.getDialogUUID(), this.getDialogButtonUUID());
+              this.getEasyNPCUUID(),
+              this.editorType,
+              this.getDialogUUID(),
+              this.getDialogButtonUUID());
     } else {
       log.error("No valid navigation found!");
       NetworkMessageHandlerManager.getServerHandler()
@@ -229,9 +226,9 @@ public class ActionDataEditorContainerScreen<T extends EditorMenu>
   }
 
   private void handleBackNavigation() {
-    if (configurationType != null && configurationType != ConfigurationType.NONE) {
+    if (this.configurationType != null && this.configurationType != ConfigurationType.NONE) {
       NetworkMessageHandlerManager.getServerHandler()
-          .openConfiguration(this.getEasyNPCUUID(), configurationType);
+          .openConfiguration(this.getEasyNPCUUID(), this.configurationType);
     } else if (this.isDialogButtonContext) {
       NetworkMessageHandlerManager.getServerHandler()
           .openDialogButtonEditor(
@@ -278,12 +275,13 @@ public class ActionDataEditorContainerScreen<T extends EditorMenu>
         || !actionDataEntry.isValidAndNotEmpty()) {
       return;
     }
+
     this.minecraft.setScreen(
         new ConfirmScreen(
             confirmed -> {
               if (confirmed) {
                 this.actionDataSet.remove(actionDataEntry.id());
-                updateActionDataSet();
+                this.updateActionDataSet();
                 this.navigateToActionDataEditor();
               } else {
                 this.minecraft.setScreen(this);
@@ -346,14 +344,14 @@ public class ActionDataEditorContainerScreen<T extends EditorMenu>
   private void handleMoveUpOrderActionDataEntry(ActionDataEntry actionDataEntry) {
     log.debug("Moving up Action Data Entry {}: {}", actionDataEntry.id(), actionDataEntry);
     this.actionDataSet.moveUp(actionDataEntry);
-    updateActionDataSet();
+    this.updateActionDataSet();
     this.navigateToActionDataEditor();
   }
 
   private void handleMoveDownOrderActionDataEntry(ActionDataEntry actionDataEntry) {
     log.debug("Moving down Action Data Entry {}: {}", actionDataEntry.id(), actionDataEntry);
     this.actionDataSet.moveDown(actionDataEntry);
-    updateActionDataSet();
+    this.updateActionDataSet();
     this.navigateToActionDataEditor();
   }
 
@@ -361,7 +359,6 @@ public class ActionDataEditorContainerScreen<T extends EditorMenu>
   public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
     super.render(guiGraphics, x, y, partialTicks);
 
-    // Gray background for dialog list
     guiGraphics.fill(
         this.leftPos + LIST_X_OFFSET,
         this.topPos + HEADER_Y_OFFSET + 5,
@@ -369,16 +366,12 @@ public class ActionDataEditorContainerScreen<T extends EditorMenu>
         this.topPos + LIST_Y_END,
         COLOR_LIST_BACKGROUND);
 
-    // Render Action Data List
     if (this.actionDataList != null) {
       this.actionDataList.render(guiGraphics, x, y, partialTicks);
     }
 
-    // Render Header
-    renderHeader(guiGraphics);
-
-    // Footer background
-    renderFooter(guiGraphics);
+    this.renderHeader(guiGraphics);
+    this.renderFooter(guiGraphics);
 
     // Re-render button for visibility
     if (this.newActionDataEntryButton != null) {
@@ -387,7 +380,6 @@ public class ActionDataEditorContainerScreen<T extends EditorMenu>
   }
 
   private void renderHeader(GuiGraphics guiGraphics) {
-    // Header background
     guiGraphics.fill(
         this.leftPos + LIST_X_OFFSET,
         this.topPos + HEADER_Y_OFFSET,
@@ -395,7 +387,6 @@ public class ActionDataEditorContainerScreen<T extends EditorMenu>
         this.topPos + HEADER_Y_OFFSET + HEADER_HEIGHT,
         COLOR_HEADER_BACKGROUND);
 
-    // Header labels
     int headerLeft = this.leftPos + 10;
     int headerTop = this.topPos + HEADER_Y_OFFSET + 5;
     Text.drawString(
@@ -427,7 +418,6 @@ public class ActionDataEditorContainerScreen<T extends EditorMenu>
         headerTop,
         Constants.FONT_COLOR_BLACK);
 
-    // Draw vertical separator line for headers
     int separatorTop = headerTop - 5;
     guiGraphics.fill(
         headerLeft + ActionDataListEntry.TYPE_LEFT_POS - 3,
@@ -450,7 +440,6 @@ public class ActionDataEditorContainerScreen<T extends EditorMenu>
   }
 
   private void renderFooter(GuiGraphics guiGraphics) {
-    // Footer background
     guiGraphics.fill(
         this.leftPos + LIST_X_OFFSET,
         this.topPos + LIST_Y_END,

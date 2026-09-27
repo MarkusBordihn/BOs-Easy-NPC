@@ -36,10 +36,8 @@ public class DialogActionConfigurationScreen<T extends ConfigurationMenu>
   public void init() {
     super.init();
 
-    // Default button stats
     this.dialogActionButton.active = false;
 
-    // On Open Dialog Action
     this.addRenderableWidget(
         this.getActionDataButton(
             this.contentLeftPos,
@@ -47,7 +45,6 @@ public class DialogActionConfigurationScreen<T extends ConfigurationMenu>
             ActionEventType.ON_OPEN_DIALOG,
             ConfigurationType.DIALOG_ACTION));
 
-    // On Close Dialog Action
     this.addRenderableWidget(
         this.getActionDataButton(
             this.contentLeftPos,
@@ -55,7 +52,6 @@ public class DialogActionConfigurationScreen<T extends ConfigurationMenu>
             ActionEventType.ON_CLOSE_DIALOG,
             ConfigurationType.DIALOG_ACTION));
 
-    // On Yes Selection Action
     this.addRenderableWidget(
         this.getActionDataButton(
             this.contentLeftPos,

@@ -358,7 +358,6 @@ tasks.register('generateRawNPCs') {
   doLast {
     def outputDir = rawNPCFolder
 
-    // Update RawNPCType enum
     if (rawNPCTypeFile.exists()) {
       println "🔄 Updating RawNPCType enum values..."
       def enumContent = rawNPCTypeFile.text
@@ -393,7 +392,7 @@ tasks.register('generateRawNPCs') {
     println "✨ Processing ${npcClasses.size()} NPC classes from ${templateFile} to ${outputDir} ..."
     npcClasses.each { npcClass ->
       def targetFolder = npcClass.subfolder ? new File(outputDir, npcClass.subfolder) : outputDir
-      targetFolder.mkdirs() // Ensure subfolder exists
+      targetFolder.mkdirs()
 
       def outputFile = new File(targetFolder, npcClass.className + ".java")
       def packagePath = npcClass.subfolder ? "de.markusbordihn.easynpc.api.npc.raw.${npcClass.subfolder}" : "de.markusbordihn.easynpc.api.npc.raw"

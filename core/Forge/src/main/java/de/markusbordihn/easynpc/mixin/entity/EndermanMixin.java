@@ -37,10 +37,10 @@ public abstract class EndermanMixin extends Monster {
   }
 
   @Inject(method = "customServerAiStep", at = @At("HEAD"), cancellable = true)
-  public void onCustomServerAiStep(CallbackInfo ci) {
+  public void onCustomServerAiStep(CallbackInfo callbackInfo) {
     if ((Object) this instanceof EasyNPC<?> && this.isAlive()) {
       super.customServerAiStep();
-      ci.cancel();
+      callbackInfo.cancel();
     }
   }
 }

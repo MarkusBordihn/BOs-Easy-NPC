@@ -31,7 +31,6 @@ import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.phys.Vec3;
 
@@ -41,8 +40,6 @@ public class DialogScreenTestHelper {
 
   public static UUID mockOpenDialog(
       ServerPlayer serverPlayer, EasyNPC<?> easyNPC, MenuType<? extends DialogMenu> menuType) {
-
-    // Define the menu provider and open the menu.
     MenuProvider menuProvider =
         DialogMenuHandler.getMenuProvider(
             easyNPC,
@@ -61,27 +58,22 @@ public class DialogScreenTestHelper {
   public static void testDialogScreen(
       GameTestHelper helper,
       DialogDataSet dialogDataSet,
-      EntityType<? extends PathfinderMob> npcEntityType,
+      EntityType<?> npcEntityType,
       MenuType<? extends DialogMenu> menuType) {
-    // Get a mock player and spawn a humanoid NPC.
     ServerPlayer serverPlayer = GameTestHelpers.mockServerPlayer(helper, new Vec3(1, 2, 1));
     EasyNPC<?> easyNPC = GameTestHelpers.mockEasyNPC(helper, npcEntityType, new Vec3(2, 2, 2));
 
-    // Close previous dialog, if any.
     if (serverPlayer.hasContainerOpen()) {
       serverPlayer.closeContainer();
     }
 
-    // Add dialog data to NPC
     GameTestHelpers.assertNotNull(helper, "DialogDataSet is null!", dialogDataSet);
     easyNPC.getEasyNPCDialogData().setDialogDataSet(dialogDataSet);
     GameTestHelpers.assertNotNull(helper, "DialogData is null!", easyNPC.getEasyNPCDialogData());
 
-    // Open Dialog
     UUID dialogId = mockOpenDialog(serverPlayer, easyNPC, menuType);
     GameTestHelpers.assertNotNull(helper, "DialogId is null!", dialogId);
 
-    // Check if dialog is open.
     GameTestHelpers.assertTrue(
         helper,
         "Dialog Screen " + menuType + " is not open!",

@@ -32,12 +32,10 @@ public class SpawnEggs implements DisplayItemsGenerator {
 
   @Override
   public void accept(ItemDisplayParameters itemDisplayParameters, Output output) {
-    // NPC Spawn Eggs
     for (RegistryObject<Item> spawnEgg : ModItems.NPC_SPAWN_EGGS.values()) {
       output.accept(spawnEgg.get());
     }
 
-    // Custom NPC Spawn Eggs
     for (RegistryObject<Item> spawnEgg : ModItems.CUSTOM_NPC_SPAWN_EGGS.values()) {
       output.accept(spawnEgg.get());
     }

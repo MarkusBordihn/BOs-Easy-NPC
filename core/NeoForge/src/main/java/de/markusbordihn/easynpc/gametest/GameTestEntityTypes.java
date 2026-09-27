@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Markus Bordihn
+ * Copyright 2026 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,10 +17,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.mixin.renderer;
+package de.markusbordihn.easynpc.gametest;
 
-import net.minecraft.client.renderer.entity.GhastRenderer;
-import org.spongepowered.asm.mixin.Mixin;
+import de.markusbordihn.easynpc.entity.ModEntityType;
+import de.markusbordihn.easynpc.entity.ModNPCEntityType;
+import net.minecraft.world.entity.EntityType;
 
-@Mixin(GhastRenderer.class)
-public class EasyNPCGhastRendererMixin {}
+public final class GameTestEntityTypes {
+
+  private GameTestEntityTypes() {}
+
+  public static EntityType<?> humanoid() {
+    return ModEntityType.getEntityType(ModNPCEntityType.HUMANOID);
+  }
+
+  public static EntityType<?> villager() {
+    return ModEntityType.getEntityType(ModNPCEntityType.VILLAGER);
+  }
+}

@@ -87,6 +87,7 @@ public class Config {
       log.warn("Check if configuration is loaded multiple times!");
       return;
     }
+
     isLoaded = true;
   }
 
@@ -94,7 +95,7 @@ public class Config {
       final String configFileName, final String configFileHeader) {
     File configFile = getConfigFile(configFileName.trim());
     if (configFile == null || !configFile.exists()) {
-      createConfigFile(getConfigFile(configFileName.trim()), configFileHeader.trim());
+      createConfigFile(configFile, configFileHeader.trim());
     }
   }
 
@@ -114,8 +115,7 @@ public class Config {
     try (FileWriter writer = new FileWriter(configFile)) {
       properties.store(writer, header.trim());
     } catch (Exception e) {
-      log.error(
-          "{} Failed to create configuration file {} for {}", LOG_PREFIX, configFile, properties);
+      log.error("{} Failed to create configuration file {}:", LOG_PREFIX, configFile, e);
     }
   }
 
@@ -124,6 +124,7 @@ public class Config {
     if (path != null) {
       return path.resolve(configFileName).toFile();
     }
+
     return null;
   }
 
@@ -144,30 +145,29 @@ public class Config {
       Properties unmodifiedProperties) {
     if (!properties.equals(unmodifiedProperties)) {
       log.debug(
-          "{} Updating configuration file {} {} ({} entries)",
+          "{} Updating configuration file {} {} ({} entries): {}",
           LOG_PREFIX,
           configFile,
           configFileHeader,
-          properties.size());
-      log.debug(
-          "{} Updated configuration file {} {} with: {}",
-          LOG_PREFIX,
-          configFile,
-          configFileHeader,
+          properties.size(),
           properties);
       try (FileWriter writer = new FileWriter(configFile)) {
         properties.store(writer, configFileHeader.trim());
       } catch (Exception e) {
         log.error(
-            "{} Failed to update configuration file {} with {}",
+            "{} Failed to update configuration file {} with {}:",
             LOG_PREFIX,
             configFile,
-            properties);
+            properties,
+            e);
       }
     } else {
       log.debug(
-          "{} {} is up to date ({} entries)", LOG_PREFIX, configFileHeader, properties.size());
-      log.debug("{} {} values: {}", LOG_PREFIX, configFileHeader, properties);
+          "{} {} is up to date ({} entries): {}",
+          LOG_PREFIX,
+          configFileHeader,
+          properties.size(),
+          properties);
     }
   }
 
@@ -224,6 +224,7 @@ public class Config {
     if (properties.containsKey(key)) {
       return properties.getProperty(key).trim();
     }
+
     properties.setProperty(key, defaultValue);
     return defaultValue;
   }

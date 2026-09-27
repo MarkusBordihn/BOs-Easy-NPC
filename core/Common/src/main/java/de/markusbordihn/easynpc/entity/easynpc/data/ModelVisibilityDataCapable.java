@@ -67,22 +67,22 @@ public interface ModelVisibilityDataCapable<T extends Mob> extends EasyNPC<T> {
 
   default EnumMap<ModelPartType, Boolean> getModelPartVisibility() {
     EnumMap<ModelPartType, Boolean> modelPartMap =
-        getSynchedEntityData(SynchedDataIndex.MODEL_VISIBILITY);
+        this.getSynchedEntityData(SynchedDataIndex.MODEL_VISIBILITY);
     if (modelPartMap == null) {
       modelPartMap = new EnumMap<>(ModelPartType.class);
-      setModelPartVisibility(modelPartMap);
+      this.setModelPartVisibility(modelPartMap);
     }
     return modelPartMap;
   }
 
   default void setModelPartVisibility(EnumMap<ModelPartType, Boolean> modelPartMap) {
     if (modelPartMap != null) {
-      setSynchedEntityData(SynchedDataIndex.MODEL_VISIBILITY, modelPartMap, true);
+      this.setSynchedEntityData(SynchedDataIndex.MODEL_VISIBILITY, modelPartMap, true);
     }
   }
 
   default void setModelPartVisibility(ModelPartType modelPartType, boolean visible) {
-    EnumMap<ModelPartType, Boolean> modelPartMap = getModelPartVisibility();
+    EnumMap<ModelPartType, Boolean> modelPartMap = this.getModelPartVisibility();
     if (modelPartType != null) {
       modelPartMap.put(modelPartType, visible);
       this.setModelPartVisibility(new EnumMap<>(modelPartMap));
@@ -91,32 +91,32 @@ public interface ModelVisibilityDataCapable<T extends Mob> extends EasyNPC<T> {
 
   default boolean getModelPartVisibility(EquipmentSlot equipmentSlot) {
     return switch (equipmentSlot) {
-      case HEAD -> getModelPartVisibility(ModelPartType.HELMET);
-      case CHEST -> getModelPartVisibility(ModelPartType.CHESTPLATE);
-      case LEGS -> getModelPartVisibility(ModelPartType.LEGGINGS);
-      case FEET -> getModelPartVisibility(ModelPartType.BOOTS);
+      case HEAD -> this.getModelPartVisibility(ModelPartType.HELMET);
+      case CHEST -> this.getModelPartVisibility(ModelPartType.CHESTPLATE);
+      case LEGS -> this.getModelPartVisibility(ModelPartType.LEGGINGS);
+      case FEET -> this.getModelPartVisibility(ModelPartType.BOOTS);
       default -> false;
     };
   }
 
   default boolean getModelPartVisibility(ModelPartType modelPartType) {
-    EnumMap<ModelPartType, Boolean> modelPartMap = getModelPartVisibility();
+    EnumMap<ModelPartType, Boolean> modelPartMap = this.getModelPartVisibility();
     return modelPartMap.getOrDefault(modelPartType, true);
   }
 
   default void setModelPartVisibility(EquipmentSlot equipmentSlot, boolean visible) {
     switch (equipmentSlot) {
       case HEAD:
-        setModelPartVisibility(ModelPartType.HELMET, visible);
+        this.setModelPartVisibility(ModelPartType.HELMET, visible);
         break;
       case CHEST:
-        setModelPartVisibility(ModelPartType.CHESTPLATE, visible);
+        this.setModelPartVisibility(ModelPartType.CHESTPLATE, visible);
         break;
       case LEGS:
-        setModelPartVisibility(ModelPartType.LEGGINGS, visible);
+        this.setModelPartVisibility(ModelPartType.LEGGINGS, visible);
         break;
       case FEET:
-        setModelPartVisibility(ModelPartType.BOOTS, visible);
+        this.setModelPartVisibility(ModelPartType.BOOTS, visible);
         break;
       default:
         break;
@@ -124,7 +124,7 @@ public interface ModelVisibilityDataCapable<T extends Mob> extends EasyNPC<T> {
   }
 
   default boolean hasChangedModelVisibility() {
-    EnumMap<ModelPartType, Boolean> modelPartMap = getModelPartVisibility();
+    EnumMap<ModelPartType, Boolean> modelPartMap = this.getModelPartVisibility();
     for (Map.Entry<ModelPartType, Boolean> entry : modelPartMap.entrySet()) {
       if (entry.getValue() != null) {
         return true;
@@ -134,13 +134,13 @@ public interface ModelVisibilityDataCapable<T extends Mob> extends EasyNPC<T> {
   }
 
   default void defineSynchedModelVisibilityData(SynchedEntityData.Builder builder) {
-    defineSynchedEntityData(
+    this.defineSynchedEntityData(
         builder, SynchedDataIndex.MODEL_VISIBILITY, new EnumMap<>(ModelPartType.class));
   }
 
   default void addAdditionalModelVisibilityData(CompoundTag compoundTag) {
     CompoundTag visibilityTag = new CompoundTag();
-    EnumMap<ModelPartType, Boolean> modelPartMap = getModelPartVisibility();
+    EnumMap<ModelPartType, Boolean> modelPartMap = this.getModelPartVisibility();
     for (Map.Entry<ModelPartType, Boolean> entry : modelPartMap.entrySet()) {
       if (entry.getValue() != null && !entry.getValue()) {
         visibilityTag.putBoolean(entry.getKey().getTagName(), false);
@@ -153,6 +153,7 @@ public interface ModelVisibilityDataCapable<T extends Mob> extends EasyNPC<T> {
     if (!compoundTag.contains(EASY_NPC_DATA_MODEL_VISIBLE_TAG)) {
       return;
     }
+
     CompoundTag visibilityTag = compoundTag.getCompound(EASY_NPC_DATA_MODEL_VISIBLE_TAG);
     EnumMap<ModelPartType, Boolean> modelPartMap = new EnumMap<>(ModelPartType.class);
     for (String key : visibilityTag.getAllKeys()) {
@@ -161,6 +162,6 @@ public interface ModelVisibilityDataCapable<T extends Mob> extends EasyNPC<T> {
         modelPartMap.put(modelPartType, visibilityTag.getBoolean(key));
       }
     }
-    setModelPartVisibility(modelPartMap);
+    this.setModelPartVisibility(modelPartMap);
   }
 }

@@ -59,10 +59,7 @@ public class ConditionManager {
       return false;
     }
 
-    Level level =
-        serverPlayer != null
-            ? serverPlayer.level()
-            : npcContext != null ? npcContext.level() : null;
+    Level level = resolveLevel(serverPlayer, npcContext);
 
     return switch (conditionDataEntry.conditionType()) {
       case SCOREBOARD -> ScoreboardCondition.evaluate(conditionDataEntry, serverPlayer);
@@ -122,6 +119,14 @@ public class ConditionManager {
       }
     }
     return true;
+  }
+
+  private static Level resolveLevel(ServerPlayer serverPlayer, LivingEntity npcContext) {
+    if (serverPlayer != null) {
+      return serverPlayer.level();
+    }
+
+    return npcContext != null ? npcContext.level() : null;
   }
 
   public static void recordExecution(

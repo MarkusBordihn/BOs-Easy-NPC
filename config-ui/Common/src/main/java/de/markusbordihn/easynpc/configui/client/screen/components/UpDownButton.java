@@ -77,20 +77,17 @@ public class UpDownButton extends AbstractWidget {
 
   @Override
   public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-    if (this.upButton != null) {
-      this.upButton.render(guiGraphics, mouseX, mouseY, partialTicks);
-    }
-    if (this.downButton != null) {
-      this.downButton.render(guiGraphics, mouseX, mouseY, partialTicks);
-    }
+    this.upButton.render(guiGraphics, mouseX, mouseY, partialTicks);
+    this.downButton.render(guiGraphics, mouseX, mouseY, partialTicks);
   }
 
   @Override
   public boolean mouseClicked(double mouseX, double mouseY, int button) {
-    if (this.upButton != null && this.upButton.mouseClicked(mouseX, mouseY, button)) {
+    if (this.upButton.mouseClicked(mouseX, mouseY, button)) {
       return true;
     }
-    return this.downButton != null && this.downButton.mouseClicked(mouseX, mouseY, button);
+
+    return this.downButton.mouseClicked(mouseX, mouseY, button);
   }
 
   public void enableUpButton(boolean enable) {

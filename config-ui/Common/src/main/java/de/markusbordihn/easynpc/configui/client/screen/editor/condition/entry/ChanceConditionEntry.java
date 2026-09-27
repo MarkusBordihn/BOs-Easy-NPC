@@ -43,7 +43,7 @@ public class ChanceConditionEntry extends ConditionEntryWidget {
 
   @Override
   public void init(int editorLeft, int editorTop) {
-    boolean hasData = hasConditionData(ConditionType.CHANCE);
+    boolean hasData = this.hasConditionData(ConditionType.CHANCE);
     this.valueTextField =
         this.screen.addConditionEntryWidget(
             new TextField(

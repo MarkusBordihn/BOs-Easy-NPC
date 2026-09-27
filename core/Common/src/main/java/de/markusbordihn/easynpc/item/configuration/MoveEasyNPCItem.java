@@ -54,19 +54,20 @@ public class MoveEasyNPCItem extends Item {
         && livingEntity instanceof EasyNPC<?> easyNPC
         && player instanceof ServerPlayer serverPlayer
         && (serverPlayer.isCreative()
-            || (easyNPC.getEasyNPCOwnerData() == null
+            || (easyNPC.getEasyNPCOwnerData() != null
                 && easyNPC.getEasyNPCOwnerData().isNPCOwner(serverPlayer)))) {
-      targetedLivingEntityMap.put(player, livingEntity);
+      this.targetedLivingEntityMap.put(player, livingEntity);
       return InteractionResult.SUCCESS;
     }
+
     return InteractionResult.PASS;
   }
 
   @Override
   public boolean canAttackBlock(
       BlockState blockState, Level level, BlockPos blockPos, Player player) {
-    if (!player.level().isClientSide && targetedLivingEntityMap.containsKey(player)) {
-      LivingEntity targetedLivingEntity = targetedLivingEntityMap.get(player);
+    if (!player.level().isClientSide && this.targetedLivingEntityMap.containsKey(player)) {
+      LivingEntity targetedLivingEntity = this.targetedLivingEntityMap.get(player);
       targetedLivingEntity.moveTo(
           blockPos.getX() + 0.5, blockPos.above().getY(), blockPos.getZ() + 0.5);
     }

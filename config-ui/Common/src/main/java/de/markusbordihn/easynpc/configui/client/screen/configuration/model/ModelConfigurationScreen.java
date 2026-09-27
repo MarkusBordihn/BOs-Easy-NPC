@@ -41,7 +41,6 @@ public class ModelConfigurationScreen<T extends ConfigurationMenu> extends Confi
   public void init() {
     super.init();
 
-    // Model Render Types
     this.defaultModelButton =
         this.addRenderableWidget(
             new TextButton(

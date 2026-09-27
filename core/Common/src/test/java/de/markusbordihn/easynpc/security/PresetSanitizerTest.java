@@ -27,6 +27,7 @@ import de.markusbordihn.easynpc.entity.easynpc.data.OwnerDataCapable;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.Entity;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -71,8 +72,7 @@ class PresetSanitizerTest {
     CompoundTag sanitizedTag = result.sanitizedTag();
     CompoundTag actionDataTag =
         sanitizedTag.getCompound(ActionEventDataCapable.DATA_ACTION_DATA_TAG);
-    CompoundTag actionEntryTag =
-        actionDataTag.getList("Entries", net.minecraft.nbt.Tag.TAG_COMPOUND).getCompound(0);
+    CompoundTag actionEntryTag = actionDataTag.getList("Entries", Tag.TAG_COMPOUND).getCompound(0);
 
     assertTrue(result.changed());
     assertEquals(trustedOwner, sanitizedTag.getUUID(OwnerDataCapable.DATA_OWNER_TAG));
@@ -99,8 +99,7 @@ class PresetSanitizerTest {
     CompoundTag sanitizedTag = PresetSanitizer.sanitizeForExport(presetData);
     CompoundTag actionDataTag =
         sanitizedTag.getCompound(ActionEventDataCapable.DATA_ACTION_DATA_TAG);
-    CompoundTag actionEntryTag =
-        actionDataTag.getList("Entries", net.minecraft.nbt.Tag.TAG_COMPOUND).getCompound(0);
+    CompoundTag actionEntryTag = actionDataTag.getList("Entries", Tag.TAG_COMPOUND).getCompound(0);
 
     assertTrue(sanitizedTag.contains(Entity.UUID_TAG));
     assertFalse(sanitizedTag.contains(OwnerDataCapable.DATA_OWNER_TAG));

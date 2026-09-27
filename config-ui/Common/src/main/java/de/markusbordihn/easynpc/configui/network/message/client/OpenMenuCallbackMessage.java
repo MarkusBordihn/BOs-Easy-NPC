@@ -64,31 +64,26 @@ public record OpenMenuCallbackMessage(UUID uuid, UUID menuId, CompoundTag data)
 
   @Override
   public void handleClient() {
-    UUID uuid = this.uuid;
-    UUID menuId = this.menuId;
-    CompoundTag data = this.data;
-
-    if (uuid == null || menuId == null || data == null) {
+    if (this.uuid == null || this.menuId == null || this.data == null) {
       log.error(
-          "Invalid menu data received for {} with menuId {} and data: {}", uuid, menuId, data);
+          "Invalid menu data received for {} with menuId {} and data {}",
+          this.uuid,
+          this.menuId,
+          this.data);
       return;
     }
 
-    // Update menu data within the client menu manager
-    ClientConfigUIMenuManager.setMenuData(menuId, data);
+    ClientConfigUIMenuManager.setMenuData(this.menuId, this.data);
 
-    // Check if additional screen data is available and re-use some of the data.
     if (ClientConfigUIMenuManager.hasAdditionalScreenData()) {
       AdditionalScreenData additionalScreenData =
           ClientConfigUIMenuManager.getAdditionalScreenData();
 
-      // Store dialog data set if available.
       if (additionalScreenData.hasDialogDataSet()) {
         DialogDataManager.addDialogDataSet(this.uuid, additionalScreenData.getDialogDataSet());
       }
     }
 
-    // Request to open the menu on the client side over the server.
-    NetworkMessageHandlerManager.getServerHandler().openMenu(uuid, menuId);
+    NetworkMessageHandlerManager.getServerHandler().openMenu(this.uuid, this.menuId);
   }
 }

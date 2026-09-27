@@ -79,7 +79,6 @@ public class EntityScreenRenderer {
 
   protected static void applyRenderModifications(EasyNPC<?> easyNPC, EntityRenderConfig config) {
     Entity entity = easyNPC.getEntity();
-    LivingEntity livingEntity = easyNPC.getLivingEntity();
     EntityRenderOverrides overrides = config.overrides();
 
     if (overrides.invisible() != null) {
@@ -87,13 +86,7 @@ public class EntityScreenRenderer {
     }
 
     if (overrides.hideNameTag() != null && overrides.hideNameTag()) {
-      Minecraft minecraft = Minecraft.getInstance();
-      if (minecraft != null) {
-        minecraft.options.hideGui = true;
-      } else {
-        livingEntity.setCustomName(null);
-        livingEntity.setCustomNameVisible(false);
-      }
+      Minecraft.getInstance().options.hideGui = true;
     }
 
     ModelDataCapable<?> modelData = easyNPC.getEasyNPCModelData();
@@ -121,10 +114,7 @@ public class EntityScreenRenderer {
     livingEntity.setCustomName(backupState.customName);
     livingEntity.setCustomNameVisible(backupState.shouldShowName);
 
-    Minecraft minecraft = Minecraft.getInstance();
-    if (minecraft != null) {
-      minecraft.options.hideGui = backupState.minecraftHideGui;
-    }
+    Minecraft.getInstance().options.hideGui = backupState.minecraftHideGui;
 
     ModelDataCapable<?> modelData = easyNPC.getEasyNPCModelData();
     if (modelData != null) {
@@ -152,8 +142,7 @@ public class EntityScreenRenderer {
     EntityRenderState(LivingEntity livingEntity, EasyNPC<?> easyNPC) {
       this.customName = livingEntity.getCustomName();
       this.shouldShowName = livingEntity.shouldShowName();
-      Minecraft minecraft = Minecraft.getInstance();
-      this.minecraftHideGui = minecraft != null && minecraft.options.hideGui;
+      this.minecraftHideGui = Minecraft.getInstance().options.hideGui;
       ModelDataCapable<?> modelData = easyNPC.getEasyNPCModelData();
       if (modelData != null) {
         this.rootData = modelData.getModelRootData();

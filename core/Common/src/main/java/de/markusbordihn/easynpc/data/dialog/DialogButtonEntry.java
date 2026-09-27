@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.data.dialog;
 import de.markusbordihn.easynpc.data.action.ActionDataSet;
 import de.markusbordihn.easynpc.data.condition.ConditionDataEntry;
 import de.markusbordihn.easynpc.network.components.TextComponent;
+import de.markusbordihn.easynpc.utils.TextFormattingCodes;
 import de.markusbordihn.easynpc.utils.TextUtils;
 import de.markusbordihn.easynpc.utils.UUIDUtils;
 import java.util.LinkedHashSet;
@@ -30,6 +31,7 @@ import java.util.Set;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 
 public record DialogButtonEntry(
@@ -47,6 +49,7 @@ public record DialogButtonEntry(
   public static final String DATA_LABEL_TAG = "Label";
   public static final String DATA_TYPE_TAG = "Type";
   public static final int MAX_BUTTON_LABEL_LENGTH = 32;
+  private static final char FORMATTING_CODE_PREFIX = '§';
 
   public DialogButtonEntry(CompoundTag compoundTag) {
     this(
@@ -90,7 +93,7 @@ public record DialogButtonEntry(
   private static Set<ConditionDataEntry> loadConditions(CompoundTag compoundTag) {
     Set<ConditionDataEntry> conditions = new LinkedHashSet<>();
     if (compoundTag.contains(DATA_CONDITIONS_TAG)) {
-      ListTag conditionsList = compoundTag.getList(DATA_CONDITIONS_TAG, 10);
+      ListTag conditionsList = compoundTag.getList(DATA_CONDITIONS_TAG, Tag.TAG_COMPOUND);
       for (int i = 0; i < conditionsList.size(); i++) {
         ConditionDataEntry condition = new ConditionDataEntry(conditionsList.getCompound(i));
         if (condition.isValid()) {
@@ -101,21 +104,40 @@ public record DialogButtonEntry(
     return conditions;
   }
 
-  public Component getButtonName(int maxLength) {
-    Component buttonName = TextComponent.getTextComponentRaw(this.name, isTranslationKey);
-    String limited = TextUtils.limitString(buttonName.getString(), maxLength);
-    if (!limited.equals(buttonName.getString())) {
-      buttonName = TextComponent.getText(limited);
+  private static String dropDanglingFormattingCode(String text) {
+    int lastIndex = text.length() - 1;
+    if (lastIndex > 0
+        && text.charAt(lastIndex) == TextUtils.LIMIT_INDICATOR
+        && text.charAt(lastIndex - 1) == FORMATTING_CODE_PREFIX) {
+      return text.substring(0, lastIndex - 1) + TextUtils.LIMIT_INDICATOR;
     }
-    return buttonName;
+
+    return text;
+  }
+
+  public Component getButtonName(DialogMetaData dialogMetaData) {
+    return TextComponent.getText(
+        DialogUtils.parseDialogText(
+            TextComponent.getTextComponentRaw(this.name, this.isTranslationKey), dialogMetaData));
+  }
+
+  public Component getButtonName(int maxLength) {
+    Component buttonName = TextComponent.getTextComponentRaw(this.name, this.isTranslationKey);
+    String formattedName = TextFormattingCodes.parseTextFormattingCodes(buttonName.getString());
+    String limitedName = TextUtils.limitString(formattedName, maxLength);
+    if (limitedName.equals(buttonName.getString())) {
+      return buttonName;
+    }
+
+    return TextComponent.getText(dropDanglingFormattingCode(limitedName));
   }
 
   public boolean hasActionData() {
-    return actionDataSet != null && actionDataSet.hasActionData();
+    return this.actionDataSet != null && this.actionDataSet.hasActionData();
   }
 
   public boolean hasConditions() {
-    return conditions != null && !conditions.isEmpty();
+    return this.conditions != null && !this.conditions.isEmpty();
   }
 
   public DialogButtonEntry withName(String name) {
@@ -166,20 +188,17 @@ public record DialogButtonEntry(
   public CompoundTag write(CompoundTag compoundTag) {
     compoundTag.putString(DATA_BUTTON_NAME_TAG, this.name.trim());
 
-    // Only save type if it is different from default.
     if (this.type != DialogButtonType.DEFAULT) {
       compoundTag.putString(DATA_TYPE_TAG, this.type.name());
     }
 
-    // Only save label if it is different from auto-generated label.
-    if (this.label != null && !Objects.equals(DialogUtils.generateButtonLabel(name), this.label)) {
+    if (this.label != null
+        && !Objects.equals(DialogUtils.generateButtonLabel(this.name), this.label)) {
       compoundTag.putString(DATA_LABEL_TAG, this.label);
     }
 
-    // Save action data
     this.actionDataSet.save(compoundTag, DATA_ACTIONS_TAG);
 
-    // Save conditions, if any.
     if (this.conditions != null && !this.conditions.isEmpty()) {
       ListTag conditionsList = new ListTag();
       for (ConditionDataEntry condition : this.conditions) {
@@ -201,7 +220,7 @@ public record DialogButtonEntry(
 
   @Override
   public String toString() {
-    return "DialogButtonData [id="
+    return "DialogButtonEntry [id="
         + this.id
         + ", name="
         + this.name

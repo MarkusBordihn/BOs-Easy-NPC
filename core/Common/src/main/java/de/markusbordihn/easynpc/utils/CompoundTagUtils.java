@@ -52,6 +52,7 @@ public class CompoundTagUtils {
         || !compoundTag.contains(Z_TAG)) {
       return BlockPos.ZERO;
     }
+
     return new BlockPos(
         compoundTag.getInt(X_TAG), compoundTag.getInt(Y_TAG), compoundTag.getInt(Z_TAG));
   }
@@ -72,6 +73,7 @@ public class CompoundTagUtils {
     if (compoundTag == null) {
       return null;
     }
+
     return new CustomScale(
         compoundTag.getFloat(X_TAG), compoundTag.getFloat(Y_TAG), compoundTag.getFloat(Z_TAG));
   }

@@ -24,6 +24,7 @@ import de.markusbordihn.easynpc.data.execution.ExecutionId;
 import de.markusbordihn.easynpc.data.execution.ExecutionType;
 import de.markusbordihn.easynpc.data.saveddata.ActionExecutionTracker;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
+import net.minecraft.commands.Commands;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -74,12 +75,13 @@ public record ResetExecutionLimitMessage(ExecutionId executionId, boolean allPla
 
     ActionExecutionTracker tracker = ActionExecutionTracker.get(serverPlayer.serverLevel());
     if (this.allPlayers) {
-      if (!serverPlayer.hasPermissions(2)) {
+      if (!serverPlayer.hasPermissions(Commands.LEVEL_GAMEMASTERS)) {
         log.warn(
             "Player {} tried to reset executions for all players without permission",
             serverPlayer.getName().getString());
         return;
       }
+
       tracker.resetExecutionForAllPlayers(this.executionId);
       log.info(
           "Player {} reset execution limit for all players for execution {}",

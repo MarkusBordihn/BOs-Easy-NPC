@@ -53,10 +53,10 @@ public enum ModCustomEntityRenderer {
   }
 
   public ModCustomEntityType getEntityType() {
-    return entityType;
+    return this.entityType;
   }
 
   public Function<Context, EntityRenderer<? extends Entity>> getRenderer() {
-    return renderer.get();
+    return this.renderer.get();
   }
 }

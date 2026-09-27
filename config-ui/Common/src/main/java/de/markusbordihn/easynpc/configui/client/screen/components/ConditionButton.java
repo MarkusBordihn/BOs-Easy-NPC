@@ -67,6 +67,7 @@ public class ConditionButton extends SpriteButton {
     } else if (conditionCount == 1) {
       return TextComponent.getTranslatedConfigText("edit_condition");
     }
+
     return TextComponent.getTranslatedConfigText("edit_conditions", String.valueOf(conditionCount));
   }
 

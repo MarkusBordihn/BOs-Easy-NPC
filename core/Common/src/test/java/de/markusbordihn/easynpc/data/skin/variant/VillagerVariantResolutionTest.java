@@ -62,8 +62,6 @@ class VillagerVariantResolutionTest {
 
   @Test
   void testNoneProfessionResolvesToVanillaNone() {
-    // The refactor depends on NONE mapping to the real minecraft:none profession (not null),
-    // so a *_NONE villager variant keeps a valid, professionless villager instead of a stale one.
     assertEquals(ResourceLocation.withDefaultNamespace("none"), Profession.NONE.getRegistryKey());
     assertTrue(
         BuiltInRegistries.VILLAGER_PROFESSION.containsKey(Profession.NONE.getRegistryKey()),

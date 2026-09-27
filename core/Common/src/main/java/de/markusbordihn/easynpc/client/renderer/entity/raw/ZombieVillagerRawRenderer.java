@@ -42,8 +42,9 @@ public class ZombieVillagerRawRenderer extends ZombieVillagerRenderer
   @Override
   public ResourceLocation getTextureLocation(ZombieVillager entity) {
     if (entity instanceof EasyNPC<?> easyNPC) {
-      return getEntityTexture(easyNPC);
+      return this.getEntityTexture(easyNPC);
     }
+
     return DEFAULT_TEXTURE;
   }
 

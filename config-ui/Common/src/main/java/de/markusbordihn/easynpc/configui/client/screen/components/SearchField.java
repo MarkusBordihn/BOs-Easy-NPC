@@ -51,7 +51,7 @@ public class SearchField extends TextField {
         this.getY(),
         stylePositionX + 16,
         this.getY() + this.height,
-        isFocused() ? 0xFFFFFFFF : 0xFFA0A0A0);
+        this.isFocused() ? 0xFFFFFFFF : 0xFFA0A0A0);
     guiGraphics.fill(
         stylePositionX,
         this.getY() + 1,
@@ -64,7 +64,7 @@ public class SearchField extends TextField {
         stylePositionX + SPRITE_X,
         this.getY() + SPRITE_Y + 1,
         SPRITE_OFFSET_X,
-        isFocused() ? SPRITE_OFFSET_Y : SPRITE_OFFSET_Y + SPRITE_HEIGHT,
+        this.isFocused() ? SPRITE_OFFSET_Y : SPRITE_OFFSET_Y + SPRITE_HEIGHT,
         SPRITE_WIDTH,
         SPRITE_HEIGHT,
         256,

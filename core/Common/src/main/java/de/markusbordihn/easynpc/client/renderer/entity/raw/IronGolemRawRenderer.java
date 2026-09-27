@@ -39,7 +39,7 @@ public class IronGolemRawRenderer extends IronGolemRenderer implements EasyNPCEn
 
   @Override
   public ResourceLocation getTextureLocation(IronGolem entity) {
-    return getTextureLocationWithConfig(entity);
+    return this.getTextureLocationWithConfig(entity);
   }
 
   @Override

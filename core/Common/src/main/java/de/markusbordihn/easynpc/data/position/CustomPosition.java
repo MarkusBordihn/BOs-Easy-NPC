@@ -24,6 +24,7 @@ import java.util.List;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.FloatTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 
@@ -51,7 +52,7 @@ public record CustomPosition(float x, float y, float z) {
       };
 
   public CustomPosition(ModelPartType modelPartType, CompoundTag compoundTag) {
-    this(compoundTag.getList(modelPartType.getTagName(), 5));
+    this(compoundTag.getList(modelPartType.getTagName(), Tag.TAG_FLOAT));
   }
 
   public CustomPosition(ListTag listTag) {
@@ -77,7 +78,7 @@ public record CustomPosition(float x, float y, float z) {
   }
 
   public boolean hasChanged() {
-    return hasChanged(0, 0, 0);
+    return this.hasChanged(0, 0, 0);
   }
 
   public boolean hasChanged(float x, float y, float z) {

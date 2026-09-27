@@ -22,16 +22,14 @@ package de.markusbordihn.easynpc.commands.suggestion;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import de.markusbordihn.easynpc.commands.Command;
 import de.markusbordihn.easynpc.commands.arguments.EasyNPCArgument;
-import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.StateDataCapable;
 import java.util.concurrent.CompletableFuture;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.SharedSuggestionProvider;
 
 public class StateSuggestions {
-
-  private static final String NPC_TARGET_ARG = "npc_target";
 
   protected StateSuggestions() {}
 
@@ -48,8 +46,8 @@ public class StateSuggestions {
 
   private static StateDataCapable<?> resolveStateData(CommandContext<CommandSourceStack> context) {
     try {
-      EasyNPC<?> easyNPC = EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG);
-      return easyNPC != null ? easyNPC.getEasyNPCStateData() : null;
+      return EasyNPCArgument.getEntityWithAccess(context, Command.NPC_TARGET_ARG)
+          .getEasyNPCStateData();
     } catch (Exception ignored) {
       return null;
     }

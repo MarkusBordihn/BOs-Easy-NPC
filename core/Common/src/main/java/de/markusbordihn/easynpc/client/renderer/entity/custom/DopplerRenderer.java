@@ -47,7 +47,6 @@ public class DopplerRenderer<E extends PathfinderMob>
       PoseStack poseStack,
       MultiBufferSource buffer,
       int packedLight) {
-
     if (!(entity instanceof EasyNPC<?> easyNPC)) {
       return false;
     }
@@ -128,8 +127,9 @@ public class DopplerRenderer<E extends PathfinderMob>
   @Override
   public ResourceLocation getTextureLocation(E entity) {
     if (entity instanceof EasyNPC<?> easyNPC) {
-      return getEntityTexture(easyNPC);
+      return this.getEntityTexture(easyNPC);
     }
+
     return DEFAULT_TEXTURE;
   }
 
@@ -146,7 +146,7 @@ public class DopplerRenderer<E extends PathfinderMob>
       PoseStack poseStack,
       MultiBufferSource bufferSource,
       int packedLight) {
-    if (renderEntity(entity, entityYaw, partialTicks, poseStack, bufferSource, packedLight)) {
+    if (this.renderEntity(entity, entityYaw, partialTicks, poseStack, bufferSource, packedLight)) {
       if (this.shouldShowName(entity)) {
         this.renderNameTag(
             entity, entity.getDisplayName(), poseStack, bufferSource, packedLight, partialTicks);

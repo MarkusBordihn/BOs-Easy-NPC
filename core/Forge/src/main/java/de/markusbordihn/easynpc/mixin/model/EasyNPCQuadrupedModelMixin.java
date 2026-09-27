@@ -53,14 +53,14 @@ public class EasyNPCQuadrupedModelMixin<T extends Entity> implements EasyNPCMode
   }
 
   @Inject(method = "<init>(Lnet/minecraft/client/model/geom/ModelPart;ZFFFFI)V", at = @At("TAIL"))
-  private void easyNpcModel(
+  private void easyNPC$initModelManager(
       ModelPart modelPart,
-      boolean p_170858_,
-      float p_170859_,
-      float p_170860_,
-      float p_170861_,
-      float p_170862_,
-      int p_170863_,
+      boolean scaleHead,
+      float babyYHeadOffset,
+      float babyZHeadOffset,
+      float babyHeadScale,
+      float babyBodyScale,
+      int bodyYOffset,
       CallbackInfo callbackInfo) {
     this.easyNPC$modelManager =
         new EasyNPCModelManager(modelPart)
@@ -76,7 +76,7 @@ public class EasyNPCQuadrupedModelMixin<T extends Entity> implements EasyNPCMode
       method = "setupAnim(Lnet/minecraft/world/entity/Entity;FFFFF)V",
       at = @At("HEAD"),
       cancellable = true)
-  private void setupNpcAnimStart(
+  private void easyNPC$setupAnimStart(
       T entity,
       float limbSwing,
       float limbSwingAmount,
@@ -91,7 +91,7 @@ public class EasyNPCQuadrupedModelMixin<T extends Entity> implements EasyNPCMode
   }
 
   @Inject(method = "setupAnim(Lnet/minecraft/world/entity/Entity;FFFFF)V", at = @At("TAIL"))
-  private void setupNpcAnimEnd(
+  private void easyNPC$setupAnimEnd(
       T entity,
       float limbSwing,
       float limbSwingAmount,

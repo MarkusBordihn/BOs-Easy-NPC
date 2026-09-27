@@ -214,6 +214,7 @@ public class EntityDataSerializersManager {
           ENTITY_DATA_SERIALIZERS.get(className));
       return null;
     }
+
     ENTITY_DATA_SERIALIZERS.put(className, serializer);
     return serializer;
   }

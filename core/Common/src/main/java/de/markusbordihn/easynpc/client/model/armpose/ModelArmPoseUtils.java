@@ -43,6 +43,7 @@ public class ModelArmPoseUtils {
     if (easyNPC == null) {
       return ModelArmPose.DEFAULT;
     }
+
     LivingEntity livingEntity = easyNPC.getLivingEntity();
     boolean isRightHanded = livingEntity.getMainArm() == HumanoidArm.RIGHT;
     return livingEntity.isUsingItem()

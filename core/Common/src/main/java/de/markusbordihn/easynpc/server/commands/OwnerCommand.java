@@ -37,7 +37,8 @@ public class OwnerCommand extends Command {
 
   public static ArgumentBuilder<CommandSourceStack, ?> register() {
     return Commands.literal("owner")
-        .requires(cs -> cs.hasPermission(Commands.LEVEL_GAMEMASTERS))
+        .requires(
+            commandSourceStack -> commandSourceStack.hasPermission(Commands.LEVEL_GAMEMASTERS))
         .then(
             Commands.literal("set")
                 .then(
@@ -78,9 +79,8 @@ public class OwnerCommand extends Command {
       return 0;
     }
 
-    // Set owner data for EasyNPC entity.
     if (!OwnerHandler.setOwner(easyNPC, serverPlayer)) {
-      sendFailureMessage(context, "Failed to set owner for " + easyNPC);
+      return sendFailureMessage(context, "Failed to set owner for " + easyNPC);
     }
 
     return sendSuccessMessage(context, "Owner of " + easyNPC + " was changed to " + serverPlayer);
@@ -91,7 +91,6 @@ public class OwnerCommand extends Command {
       return 0;
     }
 
-    // Get owner data for EasyNPC entity.
     OwnerDataCapable<?> ownerData = easyNPC.getEasyNPCOwnerData();
     if (ownerData == null) {
       return sendFailureMessageNoOwnerData(context, easyNPC);
@@ -107,7 +106,6 @@ public class OwnerCommand extends Command {
       return 0;
     }
 
-    // Remove owner data for EasyNPC entity.
     if (!OwnerHandler.removeOwner(easyNPC)) {
       return sendFailureMessage(context, "Failed to remove owner for " + easyNPC);
     }

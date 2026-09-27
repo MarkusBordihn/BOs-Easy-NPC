@@ -32,7 +32,7 @@ public class RenderTypeSuggestions {
   private RenderTypeSuggestions() {}
 
   public static CompletableFuture<Suggestions> suggest(
-      CommandContext<CommandSourceStack> context, SuggestionsBuilder build) {
-    return SharedSuggestionProvider.suggest(RenderType.getRenderTypeNames(), build);
+      CommandContext<CommandSourceStack> context, SuggestionsBuilder suggestionsBuilder) {
+    return SharedSuggestionProvider.suggest(RenderType.getRenderTypeNames(), suggestionsBuilder);
   }
 }

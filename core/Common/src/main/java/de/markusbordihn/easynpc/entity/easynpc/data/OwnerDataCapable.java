@@ -36,7 +36,7 @@ public interface OwnerDataCapable<T extends Mob> extends EasyNPC<T>, OwnableEnti
   String DATA_OWNER_TAG = "Owner";
 
   default void setNPCOwnerUUID(UUID uuid) {
-    setSynchedEntityData(SynchedDataIndex.OWNER_UUID, Optional.ofNullable(uuid));
+    this.setSynchedEntityData(SynchedDataIndex.OWNER_UUID, Optional.ofNullable(uuid));
   }
 
   default boolean hasNPCOwner() {
@@ -63,7 +63,7 @@ public interface OwnerDataCapable<T extends Mob> extends EasyNPC<T>, OwnableEnti
   }
 
   default boolean isNPCOwner(ServerPlayer serverPlayer) {
-    return serverPlayer != null && isNPCOwner(serverPlayer.getUUID());
+    return serverPlayer != null && this.isNPCOwner(serverPlayer.getUUID());
   }
 
   default boolean isNPCOwner(UUID uuid) {
@@ -72,16 +72,17 @@ public interface OwnerDataCapable<T extends Mob> extends EasyNPC<T>, OwnableEnti
 
   @Override
   default UUID getOwnerUUID() {
-    Optional<UUID> ownerUUID = getSynchedEntityData(SynchedDataIndex.OWNER_UUID);
+    Optional<UUID> ownerUUID = this.getSynchedEntityData(SynchedDataIndex.OWNER_UUID);
     return ownerUUID.orElse(null);
   }
 
   @Override
   default LivingEntity getOwner() {
-    Level level = getEntityLevel();
+    Level level = this.getEntityLevel();
     if (level == null) {
       return null;
     }
+
     try {
       UUID uuid = this.getOwnerUUID();
       return uuid == null ? null : level.getPlayerByUUID(uuid);
@@ -91,7 +92,7 @@ public interface OwnerDataCapable<T extends Mob> extends EasyNPC<T>, OwnableEnti
   }
 
   default void defineSynchedOwnerData(SynchedEntityData.Builder builder) {
-    defineSynchedEntityData(builder, SynchedDataIndex.OWNER_UUID, Optional.empty());
+    this.defineSynchedEntityData(builder, SynchedDataIndex.OWNER_UUID, Optional.empty());
   }
 
   default void addAdditionalOwnerData(CompoundTag compoundTag) {

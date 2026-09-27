@@ -177,7 +177,7 @@ public class RangeSliderButton extends AbstractWidget {
             (float) minValue,
             (float) maxValue,
             (float) stepSize,
-            button -> updateSliderValue(button, onChange),
+            button -> this.updateSliderValue(button, onChange),
             this.sliderType);
     this.textField =
         switch (this.sliderType) {

@@ -52,7 +52,6 @@ class ActionDataList extends ObjectSelectionList<ActionDataListEntry> {
     this.leftPos = left;
     this.setRenderHeader(false, 0);
 
-    // Add entries
     int topPos = top + 4;
     if (actionDataSet != null) {
       for (ActionDataEntry actionDataEntry : actionDataSet.getEntries()) {
@@ -78,17 +77,11 @@ class ActionDataList extends ObjectSelectionList<ActionDataListEntry> {
 
   @Override
   protected void renderSelection(
-      GuiGraphics guiGraphics, int unused1, int unused2, int unused3, int unused4, int unused5) {
-    // Do not render selection.
-  }
+      GuiGraphics guiGraphics, int unused1, int unused2, int unused3, int unused4, int unused5) {}
 
   @Override
-  protected void renderListSeparators(GuiGraphics guiGraphics) {
-    // Do not render list separators.
-  }
+  protected void renderListSeparators(GuiGraphics guiGraphics) {}
 
   @Override
-  protected void renderListBackground(GuiGraphics guiGraphics) {
-    // Do not render list background.
-  }
+  protected void renderListBackground(GuiGraphics guiGraphics) {}
 }

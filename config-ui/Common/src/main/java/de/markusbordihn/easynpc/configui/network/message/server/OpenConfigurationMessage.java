@@ -69,7 +69,7 @@ public record OpenConfigurationMessage(
 
   @Override
   public void handleServer(final ServerPlayer serverPlayer) {
-    EasyNPC<?> easyNPC = getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
+    EasyNPC<?> easyNPC = this.getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
     if (easyNPC == null) {
       return;
     }
@@ -80,9 +80,10 @@ public record OpenConfigurationMessage(
     }
 
     if (this.pageIndex < 0) {
-      log.error("Invalid page index {} for {} from {}", pageIndex, easyNPC, serverPlayer);
+      log.error("Invalid page index {} for {} from {}", this.pageIndex, easyNPC, serverPlayer);
       return;
     }
+
     NpcFeature feature = FeatureSecurity.getFeature(this.configurationType);
     if (feature != null
         && !MessageSecurity.checkFeatureAccess(
@@ -91,6 +92,6 @@ public record OpenConfigurationMessage(
     }
 
     MenuManager.getMenuHandler()
-        .openConfigurationMenu(configurationType, serverPlayer, easyNPC, pageIndex);
+        .openConfigurationMenu(this.configurationType, serverPlayer, easyNPC, this.pageIndex);
   }
 }
