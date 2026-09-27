@@ -45,7 +45,7 @@ public class FakePlayer extends ServerPlayer {
   }
 
   public static boolean isInvalidFakePlayer(final FakePlayer fakePlayer) {
-    return !(fakePlayer instanceof FakePlayer) || !fakePlayer.isAlive();
+    return fakePlayer == null || !fakePlayer.isAlive();
   }
 
   public FakePlayer updatePosition(final ServerLevel level, final BlockPos blockPos) {
@@ -58,27 +58,17 @@ public class FakePlayer extends ServerPlayer {
   }
 
   @Override
-  public void sendSystemMessage(final Component chatComponent) {
-    // Suppress chat messages
-  }
+  public void sendSystemMessage(final Component chatComponent) {}
 
   @Override
-  public void sendOverlayMessage(final Component chatComponent) {
-    // Suppress overlay messages
-  }
+  public void sendOverlayMessage(final Component chatComponent) {}
 
   @Override
-  public void awardStat(final Stat<?> stat, final int increment) {
-    // Suppress stat award
-  }
+  public void awardStat(final Stat<?> stat, final int increment) {}
 
   @Override
-  public void tick() {
-    // Suppress fake player tick
-  }
+  public void tick() {}
 
   @Override
-  public void doTick() {
-    // Suppress fake player tick
-  }
+  public void doTick() {}
 }

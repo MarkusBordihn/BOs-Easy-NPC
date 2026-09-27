@@ -77,19 +77,21 @@ public class ExportLocalPresetConfigurationScreen<T extends ConfigurationMenu>
       this.localExportPresetButton.active = false;
     }
 
-    this.localPresetFile = CustomPresetDataFiles.getPresetFile(getSkinModel(), getEasyNPCUUID());
+    this.localPresetFile =
+        CustomPresetDataFiles.getPresetFile(this.getSkinModel(), this.getEasyNPCUUID());
     this.localPresetFileName =
         PresetExportFormat.removePresetExtension(this.localPresetFile.getName());
 
     this.textComponents =
         this.font.split(
-            TextComponent.getTranslatedConfigText("export_preset_text", getSkinModel().getName()),
+            TextComponent.getTranslatedConfigText(
+                "export_preset_text", this.getSkinModel().getName()),
             this.imageWidth - 30);
     this.numberOfTextLines = this.textComponents.size();
 
     this.nameBox = new TextField(this.font, this.contentLeftPos + 5, this.bottomPos - 140, 300);
     this.nameBox.setMaxLength(64);
-    this.nameBox.setValue(localPresetFileName);
+    this.nameBox.setValue(this.localPresetFileName);
     this.addRenderableWidget(this.nameBox);
 
     int metaDataYOffset = this.nameBox.getY() + 35;
@@ -136,9 +138,9 @@ public class ExportLocalPresetConfigurationScreen<T extends ConfigurationMenu>
                 "export_local_preset",
                 button -> {
                   if (this.snbtCheckbox.selected()) {
-                    showSnbtWarning();
+                    this.showSnbtWarning();
                   } else {
-                    exportPreset();
+                    this.exportPreset();
                   }
                 }));
 
@@ -159,7 +161,7 @@ public class ExportLocalPresetConfigurationScreen<T extends ConfigurationMenu>
                 140,
                 20,
                 "open_export_folder",
-                button -> Util.getPlatform().openFile(localPresetFile.getParentFile())));
+                button -> Util.getPlatform().openFile(this.localPresetFile.getParentFile())));
   }
 
   private void showSnbtWarning() {
@@ -168,7 +170,7 @@ public class ExportLocalPresetConfigurationScreen<T extends ConfigurationMenu>
           new ConfirmScreen(
               confirmed -> {
                 if (confirmed) {
-                  exportPreset();
+                  this.exportPreset();
                 }
                 this.minecraft.setScreen(this);
               },
@@ -183,7 +185,7 @@ public class ExportLocalPresetConfigurationScreen<T extends ConfigurationMenu>
     String displayName = this.nameBox.getValue();
     NetworkMessageHandlerManager.getServerHandler()
         .exportPreset(
-            getEasyNPCUUID(),
+            this.getEasyNPCUUID(),
             displayName,
             this.snbtCheckbox.selected() ? PresetExportFormat.SNBT : PresetExportFormat.NBT,
             PresetMetadata.createDefault(displayName, this.authorBox.getValue())
@@ -210,8 +212,8 @@ public class ExportLocalPresetConfigurationScreen<T extends ConfigurationMenu>
             guiGraphics,
             this.font,
             formattedCharSequence,
-            leftPos + 15,
-            topPos + 25 + (line * (font.lineHeight + 2)));
+            this.leftPos + 15,
+            this.topPos + 25 + (line * (this.font.lineHeight + 2)));
       }
     }
 

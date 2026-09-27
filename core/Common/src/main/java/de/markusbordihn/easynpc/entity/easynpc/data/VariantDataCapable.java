@@ -67,9 +67,7 @@ public interface VariantDataCapable<T extends Mob> extends EasyNPC<T> {
     }
   }
 
-  default void handleSkinVariantTypeChange(Enum<?> variant) {
-    // Handle variant change if needed.
-  }
+  default void handleSkinVariantTypeChange(Enum<?> variant) {}
 
   default Enum<?> getSkinVariantType(String name) {
     HumanoidSkinVariant humanoidSkinVariant = EnumUtils.get(HumanoidSkinVariant.class, name, null);

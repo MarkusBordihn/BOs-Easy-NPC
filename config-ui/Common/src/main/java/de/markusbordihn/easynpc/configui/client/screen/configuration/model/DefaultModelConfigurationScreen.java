@@ -41,17 +41,13 @@ public class DefaultModelConfigurationScreen<T extends ConfigurationMenu>
   public void init() {
     super.init();
 
-    // Default button stats
     this.defaultModelButton.active = false;
 
-    // Description text
-    setDescriptionText("default_model.text");
+    this.setDescriptionText("default_model.text");
 
-    // Render data
     RenderDataEntry renderData = this.getRenderDataEntry();
     RenderType renderType = renderData.getRenderType();
 
-    // Default Model Checkbox
     this.defaultModelCheckbox =
         this.addRenderableWidget(
             new Checkbox(
@@ -75,7 +71,6 @@ public class DefaultModelConfigurationScreen<T extends ConfigurationMenu>
       GuiGraphicsExtractor guiGraphics, int x, int y, float partialTicks) {
     super.extractRenderState(guiGraphics, x, y, partialTicks);
 
-    // Description text
-    renderDescriptionText(guiGraphics, this.contentLeftPos + 5, this.contentTopPos + 60);
+    this.renderDescriptionText(guiGraphics, this.contentLeftPos + 5, this.contentTopPos + 60);
   }
 }

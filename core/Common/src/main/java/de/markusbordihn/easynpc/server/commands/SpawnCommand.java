@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.server.commands;
 
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import de.markusbordihn.easynpc.api.handler.EasyNPCEntityHandler;
 import de.markusbordihn.easynpc.commands.Command;
 import de.markusbordihn.easynpc.commands.suggestion.DespawnedNPCSuggestions;
@@ -48,7 +49,7 @@ public class SpawnCommand extends Command {
 
   public static ArgumentBuilder<CommandSourceStack, ?> register() {
     return Commands.literal("spawn")
-        .requires(cs -> true)
+        .requires(commandSourceStack -> true)
         .then(
             Commands.argument(UUID_ARG, StringArgumentType.string())
                 .suggests(DespawnedNPCSuggestions::suggest)
@@ -58,7 +59,10 @@ public class SpawnCommand extends Command {
                 .then(
                     Commands.argument(POSITION_ARG, Vec3Argument.vec3())
                         .requires(
-                            cs -> cs.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER))
+                            commandSourceStack ->
+                                commandSourceStack
+                                    .permissions()
+                                    .hasPermission(Permissions.COMMANDS_GAMEMASTER))
                         .executes(
                             context ->
                                 spawnAtPosition(
@@ -69,26 +73,28 @@ public class SpawnCommand extends Command {
 
   private static int spawn(CommandSourceStack context, String uuidString) {
     UUID uuid = parseUUID(context, uuidString);
-    if (uuid == null) return FAILURE;
+    if (uuid == null) {
+      return FAILURE;
+    }
 
     if (!hasAccessToStoredNPC(context, uuid)) {
       return sendFailureMessage(
           context, "You are not allowed to spawn the Easy NPC " + uuid + " !");
     }
 
-    Optional<NPCEntityMetadata> meta = NPCEntityData.get().getMetadata(uuid);
-    if (meta.isEmpty()) {
+    Optional<NPCEntityMetadata> metadata = NPCEntityData.get().getMetadata(uuid);
+    if (metadata.isEmpty()) {
       return sendFailureMessage(context, "No saved data found for NPC " + uuid + " !");
     }
 
     ServerLevel serverLevel = context.getLevel();
-    if (meta.get().hasDimension()) {
+    if (metadata.get().hasDimension()) {
       ServerLevel targetLevel =
           context
               .getServer()
               .getLevel(
                   ResourceKey.create(
-                      Registries.DIMENSION, Identifier.parse(meta.get().dimension())));
+                      Registries.DIMENSION, Identifier.parse(metadata.get().dimension())));
       if (targetLevel != null) {
         serverLevel = targetLevel;
       }
@@ -97,12 +103,15 @@ public class SpawnCommand extends Command {
     if (EasyNPCEntityHandler.spawn(uuid, serverLevel)) {
       return sendSuccessMessage(context, "Spawned Easy NPC " + uuid + " !");
     }
+
     return sendFailureMessage(context, "Failed to spawn Easy NPC " + uuid + " !");
   }
 
   private static int spawnAtPosition(CommandSourceStack context, String uuidString, Vec3 position) {
     UUID uuid = parseUUID(context, uuidString);
-    if (uuid == null) return FAILURE;
+    if (uuid == null) {
+      return FAILURE;
+    }
 
     if (!hasAccessToStoredNPC(context, uuid)) {
       return sendFailureMessage(
@@ -122,6 +131,7 @@ public class SpawnCommand extends Command {
               + (int) position.z
               + " !");
     }
+
     return sendFailureMessage(context, "Failed to spawn Easy NPC " + uuid + " !");
   }
 
@@ -138,16 +148,18 @@ public class SpawnCommand extends Command {
     if (context.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER)) {
       return true;
     }
+
     try {
       ServerPlayer serverPlayer = context.getPlayerOrException();
       if (serverPlayer.isCreative()) {
         return true;
       }
-      Optional<NPCEntityMetadata> meta = NPCEntityData.get().getMetadata(uuid);
-      return meta.isPresent()
-          && meta.get().hasOwner()
-          && meta.get().ownerUUID().equals(serverPlayer.getUUID());
-    } catch (Exception e) {
+
+      Optional<NPCEntityMetadata> metadata = NPCEntityData.get().getMetadata(uuid);
+      return metadata.isPresent()
+          && metadata.get().hasOwner()
+          && metadata.get().ownerUUID().equals(serverPlayer.getUUID());
+    } catch (CommandSyntaxException e) {
       return true;
     }
   }

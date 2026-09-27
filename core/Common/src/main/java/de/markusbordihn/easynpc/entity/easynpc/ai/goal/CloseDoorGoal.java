@@ -110,6 +110,7 @@ public class CloseDoorGoal extends Goal {
     if (this.trackedDoors.isEmpty()) {
       return;
     }
+
     Level level = this.mob.level();
     Iterator<BlockPos> iterator = this.trackedDoors.iterator();
     while (iterator.hasNext()) {

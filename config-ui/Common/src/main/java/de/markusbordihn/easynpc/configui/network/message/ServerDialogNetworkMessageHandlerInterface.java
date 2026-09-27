@@ -66,7 +66,7 @@ public interface ServerDialogNetworkMessageHandlerInterface {
   }
 
   default void openConditionDataEditor(UUID uuid, UUID dialogId) {
-    openConditionDataEditor(uuid, dialogId, Constants.EMPTY_UUID);
+    this.openConditionDataEditor(uuid, dialogId, Constants.EMPTY_UUID);
   }
 
   default void openConditionDataEditor(UUID uuid, UUID dialogId, UUID dialogButtonId) {
@@ -79,7 +79,7 @@ public interface ServerDialogNetworkMessageHandlerInterface {
 
   default void openConditionDataEntryEditor(
       UUID uuid, UUID dialogId, ConditionDataEntry conditionDataEntry) {
-    openConditionDataEntryEditor(uuid, dialogId, Constants.EMPTY_UUID, conditionDataEntry);
+    this.openConditionDataEntryEditor(uuid, dialogId, Constants.EMPTY_UUID, conditionDataEntry);
   }
 
   default void openConditionDataEntryEditor(
@@ -128,10 +128,10 @@ public interface ServerDialogNetworkMessageHandlerInterface {
   }
 
   default void openDialogEditor(UUID uuid) {
-    openDialogEditor(uuid, Constants.EMPTY_UUID);
+    this.openDialogEditor(uuid, Constants.EMPTY_UUID);
   }
 
   default void openDialogButtonEditor(UUID uuid, UUID dialogId) {
-    openDialogButtonEditor(uuid, dialogId, Constants.EMPTY_UUID);
+    this.openDialogButtonEditor(uuid, dialogId, Constants.EMPTY_UUID);
   }
 }

@@ -48,12 +48,8 @@ public class TextureManager {
       return null;
     }
 
-    // Try to load the image from file.
     NativeImage nativeImage =
-        textureModelKey.getSkinModel() == SkinModel.HUMANOID
-                || textureModelKey.getSkinModel() == SkinModel.HUMANOID_SLIM
-            ? TextureImageLoader.getNativePlayerImage(file)
-            : TextureImageLoader.getNativeImage(file);
+        TextureImageLoader.getNativeImageForSkinModel(textureModelKey.getSkinModel(), file);
     if (nativeImage == null) {
       log.error(
           "{} Unable to load Texture file {} for {} because of I/O error",
@@ -73,7 +69,6 @@ public class TextureManager {
       return null;
     }
 
-    // Adding file to texture manager.
     return TextureRegistrationHelper.registerTexture(textureModelKey, nativeImage);
   }
 

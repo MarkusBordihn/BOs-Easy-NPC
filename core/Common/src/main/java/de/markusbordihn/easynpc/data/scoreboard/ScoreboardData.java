@@ -33,6 +33,8 @@ import net.minecraft.world.scores.Scoreboard;
 public class ScoreboardData {
 
   private static final Pattern SCORE_PATTERN = Pattern.compile("@score\\(([a-zA-Z0-9_.-]+)\\)");
+  private static final Pattern OBJECTIVE_NAME_PATTERN = Pattern.compile("[a-zA-Z0-9_.-]+");
+  private static final int MAX_OBJECTIVE_NAME_LENGTH = 32;
   private static final String SCORES_TAG = "Scores";
 
   private final Map<String, Integer> scores;
@@ -84,8 +86,8 @@ public class ScoreboardData {
   private static boolean isValidObjectiveName(String objectiveName) {
     return objectiveName != null
         && !objectiveName.isEmpty()
-        && objectiveName.length() <= 32
-        && objectiveName.matches("[a-zA-Z0-9_.-]+");
+        && objectiveName.length() <= MAX_OBJECTIVE_NAME_LENGTH
+        && OBJECTIVE_NAME_PATTERN.matcher(objectiveName).matches();
   }
 
   private static int getScoreboardValue(
@@ -94,6 +96,7 @@ public class ScoreboardData {
     if (objective != null) {
       return scoreboard.getOrCreatePlayerScore(player, objective).get();
     }
+
     return 0;
   }
 
@@ -119,6 +122,6 @@ public class ScoreboardData {
 
   @Override
   public String toString() {
-    return "ScoreboardData{scores=" + scores + "}";
+    return "ScoreboardData{scores=" + this.scores + "}";
   }
 }

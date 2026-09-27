@@ -58,9 +58,9 @@ class SnbtFormatterTest {
   }
 
   @Test
+  @DisplayName("Should leave arrays unformatted")
   void testArrays() {
     String input = "{items:[1,2,3]}";
-    // Arrays are not formatted, only compound tags
     String expected = "{\n  items:[1,2,3]\n}";
     assertEquals(expected, SnbtFormatter.format(input));
   }
@@ -156,7 +156,6 @@ class SnbtFormatterTest {
       fail("Test SNBT file not found: " + presetPath);
     }
 
-    // Read and parse original file
     String originalSnbt = Files.readString(presetPath);
     CompoundTag originalTag = TagParser.parseCompoundFully(originalSnbt);
 

@@ -77,7 +77,7 @@ public record CustomPosition(float x, float y, float z) {
   }
 
   public boolean hasChanged() {
-    return hasChanged(0, 0, 0);
+    return this.hasChanged(0, 0, 0);
   }
 
   public boolean hasChanged(float x, float y, float z) {

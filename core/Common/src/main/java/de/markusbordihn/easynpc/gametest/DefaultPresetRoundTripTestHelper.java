@@ -33,6 +33,7 @@ import de.markusbordihn.easynpc.io.DataFileHandler;
 import de.markusbordihn.easynpc.io.DefaultPresetDataFiles;
 import de.markusbordihn.easynpc.io.PresetFileHandler;
 import java.io.File;
+import java.util.Comparator;
 import java.util.List;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
@@ -117,7 +118,7 @@ public class DefaultPresetRoundTripTestHelper {
 
   private static List<Identifier> defaultPresetLocations(GameTestHelper helper) {
     return DefaultPresetDataFiles.getPresetIdentifiers(helper.getLevel().getServer())
-        .sorted(java.util.Comparator.comparing(Identifier::toString))
+        .sorted(Comparator.comparing(Identifier::toString))
         .toList();
   }
 

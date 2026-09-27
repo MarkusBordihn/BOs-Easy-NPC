@@ -48,19 +48,15 @@ public class NoneDialogConfigurationScreen<T extends ConfigurationMenu>
   public void init() {
     super.init();
 
-    // Default button stats
     this.noneDialogButton.active = false;
 
-    // Pre-format text
     this.textComponents =
         this.font.split(
             TextComponent.getTranslatedConfigText("disable_dialog_text"), this.imageWidth - 20);
     this.numberOfTextLines = this.textComponents.size();
 
-    // Former dialog type
     DialogDataSet formerDialogDataSet = this.getDialogDataSet();
 
-    // None Dialog Checkbox
     this.noneDialogCheckbox =
         this.addRenderableWidget(
             new Checkbox(
@@ -98,8 +94,8 @@ public class NoneDialogConfigurationScreen<T extends ConfigurationMenu>
             guiGraphics,
             this.font,
             formattedCharSequence,
-            leftPos + 15,
-            topPos + 60 + (line * (font.lineHeight + 2)));
+            this.leftPos + 15,
+            this.topPos + 60 + (line * (this.font.lineHeight + 2)));
       }
     }
   }

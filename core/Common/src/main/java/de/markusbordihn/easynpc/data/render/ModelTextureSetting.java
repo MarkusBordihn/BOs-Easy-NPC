@@ -71,6 +71,7 @@ public record ModelTextureSetting(Map<String, ModelTextureSlot> slots) {
         || !isValidSlotName(normalized)) {
       return Optional.empty();
     }
+
     return Optional.of(normalized);
   }
 
@@ -114,6 +115,7 @@ public record ModelTextureSetting(Map<String, ModelTextureSlot> slots) {
       if (entry.getValue() == null || entry.getValue().isEmpty() || sorted.size() >= MAX_SLOTS) {
         continue;
       }
+
       normalizeSlot(entry.getKey()).ifPresent(slot -> sorted.put(slot, entry.getValue()));
     }
     return Map.copyOf(sorted);

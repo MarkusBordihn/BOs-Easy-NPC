@@ -118,8 +118,7 @@ public class PresetSecurity {
         && resourceLocation.getPath().startsWith(DEFAULT_PRESET_PATH_PREFIX);
   }
 
-  public static PresetTrustLevel getTrustLevel(
-      PresetType presetType, ActorSecurityContext actorSecurityContext) {
+  public static PresetTrustLevel getTrustLevel(ActorSecurityContext actorSecurityContext) {
     if (actorSecurityContext == null || actorSecurityContext.player() == null) {
       return PresetTrustLevel.SERVER_TRUSTED;
     }
@@ -153,7 +152,7 @@ public class PresetSecurity {
       UUID targetUuid,
       ActorSecurityContext actorSecurityContext,
       UUID importedOwnerUuid) {
-    PresetTrustLevel trustLevel = getTrustLevel(presetType, actorSecurityContext);
+    PresetTrustLevel trustLevel = getTrustLevel(actorSecurityContext);
 
     return new PresetAuthority(
         getOwnerUuid(serverLevel, targetUuid, importedOwnerUuid),

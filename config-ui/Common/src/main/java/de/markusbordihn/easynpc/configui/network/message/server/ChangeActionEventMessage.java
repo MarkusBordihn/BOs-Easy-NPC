@@ -72,7 +72,7 @@ public record ChangeActionEventMessage(
 
   @Override
   public void handleServer(final ServerPlayer serverPlayer) {
-    EasyNPC<?> easyNPC = getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
+    EasyNPC<?> easyNPC = this.getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
     if (easyNPC == null
         || this.actionEventType == null
         || this.actionEventType == ActionEventType.NONE
@@ -96,7 +96,7 @@ public record ChangeActionEventMessage(
     if (sanitizedDataSet == null) {
       log.warn(
           "Blocked action event {} change for {} from {} because it contains an action type blocked by security.cfg feature settings",
-          actionEventType,
+          this.actionEventType,
           easyNPC,
           serverPlayer);
       return;
@@ -104,12 +104,12 @@ public record ChangeActionEventMessage(
 
     log.debug(
         "Set action event {} with {} for {} from {} with owner permission level {}.",
-        actionEventType,
+        this.actionEventType,
         sanitizedDataSet,
         easyNPC,
         serverPlayer,
         permissionLevel);
-    actionEventData.getActionEventSet().setActionEvent(actionEventType, sanitizedDataSet);
+    actionEventData.getActionEventSet().setActionEvent(this.actionEventType, sanitizedDataSet);
 
     PendingActionHandler<?> pendingActionHandler = easyNPC.getEasyNPCPendingActionHandler();
     if (pendingActionHandler != null) {

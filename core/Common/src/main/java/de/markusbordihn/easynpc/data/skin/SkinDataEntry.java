@@ -252,6 +252,6 @@ public record SkinDataEntry(
   }
 
   public CompoundTag createTag() {
-    return write(new CompoundTag());
+    return this.write(new CompoundTag());
   }
 }

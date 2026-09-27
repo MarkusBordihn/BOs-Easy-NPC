@@ -84,13 +84,11 @@ public class TradingCommand extends Command {
       return 0;
     }
 
-    // Check for trading data
     TradingDataCapable<?> tradingData = easyNPC.getEasyNPCTradingData();
     if (tradingData == null) {
       return sendFailureMessageNoTradingData(context, easyNPC);
     }
 
-    // Reset trading offers for the EasyNPC entity.
     tradingData.resetTradingOffers();
     return sendSuccessMessage(
         context, "Trading offers for " + easyNPC + " were reset to default values.");

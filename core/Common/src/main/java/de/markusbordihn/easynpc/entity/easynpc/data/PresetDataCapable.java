@@ -119,21 +119,10 @@ public interface PresetDataCapable<T extends Mob> extends EasyNPC<T> {
     if (!compoundTag.contains(ENTITY_UUID_TAG) || !compoundTag.contains("Pos")) {
       CompoundTag existingCompoundTag = this.serializePresetData();
 
-      if (existingCompoundTag.contains(DialogDataCapable.DATA_DIALOG_DATA_TAG)) {
-        existingCompoundTag.remove(DialogDataCapable.DATA_DIALOG_DATA_TAG);
-      }
-
-      if (existingCompoundTag.contains(ModelDataCapable.EASY_NPC_DATA_MODEL_DATA_TAG)) {
-        existingCompoundTag.remove(ModelDataCapable.EASY_NPC_DATA_MODEL_DATA_TAG);
-      }
-
-      if (existingCompoundTag.contains(SkinDataCapable.EASY_NPC_DATA_SKIN_DATA_TAG)) {
-        existingCompoundTag.remove(SkinDataCapable.EASY_NPC_DATA_SKIN_DATA_TAG);
-      }
-
-      if (existingCompoundTag.contains(RenderDataCapable.DATA_RENDER_DATA_TAG)) {
-        existingCompoundTag.remove(RenderDataCapable.DATA_RENDER_DATA_TAG);
-      }
+      existingCompoundTag.remove(DialogDataCapable.DATA_DIALOG_DATA_TAG);
+      existingCompoundTag.remove(ModelDataCapable.EASY_NPC_DATA_MODEL_DATA_TAG);
+      existingCompoundTag.remove(SkinDataCapable.EASY_NPC_DATA_SKIN_DATA_TAG);
+      existingCompoundTag.remove(RenderDataCapable.DATA_RENDER_DATA_TAG);
 
       if (compoundTag.contains(ActionEventDataCapable.DATA_ACTION_DATA_TAG)) {
         existingCompoundTag.remove(ActionEventDataCapable.DATA_ACTION_DATA_TAG);
@@ -185,12 +174,12 @@ public interface PresetDataCapable<T extends Mob> extends EasyNPC<T> {
       entityData.putString(ID_TAG, entityTypeId);
     }
 
-    // Add Preset UUID for unique identification (after saveWithoutId to prevent overwriting)
+    // Written after saveWithoutId, which would otherwise overwrite it.
     if (!entityData.contains(PRESET_UUID_TAG)) {
       CompoundTagUtils.writeUUID(entityData, PRESET_UUID_TAG, UUID.randomUUID());
     }
 
-    // Add Entity UUID for spawner tracking (single/boss spawner)
+    // Single and boss spawners track their NPC by this UUID.
     CompoundTagUtils.writeUUID(entityData, ENTITY_UUID_TAG, this.getEntity().getUUID());
 
     for (String entityDataFieldName : ENTITY_DATA_VOLATILE_FIELDS) {
@@ -218,16 +207,16 @@ public interface PresetDataCapable<T extends Mob> extends EasyNPC<T> {
   }
 
   default UUID getPresetUUID() {
-    return getEasyNPCServerData().getServerEntityData(CUSTOM_DATA_PRESET_UUID);
+    return this.getEasyNPCServerData().getServerEntityData(CUSTOM_DATA_PRESET_UUID);
   }
 
   default void setPresetUUID(UUID uuid) {
-    getEasyNPCServerData().setServerEntityData(CUSTOM_DATA_PRESET_UUID, uuid);
+    this.getEasyNPCServerData().setServerEntityData(CUSTOM_DATA_PRESET_UUID, uuid);
   }
 
   default Identifier getCustomIdentifier() {
     String customIdentifier =
-        getEasyNPCServerData().getServerEntityData(CUSTOM_DATA_CUSTOM_IDENTIFIER);
+        this.getEasyNPCServerData().getServerEntityData(CUSTOM_DATA_CUSTOM_IDENTIFIER);
     if (customIdentifier == null || customIdentifier.isEmpty()) {
       return null;
     }
@@ -236,7 +225,7 @@ public interface PresetDataCapable<T extends Mob> extends EasyNPC<T> {
   }
 
   default void setCustomIdentifier(Identifier customIdentifier) {
-    getEasyNPCServerData()
+    this.getEasyNPCServerData()
         .setServerEntityData(
             CUSTOM_DATA_CUSTOM_IDENTIFIER,
             customIdentifier != null ? customIdentifier.toString() : "");
@@ -244,18 +233,18 @@ public interface PresetDataCapable<T extends Mob> extends EasyNPC<T> {
 
   default boolean getRestoreOnOwnerLogin() {
     return Boolean.TRUE.equals(
-        getEasyNPCServerData().getServerEntityData(CUSTOM_DATA_RESTORE_ON_OWNER_LOGIN));
+        this.getEasyNPCServerData().getServerEntityData(CUSTOM_DATA_RESTORE_ON_OWNER_LOGIN));
   }
 
   default void setRestoreOnOwnerLogin(boolean restoreOnOwnerLogin) {
-    getEasyNPCServerData()
+    this.getEasyNPCServerData()
         .setServerEntityData(CUSTOM_DATA_RESTORE_ON_OWNER_LOGIN, restoreOnOwnerLogin);
   }
 
   default void defineCustomPresetData() {
-    getEasyNPCServerData().defineServerEntityData(CUSTOM_DATA_PRESET_UUID, null);
-    getEasyNPCServerData().defineServerEntityData(CUSTOM_DATA_CUSTOM_IDENTIFIER, "");
-    getEasyNPCServerData().defineServerEntityData(CUSTOM_DATA_RESTORE_ON_OWNER_LOGIN, false);
+    this.getEasyNPCServerData().defineServerEntityData(CUSTOM_DATA_PRESET_UUID, null);
+    this.getEasyNPCServerData().defineServerEntityData(CUSTOM_DATA_CUSTOM_IDENTIFIER, "");
+    this.getEasyNPCServerData().defineServerEntityData(CUSTOM_DATA_RESTORE_ON_OWNER_LOGIN, false);
   }
 
   default void addAdditionalPresetData(ValueOutput valueOutput) {

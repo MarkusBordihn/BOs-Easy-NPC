@@ -277,6 +277,7 @@ public class CommandExecutor {
       if (context.getCommand() != null) {
         return true;
       }
+
       context = context.getChild();
     }
     return false;

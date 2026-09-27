@@ -100,6 +100,7 @@ public enum ObjectiveType {
     if (objectiveType == null || objectiveType.isEmpty()) {
       return ObjectiveType.NONE;
     }
+
     try {
       return ObjectiveType.valueOf(objectiveType.toUpperCase(Locale.ROOT));
     } catch (IllegalArgumentException e) {

@@ -92,7 +92,7 @@ public class ConditionDataEntryEditorContainerScreen<T extends EditorMenu> exten
     this.context = ConditionEditorContext.resolve(this);
     this.conditionDataSet = this.context.loadConditionDataSet();
     this.conditionDataEntryId = this.getConditionDataEntryUUID();
-    this.conditionDataEntry = loadConditionDataEntry();
+    this.conditionDataEntry = this.loadConditionDataEntry();
     this.conditionType =
         this.conditionDataEntry.conditionType() != ConditionType.NONE
             ? this.conditionDataEntry.conditionType()
@@ -127,7 +127,7 @@ public class ConditionDataEntryEditorContainerScreen<T extends EditorMenu> exten
   protected void changeConditionType(SpinButton<?> spinButton) {
     this.conditionType = (ConditionType) spinButton.get();
     this.clearWidgets();
-    init();
+    this.init();
   }
 
   private void saveConditionDataEntry() {
@@ -156,7 +156,7 @@ public class ConditionDataEntryEditorContainerScreen<T extends EditorMenu> exten
             confirmed -> {
               if (confirmed) {
                 this.conditionDataSet.remove(this.conditionDataEntryId);
-                saveConditionDataEntry();
+                this.saveConditionDataEntry();
                 this.navigateToConditionDataEditor();
               } else {
                 this.minecraft.setScreen(this);

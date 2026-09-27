@@ -31,12 +31,10 @@ public class SpawnEggs implements DisplayItemsGenerator {
 
   @Override
   public void accept(ItemDisplayParameters itemDisplayParameters, Output output) {
-    // NPC Spawn Eggs
     for (Item spawnEgg : ModItems.NPC_SPAWN_EGGS.values()) {
       output.accept(spawnEgg);
     }
 
-    // Custom NPC Spawn Eggs
     for (Item spawnEgg : ModItems.CUSTOM_NPC_SPAWN_EGGS.values()) {
       output.accept(spawnEgg);
     }

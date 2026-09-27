@@ -47,13 +47,11 @@ public class ConfigurationContainerScreen<T extends ConfigUIMenu> extends Contai
   public void init() {
     super.init();
 
-    // Core Positions
     this.buttonLeftPos = this.leftPos + 13;
     this.buttonTopPos = this.topPos + 3;
     this.contentLeftPos = this.leftPos + 7;
     this.contentTopPos = this.topPos + 23;
 
-    // Home Button
     this.homeButton =
         this.addRenderableWidget(
             new TextButton(
@@ -68,7 +66,6 @@ public class ConfigurationContainerScreen<T extends ConfigUIMenu> extends Contai
 
   @Override
   protected void extractLabels(GuiGraphicsExtractor guiGraphics, int x, int y) {
-    // Render Title if not in compact mode
     if (!this.compactMode) {
       Text.drawString(
           guiGraphics, this.font, this.title, this.titleLabelX, this.titleLabelY, 4210752);
@@ -82,11 +79,11 @@ public class ConfigurationContainerScreen<T extends ConfigUIMenu> extends Contai
 
   @Override
   public boolean keyPressed(KeyEvent keyEvent) {
-    // Capture ALT + left arrow key to navigate back to main screen
     if (keyEvent.key() == 263 && keyEvent.hasAltDown()) {
-      showMainScreen();
+      this.showMainScreen();
       return true;
     }
+
     return super.keyPressed(keyEvent);
   }
 }

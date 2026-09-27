@@ -63,7 +63,7 @@ public class ModelAnimationActionEntry extends ActionEntryWidget {
   @Override
   public void init(int editorLeft, int editorTop) {
     ModelAnimationActionData data =
-        hasActionData(this.actionDataType)
+        this.hasActionData(this.actionDataType)
             ? this.actionDataEntry.modelAnimationActionData()
             : ModelAnimationActionData.DEFAULT;
 
@@ -189,7 +189,7 @@ public class ModelAnimationActionEntry extends ActionEntryWidget {
 
   @Override
   public boolean hasChanged() {
-    return !hasActionData(this.actionDataType)
+    return !this.hasActionData(this.actionDataType)
         || !this.getActionDataEntry()
             .modelAnimationActionData()
             .equals(this.actionDataEntry.modelAnimationActionData());

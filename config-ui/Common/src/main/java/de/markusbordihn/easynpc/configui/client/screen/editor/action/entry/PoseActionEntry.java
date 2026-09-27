@@ -56,7 +56,7 @@ public class PoseActionEntry extends ActionEntryWidget {
     poseSelection.add(CUSTOM_POSE_ID);
 
     String storedPoseId =
-        hasActionData(ActionDataType.SET_POSE) ? this.actionDataEntry.poseId().trim() : "";
+        this.hasActionData(ActionDataType.SET_POSE) ? this.actionDataEntry.poseId().trim() : "";
     String selectedPoseId;
     if (storedPoseId.isEmpty()) {
       selectedPoseId = poseSelection.iterator().next();
@@ -124,7 +124,7 @@ public class PoseActionEntry extends ActionEntryWidget {
 
   @Override
   public boolean hasChanged() {
-    return !hasActionData(ActionDataType.SET_POSE)
+    return !this.hasActionData(ActionDataType.SET_POSE)
         || !this.getPoseId().equals(this.actionDataEntry.poseId());
   }
 

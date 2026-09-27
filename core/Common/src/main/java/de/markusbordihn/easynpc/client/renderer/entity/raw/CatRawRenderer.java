@@ -45,7 +45,7 @@ public class CatRawRenderer extends CatRenderer implements EasyNPCEntityRenderer
 
   @Override
   public Identifier getTextureLocation(CatRenderState renderState) {
-    return getTextureFromRenderStateWithConfig(renderState);
+    return this.getTextureFromRenderStateWithConfig(renderState);
   }
 
   @Override

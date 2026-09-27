@@ -41,7 +41,7 @@ class ActionDataSetTest {
   @Test
   void testLegacyEntryRemainsAddressableAfterSaveReload() {
     ActionDataSet actionDataSet = new ActionDataSet();
-    ActionDataEntry legacyEntry = new ActionDataEntry(createLegacyActionTag("legacy"));
+    ActionDataEntry legacyEntry = new ActionDataEntry(this.createLegacyActionTag("legacy"));
     UUID entryId = legacyEntry.id();
     actionDataSet.add(legacyEntry);
 
@@ -73,10 +73,11 @@ class ActionDataSetTest {
   @Test
   @DisplayName("Replacing an entry keeps it at its position")
   void testPutKeepsPosition() {
-    ActionDataEntry firstEntry = createCommandEntry("/say first");
-    ActionDataEntry secondEntry = createCommandEntry("/say second");
-    ActionDataEntry thirdEntry = createCommandEntry("/say third");
-    ActionDataSet actionDataSet = createOrderedActionDataSet(firstEntry, secondEntry, thirdEntry);
+    ActionDataEntry firstEntry = this.createCommandEntry("/say first");
+    ActionDataEntry secondEntry = this.createCommandEntry("/say second");
+    ActionDataEntry thirdEntry = this.createCommandEntry("/say third");
+    ActionDataSet actionDataSet =
+        this.createOrderedActionDataSet(firstEntry, secondEntry, thirdEntry);
 
     ActionDataEntry updatedEntry = secondEntry.withCommand("/say updated");
     actionDataSet.put(secondEntry.id(), updatedEntry);
@@ -90,9 +91,9 @@ class ActionDataSetTest {
   @Test
   @DisplayName("An unknown entry is appended instead of replacing another one")
   void testPutAppendsUnknownEntry() {
-    ActionDataEntry firstEntry = createCommandEntry("/say first");
-    ActionDataEntry secondEntry = createCommandEntry("/say second");
-    ActionDataSet actionDataSet = createOrderedActionDataSet(firstEntry);
+    ActionDataEntry firstEntry = this.createCommandEntry("/say first");
+    ActionDataEntry secondEntry = this.createCommandEntry("/say second");
+    ActionDataSet actionDataSet = this.createOrderedActionDataSet(firstEntry);
 
     actionDataSet.put(secondEntry.id(), secondEntry);
 
@@ -104,10 +105,11 @@ class ActionDataSetTest {
   @Test
   @DisplayName("Moving an entry up and down swaps it with its neighbour")
   void testMoveUpAndMoveDownChangeOrder() {
-    ActionDataEntry firstEntry = createCommandEntry("/say first");
-    ActionDataEntry secondEntry = createCommandEntry("/say second");
-    ActionDataEntry thirdEntry = createCommandEntry("/say third");
-    ActionDataSet actionDataSet = createOrderedActionDataSet(firstEntry, secondEntry, thirdEntry);
+    ActionDataEntry firstEntry = this.createCommandEntry("/say first");
+    ActionDataEntry secondEntry = this.createCommandEntry("/say second");
+    ActionDataEntry thirdEntry = this.createCommandEntry("/say third");
+    ActionDataSet actionDataSet =
+        this.createOrderedActionDataSet(firstEntry, secondEntry, thirdEntry);
 
     actionDataSet.moveUp(thirdEntry);
     assertEquals(1, actionDataSet.getPosition(thirdEntry));
@@ -122,13 +124,13 @@ class ActionDataSetTest {
   @Test
   @DisplayName("Moving beyond the first or last position is ignored")
   void testMoveBeyondBoundsIsIgnored() {
-    ActionDataEntry firstEntry = createCommandEntry("/say first");
-    ActionDataEntry secondEntry = createCommandEntry("/say second");
-    ActionDataSet actionDataSet = createOrderedActionDataSet(firstEntry, secondEntry);
+    ActionDataEntry firstEntry = this.createCommandEntry("/say first");
+    ActionDataEntry secondEntry = this.createCommandEntry("/say second");
+    ActionDataSet actionDataSet = this.createOrderedActionDataSet(firstEntry, secondEntry);
 
     actionDataSet.moveUp(firstEntry);
     actionDataSet.moveDown(secondEntry);
-    actionDataSet.moveUp(createCommandEntry("/say unknown"));
+    actionDataSet.moveUp(this.createCommandEntry("/say unknown"));
 
     assertEquals(2, actionDataSet.size());
     assertEquals(0, actionDataSet.getPosition(firstEntry));
@@ -138,10 +140,11 @@ class ActionDataSetTest {
   @Test
   @DisplayName("The order of the actions survives a save/load round trip")
   void testOrderSurvivesSaveAndLoad() {
-    ActionDataEntry firstEntry = createCommandEntry("/say first");
-    ActionDataEntry secondEntry = createCommandEntry("/say second");
-    ActionDataEntry thirdEntry = createCommandEntry("/say third");
-    ActionDataSet actionDataSet = createOrderedActionDataSet(firstEntry, secondEntry, thirdEntry);
+    ActionDataEntry firstEntry = this.createCommandEntry("/say first");
+    ActionDataEntry secondEntry = this.createCommandEntry("/say second");
+    ActionDataEntry thirdEntry = this.createCommandEntry("/say third");
+    ActionDataSet actionDataSet =
+        this.createOrderedActionDataSet(firstEntry, secondEntry, thirdEntry);
     actionDataSet.moveUp(thirdEntry);
 
     ActionDataSet reloaded = new ActionDataSet(actionDataSet.createTag());
@@ -154,8 +157,8 @@ class ActionDataSetTest {
   @Test
   @DisplayName("The same entry is not added twice")
   void testIdenticalEntryIsNotAddedTwice() {
-    ActionDataEntry entry = createCommandEntry("/say once");
-    ActionDataSet actionDataSet = createOrderedActionDataSet(entry, entry);
+    ActionDataEntry entry = this.createCommandEntry("/say once");
+    ActionDataSet actionDataSet = this.createOrderedActionDataSet(entry, entry);
 
     assertEquals(1, actionDataSet.size());
   }
@@ -163,8 +166,8 @@ class ActionDataSetTest {
   @Test
   void testIdenticalLegacyEntriesCanCoexistAfterSaveReload() {
     ActionDataSet actionDataSet = new ActionDataSet();
-    ActionDataEntry legacyEntryOne = new ActionDataEntry(createLegacyActionTag("legacy"));
-    ActionDataEntry legacyEntryTwo = new ActionDataEntry(createLegacyActionTag("legacy"));
+    ActionDataEntry legacyEntryOne = new ActionDataEntry(this.createLegacyActionTag("legacy"));
+    ActionDataEntry legacyEntryTwo = new ActionDataEntry(this.createLegacyActionTag("legacy"));
     actionDataSet.add(legacyEntryOne);
     actionDataSet.add(legacyEntryTwo);
 

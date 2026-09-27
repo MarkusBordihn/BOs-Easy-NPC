@@ -157,14 +157,14 @@ public record ConfigurationData(
   }
 
   public boolean isEnabled(ConfigurationType type) {
-    return enabledTypes.contains(type);
+    return this.enabledTypes.contains(type);
   }
 
   public boolean isExperimental(ConfigurationType type) {
-    return experimentalTypes.contains(type);
+    return this.experimentalTypes.contains(type);
   }
 
   public boolean hasExperimentalTypes() {
-    return !experimentalTypes.isEmpty();
+    return !this.experimentalTypes.isEmpty();
   }
 }

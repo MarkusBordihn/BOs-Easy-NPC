@@ -213,19 +213,17 @@ class TextureModelKeyTest {
   }
 
   @Test
-  @DisplayName("Should be immutable - record properties")
-  void testImmutability() {
+  @DisplayName("Should exclude resourceName from equality")
+  void testResourceNameExcludedFromEquality() {
     UUID uuid = UUID.randomUUID();
     SkinModel skinModel = SkinModel.HUMANOID;
     String resourceName = "test";
     TextureModelKey key = new TextureModelKey(uuid, skinModel, resourceName);
 
-    // Record fields should be accessible but not modifiable
     assertEquals(uuid, key.uuid());
     assertEquals(skinModel, key.skinModel());
     assertEquals(resourceName, key.resourceName());
 
-    // Trying to create a new instance should create a different object
     TextureModelKey key2 = new TextureModelKey(uuid, skinModel, "different");
     assertNotSame(key, key2);
     assertEquals(key, key2);

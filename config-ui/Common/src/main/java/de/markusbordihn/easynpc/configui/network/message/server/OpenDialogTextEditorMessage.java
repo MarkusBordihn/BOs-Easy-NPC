@@ -66,7 +66,7 @@ public record OpenDialogTextEditorMessage(UUID uuid, UUID dialogId)
 
   @Override
   public void handleServer(final ServerPlayer serverPlayer) {
-    EasyNPC<?> easyNPC = getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
+    EasyNPC<?> easyNPC = this.getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
     if (easyNPC == null) {
       return;
     }
@@ -84,7 +84,7 @@ public record OpenDialogTextEditorMessage(UUID uuid, UUID dialogId)
 
     if (!dialogData.hasDialog(this.dialogId)) {
       log.error(
-          "Unknown dialog button editor request for dialog {} for {} from {}",
+          "Unknown dialog text editor request for dialog {} for {} from {}",
           this.dialogId,
           easyNPC,
           serverPlayer);
@@ -93,7 +93,10 @@ public record OpenDialogTextEditorMessage(UUID uuid, UUID dialogId)
     }
 
     log.info(
-        "Open dialog editor with for dialog {} for {} from {}", dialogId, easyNPC, serverPlayer);
+        "Open dialog text editor for dialog {} for {} from {}",
+        this.dialogId,
+        easyNPC,
+        serverPlayer);
     MenuManager.getMenuHandler()
         .openEditorMenu(EditorType.DIALOG_TEXT, serverPlayer, easyNPC, this.dialogId, 0);
   }

@@ -46,7 +46,7 @@ public class CustomActionEntry extends ActionEntryWidget {
             new TextField(this.font, editorLeft, editorTop + 20, 275, 16));
     this.actionCommandTextField.setMaxLength(512);
     this.actionCommandTextField.setValue(
-        hasActionData(ActionDataType.CUSTOM) ? this.actionDataEntry.command() : "");
+        this.hasActionData(ActionDataType.CUSTOM) ? this.actionDataEntry.command() : "");
   }
 
   @Override

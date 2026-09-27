@@ -35,7 +35,7 @@ public class DataPresetDataFiles {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  private static final long REFRESH_COOLDOWN_MS = 5000;
+  private static final long REFRESH_COOLDOWN_MILLISECONDS = 5000;
   private static List<Identifier> cachedUsablePresets;
   private static long lastAccessRefreshTime = 0;
 
@@ -71,7 +71,8 @@ public class DataPresetDataFiles {
 
   public static Stream<Identifier> getUsablePresetIdentifiers(MinecraftServer minecraftServer) {
     long currentTime = System.currentTimeMillis();
-    if (cachedUsablePresets == null || currentTime - lastAccessRefreshTime >= REFRESH_COOLDOWN_MS) {
+    if (cachedUsablePresets == null
+        || currentTime - lastAccessRefreshTime >= REFRESH_COOLDOWN_MILLISECONDS) {
       cachedUsablePresets =
           getPresetIdentifiers(minecraftServer)
               .filter(

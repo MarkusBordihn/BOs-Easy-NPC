@@ -121,6 +121,7 @@ public class MenuManager {
     if (serverPlayer == null) {
       return;
     }
+
     Iterator<Map.Entry<UUID, ServerPlayer>> iterator = serverPlayerMap.entrySet().iterator();
     while (iterator.hasNext()) {
       Map.Entry<UUID, ServerPlayer> entry = iterator.next();

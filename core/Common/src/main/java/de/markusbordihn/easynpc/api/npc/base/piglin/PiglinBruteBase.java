@@ -110,12 +110,9 @@ public class PiglinBruteBase extends PiglinBruteRaw implements BaseEasyNPC<Pigli
 
   @Override
   public void travel(Vec3 vec3) {
-
     this.handleNavigationTravelEvent(vec3);
 
-    // Handle movement for NPC for specific conditions.
     if (this.hasTravelTargetObjectives()) {
-      // Allow travel for NPC, if travel objectives are used.
       super.travel(vec3);
     } else {
       this.calculateEntityAnimation(this instanceof FlyingAnimal);

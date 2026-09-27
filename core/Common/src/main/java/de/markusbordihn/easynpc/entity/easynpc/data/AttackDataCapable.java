@@ -37,12 +37,12 @@ public interface AttackDataCapable<E extends Mob>
   int getAttackAnimationTick();
 
   default boolean isChargingCrossbow() {
-    return getSynchedEntityData(SynchedDataIndex.ATTACK_IS_CHARGING_CROSSBOW);
+    return this.getSynchedEntityData(SynchedDataIndex.ATTACK_IS_CHARGING_CROSSBOW);
   }
 
   @Override
   default void setChargingCrossbow(boolean isCharging) {
-    setSynchedEntityData(SynchedDataIndex.ATTACK_IS_CHARGING_CROSSBOW, isCharging);
+    this.setSynchedEntityData(SynchedDataIndex.ATTACK_IS_CHARGING_CROSSBOW, isCharging);
   }
 
   @Override
@@ -51,7 +51,7 @@ public interface AttackDataCapable<E extends Mob>
   }
 
   default void defineSynchedAttackData(SynchedEntityData.Builder builder) {
-    defineSynchedEntityData(builder, SynchedDataIndex.ATTACK_IS_CHARGING_CROSSBOW, false);
+    this.defineSynchedEntityData(builder, SynchedDataIndex.ATTACK_IS_CHARGING_CROSSBOW, false);
   }
 
   default void addAdditionalAttackData(ValueOutput valueOutput) {}

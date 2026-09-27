@@ -49,7 +49,7 @@ public class EasyNPCLivingEntityRendererMixin {
       LivingEntity livingEntity,
       LivingEntityRenderState renderState,
       float partialTicks,
-      CallbackInfo ci) {
+      CallbackInfo callbackInfo) {
     if (livingEntity instanceof EasyNPC<?> easyNPC
         && renderState instanceof EasyNPCRenderStateExtension renderStateExtension) {
       renderStateExtension.setEasyNpcUUID(easyNPC.getEntityUUID());
@@ -87,7 +87,7 @@ public class EasyNPCLivingEntityRendererMixin {
       PoseStack poseStack,
       SubmitNodeCollector submitNodeCollector,
       CameraRenderState cameraRenderState,
-      CallbackInfo ci) {
+      CallbackInfo callbackInfo) {
     if (renderState instanceof EasyNPCRenderStateExtension) {
       EasyNPCLivingEntityRenderer.handleRenderStart(renderState, poseStack, null, 0);
     }
@@ -106,7 +106,7 @@ public class EasyNPCLivingEntityRendererMixin {
       PoseStack poseStack,
       SubmitNodeCollector submitNodeCollector,
       CameraRenderState cameraRenderState,
-      CallbackInfo ci) {
+      CallbackInfo callbackInfo) {
     if (renderState instanceof EasyNPCRenderStateExtension) {
       EasyNPCLivingEntityRenderer.handleRotation(renderState, poseStack);
       EasyNPCLivingEntityRenderer.handleScale(renderState, poseStack);
@@ -122,7 +122,7 @@ public class EasyNPCLivingEntityRendererMixin {
       PoseStack poseStack,
       SubmitNodeCollector submitNodeCollector,
       CameraRenderState cameraRenderState,
-      CallbackInfo ci) {
+      CallbackInfo callbackInfo) {
     if (renderState instanceof EasyNPCRenderStateExtension) {
       EasyNPCLivingEntityRenderer.handleRenderEnd(renderState, poseStack, null, 0);
     }
@@ -133,14 +133,16 @@ public class EasyNPCLivingEntityRendererMixin {
       at = @At("HEAD"),
       cancellable = true)
   private void onShouldShowName(
-      LivingEntity entity, double distance, CallbackInfoReturnable<Boolean> cir) {
+      LivingEntity entity,
+      double distance,
+      CallbackInfoReturnable<Boolean> callbackInfoReturnable) {
     if (entity instanceof EasyNPC<?> easyNPC) {
       var player = Minecraft.getInstance().player;
       if (player != null) {
         boolean shouldShowName =
             VisibilityHandler.handleIsCustomNameVisibleToPlayer(
                 easyNPC, player, entity.isCustomNameVisible(), distance);
-        cir.setReturnValue(shouldShowName);
+        callbackInfoReturnable.setReturnValue(shouldShowName);
       }
     }
   }

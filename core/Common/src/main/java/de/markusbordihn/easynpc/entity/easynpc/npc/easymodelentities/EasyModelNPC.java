@@ -124,6 +124,7 @@ public class EasyModelNPC extends PathfinderMobRaw {
     if (EasyModelEntitiesManager.isFloatingProfile(profileId)) {
       return NavigationType.FLYING;
     }
+
     if (EasyModelEntitiesManager.isAquaticProfile(profileId)) {
       return NavigationType.AQUATIC;
     }
@@ -145,6 +146,7 @@ public class EasyModelNPC extends PathfinderMobRaw {
         && modelParts.contains(ModelPartType.RIGHT_LEG)) {
       return ConfigurationData.EASY_MODEL_HUMANOID;
     }
+
     return ConfigurationData.EASY_MODEL;
   }
 

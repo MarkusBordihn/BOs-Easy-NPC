@@ -133,7 +133,7 @@ public class MultiStateToggleButton extends CustomButton {
     this.spriteY = spriteY;
     this.spriteWidth = spriteWidth;
     this.spriteHeight = spriteHeight;
-    updateTooltip();
+    this.updateTooltip();
   }
 
   @Override
@@ -145,7 +145,7 @@ public class MultiStateToggleButton extends CustomButton {
     if (this.isValidClickButton(mouseButtonEvent.buttonInfo())
         && this.isMouseOver(mouseButtonEvent.x(), mouseButtonEvent.y())) {
       this.playDownSound(Minecraft.getInstance().getSoundManager());
-      cycleToNextState();
+      this.cycleToNextState();
       this.onClick(mouseButtonEvent, doubleClick);
       return true;
     }
@@ -178,7 +178,7 @@ public class MultiStateToggleButton extends CustomButton {
 
   private void cycleToNextState() {
     this.currentStateIndex = (this.currentStateIndex + 1) % this.states.length;
-    updateTooltip();
+    this.updateTooltip();
     if (this.onStateChange != null) {
       this.onStateChange.onStateChange(this, this.currentStateIndex);
     }
@@ -198,7 +198,7 @@ public class MultiStateToggleButton extends CustomButton {
   public void setCurrentStateIndex(int stateIndex) {
     if (stateIndex >= 0 && stateIndex < this.states.length) {
       this.currentStateIndex = stateIndex;
-      updateTooltip();
+      this.updateTooltip();
     }
   }
 

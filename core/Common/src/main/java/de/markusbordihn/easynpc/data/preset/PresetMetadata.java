@@ -255,11 +255,11 @@ public record PresetMetadata(
     if (presetData == null || !presetData.contains(PresetDataCapable.PRESET_METADATA_TAG)) {
       return createDefault();
     }
+
     CompoundTag metadataTag =
         presetData.getCompound(PresetDataCapable.PRESET_METADATA_TAG).orElse(new CompoundTag());
     PresetMetadata metadata = fromCompoundTag(metadataTag);
 
-    // If metadata doesn't have preview data, try to extract from preset data
     if (metadata.entityTypeId() == null || metadata.variantType() == null) {
       String entityTypeId = metadata.entityTypeId();
       String variantType = metadata.variantType();
@@ -282,22 +282,22 @@ public record PresetMetadata(
 
   public CompoundTag toCompoundTag() {
     CompoundTag tag = new CompoundTag();
-    tag.putString(TAG_NAME, name);
-    tag.putString(TAG_CATEGORY, category);
-    tag.putString(TAG_VERSION, version);
-    tag.putString(TAG_AUTHOR, author);
-    tag.putLong(TAG_CREATED, created);
-    tag.putLong(TAG_MODIFIED, modified);
-    tag.putString(TAG_DESCRIPTION, description);
+    tag.putString(TAG_NAME, this.name);
+    tag.putString(TAG_CATEGORY, this.category);
+    tag.putString(TAG_VERSION, this.version);
+    tag.putString(TAG_AUTHOR, this.author);
+    tag.putLong(TAG_CREATED, this.created);
+    tag.putLong(TAG_MODIFIED, this.modified);
+    tag.putString(TAG_DESCRIPTION, this.description);
 
-    if (entityTypeId != null && !entityTypeId.isEmpty()) {
-      tag.putString(TAG_ENTITY_TYPE_ID, entityTypeId);
+    if (this.entityTypeId != null && !this.entityTypeId.isEmpty()) {
+      tag.putString(TAG_ENTITY_TYPE_ID, this.entityTypeId);
     }
-    if (variantType != null && !variantType.isEmpty()) {
-      tag.putString(TAG_VARIANT_TYPE, variantType);
+    if (this.variantType != null && !this.variantType.isEmpty()) {
+      tag.putString(TAG_VARIANT_TYPE, this.variantType);
     }
-    if (access != PresetAccess.PUBLIC) {
-      tag.putString(TAG_ACCESS, access.name());
+    if (this.access != PresetAccess.PUBLIC) {
+      tag.putString(TAG_ACCESS, this.access.name());
     }
 
     return tag;
@@ -305,117 +305,117 @@ public record PresetMetadata(
 
   public PresetMetadata withModifiedTime(long modifiedTime) {
     return new PresetMetadata(
-        name,
-        category,
-        version,
-        author,
-        created,
+        this.name,
+        this.category,
+        this.version,
+        this.author,
+        this.created,
         modifiedTime,
-        description,
-        entityTypeId,
-        variantType,
-        access);
+        this.description,
+        this.entityTypeId,
+        this.variantType,
+        this.access);
   }
 
   public PresetMetadata withCurrentModifiedTime() {
-    return withModifiedTime(System.currentTimeMillis());
+    return this.withModifiedTime(System.currentTimeMillis());
   }
 
   public PresetMetadata withName(String newName) {
     return new PresetMetadata(
         newName,
-        category,
-        version,
-        author,
-        created,
+        this.category,
+        this.version,
+        this.author,
+        this.created,
         System.currentTimeMillis(),
-        description,
-        entityTypeId,
-        variantType,
-        access);
+        this.description,
+        this.entityTypeId,
+        this.variantType,
+        this.access);
   }
 
   public PresetMetadata withCategory(String newCategory) {
     return new PresetMetadata(
-        name,
+        this.name,
         newCategory,
-        version,
-        author,
-        created,
+        this.version,
+        this.author,
+        this.created,
         System.currentTimeMillis(),
-        description,
-        entityTypeId,
-        variantType,
-        access);
+        this.description,
+        this.entityTypeId,
+        this.variantType,
+        this.access);
   }
 
   public PresetMetadata withVersion(String newVersion) {
     return new PresetMetadata(
-        name,
-        category,
+        this.name,
+        this.category,
         newVersion,
-        author,
-        created,
+        this.author,
+        this.created,
         System.currentTimeMillis(),
-        description,
-        entityTypeId,
-        variantType,
-        access);
+        this.description,
+        this.entityTypeId,
+        this.variantType,
+        this.access);
   }
 
   public PresetMetadata withAuthor(String newAuthor) {
     return new PresetMetadata(
-        name,
-        category,
-        version,
+        this.name,
+        this.category,
+        this.version,
         newAuthor,
-        created,
+        this.created,
         System.currentTimeMillis(),
-        description,
-        entityTypeId,
-        variantType,
-        access);
+        this.description,
+        this.entityTypeId,
+        this.variantType,
+        this.access);
   }
 
   public PresetMetadata withDescription(String newDescription) {
     return new PresetMetadata(
-        name,
-        category,
-        version,
-        author,
-        created,
+        this.name,
+        this.category,
+        this.version,
+        this.author,
+        this.created,
         System.currentTimeMillis(),
         newDescription,
-        entityTypeId,
-        variantType,
-        access);
+        this.entityTypeId,
+        this.variantType,
+        this.access);
   }
 
   public PresetMetadata withAccess(PresetAccess newAccess) {
     return new PresetMetadata(
-        name,
-        category,
-        version,
-        author,
-        created,
+        this.name,
+        this.category,
+        this.version,
+        this.author,
+        this.created,
         System.currentTimeMillis(),
-        description,
-        entityTypeId,
-        variantType,
+        this.description,
+        this.entityTypeId,
+        this.variantType,
         newAccess);
   }
 
   public PresetMetadata withPreviewData(String newEntityTypeId, String newVariantType) {
     return new PresetMetadata(
-        name,
-        category,
-        version,
-        author,
-        created,
-        modified,
-        description,
+        this.name,
+        this.category,
+        this.version,
+        this.author,
+        this.created,
+        this.modified,
+        this.description,
         newEntityTypeId,
         newVariantType,
-        access);
+        this.access);
   }
 }

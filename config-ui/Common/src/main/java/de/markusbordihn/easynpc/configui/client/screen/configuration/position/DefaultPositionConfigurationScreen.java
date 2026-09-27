@@ -70,19 +70,15 @@ public class DefaultPositionConfigurationScreen<T extends ConfigurationMenu>
   public void init() {
     super.init();
 
-    // Default button stats
     this.defaultPositionButton.active = false;
 
-    // Position Coordinates
     Vec3 entityPosition = this.getEasyNPCEntity().position();
     this.positionX = entityPosition.x;
     this.positionY = entityPosition.y;
     this.positionZ = entityPosition.z;
 
-    // Define Positions
     int positionTopPos = this.contentTopPos + 10;
 
-    // X Position
     this.positionXBox =
         this.addRenderableWidget(
             new TextField(this.font, this.contentLeftPos + 15, positionTopPos, 60));
@@ -118,7 +114,6 @@ public class DefaultPositionConfigurationScreen<T extends ConfigurationMenu>
                   this.positionXBox.setValue(String.valueOf(this.positionX));
                 }));
 
-    // Y Position
     this.positionYBox =
         this.addRenderableWidget(
             new TextField(this.font, this.contentLeftPos + 111, positionTopPos, 60));
@@ -154,7 +149,6 @@ public class DefaultPositionConfigurationScreen<T extends ConfigurationMenu>
                   this.positionYBox.setValue(String.valueOf(this.positionY));
                 }));
 
-    // Z Position
     this.positionZBox =
         this.addRenderableWidget(
             new TextField(this.font, this.contentLeftPos + 207, positionTopPos, 60));
@@ -190,7 +184,6 @@ public class DefaultPositionConfigurationScreen<T extends ConfigurationMenu>
                   this.positionZBox.setValue(String.valueOf(this.positionZ));
                 }));
 
-    // No Gravity Checkbox
     EntityAttributes attributeData =
         this.getEasyNPC().getEasyNPCAttributeData().getEntityAttributes();
     this.positionNoGravityCheckbox =
@@ -217,7 +210,6 @@ public class DefaultPositionConfigurationScreen<T extends ConfigurationMenu>
                   this.positionFreefallCheckbox.active = !checkbox.selected();
                 }));
 
-    // Freefall Checkbox
     this.positionFreefallCheckbox =
         this.addRenderableWidget(
             new Checkbox(
@@ -267,7 +259,6 @@ public class DefaultPositionConfigurationScreen<T extends ConfigurationMenu>
       GuiGraphicsExtractor guiGraphics, int x, int y, float partialTicks) {
     super.extractRenderState(guiGraphics, x, y, partialTicks);
 
-    // Position Text
     Text.drawString(
         guiGraphics,
         this.font,

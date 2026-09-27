@@ -31,7 +31,6 @@ import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.phys.Vec3;
 
@@ -59,7 +58,7 @@ public final class DialogScreenTestHelper {
   public static void testDialogScreen(
       GameTestHelper helper,
       DialogDataSet dialogDataSet,
-      EntityType<? extends PathfinderMob> npcEntityType,
+      EntityType<?> npcEntityType,
       MenuType<? extends DialogMenu> menuType) {
     ServerPlayer serverPlayer = GameTestHelpers.mockServerPlayer(helper, new Vec3(1, 2, 1));
     EasyNPC<?> easyNPC = GameTestHelpers.mockEasyNPC(helper, npcEntityType, new Vec3(2, 2, 2));

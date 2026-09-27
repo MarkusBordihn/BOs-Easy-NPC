@@ -45,7 +45,7 @@ public class PiglinBruteRawRenderer extends PiglinRenderer implements EasyNPCEnt
 
   @Override
   public Identifier getTextureLocation(PiglinRenderState renderState) {
-    return getTextureFromRenderStateWithConfig(renderState);
+    return this.getTextureFromRenderStateWithConfig(renderState);
   }
 
   @Override

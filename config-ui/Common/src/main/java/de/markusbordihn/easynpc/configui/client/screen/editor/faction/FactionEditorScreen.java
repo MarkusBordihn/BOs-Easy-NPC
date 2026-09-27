@@ -109,6 +109,7 @@ public class FactionEditorScreen<T extends EditorMenu> extends EditorScreen<T> {
     if (minecraft == null) {
       return;
     }
+
     minecraft.setScreen(
         new ConfirmScreen(
             confirmed -> {
@@ -123,6 +124,15 @@ public class FactionEditorScreen<T extends EditorMenu> extends EditorScreen<T> {
             TextComponent.getTranslatedConfigText("removeFaction.deleteWarning", this.factionName),
             TextComponent.getTranslatedConfigText("removeFaction.deleteButton"),
             CommonComponents.GUI_CANCEL));
+  }
+
+  private int getCurrentFactionColor() {
+    ChatFormatting factionColor = this.factionDataEntry.getColor();
+    if (factionColor == null || factionColor.getColor() == null) {
+      return 0xFFFFFF;
+    }
+
+    return factionColor.getColor();
   }
 
   private List<String> getVisibleHostileFactionNames() {
@@ -167,7 +177,6 @@ public class FactionEditorScreen<T extends EditorMenu> extends EditorScreen<T> {
     this.hostileFactionsScrollOffset =
         Math.min(this.hostileFactionsScrollOffset, this.getMaxScrollOffset());
 
-    // Breadcrumb navigation: < Factions > current faction.
     this.homeButton =
         this.addRenderableWidget(
             new TextButton(
@@ -197,11 +206,6 @@ public class FactionEditorScreen<T extends EditorMenu> extends EditorScreen<T> {
     factionNameButton.active = false;
 
     // Faction color with the shared color picker popup, restricted to the 16 team colors.
-    int currentColor =
-        this.factionDataEntry.getColor() != null
-                && this.factionDataEntry.getColor().getColor() != null
-            ? this.factionDataEntry.getColor().getColor()
-            : 0xFFFFFF;
     this.colorPickerPopup =
         new ColorPickerPopup(
             this.font,
@@ -228,7 +232,7 @@ public class FactionEditorScreen<T extends EditorMenu> extends EditorScreen<T> {
                         this.factionColorButton.getY() + this.factionColorButton.getHeight() + 1,
                         this.width,
                         this.height)));
-    this.factionColorButton.setColorValue(currentColor);
+    this.factionColorButton.setColorValue(this.getCurrentFactionColor());
     this.addRenderableWidget(
         new HelpIcon(
             this.leftPos
@@ -238,7 +242,6 @@ public class FactionEditorScreen<T extends EditorMenu> extends EditorScreen<T> {
             this.topPos + 27,
             "faction_color.tooltip"));
 
-    // Scrollable list of hostile factions with a delete button column.
     this.hostileFactionsTop = this.topPos + 76;
     this.addRenderableWidget(
         new HelpIcon(
@@ -273,7 +276,6 @@ public class FactionEditorScreen<T extends EditorMenu> extends EditorScreen<T> {
                   upDownButton -> this.scrollHostileFactions(1)));
     }
 
-    // Add new hostile faction based on the known factions, with optional mutual relation.
     List<SelectOption<String>> hostileFactionCandidates = new ArrayList<>();
     for (String availableFactionName : this.factionDataEntries.keySet()) {
       if (!availableFactionName.equals(this.factionName)
@@ -320,7 +322,6 @@ public class FactionEditorScreen<T extends EditorMenu> extends EditorScreen<T> {
     this.addRenderableWidget(
         new HelpIcon(this.leftPos + 250, addHostileFactionTop + 2, "mutual.tooltip"));
 
-    // Delete the whole faction.
     this.deleteFactionButton =
         this.addRenderableWidget(
             new DeleteButton(
@@ -421,6 +422,7 @@ public class FactionEditorScreen<T extends EditorMenu> extends EditorScreen<T> {
       this.scrollHostileFactions(scrollY > 0 ? -1 : 1);
       return true;
     }
+
     return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
   }
 
@@ -430,6 +432,7 @@ public class FactionEditorScreen<T extends EditorMenu> extends EditorScreen<T> {
         && this.colorPickerPopup.mouseClicked(mouseButtonEvent, doubleClick)) {
       return true;
     }
+
     return super.mouseClicked(mouseButtonEvent, doubleClick);
   }
 
@@ -440,6 +443,7 @@ public class FactionEditorScreen<T extends EditorMenu> extends EditorScreen<T> {
         && this.colorPickerPopup.keyPressed(keyEvent)) {
       return true;
     }
+
     return super.keyPressed(keyEvent);
   }
 
@@ -450,6 +454,7 @@ public class FactionEditorScreen<T extends EditorMenu> extends EditorScreen<T> {
         && this.colorPickerPopup.charTyped(characterEvent)) {
       return true;
     }
+
     return super.charTyped(characterEvent);
   }
 }

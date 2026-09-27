@@ -49,7 +49,6 @@ public class FairyModel<S extends HumanoidRenderState> extends HumanoidModel<S> 
     MeshDefinition meshDefinition = HumanoidModel.createMesh(CubeDeformation.NONE, MODEL_OFFSET_Y);
     PartDefinition partDefinition = meshDefinition.getRoot();
 
-    // Head
     partDefinition.addOrReplaceChild(
         "head",
         CubeListBuilder.create()
@@ -59,7 +58,6 @@ public class FairyModel<S extends HumanoidRenderState> extends HumanoidModel<S> 
             .addBox(-4.0F, -8.0F, -4.0F, 8.0F, 8.0F, 8.0F, new CubeDeformation(0.5F)),
         PartPose.offset(0.0F, 0.0F + MODEL_OFFSET_Y, 0.0F));
 
-    // Body
     PartDefinition body =
         partDefinition.addOrReplaceChild(
             "body",
@@ -70,7 +68,6 @@ public class FairyModel<S extends HumanoidRenderState> extends HumanoidModel<S> 
                 .addBox(-4.0F, 0.0F, -2.0F, 8.0F, 15.0F, 4.0F, new CubeDeformation(0.5F)),
             PartPose.offset(0.0F, 0.0F + MODEL_OFFSET_Y, 0.0F));
 
-    // Smaller arms
     partDefinition.addOrReplaceChild(
         "right_arm",
         CubeListBuilder.create()
@@ -90,7 +87,6 @@ public class FairyModel<S extends HumanoidRenderState> extends HumanoidModel<S> 
             .addBox(-1.0F, -2.0F, -2.0F, 3.0F, 8.0F, 4.0F, new CubeDeformation(0.5F)),
         PartPose.offset(5.0F, 2.0F + MODEL_OFFSET_Y, 0.0F));
 
-    // Combined legs like Vex
     partDefinition.addOrReplaceChild(
         "right_leg",
         CubeListBuilder.create()
@@ -102,7 +98,6 @@ public class FairyModel<S extends HumanoidRenderState> extends HumanoidModel<S> 
             .addBox(-1.0F, -1.0F, -2.0F, 6.0F, 10.0F, 4.0F, new CubeDeformation(0.5F)),
         PartPose.offset(-1.9F, 12.0F + MODEL_OFFSET_Y, 0.0F));
 
-    // Adding Wings
     body.addOrReplaceChild(
         "left_wing",
         CubeListBuilder.create()
@@ -125,7 +120,6 @@ public class FairyModel<S extends HumanoidRenderState> extends HumanoidModel<S> 
   public void setupAnim(final S renderState) {
     super.setupAnim(renderState);
 
-    // Wing animations
     this.rightWing.yRot =
         Constants.MATH_27DEG_TO_RAD
             + Mth.cos(renderState.ageInTicks * 20F * Constants.PI_180DEG) * (float) Math.PI * 0.15F;

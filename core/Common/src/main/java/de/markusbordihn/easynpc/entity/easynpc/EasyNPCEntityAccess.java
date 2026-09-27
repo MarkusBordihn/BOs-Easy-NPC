@@ -107,6 +107,7 @@ public final class EasyNPCEntityAccess {
     if (entityType == null || !entityType.canSerialize()) {
       return null;
     }
+
     return EntityType.getKey(entityType).toString();
   }
 

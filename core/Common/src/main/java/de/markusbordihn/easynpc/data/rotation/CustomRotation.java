@@ -90,7 +90,7 @@ public record CustomRotation(float x, float y, float z, boolean locked) {
   }
 
   public boolean hasChanged() {
-    return hasChanged(0, 0, 0);
+    return this.hasChanged(0, 0, 0);
   }
 
   public boolean hasChangedRotation() {
@@ -102,7 +102,7 @@ public record CustomRotation(float x, float y, float z, boolean locked) {
   }
 
   public boolean hasChanged(float x, float y, float z) {
-    return hasChanged(x, y, z, false);
+    return this.hasChanged(x, y, z, false);
   }
 
   public boolean hasChanged(float x, float y, float z, boolean locked) {

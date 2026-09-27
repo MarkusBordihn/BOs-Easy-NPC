@@ -31,14 +31,14 @@ public interface ConfigurationDataCapable<T extends Mob> extends EasyNPC<T> {
   }
 
   default boolean supportsConfigurationType(ConfigurationType type) {
-    return getConfigurationData().isEnabled(type);
+    return this.getConfigurationData().isEnabled(type);
   }
 
   default boolean isExperimentalConfigurationType(ConfigurationType type) {
-    return getConfigurationData().isExperimental(type);
+    return this.getConfigurationData().isExperimental(type);
   }
 
   default boolean hasExperimentalConfigurationTypes() {
-    return getConfigurationData().hasExperimentalTypes();
+    return this.getConfigurationData().hasExperimentalTypes();
   }
 }

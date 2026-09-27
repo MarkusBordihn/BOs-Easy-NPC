@@ -39,17 +39,18 @@ public final class DebugManager {
     if (logLevel == null || logLevel == logger.getLevel()) {
       return;
     }
+
     String loggerName = logger.getName();
     LoggerContext context = (LoggerContext) LogManager.getContext(false);
-    Configuration config = context.getConfiguration();
-    LoggerConfig loggerConfig = config.getLoggerConfig(loggerName);
+    Configuration configuration = context.getConfiguration();
+    LoggerConfig loggerConfig = configuration.getLoggerConfig(loggerName);
     LoggerConfig specificConfig = loggerConfig;
     if (!loggerConfig.getName().equals(loggerName)) {
       log.info(
           "{} Add new logger config for {} with level {} ...", LOG_PREFIX, loggerName, logLevel);
       specificConfig = new LoggerConfig(loggerName, logLevel, true);
       specificConfig.setParent(loggerConfig);
-      config.addLogger(loggerName, specificConfig);
+      configuration.addLogger(loggerName, specificConfig);
     } else {
       log.info(
           "{} Changing log level for {} from {} to {}",

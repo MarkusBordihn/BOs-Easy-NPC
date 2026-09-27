@@ -99,6 +99,7 @@ public class EasyNPCArgument implements ArgumentType<EntitySelector> {
     if (easyNPC == null) {
       throw NO_ENTITIES_FOUND.create();
     }
+
     return easyNPC;
   }
 
@@ -149,21 +150,21 @@ public class EasyNPCArgument implements ArgumentType<EntitySelector> {
     if (!(context.getSource() instanceof SharedSuggestionProvider sharedSuggestionProvider)) {
       return Suggestions.empty();
     }
+
     StringReader stringReader = new StringReader(suggestionsBuilder.getInput());
     stringReader.setCursor(suggestionsBuilder.getStart());
     EasyNPCSelectorParser easyNPCSelectorParser =
         new EasyNPCSelectorParser(stringReader, sharedSuggestionProvider);
     try {
       easyNPCSelectorParser.parse();
-    } catch (CommandSyntaxException exception) {
-      // Ignore
+    } catch (CommandSyntaxException ignored) {
     }
 
     return easyNPCSelectorParser.fillSuggestions(
         suggestionsBuilder,
-        consumer -> {
+        entitySuggestionsBuilder -> {
           Iterable<String> result = sharedSuggestionProvider.getSelectedEntities();
-          SharedSuggestionProvider.suggest(result, consumer);
+          SharedSuggestionProvider.suggest(result, entitySuggestionsBuilder);
         });
   }
 

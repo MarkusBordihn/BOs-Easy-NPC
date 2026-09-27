@@ -56,14 +56,12 @@ public class TargetObjectiveConfigurationScreen<T extends ConfigurationMenu>
   public void init() {
     super.init();
 
-    // Default button stats
     this.targetObjectiveButton.active = false;
 
     int objectiveEntriesTop = this.contentTopPos + 10;
     int objectiveEntriesFirstColumn = this.contentLeftPos + 5;
     int objectiveEntriesSecondColumn = this.contentLeftPos + 145;
 
-    // Attack hostile factions.
     this.attackHostileFactionsCheckbox =
         this.addRenderableWidget(
             this.getObjectiveCheckbox(
@@ -84,7 +82,6 @@ public class TargetObjectiveConfigurationScreen<T extends ConfigurationMenu>
                 TextComponent.getTranslatedConfigText("warning.no_attack_objective")));
     this.missingAttackObjectiveWarning.visible = false;
 
-    // Target conditions with input fields.
     objectiveEntriesTop += SPACE_BETWEEN_ENTRIES + 10;
     this.attackPlayerByNameCheckbox =
         this.addObjectiveTargetRow(

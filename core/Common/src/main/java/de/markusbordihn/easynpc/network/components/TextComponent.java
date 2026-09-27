@@ -33,6 +33,7 @@ public class TextComponent {
     if (translate) {
       return getTranslatedTextRaw(text);
     }
+
     return getText(text);
   }
 
@@ -40,6 +41,7 @@ public class TextComponent {
     if (text != null && !text.isBlank() && Character.isLowerCase(text.codePointAt(0))) {
       return getTranslatedConfigText(text);
     }
+
     return getText(text != null ? text : "");
   }
 
@@ -51,6 +53,7 @@ public class TextComponent {
     if (text != null && !text.isBlank() && Character.isLowerCase(text.codePointAt(0))) {
       return getTranslatedConfigText(text, data);
     }
+
     return getText(text != null ? text : "");
   }
 
@@ -58,6 +61,7 @@ public class TextComponent {
     if (text != null && !text.isBlank() && Character.isLowerCase(text.codePointAt(0))) {
       return getTranslatedConfigText(text, data);
     }
+
     return getText(text != null ? text : "");
   }
 

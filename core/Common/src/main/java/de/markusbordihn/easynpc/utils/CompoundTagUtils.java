@@ -145,6 +145,7 @@ public class CompoundTagUtils {
         || !compoundTag.contains(Z_TAG)) {
       return BlockPos.ZERO;
     }
+
     return new BlockPos(
         compoundTag.getInt(X_TAG).orElse(0),
         compoundTag.getInt(Y_TAG).orElse(0),
@@ -167,6 +168,7 @@ public class CompoundTagUtils {
     if (compoundTag == null) {
       return null;
     }
+
     return new CustomScale(
         compoundTag.getFloat(X_TAG).orElse(0.0F),
         compoundTag.getFloat(Y_TAG).orElse(0.0F),

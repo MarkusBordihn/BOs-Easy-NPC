@@ -76,14 +76,11 @@ public class BasicTradingConfigurationContainerScreen<T extends ConfigurationMen
   public void init() {
     super.init();
 
-    // Default button stats
     this.basicTradesButton.active = false;
 
-    // Trading Data
     TradingDataCapable<?> tradingData = this.getEasyNPC().getEasyNPCTradingData();
     TradingDataSet tradingDataSet = tradingData.getTradingDataSet();
 
-    // Reset Every Min Edit Box
     this.resetsEveryMinEditBox =
         new TextField(this.font, this.contentLeftPos + 166, this.contentTopPos + 133, 32);
     this.resetsEveryMinEditBox.setMaxLength(3);
@@ -91,7 +88,6 @@ public class BasicTradingConfigurationContainerScreen<T extends ConfigurationMen
     this.resetsEveryMinEditBox.setResponder(this::onResetsEveryMinEditBoxChanged);
     this.addRenderableWidget(this.resetsEveryMinEditBox);
 
-    // Max Uses Edit Box
     this.maxUsesEditBox =
         new PositiveNumberField(
             this.font,
@@ -103,7 +99,6 @@ public class BasicTradingConfigurationContainerScreen<T extends ConfigurationMen
     this.maxUsesEditBox.setResponder(this::onMaxUsesEditBoxChanged);
     this.addRenderableWidget(this.maxUsesEditBox);
 
-    // Experience Edit Box
     this.rewardExpEditBox =
         new TextField(
             this.font,
@@ -115,7 +110,6 @@ public class BasicTradingConfigurationContainerScreen<T extends ConfigurationMen
     this.rewardExpEditBox.setResponder(this::onRewardExpEditBoxChanged);
     this.addRenderableWidget(this.rewardExpEditBox);
 
-    // Reset Trades Button
     this.addRenderableWidget(
         new TextButton(
             this.contentLeftPos + 166,
@@ -140,21 +134,18 @@ public class BasicTradingConfigurationContainerScreen<T extends ConfigurationMen
 
     MerchantOffers merchantOffers = this.getEasyNPC().getEasyNPCTradingData().getTradingOffers();
 
-    // Render Trading Slots
     int slotPositionX = this.leftPos + BasicTradingConfigurationMenu.TRADING_START_POSITION_X - 1;
     int slotPositionY = this.topPos + BasicTradingConfigurationMenu.TRADING_START_POSITION_Y - 1;
     for (int tradingOffer = 0;
         tradingOffer < TradingSettings.BASIC_TRADING_OFFERS;
         tradingOffer++) {
 
-      // Position for Second row
       if (tradingOffer == 6) {
         slotPositionX =
             this.leftPos + BasicTradingConfigurationMenu.TRADING_START_POSITION_SECOND_ROW_X - 1;
         slotPositionY = this.topPos + BasicTradingConfigurationMenu.TRADING_START_POSITION_Y - 1;
       }
 
-      // Offer Label
       Text.drawString(
           guiGraphics,
           this.font,
@@ -163,7 +154,6 @@ public class BasicTradingConfigurationContainerScreen<T extends ConfigurationMen
           slotPositionY + 5,
           0x404040);
 
-      // Item A Slot
       int itemASlotLeftPosition = slotPositionX;
       int itemASlotTopPosition = slotPositionY;
       Graphics.blit(
@@ -176,7 +166,6 @@ public class BasicTradingConfigurationContainerScreen<T extends ConfigurationMen
           18,
           18);
 
-      // "+" Label
       Text.drawString(
           guiGraphics,
           this.font,
@@ -185,7 +174,6 @@ public class BasicTradingConfigurationContainerScreen<T extends ConfigurationMen
           itemASlotTopPosition + 5,
           0x404040);
 
-      // Item B Slot
       int itemBSlotLeftPosition =
           slotPositionX
               + BasicTradingConfigurationMenu.TRADING_SLOT_SIZE
@@ -201,7 +189,6 @@ public class BasicTradingConfigurationContainerScreen<T extends ConfigurationMen
           18,
           18);
 
-      // "=" Label
       Text.drawString(
           guiGraphics,
           this.font,
@@ -210,7 +197,6 @@ public class BasicTradingConfigurationContainerScreen<T extends ConfigurationMen
           itemBSlotTopPosition + 5,
           0x404040);
 
-      // Result Slot
       Graphics.blit(
           guiGraphics,
           Constants.TEXTURE_INVENTORY,
@@ -225,7 +211,6 @@ public class BasicTradingConfigurationContainerScreen<T extends ConfigurationMen
           18,
           18);
 
-      // Uses / MaxUses label
       if (merchantOffers != null && tradingOffer < merchantOffers.size()) {
         MerchantOffer offer = merchantOffers.get(tradingOffer);
         Text.drawString(
@@ -240,7 +225,6 @@ public class BasicTradingConfigurationContainerScreen<T extends ConfigurationMen
       slotPositionY += BasicTradingConfigurationMenu.TRADING_SLOT_SIZE + 1;
     }
 
-    // Player Inventory Slots
     Graphics.blit(
         guiGraphics,
         Constants.TEXTURE_INVENTORY,
@@ -251,7 +235,6 @@ public class BasicTradingConfigurationContainerScreen<T extends ConfigurationMen
         162,
         54);
 
-    // Player Hotbar Slots
     Graphics.blit(
         guiGraphics,
         Constants.TEXTURE_INVENTORY,
@@ -262,7 +245,6 @@ public class BasicTradingConfigurationContainerScreen<T extends ConfigurationMen
         162,
         18);
 
-    // Render Reset Every Min Label
     Text.drawConfigString(
         guiGraphics,
         this.font,
@@ -271,7 +253,6 @@ public class BasicTradingConfigurationContainerScreen<T extends ConfigurationMen
         this.resetsEveryMinEditBox.getY() + 3,
         0x404040);
 
-    // Render Max Uses Label
     Text.drawConfigString(
         guiGraphics,
         this.font,
@@ -280,7 +261,6 @@ public class BasicTradingConfigurationContainerScreen<T extends ConfigurationMen
         this.maxUsesEditBox.getY() + 3,
         0x404040);
 
-    // Render Reward Exp Label
     Text.drawConfigString(
         guiGraphics,
         this.font,

@@ -67,10 +67,10 @@ public record AddOrUpdateObjectiveMessage(UUID uuid, ObjectiveDataEntry objectiv
 
   @Override
   public void handleServer(final ServerPlayer serverPlayer) {
-    EasyNPC<?> easyNPC = getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
+    EasyNPC<?> easyNPC = this.getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
 
     if (easyNPC == null || this.objectiveDataEntry == null) {
-      log.error("Invalid data to add/update objective for {}: ", this);
+      log.error("Invalid data to add/update objective for {}", this);
       return;
     }
 
@@ -80,7 +80,7 @@ public record AddOrUpdateObjectiveMessage(UUID uuid, ObjectiveDataEntry objectiv
     }
 
     if (!ObjectiveHandler.addOrUpdateCustomObjective(easyNPC, this.objectiveDataEntry)) {
-      log.error("Failed to add/update objective {} for {}", objectiveDataEntry, easyNPC);
+      log.error("Failed to add/update objective {} for {}", this.objectiveDataEntry, easyNPC);
     }
   }
 }

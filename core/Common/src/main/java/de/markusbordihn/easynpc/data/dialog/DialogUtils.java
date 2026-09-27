@@ -23,6 +23,7 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.action.ActionDataEntry;
 import de.markusbordihn.easynpc.data.action.ActionDataSet;
 import de.markusbordihn.easynpc.data.action.ActionDataType;
+import de.markusbordihn.easynpc.data.action.ActionUtils;
 import de.markusbordihn.easynpc.data.scoreboard.ScoreboardData;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import de.markusbordihn.easynpc.utils.ResourceNameNormalizer;
@@ -33,8 +34,6 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import net.minecraft.client.gui.Font;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
@@ -47,8 +46,9 @@ public class DialogUtils {
   public static final int MAX_DIALOG_LINE_LENGTH = 192;
   private static final String MACRO_NPC_STRING = "@npc";
   private static final String MACRO_INITIATOR_STRING = "@initiator";
-  private static final Pattern SCORE_PATTERN = Pattern.compile("@score\\(([a-zA-Z0-9_.-]+)\\)");
   private static final int MAX_SMALL_BUTTON_NAME_LENGTH = 20;
+  private static final int MACRO_LINE_RESERVE = 20;
+  private static final int MAX_COMPACT_LAYOUT_LINES = 6;
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private static final Set<String> reportedLabelChanges = ConcurrentHashMap.newKeySet();
 
@@ -58,6 +58,7 @@ public class DialogUtils {
     if (dialogMetaData == null) {
       return component.getString();
     }
+
     return parseDialogText(
         component.getString(),
         dialogMetaData.livingEntity(),
@@ -71,28 +72,16 @@ public class DialogUtils {
 
   public static String parseDialogText(
       String text, LivingEntity entity, Player player, ScoreboardData scoreboardData) {
-
-    // Handle dialog macros, if any.
     if (hasDialogMacros(text)) {
-      // Replace entity macros.
       if (entity != null) {
         text = text.replace(MACRO_NPC_STRING, entity.getName().getString());
       }
 
-      // Replace player macros.
       if (player != null) {
         text = text.replace(MACRO_INITIATOR_STRING, player.getName().getString());
 
         if (scoreboardData != null) {
-          Matcher matcher = SCORE_PATTERN.matcher(text);
-          StringBuilder sb = new StringBuilder();
-          while (matcher.find()) {
-            String objectiveName = matcher.group(1);
-            int score = scoreboardData.getScore(objectiveName);
-            matcher.appendReplacement(sb, Matcher.quoteReplacement(String.valueOf(score)));
-          }
-          matcher.appendTail(sb);
-          text = sb.toString();
+          text = ActionUtils.replaceScoreMacros(text, scoreboardData::getScore);
         }
       }
     }
@@ -121,11 +110,20 @@ public class DialogUtils {
   }
 
   public static String generateButtonLabel(String label, String fallbackName) {
+    return normalizeLabel(label, fallbackName, "button", DialogButtonEntry.MAX_BUTTON_LABEL_LENGTH);
+  }
+
+  public static String generateDialogLabel(String name) {
+    return generateLabel(name, "dialog", DialogDataEntry.MAX_DIALOG_LABEL_LENGTH);
+  }
+
+  private static String normalizeLabel(
+      String label, String fallbackName, String type, int maxLength) {
     if (label == null || label.isEmpty()) {
-      return generateButtonLabel(fallbackName);
+      return generateLabel(fallbackName, type, maxLength);
     }
 
-    String generatedLabel = generateButtonLabel(label);
+    String generatedLabel = generateLabel(label, type, maxLength);
     if (!generatedLabel.equals(label) && reportedLabelChanges.add(label)) {
       log.warn(
           "Normalized dialog label '{}' to '{}', use the normalized label to reference it.",
@@ -134,10 +132,6 @@ public class DialogUtils {
     }
 
     return generatedLabel;
-  }
-
-  public static String generateDialogLabel(String name) {
-    return generateLabel(name, "dialog", DialogDataEntry.MAX_DIALOG_LABEL_LENGTH);
   }
 
   private static String generateLabel(String name, String type, int maxLength) {
@@ -162,6 +156,7 @@ public class DialogUtils {
     if (text == null || text.isEmpty()) {
       return 0;
     }
+
     return getNumberOfDialogLines(TextComponent.getText(text), maxLineLength, font);
   }
 
@@ -182,14 +177,11 @@ public class DialogUtils {
       String noButtonText,
       String yesDialogText,
       String noDialogText) {
-
-    // Define yes and no actions.
     ActionDataSet yesActionDataSet = new ActionDataSet();
     yesActionDataSet.add(new ActionDataEntry(ActionDataType.OPEN_NAMED_DIALOG, "yes_answer"));
     Set<DialogButtonEntry> buttons =
         getDialogButtonEntries(yesButtonText, noButtonText, yesActionDataSet);
 
-    // Build dialog data set.
     DialogDataSet dialogDataSet = new DialogDataSet(DialogType.YES_NO);
     DialogDataEntry questionDialog =
         new DialogDataEntry("question", "Question Dialog", dialogText, buttons);
@@ -205,13 +197,11 @@ public class DialogUtils {
     ActionDataSet noActionDataSet = new ActionDataSet();
     noActionDataSet.add(new ActionDataEntry(ActionDataType.OPEN_NAMED_DIALOG, "no_answer"));
 
-    // Define yes and no buttons.
     DialogButtonEntry yesButtonData =
         new DialogButtonEntry(yesButtonText, "yes_button", yesActionDataSet);
     DialogButtonEntry noButtonData =
         new DialogButtonEntry(noButtonText, "no_button", noActionDataSet);
 
-    // Define list of buttons for the dialog.
     Set<DialogButtonEntry> buttons = new LinkedHashSet<>();
     buttons.add(yesButtonData);
     buttons.add(noButtonData);
@@ -236,31 +226,33 @@ public class DialogUtils {
 
   public static DialogScreenLayout getDialogScreenLayout(
       Component dialogText, Font font, List<DialogButtonEntry> dialogButtons) {
+    return getDialogScreenLayout(dialogText, font, dialogButtons, null);
+  }
+
+  public static DialogScreenLayout getDialogScreenLayout(
+      Component dialogText,
+      Font font,
+      List<DialogButtonEntry> dialogButtons,
+      DialogMetaData dialogMetaData) {
     if (dialogText == null || dialogText.getString().isBlank()) {
       return DialogScreenLayout.UNKNOWN;
     }
+
     int numberOfButtons = dialogButtons != null ? dialogButtons.size() : 0;
-
-    // Check if we could use a compact layout or if we need to use a full layout.
-    boolean hasDialogMacros = hasDialogMacros(dialogText);
-
-    // Check if we need to parse line breaks.
     Component parsedDialogText =
         TextFormattingCodes.hasTextLinebreakCodes(dialogText)
             ? TextFormattingCodes.parseTextLineBreaks(dialogText)
             : dialogText;
 
-    // Calculate the number of lines.
     int numberOfLines = getNumberOfDialogLines(parsedDialogText, font);
-    if (hasDialogMacros) {
-      numberOfLines += 20;
+    if (hasDialogMacros(dialogText)) {
+      numberOfLines += MACRO_LINE_RESERVE;
     }
 
-    // Get the max length of the button names to check if we could use a compact layout.
     int maxButtonNameLength = 0;
     if (numberOfButtons > 0) {
       for (DialogButtonEntry buttonData : dialogButtons) {
-        int buttonNameLength = buttonData.name().length();
+        int buttonNameLength = buttonData.getButtonName(dialogMetaData).getString().length();
         if (buttonNameLength > maxButtonNameLength) {
           maxButtonNameLength = buttonNameLength;
         }
@@ -268,8 +260,7 @@ public class DialogUtils {
     }
     boolean hasLargeButtonName = maxButtonNameLength > MAX_SMALL_BUTTON_NAME_LENGTH;
 
-    // Everything with 6 or fewer lines could be displayed in a compact layout.
-    if (numberOfLines <= 6) {
+    if (numberOfLines <= MAX_COMPACT_LAYOUT_LINES) {
       if (numberOfButtons == 0) {
         return DialogScreenLayout.COMPACT_TEXT_ONLY;
       } else if (numberOfButtons == 1) {
@@ -289,7 +280,6 @@ public class DialogUtils {
       }
     }
 
-    // Everything else will be displayed in a full layout.
     if (numberOfButtons == 0) {
       return DialogScreenLayout.TEXT_ONLY;
     } else if (numberOfButtons == 1) {
@@ -306,7 +296,6 @@ public class DialogUtils {
       return DialogScreenLayout.TEXT_WITH_SIX_BUTTONS;
     }
 
-    // Fallback to unknown layout.
     return DialogScreenLayout.UNKNOWN;
   }
 }

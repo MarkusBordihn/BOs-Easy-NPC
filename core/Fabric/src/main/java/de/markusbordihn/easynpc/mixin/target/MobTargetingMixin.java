@@ -39,10 +39,10 @@ public abstract class MobTargetingMixin {
   @Shadow @Final protected GoalSelector goalSelector;
 
   @Inject(method = "<init>", at = @At("RETURN"))
-  private void onConstructed(EntityType<?> entityType, Level level, CallbackInfo ci) {
+  private void onConstructed(EntityType<?> entityType, Level level, CallbackInfo callbackInfo) {
     if (level instanceof ServerLevel serverLevel) {
       MobGoalSelectorManager.addMobGoals(
-          (Mob) (Object) this, goalSelector, targetSelector, entityType, serverLevel);
+          (Mob) (Object) this, this.goalSelector, this.targetSelector, entityType, serverLevel);
     }
   }
 }

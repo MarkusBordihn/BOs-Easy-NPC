@@ -33,43 +33,44 @@ public interface ModelAnimationDataCapable<T extends Mob> extends EasyNPC<T> {
   String EASY_NPC_DATA_ANIMATION_DATA_TAG = "AnimationData";
 
   default ModelAnimationData getModelAnimationData() {
-    ModelAnimationData animationData = getSynchedEntityData(SynchedDataIndex.MODEL_ANIMATION);
+    ModelAnimationData animationData = this.getSynchedEntityData(SynchedDataIndex.MODEL_ANIMATION);
     if (animationData == null) {
       animationData = new ModelAnimationData();
-      setModelAnimationData(animationData);
+      this.setModelAnimationData(animationData);
     }
     return animationData;
   }
 
   default void setModelAnimationData(ModelAnimationData animationData) {
     if (animationData != null) {
-      setSynchedEntityData(SynchedDataIndex.MODEL_ANIMATION, animationData);
+      this.setSynchedEntityData(SynchedDataIndex.MODEL_ANIMATION, animationData);
     }
   }
 
   default ModelAnimationBehavior getModelAnimationBehavior() {
-    return getModelAnimationData().behavior();
+    return this.getModelAnimationData().behavior();
   }
 
   default void setModelAnimationBehavior(ModelAnimationBehavior behavior) {
-    setModelAnimationData(
-        new ModelAnimationData(behavior, getModelAnimationData().playbackRequest()));
+    this.setModelAnimationData(
+        new ModelAnimationData(behavior, this.getModelAnimationData().playbackRequest()));
   }
 
   default ModelAnimationRequest getModelAnimationRequest() {
-    return getModelAnimationData().playbackRequest();
+    return this.getModelAnimationData().playbackRequest();
   }
 
   default void setModelAnimationRequest(ModelAnimationRequest request) {
-    setModelAnimationData(new ModelAnimationData(getModelAnimationBehavior(), request));
+    this.setModelAnimationData(new ModelAnimationData(this.getModelAnimationBehavior(), request));
   }
 
   default void defineSynchedModelAnimationData(SynchedEntityData.Builder builder) {
-    defineSynchedEntityData(builder, SynchedDataIndex.MODEL_ANIMATION, new ModelAnimationData());
+    this.defineSynchedEntityData(
+        builder, SynchedDataIndex.MODEL_ANIMATION, new ModelAnimationData());
   }
 
   default void addAdditionalModelAnimationData(CompoundTag compoundTag) {
-    ModelAnimationData animationData = getModelAnimationData();
+    ModelAnimationData animationData = this.getModelAnimationData();
     if (animationData != null && animationData.hasChanged()) {
       compoundTag.put(EASY_NPC_DATA_ANIMATION_DATA_TAG, animationData.save());
     }
@@ -82,6 +83,6 @@ public interface ModelAnimationDataCapable<T extends Mob> extends EasyNPC<T> {
 
     CompoundTag animationDataTag = compoundTag.getCompoundOrEmpty(EASY_NPC_DATA_ANIMATION_DATA_TAG);
     ModelAnimationData animationData = new ModelAnimationData(animationDataTag);
-    setModelAnimationData(animationData);
+    this.setModelAnimationData(animationData);
   }
 }

@@ -115,11 +115,11 @@ public enum ModNPCEntityRenderer {
   }
 
   public ModNPCEntityType getEntityType() {
-    return entityType;
+    return this.entityType;
   }
 
   public Function<Context, EntityRenderer<? extends Entity, ? extends EntityRenderState>>
       getRenderer() {
-    return renderer.get();
+    return this.renderer.get();
   }
 }

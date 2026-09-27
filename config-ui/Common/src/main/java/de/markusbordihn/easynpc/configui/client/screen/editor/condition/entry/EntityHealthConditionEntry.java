@@ -45,7 +45,7 @@ public class EntityHealthConditionEntry extends ConditionEntryWidget {
 
   @Override
   public void init(int editorLeft, int editorTop) {
-    boolean hasData = hasConditionData(ConditionType.ENTITY_HEALTH);
+    boolean hasData = this.hasConditionData(ConditionType.ENTITY_HEALTH);
     this.operationTypeButton =
         this.addComparisonOperationButton(
             editorLeft + 110, editorTop, hasData, ConditionOperationType.LESS_THAN_OR_EQUALS);

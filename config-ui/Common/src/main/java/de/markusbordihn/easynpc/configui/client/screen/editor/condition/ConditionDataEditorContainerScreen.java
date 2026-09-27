@@ -58,7 +58,6 @@ public class ConditionDataEditorContainerScreen<T extends EditorMenu> extends Ed
   private static final int ADD_BUTTON_X_OFFSET = 7;
   private static final int ADD_BUTTON_WIDTH = 300;
 
-  // Color constants
   private static final int COLOR_LIST_BACKGROUND = 0xffeeeeee;
   private static final int COLOR_HEADER_BACKGROUND = 0xffaaaaaa;
   private static final int COLOR_FOOTER_BACKGROUND = 0xffc6c6c6;
@@ -198,8 +197,8 @@ public class ConditionDataEditorContainerScreen<T extends EditorMenu> extends Ed
       this.conditionDataList.extractRenderState(guiGraphics, x, y, partialTicks);
     }
 
-    renderHeader(guiGraphics);
-    renderFooter(guiGraphics);
+    this.renderHeader(guiGraphics);
+    this.renderFooter(guiGraphics);
 
     if (this.newConditionDataEntryButton != null) {
       this.newConditionDataEntryButton.extractRenderState(guiGraphics, x, y, partialTicks);

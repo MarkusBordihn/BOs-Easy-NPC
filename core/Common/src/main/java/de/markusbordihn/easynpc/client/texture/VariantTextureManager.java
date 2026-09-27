@@ -48,7 +48,10 @@ public class VariantTextureManager {
           texture);
       return;
     }
-    textureRegistry.computeIfAbsent(skinModel, k -> new HashMap<>()).put(variantType, texture);
+
+    textureRegistry
+        .computeIfAbsent(skinModel, missingSkinModel -> new HashMap<>())
+        .put(variantType, texture);
     log.debug(
         "{} Registered variant texture for {} - {}: {}",
         LOG_PREFIX,
@@ -67,8 +70,9 @@ public class VariantTextureManager {
           textures);
       return;
     }
+
     Map<Enum<?>, Identifier> variantMap =
-        textureRegistry.computeIfAbsent(skinModel, k -> new HashMap<>());
+        textureRegistry.computeIfAbsent(skinModel, missingSkinModel -> new HashMap<>());
     variantMap.putAll(textures);
     log.debug("{} Registered {} variant textures for {}", LOG_PREFIX, textures.size(), skinModel);
   }
@@ -77,10 +81,12 @@ public class VariantTextureManager {
     if (skinModel == null || variantType == null) {
       return Constants.BLANK_ENTITY_TEXTURE;
     }
+
     Map<Enum<?>, Identifier> variantMap = textureRegistry.get(skinModel);
     if (variantMap == null) {
       return Constants.BLANK_ENTITY_TEXTURE;
     }
+
     return variantMap.getOrDefault(variantType, Constants.BLANK_ENTITY_TEXTURE);
   }
 
@@ -94,6 +100,7 @@ public class VariantTextureManager {
     if (skinModel == null || variantType == null) {
       return false;
     }
+
     Map<Enum<?>, Identifier> variantMap = textureRegistry.get(skinModel);
     return variantMap != null && variantMap.containsKey(variantType);
   }

@@ -52,6 +52,7 @@ public class RemoteTextureManager {
   private static final long BASE_RETRY_DELAY = 60000;
   private static final int MAX_RETRY_ATTEMPTS = 3;
   private static final long CACHE_CLEANUP_INTERVAL = 600000;
+  private static final long RELOAD_PROTECTION_EXPIRY_MILLISECONDS = 300000;
   private static volatile long lastCleanup = System.currentTimeMillis();
 
   private RemoteTextureManager() {}
@@ -93,6 +94,7 @@ public class RemoteTextureManager {
     if (attempts >= MAX_RETRY_ATTEMPTS) {
       return Long.MAX_VALUE;
     }
+
     return BASE_RETRY_DELAY * (long) Math.pow(2, Math.max(0, attempts));
   }
 
@@ -131,7 +133,9 @@ public class RemoteTextureManager {
       return;
     }
 
-    textureReloadProtection.entrySet().removeIf(entry -> now - entry.getValue() > 300000);
+    textureReloadProtection
+        .entrySet()
+        .removeIf(entry -> now - entry.getValue() > RELOAD_PROTECTION_EXPIRY_MILLISECONDS);
     retryAttempts.entrySet().removeIf(entry -> textureCache.containsKey(entry.getKey()));
 
     lastCleanup = now;
@@ -169,7 +173,6 @@ public class RemoteTextureManager {
       return defaultIdentifier;
     }
 
-    // Check if there is already any cached resource location.
     TextureModelKey textureModelKey = new TextureModelKey(skinUUID, skinData.getSkinModel());
     Identifier resourceLocation = textureCache.get(textureModelKey);
     String skinURL = skinData.getSkinURL();

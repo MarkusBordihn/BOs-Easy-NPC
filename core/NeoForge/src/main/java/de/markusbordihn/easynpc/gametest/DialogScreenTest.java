@@ -19,10 +19,10 @@
 
 package de.markusbordihn.easynpc.gametest;
 
+import static de.markusbordihn.easynpc.gametest.GameTestEntityTypes.humanoid;
+
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.data.dialog.DialogUtils;
-import de.markusbordihn.easynpc.entity.ModEntityType;
-import de.markusbordihn.easynpc.entity.ModNPCEntityType;
 import de.markusbordihn.easynpc.menu.ModMenuTypes;
 import net.minecraft.gametest.framework.GameTestHelper;
 
@@ -32,10 +32,7 @@ public final class DialogScreenTest {
 
   public static void testOpenDialog(GameTestHelper helper) {
     DialogScreenTestHelper.testDialogScreen(
-        helper,
-        new DialogDataSet(),
-        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
-        ModMenuTypes.DIALOG_MENU.get());
+        helper, new DialogDataSet(), humanoid(), ModMenuTypes.DIALOG_MENU.get());
     helper.succeed();
   }
 
@@ -43,7 +40,7 @@ public final class DialogScreenTest {
     DialogScreenTestHelper.testDialogScreen(
         helper,
         DialogUtils.getBasicDialog("Hello, I'm a test NPC!"),
-        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
+        humanoid(),
         ModMenuTypes.DIALOG_MENU.get());
     helper.succeed();
   }
@@ -57,10 +54,7 @@ public final class DialogScreenTest {
             "You have selected Yes!",
             "You have selected No!");
     DialogScreenTestHelper.testDialogScreen(
-        helper,
-        dialogDataSet,
-        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
-        ModMenuTypes.DIALOG_MENU.get());
+        helper, dialogDataSet, humanoid(), ModMenuTypes.DIALOG_MENU.get());
     helper.succeed();
   }
 }

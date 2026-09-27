@@ -42,12 +42,6 @@ public class EasyNPCSpiderModelMixin<T extends LivingEntityRenderState>
   @Shadow @Final private ModelPart head;
   @Shadow @Final private ModelPart rightFrontLeg;
   @Shadow @Final private ModelPart leftFrontLeg;
-  @Shadow @Final private ModelPart rightMiddleFrontLeg;
-  @Shadow @Final private ModelPart leftMiddleFrontLeg;
-  @Shadow @Final private ModelPart rightMiddleHindLeg;
-  @Shadow @Final private ModelPart leftMiddleHindLeg;
-  @Shadow @Final private ModelPart rightHindLeg;
-  @Shadow @Final private ModelPart leftHindLeg;
 
   @Unique private EasyNPCModelManager easyNPC$modelManager;
 
@@ -57,7 +51,7 @@ public class EasyNPCSpiderModelMixin<T extends LivingEntityRenderState>
   }
 
   @Inject(method = "<init>(Lnet/minecraft/client/model/geom/ModelPart;)V", at = @At("TAIL"))
-  private void easyNpcModel(ModelPart modelPart, CallbackInfo callbackInfo) {
+  private void easyNPC$initModelManager(ModelPart modelPart, CallbackInfo callbackInfo) {
     this.easyNPC$modelManager =
         new EasyNPCModelManager(modelPart)
             .defineModelPart(ModelPartType.HEAD, this.head)
@@ -69,7 +63,7 @@ public class EasyNPCSpiderModelMixin<T extends LivingEntityRenderState>
       method = "setupAnim(Lnet/minecraft/client/renderer/entity/state/LivingEntityRenderState;)V",
       at = @At("HEAD"),
       cancellable = true)
-  private void setupNpcAnimStart(T renderState, CallbackInfo callbackInfo) {
+  private void easyNPC$setupAnimStart(T renderState, CallbackInfo callbackInfo) {
     if (renderState instanceof EasyNPCRenderStateExtension extension
         && EasyNPCModel.setupAnimationStart(extension, this.easyNPC$modelManager)) {
       callbackInfo.cancel();
@@ -79,7 +73,7 @@ public class EasyNPCSpiderModelMixin<T extends LivingEntityRenderState>
   @Inject(
       method = "setupAnim(Lnet/minecraft/client/renderer/entity/state/LivingEntityRenderState;)V",
       at = @At("TAIL"))
-  private void setupNpcAnimEnd(T renderState, CallbackInfo callbackInfo) {
+  private void easyNPC$setupAnimEnd(T renderState, CallbackInfo callbackInfo) {
     if (renderState instanceof EasyNPCRenderStateExtension extension) {
       EasyNPCModel.setupAnimationEnd(extension, this.easyNPC$modelManager);
     }

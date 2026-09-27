@@ -62,7 +62,6 @@ public class BaseAttributeConfigurationScreen<T extends ConfigurationMenu>
       double defaultValue,
       double stepSize,
       OnChange onChange) {
-    // Get attribute values directly from attribute with default value as fallback.
     double minValue =
         attribute instanceof RangedAttribute rangedAttribute
             ? Math.max(rangedAttribute.getMinValue(), defaultMinValue)
@@ -80,21 +79,18 @@ public class BaseAttributeConfigurationScreen<T extends ConfigurationMenu>
   public void init() {
     super.init();
 
-    // Default button stats
     this.baseAttributeButton.active = false;
 
-    // Sliders
     int sliderXPos = this.buttonLeftPos + 130;
     int sliderYPos = this.buttonTopPos + 22;
     int sliderWidth = 170;
     int sliderHeight = 14;
     int sliderYSpace = 20;
 
-    // Attribute data
     LivingEntity livingEntity = this.getEasyNPC().getLivingEntity();
 
     this.maxHealthSlider =
-        createAttributeSlider(
+        this.createAttributeSlider(
             sliderXPos,
             sliderYPos,
             sliderWidth,
@@ -114,7 +110,7 @@ public class BaseAttributeConfigurationScreen<T extends ConfigurationMenu>
 
     sliderYPos += sliderYSpace;
     this.followRangeSlider =
-        createAttributeSlider(
+        this.createAttributeSlider(
             sliderXPos,
             sliderYPos,
             sliderWidth,
@@ -134,7 +130,7 @@ public class BaseAttributeConfigurationScreen<T extends ConfigurationMenu>
 
     sliderYPos += sliderYSpace;
     this.knockbackResistanceSlider =
-        createAttributeSlider(
+        this.createAttributeSlider(
             sliderXPos,
             sliderYPos,
             sliderWidth,
@@ -155,7 +151,7 @@ public class BaseAttributeConfigurationScreen<T extends ConfigurationMenu>
     if (livingEntity.getAttribute(Attributes.MOVEMENT_SPEED) != null) {
       sliderYPos += sliderYSpace;
       this.movementSpeedSlider =
-          createAttributeSlider(
+          this.createAttributeSlider(
               sliderXPos,
               sliderYPos,
               sliderWidth,
@@ -174,12 +170,11 @@ public class BaseAttributeConfigurationScreen<T extends ConfigurationMenu>
                           slider.getTargetDoubleValue()));
     }
 
-    // Flying Speed, only relevant while the NPC uses a flying navigation.
     if (livingEntity.getAttribute(Attributes.FLYING_SPEED) != null
         && this.getEasyNPC().getEasyNPCNavigationData().canFly()) {
       sliderYPos += sliderYSpace;
       this.flyingSpeedSlider =
-          createAttributeSlider(
+          this.createAttributeSlider(
               sliderXPos,
               sliderYPos,
               sliderWidth,
@@ -200,7 +195,7 @@ public class BaseAttributeConfigurationScreen<T extends ConfigurationMenu>
 
     sliderYPos += sliderYSpace;
     this.attackDamageSlider =
-        createAttributeSlider(
+        this.createAttributeSlider(
             sliderXPos,
             sliderYPos,
             sliderWidth,
@@ -220,7 +215,7 @@ public class BaseAttributeConfigurationScreen<T extends ConfigurationMenu>
 
     sliderYPos += sliderYSpace;
     this.attackKnockbackSlider =
-        createAttributeSlider(
+        this.createAttributeSlider(
             sliderXPos,
             sliderYPos,
             sliderWidth,
@@ -241,7 +236,7 @@ public class BaseAttributeConfigurationScreen<T extends ConfigurationMenu>
     if (livingEntity.getAttribute(Attributes.ATTACK_SPEED) != null) {
       sliderYPos += sliderYSpace;
       this.attackSpeedSlider =
-          createAttributeSlider(
+          this.createAttributeSlider(
               sliderXPos,
               sliderYPos,
               sliderWidth,
@@ -262,7 +257,7 @@ public class BaseAttributeConfigurationScreen<T extends ConfigurationMenu>
 
     sliderYPos += sliderYSpace;
     this.armorSlider =
-        createAttributeSlider(
+        this.createAttributeSlider(
             sliderXPos,
             sliderYPos,
             sliderWidth,
@@ -282,7 +277,7 @@ public class BaseAttributeConfigurationScreen<T extends ConfigurationMenu>
 
     sliderYPos += sliderYSpace;
     this.armorToughnessSlider =
-        createAttributeSlider(
+        this.createAttributeSlider(
             sliderXPos,
             sliderYPos,
             sliderWidth,

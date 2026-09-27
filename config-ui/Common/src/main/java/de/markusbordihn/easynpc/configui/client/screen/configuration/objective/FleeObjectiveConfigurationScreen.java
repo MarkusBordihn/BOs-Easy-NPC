@@ -43,46 +43,39 @@ public class FleeObjectiveConfigurationScreen<T extends ConfigurationMenu>
   public void init() {
     super.init();
 
-    // Default button stats
     this.fleeObjectiveButton.active = false;
 
     int objectiveEntriesTop = this.contentTopPos + 5;
     int objectiveEntriesFirstColumn = this.contentLeftPos + 5;
     int objectiveEntriesSecondColumn = this.contentLeftPos + 145;
 
-    // Flee Sun
     this.fleeSunCheckbox =
         this.addRenderableWidget(
             this.getObjectiveCheckbox(
                 objectiveEntriesFirstColumn, objectiveEntriesTop, ObjectiveType.FLEE_SUN, 1.0D));
 
-    // Flee Creeper
     objectiveEntriesTop += SPACE_BETWEEN_ENTRIES;
     this.fleeCreeperCheckbox =
         this.addRenderableWidget(
             this.getObjectiveCheckbox(
                 objectiveEntriesFirstColumn, objectiveEntriesTop, ObjectiveType.FLEE_CREEPER));
 
-    // Flee Monster
     this.fleeMonsterCheckbox =
         this.addRenderableWidget(
             this.getObjectiveCheckbox(
                 objectiveEntriesSecondColumn, objectiveEntriesTop, ObjectiveType.FLEE_MONSTER));
 
-    // Flee Mob
     objectiveEntriesTop += SPACE_BETWEEN_ENTRIES;
     this.fleeMobCheckbox =
         this.addRenderableWidget(
             this.getObjectiveCheckbox(
                 objectiveEntriesFirstColumn, objectiveEntriesTop, ObjectiveType.FLEE_MOB));
 
-    // Flee Player
     this.fleePlayerCheckbox =
         this.addRenderableWidget(
             this.getObjectiveCheckbox(
                 objectiveEntriesSecondColumn, objectiveEntriesTop, ObjectiveType.FLEE_PLAYER));
 
-    // Flee Villager
     objectiveEntriesTop += SPACE_BETWEEN_ENTRIES;
     this.fleeVillagerCheckbox =
         this.addRenderableWidget(

@@ -51,36 +51,32 @@ public record DisplayAttributeEntry(boolean booleanValue, int intValue, String s
             : "");
   }
 
-  public DisplayAttributeEntry create(final CompoundTag compoundTag) {
-    return new DisplayAttributeEntry(compoundTag);
-  }
-
   public CompoundTag write(final CompoundTag compoundTag) {
-    if (booleanValue) {
-      compoundTag.putBoolean(DATA_BOOLEAN_VALUE_TAG, booleanValue);
+    if (this.booleanValue) {
+      compoundTag.putBoolean(DATA_BOOLEAN_VALUE_TAG, this.booleanValue);
     }
-    if (intValue != 0) {
-      compoundTag.putInt(DATA_INT_VALUE_TAG, intValue);
+    if (this.intValue != 0) {
+      compoundTag.putInt(DATA_INT_VALUE_TAG, this.intValue);
     }
-    if (stringValue != null && !stringValue.isEmpty()) {
-      compoundTag.putString(DATA_STRING_VALUE_TAG, stringValue);
+    if (this.stringValue != null && !this.stringValue.isEmpty()) {
+      compoundTag.putString(DATA_STRING_VALUE_TAG, this.stringValue);
     }
     return compoundTag;
   }
 
   public CompoundTag createTag() {
-    return write(new CompoundTag());
+    return this.write(new CompoundTag());
   }
 
   @Override
   public String toString() {
     return "DisplayAttributeEntry{"
         + "boolean="
-        + booleanValue
+        + this.booleanValue
         + ", int="
-        + intValue
+        + this.intValue
         + ", string="
-        + stringValue
+        + this.stringValue
         + '}';
   }
 }

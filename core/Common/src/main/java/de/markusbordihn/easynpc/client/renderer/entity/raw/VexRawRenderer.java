@@ -36,7 +36,7 @@ public class VexRawRenderer extends VexRenderer implements EasyNPCEntityRenderer
 
   @Override
   public Identifier getTextureLocation(VexRenderState renderState) {
-    return getTextureFromRenderStateWithConfig(renderState);
+    return this.getTextureFromRenderStateWithConfig(renderState);
   }
 
   @Override

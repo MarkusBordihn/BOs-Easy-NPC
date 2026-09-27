@@ -61,10 +61,6 @@ public class DialogArgument implements ArgumentType<Pair<UUID, String>> {
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private Map<String, DialogDataEntry> dialogDataEntriesCache = new HashMap<>();
 
-  public DialogArgument() {
-    super();
-  }
-
   public static DialogArgument uuidOrLabel() {
     return new DialogArgument();
   }
@@ -80,7 +76,6 @@ public class DialogArgument implements ArgumentType<Pair<UUID, String>> {
     Matcher uuidMatcher = ALLOWED_CHARACTERS_UUID.matcher(input);
     Matcher idMatcher = ALLOWED_CHARACTERS_ID.matcher(input);
 
-    // Check if we have a valid UUID.
     if (uuidMatcher.find()) {
       String uuidString = uuidMatcher.group(1);
       try {
@@ -92,20 +87,16 @@ public class DialogArgument implements ArgumentType<Pair<UUID, String>> {
       }
     }
 
-    // Check if we have a valid label and try to find the corresponding UUID.
     if (idMatcher.find()) {
       String idString = idMatcher.group(1);
-      if (dialogDataEntriesCache != null
-          && !dialogDataEntriesCache.isEmpty()
-          && dialogDataEntriesCache.containsKey(idString)) {
-        DialogDataEntry dialogDataEntry = dialogDataEntriesCache.get(idString);
+      if (this.dialogDataEntriesCache.containsKey(idString)) {
+        DialogDataEntry dialogDataEntry = this.dialogDataEntriesCache.get(idString);
         log.debug("Found dialog id {}: {}", idString, dialogDataEntry);
         UUID uuid = dialogDataEntry.getId();
         stringReader.setCursor(stringReader.getCursor() + uuid.toString().length());
         return new Pair<>(uuid, idString);
       }
 
-      // Return the id string if no UUID was found.
       stringReader.setCursor(stringReader.getCursor() + idString.length());
       return new Pair<>(null, idString);
     }
@@ -117,7 +108,6 @@ public class DialogArgument implements ArgumentType<Pair<UUID, String>> {
   public <S> CompletableFuture<Suggestions> listSuggestions(
       final CommandContext<S> context, final SuggestionsBuilder suggestionsBuilder) {
 
-    // Get the entity target selector.
     EntitySelector entitySelector;
     try {
       entitySelector = context.getArgument("target", EntitySelector.class);
@@ -126,7 +116,6 @@ public class DialogArgument implements ArgumentType<Pair<UUID, String>> {
       return SharedSuggestionProvider.suggest(new HashSet<>(), suggestionsBuilder);
     }
 
-    // Get the entity UUID from the entity target selector.
     UUID entityUUID =
         ReflectionUtils.getUUIDValueField(
             entitySelector, new String[] {"entityUUID", "entity", "field_10821", "f_121121_"});
@@ -137,13 +126,13 @@ public class DialogArgument implements ArgumentType<Pair<UUID, String>> {
           context);
     }
 
-    // Limit suggestions to the entity UUID, if available.
     if (entityUUID != null && DialogDataManager.hasDialogDataSet(entityUUID)) {
       DialogDataSet dialogDataSet = DialogDataManager.getDialogDataSet(entityUUID);
       Map<String, DialogDataEntry> dialogDataEntries = dialogDataSet.getDialogByLabelMap();
-      dialogDataEntriesCache = dialogDataEntries;
+      this.dialogDataEntriesCache = dialogDataEntries;
       return SharedSuggestionProvider.suggest(dialogDataEntries.keySet(), suggestionsBuilder);
     }
+
     return SharedSuggestionProvider.suggest(new HashSet<>(), suggestionsBuilder);
   }
 

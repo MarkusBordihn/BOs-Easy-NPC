@@ -74,7 +74,7 @@ public class HumanoidBase extends PathfinderMobRaw implements BaseEasyNPC<Pathfi
     try {
       return HumanoidSkinVariant.valueOf(name);
     } catch (IllegalArgumentException e) {
-      return getDefaultSkinVariantType();
+      return this.getDefaultSkinVariantType();
     }
   }
 

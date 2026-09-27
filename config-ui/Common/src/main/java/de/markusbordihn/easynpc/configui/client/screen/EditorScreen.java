@@ -19,7 +19,9 @@
 
 package de.markusbordihn.easynpc.configui.client.screen;
 
+import de.markusbordihn.easynpc.client.screen.Screen;
 import de.markusbordihn.easynpc.client.screen.components.Text;
+import de.markusbordihn.easynpc.configui.data.screen.AdditionalScreenData;
 import de.markusbordihn.easynpc.configui.menu.ConfigUIMenu;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -27,9 +29,7 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
-public class EditorScreen<T extends ConfigUIMenu>
-    extends de.markusbordihn.easynpc.client.screen.Screen<
-        T, de.markusbordihn.easynpc.configui.data.screen.AdditionalScreenData>
+public class EditorScreen<T extends ConfigUIMenu> extends Screen<T, AdditionalScreenData>
     implements ScreenInterface {
 
   protected final ClientLevel clientLevel;
@@ -38,15 +38,8 @@ public class EditorScreen<T extends ConfigUIMenu>
   public EditorScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component, 328, 243);
 
-    // General environment Data
     this.localPlayer = this.minecraftInstance.player;
     this.clientLevel = this.minecraftInstance.level;
-  }
-
-  @Override
-  public void extractRenderState(
-      GuiGraphicsExtractor guiGraphics, int x, int y, float partialTicks) {
-    super.extractRenderState(guiGraphics, x, y, partialTicks);
   }
 
   @Override

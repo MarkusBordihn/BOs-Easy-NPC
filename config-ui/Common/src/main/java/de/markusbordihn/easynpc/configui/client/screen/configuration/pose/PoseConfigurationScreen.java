@@ -222,7 +222,6 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
       sliderLeftPosition = axisSlider.getX() + axisSlider.getWidth();
     }
 
-    // Slider Edit / Done Button
     this.addRenderableWidget(
         new TextButton(
             left,
@@ -242,7 +241,6 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
                   showTextField ? RangeSliderButton.DONE_TEXT : RangeSliderButton.EDIT_TEXT);
             }));
 
-    // Slider reset button
     this.addRenderableWidget(
         new TextButton(
             sliderLeftPosition,
@@ -263,7 +261,6 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
   public void init() {
     super.init();
 
-    // Pose Types
     int poseButtonWidth = 74;
     this.defaultPoseButton =
         this.addRenderableWidget(
@@ -290,7 +287,7 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
     this.advancedPoseButton =
         this.addRenderableWidget(
             new TextButton(
-                basicPoseButton.getX() + basicPoseButton.getWidth(),
+                this.basicPoseButton.getX() + this.basicPoseButton.getWidth(),
                 this.buttonTopPos,
                 poseButtonWidth + 10,
                 "advanced",
@@ -302,7 +299,7 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
     this.customPoseButton =
         this.addRenderableWidget(
             new TextButton(
-                advancedPoseButton.getX() + advancedPoseButton.getWidth(),
+                this.advancedPoseButton.getX() + this.advancedPoseButton.getWidth(),
                 this.buttonTopPos,
                 poseButtonWidth + 10,
                 "custom",

@@ -37,13 +37,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class PresetBrowserItem extends Item {
-
   public static final String ID = "preset_browser";
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   public PresetBrowserItem(Properties properties) {
     super(

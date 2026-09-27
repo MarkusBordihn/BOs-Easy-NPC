@@ -24,6 +24,7 @@ import de.markusbordihn.easynpc.configui.data.screen.AdditionalScreenData;
 import de.markusbordihn.easynpc.data.screen.ScreenData;
 import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.menu.ScreenMenuInterface;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
@@ -38,8 +39,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class ConfigUIMenu extends AbstractContainerMenu
-    implements de.markusbordihn.easynpc.menu.ScreenMenuInterface<
-        de.markusbordihn.easynpc.configui.data.screen.AdditionalScreenData> {
+    implements ScreenMenuInterface<AdditionalScreenData> {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
@@ -99,10 +99,11 @@ public class ConfigUIMenu extends AbstractContainerMenu
 
     this.easyNPC =
         this.level.isClientSide()
-            ? LivingEntityManager.getClientEasyNPCEntityByUUID(getNpcUUID())
-            : LivingEntityManager.getServerEasyNPCEntityByUUID(getNpcUUID(), (ServerPlayer) player);
+            ? LivingEntityManager.getClientEasyNPCEntityByUUID(this.getNpcUUID())
+            : LivingEntityManager.getServerEasyNPCEntityByUUID(
+                this.getNpcUUID(), (ServerPlayer) this.player);
     if (this.easyNPC == null) {
-      log.error("EasyNPC entity with UUID {} is missing for menu {}", getNpcUUID(), menuType);
+      log.error("EasyNPC entity with UUID {} is missing for menu {}", this.getNpcUUID(), menuType);
     }
   }
 

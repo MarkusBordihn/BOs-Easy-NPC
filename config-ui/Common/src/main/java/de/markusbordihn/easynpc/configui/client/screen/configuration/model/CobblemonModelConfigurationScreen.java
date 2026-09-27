@@ -79,7 +79,7 @@ public class CobblemonModelConfigurationScreen<T extends ConfigurationMenu>
     this.defaultModelButton.active = false;
     this.customModelButton.active = false;
 
-    setDescriptionText("cobblemon_model.text");
+    this.setDescriptionText("cobblemon_model.text");
     this.noteTextComponents =
         this.font.split(
             TextComponent.getTranslatedConfigText("cobblemon_model.note"), this.imageWidth - 20);
@@ -87,7 +87,8 @@ public class CobblemonModelConfigurationScreen<T extends ConfigurationMenu>
     this.speciesList = IntegrationRegistry.getModels(CobblemonSpeciesManager.INTEGRATION_ID);
     this.numOfSpecies = this.speciesList.size();
 
-    defineSkinNavigationButtons(this.contentTopPos + 189, this.contentLeftPos, this.rightPos - 29);
+    this.defineSkinNavigationButtons(
+        this.contentTopPos + 189, this.contentLeftPos, this.rightPos - 29);
 
     EditBox searchField =
         this.addRenderableWidget(
@@ -101,7 +102,7 @@ public class CobblemonModelConfigurationScreen<T extends ConfigurationMenu>
       GuiGraphicsExtractor guiGraphics, int x, int y, float partialTicks) {
     super.extractRenderState(guiGraphics, x, y, partialTicks);
 
-    renderDescriptionText(guiGraphics, this.contentLeftPos + 5, this.contentTopPos + 20);
+    this.renderDescriptionText(guiGraphics, this.contentLeftPos + 5, this.contentTopPos + 20);
 
     if (!this.noteTextComponents.isEmpty()) {
       int noteTop = this.contentTopPos + 35;
@@ -115,19 +116,19 @@ public class CobblemonModelConfigurationScreen<T extends ConfigurationMenu>
       }
     }
 
-    if (!speciesButtons.isEmpty()) {
-      for (Button button : speciesButtons) {
+    if (!this.speciesButtons.isEmpty()) {
+      for (Button button : this.speciesButtons) {
         button.extractRenderState(guiGraphics, x, y, partialTicks);
       }
     }
 
-    renderSpeciesList(guiGraphics, x, y);
+    this.renderSpeciesList(guiGraphics, x, y);
   }
 
   @Override
   public boolean mouseClicked(MouseButtonEvent mouseButtonEvent, boolean doubleClick) {
-    if (!speciesButtons.isEmpty()) {
-      for (Button skinButton : speciesButtons) {
+    if (!this.speciesButtons.isEmpty()) {
+      for (Button skinButton : this.speciesButtons) {
         skinButton.mouseClicked(mouseButtonEvent, doubleClick);
       }
     }
@@ -138,7 +139,7 @@ public class CobblemonModelConfigurationScreen<T extends ConfigurationMenu>
   public void extractBackground(
       GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
     super.extractBackground(guiGraphics, mouseX, mouseY, partialTicks);
-    renderSkinSelectionBackground(guiGraphics);
+    this.renderSkinSelectionBackground(guiGraphics);
   }
 
   private void defineSkinNavigationButtons(
@@ -151,7 +152,7 @@ public class CobblemonModelConfigurationScreen<T extends ConfigurationMenu>
                 20,
                 "<<",
                 onPress -> {
-                  skinStartIndex = Math.max(this.skinStartIndex - MAX_SKINS_PER_PAGE, 0);
+                  this.skinStartIndex = Math.max(this.skinStartIndex - MAX_SKINS_PER_PAGE, 0);
                   this.checkSkinNavigationButtonState();
                 }));
     this.skinPreviousButton =
@@ -163,7 +164,7 @@ public class CobblemonModelConfigurationScreen<T extends ConfigurationMenu>
                 "<",
                 onPress -> {
                   if (this.skinStartIndex > 0) {
-                    skinStartIndex--;
+                    this.skinStartIndex--;
                   }
                   this.checkSkinNavigationButtonState();
                 }));
@@ -195,7 +196,7 @@ public class CobblemonModelConfigurationScreen<T extends ConfigurationMenu>
                 onPress -> {
                   if (this.skinStartIndex >= 0
                       && this.skinStartIndex < this.numOfSpecies - MAX_SKINS_PER_PAGE) {
-                    skinStartIndex++;
+                    this.skinStartIndex++;
                   }
                   this.checkSkinNavigationButtonState();
                 }));
@@ -225,7 +226,7 @@ public class CobblemonModelConfigurationScreen<T extends ConfigurationMenu>
 
     int positionTop = 144;
     int skinPosition = 0;
-    speciesButtons = new ArrayList<>();
+    this.speciesButtons = new ArrayList<>();
 
     List<String> filteredSpecies = this.speciesList;
     if (this.searchFilter != null && !this.searchFilter.isEmpty()) {
@@ -241,7 +242,7 @@ public class CobblemonModelConfigurationScreen<T extends ConfigurationMenu>
     this.numOfSpecies = filteredSpecies.size();
 
     if (this.lastNumOfSkins != this.numOfSpecies) {
-      checkSkinNavigationButtonState();
+      this.checkSkinNavigationButtonState();
       this.lastNumOfSkins = this.numOfSpecies;
     }
 
@@ -249,14 +250,14 @@ public class CobblemonModelConfigurationScreen<T extends ConfigurationMenu>
     RenderDataEntry currentEntry = renderData.getRenderDataEntry();
     String currentModel = currentEntry.getRenderEntityModel();
 
-    for (int index = skinStartIndex;
-        index < this.numOfSpecies && index < skinStartIndex + MAX_SKINS_PER_PAGE;
+    for (int index = this.skinStartIndex;
+        index < this.numOfSpecies && index < this.skinStartIndex + MAX_SKINS_PER_PAGE;
         index++) {
       String speciesId = filteredSpecies.get(index);
       int left = this.leftPos + 32 + (skinPosition * SKIN_PREVIEW_WIDTH);
       int top = this.topPos + 65 + positionTop;
 
-      renderSpeciesEntity(
+      this.renderSpeciesEntity(
           guiGraphics, left, top, speciesId, currentModel, renderData, currentEntry);
 
       Identifier speciesLocation = Identifier.tryParse(speciesId);
@@ -325,7 +326,7 @@ public class CobblemonModelConfigurationScreen<T extends ConfigurationMenu>
     IntegrationRegistry.setGuiPreviewMode(false);
     renderData.setRenderData(originalEntry);
 
-    speciesButtons.add(speciesButton);
+    this.speciesButtons.add(speciesButton);
   }
 
   private void renderSkinSelectionBackground(GuiGraphicsExtractor guiGraphics) {

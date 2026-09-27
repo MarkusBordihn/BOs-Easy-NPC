@@ -42,6 +42,7 @@ public enum ScoreboardOperation {
     if (command == null || command.isEmpty()) {
       return INCREASE;
     }
+
     String[] parts = command.split(":", 2);
     return fromCommandName(parts[0]);
   }

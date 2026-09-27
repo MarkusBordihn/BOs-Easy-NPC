@@ -119,7 +119,6 @@ public class CustomMenuHandler {
           FeatureSecurity.checkActorFeatureAccess(serverPlayer, NpcFeature.POSITION).allowed());
       CompoundTag presetsIdentity = new CompoundTag();
 
-      // WORLD Presets (server-side world folder)
       WorldPresetDataFiles.refreshPresetIdentifiers();
       Set<Identifier> worldPresets = new LinkedHashSet<>();
       CompoundTag worldMetadata = new CompoundTag();
@@ -144,7 +143,6 @@ public class CustomMenuHandler {
       additionalData.put("WorldPresetsMetadata", worldMetadata);
       additionalData.put("WorldPresetsData", worldData);
 
-      // CUSTOM Presets (server-side config folder)
       CustomPresetDataFiles.refreshPresetIdentifiers();
       Set<Identifier> customPresets = new LinkedHashSet<>();
       CompoundTag customMetadata = new CompoundTag();
@@ -169,7 +167,6 @@ public class CustomMenuHandler {
       additionalData.put("CustomPresetsMetadata", customMetadata);
       additionalData.put("CustomPresetsData", customData);
 
-      // DATA Presets (datapacks)
       Set<Identifier> dataPresets = new LinkedHashSet<>();
       CompoundTag dataMetadata = new CompoundTag();
       for (Identifier preset :
