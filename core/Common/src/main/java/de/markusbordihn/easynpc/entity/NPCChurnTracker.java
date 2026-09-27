@@ -72,6 +72,7 @@ public class NPCChurnTracker {
               if (record == null) {
                 return new ChurnRecord(currentTimeMillis, 1, 0L);
               }
+
               if (record.isExpired(currentTimeMillis)) {
                 return new ChurnRecord(currentTimeMillis, 1, record.lastWarningTimeMillis());
               }

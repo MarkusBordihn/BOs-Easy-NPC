@@ -77,7 +77,6 @@ public class ServerEvents {
       return;
     }
 
-    // Perform backup each hour.
     BackupManager.performBackup();
 
     OwnerLoginRestoreHandler.handleServerTick(minecraftServer);

@@ -79,7 +79,6 @@ public class EquipmentCommand extends Command {
       return 0;
     }
 
-    // Set item for equipment slot
     ItemStack itemStack = new ItemStack(item);
     if (!EquipmentHandler.setEquipmentSlotItem(easyNPC, equipmentSlot, itemStack)) {
       return sendFailureMessage(
@@ -88,7 +87,7 @@ public class EquipmentCommand extends Command {
     }
 
     return sendSuccessMessage(
-        context, easyNPC + " set item stack" + itemStack + " for slot " + equipmentSlot);
+        context, easyNPC + " set item stack " + itemStack + " for slot " + equipmentSlot);
   }
 
   private static int removeItemSlot(

@@ -85,7 +85,7 @@ public class PlayerRenderer
           modelManager.validateModelPartsOnce(easyNPC);
         }
       }
-      applySkinToRenderState(easyNPC, renderState);
+      this.applySkinToRenderState(easyNPC, renderState);
     }
   }
 
@@ -108,7 +108,7 @@ public class PlayerRenderer
       }
     } else if (skinData.getSkinType() == SkinType.CUSTOM) {
       Identifier textureLocation =
-          CustomTextureManager.getOrCreateTextureWithDefault(skinData, getDefaultTexture());
+          CustomTextureManager.getOrCreateTextureWithDefault(skinData, this.getDefaultTexture());
       renderState.skin =
           new PlayerSkin(
               new ClientAsset.ResourceTexture(textureLocation, textureLocation),
@@ -118,7 +118,7 @@ public class PlayerRenderer
               false);
     } else if (skinData.getSkinType() == SkinType.PLAYER_SKIN) {
       Identifier textureLocation =
-          PlayerTextureManager.getOrCreateTextureWithDefault(skinData, getDefaultTexture());
+          PlayerTextureManager.getOrCreateTextureWithDefault(skinData, this.getDefaultTexture());
       renderState.skin =
           new PlayerSkin(
               new ClientAsset.ResourceTexture(textureLocation, textureLocation),
@@ -128,7 +128,7 @@ public class PlayerRenderer
               false);
     } else if (skinData.getSkinType() == SkinType.INSECURE_REMOTE_URL) {
       Identifier textureLocation =
-          RemoteTextureManager.getOrCreateTextureWithDefault(skinData, getDefaultTexture());
+          RemoteTextureManager.getOrCreateTextureWithDefault(skinData, this.getDefaultTexture());
       renderState.skin =
           new PlayerSkin(
               new ClientAsset.ResourceTexture(textureLocation, textureLocation),
@@ -138,7 +138,7 @@ public class PlayerRenderer
               false);
     } else if (skinData.getSkinType() == SkinType.SECURE_REMOTE_URL) {
       Identifier textureLocation =
-          RemoteTextureManager.getOrCreateTextureWithDefault(skinData, getDefaultTexture());
+          RemoteTextureManager.getOrCreateTextureWithDefault(skinData, this.getDefaultTexture());
       renderState.skin =
           new PlayerSkin(
               new ClientAsset.ResourceTexture(textureLocation, textureLocation),
@@ -151,7 +151,7 @@ public class PlayerRenderer
 
   @Override
   public Identifier getTextureLocation(AvatarRenderState renderState) {
-    return getTextureFromRenderState(renderState);
+    return this.getTextureFromRenderState(renderState);
   }
 
   @Override

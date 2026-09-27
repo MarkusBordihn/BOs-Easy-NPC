@@ -59,10 +59,10 @@ public class ObjectiveConfigurationScreen<T extends ConfigurationMenu>
         left,
         top,
         objectiveType.getObjectiveName(),
-        objectiveDataSet.hasObjective(objectiveType),
+        this.objectiveDataSet.hasObjective(objectiveType),
         checkbox -> {
           ObjectiveDataEntry objectiveDataEntry =
-              objectiveDataSet.getOrCreateObjective(objectiveType);
+              this.objectiveDataSet.getOrCreateObjective(objectiveType);
           objectiveDataEntry.setSpeedModifier(speedModifier);
           if (checkbox.selected()) {
             NetworkMessageHandlerManager.getServerHandler()
@@ -78,7 +78,6 @@ public class ObjectiveConfigurationScreen<T extends ConfigurationMenu>
   public void init() {
     super.init();
 
-    // Objective Types
     this.basicObjectiveButton =
         this.addRenderableWidget(
             new TextButton(

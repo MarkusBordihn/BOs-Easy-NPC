@@ -77,27 +77,25 @@ public class ContainerScreen<T extends ConfigUIMenu> extends AbstractContainerSc
 
   @Override
   public EasyNPC<?> getEasyNPC() {
-    return menu.getEasyNPC();
+    return this.menu.getEasyNPC();
   }
 
   @Override
   public ScreenData getScreenData() {
-    return menu.getScreenData();
+    return this.menu.getScreenData();
   }
 
   @Override
   public AdditionalScreenData getAdditionalScreenData() {
-    return menu.getAdditionalScreenData();
+    return this.menu.getAdditionalScreenData();
   }
 
   @Override
   protected void init() {
     super.init();
 
-    // Default stats
     this.compactMode = this.height < 260;
 
-    // Basic position
     this.titleLabelX = 7;
     this.titleLabelY = -9;
     this.topPos = (this.height - this.imageHeight) / 2 + (this.compactMode ? 2 : 10);
@@ -112,11 +110,10 @@ public class ContainerScreen<T extends ConfigUIMenu> extends AbstractContainerSc
       resetFormerMousePosition();
     }
 
-    // Close Button
     if (this.showCloseButton) {
       this.closeButton =
           this.addRenderableWidget(
-              new CloseButton(this.rightPos - 15, this.topPos + 4, onPress -> onClose()));
+              new CloseButton(this.rightPos - 15, this.topPos + 4, button -> this.onClose()));
     }
   }
 
@@ -145,7 +142,7 @@ public class ContainerScreen<T extends ConfigUIMenu> extends AbstractContainerSc
   @Override
   public void onClose() {
     resetFormerMousePosition();
-    if (!containerClosed && this.minecraft != null && this.minecraft.player != null) {
+    if (!this.containerClosed && this.minecraft != null && this.minecraft.player != null) {
       this.containerClosed = true;
       this.minecraft.player.closeContainer();
     }
@@ -154,10 +151,10 @@ public class ContainerScreen<T extends ConfigUIMenu> extends AbstractContainerSc
 
   @Override
   public void removed() {
-    if (!containerClosed
+    if (!this.containerClosed
         && this.minecraft != null
         && this.minecraft.player != null
-        && !isSwitchingToAnotherEasyNPCScreen(null)) {
+        && !this.isSwitchingToAnotherEasyNPCScreen(null)) {
       resetFormerMousePosition();
       this.containerClosed = true;
       this.minecraft.player.closeContainer();
@@ -175,6 +172,7 @@ public class ContainerScreen<T extends ConfigUIMenu> extends AbstractContainerSc
         && keyCode != InputConstants.KEY_I) {
       return super.keyPressed(keyEvent);
     }
+
     return keyCode == InputConstants.KEY_RETURN
         || keyCode == InputConstants.KEY_NUMPADENTER
         || keyCode == InputConstants.KEY_I;

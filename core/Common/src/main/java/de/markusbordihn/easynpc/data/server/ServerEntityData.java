@@ -47,10 +47,9 @@ public class ServerEntityData {
    * For production use, please define a custom index instead!
    */
   public static <T> ServerDataAccessor<T> defineId(EntityDataSerializer<T> entityDataSerializer) {
-    // Check if we have a free custom data accessor id.
     if (customDataAccessorId >= ServerDataIndex.MAX_FREE_INDEX) {
       log.error(
-          "{} No more custom data accessor available for {} with id {}"
+          "{} No more custom data accessor available for {} with id {}. "
               + "The maximum for auto-generated ids is {}",
           LOG_PREFIX,
           entityDataSerializer,
@@ -58,6 +57,7 @@ public class ServerEntityData {
           ServerDataIndex.MAX_FREE_INDEX);
       return null;
     }
+
     log.warn(
         "{} Please define a custom index for {} instead of using the auto-generated.",
         LOG_PREFIX,
@@ -68,8 +68,6 @@ public class ServerEntityData {
 
   public static <T> ServerDataAccessor<T> defineId(
       ServerDataIndex serverDataIndex, EntityDataSerializer<T> entityDataSerializers) {
-
-    // Make sure that we have a valid custom data accessor id, and it is not already in use.
     if (usedCustomDataAccessorIdSet.contains(serverDataIndex)) {
       log.error(
           "{} Can't define custom data accessor {} with id {}, because it is already in use!",
@@ -97,30 +95,32 @@ public class ServerEntityData {
     }
   }
 
-  public <T> void set(ServerDataAccessor<T> entityDataAccessor, T customData) {
-    ServerDataItem<T> serverDataItem = this.getDataItem(entityDataAccessor);
+  public <T> void set(ServerDataAccessor<T> serverDataAccessor, T customData) {
+    ServerDataItem<T> serverDataItem = this.getDataItem(serverDataAccessor);
     if (serverDataItem != null) {
       serverDataItem.setValue(customData);
     }
   }
 
-  public <T> T get(ServerDataAccessor<T> entityDataAccessor) {
-    ServerDataItem<T> serverDataItem = this.getDataItem(entityDataAccessor);
+  public <T> T get(ServerDataAccessor<T> serverDataAccessor) {
+    ServerDataItem<T> serverDataItem = this.getDataItem(serverDataAccessor);
     if (serverDataItem != null) {
       return serverDataItem.getValue();
     }
+
     return null;
   }
 
-  private <T> ServerDataItem<T> getDataItem(ServerDataAccessor<T> entityDataAccessor) {
+  private <T> ServerDataItem<T> getDataItem(ServerDataAccessor<T> serverDataAccessor) {
     try {
       @SuppressWarnings("unchecked")
       ServerDataItem<T> serverDataItem =
-          (ServerDataItem<T>) this.customEntityDataMap.get(entityDataAccessor.getIndex());
+          (ServerDataItem<T>) this.customEntityDataMap.get(serverDataAccessor.getIndex());
       return serverDataItem;
     } catch (Exception exception) {
-      log.error("{} Failed to get data item for {}:", LOG_PREFIX, entityDataAccessor, exception);
+      log.error("{} Failed to get data item for {}:", LOG_PREFIX, serverDataAccessor, exception);
     }
+
     return null;
   }
 }

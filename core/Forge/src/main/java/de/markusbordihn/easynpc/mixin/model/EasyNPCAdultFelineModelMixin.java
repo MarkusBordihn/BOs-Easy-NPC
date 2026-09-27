@@ -40,11 +40,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(AdultFelineModel.class)
 public class EasyNPCAdultFelineModelMixin<T extends FelineRenderState> {
 
+  @Unique private static final float MAX_TAIL_SCALE_DEVIATION = 0.5f;
+  @Unique private static final float MAX_TAIL_ROTATION_RADIANS = 0.1f;
+
   @Inject(
       method = "setupAnim(Lnet/minecraft/client/renderer/entity/state/FelineRenderState;)V",
       at = @At("HEAD"),
       cancellable = true)
-  private void setupNpcAnimStart(T renderState, CallbackInfo callbackInfo) {
+  private void easyNPC$setupAnimStart(T renderState, CallbackInfo callbackInfo) {
     if (renderState instanceof EasyNPCRenderStateExtension extension) {
       EasyNPCModelManager manager =
           ((EasyNPCModelManagerAccessor) (Object) this).easyNPC$getModelManager();
@@ -58,7 +61,7 @@ public class EasyNPCAdultFelineModelMixin<T extends FelineRenderState> {
   @Inject(
       method = "setupAnim(Lnet/minecraft/client/renderer/entity/state/FelineRenderState;)V",
       at = @At("TAIL"))
-  private void setupNpcAnimEnd(T renderState, CallbackInfo callbackInfo) {
+  private void easyNPC$setupAnimEnd(T renderState, CallbackInfo callbackInfo) {
     if (renderState instanceof EasyNPCRenderStateExtension extension) {
       EasyNPCModelManager manager =
           ((EasyNPCModelManagerAccessor) (Object) this).easyNPC$getModelManager();
@@ -94,7 +97,7 @@ public class EasyNPCAdultFelineModelMixin<T extends FelineRenderState> {
         && Math.abs(bodyScale.x() - 1.0f)
                 + Math.abs(bodyScale.y() - 1.0f)
                 + Math.abs(bodyScale.z() - 1.0f)
-            > 0.5f) {
+            > MAX_TAIL_SCALE_DEVIATION) {
       tail1.visible = false;
       tail2.visible = false;
       return;
@@ -103,7 +106,7 @@ public class EasyNPCAdultFelineModelMixin<T extends FelineRenderState> {
     if (bodyRotation != null
         && bodyRotation.hasChanged()
         && Math.abs(bodyRotation.x()) + Math.abs(bodyRotation.y()) + Math.abs(bodyRotation.z())
-            > 0.1f) {
+            > MAX_TAIL_ROTATION_RADIANS) {
       tail1.visible = false;
       tail2.visible = false;
       return;

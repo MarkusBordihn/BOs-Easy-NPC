@@ -111,9 +111,11 @@ public record ConditionDataEntry(
     if (compoundTag.contains(DATA_SUB_TYPE_TAG)) {
       return compoundTag.getString(DATA_SUB_TYPE_TAG).orElse("");
     }
+
     if (compoundTag.contains(DATA_LEGACY_TEXT_TAG)) {
       return compoundTag.getString(DATA_LEGACY_TEXT_TAG).orElse("");
     }
+
     return "";
   }
 
@@ -155,9 +157,10 @@ public record ConditionDataEntry(
   }
 
   public boolean hasValidUuidName() {
-    if (!hasName()) {
+    if (!this.hasName()) {
       return false;
     }
+
     try {
       UUID.fromString(this.name.trim());
       return true;
@@ -170,30 +173,30 @@ public record ConditionDataEntry(
     if (this.conditionType == ConditionType.NONE) {
       return false;
     }
+
     return switch (this.conditionType) {
       case SCOREBOARD ->
-          hasName()
+          this.hasName()
               && this.operationType != null
               && this.operationType != ConditionOperationType.NONE;
       case EXECUTION_LIMIT -> this.value > 0 && this.subType != null;
       case CHANCE -> this.value >= MIN_CHANCE_PERCENTAGE && this.value <= MAX_CHANCE_PERCENTAGE;
       case HAS_ITEM_IN_INVENTORY, HAS_ITEM_IN_HAND, ADVANCEMENT, PLAYER_TAG, TEAM, GAMEMODE ->
-          hasName();
+          this.hasName();
       case EXPERIENCE_LEVEL, PLAYER_HEALTH, NPC_HEALTH ->
           this.operationType != null && this.operationType != ConditionOperationType.NONE;
       case ENTITY_HEALTH ->
           this.operationType != null
               && this.operationType != ConditionOperationType.NONE
-              && hasValidUuidName();
+              && this.hasValidUuidName();
       case TIME_OF_DAY ->
           this.operationType != null && this.operationType != ConditionOperationType.NONE;
       case WEATHER, RELATIONSHIP -> this.subType != null;
       case NPC_STATE ->
-          hasName()
+          this.hasName()
               && this.operationType != null
               && this.operationType != ConditionOperationType.NONE;
-      case CUSTOM -> hasCustomConditionId();
-      case FALLBACK -> true;
+      case CUSTOM -> this.hasCustomConditionId();
       default -> true;
     };
   }
@@ -324,7 +327,7 @@ public record ConditionDataEntry(
     if (this.operationType != null && this.operationType != ConditionOperationType.NONE) {
       compoundTag.putString(DATA_OPERATION_TAG, this.operationType.name());
     }
-    if (hasName()) {
+    if (this.hasName()) {
       compoundTag.putString(DATA_NAME_TAG, this.name.trim());
     }
     if (this.value != 0) {
@@ -333,13 +336,13 @@ public record ConditionDataEntry(
     if (hasCustomDataComponent()) {
       compoundTag.putString(DATA_CUSTOM_DATA_COMPONENT_TAG, this.customDataComponent.trim());
     }
-    if (hasCustomConditionId()) {
+    if (this.hasCustomConditionId()) {
       compoundTag.putString(DATA_CUSTOM_CONDITION_ID_TAG, this.customConditionId.toString());
     }
-    if (hasCustomData()) {
+    if (this.hasCustomData()) {
       compoundTag.putString(DATA_CUSTOM_DATA_TAG, this.customData.trim());
     }
-    if (hasTargetUUID()) {
+    if (this.hasTargetUUID()) {
       CompoundTagUtils.writeUUID(compoundTag, DATA_TARGET_UUID_TAG, this.targetUUID);
     }
 

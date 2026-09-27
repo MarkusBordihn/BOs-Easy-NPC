@@ -25,6 +25,7 @@ import de.markusbordihn.easynpc.data.skin.SkinModel;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Comparator;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
@@ -32,6 +33,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -39,25 +41,27 @@ import org.junit.jupiter.api.Test;
 
 class AsyncTextureLoaderTest {
 
-  private Path tempDir;
+  private Path temporaryDirectory;
 
   @BeforeEach
   void setUp() throws IOException {
-    tempDir = Files.createTempDirectory("texture_test");
+    this.temporaryDirectory = Files.createTempDirectory("texture_test");
   }
 
   @AfterEach
   void tearDown() throws IOException {
-    // Clean up temp directory
-    if (tempDir != null && Files.exists(tempDir)) {
-      Files.walk(tempDir)
-          .sorted((a, b) -> -a.compareTo(b))
+    if (!Files.exists(this.temporaryDirectory)) {
+      return;
+    }
+
+    try (Stream<Path> paths = Files.walk(this.temporaryDirectory)) {
+      paths
+          .sorted(Comparator.reverseOrder())
           .forEach(
               path -> {
                 try {
                   Files.deleteIfExists(path);
-                } catch (IOException e) {
-                  // Ignore cleanup errors
+                } catch (IOException ignored) {
                 }
               });
     }
@@ -68,8 +72,10 @@ class AsyncTextureLoaderTest {
   void testDuplicatePrevention() {
     TextureModelKey key = new TextureModelKey(UUID.randomUUID(), SkinModel.HUMANOID);
     String testUrl = "http://example.com/texture.png";
-    CompletableFuture<?> future1 = AsyncTextureLoader.loadTextureAsync(key, testUrl, tempDir);
-    CompletableFuture<?> future2 = AsyncTextureLoader.loadTextureAsync(key, testUrl, tempDir);
+    CompletableFuture<?> future1 =
+        AsyncTextureLoader.loadTextureAsync(key, testUrl, this.temporaryDirectory);
+    CompletableFuture<?> future2 =
+        AsyncTextureLoader.loadTextureAsync(key, testUrl, this.temporaryDirectory);
 
     assertNotNull(future1);
     assertNotNull(future2);
@@ -85,9 +91,9 @@ class AsyncTextureLoaderTest {
     TextureModelKey key = new TextureModelKey(UUID.randomUUID(), SkinModel.HUMANOID);
     UUID playerUUID = UUID.randomUUID();
     CompletableFuture<?> future1 =
-        AsyncTextureLoader.loadPlayerTextureAsync(key, playerUUID, tempDir);
+        AsyncTextureLoader.loadPlayerTextureAsync(key, playerUUID, this.temporaryDirectory);
     CompletableFuture<?> future2 =
-        AsyncTextureLoader.loadPlayerTextureAsync(key, playerUUID, tempDir);
+        AsyncTextureLoader.loadPlayerTextureAsync(key, playerUUID, this.temporaryDirectory);
 
     assertNotNull(future1);
     assertNotNull(future2);
@@ -102,8 +108,10 @@ class AsyncTextureLoaderTest {
     TextureModelKey key1 = new TextureModelKey(UUID.randomUUID(), SkinModel.HUMANOID);
     TextureModelKey key2 = new TextureModelKey(UUID.randomUUID(), SkinModel.HUMANOID);
     String testUrl = "http://example.com/texture.png";
-    CompletableFuture<?> future1 = AsyncTextureLoader.loadTextureAsync(key1, testUrl, tempDir);
-    CompletableFuture<?> future2 = AsyncTextureLoader.loadTextureAsync(key2, testUrl, tempDir);
+    CompletableFuture<?> future1 =
+        AsyncTextureLoader.loadTextureAsync(key1, testUrl, this.temporaryDirectory);
+    CompletableFuture<?> future2 =
+        AsyncTextureLoader.loadTextureAsync(key2, testUrl, this.temporaryDirectory);
 
     assertNotNull(future1);
     assertNotNull(future2);
@@ -121,7 +129,8 @@ class AsyncTextureLoaderTest {
     CountDownLatch startLatch = new CountDownLatch(1);
     CountDownLatch doneLatch = new CountDownLatch(threadCount);
     AtomicInteger sameReferenceCount = new AtomicInteger(0);
-    CompletableFuture<?> firstFuture = AsyncTextureLoader.loadTextureAsync(key, testUrl, tempDir);
+    CompletableFuture<?> firstFuture =
+        AsyncTextureLoader.loadTextureAsync(key, testUrl, this.temporaryDirectory);
 
     for (int i = 0; i < threadCount; i++) {
       new Thread(
@@ -129,7 +138,7 @@ class AsyncTextureLoaderTest {
                 try {
                   startLatch.await();
                   CompletableFuture<?> future =
-                      AsyncTextureLoader.loadTextureAsync(key, testUrl, tempDir);
+                      AsyncTextureLoader.loadTextureAsync(key, testUrl, this.temporaryDirectory);
                   if (future == firstFuture) {
                     sameReferenceCount.incrementAndGet();
                   }
@@ -165,7 +174,7 @@ class AsyncTextureLoaderTest {
                   startLatch.await();
                   TextureModelKey key = new TextureModelKey(UUID.randomUUID(), SkinModel.HUMANOID);
                   CompletableFuture<?> future =
-                      AsyncTextureLoader.loadTextureAsync(key, testUrl, tempDir);
+                      AsyncTextureLoader.loadTextureAsync(key, testUrl, this.temporaryDirectory);
                   if (future != null) {
                     successCount.incrementAndGet();
                   }
@@ -190,14 +199,15 @@ class AsyncTextureLoaderTest {
   void testNullUrl() {
     TextureModelKey key = new TextureModelKey(UUID.randomUUID(), SkinModel.HUMANOID);
 
-    assertDoesNotThrow(() -> AsyncTextureLoader.loadTextureAsync(key, null, tempDir));
+    assertDoesNotThrow(
+        () -> AsyncTextureLoader.loadTextureAsync(key, null, this.temporaryDirectory));
   }
 
   @Test
   void testEmptyUrl() {
     TextureModelKey key = new TextureModelKey(UUID.randomUUID(), SkinModel.HUMANOID);
 
-    assertDoesNotThrow(() -> AsyncTextureLoader.loadTextureAsync(key, "", tempDir));
+    assertDoesNotThrow(() -> AsyncTextureLoader.loadTextureAsync(key, "", this.temporaryDirectory));
   }
 
   @Test
@@ -214,7 +224,7 @@ class AsyncTextureLoaderTest {
     UUID playerUUID = UUID.randomUUID();
 
     CompletableFuture<?> future =
-        AsyncTextureLoader.loadPlayerTextureAsync(key, playerUUID, tempDir);
+        AsyncTextureLoader.loadPlayerTextureAsync(key, playerUUID, this.temporaryDirectory);
 
     assertNotNull(future);
     try {
@@ -230,7 +240,8 @@ class AsyncTextureLoaderTest {
   void testInvalidTextureUrl() {
     TextureModelKey key = new TextureModelKey(UUID.randomUUID(), SkinModel.HUMANOID);
     String invalidUrl = "not-a-valid-url";
-    CompletableFuture<?> future = AsyncTextureLoader.loadTextureAsync(key, invalidUrl, tempDir);
+    CompletableFuture<?> future =
+        AsyncTextureLoader.loadTextureAsync(key, invalidUrl, this.temporaryDirectory);
 
     assertNotNull(future);
   }
@@ -242,8 +253,9 @@ class AsyncTextureLoaderTest {
     TextureModelKey humanoidKey = new TextureModelKey(uuid, SkinModel.HUMANOID);
     TextureModelKey slimKey = new TextureModelKey(uuid, SkinModel.HUMANOID_SLIM);
     CompletableFuture<?> future1 =
-        AsyncTextureLoader.loadTextureAsync(humanoidKey, testUrl, tempDir);
-    CompletableFuture<?> future2 = AsyncTextureLoader.loadTextureAsync(slimKey, testUrl, tempDir);
+        AsyncTextureLoader.loadTextureAsync(humanoidKey, testUrl, this.temporaryDirectory);
+    CompletableFuture<?> future2 =
+        AsyncTextureLoader.loadTextureAsync(slimKey, testUrl, this.temporaryDirectory);
 
     assertNotNull(future1);
     assertNotNull(future2);
@@ -255,7 +267,8 @@ class AsyncTextureLoaderTest {
     TextureModelKey key = new TextureModelKey(UUID.randomUUID(), SkinModel.HUMANOID);
     String testUrl = "http://example.com/texture.png";
     long startTime = System.currentTimeMillis();
-    CompletableFuture<?> future = AsyncTextureLoader.loadTextureAsync(key, testUrl, tempDir);
+    CompletableFuture<?> future =
+        AsyncTextureLoader.loadTextureAsync(key, testUrl, this.temporaryDirectory);
     long duration = System.currentTimeMillis() - startTime;
 
     assertNotNull(future);

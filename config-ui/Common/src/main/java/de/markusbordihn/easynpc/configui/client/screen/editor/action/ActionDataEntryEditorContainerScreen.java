@@ -101,7 +101,7 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
     this.actionEventType = this.getAdditionalScreenData().getActionEventType();
     this.configurationType = this.getAdditionalScreenData().getConfigurationType();
     this.editorType = this.getAdditionalScreenData().getEditorType();
-    this.actionDataSet = getActionDataSet();
+    this.actionDataSet = this.getActionDataSet();
 
     this.actionDataEntryId = this.getActionDataEntryUUID();
     this.actionDataEntry = this.getActionDataEntry();
@@ -112,23 +112,28 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
   }
 
   private ActionDataSet getActionDataSet() {
+    ActionDataSet resolvedActionDataSet = null;
     if (this.actionEventType != null && this.actionEventType != ActionEventType.NONE) {
-      return this.getAdditionalScreenData().getActionEventSet().getActionEvents(actionEventType);
-    } else if (this.editorType != null && this.editorType == EditorType.DIALOG_BUTTON) {
-      return this.getDialogButtonData().actionDataSet();
-    } else if (this.editorType != null && this.editorType == EditorType.TRADING_OFFER_ACTION) {
-      return this.getAdditionalScreenData().getTradingOfferActionDataSet();
+      resolvedActionDataSet =
+          this.getAdditionalScreenData().getActionEventSet().getActionEvents(this.actionEventType);
+    } else if (this.editorType == EditorType.DIALOG_BUTTON) {
+      resolvedActionDataSet = this.getDialogButtonData().actionDataSet();
+    } else if (this.editorType == EditorType.TRADING_OFFER_ACTION) {
+      resolvedActionDataSet = this.getAdditionalScreenData().getTradingOfferActionDataSet();
     }
-    log.error("No valid action data set found for {}!", this.getEasyNPCUUID());
-    return new ActionDataSet();
+
+    if (resolvedActionDataSet == null) {
+      log.error("No valid action data set found for {}!", this.getEasyNPCUUID());
+      return new ActionDataSet();
+    }
+
+    return resolvedActionDataSet;
   }
 
   private ActionDataEntry getActionDataEntry() {
-    if (this.actionDataSet != null
-        && this.actionDataEntryId != null
-        && this.actionDataSet.contains(this.actionDataEntryId)) {
+    if (this.actionDataEntryId != null && this.actionDataSet.contains(this.actionDataEntryId)) {
       return this.actionDataSet.getEntryOrDefault(this.actionDataEntryId);
-    } else if (this.actionDataSet != null && this.actionDataEntryId != null) {
+    } else if (this.actionDataEntryId != null) {
       log.error(
           "No valid action data entry found for {} in {}!",
           this.actionDataEntryId,
@@ -138,8 +143,8 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
   }
 
   private LinkedHashSet<ActionDataType> getAvailableActionDataTypes() {
-    boolean requiresServerPlayer = requiresServerPlayer(this.actionEventType);
-    Set<ActionDataType> blockedTypes = getBlockedActionTypes();
+    boolean requiresServerPlayer = this.requiresServerPlayer(this.actionEventType);
+    Set<ActionDataType> blockedTypes = this.getBlockedActionTypes();
     return Arrays.stream(ActionDataType.values())
         .filter(type -> type != ActionDataType.NONE)
         .filter(
@@ -149,8 +154,9 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
         .filter(
             type -> {
               if (!requiresServerPlayer) {
-                return !actionDataTypeRequiresServerPlayer(type);
+                return !this.actionDataTypeRequiresServerPlayer(type);
               }
+
               return true;
             })
         .sorted()
@@ -172,7 +178,8 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
     for (String entry : data.getString("BlockedActionTypes").orElse("").split(",")) {
       try {
         blocked.add(ActionDataType.valueOf(entry));
-      } catch (IllegalArgumentException ignored) {
+      } catch (IllegalArgumentException e) {
+        log.warn("Ignoring unknown blocked action type {}", entry);
       }
     }
     return blocked;
@@ -187,7 +194,7 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
   }
 
   public boolean currentEventRequiresServerPlayer() {
-    return requiresServerPlayer(this.actionEventType);
+    return this.requiresServerPlayer(this.actionEventType);
   }
 
   private boolean actionDataTypeRequiresServerPlayer(ActionDataType actionDataType) {
@@ -213,14 +220,15 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
   }
 
   private void navigateToActionDataEditor() {
-    if (this.editorType != null && this.editorType == EditorType.TRADING_OFFER_ACTION) {
+    if (this.editorType == EditorType.TRADING_OFFER_ACTION) {
       NetworkMessageHandlerManager.getServerHandler()
           .openTradingOfferActionEditor(
               this.getEasyNPCUUID(), this.menu.getPageIndex(), this.configurationType);
     } else if (this.actionEventType != null && this.actionEventType != ActionEventType.NONE) {
       NetworkMessageHandlerManager.getServerHandler()
-          .openActionDataEditor(this.getEasyNPCUUID(), actionEventType, configurationType);
-    } else if (this.editorType != null && this.editorType == EditorType.DIALOG_BUTTON) {
+          .openActionDataEditor(
+              this.getEasyNPCUUID(), this.actionEventType, this.configurationType);
+    } else if (this.editorType == EditorType.DIALOG_BUTTON) {
       NetworkMessageHandlerManager.getServerHandler()
           .openActionDataEditor(
               this.getEasyNPCUUID(),
@@ -233,12 +241,10 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
   }
 
   private void saveActionDataEntry() {
-    if (this.actionDataSet == null) {
-      return;
-    }
-
     ActionDataEntry newActionDataEntry =
-        actionEntryWidget != null ? actionEntryWidget.getActionDataEntry() : new ActionDataEntry();
+        this.actionEntryWidget != null
+            ? this.actionEntryWidget.getActionDataEntry()
+            : new ActionDataEntry();
     ActionDataEntry existingActionDataEntry = this.actionDataSet.getEntry(this.actionDataEntryId);
     if (existingActionDataEntry != null) {
       newActionDataEntry =
@@ -247,15 +253,18 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
               .withConditionDataSet(existingActionDataEntry.conditionDataSet());
     }
     this.actionDataSet.put(this.actionDataEntryId, newActionDataEntry);
+    this.sendActionDataSet();
+  }
 
-    if (this.editorType != null && this.editorType == EditorType.TRADING_OFFER_ACTION) {
+  private void sendActionDataSet() {
+    if (this.editorType == EditorType.TRADING_OFFER_ACTION) {
       NetworkMessageHandlerManager.getServerHandler()
           .changeTradingOfferAction(
               this.getEasyNPCUUID(), this.menu.getPageIndex(), this.actionDataSet);
     } else if (this.actionEventType != null && this.actionEventType != ActionEventType.NONE) {
       NetworkMessageHandlerManager.getServerHandler()
-          .actionEventChange(this.getEasyNPCUUID(), actionEventType, this.actionDataSet);
-    } else if (this.editorType != null && this.editorType == EditorType.DIALOG_BUTTON) {
+          .actionEventChange(this.getEasyNPCUUID(), this.actionEventType, this.actionDataSet);
+    } else if (this.editorType == EditorType.DIALOG_BUTTON) {
       NetworkMessageHandlerManager.getServerHandler()
           .saveDialogButton(
               this.getEasyNPCUUID(),
@@ -264,12 +273,12 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
               this.getDialogButtonData().withActionDataSet(this.actionDataSet));
     } else {
       log.error(
-          "Unable to save Action Data Set {} for {}!", this.actionDataSet, this.getEasyNPCUUID());
+          "Unable to send Action Data Set {} for {}!", this.actionDataSet, this.getEasyNPCUUID());
     }
   }
 
   private void deleteActionDataEntry() {
-    if (this.minecraft == null || this.actionDataSet == null || this.actionDataEntryId == null) {
+    if (this.minecraft == null || this.actionDataEntryId == null) {
       return;
     }
 
@@ -278,28 +287,7 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
             confirmed -> {
               if (confirmed) {
                 this.actionDataSet.remove(this.actionDataEntryId);
-                if (this.editorType != null && this.editorType == EditorType.TRADING_OFFER_ACTION) {
-                  NetworkMessageHandlerManager.getServerHandler()
-                      .changeTradingOfferAction(
-                          this.getEasyNPCUUID(), this.menu.getPageIndex(), this.actionDataSet);
-                } else if (this.actionEventType != null
-                    && this.actionEventType != ActionEventType.NONE) {
-                  NetworkMessageHandlerManager.getServerHandler()
-                      .actionEventChange(
-                          this.getEasyNPCUUID(), this.actionEventType, this.actionDataSet);
-                } else if (this.editorType != null && this.editorType == EditorType.DIALOG_BUTTON) {
-                  NetworkMessageHandlerManager.getServerHandler()
-                      .saveDialogButton(
-                          this.getEasyNPCUUID(),
-                          this.getDialogUUID(),
-                          this.getDialogButtonUUID(),
-                          this.getDialogButtonData().withActionDataSet(this.actionDataSet));
-                } else {
-                  log.error(
-                      "Unable to delete Action Data Set {} for {}!",
-                      this.actionDataSet,
-                      this.getEasyNPCUUID());
-                }
+                this.sendActionDataSet();
                 this.navigateToActionDataEditor();
               } else {
                 this.minecraft.setScreenAndShow(this);
@@ -317,7 +305,7 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
     log.debug("Change action data type to {}", spinButton.get());
     this.actionDataType = (ActionDataType) spinButton.get();
     this.clearWidgets();
-    init();
+    this.init();
   }
 
   @Override
@@ -334,7 +322,7 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
                 10,
                 16,
                 "<",
-                onPress -> navigateToActionDataEditor()));
+                onPress -> this.navigateToActionDataEditor()));
 
     this.navigationLevelOne =
         this.addRenderableWidget(
@@ -343,7 +331,7 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
                 this.topPos + 3,
                 140,
                 "Actions",
-                onPress -> navigateToActionDataEditor()));
+                onPress -> this.navigateToActionDataEditor()));
 
     int actionDataEntryPosition = this.actionDataSet.getPosition(this.actionDataEntry);
     this.navigationLevelTwo =
@@ -354,8 +342,8 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
                 140,
                 actionDataEntryPosition == -1
                     ? "Action: New"
-                    : "Action: " + this.actionDataSet.getPosition(this.actionDataEntry),
-                onPress -> navigateToActionDataEditor()));
+                    : "Action: " + actionDataEntryPosition,
+                onPress -> this.navigateToActionDataEditor()));
     this.navigationLevelTwo.active = false;
 
     this.actionDataTypeButton =
@@ -369,7 +357,6 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
                 this.actionDataType,
                 this::changeActionDataType));
 
-    // Conditions Button — only active when the action entry is already saved
     int conditionCount =
         this.actionDataEntry.conditionDataSet() != null
             ? this.actionDataEntry.conditionDataSet().size()
@@ -381,9 +368,8 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
                 this.bottomPos - 55,
                 295,
                 conditionCount,
-                onPress -> openConditionEditor()));
-    this.conditionsButton.active =
-        this.actionDataSet != null && this.actionDataSet.contains(this.actionDataEntryId);
+                onPress -> this.openConditionEditor()));
+    this.conditionsButton.active = this.actionDataSet.contains(this.actionDataEntryId);
 
     this.saveButton =
         this.addRenderableWidget(
@@ -412,7 +398,7 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
                 this.bottomPos - 35,
                 85,
                 "cancel",
-                onPress -> navigateToActionDataEditor()));
+                onPress -> this.navigateToActionDataEditor()));
 
     switch (this.actionDataType) {
       case CLOSE_DIALOG:
@@ -548,15 +534,13 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
 
     if (this.deleteButton != null) {
       this.deleteButton.active =
-          this.actionDataSet != null
-              && this.actionDataEntry != null
+          this.actionDataEntry != null
               && this.actionDataEntry.isValidAndNotEmpty()
               && this.actionDataEntryId != null;
     }
 
     if (this.conditionsButton != null) {
-      this.conditionsButton.active =
-          this.actionDataSet != null && this.actionDataSet.contains(this.actionDataEntryId);
+      this.conditionsButton.active = this.actionDataSet.contains(this.actionDataEntryId);
     }
   }
 }

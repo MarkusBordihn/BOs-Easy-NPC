@@ -47,7 +47,7 @@ public class ServerEventHandler {
   }
 
   @SubscribeEvent
-  public static void handleServerAboutToStopEvent(ServerStoppingEvent event) {
+  public static void handleServerStoppingEvent(ServerStoppingEvent event) {
     ServerEvents.handleServerStopping(event.getServer());
   }
 

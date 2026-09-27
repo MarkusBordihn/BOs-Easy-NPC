@@ -138,6 +138,7 @@ public class GunAttackGoal<T extends EasyNPC<?>> extends Goal {
           this.attackTime = this.attackIntervalMin;
           return;
         }
+
         this.rangedAttackMob.performRangedAttack(livingEntity, 10);
         this.attackTime = this.attackIntervalMin;
       }

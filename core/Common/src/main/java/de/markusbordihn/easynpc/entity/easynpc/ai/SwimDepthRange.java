@@ -69,6 +69,7 @@ public record SwimDepthRange(double lowestY, double highestY) {
       if (!level.getBlockState(blockPos).getCollisionShape(level, blockPos).isEmpty()) {
         return blockPos.getY() + 1.0D;
       }
+
       blockPos.move(Direction.DOWN);
     }
 
@@ -83,6 +84,7 @@ public record SwimDepthRange(double lowestY, double highestY) {
       if (!level.getFluidState(blockPos).is(FluidTags.WATER)) {
         return blockPos.getY();
       }
+
       blockPos.move(Direction.UP);
     }
 

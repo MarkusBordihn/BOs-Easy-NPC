@@ -19,6 +19,8 @@
 
 package de.markusbordihn.easynpc.data.action;
 
+import java.util.Map;
+import java.util.function.ToIntFunction;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import net.minecraft.server.level.ServerPlayer;
@@ -38,6 +40,12 @@ public class ActionUtils {
   public static final String MACRO_SUCCESS_MESSAGE = "/success_message";
   public static final String MACRO_WARN_MESSAGE = "/warn_message";
   private static final Pattern SCORE_PATTERN = Pattern.compile("@score\\(([a-zA-Z0-9_.-]+)\\)");
+  private static final Map<String, String> TITLE_MACRO_COLORS =
+      Map.of(
+          MACRO_ERROR_MESSAGE, "dark_red",
+          MACRO_WARN_MESSAGE, "yellow",
+          MACRO_INFO_MESSAGE, "aqua",
+          MACRO_SUCCESS_MESSAGE, "green");
 
   private ActionUtils() {}
 
@@ -45,24 +53,24 @@ public class ActionUtils {
     if (command == null || command.isEmpty()) {
       return "";
     }
+
     String output = command;
 
     if (!command.startsWith("/")) {
       command = "/" + command;
     }
 
-    if (command.startsWith(MACRO_ERROR_MESSAGE)) {
-      output = output.replace(MACRO_ERROR_MESSAGE, "").trim();
-      output = COMMAND_DISPLAY_TITLE + escapeJson(output) + "\",\"color\":\"dark_red\"}";
-    } else if (command.startsWith(MACRO_WARN_MESSAGE)) {
-      output = output.replace(MACRO_WARN_MESSAGE, "").trim();
-      output = COMMAND_DISPLAY_TITLE + escapeJson(output) + "\",\"color\":\"yellow\"}";
-    } else if (command.startsWith(MACRO_INFO_MESSAGE)) {
-      output = output.replace(MACRO_INFO_MESSAGE, "").trim();
-      output = COMMAND_DISPLAY_TITLE + escapeJson(output) + "\",\"color\":\"aqua\"}";
-    } else if (command.startsWith(MACRO_SUCCESS_MESSAGE)) {
-      output = output.replace(MACRO_SUCCESS_MESSAGE, "").trim();
-      output = COMMAND_DISPLAY_TITLE + escapeJson(output) + "\",\"color\":\"green\"}";
+    for (Map.Entry<String, String> titleMacroColor : TITLE_MACRO_COLORS.entrySet()) {
+      String titleMacro = titleMacroColor.getKey();
+      if (command.startsWith(titleMacro)) {
+        output =
+            COMMAND_DISPLAY_TITLE
+                + escapeJson(output.replace(titleMacro, "").trim())
+                + "\",\"color\":\""
+                + titleMacroColor.getValue()
+                + "\"}";
+        break;
+      }
     }
 
     return parseMacros(output, entity, player);
@@ -72,6 +80,7 @@ public class ActionUtils {
     if (text == null || text.isEmpty()) {
       return "";
     }
+
     String output = text;
 
     if (entity != null) {
@@ -83,29 +92,35 @@ public class ActionUtils {
       output = output.replace(MACRO_INITIATOR_UUID, player.getUUID().toString());
       output = output.replace(MACRO_INITIATOR, player.getName().getString());
 
-      Matcher matcher = SCORE_PATTERN.matcher(output);
-      StringBuilder sb = new StringBuilder();
-      while (matcher.find()) {
-        String objectiveName = matcher.group(1);
-        int score = getScoreboardValue(player, objectiveName);
-        matcher.appendReplacement(sb, Matcher.quoteReplacement(String.valueOf(score)));
-      }
-      matcher.appendTail(sb);
-      output = sb.toString();
+      output =
+          replaceScoreMacros(output, objectiveName -> getScoreboardValue(player, objectiveName));
     }
 
     return output;
+  }
+
+  public static String replaceScoreMacros(String text, ToIntFunction<String> scoreByObjectiveName) {
+    Matcher matcher = SCORE_PATTERN.matcher(text);
+    StringBuilder replacedText = new StringBuilder();
+    while (matcher.find()) {
+      int score = scoreByObjectiveName.applyAsInt(matcher.group(1));
+      matcher.appendReplacement(replacedText, Matcher.quoteReplacement(String.valueOf(score)));
+    }
+    matcher.appendTail(replacedText);
+    return replacedText.toString();
   }
 
   private static int getScoreboardValue(ServerPlayer player, String objectiveName) {
     if (objectiveName == null || objectiveName.isEmpty() || objectiveName.length() > 16) {
       return 0;
     }
+
     Scoreboard scoreboard = player.level().getScoreboard();
     Objective objective = scoreboard.getObjective(objectiveName);
     if (objective != null) {
       return scoreboard.getOrCreatePlayerScore(player, objective).get();
     }
+
     return 0;
   }
 
@@ -113,6 +128,7 @@ public class ActionUtils {
     if (text == null || text.isEmpty()) {
       return text;
     }
+
     return text.replace("\\", "\\\\")
         .replace("\"", "\\\"")
         .replace("\n", "\\n")

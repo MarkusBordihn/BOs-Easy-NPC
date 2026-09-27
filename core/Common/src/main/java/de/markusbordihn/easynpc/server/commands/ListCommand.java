@@ -50,7 +50,9 @@ public class ListCommand extends Command {
 
   public static ArgumentBuilder<CommandSourceStack, ?> register() {
     return Commands.literal("list")
-        .requires(cs -> cs.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER))
+        .requires(
+            commandSourceStack ->
+                commandSourceStack.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER))
         .executes(context -> listAllNPCs(context.getSource()))
         .then(
             Commands.literal("owner")

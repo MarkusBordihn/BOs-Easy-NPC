@@ -19,18 +19,13 @@
 
 package de.markusbordihn.easynpc.gametest;
 
-import de.markusbordihn.easynpc.entity.ModEntityType;
-import de.markusbordihn.easynpc.entity.ModNPCEntityType;
+import static de.markusbordihn.easynpc.gametest.GameTestEntityTypes.humanoid;
+
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraft.world.entity.EntityType;
 
 public final class SoundActionTest {
 
   private SoundActionTest() {}
-
-  private static EntityType<?> humanoid() {
-    return ModEntityType.getEntityType(ModNPCEntityType.HUMANOID);
-  }
 
   public static void testSoundActionPlaysAKnownSound(GameTestHelper helper) {
     SoundActionTestHelper.assertSoundActionPlaysAKnownSound(helper, humanoid());

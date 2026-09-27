@@ -407,6 +407,7 @@ public class PresetBrowserScreen extends CustomScreen<PresetBrowserMenu, Additio
             .filter(this::matchesFilters)
             .sorted(this.presetComparator())
             .toList());
+    this.presetListWidget.setScrollAmount(0);
 
     if (this.selectedEntry != null
         && !this.presetListWidget.children().contains(this.selectedEntry)) {
@@ -425,12 +426,12 @@ public class PresetBrowserScreen extends CustomScreen<PresetBrowserMenu, Additio
     this.presetEntries.forEach(PresetListEntry::cleanup);
     this.presetEntries.clear();
 
-    collectPresets(
+    this.collectPresets(
         PresetType.LOCAL,
         LocalPresetDataFiles.getPresetIdentifiers(),
         LocalPresetDataFiles::getPresetMetadata);
 
-    collectPresets(
+    this.collectPresets(
         PresetType.DEFAULT,
         ClientDefaultPresetDataFiles.getDefaultPresetIdentifiers(),
         ClientDefaultPresetDataFiles::getPresetMetadata);
@@ -439,20 +440,20 @@ public class PresetBrowserScreen extends CustomScreen<PresetBrowserMenu, Additio
       return;
     }
 
-    collectPresets(
+    this.collectPresets(
         PresetType.CUSTOM,
-        loadPresetListFromAdditionalData("CustomPresets").stream(),
-        preset -> loadMetadataFromAdditionalData("CustomPresetsMetadata", preset));
+        this.loadPresetListFromAdditionalData("CustomPresets").stream(),
+        preset -> this.loadMetadataFromAdditionalData("CustomPresetsMetadata", preset));
 
-    collectPresets(
+    this.collectPresets(
         PresetType.DATA,
-        loadPresetListFromAdditionalData("DataPresets").stream(),
-        preset -> loadMetadataFromAdditionalData("DataPresetsMetadata", preset));
+        this.loadPresetListFromAdditionalData("DataPresets").stream(),
+        preset -> this.loadMetadataFromAdditionalData("DataPresetsMetadata", preset));
 
-    collectPresets(
+    this.collectPresets(
         PresetType.WORLD,
-        loadPresetListFromAdditionalData("WorldPresets").stream(),
-        preset -> loadMetadataFromAdditionalData("WorldPresetsMetadata", preset));
+        this.loadPresetListFromAdditionalData("WorldPresets").stream(),
+        preset -> this.loadMetadataFromAdditionalData("WorldPresetsMetadata", preset));
   }
 
   private void collectPresets(

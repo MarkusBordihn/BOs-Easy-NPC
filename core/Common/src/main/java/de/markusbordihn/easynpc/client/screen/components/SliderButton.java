@@ -234,12 +234,12 @@ public class SliderButton extends AbstractSliderButton {
   }
 
   public void setDefaultValue(double value) {
-    this.setDefaultValue(Math.round(value * roundFactor) / roundFactor);
+    this.setDefaultValue(Math.round(value * this.roundFactor) / this.roundFactor);
   }
 
   public void setDefaultValue(float value) {
     this.initValue = value;
-    this.value = (this.initValue - minValue) / this.valueFraction;
+    this.value = (this.initValue - this.minValue) / this.valueFraction;
     this.applyValue();
     this.updateMessage();
   }
@@ -280,9 +280,9 @@ public class SliderButton extends AbstractSliderButton {
   }
 
   private void updateTargetValue() {
-    // Round value to round factor.
     this.targetValue =
-        Math.round((this.minValue + (this.valueFraction * this.value)) * roundFactor) / roundFactor;
+        Math.round((this.minValue + (this.valueFraction * this.value)) * this.roundFactor)
+            / this.roundFactor;
   }
 
   private double getStepSize() {
@@ -363,19 +363,20 @@ public class SliderButton extends AbstractSliderButton {
     // Slider Handle
     guiGraphics.blitSprite(
         RenderPipelines.GUI_TEXTURED,
-        getSliderHandleSprite(),
+        this.getSliderHandleSprite(),
         this.getX() + (int) (this.value * (this.width - 8)),
         this.getY(),
         8,
         this.getHeight());
 
-    int fgColor = this.active ? Constants.FONT_COLOR_WHITE : Constants.FONT_COLOR_LIGHT_GRAY;
+    int foregroundColor =
+        this.active ? Constants.FONT_COLOR_WHITE : Constants.FONT_COLOR_LIGHT_GRAY;
     guiGraphics.centeredText(
         font,
         this.getMessage(),
         this.getX() + this.width / 2,
         this.getY() + (this.height - 8) / 2,
-        fgColor | Mth.ceil(this.alpha * 255.0F) << 24);
+        foregroundColor | Mth.ceil(this.alpha * 255.0F) << 24);
   }
 
   private Identifier getSliderSprite() {

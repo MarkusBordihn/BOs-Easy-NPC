@@ -62,6 +62,8 @@ public interface EasyNPC<E extends Mob> extends EasyNPCDataAccessors<E>, Npc {
 
   Random randomNumber = new Random();
 
+  int LEGACY_NPC_DATA_VERSION = -1;
+
   static boolean isUsableServerSideInstance(EasyNPC<?> easyNPC) {
     return easyNPC != null && !easyNPC.isClientSideInstance();
   }
@@ -69,6 +71,10 @@ public interface EasyNPC<E extends Mob> extends EasyNPCDataAccessors<E>, Npc {
   int getNPCDataVersion();
 
   void setNPCDataVersion(int version);
+
+  default boolean isLegacyNPCData() {
+    return this.getNPCDataVersion() == LEGACY_NPC_DATA_VERSION;
+  }
 
   default NPCType getNPCType() {
     return RawNPCType.GENERIC;
@@ -220,12 +226,12 @@ public interface EasyNPC<E extends Mob> extends EasyNPCDataAccessors<E>, Npc {
 
   default <T> void setSynchedEntityData(SynchedDataIndex synchedDataIndex, T data) {
     if (synchedDataIndex.persistent) {
-      StatusDataCapable<?> statusData = getEasyNPCStatusData();
+      StatusDataCapable<?> statusData = this.getEasyNPCStatusData();
       if (statusData != null) {
         statusData.markNPCDataUpdated();
       }
     }
-    setSynchedEntityData(synchedDataIndex, data, false);
+    this.setSynchedEntityData(synchedDataIndex, data, false);
   }
 
   <T> void setSynchedEntityData(SynchedDataIndex synchedDataIndex, T data, boolean forceUpdate);

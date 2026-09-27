@@ -57,13 +57,10 @@ public abstract class CustomModelRenderLayer<
       return;
     }
 
-    // Get the texture location based on config
-    Identifier textureLocation = getTextureLocation(renderState);
+    Identifier textureLocation = this.getTextureLocation(renderState);
 
-    // Setup animation state for the custom model
     this.customModel.setupAnim(renderState);
 
-    // Render the custom model using the new API
     // Using coloredCutoutModelCopyLayerRender for proper rendering with invisibility support
     RenderLayer.coloredCutoutModelCopyLayerRender(
         this.customModel,
@@ -73,18 +70,18 @@ public abstract class CustomModelRenderLayer<
         packedLight,
         renderState,
         -1, // white color (no tint)
-        config.renderMode().ordinal() // render type from config
+        this.config.renderMode().ordinal() // render type from config
         );
   }
 
   protected Identifier getTextureLocation(S renderState) {
-    if (config.shouldUseEntityTexture()
+    if (this.config.shouldUseEntityTexture()
         && this.renderer instanceof EasyNPCEntityRenderer easyNPCRenderer) {
       return easyNPCRenderer.getTextureFromRenderState(renderState);
-    } else if (config.shouldUseVariantTexture()
+    } else if (this.config.shouldUseVariantTexture()
         && this.renderer instanceof EasyNPCEntityRenderer easyNPCRenderer) {
       return easyNPCRenderer.getTextureFromRenderState(renderState);
     }
-    return config.getCustomTexture();
+    return this.config.getCustomTexture();
   }
 }

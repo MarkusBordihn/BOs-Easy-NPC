@@ -92,7 +92,7 @@ public class NetworkHandler implements NetworkHandlerInterface {
         })) {
       log.error("Failed to register client network message handler {}:", type);
     } else {
-      logRegisterClientNetworkMessageHandler(type, networkMessageRecord);
+      this.logRegisterClientNetworkMessageHandler(type, networkMessageRecord);
     }
   }
 
@@ -116,55 +116,55 @@ public class NetworkHandler implements NetworkHandlerInterface {
         })) {
       log.error("Failed to register server network message handler {}:", type);
     } else {
-      logRegisterServerNetworkMessageHandler(type, networkMessageRecord);
+      this.logRegisterServerNetworkMessageHandler(type, networkMessageRecord);
     }
   }
 
   @Override
   public <M extends NetworkMessageRecord> void addClientMessage(
       final CustomPacketPayload.Type<M> messageID, final Class<M> networkMessage) {
-    clientMessages.put(messageID, networkMessage);
+    this.clientMessages.put(messageID, networkMessage);
   }
 
   @Override
   public <M extends NetworkMessageRecord> void addServerMessage(
       final CustomPacketPayload.Type<M> messageID, final Class<M> networkMessage) {
-    serverMessages.put(messageID, networkMessage);
+    this.serverMessages.put(messageID, networkMessage);
   }
 
   @Override
   public Map<CustomPacketPayload.Type<?>, Class<? extends NetworkMessageRecord>>
       getClientMessages() {
-    return clientMessages;
+    return this.clientMessages;
   }
 
   @Override
   public Map<CustomPacketPayload.Type<?>, Class<? extends NetworkMessageRecord>>
       getServerMessages() {
-    return serverMessages;
+    return this.serverMessages;
   }
 
   @Override
   public <M extends NetworkMessageRecord> void addRegisteredClientMessage(
       final CustomPacketPayload.Type<M> messageID, final Class<M> networkMessage) {
-    registeredClientMessages.put(messageID, networkMessage);
+    this.registeredClientMessages.put(messageID, networkMessage);
   }
 
   @Override
   public <M extends NetworkMessageRecord> void addRegisteredServerMessage(
       final CustomPacketPayload.Type<M> messageID, final Class<M> networkMessage) {
-    registeredServerMessages.put(messageID, networkMessage);
+    this.registeredServerMessages.put(messageID, networkMessage);
   }
 
   @Override
   public Map<CustomPacketPayload.Type<?>, Class<? extends NetworkMessageRecord>>
       getRegisteredClientMessages() {
-    return registeredClientMessages;
+    return this.registeredClientMessages;
   }
 
   @Override
   public Map<CustomPacketPayload.Type<?>, Class<? extends NetworkMessageRecord>>
       getRegisteredServerMessages() {
-    return registeredServerMessages;
+    return this.registeredServerMessages;
   }
 }

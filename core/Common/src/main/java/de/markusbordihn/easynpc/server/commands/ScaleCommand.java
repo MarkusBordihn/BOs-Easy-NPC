@@ -53,6 +53,7 @@ public class ScaleCommand extends Command {
                                             context.getSource(),
                                             "Invalid model part " + partString);
                                       }
+
                                       Collection<? extends EasyNPC<?>> easyNPCs =
                                           EasyNPCArgument.getEntitiesWithAccess(
                                               context, NPC_TARGETS_ARG);
@@ -92,6 +93,7 @@ public class ScaleCommand extends Command {
                                                             context.getSource(),
                                                             "Invalid model part " + partString);
                                                       }
+
                                                       Collection<? extends EasyNPC<?>> easyNPCs =
                                                           EasyNPCArgument.getEntitiesWithAccess(
                                                               context, NPC_TARGETS_ARG);

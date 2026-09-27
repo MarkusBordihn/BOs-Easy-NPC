@@ -48,7 +48,6 @@ public class PositionConfigurationScreen<T extends ConfigurationMenu>
   public void init() {
     super.init();
 
-    // Position Types
     int positionButtonWidth = 80;
     this.defaultPositionButton =
         this.addRenderableWidget(

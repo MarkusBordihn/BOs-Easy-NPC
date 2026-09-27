@@ -64,13 +64,11 @@ public class EasyNPCLivingEntityRenderer {
       return;
     }
 
-    // Apply default scale to the model.
     CustomScale defaultScale = modelData.getDefaultModelScale();
     if (defaultScale != null && defaultScale.hasChanged()) {
       poseStack.scale(defaultScale.x(), defaultScale.y(), defaultScale.z());
     }
 
-    // Apply custom root scale to the model.
     RootModelData rootModelData = modelData.getModelRootData();
     CustomScale customScale = rootModelData.scale();
     if (customScale.hasChanged()) {
@@ -144,24 +142,31 @@ public class EasyNPCLivingEntityRenderer {
       return;
     }
 
-    CustomRotation rootRotation = modelData.getModelRootData().rotation();
+    applyRootRotation(
+        modelData.getModelRootData().rotation(),
+        poseStack,
+        easyNPC.getLivingEntity().getBbHeight() * 0.5f);
+  }
+
+  public static void applyRootRotation(
+      CustomRotation rootRotation, PoseStack poseStack, float pivotY) {
     if (!rootRotation.hasChangedRotation()) {
       return;
     }
 
-    float xDeg = (float) Math.toDegrees(rootRotation.x());
-    float zDeg = (float) Math.toDegrees(rootRotation.z());
-
-    if (xDeg != 0.0f || zDeg != 0.0f) {
-      float pivotY = easyNPC.getLivingEntity().getBbHeight() * 0.5f;
-      poseStack.translate(0.0f, pivotY, 0.0f);
-      if (xDeg != 0.0f) {
-        poseStack.rotateDegrees(Axis.XP, xDeg);
-      }
-      if (zDeg != 0.0f) {
-        poseStack.rotateDegrees(Axis.ZP, zDeg);
-      }
-      poseStack.translate(0.0f, -pivotY, 0.0f);
+    float rotationXDegrees = (float) Math.toDegrees(rootRotation.x());
+    float rotationZDegrees = (float) Math.toDegrees(rootRotation.z());
+    if (rotationXDegrees == 0.0f && rotationZDegrees == 0.0f) {
+      return;
     }
+
+    poseStack.translate(0.0f, pivotY, 0.0f);
+    if (rotationXDegrees != 0.0f) {
+      poseStack.rotateDegrees(Axis.XP, rotationXDegrees);
+    }
+    if (rotationZDegrees != 0.0f) {
+      poseStack.rotateDegrees(Axis.ZP, rotationZDegrees);
+    }
+    poseStack.translate(0.0f, -pivotY, 0.0f);
   }
 }

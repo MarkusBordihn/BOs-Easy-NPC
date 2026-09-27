@@ -304,9 +304,7 @@ public class ConfigurationMenuHandler {
             ConfigurationType.LOCAL_PRESET_EXPORT,
             ConfigurationType.CUSTOM_PRESET_EXPORT);
       }
-      default -> {
-        // Do nothing
-      }
+      default -> {}
     }
     return new ScreenData(npcUUID, null, null, null, null, pageIndex, additionalSyncData);
   }

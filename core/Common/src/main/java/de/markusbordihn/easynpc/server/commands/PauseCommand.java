@@ -36,7 +36,9 @@ public class PauseCommand extends Command {
 
   public static ArgumentBuilder<CommandSourceStack, ?> register() {
     return Commands.literal("pause")
-        .requires(cs -> cs.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER))
+        .requires(
+            commandSourceStack ->
+                commandSourceStack.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER))
         .then(
             Commands.literal("all")
                 .then(

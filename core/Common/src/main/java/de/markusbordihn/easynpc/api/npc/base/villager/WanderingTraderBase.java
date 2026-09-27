@@ -108,7 +108,6 @@ public class WanderingTraderBase extends WanderingTraderRaw
 
   @Override
   public void travel(Vec3 vec3) {
-
     this.handleNavigationTravelEvent(vec3);
 
     if (this.hasTravelTargetObjectives()) {

@@ -38,10 +38,11 @@ public class WanderingTraderRawRenderer extends WanderingTraderRenderer
 
   @Override
   public Identifier getTextureLocation(VillagerRenderState renderState) {
-    Identifier texture = getTextureFromRenderState(renderState);
+    Identifier texture = this.getTextureFromRenderState(renderState);
     if (texture == DEFAULT_TEXTURE) {
       return super.getTextureLocation(renderState);
     }
+
     return texture;
   }
 

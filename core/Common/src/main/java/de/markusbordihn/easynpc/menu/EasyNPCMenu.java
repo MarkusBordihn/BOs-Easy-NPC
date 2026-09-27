@@ -38,7 +38,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class EasyNPCMenu extends AbstractContainerMenu
-    implements ScreenMenuInterface<de.markusbordihn.easynpc.data.screen.AdditionalScreenData> {
+    implements ScreenMenuInterface<AdditionalScreenData> {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
@@ -60,11 +60,9 @@ public class EasyNPCMenu extends AbstractContainerMenu
       final CompoundTag data) {
     super(menuType, containerId);
 
-    // Get player and level data.
     this.player = playerInventory.player;
     this.level = playerInventory.player.level();
 
-    // Get screen data, if available.
     this.screenData =
         this.level.isClientSide() ? ClientMenuManager.getScreenData() : ScreenData.decode(data);
     if (this.screenData == null) {
@@ -74,24 +72,23 @@ public class EasyNPCMenu extends AbstractContainerMenu
       return;
     }
 
-    // Check if additional screen data is available.
     this.additionalScreenData =
         this.level.isClientSide()
             ? ClientMenuManager.getAdditionalScreenData()
             : new AdditionalScreenData(this.screenData.additionalData());
     if (this.additionalScreenData == null) {
-      log.warn("Additional screen data is missing  menu {} with {}", menuType, this.screenData);
+      log.warn("Additional screen data is missing for menu {} with {}", menuType, this.screenData);
     }
 
-    // Get easy NPC entity from screen data.
     this.easyNPC =
         this.level.isClientSide()
-            ? LivingEntityManager.getClientEasyNPCEntityByUUID(getNpcUUID())
-            : LivingEntityManager.getServerEasyNPCEntityByUUID(getNpcUUID(), (ServerPlayer) player);
+            ? LivingEntityManager.getClientEasyNPCEntityByUUID(this.getNpcUUID())
+            : LivingEntityManager.getServerEasyNPCEntityByUUID(
+                this.getNpcUUID(), (ServerPlayer) this.player);
     if (this.easyNPC == null) {
       log.error(
           "EasyNPC entity with UUID {} is missing for menu {} with {}",
-          getNpcUUID(),
+          this.getNpcUUID(),
           menuType,
           this.screenData);
     }
@@ -131,7 +128,6 @@ public class EasyNPCMenu extends AbstractContainerMenu
 
     ItemStack itemStack = slot.getItem();
 
-    // Store changes if itemStack is not empty.
     if (itemStack.isEmpty()) {
       slot.set(ItemStack.EMPTY);
     } else {

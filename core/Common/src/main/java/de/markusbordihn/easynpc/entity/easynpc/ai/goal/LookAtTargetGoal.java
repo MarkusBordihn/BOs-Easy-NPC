@@ -19,8 +19,6 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.ai.goal;
 
-import de.markusbordihn.easynpc.data.model.ModelPartType;
-import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
 import java.util.EnumSet;
@@ -107,16 +105,7 @@ public abstract class LookAtTargetGoal<T extends EasyNPC<?>> extends Goal {
   }
 
   private boolean hasLockedBodyPose() {
-    if (this.modelData == null) {
-      return false;
-    }
-
-    if (this.modelData.getModelPartRotation(ModelPartType.HEAD).hasChangedRotation()) {
-      return false;
-    }
-
-    return this.modelData.getModelPose() == ModelPose.DEFAULT
-        || this.modelData.getModelRootData().isRotationLocked();
+    return this.modelData != null && this.modelData.hasLockedBodyPose();
   }
 
   private void applyLimitedHeadRotationToTarget(Entity target) {

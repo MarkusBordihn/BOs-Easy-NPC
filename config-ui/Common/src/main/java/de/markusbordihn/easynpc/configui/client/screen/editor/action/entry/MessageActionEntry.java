@@ -344,7 +344,7 @@ public class MessageActionEntry extends ActionEntryWidget {
   }
 
   private MessageActionData currentMessageActionData() {
-    if (!hasActionData(ActionDataType.MESSAGE)
+    if (!this.hasActionData(ActionDataType.MESSAGE)
         || this.actionDataEntry.messageActionData() == null) {
       return MessageActionData.DEFAULT;
     }

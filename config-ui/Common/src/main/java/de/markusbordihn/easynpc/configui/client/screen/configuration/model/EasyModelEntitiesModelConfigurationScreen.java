@@ -86,15 +86,16 @@ public class EasyModelEntitiesModelConfigurationScreen<T extends ConfigurationMe
     this.defaultModelButton.active = false;
     this.customModelButton.active = false;
 
-    setDescriptionText("easy_model_entities_model.text");
+    this.setDescriptionText("easy_model_entities_model.text");
     this.noteTextComponents =
         this.font.split(
             TextComponent.getTranslatedConfigText("easy_model_entities_model.note"),
             this.imageWidth - 20);
 
-    this.profileList = loadProfileList();
+    this.profileList = this.loadProfileList();
 
-    defineSkinNavigationButtons(this.contentTopPos + 189, this.contentLeftPos, this.rightPos - 29);
+    this.defineSkinNavigationButtons(
+        this.contentTopPos + 189, this.contentLeftPos, this.rightPos - 29);
 
     EditBox searchField =
         this.addRenderableWidget(
@@ -167,7 +168,7 @@ public class EasyModelEntitiesModelConfigurationScreen<T extends ConfigurationMe
       GuiGraphicsExtractor guiGraphics, int x, int y, float partialTicks) {
     super.extractRenderState(guiGraphics, x, y, partialTicks);
 
-    renderDescriptionText(guiGraphics, this.contentLeftPos + 5, this.contentTopPos + 20);
+    this.renderDescriptionText(guiGraphics, this.contentLeftPos + 5, this.contentTopPos + 20);
 
     if (!this.noteTextComponents.isEmpty()) {
       int noteTop = this.contentTopPos + 35;
@@ -181,19 +182,19 @@ public class EasyModelEntitiesModelConfigurationScreen<T extends ConfigurationMe
       }
     }
 
-    if (!profileButtons.isEmpty()) {
-      for (Button button : profileButtons) {
+    if (!this.profileButtons.isEmpty()) {
+      for (Button button : this.profileButtons) {
         button.extractRenderState(guiGraphics, x, y, partialTicks);
       }
     }
 
-    renderProfileList(guiGraphics, x, y);
+    this.renderProfileList(guiGraphics, x, y);
   }
 
   @Override
   public boolean mouseClicked(MouseButtonEvent mouseButtonEvent, boolean doubleClick) {
-    if (!profileButtons.isEmpty()) {
-      for (Button skinButton : profileButtons) {
+    if (!this.profileButtons.isEmpty()) {
+      for (Button skinButton : this.profileButtons) {
         skinButton.mouseClicked(mouseButtonEvent, doubleClick);
       }
     }
@@ -204,7 +205,7 @@ public class EasyModelEntitiesModelConfigurationScreen<T extends ConfigurationMe
   public void extractBackground(
       GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
     super.extractBackground(guiGraphics, mouseX, mouseY, partialTicks);
-    renderSkinSelectionBackground(guiGraphics);
+    this.renderSkinSelectionBackground(guiGraphics);
   }
 
   private void defineSkinNavigationButtons(
@@ -217,7 +218,7 @@ public class EasyModelEntitiesModelConfigurationScreen<T extends ConfigurationMe
                 20,
                 "<<",
                 onPress -> {
-                  skinStartIndex = Math.max(this.skinStartIndex - MAX_SKINS_PER_PAGE, 0);
+                  this.skinStartIndex = Math.max(this.skinStartIndex - MAX_SKINS_PER_PAGE, 0);
                   this.updateSkinPage();
                 }));
     this.skinPreviousButton =
@@ -229,7 +230,7 @@ public class EasyModelEntitiesModelConfigurationScreen<T extends ConfigurationMe
                 "<",
                 onPress -> {
                   if (this.skinStartIndex > 0) {
-                    skinStartIndex--;
+                    this.skinStartIndex--;
                   }
                   this.updateSkinPage();
                 }));
@@ -261,7 +262,7 @@ public class EasyModelEntitiesModelConfigurationScreen<T extends ConfigurationMe
                 onPress -> {
                   if (this.skinStartIndex >= 0
                       && this.skinStartIndex < this.numOfProfiles - MAX_SKINS_PER_PAGE) {
-                    skinStartIndex++;
+                    this.skinStartIndex++;
                   }
                   this.updateSkinPage();
                 }));
@@ -293,8 +294,8 @@ public class EasyModelEntitiesModelConfigurationScreen<T extends ConfigurationMe
     RenderDataEntry currentEntry = renderData.getRenderDataEntry();
     String currentModel = currentEntry.getRenderEntityModel();
 
-    for (int index = skinStartIndex;
-        index < this.numOfProfiles && index < skinStartIndex + MAX_SKINS_PER_PAGE;
+    for (int index = this.skinStartIndex;
+        index < this.numOfProfiles && index < this.skinStartIndex + MAX_SKINS_PER_PAGE;
         index++) {
       Identifier profileId = this.filteredProfiles.get(index);
       int skinPosition = index - this.skinStartIndex;
@@ -304,7 +305,7 @@ public class EasyModelEntitiesModelConfigurationScreen<T extends ConfigurationMe
       if (skinPosition < this.profileButtons.size()) {
         this.profileButtons.get(skinPosition).active = !profileId.toString().equals(currentModel);
       }
-      renderProfilePreview(guiGraphics, left, top, profileId, renderData, currentEntry);
+      this.renderProfilePreview(guiGraphics, left, top, profileId, renderData, currentEntry);
 
       int topNamePos = Math.round((top - 76f) / SKIN_NAME_SCALING);
       int leftNamePos = Math.round((left - 21f) / SKIN_NAME_SCALING);

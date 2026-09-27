@@ -78,11 +78,12 @@ public class CreeperBase extends CreeperRaw implements BaseEasyNPC<CreeperRaw> {
 
   @Override
   public boolean isIgnited() {
-    if (getSkinVariantType() == CreeperSkinVariant.CREEPER) {
+    if (this.getSkinVariantType() == CreeperSkinVariant.CREEPER) {
       return false;
-    } else if (getSkinVariantType() == CreeperSkinVariant.CHARGED) {
+    } else if (this.getSkinVariantType() == CreeperSkinVariant.CHARGED) {
       return true;
     }
+
     return super.isIgnited();
   }
 
@@ -105,12 +106,9 @@ public class CreeperBase extends CreeperRaw implements BaseEasyNPC<CreeperRaw> {
 
   @Override
   public void travel(Vec3 vec3) {
-
     this.handleNavigationTravelEvent(vec3);
 
-    // Handle movement for NPC for specific conditions.
     if (this.hasTravelTargetObjectives()) {
-      // Allow travel for NPC, if travel objectives are used.
       super.travel(vec3);
     } else {
       this.calculateEntityAnimation(this.omnidirectionalAirMover());

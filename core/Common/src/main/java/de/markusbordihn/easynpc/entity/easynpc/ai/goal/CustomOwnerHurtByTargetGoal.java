@@ -55,7 +55,6 @@ public class CustomOwnerHurtByTargetGoal<T extends EasyNPC<?>> extends TargetGoa
       return false;
     }
 
-    // Get entity that hurt the owner
     this.ownerLastHurtBy = owner.getLastHurtByMob();
     int lastHurtByTimestamp = owner.getLastHurtByMobTimestamp();
 
@@ -80,12 +79,10 @@ public class CustomOwnerHurtByTargetGoal<T extends EasyNPC<?>> extends TargetGoa
       return false;
     }
 
-    // Don't attack the owner
     if (target == this.ownerData.getOwner()) {
       return false;
     }
 
-    // Standard validity checks
     return target.isAlive() && !target.isPermanentlyInvulnerable() && target != this.mob;
   }
 }

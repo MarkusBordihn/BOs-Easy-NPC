@@ -76,6 +76,7 @@ public class ConfigurationTypeHelper {
           && renderData.getRenderDataEntry().getRenderType() == RenderType.EASY_MODEL_ENTITY) {
         return ConfigurationType.CUSTOM_POSE;
       }
+
       ModelDataCapable<?> modelData = easyNPC.getEasyNPCModelData();
       if (modelData.getModelPose() == ModelPose.CUSTOM) {
         if (modelData.hasChangedModelScale()) {
@@ -83,8 +84,10 @@ public class ConfigurationTypeHelper {
         } else if (modelData.hasChangedModelRotation()) {
           return ConfigurationType.ADVANCED_POSE;
         }
+
         return ConfigurationType.BASIC_POSE;
       }
+
       return ConfigurationType.DEFAULT_POSE;
     }
 
@@ -97,9 +100,11 @@ public class ConfigurationTypeHelper {
     if (offers == null || offers.isEmpty()) {
       return ConfigurationType.BASIC_TRADING;
     }
+
     if (offers.size() > TradingSettings.BASIC_TRADING_OFFERS) {
       return ConfigurationType.ADVANCED_TRADING;
     }
+
     int globalMaxUses = tradingDataSet.getMaxUses();
     int globalRewardedXP = tradingDataSet.getRewardedXP();
     for (int i = 0; i < offers.size(); i++) {

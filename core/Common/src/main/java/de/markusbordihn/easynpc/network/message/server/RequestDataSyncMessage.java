@@ -61,10 +61,11 @@ public record RequestDataSyncMessage(UUID uuid) implements NetworkMessageRecord 
 
   @Override
   public void handleServer(final ServerPlayer serverPlayer) {
-    EasyNPC<?> easyNPC = getEasyNPC(this.uuid, serverPlayer);
+    EasyNPC<?> easyNPC = this.getEasyNPC(this.uuid, serverPlayer);
     if (easyNPC == null) {
       return;
     }
+
     NetworkMessageHandlerManager.getClientHandler().syncData(easyNPC, serverPlayer);
   }
 }

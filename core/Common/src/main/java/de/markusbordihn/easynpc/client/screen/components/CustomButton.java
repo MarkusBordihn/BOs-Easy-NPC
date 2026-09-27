@@ -67,13 +67,14 @@ public class CustomButton extends Button {
   public void renderButtonText(
       GuiGraphicsExtractor guiGraphics, Font font, Component component, int x, int y) {
     if (component != null && !component.getString().isEmpty()) {
-      int fgColor = this.active ? Constants.FONT_COLOR_WHITE : Constants.FONT_COLOR_LIGHT_GRAY;
+      int foregroundColor =
+          this.active ? Constants.FONT_COLOR_WHITE : Constants.FONT_COLOR_LIGHT_GRAY;
       guiGraphics.centeredText(
           font,
           component,
           this.getX() + (this.width) / 2,
           this.getY() + (this.height - 8) / 2,
-          fgColor | Mth.ceil(this.alpha * 255.0F) << 24);
+          foregroundColor | Mth.ceil(this.alpha * 255.0F) << 24);
     }
   }
 
@@ -104,7 +105,6 @@ public class CustomButton extends Button {
         this.getWidth(),
         this.getHeight());
 
-    // Button Text
     this.renderButtonText(guiGraphics, font, this.getMessage(), this.getX(), this.getY());
   }
 }

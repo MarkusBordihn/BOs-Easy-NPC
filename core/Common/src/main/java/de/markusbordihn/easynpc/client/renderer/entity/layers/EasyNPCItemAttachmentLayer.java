@@ -74,6 +74,7 @@ public class EasyNPCItemAttachmentLayer<
     if (model instanceof EasyNPCModelManagerAccessor accessor) {
       return accessor.easyNPC$getModelManager();
     }
+
     return null;
   }
 
@@ -131,7 +132,7 @@ public class EasyNPCItemAttachmentLayer<
     var itemModelResolver = Minecraft.getInstance().getItemModelResolver();
 
     if (!mainHandItem.isEmpty()) {
-      ItemAttachmentPoint attachment = getHandAttachment(modelType, true, isRightHanded);
+      ItemAttachmentPoint attachment = this.getHandAttachment(modelType, true, isRightHanded);
       if (attachment != null && !attachment.isNone()) {
         Item item = mainHandItem.getItem();
         if (!FAILED_ITEMS.contains(item)) {
@@ -142,7 +143,7 @@ public class EasyNPCItemAttachmentLayer<
           mainHandRenderState.clear();
           itemModelResolver.updateForLiving(
               mainHandRenderState, mainHandItem, displayContext, entity);
-          renderAttachedItemSafely(
+          this.renderAttachedItemSafely(
               poseStack,
               submitNodeCollector,
               packedLight,
@@ -158,7 +159,7 @@ public class EasyNPCItemAttachmentLayer<
     }
 
     if (!offHandItem.isEmpty()) {
-      ItemAttachmentPoint attachment = getHandAttachment(modelType, false, !isRightHanded);
+      ItemAttachmentPoint attachment = this.getHandAttachment(modelType, false, !isRightHanded);
       if (attachment != null && !attachment.isNone()) {
         Item item = offHandItem.getItem();
         if (!FAILED_ITEMS.contains(item)) {
@@ -169,7 +170,7 @@ public class EasyNPCItemAttachmentLayer<
           offHandRenderState.clear();
           itemModelResolver.updateForLiving(
               offHandRenderState, offHandItem, displayContext, entity);
-          renderAttachedItemSafely(
+          this.renderAttachedItemSafely(
               poseStack,
               submitNodeCollector,
               packedLight,
@@ -203,7 +204,7 @@ public class EasyNPCItemAttachmentLayer<
       EasyNPCModelManager modelManager,
       S renderState) {
     try {
-      renderAttachedItem(
+      this.renderAttachedItem(
           poseStack,
           submitNodeCollector,
           packedLight,

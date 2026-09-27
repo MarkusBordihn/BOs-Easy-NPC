@@ -67,17 +67,17 @@ public class ChickenRawRenderer extends ChickenRenderer implements EasyNPCEntity
 
   @Override
   public OriginalModelConfig getOriginalModelConfig() {
-    return originalConfig;
+    return this.originalConfig;
   }
 
   @Override
   public CustomModelConfig getCustomModelConfig() {
-    return customConfig;
+    return this.customConfig;
   }
 
   @Override
   public Identifier getTextureLocation(ChickenRenderState renderState) {
-    return getTextureFromRenderStateWithConfig(renderState);
+    return this.getTextureFromRenderStateWithConfig(renderState);
   }
 
   @Override

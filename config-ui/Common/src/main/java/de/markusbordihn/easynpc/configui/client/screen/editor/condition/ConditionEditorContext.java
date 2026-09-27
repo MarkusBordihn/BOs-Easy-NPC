@@ -85,10 +85,11 @@ public abstract class ConditionEditorContext {
 
     private ActionDataEntry findActionDataEntry() {
       UUID actionDataEntryId = this.screen.getActionDataEntryUUID();
-      ActionDataSet actionDataSet = getActionDataSet();
+      ActionDataSet actionDataSet = this.getActionDataSet();
       if (actionDataEntryId == null || actionDataSet == null) {
         return null;
       }
+
       return actionDataSet.getEntryOrDefault(actionDataEntryId);
     }
 
@@ -106,22 +107,24 @@ public abstract class ConditionEditorContext {
       } else if (actionEventType != null && actionEventType != ActionEventType.NONE) {
         return screenData.getActionEventSet().getActionEvents(actionEventType);
       }
+
       return null;
     }
 
     @Override
     public ConditionDataSet loadConditionDataSet() {
-      ActionDataEntry entry = findActionDataEntry();
+      ActionDataEntry entry = this.findActionDataEntry();
       return entry != null ? entry.conditionDataSet() : new ConditionDataSet();
     }
 
     @Override
     public void saveConditionDataSet(ConditionDataSet conditionDataSet) {
-      ActionDataEntry currentEntry = findActionDataEntry();
+      ActionDataEntry currentEntry = this.findActionDataEntry();
       if (currentEntry == null) {
         return;
       }
-      ActionDataSet actionDataSet = getActionDataSet();
+
+      ActionDataSet actionDataSet = this.getActionDataSet();
       if (actionDataSet != null) {
         actionDataSet.put(
             this.screen.getActionDataEntryUUID(),
@@ -157,7 +160,7 @@ public abstract class ConditionEditorContext {
       EditorType formerEditorType = screenData.getEditorType();
       ActionEventType actionEventType = screenData.getActionEventType();
       ConfigurationType configurationType = screenData.getConfigurationType();
-      ActionDataEntry entry = findActionDataEntry();
+      ActionDataEntry entry = this.findActionDataEntry();
       ActionDataEntry actionDataEntry = entry != null ? entry : new ActionDataEntry();
 
       if (formerEditorType == EditorType.TRADING_OFFER_ACTION) {
@@ -254,6 +257,7 @@ public abstract class ConditionEditorContext {
       if (buttonData == null) {
         return;
       }
+
       NetworkMessageHandlerManager.getServerHandler()
           .saveDialogButton(
               this.screen.getEasyNPCUUID(),
@@ -330,6 +334,7 @@ public abstract class ConditionEditorContext {
       if (dialogData == null) {
         return;
       }
+
       dialogData.setConditions(conditionDataSet.getConditions());
       NetworkMessageHandlerManager.getServerHandler()
           .saveDialog(this.screen.getEasyNPCUUID(), this.screen.getDialogUUID(), dialogData);

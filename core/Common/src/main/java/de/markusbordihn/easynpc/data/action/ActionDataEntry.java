@@ -281,6 +281,7 @@ public record ActionDataEntry(
           MAX_PERMISSION_LEVEL);
       return MAX_PERMISSION_LEVEL;
     }
+
     return permissionLevel;
   }
 

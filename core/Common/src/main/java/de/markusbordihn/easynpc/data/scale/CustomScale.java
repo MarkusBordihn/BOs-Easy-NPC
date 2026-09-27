@@ -80,7 +80,7 @@ public record CustomScale(float x, float y, float z) {
   }
 
   public boolean hasChanged() {
-    return hasChanged(1, 1, 1);
+    return this.hasChanged(1, 1, 1);
   }
 
   public boolean hasChanged(float x, float y, float z) {

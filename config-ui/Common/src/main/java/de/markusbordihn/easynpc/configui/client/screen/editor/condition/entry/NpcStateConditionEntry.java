@@ -57,7 +57,7 @@ public class NpcStateConditionEntry extends ConditionEntryWidget {
       ConditionDataEntryEditorContainerScreen<?> screen) {
     super(conditionDataEntry, conditionDataSet, screen);
     this.currentValueType =
-        hasConditionData(ConditionType.NPC_STATE)
+        this.hasConditionData(ConditionType.NPC_STATE)
             ? NpcStateCondition.valueTypeOf(this.conditionDataEntry)
             : StateValueType.NUMBER;
     this.currentTargetType =
@@ -66,7 +66,7 @@ public class NpcStateConditionEntry extends ConditionEntryWidget {
 
   @Override
   public void init(int editorLeft, int editorTop) {
-    boolean hasConditionData = hasConditionData(ConditionType.NPC_STATE);
+    boolean hasConditionData = this.hasConditionData(ConditionType.NPC_STATE);
     this.nameTextField =
         this.screen.addConditionEntryWidget(
             new TextField(

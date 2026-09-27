@@ -33,7 +33,9 @@ public class StatsCommand extends Command {
 
   public static ArgumentBuilder<CommandSourceStack, ?> register() {
     return Commands.literal("stats")
-        .requires(cs -> cs.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER))
+        .requires(
+            commandSourceStack ->
+                commandSourceStack.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER))
         .executes(context -> showStats(context.getSource()));
   }
 

@@ -53,7 +53,7 @@ public class EasyNPCIronGolemModelMixin<T extends IronGolemRenderState>
   }
 
   @Inject(method = "<init>(Lnet/minecraft/client/model/geom/ModelPart;)V", at = @At("TAIL"))
-  private void easyNpcModel(ModelPart modelPart, CallbackInfo callbackInfo) {
+  private void easyNPC$initModelManager(ModelPart modelPart, CallbackInfo callbackInfo) {
     this.easyNPC$modelManager =
         new EasyNPCModelManager(modelPart)
             .defineModelPart(ModelPartType.HEAD, this.head)
@@ -68,7 +68,7 @@ public class EasyNPCIronGolemModelMixin<T extends IronGolemRenderState>
       method = "setupAnim(Lnet/minecraft/client/renderer/entity/state/IronGolemRenderState;)V",
       at = @At("HEAD"),
       cancellable = true)
-  private void setupNpcAnimStart(T renderState, CallbackInfo callbackInfo) {
+  private void easyNPC$setupAnimStart(T renderState, CallbackInfo callbackInfo) {
     if (renderState instanceof EasyNPCRenderStateExtension extension
         && EasyNPCModel.setupAnimationStart(extension, this.easyNPC$modelManager)) {
       callbackInfo.cancel();
@@ -78,7 +78,7 @@ public class EasyNPCIronGolemModelMixin<T extends IronGolemRenderState>
   @Inject(
       method = "setupAnim(Lnet/minecraft/client/renderer/entity/state/IronGolemRenderState;)V",
       at = @At("TAIL"))
-  private void setupNpcAnimEnd(T renderState, CallbackInfo callbackInfo) {
+  private void easyNPC$setupAnimEnd(T renderState, CallbackInfo callbackInfo) {
     if (renderState instanceof EasyNPCRenderStateExtension extension) {
       EasyNPCModel.setupAnimationEnd(extension, this.easyNPC$modelManager);
     }

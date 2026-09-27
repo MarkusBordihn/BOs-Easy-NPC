@@ -85,10 +85,10 @@ class PresetExportFormatTest {
     "'my preset', 'my_preset.npc.nbt'"
   })
   void testCompleteExportFlowNBT(String originalName, String expectedFilename) {
-    String step1 = PresetExportFormat.removePresetExtension(originalName);
-    String step2 = PresetExportFormat.normalizeFilename(step1);
-    String step3 = step2 + PresetExportFormat.NBT.getFileExtension();
-    String finalFilename = DataFileHandler.getPresetFileName(step3);
+    String withoutExtension = PresetExportFormat.removePresetExtension(originalName);
+    String normalizedName = PresetExportFormat.normalizeFilename(withoutExtension);
+    String exportFilename = normalizedName + PresetExportFormat.NBT.getFileExtension();
+    String finalFilename = DataFileHandler.getPresetFileName(exportFilename);
 
     assertEquals(expectedFilename, finalFilename, "Export flow failed for: " + originalName);
   }
@@ -101,10 +101,10 @@ class PresetExportFormatTest {
     "'my preset', 'my_preset.npc.snbt'"
   })
   void testCompleteExportFlowSNBT(String originalName, String expectedFilename) {
-    String step1 = PresetExportFormat.removePresetExtension(originalName);
-    String step2 = PresetExportFormat.normalizeFilename(step1);
-    String step3 = step2 + PresetExportFormat.SNBT.getFileExtension();
-    String finalFilename = DataFileHandler.getPresetFileName(step3);
+    String withoutExtension = PresetExportFormat.removePresetExtension(originalName);
+    String normalizedName = PresetExportFormat.normalizeFilename(withoutExtension);
+    String exportFilename = normalizedName + PresetExportFormat.SNBT.getFileExtension();
+    String finalFilename = DataFileHandler.getPresetFileName(exportFilename);
 
     assertEquals(expectedFilename, finalFilename, "Export flow failed for: " + originalName);
   }
@@ -124,10 +124,10 @@ class PresetExportFormatTest {
   @DisplayName("Should handle edge case: filename with dots")
   void testFilenameWithDots() {
     String originalName = "my.test.preset";
-    String step1 = PresetExportFormat.removePresetExtension(originalName);
-    String step2 = PresetExportFormat.normalizeFilename(step1);
-    String step3 = step2 + PresetExportFormat.NBT.getFileExtension();
-    String finalFilename = DataFileHandler.getPresetFileName(step3);
+    String withoutExtension = PresetExportFormat.removePresetExtension(originalName);
+    String normalizedName = PresetExportFormat.normalizeFilename(withoutExtension);
+    String exportFilename = normalizedName + PresetExportFormat.NBT.getFileExtension();
+    String finalFilename = DataFileHandler.getPresetFileName(exportFilename);
 
     assertEquals("my.test.preset.npc.nbt", finalFilename);
   }
@@ -137,19 +137,19 @@ class PresetExportFormatTest {
   void testReportedBugCase() {
     String userInput = "Give Stone Or Dirt To A Player";
 
-    String nbtStep1 = PresetExportFormat.removePresetExtension(userInput);
-    String nbtStep2 = PresetExportFormat.normalizeFilename(nbtStep1);
-    String nbtStep3 = nbtStep2 + PresetExportFormat.NBT.getFileExtension();
-    String nbtFinal = DataFileHandler.getPresetFileName(nbtStep3);
+    String nbtWithoutExtension = PresetExportFormat.removePresetExtension(userInput);
+    String nbtNormalizedName = PresetExportFormat.normalizeFilename(nbtWithoutExtension);
+    String nbtExportFilename = nbtNormalizedName + PresetExportFormat.NBT.getFileExtension();
+    String nbtFinal = DataFileHandler.getPresetFileName(nbtExportFilename);
 
     assertEquals(
         "give_stone_or_dirt_to_a_player.npc.nbt", nbtFinal, "NBT export produces wrong filename");
     assertFalse(nbtFinal.contains("playernpc.nbt"), "NBT filename should not have missing dot");
 
-    String snbtStep1 = PresetExportFormat.removePresetExtension(userInput);
-    String snbtStep2 = PresetExportFormat.normalizeFilename(snbtStep1);
-    String snbtStep3 = snbtStep2 + PresetExportFormat.SNBT.getFileExtension();
-    String snbtFinal = DataFileHandler.getPresetFileName(snbtStep3);
+    String snbtWithoutExtension = PresetExportFormat.removePresetExtension(userInput);
+    String snbtNormalizedName = PresetExportFormat.normalizeFilename(snbtWithoutExtension);
+    String snbtExportFilename = snbtNormalizedName + PresetExportFormat.SNBT.getFileExtension();
+    String snbtFinal = DataFileHandler.getPresetFileName(snbtExportFilename);
 
     assertEquals(
         "give_stone_or_dirt_to_a_player.npc.snbt",

@@ -37,6 +37,7 @@ public class FactionSuggestions {
     if (!FactionData.isInitialized()) {
       return builder.buildFuture();
     }
+
     return SharedSuggestionProvider.suggest(
         new TreeSet<>(FactionData.get().getFactionNames()), builder);
   }

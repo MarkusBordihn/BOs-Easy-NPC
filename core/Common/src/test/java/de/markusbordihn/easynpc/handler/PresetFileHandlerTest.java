@@ -33,7 +33,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.server.Bootstrap;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -42,7 +41,7 @@ import org.junit.jupiter.api.io.TempDir;
 
 class PresetFileHandlerTest {
 
-  @TempDir File tempDir;
+  @TempDir File temporaryDirectory;
 
   private File nbtFile;
   private CompoundTag testPresetData;
@@ -55,10 +54,8 @@ class PresetFileHandlerTest {
 
   @BeforeEach
   void setUp() throws IOException {
-    // Create new wrapper format
-    testPresetData = new CompoundTag();
+    this.testPresetData = new CompoundTag();
 
-    // PresetMetadata at root level
     CompoundTag metadata = new CompoundTag();
     metadata.putString("name", "Test Preset");
     metadata.putString("author", "TestAuthor");
@@ -69,41 +66,32 @@ class PresetFileHandlerTest {
     metadata.putString("description", "Test preset");
     metadata.putString("entityTypeId", "minecraft:armor_stand");
     metadata.putString("variantType", "");
-    testPresetData.put("PresetMetadata", metadata);
+    this.testPresetData.put("PresetMetadata", metadata);
 
-    // Data at root level
     CompoundTag data = new CompoundTag();
     data.putString("id", "minecraft:armor_stand");
     CompoundTagUtils.writeUUID(data, "UUID", UUID.randomUUID());
     data.putString("CustomName", "{\"text\":\"Test NPC\"}");
     data.putFloat("Health", 20.0f);
-    testPresetData.put("data", data);
+    this.testPresetData.put("data", data);
 
-    nbtFile = new File(tempDir, "test_preset.npc.nbt");
-  }
-
-  @AfterEach
-  void tearDown() {
-    if (nbtFile != null && nbtFile.exists()) {
-      nbtFile.delete();
-    }
+    this.nbtFile = new File(this.temporaryDirectory, "test_preset.npc.nbt");
   }
 
   private File getResourceFile(String resourcePath) throws IOException {
-    InputStream resourceStream = getClass().getResourceAsStream(resourcePath);
-    assertNotNull(resourceStream, "Resource not found: " + resourcePath);
-
-    File tempFile = new File(tempDir, new File(resourcePath).getName());
-    Files.copy(resourceStream, tempFile.toPath());
-    resourceStream.close();
-    return tempFile;
+    try (InputStream resourceStream = this.getClass().getResourceAsStream(resourcePath)) {
+      assertNotNull(resourceStream, "Resource not found: " + resourcePath);
+      File resourceFile = new File(this.temporaryDirectory, new File(resourcePath).getName());
+      Files.copy(resourceStream, resourceFile.toPath());
+      return resourceFile;
+    }
   }
 
   @Test
   void testLoadPresetFromNbtFile() throws IOException {
-    NbtIo.writeCompressed(testPresetData, nbtFile.toPath());
+    NbtIo.writeCompressed(this.testPresetData, this.nbtFile.toPath());
 
-    CompoundTag loaded = PresetFileHandler.load(nbtFile);
+    CompoundTag loaded = PresetFileHandler.load(this.nbtFile);
 
     assertNotNull(loaded, "Loaded NBT should not be null");
     assertTrue(loaded.contains("PresetMetadata"), "Should have PresetMetadata at root");
@@ -116,7 +104,8 @@ class PresetFileHandlerTest {
   @Test
   void testLoadPresetFromSnbtFile() throws IOException {
     File snbtFile =
-        getResourceFile("/de/markusbordihn/easynpc/handler/presets/simple_armor_stand.npc.snbt");
+        this.getResourceFile(
+            "/de/markusbordihn/easynpc/handler/presets/simple_armor_stand.npc.snbt");
 
     CompoundTag loaded = PresetFileHandler.load(snbtFile);
 
@@ -131,45 +120,39 @@ class PresetFileHandlerTest {
     CompoundTag data = loaded.getCompound("data").orElse(new CompoundTag());
     assertEquals("minecraft:armor_stand", data.getString("id").orElse(""));
     assertTrue(data.contains("UUID"));
-
-    snbtFile.delete();
   }
 
   @Test
   @DisplayName("Should return empty CompoundTag for unknown file format")
   void testUnknownFileFormat() throws IOException {
-    File unknownFile = new File(tempDir, "test_preset.txt");
+    File unknownFile = new File(this.temporaryDirectory, "test_preset.txt");
     Files.writeString(unknownFile.toPath(), "invalid content");
 
     CompoundTag loaded = PresetFileHandler.load(unknownFile);
 
     assertNotNull(loaded, "Should return empty CompoundTag for unknown format");
     assertTrue(loaded.isEmpty(), "CompoundTag should be empty");
-
-    unknownFile.delete();
   }
 
   @Test
   @DisplayName("Should fallback to SNBT when NBT parsing fails")
   void testFallbackToSnbt() throws IOException {
     File snbtFile =
-        getResourceFile("/de/markusbordihn/easynpc/handler/presets/zombie_fallback.npc.snbt");
+        this.getResourceFile("/de/markusbordihn/easynpc/handler/presets/zombie_fallback.npc.snbt");
 
     CompoundTag loaded = PresetFileHandler.load(snbtFile);
 
     assertNotNull(loaded, "Should load as SNBT after NBT fails");
     assertEquals("minecraft:zombie", loaded.getString("id").orElse(""));
-
-    snbtFile.delete();
   }
 
   @Test
   @DisplayName("Should store a generated preset UUID in the file instead of minting a new one")
   void testPresetUUIDStaysStableAcrossLoads() throws IOException {
-    NbtIo.writeCompressed(testPresetData, nbtFile.toPath());
+    NbtIo.writeCompressed(this.testPresetData, this.nbtFile.toPath());
 
-    CompoundTag firstLoad = PresetFileHandler.loadWithStablePresetUUID(nbtFile);
-    CompoundTag secondLoad = PresetFileHandler.loadWithStablePresetUUID(nbtFile);
+    CompoundTag firstLoad = PresetFileHandler.loadWithStablePresetUUID(this.nbtFile);
+    CompoundTag secondLoad = PresetFileHandler.loadWithStablePresetUUID(this.nbtFile);
 
     UUID firstPresetUUID =
         CompoundTagUtils.readUUID(firstLoad.getCompoundOrEmpty("data"), "PresetUUID");
@@ -181,7 +164,7 @@ class PresetFileHandlerTest {
     assertEquals(
         firstPresetUUID,
         CompoundTagUtils.readUUID(
-            NbtIo.readCompressed(nbtFile.toPath(), NbtAccounter.unlimitedHeap())
+            NbtIo.readCompressed(this.nbtFile.toPath(), NbtAccounter.unlimitedHeap())
                 .getCompoundOrEmpty("data"),
             "PresetUUID"));
   }
@@ -190,10 +173,11 @@ class PresetFileHandlerTest {
   @DisplayName("Should keep an existing preset UUID untouched")
   void testExistingPresetUUIDIsKept() throws IOException {
     UUID presetUUID = UUID.randomUUID();
-    CompoundTagUtils.writeUUID(testPresetData.getCompoundOrEmpty("data"), "PresetUUID", presetUUID);
-    NbtIo.writeCompressed(testPresetData, nbtFile.toPath());
+    CompoundTagUtils.writeUUID(
+        this.testPresetData.getCompoundOrEmpty("data"), "PresetUUID", presetUUID);
+    NbtIo.writeCompressed(this.testPresetData, this.nbtFile.toPath());
 
-    CompoundTag loaded = PresetFileHandler.loadWithStablePresetUUID(nbtFile);
+    CompoundTag loaded = PresetFileHandler.loadWithStablePresetUUID(this.nbtFile);
 
     assertEquals(
         presetUUID, CompoundTagUtils.readUUID(loaded.getCompoundOrEmpty("data"), "PresetUUID"));
@@ -204,9 +188,9 @@ class PresetFileHandlerTest {
   void testPresetUUIDForLegacyFormat() throws IOException {
     CompoundTag legacyPresetData = new CompoundTag();
     legacyPresetData.putString("id", "minecraft:zombie");
-    NbtIo.writeCompressed(legacyPresetData, nbtFile.toPath());
+    NbtIo.writeCompressed(legacyPresetData, this.nbtFile.toPath());
 
-    CompoundTag loaded = PresetFileHandler.loadWithStablePresetUUID(nbtFile);
+    CompoundTag loaded = PresetFileHandler.loadWithStablePresetUUID(this.nbtFile);
 
     UUID presetUUID = CompoundTagUtils.readUUID(loaded, "PresetUUID");
 
@@ -214,12 +198,13 @@ class PresetFileHandlerTest {
     assertEquals(
         presetUUID,
         CompoundTagUtils.readUUID(
-            NbtIo.readCompressed(nbtFile.toPath(), NbtAccounter.unlimitedHeap()), "PresetUUID"));
+            NbtIo.readCompressed(this.nbtFile.toPath(), NbtAccounter.unlimitedHeap()),
+            "PresetUUID"));
   }
 
   @Test
   void testLoadNonExistentFile() {
-    File nonExistent = new File(tempDir, "does_not_exist.npc.nbt");
+    File nonExistent = new File(this.temporaryDirectory, "does_not_exist.npc.nbt");
 
     CompoundTag loaded = PresetFileHandler.load(nonExistent);
 
@@ -235,9 +220,9 @@ class PresetFileHandlerTest {
 
   @Test
   void testExportPresetToNbtFile() throws IOException {
-    File exportFile = new File(tempDir, "exported.npc.nbt");
+    File exportFile = new File(this.temporaryDirectory, "exported.npc.nbt");
 
-    boolean result = PresetFileHandler.save(exportFile, testPresetData);
+    boolean result = PresetFileHandler.save(exportFile, this.testPresetData);
 
     assertTrue(result, "Export should succeed");
     assertTrue(exportFile.exists(), "Export file should exist");
@@ -246,15 +231,13 @@ class PresetFileHandlerTest {
     assertNotNull(loaded);
     assertTrue(loaded.contains("PresetMetadata"), "Exported file should have PresetMetadata");
     assertTrue(loaded.contains("data"), "Exported file should have data");
-
-    exportFile.delete();
   }
 
   @Test
   void testExportPresetToSnbtFile() throws IOException {
-    File exportFile = new File(tempDir, "exported.npc.snbt");
+    File exportFile = new File(this.temporaryDirectory, "exported.npc.snbt");
 
-    boolean result = PresetFileHandler.saveSnbt(exportFile, testPresetData);
+    boolean result = PresetFileHandler.saveSnbt(exportFile, this.testPresetData);
 
     assertTrue(result, "SNBT export should succeed");
     assertTrue(exportFile.exists(), "SNBT export file should exist");
@@ -268,20 +251,18 @@ class PresetFileHandlerTest {
     assertTrue(content.contains("{\n"), "SNBT should be formatted with newlines after {");
     assertTrue(content.contains("\n}"), "SNBT should be formatted with } on new lines");
     assertTrue(content.lines().count() > 1, "SNBT should be formatted across multiple lines");
-
-    exportFile.delete();
   }
 
   @Test
   void testExportWithNullFile() {
-    boolean result = PresetFileHandler.save(null, testPresetData);
+    boolean result = PresetFileHandler.save(null, this.testPresetData);
 
     assertFalse(result, "Export should fail with null file");
   }
 
   @Test
   void testExportWithNullData() {
-    File exportFile = new File(tempDir, "test.npc.nbt");
+    File exportFile = new File(this.temporaryDirectory, "test.npc.nbt");
 
     boolean result = PresetFileHandler.save(exportFile, null);
 
@@ -290,7 +271,7 @@ class PresetFileHandlerTest {
 
   @Test
   void testExportWithEmptyData() {
-    File exportFile = new File(tempDir, "test.npc.nbt");
+    File exportFile = new File(this.temporaryDirectory, "test.npc.nbt");
     CompoundTag emptyData = new CompoundTag();
 
     boolean result = PresetFileHandler.save(exportFile, emptyData);
@@ -301,7 +282,7 @@ class PresetFileHandlerTest {
   @Test
   void testImportPresetFromSnbt() throws IOException {
     File snbtFile =
-        getResourceFile("/de/markusbordihn/easynpc/handler/presets/villager_trader.npc.snbt");
+        this.getResourceFile("/de/markusbordihn/easynpc/handler/presets/villager_trader.npc.snbt");
 
     CompoundTag imported = PresetFileHandler.loadSnbt(snbtFile);
 
@@ -310,32 +291,27 @@ class PresetFileHandlerTest {
     CompoundTag importedData = imported.getCompound("data").orElse(new CompoundTag());
     assertEquals("minecraft:villager", importedData.getString("id").orElse(""));
     assertTrue(importedData.contains("Health"));
-
-    snbtFile.delete();
   }
 
   @Test
   @DisplayName("Should load legacy format for backward compatibility")
   void testLoadLegacyFormat() throws IOException {
     File snbtFile =
-        getResourceFile("/de/markusbordihn/easynpc/handler/presets/legacy_format.npc.snbt");
+        this.getResourceFile("/de/markusbordihn/easynpc/handler/presets/legacy_format.npc.snbt");
 
     CompoundTag imported = PresetFileHandler.loadSnbt(snbtFile);
 
     assertNotNull(imported, "Legacy format should still load");
-    // Legacy format has metadata nested in preset_metadata
     assertTrue(
         imported.contains("preset_metadata") || imported.contains("PresetMetadata"),
         "Should have metadata in some form");
     assertEquals("minecraft:zombie", imported.getString("id").orElse(""));
-
-    snbtFile.delete();
   }
 
   @Test
   void testComplexSnbtWithVariant() throws IOException {
     File snbtFile =
-        getResourceFile("/de/markusbordihn/easynpc/handler/presets/complex_humanoid.npc.snbt");
+        this.getResourceFile("/de/markusbordihn/easynpc/handler/presets/complex_humanoid.npc.snbt");
 
     CompoundTag imported = PresetFileHandler.loadSnbt(snbtFile);
 
@@ -349,18 +325,15 @@ class PresetFileHandlerTest {
     CompoundTag data = imported.getCompound("data").orElse(new CompoundTag());
     assertEquals("easy_npc:humanoid", data.getString("id").orElse(""));
     assertEquals("STEVE", data.getString("VariantType").orElse(""));
-
-    snbtFile.delete();
   }
 
   @Test
   void testImportMalformedSnbt() throws IOException {
-    File snbtFile = getResourceFile("/de/markusbordihn/easynpc/handler/presets/malformed.npc.snbt");
+    File snbtFile =
+        this.getResourceFile("/de/markusbordihn/easynpc/handler/presets/malformed.npc.snbt");
 
     CompoundTag imported = PresetFileHandler.loadSnbt(snbtFile);
 
     assertNull(imported, "Should return null for malformed SNBT");
-
-    snbtFile.delete();
   }
 }

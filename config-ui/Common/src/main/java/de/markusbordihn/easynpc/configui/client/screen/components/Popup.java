@@ -99,6 +99,7 @@ public abstract class Popup {
     if (!this.visible) {
       return false;
     }
+
     if (!contains(
         mouseButtonEvent.x(),
         mouseButtonEvent.y(),
@@ -109,6 +110,7 @@ public abstract class Popup {
       this.close();
       return true;
     }
+
     this.onMouseClicked(mouseButtonEvent, doubleClick);
     return true;
   }

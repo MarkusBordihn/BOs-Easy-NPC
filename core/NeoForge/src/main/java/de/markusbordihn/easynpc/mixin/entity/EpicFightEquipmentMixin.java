@@ -33,7 +33,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class EpicFightEquipmentMixin {
 
   @Inject(method = "getItemBySlot", at = @At("HEAD"), cancellable = true)
-  private void onGetItemBySlot(EquipmentSlot slot, CallbackInfoReturnable<ItemStack> cir) {
+  private void onGetItemBySlot(
+      EquipmentSlot slot, CallbackInfoReturnable<ItemStack> callbackInfoReturnable) {
     Mob self = (Mob) (Object) this;
     if (!self.level().isClientSide()) {
       return;
@@ -56,7 +57,7 @@ public abstract class EpicFightEquipmentMixin {
     }
 
     if (!modelData.getModelPartVisibility(slot)) {
-      cir.setReturnValue(ItemStack.EMPTY);
+      callbackInfoReturnable.setReturnValue(ItemStack.EMPTY);
     }
   }
 }

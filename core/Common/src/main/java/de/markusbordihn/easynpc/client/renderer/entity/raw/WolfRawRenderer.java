@@ -38,7 +38,7 @@ public class WolfRawRenderer extends WolfRenderer implements EasyNPCEntityRender
 
   @Override
   public Identifier getTextureLocation(WolfRenderState renderState) {
-    return getTextureFromRenderStateWithConfig(renderState);
+    return this.getTextureFromRenderStateWithConfig(renderState);
   }
 
   @Override

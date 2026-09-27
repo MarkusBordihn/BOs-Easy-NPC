@@ -104,7 +104,7 @@ public class Fairy extends PathfinderMobRaw {
     try {
       return FairySkinVariant.valueOf(name);
     } catch (IllegalArgumentException e) {
-      return getDefaultSkinVariantType();
+      return this.getDefaultSkinVariantType();
     }
   }
 

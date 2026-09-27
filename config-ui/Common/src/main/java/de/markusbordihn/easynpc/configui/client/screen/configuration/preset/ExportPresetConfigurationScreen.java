@@ -57,7 +57,6 @@ public class ExportPresetConfigurationScreen<T extends ConfigurationMenu>
     boolean singlePlayer = isSinglePlayerNotLan();
     int buttonWidth = 92;
 
-    // Local Export tab — always visible and accessible
     this.localExportPresetButton =
         this.addRenderableWidget(
             new TextButton(
@@ -68,11 +67,11 @@ public class ExportPresetConfigurationScreen<T extends ConfigurationMenu>
                 button ->
                     NetworkMessageHandlerManager.getServerHandler()
                         .openConfiguration(
-                            getEasyNPCUUID(), ConfigurationType.LOCAL_PRESET_EXPORT)));
+                            this.getEasyNPCUUID(), ConfigurationType.LOCAL_PRESET_EXPORT)));
     this.blockButtonWithoutPermission(
         this.localExportPresetButton, ConfigurationType.LOCAL_PRESET_EXPORT);
 
-    // Custom Export tab — hidden in single-player (same dir as local), visible on servers
+    // Hidden in single-player, where it would export into the same directory as local.
     if (!singlePlayer) {
       this.customExportPresetButton =
           this.addRenderableWidget(
@@ -84,7 +83,7 @@ public class ExportPresetConfigurationScreen<T extends ConfigurationMenu>
                   button ->
                       NetworkMessageHandlerManager.getServerHandler()
                           .openConfiguration(
-                              getEasyNPCUUID(), ConfigurationType.CUSTOM_PRESET_EXPORT)));
+                              this.getEasyNPCUUID(), ConfigurationType.CUSTOM_PRESET_EXPORT)));
       this.blockButtonWithoutPermission(
           this.customExportPresetButton, ConfigurationType.CUSTOM_PRESET_EXPORT);
     }
@@ -103,7 +102,7 @@ public class ExportPresetConfigurationScreen<T extends ConfigurationMenu>
                 button ->
                     NetworkMessageHandlerManager.getServerHandler()
                         .openConfiguration(
-                            getEasyNPCUUID(), ConfigurationType.WORLD_PRESET_EXPORT)));
+                            this.getEasyNPCUUID(), ConfigurationType.WORLD_PRESET_EXPORT)));
     this.blockButtonWithoutPermission(
         this.worldExportPresetButton, ConfigurationType.WORLD_PRESET_EXPORT);
   }

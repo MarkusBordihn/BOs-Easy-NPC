@@ -40,7 +40,6 @@ public class RemoteImageValidator {
   private RemoteImageValidator() {}
 
   public static boolean isValidImage(URL remoteUrl) {
-
     if (remoteUrl.toString().endsWith(".webp")) {
       log.error("WebP images are not supported, please use PNG images!");
       return false;
@@ -78,10 +77,6 @@ public class RemoteImageValidator {
   }
 
   private static boolean isValidImageSize(BufferedImage image) {
-    if (image == null) {
-      return false;
-    }
-
     if (image.getWidth() == 48 && image.getHeight() == 32) {
       return true;
     }

@@ -52,6 +52,7 @@ public class FactionHandler {
       if (!FactionNameValidator.isValid(factionName)) {
         return false;
       }
+
       if (!FactionData.get().createFaction(factionName)) {
         return false;
       }
@@ -70,6 +71,7 @@ public class FactionHandler {
         || !FactionData.get().removeFaction(factionName)) {
       return false;
     }
+
     clearLoadedFactionAssignments(factionName);
     return true;
   }
@@ -82,6 +84,7 @@ public class FactionHandler {
         || !FactionData.get().setFactionColor(factionName, color)) {
       return false;
     }
+
     refreshLoadedFactionAssignments(factionName);
     return true;
   }
@@ -132,6 +135,7 @@ public class FactionHandler {
         || !FactionData.isInitialized()) {
       return false;
     }
+
     return FactionData.get().isHostile(factionName, getTargetGroupName(targetEntity));
   }
 

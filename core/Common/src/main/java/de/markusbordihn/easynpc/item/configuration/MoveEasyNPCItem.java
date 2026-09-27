@@ -61,11 +61,12 @@ public class MoveEasyNPCItem extends Item {
         && livingEntity instanceof EasyNPC<?> easyNPC
         && player instanceof ServerPlayer serverPlayer
         && (serverPlayer.isCreative()
-            || (easyNPC.getEasyNPCOwnerData() == null
+            || (easyNPC.getEasyNPCOwnerData() != null
                 && easyNPC.getEasyNPCOwnerData().isNPCOwner(serverPlayer)))) {
-      targetedLivingEntityMap.put(player, livingEntity);
+      this.targetedLivingEntityMap.put(player, livingEntity);
       return InteractionResult.SUCCESS;
     }
+
     return InteractionResult.PASS;
   }
 
@@ -78,8 +79,8 @@ public class MoveEasyNPCItem extends Item {
       LivingEntity livingEntity) {
     if (!level.isClientSide()
         && livingEntity instanceof Player player
-        && targetedLivingEntityMap.containsKey(player)) {
-      LivingEntity targetedLivingEntity = targetedLivingEntityMap.get(player);
+        && this.targetedLivingEntityMap.containsKey(player)) {
+      LivingEntity targetedLivingEntity = this.targetedLivingEntityMap.get(player);
       targetedLivingEntity.snapTo(
           blockPos.getX() + 0.5, blockPos.above().getY(), blockPos.getZ() + 0.5);
     }

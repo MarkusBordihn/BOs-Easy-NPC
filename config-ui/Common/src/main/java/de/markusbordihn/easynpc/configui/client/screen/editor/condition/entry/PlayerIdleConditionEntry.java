@@ -47,7 +47,7 @@ public class PlayerIdleConditionEntry extends ConditionEntryWidget {
 
   @Override
   public void init(int editorLeft, int editorTop) {
-    boolean hasData = hasConditionData(ConditionType.PLAYER_IDLE);
+    boolean hasData = this.hasConditionData(ConditionType.PLAYER_IDLE);
     this.operationTypeButton =
         this.addComparisonOperationButton(
             editorLeft + 110, editorTop, hasData, ConditionOperationType.GREATER_THAN_OR_EQUALS);

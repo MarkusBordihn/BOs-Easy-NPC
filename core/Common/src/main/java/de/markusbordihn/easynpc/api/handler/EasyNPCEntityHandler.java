@@ -140,6 +140,7 @@ public class EasyNPCEntityHandler {
       log.error("Cannot despawn null EasyNPC");
       return false;
     }
+
     NPCRemovalReason removalReason =
         reason == null || reason == NPCRemovalReason.NONE ? NPCRemovalReason.DESPAWNED : reason;
     NPCEntityManager.saveNPC(easyNPC, removalReason);
@@ -153,6 +154,7 @@ public class EasyNPCEntityHandler {
       log.error("Cannot delete null EasyNPC");
       return false;
     }
+
     UUID entityUUID = easyNPC.getEntityUUID();
     NPCEntityManager.removeNPC(entityUUID);
     NPCEntityManager.markIntentionalRemoval(entityUUID, NPCRemovalReason.DELETED);
@@ -187,6 +189,7 @@ public class EasyNPCEntityHandler {
       log.error("Cannot despawn NPC {}: not found in world", uuid);
       return false;
     }
+
     return despawn(easyNPC, reason);
   }
 
@@ -209,11 +212,11 @@ public class EasyNPCEntityHandler {
     }
 
     CompoundTag npcData = entry.get().npcData().copy();
-    ListTag posTag = new ListTag();
-    posTag.add(DoubleTag.valueOf(position.x));
-    posTag.add(DoubleTag.valueOf(position.y));
-    posTag.add(DoubleTag.valueOf(position.z));
-    npcData.put("Pos", posTag);
+    ListTag positionTag = new ListTag();
+    positionTag.add(DoubleTag.valueOf(position.x));
+    positionTag.add(DoubleTag.valueOf(position.y));
+    positionTag.add(DoubleTag.valueOf(position.z));
+    npcData.put("Pos", positionTag);
     return PresetHandler.importPreset(serverLevel, npcData, entry.get().metadata().ownerUUID());
   }
 }

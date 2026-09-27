@@ -533,6 +533,7 @@ public interface ActionHandler<E extends Mob> extends EasyNPC<E> {
             state)) {
           return null;
         }
+
         continue;
       }
 

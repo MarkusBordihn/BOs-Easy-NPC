@@ -53,6 +53,7 @@ public class TradingOfferHandler {
     if (merchantOffer == null) {
       return;
     }
+
     merchantOffers.set(tradingOfferIndex, updater.apply(merchantOffer));
     tradingData.setTradingOffers(merchantOffers);
   }
@@ -160,6 +161,7 @@ public class TradingOfferHandler {
     if (itemResult == null || (itemA == null && itemB == null)) {
       return false;
     }
+
     return ((itemA != null && !itemA.isEmpty()) || (itemB != null && !itemB.isEmpty()))
         && !itemResult.isEmpty();
   }

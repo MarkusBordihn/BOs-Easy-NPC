@@ -729,7 +729,7 @@ public final class ModGameTests {
 
     register(
         "npc_without_stored_sounds_still_has_sounds",
-        StoredDataTest::testNpcWithoutStoredSoundsStillHasSounds,
+        StoredDataTest::testNPCWithoutStoredSoundsStillHasSounds,
         DEFAULT_STRUCTURE);
     register(
         "villager_without_stored_sounds_still_has_sounds",
@@ -745,11 +745,11 @@ public final class ModGameTests {
         DEFAULT_STRUCTURE);
     register(
         "unchanged_npc_stores_no_boilerplate",
-        StoredDataTest::testUnchangedNpcStoresNoBoilerplate,
+        StoredDataTest::testUnchangedNPCStoresNoBoilerplate,
         DEFAULT_STRUCTURE);
     register(
         "stored_npc_data_is_deterministic",
-        StoredDataTest::testStoredNpcDataIsDeterministic,
+        StoredDataTest::testStoredNPCDataIsDeterministic,
         DEFAULT_STRUCTURE);
 
     register(

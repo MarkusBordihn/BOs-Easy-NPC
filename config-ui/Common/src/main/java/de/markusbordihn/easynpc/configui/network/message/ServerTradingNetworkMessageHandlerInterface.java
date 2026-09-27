@@ -31,6 +31,8 @@ import java.util.UUID;
 
 public interface ServerTradingNetworkMessageHandlerInterface {
 
+  int UNUSED_TRADING_OFFER_INDEX = 9999;
+
   default void changeProfession(UUID uuid, Profession profession) {
     if (uuid != null && profession != null) {
       NetworkHandlerManager.sendMessageToServer(new ChangeProfessionMessage(uuid, profession));
@@ -43,11 +45,14 @@ public interface ServerTradingNetworkMessageHandlerInterface {
     }
   }
 
-  default void setAdvancedTradingResetsEveryMin(UUID uuid, int resetsEveryMin) {
-    if (uuid != null && resetsEveryMin >= 0) {
+  default void setAdvancedTradingResetsEveryMin(UUID uuid, int resetsEveryMinutes) {
+    if (uuid != null && resetsEveryMinutes >= 0) {
       NetworkHandlerManager.sendMessageToServer(
           new ChangeAdvancedTradingMessage(
-              uuid, 9999, TradingValueType.RESET_TRADING_EVERY_MIN, resetsEveryMin));
+              uuid,
+              UNUSED_TRADING_OFFER_INDEX,
+              TradingValueType.RESET_TRADING_EVERY_MIN,
+              resetsEveryMinutes));
     }
   }
 
@@ -59,11 +64,11 @@ public interface ServerTradingNetworkMessageHandlerInterface {
     }
   }
 
-  default void setAdvancedTradingRewardExp(UUID uuid, int tradingOfferIndex, int xp) {
-    if (uuid != null && xp >= 0) {
+  default void setAdvancedTradingRewardExp(UUID uuid, int tradingOfferIndex, int rewardExperience) {
+    if (uuid != null && rewardExperience >= 0) {
       NetworkHandlerManager.sendMessageToServer(
           new ChangeAdvancedTradingMessage(
-              uuid, tradingOfferIndex, TradingValueType.REWARD_EXP, xp));
+              uuid, tradingOfferIndex, TradingValueType.REWARD_EXP, rewardExperience));
     }
   }
 
@@ -91,18 +96,18 @@ public interface ServerTradingNetworkMessageHandlerInterface {
     }
   }
 
-  default void setBasicTradingRewardExp(UUID uuid, int rewardExp) {
-    if (uuid != null && rewardExp >= 0) {
+  default void setBasicTradingRewardExp(UUID uuid, int rewardExperience) {
+    if (uuid != null && rewardExperience >= 0) {
       NetworkHandlerManager.sendMessageToServer(
-          new ChangeBasicTradingMessage(uuid, TradingValueType.REWARD_EXP, rewardExp));
+          new ChangeBasicTradingMessage(uuid, TradingValueType.REWARD_EXP, rewardExperience));
     }
   }
 
-  default void setBasicTradingResetsEveryMin(UUID uuid, int resetsEveryMin) {
-    if (uuid != null && resetsEveryMin >= 0) {
+  default void setBasicTradingResetsEveryMin(UUID uuid, int resetsEveryMinutes) {
+    if (uuid != null && resetsEveryMinutes >= 0) {
       NetworkHandlerManager.sendMessageToServer(
           new ChangeBasicTradingMessage(
-              uuid, TradingValueType.RESET_TRADING_EVERY_MIN, resetsEveryMin));
+              uuid, TradingValueType.RESET_TRADING_EVERY_MIN, resetsEveryMinutes));
     }
   }
 

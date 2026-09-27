@@ -40,21 +40,21 @@ public interface OwnerDataCapable<T extends Mob> extends EasyNPC<T>, OwnableEnti
 
   default void setNPCOwnerUUID(UUID uuid) {
     if (uuid == null) {
-      setSynchedEntityData(SynchedDataIndex.OWNER_REFERENCE, Optional.empty());
+      this.setSynchedEntityData(SynchedDataIndex.OWNER_REFERENCE, Optional.empty());
     } else {
       EntityReference<LivingEntity> entityReference = EntityReference.of(uuid);
-      setSynchedEntityData(SynchedDataIndex.OWNER_REFERENCE, Optional.of(entityReference));
+      this.setSynchedEntityData(SynchedDataIndex.OWNER_REFERENCE, Optional.of(entityReference));
     }
   }
 
   default UUID getOwnerUUID() {
-    EntityReference<LivingEntity> ownerReference = getOwnerReference();
+    EntityReference<LivingEntity> ownerReference = this.getOwnerReference();
     return ownerReference == null ? null : ownerReference.getUUID();
   }
 
   default EntityReference<LivingEntity> getOwnerReference() {
     Optional<EntityReference<LivingEntity>> ownerReference =
-        getSynchedEntityData(SynchedDataIndex.OWNER_REFERENCE);
+        this.getSynchedEntityData(SynchedDataIndex.OWNER_REFERENCE);
     return ownerReference.orElse(null);
   }
 
@@ -82,7 +82,7 @@ public interface OwnerDataCapable<T extends Mob> extends EasyNPC<T>, OwnableEnti
   }
 
   default boolean isNPCOwner(ServerPlayer serverPlayer) {
-    return serverPlayer != null && isNPCOwner(serverPlayer.getUUID());
+    return serverPlayer != null && this.isNPCOwner(serverPlayer.getUUID());
   }
 
   default boolean isNPCOwner(UUID uuid) {
@@ -91,10 +91,11 @@ public interface OwnerDataCapable<T extends Mob> extends EasyNPC<T>, OwnableEnti
 
   @Override
   default LivingEntity getOwner() {
-    Level level = getEntityLevel();
+    Level level = this.getEntityLevel();
     if (level == null) {
       return null;
     }
+
     try {
       UUID uuid = this.getOwnerUUID();
       return uuid == null ? null : level.getPlayerByUUID(uuid);
@@ -104,7 +105,7 @@ public interface OwnerDataCapable<T extends Mob> extends EasyNPC<T>, OwnableEnti
   }
 
   default void defineSynchedOwnerData(SynchedEntityData.Builder builder) {
-    defineSynchedEntityData(builder, SynchedDataIndex.OWNER_REFERENCE, Optional.empty());
+    this.defineSynchedEntityData(builder, SynchedDataIndex.OWNER_REFERENCE, Optional.empty());
   }
 
   default void addAdditionalOwnerData(ValueOutput valueOutput) {

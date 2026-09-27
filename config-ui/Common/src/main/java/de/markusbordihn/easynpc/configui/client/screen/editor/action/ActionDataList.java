@@ -46,7 +46,6 @@ class ActionDataList extends ObjectSelectionList<ActionDataListEntry> {
       OnRemove onRemove) {
     super(minecraft, width, height, top, entryHeight);
 
-    // Add entries
     int topPos = top + 3;
     if (actionDataSet != null) {
       int index = 0;
@@ -76,9 +75,7 @@ class ActionDataList extends ObjectSelectionList<ActionDataListEntry> {
 
   @Override
   protected void extractSelection(
-      GuiGraphicsExtractor guiGraphics, ActionDataListEntry entry, int color) {
-    // Do not render selection.
-  }
+      GuiGraphicsExtractor guiGraphics, ActionDataListEntry entry, int color) {}
 
   @Override
   protected int scrollBarX() {
@@ -86,12 +83,8 @@ class ActionDataList extends ObjectSelectionList<ActionDataListEntry> {
   }
 
   @Override
-  protected void extractListSeparators(GuiGraphicsExtractor guiGraphics) {
-    // Do not render list separators.
-  }
+  protected void extractListSeparators(GuiGraphicsExtractor guiGraphics) {}
 
   @Override
-  protected void extractListBackground(GuiGraphicsExtractor guiGraphics) {
-    // Do not render list background.
-  }
+  protected void extractListBackground(GuiGraphicsExtractor guiGraphics) {}
 }

@@ -44,7 +44,6 @@ public class EasyNPCModel {
       return false;
     }
 
-    // Get EasyNPC
     EasyNPC<?> easyNPC = getEasyNPC(extension);
     if (easyNPC == null) {
       return false;
@@ -53,7 +52,6 @@ public class EasyNPCModel {
     // Always reset model parts first to prevent state bleeding between entities
     modelManager.resetModelParts();
 
-    // Get Model Data
     ModelDataCapable<?> modelData = easyNPC.getEasyNPCModelData();
     if (modelData == null) {
       return false;
@@ -82,7 +80,6 @@ public class EasyNPCModel {
       return false;
     }
 
-    // Handle canceled animations and setup model parts accordingly
     if (modelManager.shouldCancelAnimation(modelData)) {
       modelManager.setupModelParts(
           modelData, modelData.getModelAnimationBehavior() != ModelAnimationBehavior.SMART);
@@ -115,6 +112,7 @@ public class EasyNPCModel {
     if (easyNPC == null || displayAttributeData == null || blockPos == null) {
       return 0;
     }
+
     int entityLightLevel =
         displayAttributeData.getDisplayIntAttribute(DisplayAttributeType.LIGHT_LEVEL);
     if (entityLightLevel > 0) {
@@ -130,7 +128,6 @@ public class EasyNPCModel {
       return;
     }
 
-    // Get EasyNPC
     EasyNPC<?> easyNPC = getEasyNPC(extension);
     if (easyNPC == null) {
       return;
@@ -163,7 +160,6 @@ public class EasyNPCModel {
       return;
     }
 
-    // Get EasyNPC
     EasyNPC<?> easyNPC = getEasyNPC(extension);
     if (easyNPC == null) {
       return;

@@ -134,9 +134,7 @@ public class PresetCompactor {
       CompoundTag attributeTag = attributeList.getCompoundOrEmpty(index);
       CompoundTag referenceAttributeTag =
           findAttribute(referenceAttributeList, attributeTag.getStringOr(ATTRIBUTE_NAME_TAG, ""));
-      if (referenceAttributeTag != null
-          ? attributeTag.equals(referenceAttributeTag)
-          : isEntityTypeDefault(entityTypeDefaults, attributeTag)) {
+      if (isUnchangedAttribute(attributeTag, referenceAttributeTag, entityTypeDefaults)) {
         continue;
       }
 
@@ -148,6 +146,17 @@ public class PresetCompactor {
     } else {
       entityData.put(ATTRIBUTES_TAG, changedAttributeList);
     }
+  }
+
+  private static boolean isUnchangedAttribute(
+      CompoundTag attributeTag,
+      CompoundTag referenceAttributeTag,
+      AttributeSupplier entityTypeDefaults) {
+    if (referenceAttributeTag != null) {
+      return attributeTag.equals(referenceAttributeTag);
+    }
+
+    return isEntityTypeDefault(entityTypeDefaults, attributeTag);
   }
 
   private static AttributeSupplier getEntityTypeDefaults(CompoundTag entityData) {

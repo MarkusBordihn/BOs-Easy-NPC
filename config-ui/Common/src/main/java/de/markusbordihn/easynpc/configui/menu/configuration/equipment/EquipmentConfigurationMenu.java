@@ -36,12 +36,10 @@ import net.minecraft.world.item.ItemStack;
 
 public class EquipmentConfigurationMenu extends ConfigurationMenu {
 
-  // Defining basic layout options
   protected static final int ARMOR_CONTAINER_SIZE = 4;
   protected static final int HAND_CONTAINER_SIZE = 2;
   protected static final int SLOT_SIZE = 18;
 
-  // Define containers
   protected final Container armorContainer;
   protected final Container handContainer;
 
@@ -76,14 +74,11 @@ public class EquipmentConfigurationMenu extends ConfigurationMenu {
     checkContainerSize(armorContainer, ARMOR_CONTAINER_SIZE);
     checkContainerSize(handContainer, HAND_CONTAINER_SIZE);
 
-    // Container
     this.armorContainer = armorContainer;
     this.handContainer = handContainer;
 
-    // Update containers, if needed.
     this.loadHand();
 
-    // Player Companion Amor Slots (left / slot: 3 - 0)
     ModelDataCapable<?> modelData = this.getEasyNPC().getEasyNPCModelData();
     boolean canUseArmor = modelData == null || modelData.canUseArmor();
     boolean canUseHead = canUseArmor || modelData.canUseHead();
@@ -107,7 +102,6 @@ public class EquipmentConfigurationMenu extends ConfigurationMenu {
       }
     }
 
-    // Player Companion Main Hand Slot (left / bottom: 0)
     if (modelData == null || modelData.canUseMainHand()) {
       int playerCompanionMainHandStartPositionY = 119;
       int playerCompanionMainHandStartPositionX = 98;
@@ -120,7 +114,6 @@ public class EquipmentConfigurationMenu extends ConfigurationMenu {
               playerCompanionMainHandStartPositionY));
     }
 
-    // Player Companion Off Hand Slot (right / bottom: 1)
     if (modelData == null || modelData.canUseOffHand()) {
       int playerCompanionOffHandStartPositionY = 119;
       int playerCompanionOffHandStartPositionX = 178;
@@ -133,7 +126,6 @@ public class EquipmentConfigurationMenu extends ConfigurationMenu {
               playerCompanionOffHandStartPositionY));
     }
 
-    // Player Inventory Slots
     int playerInventoryStartPositionY = 149;
     int playerInventoryStartPositionX = 66;
     for (int inventoryRow = 0; inventoryRow < 3; ++inventoryRow) {
@@ -147,7 +139,6 @@ public class EquipmentConfigurationMenu extends ConfigurationMenu {
       }
     }
 
-    // Player Hotbar Slots
     int hotbarStartPositionY = 209;
     int hotbarStartPositionX = 66;
     for (int playerInventorySlot = 0; playerInventorySlot < 9; ++playerInventorySlot) {
@@ -164,6 +155,7 @@ public class EquipmentConfigurationMenu extends ConfigurationMenu {
     if (this.level.isClientSide()) {
       return;
     }
+
     log.debug(
         "Load main hand {} and off hand {}",
         this.getEasyNPC().getLivingEntity().getItemInHand(InteractionHand.MAIN_HAND),
@@ -179,6 +171,7 @@ public class EquipmentConfigurationMenu extends ConfigurationMenu {
     if (this.level.isClientSide()) {
       return;
     }
+
     EquipmentHandler.setHandSlotItem(this.getEasyNPC(), hand, itemStack);
   }
 
@@ -186,6 +179,7 @@ public class EquipmentConfigurationMenu extends ConfigurationMenu {
     if (this.level.isClientSide()) {
       return;
     }
+
     log.debug(
         "Load armor feet {}, legs {}, chest {} and head {}",
         this.getEasyNPC().getLivingEntity().getItemBySlot(EquipmentSlot.FEET),
@@ -207,6 +201,7 @@ public class EquipmentConfigurationMenu extends ConfigurationMenu {
     if (this.level.isClientSide()) {
       return;
     }
+
     EquipmentHandler.setArmorSlotItem(this.getEasyNPC(), equipmentSlot, itemStack);
   }
 }

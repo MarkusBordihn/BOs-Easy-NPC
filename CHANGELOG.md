@@ -8,6 +8,18 @@ the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 7.13.0
+
+- Fixed color and formatting tags in dialog button names showing as plain text.
+- Fixed the button preview in the editor showing lowercase names as a raw translation key.
+- Fixed the "Move EasyNPC" item not working for NPC owners outside of creative mode.
+- Fixed `/easy_npc owner set` reporting success even when the owner could not be changed.
+- Fixed the game crashing when the URL or player skin screen showed a skin download error.
+- Fixed the preset browser search showing no results after scrolling down the list.
+- Changed the network protocol version, so client and server must run the same mod version.
+- Added `@initiator`, `@npc` and `@score()` support to dialog button names to fix #841.
+- Larger core refactoring and code cleanup.
+
 ### 7.12.2
 
 - Fixed the Fairy hitbox being far too small, so its name tag and speech bubble sat in its body.

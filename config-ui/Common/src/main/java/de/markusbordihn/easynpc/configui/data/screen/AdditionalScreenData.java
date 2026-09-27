@@ -77,18 +77,16 @@ public class AdditionalScreenData implements AdditionalScreenDataInterface {
   private final SoundDataSet soundDataSet;
 
   public AdditionalScreenData(CompoundTag compoundTag) {
-    // Processing know data.
-    this.actionEventSet = getActionEventSet(compoundTag);
-    this.actionEventType = getActionEventType(compoundTag);
-    this.baseAttributes = getBaseAttributes(compoundTag);
-    this.configurationType = getConfigurationType(compoundTag);
-    this.dialogDataSet = getDialogDataSet(compoundTag);
-    this.editorType = getEditorType(compoundTag);
-    this.objectiveDataSet = getObjectiveDataSet(compoundTag);
-    this.scoreboardData = getScoreboardData(compoundTag);
-    this.soundDataSet = getSoundDataSet(compoundTag);
+    this.actionEventSet = this.getActionEventSet(compoundTag);
+    this.actionEventType = this.getActionEventType(compoundTag);
+    this.baseAttributes = this.getBaseAttributes(compoundTag);
+    this.configurationType = this.getConfigurationType(compoundTag);
+    this.dialogDataSet = this.getDialogDataSet(compoundTag);
+    this.editorType = this.getEditorType(compoundTag);
+    this.objectiveDataSet = this.getObjectiveDataSet(compoundTag);
+    this.scoreboardData = this.getScoreboardData(compoundTag);
+    this.soundDataSet = this.getSoundDataSet(compoundTag);
 
-    // Store remaining data and remove already processed data.
     this.data = compoundTag;
     this.data.remove(ACTION_EVENT_DATA_TAG);
     this.data.remove(ACTION_EVENT_TYPE_TAG);
@@ -481,6 +479,7 @@ public class AdditionalScreenData implements AdditionalScreenDataInterface {
     if (!this.data.contains(TRADING_OFFER_ACTION_DATA_TAG)) {
       return new ActionDataSet();
     }
+
     return new ActionDataSet(
         this.data.getCompound(TRADING_OFFER_ACTION_DATA_TAG).orElseGet(CompoundTag::new));
   }

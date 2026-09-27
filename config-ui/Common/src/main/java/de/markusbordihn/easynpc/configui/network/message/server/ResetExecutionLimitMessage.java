@@ -81,6 +81,7 @@ public record ResetExecutionLimitMessage(ExecutionId executionId, boolean allPla
             serverPlayer.getName().getString());
         return;
       }
+
       tracker.resetExecutionForAllPlayers(this.executionId);
       log.info(
           "Player {} reset execution limit for all players for execution {}",

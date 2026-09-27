@@ -24,8 +24,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public enum ServerDataIndex {
-
-  // General Data Index (0-19)
   DATA_0,
   DATA_1,
   DATA_2,
@@ -47,7 +45,6 @@ public enum ServerDataIndex {
   DATA_18,
   DATA_19,
 
-  // Custom Data Index (>= 20)
   ACTION_EVENT_SET,
   ACTION_PERMISSION_LEVEL,
   DIALOG_DATA_SET,
@@ -70,6 +67,7 @@ public enum ServerDataIndex {
       log.warn("Invalid data index {} is out of range (0-{})!", index, MAX_FREE_INDEX);
       return null;
     }
+
     return ServerDataIndex.values()[index];
   }
 }

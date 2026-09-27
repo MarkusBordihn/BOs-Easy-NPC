@@ -36,13 +36,11 @@ public interface AttributeHandler<E extends Mob> extends EasyNPC<E> {
         return;
       }
 
-      // Check entity attributes.
       EntityAttributes entityAttributes = attributeData.getEntityAttributes();
       if (entityAttributes == null) {
         return;
       }
 
-      // Handle combat relevant attributes.
       CombatAttributes combatAttributes = entityAttributes.getCombatAttributes();
       if (combatAttributes == null || combatAttributes.healthRegeneration() <= 0) {
         return;

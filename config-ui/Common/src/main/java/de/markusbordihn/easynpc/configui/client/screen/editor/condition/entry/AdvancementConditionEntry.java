@@ -42,7 +42,7 @@ public class AdvancementConditionEntry extends ConditionEntryWidget {
 
   @Override
   public void init(int editorLeft, int editorTop) {
-    boolean hasData = hasConditionData(ConditionType.ADVANCEMENT);
+    boolean hasData = this.hasConditionData(ConditionType.ADVANCEMENT);
     this.advancementTextField =
         this.screen.addConditionEntryWidget(
             new TextField(

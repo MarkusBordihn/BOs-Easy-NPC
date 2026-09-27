@@ -108,11 +108,11 @@ public enum ModRawEntityRenderer {
   }
 
   public ModRawEntityType getEntityType() {
-    return entityType;
+    return this.entityType;
   }
 
   public Function<Context, EntityRenderer<? extends Entity, ? extends EntityRenderState>>
       getRenderer() {
-    return renderer.get();
+    return this.renderer.get();
   }
 }

@@ -46,7 +46,7 @@ public class ZombifiedPiglinRawRenderer extends ZombifiedPiglinRenderer
 
   @Override
   public Identifier getTextureLocation(ZombifiedPiglinRenderState renderState) {
-    return getTextureFromRenderState(renderState);
+    return this.getTextureFromRenderState(renderState);
   }
 
   @Override

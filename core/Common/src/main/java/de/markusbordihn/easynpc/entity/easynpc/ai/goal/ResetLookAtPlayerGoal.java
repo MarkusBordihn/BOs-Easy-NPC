@@ -19,8 +19,6 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.ai.goal;
 
-import de.markusbordihn.easynpc.data.model.ModelPartType;
-import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
 import java.util.EnumSet;
@@ -42,14 +40,7 @@ public class ResetLookAtPlayerGoal<T extends EasyNPC<?>> extends Goal {
   }
 
   private boolean hasLockedBodyPose() {
-    if (this.modelData == null) {
-      return false;
-    }
-    if (this.modelData.getModelPartRotation(ModelPartType.HEAD).hasChangedRotation()) {
-      return false;
-    }
-    return this.modelData.getModelPose() == ModelPose.DEFAULT
-        || this.modelData.getModelRootData().isRotationLocked();
+    return this.modelData != null && this.modelData.hasLockedBodyPose();
   }
 
   @Override
@@ -64,12 +55,12 @@ public class ResetLookAtPlayerGoal<T extends EasyNPC<?>> extends Goal {
 
   @Override
   public boolean canUse() {
-    return hasLockedBodyPose();
+    return this.hasLockedBodyPose();
   }
 
   @Override
   public boolean canContinueToUse() {
-    return hasLockedBodyPose() && this.resetLookTime > 0;
+    return this.hasLockedBodyPose() && this.resetLookTime > 0;
   }
 
   @Override
@@ -77,6 +68,7 @@ public class ResetLookAtPlayerGoal<T extends EasyNPC<?>> extends Goal {
     if (this.resetLookTime <= 0 || this.livingEntity == null) {
       return;
     }
+
     float delta = Mth.wrapDegrees(this.livingEntity.yBodyRot - this.livingEntity.yHeadRot);
     if (Math.abs(delta) < 1.0F) {
       this.livingEntity.yHeadRot = this.livingEntity.yBodyRot;

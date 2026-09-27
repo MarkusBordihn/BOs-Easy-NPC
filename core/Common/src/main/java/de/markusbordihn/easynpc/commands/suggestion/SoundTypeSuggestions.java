@@ -30,7 +30,7 @@ import net.minecraft.commands.SharedSuggestionProvider;
 public class SoundTypeSuggestions {
 
   public static CompletableFuture<Suggestions> suggest(
-      CommandContext<CommandSourceStack> context, SuggestionsBuilder build) {
-    return SharedSuggestionProvider.suggest(SoundType.getSoundTypeNames(), build);
+      CommandContext<CommandSourceStack> context, SuggestionsBuilder suggestionsBuilder) {
+    return SharedSuggestionProvider.suggest(SoundType.getSoundTypeNames(), suggestionsBuilder);
   }
 }

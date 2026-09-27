@@ -95,19 +95,15 @@ public class AbilitiesAttributeConfigurationScreen<T extends ConfigurationMenu>
   public void init() {
     super.init();
 
-    // Default button stats
     this.abilitiesAttributeButton.active = false;
 
-    // Button rows
     int firstButtonRow = this.leftPos + 10;
     int secondButtonRow = this.leftPos + 100;
     int thirdButtonRow = this.leftPos + 200;
 
-    // Attribute data
     AttributeDataCapable<?> attributeData = this.getEasyNPC().getEasyNPCAttributeData();
     EntityAttributes entityAttributes = attributeData.getEntityAttributes();
 
-    // Checkboxes
     this.addRenderableWidget(
         new Checkbox(
             firstButtonRow,

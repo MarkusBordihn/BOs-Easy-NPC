@@ -36,21 +36,24 @@ public final class ServerDataAccessor<T> {
     return this.serverDataIndex;
   }
 
+  @Override
   public boolean equals(Object object) {
     if (this == object) {
       return true;
     } else if (object != null && this.getClass() == object.getClass()) {
-      ServerDataAccessor<?> entityDataAccessor = (ServerDataAccessor<?>) object;
-      return this.serverDataIndex == entityDataAccessor.serverDataIndex;
+      ServerDataAccessor<?> otherAccessor = (ServerDataAccessor<?>) object;
+      return this.serverDataIndex == otherAccessor.serverDataIndex;
     } else {
       return false;
     }
   }
 
+  @Override
   public int hashCode() {
     return this.serverDataIndex.hashCode();
   }
 
+  @Override
   public String toString() {
     return "<custom data: "
         + this.serverDataIndex

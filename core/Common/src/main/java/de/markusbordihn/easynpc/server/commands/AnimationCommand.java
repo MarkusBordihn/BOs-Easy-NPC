@@ -222,6 +222,7 @@ public final class AnimationCommand extends Command {
     if (!ModelAnimationAPI.stopAnimation(easyNPC, transition)) {
       return sendFailureMessage(context, "Unable to stop animation for " + easyNPC);
     }
+
     return sendSuccessMessage(context, "Stopping animation for " + easyNPC);
   }
 

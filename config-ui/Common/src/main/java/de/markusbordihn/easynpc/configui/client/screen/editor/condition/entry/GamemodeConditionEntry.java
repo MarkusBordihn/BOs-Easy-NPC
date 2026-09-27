@@ -47,7 +47,7 @@ public class GamemodeConditionEntry extends ConditionEntryWidget {
 
   @Override
   public void init(int editorLeft, int editorTop) {
-    boolean hasData = hasConditionData(ConditionType.GAMEMODE);
+    boolean hasData = this.hasConditionData(ConditionType.GAMEMODE);
     String currentGamemode =
         hasData && !this.conditionDataEntry.name().isBlank()
             ? this.conditionDataEntry.name()

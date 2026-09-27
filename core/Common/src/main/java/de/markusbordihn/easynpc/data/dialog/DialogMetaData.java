@@ -33,11 +33,11 @@ public record DialogMetaData(
   @Override
   public String toString() {
     return "DialogMetaData [livingEntity="
-        + livingEntity
+        + this.livingEntity
         + ", player="
-        + player
+        + this.player
         + ", scoreboardData="
-        + scoreboardData
+        + this.scoreboardData
         + "]";
   }
 }

@@ -47,12 +47,16 @@ public final class EditorScreenTestHelper {
       EditorType editorType,
       EasyNPC<?> easyNPC,
       MenuType<? extends EditorMenu> menuType) {
+    UUID dialogId = null;
     DialogDataCapable<?> dialogData = easyNPC.getEasyNPCDialogData();
-    if (dialogData == null) {
-      return null;
+    if (dialogData != null) {
+      dialogData.setDialogDataSet(DialogUtils.getBasicDialog("Test Dialog"));
+      dialogId =
+          dialogData.getDialogDataSet().getDialogsByLabel().stream()
+              .findFirst()
+              .map(DialogDataEntry::getId)
+              .orElse(null);
     }
-
-    dialogData.setDialogDataSet(DialogUtils.getBasicDialog("Test Dialog"));
 
     MenuProvider menuProvider =
         EditorMenuHandler.getMenuProvider(
@@ -60,17 +64,7 @@ public final class EditorScreenTestHelper {
             easyNPC,
             menuType,
             EditorMenuHandler.getScreenData(
-                editorType,
-                easyNPC,
-                dialogData.getDialogDataSet().getDialogsByLabel().stream()
-                    .findFirst()
-                    .map(DialogDataEntry::getId)
-                    .orElse(null),
-                null,
-                null,
-                null,
-                0,
-                new CompoundTag()));
+                editorType, easyNPC, dialogId, null, null, null, 0, new CompoundTag()));
     UUID menuId = MenuManager.registerMenu(easyNPC.getEntityUUID(), menuProvider, serverPlayer);
     MenuManager.openMenu(menuId, serverPlayer);
     return menuId;
@@ -89,7 +83,7 @@ public final class EditorScreenTestHelper {
     }
 
     UUID menuId = mockOpenEditorScreen(serverPlayer, editorType, easyNPC, menuType);
-    GameTestHelpers.assertNotNull(helper, "MenuId is null!", menuId);
+    GameTestHelpers.assertNotNull(helper, "Menu ID is null!", menuId);
 
     GameTestHelpers.assertTrue(
         helper,

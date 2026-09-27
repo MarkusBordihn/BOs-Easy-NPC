@@ -50,7 +50,7 @@ public class RelationshipConditionEntry extends ConditionEntryWidget {
   @Override
   public void init(int editorLeft, int editorTop) {
     RelationshipType relationshipType = RelationshipType.OWNER;
-    if (hasConditionData(ConditionType.RELATIONSHIP)
+    if (this.hasConditionData(ConditionType.RELATIONSHIP)
         && this.conditionDataEntry.subType() instanceof RelationshipType entryRelationshipType) {
       relationshipType = entryRelationshipType;
     }
@@ -72,7 +72,7 @@ public class RelationshipConditionEntry extends ConditionEntryWidget {
             new TextField(this.font, editorLeft + 110, editorTop + 24, 180, 16));
     this.factionNameTextField.setFilter(FactionNameValidator::isValidInput);
     this.factionNameTextField.setValue(
-        hasConditionData(ConditionType.RELATIONSHIP) ? this.conditionDataEntry.name() : "");
+        this.hasConditionData(ConditionType.RELATIONSHIP) ? this.conditionDataEntry.name() : "");
     this.updateFactionNameVisibility();
   }
 
