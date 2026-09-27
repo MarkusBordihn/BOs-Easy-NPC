@@ -38,6 +38,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -218,10 +219,11 @@ public class PresetDataUtils {
     }
 
     if (entity instanceof LivingEntity livingEntity) {
-      float maxHealth =
-          livingEntity.getAttribute(Attributes.MAX_HEALTH) != null
-              ? (float) livingEntity.getAttribute(Attributes.MAX_HEALTH).getValue()
-              : 20.0f;
+      AttributeInstance maxHealthAttribute = livingEntity.getAttribute(Attributes.MAX_HEALTH);
+      float maxHealth = 20.0f;
+      if (maxHealthAttribute != null) {
+        maxHealth = (float) maxHealthAttribute.getValue();
+      }
       livingEntity.setHealth(maxHealth);
       livingEntity.deathTime = 0;
       livingEntity.hurtTime = 0;

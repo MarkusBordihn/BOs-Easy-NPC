@@ -60,53 +60,53 @@ public interface DialogDataCapable<T extends Mob> extends EasyNPC<T> {
   }
 
   default DialogDataSet getDialogDataSet() {
-    return getEasyNPCServerData().getServerEntityData(CUSTOM_DATA_DIALOG_DATA_SET);
+    return this.getEasyNPCServerData().getServerEntityData(CUSTOM_DATA_DIALOG_DATA_SET);
   }
 
   default void setDialogDataSet(DialogDataSet dialogDataSet) {
-    getEasyNPCServerData().setServerEntityData(CUSTOM_DATA_DIALOG_DATA_SET, dialogDataSet);
+    this.getEasyNPCServerData().setServerEntityData(CUSTOM_DATA_DIALOG_DATA_SET, dialogDataSet);
   }
 
   default void clearDialogDataSet() {
-    setDialogDataSet(new DialogDataSet());
+    this.setDialogDataSet(new DialogDataSet());
   }
 
   default boolean hasDialog() {
-    return getDialogDataSet().hasDialog();
+    return this.getDialogDataSet().hasDialog();
   }
 
   default boolean hasDialog(String dialogLabel) {
-    return getDialogDataSet().hasDialog(dialogLabel);
+    return this.getDialogDataSet().hasDialog(dialogLabel);
   }
 
   default boolean hasDialog(UUID dialogId) {
-    return getDialogDataSet().hasDialog(dialogId);
+    return this.getDialogDataSet().hasDialog(dialogId);
   }
 
   default boolean removeDialog(UUID dialogId) {
-    return getDialogDataSet().removeDialog(dialogId);
+    return this.getDialogDataSet().removeDialog(dialogId);
   }
 
   default boolean removeDialogButton(UUID dialogId, UUID dialogButtonId) {
-    return getDialogDataSet().removeDialogButton(dialogId, dialogButtonId);
+    return this.getDialogDataSet().removeDialogButton(dialogId, dialogButtonId);
   }
 
   default void setDialog(UUID dialogId, DialogDataEntry dialogData) {
-    getDialogDataSet().setDialog(dialogId, dialogData);
+    this.getDialogDataSet().setDialog(dialogId, dialogData);
   }
 
   default UUID getDialogId(String dialogLabel) {
-    return getDialogDataSet().getDialogId(dialogLabel);
+    return this.getDialogDataSet().getDialogId(dialogLabel);
   }
 
   default boolean hasDialogButton(UUID dialogId, UUID dialogButtonId) {
-    return getDialogDataSet().hasDialogButton(dialogId, dialogButtonId);
+    return this.getDialogDataSet().hasDialogButton(dialogId, dialogButtonId);
   }
 
   default void openDialog(ServerPlayer serverPlayer, UUID dialogId) {
-    DialogDataEntry dialog = getDialogDataSet().getDialog(dialogId);
+    DialogDataEntry dialog = this.getDialogDataSet().getDialog(dialogId);
     if (dialog != null) {
-      getDialogDataSet().recordDialogExecution(dialog, serverPlayer, this.getLivingEntity());
+      this.getDialogDataSet().recordDialogExecution(dialog, serverPlayer, this.getLivingEntity());
     }
     MenuManager.getMenuHandler().openDialogMenu(serverPlayer, this, dialogId, 0);
     this.playDefaultSoundIfAvailable(SoundType.DIALOG_OPEN);
@@ -114,29 +114,31 @@ public interface DialogDataCapable<T extends Mob> extends EasyNPC<T> {
   }
 
   default boolean openDialogIfConditionsMet(ServerPlayer serverPlayer, UUID dialogId) {
-    if (!getDialogDataSet().canOpenDialog(dialogId, serverPlayer, this.getLivingEntity())) {
+    if (!this.getDialogDataSet().canOpenDialog(dialogId, serverPlayer, this.getLivingEntity())) {
       return false;
     }
-    openDialog(serverPlayer, dialogId);
+
+    this.openDialog(serverPlayer, dialogId);
     return true;
   }
 
   default void openDefaultDialog(ServerPlayer serverPlayer) {
     DialogDataEntry dialog =
-        getDialogDataSet().getNextAvailableDialog(serverPlayer, this.getLivingEntity());
+        this.getDialogDataSet().getNextAvailableDialog(serverPlayer, this.getLivingEntity());
     if (dialog != null) {
       this.openDialog(serverPlayer, dialog.getId());
     }
   }
 
   default DialogButtonEntry getDialogButton(UUID dialogId, UUID dialogButtonId) {
-    return getDialogDataSet().getDialogButton(dialogId, dialogButtonId);
+    return this.getDialogDataSet().getDialogButton(dialogId, dialogButtonId);
   }
 
   default void defineSynchedDialogData(SynchedEntityData.Builder builder) {}
 
   default void defineCustomDialogData() {
-    getEasyNPCServerData().defineServerEntityData(CUSTOM_DATA_DIALOG_DATA_SET, new DialogDataSet());
+    this.getEasyNPCServerData()
+        .defineServerEntityData(CUSTOM_DATA_DIALOG_DATA_SET, new DialogDataSet());
   }
 
   default void addAdditionalDialogData(ValueOutput valueOutput) {
@@ -151,7 +153,6 @@ public interface DialogDataCapable<T extends Mob> extends EasyNPC<T> {
   }
 
   default void readAdditionalDialogData(ValueInput valueInput) {
-    // Early exit if no dialog data is available.
     Optional<CompoundTag> compoundTagData =
         valueInput.read(DATA_DIALOG_DATA_TAG, CompoundTag.CODEC);
     if (compoundTagData.isEmpty()) {

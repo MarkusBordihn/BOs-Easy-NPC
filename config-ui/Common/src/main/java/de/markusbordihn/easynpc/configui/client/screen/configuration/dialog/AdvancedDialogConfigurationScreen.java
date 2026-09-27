@@ -202,7 +202,6 @@ public class AdvancedDialogConfigurationScreen<T extends ConfigurationMenu>
           AdvancedDialogConfigurationScreen.this.contentTopPos + 15,
           19);
 
-      // Add all dialog data sets, sorted by priority (descending) then by label
       AdvancedDialogConfigurationScreen.this.getDialogDataSet().getDialogsByLabel().stream()
           .filter(dialogData -> dialogData != null && dialogData.getId() != null)
           .sorted(
@@ -225,14 +224,10 @@ public class AdvancedDialogConfigurationScreen<T extends ConfigurationMenu>
     protected void renderSelection(
         GuiGraphics guiGraphics,
         AdvancedDialogConfigurationScreen<?>.DialogList.Entry entry,
-        int color) {
-      // Do not render selection.
-    }
+        int color) {}
 
     @Override
-    protected void renderListSeparators(GuiGraphics guiGraphics) {
-      // Do not render list separators.
-    }
+    protected void renderListSeparators(GuiGraphics guiGraphics) {}
 
     @Override
     protected int scrollBarX() {
@@ -240,9 +235,7 @@ public class AdvancedDialogConfigurationScreen<T extends ConfigurationMenu>
     }
 
     @Override
-    protected void renderListBackground(GuiGraphics guiGraphics) {
-      // Do not render list background.
-    }
+    protected void renderListBackground(GuiGraphics guiGraphics) {}
 
     class Entry
         extends ObjectSelectionList.Entry<AdvancedDialogConfigurationScreen<?>.DialogList.Entry> {
@@ -285,7 +278,7 @@ public class AdvancedDialogConfigurationScreen<T extends ConfigurationMenu>
 
       @Override
       public Component getNarration() {
-        return TextComponent.getTextComponent(dialogData.getName());
+        return TextComponent.getTextComponent(this.dialogData.getName());
       }
 
       @Override
@@ -314,7 +307,7 @@ public class AdvancedDialogConfigurationScreen<T extends ConfigurationMenu>
               Collections.singletonList(
                   ClientTooltipComponent.create(
                       TextComponent.getTranslatedConfigText(
-                              "dialog.edit_dialog", dialogData.getName())
+                              "dialog.edit_dialog", this.dialogData.getName())
                           .getVisualOrderText())),
               mouseX,
               mouseY,
@@ -326,8 +319,7 @@ public class AdvancedDialogConfigurationScreen<T extends ConfigurationMenu>
         this.copyLabelButton.setY(top);
         this.copyLabelButton.render(guiGraphics, mouseX, mouseY, partialTicks);
 
-        // Render condition indicator left of the copy button
-        if (dialogData.hasConditions()) {
+        if (this.dialogData.hasConditions()) {
           ConditionButton.renderIndicator(guiGraphics, this.copyLabelButton.getX() - 14, top + 2);
         }
         if (this.copyLabelButton.isHovered()) {
@@ -336,7 +328,7 @@ public class AdvancedDialogConfigurationScreen<T extends ConfigurationMenu>
               Collections.singletonList(
                   ClientTooltipComponent.create(
                       TextComponent.getTranslatedConfigText(
-                              "dialog.copy_dialog_label", dialogData.getLabel())
+                              "dialog.copy_dialog_label", this.dialogData.getLabel())
                           .getVisualOrderText())),
               mouseX,
               mouseY,
@@ -353,7 +345,7 @@ public class AdvancedDialogConfigurationScreen<T extends ConfigurationMenu>
               Collections.singletonList(
                   ClientTooltipComponent.create(
                       TextComponent.getTranslatedConfigText(
-                              "dialog.edit_dialog_text", dialogData.getText())
+                              "dialog.edit_dialog_text", this.dialogData.getText())
                           .getVisualOrderText())),
               mouseX,
               mouseY,
@@ -363,7 +355,7 @@ public class AdvancedDialogConfigurationScreen<T extends ConfigurationMenu>
 
         int dialogDataTopPos = Math.round((top + 5) / TEXT_SCALE);
         int fontColor =
-            switch (dialogData.getPriority()) {
+            switch (this.dialogData.getPriority()) {
               case DialogPriority.CRITICAL -> Constants.FONT_COLOR_RED;
               case DialogPriority.HIGH -> Constants.FONT_COLOR_DARK_GREEN;
               case DialogPriority.NORMAL -> Constants.FONT_COLOR_BLACK;
@@ -380,14 +372,14 @@ public class AdvancedDialogConfigurationScreen<T extends ConfigurationMenu>
         Text.drawString(
             guiGraphics,
             AdvancedDialogConfigurationScreen.this.font,
-            String.valueOf(dialogData.getPriority()),
+            String.valueOf(this.dialogData.getPriority()),
             Math.round((leftPos + COLUMN_PRIORITY_START + 8) / TEXT_SCALE),
             dialogDataTopPos,
             fontColor);
         Text.drawLimitedHoverString(
             guiGraphics,
             AdvancedDialogConfigurationScreen.this.font,
-            dialogData.getLabel(),
+            this.dialogData.getLabel(),
             Math.round((leftPos + COLUMN_LABEL_START + 2) / TEXT_SCALE),
             dialogDataTopPos,
             fontColor,
@@ -397,7 +389,7 @@ public class AdvancedDialogConfigurationScreen<T extends ConfigurationMenu>
         Text.drawLimitedHoverString(
             guiGraphics,
             AdvancedDialogConfigurationScreen.this.font,
-            dialogData.getName(),
+            this.dialogData.getName(),
             Math.round((leftPos + COLUMN_NAME_START + 2) / TEXT_SCALE),
             dialogDataTopPos,
             fontColor,
@@ -407,7 +399,7 @@ public class AdvancedDialogConfigurationScreen<T extends ConfigurationMenu>
         Text.drawLimitedHoverString(
             guiGraphics,
             AdvancedDialogConfigurationScreen.this.font,
-            dialogData.getText(),
+            this.dialogData.getText(),
             Math.round((leftPos + COLUMN_TEXT_START + 18) / TEXT_SCALE),
             dialogDataTopPos,
             fontColor,

@@ -41,6 +41,7 @@ public class CompatManager {
     if (compatHandlerInterface != null) {
       return compatHandlerInterface.isModLoaded(modId);
     }
+
     return false;
   }
 

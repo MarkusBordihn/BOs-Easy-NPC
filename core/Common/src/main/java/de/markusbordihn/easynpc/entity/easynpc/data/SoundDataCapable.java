@@ -42,11 +42,11 @@ public interface SoundDataCapable<E extends Mob> extends EasyNPC<E> {
   String EASY_NPC_DATA_SOUND_DATA_TAG = "SoundData";
 
   default SoundDataSet getSoundDataSet() {
-    return getSynchedEntityData(SynchedDataIndex.SOUND_DATA_SET);
+    return this.getSynchedEntityData(SynchedDataIndex.SOUND_DATA_SET);
   }
 
   default void setSoundDataSet(SoundDataSet soundDataSet) {
-    setSynchedEntityData(SynchedDataIndex.SOUND_DATA_SET, soundDataSet);
+    this.setSynchedEntityData(SynchedDataIndex.SOUND_DATA_SET, soundDataSet);
   }
 
   default SoundDataSet getDefaultSoundDataSet(SoundDataSet soundDataSet, String variantName) {
@@ -56,13 +56,13 @@ public interface SoundDataCapable<E extends Mob> extends EasyNPC<E> {
   default void refreshSoundDataSet() {
     SoundDataSet soundDataSet = this.getSoundDataSet();
     if (soundDataSet == null || soundDataSet.isEmpty()) {
-      clearSoundDataSet();
-      setSoundDataSet(soundDataSet);
+      this.clearSoundDataSet();
+      this.setSoundDataSet(soundDataSet);
     }
   }
 
   default void clearSoundDataSet() {
-    setSoundDataSet(new SoundDataSet());
+    this.setSoundDataSet(new SoundDataSet());
   }
 
   default SoundDataSet getResolvedSoundDataSet() {
@@ -88,6 +88,7 @@ public interface SoundDataCapable<E extends Mob> extends EasyNPC<E> {
     if (!this.hasDefaultSound(soundType)) {
       return null;
     }
+
     return this.getDefaultSound(soundType).getSoundEvent();
   }
 
@@ -100,25 +101,27 @@ public interface SoundDataCapable<E extends Mob> extends EasyNPC<E> {
     if (!soundDataEntry.isEnabled() || soundDataEntry.getSoundEvent() == null) {
       return fallbackSoundEvent;
     }
+
     return soundDataEntry.getSoundEvent();
   }
 
   default void playDefaultAmbientSound() {
     OwnerDataCapable<E> ownerData = this.getEasyNPCOwnerData();
     if (ownerData != null && ownerData.hasNPCOwner()) {
-      if (hasDefaultSound(SoundType.PET) && EasyNPC.randomNumber.nextInt(8) == 0) {
+      if (this.hasDefaultSound(SoundType.PET) && EasyNPC.randomNumber.nextInt(8) == 0) {
         this.playDefaultSound(SoundType.PET);
         return;
-      } else if (hasDefaultSound(SoundType.AMBIENT_TAMED) && EasyNPC.randomNumber.nextInt(4) == 0) {
+      } else if (this.hasDefaultSound(SoundType.AMBIENT_TAMED)
+          && EasyNPC.randomNumber.nextInt(4) == 0) {
         this.playDefaultSound(SoundType.AMBIENT_TAMED);
         return;
-      } else if (hasDefaultSound(SoundType.AMBIENT)) {
+      } else if (this.hasDefaultSound(SoundType.AMBIENT)) {
         this.playDefaultSound(SoundType.AMBIENT);
         return;
       }
     }
 
-    if (hasDefaultSound(SoundType.AMBIENT_STRAY)) {
+    if (this.hasDefaultSound(SoundType.AMBIENT_STRAY)) {
       this.playDefaultSound(SoundType.AMBIENT_STRAY);
     } else {
       this.playDefaultSound(SoundType.AMBIENT);
@@ -143,6 +146,7 @@ public interface SoundDataCapable<E extends Mob> extends EasyNPC<E> {
         || !this.hasDefaultSound(soundType)) {
       return;
     }
+
     SoundDataEntry soundDataEntry = this.getDefaultSound(soundType);
     if (soundDataEntry.isEnabled() && soundDataEntry.getVolume() > 0.0F) {
       SoundEvent soundEvent = soundDataEntry.getSoundEvent();
@@ -161,7 +165,7 @@ public interface SoundDataCapable<E extends Mob> extends EasyNPC<E> {
   }
 
   default void defineSynchedSoundData(SynchedEntityData.Builder builder) {
-    defineSynchedEntityData(builder, SynchedDataIndex.SOUND_DATA_SET, new SoundDataSet());
+    this.defineSynchedEntityData(builder, SynchedDataIndex.SOUND_DATA_SET, new SoundDataSet());
   }
 
   default void registerDefaultSoundData(Enum<?> variant) {

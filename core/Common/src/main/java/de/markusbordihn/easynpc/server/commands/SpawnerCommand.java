@@ -44,7 +44,11 @@ public class SpawnerCommand extends Command {
     return Commands.literal("spawner")
         .then(
             Commands.literal("set")
-                .requires(cs -> cs.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER))
+                .requires(
+                    commandSourceStack ->
+                        commandSourceStack
+                            .permissions()
+                            .hasPermission(Permissions.COMMANDS_GAMEMASTER))
                 .then(
                     Commands.argument(TARGET_ARG, BlockPosArgument.blockPos())
                         .then(

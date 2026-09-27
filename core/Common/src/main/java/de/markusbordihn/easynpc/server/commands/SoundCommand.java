@@ -81,7 +81,6 @@ public class SoundCommand extends Command {
       return sendFailureMessageNoSoundDataSet(context, easyNPC);
     }
 
-    // Set sound type and refresh data set.
     soundDataSet.addSound(soundType, sound);
     soundData.refreshSoundDataSet();
 

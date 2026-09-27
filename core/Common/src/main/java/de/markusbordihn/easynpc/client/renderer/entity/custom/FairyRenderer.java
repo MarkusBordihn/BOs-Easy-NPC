@@ -23,7 +23,7 @@ public class FairyRenderer
 
   @Override
   public Identifier getTextureLocation(HumanoidRenderState renderState) {
-    return getTextureFromRenderState(renderState);
+    return this.getTextureFromRenderState(renderState);
   }
 
   @Override

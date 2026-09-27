@@ -76,14 +76,11 @@ public class Screen<
   protected Screen(T menu, Inventory inventory, Component component, int width, int height) {
     super(component);
 
-    // Set screen size
     this.imageWidth = width;
     this.imageHeight = height;
 
-    // Get menu and screen data
     this.menu = menu;
 
-    // Get Minecraft instance
     this.minecraftInstance = Minecraft.getInstance();
   }
 
@@ -98,22 +95,22 @@ public class Screen<
 
   @Override
   public UUID getEasyNPCUUID() {
-    return menu.getNpcUUID();
+    return this.menu.getNpcUUID();
   }
 
   @Override
   public EasyNPC<?> getEasyNPC() {
-    return menu.getEasyNPC();
+    return this.menu.getEasyNPC();
   }
 
   @Override
   public ScreenData getScreenData() {
-    return menu.getScreenData();
+    return this.menu.getScreenData();
   }
 
   @Override
   public D getAdditionalScreenData() {
-    return menu.getAdditionalScreenData();
+    return this.menu.getAdditionalScreenData();
   }
 
   @Override
@@ -125,10 +122,8 @@ public class Screen<
   protected void init() {
     super.init();
 
-    // Default stats
     this.compactMode = this.height < 260;
 
-    // Basic position
     this.titleLabelX = 7;
     this.titleLabelY = -9;
     this.topPos = (this.height - this.imageHeight) / 2 + (this.compactMode ? 2 : 10);
@@ -138,15 +133,15 @@ public class Screen<
 
     // Set mouse position to former position, to avoid mouse jumps.
     if (formerMouseX > 0 && formerMouseY > 0) {
-      GLFW.glfwSetCursorPos(minecraftInstance.getWindow().handle(), formerMouseX, formerMouseY);
+      GLFW.glfwSetCursorPos(
+          this.minecraftInstance.getWindow().handle(), formerMouseX, formerMouseY);
       resetFormerMousePosition();
     }
 
-    // Close Button
     if (this.showCloseButton) {
       this.closeButton =
           this.addRenderableWidget(
-              new CloseButton(this.rightPos - 10, this.topPos + 1, onPress -> onClose()));
+              new CloseButton(this.rightPos - 10, this.topPos + 1, onPress -> this.onClose()));
     }
   }
 
@@ -174,7 +169,7 @@ public class Screen<
   }
 
   protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
-    if (renderDefaultScreenBackground) {
+    if (this.renderDefaultScreenBackground) {
       this.renderDefaultScreenBg(guiGraphics, this.leftPos, this.topPos, this.compactMode);
     }
   }
@@ -200,7 +195,7 @@ public class Screen<
     super.tick();
     if (this.minecraft.player.isAlive()
         && !this.minecraft.player.isRemoved()
-        && updateTicker++ % this.getUpdateTickInterval() == 0) {
+        && this.updateTicker++ % this.getUpdateTickInterval() == 0) {
       this.updateTick();
     }
   }
@@ -208,7 +203,7 @@ public class Screen<
   @Override
   public void onClose() {
     resetFormerMousePosition();
-    if (!containerClosed && this.minecraft != null && this.minecraft.player != null) {
+    if (!this.containerClosed && this.minecraft != null && this.minecraft.player != null) {
       this.containerClosed = true;
       this.minecraft.player.closeContainer();
     }
@@ -217,10 +212,10 @@ public class Screen<
 
   @Override
   public void removed() {
-    if (!containerClosed
+    if (!this.containerClosed
         && this.minecraft != null
         && this.minecraft.player != null
-        && !isSwitchingToAnotherEasyNPCScreen(this.minecraft.screen)) {
+        && !this.isSwitchingToAnotherEasyNPCScreen(this.minecraft.screen)) {
       resetFormerMousePosition();
       this.containerClosed = true;
       this.minecraft.player.closeContainer();
@@ -232,10 +227,15 @@ public class Screen<
   @Override
   public boolean keyPressed(KeyEvent keyEvent) {
     int keyCode = keyEvent.input();
-    if (keyCode != 257 && keyCode != 335 && keyCode != 69 && keyCode != 73) {
+    boolean isConsumedKey =
+        keyCode == GLFW.GLFW_KEY_ENTER
+            || keyCode == GLFW.GLFW_KEY_KP_ENTER
+            || keyCode == GLFW.GLFW_KEY_I;
+    if (!isConsumedKey && keyCode != GLFW.GLFW_KEY_E) {
       return super.keyPressed(keyEvent);
     }
-    return keyCode == 257 || keyCode == 335 || keyCode == 73;
+
+    return isConsumedKey;
   }
 
   @Override

@@ -31,6 +31,8 @@ import net.minecraft.network.chat.Component;
 
 public class SpinButton<T> extends CustomButton {
 
+  private static final int NAVIGATION_BUTTON_WIDTH = 10;
+
   private final TextButton previousButton;
   private final TextButton nextButton;
   private final TextButton textButton;
@@ -46,31 +48,45 @@ public class SpinButton<T> extends CustomButton {
     this.currentIndex = Math.max(0, this.values.indexOf(initialValue));
     this.onChange = onChange;
 
-    int navWidth = 10;
-    this.previousButton = new TextButton(x, y, navWidth, height, "<", this::previous);
-    this.textButton = new TextButton(x + navWidth, y, width - 2 * navWidth, height, "", this::next);
-    this.nextButton = new TextButton(x + width - navWidth, y, navWidth, height, ">", this::next);
+    this.previousButton =
+        new TextButton(x, y, NAVIGATION_BUTTON_WIDTH, height, "<", this::previous);
+    this.textButton =
+        new TextButton(
+            x + NAVIGATION_BUTTON_WIDTH,
+            y,
+            width - 2 * NAVIGATION_BUTTON_WIDTH,
+            height,
+            "",
+            this::next);
+    this.nextButton =
+        new TextButton(
+            x + width - NAVIGATION_BUTTON_WIDTH,
+            y,
+            NAVIGATION_BUTTON_WIDTH,
+            height,
+            ">",
+            this::next);
 
-    updateButtonStates();
+    this.updateButtonStates();
   }
 
   private void previous(Button button) {
     if (this.currentIndex > 0) {
-      setIndex(this.currentIndex - 1);
+      this.setIndex(this.currentIndex - 1);
     }
   }
 
   private void next(Button button) {
     if (this.currentIndex < this.values.size() - 1) {
-      setIndex(this.currentIndex + 1);
+      this.setIndex(this.currentIndex + 1);
     } else if (button == this.textButton && !this.values.isEmpty()) {
-      setIndex(0);
+      this.setIndex(0);
     }
   }
 
   private void setIndex(int index) {
     this.currentIndex = index;
-    updateButtonStates();
+    this.updateButtonStates();
     if (this.onChange != null) {
       this.onChange.onChange(this);
     }
@@ -95,7 +111,7 @@ public class SpinButton<T> extends CustomButton {
     this.values.clear();
     this.values.addAll(values);
     this.currentIndex = Math.max(0, this.values.indexOf(selectedValue));
-    updateButtonStates();
+    this.updateButtonStates();
   }
 
   @Override
@@ -104,7 +120,7 @@ public class SpinButton<T> extends CustomButton {
     this.nextButton.renderButton(guiGraphics, left, top, partialTicks);
     this.textButton.renderButton(guiGraphics, left, top, partialTicks);
 
-    T value = get();
+    T value = this.get();
     if (value != null) {
       this.textButton.setMessage(this.labelProvider.apply(value));
     }
@@ -132,10 +148,9 @@ public class SpinButton<T> extends CustomButton {
   @Override
   public void setX(int x) {
     super.setX(x);
-    int navWidth = 10;
     this.previousButton.setX(x);
-    this.textButton.setX(x + navWidth);
-    this.nextButton.setX(x + this.width - navWidth);
+    this.textButton.setX(x + NAVIGATION_BUTTON_WIDTH);
+    this.nextButton.setX(x + this.width - NAVIGATION_BUTTON_WIDTH);
   }
 
   public interface OnChange<T> {

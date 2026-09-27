@@ -66,9 +66,9 @@ public record ChangeFactionColorMessage(UUID uuid, String factionName, String co
 
   @Override
   public void handleServer(final ServerPlayer serverPlayer) {
-    EasyNPC<?> easyNPC = getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
+    EasyNPC<?> easyNPC = this.getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
     if (easyNPC == null || this.factionName == null || this.factionName.isEmpty()) {
-      log.error("Invalid data to change faction color for {}: ", this);
+      log.error("Invalid data to change faction color for {}", this);
       return;
     }
 

@@ -153,7 +153,7 @@ public class ConditionDataListEntry extends ObjectSelectionList.Entry<ConditionD
         fieldTop,
         Constants.FONT_COLOR_BLACK);
 
-    renderValuePreview(guiGraphics, fieldsLeft, fieldTop, mouseX, mouseY);
+    this.renderValuePreview(guiGraphics, fieldsLeft, fieldTop, mouseX, mouseY);
 
     int buttonTop = top + 4;
     this.editButton.setY(buttonTop);
@@ -174,8 +174,9 @@ public class ConditionDataListEntry extends ObjectSelectionList.Entry<ConditionD
                   + this.conditionDataEntry.operationType().getSymbol()
                   + " "
                   + this.conditionDataEntry.value();
-          case EXECUTION_LIMIT -> buildExecutionLimitPreview(this.conditionDataEntry);
-          case HAS_ITEM_IN_HAND, HAS_ITEM_IN_INVENTORY -> buildItemPreview(this.conditionDataEntry);
+          case EXECUTION_LIMIT -> this.buildExecutionLimitPreview(this.conditionDataEntry);
+          case HAS_ITEM_IN_HAND, HAS_ITEM_IN_INVENTORY ->
+              this.buildItemPreview(this.conditionDataEntry);
           case ADVANCEMENT, PLAYER_TAG, TEAM, GAMEMODE -> this.conditionDataEntry.name();
           case EXPERIENCE_LEVEL, PLAYER_HEALTH, NPC_HEALTH, TIME_OF_DAY ->
               this.conditionDataEntry.operationType().getSymbol()
@@ -190,7 +191,7 @@ public class ConditionDataListEntry extends ObjectSelectionList.Entry<ConditionD
               this.conditionDataEntry.subType() != null
                   ? ((Enum<?>) this.conditionDataEntry.subType()).name()
                   : "-";
-          case RELATIONSHIP -> buildRelationshipPreview(this.conditionDataEntry);
+          case RELATIONSHIP -> this.buildRelationshipPreview(this.conditionDataEntry);
           case ENTITY_HEALTH ->
               this.conditionDataEntry.operationType().getSymbol()
                   + " "
@@ -216,6 +217,7 @@ public class ConditionDataListEntry extends ObjectSelectionList.Entry<ConditionD
     if (conditionDataEntry.subType() == null) {
       return String.valueOf(conditionDataEntry.value());
     }
+
     return conditionDataEntry.value()
         + " ("
         + ((Enum<?>) conditionDataEntry.subType()).name()

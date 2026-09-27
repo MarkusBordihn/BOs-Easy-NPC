@@ -44,7 +44,7 @@ public class ScoreboardConditionEntry extends ConditionEntryWidget {
 
   @Override
   public void init(int editorLeft, int editorTop) {
-    boolean hasConditionData = hasConditionData(ConditionType.SCOREBOARD);
+    boolean hasConditionData = this.hasConditionData(ConditionType.SCOREBOARD);
     this.nameTextField =
         this.screen.addConditionEntryWidget(
             new TextField(

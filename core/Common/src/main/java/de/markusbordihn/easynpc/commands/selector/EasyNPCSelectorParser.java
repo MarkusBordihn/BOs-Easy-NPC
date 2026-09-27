@@ -103,7 +103,7 @@ public class EasyNPCSelectorParser extends EntitySelectorParser {
 
     CompletableFuture<Suggestions> suggestions =
         CompletableFuture.completedFuture(new Suggestions(stringRange, suggestionsList));
-    this.setSuggestions((suggestionsBuilder1, consumer1) -> suggestions);
+    this.setSuggestions((nestedBuilder, suggestionConsumer) -> suggestions);
     return suggestions;
   }
 }

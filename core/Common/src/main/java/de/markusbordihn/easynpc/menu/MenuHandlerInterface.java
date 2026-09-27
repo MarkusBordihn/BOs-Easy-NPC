@@ -40,19 +40,15 @@ public interface MenuHandlerInterface {
       final EasyNPC<?> easyNPC,
       final UUID dialogId,
       int pageIndex) {
-
-    // Get menu type for configuration type.
-    final MenuType<? extends DialogMenu> menuType = getDialogMenuType();
+    final MenuType<? extends DialogMenu> menuType = this.getDialogMenuType();
     if (menuType == null) {
       log.error("Unknown dialog for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
-    // Additional data for specific configuration menu.
     final ScreenData screenData =
         DialogMenuHandler.getScreenData(easyNPC, dialogId, pageIndex, serverPlayer);
 
-    // Get menu provider for configuration type and open configuration menu.
     final MenuProvider menuProvider =
         DialogMenuHandler.getMenuProvider(easyNPC, menuType, screenData);
     final UUID npcUUID = easyNPC.getEntityUUID();

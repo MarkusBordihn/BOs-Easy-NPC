@@ -51,7 +51,6 @@ class TextureCacheManagerTest {
     UUID result = TextureCacheManager.getUUIDFromFilename(filename);
 
     assertNotNull(result);
-    // Should create a name-based UUID from bytes
     assertEquals(UUID.nameUUIDFromBytes(filename.getBytes()), result);
   }
 

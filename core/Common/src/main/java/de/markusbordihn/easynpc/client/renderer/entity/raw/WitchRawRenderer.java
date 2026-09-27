@@ -36,7 +36,7 @@ public class WitchRawRenderer extends WitchRenderer implements EasyNPCEntityRend
 
   @Override
   public Identifier getTextureLocation(WitchRenderState renderState) {
-    return getTextureFromRenderStateWithConfig(renderState);
+    return this.getTextureFromRenderStateWithConfig(renderState);
   }
 
   @Override

@@ -30,6 +30,8 @@ import de.markusbordihn.easynpc.data.action.ActionDataSet;
 import de.markusbordihn.easynpc.data.action.ActionDataType;
 import de.markusbordihn.easynpc.data.scoreboard.ScoreboardOperation;
 import de.markusbordihn.easynpc.network.components.TextComponent;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import net.minecraft.client.gui.GuiGraphics;
 
 public class ScoreboardEntry extends ActionEntryWidget {
@@ -44,23 +46,23 @@ public class ScoreboardEntry extends ActionEntryWidget {
       ActionDataSet actionDataSet,
       ActionDataEntryEditorContainerScreen<?> screen) {
     super(actionDataEntry, actionDataSet, screen);
-    this.currentOperation = parseOperation(actionDataEntry);
+    this.currentOperation = this.parseOperation();
   }
 
-  private ScoreboardOperation parseOperation(ActionDataEntry actionDataEntry) {
-    if (!hasActionData(ActionDataType.SCOREBOARD) || actionDataEntry.command() == null) {
+  private ScoreboardOperation parseOperation() {
+    if (!this.hasActionData(ActionDataType.SCOREBOARD) || this.actionDataEntry.command() == null) {
       return ScoreboardOperation.INCREASE;
     }
 
-    return ScoreboardOperation.fromCommand(actionDataEntry.command());
+    return ScoreboardOperation.fromCommand(this.actionDataEntry.command());
   }
 
-  private String[] parseCommandData(ActionDataEntry actionDataEntry) {
-    if (!hasActionData(ActionDataType.SCOREBOARD) || actionDataEntry.command() == null) {
+  private String[] parseCommandData() {
+    if (!this.hasActionData(ActionDataType.SCOREBOARD) || this.actionDataEntry.command() == null) {
       return new String[] {"", "1"};
     }
 
-    String command = actionDataEntry.command();
+    String command = this.actionDataEntry.command();
     String[] parts = command.split(":", 3);
     if (parts.length < 2) {
       return new String[] {"", "1"};
@@ -71,14 +73,14 @@ public class ScoreboardEntry extends ActionEntryWidget {
 
   @Override
   public void init(int editorLeft, int editorTop) {
-    boolean hasActionData = hasActionData(ActionDataType.SCOREBOARD);
-    String[] commandData = parseCommandData(actionDataEntry);
+    boolean hasActionData = this.hasActionData(ActionDataType.SCOREBOARD);
+    String[] commandData = this.parseCommandData();
     String scoreboardName = commandData[0];
     String scoreboardValue = commandData[1];
 
-    java.util.Set<TranslatableScoreboardOperation> operationSet = new java.util.LinkedHashSet<>();
-    for (ScoreboardOperation op : ScoreboardOperation.values()) {
-      operationSet.add(new TranslatableScoreboardOperation(op));
+    Set<TranslatableScoreboardOperation> operationSet = new LinkedHashSet<>();
+    for (ScoreboardOperation scoreboardOperation : ScoreboardOperation.values()) {
+      operationSet.add(new TranslatableScoreboardOperation(scoreboardOperation));
     }
 
     this.screen.addActionEntryWidget(
@@ -158,7 +160,7 @@ public class ScoreboardEntry extends ActionEntryWidget {
 
   @Override
   public boolean hasChanged() {
-    ActionDataEntry currentEntry = getActionDataEntry();
+    ActionDataEntry currentEntry = this.getActionDataEntry();
     return !this.actionDataEntry.actionDataType().equals(ActionDataType.SCOREBOARD)
         || !this.actionDataEntry.command().equals(currentEntry.command())
         || this.actionDataEntry.enableDebug() != currentEntry.enableDebug();
@@ -169,13 +171,6 @@ public class ScoreboardEntry extends ActionEntryWidget {
     @Override
     public String toString() {
       return TextComponent.getTranslatedConfigText(this.operation.getTranslationKey()).getString();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-      if (this == obj) return true;
-      if (!(obj instanceof TranslatableScoreboardOperation other)) return false;
-      return this.operation == other.operation;
     }
   }
 }

@@ -39,6 +39,31 @@ class DialogButtonEntryTest {
   }
 
   @Test
+  @DisplayName("A button name with macros is not mistaken for a translation key")
+  void testMacroNameIsNoTranslationKey() {
+    DialogButtonEntry entry = new DialogButtonEntry("Hello @initiator", DialogButtonType.DEFAULT);
+
+    assertFalse(entry.isTranslationKey());
+    assertEquals("Hello @initiator", entry.getButtonName(null).getString());
+  }
+
+  @Test
+  @DisplayName("Color tags in a button name become formatting codes for the preview")
+  void testColorTagsInButtonName() {
+    DialogButtonEntry entry = new DialogButtonEntry("<red>Leave</red>", DialogButtonType.DEFAULT);
+
+    assertEquals("§cLeave§0", entry.getButtonName(21).getString());
+  }
+
+  @Test
+  @DisplayName("A truncated button name never ends on an incomplete formatting code")
+  void testTruncatedButtonNameKeepsFormattingCodesIntact() {
+    DialogButtonEntry entry = new DialogButtonEntry("Follow me <red>now", DialogButtonType.DEFAULT);
+
+    assertEquals("Follow me …", entry.getButtonName(11).getString());
+  }
+
+  @Test
   @DisplayName("An empty label falls back to the generated label of the button name")
   void testEmptyLabelFallsBackToName() {
     DialogButtonEntry entry =

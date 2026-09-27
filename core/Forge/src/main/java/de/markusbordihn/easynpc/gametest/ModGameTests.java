@@ -506,7 +506,7 @@ public final class ModGameTests {
 
     TEST_FUNCTIONS.register(
         "npc_without_stored_sounds_still_has_sounds",
-        () -> StoredDataTest::testNpcWithoutStoredSoundsStillHasSounds);
+        () -> StoredDataTest::testNPCWithoutStoredSoundsStillHasSounds);
     TEST_FUNCTIONS.register(
         "villager_without_stored_sounds_still_has_sounds",
         () -> StoredDataTest::testVillagerWithoutStoredSoundsStillHasSounds);
@@ -517,9 +517,9 @@ public final class ModGameTests {
         () -> StoredDataTest::testObjectivesSurviveWithoutTargetFlags);
     TEST_FUNCTIONS.register(
         "unchanged_npc_stores_no_boilerplate",
-        () -> StoredDataTest::testUnchangedNpcStoresNoBoilerplate);
+        () -> StoredDataTest::testUnchangedNPCStoresNoBoilerplate);
     TEST_FUNCTIONS.register(
-        "stored_npc_data_is_deterministic", () -> StoredDataTest::testStoredNpcDataIsDeterministic);
+        "stored_npc_data_is_deterministic", () -> StoredDataTest::testStoredNPCDataIsDeterministic);
 
     TEST_FUNCTIONS.register(
         "water_state_is_writable", () -> WaterStateAccessTest::testWaterStateIsWritable);

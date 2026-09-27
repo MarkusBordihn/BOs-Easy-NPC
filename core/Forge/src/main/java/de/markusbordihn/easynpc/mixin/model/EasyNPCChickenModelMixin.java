@@ -52,7 +52,7 @@ public class EasyNPCChickenModelMixin implements EasyNPCModelManagerAccessor {
   }
 
   @Inject(method = "<init>(Lnet/minecraft/client/model/geom/ModelPart;)V", at = @At("TAIL"))
-  private void easyNpcModel(ModelPart modelPart, CallbackInfo callbackInfo) {
+  private void easyNPC$initModelManager(ModelPart modelPart, CallbackInfo callbackInfo) {
     this.easyNPC$modelManager =
         new EasyNPCModelManager(modelPart)
             .defineModelPart(ModelPartType.HEAD, this.head)
@@ -67,7 +67,7 @@ public class EasyNPCChickenModelMixin implements EasyNPCModelManagerAccessor {
       method = "setupAnim(Lnet/minecraft/client/renderer/entity/state/ChickenRenderState;)V",
       at = @At("HEAD"),
       cancellable = true)
-  private void setupNpcAnimStart(ChickenRenderState renderState, CallbackInfo callbackInfo) {
+  private void easyNPC$setupAnimStart(ChickenRenderState renderState, CallbackInfo callbackInfo) {
     if (renderState instanceof EasyNPCRenderStateExtension extension
         && EasyNPCModel.setupAnimationStart(extension, this.easyNPC$modelManager)) {
       callbackInfo.cancel();
@@ -77,7 +77,7 @@ public class EasyNPCChickenModelMixin implements EasyNPCModelManagerAccessor {
   @Inject(
       method = "setupAnim(Lnet/minecraft/client/renderer/entity/state/ChickenRenderState;)V",
       at = @At("TAIL"))
-  private void setupNpcAnimEnd(ChickenRenderState renderState, CallbackInfo callbackInfo) {
+  private void easyNPC$setupAnimEnd(ChickenRenderState renderState, CallbackInfo callbackInfo) {
     if (renderState instanceof EasyNPCRenderStateExtension extension) {
       EasyNPCModel.setupAnimationEnd(extension, this.easyNPC$modelManager);
     }

@@ -32,9 +32,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class EasyNPCHighlightMixin {
 
   @Inject(method = "shouldEntityAppearGlowing", at = @At("HEAD"), cancellable = true)
-  private void onShouldEntityAppearGlowing(Entity entity, CallbackInfoReturnable<Boolean> cir) {
+  private void onShouldEntityAppearGlowing(
+      Entity entity, CallbackInfoReturnable<Boolean> callbackInfoReturnable) {
     if (entity instanceof EasyNPC<?> && NPCHighlightManager.isHighlighted(entity.getUUID())) {
-      cir.setReturnValue(true);
+      callbackInfoReturnable.setReturnValue(true);
     }
   }
 }

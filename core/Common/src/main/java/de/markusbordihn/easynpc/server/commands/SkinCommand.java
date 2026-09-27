@@ -143,7 +143,7 @@ public class SkinCommand extends Command {
       return sendFailureMessage(context, "Invalid EasyNPC target");
     }
 
-    var skinData = easyNPC.getEasyNPCSkinData();
+    SkinDataCapable<?> skinData = easyNPC.getEasyNPCSkinData();
     if (skinData == null) {
       return sendFailureMessage(context, "EasyNPC has no skin data");
     }

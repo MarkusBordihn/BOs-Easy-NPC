@@ -59,14 +59,12 @@ public class FollowObjectiveConfigurationScreen<T extends ConfigurationMenu>
   public void init() {
     super.init();
 
-    // Default button stats
     this.followObjectiveButton.active = false;
 
     int objectiveEntriesTop = this.contentTopPos + 5;
     int objectiveEntriesFirstColumn = this.contentLeftPos + 5;
     int objectiveEntriesSecondColumn = this.contentLeftPos + 145;
 
-    // Follow Owner
     OwnerDataCapable<?> ownerData = this.getOwnerData();
     this.followOwnerCheckbox =
         this.addRenderableWidget(
@@ -75,7 +73,7 @@ public class FollowObjectiveConfigurationScreen<T extends ConfigurationMenu>
                 objectiveEntriesTop,
                 ObjectiveType.FOLLOW_OWNER.getObjectiveName(),
                 ownerData.getNPCOwnerName(),
-                objectiveDataSet.hasObjective(ObjectiveType.FOLLOW_OWNER),
+                this.objectiveDataSet.hasObjective(ObjectiveType.FOLLOW_OWNER),
                 checkbox -> {
                   ObjectiveDataEntry objectiveDataEntry =
                       new ObjectiveDataEntry(ObjectiveType.FOLLOW_OWNER);
@@ -89,11 +87,10 @@ public class FollowObjectiveConfigurationScreen<T extends ConfigurationMenu>
                   }
                 }));
 
-    // Follow Player with name input field
     objectiveEntriesTop += SPACE_BETWEEN_ENTRIES;
-    savedPlayerName =
-        objectiveDataSet.hasObjective(ObjectiveType.FOLLOW_PLAYER)
-            ? objectiveDataSet.getObjective(ObjectiveType.FOLLOW_PLAYER).getTargetPlayerName()
+    this.savedPlayerName =
+        this.objectiveDataSet.hasObjective(ObjectiveType.FOLLOW_PLAYER)
+            ? this.objectiveDataSet.getObjective(ObjectiveType.FOLLOW_PLAYER).getTargetPlayerName()
             : "";
     this.followPlayerCheckbox =
         this.addRenderableWidget(
@@ -101,24 +98,24 @@ public class FollowObjectiveConfigurationScreen<T extends ConfigurationMenu>
                 objectiveEntriesFirstColumn,
                 objectiveEntriesTop,
                 ObjectiveType.FOLLOW_PLAYER.getObjectiveName(),
-                objectiveDataSet.hasObjective(ObjectiveType.FOLLOW_PLAYER),
+                this.objectiveDataSet.hasObjective(ObjectiveType.FOLLOW_PLAYER),
                 checkbox -> {
                   ObjectiveDataEntry objectiveDataEntry =
                       new ObjectiveDataEntry(ObjectiveType.FOLLOW_PLAYER);
-                  if (followPlayerName != null) {
-                    objectiveDataEntry.setTargetPlayerName(followPlayerName.getValue());
-                    followPlayerName.setEditable(checkbox.selected());
+                  if (this.followPlayerName != null) {
+                    objectiveDataEntry.setTargetPlayerName(this.followPlayerName.getValue());
+                    this.followPlayerName.setEditable(checkbox.selected());
                   }
-                  if (followPlayerNameSaveButton != null) {
-                    followPlayerNameSaveButton.active =
+                  if (this.followPlayerNameSaveButton != null) {
+                    this.followPlayerNameSaveButton.active =
                         checkbox.selected()
-                            && followPlayerName != null
-                            && !followPlayerName.getValue().equals(savedPlayerName);
+                            && this.followPlayerName != null
+                            && !this.followPlayerName.getValue().equals(this.savedPlayerName);
                   }
                   if (!checkbox.selected()) {
                     NetworkMessageHandlerManager.getServerHandler()
                         .removeObjective(this.getEasyNPCUUID(), objectiveDataEntry);
-                  } else if (!followPlayerName.getValue().isEmpty()) {
+                  } else if (!this.followPlayerName.getValue().isEmpty()) {
                     NetworkMessageHandlerManager.getServerHandler()
                         .addOrUpdateObjective(this.getEasyNPCUUID(), objectiveDataEntry);
                   }
@@ -127,18 +124,19 @@ public class FollowObjectiveConfigurationScreen<T extends ConfigurationMenu>
     this.followPlayerName =
         this.addRenderableWidget(
             new TextField(this.font, objectiveEntriesSecondColumn, objectiveEntriesTop, 125));
-    followPlayerName.setEditable(objectiveDataSet.hasObjective(ObjectiveType.FOLLOW_PLAYER));
-    followPlayerName.setResponder(
+    this.followPlayerName.setEditable(
+        this.objectiveDataSet.hasObjective(ObjectiveType.FOLLOW_PLAYER));
+    this.followPlayerName.setResponder(
         value -> {
           if (this.followPlayerNameSaveButton != null) {
             this.followPlayerNameSaveButton.active =
                 this.followPlayerCheckbox != null
                     && this.followPlayerCheckbox.selected()
                     && value != null
-                    && !value.equals(savedPlayerName);
+                    && !value.equals(this.savedPlayerName);
           }
         });
-    followPlayerName.setValue(savedPlayerName);
+    this.followPlayerName.setValue(this.savedPlayerName);
     this.followPlayerNameSaveButton =
         this.addRenderableWidget(
             new SaveButton(
@@ -150,20 +148,19 @@ public class FollowObjectiveConfigurationScreen<T extends ConfigurationMenu>
                   objectiveDataEntry.setTargetPlayerName(this.followPlayerName.getValue());
                   NetworkMessageHandlerManager.getServerHandler()
                       .addOrUpdateObjective(this.getEasyNPCUUID(), objectiveDataEntry);
-                  savedPlayerName = this.followPlayerName.getValue();
+                  this.savedPlayerName = this.followPlayerName.getValue();
                   this.followPlayerNameSaveButton.active = false;
                 }));
     this.followPlayerNameSaveButton.active = false;
 
-    // Follow Entity with UUID input field
     objectiveEntriesTop += SPACE_BETWEEN_ENTRIES;
-    savedEntityUUID =
-        objectiveDataSet.hasObjective(ObjectiveType.FOLLOW_ENTITY_BY_UUID)
-                && objectiveDataSet
+    this.savedEntityUUID =
+        this.objectiveDataSet.hasObjective(ObjectiveType.FOLLOW_ENTITY_BY_UUID)
+                && this.objectiveDataSet
                         .getObjective(ObjectiveType.FOLLOW_ENTITY_BY_UUID)
                         .getTargetEntityUUID()
                     != null
-            ? objectiveDataSet
+            ? this.objectiveDataSet
                 .getObjective(ObjectiveType.FOLLOW_ENTITY_BY_UUID)
                 .getTargetEntityUUID()
                 .toString()
@@ -174,37 +171,37 @@ public class FollowObjectiveConfigurationScreen<T extends ConfigurationMenu>
                 objectiveEntriesFirstColumn,
                 objectiveEntriesTop,
                 ObjectiveType.FOLLOW_ENTITY_BY_UUID.getObjectiveName(),
-                objectiveDataSet.hasObjective(ObjectiveType.FOLLOW_ENTITY_BY_UUID),
+                this.objectiveDataSet.hasObjective(ObjectiveType.FOLLOW_ENTITY_BY_UUID),
                 checkbox -> {
                   ObjectiveDataEntry objectiveDataEntry =
                       new ObjectiveDataEntry(ObjectiveType.FOLLOW_ENTITY_BY_UUID);
-                  if (followEntityUUID != null) {
-                    if (!followEntityUUID.getValue().isEmpty()) {
+                  if (this.followEntityUUID != null) {
+                    if (!this.followEntityUUID.getValue().isEmpty()) {
                       UUID entityUUID = null;
                       try {
-                        entityUUID = UUID.fromString(followEntityUUID.getValue());
+                        entityUUID = UUID.fromString(this.followEntityUUID.getValue());
                       } catch (IllegalArgumentException e) {
                         log.error(
                             "Unable to parse UUID {} for {}",
-                            followEntityUUID.getValue(),
+                            this.followEntityUUID.getValue(),
                             this.getEasyNPCUUID());
                       }
                       if (entityUUID != null) {
                         objectiveDataEntry.setTargetEntityUUID(entityUUID);
                       }
                     }
-                    followEntityUUID.setEditable(checkbox.selected());
+                    this.followEntityUUID.setEditable(checkbox.selected());
                   }
-                  if (followEntityUUIDSaveButton != null) {
-                    followEntityUUIDSaveButton.active =
+                  if (this.followEntityUUIDSaveButton != null) {
+                    this.followEntityUUIDSaveButton.active =
                         checkbox.selected()
-                            && followEntityUUID != null
-                            && !followEntityUUID.getValue().equals(savedEntityUUID);
+                            && this.followEntityUUID != null
+                            && !this.followEntityUUID.getValue().equals(this.savedEntityUUID);
                   }
                   if (!checkbox.selected()) {
                     NetworkMessageHandlerManager.getServerHandler()
                         .removeObjective(this.getEasyNPCUUID(), objectiveDataEntry);
-                  } else if (!followEntityUUID.getValue().isEmpty()) {
+                  } else if (!this.followEntityUUID.getValue().isEmpty()) {
                     NetworkMessageHandlerManager.getServerHandler()
                         .addOrUpdateObjective(this.getEasyNPCUUID(), objectiveDataEntry);
                   }
@@ -212,20 +209,20 @@ public class FollowObjectiveConfigurationScreen<T extends ConfigurationMenu>
     this.followEntityUUID =
         this.addRenderableWidget(
             new TextField(this.font, objectiveEntriesSecondColumn, objectiveEntriesTop, 125));
-    followEntityUUID.setMaxLength(36);
-    followEntityUUID.setEditable(
-        objectiveDataSet.hasObjective(ObjectiveType.FOLLOW_ENTITY_BY_UUID));
-    followEntityUUID.setResponder(
+    this.followEntityUUID.setMaxLength(36);
+    this.followEntityUUID.setEditable(
+        this.objectiveDataSet.hasObjective(ObjectiveType.FOLLOW_ENTITY_BY_UUID));
+    this.followEntityUUID.setResponder(
         value -> {
           if (this.followEntityUUIDSaveButton != null) {
             this.followEntityUUIDSaveButton.active =
                 this.followEntityCheckbox != null
                     && this.followEntityCheckbox.selected()
                     && value != null
-                    && !value.equals(savedEntityUUID);
+                    && !value.equals(this.savedEntityUUID);
           }
         });
-    followEntityUUID.setValue(savedEntityUUID);
+    this.followEntityUUID.setValue(this.savedEntityUUID);
     this.followEntityUUIDSaveButton =
         this.addRenderableWidget(
             new SaveButton(
@@ -235,23 +232,22 @@ public class FollowObjectiveConfigurationScreen<T extends ConfigurationMenu>
                   ObjectiveDataEntry objectiveDataEntry =
                       new ObjectiveDataEntry(ObjectiveType.FOLLOW_ENTITY_BY_UUID);
                   objectiveDataEntry.setTargetEntityUUID(
-                      !followEntityUUID.getValue().isEmpty()
-                          ? UUID.fromString(followEntityUUID.getValue())
+                      !this.followEntityUUID.getValue().isEmpty()
+                          ? UUID.fromString(this.followEntityUUID.getValue())
                           : null);
                   NetworkMessageHandlerManager.getServerHandler()
                       .addOrUpdateObjective(this.getEasyNPCUUID(), objectiveDataEntry);
-                  savedEntityUUID = this.followEntityUUID.getValue();
+                  this.savedEntityUUID = this.followEntityUUID.getValue();
                   this.followEntityUUIDSaveButton.active = false;
                 }));
     this.followEntityUUIDSaveButton.active = false;
 
-    // Follow Item with item resource location input field (e.g. "minecraft:apple")
     objectiveEntriesTop += SPACE_BETWEEN_ENTRIES;
-    savedItemTag =
-        objectiveDataSet.hasObjective(ObjectiveType.FOLLOW_ITEM)
-                && objectiveDataSet.getObjective(ObjectiveType.FOLLOW_ITEM).getTargetItemTag()
+    this.savedItemTag =
+        this.objectiveDataSet.hasObjective(ObjectiveType.FOLLOW_ITEM)
+                && this.objectiveDataSet.getObjective(ObjectiveType.FOLLOW_ITEM).getTargetItemTag()
                     != null
-            ? objectiveDataSet.getObjective(ObjectiveType.FOLLOW_ITEM).getTargetItemTag()
+            ? this.objectiveDataSet.getObjective(ObjectiveType.FOLLOW_ITEM).getTargetItemTag()
             : "";
     this.followItemCheckbox =
         this.addRenderableWidget(
@@ -259,24 +255,24 @@ public class FollowObjectiveConfigurationScreen<T extends ConfigurationMenu>
                 objectiveEntriesFirstColumn,
                 objectiveEntriesTop,
                 ObjectiveType.FOLLOW_ITEM.getObjectiveName(),
-                objectiveDataSet.hasObjective(ObjectiveType.FOLLOW_ITEM),
+                this.objectiveDataSet.hasObjective(ObjectiveType.FOLLOW_ITEM),
                 checkbox -> {
                   ObjectiveDataEntry objectiveDataEntry =
                       new ObjectiveDataEntry(ObjectiveType.FOLLOW_ITEM);
-                  if (followItemId != null) {
-                    objectiveDataEntry.setTargetItemTag(followItemId.getValue());
-                    followItemId.setEditable(checkbox.selected());
+                  if (this.followItemId != null) {
+                    objectiveDataEntry.setTargetItemTag(this.followItemId.getValue());
+                    this.followItemId.setEditable(checkbox.selected());
                   }
-                  if (followItemIdSaveButton != null) {
-                    followItemIdSaveButton.active =
+                  if (this.followItemIdSaveButton != null) {
+                    this.followItemIdSaveButton.active =
                         checkbox.selected()
-                            && followItemId != null
-                            && !followItemId.getValue().equals(savedItemTag);
+                            && this.followItemId != null
+                            && !this.followItemId.getValue().equals(this.savedItemTag);
                   }
                   if (!checkbox.selected()) {
                     NetworkMessageHandlerManager.getServerHandler()
                         .removeObjective(this.getEasyNPCUUID(), objectiveDataEntry);
-                  } else if (!followItemId.getValue().isEmpty()) {
+                  } else if (!this.followItemId.getValue().isEmpty()) {
                     NetworkMessageHandlerManager.getServerHandler()
                         .addOrUpdateObjective(this.getEasyNPCUUID(), objectiveDataEntry);
                   }
@@ -284,18 +280,18 @@ public class FollowObjectiveConfigurationScreen<T extends ConfigurationMenu>
     this.followItemId =
         this.addRenderableWidget(
             new TextField(this.font, objectiveEntriesSecondColumn, objectiveEntriesTop, 125));
-    followItemId.setEditable(objectiveDataSet.hasObjective(ObjectiveType.FOLLOW_ITEM));
-    followItemId.setResponder(
+    this.followItemId.setEditable(this.objectiveDataSet.hasObjective(ObjectiveType.FOLLOW_ITEM));
+    this.followItemId.setResponder(
         value -> {
           if (this.followItemIdSaveButton != null) {
             this.followItemIdSaveButton.active =
                 this.followItemCheckbox != null
                     && this.followItemCheckbox.selected()
                     && value != null
-                    && !value.equals(savedItemTag);
+                    && !value.equals(this.savedItemTag);
           }
         });
-    followItemId.setValue(savedItemTag);
+    this.followItemId.setValue(this.savedItemTag);
     this.followItemIdSaveButton =
         this.addRenderableWidget(
             new SaveButton(
@@ -307,7 +303,7 @@ public class FollowObjectiveConfigurationScreen<T extends ConfigurationMenu>
                   objectiveDataEntry.setTargetItemTag(this.followItemId.getValue());
                   NetworkMessageHandlerManager.getServerHandler()
                       .addOrUpdateObjective(this.getEasyNPCUUID(), objectiveDataEntry);
-                  savedItemTag = this.followItemId.getValue();
+                  this.savedItemTag = this.followItemId.getValue();
                   this.followItemIdSaveButton.active = false;
                 }));
     this.followItemIdSaveButton.active = false;

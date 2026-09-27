@@ -94,14 +94,10 @@ public record NPCEntityMetadata(
     UUID presetUUID =
         tag.contains(TAG_PRESET_UUID) ? CompoundTagUtils.readUUID(tag, TAG_PRESET_UUID) : null;
 
-    Identifier customIdentifier = null;
-    if (tag.contains(TAG_CUSTOM_IDENTIFIER)) {
-      try {
-        customIdentifier = Identifier.parse(tag.getString(TAG_CUSTOM_IDENTIFIER).orElse(""));
-      } catch (IllegalArgumentException e) {
-        // Invalid resource location format
-      }
-    }
+    Identifier customIdentifier =
+        tag.contains(TAG_CUSTOM_IDENTIFIER)
+            ? Identifier.tryParse(tag.getString(TAG_CUSTOM_IDENTIFIER).orElse(""))
+            : null;
 
     NPCRemovalReason removalReason =
         tag.contains(TAG_REMOVAL_REASON)
@@ -120,84 +116,85 @@ public record NPCEntityMetadata(
 
   public CompoundTag toCompoundTag() {
     CompoundTag tag = new CompoundTag();
-    if (ownerUUID != null) {
-      CompoundTagUtils.writeUUID(tag, TAG_OWNER, ownerUUID);
+    if (this.ownerUUID != null) {
+      CompoundTagUtils.writeUUID(tag, TAG_OWNER, this.ownerUUID);
     }
-    if (entityType != null && !entityType.isEmpty()) {
-      tag.putString(TAG_ENTITY_TYPE, entityType);
+    if (this.entityType != null && !this.entityType.isEmpty()) {
+      tag.putString(TAG_ENTITY_TYPE, this.entityType);
     }
-    if (dimension != null && !dimension.isEmpty()) {
-      tag.putString(TAG_DIMENSION, dimension);
+    if (this.dimension != null && !this.dimension.isEmpty()) {
+      tag.putString(TAG_DIMENSION, this.dimension);
     }
-    if (presetUUID != null) {
-      CompoundTagUtils.writeUUID(tag, TAG_PRESET_UUID, presetUUID);
+    if (this.presetUUID != null) {
+      CompoundTagUtils.writeUUID(tag, TAG_PRESET_UUID, this.presetUUID);
     }
-    if (customIdentifier != null) {
-      tag.putString(TAG_CUSTOM_IDENTIFIER, customIdentifier.toString());
+    if (this.customIdentifier != null) {
+      tag.putString(TAG_CUSTOM_IDENTIFIER, this.customIdentifier.toString());
     }
-    if (removalReason != null && removalReason != NPCRemovalReason.NONE) {
-      tag.putString(TAG_REMOVAL_REASON, removalReason.name());
+    if (this.removalReason != null && this.removalReason != NPCRemovalReason.NONE) {
+      tag.putString(TAG_REMOVAL_REASON, this.removalReason.name());
     }
-    if (restoreOnOwnerLogin) {
+    if (this.restoreOnOwnerLogin) {
       tag.putBoolean(TAG_RESTORE_ON_OWNER_LOGIN, true);
     }
+
     return tag;
   }
 
   public NPCEntityMetadata withOwnerUUID(UUID newOwnerUUID) {
     return new NPCEntityMetadata(
         newOwnerUUID,
-        entityType,
-        dimension,
-        presetUUID,
-        customIdentifier,
-        removalReason,
-        restoreOnOwnerLogin);
+        this.entityType,
+        this.dimension,
+        this.presetUUID,
+        this.customIdentifier,
+        this.removalReason,
+        this.restoreOnOwnerLogin);
   }
 
   public NPCEntityMetadata withDimension(String newDimension) {
     return new NPCEntityMetadata(
-        ownerUUID,
-        entityType,
+        this.ownerUUID,
+        this.entityType,
         newDimension,
-        presetUUID,
-        customIdentifier,
-        removalReason,
-        restoreOnOwnerLogin);
+        this.presetUUID,
+        this.customIdentifier,
+        this.removalReason,
+        this.restoreOnOwnerLogin);
   }
 
   public NPCEntityMetadata withRemovalReason(NPCRemovalReason newRemovalReason) {
     return new NPCEntityMetadata(
-        ownerUUID,
-        entityType,
-        dimension,
-        presetUUID,
-        customIdentifier,
+        this.ownerUUID,
+        this.entityType,
+        this.dimension,
+        this.presetUUID,
+        this.customIdentifier,
         newRemovalReason,
-        restoreOnOwnerLogin);
+        this.restoreOnOwnerLogin);
   }
 
   public boolean hasOwner() {
-    return ownerUUID != null;
+    return this.ownerUUID != null;
   }
 
   public boolean hasEntityType() {
-    return entityType != null && !entityType.isEmpty();
+    return this.entityType != null && !this.entityType.isEmpty();
   }
 
   public boolean hasDimension() {
-    return dimension != null && !dimension.isEmpty();
+    return this.dimension != null && !this.dimension.isEmpty();
   }
 
   public boolean hasPreset() {
-    return presetUUID != null;
+    return this.presetUUID != null;
   }
 
   public boolean hasCustomIdentifier() {
-    return customIdentifier != null;
+    return this.customIdentifier != null;
   }
 
   public boolean hasRemovalReason() {
-    return removalReason != null && removalReason != NPCRemovalReason.NONE;
+    return this.removalReason != null && this.removalReason != NPCRemovalReason.NONE;
   }
 }

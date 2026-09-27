@@ -18,9 +18,7 @@ public class CloseDialogEntry extends ActionEntryWidget {
   }
 
   @Override
-  public void init(int editorLeft, int editorTop) {
-    // No additional fields required for this action
-  }
+  public void init(int editorLeft, int editorTop) {}
 
   @Override
   public void render(GuiGraphics guiGraphics, int editorLeft, int editorTop) {
@@ -40,6 +38,6 @@ public class CloseDialogEntry extends ActionEntryWidget {
 
   @Override
   public boolean hasChanged() {
-    return !hasActionData(ActionDataType.CLOSE_DIALOG);
+    return !this.hasActionData(ActionDataType.CLOSE_DIALOG);
   }
 }

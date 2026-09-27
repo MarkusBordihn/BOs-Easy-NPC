@@ -39,7 +39,7 @@ public class EasyNPCSlimeRendererMixin {
           "extractRenderState(Lnet/minecraft/world/entity/monster/Slime;Lnet/minecraft/client/renderer/entity/state/SlimeRenderState;F)V",
       at = @At("HEAD"))
   protected void onExtractRenderState(
-      Slime entity, SlimeRenderState renderState, float partialTicks, CallbackInfo ci) {
+      Slime entity, SlimeRenderState renderState, float partialTicks, CallbackInfo callbackInfo) {
     if (entity instanceof EasyNPC<?> && renderState instanceof EasyNPCRenderStateExtension) {
       entity.yBodyRot = entity.yHeadRot;
       entity.yBodyRotO = entity.yHeadRotO;
@@ -50,7 +50,8 @@ public class EasyNPCSlimeRendererMixin {
       method =
           "scale(Lnet/minecraft/client/renderer/entity/state/SlimeRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;)V",
       at = @At("TAIL"))
-  protected void onScale(SlimeRenderState renderState, PoseStack poseStack, CallbackInfo ci) {
+  protected void onScale(
+      SlimeRenderState renderState, PoseStack poseStack, CallbackInfo callbackInfo) {
     if (renderState instanceof EasyNPCRenderStateExtension) {
       EasyNPCLivingEntityRenderer.handleScale(renderState, poseStack);
       EasyNPCLivingEntityRenderer.handleRotation(renderState, poseStack);

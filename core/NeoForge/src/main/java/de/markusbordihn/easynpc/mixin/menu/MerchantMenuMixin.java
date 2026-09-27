@@ -35,9 +35,9 @@ public abstract class MerchantMenuMixin {
   @Shadow @Final private Merchant trader;
 
   @Inject(method = "playTradeSound", at = @At("HEAD"), cancellable = true)
-  private void onPlayTradeSound(CallbackInfo ci) {
+  private void onPlayTradeSound(CallbackInfo callbackInfo) {
     if (this.trader instanceof SafeMerchantData) {
-      ci.cancel();
+      callbackInfo.cancel();
     }
   }
 }

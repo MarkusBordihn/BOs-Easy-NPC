@@ -19,6 +19,8 @@
 
 package de.markusbordihn.easynpc.security;
 
+import java.util.Locale;
+
 public enum CommandPermissionLevel {
   ALL(0),
   MODERATORS(1),
@@ -55,7 +57,7 @@ public enum CommandPermissionLevel {
     }
 
     try {
-      return valueOf(normalizedValue.toUpperCase(java.util.Locale.ROOT));
+      return valueOf(normalizedValue.toUpperCase(Locale.ROOT));
     } catch (IllegalArgumentException exception) {
       return defaultValue;
     }

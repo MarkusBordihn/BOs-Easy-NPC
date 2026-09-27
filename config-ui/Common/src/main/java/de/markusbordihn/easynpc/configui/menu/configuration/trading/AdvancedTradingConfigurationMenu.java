@@ -70,10 +70,8 @@ public class AdvancedTradingConfigurationMenu extends TradingConfigurationMenu {
 
     checkContainerSize(tradingContainer, TRADING_CONTAINER_SIZE);
 
-    // Container
     this.tradingContainer = tradingContainer;
 
-    // Restructure Container from merchant offers.
     if (!this.level.isClientSide()) {
       MerchantOffers merchantOffers = this.getEasyNPC().getEasyNPCTradingData().getTradingOffers();
       if (merchantOffers != null) {
@@ -89,22 +87,18 @@ public class AdvancedTradingConfigurationMenu extends TradingConfigurationMenu {
       }
     }
 
-    // Trading offers Slots
     int tradingPage = this.getPageIndex();
     int slotPositionX = TRADING_START_POSITION_X;
     int slotPositionY = TRADING_START_POSITION_Y;
 
-    // Only display a limited amount of trading slots per page.
     for (int tradingOffer = (tradingPage * TRADING_OFFERS_PER_PAGE);
         tradingOffer < ((tradingPage + 1) * TRADING_OFFERS_PER_PAGE)
             && tradingOffer < TradingSettings.ADVANCED_TRADING_OFFERS;
         tradingOffer++) {
 
-      // Item A Slot
       this.addSlot(
           new ItemASlot(this, tradingContainer, (tradingOffer * 3), slotPositionX, slotPositionY));
 
-      // Item B Slot
       this.addSlot(
           new ItemBSlot(
               this,
@@ -113,7 +107,6 @@ public class AdvancedTradingConfigurationMenu extends TradingConfigurationMenu {
               slotPositionX + TRADING_SLOT_SIZE + TRADING_SLOT_SIZE,
               slotPositionY));
 
-      // Result Slot
       this.addSlot(
           new ItemResultSlot(
               this,
@@ -125,7 +118,6 @@ public class AdvancedTradingConfigurationMenu extends TradingConfigurationMenu {
       slotPositionY += TRADING_SLOT_SIZE + 1;
     }
 
-    // Player Inventory Slots
     int playerInventoryStartPositionY = 156;
     int playerInventoryStartPositionX = 8;
     for (int inventoryRow = 0; inventoryRow < 3; ++inventoryRow) {
@@ -139,7 +131,6 @@ public class AdvancedTradingConfigurationMenu extends TradingConfigurationMenu {
       }
     }
 
-    // Player Hotbar Slots
     int hotbarStartPositionY = 216;
     int hotbarStartPositionX = 8;
     for (int playerInventorySlot = 0; playerInventorySlot < 9; ++playerInventorySlot) {
@@ -165,7 +156,7 @@ public class AdvancedTradingConfigurationMenu extends TradingConfigurationMenu {
     }
 
     TradingContainerHandler.setAdvancedTradingOffers(
-        this.getEasyNPC().getEasyNPCTradingData(), tradingContainer);
+        this.getEasyNPC().getEasyNPCTradingData(), this.tradingContainer);
   }
 
   public int getMaxPages() {

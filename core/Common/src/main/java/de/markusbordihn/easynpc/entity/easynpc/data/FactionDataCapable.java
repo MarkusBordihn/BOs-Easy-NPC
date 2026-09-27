@@ -41,11 +41,11 @@ public interface FactionDataCapable<T extends Mob> extends EasyNPC<T> {
   String DATA_FACTION_NAME_TAG = "FactionName";
 
   default String getFactionName() {
-    return getEasyNPCServerData().getServerEntityData(CUSTOM_DATA_FACTION_NAME);
+    return this.getEasyNPCServerData().getServerEntityData(CUSTOM_DATA_FACTION_NAME);
   }
 
   default void setFactionName(String factionName) {
-    getEasyNPCServerData()
+    this.getEasyNPCServerData()
         .setServerEntityData(CUSTOM_DATA_FACTION_NAME, factionName != null ? factionName : "");
   }
 
@@ -97,11 +97,12 @@ public interface FactionDataCapable<T extends Mob> extends EasyNPC<T> {
     if (currentTeam != null && factionName.equals(currentTeam.getName())) {
       return;
     }
+
     scoreboard.addPlayerToTeam(scoreboardName, team);
   }
 
   default void defineCustomFactionData() {
-    getEasyNPCServerData().defineServerEntityData(CUSTOM_DATA_FACTION_NAME, "");
+    this.getEasyNPCServerData().defineServerEntityData(CUSTOM_DATA_FACTION_NAME, "");
   }
 
   default void addAdditionalFactionData(ValueOutput valueOutput) {

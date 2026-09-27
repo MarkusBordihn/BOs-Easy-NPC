@@ -43,31 +43,23 @@ public class TradingContainerHandler {
 
   public static void setAdvancedTradingOffers(
       TradingDataCapable<?> tradingData, Container container) {
-
-    // Update trading offers with container items.
+    MerchantOffers existingMerchantOffers = tradingData.getTradingOffers();
     MerchantOffers merchantOffers = new MerchantOffers();
     int merchantOfferIndex = 0;
-    for (int tradingOffer = 0;
-        tradingOffer < TradingSettings.ADVANCED_TRADING_OFFERS;
-        tradingOffer++) {
-
-      // Check if we have a valid trading offer.
-      ItemStack itemA = container.getItem(tradingOffer * 3);
-      ItemStack itemB = container.getItem(tradingOffer * 3 + 1);
-      ItemStack itemResult = container.getItem(tradingOffer * 3 + 2);
+    for (int offerIndex = 0; offerIndex < TradingSettings.ADVANCED_TRADING_OFFERS; offerIndex++) {
+      ItemStack itemA = container.getItem(offerIndex * 3);
+      ItemStack itemB = container.getItem(offerIndex * 3 + 1);
+      ItemStack itemResult = container.getItem(offerIndex * 3 + 2);
       if (!isValidTradingOffer(itemA, itemB, itemResult)) {
         continue;
       }
 
-      // Calculate item costs based on item A and item B.
       ItemCost itemCostA = getItemCost(itemA);
       Optional<ItemCost> itemCostB = getOptionalItemCost(itemB);
 
-      // Check if we have existing trading offers and use them as base for the new trading offers.
-      MerchantOffers existingMerchantOffers = tradingData.getTradingOffers();
       MerchantOffer existingMerchantOffer =
-          existingMerchantOffers != null && existingMerchantOffers.size() > tradingOffer
-              ? existingMerchantOffers.get(tradingOffer)
+          existingMerchantOffers != null && existingMerchantOffers.size() > offerIndex
+              ? existingMerchantOffers.get(offerIndex)
               : null;
       if (existingMerchantOffer != null) {
         merchantOffers.add(
@@ -87,7 +79,6 @@ public class TradingContainerHandler {
       }
     }
 
-    // Set trading offers if we have any
     if (!merchantOffers.isEmpty()) {
       tradingData.getTradingDataSet().setType(TradingType.ADVANCED);
       tradingData.setTradingOffers(merchantOffers);
@@ -95,22 +86,15 @@ public class TradingContainerHandler {
   }
 
   public static void setBasicTradingOffers(TradingDataCapable<?> tradingData, Container container) {
-
-    // Create new trading offers based on the container and number of trading offers.
     MerchantOffers merchantOffers = new MerchantOffers();
-    for (int tradingOffer = 0;
-        tradingOffer < TradingSettings.BASIC_TRADING_OFFERS;
-        tradingOffer++) {
-
-      // Check if we have a valid trading offer.
-      ItemStack itemA = container.getItem(tradingOffer * 3);
-      ItemStack itemB = container.getItem(tradingOffer * 3 + 1);
-      ItemStack itemResult = container.getItem(tradingOffer * 3 + 2);
+    for (int offerIndex = 0; offerIndex < TradingSettings.BASIC_TRADING_OFFERS; offerIndex++) {
+      ItemStack itemA = container.getItem(offerIndex * 3);
+      ItemStack itemB = container.getItem(offerIndex * 3 + 1);
+      ItemStack itemResult = container.getItem(offerIndex * 3 + 2);
       if (!isValidTradingOffer(itemA, itemB, itemResult)) {
         continue;
       }
 
-      // Calculate item costs based on item A and item B.
       ItemCost itemCostA = getItemCost(itemA);
       Optional<ItemCost> itemCostB = getOptionalItemCost(itemB);
 
@@ -125,7 +109,6 @@ public class TradingContainerHandler {
       merchantOffers.add(merchantOffer);
     }
 
-    // Set trading offers if we have any
     if (!merchantOffers.isEmpty()) {
       tradingData.getTradingDataSet().setType(TradingType.BASIC);
       tradingData.setTradingOffers(merchantOffers);
@@ -134,10 +117,6 @@ public class TradingContainerHandler {
 
   private static boolean isValidTradingOffer(
       ItemStack itemA, ItemStack itemB, ItemStack itemResult) {
-    if (itemResult == null || (itemA == null && itemB == null)) {
-      return false;
-    }
-    return ((itemA != null && !itemA.isEmpty()) || (itemB != null && !itemB.isEmpty()))
-        && !itemResult.isEmpty();
+    return (!itemA.isEmpty() || !itemB.isEmpty()) && !itemResult.isEmpty();
   }
 }

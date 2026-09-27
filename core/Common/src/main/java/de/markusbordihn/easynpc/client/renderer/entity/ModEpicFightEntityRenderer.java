@@ -82,10 +82,10 @@ public enum ModEpicFightEntityRenderer {
   }
 
   public EpicFightEntityType getEntityType() {
-    return entityType;
+    return this.entityType;
   }
 
   public Function<Context, EntityRenderer<? extends Entity, ?>> getRenderer() {
-    return renderer.get();
+    return this.renderer.get();
   }
 }

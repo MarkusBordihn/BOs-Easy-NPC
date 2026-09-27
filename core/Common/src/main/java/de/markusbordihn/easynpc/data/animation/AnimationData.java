@@ -19,24 +19,27 @@
 
 package de.markusbordihn.easynpc.data.animation;
 
+import com.google.gson.annotations.SerializedName;
 import java.util.List;
 import java.util.Map;
 
 public class AnimationData {
 
-  private String format_version;
+  @SerializedName("format_version")
+  private String formatVersion;
+
   private Map<String, Animation> animations;
 
   public String getFormatVersion() {
-    return format_version;
+    return this.formatVersion;
   }
 
-  public void setFormatVersion(String format_version) {
-    this.format_version = format_version;
+  public void setFormatVersion(String formatVersion) {
+    this.formatVersion = formatVersion;
   }
 
   public Map<String, Animation> getAnimations() {
-    return animations;
+    return this.animations;
   }
 
   public void setAnimations(Map<String, Animation> animations) {
@@ -46,22 +49,25 @@ public class AnimationData {
   @Override
   public String toString() {
     return "AnimationData{"
-        + "format_version='"
-        + format_version
+        + "formatVersion='"
+        + this.formatVersion
         + '\''
         + ", animations="
-        + animations
+        + this.animations
         + '}';
   }
 
   public static class Animation {
-    private String name; // Name der Animation
+    private String name;
     private String loop;
-    private Float animation_length;
+
+    @SerializedName("animation_length")
+    private Float animationLength;
+
     private Map<String, Bone> bones;
 
     public String getName() {
-      return name;
+      return this.name;
     }
 
     public void setName(String name) {
@@ -69,7 +75,7 @@ public class AnimationData {
     }
 
     public String getLoop() {
-      return loop;
+      return this.loop;
     }
 
     public void setLoop(String loop) {
@@ -77,15 +83,15 @@ public class AnimationData {
     }
 
     public Float getAnimationLength() {
-      return animation_length;
+      return this.animationLength;
     }
 
-    public void setAnimationLength(Float animation_length) {
-      this.animation_length = animation_length;
+    public void setAnimationLength(Float animationLength) {
+      this.animationLength = animationLength;
     }
 
     public Map<String, Bone> getBones() {
-      return bones;
+      return this.bones;
     }
 
     public void setBones(Map<String, Bone> bones) {
@@ -96,15 +102,15 @@ public class AnimationData {
     public String toString() {
       return "Animation{"
           + "name='"
-          + name
+          + this.name
           + '\''
           + ", loop='"
-          + loop
+          + this.loop
           + '\''
-          + ", animation_length="
-          + animation_length
+          + ", animationLength="
+          + this.animationLength
           + ", bones="
-          + bones
+          + this.bones
           + '}';
     }
   }
@@ -117,7 +123,7 @@ public class AnimationData {
     private Map<String, List<Float>> keyframeRotation;
 
     public List<Float> getPosition() {
-      return position;
+      return this.position;
     }
 
     public void setPosition(List<Float> position) {
@@ -125,7 +131,7 @@ public class AnimationData {
     }
 
     public List<Float> getRotation() {
-      return rotation;
+      return this.rotation;
     }
 
     public void setRotation(List<Float> rotation) {
@@ -133,7 +139,7 @@ public class AnimationData {
     }
 
     public Float getScale() {
-      return scale;
+      return this.scale;
     }
 
     public void setScale(Float scale) {
@@ -141,7 +147,7 @@ public class AnimationData {
     }
 
     public Map<String, List<Float>> getKeyframePosition() {
-      return keyframePosition;
+      return this.keyframePosition;
     }
 
     public void setKeyframePosition(Map<String, List<Float>> keyframePosition) {
@@ -149,7 +155,7 @@ public class AnimationData {
     }
 
     public Map<String, List<Float>> getKeyframeRotation() {
-      return keyframeRotation;
+      return this.keyframeRotation;
     }
 
     public void setKeyframeRotation(Map<String, List<Float>> keyframeRotation) {
@@ -160,15 +166,15 @@ public class AnimationData {
     public String toString() {
       return "Bone{"
           + "position="
-          + position
+          + this.position
           + ", rotation="
-          + rotation
+          + this.rotation
           + ", scale="
-          + scale
+          + this.scale
           + ", keyframePosition="
-          + keyframePosition
+          + this.keyframePosition
           + ", keyframeRotation="
-          + keyframeRotation
+          + this.keyframeRotation
           + '}';
     }
   }

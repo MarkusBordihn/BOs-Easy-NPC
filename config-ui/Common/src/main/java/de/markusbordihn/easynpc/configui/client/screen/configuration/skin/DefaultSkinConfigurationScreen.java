@@ -60,10 +60,12 @@ public class DefaultSkinConfigurationScreen<T extends ConfigurationMenu>
     }
 
     int skinPosition = 0;
-    skinButtons = new ArrayList<>();
+    this.skinButtons = new ArrayList<>();
     VariantDataCapable<?> variantData = this.getEasyNPC().getEasyNPCVariantData();
 
-    for (int i = skinStartIndex; i < this.numOfSkins && i < skinStartIndex + maxSkinsPerPage; i++) {
+    for (int i = this.skinStartIndex;
+        i < this.numOfSkins && i < this.skinStartIndex + this.maxSkinsPerPage;
+        i++) {
       int variantIndex = i;
       if (variantIndex >= variantData.getSkinVariantTypes().length) {
         variantIndex = variantIndex % variantData.getSkinVariantTypes().length;
@@ -76,10 +78,8 @@ public class DefaultSkinConfigurationScreen<T extends ConfigurationMenu>
               + (skinPosition * (SKIN_PREVIEW_WIDTH));
       int top = this.contentTopPos + 102 + (skinPosition > 4 ? 84 : 0);
 
-      // Render skin entity with variant.
       this.renderSkinEntity(guiGraphics, left, top, variant, null);
 
-      // Render skin name
       int topNamePos = Math.round((top - 176f) / SKIN_NAME_SCALING);
       int leftNamePos = Math.round((left - 21f) / SKIN_NAME_SCALING);
       int scaledMouseX = Math.round(mouseX / SKIN_NAME_SCALING);
@@ -149,7 +149,6 @@ public class DefaultSkinConfigurationScreen<T extends ConfigurationMenu>
                       this.getEasyNPCUUID(), SkinDataEntry.createDefaultSkin(variantType.name()));
             });
 
-    // Disable button for active skin.
     SkinDataCapable<?> skinData = this.getEasyNPC().getEasyNPCSkinData();
     VariantDataCapable<?> variantData = this.getEasyNPC().getEasyNPCVariantData();
     ProfessionDataCapable<?> professionData = this.getEasyNPC().getEasyNPCProfessionData();
@@ -166,20 +165,17 @@ public class DefaultSkinConfigurationScreen<T extends ConfigurationMenu>
         this.xMouse,
         this.yMouse);
 
-    skinButtons.add(skinButton);
+    this.skinButtons.add(skinButton);
   }
 
   @Override
   public void init() {
     super.init();
 
-    // Default button stats
     this.defaultSkinButton.active = false;
 
-    // Description text
-    setDescriptionText("default_skin.text");
+    this.setDescriptionText("default_skin.text");
 
-    // Entity specific information.
     VariantDataCapable<?> variantData = this.getEasyNPC().getEasyNPCVariantData();
     ProfessionDataCapable<?> professionData = this.getEasyNPC().getEasyNPCProfessionData();
     this.numOfProfessions =
@@ -189,7 +185,6 @@ public class DefaultSkinConfigurationScreen<T extends ConfigurationMenu>
 
     log.debug("Found {} predefined variant combinations.", this.numOfSkins);
 
-    // Disable Layers Checkbox
     SkinDataCapable<?> skinData = this.getEasyNPC().getEasyNPCSkinData();
     this.addRenderableWidget(
         new Checkbox(
@@ -203,18 +198,15 @@ public class DefaultSkinConfigurationScreen<T extends ConfigurationMenu>
                         this.getEasyNPCUUID(),
                         skinData.getSkinDataEntry().withDisableLayers(checkbox.selected()))));
 
-    // Skin Navigation Buttons
-    defineSkinNavigationButtons();
+    this.defineSkinNavigationButtons();
   }
 
   @Override
   public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
     super.render(guiGraphics, x, y, partialTicks);
 
-    // Description text
-    renderDescriptionText(guiGraphics, this.contentLeftPos + 5, this.contentTopPos + 5);
+    this.renderDescriptionText(guiGraphics, this.contentLeftPos + 5, this.contentTopPos + 5);
 
-    // Skins
     this.renderSkins(guiGraphics, x, y);
   }
 

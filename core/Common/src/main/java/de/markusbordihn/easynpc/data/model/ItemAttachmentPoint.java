@@ -51,6 +51,6 @@ public record ItemAttachmentPoint(
   }
 
   public boolean isNone() {
-    return this == NONE || attachPart == ModelPartType.UNKNOWN;
+    return this == NONE || this.attachPart == ModelPartType.UNKNOWN;
   }
 }

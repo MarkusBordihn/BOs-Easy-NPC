@@ -145,16 +145,13 @@ public class EasyNPCMain {
     log.info("{} Creative Tabs ...", Constants.LOG_REGISTER_PREFIX);
     ModTabs.CREATIVE_TABS.register(modBusGroup);
 
-    // Register MOD bus events
     FMLCommonSetupEvent.getBus(modBusGroup).addListener(this::commonSetup);
     EntityAttributeCreationEvent.BUS.addListener(ModEntityType::entityAttributeCreation);
 
-    // Register CLIENT MOD bus events (only on client side)
     if (FMLEnvironment.dist == Dist.CLIENT) {
       registerClientEvents(modBusGroup);
     }
 
-    // Register GAME bus events
     RegisterCommandsEvent.BUS.addListener(this::registerCommands);
     ServerStartingEvent.BUS.addListener(this::onServerStarting);
     ServerStartedEvent.BUS.addListener(this::onServerStarted);
@@ -163,7 +160,6 @@ public class EasyNPCMain {
     EntityJoinLevelEvent.BUS.addListener(Priority.HIGHEST, this::onEntityJoinLevel);
     EntityLeaveLevelEvent.BUS.addListener(Priority.HIGHEST, this::onEntityLeaveLevel);
 
-    // Register CLIENT GAME bus events (only on client side)
     if (FMLEnvironment.dist == Dist.CLIENT) {
       registerClientGameEvents();
     }

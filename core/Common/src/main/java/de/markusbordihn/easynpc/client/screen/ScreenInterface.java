@@ -50,11 +50,11 @@ public interface ScreenInterface<D extends AdditionalScreenDataInterface> {
   }
 
   default Entity getEasyNPCEntity() {
-    return getEasyNPC() != null ? getEasyNPC().getEntity() : null;
+    return this.getEasyNPC() != null ? this.getEasyNPC().getEntity() : null;
   }
 
   default LivingEntity getEasyNPCLivingEntity() {
-    return getEasyNPC() != null ? getEasyNPC().getLivingEntity() : null;
+    return this.getEasyNPC() != null ? this.getEasyNPC().getLivingEntity() : null;
   }
 
   default OwnerDataCapable<?> getOwnerData() {
@@ -62,10 +62,11 @@ public interface ScreenInterface<D extends AdditionalScreenDataInterface> {
   }
 
   default SkinModel getSkinModel() {
-    if (getEasyNPCEntity() == null) {
+    if (this.getEasyNPCEntity() == null) {
       return null;
     }
-    EasyNPC<?> easyNPC = getEasyNPC();
+
+    EasyNPC<?> easyNPC = this.getEasyNPC();
     SkinDataCapable<?> skinData = easyNPC.getEasyNPCSkinData();
     return skinData != null ? skinData.getSkinModel() : null;
   }
@@ -115,6 +116,7 @@ public interface ScreenInterface<D extends AdditionalScreenDataInterface> {
     if (dialogId == null) {
       return null;
     }
+
     return this.getDialogData(dialogId);
   }
 
@@ -126,10 +128,12 @@ public interface ScreenInterface<D extends AdditionalScreenDataInterface> {
     if (!this.hasDialog() || this.getScreenData().dialogButtonId() == null) {
       return null;
     }
+
     DialogDataEntry dialogData = this.getDialogData();
     if (dialogData == null) {
       return null;
     }
+
     return dialogData.getDialogButton(this.getScreenData().dialogButtonId());
   }
 

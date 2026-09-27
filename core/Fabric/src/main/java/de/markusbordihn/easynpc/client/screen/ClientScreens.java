@@ -19,16 +19,11 @@
 
 package de.markusbordihn.easynpc.client.screen;
 
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.dialog.DialogScreenWrapper;
 import de.markusbordihn.easynpc.menu.ModMenuTypes;
 import net.minecraft.client.gui.screens.MenuScreens;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class ClientScreens {
-
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   private ClientScreens() {}
 

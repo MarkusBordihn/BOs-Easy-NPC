@@ -39,6 +39,7 @@ public enum StatusDataType {
     if (statusDataType == null || statusDataType.isEmpty()) {
       return null;
     }
+
     try {
       return StatusDataType.valueOf(statusDataType.toUpperCase(Locale.ROOT));
     } catch (IllegalArgumentException e) {

@@ -72,7 +72,7 @@ public record SpawnerData(
               SpawnerTypeConfig.WORLD_SPAWNER_MAX_NEARBY_ENTITIES,
               SpawnerTypeConfig.WORLD_SPAWNER_REQUIRED_PLAYER_RANGE,
               SpawnerTypeConfig.WORLD_SPAWNER_SPAWN_RANGE);
-      default -> // DEFAULT_SPAWNER
+      case DEFAULT_SPAWNER ->
           new SpawnerData(
               SpawnerTypeConfig.DEFAULT_SPAWNER_DELAY,
               SpawnerTypeConfig.DEFAULT_SPAWNER_MIN_SPAWN_DELAY,

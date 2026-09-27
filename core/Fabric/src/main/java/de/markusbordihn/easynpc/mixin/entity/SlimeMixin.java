@@ -42,10 +42,10 @@ public class SlimeMixin {
       DifficultyInstance difficulty,
       EntitySpawnReason entitySpawnReason,
       SpawnGroupData spawnGroupData,
-      CallbackInfoReturnable<SpawnGroupData> cir) {
+      CallbackInfoReturnable<SpawnGroupData> callbackInfoReturnable) {
     Slime slime = (Slime) (Object) this;
     if (slime instanceof EasyNPC<?>) {
-      cir.setReturnValue(spawnGroupData);
+      callbackInfoReturnable.setReturnValue(spawnGroupData);
     }
   }
 }

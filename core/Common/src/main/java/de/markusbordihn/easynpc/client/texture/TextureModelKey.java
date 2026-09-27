@@ -30,48 +30,51 @@ public record TextureModelKey(UUID uuid, SkinModel skinModel, String resourceNam
   }
 
   public String getSubType() {
-    return skinModel != null ? skinModel.name() : "";
+    return this.skinModel != null ? this.skinModel.name() : "";
   }
 
   public UUID getUUID() {
-    return uuid;
+    return this.uuid;
   }
 
   public SkinModel getSkinModel() {
-    return skinModel;
+    return this.skinModel;
   }
 
   public String getResourceName() {
-    return resourceName != null ? resourceName : "";
+    return this.resourceName != null ? this.resourceName : "";
   }
 
   @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
+  public boolean equals(Object object) {
+    if (this == object) {
       return true;
     }
-    if (!(obj instanceof TextureModelKey other)) {
+
+    if (!(object instanceof TextureModelKey other)) {
       return false;
     }
-    return Objects.equals(uuid, other.uuid) && Objects.equals(getSubType(), other.getSubType());
+
+    return Objects.equals(this.uuid, other.uuid)
+        && Objects.equals(this.getSubType(), other.getSubType());
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(uuid, getSubType());
+    return Objects.hash(this.uuid, this.getSubType());
   }
 
   @Override
   public String toString() {
     return "TextureModelKey{"
         + "uuid="
-        + uuid
+        + this.uuid
         + ", skinModel="
-        + skinModel
+        + this.skinModel
         + ", subType='"
-        + getSubType()
+        + this.getSubType()
         + "', resourceName='"
-        + resourceName
+        + this.resourceName
         + "'}";
   }
 }

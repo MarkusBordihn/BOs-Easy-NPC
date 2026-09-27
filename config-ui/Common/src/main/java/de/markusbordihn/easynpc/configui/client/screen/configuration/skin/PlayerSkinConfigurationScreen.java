@@ -84,28 +84,27 @@ public class PlayerSkinConfigurationScreen<T extends ConfigurationMenu>
 
     int positionTop = 144;
     int skinPosition = 0;
-    skinButtons = new ArrayList<>();
+    this.skinButtons = new ArrayList<>();
     SkinDataCapable<?> skinData = this.getEasyNPC().getEasyNPCSkinData();
     SkinModel skinModel = skinData.getSkinModel();
     Set<UUID> textures = PlayerTextureManager.getTextureCacheKeys(skinModel);
     this.numOfSkins = textures.size();
     Object[] textureKeys = textures.toArray();
 
-    // Check Skin buttons state, if number of skins changed.
     if (this.lastNumOfSkins != this.numOfSkins) {
-      checkSkinNavigationButtonState();
+      this.checkSkinNavigationButtonState();
       this.lastNumOfSkins = this.numOfSkins;
     }
 
-    for (int i = skinStartIndex; i < this.numOfSkins && i < skinStartIndex + maxSkinsPerPage; i++) {
+    for (int i = this.skinStartIndex;
+        i < this.numOfSkins && i < this.skinStartIndex + this.maxSkinsPerPage;
+        i++) {
       int left = this.leftPos + 32 + (skinPosition * SKIN_PREVIEW_WIDTH);
       int top = this.topPos + 65 + positionTop;
 
-      // Render Skins
       UUID textureKey = (UUID) textureKeys[i];
       this.renderSkinEntity(guiGraphics, left, top, skinModel, textureKey);
 
-      // Render skin name
       int topNamePos = Math.round((top - 76) / SKIN_NAME_SCALING);
       int leftNamePos = Math.round((left - 21) / SKIN_NAME_SCALING);
       int scaledMouseX = Math.round(mouseX / SKIN_NAME_SCALING);
@@ -134,7 +133,6 @@ public class PlayerSkinConfigurationScreen<T extends ConfigurationMenu>
     TextureModelKey textureModelKey = new TextureModelKey(textureUUID, skinModel);
     SkinType skinType = PlayerTextureManager.getTextureSkinType(textureModelKey);
 
-    // Create dynamically button for each player skin.
     Button skinButton =
         new SkinSelectionButton(
             x - 24,
@@ -156,8 +154,8 @@ public class PlayerSkinConfigurationScreen<T extends ConfigurationMenu>
         this.xMouse,
         this.yMouse);
 
-    skinButtons.add(skinButton);
-    skinButtons.add(
+    this.skinButtons.add(skinButton);
+    this.skinButtons.add(
         new ReloadButton(
             skinButton.getX() + skinButton.getWidth() - RELOAD_BUTTON_WIDTH,
             skinButton.getY() + skinButton.getHeight() - RELOAD_BUTTON_HEIGHT,
@@ -177,7 +175,6 @@ public class PlayerSkinConfigurationScreen<T extends ConfigurationMenu>
     String textureSkinLocationValue = this.textureSkinLocationBox.getValue();
     if (!textureSkinLocationValue.isEmpty()
         && !textureSkinLocationValue.equals(this.formerTextureSkinLocation)) {
-
       if (!NameValidator.isValidPlayerName(textureSkinLocationValue)) {
         this.errorMessage = "invalid_player_name";
         return;
@@ -223,7 +220,6 @@ public class PlayerSkinConfigurationScreen<T extends ConfigurationMenu>
         !textureSkinLocationValue.isEmpty()
             && NameValidator.isValidPlayerName(textureSkinLocationValue);
 
-    // Clear button
     this.clearTextureSettingsButton.active = !textureSkinLocationValue.isEmpty();
   }
 
@@ -231,18 +227,14 @@ public class PlayerSkinConfigurationScreen<T extends ConfigurationMenu>
   public void init() {
     super.init();
 
-    // Default button stats
     this.playerSkinButton.active = false;
 
-    // Description text
-    setDescriptionText("player_skin.text");
+    this.setDescriptionText("player_skin.text");
 
-    // Entity specific information.
     SkinDataCapable<?> skinData = this.getEasyNPC().getEasyNPCSkinData();
     SkinModel skinModel = skinData.getSkinModel();
     this.numOfSkins = PlayerTextureManager.getTextureCacheKeys(skinModel).size();
 
-    // Texture Skin Location
     this.textureSkinLocationBox =
         new TextField(this.font, this.contentLeftPos, this.contentTopPos + 50, 180);
     this.textureSkinLocationBox.setMaxLength(255);
@@ -250,7 +242,6 @@ public class PlayerSkinConfigurationScreen<T extends ConfigurationMenu>
     this.textureSkinLocationBox.setResponder(consumer -> this.validateTextureSkinLocation());
     this.addRenderableWidget(this.textureSkinLocationBox);
 
-    // Add Button
     this.addTextureSettingsButton =
         this.addRenderableWidget(
             new TextButton(
@@ -261,7 +252,6 @@ public class PlayerSkinConfigurationScreen<T extends ConfigurationMenu>
                 onPress -> this.addTextureSkinLocation()));
     this.addTextureSettingsButton.active = false;
 
-    // Clear Texture Buttons
     this.clearTextureSettingsButton =
         this.addRenderableWidget(
             new TextButton(
@@ -272,7 +262,6 @@ public class PlayerSkinConfigurationScreen<T extends ConfigurationMenu>
                 onPress -> this.clearTextureSkinLocation()));
     this.clearTextureSettingsButton.active = false;
 
-    // Disable Layers Checkbox
     this.addRenderableWidget(
         new Checkbox(
             this.contentLeftPos + 55,
@@ -287,32 +276,28 @@ public class PlayerSkinConfigurationScreen<T extends ConfigurationMenu>
 
     this.defineProfessionButtons(this.contentLeftPos + 185, this.contentTopPos + 85);
 
-    // Skin Navigation Buttons
-    defineSkinNavigationButtons();
+    this.defineSkinNavigationButtons();
   }
 
   @Override
   public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
     super.render(guiGraphics, x, y, partialTicks);
 
-    // Description text
-    renderDescriptionText(guiGraphics, this.contentLeftPos + 5, this.contentTopPos + 5);
+    this.renderDescriptionText(guiGraphics, this.contentLeftPos + 5, this.contentTopPos + 5);
 
-    if (addTextureSettingsButton != null) {
+    if (this.addTextureSettingsButton != null) {
       Text.drawConfigString(
           guiGraphics,
           this.font,
           "use_a_player_name",
           this.contentLeftPos,
-          addTextureSettingsButton.getY() - 10);
+          this.addTextureSettingsButton.getY() - 10);
     }
 
-    // Reload protection
     this.canTextureSkinLocationChange =
         java.time.Instant.now().getEpochSecond()
             >= PlayerSkinConfigurationScreen.nextTextureSkinLocationChange;
 
-    // Render Status Symbol and text, if needed.
     if (!this.canTextureSkinLocationChange) {
       guiGraphics.pose().translate(0, 100);
       Graphics.blit(
@@ -336,7 +321,6 @@ public class PlayerSkinConfigurationScreen<T extends ConfigurationMenu>
       }
     }
 
-    // Show error messages, if any.
     if (this.errorMessage != null && !this.errorMessage.isEmpty()) {
       Text.drawErrorMessage(
           guiGraphics,
@@ -355,7 +339,6 @@ public class PlayerSkinConfigurationScreen<T extends ConfigurationMenu>
           this.imageWidth - 14);
     }
 
-    // Skins
     this.renderSkins(guiGraphics, x, y);
   }
 }

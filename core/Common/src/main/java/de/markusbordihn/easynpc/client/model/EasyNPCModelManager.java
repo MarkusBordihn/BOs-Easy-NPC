@@ -76,75 +76,78 @@ public class EasyNPCModelManager {
   public EasyNPCModelManager defineModelPart(
       final ModelPartType modelPartType, final ModelPart parentPart, final String childName) {
     if (parentPart != null && parentPart.hasChild(childName)) {
-      return defineModelPart(modelPartType, parentPart.getChild(childName));
+      return this.defineModelPart(modelPartType, parentPart.getChild(childName));
     }
-    missingModelPartMap.put(modelPartType, childName);
+
+    this.missingModelPartMap.put(modelPartType, childName);
     return this;
   }
 
   public EasyNPCModelManager defineModelPart(
       final ModelPartType modelPartType, final String modelPartName) {
     if (this.rootModelPart != null && this.rootModelPart.hasChild(modelPartName)) {
-      return defineModelPart(modelPartType, this.rootModelPart.getChild(modelPartName));
+      return this.defineModelPart(modelPartType, this.rootModelPart.getChild(modelPartName));
     }
-    missingModelPartMap.put(modelPartType, modelPartName);
+
+    this.missingModelPartMap.put(modelPartType, modelPartName);
     return this;
   }
 
   public EasyNPCModelManager defineModelPart(
       final ModelPartType modelPartType, final ModelPart modelPart) {
     if (modelPart == null) {
-      missingModelPartMap.put(modelPartType, "<null>");
+      this.missingModelPartMap.put(modelPartType, "<null>");
       return this;
     }
-    if (!defaultModelPartPositionMap.containsKey(modelPartType)) {
-      setDefaultModelPartPosition(
+
+    if (!this.defaultModelPartPositionMap.containsKey(modelPartType)) {
+      this.setDefaultModelPartPosition(
           modelPartType, new CustomPosition(modelPart.x, modelPart.y, modelPart.z));
     }
-    if (!defaultModelPartRotationMap.containsKey(modelPartType)) {
-      setDefaultModelPartRotation(
+    if (!this.defaultModelPartRotationMap.containsKey(modelPartType)) {
+      this.setDefaultModelPartRotation(
           modelPartType, new CustomRotation(modelPart.xRot, modelPart.yRot, modelPart.zRot));
     }
-    if (!defaultModelPartScaleMap.containsKey(modelPartType)) {
-      setDefaultModelPartScale(
+    if (!this.defaultModelPartScaleMap.containsKey(modelPartType)) {
+      this.setDefaultModelPartScale(
           modelPartType, new CustomScale(modelPart.xScale, modelPart.yScale, modelPart.zScale));
     }
-    if (!defaultModelPartVisibilityMap.containsKey(modelPartType)) {
-      setDefaultModelPartVisibility(modelPartType, modelPart.visible);
+    if (!this.defaultModelPartVisibilityMap.containsKey(modelPartType)) {
+      this.setDefaultModelPartVisibility(modelPartType, modelPart.visible);
     }
-    if (!modelPartMap.containsKey(modelPartType)) {
-      setDefaultModelPart(modelPartType, modelPart);
+    if (!this.modelPartMap.containsKey(modelPartType)) {
+      this.setDefaultModelPart(modelPartType, modelPart);
     }
-    missingModelPartMap.remove(modelPartType);
+    this.missingModelPartMap.remove(modelPartType);
     return this;
   }
 
   public void setDefaultModelPartPosition(
       final ModelPartType modelPartType, final CustomPosition customPosition) {
-    defaultModelPartPositionMap.put(modelPartType, customPosition);
+    this.defaultModelPartPositionMap.put(modelPartType, customPosition);
   }
 
   public void setDefaultModelPartRotation(
       final ModelPartType modelPartType, final CustomRotation rotation) {
-    defaultModelPartRotationMap.put(modelPartType, rotation);
+    this.defaultModelPartRotationMap.put(modelPartType, rotation);
   }
 
   public void setDefaultModelPartScale(
       final ModelPartType modelPartType, final CustomScale customScale) {
-    defaultModelPartScaleMap.put(modelPartType, customScale);
+    this.defaultModelPartScaleMap.put(modelPartType, customScale);
   }
 
   public void setDefaultModelPartVisibility(
       final ModelPartType modelPartType, final boolean isVisible) {
-    defaultModelPartVisibilityMap.put(modelPartType, isVisible);
+    this.defaultModelPartVisibilityMap.put(modelPartType, isVisible);
   }
 
   public void setDefaultModelPart(final ModelPartType modelPartType, final ModelPart modelPart) {
-    modelPartMap.put(modelPartType, modelPart);
+    this.modelPartMap.put(modelPartType, modelPart);
   }
 
   public ModelPart getModelPart(final ModelPartType modelPartType) {
-    return modelPartMap.get(modelPartType);
+    return this.modelPartMap.get(modelPartType);
   }
 
   public void validateModelPartsOnce(final EasyNPC<?> easyNPC) {
@@ -156,12 +159,13 @@ public class EasyNPCModelManager {
     if (modelData == null) {
       return;
     }
+
     this.modelPartsValidated = true;
 
     ModelType modelType = modelData.getModelType();
     EnumSet<ModelPartType> missingModelParts = EnumSet.noneOf(ModelPartType.class);
     for (ModelPartType modelPartType : modelType.getModelParts()) {
-      if (!modelPartMap.containsKey(modelPartType)) {
+      if (!this.modelPartMap.containsKey(modelPartType)) {
         missingModelParts.add(modelPartType);
       }
     }
@@ -176,7 +180,7 @@ public class EasyNPCModelManager {
         easyNPC.getLivingEntity().getType(),
         modelType,
         this.rootModelPart,
-        missingModelPartMap);
+        this.missingModelPartMap);
   }
 
   public boolean setupModelParts(
@@ -188,29 +192,28 @@ public class EasyNPCModelManager {
     EnumMap<ModelPartType, Boolean> visibilityMap = modelData.getModelPartVisibility();
     boolean hasChangedModelPart = false;
 
-    for (Map.Entry<ModelPartType, ModelPart> entry : modelPartMap.entrySet()) {
+    for (Map.Entry<ModelPartType, ModelPart> entry : this.modelPartMap.entrySet()) {
       ModelPartType partType = entry.getKey();
       ModelPart modelPart = entry.getValue();
 
       // Skip outer layer parts as they will be synced from their inner parts
-      if (isOuterLayerPart(partType)) {
+      if (this.isOuterLayerPart(partType)) {
         continue;
       }
 
       // Skip transforms for parts that are explicitly hidden.
-      if (applyVisibility && applyModelPartVisibility(modelPart, partType, visibilityMap)) {
+      if (applyVisibility && this.applyModelPartVisibility(modelPart, partType, visibilityMap)) {
         continue;
       }
 
-      boolean positionChanged = applyCustomPosition(modelPart, partType, modelData);
-      boolean rotationChanged = applyCustomRotation(modelPart, partType, modelData);
-      boolean scaleChanged = applyCustomScale(modelPart, partType, modelData);
+      boolean positionChanged = this.applyCustomPosition(modelPart, partType, modelData);
+      boolean rotationChanged = this.applyCustomRotation(modelPart, partType, modelData);
+      boolean scaleChanged = this.applyCustomScale(modelPart, partType, modelData);
       if (positionChanged || rotationChanged || scaleChanged) {
         hasChangedModelPart = true;
       }
     }
 
-    // Sync model parts
     this.syncModelParts(modelData);
 
     return hasChangedModelPart;
@@ -222,12 +225,12 @@ public class EasyNPCModelManager {
     }
 
     EnumMap<ModelPartType, Boolean> visibilityMap = modelData.getModelPartVisibility();
-    syncOuterLayer(visibilityMap, ModelPartType.HAT, ModelPartType.HEAD);
-    syncOuterLayer(visibilityMap, ModelPartType.BODY_JACKET, ModelPartType.BODY);
-    syncOuterLayer(visibilityMap, ModelPartType.LEFT_SLEEVE, ModelPartType.LEFT_ARM);
-    syncOuterLayer(visibilityMap, ModelPartType.RIGHT_SLEEVE, ModelPartType.RIGHT_ARM);
-    syncOuterLayer(visibilityMap, ModelPartType.LEFT_PANTS, ModelPartType.LEFT_LEG);
-    syncOuterLayer(visibilityMap, ModelPartType.RIGHT_PANTS, ModelPartType.RIGHT_LEG);
+    this.syncOuterLayer(visibilityMap, ModelPartType.HAT, ModelPartType.HEAD);
+    this.syncOuterLayer(visibilityMap, ModelPartType.BODY_JACKET, ModelPartType.BODY);
+    this.syncOuterLayer(visibilityMap, ModelPartType.LEFT_SLEEVE, ModelPartType.LEFT_ARM);
+    this.syncOuterLayer(visibilityMap, ModelPartType.RIGHT_SLEEVE, ModelPartType.RIGHT_ARM);
+    this.syncOuterLayer(visibilityMap, ModelPartType.LEFT_PANTS, ModelPartType.LEFT_LEG);
+    this.syncOuterLayer(visibilityMap, ModelPartType.RIGHT_PANTS, ModelPartType.RIGHT_LEG);
   }
 
   private void syncOuterLayer(
@@ -235,17 +238,15 @@ public class EasyNPCModelManager {
       final ModelPartType outerPartType,
       final ModelPartType innerPartType) {
 
-    ModelPart outerPart = modelPartMap.get(outerPartType);
-    ModelPart innerPart = modelPartMap.get(innerPartType);
+    ModelPart outerPart = this.modelPartMap.get(outerPartType);
+    ModelPart innerPart = this.modelPartMap.get(innerPartType);
 
-    // Skip if parts don't exist or outer part is not visible by default
     if (outerPart == null
         || innerPart == null
-        || !Boolean.TRUE.equals(defaultModelPartVisibilityMap.get(outerPartType))) {
+        || !Boolean.TRUE.equals(this.defaultModelPartVisibilityMap.get(outerPartType))) {
       return;
     }
 
-    // Check if outer layer is explicitly hidden (set to false)
     if (Boolean.FALSE.equals(visibilityMap.get(outerPartType))) {
       outerPart.visible = false;
     } else {
@@ -258,7 +259,6 @@ public class EasyNPCModelManager {
       return false;
     }
 
-    // Check animation behavior
     switch (modelData.getModelAnimationBehavior()) {
       case NONE:
         return true;
@@ -270,11 +270,10 @@ public class EasyNPCModelManager {
         break;
     }
 
-    // Check if all critical animation parts are modified
     int modifiedCriticalParts = 0;
     int totalCriticalParts = 0;
-    for (ModelPartType partType : modelPartMap.keySet()) {
-      if (!isCriticalAnimationPart(partType)) {
+    for (ModelPartType partType : this.modelPartMap.keySet()) {
+      if (!this.isCriticalAnimationPart(partType)) {
         continue;
       }
 
@@ -326,8 +325,9 @@ public class EasyNPCModelManager {
       modelPart.visible = false;
       return true;
     }
+
     if (Boolean.TRUE.equals(visibility)
-        && Boolean.TRUE.equals(defaultModelPartVisibilityMap.get(partType))) {
+        && Boolean.TRUE.equals(this.defaultModelPartVisibilityMap.get(partType))) {
       modelPart.visible = true;
     }
     return false;
@@ -341,6 +341,7 @@ public class EasyNPCModelManager {
     if (customPosition == null || !customPosition.hasChanged()) {
       return false;
     }
+
     modelPart.x += customPosition.x();
     modelPart.y += customPosition.y();
     modelPart.z += customPosition.z();
@@ -355,6 +356,7 @@ public class EasyNPCModelManager {
     if (customRotation == null || !customRotation.hasChanged()) {
       return false;
     }
+
     modelPart.xRot += customRotation.x();
     modelPart.yRot += customRotation.y();
     modelPart.zRot += customRotation.z();
@@ -369,7 +371,8 @@ public class EasyNPCModelManager {
     if (customScale == null || !customScale.hasChanged()) {
       return false;
     }
-    CustomScale defaultScale = defaultModelPartScaleMap.get(partType);
+
+    CustomScale defaultScale = this.defaultModelPartScaleMap.get(partType);
     if (defaultScale != null) {
       modelPart.xScale = defaultScale.x() * customScale.x();
       modelPart.yScale = defaultScale.y() * customScale.y();
@@ -387,7 +390,7 @@ public class EasyNPCModelManager {
       return;
     }
 
-    for (Map.Entry<ModelPartType, ModelPart> entry : modelPartMap.entrySet()) {
+    for (Map.Entry<ModelPartType, ModelPart> entry : this.modelPartMap.entrySet()) {
       ModelPartType partType = entry.getKey();
       ModelPart modelPart = entry.getValue();
 
@@ -395,12 +398,12 @@ public class EasyNPCModelManager {
         continue;
       }
 
-      applyCustomScale(modelPart, partType, modelData);
-      applyCustomRotation(modelPart, partType, modelData);
-      applyCustomPosition(modelPart, partType, modelData);
+      this.applyCustomScale(modelPart, partType, modelData);
+      this.applyCustomRotation(modelPart, partType, modelData);
+      this.applyCustomPosition(modelPart, partType, modelData);
     }
 
-    syncModelParts(modelData);
+    this.syncModelParts(modelData);
   }
 
   public void applyVisibilityChanges(final ModelDataCapable<?> modelData) {
@@ -410,49 +413,49 @@ public class EasyNPCModelManager {
 
     EnumMap<ModelPartType, Boolean> visibilityMap = modelData.getModelPartVisibility();
 
-    for (Map.Entry<ModelPartType, ModelPart> entry : modelPartMap.entrySet()) {
+    for (Map.Entry<ModelPartType, ModelPart> entry : this.modelPartMap.entrySet()) {
       ModelPartType partType = entry.getKey();
       ModelPart modelPart = entry.getValue();
 
       // Skip outer layer parts as they will be synced from their inner parts
-      if (isOuterLayerPart(partType)) {
+      if (this.isOuterLayerPart(partType)) {
         continue;
       }
 
-      applyModelPartVisibility(modelPart, partType, visibilityMap);
+      this.applyModelPartVisibility(modelPart, partType, visibilityMap);
     }
 
-    syncModelParts(modelData);
+    this.syncModelParts(modelData);
   }
 
   public void resetModelParts() {
-    for (Map.Entry<ModelPartType, ModelPart> entry : modelPartMap.entrySet()) {
+    for (Map.Entry<ModelPartType, ModelPart> entry : this.modelPartMap.entrySet()) {
       ModelPartType modelPartType = entry.getKey();
-      ModelPart modelPartToRest = entry.getValue();
+      ModelPart modelPartToReset = entry.getValue();
 
       // Skip outer layer parts as they will be synced from their inner parts
-      if (isOuterLayerPart(modelPartType)) {
+      if (this.isOuterLayerPart(modelPartType)) {
         continue;
       }
 
-      CustomPosition customPosition = defaultModelPartPositionMap.get(modelPartType);
-      CustomRotation customRotation = defaultModelPartRotationMap.get(modelPartType);
-      CustomScale customScale = defaultModelPartScaleMap.get(modelPartType);
-      Boolean isVisible = defaultModelPartVisibilityMap.get(modelPartType);
+      CustomPosition customPosition = this.defaultModelPartPositionMap.get(modelPartType);
+      CustomRotation customRotation = this.defaultModelPartRotationMap.get(modelPartType);
+      CustomScale customScale = this.defaultModelPartScaleMap.get(modelPartType);
+      Boolean isVisible = this.defaultModelPartVisibilityMap.get(modelPartType);
 
       if (customPosition != null) {
-        modelPartToRest.setPos(customPosition.x(), customPosition.y(), customPosition.z());
+        modelPartToReset.setPos(customPosition.x(), customPosition.y(), customPosition.z());
       }
       if (customRotation != null) {
-        modelPartToRest.setRotation(customRotation.x(), customRotation.y(), customRotation.z());
+        modelPartToReset.setRotation(customRotation.x(), customRotation.y(), customRotation.z());
       }
       if (customScale != null) {
-        modelPartToRest.xScale = customScale.x();
-        modelPartToRest.yScale = customScale.y();
-        modelPartToRest.zScale = customScale.z();
+        modelPartToReset.xScale = customScale.x();
+        modelPartToReset.yScale = customScale.y();
+        modelPartToReset.zScale = customScale.z();
       }
       if (isVisible != null) {
-        modelPartToRest.visible = isVisible;
+        modelPartToReset.visible = isVisible;
       }
     }
   }

@@ -36,13 +36,14 @@ public class LivingEntityTargetingMixin {
       method = "canAttack(Lnet/minecraft/world/entity/LivingEntity;)Z",
       at = @At("HEAD"),
       cancellable = true)
-  private void onCanAttack(LivingEntity target, CallbackInfoReturnable<Boolean> cir) {
+  private void onCanAttack(
+      LivingEntity target, CallbackInfoReturnable<Boolean> callbackInfoReturnable) {
     if ((Object) this instanceof Monster
         && target instanceof EasyNPC<?> easyNPC
         && easyNPC.getEasyNPCAttributeData() instanceof AttributeDataCapable<?>) {
       CombatAttributes combatAttributes =
           easyNPC.getEasyNPCAttributeData().getEntityAttributes().getCombatAttributes();
-      cir.setReturnValue(combatAttributes.isAttackableByMonsters());
+      callbackInfoReturnable.setReturnValue(combatAttributes.isAttackableByMonsters());
     }
   }
 }

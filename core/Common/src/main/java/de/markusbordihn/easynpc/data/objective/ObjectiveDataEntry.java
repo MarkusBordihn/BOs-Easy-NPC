@@ -219,6 +219,7 @@ public final class ObjectiveDataEntry {
     if (this.objectiveType == ObjectiveType.CUSTOM || this.objectiveType == ObjectiveType.NONE) {
       return this.priority;
     }
+
     return this.objectiveType.getDefaultPriority();
   }
 
@@ -440,6 +441,7 @@ public final class ObjectiveDataEntry {
     if (this.hasPlayerTarget()) {
       return LivingEntityManager.getPlayerByName(this.targetPlayerName);
     }
+
     return null;
   }
 
@@ -475,6 +477,7 @@ public final class ObjectiveDataEntry {
     if (this.hasEntityTarget() && serverLevel != null) {
       return LivingEntityManager.getLivingEntityByUUID(this.targetEntityUUID, serverLevel);
     }
+
     return null;
   }
 
@@ -530,11 +533,11 @@ public final class ObjectiveDataEntry {
       return false;
     }
 
-    if (!hasOwnerTarget() && !hasPlayerTarget() && !hasEntityTarget()) {
+    if (!this.hasOwnerTarget() && !this.hasPlayerTarget() && !this.hasEntityTarget()) {
       return true;
     }
 
-    if (hasOwnerTarget()) {
+    if (this.hasOwnerTarget()) {
       UUID ownerUUID = this.resolveTargetOwnerUUID(easyNPC);
       if (ownerUUID == null) {
         return false;
@@ -542,16 +545,14 @@ public final class ObjectiveDataEntry {
 
       ServerPlayer serverPlayer = LivingEntityManager.getPlayerByUUID(ownerUUID, serverLevel);
       return serverPlayer != null && serverPlayer.isAlive();
-    } else if (hasPlayerTarget()) {
+    } else if (this.hasPlayerTarget()) {
       ServerPlayer serverPlayer = LivingEntityManager.getPlayerByName(this.targetPlayerName);
       return serverPlayer != null && serverPlayer.isAlive();
-    } else if (hasEntityTarget()) {
+    } else {
       LivingEntity livingEntity =
           LivingEntityManager.getLivingEntityByUUID(this.targetEntityUUID, serverLevel);
       return livingEntity != null && livingEntity.isAlive();
     }
-
-    return this.goal != null;
   }
 
   public Goal getGoal(EasyNPC<?> easyNPC) {
@@ -568,15 +569,21 @@ public final class ObjectiveDataEntry {
     return this.target;
   }
 
+  private String resolveUnresolvedType(String storedType) {
+    if (this.objectiveType != ObjectiveType.NONE
+        || storedType == null
+        || storedType.isEmpty()
+        || storedType.equalsIgnoreCase(ObjectiveType.NONE.name())) {
+      return null;
+    }
+
+    return storedType;
+  }
+
   public void load(CompoundTag compoundTag) {
     String storedType = compoundTag.getString(DATA_TYPE_TAG).orElse("");
     this.objectiveType = ObjectiveType.get(storedType);
-    this.unresolvedType =
-        this.objectiveType == ObjectiveType.NONE
-                && !storedType.isEmpty()
-                && !storedType.equalsIgnoreCase(ObjectiveType.NONE.name())
-            ? storedType
-            : null;
+    this.unresolvedType = this.resolveUnresolvedType(storedType);
     if (compoundTag.contains(DATA_CUSTOM_OBJECTIVE_ID_TAG)) {
       this.customObjectiveId =
           Identifier.tryParse(compoundTag.getString(DATA_CUSTOM_OBJECTIVE_ID_TAG).orElse(""));

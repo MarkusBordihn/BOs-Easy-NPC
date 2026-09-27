@@ -127,6 +127,7 @@ public class NPCEntityManager {
     if (!validateServer() || entityUUID == null) {
       return;
     }
+
     getNPCEntityData().updateRemovalReason(entityUUID, reason);
   }
 
@@ -171,6 +172,7 @@ public class NPCEntityManager {
     if (!validateServer() || entityUUID == null) {
       return Optional.empty();
     }
+
     return getNPCEntityData().getEntry(entityUUID);
   }
 
@@ -178,6 +180,7 @@ public class NPCEntityManager {
     if (!validateServer()) {
       return Collections.emptyList();
     }
+
     return getNPCEntityData().getAllEntries();
   }
 
@@ -185,6 +188,7 @@ public class NPCEntityManager {
     if (!validateServer()) {
       return 0;
     }
+
     return getNPCEntityData().getCount();
   }
 
@@ -192,6 +196,7 @@ public class NPCEntityManager {
     if (!validateServer()) {
       return Collections.emptyList();
     }
+
     return getNPCEntityData().getEntriesByOwner(ownerUUID);
   }
 
@@ -199,6 +204,7 @@ public class NPCEntityManager {
     if (!validateServer()) {
       return Collections.emptyList();
     }
+
     return getNPCEntityData().getEntriesByType(type);
   }
 
@@ -206,6 +212,7 @@ public class NPCEntityManager {
     if (!validateServer()) {
       return Collections.emptyList();
     }
+
     return getNPCEntityData().getEntriesByDimension(dimension);
   }
 
@@ -213,6 +220,7 @@ public class NPCEntityManager {
     if (!validateServer()) {
       return Collections.emptyList();
     }
+
     return getNPCEntityData().getEntriesByPreset(presetUUID);
   }
 
@@ -221,6 +229,7 @@ public class NPCEntityManager {
     if (!validateServer()) {
       return Collections.emptyList();
     }
+
     return getNPCEntityData().getEntriesByCustomIdentifier(customIdentifier);
   }
 
@@ -229,6 +238,7 @@ public class NPCEntityManager {
     if (!validateServer()) {
       return Collections.emptyList();
     }
+
     return getNPCEntityData().getEntriesByCustomIdentifierNamespace(namespace);
   }
 
@@ -237,6 +247,7 @@ public class NPCEntityManager {
       log.warn("{} Server not initialized", LOG_PREFIX);
       return false;
     }
+
     return true;
   }
 

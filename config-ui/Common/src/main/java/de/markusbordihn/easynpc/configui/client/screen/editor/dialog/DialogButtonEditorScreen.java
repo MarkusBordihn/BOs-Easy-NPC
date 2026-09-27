@@ -77,12 +77,14 @@ public class DialogButtonEditorScreen<T extends EditorMenu> extends EditorScreen
     if (this.minecraft == null) {
       return;
     }
+
     this.minecraft.setScreen(
         new ConfirmScreen(
             confirmed -> {
-              if (confirmed && getDialogUUID() != null) {
+              if (confirmed && this.getDialogUUID() != null) {
                 NetworkMessageHandlerManager.getServerHandler()
-                    .removeDialogButton(getEasyNPCUUID(), getDialogUUID(), getDialogButtonUUID());
+                    .removeDialogButton(
+                        this.getEasyNPCUUID(), this.getDialogUUID(), this.getDialogButtonUUID());
                 NetworkMessageHandlerManager.getServerHandler()
                     .openDialogEditor(this.getEasyNPCUUID(), this.getDialogUUID());
               } else {
@@ -97,7 +99,6 @@ public class DialogButtonEditorScreen<T extends EditorMenu> extends EditorScreen
   }
 
   protected void renderEditLabels(GuiGraphics guiGraphics) {
-
     if (this.buttonNameBox != null) {
       Text.drawConfigString(
           guiGraphics, this.font, "button.name", leftPos + 12, this.buttonNameBox.getY() + 4);
@@ -142,7 +143,7 @@ public class DialogButtonEditorScreen<T extends EditorMenu> extends EditorScreen
                 this.dialogButton.getX() + this.dialogButton.getWidth(),
                 this.topPos + 7,
                 140,
-                this.getDialogButtonData().getButtonName(21).getString(),
+                this.getDialogButtonData().getButtonName(21),
                 onPress -> {}));
     this.dialogButtonButton.active = false;
 

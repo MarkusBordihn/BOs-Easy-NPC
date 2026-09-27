@@ -39,7 +39,7 @@ public class IronGolemRawRenderer extends IronGolemRenderer implements EasyNPCEn
 
   @Override
   public Identifier getTextureLocation(IronGolemRenderState renderState) {
-    return getTextureFromRenderStateWithConfig(renderState);
+    return this.getTextureFromRenderStateWithConfig(renderState);
   }
 
   @Override

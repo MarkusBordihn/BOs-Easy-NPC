@@ -102,11 +102,6 @@ public class EasyNPCSpawnerBlockEntity extends BlockEntity {
   }
 
   @Override
-  public void setChanged() {
-    super.setChanged();
-  }
-
-  @Override
   public ClientboundBlockEntityDataPacket getUpdatePacket() {
     return ClientboundBlockEntityDataPacket.create(this);
   }

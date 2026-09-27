@@ -21,12 +21,12 @@ package de.markusbordihn.easynpc.data.server;
 
 public final class ServerDataItem<T> {
 
-  final ServerDataAccessor<T> entityDataAccessor;
+  final ServerDataAccessor<T> serverDataAccessor;
 
   private T value;
 
-  public ServerDataItem(ServerDataAccessor<T> entityDataAccessor, T value) {
-    this.entityDataAccessor = entityDataAccessor;
+  public ServerDataItem(ServerDataAccessor<T> serverDataAccessor, T value) {
+    this.serverDataAccessor = serverDataAccessor;
     this.value = value;
   }
 
@@ -34,7 +34,7 @@ public final class ServerDataItem<T> {
     return this.value;
   }
 
-  public void setValue(T customData) {
-    this.value = customData;
+  public void setValue(T value) {
+    this.value = value;
   }
 }

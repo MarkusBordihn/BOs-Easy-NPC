@@ -40,7 +40,7 @@ public class ZombieVillagerRawRenderer extends ZombieVillagerRenderer
 
   @Override
   public Identifier getTextureLocation(ZombieVillagerRenderState renderState) {
-    return getTextureFromRenderState(renderState);
+    return this.getTextureFromRenderState(renderState);
   }
 
   @Override

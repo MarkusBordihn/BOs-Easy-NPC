@@ -87,7 +87,7 @@ public class LookObjectiveConfigurationScreen<T extends ConfigurationMenu>
                 objectiveEntriesTop,
                 ObjectiveType.LOOK_AT_OWNER.getObjectiveName(),
                 ownerData.getNPCOwnerName(),
-                objectiveDataSet.hasObjective(ObjectiveType.LOOK_AT_OWNER),
+                this.objectiveDataSet.hasObjective(ObjectiveType.LOOK_AT_OWNER),
                 checkbox -> {
                   ObjectiveDataEntry objectiveDataEntry =
                       new ObjectiveDataEntry(ObjectiveType.LOOK_AT_OWNER);
@@ -127,34 +127,34 @@ public class LookObjectiveConfigurationScreen<T extends ConfigurationMenu>
                 objectiveEntriesFirstColumn,
                 objectiveEntriesTop,
                 ObjectiveType.LOOK_AT_ENTITY_BY_UUID.getObjectiveName(),
-                objectiveDataSet.hasObjective(ObjectiveType.LOOK_AT_ENTITY_BY_UUID),
+                this.objectiveDataSet.hasObjective(ObjectiveType.LOOK_AT_ENTITY_BY_UUID),
                 checkbox -> {
                   ObjectiveDataEntry objectiveDataEntry =
                       new ObjectiveDataEntry(ObjectiveType.LOOK_AT_ENTITY_BY_UUID);
-                  if (lookAtEntityUUID != null) {
-                    if (!lookAtEntityUUID.getValue().isEmpty()) {
+                  if (this.lookAtEntityUUID != null) {
+                    if (!this.lookAtEntityUUID.getValue().isEmpty()) {
                       UUID entityUUID = null;
                       try {
-                        entityUUID = UUID.fromString(lookAtEntityUUID.getValue());
+                        entityUUID = UUID.fromString(this.lookAtEntityUUID.getValue());
                       } catch (IllegalArgumentException e) {
                         log.error(
                             "Unable to parse UUID {} for {}",
-                            lookAtEntityUUID.getValue(),
+                            this.lookAtEntityUUID.getValue(),
                             this.getEasyNPCUUID());
                       }
                       if (entityUUID != null) {
                         objectiveDataEntry.setTargetEntityUUID(entityUUID);
                       }
                     }
-                    lookAtEntityUUID.setEditable(checkbox.selected());
+                    this.lookAtEntityUUID.setEditable(checkbox.selected());
                   }
-                  if (lookAtEntityUUIDSaveButton != null) {
-                    lookAtEntityUUIDSaveButton.active = checkbox.selected();
+                  if (this.lookAtEntityUUIDSaveButton != null) {
+                    this.lookAtEntityUUIDSaveButton.active = checkbox.selected();
                   }
                   if (!checkbox.selected()) {
                     NetworkMessageHandlerManager.getServerHandler()
                         .removeObjective(this.getEasyNPCUUID(), objectiveDataEntry);
-                  } else if (!lookAtEntityUUID.getValue().isEmpty()) {
+                  } else if (!this.lookAtEntityUUID.getValue().isEmpty()) {
                     NetworkMessageHandlerManager.getServerHandler()
                         .addOrUpdateObjective(this.getEasyNPCUUID(), objectiveDataEntry);
                   }
@@ -162,22 +162,22 @@ public class LookObjectiveConfigurationScreen<T extends ConfigurationMenu>
     this.lookAtEntityUUID =
         this.addRenderableWidget(
             new TextField(this.font, objectiveEntriesSecondColumn, objectiveEntriesTop, 115));
-    lookAtEntityUUID.setMaxLength(36);
-    lookAtEntityUUID.setEditable(
-        objectiveDataSet.hasObjective(ObjectiveType.LOOK_AT_ENTITY_BY_UUID));
-    lookAtEntityUUID.setResponder(
+    this.lookAtEntityUUID.setMaxLength(36);
+    this.lookAtEntityUUID.setEditable(
+        this.objectiveDataSet.hasObjective(ObjectiveType.LOOK_AT_ENTITY_BY_UUID));
+    this.lookAtEntityUUID.setResponder(
         value -> {
           if (this.lookAtEntityUUIDSaveButton != null) {
             this.lookAtEntityUUIDSaveButton.active = value != null && !value.isEmpty();
           }
         });
-    lookAtEntityUUID.setValue(
-        objectiveDataSet.hasObjective(ObjectiveType.LOOK_AT_ENTITY_BY_UUID)
-                && objectiveDataSet
+    this.lookAtEntityUUID.setValue(
+        this.objectiveDataSet.hasObjective(ObjectiveType.LOOK_AT_ENTITY_BY_UUID)
+                && this.objectiveDataSet
                         .getObjective(ObjectiveType.LOOK_AT_ENTITY_BY_UUID)
                         .getTargetEntityUUID()
                     != null
-            ? objectiveDataSet
+            ? this.objectiveDataSet
                 .getObjective(ObjectiveType.LOOK_AT_ENTITY_BY_UUID)
                 .getTargetEntityUUID()
                 .toString()
@@ -192,8 +192,8 @@ public class LookObjectiveConfigurationScreen<T extends ConfigurationMenu>
                   ObjectiveDataEntry objectiveDataEntry =
                       new ObjectiveDataEntry(ObjectiveType.LOOK_AT_ENTITY_BY_UUID);
                   objectiveDataEntry.setTargetEntityUUID(
-                      !lookAtEntityUUID.getValue().isEmpty()
-                          ? UUID.fromString(lookAtEntityUUID.getValue())
+                      !this.lookAtEntityUUID.getValue().isEmpty()
+                          ? UUID.fromString(this.lookAtEntityUUID.getValue())
                           : null);
                   NetworkMessageHandlerManager.getServerHandler()
                       .addOrUpdateObjective(this.getEasyNPCUUID(), objectiveDataEntry);
@@ -201,11 +201,11 @@ public class LookObjectiveConfigurationScreen<T extends ConfigurationMenu>
     this.lookAtEntityUUIDSaveButton.active = false;
 
     objectiveEntriesTop += SPACE_BETWEEN_ENTRIES;
-    savedItemTag =
-        objectiveDataSet.hasObjective(ObjectiveType.LOOK_AT_ITEM)
-                && objectiveDataSet.getObjective(ObjectiveType.LOOK_AT_ITEM).getTargetItemTag()
+    this.savedItemTag =
+        this.objectiveDataSet.hasObjective(ObjectiveType.LOOK_AT_ITEM)
+                && this.objectiveDataSet.getObjective(ObjectiveType.LOOK_AT_ITEM).getTargetItemTag()
                     != null
-            ? objectiveDataSet.getObjective(ObjectiveType.LOOK_AT_ITEM).getTargetItemTag()
+            ? this.objectiveDataSet.getObjective(ObjectiveType.LOOK_AT_ITEM).getTargetItemTag()
             : "";
     this.lookAtItemCheckbox =
         this.addRenderableWidget(
@@ -213,24 +213,24 @@ public class LookObjectiveConfigurationScreen<T extends ConfigurationMenu>
                 objectiveEntriesFirstColumn,
                 objectiveEntriesTop,
                 ObjectiveType.LOOK_AT_ITEM.getObjectiveName(),
-                objectiveDataSet.hasObjective(ObjectiveType.LOOK_AT_ITEM),
+                this.objectiveDataSet.hasObjective(ObjectiveType.LOOK_AT_ITEM),
                 checkbox -> {
                   ObjectiveDataEntry objectiveDataEntry =
                       new ObjectiveDataEntry(ObjectiveType.LOOK_AT_ITEM);
-                  if (lookAtItemId != null) {
-                    objectiveDataEntry.setTargetItemTag(lookAtItemId.getValue());
-                    lookAtItemId.setEditable(checkbox.selected());
+                  if (this.lookAtItemId != null) {
+                    objectiveDataEntry.setTargetItemTag(this.lookAtItemId.getValue());
+                    this.lookAtItemId.setEditable(checkbox.selected());
                   }
-                  if (lookAtItemIdSaveButton != null) {
-                    lookAtItemIdSaveButton.active =
+                  if (this.lookAtItemIdSaveButton != null) {
+                    this.lookAtItemIdSaveButton.active =
                         checkbox.selected()
-                            && lookAtItemId != null
-                            && !lookAtItemId.getValue().equals(savedItemTag);
+                            && this.lookAtItemId != null
+                            && !this.lookAtItemId.getValue().equals(this.savedItemTag);
                   }
                   if (!checkbox.selected()) {
                     NetworkMessageHandlerManager.getServerHandler()
                         .removeObjective(this.getEasyNPCUUID(), objectiveDataEntry);
-                  } else if (!lookAtItemId.getValue().isEmpty()) {
+                  } else if (!this.lookAtItemId.getValue().isEmpty()) {
                     NetworkMessageHandlerManager.getServerHandler()
                         .addOrUpdateObjective(this.getEasyNPCUUID(), objectiveDataEntry);
                   }
@@ -238,18 +238,18 @@ public class LookObjectiveConfigurationScreen<T extends ConfigurationMenu>
     this.lookAtItemId =
         this.addRenderableWidget(
             new TextField(this.font, objectiveEntriesSecondColumn, objectiveEntriesTop, 115));
-    lookAtItemId.setEditable(objectiveDataSet.hasObjective(ObjectiveType.LOOK_AT_ITEM));
-    lookAtItemId.setResponder(
+    this.lookAtItemId.setEditable(this.objectiveDataSet.hasObjective(ObjectiveType.LOOK_AT_ITEM));
+    this.lookAtItemId.setResponder(
         value -> {
           if (this.lookAtItemIdSaveButton != null) {
             this.lookAtItemIdSaveButton.active =
                 this.lookAtItemCheckbox != null
                     && this.lookAtItemCheckbox.selected()
                     && value != null
-                    && !value.equals(savedItemTag);
+                    && !value.equals(this.savedItemTag);
           }
         });
-    lookAtItemId.setValue(savedItemTag);
+    this.lookAtItemId.setValue(this.savedItemTag);
     this.lookAtItemIdSaveButton =
         this.addRenderableWidget(
             new SaveButton(
@@ -261,7 +261,7 @@ public class LookObjectiveConfigurationScreen<T extends ConfigurationMenu>
                   objectiveDataEntry.setTargetItemTag(this.lookAtItemId.getValue());
                   NetworkMessageHandlerManager.getServerHandler()
                       .addOrUpdateObjective(this.getEasyNPCUUID(), objectiveDataEntry);
-                  savedItemTag = this.lookAtItemId.getValue();
+                  this.savedItemTag = this.lookAtItemId.getValue();
                   this.lookAtItemIdSaveButton.active = false;
                 }));
     this.lookAtItemIdSaveButton.active = false;

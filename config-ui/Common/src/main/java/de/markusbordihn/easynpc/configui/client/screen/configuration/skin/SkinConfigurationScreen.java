@@ -69,7 +69,6 @@ public class SkinConfigurationScreen<T extends ConfigurationMenu> extends Config
   }
 
   protected void checkSkinNavigationButtonState() {
-    // Enable / disable buttons depending on the current skin index.
     if (this.skinPreviousButton != null) {
       this.skinPreviousButton.active = this.skinStartIndex > 0;
     }
@@ -164,7 +163,6 @@ public class SkinConfigurationScreen<T extends ConfigurationMenu> extends Config
   public void init() {
     super.init();
 
-    // Skin Types
     this.defaultSkinButton =
         this.addRenderableWidget(
             new TextButton(
@@ -217,12 +215,10 @@ public class SkinConfigurationScreen<T extends ConfigurationMenu> extends Config
                         .openConfiguration(
                             this.getEasyNPCUUID(), ConfigurationType.ADVANCED_SKIN)));
 
-    // Clear former error messages, if any.
     TextureManager.clearLastErrorMessage();
 
     this.checkAccess();
 
-    // Check if we need to hide the player skin button.
     ConfigurationDataCapable<?> configurationData = this.getEasyNPC().getEasyNPCConfigurationData();
     if (!configurationData.supportsConfigurationType(ConfigurationType.PLAYER_SKIN)) {
       this.urlSkinButton.setX(this.defaultSkinButton.getX() + this.defaultSkinButton.getWidth());
@@ -264,8 +260,8 @@ public class SkinConfigurationScreen<T extends ConfigurationMenu> extends Config
 
   @Override
   public boolean mouseClicked(MouseButtonEvent mouseButtonEvent, boolean doubleClick) {
-    if (!skinButtons.isEmpty()) {
-      for (Button skinButton : skinButtons) {
+    if (!this.skinButtons.isEmpty()) {
+      for (Button skinButton : this.skinButtons) {
         skinButton.mouseClicked(mouseButtonEvent, doubleClick);
       }
     }
@@ -288,8 +284,8 @@ public class SkinConfigurationScreen<T extends ConfigurationMenu> extends Config
                 20,
                 "<<",
                 onPress -> {
-                  skinStartIndex = Math.max(this.skinStartIndex - maxSkinsPerPage, 0);
-                  checkSkinNavigationButtonState();
+                  this.skinStartIndex = Math.max(this.skinStartIndex - this.maxSkinsPerPage, 0);
+                  this.checkSkinNavigationButtonState();
                 }));
     this.skinPreviousButton =
         this.addRenderableWidget(
@@ -300,9 +296,9 @@ public class SkinConfigurationScreen<T extends ConfigurationMenu> extends Config
                 "<",
                 onPress -> {
                   if (this.skinStartIndex > 0) {
-                    skinStartIndex--;
+                    this.skinStartIndex--;
                   }
-                  checkSkinNavigationButtonState();
+                  this.checkSkinNavigationButtonState();
                 }));
     this.skinNextPageButton =
         this.addRenderableWidget(
@@ -320,7 +316,7 @@ public class SkinConfigurationScreen<T extends ConfigurationMenu> extends Config
                   } else {
                     this.skinStartIndex = this.numOfSkins;
                   }
-                  checkSkinNavigationButtonState();
+                  this.checkSkinNavigationButtonState();
                 }));
     this.skinNextButton =
         this.addRenderableWidget(
@@ -332,19 +328,19 @@ public class SkinConfigurationScreen<T extends ConfigurationMenu> extends Config
                 onPress -> {
                   if (this.skinStartIndex >= 0
                       && this.skinStartIndex < this.numOfSkins - this.maxSkinsPerPage) {
-                    skinStartIndex++;
+                    this.skinStartIndex++;
                   }
-                  checkSkinNavigationButtonState();
+                  this.checkSkinNavigationButtonState();
                 }));
-    checkSkinNavigationButtonState();
+    this.checkSkinNavigationButtonState();
   }
 
   @Override
   public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
     super.render(guiGraphics, x, y, partialTicks);
 
-    if (!skinButtons.isEmpty()) {
-      for (Button skinButton : skinButtons) {
+    if (!this.skinButtons.isEmpty()) {
+      for (Button skinButton : this.skinButtons) {
         skinButton.render(guiGraphics, x, y, partialTicks);
       }
     }

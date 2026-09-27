@@ -122,15 +122,12 @@ public interface TradingDataCapable<E extends Mob> extends EasyNPC<E>, Merchant 
       return;
     }
 
-    // Reset trading offers
     for (MerchantOffer merchantOffer : merchantOffers) {
       merchantOffer.resetUses();
     }
 
-    // Update trading offers
     this.setTradingOffers(merchantOffers);
 
-    // Update last reset time
     this.getTradingDataSet().setLastReset(System.currentTimeMillis());
   }
 
@@ -155,13 +152,13 @@ public interface TradingDataCapable<E extends Mob> extends EasyNPC<E>, Merchant 
   }
 
   default MerchantOffers getTradingOffers() {
-    return getSynchedEntityData(SynchedDataIndex.TRADING_MERCHANT_OFFERS);
+    return this.getSynchedEntityData(SynchedDataIndex.TRADING_MERCHANT_OFFERS);
   }
 
   default void setTradingOffers(MerchantOffers merchantOffers) {
     // Force update and client sync because of weak change detection.
-    setSynchedEntityData(SynchedDataIndex.TRADING_MERCHANT_OFFERS, new MerchantOffers());
-    setSynchedEntityData(SynchedDataIndex.TRADING_MERCHANT_OFFERS, merchantOffers);
+    this.setSynchedEntityData(SynchedDataIndex.TRADING_MERCHANT_OFFERS, new MerchantOffers());
+    this.setSynchedEntityData(SynchedDataIndex.TRADING_MERCHANT_OFFERS, merchantOffers);
     this.updateMerchantTradingOffers(null);
   }
 
@@ -234,10 +231,10 @@ public interface TradingDataCapable<E extends Mob> extends EasyNPC<E>, Merchant 
   }
 
   default boolean hasTradingData() {
-    TradingType tradingType = getTradingDataSet().getType();
+    TradingType tradingType = this.getTradingDataSet().getType();
     return ((tradingType == TradingType.BASIC || tradingType == TradingType.ADVANCED)
-            && getTradingOffers() != null
-            && !getTradingOffers().isEmpty())
+            && this.getTradingOffers() != null
+            && !this.getTradingOffers().isEmpty())
         || tradingType == TradingType.CUSTOM;
   }
 
@@ -249,23 +246,24 @@ public interface TradingDataCapable<E extends Mob> extends EasyNPC<E>, Merchant 
   }
 
   default TradingDataSet getTradingDataSet() {
-    return getSynchedEntityData(SynchedDataIndex.TRADING_DATA_SET);
+    return this.getSynchedEntityData(SynchedDataIndex.TRADING_DATA_SET);
   }
 
   default void setTradingDataSet(TradingDataSet tradingDataSet) {
-    setSynchedEntityData(SynchedDataIndex.TRADING_DATA_SET, tradingDataSet);
+    this.setSynchedEntityData(SynchedDataIndex.TRADING_DATA_SET, tradingDataSet);
   }
 
   default void updateTradingDataSet() {
-    TradingDataSet currentTradingDataSet = getTradingDataSet();
-    setTradingDataSet(new TradingDataSet());
-    setTradingDataSet(currentTradingDataSet);
+    TradingDataSet currentTradingDataSet = this.getTradingDataSet();
+    this.setTradingDataSet(new TradingDataSet());
+    this.setTradingDataSet(currentTradingDataSet);
   }
 
   default boolean isValidTradingOffer(ItemStack itemA, ItemStack itemB, ItemStack itemResult) {
-    if (itemResult == null || (itemA == null && itemB == null)) {
+    if (itemResult == null) {
       return false;
     }
+
     return ((itemA != null && !itemA.isEmpty()) || (itemB != null && !itemB.isEmpty()))
         && !itemResult.isEmpty();
   }
@@ -275,7 +273,6 @@ public interface TradingDataCapable<E extends Mob> extends EasyNPC<E>, Merchant 
       return;
     }
 
-    // Make sure we have a valid merchant.
     Merchant merchant = this.getMerchant();
     if (merchant == null) {
       log.error(
@@ -292,7 +289,6 @@ public interface TradingDataCapable<E extends Mob> extends EasyNPC<E>, Merchant 
       return;
     }
 
-    // Check if player is already trading.
     if (merchant.getTradingPlayer() != null && merchant.getTradingPlayer() != serverPlayer) {
       log.warn(
           "Unable to open trading screen for {} with {} from {}, {} is still trading.",
@@ -322,9 +318,9 @@ public interface TradingDataCapable<E extends Mob> extends EasyNPC<E>, Merchant 
   }
 
   default void defineSynchedTradingData(SynchedEntityData.Builder builder) {
-    defineSynchedEntityData(builder, SynchedDataIndex.TRADING_DATA_SET, new TradingDataSet());
-    defineSynchedEntityData(builder, SynchedDataIndex.TRADING_INVENTORY, new CompoundTag());
-    defineSynchedEntityData(
+    this.defineSynchedEntityData(builder, SynchedDataIndex.TRADING_DATA_SET, new TradingDataSet());
+    this.defineSynchedEntityData(builder, SynchedDataIndex.TRADING_INVENTORY, new CompoundTag());
+    this.defineSynchedEntityData(
         builder, SynchedDataIndex.TRADING_MERCHANT_OFFERS, new MerchantOffers());
   }
 
@@ -350,8 +346,6 @@ public interface TradingDataCapable<E extends Mob> extends EasyNPC<E>, Merchant 
   }
 
   default void readAdditionalTradingData(ValueInput valueInput) {
-
-    // Load custom trading data set
     Optional<CompoundTag> tradingDataTag =
         valueInput.read(DATA_TRADING_DATA_TAG, CompoundTag.CODEC);
     tradingDataTag.ifPresent(

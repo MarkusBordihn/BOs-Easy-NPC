@@ -93,13 +93,11 @@ public class NavigationCommand extends Command {
       return Command.FAILURE;
     }
 
-    // Check for navigation data
     NavigationDataCapable<?> navigationData = easyNPC.getEasyNPCNavigationData();
     if (navigationData == null) {
       return sendFailureMessageNoNavigationData(context, easyNPC);
     }
 
-    // Set home position for EasyNPC entity by UUID.
     BlockPos blockPos = new BlockPos((int) position.x, (int) position.y, (int) position.z);
     navigationData.setNPCHomePosition(blockPos);
     return sendSuccessMessage(
@@ -117,13 +115,11 @@ public class NavigationCommand extends Command {
       return 0;
     }
 
-    // Check for navigation data
     NavigationDataCapable<?> navigationData = easyNPC.getEasyNPCNavigationData();
     if (navigationData == null) {
       return sendFailureMessageNoNavigationData(context, easyNPC);
     }
 
-    // Set home position for EasyNPC entity by UUID.
     navigationData.setPosition(position);
     return sendSuccessMessage(
         context,
@@ -140,13 +136,11 @@ public class NavigationCommand extends Command {
       return 0;
     }
 
-    // Check for navigation data
     NavigationDataCapable<?> navigationData = easyNPC.getEasyNPCNavigationData();
     if (navigationData == null) {
       return sendFailureMessageNoNavigationData(context, easyNPC);
     }
 
-    // Reset navigation for EasyNPC entity by UUID.
     navigationData.getGroundPathNavigation().recomputePath();
     return sendSuccessMessage(context, "Reset navigation for EasyNPC " + easyNPC);
   }

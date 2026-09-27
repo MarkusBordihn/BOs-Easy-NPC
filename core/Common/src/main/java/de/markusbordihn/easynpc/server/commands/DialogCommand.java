@@ -136,6 +136,7 @@ public class DialogCommand extends Command {
               + easyNPC.getEntityUUID()
               + "!");
     }
+
     return setPriority(
         context, easyNPC, easyNPC.getEasyNPCDialogData().getDialogId(dialogLabel), priority);
   }
@@ -171,7 +172,7 @@ public class DialogCommand extends Command {
       CommandSourceStack context, EasyNPC<?> easyNPC, ServerPlayer serverPlayer) {
 
     if (!serverPlayer.isAlive()) {
-      return sendFailureMessage(context, "Player is death!");
+      return sendFailureMessage(context, "Player is dead!");
     }
 
     if (easyNPC.getEasyNPCDialogData() == null || !easyNPC.getEasyNPCDialogData().hasDialog()) {
@@ -211,6 +212,7 @@ public class DialogCommand extends Command {
               + easyNPC.getEntityUUID()
               + "!");
     }
+
     return openDialog(
         context, easyNPC, serverPlayer, easyNPC.getEasyNPCDialogData().getDialogId(dialogLabel));
   }
@@ -219,7 +221,7 @@ public class DialogCommand extends Command {
       CommandSourceStack context, EasyNPC<?> easyNPC, ServerPlayer serverPlayer, UUID dialogUUID) {
 
     if (!serverPlayer.isAlive()) {
-      return sendFailureMessage(context, "Player is death!");
+      return sendFailureMessage(context, "Player is dead!");
     }
 
     if (easyNPC.getEasyNPCDialogData() == null || !easyNPC.getEasyNPCDialogData().hasDialog()) {
@@ -280,6 +282,7 @@ public class DialogCommand extends Command {
           "► Open dialog for " + easyNPC + " with " + serverPlayer + " and dialog " + dialogUUID,
           ChatFormatting.GREEN);
     }
+
     return sendSuccessMessage(
         context,
         "► Dialog " + dialogUUID + " not opened for " + serverPlayer + ": conditions are not met.",
@@ -287,7 +290,6 @@ public class DialogCommand extends Command {
   }
 
   public static int closeDialog(CommandSourceStack context, ServerPlayer serverPlayer) {
-    // Close dialog screen (client side)
     serverPlayer.closeContainer();
 
     return sendSuccessMessage(

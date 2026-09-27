@@ -94,19 +94,19 @@ public class SnbtFormatter {
 
     public void updateCurrentPosition(int index) {
       this.currentIndex = index;
-      this.currentChar = inputSnbt.charAt(index);
-      this.nextChar = getCharAtOrDefault(index + 1);
-      this.previousChar = getCharAtOrDefault(index - 1);
+      this.currentChar = this.inputSnbt.charAt(index);
+      this.nextChar = this.getCharAtOrDefault(index + 1);
+      this.previousChar = this.getCharAtOrDefault(index - 1);
     }
 
     public boolean handleStringCharacters() {
-      if (state.handleQuoteCharacter(currentChar, previousChar)) {
-        formattedOutput.append(currentChar);
+      if (this.state.handleQuoteCharacter(this.currentChar, this.previousChar)) {
+        this.formattedOutput.append(this.currentChar);
         return true;
       }
 
-      if (state.isInsideString()) {
-        formattedOutput.append(currentChar);
+      if (this.state.isInsideString()) {
+        this.formattedOutput.append(this.currentChar);
         return true;
       }
 
@@ -114,42 +114,43 @@ public class SnbtFormatter {
     }
 
     public void processStructureCharacter() {
-      switch (currentChar) {
-        case '{' -> handleOpenBrace();
-        case '}' -> handleCloseBrace();
-        case ',' -> handleComma();
-        default -> formattedOutput.append(currentChar);
+      switch (this.currentChar) {
+        case '{' -> this.handleOpenBrace();
+        case '}' -> this.handleCloseBrace();
+        case ',' -> this.handleComma();
+        default -> this.formattedOutput.append(this.currentChar);
       }
     }
 
     private void handleOpenBrace() {
-      formattedOutput.append(currentChar);
-      state.increaseDepth();
-      if (state.getCurrentDepth() == targetDepth + 1 && nextChar != '}') {
-        formattedOutput.append('\n');
-        appendIndent(state.getCurrentDepth());
+      this.formattedOutput.append(this.currentChar);
+      this.state.increaseDepth();
+      if (this.state.getCurrentDepth() == this.targetDepth + 1 && this.nextChar != '}') {
+        this.formattedOutput.append('\n');
+        this.appendIndent(this.state.getCurrentDepth());
       }
     }
 
     private void handleCloseBrace() {
-      if (state.getCurrentDepth() == targetDepth + 1 && previousChar != '{') {
-        formattedOutput.append('\n');
-        appendIndent(state.getCurrentDepth() - 1);
+      if (this.state.getCurrentDepth() == this.targetDepth + 1 && this.previousChar != '{') {
+        this.formattedOutput.append('\n');
+        this.appendIndent(this.state.getCurrentDepth() - 1);
       }
-      formattedOutput.append(currentChar);
-      state.decreaseDepth();
+      this.formattedOutput.append(this.currentChar);
+      this.state.decreaseDepth();
     }
 
     private void handleComma() {
-      formattedOutput.append(currentChar);
-      if (state.getCurrentDepth() == targetDepth + 1 && !isInsideArray(currentIndex)) {
-        formattedOutput.append('\n');
-        appendIndent(state.getCurrentDepth());
+      this.formattedOutput.append(this.currentChar);
+      if (this.state.getCurrentDepth() == this.targetDepth + 1
+          && !this.isInsideArray(this.currentIndex)) {
+        this.formattedOutput.append('\n');
+        this.appendIndent(this.state.getCurrentDepth());
       }
     }
 
     private void appendIndent(int depth) {
-      formattedOutput.append(INDENT.repeat(Math.max(0, depth)));
+      this.formattedOutput.append(INDENT.repeat(Math.max(0, depth)));
     }
 
     private boolean isInsideArray(int position) {
@@ -158,8 +159,8 @@ public class SnbtFormatter {
       char activeQuoteChar = '\0';
 
       for (int index = 0; index < position; index++) {
-        char charAtIndex = inputSnbt.charAt(index);
-        char charBeforeIndex = getCharAtOrDefault(index - 1);
+        char charAtIndex = this.inputSnbt.charAt(index);
+        char charBeforeIndex = this.getCharAtOrDefault(index - 1);
 
         if (shouldToggleStringMode(charAtIndex, charBeforeIndex, isInsideString, activeQuoteChar)) {
           isInsideString = !isInsideString;
@@ -180,11 +181,11 @@ public class SnbtFormatter {
     }
 
     private char getCharAtOrDefault(int index) {
-      return index >= 0 && index < inputLength ? inputSnbt.charAt(index) : '\0';
+      return index >= 0 && index < this.inputLength ? this.inputSnbt.charAt(index) : '\0';
     }
 
     public String getFormattedOutput() {
-      return formattedOutput.toString();
+      return this.formattedOutput.toString();
     }
   }
 
@@ -194,29 +195,30 @@ public class SnbtFormatter {
     private char activeQuoteChar = '\0';
 
     public boolean handleQuoteCharacter(char currentChar, char previousChar) {
-      if (!shouldToggleStringMode(currentChar, previousChar, isInsideString, activeQuoteChar)) {
+      if (!shouldToggleStringMode(
+          currentChar, previousChar, this.isInsideString, this.activeQuoteChar)) {
         return false;
       }
 
-      isInsideString = !isInsideString;
-      activeQuoteChar = isInsideString ? currentChar : '\0';
+      this.isInsideString = !this.isInsideString;
+      this.activeQuoteChar = this.isInsideString ? currentChar : '\0';
       return true;
     }
 
     public boolean isInsideString() {
-      return isInsideString;
+      return this.isInsideString;
     }
 
     public int getCurrentDepth() {
-      return currentDepth;
+      return this.currentDepth;
     }
 
     public void increaseDepth() {
-      currentDepth++;
+      this.currentDepth++;
     }
 
     public void decreaseDepth() {
-      currentDepth--;
+      this.currentDepth--;
     }
   }
 }

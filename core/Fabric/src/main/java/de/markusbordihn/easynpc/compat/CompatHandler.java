@@ -19,14 +19,12 @@
 
 package de.markusbordihn.easynpc.compat;
 
-import net.fabricmc.loader.impl.FabricLoaderImpl;
+import net.fabricmc.loader.api.FabricLoader;
 
 public class CompatHandler implements CompatHandlerInterface {
 
-  private static final FabricLoaderImpl fabricLoader = FabricLoaderImpl.INSTANCE;
-
   @Override
   public boolean isModLoaded(String modId) {
-    return fabricLoader.isModLoaded(modId);
+    return FabricLoader.getInstance().isModLoaded(modId);
   }
 }

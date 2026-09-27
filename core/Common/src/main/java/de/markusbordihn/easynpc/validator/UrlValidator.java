@@ -123,7 +123,6 @@ public class UrlValidator {
   }
 
   public static boolean isValidUrl(String url) {
-    // Basic URL validation.
     if (url == null
         || url.isEmpty()
         || (!url.startsWith("http://") && !url.startsWith("https://"))) {
@@ -133,7 +132,6 @@ public class UrlValidator {
       return false;
     }
 
-    // Check for forbidden extensions, to prevent downloading of malicious files.
     for (String extension : FORBIDDEN_EXTENSIONS) {
       if (url.endsWith(extension)) {
         log.error("Forbidden extension found in URL: {}", url);
@@ -141,7 +139,7 @@ public class UrlValidator {
       }
     }
 
-    // Check for valid URL format according to RFC 2396.
+    // RFC 2396
     try {
       new URL(url).toURI();
     } catch (MalformedURLException | URISyntaxException e) {

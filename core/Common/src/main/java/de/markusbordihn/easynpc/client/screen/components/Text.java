@@ -77,7 +77,8 @@ public class Text {
     if (text == null) {
       return;
     }
-    drawErrorMessage(guiGraphics, font, text, x, y, width);
+
+    drawErrorMessage(guiGraphics, font, Component.literal(text), x, y, width);
   }
 
   public static void drawErrorMessage(
@@ -216,6 +217,7 @@ public class Text {
     if (maxChars <= 0) {
       return FormattedCharSequence.EMPTY;
     }
+
     return sink -> {
       int[] count = {0};
       return sequence.accept(

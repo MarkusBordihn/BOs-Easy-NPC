@@ -48,17 +48,16 @@ public class RespawnHandler {
       return false;
     }
 
-    // Get preset data for respawn
     PresetDataCapable<?> presetData = easyNPC.getEasyNPCPresetData();
     if (presetData == null) {
       log.error("[{}] No preset data available for respawn.", easyNPC);
       return false;
     }
+
     CompoundTag compoundTag = presetData.serializePresetData();
     PresetNormalizer.removePendingActionData(compoundTag);
     EntityType<?> entityType = easyNPC.getEntity().getType();
 
-    // Create new entity with saved data
     Entity entity = entityType.create(serverLevel, EntitySpawnReason.TRIGGERED);
     if (entity == null) {
       log.error(
@@ -69,7 +68,6 @@ public class RespawnHandler {
       return false;
     }
 
-    // Load entity data using TagValueInput
     entity.load(
         TagValueInput.create(
             ProblemReporter.DISCARDING, serverLevel.registryAccess(), compoundTag));
@@ -77,12 +75,10 @@ public class RespawnHandler {
     // Fix possible legacy custom name.
     CompoundTagUtils.fixLegacyCustomName(entity, compoundTag);
 
-    // Remove old entity
     NPCEntityManager.markIntentionalRemoval(
         easyNPC.getEntityUUID(), NPCRemovalReason.UNLOADED_BY_ACTION);
     easyNPC.getEntity().discard();
 
-    // Respawn new entity
     log.info("[{}] Respawn Easy NPC with {} into {}", easyNPC, entityType, serverLevel);
     serverLevel.addFreshEntity(entity);
     return true;

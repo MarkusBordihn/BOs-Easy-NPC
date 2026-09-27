@@ -41,17 +41,17 @@ public class UUIDUtils {
       try {
         MessageDigest digest = MessageDigest.getInstance("SHA-256");
         byte[] hashBytes = digest.digest(text.getBytes());
-        long mostSigBits = 0;
-        long leastSigBits = 0;
+        long mostSignificantBits = 0;
+        long leastSignificantBits = 0;
 
         for (int i = 0; i < 8; i++) {
-          mostSigBits = (mostSigBits << 8) | (hashBytes[i] & 0xff);
+          mostSignificantBits = (mostSignificantBits << 8) | (hashBytes[i] & 0xff);
         }
         for (int i = 8; i < 16; i++) {
-          leastSigBits = (leastSigBits << 8) | (hashBytes[i] & 0xff);
+          leastSignificantBits = (leastSignificantBits << 8) | (hashBytes[i] & 0xff);
         }
 
-        return new UUID(mostSigBits, leastSigBits);
+        return new UUID(mostSignificantBits, leastSignificantBits);
       } catch (NoSuchAlgorithmException e) {
         log.error("Unable to create UUID from text: {}", text, e);
       }

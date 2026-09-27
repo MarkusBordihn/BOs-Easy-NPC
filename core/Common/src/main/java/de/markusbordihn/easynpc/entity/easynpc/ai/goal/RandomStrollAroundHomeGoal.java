@@ -70,6 +70,7 @@ public class RandomStrollAroundHomeGoal<T extends EasyNPC<?>> extends Goal {
     if (!moveControl.hasWanted()) {
       return true;
     }
+
     double dx = moveControl.getWantedX() - this.mob.getX();
     double dy = moveControl.getWantedY() - this.mob.getY();
     double dz = moveControl.getWantedZ() - this.mob.getZ();
@@ -84,6 +85,7 @@ public class RandomStrollAroundHomeGoal<T extends EasyNPC<?>> extends Goal {
           && !this.pathfinderMob.isVehicle()
           && (!this.pathfinderMob.isAggressive() || this.pathfinderMob.getTarget() == null);
     }
+
     return false;
   }
 
@@ -175,6 +177,7 @@ public class RandomStrollAroundHomeGoal<T extends EasyNPC<?>> extends Goal {
       return AirRandomPos.getPosTowards(
           this.pathfinderMob, flyingX, flyingY, flyingZ, homePosition, Constants.HALF_OF_PI);
     }
+
     return LandRandomPos.getPosTowards(this.pathfinderMob, 10, 7, homePosition);
   }
 

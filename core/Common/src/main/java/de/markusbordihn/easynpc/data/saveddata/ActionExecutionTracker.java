@@ -122,7 +122,7 @@ public class ActionExecutionTracker extends SavedData {
     }
 
     Map<ExecutionId, ExecutionData> playerData =
-        this.trackingData.computeIfAbsent(playerUUID, k -> new HashMap<>());
+        this.trackingData.computeIfAbsent(playerUUID, trackedPlayerUUID -> new HashMap<>());
     ExecutionData currentData = playerData.get(executionId);
     long now = System.currentTimeMillis();
 
@@ -144,7 +144,7 @@ public class ActionExecutionTracker extends SavedData {
           executionId);
     }
 
-    setDirty();
+    this.setDirty();
   }
 
   public void resetExecution(UUID playerUUID, ExecutionId executionId) {
@@ -155,7 +155,7 @@ public class ActionExecutionTracker extends SavedData {
     Map<ExecutionId, ExecutionData> playerData = this.trackingData.get(playerUUID);
     if (playerData != null && playerData.remove(executionId) != null) {
       log.debug("Reset execution for player {} execution {}", playerUUID, executionId);
-      setDirty();
+      this.setDirty();
     }
   }
 
@@ -172,7 +172,7 @@ public class ActionExecutionTracker extends SavedData {
     }
     if (resetCount > 0) {
       log.debug("Reset execution for {} players for execution {}", resetCount, executionId);
-      setDirty();
+      this.setDirty();
     }
   }
 

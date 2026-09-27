@@ -114,7 +114,6 @@ public final class DialogDataEntry {
       return Component.empty();
     }
 
-    // Return first dialog text or random dialog text.
     DialogTextData dialogTextData =
         this.dialogTexts.size() == 1
             ? this.dialogTexts.iterator().next()
@@ -131,7 +130,7 @@ public final class DialogDataEntry {
   }
 
   public String getDialogText(DialogMetaData dialogMetaData) {
-    return DialogUtils.parseDialogText(getDialogText(), dialogMetaData);
+    return DialogUtils.parseDialogText(this.getDialogText(), dialogMetaData);
   }
 
   @SuppressWarnings("unused")
@@ -183,6 +182,7 @@ public final class DialogDataEntry {
         return button;
       }
     }
+
     return null;
   }
 
@@ -193,6 +193,7 @@ public final class DialogDataEntry {
         return button;
       }
     }
+
     return null;
   }
 
@@ -205,6 +206,7 @@ public final class DialogDataEntry {
     if (dialogButtonEntry == null) {
       return false;
     }
+
     for (DialogButtonEntry button : this.dialogButtons) {
       if (button.id().equals(dialogButtonEntry.id())
           && !button.id().equals(replacedDialogButtonId)) {
@@ -279,7 +281,6 @@ public final class DialogDataEntry {
   public void load(CompoundTag compoundTag) {
     this.name = compoundTag.getString(DATA_DIALOG_NAME).orElse("");
 
-    // Handle label and id creation
     this.setLabel(
         compoundTag.contains(DATA_LABEL_TAG)
             ? compoundTag.getString(DATA_LABEL_TAG).orElse("")
@@ -288,10 +289,8 @@ public final class DialogDataEntry {
     if (compoundTag.contains(DATA_TEXTS_TAG)) {
       this.dialogTexts.clear();
       ListTag dialogTextsList = compoundTag.getListOrEmpty(DATA_TEXTS_TAG);
-      if (!dialogTextsList.isEmpty()) {
-        for (int i = 0; i < dialogTextsList.size(); i++) {
-          this.dialogTexts.add(new DialogTextData(dialogTextsList.getCompoundOrEmpty(i)));
-        }
+      for (int i = 0; i < dialogTextsList.size(); i++) {
+        this.dialogTexts.add(new DialogTextData(dialogTextsList.getCompoundOrEmpty(i)));
       }
     } else if (compoundTag.contains(DATA_TEXT_TAG)) {
       this.dialogTexts.clear();
@@ -301,23 +300,19 @@ public final class DialogDataEntry {
     if (compoundTag.contains(DATA_BUTTONS_TAG)) {
       this.dialogButtons.clear();
       ListTag buttonsList = compoundTag.getListOrEmpty(DATA_BUTTONS_TAG);
-      if (!buttonsList.isEmpty()) {
-        for (int i = 0; i < buttonsList.size(); i++) {
-          this.dialogButtons.add(new DialogButtonEntry(buttonsList.getCompoundOrEmpty(i)));
-        }
+      for (int i = 0; i < buttonsList.size(); i++) {
+        this.dialogButtons.add(new DialogButtonEntry(buttonsList.getCompoundOrEmpty(i)));
       }
     }
 
     if (compoundTag.contains(DATA_CONDITIONS_TAG)) {
       this.conditions.clear();
       ListTag conditionsList = compoundTag.getListOrEmpty(DATA_CONDITIONS_TAG);
-      if (!conditionsList.isEmpty()) {
-        for (int i = 0; i < conditionsList.size(); i++) {
-          ConditionDataEntry conditionEntry =
-              new ConditionDataEntry(conditionsList.getCompoundOrEmpty(i));
-          if (conditionEntry.isValid()) {
-            this.conditions.add(conditionEntry);
-          }
+      for (int i = 0; i < conditionsList.size(); i++) {
+        ConditionDataEntry conditionEntry =
+            new ConditionDataEntry(conditionsList.getCompoundOrEmpty(i));
+        if (conditionEntry.isValid()) {
+          this.conditions.add(conditionEntry);
         }
       }
     }
@@ -337,8 +332,7 @@ public final class DialogDataEntry {
   public CompoundTag save(CompoundTag compoundTag) {
     compoundTag.putString(DATA_DIALOG_NAME, this.name.trim());
 
-    // Only save label if it is different from auto-generated label.
-    if (!Objects.equals(DialogUtils.generateDialogLabel(name), this.label)) {
+    if (!Objects.equals(DialogUtils.generateDialogLabel(this.name), this.label)) {
       compoundTag.putString(DATA_LABEL_TAG, this.label);
     }
 
@@ -388,7 +382,7 @@ public final class DialogDataEntry {
 
   @Override
   public String toString() {
-    return "DialogData [id="
+    return "DialogDataEntry [id="
         + this.id
         + ", name="
         + this.name

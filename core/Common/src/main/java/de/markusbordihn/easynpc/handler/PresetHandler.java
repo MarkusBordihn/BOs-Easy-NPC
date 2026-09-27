@@ -356,6 +356,7 @@ public class PresetHandler {
       if (shownNotices >= MAX_SHOWN_SANITIZATION_NOTICES) {
         break;
       }
+
       serverPlayer.sendSystemMessage(
           Component.translatable(Constants.TEXT_PREFIX + "preset.sanitize.entry", message));
       shownNotices++;
@@ -576,6 +577,7 @@ public class PresetHandler {
         log.error("[{}] Error spawning entity", easyNPCEntity);
         return false;
       }
+
       log.debug("[{}] Imported preset data {} for {}", serverLevel, compoundTag, easyNPCEntity);
       return true;
     } catch (Exception e) {
@@ -688,19 +690,6 @@ public class PresetHandler {
     }
 
     return PresetFileHandler.loadWithStablePresetUUID(presetFile.toFile());
-  }
-
-  @SuppressWarnings("unused")
-  public static boolean importLocalPreset(
-      ServerLevel serverLevel,
-      CompoundTag compoundTag,
-      Identifier presetLocation,
-      Vec3 position,
-      UUID uuid,
-      ServerPlayer serverPlayer) {
-    return importLocalPresetWithReport(
-            serverLevel, compoundTag, presetLocation, position, uuid, serverPlayer)
-        .success();
   }
 
   public static PresetImportResult importLocalPresetWithReport(
@@ -837,15 +826,15 @@ public class PresetHandler {
     return compoundTag;
   }
 
-  @SuppressWarnings("unused")
   public static CompoundTag prepareClientExportData(EasyNPC<?> easyNPC, PresetMetadata metadata) {
     if (easyNPC == null) {
       log.error("Cannot prepare client export data, easyNPC is null");
       return null;
     }
 
-    CompoundTag presetData = serializeAndCopyPresetData(easyNPC);
-    if (presetData == null) {
+    CompoundTag presetData = prepareExportData(easyNPC);
+    if (presetData == null || presetData.isEmpty()) {
+      log.error("[{}] Error serializing preset data!", easyNPC);
       return null;
     }
 
@@ -862,16 +851,6 @@ public class PresetHandler {
         finalMetadata.category());
 
     return wrapper;
-  }
-
-  private static CompoundTag serializeAndCopyPresetData(EasyNPC<?> easyNPC) {
-    CompoundTag presetData = prepareExportData(easyNPC);
-    if (presetData == null || presetData.isEmpty()) {
-      log.error("[{}] Error serializing preset data!", easyNPC);
-      return null;
-    }
-
-    return presetData;
   }
 
   private static PresetMetadata extractAndEnrichMetadata(
@@ -906,13 +885,13 @@ public class PresetHandler {
     return null;
   }
 
-  @SuppressWarnings("unused")
   public static PresetData loadPreset(
       Identifier presetLocation, PresetType presetType, MinecraftServer server) {
     if (presetLocation == null || server == null) {
       log.error("Cannot load preset, location or server is null");
       return null;
     }
+
     return loadPresetFromSource(presetType, presetLocation, server);
   }
 }

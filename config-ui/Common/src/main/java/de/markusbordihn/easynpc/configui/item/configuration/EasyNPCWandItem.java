@@ -57,13 +57,9 @@ import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class EasyNPCWandItem extends Item {
-
   public static final String ID = "easy_npc_wand";
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private static final int HIGHLIGHT_DURATION_TICKS = 4 * 20;
   private static final int HIGHLIGHT_INTERVAL_TICKS = 30;
   private static final double HIGHLIGHT_RADIUS = 32.0d;
@@ -97,6 +93,15 @@ public class EasyNPCWandItem extends Item {
     }
 
     return ownedEasyNPCs;
+  }
+
+  private static EasyNPCBase<?> findEasyNPC(Level level, AABB searchArea) {
+    for (Mob mob : level.getEntitiesOfClass(Mob.class, searchArea, Entity::isAlive)) {
+      if (mob instanceof EasyNPCBase<?> easyNPC) {
+        return easyNPC;
+      }
+    }
+    return null;
   }
 
   @Override
@@ -142,8 +147,6 @@ public class EasyNPCWandItem extends Item {
       InteractionHand interactionHand) {
     if (player instanceof ServerPlayer serverPlayer
         && livingEntity instanceof EasyNPCBase<?> easyNPCEntity) {
-
-      // Shift+right-click: Quick rotate NPC to face the player.
       if (player.isShiftKeyDown()) {
         ModelDataCapable<?> modelData = easyNPCEntity.getEasyNPCModelData();
         if (modelData != null) {
@@ -162,6 +165,7 @@ public class EasyNPCWandItem extends Item {
           .openConfigurationMenu(ConfigurationType.MAIN, serverPlayer, easyNPCEntity, 0);
       return InteractionResult.SUCCESS;
     }
+
     return InteractionResult.PASS;
   }
 
@@ -171,8 +175,6 @@ public class EasyNPCWandItem extends Item {
     Player player = userContext.getPlayer();
     if (player instanceof ServerPlayer serverPlayer) {
       BlockPos blockPos = userContext.getClickedPos();
-
-      // Search for nearby EasyNPC entities above and below the block position
       AABB aabbAbove =
           new AABB(
               blockPos.getX() - 0.25d,
@@ -181,15 +183,6 @@ public class EasyNPCWandItem extends Item {
               blockPos.getX() + 0.25d,
               blockPos.getY() + 2d,
               blockPos.getZ() + 0.25d);
-      for (Mob mob : level.getEntitiesOfClass(Mob.class, aabbAbove.inflate(0.5), Entity::isAlive)) {
-        if (mob instanceof EasyNPCBase<?> easyNPC) {
-          MenuManager.getMenuHandler()
-              .openConfigurationMenu(ConfigurationType.MAIN, serverPlayer, easyNPC, 0);
-          return InteractionResult.SUCCESS;
-        }
-      }
-
-      // Search for nearby EasyNPC entities around the block position
       AABB aabbAround =
           new AABB(
               blockPos.getX() - 0.5d,
@@ -198,19 +191,10 @@ public class EasyNPCWandItem extends Item {
               blockPos.getX() + 1d,
               blockPos.getY() + 1d,
               blockPos.getZ() + 1d);
-      for (Mob mob :
-          level.getEntitiesOfClass(Mob.class, aabbAround.inflate(0.5), Entity::isAlive)) {
-        if (mob instanceof EasyNPCBase<?> easyNPC) {
-          MenuManager.getMenuHandler()
-              .openConfigurationMenu(ConfigurationType.MAIN, serverPlayer, easyNPC, 0);
-          return InteractionResult.SUCCESS;
-        }
-      }
-
-      // Expand the search area to find all nearby EasyNPC entities
-      for (Mob mob :
-          level.getEntitiesOfClass(Mob.class, aabbAround.inflate(2.5), Entity::isAlive)) {
-        if (mob instanceof EasyNPCBase<?> easyNPC) {
+      for (AABB searchArea :
+          List.of(aabbAbove.inflate(0.5), aabbAround.inflate(0.5), aabbAround.inflate(2.5))) {
+        EasyNPCBase<?> easyNPC = findEasyNPC(level, searchArea);
+        if (easyNPC != null) {
           MenuManager.getMenuHandler()
               .openConfigurationMenu(ConfigurationType.MAIN, serverPlayer, easyNPC, 0);
           return InteractionResult.SUCCESS;

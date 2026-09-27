@@ -42,7 +42,6 @@ class ConditionDataList extends ObjectSelectionList<ConditionDataListEntry> {
       OnRemove onRemove) {
     super(minecraft, width, height, top, entryHeight);
 
-    // Add entries
     int topPos = top + 4;
     if (conditionDataSet != null) {
       for (ConditionDataEntry conditionDataEntry : conditionDataSet.getConditions()) {
@@ -60,9 +59,8 @@ class ConditionDataList extends ObjectSelectionList<ConditionDataListEntry> {
   }
 
   @Override
-  protected void renderSelection(GuiGraphics guiGraphics, ConditionDataListEntry entry, int color) {
-    // Nothing to render
-  }
+  protected void renderSelection(
+      GuiGraphics guiGraphics, ConditionDataListEntry entry, int color) {}
 
   @Override
   protected int scrollBarX() {
@@ -70,12 +68,8 @@ class ConditionDataList extends ObjectSelectionList<ConditionDataListEntry> {
   }
 
   @Override
-  protected void renderListSeparators(GuiGraphics guiGraphics) {
-    // Do not render list separators.
-  }
+  protected void renderListSeparators(GuiGraphics guiGraphics) {}
 
   @Override
-  protected void renderListBackground(GuiGraphics guiGraphics) {
-    // Do not render list background.
-  }
+  protected void renderListBackground(GuiGraphics guiGraphics) {}
 }

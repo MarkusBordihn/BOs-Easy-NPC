@@ -74,9 +74,9 @@ class CustomPositionTest {
   @Test
   @DisplayName("Two CustomPositions with the same components should be equal (record semantics)")
   void testEqualityBySameComponents() {
-    CustomPosition p1 = new CustomPosition(1f, 2f, 3f);
-    CustomPosition p2 = new CustomPosition(1f, 2f, 3f);
-    assertEquals(p1, p2);
+    CustomPosition firstPosition = new CustomPosition(1f, 2f, 3f);
+    CustomPosition secondPosition = new CustomPosition(1f, 2f, 3f);
+    assertEquals(firstPosition, secondPosition);
   }
 
   @Test

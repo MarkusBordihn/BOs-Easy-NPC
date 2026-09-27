@@ -33,7 +33,6 @@ Spawner Type Configuration
 
 """;
 
-  // Boss Spawner
   public static short BOSS_SPAWNER_DELAY = 600;
   public static short BOSS_SPAWNER_MIN_SPAWN_DELAY = 6000;
   public static short BOSS_SPAWNER_MAX_SPAWN_DELAY = 18000;
@@ -42,7 +41,6 @@ Spawner Type Configuration
   public static short BOSS_SPAWNER_REQUIRED_PLAYER_RANGE = 32;
   public static short BOSS_SPAWNER_SPAWN_RANGE = 16;
 
-  // Default Spawner
   public static short DEFAULT_SPAWNER_DELAY = 600;
   public static short DEFAULT_SPAWNER_MIN_SPAWN_DELAY = 400;
   public static short DEFAULT_SPAWNER_MAX_SPAWN_DELAY = 1200;
@@ -51,7 +49,6 @@ Spawner Type Configuration
   public static short DEFAULT_SPAWNER_REQUIRED_PLAYER_RANGE = 16;
   public static short DEFAULT_SPAWNER_SPAWN_RANGE = 8;
 
-  // Group Spawner
   public static short GROUP_SPAWNER_DELAY = 600;
   public static short GROUP_SPAWNER_MIN_SPAWN_DELAY = 3000;
   public static short GROUP_SPAWNER_MAX_SPAWN_DELAY = 12000;
@@ -60,7 +57,6 @@ Spawner Type Configuration
   public static short GROUP_SPAWNER_REQUIRED_PLAYER_RANGE = 12;
   public static short GROUP_SPAWNER_SPAWN_RANGE = 6;
 
-  // Single Spawner
   public static short SINGLE_SPAWNER_DELAY = 600;
   public static short SINGLE_SPAWNER_MIN_SPAWN_DELAY = 3000;
   public static short SINGLE_SPAWNER_MAX_SPAWN_DELAY = 9000;
@@ -69,7 +65,6 @@ Spawner Type Configuration
   public static short SINGLE_SPAWNER_REQUIRED_PLAYER_RANGE = 8;
   public static short SINGLE_SPAWNER_SPAWN_RANGE = 4;
 
-  // World Spawner
   public static short WORLD_SPAWNER_DELAY = 600;
   public static short WORLD_SPAWNER_MIN_SPAWN_DELAY = 3000;
   public static short WORLD_SPAWNER_MAX_SPAWN_DELAY = 12000;
@@ -88,7 +83,6 @@ Spawner Type Configuration
     Properties properties = readConfigFile(configFile);
     Properties unmodifiedProperties = (Properties) properties.clone();
 
-    // Boss Spawner
     BOSS_SPAWNER_DELAY = parseConfigValue(properties, "BossSpawner:Delay", BOSS_SPAWNER_DELAY);
     BOSS_SPAWNER_MIN_SPAWN_DELAY =
         parseConfigValue(properties, "BossSpawner:MinSpawnDelay", BOSS_SPAWNER_MIN_SPAWN_DELAY);
@@ -105,7 +99,6 @@ Spawner Type Configuration
     BOSS_SPAWNER_SPAWN_RANGE =
         parseConfigValue(properties, "BossSpawner:SpawnRange", BOSS_SPAWNER_SPAWN_RANGE);
 
-    // Default Spawner
     DEFAULT_SPAWNER_DELAY =
         parseConfigValue(properties, "DefaultSpawner:Delay", DEFAULT_SPAWNER_DELAY);
     DEFAULT_SPAWNER_MIN_SPAWN_DELAY =
@@ -127,7 +120,6 @@ Spawner Type Configuration
     DEFAULT_SPAWNER_SPAWN_RANGE =
         parseConfigValue(properties, "DefaultSpawner:SpawnRange", DEFAULT_SPAWNER_SPAWN_RANGE);
 
-    // Group Spawner
     GROUP_SPAWNER_DELAY = parseConfigValue(properties, "GroupSpawner:Delay", GROUP_SPAWNER_DELAY);
     GROUP_SPAWNER_MIN_SPAWN_DELAY =
         parseConfigValue(properties, "GroupSpawner:MinSpawnDelay", GROUP_SPAWNER_MIN_SPAWN_DELAY);
@@ -144,7 +136,6 @@ Spawner Type Configuration
     GROUP_SPAWNER_SPAWN_RANGE =
         parseConfigValue(properties, "GroupSpawner:SpawnRange", GROUP_SPAWNER_SPAWN_RANGE);
 
-    // Single Spawner
     SINGLE_SPAWNER_DELAY =
         parseConfigValue(properties, "SingleSpawner:Delay", SINGLE_SPAWNER_DELAY);
     SINGLE_SPAWNER_MIN_SPAWN_DELAY =
@@ -162,7 +153,6 @@ Spawner Type Configuration
     SINGLE_SPAWNER_SPAWN_RANGE =
         parseConfigValue(properties, "SingleSpawner:SpawnRange", SINGLE_SPAWNER_SPAWN_RANGE);
 
-    // World Spawner
     WORLD_SPAWNER_DELAY = parseConfigValue(properties, "WorldSpawner:Delay", WORLD_SPAWNER_DELAY);
     WORLD_SPAWNER_MIN_SPAWN_DELAY =
         parseConfigValue(properties, "WorldSpawner:MinSpawnDelay", WORLD_SPAWNER_MIN_SPAWN_DELAY);
@@ -179,7 +169,6 @@ Spawner Type Configuration
     WORLD_SPAWNER_SPAWN_RANGE =
         parseConfigValue(properties, "WorldSpawner:SpawnRange", WORLD_SPAWNER_SPAWN_RANGE);
 
-    // Update config file if needed
     updateConfigFileIfChanged(configFile, CONFIG_FILE_HEADER, properties, unmodifiedProperties);
   }
 }

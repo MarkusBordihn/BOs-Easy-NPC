@@ -19,22 +19,14 @@
 
 package de.markusbordihn.easynpc.gametest;
 
-import de.markusbordihn.easynpc.entity.ModEntityType;
-import de.markusbordihn.easynpc.entity.ModNPCEntityType;
+import static de.markusbordihn.easynpc.gametest.GameTestEntityTypes.humanoid;
+import static de.markusbordihn.easynpc.gametest.GameTestEntityTypes.villager;
+
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraft.world.entity.EntityType;
 
 public final class PresetSpawnTest {
 
   private PresetSpawnTest() {}
-
-  private static EntityType<?> humanoid() {
-    return ModEntityType.getEntityType(ModNPCEntityType.HUMANOID);
-  }
-
-  private static EntityType<?> villager() {
-    return ModEntityType.getEntityType(ModNPCEntityType.VILLAGER);
-  }
 
   public static void testPresetItemSpawnsConfiguredNPC(GameTestHelper helper) {
     PresetSpawnTestHelper.assertPresetItemSpawnsConfiguredNPC(helper, humanoid());

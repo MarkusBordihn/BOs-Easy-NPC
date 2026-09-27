@@ -70,6 +70,7 @@ public final class ModelAnimationAPI {
     if (normalizedName.isEmpty()) {
       return false;
     }
+
     return issueRequest(npc, ModelAnimationOperation.PLAY, normalizedName, playback, transition);
   }
 
@@ -95,6 +96,7 @@ public final class ModelAnimationAPI {
     if (!(npc instanceof EasyModelNPC easyModelNPC) || !supportsAnimations(npc)) {
       return List.of();
     }
+
     return EasyModelEntitiesManager.listAnimations(easyModelNPC.getEasyModelProfileId());
   }
 
@@ -102,6 +104,7 @@ public final class ModelAnimationAPI {
     if (!(npc instanceof EasyModelNPC easyModelNPC) || !supportsAnimations(npc)) {
       return List.of();
     }
+
     return EasyModelEntitiesManager.listAnimationVariants(
         easyModelNPC.getEasyModelProfileId(), baseName);
   }
@@ -110,13 +113,16 @@ public final class ModelAnimationAPI {
     if (animationName == null) {
       return "";
     }
+
     String normalized = animationName.trim().toLowerCase(Locale.ROOT);
     if (normalized.isEmpty() || normalized.length() > MAX_ANIMATION_NAME_LENGTH) {
       return "";
     }
+
     if (normalized.startsWith(NAMED_PREFIX)) {
       return normalized.length() > NAMED_PREFIX.length() ? normalized : "";
     }
+
     return STANDARD_ANIMATIONS.contains(normalized) ? normalized : NAMED_PREFIX + normalized;
   }
 

@@ -196,14 +196,21 @@ public class TestCommand extends Command {
       ServerLevel level, BlockPos centerPos, EntityType<?> entityType) {
     int radius = 3;
 
-    // Clear area: from bottom to ceiling
     fillArea(
         level,
         centerPos.offset(-radius, -1, -radius),
         centerPos.offset(radius, 4, radius),
         Blocks.AIR.defaultBlockState());
+    buildFloor(level, centerPos, radius);
+    buildWalls(level, centerPos, radius);
+    buildCeiling(level, centerPos, radius);
+    placeGate(level, centerPos, radius);
+    placeSign(level, centerPos, entityType);
 
-    // Floor: quartz with glowstone at corners
+    entityType.spawn(level, null, null, centerPos, EntitySpawnReason.COMMAND, true, false);
+  }
+
+  private static void buildFloor(ServerLevel level, BlockPos centerPos, int radius) {
     for (int dx = -radius; dx <= radius; dx++) {
       for (int dz = -radius; dz <= radius; dz++) {
         BlockPos floorPos = centerPos.offset(dx, -1, dz);
@@ -214,8 +221,9 @@ public class TestCommand extends Command {
         }
       }
     }
+  }
 
-    // Walls: oak fences, 1 high, except 3 high at corners
+  private static void buildWalls(ServerLevel level, BlockPos centerPos, int radius) {
     for (int dx = -radius; dx <= radius; dx++) {
       for (int dz = -radius; dz <= radius; dz++) {
         boolean isEdge = Math.abs(dx) == radius || Math.abs(dz) == radius;
@@ -228,31 +236,33 @@ public class TestCommand extends Command {
         }
       }
     }
+  }
 
-    // Ceiling: oak slabs at y + 3
+  private static void buildCeiling(ServerLevel level, BlockPos centerPos, int radius) {
     fillArea(
         level,
         centerPos.offset(-radius, 3, -radius),
         centerPos.offset(radius, 3, radius),
         Blocks.OAK_SLAB.defaultBlockState());
 
-    // Additional solid area with oak planks under the sign on Y + 3
     for (int dx = -1; dx <= 1; dx++) {
       for (int dz = -1; dz <= 1; dz++) {
-        BlockPos lowerSlabPos = centerPos.offset(dx, 3, dz);
-        level.setBlockAndUpdate(lowerSlabPos, Blocks.OAK_PLANKS.defaultBlockState());
+        BlockPos plankPosition = centerPos.offset(dx, 3, dz);
+        level.setBlockAndUpdate(plankPosition, Blocks.OAK_PLANKS.defaultBlockState());
       }
     }
+  }
 
-    // Add a fence gate (south side, center)
+  private static void placeGate(ServerLevel level, BlockPos centerPos, int radius) {
     BlockPos gatePos = centerPos.offset(0, 0, radius);
     level.setBlockAndUpdate(
         gatePos,
         Blocks.OAK_FENCE_GATE
             .defaultBlockState()
             .setValue(HorizontalDirectionalBlock.FACING, Direction.SOUTH));
+  }
 
-    // Spawn sign with NPC id on top of the platform (centered, Y + 4)
+  private static void placeSign(ServerLevel level, BlockPos centerPos, EntityType<?> entityType) {
     BlockPos signPos = centerPos.offset(0, 4, 0);
     level.setBlockAndUpdate(signPos, Blocks.OAK_SIGN.defaultBlockState());
     BlockEntity blockEntity = level.getBlockEntity(signPos);
@@ -264,14 +274,11 @@ public class TestCommand extends Command {
           false);
       sign.setChanged();
     }
-
-    // Spawn the NPC
-    entityType.spawn(level, null, null, centerPos, EntitySpawnReason.COMMAND, true, false);
   }
 
   private static void fillArea(
       ServerLevel level, BlockPos from, BlockPos to, BlockState blockState) {
     BlockPos.betweenClosedStream(from, to)
-        .forEach(pos -> level.setBlockAndUpdate(pos.immutable(), blockState));
+        .forEach(blockPosition -> level.setBlockAndUpdate(blockPosition.immutable(), blockState));
   }
 }

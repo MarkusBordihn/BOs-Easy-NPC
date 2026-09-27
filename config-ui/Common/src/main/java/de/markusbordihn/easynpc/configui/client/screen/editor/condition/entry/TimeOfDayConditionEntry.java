@@ -50,7 +50,7 @@ public class TimeOfDayConditionEntry extends ConditionEntryWidget {
 
   @Override
   public void init(int editorLeft, int editorTop) {
-    boolean hasData = hasConditionData(ConditionType.TIME_OF_DAY);
+    boolean hasData = this.hasConditionData(ConditionType.TIME_OF_DAY);
     int currentValue = hasData ? this.conditionDataEntry.value() : TimeOfDayPreset.DAY.ticks();
 
     this.operationTypeButton =
@@ -158,7 +158,8 @@ public class TimeOfDayConditionEntry extends ConditionEntryWidget {
       if (this == CUSTOM) {
         return "Custom";
       }
-      String name = name().charAt(0) + name().substring(1).toLowerCase();
+
+      String name = this.name().charAt(0) + this.name().substring(1).toLowerCase();
       return name + " (" + this.ticks + ")";
     }
   }

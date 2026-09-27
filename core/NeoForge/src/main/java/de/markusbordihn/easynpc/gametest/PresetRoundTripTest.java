@@ -19,22 +19,14 @@
 
 package de.markusbordihn.easynpc.gametest;
 
-import de.markusbordihn.easynpc.entity.ModEntityType;
-import de.markusbordihn.easynpc.entity.ModNPCEntityType;
+import static de.markusbordihn.easynpc.gametest.GameTestEntityTypes.humanoid;
+import static de.markusbordihn.easynpc.gametest.GameTestEntityTypes.villager;
+
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraft.world.entity.EntityType;
 
 public final class PresetRoundTripTest {
 
   private PresetRoundTripTest() {}
-
-  private static EntityType<?> humanoid() {
-    return ModEntityType.getEntityType(ModNPCEntityType.HUMANOID);
-  }
-
-  private static EntityType<?> villager() {
-    return ModEntityType.getEntityType(ModNPCEntityType.VILLAGER);
-  }
 
   public static void testPresetSurvivesRoundTrip(GameTestHelper helper) {
     PresetRoundTripTestHelper.assertPresetSurvivesRoundTrip(helper, humanoid());

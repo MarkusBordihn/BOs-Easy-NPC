@@ -67,7 +67,7 @@ public final class ConfigurationScreenTestHelper {
     }
 
     UUID menuId = mockOpenConfigurationScreen(serverPlayer, configurationType, easyNPC, menuType);
-    GameTestHelpers.assertNotNull(helper, "MenuId is null!", menuId);
+    GameTestHelpers.assertNotNull(helper, "Menu ID is null!", menuId);
 
     GameTestHelpers.assertTrue(
         helper,

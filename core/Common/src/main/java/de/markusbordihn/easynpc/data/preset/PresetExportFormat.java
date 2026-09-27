@@ -47,6 +47,7 @@ public enum PresetExportFormat {
         return format;
       }
     }
+
     return UNKNOWN;
   }
 
@@ -60,6 +61,7 @@ public enum PresetExportFormat {
     if (extension != null) {
       return filename.substring(0, filename.length() - extension.length());
     }
+
     return filename != null ? filename : "";
   }
 
@@ -72,14 +74,12 @@ public enum PresetExportFormat {
       return "";
     }
 
-    // Extract filename from path
     String filename = pathOrFilename;
     int lastSlash = filename.lastIndexOf('/');
     if (lastSlash >= 0) {
       filename = filename.substring(lastSlash + 1);
     }
 
-    // Remove preset file extensions
     return removePresetExtension(filename);
   }
 
@@ -88,11 +88,10 @@ public enum PresetExportFormat {
       return "";
     }
 
-    // Convert to lowercase and replace spaces with underscores
     return filename.toLowerCase(Locale.ROOT).replaceAll("\\s+", "_");
   }
 
   public String getFileExtension() {
-    return fileExtension;
+    return this.fileExtension;
   }
 }

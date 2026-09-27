@@ -55,12 +55,12 @@ public class DialogPriorityButton extends SpinButton<DialogPriorityButton.Priori
   }
 
   public int getPriority() {
-    PriorityValue current = get();
+    PriorityValue current = this.get();
     return current != null ? current.value : DialogPriority.FALLBACK;
   }
 
   public boolean isCustom() {
-    PriorityValue current = get();
+    PriorityValue current = this.get();
     return current != null && current.isCustom;
   }
 
@@ -71,24 +71,33 @@ public class DialogPriorityButton extends SpinButton<DialogPriorityButton.Priori
 
     @Override
     public String toString() {
-      return isCustom ? "Custom" : DialogPriority.getDisplayName(value);
+      return this.isCustom ? "Custom" : DialogPriority.getDisplayName(this.value);
     }
 
     @Override
-    public boolean equals(Object obj) {
-      if (this == obj) {
+    public boolean equals(Object object) {
+      if (this == object) {
         return true;
       }
 
-      if (!(obj instanceof PriorityValue other)) {
+      if (!(object instanceof PriorityValue other)) {
         return false;
       }
 
-      if (isCustom && other.isCustom) {
+      if (this.isCustom && other.isCustom) {
         return true;
       }
 
-      return !isCustom && !other.isCustom && value == other.value;
+      return !this.isCustom && !other.isCustom && this.value == other.value;
+    }
+
+    @Override
+    public int hashCode() {
+      if (this.isCustom) {
+        return Boolean.hashCode(true);
+      }
+
+      return Integer.hashCode(this.value);
     }
   }
 }

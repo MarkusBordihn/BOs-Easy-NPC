@@ -65,21 +65,21 @@ If an entity type is not listed here, it doesn't mean it's automatically support
 
     resetEntityTypesWithChangedDefault(properties);
 
-    // Parse known entity types and update them based on configuration overrides.
     parseKnownEntityTypes(properties, RenderEntityTypeSupportDefaults.SUPPORTED_ENTITY_TYPES, true);
     parseKnownEntityTypes(
         properties, RenderEntityTypeSupportDefaults.UNSUPPORTED_ENTITY_TYPES, false);
 
-    // Parse the rest of the configuration file.
     for (String entityType : properties.stringPropertyNames()) {
       if (CONFIG_VERSION_KEY.equals(entityType) || isKnownEntityType(entityType)) {
         continue;
       }
+
       if (isInvalidEntityType(entityType)) {
         log.error("Remove invalid entity type {} from {}.", entityType, CONFIG_FILE_NAME);
         properties.remove(entityType);
         continue;
       }
+
       if (parseConfigValue(properties, entityType, false)) {
         addSupportedEntityType(entityType);
       } else {
@@ -87,7 +87,6 @@ If an entity type is not listed here, it doesn't mean it's automatically support
       }
     }
 
-    // Update config file if needed
     updateConfigFileIfChanged(configFile, CONFIG_FILE_HEADER, properties, unmodifiedProperties);
   }
 
