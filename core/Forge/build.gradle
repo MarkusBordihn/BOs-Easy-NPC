@@ -177,6 +177,12 @@ tasks.named('compileJava') {
   outputs.file(new File(temporaryDir, 'compileJava-mappings.tsrg'))
 }
 
+// MixinGradle hands these mappings to reobfJar only if they exist when its configure task runs, but does not
+// order that task after compileJava. On clean builds @Shadow members stayed unmapped and crashed Forge servers.
+tasks.matching { task -> task.name.startsWith('configureReobfTaskFor') }.configureEach {
+  dependsOn 'compileJava'
+}
+
 tasks.withType(JavaCompile).configureEach {
   source(project(":Common").sourceSets.main.allSource)
 }

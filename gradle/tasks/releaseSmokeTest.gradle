@@ -13,6 +13,7 @@
  * -PreleaseSmokeTestVersion=<version> overrides the version of every mod.
  */
 
+import groovy.json.JsonSlurper
 import java.nio.file.Files
 import java.util.concurrent.TimeUnit
 
@@ -50,11 +51,26 @@ def resolveFile = { String coordinates ->
   return configuration.singleFile
 }
 
-// The Modrinth Maven resolves a version number shared by several loaders only with the loader appended.
+// Modrinth reuses a version number across Minecraft versions and lists the Forge versions for NeoForge too,
+// so the Maven lookup `<version>-<loader>` can return the jar of another Minecraft version or loader.
+def findModrinthVersionId = { String modrinthProject, String version, String loader ->
+  def filter = "loaders=${URLEncoder.encode("[\"${loader}\"]", 'UTF-8')}" +
+      "&game_versions=${URLEncoder.encode("[\"${minecraftVersion}\"]", 'UTF-8')}"
+  def connection = new URL("https://api.modrinth.com/v2/project/${modrinthProject}/version?${filter}").openConnection()
+  connection.setRequestProperty('User-Agent', 'MarkusBordihn/BOs-Easy-NPC release smoke test')
+  def modrinthVersion = connection.inputStream.withCloseable { input -> new JsonSlurper().parse(input) }
+      .find { candidate -> candidate.version_number == version }
+  if (!modrinthVersion) {
+    throw new GradleException("${modrinthProject} has no ${loader} version ${version} for Minecraft ${minecraftVersion}")
+  }
+  return modrinthVersion.id
+}
+
 def resolveModJar = { String modKey, String loader ->
   def mod = smokeTestConfig.mods[modKey]
   if (smokeTestSource == 'modrinth') {
-    return resolveFile("maven.modrinth:${mod.modrinthProject}:${smokeTestVersion ?: mod.version}-${loader}")
+    def versionId = findModrinthVersionId(mod.modrinthProject, smokeTestVersion ?: mod.version, loader)
+    return resolveFile("maven.modrinth:${mod.modrinthProject}:${versionId}")
   }
 
   def jar = file(mod.localJars[loader])
