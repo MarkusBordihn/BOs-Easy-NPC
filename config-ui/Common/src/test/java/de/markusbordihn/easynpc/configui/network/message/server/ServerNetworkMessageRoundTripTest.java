@@ -26,7 +26,7 @@ import de.markusbordihn.easynpc.data.action.ActionDataSet;
 import de.markusbordihn.easynpc.data.action.ActionDataType;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
 import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
-import de.markusbordihn.easynpc.data.execution.ExecutionId;
+import de.markusbordihn.easynpc.data.execution.ExecutionType;
 import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataEntry;
 import de.markusbordihn.easynpc.data.objective.ObjectiveType;
@@ -132,12 +132,18 @@ class ServerNetworkMessageRoundTripTest {
 
   @Test
   void testResetExecutionLimitRoundTrip() {
-    ExecutionId executionId = ExecutionId.action(UUID.randomUUID(), UUID.randomUUID());
+    UUID uuid = UUID.randomUUID();
+    UUID dialogId = UUID.randomUUID();
+    UUID dialogButtonId = UUID.randomUUID();
     ResetExecutionLimitMessage loaded =
         roundTrip(
-            new ResetExecutionLimitMessage(executionId, true), ResetExecutionLimitMessage::create);
+            ResetExecutionLimitMessage.forDialogButton(uuid, dialogId, dialogButtonId, true),
+            ResetExecutionLimitMessage::create);
 
-    assertEquals(executionId, loaded.executionId());
+    assertEquals(uuid, loaded.uuid());
+    assertEquals(ExecutionType.DIALOG_BUTTON, loaded.type());
+    assertEquals(dialogId, loaded.entryId());
+    assertEquals(dialogButtonId, loaded.dialogButtonId());
     assertTrue(loaded.allPlayers());
   }
 
