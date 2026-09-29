@@ -1,0 +1,53 @@
+def versionDirectory = buildscript.sourceFile.parentFile.parentFile
+def moduleDependencies = ['core': [], 'config-ui': ['core'], 'bundle': ['core', 'config-ui']]
+def jarTaskNames = [forge: 'reobfJar', fabric: 'remapJar']
+
+def loadModuleProperties = { String moduleName ->
+  def moduleProperties = new Properties()
+  new File(versionDirectory, "${moduleName}/gradle.properties").withInputStream { input -> moduleProperties.load(input) }
+  return moduleProperties
+}
+def coreProperties = loadModuleProperties('core')
+def releaseSmokeTestMod = { String moduleName, Collection<String> loaders ->
+  def moduleProperties = loadModuleProperties(moduleName)
+  return [
+      modrinthProject: moduleProperties.modrinth_project_id,
+      version        : moduleProperties.version,
+      localJars      : loaders.collectEntries { String loader ->
+        [(loader): new File(versionDirectory, "${moduleName}/${loader.capitalize()}/build/libs/"
+            + "${moduleProperties.mod_id}-${loader}-${moduleProperties.minecraft_version}-${moduleProperties.version}.jar")]
+      }
+  ]
+}
+
+def allLoaders = [
+    forge : [version: coreProperties.forge_version],
+    fabric: [version  : coreProperties.fabric_loader_version, installerVersion: '1.1.0',
+             extraMods: ["net.fabricmc.fabric-api:fabric-api:${coreProperties.fabric_version}"]]
+]
+
+def isVersionRoot = project.projectDir == versionDirectory
+def loaders = isVersionRoot ? allLoaders : allLoaders.subMap([project.name.toLowerCase()])
+def scenarios = isVersionRoot
+    ? moduleDependencies.collectEntries { moduleName, dependencies -> [(moduleName): dependencies + moduleName] }
+    : [(rootProject.name): moduleDependencies[rootProject.name] + rootProject.name]
+def moduleNames = scenarios.values().flatten().unique()
+
+project.ext.releaseSmokeTest = [
+    minecraftVersion: coreProperties.minecraft_version,
+    javaVersion     : 17,
+    loaders         : loaders,
+    mods            : moduleNames.collectEntries { moduleName -> [(moduleName): releaseSmokeTestMod(moduleName, loaders.keySet())] },
+    scenarios       : scenarios
+]
+apply from: new File(buildscript.sourceFile.parentFile, 'tasks/releaseSmokeTest.gradle')
+
+if (!isVersionRoot) {
+  tasks.named('releaseSmokeTest') {
+    dependsOn jarTaskNames[project.name.toLowerCase()]
+  }
+  // Every upload invocation rebuilds its jar, so only a check in the same invocation tests the uploaded jar.
+  tasks.matching { task -> task.name in ['modrinth', 'curseforge'] }.configureEach {
+    dependsOn 'releaseSmokeTest'
+  }
+}

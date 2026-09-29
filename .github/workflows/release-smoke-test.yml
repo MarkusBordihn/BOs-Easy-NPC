@@ -1,0 +1,74 @@
+name: Release smoke test
+
+on:
+  workflow_call:
+    inputs:
+      source:
+        description: 'local builds the jars, modrinth downloads the published ones'
+        type: string
+        default: 'local'
+      version:
+        description: 'Mod version to download, empty for the version in gradle.properties'
+        type: string
+        default: ''
+      ref:
+        description: 'Branch, tag or commit to check out'
+        type: string
+        default: ''
+  workflow_dispatch:
+    inputs:
+      source:
+        description: 'local builds the jars, modrinth downloads the published ones'
+        type: choice
+        options: [ 'modrinth', 'local' ]
+        default: 'modrinth'
+      version:
+        description: 'Mod version to download, empty for the version in gradle.properties'
+        type: string
+        default: ''
+
+permissions:
+  contents: read
+
+jobs:
+  release-smoke-test:
+    name: Release jars (${{ inputs.source }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref }}
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-read-only: ${{ github.event_name == 'pull_request' }}
+      - run: chmod +x gradlew
+
+      - name: Build Core
+        if: ${{ inputs.source == 'local' }}
+        run: ./gradlew -p core --console=plain assemble publishToMavenLocal
+
+      - name: Build Config UI
+        if: ${{ inputs.source == 'local' }}
+        run: ./gradlew -p config-ui --console=plain assemble publishToMavenLocal
+
+      - name: Build Bundle
+        if: ${{ inputs.source == 'local' }}
+        run: ./gradlew -p bundle --console=plain assemble
+
+      - name: Start servers with the release jars
+        env:
+          ORG_GRADLE_PROJECT_releaseSmokeTestSource: ${{ inputs.source }}
+          ORG_GRADLE_PROJECT_releaseSmokeTestVersion: ${{ inputs.version }}
+        run: ./gradlew --console=plain releaseSmokeTest
+
+      - uses: actions/upload-artifact@v4
+        if: ${{ always() }}
+        with:
+          name: release-smoke-test-${{ inputs.source }}-logs
+          path: build/releaseSmokeTest/**/*.log
+          if-no-files-found: ignore

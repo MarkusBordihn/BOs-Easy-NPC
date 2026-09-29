@@ -105,6 +105,10 @@ subprojects {
 
 apply from: "$rootDir/../gradle/tasks/updateModVersions.gradle"
 
+configure(subprojects.findAll { subproject -> subproject.name in ['Forge', 'Fabric'] }) {
+  apply from: "$rootDir/../gradle/releaseSmokeTestConfig.gradle"
+}
+
 tasks.register('allGameTests') {
   group = 'verification'
   description = 'Runs both Fabric and Forge game tests.'

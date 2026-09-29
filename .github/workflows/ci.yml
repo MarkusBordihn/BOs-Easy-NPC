@@ -29,6 +29,11 @@ jobs:
     needs: gradle-wrapper
     uses: ./.github/workflows/build.yml
 
+  release-smoke-test:
+    name: Release smoke test
+    needs: build
+    uses: ./.github/workflows/release-smoke-test.yml
+
   unit-test:
     name: Unit tests
     needs: build

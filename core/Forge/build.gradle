@@ -1,7 +1,7 @@
 plugins {
   id 'maven-publish'
   id 'net.minecraftforge.gradle' version '[6.0,6.2)'
-  id 'org.spongepowered.mixin' version '0.7.+'
+  id 'org.spongepowered.mixin' version '0.7.38'
   id 'net.darkhax.curseforgegradle' version '1.1.28'
   id 'nu.studer.credentials' version '3.0'
   id "com.modrinth.minotaur" version "2.+"
@@ -167,6 +167,14 @@ mixin {
   add sourceSets.main, "easy_npc.refmap.json"
   debug.verbose = true
   debug.export = true
+}
+
+// MixinGradle writes the refmap, its jar copy and the mixin mappings into the temporary directory without
+// declaring them as outputs, so a build cache hit produced a jar without refmap (#843).
+tasks.named('compileJava') {
+  outputs.file(new File(temporaryDir, 'compileJava-refmap.json'))
+  outputs.file(new File(temporaryDir, 'easy_npc.refmap.json'))
+  outputs.file(new File(temporaryDir, 'compileJava-mappings.tsrg'))
 }
 
 tasks.withType(JavaCompile).configureEach {
