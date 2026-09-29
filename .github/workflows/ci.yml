@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  push:
+    paths-ignore: [ '**.md', 'wiki/**', '.github/ISSUE_TEMPLATE/**' ]
+  pull_request:
+    paths-ignore: [ '**.md', 'wiki/**', '.github/ISSUE_TEMPLATE/**' ]
+  workflow_dispatch:
+    inputs:
+      client-tests:
+        description: 'Run the client tests'
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  gradle-wrapper:
+    name: Gradle wrapper
+    uses: ./.github/workflows/gradle-wrapper-validation.yml
+
+  build:
+    name: Build
+    needs: gradle-wrapper
+    uses: ./.github/workflows/build.yml
+
+  unit-test:
+    name: Unit tests
+    needs: build
+    uses: ./.github/workflows/unit-test.yml
+
+  game-test:
+    name: Game tests
+    needs: unit-test
+    uses: ./.github/workflows/game-test.yml
+
+  client-test:
+    name: Client tests
+    needs: game-test
+    if: ${{ inputs.client-tests }}
+    uses: ./.github/workflows/client-test.yml

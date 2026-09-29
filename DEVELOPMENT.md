@@ -283,6 +283,34 @@ Examples:
 ./gradlew -p config-ui allGameTests
 ```
 
+### Client runtime tests
+
+Client runtime tests open screens, render NPC models and click through the UI in a real development
+client, driven by the Client Runtime Interface Toolkit (CRIT). They live in
+`<build>/Common/src/clientTest` and are optional: the tasks only exist when the CRIT Fabric, Forge
+and
+`testrunner` jars for this Minecraft version are in Maven Local. Without them the build behaves as
+before.
+
+1. Build CRIT once, which publishes it to Maven Local:
+   `./gradlew -p core build -x test` in the CRIT checkout.
+2. Run the tests; each loader starts its own client in `<loader>/run/clienttest` and closes it
+   again:
+
+```sh
+./gradlew -p core allClientTests
+./gradlew -p config-ui allClientTests
+./gradlew -p config-ui :Fabric:clientTest --tests '*NameChangeClientTest'
+```
+
+With CRIT present, `fullCheck` runs `allClientTests` as well. The client needs a display; on a
+headless machine wrap the command in `xvfb-run -a` with `LIBGL_ALWAYS_SOFTWARE=1`, as the
+`client-test.yml` workflow does. A run fails on test failures, crash reports or Easy NPC `ERROR`/
+`FATAL`
+log lines; `latest.log`, the CRIT launch log and crash reports are copied to
+`<build>/.client_test/<loader>/`. `-PclientToolkitVersion=<version>` selects a different CRIT
+version.
+
 ## Troubleshooting 🔧
 
 ### I changed core but config-ui still uses an old version

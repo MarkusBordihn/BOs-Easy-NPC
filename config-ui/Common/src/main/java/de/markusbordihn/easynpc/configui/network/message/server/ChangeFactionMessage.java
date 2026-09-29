@@ -59,7 +59,7 @@ public record ChangeFactionMessage(UUID uuid, String factionName) implements Net
     }
 
     if (!MessageSecurity.checkFeatureAccess(
-        serverPlayer, easyNPC, NpcFeature.OBJECTIVE, "faction change")) {
+        serverPlayer, easyNPC, NpcFeature.FACTION_MANAGEMENT, "faction change")) {
       return;
     }
 

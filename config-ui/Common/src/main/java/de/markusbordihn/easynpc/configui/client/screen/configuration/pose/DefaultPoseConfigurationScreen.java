@@ -231,8 +231,7 @@ public class DefaultPoseConfigurationScreen<T extends ConfigurationMenu>
 
     this.updatePoseButtonStates();
 
-    this.addRenderableWidget(
-        this.createAnimationBehaviorButton(this.contentLeftPos + 30, this.contentTopPos + 190));
+    this.createAnimationBehaviorButton(this.contentLeftPos + 30, this.contentTopPos + 190);
 
     this.createFollowCursorToggleButton(this.contentLeftPos + 134, this.contentTopPos);
 

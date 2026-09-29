@@ -68,7 +68,7 @@ public record ChangeTradingOfferActionMessage(
     }
 
     CommandPermissionLevel permissionLevel =
-        SecurityManager.applyActionAuthority(easyNPC, serverPlayer);
+        SecurityManager.getActionAuthority(easyNPC, serverPlayer);
     ActionDataSet sanitizedDataSet =
         MessageSecurity.sanitizeActionDataSet(
             this.actionDataSet, easyNPC, serverPlayer, permissionLevel);
@@ -81,6 +81,7 @@ public record ChangeTradingOfferActionMessage(
       return;
     }
 
+    SecurityManager.applyActionAuthority(easyNPC, permissionLevel);
     tradingData.getTradingDataSet().setOfferAction(this.offerIndex, sanitizedDataSet);
     tradingData.updateTradingDataSet();
   }

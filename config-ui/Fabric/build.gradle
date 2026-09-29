@@ -44,10 +44,10 @@ dependencies {
   testImplementation 'org.junit.jupiter:junit-jupiter-params:5.10.1'
 
   // Additional helpful Mods for development (skipped for game tests)
-  if (!isGameTestRun && project.hasProperty('fabric_jei_version') && project.fabric_jei_version) {
+  if (!isTestRun && project.hasProperty('fabric_jei_version') && project.fabric_jei_version) {
     modLocalRuntime("maven.modrinth:jei:${project.fabric_jei_version}")
   }
-  if (!isGameTestRun && project.hasProperty('fabric_xaeros_minimap_version') && project.fabric_xaeros_minimap_version) {
+  if (!isTestRun && project.hasProperty('fabric_xaeros_minimap_version') && project.fabric_xaeros_minimap_version) {
     modLocalRuntime("xaero.minimap:xaerominimap-fabric-${project.minecraft_version}:${project.fabric_xaeros_minimap_version}") {
       transitive = false
     }
@@ -62,6 +62,11 @@ dependencies {
     modRuntimeOnly easyModelEntitiesFabricRuntime
   } else if (project.hasProperty('fabric_easy_model_entities_version') && project.fabric_easy_model_entities_version) {
     modRuntimeOnly("maven.modrinth:easy-model-entities:${project.fabric_easy_model_entities_version}")
+  }
+
+  // Client Runtime Interface Toolkit (runtime dependency, only for client tests)
+  if (clientToolkitAvailable && isClientTestRun) {
+    modLocalRuntime clientToolkitCoordinate('fabric')
   }
 
   // Cobblemon Integration (Broken in DEV!, requires Fabric API at runtime)
@@ -96,6 +101,13 @@ loom {
       name "Game Test"
       vmArg "-Dfabric-api.gametest"
       runDir("run/gametest")
+    }
+    if (clientToolkitAvailable) {
+      clientTest {
+        client()
+        setConfigName("Fabric Client Test")
+        runDir("run/clienttest")
+      }
     }
   }
 }
