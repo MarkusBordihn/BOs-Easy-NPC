@@ -1,0 +1,215 @@
+/*
+ * Game and client tests run in the dev environment with Mojmap names and never see the release jars.
+ * This starts a dedicated server per loader and scenario with the release jars in its mods folder and
+ * fails unless the server finishes starting, stops with exit code 0 and writes no crash report.
+ *
+ * The applying build defines `ext.releaseSmokeTest` before `apply from:`:
+ *   minecraftVersion, javaVersion,
+ *   loaders:   [forge: [version], fabric: [version, installerVersion, extraMods: [<coordinates>, ...]],
+ *               neoforge: [version]],
+ *   mods:      [<key>: [modrinthProject, version, localJars: [<loader>: file]]],
+ *   scenarios: [<name>: [<mod key>, ...]]
+ *
+ * -PreleaseSmokeTestSource=modrinth tests the published jars instead of the local ones,
+ * -PreleaseSmokeTestVersion=<version> overrides the version of every mod.
+ */
+
+import groovy.json.JsonSlurper
+import java.nio.file.Files
+import java.util.concurrent.TimeUnit
+
+apply plugin: 'java-base'
+
+def smokeTestConfig = project.releaseSmokeTest
+def smokeTestSource = findProperty('releaseSmokeTestSource')?.toString()?.trim() ?: 'local'
+def smokeTestVersion = findProperty('releaseSmokeTestVersion')?.toString()?.trim() ?: null
+def minecraftVersion = smokeTestConfig.minecraftVersion.toString()
+def outputDirectory = layout.buildDirectory.dir("releaseSmokeTest/${smokeTestSource}").get().asFile
+def serversDirectory = new File(gradle.gradleUserHomeDir, 'caches/release-smoke-test/servers')
+def isWindows = System.getProperty('os.name').toLowerCase().contains('win')
+
+repositories {
+  maven {
+    url = 'https://maven.minecraftforge.net'
+    content { includeModule('net.minecraftforge', 'forge') }
+  }
+  maven {
+    url = 'https://maven.neoforged.net/releases'
+    content { includeModule('net.neoforged', 'neoforge') }
+  }
+  maven {
+    url = 'https://maven.fabricmc.net'
+    content {
+      includeModule('net.fabricmc', 'fabric-installer')
+      includeModule('net.fabricmc.fabric-api', 'fabric-api')
+    }
+  }
+  maven {
+    url = 'https://api.modrinth.com/maven'
+    content { includeGroup('maven.modrinth') }
+  }
+}
+
+def resolveFile = { String coordinates ->
+  def configuration = configurations.detachedConfiguration(dependencies.create(coordinates))
+  configuration.transitive = false
+  return configuration.singleFile
+}
+
+// Modrinth reuses a version number across Minecraft versions and lists some 1.20.1 Forge versions for NeoForge,
+// so the Maven lookup `<version>-<loader>` can return the jar of another Minecraft version or loader.
+def findModrinthVersionId = { String modrinthProject, String version, String loader ->
+  def filter = "loaders=${URLEncoder.encode("[\"${loader}\"]", 'UTF-8')}" +
+      "&game_versions=${URLEncoder.encode("[\"${minecraftVersion}\"]", 'UTF-8')}"
+  def connection = new URL("https://api.modrinth.com/v2/project/${modrinthProject}/version?${filter}").openConnection()
+  connection.setRequestProperty('User-Agent', 'MarkusBordihn/BOs-Easy-NPC release smoke test')
+  def modrinthVersion = connection.inputStream.withCloseable { input -> new JsonSlurper().parse(input) }
+      .find { candidate -> candidate.version_number == version }
+  if (!modrinthVersion) {
+    throw new GradleException("${modrinthProject} has no ${loader} version ${version} for Minecraft ${minecraftVersion}")
+  }
+  return modrinthVersion.id
+}
+
+def resolveModJar = { String modKey, String loader ->
+  def mod = smokeTestConfig.mods[modKey]
+  if (smokeTestSource == 'modrinth') {
+    def versionId = findModrinthVersionId(mod.modrinthProject, smokeTestVersion ?: mod.version, loader)
+    return resolveFile("maven.modrinth:${mod.modrinthProject}:${versionId}")
+  }
+
+  def jar = file(mod.localJars[loader])
+  if (!jar.exists()) {
+    throw new GradleException("${jar} does not exist, build it first")
+  }
+  return jar
+}
+
+def runInstaller = { List command, File serverDirectory ->
+  def logFile = new File(serverDirectory, 'smoke-test-install.log')
+  def process = new ProcessBuilder(command.collect { part -> part.toString() }).directory(serverDirectory)
+      .redirectErrorStream(true).redirectOutput(logFile).start()
+  if (!process.waitFor(15, TimeUnit.MINUTES)) {
+    process.destroyForcibly()
+    throw new GradleException("Server installation timed out, see ${logFile}")
+  }
+  if (process.exitValue() != 0) {
+    throw new GradleException("Server installation failed, see ${logFile}")
+  }
+}
+
+def installServer = { String loader, String javaExecutable ->
+  def loaderConfig = smokeTestConfig.loaders[loader]
+  def serverDirectory = new File(serversDirectory, "${loader}-${minecraftVersion}-${loaderConfig.version}")
+  serverDirectory.mkdirs()
+
+  if (loader == 'forge') {
+    def argumentsFile = "libraries/net/minecraftforge/forge/${minecraftVersion}-${loaderConfig.version}/" +
+        "${isWindows ? 'win' : 'unix'}_args.txt"
+    if (!new File(serverDirectory, argumentsFile).exists()) {
+      def installer = resolveFile("net.minecraftforge:forge:${minecraftVersion}-${loaderConfig.version}:installer")
+      runInstaller([javaExecutable, '-jar', installer, '--installServer', serverDirectory], serverDirectory)
+    }
+    return [directory: serverDirectory, command: [javaExecutable, '-Xmx2G', "@${argumentsFile}", 'nogui']]
+  }
+
+  if (loader == 'neoforge') {
+    def argumentsFile = "libraries/net/neoforged/neoforge/${loaderConfig.version}/${isWindows ? 'win' : 'unix'}_args.txt"
+    if (!new File(serverDirectory, argumentsFile).exists()) {
+      def installer = resolveFile("net.neoforged:neoforge:${loaderConfig.version}:installer")
+      runInstaller([javaExecutable, '-jar', installer, '--installServer', serverDirectory], serverDirectory)
+    }
+    return [directory: serverDirectory, command: [javaExecutable, '-Xmx2G', "@${argumentsFile}", 'nogui']]
+  }
+
+  if (loader == 'fabric') {
+    if (!new File(serverDirectory, 'fabric-server-launch.jar').exists() || !new File(serverDirectory, 'server.jar').exists()) {
+      def installer = resolveFile("net.fabricmc:fabric-installer:${loaderConfig.installerVersion}")
+      runInstaller([javaExecutable, '-jar', installer, 'server', '-mcversion', minecraftVersion,
+                    '-loader', loaderConfig.version, '-downloadMinecraft', '-dir', serverDirectory], serverDirectory)
+    }
+    return [directory: serverDirectory, command: [javaExecutable, '-Xmx2G', '-jar', 'fabric-server-launch.jar', 'nogui']]
+  }
+
+  throw new GradleException("Unsupported loader ${loader}")
+}
+
+def runServer = { Map server, List<File> modFiles, File logFile ->
+  File serverDirectory = server.directory
+  ['mods', 'world', 'config', 'defaultconfigs', 'logs', 'crash-reports'].each { directoryName ->
+    project.delete(new File(serverDirectory, directoryName))
+  }
+  def modsDirectory = new File(serverDirectory, 'mods')
+  modsDirectory.mkdirs()
+  modFiles.each { modFile -> Files.copy(modFile.toPath(), new File(modsDirectory, modFile.name).toPath()) }
+
+  new File(serverDirectory, 'eula.txt').text = 'eula=true\n'
+  // max-tick-time=-1 disables the watchdog, which kills slow first starts on CI runners.
+  new File(serverDirectory, 'server.properties').text = """\
+online-mode=false
+server-ip=127.0.0.1
+server-port=${new ServerSocket(0).withCloseable { socket -> socket.localPort }}
+level-type=minecraft\\:flat
+generator-settings={"layers":[{"block":"minecraft:bedrock","height":1}],"biome":"minecraft:plains"}
+generate-structures=false
+sync-chunk-writes=false
+max-tick-time=-1
+view-distance=4
+simulation-distance=4
+"""
+
+  logFile.parentFile.mkdirs()
+  def process = new ProcessBuilder(server.command.collect { part -> part.toString() }).directory(serverDirectory)
+      .redirectErrorStream(true).redirectOutput(logFile).start()
+  // The server reads console commands only once it has finished starting, so the queued stop runs afterwards.
+  process.outputStream.withWriter('UTF-8') { writer -> writer.write('stop\n') }
+  if (!process.waitFor(5, TimeUnit.MINUTES)) {
+    process.destroyForcibly().waitFor()
+    return 'server did not stop within 5 minutes'
+  }
+
+  def crashReports = new File(serverDirectory, 'crash-reports').list()
+  if (crashReports) {
+    return "crash report ${crashReports.join(', ')}"
+  }
+  if (!(logFile.getText('UTF-8') =~ /Done \(\d+[.,]\d+s\)!/).find()) {
+    return "server exited with code ${process.exitValue()} before it finished starting"
+  }
+  if (process.exitValue() != 0) {
+    return "server exited with code ${process.exitValue()}"
+  }
+  return null
+}
+
+tasks.register('releaseSmokeTest') {
+  group = 'verification'
+  description = 'Starts a dedicated server per loader and scenario with the release jars'
+
+  doLast {
+    if (!(smokeTestSource in ['local', 'modrinth'])) {
+      throw new GradleException("Unknown releaseSmokeTestSource ${smokeTestSource}, expected local or modrinth")
+    }
+
+    def javaExecutable = javaToolchains.launcherFor {
+      languageVersion = JavaLanguageVersion.of(smokeTestConfig.javaVersion as int)
+    }.get().executablePath.asFile.absolutePath
+    def failures = []
+    smokeTestConfig.loaders.each { String loader, Map loaderConfig ->
+      def server = installServer(loader, javaExecutable)
+      def extraMods = (loaderConfig.extraMods ?: []).collect { coordinates -> resolveFile(coordinates.toString()) }
+      smokeTestConfig.scenarios.each { scenarioName, modKeys ->
+        def runName = "${loader}-${scenarioName}"
+        def modFiles = modKeys.collect { modKey -> resolveModJar(modKey, loader) } + extraMods
+        logger.lifecycle("${runName}: starting server with ${modFiles*.name.join(', ')}")
+        def failure = runServer(server, modFiles, new File(outputDirectory, "${runName}.log"))
+        logger.lifecycle("${runName}: ${failure ?: 'OK'}")
+        if (failure) {
+          failures << "${runName}: ${failure}"
+        }
+      }
+    }
+    if (failures) {
+      throw new GradleException("Release smoke test failed, logs in ${outputDirectory}:\n  " + failures.join('\n  '))
+    }
+  }
+}

@@ -23,8 +23,8 @@ import de.markusbordihn.easynpc.compat.CompatConstants;
 import de.markusbordihn.easynpc.compat.easymodelentities.EasyModelEntitiesLoader;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.ServerTickEvent;
+import net.minecraftforge.event.server.ServerAboutToStartEvent;
 import net.minecraftforge.event.server.ServerStartedEvent;
-import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.event.server.ServerStoppingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -34,8 +34,9 @@ public class ServerEventHandler {
 
   private ServerEventHandler() {}
 
+  // Forge 1.21.1 GameTestServer fires only ServerAboutToStartEvent, never ServerStartingEvent.
   @SubscribeEvent
-  public static void handleServerStartingEvent(ServerStartingEvent event) {
+  public static void handleServerAboutToStartEvent(ServerAboutToStartEvent event) {
     ServerEvents.handleServerStarting(event.getServer());
   }
 

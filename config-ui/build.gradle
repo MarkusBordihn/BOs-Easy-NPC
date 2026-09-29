@@ -68,10 +68,16 @@ subprojects {
 
   tasks.register("prepareKotlinBuildScriptModel") {}
 
-  // Disable Development helper mods like JEI or Xaero's Minimap for game test run.
-  ext.isGameTestRun = gradle.startParameter.taskNames.any {
+  // Development helper mods like JEI or Xaero's Minimap are left out of game and client test runs,
+  // because they are not needed there and can crash the game test server.
+  ext.isTestRun = gradle.startParameter.taskNames.any {
     def taskName = it.toLowerCase()
-    return taskName.contains('gametest') || taskName.contains('fullcheck')
+    return ['gametest', 'clienttest', 'fullcheck'].any { testTask -> taskName.contains(testTask) }
+  }
+
+  // The toolkit opens a control socket in the client, so it only joins the runtime of client tests.
+  ext.isClientTestRun = gradle.startParameter.taskNames.any {
+    return it.toLowerCase().contains('clienttest')
   }
 
   // Local Easy Model Entities loader artifact (runtime); null falls back to Modrinth.
@@ -100,6 +106,10 @@ subprojects {
 
 apply from: "$rootDir/../gradle/tasks/updateModVersions.gradle"
 
+configure(subprojects.findAll { subproject -> subproject.name in ['Forge', 'Fabric', 'NeoForge'] }) {
+  apply from: "$rootDir/../gradle/releaseSmokeTestConfig.gradle"
+}
+
 tasks.register('allGameTests') {
   group = 'verification'
   description = 'Runs Fabric, Forge and NeoForge game tests.'
@@ -111,3 +121,5 @@ tasks.register('fullCheck') {
   description = 'Runs check and game tests for all platforms (Common, Fabric, Forge, NeoForge).'
   dependsOn ':Common:check', ':Fabric:check', ':Forge:check', ':NeoForge:check', 'allGameTests'
 }
+
+apply from: "$rootDir/../gradle/tasks/clientTest.gradle"

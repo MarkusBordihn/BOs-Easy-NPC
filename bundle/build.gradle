@@ -94,6 +94,10 @@ subprojects {
 
 apply from: "$rootDir/../gradle/tasks/updateModVersions.gradle"
 
+configure(subprojects.findAll { subproject -> subproject.name in ['Forge', 'Fabric', 'NeoForge'] }) {
+  apply from: "$rootDir/../gradle/releaseSmokeTestConfig.gradle"
+}
+
 tasks.register('fullCheck') {
   group = 'verification'
   description = 'Runs check for all platforms (Common, Fabric, Forge, NeoForge).'

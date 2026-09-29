@@ -19,7 +19,7 @@
 
 package de.markusbordihn.easynpc.configui.gametest;
 
-import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.gametest.GameTestHelpers;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;

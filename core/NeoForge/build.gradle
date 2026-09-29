@@ -38,6 +38,13 @@ runs {
     systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
   }
 
+  if (clientToolkitAvailable) {
+    clientTest {
+      runType('client')
+      workingDirectory project.file('runs/clientTest')
+    }
+  }
+
   data {
     arguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
   }
@@ -57,10 +64,10 @@ dependencies {
   testImplementation 'org.junit.jupiter:junit-jupiter-params:5.10.1'
 
   // Additional helpful Mods for development (runtime dependency, skipped for game tests)
-  if (!isGameTestRun && project.hasProperty('neoforge_jei_version') && project.neoforge_jei_version) {
+  if (!isTestRun && project.hasProperty('neoforge_jei_version') && project.neoforge_jei_version) {
     runtimeOnly "maven.modrinth:jei:${project.neoforge_jei_version}"
   }
-  if (!isGameTestRun && project.hasProperty('neoforge_xaeros_minimap_version') && project.neoforge_xaeros_minimap_version) {
+  if (!isTestRun && project.hasProperty('neoforge_xaeros_minimap_version') && project.neoforge_xaeros_minimap_version) {
     runtimeOnly("xaero.minimap:xaerominimap-neoforge-${project.minecraft_version}:${project.neoforge_xaeros_minimap_version}") {
       transitive = false
     }
@@ -95,6 +102,11 @@ dependencies {
   } else if (project.hasProperty('neoforge_easy_model_entities_version') && project.neoforge_easy_model_entities_version) {
     runtimeOnly "maven.modrinth:easy-model-entities:${project.neoforge_easy_model_entities_version}"
   }
+
+  // Client Runtime Interface Toolkit (runtime dependency, only for client tests)
+  if (clientToolkitAvailable && isClientTestRun) {
+    runtimeOnly clientToolkitCoordinate('neoforge')
+  }
 }
 
 // NeoGradle compiles the game, but we don't want to add our common code to the game's code
@@ -112,6 +124,22 @@ tasks.withType(Javadoc).matching(notNeoTask).configureEach {
 tasks.withType(ProcessResources).matching(notNeoTask).configureEach {
   from project(":Common").sourceSets.main.resources
   dependsOn project(":Common").tasks.named('generateDefaultPresetIndex')
+}
+
+// FML resolves ${file.jarVersion} to 0.0NONE without Implementation-Version, and 0.0NONE passes every
+// dependency version range, so a mismatched config-ui would load without an error.
+tasks.named('jar', Jar).configure {
+  manifest {
+    attributes([
+        "Specification-Title"     : "${project.mod_name}",
+        "Specification-Vendor"    : "${project.vendor_name}",
+        "Specification-Version"   : "1",
+        "Implementation-Title"    : project.name,
+        "Implementation-Version"  : "${project.version}",
+        "Implementation-Vendor"   : "${project.mod_id}",
+        "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+    ])
+  }
 }
 
 publishing {

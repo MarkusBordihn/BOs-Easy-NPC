@@ -51,7 +51,17 @@ public class GameTestHelpers {
 
   public static ServerPlayer mockServerPlayer(
       GameTestHelper helper, Vec3 position, String playerName) {
-    ServerPlayer serverPlayer = makeConnectedMockServerPlayer(helper, playerName);
+    return mockServerPlayer(helper, position, playerName, true);
+  }
+
+  public static ServerPlayer mockSurvivalServerPlayer(
+      GameTestHelper helper, Vec3 position, String playerName) {
+    return mockServerPlayer(helper, position, playerName, false);
+  }
+
+  private static ServerPlayer mockServerPlayer(
+      GameTestHelper helper, Vec3 position, String playerName, boolean creative) {
+    ServerPlayer serverPlayer = makeConnectedMockServerPlayer(helper, playerName, creative);
     GameTestHelpers.assertNotNull(helper, "ServerPlayer is null!", serverPlayer);
     serverPlayer.setPos(helper.absoluteVec(position));
     helper.assertEntityPresent(
@@ -60,7 +70,7 @@ public class GameTestHelpers {
   }
 
   private static ServerPlayer makeConnectedMockServerPlayer(
-      GameTestHelper helper, String playerName) {
+      GameTestHelper helper, String playerName, boolean creative) {
     ServerLevel level = helper.getLevel();
     CommonListenerCookie listenerCookie =
         CommonListenerCookie.createInitial(new GameProfile(UUID.randomUUID(), playerName), false);
@@ -77,7 +87,7 @@ public class GameTestHelpers {
 
           @Override
           public boolean isCreative() {
-            return true;
+            return creative;
           }
         };
     Connection connection = new Connection(PacketFlow.SERVERBOUND);

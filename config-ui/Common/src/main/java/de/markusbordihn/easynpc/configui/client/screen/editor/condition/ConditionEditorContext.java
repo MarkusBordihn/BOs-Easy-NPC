@@ -24,6 +24,7 @@ import de.markusbordihn.easynpc.configui.client.screen.EditorScreen;
 import de.markusbordihn.easynpc.configui.data.editor.EditorType;
 import de.markusbordihn.easynpc.configui.data.screen.AdditionalScreenData;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.configui.network.message.server.ResetExecutionLimitMessage;
 import de.markusbordihn.easynpc.data.action.ActionDataEntry;
 import de.markusbordihn.easynpc.data.action.ActionDataSet;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
@@ -32,7 +33,6 @@ import de.markusbordihn.easynpc.data.condition.ConditionDataSet;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.data.dialog.DialogButtonEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
-import de.markusbordihn.easynpc.data.execution.ExecutionId;
 import java.util.UUID;
 
 public abstract class ConditionEditorContext {
@@ -71,7 +71,7 @@ public abstract class ConditionEditorContext {
 
   public abstract String helpTextKey();
 
-  public abstract ExecutionId executionLimitId();
+  public abstract ResetExecutionLimitMessage createResetExecutionLimitMessage(boolean allPlayers);
 
   public boolean isActionContext() {
     return false;
@@ -227,8 +227,9 @@ public abstract class ConditionEditorContext {
     }
 
     @Override
-    public ExecutionId executionLimitId() {
-      return ExecutionId.action(this.screen.getEasyNPCUUID(), this.screen.getActionDataEntryUUID());
+    public ResetExecutionLimitMessage createResetExecutionLimitMessage(boolean allPlayers) {
+      return ResetExecutionLimitMessage.forAction(
+          this.screen.getEasyNPCUUID(), this.screen.getActionDataEntryUUID(), allPlayers);
     }
 
     @Override
@@ -306,11 +307,12 @@ public abstract class ConditionEditorContext {
     }
 
     @Override
-    public ExecutionId executionLimitId() {
-      return ExecutionId.dialogButton(
+    public ResetExecutionLimitMessage createResetExecutionLimitMessage(boolean allPlayers) {
+      return ResetExecutionLimitMessage.forDialogButton(
           this.screen.getEasyNPCUUID(),
           this.screen.getDialogUUID(),
-          this.screen.getDialogButtonUUID());
+          this.screen.getDialogButtonUUID(),
+          allPlayers);
     }
   }
 
@@ -371,8 +373,9 @@ public abstract class ConditionEditorContext {
     }
 
     @Override
-    public ExecutionId executionLimitId() {
-      return ExecutionId.dialog(this.screen.getEasyNPCUUID(), this.screen.getDialogUUID());
+    public ResetExecutionLimitMessage createResetExecutionLimitMessage(boolean allPlayers) {
+      return ResetExecutionLimitMessage.forDialog(
+          this.screen.getEasyNPCUUID(), this.screen.getDialogUUID(), allPlayers);
     }
   }
 }

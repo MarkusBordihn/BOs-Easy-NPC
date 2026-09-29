@@ -55,7 +55,7 @@ public class ActionConfigurationScreen<T extends ConfigurationMenu> extends Conf
             new TextButton(
                 this.buttonLeftPos,
                 this.buttonTopPos,
-                80,
+                76,
                 "basic",
                 onPress ->
                     NetworkMessageHandlerManager.getServerHandler()
@@ -65,7 +65,7 @@ public class ActionConfigurationScreen<T extends ConfigurationMenu> extends Conf
             new TextButton(
                 this.basicActionButton.getX() + this.basicActionButton.getWidth(),
                 this.buttonTopPos,
-                80,
+                76,
                 "dialog_actions",
                 onPress ->
                     NetworkMessageHandlerManager.getServerHandler()
@@ -76,7 +76,7 @@ public class ActionConfigurationScreen<T extends ConfigurationMenu> extends Conf
             new TextButton(
                 this.dialogActionButton.getX() + this.dialogActionButton.getWidth(),
                 this.buttonTopPos,
-                80,
+                76,
                 "distance_actions",
                 onPress ->
                     NetworkMessageHandlerManager.getServerHandler()
@@ -87,7 +87,7 @@ public class ActionConfigurationScreen<T extends ConfigurationMenu> extends Conf
             new TextButton(
                 this.distanceActionButton.getX() + this.distanceActionButton.getWidth(),
                 this.buttonTopPos,
-                80,
+                76,
                 "interval_actions",
                 onPress ->
                     NetworkMessageHandlerManager.getServerHandler()

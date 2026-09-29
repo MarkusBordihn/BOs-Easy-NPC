@@ -38,6 +38,13 @@ runs {
     systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
   }
 
+  if (clientToolkitAvailable) {
+    clientTest {
+      runType('client')
+      workingDirectory project.file('runs/clientTest')
+    }
+  }
+
   data {
     arguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
   }
@@ -61,10 +68,10 @@ dependencies {
   testImplementation 'org.junit.jupiter:junit-jupiter-params:5.10.1'
 
   // Additional helpful Mods for development (runtime dependency, skipped for game tests)
-  if (!isGameTestRun && project.hasProperty('neoforge_jei_version') && project.neoforge_jei_version) {
+  if (!isTestRun && project.hasProperty('neoforge_jei_version') && project.neoforge_jei_version) {
     runtimeOnly "maven.modrinth:jei:${project.neoforge_jei_version}"
   }
-  if (!isGameTestRun && project.hasProperty('neoforge_xaeros_minimap_version') && project.neoforge_xaeros_minimap_version) {
+  if (!isTestRun && project.hasProperty('neoforge_xaeros_minimap_version') && project.neoforge_xaeros_minimap_version) {
     runtimeOnly("xaero.minimap:xaerominimap-neoforge-${project.minecraft_version}:${project.neoforge_xaeros_minimap_version}") {
       transitive = false
     }
@@ -89,9 +96,14 @@ dependencies {
     runtimeOnly "maven.modrinth:easy-model-entities:${project.neoforge_easy_model_entities_version}"
   }
 
+  // Client Runtime Interface Toolkit (runtime dependency, only for client tests)
+  if (clientToolkitAvailable && isClientTestRun) {
+    runtimeOnly clientToolkitCoordinate('neoforge')
+  }
+
   // Tide (for testing, requires Cloth Config at runtime)
   // Tide uses the same version number across Minecraft versions, so pin the Modrinth version id
-  if (!isGameTestRun) {
+  if (!isTestRun) {
     runtimeOnly "maven.modrinth:tide:1ki6UyqV"
     runtimeOnly "maven.modrinth:cloth-config:15.0.140+neoforge"
   }

@@ -91,7 +91,7 @@ public record SaveDialogSetMessage(UUID uuid, DialogDataSet dialogDataSet)
     CommandPermissionLevel currentPermissionLevel =
         actionEventData.getActionCommandPermissionLevel();
     CommandPermissionLevel permissionLevel =
-        SecurityManager.applyActionAuthority(easyNPC, serverPlayer);
+        SecurityManager.getActionAuthority(easyNPC, serverPlayer);
     log.debug(
         "Update owner permission level from {} to {} for {} from {}",
         currentPermissionLevel,
@@ -111,6 +111,7 @@ public record SaveDialogSetMessage(UUID uuid, DialogDataSet dialogDataSet)
     }
 
     log.debug("Saving dialog {} for {} from {}", sanitizedDialogDataSet, easyNPC, serverPlayer);
+    SecurityManager.applyActionAuthority(easyNPC, permissionLevel);
     dialogData.setDialogDataSet(sanitizedDialogDataSet);
   }
 }

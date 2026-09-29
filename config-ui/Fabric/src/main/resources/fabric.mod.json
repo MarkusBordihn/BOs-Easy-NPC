@@ -25,7 +25,12 @@
       "de.markusbordihn.easynpc.configui.gametest.SmokeTest",
       "de.markusbordihn.easynpc.configui.gametest.ConfigurationScreenTest",
       "de.markusbordihn.easynpc.configui.gametest.EditorScreenTest",
-      "de.markusbordihn.easynpc.configui.gametest.MenuManagerTest"
+      "de.markusbordihn.easynpc.configui.gametest.MenuManagerTest",
+      "de.markusbordihn.easynpc.configui.gametest.AttributeMessageTest",
+      "de.markusbordihn.easynpc.configui.gametest.DialogActionMessageTest",
+      "de.markusbordihn.easynpc.configui.gametest.TradingObjectiveFactionMessageTest",
+      "de.markusbordihn.easynpc.configui.gametest.AppearanceMessageTest",
+      "de.markusbordihn.easynpc.configui.gametest.ModelMessageTest"
     ]
   },
   "mixins": [],

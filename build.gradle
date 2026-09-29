@@ -4,6 +4,12 @@ import org.gradle.tooling.GradleConnector
 def ghostRefScript = file(findProperty('ghostRefIndex') ?: '')
 if (ghostRefScript.exists()) apply from: ghostRefScript
 
+apply from: 'gradle/releaseSmokeTestConfig.gradle'
+
+tasks.named('releaseSmokeTest') {
+  mustRunAfter 'cleanBuild'
+}
+
 subprojects {
 
   tasks.register('wrapper', Wrapper) {
@@ -212,7 +218,7 @@ tasks.register('fullCheck') {
   description = 'Clean build, then check and game tests for all modules (core -> config-ui -> bundle)'
   group = "verification"
 
-  dependsOn 'cleanBuild'
+  dependsOn 'cleanBuild', 'releaseSmokeTest'
 
   doLast {
     def modules = ['core', 'config-ui', 'bundle']
@@ -246,7 +252,8 @@ tasks.register('publish') {
   description = 'Builds and publishes all modules (core, config-ui, bundle)'
   group = "publishing"
 
-  dependsOn 'cleanBuild'
+  // A failed upload below only logs a warning and continues, so all jars are checked before the first upload.
+  dependsOn 'cleanBuild', 'releaseSmokeTest'
 
   doLast {
     def modules = ['core', 'config-ui', 'bundle']

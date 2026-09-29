@@ -83,7 +83,7 @@ public record ChangeActionEventMessage(
 
     ActionEventDataCapable<?> actionEventData = easyNPC.getEasyNPCActionEventData();
     CommandPermissionLevel permissionLevel =
-        SecurityManager.applyActionAuthority(easyNPC, serverPlayer);
+        SecurityManager.getActionAuthority(easyNPC, serverPlayer);
     log.debug(
         "Set action owner permission level {} for {} from {}",
         permissionLevel,
@@ -109,6 +109,7 @@ public record ChangeActionEventMessage(
         easyNPC,
         serverPlayer,
         permissionLevel);
+    SecurityManager.applyActionAuthority(easyNPC, permissionLevel);
     actionEventData.getActionEventSet().setActionEvent(this.actionEventType, sanitizedDataSet);
 
     PendingActionHandler<?> pendingActionHandler = easyNPC.getEasyNPCPendingActionHandler();
