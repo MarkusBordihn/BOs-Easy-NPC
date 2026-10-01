@@ -45,6 +45,13 @@ neoForge {
       gameDirectory = project.file('run/gametest')
       systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
     }
+
+    if (clientToolkitAvailable) {
+      clientTest {
+        client()
+        gameDirectory = project.file('run/clienttest')
+      }
+    }
   }
 
   mods {
@@ -72,10 +79,10 @@ dependencies {
   testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.10.1'
 
   // Additional helpful Mods for development (runtime dependency, skipped for game tests)
-  if (!isGameTestRun && project.hasProperty('neoforge_jei_mod') && project.neoforge_jei_mod) {
+  if (!isTestRun && project.hasProperty('neoforge_jei_mod') && project.neoforge_jei_mod) {
     runtimeOnly "curse.maven:jei-238222:${project.neoforge_jei_mod}"
   }
-  if (!isGameTestRun && project.hasProperty('neoforge_xaeros_minimap_mod') && project.neoforge_xaeros_minimap_mod) {
+  if (!isTestRun && project.hasProperty('neoforge_xaeros_minimap_mod') && project.neoforge_xaeros_minimap_mod) {
     runtimeOnly "curse.maven:xaeros_minimap-263420:${project.neoforge_xaeros_minimap_mod}"
   }
 
@@ -90,6 +97,11 @@ dependencies {
   } else if (project.hasProperty('neoforge_easy_model_entities_version')
       && project.neoforge_easy_model_entities_version) {
     runtimeOnly "maven.modrinth:easy-model-entities:${project.neoforge_easy_model_entities_version}"
+  }
+
+  // Client Runtime Interface Toolkit (runtime dependency, only for client tests)
+  if (clientToolkitAvailable && isClientTestRun) {
+    runtimeOnly clientToolkitCoordinate('neoforge')
   }
 
   // Test dependencies

@@ -35,8 +35,7 @@ public class ModModelLayers {
   public static final ModelLayerLocation ORC =
       new ModelLayerLocation(Identifier.fromNamespaceAndPath(Constants.MOD_ID, "orc"), "main");
   public static final ModelLayerLocation HUMANOID =
-      new ModelLayerLocation(
-          Identifier.fromNamespaceAndPath(Constants.MOD_ID, "humanoid"), "main");
+      new ModelLayerLocation(Identifier.fromNamespaceAndPath(Constants.MOD_ID, "humanoid"), "main");
   public static final ModelLayerLocation HUMANOID_SLIM =
       new ModelLayerLocation(
           Identifier.fromNamespaceAndPath(Constants.MOD_ID, "humanoid_slim"), "main");

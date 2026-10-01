@@ -67,10 +67,7 @@ public class CustomMenuHandler {
   }
 
   private static void putPresetIdentity(
-      CompoundTag identityData,
-      Identifier preset,
-      PresetType presetType,
-      CompoundTag presetTag) {
+      CompoundTag identityData, Identifier preset, PresetType presetType, CompoundTag presetTag) {
     PresetData presetData = PresetData.fromCompoundTag(preset, presetType, presetTag);
     if (presetData == null) {
       return;
@@ -187,7 +184,8 @@ public class CustomMenuHandler {
             presetsIdentity,
             preset,
             PresetType.DATA,
-            PresetHandler.loadPresetCompoundTag(PresetType.DATA, preset, serverPlayer.level().getServer()));
+            PresetHandler.loadPresetCompoundTag(
+                PresetType.DATA, preset, serverPlayer.level().getServer()));
       }
       additionalData.put("DataPresets", CompoundTagUtils.writeIdentifiers(dataPresets));
       additionalData.put("DataPresetsMetadata", dataMetadata);

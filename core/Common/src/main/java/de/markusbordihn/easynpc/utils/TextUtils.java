@@ -81,8 +81,7 @@ public class TextUtils {
                 .withUnderlined(true)
                 .withClickEvent(new ClickEvent.SuggestCommand(teleportCommand))
                 .withHoverEvent(
-                    new HoverEvent.ShowText(
-                        Component.translatable("chat.coordinates.tooltip"))));
+                    new HoverEvent.ShowText(Component.translatable("chat.coordinates.tooltip"))));
   }
 
   public static Component normalizeName(String name) {

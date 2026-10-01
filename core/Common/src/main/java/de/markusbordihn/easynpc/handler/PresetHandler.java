@@ -493,10 +493,7 @@ public class PresetHandler {
   }
 
   private static ImportOutcome tryUpdateExistingEntity(
-      UUID uuid,
-      CompoundTag compoundTag,
-      ServerLevel serverLevel,
-      Identifier customIdentifier) {
+      UUID uuid, CompoundTag compoundTag, ServerLevel serverLevel, Identifier customIdentifier) {
     EasyNPC<?> existingEasyNPC =
         LivingEntityManager.getServerEasyNPCEntityByUUID(uuid, serverLevel);
     if (existingEasyNPC == null) {

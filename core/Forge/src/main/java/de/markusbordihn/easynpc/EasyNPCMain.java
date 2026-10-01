@@ -64,6 +64,7 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.EntityLeaveLevelEvent;
+import net.minecraftforge.event.server.ServerAboutToStartEvent;
 import net.minecraftforge.event.server.ServerStartedEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.event.server.ServerStoppingEvent;
@@ -153,6 +154,8 @@ public class EasyNPCMain {
     }
 
     RegisterCommandsEvent.BUS.addListener(this::registerCommands);
+    // The Forge 61 GameTestServer fires only ServerAboutToStartEvent, never ServerStartingEvent.
+    ServerAboutToStartEvent.BUS.addListener(this::onServerAboutToStart);
     ServerStartingEvent.BUS.addListener(this::onServerStarting);
     ServerStartedEvent.BUS.addListener(this::onServerStarted);
     ServerStoppingEvent.BUS.addListener(this::onServerStopping);
@@ -222,8 +225,11 @@ public class EasyNPCMain {
     CommandManager.registerCommands(event.getDispatcher(), event.getBuildContext());
   }
 
-  private void onServerStarting(final ServerStartingEvent event) {
+  private void onServerAboutToStart(final ServerAboutToStartEvent event) {
     ServerEvents.handleServerStarting(event.getServer());
+  }
+
+  private void onServerStarting(final ServerStartingEvent event) {
     if (CompatConstants.MOD_EASY_MODEL_ENTITIES_LOADED) {
       EasyModelEntitiesLoader.register();
     }

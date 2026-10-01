@@ -71,8 +71,7 @@ public record SpawnPresetMessage(
   private static Vec3 findSpawnPosition(ServerPlayer serverPlayer) {
     Vec3 playerLook = serverPlayer.getLookAngle();
     return PlacementHandler.findFreePositionNear(
-        serverPlayer.level(),
-        serverPlayer.position().add(playerLook.x * 3, 0, playerLook.z * 3));
+        serverPlayer.level(), serverPlayer.position().add(playerLook.x * 3, 0, playerLook.z * 3));
   }
 
   @Override

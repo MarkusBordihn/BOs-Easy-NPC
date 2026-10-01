@@ -1,0 +1,133 @@
+ext.clientToolkitGroup = 'de.markusbordihn.clientruntimeinterfacetoolkit'
+ext.clientToolkitVersion = findProperty('clientToolkitVersion') ?: '1.0.0'
+
+ext.clientToolkitCoordinate = { String loader, String classifier = null ->
+  def artifact = "client_runtime_interface_toolkit-${loader}-${minecraft_version}"
+  def jarName = "${artifact}-${clientToolkitVersion}${classifier ? "-${classifier}" : ''}.jar"
+  def jar = file("${System.getProperty('user.home')}/.m2/repository/"
+      + "${clientToolkitGroup.replace('.', '/')}/${artifact}/${clientToolkitVersion}/${jarName}")
+  return jar.exists()
+      ? "${clientToolkitGroup}:${artifact}:${clientToolkitVersion}${classifier ? ":${classifier}" : ''}"
+      : null
+}
+
+ext.clientToolkitAvailable = ['fabric', 'forge', 'neoforge'].every { loader -> clientToolkitCoordinate(loader) }
+    && clientToolkitCoordinate('common', 'testrunner')
+
+if (!clientToolkitAvailable) {
+  return
+}
+
+def clientTestCompileLibraries = [
+    clientToolkitCoordinate('common', 'testrunner'),
+    'org.junit.jupiter:junit-jupiter-api:5.10.1',
+    'org.junit.jupiter:junit-jupiter-params:5.10.1'
+]
+def clientTestRuntimeLibraries = [
+    'org.junit.jupiter:junit-jupiter-engine:5.10.1',
+    'org.junit.platform:junit-platform-launcher:1.10.1',
+    'com.google.code.gson:gson:2.10'
+]
+
+project(':Common') {
+  sourceSets {
+    clientTest
+  }
+
+  dependencies {
+    clientTestCompileLibraries.each { library -> clientTestImplementation library }
+    clientTestRuntimeLibraries.each { library -> clientTestRuntimeOnly library }
+  }
+}
+
+def clientTestGameDirectories =
+    ['Fabric': 'run/clienttest', 'Forge': 'run/clienttest', 'NeoForge': 'run/clienttest']
+
+clientTestGameDirectories.each { loaderName, gameDirectoryPath ->
+  project(":${loaderName}") {
+    def gameDirectory = file(gameDirectoryPath)
+    def screenshotDirectory = file("${gameDirectory}/clienttest-screenshots")
+    def reportDirectory = rootProject.file(".client_test/${loaderName.toLowerCase()}")
+
+    // Gradle 9 refuses to resolve a configuration of :Common from a task of this project, so the
+    // runner libraries are resolved through a configuration of this project instead.
+    def clientTestRunnerClasspath = configurations.create('clientTestRunnerClasspath') {
+      canBeConsumed = false
+    }
+    (clientTestCompileLibraries + clientTestRuntimeLibraries).each { library ->
+      dependencies.add(clientTestRunnerClasspath.name, library)
+    }
+
+    def clientTestLog = tasks.register('clientTestLog') {
+      doLast {
+        delete reportDirectory
+        copy {
+          from(gameDirectory) {
+            include 'logs/latest.log'
+            include 'config/client_runtime_interface_toolkit/launch.log'
+            include 'crash-reports/**'
+          }
+          into reportDirectory
+        }
+        copy {
+          from screenshotDirectory
+          into "${reportDirectory}/screenshots"
+        }
+
+        def latestLog = file("${gameDirectory}/logs/latest.log")
+        def errors = latestLog.exists()
+            ? latestLog.readLines().findAll { line ->
+                line =~ /\/(ERROR|FATAL)]/ && line.contains('Easy NPC')
+              }
+            : []
+        def crashReports = fileTree("${gameDirectory}/crash-reports").files
+        if (!errors.isEmpty() || !crashReports.isEmpty()) {
+          throw new GradleException("Client test run of ${loaderName} logged Easy NPC errors or "
+              + "crashed, see ${reportDirectory}:\n" + errors.join('\n'))
+        }
+      }
+    }
+
+    tasks.register('clientTest', Test) {
+      group = 'verification'
+      description = "Runs the client runtime tests against a ${loaderName} development client."
+      def clientTestSourceSet = project(':Common').sourceSets.clientTest
+      testClassesDirs = clientTestSourceSet.output.classesDirs
+      classpath = clientTestSourceSet.output + clientTestRunnerClasspath
+      useJUnitPlatform()
+      maxParallelForks = 1
+      outputs.upToDateWhen { false }
+      testLogging {
+        events 'passed', 'skipped', 'failed'
+        exceptionFormat 'full'
+      }
+      systemProperty 'clientruntime.runTask', ":${loaderName}:runClientTest"
+      systemProperty 'clientruntime.projectDirectory', rootProject.projectDir.absolutePath
+      systemProperty 'clientruntime.gameDirectory', gameDirectory.absolutePath
+      systemProperty 'clientruntime.loader', loaderName.toLowerCase()
+      systemProperty 'clientruntime.screenshotDirectory', screenshotDirectory.absolutePath
+      doFirst {
+        delete "${gameDirectory}/crash-reports", screenshotDirectory
+      }
+      finalizedBy clientTestLog
+    }
+  }
+}
+
+project(':Forge').tasks.named('clientTest') {
+  mustRunAfter ':Fabric:clientTest'
+}
+
+project(':NeoForge').tasks.named('clientTest') {
+  mustRunAfter ':Forge:clientTest'
+}
+
+tasks.register('allClientTests') {
+  group = 'verification'
+  description = 'Runs the client runtime tests against a Fabric, Forge and NeoForge development client.'
+  dependsOn ':Fabric:clientTest', ':Forge:clientTest', ':NeoForge:clientTest'
+}
+
+tasks.named('fullCheck') {
+  dependsOn 'allClientTests'
+}

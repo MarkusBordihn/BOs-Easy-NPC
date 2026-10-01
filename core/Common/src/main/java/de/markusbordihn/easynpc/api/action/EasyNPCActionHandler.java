@@ -393,10 +393,7 @@ public class EasyNPCActionHandler {
   }
 
   public static boolean schedule(
-      EasyNPC<?> easyNPC,
-      Identifier sourceId,
-      int ticks,
-      List<ActionDataEntry> actionDataEntries) {
+      EasyNPC<?> easyNPC, Identifier sourceId, int ticks, List<ActionDataEntry> actionDataEntries) {
     if (!EasyNPC.isUsableServerSideInstance(easyNPC)
         || sourceId == null
         || actionDataEntries == null

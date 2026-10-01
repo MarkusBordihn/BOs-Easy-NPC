@@ -101,8 +101,7 @@ public class CustomPoseConfigurationScreen<T extends ConfigurationMenu>
       }
     }
 
-    this.addRenderableWidget(
-        this.createAnimationBehaviorButton(this.contentLeftPos + 118, this.bottomPos - 26));
+    this.createAnimationBehaviorButton(this.contentLeftPos + 119, this.bottomPos - 26);
 
     this.createFollowCursorToggleButton(this.contentLeftPos + 149, this.topPos + 45);
 

@@ -43,6 +43,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class EasyNPCFelineModelMixin<T extends FelineRenderState>
     implements EasyNPCModelManagerAccessor {
 
+  @Unique private static final float MAX_TAIL_SCALE_DEVIATION = 0.5f;
+  @Unique private static final float MAX_TAIL_ROTATION_RADIANS = 0.1f;
   @Shadow @Final protected ModelPart leftHindLeg;
   @Shadow @Final protected ModelPart rightHindLeg;
   @Shadow @Final protected ModelPart leftFrontLeg;
@@ -51,10 +53,6 @@ public class EasyNPCFelineModelMixin<T extends FelineRenderState>
   @Shadow @Final protected ModelPart tail2;
   @Shadow @Final protected ModelPart head;
   @Shadow @Final protected ModelPart body;
-
-  @Unique private static final float MAX_TAIL_SCALE_DEVIATION = 0.5f;
-  @Unique private static final float MAX_TAIL_ROTATION_RADIANS = 0.1f;
-
   @Unique private EasyNPCModelManager easyNPC$modelManager;
 
   @Override

@@ -34,8 +34,7 @@ public class SoundEventManager {
 
   public static List<SelectOption<String>> getSoundEventOptions() {
     if (soundEventOptions == null) {
-      List<Identifier> soundLocations =
-          new ArrayList<>(BuiltInRegistries.SOUND_EVENT.keySet());
+      List<Identifier> soundLocations = new ArrayList<>(BuiltInRegistries.SOUND_EVENT.keySet());
       soundLocations.sort(Comparator.comparing(Identifier::toString));
 
       List<SelectOption<String>> options = new ArrayList<>(soundLocations.size());

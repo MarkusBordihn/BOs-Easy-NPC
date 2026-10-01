@@ -65,8 +65,7 @@ public class PresetCatalog {
               CustomPresetDataFiles::getPresetMetadata);
       case WORLD ->
           listedForPlayers(
-              WorldPresetDataFiles.getPresetIdentifiers(),
-              WorldPresetDataFiles::getPresetMetadata);
+              WorldPresetDataFiles.getPresetIdentifiers(), WorldPresetDataFiles::getPresetMetadata);
       case DATA -> listedServerPresets(minecraftServer, DataPresetDataFiles::getPresetIdentifiers);
       case DEFAULT ->
           listedServerPresets(minecraftServer, DefaultPresetDataFiles::getPresetIdentifiers);
@@ -87,8 +86,7 @@ public class PresetCatalog {
   }
 
   private static Set<Identifier> listedForPlayers(
-      Stream<Identifier> presetLocations,
-      Function<Identifier, PresetMetadata> metadataProvider) {
+      Stream<Identifier> presetLocations, Function<Identifier, PresetMetadata> metadataProvider) {
     return presetLocations
         .filter(
             presetLocation -> metadataProvider.apply(presetLocation).access().isListedForPlayers())

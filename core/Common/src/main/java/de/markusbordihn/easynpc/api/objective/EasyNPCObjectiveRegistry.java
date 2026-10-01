@@ -27,8 +27,7 @@ public class EasyNPCObjectiveRegistry {
 
   private EasyNPCObjectiveRegistry() {}
 
-  public static void register(
-      Identifier objectiveId, ObjectiveGoalFactory objectiveGoalFactory) {
+  public static void register(Identifier objectiveId, ObjectiveGoalFactory objectiveGoalFactory) {
     ObjectiveRegistry.register(objectiveId, objectiveGoalFactory);
   }
 

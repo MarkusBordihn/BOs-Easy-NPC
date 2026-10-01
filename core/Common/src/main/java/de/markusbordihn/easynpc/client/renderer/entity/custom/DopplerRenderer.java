@@ -79,8 +79,7 @@ public class DopplerRenderer
     EntityType<? extends Entity> renderEntityType =
         renderData.getRenderDataEntry().getRenderEntityType();
 
-    Mob customEntity =
-        EntityTypeManager.getRenderEntity(renderEntityType, entity.getEntityLevel());
+    Mob customEntity = EntityTypeManager.getRenderEntity(renderEntityType, entity.getEntityLevel());
     if (customEntity == null) {
       return false;
     }

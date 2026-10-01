@@ -193,8 +193,7 @@ public class DataFileHandler {
   }
 
   public static void forEachPresetFile(
-      Path presetDataFolder, BiConsumer<Identifier, Path> presetFileConsumer)
-      throws IOException {
+      Path presetDataFolder, BiConsumer<Identifier, Path> presetFileConsumer) throws IOException {
     try (Stream<Path> filesStream = Files.walk(presetDataFolder)) {
       filesStream
           .filter(DataFileHandler::isPresetFile)

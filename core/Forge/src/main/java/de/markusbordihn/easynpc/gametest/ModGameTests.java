@@ -265,7 +265,8 @@ public final class ModGameTests {
         "mass_player_leave_stays_responsive",
         () -> NPCMassLifecycleTest::testMassPlayerLeaveStaysResponsive);
     TEST_FUNCTIONS.register(
-        "mass_removal_stays_responsive", () -> NPCMassLifecycleTest::testMassRemovalStaysResponsive);
+        "mass_removal_stays_responsive",
+        () -> NPCMassLifecycleTest::testMassRemovalStaysResponsive);
 
     TEST_FUNCTIONS.register(
         "spawned_n_p_c_has_home_position",
@@ -476,7 +477,8 @@ public final class ModGameTests {
     TEST_FUNCTIONS.register(
         "import_reports_updated_entity", () -> PresetIdentityTest::testImportReportsUpdatedEntity);
     TEST_FUNCTIONS.register(
-        "import_reports_replaced_entity", () -> PresetIdentityTest::testImportReportsReplacedEntity);
+        "import_reports_replaced_entity",
+        () -> PresetIdentityTest::testImportReportsReplacedEntity);
     TEST_FUNCTIONS.register(
         "preset_item_drops_identity", () -> PresetIdentityTest::testPresetItemDropsIdentity);
 
@@ -641,6 +643,19 @@ public final class ModGameTests {
         "preset_import_cancels_the_chain", () -> WaitActionTest::testPresetImportCancelsTheChain);
     TEST_FUNCTIONS.register(
         "death_cancels_the_chain", () -> WaitActionTest::testDeathCancelsTheChain);
+
+    TEST_FUNCTIONS.register("owner_moves_n_p_c", () -> MoveEasyNPCItemTest::testOwnerMovesNPC);
+    TEST_FUNCTIONS.register(
+        "creative_player_moves_n_p_c", () -> MoveEasyNPCItemTest::testCreativePlayerMovesNPC);
+    TEST_FUNCTIONS.register(
+        "stranger_cannot_move_n_p_c", () -> MoveEasyNPCItemTest::testStrangerCannotMoveNPC);
+
+    TEST_FUNCTIONS.register(
+        "owner_set_changes_owner", () -> OwnerCommandTest::testOwnerSetChangesOwner);
+    TEST_FUNCTIONS.register(
+        "owner_remove_clears_owner", () -> OwnerCommandTest::testOwnerRemoveClearsOwner);
+    TEST_FUNCTIONS.register(
+        "owner_set_requires_gamemaster", () -> OwnerCommandTest::testOwnerSetRequiresGamemaster);
   }
 
   private ModGameTests() {}

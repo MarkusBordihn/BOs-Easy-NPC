@@ -120,6 +120,20 @@ public final class GameTestHelpers {
     return serverPlayer;
   }
 
+  public static ServerPlayer mockSurvivalServerPlayer(
+      GameTestHelper helper, Vec3 position, String playerName) {
+    ServerPlayer serverPlayer = mockServerPlayer(helper, position, playerName);
+    serverPlayer.setGameMode(GameType.SURVIVAL);
+    return serverPlayer;
+  }
+
+  public static ServerPlayer mockCreativeServerPlayer(
+      GameTestHelper helper, Vec3 position, String playerName) {
+    ServerPlayer serverPlayer = mockServerPlayer(helper, position, playerName);
+    serverPlayer.setGameMode(GameType.CREATIVE);
+    return serverPlayer;
+  }
+
   private static ServerPlayer createMockServerPlayer(
       GameTestHelper helper, Vec3 position, String playerName) {
     ServerLevel level = helper.getLevel();

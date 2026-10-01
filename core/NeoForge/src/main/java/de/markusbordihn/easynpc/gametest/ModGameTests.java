@@ -674,7 +674,9 @@ public final class ModGameTests {
         PresetIdentityTest::testImportKeepsTargetPosition,
         DEFAULT_STRUCTURE);
     register(
-        "export_exposes_identity", PresetIdentityTest::testExportExposesIdentity, DEFAULT_STRUCTURE);
+        "export_exposes_identity",
+        PresetIdentityTest::testExportExposesIdentity,
+        DEFAULT_STRUCTURE);
     register(
         "import_reports_created_entity",
         PresetIdentityTest::testImportReportsCreatedEntity,
@@ -925,6 +927,27 @@ public final class ModGameTests {
         DEFAULT_STRUCTURE);
     register(
         "death_cancels_the_chain", WaitActionTest::testDeathCancelsTheChain, DEFAULT_STRUCTURE);
+
+    register("owner_moves_n_p_c", MoveEasyNPCItemTest::testOwnerMovesNPC, DEFAULT_STRUCTURE);
+    register(
+        "creative_player_moves_n_p_c",
+        MoveEasyNPCItemTest::testCreativePlayerMovesNPC,
+        DEFAULT_STRUCTURE);
+    register(
+        "stranger_cannot_move_n_p_c",
+        MoveEasyNPCItemTest::testStrangerCannotMoveNPC,
+        DEFAULT_STRUCTURE);
+
+    register(
+        "owner_set_changes_owner", OwnerCommandTest::testOwnerSetChangesOwner, DEFAULT_STRUCTURE);
+    register(
+        "owner_remove_clears_owner",
+        OwnerCommandTest::testOwnerRemoveClearsOwner,
+        DEFAULT_STRUCTURE);
+    register(
+        "owner_set_requires_gamemaster",
+        OwnerCommandTest::testOwnerSetRequiresGamemaster,
+        DEFAULT_STRUCTURE);
   }
 
   private ModGameTests() {}

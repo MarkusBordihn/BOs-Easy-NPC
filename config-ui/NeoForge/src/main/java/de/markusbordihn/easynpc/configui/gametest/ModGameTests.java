@@ -287,6 +287,163 @@ public final class ModGameTests {
     register("missing_editor_type", MenuManagerTest::testMissingEditorType, DEFAULT_STRUCTURE);
 
     register("mod_registered", SmokeTest::testModRegistered, SMOKE_STRUCTURE);
+
+    register("max_health_change", AttributeMessageTest::testMaxHealthChange, DEFAULT_STRUCTURE);
+    register("visibility_change", AttributeMessageTest::testVisibilityChange, DEFAULT_STRUCTURE);
+    register("opacity_change", AttributeMessageTest::testOpacityChange, DEFAULT_STRUCTURE);
+    register("combat_flag_change", AttributeMessageTest::testCombatFlagChange, DEFAULT_STRUCTURE);
+    register(
+        "health_regeneration_change",
+        AttributeMessageTest::testHealthRegenerationChange,
+        DEFAULT_STRUCTURE);
+    register(
+        "movement_flag_change", AttributeMessageTest::testMovementFlagChange, DEFAULT_STRUCTURE);
+    register("hover_height_change", AttributeMessageTest::testHoverHeightChange, DEFAULT_STRUCTURE);
+    register(
+        "navigation_type_change",
+        AttributeMessageTest::testNavigationTypeChange,
+        DEFAULT_STRUCTURE);
+    register(
+        "interaction_flag_change",
+        AttributeMessageTest::testInteractionFlagChange,
+        DEFAULT_STRUCTURE);
+    register(
+        "environmental_flag_change",
+        AttributeMessageTest::testEnvironmentalFlagChange,
+        DEFAULT_STRUCTURE);
+    register("silent_change", AttributeMessageTest::testSilentChange, DEFAULT_STRUCTURE);
+    register("name_change", AttributeMessageTest::testNameChange, DEFAULT_STRUCTURE);
+
+    register("dialog_set_save", DialogActionMessageTest::testDialogSetSave, DEFAULT_STRUCTURE);
+    register("dialog_save", DialogActionMessageTest::testDialogSave, DEFAULT_STRUCTURE);
+    register(
+        "harmless_dialog_button_save",
+        DialogActionMessageTest::testHarmlessDialogButtonSave,
+        DEFAULT_STRUCTURE);
+    register(
+        "command_dialog_button_save_requires_creative",
+        DialogActionMessageTest::testCommandDialogButtonSaveRequiresCreative,
+        DEFAULT_STRUCTURE);
+    register("dialog_remove", DialogActionMessageTest::testDialogRemove, DEFAULT_STRUCTURE);
+    register(
+        "dialog_button_remove", DialogActionMessageTest::testDialogButtonRemove, DEFAULT_STRUCTURE);
+    register(
+        "harmless_action_event_change",
+        DialogActionMessageTest::testHarmlessActionEventChange,
+        DEFAULT_STRUCTURE);
+    register(
+        "command_action_event_change_requires_creative",
+        DialogActionMessageTest::testCommandActionEventChangeRequiresCreative,
+        DEFAULT_STRUCTURE);
+    register(
+        "command_trading_offer_action_requires_creative",
+        DialogActionMessageTest::testCommandTradingOfferActionRequiresCreative,
+        DEFAULT_STRUCTURE);
+    register(
+        "own_execution_limit_reset",
+        DialogActionMessageTest::testOwnExecutionLimitReset,
+        DEFAULT_STRUCTURE);
+    register(
+        "all_players_execution_limit_reset_requires_permission",
+        DialogActionMessageTest::testAllPlayersExecutionLimitResetRequiresPermission,
+        DEFAULT_STRUCTURE);
+    register(
+        "execution_limit_reset_requires_access",
+        DialogActionMessageTest::testExecutionLimitResetRequiresAccess,
+        DEFAULT_STRUCTURE);
+
+    register(
+        "trading_type_change",
+        TradingObjectiveFactionMessageTest::testTradingTypeChange,
+        DEFAULT_STRUCTURE);
+    register(
+        "basic_trading_max_uses_change",
+        TradingObjectiveFactionMessageTest::testBasicTradingMaxUsesChange,
+        DEFAULT_STRUCTURE);
+    register(
+        "basic_trading_reset_interval_change",
+        TradingObjectiveFactionMessageTest::testBasicTradingResetIntervalChange,
+        DEFAULT_STRUCTURE);
+    register(
+        "advanced_trading_price_multiplier_change",
+        TradingObjectiveFactionMessageTest::testAdvancedTradingPriceMultiplierChange,
+        DEFAULT_STRUCTURE);
+    register(
+        "objective_addition",
+        TradingObjectiveFactionMessageTest::testObjectiveAddition,
+        DEFAULT_STRUCTURE);
+    register(
+        "objective_removal",
+        TradingObjectiveFactionMessageTest::testObjectiveRemoval,
+        DEFAULT_STRUCTURE);
+    register(
+        "faction_assignment",
+        TradingObjectiveFactionMessageTest::testFactionAssignment,
+        DEFAULT_STRUCTURE);
+    register(
+        "faction_unassignment",
+        TradingObjectiveFactionMessageTest::testFactionUnassignment,
+        DEFAULT_STRUCTURE);
+    register(
+        "faction_creation",
+        TradingObjectiveFactionMessageTest::testFactionCreation,
+        DEFAULT_STRUCTURE);
+    register(
+        "faction_color_change",
+        TradingObjectiveFactionMessageTest::testFactionColorChange,
+        DEFAULT_STRUCTURE);
+    register(
+        "faction_relation_change",
+        TradingObjectiveFactionMessageTest::testFactionRelationChange,
+        DEFAULT_STRUCTURE);
+    register(
+        "faction_entry_removal",
+        TradingObjectiveFactionMessageTest::testFactionEntryRemoval,
+        DEFAULT_STRUCTURE);
+
+    register("player_skin_change", AppearanceMessageTest::testPlayerSkinChange, DEFAULT_STRUCTURE);
+    register("remote_skin_change", AppearanceMessageTest::testRemoteSkinChange, DEFAULT_STRUCTURE);
+    register("profession_change", AppearanceMessageTest::testProfessionChange, DEFAULT_STRUCTURE);
+    register("renderer_change", AppearanceMessageTest::testRendererChange, DEFAULT_STRUCTURE);
+    register("sound_change", AppearanceMessageTest::testSoundChange, DEFAULT_STRUCTURE);
+    register("sound_reset", AppearanceMessageTest::testSoundReset, DEFAULT_STRUCTURE);
+    register("position_change", AppearanceMessageTest::testPositionChange, DEFAULT_STRUCTURE);
+    register(
+        "home_position_change", AppearanceMessageTest::testHomePositionChange, DEFAULT_STRUCTURE);
+    register("n_p_c_respawn", AppearanceMessageTest::testNPCRespawn, DEFAULT_STRUCTURE);
+    register("n_p_c_removal", AppearanceMessageTest::testNPCRemoval, DEFAULT_STRUCTURE);
+
+    register("model_pose_change", ModelMessageTest::testModelPoseChange, DEFAULT_STRUCTURE);
+    register(
+        "model_part_position_change",
+        ModelMessageTest::testModelPartPositionChange,
+        DEFAULT_STRUCTURE);
+    register(
+        "model_root_rotation_change",
+        ModelMessageTest::testModelRootRotationChange,
+        DEFAULT_STRUCTURE);
+    register(
+        "model_part_rotation_change",
+        ModelMessageTest::testModelPartRotationChange,
+        DEFAULT_STRUCTURE);
+    register(
+        "model_root_scale_change", ModelMessageTest::testModelRootScaleChange, DEFAULT_STRUCTURE);
+    register(
+        "model_part_scale_change", ModelMessageTest::testModelPartScaleChange, DEFAULT_STRUCTURE);
+    register(
+        "model_part_visibility_change",
+        ModelMessageTest::testModelPartVisibilityChange,
+        DEFAULT_STRUCTURE);
+    register(
+        "model_animation_behavior_change",
+        ModelMessageTest::testModelAnimationBehaviorChange,
+        DEFAULT_STRUCTURE);
+    register(
+        "equipment_visibility_change",
+        ModelMessageTest::testEquipmentVisibilityChange,
+        DEFAULT_STRUCTURE);
+    register("pose_change", ModelMessageTest::testPoseChange, DEFAULT_STRUCTURE);
+    register("named_pose_change", ModelMessageTest::testNamedPoseChange, DEFAULT_STRUCTURE);
   }
 
   private ModGameTests() {}

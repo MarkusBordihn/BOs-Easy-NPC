@@ -133,12 +133,8 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
   private ActionDataEntry getActionDataEntry() {
     if (this.actionDataEntryId != null && this.actionDataSet.contains(this.actionDataEntryId)) {
       return this.actionDataSet.getEntryOrDefault(this.actionDataEntryId);
-    } else if (this.actionDataEntryId != null) {
-      log.error(
-          "No valid action data entry found for {} in {}!",
-          this.actionDataEntryId,
-          this.actionDataSet);
     }
+
     return new ActionDataEntry();
   }
 

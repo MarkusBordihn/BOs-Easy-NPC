@@ -121,7 +121,7 @@ public record SaveDialogButtonMessage(
     CommandPermissionLevel currentPermissionLevel =
         actionEventData.getActionCommandPermissionLevel();
     CommandPermissionLevel permissionLevel =
-        SecurityManager.applyActionAuthority(easyNPC, serverPlayer);
+        SecurityManager.getActionAuthority(easyNPC, serverPlayer);
     log.debug(
         "Update owner permission level from {} to {} for {} from {}",
         currentPermissionLevel,
@@ -156,6 +156,7 @@ public record SaveDialogButtonMessage(
       return;
     }
 
+    SecurityManager.applyActionAuthority(easyNPC, permissionLevel);
     if (this.dialogButtonId == null) {
       log.info(
           "Add new dialog button {} for dialog {} for {} from {}",
