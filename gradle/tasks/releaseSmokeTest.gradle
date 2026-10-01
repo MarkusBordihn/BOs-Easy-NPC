@@ -161,9 +161,23 @@ simulation-distance=4
   logFile.parentFile.mkdirs()
   def process = new ProcessBuilder(server.command.collect { part -> part.toString() }).directory(serverDirectory)
       .redirectErrorStream(true).redirectOutput(logFile).start()
-  // The server reads console commands only once it has finished starting, so the queued stop runs afterwards.
-  process.outputStream.withWriter('UTF-8') { writer -> writer.write('stop\n') }
-  if (!process.waitFor(5, TimeUnit.MINUTES)) {
+  def startedPattern = /Done \(\d+[.,]\d+s\)!/
+  long deadline = System.nanoTime() + TimeUnit.MINUTES.toNanos(5)
+  def consoleWriter = new OutputStreamWriter(process.outputStream, 'UTF-8')
+  // Minecraft 1.21.11 fails a console stop that runs right after "Done", even on a vanilla server,
+  // so stop is repeated until the server exits.
+  while (process.isAlive() && System.nanoTime() < deadline) {
+    if ((logFile.getText('UTF-8') =~ startedPattern).find()) {
+      try {
+        consoleWriter.write('stop\n')
+        consoleWriter.flush()
+      } catch (IOException ignored) {
+        // The server closed its console while shutting down.
+      }
+    }
+    process.waitFor(5, TimeUnit.SECONDS)
+  }
+  if (process.isAlive()) {
     process.destroyForcibly().waitFor()
     return 'server did not stop within 5 minutes'
   }
@@ -172,7 +186,7 @@ simulation-distance=4
   if (crashReports) {
     return "crash report ${crashReports.join(', ')}"
   }
-  if (!(logFile.getText('UTF-8') =~ /Done \(\d+[.,]\d+s\)!/).find()) {
+  if (!(logFile.getText('UTF-8') =~ startedPattern).find()) {
     return "server exited with code ${process.exitValue()} before it finished starting"
   }
   if (process.exitValue() != 0) {
