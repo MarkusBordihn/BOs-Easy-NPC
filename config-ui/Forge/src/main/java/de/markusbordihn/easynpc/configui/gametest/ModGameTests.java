@@ -206,6 +206,117 @@ public final class ModGameTests {
     TEST_FUNCTIONS.register("missing_editor_type", () -> MenuManagerTest::testMissingEditorType);
 
     TEST_FUNCTIONS.register("mod_registered", () -> SmokeTest::testModRegistered);
+
+    TEST_FUNCTIONS.register("max_health_change", () -> AttributeMessageTest::testMaxHealthChange);
+    TEST_FUNCTIONS.register("visibility_change", () -> AttributeMessageTest::testVisibilityChange);
+    TEST_FUNCTIONS.register("opacity_change", () -> AttributeMessageTest::testOpacityChange);
+    TEST_FUNCTIONS.register("combat_flag_change", () -> AttributeMessageTest::testCombatFlagChange);
+    TEST_FUNCTIONS.register(
+        "health_regeneration_change", () -> AttributeMessageTest::testHealthRegenerationChange);
+    TEST_FUNCTIONS.register(
+        "movement_flag_change", () -> AttributeMessageTest::testMovementFlagChange);
+    TEST_FUNCTIONS.register(
+        "hover_height_change", () -> AttributeMessageTest::testHoverHeightChange);
+    TEST_FUNCTIONS.register(
+        "navigation_type_change", () -> AttributeMessageTest::testNavigationTypeChange);
+    TEST_FUNCTIONS.register(
+        "interaction_flag_change", () -> AttributeMessageTest::testInteractionFlagChange);
+    TEST_FUNCTIONS.register(
+        "environmental_flag_change", () -> AttributeMessageTest::testEnvironmentalFlagChange);
+    TEST_FUNCTIONS.register("silent_change", () -> AttributeMessageTest::testSilentChange);
+    TEST_FUNCTIONS.register("name_change", () -> AttributeMessageTest::testNameChange);
+
+    TEST_FUNCTIONS.register("dialog_set_save", () -> DialogActionMessageTest::testDialogSetSave);
+    TEST_FUNCTIONS.register("dialog_save", () -> DialogActionMessageTest::testDialogSave);
+    TEST_FUNCTIONS.register(
+        "harmless_dialog_button_save", () -> DialogActionMessageTest::testHarmlessDialogButtonSave);
+    TEST_FUNCTIONS.register(
+        "command_dialog_button_save_requires_creative",
+        () -> DialogActionMessageTest::testCommandDialogButtonSaveRequiresCreative);
+    TEST_FUNCTIONS.register("dialog_remove", () -> DialogActionMessageTest::testDialogRemove);
+    TEST_FUNCTIONS.register(
+        "dialog_button_remove", () -> DialogActionMessageTest::testDialogButtonRemove);
+    TEST_FUNCTIONS.register(
+        "harmless_action_event_change",
+        () -> DialogActionMessageTest::testHarmlessActionEventChange);
+    TEST_FUNCTIONS.register(
+        "command_action_event_change_requires_creative",
+        () -> DialogActionMessageTest::testCommandActionEventChangeRequiresCreative);
+    TEST_FUNCTIONS.register(
+        "command_trading_offer_action_requires_creative",
+        () -> DialogActionMessageTest::testCommandTradingOfferActionRequiresCreative);
+    TEST_FUNCTIONS.register(
+        "own_execution_limit_reset", () -> DialogActionMessageTest::testOwnExecutionLimitReset);
+    TEST_FUNCTIONS.register(
+        "all_players_execution_limit_reset_requires_permission",
+        () -> DialogActionMessageTest::testAllPlayersExecutionLimitResetRequiresPermission);
+    TEST_FUNCTIONS.register(
+        "execution_limit_reset_requires_access",
+        () -> DialogActionMessageTest::testExecutionLimitResetRequiresAccess);
+
+    TEST_FUNCTIONS.register(
+        "trading_type_change", () -> TradingObjectiveFactionMessageTest::testTradingTypeChange);
+    TEST_FUNCTIONS.register(
+        "basic_trading_max_uses_change",
+        () -> TradingObjectiveFactionMessageTest::testBasicTradingMaxUsesChange);
+    TEST_FUNCTIONS.register(
+        "basic_trading_reset_interval_change",
+        () -> TradingObjectiveFactionMessageTest::testBasicTradingResetIntervalChange);
+    TEST_FUNCTIONS.register(
+        "advanced_trading_price_multiplier_change",
+        () -> TradingObjectiveFactionMessageTest::testAdvancedTradingPriceMultiplierChange);
+    TEST_FUNCTIONS.register(
+        "objective_addition", () -> TradingObjectiveFactionMessageTest::testObjectiveAddition);
+    TEST_FUNCTIONS.register(
+        "objective_removal", () -> TradingObjectiveFactionMessageTest::testObjectiveRemoval);
+    TEST_FUNCTIONS.register(
+        "faction_assignment", () -> TradingObjectiveFactionMessageTest::testFactionAssignment);
+    TEST_FUNCTIONS.register(
+        "faction_unassignment", () -> TradingObjectiveFactionMessageTest::testFactionUnassignment);
+    TEST_FUNCTIONS.register(
+        "faction_creation", () -> TradingObjectiveFactionMessageTest::testFactionCreation);
+    TEST_FUNCTIONS.register(
+        "faction_color_change", () -> TradingObjectiveFactionMessageTest::testFactionColorChange);
+    TEST_FUNCTIONS.register(
+        "faction_relation_change",
+        () -> TradingObjectiveFactionMessageTest::testFactionRelationChange);
+    TEST_FUNCTIONS.register(
+        "faction_entry_removal", () -> TradingObjectiveFactionMessageTest::testFactionEntryRemoval);
+
+    TEST_FUNCTIONS.register(
+        "player_skin_change", () -> AppearanceMessageTest::testPlayerSkinChange);
+    TEST_FUNCTIONS.register(
+        "remote_skin_change", () -> AppearanceMessageTest::testRemoteSkinChange);
+    TEST_FUNCTIONS.register("profession_change", () -> AppearanceMessageTest::testProfessionChange);
+    TEST_FUNCTIONS.register("renderer_change", () -> AppearanceMessageTest::testRendererChange);
+    TEST_FUNCTIONS.register("sound_change", () -> AppearanceMessageTest::testSoundChange);
+    TEST_FUNCTIONS.register("sound_reset", () -> AppearanceMessageTest::testSoundReset);
+    TEST_FUNCTIONS.register("position_change", () -> AppearanceMessageTest::testPositionChange);
+    TEST_FUNCTIONS.register(
+        "home_position_change", () -> AppearanceMessageTest::testHomePositionChange);
+    TEST_FUNCTIONS.register("n_p_c_respawn", () -> AppearanceMessageTest::testNPCRespawn);
+    TEST_FUNCTIONS.register("n_p_c_removal", () -> AppearanceMessageTest::testNPCRemoval);
+
+    TEST_FUNCTIONS.register("model_pose_change", () -> ModelMessageTest::testModelPoseChange);
+    TEST_FUNCTIONS.register(
+        "model_part_position_change", () -> ModelMessageTest::testModelPartPositionChange);
+    TEST_FUNCTIONS.register(
+        "model_root_rotation_change", () -> ModelMessageTest::testModelRootRotationChange);
+    TEST_FUNCTIONS.register(
+        "model_part_rotation_change", () -> ModelMessageTest::testModelPartRotationChange);
+    TEST_FUNCTIONS.register(
+        "model_root_scale_change", () -> ModelMessageTest::testModelRootScaleChange);
+    TEST_FUNCTIONS.register(
+        "model_part_scale_change", () -> ModelMessageTest::testModelPartScaleChange);
+    TEST_FUNCTIONS.register(
+        "model_part_visibility_change", () -> ModelMessageTest::testModelPartVisibilityChange);
+    TEST_FUNCTIONS.register(
+        "model_animation_behavior_change",
+        () -> ModelMessageTest::testModelAnimationBehaviorChange);
+    TEST_FUNCTIONS.register(
+        "equipment_visibility_change", () -> ModelMessageTest::testEquipmentVisibilityChange);
+    TEST_FUNCTIONS.register("pose_change", () -> ModelMessageTest::testPoseChange);
+    TEST_FUNCTIONS.register("named_pose_change", () -> ModelMessageTest::testNamedPoseChange);
   }
 
   private ModGameTests() {}

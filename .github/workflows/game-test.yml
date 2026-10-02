@@ -1,0 +1,109 @@
+name: Game tests
+
+on: workflow_call
+
+jobs:
+  fabric:
+    name: Fabric
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '25'
+          distribution: 'temurin'
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-read-only: ${{ github.event_name == 'pull_request' }}
+      - run: chmod +x gradlew
+
+      - name: Run Core game tests
+        run: ./gradlew -p core --console=plain :Fabric:runGameTest
+
+      - name: Publish Core to Maven Local
+        run: ./gradlew -p core --console=plain publishToMavenLocal
+
+      - name: Run Config UI game tests
+        run: ./gradlew -p config-ui --console=plain :Fabric:runGameTest
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: fabric-game-test-logs
+          path: |
+            core/Fabric/run/gametest/logs/
+            core/Fabric/run/gametest/crash-reports/
+            config-ui/Fabric/run/gametest/logs/
+            config-ui/Fabric/run/gametest/crash-reports/
+          if-no-files-found: ignore
+
+  forge:
+    name: Forge
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '25'
+          distribution: 'temurin'
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-read-only: ${{ github.event_name == 'pull_request' }}
+      - run: chmod +x gradlew
+
+      - name: Run Core game tests
+        run: ./gradlew -p core --console=plain :Forge:runGameTestServer
+
+      - name: Publish Core to Maven Local
+        run: ./gradlew -p core --console=plain publishToMavenLocal
+
+      - name: Run Config UI game tests
+        run: ./gradlew -p config-ui --console=plain :Forge:runGameTestServer
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: forge-game-test-logs
+          path: |
+            core/Forge/run/gametest/logs/
+            core/Forge/run/gametest/crash-reports/
+            config-ui/Forge/run/gametest/logs/
+            config-ui/Forge/run/gametest/crash-reports/
+          if-no-files-found: ignore
+
+  neoforge:
+    name: NeoForge
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '25'
+          distribution: 'temurin'
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-read-only: ${{ github.event_name == 'pull_request' }}
+      - run: chmod +x gradlew
+
+      - name: Run Core game tests
+        run: ./gradlew -p core --console=plain :NeoForge:runGameTestServer
+
+      - name: Publish Core to Maven Local
+        run: ./gradlew -p core --console=plain publishToMavenLocal
+
+      - name: Run Config UI game tests
+        run: ./gradlew -p config-ui --console=plain :NeoForge:runGameTestServer
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: neoforge-game-test-logs
+          path: |
+            core/NeoForge/run/gametest/logs/
+            core/NeoForge/run/gametest/crash-reports/
+            config-ui/NeoForge/run/gametest/logs/
+            config-ui/NeoForge/run/gametest/crash-reports/
+          if-no-files-found: ignore

@@ -18,6 +18,7 @@ Check the [upgrade guide][upgrade_guide] for more information.
 - Fixed the preset browser search showing no results after scrolling down the list.
 - Changed the network protocol version, so client and server must run the same mod version.
 - Added `@initiator`, `@npc` and `@score()` support to dialog button names to fix #841.
+- Added automatic client tests with the Client Runtime Interface Toolkit.
 - Larger core refactoring and code cleanup.
 
 ### 7.12.2
