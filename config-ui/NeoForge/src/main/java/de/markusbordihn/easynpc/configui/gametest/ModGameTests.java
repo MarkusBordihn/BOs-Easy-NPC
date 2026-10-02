@@ -444,6 +444,192 @@ public final class ModGameTests {
         DEFAULT_STRUCTURE);
     register("pose_change", ModelMessageTest::testPoseChange, DEFAULT_STRUCTURE);
     register("named_pose_change", ModelMessageTest::testNamedPoseChange, DEFAULT_STRUCTURE);
+
+    register(
+        "allay_t_pose_persistence",
+        PosePersistenceTest::testAllayTPosePersistence,
+        DEFAULT_STRUCTURE,
+        PosePersistenceTestHelper.TIMEOUT_TICKS);
+    register(
+        "bogged_t_pose_persistence",
+        PosePersistenceTest::testBoggedTPosePersistence,
+        DEFAULT_STRUCTURE,
+        PosePersistenceTestHelper.TIMEOUT_TICKS);
+    register(
+        "cat_t_pose_persistence",
+        PosePersistenceTest::testCatTPosePersistence,
+        DEFAULT_STRUCTURE,
+        PosePersistenceTestHelper.TIMEOUT_TICKS);
+    register(
+        "chicken_t_pose_persistence",
+        PosePersistenceTest::testChickenTPosePersistence,
+        DEFAULT_STRUCTURE,
+        PosePersistenceTestHelper.TIMEOUT_TICKS);
+    register(
+        "creeper_t_pose_persistence",
+        PosePersistenceTest::testCreeperTPosePersistence,
+        DEFAULT_STRUCTURE,
+        PosePersistenceTestHelper.TIMEOUT_TICKS);
+    register(
+        "drowned_t_pose_persistence",
+        PosePersistenceTest::testDrownedTPosePersistence,
+        DEFAULT_STRUCTURE,
+        PosePersistenceTestHelper.TIMEOUT_TICKS);
+    register(
+        "enderman_t_pose_persistence",
+        PosePersistenceTest::testEndermanTPosePersistence,
+        DEFAULT_STRUCTURE,
+        PosePersistenceTestHelper.TIMEOUT_TICKS);
+    register(
+        "evoker_t_pose_persistence",
+        PosePersistenceTest::testEvokerTPosePersistence,
+        DEFAULT_STRUCTURE,
+        PosePersistenceTestHelper.TIMEOUT_TICKS);
+    register(
+        "fox_t_pose_persistence",
+        PosePersistenceTest::testFoxTPosePersistence,
+        DEFAULT_STRUCTURE,
+        PosePersistenceTestHelper.TIMEOUT_TICKS);
+    register(
+        "ghast_t_pose_persistence",
+        PosePersistenceTest::testGhastTPosePersistence,
+        DEFAULT_STRUCTURE,
+        PosePersistenceTestHelper.TIMEOUT_TICKS);
+    register(
+        "horse_t_pose_persistence",
+        PosePersistenceTest::testHorseTPosePersistence,
+        DEFAULT_STRUCTURE,
+        PosePersistenceTestHelper.TIMEOUT_TICKS);
+    register(
+        "horse_skeleton_t_pose_persistence",
+        PosePersistenceTest::testHorseSkeletonTPosePersistence,
+        DEFAULT_STRUCTURE,
+        PosePersistenceTestHelper.TIMEOUT_TICKS);
+    register(
+        "horse_zombie_t_pose_persistence",
+        PosePersistenceTest::testHorseZombieTPosePersistence,
+        DEFAULT_STRUCTURE,
+        PosePersistenceTestHelper.TIMEOUT_TICKS);
+    register(
+        "humanoid_t_pose_persistence",
+        PosePersistenceTest::testHumanoidTPosePersistence,
+        DEFAULT_STRUCTURE,
+        PosePersistenceTestHelper.TIMEOUT_TICKS);
+    register(
+        "humanoid_slim_t_pose_persistence",
+        PosePersistenceTest::testHumanoidSlimTPosePersistence,
+        DEFAULT_STRUCTURE,
+        PosePersistenceTestHelper.TIMEOUT_TICKS);
+    register(
+        "illusioner_t_pose_persistence",
+        PosePersistenceTest::testIllusionerTPosePersistence,
+        DEFAULT_STRUCTURE,
+        PosePersistenceTestHelper.TIMEOUT_TICKS);
+    register(
+        "iron_golem_t_pose_persistence",
+        PosePersistenceTest::testIronGolemTPosePersistence,
+        DEFAULT_STRUCTURE,
+        PosePersistenceTestHelper.TIMEOUT_TICKS);
+    register(
+        "piglin_t_pose_persistence",
+        PosePersistenceTest::testPiglinTPosePersistence,
+        DEFAULT_STRUCTURE,
+        PosePersistenceTestHelper.TIMEOUT_TICKS);
+    register(
+        "piglin_brute_t_pose_persistence",
+        PosePersistenceTest::testPiglinBruteTPosePersistence,
+        DEFAULT_STRUCTURE,
+        PosePersistenceTestHelper.TIMEOUT_TICKS);
+    register(
+        "piglin_zombified_t_pose_persistence",
+        PosePersistenceTest::testPiglinZombifiedTPosePersistence,
+        DEFAULT_STRUCTURE,
+        PosePersistenceTestHelper.TIMEOUT_TICKS);
+    register(
+        "pig_t_pose_persistence",
+        PosePersistenceTest::testPigTPosePersistence,
+        DEFAULT_STRUCTURE,
+        PosePersistenceTestHelper.TIMEOUT_TICKS);
+    register(
+        "pillager_t_pose_persistence",
+        PosePersistenceTest::testPillagerTPosePersistence,
+        DEFAULT_STRUCTURE,
+        PosePersistenceTestHelper.TIMEOUT_TICKS);
+    register(
+        "skeleton_t_pose_persistence",
+        PosePersistenceTest::testSkeletonTPosePersistence,
+        DEFAULT_STRUCTURE,
+        PosePersistenceTestHelper.TIMEOUT_TICKS);
+    register(
+        "stray_t_pose_persistence",
+        PosePersistenceTest::testStrayTPosePersistence,
+        DEFAULT_STRUCTURE,
+        PosePersistenceTestHelper.TIMEOUT_TICKS);
+    register(
+        "wither_skeleton_t_pose_persistence",
+        PosePersistenceTest::testWitherSkeletonTPosePersistence,
+        DEFAULT_STRUCTURE,
+        PosePersistenceTestHelper.TIMEOUT_TICKS);
+    register(
+        "slime_t_pose_persistence",
+        PosePersistenceTest::testSlimeTPosePersistence,
+        DEFAULT_STRUCTURE,
+        PosePersistenceTestHelper.TIMEOUT_TICKS);
+    register(
+        "spider_t_pose_persistence",
+        PosePersistenceTest::testSpiderTPosePersistence,
+        DEFAULT_STRUCTURE,
+        PosePersistenceTestHelper.TIMEOUT_TICKS);
+    register(
+        "cave_spider_t_pose_persistence",
+        PosePersistenceTest::testCaveSpiderTPosePersistence,
+        DEFAULT_STRUCTURE,
+        PosePersistenceTestHelper.TIMEOUT_TICKS);
+    register(
+        "villager_t_pose_persistence",
+        PosePersistenceTest::testVillagerTPosePersistence,
+        DEFAULT_STRUCTURE,
+        PosePersistenceTestHelper.TIMEOUT_TICKS);
+    register(
+        "wandering_trader_t_pose_persistence",
+        PosePersistenceTest::testWanderingTraderTPosePersistence,
+        DEFAULT_STRUCTURE,
+        PosePersistenceTestHelper.TIMEOUT_TICKS);
+    register(
+        "vex_t_pose_persistence",
+        PosePersistenceTest::testVexTPosePersistence,
+        DEFAULT_STRUCTURE,
+        PosePersistenceTestHelper.TIMEOUT_TICKS);
+    register(
+        "vindicator_t_pose_persistence",
+        PosePersistenceTest::testVindicatorTPosePersistence,
+        DEFAULT_STRUCTURE,
+        PosePersistenceTestHelper.TIMEOUT_TICKS);
+    register(
+        "witch_t_pose_persistence",
+        PosePersistenceTest::testWitchTPosePersistence,
+        DEFAULT_STRUCTURE,
+        PosePersistenceTestHelper.TIMEOUT_TICKS);
+    register(
+        "wolf_t_pose_persistence",
+        PosePersistenceTest::testWolfTPosePersistence,
+        DEFAULT_STRUCTURE,
+        PosePersistenceTestHelper.TIMEOUT_TICKS);
+    register(
+        "zombie_t_pose_persistence",
+        PosePersistenceTest::testZombieTPosePersistence,
+        DEFAULT_STRUCTURE,
+        PosePersistenceTestHelper.TIMEOUT_TICKS);
+    register(
+        "zombie_husk_t_pose_persistence",
+        PosePersistenceTest::testZombieHuskTPosePersistence,
+        DEFAULT_STRUCTURE,
+        PosePersistenceTestHelper.TIMEOUT_TICKS);
+    register(
+        "zombie_villager_t_pose_persistence",
+        PosePersistenceTest::testZombieVillagerTPosePersistence,
+        DEFAULT_STRUCTURE,
+        PosePersistenceTestHelper.TIMEOUT_TICKS);
   }
 
   private ModGameTests() {}
@@ -460,7 +646,13 @@ public final class ModGameTests {
 
   private static void register(
       String name, Consumer<GameTestHelper> testFunction, Identifier structure) {
-    TEST_ENTRIES.add(new TestEntry(TEST_FUNCTIONS.register(name, () -> testFunction), structure));
+    register(name, testFunction, structure, DEFAULT_MAX_TICKS);
+  }
+
+  private static void register(
+      String name, Consumer<GameTestHelper> testFunction, Identifier structure, int maxTicks) {
+    TEST_ENTRIES.add(
+        new TestEntry(TEST_FUNCTIONS.register(name, () -> testFunction), structure, maxTicks));
   }
 
   @SubscribeEvent
@@ -475,11 +667,12 @@ public final class ModGameTests {
           testEntry.testFunction().getId(),
           new FunctionGameTestInstance(
               testEntry.testFunction().getKey(),
-              new TestData<>(environment, testEntry.structure(), DEFAULT_MAX_TICKS, 0, true)));
+              new TestData<>(environment, testEntry.structure(), testEntry.maxTicks(), 0, true)));
     }
   }
 
   private record TestEntry(
       DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> testFunction,
-      Identifier structure) {}
+      Identifier structure,
+      int maxTicks) {}
 }

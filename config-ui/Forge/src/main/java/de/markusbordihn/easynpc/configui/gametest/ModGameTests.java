@@ -317,6 +317,91 @@ public final class ModGameTests {
         "equipment_visibility_change", () -> ModelMessageTest::testEquipmentVisibilityChange);
     TEST_FUNCTIONS.register("pose_change", () -> ModelMessageTest::testPoseChange);
     TEST_FUNCTIONS.register("named_pose_change", () -> ModelMessageTest::testNamedPoseChange);
+
+    TEST_FUNCTIONS.register(
+        "allay_t_pose_persistence", () -> PosePersistenceTest::testAllayTPosePersistence);
+    TEST_FUNCTIONS.register(
+        "bogged_t_pose_persistence", () -> PosePersistenceTest::testBoggedTPosePersistence);
+    TEST_FUNCTIONS.register(
+        "cat_t_pose_persistence", () -> PosePersistenceTest::testCatTPosePersistence);
+    TEST_FUNCTIONS.register(
+        "chicken_t_pose_persistence", () -> PosePersistenceTest::testChickenTPosePersistence);
+    TEST_FUNCTIONS.register(
+        "creeper_t_pose_persistence", () -> PosePersistenceTest::testCreeperTPosePersistence);
+    TEST_FUNCTIONS.register(
+        "drowned_t_pose_persistence", () -> PosePersistenceTest::testDrownedTPosePersistence);
+    TEST_FUNCTIONS.register(
+        "enderman_t_pose_persistence", () -> PosePersistenceTest::testEndermanTPosePersistence);
+    TEST_FUNCTIONS.register(
+        "evoker_t_pose_persistence", () -> PosePersistenceTest::testEvokerTPosePersistence);
+    TEST_FUNCTIONS.register(
+        "fox_t_pose_persistence", () -> PosePersistenceTest::testFoxTPosePersistence);
+    TEST_FUNCTIONS.register(
+        "ghast_t_pose_persistence", () -> PosePersistenceTest::testGhastTPosePersistence);
+    TEST_FUNCTIONS.register(
+        "horse_t_pose_persistence", () -> PosePersistenceTest::testHorseTPosePersistence);
+    TEST_FUNCTIONS.register(
+        "horse_skeleton_t_pose_persistence",
+        () -> PosePersistenceTest::testHorseSkeletonTPosePersistence);
+    TEST_FUNCTIONS.register(
+        "horse_zombie_t_pose_persistence",
+        () -> PosePersistenceTest::testHorseZombieTPosePersistence);
+    TEST_FUNCTIONS.register(
+        "humanoid_t_pose_persistence", () -> PosePersistenceTest::testHumanoidTPosePersistence);
+    TEST_FUNCTIONS.register(
+        "humanoid_slim_t_pose_persistence",
+        () -> PosePersistenceTest::testHumanoidSlimTPosePersistence);
+    TEST_FUNCTIONS.register(
+        "illusioner_t_pose_persistence", () -> PosePersistenceTest::testIllusionerTPosePersistence);
+    TEST_FUNCTIONS.register(
+        "iron_golem_t_pose_persistence", () -> PosePersistenceTest::testIronGolemTPosePersistence);
+    TEST_FUNCTIONS.register(
+        "piglin_t_pose_persistence", () -> PosePersistenceTest::testPiglinTPosePersistence);
+    TEST_FUNCTIONS.register(
+        "piglin_brute_t_pose_persistence",
+        () -> PosePersistenceTest::testPiglinBruteTPosePersistence);
+    TEST_FUNCTIONS.register(
+        "piglin_zombified_t_pose_persistence",
+        () -> PosePersistenceTest::testPiglinZombifiedTPosePersistence);
+    TEST_FUNCTIONS.register(
+        "pig_t_pose_persistence", () -> PosePersistenceTest::testPigTPosePersistence);
+    TEST_FUNCTIONS.register(
+        "pillager_t_pose_persistence", () -> PosePersistenceTest::testPillagerTPosePersistence);
+    TEST_FUNCTIONS.register(
+        "skeleton_t_pose_persistence", () -> PosePersistenceTest::testSkeletonTPosePersistence);
+    TEST_FUNCTIONS.register(
+        "stray_t_pose_persistence", () -> PosePersistenceTest::testStrayTPosePersistence);
+    TEST_FUNCTIONS.register(
+        "wither_skeleton_t_pose_persistence",
+        () -> PosePersistenceTest::testWitherSkeletonTPosePersistence);
+    TEST_FUNCTIONS.register(
+        "slime_t_pose_persistence", () -> PosePersistenceTest::testSlimeTPosePersistence);
+    TEST_FUNCTIONS.register(
+        "spider_t_pose_persistence", () -> PosePersistenceTest::testSpiderTPosePersistence);
+    TEST_FUNCTIONS.register(
+        "cave_spider_t_pose_persistence",
+        () -> PosePersistenceTest::testCaveSpiderTPosePersistence);
+    TEST_FUNCTIONS.register(
+        "villager_t_pose_persistence", () -> PosePersistenceTest::testVillagerTPosePersistence);
+    TEST_FUNCTIONS.register(
+        "wandering_trader_t_pose_persistence",
+        () -> PosePersistenceTest::testWanderingTraderTPosePersistence);
+    TEST_FUNCTIONS.register(
+        "vex_t_pose_persistence", () -> PosePersistenceTest::testVexTPosePersistence);
+    TEST_FUNCTIONS.register(
+        "vindicator_t_pose_persistence", () -> PosePersistenceTest::testVindicatorTPosePersistence);
+    TEST_FUNCTIONS.register(
+        "witch_t_pose_persistence", () -> PosePersistenceTest::testWitchTPosePersistence);
+    TEST_FUNCTIONS.register(
+        "wolf_t_pose_persistence", () -> PosePersistenceTest::testWolfTPosePersistence);
+    TEST_FUNCTIONS.register(
+        "zombie_t_pose_persistence", () -> PosePersistenceTest::testZombieTPosePersistence);
+    TEST_FUNCTIONS.register(
+        "zombie_husk_t_pose_persistence",
+        () -> PosePersistenceTest::testZombieHuskTPosePersistence);
+    TEST_FUNCTIONS.register(
+        "zombie_villager_t_pose_persistence",
+        () -> PosePersistenceTest::testZombieVillagerTPosePersistence);
   }
 
   private ModGameTests() {}

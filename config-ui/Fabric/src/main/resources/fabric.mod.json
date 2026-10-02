@@ -30,7 +30,8 @@
       "de.markusbordihn.easynpc.configui.gametest.DialogActionMessageTest",
       "de.markusbordihn.easynpc.configui.gametest.TradingObjectiveFactionMessageTest",
       "de.markusbordihn.easynpc.configui.gametest.AppearanceMessageTest",
-      "de.markusbordihn.easynpc.configui.gametest.ModelMessageTest"
+      "de.markusbordihn.easynpc.configui.gametest.ModelMessageTest",
+      "de.markusbordihn.easynpc.configui.gametest.PosePersistenceTest"
     ]
   },
   "mixins": [],

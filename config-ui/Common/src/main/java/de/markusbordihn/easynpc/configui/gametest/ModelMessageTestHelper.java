@@ -59,6 +59,8 @@ public final class ModelMessageTestHelper {
     ServerMessageAssertions.assertAppliedOnlyWithAccess(
         helper,
         entityType,
+        easyNPC ->
+            modelData(easyNPC).setModelPartRotation(ModelPartType.HEAD, CHANGED_HEAD_ROTATION),
         uuid -> new ChangeModelPoseMessage(uuid, ModelPose.CUSTOM),
         ChangeModelPoseMessage::create,
         easyNPC -> modelData(easyNPC).getModelPose() == ModelPose.CUSTOM,
