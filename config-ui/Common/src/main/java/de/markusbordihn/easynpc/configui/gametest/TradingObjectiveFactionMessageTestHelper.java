@@ -234,6 +234,7 @@ public final class TradingObjectiveFactionMessageTestHelper {
             INITIAL_PRICE_MULTIPLIER));
     TradingDataCapable<?> tradingData = easyNPC.getEasyNPCTradingData();
     tradingData.getTradingDataSet().setType(tradingType);
+    tradingData.updateTradingDataSet();
     tradingData.setTradingOffers(merchantOffers);
   }
 

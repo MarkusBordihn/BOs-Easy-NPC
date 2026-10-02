@@ -8,6 +8,14 @@ the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 7.14.0
+
+- Fixed #846 by keeping custom poses for players who start seeing the NPC later.
+- Fixed attribute and trading settings missing for players who start seeing the NPC later.
+- Fixed changed max uses, XP and trading type not shown in the trading screens until reload.
+- Fixed `/easy_npc sound set` changes not reaching players until the NPC was reloaded.
+- Added game tests that check NPC poses and settings after respawns and for new players.
+
 ### 7.13.0
 
 - Fixed color and formatting tags in dialog button names showing as plain text.
