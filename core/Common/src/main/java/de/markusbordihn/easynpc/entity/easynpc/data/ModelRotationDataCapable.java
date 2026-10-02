@@ -52,10 +52,11 @@ public interface ModelRotationDataCapable<T extends Mob> extends ModelRootDataCa
   }
 
   default void setModelPartRotation(ModelPartType modelPartType, CustomRotation rotation) {
-    EnumMap<ModelPartType, CustomRotation> modelPartMap = this.getModelPartRotation();
     if (modelPartType != null) {
+      EnumMap<ModelPartType, CustomRotation> modelPartMap =
+          new EnumMap<>(this.getModelPartRotation());
       modelPartMap.put(modelPartType, rotation);
-      this.setModelPartRotation(new EnumMap<>(modelPartMap));
+      this.setModelPartRotation(modelPartMap);
     }
   }
 

@@ -117,6 +117,9 @@ public final class ServerMessageAssertions {
         helper,
         "Message from " + sender.getScoreboardName() + " was not applied",
         isApplied.test(easyNPC));
+    if (!easyNPC.getEntity().isRemoved()) {
+      NPCPersistenceAssertions.assertSurvivesRetrackingAndRespawn(helper, easyNPC, isApplied);
+    }
   }
 
   private static <M extends NetworkMessageRecord> void assertUnchangedAfter(
@@ -145,7 +148,7 @@ public final class ServerMessageAssertions {
         helper, "Test setup already matches the expected result", !isApplied.test(easyNPC));
   }
 
-  private static <M extends NetworkMessageRecord> void receive(
+  static <M extends NetworkMessageRecord> void receive(
       Function<UUID, M> messageFactory,
       Function<FriendlyByteBuf, M> messageReader,
       EasyNPC<?> easyNPC,

@@ -51,10 +51,11 @@ public interface ModelPositionDataCapable<T extends Mob> extends EasyNPC<T> {
   }
 
   default void setModelPartPosition(ModelPartType modelPartType, CustomPosition Position) {
-    EnumMap<ModelPartType, CustomPosition> modelPartMap = this.getModelPartPosition();
     if (modelPartType != null) {
+      EnumMap<ModelPartType, CustomPosition> modelPartMap =
+          new EnumMap<>(this.getModelPartPosition());
       modelPartMap.put(modelPartType, Position);
-      this.setModelPartPosition(new EnumMap<>(modelPartMap));
+      this.setModelPartPosition(modelPartMap);
     }
   }
 

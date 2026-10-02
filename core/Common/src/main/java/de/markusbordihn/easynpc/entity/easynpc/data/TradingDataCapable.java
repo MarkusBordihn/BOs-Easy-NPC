@@ -320,9 +320,7 @@ public interface TradingDataCapable<E extends Mob> extends EasyNPC<E>, Merchant 
   }
 
   default void updateTradingDataSet() {
-    TradingDataSet currentTradingDataSet = this.getTradingDataSet();
-    this.setTradingDataSet(new TradingDataSet());
-    this.setTradingDataSet(currentTradingDataSet);
+    this.setTradingDataSet(new TradingDataSet(this.getTradingDataSet().createTag()));
   }
 
   default boolean isValidTradingOffer(ItemStack itemA, ItemStack itemB, ItemStack itemResult) {

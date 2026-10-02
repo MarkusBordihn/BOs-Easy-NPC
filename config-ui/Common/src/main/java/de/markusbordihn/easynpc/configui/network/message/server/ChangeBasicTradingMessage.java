@@ -102,11 +102,13 @@ public record ChangeBasicTradingMessage(
       case MAX_USES:
         log.debug("Set max uses to {} for {} from {}", this.tradingValue, easyNPC, serverPlayer);
         tradingData.getTradingDataSet().setMaxUses(this.tradingValue);
+        tradingData.updateTradingDataSet();
         TradingOfferHandler.updateBasicTradingOffers(tradingData);
         break;
       case REWARD_EXP:
         log.debug("Set reward exp to {} for {} from {}", this.tradingValue, easyNPC, serverPlayer);
         tradingData.getTradingDataSet().setRewardedXP(this.tradingValue);
+        tradingData.updateTradingDataSet();
         TradingOfferHandler.updateBasicTradingOffers(tradingData);
         break;
       case LAST_TRADING_RESET:

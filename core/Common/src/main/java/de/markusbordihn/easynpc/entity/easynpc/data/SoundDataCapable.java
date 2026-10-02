@@ -50,14 +50,6 @@ public interface SoundDataCapable<E extends Mob> extends EasyNPC<E> {
     return soundDataSet;
   }
 
-  default void refreshSoundDataSet() {
-    SoundDataSet soundDataSet = this.getSoundDataSet();
-    if (soundDataSet == null || soundDataSet.isEmpty()) {
-      this.clearSoundDataSet();
-      this.setSoundDataSet(soundDataSet);
-    }
-  }
-
   default void clearSoundDataSet() {
     this.setSoundDataSet(new SoundDataSet());
   }
