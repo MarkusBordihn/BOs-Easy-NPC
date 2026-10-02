@@ -58,8 +58,7 @@ public interface AttributeDataCapable<E extends Mob> extends EasyNPC<E> {
   default void refreshEntityAttributes() {
     EntityAttributes entityAttributes = this.getEntityAttributes();
     if (entityAttributes != null) {
-      this.setEntityAttributes(new EntityAttributes());
-      this.setEntityAttributes(entityAttributes);
+      this.setEntityAttributes(new EntityAttributes(entityAttributes.createTag()));
     }
   }
 

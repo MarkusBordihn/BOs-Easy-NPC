@@ -81,6 +81,7 @@ public class TradingContainerHandler {
 
     if (!merchantOffers.isEmpty()) {
       tradingData.getTradingDataSet().setType(TradingType.ADVANCED);
+      tradingData.updateTradingDataSet();
       tradingData.setTradingOffers(merchantOffers);
     }
   }
@@ -111,6 +112,7 @@ public class TradingContainerHandler {
 
     if (!merchantOffers.isEmpty()) {
       tradingData.getTradingDataSet().setType(TradingType.BASIC);
+      tradingData.updateTradingDataSet();
       tradingData.setTradingOffers(merchantOffers);
     }
   }
