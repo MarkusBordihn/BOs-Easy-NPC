@@ -1,0 +1,63 @@
+name: Client tests
+
+on: workflow_call
+
+jobs:
+  client-test:
+    name: Core and Config UI
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Checkout Client Runtime Interface Toolkit
+        uses: actions/checkout@v4
+        with:
+          repository: MarkusBordihn/BOs-Client-Runtime-Interface-Toolkit
+          ref: '26.1.2'
+          path: client-runtime-interface-toolkit
+
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '25'
+          distribution: 'temurin'
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-read-only: true
+
+      - name: Install virtual display
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xvfb libgl1-mesa-dri libglu1-mesa libxrandr2 libxinerama1 \
+            libxcursor1 libxi6 libxxf86vm1
+
+      - name: Build Client Runtime Interface Toolkit and Publish to Maven Local
+        working-directory: client-runtime-interface-toolkit
+        run: |
+          chmod +x gradlew
+          ./gradlew -p core --console=plain build -x test
+
+      - run: chmod +x gradlew
+
+      - name: Run Core client tests
+        env:
+          LIBGL_ALWAYS_SOFTWARE: '1'
+        run: >-
+          xvfb-run -a --server-args="-screen 0 1280x720x24"
+          ./gradlew -p core --console=plain allClientTests publishToMavenLocal
+
+      - name: Run Config UI client tests
+        env:
+          LIBGL_ALWAYS_SOFTWARE: '1'
+        run: >-
+          xvfb-run -a --server-args="-screen 0 1280x720x24"
+          ./gradlew -p config-ui --console=plain allClientTests
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: client-test-logs
+          path: |
+            core/.client_test/
+            config-ui/.client_test/
+          if-no-files-found: ignore

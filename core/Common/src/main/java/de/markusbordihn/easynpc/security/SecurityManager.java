@@ -152,20 +152,23 @@ public class SecurityManager {
         presetData.metadata());
   }
 
-  public static CommandPermissionLevel applyActionAuthority(
+  public static CommandPermissionLevel getActionAuthority(
       EasyNPC<?> easyNPC, ServerPlayer serverPlayer) {
-    ActionEventDataCapable<?> actionEventData =
-        easyNPC != null ? easyNPC.getEasyNPCActionEventData() : null;
-    if (actionEventData == null) {
+    if (easyNPC == null || easyNPC.getEasyNPCActionEventData() == null) {
       return CommandPermissionLevel.ALL;
     }
 
     ActorSecurityContext actorSecurityContext = CommandSecurity.getActorContext(serverPlayer);
     PresetTrustLevel trustLevel = PresetSecurity.getTrustLevel(actorSecurityContext);
-    CommandPermissionLevel commandPermissionLevel =
-        CommandSecurity.getPresetImportCommandLevel(actorSecurityContext, trustLevel);
-    actionEventData.setActionCommandPermissionLevel(commandPermissionLevel);
+    return CommandSecurity.getPresetImportCommandLevel(actorSecurityContext, trustLevel);
+  }
 
-    return commandPermissionLevel;
+  public static void applyActionAuthority(
+      EasyNPC<?> easyNPC, CommandPermissionLevel commandPermissionLevel) {
+    ActionEventDataCapable<?> actionEventData =
+        easyNPC != null ? easyNPC.getEasyNPCActionEventData() : null;
+    if (actionEventData != null) {
+      actionEventData.setActionCommandPermissionLevel(commandPermissionLevel);
+    }
   }
 }
