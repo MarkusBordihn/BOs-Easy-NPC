@@ -13,6 +13,17 @@ base {
   archivesName = "${project.mod_id}-forge-${project.minecraft_version}"
 }
 
+// ForgeGradle 7 only inherits launch settings from the Forge metadata for runs named like one of
+// its own, so a custom client run has to repeat the ones of the "client" entry.
+def configureAsClient = { run ->
+  run.mainClass = 'net.minecraftforge.bootstrap.ForgeBootstrap'
+  run.args '--launchTarget', 'forge_userdev_client', '--version', 'MOD_DEV', '--assetIndex',
+      '{asset_index}', '--assetsDir', '{assets_root}', '--gameDir', '.'
+  run.jvmArgs '-Djava.net.preferIPv6Addresses=system', '-XX:+UseCompactObjectHeaders',
+      '-XX:StackShadowPages=32'
+  run.environment(['MCP_MAPPINGS': '{mcp_mappings}'])
+}
+
 minecraft {
   mappings channel: 'official', version: "${project.minecraft_version}"
 
@@ -27,6 +38,13 @@ minecraft {
 
     client {
       workingDir = project.file('run/client')
+    }
+
+    if (clientToolkitAvailable) {
+      clientTest {
+        configureAsClient(it)
+        workingDir = project.file('run/clienttest')
+      }
     }
 
     server {
@@ -89,10 +107,10 @@ dependencies {
   testImplementation 'org.junit.jupiter:junit-jupiter-params:5.10.1'
 
   // Additional helpful Mods for development (runtime dependency, skipped for game tests)
-  if (!isGameTestRun && project.hasProperty('forge_jei_mod') && project.forge_jei_mod) {
+  if (!isTestRun && project.hasProperty('forge_jei_mod') && project.forge_jei_mod) {
     runtimeOnly "curse.maven:jei-238222:${project.forge_jei_mod}"
   }
-  if (!isGameTestRun && project.hasProperty('forge_xaeros_minimap_mod') && project.forge_xaeros_minimap_mod) {
+  if (!isTestRun && project.hasProperty('forge_xaeros_minimap_mod') && project.forge_xaeros_minimap_mod) {
     runtimeOnly "curse.maven:xaeros_minimap-263420:${project.forge_xaeros_minimap_mod}"
   }
 
@@ -117,6 +135,11 @@ dependencies {
   } else if (project.hasProperty('forge_easy_model_entities_version')
       && project.forge_easy_model_entities_version) {
     runtimeOnly "maven.modrinth:easy-model-entities:${project.forge_easy_model_entities_version}"
+  }
+
+  // Client Runtime Interface Toolkit (runtime dependency, only for client tests)
+  if (clientToolkitAvailable && isClientTestRun) {
+    runtimeOnly clientToolkitCoordinate('forge')
   }
 }
 

@@ -37,7 +37,7 @@ forge*changelog.txt
 .ghost-reference-index
 
 # Client Runtime Interface Toolkit
-.client_runtime_interface_toolkit
+.client_test
 
 # Raw NPC Types (auto-generated)
 /core/Common/src/main/java/de/markusbordihn/easynpc/api/npc/raw/*Raw.java

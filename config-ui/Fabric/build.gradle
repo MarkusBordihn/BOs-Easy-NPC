@@ -52,6 +52,13 @@ loom {
       vmArg "-Dfabric-api.gametest"
       runDir("run/gametest")
     }
+    if (clientToolkitAvailable) {
+      clientTest {
+        client()
+        setConfigName("Fabric Client Test")
+        runDir("run/clienttest")
+      }
+    }
   }
 }
 
@@ -73,10 +80,10 @@ dependencies {
   testImplementation 'org.junit.jupiter:junit-jupiter-params:5.10.1'
 
   // Additional helpful Mods for development (runtime dependency, skipped for game tests)
-  if (!isGameTestRun && project.hasProperty('fabric_jei_mod') && project.fabric_jei_mod) {
+  if (!isTestRun && project.hasProperty('fabric_jei_mod') && project.fabric_jei_mod) {
     runtimeOnly("curse.maven:jei-238222:${project.fabric_jei_mod}")
   }
-  if (!isGameTestRun && project.hasProperty('fabric_xaeros_minimap_mod') && project.fabric_xaeros_minimap_mod) {
+  if (!isTestRun && project.hasProperty('fabric_xaeros_minimap_mod') && project.fabric_xaeros_minimap_mod) {
     runtimeOnly("curse.maven:xaeros_minimap-263420:${project.fabric_xaeros_minimap_mod}")
   }
 
@@ -87,6 +94,11 @@ dependencies {
   } else if (project.hasProperty('fabric_easy_model_entities_version')
       && project.fabric_easy_model_entities_version) {
     runtimeOnly("maven.modrinth:easy-model-entities:${project.fabric_easy_model_entities_version}")
+  }
+
+  // Client Runtime Interface Toolkit (runtime dependency, only for client tests)
+  if (clientToolkitAvailable && isClientTestRun) {
+    localRuntime clientToolkitCoordinate('fabric')
   }
 }
 

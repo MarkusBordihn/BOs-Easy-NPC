@@ -47,10 +47,10 @@ import de.markusbordihn.easynpc.configui.client.screen.editor.condition.entry.Sc
 import de.markusbordihn.easynpc.configui.client.screen.editor.condition.entry.TimeOfDayConditionEntry;
 import de.markusbordihn.easynpc.configui.client.screen.editor.condition.entry.WeatherConditionEntry;
 import de.markusbordihn.easynpc.configui.menu.editor.EditorMenu;
+import de.markusbordihn.easynpc.configui.network.message.server.ResetExecutionLimitMessage;
 import de.markusbordihn.easynpc.data.condition.ConditionDataEntry;
 import de.markusbordihn.easynpc.data.condition.ConditionDataSet;
 import de.markusbordihn.easynpc.data.condition.ConditionType;
-import de.markusbordihn.easynpc.data.execution.ExecutionId;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
@@ -357,8 +357,8 @@ public class ConditionDataEntryEditorContainerScreen<T extends EditorMenu> exten
     return this.isNewEntry;
   }
 
-  public ExecutionId getExecutionLimitId() {
-    return this.context.executionLimitId();
+  public ResetExecutionLimitMessage createResetExecutionLimitMessage(boolean allPlayers) {
+    return this.context.createResetExecutionLimitMessage(allPlayers);
   }
 
   public Font getFont() {

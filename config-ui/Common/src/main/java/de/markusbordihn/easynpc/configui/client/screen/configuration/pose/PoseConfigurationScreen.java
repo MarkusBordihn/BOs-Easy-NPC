@@ -70,7 +70,7 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
         new SpinButton<>(
             x,
             y,
-            80,
+            78,
             16,
             values,
             this.modelData.getModelAnimationBehavior(),
@@ -289,7 +289,7 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
             new TextButton(
                 this.basicPoseButton.getX() + this.basicPoseButton.getWidth(),
                 this.buttonTopPos,
-                poseButtonWidth + 10,
+                poseButtonWidth + 9,
                 "advanced",
                 button ->
                     NetworkMessageHandlerManager.getServerHandler()
@@ -301,7 +301,7 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
             new TextButton(
                 this.advancedPoseButton.getX() + this.advancedPoseButton.getWidth(),
                 this.buttonTopPos,
-                poseButtonWidth + 10,
+                poseButtonWidth + 9,
                 "custom",
                 button ->
                     NetworkMessageHandlerManager.getServerHandler()
