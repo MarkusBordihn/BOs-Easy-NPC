@@ -92,9 +92,9 @@ public interface ModelScaleDataCapable<T extends Mob> extends ModelRootDataCapab
       return;
     }
 
-    EnumMap<ModelPartType, CustomScale> modelPartMap = this.getModelPartScale();
+    EnumMap<ModelPartType, CustomScale> modelPartMap = new EnumMap<>(this.getModelPartScale());
     modelPartMap.put(modelPartType, scale);
-    this.setModelPartScale(new EnumMap<>(modelPartMap));
+    this.setModelPartScale(modelPartMap);
   }
 
   default CustomScale getModelPartScale(ModelPartType modelPartType) {
