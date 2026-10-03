@@ -82,10 +82,10 @@ public interface ModelVisibilityDataCapable<T extends Mob> extends EasyNPC<T> {
   }
 
   default void setModelPartVisibility(ModelPartType modelPartType, boolean visible) {
-    EnumMap<ModelPartType, Boolean> modelPartMap = this.getModelPartVisibility();
     if (modelPartType != null) {
+      EnumMap<ModelPartType, Boolean> modelPartMap = new EnumMap<>(this.getModelPartVisibility());
       modelPartMap.put(modelPartType, visible);
-      this.setModelPartVisibility(new EnumMap<>(modelPartMap));
+      this.setModelPartVisibility(modelPartMap);
     }
   }
 
