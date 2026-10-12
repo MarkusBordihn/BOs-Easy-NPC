@@ -39,7 +39,7 @@ public class ConfigurationScreenTest {
   }
 
   @GameTest(template = "easy_npc:gametest.3x3x3")
-  public void testMiscAttributeConfigurationScreen(GameTestHelper helper) {
+  public void testOpenMiscAttributeConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
         ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
@@ -54,6 +54,15 @@ public class ConfigurationScreenTest {
         ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
         ConfigurationType.ADVANCED_DIALOG,
         ModMenuTypes.ADVANCED_DIALOG_CONFIGURATION_MENU);
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testOpenInventoryConfigurationScreen(GameTestHelper helper) {
+    ConfigurationScreenTestHelper.testConfigurationScreen(
+        helper,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
+        ConfigurationType.INVENTORY,
+        ModMenuTypes.INVENTORY_CONFIGURATION_MENU);
   }
 
   @GameTest(template = "easy_npc:gametest.3x3x3")
@@ -273,7 +282,7 @@ public class ConfigurationScreenTest {
   }
 
   @GameTest(template = "easy_npc:gametest.3x3x3")
-  public void testTargetObjectiveConfigurationScreen(GameTestHelper helper) {
+  public void testOpenTargetObjectiveConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
         ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
@@ -282,7 +291,7 @@ public class ConfigurationScreenTest {
   }
 
   @GameTest(template = "easy_npc:gametest.3x3x3")
-  public void testFleeObjectiveConfigurationScreen(GameTestHelper helper) {
+  public void testOpenFleeObjectiveConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
         ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),

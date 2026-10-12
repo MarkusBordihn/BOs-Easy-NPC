@@ -43,6 +43,7 @@ public class SpawnCommand extends Command {
 
   private static final String UUID_ARG = "uuid";
   private static final String POSITION_ARG = "position";
+  private static final String FORCE_LITERAL = "force";
 
   private SpawnCommand() {}
 
@@ -54,7 +55,21 @@ public class SpawnCommand extends Command {
                 .suggests(DespawnedNPCSuggestions::suggest)
                 .executes(
                     context ->
-                        spawn(context.getSource(), StringArgumentType.getString(context, UUID_ARG)))
+                        spawn(
+                            context.getSource(),
+                            StringArgumentType.getString(context, UUID_ARG),
+                            false))
+                .then(
+                    Commands.literal(FORCE_LITERAL)
+                        .requires(
+                            commandSourceStack ->
+                                commandSourceStack.hasPermission(Commands.LEVEL_GAMEMASTERS))
+                        .executes(
+                            context ->
+                                spawn(
+                                    context.getSource(),
+                                    StringArgumentType.getString(context, UUID_ARG),
+                                    true)))
                 .then(
                     Commands.argument(POSITION_ARG, Vec3Argument.vec3())
                         .requires(
@@ -65,57 +80,64 @@ public class SpawnCommand extends Command {
                                 spawnAtPosition(
                                     context.getSource(),
                                     StringArgumentType.getString(context, UUID_ARG),
-                                    Vec3Argument.getVec3(context, POSITION_ARG)))));
+                                    Vec3Argument.getVec3(context, POSITION_ARG),
+                                    false))
+                        .then(
+                            Commands.literal(FORCE_LITERAL)
+                                .executes(
+                                    context ->
+                                        spawnAtPosition(
+                                            context.getSource(),
+                                            StringArgumentType.getString(context, UUID_ARG),
+                                            Vec3Argument.getVec3(context, POSITION_ARG),
+                                            true)))));
   }
 
-  private static int spawn(CommandSourceStack context, String uuidString) {
+  private static int spawn(CommandSourceStack context, String uuidString, boolean force) {
     UUID uuid = parseUUID(context, uuidString);
     if (uuid == null) {
       return FAILURE;
     }
 
-    if (!hasAccessToStoredNPC(context, uuid)) {
-      return sendFailureMessage(
-          context, "You are not allowed to spawn the Easy NPC " + uuid + " !");
+    Optional<String> spawnRejection = getSpawnRejection(context, uuid, force);
+    if (spawnRejection.isPresent()) {
+      return sendFailureMessage(context, spawnRejection.get());
     }
 
-    Optional<NPCEntityMetadata> metadata = NPCEntityData.get().getMetadata(uuid);
-    if (metadata.isEmpty()) {
-      return sendFailureMessage(context, "No saved data found for NPC " + uuid + " !");
-    }
-
+    NPCEntityMetadata metadata = NPCEntityData.get().getMetadata(uuid).orElseThrow();
     ServerLevel serverLevel = context.getLevel();
-    if (metadata.get().hasDimension()) {
+    if (metadata.hasDimension()) {
       ServerLevel targetLevel =
           context
               .getServer()
               .getLevel(
                   ResourceKey.create(
-                      Registries.DIMENSION, ResourceLocation.parse(metadata.get().dimension())));
+                      Registries.DIMENSION, ResourceLocation.parse(metadata.dimension())));
       if (targetLevel != null) {
         serverLevel = targetLevel;
       }
     }
 
-    if (EasyNPCEntityHandler.spawn(uuid, serverLevel)) {
+    if (EasyNPCEntityHandler.spawn(uuid, serverLevel, force)) {
       return sendSuccessMessage(context, "Spawned Easy NPC " + uuid + " !");
     }
 
     return sendFailureMessage(context, "Failed to spawn Easy NPC " + uuid + " !");
   }
 
-  private static int spawnAtPosition(CommandSourceStack context, String uuidString, Vec3 position) {
+  private static int spawnAtPosition(
+      CommandSourceStack context, String uuidString, Vec3 position, boolean force) {
     UUID uuid = parseUUID(context, uuidString);
     if (uuid == null) {
       return FAILURE;
     }
 
-    if (!hasAccessToStoredNPC(context, uuid)) {
-      return sendFailureMessage(
-          context, "You are not allowed to spawn the Easy NPC " + uuid + " !");
+    Optional<String> spawnRejection = getSpawnRejection(context, uuid, force);
+    if (spawnRejection.isPresent()) {
+      return sendFailureMessage(context, spawnRejection.get());
     }
 
-    if (EasyNPCEntityHandler.spawn(uuid, context.getLevel(), position)) {
+    if (EasyNPCEntityHandler.spawn(uuid, context.getLevel(), position, force)) {
       return sendSuccessMessage(
           context,
           "Spawned Easy NPC "
@@ -130,6 +152,16 @@ public class SpawnCommand extends Command {
     }
 
     return sendFailureMessage(context, "Failed to spawn Easy NPC " + uuid + " !");
+  }
+
+  private static Optional<String> getSpawnRejection(
+      CommandSourceStack context, UUID uuid, boolean force) {
+    if (!hasAccessToStoredNPC(context, uuid)) {
+      return Optional.of("You are not allowed to spawn the Easy NPC " + uuid + " !");
+    }
+
+    return EasyNPCEntityHandler.getSpawnRejection(uuid, force)
+        .map(reason -> "Cannot spawn Easy NPC " + uuid + ": " + reason + "!");
   }
 
   private static UUID parseUUID(CommandSourceStack context, String uuidString) {

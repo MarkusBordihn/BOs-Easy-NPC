@@ -66,7 +66,7 @@ public record RemoveObjectiveMessage(UUID uuid, ObjectiveDataEntry objectiveData
   public void handleServer(final ServerPlayer serverPlayer) {
     EasyNPC<?> easyNPC = this.getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
     if (easyNPC == null || this.objectiveDataEntry == null) {
-      log.error("Invalid data to remove objective for {}", this);
+      log.warn("Invalid data to remove objective for {}", this);
       return;
     }
 

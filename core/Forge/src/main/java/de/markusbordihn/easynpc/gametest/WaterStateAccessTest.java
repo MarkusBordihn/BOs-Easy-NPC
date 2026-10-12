@@ -19,15 +19,12 @@
 
 package de.markusbordihn.easynpc.gametest;
 
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.ModEntityType;
 import de.markusbordihn.easynpc.entity.ModNPCEntityType;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraftforge.gametest.GameTestHolder;
 
 @SuppressWarnings("unused")
-@GameTestHolder(Constants.MOD_ID)
 public class WaterStateAccessTest {
 
   @GameTest(template = "easy_npc:gametest.3x3x3")

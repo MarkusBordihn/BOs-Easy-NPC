@@ -1,0 +1,7 @@
+{
+  "layer_type": "epicfight:model_original",
+  "target_layer": "de.markusbordihn.easynpc.client.renderer.layer.ShoulderNPCLayer",
+  "joint": "Root",
+  "translation": [0.0, 0.75, 0.0],
+  "rotation": [0.0, 0.0, 0.0]
+}

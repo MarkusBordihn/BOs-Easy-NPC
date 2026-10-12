@@ -21,50 +21,51 @@ package de.markusbordihn.easynpc.gametest;
 
 import static de.markusbordihn.easynpc.gametest.GameTestEntityTypes.humanoid;
 
-import de.markusbordihn.easynpc.Constants;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.neoforged.neoforge.gametest.GameTestHolder;
-import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
 @SuppressWarnings("unused")
-@PrefixGameTestTemplate(value = false)
-@GameTestHolder(Constants.MOD_ID)
 public class PauseTest {
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testPauseAndResumeOfASingleNPC(GameTestHelper helper) {
     PauseTestHelper.assertPauseAndResumeOfASingleNPC(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testPausedNPCSkipsItsBaseTick(GameTestHelper helper) {
     PauseTestHelper.assertPausedNPCSkipsItsBaseTick(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testPauseSurvivesSaveAndLoad(GameTestHelper helper) {
     PauseTestHelper.assertPauseSurvivesSaveAndLoad(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testGlobalPauseCoversEveryNPC(GameTestHelper helper) {
     PauseTestHelper.assertGlobalPauseCoversEveryNPC(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testGlobalResumeKeepsIndividualPause(GameTestHelper helper) {
     PauseTestHelper.assertGlobalResumeKeepsIndividualPause(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testGlobalPauseEndsWithTheServer(GameTestHelper helper) {
     PauseTestHelper.assertGlobalPauseEndsWithTheServer(helper, humanoid());
+    helper.succeed();
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testPausedStateIsSynched(GameTestHelper helper) {
+    PauseTestHelper.assertPausedStateIsSynched(helper, humanoid());
     helper.succeed();
   }
 }

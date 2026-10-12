@@ -21,30 +21,25 @@ package de.markusbordihn.easynpc.gametest;
 
 import static de.markusbordihn.easynpc.gametest.GameTestEntityTypes.humanoid;
 
-import de.markusbordihn.easynpc.Constants;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.neoforged.neoforge.gametest.GameTestHolder;
-import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
 @SuppressWarnings("unused")
-@PrefixGameTestTemplate(value = false)
-@GameTestHolder(Constants.MOD_ID)
 public class ObjectivePresetTest {
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testObjectiveValuesFromPresetAreClamped(GameTestHelper helper) {
     ObjectivePresetTestHelper.assertObjectiveValuesFromPresetAreClamped(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testPlayerTargetObjectiveIsRegisteredOnJoin(GameTestHelper helper) {
     ObjectivePresetTestHelper.assertPlayerTargetObjectiveIsRegisteredOnJoin(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testEntityTargetObjectiveIsReleasedOnLeave(GameTestHelper helper) {
     ObjectivePresetTestHelper.assertEntityTargetObjectiveIsReleasedOnLeave(helper, humanoid());
     helper.succeed();

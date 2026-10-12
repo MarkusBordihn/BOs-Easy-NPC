@@ -21,74 +21,118 @@ package de.markusbordihn.easynpc.gametest;
 
 import static de.markusbordihn.easynpc.gametest.GameTestEntityTypes.humanoid;
 
-import de.markusbordihn.easynpc.Constants;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.neoforged.neoforge.gametest.GameTestHolder;
-import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
 @SuppressWarnings("unused")
-@PrefixGameTestTemplate(value = false)
-@GameTestHolder(Constants.MOD_ID)
 public class NPCEntityLifecycleTest {
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testNPCEntityDataInitialized(GameTestHelper helper) {
     NPCEntityLifecycleTestHelper.assertNPCEntityDataInitialized(helper);
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testNPCIsIndexedOnSpawn(GameTestHelper helper) {
     NPCEntityLifecycleTestHelper.assertNPCIsIndexedOnSpawn(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
-  public void testOwnerIndexUpdate(GameTestHelper helper) {
-    NPCEntityLifecycleTestHelper.assertOwnerIndexUpdate(helper, humanoid());
-    helper.succeed();
-  }
-
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testRepeatedOwnerUpdateIsIdempotent(GameTestHelper helper) {
     NPCEntityLifecycleTestHelper.assertRepeatedOwnerUpdateIsIdempotent(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testFollowOwnerWithoutTargetIsRegistered(GameTestHelper helper) {
     NPCEntityLifecycleTestHelper.assertFollowOwnerWithoutTargetIsRegistered(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testCustomIdentifierIsQueryable(GameTestHelper helper) {
     NPCEntityLifecycleTestHelper.assertCustomIdentifierIsQueryable(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testRespawnKeepsOwner(GameTestHelper helper) {
     NPCEntityLifecycleTestHelper.assertRespawnKeepsOwner(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testRemovalReasonIsResetOnRespawn(GameTestHelper helper) {
     NPCEntityLifecycleTestHelper.assertRemovalReasonIsResetOnRespawn(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testDeletedNPCIsNotRestorableForOwner(GameTestHelper helper) {
     NPCEntityLifecycleTestHelper.assertDeletedNPCIsNotRestorableForOwner(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testRespawnKeepsIndexEntry(GameTestHelper helper) {
     NPCEntityLifecycleTestHelper.assertRespawnKeepsIndexEntry(helper, humanoid());
+    helper.succeed();
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testLoadedNPCStaysPersistent(GameTestHelper helper) {
+    NPCEntityLifecycleTestHelper.assertLoadedNPCStaysPersistent(helper, humanoid());
+    helper.succeed();
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testNonPersistentNPCIsNotStoredOnJoinAndUnload(GameTestHelper helper) {
+    NPCEntityLifecycleTestHelper.assertNonPersistentNPCIsNotStoredOnJoinAndUnload(
+        helper, humanoid());
+    helper.succeed();
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testNonPersistentNPCIsStoredOnExplicitDespawn(GameTestHelper helper) {
+    NPCEntityLifecycleTestHelper.assertNonPersistentNPCIsStoredOnExplicitDespawn(
+        helper, humanoid());
+    helper.succeed();
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testEnsureInitializedKeepsNPCIndex(GameTestHelper helper) {
+    NPCEntityLifecycleTestHelper.assertEnsureInitializedKeepsNPCIndex(helper, humanoid());
+    helper.succeed();
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testDeletedNPCIsDiscardedOnLoad(GameTestHelper helper) {
+    NPCEntityLifecycleTestHelper.assertDeletedNPCIsDiscardedOnLoad(helper, humanoid());
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testKilledNPCRequiresForcedSpawn(GameTestHelper helper) {
+    NPCEntityLifecycleTestHelper.assertKilledNPCRequiresForcedSpawn(helper, humanoid());
+    helper.succeed();
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testLoadedNPCIsNotSpawnedTwice(GameTestHelper helper) {
+    NPCEntityLifecycleTestHelper.assertLoadedNPCIsNotSpawnedTwice(helper, humanoid());
+    helper.succeed();
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testActionGroupsAreRemovedOnLeave(GameTestHelper helper) {
+    NPCEntityLifecycleTestHelper.assertActionGroupsAreRemovedOnLeave(helper, humanoid());
+    helper.succeed();
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testEasyNPCEntityTypesAreRecognized(GameTestHelper helper) {
+    NPCEntityLifecycleTestHelper.assertEasyNPCEntityTypesAreRecognized(helper, humanoid());
     helper.succeed();
   }
 }

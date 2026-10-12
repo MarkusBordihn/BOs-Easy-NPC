@@ -23,10 +23,8 @@ import de.markusbordihn.easynpc.Constants;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraftforge.fml.ModList;
-import net.minecraftforge.gametest.GameTestHolder;
 
 @SuppressWarnings("unused")
-@GameTestHolder(Constants.MOD_ID)
 public class SmokeTest {
 
   @GameTest(template = "easy_npc:gametest.1x1x1")

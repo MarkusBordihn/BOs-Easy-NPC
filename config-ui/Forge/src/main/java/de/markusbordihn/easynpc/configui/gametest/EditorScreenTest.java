@@ -19,17 +19,14 @@
 
 package de.markusbordihn.easynpc.configui.gametest;
 
-import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.configui.data.editor.EditorType;
 import de.markusbordihn.easynpc.configui.menu.ModMenuTypes;
 import de.markusbordihn.easynpc.entity.ModEntityType;
 import de.markusbordihn.easynpc.entity.ModNPCEntityType;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraftforge.gametest.GameTestHolder;
 
 @SuppressWarnings("unused")
-@GameTestHolder(Constants.MOD_ID)
 public class EditorScreenTest {
 
   @GameTest(template = "easy_npc:gametest.3x3x3")
@@ -75,5 +72,23 @@ public class EditorScreenTest {
         ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
         EditorType.DIALOG_TEXT,
         ModMenuTypes.DIALOG_TEXT_EDITOR_MENU.get());
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testFactionEditorScreen(GameTestHelper helper) {
+    EditorScreenTestHelper.testEditorScreen(
+        helper,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
+        EditorType.FACTION,
+        ModMenuTypes.FACTION_EDITOR_MENU.get());
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testFactionsEditorScreen(GameTestHelper helper) {
+    EditorScreenTestHelper.testEditorScreen(
+        helper,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
+        EditorType.FACTIONS,
+        ModMenuTypes.FACTIONS_EDITOR_MENU.get());
   }
 }

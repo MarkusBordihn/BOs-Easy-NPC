@@ -81,7 +81,7 @@ public record ChangeFactionRelationMessage(
         || this.targetFactionName == null
         || this.targetFactionName.isEmpty()
         || this.factionName.equals(this.targetFactionName)) {
-      log.error("Invalid data to change faction relation for {}", this);
+      log.warn("Invalid data to change faction relation for {}", this);
       return;
     }
 

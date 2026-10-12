@@ -21,61 +21,50 @@ package de.markusbordihn.easynpc.gametest;
 
 import static de.markusbordihn.easynpc.gametest.GameTestEntityTypes.humanoid;
 
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.ModCustomEntityType;
 import de.markusbordihn.easynpc.entity.ModEntityType;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.entity.EntityType;
-import net.neoforged.neoforge.gametest.GameTestHolder;
-import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
 @SuppressWarnings("unused")
-@PrefixGameTestTemplate(value = false)
-@GameTestHolder(Constants.MOD_ID)
 public class NavigationTypeTest {
 
   private static EntityType<?> doppler() {
     return ModEntityType.getEntityType(ModCustomEntityType.DOPPLER);
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testNavigationTypeChangesTheNavigation(GameTestHelper helper) {
     NavigationTypeTestHelper.assertNavigationTypeChangesTheNavigation(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testNavigationIsOnlyRefreshedOnChange(GameTestHelper helper) {
     NavigationTypeTestHelper.assertNavigationIsOnlyRefreshedOnChange(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testGravityIsRestoredAfterFlying(GameTestHelper helper) {
     NavigationTypeTestHelper.assertGravityIsRestoredAfterFlying(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
-  public void testHoverHeightStaysInRange(GameTestHelper helper) {
-    NavigationTypeTestHelper.assertHoverHeightStaysInRange(helper, humanoid());
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testHoverHeightsAreSetIndependently(GameTestHelper helper) {
+    NavigationTypeTestHelper.assertHoverHeightsAreSetIndependently(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
-  public void testMinHoverHeightStaysInRange(GameTestHelper helper) {
-    NavigationTypeTestHelper.assertMinHoverHeightStaysInRange(helper, humanoid());
-    helper.succeed();
-  }
-
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testRenderEntityTypeSelectsTheNavigation(GameTestHelper helper) {
     NavigationTypeTestHelper.assertRenderEntityTypeSelectsTheNavigation(helper, doppler());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testNavigationTypeSurvivesPresetImport(GameTestHelper helper) {
     NavigationTypeTestHelper.assertNavigationTypeSurvivesPresetImport(helper, humanoid());
     helper.succeed();

@@ -19,17 +19,14 @@
 
 package de.markusbordihn.easynpc.gametest;
 
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.ModCustomEntityType;
 import de.markusbordihn.easynpc.entity.ModEntityType;
 import de.markusbordihn.easynpc.entity.ModNPCEntityType;
 import de.markusbordihn.easynpc.item.ModItems;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraftforge.gametest.GameTestHolder;
 
 @SuppressWarnings("unused")
-@GameTestHolder(Constants.MOD_ID)
 public class ModSpawnEggItemTest {
 
   @GameTest(template = "easy_npc:gametest.3x3x3")

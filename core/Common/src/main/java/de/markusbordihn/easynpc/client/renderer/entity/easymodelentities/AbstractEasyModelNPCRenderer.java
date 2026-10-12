@@ -156,7 +156,7 @@ public abstract class AbstractEasyModelNPCRenderer<E extends PathfinderMob>
     };
   }
 
-  private static EasyModelEntityRenderOptions createRenderOptions(
+  static EasyModelEntityRenderOptions createRenderOptions(
       EasyModelNPC easyModelNPC, LivingEntity entity) {
     EasyModelEntityRenderOptions renderOptions =
         EasyModelEntityRenderOptions.DEFAULT.withHandItems(entity);
@@ -202,7 +202,7 @@ public abstract class AbstractEasyModelNPCRenderer<E extends PathfinderMob>
     boolean staleOneShot =
         (request.operation() == ModelAnimationOperation.RESTART
                 || (request.operation() == ModelAnimationOperation.PLAY
-                    && request.playback().isSingleRun()))
+                    && request.playback().endsAutomatically()))
             && entity.level().getGameTime() - request.issuedGameTime() > 20L;
     if (staleOneShot) {
       handledAnimationRequests.put(entity, request.sequence());
@@ -246,7 +246,10 @@ public abstract class AbstractEasyModelNPCRenderer<E extends PathfinderMob>
   private static EasyModelAnimationPlayback toEasyModelPlayback(ModelAnimationRequest request) {
     ModelAnimationPlayback playback = request.playback();
     return new EasyModelAnimationPlayback(
-        toEasyModelPlaybackMode(playback.mode()), playback.repeatCount(), playback.durationTicks());
+        toEasyModelPlaybackMode(playback.mode()),
+        playback.repeatCount(),
+        playback.durationTicks(),
+        playback.speed());
   }
 
   private static EasyModelAnimationPlaybackMode toEasyModelPlaybackMode(
@@ -254,6 +257,7 @@ public abstract class AbstractEasyModelNPCRenderer<E extends PathfinderMob>
     return switch (playbackMode) {
       case LOOP -> EasyModelAnimationPlaybackMode.LOOP;
       case REPEAT -> EasyModelAnimationPlaybackMode.REPEAT;
+      case HOLD -> EasyModelAnimationPlaybackMode.HOLD;
       case ONCE -> EasyModelAnimationPlaybackMode.ONCE;
     };
   }

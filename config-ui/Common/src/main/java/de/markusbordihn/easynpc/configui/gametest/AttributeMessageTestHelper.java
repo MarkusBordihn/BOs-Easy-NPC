@@ -26,6 +26,7 @@ import de.markusbordihn.easynpc.configui.network.message.server.ChangeEntityAttr
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeEntityBaseAttributeMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeEnvironmentalAttributeMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeInteractionAttributeMessage;
+import de.markusbordihn.easynpc.configui.network.message.server.ChangeInventoryAttributeMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeMovementAttributeMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeNameMessage;
 import de.markusbordihn.easynpc.data.attribute.CombatAttributeType;
@@ -33,6 +34,7 @@ import de.markusbordihn.easynpc.data.attribute.EntityAttribute;
 import de.markusbordihn.easynpc.data.attribute.EntityAttributes;
 import de.markusbordihn.easynpc.data.attribute.EnvironmentalAttributeType;
 import de.markusbordihn.easynpc.data.attribute.InteractionAttributeType;
+import de.markusbordihn.easynpc.data.attribute.InventoryAttributeType;
 import de.markusbordihn.easynpc.data.attribute.MovementAttributeType;
 import de.markusbordihn.easynpc.data.attribute.NavigationType;
 import de.markusbordihn.easynpc.data.display.DisplayAttributeType;
@@ -166,6 +168,17 @@ public final class AttributeMessageTestHelper {
                 uuid, InteractionAttributeType.CAN_BE_LEASHED, true),
         ChangeInteractionAttributeMessage::create,
         easyNPC -> entityAttributes(easyNPC).getInteractionAttributes().canBeLeashed(),
+        SurvivalOwnerAccess.GRANTED);
+  }
+
+  public static void assertInventoryFlagChange(GameTestHelper helper, EntityType<?> entityType) {
+    ServerMessageAssertions.assertAppliedOnlyWithAccess(
+        helper,
+        entityType,
+        uuid ->
+            new ChangeInventoryAttributeMessage(uuid, InventoryAttributeType.PICK_UP_ITEMS, true),
+        ChangeInventoryAttributeMessage::create,
+        easyNPC -> easyNPC.getEasyNPCInventoryData().getInventoryAttributes().pickUpItems(),
         SurvivalOwnerAccess.GRANTED);
   }
 

@@ -25,6 +25,7 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.ServerTickEvent;
 import net.minecraftforge.event.server.ServerAboutToStartEvent;
 import net.minecraftforge.event.server.ServerStartedEvent;
+import net.minecraftforge.event.server.ServerStoppedEvent;
 import net.minecraftforge.event.server.ServerStoppingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -51,6 +52,11 @@ public class ServerEventHandler {
   @SubscribeEvent
   public static void handleServerStoppingEvent(ServerStoppingEvent event) {
     ServerEvents.handleServerStopping(event.getServer());
+  }
+
+  @SubscribeEvent
+  public static void handleServerStoppedEvent(ServerStoppedEvent event) {
+    ServerEvents.handleServerStopped(event.getServer());
   }
 
   @SubscribeEvent

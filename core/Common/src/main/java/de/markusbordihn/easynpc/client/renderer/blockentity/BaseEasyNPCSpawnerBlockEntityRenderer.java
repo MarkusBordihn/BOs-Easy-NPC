@@ -50,7 +50,7 @@ public class BaseEasyNPCSpawnerBlockEntityRenderer<T extends EasyNPCSpawnerBlock
       int packedOverlay) {
     BaseSpawner baseSpawner = baseEasyNPCSpawnerBlockEntity.getSpawner();
     if (!(baseSpawner instanceof BaseEasyNPCSpawner baseEasyNPCSpawner)
-        || !baseEasyNPCSpawner.hasEasyNPC()) {
+        || !baseEasyNPCSpawner.hasEasyNPC(baseEasyNPCSpawnerBlockEntity.getLevel())) {
       return;
     }
 

@@ -16,10 +16,8 @@ dependencies {
   modImplementation "net.fabricmc:fabric-loader:${project.fabric_loader_version}"
   modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-  // Include Common code
   implementation project(":Common")
 
-  // Test dependencies
   testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.1'
   testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.1'
   testImplementation 'org.junit.jupiter:junit-jupiter-params:5.10.1'
@@ -60,8 +58,8 @@ dependencies {
   }
 
   // Client Runtime Interface Toolkit (runtime dependency, only for client tests)
-  if (clientToolkitAvailable && isClientTestRun) {
-    modLocalRuntime clientToolkitCoordinate('fabric')
+  if (rootProject.findProperty('clientRuntimeTest')?.isClientTestRun()) {
+    modLocalRuntime rootProject.clientRuntimeTest.toolkitCoordinate('fabric')
   }
 }
 
@@ -97,9 +95,10 @@ loom {
       server()
       name "Game Test"
       vmArg "-Dfabric-api.gametest"
+      vmArg "-D${project.mod_id}.gametest=true"
       runDir("run/gametest")
     }
-    if (clientToolkitAvailable) {
+    if (project.rootProject.findProperty('clientRuntimeTest')?.isAvailable()) {
       clientTest {
         client()
         setConfigName("Fabric Client Test")

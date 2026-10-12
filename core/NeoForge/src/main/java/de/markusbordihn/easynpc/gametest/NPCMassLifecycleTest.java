@@ -21,30 +21,25 @@ package de.markusbordihn.easynpc.gametest;
 
 import static de.markusbordihn.easynpc.gametest.GameTestEntityTypes.humanoid;
 
-import de.markusbordihn.easynpc.Constants;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.neoforged.neoforge.gametest.GameTestHolder;
-import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
 @SuppressWarnings("unused")
-@PrefixGameTestTemplate(value = false)
-@GameTestHolder(Constants.MOD_ID)
 public class NPCMassLifecycleTest {
 
-  @GameTest(template = "gametest.3x3x3", timeoutTicks = 1200)
+  @GameTest(template = "easy_npc:gametest.3x3x3", timeoutTicks = 1200)
   public void testMassSpawnStaysResponsive(GameTestHelper helper) {
     NPCMassLifecycleTestHelper.assertMassSpawnStaysResponsive(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3", timeoutTicks = 1200)
+  @GameTest(template = "easy_npc:gametest.3x3x3", timeoutTicks = 1200)
   public void testMassPlayerLeaveStaysResponsive(GameTestHelper helper) {
     NPCMassLifecycleTestHelper.assertMassPlayerLeaveStaysResponsive(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3", timeoutTicks = 1200)
+  @GameTest(template = "easy_npc:gametest.3x3x3", timeoutTicks = 1200)
   public void testMassRemovalStaysResponsive(GameTestHelper helper) {
     NPCMassLifecycleTestHelper.assertMassRemovalStaysResponsive(helper, humanoid());
     helper.succeed();

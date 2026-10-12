@@ -23,6 +23,7 @@ import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.commands.Command;
+import de.markusbordihn.easynpc.commands.LogLevelCommand;
 import de.markusbordihn.easynpc.commands.arguments.EasyNPCArgument;
 import de.markusbordihn.easynpc.data.display.DisplayAttributeType;
 import de.markusbordihn.easynpc.data.display.NameVisibilityType;
@@ -59,6 +60,7 @@ public class DebugCommand extends Command {
                                     EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG)))))
         .then(
             Commands.literal("core")
+                .then(LogLevelCommand.register(Constants.LOG_NAME, Constants.MOD_NAME))
                 .then(
                     Commands.argument(ENABLE_ARG, BoolArgumentType.bool())
                         .executes(

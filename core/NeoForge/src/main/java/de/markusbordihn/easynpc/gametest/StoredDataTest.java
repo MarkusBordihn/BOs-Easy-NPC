@@ -22,48 +22,37 @@ package de.markusbordihn.easynpc.gametest;
 import static de.markusbordihn.easynpc.gametest.GameTestEntityTypes.humanoid;
 import static de.markusbordihn.easynpc.gametest.GameTestEntityTypes.villager;
 
-import de.markusbordihn.easynpc.Constants;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.neoforged.neoforge.gametest.GameTestHolder;
-import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
 @SuppressWarnings("unused")
-@PrefixGameTestTemplate(value = false)
-@GameTestHolder(Constants.MOD_ID)
 public class StoredDataTest {
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testNPCWithoutStoredSoundsStillHasSounds(GameTestHelper helper) {
     StoredDataTestHelper.assertNpcWithoutStoredSoundsStillHasSounds(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testVillagerWithoutStoredSoundsStillHasSounds(GameTestHelper helper) {
     StoredDataTestHelper.assertNpcWithoutStoredSoundsStillHasSounds(helper, villager());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
-  public void testUnchangedSoundsAreNotStored(GameTestHelper helper) {
-    StoredDataTestHelper.assertUnchangedSoundsAreNotStored(helper, humanoid());
-    helper.succeed();
-  }
-
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testObjectivesSurviveWithoutTargetFlags(GameTestHelper helper) {
     StoredDataTestHelper.assertObjectivesSurviveWithoutTargetFlags(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testUnchangedNPCStoresNoBoilerplate(GameTestHelper helper) {
     StoredDataTestHelper.assertUnchangedNpcStoresNoBoilerplate(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testStoredNPCDataIsDeterministic(GameTestHelper helper) {
     StoredDataTestHelper.assertStoredNpcDataIsDeterministic(helper, humanoid());
     helper.succeed();

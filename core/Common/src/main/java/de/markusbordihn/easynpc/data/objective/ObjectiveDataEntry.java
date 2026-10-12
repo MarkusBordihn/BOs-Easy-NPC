@@ -206,8 +206,12 @@ public final class ObjectiveDataEntry {
     return this.hasUnresolvedType() ? this.unresolvedType : this.objectiveType.name();
   }
 
+  public boolean isPriorityConfigurable() {
+    return this.objectiveType == ObjectiveType.CUSTOM || this.objectiveType == ObjectiveType.NONE;
+  }
+
   public int getPriority() {
-    if (this.objectiveType == ObjectiveType.CUSTOM || this.objectiveType == ObjectiveType.NONE) {
+    if (this.isPriorityConfigurable()) {
       return this.priority;
     }
 

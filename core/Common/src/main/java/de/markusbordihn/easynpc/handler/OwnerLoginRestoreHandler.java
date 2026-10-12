@@ -139,6 +139,6 @@ public class OwnerLoginRestoreHandler {
     }
 
     return EasyNPCEntityHandler.spawn(
-        entityUUID, serverLevel, Vec3.atBottomCenterOf(spawnPosition.get()));
+        entityUUID, serverLevel, Vec3.atBottomCenterOf(spawnPosition.get()), true);
   }
 }

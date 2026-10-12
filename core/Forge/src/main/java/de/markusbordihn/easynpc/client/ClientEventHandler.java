@@ -21,10 +21,14 @@ package de.markusbordihn.easynpc.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.client.renderer.entity.SpeechBubbleFrameRenderer;
+import de.markusbordihn.easynpc.client.renderer.layer.ShoulderNPCLayer;
 import de.markusbordihn.easynpc.compat.CompatConstants;
 import de.markusbordihn.easynpc.compat.easymodelentities.EasyModelEntitiesLoader;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.entity.player.PlayerRenderer;
+import net.minecraft.client.resources.PlayerSkin;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.event.TagsUpdatedEvent;
 import net.minecraftforge.event.TickEvent;
@@ -39,6 +43,15 @@ public class ClientEventHandler {
   @SubscribeEvent
   public static void onClientSetup(FMLClientSetupEvent event) {
     event.enqueueWork(() -> ClientEvents.handleClientStartedEvent(Minecraft.getInstance()));
+  }
+
+  @SubscribeEvent
+  public static void onAddLayers(EntityRenderersEvent.AddLayers event) {
+    for (PlayerSkin.Model skinModel : event.getSkins()) {
+      if (event.getPlayerSkin(skinModel) instanceof PlayerRenderer playerRenderer) {
+        playerRenderer.addLayer(new ShoulderNPCLayer(playerRenderer));
+      }
+    }
   }
 }
 

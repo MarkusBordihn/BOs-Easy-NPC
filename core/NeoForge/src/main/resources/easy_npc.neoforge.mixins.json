@@ -46,6 +46,7 @@
     "entity.EpicFightEquipmentMixin",
     "entity.FoxMixin",
     "entity.PiglinMixin",
+    "entity.PlayerShoulderMixin",
     "entity.RaiderMixin",
     "entity.SlimeMixin",
     "entity.VillagerMixin",

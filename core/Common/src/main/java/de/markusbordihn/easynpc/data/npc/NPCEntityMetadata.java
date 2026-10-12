@@ -32,10 +32,11 @@ public record NPCEntityMetadata(
     UUID presetUUID,
     ResourceLocation customIdentifier,
     NPCRemovalReason removalReason,
-    boolean restoreOnOwnerLogin) {
+    boolean restoreOnOwnerLogin,
+    long removalTimestamp) {
 
   public static final NPCEntityMetadata DEFAULT =
-      new NPCEntityMetadata(null, null, null, null, null, NPCRemovalReason.NONE, false);
+      new NPCEntityMetadata(null, null, null, null, null, NPCRemovalReason.NONE, false, 0L);
 
   public static final String TAG_DIMENSION = "Dimension";
   public static final String TAG_OWNER = "Owner";
@@ -44,6 +45,7 @@ public record NPCEntityMetadata(
   public static final String TAG_CUSTOM_IDENTIFIER = "CustomIdentifier";
   public static final String TAG_REMOVAL_REASON = "RemovalReason";
   public static final String TAG_RESTORE_ON_OWNER_LOGIN = "RestoreOnOwnerLogin";
+  public static final String TAG_REMOVAL_TIMESTAMP = "RemovalTimestamp";
 
   public static <T extends Mob> NPCEntityMetadata fromEasyNPC(EasyNPC<T> easyNPC) {
     if (easyNPC == null || easyNPC.getEntity() == null) {
@@ -77,7 +79,8 @@ public record NPCEntityMetadata(
         customIdentifier,
         NPCRemovalReason.NONE,
         easyNPC.getEasyNPCPresetData() != null
-            && easyNPC.getEasyNPCPresetData().getRestoreOnOwnerLogin());
+            && easyNPC.getEasyNPCPresetData().getRestoreOnOwnerLogin(),
+        0L);
   }
 
   public static NPCEntityMetadata fromCompoundTag(CompoundTag tag) {
@@ -100,6 +103,13 @@ public record NPCEntityMetadata(
             ? NPCRemovalReason.fromString(tag.getString(TAG_REMOVAL_REASON))
             : NPCRemovalReason.NONE;
 
+    long removalTimestamp = 0L;
+    if (tag.contains(TAG_REMOVAL_TIMESTAMP)) {
+      removalTimestamp = tag.getLong(TAG_REMOVAL_TIMESTAMP);
+    } else if (removalReason != NPCRemovalReason.NONE) {
+      removalTimestamp = System.currentTimeMillis();
+    }
+
     return new NPCEntityMetadata(
         ownerUUID,
         entityType,
@@ -107,7 +117,8 @@ public record NPCEntityMetadata(
         presetUUID,
         customIdentifier,
         removalReason,
-        tag.getBoolean(TAG_RESTORE_ON_OWNER_LOGIN));
+        tag.getBoolean(TAG_RESTORE_ON_OWNER_LOGIN),
+        removalTimestamp);
   }
 
   public CompoundTag toCompoundTag() {
@@ -133,6 +144,9 @@ public record NPCEntityMetadata(
     if (this.restoreOnOwnerLogin) {
       tag.putBoolean(TAG_RESTORE_ON_OWNER_LOGIN, true);
     }
+    if (this.removalTimestamp > 0L) {
+      tag.putLong(TAG_REMOVAL_TIMESTAMP, this.removalTimestamp);
+    }
 
     return tag;
   }
@@ -145,7 +159,8 @@ public record NPCEntityMetadata(
         this.presetUUID,
         this.customIdentifier,
         this.removalReason,
-        this.restoreOnOwnerLogin);
+        this.restoreOnOwnerLogin,
+        this.removalTimestamp);
   }
 
   public NPCEntityMetadata withDimension(String newDimension) {
@@ -156,10 +171,18 @@ public record NPCEntityMetadata(
         this.presetUUID,
         this.customIdentifier,
         this.removalReason,
-        this.restoreOnOwnerLogin);
+        this.restoreOnOwnerLogin,
+        this.removalTimestamp);
   }
 
   public NPCEntityMetadata withRemovalReason(NPCRemovalReason newRemovalReason) {
+    long newRemovalTimestamp = 0L;
+    if (newRemovalReason == this.removalReason) {
+      newRemovalTimestamp = this.removalTimestamp;
+    } else if (newRemovalReason != null && newRemovalReason != NPCRemovalReason.NONE) {
+      newRemovalTimestamp = System.currentTimeMillis();
+    }
+
     return new NPCEntityMetadata(
         this.ownerUUID,
         this.entityType,
@@ -167,7 +190,8 @@ public record NPCEntityMetadata(
         this.presetUUID,
         this.customIdentifier,
         newRemovalReason,
-        this.restoreOnOwnerLogin);
+        this.restoreOnOwnerLogin,
+        newRemovalTimestamp);
   }
 
   public boolean hasOwner() {
@@ -192,5 +216,9 @@ public record NPCEntityMetadata(
 
   public boolean hasRemovalReason() {
     return this.removalReason != null && this.removalReason != NPCRemovalReason.NONE;
+  }
+
+  public boolean isRemovedLongerThan(long maxAgeMilliseconds, long now) {
+    return this.removalTimestamp > 0L && now - this.removalTimestamp > maxAgeMilliseconds;
   }
 }

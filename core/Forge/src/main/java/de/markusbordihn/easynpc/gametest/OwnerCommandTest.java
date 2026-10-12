@@ -21,13 +21,10 @@ package de.markusbordihn.easynpc.gametest;
 
 import static de.markusbordihn.easynpc.gametest.GameTestEntityTypes.humanoid;
 
-import de.markusbordihn.easynpc.Constants;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraftforge.gametest.GameTestHolder;
 
 @SuppressWarnings("unused")
-@GameTestHolder(Constants.MOD_ID)
 public class OwnerCommandTest {
 
   @GameTest(template = "easy_npc:gametest.3x3x3")
@@ -45,6 +42,24 @@ public class OwnerCommandTest {
   @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testOwnerSetRequiresGamemaster(GameTestHelper helper) {
     OwnerCommandTestHelper.assertOwnerSetRequiresGamemaster(helper, humanoid());
+    helper.succeed();
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testOwnerChangeUpdatesOwnerIndex(GameTestHelper helper) {
+    OwnerCommandTestHelper.assertOwnerChangeUpdatesOwnerIndex(helper, humanoid());
+    helper.succeed();
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testSameOwnerFiresOneEvent(GameTestHelper helper) {
+    OwnerCommandTestHelper.assertSameOwnerFiresOneEvent(helper, humanoid());
+    helper.succeed();
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testOwnerSetBeforeSpawnFiresOneEvent(GameTestHelper helper) {
+    OwnerCommandTestHelper.assertOwnerSetBeforeSpawnFiresOneEvent(helper, humanoid());
     helper.succeed();
   }
 }

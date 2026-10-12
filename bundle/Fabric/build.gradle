@@ -43,7 +43,6 @@ dependencies {
   mappings loom.officialMojangMappings()
   modImplementation "net.fabricmc:fabric-loader:${project.fabric_loader_version}"
 
-  // Bundle dependencies - use compileOnly to avoid transitive dependency issues
   modRuntimeOnly(group: 'de.markusbordihn.easynpc', name: "easy_npc-fabric-${project.minecraft_version}", version: "${project.version}") {
     changing = true
   }

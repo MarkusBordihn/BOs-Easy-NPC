@@ -19,7 +19,6 @@
 
 package de.markusbordihn.easynpc.configui.gametest;
 
-import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.configui.data.editor.EditorType;
 import de.markusbordihn.easynpc.configui.menu.MenuHandlerInterface;
 import de.markusbordihn.easynpc.configui.menu.MenuManager;
@@ -27,15 +26,11 @@ import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.gametest.GameTestHelpers;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.neoforged.neoforge.gametest.GameTestHolder;
-import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
 @SuppressWarnings("unused")
-@PrefixGameTestTemplate(value = false)
-@GameTestHolder(Constants.MOD_ID)
 public class MenuManagerTest {
 
-  @GameTest(template = "gametest.1x1x1")
+  @GameTest(template = "easy_npc:gametest.1x1x1")
   public void testMissingConfigurationType(GameTestHelper helper) {
     MenuHandlerInterface menuHandlerInterface = MenuManager.getMenuHandler();
     for (ConfigurationType configurationType : ConfigurationType.values()) {
@@ -50,7 +45,7 @@ public class MenuManagerTest {
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.1x1x1")
+  @GameTest(template = "easy_npc:gametest.1x1x1")
   public void testMissingEditorType(GameTestHelper helper) {
     MenuHandlerInterface menuHandlerInterface = MenuManager.getMenuHandler();
     for (EditorType editorType : EditorType.values()) {

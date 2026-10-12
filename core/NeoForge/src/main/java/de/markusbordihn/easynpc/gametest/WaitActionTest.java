@@ -21,72 +21,67 @@ package de.markusbordihn.easynpc.gametest;
 
 import static de.markusbordihn.easynpc.gametest.GameTestEntityTypes.humanoid;
 
-import de.markusbordihn.easynpc.Constants;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.neoforged.neoforge.gametest.GameTestHolder;
-import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
 @SuppressWarnings("unused")
-@PrefixGameTestTemplate(value = false)
-@GameTestHolder(Constants.MOD_ID)
 public class WaitActionTest {
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testWaitDelaysTheFollowingActions(GameTestHelper helper) {
     WaitActionTestHelper.assertWaitDelaysTheFollowingActions(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testRemainingWaitSurvivesSaveAndLoad(GameTestHelper helper) {
     WaitActionTestHelper.assertRemainingWaitSurvivesSaveAndLoad(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testSecondTriggerIsDiscarded(GameTestHelper helper) {
     WaitActionTestHelper.assertSecondTriggerIsDiscarded(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testDifferentEventsRunInParallel(GameTestHelper helper) {
     WaitActionTestHelper.assertDifferentEventsRunInParallel(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testIntervalSetWithWaitRunsInOrder(GameTestHelper helper) {
     WaitActionTestHelper.assertIntervalSetWithWaitRunsInOrder(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testIntervalSetWithoutWaitPicksOneEntry(GameTestHelper helper) {
     WaitActionTestHelper.assertIntervalSetWithoutWaitPicksOneEntry(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testScreenActionIsKeptOverTheWait(GameTestHelper helper) {
     WaitActionTestHelper.assertScreenActionIsKeptOverTheWait(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testFallbackRunsOnceAfterTheWait(GameTestHelper helper) {
     WaitActionTestHelper.assertFallbackRunsOnceAfterTheWait(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testPresetImportCancelsTheChain(GameTestHelper helper) {
     WaitActionTestHelper.assertPresetImportCancelsTheChain(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testDeathCancelsTheChain(GameTestHelper helper) {
     WaitActionTestHelper.assertDeathCancelsTheChain(helper, humanoid());
     helper.succeed();

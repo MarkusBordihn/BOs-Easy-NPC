@@ -19,38 +19,33 @@
 
 package de.markusbordihn.easynpc.gametest;
 
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.ModEntityType;
 import de.markusbordihn.easynpc.entity.ModNPCEntityType;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.neoforged.neoforge.gametest.GameTestHolder;
-import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
 @SuppressWarnings("unused")
-@PrefixGameTestTemplate(value = false)
-@GameTestHolder(Constants.MOD_ID)
 public class BasePresetTest {
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testBasePresetExistsForEverySpawnEgg(GameTestHelper helper) {
     BasePresetTestHelper.assertBasePresetExistsForEverySpawnEgg(helper);
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testBasePresetsAreWritten(GameTestHelper helper) {
     BasePresetTestHelper.assertBasePresetsAreWritten(helper);
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testShippedBasePresetsAreUpToDate(GameTestHelper helper) {
     BasePresetTestHelper.assertShippedBasePresetsAreUpToDate(helper);
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testBasePresetIsUsableAsParent(GameTestHelper helper) {
     BasePresetTestHelper.assertBasePresetIsUsableAsParent(
         helper, ModEntityType.getEntityType(ModNPCEntityType.HUMANOID));

@@ -22,38 +22,39 @@ package de.markusbordihn.easynpc.gametest;
 import static de.markusbordihn.easynpc.gametest.GameTestEntityTypes.humanoid;
 import static de.markusbordihn.easynpc.gametest.GameTestEntityTypes.villager;
 
-import de.markusbordihn.easynpc.Constants;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.neoforged.neoforge.gametest.GameTestHolder;
-import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
 @SuppressWarnings("unused")
-@PrefixGameTestTemplate(value = false)
-@GameTestHolder(Constants.MOD_ID)
 public class PresetSpawnTest {
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testPresetItemSpawnsConfiguredNPC(GameTestHelper helper) {
     PresetSpawnTestHelper.assertPresetItemSpawnsConfiguredNPC(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testPresetItemSpawnsConfiguredVillager(GameTestHelper helper) {
     PresetSpawnTestHelper.assertPresetItemSpawnsConfiguredNPC(helper, villager());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testSpawnerSpawnsConfiguredNPC(GameTestHelper helper) {
     PresetSpawnTestHelper.assertSpawnerSpawnsConfiguredNPC(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testPresetImportSetsHome(GameTestHelper helper) {
     PresetSpawnTestHelper.assertPresetImportSetsHome(helper, humanoid());
+    helper.succeed();
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testPresetHandlerCreatesPresetItem(GameTestHelper helper) {
+    PresetSpawnTestHelper.assertPresetHandlerCreatesPresetItem(helper, humanoid());
     helper.succeed();
   }
 }

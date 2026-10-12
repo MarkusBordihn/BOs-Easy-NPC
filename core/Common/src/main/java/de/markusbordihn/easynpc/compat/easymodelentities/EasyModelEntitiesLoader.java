@@ -23,6 +23,7 @@ import de.markusbordihn.easymodelentities.api.EasyModelApiContract;
 import de.markusbordihn.easymodelentities.api.EasyModelEntitiesApi;
 import de.markusbordihn.easymodelentities.api.EasyModelReloadEvents;
 import de.markusbordihn.easymodelentities.api.client.EasyModelEntitiesClientApi;
+import de.markusbordihn.easymodelentities.api.client.EasyModelShoulderModels;
 import de.markusbordihn.easymodelentities.api.data.EasyModelBodyType;
 import de.markusbordihn.easymodelentities.api.data.EasyModelProfileInfo;
 import de.markusbordihn.easymodelentities.api.data.EasyModelProfileType;
@@ -31,10 +32,12 @@ import de.markusbordihn.easymodelentities.api.data.EasyModelTextureSetting;
 import de.markusbordihn.easymodelentities.api.data.EasyModelTextureSlot;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.api.animation.ModelAnimationInfo;
+import de.markusbordihn.easynpc.client.renderer.entity.easymodelentities.EasyModelNPCShoulderModelResolver;
 import de.markusbordihn.easynpc.compat.IntegrationModelProvider;
 import de.markusbordihn.easynpc.compat.IntegrationRegistry;
 import de.markusbordihn.easynpc.data.render.ModelTextureBlend;
 import de.markusbordihn.easynpc.data.render.ModelTextureSetting;
+import de.markusbordihn.easynpc.entity.easynpc.npc.easymodelentities.EasyModelNPC;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
@@ -49,7 +52,7 @@ public class EasyModelEntitiesLoader implements IntegrationModelProvider {
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private static final EasyModelEntitiesLoader INSTANCE = new EasyModelEntitiesLoader();
   private static final int REQUIRED_API_MAJOR_VERSION = 2;
-  private static final int REQUIRED_API_MINOR_VERSION = 3;
+  private static final int REQUIRED_API_MINOR_VERSION = 5;
 
   private static boolean reloadListenerRegistered = false;
   private static boolean clientReloadListenerRegistered = false;
@@ -168,6 +171,9 @@ public class EasyModelEntitiesLoader implements IntegrationModelProvider {
           }
         });
     EasyModelReloadEvents.onRenderProfileReload(EasyModelEntitiesLoader::loadRenderableModels);
+    EasyModelShoulderModels.register(
+        ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, EasyModelNPC.ID),
+        EasyModelNPCShoulderModelResolver::resolve);
   }
 
   public static EasyModelTextureSetting toEasyModelTextureSetting(

@@ -19,93 +19,88 @@
 
 package de.markusbordihn.easynpc.configui.gametest;
 
-import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.entity.ModEntityType;
 import de.markusbordihn.easynpc.entity.ModNPCEntityType;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.entity.EntityType;
-import net.neoforged.neoforge.gametest.GameTestHolder;
-import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
 @SuppressWarnings("unused")
-@PrefixGameTestTemplate(value = false)
-@GameTestHolder(Constants.MOD_ID)
 public class TradingObjectiveFactionMessageTest {
 
   private static EntityType<?> humanoid() {
     return ModEntityType.getEntityType(ModNPCEntityType.HUMANOID);
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testTradingTypeChange(GameTestHelper helper) {
     TradingObjectiveFactionMessageTestHelper.assertTradingTypeChange(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testBasicTradingMaxUsesChange(GameTestHelper helper) {
     TradingObjectiveFactionMessageTestHelper.assertBasicTradingMaxUsesChange(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testBasicTradingResetIntervalChange(GameTestHelper helper) {
     TradingObjectiveFactionMessageTestHelper.assertBasicTradingResetIntervalChange(
         helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testAdvancedTradingPriceMultiplierChange(GameTestHelper helper) {
     TradingObjectiveFactionMessageTestHelper.assertAdvancedTradingPriceMultiplierChange(
         helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testObjectiveAddition(GameTestHelper helper) {
     TradingObjectiveFactionMessageTestHelper.assertObjectiveAddition(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testObjectiveRemoval(GameTestHelper helper) {
     TradingObjectiveFactionMessageTestHelper.assertObjectiveRemoval(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testFactionAssignment(GameTestHelper helper) {
     TradingObjectiveFactionMessageTestHelper.assertFactionAssignment(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testFactionUnassignment(GameTestHelper helper) {
     TradingObjectiveFactionMessageTestHelper.assertFactionUnassignment(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testFactionCreation(GameTestHelper helper) {
     TradingObjectiveFactionMessageTestHelper.assertFactionCreation(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testFactionColorChange(GameTestHelper helper) {
     TradingObjectiveFactionMessageTestHelper.assertFactionColorChange(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testFactionRelationChange(GameTestHelper helper) {
     TradingObjectiveFactionMessageTestHelper.assertFactionRelationChange(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testFactionEntryRemoval(GameTestHelper helper) {
     TradingObjectiveFactionMessageTestHelper.assertFactionEntryRemoval(helper, humanoid());
     helper.succeed();

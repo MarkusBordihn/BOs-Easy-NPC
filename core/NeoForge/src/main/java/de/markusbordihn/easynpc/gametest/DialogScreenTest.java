@@ -21,34 +21,29 @@ package de.markusbordihn.easynpc.gametest;
 
 import static de.markusbordihn.easynpc.gametest.GameTestEntityTypes.humanoid;
 
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.data.dialog.DialogUtils;
 import de.markusbordihn.easynpc.menu.ModMenuTypes;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.neoforged.neoforge.gametest.GameTestHolder;
-import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
 @SuppressWarnings("unused")
-@PrefixGameTestTemplate(value = false)
-@GameTestHolder(Constants.MOD_ID)
 public class DialogScreenTest {
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testOpenDialog(GameTestHelper helper) {
     DialogScreenTestHelper.testDialogScreen(
         helper, new DialogDataSet(), humanoid(), ModMenuTypes.DIALOG_MENU.get());
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testOpenBasicDialog(GameTestHelper helper) {
     DialogDataSet dialogDataSet = DialogUtils.getBasicDialog("Hello, I'm a test NPC!");
     DialogScreenTestHelper.testDialogScreen(
         helper, dialogDataSet, humanoid(), ModMenuTypes.DIALOG_MENU.get());
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testOpenYesNoDialog(GameTestHelper helper) {
     DialogDataSet dialogDataSet =
         DialogUtils.getYesNoDialog(

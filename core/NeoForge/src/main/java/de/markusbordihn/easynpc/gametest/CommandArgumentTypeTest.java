@@ -19,18 +19,13 @@
 
 package de.markusbordihn.easynpc.gametest;
 
-import de.markusbordihn.easynpc.Constants;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.neoforged.neoforge.gametest.GameTestHolder;
-import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
 @SuppressWarnings("unused")
-@PrefixGameTestTemplate(value = false)
-@GameTestHolder(Constants.MOD_ID)
 public class CommandArgumentTypeTest {
 
-  @GameTest(template = "gametest.1x1x1")
+  @GameTest(template = "easy_npc:gametest.1x1x1")
   public void testEveryCommandArgumentCanBeSynchronized(GameTestHelper helper) {
     CommandArgumentTypeTestHelper.assertEveryCommandArgumentCanBeSynchronized(helper);
     helper.succeed();

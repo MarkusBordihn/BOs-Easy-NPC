@@ -19,19 +19,14 @@
 
 package de.markusbordihn.easynpc.gametest;
 
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.skin.variant.IllagerSkinVariant;
 import de.markusbordihn.easynpc.entity.ModEntityType;
 import de.markusbordihn.easynpc.entity.ModNPCEntityType;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.entity.EntityType;
-import net.neoforged.neoforge.gametest.GameTestHolder;
-import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
 @SuppressWarnings("unused")
-@PrefixGameTestTemplate(value = false)
-@GameTestHolder(Constants.MOD_ID)
 public class IllagerCrossedArmsTest {
 
   private static EntityType<?> evoker() {
@@ -46,14 +41,14 @@ public class IllagerCrossedArmsTest {
     return ModEntityType.getEntityType(ModNPCEntityType.VINDICATOR);
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testEvokerCrossedArmsVariantDrivesArmPose(GameTestHelper helper) {
     IllagerCrossedArmsTestHelper.assertCrossedArmsVariantDrivesArmPose(
         helper, evoker(), IllagerSkinVariant.EVOKER, IllagerSkinVariant.EVOKER_CROSSED_ARMS);
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testIllusionerCrossedArmsVariantDrivesArmPose(GameTestHelper helper) {
     IllagerCrossedArmsTestHelper.assertCrossedArmsVariantDrivesArmPose(
         helper,
@@ -63,7 +58,7 @@ public class IllagerCrossedArmsTest {
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testVindicatorCrossedArmsVariantDrivesArmPose(GameTestHelper helper) {
     IllagerCrossedArmsTestHelper.assertCrossedArmsVariantDrivesArmPose(
         helper,

@@ -20,6 +20,8 @@
 package de.markusbordihn.easynpc.entity;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.config.StorageConfig;
+import de.markusbordihn.easynpc.data.npc.NPCEntityMetadata;
 import de.markusbordihn.easynpc.data.npc.NPCRemovalReason;
 import de.markusbordihn.easynpc.data.npc.SavedNPCEntityEntry;
 import de.markusbordihn.easynpc.data.saveddata.FactionData;
@@ -29,13 +31,13 @@ import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.StatusDataCapable;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -46,6 +48,7 @@ public class NPCEntityManager {
   protected static final String LOG_PREFIX = "[NPC Entity Manager]";
 
   private static final Map<UUID, NPCRemovalReason> intentionalRemovals = new ConcurrentHashMap<>();
+  private static final int MAX_LOGGED_ORPHAN_FILES = 10;
 
   private static MinecraftServer currentServer;
 
@@ -61,8 +64,52 @@ public class NPCEntityManager {
     intentionalRemovals.clear();
     NPCEntityData.init(server);
     FactionData.init(server);
+    removeExpiredEntries();
     log.info(
         "{} Initialized with {} tracked NPC entities", LOG_PREFIX, NPCEntityData.get().getCount());
+  }
+
+  public static void ensureInitialized(MinecraftServer server) {
+    if (server == currentServer || server.overworld() == null) {
+      return;
+    }
+
+    initialize(server);
+  }
+
+  public static void reset() {
+    currentServer = null;
+    intentionalRemovals.clear();
+    NPCEntityData.reset();
+  }
+
+  private static void removeExpiredEntries() {
+    NPCEntityData npcEntityData = getNPCEntityData();
+    if (StorageConfig.KILLED_NPC_RETENTION_DAYS > 0) {
+      int removedKilled =
+          npcEntityData.removeExpiredEntries(
+              NPCRemovalReason.KILLED,
+              StorageConfig.toRetentionMilliseconds(StorageConfig.KILLED_NPC_RETENTION_DAYS));
+      if (removedKilled > 0) {
+        log.info("{} Removed saved data of {} long dead NPC(s)", LOG_PREFIX, removedKilled);
+      }
+    }
+
+    if (StorageConfig.DELETED_NPC_RETENTION_DAYS > 0) {
+      npcEntityData.removeExpiredDeletedEntries(
+          StorageConfig.toRetentionMilliseconds(StorageConfig.DELETED_NPC_RETENTION_DAYS));
+    }
+
+    if (StorageConfig.REPORT_ORPHAN_NPC_FILES) {
+      List<UUID> orphanFiles = npcEntityData.findOrphanFiles();
+      if (!orphanFiles.isEmpty()) {
+        log.warn(
+            "{} Found {} NPC file(s) without index entry, e.g. {}",
+            LOG_PREFIX,
+            orphanFiles.size(),
+            orphanFiles.subList(0, Math.min(MAX_LOGGED_ORPHAN_FILES, orphanFiles.size())));
+      }
+    }
   }
 
   public static <T extends Mob> void saveNPC(EasyNPC<T> easyNPC) {
@@ -100,6 +147,31 @@ public class NPCEntityManager {
     }
   }
 
+  public static void releaseNPC(UUID entityUUID) {
+    if (validateServer() && entityUUID != null) {
+      getNPCEntityData().releaseEntry(entityUUID);
+    }
+  }
+
+  public static void markNPCDeleted(UUID entityUUID) {
+    if (!validateServer() || entityUUID == null) {
+      return;
+    }
+
+    getNPCEntityData().markDeleted(entityUUID);
+    log.debug("{} Deleted NPC entity: {}", LOG_PREFIX, entityUUID);
+  }
+
+  public static boolean isNPCDeleted(UUID entityUUID) {
+    return validateServer() && getNPCEntityData().isDeleted(entityUUID);
+  }
+
+  public static void clearNPCDeleted(UUID entityUUID) {
+    if (validateServer()) {
+      getNPCEntityData().clearDeleted(entityUUID);
+    }
+  }
+
   public static void removeNPC(UUID entityUUID) {
     if (!validateServer() || entityUUID == null) {
       return;
@@ -131,13 +203,12 @@ public class NPCEntityManager {
     getNPCEntityData().updateRemovalReason(entityUUID, reason);
   }
 
-  public static <T extends Mob> boolean updateOwner(EasyNPC<T> easyNPC, LivingEntity owner) {
+  public static <T extends Mob> boolean updateOwner(EasyNPC<T> easyNPC, UUID ownerUUID) {
     if (!validateServer() || easyNPC == null) {
       return false;
     }
 
-    getNPCEntityData().updateOwner(easyNPC, owner);
-    return true;
+    return getNPCEntityData().updateOwner(easyNPC, ownerUUID);
   }
 
   public static void saveAllDirtyNPCs() {
@@ -150,7 +221,8 @@ public class NPCEntityManager {
         LivingEntityManager.getServerEasyNPCEntities()
             .mapToInt(
                 easyNPC -> {
-                  if (!easyNPC.getEasyNPCStatusData().hasUnsavedNPCData()) {
+                  if (!easyNPC.isPersistentNPC()
+                      || !easyNPC.getEasyNPCStatusData().hasUnsavedNPCData()) {
                     return 0;
                   }
 
@@ -174,6 +246,14 @@ public class NPCEntityManager {
     }
 
     return getNPCEntityData().getEntry(entityUUID);
+  }
+
+  public static Optional<NPCEntityMetadata> getMetadata(UUID entityUUID) {
+    if (!validateServer() || entityUUID == null) {
+      return Optional.empty();
+    }
+
+    return getNPCEntityData().getMetadata(entityUUID);
   }
 
   public static Collection<SavedNPCEntityEntry> getAllNPCs() {

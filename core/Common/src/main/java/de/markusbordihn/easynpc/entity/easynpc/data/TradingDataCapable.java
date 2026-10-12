@@ -361,7 +361,7 @@ public interface TradingDataCapable<E extends Mob> extends EasyNPC<E>, Merchant 
               compoundTag,
               DATA_OFFERS_TAG,
               provider,
-              this + " (" + this.getEntity().getUUID() + ")");
+              this + " (" + this.getEntityUUID() + ")");
       if (offers != null) {
         log.debug("Loading trading offers {} for {}", offers, this);
         this.setTradingOffers(offers);

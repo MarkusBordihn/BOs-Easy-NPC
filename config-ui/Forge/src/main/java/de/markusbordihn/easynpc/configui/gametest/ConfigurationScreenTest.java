@@ -19,17 +19,14 @@
 
 package de.markusbordihn.easynpc.configui.gametest;
 
-import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.configui.menu.ModMenuTypes;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.entity.ModEntityType;
 import de.markusbordihn.easynpc.entity.ModNPCEntityType;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraftforge.gametest.GameTestHolder;
 
 @SuppressWarnings("unused")
-@GameTestHolder(Constants.MOD_ID)
 public class ConfigurationScreenTest {
 
   @GameTest(template = "easy_npc:gametest.3x3x3")
@@ -48,6 +45,15 @@ public class ConfigurationScreenTest {
         ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
         ConfigurationType.ADVANCED_DIALOG,
         ModMenuTypes.ADVANCED_DIALOG_CONFIGURATION_MENU.get());
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testOpenInventoryConfigurationScreen(GameTestHelper helper) {
+    ConfigurationScreenTestHelper.testConfigurationScreen(
+        helper,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
+        ConfigurationType.INVENTORY,
+        ModMenuTypes.INVENTORY_CONFIGURATION_MENU.get());
   }
 
   @GameTest(template = "easy_npc:gametest.3x3x3")
@@ -273,6 +279,33 @@ public class ConfigurationScreenTest {
         ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
         ConfigurationType.FOLLOW_OBJECTIVE,
         ModMenuTypes.FOLLOW_OBJECTIVE_CONFIGURATION_MENU.get());
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testOpenFleeObjectiveConfigurationScreen(GameTestHelper helper) {
+    ConfigurationScreenTestHelper.testConfigurationScreen(
+        helper,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
+        ConfigurationType.FLEE_OBJECTIVE,
+        ModMenuTypes.FLEE_OBJECTIVE_CONFIGURATION_MENU.get());
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testOpenMiscAttributeConfigurationScreen(GameTestHelper helper) {
+    ConfigurationScreenTestHelper.testConfigurationScreen(
+        helper,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
+        ConfigurationType.MISC_ATTRIBUTE,
+        ModMenuTypes.MISC_ATTRIBUTE_CONFIGURATION_MENU.get());
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testOpenTargetObjectiveConfigurationScreen(GameTestHelper helper) {
+    ConfigurationScreenTestHelper.testConfigurationScreen(
+        helper,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
+        ConfigurationType.TARGET_OBJECTIVE,
+        ModMenuTypes.TARGET_OBJECTIVE_CONFIGURATION_MENU.get());
   }
 
   @GameTest(template = "easy_npc:gametest.3x3x3")

@@ -19,22 +19,17 @@
 
 package de.markusbordihn.easynpc.configui.gametest;
 
-import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.configui.menu.ModMenuTypes;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.entity.ModEntityType;
 import de.markusbordihn.easynpc.entity.ModNPCEntityType;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.neoforged.neoforge.gametest.GameTestHolder;
-import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
 @SuppressWarnings("unused")
-@PrefixGameTestTemplate(value = false)
-@GameTestHolder(Constants.MOD_ID)
 public class ConfigurationScreenTest {
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testOpenAbilitiesAttributeConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
@@ -43,7 +38,7 @@ public class ConfigurationScreenTest {
         ModMenuTypes.ABILITIES_ATTRIBUTE_CONFIGURATION_MENU.get());
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testOpenAdvancedDialogConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
@@ -52,7 +47,7 @@ public class ConfigurationScreenTest {
         ModMenuTypes.ADVANCED_DIALOG_CONFIGURATION_MENU.get());
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testOpenAdvancedPoseConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
@@ -61,7 +56,7 @@ public class ConfigurationScreenTest {
         ModMenuTypes.ADVANCED_POSE_CONFIGURATION_MENU.get());
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testOpenAdvancedTradingConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
@@ -70,7 +65,7 @@ public class ConfigurationScreenTest {
         ModMenuTypes.ADVANCED_TRADING_CONFIGURATION_MENU.get());
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testOpenAttackObjectiveConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
@@ -79,7 +74,7 @@ public class ConfigurationScreenTest {
         ModMenuTypes.ATTACK_OBJECTIVE_CONFIGURATION_MENU.get());
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testOpenBaseAttributeConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
@@ -88,7 +83,7 @@ public class ConfigurationScreenTest {
         ModMenuTypes.BASE_ATTRIBUTE_CONFIGURATION_MENU.get());
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testOpenBasicActionConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
@@ -97,7 +92,7 @@ public class ConfigurationScreenTest {
         ModMenuTypes.BASIC_ACTION_CONFIGURATION_MENU.get());
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testOpenBasicDialogConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
@@ -106,7 +101,7 @@ public class ConfigurationScreenTest {
         ModMenuTypes.BASIC_DIALOG_CONFIGURATION_MENU.get());
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testOpenBasicObjectiveConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
@@ -115,7 +110,7 @@ public class ConfigurationScreenTest {
         ModMenuTypes.BASIC_OBJECTIVE_CONFIGURATION_MENU.get());
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testOpenBasicTradingConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
@@ -124,7 +119,7 @@ public class ConfigurationScreenTest {
         ModMenuTypes.BASIC_TRADING_CONFIGURATION_MENU.get());
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testOpenCustomPoseConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
@@ -133,7 +128,7 @@ public class ConfigurationScreenTest {
         ModMenuTypes.CUSTOM_POSE_CONFIGURATION_MENU.get());
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testOpenCustomPresetExportConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
@@ -142,7 +137,7 @@ public class ConfigurationScreenTest {
         ModMenuTypes.CUSTOM_EXPORT_PRESET_CONFIGURATION_MENU.get());
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testOpenCustomPresetImportConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
@@ -151,7 +146,7 @@ public class ConfigurationScreenTest {
         ModMenuTypes.CUSTOM_IMPORT_PRESET_CONFIGURATION_MENU.get());
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testOpenCustomSkinConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
@@ -160,7 +155,7 @@ public class ConfigurationScreenTest {
         ModMenuTypes.CUSTOM_SKIN_CONFIGURATION_MENU.get());
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testOpenCustomTradingConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
@@ -169,7 +164,7 @@ public class ConfigurationScreenTest {
         ModMenuTypes.CUSTOM_TRADING_CONFIGURATION_MENU.get());
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testOpenCustomModelConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
@@ -178,7 +173,7 @@ public class ConfigurationScreenTest {
         ModMenuTypes.CUSTOM_MODEL_CONFIGURATION_MENU.get());
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testOpenDefaultModelConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
@@ -187,7 +182,7 @@ public class ConfigurationScreenTest {
         ModMenuTypes.DEFAULT_MODEL_CONFIGURATION_MENU.get());
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testOpenDefaultPoseConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
@@ -196,7 +191,7 @@ public class ConfigurationScreenTest {
         ModMenuTypes.DEFAULT_POSE_CONFIGURATION_MENU.get());
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testOpenDefaultPositionConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
@@ -205,7 +200,7 @@ public class ConfigurationScreenTest {
         ModMenuTypes.DEFAULT_POSITION_CONFIGURATION_MENU.get());
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testOpenDefaultPresetImportConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
@@ -214,7 +209,7 @@ public class ConfigurationScreenTest {
         ModMenuTypes.DEFAULT_IMPORT_PRESET_CONFIGURATION_MENU.get());
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testOpenDefaultRotationConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
@@ -223,7 +218,7 @@ public class ConfigurationScreenTest {
         ModMenuTypes.DEFAULT_ROTATION_CONFIGURATION_MENU.get());
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testOpenDefaultSkinConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
@@ -232,7 +227,7 @@ public class ConfigurationScreenTest {
         ModMenuTypes.DEFAULT_SKIN_CONFIGURATION_MENU.get());
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testOpenDialogActionConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
@@ -241,7 +236,7 @@ public class ConfigurationScreenTest {
         ModMenuTypes.DIALOG_ACTION_CONFIGURATION_MENU.get());
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testOpenDisplayAttributeConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
@@ -250,7 +245,7 @@ public class ConfigurationScreenTest {
         ModMenuTypes.DISPLAY_ATTRIBUTE_CONFIGURATION_MENU.get());
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testOpenDistanceActionConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
@@ -259,7 +254,7 @@ public class ConfigurationScreenTest {
         ModMenuTypes.DISTANCE_ACTION_CONFIGURATION_MENU.get());
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testOpenEquipmentConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
@@ -268,8 +263,17 @@ public class ConfigurationScreenTest {
         ModMenuTypes.EQUIPMENT_CONFIGURATION_MENU.get());
   }
 
-  @GameTest(template = "gametest.3x3x3")
-  public void testFleeObjectiveConfigurationScreen(GameTestHelper helper) {
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testOpenInventoryConfigurationScreen(GameTestHelper helper) {
+    ConfigurationScreenTestHelper.testConfigurationScreen(
+        helper,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
+        ConfigurationType.INVENTORY,
+        ModMenuTypes.INVENTORY_CONFIGURATION_MENU.get());
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testOpenFleeObjectiveConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
         ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
@@ -277,7 +281,7 @@ public class ConfigurationScreenTest {
         ModMenuTypes.FLEE_OBJECTIVE_CONFIGURATION_MENU.get());
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testOpenFollowObjectiveConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
@@ -286,7 +290,25 @@ public class ConfigurationScreenTest {
         ModMenuTypes.FOLLOW_OBJECTIVE_CONFIGURATION_MENU.get());
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testOpenMiscAttributeConfigurationScreen(GameTestHelper helper) {
+    ConfigurationScreenTestHelper.testConfigurationScreen(
+        helper,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
+        ConfigurationType.MISC_ATTRIBUTE,
+        ModMenuTypes.MISC_ATTRIBUTE_CONFIGURATION_MENU.get());
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testOpenTargetObjectiveConfigurationScreen(GameTestHelper helper) {
+    ConfigurationScreenTestHelper.testConfigurationScreen(
+        helper,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
+        ConfigurationType.TARGET_OBJECTIVE,
+        ModMenuTypes.TARGET_OBJECTIVE_CONFIGURATION_MENU.get());
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testOpenLocalPresetImportConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
@@ -295,7 +317,7 @@ public class ConfigurationScreenTest {
         ModMenuTypes.LOCAL_IMPORT_PRESET_CONFIGURATION_MENU.get());
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testOpenLookObjectiveConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
@@ -304,7 +326,7 @@ public class ConfigurationScreenTest {
         ModMenuTypes.LOOK_OBJECTIVE_CONFIGURATION_MENU.get());
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testOpenMainConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
@@ -321,7 +343,7 @@ public class ConfigurationScreenTest {
         ModMenuTypes.NONE_DIALOG_CONFIGURATION_MENU.get());
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testOpenAdvancedSkinConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
@@ -330,7 +352,7 @@ public class ConfigurationScreenTest {
         ModMenuTypes.ADVANCED_SKIN_CONFIGURATION_MENU.get());
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testOpenNoneTradingConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
@@ -339,7 +361,7 @@ public class ConfigurationScreenTest {
         ModMenuTypes.NONE_TRADING_CONFIGURATION_MENU.get());
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testOpenPlayerSkinConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
@@ -348,7 +370,7 @@ public class ConfigurationScreenTest {
         ModMenuTypes.PLAYER_SKIN_CONFIGURATION_MENU.get());
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testOpenScalingConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
@@ -357,7 +379,7 @@ public class ConfigurationScreenTest {
         ModMenuTypes.SCALING_CONFIGURATION_MENU.get());
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testOpenUrlSkinConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
@@ -366,7 +388,7 @@ public class ConfigurationScreenTest {
         ModMenuTypes.URL_SKIN_CONFIGURATION_MENU.get());
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testOpenWorldPresetExportConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
@@ -375,7 +397,7 @@ public class ConfigurationScreenTest {
         ModMenuTypes.WORLD_EXPORT_PRESET_CONFIGURATION_MENU.get());
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testOpenWorldPresetImportConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
@@ -384,7 +406,7 @@ public class ConfigurationScreenTest {
         ModMenuTypes.WORLD_IMPORT_PRESET_CONFIGURATION_MENU.get());
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testOpenYesNoDialogConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,

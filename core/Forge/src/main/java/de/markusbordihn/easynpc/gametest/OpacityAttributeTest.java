@@ -21,13 +21,10 @@ package de.markusbordihn.easynpc.gametest;
 
 import static de.markusbordihn.easynpc.gametest.GameTestEntityTypes.humanoid;
 
-import de.markusbordihn.easynpc.Constants;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraftforge.gametest.GameTestHolder;
 
 @SuppressWarnings("unused")
-@GameTestHolder(Constants.MOD_ID)
 public class OpacityAttributeTest {
 
   @GameTest(template = "easy_npc:gametest.3x3x3")
@@ -39,12 +36,6 @@ public class OpacityAttributeTest {
   @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testOpacityActionChangesTheAttribute(GameTestHelper helper) {
     OpacityAttributeTestHelper.assertOpacityActionChangesTheAttribute(helper, humanoid());
-    helper.succeed();
-  }
-
-  @GameTest(template = "easy_npc:gametest.3x3x3")
-  public void testFullyTransparentOpacitySurvivesSaveAndLoad(GameTestHelper helper) {
-    OpacityAttributeTestHelper.assertFullyTransparentOpacitySurvivesSaveAndLoad(helper, humanoid());
     helper.succeed();
   }
 

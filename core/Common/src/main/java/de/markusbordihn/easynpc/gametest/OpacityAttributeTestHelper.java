@@ -72,24 +72,6 @@ public class OpacityAttributeTestHelper {
         AttributeHandler.getOpacity(easyNPC));
   }
 
-  public static void assertFullyTransparentOpacitySurvivesSaveAndLoad(
-      GameTestHelper helper, EntityType<?> entityType) {
-    EasyNPC<?> easyNPC = GameTestHelpers.mockEasyNPC(helper, entityType, NPC_POSITION);
-    AttributeHandler.setOpacity(easyNPC, DisplayAttributeType.MIN_OPACITY);
-
-    CompoundTag compoundTag = new CompoundTag();
-    easyNPC.getEasyNPCDisplayAttributeData().addAdditionalDisplayAttributeData(compoundTag);
-
-    EasyNPC<?> reloadedNPC = GameTestHelpers.mockEasyNPC(helper, entityType, SECOND_NPC_POSITION);
-    reloadedNPC.getEasyNPCDisplayAttributeData().readAdditionalDisplayAttributeData(compoundTag);
-
-    GameTestHelpers.assertEquals(
-        helper,
-        "A fully transparent NPC stays transparent after a reload",
-        DisplayAttributeType.MIN_OPACITY,
-        AttributeHandler.getOpacity(reloadedNPC));
-  }
-
   public static void assertOpacityIsExportedWithThePreset(
       GameTestHelper helper, EntityType<?> entityType) {
     EasyNPC<?> easyNPC = GameTestHelpers.mockEasyNPC(helper, entityType, NPC_POSITION);

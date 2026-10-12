@@ -21,9 +21,14 @@ package de.markusbordihn.easynpc.data.saveddata;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import de.markusbordihn.easynpc.data.execution.ExecutionData;
 import de.markusbordihn.easynpc.data.execution.ExecutionId;
 import de.markusbordihn.easynpc.data.execution.ExecutionInterval;
+import de.markusbordihn.easynpc.data.execution.ExecutionTrackerData;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import org.junit.jupiter.api.Test;
 
@@ -83,5 +88,52 @@ class ActionExecutionTrackerTest {
 
     assertFalse(tracker.canExecute(playerId, firstNpcDialogId, 1, ExecutionInterval.LIFETIME));
     assertTrue(tracker.canExecute(playerId, secondNpcDialogId, 1, ExecutionInterval.LIFETIME));
+  }
+
+  @Test
+  void testLoadDropsExpiredWindowsAndKeepsLifetimeEntries() {
+    long now = System.currentTimeMillis();
+    UUID expiredPlayerId = UUID.randomUUID();
+    UUID lifetimePlayerId = UUID.randomUUID();
+    ExecutionId expiredActionId = ExecutionId.action(UUID.randomUUID(), UUID.randomUUID());
+    ExecutionId lifetimeActionId = ExecutionId.action(UUID.randomUUID(), UUID.randomUUID());
+    ExecutionTrackerData storedData = new ExecutionTrackerData();
+    storedData
+        .trackingData()
+        .put(
+            expiredPlayerId,
+            new HashMap<>(
+                Map.of(
+                    expiredActionId,
+                    new ExecutionData(3, now - 120_000L, now, ExecutionInterval.PER_MINUTE))));
+    storedData
+        .trackingData()
+        .put(
+            lifetimePlayerId,
+            new HashMap<>(
+                Map.of(
+                    lifetimeActionId, new ExecutionData(1, 0L, 0L, ExecutionInterval.LIFETIME))));
+
+    ActionExecutionTracker tracker = new ActionExecutionTracker(storedData.save());
+    ExecutionTrackerData reloadedData =
+        new ExecutionTrackerData(tracker.save(new CompoundTag(), RegistryAccess.EMPTY));
+
+    assertTrue(tracker.isDirty());
+    assertFalse(reloadedData.trackingData().containsKey(expiredPlayerId));
+    assertTrue(reloadedData.trackingData().get(lifetimePlayerId).containsKey(lifetimeActionId));
+  }
+
+  @Test
+  void testResetExecutionRemovesEmptyPlayerData() {
+    ActionExecutionTracker tracker = new ActionExecutionTracker();
+    UUID playerId = UUID.randomUUID();
+    ExecutionId actionId = ExecutionId.action(UUID.randomUUID(), UUID.randomUUID());
+
+    tracker.recordExecution(playerId, actionId, ExecutionInterval.PER_DAY);
+    tracker.resetExecution(playerId, actionId);
+
+    ExecutionTrackerData savedData =
+        new ExecutionTrackerData(tracker.save(new CompoundTag(), RegistryAccess.EMPTY));
+    assertTrue(savedData.trackingData().isEmpty());
   }
 }

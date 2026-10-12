@@ -133,20 +133,25 @@ public class VisibilityAttributeTestHelper {
     ServerPlayer serverPlayer = GameTestHelpers.mockServerPlayer(helper, new Vec3(1, 2, 1));
     EasyNPC<?> easyNPC = GameTestHelpers.mockEasyNPC(helper, entityType, new Vec3(2, 2, 2));
     ServerLevel level = helper.getLevel();
-    level.setDayTime(DAY_TIME);
+    long previousDayTime = level.getDayTime();
 
-    setDisplayAttribute(easyNPC, DisplayAttributeType.VISIBLE_AT_NIGHT, false);
+    try {
+      level.setDayTime(DAY_TIME);
+      setDisplayAttribute(easyNPC, DisplayAttributeType.VISIBLE_AT_NIGHT, false);
 
-    GameTestHelpers.assertTrue(
-        helper,
-        "Preview must report the NPC as visible for a simulated day time",
-        VisibilityHandler.isVisibleToPlayerAtDayTime(easyNPC, serverPlayer, DAY_TIME));
-    GameTestHelpers.assertTrue(
-        helper,
-        "Preview must report the NPC as hidden for a simulated night time",
-        !VisibilityHandler.isVisibleToPlayerAtDayTime(easyNPC, serverPlayer, NIGHT_TIME));
-    GameTestHelpers.assertTrue(
-        helper, "Preview must not change the world time", level.getDayTime() == DAY_TIME);
+      GameTestHelpers.assertTrue(
+          helper,
+          "Preview must report the NPC as visible for a simulated day time",
+          VisibilityHandler.isVisibleToPlayerAtDayTime(easyNPC, serverPlayer, DAY_TIME));
+      GameTestHelpers.assertTrue(
+          helper,
+          "Preview must report the NPC as hidden for a simulated night time",
+          !VisibilityHandler.isVisibleToPlayerAtDayTime(easyNPC, serverPlayer, NIGHT_TIME));
+      GameTestHelpers.assertTrue(
+          helper, "Preview must not change the world time", level.getDayTime() == DAY_TIME);
+    } finally {
+      level.setDayTime(previousDayTime);
+    }
   }
 
   public static void assertMainVisibilityIsRespected(

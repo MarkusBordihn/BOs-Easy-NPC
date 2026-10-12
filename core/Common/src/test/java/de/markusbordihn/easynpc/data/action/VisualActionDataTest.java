@@ -54,6 +54,23 @@ class VisualActionDataTest {
     assertFalse(animationTag.contains(ModelAnimationActionData.DATA_LOOP_TAG));
     assertFalse(animationTag.contains(ModelAnimationActionData.DATA_AFTER_CURRENT_TAG));
     assertFalse(animationTag.contains(ModelAnimationActionData.DATA_BLEND_TAG));
+    assertFalse(animationTag.contains(ModelAnimationActionData.DATA_HOLD_TAG));
+    assertFalse(animationTag.contains(ModelAnimationActionData.DATA_SPEED_TAG));
+  }
+
+  @Test
+  void roundTripsHoldModeAndSpeed() {
+    ModelAnimationActionData animationData =
+        new ModelAnimationActionData(
+            "death",
+            ModelAnimationPlayback.of(ModelAnimationPlaybackMode.HOLD).withSpeed(0.5F),
+            ModelAnimationTransition.DEFAULT);
+    ActionDataEntry entry =
+        new ActionDataEntry(ActionDataType.PLAY_ANIMATION)
+            .withModelAnimationActionData(animationData);
+
+    ActionDataEntry loaded = new ActionDataEntry(entry.createTag());
+    assertEquals(animationData, loaded.modelAnimationActionData());
   }
 
   @Test

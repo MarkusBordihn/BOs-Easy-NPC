@@ -27,9 +27,12 @@ import com.mojang.brigadier.suggestion.SuggestionProvider;
 import de.markusbordihn.easynpc.commands.Command;
 import de.markusbordihn.easynpc.commands.suggestion.PresetSuggestions;
 import de.markusbordihn.easynpc.data.preset.PresetType;
+import de.markusbordihn.easynpc.handler.PresetFeedback;
 import de.markusbordihn.easynpc.handler.PresetHandler;
+import de.markusbordihn.easynpc.handler.PresetImportResult;
 import de.markusbordihn.easynpc.security.ActorSecurityContext;
 import de.markusbordihn.easynpc.security.CommandSecurity;
+import java.util.List;
 import java.util.UUID;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -38,6 +41,7 @@ import net.minecraft.commands.arguments.ResourceLocationArgument;
 import net.minecraft.commands.arguments.UuidArgument;
 import net.minecraft.commands.arguments.coordinates.Coordinates;
 import net.minecraft.commands.arguments.coordinates.Vec3Argument;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.Vec3;
@@ -367,8 +371,14 @@ class PresetImportCommand extends Command {
       owner = actorSecurityContext.player();
     }
 
-    return PresetHandler.importPreset(
-        context.getLevel(), presetType, preset, position, uuid, actorSecurityContext, owner);
+    PresetImportResult importResult =
+        PresetHandler.importPresetWithReport(
+            context.getLevel(), presetType, preset, position, uuid, actorSecurityContext, owner);
+    for (Component message : PresetFeedback.sanitizationWarnings(List.of(importResult))) {
+      context.sendSuccess(() -> message, false);
+    }
+
+    return importResult.success();
   }
 
   private static String importedPresetFailedMessage(String presetType, ResourceLocation preset) {

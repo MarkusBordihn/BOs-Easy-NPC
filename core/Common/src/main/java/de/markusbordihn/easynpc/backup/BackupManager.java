@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.backup;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.config.StorageConfig;
 import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.NPCEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
@@ -27,6 +28,7 @@ import de.markusbordihn.easynpc.handler.PresetHandler;
 import de.markusbordihn.easynpc.io.BackupDataFiles;
 import java.io.File;
 import java.nio.file.Path;
+import java.time.LocalDate;
 import java.util.ArrayDeque;
 import java.util.Date;
 import java.util.Queue;
@@ -48,6 +50,7 @@ public class BackupManager {
   private static long lastBackupTime = 0;
   private static long backupTicks = 0;
   private static Date backupRunDate;
+  private static LocalDate lastBackupCleanupDate;
 
   public static void performBackup() {
     if (!pendingBackups.isEmpty()) {
@@ -72,6 +75,7 @@ public class BackupManager {
     lastBackupTime = System.currentTimeMillis();
     backupRunDate = new Date();
     forgetOutdatedBackupTimes();
+    removeExpiredBackupFolders();
     queueNPCsForBackup();
   }
 
@@ -87,6 +91,7 @@ public class BackupManager {
     lastNPCBackupTime.clear();
     pendingBackups.clear();
     backupRunDate = null;
+    lastBackupCleanupDate = null;
     lastBackupTime = 0;
     backupTicks = 0;
   }
@@ -98,10 +103,31 @@ public class BackupManager {
 
   private static void queueNPCsForBackup() {
     LivingEntityManager.getServerEasyNPCEntities()
-        .filter(easyNPC -> easyNPC != null && easyNPC.getEntityUUID() != null)
+        .filter(
+            easyNPC ->
+                easyNPC != null && easyNPC.getEntityUUID() != null && easyNPC.isPersistentNPC())
         .map(EasyNPC::getEntityUUID)
         .forEach(pendingBackups::add);
     log.debug("{} Queued {} NPCs for backup.", LOG_PREFIX, pendingBackups.size());
+  }
+
+  private static void removeExpiredBackupFolders() {
+    LocalDate today = LocalDate.now();
+    if (StorageConfig.BACKUP_RETENTION_DAYS <= 0 || today.equals(lastBackupCleanupDate)) {
+      return;
+    }
+
+    lastBackupCleanupDate = today;
+    int removedFolders =
+        BackupDataFiles.removeBackupFoldersBefore(
+            today.minusDays(StorageConfig.BACKUP_RETENTION_DAYS));
+    if (removedFolders > 0) {
+      log.info(
+          "{} Removed {} backup folder(s) older than {} days.",
+          LOG_PREFIX,
+          removedFolders,
+          StorageConfig.BACKUP_RETENTION_DAYS);
+    }
   }
 
   private static void processPendingBackups() {

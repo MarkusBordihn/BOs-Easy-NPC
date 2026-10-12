@@ -22,66 +22,61 @@ package de.markusbordihn.easynpc.gametest;
 import static de.markusbordihn.easynpc.gametest.GameTestEntityTypes.humanoid;
 import static de.markusbordihn.easynpc.gametest.GameTestEntityTypes.villager;
 
-import de.markusbordihn.easynpc.Constants;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.neoforged.neoforge.gametest.GameTestHolder;
-import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
 @SuppressWarnings("unused")
-@PrefixGameTestTemplate(value = false)
-@GameTestHolder(Constants.MOD_ID)
 public class PresetIdentityTest {
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testExportKeepsIdentity(GameTestHelper helper) {
     PresetIdentityTestHelper.assertExportKeepsIdentity(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testImportRestoresDeletedNPC(GameTestHelper helper) {
     PresetIdentityTestHelper.assertImportRestoresDeletedNPC(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testImportNewCreatesNewIdentity(GameTestHelper helper) {
     PresetIdentityTestHelper.assertImportNewCreatesNewIdentity(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testImportKeepsTargetPosition(GameTestHelper helper) {
     PresetIdentityTestHelper.assertImportKeepsTargetPosition(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testExportExposesIdentity(GameTestHelper helper) {
     PresetIdentityTestHelper.assertExportExposesIdentity(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testImportReportsCreatedEntity(GameTestHelper helper) {
     PresetIdentityTestHelper.assertImportReportsCreatedEntity(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testImportReportsUpdatedEntity(GameTestHelper helper) {
     PresetIdentityTestHelper.assertImportReportsUpdatedEntity(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testImportReportsReplacedEntity(GameTestHelper helper) {
     PresetIdentityTestHelper.assertImportReportsReplacedEntity(helper, humanoid(), villager());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testPresetItemDropsIdentity(GameTestHelper helper) {
     PresetIdentityTestHelper.assertPresetItemDropsIdentity(helper, humanoid());
     helper.succeed();

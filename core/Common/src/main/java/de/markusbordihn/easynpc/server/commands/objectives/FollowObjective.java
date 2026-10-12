@@ -60,6 +60,13 @@ public class FollowObjective extends Command {
                                     EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG),
                                     EntityArgument.getPlayer(context, "player")))))
         .then(
+            Commands.literal(ObjectiveType.FOLLOW_NEAREST_PLAYER.getFriendlyName())
+                .executes(
+                    context ->
+                        setFollowNearestPlayer(
+                            context.getSource(),
+                            EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG))))
+        .then(
             Commands.literal(ObjectiveType.FOLLOW_ENTITY_BY_UUID.getFriendlyName())
                 .then(
                     Commands.argument("entity", EntityArgument.entity())
@@ -98,6 +105,14 @@ public class FollowObjective extends Command {
                             context.getSource(),
                             EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG),
                             ObjectiveType.FOLLOW_PLAYER)))
+        .then(
+            Commands.literal(ObjectiveType.FOLLOW_NEAREST_PLAYER.getFriendlyName())
+                .executes(
+                    context ->
+                        removeFollowObjective(
+                            context.getSource(),
+                            EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG),
+                            ObjectiveType.FOLLOW_NEAREST_PLAYER)))
         .then(
             Commands.literal(ObjectiveType.FOLLOW_ENTITY_BY_UUID.getFriendlyName())
                 .executes(
@@ -144,6 +159,9 @@ public class FollowObjective extends Command {
                 sendSuccessMessage(
                     context, "> " + objective.getType() + ": " + objective.getTargetPlayerName()));
     objectiveData
+        .getObjectiveEntry(ObjectiveType.FOLLOW_NEAREST_PLAYER)
+        .ifPresent(objective -> sendSuccessMessage(context, "> " + objective.getType()));
+    objectiveData
         .getObjectiveEntry(ObjectiveType.FOLLOW_ENTITY_BY_UUID)
         .ifPresent(
             objective ->
@@ -189,6 +207,21 @@ public class FollowObjective extends Command {
     return sendSuccessMessage(
         context,
         "Follow player " + serverPlayer.getName().getString() + " objective added for " + easyNPC);
+  }
+
+  public static int setFollowNearestPlayer(CommandSourceStack context, EasyNPC<?> easyNPC) {
+    ObjectiveDataCapable<?> objectiveData = getObjectiveData(context, easyNPC);
+    if (objectiveData == null) {
+      return Command.FAILURE;
+    }
+
+    if (!objectiveData.addOrUpdateCustomObjective(
+        new ObjectiveDataEntry(ObjectiveType.FOLLOW_NEAREST_PLAYER))) {
+      return sendFailureMessage(
+          context, "Error adding or updating follow nearest player objective!");
+    }
+
+    return sendSuccessMessage(context, "Follow nearest player objective added for " + easyNPC);
   }
 
   public static int setFollowEntity(CommandSourceStack context, EasyNPC<?> easyNPC, Entity entity) {

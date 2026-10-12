@@ -21,42 +21,37 @@ package de.markusbordihn.easynpc.gametest;
 
 import static de.markusbordihn.easynpc.gametest.GameTestEntityTypes.humanoid;
 
-import de.markusbordihn.easynpc.Constants;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.neoforged.neoforge.gametest.GameTestHolder;
-import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
 @SuppressWarnings("unused")
-@PrefixGameTestTemplate(value = false)
-@GameTestHolder(Constants.MOD_ID)
 public class FactionObjectiveTest {
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testFactionScoreboardMembership(GameTestHelper helper) {
     FactionObjectiveTestHelper.assertFactionScoreboardMembership(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testDirectedHostileFactionTargeting(GameTestHelper helper) {
     FactionObjectiveTestHelper.assertDirectedHostileFactionTargeting(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testHostileFactionCombatBypass(GameTestHelper helper) {
     FactionObjectiveTestHelper.assertHostileFactionCombatBypass(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testPlayerFactionCombatBypass(GameTestHelper helper) {
     FactionObjectiveTestHelper.assertPlayerFactionCombatBypass(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testFactionSurvivesPresetRoundTrip(GameTestHelper helper) {
     FactionObjectiveTestHelper.assertFactionSurvivesPresetRoundTrip(helper, humanoid());
     helper.succeed();

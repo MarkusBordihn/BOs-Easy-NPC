@@ -20,7 +20,8 @@ runs {
   }
 
   client {
-    systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+    systemProperty 'neoforge.enabledGameTestNamespaces', "easy_npc,${project.mod_id}"
+    systemProperty "${project.mod_id}.gametest", 'true'
   }
 
   client2 {
@@ -30,18 +31,20 @@ runs {
   }
 
   server {
-    systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+    systemProperty 'neoforge.enabledGameTestNamespaces', "easy_npc,${project.mod_id}"
+    systemProperty "${project.mod_id}.gametest", 'true'
     arguments.add '--nogui'
   }
 
   gameTestServer {
-    systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+    systemProperty 'neoforge.enabledGameTestNamespaces', "easy_npc,${project.mod_id}"
+    systemProperty "${project.mod_id}.gametest", 'true'
   }
 
-  if (clientToolkitAvailable) {
+  if (rootProject.findProperty('clientRuntimeTest')?.isAvailable()) {
     clientTest {
       runType('client')
-      workingDirectory project.file('runs/clientTest')
+      workingDirectory project.file('run/clienttest')
     }
   }
 
@@ -97,8 +100,8 @@ dependencies {
   }
 
   // Client Runtime Interface Toolkit (runtime dependency, only for client tests)
-  if (clientToolkitAvailable && isClientTestRun) {
-    runtimeOnly clientToolkitCoordinate('neoforge')
+  if (rootProject.findProperty('clientRuntimeTest')?.isClientTestRun()) {
+    runtimeOnly rootProject.clientRuntimeTest.toolkitCoordinate('neoforge')
   }
 
   // Tide (for testing, requires Cloth Config at runtime)

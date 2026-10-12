@@ -21,54 +21,49 @@ package de.markusbordihn.easynpc.gametest;
 
 import static de.markusbordihn.easynpc.gametest.GameTestEntityTypes.humanoid;
 
-import de.markusbordihn.easynpc.Constants;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.neoforged.neoforge.gametest.GameTestHolder;
-import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
 @SuppressWarnings("unused")
-@PrefixGameTestTemplate(value = false)
-@GameTestHolder(Constants.MOD_ID)
 public class MoveActionTest {
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testMoveKeepsTheChainRunning(GameTestHelper helper) {
     MoveActionTestHelper.assertMoveKeepsTheChainRunning(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testMoveAndWaitParksTheChain(GameTestHelper helper) {
     MoveActionTestHelper.assertMoveAndWaitParksTheChain(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testArrivalResumesTheChain(GameTestHelper helper) {
     MoveActionTestHelper.assertArrivalResumesTheChain(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testTimeoutResumesTheChain(GameTestHelper helper) {
     MoveActionTestHelper.assertTimeoutResumesTheChain(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testImmovableNPCDoesNotBlockTheChain(GameTestHelper helper) {
     MoveActionTestHelper.assertImmovableNPCDoesNotBlockTheChain(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testSecondMoveReplacesTheFirstGoal(GameTestHelper helper) {
     MoveActionTestHelper.assertSecondMoveReplacesTheFirstGoal(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testMoveWithoutTargetIsSkipped(GameTestHelper helper) {
     MoveActionTestHelper.assertMoveWithoutTargetIsSkipped(helper, humanoid());
     helper.succeed();

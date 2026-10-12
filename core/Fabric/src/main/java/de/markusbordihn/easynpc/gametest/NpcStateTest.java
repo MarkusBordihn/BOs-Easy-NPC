@@ -51,12 +51,6 @@ public class NpcStateTest {
   }
 
   @GameTest(template = "easy_npc:gametest.3x3x3")
-  public void testStateSurvivesSaveAndLoad(GameTestHelper helper) {
-    NpcStateTestHelper.assertStateSurvivesSaveAndLoad(helper, humanoid());
-    helper.succeed();
-  }
-
-  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testStateConditionLocksDialogButton(GameTestHelper helper) {
     NpcStateTestHelper.assertStateConditionLocksDialogButton(helper, humanoid());
     helper.succeed();

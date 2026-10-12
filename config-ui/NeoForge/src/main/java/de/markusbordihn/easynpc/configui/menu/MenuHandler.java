@@ -124,6 +124,8 @@ public class MenuHandler implements MenuHandlerInterface {
     configurationMenuMap.put(
         ConfigurationType.EQUIPMENT, ModMenuTypes.EQUIPMENT_CONFIGURATION_MENU.get());
     configurationMenuMap.put(
+        ConfigurationType.INVENTORY, ModMenuTypes.INVENTORY_CONFIGURATION_MENU.get());
+    configurationMenuMap.put(
         ConfigurationType.FOLLOW_OBJECTIVE, ModMenuTypes.FOLLOW_OBJECTIVE_CONFIGURATION_MENU.get());
     configurationMenuMap.put(
         ConfigurationType.LOCAL_PRESET_IMPORT,

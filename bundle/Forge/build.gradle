@@ -6,8 +6,6 @@ plugins {
   id "com.modrinth.minotaur" version "2.+"
 }
 
-apply plugin: 'net.minecraftforge.gradle'
-
 base {
   archivesName = "${project.mod_id}-forge-${project.minecraft_version}"
 }
@@ -31,7 +29,6 @@ minecraft {
         }
       }
 
-      // Mixin Support
       property 'mixin.env.remapRefMap', 'true'
       property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
     }

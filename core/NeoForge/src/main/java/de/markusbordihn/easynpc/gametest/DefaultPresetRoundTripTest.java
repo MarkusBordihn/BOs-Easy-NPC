@@ -19,24 +19,19 @@
 
 package de.markusbordihn.easynpc.gametest;
 
-import de.markusbordihn.easynpc.Constants;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.neoforged.neoforge.gametest.GameTestHolder;
-import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
 @SuppressWarnings("unused")
-@PrefixGameTestTemplate(value = false)
-@GameTestHolder(Constants.MOD_ID)
 public class DefaultPresetRoundTripTest {
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testDefaultPresetsAreValid(GameTestHelper helper) {
     DefaultPresetRoundTripTestHelper.assertDefaultPresetsAreValid(helper);
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testDefaultPresetsSurviveRegeneration(GameTestHelper helper) {
     DefaultPresetRoundTripTestHelper.assertDefaultPresetsSurviveRegeneration(helper);
     helper.succeed();

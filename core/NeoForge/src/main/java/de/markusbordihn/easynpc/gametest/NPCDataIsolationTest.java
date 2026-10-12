@@ -21,78 +21,73 @@ package de.markusbordihn.easynpc.gametest;
 
 import static de.markusbordihn.easynpc.gametest.GameTestEntityTypes.humanoid;
 
-import de.markusbordihn.easynpc.Constants;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.neoforged.neoforge.gametest.GameTestHolder;
-import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
 @SuppressWarnings("unused")
-@PrefixGameTestTemplate(value = false)
-@GameTestHolder(Constants.MOD_ID)
 public class NPCDataIsolationTest {
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testServerRegistryIsolation(GameTestHelper helper) {
     NPCDataIsolationTestHelper.assertServerRegistryIsolation(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testPoseIsolation(GameTestHelper helper) {
     NPCDataIsolationTestHelper.assertPoseIsolation(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testPoseNameIsolation(GameTestHelper helper) {
     NPCDataIsolationTestHelper.assertPoseNameIsolation(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testRotationIsolation(GameTestHelper helper) {
     NPCDataIsolationTestHelper.assertRotationIsolation(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testAnimationIsolation(GameTestHelper helper) {
     NPCDataIsolationTestHelper.assertAnimationIsolation(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testScaleIsolation(GameTestHelper helper) {
     NPCDataIsolationTestHelper.assertScaleIsolation(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testNameUpdate(GameTestHelper helper) {
     NPCDataIsolationTestHelper.assertNameUpdate(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testSkinUpdate(GameTestHelper helper) {
     NPCDataIsolationTestHelper.assertSkinUpdate(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testScaleUpdatesDimensions(GameTestHelper helper) {
     NPCDataIsolationTestHelper.assertScaleUpdatesDimensions(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testPositionIsolation(GameTestHelper helper) {
     NPCDataIsolationTestHelper.assertPositionIsolation(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testVisibilityIsolation(GameTestHelper helper) {
     NPCDataIsolationTestHelper.assertVisibilityIsolation(helper, humanoid());
     helper.succeed();

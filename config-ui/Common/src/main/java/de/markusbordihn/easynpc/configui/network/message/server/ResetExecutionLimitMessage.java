@@ -95,7 +95,7 @@ public record ResetExecutionLimitMessage(
   public void handleServer(final ServerPlayer serverPlayer) {
     EasyNPC<?> easyNPC = this.getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
     if (easyNPC == null || this.executionType == null) {
-      log.error("Invalid data to reset execution limit for {}", this);
+      log.warn("Invalid data to reset execution limit for {}", this);
       return;
     }
 

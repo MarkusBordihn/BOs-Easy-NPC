@@ -21,15 +21,19 @@ package de.markusbordihn.easynpc.client;
 
 import de.markusbordihn.easynpc.client.compat.cobblemon.CobblemonVariantHelper;
 import de.markusbordihn.easynpc.client.renderer.entity.SpeechBubbleFrameRenderer;
+import de.markusbordihn.easynpc.client.renderer.layer.ShoulderNPCLayer;
 import de.markusbordihn.easynpc.compat.CompatConstants;
 import de.markusbordihn.easynpc.compat.cobblemon.CobblemonLoader;
 import de.markusbordihn.easynpc.compat.easymodelentities.EasyModelEntitiesLoader;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.entity.player.PlayerRenderer;
+import net.minecraft.client.resources.PlayerSkin;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import net.neoforged.neoforge.event.TagsUpdatedEvent;
 
@@ -39,6 +43,15 @@ public class ClientEventHandler {
   @SubscribeEvent
   public static void onClientSetup(FMLClientSetupEvent event) {
     event.enqueueWork(() -> ClientEvents.handleClientStartedEvent(Minecraft.getInstance()));
+  }
+
+  @SubscribeEvent
+  public static void onAddLayers(EntityRenderersEvent.AddLayers event) {
+    for (PlayerSkin.Model skinModel : event.getSkins()) {
+      if (event.getSkin(skinModel) instanceof PlayerRenderer playerRenderer) {
+        playerRenderer.addLayer(new ShoulderNPCLayer(playerRenderer));
+      }
+    }
   }
 }
 

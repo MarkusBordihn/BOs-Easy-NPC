@@ -35,6 +35,7 @@ import de.markusbordihn.easynpc.configui.menu.configuration.dialog.BasicDialogCo
 import de.markusbordihn.easynpc.configui.menu.configuration.dialog.NoneDialogConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.dialog.YesNoDialogConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.equipment.EquipmentConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.configui.menu.configuration.inventory.InventoryConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.main.MainConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.model.CobblemonModelConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.model.CustomModelConfigurationMenuWrapper;
@@ -330,6 +331,11 @@ public class ModMenuTypes {
           MENU_TYPES.register(
               ConfigurationType.EQUIPMENT.getName(),
               () -> IForgeMenuType.create(EquipmentConfigurationMenuWrapper::new));
+  public static final RegistryObject<MenuType<InventoryConfigurationMenuWrapper>>
+      INVENTORY_CONFIGURATION_MENU =
+          MENU_TYPES.register(
+              ConfigurationType.INVENTORY.getName(),
+              () -> IForgeMenuType.create(InventoryConfigurationMenuWrapper::new));
   public static final RegistryObject<MenuType<FollowObjectiveConfigurationMenuWrapper>>
       FOLLOW_OBJECTIVE_CONFIGURATION_MENU =
           MENU_TYPES.register(

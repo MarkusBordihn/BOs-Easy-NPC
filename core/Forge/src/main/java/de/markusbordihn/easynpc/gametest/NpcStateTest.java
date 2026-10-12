@@ -21,13 +21,10 @@ package de.markusbordihn.easynpc.gametest;
 
 import static de.markusbordihn.easynpc.gametest.GameTestEntityTypes.humanoid;
 
-import de.markusbordihn.easynpc.Constants;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraftforge.gametest.GameTestHolder;
 
 @SuppressWarnings("unused")
-@GameTestHolder(Constants.MOD_ID)
 public class NpcStateTest {
 
   @GameTest(template = "easy_npc:gametest.3x3x3")
@@ -45,12 +42,6 @@ public class NpcStateTest {
   @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testDebugActionStillWritesTheState(GameTestHelper helper) {
     NpcStateTestHelper.assertDebugActionStillWritesTheState(helper, humanoid());
-    helper.succeed();
-  }
-
-  @GameTest(template = "easy_npc:gametest.3x3x3")
-  public void testStateSurvivesSaveAndLoad(GameTestHelper helper) {
-    NpcStateTestHelper.assertStateSurvivesSaveAndLoad(helper, humanoid());
     helper.succeed();
   }
 

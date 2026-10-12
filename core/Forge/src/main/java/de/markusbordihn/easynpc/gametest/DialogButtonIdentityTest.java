@@ -21,30 +21,35 @@ package de.markusbordihn.easynpc.gametest;
 
 import static de.markusbordihn.easynpc.gametest.GameTestEntityTypes.humanoid;
 
-import de.markusbordihn.easynpc.Constants;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraftforge.gametest.GameTestHolder;
 
 @SuppressWarnings("unused")
-@GameTestHolder(Constants.MOD_ID)
 public class DialogButtonIdentityTest {
 
   @GameTest(template = "easy_npc:gametest.3x3x3")
-  public void testDuplicateButtonLabelIsRejected(GameTestHelper helper) {
-    DialogButtonIdentityTestHelper.assertDuplicateButtonLabelIsRejected(helper, humanoid());
+  public void testEqualButtonLabelsLockPerDialog(GameTestHelper helper) {
+    DialogButtonIdentityTestHelper.assertEqualButtonLabelsLockPerDialog(helper, humanoid());
     helper.succeed();
   }
 
   @GameTest(template = "easy_npc:gametest.3x3x3")
-  public void testButtonIdentitySurvivesSaveAndLoad(GameTestHelper helper) {
-    DialogButtonIdentityTestHelper.assertButtonIdentitySurvivesSaveAndLoad(helper, humanoid());
+  public void testEqualButtonLabelsReachExecutionLimitPerDialog(GameTestHelper helper) {
+    DialogButtonIdentityTestHelper.assertEqualButtonLabelsReachExecutionLimitPerDialog(
+        helper, humanoid());
     helper.succeed();
   }
 
   @GameTest(template = "easy_npc:gametest.3x3x3")
-  public void testEditedButtonLabelStaysAddressable(GameTestHelper helper) {
-    DialogButtonIdentityTestHelper.assertEditedButtonLabelStaysAddressable(helper, humanoid());
+  public void testEqualActionsReachExecutionLimitPerButton(GameTestHelper helper) {
+    DialogButtonIdentityTestHelper.assertEqualActionsReachExecutionLimitPerButton(
+        helper, humanoid());
+    helper.succeed();
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testBankTellerLocksWithdrawalsByBalance(GameTestHelper helper) {
+    DialogButtonIdentityTestHelper.assertBankTellerLocksWithdrawalsByBalance(helper);
     helper.succeed();
   }
 }

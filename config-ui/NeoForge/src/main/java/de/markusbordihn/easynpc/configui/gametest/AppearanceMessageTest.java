@@ -19,79 +19,74 @@
 
 package de.markusbordihn.easynpc.configui.gametest;
 
-import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.entity.ModEntityType;
 import de.markusbordihn.easynpc.entity.ModNPCEntityType;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.entity.EntityType;
-import net.neoforged.neoforge.gametest.GameTestHolder;
-import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
 @SuppressWarnings("unused")
-@PrefixGameTestTemplate(value = false)
-@GameTestHolder(Constants.MOD_ID)
 public class AppearanceMessageTest {
 
   private static EntityType<?> humanoid() {
     return ModEntityType.getEntityType(ModNPCEntityType.HUMANOID);
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testPlayerSkinChange(GameTestHelper helper) {
     AppearanceMessageTestHelper.assertPlayerSkinChange(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testRemoteSkinChange(GameTestHelper helper) {
     AppearanceMessageTestHelper.assertRemoteSkinChange(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testProfessionChange(GameTestHelper helper) {
     AppearanceMessageTestHelper.assertProfessionChange(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testRendererChange(GameTestHelper helper) {
     AppearanceMessageTestHelper.assertRendererChange(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testSoundChange(GameTestHelper helper) {
     AppearanceMessageTestHelper.assertSoundChange(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testSoundReset(GameTestHelper helper) {
     AppearanceMessageTestHelper.assertSoundReset(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testPositionChange(GameTestHelper helper) {
     AppearanceMessageTestHelper.assertPositionChange(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testHomePositionChange(GameTestHelper helper) {
     AppearanceMessageTestHelper.assertHomePositionChange(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testNPCRespawn(GameTestHelper helper) {
     AppearanceMessageTestHelper.assertNPCRespawn(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testNPCRemoval(GameTestHelper helper) {
     AppearanceMessageTestHelper.assertNPCRemoval(helper, humanoid());
     helper.succeed();
