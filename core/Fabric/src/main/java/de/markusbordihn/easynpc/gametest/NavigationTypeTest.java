@@ -56,14 +56,8 @@ public class NavigationTypeTest {
   }
 
   @GameTest(template = "easy_npc:gametest.3x3x3")
-  public void testHoverHeightStaysInRange(GameTestHelper helper) {
-    NavigationTypeTestHelper.assertHoverHeightStaysInRange(helper, humanoid());
-    helper.succeed();
-  }
-
-  @GameTest(template = "easy_npc:gametest.3x3x3")
-  public void testMinHoverHeightStaysInRange(GameTestHelper helper) {
-    NavigationTypeTestHelper.assertMinHoverHeightStaysInRange(helper, humanoid());
+  public void testHoverHeightsAreSetIndependently(GameTestHelper helper) {
+    NavigationTypeTestHelper.assertHoverHeightsAreSetIndependently(helper, humanoid());
     helper.succeed();
   }
 

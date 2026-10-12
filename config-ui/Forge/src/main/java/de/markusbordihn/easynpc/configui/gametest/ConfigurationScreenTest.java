@@ -19,19 +19,14 @@
 
 package de.markusbordihn.easynpc.configui.gametest;
 
-import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.configui.menu.ModMenuTypes;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.entity.ModEntityType;
 import de.markusbordihn.easynpc.entity.ModNPCEntityType;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraftforge.gametest.GameTestHolder;
-import net.minecraftforge.gametest.PrefixGameTestTemplate;
 
 @SuppressWarnings("unused")
-@PrefixGameTestTemplate(value = false)
-@GameTestHolder(Constants.MOD_ID)
 public class ConfigurationScreenTest {
 
   @GameTest(template = "gametest.3x3x3")
@@ -176,6 +171,15 @@ public class ConfigurationScreenTest {
         ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
         ConfigurationType.EQUIPMENT,
         ModMenuTypes.EQUIPMENT_CONFIGURATION_MENU.get());
+  }
+
+  @GameTest(template = "gametest.3x3x3")
+  public void testInventoryConfigurationScreen(GameTestHelper helper) {
+    ConfigurationScreenTestHelper.testConfigurationScreen(
+        helper,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
+        ConfigurationType.INVENTORY,
+        ModMenuTypes.INVENTORY_CONFIGURATION_MENU.get());
   }
 
   @GameTest(template = "gametest.3x3x3")

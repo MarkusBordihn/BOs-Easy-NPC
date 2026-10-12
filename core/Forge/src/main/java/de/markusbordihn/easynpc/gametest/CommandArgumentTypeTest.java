@@ -19,15 +19,10 @@
 
 package de.markusbordihn.easynpc.gametest;
 
-import de.markusbordihn.easynpc.Constants;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraftforge.gametest.GameTestHolder;
-import net.minecraftforge.gametest.PrefixGameTestTemplate;
 
 @SuppressWarnings("unused")
-@PrefixGameTestTemplate(value = false)
-@GameTestHolder(Constants.MOD_ID)
 public class CommandArgumentTypeTest {
 
   @GameTest(template = "gametest.1x1x1")

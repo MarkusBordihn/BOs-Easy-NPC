@@ -19,7 +19,6 @@
 
 package de.markusbordihn.easynpc.configui.gametest;
 
-import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.configui.data.editor.EditorType;
 import de.markusbordihn.easynpc.configui.menu.MenuHandlerInterface;
 import de.markusbordihn.easynpc.configui.menu.MenuManager;
@@ -27,12 +26,8 @@ import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.gametest.GameTestHelpers;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraftforge.gametest.GameTestHolder;
-import net.minecraftforge.gametest.PrefixGameTestTemplate;
 
 @SuppressWarnings("unused")
-@PrefixGameTestTemplate(value = false)
-@GameTestHolder(Constants.MOD_ID)
 public class MenuManagerTest {
 
   @GameTest(template = "gametest.1x1x1")

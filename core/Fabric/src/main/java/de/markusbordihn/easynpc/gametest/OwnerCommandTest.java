@@ -49,4 +49,22 @@ public class OwnerCommandTest {
     OwnerCommandTestHelper.assertOwnerSetRequiresGamemaster(helper, humanoid());
     helper.succeed();
   }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testOwnerChangeUpdatesOwnerIndex(GameTestHelper helper) {
+    OwnerCommandTestHelper.assertOwnerChangeUpdatesOwnerIndex(helper, humanoid());
+    helper.succeed();
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testSameOwnerFiresOneEvent(GameTestHelper helper) {
+    OwnerCommandTestHelper.assertSameOwnerFiresOneEvent(helper, humanoid());
+    helper.succeed();
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testOwnerSetBeforeSpawnFiresOneEvent(GameTestHelper helper) {
+    OwnerCommandTestHelper.assertOwnerSetBeforeSpawnFiresOneEvent(helper, humanoid());
+    helper.succeed();
+  }
 }

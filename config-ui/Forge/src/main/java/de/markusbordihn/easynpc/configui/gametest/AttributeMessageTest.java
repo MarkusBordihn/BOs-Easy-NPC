@@ -19,18 +19,13 @@
 
 package de.markusbordihn.easynpc.configui.gametest;
 
-import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.entity.ModEntityType;
 import de.markusbordihn.easynpc.entity.ModNPCEntityType;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.entity.EntityType;
-import net.minecraftforge.gametest.GameTestHolder;
-import net.minecraftforge.gametest.PrefixGameTestTemplate;
 
 @SuppressWarnings("unused")
-@PrefixGameTestTemplate(value = false)
-@GameTestHolder(Constants.MOD_ID)
 public class AttributeMessageTest {
 
   private static EntityType<?> humanoid() {
@@ -88,6 +83,12 @@ public class AttributeMessageTest {
   @GameTest(template = "gametest.3x3x3")
   public void testInteractionFlagChange(GameTestHelper helper) {
     AttributeMessageTestHelper.assertInteractionFlagChange(helper, humanoid());
+    helper.succeed();
+  }
+
+  @GameTest(template = "gametest.3x3x3")
+  public void testInventoryFlagChange(GameTestHelper helper) {
+    AttributeMessageTestHelper.assertInventoryFlagChange(helper, humanoid());
     helper.succeed();
   }
 

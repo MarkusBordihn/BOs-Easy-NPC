@@ -25,6 +25,7 @@ import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.data.trading.TradingDataSet;
 import de.markusbordihn.easynpc.data.trading.TradingType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.handler.TradingOfferHandler;
 import de.markusbordihn.easynpc.server.player.FakePlayer;
 import java.util.EnumMap;
 import net.minecraft.SharedConstants;
@@ -119,8 +120,8 @@ class TradingDataCapableTest {
   }
 
   @Test
-  @DisplayName("modified trade item survives offer NBT round-trip and rebuild")
-  void testModifiedTradeItemSurvivesOfferRoundTripAndRebuild() {
+  @DisplayName("modified trade item survives additional save, load and max uses edit")
+  void testModifiedTradeItemSurvivesSaveLoadAndMaxUsesEdit() {
     ItemStack questItem = new ItemStack(Items.SUGAR);
     questItem.setHoverName(Component.literal("Lethal Bio-Reagent"));
     ListTag lore = new ListTag();
@@ -128,26 +129,23 @@ class TradingDataCapableTest {
         StringTag.valueOf(
             Component.Serializer.toJson(Component.literal("It singes at your skin..."))));
     questItem.getOrCreateTagElement("display").put("Lore", lore);
-
+    TestTradingData tradingData = new TestTradingData();
+    tradingData.getTradingDataSet().setType(TradingType.ADVANCED);
     MerchantOffers offers = new MerchantOffers();
     offers.add(
         new MerchantOffer(questItem, ItemStack.EMPTY, new ItemStack(Items.EMERALD), 10, 0, 1.0F));
-    MerchantOffer loadedOffer = new MerchantOffers(offers.createTag()).get(0);
-    MerchantOffer rebuiltOffer =
-        new MerchantOffer(
-            loadedOffer.getBaseCostA(),
-            loadedOffer.getCostB(),
-            loadedOffer.getResult(),
-            loadedOffer.getUses(),
-            5,
-            loadedOffer.getXp(),
-            loadedOffer.getPriceMultiplier(),
-            loadedOffer.getDemand());
+    tradingData.setTradingOffers(offers);
 
-    assertTrue(loadedOffer.satisfiedBy(questItem.copy(), ItemStack.EMPTY));
-    assertTrue(rebuiltOffer.satisfiedBy(questItem.copy(), ItemStack.EMPTY));
-    assertFalse(rebuiltOffer.satisfiedBy(new ItemStack(Items.SUGAR), ItemStack.EMPTY));
-    assertTrue(ItemStack.isSameItemSameTags(questItem, rebuiltOffer.getBaseCostA()));
+    CompoundTag savedTag = new CompoundTag();
+    tradingData.addAdditionalTradingData(savedTag);
+    tradingData.readAdditionalTradingData(savedTag);
+    TradingOfferHandler.setAdvancedTradingMaxUses(tradingData, 0, 5);
+
+    MerchantOffer reloadedOffer = tradingData.getTradingOffers().get(0);
+    assertEquals(5, reloadedOffer.getMaxUses());
+    assertTrue(reloadedOffer.satisfiedBy(questItem.copy(), ItemStack.EMPTY));
+    assertFalse(reloadedOffer.satisfiedBy(new ItemStack(Items.SUGAR), ItemStack.EMPTY));
+    assertTrue(ItemStack.isSameItemSameTags(questItem, reloadedOffer.getBaseCostA()));
   }
 
   @Test

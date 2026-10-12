@@ -35,6 +35,7 @@ public class EntityAttributes {
     this.setAttribute(EntityAttributeType.COMBAT, new CombatAttributes());
     this.setAttribute(EntityAttributeType.ENVIRONMENTAL, new EnvironmentalAttributes());
     this.setAttribute(EntityAttributeType.INTERACTION, new InteractionAttributes());
+    this.setAttribute(EntityAttributeType.INVENTORY, InventoryAttributes.EMPTY);
     this.setAttribute(EntityAttributeType.MOVEMENT, new MovementAttributes());
   }
 
@@ -55,6 +56,8 @@ public class EntityAttributes {
         EntityAttributeType.ENVIRONMENTAL, EnvironmentalAttributes.decode(entityAttributeTag));
     this.setAttribute(
         EntityAttributeType.INTERACTION, InteractionAttributes.decode(entityAttributeTag));
+    this.setAttribute(
+        EntityAttributeType.INVENTORY, InventoryAttributes.decode(entityAttributeTag));
     this.setAttribute(EntityAttributeType.MOVEMENT, MovementAttributes.decode(entityAttributeTag));
   }
 
@@ -105,6 +108,18 @@ public class EntityAttributes {
 
   public void setInteractionAttributes(InteractionAttributes interactionAttributes) {
     this.setAttribute(EntityAttributeType.INTERACTION, interactionAttributes);
+  }
+
+  public boolean hasInventoryAttributes() {
+    return this.hasAttribute(EntityAttributeType.INVENTORY);
+  }
+
+  public InventoryAttributes getInventoryAttributes() {
+    return (InventoryAttributes) this.getAttribute(EntityAttributeType.INVENTORY);
+  }
+
+  public void setInventoryAttributes(InventoryAttributes inventoryAttributes) {
+    this.setAttribute(EntityAttributeType.INVENTORY, inventoryAttributes);
   }
 
   public boolean hasMovementAttributes() {

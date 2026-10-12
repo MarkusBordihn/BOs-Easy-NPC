@@ -26,6 +26,7 @@ public enum InteractionAttributeType implements EntityAttributeTypeInterface {
   BLOCK_VEHICLE_MOUNTING,
   CAN_BE_HIT_BY_PROJECTILE,
   CAN_BE_LEASHED,
+  CAN_SIT_ON_SHOULDER,
   IS_PUSHABLE,
   PUSH_ENTITIES;
 

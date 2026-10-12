@@ -19,19 +19,14 @@
 
 package de.markusbordihn.easynpc.configui.gametest;
 
-import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.configui.data.editor.EditorType;
 import de.markusbordihn.easynpc.configui.menu.ModMenuTypes;
 import de.markusbordihn.easynpc.entity.ModEntityType;
 import de.markusbordihn.easynpc.entity.ModNPCEntityType;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraftforge.gametest.GameTestHolder;
-import net.minecraftforge.gametest.PrefixGameTestTemplate;
 
 @SuppressWarnings("unused")
-@PrefixGameTestTemplate(value = false)
-@GameTestHolder(Constants.MOD_ID)
 public class EditorScreenTest {
 
   @GameTest(template = "gametest.3x3x3")

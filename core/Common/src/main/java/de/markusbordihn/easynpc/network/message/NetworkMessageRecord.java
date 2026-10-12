@@ -116,7 +116,7 @@ public interface NetworkMessageRecord {
     }
 
     if (!LivingEntityManager.hasAccess(uuid, serverPlayer)) {
-      log.error("User {} has no access to Easy NPC with uuid {}.", serverPlayer, uuid);
+      log.warn("User {} has no access to Easy NPC with uuid {}.", serverPlayer, uuid);
       serverPlayer.sendSystemMessage(
           Component.translatable("message.easynpc.access.no_permission"));
       return false;

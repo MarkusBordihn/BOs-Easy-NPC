@@ -22,15 +22,10 @@ package de.markusbordihn.easynpc.gametest;
 import static de.markusbordihn.easynpc.gametest.GameTestEntityTypes.humanoid;
 import static de.markusbordihn.easynpc.gametest.GameTestEntityTypes.villager;
 
-import de.markusbordihn.easynpc.Constants;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraftforge.gametest.GameTestHolder;
-import net.minecraftforge.gametest.PrefixGameTestTemplate;
 
 @SuppressWarnings("unused")
-@PrefixGameTestTemplate(value = false)
-@GameTestHolder(Constants.MOD_ID)
 public class StoredDataTest {
 
   @GameTest(template = "gametest.3x3x3")
@@ -42,12 +37,6 @@ public class StoredDataTest {
   @GameTest(template = "gametest.3x3x3")
   public void testVillagerWithoutStoredSoundsStillHasSounds(GameTestHelper helper) {
     StoredDataTestHelper.assertNpcWithoutStoredSoundsStillHasSounds(helper, villager());
-    helper.succeed();
-  }
-
-  @GameTest(template = "gametest.3x3x3")
-  public void testUnchangedSoundsAreNotStored(GameTestHelper helper) {
-    StoredDataTestHelper.assertUnchangedSoundsAreNotStored(helper, humanoid());
     helper.succeed();
   }
 

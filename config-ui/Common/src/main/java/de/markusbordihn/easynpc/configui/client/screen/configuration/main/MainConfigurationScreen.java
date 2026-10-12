@@ -48,7 +48,6 @@ import de.markusbordihn.easynpc.data.render.RenderDataEntry;
 import de.markusbordihn.easynpc.data.render.RenderType;
 import de.markusbordihn.easynpc.entity.easynpc.data.DisplayAttributeDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.NavigationDataCapable;
-import de.markusbordihn.easynpc.entity.easynpc.data.OwnerDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.ProgressionDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
 import de.markusbordihn.easynpc.network.components.TextComponent;
@@ -80,6 +79,7 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
     menuButtons.put("attributes", ConfigurationType.ABILITIES_ATTRIBUTE);
     menuButtons.put("dialog", ConfigurationType.DIALOG);
     menuButtons.put("equipment", ConfigurationType.EQUIPMENT);
+    menuButtons.put("inventory", ConfigurationType.INVENTORY);
     menuButtons.put("objective", ConfigurationType.BASIC_OBJECTIVE);
     menuButtons.put("pose", ConfigurationType.POSE);
     menuButtons.put("position", ConfigurationType.DEFAULT_POSITION);
@@ -188,12 +188,9 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
     // Make sure that entity text is always on top
     guiGraphics.pose().translate(0, 0, 100);
 
-    OwnerDataCapable<?> ownerData = this.getEasyNPC().getEasyNPCOwnerData();
-    if (ownerData != null) {
-      this.drawAvatarInfo(
-          guiGraphics,
-          15,
-          "Owner: " + (ownerData.hasNPCOwner() ? ownerData.getNPCOwnerName() : "-"));
+    if (this.getEasyNPC().getEasyNPCOwnerData() != null) {
+      String ownerName = this.getOwnerName();
+      this.drawAvatarInfo(guiGraphics, 15, "Owner: " + (ownerName.isEmpty() ? "-" : ownerName));
     }
 
     NavigationDataCapable<?> navigationData = this.getEasyNPC().getEasyNPCNavigationData();

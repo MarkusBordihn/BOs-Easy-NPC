@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.data;
 
+import de.markusbordihn.easynpc.api.event.EasyNPCEventRegistry;
 import de.markusbordihn.easynpc.data.attribute.EntityAttributes;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataEntry;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataSet;
@@ -236,6 +237,9 @@ public interface ObjectiveDataCapable<T extends Mob> extends EasyNPC<T> {
         canMove && attributeData.getMovementAttributes().canOpenDoor(), ObjectiveType.OPEN_DOOR);
     this.syncAttributeBasedObjective(
         canMove && attributeData.getMovementAttributes().canCloseDoor(), ObjectiveType.CLOSE_DOOR);
+    this.syncAttributeBasedObjective(
+        canMove && attributeData.getInteractionAttributes().canSitOnShoulder(),
+        ObjectiveType.SIT_ON_OWNER_SHOULDER);
   }
 
   private void syncAttributeBasedObjective(boolean enabled, ObjectiveType objectiveType) {
@@ -328,7 +332,11 @@ public interface ObjectiveDataCapable<T extends Mob> extends EasyNPC<T> {
       objectiveDataEntry.setRegistered(addedCustomObjective);
     }
 
+    boolean isNewObjective = !this.hasObjective(objectiveDataEntry.getId());
     this.getObjectiveDataSet().addObjective(objectiveDataEntry);
+    if (isNewObjective) {
+      EasyNPCEventRegistry.fireObjectiveAdded(this, objectiveDataEntry);
+    }
     return objectiveDataEntry.isRegistered();
   }
 
@@ -393,7 +401,8 @@ public interface ObjectiveDataCapable<T extends Mob> extends EasyNPC<T> {
   }
 
   default boolean removeCustomObjective(ObjectiveType objectiveType) {
-    return this.removeCustomObjective(this.getObjective(objectiveType));
+    ObjectiveDataEntry objectiveDataEntry = this.getObjective(objectiveType);
+    return objectiveDataEntry != null && this.removeCustomObjective(objectiveDataEntry);
   }
 
   default boolean removeCustomObjective(ObjectiveDataEntry objectiveDataEntry) {
@@ -403,26 +412,22 @@ public interface ObjectiveDataCapable<T extends Mob> extends EasyNPC<T> {
     }
 
     if (objectiveDataEntry.getId() != null && !objectiveDataEntry.getId().isEmpty()) {
-      objectiveDataEntry = this.getObjectiveDataSet().getObjective(objectiveDataEntry.getId());
-      if (objectiveDataEntry == null) {
-        log.error(
-            "Unable to remove non-existing custom objective {} for {}!", objectiveDataEntry, this);
+      ObjectiveDataEntry existingObjectiveDataEntry =
+          this.getObjectiveDataSet().getObjective(objectiveDataEntry.getId());
+      if (existingObjectiveDataEntry == null) {
+        log.debug("Custom objective {} for {} does not exist.", objectiveDataEntry, this);
         return false;
       }
+      objectiveDataEntry = existingObjectiveDataEntry;
     }
 
     Goal goal = objectiveDataEntry.getGoal(this);
-    Goal target = objectiveDataEntry.getTarget(this);
-    if (goal == null && target == null) {
-      log.error("Unable to remove custom objective for {}!", this);
-      return false;
-    }
-
     if (goal != null) {
       log.debug("Removing goal {} for {}", goal, this);
       this.getEntityGoalSelector().removeGoal(goal);
     }
 
+    Goal target = objectiveDataEntry.getTarget(this);
     if (target != null) {
       log.debug("Removing target goal {} for {}", target, this);
       this.getEntityTargetSelector().removeGoal(target);
@@ -430,6 +435,9 @@ public interface ObjectiveDataCapable<T extends Mob> extends EasyNPC<T> {
 
     boolean removed = this.getObjectiveDataSet().removeObjective(objectiveDataEntry);
     LivingEntityManager.updateObjectiveEventInterest(this);
+    if (removed && this.isServerSideInstance()) {
+      EasyNPCEventRegistry.fireObjectiveRemoved(this, objectiveDataEntry);
+    }
     return removed;
   }
 

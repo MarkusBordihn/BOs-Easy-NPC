@@ -51,6 +51,7 @@ public enum ObjectiveType {
   FOLLOW_ENTITY_BY_UUID("entity", 7),
   FOLLOW_ITEM("item", 7),
   FOLLOW_OWNER("owner", 6),
+  FOLLOW_NEAREST_PLAYER("nearest_player", 7),
   FOLLOW_PLAYER("player", 7),
   GUN_ATTACK("gun", 4),
   HURT_BY_TARGET("hurt_by_target", 2),
@@ -69,11 +70,13 @@ public enum ObjectiveType {
   NONE("none", false),
   OPEN_DOOR("open_door", 8),
   OWNER_HURT_BY_TARGET("owner_hurt_by_target", 2),
+  OWNER_HURT_TARGET("owner_hurt_target", 2),
   PANIC("panic", 1),
   RANDOM_STROLL_AROUND_HOME("around_home", 10),
   RANDOM_STROLL_IN_VILLAGE("in_village", 10),
   RANDOM_STROLL("stroll", 11),
   RANDOM_SWIMMING("swimming", 10),
+  SIT_ON_OWNER_SHOULDER("owner_shoulder", 5),
   WATER_AVOIDING_RANDOM_STROLL("avoid_water", 11),
   ZOMBIE_ATTACK("zombie", 2);
 

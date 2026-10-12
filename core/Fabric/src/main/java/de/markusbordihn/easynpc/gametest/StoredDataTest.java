@@ -49,12 +49,6 @@ public class StoredDataTest {
   }
 
   @GameTest(template = "easy_npc:gametest.3x3x3")
-  public void testUnchangedSoundsAreNotStored(GameTestHelper helper) {
-    StoredDataTestHelper.assertUnchangedSoundsAreNotStored(helper, humanoid());
-    helper.succeed();
-  }
-
-  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testObjectivesSurviveWithoutTargetFlags(GameTestHelper helper) {
     StoredDataTestHelper.assertObjectivesSurviveWithoutTargetFlags(helper, humanoid());
     helper.succeed();

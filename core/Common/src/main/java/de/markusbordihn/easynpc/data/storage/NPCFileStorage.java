@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
@@ -47,6 +48,7 @@ public class NPCFileStorage {
   private final Map<UUID, CompoundTag> cache = new ConcurrentHashMap<>();
   private final Map<UUID, CompoundTag> dirtyNPCs = new ConcurrentHashMap<>();
   private final Map<UUID, CompoundTag> lastSavedData = new ConcurrentHashMap<>();
+  private final Set<UUID> pendingRelease = ConcurrentHashMap.newKeySet();
 
   public NPCFileStorage(Path worldPath) {
     this.storageFolder = worldPath.resolve(Constants.MOD_ID).resolve(NPCS_FOLDER);
@@ -167,7 +169,10 @@ public class NPCFileStorage {
     int savedCount = 0;
     for (Map.Entry<UUID, CompoundTag> entry : snapshot.entrySet()) {
       if (this.saveToFile(entry.getKey(), entry.getValue())) {
-        this.dirtyNPCs.remove(entry.getKey(), entry.getValue());
+        if (this.dirtyNPCs.remove(entry.getKey(), entry.getValue())
+            && this.pendingRelease.remove(entry.getKey())) {
+          this.releaseCachedData(entry.getKey());
+        }
         savedCount++;
       }
     }
@@ -197,6 +202,7 @@ public class NPCFileStorage {
     this.cache.remove(uuid);
     this.dirtyNPCs.remove(uuid);
     this.lastSavedData.remove(uuid);
+    this.pendingRelease.remove(uuid);
 
     Path npcFile = this.getNPCFilePath(uuid);
     if (!Files.exists(npcFile)) {
@@ -220,6 +226,24 @@ public class NPCFileStorage {
 
   public void evictFromCache(UUID uuid) {
     this.cache.remove(uuid);
+  }
+
+  public void release(UUID uuid) {
+    if (uuid == null) {
+      return;
+    }
+
+    if (this.dirtyNPCs.containsKey(uuid)) {
+      this.pendingRelease.add(uuid);
+      return;
+    }
+
+    this.releaseCachedData(uuid);
+  }
+
+  private void releaseCachedData(UUID uuid) {
+    this.cache.remove(uuid);
+    this.lastSavedData.remove(uuid);
   }
 
   public int getCacheSize() {

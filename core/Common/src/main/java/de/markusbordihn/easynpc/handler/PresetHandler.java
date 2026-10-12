@@ -46,14 +46,12 @@ import de.markusbordihn.easynpc.io.WorldPresetDataFiles;
 import de.markusbordihn.easynpc.security.ActorSecurityContext;
 import de.markusbordihn.easynpc.security.CommandSecurity;
 import de.markusbordihn.easynpc.security.PresetSanitizationResult;
-import de.markusbordihn.easynpc.security.PresetWarningMessages;
 import de.markusbordihn.easynpc.security.SecurityDecision;
 import de.markusbordihn.easynpc.security.SecurityManager;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.BiFunction;
@@ -61,7 +59,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.nbt.TagParser;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -75,7 +72,6 @@ import org.apache.logging.log4j.Logger;
 public class PresetHandler {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-  private static final int MAX_SHOWN_SANITIZATION_NOTICES = 3;
 
   private PresetHandler() {}
 
@@ -224,6 +220,7 @@ public class PresetHandler {
       entityUUID = UUID.randomUUID();
     }
 
+    NPCEntityManager.clearNPCDeleted(entityUUID);
     PresetData updatedPresetData =
         dropPositionOfForeignIdentity(presetData, entityUUID, storedEntityUUID);
     Vec3 importPosition = position;
@@ -264,8 +261,6 @@ public class PresetHandler {
     }
 
     configureImportedEntity(easyNPC, importPosition, owner);
-    sendImportSanitizationWarnings(
-        actorSecurityContext != null ? actorSecurityContext.player() : null, sanitizationResult);
 
     return new PresetImportResult(
         entityUUID,
@@ -326,40 +321,6 @@ public class PresetHandler {
     }
 
     return null;
-  }
-
-  private static void sendImportSanitizationWarnings(
-      ServerPlayer serverPlayer, PresetSanitizationResult sanitizationResult) {
-    if (serverPlayer == null
-        || sanitizationResult == null
-        || !sanitizationResult.changed()
-        || sanitizationResult.notices().isEmpty()) {
-      return;
-    }
-
-    List<Component> playerMessages = PresetWarningMessages.toPlayerMessages(sanitizationResult);
-    if (playerMessages.isEmpty()) {
-      return;
-    }
-
-    serverPlayer.sendSystemMessage(
-        Component.translatable(Constants.TEXT_PREFIX + "preset.sanitize.header"));
-    int shownNotices = 0;
-    for (Component message : playerMessages) {
-      if (shownNotices >= MAX_SHOWN_SANITIZATION_NOTICES) {
-        break;
-      }
-
-      serverPlayer.sendSystemMessage(
-          Component.translatable(Constants.TEXT_PREFIX + "preset.sanitize.entry", message));
-      shownNotices++;
-    }
-
-    int remainingNotices = playerMessages.size() - shownNotices;
-    if (remainingNotices > 0) {
-      serverPlayer.sendSystemMessage(
-          Component.translatable(Constants.TEXT_PREFIX + "preset.sanitize.more", remainingNotices));
-    }
   }
 
   private static void configureImportedEntity(

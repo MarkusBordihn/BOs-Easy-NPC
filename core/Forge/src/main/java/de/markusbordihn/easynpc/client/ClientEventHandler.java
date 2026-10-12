@@ -21,11 +21,14 @@ package de.markusbordihn.easynpc.client;
 
 import de.markusbordihn.easynpc.client.compat.cobblemon.CobblemonVariantHelper;
 import de.markusbordihn.easynpc.client.renderer.entity.SpeechBubbleFrameRenderer;
+import de.markusbordihn.easynpc.client.renderer.layer.ShoulderNPCLayer;
 import de.markusbordihn.easynpc.compat.CompatConstants;
 import de.markusbordihn.easynpc.compat.cobblemon.CobblemonLoader;
 import de.markusbordihn.easynpc.compat.easymodelentities.EasyModelEntitiesLoader;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.event.TagsUpdatedEvent;
 import net.minecraftforge.event.TickEvent;
@@ -39,6 +42,15 @@ public class ClientEventHandler {
   @SubscribeEvent
   public static void onClientSetup(FMLClientSetupEvent event) {
     event.enqueueWork(() -> ClientEvents.handleClientStartedEvent(Minecraft.getInstance()));
+  }
+
+  @SubscribeEvent
+  public static void onAddLayers(EntityRenderersEvent.AddLayers event) {
+    for (String skin : event.getSkins()) {
+      if (event.getSkin(skin) instanceof PlayerRenderer playerRenderer) {
+        playerRenderer.addLayer(new ShoulderNPCLayer(playerRenderer));
+      }
+    }
   }
 }
 

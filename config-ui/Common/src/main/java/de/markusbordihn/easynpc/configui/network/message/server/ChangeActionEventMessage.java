@@ -62,11 +62,14 @@ public record ChangeActionEventMessage(
   @Override
   public void handleServer(final ServerPlayer serverPlayer) {
     EasyNPC<?> easyNPC = this.getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
-    if (easyNPC == null
-        || this.actionEventType == null
+    if (easyNPC == null) {
+      return;
+    }
+
+    if (this.actionEventType == null
         || this.actionEventType == ActionEventType.NONE
         || this.actionDataSet == null) {
-      log.error("Failed to change action event for {}: Invalid data", easyNPC);
+      log.warn("Invalid data to change action event for {}", this);
       return;
     }
 

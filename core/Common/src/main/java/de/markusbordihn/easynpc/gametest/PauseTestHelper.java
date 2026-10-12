@@ -27,17 +27,24 @@ import de.markusbordihn.easynpc.data.action.ActionDataType;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
 import de.markusbordihn.easynpc.data.state.StateIdentifier;
 import de.markusbordihn.easynpc.data.status.StatusDataType;
+import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
+import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.BaseTickHandler;
 import de.markusbordihn.easynpc.handler.PauseManager;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.phys.Vec3;
 
 public class PauseTestHelper {
 
+  private static final String NO_AI_TAG = "NoAI";
   private static final ResourceLocation DELAYED_STATE =
       StateIdentifier.parse("gametest_pause_delayed");
   private static final Vec3 NPC_POSITION = new Vec3(1, 2, 1);
@@ -68,9 +75,13 @@ public class PauseTestHelper {
         .executeActions(actionDataSet, ActionContext.of(ActionEventType.ON_SPAWN, null, null));
   }
 
+  private static boolean isSynchedAsPaused(EasyNPC<?> easyNPC) {
+    return Boolean.TRUE.equals(easyNPC.getSynchedEntityData(SynchedDataIndex.PAUSED));
+  }
+
   public static void assertPauseAndResumeOfASingleNPC(
       GameTestHelper helper, EntityType<?> entityType) {
-    PauseManager.reset();
+    isolateGlobalPause(helper);
     EasyNPC<?> easyNPC = GameTestHelpers.mockEasyNPC(helper, entityType, NPC_POSITION);
 
     GameTestHelpers.assertTrue(
@@ -92,7 +103,7 @@ public class PauseTestHelper {
 
   public static void assertPausedNPCSkipsItsBaseTick(
       GameTestHelper helper, EntityType<?> entityType) {
-    PauseManager.reset();
+    isolateGlobalPause(helper);
     EasyNPC<?> easyNPC = GameTestHelpers.mockEasyNPC(helper, entityType, NPC_POSITION);
     scheduleDelayedState(easyNPC);
     EasyNPCPauseHandler.pause(easyNPC);
@@ -114,7 +125,7 @@ public class PauseTestHelper {
 
   public static void assertPauseSurvivesSaveAndLoad(
       GameTestHelper helper, EntityType<?> entityType) {
-    PauseManager.reset();
+    isolateGlobalPause(helper);
     EasyNPC<?> easyNPC = GameTestHelpers.mockEasyNPC(helper, entityType, NPC_POSITION);
     EasyNPCPauseHandler.pause(easyNPC);
 
@@ -135,11 +146,40 @@ public class PauseTestHelper {
         helper, "A loaded paused NPC must stop its AI again", reloadedNPC.getMob().isNoAi());
   }
 
+  public static void assertPausedStateIsSynched(GameTestHelper helper, EntityType<?> entityType) {
+    isolateGlobalPause(helper);
+    EasyNPC<?> easyNPC = GameTestHelpers.mockEasyNPC(helper, entityType, NPC_POSITION);
+    GameTestHelpers.assertTrue(
+        helper, "A new NPC must not sync a paused state", !isSynchedAsPaused(easyNPC));
+
+    EasyNPCPauseHandler.pause(easyNPC);
+    GameTestHelpers.assertTrue(
+        helper, "A paused NPC must sync its paused state", isSynchedAsPaused(easyNPC));
+    GameTestHelpers.assertTrue(
+        helper,
+        "A paused NPC must report its paused state",
+        easyNPC.getEasyNPCStatusData().isNPCPaused());
+
+    CompoundTag compoundTag = new CompoundTag();
+    easyNPC.getEasyNPCStatusData().addAdditionalStatusData(compoundTag);
+    EasyNPC<?> reloadedNPC = GameTestHelpers.mockEasyNPC(helper, entityType, SECOND_NPC_POSITION);
+    reloadedNPC.getEasyNPCStatusData().readAdditionalStatusData(compoundTag);
+    GameTestHelpers.assertTrue(
+        helper, "A loaded paused NPC must sync its paused state", isSynchedAsPaused(reloadedNPC));
+
+    EasyNPCPauseHandler.resume(easyNPC);
+    GameTestHelpers.assertTrue(
+        helper, "A resumed NPC must sync its running state", !isSynchedAsPaused(easyNPC));
+    GameTestHelpers.assertTrue(
+        helper,
+        "A resumed NPC must report its running state",
+        !easyNPC.getEasyNPCStatusData().isNPCPaused());
+  }
+
   public static void assertGlobalPauseCoversEveryNPC(
       GameTestHelper helper, EntityType<?> entityType) {
-    PauseManager.reset();
+    isolateGlobalPause(helper);
     EasyNPC<?> easyNPC = GameTestHelpers.mockEasyNPC(helper, entityType, NPC_POSITION);
-
     EasyNPCPauseHandler.setGlobalPause(true);
 
     GameTestHelpers.assertTrue(
@@ -167,11 +207,10 @@ public class PauseTestHelper {
 
   public static void assertGlobalResumeKeepsIndividualPause(
       GameTestHelper helper, EntityType<?> entityType) {
-    PauseManager.reset();
+    isolateGlobalPause(helper);
     EasyNPC<?> pausedNPC = GameTestHelpers.mockEasyNPC(helper, entityType, NPC_POSITION);
     EasyNPC<?> runningNPC = GameTestHelpers.mockEasyNPC(helper, entityType, SECOND_NPC_POSITION);
     EasyNPCPauseHandler.pause(pausedNPC);
-
     EasyNPCPauseHandler.setGlobalPause(true);
     EasyNPCPauseHandler.setGlobalPause(false);
 
@@ -191,9 +230,14 @@ public class PauseTestHelper {
 
   public static void assertGlobalPauseEndsWithTheServer(
       GameTestHelper helper, EntityType<?> entityType) {
-    PauseManager.reset();
+    isolateGlobalPause(helper);
     EasyNPC<?> easyNPC = GameTestHelpers.mockEasyNPC(helper, entityType, NPC_POSITION);
     EasyNPCPauseHandler.setGlobalPause(true);
+
+    GameTestHelpers.assertTrue(
+        helper,
+        "A global pause must not be saved into an NPC which is not paused itself",
+        !easyNPC.getEntity().saveWithoutId(new CompoundTag()).contains(NO_AI_TAG));
 
     PauseManager.reset();
 
@@ -203,5 +247,25 @@ public class PauseTestHelper {
         helper,
         "An NPC must run again once the global pause is gone",
         !EasyNPCPauseHandler.isPaused(easyNPC));
+  }
+
+  private static void isolateGlobalPause(GameTestHelper helper) {
+    boolean wasGlobalPause = PauseManager.isGlobalPause();
+    Map<Mob, Boolean> noAiByMob = new HashMap<>();
+    LivingEntityManager.getServerEasyNPCEntities()
+        .map(EasyNPC::getMob)
+        .filter(Objects::nonNull)
+        .forEach(mob -> noAiByMob.put(mob, mob.isNoAi()));
+    PauseManager.reset();
+
+    GameTestHelpers.addCleanup(
+        helper,
+        () -> {
+          PauseManager.reset();
+          noAiByMob.forEach(Mob::setNoAi);
+          if (wasGlobalPause) {
+            PauseManager.setGlobalPause(true);
+          }
+        });
   }
 }

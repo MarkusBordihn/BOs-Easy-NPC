@@ -93,6 +93,10 @@ public interface AttributeDataCapable<E extends Mob> extends EasyNPC<E> {
   }
 
   default void readAdditionalAttributeData(CompoundTag compoundTag) {
+    if (!compoundTag.contains(EntityAttributes.ENTITY_ATTRIBUTE_TAG)) {
+      return;
+    }
+
     EntityAttributes entityAttributes = new EntityAttributes(compoundTag);
     this.setEntityAttributes(entityAttributes);
 

@@ -21,7 +21,6 @@ package de.markusbordihn.easynpc.gametest;
 
 import static de.markusbordihn.easynpc.gametest.GameTestEntityTypes.humanoid;
 
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.data.dialog.DialogUtils;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
@@ -32,12 +31,8 @@ import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.gametest.GameTestHolder;
-import net.minecraftforge.gametest.PrefixGameTestTemplate;
 
 @SuppressWarnings("unused")
-@PrefixGameTestTemplate(value = false)
-@GameTestHolder(Constants.MOD_ID)
 public class DialogScreenTest {
 
   private static void assertDialogOpens(GameTestHelper helper, DialogDataSet dialogDataSet) {

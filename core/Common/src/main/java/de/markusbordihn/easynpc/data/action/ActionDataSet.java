@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.data.action;
 
 import de.markusbordihn.easynpc.utils.CompoundTagUtils;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashSet;
@@ -180,6 +181,27 @@ public final class ActionDataSet {
     }
 
     return -1;
+  }
+
+  public ActionDataSet withUniqueIds(Set<UUID> usedActionIds, String scope) {
+    ActionDataSet uniqueActionDataSet = new ActionDataSet();
+    boolean hasReassignedIds = false;
+    for (ActionDataEntry actionDataEntry : this.actionDataEntries) {
+      UUID uniqueId = actionDataEntry.id();
+      for (int attempt = 1; !usedActionIds.add(uniqueId); attempt++) {
+        uniqueId =
+            UUID.nameUUIDFromBytes(
+                (scope + ":" + attempt + ":" + actionDataEntry.id())
+                    .getBytes(StandardCharsets.UTF_8));
+      }
+      if (uniqueId.equals(actionDataEntry.id())) {
+        uniqueActionDataSet.actionDataEntries.add(actionDataEntry);
+      } else {
+        uniqueActionDataSet.actionDataEntries.add(actionDataEntry.withId(uniqueId));
+        hasReassignedIds = true;
+      }
+    }
+    return hasReassignedIds ? uniqueActionDataSet : this;
   }
 
   @SuppressWarnings("unused")

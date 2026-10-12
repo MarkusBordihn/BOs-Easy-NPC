@@ -1,0 +1,153 @@
+{
+  PresetMetadata:{
+    author:"Markus Bordihn",
+    category:"Villager",
+    created:1791590400000L,
+    description:"An emerald bank with matching deposit and withdraw buttons. Deposits need emeralds in the inventory, withdrawals need a scoreboard balance.",
+    entityTypeId:"easy_npc:villager",
+    modified:1791590400000L,
+    name:"Bank Teller",
+    variantType:"PLAINS_CARTOGRAPHER",
+    version:"1.0.0"
+  },
+  data:{
+    ActionData:{
+      ActionEventSet:{
+        ON_INTERACTION:[{
+          Type:"OPEN_DEFAULT_DIALOG"
+        }]
+      }
+    },
+    Attributes:[{
+      Base:0.6000000238418579d,Name:"minecraft:generic.movement_speed"
+    }],
+    CustomName:'{"color":"#50C878","text":"Bank Teller"}',
+    DialogData:{
+      DialogDataSet:[{
+        Buttons:[{
+          Actions:[{
+            Cmd:"deposit",Type:"OPEN_NAMED_DIALOG"
+          }],Label:"deposit",Name:"Deposit Emeralds"
+        },{
+          Actions:[{
+            Cmd:"withdraw",Type:"OPEN_NAMED_DIALOG"
+          }],Label:"withdraw",Name:"Withdraw Emeralds"
+        },{
+          Actions:[{
+            Type:"CLOSE_DIALOG"
+          }],Label:"goodbye",Name:"Goodbye"
+        }],Label:"default",Name:"Welcome",Texts:[{
+          Text:"Welcome to the Emerald Bank, @initiator.\\n\\nYour balance: @score(easy_npc_bank) emeralds."
+        }]
+      },{
+        Buttons:[{
+          Actions:[{
+            Cmd:"/clear @initiator minecraft:emerald 1",Type:"COMMAND"
+          },{
+            Cmd:"increase:easy_npc_bank:1",Type:"SCOREBOARD"
+          },{
+            Cmd:"deposit",Type:"OPEN_NAMED_DIALOG"
+          }],Conditions:[{
+            Name:"minecraft:emerald",Type:"HAS_ITEM_IN_INVENTORY",Value:1
+          }],Label:"one",Name:"1 Emerald"
+        },{
+          Actions:[{
+            Cmd:"/clear @initiator minecraft:emerald 5",Type:"COMMAND"
+          },{
+            Cmd:"increase:easy_npc_bank:5",Type:"SCOREBOARD"
+          },{
+            Cmd:"deposit",Type:"OPEN_NAMED_DIALOG"
+          }],Conditions:[{
+            Name:"minecraft:emerald",Type:"HAS_ITEM_IN_INVENTORY",Value:5
+          }],Label:"five",Name:"5 Emeralds"
+        },{
+          Actions:[{
+            Cmd:"/clear @initiator minecraft:emerald 10",Type:"COMMAND"
+          },{
+            Cmd:"increase:easy_npc_bank:10",Type:"SCOREBOARD"
+          },{
+            Cmd:"deposit",Type:"OPEN_NAMED_DIALOG"
+          }],Conditions:[{
+            Name:"minecraft:emerald",Type:"HAS_ITEM_IN_INVENTORY",Value:10
+          }],Label:"ten",Name:"10 Emeralds"
+        },{
+          Actions:[{
+            Type:"OPEN_DEFAULT_DIALOG"
+          }],Label:"back",Name:"Back"
+        }],Label:"deposit",Name:"Deposit",Priority:-1,Texts:[{
+          Text:"How many emeralds would you like to deposit?\\n\\nYour balance: @score(easy_npc_bank) emeralds."
+        }]
+      },{
+        Buttons:[{
+          Actions:[{
+            Cmd:"decrease:easy_npc_bank:1",Type:"SCOREBOARD"
+          },{
+            Cmd:"/give @initiator minecraft:emerald 1",Type:"COMMAND"
+          },{
+            Cmd:"withdraw",Type:"OPEN_NAMED_DIALOG"
+          }],Conditions:[{
+            Name:"easy_npc_bank",Operation:"GREATER_THAN_OR_EQUALS",Type:"SCOREBOARD",Value:1
+          }],Label:"one",Name:"1 Emerald"
+        },{
+          Actions:[{
+            Cmd:"decrease:easy_npc_bank:5",Type:"SCOREBOARD"
+          },{
+            Cmd:"/give @initiator minecraft:emerald 5",Type:"COMMAND"
+          },{
+            Cmd:"withdraw",Type:"OPEN_NAMED_DIALOG"
+          }],Conditions:[{
+            Name:"easy_npc_bank",Operation:"GREATER_THAN_OR_EQUALS",Type:"SCOREBOARD",Value:5
+          }],Label:"five",Name:"5 Emeralds"
+        },{
+          Actions:[{
+            Cmd:"decrease:easy_npc_bank:10",Type:"SCOREBOARD"
+          },{
+            Cmd:"/give @initiator minecraft:emerald 10",Type:"COMMAND"
+          },{
+            Cmd:"withdraw",Type:"OPEN_NAMED_DIALOG"
+          }],Conditions:[{
+            Name:"easy_npc_bank",Operation:"GREATER_THAN_OR_EQUALS",Type:"SCOREBOARD",Value:10
+          }],Label:"ten",Name:"10 Emeralds"
+        },{
+          Actions:[{
+            Type:"OPEN_DEFAULT_DIALOG"
+          }],Label:"back",Name:"Back"
+        }],Label:"withdraw",Name:"Withdraw",Priority:-1,Texts:[{
+          Text:"How many emeralds would you like to withdraw?\\n\\nYour balance: @score(easy_npc_bank) emeralds."
+        }]
+      }],
+      Type:"CUSTOM"
+    },
+    EasyNPCVersion:3,
+    EntityAttribute:{
+      CanCloseDoor:1b,
+      CanFloat:1b,
+      CanOpenDoor:1b,
+      CanPassDoor:1b
+    },
+    HandItems:[{
+      Count:1b,id:"minecraft:emerald"
+    },{}],
+    ObjectiveData:{
+      HasObjectives:1b,
+      ObjectiveDataSet:[{
+        Type:"LOOK_AT_PLAYER"
+      },{
+        Type:"LOOK_AT_MOB"
+      },{
+        Type:"LOOK_AT_RESET"
+      }]
+    },
+    PersistenceRequired:0b,
+    PresetUUID:[I;-1532748211,1287364520,-1948220147,839145662],
+    Profession:"CARTOGRAPHER",
+    SkinData:{
+      Name:"PLAINS_CARTOGRAPHER"
+    },
+    VariantType:"PLAINS_CARTOGRAPHER",
+    VillagerData:{
+      profession:"minecraft:cartographer"
+    },
+    id:"easy_npc:villager"
+  }
+}

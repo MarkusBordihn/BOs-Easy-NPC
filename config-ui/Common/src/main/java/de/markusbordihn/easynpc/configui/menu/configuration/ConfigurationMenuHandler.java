@@ -24,6 +24,7 @@ import de.markusbordihn.easynpc.compat.IntegrationRegistry;
 import de.markusbordihn.easynpc.compat.easymodelentities.EasyModelEntitiesManager;
 import de.markusbordihn.easynpc.configui.data.screen.AdditionalScreenData;
 import de.markusbordihn.easynpc.configui.menu.configuration.equipment.EquipmentConfigurationMenu;
+import de.markusbordihn.easynpc.configui.menu.configuration.inventory.InventoryConfigurationMenu;
 import de.markusbordihn.easynpc.configui.menu.configuration.trading.AdvancedTradingConfigurationMenu;
 import de.markusbordihn.easynpc.configui.menu.configuration.trading.BasicTradingConfigurationMenu;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
@@ -92,6 +93,25 @@ public class ConfigurationMenuHandler {
         @Override
         public String toString() {
           return "EquipmentConfigurationMenu[" + displayName + "]";
+        }
+      };
+    } else if (configurationType == ConfigurationType.INVENTORY) {
+      return new MenuProvider() {
+        @Override
+        public AbstractContainerMenu createMenu(
+            int containerId, Inventory playerInventory, Player player) {
+          return new InventoryConfigurationMenu(
+              menuType, containerId, playerInventory, screenData.encode());
+        }
+
+        @Override
+        public Component getDisplayName() {
+          return displayName;
+        }
+
+        @Override
+        public String toString() {
+          return "InventoryConfigurationMenu[" + displayName + "]";
         }
       };
     } else if (configurationType == ConfigurationType.ADVANCED_TRADING) {

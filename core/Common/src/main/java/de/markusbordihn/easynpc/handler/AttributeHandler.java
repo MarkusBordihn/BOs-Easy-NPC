@@ -29,6 +29,8 @@ import de.markusbordihn.easynpc.data.attribute.EnvironmentalAttributeType;
 import de.markusbordihn.easynpc.data.attribute.EnvironmentalAttributes;
 import de.markusbordihn.easynpc.data.attribute.InteractionAttributeType;
 import de.markusbordihn.easynpc.data.attribute.InteractionAttributes;
+import de.markusbordihn.easynpc.data.attribute.InventoryAttributeType;
+import de.markusbordihn.easynpc.data.attribute.InventoryAttributes;
 import de.markusbordihn.easynpc.data.attribute.MovementAttributeType;
 import de.markusbordihn.easynpc.data.attribute.MovementAttributes;
 import de.markusbordihn.easynpc.data.attribute.NavigationType;
@@ -39,8 +41,10 @@ import de.markusbordihn.easynpc.entity.easynpc.data.AttributeDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.DisplayAttributeDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.NavigationDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.ObjectiveDataCapable;
+import java.util.Arrays;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.BossEvent;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -140,10 +144,34 @@ public class AttributeHandler {
       return false;
     }
 
+    if (!isValidDisplayAttributeValue(attributeType, value)) {
+      log.warn("Invalid display attribute value {}={} for {}", attributeType, value, easyNPC);
+      return false;
+    }
+
     log.debug("Changing display attribute {}={} for {}", attributeType, value, easyNPC);
     ValueType valueType = attributeType.getValueType();
     attributeData.setDisplayAttribute(attributeType, valueType, value);
     return true;
+  }
+
+  private static boolean isValidDisplayAttributeValue(
+      DisplayAttributeType attributeType, Object value) {
+    return switch (attributeType) {
+      case BOSS_BAR_COLOR ->
+          value instanceof String colorName
+              && Arrays.stream(BossEvent.BossBarColor.values())
+                  .anyMatch(color -> color.name().equals(colorName));
+      case BOSS_BAR_STYLE ->
+          value instanceof String styleName
+              && Arrays.stream(BossEvent.BossBarOverlay.values())
+                  .anyMatch(style -> style.name().equals(styleName));
+      case BOSS_BAR_RANGE ->
+          value instanceof Integer range
+              && range >= DisplayAttributeType.MIN_BOSS_BAR_RANGE
+              && range <= DisplayAttributeType.MAX_BOSS_BAR_RANGE;
+      default -> true;
+    };
   }
 
   public static int getOpacity(EasyNPC<?> easyNPC) {
@@ -241,10 +269,41 @@ public class AttributeHandler {
           entityAttributes.setInteractionAttributes(attributes.withPushEntities(value));
       case BLOCK_VEHICLE_MOUNTING ->
           entityAttributes.setInteractionAttributes(attributes.withBlockVehicleMounting(value));
+      case CAN_SIT_ON_SHOULDER -> {
+        entityAttributes.setInteractionAttributes(attributes.withCanSitOnShoulder(value));
+        ObjectiveDataCapable<?> objectiveData = easyNPC.getEasyNPCObjectiveData();
+        if (objectiveData != null) {
+          objectiveData.registerAttributeBasedObjectives();
+        }
+      }
       default -> {
         log.error("Unimplemented interaction attribute {} for {}", attributeType, easyNPC);
         return false;
       }
+    }
+    attributeData.refreshEntityAttributes();
+    return true;
+  }
+
+  public static boolean setInventoryAttribute(
+      EasyNPC<?> easyNPC, InventoryAttributeType attributeType, boolean value) {
+    if (easyNPC == null || attributeType == null) {
+      return false;
+    }
+
+    AttributeDataCapable<?> attributeData = easyNPC.getEasyNPCAttributeData();
+    if (attributeData == null || attributeData.getEntityAttributes() == null) {
+      return false;
+    }
+
+    EntityAttributes entityAttributes = attributeData.getEntityAttributes();
+    InventoryAttributes attributes = entityAttributes.getInventoryAttributes();
+    log.debug("Changing inventory attribute {}={} for {}", attributeType, value, easyNPC);
+    switch (attributeType) {
+      case DROP_ON_DEATH ->
+          entityAttributes.setInventoryAttributes(attributes.withDropOnDeath(value));
+      case PICK_UP_ITEMS ->
+          entityAttributes.setInventoryAttributes(attributes.withPickUpItems(value));
     }
     attributeData.refreshEntityAttributes();
     return true;
@@ -269,6 +328,7 @@ public class AttributeHandler {
     switch (attributeType) {
       case CAN_CLOSE_DOOR ->
           entityAttributes.setMovementAttributes(attributes.withCanCloseDoor(value));
+      case CAN_JUMP -> entityAttributes.setMovementAttributes(attributes.withCanJump(value));
       case CAN_OPEN_DOOR ->
           entityAttributes.setMovementAttributes(attributes.withCanOpenDoor(value));
       case CAN_PASS_DOOR ->

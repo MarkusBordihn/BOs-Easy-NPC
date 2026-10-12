@@ -102,6 +102,7 @@ public class PresetIdentityTestHelper {
     UUID sourceUUID = sourceNPC.getEntityUUID();
     Vec3 sourcePosition = sourceNPC.getEntity().position();
     UUID newUUID = UUID.randomUUID();
+    GameTestHelpers.removeNPCDataAfterTest(helper, newUUID);
     Vec3 spawnPosition = helper.absoluteVec(SPAWN_POSITION);
 
     GameTestHelpers.assertTrue(

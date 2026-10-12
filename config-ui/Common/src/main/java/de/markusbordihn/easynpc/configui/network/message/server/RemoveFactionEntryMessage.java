@@ -54,7 +54,7 @@ public record RemoveFactionEntryMessage(UUID uuid, String factionName)
   public void handleServer(final ServerPlayer serverPlayer) {
     EasyNPC<?> easyNPC = this.getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
     if (easyNPC == null || this.factionName == null || this.factionName.isEmpty()) {
-      log.error("Invalid data to remove faction for {}", this);
+      log.warn("Invalid data to remove faction for {}", this);
       return;
     }
 

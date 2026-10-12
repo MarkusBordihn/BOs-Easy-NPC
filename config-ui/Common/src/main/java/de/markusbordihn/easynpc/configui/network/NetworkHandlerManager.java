@@ -36,6 +36,7 @@ import de.markusbordihn.easynpc.configui.network.message.server.ChangeFactionMes
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeFactionRelationMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeHomePositionMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeInteractionAttributeMessage;
+import de.markusbordihn.easynpc.configui.network.message.server.ChangeInventoryAttributeMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeModelAnimationDataMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeModelEquipmentVisibilityMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeModelPoseMessage;
@@ -252,6 +253,11 @@ public class NetworkHandlerManager {
         ChangeInteractionAttributeMessage.MESSAGE_ID,
         ChangeInteractionAttributeMessage.class,
         ChangeInteractionAttributeMessage::create);
+
+    networkHandler.registerServerNetworkMessage(
+        ChangeInventoryAttributeMessage.MESSAGE_ID,
+        ChangeInventoryAttributeMessage.class,
+        ChangeInventoryAttributeMessage::create);
 
     networkHandler.registerServerNetworkMessage(
         ChangeModelEquipmentVisibilityMessage.MESSAGE_ID,

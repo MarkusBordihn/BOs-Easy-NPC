@@ -22,15 +22,10 @@ package de.markusbordihn.easynpc.gametest;
 import static de.markusbordihn.easynpc.gametest.GameTestEntityTypes.humanoid;
 import static de.markusbordihn.easynpc.gametest.GameTestEntityTypes.villager;
 
-import de.markusbordihn.easynpc.Constants;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraftforge.gametest.GameTestHolder;
-import net.minecraftforge.gametest.PrefixGameTestTemplate;
 
 @SuppressWarnings("unused")
-@PrefixGameTestTemplate(value = false)
-@GameTestHolder(Constants.MOD_ID)
 public class PresetSpawnTest {
 
   @GameTest(template = "gametest.3x3x3")
@@ -54,6 +49,12 @@ public class PresetSpawnTest {
   @GameTest(template = "gametest.3x3x3")
   public void testPresetImportSetsHome(GameTestHelper helper) {
     PresetSpawnTestHelper.assertPresetImportSetsHome(helper, humanoid());
+    helper.succeed();
+  }
+
+  @GameTest(template = "gametest.3x3x3")
+  public void testPresetHandlerCreatesPresetItem(GameTestHelper helper) {
+    PresetSpawnTestHelper.assertPresetHandlerCreatesPresetItem(helper, humanoid());
     helper.succeed();
   }
 }

@@ -60,7 +60,7 @@ public record ChangeSkinMessage(UUID uuid, SkinDataEntry skinDataEntry)
   public void handleServer(final ServerPlayer serverPlayer) {
     EasyNPC<?> easyNPC = this.getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
     if (easyNPC == null || this.skinDataEntry == null || easyNPC.getEasyNPCSkinData() == null) {
-      log.error("Skin validation failed for {} from {}", easyNPC, serverPlayer);
+      log.warn("Skin validation failed for {} from {}", easyNPC, serverPlayer);
       return;
     }
 

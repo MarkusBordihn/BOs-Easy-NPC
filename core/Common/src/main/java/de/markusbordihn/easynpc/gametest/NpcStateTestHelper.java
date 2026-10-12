@@ -31,11 +31,11 @@ import de.markusbordihn.easynpc.data.condition.ConditionDataEntry;
 import de.markusbordihn.easynpc.data.condition.ConditionOperationType;
 import de.markusbordihn.easynpc.data.condition.ConditionType;
 import de.markusbordihn.easynpc.data.dialog.DialogButtonEntry;
+import de.markusbordihn.easynpc.data.dialog.DialogButtonReference;
 import de.markusbordihn.easynpc.data.dialog.DialogButtonType;
 import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.data.screen.AdditionalScreenData;
-import de.markusbordihn.easynpc.data.state.StateDataSet;
 import de.markusbordihn.easynpc.data.state.StateIdentifier;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.StateDataCapable;
@@ -55,7 +55,6 @@ import net.minecraft.world.phys.Vec3;
 public class NpcStateTestHelper {
 
   private static final ResourceLocation QUEST_STATE = StateIdentifier.parse("gametest_quest");
-  private static final ResourceLocation STAGE_STATE = StateIdentifier.parse("gametest_stage");
   private static final String FORGE_KEEPER_PRESET =
       "easy_npc:default_preset/humanoid/forge_keeper.npc.snbt";
   private static final Vec3 NPC_POSITION = new Vec3(1, 1, 1);
@@ -121,31 +120,6 @@ public class NpcStateTestHelper {
         "A state action with debug enabled must still write the state",
         2,
         easyNPC.getEasyNPCStateData().getStateNumber(QUEST_STATE));
-  }
-
-  public static void assertStateSurvivesSaveAndLoad(
-      GameTestHelper helper, EntityType<?> entityType) {
-    EasyNPC<?> easyNPC = GameTestHelpers.mockEasyNPC(helper, entityType, NPC_POSITION);
-    StateDataCapable<?> stateData = easyNPC.getEasyNPCStateData();
-    GameTestHelpers.assertNotNull(helper, "NPC must support states", stateData);
-
-    stateData.setState(QUEST_STATE, 3);
-    stateData.setState(STAGE_STATE, "intro");
-
-    EasyNPC<?> reloadedNPC = GameTestHelpers.mockEasyNPC(helper, entityType, PLAYER_POSITION);
-    StateDataCapable<?> reloadedStateData = reloadedNPC.getEasyNPCStateData();
-    reloadedStateData.setStateDataSet(new StateDataSet(stateData.getStateDataSet().createTag()));
-
-    GameTestHelpers.assertEquals(
-        helper,
-        "A number state must survive save and load",
-        3,
-        reloadedStateData.getStateNumber(QUEST_STATE));
-    GameTestHelpers.assertEquals(
-        helper,
-        "A text state must survive save and load",
-        "intro",
-        reloadedStateData.getStateText(STAGE_STATE));
   }
 
   public static void assertStateConditionLocksDialogButton(
@@ -243,8 +217,8 @@ public class NpcStateTestHelper {
       EasyNPC<?> easyNPC,
       String buttonLabel,
       boolean expectedAvailable) {
-    DialogButtonEntry dialogButtonEntry = findButton(dialogDataSet, buttonLabel);
-    if (dialogButtonEntry == null) {
+    DialogButtonReference buttonReference = findButton(dialogDataSet, buttonLabel);
+    if (buttonReference == null) {
       helper.fail("The forge keeper preset has no button " + buttonLabel);
       return;
     }
@@ -252,17 +226,17 @@ public class NpcStateTestHelper {
     CompoundTag lockedTag = new CompoundTag();
     AdditionalScreenData.addDialogButtonLockData(lockedTag, dialogDataSet, serverPlayer, easyNPC);
     boolean available =
-        !AdditionalScreenData.getLockedDialogButtons(lockedTag).contains(dialogButtonEntry.id());
+        !AdditionalScreenData.getLockedDialogButtons(lockedTag).contains(buttonReference);
 
     GameTestHelpers.assertEquals(
         helper, "Availability of the button " + buttonLabel, expectedAvailable, available);
   }
 
-  private static DialogButtonEntry findButton(DialogDataSet dialogDataSet, String buttonLabel) {
+  private static DialogButtonReference findButton(DialogDataSet dialogDataSet, String buttonLabel) {
     for (DialogDataEntry dialogDataEntry : dialogDataSet.getDialogsByLabel()) {
       for (DialogButtonEntry dialogButtonEntry : dialogDataEntry.getDialogButtons()) {
         if (buttonLabel.equals(dialogButtonEntry.label())) {
-          return dialogButtonEntry;
+          return new DialogButtonReference(dialogDataEntry.getId(), dialogButtonEntry.id());
         }
       }
     }

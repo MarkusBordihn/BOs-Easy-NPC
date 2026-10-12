@@ -22,16 +22,7 @@
       "de.markusbordihn.easynpc.configui.ConfigUIClient"
     ],
     "fabric-gametest": [
-      "de.markusbordihn.easynpc.configui.gametest.SmokeTest",
-      "de.markusbordihn.easynpc.configui.gametest.ConfigurationScreenTest",
-      "de.markusbordihn.easynpc.configui.gametest.EditorScreenTest",
-      "de.markusbordihn.easynpc.configui.gametest.MenuManagerTest",
-      "de.markusbordihn.easynpc.configui.gametest.AttributeMessageTest",
-      "de.markusbordihn.easynpc.configui.gametest.DialogActionMessageTest",
-      "de.markusbordihn.easynpc.configui.gametest.TradingObjectiveFactionMessageTest",
-      "de.markusbordihn.easynpc.configui.gametest.AppearanceMessageTest",
-      "de.markusbordihn.easynpc.configui.gametest.ModelMessageTest",
-      "de.markusbordihn.easynpc.configui.gametest.PosePersistenceTest"
+      "de.markusbordihn.easynpc.configui.gametest.GameTestRegistration"
     ]
   },
   "mixins": [],
@@ -45,9 +36,9 @@
   },
   "suggests": {
     "tooltipfix": "*",
-    "easy_model_entities": ">=2.4.0 <3.0.0"
+    "easy_model_entities": ">=2.5.0 <3.0.0"
   },
   "breaks": {
-    "easy_model_entities": "<2.4.0 || >=3.0.0"
+    "easy_model_entities": "<2.5.0 || >=3.0.0"
   }
 }

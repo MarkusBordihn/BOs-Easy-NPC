@@ -24,6 +24,7 @@ import de.markusbordihn.easynpc.data.status.StatusDataType;
 import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.StatusDataCapable;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Mob;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -31,6 +32,8 @@ import org.apache.logging.log4j.Logger;
 public class PauseManager {
 
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+
+  private static final String NO_AI_TAG = "NoAI";
 
   private static boolean globalPause = false;
 
@@ -42,7 +45,7 @@ public class PauseManager {
     }
 
     StatusDataCapable<?> statusData = easyNPC != null ? easyNPC.getEasyNPCStatusData() : null;
-    return statusData != null && statusData.getStatusDataFlag(StatusDataType.PAUSED);
+    return statusData != null && statusData.isNPCPaused();
   }
 
   public static boolean setPaused(EasyNPC<?> easyNPC, boolean paused) {
@@ -78,6 +81,13 @@ public class PauseManager {
 
   public static void enforcePause(EasyNPC<?> easyNPC) {
     applyNoAi(easyNPC, true);
+  }
+
+  public static void removeGlobalPauseFromSaveData(EasyNPC<?> easyNPC, CompoundTag compoundTag) {
+    StatusDataCapable<?> statusData = easyNPC.getEasyNPCStatusData();
+    if (globalPause && statusData != null && !statusData.isNPCPaused()) {
+      compoundTag.remove(NO_AI_TAG);
+    }
   }
 
   private static void applyNoAi(EasyNPC<?> easyNPC, boolean paused) {

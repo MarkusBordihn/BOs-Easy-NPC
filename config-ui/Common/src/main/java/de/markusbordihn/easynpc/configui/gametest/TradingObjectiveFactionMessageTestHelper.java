@@ -39,6 +39,7 @@ import de.markusbordihn.easynpc.data.trading.TradingType;
 import de.markusbordihn.easynpc.data.trading.TradingValueType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.TradingDataCapable;
+import de.markusbordihn.easynpc.gametest.GameTestHelpers;
 import de.markusbordihn.easynpc.handler.FactionHandler;
 import de.markusbordihn.easynpc.handler.ObjectiveHandler;
 import java.util.UUID;
@@ -142,6 +143,7 @@ public final class TradingObjectiveFactionMessageTestHelper {
 
   public static void assertFactionAssignment(GameTestHelper helper, EntityType<?> entityType) {
     FactionData.init(helper.getLevel().getServer());
+    GameTestHelpers.addCleanup(helper, () -> removeTestFactions(helper));
     ServerMessageAssertions.assertAppliedOnlyWithAccess(
         helper,
         entityType,
@@ -152,11 +154,11 @@ public final class TradingObjectiveFactionMessageTestHelper {
             factionName(easyNPC.getEntityUUID())
                 .equals(easyNPC.getEasyNPCFactionData().getFactionName()),
         SurvivalOwnerAccess.DENIED);
-    removeTestFactions(helper);
   }
 
   public static void assertFactionUnassignment(GameTestHelper helper, EntityType<?> entityType) {
     FactionData.init(helper.getLevel().getServer());
+    GameTestHelpers.addCleanup(helper, () -> removeTestFactions(helper));
     ServerMessageAssertions.assertAppliedOnlyWithAccess(
         helper,
         entityType,
@@ -165,11 +167,11 @@ public final class TradingObjectiveFactionMessageTestHelper {
         ChangeFactionMessage::create,
         easyNPC -> !easyNPC.getEasyNPCFactionData().hasFactionName(),
         SurvivalOwnerAccess.DENIED);
-    removeTestFactions(helper);
   }
 
   public static void assertFactionCreation(GameTestHelper helper, EntityType<?> entityType) {
     FactionData.init(helper.getLevel().getServer());
+    GameTestHelpers.addCleanup(helper, () -> removeTestFactions(helper));
     ServerMessageAssertions.assertAppliedOnlyWithAccess(
         helper,
         entityType,
@@ -177,11 +179,11 @@ public final class TradingObjectiveFactionMessageTestHelper {
         CreateFactionMessage::create,
         easyNPC -> FactionData.get().hasFaction(factionName(easyNPC.getEntityUUID())),
         SurvivalOwnerAccess.DENIED);
-    removeTestFactions(helper);
   }
 
   public static void assertFactionColorChange(GameTestHelper helper, EntityType<?> entityType) {
     FactionData.init(helper.getLevel().getServer());
+    GameTestHelpers.addCleanup(helper, () -> removeTestFactions(helper));
     ServerMessageAssertions.assertAppliedOnlyWithAccess(
         helper,
         entityType,
@@ -191,11 +193,11 @@ public final class TradingObjectiveFactionMessageTestHelper {
         ChangeFactionColorMessage::create,
         TradingObjectiveFactionMessageTestHelper::hasChangedFactionColor,
         SurvivalOwnerAccess.DENIED);
-    removeTestFactions(helper);
   }
 
   public static void assertFactionRelationChange(GameTestHelper helper, EntityType<?> entityType) {
     FactionData.init(helper.getLevel().getServer());
+    GameTestHelpers.addCleanup(helper, () -> removeTestFactions(helper));
     ServerMessageAssertions.assertAppliedOnlyWithAccess(
         helper,
         entityType,
@@ -206,11 +208,11 @@ public final class TradingObjectiveFactionMessageTestHelper {
         ChangeFactionRelationMessage::create,
         TradingObjectiveFactionMessageTestHelper::isMutuallyHostile,
         SurvivalOwnerAccess.DENIED);
-    removeTestFactions(helper);
   }
 
   public static void assertFactionEntryRemoval(GameTestHelper helper, EntityType<?> entityType) {
     FactionData.init(helper.getLevel().getServer());
+    GameTestHelpers.addCleanup(helper, () -> removeTestFactions(helper));
     ServerMessageAssertions.assertAppliedOnlyWithAccess(
         helper,
         entityType,
@@ -219,7 +221,6 @@ public final class TradingObjectiveFactionMessageTestHelper {
         RemoveFactionEntryMessage::create,
         easyNPC -> !FactionData.get().hasFaction(factionName(easyNPC.getEntityUUID())),
         SurvivalOwnerAccess.DENIED);
-    removeTestFactions(helper);
   }
 
   private static void setupTrading(EasyNPC<?> easyNPC, TradingType tradingType) {

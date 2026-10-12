@@ -174,6 +174,15 @@ public class ConfigurationScreenTest {
   }
 
   @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testInventoryConfigurationScreen(GameTestHelper helper) {
+    ConfigurationScreenTestHelper.testConfigurationScreen(
+        helper,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
+        ConfigurationType.INVENTORY,
+        ModMenuTypes.INVENTORY_CONFIGURATION_MENU);
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testDefaultSkinConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,

@@ -34,13 +34,27 @@ class MovementAttributesTest {
   void testEncodeDecodeRoundTrip() {
     MovementAttributes movementAttributes =
         new MovementAttributes(
-            true, false, true, false, NavigationType.AQUATIC, 2.5D, 1.0D, 4.0D, 1.5D, true);
+            true, false, true, false, NavigationType.AQUATIC, 2.5D, 1.0D, 4.0D, 1.5D, true, false);
 
     MovementAttributes decoded =
         MovementAttributes.decode(movementAttributes.encode(new CompoundTag()));
 
     assertEquals(movementAttributes, decoded);
     assertTrue(decoded.isImmovable());
+    assertFalse(decoded.canJump());
+  }
+
+  @Test
+  @DisplayName("Data saved before the jump attribute existed keeps the NPC jumping")
+  void testLegacyDataDecodesToJumping() {
+    CompoundTag legacyTag = new CompoundTag();
+    legacyTag.putBoolean(MovementAttributes.CAN_OPEN_DOOR_TAG, true);
+
+    assertTrue(MovementAttributes.decode(legacyTag).canJump());
+    assertFalse(
+        new MovementAttributes()
+            .encode(new CompoundTag())
+            .contains(MovementAttributes.CAN_JUMP_TAG));
   }
 
   @Test

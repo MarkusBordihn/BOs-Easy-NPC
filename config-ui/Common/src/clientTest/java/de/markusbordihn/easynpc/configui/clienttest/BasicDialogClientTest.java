@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import de.markusbordihn.clientruntimeinterfacetoolkit.testrunner.By;
 import de.markusbordihn.clientruntimeinterfacetoolkit.testrunner.Until;
-import java.io.IOException;
+import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -37,16 +37,16 @@ class BasicDialogClientTest extends ClientTestBase {
       By.className("de.markusbordihn.easynpc.configui.client.screen.components.SaveButton");
   private static final String DIALOG_TEXT = "Hello from the client test";
 
-  private static String openBasicDialog() {
-    openMainConfiguration();
+  private static String openBasicDialog(UUID testNpc) {
+    openMainConfiguration(testNpc);
     return openSubPage("dialog", "basic", BASIC_DIALOG_SCREEN);
   }
 
   @Test
   @DisplayName("Saved basic dialog text reaches the server and is shown after reopening")
-  void savedDialogTextSurvivesReopen() throws IOException {
-    summonTestNpc();
-    String screenId = openBasicDialog();
+  void savedDialogTextSurvivesReopen() {
+    UUID testNpc = spawnTestNpc();
+    String screenId = openBasicDialog(testNpc);
 
     client.type(DIALOG_FIELD, DIALOG_TEXT, true);
     assertTrue(isEnabledWidget(SAVE_BUTTON), "Save stays disabled after changing the text");
@@ -54,9 +54,9 @@ class BasicDialogClientTest extends ClientTestBase {
     client.click(SAVE_BUTTON, screenId);
     client.closeScreen();
     client.await(Until.noScreen());
-    openBasicDialog();
+    openBasicDialog(testNpc);
 
     assertEquals(DIALOG_TEXT, client.findWidget(DIALOG_FIELD).orElseThrow().string("value"));
-    captureScreen("reopened");
+    client.saveScreenshot("reopened");
   }
 }

@@ -21,19 +21,30 @@ package de.markusbordihn.easynpc.gametest;
 
 import com.mojang.authlib.GameProfile;
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.data.saveddata.FactionData;
+import de.markusbordihn.easynpc.entity.NPCEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.handler.FactionHandler;
 import io.netty.channel.embedded.EmbeddedChannel;
+import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.gametest.framework.GameTestInfo;
+import net.minecraft.gametest.framework.GameTestListener;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.players.PlayerList;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.scores.PlayerTeam;
+import net.minecraft.world.scores.Scoreboard;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -41,7 +52,77 @@ public class GameTestHelpers {
 
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
+  // Vanilla 1.20.1 GameTestHelper has no addCleanup; its field name differs per mapping.
+  private static final Field TEST_INFO_FIELD = findTestInfoField();
+
   private GameTestHelpers() {}
+
+  private static Field findTestInfoField() {
+    for (Field field : GameTestHelper.class.getDeclaredFields()) {
+      if (field.getType() == GameTestInfo.class) {
+        field.setAccessible(true);
+        return field;
+      }
+    }
+    throw new IllegalStateException("GameTestHelper has no GameTestInfo field");
+  }
+
+  public static void addCleanup(GameTestHelper helper, Runnable cleanup) {
+    GameTestInfo testInfo;
+    try {
+      testInfo = (GameTestInfo) TEST_INFO_FIELD.get(helper);
+    } catch (IllegalAccessException e) {
+      throw new IllegalStateException("Unable to access the GameTestInfo of " + helper, e);
+    }
+
+    testInfo.addListener(
+        new GameTestListener() {
+          @Override
+          public void testStructureLoaded(GameTestInfo loadedTestInfo) {}
+
+          @Override
+          public void testPassed(GameTestInfo passedTestInfo) {
+            runCleanup(passedTestInfo, cleanup);
+          }
+
+          @Override
+          public void testFailed(GameTestInfo failedTestInfo) {
+            runCleanup(failedTestInfo, cleanup);
+          }
+        });
+  }
+
+  private static void runCleanup(GameTestInfo testInfo, Runnable cleanup) {
+    try {
+      cleanup.run();
+    } catch (RuntimeException e) {
+      log.error("Cleanup of game test {} failed:", testInfo.getTestName(), e);
+    }
+  }
+
+  public static void removeFactionsAfterTest(GameTestHelper helper, String... factionNames) {
+    Scoreboard scoreboard = helper.getLevel().getScoreboard();
+    List<String> createdFactionNames =
+        Arrays.stream(factionNames)
+            .filter(factionName -> !FactionData.get().hasFaction(factionName))
+            .toList();
+    List<String> createdTeamNames =
+        Arrays.stream(factionNames)
+            .filter(factionName -> scoreboard.getPlayerTeam(factionName) == null)
+            .toList();
+
+    addCleanup(
+        helper,
+        () -> {
+          createdFactionNames.forEach(FactionHandler::deleteFaction);
+          for (String teamName : createdTeamNames) {
+            PlayerTeam playerTeam = scoreboard.getPlayerTeam(teamName);
+            if (playerTeam != null) {
+              scoreboard.removePlayerTeam(playerTeam);
+            }
+          }
+        });
+  }
 
   public static ServerPlayer mockServerPlayer(GameTestHelper helper, Vec3 position) {
     return mockServerPlayer(helper, position, "test-mock-player");
@@ -84,7 +165,14 @@ public class GameTestHelpers {
         };
     Connection connection = new Connection(PacketFlow.SERVERBOUND);
     new EmbeddedChannel(connection);
-    level.getServer().getPlayerList().placeNewPlayer(connection, serverPlayer);
+    PlayerList playerList = level.getServer().getPlayerList();
+    playerList.placeNewPlayer(connection, serverPlayer);
+    addCleanup(
+        helper,
+        () -> {
+          level.getScoreboard().removePlayerFromTeam(serverPlayer.getScoreboardName());
+          playerList.remove(serverPlayer);
+        });
     return serverPlayer;
   }
 
@@ -99,9 +187,14 @@ public class GameTestHelpers {
     return easyNPC;
   }
 
+  public static void removeNPCDataAfterTest(GameTestHelper helper, UUID entityUUID) {
+    addCleanup(helper, () -> NPCEntityManager.removeNPC(entityUUID));
+  }
+
   public static EasyNPC<?> spawnNPCEntityType(GameTestHelper helper, EntityType<?> entityType) {
     Entity entity = spawnEntityType(helper, entityType);
     if (entity instanceof EasyNPC<?> easyNPC) {
+      removeNPCDataAfterTest(helper, easyNPC.getEntityUUID());
       return easyNPC;
     }
 

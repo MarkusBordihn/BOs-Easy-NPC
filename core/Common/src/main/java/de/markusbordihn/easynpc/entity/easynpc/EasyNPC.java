@@ -144,6 +144,11 @@ public interface EasyNPC<E extends Mob> extends EasyNPCDataAccessors<E>, Npc {
     return EasyNPCEntityAccess.getEntityUUID(this);
   }
 
+  default boolean isPersistentNPC() {
+    Mob mob = this.getMob();
+    return mob.isPersistenceRequired() || mob.requiresCustomPersistence();
+  }
+
   default Component getEntityTypeName() {
     return EasyNPCEntityAccess.getEntityTypeName(this);
   }

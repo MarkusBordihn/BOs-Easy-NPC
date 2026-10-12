@@ -46,6 +46,7 @@ public class FactionDefenseTestHelper {
       GameTestHelper helper, EntityType<?> entityType) {
     String factionName = "guards-outside-attacker";
     FactionData.init(helper.getLevel().getServer());
+    GameTestHelpers.removeFactionsAfterTest(helper, factionName);
     EasyNPC<?> defender = GameTestHelpers.mockEasyNPC(helper, entityType, new Vec3(2, 2, 1));
     EasyNPC<?> factionMember = GameTestHelpers.mockEasyNPC(helper, entityType, new Vec3(2, 2, 2));
     FactionHandler.setFaction(defender, factionName);
@@ -70,6 +71,7 @@ public class FactionDefenseTestHelper {
       GameTestHelper helper, EntityType<?> entityType) {
     String factionName = "guards-internal-dispute";
     FactionData.init(helper.getLevel().getServer());
+    GameTestHelpers.removeFactionsAfterTest(helper, factionName);
     EasyNPC<?> defender = GameTestHelpers.mockEasyNPC(helper, entityType, new Vec3(2, 2, 1));
     EasyNPC<?> factionMember = GameTestHelpers.mockEasyNPC(helper, entityType, new Vec3(2, 2, 2));
     FactionHandler.setFaction(defender, factionName);
@@ -100,6 +102,7 @@ public class FactionDefenseTestHelper {
       GameTestHelper helper, EntityType<?> entityType) {
     String factionName = "guards-player-defense";
     FactionData.init(helper.getLevel().getServer());
+    GameTestHelpers.removeFactionsAfterTest(helper, factionName);
     EasyNPC<?> defender = GameTestHelpers.mockEasyNPC(helper, entityType, new Vec3(2, 2, 1));
     FactionHandler.setFaction(defender, factionName);
 
@@ -125,6 +128,7 @@ public class FactionDefenseTestHelper {
       GameTestHelper helper, EntityType<?> entityType) {
     String factionName = "guards-requires-faction";
     FactionData.init(helper.getLevel().getServer());
+    GameTestHelpers.removeFactionsAfterTest(helper, factionName);
     EasyNPC<?> defender = GameTestHelpers.mockEasyNPC(helper, entityType, new Vec3(2, 2, 1));
     EasyNPC<?> factionMember = GameTestHelpers.mockEasyNPC(helper, entityType, new Vec3(2, 2, 2));
     FactionHandler.setFaction(factionMember, factionName);

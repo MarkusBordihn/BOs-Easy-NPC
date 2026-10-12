@@ -54,7 +54,7 @@ public record CreateFactionMessage(UUID uuid, String factionName) implements Net
   public void handleServer(final ServerPlayer serverPlayer) {
     EasyNPC<?> easyNPC = this.getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
     if (easyNPC == null || !FactionNameValidator.isValid(this.factionName)) {
-      log.error("Invalid data to create faction for {}", this);
+      log.warn("Invalid data to create faction for {}", this);
       return;
     }
 

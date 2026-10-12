@@ -23,6 +23,7 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.backup.BackupManager;
 import de.markusbordihn.easynpc.condition.ConditionWarnings;
 import de.markusbordihn.easynpc.data.preset.PresetReference;
+import de.markusbordihn.easynpc.entity.EasyNPCEntityTypes;
 import de.markusbordihn.easynpc.entity.NPCChurnTracker;
 import de.markusbordihn.easynpc.entity.NPCEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.action.executor.MessageActionExecutor;
@@ -68,8 +69,7 @@ public class ServerEvents {
 
     log.info("{} Server started Events ...", Constants.LOG_REGISTER_PREFIX);
 
-    // Initialize NPC entity tracking (requires overworld to be loaded)
-    NPCEntityManager.initialize(minecraftServer);
+    NPCEntityManager.ensureInitialized(minecraftServer);
   }
 
   public static void handleServerTick(MinecraftServer minecraftServer) {
@@ -104,5 +104,11 @@ public class ServerEvents {
         "{} Server stop handling finished in {} ms",
         Constants.LOG_REGISTER_PREFIX,
         System.currentTimeMillis() - startTime);
+  }
+
+  public static void handleServerStopped(MinecraftServer minecraftServer) {
+    NPCEntityManager.reset();
+    BackupManager.reset();
+    EasyNPCEntityTypes.reset();
   }
 }

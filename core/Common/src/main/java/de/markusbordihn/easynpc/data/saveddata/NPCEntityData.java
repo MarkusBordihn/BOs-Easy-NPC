@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.data.saveddata;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.data.npc.DeletedNPCEntry;
 import de.markusbordihn.easynpc.data.npc.NPCEntityMetadata;
 import de.markusbordihn.easynpc.data.npc.NPCRemovalReason;
 import de.markusbordihn.easynpc.data.npc.SavedNPCEntityEntry;
@@ -38,13 +39,14 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.saveddata.SavedData;
+import net.minecraft.world.level.storage.LevelResource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -55,8 +57,10 @@ public class NPCEntityData extends SavedData {
   private static final String DATA_METADATA_TAG = "Metadata";
   private static final String DATA_METADATA_UUID_TAG = "UUID";
   private static final String DATA_METADATA_DATA_TAG = "Data";
+  private static final String DATA_DELETED_TAG = "Deleted";
   private static NPCEntityData instance;
   private final Map<UUID, NPCEntityMetadata> metadata = new HashMap<>();
+  private final Map<UUID, DeletedNPCEntry> deletedEntries = new HashMap<>();
   private final Map<UUID, Set<UUID>> entriesByOwner = new HashMap<>();
   private final Map<String, Set<UUID>> entriesByType = new HashMap<>();
   private final Map<String, Set<UUID>> entriesByDimension = new HashMap<>();
@@ -80,7 +84,18 @@ public class NPCEntityData extends SavedData {
         this.updateCachedMaps(uuid, entityMetadata);
       }
     }
-    log.info("Loaded metadata for {} NPC entities from index", this.metadata.size());
+    if (compoundTag.contains(DATA_DELETED_TAG)) {
+      DeletedNPCEntry.LIST_CODEC
+          .parse(NbtOps.INSTANCE, compoundTag.get(DATA_DELETED_TAG))
+          .resultOrPartial(error -> log.warn("Skipped invalid deleted NPC entries: {}", error))
+          .ifPresent(
+              entries ->
+                  entries.forEach(entry -> this.deletedEntries.put(entry.entityUUID(), entry)));
+    }
+    log.info(
+        "Loaded metadata for {} NPC entities and {} deleted NPC entities from index",
+        this.metadata.size(),
+        this.deletedEntries.size());
   }
 
   public static NPCEntityData get(MinecraftServer server) {
@@ -101,7 +116,7 @@ public class NPCEntityData extends SavedData {
             .computeIfAbsent(NPCEntityData::new, NPCEntityData::new, DATA_NAME);
 
     if (data.npcFileStorage == null) {
-      data.npcFileStorage = new NPCFileStorage(Constants.WORLD_DIR);
+      data.npcFileStorage = new NPCFileStorage(server.getWorldPath(LevelResource.ROOT));
     }
 
     return data;
@@ -109,6 +124,10 @@ public class NPCEntityData extends SavedData {
 
   public static void init(MinecraftServer server) {
     instance = get(server);
+  }
+
+  public static void reset() {
+    instance = null;
   }
 
   public static NPCEntityData get() {
@@ -153,6 +172,66 @@ public class NPCEntityData extends SavedData {
     if (this.npcFileStorage != null) {
       this.npcFileStorage.delete(uuid);
     }
+  }
+
+  public void releaseEntry(UUID uuid) {
+    if (this.npcFileStorage != null && uuid != null) {
+      this.npcFileStorage.release(uuid);
+    }
+  }
+
+  public void markDeleted(UUID uuid) {
+    if (uuid == null) {
+      return;
+    }
+
+    this.removeEntry(uuid);
+    this.deletedEntries.put(uuid, new DeletedNPCEntry(uuid, System.currentTimeMillis()));
+    this.setDirty();
+  }
+
+  public boolean isDeleted(UUID uuid) {
+    return uuid != null && this.deletedEntries.containsKey(uuid);
+  }
+
+  public void clearDeleted(UUID uuid) {
+    if (uuid != null && this.deletedEntries.remove(uuid) != null) {
+      this.setDirty();
+    }
+  }
+
+  public int removeExpiredDeletedEntries(long maxAgeMilliseconds) {
+    long now = System.currentTimeMillis();
+    int sizeBefore = this.deletedEntries.size();
+    this.deletedEntries.values().removeIf(entry -> entry.isOlderThan(maxAgeMilliseconds, now));
+    int removedCount = sizeBefore - this.deletedEntries.size();
+    if (removedCount > 0) {
+      this.setDirty();
+    }
+    return removedCount;
+  }
+
+  public int removeExpiredEntries(NPCRemovalReason removalReason, long maxAgeMilliseconds) {
+    long now = System.currentTimeMillis();
+    List<UUID> expiredUUIDs =
+        this.metadata.entrySet().stream()
+            .filter(entry -> entry.getValue().removalReason() == removalReason)
+            .filter(entry -> entry.getValue().isRemovedLongerThan(maxAgeMilliseconds, now))
+            .map(Map.Entry::getKey)
+            .toList();
+    expiredUUIDs.forEach(this::removeEntry);
+    return expiredUUIDs.size();
+  }
+
+  public List<UUID> findOrphanFiles() {
+    if (this.npcFileStorage == null) {
+      return Collections.emptyList();
+    }
+
+    return this.npcFileStorage
+        .getAllStoredNPCUUIDs()
+        .filter(uuid -> !this.metadata.containsKey(uuid))
+        .toList();
   }
 
   public Optional<SavedNPCEntityEntry> getEntry(UUID uuid) {
@@ -390,12 +469,11 @@ public class NPCEntityData extends SavedData {
     this.setDirty();
   }
 
-  public <E extends Mob> void updateOwner(EasyNPC<E> easyNPC, LivingEntity owner) {
+  public <E extends Mob> boolean updateOwner(EasyNPC<E> easyNPC, UUID newOwnerUUID) {
     UUID uuid = easyNPC.getEntityUUID();
-    UUID newOwnerUUID = owner != null ? owner.getUUID() : null;
     NPCEntityMetadata old = this.metadata.get(uuid);
     if (old == null || Objects.equals(old.ownerUUID(), newOwnerUUID)) {
-      return;
+      return false;
     }
 
     this.removeFromIndex(this.entriesByOwner, old.ownerUUID(), uuid);
@@ -404,6 +482,7 @@ public class NPCEntityData extends SavedData {
       this.entriesByOwner.computeIfAbsent(newOwnerUUID, ownerUUID -> new HashSet<>()).add(uuid);
     }
     this.setDirty();
+    return true;
   }
 
   public void updateRemovalReason(UUID uuid, NPCRemovalReason reason) {
@@ -434,6 +513,10 @@ public class NPCEntityData extends SavedData {
       metadataTag.add(entryTag);
     }
     compoundTag.put(DATA_METADATA_TAG, metadataTag);
+    DeletedNPCEntry.LIST_CODEC
+        .encodeStart(NbtOps.INSTANCE, List.copyOf(this.deletedEntries.values()))
+        .resultOrPartial(error -> log.error("Failed to save deleted NPC entries: {}", error))
+        .ifPresent(deletedTag -> compoundTag.put(DATA_DELETED_TAG, deletedTag));
 
     int savedFiles = this.saveAllDirtyNPCs();
     log.debug(

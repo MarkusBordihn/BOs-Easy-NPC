@@ -43,6 +43,7 @@ public class FactionObjectiveTestHelper {
   public static void assertFactionScoreboardMembership(
       GameTestHelper helper, EntityType<?> entityType) {
     FactionData.init(helper.getLevel().getServer());
+    GameTestHelpers.removeFactionsAfterTest(helper, "red", "blue");
     EasyNPC<?> redNPC = GameTestHelpers.spawnNPCEntityType(helper, entityType);
     EasyNPC<?> blueNPC = GameTestHelpers.spawnNPCEntityType(helper, entityType);
 
@@ -74,6 +75,7 @@ public class FactionObjectiveTestHelper {
   public static void assertDirectedHostileFactionTargeting(
       GameTestHelper helper, EntityType<?> entityType) {
     FactionData.init(helper.getLevel().getServer());
+    GameTestHelpers.removeFactionsAfterTest(helper, "red", "blue");
     EasyNPC<?> redNPC = GameTestHelpers.spawnNPCEntityType(helper, entityType);
     EasyNPC<?> blueNPC = GameTestHelpers.spawnNPCEntityType(helper, entityType);
     FactionHandler.setFaction(redNPC, "red");
@@ -112,6 +114,7 @@ public class FactionObjectiveTestHelper {
   public static void assertHostileFactionCombatBypass(
       GameTestHelper helper, EntityType<?> entityType) {
     FactionData.init(helper.getLevel().getServer());
+    GameTestHelpers.removeFactionsAfterTest(helper, "red", "blue");
     EasyNPC<?> redNPC = GameTestHelpers.spawnNPCEntityType(helper, entityType);
     EasyNPC<?> blueNPC = GameTestHelpers.spawnNPCEntityType(helper, entityType);
     FactionHandler.setFaction(redNPC, "red");
@@ -163,6 +166,7 @@ public class FactionObjectiveTestHelper {
   public static void assertPlayerFactionCombatBypass(
       GameTestHelper helper, EntityType<?> entityType) {
     FactionData.init(helper.getLevel().getServer());
+    GameTestHelpers.removeFactionsAfterTest(helper, "red", "blue");
     EasyNPC<?> redNPC = GameTestHelpers.spawnNPCEntityType(helper, entityType);
     EasyNPC<?> blueNPC = GameTestHelpers.spawnNPCEntityType(helper, entityType);
     FactionHandler.setFaction(redNPC, "red");
@@ -206,6 +210,7 @@ public class FactionObjectiveTestHelper {
   public static void assertFactionSurvivesPresetRoundTrip(
       GameTestHelper helper, EntityType<?> entityType) {
     FactionData.init(helper.getLevel().getServer());
+    GameTestHelpers.removeFactionsAfterTest(helper, "guards");
     EasyNPC<?> sourceNPC = GameTestHelpers.spawnNPCEntityType(helper, entityType);
     FactionHandler.setFaction(sourceNPC, "guards");
 

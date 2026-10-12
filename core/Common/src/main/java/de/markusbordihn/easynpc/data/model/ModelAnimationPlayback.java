@@ -19,11 +19,16 @@
 
 package de.markusbordihn.easynpc.data.model;
 
+import net.minecraft.util.Mth;
+
 public record ModelAnimationPlayback(
-    ModelAnimationPlaybackMode mode, int repeatCount, float durationTicks) {
+    ModelAnimationPlaybackMode mode, int repeatCount, float durationTicks, float speed) {
 
   public static final int DEFAULT_REPEAT_COUNT = 1;
   public static final float UNLIMITED_DURATION_TICKS = 0.0F;
+  public static final float DEFAULT_SPEED = 1.0F;
+  public static final float MIN_SPEED = 0.05F;
+  public static final float MAX_SPEED = 16.0F;
   public static final ModelAnimationPlayback DEFAULT =
       new ModelAnimationPlayback(
           ModelAnimationPlaybackMode.ONCE, DEFAULT_REPEAT_COUNT, UNLIMITED_DURATION_TICKS);
@@ -36,6 +41,12 @@ public record ModelAnimationPlayback(
     if (!Float.isFinite(durationTicks) || durationTicks < UNLIMITED_DURATION_TICKS) {
       durationTicks = UNLIMITED_DURATION_TICKS;
     }
+    speed = Float.isFinite(speed) ? Mth.clamp(speed, MIN_SPEED, MAX_SPEED) : DEFAULT_SPEED;
+  }
+
+  public ModelAnimationPlayback(
+      ModelAnimationPlaybackMode mode, int repeatCount, float durationTicks) {
+    this(mode, repeatCount, durationTicks, DEFAULT_SPEED);
   }
 
   public static ModelAnimationPlayback of(ModelAnimationPlaybackMode mode) {
@@ -48,22 +59,31 @@ public record ModelAnimationPlayback(
   }
 
   public ModelAnimationPlayback withMode(ModelAnimationPlaybackMode mode) {
-    return new ModelAnimationPlayback(mode, this.repeatCount, this.durationTicks);
+    return new ModelAnimationPlayback(mode, this.repeatCount, this.durationTicks, this.speed);
   }
 
   public ModelAnimationPlayback withRepeatCount(int repeatCount) {
-    return new ModelAnimationPlayback(this.mode, repeatCount, this.durationTicks);
+    return new ModelAnimationPlayback(this.mode, repeatCount, this.durationTicks, this.speed);
   }
 
   public ModelAnimationPlayback withDurationTicks(float durationTicks) {
-    return new ModelAnimationPlayback(this.mode, this.repeatCount, durationTicks);
+    return new ModelAnimationPlayback(this.mode, this.repeatCount, durationTicks, this.speed);
+  }
+
+  public ModelAnimationPlayback withSpeed(float speed) {
+    return new ModelAnimationPlayback(this.mode, this.repeatCount, this.durationTicks, speed);
   }
 
   public boolean hasDurationLimit() {
     return this.durationTicks > UNLIMITED_DURATION_TICKS;
   }
 
-  public boolean isSingleRun() {
-    return this.mode != ModelAnimationPlaybackMode.LOOP;
+  public boolean hasDefaultSpeed() {
+    return this.speed == DEFAULT_SPEED;
+  }
+
+  public boolean endsAutomatically() {
+    return this.mode == ModelAnimationPlaybackMode.ONCE
+        || this.mode == ModelAnimationPlaybackMode.REPEAT;
   }
 }

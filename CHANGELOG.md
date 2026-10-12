@@ -8,6 +8,22 @@ the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 7.15.0
+
+- Fixed #838 by keeping preset imports silent when run through `/execute` or command blocks.
+- Fixed #380 by applying the NPC limit to the default spawner as well.
+- Fixed #849 by allowing resource pack sounds in the sound configuration.
+- Fixed #349 by no longer spawning NPCs left-handed at random.
+- Fixed #851 by locking dialog buttons per dialog, not across dialogs with the same label.
+- Fixed deleted or duplicated NPCs returning, memory leaks and several owner and UI issues.
+- Fixed the Epic Fight Wither Skeleton NPC missing its Epic Fight mob patch.
+- Changed requirements: same mod version on client and server, Easy Model Entities 2.5.0+.
+- Changed backups of all worlds and killed NPC data to expire after 30 days, see `storage.cfg`.
+- Added "Jump", "Assist Owner" and "Follow Nearest Player" to fix #845, fix #310, fix #761.
+- Added an NPC inventory with item pickup and death drops to fix #111, fix #197, fix #543, fix #670.
+- Added "Sit on Shoulder", a boss bar and `/easy_npc debug core loglevel` to fix #577, fix #219.
+- Added the "Hold" animation mode, a "Bank Teller" preset and new API methods for addons.
+
 ### 7.14.0
 
 - Fixed #846 by keeping custom poses for players who start seeing the NPC later.

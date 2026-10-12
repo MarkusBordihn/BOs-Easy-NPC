@@ -24,14 +24,15 @@ import de.markusbordihn.easynpc.condition.ConditionManager;
 import de.markusbordihn.easynpc.data.condition.ConditionDataEntry;
 import de.markusbordihn.easynpc.data.condition.ConditionType;
 import de.markusbordihn.easynpc.data.dialog.DialogButtonEntry;
+import de.markusbordihn.easynpc.data.dialog.DialogButtonReference;
 import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.data.execution.ExecutionId;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.NbtUtils;
 import net.minecraft.server.level.ServerPlayer;
 
 /**
@@ -42,7 +43,7 @@ final class DialogLockSnapshot {
 
   private DialogLockSnapshot() {}
 
-  static ListTag collectLockedDialogButtons(
+  static List<DialogButtonReference> collectLockedDialogButtons(
       DialogDataSet dialogDataSet, ServerPlayer serverPlayer, EasyNPC<?> easyNPC) {
     return collectLockedButtons(
         dialogDataSet,
@@ -55,7 +56,7 @@ final class DialogLockSnapshot {
                 DialogLockSnapshot::requiresServerLockSnapshot));
   }
 
-  static ListTag collectLockedExecutionLimits(
+  static List<DialogButtonReference> collectLockedExecutionLimits(
       DialogDataSet dialogDataSet, ServerPlayer serverPlayer, EasyNPC<?> easyNPC) {
     return collectLockedButtons(
         dialogDataSet,
@@ -68,9 +69,9 @@ final class DialogLockSnapshot {
                 condition -> condition.conditionType() == ConditionType.EXECUTION_LIMIT));
   }
 
-  private static ListTag collectLockedButtons(
+  private static List<DialogButtonReference> collectLockedButtons(
       DialogDataSet dialogDataSet, DialogButtonPredicate lockedPredicate) {
-    ListTag lockedButtons = new ListTag();
+    List<DialogButtonReference> lockedButtons = new ArrayList<>();
     for (DialogDataEntry dialogEntry : dialogDataSet.getDialogsByLabel()) {
       if (dialogEntry == null) {
         continue;
@@ -80,7 +81,7 @@ final class DialogLockSnapshot {
         if (buttonEntry != null
             && buttonEntry.hasConditions()
             && lockedPredicate.isLocked(dialogEntry.getId(), buttonEntry)) {
-          lockedButtons.add(NbtUtils.createUUID(buttonEntry.id()));
+          lockedButtons.add(new DialogButtonReference(dialogEntry.getId(), buttonEntry.id()));
         }
       }
     }

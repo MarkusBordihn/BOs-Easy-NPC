@@ -49,7 +49,8 @@ class ObjectiveFactoryMetadataTest {
           ObjectiveType.ATTACK_VILLAGER,
           ObjectiveType.FACTION_HURT_BY_TARGET,
           ObjectiveType.HURT_BY_TARGET,
-          ObjectiveType.OWNER_HURT_BY_TARGET);
+          ObjectiveType.OWNER_HURT_BY_TARGET,
+          ObjectiveType.OWNER_HURT_TARGET);
 
   private static final Set<ObjectiveType> EXPECTED_PATHFINDER_MOB_OBJECTIVES =
       EnumSet.of(

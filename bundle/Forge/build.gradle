@@ -6,8 +6,6 @@ plugins {
   id "com.modrinth.minotaur" version "2.+"
 }
 
-apply plugin: 'net.minecraftforge.gradle'
-
 base {
   archivesName = "${project.mod_id}-forge-${project.minecraft_version}"
 }
@@ -38,7 +36,6 @@ minecraft {
         }
       }
 
-      // Mixin Support
       property 'mixin.env.remapRefMap', 'true'
       property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
     }
@@ -86,7 +83,6 @@ tasks.named('compileTestJava', JavaCompile).configure {
   enabled = !sourceSets.test.allSource.isEmpty()
 }
 
-// Function to calculate next major version
 def getNextMajorVersion(String currentVersion) {
   def versionParts = currentVersion.tokenize('.')
   if (versionParts.size() > 0) {

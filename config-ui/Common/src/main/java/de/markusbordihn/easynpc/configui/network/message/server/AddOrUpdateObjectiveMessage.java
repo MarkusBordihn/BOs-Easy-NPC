@@ -57,7 +57,7 @@ public record AddOrUpdateObjectiveMessage(UUID uuid, ObjectiveDataEntry objectiv
     EasyNPC<?> easyNPC = this.getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
 
     if (easyNPC == null || this.objectiveDataEntry == null) {
-      log.error("Invalid data to add/update objective for {}", this);
+      log.warn("Invalid data to add/update objective for {}", this);
       return;
     }
 

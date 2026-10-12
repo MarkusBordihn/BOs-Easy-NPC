@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.configui.server.commands;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import de.markusbordihn.easynpc.commands.Command;
+import de.markusbordihn.easynpc.commands.LogLevelCommand;
 import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.configui.debug.DebugManager;
 import net.minecraft.ChatFormatting;
@@ -38,6 +39,7 @@ public class DebugCommand extends Command {
             commandSourceStack -> commandSourceStack.hasPermission(Commands.LEVEL_GAMEMASTERS))
         .then(
             Commands.literal("config")
+                .then(LogLevelCommand.register(Constants.LOG_NAME, Constants.MOD_NAME))
                 .then(
                     Commands.argument("enable", BoolArgumentType.bool())
                         .executes(

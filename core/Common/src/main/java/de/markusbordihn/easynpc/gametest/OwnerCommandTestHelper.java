@@ -19,12 +19,20 @@
 
 package de.markusbordihn.easynpc.gametest;
 
+import de.markusbordihn.easynpc.api.event.EasyNPCEventRegistry;
+import de.markusbordihn.easynpc.api.event.OwnerEventListener;
+import de.markusbordihn.easynpc.api.handler.EasyNPCEntityHandler;
+import de.markusbordihn.easynpc.entity.NPCEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.OwnerDataCapable;
 import de.markusbordihn.easynpc.security.CommandPermissionLevel;
+import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.phys.Vec3;
 
@@ -94,6 +102,102 @@ public class OwnerCommandTestHelper {
         helper,
         "Owner was changed by a player without permission",
         ownerData.isNPCOwner(owner.getUUID()));
+  }
+
+  public static void assertOwnerChangeUpdatesOwnerIndex(
+      GameTestHelper helper, EntityType<?> entityType) {
+    EasyNPC<?> easyNPC = GameTestHelpers.mockEasyNPC(helper, entityType, NPC_POSITION);
+    NPCEntityManager.saveNPC(easyNPC);
+    UUID firstOwnerUUID = UUID.randomUUID();
+    UUID secondOwnerUUID = UUID.randomUUID();
+
+    easyNPC.getEasyNPCOwnerData().setNPCOwnerUUID(firstOwnerUUID);
+    GameTestHelpers.assertTrue(
+        helper,
+        "A new owner must list the NPC in the owner index",
+        isListedForOwner(easyNPC, firstOwnerUUID));
+
+    CompoundTag presetTag = new CompoundTag();
+    presetTag.putUUID(OwnerDataCapable.DATA_OWNER_TAG, secondOwnerUUID);
+    easyNPC.getEasyNPCPresetData().importPresetData(presetTag);
+    GameTestHelpers.assertTrue(
+        helper,
+        "A preset import must remove the NPC from the previous owner",
+        !isListedForOwner(easyNPC, firstOwnerUUID));
+    GameTestHelpers.assertTrue(
+        helper,
+        "A preset import must list the NPC for the imported owner",
+        isListedForOwner(easyNPC, secondOwnerUUID));
+
+    easyNPC.getEasyNPCOwnerData().setNPCOwnerUUID(null);
+    GameTestHelpers.assertTrue(
+        helper,
+        "Removing the owner must remove the NPC from the owner index",
+        !isListedForOwner(easyNPC, secondOwnerUUID));
+  }
+
+  public static void assertSameOwnerFiresOneEvent(GameTestHelper helper, EntityType<?> entityType) {
+    EasyNPC<?> easyNPC = GameTestHelpers.mockEasyNPC(helper, entityType, NPC_POSITION);
+    NPCEntityManager.saveNPC(easyNPC);
+    UUID ownerUUID = UUID.randomUUID();
+    AtomicInteger ownerEvents = new AtomicInteger();
+    OwnerEventListener ownerEventListener =
+        (changedNPC, previousOwnerUUID, changedOwnerUUID) -> {
+          if (changedNPC == easyNPC && ownerUUID.equals(changedOwnerUUID)) {
+            ownerEvents.incrementAndGet();
+          }
+        };
+    EasyNPCEventRegistry.registerOwnerEventListener(ownerEventListener);
+
+    try {
+      easyNPC.getEasyNPCOwnerData().setNPCOwnerUUID(ownerUUID);
+      easyNPC.getEasyNPCOwnerData().setNPCOwnerUUID(ownerUUID);
+    } finally {
+      EasyNPCEventRegistry.unregisterOwnerEventListener(ownerEventListener);
+    }
+
+    GameTestHelpers.assertEquals(
+        helper, "Setting the same owner twice must fire one event", 1, ownerEvents.get());
+  }
+
+  public static void assertOwnerSetBeforeSpawnFiresOneEvent(
+      GameTestHelper helper, EntityType<?> entityType) {
+    UUID ownerUUID = UUID.randomUUID();
+    AtomicInteger ownerEvents = new AtomicInteger();
+    OwnerEventListener ownerEventListener =
+        (changedNPC, previousOwnerUUID, changedOwnerUUID) -> {
+          if (ownerUUID.equals(changedOwnerUUID)) {
+            ownerEvents.incrementAndGet();
+          }
+        };
+    Entity entity = entityType.create(helper.getLevel());
+    GameTestHelpers.assertTrue(
+        helper, "The entity type must create an Easy NPC", entity instanceof EasyNPC<?>);
+    EasyNPC<?> easyNPC = (EasyNPC<?>) entity;
+    entity.setPos(helper.absoluteVec(NPC_POSITION));
+    GameTestHelpers.removeNPCDataAfterTest(helper, easyNPC.getEntityUUID());
+    EasyNPCEventRegistry.registerOwnerEventListener(ownerEventListener);
+
+    try {
+      easyNPC.getEasyNPCOwnerData().setNPCOwnerUUID(ownerUUID);
+      helper.getLevel().addFreshEntity(entity);
+    } finally {
+      EasyNPCEventRegistry.unregisterOwnerEventListener(ownerEventListener);
+    }
+
+    GameTestHelpers.assertEquals(
+        helper, "An owner set before the spawn must fire one event", 1, ownerEvents.get());
+    GameTestHelpers.assertTrue(
+        helper,
+        "An owner set before the spawn must list the NPC in the owner index",
+        isListedForOwner(easyNPC, ownerUUID));
+  }
+
+  private static boolean isListedForOwner(EasyNPC<?> easyNPC, UUID ownerUUID) {
+    return EasyNPCEntityHandler.getByOwner(ownerUUID).stream()
+        .anyMatch(
+            savedNPCEntityEntry ->
+                easyNPC.getEntityUUID().equals(savedNPCEntityEntry.entityUUID()));
   }
 
   private static CommandSourceStack consoleSource(GameTestHelper helper) {

@@ -87,6 +87,12 @@ public class AttributeMessageTest {
   }
 
   @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testInventoryFlagChange(GameTestHelper helper) {
+    AttributeMessageTestHelper.assertInventoryFlagChange(helper, humanoid());
+    helper.succeed();
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testEnvironmentalFlagChange(GameTestHelper helper) {
     AttributeMessageTestHelper.assertEnvironmentalFlagChange(helper, humanoid());
     helper.succeed();

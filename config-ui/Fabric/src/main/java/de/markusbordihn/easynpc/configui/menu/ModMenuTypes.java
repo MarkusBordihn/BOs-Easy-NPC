@@ -35,6 +35,7 @@ import de.markusbordihn.easynpc.configui.menu.configuration.dialog.BasicDialogCo
 import de.markusbordihn.easynpc.configui.menu.configuration.dialog.NoneDialogConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.dialog.YesNoDialogConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.equipment.EquipmentConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.configui.menu.configuration.inventory.InventoryConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.main.MainConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.model.CobblemonModelConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.model.CustomModelConfigurationMenuWrapper;
@@ -288,6 +289,9 @@ public class ModMenuTypes {
   public static final MenuType<EquipmentConfigurationMenuWrapper> EQUIPMENT_CONFIGURATION_MENU =
       ScreenHandlerRegistry.registerSimple(
           ConfigurationType.EQUIPMENT.getId(), EquipmentConfigurationMenuWrapper::new);
+  public static final MenuType<InventoryConfigurationMenuWrapper> INVENTORY_CONFIGURATION_MENU =
+      ScreenHandlerRegistry.registerSimple(
+          ConfigurationType.INVENTORY.getId(), InventoryConfigurationMenuWrapper::new);
   public static final MenuType<FollowObjectiveConfigurationMenuWrapper>
       FOLLOW_OBJECTIVE_CONFIGURATION_MENU =
           ScreenHandlerRegistry.registerSimple(
