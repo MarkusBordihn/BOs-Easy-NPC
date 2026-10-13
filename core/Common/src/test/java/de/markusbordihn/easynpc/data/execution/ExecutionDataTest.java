@@ -28,7 +28,7 @@ class ExecutionDataTest {
 
   @Test
   void testConstructorWithValues() {
-    ExecutionData data = new ExecutionData(5, 1000L, 2000L);
+    ExecutionData data = new ExecutionData(5, 1000L, 2000L, ExecutionInterval.PER_DAY);
 
     assertEquals(5, data.executionCount());
     assertEquals(1000L, data.windowStartTime());
@@ -37,18 +37,28 @@ class ExecutionDataTest {
 
   @Test
   void testSaveAndLoad() {
-    ExecutionData original = new ExecutionData(3, 5000L, 6000L);
+    ExecutionData original = new ExecutionData(3, 5000L, 6000L, ExecutionInterval.PER_DAY);
     CompoundTag tag = original.save();
     ExecutionData loaded = new ExecutionData(tag);
 
     assertEquals(original.executionCount(), loaded.executionCount());
     assertEquals(original.windowStartTime(), loaded.windowStartTime());
     assertEquals(original.lastExecutionTime(), loaded.lastExecutionTime());
+    assertEquals(original.interval(), loaded.interval());
+  }
+
+  @Test
+  void testExpiredOnlyAfterInterval() {
+    long now = System.currentTimeMillis();
+
+    assertTrue(new ExecutionData(1, now - 120_000L, now, ExecutionInterval.PER_MINUTE).isExpired());
+    assertFalse(new ExecutionData(1, now, now, ExecutionInterval.PER_MINUTE).isExpired());
+    assertFalse(new ExecutionData(1, 0L, 0L, ExecutionInterval.LIFETIME).isExpired());
   }
 
   @Test
   void testSaveToExistingTag() {
-    ExecutionData data = new ExecutionData(10, 100L, 200L);
+    ExecutionData data = new ExecutionData(10, 100L, 200L, ExecutionInterval.PER_DAY);
     CompoundTag tag = new CompoundTag();
     tag.putString("ExtraData", "test");
     data.save(tag);
@@ -67,5 +77,6 @@ class ExecutionDataTest {
     assertEquals(0, data.executionCount());
     assertEquals(0L, data.windowStartTime());
     assertEquals(0L, data.lastExecutionTime());
+    assertEquals(ExecutionInterval.LIFETIME, data.interval());
   }
 }

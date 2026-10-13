@@ -40,9 +40,9 @@ public interface AdditionalScreenDataInterface {
 
   boolean hasDialogDataSet();
 
-  default boolean isDialogButtonLocked(UUID buttonId) {
+  default boolean isDialogButtonLocked(UUID dialogId, UUID buttonId) {
     return false;
   }
 
-  boolean isExecutionLimitReached(UUID actionId);
+  boolean isExecutionLimitReached(UUID dialogId, UUID buttonId);
 }

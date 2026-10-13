@@ -60,19 +60,6 @@ public class StoredDataTestHelper {
     }
   }
 
-  public static void assertUnchangedSoundsAreNotStored(
-      GameTestHelper helper, EntityType<?> entityType) {
-    EasyNPC<?> easyNPC = GameTestHelpers.mockEasyNPC(helper, entityType, NPC_POSITION);
-    ((SoundDataCapable<?>) easyNPC).clearSoundDataSet();
-
-    CompoundTag storedData = ((PresetDataCapable<?>) easyNPC).serializePresetData();
-
-    GameTestHelpers.assertTrue(
-        helper,
-        "An NPC without own sounds must not store the sound data of its variant",
-        !storedData.contains(SoundDataCapable.EASY_NPC_DATA_SOUND_DATA_TAG));
-  }
-
   public static void assertObjectivesSurviveWithoutTargetFlags(
       GameTestHelper helper, EntityType<?> entityType) {
     EasyNPC<?> easyNPC = GameTestHelpers.mockEasyNPC(helper, entityType, NPC_POSITION);

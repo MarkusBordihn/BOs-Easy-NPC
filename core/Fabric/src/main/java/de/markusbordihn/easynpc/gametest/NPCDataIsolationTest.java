@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.gametest;
 
+import de.markusbordihn.easynpc.entity.ModCustomEntityType;
 import de.markusbordihn.easynpc.entity.ModEntityType;
 import de.markusbordihn.easynpc.entity.ModNPCEntityType;
 import net.fabricmc.fabric.api.gametest.v1.GameTest;
@@ -30,6 +31,10 @@ public class NPCDataIsolationTest {
 
   private static EntityType<?> humanoid() {
     return ModEntityType.getEntityType(ModNPCEntityType.HUMANOID);
+  }
+
+  private static EntityType<?> doppler() {
+    return ModEntityType.getEntityType(ModCustomEntityType.DOPPLER);
   }
 
   @GameTest(structure = "easy_npc:gametest.3x3x3")
@@ -89,6 +94,12 @@ public class NPCDataIsolationTest {
   @GameTest(structure = "easy_npc:gametest.3x3x3")
   public void testScaleUpdatesDimensions(GameTestHelper helper) {
     NPCDataIsolationTestHelper.assertScaleUpdatesDimensions(helper, humanoid());
+    helper.succeed();
+  }
+
+  @GameTest(structure = "easy_npc:gametest.3x3x3")
+  public void testScaleUpdatesRenderEntityDimensions(GameTestHelper helper) {
+    NPCDataIsolationTestHelper.assertScaleUpdatesRenderEntityDimensions(helper, doppler());
     helper.succeed();
   }
 

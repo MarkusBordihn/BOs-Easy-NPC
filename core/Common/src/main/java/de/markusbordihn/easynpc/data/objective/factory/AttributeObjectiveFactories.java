@@ -24,6 +24,7 @@ import static de.markusbordihn.easynpc.data.objective.factory.BuiltInObjectiveFa
 import de.markusbordihn.easynpc.data.objective.ObjectiveType;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.CloseDoorGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.CustomDoorInteractGoal;
+import de.markusbordihn.easynpc.entity.easynpc.ai.goal.SitOnOwnerShoulderGoal;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 
 final class AttributeObjectiveFactories {
@@ -40,5 +41,9 @@ final class AttributeObjectiveFactories {
     register(
         ObjectiveType.CLOSE_DOOR,
         (objectiveDataEntry, easyNPC) -> new CloseDoorGoal(easyNPC.getMob()));
+
+    register(
+        ObjectiveType.SIT_ON_OWNER_SHOULDER,
+        (objectiveDataEntry, easyNPC) -> new SitOnOwnerShoulderGoal(easyNPC));
   }
 }

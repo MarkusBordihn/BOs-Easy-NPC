@@ -30,14 +30,18 @@ import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.data.render.RenderType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ConfigurationDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.OwnerDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.RenderDataCapable;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
@@ -119,6 +123,27 @@ public class ConfigurationScreen<T extends ConfigUIMenu> extends Screen<T, Addit
   public void showMainScreen() {
     NetworkMessageHandlerManager.getServerHandler()
         .openConfiguration(this.getEasyNPCUUID(), ConfigurationType.MAIN);
+  }
+
+  protected String getOwnerName() {
+    OwnerDataCapable<?> ownerData = this.getOwnerData();
+    if (ownerData == null || !ownerData.hasNPCOwner()) {
+      return "";
+    }
+
+    String ownerName = ownerData.getNPCOwnerName();
+    if (!ownerName.isEmpty()) {
+      return ownerName;
+    }
+
+    UUID ownerUUID = ownerData.getOwnerUUID();
+    ClientPacketListener connection = this.minecraft.getConnection();
+    PlayerInfo playerInfo = connection != null ? connection.getPlayerInfo(ownerUUID) : null;
+    if (playerInfo == null) {
+      return ownerUUID.toString();
+    }
+
+    return playerInfo.getProfile().name();
   }
 
   @Override

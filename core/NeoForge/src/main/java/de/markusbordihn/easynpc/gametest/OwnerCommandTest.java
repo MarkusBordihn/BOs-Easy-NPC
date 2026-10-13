@@ -41,4 +41,19 @@ public final class OwnerCommandTest {
     OwnerCommandTestHelper.assertOwnerSetRequiresGamemaster(helper, humanoid());
     helper.succeed();
   }
+
+  public static void testOwnerChangeUpdatesOwnerIndex(GameTestHelper helper) {
+    OwnerCommandTestHelper.assertOwnerChangeUpdatesOwnerIndex(helper, humanoid());
+    helper.succeed();
+  }
+
+  public static void testSameOwnerFiresOneEvent(GameTestHelper helper) {
+    OwnerCommandTestHelper.assertSameOwnerFiresOneEvent(helper, humanoid());
+    helper.succeed();
+  }
+
+  public static void testOwnerSetBeforeSpawnFiresOneEvent(GameTestHelper helper) {
+    OwnerCommandTestHelper.assertOwnerSetBeforeSpawnFiresOneEvent(helper, humanoid());
+    helper.succeed();
+  }
 }

@@ -22,13 +22,11 @@ package de.markusbordihn.easynpc.client.renderer.entity.layers;
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.renderer.entity.state.EasyNPCRenderStateExtension;
-import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
@@ -82,12 +80,7 @@ public class SkullHeadRenderLayer<
       return;
     }
 
-    UUID entityUUID = renderStateExtension.getEasyNpcUUID();
-    if (entityUUID == null) {
-      return;
-    }
-
-    EasyNPC<?> easyNPC = LivingEntityManager.getClientEasyNPCEntityByUUID(entityUUID);
+    EasyNPC<?> easyNPC = renderStateExtension.getEasyNPC();
     if (easyNPC == null) {
       return;
     }

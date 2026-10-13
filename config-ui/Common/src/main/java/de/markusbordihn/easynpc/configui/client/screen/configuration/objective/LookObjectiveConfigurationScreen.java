@@ -79,28 +79,30 @@ public class LookObjectiveConfigurationScreen<T extends ConfigurationMenu>
                 ObjectiveType.LOOK_RANDOM_AROUND));
 
     OwnerDataCapable<?> ownerData = this.getOwnerData();
-    objectiveEntriesTop += SPACE_BETWEEN_ENTRIES;
-    this.lookAtOwnerCheckbox =
-        this.addRenderableWidget(
-            new Checkbox(
-                objectiveEntriesFirstColumn,
-                objectiveEntriesTop,
-                ObjectiveType.LOOK_AT_OWNER.getObjectiveName(),
-                ownerData.getNPCOwnerName(),
-                this.objectiveDataSet.hasObjective(ObjectiveType.LOOK_AT_OWNER),
-                checkbox -> {
-                  ObjectiveDataEntry objectiveDataEntry =
-                      new ObjectiveDataEntry(ObjectiveType.LOOK_AT_OWNER);
-                  objectiveDataEntry.setTargetOwnerUUID(ownerData.getOwnerUUID());
-                  if (checkbox.selected()) {
-                    NetworkMessageHandlerManager.getServerHandler()
-                        .addOrUpdateObjective(this.getEasyNPCUUID(), objectiveDataEntry);
-                  } else {
-                    NetworkMessageHandlerManager.getServerHandler()
-                        .removeObjective(this.getEasyNPCUUID(), objectiveDataEntry);
-                  }
-                }));
-    this.lookAtOwnerCheckbox.active = ownerData.hasNPCOwner();
+    boolean hasLookAtOwnerObjective =
+        this.objectiveDataSet.hasObjective(ObjectiveType.LOOK_AT_OWNER);
+    if (!this.getOwnerName().isEmpty() || hasLookAtOwnerObjective) {
+      objectiveEntriesTop += SPACE_BETWEEN_ENTRIES;
+      this.lookAtOwnerCheckbox =
+          this.addRenderableWidget(
+              new Checkbox(
+                  objectiveEntriesFirstColumn,
+                  objectiveEntriesTop,
+                  ObjectiveType.LOOK_AT_OWNER.getObjectiveName(),
+                  hasLookAtOwnerObjective,
+                  checkbox -> {
+                    ObjectiveDataEntry objectiveDataEntry =
+                        new ObjectiveDataEntry(ObjectiveType.LOOK_AT_OWNER);
+                    objectiveDataEntry.setTargetOwnerUUID(ownerData.getOwnerUUID());
+                    if (checkbox.selected()) {
+                      NetworkMessageHandlerManager.getServerHandler()
+                          .addOrUpdateObjective(this.getEasyNPCUUID(), objectiveDataEntry);
+                    } else {
+                      NetworkMessageHandlerManager.getServerHandler()
+                          .removeObjective(this.getEasyNPCUUID(), objectiveDataEntry);
+                    }
+                  }));
+    }
 
     objectiveEntriesTop += SPACE_BETWEEN_ENTRIES;
     this.lookAtPlayerCheckbox =

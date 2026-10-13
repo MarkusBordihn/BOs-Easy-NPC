@@ -335,6 +335,15 @@ public final class ConfigurationScreenTest {
     helper.succeed();
   }
 
+  public static void testInventoryConfigurationScreen(GameTestHelper helper) {
+    ConfigurationScreenTestHelper.testConfigurationScreen(
+        helper,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
+        ConfigurationType.INVENTORY,
+        ModMenuTypes.INVENTORY_CONFIGURATION_MENU.get());
+    helper.succeed();
+  }
+
   public static void testLocalPresetImportConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,

@@ -39,7 +39,7 @@
         Type:"LOOK_AT_MOB"
       }]
     },
-    PersistenceRequired:0b,
+    PersistenceRequired:1b,
     RenderData:{
       EntityModel:"easy_model_entities_examples:entity/little_explorer",
       Type:"EASY_MODEL_ENTITY"

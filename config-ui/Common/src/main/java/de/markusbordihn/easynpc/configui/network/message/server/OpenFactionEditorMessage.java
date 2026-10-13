@@ -69,7 +69,7 @@ public record OpenFactionEditorMessage(UUID uuid, String factionName)
   public void handleServer(final ServerPlayer serverPlayer) {
     EasyNPC<?> easyNPC = this.getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
     if (easyNPC == null || this.factionName == null || this.factionName.isEmpty()) {
-      log.error("Invalid data to open faction editor for {}", this);
+      log.warn("Invalid data to open faction editor for {}", this);
       return;
     }
 

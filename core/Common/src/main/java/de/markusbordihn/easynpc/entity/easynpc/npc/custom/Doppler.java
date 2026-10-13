@@ -74,9 +74,11 @@ public class Doppler extends PathfinderMobRaw {
   @Override
   public EntityDimensions getDefaultDimensions(Pose pose) {
     EntityType<? extends Entity> renderEntityType = this.getRenderEntityType();
-    return renderEntityType != null
-        ? renderEntityType.getDimensions()
-        : super.getDefaultDimensions(pose);
+    if (renderEntityType == null) {
+      return super.getDefaultDimensions(pose);
+    }
+
+    return this.applyModelScale(renderEntityType.getDimensions());
   }
 
   private EntityType<? extends Entity> getRenderEntityType() {

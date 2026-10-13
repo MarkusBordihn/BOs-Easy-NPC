@@ -23,7 +23,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexFormatElement;
 import de.markusbordihn.easynpc.client.renderer.entity.state.EasyNPCRenderStateExtension;
 import de.markusbordihn.easynpc.data.display.DisplayAttributeType;
-import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.handler.AttributeHandler;
 import java.util.ArrayList;
@@ -31,7 +30,6 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelPart;
@@ -98,13 +96,8 @@ public class OpacitySubmitNodeCollector implements SubmitNodeCollector {
 
   public static SubmitNodeCollector wrapIfNeeded(
       EntityRenderState renderState, SubmitNodeCollector submitNodeCollector) {
-    if (!(renderState instanceof EasyNPCRenderStateExtension renderStateExtension)) {
-      return submitNodeCollector;
-    }
-
-    UUID uuid = renderStateExtension.getEasyNpcUUID();
-    return uuid != null
-        ? wrapIfNeeded(LivingEntityManager.getClientEasyNPCEntityByUUID(uuid), submitNodeCollector)
+    return renderState instanceof EasyNPCRenderStateExtension renderStateExtension
+        ? wrapIfNeeded(renderStateExtension.getEasyNPC(), submitNodeCollector)
         : submitNodeCollector;
   }
 

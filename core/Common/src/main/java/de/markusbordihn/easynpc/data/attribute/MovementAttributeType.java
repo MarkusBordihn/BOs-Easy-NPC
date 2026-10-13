@@ -24,6 +24,7 @@ import java.util.Locale;
 
 public enum MovementAttributeType implements EntityAttributeTypeInterface {
   CAN_CLOSE_DOOR,
+  CAN_JUMP,
   CAN_OPEN_DOOR,
   CAN_PASS_DOOR,
   CAN_USE_NETHER_PORTAL,

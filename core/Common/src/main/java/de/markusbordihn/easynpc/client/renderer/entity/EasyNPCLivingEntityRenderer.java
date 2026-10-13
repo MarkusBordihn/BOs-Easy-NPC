@@ -26,10 +26,8 @@ import de.markusbordihn.easynpc.client.texture.LivingEntityTextureManager;
 import de.markusbordihn.easynpc.data.model.RootModelData;
 import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.data.scale.CustomScale;
-import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
-import java.util.UUID;
 import java.util.function.Supplier;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
@@ -77,14 +75,10 @@ public class EasyNPCLivingEntityRenderer {
   }
 
   public static EasyNPC<?> getEasyNPC(LivingEntityRenderState livingEntityRenderState) {
-    if (livingEntityRenderState
-        instanceof EasyNPCRenderStateExtension easyNPCRenderStateExtension) {
-      UUID uuid = easyNPCRenderStateExtension.getEasyNpcUUID();
-      if (uuid != null) {
-        return LivingEntityManager.getClientEasyNPCEntityByUUID(uuid);
-      }
-    }
-    return null;
+    return livingEntityRenderState
+            instanceof EasyNPCRenderStateExtension easyNPCRenderStateExtension
+        ? easyNPCRenderStateExtension.getEasyNPC()
+        : null;
   }
 
   public static Identifier getTexture(

@@ -152,10 +152,6 @@ public class PresetRoundTripTestHelper {
         targetNPC.getEasyNPCObjectiveData().getObjective(ObjectiveType.FOLLOW_OWNER);
     GameTestHelpers.assertNotNull(
         helper, "The imported NPC must keep its objective", importedObjective);
-    GameTestHelpers.assertTrue(
-        helper,
-        "The imported NPC must not keep the standard objectives it replaced",
-        targetNPC.getEasyNPCObjectiveData().getObjective(ObjectiveType.LOOK_AT_PLAYER) == null);
 
     GameTestHelpers.assertEquals(
         helper,

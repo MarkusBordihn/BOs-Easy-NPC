@@ -32,7 +32,8 @@ public record MovementAttributes(
     double minHoverHeight,
     double swimDepthBelowSurface,
     double swimHeightAboveFloor,
-    boolean isImmovable)
+    boolean isImmovable,
+    boolean canJump)
     implements EntityAttributesInterface {
 
   public static final String CAN_OPEN_DOOR_TAG = MovementAttributeType.CAN_OPEN_DOOR.getTagName();
@@ -50,6 +51,7 @@ public record MovementAttributes(
   public static final String SWIM_HEIGHT_ABOVE_FLOOR_TAG =
       MovementAttributeType.SWIM_HEIGHT_ABOVE_FLOOR.getTagName();
   public static final String IS_IMMOVABLE_TAG = MovementAttributeType.IS_IMMOVABLE.getTagName();
+  public static final String CAN_JUMP_TAG = MovementAttributeType.CAN_JUMP.getTagName();
   public static final double MAX_HOVER_HEIGHT = 16.0D;
   public static final double MAX_SWIM_DEPTH_BELOW_SURFACE = 32.0D;
   public static final double MAX_SWIM_HEIGHT_ABOVE_FLOOR = 16.0D;
@@ -68,7 +70,7 @@ public record MovementAttributes(
   }
 
   public MovementAttributes() {
-    this(false, false, false, false, NavigationType.DEFAULT, 0.0D, 0.0D, 0.0D, 0.0D, false);
+    this(false, false, false, false, NavigationType.DEFAULT, 0.0D, 0.0D, 0.0D, 0.0D, false, true);
   }
 
   public MovementAttributes(
@@ -83,7 +85,8 @@ public record MovementAttributes(
         0.0D,
         0.0D,
         0.0D,
-        false);
+        false,
+        true);
   }
 
   private static double clampDistance(double distance, double maxDistance) {
@@ -101,7 +104,8 @@ public record MovementAttributes(
         compoundTag.getDouble(MIN_HOVER_HEIGHT_TAG).orElse(0.0D),
         compoundTag.getDouble(SWIM_DEPTH_BELOW_SURFACE_TAG).orElse(0.0D),
         compoundTag.getDouble(SWIM_HEIGHT_ABOVE_FLOOR_TAG).orElse(0.0D),
-        compoundTag.getBoolean(IS_IMMOVABLE_TAG).orElse(false));
+        compoundTag.getBoolean(IS_IMMOVABLE_TAG).orElse(false),
+        compoundTag.getBoolean(CAN_JUMP_TAG).orElse(true));
   }
 
   public MovementAttributes withCanOpenDoor(boolean canOpenDoor) {
@@ -115,7 +119,8 @@ public record MovementAttributes(
         this.minHoverHeight,
         this.swimDepthBelowSurface,
         this.swimHeightAboveFloor,
-        this.isImmovable);
+        this.isImmovable,
+        this.canJump);
   }
 
   public MovementAttributes withCanCloseDoor(boolean canCloseDoor) {
@@ -129,7 +134,8 @@ public record MovementAttributes(
         this.minHoverHeight,
         this.swimDepthBelowSurface,
         this.swimHeightAboveFloor,
-        this.isImmovable);
+        this.isImmovable,
+        this.canJump);
   }
 
   public MovementAttributes withCanPassDoor(boolean canPassDoor) {
@@ -143,7 +149,8 @@ public record MovementAttributes(
         this.minHoverHeight,
         this.swimDepthBelowSurface,
         this.swimHeightAboveFloor,
-        this.isImmovable);
+        this.isImmovable,
+        this.canJump);
   }
 
   public MovementAttributes withCanUseNetherPortal(boolean canUseNetherPortal) {
@@ -157,7 +164,8 @@ public record MovementAttributes(
         this.minHoverHeight,
         this.swimDepthBelowSurface,
         this.swimHeightAboveFloor,
-        this.isImmovable);
+        this.isImmovable,
+        this.canJump);
   }
 
   public MovementAttributes withNavigationType(NavigationType navigationType) {
@@ -171,7 +179,8 @@ public record MovementAttributes(
         this.minHoverHeight,
         this.swimDepthBelowSurface,
         this.swimHeightAboveFloor,
-        this.isImmovable);
+        this.isImmovable,
+        this.canJump);
   }
 
   public MovementAttributes withHoverHeight(double hoverHeight) {
@@ -185,7 +194,8 @@ public record MovementAttributes(
         this.minHoverHeight,
         this.swimDepthBelowSurface,
         this.swimHeightAboveFloor,
-        this.isImmovable);
+        this.isImmovable,
+        this.canJump);
   }
 
   public MovementAttributes withMinHoverHeight(double minHoverHeight) {
@@ -199,7 +209,8 @@ public record MovementAttributes(
         minHoverHeight,
         this.swimDepthBelowSurface,
         this.swimHeightAboveFloor,
-        this.isImmovable);
+        this.isImmovable,
+        this.canJump);
   }
 
   public MovementAttributes withSwimDepthBelowSurface(double swimDepthBelowSurface) {
@@ -213,7 +224,8 @@ public record MovementAttributes(
         this.minHoverHeight,
         swimDepthBelowSurface,
         this.swimHeightAboveFloor,
-        this.isImmovable);
+        this.isImmovable,
+        this.canJump);
   }
 
   public MovementAttributes withSwimHeightAboveFloor(double swimHeightAboveFloor) {
@@ -227,7 +239,8 @@ public record MovementAttributes(
         this.minHoverHeight,
         this.swimDepthBelowSurface,
         swimHeightAboveFloor,
-        this.isImmovable);
+        this.isImmovable,
+        this.canJump);
   }
 
   public MovementAttributes withIsImmovable(boolean isImmovable) {
@@ -241,7 +254,23 @@ public record MovementAttributes(
         this.minHoverHeight,
         this.swimDepthBelowSurface,
         this.swimHeightAboveFloor,
-        isImmovable);
+        isImmovable,
+        this.canJump);
+  }
+
+  public MovementAttributes withCanJump(boolean canJump) {
+    return new MovementAttributes(
+        this.canOpenDoor,
+        this.canCloseDoor,
+        this.canPassDoor,
+        this.canUseNetherPortal,
+        this.navigationType,
+        this.hoverHeight,
+        this.minHoverHeight,
+        this.swimDepthBelowSurface,
+        this.swimHeightAboveFloor,
+        this.isImmovable,
+        canJump);
   }
 
   public CompoundTag encode(CompoundTag compoundTag) {
@@ -259,6 +288,9 @@ public record MovementAttributes(
     AttributeTagUtils.putIfNotZero(
         compoundTag, SWIM_HEIGHT_ABOVE_FLOOR_TAG, this.swimHeightAboveFloor);
     AttributeTagUtils.putIfTrue(compoundTag, IS_IMMOVABLE_TAG, this.isImmovable);
+    if (!this.canJump) {
+      compoundTag.putBoolean(CAN_JUMP_TAG, false);
+    }
     return compoundTag;
   }
 }

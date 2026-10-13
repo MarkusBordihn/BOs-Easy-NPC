@@ -21,12 +21,18 @@ package de.markusbordihn.easynpc.clienttest;
 
 import de.markusbordihn.clientruntimeinterfacetoolkit.testrunner.Until;
 import de.markusbordihn.clientruntimeinterfacetoolkit.testrunner.data.Parameters;
-import java.io.IOException;
+import de.markusbordihn.clientruntimeinterfacetoolkit.testrunner.data.TestArea;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 class ModelRenderClientTest extends ClientTestBase {
+
+  private static final int PLATFORM_Y = 100;
+  private static final int VIEW_Y = PLATFORM_Y + 1;
+  private static final TestArea VIEWING_PLATFORM =
+      TestArea.between(-3, PLATFORM_Y, -1, 3, PLATFORM_Y, 6);
+  private static final long RENDER_TICKS = 20;
 
   @ParameterizedTest(name = "{0}")
   @ValueSource(
@@ -73,12 +79,14 @@ class ModelRenderClientTest extends ClientTestBase {
         "zombified_piglin"
       })
   @DisplayName("NPC model renders in view without crashing the client")
-  void modelRendersInView(String entityType) throws IOException {
-    command("tp @s ~ ~ ~ 0 0");
-    command("summon easy_npc:" + entityType + " ~ ~ ~4 {Tags:[\"" + TEST_TAG + "\"],NoAI:1b}");
+  void modelRendersInView(String entityType) {
+    String entityId = "easy_npc:" + entityType;
+    client.fill(VIEWING_PLATFORM, "minecraft:stone");
+    client.teleport(0.5, VIEW_Y, 0.5, 0, 0);
+    client.spawnEntity(entityId, 0.5, VIEW_Y, 4.5, true);
 
-    client.awaitEntity(Parameters.of("type", "easy_npc:" + entityType), entity -> true);
-    client.await(Until.ticksElapsed(20));
-    captureScreen(entityType);
+    client.await(Until.entityPresent(Parameters.of("type", entityId)));
+    client.await(Until.ticksElapsed(RENDER_TICKS));
+    client.saveScreenshot(entityType);
   }
 }

@@ -58,6 +58,7 @@ public class Config {
     RenderEntityTypeSupportConfig.registerConfig();
     SecurityConfig.registerConfig();
     SpawnerTypeConfig.registerConfig();
+    StorageConfig.registerConfig();
   }
 
   public static void registerClientConfig() {

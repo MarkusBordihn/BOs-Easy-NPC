@@ -23,7 +23,7 @@ import de.markusbordihn.easymodelentities.api.data.client.EasyModelItemAnchor;
 import de.markusbordihn.easymodelentities.client.render.EasyModelEntityRenderState;
 import de.markusbordihn.easynpc.client.renderer.entity.state.EasyNPCGuiRenderStateExtension;
 import de.markusbordihn.easynpc.client.renderer.entity.state.EasyNPCRenderStateExtension;
-import java.util.UUID;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.resources.Identifier;
 
@@ -46,7 +46,7 @@ public class EasyModelNPCRenderState extends EasyModelEntityRenderState
   public EasyModelItemAnchor offHandAnchor;
   public boolean mainArmLeft;
 
-  private UUID easyNpcUUID;
+  private EasyNPC<?> easyNPC;
   private Identifier easyNpcTexture;
 
   @Override
@@ -55,13 +55,13 @@ public class EasyModelNPCRenderState extends EasyModelEntityRenderState
   }
 
   @Override
-  public UUID getEasyNpcUUID() {
-    return this.easyNpcUUID;
+  public EasyNPC<?> getEasyNPC() {
+    return this.easyNPC;
   }
 
   @Override
-  public void setEasyNpcUUID(UUID uuid) {
-    this.easyNpcUUID = uuid;
+  public void setEasyNPC(EasyNPC<?> easyNPC) {
+    this.easyNPC = easyNPC;
   }
 
   @Override

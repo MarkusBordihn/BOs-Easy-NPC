@@ -72,6 +72,14 @@ public class ActionExecutionTracker extends SavedData {
 
   private ActionExecutionTracker(Map<UUID, Map<ExecutionId, ExecutionData>> trackingData) {
     this.trackingData = new HashMap<>(trackingData);
+    boolean removedExpiredExecutions = false;
+    for (Map<ExecutionId, ExecutionData> playerData : this.trackingData.values()) {
+      removedExpiredExecutions |= removeExpiredExecutions(playerData);
+    }
+    if (removedExpiredExecutions) {
+      this.trackingData.values().removeIf(Map::isEmpty);
+      this.setDirty();
+    }
   }
 
   static ActionExecutionTracker loadFromNbt(Dynamic<?> dynamic) {
@@ -90,6 +98,10 @@ public class ActionExecutionTracker extends SavedData {
     return serverLevel.getDataStorage().computeIfAbsent(TYPE);
   }
 
+  private static boolean removeExpiredExecutions(Map<ExecutionId, ExecutionData> playerData) {
+    return playerData.values().removeIf(ExecutionData::isExpired);
+  }
+
   public boolean canExecute(
       UUID playerUUID, ExecutionId executionId, int limit, ExecutionInterval interval) {
     if (executionId == null) {
@@ -100,8 +112,7 @@ public class ActionExecutionTracker extends SavedData {
       return true;
     }
 
-    ExecutionData data =
-        this.trackingData.getOrDefault(playerUUID, new HashMap<>()).get(executionId);
+    ExecutionData data = this.trackingData.getOrDefault(playerUUID, Map.of()).get(executionId);
     if (data == null) {
       return true;
     }
@@ -125,11 +136,12 @@ public class ActionExecutionTracker extends SavedData {
 
     Map<ExecutionId, ExecutionData> playerData =
         this.trackingData.computeIfAbsent(playerUUID, trackedPlayerUUID -> new HashMap<>());
+    removeExpiredExecutions(playerData);
     ExecutionData currentData = playerData.get(executionId);
     long now = System.currentTimeMillis();
 
     if (currentData == null || interval.hasIntervalPassed(currentData.windowStartTime())) {
-      playerData.put(executionId, new ExecutionData(1, now, now));
+      playerData.put(executionId, new ExecutionData(1, now, now, interval));
       log.debug(
           "Started new execution window for player {} execution {} with interval {}",
           playerUUID,
@@ -138,7 +150,8 @@ public class ActionExecutionTracker extends SavedData {
     } else {
       playerData.put(
           executionId,
-          new ExecutionData(currentData.executionCount() + 1, currentData.windowStartTime(), now));
+          new ExecutionData(
+              currentData.executionCount() + 1, currentData.windowStartTime(), now, interval));
       log.debug(
           "Recorded execution {} for player {} execution {}",
           currentData.executionCount() + 1,
@@ -156,6 +169,9 @@ public class ActionExecutionTracker extends SavedData {
 
     Map<ExecutionId, ExecutionData> playerData = this.trackingData.get(playerUUID);
     if (playerData != null && playerData.remove(executionId) != null) {
+      if (playerData.isEmpty()) {
+        this.trackingData.remove(playerUUID);
+      }
       log.debug("Reset execution for player {} execution {}", playerUUID, executionId);
       this.setDirty();
     }
@@ -173,6 +189,7 @@ public class ActionExecutionTracker extends SavedData {
       }
     }
     if (resetCount > 0) {
+      this.trackingData.values().removeIf(Map::isEmpty);
       log.debug("Reset execution for {} players for execution {}", resetCount, executionId);
       this.setDirty();
     }

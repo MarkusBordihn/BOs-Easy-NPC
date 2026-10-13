@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.api.handler;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.data.npc.NPCEntityMetadata;
 import de.markusbordihn.easynpc.data.npc.NPCRemovalReason;
 import de.markusbordihn.easynpc.data.npc.SavedNPCEntityEntry;
 import de.markusbordihn.easynpc.data.preset.PresetType;
@@ -156,7 +157,7 @@ public class EasyNPCEntityHandler {
     }
 
     UUID entityUUID = easyNPC.getEntityUUID();
-    NPCEntityManager.removeNPC(entityUUID);
+    NPCEntityManager.markNPCDeleted(entityUUID);
     NPCEntityManager.markIntentionalRemoval(entityUUID, NPCRemovalReason.DELETED);
     easyNPC.getEntity().discard();
     return true;
@@ -178,8 +179,7 @@ public class EasyNPCEntityHandler {
       return false;
     }
 
-    NPCEntityManager.removeNPC(uuid);
-    NPCEntityManager.markIntentionalRemoval(uuid, NPCRemovalReason.DELETED);
+    NPCEntityManager.markNPCDeleted(uuid);
     return true;
   }
 
@@ -194,20 +194,23 @@ public class EasyNPCEntityHandler {
   }
 
   public static boolean spawn(UUID uuid, ServerLevel serverLevel) {
-    Optional<SavedNPCEntityEntry> entry = NPCEntityManager.getNPC(uuid);
-    if (entry.isEmpty()) {
-      log.error("Cannot spawn NPC {}: no saved data found", uuid);
-      return false;
-    }
+    return spawn(uuid, serverLevel, false);
+  }
 
-    return PresetHandler.importPreset(
-        serverLevel, entry.get().npcData(), entry.get().metadata().ownerUUID());
+  public static boolean spawn(UUID uuid, ServerLevel serverLevel, boolean force) {
+    Optional<SavedNPCEntityEntry> entry = getSpawnableEntry(uuid, force);
+    return entry.isPresent()
+        && PresetHandler.importPreset(
+            serverLevel, entry.get().npcData(), entry.get().metadata().ownerUUID());
   }
 
   public static boolean spawn(UUID uuid, ServerLevel serverLevel, Vec3 position) {
-    Optional<SavedNPCEntityEntry> entry = NPCEntityManager.getNPC(uuid);
+    return spawn(uuid, serverLevel, position, false);
+  }
+
+  public static boolean spawn(UUID uuid, ServerLevel serverLevel, Vec3 position, boolean force) {
+    Optional<SavedNPCEntityEntry> entry = getSpawnableEntry(uuid, force);
     if (entry.isEmpty()) {
-      log.error("Cannot spawn NPC {}: no saved data found", uuid);
       return false;
     }
 
@@ -218,5 +221,50 @@ public class EasyNPCEntityHandler {
     positionTag.add(DoubleTag.valueOf(position.z));
     npcData.put("Pos", positionTag);
     return PresetHandler.importPreset(serverLevel, npcData, entry.get().metadata().ownerUUID());
+  }
+
+  public static boolean isLoaded(UUID uuid) {
+    EasyNPC<?> easyNPC = LivingEntityManager.getServerEasyNPCEntityByUUID(uuid);
+    return easyNPC != null && !easyNPC.getEntity().isRemoved();
+  }
+
+  public static Optional<String> getSpawnRejection(UUID uuid, boolean force) {
+    if (NPCEntityManager.isNPCDeleted(uuid)) {
+      return Optional.of("it was deleted");
+    }
+
+    Optional<NPCEntityMetadata> metadata = NPCEntityManager.getMetadata(uuid);
+    if (metadata.isEmpty()) {
+      return Optional.of("no saved data found");
+    }
+
+    NPCRemovalReason removalReason = metadata.get().removalReason();
+    if (removalReason == NPCRemovalReason.ON_SHOULDER) {
+      return Optional.of("it sits on the shoulder of a player");
+    }
+
+    if (isLoaded(uuid)) {
+      return Optional.of("it is already loaded");
+    }
+
+    if (!force && !removalReason.isRestorableReason()) {
+      return Optional.of("it was removed with reason " + removalReason + ", use force to spawn it");
+    }
+
+    return Optional.empty();
+  }
+
+  private static Optional<SavedNPCEntityEntry> getSpawnableEntry(UUID uuid, boolean force) {
+    Optional<String> spawnRejection = getSpawnRejection(uuid, force);
+    if (spawnRejection.isPresent()) {
+      log.warn("Cannot spawn NPC {}: {}", uuid, spawnRejection.get());
+      return Optional.empty();
+    }
+
+    Optional<SavedNPCEntityEntry> entry = NPCEntityManager.getNPC(uuid);
+    if (entry.isEmpty()) {
+      log.error("Cannot spawn NPC {}: metadata exists, but its saved entity data is missing", uuid);
+    }
+    return entry;
   }
 }

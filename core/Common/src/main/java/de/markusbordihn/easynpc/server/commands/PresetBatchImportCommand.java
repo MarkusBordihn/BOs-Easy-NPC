@@ -40,6 +40,7 @@ import de.markusbordihn.easynpc.security.FeatureSecurity;
 import de.markusbordihn.easynpc.security.NpcFeature;
 import de.markusbordihn.easynpc.security.SpawnRateLimiter;
 import de.markusbordihn.easynpc.utils.ResourceNameNormalizer;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.EnumMap;
 import java.util.List;
@@ -143,6 +144,7 @@ class PresetBatchImportCommand extends Command {
       boolean keepIdentity) {
     ServerLevel serverLevel = context.getLevel();
     EnumMap<ImportOutcome, Integer> outcomes = new EnumMap<>(ImportOutcome.class);
+    List<PresetImportResult> importResults = new ArrayList<>();
     for (Identifier preset : matches) {
       Vec3 importPosition = null;
       UUID importUUID = null;
@@ -162,9 +164,14 @@ class PresetBatchImportCommand extends Command {
               serverPlayer);
       ImportOutcome outcome = importResult.outcome();
       outcomes.merge(outcome != null ? outcome : ImportOutcome.FAILED, 1, Integer::sum);
+      importResults.add(importResult);
     }
     if (serverPlayer != null) {
       lastBatchImport.put(serverPlayer.getUUID(), System.currentTimeMillis());
+    }
+
+    for (Component message : PresetFeedback.sanitizationWarnings(importResults)) {
+      context.sendSuccess(() -> message, false);
     }
 
     return sendSuccessMessage(

@@ -47,6 +47,7 @@ public class AttackObjectiveConfigurationScreen<T extends ConfigurationMenu>
   protected Checkbox attackMobWithoutCreeperCheckbox;
   protected Checkbox attackVillagerCheckbox;
   protected Checkbox ownerHurtByTargetCheckbox;
+  protected Checkbox ownerHurtTargetCheckbox;
   protected Checkbox hurtByTargetCheckbox;
   protected Checkbox factionHurtByTargetCheckbox;
 
@@ -163,6 +164,15 @@ public class AttackObjectiveConfigurationScreen<T extends ConfigurationMenu>
                 ObjectiveType.FACTION_HURT_BY_TARGET));
     this.setRequirementState(
         this.factionHurtByTargetCheckbox, ObjectiveType.FACTION_HURT_BY_TARGET, this.hasFaction());
+
+    this.ownerHurtTargetCheckbox =
+        this.addRenderableWidget(
+            this.getObjectiveCheckbox(
+                objectiveEntriesSecondColumn,
+                objectiveEntriesTop,
+                ObjectiveType.OWNER_HURT_TARGET));
+    this.setRequirementState(
+        this.ownerHurtTargetCheckbox, ObjectiveType.OWNER_HURT_TARGET, this.hasOwner());
   }
 
   private void setRequirementState(

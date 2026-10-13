@@ -20,25 +20,37 @@
 package de.markusbordihn.easynpc.gametest;
 
 import de.markusbordihn.easynpc.api.handler.EasyNPCEntityHandler;
+import de.markusbordihn.easynpc.data.action.ActionGroup;
+import de.markusbordihn.easynpc.data.action.ActionManager;
 import de.markusbordihn.easynpc.data.npc.NPCRemovalReason;
 import de.markusbordihn.easynpc.data.npc.SavedNPCEntityEntry;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataEntry;
 import de.markusbordihn.easynpc.data.objective.ObjectiveType;
 import de.markusbordihn.easynpc.data.saveddata.NPCEntityData;
+import de.markusbordihn.easynpc.entity.EasyNPCEntityTypes;
 import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.NPCEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ObjectiveDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.OwnerDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.npc.standard.HumanoidNPC;
 import de.markusbordihn.easynpc.handler.OwnerHandler;
 import de.markusbordihn.easynpc.handler.RespawnHandler;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.ProblemReporter;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.TagValueOutput;
 import net.minecraft.world.phys.Vec3;
 
 public class NPCEntityLifecycleTestHelper {
@@ -57,6 +69,38 @@ public class NPCEntityLifecycleTestHelper {
     }
 
     return entry.get().metadata().removalReason();
+  }
+
+  private static CompoundTag saveEntity(GameTestHelper helper, Entity entity) {
+    TagValueOutput valueOutput =
+        TagValueOutput.createWithContext(
+            ProblemReporter.DISCARDING, helper.getLevel().registryAccess());
+    entity.saveWithoutId(valueOutput);
+    return valueOutput.buildResult();
+  }
+
+  private static void loadEntity(GameTestHelper helper, Entity entity, CompoundTag entityTag) {
+    entity.load(
+        TagValueInput.create(
+            ProblemReporter.DISCARDING, helper.getLevel().registryAccess(), entityTag));
+  }
+
+  @SuppressWarnings("unchecked")
+  private static HumanoidNPC spawnNonPersistentNPC(
+      GameTestHelper helper, EntityType<?> entityType) {
+    HumanoidNPC easyNPC =
+        new HumanoidNPC((EntityType<? extends PathfinderMob>) entityType, helper.getLevel()) {
+          @Override
+          public boolean isPersistentNPC() {
+            return false;
+          }
+        };
+    easyNPC.setPos(helper.absoluteVec(new Vec3(1, 2, 1)));
+    GameTestHelpers.removeNPCDataAfterTest(helper, easyNPC.getEntityUUID());
+    if (!helper.getLevel().addFreshEntity(easyNPC)) {
+      helper.fail("Unable to add the non-persistent NPC to the level");
+    }
+    return easyNPC;
   }
 
   // A loader without the server started event makes every NPC query silently return nothing.
@@ -79,33 +123,6 @@ public class NPCEntityLifecycleTestHelper {
 
     if (NPCEntityManager.getNPC(easyNPC.getEntityUUID()).isEmpty()) {
       helper.fail("Spawned NPC " + easyNPC.getEntityUUID() + " is missing from the NPC index");
-    }
-  }
-
-  public static void assertOwnerIndexUpdate(GameTestHelper helper, EntityType<?> entityType) {
-    EasyNPC<?> easyNPC = GameTestHelpers.mockEasyNPC(helper, entityType, new Vec3(1, 2, 1));
-    ServerPlayer serverPlayer =
-        GameTestHelpers.mockServerPlayer(helper, new Vec3(2, 2, 1), "owner-index-player");
-    NPCEntityManager.saveNPC(easyNPC);
-
-    UUID entityUUID = easyNPC.getEntityUUID();
-    UUID ownerUUID = serverPlayer.getUUID();
-    if (!OwnerHandler.setOwner(easyNPC, serverPlayer)) {
-      helper.fail("Failed to set the owner of the NPC");
-      return;
-    }
-
-    if (!containsNPC(EasyNPCEntityHandler.getByOwner(ownerUUID), entityUUID)) {
-      helper.fail("NPC is missing from the owner index after setting the owner");
-    }
-
-    if (!OwnerHandler.removeOwner(easyNPC)) {
-      helper.fail("Failed to remove the owner of the NPC");
-      return;
-    }
-
-    if (containsNPC(EasyNPCEntityHandler.getByOwner(ownerUUID), entityUUID)) {
-      helper.fail("NPC is still in the owner index after removing the owner");
     }
   }
 
@@ -304,6 +321,188 @@ public class NPCEntityLifecycleTestHelper {
     NPCRemovalReason removalReason = getStoredRemovalReason(helper, entityUUID);
     if (removalReason != NPCRemovalReason.NONE) {
       helper.fail("Respawn must not mark the NPC as removed, got " + removalReason);
+    }
+  }
+
+  public static void assertLoadedNPCStaysPersistent(
+      GameTestHelper helper, EntityType<?> entityType) {
+    EasyNPC<?> easyNPC = GameTestHelpers.mockEasyNPC(helper, entityType, new Vec3(1, 2, 1));
+    CompoundTag entityTag = saveEntity(helper, easyNPC.getEntity());
+    entityTag.putBoolean("PersistenceRequired", false);
+    loadEntity(helper, easyNPC.getEntity(), entityTag);
+
+    if (!easyNPC.getMob().isPersistenceRequired() || !easyNPC.isPersistentNPC()) {
+      helper.fail("NPC loaded with PersistenceRequired:0b must stay persistent");
+    }
+  }
+
+  public static void assertNonPersistentNPCIsNotStoredOnJoinAndUnload(
+      GameTestHelper helper, EntityType<?> entityType) {
+    HumanoidNPC easyNPC = spawnNonPersistentNPC(helper, entityType);
+    UUID entityUUID = easyNPC.getEntityUUID();
+    if (NPCEntityManager.getNPC(entityUUID).isPresent()) {
+      helper.fail("Non-persistent NPC " + entityUUID + " must not be indexed on join");
+      return;
+    }
+
+    easyNPC.discard();
+    if (NPCEntityManager.getNPC(entityUUID).isPresent()) {
+      helper.fail("Non-persistent NPC " + entityUUID + " must not be stored on unload");
+    }
+  }
+
+  public static void assertNonPersistentNPCIsStoredOnExplicitDespawn(
+      GameTestHelper helper, EntityType<?> entityType) {
+    HumanoidNPC easyNPC = spawnNonPersistentNPC(helper, entityType);
+    UUID entityUUID = easyNPC.getEntityUUID();
+    if (!EasyNPCEntityHandler.despawn(easyNPC, NPCRemovalReason.DESPAWNED)) {
+      helper.fail("Failed to despawn the non-persistent NPC");
+      return;
+    }
+
+    if (getStoredRemovalReason(helper, entityUUID) != NPCRemovalReason.DESPAWNED) {
+      helper.fail("Explicitly despawned non-persistent NPC must be stored as despawned");
+    }
+  }
+
+  public static void assertEnsureInitializedKeepsNPCIndex(
+      GameTestHelper helper, EntityType<?> entityType) {
+    EasyNPC<?> easyNPC = GameTestHelpers.mockEasyNPC(helper, entityType, new Vec3(1, 2, 1));
+    NPCEntityManager.saveNPC(easyNPC);
+    NPCEntityData entityData = NPCEntityData.get();
+
+    NPCEntityManager.ensureInitialized(helper.getLevel().getServer());
+
+    if (NPCEntityData.get() != entityData) {
+      helper.fail("Repeated initialization for the same server replaced the NPC index");
+      return;
+    }
+
+    if (NPCEntityManager.getNPC(easyNPC.getEntityUUID()).isEmpty()) {
+      helper.fail("Repeated initialization lost the NPC " + easyNPC.getEntityUUID());
+    }
+  }
+
+  public static void assertDeletedNPCIsDiscardedOnLoad(
+      GameTestHelper helper, EntityType<?> entityType) {
+    ServerLevel serverLevel = helper.getLevel();
+    EasyNPC<?> easyNPC = GameTestHelpers.mockEasyNPC(helper, entityType, new Vec3(1, 2, 1));
+    NPCEntityManager.saveNPC(easyNPC);
+    UUID entityUUID = easyNPC.getEntityUUID();
+    CompoundTag entityTag = saveEntity(helper, easyNPC.getEntity());
+    GameTestHelpers.addCleanup(helper, () -> NPCEntityManager.clearNPCDeleted(entityUUID));
+
+    if (!EasyNPCEntityHandler.delete(easyNPC)) {
+      helper.fail("Failed to delete the NPC");
+      return;
+    }
+
+    Entity reloadedEntity = entityType.create(serverLevel, EntitySpawnReason.LOAD);
+    if (reloadedEntity == null) {
+      helper.fail("Unable to create " + entityType + " for the reload");
+      return;
+    }
+
+    loadEntity(helper, reloadedEntity, entityTag);
+    if (!serverLevel.addFreshEntity(reloadedEntity)) {
+      helper.fail("Unable to add the reloaded NPC " + entityUUID + " to the level");
+      return;
+    }
+
+    saveDirtyNPCsBeforeScheduledDiscard(reloadedEntity);
+
+    helper.succeedWhen(
+        () -> {
+          if (!reloadedEntity.isRemoved()) {
+            helper.fail("Deleted NPC " + entityUUID + " returned on load");
+          }
+          if (NPCEntityManager.getNPC(entityUUID).isPresent()) {
+            helper.fail("Deleted NPC " + entityUUID + " was indexed again on load");
+          }
+        });
+  }
+
+  private static void saveDirtyNPCsBeforeScheduledDiscard(Entity entity) {
+    if (entity instanceof EasyNPC<?> easyNPC) {
+      easyNPC.getEasyNPCStatusData().markNPCDataUpdated();
+    }
+    NPCEntityManager.saveAllDirtyNPCs();
+  }
+
+  public static void assertKilledNPCRequiresForcedSpawn(
+      GameTestHelper helper, EntityType<?> entityType) {
+    EasyNPC<?> easyNPC = GameTestHelpers.mockEasyNPC(helper, entityType, new Vec3(1, 2, 1));
+    NPCEntityManager.saveNPC(easyNPC);
+    UUID entityUUID = easyNPC.getEntityUUID();
+    if (!EasyNPCEntityHandler.despawn(easyNPC, NPCRemovalReason.KILLED)) {
+      helper.fail("Failed to remove the NPC as killed");
+      return;
+    }
+
+    if (EasyNPCEntityHandler.spawn(entityUUID, helper.getLevel())) {
+      helper.fail("Killed NPC " + entityUUID + " must not spawn without force");
+      return;
+    }
+
+    if (!EasyNPCEntityHandler.spawn(entityUUID, helper.getLevel(), true)) {
+      helper.fail("Killed NPC " + entityUUID + " must spawn with force");
+    }
+  }
+
+  public static void assertLoadedNPCIsNotSpawnedTwice(
+      GameTestHelper helper, EntityType<?> entityType) {
+    EasyNPC<?> easyNPC = GameTestHelpers.mockEasyNPC(helper, entityType, new Vec3(1, 2, 1));
+    NPCEntityManager.saveNPC(easyNPC);
+
+    if (EasyNPCEntityHandler.spawn(easyNPC.getEntityUUID(), helper.getLevel(), true)) {
+      helper.fail("Loaded NPC " + easyNPC.getEntityUUID() + " was spawned a second time");
+    }
+  }
+
+  public static void assertActionGroupsAreRemovedOnLeave(
+      GameTestHelper helper, EntityType<?> entityType) {
+    EasyNPC<?> easyNPC = GameTestHelpers.mockEasyNPC(helper, entityType, new Vec3(1, 2, 1));
+    ServerPlayer serverPlayer =
+        GameTestHelpers.mockServerPlayer(helper, new Vec3(2, 2, 1), "action-group-player");
+
+    ActionManager.addPlayer(easyNPC.getMob(), ActionGroup.DISTANCE_NEAR, serverPlayer);
+    ActionManager.removeServerPlayer(serverPlayer);
+    if (ActionManager.containsPlayer(easyNPC.getMob(), ActionGroup.DISTANCE_NEAR, serverPlayer)) {
+      helper.fail("Action groups still reference the player after the player left");
+      return;
+    }
+
+    ActionManager.addPlayer(easyNPC.getMob(), ActionGroup.DISTANCE_NEAR, serverPlayer);
+    ActionManager.removeMob(easyNPC.getMob());
+    if (ActionManager.containsPlayer(easyNPC.getMob(), ActionGroup.DISTANCE_NEAR, serverPlayer)) {
+      helper.fail("Action groups still reference the NPC after the NPC left");
+    }
+  }
+
+  public static void assertEasyNPCEntityTypesAreRecognized(
+      GameTestHelper helper, EntityType<?> entityType) {
+    ServerLevel serverLevel = helper.getLevel();
+    if (!EasyNPCEntityTypes.isEasyNPCEntityType(entityType, serverLevel)) {
+      helper.fail(entityType + " must be recognized as an Easy NPC type");
+      return;
+    }
+
+    if (EasyNPCEntityTypes.isEasyNPCEntityType(EntityType.PIG, serverLevel)) {
+      helper.fail("Pig must not be recognized as an Easy NPC type");
+      return;
+    }
+
+    CompoundTag easyNPCTag = new CompoundTag();
+    easyNPCTag.putString("id", EntityType.getKey(entityType).toString());
+    if (!EasyNPCEntityTypes.isEasyNPCEntityTag(easyNPCTag, serverLevel)) {
+      helper.fail("Entity tag of " + entityType + " must be recognized as an Easy NPC");
+      return;
+    }
+
+    CompoundTag pigTag = new CompoundTag();
+    pigTag.putString("id", EntityType.getKey(EntityType.PIG).toString());
+    if (EasyNPCEntityTypes.isEasyNPCEntityTag(pigTag, serverLevel)) {
+      helper.fail("Entity tag of a pig must not be recognized as an Easy NPC");
     }
   }
 }

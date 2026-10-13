@@ -103,4 +103,10 @@ public class AttributeMessageTest {
     AttributeMessageTestHelper.assertNameChange(helper, humanoid());
     helper.succeed();
   }
+
+  @GameTest(structure = "easy_npc_config_ui:gametest.3x3x3")
+  public void testInventoryFlagChange(GameTestHelper helper) {
+    AttributeMessageTestHelper.assertInventoryFlagChange(helper, humanoid());
+    helper.succeed();
+  }
 }

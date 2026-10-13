@@ -41,6 +41,8 @@ public class AttackObjective extends Command {
         ObjectiveType.OWNER_HURT_BY_TARGET,
         new ProtectionObjective("protect_owner", "Protect Owner"));
     PROTECTION_OBJECTIVES.put(
+        ObjectiveType.OWNER_HURT_TARGET, new ProtectionObjective("assist_owner", "Assist Owner"));
+    PROTECTION_OBJECTIVES.put(
         ObjectiveType.HURT_BY_TARGET, new ProtectionObjective("defend_self", "Defend Self"));
     PROTECTION_OBJECTIVES.put(
         ObjectiveType.FACTION_HURT_BY_TARGET,

@@ -79,7 +79,7 @@ public class ObjectiveHandler {
     }
 
     if (!objectiveData.removeCustomObjective(objectiveDataEntry)) {
-      log.error("[{}] Error removing custom objective!", easyNPC);
+      log.debug("[{}] Custom objective {} was not present.", easyNPC, objectiveDataEntry);
       return false;
     }
 

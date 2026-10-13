@@ -34,6 +34,7 @@ import de.markusbordihn.easynpc.configui.client.screen.configuration.dialog.Basi
 import de.markusbordihn.easynpc.configui.client.screen.configuration.dialog.NoneDialogConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.dialog.YesNoDialogConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.equipment.EquipmentConfigurationContainerScreenWrapper;
+import de.markusbordihn.easynpc.configui.client.screen.configuration.inventory.InventoryConfigurationContainerScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.main.MainConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.model.CobblemonModelConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.model.CustomModelConfigurationScreenWrapper;
@@ -238,6 +239,9 @@ public class ClientScreens {
           MenuScreens.register(
               ModMenuTypes.EQUIPMENT_CONFIGURATION_MENU.get(),
               EquipmentConfigurationContainerScreenWrapper::new);
+          MenuScreens.register(
+              ModMenuTypes.INVENTORY_CONFIGURATION_MENU.get(),
+              InventoryConfigurationContainerScreenWrapper::new);
           MenuScreens.register(
               ModMenuTypes.FOLLOW_OBJECTIVE_CONFIGURATION_MENU.get(),
               FollowObjectiveConfigurationScreenWrapper::new);

@@ -27,6 +27,10 @@ public final class GameTestEntityTypes {
 
   private GameTestEntityTypes() {}
 
+  public static EntityType<?> allay() {
+    return ModEntityType.getEntityType(ModNPCEntityType.ALLAY);
+  }
+
   public static EntityType<?> humanoid() {
     return ModEntityType.getEntityType(ModNPCEntityType.HUMANOID);
   }
