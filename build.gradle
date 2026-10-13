@@ -10,20 +10,6 @@ tasks.named('releaseSmokeTest') {
   mustRunAfter 'cleanBuild'
 }
 
-subprojects {
-
-  tasks.register('wrapper', Wrapper) {
-    gradleVersion = '9.7.1'
-    distributionType = Wrapper.DistributionType.BIN
-  }
-
-  tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8'
-  }
-
-}
-
-// Build all modules
 tasks.named('build') {
   description = 'Builds all modules (core, config-ui, bundle)'
 
@@ -54,7 +40,6 @@ tasks.named('build') {
   }
 }
 
-// Clean all modules
 tasks.named('clean') {
   description = 'Cleans all modules (core, config-ui, bundle)'
 
@@ -85,7 +70,6 @@ tasks.named('clean') {
   }
 }
 
-// Clean Maven Local artifacts (current version only)
 tasks.register('cleanMavenLocal') {
   description = 'Deletes this project\'s artifacts from Maven Local (current version)'
   group = "build"
@@ -137,7 +121,6 @@ tasks.register('cleanMavenLocal') {
   }
 }
 
-// Clean Loom Cache for Easy NPC artifacts
 tasks.register('cleanLoomCache') {
   description = 'Deletes Easy NPC artifacts from Fabric Loom cache'
   group = "build"
@@ -168,19 +151,15 @@ tasks.register('cleanLoomCache') {
   }
 }
 
-// Clean Maven Local and build all modules sequentially
 tasks.register('cleanBuild') {
   description = 'Cleans Maven Local and builds all modules sequentially (core -> config-ui -> bundle)'
   group = "build"
 
   doLast {
-    // First clean Maven Local
     tasks.cleanMavenLocal.actions.each { it.execute(tasks.cleanMavenLocal) }
 
-    // Clean Loom Cache
     tasks.cleanLoomCache.actions.each { it.execute(tasks.cleanLoomCache) }
 
-    // Build modules in correct order: core first, then config-ui (needs core), then bundle (needs both)
     def modules = ['core', 'config-ui', 'bundle']
 
     modules.each { moduleName ->
@@ -207,7 +186,6 @@ tasks.register('cleanBuild') {
   }
 }
 
-// Full verification: clean build, then check + game tests for all modules
 tasks.register('fullCheck') {
   description = 'Clean build, then check and game tests for all modules (core -> config-ui -> bundle)'
   group = "verification"
@@ -241,7 +219,6 @@ tasks.register('fullCheck') {
   }
 }
 
-// Publish all modules to Modrinth and CurseForge
 tasks.register('publish') {
   description = 'Builds and publishes all modules (core, config-ui, bundle)'
   group = "publishing"

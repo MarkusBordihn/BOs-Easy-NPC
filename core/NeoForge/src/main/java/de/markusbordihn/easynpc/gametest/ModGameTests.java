@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.gametest;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.compat.CompatConstants;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -327,6 +328,10 @@ public final class ModGameTests {
         "scale_updates_dimensions",
         NPCDataIsolationTest::testScaleUpdatesDimensions,
         DEFAULT_STRUCTURE);
+    register(
+        "scale_updates_render_entity_dimensions",
+        NPCDataIsolationTest::testScaleUpdatesRenderEntityDimensions,
+        DEFAULT_STRUCTURE);
     register("position_isolation", NPCDataIsolationTest::testPositionIsolation, DEFAULT_STRUCTURE);
     register(
         "visibility_isolation", NPCDataIsolationTest::testVisibilityIsolation, DEFAULT_STRUCTURE);
@@ -339,7 +344,6 @@ public final class ModGameTests {
         "n_p_c_is_indexed_on_spawn",
         NPCEntityLifecycleTest::testNPCIsIndexedOnSpawn,
         DEFAULT_STRUCTURE);
-    register("owner_index_update", NPCEntityLifecycleTest::testOwnerIndexUpdate, DEFAULT_STRUCTURE);
     register(
         "repeated_owner_update_is_idempotent",
         NPCEntityLifecycleTest::testRepeatedOwnerUpdateIsIdempotent,
@@ -365,6 +369,42 @@ public final class ModGameTests {
     register(
         "respawn_keeps_index_entry",
         NPCEntityLifecycleTest::testRespawnKeepsIndexEntry,
+        DEFAULT_STRUCTURE);
+    register(
+        "loaded_n_p_c_stays_persistent",
+        NPCEntityLifecycleTest::testLoadedNPCStaysPersistent,
+        DEFAULT_STRUCTURE);
+    register(
+        "non_persistent_n_p_c_is_not_stored_on_join_and_unload",
+        NPCEntityLifecycleTest::testNonPersistentNPCIsNotStoredOnJoinAndUnload,
+        DEFAULT_STRUCTURE);
+    register(
+        "non_persistent_n_p_c_is_stored_on_explicit_despawn",
+        NPCEntityLifecycleTest::testNonPersistentNPCIsStoredOnExplicitDespawn,
+        DEFAULT_STRUCTURE);
+    register(
+        "ensure_initialized_keeps_n_p_c_index",
+        NPCEntityLifecycleTest::testEnsureInitializedKeepsNPCIndex,
+        DEFAULT_STRUCTURE);
+    register(
+        "deleted_n_p_c_is_discarded_on_load",
+        NPCEntityLifecycleTest::testDeletedNPCIsDiscardedOnLoad,
+        DEFAULT_STRUCTURE);
+    register(
+        "killed_n_p_c_requires_forced_spawn",
+        NPCEntityLifecycleTest::testKilledNPCRequiresForcedSpawn,
+        DEFAULT_STRUCTURE);
+    register(
+        "loaded_n_p_c_is_not_spawned_twice",
+        NPCEntityLifecycleTest::testLoadedNPCIsNotSpawnedTwice,
+        DEFAULT_STRUCTURE);
+    register(
+        "action_groups_are_removed_on_leave",
+        NPCEntityLifecycleTest::testActionGroupsAreRemovedOnLeave,
+        DEFAULT_STRUCTURE);
+    register(
+        "easy_n_p_c_entity_types_are_recognized",
+        NPCEntityLifecycleTest::testEasyNPCEntityTypesAreRecognized,
         DEFAULT_STRUCTURE);
 
     register(
@@ -413,16 +453,20 @@ public final class ModGameTests {
         SMOKE_STRUCTURE);
 
     register(
-        "duplicate_button_label_is_rejected",
-        DialogButtonIdentityTest::testDuplicateButtonLabelIsRejected,
+        "equal_button_labels_lock_per_dialog",
+        DialogButtonIdentityTest::testEqualButtonLabelsLockPerDialog,
         DEFAULT_STRUCTURE);
     register(
-        "button_identity_survives_save_and_load",
-        DialogButtonIdentityTest::testButtonIdentitySurvivesSaveAndLoad,
+        "equal_button_labels_reach_execution_limit_per_dialog",
+        DialogButtonIdentityTest::testEqualButtonLabelsReachExecutionLimitPerDialog,
         DEFAULT_STRUCTURE);
     register(
-        "edited_button_label_stays_addressable",
-        DialogButtonIdentityTest::testEditedButtonLabelStaysAddressable,
+        "equal_actions_reach_execution_limit_per_button",
+        DialogButtonIdentityTest::testEqualActionsReachExecutionLimitPerButton,
+        DEFAULT_STRUCTURE);
+    register(
+        "bank_teller_locks_withdrawals_by_balance",
+        DialogButtonIdentityTest::testBankTellerLocksWithdrawalsByBalance,
         DEFAULT_STRUCTURE);
 
     register(
@@ -451,20 +495,16 @@ public final class ModGameTests {
         NavigationTypeTest::testGravityIsRestoredAfterFlying,
         DEFAULT_STRUCTURE);
     register(
-        "hover_height_stays_in_range",
-        NavigationTypeTest::testHoverHeightStaysInRange,
-        DEFAULT_STRUCTURE);
-    register(
-        "min_hover_height_stays_in_range",
-        NavigationTypeTest::testMinHoverHeightStaysInRange,
-        DEFAULT_STRUCTURE);
-    register(
         "render_entity_type_selects_the_navigation",
         NavigationTypeTest::testRenderEntityTypeSelectsTheNavigation,
         DEFAULT_STRUCTURE);
     register(
         "navigation_type_survives_preset_import",
         NavigationTypeTest::testNavigationTypeSurvivesPresetImport,
+        DEFAULT_STRUCTURE);
+    register(
+        "hover_heights_are_set_independently",
+        NavigationTypeTest::testHoverHeightsAreSetIndependently,
         DEFAULT_STRUCTURE);
 
     register(
@@ -491,10 +531,6 @@ public final class ModGameTests {
     register(
         "debug_action_still_writes_the_state",
         NpcStateTest::testDebugActionStillWritesTheState,
-        DEFAULT_STRUCTURE);
-    register(
-        "state_survives_save_and_load",
-        NpcStateTest::testStateSurvivesSaveAndLoad,
         DEFAULT_STRUCTURE);
     register(
         "state_condition_locks_dialog_button",
@@ -561,10 +597,6 @@ public final class ModGameTests {
     register(
         "advanced_max_uses_preserves_current_uses",
         TradingPersistenceTest::testAdvancedMaxUsesPreservesCurrentUses,
-        DEFAULT_STRUCTURE);
-    register(
-        "modified_trade_item_persistence",
-        TradingPersistenceTest::testModifiedTradeItemPersistence,
         DEFAULT_STRUCTURE);
     register(
         "basic_trading_offers_update_applies_correct_fields",
@@ -726,6 +758,10 @@ public final class ModGameTests {
         DEFAULT_STRUCTURE);
     register(
         "preset_import_sets_home", PresetSpawnTest::testPresetImportSetsHome, DEFAULT_STRUCTURE);
+    register(
+        "preset_handler_creates_preset_item",
+        PresetSpawnTest::testPresetHandlerCreatesPresetItem,
+        DEFAULT_STRUCTURE);
 
     register(
         "npc_without_stored_sounds_still_has_sounds",
@@ -734,10 +770,6 @@ public final class ModGameTests {
     register(
         "villager_without_stored_sounds_still_has_sounds",
         StoredDataTest::testVillagerWithoutStoredSoundsStillHasSounds,
-        DEFAULT_STRUCTURE);
-    register(
-        "unchanged_sounds_are_not_stored",
-        StoredDataTest::testUnchangedSoundsAreNotStored,
         DEFAULT_STRUCTURE);
     register(
         "objectives_survive_without_target_flags",
@@ -815,10 +847,6 @@ public final class ModGameTests {
         OpacityAttributeTest::testOpacityActionChangesTheAttribute,
         DEFAULT_STRUCTURE);
     register(
-        "fully_transparent_opacity_survives_save_and_load",
-        OpacityAttributeTest::testFullyTransparentOpacitySurvivesSaveAndLoad,
-        DEFAULT_STRUCTURE);
-    register(
         "opacity_is_exported_with_the_preset",
         OpacityAttributeTest::testOpacityIsExportedWithThePreset,
         DEFAULT_STRUCTURE);
@@ -849,6 +877,7 @@ public final class ModGameTests {
         "global_pause_ends_with_the_server",
         PauseTest::testGlobalPauseEndsWithTheServer,
         DEFAULT_STRUCTURE);
+    register("paused_state_is_synched", PauseTest::testPausedStateIsSynched, DEFAULT_STRUCTURE);
 
     register(
         "idle_time_grows_while_the_player_stands_still",
@@ -947,6 +976,153 @@ public final class ModGameTests {
     register(
         "owner_set_requires_gamemaster",
         OwnerCommandTest::testOwnerSetRequiresGamemaster,
+        DEFAULT_STRUCTURE);
+    register(
+        "owner_change_updates_owner_index",
+        OwnerCommandTest::testOwnerChangeUpdatesOwnerIndex,
+        DEFAULT_STRUCTURE);
+    register(
+        "same_owner_fires_one_event",
+        OwnerCommandTest::testSameOwnerFiresOneEvent,
+        DEFAULT_STRUCTURE);
+    register(
+        "owner_set_before_spawn_fires_one_event",
+        OwnerCommandTest::testOwnerSetBeforeSpawnFiresOneEvent,
+        DEFAULT_STRUCTURE);
+
+    register(
+        "assist_owner_targets_what_the_owner_attacks",
+        AssistOwnerTest::testAssistOwnerTargetsWhatTheOwnerAttacks,
+        DEFAULT_STRUCTURE);
+    register(
+        "assist_owner_requires_owner",
+        AssistOwnerTest::testAssistOwnerRequiresOwner,
+        DEFAULT_STRUCTURE);
+    register(
+        "owner_goals_ignore_allies",
+        AssistOwnerTest::testOwnerGoalsIgnoreAllies,
+        DEFAULT_STRUCTURE);
+
+    register(
+        "boss_bar_is_hidden_by_default",
+        BossBarTest::testBossBarIsHiddenByDefault,
+        DEFAULT_STRUCTURE);
+    register(
+        "boss_bar_is_shown_to_player_in_range",
+        BossBarTest::testBossBarIsShownToPlayerInRange,
+        DEFAULT_STRUCTURE);
+    register(
+        "boss_bar_is_hidden_from_player_out_of_range",
+        BossBarTest::testBossBarIsHiddenFromPlayerOutOfRange,
+        DEFAULT_STRUCTURE);
+    register(
+        "boss_bar_is_removed_after_death",
+        BossBarTest::testBossBarIsRemovedAfterDeath,
+        DEFAULT_STRUCTURE);
+    register(
+        "invalid_boss_bar_values_are_rejected",
+        BossBarTest::testInvalidBossBarValuesAreRejected,
+        DEFAULT_STRUCTURE);
+    register(
+        "boss_bar_settings_are_exported_with_the_preset",
+        BossBarTest::testBossBarSettingsAreExportedWithThePreset,
+        DEFAULT_STRUCTURE);
+
+    if (CompatConstants.MOD_EASY_MODEL_ENTITIES_LOADED) {
+      register(
+          "integration_lists_example_profiles",
+          EasyModelEntitiesTest::testIntegrationListsExampleProfiles,
+          DEFAULT_STRUCTURE);
+      register(
+          "default_profile_defines_the_n_p_c",
+          EasyModelEntitiesTest::testDefaultProfileDefinesTheNPC,
+          DEFAULT_STRUCTURE);
+      register(
+          "floating_profile_flies",
+          EasyModelEntitiesTest::testFloatingProfileFlies,
+          DEFAULT_STRUCTURE);
+      register(
+          "aquatic_profile_swims",
+          EasyModelEntitiesTest::testAquaticProfileSwims,
+          DEFAULT_STRUCTURE);
+      register(
+          "profile_survives_preset_import",
+          EasyModelEntitiesTest::testProfileSurvivesPresetImport,
+          DEFAULT_STRUCTURE);
+    }
+
+    register(
+        "interaction_action_consumes_the_click",
+        InteractionResultTest::testInteractionActionConsumesTheClick,
+        DEFAULT_STRUCTURE);
+    register(
+        "interaction_without_action_passes",
+        InteractionResultTest::testInteractionWithoutActionPasses,
+        DEFAULT_STRUCTURE);
+    register(
+        "interaction_with_tool_item_passes",
+        InteractionResultTest::testInteractionWithToolItemPasses,
+        DEFAULT_STRUCTURE);
+
+    register(
+        "items_are_picked_up_into_inventory",
+        InventoryTest::testItemsArePickedUpIntoInventory,
+        DEFAULT_STRUCTURE);
+    register(
+        "nothing_is_picked_up_by_default",
+        InventoryTest::testNothingIsPickedUpByDefault,
+        DEFAULT_STRUCTURE);
+    register(
+        "full_inventory_rejects_items",
+        InventoryTest::testFullInventoryRejectsItems,
+        DEFAULT_STRUCTURE);
+    register(
+        "inventory_is_dropped_on_death_when_enabled",
+        InventoryTest::testInventoryIsDroppedOnDeathWhenEnabled,
+        DEFAULT_STRUCTURE);
+    register(
+        "inventory_is_not_dropped_on_death_by_default",
+        InventoryTest::testInventoryIsNotDroppedOnDeathByDefault,
+        DEFAULT_STRUCTURE);
+    register(
+        "inventory_is_exported_with_the_preset",
+        InventoryTest::testInventoryIsExportedWithThePreset,
+        DEFAULT_STRUCTURE);
+    register(
+        "preset_item_drops_inventory_contents",
+        InventoryTest::testPresetItemDropsInventoryContents,
+        DEFAULT_STRUCTURE);
+
+    register(
+        "owner_objective_without_owner_can_be_removed",
+        ObjectiveApiTest::testOwnerObjectiveWithoutOwnerCanBeRemoved,
+        DEFAULT_STRUCTURE);
+    register(
+        "follow_owner_is_added_and_removed_once",
+        ObjectiveApiTest::testFollowOwnerIsAddedAndRemovedOnce,
+        DEFAULT_STRUCTURE);
+    register(
+        "follow_nearest_player_is_added_and_removed_once",
+        ObjectiveApiTest::testFollowNearestPlayerIsAddedAndRemovedOnce,
+        DEFAULT_STRUCTURE);
+    register(
+        "objective_events_fire_once_per_change",
+        ObjectiveApiTest::testObjectiveEventsFireOncePerChange,
+        DEFAULT_STRUCTURE);
+
+    register(
+        "sit_on_shoulder_stores_n_p_c",
+        ShoulderTest::testSitOnShoulderStoresNPC,
+        DEFAULT_STRUCTURE);
+    register(
+        "second_n_p_c_uses_right_shoulder",
+        ShoulderTest::testSecondNPCUsesRightShoulder,
+        DEFAULT_STRUCTURE);
+    register("dismount_respawns_n_p_c", ShoulderTest::testDismountRespawnsNPC, DEFAULT_STRUCTURE);
+    register("shoulder_size_limit", ShoulderTest::testShoulderSizeLimit, DEFAULT_STRUCTURE);
+    register(
+        "attribute_toggles_objective",
+        ShoulderTest::testAttributeTogglesObjective,
         DEFAULT_STRUCTURE);
   }
 

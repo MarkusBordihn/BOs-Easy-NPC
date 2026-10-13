@@ -35,7 +35,9 @@ public record ModelAnimationActionData(
   public static final String DATA_NAME_TAG = "Name";
   public static final String DATA_LOOP_TAG = "Loop";
   public static final String DATA_REPEAT_TAG = "Repeat";
+  public static final String DATA_HOLD_TAG = "Hold";
   public static final String DATA_DURATION_TAG = "Duration";
+  public static final String DATA_SPEED_TAG = "Speed";
   public static final String DATA_AFTER_CURRENT_TAG = "After";
   public static final String DATA_BLEND_TAG = "Blend";
 
@@ -70,19 +72,30 @@ public record ModelAnimationActionData(
 
   private static ModelAnimationPlayback playbackFromTag(CompoundTag compoundTag) {
     float durationTicks = compoundTag.getFloatOr(DATA_DURATION_TAG, 0.0F);
+    float speed = compoundTag.getFloatOr(DATA_SPEED_TAG, ModelAnimationPlayback.DEFAULT_SPEED);
     if (compoundTag.contains(DATA_REPEAT_TAG)) {
       return new ModelAnimationPlayback(
           ModelAnimationPlaybackMode.REPEAT,
           compoundTag.getIntOr(DATA_REPEAT_TAG, 0),
-          durationTicks);
+          durationTicks,
+          speed);
     }
 
     return new ModelAnimationPlayback(
-        compoundTag.getBooleanOr(DATA_LOOP_TAG, false)
-            ? ModelAnimationPlaybackMode.LOOP
-            : ModelAnimationPlaybackMode.ONCE,
+        playbackModeFromTag(compoundTag),
         ModelAnimationPlayback.DEFAULT_REPEAT_COUNT,
-        durationTicks);
+        durationTicks,
+        speed);
+  }
+
+  private static ModelAnimationPlaybackMode playbackModeFromTag(CompoundTag compoundTag) {
+    if (compoundTag.getBooleanOr(DATA_HOLD_TAG, false)) {
+      return ModelAnimationPlaybackMode.HOLD;
+    }
+
+    return compoundTag.getBooleanOr(DATA_LOOP_TAG, false)
+        ? ModelAnimationPlaybackMode.LOOP
+        : ModelAnimationPlaybackMode.ONCE;
   }
 
   public CompoundTag createTag() {
@@ -96,8 +109,14 @@ public record ModelAnimationActionData(
     if (this.playback.mode() == ModelAnimationPlaybackMode.REPEAT) {
       compoundTag.putInt(DATA_REPEAT_TAG, this.playback.repeatCount());
     }
+    if (this.playback.mode() == ModelAnimationPlaybackMode.HOLD) {
+      compoundTag.putBoolean(DATA_HOLD_TAG, true);
+    }
     if (this.playback.hasDurationLimit()) {
       compoundTag.putFloat(DATA_DURATION_TAG, this.playback.durationTicks());
+    }
+    if (!this.playback.hasDefaultSpeed()) {
+      compoundTag.putFloat(DATA_SPEED_TAG, this.playback.speed());
     }
     if (this.transition.timing() == ModelAnimationSwitchTiming.AFTER_CURRENT) {
       compoundTag.putBoolean(DATA_AFTER_CURRENT_TAG, true);

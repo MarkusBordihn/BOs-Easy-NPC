@@ -24,12 +24,16 @@ import de.markusbordihn.easynpc.data.action.ActionContext;
 import de.markusbordihn.easynpc.data.action.ActionDataEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.data.npc.NPCRemovalReason;
+import de.markusbordihn.easynpc.data.npc.ShoulderSide;
+import de.markusbordihn.easynpc.data.objective.ObjectiveDataEntry;
 import de.markusbordihn.easynpc.data.state.StateEntry;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -43,6 +47,11 @@ public class EasyNPCEventRegistry {
       new CopyOnWriteArrayList<>();
   private static final List<StateEventListener> stateEventListeners = new CopyOnWriteArrayList<>();
   private static final List<EntityLifecycleListener> entityLifecycleListeners =
+      new CopyOnWriteArrayList<>();
+  private static final List<OwnerEventListener> ownerEventListeners = new CopyOnWriteArrayList<>();
+  private static final List<ObjectiveEventListener> objectiveEventListeners =
+      new CopyOnWriteArrayList<>();
+  private static final List<ShoulderEventListener> shoulderEventListeners =
       new CopyOnWriteArrayList<>();
 
   private EasyNPCEventRegistry() {}
@@ -99,6 +108,89 @@ public class EasyNPCEventRegistry {
   public static void unregisterEntityLifecycleListener(
       EntityLifecycleListener entityLifecycleListener) {
     entityLifecycleListeners.remove(entityLifecycleListener);
+  }
+
+  public static void registerOwnerEventListener(OwnerEventListener ownerEventListener) {
+    if (ownerEventListener == null) {
+      log.error("Unable to register a null owner event listener");
+      return;
+    }
+
+    ownerEventListeners.add(ownerEventListener);
+  }
+
+  public static void unregisterOwnerEventListener(OwnerEventListener ownerEventListener) {
+    ownerEventListeners.remove(ownerEventListener);
+  }
+
+  public static void registerObjectiveEventListener(ObjectiveEventListener objectiveEventListener) {
+    if (objectiveEventListener == null) {
+      log.error("Unable to register a null objective event listener");
+      return;
+    }
+
+    objectiveEventListeners.add(objectiveEventListener);
+  }
+
+  public static void unregisterObjectiveEventListener(
+      ObjectiveEventListener objectiveEventListener) {
+    objectiveEventListeners.remove(objectiveEventListener);
+  }
+
+  public static void registerShoulderEventListener(ShoulderEventListener shoulderEventListener) {
+    if (shoulderEventListener == null) {
+      log.error("Unable to register a null shoulder event listener");
+      return;
+    }
+
+    shoulderEventListeners.add(shoulderEventListener);
+  }
+
+  public static void unregisterShoulderEventListener(ShoulderEventListener shoulderEventListener) {
+    shoulderEventListeners.remove(shoulderEventListener);
+  }
+
+  public static void fireOwnerChanged(EasyNPC<?> easyNPC, UUID previousOwnerUUID, UUID ownerUUID) {
+    if (ownerEventListeners.isEmpty() || easyNPC == null) {
+      return;
+    }
+
+    for (OwnerEventListener ownerEventListener : ownerEventListeners) {
+      try {
+        ownerEventListener.onOwnerChanged(easyNPC, previousOwnerUUID, ownerUUID);
+      } catch (Exception e) {
+        log.error("Owner event listener {} failed for {}", ownerEventListener, easyNPC, e);
+      }
+    }
+  }
+
+  public static void fireObjectiveAdded(EasyNPC<?> easyNPC, ObjectiveDataEntry objectiveDataEntry) {
+    if (objectiveEventListeners.isEmpty() || easyNPC == null || objectiveDataEntry == null) {
+      return;
+    }
+
+    for (ObjectiveEventListener objectiveEventListener : objectiveEventListeners) {
+      try {
+        objectiveEventListener.onObjectiveAdded(easyNPC, objectiveDataEntry);
+      } catch (Exception e) {
+        log.error("Objective event listener {} failed for {}", objectiveEventListener, easyNPC, e);
+      }
+    }
+  }
+
+  public static void fireObjectiveRemoved(
+      EasyNPC<?> easyNPC, ObjectiveDataEntry objectiveDataEntry) {
+    if (objectiveEventListeners.isEmpty() || easyNPC == null || objectiveDataEntry == null) {
+      return;
+    }
+
+    for (ObjectiveEventListener objectiveEventListener : objectiveEventListeners) {
+      try {
+        objectiveEventListener.onObjectiveRemoved(easyNPC, objectiveDataEntry);
+      } catch (Exception e) {
+        log.error("Objective event listener {} failed for {}", objectiveEventListener, easyNPC, e);
+      }
+    }
   }
 
   public static void fireNPCSpawned(EasyNPC<?> easyNPC) {
@@ -190,6 +282,35 @@ public class EasyNPCEventRegistry {
         actionEventListener.onActionExecuted(easyNPC, actionDataEntry, actionContext);
       } catch (Exception e) {
         log.error("Action event listener {} failed for {}", actionEventListener, easyNPC, e);
+      }
+    }
+  }
+
+  public static void fireShoulderMounted(
+      EasyNPC<?> easyNPC, Player player, ShoulderSide shoulderSide) {
+    if (shoulderEventListeners.isEmpty() || easyNPC == null || player == null) {
+      return;
+    }
+
+    for (ShoulderEventListener shoulderEventListener : shoulderEventListeners) {
+      try {
+        shoulderEventListener.onShoulderMounted(easyNPC, player, shoulderSide);
+      } catch (Exception e) {
+        log.error("Shoulder event listener {} failed for {}", shoulderEventListener, easyNPC, e);
+      }
+    }
+  }
+
+  public static void fireShoulderDismounted(EasyNPC<?> easyNPC) {
+    if (shoulderEventListeners.isEmpty() || easyNPC == null) {
+      return;
+    }
+
+    for (ShoulderEventListener shoulderEventListener : shoulderEventListeners) {
+      try {
+        shoulderEventListener.onShoulderDismounted(easyNPC);
+      } catch (Exception e) {
+        log.error("Shoulder event listener {} failed for {}", shoulderEventListener, easyNPC, e);
       }
     }
   }

@@ -21,10 +21,12 @@ package de.markusbordihn.easynpc.data.dialog;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import de.markusbordihn.easynpc.data.action.ActionDataSet;
 import de.markusbordihn.easynpc.data.condition.ConditionDataEntry;
 import de.markusbordihn.easynpc.data.condition.ConditionType;
 import de.markusbordihn.easynpc.data.condition.DurationType;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
@@ -239,5 +241,24 @@ class DialogDataEntryTest {
 
     assertEquals("hndler_begrung", reloaded.getLabel());
     assertEquals(original.getId(), reloaded.getId());
+  }
+
+  @Test
+  @DisplayName("An edited button keeps its position in the dialog")
+  void testEditedButtonKeepsItsPosition() {
+    DialogButtonEntry firstButton = new DialogButtonEntry("First", DialogButtonType.DEFAULT);
+    DialogButtonEntry secondButton = new DialogButtonEntry("Second", DialogButtonType.DEFAULT);
+    DialogButtonEntry thirdButton = new DialogButtonEntry("Third", DialogButtonType.DEFAULT);
+    Set<DialogButtonEntry> buttons =
+        new LinkedHashSet<>(List.of(firstButton, secondButton, thirdButton));
+    DialogDataEntry dialogDataEntry = new DialogDataEntry("label", "Name", "Text", buttons);
+    DialogButtonEntry editedFirstButton =
+        new DialogButtonEntry("Edited", firstButton.label(), new ActionDataSet());
+
+    dialogDataEntry.setDialogButton(firstButton.id(), editedFirstButton);
+
+    assertEquals(
+        List.of(editedFirstButton, secondButton, thirdButton),
+        List.copyOf(dialogDataEntry.getDialogButtons()));
   }
 }

@@ -27,7 +27,6 @@ import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
 import de.markusbordihn.easynpc.data.model.ModelType;
 import de.markusbordihn.easynpc.data.npc.NPCType;
 import de.markusbordihn.easynpc.data.npc.RawNPCType;
-import de.markusbordihn.easynpc.data.scale.CustomScale;
 import de.markusbordihn.easynpc.data.server.ServerEntityData;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.data.skin.variant.ZombieSkinVariant;
@@ -45,6 +44,7 @@ import de.markusbordihn.easynpc.entity.easynpc.ai.control.EasyNPCSwimmingLookCon
 import de.markusbordihn.easynpc.entity.easynpc.ai.control.EasyNPCSwimmingMoveControl;
 import de.markusbordihn.easynpc.entity.easynpc.ai.navigation.EasyNPCWaterBoundPathNavigation;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.AttackHandler;
+import de.markusbordihn.easynpc.entity.easynpc.handlers.BossBarHandler;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.InteractionHandler;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.VisibilityHandler;
 import de.markusbordihn.easynpc.handler.AttributeHandler;
@@ -72,6 +72,7 @@ import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
@@ -87,6 +88,7 @@ import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.ai.goal.GoalSelector;
 import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.zombie.Zombie;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -185,6 +187,11 @@ public class NPCRawTemplate extends Zombie
             NPCRawTemplate.class, EntityDataSerializers.OPTIONAL_LIVING_ENTITY_REFERENCE));
 
     entityDataAccessorMap.put(
+        SynchedDataIndex.PAUSED,
+        net.minecraft.network.syncher.SynchedEntityData.defineId(
+            NPCRawTemplate.class, EntityDataSerializers.BOOLEAN));
+
+    entityDataAccessorMap.put(
         SynchedDataIndex.PROFESSION,
         net.minecraft.network.syncher.SynchedEntityData.defineId(
             NPCRawTemplate.class, EntityDataSerializersManager.PROFESSION));
@@ -234,6 +241,8 @@ public class NPCRawTemplate extends Zombie
       new EnumMap<>(StatusDataType.class);
   private final EnumMap<StatusDataType, Long> statusDataTimestampMap =
       new EnumMap<>(StatusDataType.class);
+  private final BossBarHandler bossBarHandler = new BossBarHandler();
+  private final SimpleContainer easyNPCInventory = new SimpleContainer(INVENTORY_SIZE);
   protected MerchantOffers merchantTradingOffers;
   private ServerEntityData serverEntityData;
   private int attackAnimationTick;
@@ -248,14 +257,15 @@ public class NPCRawTemplate extends Zombie
   private LookControl defaultLookControl;
 
   public NPCRawTemplate(EntityType<? extends Zombie> entityType, Level level, Enum<?> variant) {
-    super(entityType, level);
-    this.lookControl = new EasyNPCLookControl(this);
+    this(entityType, level);
     this.registerEasyNPCDefaultVariant(variant);
   }
 
   public NPCRawTemplate(EntityType<? extends Zombie> entityType, Level level) {
     super(entityType, level);
     this.lookControl = new EasyNPCLookControl(this);
+    // Minecraft 26.3 Mob#<init> resets Mob#persistenceRequired after defineSynchedData set it.
+    this.setPersistenceRequired();
   }
 
   @Override
@@ -340,6 +350,7 @@ public class NPCRawTemplate extends Zombie
       this.updatePersistentAnger((ServerLevel) this.level(), true);
       this.handleWaterEscapeTick();
       this.handleBlockedVehicleMountingTick();
+      this.bossBarHandler.tick(this);
     }
   }
 
@@ -358,7 +369,62 @@ public class NPCRawTemplate extends Zombie
   @Override
   public void die(DamageSource damageSource) {
     this.handleDieEvent(damageSource);
+    this.bossBarHandler.removeAllPlayers();
     super.die(damageSource);
+  }
+
+  @Override
+  protected void dropEquipment(ServerLevel serverLevel) {
+    super.dropEquipment(serverLevel);
+    this.dropInventoryOnDeath(serverLevel);
+  }
+
+  @Override
+  public SimpleContainer getEasyNPCInventory() {
+    return this.easyNPCInventory;
+  }
+
+  @Override
+  public boolean canPickUpLoot() {
+    return this.canPickUpItemsIntoInventory() || super.canPickUpLoot();
+  }
+
+  @Override
+  public boolean wantsToPickUp(ServerLevel serverLevel, ItemStack itemStack) {
+    if (this.canPickUpItemsIntoInventory()) {
+      return this.easyNPCInventory.canAddItem(itemStack);
+    }
+
+    return super.wantsToPickUp(serverLevel, itemStack);
+  }
+
+  @Override
+  protected void pickUpItem(ServerLevel serverLevel, ItemEntity itemEntity) {
+    if (!this.canPickUpItemsIntoInventory()) {
+      super.pickUpItem(serverLevel, itemEntity);
+      return;
+    }
+
+    ItemStack itemStack = itemEntity.getItem();
+    if (!this.easyNPCInventory.canAddItem(itemStack)) {
+      return;
+    }
+
+    this.onItemPickup(itemEntity);
+    int pickedUpCount = itemStack.getCount();
+    ItemStack remainingItemStack = this.easyNPCInventory.addItem(itemStack);
+    this.take(itemEntity, pickedUpCount - remainingItemStack.getCount());
+    if (remainingItemStack.isEmpty()) {
+      itemEntity.discard();
+    } else {
+      itemStack.setCount(remainingItemStack.getCount());
+    }
+  }
+
+  @Override
+  public void remove(RemovalReason removalReason) {
+    this.bossBarHandler.removeAllPlayers();
+    super.remove(removalReason);
   }
 
   @Override
@@ -440,10 +506,13 @@ public class NPCRawTemplate extends Zombie
       EntitySpawnReason entitySpawnReason,
       SpawnGroupData spawnGroupData) {
     AttributeHandler.handleDefaultAttributes(this);
+    boolean leftHanded = this.isLeftHanded();
     SpawnGroupData result =
         this.finalizeEasyNPCSpawn(
             super.finalizeSpawn(
                 serverLevelAccessor, difficulty, entitySpawnReason, spawnGroupData));
+    // Mob.finalizeSpawn makes 5% of all mobs left-handed, also over preset data (#349).
+    this.setLeftHanded(leftHanded);
     this.refreshDimensions();
     return result;
   }
@@ -607,6 +676,13 @@ public class NPCRawTemplate extends Zombie
     }
 
     super.knockback(strength, x, z, damageSource, damage, comesFromEffect);
+  }
+
+  @Override
+  public void jumpFromGround() {
+    if (this.getEntityAttributes().getMovementAttributes().canJump()) {
+      super.jumpFromGround();
+    }
   }
 
   @Override
@@ -797,19 +873,7 @@ public class NPCRawTemplate extends Zombie
 
   @Override
   public EntityDimensions getDefaultDimensions(Pose pose) {
-    EntityDimensions baseDimensions = super.getDefaultDimensions(pose);
-
-    CustomScale defaultScale = this.getDefaultModelScale();
-    if (defaultScale != null && defaultScale.hasChanged()) {
-      baseDimensions = baseDimensions.scale(defaultScale.x(), defaultScale.y());
-    }
-
-    CustomScale rootScale = this.getModelRootData().scale();
-    if (rootScale.x() != 1.0f || rootScale.y() != 1.0f) {
-      baseDimensions = baseDimensions.scale(rootScale.x(), rootScale.y());
-    }
-
-    return baseDimensions;
+    return this.applyModelScale(super.getDefaultDimensions(pose));
   }
 
   // TEMPLATE_INSERT:METHODS

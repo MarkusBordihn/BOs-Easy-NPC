@@ -37,6 +37,7 @@ import de.markusbordihn.easynpc.entity.easynpc.data.ModelRootDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.VariantDataCapable;
 import de.markusbordihn.easynpc.handler.NameHandler;
+import de.markusbordihn.easynpc.handler.RenderHandler;
 import de.markusbordihn.easynpc.handler.SkinHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -44,7 +45,9 @@ import java.util.Collection;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.ProblemReporter;
+import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.level.storage.TagValueOutput;
 import net.minecraft.world.phys.Vec3;
 
@@ -446,6 +449,29 @@ public final class NPCDataIsolationTestHelper {
 
     if (!rootTag.contains("Scale")) {
       helper.fail("NPC saved root model data should contain Scale after scale update");
+    }
+  }
+
+  public static void assertScaleUpdatesRenderEntityDimensions(
+      GameTestHelper helper, EntityType<?> entityType) {
+    EasyNPC<?> npc = GameTestHelpers.mockEasyNPC(helper, entityType, new Vec3(1, 2, 1));
+    ModelDataCapable<?> modelData = requireModelData(helper, npc, "NPC");
+    if (modelData == null) {
+      return;
+    }
+
+    RenderHandler.setRenderEntity(npc, EntityTypes.BAT);
+    modelData.setModelRootScale(new CustomScale(0.5f, 0.5f, 0.5f));
+
+    EntityDimensions expectedDimensions = EntityTypes.BAT.getDimensions().scale(0.5f);
+    EntityDimensions dimensions = npc.getEntity().getDimensions(npc.getEntity().getPose());
+    if (Math.abs(dimensions.width() - expectedDimensions.width()) > 0.001f
+        || Math.abs(dimensions.height() - expectedDimensions.height()) > 0.001f) {
+      helper.fail(
+          "NPC rendered as bat with half scale: expected "
+              + expectedDimensions
+              + ", got "
+              + dimensions);
     }
   }
 

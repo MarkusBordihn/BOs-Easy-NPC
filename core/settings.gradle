@@ -1,6 +1,11 @@
 pluginManagement {
   repositories {
     gradlePluginPortal()
+    mavenLocal {
+      content {
+        includeGroup 'de.markusbordihn.clientruntimeinterfacetoolkit'
+      }
+    }
     maven {
       name = 'Fabric'
       url = 'https://maven.fabricmc.net/'

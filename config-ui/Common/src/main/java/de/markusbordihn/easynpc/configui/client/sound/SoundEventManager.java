@@ -23,6 +23,9 @@ import de.markusbordihn.easynpc.configui.client.screen.components.SelectOption;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 
@@ -32,10 +35,16 @@ public class SoundEventManager {
 
   private SoundEventManager() {}
 
+  public static void refreshSoundEventOptions() {
+    soundEventOptions = null;
+  }
+
   public static List<SelectOption<String>> getSoundEventOptions() {
     if (soundEventOptions == null) {
-      List<Identifier> soundLocations = new ArrayList<>(BuiltInRegistries.SOUND_EVENT.keySet());
-      soundLocations.sort(Comparator.comparing(Identifier::toString));
+      // Resource-pack sounds exist only in sounds.json, not in the sound event registry (#849).
+      Set<Identifier> soundLocations = new TreeSet<>(Comparator.comparing(Identifier::toString));
+      soundLocations.addAll(BuiltInRegistries.SOUND_EVENT.keySet());
+      soundLocations.addAll(Minecraft.getInstance().getSoundManager().getAvailableSounds());
 
       List<SelectOption<String>> options = new ArrayList<>(soundLocations.size());
       for (Identifier soundLocation : soundLocations) {
@@ -49,7 +58,9 @@ public class SoundEventManager {
 
   public static boolean isKnownSoundEvent(String soundName) {
     Identifier soundLocation = Identifier.tryParse(soundName);
-    return soundLocation != null && BuiltInRegistries.SOUND_EVENT.containsKey(soundLocation);
+    return soundLocation != null
+        && (BuiltInRegistries.SOUND_EVENT.containsKey(soundLocation)
+            || Minecraft.getInstance().getSoundManager().getSoundEvent(soundLocation) != null);
   }
 
   private static String getDisplayLabel(Identifier soundLocation) {

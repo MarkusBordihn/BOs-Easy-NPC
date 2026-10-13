@@ -19,7 +19,9 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.data;
 
+import de.markusbordihn.easynpc.api.event.EasyNPCEventRegistry;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
+import de.markusbordihn.easynpc.entity.NPCEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import java.util.Optional;
 import java.util.UUID;
@@ -39,11 +41,15 @@ public interface OwnerDataCapable<T extends Mob> extends EasyNPC<T>, OwnableEnti
   String DATA_OWNER_TAG = "Owner";
 
   default void setNPCOwnerUUID(UUID uuid) {
+    UUID previousOwnerUUID = this.getOwnerUUID();
     if (uuid == null) {
       this.setSynchedEntityData(SynchedDataIndex.OWNER_REFERENCE, Optional.empty());
     } else {
       EntityReference<LivingEntity> entityReference = EntityReference.of(uuid);
       this.setSynchedEntityData(SynchedDataIndex.OWNER_REFERENCE, Optional.of(entityReference));
+    }
+    if (this.isServerSideInstance() && NPCEntityManager.updateOwner(this, uuid)) {
+      EasyNPCEventRegistry.fireOwnerChanged(this, previousOwnerUUID, uuid);
     }
   }
 

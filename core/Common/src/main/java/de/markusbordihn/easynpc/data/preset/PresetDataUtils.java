@@ -23,7 +23,9 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.component.DataComponents;
 import de.markusbordihn.easynpc.data.attribute.LegacyAttributeConverter;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.data.InventoryDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.NavigationDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.PresetDataCapable;
 import de.markusbordihn.easynpc.security.SecurityManager;
 import de.markusbordihn.easynpc.utils.CompoundTagUtils;
 import java.util.Optional;
@@ -101,6 +103,15 @@ public class PresetDataUtils {
     return entityData;
   }
 
+  // Every NPC spawned from the same preset would otherwise receive its own copy of the items.
+  public static CompoundTag removeInventoryContents(CompoundTag entityData) {
+    if (entityData != null) {
+      entityData.remove(InventoryDataCapable.DATA_INVENTORY_TAG);
+    }
+
+    return entityData;
+  }
+
   public static SpawnData toSpawnData(PresetData presetData) {
     if (presetData == null || !presetData.hasValidData()) {
       return new SpawnData();
@@ -146,6 +157,19 @@ public class PresetDataUtils {
     return new PresetData(entityType, entityData.copy());
   }
 
+  public static ItemStack toItemStack(EasyNPC<?> easyNPC) {
+    PresetDataCapable<?> presetData = easyNPC.getEasyNPCPresetData();
+    if (presetData == null) {
+      log.error("Can't export preset data from {}", easyNPC);
+      return ItemStack.EMPTY;
+    }
+
+    EntityType<?> entityType = easyNPC.getLivingEntity().getType();
+    ItemStack itemStack = toItemStack(new PresetData(entityType, presetData.serializePresetData()));
+    log.debug("Captured NPC preset from {} to {}", entityType, itemStack);
+    return itemStack;
+  }
+
   public static ItemStack toItemStack(PresetData presetData) {
     if (presetData == null || !presetData.hasValidData()) {
       log.warn("Cannot create item stack from invalid preset data");
@@ -162,11 +186,13 @@ public class PresetDataUtils {
     }
 
     ItemStack itemStack = new ItemStack(item);
+    CompoundTag cleanedData = cleanupEntityData(presetData.data().copy(), CleanupMode.FULL);
     itemStack.set(
         DataComponents.PRESET_DATA,
         new PresetData(
             presetData.entityType(),
-            removeEntityUUID(cleanupEntityData(presetData.data().copy(), CleanupMode.FULL))));
+            removeInventoryContents(
+                removeEntityUUID(SecurityManager.sanitizePresetExport(cleanedData)))));
 
     return itemStack;
   }
@@ -202,7 +228,8 @@ public class PresetDataUtils {
       return false;
     }
 
-    CompoundTag entityData = removeEntityUUID(sanitizedPresetData.data().copy());
+    CompoundTag entityData =
+        removeInventoryContents(removeEntityUUID(sanitizedPresetData.data().copy()));
 
     LegacyAttributeConverter.convertLegacyAttributes(entityData);
 

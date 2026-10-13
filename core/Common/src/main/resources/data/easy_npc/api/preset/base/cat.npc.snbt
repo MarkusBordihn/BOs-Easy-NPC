@@ -44,7 +44,7 @@
         Type:"LOOK_AT_MOB"
       }]
     },
-    PersistenceRequired:0b,
+    PersistenceRequired:1b,
     Sitting:0b,
     SkinData:{
       Type:"DEFAULT"

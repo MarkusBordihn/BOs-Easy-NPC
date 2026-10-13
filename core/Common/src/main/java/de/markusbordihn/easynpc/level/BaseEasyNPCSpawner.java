@@ -24,7 +24,9 @@ import de.markusbordihn.easynpc.access.SpawnerAccessHelper;
 import de.markusbordihn.easynpc.data.preset.PresetData;
 import de.markusbordihn.easynpc.data.preset.PresetDataUtils;
 import de.markusbordihn.easynpc.data.spawner.SpawnerType;
+import de.markusbordihn.easynpc.entity.EasyNPCEntityTypes;
 import de.markusbordihn.easynpc.entity.LivingEntityManager;
+import de.markusbordihn.easynpc.entity.NPCEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.PresetDataCapable;
 import de.markusbordihn.easynpc.utils.CompoundTagUtils;
@@ -32,6 +34,7 @@ import java.util.Optional;
 import java.util.UUID;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.UUIDUtil;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
@@ -50,6 +53,7 @@ import net.minecraft.world.level.storage.TagValueInput;
 import net.minecraft.world.level.storage.TagValueOutput;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -61,7 +65,7 @@ public class BaseEasyNPCSpawner extends BaseSpawner {
   private static final String STORED_PRESET_DATA_TAG = "StoredPresetData";
 
   private final SpawnerType spawnerType;
-  private boolean isEasyNPC = false;
+  private EntityType<?> spawnEntityType;
   private UUID easyNPCPresetUUID;
   private UUID easyNPCUUID;
   private PresetData storedPresetData;
@@ -134,7 +138,7 @@ public class BaseEasyNPCSpawner extends BaseSpawner {
 
   @Override
   public void clientTick(Level level, BlockPos blockPos) {
-    if (!this.hasEasyNPC() || !this.canSpawnBasedOnConditions(level, blockPos)) {
+    if (!this.hasEasyNPC(level) || !this.canSpawnBasedOnConditions(level, blockPos)) {
       return;
     }
 
@@ -143,7 +147,8 @@ public class BaseEasyNPCSpawner extends BaseSpawner {
 
   @Override
   public void serverTick(ServerLevel serverLevel, BlockPos blockPos) {
-    if (!this.hasEasyNPC() || this.spawnerType == SpawnerType.DEFAULT_SPAWNER) {
+    if (!this.hasEasyNPC(serverLevel)
+        || (this.spawnerType == SpawnerType.DEFAULT_SPAWNER && this.easyNPCPresetUUID == null)) {
       super.serverTick(serverLevel, blockPos);
       return;
     }
@@ -262,6 +267,7 @@ public class BaseEasyNPCSpawner extends BaseSpawner {
           null);
     }
 
+    NPCEntityManager.clearNPCDeleted(entity.getUUID());
     if (!serverLevel.tryAddFreshEntityWithPassengers(entity)) {
       log.debug("[Spawner] Failed to add entity to world at {}", entity.blockPosition());
       return false;
@@ -298,8 +304,19 @@ public class BaseEasyNPCSpawner extends BaseSpawner {
   }
 
   private boolean canSpawnBasedOnConditions(Level level, BlockPos blockPos) {
-    if (!this.hasEasyNPC() || this.storedPresetData == null) {
+    if (!this.hasEasyNPC(level) || this.storedPresetData == null) {
       return false;
+    }
+
+    if (this.spawnerType == SpawnerType.DEFAULT_SPAWNER
+        && this.easyNPCPresetUUID != null
+        && level instanceof ServerLevel serverLevel) {
+      return LivingEntityManager.getEntityCountByPresetUUID(
+              this.easyNPCPresetUUID,
+              serverLevel,
+              Vec3.atCenterOf(blockPos),
+              ((SpawnerAccessHelper) this).getRequiredPlayerRange())
+          < this.getMaxNearbyEntities();
     }
 
     if (this.spawnerType == SpawnerType.GROUP_SPAWNER
@@ -336,8 +353,8 @@ public class BaseEasyNPCSpawner extends BaseSpawner {
     return true;
   }
 
-  public boolean hasEasyNPC() {
-    return this.isEasyNPC;
+  public boolean hasEasyNPC(Level level) {
+    return EasyNPCEntityTypes.isEasyNPCEntityType(this.spawnEntityType, level);
   }
 
   private int getMaxNearbyEntities() {
@@ -402,19 +419,14 @@ public class BaseEasyNPCSpawner extends BaseSpawner {
   }
 
   private void updateEasyNPCData(CompoundTag compoundTag) {
-    this.isEasyNPC = false;
+    this.spawnEntityType =
+        compoundTag
+            .getString("id")
+            .map(Identifier::tryParse)
+            .flatMap(BuiltInRegistries.ENTITY_TYPE::getOptional)
+            .orElse(null);
     this.easyNPCUUID = null;
     this.easyNPCPresetUUID = null;
-
-    if (compoundTag.contains("id")) {
-      Optional<String> idOptional = compoundTag.getString("id");
-      if (idOptional.isPresent()) {
-        Identifier entityIdentifier = Identifier.tryParse(idOptional.get());
-        if (entityIdentifier != null) {
-          this.isEasyNPC = entityIdentifier.getNamespace().equals(Constants.MOD_ID);
-        }
-      }
-    }
 
     if (compoundTag.contains(ENTITY_UUID_TAG)) {
       Optional<UUID> uuidOptional = compoundTag.read(ENTITY_UUID_TAG, UUIDUtil.CODEC);

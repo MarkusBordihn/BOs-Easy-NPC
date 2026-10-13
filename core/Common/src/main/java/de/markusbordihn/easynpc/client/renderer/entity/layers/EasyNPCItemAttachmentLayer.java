@@ -28,10 +28,8 @@ import de.markusbordihn.easynpc.client.renderer.entity.state.EasyNPCRenderStateE
 import de.markusbordihn.easynpc.data.model.ItemAttachmentPoint;
 import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.model.ModelType;
-import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import java.util.Set;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
@@ -95,12 +93,7 @@ public class EasyNPCItemAttachmentLayer<
       return;
     }
 
-    UUID entityUUID = renderStateExtension.getEasyNpcUUID();
-    if (entityUUID == null) {
-      return;
-    }
-
-    EasyNPC<?> easyNPC = LivingEntityManager.getClientEasyNPCEntityByUUID(entityUUID);
+    EasyNPC<?> easyNPC = renderStateExtension.getEasyNPC();
     if (easyNPC == null) {
       return;
     }

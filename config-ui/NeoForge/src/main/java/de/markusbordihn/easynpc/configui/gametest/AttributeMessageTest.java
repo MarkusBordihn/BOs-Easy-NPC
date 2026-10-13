@@ -91,4 +91,9 @@ public final class AttributeMessageTest {
     AttributeMessageTestHelper.assertNameChange(helper, humanoid());
     helper.succeed();
   }
+
+  public static void testInventoryFlagChange(GameTestHelper helper) {
+    AttributeMessageTestHelper.assertInventoryFlagChange(helper, humanoid());
+    helper.succeed();
+  }
 }

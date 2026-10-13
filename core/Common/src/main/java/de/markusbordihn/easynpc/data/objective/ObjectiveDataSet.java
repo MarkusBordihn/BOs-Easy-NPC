@@ -82,7 +82,8 @@ public class ObjectiveDataSet {
   public ObjectiveDataEntry getOrCreateObjective(ObjectiveType objectiveType, int priority) {
     if (this.hasObjective(objectiveType)) {
       ObjectiveDataEntry objectiveDataEntry = this.getObjective(objectiveType);
-      if (objectiveDataEntry.getPriority() != priority) {
+      if (objectiveDataEntry.isPriorityConfigurable()
+          && objectiveDataEntry.getPriority() != priority) {
         objectiveDataEntry.setPriority(priority);
       }
       return objectiveDataEntry;

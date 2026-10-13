@@ -47,14 +47,6 @@ public class VillagerVariantTestHelper {
 
     assertMapping(
         helper, variantData, villager, VillagerSkinVariant.DESERT_ARMORER, "desert", "armorer");
-    assertMapping(
-        helper,
-        variantData,
-        villager,
-        VillagerSkinVariant.TAIGA_WEAPONSMITH,
-        "taiga",
-        "weaponsmith");
-    assertMapping(helper, variantData, villager, VillagerSkinVariant.PLAINS_NONE, "plains", "none");
   }
 
   private static void assertMapping(

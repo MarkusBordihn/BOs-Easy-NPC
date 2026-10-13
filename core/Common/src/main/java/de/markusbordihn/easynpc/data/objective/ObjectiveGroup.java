@@ -36,6 +36,7 @@ public class ObjectiveGroup {
       EnumSet.of(
           ObjectiveType.FOLLOW_ENTITY_BY_UUID,
           ObjectiveType.FOLLOW_OWNER,
+          ObjectiveType.FOLLOW_NEAREST_PLAYER,
           ObjectiveType.FOLLOW_PLAYER);
 
   public static final Set<ObjectiveType> OWNER_TARGET =

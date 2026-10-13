@@ -145,6 +145,9 @@ public final class ModGameTests {
         "follow_objective_configuration_screen",
         () -> ConfigurationScreenTest::testFollowObjectiveConfigurationScreen);
     TEST_FUNCTIONS.register(
+        "inventory_configuration_screen",
+        () -> ConfigurationScreenTest::testInventoryConfigurationScreen);
+    TEST_FUNCTIONS.register(
         "local_preset_import_configuration_screen",
         () -> ConfigurationScreenTest::testLocalPresetImportConfigurationScreen);
     TEST_FUNCTIONS.register(
@@ -225,6 +228,8 @@ public final class ModGameTests {
         "environmental_flag_change", () -> AttributeMessageTest::testEnvironmentalFlagChange);
     TEST_FUNCTIONS.register("silent_change", () -> AttributeMessageTest::testSilentChange);
     TEST_FUNCTIONS.register("name_change", () -> AttributeMessageTest::testNameChange);
+    TEST_FUNCTIONS.register(
+        "inventory_flag_change", () -> AttributeMessageTest::testInventoryFlagChange);
 
     TEST_FUNCTIONS.register("dialog_set_save", () -> DialogActionMessageTest::testDialogSetSave);
     TEST_FUNCTIONS.register("dialog_save", () -> DialogActionMessageTest::testDialogSave);

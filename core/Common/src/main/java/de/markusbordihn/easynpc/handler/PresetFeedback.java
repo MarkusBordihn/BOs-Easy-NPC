@@ -20,10 +20,14 @@
 package de.markusbordihn.easynpc.handler;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.security.PresetSanitizationResult;
+import de.markusbordihn.easynpc.security.PresetWarningMessages;
 import de.markusbordihn.easynpc.utils.TextUtils;
 import de.markusbordihn.easynpc.utils.UUIDUtils;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -32,6 +36,7 @@ import net.minecraft.server.level.ServerPlayer;
 public class PresetFeedback {
 
   public static final int MAX_LISTED_NAMES = 5;
+  private static final int MAX_SHOWN_SANITIZATION_WARNINGS = 3;
   private static final String PRESET_PREFIX = Constants.TEXT_PREFIX + "preset.";
 
   private PresetFeedback() {}
@@ -43,6 +48,39 @@ public class PresetFeedback {
     }
 
     serverPlayer.sendSystemMessage(importResult(result, presetLocation, serverPlayer));
+    for (Component message : sanitizationWarnings(List.of(result))) {
+      serverPlayer.sendSystemMessage(message);
+    }
+  }
+
+  public static List<Component> sanitizationWarnings(List<PresetImportResult> results) {
+    Set<Component> warnings = new LinkedHashSet<>();
+    for (PresetImportResult result : results) {
+      PresetSanitizationResult sanitizationResult = result.sanitizationResult();
+      if (result.success() && sanitizationResult != null && sanitizationResult.changed()) {
+        warnings.addAll(PresetWarningMessages.toPlayerMessages(sanitizationResult));
+      }
+    }
+    if (warnings.isEmpty()) {
+      return List.of();
+    }
+
+    List<Component> messages = new ArrayList<>();
+    messages.add(Component.translatable(PRESET_PREFIX + "sanitize.header"));
+    for (Component warning : warnings) {
+      if (messages.size() > MAX_SHOWN_SANITIZATION_WARNINGS) {
+        break;
+      }
+
+      messages.add(Component.translatable(PRESET_PREFIX + "sanitize.entry", warning));
+    }
+
+    int remainingWarnings = warnings.size() - (messages.size() - 1);
+    if (remainingWarnings > 0) {
+      messages.add(Component.translatable(PRESET_PREFIX + "sanitize.more", remainingWarnings));
+    }
+
+    return messages;
   }
 
   public static Component importResult(

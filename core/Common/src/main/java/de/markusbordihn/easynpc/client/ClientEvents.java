@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.client;
 
 import de.markusbordihn.easynpc.client.renderer.entity.SpeechBubbleFrameRenderer;
+import de.markusbordihn.easynpc.client.renderer.layer.ShoulderNPCCache;
 import de.markusbordihn.easynpc.client.renderer.manager.EntityTypeManager;
 import de.markusbordihn.easynpc.client.texture.CustomTextureManager;
 import de.markusbordihn.easynpc.client.texture.PlayerTextureManager;
@@ -45,6 +46,7 @@ public class ClientEvents {
     SpeechBubbleManager.clear();
     SpeechBubbleFrameRenderer.clear();
     NPCHighlightManager.clear();
+    ShoulderNPCCache.clear();
     clearTextureCaches();
   }
 

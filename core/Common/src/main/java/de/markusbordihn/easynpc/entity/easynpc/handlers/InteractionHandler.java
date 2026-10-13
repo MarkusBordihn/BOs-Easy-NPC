@@ -47,51 +47,43 @@ public class InteractionHandler {
 
   public static InteractionResult handleMobInteraction(
       EasyNPC<?> easyNPC, Player player, InteractionHand hand) {
-    if (!(player instanceof ServerPlayer serverPlayer) || hand != InteractionHand.MAIN_HAND) {
+    if (hand != InteractionHand.MAIN_HAND) {
       return InteractionResult.PASS;
     }
 
     ItemStack handItemStack = player.getItemInHand(hand);
-    if (!handItemStack.isEmpty()) {
-      Item handItem = handItemStack.getItem();
+    Item handItem = handItemStack.getItem();
+    if (isEasyNPCToolItem(handItem)) {
+      return InteractionResult.PASS;
+    }
 
-      Item easyNPCWand = ItemUtils.getEasyNPCWandItem();
-      if (handItem.equals(easyNPCWand)) {
-        return InteractionResult.PASS;
-      }
+    boolean isArmourersWorkshopItem =
+        Constants.MOD_ARMOURERS_WORKSHOP_ID.equals(
+            BuiltInRegistries.ITEM.getKey(handItem).getNamespace());
+    if (!(player instanceof ServerPlayer serverPlayer)) {
+      return isArmourersWorkshopItem ? InteractionResult.PASS : InteractionResult.SUCCESS;
+    }
 
-      Item moveEasyNPCItem = ItemUtils.getMoveEasyNPCItem();
-      if (handItem.equals(moveEasyNPCItem)) {
-        return InteractionResult.PASS;
-      }
-
-      if (handItem.equals(ItemUtils.getEasyNPCPresetEmptyItem())
-          || handItem.equals(ItemUtils.getEasyNPCPresetItem())) {
-        return InteractionResult.PASS;
-      }
-
-      if (Constants.MOD_ARMOURERS_WORKSHOP_ID.equals(
-          BuiltInRegistries.ITEM.getKey(handItem).getNamespace())) {
-        OwnerDataCapable<?> ownerData = easyNPC.getEasyNPCOwnerData();
-        if (serverPlayer.isCreative() || ownerData.isNPCOwner(serverPlayer)) {
-          SkinDataCapable<?> skinData = easyNPC.getEasyNPCSkinData();
-          if (skinData.getSkinModel().hasArmourersWorkshopSupport()) {
-            log.debug("Ignore event for Armourer's Workshop Item for {} ...", easyNPC);
-            return InteractionResult.PASS;
-          } else {
-            serverPlayer.sendSystemMessage(
-                TextComponent.getTranslatedText(
-                    "armourers_workshop.no_support",
-                    skinData.getSkinModel().name(),
-                    easyNPC.toString()));
-          }
+    if (isArmourersWorkshopItem) {
+      OwnerDataCapable<?> ownerData = easyNPC.getEasyNPCOwnerData();
+      if (serverPlayer.isCreative() || ownerData.isNPCOwner(serverPlayer)) {
+        SkinDataCapable<?> skinData = easyNPC.getEasyNPCSkinData();
+        if (skinData.getSkinModel().hasArmourersWorkshopSupport()) {
+          log.debug("Ignore event for Armourer's Workshop Item for {} ...", easyNPC);
+          return InteractionResult.PASS;
         } else {
-          log.debug(
-              "{} has no permissions to use Armourer's Workshop Item for {} ...",
-              serverPlayer,
-              easyNPC);
-          return InteractionResult.CONSUME;
+          serverPlayer.sendSystemMessage(
+              TextComponent.getTranslatedText(
+                  "armourers_workshop.no_support",
+                  skinData.getSkinModel().name(),
+                  easyNPC.toString()));
         }
+      } else {
+        log.debug(
+            "{} has no permissions to use Armourer's Workshop Item for {} ...",
+            serverPlayer,
+            easyNPC);
+        return InteractionResult.CONSUME;
       }
     }
 
@@ -108,10 +100,19 @@ public class InteractionHandler {
     }
 
     ActionEventDataCapable<?> actionEventData = easyNPC.getEasyNPCActionEventData();
-    if (actionEventData != null) {
-      actionEventData.handleActionEvent(ActionEventType.ON_INTERACTION, serverPlayer);
+    if (actionEventData == null
+        || !actionEventData.hasActionEvent(ActionEventType.ON_INTERACTION)) {
+      return InteractionResult.PASS;
     }
 
-    return InteractionResult.PASS;
+    actionEventData.handleActionEvent(ActionEventType.ON_INTERACTION, serverPlayer);
+    return InteractionResult.CONSUME;
+  }
+
+  private static boolean isEasyNPCToolItem(Item item) {
+    return item.equals(ItemUtils.getEasyNPCWandItem())
+        || item.equals(ItemUtils.getMoveEasyNPCItem())
+        || item.equals(ItemUtils.getEasyNPCPresetEmptyItem())
+        || item.equals(ItemUtils.getEasyNPCPresetItem());
   }
 }

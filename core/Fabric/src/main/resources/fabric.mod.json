@@ -67,7 +67,14 @@
       "de.markusbordihn.easynpc.gametest.MoveActionTest",
       "de.markusbordihn.easynpc.gametest.OpacityAttributeTest",
       "de.markusbordihn.easynpc.gametest.WaterStateAccessTest",
-      "de.markusbordihn.easynpc.gametest.RenderEntityTypeTest"
+      "de.markusbordihn.easynpc.gametest.RenderEntityTypeTest",
+      "de.markusbordihn.easynpc.gametest.AssistOwnerTest",
+      "de.markusbordihn.easynpc.gametest.BossBarTest",
+      "de.markusbordihn.easynpc.gametest.EasyModelEntitiesTest",
+      "de.markusbordihn.easynpc.gametest.InteractionResultTest",
+      "de.markusbordihn.easynpc.gametest.InventoryTest",
+      "de.markusbordihn.easynpc.gametest.ObjectiveApiTest",
+      "de.markusbordihn.easynpc.gametest.ShoulderTest"
     ]
   },
   "mixins": [
@@ -82,9 +89,9 @@
   },
   "suggests": {
     "tooltipfix": "*",
-    "easy_model_entities": ">=2.4.0 <3.0.0"
+    "easy_model_entities": ">=2.5.0 <3.0.0"
   },
   "breaks": {
-    "easy_model_entities": "<2.4.0 || >=3.0.0"
+    "easy_model_entities": "<2.5.0 || >=3.0.0"
   }
 }

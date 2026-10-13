@@ -25,8 +25,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import de.markusbordihn.clientruntimeinterfacetoolkit.testrunner.By;
 import de.markusbordihn.clientruntimeinterfacetoolkit.testrunner.Until;
 import de.markusbordihn.clientruntimeinterfacetoolkit.testrunner.data.Parameters;
-import java.io.IOException;
 import java.util.Optional;
+import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -40,9 +40,9 @@ class NameChangeClientTest extends ClientTestBase {
 
   @Test
   @DisplayName("Saved name reaches the server and is shown after reopening")
-  void savedNameSurvivesReopen() throws IOException {
-    summonTestNpc();
-    openMainConfiguration();
+  void savedNameSurvivesReopen() {
+    UUID testNpc = spawnTestNpc();
+    openMainConfiguration(testNpc);
 
     client.type(NAME_FIELD, NEW_NAME, true);
     assertTrue(isEnabledWidget(SAVE_BUTTON), "Save stays disabled after changing the name");
@@ -53,9 +53,9 @@ class NameChangeClientTest extends ClientTestBase {
         entity -> entity.customName().equals(Optional.of(NEW_NAME)));
     client.closeScreen();
     client.await(Until.noScreen());
-    openMainConfiguration();
+    openMainConfiguration(testNpc);
 
     assertEquals(NEW_NAME, client.findWidget(NAME_FIELD).orElseThrow().string("value"));
-    captureScreen("reopened");
+    client.saveScreenshot("reopened");
   }
 }

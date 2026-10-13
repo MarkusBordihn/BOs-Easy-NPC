@@ -40,6 +40,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -72,6 +73,9 @@ public class LivingEntityManager {
   public static void addEasyNPC(EasyNPC<?> easyNPC) {
     UUID uuid = easyNPC.getEntityUUID();
     log.debug("{} [Add] EASY NPC entity {}: {}", LOG_PREFIX, easyNPC, uuid);
+    if (easyNPC.getEntity() != null) {
+      EasyNPCEntityTypes.markEasyNPCEntityType(easyNPC.getEntity().getType());
+    }
 
     // Client-side instances stay in a separate registry, out of the preset map and broadcasts.
     if (easyNPC.isClientSideInstance()) {
@@ -366,6 +370,24 @@ public class LivingEntityManager {
 
     int count = getEntityCountByPresetUUIDInDimension(presetUUID, dimension);
     presetCountCache.put(cacheKey, new PresetCountCache(count, currentTick));
+    return count;
+  }
+
+  public static int getEntityCountByPresetUUID(
+      UUID presetUUID, ServerLevel serverLevel, Vec3 center, double range) {
+    Set<EasyNPC<?>> presetEntities = presetMap.get(presetUUID);
+    if (presetEntities == null) {
+      return 0;
+    }
+
+    double rangeSquared = range * range;
+    int count = 0;
+    for (EasyNPC<?> easyNPC : presetEntities) {
+      Entity entity = easyNPC.getEntity();
+      if (entity.level() == serverLevel && entity.distanceToSqr(center) <= rangeSquared) {
+        count++;
+      }
+    }
     return count;
   }
 

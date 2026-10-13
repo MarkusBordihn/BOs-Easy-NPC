@@ -48,6 +48,7 @@ public class ModelAnimationActionEntry extends ActionEntryWidget {
   private TextField blendTicksField;
   private TextField repeatCountField;
   private TextField durationTicksField;
+  private TextField speedField;
   private SpinButton<ModelAnimationPlaybackMode> playbackModeButton;
   private Checkbox afterCurrentCheckbox;
 
@@ -119,6 +120,12 @@ public class ModelAnimationActionEntry extends ActionEntryWidget {
       this.repeatCountField.setFilter(ValueUtils::isNumericValue);
       this.repeatCountField.setValue(String.valueOf(data.playback().repeatCount()));
 
+      this.speedField =
+          this.screen.addActionEntryWidget(
+              new TextField(this.font, editorLeft + 200, editorTop + 95, 40, 16));
+      this.speedField.setFilter(ValueUtils::isFloatValue);
+      this.speedField.setValue(String.valueOf(data.playback().speed()));
+
       this.durationTicksField =
           this.screen.addActionEntryWidget(
               new TextField(this.font, editorLeft + 105, editorTop + 120, 40, 16));
@@ -168,6 +175,13 @@ public class ModelAnimationActionEntry extends ActionEntryWidget {
         this.font,
         "action.animation.repeat_count",
         editorLeft + 2,
+        editorTop + 98,
+        Constants.FONT_COLOR_DEFAULT);
+    Text.drawConfigString(
+        guiGraphics,
+        this.font,
+        "action.animation.speed",
+        editorLeft + 152,
         editorTop + 98,
         Constants.FONT_COLOR_DEFAULT);
     Text.drawConfigString(
@@ -228,6 +242,11 @@ public class ModelAnimationActionEntry extends ActionEntryWidget {
         this.durationTicksField.getValue().isEmpty()
             ? ModelAnimationPlayback.UNLIMITED_DURATION_TICKS
             : Float.parseFloat(this.durationTicksField.getValue());
-    return new ModelAnimationPlayback(this.playbackModeButton.get(), repeatCount, durationTicks);
+    float speed =
+        this.speedField.getValue().isEmpty()
+            ? ModelAnimationPlayback.DEFAULT_SPEED
+            : Float.parseFloat(this.speedField.getValue());
+    return new ModelAnimationPlayback(
+        this.playbackModeButton.get(), repeatCount, durationTicks, speed);
   }
 }

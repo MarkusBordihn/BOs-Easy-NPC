@@ -37,11 +37,6 @@ public final class NPCEntityLifecycleTest {
     helper.succeed();
   }
 
-  public static void testOwnerIndexUpdate(GameTestHelper helper) {
-    NPCEntityLifecycleTestHelper.assertOwnerIndexUpdate(helper, humanoid());
-    helper.succeed();
-  }
-
   public static void testRepeatedOwnerUpdateIsIdempotent(GameTestHelper helper) {
     NPCEntityLifecycleTestHelper.assertRepeatedOwnerUpdateIsIdempotent(helper, humanoid());
     helper.succeed();
@@ -74,6 +69,52 @@ public final class NPCEntityLifecycleTest {
 
   public static void testRespawnKeepsIndexEntry(GameTestHelper helper) {
     NPCEntityLifecycleTestHelper.assertRespawnKeepsIndexEntry(helper, humanoid());
+    helper.succeed();
+  }
+
+  public static void testLoadedNPCStaysPersistent(GameTestHelper helper) {
+    NPCEntityLifecycleTestHelper.assertLoadedNPCStaysPersistent(helper, humanoid());
+    helper.succeed();
+  }
+
+  public static void testNonPersistentNPCIsNotStoredOnJoinAndUnload(GameTestHelper helper) {
+    NPCEntityLifecycleTestHelper.assertNonPersistentNPCIsNotStoredOnJoinAndUnload(
+        helper, humanoid());
+    helper.succeed();
+  }
+
+  public static void testNonPersistentNPCIsStoredOnExplicitDespawn(GameTestHelper helper) {
+    NPCEntityLifecycleTestHelper.assertNonPersistentNPCIsStoredOnExplicitDespawn(
+        helper, humanoid());
+    helper.succeed();
+  }
+
+  public static void testEnsureInitializedKeepsNPCIndex(GameTestHelper helper) {
+    NPCEntityLifecycleTestHelper.assertEnsureInitializedKeepsNPCIndex(helper, humanoid());
+    helper.succeed();
+  }
+
+  public static void testDeletedNPCIsDiscardedOnLoad(GameTestHelper helper) {
+    NPCEntityLifecycleTestHelper.assertDeletedNPCIsDiscardedOnLoad(helper, humanoid());
+  }
+
+  public static void testKilledNPCRequiresForcedSpawn(GameTestHelper helper) {
+    NPCEntityLifecycleTestHelper.assertKilledNPCRequiresForcedSpawn(helper, humanoid());
+    helper.succeed();
+  }
+
+  public static void testLoadedNPCIsNotSpawnedTwice(GameTestHelper helper) {
+    NPCEntityLifecycleTestHelper.assertLoadedNPCIsNotSpawnedTwice(helper, humanoid());
+    helper.succeed();
+  }
+
+  public static void testActionGroupsAreRemovedOnLeave(GameTestHelper helper) {
+    NPCEntityLifecycleTestHelper.assertActionGroupsAreRemovedOnLeave(helper, humanoid());
+    helper.succeed();
+  }
+
+  public static void testEasyNPCEntityTypesAreRecognized(GameTestHelper helper) {
+    NPCEntityLifecycleTestHelper.assertEasyNPCEntityTypesAreRecognized(helper, humanoid());
     helper.succeed();
   }
 }

@@ -26,11 +26,9 @@ import de.markusbordihn.easynpc.data.model.ModelAnimationBehavior;
 import de.markusbordihn.easynpc.data.model.ModelArmPose;
 import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.model.ModelPose;
-import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.DisplayAttributeDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
-import java.util.UUID;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
@@ -93,16 +91,7 @@ public class EasyNPCModel {
   }
 
   public static EasyNPC<?> getEasyNPC(final EasyNPCRenderStateExtension extension) {
-    if (extension == null) {
-      return null;
-    }
-
-    UUID uuid = extension.getEasyNpcUUID();
-    if (uuid == null) {
-      return null;
-    }
-
-    return LivingEntityManager.getClientEasyNPCEntityByUUID(uuid);
+    return extension != null ? extension.getEasyNPC() : null;
   }
 
   public static int getEntityLightLevel(

@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.client.renderer.blockentity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import de.markusbordihn.easynpc.block.entity.EasyNPCSpawnerBlockEntity;
+import de.markusbordihn.easynpc.level.BaseEasyNPCSpawner;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -35,7 +36,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.BaseSpawner;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.Nullable;
 
 public class BaseEasyNPCSpawnerBlockEntityRenderer<T extends EasyNPCSpawnerBlockEntity>
     implements BlockEntityRenderer<T, EasyNPCSpawnerRenderState> {
@@ -57,17 +57,19 @@ public class BaseEasyNPCSpawnerBlockEntityRenderer<T extends EasyNPCSpawnerBlock
       EasyNPCSpawnerRenderState renderState,
       float partialTicks,
       Vec3 cameraPos,
-      @Nullable ModelFeatureRenderer.CrumblingOverlay crumblingOverlay) {
+      ModelFeatureRenderer.CrumblingOverlay crumblingOverlay) {
     BlockEntityRenderer.super.extractRenderState(
         blockEntity, renderState, partialTicks, cameraPos, crumblingOverlay);
 
     Level level = blockEntity.getLevel();
-    if (level == null) {
+    BaseSpawner baseSpawner = blockEntity.getSpawner();
+    if (level == null
+        || !(baseSpawner instanceof BaseEasyNPCSpawner baseEasyNPCSpawner)
+        || !baseEasyNPCSpawner.hasEasyNPC(level)) {
       renderState.entityRenderState = null;
       return;
     }
 
-    BaseSpawner baseSpawner = blockEntity.getSpawner();
     Entity entity = baseSpawner.getOrCreateDisplayEntity(level, blockEntity.getBlockPos());
     if (entity == null) {
       renderState.entityRenderState = null;

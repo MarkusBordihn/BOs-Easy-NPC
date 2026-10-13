@@ -26,12 +26,10 @@ import de.markusbordihn.easynpc.block.entity.EasyNPCSpawnerBlockEntity;
 import de.markusbordihn.easynpc.data.preset.PresetData;
 import de.markusbordihn.easynpc.data.preset.PresetDataUtils;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.data.PresetDataCapable;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
@@ -39,7 +37,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Prediction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -52,14 +49,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.SpawnData;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class EasyNPCPresetEmptyItem extends Item {
 
   public static final String NAME = "easy_npc_preset_empty";
-
-  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   public EasyNPCPresetEmptyItem(Properties properties) {
     super(
@@ -82,7 +75,7 @@ public class EasyNPCPresetEmptyItem extends Item {
         return InteractionResult.FAIL;
       }
 
-      ItemStack presetItemStack = this.createPresetItemStack(easyNPC);
+      ItemStack presetItemStack = PresetDataUtils.toItemStack(easyNPC);
       if (!presetItemStack.isEmpty()) {
         if (!player.getInventory().add(presetItemStack)) {
           player.drop(presetItemStack, false, Prediction.PREDICTED);
@@ -92,23 +85,6 @@ public class EasyNPCPresetEmptyItem extends Item {
     }
 
     return level.isClientSide() ? InteractionResult.SUCCESS : InteractionResult.CONSUME;
-  }
-
-  private ItemStack createPresetItemStack(EasyNPC<?> easyNPC) {
-    PresetDataCapable<?> presetData = easyNPC.getEasyNPCPresetData();
-    if (presetData == null) {
-      log.error("Can't export preset data from {}", easyNPC);
-      return ItemStack.EMPTY;
-    }
-
-    CompoundTag presetDataTag = presetData.serializePresetData();
-    EntityType<?> entityType = easyNPC.getLivingEntity().getType();
-    PresetData preset = new PresetData(entityType, presetDataTag);
-
-    ItemStack itemStack = PresetDataUtils.toItemStack(preset);
-    log.debug("Captured NPC preset from {} to {}", entityType, itemStack);
-
-    return itemStack;
   }
 
   @Override

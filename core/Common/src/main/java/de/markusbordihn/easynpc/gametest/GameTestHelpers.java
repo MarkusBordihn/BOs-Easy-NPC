@@ -19,16 +19,24 @@
 
 package de.markusbordihn.easynpc.gametest;
 
+import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.data.saveddata.FactionData;
 import de.markusbordihn.easynpc.entity.LivingEntityManager;
+import de.markusbordihn.easynpc.entity.NPCEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.handler.FactionHandler;
 import de.markusbordihn.easynpc.server.player.FakePlayer;
 import io.netty.channel.embedded.EmbeddedChannel;
 import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.gametest.framework.GameTestInfo;
+import net.minecraft.gametest.framework.GameTestListener;
+import net.minecraft.gametest.framework.GameTestRunner;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.server.level.ServerLevel;
@@ -43,10 +51,92 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.scores.PlayerTeam;
+import net.minecraft.world.scores.Scoreboard;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public final class GameTestHelpers {
 
+  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+
+  // Vanilla GameTestHelper has no addCleanup and keeps its GameTestInfo in a private field.
+  private static final Field TEST_INFO_FIELD = findTestInfoField();
+
   private GameTestHelpers() {}
+
+  private static Field findTestInfoField() {
+    for (Field field : GameTestHelper.class.getDeclaredFields()) {
+      if (field.getType() == GameTestInfo.class) {
+        field.setAccessible(true);
+        return field;
+      }
+    }
+    throw new IllegalStateException("GameTestHelper has no GameTestInfo field");
+  }
+
+  public static void addCleanup(GameTestHelper helper, Runnable cleanup) {
+    GameTestInfo testInfo;
+    try {
+      testInfo = (GameTestInfo) TEST_INFO_FIELD.get(helper);
+    } catch (IllegalAccessException e) {
+      throw new IllegalStateException("Unable to access the GameTestInfo of " + helper, e);
+    }
+
+    testInfo.addListener(
+        new GameTestListener() {
+          @Override
+          public void testStructureLoaded(GameTestInfo loadedTestInfo) {}
+
+          @Override
+          public void testPassed(GameTestInfo passedTestInfo, GameTestRunner gameTestRunner) {
+            runCleanup(passedTestInfo, cleanup);
+          }
+
+          @Override
+          public void testFailed(GameTestInfo failedTestInfo, GameTestRunner gameTestRunner) {
+            runCleanup(failedTestInfo, cleanup);
+          }
+
+          @Override
+          public void testAddedForRerun(
+              GameTestInfo previousTestInfo,
+              GameTestInfo rerunTestInfo,
+              GameTestRunner gameTestRunner) {}
+        });
+  }
+
+  private static void runCleanup(GameTestInfo testInfo, Runnable cleanup) {
+    try {
+      cleanup.run();
+    } catch (RuntimeException e) {
+      log.error("Cleanup of game test {} failed:", testInfo.id(), e);
+    }
+  }
+
+  public static void removeFactionsAfterTest(GameTestHelper helper, String... factionNames) {
+    Scoreboard scoreboard = helper.getLevel().getScoreboard();
+    List<String> createdFactionNames =
+        Arrays.stream(factionNames)
+            .filter(factionName -> !FactionData.get().hasFaction(factionName))
+            .toList();
+    List<String> createdTeamNames =
+        Arrays.stream(factionNames)
+            .filter(factionName -> scoreboard.getPlayerTeam(factionName) == null)
+            .toList();
+
+    addCleanup(
+        helper,
+        () -> {
+          createdFactionNames.forEach(FactionHandler::deleteFaction);
+          for (String teamName : createdTeamNames) {
+            PlayerTeam playerTeam = scoreboard.getPlayerTeam(teamName);
+            if (playerTeam != null) {
+              scoreboard.removePlayerTeam(playerTeam);
+            }
+          }
+        });
+  }
 
   @SuppressWarnings("unchecked")
   public static EasyNPC<?> mockEasyNPC(
@@ -62,9 +152,14 @@ public final class GameTestHelpers {
     return easyNPC;
   }
 
+  public static void removeNPCDataAfterTest(GameTestHelper helper, UUID entityUUID) {
+    addCleanup(helper, () -> NPCEntityManager.removeNPC(entityUUID));
+  }
+
   public static EasyNPC<?> spawnNPCEntityType(GameTestHelper helper, EntityType<?> entityType) {
     Entity entity = spawnEntityType(helper, entityType);
     if (entity instanceof EasyNPC<?> easyNPC) {
+      removeNPCDataAfterTest(helper, easyNPC.getEntityUUID());
       return easyNPC;
     }
 
@@ -121,6 +216,10 @@ public final class GameTestHelpers {
     ServerPlayer serverPlayer = createMockServerPlayer(helper, position, playerName);
     // Add the mock player to the level so entity scans, such as faction member lookups, find it.
     helper.getLevel().addNewPlayer(serverPlayer);
+    addCleanup(
+        helper,
+        () ->
+            helper.getLevel().removePlayerImmediately(serverPlayer, Entity.RemovalReason.DISCARDED));
     return serverPlayer;
   }
 
@@ -160,7 +259,14 @@ public final class GameTestHelpers {
             connection,
             fakePlayer,
             CommonListenerCookie.createInitial(fakePlayer.getGameProfile(), false));
-    registerInPlayerList(level.getServer().getPlayerList(), fakePlayer);
+    PlayerList playerList = level.getServer().getPlayerList();
+    registerInPlayerList(playerList, fakePlayer);
+    addCleanup(
+        helper,
+        () -> {
+          level.getScoreboard().removePlayerFromTeam(fakePlayer.getScoreboardName());
+          unregisterFromPlayerList(playerList, fakePlayer);
+        });
     return fakePlayer;
   }
 
@@ -169,21 +275,35 @@ public final class GameTestHelpers {
    * resolve it, without running the full {@code placeNewPlayer} login flow that a real connection
    * would require. This is test-only support and relies on the development runtime mappings.
    */
-  @SuppressWarnings("unchecked")
   private static void registerInPlayerList(PlayerList playerList, ServerPlayer serverPlayer) {
+    if (playersByUUID(playerList).putIfAbsent(serverPlayer.getUUID(), serverPlayer) == null) {
+      players(playerList).add(serverPlayer);
+    }
+  }
+
+  private static void unregisterFromPlayerList(PlayerList playerList, ServerPlayer serverPlayer) {
+    if (playersByUUID(playerList).remove(serverPlayer.getUUID(), serverPlayer)) {
+      players(playerList).remove(serverPlayer);
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  private static List<ServerPlayer> players(PlayerList playerList) {
+    return (List<ServerPlayer>) playerListField(playerList, "players");
+  }
+
+  @SuppressWarnings("unchecked")
+  private static Map<UUID, ServerPlayer> playersByUUID(PlayerList playerList) {
+    return (Map<UUID, ServerPlayer>) playerListField(playerList, "playersByUUID");
+  }
+
+  private static Object playerListField(PlayerList playerList, String fieldName) {
     try {
-      Field playersField = PlayerList.class.getDeclaredField("players");
-      playersField.setAccessible(true);
-      Field playersByUuidField = PlayerList.class.getDeclaredField("playersByUUID");
-      playersByUuidField.setAccessible(true);
-      List<ServerPlayer> players = (List<ServerPlayer>) playersField.get(playerList);
-      Map<UUID, ServerPlayer> playersByUuid =
-          (Map<UUID, ServerPlayer>) playersByUuidField.get(playerList);
-      if (playersByUuid.putIfAbsent(serverPlayer.getUUID(), serverPlayer) == null) {
-        players.add(serverPlayer);
-      }
+      Field field = PlayerList.class.getDeclaredField(fieldName);
+      field.setAccessible(true);
+      return field.get(playerList);
     } catch (ReflectiveOperationException exception) {
-      throw new IllegalStateException("Unable to register mock player in player list", exception);
+      throw new IllegalStateException("Unable to access the mock player list", exception);
     }
   }
 }

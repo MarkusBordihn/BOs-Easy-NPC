@@ -1,7 +1,7 @@
 package de.markusbordihn.easynpc.mixin.renderer.state;
 
 import de.markusbordihn.easynpc.client.renderer.entity.state.EasyNPCRenderStateExtension;
-import java.util.UUID;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.resources.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
@@ -10,17 +10,17 @@ import org.spongepowered.asm.mixin.Unique;
 @Mixin(LivingEntityRenderState.class)
 public class EasyNPCLivingEntityRenderStateMixin implements EasyNPCRenderStateExtension {
 
-  @Unique private UUID easyNpcUUID;
+  @Unique private EasyNPC<?> easyNPC;
   @Unique private Identifier easyNpcTexture;
 
   @Override
-  public UUID getEasyNpcUUID() {
-    return this.easyNpcUUID;
+  public EasyNPC<?> getEasyNPC() {
+    return this.easyNPC;
   }
 
   @Override
-  public void setEasyNpcUUID(UUID uuid) {
-    this.easyNpcUUID = uuid;
+  public void setEasyNPC(EasyNPC<?> easyNPC) {
+    this.easyNPC = easyNPC;
   }
 
   @Override

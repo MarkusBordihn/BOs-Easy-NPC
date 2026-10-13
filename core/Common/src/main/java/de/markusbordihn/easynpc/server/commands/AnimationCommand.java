@@ -47,7 +47,8 @@ public final class AnimationCommand extends Command {
   private static final String BLEND_TICKS_ARG = "blend_ticks";
   private static final String REPEAT_COUNT_ARG = "repeat_count";
   private static final String DURATION_TICKS_ARG = "duration_ticks";
-  private static final String[] MODE_SUGGESTIONS = {"once", "loop", "repeat"};
+  private static final String SPEED_ARG = "speed";
+  private static final String[] MODE_SUGGESTIONS = {"once", "loop", "repeat", "hold"};
   private static final String[] TIMING_SUGGESTIONS = {"immediate", "after_current"};
 
   private AnimationCommand() {}
@@ -106,7 +107,17 @@ public final class AnimationCommand extends Command {
                                                     Commands.argument(
                                                             DURATION_TICKS_ARG,
                                                             FloatArgumentType.floatArg(0.0F))
-                                                        .executes(AnimationCommand::play)))))));
+                                                        .executes(AnimationCommand::play)
+                                                        .then(
+                                                            Commands.argument(
+                                                                    SPEED_ARG,
+                                                                    FloatArgumentType.floatArg(
+                                                                        ModelAnimationPlayback
+                                                                            .MIN_SPEED,
+                                                                        ModelAnimationPlayback
+                                                                            .MAX_SPEED))
+                                                                .executes(
+                                                                    AnimationCommand::play))))))));
   }
 
   private static ArgumentBuilder<CommandSourceStack, ?> stopArguments() {
@@ -194,7 +205,9 @@ public final class AnimationCommand extends Command {
                 context,
                 DURATION_TICKS_ARG,
                 Float.class,
-                ModelAnimationPlayback.UNLIMITED_DURATION_TICKS));
+                ModelAnimationPlayback.UNLIMITED_DURATION_TICKS),
+            optionalArgument(
+                context, SPEED_ARG, Float.class, ModelAnimationPlayback.DEFAULT_SPEED));
     EasyNPC<?> easyNPC = EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG);
     String animationName = StringArgumentType.getString(context, ANIMATION_ARG);
     if (!ModelAnimationAPI.playAnimation(easyNPC, animationName, playback, transition)) {

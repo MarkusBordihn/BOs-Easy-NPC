@@ -55,6 +55,7 @@ public record ModelAnimationRequest(
         new ModelAnimationPlayback(
             buffer.readEnum(ModelAnimationPlaybackMode.class),
             buffer.readVarInt(),
+            buffer.readFloat(),
             buffer.readFloat()),
         new ModelAnimationTransition(
             buffer.readEnum(ModelAnimationSwitchTiming.class), buffer.readFloat()),
@@ -68,6 +69,7 @@ public record ModelAnimationRequest(
     buffer.writeEnum(this.playback.mode());
     buffer.writeVarInt(this.playback.repeatCount());
     buffer.writeFloat(this.playback.durationTicks());
+    buffer.writeFloat(this.playback.speed());
     buffer.writeEnum(this.transition.timing());
     buffer.writeFloat(this.transition.blendDurationTicks());
     buffer.writeVarInt(this.sequence);

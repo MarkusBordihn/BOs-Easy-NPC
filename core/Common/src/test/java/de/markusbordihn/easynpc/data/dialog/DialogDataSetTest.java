@@ -21,8 +21,12 @@ package de.markusbordihn.easynpc.data.dialog;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import de.markusbordihn.easynpc.data.action.ActionDataEntry;
+import de.markusbordihn.easynpc.data.action.ActionDataSet;
+import de.markusbordihn.easynpc.data.action.ActionDataType;
 import net.minecraft.SharedConstants;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.Bootstrap;
@@ -36,6 +40,17 @@ class DialogDataSetTest {
   static void bootstrap() {
     SharedConstants.tryDetectVersion();
     Bootstrap.bootStrap();
+  }
+
+  private static DialogButtonEntry commandButton(String label, String command) {
+    ActionDataSet actionDataSet = new ActionDataSet();
+    actionDataSet.add(new ActionDataEntry(ActionDataType.COMMAND, null, command));
+    return new DialogButtonEntry(label, label, DialogButtonType.DEFAULT, actionDataSet);
+  }
+
+  private static String firstCommandOf(DialogButtonEntry dialogButtonEntry) {
+    assertNotNull(dialogButtonEntry);
+    return dialogButtonEntry.actionDataSet().getEntries().iterator().next().command();
   }
 
   @Test
@@ -58,6 +73,26 @@ class DialogDataSetTest {
     assertTrue(restored.hasDialog("welcome"));
     assertEquals("Hello there!", restored.getDialog("welcome").getText());
     assertEquals(DialogType.BASIC, restored.getType());
+  }
+
+  @Test
+  @DisplayName("Dialog buttons keep their action after a round trip, also after a label edit")
+  void testDialogButtonsKeepTheirActionAfterRoundTrip() {
+    DialogButtonEntry firstButton = commandButton("first_button", "/say first");
+    DialogButtonEntry secondButton = commandButton("second_button", "/say second");
+    DialogDataEntry dialogDataEntry = new DialogDataEntry("welcome", "Welcome", "Hello there!");
+    dialogDataEntry.setDialogButton(firstButton);
+    dialogDataEntry.setDialogButton(secondButton);
+    DialogButtonEntry renamedButton = secondButton.withLabel("Yes, Please!");
+    dialogDataEntry.setDialogButton(secondButton.id(), renamedButton);
+    DialogDataSet dialogDataSet = new DialogDataSet(DialogType.BASIC);
+    dialogDataSet.addDialog(dialogDataEntry);
+
+    DialogDataEntry restored = new DialogDataSet(dialogDataSet.createTag()).getDialog("welcome");
+
+    assertEquals(2, restored.getNumberOfDialogButtons());
+    assertEquals("/say first", firstCommandOf(restored.getDialogButton(firstButton.id())));
+    assertEquals("/say second", firstCommandOf(restored.getDialogButton(renamedButton.id())));
   }
 
   @Test

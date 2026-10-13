@@ -106,6 +106,7 @@ public class EasyNPCMain implements ModInitializer {
       ServerLifecycleEvents.SERVER_STARTED.register(server -> EasyModelEntitiesLoader.register());
     }
     ServerLifecycleEvents.SERVER_STOPPING.register(ServerEvents::handleServerStopping);
+    ServerLifecycleEvents.SERVER_STOPPED.register(ServerEvents::handleServerStopped);
     ServerTickEvents.END_SERVER_TICK.register(ServerEvents::handleServerTick);
     LivingEntityEventHandler.registerServerEntityEvents();
 

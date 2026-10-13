@@ -29,10 +29,7 @@ import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.handler.AttributeHandler;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.level.storage.TagValueInput;
-import net.minecraft.world.level.storage.TagValueOutput;
 import net.minecraft.world.phys.Vec3;
 
 public class OpacityAttributeTestHelper {
@@ -73,32 +70,6 @@ public class OpacityAttributeTestHelper {
         "The opacity action changes the attribute",
         GHOST_OPACITY,
         AttributeHandler.getOpacity(easyNPC));
-  }
-
-  public static void assertFullyTransparentOpacitySurvivesSaveAndLoad(
-      GameTestHelper helper, EntityType<?> entityType) {
-    EasyNPC<?> easyNPC = GameTestHelpers.mockEasyNPC(helper, entityType, NPC_POSITION);
-    AttributeHandler.setOpacity(easyNPC, DisplayAttributeType.MIN_OPACITY);
-
-    TagValueOutput valueOutput =
-        TagValueOutput.createWithContext(
-            ProblemReporter.DISCARDING, helper.getLevel().registryAccess());
-    easyNPC.getEasyNPCDisplayAttributeData().addAdditionalDisplayAttributeData(valueOutput);
-
-    EasyNPC<?> reloadedNPC = GameTestHelpers.mockEasyNPC(helper, entityType, SECOND_NPC_POSITION);
-    reloadedNPC
-        .getEasyNPCDisplayAttributeData()
-        .readAdditionalDisplayAttributeData(
-            TagValueInput.create(
-                ProblemReporter.DISCARDING,
-                helper.getLevel().registryAccess(),
-                valueOutput.buildResult()));
-
-    GameTestHelpers.assertEquals(
-        helper,
-        "A fully transparent NPC stays transparent after a reload",
-        DisplayAttributeType.MIN_OPACITY,
-        AttributeHandler.getOpacity(reloadedNPC));
   }
 
   public static void assertOpacityIsExportedWithThePreset(

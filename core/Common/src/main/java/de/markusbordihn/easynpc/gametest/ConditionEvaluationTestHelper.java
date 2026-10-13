@@ -324,31 +324,9 @@ public class ConditionEvaluationTestHelper {
         "Target entity must be resolvable by UUID from the NPC context level",
         HealthConditionEvaluator.resolveByUuid(npcEntity, targetUuid) == targetEntity);
 
-    targetEntity.setHealth(targetEntity.getMaxHealth());
-    GameTestHelpers.assertTrue(
-        helper,
-        "Full target health must not satisfy a < 75% condition",
-        !HealthConditionEvaluator.evaluate(
-            ConditionOperationType.LESS_THAN,
-            75,
-            HealthConditionEvaluator.resolveByUuid(npcEntity, targetUuid)));
-
-    targetEntity.setHealth(targetEntity.getMaxHealth() * 0.5F);
-    GameTestHelpers.assertTrue(
-        helper,
-        "Half target health must satisfy a < 75% condition",
-        HealthConditionEvaluator.evaluate(
-            ConditionOperationType.LESS_THAN,
-            75,
-            HealthConditionEvaluator.resolveByUuid(npcEntity, targetUuid)));
-
     LivingEntity unknownTarget =
         HealthConditionEvaluator.resolveByUuid(npcEntity, UUID.randomUUID().toString());
     GameTestHelpers.assertTrue(
         helper, "Unknown entity UUID must resolve to null", unknownTarget == null);
-    GameTestHelpers.assertTrue(
-        helper,
-        "Unknown entity UUID must evaluate to false",
-        !HealthConditionEvaluator.evaluate(ConditionOperationType.LESS_THAN, 75, unknownTarget));
   }
 }

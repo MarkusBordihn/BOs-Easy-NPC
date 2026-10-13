@@ -186,6 +186,11 @@ public class BasePresetTestHelper {
           !entityData.contains(identityTag));
     }
 
+    GameTestHelpers.assertTrue(
+        helper,
+        "The base preset of " + entityTypeId + " must keep PersistenceRequired",
+        entityData.getBooleanOr("PersistenceRequired", false));
+
     PresetMetadata metadata =
         PresetMetadata.fromCompoundTag(
             basePreset.getCompoundOrEmpty(PresetDataCapable.PRESET_METADATA_TAG));
