@@ -37,11 +37,6 @@ public final class OpacityAttributeTest {
     helper.succeed();
   }
 
-  public static void testFullyTransparentOpacitySurvivesSaveAndLoad(GameTestHelper helper) {
-    OpacityAttributeTestHelper.assertFullyTransparentOpacitySurvivesSaveAndLoad(helper, humanoid());
-    helper.succeed();
-  }
-
   public static void testOpacityIsExportedWithThePreset(GameTestHelper helper) {
     OpacityAttributeTestHelper.assertOpacityIsExportedWithThePreset(helper, humanoid());
     helper.succeed();

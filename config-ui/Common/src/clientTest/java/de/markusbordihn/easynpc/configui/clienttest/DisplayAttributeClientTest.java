@@ -25,76 +25,66 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import de.markusbordihn.clientruntimeinterfacetoolkit.testrunner.By;
 import de.markusbordihn.clientruntimeinterfacetoolkit.testrunner.Until;
-import de.markusbordihn.clientruntimeinterfacetoolkit.testrunner.data.JsonValue;
-import java.io.IOException;
-import java.util.List;
+import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class DisplayAttributeClientTest extends ClientTestBase {
 
   private static final String DISPLAY_ATTRIBUTE_SCREEN = "DisplayAttributeConfigurationScreen";
-  private static final By TEXT_FIELD =
-      By.className("de.markusbordihn.easynpc.client.screen.components.TextField");
-  private static final By SAVE_BUTTON =
-      By.className("de.markusbordihn.easynpc.configui.client.screen.components.SaveButton");
   private static final int OPACITY_INDEX = 1;
+  private static final By OPACITY_TEXT_FIELD =
+      By.className("de.markusbordihn.easynpc.client.screen.components.TextField")
+          .withIndex(OPACITY_INDEX);
+  private static final By OPACITY_SAVE_BUTTON =
+      By.className("de.markusbordihn.easynpc.configui.client.screen.components.SaveButton")
+          .withIndex(OPACITY_INDEX);
   private static final String CHANGED_OPACITY = "40";
   private static final By VISIBLE_CHECKBOX = configurationButton("visible");
   private static final By VISIBLE_AT_DAY_CHECKBOX = configurationButton("visible_at_day");
 
-  private static String openDisplayAttributes() {
-    openMainConfiguration();
+  private static String openDisplayAttributes(UUID testNpc) {
+    openMainConfiguration(testNpc);
     return openSubPage("attributes", "display", DISPLAY_ATTRIBUTE_SCREEN);
   }
 
-  private static void reopen() {
+  private static void reopen(UUID testNpc) {
     client.closeScreen();
     client.await(Until.noScreen());
-    openDisplayAttributes();
-  }
-
-  private static JsonValue nthWidget(By locator, int index) {
-    List<JsonValue> widgets = client.findWidgets(locator);
-    assertTrue(widgets.size() > index, "Expected more than " + index + " of " + locator);
-    return widgets.get(index);
-  }
-
-  private static By nthWidgetLocator(By locator, int index) {
-    return By.id(nthWidget(locator, index).string(By.FIELD_ID));
+    openDisplayAttributes(testNpc);
   }
 
   @Test
   @DisplayName("Saved opacity reaches the server and is shown after reopening")
-  void savedOpacitySurvivesReopen() throws IOException {
-    summonTestNpc();
-    String screenId = openDisplayAttributes();
+  void savedOpacitySurvivesReopen() {
+    UUID testNpc = spawnTestNpc();
+    String screenId = openDisplayAttributes(testNpc);
 
-    client.type(nthWidgetLocator(TEXT_FIELD, OPACITY_INDEX), CHANGED_OPACITY, true);
+    client.type(OPACITY_TEXT_FIELD, CHANGED_OPACITY, true);
     assertTrue(
-        nthWidget(SAVE_BUTTON, OPACITY_INDEX).flag("enabled"),
+        client.isEnabled(OPACITY_SAVE_BUTTON),
         "Opacity save stays disabled after changing the value");
 
-    client.click(nthWidgetLocator(SAVE_BUTTON, OPACITY_INDEX), screenId);
-    reopen();
+    client.click(OPACITY_SAVE_BUTTON, screenId);
+    reopen(testNpc);
 
-    assertEquals(CHANGED_OPACITY, nthWidget(TEXT_FIELD, OPACITY_INDEX).string("value"));
-    captureScreen("reopened");
+    assertEquals(CHANGED_OPACITY, client.widget(OPACITY_TEXT_FIELD).string("value"));
+    client.saveScreenshot("reopened");
   }
 
   @Test
   @DisplayName("Unchecked visibility reaches the server and disables the dependent checkboxes")
-  void uncheckedVisibilitySurvivesReopen() throws IOException {
-    summonTestNpc();
-    openDisplayAttributes();
+  void uncheckedVisibilitySurvivesReopen() {
+    UUID testNpc = spawnTestNpc();
+    openDisplayAttributes(testNpc);
     assertTrue(isEnabledWidget(VISIBLE_AT_DAY_CHECKBOX), "Visible at day is disabled on a new NPC");
 
     client.click(VISIBLE_CHECKBOX);
-    reopen();
+    reopen(testNpc);
 
     assertFalse(
         isEnabledWidget(VISIBLE_AT_DAY_CHECKBOX),
         "Visible at day is still enabled after the NPC was made invisible");
-    captureScreen("reopened");
+    client.saveScreenshot("reopened");
   }
 }

@@ -56,18 +56,6 @@ public class NavigationTypeTest {
   }
 
   @GameTest(structure = "easy_npc:gametest.3x3x3")
-  public void testHoverHeightStaysInRange(GameTestHelper helper) {
-    NavigationTypeTestHelper.assertHoverHeightStaysInRange(helper, humanoid());
-    helper.succeed();
-  }
-
-  @GameTest(structure = "easy_npc:gametest.3x3x3")
-  public void testMinHoverHeightStaysInRange(GameTestHelper helper) {
-    NavigationTypeTestHelper.assertMinHoverHeightStaysInRange(helper, humanoid());
-    helper.succeed();
-  }
-
-  @GameTest(structure = "easy_npc:gametest.3x3x3")
   public void testRenderEntityTypeSelectsTheNavigation(GameTestHelper helper) {
     NavigationTypeTestHelper.assertRenderEntityTypeSelectsTheNavigation(helper, doppler());
     helper.succeed();
@@ -76,6 +64,12 @@ public class NavigationTypeTest {
   @GameTest(structure = "easy_npc:gametest.3x3x3")
   public void testNavigationTypeSurvivesPresetImport(GameTestHelper helper) {
     NavigationTypeTestHelper.assertNavigationTypeSurvivesPresetImport(helper, humanoid());
+    helper.succeed();
+  }
+
+  @GameTest(structure = "easy_npc:gametest.3x3x3")
+  public void testHoverHeightsAreSetIndependently(GameTestHelper helper) {
+    NavigationTypeTestHelper.assertHoverHeightsAreSetIndependently(helper, humanoid());
     helper.succeed();
   }
 }

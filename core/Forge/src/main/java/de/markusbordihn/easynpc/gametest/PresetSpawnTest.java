@@ -47,4 +47,9 @@ public final class PresetSpawnTest {
     PresetSpawnTestHelper.assertPresetImportSetsHome(helper, humanoid());
     helper.succeed();
   }
+
+  public static void testPresetHandlerCreatesPresetItem(GameTestHelper helper) {
+    PresetSpawnTestHelper.assertPresetHandlerCreatesPresetItem(helper, humanoid());
+    helper.succeed();
+  }
 }

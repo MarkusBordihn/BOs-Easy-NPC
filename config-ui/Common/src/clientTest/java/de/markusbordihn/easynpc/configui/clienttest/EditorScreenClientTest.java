@@ -23,7 +23,6 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import de.markusbordihn.clientruntimeinterfacetoolkit.testrunner.By;
 import de.markusbordihn.clientruntimeinterfacetoolkit.testrunner.Until;
-import java.io.IOException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -45,15 +44,13 @@ class EditorScreenClientTest extends ClientTestBase {
   }
 
   private static void openNewDialogEditor() {
-    summonTestNpc();
-    openMainConfiguration();
+    openMainConfiguration(spawnTestNpc());
     openSubPage("dialog", "advanced", "AdvancedDialogConfigurationScreen");
     openEditor(configurationButton("dialog.add"), "DialogEditorScreen");
   }
 
   private static void openNewActionDataEntryEditor() {
-    summonTestNpc();
-    openMainConfiguration();
+    openMainConfiguration(spawnTestNpc());
     openSubPage("actions", "basic", "BasicActionConfigurationScreen");
     openEditor(
         By.translationKey("text.easy_npc.config.add_action", 0),
@@ -66,103 +63,102 @@ class EditorScreenClientTest extends ClientTestBase {
   }
 
   private static void openFactionsEditor() {
-    summonTestNpc();
-    openMainConfiguration();
+    openMainConfiguration(spawnTestNpc());
     openSubPage("attributes", "misc", "MiscAttributeConfigurationScreen");
     openEditor(configurationButton("new"), "FactionsEditorScreen");
   }
 
   @Test
   @DisplayName("Dialog editor renders for a new dialog")
-  void dialogEditorRenders() throws IOException {
+  void dialogEditorRenders() {
     openNewDialogEditor();
 
-    captureScreen("dialog_editor");
+    client.saveScreenshot("dialog_editor");
   }
 
   @Test
   @DisplayName("Dialog text editor renders")
-  void dialogTextEditorRenders() throws IOException {
+  void dialogTextEditorRenders() {
     openNewDialogEditor();
 
     openEditor(configurationButton("dialog.edit_text"), "DialogTextEditorScreen");
 
-    captureScreen("dialog_text_editor");
+    client.saveScreenshot("dialog_text_editor");
   }
 
   @Test
   @DisplayName("Dialog options editor renders")
-  void dialogOptionsEditorRenders() throws IOException {
+  void dialogOptionsEditorRenders() {
     openNewDialogEditor();
 
     openEditor(configurationButton("dialog.edit_options"), "DialogOptionsEditorScreen");
 
-    captureScreen("dialog_options_editor");
+    client.saveScreenshot("dialog_options_editor");
   }
 
   @Test
   @DisplayName("Dialog button editor renders for a new button")
-  void dialogButtonEditorRenders() throws IOException {
+  void dialogButtonEditorRenders() {
     openNewDialogEditor();
 
     openEditor(configurationButton("dialog.add_button"), "DialogButtonEditorScreen");
 
-    captureScreen("dialog_button_editor");
+    client.saveScreenshot("dialog_button_editor");
   }
 
   @Test
   @DisplayName("Condition editor renders for a dialog")
-  void conditionDataEditorRenders() throws IOException {
+  void conditionDataEditorRenders() {
     openConditionDataEditorOfNewDialog();
 
-    captureScreen("condition_data_editor");
+    client.saveScreenshot("condition_data_editor");
   }
 
   @Test
   @DisplayName("Condition entry editor renders for a new condition")
-  void conditionDataEntryEditorRenders() throws IOException {
+  void conditionDataEntryEditorRenders() {
     openConditionDataEditorOfNewDialog();
 
     openEditor(configurationButton("condition.add"), "ConditionDataEntryEditorContainerScreen");
 
-    captureScreen("condition_data_entry_editor");
+    client.saveScreenshot("condition_data_entry_editor");
   }
 
   @Test
   @DisplayName("Action entry editor renders for a new action")
-  void actionDataEntryEditorRenders() throws IOException {
+  void actionDataEntryEditorRenders() {
     openNewActionDataEntryEditor();
 
-    captureScreen("action_data_entry_editor");
+    client.saveScreenshot("action_data_entry_editor");
   }
 
   @Test
   @DisplayName("Action editor renders after saving an action")
-  void actionDataEditorRenders() throws IOException {
+  void actionDataEditorRenders() {
     openNewActionDataEntryEditor();
     typeIntoTextField(NEW_ACTION_COMMAND, configurationButton("save"));
 
     openEditor(configurationButton("save"), "ActionDataEditorContainerScreen");
 
-    captureScreen("action_data_editor");
+    client.saveScreenshot("action_data_editor");
   }
 
   @Test
   @DisplayName("Factions editor renders")
-  void factionsEditorRenders() throws IOException {
+  void factionsEditorRenders() {
     openFactionsEditor();
 
-    captureScreen("factions_editor");
+    client.saveScreenshot("factions_editor");
   }
 
   @Test
   @DisplayName("Faction editor renders for a new faction")
-  void factionEditorRenders() throws IOException {
+  void factionEditorRenders() {
     openFactionsEditor();
     typeIntoTextField(NEW_FACTION_NAME, configurationButton("add_faction"));
 
     openEditor(configurationButton("add_faction"), "FactionEditorScreen");
 
-    captureScreen("faction_editor");
+    client.saveScreenshot("faction_editor");
   }
 }

@@ -199,6 +199,10 @@ public final class ModGameTests {
         ConfigurationScreenTest::testFollowObjectiveConfigurationScreen,
         DEFAULT_STRUCTURE);
     register(
+        "inventory_configuration_screen",
+        ConfigurationScreenTest::testInventoryConfigurationScreen,
+        DEFAULT_STRUCTURE);
+    register(
         "local_preset_import_configuration_screen",
         ConfigurationScreenTest::testLocalPresetImportConfigurationScreen,
         DEFAULT_STRUCTURE);
@@ -313,6 +317,8 @@ public final class ModGameTests {
         DEFAULT_STRUCTURE);
     register("silent_change", AttributeMessageTest::testSilentChange, DEFAULT_STRUCTURE);
     register("name_change", AttributeMessageTest::testNameChange, DEFAULT_STRUCTURE);
+    register(
+        "inventory_flag_change", AttributeMessageTest::testInventoryFlagChange, DEFAULT_STRUCTURE);
 
     register("dialog_set_save", DialogActionMessageTest::testDialogSetSave, DEFAULT_STRUCTURE);
     register("dialog_save", DialogActionMessageTest::testDialogSave, DEFAULT_STRUCTURE);

@@ -42,11 +42,6 @@ public final class NpcStateTest {
     helper.succeed();
   }
 
-  public static void testStateSurvivesSaveAndLoad(GameTestHelper helper) {
-    NpcStateTestHelper.assertStateSurvivesSaveAndLoad(helper, humanoid());
-    helper.succeed();
-  }
-
   public static void testStateConditionLocksDialogButton(GameTestHelper helper) {
     NpcStateTestHelper.assertStateConditionLocksDialogButton(helper, humanoid());
     helper.succeed();

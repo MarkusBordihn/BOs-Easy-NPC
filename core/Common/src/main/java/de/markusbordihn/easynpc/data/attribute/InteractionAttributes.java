@@ -26,7 +26,8 @@ public record InteractionAttributes(
     boolean canBeHitByProjectile,
     boolean canBeLeashed,
     boolean pushEntities,
-    boolean blockVehicleMounting)
+    boolean blockVehicleMounting,
+    boolean canSitOnShoulder)
     implements EntityAttributesInterface {
 
   public static final String IS_PUSHABLE_TAG = InteractionAttributeType.IS_PUSHABLE.getTagName();
@@ -38,9 +39,11 @@ public record InteractionAttributes(
       InteractionAttributeType.PUSH_ENTITIES.getTagName();
   public static final String BLOCK_VEHICLE_MOUNTING_TAG =
       InteractionAttributeType.BLOCK_VEHICLE_MOUNTING.getTagName();
+  public static final String CAN_SIT_ON_SHOULDER_TAG =
+      InteractionAttributeType.CAN_SIT_ON_SHOULDER.getTagName();
 
   public InteractionAttributes() {
-    this(false, false, false, false, false);
+    this(false, false, false, false, false, false);
   }
 
   public static InteractionAttributes decode(CompoundTag compoundTag) {
@@ -49,7 +52,8 @@ public record InteractionAttributes(
         compoundTag.getBoolean(CAN_BE_HIT_BY_PROJECTILE_TAG).orElse(false),
         compoundTag.getBoolean(CAN_BE_LEASHED_TAG).orElse(false),
         compoundTag.getBoolean(PUSH_ENTITIES_TAG).orElse(false),
-        compoundTag.getBoolean(BLOCK_VEHICLE_MOUNTING_TAG).orElse(false));
+        compoundTag.getBoolean(BLOCK_VEHICLE_MOUNTING_TAG).orElse(false),
+        compoundTag.getBoolean(CAN_SIT_ON_SHOULDER_TAG).orElse(false));
   }
 
   public InteractionAttributes withIsPushable(boolean isPushable) {
@@ -58,7 +62,8 @@ public record InteractionAttributes(
         this.canBeHitByProjectile,
         this.canBeLeashed,
         this.pushEntities,
-        this.blockVehicleMounting);
+        this.blockVehicleMounting,
+        this.canSitOnShoulder);
   }
 
   public InteractionAttributes withCanBeHitByProjectile(boolean canBeHitByProjectile) {
@@ -67,7 +72,8 @@ public record InteractionAttributes(
         canBeHitByProjectile,
         this.canBeLeashed,
         this.pushEntities,
-        this.blockVehicleMounting);
+        this.blockVehicleMounting,
+        this.canSitOnShoulder);
   }
 
   public InteractionAttributes withCanBeLeashed(boolean canBeLeashed) {
@@ -76,7 +82,8 @@ public record InteractionAttributes(
         this.canBeHitByProjectile,
         canBeLeashed,
         this.pushEntities,
-        this.blockVehicleMounting);
+        this.blockVehicleMounting,
+        this.canSitOnShoulder);
   }
 
   public InteractionAttributes withPushEntities(boolean pushEntities) {
@@ -85,7 +92,8 @@ public record InteractionAttributes(
         this.canBeHitByProjectile,
         this.canBeLeashed,
         pushEntities,
-        this.blockVehicleMounting);
+        this.blockVehicleMounting,
+        this.canSitOnShoulder);
   }
 
   public InteractionAttributes withBlockVehicleMounting(boolean blockVehicleMounting) {
@@ -94,7 +102,18 @@ public record InteractionAttributes(
         this.canBeHitByProjectile,
         this.canBeLeashed,
         this.pushEntities,
-        blockVehicleMounting);
+        blockVehicleMounting,
+        this.canSitOnShoulder);
+  }
+
+  public InteractionAttributes withCanSitOnShoulder(boolean canSitOnShoulder) {
+    return new InteractionAttributes(
+        this.isPushable,
+        this.canBeHitByProjectile,
+        this.canBeLeashed,
+        this.pushEntities,
+        this.blockVehicleMounting,
+        canSitOnShoulder);
   }
 
   public CompoundTag encode(CompoundTag compoundTag) {
@@ -104,6 +123,7 @@ public record InteractionAttributes(
     AttributeTagUtils.putIfTrue(compoundTag, CAN_BE_LEASHED_TAG, this.canBeLeashed);
     AttributeTagUtils.putIfTrue(compoundTag, PUSH_ENTITIES_TAG, this.pushEntities);
     AttributeTagUtils.putIfTrue(compoundTag, BLOCK_VEHICLE_MOUNTING_TAG, this.blockVehicleMounting);
+    AttributeTagUtils.putIfTrue(compoundTag, CAN_SIT_ON_SHOULDER_TAG, this.canSitOnShoulder);
     return compoundTag;
   }
 }

@@ -21,7 +21,9 @@ package de.markusbordihn.easynpc.data.dialog;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.condition.ConditionDataEntry;
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
@@ -225,16 +227,16 @@ public final class DialogDataEntry {
       return;
     }
 
-    if (dialogButtonId != null) {
-      for (DialogButtonEntry button : this.dialogButtons) {
-        if (button.id().equals(dialogButtonId)) {
-          this.dialogButtons.remove(button);
-          this.dialogButtons.add(dialogButtonEntry);
-          return;
-        }
-      }
+    DialogButtonEntry replacedButton = this.getDialogButton(dialogButtonId);
+    if (replacedButton == null) {
+      this.dialogButtons.add(dialogButtonEntry);
+      return;
     }
-    this.dialogButtons.add(dialogButtonEntry);
+
+    List<DialogButtonEntry> orderedButtons = new ArrayList<>(this.dialogButtons);
+    orderedButtons.set(orderedButtons.indexOf(replacedButton), dialogButtonEntry);
+    this.dialogButtons.clear();
+    this.dialogButtons.addAll(orderedButtons);
   }
 
   @SuppressWarnings("unused")

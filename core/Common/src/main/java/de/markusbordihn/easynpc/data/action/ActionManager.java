@@ -73,11 +73,16 @@ public class ActionManager {
     }
 
     HashSet<ServerPlayer> playerList = actionGroupPlayer.get(actionGroup);
-    if (playerList == null || !playerList.contains(serverPlayer)) {
+    if (playerList == null || !playerList.remove(serverPlayer)) {
       return;
     }
 
-    playerList.remove(serverPlayer);
+    if (playerList.isEmpty()) {
+      actionGroupPlayer.remove(actionGroup);
+    }
+    if (actionGroupPlayer.isEmpty()) {
+      actionGroupPlayerMap.remove(mob);
+    }
   }
 
   public static void removeActionGroup(Mob mob, ActionGroup actionGroup) {
@@ -86,10 +91,34 @@ public class ActionManager {
     }
 
     EnumMap<ActionGroup, HashSet<ServerPlayer>> actionGroupPlayer = actionGroupPlayerMap.get(mob);
-    if (actionGroupPlayer == null || !actionGroupPlayer.containsKey(actionGroup)) {
+    if (actionGroupPlayer == null || actionGroupPlayer.remove(actionGroup) == null) {
       return;
     }
 
-    actionGroupPlayer.remove(actionGroup);
+    if (actionGroupPlayer.isEmpty()) {
+      actionGroupPlayerMap.remove(mob);
+    }
+  }
+
+  public static void removeMob(Mob mob) {
+    if (mob != null) {
+      actionGroupPlayerMap.remove(mob);
+    }
+  }
+
+  public static void removeServerPlayer(ServerPlayer serverPlayer) {
+    if (serverPlayer == null) {
+      return;
+    }
+
+    actionGroupPlayerMap
+        .values()
+        .removeIf(
+            actionGroupPlayer -> {
+              actionGroupPlayer
+                  .values()
+                  .removeIf(playerList -> playerList.remove(serverPlayer) && playerList.isEmpty());
+              return actionGroupPlayer.isEmpty();
+            });
   }
 }

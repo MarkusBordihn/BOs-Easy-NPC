@@ -26,6 +26,7 @@ import de.markusbordihn.easynpc.client.ClientEvents;
 import de.markusbordihn.easynpc.client.model.ModModelLayer;
 import de.markusbordihn.easynpc.client.renderer.BlockEntityRenderer;
 import de.markusbordihn.easynpc.client.renderer.EntityRenderer;
+import de.markusbordihn.easynpc.client.renderer.PlayerRendererLayers;
 import de.markusbordihn.easynpc.client.screen.ClientScreens;
 import de.markusbordihn.easynpc.commands.ModArgumentTypes;
 import de.markusbordihn.easynpc.commands.manager.CommandManager;
@@ -66,7 +67,7 @@ import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.EntityLeaveLevelEvent;
 import net.minecraftforge.event.server.ServerAboutToStartEvent;
 import net.minecraftforge.event.server.ServerStartedEvent;
-import net.minecraftforge.event.server.ServerStartingEvent;
+import net.minecraftforge.event.server.ServerStoppedEvent;
 import net.minecraftforge.event.server.ServerStoppingEvent;
 import net.minecraftforge.eventbus.api.bus.BusGroup;
 import net.minecraftforge.eventbus.api.listener.Priority;
@@ -154,11 +155,11 @@ public class EasyNPCMain {
     }
 
     RegisterCommandsEvent.BUS.addListener(this::registerCommands);
-    // The Forge 61 GameTestServer fires only ServerAboutToStartEvent, never ServerStartingEvent.
+    // The Forge 65 GameTestServer fires only ServerAboutToStartEvent, never ServerStartingEvent.
     ServerAboutToStartEvent.BUS.addListener(this::onServerAboutToStart);
-    ServerStartingEvent.BUS.addListener(this::onServerStarting);
     ServerStartedEvent.BUS.addListener(this::onServerStarted);
     ServerStoppingEvent.BUS.addListener(this::onServerStopping);
+    ServerStoppedEvent.BUS.addListener(this::onServerStopped);
     TickEvent.ServerTickEvent.Post.BUS.addListener(this::onServerTick);
     EntityJoinLevelEvent.BUS.addListener(Priority.HIGHEST, this::onEntityJoinLevel);
     EntityLeaveLevelEvent.BUS.addListener(Priority.HIGHEST, this::onEntityLeaveLevel);
@@ -173,6 +174,7 @@ public class EasyNPCMain {
     FMLClientSetupEvent.getBus(modBusGroup).addListener(this::onClientSetup);
     EntityRenderersEvent.RegisterRenderers.BUS.addListener(this::onRegisterRenderers);
     EntityRenderersEvent.RegisterLayerDefinitions.BUS.addListener(this::onRegisterLayerDefinitions);
+    EntityRenderersEvent.AddLayers.BUS.addListener(this::onAddLayers);
   }
 
   private void registerClientGameEvents() {
@@ -218,6 +220,10 @@ public class EasyNPCMain {
     ModModelLayer.registerEntityLayerDefinitions(event);
   }
 
+  private void onAddLayers(final EntityRenderersEvent.AddLayers event) {
+    PlayerRendererLayers.register(event);
+  }
+
   private void onPlayerLoggedOut(final ClientPlayerNetworkEvent.LoggingOut event) {
     ClientEvents.handleWorldUnloadEvent();
   }
@@ -230,18 +236,19 @@ public class EasyNPCMain {
     ServerEvents.handleServerStarting(event.getServer());
   }
 
-  private void onServerStarting(final ServerStartingEvent event) {
+  private void onServerStarted(final ServerStartedEvent event) {
+    ServerEvents.handleServerStarted(event.getServer());
     if (CompatConstants.MOD_EASY_MODEL_ENTITIES_LOADED) {
       EasyModelEntitiesLoader.register();
     }
   }
 
-  private void onServerStarted(final ServerStartedEvent event) {
-    ServerEvents.handleServerStarted(event.getServer());
-  }
-
   private void onServerStopping(final ServerStoppingEvent event) {
     ServerEvents.handleServerStopping(event.getServer());
+  }
+
+  private void onServerStopped(final ServerStoppedEvent event) {
+    ServerEvents.handleServerStopped(event.getServer());
   }
 
   private void onServerTick(final TickEvent.ServerTickEvent event) {

@@ -65,7 +65,7 @@ public record ChangeFactionMessage(UUID uuid, String factionName) implements Net
     EasyNPC<?> easyNPC = this.getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
 
     if (easyNPC == null || this.factionName == null) {
-      log.error("Invalid data to change faction for {}", this);
+      log.warn("Invalid data to change faction for {}", this);
       return;
     }
 

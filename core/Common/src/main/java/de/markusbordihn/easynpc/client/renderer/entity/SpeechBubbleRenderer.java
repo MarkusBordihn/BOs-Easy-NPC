@@ -89,15 +89,17 @@ public class SpeechBubbleRenderer {
       CameraRenderState cameraRenderState) {
     if (EntityScreenRenderer.isRenderingEntityOnScreen()
         || !(renderState instanceof EasyNPCRenderStateExtension extension)
-        || extension.getEasyNpcUUID() == null) {
+        || !isLoadedInClientLevel(extension.getEasyNPC())) {
       return;
     }
 
-    EasyNPC<?> easyNPC =
-        LivingEntityManager.getClientEasyNPCEntityByUUID(extension.getEasyNpcUUID());
-    if (easyNPC != null) {
-      submit(easyNPC.getEntity(), poseStack, submitNodeCollector, cameraRenderState);
-    }
+    submit(
+        extension.getEasyNPC().getEntity(), poseStack, submitNodeCollector, cameraRenderState);
+  }
+
+  private static boolean isLoadedInClientLevel(EasyNPC<?> easyNPC) {
+    return easyNPC != null
+        && LivingEntityManager.getClientEasyNPCEntityByUUID(easyNPC.getEntityUUID()) == easyNPC;
   }
 
   public static void submit(

@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.gametest;
 
+import de.markusbordihn.easynpc.api.handler.EasyNPCPresetHandler;
 import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataEntry;
@@ -95,6 +96,20 @@ public class PresetSpawnTestHelper {
     GameTestHelpers.assertNotNull(helper, "The imported preset must spawn its NPC", spawnedEntity);
     assertHomePosition(helper, (EasyNPC<?>) spawnedEntity, spawnPosition, "imported preset");
     spawnedEntity.discard();
+  }
+
+  public static void assertPresetHandlerCreatesPresetItem(
+      GameTestHelper helper, EntityType<?> entityType) {
+    EasyNPC<?> easyNPC = GameTestHelpers.mockEasyNPC(helper, entityType, SOURCE_NPC_POSITION);
+
+    ItemStack presetItemStack = EasyNPCPresetHandler.createPresetItem(easyNPC);
+    GameTestHelpers.assertTrue(
+        helper, "The API must create a preset item for an NPC", !presetItemStack.isEmpty());
+    GameTestHelpers.assertEquals(
+        helper,
+        "The API preset item must keep the entity type",
+        entityType,
+        PresetDataUtils.fromItemStack(presetItemStack).entityType());
   }
 
   private static PresetData createCompactPreset(GameTestHelper helper, EntityType<?> entityType) {

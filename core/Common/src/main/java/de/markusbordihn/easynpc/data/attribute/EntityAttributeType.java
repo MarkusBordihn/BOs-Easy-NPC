@@ -26,7 +26,8 @@ public enum EntityAttributeType {
   CUSTOM,
   INTERACTION,
   MOVEMENT,
-  ENVIRONMENTAL;
+  ENVIRONMENTAL,
+  INVENTORY;
 
   private final String tagName = TextUtils.convertToPascalCase(this.name());
 

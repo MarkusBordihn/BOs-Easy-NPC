@@ -23,7 +23,6 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataEntry;
 import de.markusbordihn.easynpc.data.objective.ObjectiveGroup;
 import de.markusbordihn.easynpc.data.objective.ObjectiveType;
-import de.markusbordihn.easynpc.entity.NPCEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ObjectiveDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.OwnerDataCapable;
@@ -57,11 +56,6 @@ public class OwnerHandler {
     }
 
     log.debug("[{}] Setting owner to {}", easyNPC, owner);
-    if (!NPCEntityManager.updateOwner(easyNPC, owner)) {
-      log.error("[{}] Unable to update the owner index for {}!", easyNPC, owner);
-      return false;
-    }
-
     ownerData.setNPCOwnerUUID(owner.getUUID());
     rebuildOwnerObjectives(easyNPC, owner.getUUID());
     return true;
@@ -108,11 +102,6 @@ public class OwnerHandler {
     }
 
     log.debug("[{}] Removing owner ...", easyNPC);
-    if (!NPCEntityManager.updateOwner(easyNPC, null)) {
-      log.error("[{}] Unable to update the owner index!", easyNPC);
-      return false;
-    }
-
     ownerData.setNPCOwner(null);
     rebuildOwnerObjectives(easyNPC, null);
     return true;

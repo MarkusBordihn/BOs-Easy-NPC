@@ -46,6 +46,7 @@ class InteractionAttributesTest {
     assertFalse(interactionAttributes.canBeLeashed());
     assertFalse(interactionAttributes.pushEntities());
     assertFalse(interactionAttributes.blockVehicleMounting());
+    assertFalse(interactionAttributes.canSitOnShoulder());
   }
 
   @Test
@@ -55,7 +56,8 @@ class InteractionAttributesTest {
         new InteractionAttributes()
             .withIsPushable(true)
             .withCanBeLeashed(true)
-            .withBlockVehicleMounting(true);
+            .withBlockVehicleMounting(true)
+            .withCanSitOnShoulder(true);
 
     InteractionAttributes restored =
         InteractionAttributes.decode(interactionAttributes.encode(new CompoundTag()));
@@ -63,6 +65,7 @@ class InteractionAttributesTest {
     assertTrue(restored.isPushable());
     assertTrue(restored.canBeLeashed());
     assertTrue(restored.blockVehicleMounting());
+    assertTrue(restored.canSitOnShoulder());
     assertFalse(restored.canBeHitByProjectile());
     assertFalse(restored.pushEntities());
   }

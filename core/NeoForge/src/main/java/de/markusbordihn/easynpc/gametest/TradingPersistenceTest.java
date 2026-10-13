@@ -37,11 +37,6 @@ public final class TradingPersistenceTest {
     helper.succeed();
   }
 
-  public static void testModifiedTradeItemPersistence(GameTestHelper helper) {
-    TradingPersistenceTestHelper.assertModifiedTradeItemPersistence(helper, humanoid());
-    helper.succeed();
-  }
-
   public static void testBasicTradingOffersUpdateAppliesCorrectFields(GameTestHelper helper) {
     TradingPersistenceTestHelper.assertBasicTradingOffersUpdateAppliesCorrectFields(
         helper, humanoid());

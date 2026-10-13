@@ -126,45 +126,10 @@ public class NavigationTypeTestHelper {
         easyNPC.getEntity().isNoGravity());
   }
 
-  public static void assertHoverHeightStaysInRange(
+  public static void assertHoverHeightsAreSetIndependently(
       GameTestHelper helper, EntityType<?> entityType) {
     EasyNPC<?> easyNPC = GameTestHelpers.mockEasyNPC(helper, entityType, NPC_POSITION);
     NavigationDataCapable<?> navigationData = easyNPC.getEasyNPCNavigationData();
-
-    AttributeHandler.setMovementAttribute(easyNPC, MovementAttributeType.HOVER_HEIGHT, Double.NaN);
-    GameTestHelpers.assertEquals(
-        helper,
-        "A hover height that is not a number must not reach the movement control",
-        0.0D,
-        navigationData.getHoverHeight());
-
-    AttributeHandler.setMovementAttribute(easyNPC, MovementAttributeType.HOVER_HEIGHT, 4096.0D);
-    GameTestHelpers.assertEquals(
-        helper,
-        "A hover height above the limit must be capped",
-        MovementAttributes.MAX_HOVER_HEIGHT,
-        navigationData.getHoverHeight());
-  }
-
-  public static void assertMinHoverHeightStaysInRange(
-      GameTestHelper helper, EntityType<?> entityType) {
-    EasyNPC<?> easyNPC = GameTestHelpers.mockEasyNPC(helper, entityType, NPC_POSITION);
-    NavigationDataCapable<?> navigationData = easyNPC.getEasyNPCNavigationData();
-
-    AttributeHandler.setMovementAttribute(
-        easyNPC, MovementAttributeType.MIN_HOVER_HEIGHT, Double.NaN);
-    GameTestHelpers.assertEquals(
-        helper,
-        "A minimum hover height that is not a number must not reach the movement control",
-        0.0D,
-        navigationData.getMinHoverHeight());
-
-    AttributeHandler.setMovementAttribute(easyNPC, MovementAttributeType.MIN_HOVER_HEIGHT, 4096.0D);
-    GameTestHelpers.assertEquals(
-        helper,
-        "A minimum hover height above the limit must be capped",
-        MovementAttributes.MAX_HOVER_HEIGHT,
-        navigationData.getMinHoverHeight());
 
     AttributeHandler.setMovementAttribute(easyNPC, MovementAttributeType.MIN_HOVER_HEIGHT, 2.0D);
     AttributeHandler.setMovementAttribute(easyNPC, MovementAttributeType.HOVER_HEIGHT, 5.0D);

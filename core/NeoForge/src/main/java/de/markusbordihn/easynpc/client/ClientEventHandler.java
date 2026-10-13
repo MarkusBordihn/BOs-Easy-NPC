@@ -19,14 +19,19 @@
 
 package de.markusbordihn.easynpc.client;
 
+import de.markusbordihn.easynpc.client.renderer.layer.ShoulderNPCLayer;
 import de.markusbordihn.easynpc.compat.CompatConstants;
 import de.markusbordihn.easynpc.compat.easymodelentities.EasyModelEntitiesLoader;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.client.renderer.entity.player.AvatarRenderer;
+import net.minecraft.world.entity.player.PlayerModelType;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.event.TagsUpdatedEvent;
 
 @EventBusSubscriber(value = Dist.CLIENT)
@@ -35,6 +40,16 @@ public class ClientEventHandler {
   @SubscribeEvent
   public static void onClientSetup(FMLClientSetupEvent event) {
     event.enqueueWork(() -> ClientEvents.handleClientStartedEvent(Minecraft.getInstance()));
+  }
+
+  @SubscribeEvent
+  public static void onAddLayers(EntityRenderersEvent.AddLayers event) {
+    for (PlayerModelType modelType : event.getSkins()) {
+      AvatarRenderer<AbstractClientPlayer> playerRenderer = event.getPlayerRenderer(modelType);
+      if (playerRenderer != null) {
+        playerRenderer.addLayer(new ShoulderNPCLayer(playerRenderer));
+      }
+    }
   }
 }
 

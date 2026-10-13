@@ -56,4 +56,9 @@ public final class PauseTest {
     PauseTestHelper.assertGlobalPauseEndsWithTheServer(helper, humanoid());
     helper.succeed();
   }
+
+  public static void testPausedStateIsSynched(GameTestHelper helper) {
+    PauseTestHelper.assertPausedStateIsSynched(helper, humanoid());
+    helper.succeed();
+  }
 }

@@ -21,23 +21,38 @@ package de.markusbordihn.easynpc.data.execution;
 
 import net.minecraft.nbt.CompoundTag;
 
-public record ExecutionData(int executionCount, long windowStartTime, long lastExecutionTime) {
+public record ExecutionData(
+    int executionCount, long windowStartTime, long lastExecutionTime, ExecutionInterval interval) {
 
   public static final String DATA_EXECUTION_COUNT_TAG = "Count";
   public static final String DATA_WINDOW_START_TAG = "WindowStart";
   public static final String DATA_LAST_EXECUTION_TAG = "LastExec";
+  public static final String DATA_INTERVAL_TAG = "Interval";
 
   public ExecutionData(CompoundTag compoundTag) {
     this(
         compoundTag.getInt(DATA_EXECUTION_COUNT_TAG).orElse(0),
         compoundTag.getLong(DATA_WINDOW_START_TAG).orElse(0L),
-        compoundTag.getLong(DATA_LAST_EXECUTION_TAG).orElse(0L));
+        compoundTag.getLong(DATA_LAST_EXECUTION_TAG).orElse(0L),
+        loadInterval(compoundTag));
+  }
+
+  private static ExecutionInterval loadInterval(CompoundTag compoundTag) {
+    return compoundTag
+        .getString(DATA_INTERVAL_TAG)
+        .map(ExecutionInterval::get)
+        .orElse(ExecutionInterval.LIFETIME);
+  }
+
+  public boolean isExpired() {
+    return this.interval.hasIntervalPassed(this.windowStartTime);
   }
 
   public CompoundTag save(CompoundTag compoundTag) {
     compoundTag.putInt(DATA_EXECUTION_COUNT_TAG, this.executionCount);
     compoundTag.putLong(DATA_WINDOW_START_TAG, this.windowStartTime);
     compoundTag.putLong(DATA_LAST_EXECUTION_TAG, this.lastExecutionTime);
+    compoundTag.putString(DATA_INTERVAL_TAG, this.interval.name());
     return compoundTag;
   }
 

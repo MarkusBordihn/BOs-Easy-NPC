@@ -19,7 +19,6 @@
 
 package de.markusbordihn.easynpc.configui.clienttest;
 
-import java.io.IOException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -75,13 +74,11 @@ class ConfigurationSubPageClientTest extends ClientTestBase {
     "import, custom, ImportCustomPresetConfigurationScreen"
   })
   @DisplayName("Configuration tab opens and renders its sub page")
-  void tabOpensSubPage(String categoryLabel, String tabLabel, String screenClassName)
-      throws IOException {
-    summonTestNpc();
-    openMainConfiguration();
+  void tabOpensSubPage(String categoryLabel, String tabLabel, String screenClassName) {
+    openMainConfiguration(spawnTestNpc());
 
     openSubPage(categoryLabel, tabLabel, screenClassName);
 
-    captureScreen(categoryLabel + "-" + tabLabel);
+    client.saveScreenshot(categoryLabel + "-" + tabLabel);
   }
 }

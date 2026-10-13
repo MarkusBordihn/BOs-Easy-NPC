@@ -20,10 +20,13 @@
 package de.markusbordihn.easynpc.entity.easynpc.data;
 
 import de.markusbordihn.easynpc.data.status.StatusDataType;
+import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.handler.PauseManager;
 import java.util.EnumMap;
 import java.util.Optional;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -46,6 +49,21 @@ public interface StatusDataCapable<T extends Mob> extends EasyNPC<T> {
 
   default void setStatusDataFlag(StatusDataType key, boolean value) {
     this.getStatusDataFlags().put(key, value);
+    if (key == StatusDataType.PAUSED) {
+      this.setSynchedEntityData(SynchedDataIndex.PAUSED, value);
+    }
+  }
+
+  default boolean isNPCPaused() {
+    if (this.isClientSideInstance()) {
+      return this.getSynchedEntityData(SynchedDataIndex.PAUSED);
+    }
+
+    return this.getStatusDataFlag(StatusDataType.PAUSED);
+  }
+
+  default void defineSynchedStatusData(SynchedEntityData.Builder builder) {
+    this.defineSynchedEntityData(builder, SynchedDataIndex.PAUSED, false);
   }
 
   default long getStatusDataTimestamp(StatusDataType key) {
@@ -98,6 +116,7 @@ public interface StatusDataCapable<T extends Mob> extends EasyNPC<T> {
     }
 
     valueOutput.store(DATA_STATUS_DATA_TAG, CompoundTag.CODEC, statusTag);
+    PauseManager.removeGlobalPauseFromSaveData(this, valueOutput);
   }
 
   default void readAdditionalStatusData(ValueInput valueInput) {

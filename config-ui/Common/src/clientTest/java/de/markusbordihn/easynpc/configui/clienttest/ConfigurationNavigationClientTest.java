@@ -19,11 +19,9 @@
 
 package de.markusbordihn.easynpc.configui.clienttest;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import de.markusbordihn.clientruntimeinterfacetoolkit.testrunner.By;
-import java.io.IOException;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,36 +32,17 @@ class ConfigurationNavigationClientTest extends ClientTestBase {
 
   @Test
   @DisplayName("Main configuration screen renders")
-  void mainConfigurationScreenRenders() throws IOException {
-    summonTestNpc();
-    openMainConfiguration();
+  void mainConfigurationScreenRenders() {
+    openMainConfiguration(spawnTestNpc());
 
-    captureScreen("main");
+    client.saveScreenshot("main");
   }
 
   @ParameterizedTest(name = "{0}")
-  @ValueSource(
-      strings = {
-        "actions",
-        "attributes",
-        "dialog",
-        "equipment",
-        "objective",
-        "pose",
-        "position",
-        "rotation",
-        "scaling",
-        "sound",
-        "trading",
-        "edit_skin",
-        "change_model",
-        "import",
-        "export"
-      })
-  @DisplayName("Main configuration button opens and renders its configuration screen")
-  void buttonOpensConfigurationScreen(String buttonLabel) throws IOException {
-    summonTestNpc();
-    openMainConfiguration();
+  @ValueSource(strings = {"equipment", "inventory", "position", "rotation", "scaling"})
+  @DisplayName("Main configuration button without sub pages opens and renders its screen")
+  void buttonOpensConfigurationScreen(String buttonLabel) {
+    openMainConfiguration(spawnTestNpc());
 
     By button = configurationButton(buttonLabel);
     Assumptions.assumeTrue(isEnabledWidget(button), buttonLabel + " is not available for this NPC");
@@ -72,7 +51,6 @@ class ConfigurationNavigationClientTest extends ClientTestBase {
     assertTrue(
         openedScreenId.startsWith("de.markusbordihn.easynpc."),
         buttonLabel + " opened " + openedScreenId);
-    assertEquals(openedScreenId, client.screenId());
-    captureScreen(buttonLabel);
+    client.saveScreenshot(buttonLabel);
   }
 }

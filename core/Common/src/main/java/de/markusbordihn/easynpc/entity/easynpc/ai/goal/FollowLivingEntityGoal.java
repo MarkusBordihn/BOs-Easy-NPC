@@ -24,6 +24,7 @@ import de.markusbordihn.easynpc.entity.easynpc.ai.control.JumpEasyNPCMoveControl
 import de.markusbordihn.easynpc.entity.easynpc.data.NavigationDataCapable;
 import de.markusbordihn.easynpc.handler.PlacementHandler;
 import java.util.EnumSet;
+import java.util.function.Supplier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
@@ -47,7 +48,7 @@ public class FollowLivingEntityGoal extends Goal {
 
   private final Mob mob;
   private final NavigationDataCapable<?> navigationData;
-  private final LivingEntity livingEntity;
+  private final Supplier<LivingEntity> targetSupplier;
   private final double speedModifier;
   private final float stopDistance;
   private final float maxFollowDistance;
@@ -58,6 +59,7 @@ public class FollowLivingEntityGoal extends Goal {
   private int timeToRecalcPath;
   private int combatCooldownTicks = 0;
   private int pathFailureCooldownTicks = 0;
+  private LivingEntity livingEntity;
 
   public FollowLivingEntityGoal(
       EasyNPC<?> easyNPC,
@@ -67,9 +69,27 @@ public class FollowLivingEntityGoal extends Goal {
       float maxFollowDistance,
       float teleportDistance,
       Vec3 followOffset) {
+    this(
+        easyNPC,
+        () -> livingEntity,
+        speedModifier,
+        stopDistance,
+        maxFollowDistance,
+        teleportDistance,
+        followOffset);
+  }
+
+  public FollowLivingEntityGoal(
+      EasyNPC<?> easyNPC,
+      Supplier<LivingEntity> targetSupplier,
+      double speedModifier,
+      float stopDistance,
+      float maxFollowDistance,
+      float teleportDistance,
+      Vec3 followOffset) {
     this.mob = easyNPC.getMob();
     this.navigationData = easyNPC.getEasyNPCNavigationData();
-    this.livingEntity = livingEntity;
+    this.targetSupplier = targetSupplier;
     this.speedModifier = speedModifier;
     this.stopDistance = stopDistance;
     this.maxFollowDistance =
@@ -124,6 +144,7 @@ public class FollowLivingEntityGoal extends Goal {
       return false;
     }
 
+    this.livingEntity = this.targetSupplier.get();
     if (this.livingEntity == null || !this.livingEntity.isAlive() || !this.mob.isAlive()) {
       return false;
     }

@@ -44,7 +44,9 @@ class ExecutionTrackerDataTest {
     ExecutionId executionId = ExecutionId.dialog(UUID.randomUUID(), UUID.randomUUID());
     original
         .trackingData()
-        .put(playerUUID, Map.of(executionId, new ExecutionData(5, 1000L, 2000L)));
+        .put(
+            playerUUID,
+            Map.of(executionId, new ExecutionData(5, 1000L, 2000L, ExecutionInterval.PER_DAY)));
     CompoundTag tag = original.save();
     ExecutionTrackerData loaded = new ExecutionTrackerData(tag);
 
@@ -71,8 +73,8 @@ class ExecutionTrackerDataTest {
         .put(
             playerUUID,
             Map.of(
-                actionId, new ExecutionData(1, 100L, 200L),
-                dialogId, new ExecutionData(2, 300L, 400L)));
+                actionId, new ExecutionData(1, 100L, 200L, ExecutionInterval.PER_DAY),
+                dialogId, new ExecutionData(2, 300L, 400L, ExecutionInterval.PER_DAY)));
     ExecutionTrackerData loaded = new ExecutionTrackerData(original.save());
 
     Map<ExecutionId, ExecutionData> playerData = loaded.trackingData().get(playerUUID);
@@ -89,8 +91,10 @@ class ExecutionTrackerDataTest {
     ExecutionId target1 = ExecutionId.action(UUID.randomUUID(), UUID.randomUUID());
     ExecutionId target2 =
         ExecutionId.dialogButton(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID());
-    data.trackingData().put(player1, Map.of(target1, new ExecutionData(1, 100L, 200L)));
-    data.trackingData().put(player2, Map.of(target2, new ExecutionData(2, 300L, 400L)));
+    data.trackingData()
+        .put(player1, Map.of(target1, new ExecutionData(1, 100L, 200L, ExecutionInterval.PER_DAY)));
+    data.trackingData()
+        .put(player2, Map.of(target2, new ExecutionData(2, 300L, 400L, ExecutionInterval.PER_DAY)));
     CompoundTag tag = data.save();
     ExecutionTrackerData loaded = new ExecutionTrackerData(tag);
 
@@ -117,7 +121,7 @@ class ExecutionTrackerDataTest {
     CompoundTag legacyExecutionTag = new CompoundTag();
     CompoundTagUtils.writeUUID(
         legacyExecutionTag, ExecutionTrackerData.DATA_EXECUTION_ID_TAG, UUID.randomUUID());
-    new ExecutionData(1, 100L, 200L).save(legacyExecutionTag);
+    new ExecutionData(1, 100L, 200L, ExecutionInterval.PER_DAY).save(legacyExecutionTag);
     ListTag executionsTag = new ListTag();
     executionsTag.add(legacyExecutionTag);
     playerTag.put(ExecutionTrackerData.DATA_EXECUTIONS_TAG, executionsTag);
@@ -136,7 +140,10 @@ class ExecutionTrackerDataTest {
     ExecutionTrackerData data = new ExecutionTrackerData();
     UUID playerUUID = UUID.randomUUID();
     ExecutionId executionId = ExecutionId.action(UUID.randomUUID(), UUID.randomUUID());
-    data.trackingData().put(playerUUID, Map.of(executionId, new ExecutionData(3, 500L, 600L)));
+    data.trackingData()
+        .put(
+            playerUUID,
+            Map.of(executionId, new ExecutionData(3, 500L, 600L, ExecutionInterval.PER_DAY)));
     CompoundTag tag = new CompoundTag();
     tag.putString("ExtraField", "test");
     data.save(tag);

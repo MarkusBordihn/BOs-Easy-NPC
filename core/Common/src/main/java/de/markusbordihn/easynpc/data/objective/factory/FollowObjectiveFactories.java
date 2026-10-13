@@ -22,10 +22,15 @@ package de.markusbordihn.easynpc.data.objective.factory;
 import static de.markusbordihn.easynpc.data.objective.factory.BuiltInObjectiveFactories.register;
 import static de.markusbordihn.easynpc.data.objective.factory.BuiltInObjectiveFactories.requiresPathfinderMob;
 
+import de.markusbordihn.easynpc.data.objective.ObjectiveDataEntry;
 import de.markusbordihn.easynpc.data.objective.ObjectiveType;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.CustomTemptGoal;
+import de.markusbordihn.easynpc.entity.easynpc.ai.goal.FollowLivingEntityGoal;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.crafting.Ingredient;
 
 final class FollowObjectiveFactories {
@@ -45,6 +50,18 @@ final class FollowObjectiveFactories {
         ObjectiveType.FOLLOW_PLAYER,
         new FollowLivingEntityGoalFactory(
             (objectiveDataEntry, easyNPC) -> objectiveDataEntry.getTargetPlayer()));
+
+    register(
+        ObjectiveType.FOLLOW_NEAREST_PLAYER,
+        (objectiveDataEntry, easyNPC) ->
+            new FollowLivingEntityGoal(
+                easyNPC,
+                () -> findNearestPlayer(objectiveDataEntry, easyNPC.getMob()),
+                objectiveDataEntry.getSpeedModifier(),
+                objectiveDataEntry.getStopDistance(),
+                objectiveDataEntry.getStartDistance(),
+                objectiveDataEntry.getTeleportDistance(),
+                objectiveDataEntry.getFollowOffset()));
 
     register(
         ObjectiveType.FOLLOW_ENTITY_BY_UUID,
@@ -68,5 +85,13 @@ final class FollowObjectiveFactories {
                   objectiveDataEntry.getCanScare(),
                   objectiveDataEntry.getOnlyWithoutOwner());
             }));
+  }
+
+  private static Player findNearestPlayer(ObjectiveDataEntry objectiveDataEntry, Mob mob) {
+    double searchRange =
+        objectiveDataEntry.getStartDistance() > 0.0F
+            ? objectiveDataEntry.getStartDistance()
+            : mob.getAttributeValue(Attributes.FOLLOW_RANGE);
+    return mob.level().getNearestPlayer(mob, searchRange);
   }
 }

@@ -45,9 +45,9 @@
   },
   "suggests": {
     "tooltipfix": "*",
-    "easy_model_entities": ">=2.4.0 <3.0.0"
+    "easy_model_entities": ">=2.5.0 <3.0.0"
   },
   "breaks": {
-    "easy_model_entities": "<2.4.0 || >=3.0.0"
+    "easy_model_entities": "<2.5.0 || >=3.0.0"
   }
 }

@@ -55,7 +55,7 @@ public class ContainerScreen<T extends ConfigUIMenu> extends AbstractContainerSc
   private boolean containerClosed = false;
 
   protected ContainerScreen(T menu, Inventory inventory, Component component) {
-    this(menu, inventory, component, 318, 243);
+    this(menu, inventory, component, 328, 243);
   }
 
   protected ContainerScreen(

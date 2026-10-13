@@ -22,11 +22,13 @@ package de.markusbordihn.easynpc.entity.easynpc.data;
 import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.data.model.ModelType;
+import de.markusbordihn.easynpc.data.scale.CustomScale;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import java.util.Optional;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.level.storage.ValueInput;
@@ -95,6 +97,22 @@ public interface ModelDataCapable<T extends Mob>
         || this.hasChangedModelRotation()
         || this.hasChangedModelScale()
         || this.hasChangedModelVisibility();
+  }
+
+  default EntityDimensions applyModelScale(EntityDimensions dimensions) {
+    EntityDimensions scaledDimensions = dimensions;
+
+    CustomScale defaultScale = this.getDefaultModelScale();
+    if (defaultScale != null && defaultScale.hasChanged()) {
+      scaledDimensions = scaledDimensions.scale(defaultScale.x(), defaultScale.y());
+    }
+
+    CustomScale rootScale = this.getModelRootData().scale();
+    if (rootScale.x() != 1.0f || rootScale.y() != 1.0f) {
+      scaledDimensions = scaledDimensions.scale(rootScale.x(), rootScale.y());
+    }
+
+    return scaledDimensions;
   }
 
   default boolean hasLockedBodyPose() {

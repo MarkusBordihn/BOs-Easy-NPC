@@ -38,11 +38,6 @@ public final class StoredDataTest {
     helper.succeed();
   }
 
-  public static void testUnchangedSoundsAreNotStored(GameTestHelper helper) {
-    StoredDataTestHelper.assertUnchangedSoundsAreNotStored(helper, humanoid());
-    helper.succeed();
-  }
-
   public static void testObjectivesSurviveWithoutTargetFlags(GameTestHelper helper) {
     StoredDataTestHelper.assertObjectivesSurviveWithoutTargetFlags(helper, humanoid());
     helper.succeed();

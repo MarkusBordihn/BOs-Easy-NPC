@@ -25,6 +25,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.world.BossEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -83,6 +84,16 @@ public record DisplayAttributeDataSet(
     map.put(
         DisplayAttributeType.OPACITY,
         new DisplayAttributeEntry(DisplayAttributeType.DEFAULT_OPACITY));
+    map.put(
+        DisplayAttributeType.BOSS_BAR_COLOR,
+        new DisplayAttributeEntry(BossEvent.BossBarColor.PURPLE.name()));
+    map.put(
+        DisplayAttributeType.BOSS_BAR_RANGE,
+        new DisplayAttributeEntry(DisplayAttributeType.DEFAULT_BOSS_BAR_RANGE));
+    map.put(
+        DisplayAttributeType.BOSS_BAR_STYLE,
+        new DisplayAttributeEntry(BossEvent.BossBarOverlay.PROGRESS.name()));
+    map.put(DisplayAttributeType.SHOW_BOSS_BAR, new DisplayAttributeEntry(false));
     return map;
   }
 
