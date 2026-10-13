@@ -20,12 +20,19 @@
 package de.markusbordihn.easynpc.io;
 
 import de.markusbordihn.easynpc.Constants;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Stream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -56,5 +63,54 @@ public class BackupDataFiles {
     String backupFileName = String.format("%s_%s.backup.npc.nbt", dateString, uuid);
     Path backupDataFolder = DataFileHandler.getOrCreateBackupFolder(dateString);
     return backupDataFolder != null ? backupDataFolder.resolve(backupFileName) : null;
+  }
+
+  public static int removeBackupFoldersBefore(LocalDate oldestKeptDate) {
+    return removeBackupFoldersBefore(DataFileHandler.getBackupFolder(), oldestKeptDate);
+  }
+
+  public static int removeBackupFoldersBefore(Path backupFolder, LocalDate oldestKeptDate) {
+    if (backupFolder == null || oldestKeptDate == null || !Files.isDirectory(backupFolder)) {
+      return 0;
+    }
+
+    List<Path> backupDateFolders;
+    try (Stream<Path> backupFolderEntries = Files.list(backupFolder)) {
+      backupDateFolders = backupFolderEntries.filter(Files::isDirectory).toList();
+    } catch (IOException e) {
+      log.error("Unable to list backup folder {}:", backupFolder, e);
+      return 0;
+    }
+
+    int removedFolders = 0;
+    for (Path backupDateFolder : backupDateFolders) {
+      Optional<LocalDate> backupDate = parseBackupDate(backupDateFolder.getFileName().toString());
+      if (backupDate.isPresent()
+          && backupDate.get().isBefore(oldestKeptDate)
+          && deleteBackupFolder(backupDateFolder)) {
+        removedFolders++;
+      }
+    }
+    return removedFolders;
+  }
+
+  private static Optional<LocalDate> parseBackupDate(String folderName) {
+    try {
+      return Optional.of(LocalDate.parse(folderName, DATE_FORMATTER));
+    } catch (DateTimeParseException e) {
+      return Optional.empty();
+    }
+  }
+
+  private static boolean deleteBackupFolder(Path backupDateFolder) {
+    try (Stream<Path> backupPaths = Files.walk(backupDateFolder)) {
+      for (Path backupPath : backupPaths.sorted(Comparator.reverseOrder()).toList()) {
+        Files.delete(backupPath);
+      }
+      return true;
+    } catch (IOException e) {
+      log.error("Unable to delete backup folder {}:", backupDateFolder, e);
+      return false;
+    }
   }
 }

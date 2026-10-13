@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.entity.easynpc;
 
+import de.markusbordihn.easynpc.data.action.UniqueActionIdAssigner;
 import de.markusbordihn.easynpc.data.status.StatusDataType;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventDataCapable;
@@ -193,6 +194,10 @@ public interface EasyNPCBase<E extends Mob>
     if (soundData != null) {
       soundData.defineSynchedSoundData(builder);
     }
+    StatusDataCapable<E> statusData = this.getEasyNPCStatusData();
+    if (statusData != null) {
+      statusData.defineSynchedStatusData(builder);
+    }
     TradingDataCapable<E> tradingData = this.getEasyNPCTradingData();
     if (tradingData != null) {
       tradingData.defineSynchedTradingData(builder);
@@ -288,6 +293,11 @@ public interface EasyNPCBase<E extends Mob>
     FactionDataCapable<E> factionData = this.getEasyNPCFactionData();
     if (factionData != null) {
       this.handleEasyNPCData("faction", () -> factionData.addAdditionalFactionData(valueOutput));
+    }
+    InventoryDataCapable<E> inventoryData = this.getEasyNPCInventoryData();
+    if (inventoryData != null) {
+      this.handleEasyNPCData(
+          "inventory", () -> inventoryData.addAdditionalInventoryData(valueOutput));
     }
     ModelDataCapable<E> modelData = this.getEasyNPCModelData();
     if (modelData != null) {
@@ -387,14 +397,14 @@ public interface EasyNPCBase<E extends Mob>
           "display attribute",
           () -> displayAttributeData.readAdditionalDisplayAttributeData(valueInput));
     }
-    InventoryDataCapable<E> inventoryData = getEasyNPCInventoryData();
-    if (inventoryData != null) {
-      this.handleEasyNPCData(
-          "inventory", () -> inventoryData.readAdditionalInventoryData(valueInput));
-    }
     FactionDataCapable<E> factionData = this.getEasyNPCFactionData();
     if (factionData != null) {
       this.handleEasyNPCData("faction", () -> factionData.readAdditionalFactionData(valueInput));
+    }
+    InventoryDataCapable<E> inventoryData = this.getEasyNPCInventoryData();
+    if (inventoryData != null) {
+      this.handleEasyNPCData(
+          "inventory", () -> inventoryData.readAdditionalInventoryData(valueInput));
     }
     ModelDataCapable<E> modelData = this.getEasyNPCModelData();
     if (modelData != null) {
@@ -447,6 +457,13 @@ public interface EasyNPCBase<E extends Mob>
     if (tradingData != null) {
       this.handleEasyNPCData("trading", () -> tradingData.readAdditionalTradingData(valueInput));
     }
+    this.handleEasyNPCData(
+        "action ids",
+        () ->
+            UniqueActionIdAssigner.assign(
+                dialogData != null ? dialogData.getDialogDataSet() : null,
+                actionEventData != null ? actionEventData.getActionEventSet() : null,
+                tradingData != null ? tradingData.getTradingDataSet() : null));
 
     ObjectiveDataCapable<E> objectiveData = this.getEasyNPCObjectiveData();
     if (objectiveData != null) {
@@ -457,5 +474,7 @@ public interface EasyNPCBase<E extends Mob>
     if (navigationData != null) {
       this.handleEasyNPCData("navigation refresh", navigationData::refreshNavigation);
     }
+
+    this.getMob().setPersistenceRequired();
   }
 }

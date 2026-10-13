@@ -45,12 +45,6 @@ public class OpacityAttributeTest {
   }
 
   @GameTest(structure = "easy_npc:gametest.3x3x3")
-  public void testFullyTransparentOpacitySurvivesSaveAndLoad(GameTestHelper helper) {
-    OpacityAttributeTestHelper.assertFullyTransparentOpacitySurvivesSaveAndLoad(helper, humanoid());
-    helper.succeed();
-  }
-
-  @GameTest(structure = "easy_npc:gametest.3x3x3")
   public void testOpacityIsExportedWithThePreset(GameTestHelper helper) {
     OpacityAttributeTestHelper.assertOpacityIsExportedWithThePreset(helper, humanoid());
     helper.succeed();

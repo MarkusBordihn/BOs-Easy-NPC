@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.api.handler;
 import de.markusbordihn.easynpc.data.attribute.CombatAttributeType;
 import de.markusbordihn.easynpc.data.attribute.EnvironmentalAttributeType;
 import de.markusbordihn.easynpc.data.attribute.InteractionAttributeType;
+import de.markusbordihn.easynpc.data.attribute.InventoryAttributeType;
 import de.markusbordihn.easynpc.data.attribute.MovementAttributeType;
 import de.markusbordihn.easynpc.data.attribute.NavigationType;
 import de.markusbordihn.easynpc.data.display.DisplayAttributeType;
@@ -46,6 +47,11 @@ public class EasyNPCAttributeHandler {
   public static boolean setInteractionAttribute(
       EasyNPC<?> easyNPC, InteractionAttributeType attributeType, boolean value) {
     return AttributeHandler.setInteractionAttribute(easyNPC, attributeType, value);
+  }
+
+  public static boolean setInventoryAttribute(
+      EasyNPC<?> easyNPC, InventoryAttributeType attributeType, boolean value) {
+    return AttributeHandler.setInventoryAttribute(easyNPC, attributeType, value);
   }
 
   public static boolean setMovementAttribute(

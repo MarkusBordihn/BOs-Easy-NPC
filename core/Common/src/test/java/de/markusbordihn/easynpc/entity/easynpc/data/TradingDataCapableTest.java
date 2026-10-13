@@ -25,6 +25,7 @@ import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.data.trading.TradingDataSet;
 import de.markusbordihn.easynpc.data.trading.TradingType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.handler.TradingOfferHandler;
 import de.markusbordihn.easynpc.server.player.FakePlayer;
 import de.markusbordihn.easynpc.utils.TradingUtils;
 import java.util.EnumMap;
@@ -53,6 +54,7 @@ import net.minecraft.world.item.component.ItemLore;
 import net.minecraft.world.item.trading.ItemCost;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.item.trading.MerchantOffers;
+import net.minecraft.world.level.storage.TagValueInput;
 import net.minecraft.world.level.storage.TagValueOutput;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -138,36 +140,33 @@ class TradingDataCapableTest {
   }
 
   @Test
-  @DisplayName("modified trade item survives offer NBT round-trip and rebuild")
-  void testModifiedTradeItemSurvivesOfferRoundTripAndRebuild() {
+  @DisplayName("modified trade item survives additional save, load and max uses edit")
+  void testModifiedTradeItemSurvivesSaveLoadAndMaxUsesEdit() {
     ItemStack questItem = new ItemStack(Items.SUGAR);
     questItem.set(DataComponents.CUSTOM_NAME, Component.literal("Lethal Bio-Reagent"));
     questItem.set(
         DataComponents.LORE, new ItemLore(List.of(Component.literal("It singes at your skin..."))));
-
+    TestTradingData tradingData = new TestTradingData();
+    tradingData.getTradingDataSet().setType(TradingType.ADVANCED);
     MerchantOffers offers = new MerchantOffers();
     offers.add(
         new MerchantOffer(
             TradingUtils.getItemCost(questItem), new ItemStack(Items.EMERALD), 10, 0, 1.0F));
+    tradingData.setTradingOffers(offers);
 
-    RegistryOps<Tag> ops = registryOps();
-    Tag encoded = MerchantOffers.CODEC.encodeStart(ops, offers).getOrThrow();
-    MerchantOffer loadedOffer = MerchantOffers.CODEC.parse(ops, encoded).getOrThrow().get(0);
-    MerchantOffer rebuiltOffer =
-        new MerchantOffer(
-            TradingUtils.getItemCost(loadedOffer.getBaseCostA()),
-            TradingUtils.getOptionalItemCost(loadedOffer.getCostB()),
-            loadedOffer.getResult(),
-            loadedOffer.getUses(),
-            5,
-            loadedOffer.getXp(),
-            loadedOffer.getPriceMultiplier(),
-            loadedOffer.getDemand());
+    TagValueOutput valueOutput =
+        TagValueOutput.createWithContext(ProblemReporter.DISCARDING, registries());
+    tradingData.addAdditionalTradingData(valueOutput);
+    tradingData.readAdditionalTradingData(
+        TagValueInput.create(ProblemReporter.DISCARDING, registries(), valueOutput.buildResult()));
+    TradingOfferHandler.setAdvancedTradingMaxUses(tradingData, 0, 5);
 
-    assertTrue(loadedOffer.satisfiedBy(questItem.copy(), ItemStack.EMPTY));
-    assertTrue(rebuiltOffer.satisfiedBy(questItem.copy(), ItemStack.EMPTY));
-    assertFalse(rebuiltOffer.satisfiedBy(new ItemStack(Items.SUGAR), ItemStack.EMPTY));
-    assertEquals(questItem.getComponentsPatch(), rebuiltOffer.getBaseCostA().getComponentsPatch());
+    MerchantOffer reloadedOffer = tradingData.getTradingOffers().get(0);
+    assertEquals(5, reloadedOffer.getMaxUses());
+    assertTrue(reloadedOffer.satisfiedBy(questItem.copy(), ItemStack.EMPTY));
+    assertFalse(reloadedOffer.satisfiedBy(new ItemStack(Items.SUGAR), ItemStack.EMPTY));
+    assertEquals(
+        questItem.getComponentsPatch(), reloadedOffer.getBaseCostA().getComponentsPatch());
   }
 
   @Test

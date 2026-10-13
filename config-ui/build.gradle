@@ -1,3 +1,26 @@
+buildscript {
+  // The toolkit is only published to Maven Local, so its client test plugin stays optional and a
+  // machine without it still builds and runs the game tests.
+  String toolkitPluginModule = "client_runtime_interface_toolkit-gradle-plugin-${minecraft_version}"
+  String toolkitPluginVersion = '1.1.0'
+  File toolkitPluginDirectory = new File(
+      System.getProperty('maven.repo.local', "${System.getProperty('user.home')}/.m2/repository"),
+      "de/markusbordihn/clientruntimeinterfacetoolkit/${toolkitPluginModule}/${toolkitPluginVersion}")
+  ext.clientRuntimeTestPluginAvailable = toolkitPluginDirectory.isDirectory()
+  repositories {
+    mavenLocal {
+      content {
+        includeGroup 'de.markusbordihn.clientruntimeinterfacetoolkit'
+      }
+    }
+  }
+  dependencies {
+    if (clientRuntimeTestPluginAvailable) {
+      classpath "de.markusbordihn.clientruntimeinterfacetoolkit:${toolkitPluginModule}:${toolkitPluginVersion}"
+    }
+  }
+}
+
 plugins {
   id 'idea'
   id "org.jetbrains.gradle.plugin.idea-ext" version "1.3"
@@ -40,11 +63,6 @@ subprojects {
     setExtendsFrom([])
   }
 
-  tasks.register('wrapper', Wrapper) {
-    gradleVersion = '9.7.1'
-    distributionType = Wrapper.DistributionType.BIN
-  }
-
   tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
   }
@@ -73,12 +91,7 @@ subprojects {
     return ['gametest', 'clienttest', 'fullcheck'].any { testTask -> taskName.contains(testTask) }
   }
 
-  // The toolkit opens a control socket in the client, so it only joins the runtime of client tests.
-  ext.isClientTestRun = gradle.startParameter.taskNames.any {
-    return it.toLowerCase().contains('clienttest')
-  }
-
-  // Local Easy Model Entities loader artifact (runtime); null falls back to CurseForge.
+  // Local Easy Model Entities loader artifact (runtime); null falls back to Modrinth.
   ext.findLocalEasyModelEntitiesLoader = { String loader ->
     def version = project.findProperty('easy_model_entities_version')
     if (version == null) {
@@ -118,4 +131,10 @@ tasks.register('fullCheck') {
   dependsOn ':Common:check', ':Fabric:check', ':Forge:check', ':NeoForge:check', 'allGameTests'
 }
 
-apply from: "$rootDir/../gradle/tasks/clientTest.gradle"
+if (clientRuntimeTestPluginAvailable) {
+  apply plugin: 'de.markusbordihn.clientruntimeinterfacetoolkit.client-test'
+  clientRuntimeTest {
+    loaders = ['Fabric', 'Forge', 'NeoForge']
+    errorLogMarkers = ['Easy NPC', 'easy_npc']
+  }
+}

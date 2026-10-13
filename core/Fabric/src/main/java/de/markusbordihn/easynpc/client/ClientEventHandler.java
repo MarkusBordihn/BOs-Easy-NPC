@@ -19,13 +19,16 @@
 
 package de.markusbordihn.easynpc.client;
 
+import de.markusbordihn.easynpc.client.renderer.layer.ShoulderNPCLayer;
 import de.markusbordihn.easynpc.compat.CompatConstants;
 import de.markusbordihn.easynpc.compat.easymodelentities.EasyModelEntitiesLoader;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
+import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRendererRegistrationCallback;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.client.renderer.entity.player.AvatarRenderer;
 
 public class ClientEventHandler {
 
@@ -41,6 +44,12 @@ public class ClientEventHandler {
           }
         });
     ClientPlayConnectionEvents.DISCONNECT.register(ClientEventHandler::onDisconnect);
+    LivingEntityFeatureRendererRegistrationCallback.EVENT.register(
+        (entityType, entityRenderer, registrationHelper, context) -> {
+          if (entityRenderer instanceof AvatarRenderer<?> avatarRenderer) {
+            registrationHelper.register(new ShoulderNPCLayer(avatarRenderer));
+          }
+        });
   }
 
   public static void onClientStarted(Minecraft client) {

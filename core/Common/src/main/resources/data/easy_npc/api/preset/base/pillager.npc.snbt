@@ -43,7 +43,7 @@
     },
     PatrolLeader:0b,
     Patrolling:0b,
-    PersistenceRequired:0b,
+    PersistenceRequired:1b,
     SkinData:{
       Type:"DEFAULT"
     },

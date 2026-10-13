@@ -97,6 +97,10 @@ public interface AttributeDataCapable<E extends Mob> extends EasyNPC<E> {
   }
 
   default void readAdditionalAttributeData(ValueInput valueInput) {
+    if (valueInput.child(EntityAttributes.ENTITY_ATTRIBUTE_TAG).isEmpty()) {
+      return;
+    }
+
     EntityAttributes entityAttributes = new EntityAttributes(valueInput);
     this.setEntityAttributes(entityAttributes);
 

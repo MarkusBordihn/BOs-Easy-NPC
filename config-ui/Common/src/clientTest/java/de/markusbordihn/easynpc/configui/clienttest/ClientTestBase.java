@@ -27,23 +27,14 @@ import de.markusbordihn.clientruntimeinterfacetoolkit.testrunner.GameClientBuild
 import de.markusbordihn.clientruntimeinterfacetoolkit.testrunner.GameClientExtension;
 import de.markusbordihn.clientruntimeinterfacetoolkit.testrunner.Until;
 import de.markusbordihn.clientruntimeinterfacetoolkit.testrunner.data.Parameters;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
-import java.time.Duration;
-import java.util.List;
+import de.markusbordihn.clientruntimeinterfacetoolkit.testrunner.data.TestArea;
 import java.util.Locale;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
+import java.util.UUID;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
 abstract class ClientTestBase {
 
-  static final String TEST_TAG = "easynpc_clienttest";
   static final String TEST_NPC_TYPE = "easy_npc:humanoid";
-  static final String TEST_NPC_SELECTOR = "@e[tag=" + TEST_TAG + ",limit=1]";
   static final String MAIN_CONFIGURATION_SCREEN_ID =
       "de.markusbordihn.easynpc.configui.client.screen.configuration.main."
           + "mainconfigurationscreenwrapper";
@@ -53,39 +44,37 @@ abstract class ClientTestBase {
       GameClientExtension.shared(ClientTestBase::configureLaunch);
 
   private static final String SUITE_NAME = "Easy NPC config-ui";
-  private static final String LAYOUT_REPORT_FILE_NAME = "layout-issues.txt";
-  private static final Duration WORLD_TIMEOUT = Duration.ofMinutes(3);
+  private static final String WORLD_NAME = "EasyNPC Client Test";
+  private static final int PLATFORM_Y = 100;
+  static final int STAND_Y = PLATFORM_Y + 1;
+  private static final TestArea TEST_PLATFORM =
+      TestArea.between(-2, PLATFORM_Y, -1, 2, PLATFORM_Y, 4);
 
   private static GameClientBuilder configureLaunch(GameClientBuilder builder) {
     return builder
         .withSuiteName(SUITE_NAME)
         .withWindowSize(1280, 720)
         .withGuiScale(2)
-        .withConfiguration("command_allowlist", "summon,kill,tp,gamerule,easy_npc_config_ui");
+        .withAllowedCommands("easy_npc_config_ui", "easy_npc")
+        .withWorld(Parameters.of("name", WORLD_NAME))
+        .withLayoutChecksOnScreenshot();
   }
 
-  @BeforeAll
-  static void loadWorld() {
-    if (!client.checkState(Until.worldLoaded(true)).passed()) {
-      client.await(WORLD_TIMEOUT, Until.resourcesLoaded());
-      client.api().world().create(Parameters.of("name", "EasyNPC Client Test"));
-    }
-    client.await(WORLD_TIMEOUT, Until.worldLoaded(true), Until.playerAvailable(true));
-    command("gamerule send_command_feedback false");
+  static void buildTestPlatform() {
+    client.fill(TEST_PLATFORM, "minecraft:stone");
   }
 
-  static void command(String command) {
-    client.api().command().run(Parameters.of("command", command));
-    client.await(Until.ticksElapsed(5));
+  static UUID spawnTestNpc() {
+    buildTestPlatform();
+    client.teleport(0.5, STAND_Y, 0.5);
+    return client.spawnEntity(TEST_NPC_TYPE, 0.5, STAND_Y, 3.5, true);
   }
 
-  static void summonTestNpc() {
-    command("summon " + TEST_NPC_TYPE + " ~ ~ ~3 {Tags:[\"" + TEST_TAG + "\"],NoAI:1b}");
-  }
-
-  static void openMainConfiguration() {
-    command("easy_npc_config_ui configure " + TEST_NPC_SELECTOR);
-    client.await(Until.screen(MAIN_CONFIGURATION_SCREEN_ID), Until.settled(5));
+  static void openMainConfiguration(UUID testNpc) {
+    client.runCommand(
+        "easy_npc_config_ui configure " + testNpc,
+        Until.screen(MAIN_CONFIGURATION_SCREEN_ID),
+        Until.settled(5));
   }
 
   static By configurationButton(String label) {
@@ -130,31 +119,5 @@ abstract class ClientTestBase {
     return screenId.endsWith("." + lowerCaseClassName)
         || screenId.endsWith("." + lowerCaseClassName + "wrapper")
         || screenId.endsWith("." + neoForgeWrapperClassName);
-  }
-
-  static void captureScreen(String label) throws IOException {
-    Path screenshot = client.saveScreenshot(label);
-    List<String> layoutIssues = client.layoutIssues();
-    if (layoutIssues.isEmpty()) {
-      return;
-    }
-
-    StringBuilder report =
-        new StringBuilder(client.screenshotDirectory().relativize(screenshot) + "\n");
-    layoutIssues.forEach(layoutIssue -> report.append("  ").append(layoutIssue).append('\n'));
-    Files.writeString(
-        client.screenshotDirectory().resolve(LAYOUT_REPORT_FILE_NAME),
-        report,
-        StandardCharsets.UTF_8,
-        StandardOpenOption.CREATE,
-        StandardOpenOption.APPEND);
-  }
-
-  @AfterEach
-  void removeTestNpcs() {
-    if (!Until.NO_SCREEN_ID.equals(client.screenId())) {
-      client.closeScreen();
-    }
-    command("kill @e[tag=" + TEST_TAG + "]");
   }
 }

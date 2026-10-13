@@ -370,6 +370,16 @@ public class ConfigurationScreenTest {
   }
 
   @GameTest(structure = "easy_npc_config_ui:gametest.3x3x3")
+  public void testInventoryConfigurationScreen(GameTestHelper helper) {
+    ConfigurationScreenTestHelper.testConfigurationScreen(
+        helper,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
+        ConfigurationType.INVENTORY,
+        ModMenuTypes.INVENTORY_CONFIGURATION_MENU);
+    helper.succeed();
+  }
+
+  @GameTest(structure = "easy_npc_config_ui:gametest.3x3x3")
   public void testLocalPresetImportConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,

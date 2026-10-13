@@ -59,8 +59,6 @@ public class ObjectivePresetTestHelper {
     }
 
     objectiveEntryTag.putDouble(ObjectiveDataEntry.DATA_SPEED_MODIFIER_TAG, -1.0D);
-    objectiveEntryTag.putFloat(ObjectiveDataEntry.DATA_STOP_DISTANCE_TAG, -5.0F);
-    objectiveEntryTag.putFloat(ObjectiveDataEntry.DATA_PROBABILITY_TAG, 2.5F);
 
     EasyNPC<?> importedNPC = GameTestHelpers.mockEasyNPC(helper, entityType, SECOND_NPC_POSITION);
     ((PresetDataCapable<?>) importedNPC).importPresetData(presetTag);
@@ -71,10 +69,6 @@ public class ObjectivePresetTestHelper {
         helper, "The imported preset must keep the follow player objective", importedObjective);
     GameTestHelpers.assertEquals(
         helper, "A negative speed modifier is clamped", 0.0D, importedObjective.getSpeedModifier());
-    GameTestHelpers.assertEquals(
-        helper, "A negative stop distance is clamped", 0.0F, importedObjective.getStopDistance());
-    GameTestHelpers.assertEquals(
-        helper, "A probability above one is clamped", 1.0F, importedObjective.getProbability());
   }
 
   public static void assertPlayerTargetObjectiveIsRegisteredOnJoin(

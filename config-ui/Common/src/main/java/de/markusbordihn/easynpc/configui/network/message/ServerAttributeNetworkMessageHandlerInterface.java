@@ -26,11 +26,13 @@ import de.markusbordihn.easynpc.configui.network.message.server.ChangeEntityAttr
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeEntityBaseAttributeMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeEnvironmentalAttributeMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeInteractionAttributeMessage;
+import de.markusbordihn.easynpc.configui.network.message.server.ChangeInventoryAttributeMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeMovementAttributeMessage;
 import de.markusbordihn.easynpc.data.attribute.CombatAttributeType;
 import de.markusbordihn.easynpc.data.attribute.EntityAttribute;
 import de.markusbordihn.easynpc.data.attribute.EnvironmentalAttributeType;
 import de.markusbordihn.easynpc.data.attribute.InteractionAttributeType;
+import de.markusbordihn.easynpc.data.attribute.InventoryAttributeType;
 import de.markusbordihn.easynpc.data.attribute.MovementAttributeType;
 import de.markusbordihn.easynpc.data.attribute.NavigationType;
 import de.markusbordihn.easynpc.data.display.DisplayAttributeType;
@@ -53,6 +55,14 @@ public interface ServerAttributeNetworkMessageHandlerInterface {
     if (uuid != null && displayAttributeType != null && integerValue != null) {
       NetworkHandlerManager.sendMessageToServer(
           new ChangeDisplayAttributeMessage(uuid, displayAttributeType, integerValue));
+    }
+  }
+
+  default void changeDisplayAttribute(
+      UUID uuid, DisplayAttributeType displayAttributeType, String stringValue) {
+    if (uuid != null && displayAttributeType != null && stringValue != null) {
+      NetworkHandlerManager.sendMessageToServer(
+          new ChangeDisplayAttributeMessage(uuid, displayAttributeType, stringValue));
     }
   }
 
@@ -93,6 +103,14 @@ public interface ServerAttributeNetworkMessageHandlerInterface {
     if (uuid != null && attributeType != null && booleanValue != null) {
       NetworkHandlerManager.sendMessageToServer(
           new ChangeInteractionAttributeMessage(uuid, attributeType, booleanValue));
+    }
+  }
+
+  default void inventoryAttributeChange(
+      UUID uuid, InventoryAttributeType attributeType, Boolean booleanValue) {
+    if (uuid != null && attributeType != null && booleanValue != null) {
+      NetworkHandlerManager.sendMessageToServer(
+          new ChangeInventoryAttributeMessage(uuid, attributeType, booleanValue));
     }
   }
 

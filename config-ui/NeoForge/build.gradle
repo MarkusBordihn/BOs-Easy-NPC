@@ -46,7 +46,7 @@ neoForge {
       systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
     }
 
-    if (clientToolkitAvailable) {
+    if (rootProject.findProperty('clientRuntimeTest')?.isAvailable()) {
       clientTest {
         client()
         gameDirectory = project.file('run/clienttest')
@@ -100,8 +100,8 @@ dependencies {
   }
 
   // Client Runtime Interface Toolkit (runtime dependency, only for client tests)
-  if (clientToolkitAvailable && isClientTestRun) {
-    runtimeOnly clientToolkitCoordinate('neoforge')
+  if (rootProject.findProperty('clientRuntimeTest')?.isClientTestRun()) {
+    runtimeOnly rootProject.clientRuntimeTest.toolkitCoordinate('neoforge')
   }
 
   // Test dependencies

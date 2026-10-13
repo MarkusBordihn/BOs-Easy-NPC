@@ -233,10 +233,12 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T, AdditionalScre
     AdditionalScreenData additionalScreenData = this.getAdditionalScreenData();
     boolean executionLimitReached =
         additionalScreenData != null
-            && additionalScreenData.isExecutionLimitReached(dialogButtonEntry.id());
+            && additionalScreenData.isExecutionLimitReached(
+                this.getDialogUUID(), dialogButtonEntry.id());
     boolean dialogButtonLocked =
         additionalScreenData != null
-            && additionalScreenData.isDialogButtonLocked(dialogButtonEntry.id());
+            && additionalScreenData.isDialogButtonLocked(
+                this.getDialogUUID(), dialogButtonEntry.id());
     return !conditionsMet || executionLimitReached || dialogButtonLocked;
   }
 

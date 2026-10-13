@@ -269,9 +269,9 @@ behaves as before.
 With CRIT present, `fullCheck` runs `allClientTests` as well. The client needs a display; on a
 headless machine wrap the command in `xvfb-run -a` with `LIBGL_ALWAYS_SOFTWARE=1`, as the
 `client-test.yml` workflow does. A run fails on test failures, crash reports or Easy NPC
-`ERROR`/`FATAL` log lines; `latest.log`, the CRIT launch log and crash reports are copied to
-`<build>/.client_test/<loader>/`. `-PclientToolkitVersion=<version>` selects a different CRIT
-version.
+`ERROR`/`FATAL` log lines; the game log, screenshots, results and crash reports are copied to
+`<build>/.client_test/<loader>-clientTest/`. The CRIT version is the version of the
+`de.markusbordihn.clientruntimeinterfacetoolkit.client-test` plugin in `<build>/build.gradle`.
 
 ## Troubleshooting 🔧
 

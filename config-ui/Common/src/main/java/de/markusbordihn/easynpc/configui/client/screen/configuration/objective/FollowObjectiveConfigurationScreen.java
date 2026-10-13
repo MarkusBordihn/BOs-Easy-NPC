@@ -46,6 +46,7 @@ public class FollowObjectiveConfigurationScreen<T extends ConfigurationMenu>
   protected Checkbox followItemCheckbox;
   protected EditBox followItemId;
   protected Button followItemIdSaveButton;
+  protected Checkbox followNearestPlayerCheckbox;
 
   private String savedPlayerName;
   private String savedEntityUUID;
@@ -66,28 +67,33 @@ public class FollowObjectiveConfigurationScreen<T extends ConfigurationMenu>
     int objectiveEntriesSecondColumn = this.contentLeftPos + 145;
 
     OwnerDataCapable<?> ownerData = this.getOwnerData();
-    this.followOwnerCheckbox =
-        this.addRenderableWidget(
-            new Checkbox(
-                objectiveEntriesFirstColumn,
-                objectiveEntriesTop,
-                ObjectiveType.FOLLOW_OWNER.getObjectiveName(),
-                ownerData.getNPCOwnerName(),
-                this.objectiveDataSet.hasObjective(ObjectiveType.FOLLOW_OWNER),
-                checkbox -> {
-                  ObjectiveDataEntry objectiveDataEntry =
-                      new ObjectiveDataEntry(ObjectiveType.FOLLOW_OWNER);
-                  objectiveDataEntry.setTargetOwnerUUID(ownerData.getOwnerUUID());
-                  if (checkbox.selected()) {
-                    NetworkMessageHandlerManager.getServerHandler()
-                        .addOrUpdateObjective(this.getEasyNPCUUID(), objectiveDataEntry);
-                  } else {
-                    NetworkMessageHandlerManager.getServerHandler()
-                        .removeObjective(this.getEasyNPCUUID(), objectiveDataEntry);
-                  }
-                }));
+    String ownerName = this.getOwnerName();
+    boolean hasFollowOwnerObjective =
+        this.objectiveDataSet.hasObjective(ObjectiveType.FOLLOW_OWNER);
+    if (!ownerName.isEmpty() || hasFollowOwnerObjective) {
+      this.followOwnerCheckbox =
+          this.addRenderableWidget(
+              new Checkbox(
+                  objectiveEntriesFirstColumn,
+                  objectiveEntriesTop,
+                  ObjectiveType.FOLLOW_OWNER.getObjectiveName(),
+                  ownerName.isEmpty() ? "-" : ownerName,
+                  hasFollowOwnerObjective,
+                  checkbox -> {
+                    ObjectiveDataEntry objectiveDataEntry =
+                        new ObjectiveDataEntry(ObjectiveType.FOLLOW_OWNER);
+                    objectiveDataEntry.setTargetOwnerUUID(ownerData.getOwnerUUID());
+                    if (checkbox.selected()) {
+                      NetworkMessageHandlerManager.getServerHandler()
+                          .addOrUpdateObjective(this.getEasyNPCUUID(), objectiveDataEntry);
+                    } else {
+                      NetworkMessageHandlerManager.getServerHandler()
+                          .removeObjective(this.getEasyNPCUUID(), objectiveDataEntry);
+                    }
+                  }));
+      objectiveEntriesTop += SPACE_BETWEEN_ENTRIES;
+    }
 
-    objectiveEntriesTop += SPACE_BETWEEN_ENTRIES;
     this.savedPlayerName =
         this.objectiveDataSet.hasObjective(ObjectiveType.FOLLOW_PLAYER)
             ? this.objectiveDataSet.getObjective(ObjectiveType.FOLLOW_PLAYER).getTargetPlayerName()
@@ -120,7 +126,6 @@ public class FollowObjectiveConfigurationScreen<T extends ConfigurationMenu>
                         .addOrUpdateObjective(this.getEasyNPCUUID(), objectiveDataEntry);
                   }
                 }));
-    this.followOwnerCheckbox.active = ownerData.hasNPCOwner();
     this.followPlayerName =
         this.addRenderableWidget(
             new TextField(this.font, objectiveEntriesSecondColumn, objectiveEntriesTop, 125));
@@ -307,5 +312,13 @@ public class FollowObjectiveConfigurationScreen<T extends ConfigurationMenu>
                   this.followItemIdSaveButton.active = false;
                 }));
     this.followItemIdSaveButton.active = false;
+
+    objectiveEntriesTop += SPACE_BETWEEN_ENTRIES;
+    this.followNearestPlayerCheckbox =
+        this.addRenderableWidget(
+            this.getObjectiveCheckbox(
+                objectiveEntriesFirstColumn,
+                objectiveEntriesTop,
+                ObjectiveType.FOLLOW_NEAREST_PLAYER));
   }
 }

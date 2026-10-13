@@ -27,18 +27,25 @@ public final class DialogButtonIdentityTest {
 
   private DialogButtonIdentityTest() {}
 
-  public static void testDuplicateButtonLabelIsRejected(GameTestHelper helper) {
-    DialogButtonIdentityTestHelper.assertDuplicateButtonLabelIsRejected(helper, humanoid());
+  public static void testEqualButtonLabelsLockPerDialog(GameTestHelper helper) {
+    DialogButtonIdentityTestHelper.assertEqualButtonLabelsLockPerDialog(helper, humanoid());
     helper.succeed();
   }
 
-  public static void testButtonIdentitySurvivesSaveAndLoad(GameTestHelper helper) {
-    DialogButtonIdentityTestHelper.assertButtonIdentitySurvivesSaveAndLoad(helper, humanoid());
+  public static void testEqualButtonLabelsReachExecutionLimitPerDialog(GameTestHelper helper) {
+    DialogButtonIdentityTestHelper.assertEqualButtonLabelsReachExecutionLimitPerDialog(
+        helper, humanoid());
     helper.succeed();
   }
 
-  public static void testEditedButtonLabelStaysAddressable(GameTestHelper helper) {
-    DialogButtonIdentityTestHelper.assertEditedButtonLabelStaysAddressable(helper, humanoid());
+  public static void testEqualActionsReachExecutionLimitPerButton(GameTestHelper helper) {
+    DialogButtonIdentityTestHelper.assertEqualActionsReachExecutionLimitPerButton(
+        helper, humanoid());
+    helper.succeed();
+  }
+
+  public static void testBankTellerLocksWithdrawalsByBalance(GameTestHelper helper) {
+    DialogButtonIdentityTestHelper.assertBankTellerLocksWithdrawalsByBalance(helper);
     helper.succeed();
   }
 }

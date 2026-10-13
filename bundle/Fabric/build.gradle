@@ -47,7 +47,6 @@ dependencies {
   // Include Common code
   implementation project(":Common")
 
-  // Bundle dependencies - use compileOnly to avoid transitive dependency issues
   modRuntimeOnly(group: 'de.markusbordihn.easynpc', name: "easy_npc-fabric-${project.minecraft_version}", version: "${project.version}") {
     changing = true
   }

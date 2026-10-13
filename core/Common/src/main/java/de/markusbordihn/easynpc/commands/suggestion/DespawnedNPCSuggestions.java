@@ -23,9 +23,9 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import de.markusbordihn.easynpc.api.handler.EasyNPCEntityHandler;
 import de.markusbordihn.easynpc.data.npc.NPCEntityMetadata;
 import de.markusbordihn.easynpc.data.saveddata.NPCEntityData;
-import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -46,17 +46,17 @@ public class DespawnedNPCSuggestions {
 
     Stream<String> uuids =
         npcData.getAllUUIDs().stream()
-            .filter(uuid -> LivingEntityManager.getServerEasyNPCEntityByUUID(uuid) == null)
+            .filter(uuid -> !npcData.isDeleted(uuid) && !EasyNPCEntityHandler.isLoaded(uuid))
             .filter(
                 uuid -> {
-                  if (serverPlayer.isCreative()) {
-                    return true;
+                  Optional<NPCEntityMetadata> metadata = npcData.getMetadata(uuid);
+                  if (metadata.isEmpty() || !metadata.get().removalReason().isRestorableReason()) {
+                    return false;
                   }
 
-                  Optional<NPCEntityMetadata> metadata = npcData.getMetadata(uuid);
-                  return metadata.isPresent()
-                      && metadata.get().hasOwner()
-                      && metadata.get().ownerUUID().equals(serverPlayer.getUUID());
+                  return serverPlayer.isCreative()
+                      || (metadata.get().hasOwner()
+                          && metadata.get().ownerUUID().equals(serverPlayer.getUUID()));
                 })
             .map(UUID::toString);
 

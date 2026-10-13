@@ -38,7 +38,8 @@ public record ChangeDisplayAttributeMessage(
     DisplayAttributeType attributeType,
     ValueType valueType,
     boolean booleanValue,
-    int integerValue)
+    int integerValue,
+    String stringValue)
     implements NetworkMessageRecord {
 
   public static final Identifier MESSAGE_ID =
@@ -48,15 +49,21 @@ public record ChangeDisplayAttributeMessage(
       STREAM_CODEC =
           StreamCodec.of(
               (buffer, message) -> message.write(buffer), ChangeDisplayAttributeMessage::create);
+  private static final int MAX_STRING_VALUE_LENGTH = 64;
 
   public ChangeDisplayAttributeMessage(
       final UUID uuid, final DisplayAttributeType attributeType, final Boolean value) {
-    this(uuid, attributeType, ValueType.BOOLEAN, value, 0);
+    this(uuid, attributeType, ValueType.BOOLEAN, value, 0, "");
   }
 
   public ChangeDisplayAttributeMessage(
       final UUID uuid, final DisplayAttributeType attributeType, final Integer value) {
-    this(uuid, attributeType, ValueType.INTEGER, false, value);
+    this(uuid, attributeType, ValueType.INTEGER, false, value, "");
+  }
+
+  public ChangeDisplayAttributeMessage(
+      final UUID uuid, final DisplayAttributeType attributeType, final String value) {
+    this(uuid, attributeType, ValueType.STRING, false, 0, value);
   }
 
   public static ChangeDisplayAttributeMessage create(final FriendlyByteBuf buffer) {
@@ -65,7 +72,8 @@ public record ChangeDisplayAttributeMessage(
         NetworkMessageRecord.readEnum(buffer, DisplayAttributeType.class),
         NetworkMessageRecord.readEnum(buffer, ValueType.class),
         buffer.readBoolean(),
-        buffer.readInt());
+        buffer.readInt(),
+        buffer.readUtf(MAX_STRING_VALUE_LENGTH));
   }
 
   @Override
@@ -75,6 +83,7 @@ public record ChangeDisplayAttributeMessage(
     buffer.writeEnum(this.valueType);
     buffer.writeBoolean(this.booleanValue);
     buffer.writeInt(this.integerValue);
+    buffer.writeUtf(this.stringValue, MAX_STRING_VALUE_LENGTH);
   }
 
   @Override
@@ -94,8 +103,10 @@ public record ChangeDisplayAttributeMessage(
       return;
     }
 
-    if (this.attributeType == null || this.valueType == null) {
-      log.error("Invalid display attribute for {} from {}", easyNPC, serverPlayer);
+    if (this.attributeType == null
+        || this.valueType == null
+        || this.valueType != this.attributeType.getValueType()) {
+      log.warn("Invalid display attribute for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
@@ -104,8 +115,10 @@ public record ChangeDisplayAttributeMessage(
           AttributeHandler.setDisplayAttribute(easyNPC, this.attributeType, this.booleanValue);
       case INTEGER ->
           AttributeHandler.setDisplayAttribute(easyNPC, this.attributeType, this.integerValue);
+      case STRING ->
+          AttributeHandler.setDisplayAttribute(easyNPC, this.attributeType, this.stringValue);
       default ->
-          log.error(
+          log.warn(
               "Invalid display value type {} for {} from {}",
               this.valueType,
               easyNPC,

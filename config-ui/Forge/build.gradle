@@ -6,8 +6,6 @@ plugins {
   id "com.modrinth.minotaur" version "2.+"
 }
 
-apply plugin: 'net.minecraftforge.gradle'
-
 base {
   archivesName = "${project.mod_id}-forge-${project.minecraft_version}"
 }
@@ -37,7 +35,7 @@ minecraft {
       workingDir = project.file('run/client')
     }
 
-    if (clientToolkitAvailable) {
+    if (rootProject.findProperty('clientRuntimeTest')?.isAvailable()) {
       clientTest {
         configureAsClient(it)
         workingDir = project.file('run/clienttest')
@@ -109,7 +107,6 @@ dependencies {
     changing = true
   }
 
-  // Test dependencies
   testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.1'
   testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.1'
   testImplementation 'org.junit.jupiter:junit-jupiter-params:5.10.1'
@@ -135,8 +132,8 @@ dependencies {
   }
 
   // Client Runtime Interface Toolkit (runtime dependency, only for client tests)
-  if (clientToolkitAvailable && isClientTestRun) {
-    runtimeOnly clientToolkitCoordinate('forge')
+  if (rootProject.findProperty('clientRuntimeTest')?.isClientTestRun()) {
+    runtimeOnly rootProject.clientRuntimeTest.toolkitCoordinate('forge')
   }
 }
 
@@ -160,7 +157,6 @@ tasks.withType(Test).configureEach {
   failOnNoDiscoveredTests = false
 }
 
-// Function to calculate next major version
 def getNextMajorVersion(String currentVersion) {
   def versionParts = currentVersion.tokenize('.')
   if (versionParts.size() > 0) {

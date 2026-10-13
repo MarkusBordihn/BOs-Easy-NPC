@@ -67,7 +67,38 @@ class ModelAnimationDataTest {
     assertEquals(request, decoded);
     assertEquals(3, decoded.playback().repeatCount());
     assertTrue(decoded.playback().hasDurationLimit());
-    assertTrue(decoded.playback().isSingleRun());
+    assertTrue(decoded.playback().endsAutomatically());
+  }
+
+  @Test
+  void networksHoldModeAndSpeed() {
+    ModelAnimationRequest request =
+        new ModelAnimationRequest(
+            ModelAnimationOperation.PLAY,
+            "death",
+            ModelAnimationPlayback.of(ModelAnimationPlaybackMode.HOLD).withSpeed(2.0F),
+            ModelAnimationTransition.DEFAULT,
+            8,
+            260L);
+
+    FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
+    request.encode(buffer);
+    ModelAnimationRequest decoded = ModelAnimationRequest.decode(buffer);
+
+    assertEquals(request, decoded);
+    assertEquals(2.0F, decoded.playback().speed());
+    assertFalse(decoded.playback().endsAutomatically());
+  }
+
+  @Test
+  void speedIsClamped() {
+    assertEquals(
+        ModelAnimationPlayback.MAX_SPEED, ModelAnimationPlayback.DEFAULT.withSpeed(100.0F).speed());
+    assertEquals(
+        ModelAnimationPlayback.MIN_SPEED, ModelAnimationPlayback.DEFAULT.withSpeed(0.0F).speed());
+    assertEquals(
+        ModelAnimationPlayback.DEFAULT_SPEED,
+        ModelAnimationPlayback.DEFAULT.withSpeed(Float.NaN).speed());
   }
 
   @Test
@@ -78,7 +109,7 @@ class ModelAnimationDataTest {
     assertEquals(ModelAnimationPlayback.DEFAULT_REPEAT_COUNT, looped.repeatCount());
     assertEquals(ModelAnimationPlayback.UNLIMITED_DURATION_TICKS, looped.durationTicks());
     assertFalse(looped.hasDurationLimit());
-    assertFalse(looped.isSingleRun());
+    assertFalse(looped.endsAutomatically());
     assertEquals(
         ModelAnimationPlayback.DEFAULT_REPEAT_COUNT,
         ModelAnimationPlayback.repeat(0).repeatCount());

@@ -470,7 +470,7 @@ public class AdditionalScreenData implements AdditionalScreenDataInterface {
   }
 
   @Override
-  public boolean isExecutionLimitReached(UUID actionId) {
+  public boolean isExecutionLimitReached(UUID dialogId, UUID buttonId) {
     // Execution limits are intentionally not enforced inside the editor/preview.
     return false;
   }

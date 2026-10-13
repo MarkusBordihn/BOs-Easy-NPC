@@ -49,7 +49,6 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.Identifier;
@@ -93,14 +92,11 @@ public class SoundConfigurationScreen<T extends ConfigurationMenu> extends Confi
       return;
     }
 
-    SoundEvent soundEvent = BuiltInRegistries.SOUND_EVENT.getOptional(soundLocation).orElse(null);
-    if (soundEvent == null) {
-      return;
-    }
-
     Minecraft.getInstance()
         .getSoundManager()
-        .play(SimpleSoundInstance.forUI(soundEvent, pitch, volume));
+        .play(
+            SimpleSoundInstance.forUI(
+                SoundEvent.createVariableRangeEvent(soundLocation), pitch, volume));
   }
 
   private static List<SelectOption<String>> getSoundOptions(String soundName) {
@@ -330,6 +326,7 @@ public class SoundConfigurationScreen<T extends ConfigurationMenu> extends Confi
       this.soundDataSet = additionalScreenData.getSoundDataSet();
     }
     this.soundEntryRows.clear();
+    SoundEventManager.refreshSoundEventOptions();
 
     this.basicSoundButton =
         this.addRenderableWidget(

@@ -49,16 +49,6 @@ public final class NavigationTypeTest {
     helper.succeed();
   }
 
-  public static void testHoverHeightStaysInRange(GameTestHelper helper) {
-    NavigationTypeTestHelper.assertHoverHeightStaysInRange(helper, humanoid());
-    helper.succeed();
-  }
-
-  public static void testMinHoverHeightStaysInRange(GameTestHelper helper) {
-    NavigationTypeTestHelper.assertMinHoverHeightStaysInRange(helper, humanoid());
-    helper.succeed();
-  }
-
   public static void testRenderEntityTypeSelectsTheNavigation(GameTestHelper helper) {
     NavigationTypeTestHelper.assertRenderEntityTypeSelectsTheNavigation(helper, doppler());
     helper.succeed();
@@ -66,6 +56,11 @@ public final class NavigationTypeTest {
 
   public static void testNavigationTypeSurvivesPresetImport(GameTestHelper helper) {
     NavigationTypeTestHelper.assertNavigationTypeSurvivesPresetImport(helper, humanoid());
+    helper.succeed();
+  }
+
+  public static void testHoverHeightsAreSetIndependently(GameTestHelper helper) {
+    NavigationTypeTestHelper.assertHoverHeightsAreSetIndependently(helper, humanoid());
     helper.succeed();
   }
 }
