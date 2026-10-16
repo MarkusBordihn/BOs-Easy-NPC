@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:function",
+  "function": "easy_npc:attackable_n_p_c_can_be_hit_by_spear",
+  "environment": "minecraft:default",
+  "structure": "easy_npc:gametest.3x3x3",
+  "max_ticks": 100
+}

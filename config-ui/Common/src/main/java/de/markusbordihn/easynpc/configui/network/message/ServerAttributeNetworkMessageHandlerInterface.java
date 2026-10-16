@@ -106,6 +106,14 @@ public interface ServerAttributeNetworkMessageHandlerInterface {
     }
   }
 
+  default void interactionAttributeChange(
+      UUID uuid, InteractionAttributeType attributeType, Double doubleValue) {
+    if (uuid != null && attributeType != null && doubleValue != null) {
+      NetworkHandlerManager.sendMessageToServer(
+          new ChangeInteractionAttributeMessage(uuid, attributeType, doubleValue));
+    }
+  }
+
   default void inventoryAttributeChange(
       UUID uuid, InventoryAttributeType attributeType, Boolean booleanValue) {
     if (uuid != null && attributeType != null && booleanValue != null) {

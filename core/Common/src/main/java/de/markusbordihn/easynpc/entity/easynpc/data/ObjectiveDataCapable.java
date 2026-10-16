@@ -288,6 +288,7 @@ public interface ObjectiveDataCapable<T extends Mob> extends EasyNPC<T> {
       return false;
     }
 
+    this.removeReplacedObjectiveGoals(objectiveDataEntry);
     boolean addedCustomObjective = false;
     boolean hasValidTarget = objectiveDataEntry.hasValidTarget(this);
 
@@ -340,6 +341,24 @@ public interface ObjectiveDataCapable<T extends Mob> extends EasyNPC<T> {
       EasyNPCEventRegistry.fireObjectiveAdded(this, objectiveDataEntry);
     }
     return objectiveDataEntry.isRegistered();
+  }
+
+  private void removeReplacedObjectiveGoals(ObjectiveDataEntry objectiveDataEntry) {
+    ObjectiveDataEntry replacedObjectiveDataEntry =
+        this.getObjectiveDataSet().getObjective(objectiveDataEntry.getId());
+    if (replacedObjectiveDataEntry == null || replacedObjectiveDataEntry == objectiveDataEntry) {
+      return;
+    }
+
+    Goal replacedGoal = replacedObjectiveDataEntry.getGoal(this);
+    if (replacedGoal != null) {
+      this.getEntityGoalSelector().removeGoal(replacedGoal);
+    }
+
+    Goal replacedTarget = replacedObjectiveDataEntry.getTarget(this);
+    if (replacedTarget != null) {
+      this.getEntityTargetSelector().removeGoal(replacedTarget);
+    }
   }
 
   private void handleUnusedObjective(

@@ -45,6 +45,13 @@ public final class EasyModelNPCShoulderModelResolver {
     if (rootScale.y() != 1.0F) {
       renderOptions = renderOptions.withScale(rootScale.y());
     }
-    return new EasyModelShoulderModel(easyModelNPC.getEasyModelProfileId(), renderOptions);
+    return new EasyModelShoulderModel(
+        easyModelNPC.getEasyModelProfileId(),
+        renderOptions,
+        easyModelNPC
+            .getEasyNPCAttributeData()
+            .getEntityAttributes()
+            .getInteractionAttributes()
+            .shoulderOffset());
   }
 }

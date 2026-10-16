@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.client.renderer.layer;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.compat.CompatConstants;
+import de.markusbordihn.easynpc.compat.easymodelentities.EasyModelEntitiesLoader;
 import de.markusbordihn.easynpc.data.npc.ShoulderSide;
 import de.markusbordihn.easynpc.data.render.RenderDataEntry;
 import de.markusbordihn.easynpc.data.render.RenderType;
@@ -36,6 +37,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
@@ -66,6 +68,18 @@ public final class ShoulderNPCCache {
     } else {
       playerShoulderEntities.put(
           playerId, new PlayerShoulderEntities(leftShoulderEntity, rightShoulderEntity));
+    }
+    if (CompatConstants.MOD_EASY_MODEL_ENTITIES_LOADED) {
+      registerEasyModelShoulderResolver(leftShoulderEntity);
+      registerEasyModelShoulderResolver(rightShoulderEntity);
+    }
+  }
+
+  // EasyModelShoulderModels.resolve matches the exact entity type, addon types are unknown before.
+  private static void registerEasyModelShoulderResolver(CompoundTag entityTag) {
+    Identifier entityTypeId = Identifier.tryParse(entityTag.getStringOr(ENTITY_ID_TAG, ""));
+    if (entityTypeId != null && !entityTag.isEmpty()) {
+      EasyModelEntitiesLoader.registerShoulderModelResolver(entityTypeId);
     }
   }
 

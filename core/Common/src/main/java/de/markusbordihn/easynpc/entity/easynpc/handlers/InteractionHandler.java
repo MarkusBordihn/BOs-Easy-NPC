@@ -27,6 +27,7 @@ import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.DisplayAttributeDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.OwnerDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
+import de.markusbordihn.easynpc.item.ModItemTags;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import de.markusbordihn.easynpc.utils.ItemUtils;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -54,6 +55,12 @@ public class InteractionHandler {
     ItemStack handItemStack = player.getItemInHand(hand);
     Item handItem = handItemStack.getItem();
     if (isEasyNPCToolItem(handItem)) {
+      return InteractionResult.PASS;
+    }
+
+    ActionEventDataCapable<?> actionEventData = easyNPC.getEasyNPCActionEventData();
+    if (handItemStack.is(ModItemTags.PASS_INTERACTION)
+        && (actionEventData == null || !actionEventData.hasSynchedInteractionActionEvent())) {
       return InteractionResult.PASS;
     }
 
@@ -99,7 +106,6 @@ public class InteractionHandler {
       return InteractionResult.PASS;
     }
 
-    ActionEventDataCapable<?> actionEventData = easyNPC.getEasyNPCActionEventData();
     if (actionEventData == null
         || !actionEventData.hasActionEvent(ActionEventType.ON_INTERACTION)) {
       return InteractionResult.PASS;

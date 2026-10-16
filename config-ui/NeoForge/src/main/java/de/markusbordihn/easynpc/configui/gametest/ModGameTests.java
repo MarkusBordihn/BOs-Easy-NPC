@@ -312,6 +312,10 @@ public final class ModGameTests {
         AttributeMessageTest::testInteractionFlagChange,
         DEFAULT_STRUCTURE);
     register(
+        "shoulder_offset_change",
+        AttributeMessageTest::testShoulderOffsetChange,
+        DEFAULT_STRUCTURE);
+    register(
         "environmental_flag_change",
         AttributeMessageTest::testEnvironmentalFlagChange,
         DEFAULT_STRUCTURE);

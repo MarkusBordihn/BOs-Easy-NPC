@@ -19,10 +19,12 @@
 
 package de.markusbordihn.easynpc.data.attribute;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.phys.Vec3;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -80,5 +82,49 @@ class InteractionAttributesTest {
             .encode(new CompoundTag());
 
     assertFalse(compoundTag.contains(InteractionAttributes.CAN_BE_LEASHED_TAG));
+  }
+
+  @Test
+  @DisplayName("A shoulder offset survives a round trip")
+  void testShoulderOffsetSurvivesRoundTrip() {
+    InteractionAttributes interactionAttributes =
+        new InteractionAttributes()
+            .withShoulderOffsetX(0.1D)
+            .withShoulderOffsetY(-0.25D)
+            .withShoulderOffsetZ(0.5D);
+
+    InteractionAttributes restored =
+        InteractionAttributes.decode(interactionAttributes.encode(new CompoundTag()));
+
+    assertEquals(new Vec3(0.1D, -0.25D, 0.5D), restored.shoulderOffset());
+  }
+
+  @Test
+  @DisplayName("A shoulder offset is clamped to the maximum and NaN reads as zero")
+  void testShoulderOffsetIsClamped() {
+    InteractionAttributes interactionAttributes =
+        new InteractionAttributes()
+            .withShoulderOffsetX(5.0D)
+            .withShoulderOffsetY(-5.0D)
+            .withShoulderOffsetZ(Double.NaN);
+
+    assertEquals(
+        new Vec3(
+            InteractionAttributes.MAX_SHOULDER_OFFSET,
+            -InteractionAttributes.MAX_SHOULDER_OFFSET,
+            0.0D),
+        interactionAttributes.shoulderOffset());
+  }
+
+  @Test
+  @DisplayName("A shoulder offset back on zero is stored no more")
+  void testShoulderOffsetBackOnZeroIsNotStored() {
+    CompoundTag compoundTag =
+        new InteractionAttributes()
+            .withShoulderOffsetY(0.25D)
+            .withShoulderOffsetY(0.0D)
+            .encode(new CompoundTag());
+
+    assertFalse(compoundTag.contains(InteractionAttributes.SHOULDER_OFFSET_Y_TAG));
   }
 }

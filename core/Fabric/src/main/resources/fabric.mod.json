@@ -74,7 +74,11 @@
       "de.markusbordihn.easynpc.gametest.InteractionResultTest",
       "de.markusbordihn.easynpc.gametest.InventoryTest",
       "de.markusbordihn.easynpc.gametest.ObjectiveApiTest",
-      "de.markusbordihn.easynpc.gametest.ShoulderTest"
+      "de.markusbordihn.easynpc.gametest.ShoulderTest",
+      "de.markusbordihn.easynpc.gametest.NPCLifecycleCommandTest",
+      "de.markusbordihn.easynpc.gametest.ObjectiveCommandTest",
+      "de.markusbordihn.easynpc.gametest.ShoulderCommandTest",
+      "de.markusbordihn.easynpc.gametest.SpearAttackTest"
     ]
   },
   "mixins": [
@@ -89,9 +93,9 @@
   },
   "suggests": {
     "tooltipfix": "*",
-    "easy_model_entities": ">=2.5.0 <3.0.0"
+    "easy_model_entities": ">=2.6.0 <3.0.0"
   },
   "breaks": {
-    "easy_model_entities": "<2.5.0 || >=3.0.0"
+    "easy_model_entities": "<2.6.0 || >=3.0.0"
   }
 }
