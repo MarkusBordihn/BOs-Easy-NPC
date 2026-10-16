@@ -20,25 +20,18 @@
 package de.markusbordihn.easynpc.entity.easynpc.ai.goal;
 
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 
-public class ZombieAttackGoal<T extends EasyNPC<?>> extends MeleeAttackGoal {
+public class ZombieAttackGoal<T extends EasyNPC<?>> extends CustomMeleeAttackGoal<T> {
   private int raiseArmTicks;
 
   public ZombieAttackGoal(T easyNPC, double speedModifier, boolean followingTargetEvenIfNotSeen) {
-    super(easyNPC.getPathfinderMob(), speedModifier, followingTargetEvenIfNotSeen);
+    super(easyNPC, speedModifier, followingTargetEvenIfNotSeen);
   }
 
   @Override
   public void start() {
     super.start();
     this.raiseArmTicks = 0;
-  }
-
-  @Override
-  public void stop() {
-    super.stop();
-    this.mob.setAggressive(false);
   }
 
   @Override

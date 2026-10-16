@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.data.synched;
 
 public enum SynchedDataIndex {
+  ACTION_HAS_INTERACTION_EVENT(false),
   ATTACK_IS_CHARGING_CROSSBOW(false),
   DISPLAY_ATTRIBUTE_SET,
   ENTITY_ATTRIBUTES,

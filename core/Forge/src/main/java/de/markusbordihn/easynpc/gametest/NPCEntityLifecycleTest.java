@@ -117,4 +117,33 @@ public final class NPCEntityLifecycleTest {
     NPCEntityLifecycleTestHelper.assertEasyNPCEntityTypesAreRecognized(helper, humanoid());
     helper.succeed();
   }
+
+  public static void testKilledNPCCanBeRevived(GameTestHelper helper) {
+    NPCEntityLifecycleTestHelper.assertKilledNPCCanBeRevived(helper, humanoid());
+    helper.succeed();
+  }
+
+  public static void testReviveUsesGivenPosition(GameTestHelper helper) {
+    NPCEntityLifecycleTestHelper.assertReviveUsesGivenPosition(helper, humanoid());
+    helper.succeed();
+  }
+
+  public static void testRevivedNPCHasFullHealth(GameTestHelper helper) {
+    NPCEntityLifecycleTestHelper.assertRevivedNPCHasFullHealth(helper, humanoid());
+  }
+
+  public static void testReviveRejectsDeletedNPC(GameTestHelper helper) {
+    NPCEntityLifecycleTestHelper.assertReviveRejectsDeletedNPC(helper, humanoid());
+    helper.succeed();
+  }
+
+  public static void testReviveRejectsLoadedNPC(GameTestHelper helper) {
+    NPCEntityLifecycleTestHelper.assertReviveRejectsLoadedNPC(helper, humanoid());
+    helper.succeed();
+  }
+
+  public static void testDefaultDataAppliedOnEveryCreationPath(GameTestHelper helper) {
+    NPCEntityLifecycleTestHelper.assertDefaultDataAppliedOnEveryCreationPath(helper, humanoid());
+    helper.succeed();
+  }
 }

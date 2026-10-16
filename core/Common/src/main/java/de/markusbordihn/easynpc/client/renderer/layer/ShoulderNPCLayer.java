@@ -35,6 +35,7 @@ import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.phys.Vec3;
 
 public class ShoulderNPCLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
 
@@ -91,6 +92,17 @@ public class ShoulderNPCLayer extends RenderLayer<AvatarRenderState, PlayerModel
         renderState.isCrouching ? CROUCHING_SHOULDER_DROP : 0.0F,
         0.0F);
     poseStack.rotateDegrees(Axis.ZP, 180.0F);
+    Vec3 shoulderOffset =
+        shoulderNPC
+            .get()
+            .getEasyNPCAttributeData()
+            .getEntityAttributes()
+            .getInteractionAttributes()
+            .shoulderOffset();
+    poseStack.translate(
+        shoulderSide == ShoulderSide.LEFT ? -shoulderOffset.x : shoulderOffset.x,
+        shoulderOffset.y,
+        -shoulderOffset.z);
     shoulderRenderer.submit(
         shoulderRenderState, poseStack, submitNodeCollector, new CameraRenderState());
     poseStack.popPose();

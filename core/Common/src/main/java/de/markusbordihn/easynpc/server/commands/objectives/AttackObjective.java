@@ -3,6 +3,7 @@ package de.markusbordihn.easynpc.server.commands.objectives;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
+import de.markusbordihn.easynpc.api.handler.EasyNPCObjectiveHandler;
 import de.markusbordihn.easynpc.commands.Command;
 import de.markusbordihn.easynpc.commands.arguments.EasyNPCArgument;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataEntry;
@@ -112,7 +113,7 @@ public class AttackObjective extends Command {
     boolean removedAny = false;
     for (ObjectiveType objectiveType : ObjectiveType.values()) {
       if (BuiltInObjectiveFactories.isTargetObjective(objectiveType)) {
-        if (objectiveData.removeCustomObjective(objectiveType)) {
+        if (EasyNPCObjectiveHandler.removeObjective(easyNPC, objectiveType)) {
           removedAny = true;
         }
       }
@@ -137,7 +138,7 @@ public class AttackObjective extends Command {
       return Command.FAILURE;
     }
 
-    if (!objectiveData.removeCustomObjective(objectiveType)) {
+    if (!EasyNPCObjectiveHandler.removeObjective(easyNPC, objectiveType)) {
       return sendFailureMessage(
           context, "Error removing attack target " + targetName + " for " + easyNPC);
     }
@@ -199,7 +200,7 @@ public class AttackObjective extends Command {
     }
 
     ObjectiveDataEntry objectiveDataEntry = new ObjectiveDataEntry(objectiveType);
-    if (!objectiveData.addOrUpdateCustomObjective(objectiveDataEntry)) {
+    if (!EasyNPCObjectiveHandler.addObjective(easyNPC, objectiveDataEntry)) {
       return sendFailureMessage(context, "Error adding or updating attack target!");
     }
 

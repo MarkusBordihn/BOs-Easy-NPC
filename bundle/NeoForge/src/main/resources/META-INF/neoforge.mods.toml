@@ -24,7 +24,7 @@ Users only need to install this single file to get both mods.
 [[dependencies.easy_npc_bundle]]
 modId = "neoforge"
 type = "required"
-versionRange = "[26.1.0,)"
+versionRange = "[26.3.0.0-beta,)"
 ordering = "NONE"
 side = "BOTH"
 

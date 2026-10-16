@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "#easy_npc:ranged_weapon/bow",
+    "#easy_npc:ranged_weapon/crossbow",
+    "#minecraft:spears",
+    "minecraft:trident",
+    "minecraft:shield"
+  ]
+}
