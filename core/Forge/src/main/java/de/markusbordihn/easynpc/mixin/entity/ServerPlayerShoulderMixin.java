@@ -20,14 +20,28 @@
 package de.markusbordihn.easynpc.mixin.entity;
 
 import de.markusbordihn.easynpc.access.ShoulderAccessHelper;
+import de.markusbordihn.easynpc.api.handler.EasyNPCShoulderHandler;
 import de.markusbordihn.easynpc.data.npc.ShoulderSide;
+import java.util.Optional;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ServerPlayer.class)
 public abstract class ServerPlayerShoulderMixin implements ShoulderAccessHelper {
+
+  // Mirrors the delay check in vanilla ServerPlayer.removeEntitiesOnShoulder.
+  @Unique private static final long SHOULDER_RELEASE_DELAY_TICKS = 20L;
+
+  @Unique private Optional<CompoundTag> keptShoulderNPCDataLeft = Optional.empty();
+  @Unique private Optional<CompoundTag> keptShoulderNPCDataRight = Optional.empty();
+
+  @Shadow private long timeEntitySatOnShoulder;
 
   @Shadow
   protected abstract void setShoulderEntityLeft(CompoundTag entityTag);
@@ -42,5 +56,27 @@ public abstract class ServerPlayerShoulderMixin implements ShoulderAccessHelper 
     } else {
       this.setShoulderEntityRight(new CompoundTag());
     }
+  }
+
+  @Inject(method = "removeEntitiesOnShoulder", at = @At("HEAD"))
+  private void onRemoveEntitiesOnShoulder(CallbackInfo callbackInfo) {
+    ServerPlayer serverPlayer = (ServerPlayer) (Object) this;
+    if (this.timeEntitySatOnShoulder + SHOULDER_RELEASE_DELAY_TICKS
+        >= serverPlayer.level().getGameTime()) {
+      return;
+    }
+
+    this.keptShoulderNPCDataLeft =
+        EasyNPCShoulderHandler.dismountOrTakeShoulderNPCData(serverPlayer, ShoulderSide.LEFT);
+    this.keptShoulderNPCDataRight =
+        EasyNPCShoulderHandler.dismountOrTakeShoulderNPCData(serverPlayer, ShoulderSide.RIGHT);
+  }
+
+  @Inject(method = "removeEntitiesOnShoulder", at = @At("RETURN"))
+  private void afterRemoveEntitiesOnShoulder(CallbackInfo callbackInfo) {
+    this.keptShoulderNPCDataLeft.ifPresent(this::setShoulderEntityLeft);
+    this.keptShoulderNPCDataRight.ifPresent(this::setShoulderEntityRight);
+    this.keptShoulderNPCDataLeft = Optional.empty();
+    this.keptShoulderNPCDataRight = Optional.empty();
   }
 }

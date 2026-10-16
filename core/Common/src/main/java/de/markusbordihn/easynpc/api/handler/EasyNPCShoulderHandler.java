@@ -19,13 +19,16 @@
 
 package de.markusbordihn.easynpc.api.handler;
 
+import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.access.ShoulderAccessHelper;
 import de.markusbordihn.easynpc.api.event.EasyNPCEventRegistry;
 import de.markusbordihn.easynpc.data.npc.NPCRemovalReason;
 import de.markusbordihn.easynpc.data.npc.ShoulderSide;
+import de.markusbordihn.easynpc.data.status.StatusDataType;
 import de.markusbordihn.easynpc.entity.EasyNPCEntityTypes;
 import de.markusbordihn.easynpc.entity.NPCEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.data.StatusDataCapable;
 import java.util.Optional;
 import java.util.UUID;
 import net.minecraft.core.UUIDUtil;
@@ -40,13 +43,34 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.storage.TagValueInput;
 import net.minecraft.world.level.storage.TagValueOutput;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class EasyNPCShoulderHandler {
 
+  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private static final String ENTITY_UUID_TAG = "UUID";
   private static final double RESPAWN_HEIGHT_OFFSET = 0.7D;
 
+  // Vanilla calls ServerPlayer.removeEntitiesOnShoulder every tick while the player is in water or
+  // flying.
+  private static final long DISMOUNT_FAILURE_LOG_INTERVAL_TICKS = 100L;
+
+  private static long lastDismountFailureLogGameTime = -DISMOUNT_FAILURE_LOG_INTERVAL_TICKS;
+
   private EasyNPCShoulderHandler() {}
+
+  private static void logDismountFailure(
+      ServerLevel serverLevel, String message, Object... parameters) {
+    long ticksSinceLastLog = serverLevel.getGameTime() - lastDismountFailureLogGameTime;
+    if (!log.isDebugEnabled()
+        || (ticksSinceLastLog >= 0 && ticksSinceLastLog < DISMOUNT_FAILURE_LOG_INTERVAL_TICKS)) {
+      return;
+    }
+
+    lastDismountFailureLogGameTime = serverLevel.getGameTime();
+    log.debug(message, parameters);
+  }
 
   public static boolean sitOnShoulder(EasyNPC<?> easyNPC, Player player) {
     if (easyNPC == null || !(player instanceof ServerPlayer serverPlayer)) {
@@ -78,6 +102,11 @@ public class EasyNPCShoulderHandler {
   }
 
   public static boolean dismount(Player player, ShoulderSide shoulderSide) {
+    return dismount(player, shoulderSide, 0);
+  }
+
+  public static boolean dismount(
+      Player player, ShoulderSide shoulderSide, int remountCooldownTicks) {
     if (shoulderSide == null
         || !(player instanceof ServerPlayer serverPlayer)
         || !(serverPlayer instanceof ShoulderAccessHelper shoulderAccess)) {
@@ -90,23 +119,77 @@ public class EasyNPCShoulderHandler {
     }
 
     ServerLevel serverLevel = serverPlayer.level();
-    boolean respawned =
+    Optional<Entity> entity =
         EntityType.create(
-                TagValueInput.create(
-                    ProblemReporter.DISCARDING, serverLevel.registryAccess(), entityTag.get()),
-                serverLevel,
-                new EntitySpawnRequest(EntitySpawnReason.LOAD, false))
-            .map(
-                entity -> {
-                  entity.setPos(
-                      serverPlayer.getX(),
-                      serverPlayer.getY() + RESPAWN_HEIGHT_OFFSET,
-                      serverPlayer.getZ());
-                  return serverLevel.addWithUUID(entity);
-                })
-            .orElse(false);
+            TagValueInput.create(
+                ProblemReporter.DISCARDING, serverLevel.registryAccess(), entityTag.get()),
+            serverLevel,
+            new EntitySpawnRequest(EntitySpawnReason.LOAD, false));
+    if (entity.isEmpty() || !moveToFreeDismountPosition(entity.get(), serverPlayer, serverLevel)) {
+      logDismountFailure(
+          serverLevel,
+          "Unable to find a free position to put the NPC on the {} shoulder of {} down.",
+          shoulderSide,
+          serverPlayer.getName().getString());
+      return false;
+    }
+
+    if (remountCooldownTicks > 0 && entity.get() instanceof EasyNPC<?> easyNPC) {
+      blockRemountUntil(easyNPC, serverLevel.getGameTime() + remountCooldownTicks);
+    }
+
+    if (!serverLevel.addWithUUID(entity.get())) {
+      logDismountFailure(
+          serverLevel,
+          "Unable to put the NPC {} on the {} shoulder of {} down.",
+          entity.get().getUUID(),
+          shoulderSide,
+          serverPlayer.getName().getString());
+      return false;
+    }
+
     shoulderAccess.clearShoulderEntity(shoulderSide);
-    return respawned;
+    return true;
+  }
+
+  public static Optional<CompoundTag> dismountOrTakeShoulderNPCData(
+      Player player, ShoulderSide shoulderSide) {
+    Optional<CompoundTag> entityTag = getShoulderNPCData(player, shoulderSide);
+    if (entityTag.isEmpty()
+        || !(player instanceof ShoulderAccessHelper shoulderAccess)
+        || dismount(player, shoulderSide)) {
+      return Optional.empty();
+    }
+
+    shoulderAccess.clearShoulderEntity(shoulderSide);
+    return entityTag;
+  }
+
+  public static long getRemountAllowedGameTime(EasyNPC<?> easyNPC) {
+    StatusDataCapable<?> statusData = easyNPC.getEasyNPCStatusData();
+    return statusData != null
+        ? statusData.getStatusDataTimestamp(StatusDataType.SHOULDER_REMOUNT_ALLOWED_GAME_TIME)
+        : 0L;
+  }
+
+  private static void blockRemountUntil(EasyNPC<?> easyNPC, long remountAllowedGameTime) {
+    StatusDataCapable<?> statusData = easyNPC.getEasyNPCStatusData();
+    if (statusData != null) {
+      statusData.setStatusDataTimestamp(
+          StatusDataType.SHOULDER_REMOUNT_ALLOWED_GAME_TIME, remountAllowedGameTime);
+    }
+  }
+
+  private static boolean moveToFreeDismountPosition(
+      Entity entity, ServerPlayer serverPlayer, ServerLevel serverLevel) {
+    entity.setPos(
+        serverPlayer.getX(), serverPlayer.getY() + RESPAWN_HEIGHT_OFFSET, serverPlayer.getZ());
+    if (serverLevel.noCollision(entity)) {
+      return true;
+    }
+
+    entity.setPos(serverPlayer.getX(), serverPlayer.getY(), serverPlayer.getZ());
+    return serverLevel.noCollision(entity);
   }
 
   public static Optional<CompoundTag> getShoulderNPCData(Player player, ShoulderSide shoulderSide) {

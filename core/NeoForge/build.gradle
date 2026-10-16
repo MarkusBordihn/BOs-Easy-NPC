@@ -1,6 +1,6 @@
 plugins {
   id 'maven-publish'
-  id 'net.neoforged.moddev' version '2.0.141'
+  id 'net.neoforged.moddev' version '2.0.147'
   id 'net.darkhax.curseforgegradle' version '1.2.30'
   id 'nu.studer.credentials' version '3.0'
   id "com.modrinth.minotaur" version "2.+"
@@ -25,7 +25,7 @@ neoForge {
 
     client {
       client()
-      systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+      systemProperty "${project.mod_id}.gametest", 'true'
     }
 
     client2 {
@@ -36,14 +36,14 @@ neoForge {
 
     server {
       server()
-      systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+      systemProperty "${project.mod_id}.gametest", 'true'
       programArgument '--nogui'
     }
 
     gameTestServer {
       type = 'gameTestServer'
       gameDirectory = project.file('run/gametest')
-      systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+      systemProperty "${project.mod_id}.gametest", 'true'
     }
 
     if (rootProject.findProperty('clientRuntimeTest')?.isAvailable()) {

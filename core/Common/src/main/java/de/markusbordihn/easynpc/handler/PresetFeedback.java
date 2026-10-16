@@ -144,6 +144,10 @@ public class PresetFeedback {
     return Component.translatable(PRESET_PREFIX + "spawn_rate_limited", limit);
   }
 
+  public static Component exportRateLimited(int limit) {
+    return Component.translatable(PRESET_PREFIX + "export_rate_limited", limit);
+  }
+
   public static Component batchPatternInvalid(String pattern) {
     return Component.translatable(PRESET_PREFIX + "batch.pattern_invalid", pattern);
   }

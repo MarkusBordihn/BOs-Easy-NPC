@@ -33,7 +33,7 @@ import org.junit.jupiter.api.Test;
 class ShoulderClientTest extends ClientTestBase {
 
   private static final String SHOULDER_NPC_TYPE = "easy_npc:cat";
-  private static final String ABILITIES_ATTRIBUTE_SCREEN = "AbilitiesAttributeConfigurationScreen";
+  private static final String MISC_ATTRIBUTE_SCREEN = "MiscAttributeConfigurationScreen";
   private static final double PLAYER_X = 0.5;
   private static final double PLAYER_Z = 0.5;
   private static final double NPC_Z = 2.5;
@@ -71,7 +71,7 @@ class ShoulderClientTest extends ClientTestBase {
 
   private static void enableSitOnShoulder(UUID shoulderNpc) {
     openMainConfiguration(shoulderNpc);
-    openSubPage("attributes", "abilities", ABILITIES_ATTRIBUTE_SCREEN);
+    openSubPage("attributes", "misc", MISC_ATTRIBUTE_SCREEN);
     client.click(configurationButton("can_sit_on_shoulder"));
     client.closeScreen();
     client.await(Until.noScreen());

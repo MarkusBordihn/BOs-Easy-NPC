@@ -53,6 +53,7 @@ npcSpawnRateLimitAdmin: Max new NPCs an admin player may spawn via browser or ba
 npcPresetBatchLimit: Max presets a single "matching <pattern>" import may process (default: 10, range: 1-64)
 npcPresetBatchCooldown: Seconds a player has to wait between two batch imports (default: 30, range: 0-3600)
 npcPresetBatchConfirmThreshold: Max matches a batch import runs without an explicit confirm (default: 5)
+npcPresetExportRateLimit: Max world or server presets a player may export per minute (default: 10, range: 1-1000)
 Role values use enum names: NORMAL_PLAYER, CREATIVE_PLAYER, ADMIN, SERVER_TRUSTED.
 npcHighlightMinimumRole: Minimum role which sees the NPC wand highlight without holding a wand (default: ADMIN)
 npcHighlightForOwner: Also shows the NPC wand highlight to the owner of the highlighted NPC (default: true)
@@ -84,6 +85,7 @@ feature.URL_RESOURCE: Minimum role required to use URL-based skin loading (defau
   public static int NPC_PRESET_BATCH_LIMIT = 10;
   public static int NPC_PRESET_BATCH_COOLDOWN = 30;
   public static int NPC_PRESET_BATCH_CONFIRM_THRESHOLD = 5;
+  public static int NPC_PRESET_EXPORT_RATE_LIMIT = 10;
   public static NpcSecurityRole NPC_HIGHLIGHT_MINIMUM_ROLE = NpcSecurityRole.ADMIN;
   public static boolean NPC_HIGHLIGHT_FOR_OWNER = true;
 
@@ -159,6 +161,13 @@ feature.URL_RESOURCE: Minimum role required to use URL-based skin loading (defau
             NPC_PRESET_BATCH_CONFIRM_THRESHOLD,
             0,
             64);
+    NPC_PRESET_EXPORT_RATE_LIMIT =
+        parseConfigValue(
+            properties,
+            "npcPresetExportRateLimit",
+            NPC_PRESET_EXPORT_RATE_LIMIT,
+            1,
+            1000);
     NPC_HIGHLIGHT_MINIMUM_ROLE =
         parseConfigValue(properties, "npcHighlightMinimumRole", NPC_HIGHLIGHT_MINIMUM_ROLE);
     NPC_HIGHLIGHT_FOR_OWNER =

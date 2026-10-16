@@ -55,6 +55,7 @@
     "entity.VillagerMixin",
     "entity.WalkAnimationStateMixin",
     "entity.WitchMixin",
+    "item.PiercingWeaponMixin",
     "menu.MerchantMenuMixin",
     "spawner.BaseSpawnerMixin",
     "target.LivingEntityTargetingMixin",

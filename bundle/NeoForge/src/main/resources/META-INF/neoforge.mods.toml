@@ -8,7 +8,7 @@ modId = "easy_npc_bundle"
 version = "${file.jarVersion}"
 displayName = "Easy NPC: Bundle"
 displayURL = "https://github.com/MarkusBordihn/BOs-Easy-NPC"
-logoFile = "logo.png"
+iconFile = "logo.png"
 credits = ""
 authors = "Markus Bordihn"
 description = '''
@@ -24,7 +24,7 @@ Users only need to install this single file to get both mods.
 [[dependencies.easy_npc_bundle]]
 modId = "neoforge"
 type = "required"
-versionRange = "[26.1.0,)"
+versionRange = "[26.2.0.50-beta,)"
 ordering = "NONE"
 side = "BOTH"
 

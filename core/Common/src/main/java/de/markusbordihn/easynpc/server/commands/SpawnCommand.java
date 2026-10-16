@@ -107,21 +107,7 @@ public class SpawnCommand extends Command {
       return sendFailureMessage(context, spawnRejection.get());
     }
 
-    NPCEntityMetadata metadata = NPCEntityData.get().getMetadata(uuid).orElseThrow();
-    ServerLevel serverLevel = context.getLevel();
-    if (metadata.hasDimension()) {
-      ServerLevel targetLevel =
-          context
-              .getServer()
-              .getLevel(
-                  ResourceKey.create(
-                      Registries.DIMENSION, Identifier.parse(metadata.dimension())));
-      if (targetLevel != null) {
-        serverLevel = targetLevel;
-      }
-    }
-
-    if (EasyNPCEntityHandler.spawn(uuid, serverLevel, force)) {
+    if (EasyNPCEntityHandler.spawn(uuid, getStoredLevel(context, uuid), force)) {
       return sendSuccessMessage(context, "Spawned Easy NPC " + uuid + " !");
     }
 
@@ -167,7 +153,22 @@ public class SpawnCommand extends Command {
         .map(reason -> "Cannot spawn Easy NPC " + uuid + ": " + reason + "!");
   }
 
-  private static UUID parseUUID(CommandSourceStack context, String uuidString) {
+  static ServerLevel getStoredLevel(CommandSourceStack context, UUID uuid) {
+    Optional<NPCEntityMetadata> metadata = NPCEntityData.get().getMetadata(uuid);
+    if (metadata.isEmpty() || !metadata.get().hasDimension()) {
+      return context.getLevel();
+    }
+
+    ServerLevel storedLevel =
+        context
+            .getServer()
+            .getLevel(
+                ResourceKey.create(
+                    Registries.DIMENSION, Identifier.parse(metadata.get().dimension())));
+    return storedLevel != null ? storedLevel : context.getLevel();
+  }
+
+  static UUID parseUUID(CommandSourceStack context, String uuidString) {
     try {
       return UUID.fromString(uuidString);
     } catch (IllegalArgumentException e) {
@@ -176,7 +177,7 @@ public class SpawnCommand extends Command {
     }
   }
 
-  private static boolean hasAccessToStoredNPC(CommandSourceStack context, UUID uuid) {
+  static boolean hasAccessToStoredNPC(CommandSourceStack context, UUID uuid) {
     if (context.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER)) {
       return true;
     }

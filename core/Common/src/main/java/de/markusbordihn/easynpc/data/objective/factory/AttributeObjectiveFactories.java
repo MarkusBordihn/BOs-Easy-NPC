@@ -44,6 +44,6 @@ final class AttributeObjectiveFactories {
 
     register(
         ObjectiveType.SIT_ON_OWNER_SHOULDER,
-        (objectiveDataEntry, easyNPC) -> new SitOnOwnerShoulderGoal(easyNPC));
+        (objectiveDataEntry, easyNPC) -> new SitOnOwnerShoulderGoal(easyNPC, objectiveDataEntry));
   }
 }

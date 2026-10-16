@@ -147,6 +147,7 @@
   "text.easy_npc.preset.sanitize.trading_removed": "Trading was removed.",
   "text.easy_npc.preset.spawn_denied": "You are not allowed to spawn NPCs from presets.",
   "text.easy_npc.preset.spawn_rate_limited": "Spawn limit of %1$s NPCs per minute reached, please wait a moment.",
+  "text.easy_npc.preset.export_rate_limited": "Export limit of %1$s presets per minute reached, please wait a moment.",
   "text.easy_npc.respawn": "Respawn",
   "text.easy_npc.save": "Save",
   "text.easy_npc.trading": "Trading",

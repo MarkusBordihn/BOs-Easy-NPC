@@ -129,6 +129,11 @@ public class NPCRawTemplate extends Zombie
 
   static {
     entityDataAccessorMap.put(
+        SynchedDataIndex.ACTION_HAS_INTERACTION_EVENT,
+        net.minecraft.network.syncher.SynchedEntityData.defineId(
+            NPCRawTemplate.class, EntityDataSerializers.BOOLEAN));
+
+    entityDataAccessorMap.put(
         SynchedDataIndex.ATTACK_IS_CHARGING_CROSSBOW,
         net.minecraft.network.syncher.SynchedEntityData.defineId(
             NPCRawTemplate.class, EntityDataSerializers.BOOLEAN));

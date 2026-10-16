@@ -77,6 +77,11 @@ public final class AttributeMessageTest {
     helper.succeed();
   }
 
+  public static void testShoulderOffsetChange(GameTestHelper helper) {
+    AttributeMessageTestHelper.assertShoulderOffsetChange(helper, humanoid());
+    helper.succeed();
+  }
+
   public static void testEnvironmentalFlagChange(GameTestHelper helper) {
     AttributeMessageTestHelper.assertEnvironmentalFlagChange(helper, humanoid());
     helper.succeed();

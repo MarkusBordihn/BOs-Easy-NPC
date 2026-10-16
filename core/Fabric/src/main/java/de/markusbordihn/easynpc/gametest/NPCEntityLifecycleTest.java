@@ -140,4 +140,39 @@ public class NPCEntityLifecycleTest {
     NPCEntityLifecycleTestHelper.assertEasyNPCEntityTypesAreRecognized(helper, humanoid());
     helper.succeed();
   }
+
+  @GameTest(structure = "easy_npc:gametest.3x3x3")
+  public void testKilledNPCCanBeRevived(GameTestHelper helper) {
+    NPCEntityLifecycleTestHelper.assertKilledNPCCanBeRevived(helper, humanoid());
+    helper.succeed();
+  }
+
+  @GameTest(structure = "easy_npc:gametest.3x3x3")
+  public void testReviveUsesGivenPosition(GameTestHelper helper) {
+    NPCEntityLifecycleTestHelper.assertReviveUsesGivenPosition(helper, humanoid());
+    helper.succeed();
+  }
+
+  @GameTest(structure = "easy_npc:gametest.3x3x3", maxTicks = 100)
+  public void testRevivedNPCHasFullHealth(GameTestHelper helper) {
+    NPCEntityLifecycleTestHelper.assertRevivedNPCHasFullHealth(helper, humanoid());
+  }
+
+  @GameTest(structure = "easy_npc:gametest.3x3x3")
+  public void testReviveRejectsDeletedNPC(GameTestHelper helper) {
+    NPCEntityLifecycleTestHelper.assertReviveRejectsDeletedNPC(helper, humanoid());
+    helper.succeed();
+  }
+
+  @GameTest(structure = "easy_npc:gametest.3x3x3")
+  public void testReviveRejectsLoadedNPC(GameTestHelper helper) {
+    NPCEntityLifecycleTestHelper.assertReviveRejectsLoadedNPC(helper, humanoid());
+    helper.succeed();
+  }
+
+  @GameTest(structure = "easy_npc:gametest.3x3x3")
+  public void testDefaultDataAppliedOnEveryCreationPath(GameTestHelper helper) {
+    NPCEntityLifecycleTestHelper.assertDefaultDataAppliedOnEveryCreationPath(helper, humanoid());
+    helper.succeed();
+  }
 }

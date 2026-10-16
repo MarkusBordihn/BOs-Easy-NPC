@@ -25,13 +25,17 @@ import de.markusbordihn.easynpc.data.action.ActionDataType;
 import de.markusbordihn.easynpc.data.action.ActionEventSet;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.InteractionHandler;
+import de.markusbordihn.easynpc.item.ModItemTags;
 import de.markusbordihn.easynpc.utils.ItemUtils;
+import java.util.List;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.Vec3;
@@ -81,6 +85,55 @@ public class InteractionResultTestHelper {
         helper,
         "An Easy NPC tool item must handle the click itself",
         InteractionResult.PASS,
+        InteractionHandler.handleMobInteraction(easyNPC, serverPlayer, InteractionHand.MAIN_HAND));
+  }
+
+  public static void assertPassInteractionTagContainsWeapons(GameTestHelper helper) {
+    for (Item item : List.of(Items.BOW, Items.CROSSBOW, Items.TRIDENT, Items.SHIELD)) {
+      GameTestHelpers.assertTrue(
+          helper,
+          item + " must be in the pass_interaction item tag",
+          new ItemStack(item).is(ModItemTags.PASS_INTERACTION));
+    }
+    GameTestHelpers.assertTrue(
+        helper,
+        "Food must not be in the pass_interaction item tag",
+        !new ItemStack(Items.BREAD).is(ModItemTags.PASS_INTERACTION));
+  }
+
+  public static void assertPassInteractionItemWithoutActionPasses(
+      GameTestHelper helper, EntityType<?> entityType) {
+    EasyNPC<?> easyNPC = GameTestHelpers.mockEasyNPC(helper, entityType, NPC_POSITION);
+    ActionEventDataCapable<?> actionEventData = easyNPC.getEasyNPCActionEventData();
+    actionEventData.clearActionEventSet();
+    ServerPlayer serverPlayer =
+        mockPlayerHolding(helper, "interaction-bow-empty", new ItemStack(Items.BOW));
+
+    GameTestHelpers.assertTrue(
+        helper,
+        "Clearing the actions must clear the synced interaction flag",
+        !actionEventData.hasSynchedInteractionActionEvent());
+    GameTestHelpers.assertEquals(
+        helper,
+        "A bow on an NPC without an interaction action must be used as a bow",
+        InteractionResult.PASS,
+        InteractionHandler.handleMobInteraction(easyNPC, serverPlayer, InteractionHand.MAIN_HAND));
+  }
+
+  public static void assertInteractionActionTakesPrecedenceOverPassInteractionItem(
+      GameTestHelper helper, EntityType<?> entityType) {
+    EasyNPC<?> easyNPC = mockNPCWithInteractionAction(helper, entityType);
+    ServerPlayer serverPlayer =
+        mockPlayerHolding(helper, "interaction-bow-action", new ItemStack(Items.BOW));
+
+    GameTestHelpers.assertTrue(
+        helper,
+        "An interaction action must set the synced interaction flag",
+        easyNPC.getEasyNPCActionEventData().hasSynchedInteractionActionEvent());
+    GameTestHelpers.assertEquals(
+        helper,
+        "An interaction action must win over a held bow",
+        InteractionResult.CONSUME,
         InteractionHandler.handleMobInteraction(easyNPC, serverPlayer, InteractionHand.MAIN_HAND));
   }
 

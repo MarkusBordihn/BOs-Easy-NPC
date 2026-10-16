@@ -58,4 +58,16 @@ public class ObjectiveApiTest {
     ObjectiveApiTestHelper.assertObjectiveEventsFireOncePerChange(helper, humanoid());
     helper.succeed();
   }
+
+  @GameTest(structure = "easy_npc:gametest.3x3x3")
+  public void testExplicitPriorityReachesGoalSelector(GameTestHelper helper) {
+    ObjectiveApiTestHelper.assertExplicitPriorityReachesGoalSelector(helper, humanoid());
+    helper.succeed();
+  }
+
+  @GameTest(structure = "easy_npc:gametest.3x3x3")
+  public void testMeleeAttackUsesAttackSpeed(GameTestHelper helper) {
+    ObjectiveApiTestHelper.assertMeleeAttackUsesAttackSpeed(helper, humanoid());
+    helper.succeed();
+  }
 }
