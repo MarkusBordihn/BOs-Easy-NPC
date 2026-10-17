@@ -94,6 +94,39 @@ class ObjectiveDataSetTest {
   }
 
   @Test
+  @DisplayName("Creating or updating a built-in objective applies an explicit priority")
+  void testGetOrCreateObjectiveAppliesExplicitPriority() {
+    int explicitPriority = ObjectiveType.FOLLOW_OWNER.getDefaultPriority() + 1;
+    ObjectiveDataSet objectiveDataSet = new ObjectiveDataSet();
+
+    assertEquals(
+        explicitPriority,
+        objectiveDataSet
+            .getOrCreateObjective(ObjectiveType.FOLLOW_OWNER, explicitPriority)
+            .getPriority());
+
+    objectiveDataSet.addObjective(new ObjectiveDataEntry(ObjectiveType.FOLLOW_OWNER));
+    assertEquals(
+        explicitPriority,
+        objectiveDataSet
+            .getOrCreateObjective(ObjectiveType.FOLLOW_OWNER, explicitPriority)
+            .getPriority());
+  }
+
+  @Test
+  @DisplayName("Looking up an objective without a priority keeps its explicit priority")
+  void testGetOrCreateObjectiveKeepsExistingPriority() {
+    int explicitPriority = ObjectiveType.FOLLOW_OWNER.getDefaultPriority() + 1;
+    ObjectiveDataSet objectiveDataSet = new ObjectiveDataSet();
+    objectiveDataSet.addObjective(
+        new ObjectiveDataEntry(ObjectiveType.FOLLOW_OWNER, explicitPriority));
+
+    assertEquals(
+        explicitPriority,
+        objectiveDataSet.getOrCreateObjective(ObjectiveType.FOLLOW_OWNER).getPriority());
+  }
+
+  @Test
   @DisplayName("A custom objective without its mod stays retried instead of written off")
   void testUnregisteredCustomObjectiveAwaitsRegistration() {
     ObjectiveDataEntry entry =

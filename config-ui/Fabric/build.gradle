@@ -128,6 +128,17 @@ tasks.withType(Test).configureEach {
   failOnNoDiscoveredTests = false
 }
 
+// Fabric API finds game tests only through the `fabric-gametest` entrypoints, so the released jar
+// drops them to keep them out of the game test runs of mods depending on Easy NPC. Development
+// runs read the processed resources instead of this jar and keep them.
+tasks.named('jar', Jar).configure {
+  // Gradle does not track filter closures, so without this input an up-to-date jar keeps them.
+  inputs.property('fabricGameTestEntrypoints', 'stripped')
+  filesMatching('fabric.mod.json') {
+    filter { String line -> line.contains('.gametest.') ? null : line }
+  }
+}
+
 publishing {
   publications {
     mavenJava(MavenPublication) {

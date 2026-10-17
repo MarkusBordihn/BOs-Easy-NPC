@@ -285,6 +285,58 @@ public class AttributeHandler {
     return true;
   }
 
+  public static boolean setInteractionAttribute(
+      EasyNPC<?> easyNPC, InteractionAttributeType attributeType, double value) {
+    if (easyNPC == null || attributeType == null) {
+      return false;
+    }
+
+    AttributeDataCapable<?> attributeData = easyNPC.getEasyNPCAttributeData();
+    if (attributeData == null || attributeData.getEntityAttributes() == null) {
+      return false;
+    }
+
+    EntityAttributes entityAttributes = attributeData.getEntityAttributes();
+    InteractionAttributes attributes = entityAttributes.getInteractionAttributes();
+    log.debug("Changing interaction attribute {}={} for {}", attributeType, value, easyNPC);
+    switch (attributeType) {
+      case SHOULDER_OFFSET_X ->
+          entityAttributes.setInteractionAttributes(attributes.withShoulderOffsetX(value));
+      case SHOULDER_OFFSET_Y ->
+          entityAttributes.setInteractionAttributes(attributes.withShoulderOffsetY(value));
+      case SHOULDER_OFFSET_Z ->
+          entityAttributes.setInteractionAttributes(attributes.withShoulderOffsetZ(value));
+      default -> {
+        log.error("Unimplemented interaction attribute {} for {}", attributeType, easyNPC);
+        return false;
+      }
+    }
+    attributeData.refreshEntityAttributes();
+    return true;
+  }
+
+  public static boolean setShoulderOffset(EasyNPC<?> easyNPC, Vec3 shoulderOffset) {
+    if (easyNPC == null || shoulderOffset == null) {
+      return false;
+    }
+
+    AttributeDataCapable<?> attributeData = easyNPC.getEasyNPCAttributeData();
+    if (attributeData == null || attributeData.getEntityAttributes() == null) {
+      return false;
+    }
+
+    EntityAttributes entityAttributes = attributeData.getEntityAttributes();
+    log.debug("Changing shoulder offset to {} for {}", shoulderOffset, easyNPC);
+    entityAttributes.setInteractionAttributes(
+        entityAttributes
+            .getInteractionAttributes()
+            .withShoulderOffsetX(shoulderOffset.x())
+            .withShoulderOffsetY(shoulderOffset.y())
+            .withShoulderOffsetZ(shoulderOffset.z()));
+    attributeData.refreshEntityAttributes();
+    return true;
+  }
+
   public static boolean setInventoryAttribute(
       EasyNPC<?> easyNPC, InventoryAttributeType attributeType, boolean value) {
     if (easyNPC == null || attributeType == null) {

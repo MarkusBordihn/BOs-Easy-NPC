@@ -248,6 +248,9 @@ sourceSets.test {
   output.resourcesDir = mainOutputDir
   java.destinationDirectory = mainOutputDir
 }
+tasks.matching { it.name == 'clientTest' }.configureEach {
+  mustRunAfter tasks.named('compileTestJava'), tasks.named('processTestResources')
+}
 
 // The game test world is persistent, so every run would inherit the NPCs of all previous runs.
 tasks.matching { it.name == 'runGameTestServer' }.configureEach {

@@ -26,7 +26,8 @@ public enum StatusDataType {
   PAUSED(ValueType.BOOLEAN),
   SPAWN_ACTION_FIRED(ValueType.BOOLEAN),
   NPC_DATA_LAST_UPDATE(ValueType.TIMESTAMP),
-  NPC_DATA_LAST_SAVED(ValueType.TIMESTAMP);
+  NPC_DATA_LAST_SAVED(ValueType.TIMESTAMP),
+  SHOULDER_REMOUNT_ALLOWED_GAME_TIME(ValueType.TIMESTAMP);
 
   private final ValueType valueType;
   private final String tagName = this.name().toLowerCase(Locale.ROOT);

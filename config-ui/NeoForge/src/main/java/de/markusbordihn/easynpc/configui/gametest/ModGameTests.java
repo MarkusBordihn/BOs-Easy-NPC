@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.configui.gametest;
 
 import de.markusbordihn.easynpc.configui.Constants;
+import de.markusbordihn.easynpc.gametest.GameTestActivation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -31,8 +32,6 @@ import net.minecraft.gametest.framework.TestData;
 import net.minecraft.gametest.framework.TestEnvironmentDefinition;
 import net.minecraft.resources.Identifier;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.event.RegisterGameTestsEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -44,7 +43,6 @@ import net.neoforged.neoforge.registries.DeferredRegister;
  * <p>NeoForge has no annotation based game test discovery, so every test method is registered
  * manually here and paired with the structure it should run in.
  */
-@EventBusSubscriber
 public final class ModGameTests {
 
   private static final DeferredRegister<Consumer<GameTestHelper>> TEST_FUNCTIONS =
@@ -310,6 +308,10 @@ public final class ModGameTests {
     register(
         "interaction_flag_change",
         AttributeMessageTest::testInteractionFlagChange,
+        DEFAULT_STRUCTURE);
+    register(
+        "shoulder_offset_change",
+        AttributeMessageTest::testShoulderOffsetChange,
         DEFAULT_STRUCTURE);
     register(
         "environmental_flag_change",
@@ -643,11 +645,12 @@ public final class ModGameTests {
   public static void register(IEventBus modEventBus) {
     // NeoForge only fires RegisterGameTestsEvent outside production, so the test functions
     // would stay unused there anyway.
-    if (FMLEnvironment.isProduction()) {
+    if (FMLEnvironment.isProduction() || !GameTestActivation.isEnabled(Constants.MOD_ID)) {
       return;
     }
 
     TEST_FUNCTIONS.register(modEventBus);
+    modEventBus.addListener(ModGameTests::registerGameTests);
   }
 
   private static void register(
@@ -661,8 +664,7 @@ public final class ModGameTests {
         new TestEntry(TEST_FUNCTIONS.register(name, () -> testFunction), structure, maxTicks));
   }
 
-  @SubscribeEvent
-  public static void registerGameTests(RegisterGameTestsEvent event) {
+  private static void registerGameTests(RegisterGameTestsEvent event) {
     Holder<TestEnvironmentDefinition> environment =
         event.registerEnvironment(
             Identifier.fromNamespaceAndPath(Constants.MOD_ID, "default"),

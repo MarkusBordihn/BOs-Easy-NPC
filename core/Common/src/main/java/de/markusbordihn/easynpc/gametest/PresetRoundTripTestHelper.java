@@ -149,6 +149,11 @@ public class PresetRoundTripTestHelper {
         targetNPC.getEasyNPCObjectiveData().getObjective(ObjectiveType.FOLLOW_OWNER);
     GameTestHelpers.assertNotNull(
         helper, "The imported NPC must keep its objective", importedObjective);
+    GameTestHelpers.assertEquals(
+        helper,
+        "The imported NPC must keep the explicit objective priority",
+        FOLLOW_OWNER_PRIORITY,
+        importedObjective.getPriority());
 
     GameTestHelpers.assertEquals(
         helper,

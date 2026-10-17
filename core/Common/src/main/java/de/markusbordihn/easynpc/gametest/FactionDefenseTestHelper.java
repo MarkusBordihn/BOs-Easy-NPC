@@ -30,6 +30,7 @@ import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.scores.PlayerTeam;
@@ -38,7 +39,6 @@ import net.minecraft.world.scores.Scoreboard;
 public class FactionDefenseTestHelper {
 
   private static final int IMMEDIATE_SCAN_INTERVAL = 1;
-  private static final int TICKS_BEFORE_ATTACK = 2;
 
   /**
    * The game test framework seals the structure with a barrier lid. On the topmost layer of a 3x3x3
@@ -163,16 +163,14 @@ public class FactionDefenseTestHelper {
     EasyNPC<?> bystanderNPC =
         GameTestHelpers.mockEasyNPC(helper, entityType, new Vec3(2, GROUND_LAYER, 1));
     LivingEntity attacker = spawnOutsideAttacker(helper, new Vec3(1, GROUND_LAYER, 1));
+    Goal defendSelfGoal =
+        ObjectiveUtils.createObjectiveTarget(
+            new ObjectiveDataEntry(ObjectiveType.HURT_BY_TARGET), attackedNPC);
+    GameTestHelpers.assertNotNull(helper, "Defend Self goal is null", defendSelfGoal);
 
-    helper.runAfterDelay(
-        TICKS_BEFORE_ATTACK,
+    helper.succeedWhen(
         () -> {
           attackedNPC.getLivingEntity().setLastHurtByMob(attacker);
-
-          Goal defendSelfGoal =
-              ObjectiveUtils.createObjectiveTarget(
-                  new ObjectiveDataEntry(ObjectiveType.HURT_BY_TARGET), attackedNPC);
-          GameTestHelpers.assertNotNull(helper, "Defend Self goal is null", defendSelfGoal);
           if (defendSelfGoal.canUse()) {
             defendSelfGoal.start();
           }
@@ -185,12 +183,12 @@ public class FactionDefenseTestHelper {
               helper,
               "Defend Self must not pull uninvolved NPCs into the fight",
               bystanderNPC.getMob().getTarget() == null);
-          helper.succeed();
         });
   }
 
   private static LivingEntity spawnOutsideAttacker(GameTestHelper helper, Vec3 position) {
-    LivingEntity attacker = GameTestHelpers.spawnEntityType(helper, EntityType.ZOMBIE);
+    Mob attacker = GameTestHelpers.spawnEntityType(helper, EntityType.ZOMBIE);
+    attacker.setNoAi(true);
     attacker.setPos(helper.absoluteVec(position));
     return attacker;
   }

@@ -25,7 +25,7 @@ neoForge {
 
     client {
       client()
-      systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+      systemProperty "${project.mod_id}.gametest", 'true'
     }
 
     client2 {
@@ -36,14 +36,14 @@ neoForge {
 
     server {
       server()
-      systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+      systemProperty "${project.mod_id}.gametest", 'true'
       programArgument '--nogui'
     }
 
     gameTestServer {
       type = 'gameTestServer'
       gameDirectory = project.file('run/gametest')
-      systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+      systemProperty "${project.mod_id}.gametest", 'true'
     }
 
     if (rootProject.findProperty('clientRuntimeTest')?.isAvailable()) {

@@ -259,7 +259,6 @@ public class EasyModelNPCRenderer<E extends PathfinderMob>
   @Override
   public void extractRenderState(E entity, EasyModelNPCRenderState renderState, float partialTick) {
     super.extractRenderState(entity, renderState, partialTick);
-    renderState.setEasyNpcUUID(entity.getUUID());
     renderState.easyModelRenderState = null;
     renderState.profileId = null;
     renderState.rootScaleX = 1.0f;
@@ -278,6 +277,7 @@ public class EasyModelNPCRenderer<E extends PathfinderMob>
     if (!(entity instanceof EasyModelNPC easyModelNPC)) {
       return;
     }
+    renderState.setEasyNPC(easyModelNPC);
     Identifier profileId = easyModelNPC.getEasyModelProfileId();
     if (profileId == null) {
       return;

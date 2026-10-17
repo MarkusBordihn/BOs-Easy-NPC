@@ -210,21 +210,6 @@ public class AbilitiesAttributeConfigurationScreen<T extends ConfigurationMenu>
 
     this.addRenderableWidget(
         new Checkbox(
-            thirdButtonRow,
-            this.buttonTopPos + 65,
-            InteractionAttributeType.CAN_SIT_ON_SHOULDER.getAttributeName(),
-            entityAttributes.getInteractionAttributes().canSitOnShoulder(),
-            checkbox ->
-                NetworkMessageHandlerManager.getServerHandler()
-                    .interactionAttributeChange(
-                        this.getEasyNPCUUID(),
-                        InteractionAttributeType.CAN_SIT_ON_SHOULDER,
-                        checkbox.selected())));
-    this.addRenderableWidget(
-        new HelpIcon(this.leftPos + 296, this.buttonTopPos + 67, "can_sit_on_shoulder.tooltip"));
-
-    this.addRenderableWidget(
-        new Checkbox(
             firstButtonRow,
             this.buttonTopPos + 85,
             InteractionAttributeType.CAN_BE_LEASHED.getAttributeName(),

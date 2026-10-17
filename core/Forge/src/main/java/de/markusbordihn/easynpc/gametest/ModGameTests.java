@@ -223,6 +223,9 @@ public final class ModGameTests {
     TEST_FUNCTIONS.register(
         "scale_updates_dimensions", () -> NPCDataIsolationTest::testScaleUpdatesDimensions);
     TEST_FUNCTIONS.register(
+        "scale_updates_render_entity_dimensions",
+        () -> NPCDataIsolationTest::testScaleUpdatesRenderEntityDimensions);
+    TEST_FUNCTIONS.register(
         "position_isolation", () -> NPCDataIsolationTest::testPositionIsolation);
     TEST_FUNCTIONS.register(
         "visibility_isolation", () -> NPCDataIsolationTest::testVisibilityIsolation);
@@ -733,6 +736,25 @@ public final class ModGameTests {
     TEST_FUNCTIONS.register(
         "interaction_with_tool_item_passes",
         () -> InteractionResultTest::testInteractionWithToolItemPasses);
+    TEST_FUNCTIONS.register(
+        "pass_interaction_tag_contains_weapons",
+        () -> InteractionResultTest::testPassInteractionTagContainsWeapons);
+    TEST_FUNCTIONS.register(
+        "pass_interaction_item_without_action_passes",
+        () -> InteractionResultTest::testPassInteractionItemWithoutActionPasses);
+    TEST_FUNCTIONS.register(
+        "interaction_action_takes_precedence_over_pass_interaction_item",
+        () -> InteractionResultTest::testInteractionActionTakesPrecedenceOverPassInteractionItem);
+
+    TEST_FUNCTIONS.register(
+        "spears_are_in_pass_interaction_tag",
+        () -> SpearAttackTest::testSpearsAreInPassInteractionTag);
+    TEST_FUNCTIONS.register(
+        "attackable_n_p_c_can_be_hit_by_spear",
+        () -> SpearAttackTest::testAttackableNPCCanBeHitBySpear);
+    TEST_FUNCTIONS.register(
+        "invulnerable_n_p_c_cannot_be_hit_by_spear",
+        () -> SpearAttackTest::testInvulnerableNPCCannotBeHitBySpear);
 
     TEST_FUNCTIONS.register(
         "items_are_picked_up_into_inventory",
@@ -775,6 +797,118 @@ public final class ModGameTests {
     TEST_FUNCTIONS.register("shoulder_size_limit", () -> ShoulderTest::testShoulderSizeLimit);
     TEST_FUNCTIONS.register(
         "attribute_toggles_objective", () -> ShoulderTest::testAttributeTogglesObjective);
+
+    TEST_FUNCTIONS.register(
+        "dismount_keeps_n_p_c_when_u_u_i_d_taken",
+        () -> ShoulderTest::testDismountKeepsNPCWhenUUIDTaken);
+    TEST_FUNCTIONS.register(
+        "dismount_keeps_n_p_c_when_blocked", () -> ShoulderTest::testDismountKeepsNPCWhenBlocked);
+    TEST_FUNCTIONS.register(
+        "dismount_falls_back_to_player_position",
+        () -> ShoulderTest::testDismountFallsBackToPlayerPosition);
+    TEST_FUNCTIONS.register(
+        "vanilla_shoulder_release_respawns_n_p_c",
+        () -> ShoulderTest::testVanillaShoulderReleaseRespawnsNPC);
+    TEST_FUNCTIONS.register(
+        "vanilla_shoulder_release_keeps_blocked_n_p_c",
+        () -> ShoulderTest::testVanillaShoulderReleaseKeepsBlockedNPC);
+    TEST_FUNCTIONS.register(
+        "player_death_puts_n_p_c_down", () -> ShoulderTest::testPlayerDeathPutsNPCDown);
+    TEST_FUNCTIONS.register(
+        "blocked_n_p_c_stays_on_shoulder_after_respawn",
+        () -> ShoulderTest::testBlockedNPCStaysOnShoulderAfterRespawn);
+    TEST_FUNCTIONS.register(
+        "owner_dismount_blocks_remount", () -> ShoulderTest::testOwnerDismountBlocksRemount);
+    TEST_FUNCTIONS.register(
+        "remount_cooldown_survives_reload", () -> ShoulderTest::testRemountCooldownSurvivesReload);
+    TEST_FUNCTIONS.register(
+        "shoulder_cooldown_from_objective", () -> ShoulderTest::testShoulderCooldownFromObjective);
+    TEST_FUNCTIONS.register(
+        "shoulder_goal_respects_max_distance",
+        () -> ShoulderTest::testShoulderGoalRespectsMaxDistance);
+    TEST_FUNCTIONS.register(
+        "shoulder_goal_stops_without_progress",
+        () -> ShoulderTest::testShoulderGoalStopsWithoutProgress);
+    TEST_FUNCTIONS.register(
+        "shoulder_goal_waits_out_of_combat", () -> ShoulderTest::testShoulderGoalWaitsOutOfCombat);
+    TEST_FUNCTIONS.register(
+        "revive_rejects_n_p_c_on_shoulder", () -> ShoulderTest::testReviveRejectsNPCOnShoulder);
+
+    TEST_FUNCTIONS.register(
+        "killed_n_p_c_can_be_revived", () -> NPCEntityLifecycleTest::testKilledNPCCanBeRevived);
+    TEST_FUNCTIONS.register(
+        "revive_uses_given_position", () -> NPCEntityLifecycleTest::testReviveUsesGivenPosition);
+    TEST_FUNCTIONS.register(
+        "revived_n_p_c_has_full_health", () -> NPCEntityLifecycleTest::testRevivedNPCHasFullHealth);
+    TEST_FUNCTIONS.register(
+        "revive_rejects_deleted_n_p_c", () -> NPCEntityLifecycleTest::testReviveRejectsDeletedNPC);
+    TEST_FUNCTIONS.register(
+        "revive_rejects_loaded_n_p_c", () -> NPCEntityLifecycleTest::testReviveRejectsLoadedNPC);
+    TEST_FUNCTIONS.register(
+        "default_data_applied_on_every_creation_path",
+        () -> NPCEntityLifecycleTest::testDefaultDataAppliedOnEveryCreationPath);
+
+    TEST_FUNCTIONS.register(
+        "explicit_priority_reaches_goal_selector",
+        () -> ObjectiveApiTest::testExplicitPriorityReachesGoalSelector);
+
+    TEST_FUNCTIONS.register(
+        "melee_attack_uses_attack_speed",
+        () -> ObjectiveApiTest::testMeleeAttackUsesAttackSpeed);
+
+    TEST_FUNCTIONS.register(
+        "respawn_command_replaces_n_p_c",
+        () -> NPCLifecycleCommandTest::testRespawnCommandReplacesNPC);
+    TEST_FUNCTIONS.register(
+        "revive_command_revives_killed_n_p_c",
+        () -> NPCLifecycleCommandTest::testReviveCommandRevivesKilledNPC);
+    TEST_FUNCTIONS.register(
+        "revive_command_uses_given_position",
+        () -> NPCLifecycleCommandTest::testReviveCommandUsesGivenPosition);
+    TEST_FUNCTIONS.register(
+        "revive_command_requires_access",
+        () -> NPCLifecycleCommandTest::testReviveCommandRequiresAccess);
+    TEST_FUNCTIONS.register(
+        "revive_command_rejects_n_p_c_on_shoulder",
+        () -> NPCLifecycleCommandTest::testReviveCommandRejectsNPCOnShoulder);
+
+    TEST_FUNCTIONS.register(
+        "shoulder_objective_command_sets_options",
+        () -> ObjectiveCommandTest::testShoulderObjectiveCommandSetsOptions);
+    TEST_FUNCTIONS.register(
+        "shoulder_objective_command_requires_enabled_shoulder",
+        () -> ObjectiveCommandTest::testShoulderObjectiveCommandRequiresEnabledShoulder);
+    TEST_FUNCTIONS.register(
+        "priority_command_reaches_goal_selector",
+        () -> ObjectiveCommandTest::testPriorityCommandReachesGoalSelector);
+    TEST_FUNCTIONS.register(
+        "priority_command_rejects_unknown_objective",
+        () -> ObjectiveCommandTest::testPriorityCommandRejectsUnknownObjective);
+    TEST_FUNCTIONS.register(
+        "repeated_follow_command_keeps_one_goal",
+        () -> ObjectiveCommandTest::testRepeatedFollowCommandKeepsOneGoal);
+    TEST_FUNCTIONS.register(
+        "attack_command_adds_and_removes_objective",
+        () -> ObjectiveCommandTest::testAttackCommandAddsAndRemovesObjective);
+
+    TEST_FUNCTIONS.register(
+        "sit_command_puts_n_p_c_on_shoulder",
+        () -> ShoulderCommandTest::testSitCommandPutsNPCOnShoulder);
+    TEST_FUNCTIONS.register(
+        "dismount_command_uses_side_and_cooldown",
+        () -> ShoulderCommandTest::testDismountCommandUsesSideAndCooldown);
+    TEST_FUNCTIONS.register(
+        "dismount_command_without_side_frees_both_shoulders",
+        () -> ShoulderCommandTest::testDismountCommandWithoutSideFreesBothShoulders);
+    TEST_FUNCTIONS.register(
+        "shoulder_command_only_controls_own_player",
+        () -> ShoulderCommandTest::testShoulderCommandOnlyControlsOwnPlayer);
+    TEST_FUNCTIONS.register(
+        "enable_command_toggles_objective",
+        () -> ShoulderCommandTest::testEnableCommandTogglesObjective);
+    TEST_FUNCTIONS.register(
+        "offset_command_travels_over_shoulder",
+        () -> ShoulderCommandTest::testOffsetCommandTravelsOverShoulder);
   }
 
   private ModGameTests() {}

@@ -29,6 +29,7 @@ import de.markusbordihn.easynpc.data.action.PendingActionSet;
 import de.markusbordihn.easynpc.data.server.ServerDataAccessor;
 import de.markusbordihn.easynpc.data.server.ServerDataIndex;
 import de.markusbordihn.easynpc.data.server.ServerEntityData;
+import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.ActionHandler;
 import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
@@ -62,7 +63,14 @@ public interface ActionEventDataCapable<E extends Mob> extends EasyNPC<E> {
 
   default void setActionEventSet(ActionEventSet actions) {
     this.getEasyNPCServerData().setServerEntityData(CUSTOM_DATA_ACTION_EVENT_SET, actions);
+    this.setSynchedEntityData(
+        SynchedDataIndex.ACTION_HAS_INTERACTION_EVENT,
+        actions != null && actions.hasActionEvent(ActionEventType.ON_INTERACTION));
     this.cancelPendingActionSet();
+  }
+
+  default boolean hasSynchedInteractionActionEvent() {
+    return this.getSynchedEntityData(SynchedDataIndex.ACTION_HAS_INTERACTION_EVENT);
   }
 
   default boolean hasActionEvent(ActionEventType actionEventType) {
@@ -84,6 +92,7 @@ public interface ActionEventDataCapable<E extends Mob> extends EasyNPC<E> {
   default void clearActionEventSet() {
     this.getEasyNPCServerData()
         .setServerEntityData(CUSTOM_DATA_ACTION_EVENT_SET, new ActionEventSet());
+    this.setSynchedEntityData(SynchedDataIndex.ACTION_HAS_INTERACTION_EVENT, false);
     this.cancelPendingActionSet();
   }
 
@@ -111,7 +120,9 @@ public interface ActionEventDataCapable<E extends Mob> extends EasyNPC<E> {
                 .minecraftLevel());
   }
 
-  default void defineSynchedActionData(SynchedEntityData.Builder builder) {}
+  default void defineSynchedActionData(SynchedEntityData.Builder builder) {
+    this.defineSynchedEntityData(builder, SynchedDataIndex.ACTION_HAS_INTERACTION_EVENT, false);
+  }
 
   default PendingActionSet getPendingActionSet() {
     return this.getEasyNPCServerData().getServerEntityData(CUSTOM_DATA_PENDING_ACTION_SET);

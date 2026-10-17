@@ -21,11 +21,18 @@ package de.markusbordihn.easynpc.gametest;
 
 import static de.markusbordihn.easynpc.gametest.GameTestEntityTypes.humanoid;
 
+import de.markusbordihn.easynpc.entity.ModCustomEntityType;
+import de.markusbordihn.easynpc.entity.ModEntityType;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.world.entity.EntityType;
 
 public final class NPCDataIsolationTest {
 
   private NPCDataIsolationTest() {}
+
+  private static EntityType<?> doppler() {
+    return ModEntityType.getEntityType(ModCustomEntityType.DOPPLER);
+  }
 
   public static void testServerRegistryIsolation(GameTestHelper helper) {
     NPCDataIsolationTestHelper.assertServerRegistryIsolation(helper, humanoid());
@@ -74,6 +81,11 @@ public final class NPCDataIsolationTest {
 
   public static void testScaleUpdatesDimensions(GameTestHelper helper) {
     NPCDataIsolationTestHelper.assertScaleUpdatesDimensions(helper, humanoid());
+    helper.succeed();
+  }
+
+  public static void testScaleUpdatesRenderEntityDimensions(GameTestHelper helper) {
+    NPCDataIsolationTestHelper.assertScaleUpdatesRenderEntityDimensions(helper, doppler());
     helper.succeed();
   }
 

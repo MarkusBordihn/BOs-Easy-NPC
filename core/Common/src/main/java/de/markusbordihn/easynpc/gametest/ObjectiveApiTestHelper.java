@@ -25,13 +25,29 @@ import de.markusbordihn.easynpc.api.handler.EasyNPCObjectiveHandler;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataEntry;
 import de.markusbordihn.easynpc.data.objective.ObjectiveType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.ai.goal.CustomMeleeAttackGoal;
+import java.util.Optional;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.goal.WrappedGoal;
 import net.minecraft.world.phys.Vec3;
 
 public class ObjectiveApiTestHelper {
 
   private static final Vec3 NPC_POSITION = new Vec3(1, 2, 1);
+  private static final int EXPLICIT_PRIORITY = 4;
+  private static final Vec3 MELEE_ATTACKER_POSITION = new Vec3(1, 0, 1);
+  private static final Vec3 MELEE_TARGET_POSITION = new Vec3(2, 0, 1);
+  private static final double FAST_ATTACK_SPEED = 4.0D;
+  private static final int MELEE_ATTACK_TEST_TICKS = 40;
+  private static final int DEFAULT_MELEE_ATTACKS = 2;
+  private static final int FAST_MELEE_ATTACKS = 8;
 
   private ObjectiveApiTestHelper() {}
 
@@ -83,6 +99,40 @@ public class ObjectiveApiTestHelper {
         !EasyNPCObjectiveHandler.hasObjective(easyNPC, objectiveType));
   }
 
+  public static void assertExplicitPriorityReachesGoalSelector(
+      GameTestHelper helper, EntityType<?> entityType) {
+    EasyNPC<?> easyNPC = GameTestHelpers.mockEasyNPC(helper, entityType, NPC_POSITION);
+    ServerPlayer owner =
+        GameTestHelpers.mockServerPlayer(helper, new Vec3(2, 2, 1), "priority-owner-player");
+    easyNPC.getEasyNPCOwnerData().setNPCOwnerUUID(owner.getUUID());
+    GameTestHelpers.assertTrue(
+        helper,
+        "Follow owner objective with an explicit priority was not added",
+        EasyNPCObjectiveHandler.addObjective(
+            easyNPC, new ObjectiveDataEntry(ObjectiveType.FOLLOW_OWNER, EXPLICIT_PRIORITY)));
+
+    ObjectiveDataEntry storedEntry =
+        EasyNPCObjectiveHandler.getObjectives(easyNPC).stream()
+            .filter(objectiveDataEntry -> objectiveDataEntry.getType() == ObjectiveType.FOLLOW_OWNER)
+            .findFirst()
+            .orElse(null);
+    GameTestHelpers.assertNotNull(helper, "Follow owner objective is not stored", storedEntry);
+    Goal goal = storedEntry.getGoal(easyNPC);
+    GameTestHelpers.assertNotNull(helper, "Follow owner objective has no goal", goal);
+
+    Optional<WrappedGoal> wrappedGoal =
+        easyNPC.getEntityGoalSelector().getAvailableGoals().stream()
+            .filter(availableGoal -> availableGoal.getGoal() == goal)
+            .findFirst();
+    GameTestHelpers.assertTrue(
+        helper, "Follow owner goal is not registered", wrappedGoal.isPresent());
+    GameTestHelpers.assertEquals(
+        helper,
+        "Follow owner goal ignores the explicit priority",
+        EXPLICIT_PRIORITY,
+        wrappedGoal.get().getPriority());
+  }
+
   public static void assertObjectiveEventsFireOncePerChange(
       GameTestHelper helper, EntityType<?> entityType) {
     EasyNPC<?> easyNPC = GameTestHelpers.mockEasyNPC(helper, entityType, NPC_POSITION);
@@ -103,6 +153,58 @@ public class ObjectiveApiTestHelper {
         helper, "An added objective must fire one event", 1, objectiveEventCounter.addedEvents);
     GameTestHelpers.assertEquals(
         helper, "A removed objective must fire one event", 1, objectiveEventCounter.removedEvents);
+  }
+
+  public static void assertMeleeAttackUsesAttackSpeed(
+      GameTestHelper helper, EntityType<?> entityType) {
+    GameTestHelpers.assertEquals(
+        helper,
+        "Melee attacks without attack speed",
+        DEFAULT_MELEE_ATTACKS,
+        countMeleeAttacks(helper, entityType, 0.0D));
+    GameTestHelpers.assertEquals(
+        helper,
+        "Melee attacks ignore the attack speed",
+        FAST_MELEE_ATTACKS,
+        countMeleeAttacks(helper, entityType, FAST_ATTACK_SPEED));
+  }
+
+  private static int countMeleeAttacks(
+      GameTestHelper helper, EntityType<?> entityType, double attackSpeed) {
+    EasyNPC<?> easyNPC = GameTestHelpers.mockEasyNPC(helper, entityType, MELEE_ATTACKER_POSITION);
+    PathfinderMob attacker = easyNPC.getPathfinderMob();
+    AttributeInstance attackSpeedAttribute = attacker.getAttribute(Attributes.ATTACK_SPEED);
+    GameTestHelpers.assertNotNull(helper, "NPC has no attack speed", attackSpeedAttribute);
+    attackSpeedAttribute.setBaseValue(attackSpeed);
+    AttributeInstance attackDamageAttribute = attacker.getAttribute(Attributes.ATTACK_DAMAGE);
+    GameTestHelpers.assertNotNull(helper, "NPC has no attack damage", attackDamageAttribute);
+    attackDamageAttribute.setBaseValue(1.0D);
+
+    Mob target = spawnTargetWithoutHurtCooldown(helper, attacker);
+    CustomMeleeAttackGoal<?> meleeAttackGoal = new CustomMeleeAttackGoal<>(easyNPC, 1.0D, false);
+    meleeAttackGoal.start();
+    int meleeAttacks = 0;
+    for (int tick = 0; tick < MELEE_ATTACK_TEST_TICKS; tick++) {
+      meleeAttackGoal.tick();
+      if (target.getHealth() < target.getMaxHealth()) {
+        meleeAttacks++;
+        target.discard();
+        target = spawnTargetWithoutHurtCooldown(helper, attacker);
+      }
+    }
+    meleeAttackGoal.stop();
+    target.discard();
+    easyNPC.getEntity().discard();
+    return meleeAttacks;
+  }
+
+  private static Mob spawnTargetWithoutHurtCooldown(
+      GameTestHelper helper, PathfinderMob attacker) {
+    Mob target = GameTestHelpers.spawnEntityType(helper, EntityType.ZOMBIE);
+    target.setNoAi(true);
+    target.setPos(helper.absoluteVec(MELEE_TARGET_POSITION));
+    attacker.setTarget(target);
+    return target;
   }
 
   private static class ObjectiveEventCounter implements ObjectiveEventListener {

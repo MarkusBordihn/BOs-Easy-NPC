@@ -52,4 +52,68 @@ public final class ShoulderTest {
     ShoulderTestHelper.assertAttributeTogglesObjective(helper, allay());
     helper.succeed();
   }
+
+  public static void testDismountKeepsNPCWhenUUIDTaken(GameTestHelper helper) {
+    ShoulderTestHelper.assertDismountKeepsNPCWhenUUIDTaken(helper, allay());
+    helper.succeed();
+  }
+
+  public static void testDismountKeepsNPCWhenBlocked(GameTestHelper helper) {
+    ShoulderTestHelper.assertDismountKeepsNPCWhenBlocked(helper, allay());
+    helper.succeed();
+  }
+
+  public static void testDismountFallsBackToPlayerPosition(GameTestHelper helper) {
+    ShoulderTestHelper.assertDismountFallsBackToPlayerPosition(helper, allay());
+    helper.succeed();
+  }
+
+  public static void testVanillaShoulderReleaseRespawnsNPC(GameTestHelper helper) {
+    ShoulderTestHelper.assertVanillaShoulderReleaseRespawnsNPC(helper, allay());
+  }
+
+  public static void testVanillaShoulderReleaseKeepsBlockedNPC(GameTestHelper helper) {
+    ShoulderTestHelper.assertVanillaShoulderReleaseKeepsBlockedNPC(helper, allay());
+  }
+
+  public static void testPlayerDeathPutsNPCDown(GameTestHelper helper) {
+    ShoulderTestHelper.assertPlayerDeathPutsNPCDown(helper, allay());
+  }
+
+  public static void testBlockedNPCStaysOnShoulderAfterRespawn(GameTestHelper helper) {
+    ShoulderTestHelper.assertBlockedNPCStaysOnShoulderAfterRespawn(helper, allay());
+  }
+
+  public static void testOwnerDismountBlocksRemount(GameTestHelper helper) {
+    ShoulderTestHelper.assertOwnerDismountBlocksRemount(helper, allay());
+  }
+
+  public static void testRemountCooldownSurvivesReload(GameTestHelper helper) {
+    ShoulderTestHelper.assertRemountCooldownSurvivesReload(helper, allay());
+    helper.succeed();
+  }
+
+  public static void testShoulderCooldownFromObjective(GameTestHelper helper) {
+    ShoulderTestHelper.assertShoulderCooldownFromObjective(helper, allay());
+    helper.succeed();
+  }
+
+  public static void testShoulderGoalRespectsMaxDistance(GameTestHelper helper) {
+    ShoulderTestHelper.assertShoulderGoalRespectsMaxDistance(helper, allay());
+    helper.succeed();
+  }
+
+  public static void testShoulderGoalStopsWithoutProgress(GameTestHelper helper) {
+    ShoulderTestHelper.assertShoulderGoalStopsWithoutProgress(helper, allay());
+  }
+
+  public static void testShoulderGoalWaitsOutOfCombat(GameTestHelper helper) {
+    ShoulderTestHelper.assertShoulderGoalWaitsOutOfCombat(helper, allay());
+    helper.succeed();
+  }
+
+  public static void testReviveRejectsNPCOnShoulder(GameTestHelper helper) {
+    ShoulderTestHelper.assertReviveRejectsNPCOnShoulder(helper, allay());
+    helper.succeed();
+  }
 }

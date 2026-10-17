@@ -20,9 +20,17 @@
 package de.markusbordihn.easynpc.entity.easynpc.ai.goal;
 
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 
 public class CustomMeleeAttackGoal<T extends EasyNPC<?>> extends MeleeAttackGoal {
+
+  private static final int DEFAULT_ATTACK_INTERVAL_TICKS = 20;
+  private static final double TICKS_PER_SECOND = 20.0D;
+
+  // Vanilla MeleeAttackGoal keeps its cooldown in a private field that is always reset to 20 ticks.
+  private int ticksUntilNextAttack;
 
   public CustomMeleeAttackGoal(T easyNPC, double speedModifier, boolean mustSeeTarget) {
     super(easyNPC.getPathfinderMob(), speedModifier, mustSeeTarget);
@@ -38,5 +46,38 @@ public class CustomMeleeAttackGoal<T extends EasyNPC<?>> extends MeleeAttackGoal
   public void start() {
     super.start();
     this.mob.setAggressive(true);
+    this.ticksUntilNextAttack = 0;
+  }
+
+  @Override
+  public void tick() {
+    this.ticksUntilNextAttack = Math.max(this.ticksUntilNextAttack - 1, 0);
+    super.tick();
+  }
+
+  @Override
+  protected void resetAttackCooldown() {
+    this.ticksUntilNextAttack = this.getAttackInterval();
+  }
+
+  @Override
+  protected boolean isTimeToAttack() {
+    return this.ticksUntilNextAttack <= 0;
+  }
+
+  @Override
+  protected int getTicksUntilNextAttack() {
+    return this.ticksUntilNextAttack;
+  }
+
+  @Override
+  protected int getAttackInterval() {
+    AttributeInstance attackSpeed = this.mob.getAttribute(Attributes.ATTACK_SPEED);
+    if (attackSpeed == null || attackSpeed.getValue() <= 0.0D) {
+      return this.adjustedTickDelay(DEFAULT_ATTACK_INTERVAL_TICKS);
+    }
+
+    return this.adjustedTickDelay(
+        Math.max(1, (int) Math.round(TICKS_PER_SECOND / attackSpeed.getValue())));
   }
 }

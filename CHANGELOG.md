@@ -8,6 +8,27 @@ the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 7.16.0
+
+- Fixed #432 by no longer running objectives twice or after removal when set more than once.
+- Fixed #852 by letting spears hit attackable NPCs.
+- Fixed NPCs getting lost when they could not be put down from a player's shoulder.
+- Fixed "Sit on Shoulder" NPCs chasing their owner without a distance or time limit.
+- Fixed Easy Model Entities NPCs from addons being invisible on a player's shoulder.
+- Fixed spawning a stored NPC by UUID failing with an invalid dimension error.
+- Fixed melee NPCs ignoring "Attack Speed" and always attacking once per second.
+- Fixed unlimited world and server preset exports by allowing 10 per minute, see `security.cfg`.
+- Changed killed NPCs to need `force` or the new revive API to spawn again, since 7.15.0.
+- Changed built-in objectives to keep a priority set by addons instead of their default.
+- Changed the Iron Golem "Attack Speed" default to 1.0; existing ones keep 4.0 and attack faster.
+- Changed "Sit on Shoulder" from the "Abilities" to the "Misc" attribute tab.
+- Changed the optional Easy Model Entities dependency to require version 2.6.0 or newer.
+- Added an API to revive killed NPCs and a remount cooldown when dismounting from a shoulder.
+- Added distance, cooldown and combat settings to "Sit on Shoulder" for addons and commands.
+- Added `/easy_npc revive`, `/easy_npc shoulder` and `objective … priority` commands.
+- Added a shoulder offset per NPC, set in the "Misc" tab or with `/easy_npc shoulder offset`.
+- Updated the tested NeoForge version to 21.11.48, which fixes three network vulnerabilities.
+
 ### 7.15.0
 
 - Fixed #838 by keeping preset imports silent when run through `/execute` or command blocks.
@@ -17,6 +38,8 @@ Check the [upgrade guide][upgrade_guide] for more information.
 - Fixed #851 by locking dialog buttons per dialog, not across dialogs with the same label.
 - Fixed deleted or duplicated NPCs returning, memory leaks and several owner and UI issues.
 - Fixed the Epic Fight Wither Skeleton NPC missing its Epic Fight mob patch.
+- Fixed scaled Doppler NPCs keeping the full hitbox of the mimicked entity.
+- Fixed NPCs on a player's shoulder ignoring their scale and the Doppler's mimicked model.
 - Changed requirements: same mod version on client and server, Easy Model Entities 2.5.0+.
 - Changed backups of all worlds and killed NPC data to expire after 30 days, see `storage.cfg`.
 - Added "Jump", "Assist Owner" and "Follow Nearest Player" to fix #845, fix #310, fix #761.

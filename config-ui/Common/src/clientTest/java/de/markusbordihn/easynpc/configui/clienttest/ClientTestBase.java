@@ -26,7 +26,6 @@ import de.markusbordihn.clientruntimeinterfacetoolkit.testrunner.By;
 import de.markusbordihn.clientruntimeinterfacetoolkit.testrunner.GameClientBuilder;
 import de.markusbordihn.clientruntimeinterfacetoolkit.testrunner.GameClientExtension;
 import de.markusbordihn.clientruntimeinterfacetoolkit.testrunner.Until;
-import de.markusbordihn.clientruntimeinterfacetoolkit.testrunner.data.Parameters;
 import de.markusbordihn.clientruntimeinterfacetoolkit.testrunner.data.TestArea;
 import java.util.Locale;
 import java.util.UUID;
@@ -44,7 +43,6 @@ abstract class ClientTestBase {
       GameClientExtension.shared(ClientTestBase::configureLaunch);
 
   private static final String SUITE_NAME = "Easy NPC config-ui";
-  private static final String WORLD_NAME = "EasyNPC Client Test";
   private static final int PLATFORM_Y = 100;
   static final int STAND_Y = PLATFORM_Y + 1;
   private static final TestArea TEST_PLATFORM =
@@ -56,7 +54,7 @@ abstract class ClientTestBase {
         .withWindowSize(1280, 720)
         .withGuiScale(2)
         .withAllowedCommands("easy_npc_config_ui", "easy_npc")
-        .withWorld(Parameters.of("name", WORLD_NAME))
+        .withWorld()
         .withLayoutChecksOnScreenshot();
   }
 

@@ -19,15 +19,31 @@
 
 package de.markusbordihn.easynpc.server.commands;
 
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.suggestion.Suggestions;
+import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import de.markusbordihn.easynpc.api.handler.EasyNPCObjectiveHandler;
 import de.markusbordihn.easynpc.commands.Command;
 import de.markusbordihn.easynpc.commands.arguments.EasyNPCArgument;
+import de.markusbordihn.easynpc.data.objective.ObjectiveDataEntry;
+import de.markusbordihn.easynpc.data.objective.ObjectiveType;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.server.commands.objectives.AttackObjective;
 import de.markusbordihn.easynpc.server.commands.objectives.FollowObjective;
+import de.markusbordihn.easynpc.server.commands.objectives.ShoulderObjective;
+import java.util.concurrent.CompletableFuture;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.commands.SharedSuggestionProvider;
 
 public class ObjectiveCommand extends Command {
+
+  private static final String OBJECTIVE_ARG = "objective";
+  private static final String PRIORITY_ARG = "priority";
 
   private ObjectiveCommand() {}
 
@@ -42,10 +58,59 @@ public class ObjectiveCommand extends Command {
                 .then(
                     Commands.literal("set")
                         .then(AttackObjective.registerSet())
-                        .then(FollowObjective.registerSet()))
+                        .then(FollowObjective.registerSet())
+                        .then(ShoulderObjective.registerSet()))
                 .then(
                     Commands.literal("remove")
                         .then(AttackObjective.registerRemove())
-                        .then(FollowObjective.registerRemove())));
+                        .then(FollowObjective.registerRemove()))
+                .then(
+                    Commands.literal("priority")
+                        .then(
+                            Commands.argument(OBJECTIVE_ARG, StringArgumentType.string())
+                                .suggests(ObjectiveCommand::suggestObjectiveIds)
+                                .then(
+                                    Commands.argument(
+                                            PRIORITY_ARG, IntegerArgumentType.integer(0))
+                                        .executes(
+                                            context ->
+                                                setPriority(
+                                                    context.getSource(),
+                                                    EasyNPCArgument.getEntityWithAccess(
+                                                        context, NPC_TARGET_ARG),
+                                                    StringArgumentType.getString(
+                                                        context, OBJECTIVE_ARG),
+                                                    IntegerArgumentType.getInteger(
+                                                        context, PRIORITY_ARG)))))));
+  }
+
+  public static int setPriority(
+      CommandSourceStack context, EasyNPC<?> easyNPC, String objective, int priority) {
+    String objectiveId = resolveObjectiveId(easyNPC, objective);
+    if (!EasyNPCObjectiveHandler.setPriority(easyNPC, objectiveId, priority)) {
+      return sendFailureMessage(context, "Objective " + objective + " not found for " + easyNPC);
+    }
+
+    return sendSuccessMessage(
+        context, "Set priority of objective " + objectiveId + " to " + priority + " for " + easyNPC);
+  }
+
+  private static String resolveObjectiveId(EasyNPC<?> easyNPC, String objective) {
+    if (EasyNPCObjectiveHandler.getObjective(easyNPC, objective) != null) {
+      return objective;
+    }
+
+    return ObjectiveType.get(objective).name();
+  }
+
+  private static CompletableFuture<Suggestions> suggestObjectiveIds(
+      CommandContext<CommandSourceStack> context, SuggestionsBuilder builder)
+      throws CommandSyntaxException {
+    EasyNPC<?> easyNPC = EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG);
+    return SharedSuggestionProvider.suggest(
+        EasyNPCObjectiveHandler.getObjectives(easyNPC).stream()
+            .map(ObjectiveDataEntry::getId)
+            .map(StringArgumentType::escapeIfRequired),
+        builder);
   }
 }

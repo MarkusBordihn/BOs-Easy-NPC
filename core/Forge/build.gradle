@@ -259,6 +259,9 @@ sourceSets.test {
   output.resourcesDir = mainOutputDir
   java.destinationDirectory = mainOutputDir
 }
+tasks.matching { it.name == 'clientTest' }.configureEach {
+  mustRunAfter tasks.named('compileTestJava'), tasks.named('processTestResources')
+}
 
 // CurseForge Publishing
 if (project.hasProperty('curseforge_project_id') && project.curseforge_project_id) {

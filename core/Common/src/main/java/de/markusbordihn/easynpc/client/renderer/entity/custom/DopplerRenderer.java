@@ -106,7 +106,7 @@ public class DopplerRenderer
         LivingEntityRenderState livingEntityRenderState =
             livingEntityRenderer.createRenderState(customEntity, 1.0F);
         if (livingEntityRenderState instanceof EasyNPCRenderStateExtension extension) {
-          extension.setEasyNpcUUID(easyNPC.getEntityUUID());
+          extension.setEasyNPC(easyNPC);
         }
         applyNPCRotationToImitatedModel(renderState, livingEntityRenderState);
 
@@ -134,7 +134,7 @@ public class DopplerRenderer
             RendererManager.getEntityRenderer(renderEntityType, customEntity);
     EntityRenderState entityRenderState = entityRenderer.createRenderState(customEntity, 1.0F);
     if (entityRenderState instanceof EasyNPCRenderStateExtension extension) {
-      extension.setEasyNpcUUID(easyNPC.getEntityUUID());
+      extension.setEasyNPC(easyNPC);
     }
     if (entityRenderer != null) {
       poseStack.pushPose();

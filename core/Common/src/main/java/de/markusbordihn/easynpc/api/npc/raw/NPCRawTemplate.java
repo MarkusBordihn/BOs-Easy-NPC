@@ -27,7 +27,6 @@ import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
 import de.markusbordihn.easynpc.data.model.ModelType;
 import de.markusbordihn.easynpc.data.npc.NPCType;
 import de.markusbordihn.easynpc.data.npc.RawNPCType;
-import de.markusbordihn.easynpc.data.scale.CustomScale;
 import de.markusbordihn.easynpc.data.server.ServerEntityData;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.data.skin.variant.ZombieSkinVariant;
@@ -129,6 +128,11 @@ public class NPCRawTemplate extends Zombie
   private static final UniformInt PERSISTENT_ANGER_TIME = TimeUtil.rangeOfSeconds(20, 39);
 
   static {
+    entityDataAccessorMap.put(
+        SynchedDataIndex.ACTION_HAS_INTERACTION_EVENT,
+        net.minecraft.network.syncher.SynchedEntityData.defineId(
+            NPCRawTemplate.class, EntityDataSerializers.BOOLEAN));
+
     entityDataAccessorMap.put(
         SynchedDataIndex.ATTACK_IS_CHARGING_CROSSBOW,
         net.minecraft.network.syncher.SynchedEntityData.defineId(
@@ -869,19 +873,7 @@ public class NPCRawTemplate extends Zombie
 
   @Override
   public EntityDimensions getDefaultDimensions(Pose pose) {
-    EntityDimensions baseDimensions = super.getDefaultDimensions(pose);
-
-    CustomScale defaultScale = this.getDefaultModelScale();
-    if (defaultScale != null && defaultScale.hasChanged()) {
-      baseDimensions = baseDimensions.scale(defaultScale.x(), defaultScale.y());
-    }
-
-    CustomScale rootScale = this.getModelRootData().scale();
-    if (rootScale.x() != 1.0f || rootScale.y() != 1.0f) {
-      baseDimensions = baseDimensions.scale(rootScale.x(), rootScale.y());
-    }
-
-    return baseDimensions;
+    return this.applyModelScale(super.getDefaultDimensions(pose));
   }
 
   // TEMPLATE_INSERT:METHODS

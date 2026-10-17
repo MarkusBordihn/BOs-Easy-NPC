@@ -28,10 +28,12 @@ import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.NPCEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.handler.PresetHandler;
+import de.markusbordihn.easynpc.handler.RespawnHandler;
 import de.markusbordihn.easynpc.security.CommandSecurity;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Predicate;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.DoubleTag;
 import net.minecraft.nbt.ListTag;
@@ -150,6 +152,10 @@ public class EasyNPCEntityHandler {
     return true;
   }
 
+  public static boolean respawn(EasyNPC<?> easyNPC, ServerLevel serverLevel) {
+    return RespawnHandler.respawnNPC(easyNPC, serverLevel);
+  }
+
   public static boolean delete(EasyNPC<?> easyNPC) {
     if (easyNPC == null) {
       log.error("Cannot delete null EasyNPC");
@@ -198,7 +204,7 @@ public class EasyNPCEntityHandler {
   }
 
   public static boolean spawn(UUID uuid, ServerLevel serverLevel, boolean force) {
-    Optional<SavedNPCEntityEntry> entry = getSpawnableEntry(uuid, force);
+    Optional<SavedNPCEntityEntry> entry = getSpawnableEntry(uuid, getSpawnRejection(uuid, force));
     return entry.isPresent()
         && PresetHandler.importPreset(
             serverLevel, entry.get().npcData(), entry.get().metadata().ownerUUID());
@@ -209,17 +215,35 @@ public class EasyNPCEntityHandler {
   }
 
   public static boolean spawn(UUID uuid, ServerLevel serverLevel, Vec3 position, boolean force) {
-    Optional<SavedNPCEntityEntry> entry = getSpawnableEntry(uuid, force);
+    Optional<SavedNPCEntityEntry> entry = getSpawnableEntry(uuid, getSpawnRejection(uuid, force));
     if (entry.isEmpty()) {
       return false;
     }
 
     CompoundTag npcData = entry.get().npcData().copy();
-    ListTag positionTag = new ListTag();
-    positionTag.add(DoubleTag.valueOf(position.x));
-    positionTag.add(DoubleTag.valueOf(position.y));
-    positionTag.add(DoubleTag.valueOf(position.z));
-    npcData.put("Pos", positionTag);
+    putPosition(npcData, position);
+    return PresetHandler.importPreset(serverLevel, npcData, entry.get().metadata().ownerUUID());
+  }
+
+  public static boolean revive(UUID uuid, ServerLevel serverLevel) {
+    return revive(uuid, serverLevel, null);
+  }
+
+  public static boolean revive(UUID uuid, ServerLevel serverLevel, Vec3 position) {
+    Optional<SavedNPCEntityEntry> entry = getSpawnableEntry(uuid, getReviveRejection(uuid));
+    if (entry.isEmpty()) {
+      return false;
+    }
+
+    CompoundTag npcData = entry.get().npcData().copy();
+    if (position != null) {
+      putPosition(npcData, position);
+    }
+    // LivingEntity#readAdditionalSaveData loads Attributes before Health, setHealth clamps to max.
+    npcData.putFloat("Health", Float.MAX_VALUE);
+    npcData.remove("DeathTime");
+    npcData.remove("HurtTime");
+    npcData.remove("Fire");
     return PresetHandler.importPreset(serverLevel, npcData, entry.get().metadata().ownerUUID());
   }
 
@@ -229,6 +253,20 @@ public class EasyNPCEntityHandler {
   }
 
   public static Optional<String> getSpawnRejection(UUID uuid, boolean force) {
+    return getRejection(
+        uuid, removalReason -> force || removalReason.isRestorableReason(), "use force to spawn it");
+  }
+
+  public static Optional<String> getReviveRejection(UUID uuid) {
+    return getRejection(
+        uuid,
+        removalReason ->
+            removalReason == NPCRemovalReason.KILLED || removalReason.isRestorableReason(),
+        "use spawn with force instead");
+  }
+
+  private static Optional<String> getRejection(
+      UUID uuid, Predicate<NPCRemovalReason> isAcceptedReason, String unacceptedReasonHint) {
     if (NPCEntityManager.isNPCDeleted(uuid)) {
       return Optional.of("it was deleted");
     }
@@ -247,15 +285,24 @@ public class EasyNPCEntityHandler {
       return Optional.of("it is already loaded");
     }
 
-    if (!force && !removalReason.isRestorableReason()) {
-      return Optional.of("it was removed with reason " + removalReason + ", use force to spawn it");
+    if (!isAcceptedReason.test(removalReason)) {
+      return Optional.of(
+          "it was removed with reason " + removalReason + ", " + unacceptedReasonHint);
     }
 
     return Optional.empty();
   }
 
-  private static Optional<SavedNPCEntityEntry> getSpawnableEntry(UUID uuid, boolean force) {
-    Optional<String> spawnRejection = getSpawnRejection(uuid, force);
+  private static void putPosition(CompoundTag npcData, Vec3 position) {
+    ListTag positionTag = new ListTag();
+    positionTag.add(DoubleTag.valueOf(position.x));
+    positionTag.add(DoubleTag.valueOf(position.y));
+    positionTag.add(DoubleTag.valueOf(position.z));
+    npcData.put("Pos", positionTag);
+  }
+
+  private static Optional<SavedNPCEntityEntry> getSpawnableEntry(
+      UUID uuid, Optional<String> spawnRejection) {
     if (spawnRejection.isPresent()) {
       log.warn("Cannot spawn NPC {}: {}", uuid, spawnRejection.get());
       return Optional.empty();

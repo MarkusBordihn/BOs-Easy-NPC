@@ -63,17 +63,31 @@ public class EasyNPCObjectiveHandler {
   }
 
   public static boolean removeObjective(EasyNPC<?> easyNPC, String objectiveId) {
+    ObjectiveDataEntry objectiveDataEntry = getObjective(easyNPC, objectiveId);
+    return objectiveDataEntry != null
+        && easyNPC.getEasyNPCObjectiveData().removeCustomObjective(objectiveDataEntry);
+  }
+
+  public static boolean setPriority(EasyNPC<?> easyNPC, String objectiveId, int priority) {
+    ObjectiveDataEntry objectiveDataEntry = getObjective(easyNPC, objectiveId);
+    if (objectiveDataEntry == null) {
+      return false;
+    }
+
+    objectiveDataEntry.setPriority(priority);
+    return addObjective(easyNPC, objectiveDataEntry);
+  }
+
+  public static ObjectiveDataEntry getObjective(EasyNPC<?> easyNPC, String objectiveId) {
     ObjectiveDataCapable<?> objectiveData = getServerObjectiveData(easyNPC);
     if (objectiveData == null
         || objectiveData.getObjectiveDataSet() == null
         || objectiveId == null
         || objectiveId.isEmpty()) {
-      return false;
+      return null;
     }
 
-    ObjectiveDataEntry objectiveDataEntry =
-        objectiveData.getObjectiveDataSet().getObjective(objectiveId);
-    return objectiveDataEntry != null && objectiveData.removeCustomObjective(objectiveDataEntry);
+    return objectiveData.getObjectiveDataSet().getObjective(objectiveId);
   }
 
   public static boolean hasObjective(EasyNPC<?> easyNPC, ObjectiveType objectiveType) {

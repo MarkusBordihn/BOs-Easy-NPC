@@ -50,16 +50,37 @@ public class DespawnedNPCSuggestions {
             .filter(
                 uuid -> {
                   Optional<NPCEntityMetadata> metadata = npcData.getMetadata(uuid);
-                  if (metadata.isEmpty() || !metadata.get().removalReason().isRestorableReason()) {
-                    return false;
-                  }
-
-                  return serverPlayer.isCreative()
-                      || (metadata.get().hasOwner()
-                          && metadata.get().ownerUUID().equals(serverPlayer.getUUID()));
+                  return metadata.isPresent()
+                      && metadata.get().removalReason().isRestorableReason()
+                      && canAccess(serverPlayer, metadata.get());
                 })
             .map(UUID::toString);
 
     return SharedSuggestionProvider.suggest(uuids, builder);
+  }
+
+  public static CompletableFuture<Suggestions> suggestRevivable(
+      CommandContext<CommandSourceStack> context, SuggestionsBuilder builder)
+      throws CommandSyntaxException {
+    NPCEntityData npcData = NPCEntityData.get();
+    ServerPlayer serverPlayer = context.getSource().getPlayerOrException();
+
+    Stream<String> uuids =
+        npcData.getAllUUIDs().stream()
+            .filter(uuid -> EasyNPCEntityHandler.getReviveRejection(uuid).isEmpty())
+            .filter(
+                uuid ->
+                    npcData
+                        .getMetadata(uuid)
+                        .map(metadata -> canAccess(serverPlayer, metadata))
+                        .orElse(false))
+            .map(UUID::toString);
+
+    return SharedSuggestionProvider.suggest(uuids, builder);
+  }
+
+  private static boolean canAccess(ServerPlayer serverPlayer, NPCEntityMetadata metadata) {
+    return serverPlayer.isCreative()
+        || (metadata.hasOwner() && metadata.ownerUUID().equals(serverPlayer.getUUID()));
   }
 }

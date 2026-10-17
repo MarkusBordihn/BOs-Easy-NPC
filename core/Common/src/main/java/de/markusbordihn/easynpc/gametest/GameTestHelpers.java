@@ -19,11 +19,14 @@
 
 package de.markusbordihn.easynpc.gametest;
 
+import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.saveddata.FactionData;
 import de.markusbordihn.easynpc.entity.NPCEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.handler.FactionHandler;
+import de.markusbordihn.easynpc.security.CommandPermissionLevel;
 import de.markusbordihn.easynpc.server.player.FakePlayer;
 import io.netty.channel.embedded.EmbeddedChannel;
 import java.lang.reflect.Field;
@@ -31,17 +34,21 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.gametest.framework.GameTestInfo;
 import net.minecraft.gametest.framework.GameTestListener;
 import net.minecraft.gametest.framework.GameTestRunner;
 import net.minecraft.network.Connection;
+import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.CommonListenerCookie;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
+import net.minecraft.server.permissions.LevelBasedPermissionSet;
+import net.minecraft.server.permissions.PermissionLevel;
 import net.minecraft.server.players.PlayerList;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
@@ -186,6 +193,34 @@ public final class GameTestHelpers {
     return entity;
   }
 
+  public static CommandSourceStack consoleCommandSource(GameTestHelper helper, Vec3 position) {
+    return helper
+        .getLevel()
+        .getServer()
+        .createCommandSourceStack()
+        .withLevel(helper.getLevel())
+        .withPosition(helper.absoluteVec(position));
+  }
+
+  public static CommandSourceStack playerCommandSource(ServerPlayer serverPlayer) {
+    return serverPlayer
+        .createCommandSourceStack()
+        .withPermission(
+            LevelBasedPermissionSet.forLevel(
+                PermissionLevel.byId(CommandPermissionLevel.ALL.minecraftLevel())));
+  }
+
+  public static int executeCommand(
+      GameTestHelper helper, CommandSourceStack commandSourceStack, String command) {
+    CommandDispatcher<CommandSourceStack> commandDispatcher =
+        helper.getLevel().getServer().getCommands().getDispatcher();
+    try {
+      return commandDispatcher.execute(commandDispatcher.parse(command, commandSourceStack));
+    } catch (CommandSyntaxException e) {
+      return 0;
+    }
+  }
+
   public static void assertEquals(
       GameTestHelper helper, String message, Object expected, Object actual) {
     if (!expected.equals(actual)) {
@@ -254,7 +289,12 @@ public final class GameTestHelpers {
             level.getServer(),
             connection,
             fakePlayer,
-            CommonListenerCookie.createInitial(fakePlayer.getGameProfile(), false));
+            CommonListenerCookie.createInitial(fakePlayer.getGameProfile(), false)) {
+          // NeoForge throws for payloads a connection never negotiated, such as the optional Easy
+          // Model Entities shoulder sync, which would crash the game test server.
+          @Override
+          public void send(Packet<?> packet) {}
+        };
     PlayerList playerList = level.getServer().getPlayerList();
     registerInPlayerList(playerList, fakePlayer);
     addCleanup(

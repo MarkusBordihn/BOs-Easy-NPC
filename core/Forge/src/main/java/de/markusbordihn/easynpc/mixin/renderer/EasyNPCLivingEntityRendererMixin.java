@@ -45,16 +45,14 @@ public class EasyNPCLivingEntityRendererMixin {
       method =
           "extractRenderState(Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/client/renderer/entity/state/LivingEntityRenderState;F)V",
       at = @At("TAIL"))
-  private void injectEasyNpcUUID(
+  private void injectEasyNPC(
       LivingEntity livingEntity,
       LivingEntityRenderState renderState,
       float partialTicks,
       CallbackInfo callbackInfo) {
     if (livingEntity instanceof EasyNPC<?> easyNPC
         && renderState instanceof EasyNPCRenderStateExtension renderStateExtension) {
-      renderStateExtension.setEasyNpcUUID(easyNPC.getEntityUUID());
-
-      // Extract and cache the texture in the render state
+      renderStateExtension.setEasyNPC(easyNPC);
       EasyNPCLivingEntityRenderer.extractAndCacheTexture(
           easyNPC,
           renderStateExtension,

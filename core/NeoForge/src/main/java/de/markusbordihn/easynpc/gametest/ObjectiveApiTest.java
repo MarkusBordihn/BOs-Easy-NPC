@@ -49,4 +49,14 @@ public final class ObjectiveApiTest {
     ObjectiveApiTestHelper.assertObjectiveEventsFireOncePerChange(helper, humanoid());
     helper.succeed();
   }
+
+  public static void testExplicitPriorityReachesGoalSelector(GameTestHelper helper) {
+    ObjectiveApiTestHelper.assertExplicitPriorityReachesGoalSelector(helper, humanoid());
+    helper.succeed();
+  }
+
+  public static void testMeleeAttackUsesAttackSpeed(GameTestHelper helper) {
+    ObjectiveApiTestHelper.assertMeleeAttackUsesAttackSpeed(helper, humanoid());
+    helper.succeed();
+  }
 }
