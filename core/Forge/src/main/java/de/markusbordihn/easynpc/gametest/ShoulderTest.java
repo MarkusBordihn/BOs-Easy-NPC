@@ -57,4 +57,84 @@ public class ShoulderTest {
     ShoulderTestHelper.assertAttributeTogglesObjective(helper, allay());
     helper.succeed();
   }
+
+  @GameTest(template = "gametest.3x3x3")
+  public void testDismountKeepsNPCWhenUUIDTaken(GameTestHelper helper) {
+    ShoulderTestHelper.assertDismountKeepsNPCWhenUUIDTaken(helper, allay());
+    helper.succeed();
+  }
+
+  @GameTest(template = "gametest.3x3x3")
+  public void testDismountKeepsNPCWhenBlocked(GameTestHelper helper) {
+    ShoulderTestHelper.assertDismountKeepsNPCWhenBlocked(helper, allay());
+    helper.succeed();
+  }
+
+  @GameTest(template = "gametest.3x3x3")
+  public void testDismountFallsBackToPlayerPosition(GameTestHelper helper) {
+    ShoulderTestHelper.assertDismountFallsBackToPlayerPosition(helper, allay());
+    helper.succeed();
+  }
+
+  @GameTest(template = "gametest.3x3x3")
+  public void testVanillaShoulderReleaseRespawnsNPC(GameTestHelper helper) {
+    ShoulderTestHelper.assertVanillaShoulderReleaseRespawnsNPC(helper, allay());
+  }
+
+  @GameTest(template = "gametest.3x3x3")
+  public void testVanillaShoulderReleaseKeepsBlockedNPC(GameTestHelper helper) {
+    ShoulderTestHelper.assertVanillaShoulderReleaseKeepsBlockedNPC(helper, allay());
+  }
+
+  @GameTest(template = "gametest.3x3x3")
+  public void testPlayerDeathPutsNPCDown(GameTestHelper helper) {
+    ShoulderTestHelper.assertPlayerDeathPutsNPCDown(helper, allay());
+  }
+
+  @GameTest(template = "gametest.3x3x3")
+  public void testBlockedNPCStaysOnShoulderAfterRespawn(GameTestHelper helper) {
+    ShoulderTestHelper.assertBlockedNPCStaysOnShoulderAfterRespawn(helper, allay());
+  }
+
+  @GameTest(template = "gametest.3x3x3")
+  public void testOwnerDismountBlocksRemount(GameTestHelper helper) {
+    ShoulderTestHelper.assertOwnerDismountBlocksRemount(helper, allay());
+  }
+
+  @GameTest(template = "gametest.3x3x3")
+  public void testRemountCooldownSurvivesReload(GameTestHelper helper) {
+    ShoulderTestHelper.assertRemountCooldownSurvivesReload(helper, allay());
+    helper.succeed();
+  }
+
+  @GameTest(template = "gametest.3x3x3")
+  public void testShoulderCooldownFromObjective(GameTestHelper helper) {
+    ShoulderTestHelper.assertShoulderCooldownFromObjective(helper, allay());
+    helper.succeed();
+  }
+
+  @GameTest(template = "gametest.3x3x3")
+  public void testShoulderGoalRespectsMaxDistance(GameTestHelper helper) {
+    ShoulderTestHelper.assertShoulderGoalRespectsMaxDistance(helper, allay());
+    helper.succeed();
+  }
+
+  @GameTest(
+      template = "gametest.3x3x3",
+      timeoutTicks = ShoulderTestHelper.NO_PROGRESS_TEST_TIMEOUT_TICKS)
+  public void testShoulderGoalStopsWithoutProgress(GameTestHelper helper) {
+    ShoulderTestHelper.assertShoulderGoalStopsWithoutProgress(helper, allay());
+  }
+
+  @GameTest(template = "gametest.3x3x3")
+  public void testShoulderGoalWaitsOutOfCombat(GameTestHelper helper) {
+    ShoulderTestHelper.assertShoulderGoalWaitsOutOfCombat(helper, allay());
+    helper.succeed();
+  }
+
+  @GameTest(template = "gametest.3x3x3")
+  public void testReviveRejectsNPCOnShoulder(GameTestHelper helper) {
+    ShoulderTestHelper.assertReviveRejectsNPCOnShoulder(helper, allay());
+    helper.succeed();
+  }
 }

@@ -31,6 +31,7 @@ import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.phys.Vec3;
 
 public class ShoulderNPCLayer
     extends RenderLayer<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> {
@@ -96,6 +97,15 @@ public class ShoulderNPCLayer
         player.isCrouching() ? CROUCHING_SHOULDER_DROP : 0.0F,
         0.0F);
     poseStack.mulPose(Axis.ZP.rotationDegrees(180.0F));
+    Vec3 shoulderOffset =
+        shoulderNPC
+            .get()
+            .getEasyNPCAttributeData()
+            .getEntityAttributes()
+            .getInteractionAttributes()
+            .shoulderOffset();
+    poseStack.translate(
+        leftShoulder ? -shoulderOffset.x : shoulderOffset.x, shoulderOffset.y, -shoulderOffset.z);
     Minecraft.getInstance()
         .getEntityRenderDispatcher()
         .getRenderer(shoulderEntity)

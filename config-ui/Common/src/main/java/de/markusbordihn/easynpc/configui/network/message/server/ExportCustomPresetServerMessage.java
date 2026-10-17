@@ -30,6 +30,7 @@ import de.markusbordihn.easynpc.io.CustomPresetDataFiles;
 import de.markusbordihn.easynpc.io.PresetFileHandler;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import de.markusbordihn.easynpc.security.NpcFeature;
+import de.markusbordihn.easynpc.security.PresetExportRateLimiter;
 import java.io.File;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
@@ -100,6 +101,15 @@ public record ExportCustomPresetServerMessage(UUID uuid, String name, PresetMeta
     File presetFile = CustomPresetDataFiles.getPresetFile(skinModel, this.name);
     if (presetFile == null) {
       log.error("Failed to get custom preset file for {} with name {}", skinModel, this.name);
+      return;
+    }
+
+    if (!PresetExportRateLimiter.checkAndRecord(serverPlayer)) {
+      log.warn(
+          "Rate-limited preset export by {}, see security.cfg key npcPresetExportRateLimit.",
+          serverPlayer.getName());
+      serverPlayer.sendSystemMessage(
+          PresetFeedback.exportRateLimited(PresetExportRateLimiter.exportLimit()));
       return;
     }
 

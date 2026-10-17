@@ -29,6 +29,7 @@ import de.markusbordihn.easynpc.data.display.DisplayAttributeType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.handler.AttributeHandler;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.phys.Vec3;
 
 public class EasyNPCAttributeHandler {
 
@@ -47,6 +48,15 @@ public class EasyNPCAttributeHandler {
   public static boolean setInteractionAttribute(
       EasyNPC<?> easyNPC, InteractionAttributeType attributeType, boolean value) {
     return AttributeHandler.setInteractionAttribute(easyNPC, attributeType, value);
+  }
+
+  public static boolean setInteractionAttribute(
+      EasyNPC<?> easyNPC, InteractionAttributeType attributeType, double value) {
+    return AttributeHandler.setInteractionAttribute(easyNPC, attributeType, value);
+  }
+
+  public static boolean setShoulderOffset(EasyNPC<?> easyNPC, Vec3 shoulderOffset) {
+    return AttributeHandler.setShoulderOffset(easyNPC, shoulderOffset);
   }
 
   public static boolean setInventoryAttribute(

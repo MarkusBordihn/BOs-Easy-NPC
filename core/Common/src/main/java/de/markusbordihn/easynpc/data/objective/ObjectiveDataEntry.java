@@ -44,6 +44,7 @@ public final class ObjectiveDataEntry {
   public static final String DATA_ATTACK_INTERVAL_TAG = "AttackInterval";
   public static final String DATA_ATTACK_RADIUS_TAG = "AttackRadius";
   public static final String DATA_CAN_DEAL_WITH_DOORS_TAG = "CanDealWithDoors";
+  public static final String DATA_COOLDOWN_TICKS_TAG = "CooldownTicks";
   public static final String DATA_DISTANCE_TO_POI_TAG = "DistanceToPoi";
   public static final String DATA_ID_TAG = "Id";
   public static final String DATA_INTERVAL_TAG = "Interval";
@@ -51,6 +52,7 @@ public final class ObjectiveDataEntry {
   public static final String DATA_MUST_REACH_TARGET_TAG = "MustReachTarget";
   public static final String DATA_MUST_SEE_TARGET_TAG = "MustSeeTarget";
   public static final String DATA_ONLY_AT_NIGHT_TAG = "OnlyAtNight";
+  public static final String DATA_ONLY_OUT_OF_COMBAT_TAG = "OnlyOutOfCombat";
   public static final String DATA_PRIORITY_TAG = "Prio";
   public static final String DATA_PROBABILITY_TAG = "Probability";
   public static final String DATA_SPEED_MODIFIER_TAG = "SpeedModifier";
@@ -76,6 +78,7 @@ public final class ObjectiveDataEntry {
   public static final float DEFAULT_STOP_DISTANCE = 2.0F;
   public static final float DEFAULT_TELEPORT_DISTANCE = 12.0F;
   public static final int DEFAULT_ATTACK_INTERVAL = 20;
+  public static final int DEFAULT_COOLDOWN_TICKS = 100;
   public static final int DEFAULT_DISTANCE_TO_POI = 16;
   public static final int DEFAULT_INTERVAL = 10;
   public static final int DEFAULT_PRIORITY = 1;
@@ -89,6 +92,7 @@ public final class ObjectiveDataEntry {
   private float teleportDistance = DEFAULT_TELEPORT_DISTANCE;
   private Vec3 followOffset = Vec3.ZERO;
   private int attackInterval = DEFAULT_ATTACK_INTERVAL;
+  private int cooldownTicks = DEFAULT_COOLDOWN_TICKS;
   private int distanceToPoi = DEFAULT_DISTANCE_TO_POI;
   private int interval = DEFAULT_INTERVAL;
   private int priority = DEFAULT_PRIORITY;
@@ -101,6 +105,7 @@ public final class ObjectiveDataEntry {
   private boolean mustReachTarget = true;
   private boolean mustSeeTarget = true;
   private boolean onlyAtNight = false;
+  private boolean onlyOutOfCombat = false;
   private boolean onlyWithoutOwner = false;
   private boolean canScare = false;
 
@@ -120,11 +125,14 @@ public final class ObjectiveDataEntry {
   public ObjectiveDataEntry(ObjectiveType objectiveType) {
     this.id = objectiveType.name();
     this.objectiveType = objectiveType;
+    if (!this.isPriorityConfigurable()) {
+      this.priority = objectiveType.getDefaultPriority();
+    }
   }
 
   public ObjectiveDataEntry(ObjectiveType objectiveType, int priority) {
     this(objectiveType);
-    this.priority = priority;
+    this.setPriority(priority);
   }
 
   public ObjectiveDataEntry(CompoundTag compoundTag) {
@@ -210,12 +218,13 @@ public final class ObjectiveDataEntry {
     return this.objectiveType == ObjectiveType.CUSTOM || this.objectiveType == ObjectiveType.NONE;
   }
 
-  public int getPriority() {
-    if (this.isPriorityConfigurable()) {
-      return this.priority;
-    }
+  public boolean hasExplicitPriority() {
+    return !this.isPriorityConfigurable()
+        && this.priority != this.objectiveType.getDefaultPriority();
+  }
 
-    return this.objectiveType.getDefaultPriority();
+  public int getPriority() {
+    return this.priority;
   }
 
   public ObjectiveDataEntry setPriority(int priority) {
@@ -302,6 +311,24 @@ public final class ObjectiveDataEntry {
 
   public ObjectiveDataEntry setOnlyAtNight(boolean onlyAtNight) {
     this.onlyAtNight = onlyAtNight;
+    return this.invalidateGoals();
+  }
+
+  public boolean getOnlyOutOfCombat() {
+    return this.onlyOutOfCombat;
+  }
+
+  public ObjectiveDataEntry setOnlyOutOfCombat(boolean onlyOutOfCombat) {
+    this.onlyOutOfCombat = onlyOutOfCombat;
+    return this.invalidateGoals();
+  }
+
+  public int getCooldownTicks() {
+    return this.cooldownTicks;
+  }
+
+  public ObjectiveDataEntry setCooldownTicks(int cooldownTicks) {
+    this.cooldownTicks = clampToMinimum("cooldownTicks", cooldownTicks, 0);
     return this.invalidateGoals();
   }
 
@@ -583,7 +610,13 @@ public final class ObjectiveDataEntry {
       this.customObjectiveId =
           ResourceLocation.tryParse(compoundTag.getString(DATA_CUSTOM_OBJECTIVE_ID_TAG));
     }
-    this.setPriority(compoundTag.getInt(DATA_PRIORITY_TAG));
+    if (compoundTag.contains(DATA_PRIORITY_TAG)) {
+      this.setPriority(compoundTag.getInt(DATA_PRIORITY_TAG));
+    } else if (this.objectiveType == ObjectiveType.CUSTOM) {
+      this.setPriority(ObjectiveRegistry.getDefaultPriority(this.customObjectiveId));
+    } else {
+      this.setPriority(this.objectiveType.getDefaultPriority());
+    }
 
     if (compoundTag.contains(DATA_ID_TAG) && !compoundTag.getString(DATA_ID_TAG).isEmpty()) {
       this.id = compoundTag.getString(DATA_ID_TAG);
@@ -636,6 +669,12 @@ public final class ObjectiveDataEntry {
     if (compoundTag.contains(DATA_ONLY_AT_NIGHT_TAG)) {
       this.onlyAtNight = compoundTag.getBoolean(DATA_ONLY_AT_NIGHT_TAG);
     }
+    if (compoundTag.contains(DATA_ONLY_OUT_OF_COMBAT_TAG)) {
+      this.onlyOutOfCombat = compoundTag.getBoolean(DATA_ONLY_OUT_OF_COMBAT_TAG);
+    }
+    if (compoundTag.contains(DATA_COOLDOWN_TICKS_TAG)) {
+      this.setCooldownTicks(compoundTag.getInt(DATA_COOLDOWN_TICKS_TAG));
+    }
     if (compoundTag.contains(DATA_ONLY_WITHOUT_OWNER_TAG)) {
       this.onlyWithoutOwner = compoundTag.getBoolean(DATA_ONLY_WITHOUT_OWNER_TAG);
     }
@@ -677,7 +716,7 @@ public final class ObjectiveDataEntry {
     if (this.customObjectiveId != null) {
       compoundTag.putString(DATA_CUSTOM_OBJECTIVE_ID_TAG, this.customObjectiveId.toString());
     }
-    if (this.objectiveType == ObjectiveType.CUSTOM || this.objectiveType == ObjectiveType.NONE) {
+    if (this.isPriorityConfigurable() || this.hasExplicitPriority()) {
       compoundTag.putInt(DATA_PRIORITY_TAG, this.priority);
     }
 
@@ -725,6 +764,12 @@ public final class ObjectiveDataEntry {
     }
     if (this.onlyAtNight) {
       compoundTag.putBoolean(DATA_ONLY_AT_NIGHT_TAG, true);
+    }
+    if (this.onlyOutOfCombat) {
+      compoundTag.putBoolean(DATA_ONLY_OUT_OF_COMBAT_TAG, true);
+    }
+    if (this.cooldownTicks != DEFAULT_COOLDOWN_TICKS) {
+      compoundTag.putInt(DATA_COOLDOWN_TICKS_TAG, this.cooldownTicks);
     }
     if (this.onlyWithoutOwner) {
       compoundTag.putBoolean(DATA_ONLY_WITHOUT_OWNER_TAG, true);

@@ -208,15 +208,80 @@ class ObjectiveDataEntryTest {
   }
 
   @Test
-  @DisplayName("Built-in objectives always use the priority of their type")
-  void testBuiltInObjectivesIgnoreStoredPriority() {
+  @DisplayName("Built-in objectives use the priority of their type unless one is set")
+  void testBuiltInObjectivesUseDefaultPriority() {
     ObjectiveDataEntry entry = new ObjectiveDataEntry(ObjectiveType.MOVE_BACK_TO_HOME);
-    entry.setPriority(3);
 
     assertEquals(ObjectiveType.MOVE_BACK_TO_HOME.getDefaultPriority(), entry.getPriority());
+    assertFalse(entry.hasExplicitPriority());
+    assertFalse(entry.createTag().contains(ObjectiveDataEntry.DATA_PRIORITY_TAG));
+  }
+
+  @Test
+  @DisplayName("An explicit priority on a built-in objective survives a save/load round trip")
+  void testBuiltInObjectiveKeepsExplicitPriority() {
+    int explicitPriority = ObjectiveType.MOVE_BACK_TO_HOME.getDefaultPriority() + 1;
+    ObjectiveDataEntry entry =
+        new ObjectiveDataEntry(ObjectiveType.MOVE_BACK_TO_HOME, explicitPriority);
+
+    assertEquals(explicitPriority, entry.getPriority());
+    assertTrue(entry.hasExplicitPriority());
+    assertEquals(explicitPriority, entry.createTag().getInt(ObjectiveDataEntry.DATA_PRIORITY_TAG));
+    assertEquals(explicitPriority, new ObjectiveDataEntry(entry.createTag()).getPriority());
+  }
+
+  @Test
+  @DisplayName("A custom objective stored without a priority loads with the registry default")
+  void testCustomObjectiveWithoutPriorityUsesRegistryDefault() {
+    ResourceLocation customObjectiveId = new ResourceLocation("example", "objective");
+    CompoundTag compoundTag = new CompoundTag();
+    compoundTag.putString(ObjectiveDataEntry.DATA_TYPE_TAG, ObjectiveType.CUSTOM.name());
+    compoundTag.putString(
+        ObjectiveDataEntry.DATA_CUSTOM_OBJECTIVE_ID_TAG, customObjectiveId.toString());
+
     assertEquals(
-        ObjectiveType.MOVE_BACK_TO_HOME.getDefaultPriority(),
-        new ObjectiveDataEntry(entry.createTag()).getPriority());
+        ObjectiveRegistry.getDefaultPriority(customObjectiveId),
+        new ObjectiveDataEntry(compoundTag).getPriority());
+  }
+
+  @Test
+  @DisplayName("Shoulder cooldown and combat options survive a save/load round trip")
+  void testShoulderOptionsRoundTrip() {
+    ObjectiveDataEntry entry =
+        new ObjectiveDataEntry(ObjectiveType.SIT_ON_OWNER_SHOULDER)
+            .setCooldownTicks(40)
+            .setOnlyOutOfCombat(true);
+
+    ObjectiveDataEntry restored = new ObjectiveDataEntry(entry.createTag());
+    assertEquals(40, restored.getCooldownTicks());
+    assertTrue(restored.getOnlyOutOfCombat());
+  }
+
+  @Test
+  @DisplayName("Default shoulder options are not written to the tag")
+  void testShoulderOptionDefaultsAreNotPersisted() {
+    ObjectiveDataEntry entry = new ObjectiveDataEntry(ObjectiveType.SIT_ON_OWNER_SHOULDER);
+    CompoundTag compoundTag = entry.createTag();
+
+    assertEquals(ObjectiveDataEntry.DEFAULT_COOLDOWN_TICKS, entry.getCooldownTicks());
+    assertFalse(entry.getOnlyOutOfCombat());
+    assertFalse(compoundTag.contains(ObjectiveDataEntry.DATA_COOLDOWN_TICKS_TAG));
+    assertFalse(compoundTag.contains(ObjectiveDataEntry.DATA_ONLY_OUT_OF_COMBAT_TAG));
+  }
+
+  @Test
+  @DisplayName("A negative shoulder cooldown is clamped to zero")
+  void testNegativeCooldownIsClamped() {
+    CompoundTag compoundTag = new CompoundTag();
+    compoundTag.putString(
+        ObjectiveDataEntry.DATA_TYPE_TAG, ObjectiveType.SIT_ON_OWNER_SHOULDER.name());
+    compoundTag.putInt(ObjectiveDataEntry.DATA_COOLDOWN_TICKS_TAG, -20);
+
+    ObjectiveDataEntry entry =
+        new ObjectiveDataEntry(ObjectiveType.SIT_ON_OWNER_SHOULDER).setCooldownTicks(-5);
+
+    assertEquals(0, entry.getCooldownTicks());
+    assertEquals(0, new ObjectiveDataEntry(compoundTag).getCooldownTicks());
   }
 
   @Test

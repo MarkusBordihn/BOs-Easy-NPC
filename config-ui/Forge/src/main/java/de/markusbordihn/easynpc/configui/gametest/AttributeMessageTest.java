@@ -93,6 +93,12 @@ public class AttributeMessageTest {
   }
 
   @GameTest(template = "gametest.3x3x3")
+  public void testShoulderOffsetChange(GameTestHelper helper) {
+    AttributeMessageTestHelper.assertShoulderOffsetChange(helper, humanoid());
+    helper.succeed();
+  }
+
+  @GameTest(template = "gametest.3x3x3")
   public void testEnvironmentalFlagChange(GameTestHelper helper) {
     AttributeMessageTestHelper.assertEnvironmentalFlagChange(helper, humanoid());
     helper.succeed();

@@ -40,6 +40,18 @@ public class ObjectiveApiTest {
   }
 
   @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testExplicitPriorityReachesGoalSelector(GameTestHelper helper) {
+    ObjectiveApiTestHelper.assertExplicitPriorityReachesGoalSelector(helper, humanoid());
+    helper.succeed();
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testMeleeAttackUsesAttackSpeed(GameTestHelper helper) {
+    ObjectiveApiTestHelper.assertMeleeAttackUsesAttackSpeed(helper, humanoid());
+    helper.succeed();
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testFollowOwnerIsAddedAndRemovedOnce(GameTestHelper helper) {
     ObjectiveApiTestHelper.assertObjectiveIsAddedAndRemovedOnce(
         helper, humanoid(), ObjectiveType.FOLLOW_OWNER);

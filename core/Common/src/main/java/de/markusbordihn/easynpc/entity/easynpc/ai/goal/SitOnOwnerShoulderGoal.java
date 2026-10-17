@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.entity.easynpc.ai.goal;
 
 import de.markusbordihn.easynpc.api.handler.EasyNPCShoulderHandler;
+import de.markusbordihn.easynpc.data.objective.ObjectiveDataEntry;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.OwnerDataCapable;
 import java.util.EnumSet;
@@ -30,22 +31,36 @@ import net.minecraft.world.entity.player.Player;
 
 public class SitOnOwnerShoulderGoal extends Goal {
 
+  public static final int MAX_TICKS_WITHOUT_PROGRESS = 100;
+  private static final double DEFAULT_MAX_DISTANCE = 16.0D;
+  // Matches the 100 ticks after which vanilla clears LivingEntity.lastHurtByMob.
+  private static final int COMBAT_DURATION_TICKS = 100;
   private static final float MAX_SHOULDER_WIDTH = 0.8F;
   private static final float MAX_SHOULDER_HEIGHT = 1.0F;
-  private static final int MIN_TICKS_BEFORE_SITTING = 100;
   private static final int PATH_RECALCULATION_DELAY = 10;
-  private static final double MAX_START_DISTANCE = 16.0D;
   private static final double SHOULDER_REACH = 0.5D;
   private static final double SPEED_MODIFIER = 1.0D;
 
   private final EasyNPC<?> easyNPC;
   private final Mob mob;
+  private final int cooldownTicks;
+  private final double maxDistance;
+  private final boolean onlyOutOfCombat;
   private Player owner;
   private int timeToRecalcPath;
+  private double closestDistanceSqr;
+  private long lastProgressGameTime;
+  private long retryAllowedGameTime;
 
-  public SitOnOwnerShoulderGoal(EasyNPC<?> easyNPC) {
+  public SitOnOwnerShoulderGoal(EasyNPC<?> easyNPC, ObjectiveDataEntry objectiveDataEntry) {
     this.easyNPC = easyNPC;
     this.mob = easyNPC.getMob();
+    this.cooldownTicks = objectiveDataEntry.getCooldownTicks();
+    this.maxDistance =
+        objectiveDataEntry.getStartDistance() > 0.0F
+            ? objectiveDataEntry.getStartDistance()
+            : DEFAULT_MAX_DISTANCE;
+    this.onlyOutOfCombat = objectiveDataEntry.getOnlyOutOfCombat();
     this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
   }
 
@@ -79,29 +94,66 @@ public class SitOnOwnerShoulderGoal extends Goal {
         && fitsOnShoulder(this.mob);
   }
 
+  private static boolean isInCombat(Player player) {
+    return player.getLastHurtByMob() != null
+        || (player.getLastHurtMob() != null
+            && player.tickCount - player.getLastHurtMobTimestamp() < COMBAT_DURATION_TICKS);
+  }
+
+  private boolean canCarry(Player player) {
+    return canCarryOnShoulder(player) && !(this.onlyOutOfCombat && isInCombat(player));
+  }
+
+  private boolean isWithinMaxDistance(Player player) {
+    return this.mob.distanceToSqr(player) <= this.maxDistance * this.maxDistance;
+  }
+
+  private boolean isRemountAllowed() {
+    long gameTime = this.mob.level().getGameTime();
+    return gameTime >= this.retryAllowedGameTime
+        && gameTime >= EasyNPCShoulderHandler.getRemountAllowedGameTime(this.easyNPC);
+  }
+
+  private boolean abortAndDelayRetry() {
+    this.retryAllowedGameTime = this.mob.level().getGameTime() + this.cooldownTicks;
+    return false;
+  }
+
   @Override
   public boolean canUse() {
-    if (this.mob.tickCount <= MIN_TICKS_BEFORE_SITTING || !this.isMobReady()) {
+    if (this.mob.tickCount <= this.cooldownTicks
+        || !this.isMobReady()
+        || !this.isRemountAllowed()) {
       return false;
     }
 
     this.owner = this.getOwner();
-    return this.owner != null
-        && canCarryOnShoulder(this.owner)
-        && this.mob.distanceToSqr(this.owner) <= MAX_START_DISTANCE * MAX_START_DISTANCE;
+    return this.owner != null && this.canCarry(this.owner) && this.isWithinMaxDistance(this.owner);
   }
 
   @Override
   public boolean canContinueToUse() {
-    return this.owner != null
-        && this.owner.level() == this.mob.level()
-        && this.isMobReady()
-        && canCarryOnShoulder(this.owner);
+    if (this.owner == null
+        || this.owner.level() != this.mob.level()
+        || !this.isMobReady()
+        || !this.canCarry(this.owner)) {
+      return false;
+    }
+
+    if (!this.isWithinMaxDistance(this.owner)
+        || this.mob.level().getGameTime() - this.lastProgressGameTime
+            >= MAX_TICKS_WITHOUT_PROGRESS) {
+      return this.abortAndDelayRetry();
+    }
+
+    return true;
   }
 
   @Override
   public void start() {
     this.timeToRecalcPath = 0;
+    this.closestDistanceSqr = this.mob.distanceToSqr(this.owner);
+    this.lastProgressGameTime = this.mob.level().getGameTime();
   }
 
   @Override
@@ -112,6 +164,12 @@ public class SitOnOwnerShoulderGoal extends Goal {
 
   @Override
   public void tick() {
+    double distanceSqr = this.mob.distanceToSqr(this.owner);
+    if (distanceSqr < this.closestDistanceSqr) {
+      this.closestDistanceSqr = distanceSqr;
+      this.lastProgressGameTime = this.mob.level().getGameTime();
+    }
+
     this.mob.getLookControl().setLookAt(this.owner, 10.0F, this.mob.getMaxHeadXRot());
     if (this.mob.getBoundingBox().intersects(this.owner.getBoundingBox().inflate(SHOULDER_REACH))) {
       EasyNPCShoulderHandler.sitOnShoulder(this.easyNPC, this.owner);

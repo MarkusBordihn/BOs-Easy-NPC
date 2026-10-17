@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.server.commands.objectives;
 
 import com.mojang.brigadier.builder.ArgumentBuilder;
+import de.markusbordihn.easynpc.api.handler.EasyNPCObjectiveHandler;
 import de.markusbordihn.easynpc.commands.Command;
 import de.markusbordihn.easynpc.commands.arguments.EasyNPCArgument;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataEntry;
@@ -130,7 +131,7 @@ public class FollowObjective extends Command {
       return Command.FAILURE;
     }
 
-    if (!objectiveData.removeCustomObjective(objectiveType)) {
+    if (!EasyNPCObjectiveHandler.removeObjective(easyNPC, objectiveType)) {
       return sendFailureMessage(
           context, "Error removing follow objective " + objectiveType + " for " + easyNPC);
     }
@@ -184,7 +185,7 @@ public class FollowObjective extends Command {
 
     ObjectiveDataEntry objectiveDataEntry = new ObjectiveDataEntry(ObjectiveType.FOLLOW_OWNER);
     objectiveDataEntry.setTargetOwnerUUID(ownerData.getOwnerUUID());
-    if (!objectiveData.addOrUpdateCustomObjective(objectiveDataEntry)) {
+    if (!EasyNPCObjectiveHandler.addObjective(easyNPC, objectiveDataEntry)) {
       return sendFailureMessage(context, "Error adding or updating follow owner objective!");
     }
 
@@ -200,7 +201,7 @@ public class FollowObjective extends Command {
 
     ObjectiveDataEntry objectiveDataEntry = new ObjectiveDataEntry(ObjectiveType.FOLLOW_PLAYER);
     objectiveDataEntry.setTargetPlayerName(serverPlayer.getName().getString());
-    if (!objectiveData.addOrUpdateCustomObjective(objectiveDataEntry)) {
+    if (!EasyNPCObjectiveHandler.addObjective(easyNPC, objectiveDataEntry)) {
       return sendFailureMessage(context, "Error adding or updating follow player objective!");
     }
 
@@ -215,8 +216,7 @@ public class FollowObjective extends Command {
       return Command.FAILURE;
     }
 
-    if (!objectiveData.addOrUpdateCustomObjective(
-        new ObjectiveDataEntry(ObjectiveType.FOLLOW_NEAREST_PLAYER))) {
+    if (!EasyNPCObjectiveHandler.addObjective(easyNPC, ObjectiveType.FOLLOW_NEAREST_PLAYER)) {
       return sendFailureMessage(
           context, "Error adding or updating follow nearest player objective!");
     }
@@ -237,7 +237,7 @@ public class FollowObjective extends Command {
     ObjectiveDataEntry objectiveDataEntry =
         new ObjectiveDataEntry(ObjectiveType.FOLLOW_ENTITY_BY_UUID);
     objectiveDataEntry.setTargetEntityUUID(entity.getUUID());
-    if (!objectiveData.addOrUpdateCustomObjective(objectiveDataEntry)) {
+    if (!EasyNPCObjectiveHandler.addObjective(easyNPC, objectiveDataEntry)) {
       return sendFailureMessage(context, "Error adding or updating follow entity objective!");
     }
 

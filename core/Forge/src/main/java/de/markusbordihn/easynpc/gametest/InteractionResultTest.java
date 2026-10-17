@@ -44,4 +44,23 @@ public class InteractionResultTest {
     InteractionResultTestHelper.assertInteractionWithToolItemPasses(helper, humanoid());
     helper.succeed();
   }
+
+  @GameTest(template = "gametest.3x3x3")
+  public void testPassInteractionTagContainsWeapons(GameTestHelper helper) {
+    InteractionResultTestHelper.assertPassInteractionTagContainsWeapons(helper);
+    helper.succeed();
+  }
+
+  @GameTest(template = "gametest.3x3x3")
+  public void testPassInteractionItemWithoutActionPasses(GameTestHelper helper) {
+    InteractionResultTestHelper.assertPassInteractionItemWithoutActionPasses(helper, humanoid());
+    helper.succeed();
+  }
+
+  @GameTest(template = "gametest.3x3x3")
+  public void testInteractionActionTakesPrecedenceOverPassInteractionItem(GameTestHelper helper) {
+    InteractionResultTestHelper.assertInteractionActionTakesPrecedenceOverPassInteractionItem(
+        helper, humanoid());
+    helper.succeed();
+  }
 }

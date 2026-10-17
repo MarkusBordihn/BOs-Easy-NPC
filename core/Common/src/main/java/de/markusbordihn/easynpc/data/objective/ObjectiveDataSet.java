@@ -60,14 +60,17 @@ public class ObjectiveDataSet {
   }
 
   public ObjectiveDataEntry getOrCreateObjective(ObjectiveType objectiveType) {
-    return this.getOrCreateObjective(objectiveType, objectiveType.getDefaultPriority());
+    if (this.hasObjective(objectiveType)) {
+      return this.getObjective(objectiveType);
+    }
+
+    return new ObjectiveDataEntry(objectiveType);
   }
 
   public ObjectiveDataEntry getOrCreateObjective(ObjectiveType objectiveType, int priority) {
     if (this.hasObjective(objectiveType)) {
       ObjectiveDataEntry objectiveDataEntry = this.getObjective(objectiveType);
-      if (objectiveDataEntry.isPriorityConfigurable()
-          && objectiveDataEntry.getPriority() != priority) {
+      if (objectiveDataEntry.getPriority() != priority) {
         objectiveDataEntry.setPriority(priority);
       }
       return objectiveDataEntry;

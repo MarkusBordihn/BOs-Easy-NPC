@@ -170,6 +170,18 @@ public final class AttributeMessageTestHelper {
         SurvivalOwnerAccess.GRANTED);
   }
 
+  public static void assertShoulderOffsetChange(GameTestHelper helper, EntityType<?> entityType) {
+    ServerMessageAssertions.assertAppliedOnlyWithAccess(
+        helper,
+        entityType,
+        uuid ->
+            new ChangeInteractionAttributeMessage(
+                uuid, InteractionAttributeType.SHOULDER_OFFSET_Y, -0.25D),
+        ChangeInteractionAttributeMessage::create,
+        easyNPC -> entityAttributes(easyNPC).getInteractionAttributes().shoulderOffsetY() == -0.25D,
+        SurvivalOwnerAccess.GRANTED);
+  }
+
   public static void assertInventoryFlagChange(GameTestHelper helper, EntityType<?> entityType) {
     ServerMessageAssertions.assertAppliedOnlyWithAccess(
         helper,

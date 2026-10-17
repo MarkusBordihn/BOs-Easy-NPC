@@ -30,17 +30,28 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
 public record ChangeInteractionAttributeMessage(
-    UUID uuid, InteractionAttributeType attributeType, Boolean booleanValue)
+    UUID uuid, InteractionAttributeType attributeType, Boolean booleanValue, Double doubleValue)
     implements NetworkMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
       new ResourceLocation(Constants.MOD_ID, "change_interaction_attribute");
 
+  public ChangeInteractionAttributeMessage(
+      final UUID uuid, final InteractionAttributeType attributeType, final Boolean value) {
+    this(uuid, attributeType, value, 0d);
+  }
+
+  public ChangeInteractionAttributeMessage(
+      final UUID uuid, final InteractionAttributeType attributeType, final Double value) {
+    this(uuid, attributeType, false, value);
+  }
+
   public static ChangeInteractionAttributeMessage create(final FriendlyByteBuf buffer) {
     return new ChangeInteractionAttributeMessage(
         buffer.readUUID(),
         NetworkMessageRecord.readEnum(buffer, InteractionAttributeType.class),
-        buffer.readBoolean());
+        buffer.readBoolean(),
+        buffer.readDouble());
   }
 
   @Override
@@ -48,6 +59,7 @@ public record ChangeInteractionAttributeMessage(
     buffer.writeUUID(this.uuid);
     buffer.writeEnum(this.attributeType);
     buffer.writeBoolean(this.booleanValue);
+    buffer.writeDouble(this.doubleValue);
   }
 
   @Override
@@ -59,6 +71,18 @@ public record ChangeInteractionAttributeMessage(
   public void handleServer(final ServerPlayer serverPlayer) {
     EasyNPC<?> easyNPC = this.getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
     if (easyNPC == null) {
+      return;
+    }
+
+    if (this.attributeType == InteractionAttributeType.SHOULDER_OFFSET_X
+        || this.attributeType == InteractionAttributeType.SHOULDER_OFFSET_Y
+        || this.attributeType == InteractionAttributeType.SHOULDER_OFFSET_Z) {
+      if (this.doubleValue == null) {
+        log.error("Invalid value for {} for {} from {}", this.attributeType, easyNPC, serverPlayer);
+        return;
+      }
+
+      AttributeHandler.setInteractionAttribute(easyNPC, this.attributeType, this.doubleValue);
       return;
     }
 

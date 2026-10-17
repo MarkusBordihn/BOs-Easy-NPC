@@ -222,6 +222,7 @@ public class NPCEntityManager {
             .mapToInt(
                 easyNPC -> {
                   if (!easyNPC.isPersistentNPC()
+                      || isNPCDeleted(easyNPC.getEntityUUID())
                       || !easyNPC.getEasyNPCStatusData().hasUnsavedNPCData()) {
                     return 0;
                   }

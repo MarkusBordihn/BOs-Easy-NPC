@@ -171,9 +171,11 @@ public class EasyModelEntitiesLoader implements IntegrationModelProvider {
           }
         });
     EasyModelReloadEvents.onRenderProfileReload(EasyModelEntitiesLoader::loadRenderableModels);
-    EasyModelShoulderModels.register(
-        new ResourceLocation(Constants.MOD_ID, EasyModelNPC.ID),
-        EasyModelNPCShoulderModelResolver::resolve);
+    registerShoulderModelResolver(new ResourceLocation(Constants.MOD_ID, EasyModelNPC.ID));
+  }
+
+  public static void registerShoulderModelResolver(ResourceLocation entityTypeId) {
+    EasyModelShoulderModels.register(entityTypeId, EasyModelNPCShoulderModelResolver::resolve);
   }
 
   public static EasyModelTextureSetting toEasyModelTextureSetting(

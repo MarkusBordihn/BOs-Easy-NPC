@@ -25,11 +25,13 @@ import de.markusbordihn.easynpc.data.saveddata.FactionData;
 import de.markusbordihn.easynpc.entity.NPCEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.handler.FactionHandler;
+import de.markusbordihn.easynpc.security.CommandPermissionLevel;
 import io.netty.channel.embedded.EmbeddedChannel;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.gametest.framework.GameTestInfo;
@@ -222,6 +224,30 @@ public class GameTestHelpers {
     }
 
     return entity;
+  }
+
+  public static CommandSourceStack consoleCommandSource(GameTestHelper helper, Vec3 position) {
+    return helper
+        .getLevel()
+        .getServer()
+        .createCommandSourceStack()
+        .withLevel(helper.getLevel())
+        .withPosition(helper.absoluteVec(position));
+  }
+
+  public static CommandSourceStack playerCommandSource(ServerPlayer serverPlayer) {
+    return serverPlayer
+        .createCommandSourceStack()
+        .withPermission(CommandPermissionLevel.ALL.minecraftLevel());
+  }
+
+  public static int executeCommand(
+      GameTestHelper helper, CommandSourceStack commandSourceStack, String command) {
+    return helper
+        .getLevel()
+        .getServer()
+        .getCommands()
+        .performPrefixedCommand(commandSourceStack, command);
   }
 
   public static void assertEquals(

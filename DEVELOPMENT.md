@@ -198,10 +198,10 @@ From the repository root:
 ./gradlew deepClean
 ```
 
-- Attempt publication (requires credentials/tokens in your environment)
+- Run the full check, then publish (requires credentials/tokens in your environment)
 
 ```sh
-./gradlew publish
+./gradlew publishMods
 ```
 
 Tip: If you only change core, rebuild core to refresh Maven Local, then rebuild the dependent
