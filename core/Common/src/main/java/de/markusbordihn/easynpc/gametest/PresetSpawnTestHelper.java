@@ -147,10 +147,15 @@ public class PresetSpawnTestHelper {
 
     EasyNPC<?> spawnedNPC = (EasyNPC<?>) spawnedEntity;
     assertHomePosition(helper, spawnedNPC, spawnPosition, spawnSource);
+    ObjectiveDataEntry spawnedObjective =
+        spawnedNPC.getEasyNPCObjectiveData().getObjective(ObjectiveType.FOLLOW_OWNER);
     GameTestHelpers.assertNotNull(
+        helper, "The NPC of the " + spawnSource + " must keep its objective", spawnedObjective);
+    GameTestHelpers.assertEquals(
         helper,
-        "The NPC of the " + spawnSource + " must keep its objective",
-        spawnedNPC.getEasyNPCObjectiveData().getObjective(ObjectiveType.FOLLOW_OWNER));
+        "The NPC of the " + spawnSource + " must keep the explicit objective priority",
+        FOLLOW_OWNER_PRIORITY,
+        spawnedObjective.getPriority());
     DialogDataSet dialogDataSet = ((DialogDataCapable<?>) spawnedNPC).getDialogDataSet();
     GameTestHelpers.assertTrue(
         helper,

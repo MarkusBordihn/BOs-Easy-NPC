@@ -159,7 +159,7 @@ tasks.register('cleanLoomCache') {
 }
 
 tasks.register('cleanBuild') {
-  description = 'Cleans Maven Local and builds all modules sequentially (core -> config-ui -> bundle)'
+  description = 'Cleans Maven Local and builds all modules without tests (core -> config-ui -> bundle)'
   group = "build"
 
   doLast {
@@ -180,6 +180,7 @@ tasks.register('cleanBuild') {
       try {
         def buildLauncher = connection.newBuild()
         buildLauncher.forTasks('build')
+        buildLauncher.withArguments('-x', 'check')
         buildLauncher.setStandardOutput(System.out)
         buildLauncher.setStandardError(System.err)
         buildLauncher.run()
@@ -226,12 +227,12 @@ tasks.register('fullCheck') {
   }
 }
 
-tasks.register('publish') {
-  description = 'Builds and publishes all modules (core, config-ui, bundle)'
+tasks.register('publishMods') {
+  description = 'Runs fullCheck, then publishes core, config-ui and bundle to Modrinth and CurseForge'
   group = "publishing"
 
   // A failed upload below only logs a warning and continues, so all jars are checked before the first upload.
-  dependsOn 'cleanBuild', 'releaseSmokeTest'
+  dependsOn 'fullCheck'
 
   doLast {
     def modules = ['core', 'config-ui', 'bundle']

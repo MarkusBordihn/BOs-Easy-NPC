@@ -27,6 +27,7 @@ import de.markusbordihn.easynpc.data.npc.SavedNPCEntityEntry;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataEntry;
 import de.markusbordihn.easynpc.data.objective.ObjectiveType;
 import de.markusbordihn.easynpc.data.saveddata.NPCEntityData;
+import de.markusbordihn.easynpc.data.status.StatusDataType;
 import de.markusbordihn.easynpc.entity.EasyNPCEntityTypes;
 import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.NPCEntityManager;
@@ -39,6 +40,7 @@ import de.markusbordihn.easynpc.handler.RespawnHandler;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
+import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -46,10 +48,14 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.phys.Vec3;
 
 public class NPCEntityLifecycleTestHelper {
+
+  private static final double POSITION_TOLERANCE = 1.0E-6D;
 
   private NPCEntityLifecycleTestHelper() {}
 
@@ -392,6 +398,8 @@ public class NPCEntityLifecycleTestHelper {
       return;
     }
 
+    saveDirtyNPCsBeforeScheduledDiscard(reloadedEntity);
+
     helper.succeedWhen(
         () -> {
           if (!reloadedEntity.isRemoved()) {
@@ -401,6 +409,13 @@ public class NPCEntityLifecycleTestHelper {
             helper.fail("Deleted NPC " + entityUUID + " was indexed again on load");
           }
         });
+  }
+
+  private static void saveDirtyNPCsBeforeScheduledDiscard(Entity entity) {
+    if (entity instanceof EasyNPC<?> easyNPC) {
+      easyNPC.getEasyNPCStatusData().markNPCDataUpdated();
+    }
+    NPCEntityManager.saveAllDirtyNPCs();
   }
 
   public static void assertKilledNPCRequiresForcedSpawn(
@@ -421,6 +436,207 @@ public class NPCEntityLifecycleTestHelper {
     if (!EasyNPCEntityHandler.spawn(entityUUID, helper.getLevel(), true)) {
       helper.fail("Killed NPC " + entityUUID + " must spawn with force");
     }
+  }
+
+  public static void assertKilledNPCCanBeRevived(GameTestHelper helper, EntityType<?> entityType) {
+    UUID entityUUID = despawnAsKilled(helper, entityType);
+    if (EasyNPCEntityHandler.spawn(entityUUID, helper.getLevel())) {
+      helper.fail("Killed NPC " + entityUUID + " must not spawn without force");
+      return;
+    }
+
+    Optional<String> reviveRejection = EasyNPCEntityHandler.getReviveRejection(entityUUID);
+    if (reviveRejection.isPresent()) {
+      helper.fail("Killed NPC " + entityUUID + " is rejected for revive: " + reviveRejection.get());
+      return;
+    }
+
+    if (!EasyNPCEntityHandler.revive(entityUUID, helper.getLevel())) {
+      helper.fail("Killed NPC " + entityUUID + " was not revived");
+      return;
+    }
+
+    GameTestHelpers.assertNotNull(
+        helper,
+        "Revived NPC " + entityUUID + " was not found in the world",
+        LivingEntityManager.getServerEasyNPCEntityByUUID(entityUUID, helper.getLevel()));
+    GameTestHelpers.assertEquals(
+        helper,
+        "Revived NPC is still stored as removed",
+        NPCRemovalReason.NONE,
+        getStoredRemovalReason(helper, entityUUID));
+  }
+
+  public static void assertReviveUsesGivenPosition(
+      GameTestHelper helper, EntityType<?> entityType) {
+    UUID entityUUID = despawnAsKilled(helper, entityType);
+    Vec3 revivePosition = helper.absoluteVec(new Vec3(2.5, 2, 2.5));
+    if (!EasyNPCEntityHandler.revive(entityUUID, helper.getLevel(), revivePosition)) {
+      helper.fail("Killed NPC " + entityUUID + " was not revived at " + revivePosition);
+      return;
+    }
+
+    EasyNPC<?> revivedNPC =
+        LivingEntityManager.getServerEasyNPCEntityByUUID(entityUUID, helper.getLevel());
+    if (revivedNPC == null) {
+      helper.fail("Revived NPC " + entityUUID + " was not found in the world");
+      return;
+    }
+
+    Vec3 revivedPosition = revivedNPC.getEntity().position();
+    if (revivedPosition.distanceToSqr(revivePosition) > POSITION_TOLERANCE) {
+      helper.fail("Revived NPC is at " + revivedPosition + " instead of " + revivePosition);
+    }
+  }
+
+  public static void assertRevivedNPCHasFullHealth(
+      GameTestHelper helper, EntityType<?> entityType) {
+    EasyNPC<?> easyNPC = GameTestHelpers.mockEasyNPC(helper, entityType, new Vec3(1, 2, 1));
+    NPCEntityManager.saveNPC(easyNPC);
+    UUID entityUUID = easyNPC.getEntityUUID();
+    LivingEntity livingEntity = easyNPC.getLivingEntity();
+    livingEntity.kill();
+    GameTestHelpers.assertTrue(helper, "NPC survived the kill", livingEntity.isDeadOrDying());
+
+    helper
+        .startSequence()
+        .thenWaitUntil(
+            () ->
+                GameTestHelpers.assertTrue(
+                    helper, "Dead NPC was not removed from the world", livingEntity.isRemoved()))
+        .thenExecute(
+            () -> {
+              GameTestHelpers.assertEquals(
+                  helper,
+                  "Dead NPC was not stored as killed",
+                  NPCRemovalReason.KILLED,
+                  getStoredRemovalReason(helper, entityUUID));
+              GameTestHelpers.assertTrue(
+                  helper,
+                  "Dead NPC " + entityUUID + " was not revived",
+                  EasyNPCEntityHandler.revive(entityUUID, helper.getLevel()));
+
+              EasyNPC<?> revivedNPC =
+                  LivingEntityManager.getServerEasyNPCEntityByUUID(entityUUID, helper.getLevel());
+              GameTestHelpers.assertNotNull(
+                  helper, "Revived NPC " + entityUUID + " was not found in the world", revivedNPC);
+              LivingEntity revivedEntity = revivedNPC.getLivingEntity();
+              GameTestHelpers.assertTrue(
+                  helper,
+                  "Revived NPC is still dying",
+                  !revivedEntity.isDeadOrDying() && revivedEntity.deathTime == 0);
+              GameTestHelpers.assertEquals(
+                  helper,
+                  "Revived NPC does not have full health",
+                  revivedEntity.getMaxHealth(),
+                  revivedEntity.getHealth());
+            })
+        .thenSucceed();
+  }
+
+  public static void assertReviveRejectsDeletedNPC(
+      GameTestHelper helper, EntityType<?> entityType) {
+    EasyNPC<?> easyNPC = GameTestHelpers.mockEasyNPC(helper, entityType, new Vec3(1, 2, 1));
+    NPCEntityManager.saveNPC(easyNPC);
+    UUID entityUUID = easyNPC.getEntityUUID();
+    GameTestHelpers.addCleanup(helper, () -> NPCEntityManager.clearNPCDeleted(entityUUID));
+    if (!EasyNPCEntityHandler.delete(easyNPC)) {
+      helper.fail("Failed to delete the NPC");
+      return;
+    }
+
+    if (EasyNPCEntityHandler.revive(entityUUID, helper.getLevel())) {
+      helper.fail("Deleted NPC " + entityUUID + " was revived");
+    }
+  }
+
+  public static void assertReviveRejectsLoadedNPC(
+      GameTestHelper helper, EntityType<?> entityType) {
+    EasyNPC<?> easyNPC = GameTestHelpers.mockEasyNPC(helper, entityType, new Vec3(1, 2, 1));
+    NPCEntityManager.saveNPC(easyNPC);
+
+    if (EasyNPCEntityHandler.revive(easyNPC.getEntityUUID(), helper.getLevel())) {
+      helper.fail("Loaded NPC " + easyNPC.getEntityUUID() + " was revived a second time");
+    }
+  }
+
+  public static void assertDefaultDataAppliedOnEveryCreationPath(
+      GameTestHelper helper, EntityType<?> entityType) {
+    ServerLevel serverLevel = helper.getLevel();
+    BlockPos spawnPosition = helper.absolutePos(new BlockPos(1, 2, 1));
+    Entity spawnedEntity = entityType.spawn(serverLevel, spawnPosition, MobSpawnType.SPAWN_EGG);
+    if (!(spawnedEntity instanceof EasyNPC<?> spawnedNPC)) {
+      helper.fail("Spawn egg path did not create an NPC for " + entityType);
+      return;
+    }
+
+    UUID entityUUID = spawnedNPC.getEntityUUID();
+    GameTestHelpers.removeNPCDataAfterTest(helper, entityUUID);
+    ObjectiveDataCapable<?> objectiveData = spawnedNPC.getEasyNPCObjectiveData();
+    GameTestHelpers.assertTrue(
+        helper,
+        "Spawn egg path did not register the default objectives",
+        objectiveData.hasObjective(ObjectiveType.LOOK_AT_PLAYER)
+            && objectiveData.hasObjective(ObjectiveType.LOOK_AT_MOB));
+
+    objectiveData.removeCustomObjective(ObjectiveType.LOOK_AT_MOB);
+    NPCEntityManager.saveNPC(spawnedNPC);
+    spawnedNPC
+        .getMob()
+        .finalizeSpawn(
+            serverLevel,
+            serverLevel.getCurrentDifficultyAt(spawnPosition),
+            MobSpawnType.SPAWN_EGG,
+            null);
+    assertDefaultDataNotReapplied(helper, "a second finalize spawn", spawnedNPC);
+
+    GameTestHelpers.assertTrue(
+        helper,
+        "Failed to despawn the NPC",
+        EasyNPCEntityHandler.despawn(spawnedNPC, NPCRemovalReason.DESPAWNED));
+    GameTestHelpers.assertTrue(
+        helper, "Failed to respawn the NPC", EasyNPCEntityHandler.spawn(entityUUID, serverLevel));
+    EasyNPC<?> respawnedNPC =
+        LivingEntityManager.getServerEasyNPCEntityByUUID(entityUUID, serverLevel);
+    assertDefaultDataNotReapplied(helper, "spawn", respawnedNPC);
+
+    GameTestHelpers.assertTrue(
+        helper,
+        "Failed to remove the NPC as killed",
+        EasyNPCEntityHandler.despawn(respawnedNPC, NPCRemovalReason.KILLED));
+    GameTestHelpers.assertTrue(
+        helper, "Failed to revive the NPC", EasyNPCEntityHandler.revive(entityUUID, serverLevel));
+    assertDefaultDataNotReapplied(
+        helper, "revive", LivingEntityManager.getServerEasyNPCEntityByUUID(entityUUID, serverLevel));
+  }
+
+  private static void assertDefaultDataNotReapplied(
+      GameTestHelper helper, String creationPath, EasyNPC<?> easyNPC) {
+    GameTestHelpers.assertNotNull(helper, "No NPC in the world after " + creationPath, easyNPC);
+    GameTestHelpers.assertTrue(
+        helper,
+        "NPC is not finalized after " + creationPath,
+        easyNPC.getEasyNPCStatusData().getStatusDataFlag(StatusDataType.FINALIZED));
+
+    ObjectiveDataCapable<?> objectiveData = easyNPC.getEasyNPCObjectiveData();
+    GameTestHelpers.assertTrue(
+        helper,
+        "Default objective is missing after " + creationPath,
+        objectiveData.hasObjective(ObjectiveType.LOOK_AT_PLAYER));
+    GameTestHelpers.assertTrue(
+        helper,
+        "Removed default objective returned after " + creationPath,
+        !objectiveData.hasObjective(ObjectiveType.LOOK_AT_MOB));
+  }
+
+  private static UUID despawnAsKilled(GameTestHelper helper, EntityType<?> entityType) {
+    EasyNPC<?> easyNPC = GameTestHelpers.mockEasyNPC(helper, entityType, new Vec3(1, 2, 1));
+    NPCEntityManager.saveNPC(easyNPC);
+    GameTestHelpers.assertTrue(
+        helper,
+        "Failed to remove the NPC as killed",
+        EasyNPCEntityHandler.despawn(easyNPC, NPCRemovalReason.KILLED));
+    return easyNPC.getEntityUUID();
   }
 
   public static void assertLoadedNPCIsNotSpawnedTwice(

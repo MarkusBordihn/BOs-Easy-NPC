@@ -28,7 +28,10 @@ public enum InteractionAttributeType implements EntityAttributeTypeInterface {
   CAN_BE_LEASHED,
   CAN_SIT_ON_SHOULDER,
   IS_PUSHABLE,
-  PUSH_ENTITIES;
+  PUSH_ENTITIES,
+  SHOULDER_OFFSET_X,
+  SHOULDER_OFFSET_Y,
+  SHOULDER_OFFSET_Z;
 
   private final String tagName = TextUtils.convertToPascalCase(this.name());
   private final String attributeName = this.name().toLowerCase(Locale.ROOT);

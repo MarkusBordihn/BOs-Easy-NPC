@@ -51,6 +51,16 @@ public class LivingEntityEvents {
     }
 
     if (livingEntity instanceof EasyNPC<?> easyNPC) {
+      if (livingEntity.level() instanceof ServerLevel serverLevel
+          && isUUIDTakenByOtherEntity(livingEntity, serverLevel)) {
+        log.warn(
+            "{} Ignoring join of {} because its UUID {} is already taken.",
+            LOG_PREFIX,
+            easyNPC,
+            livingEntity.getUUID());
+        return;
+      }
+
       LivingEntityManager.addEasyNPC(easyNPC);
       if (livingEntity.level() instanceof ServerLevel serverLevel) {
         handleServerEasyNPCJoin(easyNPC, livingEntity, serverLevel.getServer());
@@ -111,6 +121,12 @@ public class LivingEntityEvents {
     } else {
       LivingEntityManager.removeLivingEntity(livingEntity);
     }
+  }
+
+  // Forge fires EntityJoinLevelEvent before addWithUUID rejects a taken UUID.
+  private static boolean isUUIDTakenByOtherEntity(Entity entity, ServerLevel serverLevel) {
+    Entity existingEntity = serverLevel.getEntity(entity.getUUID());
+    return existingEntity != null && existingEntity != entity;
   }
 
   private static void handleServerEasyNPCJoin(

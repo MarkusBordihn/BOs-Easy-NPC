@@ -21,10 +21,10 @@ package de.markusbordihn.easynpc.server.commands;
 
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import de.markusbordihn.easynpc.access.AccessManager;
+import de.markusbordihn.easynpc.api.handler.EasyNPCEntityHandler;
 import de.markusbordihn.easynpc.commands.Command;
 import de.markusbordihn.easynpc.commands.arguments.EasyNPCArgument;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.handler.RespawnHandler;
 import java.util.Collection;
 import java.util.UUID;
 import net.minecraft.commands.CommandSourceStack;
@@ -53,7 +53,7 @@ public class RespawnCommand extends Command {
     for (EasyNPC<?> easyNPC : easyNPCs) {
       UUID uuid = easyNPC.getEntityUUID();
       if (AccessManager.hasAccess(context, uuid)) {
-        if (RespawnHandler.respawnNPC(easyNPC, context.getLevel())) {
+        if (EasyNPCEntityHandler.respawn(easyNPC, context.getLevel())) {
           respawnedEntities++;
         }
       } else {

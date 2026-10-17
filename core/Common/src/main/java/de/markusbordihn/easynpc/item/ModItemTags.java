@@ -39,4 +39,9 @@ public class ModItemTags {
       TagKey.create(
           BuiltInRegistries.ITEM.key(),
           ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "ranged_weapon/gun"));
+
+  public static final TagKey<Item> PASS_INTERACTION =
+      TagKey.create(
+          BuiltInRegistries.ITEM.key(),
+          ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "pass_interaction"));
 }

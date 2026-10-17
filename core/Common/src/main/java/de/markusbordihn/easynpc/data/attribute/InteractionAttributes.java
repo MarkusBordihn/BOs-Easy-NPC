@@ -20,6 +20,8 @@
 package de.markusbordihn.easynpc.data.attribute;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec3;
 
 public record InteractionAttributes(
     boolean isPushable,
@@ -27,7 +29,10 @@ public record InteractionAttributes(
     boolean canBeLeashed,
     boolean pushEntities,
     boolean blockVehicleMounting,
-    boolean canSitOnShoulder)
+    boolean canSitOnShoulder,
+    double shoulderOffsetX,
+    double shoulderOffsetY,
+    double shoulderOffsetZ)
     implements EntityAttributesInterface {
 
   public static final String IS_PUSHABLE_TAG = InteractionAttributeType.IS_PUSHABLE.getTagName();
@@ -41,9 +46,29 @@ public record InteractionAttributes(
       InteractionAttributeType.BLOCK_VEHICLE_MOUNTING.getTagName();
   public static final String CAN_SIT_ON_SHOULDER_TAG =
       InteractionAttributeType.CAN_SIT_ON_SHOULDER.getTagName();
+  public static final String SHOULDER_OFFSET_X_TAG =
+      InteractionAttributeType.SHOULDER_OFFSET_X.getTagName();
+  public static final String SHOULDER_OFFSET_Y_TAG =
+      InteractionAttributeType.SHOULDER_OFFSET_Y.getTagName();
+  public static final String SHOULDER_OFFSET_Z_TAG =
+      InteractionAttributeType.SHOULDER_OFFSET_Z.getTagName();
+
+  public static final double MAX_SHOULDER_OFFSET = 2.0D;
+
+  public InteractionAttributes {
+    shoulderOffsetX = clampShoulderOffset(shoulderOffsetX);
+    shoulderOffsetY = clampShoulderOffset(shoulderOffsetY);
+    shoulderOffsetZ = clampShoulderOffset(shoulderOffsetZ);
+  }
 
   public InteractionAttributes() {
-    this(false, false, false, false, false, false);
+    this(false, false, false, false, false, false, 0.0D, 0.0D, 0.0D);
+  }
+
+  private static double clampShoulderOffset(double shoulderOffset) {
+    return Double.isNaN(shoulderOffset)
+        ? 0.0D
+        : Mth.clamp(shoulderOffset, -MAX_SHOULDER_OFFSET, MAX_SHOULDER_OFFSET);
   }
 
   public static InteractionAttributes decode(CompoundTag compoundTag) {
@@ -53,7 +78,10 @@ public record InteractionAttributes(
         compoundTag.getBoolean(CAN_BE_LEASHED_TAG),
         compoundTag.getBoolean(PUSH_ENTITIES_TAG),
         compoundTag.getBoolean(BLOCK_VEHICLE_MOUNTING_TAG),
-        compoundTag.getBoolean(CAN_SIT_ON_SHOULDER_TAG));
+        compoundTag.getBoolean(CAN_SIT_ON_SHOULDER_TAG),
+        compoundTag.getDouble(SHOULDER_OFFSET_X_TAG),
+        compoundTag.getDouble(SHOULDER_OFFSET_Y_TAG),
+        compoundTag.getDouble(SHOULDER_OFFSET_Z_TAG));
   }
 
   public InteractionAttributes withIsPushable(boolean isPushable) {
@@ -63,7 +91,10 @@ public record InteractionAttributes(
         this.canBeLeashed,
         this.pushEntities,
         this.blockVehicleMounting,
-        this.canSitOnShoulder);
+        this.canSitOnShoulder,
+        this.shoulderOffsetX,
+        this.shoulderOffsetY,
+        this.shoulderOffsetZ);
   }
 
   public InteractionAttributes withCanBeHitByProjectile(boolean canBeHitByProjectile) {
@@ -73,7 +104,10 @@ public record InteractionAttributes(
         this.canBeLeashed,
         this.pushEntities,
         this.blockVehicleMounting,
-        this.canSitOnShoulder);
+        this.canSitOnShoulder,
+        this.shoulderOffsetX,
+        this.shoulderOffsetY,
+        this.shoulderOffsetZ);
   }
 
   public InteractionAttributes withCanBeLeashed(boolean canBeLeashed) {
@@ -83,7 +117,10 @@ public record InteractionAttributes(
         canBeLeashed,
         this.pushEntities,
         this.blockVehicleMounting,
-        this.canSitOnShoulder);
+        this.canSitOnShoulder,
+        this.shoulderOffsetX,
+        this.shoulderOffsetY,
+        this.shoulderOffsetZ);
   }
 
   public InteractionAttributes withPushEntities(boolean pushEntities) {
@@ -93,7 +130,10 @@ public record InteractionAttributes(
         this.canBeLeashed,
         pushEntities,
         this.blockVehicleMounting,
-        this.canSitOnShoulder);
+        this.canSitOnShoulder,
+        this.shoulderOffsetX,
+        this.shoulderOffsetY,
+        this.shoulderOffsetZ);
   }
 
   public InteractionAttributes withBlockVehicleMounting(boolean blockVehicleMounting) {
@@ -103,7 +143,10 @@ public record InteractionAttributes(
         this.canBeLeashed,
         this.pushEntities,
         blockVehicleMounting,
-        this.canSitOnShoulder);
+        this.canSitOnShoulder,
+        this.shoulderOffsetX,
+        this.shoulderOffsetY,
+        this.shoulderOffsetZ);
   }
 
   public InteractionAttributes withCanSitOnShoulder(boolean canSitOnShoulder) {
@@ -113,7 +156,53 @@ public record InteractionAttributes(
         this.canBeLeashed,
         this.pushEntities,
         this.blockVehicleMounting,
-        canSitOnShoulder);
+        canSitOnShoulder,
+        this.shoulderOffsetX,
+        this.shoulderOffsetY,
+        this.shoulderOffsetZ);
+  }
+
+  public InteractionAttributes withShoulderOffsetX(double shoulderOffsetX) {
+    return new InteractionAttributes(
+        this.isPushable,
+        this.canBeHitByProjectile,
+        this.canBeLeashed,
+        this.pushEntities,
+        this.blockVehicleMounting,
+        this.canSitOnShoulder,
+        shoulderOffsetX,
+        this.shoulderOffsetY,
+        this.shoulderOffsetZ);
+  }
+
+  public InteractionAttributes withShoulderOffsetY(double shoulderOffsetY) {
+    return new InteractionAttributes(
+        this.isPushable,
+        this.canBeHitByProjectile,
+        this.canBeLeashed,
+        this.pushEntities,
+        this.blockVehicleMounting,
+        this.canSitOnShoulder,
+        this.shoulderOffsetX,
+        shoulderOffsetY,
+        this.shoulderOffsetZ);
+  }
+
+  public InteractionAttributes withShoulderOffsetZ(double shoulderOffsetZ) {
+    return new InteractionAttributes(
+        this.isPushable,
+        this.canBeHitByProjectile,
+        this.canBeLeashed,
+        this.pushEntities,
+        this.blockVehicleMounting,
+        this.canSitOnShoulder,
+        this.shoulderOffsetX,
+        this.shoulderOffsetY,
+        shoulderOffsetZ);
+  }
+
+  public Vec3 shoulderOffset() {
+    return new Vec3(this.shoulderOffsetX, this.shoulderOffsetY, this.shoulderOffsetZ);
   }
 
   public CompoundTag encode(CompoundTag compoundTag) {
@@ -124,6 +213,9 @@ public record InteractionAttributes(
     AttributeTagUtils.putIfTrue(compoundTag, PUSH_ENTITIES_TAG, this.pushEntities);
     AttributeTagUtils.putIfTrue(compoundTag, BLOCK_VEHICLE_MOUNTING_TAG, this.blockVehicleMounting);
     AttributeTagUtils.putIfTrue(compoundTag, CAN_SIT_ON_SHOULDER_TAG, this.canSitOnShoulder);
+    AttributeTagUtils.putIfNotZero(compoundTag, SHOULDER_OFFSET_X_TAG, this.shoulderOffsetX);
+    AttributeTagUtils.putIfNotZero(compoundTag, SHOULDER_OFFSET_Y_TAG, this.shoulderOffsetY);
+    AttributeTagUtils.putIfNotZero(compoundTag, SHOULDER_OFFSET_Z_TAG, this.shoulderOffsetZ);
     return compoundTag;
   }
 }
