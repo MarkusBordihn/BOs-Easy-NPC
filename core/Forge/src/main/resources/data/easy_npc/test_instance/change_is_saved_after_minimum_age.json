@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:function",
+  "function": "easy_npc:change_is_saved_after_minimum_age",
+  "environment": "easy_npc:npc_save_scheduler",
+  "structure": "easy_npc:gametest.3x3x3",
+  "max_ticks": 100
+}

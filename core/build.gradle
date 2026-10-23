@@ -3,7 +3,7 @@ buildscript {
   // machine without it still builds and runs the game tests. Its repository is declared in
   // settings.gradle, Gradle rejects buildscript repositories next to exclusive plugin content.
   String toolkitPluginModule = "client_runtime_interface_toolkit-gradle-plugin-${minecraft_version}"
-  String toolkitPluginVersion = '1.1.0'
+  String toolkitPluginVersion = '2.1.0'
   File toolkitPluginDirectory = new File(
       System.getProperty('maven.repo.local', "${System.getProperty('user.home')}/.m2/repository"),
       "de/markusbordihn/clientruntimeinterfacetoolkit/${toolkitPluginModule}/${toolkitPluginVersion}")
@@ -119,9 +119,31 @@ subprojects {
         file("${System.getProperty('user.home')}/.m2/repository/de/markusbordihn/easymodelentities/"
             + "easy_model_entities-${loader}-${mcVersion}/${version}/"
             + "easy_model_entities-${loader}-${mcVersion}-${version}.jar")
-    return jar.exists()
-        ? "de.markusbordihn.easymodelentities:easy_model_entities-${loader}-${mcVersion}:${version}"
-        : null
+    if (!jar.exists()) {
+      return null
+    }
+
+    // Fabric Loom keys its remap cache by coordinate and version only, so a jar republished to
+    // mavenLocal under the same version would keep resolving to the previous remap.
+    rootProject.file(".gradle/loom-cache/remapped_mods")
+        .listFiles()
+        ?.collectMany { mappingsDirectory ->
+          new File(mappingsDirectory, "de/markusbordihn/easymodelentities")
+              .listFiles()?.toList() ?: []
+        }
+        ?.findAll { artifactDirectory ->
+          artifactDirectory.name == "easy_model_entities-${loader}-${mcVersion}"
+              || artifactDirectory.name.startsWith("easy_model_entities-${loader}-${mcVersion}-")
+        }
+        ?.collect { artifactDirectory -> new File(artifactDirectory, version) }
+        ?.findAll { remappedVersion ->
+          remappedVersion.isDirectory() && remappedVersion.lastModified() < jar.lastModified()
+        }
+        ?.each { staleRemap ->
+          logger.lifecycle("Discarding stale Loom remap ${staleRemap}")
+          project.delete(staleRemap)
+        }
+    return "de.markusbordihn.easymodelentities:easy_model_entities-${loader}-${mcVersion}:${version}"
   }
 
   configurations.configureEach {
@@ -150,7 +172,4 @@ tasks.register('fullCheck') {
 
 if (clientRuntimeTestPluginAvailable) {
   apply plugin: 'de.markusbordihn.clientruntimeinterfacetoolkit.client-test'
-  clientRuntimeTest {
-    loaders = ['Fabric', 'Forge', 'NeoForge']
-  }
 }

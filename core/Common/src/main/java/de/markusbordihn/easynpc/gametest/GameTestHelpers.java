@@ -272,6 +272,13 @@ public final class GameTestHelpers {
     return serverPlayer;
   }
 
+  public static ServerPlayer mockSpectatorServerPlayer(
+      GameTestHelper helper, Vec3 position, String playerName) {
+    ServerPlayer serverPlayer = mockServerPlayer(helper, position, playerName);
+    serverPlayer.setGameMode(GameType.SPECTATOR);
+    return serverPlayer;
+  }
+
   private static ServerPlayer createMockServerPlayer(
       GameTestHelper helper, Vec3 position, String playerName) {
     ServerLevel level = helper.getLevel();

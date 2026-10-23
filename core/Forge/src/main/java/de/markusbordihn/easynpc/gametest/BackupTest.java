@@ -36,4 +36,29 @@ public final class BackupTest {
     BackupTestHelper.assertBackupRestoresDeletedNPCs(helper, humanoid());
     helper.succeed();
   }
+
+  public static void testBackupMatchesExport(GameTestHelper helper) {
+    BackupTestHelper.assertBackupMatchesExport(helper, humanoid());
+    helper.succeed();
+  }
+
+  public static void testUnchangedNPCIsLinkedIntoNextDay(GameTestHelper helper) {
+    BackupTestHelper.assertUnchangedNPCIsLinkedIntoNextDay(helper, humanoid());
+    helper.succeed();
+  }
+
+  public static void testChangedNPCIsSavedAndExported(GameTestHelper helper) {
+    BackupTestHelper.assertChangedNPCIsSavedAndExported(helper, humanoid());
+    helper.succeed();
+  }
+
+  public static void testBackupRestoresOverChangedNPC(GameTestHelper helper) {
+    BackupTestHelper.assertBackupRestoresOverChangedNPC(helper, humanoid());
+    helper.succeed();
+  }
+
+  public static void testBackupRestoresFullConfiguration(GameTestHelper helper) {
+    BackupTestHelper.assertBackupRestoresFullConfiguration(helper, humanoid());
+    helper.succeed();
+  }
 }

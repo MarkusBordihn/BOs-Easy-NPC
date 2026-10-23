@@ -34,4 +34,8 @@ public final class DefaultPresetRoundTripTest {
     DefaultPresetRoundTripTestHelper.assertDefaultPresetsSurviveRegeneration(helper);
     helper.succeed();
   }
+
+  public static void testDefaultPresetsSpawnAndKeepRunning(GameTestHelper helper) {
+    DefaultPresetRoundTripTestHelper.assertDefaultPresetsSpawnAndKeepRunning(helper);
+  }
 }

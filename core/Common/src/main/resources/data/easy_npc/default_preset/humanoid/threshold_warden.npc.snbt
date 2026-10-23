@@ -3,7 +3,7 @@
     author:"Kaworru",
     category:"Quest",
     created:1780600000000L,
-    description:"A castle gatekeeper that unlocks dialog buttons and whole dialogs based on conditions: a gold ingot in hand, experience level, game-mode, an ender pearl in the inventory and the player's scoreboard team.",
+    description:"A castle gatekeeper that unlocks dialog buttons and whole dialogs based on conditions: a gold ingot in hand, experience level, game mode, an ender pearl in the inventory and membership in the scoreboard team `warden`.",
     entityTypeId:"easy_npc:humanoid",
     modified:1780600000000L,
     name:"Threshold Warden",
@@ -65,15 +65,15 @@
             Cmd:"farewell",Type:"OPEN_NAMED_DIALOG"
           }],Label:"button_leave",Name:"I'll be on my way"
         }],Label:"default",Name:"At the Gate",Priority:5,Texts:[{
-          Text:"Halt, @initiator. None cross my threshold without proof.\\n\\nBear a Golden Seal, a gold ingot held in your hand and the gate swings wide.\\nOr show an Ender Token, a single ender pearl in your pack, and you are known to me.\\n\\nVeterans of the 20th level pass on reputation alone, and the Order walks freely in Creative.\\n\\nSo... what proof do you carry?"
+          Text:"Halt, @initiator. None cross my threshold without proof.\\n\\nBear a Golden Seal, a gold ingot held in your hand, and the gate swings wide.\\nOr show an Ender Token, a single ender pearl in your pack, and you are known to me.\\n\\nVeterans of the 20th level pass on reputation alone, and those who walk in Creative slip by unseen.\\n\\nSo... what proof do you carry?"
         }]
       },{
         Label:"passage",Name:"Passage Granted",Priority:-1,Texts:[{
-          Text:"With a heavy groan of iron, the gate yields. Pass, @initiator and may the keep keep you."
+          Text:"With a heavy groan of iron, the gate yields. Pass, @initiator, and may the keep keep you."
         }]
       },{
         Label:"veteran",Name:"Veteran's Path",Priority:-1,Texts:[{
-          Text:"Ah, a proven veteran. No seal needed for one of your standing the armory is yours to browse."
+          Text:"Ah, a proven veteran. No seal needed for one of your standing. The armory is yours to browse."
         }]
       },{
         Conditions:[{
@@ -100,7 +100,6 @@
     }],
     Invulnerable:1b,
     ObjectiveData:{
-      HasObjectives:1b,
       ObjectiveDataSet:[{
         Type:"LOOK_AT_PLAYER"
       },{
@@ -119,4 +118,4 @@
     VariantType:"KNIGHT_01",
     id:"easy_npc:humanoid"
   }
-}
+}

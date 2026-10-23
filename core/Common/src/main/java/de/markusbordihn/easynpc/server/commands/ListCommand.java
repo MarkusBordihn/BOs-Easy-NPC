@@ -26,9 +26,10 @@ import de.markusbordihn.easynpc.commands.suggestion.CustomIdentifierNamespaceSug
 import de.markusbordihn.easynpc.commands.suggestion.CustomIdentifierSuggestions;
 import de.markusbordihn.easynpc.commands.suggestion.DimensionSuggestions;
 import de.markusbordihn.easynpc.commands.suggestion.NPCEntityTypeSuggestions;
-import de.markusbordihn.easynpc.data.npc.SavedNPCEntityEntry;
+import de.markusbordihn.easynpc.data.npc.NPCEntityMetadata;
 import de.markusbordihn.easynpc.data.saveddata.NPCEntityData;
-import java.util.Collection;
+import java.util.Map;
+import java.util.UUID;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -110,118 +111,131 @@ public class ListCommand extends Command {
   }
 
   private static int listAllNPCs(CommandSourceStack context) {
-    NPCEntityData npcData = NPCEntityData.get();
-    int count = npcData.getCount();
+    Map<UUID, NPCEntityMetadata> metadataByUUID = NPCEntityData.get().getAllMetadata();
+    int count = metadataByUUID.size();
     sendSuccessMessage(context, "Total NPCs: " + count, ChatFormatting.GREEN);
 
-    Collection<SavedNPCEntityEntry> entries = npcData.getAllEntries();
     int displayed = 0;
-    for (SavedNPCEntityEntry entry : entries) {
+    for (Map.Entry<UUID, NPCEntityMetadata> metadataEntry : metadataByUUID.entrySet()) {
       if (displayed >= 10) {
         sendSuccessMessage(
             context, "... and " + (count - displayed) + " more NPCs", ChatFormatting.GRAY);
         break;
       }
-      sendEntryInfo(context, entry, true, true, false);
+      sendEntryInfo(context, metadataEntry.getKey(), metadataEntry.getValue(), true, true, false);
       displayed++;
     }
     return Command.SINGLE_SUCCESS;
   }
 
   private static int listNPCsByOwner(CommandSourceStack context, ServerPlayer player) {
-    Collection<SavedNPCEntityEntry> entries =
-        NPCEntityData.get().getEntriesByOwner(player.getUUID());
+    Map<UUID, NPCEntityMetadata> metadataByUUID =
+        NPCEntityData.get().getMetadataByOwner(player.getUUID());
 
     boolean isSelf =
         context.getEntity() instanceof ServerPlayer self && self.getUUID().equals(player.getUUID());
     String ownerName = isSelf ? "Your" : player.getName().getString() + "'s";
 
-    sendSuccessMessage(context, ownerName + " NPCs: " + entries.size(), ChatFormatting.GREEN);
-    entries.forEach(entry -> sendEntryInfo(context, entry, false, true, true));
+    sendSuccessMessage(
+        context, ownerName + " NPCs: " + metadataByUUID.size(), ChatFormatting.GREEN);
+    metadataByUUID.forEach(
+        (entityUUID, entityMetadata) ->
+            sendEntryInfo(context, entityUUID, entityMetadata, false, true, true));
     return Command.SINGLE_SUCCESS;
   }
 
   private static int listNPCsByType(CommandSourceStack context, Identifier entityType) {
-    NPCEntityData npcData = NPCEntityData.get(context.getServer());
-    Collection<SavedNPCEntityEntry> entries = npcData.getEntriesByType(entityType.toString());
+    Map<UUID, NPCEntityMetadata> metadataByUUID =
+        NPCEntityData.get().getMetadataByType(entityType.toString());
 
     sendSuccessMessage(
-        context, "NPCs of type " + entityType + ": " + entries.size(), ChatFormatting.GREEN);
-    entries.forEach(entry -> sendEntryInfo(context, entry, true, false, true));
+        context,
+        "NPCs of type " + entityType + ": " + metadataByUUID.size(),
+        ChatFormatting.GREEN);
+    metadataByUUID.forEach(
+        (entityUUID, entityMetadata) ->
+            sendEntryInfo(context, entityUUID, entityMetadata, true, false, true));
     return Command.SINGLE_SUCCESS;
   }
 
   private static int listNPCsByDimension(CommandSourceStack context, Identifier dimension) {
-    NPCEntityData npcData = NPCEntityData.get(context.getServer());
-    Collection<SavedNPCEntityEntry> entries = npcData.getEntriesByDimension(dimension.toString());
+    Map<UUID, NPCEntityMetadata> metadataByUUID =
+        NPCEntityData.get().getMetadataByDimension(dimension.toString());
 
     sendSuccessMessage(
-        context, "NPCs in dimension " + dimension + ": " + entries.size(), ChatFormatting.GREEN);
-    entries.forEach(entry -> sendEntryInfo(context, entry, true, true, false));
+        context,
+        "NPCs in dimension " + dimension + ": " + metadataByUUID.size(),
+        ChatFormatting.GREEN);
+    metadataByUUID.forEach(
+        (entityUUID, entityMetadata) ->
+            sendEntryInfo(context, entityUUID, entityMetadata, true, true, false));
     return Command.SINGLE_SUCCESS;
   }
 
   private static int listNPCsByCustomIdentifier(
       CommandSourceStack context, Identifier customIdentifier) {
-    NPCEntityData npcData = NPCEntityData.get(context.getServer());
-    Collection<SavedNPCEntityEntry> entries =
-        NPCEntityData.get().getEntriesByCustomIdentifier(customIdentifier);
+    Map<UUID, NPCEntityMetadata> metadataByUUID =
+        NPCEntityData.get().getMetadataByCustomIdentifier(customIdentifier);
 
     sendSuccessMessage(
         context,
-        "NPCs with custom identifier " + customIdentifier + ": " + entries.size(),
+        "NPCs with custom identifier " + customIdentifier + ": " + metadataByUUID.size(),
         ChatFormatting.GREEN);
-    entries.forEach(entry -> sendEntryInfo(context, entry, true, true, true));
+    metadataByUUID.forEach(
+        (entityUUID, entityMetadata) ->
+            sendEntryInfo(context, entityUUID, entityMetadata, true, true, true));
     return Command.SINGLE_SUCCESS;
   }
 
   private static int listNPCsByNamespace(CommandSourceStack context, String namespace) {
-    Collection<SavedNPCEntityEntry> entries =
-        NPCEntityData.get().getEntriesByCustomIdentifierNamespace(namespace);
+    Map<UUID, NPCEntityMetadata> metadataByUUID =
+        NPCEntityData.get().getMetadataByCustomIdentifierNamespace(namespace);
 
     sendSuccessMessage(
         context,
-        "NPCs with custom identifier namespace '" + namespace + "': " + entries.size(),
+        "NPCs with custom identifier namespace '" + namespace + "': " + metadataByUUID.size(),
         ChatFormatting.GREEN);
 
-    for (SavedNPCEntityEntry entry : entries) {
-      StringBuilder info = new StringBuilder("- " + entry.entityUUID());
-      if (entry.metadata().hasOwner()) {
-        info.append(" Owner: ").append(entry.metadata().ownerUUID());
-      } else {
-        info.append(" (No owner)");
-      }
-      if (entry.metadata().hasEntityType()) {
-        info.append(" Type: ").append(entry.metadata().entityType());
-      }
-      if (entry.metadata().hasCustomIdentifier()) {
-        info.append(" ID: ").append(entry.metadata().customIdentifier());
-      }
-      sendSuccessMessage(context, info.toString(), ChatFormatting.WHITE);
-    }
+    metadataByUUID.forEach(
+        (entityUUID, entityMetadata) -> {
+          StringBuilder info = new StringBuilder("- " + entityUUID);
+          if (entityMetadata.hasOwner()) {
+            info.append(" Owner: ").append(entityMetadata.ownerUUID());
+          } else {
+            info.append(" (No owner)");
+          }
+          if (entityMetadata.hasEntityType()) {
+            info.append(" Type: ").append(entityMetadata.entityType());
+          }
+          if (entityMetadata.hasCustomIdentifier()) {
+            info.append(" ID: ").append(entityMetadata.customIdentifier());
+          }
+          sendSuccessMessage(context, info.toString(), ChatFormatting.WHITE);
+        });
     return Command.SINGLE_SUCCESS;
   }
 
   private static void sendEntryInfo(
       CommandSourceStack context,
-      SavedNPCEntityEntry entry,
+      UUID entityUUID,
+      NPCEntityMetadata entityMetadata,
       boolean showOwner,
       boolean showType,
       boolean showDimension) {
-    StringBuilder info = new StringBuilder("- " + entry.entityUUID());
+    StringBuilder info = new StringBuilder("- " + entityUUID);
 
     if (showOwner) {
-      if (entry.metadata().hasOwner()) {
-        info.append(" Owner: ").append(entry.metadata().ownerUUID());
+      if (entityMetadata.hasOwner()) {
+        info.append(" Owner: ").append(entityMetadata.ownerUUID());
       } else {
         info.append(" (No owner)");
       }
     }
-    if (showType && entry.metadata().hasEntityType()) {
-      info.append(" Type: ").append(entry.metadata().entityType());
+    if (showType && entityMetadata.hasEntityType()) {
+      info.append(" Type: ").append(entityMetadata.entityType());
     }
-    if (showDimension && entry.metadata().hasDimension()) {
-      info.append(" Dimension: ").append(entry.metadata().dimension());
+    if (showDimension && entityMetadata.hasDimension()) {
+      info.append(" Dimension: ").append(entityMetadata.dimension());
     }
 
     sendSuccessMessage(context, info.toString(), ChatFormatting.WHITE);

@@ -3,7 +3,7 @@
     author:"Kaworru",
     category:"Custom",
     created:1768695456915L,
-    description:"Shows a sitting skeleton NPC with its head on the floor. Talks to the player when they get near.",
+    description:"Shows a sitting skeleton NPC with its head on the floor. Speaks up when a player bumps right into it.",
     entityTypeId:"easy_npc:skeleton",
     modified:1768695456915L,
     name:"Headless Skeleton",
@@ -14,7 +14,7 @@
     ActionData:{
       ActionEventSet:{
         ON_DISTANCE_TOUCH:[{
-          Cmd:"/say No worries I just lost my head ...",Type:"COMMAND"
+          Cmd:"/say Don't mind me. I just lost my head again.",Type:"COMMAND"
         }]
       }
     },
@@ -48,11 +48,10 @@
       }
     },
     ObjectiveData:{
-      HasObjectives:0b,
       ObjectiveDataSet:[]
     },
     PersistenceRequired:0b,
     PresetUUID:[I;2109095532,-193837020,-1856037432,-169200638],
     id:"easy_npc:skeleton"
   }
-}
+}

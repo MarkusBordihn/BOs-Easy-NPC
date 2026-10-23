@@ -52,13 +52,6 @@ loom {
       vmArg "-Dfabric-api.gametest"
       runDir("run/gametest")
     }
-    if (project.rootProject.findProperty('clientRuntimeTest')?.isAvailable()) {
-      clientTest {
-        client()
-        setConfigName("Fabric Client Test")
-        runDir("run/clienttest")
-      }
-    }
   }
 }
 
@@ -95,11 +88,6 @@ dependencies {
       && project.fabric_easy_model_entities_version) {
     runtimeOnly("maven.modrinth:easy-model-entities:${project.fabric_easy_model_entities_version}")
   }
-
-  // Client Runtime Interface Toolkit (runtime dependency, only for client tests)
-  if (rootProject.findProperty('clientRuntimeTest')?.isClientTestRun()) {
-    localRuntime rootProject.clientRuntimeTest.toolkitCoordinate('fabric')
-  }
 }
 
 tasks.withType(JavaCompile).configureEach {
@@ -121,6 +109,17 @@ processResources {
 
 tasks.withType(Test).configureEach {
   failOnNoDiscoveredTests = false
+}
+
+// Fabric API finds game tests only through the `fabric-gametest` entrypoints, so the released jar
+// drops them to keep them out of the game test runs of mods depending on Easy NPC. Development
+// runs read the processed resources instead of this jar and keep them.
+tasks.named('jar', Jar).configure {
+  // Gradle does not track filter closures, so without this input an up-to-date jar keeps them.
+  inputs.property('fabricGameTestEntrypoints', 'stripped')
+  filesMatching('fabric.mod.json') {
+    filter { String line -> line.contains('.gametest.') ? null : line }
+  }
 }
 
 publishing {

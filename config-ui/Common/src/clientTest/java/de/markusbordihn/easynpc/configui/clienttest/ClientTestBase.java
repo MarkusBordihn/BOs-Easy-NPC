@@ -27,10 +27,14 @@ import de.markusbordihn.clientruntimeinterfacetoolkit.testrunner.By;
 import de.markusbordihn.clientruntimeinterfacetoolkit.testrunner.GameClientBuilder;
 import de.markusbordihn.clientruntimeinterfacetoolkit.testrunner.GameClientExtension;
 import de.markusbordihn.clientruntimeinterfacetoolkit.testrunner.Until;
-import de.markusbordihn.clientruntimeinterfacetoolkit.testrunner.data.Parameters;
-import de.markusbordihn.clientruntimeinterfacetoolkit.testrunner.data.TestArea;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UncheckedIOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Duration;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.UUID;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
@@ -46,13 +50,14 @@ abstract class ClientTestBase {
       GameClientExtension.shared(ClientTestBase::configureLaunch);
 
   private static final String SUITE_NAME = "Easy NPC config-ui";
-  private static final String WORLD_NAME = "EasyNPC Client Test";
   private static final String WORLD_SETUP_CAPABILITY = "world.setup";
   private static final Duration WORLD_SETUP_TIMEOUT = Duration.ofMinutes(1);
   private static final int PLATFORM_Y = 100;
   static final int STAND_Y = PLATFORM_Y + 1;
-  private static final TestArea TEST_PLATFORM =
-      TestArea.between(-2, PLATFORM_Y, -1, 2, PLATFORM_Y, 4);
+  private static final String TEST_PLATFORM_FILE_NAME = "npc_platform.nbt";
+  private static final String TEST_PLATFORM_RESOURCE =
+      "/structures/" + TEST_PLATFORM_FILE_NAME;
+  private static final String TEST_PLATFORM_DIRECTORY_PREFIX = "easy_npc_scene";
 
   private static GameClientBuilder configureLaunch(GameClientBuilder builder) {
     return builder
@@ -60,13 +65,25 @@ abstract class ClientTestBase {
         .withWindowSize(1280, 720)
         .withGuiScale(2)
         .withAllowedCommands("easy_npc_config_ui", "easy_npc")
-        .withWorld(Parameters.of("name", WORLD_NAME))
+        .withWorld()
         .withLayoutChecksOnScreenshot();
   }
 
   static void buildTestPlatform() {
     awaitWorldSetupCapability();
-    client.fill(TEST_PLATFORM, "minecraft:stone");
+    try (InputStream testPlatformStream =
+        Objects.requireNonNull(
+            ClientTestBase.class.getResourceAsStream(TEST_PLATFORM_RESOURCE),
+            "Missing scene " + TEST_PLATFORM_RESOURCE)) {
+      Path testPlatformDirectory = Files.createTempDirectory(TEST_PLATFORM_DIRECTORY_PREFIX);
+      Path testPlatformFile = testPlatformDirectory.resolve(TEST_PLATFORM_FILE_NAME);
+      Files.copy(testPlatformStream, testPlatformFile);
+      testPlatformDirectory.toFile().deleteOnExit();
+      testPlatformFile.toFile().deleteOnExit();
+      client.placeStructure(testPlatformFile, -2, PLATFORM_Y, -1);
+    } catch (IOException e) {
+      throw new UncheckedIOException("Unable to read the scene " + TEST_PLATFORM_RESOURCE, e);
+    }
   }
 
   // Toolkit 1.1.0 on Forge grants world.setup a few ticks after the world has loaded.

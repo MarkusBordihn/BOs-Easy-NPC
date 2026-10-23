@@ -28,9 +28,13 @@ public interface ServerDataCapable<E extends Mob> extends EasyNPC<E> {
 
   default <T> void setServerEntityData(ServerDataAccessor<T> entityDataAccessor, T entityData) {
     this.getServerEntityData().set(entityDataAccessor, entityData);
+    this.markServerEntityDataChanged(entityDataAccessor);
+  }
+
+  default <T> void markServerEntityDataChanged(ServerDataAccessor<T> entityDataAccessor) {
     StatusDataCapable<E> statusData = this.getEasyNPCStatusData();
     if (statusData != null) {
-      statusData.markNPCDataUpdated();
+      statusData.markNPCDataUpdated(entityDataAccessor);
     }
   }
 

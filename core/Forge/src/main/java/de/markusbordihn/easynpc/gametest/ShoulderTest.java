@@ -116,4 +116,14 @@ public final class ShoulderTest {
     ShoulderTestHelper.assertReviveRejectsNPCOnShoulder(helper, allay());
     helper.succeed();
   }
+
+  public static void testSitOnShoulderRejectsUnavailableNPC(GameTestHelper helper) {
+    ShoulderTestHelper.assertSitOnShoulderRejectsUnavailableNPC(helper, allay());
+    helper.succeed();
+  }
+
+  public static void testShoulderDataSentToClientsWithoutServerData(GameTestHelper helper) {
+    ShoulderTestHelper.assertShoulderDataSentToClientsWithoutServerData(helper, allay());
+    helper.succeed();
+  }
 }
