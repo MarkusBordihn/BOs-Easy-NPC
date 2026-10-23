@@ -19,10 +19,16 @@
 
 package de.markusbordihn.easynpc.data.npc;
 
+import com.google.common.hash.Hashing;
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.data.preset.PresetCompactor;
+import de.markusbordihn.easynpc.data.status.StatusDataType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.PresetDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.StatusDataCapable;
 import de.markusbordihn.easynpc.utils.CompoundTagUtils;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Mob;
@@ -35,6 +41,12 @@ public record SavedNPCEntityEntry(
   private static final String DATA_ENTITY_UUID_TAG = "EntityUUID";
   private static final String DATA_NPC_DATA_TAG = "NPCData";
   private static final String DATA_METADATA_TAG = "Metadata";
+
+  // The chunk stays the authoritative copy, so movement alone must not rewrite the NPC file.
+  private static final List<String> NPC_DATA_HASH_IGNORED_TAGS =
+      List.of(
+          "Air", "Brain", "fall_distance", "Fire", "HurtTime", "Motion", "OnGround", "Pos",
+          "Rotation");
 
   public static <T extends Mob> SavedNPCEntityEntry fromEasyNPC(EasyNPC<T> easyNPC) {
     return fromEasyNPC(easyNPC, NPCRemovalReason.NONE);
@@ -53,15 +65,36 @@ public record SavedNPCEntityEntry(
       return null;
     }
 
-    NPCEntityMetadata metadata =
-        NPCEntityMetadata.fromEasyNPC(easyNPC).withRemovalReason(removalReason);
-    CompoundTag npcData = presetData.serializePresetData();
+    return fromPresetData(easyNPC, presetData.serializePresetData(), removalReason);
+  }
+
+  public static <T extends Mob> SavedNPCEntityEntry fromPresetData(
+      EasyNPC<T> easyNPC, CompoundTag npcData, NPCRemovalReason removalReason) {
     npcData.remove(PresetDataCapable.PRESET_METADATA_TAG);
-    if (!presetData.hasPresetUUID()) {
+    if (!easyNPC.getEasyNPCPresetData().hasPresetUUID()) {
       npcData.remove(PresetDataCapable.PRESET_UUID_TAG);
     }
+    NPCEntityMetadata metadata =
+        NPCEntityMetadata.fromEasyNPC(easyNPC)
+            .withRemovalReason(removalReason)
+            .withNPCDataHash(computeNPCDataHash(npcData));
 
     return new SavedNPCEntityEntry(easyNPC.getEntityUUID(), npcData, metadata);
+  }
+
+  public static long computeNPCDataHash(CompoundTag npcData) {
+    CompoundTag hashedData = npcData.copy();
+    NPC_DATA_HASH_IGNORED_TAGS.forEach(hashedData::remove);
+    CompoundTag statusTag = hashedData.getCompoundOrEmpty(StatusDataCapable.DATA_STATUS_DATA_TAG);
+    statusTag.remove(StatusDataType.NPC_DATA_LAST_UPDATE.getTagName());
+    statusTag.remove(StatusDataType.NPC_DATA_LAST_SAVED.getTagName());
+    // Vanilla AttributeMap creates instances on first access, so AI ticks add default entries.
+    PresetCompactor.removeEntityTypeDefaultAttributes(hashedData);
+
+    // StringTagVisitor sorts compound keys, so the hash does not depend on HashMap order.
+    return Hashing.murmur3_128()
+        .hashString(hashedData.toString(), StandardCharsets.UTF_8)
+        .asLong();
   }
 
   public static SavedNPCEntityEntry load(CompoundTag compoundTag) {

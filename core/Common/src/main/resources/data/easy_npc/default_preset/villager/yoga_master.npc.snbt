@@ -17,7 +17,10 @@
           Cmd:"/say Ah, a seeking spirit! I am ready to share my wisdom with you.",Type:"COMMAND"
         }],
         ON_DISTANCE_VERY_CLOSE:[{
-          Cmd:"/say Hey @initiator come closer to me.",Type:"COMMAND"
+          Cmd:"/say Hey @initiator, come closer. Breathe with me.",Type:"COMMAND"
+        }],
+        ON_INTERACTION:[{
+          Type:"OPEN_DEFAULT_DIALOG"
         }]
       }
     },
@@ -32,15 +35,15 @@
         Buttons:[{
           Name:"Close"
         }],Name:"Default",Texts:[{
-          Text:"Sit, and let us delve into the mysteries of the universe."
+          Text:"Breathe in through the nose, @initiator. Breathe out through the worries."
         },{
-          Text:"Within these words lies the guidance you seek."
+          Text:"Stand on one leg long enough, and the world starts to balance with you."
         },{
-          Text:"Together, we shall unlock the secrets of the ancient texts."
+          Text:"The mountain does not rush. Neither should you."
         },{
-          Text:"Open your mind, and I will illuminate the path to knowledge."
+          Text:"A stiff back holds a stiff mind. Stretch, and both will loosen."
         },{
-          Text:"Prepare yourself for a journey into the depths of enlightenment."
+          Text:"Even a creeper finds peace, just once, at the very end."
         }]
       }],
       Type:"CUSTOM"
@@ -61,7 +64,6 @@
       }
     },
     ObjectiveData:{
-      HasObjectives:1b,
       ObjectiveDataSet:[{
         Type:"LOOK_AT_PLAYER"
       },{

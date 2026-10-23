@@ -21,7 +21,7 @@
         },{
           Cmd:"3s",Type:"WAIT"
         },{
-          Msg:{T:4b,Texts:["I will walk the square again soon."]},Type:"MESSAGE"
+          Msg:{T:4b,Texts:["Ask, and I will walk the square again."]},Type:"MESSAGE"
         }]
       }
     },
@@ -71,6 +71,8 @@
     },
     DisplayAttribute:[{
       Int:40,Type:"OPACITY"
+    },{
+      Int:12,Type:"LIGHT_LEVEL"
     }],
     EasyNPCVersion:3,
     EntityAttribute:{
@@ -83,8 +85,6 @@
     }],
     Invulnerable:1b,
     ObjectiveData:{
-      HasObjectives:1b,
-      HasTravelTarget:1b,
       ObjectiveDataSet:[{
         Type:"LOOK_AT_PLAYER"
       },{

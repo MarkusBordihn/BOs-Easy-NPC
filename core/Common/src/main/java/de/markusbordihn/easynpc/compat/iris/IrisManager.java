@@ -85,7 +85,7 @@ public class IrisManager {
         shaderPackInUseMethod = apiClass.getMethod("isShaderPackInUse");
         log.info(
             "{} Iris shader pack detection over {} ...",
-            Constants.LOG_REGISTER_PREFIX,
+            Constants.LOG_PREFIX,
             apiClassName);
         return;
       } catch (ReflectiveOperationException exception) {

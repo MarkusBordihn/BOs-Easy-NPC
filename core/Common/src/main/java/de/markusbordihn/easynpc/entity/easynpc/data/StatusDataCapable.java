@@ -80,6 +80,13 @@ public interface StatusDataCapable<T extends Mob> extends EasyNPC<T> {
   }
 
   default void markNPCDataUpdated() {
+    this.markNPCDataUpdated("unspecified");
+  }
+
+  default void markNPCDataUpdated(Object changeSource) {
+    if (log.isDebugEnabled() && !this.hasUnsavedNPCData() && this.getEntity().tickCount > 0) {
+      log.debug("{} marked as changed by {}", this, changeSource);
+    }
     this.setStatusDataTimestamp(
         StatusDataType.NPC_DATA_LAST_UPDATE,
         currentTimeAfter(this.getStatusDataTimestamp(StatusDataType.NPC_DATA_LAST_SAVED)));
@@ -92,6 +99,25 @@ public interface StatusDataCapable<T extends Mob> extends EasyNPC<T> {
     }
 
     this.setStatusDataTimestamp(StatusDataType.NPC_DATA_LAST_SAVED, lastUpdate);
+  }
+
+  default void trackLoadedNPCData(ValueInput valueInput, boolean replacesRunningNPCData) {
+    if (replacesRunningNPCData || this.isLegacyNPCData()) {
+      this.markNPCDataUpdated("load");
+      return;
+    }
+
+    // PersistentEntitySectionManager#storeChunkSections saves the chunk before the unload event.
+    long storedLastUpdate =
+        valueInput
+            .read(DATA_STATUS_DATA_TAG, CompoundTag.CODEC)
+            .flatMap(
+                statusTag -> statusTag.getLong(StatusDataType.NPC_DATA_LAST_UPDATE.getTagName()))
+            .orElse(0L);
+    this.setStatusDataTimestamp(StatusDataType.NPC_DATA_LAST_UPDATE, storedLastUpdate);
+    this.setStatusDataTimestamp(
+        StatusDataType.NPC_DATA_LAST_SAVED,
+        Math.max(storedLastUpdate, this.getStatusDataTimestamp(StatusDataType.NPC_DATA_LAST_SAVED)));
   }
 
   default void addAdditionalStatusData(ValueOutput valueOutput) {

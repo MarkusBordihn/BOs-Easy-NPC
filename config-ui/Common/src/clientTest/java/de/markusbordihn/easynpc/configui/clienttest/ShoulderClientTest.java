@@ -87,22 +87,19 @@ class ShoulderClientTest extends ClientTestBase {
   void ownedNpcSitsOnShoulderAndDropsOffAfterFall() {
     String playerOnlyFrame = preparePlayerFrontView();
     UUID shoulderNpc = spawnOwnedShoulderNpc();
-    try {
-      enableSitOnShoulder(shoulderNpc);
-      client.await(SIT_DOWN_TIMEOUT, Until.entityAbsent(npcQuery(shoulderNpc)));
-      client.await(Until.ticksElapsed(SHOULDER_GUARD_TICKS));
-      long seatedPixels = changedPixelsSince(playerOnlyFrame);
-      client.saveScreenshot("shoulder_seated");
+    enableSitOnShoulder(shoulderNpc);
+    client.await(SIT_DOWN_TIMEOUT, Until.entityAbsent(npcQuery(shoulderNpc)));
+    client.await(Until.playerShoulder(SHOULDER_NPC_TYPE));
+    client.await(Until.ticksElapsed(SHOULDER_GUARD_TICKS));
+    long seatedPixels = changedPixelsSince(playerOnlyFrame);
+    client.saveScreenshot("shoulder_seated");
 
-      client.teleport(PLAYER_X, STAND_Y + FALL_HEIGHT, PLAYER_Z);
-      client.await(Until.ticksElapsed(LANDING_TICKS));
-      client.await(Until.entityPresent(npcQuery(shoulderNpc)));
-      client.saveScreenshot("shoulder_dropped");
+    client.teleport(PLAYER_X, STAND_Y + FALL_HEIGHT, PLAYER_Z);
+    client.await(Until.ticksElapsed(LANDING_TICKS));
+    client.await(Until.entityPresent(npcQuery(shoulderNpc)));
+    client.await(Until.playerShoulderEmpty());
+    client.saveScreenshot("shoulder_dropped");
 
-      client.removeEntity(shoulderNpc);
-      assertTrue(seatedPixels > VISIBLE_CHANGE_PIXELS, "NPC not on shoulder: " + seatedPixels);
-    } finally {
-      client.renderSettings(Parameters.of().with("perspective", "first"));
-    }
+    assertTrue(seatedPixels > VISIBLE_CHANGE_PIXELS, "NPC not on shoulder: " + seatedPixels);
   }
 }

@@ -3,7 +3,7 @@
     author:"Kaworru",
     category:"Quest",
     created:1782518400000L,
-    description:"A simple skywatcher preset that uses time-of-day and weather conditions to offer different dialogs, route hints and small command effects.",
+    description:"A skywatcher whose dialog changes with time of day and weather: day, night, rain and thunder each have their own dialog and route hint, with a fallback at dusk. The storm flare button is limited to once per day.",
     entityTypeId:"easy_npc:humanoid",
     modified:1782518400000L,
     name:"Skywatch Scout",
@@ -55,7 +55,7 @@
         }]
       },{
         Label:"storm_flare",Name:"Storm Flare Sent",Priority:-1,Texts:[{
-          Text:"The storm flare has been sent. Wait for clear weather before taking the road."
+          Text:"Flare's up. I carry only one a day, so make it count. Wait for clear weather before taking the road."
         }]
       },{
         Buttons:[{
@@ -111,13 +111,13 @@
         }],Conditions:[{
           Operation:"LESS_THAN",Type:"TIME_OF_DAY",Value:12000
         }],Label:"day",Name:"Day Watch",Priority:10,Texts:[{
-          Text:"The weather is clear, @initiator. Follow the ridge to the river, then descend through the birch grove."
+          Text:"Clear skies and long shadows, @initiator. A good day for the high roads."
         }]
       },{
         Conditions:[{
           Type:"FALLBACK"
         }],Label:"fallback",Name:"Changing Light",Texts:[{
-          Text:"The route changes at dawn and dusk, @initiator. Ask again shortly."
+          Text:"Dusk is the wrong hour for directions, @initiator. Ask again once the stars are out."
         }]
       }],
       Type:"CUSTOM"
@@ -146,7 +146,6 @@
       }
     },
     ObjectiveData:{
-      HasObjectives:1b,
       ObjectiveDataSet:[{
         Type:"LOOK_AT_PLAYER"
       },{

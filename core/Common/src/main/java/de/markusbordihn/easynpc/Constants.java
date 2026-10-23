@@ -70,7 +70,10 @@ public final class Constants {
   public static final String ITEM_PREFIX = "item." + MOD_ID + ".";
   public static final String LOG_ICON = "🗣";
   public static final String LOG_NAME = "Easy NPC: Core";
-  public static final String LOG_REGISTER_PREFIX = LOG_ICON + " Register " + LOG_NAME;
+  public static final String LOG_PREFIX = LOG_ICON + " [" + LOG_NAME + "]";
+  public static final String LOG_ERROR_PREFIX = LOG_PREFIX + " Error";
+  public static final String LOG_REGISTER_PREFIX = LOG_PREFIX + " Register";
+  public static final String LOG_UNREGISTER_PREFIX = LOG_PREFIX + " Unregister";
   public static final String MINECRAFT_RESOURCE_PREFIX = MINECRAFT_PREFIX + ":";
   public static final String MOD_EASY_NPC_CONFIG_UI_ID = "easy_npc_config_ui";
   public static final String MOD_ARMOURERS_WORKSHOP_ID = "armourers_workshop";

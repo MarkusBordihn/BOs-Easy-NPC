@@ -23,16 +23,20 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.backup.BackupManager;
 import de.markusbordihn.easynpc.condition.ConditionWarnings;
 import de.markusbordihn.easynpc.data.preset.PresetReference;
+import de.markusbordihn.easynpc.data.storage.NPCStorageStatistics;
 import de.markusbordihn.easynpc.entity.EasyNPCEntityTypes;
 import de.markusbordihn.easynpc.entity.NPCChurnTracker;
 import de.markusbordihn.easynpc.entity.NPCEntityManager;
+import de.markusbordihn.easynpc.entity.NPCSaveScheduler;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.action.executor.MessageActionExecutor;
 import de.markusbordihn.easynpc.handler.EnvironmentChangeTracker;
 import de.markusbordihn.easynpc.handler.OwnerLoginRestoreHandler;
 import de.markusbordihn.easynpc.handler.PauseManager;
 import de.markusbordihn.easynpc.handler.PlayerIdleTracker;
 import de.markusbordihn.easynpc.handler.ShoulderNPCSynchronizer;
+import de.markusbordihn.easynpc.io.BackgroundFileWriter;
 import de.markusbordihn.easynpc.io.DataFileHandler;
+import java.time.Duration;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.storage.LevelResource;
 import org.apache.logging.log4j.LogManager;
@@ -41,6 +45,9 @@ import org.apache.logging.log4j.Logger;
 public class ServerEvents {
 
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+  private static final Duration PENDING_WRITES_SHUTDOWN_TIMEOUT = Duration.ofMinutes(2);
+
+  private static NPCStorageStatistics storageStatisticsBeforeShutdown = NPCStorageStatistics.EMPTY;
 
   private ServerEvents() {}
 
@@ -57,6 +64,7 @@ public class ServerEvents {
     ConditionWarnings.reset();
     EnvironmentChangeTracker.reset();
     NPCChurnTracker.reset();
+    NPCSaveScheduler.reset();
     PauseManager.reset();
     PresetReference.clearCache();
     MessageActionExecutor.clearKnownPlayerNames();
@@ -79,6 +87,7 @@ public class ServerEvents {
     }
 
     BackupManager.performBackup();
+    NPCSaveScheduler.handleServerTick(minecraftServer);
 
     OwnerLoginRestoreHandler.handleServerTick(minecraftServer);
     EnvironmentChangeTracker.handleServerTick(minecraftServer);
@@ -91,7 +100,7 @@ public class ServerEvents {
       return;
     }
 
-    log.info("{} Server is stopping, saving all dirty NPCs...", Constants.LOG_REGISTER_PREFIX);
+    log.info("{} Server is stopping, saving all dirty NPCs...", Constants.LOG_UNREGISTER_PREFIX);
 
     long startTime = System.currentTimeMillis();
     NPCEntityManager.saveAllDirtyNPCs();
@@ -105,13 +114,42 @@ public class ServerEvents {
 
     log.info(
         "{} Server stop handling finished in {} ms",
-        Constants.LOG_REGISTER_PREFIX,
+        Constants.LOG_UNREGISTER_PREFIX,
         System.currentTimeMillis() - startTime);
+    storageStatisticsBeforeShutdown = NPCEntityManager.getStorageStatistics();
   }
 
   public static void handleServerStopped(MinecraftServer minecraftServer) {
+    if (!BackgroundFileWriter.awaitPendingWrites(PENDING_WRITES_SHUTDOWN_TIMEOUT)) {
+      log.warn(
+          "{} {} NPC file write(s) were still pending after {} seconds.",
+          Constants.LOG_UNREGISTER_PREFIX,
+          BackgroundFileWriter.getPendingWriteCount(),
+          PENDING_WRITES_SHUTDOWN_TIMEOUT.toSeconds());
+    }
+    logStorageStatistics(NPCEntityManager.getStorageStatistics());
+    storageStatisticsBeforeShutdown = NPCStorageStatistics.EMPTY;
     NPCEntityManager.reset();
     BackupManager.reset();
     EasyNPCEntityTypes.reset();
+  }
+
+  private static void logStorageStatistics(NPCStorageStatistics statistics) {
+    if (statistics.equals(NPCStorageStatistics.EMPTY)) {
+      return;
+    }
+
+    log.info(
+        "{} NPC files this session: {} written in {} ms, {} failed, {} read, {} unchanged unloads"
+            + " skipped. Shutdown wrote {} file(s) in {} ms.",
+        Constants.LOG_PREFIX,
+        statistics.filesWritten(),
+        statistics.fileWriteMilliseconds(),
+        statistics.fileWriteFailures(),
+        statistics.filesRead(),
+        statistics.skippedUnchangedUnloads(),
+        statistics.filesWritten() - storageStatisticsBeforeShutdown.filesWritten(),
+        statistics.fileWriteMilliseconds()
+            - storageStatisticsBeforeShutdown.fileWriteMilliseconds());
   }
 }

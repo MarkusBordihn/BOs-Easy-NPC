@@ -19,6 +19,8 @@
 
 package de.markusbordihn.easynpc.data.attribute;
 
+import java.util.EnumMap;
+import java.util.Map;
 import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.LivingEntity;
@@ -34,6 +36,10 @@ public class BaseAttributes {
   public static final String FOLLOW_RANGE_TAG = BaseAttributeType.FOLLOW_RANGE.getTagName();
   public static final String KNOCKBACK_RESISTANCE_TAG =
       BaseAttributeType.KNOCKBACK_RESISTANCE.getTagName();
+  public static final String MIN_VALUES_TAG = "MinValues";
+  public static final String MAX_VALUES_TAG = "MaxValues";
+  private final Map<BaseAttributeType, Double> minValues = new EnumMap<>(BaseAttributeType.class);
+  private final Map<BaseAttributeType, Double> maxValues = new EnumMap<>(BaseAttributeType.class);
   private double attackDamage = 2.0D;
   private double attackKnockback = 0.0D;
   private double followRange = 32.0D;
@@ -56,6 +62,27 @@ public class BaseAttributes {
     this.setAttackDamage(getBaseValue(livingEntity, Attributes.ATTACK_DAMAGE, this.attackDamage));
     this.setAttackKnockback(
         getBaseValue(livingEntity, Attributes.ATTACK_KNOCKBACK, this.attackKnockback));
+    for (BaseAttributeType baseAttributeType : BaseAttributeType.values()) {
+      this.minValues.put(baseAttributeType, baseAttributeType.getMinValue());
+      this.maxValues.put(baseAttributeType, baseAttributeType.getMaxValue());
+    }
+  }
+
+  private static void loadValues(
+      CompoundTag compoundTag, String tagName, Map<BaseAttributeType, Double> values) {
+    CompoundTag valuesTag = compoundTag.getCompoundOrEmpty(tagName);
+    for (BaseAttributeType baseAttributeType : BaseAttributeType.values()) {
+      valuesTag
+          .getDouble(baseAttributeType.getTagName())
+          .ifPresent(value -> values.put(baseAttributeType, value));
+    }
+  }
+
+  private static CompoundTag saveValues(Map<BaseAttributeType, Double> values) {
+    CompoundTag valuesTag = new CompoundTag();
+    values.forEach(
+        (baseAttributeType, value) -> valuesTag.putDouble(baseAttributeType.getTagName(), value));
+    return valuesTag;
   }
 
   private static double getBaseValue(
@@ -83,6 +110,8 @@ public class BaseAttributes {
     if (baseAttributesTag.contains(ATTACK_KNOCKBACK_TAG)) {
       this.setAttackKnockback(baseAttributesTag.getDouble(ATTACK_KNOCKBACK_TAG).orElse(0.0));
     }
+    loadValues(baseAttributesTag, MIN_VALUES_TAG, this.minValues);
+    loadValues(baseAttributesTag, MAX_VALUES_TAG, this.maxValues);
   }
 
   public CompoundTag save(CompoundTag compoundTag) {
@@ -91,12 +120,24 @@ public class BaseAttributes {
     baseAttributesTag.putDouble(KNOCKBACK_RESISTANCE_TAG, this.getKnockbackResistance());
     baseAttributesTag.putDouble(ATTACK_DAMAGE_TAG, this.getAttackDamage());
     baseAttributesTag.putDouble(ATTACK_KNOCKBACK_TAG, this.getAttackKnockback());
+    baseAttributesTag.put(MIN_VALUES_TAG, saveValues(this.minValues));
+    baseAttributesTag.put(MAX_VALUES_TAG, saveValues(this.maxValues));
     compoundTag.put(BASE_ATTRIBUTES_TAG, baseAttributesTag);
     return compoundTag;
   }
 
   public CompoundTag createTag() {
     return this.save(new CompoundTag());
+  }
+
+  public double getMinValue(BaseAttributeType baseAttributeType) {
+    Double minValue = this.minValues.get(baseAttributeType);
+    return minValue != null ? minValue : baseAttributeType.getMinValue();
+  }
+
+  public double getMaxValue(BaseAttributeType baseAttributeType) {
+    Double maxValue = this.maxValues.get(baseAttributeType);
+    return maxValue != null ? maxValue : baseAttributeType.getMaxValue();
   }
 
   public double getFollowRange() {

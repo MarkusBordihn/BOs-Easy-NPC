@@ -3,7 +3,7 @@
     author:"Kaworru",
     category:"General",
     created:1768693668394L,
-    description:"This NPC gives stone or dirt to a player on request.",
+    description:"A YES_NO dialog where each answer runs a /give command: yes hands out stone, no hands out dirt anyway. Also shows the @npc name macro.",
     entityTypeId:"easy_npc:humanoid_slim",
     modified:1768693668394L,
     name:"Stone or Dirt Supplier",
@@ -16,11 +16,11 @@
     },{
       Base:0.5d,Name:"minecraft:generic.movement_speed"
     }],
-    CustomName:'{"color":"#00FFFF","text":"Starter NPC"}',
+    CustomName:'{"color":"#00FFFF","text":"Stone Supplier"}',
     DialogData:{
       DialogDataSet:[{
         Label:"yes_answer",Name:"Yes Dialog",Texts:[{
-          Text:"<green>Here have some stone.</green>"
+          Text:"<green>Here, fresh from the quarry.</green>"
         }]
       },{
         Buttons:[{
@@ -36,11 +36,11 @@
             Cmd:"/give @initiator dirt",Type:"COMMAND"
           }],Label:"no_button",Name:"No, thanks."
         }],Label:"question",Name:"Question Dialog",Texts:[{
-          Text:"Hi @initiator, my name is @npc.\\nDo you want some stone ?"
+          Text:"Hi @initiator, my name is @npc.\\nDo you want some stone?"
         }]
       },{
         Label:"no_answer",Name:"No Dialog",Texts:[{
-          Text:"<red>Ok, then get some dirt instead.</red>"
+          Text:"<red>Suit yourself. Dirt it is, then.</red>"
         }]
       }],
       Type:"YES_NO"
@@ -63,7 +63,6 @@
       }
     },
     ObjectiveData:{
-      HasObjectives:1b,
       ObjectiveDataSet:[{
         SpeedModifier:0.6d,Type:"LOOK_AT_PLAYER"
       },{

@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.handler;
 import de.markusbordihn.easynpc.entity.EasyNPCEntityTypes;
 import de.markusbordihn.easynpc.network.NetworkHandlerManager;
 import de.markusbordihn.easynpc.network.message.client.ShoulderNPCMessage;
+import de.markusbordihn.easynpc.network.syncher.ShoulderNPCClientData;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -96,7 +97,7 @@ public class ShoulderNPCSynchronizer {
     sentShoulderStates.clear();
   }
 
-  private static ShoulderNPCMessage createShoulderState(ServerPlayer serverPlayer) {
+  public static ShoulderNPCMessage createShoulderState(ServerPlayer serverPlayer) {
     return new ShoulderNPCMessage(
         serverPlayer.getId(),
         getShoulderNPCTag(serverPlayer, serverPlayer.getShoulderEntityLeft()),
@@ -105,7 +106,7 @@ public class ShoulderNPCSynchronizer {
 
   private static CompoundTag getShoulderNPCTag(ServerPlayer serverPlayer, CompoundTag entityTag) {
     return EasyNPCEntityTypes.isEasyNPCEntityTag(entityTag, serverPlayer.level())
-        ? entityTag
+        ? ShoulderNPCClientData.createClientEntityTag(entityTag)
         : new CompoundTag();
   }
 }

@@ -3,7 +3,7 @@
     author:"Kaworru",
     category:"Custom",
     created:1768695783381L,
-    description:"A sitting skeleton that shows a dialog on interaction.",
+    description:"A sitting skeleton with detached legs and a shortened arm, built from custom part positions, rotations and scale. Shows a dialog on interaction.",
     entityTypeId:"easy_npc:skeleton",
     modified:1768695783381L,
     name:"Sitting Skeleton",
@@ -23,7 +23,7 @@
     DialogData:{
       DialogDataSet:[{
         Label:"default",Name:"Basic Dialog",Texts:[{
-          Text:"Hello @initiator, did you saw my legs ?"
+          Text:"Hello @initiator, have you seen my legs? They were attached a moment ago."
         }]
       }],
       Type:"BASIC"
@@ -59,7 +59,6 @@
       }
     },
     ObjectiveData:{
-      HasObjectives:0b,
       ObjectiveDataSet:[]
     },
     PersistenceRequired:0b,
