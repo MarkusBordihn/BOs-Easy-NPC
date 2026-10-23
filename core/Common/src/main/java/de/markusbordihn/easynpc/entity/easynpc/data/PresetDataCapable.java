@@ -144,6 +144,11 @@ public interface PresetDataCapable<T extends Mob> extends EasyNPC<T> {
     // Fix possible legacy custom name.
     CompoundTagUtils.fixLegacyCustomName(this.getEntity());
 
+    StatusDataCapable<T> statusData = this.getEasyNPCStatusData();
+    if (statusData != null) {
+      statusData.markNPCDataUpdated("preset import");
+    }
+
     if (this.getEntity() instanceof LivingEntity livingEntity) {
       float maxHealth =
           livingEntity.getAttribute(Attributes.MAX_HEALTH) != null

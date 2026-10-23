@@ -18,7 +18,7 @@
     },{
       Base:0.5d,Name:"minecraft:generic.movement_speed"
     }],
-    CustomName:'{"color":"#00FFFF","text":"Professor Dr."}',
+    CustomName:'{"color":"#00FFFF","text":"Professor Quiz"}',
     DialogData:{
       DialogDataSet:[{
         Name:"End Quiz",Texts:[{
@@ -54,7 +54,7 @@
         },{
           Actions:[{
             Cmd:"start_quiz",Type:"OPEN_NAMED_DIALOG"
-          }],Label:"button_11",Name:"Yes, of course !"
+          }],Label:"button_11",Name:"Yes, of course!"
         }],Label:"default",Name:"Welcome",Texts:[{
           Text:"Curious to see how much you know, @initiator?"
         },{
@@ -64,7 +64,7 @@
         },{
           Text:"Up for a knowledge test, @initiator?"
         },{
-          Text:"Hey @initiator you want to test your knowledge ?"
+          Text:"Hey @initiator, want to test your knowledge?"
         },{
           Text:"Hey there, @initiator! Ready to put your knowledge to the test?"
         }]
@@ -74,7 +74,7 @@
             Cmd:"question_two",Type:"OPEN_NAMED_DIALOG"
           }],Label:"button_70",Name:"Next One ..."
         }],Label:"question_one_correct",Name:"First question: Correct",Texts:[{
-          Text:"Thats correct.\\nIn Minecraft, a crafting table is an essential crafting station that allows players to create more advanced items and tools.\\nTo craft a crafting table, you need four wooden planks.\\nSimply place the wooden planks in a 2x2 crafting grid, leaving the center square empty, and you'll have your crafting table ready for use."
+          Text:"That's correct.\\nIn Minecraft, a crafting table is an essential crafting station that allows players to create more advanced items and tools.\\nTo craft a crafting table, you need four wooden planks.\\nFill the 2x2 crafting grid in your inventory with them and your crafting table is ready."
         }]
       },{
         Buttons:[{
@@ -82,7 +82,7 @@
             Cmd:"question_one",Type:"OPEN_NAMED_DIALOG"
           }],Label:"button_564",Name:"Try again ..."
         }],Label:"question_one_wrong",Name:"First Question: Wrong",Texts:[{
-          Text:"Wrong answer. Try again."
+          Text:"Not quite. Far too precious for a humble crafting table. Try again."
         }]
       },{
         Buttons:[{
@@ -90,11 +90,11 @@
             Cmd:"question_one",Type:"OPEN_NAMED_DIALOG"
           }],Label:"button_2",Name:"Start quiz"
         }],Name:"Start Quiz",Texts:[{
-          Text:"Nice, lets start the quiz.... click on the start button when you are ready."
+          Text:"Splendid. Two questions, no time limit. Start whenever you are ready."
         }]
       },{
         Label:"question_two_correct",Name:"Second Question: Correct",Texts:[{
-          Text:"Nice one. The End is a mysterious and otherworldly dimension in Minecraft, accessed through a portal generated after defeating the Ender Dragon.\\nIt is a desolate land with floating islands and obsidian pillars.\\nThe Ender Dragon is the final boss in Minecraft and resides in The End, guarding the End Portal and Ender Gateway."
+          Text:"Nice one. The End is a mysterious and otherworldly dimension in Minecraft, reached through the End portal hidden deep inside a stronghold.\\nIt is a desolate land with floating islands and obsidian pillars.\\nDefeat the Ender Dragon there and the exit portal opens to take you home."
         }]
       },{
         Buttons:[{
@@ -124,7 +124,7 @@
             Cmd:"question_two",Type:"OPEN_NAMED_DIALOG"
           }],Label:"button_712",Name:"Try again"
         }],Label:"question_two_wrong",Name:"Second Question: Wrong",Texts:[{
-          Text:"Wrong answer. Try again."
+          Text:"Not quite. Think further away, past the strongholds. Try again."
         }]
       }],
       Type:"STANDARD"
@@ -138,7 +138,6 @@
     },{}],
     Invulnerable:1b,
     ObjectiveData:{
-      HasObjectives:1b,
       ObjectiveDataSet:[{
         Type:"LOOK_AT_PLAYER"
       },{

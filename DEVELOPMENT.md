@@ -120,7 +120,7 @@ multi-project plugin conflicts.
 **Note:** Build caches (Loom, Forge mappings, Gradle cache) are intentionally kept to maximize build
 speed. Use individual project's `clean` task if you need to delete build directories.
 
-## Quick start (cross‑platform) 🚀
+## Quick start (cross-platform) 🚀
 
 > [!IMPORTANT]
 > First-time setup for reliable root tasks: Build each artifact at least once individually so that

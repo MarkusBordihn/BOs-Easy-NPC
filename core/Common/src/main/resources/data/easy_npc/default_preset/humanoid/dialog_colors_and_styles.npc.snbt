@@ -11,11 +11,11 @@
     version:"1.0.0"
   },
   data:{
-    CustomName:'{"color":"#A020F0","text":"Humanoid"}',
+    CustomName:'{"color":"#A020F0","text":"Style Showcase"}',
     DialogData:{
       DialogDataSet:[{
         Label:"default",Name:"Basic Dialog",Texts:[{
-          Text:"The dialog supports different kind of colors like: <black>black <dark_blue>dark blue <dark_green>dark green <dark_aqua>dark aqua <dark_red>dark red <dark_purple>dark purple <gold>gold <gray>gray <dark_gray>dark gray <blue>blue <green>green <aqua>aqua <red>red <light_purple>light purple <yellow>yellow <white>white<br><br><black>Styling is also supported: <obfuscated>obfuscated</obfuscated> <bold>bold</bold> <strikethrough>strikethrough</strikethrough> <underline>underline</underline> <italic>italic</italic>"
+          Text:"Dialogs support these colors: <black>black <dark_blue>dark blue <dark_green>dark green <dark_aqua>dark aqua <dark_red>dark red <dark_purple>dark purple <gold>gold <gray>gray <dark_gray>dark gray <blue>blue <green>green <aqua>aqua <red>red <light_purple>light purple <yellow>yellow <white>white<br><br><black>Styling is also supported: <obfuscated>obfuscated</obfuscated> <bold>bold</bold> <strikethrough>strikethrough</strikethrough> <underline>underline</underline> <italic>italic</italic>"
         }]
       }],
       Type:"BASIC"
@@ -31,7 +31,6 @@
     }],
     Invulnerable:1b,
     ObjectiveData:{
-      HasObjectives:1b,
       ObjectiveDataSet:[{
         Type:"LOOK_AT_PLAYER"
       },{

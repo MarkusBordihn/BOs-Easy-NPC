@@ -212,7 +212,7 @@ public class DialogOptionsEditorScreen<T extends EditorMenu> extends EditorScree
                 true,
                 sliderButton -> {}));
 
-    // Avatar Top slider — uses POSITION type so text-edit accepts negative values
+    // Avatar Top slider - uses POSITION type so text-edit accepts negative values
     this.avatarTopInitialValue =
         dialogOptions.hasAvatarTop() ? dialogOptions.avatarTop() : this.npcDefaultTop;
     this.avatarTopSlider =
@@ -231,7 +231,7 @@ public class DialogOptionsEditorScreen<T extends EditorMenu> extends EditorScree
                 true,
                 sliderButton -> {}));
 
-    // Avatar Left slider — uses POSITION type so text-edit accepts negative values
+    // Avatar Left slider - uses POSITION type so text-edit accepts negative values
     this.avatarLeftInitialValue =
         dialogOptions.hasAvatarLeft() ? dialogOptions.avatarLeft() : this.npcDefaultLeft;
     this.avatarLeftSlider =

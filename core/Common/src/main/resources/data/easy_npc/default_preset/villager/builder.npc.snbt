@@ -3,7 +3,7 @@
     author:"Kaworru",
     category:"Villager",
     created:1768694699583L,
-    description:"Uses the on_interaction event to talk to the player, then builds a glow block with a lever and activates the glow block via the lever.",
+    description:"Uses ON_INTERACTION commands to place a redstone lamp with a lever on top, then flips the lever with /easy_npc interact block. Each click toggles the lamp.",
     entityTypeId:"easy_npc:villager",
     modified:1768694699583L,
     name:"Builder",
@@ -14,13 +14,13 @@
     ActionData:{
       ActionEventSet:{
         ON_INTERACTION:[{
-          Cmd:"/say Hello @initiator, lets build something ..",Type:"COMMAND"
+          Cmd:"/say Hello @initiator, let's build something!",Type:"COMMAND"
         },{
           Cmd:"/setblock ~1 ~0 ~0 minecraft:redstone_lamp replace",Type:"COMMAND"
         },{
           Cmd:"/setblock ~1 ~1 ~0 minecraft:lever[face=floor] keep",Type:"COMMAND"
         },{
-          Cmd:"/say Now lets switch the lever ...",Type:"COMMAND"
+          Cmd:"/say Now watch, I'll flip the lever.",Type:"COMMAND"
         },{
           Cmd:"/easy_npc interact block @npc-uuid ~1 ~1 ~",Type:"COMMAND"
         }]
@@ -39,7 +39,6 @@
     },{}],
     LastGossipDecay:2436039L,
     ObjectiveData:{
-      HasObjectives:1b,
       ObjectiveDataSet:[{
         Type:"LOOK_AT_PLAYER"
       },{

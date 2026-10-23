@@ -24,6 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import de.markusbordihn.easynpc.data.action.ActionEventSet;
+import de.markusbordihn.easynpc.data.objective.ObjectiveDataSet;
 import de.markusbordihn.easynpc.data.status.StatusDataType;
 import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.ObjectiveDataCapable;
@@ -197,7 +198,7 @@ class PresetCompactorTest {
   @DisplayName("The objective data is kept even when it is equal to the reference")
   void testObjectiveDataIsAlwaysKept() {
     CompoundTag objectiveData = new CompoundTag();
-    objectiveData.putBoolean("HasObjectives", true);
+    objectiveData.put(ObjectiveDataSet.DATA_OBJECTIVE_DATA_SET_TAG, new ListTag());
     CompoundTag reference = new CompoundTag();
     reference.put(ObjectiveDataCapable.DATA_OBJECTIVE_DATA_TAG, objectiveData);
 

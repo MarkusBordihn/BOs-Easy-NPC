@@ -54,8 +54,10 @@ public class PauseManager {
       return false;
     }
 
-    statusData.setStatusDataFlag(StatusDataType.PAUSED, paused);
-    statusData.markNPCDataUpdated();
+    if (statusData.getStatusDataFlag(StatusDataType.PAUSED) != paused) {
+      statusData.setStatusDataFlag(StatusDataType.PAUSED, paused);
+      statusData.markNPCDataUpdated("pause");
+    }
     applyNoAi(easyNPC, paused);
     return true;
   }

@@ -1,5 +1,5 @@
 {
-  "text.easy_npc_example.hello.text": "Hello @initiator, my name is @npc nice to meet you!\n\nDo you want to know more about me?",
+  "text.easy_npc_example.hello.text": "Hello @initiator, my name is @npc, nice to meet you!\n\nDo you want to know more about me?",
   "text.easy_npc_example.hello.yes_button": "Yes, of course.",
   "text.easy_npc_example.hello.no_button": "No, thanks.",
   "text.easy_npc_example.hello.yes_answer": "I'm a translator, I can help you to understand the language of the world.",

@@ -21,7 +21,7 @@
         },{
           Cmd:"5s",Type:"WAIT"
         },{
-          Msg:{T:4b,Texts:["I will turn the glass again."]},Type:"MESSAGE"
+          Msg:{T:4b,Texts:["Ask, and I will turn the glass again."]},Type:"MESSAGE"
         }]
       }
     },
@@ -88,7 +88,7 @@
     },
     EasyNPCVersion:3,
     ObjectiveData:{
-      HasObjectives:1b,ObjectiveDataSet:[{
+      ObjectiveDataSet:[{
         Type:"LOOK_AT_PLAYER"
       },{
         Type:"LOOK_AT_RESET"

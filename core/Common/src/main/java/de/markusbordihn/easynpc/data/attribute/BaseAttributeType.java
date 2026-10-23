@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 import net.minecraft.core.Holder;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.attributes.RangedAttribute;
 
 public enum BaseAttributeType {
   ATTACK_DAMAGE(Attributes.ATTACK_DAMAGE),
@@ -41,6 +42,12 @@ public enum BaseAttributeType {
   ARMOR(Attributes.ARMOR),
   ARMOR_TOUGHNESS(Attributes.ARMOR_TOUGHNESS),
   LUCK(Attributes.LUCK);
+
+  // CombatRules#getDamageAfterAbsorb inverts its armor clamp above 100, 125 armor blocks all damage.
+  private static final double MAX_ARMOR_BEFORE_DAMAGE_IMMUNITY = 100.0D;
+
+  // LivingEntity#setHealth and Mob#doHurtTarget use floats, larger values become Infinity.
+  private static final double MAX_FLOAT_VALUE = Float.MAX_VALUE;
 
   private final Holder<Attribute> attribute;
   private final String attributeName = this.name().toLowerCase(Locale.ROOT);
@@ -56,6 +63,29 @@ public enum BaseAttributeType {
 
   public Holder<Attribute> getAttribute() {
     return this.attribute;
+  }
+
+  public double getMinValue() {
+    if (this.attribute.value() instanceof RangedAttribute rangedAttribute) {
+      return Math.max(rangedAttribute.getMinValue(), -MAX_FLOAT_VALUE);
+    }
+
+    return -MAX_FLOAT_VALUE;
+  }
+
+  public double getMaxValue() {
+    double maxValue = MAX_FLOAT_VALUE;
+    if (this.attribute.value() instanceof RangedAttribute rangedAttribute) {
+      maxValue = Math.min(rangedAttribute.getMaxValue(), MAX_FLOAT_VALUE);
+    }
+    if (this == ARMOR) {
+      maxValue = Math.min(maxValue, MAX_ARMOR_BEFORE_DAMAGE_IMMUNITY);
+    }
+    return maxValue;
+  }
+
+  public boolean isValidValue(double value) {
+    return Double.isFinite(value) && value >= this.getMinValue() && value <= this.getMaxValue();
   }
 
   public String getAttributeName() {

@@ -130,11 +130,6 @@ dependencies {
       && project.forge_easy_model_entities_version) {
     runtimeOnly "maven.modrinth:easy-model-entities:${project.forge_easy_model_entities_version}"
   }
-
-  // Client Runtime Interface Toolkit (runtime dependency, only for client tests)
-  if (rootProject.findProperty('clientRuntimeTest')?.isClientTestRun()) {
-    runtimeOnly rootProject.clientRuntimeTest.toolkitCoordinate('forge')
-  }
 }
 
 // ForgeGradle derives the "runsJson" output of its slimeLauncherMetadata tasks from their own
@@ -247,6 +242,9 @@ sourceSets.main {
 sourceSets.test {
   output.resourcesDir = mainOutputDir
   java.destinationDirectory = mainOutputDir
+}
+tasks.matching { it.name == 'clientTest' }.configureEach {
+  mustRunAfter tasks.named('compileTestJava'), tasks.named('processTestResources')
 }
 
 // The game test world is persistent, so every run would inherit the NPCs of all previous runs.

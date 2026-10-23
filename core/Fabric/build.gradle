@@ -42,13 +42,6 @@ loom {
       vmArg "-Dfabric-api.gametest"
       runDir("run/gametest")
     }
-    if (project.rootProject.findProperty('clientRuntimeTest')?.isAvailable()) {
-      clientTest {
-        client()
-        setConfigName("Fabric Client Test")
-        runDir("run/clienttest")
-      }
-    }
   }
 }
 
@@ -91,11 +84,6 @@ dependencies {
   } else if (project.hasProperty('fabric_easy_model_entities_version')
       && project.fabric_easy_model_entities_version) {
     runtimeOnly("maven.modrinth:easy-model-entities:${project.fabric_easy_model_entities_version}")
-  }
-
-  // Client Runtime Interface Toolkit (runtime dependency, only for client tests)
-  if (rootProject.findProperty('clientRuntimeTest')?.isClientTestRun()) {
-    localRuntime rootProject.clientRuntimeTest.toolkitCoordinate('fabric')
   }
 }
 

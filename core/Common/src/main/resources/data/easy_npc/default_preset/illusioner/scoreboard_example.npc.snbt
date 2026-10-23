@@ -47,9 +47,9 @@
             Cmd:"set:easy_npc_test_score:0",Type:"SCOREBOARD"
           },{
             Type:"OPEN_DEFAULT_DIALOG"
-          }],Label:"button_679",Name:"Reset Counter"
+          }],Label:"button_679",Name:"Reset Score"
         }],Name:"Fallback",Texts:[{
-          Text:"Highcore to high..."
+          Text:"Your score reached @score(easy_npc_test_score), @initiator. That is the top of my board. Reset it to play again."
         }]
       }],
       Type:"CUSTOM"
@@ -61,7 +61,6 @@
       }
     },{}],
     ObjectiveData:{
-      HasObjectives:1b,
       ObjectiveDataSet:[{
         Type:"LOOK_AT_PLAYER"
       },{

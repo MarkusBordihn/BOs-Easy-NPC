@@ -79,6 +79,7 @@ import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.SpawnGroupData;
@@ -247,7 +248,14 @@ public class NPCRawTemplate extends Zombie
   private final EnumMap<StatusDataType, Long> statusDataTimestampMap =
       new EnumMap<>(StatusDataType.class);
   private final BossBarHandler bossBarHandler = new BossBarHandler();
-  private final SimpleContainer easyNPCInventory = new SimpleContainer(INVENTORY_SIZE);
+  private final SimpleContainer easyNPCInventory =
+      new SimpleContainer(INVENTORY_SIZE) {
+        @Override
+        public void setChanged() {
+          super.setChanged();
+          NPCRawTemplate.this.markNPCDataUpdated("inventory");
+        }
+      };
   protected MerchantOffers merchantTradingOffers;
   private ServerEntityData serverEntityData;
   private int attackAnimationTick;
@@ -424,6 +432,24 @@ public class NPCRawTemplate extends Zombie
       itemEntity.discard();
     } else {
       itemStack.setCount(remainingItemStack.getCount());
+    }
+  }
+
+  @Override
+  public void setItemSlot(EquipmentSlot equipmentSlot, ItemStack itemStack) {
+    boolean isChanged = !ItemStack.matches(this.getItemBySlot(equipmentSlot), itemStack);
+    super.setItemSlot(equipmentSlot, itemStack);
+    if (isChanged && !this.level().isClientSide()) {
+      this.markNPCDataUpdated("equipment " + equipmentSlot.getName());
+    }
+  }
+
+  @Override
+  public void setCustomName(Component customName) {
+    boolean isChanged = !Objects.equals(this.getCustomName(), customName);
+    super.setCustomName(customName);
+    if (isChanged && !this.level().isClientSide()) {
+      this.markNPCDataUpdated("custom name");
     }
   }
 
@@ -789,6 +815,11 @@ public class NPCRawTemplate extends Zombie
     }
 
     this.handleNavigationTravelEvent(vec3);
+    if (this.canSkipIdleTravel(vec3)) {
+      this.calculateEntityAnimation(false);
+      return;
+    }
+
     super.travel(vec3);
   }
 
