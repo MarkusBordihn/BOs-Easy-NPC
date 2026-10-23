@@ -104,9 +104,11 @@ public class LivingEntityEvents {
               livingEntity.level().dimension().identifier(),
               removalReason);
           if (intentionalReason == null && easyNPC.isPersistentNPC()) {
-            NPCEntityManager.saveNPC(easyNPC, removalReason);
             if (removalReason == NPCRemovalReason.UNLOADED_TO_CHUNK) {
+              NPCEntityManager.saveChangedNPCOnChunkUnload(easyNPC);
               NPCChurnTracker.trackChunkUnload(easyNPC);
+            } else {
+              NPCEntityManager.saveNPC(easyNPC, removalReason);
             }
           }
         }

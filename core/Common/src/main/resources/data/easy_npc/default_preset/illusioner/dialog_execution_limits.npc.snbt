@@ -3,7 +3,7 @@
     author:"Kaworru",
     category:"Custom",
     created:1768694289876L,
-    description:"Shows a sequence of dialogs (Start, Dialog 1 to 3, End). Execution limits reset once per day.",
+    description:"Shows a sequence of dialogs (Start, Dialog 1 to 5, End) driven by priorities. Each limited dialog shows once per day per player, so every talk opens the next one.",
     entityTypeId:"easy_npc:illusioner",
     modified:1768694289876L,
     name:"Dialog Sequence: Daily Limits",
@@ -21,31 +21,31 @@
         Conditions:[{
           SubType:"PER_DAY",Type:"EXECUTION_LIMIT",Value:1
         }],Name:"Dialog 5",Priority:1,Texts:[{
-          Text:"This is the 5th Dialog."
+          Text:"Dialog 5 of 5. That was the last limited dialog for today."
         }]
       },{
         Conditions:[{
           SubType:"PER_DAY",Type:"EXECUTION_LIMIT",Value:1
         }],Name:"Dialog 4",Priority:2,Texts:[{
-          Text:"This is the 4th Dialog."
+          Text:"Dialog 4 of 5. Only one left after this."
         }]
       },{
         Conditions:[{
           SubType:"PER_DAY",Type:"EXECUTION_LIMIT",Value:1
         }],Name:"Dialog 3",Priority:3,Texts:[{
-          Text:"This is the 3rd Dialog."
+          Text:"Dialog 3 of 5. Halfway through today's sequence."
         }]
       },{
         Conditions:[{
           SubType:"PER_DAY",Type:"EXECUTION_LIMIT",Value:1
         }],Name:"Dialog 2",Priority:4,Texts:[{
-          Text:"This is the 2nd Dialog."
+          Text:"Dialog 2 of 5. The first one is gone until tomorrow."
         }]
       },{
         Conditions:[{
           SubType:"PER_DAY",Type:"EXECUTION_LIMIT",Value:1
         }],Name:"Dialog 1",Priority:5,Texts:[{
-          Text:"This is the 1st Dialog."
+          Text:"Dialog 1 of 5. Each one shows once per day. Talk to me again for the next."
         }]
       },{
         Conditions:[{
@@ -55,7 +55,7 @@
         }]
       },{
         Name:"End Dialog",Texts:[{
-          Text:"This is the end my friend."
+          Text:"This is the end, my friend. Come back tomorrow for the whole sequence."
         }]
       }],
       Type:"CUSTOM"
@@ -67,7 +67,6 @@
       }
     },{}],
     ObjectiveData:{
-      HasObjectives:1b,
       ObjectiveDataSet:[{
         Type:"LOOK_AT_PLAYER"
       },{
@@ -80,4 +79,4 @@
     PresetUUID:[I;788608011,1045317104,-1360710270,-1751880300],
     id:"easy_npc:illusioner"
   }
-}
+}

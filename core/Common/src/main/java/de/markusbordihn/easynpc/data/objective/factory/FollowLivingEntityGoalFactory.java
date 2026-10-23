@@ -29,7 +29,8 @@ import net.minecraft.world.entity.ai.goal.Goal;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public record FollowLivingEntityGoalFactory(TargetResolver targetResolver)
+public record FollowLivingEntityGoalFactory(
+    TargetResolver targetResolver, boolean followIntoOtherDimensions)
     implements ObjectiveGoalFactory {
 
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
@@ -52,7 +53,8 @@ public record FollowLivingEntityGoalFactory(TargetResolver targetResolver)
         objectiveDataEntry.getStopDistance(),
         objectiveDataEntry.getStartDistance(),
         objectiveDataEntry.getTeleportDistance(),
-        objectiveDataEntry.getFollowOffset());
+        objectiveDataEntry.getFollowOffset(),
+        this.followIntoOtherDimensions);
   }
 
   @FunctionalInterface

@@ -28,12 +28,14 @@ import de.markusbordihn.easynpc.data.npc.NPCEntityMetadata;
 import de.markusbordihn.easynpc.data.npc.NPCRemovalReason;
 import de.markusbordihn.easynpc.data.npc.SavedNPCEntityEntry;
 import de.markusbordihn.easynpc.data.storage.NPCFileStorage;
+import de.markusbordihn.easynpc.data.storage.NPCStorageStatistics;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.utils.CompoundTagUtils;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -169,10 +171,14 @@ public class NPCEntityData extends SavedData {
 
     this.metadata.put(uuid, entry.metadata());
     this.updateCachedMaps(uuid, entry.metadata());
-    this.setDirty();
 
-    if (this.npcFileStorage != null && entry.npcData() != null) {
-      this.npcFileStorage.markDirty(uuid, entry.npcData());
+    boolean isFileDirty =
+        this.npcFileStorage != null
+            && entry.npcData() != null
+            && this.npcFileStorage.markDirty(uuid, entry.npcData());
+    // Vanilla calls SavedData#save, which queues the NPC file writes, only while the index is dirty.
+    if (isFileDirty || !entry.metadata().equals(oldMetadata)) {
+      this.setDirty();
     }
   }
 
@@ -387,6 +393,51 @@ public class NPCEntityData extends SavedData {
         : Collections.emptyList();
   }
 
+  public Map<UUID, NPCEntityMetadata> getAllMetadata() {
+    return Map.copyOf(this.metadata);
+  }
+
+  public Map<UUID, NPCEntityMetadata> getMetadataByOwner(UUID ownerUUID) {
+    return ownerUUID != null ? this.resolveMetadata(this.entriesByOwner.get(ownerUUID)) : Map.of();
+  }
+
+  public Map<UUID, NPCEntityMetadata> getMetadataByType(String type) {
+    return type != null ? this.resolveMetadata(this.entriesByType.get(type)) : Map.of();
+  }
+
+  public Map<UUID, NPCEntityMetadata> getMetadataByDimension(String dimension) {
+    return dimension != null
+        ? this.resolveMetadata(this.entriesByDimension.get(dimension))
+        : Map.of();
+  }
+
+  public Map<UUID, NPCEntityMetadata> getMetadataByCustomIdentifier(Identifier customIdentifier) {
+    return customIdentifier != null
+        ? this.resolveMetadata(this.entriesByCustomIdentifier.get(customIdentifier))
+        : Map.of();
+  }
+
+  public Map<UUID, NPCEntityMetadata> getMetadataByCustomIdentifierNamespace(String namespace) {
+    return namespace != null
+        ? this.resolveMetadata(this.entriesByCustomIdentifierNamespace.get(namespace))
+        : Map.of();
+  }
+
+  private Map<UUID, NPCEntityMetadata> resolveMetadata(Set<UUID> uuids) {
+    if (uuids == null || uuids.isEmpty()) {
+      return Map.of();
+    }
+
+    Map<UUID, NPCEntityMetadata> resolvedMetadata = new LinkedHashMap<>();
+    for (UUID uuid : uuids) {
+      NPCEntityMetadata entityMetadata = this.metadata.get(uuid);
+      if (entityMetadata != null) {
+        resolvedMetadata.put(uuid, entityMetadata);
+      }
+    }
+    return resolvedMetadata;
+  }
+
   private Collection<SavedNPCEntityEntry> resolveEntries(Set<UUID> uuids) {
     if (uuids == null || uuids.isEmpty()) {
       return Collections.emptyList();
@@ -512,6 +563,22 @@ public class NPCEntityData extends SavedData {
     this.setDirty();
   }
 
+  public void updateNPCDataHash(UUID uuid, long npcDataHash) {
+    NPCEntityMetadata old = this.metadata.get(uuid);
+    if (old == null || old.npcDataHash() == npcDataHash) {
+      return;
+    }
+
+    this.metadata.put(uuid, old.withNPCDataHash(npcDataHash));
+    this.setDirty();
+  }
+
+  public void recordSkippedUnchangedUnload() {
+    if (this.npcFileStorage != null) {
+      this.npcFileStorage.recordSkippedUnchangedUnload();
+    }
+  }
+
   public int saveAllDirtyNPCs() {
     if (this.npcFileStorage != null) {
       return this.npcFileStorage.saveAllDirty();
@@ -520,7 +587,22 @@ public class NPCEntityData extends SavedData {
     return 0;
   }
 
+  public boolean queueNPCFile(UUID uuid) {
+    return this.npcFileStorage != null && this.npcFileStorage.queue(uuid);
+  }
+
+  public boolean isFileDirty(UUID uuid) {
+    return this.npcFileStorage != null && uuid != null && this.npcFileStorage.isDirty(uuid);
+  }
+
+  public NPCStorageStatistics getStorageStatistics() {
+    return this.npcFileStorage != null
+        ? this.npcFileStorage.getStatistics()
+        : NPCStorageStatistics.EMPTY;
+  }
+
   private CompoundTag saveToNbt() {
+    long startTime = System.currentTimeMillis();
     CompoundTag compoundTag = new CompoundTag();
     ListTag metadataTag = new ListTag();
     for (Map.Entry<UUID, NPCEntityMetadata> entry : this.metadata.entrySet()) {
@@ -535,11 +617,14 @@ public class NPCEntityData extends SavedData {
         .resultOrPartial(error -> log.error("Failed to save deleted NPC entries: {}", error))
         .ifPresent(deletedTag -> compoundTag.put(DATA_DELETED_TAG, deletedTag));
 
-    int savedFiles = this.saveAllDirtyNPCs();
+    long indexMilliseconds = System.currentTimeMillis() - startTime;
+    int queuedFiles = this.npcFileStorage != null ? this.npcFileStorage.queueAllDirty() : 0;
     log.debug(
-        "Saved metadata for {} NPC entities to index and {} dirty NPC files",
+        "Saved metadata for {} NPC entities to index in {} ms and queued {} NPC files in {} ms",
         this.metadata.size(),
-        savedFiles);
+        indexMilliseconds,
+        queuedFiles,
+        System.currentTimeMillis() - startTime - indexMilliseconds);
 
     return compoundTag;
   }

@@ -83,12 +83,17 @@ subprojects {
 
     // Fabric Loom keys its remap cache by coordinate and version only, so a jar republished to
     // mavenLocal under the same version would keep resolving to the previous remap.
-    rootProject.file(".gradle/loom-cache/remapped_mods/remapped/de/markusbordihn/easymodelentities")
+    rootProject.file(".gradle/loom-cache/remapped_mods")
         .listFiles()
-        ?.findAll { cacheDirectory ->
-          cacheDirectory.name.startsWith("easy_model_entities-${loader}-${mcVersion}-")
+        ?.collectMany { mappingsDirectory ->
+          new File(mappingsDirectory, "de/markusbordihn/easymodelentities")
+              .listFiles()?.toList() ?: []
         }
-        ?.collect { cacheDirectory -> new File(cacheDirectory, version) }
+        ?.findAll { artifactDirectory ->
+          artifactDirectory.name == "easy_model_entities-${loader}-${mcVersion}"
+              || artifactDirectory.name.startsWith("easy_model_entities-${loader}-${mcVersion}-")
+        }
+        ?.collect { artifactDirectory -> new File(artifactDirectory, version) }
         ?.findAll { remappedVersion ->
           remappedVersion.isDirectory() && remappedVersion.lastModified() < jar.lastModified()
         }

@@ -38,14 +38,24 @@ killedNPCRetentionDays: Deletes the saved data of killed NPCs after this (defaul
 deletedNPCRetentionDays: Forgets deleted NPCs after this, so their copies in old chunks are no longer removed on load (default: 365)
 reportOrphanNPCFiles: Logs NPC files without index entry on world load, never deletes them (default: true)
 
+npcSaveIntervalSeconds: Saves changed NPCs in loaded chunks every this many seconds, 0 only saves on chunk unload, autosave and stop (default: 30)
+npcSaveBatchSize: Maximum number of NPCs saved per interval, the rest follow in the next interval (default: 4)
+npcSaveMinimumAgeSeconds: Waits this long after the last change of an NPC before saving it, so ongoing edits are saved once (default: 30)
+
 """;
 
   private static final int MAX_RETENTION_DAYS = 3650;
+  private static final int MAX_NPC_SAVE_INTERVAL_SECONDS = 3600;
+  private static final int MAX_NPC_SAVE_BATCH_SIZE = 64;
+  private static final int MAX_NPC_SAVE_MINIMUM_AGE_SECONDS = 3600;
 
   public static int BACKUP_RETENTION_DAYS = 30;
   public static int KILLED_NPC_RETENTION_DAYS = 30;
   public static int DELETED_NPC_RETENTION_DAYS = 365;
   public static boolean REPORT_ORPHAN_NPC_FILES = true;
+  public static int NPC_SAVE_INTERVAL_SECONDS = 30;
+  public static int NPC_SAVE_BATCH_SIZE = 4;
+  public static int NPC_SAVE_MINIMUM_AGE_SECONDS = 30;
 
   public static void registerConfig() {
     registerConfigFile(CONFIG_FILE_NAME, CONFIG_FILE_HEADER);
@@ -72,6 +82,23 @@ reportOrphanNPCFiles: Logs NPC files without index entry on world load, never de
             MAX_RETENTION_DAYS);
     REPORT_ORPHAN_NPC_FILES =
         parseConfigValue(properties, "reportOrphanNPCFiles", REPORT_ORPHAN_NPC_FILES);
+    NPC_SAVE_INTERVAL_SECONDS =
+        parseConfigValue(
+            properties,
+            "npcSaveIntervalSeconds",
+            NPC_SAVE_INTERVAL_SECONDS,
+            0,
+            MAX_NPC_SAVE_INTERVAL_SECONDS);
+    NPC_SAVE_BATCH_SIZE =
+        parseConfigValue(
+            properties, "npcSaveBatchSize", NPC_SAVE_BATCH_SIZE, 1, MAX_NPC_SAVE_BATCH_SIZE);
+    NPC_SAVE_MINIMUM_AGE_SECONDS =
+        parseConfigValue(
+            properties,
+            "npcSaveMinimumAgeSeconds",
+            NPC_SAVE_MINIMUM_AGE_SECONDS,
+            0,
+            MAX_NPC_SAVE_MINIMUM_AGE_SECONDS);
 
     updateConfigFileIfChanged(configFile, CONFIG_FILE_HEADER, properties, unmodifiedProperties);
   }

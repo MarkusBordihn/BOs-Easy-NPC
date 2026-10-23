@@ -22,7 +22,9 @@ package de.markusbordihn.easynpc.gametest;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.compat.CompatConstants;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -53,6 +55,18 @@ public final class ModGameTests {
   private static final int EXTENDED_MAX_TICKS = 1200;
   private static final Identifier DEFAULT_STRUCTURE = Identifier.parse("easy_npc:gametest.3x3x3");
   private static final Identifier SMOKE_STRUCTURE = Identifier.parse("easy_npc:gametest.1x1x1");
+  private static final Identifier DEFAULT_ENVIRONMENT =
+      Identifier.fromNamespaceAndPath(Constants.MOD_ID, "default");
+  private static final Identifier IDLE_NPC_LOOK_COOLDOWN_ENVIRONMENT =
+      Identifier.fromNamespaceAndPath(Constants.MOD_ID, "idle_npc_look_cooldown");
+  private static final Identifier IDLE_NPC_NEARBY_PLAYER_ENVIRONMENT =
+      Identifier.fromNamespaceAndPath(Constants.MOD_ID, "idle_npc_nearby_player");
+  private static final Identifier IDLE_NPC_SPECTATOR_ENVIRONMENT =
+      Identifier.fromNamespaceAndPath(Constants.MOD_ID, "idle_npc_spectator");
+  private static final Identifier IDLE_NPC_WITHOUT_PLAYER_ENVIRONMENT =
+      Identifier.fromNamespaceAndPath(Constants.MOD_ID, "idle_npc_without_player");
+  private static final Identifier NPC_SAVE_SCHEDULER_ENVIRONMENT =
+      Identifier.fromNamespaceAndPath(Constants.MOD_ID, "npc_save_scheduler");
 
   static {
     register(
@@ -414,6 +428,99 @@ public final class ModGameTests {
         BackupTest::testBackupRestoresDeletedNPCs,
         DEFAULT_STRUCTURE,
         EXTENDED_MAX_TICKS);
+    register("backup_matches_export", BackupTest::testBackupMatchesExport, DEFAULT_STRUCTURE);
+    register(
+        "unchanged_n_p_c_is_linked_into_next_day",
+        BackupTest::testUnchangedNPCIsLinkedIntoNextDay,
+        DEFAULT_STRUCTURE);
+    register(
+        "changed_n_p_c_is_saved_and_exported",
+        BackupTest::testChangedNPCIsSavedAndExported,
+        DEFAULT_STRUCTURE);
+    register(
+        "backup_restores_over_changed_n_p_c",
+        BackupTest::testBackupRestoresOverChangedNPC,
+        DEFAULT_STRUCTURE);
+    register(
+        "backup_restores_full_configuration",
+        BackupTest::testBackupRestoresFullConfiguration,
+        DEFAULT_STRUCTURE);
+
+    register(
+        "idle_n_p_c_skips_travel",
+        IdleNPCTest::testIdleNPCSkipsTravel,
+        DEFAULT_STRUCTURE,
+        IDLE_NPC_WITHOUT_PLAYER_ENVIRONMENT);
+    register(
+        "periodic_tick_runs_travel",
+        IdleNPCTest::testPeriodicTickRunsTravel,
+        DEFAULT_STRUCTURE,
+        IDLE_NPC_WITHOUT_PLAYER_ENVIRONMENT);
+    register(
+        "moving_n_p_c_runs_travel",
+        IdleNPCTest::testMovingNPCRunsTravel,
+        DEFAULT_STRUCTURE,
+        IDLE_NPC_WITHOUT_PLAYER_ENVIRONMENT);
+    register(
+        "airborne_or_hurt_n_p_c_runs_travel",
+        IdleNPCTest::testAirborneOrHurtNPCRunsTravel,
+        DEFAULT_STRUCTURE,
+        IDLE_NPC_WITHOUT_PLAYER_ENVIRONMENT);
+    register(
+        "nearby_player_keeps_travel",
+        IdleNPCTest::testNearbyPlayerKeepsTravel,
+        DEFAULT_STRUCTURE,
+        IDLE_NPC_NEARBY_PLAYER_ENVIRONMENT);
+    register(
+        "spectator_is_ignored",
+        IdleNPCTest::testSpectatorIsIgnored,
+        DEFAULT_STRUCTURE,
+        IDLE_NPC_SPECTATOR_ENVIRONMENT);
+    register(
+        "look_goal_waits_after_failed_search",
+        IdleNPCTest::testLookGoalWaitsAfterFailedSearch,
+        DEFAULT_STRUCTURE,
+        IDLE_NPC_LOOK_COOLDOWN_ENVIRONMENT);
+    register(
+        "change_is_saved_after_minimum_age",
+        NPCSaveSchedulerTest::testChangeIsSavedAfterMinimumAge,
+        DEFAULT_STRUCTURE,
+        NPC_SAVE_SCHEDULER_ENVIRONMENT);
+    register(
+        "unchanged_n_p_c_is_not_saved",
+        NPCSaveSchedulerTest::testUnchangedNPCIsNotSaved,
+        DEFAULT_STRUCTURE,
+        NPC_SAVE_SCHEDULER_ENVIRONMENT);
+    register(
+        "batch_size_limits_saves_per_run",
+        NPCSaveSchedulerTest::testBatchSizeLimitsSavesPerRun,
+        DEFAULT_STRUCTURE,
+        NPC_SAVE_SCHEDULER_ENVIRONMENT);
+    register(
+        "unload_during_pending_write_keeps_newest_data",
+        NPCSaveSchedulerTest::testUnloadDuringPendingWriteKeepsNewestData,
+        DEFAULT_STRUCTURE,
+        NPC_SAVE_SCHEDULER_ENVIRONMENT);
+    register(
+        "autosave_writes_changed_n_p_c_file",
+        NPCSaveSchedulerTest::testAutosaveWritesChangedNPCFile,
+        DEFAULT_STRUCTURE,
+        NPC_SAVE_SCHEDULER_ENVIRONMENT);
+    register(
+        "disabled_interval_keeps_change_until_unload",
+        NPCSaveSchedulerTest::testDisabledIntervalKeepsChangeUntilUnload,
+        DEFAULT_STRUCTURE,
+        NPC_SAVE_SCHEDULER_ENVIRONMENT);
+    register(
+        "missing_index_hash_is_adopted_without_write",
+        NPCSaveSchedulerTest::testMissingIndexHashIsAdoptedWithoutWrite,
+        DEFAULT_STRUCTURE,
+        NPC_SAVE_SCHEDULER_ENVIRONMENT);
+    register(
+        "fired_spawn_action_is_saved",
+        NPCSaveSchedulerTest::testFiredSpawnActionIsSaved,
+        DEFAULT_STRUCTURE,
+        NPC_SAVE_SCHEDULER_ENVIRONMENT);
 
     register(
         "mass_spawn_stays_responsive",
@@ -657,6 +764,10 @@ public final class ModGameTests {
         "default_presets_survive_regeneration",
         DefaultPresetRoundTripTest::testDefaultPresetsSurviveRegeneration,
         DEFAULT_STRUCTURE);
+    register(
+        "default_presets_spawn_and_keep_running",
+        DefaultPresetRoundTripTest::testDefaultPresetsSpawnAndKeepRunning,
+        DEFAULT_STRUCTURE);
 
     register(
         "audience_contains_every_player_in_range",
@@ -799,6 +910,31 @@ public final class ModGameTests {
     register(
         "screen_action_without_a_player_is_skipped",
         FallbackActionTest::testScreenActionWithoutAPlayerIsSkipped,
+        DEFAULT_STRUCTURE);
+
+    register(
+        "unmet_conditional_dialog_falls_through_to_the_next_one",
+        ConditionalDialogActionTest::testUnmetConditionalDialogFallsThroughToTheNextOne,
+        DEFAULT_STRUCTURE);
+    register(
+        "met_conditional_dialog_blocks_later_screen_actions",
+        ConditionalDialogActionTest::testMetConditionalDialogBlocksLaterScreenActions,
+        DEFAULT_STRUCTURE);
+    register(
+        "fallback_runs_when_no_conditional_dialog_matches",
+        ConditionalDialogActionTest::testFallbackRunsWhenNoConditionalDialogMatches,
+        DEFAULT_STRUCTURE);
+    register(
+        "action_conditions_select_the_dialog",
+        ConditionalDialogActionTest::testActionConditionsSelectTheDialog,
+        DEFAULT_STRUCTURE);
+    register(
+        "action_chance_is_rolled_once",
+        ConditionalDialogActionTest::testActionChanceIsRolledOnce,
+        DEFAULT_STRUCTURE);
+    register(
+        "dialog_chance_is_rolled_once",
+        ConditionalDialogActionTest::testDialogChanceIsRolledOnce,
         DEFAULT_STRUCTURE);
 
     register(
@@ -1204,6 +1340,169 @@ public final class ModGameTests {
         "revive_rejects_n_p_c_on_shoulder",
         ShoulderTest::testReviveRejectsNPCOnShoulder,
         DEFAULT_STRUCTURE);
+    register(
+        "sit_on_shoulder_rejects_unavailable_n_p_c",
+        ShoulderTest::testSitOnShoulderRejectsUnavailableNPC,
+        DEFAULT_STRUCTURE);
+    register(
+        "shoulder_data_sent_to_clients_without_server_data",
+        ShoulderTest::testShoulderDataSentToClientsWithoutServerData,
+        DEFAULT_STRUCTURE);
+
+    register(
+        "light_level_command_sets_light_level",
+        AttributeCommandTest::testLightLevelCommandSetsLightLevel,
+        DEFAULT_STRUCTURE);
+    register(
+        "light_level_out_of_range_is_rejected",
+        AttributeCommandTest::testLightLevelOutOfRangeIsRejected,
+        DEFAULT_STRUCTURE);
+    register(
+        "max_health_command_sets_max_health_and_health",
+        AttributeCommandTest::testMaxHealthCommandSetsMaxHealthAndHealth,
+        DEFAULT_STRUCTURE);
+    register(
+        "max_health_out_of_range_is_rejected",
+        AttributeCommandTest::testMaxHealthOutOfRangeIsRejected,
+        DEFAULT_STRUCTURE);
+
+    register(
+        "scale_command_accepts_root",
+        ModelRootCommandTest::testScaleCommandAcceptsRoot,
+        DEFAULT_STRUCTURE);
+    register(
+        "rotate_command_accepts_root",
+        ModelRootCommandTest::testRotateCommandAcceptsRoot,
+        DEFAULT_STRUCTURE);
+    register(
+        "position_command_accepts_root",
+        ModelRootCommandTest::testPositionCommandAcceptsRoot,
+        DEFAULT_STRUCTURE);
+    register(
+        "scale_command_on_model_part_sets_custom_pose",
+        ModelRootCommandTest::testScaleCommandOnModelPartSetsCustomPose,
+        DEFAULT_STRUCTURE);
+
+    register("name_clear_hides_name", NameCommandTest::testNameClearHidesName, DEFAULT_STRUCTURE);
+
+    register(
+        "unchanged_reload_writes_no_file",
+        NPCStorageWriteTest::testUnchangedReloadWritesNoFile,
+        DEFAULT_STRUCTURE);
+    register(
+        "unchanged_reload_with_objectives_writes_no_file",
+        NPCStorageWriteTest::testUnchangedReloadWithObjectivesWritesNoFile,
+        DEFAULT_STRUCTURE);
+    register(
+        "unchanged_reload_with_trading_writes_no_file",
+        NPCStorageWriteTest::testUnchangedReloadWithTradingWritesNoFile,
+        DEFAULT_STRUCTURE);
+    register(
+        "equipment_change_is_saved",
+        NPCStorageWriteTest::testEquipmentChangeIsSaved,
+        DEFAULT_STRUCTURE);
+    register(
+        "custom_name_change_is_saved",
+        NPCStorageWriteTest::testCustomNameChangeIsSaved,
+        DEFAULT_STRUCTURE);
+    register(
+        "custom_name_removal_is_saved",
+        NPCStorageWriteTest::testCustomNameRemovalIsSaved,
+        DEFAULT_STRUCTURE);
+    register(
+        "inventory_change_is_saved",
+        NPCStorageWriteTest::testInventoryChangeIsSaved,
+        DEFAULT_STRUCTURE);
+    register("item_pickup_is_saved", NPCStorageWriteTest::testItemPickupIsSaved, DEFAULT_STRUCTURE);
+    register(
+        "preset_import_is_saved", NPCStorageWriteTest::testPresetImportIsSaved, DEFAULT_STRUCTURE);
+    register(
+        "preset_import_with_type_change_is_saved",
+        NPCStorageWriteTest::testPresetImportWithTypeChangeIsSaved,
+        DEFAULT_STRUCTURE);
+    register(
+        "load_on_running_n_p_c_is_saved",
+        NPCStorageWriteTest::testLoadOnRunningNPCIsSaved,
+        DEFAULT_STRUCTURE);
+    register(
+        "killed_n_p_c_is_still_saved",
+        NPCStorageWriteTest::testKilledNPCIsStillSaved,
+        DEFAULT_STRUCTURE);
+    register(
+        "unload_with_player_is_still_saved",
+        NPCStorageWriteTest::testUnloadWithPlayerIsStillSaved,
+        DEFAULT_STRUCTURE);
+    register(
+        "dimension_change_is_still_saved",
+        NPCStorageWriteTest::testDimensionChangeIsStillSaved,
+        DEFAULT_STRUCTURE);
+    register(
+        "backup_run_skips_unchanged_n_p_c",
+        NPCStorageWriteTest::testBackupRunSkipsUnchangedNPC,
+        DEFAULT_STRUCTURE);
+    register(
+        "backup_run_exports_changed_n_p_c",
+        NPCStorageWriteTest::testBackupRunExportsChangedNPC,
+        DEFAULT_STRUCTURE);
+    register(
+        "list_command_reads_no_n_p_c_file",
+        NPCStorageWriteTest::testListCommandReadsNoNPCFile,
+        DEFAULT_STRUCTURE);
+    register(
+        "repeated_save_keeps_index_clean",
+        NPCStorageWriteTest::testRepeatedSaveKeepsIndexClean,
+        DEFAULT_STRUCTURE);
+    register(
+        "unchanged_pause_state_keeps_n_p_c_clean",
+        NPCStorageWriteTest::testUnchangedPauseStateKeepsNPCClean,
+        DEFAULT_STRUCTURE);
+    register(
+        "shoulder_round_trip_writes_no_unchanged_file",
+        NPCStorageWriteTest::testShoulderRoundTripWritesNoUnchangedFile,
+        DEFAULT_STRUCTURE);
+    register(
+        "shoulder_round_trips_keep_latest_changes",
+        NPCStorageWriteTest::testShoulderRoundTripsKeepLatestChanges,
+        DEFAULT_STRUCTURE);
+    register(
+        "dialog_change_is_saved", NPCStorageWriteTest::testDialogChangeIsSaved, DEFAULT_STRUCTURE);
+    register(
+        "dialog_removal_is_saved",
+        NPCStorageWriteTest::testDialogRemovalIsSaved,
+        DEFAULT_STRUCTURE);
+    register(
+        "objective_change_is_saved",
+        NPCStorageWriteTest::testObjectiveChangeIsSaved,
+        DEFAULT_STRUCTURE);
+    register(
+        "objective_removal_is_saved",
+        NPCStorageWriteTest::testObjectiveRemovalIsSaved,
+        DEFAULT_STRUCTURE);
+    register(
+        "objective_refresh_keeps_n_p_c_clean",
+        NPCStorageWriteTest::testObjectiveRefreshKeepsNPCClean,
+        DEFAULT_STRUCTURE);
+    register(
+        "hourly_flush_keeps_unchanged_n_p_c_clean",
+        NPCStorageWriteTest::testHourlyFlushKeepsUnchangedNPCClean,
+        DEFAULT_STRUCTURE);
+    register(
+        "hourly_flush_saves_unmarked_change",
+        NPCStorageWriteTest::testHourlyFlushSavesUnmarkedChange,
+        DEFAULT_STRUCTURE);
+    register(
+        "backup_run_exports_unmarked_change",
+        NPCStorageWriteTest::testBackupRunExportsUnmarkedChange,
+        DEFAULT_STRUCTURE);
+    register(
+        "file_storage_stats_command_runs",
+        NPCStorageWriteTest::testFileStorageStatsCommandRuns,
+        DEFAULT_STRUCTURE);
+    register(
+        "mass_reload_writes_no_unchanged_n_p_c_file",
+        NPCStorageWriteTest::testMassReloadWritesNoUnchangedNPCFile,
+        DEFAULT_STRUCTURE,
+        EXTENDED_MAX_TICKS);
 
     register(
         "killed_n_p_c_can_be_revived",
@@ -1332,17 +1631,39 @@ public final class ModGameTests {
 
   private static void register(
       String name, Consumer<GameTestHelper> testFunction, Identifier structure, int maxTicks) {
+    register(name, testFunction, structure, maxTicks, DEFAULT_ENVIRONMENT);
+  }
+
+  private static void register(
+      String name,
+      Consumer<GameTestHelper> testFunction,
+      Identifier structure,
+      Identifier environment) {
+    register(name, testFunction, structure, DEFAULT_MAX_TICKS, environment);
+  }
+
+  // Minecraft 1.21.5+ batches game tests by environment, so tests that must not share a batch
+  // with other tests need their own environment.
+  private static void register(
+      String name,
+      Consumer<GameTestHelper> testFunction,
+      Identifier structure,
+      int maxTicks,
+      Identifier environment) {
     TEST_ENTRIES.add(
-        new TestEntry(TEST_FUNCTIONS.register(name, () -> testFunction), structure, maxTicks));
+        new TestEntry(
+            TEST_FUNCTIONS.register(name, () -> testFunction), structure, maxTicks, environment));
   }
 
   private static void registerGameTests(RegisterGameTestsEvent event) {
-    Holder<TestEnvironmentDefinition> environment =
-        event.registerEnvironment(
-            Identifier.fromNamespaceAndPath(Constants.MOD_ID, "default"),
-            new TestEnvironmentDefinition.AllOf(List.of()));
-
+    Map<Identifier, Holder<TestEnvironmentDefinition>> environments = new HashMap<>();
     for (TestEntry testEntry : TEST_ENTRIES) {
+      Holder<TestEnvironmentDefinition> environment =
+          environments.computeIfAbsent(
+              testEntry.environment(),
+              environmentId ->
+                  event.registerEnvironment(
+                      environmentId, new TestEnvironmentDefinition.AllOf(List.of())));
       event.registerTest(
           testEntry.testFunction().getId(),
           new FunctionGameTestInstance(
@@ -1354,5 +1675,6 @@ public final class ModGameTests {
   private record TestEntry(
       DeferredHolder<Consumer<GameTestHelper>, Consumer<GameTestHelper>> testFunction,
       Identifier structure,
-      int maxTicks) {}
+      int maxTicks,
+      Identifier environment) {}
 }

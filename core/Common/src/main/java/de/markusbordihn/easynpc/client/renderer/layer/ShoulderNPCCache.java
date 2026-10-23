@@ -118,12 +118,13 @@ public final class ShoulderNPCCache {
 
     long gameTime = level.getGameTime();
     CachedShoulderNPC cachedShoulderNPC = cachedShoulderNPCs.get(entityUUID.get());
-    if (cachedShoulderNPC == null || !cachedShoulderNPC.entityTag().equals(entityTag)) {
+    if (cachedShoulderNPC == null || !cachedShoulderNPC.matches(entityTag)) {
       removeUnusedEntries(gameTime);
       cachedShoulderNPC =
-          new CachedShoulderNPC(entityTag.copy(), createShoulderNPC(entityTag, level), gameTime);
+          new CachedShoulderNPC(
+              entityTag, entityTag.copy(), createShoulderNPC(entityTag, level), gameTime);
     } else {
-      cachedShoulderNPC = cachedShoulderNPC.withLastUsedGameTime(gameTime);
+      cachedShoulderNPC = cachedShoulderNPC.withLastUse(entityTag, gameTime);
     }
     cachedShoulderNPCs.put(entityUUID.get(), cachedShoulderNPC);
     return cachedShoulderNPC.easyNPC();
@@ -181,11 +182,18 @@ public final class ShoulderNPCCache {
   private record PlayerShoulderEntities(
       CompoundTag leftShoulderEntity, CompoundTag rightShoulderEntity) {}
 
-  private record CachedShoulderNPC(
-      CompoundTag entityTag, Optional<EasyNPC<?>> easyNPC, long lastUsedGameTime) {
+  record CachedShoulderNPC(
+      CompoundTag sourceEntityTag,
+      CompoundTag entityTag,
+      Optional<EasyNPC<?>> easyNPC,
+      long lastUsedGameTime) {
 
-    CachedShoulderNPC withLastUsedGameTime(long lastUsedGameTime) {
-      return new CachedShoulderNPC(this.entityTag, this.easyNPC, lastUsedGameTime);
+    boolean matches(CompoundTag entityTag) {
+      return this.sourceEntityTag == entityTag || this.entityTag.equals(entityTag);
+    }
+
+    CachedShoulderNPC withLastUse(CompoundTag sourceEntityTag, long lastUsedGameTime) {
+      return new CachedShoulderNPC(sourceEntityTag, this.entityTag, this.easyNPC, lastUsedGameTime);
     }
   }
 }

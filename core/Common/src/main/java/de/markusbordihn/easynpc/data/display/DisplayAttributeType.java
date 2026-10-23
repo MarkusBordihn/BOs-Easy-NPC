@@ -47,6 +47,9 @@ public enum DisplayAttributeType {
   public static final int MIN_BOSS_BAR_RANGE = 1;
   public static final int MAX_BOSS_BAR_RANGE = 128;
   public static final int DEFAULT_BOSS_BAR_RANGE = 32;
+  public static final int MIN_LIGHT_LEVEL = 0;
+  public static final int MAX_LIGHT_LEVEL = 15;
+  public static final int AMBIENT_LIGHT_LEVEL = 0;
 
   private final ValueType valueType;
   private final String attributeName = this.name().toLowerCase(Locale.ROOT);

@@ -45,13 +45,6 @@ neoForge {
       gameDirectory = project.file('run/gametest')
       systemProperty "${project.mod_id}.gametest", 'true'
     }
-
-    if (rootProject.findProperty('clientRuntimeTest')?.isAvailable()) {
-      clientTest {
-        client()
-        gameDirectory = project.file('run/clienttest')
-      }
-    }
   }
 
   mods {
@@ -100,11 +93,6 @@ dependencies {
   } else if (project.hasProperty('neoforge_easy_model_entities_version')
       && project.neoforge_easy_model_entities_version) {
     runtimeOnly "maven.modrinth:easy-model-entities:${project.neoforge_easy_model_entities_version}"
-  }
-
-  // Client Runtime Interface Toolkit (runtime dependency, only for client tests)
-  if (rootProject.findProperty('clientRuntimeTest')?.isClientTestRun()) {
-    runtimeOnly rootProject.clientRuntimeTest.toolkitCoordinate('neoforge')
   }
 }
 

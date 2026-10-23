@@ -286,6 +286,45 @@ public final class ModGameTests {
         "backup_is_spread_over_ticks", () -> BackupTest::testBackupIsSpreadOverTicks);
     TEST_FUNCTIONS.register(
         "backup_restores_deleted_n_p_cs", () -> BackupTest::testBackupRestoresDeletedNPCs);
+    TEST_FUNCTIONS.register("backup_matches_export", () -> BackupTest::testBackupMatchesExport);
+    TEST_FUNCTIONS.register(
+        "unchanged_n_p_c_is_linked_into_next_day",
+        () -> BackupTest::testUnchangedNPCIsLinkedIntoNextDay);
+    TEST_FUNCTIONS.register(
+        "changed_n_p_c_is_saved_and_exported", () -> BackupTest::testChangedNPCIsSavedAndExported);
+    TEST_FUNCTIONS.register(
+        "backup_restores_over_changed_n_p_c", () -> BackupTest::testBackupRestoresOverChangedNPC);
+    TEST_FUNCTIONS.register(
+        "backup_restores_full_configuration",
+        () -> BackupTest::testBackupRestoresFullConfiguration);
+
+    TEST_FUNCTIONS.register("idle_n_p_c_skips_travel", () -> IdleNPCTest::testIdleNPCSkipsTravel);
+    TEST_FUNCTIONS.register(
+        "periodic_tick_runs_travel", () -> IdleNPCTest::testPeriodicTickRunsTravel);
+    TEST_FUNCTIONS.register("moving_n_p_c_runs_travel", () -> IdleNPCTest::testMovingNPCRunsTravel);
+    TEST_FUNCTIONS.register(
+        "airborne_or_hurt_n_p_c_runs_travel", () -> IdleNPCTest::testAirborneOrHurtNPCRunsTravel);
+    TEST_FUNCTIONS.register(
+        "nearby_player_keeps_travel", () -> IdleNPCTest::testNearbyPlayerKeepsTravel);
+    TEST_FUNCTIONS.register("spectator_is_ignored", () -> IdleNPCTest::testSpectatorIsIgnored);
+    TEST_FUNCTIONS.register(
+        "look_goal_waits_after_failed_search", () -> IdleNPCTest::testLookGoalWaitsAfterFailedSearch);
+    TEST_FUNCTIONS.register(
+        "change_is_saved_after_minimum_age", () -> NPCSaveSchedulerTest::testChangeIsSavedAfterMinimumAge);
+    TEST_FUNCTIONS.register(
+        "unchanged_n_p_c_is_not_saved", () -> NPCSaveSchedulerTest::testUnchangedNPCIsNotSaved);
+    TEST_FUNCTIONS.register(
+        "batch_size_limits_saves_per_run", () -> NPCSaveSchedulerTest::testBatchSizeLimitsSavesPerRun);
+    TEST_FUNCTIONS.register(
+        "unload_during_pending_write_keeps_newest_data", () -> NPCSaveSchedulerTest::testUnloadDuringPendingWriteKeepsNewestData);
+    TEST_FUNCTIONS.register(
+        "autosave_writes_changed_n_p_c_file", () -> NPCSaveSchedulerTest::testAutosaveWritesChangedNPCFile);
+    TEST_FUNCTIONS.register(
+        "disabled_interval_keeps_change_until_unload", () -> NPCSaveSchedulerTest::testDisabledIntervalKeepsChangeUntilUnload);
+    TEST_FUNCTIONS.register(
+        "missing_index_hash_is_adopted_without_write", () -> NPCSaveSchedulerTest::testMissingIndexHashIsAdoptedWithoutWrite);
+    TEST_FUNCTIONS.register(
+        "fired_spawn_action_is_saved", () -> NPCSaveSchedulerTest::testFiredSpawnActionIsSaved);
 
     TEST_FUNCTIONS.register(
         "mass_spawn_stays_responsive", () -> NPCMassLifecycleTest::testMassSpawnStaysResponsive);
@@ -461,6 +500,9 @@ public final class ModGameTests {
     TEST_FUNCTIONS.register(
         "default_presets_survive_regeneration",
         () -> DefaultPresetRoundTripTest::testDefaultPresetsSurviveRegeneration);
+    TEST_FUNCTIONS.register(
+        "default_presets_spawn_and_keep_running",
+        () -> DefaultPresetRoundTripTest::testDefaultPresetsSpawnAndKeepRunning);
 
     TEST_FUNCTIONS.register(
         "audience_contains_every_player_in_range",
@@ -561,6 +603,25 @@ public final class ModGameTests {
     TEST_FUNCTIONS.register(
         "screen_action_without_a_player_is_skipped",
         () -> FallbackActionTest::testScreenActionWithoutAPlayerIsSkipped);
+
+    TEST_FUNCTIONS.register(
+        "unmet_conditional_dialog_falls_through_to_the_next_one",
+        () -> ConditionalDialogActionTest::testUnmetConditionalDialogFallsThroughToTheNextOne);
+    TEST_FUNCTIONS.register(
+        "met_conditional_dialog_blocks_later_screen_actions",
+        () -> ConditionalDialogActionTest::testMetConditionalDialogBlocksLaterScreenActions);
+    TEST_FUNCTIONS.register(
+        "fallback_runs_when_no_conditional_dialog_matches",
+        () -> ConditionalDialogActionTest::testFallbackRunsWhenNoConditionalDialogMatches);
+    TEST_FUNCTIONS.register(
+        "action_conditions_select_the_dialog",
+        () -> ConditionalDialogActionTest::testActionConditionsSelectTheDialog);
+    TEST_FUNCTIONS.register(
+        "action_chance_is_rolled_once",
+        () -> ConditionalDialogActionTest::testActionChanceIsRolledOnce);
+    TEST_FUNCTIONS.register(
+        "dialog_chance_is_rolled_once",
+        () -> ConditionalDialogActionTest::testDialogChanceIsRolledOnce);
 
     TEST_FUNCTIONS.register(
         "immovable_n_p_c_is_not_pushed", () -> ImmovableAttributeTest::testImmovableNPCIsNotPushed);
@@ -833,6 +894,120 @@ public final class ModGameTests {
         "shoulder_goal_waits_out_of_combat", () -> ShoulderTest::testShoulderGoalWaitsOutOfCombat);
     TEST_FUNCTIONS.register(
         "revive_rejects_n_p_c_on_shoulder", () -> ShoulderTest::testReviveRejectsNPCOnShoulder);
+    TEST_FUNCTIONS.register(
+        "sit_on_shoulder_rejects_unavailable_n_p_c",
+        () -> ShoulderTest::testSitOnShoulderRejectsUnavailableNPC);
+    TEST_FUNCTIONS.register(
+        "shoulder_data_sent_to_clients_without_server_data",
+        () -> ShoulderTest::testShoulderDataSentToClientsWithoutServerData);
+
+    TEST_FUNCTIONS.register(
+        "light_level_command_sets_light_level",
+        () -> AttributeCommandTest::testLightLevelCommandSetsLightLevel);
+    TEST_FUNCTIONS.register(
+        "light_level_out_of_range_is_rejected",
+        () -> AttributeCommandTest::testLightLevelOutOfRangeIsRejected);
+    TEST_FUNCTIONS.register(
+        "max_health_command_sets_max_health_and_health",
+        () -> AttributeCommandTest::testMaxHealthCommandSetsMaxHealthAndHealth);
+    TEST_FUNCTIONS.register(
+        "max_health_out_of_range_is_rejected",
+        () -> AttributeCommandTest::testMaxHealthOutOfRangeIsRejected);
+
+    TEST_FUNCTIONS.register(
+        "scale_command_accepts_root", () -> ModelRootCommandTest::testScaleCommandAcceptsRoot);
+    TEST_FUNCTIONS.register(
+        "rotate_command_accepts_root", () -> ModelRootCommandTest::testRotateCommandAcceptsRoot);
+    TEST_FUNCTIONS.register(
+        "position_command_accepts_root",
+        () -> ModelRootCommandTest::testPositionCommandAcceptsRoot);
+    TEST_FUNCTIONS.register(
+        "scale_command_on_model_part_sets_custom_pose",
+        () -> ModelRootCommandTest::testScaleCommandOnModelPartSetsCustomPose);
+
+    TEST_FUNCTIONS.register("name_clear_hides_name", () -> NameCommandTest::testNameClearHidesName);
+
+    TEST_FUNCTIONS.register(
+        "unchanged_reload_writes_no_file",
+        () -> NPCStorageWriteTest::testUnchangedReloadWritesNoFile);
+    TEST_FUNCTIONS.register(
+        "unchanged_reload_with_objectives_writes_no_file",
+        () -> NPCStorageWriteTest::testUnchangedReloadWithObjectivesWritesNoFile);
+    TEST_FUNCTIONS.register(
+        "unchanged_reload_with_trading_writes_no_file",
+        () -> NPCStorageWriteTest::testUnchangedReloadWithTradingWritesNoFile);
+    TEST_FUNCTIONS.register(
+        "equipment_change_is_saved", () -> NPCStorageWriteTest::testEquipmentChangeIsSaved);
+    TEST_FUNCTIONS.register(
+        "custom_name_change_is_saved", () -> NPCStorageWriteTest::testCustomNameChangeIsSaved);
+    TEST_FUNCTIONS.register(
+        "custom_name_removal_is_saved", () -> NPCStorageWriteTest::testCustomNameRemovalIsSaved);
+    TEST_FUNCTIONS.register(
+        "inventory_change_is_saved", () -> NPCStorageWriteTest::testInventoryChangeIsSaved);
+    TEST_FUNCTIONS.register(
+        "item_pickup_is_saved", () -> NPCStorageWriteTest::testItemPickupIsSaved);
+    TEST_FUNCTIONS.register(
+        "preset_import_is_saved", () -> NPCStorageWriteTest::testPresetImportIsSaved);
+    TEST_FUNCTIONS.register(
+        "preset_import_with_type_change_is_saved",
+        () -> NPCStorageWriteTest::testPresetImportWithTypeChangeIsSaved);
+    TEST_FUNCTIONS.register(
+        "load_on_running_n_p_c_is_saved", () -> NPCStorageWriteTest::testLoadOnRunningNPCIsSaved);
+    TEST_FUNCTIONS.register(
+        "killed_n_p_c_is_still_saved", () -> NPCStorageWriteTest::testKilledNPCIsStillSaved);
+    TEST_FUNCTIONS.register(
+        "unload_with_player_is_still_saved",
+        () -> NPCStorageWriteTest::testUnloadWithPlayerIsStillSaved);
+    TEST_FUNCTIONS.register(
+        "dimension_change_is_still_saved",
+        () -> NPCStorageWriteTest::testDimensionChangeIsStillSaved);
+    TEST_FUNCTIONS.register(
+        "backup_run_skips_unchanged_n_p_c",
+        () -> NPCStorageWriteTest::testBackupRunSkipsUnchangedNPC);
+    TEST_FUNCTIONS.register(
+        "backup_run_exports_changed_n_p_c",
+        () -> NPCStorageWriteTest::testBackupRunExportsChangedNPC);
+    TEST_FUNCTIONS.register(
+        "list_command_reads_no_n_p_c_file",
+        () -> NPCStorageWriteTest::testListCommandReadsNoNPCFile);
+    TEST_FUNCTIONS.register(
+        "repeated_save_keeps_index_clean",
+        () -> NPCStorageWriteTest::testRepeatedSaveKeepsIndexClean);
+    TEST_FUNCTIONS.register(
+        "unchanged_pause_state_keeps_n_p_c_clean",
+        () -> NPCStorageWriteTest::testUnchangedPauseStateKeepsNPCClean);
+    TEST_FUNCTIONS.register(
+        "shoulder_round_trip_writes_no_unchanged_file",
+        () -> NPCStorageWriteTest::testShoulderRoundTripWritesNoUnchangedFile);
+    TEST_FUNCTIONS.register(
+        "shoulder_round_trips_keep_latest_changes",
+        () -> NPCStorageWriteTest::testShoulderRoundTripsKeepLatestChanges);
+    TEST_FUNCTIONS.register(
+        "dialog_change_is_saved", () -> NPCStorageWriteTest::testDialogChangeIsSaved);
+    TEST_FUNCTIONS.register(
+        "dialog_removal_is_saved", () -> NPCStorageWriteTest::testDialogRemovalIsSaved);
+    TEST_FUNCTIONS.register(
+        "objective_change_is_saved", () -> NPCStorageWriteTest::testObjectiveChangeIsSaved);
+    TEST_FUNCTIONS.register(
+        "objective_removal_is_saved", () -> NPCStorageWriteTest::testObjectiveRemovalIsSaved);
+    TEST_FUNCTIONS.register(
+        "objective_refresh_keeps_n_p_c_clean",
+        () -> NPCStorageWriteTest::testObjectiveRefreshKeepsNPCClean);
+    TEST_FUNCTIONS.register(
+        "hourly_flush_keeps_unchanged_n_p_c_clean",
+        () -> NPCStorageWriteTest::testHourlyFlushKeepsUnchangedNPCClean);
+    TEST_FUNCTIONS.register(
+        "hourly_flush_saves_unmarked_change",
+        () -> NPCStorageWriteTest::testHourlyFlushSavesUnmarkedChange);
+    TEST_FUNCTIONS.register(
+        "backup_run_exports_unmarked_change",
+        () -> NPCStorageWriteTest::testBackupRunExportsUnmarkedChange);
+    TEST_FUNCTIONS.register(
+        "file_storage_stats_command_runs",
+        () -> NPCStorageWriteTest::testFileStorageStatsCommandRuns);
+    TEST_FUNCTIONS.register(
+        "mass_reload_writes_no_unchanged_n_p_c_file",
+        () -> NPCStorageWriteTest::testMassReloadWritesNoUnchangedNPCFile);
 
     TEST_FUNCTIONS.register(
         "killed_n_p_c_can_be_revived", () -> NPCEntityLifecycleTest::testKilledNPCCanBeRevived);

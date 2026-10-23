@@ -62,10 +62,6 @@ public interface ObjectiveDataCapable<T extends Mob> extends EasyNPC<T> {
           ServerDataIndex.OBJECTIVE_PLAYER_SET,
           EntityDataSerializersManager.TARGETED_PLAYER_HASH_SET);
   int CUSTOM_OBJECTIVE_DELAYED_REGISTRATION_TICK = 20 * 15;
-  String DATA_HAS_ENTITY_TARGET_TAG = "HasEntityTarget";
-  String DATA_HAS_OBJECTIVE_TAG = "HasObjectives";
-  String DATA_HAS_PLAYER_TARGET_TAG = "HasPlayerTarget";
-  String DATA_HAS_TRAVEL_TARGET_TAG = "HasTravelTarget";
   String DATA_OBJECTIVE_DATA_TAG = "ObjectiveData";
 
   default ObjectiveDataSet getObjectiveDataSet() {
@@ -122,7 +118,11 @@ public interface ObjectiveDataCapable<T extends Mob> extends EasyNPC<T> {
       return false;
     }
 
-    return this.getObjectiveDataSet().removeObjective(objectiveType);
+    boolean removed = this.getObjectiveDataSet().removeObjective(objectiveType);
+    if (removed) {
+      this.markObjectiveDataChanged();
+    }
+    return removed;
   }
 
   default void addObjective(ObjectiveDataEntry objectiveDataEntry) {
@@ -131,6 +131,11 @@ public interface ObjectiveDataCapable<T extends Mob> extends EasyNPC<T> {
     }
 
     this.getObjectiveDataSet().addObjective(objectiveDataEntry);
+    this.markObjectiveDataChanged();
+  }
+
+  private void markObjectiveDataChanged() {
+    this.getEasyNPCServerData().markServerEntityDataChanged(CUSTOM_DATA_OBJECTIVE_DATA_SET);
   }
 
   default boolean hasTravelTargetObjectives() {
@@ -335,9 +340,14 @@ public interface ObjectiveDataCapable<T extends Mob> extends EasyNPC<T> {
       objectiveDataEntry.setRegistered(addedCustomObjective);
     }
 
-    boolean isNewObjective = !this.hasObjective(objectiveDataEntry.getId());
+    ObjectiveDataEntry storedObjectiveDataEntry =
+        this.getObjectiveDataSet().getObjective(objectiveDataEntry.getId());
     this.getObjectiveDataSet().addObjective(objectiveDataEntry);
-    if (isNewObjective) {
+    boolean isRefreshOfStoredInstance = storedObjectiveDataEntry == objectiveDataEntry;
+    if (!isRefreshOfStoredInstance) {
+      this.markObjectiveDataChanged();
+    }
+    if (storedObjectiveDataEntry == null) {
       EasyNPCEventRegistry.fireObjectiveAdded(this, objectiveDataEntry);
     }
     return objectiveDataEntry.isRegistered();
@@ -402,6 +412,7 @@ public interface ObjectiveDataCapable<T extends Mob> extends EasyNPC<T> {
     }
 
     objectiveDataEntry.setRegistered(false);
+    this.markObjectiveDataChanged();
     return this.addOrUpdateCustomObjective(objectiveDataEntry);
   }
 
@@ -457,6 +468,7 @@ public interface ObjectiveDataCapable<T extends Mob> extends EasyNPC<T> {
     boolean removed = this.getObjectiveDataSet().removeObjective(objectiveDataEntry);
     LivingEntityManager.updateObjectiveEventInterest(this);
     if (removed && this.isServerSideInstance()) {
+      this.markObjectiveDataChanged();
       EasyNPCEventRegistry.fireObjectiveRemoved(this, objectiveDataEntry);
     }
     return removed;

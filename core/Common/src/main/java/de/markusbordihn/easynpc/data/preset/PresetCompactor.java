@@ -23,6 +23,7 @@ import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.ConfigDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.ObjectiveDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.PresetDataCapable;
+import java.util.Optional;
 import java.util.Set;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -89,6 +90,21 @@ public class PresetCompactor {
     }
 
     return expandedData;
+  }
+
+  public static void removeEntityTypeDefaultAttributes(CompoundTag entityData) {
+    Optional<ListTag> attributeList = entityData.getList(ATTRIBUTES_TAG);
+    if (attributeList.isEmpty()) {
+      return;
+    }
+
+    AttributeSupplier entityTypeDefaults = getEntityTypeDefaults(entityData);
+    attributeList
+        .get()
+        .removeIf(
+            attributeTag ->
+                attributeTag instanceof CompoundTag attributeCompoundTag
+                    && isEntityTypeDefault(entityTypeDefaults, attributeCompoundTag));
   }
 
   private static void removeEqualTags(

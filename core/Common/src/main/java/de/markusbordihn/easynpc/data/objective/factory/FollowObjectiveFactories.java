@@ -44,12 +44,13 @@ final class FollowObjectiveFactories {
             (objectiveDataEntry, easyNPC) -> {
               Entity targetOwner = objectiveDataEntry.getTargetOwner(easyNPC);
               return targetOwner instanceof LivingEntity livingEntity ? livingEntity : null;
-            }));
+            },
+            true));
 
     register(
         ObjectiveType.FOLLOW_PLAYER,
         new FollowLivingEntityGoalFactory(
-            (objectiveDataEntry, easyNPC) -> objectiveDataEntry.getTargetPlayer()));
+            (objectiveDataEntry, easyNPC) -> objectiveDataEntry.getTargetPlayer(), false));
 
     register(
         ObjectiveType.FOLLOW_NEAREST_PLAYER,
@@ -61,12 +62,13 @@ final class FollowObjectiveFactories {
                 objectiveDataEntry.getStopDistance(),
                 objectiveDataEntry.getStartDistance(),
                 objectiveDataEntry.getTeleportDistance(),
-                objectiveDataEntry.getFollowOffset()));
+                objectiveDataEntry.getFollowOffset(),
+                false));
 
     register(
         ObjectiveType.FOLLOW_ENTITY_BY_UUID,
         new FollowLivingEntityGoalFactory(
-            (objectiveDataEntry, easyNPC) -> objectiveDataEntry.getTargetEntity(easyNPC)));
+            (objectiveDataEntry, easyNPC) -> objectiveDataEntry.getTargetEntity(easyNPC), false));
 
     register(
         ObjectiveType.FOLLOW_ITEM,

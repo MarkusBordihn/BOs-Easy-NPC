@@ -79,6 +79,7 @@ import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.SpawnGroupData;
@@ -269,6 +270,7 @@ public class NPCRawTemplate extends Zombie
   public NPCRawTemplate(EntityType<? extends Zombie> entityType, Level level) {
     super(entityType, level);
     this.lookControl = new EasyNPCLookControl(this);
+    this.easyNPCInventory.addListener(changedContainer -> this.markNPCDataUpdated("inventory"));
     // Minecraft 1.21.11 Mob#<init> resets Mob#persistenceRequired after defineSynchedData set it.
     this.setPersistenceRequired();
   }
@@ -424,6 +426,24 @@ public class NPCRawTemplate extends Zombie
       itemEntity.discard();
     } else {
       itemStack.setCount(remainingItemStack.getCount());
+    }
+  }
+
+  @Override
+  public void setItemSlot(EquipmentSlot equipmentSlot, ItemStack itemStack) {
+    boolean isChanged = !ItemStack.matches(this.getItemBySlot(equipmentSlot), itemStack);
+    super.setItemSlot(equipmentSlot, itemStack);
+    if (isChanged && !this.level().isClientSide()) {
+      this.markNPCDataUpdated("equipment " + equipmentSlot.getName());
+    }
+  }
+
+  @Override
+  public void setCustomName(Component customName) {
+    boolean isChanged = !Objects.equals(this.getCustomName(), customName);
+    super.setCustomName(customName);
+    if (isChanged && !this.level().isClientSide()) {
+      this.markNPCDataUpdated("custom name");
     }
   }
 
@@ -783,6 +803,11 @@ public class NPCRawTemplate extends Zombie
     }
 
     this.handleNavigationTravelEvent(vec3);
+    if (this.canSkipIdleTravel(vec3)) {
+      this.calculateEntityAnimation(false);
+      return;
+    }
+
     super.travel(vec3);
   }
 

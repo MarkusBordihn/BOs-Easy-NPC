@@ -29,10 +29,9 @@ import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.DisplayAttributeDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
+import java.util.OptionalInt;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
-import net.minecraft.world.level.LightLayer;
 
 public class EasyNPCModel {
 
@@ -94,21 +93,17 @@ public class EasyNPCModel {
     return extension != null ? extension.getEasyNPC() : null;
   }
 
-  public static int getEntityLightLevel(
-      final EasyNPC<?> easyNPC,
-      final DisplayAttributeDataCapable<?> displayAttributeData,
-      final BlockPos blockPos) {
-    if (easyNPC == null || displayAttributeData == null || blockPos == null) {
-      return 0;
+  public static OptionalInt getFixedEntityLightLevel(
+      final DisplayAttributeDataCapable<?> displayAttributeData) {
+    if (displayAttributeData == null) {
+      return OptionalInt.empty();
     }
 
     int entityLightLevel =
         displayAttributeData.getDisplayIntAttribute(DisplayAttributeType.LIGHT_LEVEL);
-    if (entityLightLevel > 0) {
-      return entityLightLevel;
-    }
-
-    return easyNPC.getLivingEntity().level().getBrightness(LightLayer.BLOCK, blockPos);
+    return entityLightLevel != DisplayAttributeType.AMBIENT_LIGHT_LEVEL
+        ? OptionalInt.of(entityLightLevel)
+        : OptionalInt.empty();
   }
 
   public static void setupAnimationEnd(

@@ -115,6 +115,20 @@ public interface ModelDataCapable<T extends Mob>
     return scaledDimensions;
   }
 
+  default boolean supportsModelPart(ModelPartType modelPartType) {
+    return modelPartType == ModelPartType.ROOT
+        || this.getModelType().getModelParts().contains(modelPartType);
+  }
+
+  // Root transforms are applied on top of vanilla animations and must not force the custom pose.
+  default void updateModelPose(ModelPartType changedModelPartType) {
+    if (!this.hasChangedModel()) {
+      this.setModelPose(ModelPose.VANILLA);
+    } else if (changedModelPartType != ModelPartType.ROOT) {
+      this.setModelPose(ModelPose.CUSTOM);
+    }
+  }
+
   default boolean hasLockedBodyPose() {
     if (this.getModelPartRotation(ModelPartType.HEAD).hasChangedRotation()) {
       return false;

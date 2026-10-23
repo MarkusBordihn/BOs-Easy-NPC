@@ -22,7 +22,6 @@ package de.markusbordihn.easynpc.clienttest;
 import de.markusbordihn.clientruntimeinterfacetoolkit.testrunner.Until;
 import de.markusbordihn.clientruntimeinterfacetoolkit.testrunner.data.EntitySpawn;
 import de.markusbordihn.clientruntimeinterfacetoolkit.testrunner.data.Parameters;
-import de.markusbordihn.clientruntimeinterfacetoolkit.testrunner.data.TestArea;
 import java.time.Duration;
 import java.util.UUID;
 import org.junit.jupiter.api.AfterEach;
@@ -35,7 +34,6 @@ class ReviveClientTest extends ClientTestBase {
   private static final String NPC_TYPE = "easy_npc:humanoid";
   private static final int PLATFORM_Y = 100;
   private static final int VIEW_Y = PLATFORM_Y + 1;
-  private static final TestArea PLATFORM = TestArea.between(-3, PLATFORM_Y, -1, 3, PLATFORM_Y, 6);
   private static final String REVIVE_POSITION = "0.5 " + VIEW_Y + " 4.5";
   private static final Duration SPAWN_REFUSED_DURATION = Duration.ofSeconds(2);
 
@@ -44,7 +42,7 @@ class ReviveClientTest extends ClientTestBase {
   @BeforeEach
   void standOnPlatform() {
     awaitWorldSetupCapability();
-    client.fill(PLATFORM, "minecraft:stone");
+    placeScene("viewing_platform", -3, PLATFORM_Y, -1);
     client.teleport(0.5, VIEW_Y, 0.5, 0, 0);
   }
 

@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:function",
+  "function": "easy_npc:disabled_interval_keeps_change_until_unload",
+  "environment": "easy_npc:npc_save_scheduler",
+  "structure": "easy_npc:gametest.3x3x3",
+  "max_ticks": 100
+}

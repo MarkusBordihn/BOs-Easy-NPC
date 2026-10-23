@@ -2,7 +2,7 @@ buildscript {
   // The toolkit is only published to Maven Local, so its client test plugin stays optional and a
   // machine without it still builds and runs the game tests.
   String toolkitPluginModule = "client_runtime_interface_toolkit-gradle-plugin-${minecraft_version}"
-  String toolkitPluginVersion = '2.0.0'
+  String toolkitPluginVersion = '2.1.0'
   File toolkitPluginDirectory = new File(
       System.getProperty('maven.repo.local', "${System.getProperty('user.home')}/.m2/repository"),
       "de/markusbordihn/clientruntimeinterfacetoolkit/${toolkitPluginModule}/${toolkitPluginVersion}")
@@ -108,12 +108,17 @@ subprojects {
 
     // Fabric Loom keys its remap cache by coordinate and version only, so a jar republished to
     // mavenLocal under the same version would keep resolving to the previous remap.
-    rootProject.file(".gradle/loom-cache/remapped_mods/remapped/de/markusbordihn/easymodelentities")
+    rootProject.file(".gradle/loom-cache/remapped_mods")
         .listFiles()
-        ?.findAll { cacheDirectory ->
-          cacheDirectory.name.startsWith("easy_model_entities-${loader}-${mcVersion}-")
+        ?.collectMany { mappingsDirectory ->
+          new File(mappingsDirectory, "de/markusbordihn/easymodelentities")
+              .listFiles()?.toList() ?: []
         }
-        ?.collect { cacheDirectory -> new File(cacheDirectory, version) }
+        ?.findAll { artifactDirectory ->
+          artifactDirectory.name == "easy_model_entities-${loader}-${mcVersion}"
+              || artifactDirectory.name.startsWith("easy_model_entities-${loader}-${mcVersion}-")
+        }
+        ?.collect { artifactDirectory -> new File(artifactDirectory, version) }
         ?.findAll { remappedVersion ->
           remappedVersion.isDirectory() && remappedVersion.lastModified() < jar.lastModified()
         }
@@ -151,7 +156,6 @@ tasks.register('fullCheck') {
 if (clientRuntimeTestPluginAvailable) {
   apply plugin: 'de.markusbordihn.clientruntimeinterfacetoolkit.client-test'
   clientRuntimeTest {
-    loaders = ['Fabric', 'Forge', 'NeoForge']
     errorLogMarkers = ['Easy NPC', 'easy_npc']
   }
 }
