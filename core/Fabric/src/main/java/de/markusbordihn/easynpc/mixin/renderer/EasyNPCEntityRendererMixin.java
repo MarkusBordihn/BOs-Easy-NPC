@@ -24,7 +24,6 @@ import de.markusbordihn.easynpc.client.model.EasyNPCModel;
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCRenderVisibility;
 import de.markusbordihn.easynpc.client.renderer.entity.NameTagRenderer;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.data.DisplayAttributeDataCapable;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -57,11 +56,9 @@ public class EasyNPCEntityRendererMixin<T extends Entity> {
   @Inject(method = "getBlockLightLevel", at = @At("HEAD"), cancellable = true)
   private void onGetBlockLightLevel(
       T entity, BlockPos blockPos, CallbackInfoReturnable<Integer> callbackInfoReturnable) {
-    if (entity instanceof EasyNPC<?> easyNPC
-        && easyNPC.getEasyNPCDisplayAttributeData() instanceof DisplayAttributeDataCapable<?>) {
-      callbackInfoReturnable.setReturnValue(
-          EasyNPCModel.getEntityLightLevel(
-              easyNPC, easyNPC.getEasyNPCDisplayAttributeData(), blockPos));
+    if (entity instanceof EasyNPC<?> easyNPC) {
+      EasyNPCModel.getFixedEntityLightLevel(easyNPC.getEasyNPCDisplayAttributeData())
+          .ifPresent(callbackInfoReturnable::setReturnValue);
     }
   }
 

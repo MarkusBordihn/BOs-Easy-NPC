@@ -3,7 +3,7 @@
     author:"Kaworru",
     category:"General",
     created:1778627096335L,
-    description:"A suspicious witch who offers restricted item upgrades. Each trade can trigger custom actions, such as commands, messages, or special effects.",
+    description:"A suspicious witch who upgrades wooden tools to stone for one cobblestone each. Every offer has its own use limit and runs its own action after the trade, here a /say line.",
     entityTypeId:"easy_npc:witch",
     modified:1778627096335L,
     name:"Griselda Grindstone",
@@ -33,7 +33,7 @@
         }],Name:"Default",Texts:[{
           Text:"Hello @initiator, I can improve your wooden tools...
 
-Just give me the item and one stone block.
+Just give me the item and one cobblestone.
 
 No questions. No refunds. Probably safe."
         }]
@@ -43,7 +43,6 @@ No questions. No refunds. Probably safe."
     EasyNPCVersion:3,
     ForgeData:{},
     ObjectiveData:{
-      HasObjectives:1b,
       ObjectiveDataSet:[{
         Type:"LOOK_AT_PLAYER"
       },{
@@ -129,7 +128,7 @@ No questions. No refunds. Probably safe."
           }],Index:0
         },{
           ActionDataSet:[{
-            Cmd:"/say  Stone hoe delivered. The dirt never agreed to this.",Type:"COMMAND"
+            Cmd:"/say Stone hoe delivered. The dirt never agreed to this.",Type:"COMMAND"
           }],Index:1
         },{
           ActionDataSet:[{
@@ -149,4 +148,4 @@ No questions. No refunds. Probably safe."
     },
     id:"easy_npc:witch"
   }
-}
+}

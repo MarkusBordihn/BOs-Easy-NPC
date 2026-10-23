@@ -42,15 +42,12 @@ import de.markusbordihn.easynpc.entity.easynpc.data.DisplayAttributeDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.NavigationDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.ObjectiveDataCapable;
 import java.util.Arrays;
-import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.attributes.RangedAttribute;
 import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -171,6 +168,10 @@ public class AttributeHandler {
           value instanceof Integer range
               && range >= DisplayAttributeType.MIN_BOSS_BAR_RANGE
               && range <= DisplayAttributeType.MAX_BOSS_BAR_RANGE;
+      case LIGHT_LEVEL ->
+          value instanceof Integer lightLevel
+              && lightLevel >= DisplayAttributeType.MIN_LIGHT_LEVEL
+              && lightLevel <= DisplayAttributeType.MAX_LIGHT_LEVEL;
       default -> true;
     };
   }
@@ -493,18 +494,6 @@ public class AttributeHandler {
     return false;
   }
 
-  private static boolean isValidAttributeValue(Holder<Attribute> attribute, double value) {
-    if (!Double.isFinite(value)) {
-      return false;
-    }
-
-    if (attribute.value() instanceof RangedAttribute rangedAttribute) {
-      return value >= rangedAttribute.getMinValue() && value <= rangedAttribute.getMaxValue();
-    }
-
-    return true;
-  }
-
   public static boolean setBaseAttribute(
       EasyNPC<?> easyNPC, ResourceLocation attribute, Double value) {
     if (easyNPC == null || attribute == null || value == null) {
@@ -522,8 +511,14 @@ public class AttributeHandler {
       return false;
     }
 
-    if (!isValidAttributeValue(baseAttributeType.getAttribute(), value)) {
-      log.error("Invalid value {} for base attribute {} for {}", value, attribute, easyNPC);
+    if (!baseAttributeType.isValidValue(value)) {
+      log.error(
+          "Invalid value {} for base attribute {} for {}, allowed range is {} to {}",
+          value,
+          attribute,
+          easyNPC,
+          baseAttributeType.getMinValue(),
+          baseAttributeType.getMaxValue());
       return false;
     }
 

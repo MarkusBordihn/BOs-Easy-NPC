@@ -35,6 +35,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -65,7 +66,10 @@ public class EasyNPCShoulderHandler {
   }
 
   public static boolean sitOnShoulder(EasyNPC<?> easyNPC, Player player) {
-    if (easyNPC == null || player == null || player.level().isClientSide()) {
+    if (easyNPC == null
+        || player == null
+        || player.level().isClientSide()
+        || !canLeaveWorldForShoulder(easyNPC.getMob())) {
       return false;
     }
 
@@ -82,6 +86,14 @@ public class EasyNPCShoulderHandler {
     EasyNPCEntityHandler.despawn(easyNPC, NPCRemovalReason.ON_SHOULDER);
     EasyNPCEventRegistry.fireShoulderMounted(easyNPC, player, freeShoulderSide.get());
     return true;
+  }
+
+  private static boolean canLeaveWorldForShoulder(Mob mob) {
+    return mob != null
+        && mob.isAlive()
+        && !mob.isPassenger()
+        && !mob.isVehicle()
+        && !mob.isLeashed();
   }
 
   public static boolean dismount(Player player) {
@@ -196,8 +208,8 @@ public class EasyNPCShoulderHandler {
   }
 
   public static boolean isOnShoulder(UUID entityUUID) {
-    return NPCEntityManager.getNPC(entityUUID)
-        .map(entry -> entry.metadata().removalReason() == NPCRemovalReason.ON_SHOULDER)
+    return NPCEntityManager.getMetadata(entityUUID)
+        .map(metadata -> metadata.removalReason() == NPCRemovalReason.ON_SHOULDER)
         .orElse(false);
   }
 

@@ -34,12 +34,20 @@ import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.NPCEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.SitOnOwnerShoulderGoal;
+import de.markusbordihn.easynpc.entity.easynpc.data.ObjectiveDataCapable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientboundBundlePacket;
+import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerEntity;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.PlayerList;
 import net.minecraft.world.entity.Entity;
@@ -47,6 +55,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.animal.Parrot;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.vehicle.Minecart;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
 
@@ -61,6 +70,8 @@ public class ShoulderTestHelper {
       ObjectiveDataEntry.DEFAULT_COOLDOWN_TICKS + 1;
   private static final float MAX_DISTANCE = 4.0F;
   private static final double POSITION_TOLERANCE = 1.0E-6D;
+  private static final String ENTITY_ID_TAG = "id";
+  private static final String ENTITY_UUID_TAG = "UUID";
 
   private ShoulderTestHelper() {}
 
@@ -660,6 +671,128 @@ public class ShoulderTestHelper {
           assertStillOnLeftShoulder(helper, respawnedPlayer, entityUUID);
           helper.succeed();
         });
+  }
+
+  public static void assertSitOnShoulderRejectsUnavailableNPC(
+      GameTestHelper helper, EntityType<?> entityType) {
+    ServerPlayer serverPlayer = mockGroundedPlayer(helper, "shoulder-unavailable-player");
+
+    EasyNPC<?> leashedNPC = mockStoredNPC(helper, entityType);
+    leashedNPC.getMob().setLeashedTo(serverPlayer, true);
+    GameTestHelpers.addCleanup(helper, () -> leashedNPC.getMob().dropLeash(true, false));
+    assertSitOnShoulderRejected(helper, leashedNPC, serverPlayer, "Leashed");
+
+    EasyNPC<?> passengerNPC = mockStoredNPC(helper, entityType);
+    Minecart minecart = EntityType.MINECART.create(helper.getLevel());
+    minecart.setPos(helper.absoluteVec(new Vec3(0.5, 2, 0.5)));
+    helper.getLevel().addFreshEntity(minecart);
+    GameTestHelpers.addCleanup(helper, minecart::discard);
+    if (!passengerNPC.getEntity().startRiding(minecart, true)) {
+      helper.fail("NPC could not ride a minecart");
+      return;
+    }
+    assertSitOnShoulderRejected(helper, passengerNPC, serverPlayer, "Riding");
+
+    EasyNPC<?> vehicleNPC = mockStoredNPC(helper, entityType);
+    EasyNPC<?> riderNPC = mockStoredNPC(helper, entityType);
+    if (!riderNPC.getEntity().startRiding(vehicleNPC.getEntity(), true)) {
+      helper.fail("NPC could not ride another NPC");
+      return;
+    }
+    assertSitOnShoulderRejected(helper, vehicleNPC, serverPlayer, "Ridden");
+
+    EasyNPC<?> deadNPC = mockStoredNPC(helper, entityType);
+    deadNPC.getMob().setHealth(0.0F);
+    assertSitOnShoulderRejected(helper, deadNPC, serverPlayer, "Dead");
+    deadNPC.getMob().setHealth(deadNPC.getMob().getMaxHealth());
+  }
+
+  public static void assertShoulderDataSentToClientsWithoutServerData(
+      GameTestHelper helper, EntityType<?> entityType) {
+    EasyNPC<?> easyNPC = mockStoredNPC(helper, entityType);
+    ServerPlayer serverPlayer = mockGroundedPlayer(helper, "shoulder-sync-player");
+    List<Packet<?>> observerPackets = new ArrayList<>();
+    ServerPlayer observerPlayer =
+        GameTestHelpers.mockPacketRecordingServerPlayer(
+            helper, new Vec3(1, 2, 2), "shoulder-sync-observer", observerPackets);
+    UUID entityUUID = easyNPC.getEntityUUID();
+    List<Packet<?>> changedDataPackets = new ArrayList<>();
+    ServerEntity trackedPlayer =
+        new ServerEntity(helper.getLevel(), serverPlayer, 1, false, changedDataPackets::add);
+    if (!EasyNPCShoulderHandler.sitOnShoulder(easyNPC, serverPlayer)) {
+      helper.fail("NPC " + entityUUID + " did not sit on the shoulder");
+      return;
+    }
+
+    if (!serverPlayer.getShoulderEntityLeft().contains(ObjectiveDataCapable.DATA_OBJECTIVE_DATA_TAG)) {
+      helper.fail("Shoulder data on the server has no objective data to filter");
+      return;
+    }
+
+    trackedPlayer.sendChanges();
+    assertClientShoulderData(helper, changedDataPackets, entityUUID, "Changed shoulder data");
+
+    observerPackets.clear();
+    new ServerEntity(helper.getLevel(), serverPlayer, 1, false, packet -> {})
+        .addPairing(observerPlayer);
+    List<Packet<?>> pairingPackets = new ArrayList<>();
+    for (Packet<?> observerPacket : observerPackets) {
+      if (observerPacket instanceof ClientboundBundlePacket bundlePacket) {
+        bundlePacket.subPackets().forEach(pairingPackets::add);
+      }
+    }
+    assertClientShoulderData(helper, pairingPackets, entityUUID, "Shoulder data for a new observer");
+
+    if (!serverPlayer.getShoulderEntityLeft().contains(ObjectiveDataCapable.DATA_OBJECTIVE_DATA_TAG)) {
+      helper.fail("Sending the shoulder data removed the objective data on the server");
+    }
+  }
+
+  private static void assertSitOnShoulderRejected(
+      GameTestHelper helper, EasyNPC<?> easyNPC, ServerPlayer serverPlayer, String npcState) {
+    if (EasyNPCShoulderHandler.sitOnShoulder(easyNPC, serverPlayer)) {
+      helper.fail(npcState + " NPC sat on the shoulder");
+      return;
+    }
+
+    if (easyNPC.getEntity().isRemoved()) {
+      helper.fail(npcState + " NPC was removed from the world");
+      return;
+    }
+
+    if (!serverPlayer.getShoulderEntityLeft().isEmpty()) {
+      helper.fail("Left shoulder holds data after the " + npcState + " NPC was rejected");
+    }
+  }
+
+  private static void assertClientShoulderData(
+      GameTestHelper helper, List<Packet<?>> packets, UUID entityUUID, String dataDescription) {
+    Optional<CompoundTag> clientEntityTag =
+        packets.stream()
+            .filter(ClientboundSetEntityDataPacket.class::isInstance)
+            .map(ClientboundSetEntityDataPacket.class::cast)
+            .flatMap(packet -> packet.packedItems().stream())
+            .map(SynchedEntityData.DataValue::value)
+            .filter(CompoundTag.class::isInstance)
+            .map(CompoundTag.class::cast)
+            .filter(
+                entityTag ->
+                    entityTag.hasUUID(ENTITY_UUID_TAG)
+                        && entityTag.getUUID(ENTITY_UUID_TAG).equals(entityUUID))
+            .findFirst();
+    if (clientEntityTag.isEmpty()) {
+      helper.fail(dataDescription + " for NPC " + entityUUID + " was not sent");
+      return;
+    }
+
+    if (clientEntityTag.get().contains(ObjectiveDataCapable.DATA_OBJECTIVE_DATA_TAG)) {
+      helper.fail(dataDescription + " sent to clients contains the objective data");
+      return;
+    }
+
+    if (!clientEntityTag.get().contains(ENTITY_ID_TAG)) {
+      helper.fail(dataDescription + " sent to clients lost the entity type");
+    }
   }
 
   private static void releaseShoulderEntitiesByFlying(ServerPlayer serverPlayer) {

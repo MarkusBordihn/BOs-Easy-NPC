@@ -40,7 +40,7 @@ public class ScoreboardActionExecutor {
 
   public static void execute(
       ActionDataEntry actionDataEntry, ServerPlayer serverPlayer, LivingEntity npcContext) {
-    if (!ActionValidator.validateActionData(actionDataEntry, serverPlayer, npcContext)) {
+    if (!ActionValidator.validateExecutableActionData(actionDataEntry, serverPlayer)) {
       log.warn(
           "Failed to execute scoreboard action for player {}: Invalid action data",
           serverPlayer.getName().getString());

@@ -71,7 +71,7 @@ public class CustomPoseDataFiles {
     }
 
     log.info(
-        "{} Registered {} pose data entries.",
+        "{} {} pose data entries.",
         Constants.LOG_REGISTER_PREFIX,
         PoseManager.getPoseDataKeys().size());
   }

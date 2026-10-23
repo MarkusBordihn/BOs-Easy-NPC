@@ -252,13 +252,14 @@ public class EasyNPCModelManager {
 
     if (Boolean.FALSE.equals(visibilityMap.get(outerPartType))) {
       outerPart.visible = false;
-    } else {
-      if (outerPartType == ModelPartType.HAT && modelData.getModelType().requiresHatSync()) {
-        outerPart.copyFrom(innerPart);
-      } else {
-        outerPart.visible = innerPart.visible;
-      }
+      return;
     }
+
+    // ModelPart.copyFrom only copies pose and rotation, not visibility.
+    if (outerPartType == ModelPartType.HAT && modelData.getModelType().requiresHatSync()) {
+      outerPart.copyFrom(innerPart);
+    }
+    outerPart.visible = innerPart.visible;
   }
 
   public boolean shouldCancelAnimation(final ModelDataCapable<?> modelData) {

@@ -24,7 +24,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import de.markusbordihn.clientruntimeinterfacetoolkit.testrunner.Until;
 import de.markusbordihn.clientruntimeinterfacetoolkit.testrunner.data.EntitySpawn;
 import de.markusbordihn.clientruntimeinterfacetoolkit.testrunner.data.Parameters;
-import de.markusbordihn.clientruntimeinterfacetoolkit.testrunner.data.TestArea;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,10 +39,6 @@ class ShoulderClientTest extends ClientTestBase {
   private static final String PERSPECTIVE_BINDING = "key.togglePerspective";
   private static final int PLATFORM_Y = 100;
   private static final int VIEW_Y = PLATFORM_Y + 1;
-  private static final TestArea PLATFORM = TestArea.between(-3, PLATFORM_Y, -1, 3, PLATFORM_Y, 6);
-  private static final TestArea CAGE = TestArea.between(-4, VIEW_Y, -2, 4, PLATFORM_Y + 4, 7);
-  private static final TestArea CAGE_INTERIOR =
-      TestArea.between(-3, VIEW_Y, -1, 3, PLATFORM_Y + 3, 6);
   private static final int REMOUNT_COOLDOWN_TICKS = 200;
   private static final int OBJECTIVE_COOLDOWN_TICKS = 20;
   private static final long RENDER_TICKS = 20;
@@ -57,7 +52,7 @@ class ShoulderClientTest extends ClientTestBase {
   @BeforeEach
   void standOnPlatform() {
     awaitWorldSetupCapability();
-    client.fill(PLATFORM, "minecraft:stone");
+    placeScene("viewing_platform", -3, PLATFORM_Y, -1);
     client.teleport(0.5, VIEW_Y, 0.5, 0, 0);
   }
 
@@ -68,53 +63,53 @@ class ShoulderClientTest extends ClientTestBase {
 
     client.runCommand("easy_npc shoulder sit " + npcUUID + " @s");
     client.await(Until.entityAbsent(npcParameters(npcUUID)));
+    client.await(Until.playerShoulder(NPC_TYPE));
     captureFromFront("npc_on_shoulder");
 
     client.runCommand("easy_npc shoulder dismount @s left");
     client.await(Until.entityPresent(npcParameters(npcUUID)));
+    client.await(Until.playerShoulderEmpty());
   }
 
   @Test
   @DisplayName("Sit on Shoulder objective waits for the remount cooldown after a dismount")
   void sitOnShoulderObjectiveWaitsForRemountCooldown() {
     // The vanilla Allay brain lets the NPC wander out of sight, which would read as a remount.
-    client.fill(CAGE, "minecraft:glass");
-    client.fill(CAGE_INTERIOR, "minecraft:air");
+    placeScene("shoulder_cage", -4, VIEW_Y, -2);
     UUID npcUUID = this.spawnNPC();
     client.runCommand("easy_npc owner set " + npcUUID + " @s");
     client.runCommand("easy_npc shoulder enable " + npcUUID);
     client.runCommand(
         "easy_npc objective " + npcUUID + " set owner_shoulder 16 " + OBJECTIVE_COOLDOWN_TICKS);
     client.await(SIT_ON_SHOULDER_TIMEOUT, Until.entityAbsent(npcParameters(npcUUID)));
+    client.await(Until.playerShoulder(NPC_TYPE));
 
     client.runCommand("easy_npc shoulder dismount @s left " + REMOUNT_COOLDOWN_TICKS);
     client.await(Until.entityPresent(npcParameters(npcUUID)));
+    client.await(Until.playerShoulderEmpty());
 
-    client.assertNever(REMOUNT_BLOCKED_DURATION, Until.entityAbsent(npcParameters(npcUUID)));
+    client.assertNever(REMOUNT_BLOCKED_DURATION, Until.playerShoulder(NPC_TYPE));
     client.await(SIT_ON_SHOULDER_TIMEOUT, Until.entityAbsent(npcParameters(npcUUID)));
+    client.await(Until.playerShoulder(NPC_TYPE));
   }
 
   @Test
   @DisplayName("A shoulder offset moves the seated NPC up or down on the shoulder")
   void shoulderOffsetMovesSeatedNPC() {
     client.renderSettings(Parameters.of().with("perspective", "front"));
-    try {
-      client.await(Until.ticksElapsed(RENDER_TICKS));
-      long defaultTop =
-          seatedShoulderNPCTop(ShoulderClientTest::spawnUntrackedNPC, 0.0, "offset_default");
-      long raisedTop =
-          seatedShoulderNPCTop(
-              ShoulderClientTest::spawnUntrackedNPC, SHOULDER_OFFSET_UP, "offset_up");
-      long loweredTop =
-          seatedShoulderNPCTop(
-              ShoulderClientTest::spawnUntrackedNPC, SHOULDER_OFFSET_DOWN, "offset_down");
+    client.await(Until.ticksElapsed(RENDER_TICKS));
+    long defaultTop =
+        seatedShoulderNPCTop(ShoulderClientTest::spawnUntrackedNPC, 0.0, "offset_default");
+    long raisedTop =
+        seatedShoulderNPCTop(
+            ShoulderClientTest::spawnUntrackedNPC, SHOULDER_OFFSET_UP, "offset_up");
+    long loweredTop =
+        seatedShoulderNPCTop(
+            ShoulderClientTest::spawnUntrackedNPC, SHOULDER_OFFSET_DOWN, "offset_down");
 
-      String tops = "default " + defaultTop + ", up " + raisedTop + ", down " + loweredTop;
-      assertTrue(raisedTop < defaultTop, "offset up did not raise the NPC: " + tops);
-      assertTrue(loweredTop > defaultTop, "offset down did not lower the NPC: " + tops);
-    } finally {
-      client.renderSettings(Parameters.of().with("perspective", "first"));
-    }
+    String tops = "default " + defaultTop + ", up " + raisedTop + ", down " + loweredTop;
+    assertTrue(raisedTop < defaultTop, "offset up did not raise the NPC: " + tops);
+    assertTrue(loweredTop > defaultTop, "offset down did not lower the NPC: " + tops);
   }
 
   @AfterEach
@@ -124,7 +119,6 @@ class ShoulderClientTest extends ClientTestBase {
       client.runCommand("easy_npc delete " + npcUUID);
     }
     this.spawnedNPCs.clear();
-    client.fill(CAGE, "minecraft:air");
   }
 
   private UUID spawnNPC() {

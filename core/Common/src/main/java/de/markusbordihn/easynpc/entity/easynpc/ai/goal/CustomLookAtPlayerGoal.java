@@ -22,14 +22,19 @@ package de.markusbordihn.easynpc.entity.easynpc.ai.goal;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.player.Player;
 
 public class CustomLookAtPlayerGoal<T extends EasyNPC<?>> extends LookAtPlayerGoal {
   private static final float MAX_HEAD_ROTATION = 60.0F;
   private static final float LOOK_SPEED = 0.15F;
+  private static final int FAILED_SEARCH_COOLDOWN_TICKS = 4;
   private final ModelDataCapable<?> modelData;
   private final LivingEntity livingEntity;
+  private final boolean looksAtPlayers;
+  private int nextSearchTick;
 
   public CustomLookAtPlayerGoal(
       T easyNPC, Class<? extends LivingEntity> lookAtType, float lookDistance, float probability) {
@@ -45,6 +50,7 @@ public class CustomLookAtPlayerGoal<T extends EasyNPC<?>> extends LookAtPlayerGo
     super(easyNPC.getMob(), lookAtType, lookDistance, probability, onlyHorizontal);
     this.modelData = easyNPC.getEasyNPCModelData();
     this.livingEntity = easyNPC.getLivingEntity();
+    this.looksAtPlayers = Player.class.isAssignableFrom(lookAtType);
   }
 
   private boolean hasLockedBodyPose() {
@@ -59,7 +65,41 @@ public class CustomLookAtPlayerGoal<T extends EasyNPC<?>> extends LookAtPlayerGo
       return false;
     }
 
-    return super.canUse();
+    if (this.mob.tickCount < this.nextSearchTick) {
+      return false;
+    }
+
+    if (this.looksAtPlayers && !hasPlayerInRange(this.mob, this.lookDistance)) {
+      this.startSearchCooldown();
+      return false;
+    }
+
+    if (super.canUse()) {
+      return true;
+    }
+
+    if (this.failedCanUseMeansNoTarget()) {
+      this.startSearchCooldown();
+    }
+    return false;
+  }
+
+  public static boolean hasPlayerInRange(Entity entity, double range) {
+    double maximumDistanceSquared = range * range;
+    for (Player player : entity.level().players()) {
+      if (!player.isSpectator() && player.distanceToSqr(entity) <= maximumDistanceSquared) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private boolean failedCanUseMeansNoTarget() {
+    return this.probability >= 1.0F;
+  }
+
+  private void startSearchCooldown() {
+    this.nextSearchTick = this.mob.tickCount + FAILED_SEARCH_COOLDOWN_TICKS;
   }
 
   @Override

@@ -48,6 +48,7 @@
     "entity.PiglinMixin",
     "entity.PlayerShoulderMixin",
     "entity.RaiderMixin",
+    "entity.ServerEntityShoulderDataMixin",
     "entity.SlimeMixin",
     "entity.VillagerMixin",
     "entity.WalkAnimationStateMixin",

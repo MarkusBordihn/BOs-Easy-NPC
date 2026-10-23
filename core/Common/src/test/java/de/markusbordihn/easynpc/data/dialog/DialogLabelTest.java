@@ -20,7 +20,9 @@
 package de.markusbordihn.easynpc.data.dialog;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
+import net.minecraft.nbt.CompoundTag;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -54,5 +56,19 @@ class DialogLabelTest {
         new DialogDataEntry("damaged_core", "Observatory Arrival Damaged Core", "Text");
 
     assertEquals("damaged_core", dialogDataEntry.getLabel());
+  }
+
+  @Test
+  @DisplayName("A dialog saved without its generated label loads it back without a warning")
+  void generatedLabelLoadsWithoutWarning() {
+    DialogDataEntry savedDialog = new DialogDataEntry(null, "Round Trip Name", "Text", null);
+    CompoundTag savedTag = savedDialog.save(new CompoundTag());
+
+    DialogDataEntry loadedDialog = new DialogDataEntry(savedTag);
+
+    assertFalse(savedTag.contains(DialogDataEntry.DATA_LABEL_TAG));
+    assertEquals("round_trip_name", loadedDialog.getLabel());
+    assertEquals(savedDialog.getId(), loadedDialog.getId());
+    assertFalse(DialogUtils.reportedLabelChanges.contains("Round Trip Name"));
   }
 }

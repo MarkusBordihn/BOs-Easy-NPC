@@ -285,7 +285,7 @@ public final class DialogDataEntry {
     this.name = compoundTag.getString(DATA_DIALOG_NAME);
 
     this.setLabel(
-        compoundTag.contains(DATA_LABEL_TAG) ? compoundTag.getString(DATA_LABEL_TAG) : this.name);
+        compoundTag.contains(DATA_LABEL_TAG) ? compoundTag.getString(DATA_LABEL_TAG) : null);
 
     if (compoundTag.contains(DATA_TEXTS_TAG)) {
       this.dialogTexts.clear();

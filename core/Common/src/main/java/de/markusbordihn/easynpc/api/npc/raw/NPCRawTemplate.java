@@ -80,6 +80,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.Pose;
@@ -262,12 +263,14 @@ public class NPCRawTemplate extends Zombie implements EasyNPCBase<Zombie> {
   public NPCRawTemplate(EntityType<? extends Zombie> entityType, Level level, Enum<?> variant) {
     super(entityType, level);
     this.lookControl = new EasyNPCLookControl(this);
+    this.easyNPCInventory.addListener(changedContainer -> this.markNPCDataUpdated("inventory"));
     this.registerEasyNPCDefaultVariant(variant);
   }
 
   public NPCRawTemplate(EntityType<? extends Zombie> entityType, Level level) {
     super(entityType, level);
     this.lookControl = new EasyNPCLookControl(this);
+    this.easyNPCInventory.addListener(changedContainer -> this.markNPCDataUpdated("inventory"));
   }
 
   @Override
@@ -421,6 +424,24 @@ public class NPCRawTemplate extends Zombie implements EasyNPCBase<Zombie> {
       itemEntity.discard();
     } else {
       itemStack.setCount(remainingItemStack.getCount());
+    }
+  }
+
+  @Override
+  public void setItemSlot(EquipmentSlot equipmentSlot, ItemStack itemStack) {
+    boolean isChanged = !ItemStack.matches(this.getItemBySlot(equipmentSlot), itemStack);
+    super.setItemSlot(equipmentSlot, itemStack);
+    if (isChanged && !this.level().isClientSide()) {
+      this.markNPCDataUpdated("equipment " + equipmentSlot.getName());
+    }
+  }
+
+  @Override
+  public void setCustomName(Component customName) {
+    boolean isChanged = !Objects.equals(this.getCustomName(), customName);
+    super.setCustomName(customName);
+    if (isChanged && !this.level().isClientSide()) {
+      this.markNPCDataUpdated("custom name");
     }
   }
 
@@ -784,6 +805,11 @@ public class NPCRawTemplate extends Zombie implements EasyNPCBase<Zombie> {
     }
 
     this.handleNavigationTravelEvent(vec3);
+    if (this.canSkipIdleTravel(vec3)) {
+      this.calculateEntityAnimation(false);
+      return;
+    }
+
     super.travel(vec3);
   }
 

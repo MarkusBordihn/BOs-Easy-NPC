@@ -33,10 +33,11 @@ public record NPCEntityMetadata(
     ResourceLocation customIdentifier,
     NPCRemovalReason removalReason,
     boolean restoreOnOwnerLogin,
-    long removalTimestamp) {
+    long removalTimestamp,
+    long npcDataHash) {
 
   public static final NPCEntityMetadata DEFAULT =
-      new NPCEntityMetadata(null, null, null, null, null, NPCRemovalReason.NONE, false, 0L);
+      new NPCEntityMetadata(null, null, null, null, null, NPCRemovalReason.NONE, false, 0L, 0L);
 
   public static final String TAG_DIMENSION = "Dimension";
   public static final String TAG_OWNER = "Owner";
@@ -46,6 +47,7 @@ public record NPCEntityMetadata(
   public static final String TAG_REMOVAL_REASON = "RemovalReason";
   public static final String TAG_RESTORE_ON_OWNER_LOGIN = "RestoreOnOwnerLogin";
   public static final String TAG_REMOVAL_TIMESTAMP = "RemovalTimestamp";
+  public static final String TAG_NPC_DATA_HASH = "NPCDataHash";
 
   public static <T extends Mob> NPCEntityMetadata fromEasyNPC(EasyNPC<T> easyNPC) {
     if (easyNPC == null || easyNPC.getEntity() == null) {
@@ -80,6 +82,7 @@ public record NPCEntityMetadata(
         NPCRemovalReason.NONE,
         easyNPC.getEasyNPCPresetData() != null
             && easyNPC.getEasyNPCPresetData().getRestoreOnOwnerLogin(),
+        0L,
         0L);
   }
 
@@ -118,7 +121,8 @@ public record NPCEntityMetadata(
         customIdentifier,
         removalReason,
         tag.getBoolean(TAG_RESTORE_ON_OWNER_LOGIN),
-        removalTimestamp);
+        removalTimestamp,
+        tag.getLong(TAG_NPC_DATA_HASH));
   }
 
   public CompoundTag toCompoundTag() {
@@ -147,6 +151,9 @@ public record NPCEntityMetadata(
     if (this.removalTimestamp > 0L) {
       tag.putLong(TAG_REMOVAL_TIMESTAMP, this.removalTimestamp);
     }
+    if (this.npcDataHash != 0L) {
+      tag.putLong(TAG_NPC_DATA_HASH, this.npcDataHash);
+    }
 
     return tag;
   }
@@ -160,7 +167,8 @@ public record NPCEntityMetadata(
         this.customIdentifier,
         this.removalReason,
         this.restoreOnOwnerLogin,
-        this.removalTimestamp);
+        this.removalTimestamp,
+        this.npcDataHash);
   }
 
   public NPCEntityMetadata withDimension(String newDimension) {
@@ -172,7 +180,8 @@ public record NPCEntityMetadata(
         this.customIdentifier,
         this.removalReason,
         this.restoreOnOwnerLogin,
-        this.removalTimestamp);
+        this.removalTimestamp,
+        this.npcDataHash);
   }
 
   public NPCEntityMetadata withRemovalReason(NPCRemovalReason newRemovalReason) {
@@ -191,7 +200,21 @@ public record NPCEntityMetadata(
         this.customIdentifier,
         newRemovalReason,
         this.restoreOnOwnerLogin,
-        newRemovalTimestamp);
+        newRemovalTimestamp,
+        this.npcDataHash);
+  }
+
+  public NPCEntityMetadata withNPCDataHash(long newNPCDataHash) {
+    return new NPCEntityMetadata(
+        this.ownerUUID,
+        this.entityType,
+        this.dimension,
+        this.presetUUID,
+        this.customIdentifier,
+        this.removalReason,
+        this.restoreOnOwnerLogin,
+        this.removalTimestamp,
+        newNPCDataHash);
   }
 
   public boolean hasOwner() {

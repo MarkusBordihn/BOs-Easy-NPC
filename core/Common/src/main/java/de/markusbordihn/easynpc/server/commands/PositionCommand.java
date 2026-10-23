@@ -7,7 +7,6 @@ import de.markusbordihn.easynpc.access.AccessManager;
 import de.markusbordihn.easynpc.commands.Command;
 import de.markusbordihn.easynpc.commands.arguments.EasyNPCArgument;
 import de.markusbordihn.easynpc.data.model.ModelPartType;
-import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.data.position.CustomPosition;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
@@ -34,6 +33,7 @@ public class PositionCommand extends Command {
                                   EasyNPCArgument.getEntityWithAccess(context, NPC_TARGETS_ARG);
                               if (easyNPC != null) {
                                 ModelDataCapable<?> modelData = easyNPC.getEasyNPCModelData();
+                                builder.suggest(ModelPartType.ROOT.name().toLowerCase(Locale.ROOT));
                                 for (ModelPartType partType :
                                     modelData.getModelType().getModelParts()) {
                                   builder.suggest(partType.name().toLowerCase(Locale.ROOT));
@@ -95,13 +95,13 @@ public class PositionCommand extends Command {
       UUID uuid = easyNPC.getEntityUUID();
       if (AccessManager.hasAccess(context, uuid)) {
         ModelDataCapable<?> modelData = easyNPC.getEasyNPCModelData();
-        if (!modelData.getModelType().getModelParts().contains(modelPartType)) {
+        if (!modelData.supportsModelPart(modelPartType)) {
           sendFailureMessage(
               context, "Model part " + modelPartType + " not supported by NPC " + uuid + ".");
           continue;
         }
         modelData.setModelPartPosition(modelPartType, position);
-        modelData.setModelPose(modelData.hasChangedModel() ? ModelPose.CUSTOM : ModelPose.VANILLA);
+        modelData.updateModelPose(modelPartType);
         moved++;
       } else {
         sendFailureMessage(context, "You are not allowed to move the Easy NPC " + uuid + " !");

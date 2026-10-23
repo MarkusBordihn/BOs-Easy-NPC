@@ -8,6 +8,27 @@ the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 7.17.0
+
+- Fixed #858 by supporting higher attribute limits set by AttributeFix and similar mods.
+  Needs AttributeFix or a similar mod on server and client; armor is capped at 100.
+- Fixed #857 by no longer rewriting NPC files on every chunk unload when nothing changed.
+- Fixed #854 by trying the next "Open Dialog (Conditional)" when the conditions of one are not met.
+- Fixed "Chance" conditions on actions and dialogs being rolled twice, which lowered the chance.
+- Fixed unsaved NPC changes, broken preset exports and spawn actions repeated after a crash.
+- Fixed `scale`, `rotate` and `position` rejecting `root` and `name clear` keeping the name shown.
+- Fixed dead, riding or leashed NPCs going on a shoulder and a shoulder render leak on disconnect.
+- Fixed hidden heads keeping their hat layer and NPCs following targets in other dimensions.
+- Fixed and improved several default presets, including "Grukk", "Forge Keeper" and "Yoga Master".
+- Changed the default "Light Level" from 7 to 0 (surrounding light) and limited it to 0 to 15.
+  Existing NPCs that kept the default switch as well; set 7 to keep the old look.
+- Changed "Close Dialog" and "Fallback" actions to run when no conditional dialog opened.
+- Changed "Follow Owner" NPCs with a teleport distance to follow their owner into other dimensions.
+- Changed server stop to wait up to 2 minutes for NPC files that are still being written.
+- Changed idle NPCs to react up to 0.5 s later to nearby players, falling or pressure plates.
+- Added `/easy_npc attribute`, `/easy_npc debug stats file_storage` and `storage.cfg` save settings.
+- Improved performance of NPC saving, backups, `/easy_npc list`, shoulder sync and idle NPCs.
+
 ### 7.16.0
 
 - Fixed #432 by no longer running objectives twice or after removal when set more than once.
@@ -811,10 +832,10 @@ with earlier releases.
 
 Easy NPC is now split into three separate mods:
 
-- **Easy NPC** – Bundle that includes both Core and Configuration UI for a plug‑and‑play experience.
-- **Easy NPC: Core** – Lightweight runtime and logic for NPCs, with minimal dependencies. Intended
+- **Easy NPC** - Bundle that includes both Core and Configuration UI for a plug-and-play experience.
+- **Easy NPC: Core** - Lightweight runtime and logic for NPCs, with minimal dependencies. Intended
   for servers, modpacks, and developers.
-- **Easy NPC: Configuration UI** – Standalone configuration interface for creating and editing NPCs.
+- **Easy NPC: Configuration UI** - Standalone configuration interface for creating and editing NPCs.
   Can be installed on clients that need the UI.
 
 🎯 Why this change?

@@ -20,21 +20,20 @@
 package de.markusbordihn.easynpc.configui.client.screen.configuration.attribute;
 
 import de.markusbordihn.easynpc.client.screen.components.RangeSliderButton;
-import de.markusbordihn.easynpc.client.screen.components.SliderButton.OnChange;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.data.attribute.BaseAttributeType;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.attributes.RangedAttribute;
 import net.minecraft.world.entity.player.Inventory;
 
 public class BaseAttributeConfigurationScreen<T extends ConfigurationMenu>
     extends AttributeConfigurationScreen<T> {
 
+  private static final double MAX_SPEED_SLIDER_VALUE = 2.0D;
   RangeSliderButton armorSlider;
   RangeSliderButton armorToughnessSlider;
   RangeSliderButton attackDamageSlider;
@@ -55,24 +54,49 @@ public class BaseAttributeConfigurationScreen<T extends ConfigurationMenu>
       int top,
       int width,
       int height,
-      Attribute attribute,
+      BaseAttributeType baseAttributeType,
       double value,
-      double defaultMinValue,
-      double defaultMaxValue,
       double defaultValue,
-      double stepSize,
-      OnChange onChange) {
-    double minValue =
-        attribute instanceof RangedAttribute rangedAttribute
-            ? Math.max(rangedAttribute.getMinValue(), defaultMinValue)
-            : defaultMinValue;
-    double maxValue =
-        attribute instanceof RangedAttribute rangedAttribute
-            ? Math.min(rangedAttribute.getMaxValue(), defaultMaxValue)
-            : defaultMaxValue;
+      double stepSize) {
+    return this.createAttributeSlider(
+        left,
+        top,
+        width,
+        height,
+        baseAttributeType,
+        value,
+        Double.MAX_VALUE,
+        defaultValue,
+        stepSize);
+  }
+
+  protected RangeSliderButton createAttributeSlider(
+      int left,
+      int top,
+      int width,
+      int height,
+      BaseAttributeType baseAttributeType,
+      double value,
+      double maxSliderValue,
+      double defaultValue,
+      double stepSize) {
     return this.addRenderableWidget(
         new RangeSliderButton(
-            left, top, width, height, value, minValue, maxValue, defaultValue, stepSize, onChange));
+            left,
+            top,
+            width,
+            height,
+            value,
+            this.getBaseAttributes().getMinValue(baseAttributeType),
+            Math.min(this.getBaseAttributes().getMaxValue(baseAttributeType), maxSliderValue),
+            defaultValue,
+            stepSize,
+            slider ->
+                NetworkMessageHandlerManager.getServerHandler()
+                    .entityBaseAttributeChange(
+                        this.getEasyNPCUUID(),
+                        baseAttributeType.getAttribute().value(),
+                        slider.getTargetDoubleValue())));
   }
 
   @Override
@@ -95,18 +119,10 @@ public class BaseAttributeConfigurationScreen<T extends ConfigurationMenu>
             sliderYPos,
             sliderWidth,
             sliderHeight,
-            Attributes.MAX_HEALTH.value(),
+            BaseAttributeType.MAX_HEALTH,
             livingEntity.getAttributeBaseValue(Attributes.MAX_HEALTH),
-            1.0D,
-            4096.0D,
             20.0D,
-            1.0D,
-            slider ->
-                NetworkMessageHandlerManager.getServerHandler()
-                    .entityBaseAttributeChange(
-                        this.getEasyNPCUUID(),
-                        Attributes.MAX_HEALTH.value(),
-                        slider.getTargetDoubleValue()));
+            1.0D);
 
     sliderYPos += sliderYSpace;
     this.followRangeSlider =
@@ -115,18 +131,10 @@ public class BaseAttributeConfigurationScreen<T extends ConfigurationMenu>
             sliderYPos,
             sliderWidth,
             sliderHeight,
-            Attributes.FOLLOW_RANGE.value(),
+            BaseAttributeType.FOLLOW_RANGE,
             this.getBaseAttributes().getFollowRange(),
-            0.0D,
-            2048.0D,
             32.0D,
-            1.0D,
-            slider ->
-                NetworkMessageHandlerManager.getServerHandler()
-                    .entityBaseAttributeChange(
-                        this.getEasyNPCUUID(),
-                        Attributes.FOLLOW_RANGE.value(),
-                        slider.getTargetDoubleValue()));
+            1.0D);
 
     sliderYPos += sliderYSpace;
     this.knockbackResistanceSlider =
@@ -135,18 +143,10 @@ public class BaseAttributeConfigurationScreen<T extends ConfigurationMenu>
             sliderYPos,
             sliderWidth,
             sliderHeight,
-            Attributes.KNOCKBACK_RESISTANCE.value(),
+            BaseAttributeType.KNOCKBACK_RESISTANCE,
             this.getBaseAttributes().getKnockbackResistance(),
             0.0D,
-            1.0D,
-            0.0D,
-            0.1D,
-            slider ->
-                NetworkMessageHandlerManager.getServerHandler()
-                    .entityBaseAttributeChange(
-                        this.getEasyNPCUUID(),
-                        Attributes.KNOCKBACK_RESISTANCE.value(),
-                        slider.getTargetDoubleValue()));
+            0.1D);
 
     if (livingEntity.getAttribute(Attributes.MOVEMENT_SPEED) != null) {
       sliderYPos += sliderYSpace;
@@ -156,18 +156,11 @@ public class BaseAttributeConfigurationScreen<T extends ConfigurationMenu>
               sliderYPos,
               sliderWidth,
               sliderHeight,
-              Attributes.MOVEMENT_SPEED.value(),
+              BaseAttributeType.MOVEMENT_SPEED,
               livingEntity.getAttributeBaseValue(Attributes.MOVEMENT_SPEED),
-              0.0D,
-              2.0D,
+              MAX_SPEED_SLIDER_VALUE,
               0.6D,
-              0.1D,
-              slider ->
-                  NetworkMessageHandlerManager.getServerHandler()
-                      .entityBaseAttributeChange(
-                          this.getEasyNPCUUID(),
-                          Attributes.MOVEMENT_SPEED.value(),
-                          slider.getTargetDoubleValue()));
+              0.1D);
     }
 
     if (livingEntity.getAttribute(Attributes.FLYING_SPEED) != null
@@ -179,18 +172,11 @@ public class BaseAttributeConfigurationScreen<T extends ConfigurationMenu>
               sliderYPos,
               sliderWidth,
               sliderHeight,
-              Attributes.FLYING_SPEED.value(),
+              BaseAttributeType.FLYING_SPEED,
               livingEntity.getAttributeBaseValue(Attributes.FLYING_SPEED),
-              0.0D,
-              2.0D,
+              MAX_SPEED_SLIDER_VALUE,
               0.4D,
-              0.1D,
-              slider ->
-                  NetworkMessageHandlerManager.getServerHandler()
-                      .entityBaseAttributeChange(
-                          this.getEasyNPCUUID(),
-                          Attributes.FLYING_SPEED.value(),
-                          slider.getTargetDoubleValue()));
+              0.1D);
     }
 
     sliderYPos += sliderYSpace;
@@ -200,18 +186,10 @@ public class BaseAttributeConfigurationScreen<T extends ConfigurationMenu>
             sliderYPos,
             sliderWidth,
             sliderHeight,
-            Attributes.ATTACK_DAMAGE.value(),
+            BaseAttributeType.ATTACK_DAMAGE,
             this.getBaseAttributes().getAttackDamage(),
-            0.0D,
-            2048.0D,
             2.0D,
-            1.0D,
-            slider ->
-                NetworkMessageHandlerManager.getServerHandler()
-                    .entityBaseAttributeChange(
-                        this.getEasyNPCUUID(),
-                        Attributes.ATTACK_DAMAGE.value(),
-                        slider.getTargetDoubleValue()));
+            1.0D);
 
     sliderYPos += sliderYSpace;
     this.attackKnockbackSlider =
@@ -220,18 +198,10 @@ public class BaseAttributeConfigurationScreen<T extends ConfigurationMenu>
             sliderYPos,
             sliderWidth,
             sliderHeight,
-            Attributes.ATTACK_KNOCKBACK.value(),
+            BaseAttributeType.ATTACK_KNOCKBACK,
             this.getBaseAttributes().getAttackKnockback(),
             0.0D,
-            5.0D,
-            0.0D,
-            0.1D,
-            slider ->
-                NetworkMessageHandlerManager.getServerHandler()
-                    .entityBaseAttributeChange(
-                        this.getEasyNPCUUID(),
-                        Attributes.ATTACK_KNOCKBACK.value(),
-                        slider.getTargetDoubleValue()));
+            0.1D);
 
     if (livingEntity.getAttribute(Attributes.ATTACK_SPEED) != null) {
       sliderYPos += sliderYSpace;
@@ -241,18 +211,10 @@ public class BaseAttributeConfigurationScreen<T extends ConfigurationMenu>
               sliderYPos,
               sliderWidth,
               sliderHeight,
-              Attributes.ATTACK_SPEED.value(),
+              BaseAttributeType.ATTACK_SPEED,
               livingEntity.getAttributeBaseValue(Attributes.ATTACK_SPEED),
-              0.0D,
-              1024.0D,
               4.0D,
-              0.5D,
-              slider ->
-                  NetworkMessageHandlerManager.getServerHandler()
-                      .entityBaseAttributeChange(
-                          this.getEasyNPCUUID(),
-                          Attributes.ATTACK_SPEED.value(),
-                          slider.getTargetDoubleValue()));
+              0.5D);
     }
 
     sliderYPos += sliderYSpace;
@@ -262,18 +224,10 @@ public class BaseAttributeConfigurationScreen<T extends ConfigurationMenu>
             sliderYPos,
             sliderWidth,
             sliderHeight,
-            Attributes.ARMOR.value(),
+            BaseAttributeType.ARMOR,
             livingEntity.getAttributeBaseValue(Attributes.ARMOR),
             0.0D,
-            30.0D,
-            0.0D,
-            1.0D,
-            slider ->
-                NetworkMessageHandlerManager.getServerHandler()
-                    .entityBaseAttributeChange(
-                        this.getEasyNPCUUID(),
-                        Attributes.ARMOR.value(),
-                        slider.getTargetDoubleValue()));
+            1.0D);
 
     sliderYPos += sliderYSpace;
     this.armorToughnessSlider =
@@ -282,18 +236,10 @@ public class BaseAttributeConfigurationScreen<T extends ConfigurationMenu>
             sliderYPos,
             sliderWidth,
             sliderHeight,
-            Attributes.ARMOR_TOUGHNESS.value(),
+            BaseAttributeType.ARMOR_TOUGHNESS,
             livingEntity.getAttributeBaseValue(Attributes.ARMOR_TOUGHNESS),
             0.0D,
-            20.0D,
-            0.0D,
-            0.5D,
-            slider ->
-                NetworkMessageHandlerManager.getServerHandler()
-                    .entityBaseAttributeChange(
-                        this.getEasyNPCUUID(),
-                        Attributes.ARMOR_TOUGHNESS.value(),
-                        slider.getTargetDoubleValue()));
+            0.5D);
   }
 
   @Override

@@ -50,7 +50,7 @@ public class DialogUtils {
   private static final int MACRO_LINE_RESERVE = 20;
   private static final int MAX_COMPACT_LAYOUT_LINES = 6;
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-  private static final Set<String> reportedLabelChanges = ConcurrentHashMap.newKeySet();
+  static final Set<String> reportedLabelChanges = ConcurrentHashMap.newKeySet();
 
   protected DialogUtils() {}
 

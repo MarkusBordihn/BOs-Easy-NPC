@@ -40,6 +40,8 @@ import net.minecraft.gametest.framework.GameTestInfo;
 import net.minecraft.gametest.framework.GameTestListener;
 import net.minecraft.gametest.framework.GameTestRunner;
 import net.minecraft.network.Connection;
+import net.minecraft.network.PacketSendListener;
+import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -143,17 +145,46 @@ public class GameTestHelpers {
 
   public static ServerPlayer mockServerPlayer(
       GameTestHelper helper, Vec3 position, String playerName) {
-    return mockServerPlayer(helper, position, playerName, true);
+    return mockServerPlayer(helper, position, playerName, GameType.CREATIVE);
   }
 
   public static ServerPlayer mockSurvivalServerPlayer(
       GameTestHelper helper, Vec3 position, String playerName) {
-    return mockServerPlayer(helper, position, playerName, false);
+    return mockServerPlayer(helper, position, playerName, GameType.SURVIVAL);
+  }
+
+  public static ServerPlayer mockSpectatorServerPlayer(
+      GameTestHelper helper, Vec3 position, String playerName) {
+    return mockServerPlayer(helper, position, playerName, GameType.SPECTATOR);
+  }
+
+  public static ServerPlayer mockPacketRecordingServerPlayer(
+      GameTestHelper helper, Vec3 position, String playerName, List<Packet<?>> sentPackets) {
+    Connection connection =
+        new Connection(PacketFlow.SERVERBOUND) {
+          @Override
+          public void send(Packet<?> packet, PacketSendListener sendListener, boolean flush) {
+            sentPackets.add(packet);
+            super.send(packet, sendListener, flush);
+          }
+        };
+    return mockServerPlayer(helper, position, playerName, GameType.CREATIVE, connection);
   }
 
   private static ServerPlayer mockServerPlayer(
-      GameTestHelper helper, Vec3 position, String playerName, boolean creative) {
-    ServerPlayer serverPlayer = makeConnectedMockServerPlayer(helper, playerName, creative);
+      GameTestHelper helper, Vec3 position, String playerName, GameType gameType) {
+    return mockServerPlayer(
+        helper, position, playerName, gameType, new Connection(PacketFlow.SERVERBOUND));
+  }
+
+  private static ServerPlayer mockServerPlayer(
+      GameTestHelper helper,
+      Vec3 position,
+      String playerName,
+      GameType gameType,
+      Connection connection) {
+    ServerPlayer serverPlayer =
+        makeConnectedMockServerPlayer(helper, playerName, gameType, connection);
     GameTestHelpers.assertNotNull(helper, "ServerPlayer is null!", serverPlayer);
     serverPlayer.setPos(helper.absoluteVec(position));
     helper.assertEntityPresent(
@@ -162,7 +193,7 @@ public class GameTestHelpers {
   }
 
   private static ServerPlayer makeConnectedMockServerPlayer(
-      GameTestHelper helper, String playerName, boolean creative) {
+      GameTestHelper helper, String playerName, GameType gameType, Connection connection) {
     ServerLevel level = helper.getLevel();
     CommonListenerCookie listenerCookie =
         CommonListenerCookie.createInitial(new GameProfile(UUID.randomUUID(), playerName), false);
@@ -174,15 +205,14 @@ public class GameTestHelpers {
             listenerCookie.clientInformation()) {
           @Override
           public boolean isSpectator() {
-            return false;
+            return gameType == GameType.SPECTATOR;
           }
 
           @Override
           public boolean isCreative() {
-            return creative;
+            return gameType == GameType.CREATIVE;
           }
         };
-    Connection connection = new Connection(PacketFlow.SERVERBOUND);
     new EmbeddedChannel(connection);
     PlayerList playerList = level.getServer().getPlayerList();
     playerList.placeNewPlayer(connection, serverPlayer, listenerCookie);

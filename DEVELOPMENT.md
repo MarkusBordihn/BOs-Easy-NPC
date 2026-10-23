@@ -155,7 +155,7 @@ The task is available in `core`, `config-ui` and `bundle`, queries the Modrinth 
 maven metadata and rewrites the `*_version` properties in place. It is intentionally not part of
 `build` or `fullCheck`.
 
-## Quick start (cross‑platform) 🚀
+## Quick start (cross-platform) 🚀
 
 > [!IMPORTANT]
 > First-time setup for reliable root tasks: Build each artifact at least once individually so that

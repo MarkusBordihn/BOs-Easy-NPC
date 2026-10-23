@@ -24,8 +24,10 @@ import de.markusbordihn.easynpc.entity.easynpc.ai.control.JumpEasyNPCMoveControl
 import de.markusbordihn.easynpc.entity.easynpc.data.NavigationDataCapable;
 import de.markusbordihn.easynpc.handler.PlacementHandler;
 import java.util.EnumSet;
+import java.util.Set;
 import java.util.function.Supplier;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -36,6 +38,7 @@ import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
+import net.minecraft.world.level.portal.DimensionTransition;
 import net.minecraft.world.phys.Vec3;
 
 public class FollowLivingEntityGoal extends Goal {
@@ -46,6 +49,7 @@ public class FollowLivingEntityGoal extends Goal {
   private static final int TELEPORT_ATTEMPTS = 10;
   private static final float NO_DISTANCE_LIMIT = 0.0F;
 
+  private final EasyNPC<?> easyNPC;
   private final Mob mob;
   private final NavigationDataCapable<?> navigationData;
   private final Supplier<LivingEntity> targetSupplier;
@@ -54,6 +58,7 @@ public class FollowLivingEntityGoal extends Goal {
   private final float maxFollowDistance;
   private final float teleportDistance;
   private final Vec3 followOffset;
+  private final boolean followIntoOtherDimensions;
   private final LevelReader level;
   private float oldWaterCost;
   private int timeToRecalcPath;
@@ -68,7 +73,8 @@ public class FollowLivingEntityGoal extends Goal {
       float stopDistance,
       float maxFollowDistance,
       float teleportDistance,
-      Vec3 followOffset) {
+      Vec3 followOffset,
+      boolean followIntoOtherDimensions) {
     this(
         easyNPC,
         () -> livingEntity,
@@ -76,7 +82,8 @@ public class FollowLivingEntityGoal extends Goal {
         stopDistance,
         maxFollowDistance,
         teleportDistance,
-        followOffset);
+        followOffset,
+        followIntoOtherDimensions);
   }
 
   public FollowLivingEntityGoal(
@@ -86,7 +93,9 @@ public class FollowLivingEntityGoal extends Goal {
       float stopDistance,
       float maxFollowDistance,
       float teleportDistance,
-      Vec3 followOffset) {
+      Vec3 followOffset,
+      boolean followIntoOtherDimensions) {
+    this.easyNPC = easyNPC;
     this.mob = easyNPC.getMob();
     this.navigationData = easyNPC.getEasyNPCNavigationData();
     this.targetSupplier = targetSupplier;
@@ -96,6 +105,7 @@ public class FollowLivingEntityGoal extends Goal {
         maxFollowDistance > stopDistance ? maxFollowDistance : NO_DISTANCE_LIMIT;
     this.teleportDistance = teleportDistance;
     this.followOffset = followOffset != null ? followOffset : Vec3.ZERO;
+    this.followIntoOtherDimensions = followIntoOtherDimensions;
     this.level = easyNPC.getEntityServerLevel();
     this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
   }
@@ -149,6 +159,11 @@ public class FollowLivingEntityGoal extends Goal {
       return false;
     }
 
+    if (this.livingEntity.level() != this.mob.level()) {
+      this.followIntoTargetDimension();
+      return false;
+    }
+
     double distanceSq = this.distanceToTargetSqr();
     if (distanceSq <= this.stopDistance * this.stopDistance) {
       return false;
@@ -164,7 +179,7 @@ public class FollowLivingEntityGoal extends Goal {
       return false;
     }
 
-    if (this.livingEntity == null) {
+    if (this.livingEntity == null || this.livingEntity.level() != this.mob.level()) {
       return false;
     }
 
@@ -234,6 +249,27 @@ public class FollowLivingEntityGoal extends Goal {
     }
 
     this.pathFailureCooldownTicks = PATH_FAILURE_COOLDOWN_TICKS;
+  }
+
+  private void followIntoTargetDimension() {
+    if (!this.followIntoOtherDimensions
+        || this.teleportDistance <= NO_DISTANCE_LIMIT
+        || this.mob.isLeashed()
+        || this.mob.isPassenger()
+        || !(this.livingEntity.level() instanceof ServerLevel targetLevel)) {
+      return;
+    }
+
+    this.easyNPC.handleChangeDimensionEvent(
+        new DimensionTransition(targetLevel, this.livingEntity, DimensionTransition.DO_NOTHING));
+    this.mob.teleportTo(
+        targetLevel,
+        this.livingEntity.getX(),
+        this.livingEntity.getY(),
+        this.livingEntity.getZ(),
+        Set.of(),
+        this.livingEntity.getYRot(),
+        this.mob.getXRot());
   }
 
   private void teleportTo(Vec3 targetPosition) {

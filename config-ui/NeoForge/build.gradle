@@ -41,13 +41,6 @@ runs {
     systemProperty "${project.mod_id}.gametest", 'true'
   }
 
-  if (rootProject.findProperty('clientRuntimeTest')?.isAvailable()) {
-    clientTest {
-      runType('client')
-      workingDirectory project.file('run/clienttest')
-    }
-  }
-
   data {
     arguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
   }
@@ -97,11 +90,6 @@ dependencies {
     runtimeOnly easyModelEntitiesNeoForgeRuntime
   } else if (project.hasProperty('neoforge_easy_model_entities_version') && project.neoforge_easy_model_entities_version) {
     runtimeOnly "maven.modrinth:easy-model-entities:${project.neoforge_easy_model_entities_version}"
-  }
-
-  // Client Runtime Interface Toolkit (runtime dependency, only for client tests)
-  if (rootProject.findProperty('clientRuntimeTest')?.isClientTestRun()) {
-    runtimeOnly rootProject.clientRuntimeTest.toolkitCoordinate('neoforge')
   }
 
   // Tide (for testing, requires Cloth Config at runtime)

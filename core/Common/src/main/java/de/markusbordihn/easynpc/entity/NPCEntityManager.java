@@ -21,12 +21,14 @@ package de.markusbordihn.easynpc.entity;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.config.StorageConfig;
+import de.markusbordihn.easynpc.data.npc.NPCBackupSnapshot;
 import de.markusbordihn.easynpc.data.npc.NPCEntityMetadata;
 import de.markusbordihn.easynpc.data.npc.NPCRemovalReason;
 import de.markusbordihn.easynpc.data.npc.SavedNPCEntityEntry;
 import de.markusbordihn.easynpc.data.saveddata.FactionData;
 import de.markusbordihn.easynpc.data.saveddata.NPCEntityData;
 import de.markusbordihn.easynpc.data.status.StatusDataType;
+import de.markusbordihn.easynpc.data.storage.NPCStorageStatistics;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.StatusDataCapable;
 import java.util.Collection;
@@ -36,6 +38,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.Mob;
@@ -121,6 +124,101 @@ public class NPCEntityManager {
       return;
     }
 
+    SavedNPCEntityEntry entry = createSavedEntry(easyNPC, removalReason);
+    if (entry == null) {
+      return;
+    }
+
+    getNPCEntityData().putEntry(entry.entityUUID(), entry);
+    log.debug("{} Saved NPC entity: {}", LOG_PREFIX, entry.entityUUID());
+  }
+
+  public static <T extends Mob> void saveChangedNPCOnChunkUnload(EasyNPC<T> easyNPC) {
+    if (!validateServer() || easyNPC == null) {
+      return;
+    }
+
+    if (easyNPC.getEasyNPCStatusData().hasUnsavedNPCData() || hasStoredDimensionChanged(easyNPC)) {
+      saveNPC(easyNPC, NPCRemovalReason.UNLOADED_TO_CHUNK);
+      return;
+    }
+
+    NPCEntityData npcEntityData = getNPCEntityData();
+    npcEntityData.updateRemovalReason(easyNPC.getEntityUUID(), NPCRemovalReason.UNLOADED_TO_CHUNK);
+    npcEntityData.recordSkippedUnchangedUnload();
+  }
+
+  private static <T extends Mob> boolean hasStoredDimensionChanged(EasyNPC<T> easyNPC) {
+    String currentDimension = easyNPC.getEntity().level().dimension().location().toString();
+    return getMetadata(easyNPC.getEntityUUID())
+        .map(metadata -> !currentDimension.equals(metadata.dimension()))
+        .orElse(true);
+  }
+
+  public static <T extends Mob> boolean saveChangedNPCAndQueueFile(EasyNPC<T> easyNPC) {
+    if (!isSavableNPC(easyNPC) || !saveChangedNPC(easyNPC)) {
+      return false;
+    }
+
+    getNPCEntityData().queueNPCFile(easyNPC.getEntityUUID());
+    return true;
+  }
+
+  public static <T extends Mob> NPCBackupSnapshot saveChangedNPCForBackup(EasyNPC<T> easyNPC) {
+    if (!isSavableNPC(easyNPC) || easyNPC.getEasyNPCPresetData() == null) {
+      return null;
+    }
+
+    StatusDataCapable<T> statusData = easyNPC.getEasyNPCStatusData();
+    boolean isMarkedAsChanged = statusData.hasUnsavedNPCData();
+    statusData.markNPCDataSaved();
+    CompoundTag serializedPresetData = easyNPC.getEasyNPCPresetData().serializePresetData();
+    SavedNPCEntityEntry entry =
+        SavedNPCEntityEntry.fromPresetData(
+            easyNPC, serializedPresetData.copy(), NPCRemovalReason.NONE);
+    if (storeChangedEntry(statusData, entry, isMarkedAsChanged)) {
+      getNPCEntityData().queueNPCFile(entry.entityUUID());
+    }
+    return new NPCBackupSnapshot(serializedPresetData, entry.metadata().npcDataHash());
+  }
+
+  private static <T extends Mob> boolean isSavableNPC(EasyNPC<T> easyNPC) {
+    return validateServer()
+        && easyNPC != null
+        && easyNPC.isPersistentNPC()
+        && !isNPCDeleted(easyNPC.getEntityUUID());
+  }
+
+  private static <T extends Mob> boolean saveChangedNPC(EasyNPC<T> easyNPC) {
+    StatusDataCapable<T> statusData = easyNPC.getEasyNPCStatusData();
+    boolean isMarkedAsChanged = statusData.hasUnsavedNPCData();
+    SavedNPCEntityEntry entry = createSavedEntry(easyNPC, NPCRemovalReason.NONE);
+    return entry != null && storeChangedEntry(statusData, entry, isMarkedAsChanged);
+  }
+
+  private static <T extends Mob> boolean storeChangedEntry(
+      StatusDataCapable<T> statusData, SavedNPCEntityEntry entry, boolean isMarkedAsChanged) {
+    Optional<NPCEntityMetadata> storedMetadata = getMetadata(entry.entityUUID());
+    if (isStoredEntryUpToDate(entry, storedMetadata)) {
+      return false;
+    }
+
+    if (!isMarkedAsChanged && isOnlyNPCDataHashMissing(entry, storedMetadata)) {
+      getNPCEntityData().updateNPCDataHash(entry.entityUUID(), entry.metadata().npcDataHash());
+      return false;
+    }
+
+    // Lets the backup run, which compares NPC_DATA_LAST_UPDATE, see changes no setter marked.
+    if (!isMarkedAsChanged) {
+      statusData.markNPCDataUpdated("unmarked change");
+      statusData.markNPCDataSaved();
+    }
+    getNPCEntityData().putEntry(entry.entityUUID(), entry);
+    return true;
+  }
+
+  private static <T extends Mob> SavedNPCEntityEntry createSavedEntry(
+      EasyNPC<T> easyNPC, NPCRemovalReason removalReason) {
     StatusDataCapable<T> statusData = easyNPC.getEasyNPCStatusData();
     long previousSavedTimestamp =
         statusData.getStatusDataTimestamp(StatusDataType.NPC_DATA_LAST_SAVED);
@@ -128,11 +226,27 @@ public class NPCEntityManager {
     SavedNPCEntityEntry entry = SavedNPCEntityEntry.fromEasyNPC(easyNPC, removalReason);
     if (entry == null) {
       statusData.setStatusDataTimestamp(StatusDataType.NPC_DATA_LAST_SAVED, previousSavedTimestamp);
-      return;
     }
+    return entry;
+  }
 
-    getNPCEntityData().putEntry(entry.entityUUID(), entry);
-    log.debug("{} Saved NPC entity: {}", LOG_PREFIX, entry.entityUUID());
+  private static boolean isStoredEntryUpToDate(
+      SavedNPCEntityEntry entry, Optional<NPCEntityMetadata> storedMetadata) {
+    NPCEntityMetadata currentMetadata = entry.metadata().withRemovalReason(NPCRemovalReason.NONE);
+    return storedMetadata
+        .map(metadata -> metadata.withRemovalReason(NPCRemovalReason.NONE).equals(currentMetadata))
+        .orElse(false);
+  }
+
+  // Index entries written before 7.17.0 have no hash, adopting it avoids rewriting every NPC file.
+  private static boolean isOnlyNPCDataHashMissing(
+      SavedNPCEntityEntry entry, Optional<NPCEntityMetadata> storedMetadata) {
+    NPCEntityMetadata currentMetadata =
+        entry.metadata().withRemovalReason(NPCRemovalReason.NONE).withNPCDataHash(0L);
+    return storedMetadata
+        .filter(metadata -> metadata.npcDataHash() == 0L)
+        .map(metadata -> metadata.withRemovalReason(NPCRemovalReason.NONE).equals(currentMetadata))
+        .orElse(false);
   }
 
   public static boolean hasStoredNPC(UUID entityUUID) {
@@ -220,16 +334,7 @@ public class NPCEntityManager {
     int savedCount =
         LivingEntityManager.getServerEasyNPCEntities()
             .mapToInt(
-                easyNPC -> {
-                  if (!easyNPC.isPersistentNPC()
-                      || isNPCDeleted(easyNPC.getEntityUUID())
-                      || !easyNPC.getEasyNPCStatusData().hasUnsavedNPCData()) {
-                    return 0;
-                  }
-
-                  saveNPC(easyNPC);
-                  return 1;
-                })
+                easyNPC -> isSavableNPC(easyNPC) && saveChangedNPC(easyNPC) ? 1 : 0)
             .sum();
 
     if (savedCount > 0) {
@@ -239,6 +344,18 @@ public class NPCEntityManager {
           savedCount,
           System.currentTimeMillis() - startTime);
     }
+  }
+
+  public static boolean isNPCFileDirty(UUID entityUUID) {
+    return validateServer() && getNPCEntityData().isFileDirty(entityUUID);
+  }
+
+  public static NPCStorageStatistics getStorageStatistics() {
+    if (currentServer == null) {
+      return NPCStorageStatistics.EMPTY;
+    }
+
+    return getNPCEntityData().getStorageStatistics();
   }
 
   public static Optional<SavedNPCEntityEntry> getNPC(UUID entityUUID) {

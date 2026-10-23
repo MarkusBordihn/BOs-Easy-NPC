@@ -704,19 +704,18 @@ public class PresetHandler {
     return savePreset(easyNPC, file, prepareExportData(easyNPC));
   }
 
-  public static boolean exportBackupPreset(EasyNPC<?> easyNPC, File file) {
-    if (easyNPC == null || file == null) {
-      log.error("[{}] Error exporting backup preset {} !", easyNPC, file);
-      return false;
+  public static CompoundTag prepareBackupData(
+      CompoundTag presetData, CompoundTag referenceTag, UUID ownerUUID) {
+    CompoundTag compoundTag = prepareExportData(presetData, referenceTag);
+    if (compoundTag != null && ownerUUID != null) {
+      compoundTag.putUUID(OwnerDataCapable.DATA_OWNER_TAG, ownerUUID);
     }
+    return compoundTag;
+  }
 
-    CompoundTag compoundTag = prepareExportData(easyNPC);
+  public static UUID getBackupOwnerUUID(EasyNPC<?> easyNPC) {
     OwnerDataCapable<?> ownerData = easyNPC.getEasyNPCOwnerData();
-    if (compoundTag != null && ownerData != null && ownerData.hasNPCOwner()) {
-      compoundTag.putUUID(OwnerDataCapable.DATA_OWNER_TAG, ownerData.getOwnerUUID());
-    }
-
-    return savePreset(easyNPC, file, compoundTag);
+    return ownerData != null && ownerData.hasNPCOwner() ? ownerData.getOwnerUUID() : null;
   }
 
   private static boolean savePreset(EasyNPC<?> easyNPC, File file, CompoundTag compoundTag) {
@@ -735,8 +734,20 @@ public class PresetHandler {
       return null;
     }
 
-    CompoundTag compoundTag =
-        SecurityManager.sanitizePresetExport(presetData.serializePresetData());
+    return prepareExportData(presetData.serializePresetData(), getExportReferenceTag(easyNPC));
+  }
+
+  public static CompoundTag getExportReferenceTag(EasyNPC<?> easyNPC) {
+    if (easyNPC.getEntity().level() instanceof ServerLevel serverLevel) {
+      return PresetReference.getReferenceTag(easyNPC.getEntity().getType(), serverLevel);
+    }
+
+    return null;
+  }
+
+  // Runs on the background file writer, so it must stay pure tag work without entity access.
+  public static CompoundTag prepareExportData(CompoundTag presetData, CompoundTag referenceTag) {
+    CompoundTag compoundTag = SecurityManager.sanitizePresetExport(presetData);
     if (compoundTag == null || compoundTag.isEmpty()) {
       return compoundTag;
     }
@@ -744,9 +755,7 @@ public class PresetHandler {
     PresetDataUtils.cleanupEntityData(compoundTag, PresetDataUtils.CleanupMode.RUNTIME_ONLY);
     PresetNormalizer.normalize(compoundTag);
 
-    if (easyNPC.getEntity().level() instanceof ServerLevel serverLevel) {
-      CompoundTag referenceTag =
-          PresetReference.getReferenceTag(easyNPC.getEntity().getType(), serverLevel);
+    if (referenceTag != null) {
       return PresetCompactor.compact(compoundTag, referenceTag);
     }
 

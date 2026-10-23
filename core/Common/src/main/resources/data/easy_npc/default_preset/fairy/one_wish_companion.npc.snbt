@@ -47,7 +47,7 @@
             Cmd:"farewell",Type:"OPEN_NAMED_DIALOG"
           }],Label:"leave",Name:"Maybe later"
         }],Label:"default",Name:"One Small Wish",Texts:[{
-          Text:"Hello, @initiator. I can summon one wolf companion for you. This wish can only be used once."
+          Text:"Hello, @initiator. Every traveler gets one wish from me, and only one, ever. Mine come with four paws and a loyal heart."
         }]
       },{
         Name:"Wish Granted",Priority:-1,Texts:[{
@@ -75,7 +75,6 @@
     Invulnerable:1b,
     NoGravity:1b,
     ObjectiveData:{
-      HasObjectives:1b,
       ObjectiveDataSet:[{
         Type:"LOOK_AT_PLAYER"
       },{

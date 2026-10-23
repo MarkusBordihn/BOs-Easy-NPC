@@ -36,4 +36,9 @@ public class DefaultPresetRoundTripTest {
     DefaultPresetRoundTripTestHelper.assertDefaultPresetsSurviveRegeneration(helper);
     helper.succeed();
   }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testDefaultPresetsSpawnAndKeepRunning(GameTestHelper helper) {
+    DefaultPresetRoundTripTestHelper.assertDefaultPresetsSpawnAndKeepRunning(helper);
+  }
 }

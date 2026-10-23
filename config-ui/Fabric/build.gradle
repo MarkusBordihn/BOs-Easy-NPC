@@ -71,11 +71,6 @@ dependencies {
     modRuntimeOnly("maven.modrinth:cloth-config:15.0.140+fabric")
   }
 
-  // Client Runtime Interface Toolkit (runtime dependency, only for client tests)
-  if (rootProject.findProperty('clientRuntimeTest')?.isClientTestRun()) {
-    modLocalRuntime rootProject.clientRuntimeTest.toolkitCoordinate('fabric')
-  }
-
   // Cobblemon Integration (Broken in DEV!, requires Fabric API at runtime)
   // modRuntimeOnly("maven.modrinth:cobblemon:${project.fabric_cobblemon_version}")
 }
@@ -109,13 +104,6 @@ loom {
       vmArg "-Dfabric-api.gametest"
       vmArg "-D${project.mod_id}.gametest=true"
       runDir("run/gametest")
-    }
-    if (project.rootProject.findProperty('clientRuntimeTest')?.isAvailable()) {
-      clientTest {
-        client()
-        setConfigName("Fabric Client Test")
-        runDir("run/clienttest")
-      }
     }
   }
 }

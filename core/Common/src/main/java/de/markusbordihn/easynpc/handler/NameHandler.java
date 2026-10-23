@@ -61,6 +61,7 @@ public class NameHandler {
       log.debug("[{}] Remove custom name", easyNPC);
       easyNPC.getEntity().setCustomName(null);
       easyNPC.getEntity().setCustomNameVisible(false);
+      setNameVisibility(easyNPC, NameVisibilityType.NEVER);
       return true;
     }
 
@@ -78,13 +79,17 @@ public class NameHandler {
         .setCustomName(
             TextComponent.getTextComponentRaw(name, TextUtils.isTranslationKey(name))
                 .setStyle(style));
+    setNameVisibility(easyNPC, nameVisibilityType);
 
+    return true;
+  }
+
+  private static void setNameVisibility(
+      EasyNPC<?> easyNPC, NameVisibilityType nameVisibilityType) {
     DisplayAttributeDataCapable<?> displayAttributeData = easyNPC.getEasyNPCDisplayAttributeData();
     if (displayAttributeData != null) {
       displayAttributeData.setDisplayAttribute(
           DisplayAttributeType.NAME_VISIBILITY, nameVisibilityType);
     }
-
-    return true;
   }
 }

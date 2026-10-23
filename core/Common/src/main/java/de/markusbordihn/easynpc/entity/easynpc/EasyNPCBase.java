@@ -54,6 +54,8 @@ import de.markusbordihn.easynpc.entity.easynpc.handlers.PendingActionHandler;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.Saddleable;
 import net.minecraft.world.entity.SpawnGroupData;
@@ -96,7 +98,7 @@ public interface EasyNPCBase<E extends Mob>
     if (synchedDataIndex.persistent) {
       StatusDataCapable<E> statusData = this.getEasyNPCStatusData();
       if (statusData != null) {
-        statusData.markNPCDataUpdated();
+        statusData.markNPCDataUpdated(synchedDataIndex);
       }
     }
     this.setSynchedEntityData(synchedDataIndex, data, false);
@@ -478,6 +480,19 @@ public interface EasyNPCBase<E extends Mob>
       this.handleEasyNPCData("navigation refresh", navigationData::refreshNavigation);
     }
 
+    if (statusData != null) {
+      boolean replacesRunningNPCData = this.isAddedToServerLevel();
+      this.handleEasyNPCData(
+          "status tracking",
+          () -> statusData.trackLoadedNPCData(compoundTag, replacesRunningNPCData));
+    }
+
     this.getMob().setPersistenceRequired();
+  }
+
+  private boolean isAddedToServerLevel() {
+    Entity entity = this.getEntity();
+    return entity.level() instanceof ServerLevel serverLevel
+        && serverLevel.getEntity(entity.getId()) == entity;
   }
 }

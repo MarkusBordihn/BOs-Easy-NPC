@@ -26,6 +26,7 @@ import de.markusbordihn.easynpc.data.npc.NPCEntityMetadata;
 import de.markusbordihn.easynpc.data.npc.NPCRemovalReason;
 import de.markusbordihn.easynpc.data.npc.SavedNPCEntityEntry;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
@@ -45,7 +46,8 @@ class NPCEntityDataRetentionTest {
         null,
         removalReason,
         false,
-        removalTimestamp);
+        removalTimestamp,
+        0L);
   }
 
   private static UUID putEntry(NPCEntityData entityData, NPCEntityMetadata entityMetadata) {
@@ -96,6 +98,26 @@ class NPCEntityDataRetentionTest {
     NPCEntityMetadata reloadedMetadata =
         NPCEntityMetadata.fromCompoundTag(removedMetadata.toCompoundTag());
     assertEquals(1000L, reloadedMetadata.removalTimestamp());
+  }
+
+  @Test
+  void testUpdateNPCDataHashAdoptsMissingHashWithoutChangingEntry() {
+    NPCEntityData entityData = new NPCEntityData();
+    NPCEntityMetadata storedMetadata = metadata(NPCRemovalReason.NONE, 0L);
+    UUID entityUUID = putEntry(entityData, storedMetadata);
+    entityData.setDirty(false);
+
+    entityData.updateNPCDataHash(entityUUID, 42L);
+
+    assertEquals(
+        Optional.of(storedMetadata.withNPCDataHash(42L)), entityData.getMetadata(entityUUID));
+    assertTrue(entityData.isDirty());
+
+    entityData.setDirty(false);
+    entityData.updateNPCDataHash(entityUUID, 42L);
+    entityData.updateNPCDataHash(UUID.randomUUID(), 42L);
+
+    assertFalse(entityData.isDirty());
   }
 
   @Test

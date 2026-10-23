@@ -33,7 +33,7 @@ public final class Constants {
   public static final String MOD_PREFIX_ID = MOD_ID + ":";
   public static final String LOG_ICON = "🗣";
   public static final String LOG_NAME = "Easy NPC: Config UI";
-  public static final String LOG_REGISTER_PREFIX = LOG_ICON + " Register " + LOG_NAME;
+  public static final String LOG_REGISTER_PREFIX = LOG_ICON + " [" + LOG_NAME + "] [Register]";
   public static final UUID EMPTY_UUID = new UUID(0L, 0L);
 
   public static final String TEXT_PREFIX = "text." + MOD_ID + ".";

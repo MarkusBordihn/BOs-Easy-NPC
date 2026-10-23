@@ -25,7 +25,6 @@ import de.markusbordihn.clientruntimeinterfacetoolkit.testrunner.EnabledIfModLoa
 import de.markusbordihn.clientruntimeinterfacetoolkit.testrunner.Until;
 import de.markusbordihn.clientruntimeinterfacetoolkit.testrunner.data.CompareOptions;
 import de.markusbordihn.clientruntimeinterfacetoolkit.testrunner.data.Parameters;
-import de.markusbordihn.clientruntimeinterfacetoolkit.testrunner.data.TestArea;
 import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -38,8 +37,6 @@ class EasyModelEntitiesClientTest extends ClientTestBase {
   private static final String EXAMPLE_PROFILE_PREFIX = "easy_model_entities_examples:entity/";
   private static final int PLATFORM_Y = 100;
   private static final int VIEW_Y = PLATFORM_Y + 1;
-  private static final TestArea VIEWING_PLATFORM =
-      TestArea.between(-3, PLATFORM_Y, -1, 3, PLATFORM_Y, 6);
   private static final long RENDER_TICKS = 20;
   private static final long VISIBLE_CHANGE_PIXELS = 500;
   private static final CompareOptions MODEL_COMPARE = CompareOptions.DEFAULT.withTolerance(8);
@@ -52,7 +49,7 @@ class EasyModelEntitiesClientTest extends ClientTestBase {
   @ValueSource(strings = {"wisp_lantern", "coral_drifter", "dawn_sparrow", "skybound_wanderer"})
   @DisplayName("Easy Model NPC renders its default profile and switches to the example profile")
   void exampleProfileRendersInView(String profile) {
-    client.fill(VIEWING_PLATFORM, "minecraft:stone");
+    placeScene("viewing_platform", -3, PLATFORM_Y, -1);
     client.teleport(0.5, VIEW_Y, 0.5, 0, 0);
     client.await(Until.ticksElapsed(RENDER_TICKS));
     String emptyPlatformFrame = client.retainFrame();
