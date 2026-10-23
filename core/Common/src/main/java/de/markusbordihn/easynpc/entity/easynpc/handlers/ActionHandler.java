@@ -168,6 +168,7 @@ public interface ActionHandler<E extends Mob> extends EasyNPC<E> {
     Mob mob = this.getMob();
     ActionEventDataCapable<E> actionEventData = this.getEasyNPCActionEventData();
     if (actionEventData == null || mob == null || mob.isDeadOrDying()) {
+      this.getProfiler().pop();
       return;
     }
 
@@ -326,6 +327,7 @@ public interface ActionHandler<E extends Mob> extends EasyNPC<E> {
     }
 
     statusData.setStatusDataFlag(StatusDataType.SPAWN_ACTION_FIRED, true);
+    statusData.markNPCDataUpdated(StatusDataType.SPAWN_ACTION_FIRED);
     actionEventData.handleActionEvent(
         ActionEventType.ON_SPAWN,
         ActionContext.of(
@@ -526,6 +528,13 @@ public interface ActionHandler<E extends Mob> extends EasyNPC<E> {
         continue;
       }
 
+      if (actionType == ActionDataType.OPEN_NAMED_DIALOG_CONDITIONAL) {
+        if (!state.hasScreenAction() && this.openConditionalDialog(actionDataEntry, actionContext)) {
+          state = state.withAnyRegularFired().withScreenAction();
+        }
+        continue;
+      }
+
       state = state.withAnyRegularFired();
 
       if (actionType == ActionDataType.MOVE_TO_AND_WAIT
@@ -665,13 +674,30 @@ public interface ActionHandler<E extends Mob> extends EasyNPC<E> {
       return this.getEasyNPCDialogData().hasDialog();
     }
 
-    if (actionType == ActionDataType.OPEN_NAMED_DIALOG
-        || actionType == ActionDataType.OPEN_NAMED_DIALOG_CONDITIONAL) {
+    if (actionType == ActionDataType.OPEN_NAMED_DIALOG) {
       return actionDataEntry.targetUUID() != null
           || this.getEasyNPCDialogData().hasDialog(actionDataEntry.command());
     }
 
     return this.getEasyNPCTradingData().hasTradingData();
+  }
+
+  private boolean openConditionalDialog(
+      ActionDataEntry actionDataEntry, ActionContext actionContext) {
+    ServerPlayer serverPlayer = actionContext.initiator();
+    if (serverPlayer == null) {
+      log.warn(
+          "Skipping OPEN_NAMED_DIALOG_CONDITIONAL action because no ServerPlayer is available");
+      return false;
+    }
+
+    if (!DialogActionExecutor.openNamedDialogConditional(
+        actionDataEntry, serverPlayer, this.getEasyNPCDialogData())) {
+      return false;
+    }
+
+    this.completeAction(actionDataEntry, actionContext);
+    return true;
   }
 
   default void executeAction(ActionDataEntry actionDataEntry, ServerPlayer serverPlayer) {
@@ -829,6 +855,11 @@ public interface ActionHandler<E extends Mob> extends EasyNPC<E> {
         break;
     }
 
+    this.completeAction(actionDataEntry, actionContext);
+  }
+
+  private void completeAction(ActionDataEntry actionDataEntry, ActionContext actionContext) {
+    ServerPlayer serverPlayer = actionContext.initiator();
     if (serverPlayer != null) {
       ConditionManager.recordExecutions(
           actionDataEntry.conditionDataSet().getConditions(),

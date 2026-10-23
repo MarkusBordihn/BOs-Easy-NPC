@@ -57,14 +57,14 @@ jobs:
           # Only feature requests/enhancements get processed here
           only-labels: 'feature,enhancement,feature-request'
 
-          # Longer window for feature requests (2–3 months)
+          # Longer window for feature requests (2-3 months)
           stale-issue-message: |
             We appreciate your feature ideas! This request has been inactive for 90 days.
             If it is still relevant, please confirm the need and share **use cases**, **impact**, and possible **alternatives**. Reactions (👍) also help with prioritization.
             Without further activity, this ticket will be closed in 30 days to keep the backlog healthy.
           close-issue-message: |
             Closing this feature request after a prolonged period of inactivity.
-            We value your ideas—please re-open or file a new request when you have updated requirements or additional context.
+            We value your ideas - please re-open or file a new request when you have updated requirements or additional context.
 
           # Timings for feature requests
           days-before-stale: 90

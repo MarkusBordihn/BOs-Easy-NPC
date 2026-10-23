@@ -22,17 +22,25 @@ package de.markusbordihn.easynpc.gametest;
 import de.markusbordihn.easynpc.api.handler.EasyNPCEntityHandler;
 import de.markusbordihn.easynpc.backup.BackupManager;
 import de.markusbordihn.easynpc.data.display.DisplayAttributeType;
+import de.markusbordihn.easynpc.data.npc.NPCRemovalReason;
+import de.markusbordihn.easynpc.data.preset.PresetMetadata;
 import de.markusbordihn.easynpc.data.type.ValueType;
 import de.markusbordihn.easynpc.entity.LivingEntityManager;
+import de.markusbordihn.easynpc.entity.NPCEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.DisplayAttributeDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.OwnerDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.PresetDataCapable;
 import de.markusbordihn.easynpc.handler.OwnerHandler;
 import de.markusbordihn.easynpc.handler.PresetHandler;
+import de.markusbordihn.easynpc.io.BackgroundFileWriter;
 import de.markusbordihn.easynpc.io.BackupDataFiles;
 import de.markusbordihn.easynpc.io.PresetFileHandler;
 import java.io.File;
 import java.nio.file.Path;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -53,6 +61,7 @@ public class BackupTestHelper {
   private static final String RESTORE_NAME_PREFIX = "Backup Restore ";
   private static final int NPC_COUNT = BackupManager.BACKUP_BATCH_SIZE_PER_TICK + 2;
   private static final int LIGHT_LEVEL = 12;
+  private static final Duration WRITER_TIMEOUT = Duration.ofSeconds(30);
 
   private BackupTestHelper() {}
 
@@ -167,6 +176,223 @@ public class BackupTestHelper {
     }
   }
 
+  public static void assertBackupMatchesExport(GameTestHelper helper, EntityType<?> entityType) {
+    EasyNPC<?> easyNPC = GameTestHelpers.mockEasyNPC(helper, entityType, NPC_POSITION);
+    ServerPlayer serverPlayer =
+        GameTestHelpers.mockServerPlayer(helper, OWNER_POSITION, "backup-export-player");
+    GameTestHelpers.assertTrue(
+        helper, "Failed to set the owner", OwnerHandler.setOwner(easyNPC, serverPlayer));
+
+    BackupManager.startBackupRun();
+    drainBackupRun(helper);
+
+    CompoundTag expectedBackup = PresetHandler.prepareExportData(easyNPC);
+    expectedBackup.putUUID(OwnerDataCapable.DATA_OWNER_TAG, serverPlayer.getUUID());
+    GameTestHelpers.assertEquals(
+        helper,
+        "The backup must match the preset export of the NPC",
+        withoutVolatilePresetData(expectedBackup),
+        withoutVolatilePresetData(PresetFileHandler.load(getBackupFile(easyNPC.getEntityUUID()))));
+  }
+
+  public static void assertUnchangedNPCIsLinkedIntoNextDay(
+      GameTestHelper helper, EntityType<?> entityType) {
+    EasyNPC<?> easyNPC = GameTestHelpers.mockEasyNPC(helper, entityType, NPC_POSITION);
+    UUID entityUUID = easyNPC.getEntityUUID();
+    LocalDate today = LocalDate.now();
+
+    BackupManager.reset();
+    BackupManager.startBackupRun(toDate(today.minusDays(1)));
+    drainBackupRun(helper);
+    File previousBackupFile = getBackupFile(entityUUID);
+    CompoundTag previousBackup = PresetFileHandler.load(previousBackupFile);
+    GameTestHelpers.assertNotNull(
+        helper, "The backup of the previous day is missing", previousBackup);
+
+    BackupManager.startBackupRun(toDate(today));
+    drainBackupRun(helper);
+    GameTestHelpers.assertTrue(
+        helper,
+        "An unchanged NPC must be linked into the new day instead of exported again",
+        BackupManager.getLinkedBackupCount() > 0);
+    File backupFile = getBackupFile(entityUUID);
+    GameTestHelpers.assertEquals(
+        helper,
+        "The linked backup must match the backup of the previous day",
+        previousBackup,
+        PresetFileHandler.load(backupFile));
+
+    BackupDataFiles.removeBackupFoldersBefore(today);
+    GameTestHelpers.assertTrue(
+        helper,
+        "Removing the previous day must remove its backup",
+        !previousBackupFile.exists());
+    CompoundTag backupTag = PresetFileHandler.load(backupFile);
+    GameTestHelpers.assertEquals(
+        helper,
+        "The linked backup must stay readable after the previous day was removed",
+        previousBackup,
+        backupTag);
+
+    EasyNPCEntityHandler.delete(easyNPC);
+    GameTestHelpers.assertTrue(
+        helper,
+        "The linked backup could not be restored",
+        PresetHandler.importPreset(helper.getLevel(), backupTag));
+    GameTestHelpers.assertNotNull(
+        helper,
+        "The NPC was not restored from the linked backup",
+        LivingEntityManager.getServerEasyNPCEntityByUUID(entityUUID, helper.getLevel()));
+  }
+
+  public static void assertChangedNPCIsSavedAndExported(
+      GameTestHelper helper, EntityType<?> entityType) {
+    EasyNPC<?> easyNPC = GameTestHelpers.mockEasyNPC(helper, entityType, NPC_POSITION);
+    UUID entityUUID = easyNPC.getEntityUUID();
+    BackupManager.startBackupRun();
+    drainBackupRun(helper);
+
+    ((DisplayAttributeDataCapable<?>) easyNPC)
+        .setDisplayAttribute(DisplayAttributeType.LIGHT_LEVEL, ValueType.INTEGER, LIGHT_LEVEL + 1);
+    BackupManager.startBackupRun();
+    drainBackupRun(helper);
+
+    GameTestHelpers.assertTrue(
+        helper,
+        "A changed NPC must be exported again",
+        BackupManager.getExportedBackupCount() > 0);
+    GameTestHelpers.assertTrue(
+        helper,
+        "The backup run must store the change of the NPC",
+        !easyNPC.getEasyNPCStatusData().hasUnsavedNPCData());
+    GameTestHelpers.assertTrue(
+        helper,
+        "The backup run must write the NPC file together with the backup",
+        !NPCEntityManager.isNPCFileDirty(entityUUID));
+    CompoundTag backupTag = PresetFileHandler.load(getBackupFile(entityUUID));
+    GameTestHelpers.assertNotNull(helper, "The backup of the changed NPC is missing", backupTag);
+    GameTestHelpers.assertEquals(
+        helper,
+        "The backup must contain the change of the NPC",
+        withoutVolatilePresetData(PresetHandler.prepareExportData(easyNPC)),
+        withoutVolatilePresetData(backupTag));
+  }
+
+  public static void assertBackupRestoresOverChangedNPC(
+      GameTestHelper helper, EntityType<?> entityType) {
+    EasyNPC<?> easyNPC = GameTestHelpers.mockEasyNPC(helper, entityType, NPC_POSITION);
+    UUID entityUUID = easyNPC.getEntityUUID();
+    NPCStorageWriteTestHelper.applyNPCDataChange(
+        easyNPC, NPCStorageWriteTestHelper.FIRST_NPC_DATA_CHANGE);
+    BackupManager.startBackupRun();
+    drainBackupRun(helper);
+    CompoundTag backupTag = PresetFileHandler.load(getBackupFile(entityUUID));
+    GameTestHelpers.assertNotNull(helper, "The backup of the NPC is missing", backupTag);
+
+    NPCStorageWriteTestHelper.applyNPCDataChange(
+        easyNPC, NPCStorageWriteTestHelper.SECOND_NPC_DATA_CHANGE);
+    GameTestHelpers.assertTrue(
+        helper,
+        "The backup could not be restored over the changed NPC",
+        PresetHandler.importPreset(helper.getLevel(), backupTag));
+    GameTestHelpers.assertEquals(
+        helper,
+        "Restoring a backup must replace the changed NPC instead of adding a second one",
+        1L,
+        LivingEntityManager.getServerEasyNPCEntities()
+            .filter(serverNPC -> entityUUID.equals(serverNPC.getEntityUUID()))
+            .count());
+    EasyNPC<?> restoredNPC =
+        LivingEntityManager.getServerEasyNPCEntityByUUID(entityUUID, helper.getLevel());
+    GameTestHelpers.assertNotNull(helper, "The restored NPC is missing", restoredNPC);
+    NPCStorageWriteTestHelper.assertNPCDataChange(
+        helper,
+        restoredNPC,
+        NPCStorageWriteTestHelper.FIRST_NPC_DATA_CHANGE,
+        "The NPC restored from its backup");
+
+    GameTestHelpers.assertTrue(
+        helper,
+        "The restored NPC was not despawned",
+        EasyNPCEntityHandler.despawn(restoredNPC, NPCRemovalReason.DESPAWNED));
+    GameTestHelpers.assertTrue(
+        helper,
+        "The restored NPC was not spawned from its stored data",
+        EasyNPCEntityHandler.spawn(
+            entityUUID, helper.getLevel(), helper.absoluteVec(NPC_POSITION)));
+    EasyNPC<?> spawnedNPC =
+        LivingEntityManager.getServerEasyNPCEntityByUUID(entityUUID, helper.getLevel());
+    GameTestHelpers.assertNotNull(
+        helper, "The restored NPC spawned from its stored data is missing", spawnedNPC);
+    NPCStorageWriteTestHelper.assertNPCDataChange(
+        helper,
+        spawnedNPC,
+        NPCStorageWriteTestHelper.FIRST_NPC_DATA_CHANGE,
+        "Spawning the restored NPC from its stored data");
+  }
+
+  public static void assertBackupRestoresFullConfiguration(
+      GameTestHelper helper, EntityType<?> entityType) {
+    EasyNPC<?> easyNPC = GameTestHelpers.mockEasyNPC(helper, entityType, NPC_POSITION);
+    UUID entityUUID = easyNPC.getEntityUUID();
+    ServerPlayer serverPlayer =
+        GameTestHelpers.mockServerPlayer(helper, OWNER_POSITION, "backup-full-restore-player");
+    GameTestHelpers.assertTrue(
+        helper, "Failed to set the owner", OwnerHandler.setOwner(easyNPC, serverPlayer));
+    NPCStorageWriteTestHelper.applyNPCDataChange(
+        easyNPC, NPCStorageWriteTestHelper.FIRST_NPC_DATA_CHANGE);
+
+    BackupManager.startBackupRun();
+    drainBackupRun(helper);
+    CompoundTag expectedExport = withoutVolatilePresetData(PresetHandler.prepareExportData(easyNPC));
+    CompoundTag backupTag = PresetFileHandler.load(getBackupFile(entityUUID));
+    GameTestHelpers.assertNotNull(helper, "The backup of the NPC is missing", backupTag);
+
+    EasyNPCEntityHandler.delete(easyNPC);
+    GameTestHelpers.assertTrue(
+        helper,
+        "The deleted NPC is still present",
+        LivingEntityManager.getServerEasyNPCEntityByUUID(entityUUID, helper.getLevel()) == null);
+    GameTestHelpers.assertTrue(
+        helper,
+        "The backup of the deleted NPC could not be restored",
+        PresetHandler.importPreset(helper.getLevel(), backupTag));
+
+    EasyNPC<?> restoredNPC =
+        LivingEntityManager.getServerEasyNPCEntityByUUID(entityUUID, helper.getLevel());
+    GameTestHelpers.assertNotNull(helper, "The NPC was not restored from its backup", restoredNPC);
+    NPCStorageWriteTestHelper.assertNPCDataChange(
+        helper,
+        restoredNPC,
+        NPCStorageWriteTestHelper.FIRST_NPC_DATA_CHANGE,
+        "The NPC restored from its backup");
+    GameTestHelpers.assertEquals(
+        helper,
+        "The restored NPC lost its owner",
+        serverPlayer.getUUID(),
+        ((OwnerDataCapable<?>) restoredNPC).getOwnerUUID());
+    GameTestHelpers.assertEquals(
+        helper,
+        "The restored NPC must have the configuration it had before it was deleted",
+        expectedExport,
+        withoutVolatilePresetData(PresetHandler.prepareExportData(restoredNPC)));
+  }
+
+  private static CompoundTag withoutVolatilePresetData(CompoundTag presetTag) {
+    CompoundTag normalizedTag = presetTag.copy();
+    normalizedTag.remove(PresetDataCapable.PRESET_UUID_TAG);
+    if (normalizedTag.contains(PresetDataCapable.PRESET_METADATA_TAG)) {
+      CompoundTag metadataTag = normalizedTag.getCompound(PresetDataCapable.PRESET_METADATA_TAG);
+      metadataTag.remove(PresetMetadata.TAG_CREATED);
+      metadataTag.remove(PresetMetadata.TAG_MODIFIED);
+    }
+    return normalizedTag;
+  }
+
+  private static Date toDate(LocalDate localDate) {
+    return Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+  }
+
   private static List<EasyNPC<?>> spawnNamedNPCs(
       GameTestHelper helper, EntityType<?> entityType, String namePrefix) {
     List<EasyNPC<?>> spawnedNPCs = new ArrayList<>(NPC_COUNT);
@@ -180,7 +406,7 @@ public class BackupTestHelper {
     return spawnedNPCs;
   }
 
-  private static void drainBackupRun(GameTestHelper helper) {
+  static void drainBackupRun(GameTestHelper helper) {
     int pendingBackups = BackupManager.getPendingBackupCount();
     while (pendingBackups > 0) {
       BackupManager.performBackup();
@@ -192,9 +418,14 @@ public class BackupTestHelper {
           remainingBackups < pendingBackups);
       pendingBackups = remainingBackups;
     }
+
+    GameTestHelpers.assertTrue(
+        helper,
+        "The backup files were not written in time",
+        BackgroundFileWriter.awaitPendingWrites(WRITER_TIMEOUT));
   }
 
-  private static File getBackupFile(UUID entityUUID) {
+  static File getBackupFile(UUID entityUUID) {
     Date backupRunDate = BackupManager.getBackupRunDate();
     if (backupRunDate == null) {
       return null;

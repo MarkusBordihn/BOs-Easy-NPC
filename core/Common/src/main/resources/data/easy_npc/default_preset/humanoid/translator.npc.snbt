@@ -3,7 +3,7 @@
     author:"Kaworru",
     category:"General",
     created:1768699330858L,
-    description:"Displays translated dialogs, text, and buttons based on matching resource files. ",
+    description:"Shows a translated name, dialog texts and buttons. Each one is a translation key resolved from the language files, here assets/easy_npc_example/lang.",
     entityTypeId:"easy_npc:humanoid",
     modified:1768699330858L,
     name:"Translator",
@@ -54,7 +54,6 @@
       }
     },
     ObjectiveData:{
-      HasObjectives:1b,
       ObjectiveDataSet:[{
         Type:"LOOK_AT_PLAYER"
       },{

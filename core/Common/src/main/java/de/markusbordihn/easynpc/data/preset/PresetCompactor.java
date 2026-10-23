@@ -91,6 +91,19 @@ public class PresetCompactor {
     return expandedData;
   }
 
+  public static void removeEntityTypeDefaultAttributes(CompoundTag entityData) {
+    if (!entityData.contains(ATTRIBUTES_TAG, Tag.TAG_LIST)) {
+      return;
+    }
+
+    AttributeSupplier entityTypeDefaults = getEntityTypeDefaults(entityData);
+    entityData
+        .getList(ATTRIBUTES_TAG, Tag.TAG_COMPOUND)
+        .removeIf(
+            attributeTag ->
+                isEntityTypeDefault(entityTypeDefaults, (CompoundTag) attributeTag));
+  }
+
   private static void removeEqualTags(
       CompoundTag entityData, CompoundTag referenceData, boolean isRootLevel) {
     for (String key : Set.copyOf(entityData.getAllKeys())) {

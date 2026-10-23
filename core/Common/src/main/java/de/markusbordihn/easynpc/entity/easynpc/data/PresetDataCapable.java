@@ -122,6 +122,10 @@ public interface PresetDataCapable<T extends Mob> extends EasyNPC<T> {
     }
 
     this.getEntity().load(compoundTag);
+    StatusDataCapable<T> statusData = this.getEasyNPCStatusData();
+    if (statusData != null) {
+      statusData.markNPCDataUpdated("preset import");
+    }
 
     if (this.getEntity() instanceof LivingEntity livingEntity) {
       float maxHealth =

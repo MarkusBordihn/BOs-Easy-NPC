@@ -553,7 +553,7 @@ class EntityTypeManagerTest {
     }
 
     @Test
-    @DisplayName("Anorith (0.3 blocks) formerly scaled to ~6.5x — now capped at max")
+    @DisplayName("Anorith (0.3 blocks) formerly scaled to ~6.5x - now capped at max")
     void anorithIsNowCapped() {
       float legacyScale = 1.95f / 0.3f;
       float newScale = EntityTypeManager.calculateGuiPreviewScaleFactor(0.3f);

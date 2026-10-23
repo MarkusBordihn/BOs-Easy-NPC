@@ -3,7 +3,7 @@
     author:"Kaworru",
     category:"General",
     created:1780559128316L,
-    description:"Goldmere is a mystical trader who only deals with players carrying a gold_ingot.",
+    description:"A piglin trader who only deals with players holding a gold ingot. Conditional ON_INTERACTION actions give a hint when the gold is only in the inventory, open trading when it is in the main hand, and use a FALLBACK line otherwise. Trades reset every 15 minutes.",
     entityTypeId:"easy_npc:piglin",
     modified:1780559128316L,
     name:"Goldmere",
@@ -14,7 +14,7 @@
     ActionData:{
       ActionEventSet:{
         ON_INTERACTION:[{
-          Cmd:"/say I smell gold upon you, yet your hand is empty. Show it to me.",ConditionDataSet:{
+          Cmd:"/say I smell gold upon you, yet you keep it from my sight. Hold it up.",ConditionDataSet:{
             ConditionDataSet:[{
               Name:"minecraft:gold_ingot",Type:"HAS_ITEM_IN_INVENTORY"
             },{
@@ -55,7 +55,7 @@
     DialogData:{
       DialogDataSet:[{
         Label:"default",Name:"Basic Dialog",Texts:[{
-          Text:"Hurray"
+          Text:"Gold speaks, @initiator. Everything else is noise."
         }]
       }],
       Type:"BASIC"
@@ -68,7 +68,6 @@
     },{}],
     Invulnerable:0b,
     ObjectiveData:{
-      HasObjectives:1b,
       ObjectiveDataSet:[{
         Type:"LOOK_AT_PLAYER"
       },{

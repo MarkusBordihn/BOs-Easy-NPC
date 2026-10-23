@@ -81,15 +81,28 @@ public interface DialogDataCapable<T extends Mob> extends EasyNPC<T> {
   }
 
   default boolean removeDialog(UUID dialogId) {
-    return this.getDialogDataSet().removeDialog(dialogId);
+    boolean removed = this.getDialogDataSet().removeDialog(dialogId);
+    if (removed) {
+      this.markDialogDataChanged();
+    }
+    return removed;
   }
 
   default boolean removeDialogButton(UUID dialogId, UUID dialogButtonId) {
-    return this.getDialogDataSet().removeDialogButton(dialogId, dialogButtonId);
+    boolean removed = this.getDialogDataSet().removeDialogButton(dialogId, dialogButtonId);
+    if (removed) {
+      this.markDialogDataChanged();
+    }
+    return removed;
   }
 
   default void setDialog(UUID dialogId, DialogDataEntry dialogData) {
     this.getDialogDataSet().setDialog(dialogId, dialogData);
+    this.markDialogDataChanged();
+  }
+
+  private void markDialogDataChanged() {
+    this.getEasyNPCServerData().markServerEntityDataChanged(CUSTOM_DATA_DIALOG_DATA_SET);
   }
 
   default UUID getDialogId(String dialogLabel) {

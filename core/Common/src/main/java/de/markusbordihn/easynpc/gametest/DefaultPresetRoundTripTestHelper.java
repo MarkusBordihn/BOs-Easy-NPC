@@ -22,21 +22,33 @@ package de.markusbordihn.easynpc.gametest;
 import de.markusbordihn.easynpc.api.preset.PresetValidationContext;
 import de.markusbordihn.easynpc.api.preset.PresetValidationReport;
 import de.markusbordihn.easynpc.api.preset.PresetValidator;
+import de.markusbordihn.easynpc.data.objective.ObjectiveDataEntry;
+import de.markusbordihn.easynpc.data.objective.ObjectiveDataSet;
+import de.markusbordihn.easynpc.data.objective.ObjectiveType;
 import de.markusbordihn.easynpc.data.preset.PresetData;
 import de.markusbordihn.easynpc.data.preset.PresetExportFormat;
 import de.markusbordihn.easynpc.data.preset.PresetType;
+import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.NavigationDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.ObjectiveDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.PresetDataCapable;
 import de.markusbordihn.easynpc.handler.PresetHandler;
+import de.markusbordihn.easynpc.handler.PresetImportResult;
 import de.markusbordihn.easynpc.io.DataFileHandler;
 import de.markusbordihn.easynpc.io.DefaultPresetDataFiles;
 import de.markusbordihn.easynpc.io.PresetFileHandler;
+import de.markusbordihn.easynpc.security.CommandSecurity;
 import java.io.File;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -116,6 +128,81 @@ public class DefaultPresetRoundTripTestHelper {
     }
   }
 
+  public static void assertDefaultPresetsSpawnAndKeepRunning(GameTestHelper helper) {
+    Map<ResourceLocation, EasyNPC<?>> spawnedNPCs = new LinkedHashMap<>();
+    for (ResourceLocation presetLocation : defaultPresetLocations(helper)) {
+      CompoundTag presetTag = loadPreset(helper, presetLocation);
+      GameTestHelpers.assertNotNull(
+          helper, "The default preset " + presetLocation + " must be readable", presetTag);
+      CompoundTag entityData = entityData(presetTag);
+
+      UUID entityUUID = UUID.randomUUID();
+      GameTestHelpers.removeNPCDataAfterTest(helper, entityUUID);
+      PresetImportResult importResult =
+          PresetHandler.importPresetWithReport(
+              helper.getLevel(),
+              PresetType.DEFAULT,
+              presetLocation,
+              helper.absoluteVec(NPC_POSITION),
+              entityUUID,
+              CommandSecurity.getServerActorContext(),
+              null);
+      GameTestHelpers.assertTrue(
+          helper, "The default preset " + presetLocation + " must spawn", importResult.success());
+
+      EasyNPC<?> easyNPC =
+          LivingEntityManager.getServerEasyNPCEntityByUUID(entityUUID, helper.getLevel());
+      GameTestHelpers.assertNotNull(
+          helper, "The default preset " + presetLocation + " must spawn an NPC", easyNPC);
+      GameTestHelpers.assertEquals(
+          helper,
+          "The default preset " + presetLocation + " must spawn its NPC type",
+          entityData.getString(Entity.ID_TAG),
+          EntityType.getKey(easyNPC.getEntity().getType()).toString());
+      assertPresetObjectivesAreActive(helper, presetLocation, entityData, easyNPC);
+      spawnedNPCs.put(presetLocation, easyNPC);
+    }
+
+    helper.runAfterDelay(
+        40,
+        () -> {
+          spawnedNPCs.forEach(
+              (presetLocation, easyNPC) ->
+                  GameTestHelpers.assertTrue(
+                      helper,
+                      "The NPC of the default preset " + presetLocation + " must keep running",
+                      easyNPC.getEntity().isAlive()));
+          spawnedNPCs.values().forEach(easyNPC -> easyNPC.getEntity().discard());
+          helper.succeed();
+        });
+  }
+
+  private static void assertPresetObjectivesAreActive(
+      GameTestHelper helper,
+      ResourceLocation presetLocation,
+      CompoundTag entityData,
+      EasyNPC<?> easyNPC) {
+    ListTag presetObjectives =
+        entityData
+            .getCompound(ObjectiveDataCapable.DATA_OBJECTIVE_DATA_TAG)
+            .getList(ObjectiveDataSet.DATA_OBJECTIVE_DATA_SET_TAG, Tag.TAG_COMPOUND);
+    ObjectiveDataSet activeObjectives = easyNPC.getEasyNPCObjectiveData().getObjectiveDataSet();
+    for (int index = 0; index < presetObjectives.size(); index++) {
+      ObjectiveType objectiveType =
+          new ObjectiveDataEntry(presetObjectives.getCompound(index)).getType();
+      GameTestHelpers.assertTrue(
+          helper,
+          "The default preset " + presetLocation + " must activate the objective " + objectiveType,
+          activeObjectives.hasObjective(objectiveType));
+    }
+  }
+
+  private static CompoundTag entityData(CompoundTag presetTag) {
+    return PresetData.usesEntityDataWrapper(presetTag)
+        ? presetTag.getCompound(PresetData.DATA_TAG)
+        : presetTag;
+  }
+
   private static List<ResourceLocation> defaultPresetLocations(GameTestHelper helper) {
     return DefaultPresetDataFiles.getPresetResourceLocations(helper.getLevel().getServer())
         .sorted(Comparator.comparing(ResourceLocation::toString))
@@ -128,10 +215,7 @@ public class DefaultPresetRoundTripTestHelper {
   }
 
   private static EasyNPC<?> importPreset(GameTestHelper helper, CompoundTag presetTag) {
-    CompoundTag entityData =
-        PresetData.usesEntityDataWrapper(presetTag)
-            ? presetTag.getCompound(PresetData.DATA_TAG)
-            : presetTag;
+    CompoundTag entityData = entityData(presetTag);
     EntityType<?> entityType =
         EntityType.byString(entityData.getString(Entity.ID_TAG)).orElse(null);
     if (entityType == null) {

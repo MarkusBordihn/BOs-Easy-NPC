@@ -39,10 +39,7 @@ public class ActionValidator {
 
   public static boolean validateActionData(
       ActionDataEntry actionDataEntry, ServerPlayer serverPlayer, LivingEntity npcContext) {
-    if (actionDataEntry == null
-        || serverPlayer == null
-        || !actionDataEntry.isValidAndNotEmpty()
-        || serverPlayer.level().isClientSide()) {
+    if (!validateExecutableActionData(actionDataEntry, serverPlayer)) {
       return false;
     }
 
@@ -51,6 +48,14 @@ public class ActionValidator {
         serverPlayer,
         ExecutionId.action(npcContext, actionDataEntry.id()),
         npcContext);
+  }
+
+  public static boolean validateExecutableActionData(
+      ActionDataEntry actionDataEntry, ServerPlayer serverPlayer) {
+    return actionDataEntry != null
+        && serverPlayer != null
+        && actionDataEntry.isValidAndNotEmpty()
+        && !serverPlayer.level().isClientSide();
   }
 
   public static boolean validateActionDataWithoutPlayer(

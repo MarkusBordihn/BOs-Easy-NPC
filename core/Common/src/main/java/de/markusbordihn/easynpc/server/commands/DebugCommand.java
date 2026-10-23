@@ -29,7 +29,9 @@ import de.markusbordihn.easynpc.data.display.DisplayAttributeType;
 import de.markusbordihn.easynpc.data.display.NameVisibilityType;
 import de.markusbordihn.easynpc.data.model.RootModelData;
 import de.markusbordihn.easynpc.data.skin.SkinDataEntry;
+import de.markusbordihn.easynpc.data.storage.NPCStorageStatistics;
 import de.markusbordihn.easynpc.debug.DebugManager;
+import de.markusbordihn.easynpc.entity.NPCEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.DisplayAttributeDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
@@ -67,7 +69,47 @@ public class DebugCommand extends Command {
                             context ->
                                 setDebug(
                                     context.getSource(),
-                                    BoolArgumentType.getBool(context, ENABLE_ARG)))));
+                                    BoolArgumentType.getBool(context, ENABLE_ARG)))))
+        .then(
+            Commands.literal("stats")
+                .then(
+                    Commands.literal("file_storage")
+                        .executes(context -> showFileStorageStats(context.getSource()))));
+  }
+
+  public static int showFileStorageStats(CommandSourceStack context) {
+    NPCStorageStatistics statistics = NPCEntityManager.getStorageStatistics();
+    sendSuccessMessage(context, "Easy NPC File Storage", ChatFormatting.GOLD);
+    sendSuccessMessage(
+        context,
+        "Written: "
+            + statistics.filesWritten()
+            + " files in "
+            + statistics.fileWriteMilliseconds()
+            + " ms / Failed: "
+            + statistics.fileWriteFailures(),
+        ChatFormatting.WHITE);
+    sendSuccessMessage(
+        context,
+        "Read: "
+            + statistics.filesRead()
+            + " / Serialized: "
+            + statistics.serializations()
+            + " / Skipped unchanged unloads: "
+            + statistics.skippedUnchangedUnloads(),
+        ChatFormatting.WHITE);
+    sendSuccessMessage(
+        context,
+        "Dirty: "
+            + statistics.dirtyFiles()
+            + " / Cached: "
+            + statistics.cachedFiles()
+            + " / Indexed: "
+            + NPCEntityManager.getCount(),
+        ChatFormatting.WHITE);
+    log.info("[Debug File Storage] {}", statistics);
+
+    return Command.SINGLE_SUCCESS;
   }
 
   public static int setDebug(CommandSourceStack context, boolean enable) {

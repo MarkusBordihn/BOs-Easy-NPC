@@ -53,7 +53,7 @@ public record DisplayAttributeDataSet(
   private static EnumMap<DisplayAttributeType, DisplayAttributeEntry> createDefaultAttributes() {
     EnumMap<DisplayAttributeType, DisplayAttributeEntry> map =
         new EnumMap<>(DisplayAttributeType.class);
-    map.put(DisplayAttributeType.LIGHT_LEVEL, new DisplayAttributeEntry(7));
+    map.put(DisplayAttributeType.LIGHT_LEVEL, new DisplayAttributeEntry(DisplayAttributeType.AMBIENT_LIGHT_LEVEL));
     map.put(DisplayAttributeType.VISIBLE, new DisplayAttributeEntry(true));
     map.put(DisplayAttributeType.VISIBLE_AT_DAY, new DisplayAttributeEntry(true));
     map.put(DisplayAttributeType.VISIBLE_AT_NIGHT, new DisplayAttributeEntry(true));

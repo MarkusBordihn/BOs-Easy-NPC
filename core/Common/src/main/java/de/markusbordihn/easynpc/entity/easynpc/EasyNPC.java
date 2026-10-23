@@ -218,7 +218,7 @@ public interface EasyNPC<E extends Mob> extends EasyNPCDataAccessors<E>, Npc {
     if (synchedDataIndex.persistent) {
       StatusDataCapable<?> statusData = this.getEasyNPCStatusData();
       if (statusData != null) {
-        statusData.markNPCDataUpdated();
+        statusData.markNPCDataUpdated(synchedDataIndex);
       }
     }
     this.setSynchedEntityData(synchedDataIndex, data, false);

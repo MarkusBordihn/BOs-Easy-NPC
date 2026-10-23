@@ -145,4 +145,16 @@ public class ShoulderTest {
     ShoulderTestHelper.assertReviveRejectsNPCOnShoulder(helper, allay());
     helper.succeed();
   }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testSitOnShoulderRejectsUnavailableNPC(GameTestHelper helper) {
+    ShoulderTestHelper.assertSitOnShoulderRejectsUnavailableNPC(helper, allay());
+    helper.succeed();
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testShoulderDataSentToClientsWithoutServerData(GameTestHelper helper) {
+    ShoulderTestHelper.assertShoulderDataSentToClientsWithoutServerData(helper, allay());
+    helper.succeed();
+  }
 }

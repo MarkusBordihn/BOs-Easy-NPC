@@ -156,7 +156,7 @@ maven metadata and rewrites the `*_version` properties in place. It is intention
 `build` or
 `fullCheck`.
 
-## Quick start (cross‑platform) 🚀
+## Quick start (cross-platform) 🚀
 
 > [!IMPORTANT]
 > First-time setup for reliable root tasks: Build each artifact at least once individually so that

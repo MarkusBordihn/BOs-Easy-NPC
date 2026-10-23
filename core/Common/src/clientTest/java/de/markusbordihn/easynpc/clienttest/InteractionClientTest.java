@@ -19,11 +19,12 @@
 
 package de.markusbordihn.easynpc.clienttest;
 
+import de.markusbordihn.clientruntimeinterfacetoolkit.testrunner.GameClient.TemporaryChange;
 import de.markusbordihn.clientruntimeinterfacetoolkit.testrunner.Until;
+import de.markusbordihn.clientruntimeinterfacetoolkit.testrunner.data.EntitySpawn;
+import de.markusbordihn.clientruntimeinterfacetoolkit.testrunner.data.GameMode;
 import de.markusbordihn.clientruntimeinterfacetoolkit.testrunner.data.Parameters;
-import de.markusbordihn.clientruntimeinterfacetoolkit.testrunner.data.TestArea;
-import de.markusbordihn.clientruntimeinterfacetoolkit.testrunner.data.api.Player;
-import java.util.Locale;
+import java.util.UUID;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -31,13 +32,11 @@ import org.junit.jupiter.api.Test;
 
 class InteractionClientTest extends ClientTestBase {
 
-  private static final String TEST_TAG = "easynpc_clienttest";
+  private static final String NPC_TYPE = "easy_npc:humanoid";
   private static final String DIALOG_SCREEN_ID =
       "de.markusbordihn.easynpc.client.screen.dialog.dialogscreenwrapper";
   private static final int PLATFORM_Y = 100;
   private static final int VIEW_Y = PLATFORM_Y + 1;
-  private static final TestArea PLATFORM = TestArea.between(-2, PLATFORM_Y, -1, 2, PLATFORM_Y, 4);
-  private static final String NPC_SUMMON_POSITION = "0.5 " + VIEW_Y + " 2.5";
   private static final String DIALOG_DATA =
       "DialogData:{Type:\"STANDARD\",DialogDataSet:[{Label:\"default\",Texts:[{Text:\"Hi\"}]}]}";
   private static final String INTERACTION_ACTION_DATA =
@@ -46,14 +45,10 @@ class InteractionClientTest extends ClientTestBase {
   private static final int ARROW_SLOT = 9;
   private static final long BOW_DRAW_TICKS = 25;
 
-  private String previousGameMode;
-
   @BeforeEach
   void faceTheNpcPosition() {
     awaitWorldSetupCapability();
-    this.previousGameMode =
-        client.state().playerGet().player().map(Player::gameMode).orElse("creative");
-    client.fill(PLATFORM, "minecraft:stone");
+    placeScene("npc_platform", -2, PLATFORM_Y, -1);
     client.teleport(0.5, VIEW_Y, 0.5, 0, 0);
   }
 
@@ -74,37 +69,32 @@ class InteractionClientTest extends ClientTestBase {
   @Test
   @DisplayName("Right-click with a bow shoots through an NPC without an interaction action")
   void bowShootsWhenNpcHasNoInteractionAction() {
-    client.runCommand("gamemode survival @s");
-    summonNpc(DIALOG_DATA);
-    holdInHotbar("minecraft:bow");
-    client.setItemInSlot(ARROW_SLOT, "minecraft:arrow", 2);
+    try (TemporaryChange survival = client.setGameMode(GameMode.SURVIVAL)) {
+      summonNpc(DIALOG_DATA);
+      holdInHotbar("minecraft:bow");
+      client.setItemInSlot(ARROW_SLOT, "minecraft:arrow", 2);
 
-    rightMouseButton("press");
-    client.await(Until.ticksElapsed(BOW_DRAW_TICKS));
-    rightMouseButton("release");
+      rightMouseButton("press");
+      client.await(Until.ticksElapsed(BOW_DRAW_TICKS));
+      rightMouseButton("release");
 
-    client.await(Until.itemInSlot(ARROW_SLOT, "minecraft:arrow", 1));
+      client.await(Until.itemInSlot(ARROW_SLOT, "minecraft:arrow", 1));
+    }
   }
 
   @AfterEach
   void restorePlayer() {
-    client.control().releaseAll();
-    client.runCommand("kill @e[tag=" + TEST_TAG + "]");
     client.runCommand("kill @e[type=minecraft:arrow]");
     client.clearInventory();
-    client.runCommand("gamemode " + this.previousGameMode.toLowerCase(Locale.ROOT) + " @s");
   }
 
   private static void summonNpc(String npcData) {
-    client.runCommand(
-        "summon easy_npc:humanoid "
-            + NPC_SUMMON_POSITION
-            + " {Tags:[\""
-            + TEST_TAG
-            + "\"],CustomName:'\"Tester\"',"
-            + npcData
-            + "}");
-    client.await(Until.entityPresent(Parameters.of("type", "easy_npc:humanoid")));
+    UUID npcUUID =
+        client.spawnEntity(
+            EntitySpawn.of(NPC_TYPE, 0.5, VIEW_Y, 2.5)
+                .withNbt("{CustomName:'\"Tester\"'," + npcData + "}"));
+    client.await(
+        Until.entityPresent(Parameters.of("type", NPC_TYPE).with("uuid", npcUUID.toString())));
   }
 
   private static void holdInHotbar(String item) {

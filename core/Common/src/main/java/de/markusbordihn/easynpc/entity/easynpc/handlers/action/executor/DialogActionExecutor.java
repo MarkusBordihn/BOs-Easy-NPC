@@ -38,8 +38,7 @@ public class DialogActionExecutor {
 
   public static void openDefaultDialog(
       ActionDataEntry actionDataEntry, ServerPlayer serverPlayer, DialogDataCapable<?> dialogData) {
-    if (!ActionValidator.validateActionData(
-        actionDataEntry, serverPlayer, dialogData != null ? dialogData.getLivingEntity() : null)) {
+    if (!ActionValidator.validateExecutableActionData(actionDataEntry, serverPlayer)) {
       return;
     }
 
@@ -56,42 +55,45 @@ public class DialogActionExecutor {
     openNamedDialog(actionDataEntry, serverPlayer, dialogData, false);
   }
 
-  public static void openNamedDialogConditional(
+  public static boolean openNamedDialogConditional(
       ActionDataEntry actionDataEntry, ServerPlayer serverPlayer, DialogDataCapable<?> dialogData) {
-    openNamedDialog(actionDataEntry, serverPlayer, dialogData, true);
+    return openNamedDialog(actionDataEntry, serverPlayer, dialogData, true);
   }
 
-  private static void openNamedDialog(
+  private static boolean openNamedDialog(
       ActionDataEntry actionDataEntry,
       ServerPlayer serverPlayer,
       DialogDataCapable<?> dialogData,
       boolean checkConditions) {
-    if (!ActionValidator.validateActionData(
-        actionDataEntry, serverPlayer, dialogData != null ? dialogData.getLivingEntity() : null)) {
-      return;
+    if (!ActionValidator.validateExecutableActionData(actionDataEntry, serverPlayer)) {
+      return false;
     }
 
     DialogDataCapable<?> targetDialogData =
         resolveTargetDialogData(actionDataEntry, serverPlayer, dialogData);
     if (targetDialogData == null) {
-      return;
+      return false;
     }
 
     String dialogLabel = actionDataEntry.command();
     if (!ActionValidator.validateNamedDialog(targetDialogData, dialogLabel)) {
       log.error("Unknown dialog label {} for action {}", dialogLabel, actionDataEntry);
       serverPlayer.closeContainer();
-      return;
+      return false;
     }
 
     UUID dialogId = targetDialogData.getDialogId(dialogLabel);
-    if (checkConditions) {
-      if (!targetDialogData.openDialogIfConditionsMet(serverPlayer, dialogId)) {
-        log.debug("Conditions not met for dialog {} of action {}", dialogLabel, actionDataEntry);
-      }
-    } else {
+    if (!checkConditions) {
       targetDialogData.openDialog(serverPlayer, dialogId);
+      return true;
     }
+
+    if (!targetDialogData.openDialogIfConditionsMet(serverPlayer, dialogId)) {
+      log.debug("Conditions not met for dialog {} of action {}", dialogLabel, actionDataEntry);
+      return false;
+    }
+
+    return true;
   }
 
   private static DialogDataCapable<?> resolveTargetDialogData(

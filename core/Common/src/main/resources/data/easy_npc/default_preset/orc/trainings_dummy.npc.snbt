@@ -3,7 +3,7 @@
     author:"Kaworru",
     category:"Custom",
     created:1782070622883L,
-    description:"Grukk is a battle-scarred orc who serves as a living sparring post: 1000 HP, mocks feeble hits and grudgingly opens a new dialog once you've carved 100 damage from his hide.",
+    description:"Grukk is a battle-scarred orc who serves as a living sparring post: 1000 HP and health regeneration, taunts anyone who walks up, and unlocks a dialog button once you've carved 100 damage (10% health) from his hide.",
     entityTypeId:"easy_npc:orc_warrior",
     modified:1782070622883L,
     name:"Grukk, the Sparring Post",
@@ -22,6 +22,9 @@
           Cmd:"/say Ha! Look at you, @initiator, struttin' right up to a war-orc. Mighty brave... or mighty foolish. Let's find out which.",Type:"COMMAND"
         },{
           Cmd:"/playsound minecraft:entity.zoglin.angry master @a ~ ~ ~ 1 1",Type:"COMMAND"
+        }],
+        ON_INTERACTION:[{
+          Type:"OPEN_DEFAULT_DIALOG"
         }]
       }
     },
@@ -72,7 +75,6 @@
       }
     }],
     ObjectiveData:{
-      HasObjectives:1b,
       ObjectiveDataSet:[{
         Type:"LOOK_AT_PLAYER"
       },{

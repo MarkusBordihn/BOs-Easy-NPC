@@ -21,19 +21,27 @@ package de.markusbordihn.easynpc.backup;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.config.StorageConfig;
+import de.markusbordihn.easynpc.data.npc.NPCBackupSnapshot;
+import de.markusbordihn.easynpc.data.status.StatusDataType;
 import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.NPCEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.handler.PresetHandler;
+import de.markusbordihn.easynpc.io.BackgroundFileWriter;
 import de.markusbordihn.easynpc.io.BackupDataFiles;
+import de.markusbordihn.easynpc.io.PresetFileHandler;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
 import java.util.ArrayDeque;
 import java.util.Date;
 import java.util.Queue;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import net.minecraft.nbt.CompoundTag;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -42,7 +50,8 @@ public class BackupManager {
   public static final int BACKUP_BATCH_SIZE_PER_TICK = 10;
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   protected static final String LOG_PREFIX = "[Backup Manager]";
-  private static final ConcurrentHashMap<UUID, Long> lastNPCBackupTime = new ConcurrentHashMap<>();
+  private static final ConcurrentHashMap<UUID, BackupFileEntry> lastNPCBackups =
+      new ConcurrentHashMap<>();
   private static final Queue<UUID> pendingBackups = new ArrayDeque<>();
   private static final long BACKUP_INTERVAL_MILLISECONDS = 60 * 60 * 1000;
   private static final long BACKUP_CHECK_INTERVAL_TICKS = 20 * 60;
@@ -51,6 +60,10 @@ public class BackupManager {
   private static long backupTicks = 0;
   private static Date backupRunDate;
   private static LocalDate lastBackupCleanupDate;
+  private static long backupRunStartTime;
+  private static int exportedBackups;
+  private static int linkedBackups;
+  private static int skippedUnchangedBackups;
 
   public static void performBackup() {
     if (!pendingBackups.isEmpty()) {
@@ -72,9 +85,16 @@ public class BackupManager {
   }
 
   public static void startBackupRun() {
+    startBackupRun(new Date());
+  }
+
+  public static void startBackupRun(Date runDate) {
     lastBackupTime = System.currentTimeMillis();
-    backupRunDate = new Date();
-    forgetOutdatedBackupTimes();
+    backupRunDate = runDate;
+    backupRunStartTime = lastBackupTime;
+    exportedBackups = 0;
+    linkedBackups = 0;
+    skippedUnchangedBackups = 0;
     removeExpiredBackupFolders();
     queueNPCsForBackup();
   }
@@ -87,8 +107,16 @@ public class BackupManager {
     return backupRunDate;
   }
 
+  public static int getExportedBackupCount() {
+    return exportedBackups;
+  }
+
+  public static int getLinkedBackupCount() {
+    return linkedBackups;
+  }
+
   public static void reset() {
-    lastNPCBackupTime.clear();
+    lastNPCBackups.clear();
     pendingBackups.clear();
     backupRunDate = null;
     lastBackupCleanupDate = null;
@@ -136,15 +164,18 @@ public class BackupManager {
     }
 
     if (pendingBackups.isEmpty()) {
-      NPCEntityManager.saveAllDirtyNPCs();
+      log.debug(
+          "{} Exported {}, linked {}, skipped {} unchanged NPCs in {} ms.",
+          LOG_PREFIX,
+          exportedBackups,
+          linkedBackups,
+          skippedUnchangedBackups,
+          System.currentTimeMillis() - backupRunStartTime);
     }
   }
 
-  private static void forgetOutdatedBackupTimes() {
-    long currentTime = System.currentTimeMillis();
-    lastNPCBackupTime
-        .values()
-        .removeIf(backupTime -> currentTime - backupTime > BACKUP_INTERVAL_MILLISECONDS);
+  static boolean isBackupUpToDate(File backupFile, long lastUpdate) {
+    return backupFile.lastModified() > lastUpdate;
   }
 
   private static void backupNPCData(UUID uuid) {
@@ -153,24 +184,86 @@ public class BackupManager {
       return;
     }
 
-    Long lastBackup = lastNPCBackupTime.get(uuid);
-    if (lastBackup != null
-        && System.currentTimeMillis() - lastBackup < BACKUP_INTERVAL_MILLISECONDS) {
-      log.debug("{} [Skipping] Backup for {} already done in the last hour.", LOG_PREFIX, easyNPC);
-      return;
-    }
-
-    Path backupFilePath = BackupDataFiles.getBackupFile(uuid, backupRunDate);
-    if (backupFilePath == null) {
+    Path backupFile = BackupDataFiles.getBackupFile(uuid, backupRunDate);
+    if (backupFile == null) {
       log.error("{} Backup file path for {} is null.", LOG_PREFIX, easyNPC);
       return;
     }
 
-    File backupFile = backupFilePath.toFile();
-    if (PresetHandler.exportBackupPreset(easyNPC, backupFile)) {
-      lastNPCBackupTime.put(uuid, System.currentTimeMillis());
-    } else {
-      log.error("{} Backup failed for {}", LOG_PREFIX, easyNPC);
+    NPCBackupSnapshot snapshot = NPCEntityManager.saveChangedNPCForBackup(easyNPC);
+    if (snapshot == null) {
+      return;
+    }
+
+    BackupFileEntry backupFileEntry = new BackupFileEntry(snapshot.npcDataHash(), backupFile);
+    BackupFileEntry lastBackup = lastNPCBackups.get(uuid);
+    if (lastBackup != null && lastBackup.npcDataHash() == snapshot.npcDataHash()) {
+      if (lastBackup.backupFile().equals(backupFile)) {
+        skippedUnchangedBackups++;
+        return;
+      }
+
+      if (Files.isRegularFile(lastBackup.backupFile())) {
+        lastNPCBackups.put(uuid, backupFileEntry);
+        BackgroundFileWriter.submit(
+            () -> {
+              if (!linkOrCopyBackupFile(lastBackup.backupFile(), backupFile)) {
+                lastNPCBackups.remove(uuid, backupFileEntry);
+              }
+            });
+        linkedBackups++;
+        return;
+      }
+    }
+
+    if (lastBackup == null
+        && isBackupUpToDate(
+            backupFile.toFile(),
+            easyNPC
+                .getEasyNPCStatusData()
+                .getStatusDataTimestamp(StatusDataType.NPC_DATA_LAST_UPDATE))) {
+      lastNPCBackups.put(uuid, backupFileEntry);
+      skippedUnchangedBackups++;
+      return;
+    }
+
+    CompoundTag referenceTag = PresetHandler.getExportReferenceTag(easyNPC);
+    UUID ownerUUID = PresetHandler.getBackupOwnerUUID(easyNPC);
+    lastNPCBackups.put(uuid, backupFileEntry);
+    BackgroundFileWriter.submit(
+        () -> {
+          CompoundTag backupData =
+              PresetHandler.prepareBackupData(snapshot.presetData(), referenceTag, ownerUUID);
+          if (!PresetFileHandler.save(backupFile.toFile(), backupData)) {
+            log.error("{} Backup failed for {}", LOG_PREFIX, uuid);
+            lastNPCBackups.remove(uuid, backupFileEntry);
+          }
+        });
+    exportedBackups++;
+  }
+
+  static boolean linkOrCopyBackupFile(Path sourceFile, Path targetFile) {
+    try {
+      Files.createLink(targetFile, sourceFile);
+      return true;
+    } catch (IOException | UnsupportedOperationException linkException) {
+      log.debug(
+          "{} Hard link to {} failed, copying instead: {}",
+          LOG_PREFIX,
+          targetFile,
+          linkException.toString());
+    }
+
+    Path temporaryFile = targetFile.resolveSibling(targetFile.getFileName() + ".tmp");
+    try {
+      Files.copy(sourceFile, temporaryFile, StandardCopyOption.REPLACE_EXISTING);
+      Files.move(temporaryFile, targetFile, StandardCopyOption.REPLACE_EXISTING);
+      return true;
+    } catch (IOException e) {
+      log.error("{} Failed to copy backup {} to {}:", LOG_PREFIX, sourceFile, targetFile, e);
+      return false;
     }
   }
+
+  private record BackupFileEntry(long npcDataHash, Path backupFile) {}
 }

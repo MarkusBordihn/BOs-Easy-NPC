@@ -44,6 +44,7 @@ import net.minecraft.server.players.PlayerList;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.GameType;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.scores.PlayerTeam;
 import net.minecraft.world.scores.Scoreboard;
@@ -132,17 +133,22 @@ public class GameTestHelpers {
 
   public static ServerPlayer mockServerPlayer(
       GameTestHelper helper, Vec3 position, String playerName) {
-    return mockServerPlayer(helper, position, playerName, true);
+    return mockServerPlayer(helper, position, playerName, GameType.CREATIVE);
   }
 
   public static ServerPlayer mockSurvivalServerPlayer(
       GameTestHelper helper, Vec3 position, String playerName) {
-    return mockServerPlayer(helper, position, playerName, false);
+    return mockServerPlayer(helper, position, playerName, GameType.SURVIVAL);
+  }
+
+  public static ServerPlayer mockSpectatorServerPlayer(
+      GameTestHelper helper, Vec3 position, String playerName) {
+    return mockServerPlayer(helper, position, playerName, GameType.SPECTATOR);
   }
 
   private static ServerPlayer mockServerPlayer(
-      GameTestHelper helper, Vec3 position, String playerName, boolean creative) {
-    ServerPlayer serverPlayer = makeConnectedMockServerPlayer(helper, playerName, creative);
+      GameTestHelper helper, Vec3 position, String playerName, GameType gameType) {
+    ServerPlayer serverPlayer = makeConnectedMockServerPlayer(helper, playerName, gameType);
     GameTestHelpers.assertNotNull(helper, "ServerPlayer is null!", serverPlayer);
     serverPlayer.setPos(helper.absoluteVec(position));
     helper.assertEntityPresent(
@@ -151,18 +157,18 @@ public class GameTestHelpers {
   }
 
   private static ServerPlayer makeConnectedMockServerPlayer(
-      GameTestHelper helper, String playerName, boolean creative) {
+      GameTestHelper helper, String playerName, GameType gameType) {
     ServerLevel level = helper.getLevel();
     ServerPlayer serverPlayer =
         new ServerPlayer(level.getServer(), level, new GameProfile(UUID.randomUUID(), playerName)) {
           @Override
           public boolean isSpectator() {
-            return false;
+            return gameType == GameType.SPECTATOR;
           }
 
           @Override
           public boolean isCreative() {
-            return creative;
+            return gameType == GameType.CREATIVE;
           }
         };
     Connection connection = new Connection(PacketFlow.SERVERBOUND);

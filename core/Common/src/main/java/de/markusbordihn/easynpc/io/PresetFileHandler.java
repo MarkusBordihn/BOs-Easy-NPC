@@ -32,6 +32,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
@@ -179,8 +181,10 @@ public class PresetFileHandler {
       return false;
     }
 
+    Path temporaryFile = file.toPath().resolveSibling(file.getName() + ".tmp");
     try {
-      NbtIo.writeCompressed(compoundTag, file);
+      NbtIo.writeCompressed(compoundTag, temporaryFile.toFile());
+      Files.move(temporaryFile, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
       return true;
     } catch (IOException exception) {
       log.error("Failed to export NBT preset file {} with {}:", file, compoundTag, exception);

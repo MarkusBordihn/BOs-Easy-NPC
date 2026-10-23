@@ -63,7 +63,9 @@ class DisplayAttributeDataSetTest {
     assertTrue(dataSet.getAttribute(DisplayAttributeType.VISIBLE_AT_DAY).booleanValue());
     assertTrue(dataSet.getAttribute(DisplayAttributeType.VISIBLE_IN_STANDARD).booleanValue());
     assertTrue(dataSet.getAttribute(DisplayAttributeType.VISIBLE_TO_OWNER).booleanValue());
-    assertEquals(7, dataSet.getAttribute(DisplayAttributeType.LIGHT_LEVEL).intValue());
+    assertEquals(
+        DisplayAttributeType.AMBIENT_LIGHT_LEVEL,
+        dataSet.getAttribute(DisplayAttributeType.LIGHT_LEVEL).intValue());
   }
 
   @Test

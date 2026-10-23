@@ -3,7 +3,7 @@
     author:"Kaworru",
     category:"Quest",
     created:1784073600000L,
-    description:"A smith that remembers what happens at his forge through NPC states: a lit or banked fire, how many orders he already took and which blade he is working on. Every dialog reacts to those states, so the NPC changes for everyone who visits it.",
+    description:"A smith that remembers what happens at his forge through NPC states: a lit or banked fire, how many orders he already took and which blade he is working on. Its buttons and the Booked Out dialog react to those states, so the NPC changes for everyone who visits it.",
     entityTypeId:"easy_npc:humanoid",
     modified:1784073600000L,
     name:"Forge Keeper",
@@ -103,17 +103,25 @@
         }]
       },{
         Name:"Order Taken",Priority:-1,Texts:[{
-          Text:"A longsword it is. Onto the bench with it, next to the others."
+          Text:"A longsword it is. Onto the bench with it, @initiator."
         }]
       },{
         Name:"Current Work",Priority:-1,Texts:[{
           Text:"A longsword, @initiator. Folded twice, edge not set yet. Ask again after the next heat."
         }]
       },{
-        Conditions:[{
+        Buttons:[{
+          Actions:[{
+            Cmd:"remove current_order",Type:"NPC_STATE"
+          },{
+            Cmd:"decrease orders_taken 1",Type:"NPC_STATE"
+          },{
+            Cmd:"order_cleared",Type:"OPEN_NAMED_DIALOG"
+          }],Label:"button_clear",Name:"Take a blade off the bench"
+        }],Conditions:[{
           Name:"orders_taken",Operation:"GREATER_THAN_OR_EQUALS",Type:"NPC_STATE",Value:3
         }],Name:"Booked Out",Priority:10,Texts:[{
-          Text:"Three blades on the bench already, @initiator. Come back when I cleared one of them.\\n\\nThe forge remembers every order, even after I close for the night."
+          Text:"Three blades on the bench already, @initiator. Come back when I have cleared one of them.\\n\\nThe forge remembers every order, even after I close for the night."
         }]
       },{
         Name:"Order Cleared",Priority:-1,Texts:[{
@@ -139,7 +147,6 @@
     }],
     Invulnerable:1b,
     ObjectiveData:{
-      HasObjectives:1b,
       ObjectiveDataSet:[{
         Type:"LOOK_AT_PLAYER"
       },{

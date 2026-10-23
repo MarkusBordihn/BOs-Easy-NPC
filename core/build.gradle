@@ -2,7 +2,7 @@ buildscript {
   // The toolkit is only published to Maven Local, so its client test plugin stays optional and a
   // machine without it still builds and runs the game tests.
   String toolkitPluginModule = "client_runtime_interface_toolkit-gradle-plugin-${minecraft_version}"
-  String toolkitPluginVersion = '2.0.0'
+  String toolkitPluginVersion = '2.1.0'
   File toolkitPluginDirectory = new File(
       System.getProperty('maven.repo.local', "${System.getProperty('user.home')}/.m2/repository"),
       "de/markusbordihn/clientruntimeinterfacetoolkit/${toolkitPluginModule}/${toolkitPluginVersion}")
@@ -159,7 +159,4 @@ tasks.register('fullCheck') {
 
 if (clientRuntimeTestPluginAvailable) {
   apply plugin: 'de.markusbordihn.clientruntimeinterfacetoolkit.client-test'
-  clientRuntimeTest {
-    loaders = ['Fabric', 'Forge']
-  }
 }

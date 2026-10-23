@@ -3,7 +3,7 @@
     author:"Markus Bordihn",
     category:"Villager",
     created:1782744600000L,
-    description:"A daily welcome trader who gives one custom named NPC coin per player per day and exchanges it for test NPC items.",
+    description:"A daily welcome trader who gives one custom named NPC coin per player per day and trades it for a Market Favor token or a Ledger Key. Four Ledger Keys buy a Surprise Chest.",
     entityTypeId:"easy_npc:villager",
     modified:1782744600000L,
     name:"Welcome Coin Trader",
@@ -58,7 +58,7 @@
         }],Conditions:[{
           SubType:"PER_DAY",Type:"EXECUTION_LIMIT",Value:1
         }],Label:"welcome",Name:"Welcome Coin",Priority:40,Texts:[{
-          Text:"<gold>Your first Welcome Coin of the day is free.</gold>\\n\\nUse it at this stall for today's exchange."
+          Text:"<gold>Today's Welcome Coin is yours, free of charge.</gold>\\n\\nSpend it at this stall or keep it for later. There is only one per day."
         }]
       },{
         Conditions:[{
@@ -93,7 +93,6 @@
       }
     },
     ObjectiveData:{
-      HasObjectives:1b,
       ObjectiveDataSet:[{
         Type:"LOOK_AT_PLAYER"
       },{

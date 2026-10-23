@@ -3,7 +3,7 @@
     author:"Kaworru",
     category:"General",
     created:1768696382989L,
-    description:"Uses distance actions to talk to the player and prompts them to interact. On interaction, it opens a trading screen with a few basic trades.",
+    description:"Uses distance actions to talk to the player and prompts them to interact. On interaction, a YES_NO dialog asks first and opens advanced trading on yes. Offers reset every 5 minutes.",
     entityTypeId:"easy_npc:skeleton",
     modified:1768696382989L,
     name:"Skeleton Trader",
@@ -14,7 +14,7 @@
     ActionData:{
       ActionEventSet:{
         ON_DISTANCE_CLOSE:[{
-          Cmd:"/say Hey @initiator do you want to buy something ?",Type:"COMMAND"
+          Cmd:"/say Psst, @initiator! Fine goods, barely haunted. Care to look?",Type:"COMMAND"
         },{
           Cmd:"/summon firework_rocket ~ ~1 ~ {LifeTime:30,FireworksItem:{id:firework_rocket,Count:1,tag:{Fireworks:{Flight:2,Explosions:[{Type:1,Flicker:0,Trail:1,Colors:[I;8073150,14188952],FadeColors:[I;12801229]}]}}}}",Type:"COMMAND"
         }],
@@ -22,7 +22,10 @@
           Cmd:"/say Now just click on me.",Type:"COMMAND"
         }],
         ON_DISTANCE_VERY_CLOSE:[{
-          Cmd:"/say Come closer and take a look.",Type:"COMMAND"
+          Cmd:"/say Closer, closer. My bones don't bite.",Type:"COMMAND"
+        }],
+        ON_INTERACTION:[{
+          Type:"OPEN_DEFAULT_DIALOG"
         }]
       }
     },
@@ -54,17 +57,17 @@
         Buttons:[{
           Actions:[{
             ExecAsUser:1b,PermLevel:0,Type:"OPEN_TRADING_SCREEN"
-          }],Label:"yes_button",Name:"Yes, show me you stuff."
+          }],Label:"yes_button",Name:"Yes, show me your stuff."
         },{
           Actions:[{
             Cmd:"no_answer",Type:"OPEN_NAMED_DIALOG"
           }],Label:"no_button",Name:"No, thanks I'm good."
         }],Label:"question",Name:"Question Dialog",Texts:[{
-          Text:"Do you want to see my shop ?"
+          Text:"Care to see my wares? Everything is only slightly cursed."
         }]
       },{
         Label:"no_answer",Name:"No Dialog",Texts:[{
-          Text:"Ok, come back at any time."
+          Text:"Suit yourself. I have all the time in the world."
         }]
       }],
       Type:"YES_NO"
@@ -94,8 +97,6 @@
       }
     },
     ObjectiveData:{
-      HasObjectives:1b,
-      HasTravelTarget:1b,
       ObjectiveDataSet:[{
         Type:"CLOSE_DOOR"
       },{
