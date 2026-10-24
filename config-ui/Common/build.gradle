@@ -19,6 +19,17 @@ minecraft {
   }
 }
 
+sourceSets {
+  gameTest {
+    compileClasspath += main.compileClasspath + main.output
+    runtimeClasspath += main.runtimeClasspath + main.output
+  }
+}
+
+tasks.named('compileGameTestJava') {
+  source(coreGameTestHelperSources)
+}
+
 dependencies {
   compileOnly group: 'org.spongepowered', name: 'mixin', version: '0.8.7'
 

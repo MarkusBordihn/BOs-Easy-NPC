@@ -30,7 +30,7 @@ import net.minecraft.gametest.framework.GameTestHelper;
 @SuppressWarnings("unused")
 public class MenuManagerTest {
 
-  @GameTest(template = "easy_npc:gametest.1x1x1")
+  @GameTest(template = "easy_npc_config_ui:gametest.1x1x1")
   public void testMissingConfigurationType(GameTestHelper helper) {
     MenuHandlerInterface menuHandlerInterface = MenuManager.getMenuHandler();
     for (ConfigurationType configurationType : ConfigurationType.values()) {
@@ -45,7 +45,7 @@ public class MenuManagerTest {
     helper.succeed();
   }
 
-  @GameTest(template = "easy_npc:gametest.1x1x1")
+  @GameTest(template = "easy_npc_config_ui:gametest.1x1x1")
   public void testMissingEditorType(GameTestHelper helper) {
     MenuHandlerInterface menuHandlerInterface = MenuManager.getMenuHandler();
     for (EditorType editorType : EditorType.values()) {

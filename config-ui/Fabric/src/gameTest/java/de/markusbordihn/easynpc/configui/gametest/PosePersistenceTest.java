@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Markus Bordihn
+ * Copyright 2026 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -19,21 +19,22 @@
 
 package de.markusbordihn.easynpc.configui.gametest;
 
-import de.markusbordihn.easynpc.configui.Constants;
-import de.markusbordihn.easynpc.gametest.GameTestHelpers;
-import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.gametest.framework.GameTest;
-import net.minecraft.gametest.framework.GameTestHelper;
+import de.markusbordihn.easynpc.entity.ModEntityType;
+import java.util.Collection;
+import net.minecraft.gametest.framework.GameTestGenerator;
+import net.minecraft.gametest.framework.TestFunction;
 
 @SuppressWarnings("unused")
-public class SmokeTest {
+public class PosePersistenceTest {
 
-  @GameTest(template = "easy_npc:gametest.1x1x1")
-  public void testModRegistered(GameTestHelper helper) {
-    GameTestHelpers.assertTrue(
-        helper,
-        "Mod " + Constants.MOD_ID + " is not available!",
-        FabricLoader.getInstance().isModLoaded(Constants.MOD_ID));
-    helper.succeed();
+  @GameTestGenerator
+  public Collection<TestFunction> generateTPosePersistenceTests() {
+    return PosePersistenceTestHelper.createTPosePersistenceTests(ModEntityType::getEntityType);
+  }
+
+  @GameTestGenerator
+  public Collection<TestFunction> generateMassPosePersistenceTests() {
+    return MassPosePersistenceTestHelper.createMassPosePersistenceTests(
+        ModEntityType::getEntityType);
   }
 }

@@ -32,67 +32,67 @@ public class ModelMessageTest {
     return ModEntityType.getEntityType(ModNPCEntityType.HUMANOID);
   }
 
-  @GameTest(template = "easy_npc:gametest.3x3x3")
+  @GameTest(template = "easy_npc_config_ui:gametest.3x3x3")
   public void testModelPoseChange(GameTestHelper helper) {
     ModelMessageTestHelper.assertModelPoseChange(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "easy_npc:gametest.3x3x3")
+  @GameTest(template = "easy_npc_config_ui:gametest.3x3x3")
   public void testModelPartPositionChange(GameTestHelper helper) {
     ModelMessageTestHelper.assertModelPartPositionChange(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "easy_npc:gametest.3x3x3")
+  @GameTest(template = "easy_npc_config_ui:gametest.3x3x3")
   public void testModelRootRotationChange(GameTestHelper helper) {
     ModelMessageTestHelper.assertModelRootRotationChange(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "easy_npc:gametest.3x3x3")
+  @GameTest(template = "easy_npc_config_ui:gametest.3x3x3")
   public void testModelPartRotationChange(GameTestHelper helper) {
     ModelMessageTestHelper.assertModelPartRotationChange(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "easy_npc:gametest.3x3x3")
+  @GameTest(template = "easy_npc_config_ui:gametest.3x3x3")
   public void testModelRootScaleChange(GameTestHelper helper) {
     ModelMessageTestHelper.assertModelRootScaleChange(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "easy_npc:gametest.3x3x3")
+  @GameTest(template = "easy_npc_config_ui:gametest.3x3x3")
   public void testModelPartScaleChange(GameTestHelper helper) {
     ModelMessageTestHelper.assertModelPartScaleChange(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "easy_npc:gametest.3x3x3")
+  @GameTest(template = "easy_npc_config_ui:gametest.3x3x3")
   public void testModelPartVisibilityChange(GameTestHelper helper) {
     ModelMessageTestHelper.assertModelPartVisibilityChange(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "easy_npc:gametest.3x3x3")
+  @GameTest(template = "easy_npc_config_ui:gametest.3x3x3")
   public void testModelAnimationBehaviorChange(GameTestHelper helper) {
     ModelMessageTestHelper.assertModelAnimationBehaviorChange(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "easy_npc:gametest.3x3x3")
+  @GameTest(template = "easy_npc_config_ui:gametest.3x3x3")
   public void testEquipmentVisibilityChange(GameTestHelper helper) {
     ModelMessageTestHelper.assertEquipmentVisibilityChange(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "easy_npc:gametest.3x3x3")
+  @GameTest(template = "easy_npc_config_ui:gametest.3x3x3")
   public void testPoseChange(GameTestHelper helper) {
     ModelMessageTestHelper.assertPoseChange(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "easy_npc:gametest.3x3x3")
+  @GameTest(template = "easy_npc_config_ui:gametest.3x3x3")
   public void testNamedPoseChange(GameTestHelper helper) {
     ModelMessageTestHelper.assertNamedPoseChange(helper, humanoid());
     helper.succeed();

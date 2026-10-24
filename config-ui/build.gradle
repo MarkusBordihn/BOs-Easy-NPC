@@ -108,6 +108,14 @@ subprojects {
     return "de.markusbordihn.easymodelentities:easy_model_entities-${loader}-${mcVersion}:${version}"
   }
 
+  // The core game test sources are not part of the published core jar. Only these helpers are compiled
+  // in, because the remaining core tests need the core access widener.
+  ext.coreGameTestHelperSources = fileTree(rootProject.file('../core/Common/src/gameTest/java')) {
+    include 'de/markusbordihn/easynpc/gametest/GameTestHelpers.java'
+    include 'de/markusbordihn/easynpc/gametest/GameTestFunctions.java'
+    include 'de/markusbordihn/easynpc/gametest/EnabledIfModLoaded.java'
+  }
+
   configurations.configureEach {
     resolutionStrategy {
       cacheChangingModulesFor 0, 'minutes'

@@ -20,9 +20,6 @@
     ],
     "client": [
       "de.markusbordihn.easynpc.configui.ConfigUIClient"
-    ],
-    "fabric-gametest": [
-      "de.markusbordihn.easynpc.configui.gametest.GameTestRegistration"
     ]
   },
   "mixins": [],

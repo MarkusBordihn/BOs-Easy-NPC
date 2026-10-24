@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "id": "easy_npc_gametest",
+  "version": "${version}",
+  "name": "Easy NPC Game Tests",
+  "license": "MIT",
+  "environment": "*",
+  "entrypoints": {
+    "fabric-gametest": [
+      "de.markusbordihn.easynpc.gametest.GameTestRegistration"
+    ]
+  },
+  "depends": {
+    "easy_npc": "*"
+  }
+}

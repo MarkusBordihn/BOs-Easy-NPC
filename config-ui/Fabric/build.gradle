@@ -10,6 +10,15 @@ base {
   archivesName = "${project.mod_id}-fabric-${project.minecraft_version}"
 }
 
+sourceSets {
+  gameTest {
+    java.srcDir project(":Common").file('src/gameTest/java')
+    resources.srcDir project(":Common").file('src/gameTest/resources')
+    compileClasspath += main.compileClasspath + main.output
+    runtimeClasspath += main.runtimeClasspath + main.output
+  }
+}
+
 ext {
   getNextMajorVersion = { String currentVersion ->
     def versionParts = currentVersion.tokenize('.')
@@ -68,6 +77,16 @@ dependencies {
 
 loom {
   accessWidenerPath = file("src/main/resources/easynpcconfig.accesswidener")
+
+  mods {
+    "${project.mod_id}" {
+      sourceSet sourceSets.main
+    }
+    "${project.mod_id}_gametest" {
+      sourceSet sourceSets.gameTest
+    }
+  }
+
   runs {
     client {
       client()
@@ -95,6 +114,7 @@ loom {
       vmArg "-Dfabric-api.gametest"
       vmArg "-D${project.mod_id}.gametest=true"
       runDir("run/gametest")
+      source sourceSets.gameTest
     }
   }
 }
@@ -114,6 +134,13 @@ processResources {
   }
 }
 
+processGameTestResources {
+  inputs.property "version", project.version
+  filesMatching("fabric.mod.json") {
+    expand "version": project.version
+  }
+}
+
 publishing {
   publications {
     mavenJava(MavenPublication) {
@@ -125,8 +152,14 @@ publishing {
   }
 }
 
-tasks.withType(JavaCompile).configureEach {
+// The game test source set compiles against the main output, so the Common main sources would be
+// compiled into it a second time.
+tasks.withType(JavaCompile).matching { compileTask -> compileTask.name != 'compileGameTestJava' }.configureEach {
   source(project(":Common").sourceSets.main.allSource)
+}
+
+tasks.named('compileGameTestJava') {
+  source(coreGameTestHelperSources)
 }
 
 tasks.named('build') {

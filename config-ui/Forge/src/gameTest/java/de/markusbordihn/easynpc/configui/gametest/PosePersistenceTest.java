@@ -31,4 +31,10 @@ public class PosePersistenceTest {
   public Collection<TestFunction> generateTPosePersistenceTests() {
     return PosePersistenceTestHelper.createTPosePersistenceTests(ModEntityType::getEntityType);
   }
+
+  @GameTestGenerator
+  public Collection<TestFunction> generateMassPosePersistenceTests() {
+    return MassPosePersistenceTestHelper.createMassPosePersistenceTests(
+        ModEntityType::getEntityType);
+  }
 }

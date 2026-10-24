@@ -32,85 +32,85 @@ public class AttributeMessageTest {
     return ModEntityType.getEntityType(ModNPCEntityType.HUMANOID);
   }
 
-  @GameTest(template = "easy_npc:gametest.3x3x3")
+  @GameTest(template = "easy_npc_config_ui:gametest.3x3x3")
   public void testMaxHealthChange(GameTestHelper helper) {
     AttributeMessageTestHelper.assertMaxHealthChange(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "easy_npc:gametest.3x3x3")
+  @GameTest(template = "easy_npc_config_ui:gametest.3x3x3")
   public void testVisibilityChange(GameTestHelper helper) {
     AttributeMessageTestHelper.assertVisibilityChange(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "easy_npc:gametest.3x3x3")
+  @GameTest(template = "easy_npc_config_ui:gametest.3x3x3")
   public void testOpacityChange(GameTestHelper helper) {
     AttributeMessageTestHelper.assertOpacityChange(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "easy_npc:gametest.3x3x3")
+  @GameTest(template = "easy_npc_config_ui:gametest.3x3x3")
   public void testCombatFlagChange(GameTestHelper helper) {
     AttributeMessageTestHelper.assertCombatFlagChange(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "easy_npc:gametest.3x3x3")
+  @GameTest(template = "easy_npc_config_ui:gametest.3x3x3")
   public void testHealthRegenerationChange(GameTestHelper helper) {
     AttributeMessageTestHelper.assertHealthRegenerationChange(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "easy_npc:gametest.3x3x3")
+  @GameTest(template = "easy_npc_config_ui:gametest.3x3x3")
   public void testMovementFlagChange(GameTestHelper helper) {
     AttributeMessageTestHelper.assertMovementFlagChange(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "easy_npc:gametest.3x3x3")
+  @GameTest(template = "easy_npc_config_ui:gametest.3x3x3")
   public void testHoverHeightChange(GameTestHelper helper) {
     AttributeMessageTestHelper.assertHoverHeightChange(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "easy_npc:gametest.3x3x3")
+  @GameTest(template = "easy_npc_config_ui:gametest.3x3x3")
   public void testNavigationTypeChange(GameTestHelper helper) {
     AttributeMessageTestHelper.assertNavigationTypeChange(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "easy_npc:gametest.3x3x3")
+  @GameTest(template = "easy_npc_config_ui:gametest.3x3x3")
   public void testInteractionFlagChange(GameTestHelper helper) {
     AttributeMessageTestHelper.assertInteractionFlagChange(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "easy_npc:gametest.3x3x3")
+  @GameTest(template = "easy_npc_config_ui:gametest.3x3x3")
   public void testInventoryFlagChange(GameTestHelper helper) {
     AttributeMessageTestHelper.assertInventoryFlagChange(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "easy_npc:gametest.3x3x3")
+  @GameTest(template = "easy_npc_config_ui:gametest.3x3x3")
   public void testShoulderOffsetChange(GameTestHelper helper) {
     AttributeMessageTestHelper.assertShoulderOffsetChange(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "easy_npc:gametest.3x3x3")
+  @GameTest(template = "easy_npc_config_ui:gametest.3x3x3")
   public void testEnvironmentalFlagChange(GameTestHelper helper) {
     AttributeMessageTestHelper.assertEnvironmentalFlagChange(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "easy_npc:gametest.3x3x3")
+  @GameTest(template = "easy_npc_config_ui:gametest.3x3x3")
   public void testSilentChange(GameTestHelper helper) {
     AttributeMessageTestHelper.assertSilentChange(helper, humanoid());
     helper.succeed();
   }
 
-  @GameTest(template = "easy_npc:gametest.3x3x3")
+  @GameTest(template = "easy_npc_config_ui:gametest.3x3x3")
   public void testNameChange(GameTestHelper helper) {
     AttributeMessageTestHelper.assertNameChange(helper, humanoid());
     helper.succeed();

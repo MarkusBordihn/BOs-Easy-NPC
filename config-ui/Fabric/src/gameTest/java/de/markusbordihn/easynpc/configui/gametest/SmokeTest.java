@@ -1,5 +1,5 @@
 /*
- * Copyright 2026 Markus Bordihn
+ * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -19,16 +19,21 @@
 
 package de.markusbordihn.easynpc.configui.gametest;
 
-import de.markusbordihn.easynpc.entity.ModEntityType;
-import java.util.Collection;
-import net.minecraft.gametest.framework.GameTestGenerator;
-import net.minecraft.gametest.framework.TestFunction;
+import de.markusbordihn.easynpc.configui.Constants;
+import de.markusbordihn.easynpc.gametest.GameTestHelpers;
+import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.gametest.framework.GameTest;
+import net.minecraft.gametest.framework.GameTestHelper;
 
 @SuppressWarnings("unused")
-public class PosePersistenceTest {
+public class SmokeTest {
 
-  @GameTestGenerator
-  public Collection<TestFunction> generateTPosePersistenceTests() {
-    return PosePersistenceTestHelper.createTPosePersistenceTests(ModEntityType::getEntityType);
+  @GameTest(template = "easy_npc_config_ui:gametest.1x1x1")
+  public void testModRegistered(GameTestHelper helper) {
+    GameTestHelpers.assertTrue(
+        helper,
+        "Mod " + Constants.MOD_ID + " is not available!",
+        FabricLoader.getInstance().isModLoaded(Constants.MOD_ID));
+    helper.succeed();
   }
 }
