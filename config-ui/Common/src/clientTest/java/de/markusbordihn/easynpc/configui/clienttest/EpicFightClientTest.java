@@ -25,6 +25,8 @@ import de.markusbordihn.clientruntimeinterfacetoolkit.testrunner.EnabledIfModLoa
 import de.markusbordihn.clientruntimeinterfacetoolkit.testrunner.Until;
 import de.markusbordihn.clientruntimeinterfacetoolkit.testrunner.data.CompareOptions;
 import de.markusbordihn.clientruntimeinterfacetoolkit.testrunner.data.Parameters;
+import de.markusbordihn.clientruntimeinterfacetoolkit.testrunner.data.api.CaptureComparison;
+import java.time.Duration;
 import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -33,9 +35,12 @@ import org.junit.jupiter.params.provider.ValueSource;
 @EnabledIfModLoaded("epicfight")
 class EpicFightClientTest extends ClientTestBase {
 
-  private static final long RENDER_TICKS = 20;
-  private static final long VISIBLE_CHANGE_PIXELS = 500;
-  private static final CompareOptions MODEL_COMPARE = CompareOptions.DEFAULT.withTolerance(8);
+  private static final long SETTLED_TICKS = 5;
+  private static final double VISIBLE_CHANGE_RATIO = 0.002;
+  private static final CompareOptions MODEL_COMPARE =
+      CompareOptions.DEFAULT
+          .withTolerance(8)
+          .withAwaitChangedRatioAbove(VISIBLE_CHANGE_RATIO, Duration.ofSeconds(10));
 
   @ParameterizedTest(name = "{0}")
   @ValueSource(
@@ -67,17 +72,17 @@ class EpicFightClientTest extends ClientTestBase {
   void epicFightModelRendersInView(String npcType) {
     buildTestPlatform();
     client.teleport(0.5, STAND_Y, 0.5, 0, 0);
-    client.await(Until.ticksElapsed(RENDER_TICKS));
+    client.await(Until.settled(SETTLED_TICKS));
     String emptyPlatformFrame = client.retainFrame();
 
     UUID epicFightNpc =
         client.spawnEntity("easy_npc:epic_fight_" + npcType + "_raw", 0.5, STAND_Y, 3.5, true);
     client.await(Until.entityPresent(Parameters.of("uuid", epicFightNpc.toString())));
-    client.await(Until.ticksElapsed(RENDER_TICKS));
-    long changedPixels =
-        client.compare(emptyPlatformFrame, MODEL_COMPARE).comparison().changedPixels();
+    CaptureComparison comparison = client.compare(emptyPlatformFrame, MODEL_COMPARE).comparison();
     client.saveScreenshot("epic_fight_" + npcType);
 
-    assertTrue(changedPixels > VISIBLE_CHANGE_PIXELS, npcType + " not visible: " + changedPixels);
+    assertTrue(
+        comparison.ratioReached().orElse(false),
+        npcType + " not visible: changedPixels=" + comparison.changedPixels());
   }
 }
