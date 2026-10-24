@@ -20,7 +20,9 @@
 package de.markusbordihn.easynpc.clienttest;
 
 import de.markusbordihn.clientruntimeinterfacetoolkit.testrunner.Until;
+import de.markusbordihn.clientruntimeinterfacetoolkit.testrunner.data.CompareOptions;
 import de.markusbordihn.clientruntimeinterfacetoolkit.testrunner.data.Parameters;
+import java.time.Duration;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -29,7 +31,12 @@ class ModelRenderClientTest extends ClientTestBase {
 
   private static final int PLATFORM_Y = 100;
   private static final int VIEW_Y = PLATFORM_Y + 1;
-  private static final long RENDER_TICKS = 20;
+  private static final long SETTLED_TICKS = 5;
+  private static final double VISIBLE_CHANGE_RATIO = 0.002;
+  private static final CompareOptions MODEL_COMPARE =
+      CompareOptions.DEFAULT
+          .withTolerance(8)
+          .withAwaitChangedRatioAbove(VISIBLE_CHANGE_RATIO, Duration.ofSeconds(10));
 
   @ParameterizedTest(name = "{0}")
   @ValueSource(
@@ -80,10 +87,12 @@ class ModelRenderClientTest extends ClientTestBase {
     String entityId = "easy_npc:" + entityType;
     placeScene("viewing_platform", -3, PLATFORM_Y, -1);
     client.teleport(0.5, VIEW_Y, 0.5, 0, 0);
+    client.await(Until.settled(SETTLED_TICKS));
+    String emptyPlatformFrame = client.retainFrame();
     client.spawnEntity(entityId, 0.5, VIEW_Y, 4.5, true);
 
     client.await(Until.entityPresent(Parameters.of("type", entityId)));
-    client.await(Until.ticksElapsed(RENDER_TICKS));
+    client.compare(emptyPlatformFrame, MODEL_COMPARE);
     client.saveScreenshot(entityType);
   }
 }

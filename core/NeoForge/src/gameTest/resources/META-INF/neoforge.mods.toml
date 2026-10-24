@@ -1,0 +1,14 @@
+modLoader = "javafml"
+loaderVersion = "[5,)"
+license = "MIT"
+
+[[mods]]
+modId = "easy_npc_gametest"
+version = "1.0.0"
+displayName = "Easy NPC Game Tests"
+
+[[dependencies.easy_npc_gametest]]
+modId = "easy_npc"
+type = "required"
+ordering = "AFTER"
+side = "BOTH"

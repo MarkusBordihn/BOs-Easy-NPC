@@ -8,6 +8,10 @@ the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 7.17.1
+
+- Refactored the build to no longer ship tests, which makes the mod files up to 20 % smaller.
+
 ### 7.17.0
 
 - Fixed #858 by supporting higher attribute limits set by AttributeFix and similar mods.

@@ -21,6 +21,19 @@ def configureAsClient = { run ->
   run.environment(['MCP_MAPPINGS': '{mcp_mappings}'])
 }
 
+sourceSets {
+  gameTest {
+    java.srcDir project(":Common").file('src/gameTest/java')
+    resources.srcDir project(":Common").file('src/gameTest/resources')
+    compileClasspath += main.compileClasspath + main.output
+    runtimeClasspath += main.runtimeClasspath + main.output
+  }
+  test {
+    compileClasspath += gameTest.output
+    runtimeClasspath += gameTest.output
+  }
+}
+
 minecraft {
   mappings channel: 'official', version: "${project.minecraft_version}"
 
@@ -142,7 +155,9 @@ tasks.matching { it.name.startsWith('slimeLauncherMetadataFor') }.configureEach 
   runsJson.set(metadataDir.map { it.dir("launcher").file("runs.json") })
 }
 
-tasks.withType(JavaCompile).configureEach {
+// The game test source set compiles against the main output, so the Common main sources would be
+// compiled into it a second time.
+tasks.withType(JavaCompile).matching { compileTask -> compileTask.name != 'compileGameTestJava' }.configureEach {
   source(project(":Common").sourceSets.main.allSource)
   dependsOn project(":Common").tasks.named('generateDefaultPresetIndex')
   if (name == 'compileTestJava') {
@@ -167,23 +182,18 @@ tasks.named('compileTestJava').configure {
   dependsOn tasks.named('processTestResources')
 }
 
+tasks.named('compileGameTestJava').configure {
+  dependsOn tasks.named('processGameTestResources')
+}
+
 tasks.matching { it.name == 'runGameTestServer' }.configureEach {
-  dependsOn tasks.named('processTestResources')
-  dependsOn tasks.named('compileTestJava')
+  classpath(sourceSets.gameTest.output)
 }
 
 tasks.named('jar', Jar).configure {
   from(project(":Common").sourceSets.main.output)
 
   duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-
-  // Test instances and environments are data pack registries and would otherwise be loaded in
-  // every world, which makes the game tests selectable through the /test command. Development runs
-  // read the source set output instead of this jar and therefore keep them.
-  exclude 'data/*/test_instance/**'
-  exclude 'data/*/test_environment/**'
-
-  mustRunAfter tasks.named('compileTestJava'), tasks.named('processTestResources')
 
   manifest {
     attributes([
@@ -226,18 +236,19 @@ test {
   exclude '**/*'
 }
 
-// Merge the resources and classes into the same directory.
-def mainOutputDir = layout.buildDirectory.dir("sourcesSets/main")
-sourceSets.main {
-  output.resourcesDir = mainOutputDir
-  java.destinationDirectory = mainOutputDir
+// Forge 65 expects a mod in a single directory, so every source set merges its resources and
+// classes into one. The game tests stay a separate mod with their own mods.toml.
+sourceSets.each { sourceSet ->
+  def outputDir = layout.buildDirectory.dir("sourcesSets/${sourceSet.name}")
+  sourceSet.output.resourcesDir = outputDir
+  sourceSet.java.destinationDirectory = outputDir
 }
 
 // Development runs load this directory instead of the jar, and Mixin only picks up the mixin
 // config from a manifest. Without it every development run, including the game test server, starts
 // with no mixins applied.
 tasks.register('devManifest') {
-  def manifestFile = mainOutputDir.map { it.file("META-INF/MANIFEST.MF") }
+  def manifestFile = layout.buildDirectory.file("sourcesSets/main/META-INF/MANIFEST.MF")
   doLast {
     def target = manifestFile.get().asFile
     target.parentFile.mkdirs()
@@ -245,18 +256,10 @@ tasks.register('devManifest') {
   }
 }
 tasks.named('devManifest').configure {
-  mustRunAfter tasks.named('classes'), tasks.named('compileTestJava'),
-      tasks.named('processTestResources')
+  mustRunAfter tasks.named('classes')
 }
 tasks.matching { it.name.startsWith('run') }.configureEach {
   dependsOn tasks.named('devManifest')
-}
-sourceSets.test {
-  output.resourcesDir = mainOutputDir
-  java.destinationDirectory = mainOutputDir
-}
-tasks.matching { it.name == 'clientTest' }.configureEach {
-  mustRunAfter tasks.named('compileTestJava'), tasks.named('processTestResources')
 }
 
 // CurseForge Publishing
