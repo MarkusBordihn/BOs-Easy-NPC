@@ -20,6 +20,15 @@ def configureAsClient = { run ->
   run.environment(['MCP_MAPPINGS': '{mcp_mappings}'])
 }
 
+sourceSets {
+  gameTest {
+    java.srcDir project(":Common").file('src/gameTest/java')
+    resources.srcDir project(":Common").file('src/gameTest/resources')
+    compileClasspath += main.compileClasspath + main.output
+    runtimeClasspath += main.runtimeClasspath + main.output
+  }
+}
+
 minecraft {
   mappings channel: 'official', version: "${project.minecraft_version}"
 
@@ -141,11 +150,17 @@ tasks.matching { it.name.startsWith('slimeLauncherMetadataFor') }.configureEach 
   runsJson.set(metadataDir.map { it.dir("launcher").file("runs.json") })
 }
 
-tasks.withType(JavaCompile).configureEach {
+// The game test source set compiles against the main output, so the Common main sources would be
+// compiled into it a second time.
+tasks.withType(JavaCompile).matching { compileTask -> compileTask.name != 'compileGameTestJava' }.configureEach {
   source(project(":Common").sourceSets.main.allSource)
   if (name == 'compileTestJava') {
     source(project(":Common").sourceSets.test.allSource)
   }
+}
+
+tasks.named('compileGameTestJava') {
+  source(coreGameTestHelperSources)
 }
 
 tasks.withType(Test).configureEach {
@@ -186,20 +201,15 @@ tasks.named('compileTestJava').configure {
   dependsOn tasks.named('processTestResources')
 }
 
+tasks.named('compileGameTestJava').configure {
+  dependsOn tasks.named('processGameTestResources')
+}
+
 tasks.matching { it.name == 'runGameTestServer' }.configureEach {
-  dependsOn tasks.named('processTestResources')
-  dependsOn tasks.named('compileTestJava')
+  classpath(sourceSets.gameTest.output)
 }
 
 tasks.named('jar', Jar).configure {
-  // Ensure jar runs after test tasks since both use the same output directory
-  mustRunAfter tasks.named('compileTestJava'), tasks.named('processTestResources')
-
-  // Test instances are a data pack registry and would otherwise be loaded in every world, which
-  // makes the game tests selectable through the /test command. Development runs read the source
-  // set output instead of this jar and therefore keep them.
-  exclude 'data/*/test_instance/**'
-
   manifest {
     attributes([
         "Specification-Title"     : "${project.mod_name}",
@@ -228,23 +238,12 @@ tasks.named('build') {
   finalizedBy tasks.named('publishToMavenLocal')
 }
 
-// Merge the resources and classes into the same directory.
-// This is done because java expects modules to be in a single directory.
-// And if we have it in multiple we have to do performance intensive hacks like having the UnionFileSystem
-// This will eventually be migrated to ForgeGradle so modders don't need to manually do it. But that is later.
-// Note: We merge 'test' sourceset with 'main' to avoid Java Module System conflicts where both modules
-// would export the same packages. Tests are merged into the main module output directory.
-def mainOutputDir = layout.buildDirectory.dir("sourcesSets/main")
-sourceSets.main {
-  output.resourcesDir = mainOutputDir
-  java.destinationDirectory = mainOutputDir
-}
-sourceSets.test {
-  output.resourcesDir = mainOutputDir
-  java.destinationDirectory = mainOutputDir
-}
-tasks.matching { it.name == 'clientTest' }.configureEach {
-  mustRunAfter tasks.named('compileTestJava'), tasks.named('processTestResources')
+// Forge 61 expects a mod in a single directory, so every source set merges its resources and
+// classes into one. The game tests stay a separate mod with their own mods.toml.
+sourceSets.each { sourceSet ->
+  def outputDir = layout.buildDirectory.dir("sourcesSets/${sourceSet.name}")
+  sourceSet.output.resourcesDir = outputDir
+  sourceSet.java.destinationDirectory = outputDir
 }
 
 // The game test world is persistent, so every run would inherit the NPCs of all previous runs.

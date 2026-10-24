@@ -10,11 +10,29 @@ base {
   archivesName = "${project.mod_id}-fabric-${project.minecraft_version}"
 }
 
+sourceSets {
+  gameTest {
+    java.srcDir project(":Common").file('src/gameTest/java')
+    resources.srcDir project(":Common").file('src/gameTest/resources')
+    compileClasspath += main.compileClasspath + main.output
+    runtimeClasspath += main.runtimeClasspath + main.output
+  }
+}
+
 loom {
   accessWidenerPath = file("src/main/resources/easynpc.accesswidener")
 
   mixin {
     defaultRefmapName = "easy_npc.refmap.json"
+  }
+
+  mods {
+    "${project.mod_id}" {
+      sourceSet sourceSets.main
+    }
+    "${project.mod_id}_gametest" {
+      sourceSet sourceSets.gameTest
+    }
   }
 
   runs {
@@ -43,6 +61,7 @@ loom {
       name "Game Test"
       vmArg "-Dfabric-api.gametest"
       runDir("run/gametest")
+      source sourceSets.gameTest
     }
   }
 }
@@ -101,24 +120,22 @@ processResources {
   dependsOn project(":Common").tasks.named('generateDefaultPresetIndex')
 }
 
-tasks.withType(JavaCompile).configureEach {
+processGameTestResources {
+  inputs.property "version", project.version
+  filesMatching("fabric.mod.json") {
+    expand "version": project.version
+  }
+}
+
+// The game test source set compiles against the main output, so the Common main sources would be
+// compiled into it a second time.
+tasks.withType(JavaCompile).matching { compileTask -> compileTask.name != 'compileGameTestJava' }.configureEach {
   source(project(":Common").sourceSets.main.allSource)
   dependsOn project(":Common").tasks.named('generateDefaultPresetIndex')
 }
 
 tasks.withType(Test).configureEach {
   failOnNoDiscoveredTests = false
-}
-
-// Fabric API finds game tests only through the `fabric-gametest` entrypoints, so the released jar
-// drops them to keep them out of the game test runs of mods depending on Easy NPC. Development
-// runs read the processed resources instead of this jar and keep them.
-tasks.named('jar', Jar).configure {
-  // Gradle does not track filter closures, so without this input an up-to-date jar keeps them.
-  inputs.property('fabricGameTestEntrypoints', 'stripped')
-  filesMatching('fabric.mod.json') {
-    filter { String line -> line.contains('.gametest.') ? null : line }
-  }
 }
 
 publishing {

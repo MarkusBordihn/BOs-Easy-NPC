@@ -10,6 +10,15 @@ base {
   archivesName = "${project.mod_id}-neoforge-${project.minecraft_version}"
 }
 
+sourceSets {
+  gameTest {
+    java.srcDir project(":Common").file('src/gameTest/java')
+    resources.srcDir project(":Common").file('src/gameTest/resources')
+    compileClasspath += main.compileClasspath + main.output
+    runtimeClasspath += main.runtimeClasspath + main.output
+  }
+}
+
 neoForge {
   version = project.neoforge_version
 
@@ -25,7 +34,6 @@ neoForge {
 
     client {
       client()
-      systemProperty "${project.mod_id}.gametest", 'true'
     }
 
     client2 {
@@ -36,14 +44,13 @@ neoForge {
 
     server {
       server()
-      systemProperty "${project.mod_id}.gametest", 'true'
       programArgument '--nogui'
     }
 
     gameTestServer {
       type = 'gameTestServer'
       gameDirectory = project.file('run/gametest')
-      systemProperty "${project.mod_id}.gametest", 'true'
+      sourceSet = sourceSets.gameTest
     }
   }
 
@@ -51,8 +58,15 @@ neoForge {
     "${project.mod_id}" {
       sourceSet sourceSets.main
     }
+    "${project.mod_id}_gametest" {
+      sourceSet sourceSets.gameTest
+    }
   }
 
+}
+
+neoForge.runs.matching { run -> run.name != 'gameTestServer' }.configureEach {
+  loadedMods = [neoForge.mods."${project.mod_id}"]
 }
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
