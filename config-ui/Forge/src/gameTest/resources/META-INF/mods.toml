@@ -1,0 +1,8 @@
+modLoader = "javafml"
+loaderVersion = "[0,)"
+license = "MIT"
+
+[[mods]]
+modId = "easy_npc_config_ui_gametest"
+version = "1.0.0"
+displayName = "Easy NPC Configuration UI Game Tests"

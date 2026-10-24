@@ -10,6 +10,15 @@ base {
   archivesName = "${project.mod_id}-forge-${project.minecraft_version}"
 }
 
+sourceSets {
+  gameTest {
+    java.srcDir project(":Common").file('src/gameTest/java')
+    resources.srcDir project(":Common").file('src/gameTest/resources')
+    compileClasspath += main.compileClasspath + main.output
+    runtimeClasspath += main.runtimeClasspath + main.output
+  }
+}
+
 minecraft {
   mappings channel: 'official', version: "${project.minecraft_version}"
 
@@ -27,6 +36,9 @@ minecraft {
       mods {
         "${project.mod_id}" {
           source sourceSets.main
+        }
+        "${project.mod_id}_gametest" {
+          source sourceSets.gameTest
         }
       }
 
@@ -58,6 +70,9 @@ minecraft {
         "${project.mod_id}" {
           source sourceSets.main
         }
+        "${project.mod_id}_gametest" {
+          source sourceSets.gameTest
+        }
       }
 
       property 'mixin.env.remapRefMap', 'true'
@@ -74,6 +89,9 @@ minecraft {
       mods {
         "${project.mod_id}" {
           source sourceSets.main
+        }
+        "${project.mod_id}_gametest" {
+          source sourceSets.gameTest
         }
       }
 
@@ -129,8 +147,14 @@ dependencies {
   }
 }
 
-tasks.withType(JavaCompile).configureEach {
+// The game test source set compiles against the main output, so the Common main sources would be
+// compiled into it a second time.
+tasks.withType(JavaCompile).matching { compileTask -> compileTask.name != 'compileGameTestJava' }.configureEach {
   source(project(":Common").sourceSets.main.allSource)
+}
+
+tasks.named('compileGameTestJava') {
+  source(coreGameTestHelperSources)
 }
 
 def getNextMajorVersion(String currentVersion) {

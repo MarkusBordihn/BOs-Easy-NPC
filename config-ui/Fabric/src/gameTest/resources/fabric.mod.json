@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "id": "easy_npc_config_ui_gametest",
+  "version": "${version}",
+  "name": "Easy NPC: Config UI Game Tests",
+  "license": "MIT",
+  "environment": "*",
+  "entrypoints": {
+    "fabric-gametest": [
+      "de.markusbordihn.easynpc.configui.gametest.GameTestRegistration"
+    ]
+  },
+  "depends": {
+    "easy_npc_config_ui": "*"
+  }
+}

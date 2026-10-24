@@ -10,6 +10,15 @@ base {
   archivesName = "${project.mod_id}-neoforge-${project.minecraft_version}"
 }
 
+sourceSets {
+  gameTest {
+    java.srcDir project(":Common").file('src/gameTest/java')
+    resources.srcDir project(":Common").file('src/gameTest/resources')
+    compileClasspath += main.compileClasspath + main.output
+    runtimeClasspath += main.runtimeClasspath + main.output
+  }
+}
+
 minecraft.accessTransformers.file file('src/main/resources/META-INF/accesstransformer.cfg')
 
 runs {
@@ -17,6 +26,7 @@ runs {
     systemProperty 'forge.logging.markers', 'REGISTRIES'
     systemProperty 'forge.logging.console.level', 'debug'
     modSource project.sourceSets.main
+    modSource project.sourceSets.gameTest
   }
 
   client {
@@ -106,8 +116,16 @@ dependencies {
 // NeoGradle compiles the game, but we don't want to add our common code to the game's code
 Spec<Task> notNeoTask = { Task it -> !it.name.startsWith("neo") } as Spec<Task>
 
-tasks.withType(JavaCompile).matching(notNeoTask).configureEach {
+// The game test source set builds on the main output, so the Common main sources and resources
+// would end up in it a second time.
+Spec<Task> notGameTestTask = { Task task -> !task.name.contains('GameTest') } as Spec<Task>
+
+tasks.withType(JavaCompile).matching(notNeoTask).matching(notGameTestTask).configureEach {
   source(project(":Common").sourceSets.main.allSource)
+}
+
+tasks.named('compileGameTestJava') {
+  source(coreGameTestHelperSources)
 }
 
 tasks.withType(Javadoc).matching(notNeoTask).configureEach {
@@ -123,7 +141,7 @@ def getNextMajorVersion(String currentVersion) {
   return "1.0.0"
 }
 
-tasks.withType(ProcessResources).matching(notNeoTask).configureEach {
+tasks.withType(ProcessResources).matching(notNeoTask).matching(notGameTestTask).configureEach {
   from project(":Common").sourceSets.main.resources
   duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 
