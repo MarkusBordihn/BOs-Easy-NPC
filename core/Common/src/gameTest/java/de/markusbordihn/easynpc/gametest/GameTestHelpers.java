@@ -35,6 +35,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.Consumer;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTestHelper;
@@ -279,8 +280,21 @@ public final class GameTestHelpers {
     return serverPlayer;
   }
 
+  public static ServerPlayer mockPacketRecordingServerPlayer(
+      GameTestHelper helper, Vec3 position, String playerName, List<Packet<?>> sentPackets) {
+    return createMockServerPlayer(helper, position, playerName, sentPackets::add);
+  }
+
   private static ServerPlayer createMockServerPlayer(
       GameTestHelper helper, Vec3 position, String playerName) {
+    return createMockServerPlayer(helper, position, playerName, sentPacket -> {});
+  }
+
+  private static ServerPlayer createMockServerPlayer(
+      GameTestHelper helper,
+      Vec3 position,
+      String playerName,
+      Consumer<Packet<?>> sentPacketConsumer) {
     ServerLevel level = helper.getLevel();
     // Place the mock player at the structure-relative absolute position so it sits inside its own
     // test area (matching the command source position) and stays far from other tests' mock
@@ -304,7 +318,9 @@ public final class GameTestHelpers {
           // NeoForge throws for payloads a connection never negotiated, such as the optional Easy
           // Model Entities shoulder sync, which would crash the game test server.
           @Override
-          public void send(Packet<?> packet) {}
+          public void send(Packet<?> packet) {
+            sentPacketConsumer.accept(packet);
+          }
         };
     PlayerList playerList = level.getServer().getPlayerList();
     registerInPlayerList(playerList, fakePlayer);

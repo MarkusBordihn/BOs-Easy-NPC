@@ -39,6 +39,7 @@ public class AttackObjectiveConfigurationScreen<T extends ConfigurationMenu>
   protected Checkbox crossbowAttackCheckbox;
   protected Checkbox bowAttackCheckbox;
   protected Checkbox gunAttackCheckbox;
+  protected Checkbox projectileAttackCheckbox;
   protected Checkbox attackAnimalCheckbox;
   protected Checkbox attackPlayerCheckbox;
   protected Checkbox attackPlayerWithoutOwnerCheckbox;
@@ -91,6 +92,13 @@ public class AttackObjectiveConfigurationScreen<T extends ConfigurationMenu>
         this.addRenderableWidget(
             this.getObjectiveCheckbox(
                 objectiveEntriesFirstColumn, objectiveEntriesTop, ObjectiveType.GUN_ATTACK));
+
+    this.projectileAttackCheckbox =
+        this.addRenderableWidget(
+            this.getObjectiveCheckbox(
+                objectiveEntriesSecondColumn,
+                objectiveEntriesTop,
+                ObjectiveType.PROJECTILE_ATTACK));
 
     objectiveEntriesTop += SPACE_BETWEEN_ENTRIES + 10;
     this.attackPlayerCheckbox =

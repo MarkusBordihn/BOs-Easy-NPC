@@ -25,9 +25,12 @@ import de.markusbordihn.easynpc.client.renderer.entity.ModEpicFightEntityRendere
 import de.markusbordihn.easynpc.client.renderer.entity.ModNPCEntityRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.ModRawEntityRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.easymodelentities.EasyModelNPCRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.projectile.EasyNPCBulletRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.projectile.EasyNPCItemProjectileRenderer;
 import de.markusbordihn.easynpc.compat.CompatConstants;
 import de.markusbordihn.easynpc.entity.EasyModelEntitiesEntityType;
 import de.markusbordihn.easynpc.entity.ModEntityType;
+import de.markusbordihn.easynpc.entity.ModProjectileEntityType;
 import java.util.function.Function;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.world.entity.Entity;
@@ -66,6 +69,15 @@ public class EntityRenderer {
           ModEntityType.CUSTOM_TYPE.get(renderer.getEntityType()),
           context -> renderer.getRenderer().apply(context));
     }
+
+    registerEntityRendererSafe(
+        event,
+        ModEntityType.PROJECTILE_TYPE.get(ModProjectileEntityType.BULLET),
+        EasyNPCBulletRenderer::new);
+    registerEntityRendererSafe(
+        event,
+        ModEntityType.PROJECTILE_TYPE.get(ModProjectileEntityType.ITEM_PROJECTILE),
+        EasyNPCItemProjectileRenderer::new);
 
     if (CompatConstants.MOD_EPIC_FIGHT_LOADED) {
       for (ModEpicFightEntityRenderer renderer : ModEpicFightEntityRenderer.values()) {

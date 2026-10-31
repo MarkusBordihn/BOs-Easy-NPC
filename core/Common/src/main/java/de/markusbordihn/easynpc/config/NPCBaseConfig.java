@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.config;
 
+import de.markusbordihn.easynpc.data.attack.ProjectileData;
 import java.io.File;
 import java.util.Properties;
 
@@ -31,10 +32,14 @@ public class NPCBaseConfig extends Config {
 NPC Base Configuration
 
 allowBypassInvulnerability: Allows damage types like /kill command or void to bypass NPC invulnerability (default: true)
+projectileMaximumExplosionPower: Maximum explosion power of custom NPC projectiles, 0 disables explosions (default: 2, range: 0-6)
+projectileExplosionBlockDamage: Allows custom NPC projectile explosions to destroy blocks, also requires the mobGriefing game rule (default: false)
 
 """;
 
   public static boolean ALLOW_BYPASS_INVULNERABILITY = true;
+  public static int PROJECTILE_MAXIMUM_EXPLOSION_POWER = 2;
+  public static boolean PROJECTILE_EXPLOSION_BLOCK_DAMAGE = false;
 
   public static void registerConfig() {
     registerConfigFile(CONFIG_FILE_NAME, CONFIG_FILE_HEADER);
@@ -48,6 +53,16 @@ allowBypassInvulnerability: Allows damage types like /kill command or void to by
 
     ALLOW_BYPASS_INVULNERABILITY =
         parseConfigValue(properties, "allowBypassInvulnerability", ALLOW_BYPASS_INVULNERABILITY);
+    PROJECTILE_MAXIMUM_EXPLOSION_POWER =
+        parseConfigValue(
+            properties,
+            "projectileMaximumExplosionPower",
+            PROJECTILE_MAXIMUM_EXPLOSION_POWER,
+            0,
+            (int) ProjectileData.MAXIMUM_EXPLOSION_POWER);
+    PROJECTILE_EXPLOSION_BLOCK_DAMAGE =
+        parseConfigValue(
+            properties, "projectileExplosionBlockDamage", PROJECTILE_EXPLOSION_BLOCK_DAMAGE);
 
     updateConfigFileIfChanged(configFile, CONFIG_FILE_HEADER, properties, unmodifiedProperties);
   }

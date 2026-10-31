@@ -38,6 +38,11 @@ public final class PresetSpawnTest {
     helper.succeed();
   }
 
+  public static void testPresetItemIsConsumedOnSpawn(GameTestHelper helper) {
+    PresetSpawnTestHelper.assertPresetItemIsConsumedOnSpawn(helper, humanoid());
+    helper.succeed();
+  }
+
   public static void testSpawnerSpawnsConfiguredNPC(GameTestHelper helper) {
     PresetSpawnTestHelper.assertSpawnerSpawnsConfiguredNPC(helper, humanoid());
     helper.succeed();

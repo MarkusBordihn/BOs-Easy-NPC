@@ -45,6 +45,7 @@ public class CombatSoundConfigurationScreen<T extends ConfigurationMenu>
             SoundType.HURT,
             SoundType.DEATH,
             SoundType.FALL_DAMAGE_SMALL,
-            SoundType.FALL_DAMAGE_BIG));
+            SoundType.FALL_DAMAGE_BIG,
+            SoundType.RANGED_ATTACK));
   }
 }

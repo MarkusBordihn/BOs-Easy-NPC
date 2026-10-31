@@ -28,6 +28,7 @@ import de.markusbordihn.easynpc.configui.client.screen.configuration.attribute.B
 import de.markusbordihn.easynpc.configui.client.screen.configuration.attribute.CombatAttributeConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.attribute.DisplayAttributeConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.attribute.MiscAttributeConfigurationScreenWrapper;
+import de.markusbordihn.easynpc.configui.client.screen.configuration.attribute.ProjectileAttributeConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.dialog.AdvancedDialogConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.dialog.BasicDialogConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.dialog.NoneDialogConfigurationScreenWrapper;
@@ -141,6 +142,9 @@ public class ClientScreens {
     MenuScreens.register(
         ModMenuTypes.COMBAT_ATTRIBUTE_CONFIGURATION_MENU,
         CombatAttributeConfigurationScreenWrapper::new);
+    MenuScreens.register(
+        ModMenuTypes.PROJECTILE_ATTRIBUTE_CONFIGURATION_MENU,
+        ProjectileAttributeConfigurationScreenWrapper::new);
     MenuScreens.register(
         ModMenuTypes.COMBAT_SOUND_CONFIGURATION_MENU, CombatSoundConfigurationScreenWrapper::new);
     MenuScreens.register(

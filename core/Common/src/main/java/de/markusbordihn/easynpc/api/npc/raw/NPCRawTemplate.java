@@ -48,6 +48,7 @@ import de.markusbordihn.easynpc.entity.easynpc.handlers.BossBarHandler;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.InteractionHandler;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.VisibilityHandler;
 import de.markusbordihn.easynpc.handler.AttributeHandler;
+import de.markusbordihn.easynpc.handler.VisibilityConditionTracker;
 import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
 import de.markusbordihn.easynpc.server.player.FakePlayer;
 import de.markusbordihn.easynpc.utils.TextUtils;
@@ -148,6 +149,10 @@ public class NPCRawTemplate extends Zombie
         SynchedDataIndex.DISPLAY_ATTRIBUTE_SET,
         net.minecraft.network.syncher.SynchedEntityData.defineId(
             NPCRawTemplate.class, EntityDataSerializersManager.DISPLAY_ATTRIBUTE));
+    entityDataAccessorMap.put(
+        SynchedDataIndex.DISPLAY_HAS_VISIBILITY_CONDITIONS,
+        net.minecraft.network.syncher.SynchedEntityData.defineId(
+            NPCRawTemplate.class, EntityDataSerializers.BOOLEAN));
 
     entityDataAccessorMap.put(
         SynchedDataIndex.MODEL_POSE,
@@ -455,7 +460,20 @@ public class NPCRawTemplate extends Zombie
   @Override
   public void remove(RemovalReason removalReason) {
     this.bossBarHandler.removeAllPlayers();
+    VisibilityConditionTracker.removeNPC(this);
     super.remove(removalReason);
+  }
+
+  @Override
+  public void startSeenByPlayer(ServerPlayer serverPlayer) {
+    super.startSeenByPlayer(serverPlayer);
+    VisibilityConditionTracker.startSeenByPlayer(this, serverPlayer);
+  }
+
+  @Override
+  public void stopSeenByPlayer(ServerPlayer serverPlayer) {
+    super.stopSeenByPlayer(serverPlayer);
+    VisibilityConditionTracker.stopSeenByPlayer(this, serverPlayer);
   }
 
   @Override

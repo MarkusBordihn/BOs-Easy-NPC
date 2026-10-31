@@ -23,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import de.markusbordihn.clientruntimeinterfacetoolkit.testrunner.By;
+import de.markusbordihn.clientruntimeinterfacetoolkit.testrunner.GameClient.TemporaryChange;
 import de.markusbordihn.clientruntimeinterfacetoolkit.testrunner.Until;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
@@ -61,41 +62,42 @@ class DialogScreenClientTest extends ClientTestBase {
   @DisplayName(
       "Bank Teller preset locks only the withdraw button, not the deposit button of the same label")
   void equalButtonLabelsLockPerDialog() {
-    client.runCommand("clear @s minecraft:emerald");
-    client.runCommand("give @s minecraft:emerald 5");
-    client.runCommand("scoreboard objectives add " + BANK_OBJECTIVE + " dummy");
-    client.runCommand("scoreboard players set @s " + BANK_OBJECTIVE + " 0");
-    client.runCommand("easy_npc preset import_new default " + BANK_TELLER_PRESET + " ~ ~ ~3");
-    client.runCommand("tag @e[type=easy_npc:villager,sort=nearest,limit=1] add " + TEST_TAG);
+    awaitWorldSetupCapability();
+    client.clearInventory();
+    client.giveItem("minecraft:emerald", 5);
+    try (TemporaryChange bankObjective =
+        client.addScoreboardObjective(BANK_OBJECTIVE, BANK_OBJECTIVE)) {
+      client.runCommand("easy_npc preset import_new default " + BANK_TELLER_PRESET + " ~ ~ ~3");
+      client.runCommand("tag @e[type=easy_npc:villager,sort=nearest,limit=1] add " + TEST_TAG);
 
-    client.runCommand(
-        "easy_npc dialog open " + TEST_NPC_SELECTOR + " @s deposit",
-        Until.screen(DIALOG_SCREEN_ID),
-        Until.widgetPresent(By.text(BANK_TELLER_FIVE_EMERALDS)));
-    client.saveScreenshot("dialog_deposit");
-    assertTrue(
-        isEnabledWidget(By.text(BANK_TELLER_FIVE_EMERALDS)),
-        "The deposit button is locked although the player carries 5 emeralds");
+      client.runCommand(
+          "easy_npc dialog open " + TEST_NPC_SELECTOR + " @s deposit",
+          Until.screen(DIALOG_SCREEN_ID),
+          Until.widgetPresent(By.text(BANK_TELLER_FIVE_EMERALDS)));
+      client.saveScreenshot("dialog_deposit");
+      assertTrue(
+          isEnabledWidget(By.text(BANK_TELLER_FIVE_EMERALDS)),
+          "The deposit button is locked although the player carries 5 emeralds");
 
-    client.closeScreen();
-    client.await(Until.noScreen());
-    client.runCommand(
-        "easy_npc dialog open " + TEST_NPC_SELECTOR + " @s withdraw",
-        Until.screen(DIALOG_SCREEN_ID),
-        Until.widgetPresent(By.text(BANK_TELLER_FIVE_EMERALDS)));
-    client.saveScreenshot("dialog_withdraw");
-    assertFalse(
-        isEnabledWidget(By.text(BANK_TELLER_FIVE_EMERALDS)),
-        "The withdraw button is not locked although the balance is 0");
+      client.closeScreen();
+      client.await(Until.noScreen());
+      client.runCommand(
+          "easy_npc dialog open " + TEST_NPC_SELECTOR + " @s withdraw",
+          Until.screen(DIALOG_SCREEN_ID),
+          Until.widgetPresent(By.text(BANK_TELLER_FIVE_EMERALDS)));
+      client.saveScreenshot("dialog_withdraw");
+      assertFalse(
+          isEnabledWidget(By.text(BANK_TELLER_FIVE_EMERALDS)),
+          "The withdraw button is not locked although the player has no balance");
 
-    client.closeScreen();
-    client.await(Until.noScreen());
+      client.closeScreen();
+      client.await(Until.noScreen());
+    }
   }
 
   @AfterEach
   void removeTestNpc() {
     client.runCommand("kill @e[tag=" + TEST_TAG + "]");
-    client.runCommand("clear @s minecraft:emerald");
-    client.runCommand("scoreboard objectives remove " + BANK_OBJECTIVE);
+    client.clearInventory();
   }
 }
