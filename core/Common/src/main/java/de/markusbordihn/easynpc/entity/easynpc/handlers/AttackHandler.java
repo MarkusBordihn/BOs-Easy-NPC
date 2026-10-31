@@ -21,15 +21,26 @@ package de.markusbordihn.easynpc.entity.easynpc.handlers;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.config.NPCBaseConfig;
+import de.markusbordihn.easynpc.data.attack.ProjectileData;
 import de.markusbordihn.easynpc.data.attribute.CombatAttributes;
+import de.markusbordihn.easynpc.data.sound.SoundType;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPCBase;
+import de.markusbordihn.easynpc.entity.easynpc.data.AttackDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.SoundDataCapable;
+import de.markusbordihn.easynpc.entity.projectile.EasyNPCBullet;
+import de.markusbordihn.easynpc.entity.projectile.EasyNPCItemProjectile;
+import de.markusbordihn.easynpc.entity.projectile.EasyNPCProjectile;
 import de.markusbordihn.easynpc.handler.FactionHandler;
 import de.markusbordihn.easynpc.item.ModItemTags;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import net.minecraft.core.Holder.Reference;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.ItemTags;
@@ -39,6 +50,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.CrossbowAttackMob;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 import net.minecraft.world.item.AxeItem;
@@ -139,10 +151,8 @@ public class AttackHandler {
       LivingEntity livingEntity, LivingEntity targedtedLivingEntity, float damage) {
     if (isHoldingBowWeapon(livingEntity)) {
       performBowAttack(livingEntity, targedtedLivingEntity, damage);
-    } else if (livingEntity instanceof CrossbowAttackMob crossbowAttackMob
-        && isHoldingCrossbowWeapon(livingEntity)) {
-      addChargedProjectile(livingEntity.getMainHandItem(), new ItemStack(Items.ARROW, 1));
-      crossbowAttackMob.performCrossbowAttack(livingEntity, 1.6F);
+    } else if (isHoldingCrossbowWeapon(livingEntity)) {
+      performCrossbowAttack(livingEntity, targedtedLivingEntity);
     } else if (isHoldingGunWeapon(livingEntity)) {
       performGunAttack(livingEntity, targedtedLivingEntity, damage);
     }
@@ -165,29 +175,140 @@ public class AttackHandler {
 
   public static void performGunAttack(
       LivingEntity livingEntity, LivingEntity livingEntityTarget, float damage) {
+    if (!isGunWeapon(livingEntity.getMainHandItem())) {
+      return;
+    }
+
+    ProjectileData projectileData = getProjectileData(livingEntity);
+    if (projectileData.enabled()) {
+      performCustomProjectileAttack(livingEntity, livingEntityTarget, projectileData);
+      return;
+    }
+
     ItemStack itemStackWeapon = livingEntity.getItemInHand(getGunHoldingHand(livingEntity));
     AbstractArrow abstractArrow = getBullet(livingEntity, itemStackWeapon, damage);
-    if (isGunWeapon(livingEntity.getMainHandItem())) {
-      double targetX = livingEntityTarget.getX() - livingEntity.getX();
-      double targetY = livingEntityTarget.getY() - abstractArrow.getY();
-      double targetZ = livingEntityTarget.getZ() - livingEntity.getZ();
-      double targetRadius = Math.sqrt(targetX * targetX + targetZ * targetZ);
-      abstractArrow.shoot(
-          targetX,
-          targetY + targetRadius * 0.2F,
-          targetZ,
-          1.6F,
-          14.0F - livingEntity.level().getDifficulty().getId() * 4);
-      livingEntity.playSound(
-          SoundEvents.FIRECHARGE_USE,
-          1.0F,
-          1.0F / (livingEntity.getRandom().nextFloat() * 0.4F + 0.8F));
-      livingEntity.level().addFreshEntity(abstractArrow);
+    double targetX = livingEntityTarget.getX() - livingEntity.getX();
+    double targetY = livingEntityTarget.getY() - abstractArrow.getY();
+    double targetZ = livingEntityTarget.getZ() - livingEntity.getZ();
+    double targetRadius = Math.sqrt(targetX * targetX + targetZ * targetZ);
+    abstractArrow.shoot(
+        targetX,
+        targetY + targetRadius * 0.2F,
+        targetZ,
+        1.6F,
+        14.0F - livingEntity.level().getDifficulty().getId() * 4);
+    playRangedAttackSound(livingEntity, SoundEvents.FIRECHARGE_USE);
+    livingEntity.level().addFreshEntity(abstractArrow);
+  }
+
+  public static void performCrossbowAttack(
+      LivingEntity livingEntity, LivingEntity livingEntityTarget) {
+    ItemStack itemStack = livingEntity.getItemInHand(getCrossbowHoldingHand(livingEntity));
+    ProjectileData projectileData = getProjectileData(livingEntity);
+    if (projectileData.enabled()) {
+      performCustomProjectileAttack(
+          livingEntity, livingEntityTarget, projectileData, SoundEvents.CROSSBOW_SHOOT);
+      if (itemStack.getItem() instanceof CrossbowItem) {
+        itemStack.set(DataComponents.CHARGED_PROJECTILES, ChargedProjectiles.EMPTY);
+      }
+      return;
     }
+
+    if (livingEntity instanceof CrossbowAttackMob crossbowAttackMob) {
+      addChargedProjectile(itemStack, new ItemStack(Items.ARROW, 1));
+      crossbowAttackMob.performCrossbowAttack(livingEntity, 1.6F);
+    }
+  }
+
+  public static List<Projectile> performProjectileAttack(
+      LivingEntity livingEntity, LivingEntity livingEntityTarget) {
+    return performCustomProjectileAttack(
+        livingEntity,
+        livingEntityTarget,
+        getProjectileData(livingEntity),
+        SoundEvents.FIRECHARGE_USE);
+  }
+
+  public static List<Projectile> performCustomProjectileAttack(
+      LivingEntity livingEntity, LivingEntity livingEntityTarget, ProjectileData projectileData) {
+    return performCustomProjectileAttack(
+        livingEntity, livingEntityTarget, projectileData, SoundEvents.FIRECHARGE_USE);
+  }
+
+  private static List<Projectile> performCustomProjectileAttack(
+      LivingEntity livingEntity,
+      LivingEntity livingEntityTarget,
+      ProjectileData projectileData,
+      SoundEvent fallbackSound) {
+    List<Projectile> projectiles = new ArrayList<>(projectileData.shotCount());
+    for (int i = 0; i < projectileData.shotCount(); i++) {
+      Projectile projectile = createCustomProjectile(livingEntity, projectileData);
+      if (!(projectile instanceof EasyNPCProjectile easyNPCProjectile)) {
+        break;
+      }
+
+      double targetX = livingEntityTarget.getX() - projectile.getX();
+      double targetY = livingEntityTarget.getY(0.5D) - projectile.getY();
+      double targetZ = livingEntityTarget.getZ() - projectile.getZ();
+      float velocity = projectileData.velocity();
+      float gravityPerTick = easyNPCProjectile.getGravityPerTick();
+      double gravityDrop =
+          (targetX * targetX + targetZ * targetZ) * gravityPerTick / (2.0D * velocity * velocity);
+      projectile.shoot(
+          targetX, targetY + gravityDrop, targetZ, velocity, projectileData.inaccuracy());
+      livingEntity.level().addFreshEntity(projectile);
+      projectiles.add(projectile);
+    }
+    if (!projectiles.isEmpty()) {
+      playRangedAttackSound(livingEntity, fallbackSound);
+    }
+    return projectiles;
+  }
+
+  public static Projectile createCustomProjectile(
+      LivingEntity livingEntity, ProjectileData projectileData) {
+    if (EasyNPCBullet.supportsProjectileType(projectileData.projectileType())) {
+      return EasyNPCBullet.create(livingEntity, projectileData);
+    }
+
+    return EasyNPCItemProjectile.create(livingEntity, projectileData);
+  }
+
+  private static ProjectileData getProjectileData(LivingEntity livingEntity) {
+    if (livingEntity instanceof EasyNPC<?> easyNPC) {
+      AttackDataCapable<?> attackData = easyNPC.getEasyNPCAttackData();
+      if (attackData != null) {
+        return attackData.getProjectileData();
+      }
+    }
+    return ProjectileData.DEFAULT;
+  }
+
+  private static void playRangedAttackSound(LivingEntity livingEntity, SoundEvent fallbackSound) {
+    if (livingEntity instanceof EasyNPC<?> easyNPC) {
+      SoundDataCapable<?> soundData = easyNPC.getEasyNPCSoundData();
+      if (soundData != null && soundData.hasDefaultSound(SoundType.RANGED_ATTACK)) {
+        soundData.playDefaultSound(SoundType.RANGED_ATTACK);
+        return;
+      }
+    }
+    livingEntity.playSound(
+        fallbackSound, 1.0F, 1.0F / (livingEntity.getRandom().nextFloat() * 0.4F + 0.8F));
   }
 
   public static void performBowAttack(
       LivingEntity livingEntity, LivingEntity livingEntityTarget, float damage) {
+    if (!isBowWeapon(livingEntity.getMainHandItem())) {
+      return;
+    }
+
+    ProjectileData projectileData = getProjectileData(livingEntity);
+    if (projectileData.enabled()) {
+      performCustomProjectileAttack(
+          livingEntity, livingEntityTarget, projectileData, SoundEvents.SKELETON_SHOOT);
+      return;
+    }
+
     ItemStack itemStackWeapon = livingEntity.getItemInHand(getBowHoldingHand(livingEntity));
     ItemStack itemStackProjectile = livingEntity.getProjectile(itemStackWeapon);
     AbstractArrow abstractArrow =
@@ -196,23 +317,21 @@ public class AttackHandler {
             itemStackWeapon,
             itemStackProjectile.isEmpty() ? new ItemStack(Items.ARROW) : itemStackProjectile,
             damage);
-    if (isBowWeapon(livingEntity.getMainHandItem())) {
-      double targetX = livingEntityTarget.getX() - livingEntity.getX();
-      double targetY = livingEntityTarget.getY(0.3333333333333333D) - abstractArrow.getY();
-      double targetZ = livingEntityTarget.getZ() - livingEntity.getZ();
-      double targetRadius = Math.sqrt(targetX * targetX + targetZ * targetZ);
-      abstractArrow.shoot(
-          targetX,
-          targetY + targetRadius * 0.2F,
-          targetZ,
-          1.6F,
-          14.0F - livingEntity.level().getDifficulty().getId() * 4);
-      livingEntity.playSound(
-          SoundEvents.SKELETON_SHOOT,
-          1.0F,
-          1.0F / (livingEntity.getRandom().nextFloat() * 0.4F + 0.8F));
-      livingEntity.level().addFreshEntity(abstractArrow);
-    }
+    double targetX = livingEntityTarget.getX() - livingEntity.getX();
+    double targetY = livingEntityTarget.getY(0.3333333333333333D) - abstractArrow.getY();
+    double targetZ = livingEntityTarget.getZ() - livingEntity.getZ();
+    double targetRadius = Math.sqrt(targetX * targetX + targetZ * targetZ);
+    abstractArrow.shoot(
+        targetX,
+        targetY + targetRadius * 0.2F,
+        targetZ,
+        1.6F,
+        14.0F - livingEntity.level().getDifficulty().getId() * 4);
+    livingEntity.playSound(
+        SoundEvents.SKELETON_SHOOT,
+        1.0F,
+        1.0F / (livingEntity.getRandom().nextFloat() * 0.4F + 0.8F));
+    livingEntity.level().addFreshEntity(abstractArrow);
   }
 
   public static AbstractArrow getArrow(

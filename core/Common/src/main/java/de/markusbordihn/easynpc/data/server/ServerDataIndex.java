@@ -57,6 +57,8 @@ public enum ServerDataIndex {
   FACTION_NAME,
   NPC_STATE,
   PENDING_ACTION_SET,
+  VISIBILITY_CONDITION_SET,
+  PROJECTILE_DATA,
   UNKNOWN;
 
   public static final int MAX_FREE_INDEX = 20;

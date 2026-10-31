@@ -69,6 +69,7 @@ class ObjectiveFactoryMetadataTest {
           ObjectiveType.MELEE_ATTACK,
           ObjectiveType.MOVE_BACK_TO_VILLAGE,
           ObjectiveType.MOVE_THROUGH_VILLAGE,
+          ObjectiveType.PROJECTILE_ATTACK,
           ObjectiveType.RANDOM_STROLL_IN_VILLAGE,
           ObjectiveType.RANDOM_SWIMMING,
           ObjectiveType.ZOMBIE_ATTACK);

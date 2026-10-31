@@ -19,10 +19,15 @@
 
 package de.markusbordihn.easynpc.configui.clienttest;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import de.markusbordihn.clientruntimeinterfacetoolkit.testrunner.By;
 import de.markusbordihn.clientruntimeinterfacetoolkit.testrunner.Until;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -32,6 +37,25 @@ class EditorScreenClientTest extends ClientTestBase {
       "de.markusbordihn.easynpc.client.screen.components.TextField";
   private static final String NEW_FACTION_NAME = "clienttest";
   private static final String NEW_ACTION_COMMAND = "say clienttest";
+  private static final By TYPE_SPIN_BUTTON =
+      By.className("de.markusbordihn.easynpc.client.screen.components.SpinButton").withIndex(0);
+
+  private static String selectedType() {
+    return client.widget(TYPE_SPIN_BUTTON).string(By.FIELD_TEXT);
+  }
+
+  private static void saveScreenshotOfEveryType(String screenshotPrefix) {
+    Set<String> renderedTypes = new HashSet<>();
+    String type = selectedType();
+    while (renderedTypes.add(type)) {
+      client.saveScreenshot(screenshotPrefix + "-" + type.toLowerCase(Locale.ROOT));
+      client.assertLayoutClean(List.of("rawTranslationKey"), List.of());
+      client.click(TYPE_SPIN_BUTTON);
+      client.await(Until.settled(10));
+      type = selectedType();
+    }
+    assertTrue(renderedTypes.size() > 1, "The type button did not switch to another type");
+  }
 
   private static void openEditor(By button, String screenClassName) {
     assumeTrue(isEnabledWidget(button), button + " is not available on " + client.screenId());
@@ -115,21 +139,21 @@ class EditorScreenClientTest extends ClientTestBase {
   }
 
   @Test
-  @DisplayName("Condition entry editor renders for a new condition")
+  @DisplayName("Condition entry editor renders every selectable condition type")
   void conditionDataEntryEditorRenders() {
     openConditionDataEditorOfNewDialog();
 
     openEditor(configurationButton("condition.add"), "ConditionDataEntryEditorContainerScreen");
 
-    client.saveScreenshot("condition_data_entry_editor");
+    saveScreenshotOfEveryType("condition_data_entry_editor");
   }
 
   @Test
-  @DisplayName("Action entry editor renders for a new action")
+  @DisplayName("Action entry editor renders every selectable action type")
   void actionDataEntryEditorRenders() {
     openNewActionDataEntryEditor();
 
-    client.saveScreenshot("action_data_entry_editor");
+    saveScreenshotOfEveryType("action_data_entry_editor");
   }
 
   @Test
@@ -141,6 +165,18 @@ class EditorScreenClientTest extends ClientTestBase {
     openEditor(configurationButton("save"), "ActionDataEditorContainerScreen");
 
     client.saveScreenshot("action_data_editor");
+  }
+
+  @Test
+  @DisplayName("Projectile settings render from the combat attributes")
+  void projectileAttributeConfigurationRenders() {
+    openMainConfiguration(spawnTestNpc());
+    openSubPage("attributes", "combat", "CombatAttributeConfigurationScreen");
+
+    openEditor(
+        configurationButton("projectile_settings"), "ProjectileAttributeConfigurationScreen");
+
+    client.saveScreenshot("projectile_attribute_configuration");
   }
 
   @Test

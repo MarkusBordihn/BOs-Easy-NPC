@@ -8,6 +8,25 @@ the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 7.18.0
+
+- Fixed creative pick block on an NPC not giving its spawn egg.
+- Fixed "Scoreboard" conditions adding a score of 0 for players without a score.
+- Fixed missing error messages in the URL and player skin screens.
+- Fixed the URL skin screen logging errors on every key press while typing an address.
+- Fixed the Spartan Weaponry golden heavy crossbow not working with "Crossbow Attack".
+- Fixed hints overlapping or leaving the screen in the "Wait", "Move To" and condition editors.
+- Changed preset items to be used up when spawning an NPC in survival to fix #844.
+- Added per-player visibility conditions, e.g. by score, in the "Display" tab to fix #785.
+- Added custom projectiles with damage, trail and impact for bows, crossbows and guns to fix #855.
+- Added the "Projectile Attack" objective to shoot projectiles without a weapon, like a wizard.
+- Added projectile types: bullet, arrows, trident, snowball, egg, fireballs, wither skull and items.
+- Added knockback, multiple shots and hit effects like poison or slowness to custom projectiles.
+- Added the `/easy_npc projectile` command and an API to set projectiles for NPCs.
+- Added `/easy_npc objective <npc> set attack type <type>` to switch the attack type, e.g. `bow`.
+- Added the leather and copper heavy crossbows from Spartan Weaponry to "Crossbow Attack".
+- Added a "Ranged Attack" sound and explosion limits for projectiles in `npc_base.cfg`.
+
 ### 7.17.1
 
 - Refactored the build to no longer ship tests, which makes the mod files up to 20 % smaller.

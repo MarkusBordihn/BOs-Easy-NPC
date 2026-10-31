@@ -72,4 +72,16 @@ public class ObjectiveCommandTest {
     ObjectiveCommandTestHelper.assertAttackCommandAddsAndRemovesObjective(helper, humanoid());
     helper.succeed();
   }
+
+  @GameTest(structure = "easy_npc:gametest.3x3x3")
+  public void testAttackTypeCommandSwitchesAttackType(GameTestHelper helper) {
+    ObjectiveCommandTestHelper.assertAttackTypeCommandSwitchesAttackType(helper, humanoid());
+    helper.succeed();
+  }
+
+  @GameTest(structure = "easy_npc:gametest.3x3x3")
+  public void testAttackTypeCommandRejectsUnknownType(GameTestHelper helper) {
+    ObjectiveCommandTestHelper.assertAttackTypeCommandRejectsUnknownType(helper, humanoid());
+    helper.succeed();
+  }
 }

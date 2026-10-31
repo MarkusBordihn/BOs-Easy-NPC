@@ -59,8 +59,7 @@ abstract class ClientTestBase {
         .withSuiteName(SUITE_NAME)
         .withWindowSize(1280, 720)
         .withGuiScale(2)
-        .withAllowedCommands(
-            "summon", "kill", "give", "clear", "scoreboard", "tag", "gamemode", "easy_npc")
+        .withAllowedCommands("summon", "kill", "tag", "easy_npc")
         .withWorld()
         .withLayoutChecksOnScreenshot();
   }
