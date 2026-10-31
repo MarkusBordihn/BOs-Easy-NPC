@@ -56,4 +56,31 @@ public final class VisibilityAttributeTest {
     VisibilityAttributeTestHelper.assertMainVisibilityIsRespected(helper, humanoid());
     helper.succeed();
   }
+
+  public static void testVisibilityConditionsAreEvaluatedPerPlayer(GameTestHelper helper) {
+    VisibilityAttributeTestHelper.assertVisibilityConditionsAreEvaluatedPerPlayer(
+        helper, humanoid());
+    helper.succeed();
+  }
+
+  public static void testEmptyVisibilityConditionsKeepNPCVisible(GameTestHelper helper) {
+    VisibilityAttributeTestHelper.assertEmptyVisibilityConditionsKeepNPCVisible(helper, humanoid());
+    helper.succeed();
+  }
+
+  public static void testUnsupportedVisibilityConditionsAreIgnored(GameTestHelper helper) {
+    VisibilityAttributeTestHelper.assertUnsupportedVisibilityConditionsAreIgnored(
+        helper, humanoid());
+    helper.succeed();
+  }
+
+  public static void testVisibilityConditionsSurviveSaveAndLoad(GameTestHelper helper) {
+    VisibilityAttributeTestHelper.assertVisibilityConditionsSurviveSaveAndLoad(helper, humanoid());
+    helper.succeed();
+  }
+
+  public static void testStopSeenByPlayerDropsCachedVisibility(GameTestHelper helper) {
+    VisibilityAttributeTestHelper.assertStopSeenByPlayerDropsCachedVisibility(helper, humanoid());
+    helper.succeed();
+  }
 }

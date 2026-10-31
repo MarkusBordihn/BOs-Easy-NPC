@@ -19,20 +19,32 @@
 
 package de.markusbordihn.easynpc.gametest;
 
+import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.item.ModSpawnEggItem;
+import java.util.ArrayList;
+import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.GameType;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 
 public final class ModSpawnEggItemTestHelper {
+
+  private static final BlockPos SPAWN_POSITION = new BlockPos(1, 2, 1);
 
   // Large NPCs like the Ghast are pushed away from the clicked block to fit their hitbox, so the
   // spawned entity is only checked within this radius instead of on the exact block.
@@ -40,32 +52,76 @@ public final class ModSpawnEggItemTestHelper {
 
   private ModSpawnEggItemTestHelper() {}
 
-  public static void useSpawnEggItem(
-      GameTestHelper helper, Item item, EntityType<? extends PathfinderMob> entityType) {
-    if (item instanceof ModSpawnEggItem modSpawnEggItem) {
-      useSpawnEggItem(helper, modSpawnEggItem, entityType);
-      return;
-    }
+  public static void useAllSpawnEggItems(GameTestHelper helper) {
+    List<String> errors = new ArrayList<>();
+    for (SpawnEggItem spawnEggItem : getAllSpawnEggItems(helper)) {
+      Identifier itemId = BuiltInRegistries.ITEM.getKey(spawnEggItem);
+      EntityType<?> expectedEntityType = getExpectedEntityType(itemId);
+      if (expectedEntityType == null) {
+        errors.add(itemId + " has no matching entity type");
+        continue;
+      }
 
-    helper.fail("Item " + item + " is not a ModSpawnEggItem!");
+      EntityType<?> entityType = SpawnEggItem.getType(new ItemStack(spawnEggItem));
+      if (entityType != expectedEntityType) {
+        errors.add(itemId + " has entity type " + entityType);
+      }
+      if (SpawnEggItem.byId(expectedEntityType).map(Holder::value).orElse(null) != spawnEggItem) {
+        errors.add(itemId + " is not found by SpawnEggItem.byId");
+      }
+      if (!spawnsEntity(helper, spawnEggItem, expectedEntityType)) {
+        errors.add(itemId + " does not spawn " + EntityType.getKey(expectedEntityType));
+      }
+    }
+    if (!errors.isEmpty()) {
+      helper.fail(errors.size() + " spawn egg checks failed: " + String.join(", ", errors));
+    }
   }
 
-  public static void useSpawnEggItem(
-      GameTestHelper helper,
-      ModSpawnEggItem modSpawnEggItem,
-      EntityType<? extends PathfinderMob> entityType) {
+  private static boolean spawnsEntity(
+      GameTestHelper helper, SpawnEggItem spawnEggItem, EntityType<?> entityType) {
     Player player = helper.makeMockPlayer(GameType.SURVIVAL);
-    UseOnContext useOnContext =
+    player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(spawnEggItem));
+    spawnEggItem.useOn(
         new UseOnContext(
             player,
-            player.getUsedItemHand(),
+            InteractionHand.MAIN_HAND,
             new BlockHitResult(
                 helper.absoluteVec(new Vec3(1, 2, 1)),
                 Direction.UP,
-                helper.absolutePos(new BlockPos(1, 2, 1)),
-                false));
-    modSpawnEggItem.useOn(useOnContext);
+                helper.absolutePos(SPAWN_POSITION),
+                false)));
+    AABB searchArea = new AABB(helper.absolutePos(SPAWN_POSITION)).inflate(SPAWN_SEARCH_RADIUS);
+    return !helper.getLevel().getEntities(entityType, searchArea, Entity::isAlive).isEmpty();
+  }
 
-    helper.assertEntityPresent(entityType, new BlockPos(1, 2, 1), SPAWN_SEARCH_RADIUS);
+  private static List<SpawnEggItem> getAllSpawnEggItems(GameTestHelper helper) {
+    List<SpawnEggItem> spawnEggItems = new ArrayList<>();
+    for (Item item : BuiltInRegistries.ITEM) {
+      Identifier itemId = BuiltInRegistries.ITEM.getKey(item);
+      if (!Constants.MOD_ID.equals(itemId.getNamespace())
+          || !itemId.getPath().endsWith(ModSpawnEggItem.SUFFIX)) {
+        continue;
+      }
+
+      if (item instanceof SpawnEggItem spawnEggItem) {
+        spawnEggItems.add(spawnEggItem);
+      } else {
+        helper.fail(itemId + " is not a SpawnEggItem!");
+      }
+    }
+    if (spawnEggItems.isEmpty()) {
+      helper.fail("No spawn egg items registered for " + Constants.MOD_ID + "!");
+    }
+    return spawnEggItems;
+  }
+
+  private static EntityType<?> getExpectedEntityType(Identifier spawnEggItemId) {
+    String itemPath = spawnEggItemId.getPath();
+    return BuiltInRegistries.ENTITY_TYPE
+        .getOptional(
+            spawnEggItemId.withPath(
+                itemPath.substring(0, itemPath.length() - ModSpawnEggItem.SUFFIX.length())))
+        .orElse(null);
   }
 }

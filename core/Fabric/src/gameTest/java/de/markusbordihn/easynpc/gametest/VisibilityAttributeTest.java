@@ -67,4 +67,36 @@ public class VisibilityAttributeTest {
     VisibilityAttributeTestHelper.assertMainVisibilityIsRespected(helper, humanoid());
     helper.succeed();
   }
+
+  @GameTest(structure = "easy_npc:gametest.3x3x3")
+  public void testVisibilityConditionsAreEvaluatedPerPlayer(GameTestHelper helper) {
+    VisibilityAttributeTestHelper.assertVisibilityConditionsAreEvaluatedPerPlayer(
+        helper, humanoid());
+    helper.succeed();
+  }
+
+  @GameTest(structure = "easy_npc:gametest.3x3x3")
+  public void testEmptyVisibilityConditionsKeepNPCVisible(GameTestHelper helper) {
+    VisibilityAttributeTestHelper.assertEmptyVisibilityConditionsKeepNPCVisible(helper, humanoid());
+    helper.succeed();
+  }
+
+  @GameTest(structure = "easy_npc:gametest.3x3x3")
+  public void testUnsupportedVisibilityConditionsAreIgnored(GameTestHelper helper) {
+    VisibilityAttributeTestHelper.assertUnsupportedVisibilityConditionsAreIgnored(
+        helper, humanoid());
+    helper.succeed();
+  }
+
+  @GameTest(structure = "easy_npc:gametest.3x3x3")
+  public void testVisibilityConditionsSurviveSaveAndLoad(GameTestHelper helper) {
+    VisibilityAttributeTestHelper.assertVisibilityConditionsSurviveSaveAndLoad(helper, humanoid());
+    helper.succeed();
+  }
+
+  @GameTest(structure = "easy_npc:gametest.3x3x3")
+  public void testStopSeenByPlayerDropsCachedVisibility(GameTestHelper helper) {
+    VisibilityAttributeTestHelper.assertStopSeenByPlayerDropsCachedVisibility(helper, humanoid());
+    helper.succeed();
+  }
 }

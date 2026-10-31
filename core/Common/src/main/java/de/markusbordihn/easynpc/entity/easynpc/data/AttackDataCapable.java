@@ -19,9 +19,15 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.data;
 
+import de.markusbordihn.easynpc.data.attack.ProjectileData;
+import de.markusbordihn.easynpc.data.server.ServerDataAccessor;
+import de.markusbordihn.easynpc.data.server.ServerDataIndex;
+import de.markusbordihn.easynpc.data.server.ServerEntityData;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.AttackHandler;
+import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -34,7 +40,39 @@ import net.minecraft.world.level.storage.ValueOutput;
 public interface AttackDataCapable<E extends Mob>
     extends EasyNPC<E>, NeutralMob, RangedAttackMob, CrossbowAttackMob {
 
+  ServerDataAccessor<ProjectileData> CUSTOM_DATA_PROJECTILE_DATA =
+      ServerEntityData.defineId(
+          ServerDataIndex.PROJECTILE_DATA, EntityDataSerializersManager.PROJECTILE_DATA);
+
+  String DATA_PROJECTILE_DATA_TAG = "ProjectileData";
+
   int getAttackAnimationTick();
+
+  default ProjectileData getProjectileData() {
+    ServerDataCapable<E> serverData = this.getEasyNPCServerData();
+    if (this.isClientSideInstance() || serverData == null || !serverData.hasServerEntityData()) {
+      return ProjectileData.DEFAULT;
+    }
+
+    ProjectileData projectileData = serverData.getServerEntityData(CUSTOM_DATA_PROJECTILE_DATA);
+    return projectileData != null ? projectileData : ProjectileData.DEFAULT;
+  }
+
+  default void setProjectileData(ProjectileData projectileData) {
+    ProjectileData updatedProjectileData =
+        projectileData != null ? projectileData : ProjectileData.DEFAULT;
+    if (updatedProjectileData.equals(this.getProjectileData())) {
+      return;
+    }
+
+    this.getEasyNPCServerData()
+        .setServerEntityData(CUSTOM_DATA_PROJECTILE_DATA, updatedProjectileData);
+  }
+
+  default void defineCustomAttackData() {
+    this.getEasyNPCServerData()
+        .defineServerEntityData(CUSTOM_DATA_PROJECTILE_DATA, ProjectileData.DEFAULT);
+  }
 
   default boolean isChargingCrossbow() {
     return this.getSynchedEntityData(SynchedDataIndex.ATTACK_IS_CHARGING_CROSSBOW);
@@ -54,7 +92,17 @@ public interface AttackDataCapable<E extends Mob>
     this.defineSynchedEntityData(builder, SynchedDataIndex.ATTACK_IS_CHARGING_CROSSBOW, false);
   }
 
-  default void addAdditionalAttackData(ValueOutput valueOutput) {}
+  default void addAdditionalAttackData(ValueOutput valueOutput) {
+    ProjectileData projectileData = this.getProjectileData();
+    if (!projectileData.equals(ProjectileData.DEFAULT)) {
+      valueOutput.store(DATA_PROJECTILE_DATA_TAG, CompoundTag.CODEC, projectileData.createTag());
+    }
+  }
 
-  default void readAdditionalAttackData(ValueInput valueInput) {}
+  default void readAdditionalAttackData(ValueInput valueInput) {
+    valueInput
+        .read(DATA_PROJECTILE_DATA_TAG, CompoundTag.CODEC)
+        .ifPresent(
+            projectileDataTag -> this.setProjectileData(ProjectileData.fromTag(projectileDataTag)));
+  }
 }

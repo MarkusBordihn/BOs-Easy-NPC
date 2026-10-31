@@ -144,13 +144,13 @@ public class MoveActionEntry extends ActionEntryWidget {
 
     this.screen.addActionEntryWidget(
         new HelpIcon(
-            this.helpIconLeft(editorLeft, "action.move.speed"),
+            this.afterLabelLeft(editorLeft, "action.move.speed"),
             centeredTop(editorTop + VALUE_LABEL_TOP, HELP_ICON_HEIGHT),
             "action.move.speed.tooltip"));
 
     this.screen.addActionEntryWidget(
         new HelpIcon(
-            this.helpIconLeft(editorLeft + SECOND_COLUMN_LEFT, "action.move.radius"),
+            this.afterLabelLeft(editorLeft + SECOND_COLUMN_LEFT, "action.move.radius"),
             centeredTop(editorTop + VALUE_LABEL_TOP, HELP_ICON_HEIGHT),
             "action.move.radius.tooltip"));
 
@@ -185,7 +185,7 @@ public class MoveActionEntry extends ActionEntryWidget {
     return textField;
   }
 
-  private int helpIconLeft(int labelLeft, String labelTranslationKey) {
+  private int afterLabelLeft(int labelLeft, String labelTranslationKey) {
     return labelLeft
         + LABEL_LEFT
         + this.font.width(TextComponent.getTranslatedConfigText(labelTranslationKey))
@@ -250,7 +250,7 @@ public class MoveActionEntry extends ActionEntryWidget {
           guiGraphics,
           this.font,
           "action.move.missing_position",
-          editorLeft + SECOND_COLUMN_LEFT,
+          this.afterLabelLeft(editorLeft, "action.move.position"),
           editorTop + POSITION_LABEL_TOP,
           Constants.FONT_COLOR_RED);
     }

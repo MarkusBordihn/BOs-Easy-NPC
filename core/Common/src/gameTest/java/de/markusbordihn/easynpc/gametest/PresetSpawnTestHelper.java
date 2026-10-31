@@ -34,19 +34,26 @@ import de.markusbordihn.easynpc.entity.easynpc.data.SoundDataCapable;
 import de.markusbordihn.easynpc.handler.PresetHandler;
 import java.util.List;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 
 public class PresetSpawnTestHelper {
 
   private static final Vec3 SOURCE_NPC_POSITION = new Vec3(1, 2, 1);
   private static final BlockPos SPAWN_POSITION = new BlockPos(2, 2, 2);
+  private static final Vec3 PLAYER_POSITION = new Vec3(0, 2, 0);
   private static final String NPC_NAME = "Spawned From Preset";
   private static final String DIALOG_NAME = "Spawn Dialog";
   private static final String DIALOG_TEXT = "The spawned NPC kept its dialog.";
@@ -69,6 +76,38 @@ public class PresetSpawnTestHelper {
         helper, "A preset item must return a usable preset", presetData.hasValidData());
 
     assertSpawnKeepsConfigurationAndDefaults(helper, entityType, presetData, "preset item");
+  }
+
+  public static void assertPresetItemIsConsumedOnSpawn(
+      GameTestHelper helper, EntityType<?> entityType) {
+    ItemStack presetItemStack =
+        PresetDataUtils.toItemStack(createCompactPreset(helper, entityType));
+    presetItemStack.setCount(2);
+    ServerPlayer serverPlayer =
+        GameTestHelpers.mockSurvivalServerPlayer(helper, PLAYER_POSITION, "preset-item-user");
+    serverPlayer.setItemInHand(InteractionHand.MAIN_HAND, presetItemStack);
+    BlockPos clickedPosition = helper.absolutePos(SPAWN_POSITION.below());
+
+    InteractionResult interactionResult =
+        presetItemStack
+            .getItem()
+            .useOn(
+                new UseOnContext(
+                    serverPlayer,
+                    InteractionHand.MAIN_HAND,
+                    new BlockHitResult(
+                        Vec3.atCenterOf(clickedPosition), Direction.UP, clickedPosition, false)));
+
+    GameTestHelpers.assertEquals(
+        helper,
+        "Using a preset item must consume it",
+        InteractionResult.CONSUME,
+        interactionResult);
+    GameTestHelpers.assertEquals(
+        helper, "Using a preset item must remove one item", 1, presetItemStack.getCount());
+    Mob spawnedEntity = findSpawnedNPC(helper, entityType, helper.absolutePos(SPAWN_POSITION));
+    GameTestHelpers.assertNotNull(helper, "Using a preset item must spawn its NPC", spawnedEntity);
+    spawnedEntity.discard();
   }
 
   public static void assertSpawnerSpawnsConfiguredNPC(

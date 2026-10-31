@@ -41,7 +41,7 @@ public class RemoteImageValidator {
 
   public static boolean isValidImage(URL remoteUrl) {
     if (remoteUrl.toString().endsWith(".webp")) {
-      log.error("WebP images are not supported, please use PNG images!");
+      log.warn("WebP images are not supported, please use PNG images!");
       return false;
     }
 
@@ -54,13 +54,13 @@ public class RemoteImageValidator {
         image = ImageIO.read(inputStream);
       }
     } catch (IIOException iioException) {
-      log.error("Unable to download image from URL {}: {}", remoteUrl, iioException.getMessage());
+      log.warn("Unable to download image from URL {}: {}", remoteUrl, iioException.getMessage());
       return false;
     } catch (FileNotFoundException fileNotFoundException) {
-      log.error("Image not found at URL {}: {}", remoteUrl, fileNotFoundException.getMessage());
+      log.warn("Image not found at URL {}: {}", remoteUrl, fileNotFoundException.getMessage());
       return false;
     } catch (IllegalArgumentException | IOException exception) {
-      log.error("Unable to get any valid image from URL {}: {}", remoteUrl, exception.getMessage());
+      log.warn("Unable to get any valid image from URL {}: {}", remoteUrl, exception.getMessage());
       return false;
     } catch (Exception exception) {
       log.error(
@@ -69,7 +69,7 @@ public class RemoteImageValidator {
     }
 
     if (image == null) {
-      log.error("Unable to get any valid image from URL {}!", remoteUrl);
+      log.warn("Unable to get any valid image from URL {}!", remoteUrl);
       return false;
     }
 
@@ -85,7 +85,7 @@ public class RemoteImageValidator {
         || image.getHeight() < 32
         || image.getWidth() % 32 != 0
         || image.getHeight() % 32 != 0) {
-      log.error(
+      log.warn(
           "Invalid image size {}x{}, must be at least 32x32 and multiple of 32!",
           image.getWidth(),
           image.getHeight());

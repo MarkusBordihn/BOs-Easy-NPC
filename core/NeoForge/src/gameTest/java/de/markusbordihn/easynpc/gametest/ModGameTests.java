@@ -168,160 +168,7 @@ public final class ModGameTests {
         IllagerCrossedArmsTest::testVindicatorCrossedArmsVariantDrivesArmPose,
         DEFAULT_STRUCTURE);
 
-    register(
-        "allay_n_p_c_spawn_egg_item",
-        ModSpawnEggItemTest::useAllayNPCSpawnEggItem,
-        DEFAULT_STRUCTURE);
-    register(
-        "bogged_n_p_c_spawn_egg_item",
-        ModSpawnEggItemTest::useBoggedNPCSpawnEggItem,
-        DEFAULT_STRUCTURE);
-    register(
-        "cat_n_p_c_spawn_egg_item", ModSpawnEggItemTest::useCatNPCSpawnEggItem, DEFAULT_STRUCTURE);
-    register(
-        "chicken_n_p_c_spawn_egg_item",
-        ModSpawnEggItemTest::useChickenNPCSpawnEggItem,
-        DEFAULT_STRUCTURE);
-    register(
-        "creeper_n_p_c_spawn_egg_item",
-        ModSpawnEggItemTest::useCreeperNPCSpawnEggItem,
-        DEFAULT_STRUCTURE);
-    register(
-        "drowned_n_p_c_spawn_egg_item",
-        ModSpawnEggItemTest::useDrownedNPCSpawnEggItem,
-        DEFAULT_STRUCTURE);
-    register(
-        "enderman_n_p_c_spawn_egg_item",
-        ModSpawnEggItemTest::useEndermanNPCSpawnEggItem,
-        DEFAULT_STRUCTURE);
-    register(
-        "evoker_n_p_c_spawn_egg_item",
-        ModSpawnEggItemTest::useEvokerNPCSpawnEggItem,
-        DEFAULT_STRUCTURE);
-    register(
-        "fox_n_p_c_spawn_egg_item", ModSpawnEggItemTest::useFoxNPCSpawnEggItem, DEFAULT_STRUCTURE);
-    register(
-        "ghast_n_p_c_spawn_egg_item",
-        ModSpawnEggItemTest::useGhastNPCSpawnEggItem,
-        DEFAULT_STRUCTURE);
-    register(
-        "horse_n_p_c_spawn_egg_item",
-        ModSpawnEggItemTest::useHorseNPCSpawnEggItem,
-        DEFAULT_STRUCTURE);
-    register(
-        "horse_skeleton_n_p_c_spawn_egg_item",
-        ModSpawnEggItemTest::useHorseSkeletonNPCSpawnEggItem,
-        DEFAULT_STRUCTURE);
-    register(
-        "horse_zombie_n_p_c_spawn_egg_item",
-        ModSpawnEggItemTest::useHorseZombieNPCSpawnEggItem,
-        DEFAULT_STRUCTURE);
-    register(
-        "humanoid_n_p_c_spawn_egg_item",
-        ModSpawnEggItemTest::useHumanoidNPCSpawnEggItem,
-        DEFAULT_STRUCTURE);
-    register(
-        "humanoid_slim_n_p_c_spawn_egg_item",
-        ModSpawnEggItemTest::useHumanoidSlimNPCSpawnEggItem,
-        DEFAULT_STRUCTURE);
-    register(
-        "illusioner_n_p_c_spawn_egg_item",
-        ModSpawnEggItemTest::useIllusionerNPCSpawnEggItem,
-        DEFAULT_STRUCTURE);
-    register(
-        "iron_golem_n_p_c_spawn_egg_item",
-        ModSpawnEggItemTest::useIronGolemNPCSpawnEggItem,
-        DEFAULT_STRUCTURE);
-    register(
-        "piglin_n_p_c_spawn_egg_item",
-        ModSpawnEggItemTest::usePiglinNPCSpawnEggItem,
-        DEFAULT_STRUCTURE);
-    register(
-        "piglin_brute_n_p_c_spawn_egg_item",
-        ModSpawnEggItemTest::usePiglinBruteNPCSpawnEggItem,
-        DEFAULT_STRUCTURE);
-    register(
-        "piglin_zombified_n_p_c_spawn_egg_item",
-        ModSpawnEggItemTest::usePiglinZombifiedNPCSpawnEggItem,
-        DEFAULT_STRUCTURE);
-    register(
-        "pig_n_p_c_spawn_egg_item", ModSpawnEggItemTest::usePigNPCSpawnEggItem, DEFAULT_STRUCTURE);
-    register(
-        "pillager_n_p_c_spawn_egg_item",
-        ModSpawnEggItemTest::usePillagerNPCSpawnEggItem,
-        DEFAULT_STRUCTURE);
-    register(
-        "skeleton_n_p_c_spawn_egg_item",
-        ModSpawnEggItemTest::useSkeletonNPCSpawnEggItem,
-        DEFAULT_STRUCTURE);
-    register(
-        "stray_n_p_c_spawn_egg_item",
-        ModSpawnEggItemTest::useStrayNPCSpawnEggItem,
-        DEFAULT_STRUCTURE);
-    register(
-        "wither_skeleton_n_p_c_spawn_egg_item",
-        ModSpawnEggItemTest::useWitherSkeletonNPCSpawnEggItem,
-        DEFAULT_STRUCTURE);
-    register(
-        "slime_n_p_c_spawn_egg_item",
-        ModSpawnEggItemTest::useSlimeNPCSpawnEggItem,
-        DEFAULT_STRUCTURE);
-    register(
-        "spider_n_p_c_spawn_egg_item",
-        ModSpawnEggItemTest::useSpiderNPCSpawnEggItem,
-        DEFAULT_STRUCTURE);
-    register(
-        "cave_spider_n_p_c_spawn_egg_item",
-        ModSpawnEggItemTest::useCaveSpiderNPCSpawnEggItem,
-        DEFAULT_STRUCTURE);
-    register(
-        "villager_n_p_c_spawn_egg_item",
-        ModSpawnEggItemTest::useVillagerNPCSpawnEggItem,
-        DEFAULT_STRUCTURE);
-    register(
-        "wandering_trader_n_p_c_spawn_egg_item",
-        ModSpawnEggItemTest::useWanderingTraderNPCSpawnEggItem,
-        DEFAULT_STRUCTURE);
-    register(
-        "vex_n_p_c_spawn_egg_item", ModSpawnEggItemTest::useVexNPCSpawnEggItem, DEFAULT_STRUCTURE);
-    register(
-        "vindicator_n_p_c_spawn_egg_item",
-        ModSpawnEggItemTest::useVindicatorNPCSpawnEggItem,
-        DEFAULT_STRUCTURE);
-    register(
-        "witch_n_p_c_spawn_egg_item",
-        ModSpawnEggItemTest::useWitchNPCSpawnEggItem,
-        DEFAULT_STRUCTURE);
-    register(
-        "wolf_n_p_c_spawn_egg_item",
-        ModSpawnEggItemTest::useWolfNPCSpawnEggItem,
-        DEFAULT_STRUCTURE);
-    register(
-        "zombie_n_p_c_spawn_egg_item",
-        ModSpawnEggItemTest::useZombieNPCSpawnEggItem,
-        DEFAULT_STRUCTURE);
-    register(
-        "zombie_husk_n_p_c_spawn_egg_item",
-        ModSpawnEggItemTest::useZombieHuskNPCSpawnEggItem,
-        DEFAULT_STRUCTURE);
-    register(
-        "zombie_villager_n_p_c_spawn_egg_item",
-        ModSpawnEggItemTest::useZombieVillagerNPCSpawnEggItem,
-        DEFAULT_STRUCTURE);
-    register(
-        "doppler_n_p_c_spawn_egg_item",
-        ModSpawnEggItemTest::useDopplerNPCSpawnEggItem,
-        DEFAULT_STRUCTURE);
-    register(
-        "fairy_n_p_c_spawn_egg_item",
-        ModSpawnEggItemTest::useFairyNPCSpawnEggItem,
-        DEFAULT_STRUCTURE);
-    register(
-        "orc_n_p_c_spawn_egg_item", ModSpawnEggItemTest::useOrcNPCSpawnEggItem, DEFAULT_STRUCTURE);
-    register(
-        "orc_warrior_n_p_c_spawn_egg_item",
-        ModSpawnEggItemTest::useOrcWarriorNPCSpawnEggItem,
-        DEFAULT_STRUCTURE);
+    register("all_spawn_egg_items", ModSpawnEggItemTest::useAllSpawnEggItems, DEFAULT_STRUCTURE);
 
     register(
         "server_registry_isolation",
@@ -741,6 +588,26 @@ public final class ModGameTests {
         "main_visibility_is_respected",
         VisibilityAttributeTest::testMainVisibilityIsRespected,
         DEFAULT_STRUCTURE);
+    register(
+        "visibility_conditions_are_evaluated_per_player",
+        VisibilityAttributeTest::testVisibilityConditionsAreEvaluatedPerPlayer,
+        DEFAULT_STRUCTURE);
+    register(
+        "empty_visibility_conditions_keep_n_p_c_visible",
+        VisibilityAttributeTest::testEmptyVisibilityConditionsKeepNPCVisible,
+        DEFAULT_STRUCTURE);
+    register(
+        "unsupported_visibility_conditions_are_ignored",
+        VisibilityAttributeTest::testUnsupportedVisibilityConditionsAreIgnored,
+        DEFAULT_STRUCTURE);
+    register(
+        "visibility_conditions_survive_save_and_load",
+        VisibilityAttributeTest::testVisibilityConditionsSurviveSaveAndLoad,
+        DEFAULT_STRUCTURE);
+    register(
+        "stop_seen_by_player_drops_cached_visibility",
+        VisibilityAttributeTest::testStopSeenByPlayerDropsCachedVisibility,
+        DEFAULT_STRUCTURE);
 
     register(
         "base_preset_exists_for_every_spawn_egg",
@@ -870,6 +737,10 @@ public final class ModGameTests {
     register(
         "preset_handler_creates_preset_item",
         PresetSpawnTest::testPresetHandlerCreatesPresetItem,
+        DEFAULT_STRUCTURE);
+    register(
+        "preset_item_is_consumed_on_spawn",
+        PresetSpawnTest::testPresetItemIsConsumedOnSpawn,
         DEFAULT_STRUCTURE);
 
     register(
@@ -1587,6 +1458,16 @@ public final class ModGameTests {
         DEFAULT_STRUCTURE);
 
     register(
+        "attack_type_command_switches_attack_type",
+        ObjectiveCommandTest::testAttackTypeCommandSwitchesAttackType,
+        DEFAULT_STRUCTURE);
+
+    register(
+        "attack_type_command_rejects_unknown_type",
+        ObjectiveCommandTest::testAttackTypeCommandRejectsUnknownType,
+        DEFAULT_STRUCTURE);
+
+    register(
         "sit_command_puts_n_p_c_on_shoulder",
         ShoulderCommandTest::testSitCommandPutsNPCOnShoulder,
         DEFAULT_STRUCTURE);
@@ -1610,6 +1491,121 @@ public final class ModGameTests {
         "offset_command_travels_over_shoulder",
         ShoulderCommandTest::testOffsetCommandTravelsOverShoulder,
         DEFAULT_STRUCTURE);
+
+    register(
+        "projectile_data_is_saved_and_loaded",
+        ProjectileTest::testProjectileDataIsSavedAndLoaded,
+        DEFAULT_STRUCTURE);
+    register(
+        "default_projectile_data_is_not_saved",
+        ProjectileTest::testDefaultProjectileDataIsNotSaved,
+        DEFAULT_STRUCTURE);
+    register(
+        "custom_projectile_attack_spawns_bullet",
+        ProjectileTest::testCustomProjectileAttackSpawnsBullet,
+        DEFAULT_STRUCTURE);
+
+    register(
+        "ranged_attack_plays_configured_sound",
+        ProjectileTest::testRangedAttackPlaysConfiguredSound,
+        DEFAULT_STRUCTURE);
+
+    register(
+        "ranged_attack_plays_fallback_sound_without_configured_sound",
+        ProjectileTest::testRangedAttackPlaysFallbackSoundWithoutConfiguredSound,
+        DEFAULT_STRUCTURE);
+    register(
+        "bullet_deals_configured_damage",
+        ProjectileTest::testBulletDealsConfiguredDamage,
+        DEFAULT_STRUCTURE);
+    register(
+        "explosion_does_not_destroy_blocks",
+        ProjectileTest::testExplosionDoesNotDestroyBlocks,
+        DEFAULT_STRUCTURE);
+    register(
+        "every_projectile_type_spawns_matching_entity",
+        ProjectileTest::testEveryProjectileTypeSpawnsMatchingEntity,
+        DEFAULT_STRUCTURE);
+    register(
+        "every_projectile_type_deals_configured_damage",
+        ProjectileTest::testEveryProjectileTypeDealsConfiguredDamage,
+        DEFAULT_STRUCTURE);
+    register(
+        "projectile_item_is_resolved",
+        ProjectileTest::testProjectileItemIsResolved,
+        DEFAULT_STRUCTURE);
+    register(
+        "every_projectile_type_is_removed_on_block_hit",
+        ProjectileTest::testEveryProjectileTypeIsRemovedOnBlockHit,
+        DEFAULT_STRUCTURE);
+    register(
+        "every_projectile_type_is_removed_after_maximum_lifetime",
+        ProjectileTest::testEveryProjectileTypeIsRemovedAfterMaximumLifetime,
+        DEFAULT_STRUCTURE);
+    register(
+        "n_p_c_projectiles_cannot_be_picked_up",
+        ProjectileTest::testNPCProjectilesCannotBePickedUp,
+        DEFAULT_STRUCTURE);
+    register(
+        "shot_count_fires_every_projectile",
+        ProjectileTest::testShotCountFiresEveryProjectile,
+        DEFAULT_STRUCTURE);
+    register(
+        "knockback_pushes_target_further",
+        ProjectileTest::testKnockbackPushesTargetFurther,
+        DEFAULT_STRUCTURE);
+    register("hit_effect_is_applied", ProjectileTest::testHitEffectIsApplied, DEFAULT_STRUCTURE);
+    register(
+        "projectile_command_changes_settings",
+        ProjectileTest::testProjectileCommandChangesSettings,
+        DEFAULT_STRUCTURE);
+    register(
+        "projectile_command_rejects_invalid_values",
+        ProjectileTest::testProjectileCommandRejectsInvalidValues,
+        DEFAULT_STRUCTURE);
+    register(
+        "projectile_command_caps_explosion_power",
+        ProjectileTest::testProjectileCommandCapsExplosionPower,
+        DEFAULT_STRUCTURE);
+    register(
+        "bow_attack_shoots_custom_projectile",
+        ProjectileTest::testBowAttackShootsCustomProjectile,
+        DEFAULT_STRUCTURE);
+    register(
+        "bow_attack_keeps_arrow_without_custom_projectile",
+        ProjectileTest::testBowAttackKeepsArrowWithoutCustomProjectile,
+        DEFAULT_STRUCTURE);
+    register(
+        "crossbow_attack_shoots_custom_projectile",
+        ProjectileTest::testCrossbowAttackShootsCustomProjectile,
+        DEFAULT_STRUCTURE);
+    register(
+        "projectile_attack_needs_no_weapon",
+        ProjectileTest::testProjectileAttackNeedsNoWeapon,
+        DEFAULT_STRUCTURE);
+    register(
+        "projectile_attack_objective_creates_goal",
+        ProjectileTest::testProjectileAttackObjectiveCreatesGoal,
+        DEFAULT_STRUCTURE);
+    register(
+        "crossbow_attack_keeps_arrow_without_custom_projectile",
+        ProjectileTest::testCrossbowAttackKeepsArrowWithoutCustomProjectile,
+        DEFAULT_STRUCTURE);
+    register(
+        "projectile_attack_objective_hits_enemy",
+        ProjectileTest::testProjectileAttackObjectiveHitsEnemy,
+        DEFAULT_STRUCTURE,
+        400);
+    register(
+        "bow_attack_objective_hits_enemy_with_custom_projectile",
+        ProjectileTest::testBowAttackObjectiveHitsEnemyWithCustomProjectile,
+        DEFAULT_STRUCTURE,
+        400);
+    register(
+        "crossbow_attack_objective_hits_enemy_with_custom_projectile",
+        ProjectileTest::testCrossbowAttackObjectiveHitsEnemyWithCustomProjectile,
+        DEFAULT_STRUCTURE,
+        400);
   }
 
   public ModGameTests(IEventBus modEventBus) {

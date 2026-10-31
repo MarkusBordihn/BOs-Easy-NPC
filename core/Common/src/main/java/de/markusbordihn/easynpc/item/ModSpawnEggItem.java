@@ -29,7 +29,9 @@ import java.util.function.Supplier;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.locale.Language;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
@@ -43,6 +45,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
+import net.minecraft.world.item.component.TypedEntityData;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -62,7 +65,11 @@ public class ModSpawnEggItem extends SpawnEggItem {
 
   public ModSpawnEggItem(
       Supplier<? extends EntityType<? extends Mob>> entityType, Properties properties) {
-    super(properties);
+    // Not Properties.spawnEgg(): on Forge and NeoForge entity types register after items.
+    super(
+        properties.delayedComponent(
+            DataComponents.ENTITY_DATA,
+            registries -> TypedEntityData.of(entityType.get(), new CompoundTag())));
     this.typeSupplier = entityType;
   }
 
