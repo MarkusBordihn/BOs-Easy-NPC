@@ -26,6 +26,8 @@
   "entity.easy_npc.iron_golem": "Eisengolem",
   "entity.easy_npc.orc": "Ork",
   "entity.easy_npc.orc_warrior": "Ork Krieger",
+  "entity.easy_npc.npc_bullet": "NPC-Kugel",
+  "entity.easy_npc.npc_item_projectile": "NPC-Wurfgeschoss",
   "entity.easy_npc.pig": "Schwein",
   "entity.easy_npc.piglin": "Piglin",
   "entity.easy_npc.piglin_brute": "Piglin Brute",

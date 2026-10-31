@@ -30,9 +30,11 @@ import de.markusbordihn.easynpc.data.action.ActionDataSet;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
 import de.markusbordihn.easynpc.data.condition.ConditionDataEntry;
 import de.markusbordihn.easynpc.data.condition.ConditionDataSet;
+import de.markusbordihn.easynpc.data.condition.ConditionType;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.data.dialog.DialogButtonEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
+import de.markusbordihn.easynpc.data.visibility.VisibilityConditionSet;
 import java.util.UUID;
 
 public abstract class ConditionEditorContext {
@@ -52,6 +54,11 @@ public abstract class ConditionEditorContext {
     UUID dialogButtonId = screen.getDialogButtonUUID();
     if (dialogButtonId != null && !Constants.EMPTY_UUID.equals(dialogButtonId)) {
       return new DialogButtonContext(screen);
+    }
+
+    if (screen.getAdditionalScreenData().getConfigurationType()
+        == ConfigurationType.DISPLAY_ATTRIBUTE) {
+      return new VisibilityContext(screen);
     }
 
     return new DialogContext(screen);
@@ -75,6 +82,10 @@ public abstract class ConditionEditorContext {
 
   public boolean isActionContext() {
     return false;
+  }
+
+  public boolean isSupportedConditionType(ConditionType conditionType) {
+    return true;
   }
 
   private static final class ActionContext extends ConditionEditorContext {
@@ -376,6 +387,64 @@ public abstract class ConditionEditorContext {
     public ResetExecutionLimitMessage createResetExecutionLimitMessage(boolean allPlayers) {
       return ResetExecutionLimitMessage.forDialog(
           this.screen.getEasyNPCUUID(), this.screen.getDialogUUID(), allPlayers);
+    }
+  }
+
+  private static final class VisibilityContext extends ConditionEditorContext {
+
+    private VisibilityContext(EditorScreen<?> screen) {
+      super(screen);
+    }
+
+    @Override
+    public ConditionDataSet loadConditionDataSet() {
+      return this.screen.getAdditionalScreenData().getVisibilityConditionSet().toConditionDataSet();
+    }
+
+    @Override
+    public void saveConditionDataSet(ConditionDataSet conditionDataSet) {
+      NetworkMessageHandlerManager.getServerHandler()
+          .saveVisibilityConditions(
+              this.screen.getEasyNPCUUID(),
+              VisibilityConditionSet.fromConditionDataSet(conditionDataSet));
+    }
+
+    @Override
+    public void openParentEditor() {
+      NetworkMessageHandlerManager.getServerHandler()
+          .openConfiguration(this.screen.getEasyNPCUUID(), ConfigurationType.DISPLAY_ATTRIBUTE);
+    }
+
+    @Override
+    public void openConditionListEditor() {
+      NetworkMessageHandlerManager.getServerHandler()
+          .openVisibilityConditionEditor(this.screen.getEasyNPCUUID());
+    }
+
+    @Override
+    public void openConditionEntryEditor(ConditionDataEntry conditionDataEntry) {
+      NetworkMessageHandlerManager.getServerHandler()
+          .openVisibilityConditionEntryEditor(this.screen.getEasyNPCUUID(), conditionDataEntry);
+    }
+
+    @Override
+    public String breadcrumbLabel() {
+      return "Display";
+    }
+
+    @Override
+    public String helpTextKey() {
+      return "condition.help_text.visibility";
+    }
+
+    @Override
+    public ResetExecutionLimitMessage createResetExecutionLimitMessage(boolean allPlayers) {
+      return null;
+    }
+
+    @Override
+    public boolean isSupportedConditionType(ConditionType conditionType) {
+      return !VisibilityConditionSet.UNSUPPORTED_CONDITION_TYPES.contains(conditionType);
     }
   }
 }

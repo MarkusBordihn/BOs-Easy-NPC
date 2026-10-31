@@ -29,6 +29,7 @@ import de.markusbordihn.easynpc.client.texture.TextureRegistrationQueue;
 import de.markusbordihn.easynpc.data.action.SpeechBubbleManager;
 import de.markusbordihn.easynpc.data.dialog.DialogDataManager;
 import de.markusbordihn.easynpc.data.highlight.NPCHighlightManager;
+import de.markusbordihn.easynpc.data.visibility.NPCVisibilityConditionManager;
 import de.markusbordihn.easynpc.io.DataFileHandler;
 import net.minecraft.client.Minecraft;
 
@@ -46,6 +47,7 @@ public class ClientEvents {
     SpeechBubbleManager.clear();
     SpeechBubbleFrameRenderer.clear();
     NPCHighlightManager.clear();
+    NPCVisibilityConditionManager.clear();
     ShoulderNPCCache.clear();
     clearTextureCaches();
   }

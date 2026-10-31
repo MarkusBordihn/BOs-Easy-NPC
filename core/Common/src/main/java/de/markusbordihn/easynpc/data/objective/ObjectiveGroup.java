@@ -30,7 +30,8 @@ public class ObjectiveGroup {
           ObjectiveType.ZOMBIE_ATTACK,
           ObjectiveType.CROSSBOW_ATTACK,
           ObjectiveType.BOW_ATTACK,
-          ObjectiveType.GUN_ATTACK);
+          ObjectiveType.GUN_ATTACK,
+          ObjectiveType.PROJECTILE_ATTACK);
 
   public static final Set<ObjectiveType> FOLLOW =
       EnumSet.of(

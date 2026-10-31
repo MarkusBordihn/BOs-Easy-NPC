@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.configui.network.message;
 
+import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.configui.network.NetworkHandlerManager;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeCombatAttributeMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeDisplayAttributeMessage;
@@ -28,6 +29,10 @@ import de.markusbordihn.easynpc.configui.network.message.server.ChangeEnvironmen
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeInteractionAttributeMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeInventoryAttributeMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeMovementAttributeMessage;
+import de.markusbordihn.easynpc.configui.network.message.server.ChangeProjectileDataMessage;
+import de.markusbordihn.easynpc.configui.network.message.server.OpenVisibilityConditionEditorMessage;
+import de.markusbordihn.easynpc.configui.network.message.server.SaveVisibilityConditionsMessage;
+import de.markusbordihn.easynpc.data.attack.ProjectileData;
 import de.markusbordihn.easynpc.data.attribute.CombatAttributeType;
 import de.markusbordihn.easynpc.data.attribute.EntityAttribute;
 import de.markusbordihn.easynpc.data.attribute.EnvironmentalAttributeType;
@@ -35,7 +40,9 @@ import de.markusbordihn.easynpc.data.attribute.InteractionAttributeType;
 import de.markusbordihn.easynpc.data.attribute.InventoryAttributeType;
 import de.markusbordihn.easynpc.data.attribute.MovementAttributeType;
 import de.markusbordihn.easynpc.data.attribute.NavigationType;
+import de.markusbordihn.easynpc.data.condition.ConditionDataEntry;
 import de.markusbordihn.easynpc.data.display.DisplayAttributeType;
+import de.markusbordihn.easynpc.data.visibility.VisibilityConditionSet;
 import java.util.UUID;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -67,6 +74,29 @@ public interface ServerAttributeNetworkMessageHandlerInterface {
     }
   }
 
+  default void openVisibilityConditionEditor(UUID uuid) {
+    if (uuid != null) {
+      NetworkHandlerManager.sendMessageToServer(
+          new OpenVisibilityConditionEditorMessage(uuid, Constants.EMPTY_UUID));
+    }
+  }
+
+  default void openVisibilityConditionEntryEditor(
+      UUID uuid, ConditionDataEntry conditionDataEntry) {
+    if (uuid != null && conditionDataEntry != null) {
+      NetworkHandlerManager.sendMessageToServer(
+          new OpenVisibilityConditionEditorMessage(uuid, conditionDataEntry.getId()));
+    }
+  }
+
+  default void saveVisibilityConditions(
+      UUID uuid, VisibilityConditionSet visibilityConditionSet) {
+    if (uuid != null && visibilityConditionSet != null) {
+      NetworkHandlerManager.sendMessageToServer(
+          new SaveVisibilityConditionsMessage(uuid, visibilityConditionSet));
+    }
+  }
+
   default void entityAttributeChange(
       UUID uuid, EntityAttribute entityAttribute, Boolean booleanValue) {
     if (uuid != null && entityAttribute != null && booleanValue != null) {
@@ -88,6 +118,13 @@ public interface ServerAttributeNetworkMessageHandlerInterface {
     if (uuid != null && attributeType != null && doubleValue != null) {
       NetworkHandlerManager.sendMessageToServer(
           new ChangeCombatAttributeMessage(uuid, attributeType, doubleValue));
+    }
+  }
+
+  default void projectileDataChange(UUID uuid, ProjectileData projectileData) {
+    if (uuid != null && projectileData != null) {
+      NetworkHandlerManager.sendMessageToServer(
+          new ChangeProjectileDataMessage(uuid, projectileData));
     }
   }
 

@@ -41,6 +41,7 @@ import de.markusbordihn.easynpc.server.commands.PoseCommand;
 import de.markusbordihn.easynpc.server.commands.PositionCommand;
 import de.markusbordihn.easynpc.server.commands.PresetCommand;
 import de.markusbordihn.easynpc.server.commands.ProgressionCommand;
+import de.markusbordihn.easynpc.server.commands.ProjectileCommand;
 import de.markusbordihn.easynpc.server.commands.ReloadCommand;
 import de.markusbordihn.easynpc.server.commands.RenderCommand;
 import de.markusbordihn.easynpc.server.commands.RespawnCommand;
@@ -97,6 +98,7 @@ public class CommandManager {
             .then(PositionCommand.register())
             .then(PresetCommand.register())
             .then(ProgressionCommand.register())
+            .then(ProjectileCommand.register())
             .then(ReloadCommand.register())
             .then(RenderCommand.register())
             .then(RespawnCommand.register())

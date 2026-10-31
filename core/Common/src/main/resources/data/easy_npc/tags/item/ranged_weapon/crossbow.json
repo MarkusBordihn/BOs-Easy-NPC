@@ -7,11 +7,19 @@
       "required": false
     },
     {
+      "id": "spartanweaponry:leather_heavy_crossbow",
+      "required": false
+    },
+    {
+      "id": "spartanweaponry:copper_heavy_crossbow",
+      "required": false
+    },
+    {
       "id": "spartanweaponry:iron_heavy_crossbow",
       "required": false
     },
     {
-      "id": "spartanweaponry:gold_heavy_crossbow",
+      "id": "spartanweaponry:golden_heavy_crossbow",
       "required": false
     },
     {

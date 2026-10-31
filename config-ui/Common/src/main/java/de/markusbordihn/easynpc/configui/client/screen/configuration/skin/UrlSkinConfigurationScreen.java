@@ -217,7 +217,7 @@ public class UrlSkinConfigurationScreen<T extends ConfigurationMenu>
     }
 
     if (!Boolean.TRUE.equals(valid)) {
-      log.error("Unable to set remote user texture to {}", textureSkinLocationValue);
+      log.warn("Unable to set remote user texture to {}", textureSkinLocationValue);
       this.errorMessage = "invalid_remote_image";
       this.resetCooldownOnError();
       return;

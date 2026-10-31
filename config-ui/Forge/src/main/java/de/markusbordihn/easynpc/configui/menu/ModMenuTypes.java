@@ -30,6 +30,7 @@ import de.markusbordihn.easynpc.configui.menu.configuration.attribute.BaseAttrib
 import de.markusbordihn.easynpc.configui.menu.configuration.attribute.CombatAttributeConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.attribute.DisplayAttributeConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.attribute.MiscAttributeConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.configui.menu.configuration.attribute.ProjectileAttributeConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.dialog.AdvancedDialogConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.dialog.BasicDialogConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.dialog.NoneDialogConfigurationMenuWrapper;
@@ -191,6 +192,11 @@ public class ModMenuTypes {
           MENU_TYPES.register(
               ConfigurationType.COMBAT_ATTRIBUTE.getName(),
               () -> IForgeMenuType.create(CombatAttributeConfigurationMenuWrapper::new));
+  public static final RegistryObject<MenuType<ProjectileAttributeConfigurationMenuWrapper>>
+      PROJECTILE_ATTRIBUTE_CONFIGURATION_MENU =
+          MENU_TYPES.register(
+              ConfigurationType.PROJECTILE_ATTRIBUTE.getName(),
+              () -> IForgeMenuType.create(ProjectileAttributeConfigurationMenuWrapper::new));
   public static final RegistryObject<MenuType<CombatSoundConfigurationMenuWrapper>>
       COMBAT_SOUND_CONFIGURATION_MENU =
           MENU_TYPES.register(

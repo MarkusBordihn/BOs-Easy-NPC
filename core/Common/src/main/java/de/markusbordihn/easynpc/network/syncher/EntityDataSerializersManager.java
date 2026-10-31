@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.network.syncher;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.action.ActionEventSet;
 import de.markusbordihn.easynpc.data.action.PendingActionSet;
+import de.markusbordihn.easynpc.data.attack.ProjectileData;
 import de.markusbordihn.easynpc.data.attribute.EntityAttributes;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.data.display.DisplayAttributeDataSet;
@@ -45,6 +46,7 @@ import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.state.StateDataSet;
 import de.markusbordihn.easynpc.data.trading.TradingDataSet;
 import de.markusbordihn.easynpc.data.trading.TradingType;
+import de.markusbordihn.easynpc.data.visibility.VisibilityConditionSet;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelPositionDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelRotationDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelScaleDataCapable;
@@ -56,6 +58,7 @@ import java.util.UUID;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.world.item.trading.MerchantOffers;
@@ -72,6 +75,17 @@ public class EntityDataSerializersManager {
       defineSerializer(
           ActionEventSet.class.getSimpleName(),
           EntityDataSerializer.forValueType(ActionEventSet.STREAM_CODEC));
+  public static final EntityDataSerializer<VisibilityConditionSet> VISIBILITY_CONDITION_SET =
+      defineSerializer(
+          VisibilityConditionSet.class.getSimpleName(),
+          EntityDataSerializer.forValueType(
+              ByteBufCodecs.COMPOUND_TAG.map(
+                  VisibilityConditionSet::fromTag, VisibilityConditionSet::createTag)));
+  public static final EntityDataSerializer<ProjectileData> PROJECTILE_DATA =
+      defineSerializer(
+          ProjectileData.class.getSimpleName(),
+          EntityDataSerializer.forValueType(
+              ByteBufCodecs.COMPOUND_TAG.map(ProjectileData::fromTag, ProjectileData::createTag)));
   public static final EntityDataSerializer<PendingActionSet> PENDING_ACTION_SET =
       defineSerializer(
           PendingActionSet.class.getSimpleName(),

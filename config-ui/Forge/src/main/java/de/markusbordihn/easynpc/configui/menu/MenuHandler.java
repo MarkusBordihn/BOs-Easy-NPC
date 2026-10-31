@@ -74,6 +74,9 @@ public class MenuHandler implements MenuHandlerInterface {
     configurationMenuMap.put(
         ConfigurationType.COMBAT_ATTRIBUTE, ModMenuTypes.COMBAT_ATTRIBUTE_CONFIGURATION_MENU.get());
     configurationMenuMap.put(
+        ConfigurationType.PROJECTILE_ATTRIBUTE,
+        ModMenuTypes.PROJECTILE_ATTRIBUTE_CONFIGURATION_MENU.get());
+    configurationMenuMap.put(
         ConfigurationType.COMBAT_SOUND, ModMenuTypes.COMBAT_SOUND_CONFIGURATION_MENU.get());
     configurationMenuMap.put(
         ConfigurationType.CUSTOM_POSE, ModMenuTypes.CUSTOM_POSE_CONFIGURATION_MENU.get());

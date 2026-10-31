@@ -275,13 +275,31 @@ public class ConfigurationMenuHandler {
               FactionDataCapable.DATA_FACTION_NAME_TAG, factionData.getFactionName());
         }
       }
-      case ABILITIES_ATTRIBUTE, DISPLAY_ATTRIBUTE -> {
+      case ABILITIES_ATTRIBUTE -> {
         addBlockedConfigurationsForTypes(
             additionalSyncData,
             serverPlayer,
             easyNPC,
             ConfigurationType.BASE_ATTRIBUTE,
             ConfigurationType.COMBAT_ATTRIBUTE);
+      }
+      case DISPLAY_ATTRIBUTE -> {
+        addBlockedConfigurationsForTypes(
+            additionalSyncData,
+            serverPlayer,
+            easyNPC,
+            ConfigurationType.BASE_ATTRIBUTE,
+            ConfigurationType.COMBAT_ATTRIBUTE);
+        AdditionalScreenData.addVisibilityConditionSet(additionalSyncData, easyNPC);
+      }
+      case PROJECTILE_ATTRIBUTE -> {
+        addBlockedConfigurationsForTypes(
+            additionalSyncData,
+            serverPlayer,
+            easyNPC,
+            ConfigurationType.BASE_ATTRIBUTE,
+            ConfigurationType.COMBAT_ATTRIBUTE);
+        AdditionalScreenData.addProjectileData(additionalSyncData, easyNPC);
       }
       case MISC_ATTRIBUTE -> {
         FactionDataCapable<?> factionData = easyNPC.getEasyNPCFactionData();
