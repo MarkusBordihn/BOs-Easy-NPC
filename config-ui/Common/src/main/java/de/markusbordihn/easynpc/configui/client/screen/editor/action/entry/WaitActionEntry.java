@@ -27,9 +27,14 @@ import de.markusbordihn.easynpc.data.action.ActionDataEntry;
 import de.markusbordihn.easynpc.data.action.ActionDataSet;
 import de.markusbordihn.easynpc.data.action.ActionDataType;
 import de.markusbordihn.easynpc.data.action.WaitDuration;
+import de.markusbordihn.easynpc.network.components.TextComponent;
 import net.minecraft.client.gui.GuiGraphics;
 
 public class WaitActionEntry extends ActionEntryWidget {
+
+  private static final int HINT_TOP = 42;
+  private static final int HINT_WIDTH = 285;
+  private static final int HINT_SPACING = 3;
 
   private TextField waitDurationTextField;
 
@@ -63,19 +68,26 @@ public class WaitActionEntry extends ActionEntryWidget {
         editorLeft + 2,
         editorTop + 5,
         Constants.FONT_COLOR_DEFAULT);
-    Text.drawConfigString(
+    Text.drawConfigStringWrapped(
         guiGraphics,
         this.font,
         "action.wait.hint",
         editorLeft + 2,
-        editorTop + 42,
+        editorTop + HINT_TOP,
+        HINT_WIDTH,
         Constants.FONT_COLOR_GRAY);
-    Text.drawConfigString(
+    int hintHeight =
+        this.font
+                .split(TextComponent.getTranslatedConfigText("action.wait.hint"), HINT_WIDTH)
+                .size()
+            * this.font.lineHeight;
+    Text.drawConfigStringWrapped(
         guiGraphics,
         this.font,
         "action.wait.chain.hint",
         editorLeft + 2,
-        editorTop + 54,
+        editorTop + HINT_TOP + hintHeight + HINT_SPACING,
+        HINT_WIDTH,
         Constants.FONT_COLOR_GRAY);
   }
 

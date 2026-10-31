@@ -51,6 +51,7 @@ import net.minecraft.world.level.SpawnData;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.SpawnerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.gameevent.GameEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -213,7 +214,9 @@ public class EasyNPCPresetItem extends Item {
                         level, candidate, EntityDimensions.scalable(0.6F, 1.8F)));
     if (spawnPosition.isPresent()
         && spawnAtPosition(spawnPosition.get(), itemStack, level, useOnContext.getPlayer())) {
-      return InteractionResult.SUCCESS;
+      itemStack.shrink(1);
+      level.gameEvent(useOnContext.getPlayer(), GameEvent.ENTITY_PLACE, spawnPosition.get());
+      return InteractionResult.CONSUME;
     }
 
     log.error("Found no valid spawn placement for preset data: {}", itemStack);

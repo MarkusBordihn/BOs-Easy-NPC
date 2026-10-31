@@ -235,7 +235,7 @@ public class SliderButton extends AbstractSliderButton {
 
   public void reset() {
     switch (this.type) {
-      case DEGREE, POSITION, DOUBLE:
+      case DEGREE, POSITION, DOUBLE, INTEGER:
         this.setDefaultValue(0);
         break;
       case SCALE:
@@ -291,6 +291,9 @@ public class SliderButton extends AbstractSliderButton {
     switch (this.type) {
       case DEGREE:
         this.setMessage(TextComponent.getText(this.targetValue + "°"));
+        break;
+      case INTEGER:
+        this.setMessage(TextComponent.getText(String.valueOf(Math.round(this.targetValue))));
         break;
       case DOUBLE, SCALE, POSITION:
       default:
@@ -419,6 +422,7 @@ public class SliderButton extends AbstractSliderButton {
 
   public enum Type {
     DOUBLE,
+    INTEGER,
     DEGREE,
     POSITION,
     SCALE,

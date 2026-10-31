@@ -72,6 +72,7 @@ public enum ObjectiveType {
   OWNER_HURT_BY_TARGET("owner_hurt_by_target", 2),
   OWNER_HURT_TARGET("owner_hurt_target", 2),
   PANIC("panic", 1),
+  PROJECTILE_ATTACK("projectile", 4),
   RANDOM_STROLL_AROUND_HOME("around_home", 10),
   RANDOM_STROLL_IN_VILLAGE("in_village", 10),
   RANDOM_STROLL("stroll", 11),

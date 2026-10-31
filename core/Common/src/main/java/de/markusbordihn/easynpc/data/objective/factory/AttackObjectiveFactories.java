@@ -32,6 +32,7 @@ import de.markusbordihn.easynpc.entity.easynpc.ai.goal.CustomMeleeAttackGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.CustomOwnerHurtByTargetGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.CustomOwnerHurtTargetGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.GunAttackGoal;
+import de.markusbordihn.easynpc.entity.easynpc.ai.goal.ProjectileAttackGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.ZombieAttackGoal;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
@@ -94,6 +95,16 @@ final class AttackObjectiveFactories {
         requiresPathfinderMob(
             (objectiveDataEntry, easyNPC) ->
                 new GunAttackGoal<>(
+                    easyNPC,
+                    objectiveDataEntry.getSpeedModifier(),
+                    objectiveDataEntry.getAttackInterval(),
+                    objectiveDataEntry.getAttackRadius())));
+
+    register(
+        ObjectiveType.PROJECTILE_ATTACK,
+        requiresPathfinderMob(
+            (objectiveDataEntry, easyNPC) ->
+                new ProjectileAttackGoal<>(
                     easyNPC,
                     objectiveDataEntry.getSpeedModifier(),
                     objectiveDataEntry.getAttackInterval(),

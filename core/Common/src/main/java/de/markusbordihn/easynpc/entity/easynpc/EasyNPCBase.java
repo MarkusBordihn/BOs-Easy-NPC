@@ -226,9 +226,17 @@ public interface EasyNPCBase<E extends Mob>
     if (actionEventData != null) {
       actionEventData.defineCustomActionData();
     }
+    AttackDataCapable<E> attackData = this.getEasyNPCAttackData();
+    if (attackData != null) {
+      attackData.defineCustomAttackData();
+    }
     DialogDataCapable<E> dialogData = this.getEasyNPCDialogData();
     if (dialogData != null) {
       dialogData.defineCustomDialogData();
+    }
+    DisplayAttributeDataCapable<E> displayAttributeData = this.getEasyNPCDisplayAttributeData();
+    if (displayAttributeData != null) {
+      displayAttributeData.defineCustomVisibilityConditionData();
     }
     ObjectiveDataCapable<E> objectiveData = this.getEasyNPCObjectiveData();
     if (objectiveData != null) {

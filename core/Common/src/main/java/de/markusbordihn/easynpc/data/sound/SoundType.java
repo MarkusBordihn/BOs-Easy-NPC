@@ -38,6 +38,7 @@ public enum SoundType {
   FALL_DAMAGE_SMALL,
   HURT,
   PET,
+  RANGED_ATTACK,
   SPEECH,
   STEP,
   SWIM,

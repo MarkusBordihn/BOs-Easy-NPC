@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.network.syncher;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.action.ActionEventSet;
 import de.markusbordihn.easynpc.data.action.PendingActionSet;
+import de.markusbordihn.easynpc.data.attack.ProjectileData;
 import de.markusbordihn.easynpc.data.attribute.EntityAttributes;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.data.display.DisplayAttributeDataSet;
@@ -40,6 +41,7 @@ import de.markusbordihn.easynpc.data.skin.SkinDataEntry;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.state.StateDataSet;
 import de.markusbordihn.easynpc.data.trading.TradingDataSet;
+import de.markusbordihn.easynpc.data.visibility.VisibilityConditionSet;
 import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -116,6 +118,13 @@ public class EntityDataSerializersManager {
           });
   public static final EntityDataSerializer<ActionEventSet> ACTION_EVENT_SET =
       nbtSerializer(ActionEventSet.class, ActionEventSet::createTag, ActionEventSet::new);
+  public static final EntityDataSerializer<VisibilityConditionSet> VISIBILITY_CONDITION_SET =
+      nbtSerializer(
+          VisibilityConditionSet.class,
+          VisibilityConditionSet::createTag,
+          VisibilityConditionSet::fromTag);
+  public static final EntityDataSerializer<ProjectileData> PROJECTILE_DATA =
+      nbtSerializer(ProjectileData.class, ProjectileData::createTag, ProjectileData::fromTag);
   public static final EntityDataSerializer<PendingActionSet> PENDING_ACTION_SET =
       nbtSerializer(PendingActionSet.class, PendingActionSet::createTag, PendingActionSet::new);
   public static final EntityDataSerializer<StateDataSet> STATE_DATA_SET =

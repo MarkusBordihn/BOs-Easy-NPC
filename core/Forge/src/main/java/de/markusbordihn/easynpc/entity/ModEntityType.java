@@ -48,6 +48,8 @@ public class ModEntityType {
       new EnumMap<>(ModNPCEntityType.class);
   public static final Map<ModCustomEntityType, RegistryObject<EntityType<?>>> CUSTOM_TYPE =
       new EnumMap<>(ModCustomEntityType.class);
+  public static final Map<ModProjectileEntityType, RegistryObject<EntityType<?>>>
+      PROJECTILE_TYPE = new EnumMap<>(ModProjectileEntityType.class);
   public static final Map<EpicFightEntityType, RegistryObject<EntityType<?>>> EPIC_FIGHT_TYPE =
       new HashMap<>();
   public static final Map<CobblemonEntityType, RegistryObject<EntityType<?>>> COBBLEMON_TYPE =
@@ -60,6 +62,7 @@ public class ModEntityType {
     registerEntityTypes(ModRawEntityType.values(), RAW_TYPE, "raw");
     registerEntityTypes(ModNPCEntityType.values(), NPC_TYPE, "NPC");
     registerEntityTypes(ModCustomEntityType.values(), CUSTOM_TYPE, "custom");
+    registerEntityTypes(ModProjectileEntityType.values(), PROJECTILE_TYPE, "projectile");
     if (CompatConstants.MOD_EPIC_FIGHT_LOADED) {
       registerEntityTypes(EpicFightEntityType.values(), EPIC_FIGHT_TYPE, "Epic Fight");
     }
@@ -99,6 +102,18 @@ public class ModEntityType {
     }
 
     return (EntityType<T>) CUSTOM_TYPE.get(type).get();
+  }
+
+  public static <T extends Entity> EntityType<T> getEntityType(ModProjectileEntityType type) {
+    if (!PROJECTILE_TYPE.containsKey(type)) {
+      throw new IllegalArgumentException(
+          "Invalid projectile entity type '"
+              + type
+              + "'! Supported types are "
+              + PROJECTILE_TYPE.keySet());
+    }
+
+    return (EntityType<T>) PROJECTILE_TYPE.get(type).get();
   }
 
   @SubscribeEvent

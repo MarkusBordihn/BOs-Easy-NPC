@@ -49,6 +49,7 @@
     "entity.VillagerMixin",
     "entity.WalkAnimationStateMixin",
     "entity.WitchMixin",
+    "item.SpawnEggItemMixin",
     "menu.MerchantMenuMixin",
     "spawner.BaseSpawnerMixin",
     "target.LivingEntityTargetingMixin",

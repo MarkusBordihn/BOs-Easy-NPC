@@ -30,6 +30,7 @@ import de.markusbordihn.easynpc.configui.menu.configuration.attribute.BaseAttrib
 import de.markusbordihn.easynpc.configui.menu.configuration.attribute.CombatAttributeConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.attribute.DisplayAttributeConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.attribute.MiscAttributeConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.configui.menu.configuration.attribute.ProjectileAttributeConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.dialog.AdvancedDialogConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.dialog.BasicDialogConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.dialog.NoneDialogConfigurationMenuWrapper;
@@ -175,6 +176,11 @@ public class ModMenuTypes {
           ScreenHandlerRegistry.registerSimple(
               ConfigurationType.COMBAT_ATTRIBUTE.getId(),
               CombatAttributeConfigurationMenuWrapper::new);
+  public static final MenuType<ProjectileAttributeConfigurationMenuWrapper>
+      PROJECTILE_ATTRIBUTE_CONFIGURATION_MENU =
+          ScreenHandlerRegistry.registerSimple(
+              ConfigurationType.PROJECTILE_ATTRIBUTE.getId(),
+              ProjectileAttributeConfigurationMenuWrapper::new);
   public static final MenuType<CombatSoundConfigurationMenuWrapper>
       COMBAT_SOUND_CONFIGURATION_MENU =
           ScreenHandlerRegistry.registerSimple(

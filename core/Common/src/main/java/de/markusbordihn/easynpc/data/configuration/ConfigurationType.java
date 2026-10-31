@@ -74,6 +74,7 @@ public enum ConfigurationType {
   NONE_TRADING,
   PLAYER_SKIN,
   POSE(true),
+  PROJECTILE_ATTRIBUTE,
   SCALING,
   SKIN(true),
   TARGET_OBJECTIVE,

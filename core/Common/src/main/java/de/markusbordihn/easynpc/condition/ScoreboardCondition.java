@@ -23,7 +23,6 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.condition.ConditionDataEntry;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.scores.Objective;
-import net.minecraft.world.scores.Score;
 import net.minecraft.world.scores.Scoreboard;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -45,14 +44,18 @@ public class ScoreboardCondition {
       if (objective == null) {
         if (ConditionWarnings.shouldReport("scoreboard:" + conditionDataEntry.name())) {
           log.warn(
-              "Scoreboard objective '{}' does not exist, every dialog and action using it stays hidden.",
+              "Scoreboard objective '{}' does not exist, every dialog and action using it stays"
+                  + " hidden.",
               conditionDataEntry.name());
         }
         return false;
       }
 
-      Score score = scoreboard.getOrCreatePlayerScore(serverPlayer.getScoreboardName(), objective);
-      int scoreValue = score.getScore();
+      String scoreboardName = serverPlayer.getScoreboardName();
+      int scoreValue =
+          scoreboard.hasPlayerScore(scoreboardName, objective)
+              ? scoreboard.getOrCreatePlayerScore(scoreboardName, objective).getScore()
+              : 0;
       boolean result =
           conditionDataEntry.operationType().evaluate(scoreValue, conditionDataEntry.value());
       log.debug(

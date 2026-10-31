@@ -48,6 +48,7 @@ import de.markusbordihn.easynpc.configui.network.message.server.ChangeMovementAt
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeNameMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeNamedPoseMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangePoseMessage;
+import de.markusbordihn.easynpc.configui.network.message.server.ChangeProjectileDataMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangePositionMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeProfessionMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeRendererMessage;
@@ -74,6 +75,7 @@ import de.markusbordihn.easynpc.configui.network.message.server.OpenDialogTextEd
 import de.markusbordihn.easynpc.configui.network.message.server.OpenFactionEditorMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.OpenFactionsEditorMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.OpenMenuMessage;
+import de.markusbordihn.easynpc.configui.network.message.server.OpenVisibilityConditionEditorMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.RemoveDialogButtonMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.RemoveDialogMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.RemoveFactionEntryMessage;
@@ -84,6 +86,7 @@ import de.markusbordihn.easynpc.configui.network.message.server.RespawnNPCMessag
 import de.markusbordihn.easynpc.configui.network.message.server.SaveDialogButtonMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.SaveDialogMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.SaveDialogSetMessage;
+import de.markusbordihn.easynpc.configui.network.message.server.SaveVisibilityConditionsMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.SpawnPresetMessage;
 import de.markusbordihn.easynpc.network.NetworkHandlerManagerType;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
@@ -223,6 +226,11 @@ public class NetworkHandlerManager {
         ChangeCombatAttributeMessage.MESSAGE_ID,
         ChangeCombatAttributeMessage.class,
         ChangeCombatAttributeMessage::create);
+
+    networkHandler.registerServerNetworkMessage(
+        ChangeProjectileDataMessage.MESSAGE_ID,
+        ChangeProjectileDataMessage.class,
+        ChangeProjectileDataMessage::create);
 
     networkHandler.registerServerNetworkMessage(
         ChangeDisplayAttributeMessage.MESSAGE_ID,
@@ -457,5 +465,15 @@ public class NetworkHandlerManager {
 
     networkHandler.registerServerNetworkMessage(
         SaveDialogSetMessage.MESSAGE_ID, SaveDialogSetMessage.class, SaveDialogSetMessage::create);
+
+    networkHandler.registerServerNetworkMessage(
+        OpenVisibilityConditionEditorMessage.MESSAGE_ID,
+        OpenVisibilityConditionEditorMessage.class,
+        OpenVisibilityConditionEditorMessage::create);
+
+    networkHandler.registerServerNetworkMessage(
+        SaveVisibilityConditionsMessage.MESSAGE_ID,
+        SaveVisibilityConditionsMessage.class,
+        SaveVisibilityConditionsMessage::create);
   }
 }

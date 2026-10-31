@@ -26,6 +26,7 @@ import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataSet;
 import de.markusbordihn.easynpc.data.preset.PresetMetadata;
 import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.AttackDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.DialogDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.NavigationDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.ObjectiveDataCapable;
@@ -202,6 +203,12 @@ public class PresetSanitizer {
             || !FeatureSecurity.isFeatureAllowed(presetAuthority, NpcFeature.BASE_ATTRIBUTE))
         && compoundTag.contains(EntityAttributes.ENTITY_ATTRIBUTE_TAG)) {
       compoundTag.remove(EntityAttributes.ENTITY_ATTRIBUTE_TAG);
+      notices.add(PresetSanitizationNotice.ATTRIBUTE_REMOVED);
+    }
+
+    if (!FeatureSecurity.isFeatureAllowed(presetAuthority, NpcFeature.COMBAT_ATTRIBUTE)
+        && compoundTag.contains(AttackDataCapable.DATA_PROJECTILE_DATA_TAG)) {
+      compoundTag.remove(AttackDataCapable.DATA_PROJECTILE_DATA_TAG);
       notices.add(PresetSanitizationNotice.ATTRIBUTE_REMOVED);
     }
   }

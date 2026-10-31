@@ -146,9 +146,29 @@ public class GameTestHelpers {
     return mockServerPlayer(helper, position, playerName, GameType.SPECTATOR);
   }
 
+  public static EmbeddedChannel mockServerPlayerChannel(
+      GameTestHelper helper, Vec3 position, String playerName) {
+    Connection connection = new Connection(PacketFlow.SERVERBOUND);
+    EmbeddedChannel channel = new EmbeddedChannel(connection);
+    mockServerPlayer(helper, position, playerName, GameType.CREATIVE, connection);
+    return channel;
+  }
+
   private static ServerPlayer mockServerPlayer(
       GameTestHelper helper, Vec3 position, String playerName, GameType gameType) {
-    ServerPlayer serverPlayer = makeConnectedMockServerPlayer(helper, playerName, gameType);
+    Connection connection = new Connection(PacketFlow.SERVERBOUND);
+    new EmbeddedChannel(connection);
+    return mockServerPlayer(helper, position, playerName, gameType, connection);
+  }
+
+  private static ServerPlayer mockServerPlayer(
+      GameTestHelper helper,
+      Vec3 position,
+      String playerName,
+      GameType gameType,
+      Connection connection) {
+    ServerPlayer serverPlayer =
+        makeConnectedMockServerPlayer(helper, playerName, gameType, connection);
     GameTestHelpers.assertNotNull(helper, "ServerPlayer is null!", serverPlayer);
     serverPlayer.setPos(helper.absoluteVec(position));
     helper.assertEntityPresent(
@@ -157,7 +177,7 @@ public class GameTestHelpers {
   }
 
   private static ServerPlayer makeConnectedMockServerPlayer(
-      GameTestHelper helper, String playerName, GameType gameType) {
+      GameTestHelper helper, String playerName, GameType gameType, Connection connection) {
     ServerLevel level = helper.getLevel();
     ServerPlayer serverPlayer =
         new ServerPlayer(level.getServer(), level, new GameProfile(UUID.randomUUID(), playerName)) {
@@ -171,8 +191,6 @@ public class GameTestHelpers {
             return gameType == GameType.CREATIVE;
           }
         };
-    Connection connection = new Connection(PacketFlow.SERVERBOUND);
-    new EmbeddedChannel(connection);
     PlayerList playerList = level.getServer().getPlayerList();
     playerList.placeNewPlayer(connection, serverPlayer);
     addCleanup(

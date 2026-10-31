@@ -44,6 +44,7 @@ class InteractionClientTest extends ClientTestBase {
   private static final int BOW_SLOT = 0;
   private static final int ARROW_SLOT = 9;
   private static final long BOW_DRAW_TICKS = 25;
+  private static final int ARROW_CLEAR_RADIUS = 128;
 
   @BeforeEach
   void faceTheNpcPosition() {
@@ -84,7 +85,7 @@ class InteractionClientTest extends ClientTestBase {
 
   @AfterEach
   void restorePlayer() {
-    client.runCommand("kill @e[type=minecraft:arrow]");
+    client.clearEntities("minecraft:arrow", ARROW_CLEAR_RADIUS);
     client.clearInventory();
   }
 

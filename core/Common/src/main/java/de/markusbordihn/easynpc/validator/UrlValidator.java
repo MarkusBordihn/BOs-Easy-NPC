@@ -114,14 +114,14 @@ public class UrlValidator {
         || url.isEmpty()
         || (!url.startsWith("http://") && !url.startsWith("https://"))) {
       if (url != null && !url.isEmpty()) {
-        log.error("Invalid URL: {}", url);
+        log.debug("Invalid URL: {}", url);
       }
       return false;
     }
 
     for (String extension : FORBIDDEN_EXTENSIONS) {
       if (url.endsWith(extension)) {
-        log.error("Forbidden extension found in URL: {}", url);
+        log.debug("Forbidden extension found in URL: {}", url);
         return false;
       }
     }
@@ -130,7 +130,7 @@ public class UrlValidator {
     try {
       new URL(url).toURI();
     } catch (MalformedURLException | URISyntaxException e) {
-      log.error("Invalid URL format: {}", url);
+      log.debug("Invalid URL format: {}", url);
       return false;
     }
     return true;

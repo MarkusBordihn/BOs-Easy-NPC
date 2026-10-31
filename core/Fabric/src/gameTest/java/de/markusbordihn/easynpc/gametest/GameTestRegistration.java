@@ -92,6 +92,7 @@ public class GameTestRegistration {
         RenderEntityTypeTest.class,
         ObjectiveApiTest.class,
         AssistOwnerTest.class,
+        ProjectileTest.class,
         InteractionResultTest.class,
         EasyModelEntitiesTest.class);
   }

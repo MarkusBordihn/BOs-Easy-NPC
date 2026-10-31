@@ -24,6 +24,7 @@ import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextField;
 import de.markusbordihn.easynpc.configui.client.renderer.screen.EntityConfigScreenRenderer;
 import de.markusbordihn.easynpc.configui.client.screen.components.Checkbox;
+import de.markusbordihn.easynpc.configui.client.screen.components.ConditionButton;
 import de.markusbordihn.easynpc.configui.client.screen.components.SaveButton;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
@@ -247,6 +248,16 @@ public class DisplayAttributeConfigurationScreen<T extends ConfigurationMenu>
                         this.getEasyNPCUUID(),
                         DisplayAttributeType.INTERACTION_WHEN_INVISIBLE,
                         checkbox.selected())));
+
+    this.addRenderableWidget(
+        new ConditionButton(
+            firstButtonRow,
+            checkboxTopPos + 18,
+            140,
+            this.getAdditionalScreenData().getVisibilityConditionSet().conditions().size(),
+            onPress ->
+                NetworkMessageHandlerManager.getServerHandler()
+                    .openVisibilityConditionEditor(this.getEasyNPCUUID())));
 
     this.addRenderableWidget(
         new Checkbox(
