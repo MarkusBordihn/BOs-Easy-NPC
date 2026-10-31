@@ -122,7 +122,9 @@ public class SpinButton<T> extends CustomButton {
 
     T value = this.get();
     if (value != null) {
-      this.textButton.setMessage(this.labelProvider.apply(value));
+      Component label = this.labelProvider.apply(value);
+      this.textButton.setMessage(label);
+      this.setMessage(label);
     }
   }
 

@@ -23,9 +23,15 @@ import de.markusbordihn.easynpc.data.display.DisplayAttributeDataSet;
 import de.markusbordihn.easynpc.data.display.DisplayAttributeEntry;
 import de.markusbordihn.easynpc.data.display.DisplayAttributeType;
 import de.markusbordihn.easynpc.data.display.NameVisibilityType;
+import de.markusbordihn.easynpc.data.server.ServerDataAccessor;
+import de.markusbordihn.easynpc.data.server.ServerDataIndex;
+import de.markusbordihn.easynpc.data.server.ServerEntityData;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.data.type.ValueType;
+import de.markusbordihn.easynpc.data.visibility.VisibilityConditionSet;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.handler.VisibilityConditionTracker;
+import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
 import de.markusbordihn.easynpc.utils.CompoundTagUtils;
 import java.util.EnumMap;
 import java.util.Map;
@@ -41,7 +47,13 @@ import net.minecraft.world.level.storage.ValueOutput;
 
 public interface DisplayAttributeDataCapable<E extends Mob> extends EasyNPC<E> {
 
+  ServerDataAccessor<VisibilityConditionSet> CUSTOM_DATA_VISIBILITY_CONDITION_SET =
+      ServerEntityData.defineId(
+          ServerDataIndex.VISIBILITY_CONDITION_SET,
+          EntityDataSerializersManager.VISIBILITY_CONDITION_SET);
+
   String DATA_DISPLAY_ATTRIBUTE_TAG = "DisplayAttribute";
+  String DATA_VISIBILITY_CONDITIONS_TAG = "VisibilityConditions";
 
   StreamCodec<RegistryFriendlyByteBuf, EnumMap<DisplayAttributeType, DisplayAttributeEntry>>
       STREAM_CODEC =
@@ -170,9 +182,47 @@ public interface DisplayAttributeDataCapable<E extends Mob> extends EasyNPC<E> {
     this.setDisplayAttribute(displayAttributeType, ValueType.STRING, enumValue.toString());
   }
 
+  default VisibilityConditionSet getVisibilityConditionSet() {
+    ServerDataCapable<E> serverData = this.getEasyNPCServerData();
+    if (this.isClientSideInstance() || serverData == null || !serverData.hasServerEntityData()) {
+      return VisibilityConditionSet.EMPTY;
+    }
+
+    VisibilityConditionSet visibilityConditionSet =
+        serverData.getServerEntityData(CUSTOM_DATA_VISIBILITY_CONDITION_SET);
+    return visibilityConditionSet != null ? visibilityConditionSet : VisibilityConditionSet.EMPTY;
+  }
+
+  default void setVisibilityConditionSet(VisibilityConditionSet visibilityConditionSet) {
+    VisibilityConditionSet updatedVisibilityConditionSet =
+        visibilityConditionSet != null ? visibilityConditionSet : VisibilityConditionSet.EMPTY;
+    if (updatedVisibilityConditionSet.equals(this.getVisibilityConditionSet())) {
+      return;
+    }
+
+    this.getEasyNPCServerData()
+        .setServerEntityData(CUSTOM_DATA_VISIBILITY_CONDITION_SET, updatedVisibilityConditionSet);
+    this.setSynchedEntityData(
+        SynchedDataIndex.DISPLAY_HAS_VISIBILITY_CONDITIONS,
+        !updatedVisibilityConditionSet.isEmpty());
+    VisibilityConditionTracker.refresh(this);
+  }
+
+  default boolean hasVisibilityConditions() {
+    return Boolean.TRUE.equals(
+        this.getSynchedEntityData(SynchedDataIndex.DISPLAY_HAS_VISIBILITY_CONDITIONS));
+  }
+
+  default void defineCustomVisibilityConditionData() {
+    this.getEasyNPCServerData()
+        .defineServerEntityData(CUSTOM_DATA_VISIBILITY_CONDITION_SET, VisibilityConditionSet.EMPTY);
+  }
+
   default void defineSynchedDisplayAttributeData(SynchedEntityData.Builder builder) {
     this.defineSynchedEntityData(
         builder, SynchedDataIndex.DISPLAY_ATTRIBUTE_SET, DisplayAttributeDataSet.createDefault());
+    this.defineSynchedEntityData(
+        builder, SynchedDataIndex.DISPLAY_HAS_VISIBILITY_CONDITIONS, false);
   }
 
   default void addAdditionalDisplayAttributeData(ValueOutput valueOutput) {
@@ -186,9 +236,22 @@ public interface DisplayAttributeDataCapable<E extends Mob> extends EasyNPC<E> {
       valueOutput.store(
           DATA_DISPLAY_ATTRIBUTE_TAG, CompoundTagUtils.LIST_TAG_CODEC, displayAttributeTag);
     }
+
+    VisibilityConditionSet visibilityConditionSet = this.getVisibilityConditionSet();
+    if (!visibilityConditionSet.isEmpty()) {
+      valueOutput.store(
+          DATA_VISIBILITY_CONDITIONS_TAG, CompoundTag.CODEC, visibilityConditionSet.createTag());
+    }
   }
 
   default void readAdditionalDisplayAttributeData(ValueInput valueInput) {
+    valueInput
+        .read(DATA_VISIBILITY_CONDITIONS_TAG, CompoundTag.CODEC)
+        .ifPresent(
+            visibilityConditionsTag ->
+                this.setVisibilityConditionSet(
+                    VisibilityConditionSet.fromTag(visibilityConditionsTag)));
+
     Optional<ListTag> listTagData =
         valueInput.read(DATA_DISPLAY_ATTRIBUTE_TAG, CompoundTagUtils.LIST_TAG_CODEC);
     if (listTagData.isEmpty()) {

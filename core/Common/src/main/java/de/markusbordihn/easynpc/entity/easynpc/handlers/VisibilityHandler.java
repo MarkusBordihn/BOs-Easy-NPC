@@ -24,12 +24,15 @@ import de.markusbordihn.easynpc.data.display.DisplayAttributeDataSet;
 import de.markusbordihn.easynpc.data.display.DisplayAttributeType;
 import de.markusbordihn.easynpc.data.display.NameVisibilityType;
 import de.markusbordihn.easynpc.data.highlight.NPCHighlightManager;
+import de.markusbordihn.easynpc.data.visibility.NPCVisibilityConditionManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.DisplayAttributeDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.OwnerDataCapable;
+import de.markusbordihn.easynpc.handler.VisibilityConditionTracker;
 import de.markusbordihn.easynpc.utils.ItemUtils;
 import java.util.Objects;
 import net.minecraft.client.Minecraft;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.scores.Team;
@@ -104,7 +107,22 @@ public class VisibilityHandler {
         && isVisibleAtDayTime(displayAttributes, player.level(), dayTime)
         && isVisibleInGameMode(displayAttributes, player)
         && isVisibleToOwner(easyNPC, displayAttributes, player)
-        && isVisibleToTeam(easyNPC, displayAttributes, player);
+        && isVisibleToTeam(easyNPC, displayAttributes, player)
+        && isVisibleByConditions(easyNPC, player);
+  }
+
+  private static boolean isVisibleByConditions(final EasyNPC<?> easyNPC, final Player player) {
+    DisplayAttributeDataCapable<?> displayAttributeData = easyNPC.getEasyNPCDisplayAttributeData();
+    if (displayAttributeData == null || !displayAttributeData.hasVisibilityConditions()) {
+      return true;
+    }
+
+    if (easyNPC.getEntity().level().isClientSide()) {
+      return NPCVisibilityConditionManager.isVisible(easyNPC.getEntity().getUUID());
+    }
+
+    return !(player instanceof ServerPlayer serverPlayer)
+        || VisibilityConditionTracker.isVisible(easyNPC, serverPlayer);
   }
 
   private static boolean isVisibleAtDayTime(

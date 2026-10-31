@@ -34,6 +34,7 @@ import de.markusbordihn.easynpc.handler.OwnerLoginRestoreHandler;
 import de.markusbordihn.easynpc.handler.PauseManager;
 import de.markusbordihn.easynpc.handler.PlayerIdleTracker;
 import de.markusbordihn.easynpc.handler.ShoulderNPCSynchronizer;
+import de.markusbordihn.easynpc.handler.VisibilityConditionTracker;
 import de.markusbordihn.easynpc.io.BackgroundFileWriter;
 import de.markusbordihn.easynpc.io.DataFileHandler;
 import java.time.Duration;
@@ -92,6 +93,7 @@ public class ServerEvents {
     OwnerLoginRestoreHandler.handleServerTick(minecraftServer);
     EnvironmentChangeTracker.handleServerTick(minecraftServer);
     PlayerIdleTracker.handleServerTick(minecraftServer);
+    VisibilityConditionTracker.handleServerTick(minecraftServer);
     ShoulderNPCSynchronizer.handleServerTick(minecraftServer);
   }
 
@@ -109,6 +111,7 @@ public class ServerEvents {
     NPCChurnTracker.reset();
     PauseManager.reset();
     PlayerIdleTracker.reset();
+    VisibilityConditionTracker.reset();
     ShoulderNPCSynchronizer.reset();
     PresetReference.clearCache();
 

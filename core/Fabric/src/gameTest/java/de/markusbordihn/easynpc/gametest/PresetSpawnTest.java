@@ -49,6 +49,12 @@ public class PresetSpawnTest {
   }
 
   @GameTest(structure = "easy_npc:gametest.3x3x3")
+  public void testPresetItemIsConsumedOnSpawn(GameTestHelper helper) {
+    PresetSpawnTestHelper.assertPresetItemIsConsumedOnSpawn(helper, humanoid());
+    helper.succeed();
+  }
+
+  @GameTest(structure = "easy_npc:gametest.3x3x3")
   public void testSpawnerSpawnsConfiguredNPC(GameTestHelper helper) {
     PresetSpawnTestHelper.assertSpawnerSpawnsConfiguredNPC(helper, humanoid());
     helper.succeed();

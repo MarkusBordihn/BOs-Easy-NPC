@@ -23,6 +23,7 @@ import de.markusbordihn.easynpc.api.handler.EasyNPCAttributeHandler;
 import de.markusbordihn.easynpc.api.handler.EasyNPCObjectiveHandler;
 import de.markusbordihn.easynpc.data.attribute.InteractionAttributeType;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataEntry;
+import de.markusbordihn.easynpc.data.objective.ObjectiveGroup;
 import de.markusbordihn.easynpc.data.objective.ObjectiveType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import java.util.List;
@@ -226,5 +227,60 @@ public class ObjectiveCommandTestHelper {
         helper,
         "Attack remove command did not remove the objective",
         !EasyNPCObjectiveHandler.hasObjective(easyNPC, ObjectiveType.ATTACK_MONSTER));
+  }
+
+  public static void assertAttackTypeCommandSwitchesAttackType(
+      GameTestHelper helper, EntityType<?> entityType) {
+    EasyNPC<?> easyNPC = mockSpawnedNPC(helper, entityType);
+
+    int meleeResult =
+        executeConsoleCommand(
+            helper, "easy_npc objective " + easyNPC.getEntityUUID() + " set attack type melee");
+
+    GameTestHelpers.assertEquals(helper, "Melee attack type command result", 1, meleeResult);
+    GameTestHelpers.assertTrue(
+        helper,
+        "Attack type command did not add the melee attack objective",
+        EasyNPCObjectiveHandler.hasObjective(easyNPC, ObjectiveType.MELEE_ATTACK));
+
+    int bowResult =
+        executeConsoleCommand(
+            helper, "easy_npc objective " + easyNPC.getEntityUUID() + " set attack type bow");
+
+    GameTestHelpers.assertEquals(helper, "Bow attack type command result", 1, bowResult);
+    GameTestHelpers.assertTrue(
+        helper,
+        "Attack type command did not add the bow attack objective",
+        EasyNPCObjectiveHandler.hasObjective(easyNPC, ObjectiveType.BOW_ATTACK));
+    GameTestHelpers.assertTrue(
+        helper,
+        "Attack type command kept the previous melee attack objective",
+        !EasyNPCObjectiveHandler.hasObjective(easyNPC, ObjectiveType.MELEE_ATTACK));
+
+    int removeResult =
+        executeConsoleCommand(
+            helper, "easy_npc objective " + easyNPC.getEntityUUID() + " remove attack type bow");
+
+    GameTestHelpers.assertEquals(helper, "Attack type remove command result", 1, removeResult);
+    GameTestHelpers.assertTrue(
+        helper,
+        "Attack type remove command did not remove the bow attack objective",
+        !EasyNPCObjectiveHandler.hasObjective(easyNPC, ObjectiveType.BOW_ATTACK));
+  }
+
+  public static void assertAttackTypeCommandRejectsUnknownType(
+      GameTestHelper helper, EntityType<?> entityType) {
+    EasyNPC<?> easyNPC = mockSpawnedNPC(helper, entityType);
+
+    int result =
+        executeConsoleCommand(
+            helper, "easy_npc objective " + easyNPC.getEntityUUID() + " set attack type sword");
+
+    GameTestHelpers.assertEquals(helper, "Unknown attack type command result", 0, result);
+    GameTestHelpers.assertTrue(
+        helper,
+        "Unknown attack type command added an attack objective",
+        ObjectiveGroup.ATTACK_TYPE.stream()
+            .noneMatch(attackType -> EasyNPCObjectiveHandler.hasObjective(easyNPC, attackType)));
   }
 }

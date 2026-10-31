@@ -58,4 +58,14 @@ public final class ObjectiveCommandTest {
     ObjectiveCommandTestHelper.assertAttackCommandAddsAndRemovesObjective(helper, humanoid());
     helper.succeed();
   }
+
+  public static void testAttackTypeCommandSwitchesAttackType(GameTestHelper helper) {
+    ObjectiveCommandTestHelper.assertAttackTypeCommandSwitchesAttackType(helper, humanoid());
+    helper.succeed();
+  }
+
+  public static void testAttackTypeCommandRejectsUnknownType(GameTestHelper helper) {
+    ObjectiveCommandTestHelper.assertAttackTypeCommandRejectsUnknownType(helper, humanoid());
+    helper.succeed();
+  }
 }

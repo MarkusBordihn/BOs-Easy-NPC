@@ -19,10 +19,10 @@
 
 package de.markusbordihn.easynpc.security;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import de.markusbordihn.easynpc.data.action.ActionDataEntry;
+import de.markusbordihn.easynpc.data.attack.ProjectileData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.AttackDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.OwnerDataCapable;
 import de.markusbordihn.easynpc.utils.CompoundTagUtils;
 import java.util.UUID;
@@ -30,6 +30,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 class PresetSanitizerTest {
 
@@ -119,5 +120,38 @@ class PresetSanitizerTest {
     assertEquals(
         CommandPermissionLevel.ADMINS.minecraftLevel(),
         actionEntryTag.getInt(ActionDataEntry.DATA_PERMISSION_LEVEL_TAG).orElse(0));
+  }
+
+  @Test
+  @DisplayName("Should remove projectile data only without combat attribute permission")
+  void testProjectileDataSanitization() {
+    CompoundTag presetData = createPresetData(CommandPermissionLevel.ALL);
+    presetData.put(
+        AttackDataCapable.DATA_PROJECTILE_DATA_TAG,
+        ProjectileData.DEFAULT.withEnabled(true).createTag());
+    UUID owner = UUID.randomUUID();
+
+    PresetSanitizationResult normalPlayerResult =
+        PresetSanitizer.sanitize(
+            presetData,
+            new PresetAuthority(
+                owner,
+                CommandPermissionLevel.ALL,
+                PresetTrustLevel.UNTRUSTED_PLAYER,
+                NpcSecurityRole.NORMAL_PLAYER));
+    PresetSanitizationResult creativePlayerResult =
+        PresetSanitizer.sanitize(
+            presetData,
+            new PresetAuthority(
+                owner,
+                CommandPermissionLevel.ALL,
+                PresetTrustLevel.UNTRUSTED_PLAYER,
+                NpcSecurityRole.CREATIVE_PLAYER));
+
+    assertFalse(
+        normalPlayerResult.sanitizedTag().contains(AttackDataCapable.DATA_PROJECTILE_DATA_TAG));
+    assertTrue(normalPlayerResult.notices().contains(PresetSanitizationNotice.ATTRIBUTE_REMOVED));
+    assertTrue(
+        creativePlayerResult.sanitizedTag().contains(AttackDataCapable.DATA_PROJECTILE_DATA_TAG));
   }
 }

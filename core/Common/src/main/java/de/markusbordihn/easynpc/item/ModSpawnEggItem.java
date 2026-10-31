@@ -23,6 +23,8 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.handler.OwnerHandler;
 import de.markusbordihn.easynpc.network.components.TextComponent;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -55,6 +57,7 @@ public class ModSpawnEggItem extends SpawnEggItem {
 
   public static final String SUFFIX = "_spawn_egg";
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+  private static final List<ModSpawnEggItem> SPAWN_EGG_ITEMS = new ArrayList<>();
   private final Supplier<? extends EntityType<? extends Mob>> typeSupplier;
 
   public ModSpawnEggItem(EntityType<? extends Mob> entityType, Properties properties) {
@@ -65,6 +68,17 @@ public class ModSpawnEggItem extends SpawnEggItem {
       Supplier<? extends EntityType<? extends Mob>> entityType, Properties properties) {
     super(properties);
     this.typeSupplier = entityType;
+    SPAWN_EGG_ITEMS.add(this);
+  }
+
+  // SpawnEggItem.byId misses eggs created without an entity type, see loader SpawnEggItemMixin.
+  public static ModSpawnEggItem byEntityType(EntityType<?> entityType) {
+    for (ModSpawnEggItem spawnEggItem : SPAWN_EGG_ITEMS) {
+      if (spawnEggItem.typeSupplier.get() == entityType) {
+        return spawnEggItem;
+      }
+    }
+    return null;
   }
 
   @Override

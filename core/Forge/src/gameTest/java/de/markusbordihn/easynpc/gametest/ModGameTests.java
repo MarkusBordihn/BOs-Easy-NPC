@@ -116,98 +116,7 @@ public final class ModGameTests {
         () -> IllagerCrossedArmsTest::testVindicatorCrossedArmsVariantDrivesArmPose);
 
     TEST_FUNCTIONS.register(
-        "allay_n_p_c_spawn_egg_item", () -> ModSpawnEggItemTest::useAllayNPCSpawnEggItem);
-    TEST_FUNCTIONS.register(
-        "bogged_n_p_c_spawn_egg_item", () -> ModSpawnEggItemTest::useBoggedNPCSpawnEggItem);
-    TEST_FUNCTIONS.register(
-        "cat_n_p_c_spawn_egg_item", () -> ModSpawnEggItemTest::useCatNPCSpawnEggItem);
-    TEST_FUNCTIONS.register(
-        "chicken_n_p_c_spawn_egg_item", () -> ModSpawnEggItemTest::useChickenNPCSpawnEggItem);
-    TEST_FUNCTIONS.register(
-        "creeper_n_p_c_spawn_egg_item", () -> ModSpawnEggItemTest::useCreeperNPCSpawnEggItem);
-    TEST_FUNCTIONS.register(
-        "drowned_n_p_c_spawn_egg_item", () -> ModSpawnEggItemTest::useDrownedNPCSpawnEggItem);
-    TEST_FUNCTIONS.register(
-        "enderman_n_p_c_spawn_egg_item", () -> ModSpawnEggItemTest::useEndermanNPCSpawnEggItem);
-    TEST_FUNCTIONS.register(
-        "evoker_n_p_c_spawn_egg_item", () -> ModSpawnEggItemTest::useEvokerNPCSpawnEggItem);
-    TEST_FUNCTIONS.register(
-        "fox_n_p_c_spawn_egg_item", () -> ModSpawnEggItemTest::useFoxNPCSpawnEggItem);
-    TEST_FUNCTIONS.register(
-        "ghast_n_p_c_spawn_egg_item", () -> ModSpawnEggItemTest::useGhastNPCSpawnEggItem);
-    TEST_FUNCTIONS.register(
-        "horse_n_p_c_spawn_egg_item", () -> ModSpawnEggItemTest::useHorseNPCSpawnEggItem);
-    TEST_FUNCTIONS.register(
-        "horse_skeleton_n_p_c_spawn_egg_item",
-        () -> ModSpawnEggItemTest::useHorseSkeletonNPCSpawnEggItem);
-    TEST_FUNCTIONS.register(
-        "horse_zombie_n_p_c_spawn_egg_item",
-        () -> ModSpawnEggItemTest::useHorseZombieNPCSpawnEggItem);
-    TEST_FUNCTIONS.register(
-        "humanoid_n_p_c_spawn_egg_item", () -> ModSpawnEggItemTest::useHumanoidNPCSpawnEggItem);
-    TEST_FUNCTIONS.register(
-        "humanoid_slim_n_p_c_spawn_egg_item",
-        () -> ModSpawnEggItemTest::useHumanoidSlimNPCSpawnEggItem);
-    TEST_FUNCTIONS.register(
-        "illusioner_n_p_c_spawn_egg_item", () -> ModSpawnEggItemTest::useIllusionerNPCSpawnEggItem);
-    TEST_FUNCTIONS.register(
-        "iron_golem_n_p_c_spawn_egg_item", () -> ModSpawnEggItemTest::useIronGolemNPCSpawnEggItem);
-    TEST_FUNCTIONS.register(
-        "piglin_n_p_c_spawn_egg_item", () -> ModSpawnEggItemTest::usePiglinNPCSpawnEggItem);
-    TEST_FUNCTIONS.register(
-        "piglin_brute_n_p_c_spawn_egg_item",
-        () -> ModSpawnEggItemTest::usePiglinBruteNPCSpawnEggItem);
-    TEST_FUNCTIONS.register(
-        "piglin_zombified_n_p_c_spawn_egg_item",
-        () -> ModSpawnEggItemTest::usePiglinZombifiedNPCSpawnEggItem);
-    TEST_FUNCTIONS.register(
-        "pig_n_p_c_spawn_egg_item", () -> ModSpawnEggItemTest::usePigNPCSpawnEggItem);
-    TEST_FUNCTIONS.register(
-        "pillager_n_p_c_spawn_egg_item", () -> ModSpawnEggItemTest::usePillagerNPCSpawnEggItem);
-    TEST_FUNCTIONS.register(
-        "skeleton_n_p_c_spawn_egg_item", () -> ModSpawnEggItemTest::useSkeletonNPCSpawnEggItem);
-    TEST_FUNCTIONS.register(
-        "stray_n_p_c_spawn_egg_item", () -> ModSpawnEggItemTest::useStrayNPCSpawnEggItem);
-    TEST_FUNCTIONS.register(
-        "wither_skeleton_n_p_c_spawn_egg_item",
-        () -> ModSpawnEggItemTest::useWitherSkeletonNPCSpawnEggItem);
-    TEST_FUNCTIONS.register(
-        "slime_n_p_c_spawn_egg_item", () -> ModSpawnEggItemTest::useSlimeNPCSpawnEggItem);
-    TEST_FUNCTIONS.register(
-        "spider_n_p_c_spawn_egg_item", () -> ModSpawnEggItemTest::useSpiderNPCSpawnEggItem);
-    TEST_FUNCTIONS.register(
-        "cave_spider_n_p_c_spawn_egg_item",
-        () -> ModSpawnEggItemTest::useCaveSpiderNPCSpawnEggItem);
-    TEST_FUNCTIONS.register(
-        "villager_n_p_c_spawn_egg_item", () -> ModSpawnEggItemTest::useVillagerNPCSpawnEggItem);
-    TEST_FUNCTIONS.register(
-        "wandering_trader_n_p_c_spawn_egg_item",
-        () -> ModSpawnEggItemTest::useWanderingTraderNPCSpawnEggItem);
-    TEST_FUNCTIONS.register(
-        "vex_n_p_c_spawn_egg_item", () -> ModSpawnEggItemTest::useVexNPCSpawnEggItem);
-    TEST_FUNCTIONS.register(
-        "vindicator_n_p_c_spawn_egg_item", () -> ModSpawnEggItemTest::useVindicatorNPCSpawnEggItem);
-    TEST_FUNCTIONS.register(
-        "witch_n_p_c_spawn_egg_item", () -> ModSpawnEggItemTest::useWitchNPCSpawnEggItem);
-    TEST_FUNCTIONS.register(
-        "wolf_n_p_c_spawn_egg_item", () -> ModSpawnEggItemTest::useWolfNPCSpawnEggItem);
-    TEST_FUNCTIONS.register(
-        "zombie_n_p_c_spawn_egg_item", () -> ModSpawnEggItemTest::useZombieNPCSpawnEggItem);
-    TEST_FUNCTIONS.register(
-        "zombie_husk_n_p_c_spawn_egg_item",
-        () -> ModSpawnEggItemTest::useZombieHuskNPCSpawnEggItem);
-    TEST_FUNCTIONS.register(
-        "zombie_villager_n_p_c_spawn_egg_item",
-        () -> ModSpawnEggItemTest::useZombieVillagerNPCSpawnEggItem);
-    TEST_FUNCTIONS.register(
-        "doppler_n_p_c_spawn_egg_item", () -> ModSpawnEggItemTest::useDopplerNPCSpawnEggItem);
-    TEST_FUNCTIONS.register(
-        "fairy_n_p_c_spawn_egg_item", () -> ModSpawnEggItemTest::useFairyNPCSpawnEggItem);
-    TEST_FUNCTIONS.register(
-        "orc_n_p_c_spawn_egg_item", () -> ModSpawnEggItemTest::useOrcNPCSpawnEggItem);
-    TEST_FUNCTIONS.register(
-        "orc_warrior_n_p_c_spawn_egg_item",
-        () -> ModSpawnEggItemTest::useOrcWarriorNPCSpawnEggItem);
+        "all_spawn_egg_items", () -> ModSpawnEggItemTest::useAllSpawnEggItems);
 
     TEST_FUNCTIONS.register(
         "server_registry_isolation", () -> NPCDataIsolationTest::testServerRegistryIsolation);
@@ -486,6 +395,21 @@ public final class ModGameTests {
     TEST_FUNCTIONS.register(
         "main_visibility_is_respected",
         () -> VisibilityAttributeTest::testMainVisibilityIsRespected);
+    TEST_FUNCTIONS.register(
+        "visibility_conditions_are_evaluated_per_player",
+        () -> VisibilityAttributeTest::testVisibilityConditionsAreEvaluatedPerPlayer);
+    TEST_FUNCTIONS.register(
+        "empty_visibility_conditions_keep_n_p_c_visible",
+        () -> VisibilityAttributeTest::testEmptyVisibilityConditionsKeepNPCVisible);
+    TEST_FUNCTIONS.register(
+        "unsupported_visibility_conditions_are_ignored",
+        () -> VisibilityAttributeTest::testUnsupportedVisibilityConditionsAreIgnored);
+    TEST_FUNCTIONS.register(
+        "visibility_conditions_survive_save_and_load",
+        () -> VisibilityAttributeTest::testVisibilityConditionsSurviveSaveAndLoad);
+    TEST_FUNCTIONS.register(
+        "stop_seen_by_player_drops_cached_visibility",
+        () -> VisibilityAttributeTest::testStopSeenByPlayerDropsCachedVisibility);
 
     TEST_FUNCTIONS.register(
         "base_preset_exists_for_every_spawn_egg",
@@ -577,6 +501,8 @@ public final class ModGameTests {
     TEST_FUNCTIONS.register(
         "preset_handler_creates_preset_item",
         () -> PresetSpawnTest::testPresetHandlerCreatesPresetItem);
+    TEST_FUNCTIONS.register(
+        "preset_item_is_consumed_on_spawn", () -> PresetSpawnTest::testPresetItemIsConsumedOnSpawn);
 
     TEST_FUNCTIONS.register(
         "npc_without_stored_sounds_still_has_sounds",
@@ -1068,6 +994,12 @@ public final class ModGameTests {
     TEST_FUNCTIONS.register(
         "attack_command_adds_and_removes_objective",
         () -> ObjectiveCommandTest::testAttackCommandAddsAndRemovesObjective);
+    TEST_FUNCTIONS.register(
+        "attack_type_command_switches_attack_type",
+        () -> ObjectiveCommandTest::testAttackTypeCommandSwitchesAttackType);
+    TEST_FUNCTIONS.register(
+        "attack_type_command_rejects_unknown_type",
+        () -> ObjectiveCommandTest::testAttackTypeCommandRejectsUnknownType);
 
     TEST_FUNCTIONS.register(
         "sit_command_puts_n_p_c_on_shoulder",
@@ -1087,6 +1019,86 @@ public final class ModGameTests {
     TEST_FUNCTIONS.register(
         "offset_command_travels_over_shoulder",
         () -> ShoulderCommandTest::testOffsetCommandTravelsOverShoulder);
+
+    TEST_FUNCTIONS.register(
+        "projectile_data_is_saved_and_loaded",
+        () -> ProjectileTest::testProjectileDataIsSavedAndLoaded);
+    TEST_FUNCTIONS.register(
+        "default_projectile_data_is_not_saved",
+        () -> ProjectileTest::testDefaultProjectileDataIsNotSaved);
+    TEST_FUNCTIONS.register(
+        "custom_projectile_attack_spawns_bullet",
+        () -> ProjectileTest::testCustomProjectileAttackSpawnsBullet);
+    TEST_FUNCTIONS.register(
+        "ranged_attack_plays_configured_sound",
+        () -> ProjectileTest::testRangedAttackPlaysConfiguredSound);
+    TEST_FUNCTIONS.register(
+        "ranged_attack_plays_fallback_sound_without_configured_sound",
+        () -> ProjectileTest::testRangedAttackPlaysFallbackSoundWithoutConfiguredSound);
+    TEST_FUNCTIONS.register(
+        "bullet_deals_configured_damage", () -> ProjectileTest::testBulletDealsConfiguredDamage);
+    TEST_FUNCTIONS.register(
+        "explosion_does_not_destroy_blocks",
+        () -> ProjectileTest::testExplosionDoesNotDestroyBlocks);
+    TEST_FUNCTIONS.register(
+        "every_projectile_type_spawns_matching_entity",
+        () -> ProjectileTest::testEveryProjectileTypeSpawnsMatchingEntity);
+    TEST_FUNCTIONS.register(
+        "every_projectile_type_deals_configured_damage",
+        () -> ProjectileTest::testEveryProjectileTypeDealsConfiguredDamage);
+    TEST_FUNCTIONS.register(
+        "projectile_item_is_resolved", () -> ProjectileTest::testProjectileItemIsResolved);
+    TEST_FUNCTIONS.register(
+        "every_projectile_type_is_removed_on_block_hit",
+        () -> ProjectileTest::testEveryProjectileTypeIsRemovedOnBlockHit);
+    TEST_FUNCTIONS.register(
+        "every_projectile_type_is_removed_after_maximum_lifetime",
+        () -> ProjectileTest::testEveryProjectileTypeIsRemovedAfterMaximumLifetime);
+    TEST_FUNCTIONS.register(
+        "n_p_c_projectiles_cannot_be_picked_up",
+        () -> ProjectileTest::testNPCProjectilesCannotBePickedUp);
+    TEST_FUNCTIONS.register(
+        "shot_count_fires_every_projectile",
+        () -> ProjectileTest::testShotCountFiresEveryProjectile);
+    TEST_FUNCTIONS.register(
+        "knockback_pushes_target_further", () -> ProjectileTest::testKnockbackPushesTargetFurther);
+    TEST_FUNCTIONS.register("hit_effect_is_applied", () -> ProjectileTest::testHitEffectIsApplied);
+    TEST_FUNCTIONS.register(
+        "projectile_command_changes_settings",
+        () -> ProjectileTest::testProjectileCommandChangesSettings);
+    TEST_FUNCTIONS.register(
+        "projectile_command_rejects_invalid_values",
+        () -> ProjectileTest::testProjectileCommandRejectsInvalidValues);
+    TEST_FUNCTIONS.register(
+        "projectile_command_caps_explosion_power",
+        () -> ProjectileTest::testProjectileCommandCapsExplosionPower);
+    TEST_FUNCTIONS.register(
+        "bow_attack_shoots_custom_projectile",
+        () -> ProjectileTest::testBowAttackShootsCustomProjectile);
+    TEST_FUNCTIONS.register(
+        "bow_attack_keeps_arrow_without_custom_projectile",
+        () -> ProjectileTest::testBowAttackKeepsArrowWithoutCustomProjectile);
+    TEST_FUNCTIONS.register(
+        "crossbow_attack_shoots_custom_projectile",
+        () -> ProjectileTest::testCrossbowAttackShootsCustomProjectile);
+    TEST_FUNCTIONS.register(
+        "projectile_attack_needs_no_weapon",
+        () -> ProjectileTest::testProjectileAttackNeedsNoWeapon);
+    TEST_FUNCTIONS.register(
+        "projectile_attack_objective_creates_goal",
+        () -> ProjectileTest::testProjectileAttackObjectiveCreatesGoal);
+    TEST_FUNCTIONS.register(
+        "crossbow_attack_keeps_arrow_without_custom_projectile",
+        () -> ProjectileTest::testCrossbowAttackKeepsArrowWithoutCustomProjectile);
+    TEST_FUNCTIONS.register(
+        "projectile_attack_objective_hits_enemy",
+        () -> ProjectileTest::testProjectileAttackObjectiveHitsEnemy);
+    TEST_FUNCTIONS.register(
+        "bow_attack_objective_hits_enemy_with_custom_projectile",
+        () -> ProjectileTest::testBowAttackObjectiveHitsEnemyWithCustomProjectile);
+    TEST_FUNCTIONS.register(
+        "crossbow_attack_objective_hits_enemy_with_custom_projectile",
+        () -> ProjectileTest::testCrossbowAttackObjectiveHitsEnemyWithCustomProjectile);
   }
 
   public ModGameTests(FMLJavaModLoadingContext context) {
