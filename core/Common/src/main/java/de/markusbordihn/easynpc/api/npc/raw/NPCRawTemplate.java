@@ -276,7 +276,7 @@ public class NPCRawTemplate extends Zombie
     super(entityType, level);
     this.lookControl = new EasyNPCLookControl(this);
     this.easyNPCInventory.addListener(changedContainer -> this.markNPCDataUpdated("inventory"));
-    // Minecraft 1.21.11 Mob#<init> resets Mob#persistenceRequired after defineSynchedData set it.
+    // Minecraft 1.21.11 Mob#<init> resets Mob#persistenceRequired after defineSynchedData, see #862.
     this.setPersistenceRequired();
   }
 
@@ -463,12 +463,14 @@ public class NPCRawTemplate extends Zombie
   public void startSeenByPlayer(ServerPlayer serverPlayer) {
     super.startSeenByPlayer(serverPlayer);
     VisibilityConditionTracker.startSeenByPlayer(this, serverPlayer);
+    this.bossBarHandler.startSeenByPlayer(serverPlayer);
   }
 
   @Override
   public void stopSeenByPlayer(ServerPlayer serverPlayer) {
     super.stopSeenByPlayer(serverPlayer);
     VisibilityConditionTracker.stopSeenByPlayer(this, serverPlayer);
+    this.bossBarHandler.stopSeenByPlayer(serverPlayer);
   }
 
   @Override

@@ -230,7 +230,7 @@
   "text.easy_npc.config.custom_pose.title": "Пользовательские позы",
   "text.easy_npc.config.custom_preset_export.title": "Экспорт пользовательского шаблона",
   "text.easy_npc.config.custom_preset_import.title": "Импорт пользовательского шаблона",
-  "text.easy_npc.config.custom_skin.text": "Пользовательские скины позволяют использовать локально сохраненные скины для NPC.\nСкины должны быть размещены в соответствующей папке 'config/easy_npc/skins' для каждого игрока.",
+  "text.easy_npc.config.custom_skin.text": "Пользовательские скины позволяют использовать локально сохраненные скины для NPC.\nСкины должны быть размещены в соответствующей папке 'config/easy_npc/skin' для каждого игрока.",
   "text.easy_npc.config.custom_skin.title": "Пользовательские скины",
   "text.easy_npc.config.custom_trading_checkbox": "Включить пользовательскую торговлю",
   "text.easy_npc.config.custom_trading_text": "Этот флажок активирует пользовательскую торговлю с использованием NBT-данных.\n\nЭто полезно, если торговля определяется через NBT-данные, а не через интерфейс.",

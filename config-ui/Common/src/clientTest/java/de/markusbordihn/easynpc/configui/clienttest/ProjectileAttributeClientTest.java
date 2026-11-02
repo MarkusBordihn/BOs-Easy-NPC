@@ -45,6 +45,9 @@ class ProjectileAttributeClientTest extends ClientTestBase {
   private static final By PROJECTILE_ITEM_SAVE_BUTTON =
       By.className("de.markusbordihn.easynpc.configui.client.screen.components.SaveButton")
           .withIndex(0);
+  private static final By PROJECTILE_PAGE_BUTTON =
+      configurationButton("projectile_page.projectile");
+  private static final By EFFECTS_PAGE_BUTTON = configurationButton("projectile_page.effects");
   private static final String ITEM_PROJECTILE_SEARCH_TEXT = "Custom";
   private static final int SELECT_BOX_ENTRY_HEIGHT = 14;
   private static final String SAVED_PROJECTILE_ITEM = "minecraft:diamond_sword";
@@ -122,5 +125,25 @@ class ProjectileAttributeClientTest extends ClientTestBase {
         "Custom item projectile type was not kept after reopening");
     assertEquals(SAVED_PROJECTILE_ITEM, client.widget(PROJECTILE_ITEM_TEXT_FIELD).string("value"));
     client.saveScreenshot("reopened");
+  }
+
+  @Test
+  @DisplayName("Switching to the effects page keeps an unsaved item ID")
+  void pageSwitchKeepsUnsavedItem() {
+    UUID testNpc = spawnTestNpc();
+    openProjectileAttributes(testNpc);
+    selectItemProjectileType();
+    client.type(PROJECTILE_ITEM_TEXT_FIELD, SAVED_PROJECTILE_ITEM, true);
+
+    client.click(EFFECTS_PAGE_BUTTON);
+    client.await(Until.settled(5));
+    client.saveScreenshot("effects_page");
+    client.click(PROJECTILE_PAGE_BUTTON);
+    client.await(Until.settled(5));
+
+    assertEquals(SAVED_PROJECTILE_ITEM, client.widget(PROJECTILE_ITEM_TEXT_FIELD).string("value"));
+    assertTrue(
+        isEnabledWidget(PROJECTILE_ITEM_SAVE_BUTTON),
+        "Unsaved item ID cannot be saved after switching pages");
   }
 }

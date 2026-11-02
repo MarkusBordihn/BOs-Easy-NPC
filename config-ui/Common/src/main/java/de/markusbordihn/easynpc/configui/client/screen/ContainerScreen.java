@@ -105,12 +105,12 @@ public class ContainerScreen<T extends ConfigUIMenu> extends AbstractContainerSc
     this.rightPos = this.leftPos + this.imageWidth;
     this.bottomPos = this.topPos + this.imageHeight;
 
-    // Set mouse position to former position, to avoid mouse jumps.
-    if (formerMouseX > 0 && formerMouseY > 0) {
+    // MouseHandler#releaseMouse only centers the cursor while the window is active.
+    if (formerMouseX > 0 && formerMouseY > 0 && this.minecraftInstance.isWindowActive()) {
       GLFW.glfwSetCursorPos(
           this.minecraftInstance.getWindow().handle(), formerMouseX, formerMouseY);
-      resetFormerMousePosition();
     }
+    resetFormerMousePosition();
 
     if (this.showCloseButton) {
       this.closeButton =

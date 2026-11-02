@@ -160,6 +160,15 @@ public final class ProjectileTest {
     ProjectileTestHelper.assertBowAttackObjectiveHitsEnemyWithCustomProjectile(helper, humanoid());
   }
 
+  public static void testMeleeAndBowAttackObjectivesShootWhenHoldingBow(GameTestHelper helper) {
+    ProjectileTestHelper.assertMeleeAndBowAttackObjectivesShootWhenHoldingBow(helper, humanoid());
+  }
+
+  public static void testMeleeAttackYieldsOnlyToMatchingRangedWeapon(GameTestHelper helper) {
+    ProjectileTestHelper.assertMeleeAttackYieldsOnlyToMatchingRangedWeapon(helper, humanoid());
+    helper.succeed();
+  }
+
   public static void testCrossbowAttackObjectiveHitsEnemyWithCustomProjectile(
       GameTestHelper helper) {
     ProjectileTestHelper.assertCrossbowAttackObjectiveHitsEnemyWithCustomProjectile(

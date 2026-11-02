@@ -27,6 +27,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.CharacterEvent;
@@ -41,6 +42,7 @@ public class RangeSliderButton extends AbstractWidget {
   public static final Component RESET_TEXT = TextComponent.getText("↺");
   public static final Component EDIT_TEXT = TextComponent.getText("✎");
   public static final Component DONE_TEXT = TextComponent.getText("✔");
+  private static final String TOOLTIP_PREFIX = "text.easy_npc.range_slider.";
   private static final int DEFAULT_WIDTH = 170;
   private static final int DEFAULT_HEIGHT = 14;
   private static final int DECREASE_BUTTON_WIDTH = 12;
@@ -287,6 +289,16 @@ public class RangeSliderButton extends AbstractWidget {
             DONE_TEXT,
             this::showSliderButton);
     this.textButtonDone.active = showButtons;
+
+    this.textButtonDecrease.setTooltip(createTooltip("decrease"));
+    this.textButtonIncrease.setTooltip(createTooltip("increase"));
+    this.textButtonReset.setTooltip(createTooltip("reset"));
+    this.textButtonEdit.setTooltip(createTooltip("edit"));
+    this.textButtonDone.setTooltip(createTooltip("done"));
+  }
+
+  private static Tooltip createTooltip(String action) {
+    return Tooltip.create(TextComponent.getTranslatedTextRaw(TOOLTIP_PREFIX + action));
   }
 
   public void reset() {
@@ -371,19 +383,16 @@ public class RangeSliderButton extends AbstractWidget {
       this.textField.render(guiGraphics, mouseX, mouseY, partialTicks);
     }
 
-    if (this.textButtonDecrease.active) {
-      this.textButtonDecrease.render(guiGraphics, mouseX, mouseY, partialTicks);
-    }
-    if (this.textButtonIncrease.active) {
-      this.textButtonIncrease.render(guiGraphics, mouseX, mouseY, partialTicks);
-    }
-    if (this.textButtonReset.active) {
-      this.textButtonReset.render(guiGraphics, mouseX, mouseY, partialTicks);
+    if (!this.showButtons) {
+      return;
     }
 
-    if (this.textButtonEdit.active && this.textButtonEdit.visible) {
+    this.textButtonDecrease.render(guiGraphics, mouseX, mouseY, partialTicks);
+    this.textButtonIncrease.render(guiGraphics, mouseX, mouseY, partialTicks);
+    this.textButtonReset.render(guiGraphics, mouseX, mouseY, partialTicks);
+    if (this.textButtonEdit.isVisible()) {
       this.textButtonEdit.render(guiGraphics, mouseX, mouseY, partialTicks);
-    } else if (this.textButtonDone.active && this.textButtonDone.visible) {
+    } else if (this.textButtonDone.isVisible()) {
       this.textButtonDone.render(guiGraphics, mouseX, mouseY, partialTicks);
     }
   }

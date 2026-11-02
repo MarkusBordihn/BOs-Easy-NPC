@@ -65,7 +65,7 @@ public class DefaultRotationConfigurationScreen<T extends ConfigurationMenu>
 
     int sliderWidth = 80;
     int sliderHeight = 16;
-    int sliderLeftPosition = this.contentLeftPos + 10;
+    int sliderLeftPosition = this.contentLeftPos + 12;
     int sliderTopPosition = this.contentTopPos;
 
     RangeSliderButton sliderButtonX =
@@ -122,7 +122,7 @@ public class DefaultRotationConfigurationScreen<T extends ConfigurationMenu>
         new TextButton(
             this.contentLeftPos,
             sliderTopPosition,
-            10,
+            12,
             RangeSliderButton.EDIT_TEXT,
             button -> {
               if (button.getMessage() == RangeSliderButton.EDIT_TEXT) {

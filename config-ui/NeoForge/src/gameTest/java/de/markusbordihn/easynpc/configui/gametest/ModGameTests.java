@@ -254,6 +254,10 @@ public final class ModGameTests {
         "yes_no_dialog_configuration_screen",
         ConfigurationScreenTest::testYesNoDialogConfigurationScreen,
         DEFAULT_STRUCTURE);
+    register(
+        "boss_bar_attribute_configuration_screen",
+        ConfigurationScreenTest::testBossBarAttributeConfigurationScreen,
+        DEFAULT_STRUCTURE);
 
     register(
         "action_data_editor_screen",

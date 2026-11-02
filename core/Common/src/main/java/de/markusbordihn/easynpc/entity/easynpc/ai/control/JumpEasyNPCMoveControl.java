@@ -2,6 +2,7 @@ package de.markusbordihn.easynpc.entity.easynpc.ai.control;
 
 import de.markusbordihn.easynpc.api.npc.base.slime.SlimeBase;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.MoveControl;
@@ -10,19 +11,31 @@ public class JumpEasyNPCMoveControl extends MoveControl {
 
   private static final int DEFAULT_JUMP_DELAY = 10;
   private static final float AGGRESSIVE_JUMP_DELAY_FACTOR = 3.0F;
+  private static final float ROTATION_TOLERANCE_DEGREES = 1.0F;
 
   private float yRot;
   private int jumpDelay;
   private boolean isAggressive;
+  private boolean isRotationPending;
+  private boolean followsWantedPosition;
 
   public JumpEasyNPCMoveControl(Mob mob) {
     super(mob);
-    this.yRot = 180.0F * mob.getYRot() / (float) Math.PI;
+    this.yRot = mob.getYRot();
   }
 
   public void setDirection(float yRot, boolean isAggressive) {
     this.yRot = yRot;
     this.isAggressive = isAggressive;
+    this.isRotationPending = true;
+    this.followsWantedPosition = false;
+  }
+
+  @Override
+  public void setWantedPosition(double x, double y, double z, double speedModifier) {
+    super.setWantedPosition(x, y, z, speedModifier);
+    this.isRotationPending = true;
+    this.followsWantedPosition = true;
   }
 
   public void setWantedMovement(double speedModifier) {
@@ -32,9 +45,22 @@ public class JumpEasyNPCMoveControl extends MoveControl {
 
   @Override
   public void tick() {
-    this.mob.setYRot(this.rotlerp(this.mob.getYRot(), this.yRot, 90.0F));
-    this.mob.yHeadRot = this.mob.getYRot();
-    this.mob.yBodyRot = this.mob.getYRot();
+    if (this.operation == MoveControl.Operation.MOVE_TO && this.followsWantedPosition) {
+      this.yRot =
+          (float) (Mth.atan2(this.wantedZ - this.mob.getZ(), this.wantedX - this.mob.getX())
+                  * (180.0 / Math.PI))
+              - 90.0F;
+    }
+
+    if (this.isRotationPending) {
+      this.mob.setYRot(this.rotlerp(this.mob.getYRot(), this.yRot, 90.0F));
+      this.mob.yHeadRot = this.mob.getYRot();
+      this.mob.yBodyRot = this.mob.getYRot();
+      this.isRotationPending =
+          this.operation == MoveControl.Operation.MOVE_TO
+              || Mth.degreesDifferenceAbs(this.mob.getYRot(), this.yRot)
+                  > ROTATION_TOLERANCE_DEGREES;
+    }
 
     if (this.operation != MoveControl.Operation.MOVE_TO) {
       this.mob.setZza(0.0F);

@@ -83,7 +83,8 @@ public enum ConfigurationType {
   URL_SKIN,
   WORLD_PRESET_EXPORT,
   WORLD_PRESET_IMPORT,
-  YES_NO_DIALOG;
+  YES_NO_DIALOG,
+  BOSS_BAR_ATTRIBUTE;
 
   private final String configurationName = this.name().toLowerCase(Locale.ROOT) + "_configuration";
   private final Identifier id =

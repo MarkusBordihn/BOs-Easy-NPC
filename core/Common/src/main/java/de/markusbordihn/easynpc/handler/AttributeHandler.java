@@ -168,6 +168,10 @@ public class AttributeHandler {
           value instanceof Integer range
               && range >= DisplayAttributeType.MIN_BOSS_BAR_RANGE
               && range <= DisplayAttributeType.MAX_BOSS_BAR_RANGE;
+      case BOSS_BAR_AUTO_HIDE ->
+          value instanceof Integer seconds
+              && seconds >= DisplayAttributeType.MIN_BOSS_BAR_AUTO_HIDE_SECONDS
+              && seconds <= DisplayAttributeType.MAX_BOSS_BAR_AUTO_HIDE_SECONDS;
       case LIGHT_LEVEL ->
           value instanceof Integer lightLevel
               && lightLevel >= DisplayAttributeType.MIN_LIGHT_LEVEL

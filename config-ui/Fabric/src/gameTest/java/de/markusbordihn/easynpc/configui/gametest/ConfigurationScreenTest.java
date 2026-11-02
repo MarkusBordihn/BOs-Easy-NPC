@@ -70,6 +70,16 @@ public class ConfigurationScreenTest {
   }
 
   @GameTest(structure = "easy_npc_config_ui:gametest.3x3x3")
+  public void testBossBarAttributeConfigurationScreen(GameTestHelper helper) {
+    ConfigurationScreenTestHelper.testConfigurationScreen(
+        helper,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
+        ConfigurationType.BOSS_BAR_ATTRIBUTE,
+        ModMenuTypes.BOSS_BAR_ATTRIBUTE_CONFIGURATION_MENU);
+    helper.succeed();
+  }
+
+  @GameTest(structure = "easy_npc_config_ui:gametest.3x3x3")
   public void testAttackObjectiveConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,

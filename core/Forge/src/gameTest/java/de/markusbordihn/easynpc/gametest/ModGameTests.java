@@ -43,6 +43,21 @@ public final class ModGameTests {
 
   static {
     TEST_FUNCTIONS.register(
+        "idle_objectives_pause_in_combat",
+        () -> OutOfCombatGoalTest::testIdleObjectivesPauseInCombat);
+    TEST_FUNCTIONS.register(
+        "out_of_combat_goal_waits_for_combat_cooldown",
+        () -> OutOfCombatGoalTest::testOutOfCombatGoalWaitsForCombatCooldown);
+    TEST_FUNCTIONS.register(
+        "look_at_target_goal_faces_target",
+        () -> OutOfCombatGoalTest::testLookAtTargetGoalFacesTarget);
+    TEST_FUNCTIONS.register(
+        "move_back_to_home_goal_waits_before_retry",
+        () -> OutOfCombatGoalTest::testMoveBackToHomeGoalWaitsBeforeRetry);
+    TEST_FUNCTIONS.register(
+        "jump_move_control_follows_wanted_position",
+        () -> OutOfCombatGoalTest::testJumpMoveControlFollowsWantedPosition);
+    TEST_FUNCTIONS.register(
         "item_quantity_conditions", () -> ConditionEvaluationTest::testItemQuantityConditions);
     TEST_FUNCTIONS.register(
         "health_target_conditions", () -> ConditionEvaluationTest::testHealthTargetConditions);
@@ -169,6 +184,15 @@ public final class ModGameTests {
     TEST_FUNCTIONS.register(
         "loaded_n_p_c_stays_persistent",
         () -> NPCEntityLifecycleTest::testLoadedNPCStaysPersistent);
+    TEST_FUNCTIONS.register(
+        "constructed_n_p_c_is_persistent",
+        () -> NPCEntityLifecycleTest::testConstructedNPCIsPersistent);
+    TEST_FUNCTIONS.register(
+        "construction_tolerates_persistence_hook",
+        () -> NPCEntityLifecycleTest::testConstructionToleratesPersistenceHook);
+    TEST_FUNCTIONS.register(
+        "addon_display_attribute_override_keeps_visibility_data",
+        () -> NPCEntityLifecycleTest::testAddonDisplayAttributeOverrideKeepsVisibilityData);
     TEST_FUNCTIONS.register(
         "non_persistent_n_p_c_is_not_stored_on_join_and_unload",
         () -> NPCEntityLifecycleTest::testNonPersistentNPCIsNotStoredOnJoinAndUnload);
@@ -702,6 +726,23 @@ public final class ModGameTests {
     TEST_FUNCTIONS.register(
         "boss_bar_settings_are_exported_with_the_preset",
         () -> BossBarTest::testBossBarSettingsAreExportedWithThePreset);
+    TEST_FUNCTIONS.register(
+        "boss_bar_is_removed_when_player_stops_seeing_n_p_c",
+        () -> BossBarTest::testBossBarIsRemovedWhenPlayerStopsSeeingNPC);
+    TEST_FUNCTIONS.register(
+        "boss_bar_is_auto_hidden_and_shown_again_when_fighting",
+        () -> BossBarTest::testBossBarIsAutoHiddenAndShownAgainWhenFighting);
+    TEST_FUNCTIONS.register(
+        "boss_bar_command_changes_settings", () -> BossBarTest::testBossBarCommandChangesSettings);
+    TEST_FUNCTIONS.register(
+        "boss_bar_command_rejects_out_of_range_values",
+        () -> BossBarTest::testBossBarCommandRejectsOutOfRangeValues);
+    TEST_FUNCTIONS.register(
+        "boss_bar_settings_are_saved_and_loaded",
+        () -> BossBarTest::testBossBarSettingsAreSavedAndLoaded);
+    TEST_FUNCTIONS.register(
+        "boss_bar_auto_hide_is_reset_when_player_comes_back",
+        () -> BossBarTest::testBossBarAutoHideIsResetWhenPlayerComesBack);
 
     TEST_FUNCTIONS.register(
         "integration_lists_example_profiles",
@@ -1000,6 +1041,15 @@ public final class ModGameTests {
     TEST_FUNCTIONS.register(
         "attack_type_command_rejects_unknown_type",
         () -> ObjectiveCommandTest::testAttackTypeCommandRejectsUnknownType);
+    TEST_FUNCTIONS.register(
+        "attack_type_command_sets_several_attack_types",
+        () -> ObjectiveCommandTest::testAttackTypeCommandSetsSeveralAttackTypes);
+    TEST_FUNCTIONS.register(
+        "attack_type_command_rejects_melee_with_zombie",
+        () -> ObjectiveCommandTest::testAttackTypeCommandRejectsMeleeWithZombie);
+    TEST_FUNCTIONS.register(
+        "attack_list_command_shows_attack_types",
+        () -> ObjectiveCommandTest::testAttackListCommandShowsAttackTypes);
 
     TEST_FUNCTIONS.register(
         "sit_command_puts_n_p_c_on_shoulder",
@@ -1099,6 +1149,12 @@ public final class ModGameTests {
     TEST_FUNCTIONS.register(
         "crossbow_attack_objective_hits_enemy_with_custom_projectile",
         () -> ProjectileTest::testCrossbowAttackObjectiveHitsEnemyWithCustomProjectile);
+    TEST_FUNCTIONS.register(
+        "melee_and_bow_attack_objectives_shoot_when_holding_bow",
+        () -> ProjectileTest::testMeleeAndBowAttackObjectivesShootWhenHoldingBow);
+    TEST_FUNCTIONS.register(
+        "melee_attack_yields_only_to_matching_ranged_weapon",
+        () -> ProjectileTest::testMeleeAttackYieldsOnlyToMatchingRangedWeapon);
   }
 
   public ModGameTests(FMLJavaModLoadingContext context) {

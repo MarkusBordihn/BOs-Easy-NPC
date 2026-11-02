@@ -227,7 +227,7 @@
   "text.easy_npc.config.custom_pose.title": "自定义姿势",
   "text.easy_npc.config.custom_preset_export.title": "自定义预设导出",
   "text.easy_npc.config.custom_preset_import.title": "自定义预设导入",
-  "text.easy_npc.config.custom_skin.text": "自定义皮肤允许您对 NPC 使用本地存储的皮肤.\n皮肤必须存储在每个玩家的相应 'config/easy_npc/skins' 文件夹中.",
+  "text.easy_npc.config.custom_skin.text": "自定义皮肤允许您对 NPC 使用本地存储的皮肤.\n皮肤必须存储在每个玩家的相应 'config/easy_npc/skin' 文件夹中.",
   "text.easy_npc.config.custom_skin.title": "自定义皮肤",
   "text.easy_npc.config.custom_trading_checkbox": "自定义交易",
   "text.easy_npc.config.custom_trading_text": "该复选框将启用使用自定义 NBT 数据的自定义交易.\n\n当交易是在NBT数据上定义而不是在UI界面上定义的时,这可能很有用.",
