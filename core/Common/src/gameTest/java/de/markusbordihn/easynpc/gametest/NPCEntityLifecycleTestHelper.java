@@ -22,12 +22,14 @@ package de.markusbordihn.easynpc.gametest;
 import de.markusbordihn.easynpc.api.handler.EasyNPCEntityHandler;
 import de.markusbordihn.easynpc.data.action.ActionGroup;
 import de.markusbordihn.easynpc.data.action.ActionManager;
+import de.markusbordihn.easynpc.data.display.DisplayAttributeDataSet;
 import de.markusbordihn.easynpc.data.npc.NPCRemovalReason;
 import de.markusbordihn.easynpc.data.npc.SavedNPCEntityEntry;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataEntry;
 import de.markusbordihn.easynpc.data.objective.ObjectiveType;
 import de.markusbordihn.easynpc.data.saveddata.NPCEntityData;
 import de.markusbordihn.easynpc.data.status.StatusDataType;
+import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.entity.EasyNPCEntityTypes;
 import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.NPCEntityManager;
@@ -43,6 +45,7 @@ import java.util.UUID;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -338,6 +341,69 @@ public class NPCEntityLifecycleTestHelper {
 
     if (!easyNPC.getMob().isPersistenceRequired() || !easyNPC.isPersistentNPC()) {
       helper.fail("NPC loaded with PersistenceRequired:0b must stay persistent");
+    }
+  }
+
+  public static void assertConstructedNPCIsPersistent(
+      GameTestHelper helper, EntityType<?> entityType) {
+    if (!(entityType.create(helper.getLevel(), EntitySpawnReason.LOAD)
+        instanceof EasyNPC<?> easyNPC)) {
+      helper.fail("Unable to create an Easy NPC of type " + entityType);
+      return;
+    }
+
+    if (!easyNPC.getMob().isPersistenceRequired() || !easyNPC.isPersistentNPC()) {
+      helper.fail("Constructed NPC must be persistent without being added or loaded");
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  public static void assertConstructionToleratesPersistenceHook(
+      GameTestHelper helper, EntityType<?> entityType) {
+    HumanoidNPC easyNPC;
+    try {
+      easyNPC =
+          new HumanoidNPC((EntityType<? extends PathfinderMob>) entityType, helper.getLevel()) {
+            @Override
+            public void setPersistenceRequired() {
+              // Mirrors the LetMeDespawn mixin from #862, which reads synced data at this point.
+              this.hasCustomName();
+              super.setPersistenceRequired();
+            }
+          };
+    } catch (NullPointerException e) {
+      helper.fail("Constructing an NPC must not call setPersistenceRequired too early: " + e);
+      return;
+    }
+
+    if (!easyNPC.getMob().isPersistenceRequired() || !easyNPC.isPersistentNPC()) {
+      helper.fail("NPC with a persistence hook must still be persistent");
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  public static void assertAddonDisplayAttributeOverrideKeepsVisibilityData(
+      GameTestHelper helper, EntityType<?> entityType) {
+    boolean hasVisibilityConditions;
+    try {
+      HumanoidNPC easyNPC =
+          new HumanoidNPC((EntityType<? extends PathfinderMob>) entityType, helper.getLevel()) {
+            @Override
+            public void defineSynchedDisplayAttributeData(SynchedEntityData.Builder builder) {
+              this.defineSynchedEntityData(
+                  builder,
+                  SynchedDataIndex.DISPLAY_ATTRIBUTE_SET,
+                  DisplayAttributeDataSet.createDefault());
+            }
+          };
+      hasVisibilityConditions = easyNPC.hasVisibilityConditions();
+    } catch (RuntimeException e) {
+      helper.fail("Addon display attribute override dropped visibility data: " + e);
+      return;
+    }
+
+    if (hasVisibilityConditions) {
+      helper.fail("NPC must start without visibility conditions");
     }
   }
 

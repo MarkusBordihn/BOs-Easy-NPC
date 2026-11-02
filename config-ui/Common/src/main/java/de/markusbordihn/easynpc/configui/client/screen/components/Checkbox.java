@@ -37,6 +37,8 @@ public class Checkbox extends AbstractButton {
 
   private static final Identifier TEXTURE =
       Identifier.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/checkbox.png");
+  private static final int BOX_SIZE = 16;
+  private static final int LABEL_GAP = 2;
 
   protected final Checkbox.OnChange onChange;
   private final boolean showLabel;
@@ -77,12 +79,20 @@ public class Checkbox extends AbstractButton {
       boolean selected,
       boolean showLabel,
       Checkbox.OnChange onChange) {
-    super(left, top, 16, 16, component);
+    super(left, top, getWidgetWidth(component, showLabel), 16, component);
     this.selected = selected;
     this.showLabel = showLabel;
     Minecraft minecraft = Minecraft.getInstance();
     this.font = minecraft.font;
     this.onChange = onChange;
+  }
+
+  private static int getWidgetWidth(Component component, boolean showLabel) {
+    if (!showLabel) {
+      return BOX_SIZE;
+    }
+
+    return BOX_SIZE + LABEL_GAP + Minecraft.getInstance().font.width(component);
   }
 
   @Override
@@ -132,8 +142,8 @@ public class Checkbox extends AbstractButton {
         this.getY(),
         this.getSpriteOffsetX(),
         this.selected ? 16 : 0,
-        16,
-        16,
+        BOX_SIZE,
+        BOX_SIZE,
         64,
         64);
 
@@ -142,7 +152,7 @@ public class Checkbox extends AbstractButton {
           guiGraphics,
           this.font,
           this.getMessage(),
-          this.getX() + 18,
+          this.getX() + BOX_SIZE + LABEL_GAP,
           this.getY() + (this.height - 8) / 2);
     }
   }

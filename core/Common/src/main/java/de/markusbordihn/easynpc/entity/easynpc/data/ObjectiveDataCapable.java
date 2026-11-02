@@ -32,6 +32,7 @@ import de.markusbordihn.easynpc.data.server.ServerEntityData;
 import de.markusbordihn.easynpc.data.ticker.TickerType;
 import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.ai.goal.LookAtAttackTargetGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.ResetUniversalAngerTargetGoal;
 import de.markusbordihn.easynpc.handler.PauseManager;
 import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
@@ -330,6 +331,7 @@ public interface ObjectiveDataCapable<T extends Mob> extends EasyNPC<T> {
         log.debug("Adding target goal {} for {}", target, this);
         targetSelector.removeGoal(target);
         targetSelector.addGoal(objectiveDataEntry.getPriority(), target);
+        this.registerLookAtAttackTargetGoal();
         addedCustomObjective = true;
       }
     }
@@ -351,6 +353,16 @@ public interface ObjectiveDataCapable<T extends Mob> extends EasyNPC<T> {
       EasyNPCEventRegistry.fireObjectiveAdded(this, objectiveDataEntry);
     }
     return objectiveDataEntry.isRegistered();
+  }
+
+  private void registerLookAtAttackTargetGoal() {
+    GoalSelector goalSelector = this.getEntityGoalSelector();
+    boolean isRegistered =
+        goalSelector.getAvailableGoals().stream()
+            .anyMatch(wrappedGoal -> wrappedGoal.getGoal() instanceof LookAtAttackTargetGoal);
+    if (!isRegistered) {
+      goalSelector.addGoal(LookAtAttackTargetGoal.PRIORITY, new LookAtAttackTargetGoal<>(this));
+    }
   }
 
   private void removeReplacedObjectiveGoals(ObjectiveDataEntry objectiveDataEntry) {

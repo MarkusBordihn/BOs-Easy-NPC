@@ -23,18 +23,26 @@ import de.markusbordihn.easynpc.data.display.DisplayAttributeType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.DisplayAttributeDataCapable;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 
 public class BossBarHandler {
 
   private static final int UPDATE_INTERVAL_TICKS = 10;
 
+  private final Set<ServerPlayer> seenByPlayers = new HashSet<>();
+  private final Map<ServerPlayer, Integer> visibleSinceTicks = new HashMap<>();
+  private final Set<ServerPlayer> autoHiddenPlayers = new HashSet<>();
   private ServerBossEvent bossEvent;
 
   public static BossEvent.BossBarColor getBossBarColor(
@@ -62,6 +70,33 @@ public class BossBarHandler {
         displayAttributeData.getDisplayIntAttribute(DisplayAttributeType.BOSS_BAR_RANGE),
         DisplayAttributeType.MIN_BOSS_BAR_RANGE,
         DisplayAttributeType.MAX_BOSS_BAR_RANGE);
+  }
+
+  public static int getBossBarAutoHideSeconds(
+      DisplayAttributeDataCapable<?> displayAttributeData) {
+    return Mth.clamp(
+        displayAttributeData.getDisplayIntAttribute(DisplayAttributeType.BOSS_BAR_AUTO_HIDE),
+        DisplayAttributeType.MIN_BOSS_BAR_AUTO_HIDE_SECONDS,
+        DisplayAttributeType.MAX_BOSS_BAR_AUTO_HIDE_SECONDS);
+  }
+
+  private static boolean isFighting(LivingEntity livingEntity) {
+    if (livingEntity instanceof Mob mob && mob.getTarget() != null) {
+      return true;
+    }
+
+    return livingEntity.getLastHurtByMob() != null
+        && livingEntity.tickCount - livingEntity.getLastHurtByMobTimestamp()
+            <= UPDATE_INTERVAL_TICKS;
+  }
+
+  public void startSeenByPlayer(ServerPlayer serverPlayer) {
+    this.seenByPlayers.add(serverPlayer);
+  }
+
+  public void stopSeenByPlayer(ServerPlayer serverPlayer) {
+    this.seenByPlayers.remove(serverPlayer);
+    this.removePlayer(serverPlayer);
   }
 
   public void tick(EasyNPC<?> easyNPC) {
@@ -94,13 +129,38 @@ public class BossBarHandler {
 
     int range = getBossBarRange(displayAttributeData);
     double rangeSquared = (double) range * range;
+    Set<ServerPlayer> playersInRange = new HashSet<>();
+    for (ServerPlayer serverPlayer : this.seenByPlayers) {
+      if (this.isInRange(easyNPC, serverLevel, serverPlayer, rangeSquared)) {
+        playersInRange.add(serverPlayer);
+      }
+    }
     for (ServerPlayer serverPlayer : List.copyOf(this.bossEvent.getPlayers())) {
-      if (!this.isInRange(easyNPC, serverLevel, serverPlayer, rangeSquared)) {
+      if (!playersInRange.contains(serverPlayer)) {
         this.bossEvent.removePlayer(serverPlayer);
       }
     }
-    for (ServerPlayer serverPlayer : serverLevel.players()) {
-      if (this.isInRange(easyNPC, serverLevel, serverPlayer, rangeSquared)) {
+    this.visibleSinceTicks.keySet().retainAll(playersInRange);
+    this.autoHiddenPlayers.retainAll(playersInRange);
+
+    if (isFighting(livingEntity)) {
+      this.visibleSinceTicks.clear();
+      this.autoHiddenPlayers.clear();
+    }
+
+    int autoHideTicks = getBossBarAutoHideSeconds(displayAttributeData) * 20;
+    int tickCount = livingEntity.tickCount;
+    for (ServerPlayer serverPlayer : playersInRange) {
+      if (this.autoHiddenPlayers.contains(serverPlayer)) {
+        continue;
+      }
+
+      int visibleSinceTick =
+          this.visibleSinceTicks.computeIfAbsent(serverPlayer, player -> tickCount);
+      if (autoHideTicks > 0 && tickCount - visibleSinceTick >= autoHideTicks) {
+        this.bossEvent.removePlayer(serverPlayer);
+        this.autoHiddenPlayers.add(serverPlayer);
+      } else {
         this.bossEvent.addPlayer(serverPlayer);
       }
     }
@@ -110,7 +170,17 @@ public class BossBarHandler {
     return this.bossEvent == null ? List.of() : this.bossEvent.getPlayers();
   }
 
+  public void removePlayer(ServerPlayer serverPlayer) {
+    this.visibleSinceTicks.remove(serverPlayer);
+    this.autoHiddenPlayers.remove(serverPlayer);
+    if (this.bossEvent != null) {
+      this.bossEvent.removePlayer(serverPlayer);
+    }
+  }
+
   public void removeAllPlayers() {
+    this.visibleSinceTicks.clear();
+    this.autoHiddenPlayers.clear();
     if (this.bossEvent != null) {
       this.bossEvent.removeAllPlayers();
       this.bossEvent = null;

@@ -271,7 +271,7 @@ public class ConfigurationMenuHandler {
               FactionDataCapable.DATA_FACTION_NAME_TAG, factionData.getFactionName());
         }
       }
-      case ABILITIES_ATTRIBUTE -> {
+      case ABILITIES_ATTRIBUTE, BOSS_BAR_ATTRIBUTE -> {
         addBlockedConfigurationsForTypes(
             additionalSyncData,
             serverPlayer,

@@ -31,6 +31,7 @@ import de.markusbordihn.easynpc.data.objective.ObjectiveDataEntry;
 import de.markusbordihn.easynpc.data.objective.ObjectiveType;
 import de.markusbordihn.easynpc.data.sound.SoundType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.ai.goal.CustomMeleeAttackGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.ProjectileAttackGoal;
 import de.markusbordihn.easynpc.entity.easynpc.data.AttackDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.AttackHandler;
@@ -60,6 +61,8 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.goal.WrappedGoal;
 import net.minecraft.world.entity.animal.pig.Pig;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
@@ -764,6 +767,46 @@ public class ProjectileTestHelper {
         mockRangedNPC(
             helper, entityType, new ItemStack(Items.BOW), POISON_PROJECTILE_DATA.withEnabled(true));
     assertObjectiveHitsEnemyRepeatedly(helper, easyNPC, ObjectiveType.BOW_ATTACK);
+  }
+
+  public static void assertMeleeAndBowAttackObjectivesShootWhenHoldingBow(
+      GameTestHelper helper, EntityType<?> entityType) {
+    EasyNPC<?> easyNPC =
+        mockRangedNPC(
+            helper, entityType, new ItemStack(Items.BOW), POISON_PROJECTILE_DATA.withEnabled(true));
+    GameTestHelpers.assertTrue(
+        helper,
+        "The melee attack objective must be added",
+        EasyNPCObjectiveHandler.addObjective(
+            easyNPC, new ObjectiveDataEntry(ObjectiveType.MELEE_ATTACK)));
+    assertObjectiveHitsEnemyRepeatedly(helper, easyNPC, ObjectiveType.BOW_ATTACK);
+  }
+
+  public static void assertMeleeAttackYieldsOnlyToMatchingRangedWeapon(
+      GameTestHelper helper, EntityType<?> entityType) {
+    EasyNPC<?> easyNPC =
+        mockRangedNPC(helper, entityType, new ItemStack(Items.BOW), ProjectileData.DEFAULT);
+    EasyNPCObjectiveHandler.addObjective(
+        easyNPC, new ObjectiveDataEntry(ObjectiveType.MELEE_ATTACK));
+    EasyNPCObjectiveHandler.addObjective(easyNPC, new ObjectiveDataEntry(ObjectiveType.BOW_ATTACK));
+    Mob enemy = spawnEnemy(helper);
+    enemy.setPos(easyNPC.getLivingEntity().position());
+    easyNPC.getMob().setTarget(enemy);
+    Goal meleeAttackGoal =
+        easyNPC.getEntityGoalSelector().getAvailableGoals().stream()
+            .map(WrappedGoal::getGoal)
+            .filter(CustomMeleeAttackGoal.class::isInstance)
+            .findFirst()
+            .orElse(null);
+    GameTestHelpers.assertTrue(
+        helper, "The melee attack goal must be registered", meleeAttackGoal != null);
+
+    GameTestHelpers.assertTrue(
+        helper, "The melee attack yields while holding a bow", !meleeAttackGoal.canUse());
+
+    easyNPC.getLivingEntity().setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.IRON_SWORD));
+    GameTestHelpers.assertTrue(
+        helper, "The melee attack is used while holding a sword", meleeAttackGoal.canUse());
   }
 
   public static void assertCrossbowAttackObjectiveHitsEnemyWithCustomProjectile(

@@ -10,22 +10,27 @@ Check the [upgrade guide][upgrade_guide] for more information.
 
 ### 7.18.0
 
+- Fixed #862 by keeping NPCs from getting lost on loading with mods like LetMeDespawn.
+- Fixed NPCs with melee and a ranged attack not shooting while holding a bow, crossbow or gun.
+- Fixed NPCs spinning between objectives and slime NPCs hopping the wrong way when attacking.
+- Fixed the boss bar staying on screen after teleporting away or changing dimensions.
 - Fixed creative pick block on an NPC not giving its spawn egg.
 - Fixed "Scoreboard" conditions adding a score of 0 for players without a score.
-- Fixed missing error messages in the URL and player skin screens.
-- Fixed the URL skin screen logging errors on every key press while typing an address.
-- Fixed the Spartan Weaponry golden heavy crossbow not working with "Crossbow Attack".
-- Fixed hints overlapping or leaving the screen in the "Wait", "Move To" and condition editors.
+- Fixed the Spartan Weaponry golden heavy crossbow and added the leather and copper ones.
+- Fixed overlapping hints, checkbox tooltips, and missing errors and log spam in the skin screens.
+- Fixed the "Custom" skin tab naming the folder `skins` instead of `config/easy_npc/skin`.
+- Fixed many German translations, the English Bogged name and raw "Main Hand"/"Off Hand" keys.
 - Changed preset items to be used up when spawning an NPC in survival to fix #844.
+- Changed stroll, home and look objectives to pause during combat and for 3 seconds after it.
+- Changed NPCs with a target but no usable attack, e.g. no bow in hand, to look at their target.
+- Changed the "Attack" and "Projectile Settings" screens to be simpler and added slider tooltips.
+- Changed boss bar options to their own screen in "Display", with a new "Hide after" setting.
 - Added per-player visibility conditions, e.g. by score, in the "Display" tab to fix #785.
 - Added custom projectiles with damage, trail and impact for bows, crossbows and guns to fix #855.
 - Added the "Projectile Attack" objective to shoot projectiles without a weapon, like a wizard.
-- Added projectile types: bullet, arrows, trident, snowball, egg, fireballs, wither skull and items.
-- Added knockback, multiple shots and hit effects like poison or slowness to custom projectiles.
-- Added the `/easy_npc projectile` command and an API to set projectiles for NPCs.
-- Added `/easy_npc objective <npc> set attack type <type>` to switch the attack type, e.g. `bow`.
-- Added the leather and copper heavy crossbows from Spartan Weaponry to "Crossbow Attack".
-- Added a "Ranged Attack" sound and explosion limits for projectiles in `npc_base.cfg`.
+- Added projectile types like bullets, fireballs or items, multiple shots, knockback and effects.
+- Added the `projectile`, `boss_bar` and `objective … set attack type` commands and an API.
+- Added a "Ranged Attack" sound and projectile explosion limits in `npc_base.cfg`.
 
 ### 7.17.1
 
