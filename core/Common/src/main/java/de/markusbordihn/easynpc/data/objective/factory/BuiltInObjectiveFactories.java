@@ -104,6 +104,14 @@ public final class BuiltInObjectiveFactories {
     return requiresPathfinderMob(goalFactory(objectiveGoalCreator));
   }
 
+  static ObjectiveGoalFactory outOfCombat(ObjectiveGoalFactory objectiveGoalFactory) {
+    return new OutOfCombatObjectiveFactory(objectiveGoalFactory);
+  }
+
+  static ObjectiveGoalFactory outOfCombat(ObjectiveGoalCreator objectiveGoalCreator) {
+    return outOfCombat(goalFactory(objectiveGoalCreator));
+  }
+
   static ObjectiveGoalFactory goalFactory(ObjectiveGoalCreator objectiveGoalCreator) {
     return new ObjectiveGoalFactory() {
       @Override

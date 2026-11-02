@@ -23,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import de.markusbordihn.clientruntimeinterfacetoolkit.testrunner.By;
+import de.markusbordihn.clientruntimeinterfacetoolkit.testrunner.GameClient.TemporaryChange;
 import de.markusbordihn.clientruntimeinterfacetoolkit.testrunner.GameClientBuilder;
 import de.markusbordihn.clientruntimeinterfacetoolkit.testrunner.GameClientExtension;
 import de.markusbordihn.clientruntimeinterfacetoolkit.testrunner.Until;
@@ -48,6 +49,7 @@ abstract class ClientTestBase {
       GameClientExtension.shared(ClientTestBase::configureLaunch);
 
   private static final String SUITE_NAME = "Easy NPC config-ui";
+  private static final String SEND_COMMAND_FEEDBACK_GAME_RULE = "sendCommandFeedback";
   private static final int PLATFORM_Y = 100;
   static final int STAND_Y = PLATFORM_Y + 1;
   private static final String TEST_PLATFORM_FILE_NAME = "npc_platform.nbt";
@@ -60,7 +62,7 @@ abstract class ClientTestBase {
         .withSuiteName(SUITE_NAME)
         .withWindowSize(1280, 720)
         .withGuiScale(2)
-        .withAllowedCommands("easy_npc_config_ui", "easy_npc")
+        .withAllowedCommands("easy_npc_config_ui", "easy_npc", "armourers")
         .withWorld()
         .withLayoutChecksOnScreenshot();
   }
@@ -78,6 +80,16 @@ abstract class ClientTestBase {
       client.placeStructure(testPlatformFile, -2, PLATFORM_Y, -1);
     } catch (IOException e) {
       throw new UncheckedIOException("Unable to read the scene " + TEST_PLATFORM_RESOURCE, e);
+    }
+  }
+
+  static void runCommandAndAwaitFeedback(String command, String expectedFeedback) {
+    client.closeScreen();
+    client.await(Until.noScreen());
+    client.clearChat();
+    try (TemporaryChange commandFeedback =
+        client.setGameRule(SEND_COMMAND_FEEDBACK_GAME_RULE, true)) {
+      client.runCommand(command, Until.chatMessage(expectedFeedback));
     }
   }
 

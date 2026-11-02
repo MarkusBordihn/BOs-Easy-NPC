@@ -164,6 +164,7 @@ public interface EasyNPCBase<E extends Mob>
     DisplayAttributeDataCapable<E> displayAttributeData = this.getEasyNPCDisplayAttributeData();
     if (displayAttributeData != null) {
       displayAttributeData.defineSynchedDisplayAttributeData(builder);
+      displayAttributeData.defineSynchedVisibilityConditionData(builder);
     }
     ModelDataCapable<E> modelData = this.getEasyNPCModelData();
     if (modelData != null) {
@@ -211,8 +212,6 @@ public interface EasyNPCBase<E extends Mob>
     if (!this.isServerSideInstance()) {
       return;
     }
-
-    this.getMob().setPersistenceRequired();
 
     ServerDataCapable<E> serverData = this.getEasyNPCServerData();
     if (serverData == null) {

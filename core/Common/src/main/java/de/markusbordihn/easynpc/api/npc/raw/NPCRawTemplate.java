@@ -267,6 +267,9 @@ public class NPCRawTemplate extends Zombie implements EasyNPCBase<Zombie> {
 
   public NPCRawTemplate(EntityType<? extends Zombie> entityType, Level level, Enum<?> variant) {
     super(entityType, level);
+    if (this.isServerSideInstance()) {
+      this.setPersistenceRequired();
+    }
     this.lookControl = new EasyNPCLookControl(this);
     this.easyNPCInventory.addListener(changedContainer -> this.markNPCDataUpdated("inventory"));
     this.registerEasyNPCDefaultVariant(variant);
@@ -274,6 +277,9 @@ public class NPCRawTemplate extends Zombie implements EasyNPCBase<Zombie> {
 
   public NPCRawTemplate(EntityType<? extends Zombie> entityType, Level level) {
     super(entityType, level);
+    if (this.isServerSideInstance()) {
+      this.setPersistenceRequired();
+    }
     this.lookControl = new EasyNPCLookControl(this);
     this.easyNPCInventory.addListener(changedContainer -> this.markNPCDataUpdated("inventory"));
   }
@@ -461,12 +467,14 @@ public class NPCRawTemplate extends Zombie implements EasyNPCBase<Zombie> {
   public void startSeenByPlayer(ServerPlayer serverPlayer) {
     super.startSeenByPlayer(serverPlayer);
     VisibilityConditionTracker.startSeenByPlayer(this, serverPlayer);
+    this.bossBarHandler.startSeenByPlayer(serverPlayer);
   }
 
   @Override
   public void stopSeenByPlayer(ServerPlayer serverPlayer) {
     super.stopSeenByPlayer(serverPlayer);
     VisibilityConditionTracker.stopSeenByPlayer(this, serverPlayer);
+    this.bossBarHandler.stopSeenByPlayer(serverPlayer);
   }
 
   @Override

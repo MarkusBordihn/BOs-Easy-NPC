@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "easy_npc:item/bullet"
+    "layer0": "easy_npc:item/projectile/bullet"
   }
 }

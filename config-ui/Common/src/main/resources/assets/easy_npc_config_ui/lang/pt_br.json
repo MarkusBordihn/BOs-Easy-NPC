@@ -70,7 +70,7 @@
   "text.easy_npc.config.custom_pose.title": "Pose Personalizada",
   "text.easy_npc.config.custom_preset_export.title": "Exportar Predefinição Personalizada",
   "text.easy_npc.config.custom_preset_import.title": "Importar Predefinição Personalizada",
-  "text.easy_npc.config.custom_skin.text": "Skins personalizadas permitem que você use skins armazenadas localmente para os NPCs.\nAs skins devem ser armazenadas na pasta 'config/easy_npc/skins' correspondente para cada jogador.",
+  "text.easy_npc.config.custom_skin.text": "Skins personalizadas permitem que você use skins armazenadas localmente para os NPCs.\nAs skins devem ser armazenadas na pasta 'config/easy_npc/skin' correspondente para cada jogador.",
   "text.easy_npc.config.custom_skin.title": "Skins Personalizadas",
   "text.easy_npc.config.custom_trading_checkbox": "Trocas Personalizadas",
   "text.easy_npc.config.custom_trading_text": "A caixa de seleção habilitará trocas personalizadas com dados NBT personalizados.\n\nIsso pode ser útil quando as trocas são definidas por dados NBT personalizados e não pela interface.",

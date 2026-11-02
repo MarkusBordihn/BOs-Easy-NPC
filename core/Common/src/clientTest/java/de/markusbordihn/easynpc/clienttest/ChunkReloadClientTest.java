@@ -34,6 +34,7 @@ class ChunkReloadClientTest extends ClientTestBase {
 
   private static final String NPC_TYPE = "easy_npc:humanoid";
   private static final String CHANGED_NAME = "Reloaded";
+  private static final String CHANGED_AGAIN_NAME = "ReloadedAgain";
   private static final int RENDER_DISTANCE_CHUNKS = 2;
   private static final int SIMULATION_DISTANCE_CHUNKS = 5;
   private static final int CHUNK_SIZE = 16;
@@ -64,13 +65,8 @@ class ChunkReloadClientTest extends ClientTestBase {
         TemporaryChange spectator = client.setGameMode(GameMode.SPECTATOR)) {
       this.spawnChangedNPC();
 
-      client.teleport(UNLOADING_X, VIEW_Y, NPC_Z, 0, 0);
-      client.await(Until.entityAbsent(this.npcParameters()));
-      client.await(Until.ticksElapsed(WAITING_TICKS));
-
-      client.teleport(OUTSIDE_SPAWN_CHUNKS_X + 0.5, VIEW_Y, 0.5, 0, 0);
-      client.await(Until.entityPresent(this.npcParameters()));
-      this.awaitChangedName();
+      this.reloadNPCChunk();
+      this.awaitName(CHANGED_NAME);
       client.saveScreenshot("reloaded_npc");
     }
   }
@@ -84,8 +80,29 @@ class ChunkReloadClientTest extends ClientTestBase {
 
       client.teleport(NEARBY_X, VIEW_Y, NPC_Z, 90, 0);
       client.await(Until.ticksElapsed(WAITING_TICKS));
-      this.awaitChangedName();
+      this.awaitName(CHANGED_NAME);
       client.saveScreenshot("nearby_npc");
+    }
+  }
+
+  @Test
+  @DisplayName("NPC survives repeated chunk reloads with a change in between")
+  void npcSurvivesRepeatedChunkReloads() {
+    try (TemporaryChange landing = client.setGameMode(GameMode.SURVIVAL);
+        TemporaryChange spectator = client.setGameMode(GameMode.SPECTATOR)) {
+      this.spawnChangedNPC();
+
+      this.reloadNPCChunk();
+      this.awaitName(CHANGED_NAME);
+
+      client.runCommand("easy_npc name set " + this.npcUUID + " " + CHANGED_AGAIN_NAME);
+      this.awaitName(CHANGED_AGAIN_NAME);
+      this.reloadNPCChunk();
+      this.awaitName(CHANGED_AGAIN_NAME);
+
+      this.reloadNPCChunk();
+      this.awaitName(CHANGED_AGAIN_NAME);
+      client.saveScreenshot("repeatedly_reloaded_npc");
     }
   }
 
@@ -103,13 +120,21 @@ class ChunkReloadClientTest extends ClientTestBase {
         client.spawnEntity(EntitySpawn.of(NPC_TYPE, OUTSIDE_SPAWN_CHUNKS_X + 0.5, VIEW_Y, NPC_Z));
     client.await(Until.entityPresent(this.npcParameters()));
     client.runCommand("easy_npc name set " + this.npcUUID + " " + CHANGED_NAME);
-    this.awaitChangedName();
+    this.awaitName(CHANGED_NAME);
   }
 
-  private void awaitChangedName() {
+  private void reloadNPCChunk() {
+    client.teleport(UNLOADING_X, VIEW_Y, NPC_Z, 0, 0);
+    client.await(Until.entityAbsent(this.npcParameters()));
+    client.await(Until.ticksElapsed(WAITING_TICKS));
+
+    client.teleport(OUTSIDE_SPAWN_CHUNKS_X + 0.5, VIEW_Y, 0.5, 0, 0);
+    client.await(Until.entityPresent(this.npcParameters()));
+  }
+
+  private void awaitName(String name) {
     client.awaitEntity(
-        this.npcParameters(),
-        entity -> entity.customName().filter(CHANGED_NAME::equals).isPresent());
+        this.npcParameters(), entity -> entity.customName().filter(name::equals).isPresent());
   }
 
   private Parameters npcParameters() {

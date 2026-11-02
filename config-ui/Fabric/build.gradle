@@ -73,6 +73,10 @@ dependencies {
     modRuntimeOnly("maven.modrinth:easy-model-entities:${project.fabric_easy_model_entities_version}")
   }
 
+  if (isClientTestRun) {
+    modRuntimeOnly("maven.modrinth:armourers-workshop:${project.fabric_armourers_workshop_version}")
+  }
+
   // Tide (for testing, requires Cloth Config at runtime)
   // Tide uses the same version number across Minecraft versions, so pin the Modrinth version id
   if (!isTestRun) {

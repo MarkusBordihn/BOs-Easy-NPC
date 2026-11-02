@@ -94,6 +94,9 @@ public record DisplayAttributeDataSet(
         DisplayAttributeType.BOSS_BAR_STYLE,
         new DisplayAttributeEntry(BossEvent.BossBarOverlay.PROGRESS.name()));
     map.put(DisplayAttributeType.SHOW_BOSS_BAR, new DisplayAttributeEntry(false));
+    map.put(
+        DisplayAttributeType.BOSS_BAR_AUTO_HIDE,
+        new DisplayAttributeEntry(DisplayAttributeType.DEFAULT_BOSS_BAR_AUTO_HIDE_SECONDS));
     return map;
   }
 

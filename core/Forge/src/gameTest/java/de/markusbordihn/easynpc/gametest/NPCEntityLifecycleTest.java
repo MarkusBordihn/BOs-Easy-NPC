@@ -88,6 +88,25 @@ public class NPCEntityLifecycleTest {
   }
 
   @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testConstructedNPCIsPersistent(GameTestHelper helper) {
+    NPCEntityLifecycleTestHelper.assertConstructedNPCIsPersistent(helper, humanoid());
+    helper.succeed();
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testConstructionToleratesPersistenceHook(GameTestHelper helper) {
+    NPCEntityLifecycleTestHelper.assertConstructionToleratesPersistenceHook(helper, humanoid());
+    helper.succeed();
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testAddonDisplayAttributeOverrideKeepsVisibilityData(GameTestHelper helper) {
+    NPCEntityLifecycleTestHelper.assertAddonDisplayAttributeOverrideKeepsVisibilityData(
+        helper, humanoid());
+    helper.succeed();
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testNonPersistentNPCIsNotStoredOnJoinAndUnload(GameTestHelper helper) {
     NPCEntityLifecycleTestHelper.assertNonPersistentNPCIsNotStoredOnJoinAndUnload(
         helper, humanoid());

@@ -52,14 +52,50 @@ public class BossBarTest {
   }
 
   @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testBossBarIsRemovedWhenPlayerStopsSeeingNPC(GameTestHelper helper) {
+    BossBarTestHelper.assertBossBarIsRemovedWhenPlayerStopsSeeingNPC(helper, humanoid());
+    helper.succeed();
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testBossBarIsAutoHiddenAndShownAgainWhenFighting(GameTestHelper helper) {
+    BossBarTestHelper.assertBossBarIsAutoHiddenAndShownAgainWhenFighting(helper, humanoid());
+    helper.succeed();
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testInvalidBossBarValuesAreRejected(GameTestHelper helper) {
     BossBarTestHelper.assertInvalidBossBarValuesAreRejected(helper, humanoid());
     helper.succeed();
   }
 
   @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testBossBarCommandChangesSettings(GameTestHelper helper) {
+    BossBarTestHelper.assertBossBarCommandChangesSettings(helper, humanoid());
+    helper.succeed();
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testBossBarCommandRejectsOutOfRangeValues(GameTestHelper helper) {
+    BossBarTestHelper.assertBossBarCommandRejectsOutOfRangeValues(helper, humanoid());
+    helper.succeed();
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testBossBarSettingsAreExportedWithThePreset(GameTestHelper helper) {
     BossBarTestHelper.assertBossBarSettingsAreExportedWithThePreset(helper, humanoid());
+    helper.succeed();
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testBossBarSettingsAreSavedAndLoaded(GameTestHelper helper) {
+    BossBarTestHelper.assertBossBarSettingsAreSavedAndLoaded(helper, humanoid());
+    helper.succeed();
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testBossBarAutoHideIsResetWhenPlayerComesBack(GameTestHelper helper) {
+    BossBarTestHelper.assertBossBarAutoHideIsResetWhenPlayerComesBack(helper, humanoid());
     helper.succeed();
   }
 }
