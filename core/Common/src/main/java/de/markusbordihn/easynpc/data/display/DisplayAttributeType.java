@@ -24,6 +24,7 @@ import java.util.Locale;
 
 public enum DisplayAttributeType {
   NONE(ValueType.STRING),
+  BOSS_BAR_AUTO_HIDE(ValueType.INTEGER),
   BOSS_BAR_COLOR(ValueType.STRING),
   BOSS_BAR_RANGE(ValueType.INTEGER),
   BOSS_BAR_STYLE(ValueType.STRING),
@@ -47,6 +48,9 @@ public enum DisplayAttributeType {
   public static final int MIN_BOSS_BAR_RANGE = 1;
   public static final int MAX_BOSS_BAR_RANGE = 128;
   public static final int DEFAULT_BOSS_BAR_RANGE = 32;
+  public static final int MIN_BOSS_BAR_AUTO_HIDE_SECONDS = 0;
+  public static final int MAX_BOSS_BAR_AUTO_HIDE_SECONDS = 600;
+  public static final int DEFAULT_BOSS_BAR_AUTO_HIDE_SECONDS = 0;
   public static final int MIN_LIGHT_LEVEL = 0;
   public static final int MAX_LIGHT_LEVEL = 15;
   public static final int AMBIENT_LIGHT_LEVEL = 0;

@@ -27,6 +27,7 @@ import de.markusbordihn.easynpc.configui.menu.configuration.action.DistanceActio
 import de.markusbordihn.easynpc.configui.menu.configuration.action.IntervalActionConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.attribute.AbilitiesAttributeConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.attribute.BaseAttributeConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.configui.menu.configuration.attribute.BossBarAttributeConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.attribute.CombatAttributeConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.attribute.DisplayAttributeConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.attribute.MiscAttributeConfigurationMenuWrapper;
@@ -181,6 +182,11 @@ public class ModMenuTypes {
           ScreenHandlerRegistry.registerSimple(
               ConfigurationType.PROJECTILE_ATTRIBUTE.getId(),
               ProjectileAttributeConfigurationMenuWrapper::new);
+  public static final MenuType<BossBarAttributeConfigurationMenuWrapper>
+      BOSS_BAR_ATTRIBUTE_CONFIGURATION_MENU =
+          ScreenHandlerRegistry.registerSimple(
+              ConfigurationType.BOSS_BAR_ATTRIBUTE.getId(),
+              BossBarAttributeConfigurationMenuWrapper::new);
   public static final MenuType<CombatSoundConfigurationMenuWrapper>
       COMBAT_SOUND_CONFIGURATION_MENU =
           ScreenHandlerRegistry.registerSimple(

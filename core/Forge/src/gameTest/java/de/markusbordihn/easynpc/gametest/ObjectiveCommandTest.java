@@ -75,4 +75,22 @@ public class ObjectiveCommandTest {
     ObjectiveCommandTestHelper.assertAttackTypeCommandRejectsUnknownType(helper, humanoid());
     helper.succeed();
   }
+
+  @GameTest(template = "gametest.3x3x3")
+  public void testAttackTypeCommandSetsSeveralAttackTypes(GameTestHelper helper) {
+    ObjectiveCommandTestHelper.assertAttackTypeCommandSetsSeveralAttackTypes(helper, humanoid());
+    helper.succeed();
+  }
+
+  @GameTest(template = "gametest.3x3x3")
+  public void testAttackTypeCommandRejectsMeleeWithZombie(GameTestHelper helper) {
+    ObjectiveCommandTestHelper.assertAttackTypeCommandRejectsMeleeWithZombie(helper, humanoid());
+    helper.succeed();
+  }
+
+  @GameTest(template = "gametest.3x3x3")
+  public void testAttackListCommandShowsAttackTypes(GameTestHelper helper) {
+    ObjectiveCommandTestHelper.assertAttackListCommandShowsAttackTypes(helper, humanoid());
+    helper.succeed();
+  }
 }

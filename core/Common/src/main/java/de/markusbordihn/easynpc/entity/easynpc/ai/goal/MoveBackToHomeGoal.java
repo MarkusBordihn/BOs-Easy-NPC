@@ -37,6 +37,7 @@ public class MoveBackToHomeGoal<T extends EasyNPC<?>> extends Goal {
   private static final float MIN_VERTICAL_ARRIVAL_DISTANCE = 2.0F;
   private static final int TICKS_WITHOUT_PROGRESS_LIMIT = 60;
   private static final double PROGRESS_DISTANCE = 0.5D;
+  private static final int RETRY_DELAY_TICKS = 40;
 
   private final float stopDistance;
   private final NavigationDataCapable<?> navigationData;
@@ -47,6 +48,7 @@ public class MoveBackToHomeGoal<T extends EasyNPC<?>> extends Goal {
   private BlockPos homeTargetPos;
   private Vec3 lastProgressPosition;
   private int ticksWithoutProgress;
+  private int nextAttemptTick;
 
   public MoveBackToHomeGoal(T easyNPCEntity, double speedModifier, float stopDistance) {
     this(easyNPCEntity, speedModifier, stopDistance, DEFAULT_INTERVAL);
@@ -66,8 +68,8 @@ public class MoveBackToHomeGoal<T extends EasyNPC<?>> extends Goal {
   @Override
   public boolean canUse() {
     if (this.mob.isVehicle()
+        || this.mob.tickCount < this.nextAttemptTick
         || this.mob.getRandom().nextInt(reducedTickDelay(this.interval)) != 0
-        || (this.mob.isAggressive() && this.mob.getTarget() != null)
         || this.navigationData == null
         || !this.navigationData.hasHomePosition()) {
       return false;
@@ -87,7 +89,6 @@ public class MoveBackToHomeGoal<T extends EasyNPC<?>> extends Goal {
   public boolean canContinueToUse() {
     return !this.mob.getNavigation().isDone()
         && !this.mob.isVehicle()
-        && this.mob.getTarget() == null
         && this.ticksWithoutProgress < TICKS_WITHOUT_PROGRESS_LIMIT
         && !this.reachedHome();
   }
@@ -126,6 +127,9 @@ public class MoveBackToHomeGoal<T extends EasyNPC<?>> extends Goal {
 
   @Override
   public void stop() {
+    if (!this.reachedHome()) {
+      this.nextAttemptTick = this.mob.tickCount + RETRY_DELAY_TICKS;
+    }
     this.mob.getNavigation().stop();
     super.stop();
   }

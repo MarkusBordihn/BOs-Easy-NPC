@@ -19,7 +19,10 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.ai.goal;
 
+import de.markusbordihn.easynpc.data.objective.ObjectiveType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.data.ObjectiveDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.handlers.AttackHandler;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
@@ -31,11 +34,38 @@ public class CustomMeleeAttackGoal<T extends EasyNPC<?>> extends MeleeAttackGoal
   private static final int DEFAULT_ATTACK_INTERVAL_TICKS = 20;
   private static final double TICKS_PER_SECOND = 20.0D;
 
+  private final T easyNPC;
+
   // Vanilla MeleeAttackGoal keeps its cooldown in a private field that is always reset to 20 ticks.
   private int ticksUntilNextAttack;
 
   public CustomMeleeAttackGoal(T easyNPC, double speedModifier, boolean mustSeeTarget) {
     super(easyNPC.getPathfinderMob(), speedModifier, mustSeeTarget);
+    this.easyNPC = easyNPC;
+  }
+
+  @Override
+  public boolean canUse() {
+    return !this.isHoldingWeaponOfRangedAttack() && super.canUse();
+  }
+
+  @Override
+  public boolean canContinueToUse() {
+    return !this.isHoldingWeaponOfRangedAttack() && super.canContinueToUse();
+  }
+
+  private boolean isHoldingWeaponOfRangedAttack() {
+    ObjectiveDataCapable<?> objectiveData = this.easyNPC.getEasyNPCObjectiveData();
+    if (objectiveData == null) {
+      return false;
+    }
+
+    return (objectiveData.hasObjective(ObjectiveType.BOW_ATTACK)
+            && AttackHandler.isHoldingBowWeapon(this.mob))
+        || (objectiveData.hasObjective(ObjectiveType.CROSSBOW_ATTACK)
+            && AttackHandler.isHoldingCrossbowWeapon(this.mob))
+        || (objectiveData.hasObjective(ObjectiveType.GUN_ATTACK)
+            && AttackHandler.isHoldingGunWeapon(this.mob));
   }
 
   @Override

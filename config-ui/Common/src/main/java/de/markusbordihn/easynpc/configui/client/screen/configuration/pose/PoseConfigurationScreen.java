@@ -198,9 +198,9 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
       double[] axisValues,
       AxisValueSetter axisValueSetter,
       Runnable resetAction) {
-    int sliderWidth = 34;
+    int sliderWidth = 33;
     int sliderHeight = 16;
-    int sliderLeftPosition = left + 10;
+    int sliderLeftPosition = left + 12;
     RangeSliderButton[] axisSliders = new RangeSliderButton[axisValues.length];
 
     for (int axis = 0; axis < axisValues.length; axis++) {
@@ -225,7 +225,7 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
         new TextButton(
             left,
             top,
-            10,
+            12,
             RangeSliderButton.EDIT_TEXT,
             button -> {
               boolean showTextField = button.getMessage() == RangeSliderButton.EDIT_TEXT;

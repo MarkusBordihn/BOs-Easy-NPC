@@ -66,6 +66,15 @@ public class ConfigurationScreenTest {
   }
 
   @GameTest(template = "gametest.3x3x3")
+  public void testBossBarAttributeConfigurationScreen(GameTestHelper helper) {
+    ConfigurationScreenTestHelper.testConfigurationScreen(
+        helper,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
+        ConfigurationType.BOSS_BAR_ATTRIBUTE,
+        ModMenuTypes.BOSS_BAR_ATTRIBUTE_CONFIGURATION_MENU.get());
+  }
+
+  @GameTest(template = "gametest.3x3x3")
   public void testMiscAttributeConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,

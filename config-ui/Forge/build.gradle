@@ -140,7 +140,6 @@ dependencies {
   runtimeOnly fg.deobf("maven.modrinth:epic-fight:${project.forge_epic_fight_version}")
 
   // Test dependencies
-  // runtimeOnly fg.deobf("maven.modrinth:armourers-workshop:3.4.0-beta.3+1.20.1-forge")
   // GeckoLib uses the same version number across Minecraft versions, so pin the Modrinth version id
   // runtimeOnly fg.deobf("maven.modrinth:geckolib:aC5KMoNg")
 

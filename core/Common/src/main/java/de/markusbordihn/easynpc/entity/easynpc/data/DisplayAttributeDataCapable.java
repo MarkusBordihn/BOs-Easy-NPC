@@ -177,6 +177,9 @@ public interface DisplayAttributeDataCapable<E extends Mob> extends EasyNPC<E> {
   default void defineSynchedDisplayAttributeData() {
     this.defineSynchedEntityData(
         SynchedDataIndex.DISPLAY_ATTRIBUTE_SET, DisplayAttributeDataSet.createDefault());
+  }
+
+  default void defineSynchedVisibilityConditionData() {
     this.defineSynchedEntityData(SynchedDataIndex.DISPLAY_HAS_VISIBILITY_CONDITIONS, false);
   }
 

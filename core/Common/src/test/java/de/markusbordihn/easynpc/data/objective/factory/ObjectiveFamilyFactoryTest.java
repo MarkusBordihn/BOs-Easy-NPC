@@ -50,6 +50,9 @@ class ObjectiveFamilyFactoryTest {
   private static ObjectiveGoalFactory unwrap(ObjectiveType objectiveType) {
     ObjectiveGoalFactory objectiveGoalFactory = BuiltInObjectiveFactories.get(objectiveType);
     assertNotNull(objectiveGoalFactory, objectiveType + " must have a registered factory");
+    if (objectiveGoalFactory instanceof OutOfCombatObjectiveFactory outOfCombatFactory) {
+      objectiveGoalFactory = outOfCombatFactory.delegate();
+    }
 
     return objectiveGoalFactory instanceof PathfinderMobObjectiveFactory pathfinderMobFactory
         ? pathfinderMobFactory.delegate()

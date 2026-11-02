@@ -26,8 +26,11 @@ import de.markusbordihn.easynpc.data.objective.ObjectiveDataEntry;
 import de.markusbordihn.easynpc.data.objective.ObjectiveGroup;
 import de.markusbordihn.easynpc.data.objective.ObjectiveType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import java.util.ArrayList;
 import java.util.List;
+import net.minecraft.commands.CommandSource;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.goal.Goal;
@@ -282,5 +285,102 @@ public class ObjectiveCommandTestHelper {
         "Unknown attack type command added an attack objective",
         ObjectiveGroup.ATTACK_TYPE.stream()
             .noneMatch(attackType -> EasyNPCObjectiveHandler.hasObjective(easyNPC, attackType)));
+  }
+
+  public static void assertAttackTypeCommandSetsSeveralAttackTypes(
+      GameTestHelper helper, EntityType<?> entityType) {
+    EasyNPC<?> easyNPC = mockSpawnedNPC(helper, entityType);
+    executeConsoleCommand(
+        helper, "easy_npc objective " + easyNPC.getEntityUUID() + " set attack type gun");
+
+    int result =
+        executeConsoleCommand(
+            helper, "easy_npc objective " + easyNPC.getEntityUUID() + " set attack type melee bow");
+
+    GameTestHelpers.assertEquals(helper, "Several attack types command result", 1, result);
+    GameTestHelpers.assertTrue(
+        helper,
+        "Several attack types command did not set melee and bow",
+        EasyNPCObjectiveHandler.hasObjective(easyNPC, ObjectiveType.MELEE_ATTACK)
+            && EasyNPCObjectiveHandler.hasObjective(easyNPC, ObjectiveType.BOW_ATTACK));
+    GameTestHelpers.assertTrue(
+        helper,
+        "Several attack types command kept the previous gun attack objective",
+        !EasyNPCObjectiveHandler.hasObjective(easyNPC, ObjectiveType.GUN_ATTACK));
+
+    int removeResult =
+        executeConsoleCommand(
+            helper, "easy_npc objective " + easyNPC.getEntityUUID() + " remove attack");
+
+    GameTestHelpers.assertEquals(helper, "Attack remove command result", 1, removeResult);
+    GameTestHelpers.assertTrue(
+        helper,
+        "Attack remove command kept attack types",
+        ObjectiveGroup.ATTACK_TYPE.stream()
+            .noneMatch(attackType -> EasyNPCObjectiveHandler.hasObjective(easyNPC, attackType)));
+  }
+
+  public static void assertAttackTypeCommandRejectsMeleeWithZombie(
+      GameTestHelper helper, EntityType<?> entityType) {
+    EasyNPC<?> easyNPC = mockSpawnedNPC(helper, entityType);
+
+    int result =
+        executeConsoleCommand(
+            helper,
+            "easy_npc objective " + easyNPC.getEntityUUID() + " set attack type melee zombie");
+
+    GameTestHelpers.assertEquals(helper, "Melee with zombie command result", 0, result);
+    GameTestHelpers.assertTrue(
+        helper,
+        "Melee with zombie command added an attack objective",
+        ObjectiveGroup.ATTACK_TYPE.stream()
+            .noneMatch(attackType -> EasyNPCObjectiveHandler.hasObjective(easyNPC, attackType)));
+  }
+
+  public static void assertAttackListCommandShowsAttackTypes(
+      GameTestHelper helper, EntityType<?> entityType) {
+    EasyNPC<?> easyNPC = mockSpawnedNPC(helper, entityType);
+    executeConsoleCommand(
+        helper, "easy_npc objective " + easyNPC.getEntityUUID() + " set attack type melee bow");
+    List<String> messages = new ArrayList<>();
+    CommandSource messageCapturingSource =
+        new CommandSource() {
+          @Override
+          public void sendSystemMessage(Component component) {
+            messages.add(component.getString());
+          }
+
+          @Override
+          public boolean acceptsSuccess() {
+            return true;
+          }
+
+          @Override
+          public boolean acceptsFailure() {
+            return true;
+          }
+
+          @Override
+          public boolean shouldInformAdmins() {
+            return false;
+          }
+        };
+
+    int result =
+        GameTestHelpers.executeCommand(
+            helper,
+            GameTestHelpers.consoleCommandSource(helper, NPC_POSITION)
+                .withSource(messageCapturingSource),
+            "easy_npc objective " + easyNPC.getEntityUUID() + " list attack");
+
+    GameTestHelpers.assertEquals(helper, "Attack list command result", 1, result);
+    String expectedAttackTypes =
+        ObjectiveType.BOW_ATTACK.getFriendlyName()
+            + ", "
+            + ObjectiveType.MELEE_ATTACK.getFriendlyName();
+    GameTestHelpers.assertTrue(
+        helper,
+        "Attack list command does not show the attack types: " + messages,
+        messages.stream().anyMatch(message -> message.endsWith(": " + expectedAttackTypes)));
   }
 }

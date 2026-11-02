@@ -42,6 +42,7 @@ public class GameTestRegistration {
         VillagerVariantTest.class,
         FactionObjectiveTest.class,
         ObjectiveGoalCreationTest.class,
+        OutOfCombatGoalTest.class,
         ExecuteAsUserCommandTest.class,
         PresetCommandSecurityTest.class,
         OwnerCommandTest.class,

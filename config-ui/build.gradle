@@ -70,6 +70,10 @@ subprojects {
     return ['gametest', 'clienttest', 'fullcheck'].any { testTask -> taskName.contains(testTask) }
   }
 
+  ext.isClientTestRun = gradle.startParameter.taskNames.any {
+    it.toLowerCase().contains('clienttest')
+  }
+
   // Local Easy Model Entities loader artifact (runtime); null falls back to Modrinth.
   ext.findLocalEasyModelEntitiesLoader = { String loader ->
     def version = project.findProperty('easy_model_entities_version')

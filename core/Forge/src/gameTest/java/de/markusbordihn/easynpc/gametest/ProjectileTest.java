@@ -189,6 +189,17 @@ public class ProjectileTest {
   }
 
   @GameTest(template = "gametest.3x3x3", timeoutTicks = 400)
+  public void testMeleeAndBowAttackObjectivesShootWhenHoldingBow(GameTestHelper helper) {
+    ProjectileTestHelper.assertMeleeAndBowAttackObjectivesShootWhenHoldingBow(helper, humanoid());
+  }
+
+  @GameTest(template = "gametest.3x3x3")
+  public void testMeleeAttackYieldsOnlyToMatchingRangedWeapon(GameTestHelper helper) {
+    ProjectileTestHelper.assertMeleeAttackYieldsOnlyToMatchingRangedWeapon(helper, humanoid());
+    helper.succeed();
+  }
+
+  @GameTest(template = "gametest.3x3x3", timeoutTicks = 400)
   public void testCrossbowAttackObjectiveHitsEnemyWithCustomProjectile(GameTestHelper helper) {
     ProjectileTestHelper.assertCrossbowAttackObjectiveHitsEnemyWithCustomProjectile(
         helper, humanoid());
