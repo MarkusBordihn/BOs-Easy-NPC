@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.configui.client.screen.configuration.attribute;
 
 import de.markusbordihn.easynpc.client.screen.components.SpinButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
+import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.client.screen.components.TextField;
 import de.markusbordihn.easynpc.configui.client.renderer.screen.EntityConfigScreenRenderer;
 import de.markusbordihn.easynpc.configui.client.screen.components.Checkbox;
@@ -28,10 +29,10 @@ import de.markusbordihn.easynpc.configui.client.screen.components.ConditionButto
 import de.markusbordihn.easynpc.configui.client.screen.components.SaveButton;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.data.display.DisplayAttributeType;
 import de.markusbordihn.easynpc.data.render.EntityRenderConfig;
 import de.markusbordihn.easynpc.entity.easynpc.data.DisplayAttributeDataCapable;
-import de.markusbordihn.easynpc.entity.easynpc.handlers.BossBarHandler;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.VisibilityHandler;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import de.markusbordihn.easynpc.utils.ValueUtils;
@@ -43,7 +44,6 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.BossEvent;
 import net.minecraft.world.entity.player.Inventory;
 
 public class DisplayAttributeConfigurationScreen<T extends ConfigurationMenu>
@@ -71,8 +71,6 @@ public class DisplayAttributeConfigurationScreen<T extends ConfigurationMenu>
   private Button lightLevelSaveButton;
   private EditBox opacityBox;
   private Button opacitySaveButton;
-  private EditBox bossBarRangeBox;
-  private Button bossBarRangeSaveButton;
   private PreviewTime previewTime = PreviewTime.DAY;
 
   public DisplayAttributeConfigurationScreen(T menu, Inventory inventory, Component component) {
@@ -253,94 +251,22 @@ public class DisplayAttributeConfigurationScreen<T extends ConfigurationMenu>
         new ConditionButton(
             firstButtonRow,
             checkboxTopPos + 18,
-            140,
+            120,
             this.getAdditionalScreenData().getVisibilityConditionSet().conditions().size(),
             onPress ->
                 NetworkMessageHandlerManager.getServerHandler()
                     .openVisibilityConditionEditor(this.getEasyNPCUUID())));
 
     this.addRenderableWidget(
-        new Checkbox(
-            secondButtonRow,
-            this.buttonTopPos + 158,
-            DisplayAttributeType.SHOW_BOSS_BAR.getAttributeName(),
-            displayAttributeData.getDisplayBooleanAttribute(DisplayAttributeType.SHOW_BOSS_BAR),
-            checkbox ->
+        new TextButton(
+            firstButtonRow + 124,
+            checkboxTopPos + 18,
+            116,
+            "boss_bar_settings",
+            onPress ->
                 NetworkMessageHandlerManager.getServerHandler()
-                    .changeDisplayAttribute(
-                        this.getEasyNPCUUID(),
-                        DisplayAttributeType.SHOW_BOSS_BAR,
-                        checkbox.selected())));
-
-    this.addRenderableWidget(
-        new SpinButton<>(
-            secondButtonRow,
-            this.buttonTopPos + 177,
-            105,
-            16,
-            new LinkedHashSet<>(List.of(BossEvent.BossBarColor.values())),
-            BossBarHandler.getBossBarColor(displayAttributeData),
-            spinButton ->
-                NetworkMessageHandlerManager.getServerHandler()
-                    .changeDisplayAttribute(
-                        this.getEasyNPCUUID(),
-                        DisplayAttributeType.BOSS_BAR_COLOR,
-                        spinButton.get().name())));
-
-    this.addRenderableWidget(
-        new SpinButton<>(
-            secondButtonRow,
-            this.buttonTopPos + 195,
-            105,
-            16,
-            new LinkedHashSet<>(List.of(BossEvent.BossBarOverlay.values())),
-            BossBarHandler.getBossBarStyle(displayAttributeData),
-            spinButton ->
-                NetworkMessageHandlerManager.getServerHandler()
-                    .changeDisplayAttribute(
-                        this.getEasyNPCUUID(),
-                        DisplayAttributeType.BOSS_BAR_STYLE,
-                        spinButton.get().name())));
-
-    this.bossBarRangeBox =
-        this.addRenderableWidget(
-            new TextField(
-                this.font,
-                secondButtonRow + 40,
-                this.buttonTopPos + 214,
-                25,
-                BossBarHandler.getBossBarRange(displayAttributeData),
-                3));
-    this.bossBarRangeBox.setResponder(
-        value -> {
-          if (this.bossBarRangeSaveButton != null) {
-            this.bossBarRangeSaveButton.active =
-                ValueUtils.isNumericValue(
-                        value,
-                        DisplayAttributeType.MIN_BOSS_BAR_RANGE,
-                        DisplayAttributeType.MAX_BOSS_BAR_RANGE)
-                    && ValueUtils.getIntValue(value)
-                        != BossBarHandler.getBossBarRange(
-                            this.getEasyNPC().getEasyNPCDisplayAttributeData());
-          }
-        });
-    this.bossBarRangeSaveButton =
-        this.addRenderableWidget(
-            new SaveButton(
-                this.bossBarRangeBox.getX() + this.bossBarRangeBox.getWidth() + 2,
-                this.bossBarRangeBox.getY() - 1,
-                onPress -> {
-                  int bossBarRange = Integer.parseInt(this.bossBarRangeBox.getValue());
-                  if (bossBarRange >= DisplayAttributeType.MIN_BOSS_BAR_RANGE
-                      && bossBarRange <= DisplayAttributeType.MAX_BOSS_BAR_RANGE) {
-                    NetworkMessageHandlerManager.getServerHandler()
-                        .changeDisplayAttribute(
-                            this.getEasyNPCUUID(),
-                            DisplayAttributeType.BOSS_BAR_RANGE,
-                            bossBarRange);
-                  }
-                }));
-    this.bossBarRangeSaveButton.active = false;
+                    .openConfiguration(
+                        this.getEasyNPCUUID(), ConfigurationType.BOSS_BAR_ATTRIBUTE)));
 
     // Preview to verify the configured visibility without changing the world time.
     this.addRenderableWidget(
@@ -408,18 +334,6 @@ public class DisplayAttributeConfigurationScreen<T extends ConfigurationMenu>
         firstButtonRow,
         specialSectionY,
         0x555555);
-
-    Text.drawConfigString(
-        guiGraphics, this.font, "boss_bar_settings", secondButtonRow, specialSectionY, 0x555555);
-
-    if (this.bossBarRangeBox != null) {
-      Text.drawConfigString(
-          guiGraphics,
-          this.font,
-          "boss_bar_range",
-          this.bossBarRangeBox.getX() - 40,
-          this.bossBarRangeBox.getY() + 4);
-    }
 
     if (this.getEasyNPC() == null) {
       return;

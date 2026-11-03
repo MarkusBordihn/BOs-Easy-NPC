@@ -30,13 +30,13 @@ import de.markusbordihn.easynpc.data.condition.ConditionDataSet;
 import de.markusbordihn.easynpc.data.condition.ConditionOperationType;
 import de.markusbordihn.easynpc.data.condition.ConditionType;
 import de.markusbordihn.easynpc.data.condition.HandItemType;
+import de.markusbordihn.easynpc.network.components.TextComponent;
 import java.lang.reflect.Method;
 import java.util.LinkedHashSet;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.Tooltip;
 
 public class HasItemConditionEntry extends ConditionEntryWidget {
-
-  private static final int HINT_WIDTH = 285;
 
   private final ConditionType conditionType;
   private TextField itemNameTextField;
@@ -117,6 +117,9 @@ public class HasItemConditionEntry extends ConditionEntryWidget {
                 155,
                 hasData ? this.getStoredCustomData() : "",
                 1024));
+    this.customDataTextField.setTooltip(
+        Tooltip.create(
+            TextComponent.getTranslatedConfigText("condition.has_item.custom_data_hint")));
 
     this.quantityTextField =
         this.screen.addConditionEntryWidget(
@@ -143,14 +146,14 @@ public class HasItemConditionEntry extends ConditionEntryWidget {
               new Checkbox(
                   editorLeft,
                   editorTop + 104,
-                  "config.condition.has_item_in_hand.main_hand",
+                  "condition.has_item_in_hand.main_hand",
                   mainHandSelected));
       this.offHandCheckbox =
           this.screen.addConditionEntryWidget(
               new Checkbox(
                   editorLeft + 155,
                   editorTop + 104,
-                  "config.condition.has_item_in_hand.off_hand",
+                  "condition.has_item_in_hand.off_hand",
                   offHandSelected));
     }
   }
@@ -206,15 +209,6 @@ public class HasItemConditionEntry extends ConditionEntryWidget {
           editorLeft,
           editorTop + 44,
           Constants.FONT_COLOR_BLACK);
-      int hintTop = this.conditionType == ConditionType.HAS_ITEM_IN_HAND ? 124 : 104;
-      Text.drawConfigStringWrapped(
-          guiGraphics,
-          this.font,
-          "condition.has_item.custom_data_hint",
-          editorLeft,
-          editorTop + hintTop,
-          HINT_WIDTH,
-          Constants.FONT_COLOR_DEFAULT);
     }
   }
 

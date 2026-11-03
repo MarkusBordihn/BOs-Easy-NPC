@@ -185,6 +185,9 @@ public final class ModGameTests {
     TEST_FUNCTIONS.register(
         "yes_no_dialog_configuration_screen",
         () -> ConfigurationScreenTest::testYesNoDialogConfigurationScreen);
+    TEST_FUNCTIONS.register(
+        "boss_bar_attribute_configuration_screen",
+        () -> ConfigurationScreenTest::testBossBarAttributeConfigurationScreen);
 
     TEST_FUNCTIONS.register(
         "action_data_editor_screen", () -> EditorScreenTest::testActionDataEditorScreen);

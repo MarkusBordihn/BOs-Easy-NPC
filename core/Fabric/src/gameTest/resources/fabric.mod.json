@@ -69,6 +69,7 @@
       "de.markusbordihn.easynpc.gametest.NPCStorageWriteTest",
       "de.markusbordihn.easynpc.gametest.NPCLifecycleCommandTest",
       "de.markusbordihn.easynpc.gametest.ObjectiveCommandTest",
+      "de.markusbordihn.easynpc.gametest.OutOfCombatGoalTest",
       "de.markusbordihn.easynpc.gametest.ShoulderCommandTest",
       "de.markusbordihn.easynpc.gametest.SpearAttackTest",
       "de.markusbordihn.easynpc.gametest.ProjectileTest"

@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.data.objective.factory;
 
+import static de.markusbordihn.easynpc.data.objective.factory.BuiltInObjectiveFactories.outOfCombat;
 import static de.markusbordihn.easynpc.data.objective.factory.BuiltInObjectiveFactories.register;
 import static de.markusbordihn.easynpc.data.objective.factory.BuiltInObjectiveFactories.requiresPathfinderMob;
 
@@ -41,63 +42,74 @@ final class BasicObjectiveFactories {
   static void registerFactories() {
     register(
         ObjectiveType.RANDOM_STROLL,
-        (objectiveDataEntry, easyNPC) ->
-            new RandomStrollAroundGoal<>(easyNPC, objectiveDataEntry.getSpeedModifier()));
+        outOfCombat(
+            (objectiveDataEntry, easyNPC) ->
+                new RandomStrollAroundGoal<>(easyNPC, objectiveDataEntry.getSpeedModifier())));
 
     register(
         ObjectiveType.WATER_AVOIDING_RANDOM_STROLL,
-        (objectiveDataEntry, easyNPC) ->
-            easyNPC.getPathfinderMob() != null
-                ? new WaterAvoidingRandomStrollGoal(
-                    easyNPC.getPathfinderMob(), objectiveDataEntry.getSpeedModifier())
-                : new RandomStrollAroundGoal<>(easyNPC, objectiveDataEntry.getSpeedModifier()));
+        outOfCombat(
+            (objectiveDataEntry, easyNPC) ->
+                easyNPC.getPathfinderMob() != null
+                    ? new WaterAvoidingRandomStrollGoal(
+                        easyNPC.getPathfinderMob(), objectiveDataEntry.getSpeedModifier())
+                    : new RandomStrollAroundGoal<>(
+                        easyNPC, objectiveDataEntry.getSpeedModifier())));
 
     register(
         ObjectiveType.MOVE_THROUGH_VILLAGE,
-        requiresPathfinderMob(
-            (objectiveDataEntry, easyNPC) ->
-                new MoveThroughVillageGoal(
-                    easyNPC.getPathfinderMob(),
-                    objectiveDataEntry.getSpeedModifier(),
-                    objectiveDataEntry.getOnlyAtNight(),
-                    objectiveDataEntry.getDistanceToPoi(),
-                    objectiveDataEntry.getCanDealWithDoors())));
+        outOfCombat(
+            requiresPathfinderMob(
+                (objectiveDataEntry, easyNPC) ->
+                    new MoveThroughVillageGoal(
+                        easyNPC.getPathfinderMob(),
+                        objectiveDataEntry.getSpeedModifier(),
+                        objectiveDataEntry.getOnlyAtNight(),
+                        objectiveDataEntry.getDistanceToPoi(),
+                        objectiveDataEntry.getCanDealWithDoors()))));
 
     register(
         ObjectiveType.MOVE_BACK_TO_HOME,
-        (objectiveDataEntry, easyNPC) ->
-            new MoveBackToHomeGoal<>(
-                easyNPC,
-                objectiveDataEntry.getSpeedModifier(),
-                objectiveDataEntry.getStopDistance()));
+        outOfCombat(
+            (objectiveDataEntry, easyNPC) ->
+                new MoveBackToHomeGoal<>(
+                    easyNPC,
+                    objectiveDataEntry.getSpeedModifier(),
+                    objectiveDataEntry.getStopDistance())));
 
     register(
         ObjectiveType.MOVE_BACK_TO_VILLAGE,
-        requiresPathfinderMob(
-            (objectiveDataEntry, easyNPC) ->
-                new MoveBackToVillageGoal(
-                    easyNPC.getPathfinderMob(), objectiveDataEntry.getSpeedModifier(), false)));
+        outOfCombat(
+            requiresPathfinderMob(
+                (objectiveDataEntry, easyNPC) ->
+                    new MoveBackToVillageGoal(
+                        easyNPC.getPathfinderMob(),
+                        objectiveDataEntry.getSpeedModifier(),
+                        false))));
 
     register(
         ObjectiveType.RANDOM_STROLL_AROUND_HOME,
-        (objectiveDataEntry, easyNPC) ->
-            new RandomStrollAroundHomeGoal<>(easyNPC, objectiveDataEntry.getSpeedModifier()));
+        outOfCombat(
+            (objectiveDataEntry, easyNPC) ->
+                new RandomStrollAroundHomeGoal<>(easyNPC, objectiveDataEntry.getSpeedModifier())));
 
     register(
         ObjectiveType.RANDOM_STROLL_IN_VILLAGE,
-        requiresPathfinderMob(
-            (objectiveDataEntry, easyNPC) ->
-                new GolemRandomStrollInVillageGoal(
-                    easyNPC.getPathfinderMob(), objectiveDataEntry.getSpeedModifier())));
+        outOfCombat(
+            requiresPathfinderMob(
+                (objectiveDataEntry, easyNPC) ->
+                    new GolemRandomStrollInVillageGoal(
+                        easyNPC.getPathfinderMob(), objectiveDataEntry.getSpeedModifier()))));
 
     register(
         ObjectiveType.RANDOM_SWIMMING,
-        requiresPathfinderMob(
-            (objectiveDataEntry, easyNPC) ->
-                new CustomRandomSwimmingGoal(
-                    easyNPC.getPathfinderMob(),
-                    objectiveDataEntry.getSpeedModifier(),
-                    objectiveDataEntry.getInterval())));
+        outOfCombat(
+            requiresPathfinderMob(
+                (objectiveDataEntry, easyNPC) ->
+                    new CustomRandomSwimmingGoal(
+                        easyNPC.getPathfinderMob(),
+                        objectiveDataEntry.getSpeedModifier(),
+                        objectiveDataEntry.getInterval()))));
 
     register(
         ObjectiveType.PANIC,

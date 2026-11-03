@@ -47,13 +47,43 @@ public final class BossBarTest {
     helper.succeed();
   }
 
+  public static void testBossBarIsRemovedWhenPlayerStopsSeeingNPC(GameTestHelper helper) {
+    BossBarTestHelper.assertBossBarIsRemovedWhenPlayerStopsSeeingNPC(helper, humanoid());
+    helper.succeed();
+  }
+
+  public static void testBossBarIsAutoHiddenAndShownAgainWhenFighting(GameTestHelper helper) {
+    BossBarTestHelper.assertBossBarIsAutoHiddenAndShownAgainWhenFighting(helper, humanoid());
+    helper.succeed();
+  }
+
   public static void testInvalidBossBarValuesAreRejected(GameTestHelper helper) {
     BossBarTestHelper.assertInvalidBossBarValuesAreRejected(helper, humanoid());
     helper.succeed();
   }
 
+  public static void testBossBarCommandChangesSettings(GameTestHelper helper) {
+    BossBarTestHelper.assertBossBarCommandChangesSettings(helper, humanoid());
+    helper.succeed();
+  }
+
+  public static void testBossBarCommandRejectsOutOfRangeValues(GameTestHelper helper) {
+    BossBarTestHelper.assertBossBarCommandRejectsOutOfRangeValues(helper, humanoid());
+    helper.succeed();
+  }
+
   public static void testBossBarSettingsAreExportedWithThePreset(GameTestHelper helper) {
     BossBarTestHelper.assertBossBarSettingsAreExportedWithThePreset(helper, humanoid());
+    helper.succeed();
+  }
+
+  public static void testBossBarSettingsAreSavedAndLoaded(GameTestHelper helper) {
+    BossBarTestHelper.assertBossBarSettingsAreSavedAndLoaded(helper, humanoid());
+    helper.succeed();
+  }
+
+  public static void testBossBarAutoHideIsResetWhenPlayerComesBack(GameTestHelper helper) {
+    BossBarTestHelper.assertBossBarAutoHideIsResetWhenPlayerComesBack(helper, humanoid());
     helper.succeed();
   }
 }

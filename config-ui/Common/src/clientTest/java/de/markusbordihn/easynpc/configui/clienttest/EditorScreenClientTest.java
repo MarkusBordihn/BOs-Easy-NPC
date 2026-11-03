@@ -177,6 +177,21 @@ class EditorScreenClientTest extends ClientTestBase {
         configurationButton("projectile_settings"), "ProjectileAttributeConfigurationScreen");
 
     client.saveScreenshot("projectile_attribute_configuration");
+
+    client.click(configurationButton("projectile_page.effects"));
+    client.await(Until.settled(10));
+    client.saveScreenshot("projectile_attribute_configuration-effects");
+  }
+
+  @Test
+  @DisplayName("Boss bar settings render from the display attributes")
+  void bossBarAttributeConfigurationRenders() {
+    openMainConfiguration(spawnTestNpc());
+    openSubPage("attributes", "display", "DisplayAttributeConfigurationScreen");
+
+    openEditor(configurationButton("boss_bar_settings"), "BossBarAttributeConfigurationScreen");
+
+    client.saveScreenshot("boss_bar_attribute_configuration");
   }
 
   @Test
