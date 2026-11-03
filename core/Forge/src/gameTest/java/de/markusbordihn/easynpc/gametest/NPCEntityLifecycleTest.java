@@ -77,6 +77,22 @@ public final class NPCEntityLifecycleTest {
     helper.succeed();
   }
 
+  public static void testConstructedNPCIsPersistent(GameTestHelper helper) {
+    NPCEntityLifecycleTestHelper.assertConstructedNPCIsPersistent(helper, humanoid());
+    helper.succeed();
+  }
+
+  public static void testConstructionToleratesPersistenceHook(GameTestHelper helper) {
+    NPCEntityLifecycleTestHelper.assertConstructionToleratesPersistenceHook(helper, humanoid());
+    helper.succeed();
+  }
+
+  public static void testAddonDisplayAttributeOverrideKeepsVisibilityData(GameTestHelper helper) {
+    NPCEntityLifecycleTestHelper.assertAddonDisplayAttributeOverrideKeepsVisibilityData(
+        helper, humanoid());
+    helper.succeed();
+  }
+
   public static void testNonPersistentNPCIsNotStoredOnJoinAndUnload(GameTestHelper helper) {
     NPCEntityLifecycleTestHelper.assertNonPersistentNPCIsNotStoredOnJoinAndUnload(
         helper, humanoid());

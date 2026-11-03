@@ -10,6 +10,8 @@
       "de.markusbordihn.easynpc.gametest.SmokeTest",
       "de.markusbordihn.easynpc.gametest.ConditionEvaluationTest",
       "de.markusbordihn.easynpc.gametest.BackupTest",
+      "de.markusbordihn.easynpc.gametest.IdleNPCTest",
+      "de.markusbordihn.easynpc.gametest.NPCSaveSchedulerTest",
       "de.markusbordihn.easynpc.gametest.DialogScreenTest",
       "de.markusbordihn.easynpc.gametest.ModSpawnEggItemTest",
       "de.markusbordihn.easynpc.gametest.NPCDataIsolationTest",
@@ -67,6 +69,7 @@
       "de.markusbordihn.easynpc.gametest.NPCStorageWriteTest",
       "de.markusbordihn.easynpc.gametest.NPCLifecycleCommandTest",
       "de.markusbordihn.easynpc.gametest.ObjectiveCommandTest",
+      "de.markusbordihn.easynpc.gametest.OutOfCombatGoalTest",
       "de.markusbordihn.easynpc.gametest.ShoulderCommandTest",
       "de.markusbordihn.easynpc.gametest.SpearAttackTest",
       "de.markusbordihn.easynpc.gametest.ProjectileTest"

@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.data.objective.factory;
 
+import static de.markusbordihn.easynpc.data.objective.factory.BuiltInObjectiveFactories.outOfCombat;
 import static de.markusbordihn.easynpc.data.objective.factory.BuiltInObjectiveFactories.register;
 
 import de.markusbordihn.easynpc.Constants;
@@ -46,51 +47,55 @@ final class LookObjectiveFactories {
   static void registerFactories() {
     register(
         ObjectiveType.LOOK_AT_RESET,
-        (objectiveDataEntry, easyNPC) -> new ResetLookAtPlayerGoal<>(easyNPC));
+        outOfCombat((objectiveDataEntry, easyNPC) -> new ResetLookAtPlayerGoal<>(easyNPC)));
 
     register(
         ObjectiveType.LOOK_RANDOM_AROUND,
-        (objectiveDataEntry, easyNPC) -> new RandomLookAroundGoal(easyNPC.getMob()));
+        outOfCombat((objectiveDataEntry, easyNPC) -> new RandomLookAroundGoal(easyNPC.getMob())));
 
-    register(ObjectiveType.LOOK_AT_PLAYER, new LookAtEntityGoalFactory(Player.class));
-    register(ObjectiveType.LOOK_AT_MOB, new LookAtEntityGoalFactory(Mob.class));
-    register(ObjectiveType.LOOK_AT_ANIMAL, new LookAtEntityGoalFactory(Animal.class));
+    register(ObjectiveType.LOOK_AT_PLAYER, outOfCombat(new LookAtEntityGoalFactory(Player.class)));
+    register(ObjectiveType.LOOK_AT_MOB, outOfCombat(new LookAtEntityGoalFactory(Mob.class)));
+    register(ObjectiveType.LOOK_AT_ANIMAL, outOfCombat(new LookAtEntityGoalFactory(Animal.class)));
 
     register(
         ObjectiveType.LOOK_AT_ENTITY_BY_UUID,
-        (objectiveDataEntry, easyNPC) -> {
-          UUID lookAtEntityUUID = objectiveDataEntry.getTargetEntityUUID();
-          if (lookAtEntityUUID == null) {
-            log.debug("No valid target entity UUID for LOOK_AT_ENTITY_BY_UUID objective!");
-            return null;
-          }
+        outOfCombat(
+            (objectiveDataEntry, easyNPC) -> {
+              UUID lookAtEntityUUID = objectiveDataEntry.getTargetEntityUUID();
+              if (lookAtEntityUUID == null) {
+                log.debug("No valid target entity UUID for LOOK_AT_ENTITY_BY_UUID objective!");
+                return null;
+              }
 
-          return new LookAtEntityByUUIDGoal<>(
-              easyNPC, lookAtEntityUUID, objectiveDataEntry.getLookDistance());
-        });
+              return new LookAtEntityByUUIDGoal<>(
+                  easyNPC, lookAtEntityUUID, objectiveDataEntry.getLookDistance());
+            }));
 
     register(
         ObjectiveType.LOOK_AT_OWNER,
-        (objectiveDataEntry, easyNPC) -> {
-          Entity lookAtOwner = objectiveDataEntry.getTargetOwner(easyNPC);
-          if (!(lookAtOwner instanceof LivingEntity ownerEntity) || ownerEntity.isRemoved()) {
-            log.debug("No valid owner for LOOK_AT_OWNER objective!");
-            return null;
-          }
+        outOfCombat(
+            (objectiveDataEntry, easyNPC) -> {
+              Entity lookAtOwner = objectiveDataEntry.getTargetOwner(easyNPC);
+              if (!(lookAtOwner instanceof LivingEntity ownerEntity) || ownerEntity.isRemoved()) {
+                log.debug("No valid owner for LOOK_AT_OWNER objective!");
+                return null;
+              }
 
-          return new LookAtEntityByUUIDGoal<>(
-              easyNPC, ownerEntity.getUUID(), objectiveDataEntry.getLookDistance());
-        });
+              return new LookAtEntityByUUIDGoal<>(
+                  easyNPC, ownerEntity.getUUID(), objectiveDataEntry.getLookDistance());
+            }));
 
     register(
         ObjectiveType.LOOK_AT_ITEM,
-        (objectiveDataEntry, easyNPC) -> {
-          Ingredient lookAtItems = TargetItemResolver.resolveTargetItems(objectiveDataEntry);
-          if (lookAtItems == null) {
-            return null;
-          }
+        outOfCombat(
+            (objectiveDataEntry, easyNPC) -> {
+              Ingredient lookAtItems = TargetItemResolver.resolveTargetItems(objectiveDataEntry);
+              if (lookAtItems == null) {
+                return null;
+              }
 
-          return new LookAtItemGoal<>(easyNPC, lookAtItems, objectiveDataEntry.getLookDistance());
-        });
+              return new LookAtItemGoal<>(
+                  easyNPC, lookAtItems, objectiveDataEntry.getLookDistance());
+            }));
   }
 }

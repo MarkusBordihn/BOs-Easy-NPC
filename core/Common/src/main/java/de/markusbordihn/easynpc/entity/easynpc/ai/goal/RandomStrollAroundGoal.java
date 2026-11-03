@@ -85,8 +85,7 @@ public class RandomStrollAroundGoal<T extends EasyNPC<?>> extends Goal {
   public boolean canContinueToUse() {
     if (this.pathfinderMob != null) {
       return !this.pathfinderMob.getNavigation().isDone()
-          && !this.pathfinderMob.isVehicle()
-          && (!this.pathfinderMob.isAggressive() || this.pathfinderMob.getTarget() == null);
+          && !this.pathfinderMob.isVehicle();
     }
 
     return false;

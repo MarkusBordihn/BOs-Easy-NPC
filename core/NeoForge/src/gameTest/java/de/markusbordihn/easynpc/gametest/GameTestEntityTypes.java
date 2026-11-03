@@ -35,6 +35,10 @@ public final class GameTestEntityTypes {
     return ModEntityType.getEntityType(ModNPCEntityType.HUMANOID);
   }
 
+  public static EntityType<?> slime() {
+    return ModEntityType.getEntityType(ModNPCEntityType.SLIME);
+  }
+
   public static EntityType<?> villager() {
     return ModEntityType.getEntityType(ModNPCEntityType.VILLAGER);
   }

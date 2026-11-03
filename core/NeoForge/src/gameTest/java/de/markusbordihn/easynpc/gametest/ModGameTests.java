@@ -71,6 +71,26 @@ public final class ModGameTests {
 
   static {
     register(
+        "idle_objectives_pause_in_combat",
+        OutOfCombatGoalTest::testIdleObjectivesPauseInCombat,
+        DEFAULT_STRUCTURE);
+    register(
+        "out_of_combat_goal_waits_for_combat_cooldown",
+        OutOfCombatGoalTest::testOutOfCombatGoalWaitsForCombatCooldown,
+        DEFAULT_STRUCTURE);
+    register(
+        "look_at_target_goal_faces_target",
+        OutOfCombatGoalTest::testLookAtTargetGoalFacesTarget,
+        DEFAULT_STRUCTURE);
+    register(
+        "move_back_to_home_goal_waits_before_retry",
+        OutOfCombatGoalTest::testMoveBackToHomeGoalWaitsBeforeRetry,
+        DEFAULT_STRUCTURE);
+    register(
+        "jump_move_control_follows_wanted_position",
+        OutOfCombatGoalTest::testJumpMoveControlFollowsWantedPosition,
+        DEFAULT_STRUCTURE);
+    register(
         "item_quantity_conditions",
         ConditionEvaluationTest::testItemQuantityConditions,
         DEFAULT_STRUCTURE);
@@ -232,6 +252,18 @@ public final class ModGameTests {
     register(
         "loaded_n_p_c_stays_persistent",
         NPCEntityLifecycleTest::testLoadedNPCStaysPersistent,
+        DEFAULT_STRUCTURE);
+    register(
+        "constructed_n_p_c_is_persistent",
+        NPCEntityLifecycleTest::testConstructedNPCIsPersistent,
+        DEFAULT_STRUCTURE);
+    register(
+        "construction_tolerates_persistence_hook",
+        NPCEntityLifecycleTest::testConstructionToleratesPersistenceHook,
+        DEFAULT_STRUCTURE);
+    register(
+        "addon_display_attribute_override_keeps_visibility_data",
+        NPCEntityLifecycleTest::testAddonDisplayAttributeOverrideKeepsVisibilityData,
         DEFAULT_STRUCTURE);
     register(
         "non_persistent_n_p_c_is_not_stored_on_join_and_unload",
@@ -1032,6 +1064,30 @@ public final class ModGameTests {
         "boss_bar_settings_are_exported_with_the_preset",
         BossBarTest::testBossBarSettingsAreExportedWithThePreset,
         DEFAULT_STRUCTURE);
+    register(
+        "boss_bar_is_removed_when_player_stops_seeing_n_p_c",
+        BossBarTest::testBossBarIsRemovedWhenPlayerStopsSeeingNPC,
+        DEFAULT_STRUCTURE);
+    register(
+        "boss_bar_is_auto_hidden_and_shown_again_when_fighting",
+        BossBarTest::testBossBarIsAutoHiddenAndShownAgainWhenFighting,
+        DEFAULT_STRUCTURE);
+    register(
+        "boss_bar_command_changes_settings",
+        BossBarTest::testBossBarCommandChangesSettings,
+        DEFAULT_STRUCTURE);
+    register(
+        "boss_bar_command_rejects_out_of_range_values",
+        BossBarTest::testBossBarCommandRejectsOutOfRangeValues,
+        DEFAULT_STRUCTURE);
+    register(
+        "boss_bar_settings_are_saved_and_loaded",
+        BossBarTest::testBossBarSettingsAreSavedAndLoaded,
+        DEFAULT_STRUCTURE);
+    register(
+        "boss_bar_auto_hide_is_reset_when_player_comes_back",
+        BossBarTest::testBossBarAutoHideIsResetWhenPlayerComesBack,
+        DEFAULT_STRUCTURE);
 
     if (CompatConstants.MOD_EASY_MODEL_ENTITIES_LOADED) {
       register(
@@ -1466,6 +1522,18 @@ public final class ModGameTests {
         "attack_type_command_rejects_unknown_type",
         ObjectiveCommandTest::testAttackTypeCommandRejectsUnknownType,
         DEFAULT_STRUCTURE);
+    register(
+        "attack_type_command_sets_several_attack_types",
+        ObjectiveCommandTest::testAttackTypeCommandSetsSeveralAttackTypes,
+        DEFAULT_STRUCTURE);
+    register(
+        "attack_type_command_rejects_melee_with_zombie",
+        ObjectiveCommandTest::testAttackTypeCommandRejectsMeleeWithZombie,
+        DEFAULT_STRUCTURE);
+    register(
+        "attack_list_command_shows_attack_types",
+        ObjectiveCommandTest::testAttackListCommandShowsAttackTypes,
+        DEFAULT_STRUCTURE);
 
     register(
         "sit_command_puts_n_p_c_on_shoulder",
@@ -1606,6 +1674,15 @@ public final class ModGameTests {
         ProjectileTest::testCrossbowAttackObjectiveHitsEnemyWithCustomProjectile,
         DEFAULT_STRUCTURE,
         400);
+    register(
+        "melee_and_bow_attack_objectives_shoot_when_holding_bow",
+        ProjectileTest::testMeleeAndBowAttackObjectivesShootWhenHoldingBow,
+        DEFAULT_STRUCTURE,
+        400);
+    register(
+        "melee_attack_yields_only_to_matching_ranged_weapon",
+        ProjectileTest::testMeleeAttackYieldsOnlyToMatchingRangedWeapon,
+        DEFAULT_STRUCTURE);
   }
 
   public ModGameTests(IEventBus modEventBus) {

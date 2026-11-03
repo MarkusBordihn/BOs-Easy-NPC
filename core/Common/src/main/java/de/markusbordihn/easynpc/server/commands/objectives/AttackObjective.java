@@ -13,9 +13,11 @@ import de.markusbordihn.easynpc.data.objective.factory.BuiltInObjectiveFactories
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ObjectiveDataCapable;
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -42,6 +44,12 @@ public class AttackObjective extends Command {
       (context, builder) ->
           SharedSuggestionProvider.suggest(
               ObjectiveGroup.ATTACK_TYPE.stream().map(ObjectiveType::getFriendlyName), builder);
+  private static final SuggestionProvider<CommandSourceStack> SUGGEST_ATTACK_TYPE_LIST =
+      (context, builder) ->
+          SharedSuggestionProvider.suggest(
+              ObjectiveGroup.ATTACK_TYPE.stream().map(ObjectiveType::getFriendlyName),
+              builder.createOffset(
+                  builder.getStart() + builder.getRemaining().lastIndexOf(' ') + 1));
 
   static {
     PROTECTION_OBJECTIVES.put(
@@ -110,11 +118,11 @@ public class AttackObjective extends Command {
         .then(
             Commands.literal("type")
                 .then(
-                    Commands.argument(TYPE_ARGUMENT, StringArgumentType.word())
-                        .suggests(SUGGEST_ATTACK_TYPES)
+                    Commands.argument(TYPE_ARGUMENT, StringArgumentType.greedyString())
+                        .suggests(SUGGEST_ATTACK_TYPE_LIST)
                         .executes(
                             context ->
-                                setAttackTypeObjective(
+                                setAttackTypeObjectives(
                                     context.getSource(),
                                     EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG),
                                     StringArgumentType.getString(context, TYPE_ARGUMENT)))))
@@ -140,7 +148,8 @@ public class AttackObjective extends Command {
 
     boolean removedAny = false;
     for (ObjectiveType objectiveType : ObjectiveType.values()) {
-      if (BuiltInObjectiveFactories.isTargetObjective(objectiveType)) {
+      if (BuiltInObjectiveFactories.isTargetObjective(objectiveType)
+          || ObjectiveGroup.ATTACK_TYPE.contains(objectiveType)) {
         if (EasyNPCObjectiveHandler.removeObjective(easyNPC, objectiveType)) {
           removedAny = true;
         }
@@ -180,6 +189,14 @@ public class AttackObjective extends Command {
       return sendFailureMessageNoObjectiveData(context, easyNPC);
     }
 
+    String attackTypes =
+        ObjectiveGroup.ATTACK_TYPE.stream()
+            .filter(objectiveData::hasObjective)
+            .map(ObjectiveType::getFriendlyName)
+            .collect(Collectors.joining(", "));
+    sendSuccessMessage(
+        context,
+        "Attack types for " + easyNPC + ": " + (attackTypes.isEmpty() ? "none" : attackTypes));
     sendSuccessMessage(context, "Attack targets for " + easyNPC + ":");
 
     for (ObjectiveType objectiveType : ObjectiveType.values()) {
@@ -215,14 +232,29 @@ public class AttackObjective extends Command {
     return sendSuccessMessage(
         context,
         "Usage: /objective set attack target <target_type>"
-            + " or /objective set attack type <attack_type>");
+            + " or /objective set attack type <attack_type> [<attack_type> ...]");
   }
 
-  public static int setAttackTypeObjective(
-      CommandSourceStack context, EasyNPC<?> easyNPC, String typeName) {
-    ObjectiveType attackType = getAttackTypeFromName(typeName);
-    if (attackType == null) {
-      return sendFailureMessage(context, "Unknown attack type: " + typeName);
+  public static int setAttackTypeObjectives(
+      CommandSourceStack context, EasyNPC<?> easyNPC, String typeNames) {
+    Set<ObjectiveType> attackTypes = EnumSet.noneOf(ObjectiveType.class);
+    for (String typeName : typeNames.trim().split("\\s+")) {
+      ObjectiveType attackType = getAttackTypeFromName(typeName);
+      if (attackType == null) {
+        return sendFailureMessage(context, "Unknown attack type: " + typeName);
+      }
+      attackTypes.add(attackType);
+    }
+
+    if (attackTypes.contains(ObjectiveType.MELEE_ATTACK)
+        && attackTypes.contains(ObjectiveType.ZOMBIE_ATTACK)) {
+      return sendFailureMessage(
+          context,
+          "Attack types "
+              + ObjectiveType.MELEE_ATTACK.getFriendlyName()
+              + " and "
+              + ObjectiveType.ZOMBIE_ATTACK.getFriendlyName()
+              + " cannot be combined!");
     }
 
     if (getObjectiveData(context, easyNPC) == null) {
@@ -230,16 +262,22 @@ public class AttackObjective extends Command {
     }
 
     for (ObjectiveType otherAttackType : ObjectiveGroup.ATTACK_TYPE) {
-      if (otherAttackType != attackType) {
+      if (!attackTypes.contains(otherAttackType)) {
         EasyNPCObjectiveHandler.removeObjective(easyNPC, otherAttackType);
       }
     }
 
-    if (!EasyNPCObjectiveHandler.addObjective(easyNPC, new ObjectiveDataEntry(attackType))) {
-      return sendFailureMessage(context, "Error setting attack type " + typeName + "!");
+    for (ObjectiveType attackType : attackTypes) {
+      if (!EasyNPCObjectiveHandler.addObjective(easyNPC, new ObjectiveDataEntry(attackType))) {
+        return sendFailureMessage(
+            context, "Error setting attack type " + attackType.getFriendlyName() + "!");
+      }
     }
 
-    return sendSuccessMessage(context, "Set attack type " + typeName + " for " + easyNPC);
+    String attackTypeNames =
+        attackTypes.stream().map(ObjectiveType::getFriendlyName).collect(Collectors.joining(", "));
+    return sendSuccessMessage(
+        context, "Set attack types " + attackTypeNames + " for " + easyNPC);
   }
 
   public static int removeAttackTypeObjective(

@@ -227,7 +227,7 @@
   "text.easy_npc.config.custom_pose.title": "自訂姿勢",
   "text.easy_npc.config.custom_preset_export.title": "自訂預設匯出",
   "text.easy_npc.config.custom_preset_import.title": "自訂預設匯入",
-  "text.easy_npc.config.custom_skin.text": "自訂皮膚允許你將本地儲存的皮膚用於 NPC。\n\n皮膚必須儲存在每個玩家對應的「config/easy_npc/skins」資料夾中。",
+  "text.easy_npc.config.custom_skin.text": "自訂皮膚允許你將本地儲存的皮膚用於 NPC。\n\n皮膚必須儲存在每個玩家對應的「config/easy_npc/skin」資料夾中。",
   "text.easy_npc.config.custom_skin.title": "自訂皮膚",
   "text.easy_npc.config.custom_trading_checkbox": "自訂交易",
   "text.easy_npc.config.custom_trading_text": "此核取方塊將啟用自訂交易，並帶有自訂 NBT 資料。\n\n當交易是透過自訂 NBT 資料而不是介面定義時，這會很有用。",

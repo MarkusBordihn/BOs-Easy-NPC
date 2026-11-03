@@ -24,6 +24,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import de.markusbordihn.clientruntimeinterfacetoolkit.testrunner.By;
+import de.markusbordihn.clientruntimeinterfacetoolkit.testrunner.GameClient.TemporaryChange;
 import de.markusbordihn.clientruntimeinterfacetoolkit.testrunner.GameClientBuilder;
 import de.markusbordihn.clientruntimeinterfacetoolkit.testrunner.GameClientExtension;
 import de.markusbordihn.clientruntimeinterfacetoolkit.testrunner.Until;
@@ -52,6 +53,7 @@ abstract class ClientTestBase {
   private static final String SUITE_NAME = "Easy NPC config-ui";
   private static final String WORLD_SETUP_CAPABILITY = "world.setup";
   private static final Duration WORLD_SETUP_TIMEOUT = Duration.ofMinutes(1);
+  private static final String SEND_COMMAND_FEEDBACK_GAME_RULE = "send_command_feedback";
   private static final int PLATFORM_Y = 100;
   static final int STAND_Y = PLATFORM_Y + 1;
   private static final String TEST_PLATFORM_FILE_NAME = "npc_platform.nbt";
@@ -95,6 +97,16 @@ abstract class ClientTestBase {
       }
 
       client.await(Until.ticksElapsed(2));
+    }
+  }
+
+  static void runCommandAndAwaitFeedback(String command, String expectedFeedback) {
+    client.closeScreen();
+    client.await(Until.noScreen());
+    client.clearChat();
+    try (TemporaryChange commandFeedback =
+        client.setGameRule(SEND_COMMAND_FEEDBACK_GAME_RULE, true)) {
+      client.runCommand(command, Until.chatMessage(expectedFeedback));
     }
   }
 
