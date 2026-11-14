@@ -226,6 +226,7 @@ public class ProjectileAttributeConfigurationScreen<T extends ConfigurationMenu>
                 WIDGET_HEIGHT,
                 this.projectileData.projectileItem().toString(),
                 PROJECTILE_ITEM_MAXIMUM_LENGTH));
+    this.projectileItemTextField.moveCursorToStart();
     this.projectileItemSaveButton =
         this.addPageWidget(
             Page.PROJECTILE,

@@ -55,6 +55,7 @@ public class GameTestRegistration {
         EnvironmentalAttributeTest.class,
         FactionDefenseTest.class,
         IllagerCrossedArmsTest.class,
+        SunBurnTest.class,
         NPCEntityLifecycleTest.class,
         ShoulderTest.class,
         NPCMassLifecycleTest.class,

@@ -28,6 +28,7 @@ import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
 import de.markusbordihn.easynpc.utils.ResourceNameNormalizer;
+import java.util.Collections;
 import java.util.EnumMap;
 import java.util.LinkedHashMap;
 import java.util.Locale;
@@ -155,6 +156,6 @@ public class ModelPoseAPI {
     poses.put(VANILLA_CROUCHING, Pose.CROUCHING);
     poses.put(VANILLA_SLEEPING, Pose.SLEEPING);
     poses.put(VANILLA_SWIMMING, Pose.SWIMMING);
-    return Map.copyOf(poses);
+    return Collections.unmodifiableMap(poses);
   }
 }
