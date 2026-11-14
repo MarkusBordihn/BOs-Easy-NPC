@@ -131,6 +131,28 @@ public final class ModGameTests {
         () -> IllagerCrossedArmsTest::testVindicatorCrossedArmsVariantDrivesArmPose);
 
     TEST_FUNCTIONS.register(
+        "zombie_does_not_burn_in_daylight",
+        () -> SunBurnTest::testZombieDoesNotBurnInDaylight);
+    TEST_FUNCTIONS.register(
+        "drowned_does_not_burn_in_daylight",
+        () -> SunBurnTest::testDrownedDoesNotBurnInDaylight);
+    TEST_FUNCTIONS.register(
+        "zombie_villager_does_not_burn_in_daylight",
+        () -> SunBurnTest::testZombieVillagerDoesNotBurnInDaylight);
+    TEST_FUNCTIONS.register(
+        "zombified_piglin_does_not_burn_in_daylight",
+        () -> SunBurnTest::testZombifiedPiglinDoesNotBurnInDaylight);
+    TEST_FUNCTIONS.register(
+        "skeleton_does_not_burn_in_daylight",
+        () -> SunBurnTest::testSkeletonDoesNotBurnInDaylight);
+    TEST_FUNCTIONS.register(
+        "stray_does_not_burn_in_daylight",
+        () -> SunBurnTest::testStrayDoesNotBurnInDaylight);
+    TEST_FUNCTIONS.register(
+        "bogged_does_not_burn_in_daylight",
+        () -> SunBurnTest::testBoggedDoesNotBurnInDaylight);
+
+    TEST_FUNCTIONS.register(
         "all_spawn_egg_items", () -> ModSpawnEggItemTest::useAllSpawnEggItems);
 
     TEST_FUNCTIONS.register(

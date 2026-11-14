@@ -20,18 +20,23 @@
 package de.markusbordihn.easynpc.mixin.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import de.markusbordihn.easynpc.client.model.EasyNPCModel;
+import de.markusbordihn.easynpc.client.model.EasyNPCModelManagerAccessor;
 import de.markusbordihn.easynpc.client.renderer.OpacitySubmitNodeCollector;
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCLivingEntityRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.state.EasyNPCRenderStateExtension;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.VisibilityHandler;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.world.entity.LivingEntity;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
@@ -40,6 +45,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(LivingEntityRenderer.class)
 public class EasyNPCLivingEntityRendererMixin {
+
+  @Shadow protected EntityModel<?> model;
 
   @Inject(
       method =
@@ -108,6 +115,28 @@ public class EasyNPCLivingEntityRendererMixin {
     if (renderState instanceof EasyNPCRenderStateExtension) {
       EasyNPCLivingEntityRenderer.handleRotation(renderState, poseStack);
       EasyNPCLivingEntityRenderer.handleScale(renderState, poseStack);
+    }
+  }
+
+  @Inject(
+      method =
+          "submit(Lnet/minecraft/client/renderer/entity/state/LivingEntityRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/renderer/state/CameraRenderState;)V",
+      at =
+          @At(
+              value = "INVOKE",
+              target = "Lnet/minecraft/client/model/EntityModel;setupAnim(Ljava/lang/Object;)V",
+              shift = At.Shift.AFTER))
+  private void reapplyCustomPoseAfterSetupAnim(
+      LivingEntityRenderState renderState,
+      PoseStack poseStack,
+      SubmitNodeCollector submitNodeCollector,
+      CameraRenderState cameraRenderState,
+      CallbackInfo callbackInfo) {
+    if (renderState instanceof EasyNPCRenderStateExtension extension
+        && this.model instanceof HumanoidModel<?>
+        && this.model instanceof EasyNPCModelManagerAccessor modelManagerAccessor) {
+      EasyNPCModel.reapplyCustomPoseAfterSubclassAnimation(
+          extension, modelManagerAccessor.easyNPC$getModelManager());
     }
   }
 
