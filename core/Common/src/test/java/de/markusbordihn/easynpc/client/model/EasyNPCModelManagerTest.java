@@ -19,10 +19,14 @@
 
 package de.markusbordihn.easynpc.client.model;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import de.markusbordihn.easynpc.data.model.ModelPartType;
+import de.markusbordihn.easynpc.data.position.CustomPosition;
+import de.markusbordihn.easynpc.data.rotation.CustomRotation;
+import de.markusbordihn.easynpc.data.scale.CustomScale;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.data.model.ModelType;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
@@ -41,6 +45,8 @@ import org.junit.jupiter.api.Test;
 class EasyNPCModelManagerTest {
 
   private final EnumMap<ModelPartType, Boolean> modelPartVisibility =
+      new EnumMap<>(ModelPartType.class);
+  private final EnumMap<ModelPartType, CustomRotation> modelPartRotation =
       new EnumMap<>(ModelPartType.class);
   private ModelPart headPart;
   private ModelPart hatPart;
@@ -66,6 +72,11 @@ class EasyNPCModelManagerTest {
                   case "getModelPose" -> ModelPose.CUSTOM;
                   case "getModelType" -> ModelType.HUMANOID;
                   case "getModelPartVisibility" -> this.modelPartVisibility;
+                  case "getModelPartRotation" ->
+                      this.modelPartRotation.getOrDefault(
+                          (ModelPartType) arguments[0], new CustomRotation(0, 0, 0));
+                  case "getModelPartPosition" -> new CustomPosition(0, 0, 0);
+                  case "getModelPartScale" -> new CustomScale(1, 1, 1);
                   default -> throw new UnsupportedOperationException(method.getName());
                 });
   }
@@ -106,6 +117,88 @@ class EasyNPCModelManagerTest {
 
     this.modelManager.syncModelParts(this.createSyncOnlyModelData());
 
+    assertFalse(this.hatPart.visible);
+  }
+
+  @Test
+  @DisplayName("Reset shows an outer layer again that the previous NPC hid")
+  void resetShowsOuterLayerHiddenByPreviousNPC() {
+    this.hatPart.visible = false;
+
+    this.modelManager.resetModelParts();
+
+    assertTrue(this.hatPart.visible);
+  }
+
+  @Test
+  @DisplayName("Reset keeps an outer layer hidden that the model hides by default")
+  void resetKeepsOuterLayerHiddenByModel() {
+    ModelPart sleevePart = createModelPart();
+    sleevePart.visible = false;
+    this.modelManager.defineModelPart(ModelPartType.LEFT_SLEEVE, sleevePart);
+    sleevePart.visible = true;
+
+    this.modelManager.resetModelParts();
+
+    assertFalse(sleevePart.visible);
+  }
+
+  @Test
+  @DisplayName("Reset restores the pose the previous NPC left on a part")
+  void resetRestoresPoseOfPreviousNPC() {
+    this.headPart.setPos(1.0F, -2.0F, 3.0F);
+    this.headPart.setRotation(0.6F, 0.4F, 0.2F);
+    this.headPart.xScale = 1.5F;
+    this.headPart.yScale = 1.5F;
+    this.headPart.zScale = 1.5F;
+    this.headPart.visible = false;
+
+    this.modelManager.resetModelParts();
+
+    assertEquals(0.0F, this.headPart.x);
+    assertEquals(0.0F, this.headPart.y);
+    assertEquals(0.0F, this.headPart.z);
+    assertEquals(0.0F, this.headPart.xRot);
+    assertEquals(0.0F, this.headPart.yRot);
+    assertEquals(0.0F, this.headPart.zRot);
+    assertEquals(1.0F, this.headPart.xScale);
+    assertEquals(1.0F, this.headPart.yScale);
+    assertEquals(1.0F, this.headPart.zScale);
+    assertTrue(this.headPart.visible);
+  }
+
+  @Test
+  @DisplayName("Custom pose wins over a part a model subclass overwrote")
+  void reapplyRestoresChangedPartOverwrittenBySubclass() {
+    this.modelPartRotation.put(ModelPartType.HEAD, new CustomRotation(0.6F, 0.0F, 0.0F));
+    this.headPart.xRot = -1.4F;
+
+    this.modelManager.reapplyChangedModelParts(this.createSyncOnlyModelData());
+
+    assertEquals(0.6F, this.headPart.xRot);
+  }
+
+  @Test
+  @DisplayName("Parts without custom pose keep the model subclass animation")
+  void reapplyKeepsSubclassAnimationOfUnchangedPart() {
+    ModelPart rightArmPart = createModelPart();
+    this.modelManager.defineModelPart(ModelPartType.RIGHT_ARM, rightArmPart);
+    rightArmPart.xRot = -1.4F;
+
+    this.modelManager.reapplyChangedModelParts(this.createSyncOnlyModelData());
+
+    assertEquals(-1.4F, rightArmPart.xRot);
+  }
+
+  @Test
+  @DisplayName("Hidden head stays hidden when a model subclass shows it again")
+  void reapplyKeepsHiddenPartHidden() {
+    this.modelPartVisibility.put(ModelPartType.HEAD, false);
+    this.headPart.visible = true;
+
+    this.modelManager.reapplyChangedModelParts(this.createSyncOnlyModelData());
+
+    assertFalse(this.headPart.visible);
     assertFalse(this.hatPart.visible);
   }
 }

@@ -32,6 +32,7 @@
     "renderer.EasyNPCEntityRendererMixin",
     "renderer.EasyNPCHighlightMixin",
     "renderer.EasyNPCLivingEntityRendererMixin",
+    "renderer.EasyNPCModelFeatureRendererMixin",
     "renderer.EasyNPCSlimeRendererMixin",
     "renderer.HumanoidArmorLayerMixin",
     "renderer.RenderSetupMixin",
