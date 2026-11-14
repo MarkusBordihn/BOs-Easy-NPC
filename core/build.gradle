@@ -3,7 +3,7 @@ buildscript {
   // machine without it still builds and runs the game tests. Its repository is declared in
   // settings.gradle, Gradle rejects buildscript repositories next to exclusive plugin content.
   String toolkitPluginModule = "client_runtime_interface_toolkit-gradle-plugin-${minecraft_version}"
-  String toolkitPluginVersion = '2.1.0'
+  String toolkitPluginVersion = '2.2.0'
   File toolkitPluginDirectory = new File(
       System.getProperty('maven.repo.local', "${System.getProperty('user.home')}/.m2/repository"),
       "de/markusbordihn/clientruntimeinterfacetoolkit/${toolkitPluginModule}/${toolkitPluginVersion}")
