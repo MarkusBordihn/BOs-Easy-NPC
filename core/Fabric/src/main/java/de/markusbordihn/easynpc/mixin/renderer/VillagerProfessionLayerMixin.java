@@ -20,9 +20,12 @@
 package de.markusbordihn.easynpc.mixin.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import de.markusbordihn.easynpc.client.model.EasyNPCModel;
+import de.markusbordihn.easynpc.client.model.EasyNPCModelManagerAccessor;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.entity.layers.VillagerProfessionLayer;
 import net.minecraft.world.entity.LivingEntity;
 import org.spongepowered.asm.mixin.Mixin;
@@ -62,6 +65,34 @@ public class VillagerProfessionLayerMixin {
 
     if (skinData.getSkinDataEntry().disableLayers()) {
       callbackInfo.cancel();
+    }
+  }
+
+  @Inject(
+      method =
+          "render(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;ILnet/minecraft/world/entity/LivingEntity;FFFFFF)V",
+      at =
+          @At(
+              value = "INVOKE",
+              target = "Lnet/minecraft/client/model/VillagerHeadModel;hatVisible(Z)V",
+              shift = At.Shift.AFTER))
+  private void keepHiddenModelPartsHidden(
+      PoseStack poseStack,
+      MultiBufferSource multiBufferSource,
+      int packedLight,
+      LivingEntity livingEntity,
+      float limbSwing,
+      float limbSwingAmount,
+      float partialTick,
+      float ageInTicks,
+      float netHeadYaw,
+      float headPitch,
+      CallbackInfo callbackInfo) {
+    if (livingEntity instanceof EasyNPC<?> easyNPC
+        && ((RenderLayer<?, ?>) (Object) this).getParentModel()
+            instanceof EasyNPCModelManagerAccessor modelManagerAccessor) {
+      EasyNPCModel.keepHiddenModelPartsHidden(
+          easyNPC, modelManagerAccessor.easyNPC$getModelManager());
     }
   }
 }

@@ -155,8 +155,8 @@ public class DefaultRotationConfigurationScreen<T extends ConfigurationMenu>
     this.rootRotationCheckbox =
         this.addRenderableWidget(
             new Checkbox(
-                resetButtonLeftPosition + 15,
-                sliderTopPosition + 1,
+                this.contentLeftPos,
+                sliderTopPosition + sliderHeight + 14,
                 "lock_rotation",
                 modelData.getModelRootData().rotation().locked(),
                 checkbox ->

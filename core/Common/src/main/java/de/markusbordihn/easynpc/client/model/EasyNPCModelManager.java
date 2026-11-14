@@ -441,30 +441,88 @@ public class EasyNPCModelManager {
       ModelPartType modelPartType = entry.getKey();
       ModelPart modelPartToReset = entry.getValue();
 
+      Boolean isVisible = this.defaultModelPartVisibilityMap.get(modelPartType);
+      if (isVisible != null) {
+        modelPartToReset.visible = isVisible;
+      }
+
       // Skip outer layer parts as they will be synced from their inner parts
       if (this.isOuterLayerPart(modelPartType)) {
         continue;
       }
 
-      CustomPosition customPosition = this.defaultModelPartPositionMap.get(modelPartType);
-      CustomRotation customRotation = this.defaultModelPartRotationMap.get(modelPartType);
-      CustomScale customScale = this.defaultModelPartScaleMap.get(modelPartType);
-      Boolean isVisible = this.defaultModelPartVisibilityMap.get(modelPartType);
+      this.resetModelPartTransform(modelPartType, modelPartToReset);
+    }
+  }
 
-      if (customPosition != null) {
-        modelPartToReset.setPos(customPosition.x(), customPosition.y(), customPosition.z());
+  public void reapplyChangedModelParts(final ModelDataCapable<?> modelData) {
+    if (modelData == null || modelData.getModelPose() == ModelPose.VANILLA) {
+      return;
+    }
+
+    EnumMap<ModelPartType, Boolean> visibilityMap = modelData.getModelPartVisibility();
+    for (Map.Entry<ModelPartType, ModelPart> entry : this.modelPartMap.entrySet()) {
+      ModelPartType partType = entry.getKey();
+      ModelPart modelPart = entry.getValue();
+      if (this.isOuterLayerPart(partType)
+          || this.applyModelPartVisibility(modelPart, partType, visibilityMap)
+          || !this.hasCustomTransform(partType, modelData)) {
+        continue;
       }
-      if (customRotation != null) {
-        modelPartToReset.setRotation(customRotation.x(), customRotation.y(), customRotation.z());
+
+      this.resetModelPartTransform(partType, modelPart);
+      this.applyCustomPosition(modelPart, partType, modelData);
+      this.applyCustomRotation(modelPart, partType, modelData);
+      this.applyCustomScale(modelPart, partType, modelData);
+    }
+
+    this.syncModelParts(modelData);
+  }
+
+  public void applyHiddenModelParts(final ModelDataCapable<?> modelData) {
+    if (modelData == null || modelData.getModelPose() == ModelPose.VANILLA) {
+      return;
+    }
+
+    EnumMap<ModelPartType, Boolean> visibilityMap = modelData.getModelPartVisibility();
+    for (Map.Entry<ModelPartType, ModelPart> entry : this.modelPartMap.entrySet()) {
+      if (Boolean.FALSE.equals(visibilityMap.get(entry.getKey()))) {
+        entry.getValue().visible = false;
       }
-      if (customScale != null) {
-        modelPartToReset.xScale = customScale.x();
-        modelPartToReset.yScale = customScale.y();
-        modelPartToReset.zScale = customScale.z();
-      }
-      if (isVisible != null) {
-        modelPartToReset.visible = isVisible;
-      }
+    }
+
+    ModelPart headPart = this.modelPartMap.get(ModelPartType.HEAD);
+    ModelPart hatPart = this.modelPartMap.get(ModelPartType.HAT);
+    if (headPart != null && hatPart != null && !headPart.visible) {
+      hatPart.visible = false;
+    }
+  }
+
+  private boolean hasCustomTransform(
+      final ModelPartType partType, final ModelDataCapable<?> modelData) {
+    CustomPosition customPosition = modelData.getModelPartPosition(partType);
+    CustomRotation customRotation = modelData.getModelPartRotation(partType);
+    CustomScale customScale = modelData.getModelPartScale(partType);
+    return (customPosition != null && customPosition.hasChanged())
+        || (customRotation != null && customRotation.hasChanged())
+        || (customScale != null && customScale.hasChanged());
+  }
+
+  private void resetModelPartTransform(final ModelPartType partType, final ModelPart modelPart) {
+    CustomPosition defaultPosition = this.defaultModelPartPositionMap.get(partType);
+    CustomRotation defaultRotation = this.defaultModelPartRotationMap.get(partType);
+    CustomScale defaultScale = this.defaultModelPartScaleMap.get(partType);
+
+    if (defaultPosition != null) {
+      modelPart.setPos(defaultPosition.x(), defaultPosition.y(), defaultPosition.z());
+    }
+    if (defaultRotation != null) {
+      modelPart.setRotation(defaultRotation.x(), defaultRotation.y(), defaultRotation.z());
+    }
+    if (defaultScale != null) {
+      modelPart.xScale = defaultScale.x();
+      modelPart.yScale = defaultScale.y();
+      modelPart.zScale = defaultScale.z();
     }
   }
 }

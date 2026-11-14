@@ -80,6 +80,35 @@ public class EasyNPCModel {
     return false;
   }
 
+  // AbstractZombieModel and EndermanModel overwrite parts after HumanoidModel.setupAnim.
+  public static void reapplyCustomPoseAfterSubclassAnimation(
+      final EasyNPC<?> easyNPC, final EasyNPCModelManager modelManager) {
+    if (easyNPC == null || modelManager == null) {
+      return;
+    }
+
+    ModelDataCapable<?> modelData = easyNPC.getEasyNPCModelData();
+    if (modelData == null
+        || modelData.getModelPose() == ModelPose.VANILLA
+        || !modelManager.shouldCancelAnimation(modelData)
+        || (modelData.getModelPose() == ModelPose.DEFAULT
+            && easyNPC.getLivingEntity().walkAnimation.speed() > 0.01f)) {
+      return;
+    }
+
+    modelManager.reapplyChangedModelParts(modelData);
+  }
+
+  // VillagerProfessionLayer shows head and hat again through VillagerHeadModel.hatVisible.
+  public static void keepHiddenModelPartsHidden(
+      final EasyNPC<?> easyNPC, final EasyNPCModelManager modelManager) {
+    if (easyNPC == null || modelManager == null) {
+      return;
+    }
+
+    modelManager.applyHiddenModelParts(easyNPC.getEasyNPCModelData());
+  }
+
   public static OptionalInt getFixedEntityLightLevel(
       final DisplayAttributeDataCapable<?> displayAttributeData) {
     if (displayAttributeData == null) {
@@ -109,13 +138,10 @@ public class EasyNPCModel {
 
     setupArmPoses(easyNPC, modelManager);
 
-    // Apply visibility synchronization after all standard animations
-    if (modelData != null) {
-      if (modelData.getModelAnimationBehavior() == ModelAnimationBehavior.SMART) {
-        modelManager.applyVisibilityChanges(modelData);
-      } else {
-        modelManager.syncModelParts(modelData);
-      }
+    if (modelData != null
+        && (modelData.getModelAnimationBehavior() == ModelAnimationBehavior.SMART
+            || modelData.getModelPose() != ModelPose.VANILLA)) {
+      modelManager.applyVisibilityChanges(modelData);
     }
   }
 

@@ -79,6 +79,11 @@ public class ZombifiedPiglinBase extends ZombifiedPiglinRaw
   }
 
   @Override
+  protected boolean isSunSensitive() {
+    return false;
+  }
+
+  @Override
   public void travel(Vec3 vec3) {
     this.handleNavigationTravelEvent(vec3);
 
