@@ -27,6 +27,7 @@
       "de.markusbordihn.easynpc.gametest.EnvironmentalAttributeTest",
       "de.markusbordihn.easynpc.gametest.FactionDefenseTest",
       "de.markusbordihn.easynpc.gametest.IllagerCrossedArmsTest",
+      "de.markusbordihn.easynpc.gametest.SunBurnTest",
       "de.markusbordihn.easynpc.gametest.NPCEntityLifecycleTest",
       "de.markusbordihn.easynpc.gametest.NavigationHomePositionTest",
       "de.markusbordihn.easynpc.gametest.NPCMassLifecycleTest",

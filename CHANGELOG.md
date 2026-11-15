@@ -8,6 +8,16 @@ the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 7.19.0
+
+- Fixed #865 by keeping hidden skin layers of one NPC from hiding them on others of the same type.
+- Fixed custom poses of enderman NPCs being overwritten by their default animation.
+- Fixed hidden body parts showing again while walking with the "DEFAULT" or "NONE" animation.
+- Fixed the "Lock Body" label running outside the rotation screen.
+- Fixed the projectile "Item ID" field hiding the start of the item ID.
+- Fixed the English name of the orc warrior, which was spelled "Ork Warrior".
+- Fixed the vanilla pose buttons changing their order after each game start.
+
 ### 7.18.0
 
 - Fixed #862 by keeping NPCs from getting lost on loading with mods like LetMeDespawn.

@@ -89,6 +89,26 @@ public class EasyNPCModel {
     return false;
   }
 
+  // EndermanModel overwrites parts after HumanoidModel.setupAnim.
+  public static void reapplyCustomPoseAfterSubclassAnimation(
+      final EasyNPCRenderStateExtension extension, final EasyNPCModelManager modelManager) {
+    EasyNPC<?> easyNPC = getEasyNPC(extension);
+    if (easyNPC == null || modelManager == null) {
+      return;
+    }
+
+    ModelDataCapable<?> modelData = easyNPC.getEasyNPCModelData();
+    if (modelData == null
+        || modelData.getModelPose() == ModelPose.VANILLA
+        || !modelManager.shouldCancelAnimation(modelData)
+        || (modelData.getModelPose() == ModelPose.DEFAULT
+            && easyNPC.getLivingEntity().walkAnimation.speed() > 0.01f)) {
+      return;
+    }
+
+    modelManager.reapplyChangedModelParts(modelData);
+  }
+
   public static EasyNPC<?> getEasyNPC(final EasyNPCRenderStateExtension extension) {
     return extension != null ? extension.getEasyNPC() : null;
   }
@@ -127,13 +147,10 @@ public class EasyNPCModel {
 
     setupArmPoses(extension, modelManager);
 
-    // Apply visibility synchronization after all standard animations
-    if (modelData != null) {
-      if (modelData.getModelAnimationBehavior() == ModelAnimationBehavior.SMART) {
-        modelManager.applyVisibilityChanges(modelData);
-      } else {
-        modelManager.syncModelParts(modelData);
-      }
+    if (modelData != null
+        && (modelData.getModelAnimationBehavior() == ModelAnimationBehavior.SMART
+            || modelData.getModelPose() != ModelPose.VANILLA)) {
+      modelManager.applyVisibilityChanges(modelData);
     }
   }
 

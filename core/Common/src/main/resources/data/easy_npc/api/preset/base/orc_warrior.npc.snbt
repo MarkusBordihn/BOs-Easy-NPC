@@ -7,7 +7,7 @@
     description:"",
     entityTypeId:"easy_npc:orc_warrior",
     modified:1L,
-    name:"Ork Warrior Base",
+    name:"Orc Warrior Base",
     variantType:"ORC_WARRIOR",
     version:"1.0.0"
   },

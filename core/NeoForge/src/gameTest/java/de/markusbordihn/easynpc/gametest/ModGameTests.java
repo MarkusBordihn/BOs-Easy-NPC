@@ -188,6 +188,35 @@ public final class ModGameTests {
         IllagerCrossedArmsTest::testVindicatorCrossedArmsVariantDrivesArmPose,
         DEFAULT_STRUCTURE);
 
+    register(
+        "zombie_does_not_burn_in_daylight",
+        SunBurnTest::testZombieDoesNotBurnInDaylight,
+        DEFAULT_STRUCTURE);
+    register(
+        "drowned_does_not_burn_in_daylight",
+        SunBurnTest::testDrownedDoesNotBurnInDaylight,
+        DEFAULT_STRUCTURE);
+    register(
+        "zombie_villager_does_not_burn_in_daylight",
+        SunBurnTest::testZombieVillagerDoesNotBurnInDaylight,
+        DEFAULT_STRUCTURE);
+    register(
+        "zombified_piglin_does_not_burn_in_daylight",
+        SunBurnTest::testZombifiedPiglinDoesNotBurnInDaylight,
+        DEFAULT_STRUCTURE);
+    register(
+        "skeleton_does_not_burn_in_daylight",
+        SunBurnTest::testSkeletonDoesNotBurnInDaylight,
+        DEFAULT_STRUCTURE);
+    register(
+        "stray_does_not_burn_in_daylight",
+        SunBurnTest::testStrayDoesNotBurnInDaylight,
+        DEFAULT_STRUCTURE);
+    register(
+        "bogged_does_not_burn_in_daylight",
+        SunBurnTest::testBoggedDoesNotBurnInDaylight,
+        DEFAULT_STRUCTURE);
+
     register("all_spawn_egg_items", ModSpawnEggItemTest::useAllSpawnEggItems, DEFAULT_STRUCTURE);
 
     register(
