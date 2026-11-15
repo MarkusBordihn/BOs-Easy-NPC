@@ -70,7 +70,7 @@ public class PlayerTextureManager {
   public static ResourceLocation getOrCreateTextureWithDefault(
       SkinDataCapable<?> skinData, ResourceLocation defaultResourceLocation) {
     UUID skinUUID = skinData.getSkinUUID();
-    if (skinUUID.equals(Constants.BLANK_UUID)) {
+    if (skinUUID == null || skinUUID.equals(Constants.BLANK_UUID)) {
       return defaultResourceLocation;
     }
 
