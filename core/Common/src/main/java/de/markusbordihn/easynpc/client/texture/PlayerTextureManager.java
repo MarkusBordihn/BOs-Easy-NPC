@@ -69,7 +69,7 @@ public class PlayerTextureManager {
   public static Identifier getOrCreateTextureWithDefault(
       SkinDataCapable<?> skinData, Identifier defaultIdentifier) {
     UUID skinUUID = skinData.getSkinUUID();
-    if (skinUUID.equals(Constants.BLANK_UUID)) {
+    if (skinUUID == null || skinUUID.equals(Constants.BLANK_UUID)) {
       return defaultIdentifier;
     }
 
