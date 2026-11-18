@@ -205,10 +205,9 @@ public class TargetObjectiveConfigurationScreen<T extends ConfigurationMenu>
                   .addOrUpdateObjective(this.getEasyNPCUUID(), objectiveDataEntry);
               savedValueHolder[0] = targetValueField.getValue();
             });
-    targetValueField.setResponder(
-        value ->
-            targetValueSaveButton.active =
-                targetCheckbox.selected() && value != null && !value.equals(savedValueHolder[0]));
+    targetValueField.setResponder(value ->
+        targetValueSaveButton.active =
+            targetCheckbox.selected() && value != null && !value.equals(savedValueHolder[0]));
     targetValueSaveButton.active = false;
 
     this.addRenderableWidget(targetCheckbox);

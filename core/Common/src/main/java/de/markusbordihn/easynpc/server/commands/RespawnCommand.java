@@ -38,11 +38,10 @@ public class RespawnCommand extends Command {
     return Commands.literal("respawn")
         .then(
             Commands.argument(NPC_TARGETS_ARG, EasyNPCArgument.npc())
-                .executes(
-                    context ->
-                        respawn(
-                            context.getSource(),
-                            EasyNPCArgument.getEntitiesWithAccess(context, NPC_TARGETS_ARG))));
+                .executes(context ->
+                    respawn(
+                        context.getSource(),
+                        EasyNPCArgument.getEntitiesWithAccess(context, NPC_TARGETS_ARG))));
   }
 
   private static int respawn(

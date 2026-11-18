@@ -50,28 +50,25 @@ public class DebugCommand extends Command {
 
   public static ArgumentBuilder<CommandSourceStack, ?> register() {
     return Commands.literal("debug")
-        .requires(
-            commandSourceStack ->
-                commandSourceStack.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER))
+        .requires(commandSourceStack ->
+            commandSourceStack.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER))
         .then(
             Commands.literal("npc")
                 .then(
                     Commands.argument(NPC_TARGET_ARG, EasyNPCArgument.npc())
-                        .executes(
-                            context ->
-                                showNPCDebug(
-                                    context.getSource(),
-                                    EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG)))))
+                        .executes(context ->
+                            showNPCDebug(
+                                context.getSource(),
+                                EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG)))))
         .then(
             Commands.literal("core")
                 .then(LogLevelCommand.register(Constants.LOG_NAME, Constants.MOD_NAME))
                 .then(
                     Commands.argument(ENABLE_ARG, BoolArgumentType.bool())
-                        .executes(
-                            context ->
-                                setDebug(
-                                    context.getSource(),
-                                    BoolArgumentType.getBool(context, ENABLE_ARG)))))
+                        .executes(context ->
+                            setDebug(
+                                context.getSource(),
+                                BoolArgumentType.getBool(context, ENABLE_ARG)))))
         .then(
             Commands.literal("stats")
                 .then(

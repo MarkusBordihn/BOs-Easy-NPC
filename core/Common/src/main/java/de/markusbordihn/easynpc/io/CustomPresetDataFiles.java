@@ -88,10 +88,9 @@ public class CustomPresetDataFiles {
   public static Stream<Identifier> getPresetIdentifiers(SkinModel skinModel) {
     String searchName = "/" + skinModel.getName() + "/";
     return getPresetIdentifiers()
-        .filter(
-            resourceLocation ->
-                resourceLocation.toString().contains(searchName)
-                    && DataFileHandler.isPresetFile(resourceLocation));
+        .filter(resourceLocation ->
+            resourceLocation.toString().contains(searchName)
+                && DataFileHandler.isPresetFile(resourceLocation));
   }
 
   public static Stream<Identifier> getPresetIdentifiers() {

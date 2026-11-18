@@ -92,12 +92,11 @@ public class EntityTypeSuggestions {
     if (filteredEntityTypes == null) {
       filteredEntityTypes =
           BuiltInRegistries.ENTITY_TYPE.keySet().stream()
-              .filter(
-                  entityType -> {
-                    String entityTypeName = entityType.toString();
-                    return !entityTypeName.startsWith("easy_npc")
-                        && !DENIED_ENTITY_TYPES.contains(entityTypeName);
-                  })
+              .filter(entityType -> {
+                String entityTypeName = entityType.toString();
+                return !entityTypeName.startsWith("easy_npc")
+                    && !DENIED_ENTITY_TYPES.contains(entityTypeName);
+              })
               .map(entityType -> "\"" + entityType + "\"")
               .toList();
     }

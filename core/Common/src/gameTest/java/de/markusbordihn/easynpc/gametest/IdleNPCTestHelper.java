@@ -56,10 +56,7 @@ public class IdleNPCTestHelper {
     mob.travel(Vec3.ZERO);
 
     GameTestHelpers.assertEquals(
-        helper,
-        "A skipped travel must keep the idle NPC in place",
-        positionBefore,
-        mob.position());
+        helper, "A skipped travel must keep the idle NPC in place", positionBefore, mob.position());
     GameTestHelpers.assertEquals(
         helper,
         "A skipped travel must not apply gravity to the idle NPC",
@@ -67,8 +64,7 @@ public class IdleNPCTestHelper {
         mob.getDeltaMovement());
   }
 
-  public static void assertPeriodicTickRunsTravel(
-      GameTestHelper helper, EntityType<?> entityType) {
+  public static void assertPeriodicTickRunsTravel(GameTestHelper helper, EntityType<?> entityType) {
     EasyNPC<?> easyNPC = spawnIdleNPC(helper, entityType);
     Mob mob = easyNPC.getMob();
     setTickCountWithPhysicsStep(mob);

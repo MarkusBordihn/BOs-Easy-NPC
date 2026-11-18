@@ -24,7 +24,7 @@
     Brain:{
       memories:{}
     },
-    CanPickUpLoot:1b,
+    CanPickUpLoot:0b,
     CannotHunt:0b,
     CustomNameVisible:1b,
     EasyNPCVersion:3,

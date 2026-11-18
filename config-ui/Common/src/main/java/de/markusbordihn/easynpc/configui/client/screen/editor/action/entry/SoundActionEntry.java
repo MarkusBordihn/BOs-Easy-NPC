@@ -95,9 +95,8 @@ public class SoundActionEntry extends ActionEntryWidget {
                     .collect(Collectors.toCollection(LinkedHashSet::new)),
                 soundActionData.soundSource(),
                 button -> {}));
-    this.soundSourceButton.setLabelProvider(
-        soundSource ->
-            TextComponent.getTranslatedTextRaw("soundCategory." + soundSource.getName()));
+    this.soundSourceButton.setLabelProvider(soundSource ->
+        TextComponent.getTranslatedTextRaw("soundCategory." + soundSource.getName()));
 
     this.volumeField =
         this.screen.addActionEntryWidget(

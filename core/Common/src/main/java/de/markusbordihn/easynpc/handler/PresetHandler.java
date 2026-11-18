@@ -402,7 +402,7 @@ public class PresetHandler {
         PresetCompactor.expand(
             compoundTag, PresetReference.getReferenceTag(entityType, serverLevel));
 
-    UUID existingUUID = CompoundTagUtils.readUUID(expandedCompoundTag, UUID_TAG);
+    UUID existingUUID = CompoundTagUtils.readUUID(expandedCompoundTag, UUID_TAG, null);
     ImportOutcome existingEntityOutcome = ImportOutcome.FAILED;
     if (existingUUID != null) {
       existingEntityOutcome =

@@ -99,11 +99,10 @@ public class ConfigUIMain {
   }
 
   private void commonSetup(final FMLCommonSetupEvent event) {
-    event.enqueueWork(
-        () -> {
-          NetworkHandlerManager.registerHandler(new NetworkHandler());
-          NetworkHandlerManager.registerNetworkMessages(NetworkHandlerManagerType.BOTH);
-        });
+    event.enqueueWork(() -> {
+      NetworkHandlerManager.registerHandler(new NetworkHandler());
+      NetworkHandlerManager.registerNetworkMessages(NetworkHandlerManagerType.BOTH);
+    });
   }
 
   private void registerCommands(final RegisterCommandsEvent event) {

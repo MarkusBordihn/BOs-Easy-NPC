@@ -99,4 +99,9 @@ public class PillagerBase extends PillagerRaw implements BaseEasyNPC<PillagerRaw
       this.calculateEntityAnimation(this.omnidirectionalAirMover());
     }
   }
+
+  @Override
+  public boolean canBeLeader() {
+    return false;
+  }
 }

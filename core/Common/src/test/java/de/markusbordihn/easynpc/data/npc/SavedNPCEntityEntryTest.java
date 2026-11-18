@@ -100,7 +100,8 @@ class SavedNPCEntityEntryTest {
   }
 
   private static double getZombieDefaultMovementSpeed() {
-    return DefaultAttributes.getSupplier(EntityTypes.ZOMBIE).getBaseValue(Attributes.MOVEMENT_SPEED);
+    return DefaultAttributes.getSupplier(EntityTypes.ZOMBIE)
+        .getBaseValue(Attributes.MOVEMENT_SPEED);
   }
 
   private static CompoundTag withAttribute(CompoundTag npcData, CompoundTag attributeTag) {

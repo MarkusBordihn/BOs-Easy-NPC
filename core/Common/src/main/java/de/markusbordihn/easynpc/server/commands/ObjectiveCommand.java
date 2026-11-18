@@ -70,18 +70,16 @@ public class ObjectiveCommand extends Command {
                             Commands.argument(OBJECTIVE_ARG, StringArgumentType.string())
                                 .suggests(ObjectiveCommand::suggestObjectiveIds)
                                 .then(
-                                    Commands.argument(
-                                            PRIORITY_ARG, IntegerArgumentType.integer(0))
-                                        .executes(
-                                            context ->
-                                                setPriority(
-                                                    context.getSource(),
-                                                    EasyNPCArgument.getEntityWithAccess(
-                                                        context, NPC_TARGET_ARG),
-                                                    StringArgumentType.getString(
-                                                        context, OBJECTIVE_ARG),
-                                                    IntegerArgumentType.getInteger(
-                                                        context, PRIORITY_ARG)))))));
+                                    Commands.argument(PRIORITY_ARG, IntegerArgumentType.integer(0))
+                                        .executes(context ->
+                                            setPriority(
+                                                context.getSource(),
+                                                EasyNPCArgument.getEntityWithAccess(
+                                                    context, NPC_TARGET_ARG),
+                                                StringArgumentType.getString(
+                                                    context, OBJECTIVE_ARG),
+                                                IntegerArgumentType.getInteger(
+                                                    context, PRIORITY_ARG)))))));
   }
 
   public static int setPriority(
@@ -92,7 +90,8 @@ public class ObjectiveCommand extends Command {
     }
 
     return sendSuccessMessage(
-        context, "Set priority of objective " + objectiveId + " to " + priority + " for " + easyNPC);
+        context,
+        "Set priority of objective " + objectiveId + " to " + priority + " for " + easyNPC);
   }
 
   private static String resolveObjectiveId(EasyNPC<?> easyNPC, String objective) {

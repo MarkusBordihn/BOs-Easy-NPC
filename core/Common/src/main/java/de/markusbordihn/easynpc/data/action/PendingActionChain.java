@@ -84,7 +84,7 @@ public record PendingActionChain(
         ActionEventType.get(compoundTag.getStringOr(DATA_EVENT_TYPE_TAG, "")),
         readSourceId(compoundTag),
         compoundTag.getIntOr(DATA_REMAINING_TICKS_TAG, 0),
-        CompoundTagUtils.readUUID(compoundTag, DATA_INITIATOR_TAG),
+        CompoundTagUtils.readUUID(compoundTag, DATA_INITIATOR_TAG, null),
         readActions(compoundTag, DATA_REMAINING_ACTIONS_TAG),
         readActions(compoundTag, DATA_FALLBACK_ACTIONS_TAG),
         ActionExecutionState.fromTag(compoundTag.getCompoundOrEmpty(DATA_EXECUTION_STATE_TAG)));

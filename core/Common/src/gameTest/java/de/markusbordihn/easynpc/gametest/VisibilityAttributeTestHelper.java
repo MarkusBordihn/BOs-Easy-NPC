@@ -336,8 +336,7 @@ public class VisibilityAttributeTestHelper {
     EasyNPC<?> easyNPC = GameTestHelpers.mockEasyNPC(helper, entityType, new Vec3(2, 2, 2));
     Objective objective = createObjective(helper, "vis_stop_seen");
     setScore(serverPlayer, objective, 1);
-    setVisibilityConditions(
-        easyNPC, scoreCondition(objective, ConditionOperationType.EQUALS, 1));
+    setVisibilityConditions(easyNPC, scoreCondition(objective, ConditionOperationType.EQUALS, 1));
 
     VisibilityConditionTracker.startSeenByPlayer(easyNPC, serverPlayer);
     setScore(serverPlayer, objective, 0);

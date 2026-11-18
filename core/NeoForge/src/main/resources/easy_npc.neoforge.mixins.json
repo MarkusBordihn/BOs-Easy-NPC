@@ -45,10 +45,12 @@
   ],
   "mixins": [
     "CommonHooksMixin",
+    "entity.AbstractCubeMobMixin",
     "entity.CreeperMixin",
     "entity.EndermanMixin",
     "entity.EntityWaterStateMixin",
     "entity.FoxMixin",
+    "entity.GhastMixin",
     "entity.PiglinMixin",
     "entity.RaiderMixin",
     "entity.ServerPlayerShoulderMixin",

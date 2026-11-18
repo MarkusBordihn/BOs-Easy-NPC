@@ -163,11 +163,7 @@ feature.URL_RESOURCE: Minimum role required to use URL-based skin loading (defau
             64);
     NPC_PRESET_EXPORT_RATE_LIMIT =
         parseConfigValue(
-            properties,
-            "npcPresetExportRateLimit",
-            NPC_PRESET_EXPORT_RATE_LIMIT,
-            1,
-            1000);
+            properties, "npcPresetExportRateLimit", NPC_PRESET_EXPORT_RATE_LIMIT, 1, 1000);
     NPC_HIGHLIGHT_MINIMUM_ROLE =
         parseConfigValue(properties, "npcHighlightMinimumRole", NPC_HIGHLIGHT_MINIMUM_ROLE);
     NPC_HIGHLIGHT_FOR_OWNER =

@@ -41,7 +41,6 @@ public record NPCEntityMetadata(
       new NPCEntityMetadata(null, null, null, null, null, NPCRemovalReason.NONE, false, 0L, 0L);
 
   public static final String TAG_DIMENSION = "Dimension";
-  private static final String LEGACY_DIMENSION_PREFIX = "ResourceKey[minecraft:dimension / ";
   public static final String TAG_OWNER = "Owner";
   public static final String TAG_ENTITY_TYPE = "EntityType";
   public static final String TAG_PRESET_UUID = "PresetUUID";
@@ -50,6 +49,7 @@ public record NPCEntityMetadata(
   public static final String TAG_RESTORE_ON_OWNER_LOGIN = "RestoreOnOwnerLogin";
   public static final String TAG_REMOVAL_TIMESTAMP = "RemovalTimestamp";
   public static final String TAG_NPC_DATA_HASH = "NPCDataHash";
+  private static final String LEGACY_DIMENSION_PREFIX = "ResourceKey[minecraft:dimension / ";
 
   public static <T extends Mob> NPCEntityMetadata fromEasyNPC(EasyNPC<T> easyNPC) {
     if (easyNPC == null || easyNPC.getEntity() == null) {
@@ -130,6 +130,15 @@ public record NPCEntityMetadata(
         tag.getBoolean(TAG_RESTORE_ON_OWNER_LOGIN).orElse(false),
         removalTimestamp,
         tag.getLong(TAG_NPC_DATA_HASH).orElse(0L));
+  }
+
+  // 7.15.0 and older stored "ResourceKey[minecraft:dimension / minecraft:overworld]".
+  private static String fromLegacyDimension(String dimension) {
+    if (!dimension.startsWith(LEGACY_DIMENSION_PREFIX) || !dimension.endsWith("]")) {
+      return dimension;
+    }
+
+    return dimension.substring(LEGACY_DIMENSION_PREFIX.length(), dimension.length() - 1);
   }
 
   public CompoundTag toCompoundTag() {
@@ -230,15 +239,6 @@ public record NPCEntityMetadata(
 
   public boolean hasEntityType() {
     return this.entityType != null && !this.entityType.isEmpty();
-  }
-
-  // 7.15.0 and older stored "ResourceKey[minecraft:dimension / minecraft:overworld]".
-  private static String fromLegacyDimension(String dimension) {
-    if (!dimension.startsWith(LEGACY_DIMENSION_PREFIX) || !dimension.endsWith("]")) {
-      return dimension;
-    }
-
-    return dimension.substring(LEGACY_DIMENSION_PREFIX.length(), dimension.length() - 1);
   }
 
   public boolean hasDimension() {

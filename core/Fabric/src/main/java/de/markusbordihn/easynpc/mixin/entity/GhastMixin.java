@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Markus Bordihn
+ * Copyright 2026 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -20,44 +20,32 @@
 package de.markusbordihn.easynpc.mixin.entity;
 
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
-import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.entity.monster.Ghast;
+import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(Mob.class)
-public abstract class EpicFightEquipmentMixin {
+@Mixin(Ghast.class)
+public abstract class GhastMixin extends Mob {
 
-  @Inject(method = "getItemBySlot", at = @At("HEAD"), cancellable = true)
-  private void onGetItemBySlot(
-      EquipmentSlot slot, CallbackInfoReturnable<ItemStack> callbackInfoReturnable) {
-    Mob self = (Mob) (Object) this;
-    if (!self.level().isClientSide()) {
-      return;
-    }
+  private GhastMixin(EntityType<? extends Mob> entityType, Level level) {
+    super(entityType, level);
+  }
 
-    if (!(self instanceof EasyNPC<?> easyNPC)) {
-      return;
-    }
-
-    if (slot != EquipmentSlot.HEAD
-        && slot != EquipmentSlot.CHEST
-        && slot != EquipmentSlot.LEGS
-        && slot != EquipmentSlot.FEET) {
-      return;
-    }
-
-    ModelDataCapable<?> modelData = easyNPC.getEasyNPCModelData();
-    if (modelData == null) {
-      return;
-    }
-
-    if (!modelData.getModelPartVisibility(slot)) {
-      callbackInfoReturnable.setReturnValue(ItemStack.EMPTY);
+  @Inject(method = "hurtServer", at = @At("HEAD"), cancellable = true)
+  private void hurtEasyNPCWithoutReflectedFireballKill(
+      ServerLevel serverLevel,
+      DamageSource damageSource,
+      float damage,
+      CallbackInfoReturnable<Boolean> callbackInfoReturnable) {
+    if ((Object) this instanceof EasyNPC<?>) {
+      callbackInfoReturnable.setReturnValue(super.hurtServer(serverLevel, damageSource, damage));
     }
   }
 }

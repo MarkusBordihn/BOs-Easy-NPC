@@ -124,23 +124,21 @@ public class MenuManager {
       return;
     }
 
-    serverPlayerMap.forEach(
-        (menuId, registeredPlayer) -> {
-          if (registeredPlayer.equals(serverPlayer)) {
-            log.debug("Cleaning up menu {} for disconnected player {}", menuId, serverPlayer);
-            removeMenu(menuId);
-          }
-        });
+    serverPlayerMap.forEach((menuId, registeredPlayer) -> {
+      if (registeredPlayer.equals(serverPlayer)) {
+        log.debug("Cleaning up menu {} for disconnected player {}", menuId, serverPlayer);
+        removeMenu(menuId);
+      }
+    });
   }
 
   private static void cleanupExpiredMenus() {
     long currentTime = System.currentTimeMillis();
-    menuTimestampMap.forEach(
-        (menuId, timestamp) -> {
-          if (currentTime - timestamp > MENU_TIMEOUT_MS) {
-            log.warn("Cleaning up expired menu {} after timeout", menuId);
-            removeMenu(menuId);
-          }
-        });
+    menuTimestampMap.forEach((menuId, timestamp) -> {
+      if (currentTime - timestamp > MENU_TIMEOUT_MS) {
+        log.warn("Cleaning up expired menu {} after timeout", menuId);
+        removeMenu(menuId);
+      }
+    });
   }
 }

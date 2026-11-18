@@ -99,4 +99,9 @@ public class IllusionerBase extends IllusionerRaw implements BaseEasyNPC<Illusio
       this.calculateEntityAnimation(this.omnidirectionalAirMover());
     }
   }
+
+  @Override
+  public boolean canBeLeader() {
+    return false;
+  }
 }

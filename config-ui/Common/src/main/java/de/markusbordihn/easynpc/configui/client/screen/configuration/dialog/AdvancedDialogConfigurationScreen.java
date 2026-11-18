@@ -206,10 +206,8 @@ public class AdvancedDialogConfigurationScreen<T extends ConfigurationMenu>
               Comparator.comparingInt(DialogDataEntry::getPriority)
                   .reversed()
                   .thenComparing(Comparator.comparing(DialogDataEntry::getLabel)))
-          .forEach(
-              dialogData ->
-                  this.addEntry(
-                      new AdvancedDialogConfigurationScreen<?>.DialogList.Entry(dialogData)));
+          .forEach(dialogData ->
+              this.addEntry(new AdvancedDialogConfigurationScreen<?>.DialogList.Entry(dialogData)));
     }
 
     public void renderSelectionList(

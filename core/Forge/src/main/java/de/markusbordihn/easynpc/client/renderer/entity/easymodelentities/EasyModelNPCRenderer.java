@@ -147,10 +147,9 @@ public class EasyModelNPCRenderer<E extends PathfinderMob>
       EasyModelEntityRenderOptions renderOptions) {
     renderState.easyModelRenderState = null;
     EasyModelEntityRenderBackend.resolveContract(profileId, EasyModelAnimationSetting.AUTO)
-        .ifPresent(
-            contract ->
-                EasyModelEntityRenderBackend.extractRenderState(
-                    entity, contract, renderState, partialTick, renderOptions));
+        .ifPresent(contract ->
+            EasyModelEntityRenderBackend.extractRenderState(
+                entity, contract, renderState, partialTick, renderOptions));
     return renderState.easyModelRenderState != null;
   }
 
@@ -289,7 +288,11 @@ public class EasyModelNPCRenderer<E extends PathfinderMob>
 
     Identifier renderProfileId =
         resolveRenderProfile(
-            entity, renderState, profileId, partialTick, EasyModelNPCRenderOptions.create(easyModelNPC));
+            entity,
+            renderState,
+            profileId,
+            partialTick,
+            EasyModelNPCRenderOptions.create(easyModelNPC));
     if (renderProfileId == null || renderState.easyModelRenderState == null) {
       return;
     }

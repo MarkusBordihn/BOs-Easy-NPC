@@ -46,6 +46,7 @@ import de.markusbordihn.easynpc.entity.easynpc.ai.navigation.EasyNPCWaterBoundPa
 import de.markusbordihn.easynpc.entity.easynpc.handlers.AttackHandler;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.BossBarHandler;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.InteractionHandler;
+import de.markusbordihn.easynpc.entity.easynpc.handlers.SpawnRandomnessHandler;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.VisibilityHandler;
 import de.markusbordihn.easynpc.handler.AttributeHandler;
 import de.markusbordihn.easynpc.handler.VisibilityConditionTracker;
@@ -68,6 +69,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.RandomSource;
 import net.minecraft.util.TimeUtil;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.DifficultyInstance;
@@ -75,6 +77,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.ConversionParams;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityReference;
@@ -82,6 +85,7 @@ import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.control.BodyRotationControl;
@@ -405,7 +409,7 @@ public class NPCRawTemplate extends Zombie
 
   @Override
   public boolean canPickUpLoot() {
-    return this.canPickUpItemsIntoInventory() || super.canPickUpLoot();
+    return this.canPickUpItemsIntoInventory();
   }
 
   @Override
@@ -561,12 +565,34 @@ public class NPCRawTemplate extends Zombie
     boolean leftHanded = this.isLeftHanded();
     SpawnGroupData result =
         this.finalizeEasyNPCSpawn(
-            super.finalizeSpawn(
-                serverLevelAccessor, difficulty, entitySpawnReason, spawnGroupData));
+            SpawnRandomnessHandler.finalizeSpawnKeepingEquipment(
+                this,
+                () ->
+                    super.finalizeSpawn(
+                        serverLevelAccessor,
+                        difficulty,
+                        entitySpawnReason,
+                        this.getVanillaSpawnGroupData(spawnGroupData))));
     // Mob.finalizeSpawn makes 5% of all mobs left-handed, also over preset data (#349).
     this.setLeftHanded(leftHanded);
     this.refreshDimensions();
     return result;
+  }
+
+  @Override
+  protected void populateDefaultEquipmentEnchantments(
+      ServerLevelAccessor serverLevelAccessor,
+      RandomSource randomSource,
+      DifficultyInstance difficulty) {}
+
+  // Vanilla conversions, e.g. by lightning or drowning, would replace the NPC with a plain mob.
+  @Override
+  public <T extends Mob> T convertTo(
+      EntityType<T> entityType,
+      ConversionParams conversionParams,
+      EntitySpawnReason entitySpawnReason,
+      ConversionParams.AfterConversion<T> afterConversion) {
+    return null;
   }
 
   @Override

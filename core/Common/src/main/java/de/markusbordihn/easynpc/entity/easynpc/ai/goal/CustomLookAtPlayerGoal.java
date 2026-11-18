@@ -53,6 +53,16 @@ public class CustomLookAtPlayerGoal<T extends EasyNPC<?>> extends LookAtPlayerGo
     this.looksAtPlayers = Player.class.isAssignableFrom(lookAtType);
   }
 
+  public static boolean hasPlayerInRange(Entity entity, double range) {
+    double maximumDistanceSquared = range * range;
+    for (Player player : entity.level().players()) {
+      if (!player.isSpectator() && player.distanceToSqr(entity) <= maximumDistanceSquared) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   private boolean hasLockedBodyPose() {
     return this.modelData != null && this.modelData.hasLockedBodyPose();
   }
@@ -84,16 +94,6 @@ public class CustomLookAtPlayerGoal<T extends EasyNPC<?>> extends LookAtPlayerGo
 
     if (this.failedCanUseMeansNoTarget()) {
       this.startSearchCooldown();
-    }
-    return false;
-  }
-
-  public static boolean hasPlayerInRange(Entity entity, double range) {
-    double maximumDistanceSquared = range * range;
-    for (Player player : entity.level().players()) {
-      if (!player.isSpectator() && player.distanceToSqr(entity) <= maximumDistanceSquared) {
-        return true;
-      }
     }
     return false;
   }
