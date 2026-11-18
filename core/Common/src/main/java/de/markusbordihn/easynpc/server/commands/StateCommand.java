@@ -47,19 +47,17 @@ public class StateCommand extends Command {
 
   public static ArgumentBuilder<CommandSourceStack, ?> register() {
     return Commands.literal("state")
-        .requires(
-            commandSourceStack ->
-                commandSourceStack.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER))
+        .requires(commandSourceStack ->
+            commandSourceStack.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER))
         .then(Commands.literal("get").then(stateArgument(StateCommand::getState)))
         .then(
             Commands.literal("list")
                 .then(
                     Commands.argument(NPC_TARGET_ARG, EasyNPCArgument.npc())
-                        .executes(
-                            context ->
-                                listStates(
-                                    context.getSource(),
-                                    EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG)))))
+                        .executes(context ->
+                            listStates(
+                                context.getSource(),
+                                EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG)))))
         .then(Commands.literal("set").then(setArgument()))
         .then(Commands.literal("increase").then(changeArgument(1)))
         .then(Commands.literal("decrease").then(changeArgument(-1)))
@@ -72,12 +70,11 @@ public class StateCommand extends Command {
         .then(
             Commands.argument(STATE_ARG, StateArgument.state())
                 .suggests(StateSuggestions::suggest)
-                .executes(
-                    context ->
-                        stateAction.apply(
-                            context.getSource(),
-                            EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG),
-                            StateArgument.getStateId(context, STATE_ARG))));
+                .executes(context ->
+                    stateAction.apply(
+                        context.getSource(),
+                        EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG),
+                        StateArgument.getStateId(context, STATE_ARG))));
   }
 
   private static ArgumentBuilder<CommandSourceStack, ?> setArgument() {
@@ -87,41 +84,36 @@ public class StateCommand extends Command {
                 .suggests(StateSuggestions::suggest)
                 .then(
                     Commands.argument(VALUE_ARG, IntegerArgumentType.integer())
-                        .executes(
-                            context ->
-                                setState(
-                                    context.getSource(),
-                                    EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG),
-                                    StateArgument.getStateId(context, STATE_ARG),
-                                    StateEntry.of(
-                                        IntegerArgumentType.getInteger(context, VALUE_ARG)))))
+                        .executes(context ->
+                            setState(
+                                context.getSource(),
+                                EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG),
+                                StateArgument.getStateId(context, STATE_ARG),
+                                StateEntry.of(IntegerArgumentType.getInteger(context, VALUE_ARG)))))
                 .then(
                     Commands.literal("text")
                         .then(
                             Commands.argument(VALUE_ARG, StringArgumentType.string())
-                                .executes(
-                                    context ->
-                                        setState(
-                                            context.getSource(),
-                                            EasyNPCArgument.getEntityWithAccess(
-                                                context, NPC_TARGET_ARG),
-                                            StateArgument.getStateId(context, STATE_ARG),
-                                            StateEntry.of(
-                                                StringArgumentType.getString(
-                                                    context, VALUE_ARG))))))
+                                .executes(context ->
+                                    setState(
+                                        context.getSource(),
+                                        EasyNPCArgument.getEntityWithAccess(
+                                            context, NPC_TARGET_ARG),
+                                        StateArgument.getStateId(context, STATE_ARG),
+                                        StateEntry.of(
+                                            StringArgumentType.getString(context, VALUE_ARG))))))
                 .then(
                     Commands.literal("flag")
                         .then(
                             Commands.argument(VALUE_ARG, BoolArgumentType.bool())
-                                .executes(
-                                    context ->
-                                        setState(
-                                            context.getSource(),
-                                            EasyNPCArgument.getEntityWithAccess(
-                                                context, NPC_TARGET_ARG),
-                                            StateArgument.getStateId(context, STATE_ARG),
-                                            StateEntry.of(
-                                                BoolArgumentType.getBool(context, VALUE_ARG)))))));
+                                .executes(context ->
+                                    setState(
+                                        context.getSource(),
+                                        EasyNPCArgument.getEntityWithAccess(
+                                            context, NPC_TARGET_ARG),
+                                        StateArgument.getStateId(context, STATE_ARG),
+                                        StateEntry.of(
+                                            BoolArgumentType.getBool(context, VALUE_ARG)))))));
   }
 
   private static ArgumentBuilder<CommandSourceStack, ?> changeArgument(int signum) {
@@ -129,23 +121,20 @@ public class StateCommand extends Command {
         .then(
             Commands.argument(STATE_ARG, StateArgument.state())
                 .suggests(StateSuggestions::suggest)
-                .executes(
-                    context ->
-                        changeState(
-                            context.getSource(),
-                            EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG),
-                            StateArgument.getStateId(context, STATE_ARG),
-                            signum))
+                .executes(context ->
+                    changeState(
+                        context.getSource(),
+                        EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG),
+                        StateArgument.getStateId(context, STATE_ARG),
+                        signum))
                 .then(
                     Commands.argument(AMOUNT_ARG, IntegerArgumentType.integer(1))
-                        .executes(
-                            context ->
-                                changeState(
-                                    context.getSource(),
-                                    EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG),
-                                    StateArgument.getStateId(context, STATE_ARG),
-                                    signum
-                                        * IntegerArgumentType.getInteger(context, AMOUNT_ARG)))));
+                        .executes(context ->
+                            changeState(
+                                context.getSource(),
+                                EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG),
+                                StateArgument.getStateId(context, STATE_ARG),
+                                signum * IntegerArgumentType.getInteger(context, AMOUNT_ARG)))));
   }
 
   private static int getState(CommandSourceStack context, EasyNPC<?> easyNPC, Identifier stateId) {

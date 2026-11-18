@@ -165,8 +165,7 @@ class TradingDataCapableTest {
     assertEquals(5, reloadedOffer.getMaxUses());
     assertTrue(reloadedOffer.satisfiedBy(questItem.copy(), ItemStack.EMPTY));
     assertFalse(reloadedOffer.satisfiedBy(new ItemStack(Items.SUGAR), ItemStack.EMPTY));
-    assertEquals(
-        questItem.getComponentsPatch(), reloadedOffer.getBaseCostA().getComponentsPatch());
+    assertEquals(questItem.getComponentsPatch(), reloadedOffer.getBaseCostA().getComponentsPatch());
   }
 
   @Test

@@ -113,7 +113,8 @@ public class ObjectiveApiTestHelper {
 
     ObjectiveDataEntry storedEntry =
         EasyNPCObjectiveHandler.getObjectives(easyNPC).stream()
-            .filter(objectiveDataEntry -> objectiveDataEntry.getType() == ObjectiveType.FOLLOW_OWNER)
+            .filter(
+                objectiveDataEntry -> objectiveDataEntry.getType() == ObjectiveType.FOLLOW_OWNER)
             .findFirst()
             .orElse(null);
     GameTestHelpers.assertNotNull(helper, "Follow owner objective is not stored", storedEntry);
@@ -198,8 +199,7 @@ public class ObjectiveApiTestHelper {
     return meleeAttacks;
   }
 
-  private static Mob spawnTargetWithoutHurtCooldown(
-      GameTestHelper helper, PathfinderMob attacker) {
+  private static Mob spawnTargetWithoutHurtCooldown(GameTestHelper helper, PathfinderMob attacker) {
     Mob target = GameTestHelpers.spawnEntityType(helper, EntityType.ZOMBIE);
     target.setNoAi(true);
     target.setPos(helper.absoluteVec(MELEE_TARGET_POSITION));

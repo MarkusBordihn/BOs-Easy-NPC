@@ -65,11 +65,10 @@ public class ModDataComponents {
 
   @SubscribeEvent
   public static void onCommonSetup(FMLCommonSetupEvent event) {
-    event.enqueueWork(
-        () -> {
-          DataComponents.registerCustomData(CUSTOM_DATA);
-          DataComponents.registerPresetData(PRESET_DATA);
-          DataComponents.registerTestItemData(TEST_ITEM_DATA);
-        });
+    event.enqueueWork(() -> {
+      DataComponents.registerCustomData(CUSTOM_DATA);
+      DataComponents.registerPresetData(PRESET_DATA);
+      DataComponents.registerTestItemData(TEST_ITEM_DATA);
+    });
   }
 }

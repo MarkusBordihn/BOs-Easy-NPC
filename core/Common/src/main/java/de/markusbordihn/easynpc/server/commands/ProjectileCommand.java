@@ -62,15 +62,14 @@ public class ProjectileCommand extends Command {
             Commands.literal("enabled")
                 .then(
                     Commands.argument(VALUE_ARG, BoolArgumentType.bool())
-                        .executes(
-                            context -> {
-                              boolean enabled = BoolArgumentType.getBool(context, VALUE_ARG);
-                              return updateProjectileData(
-                                  context,
-                                  "enabled",
-                                  String.valueOf(enabled),
-                                  projectileData -> projectileData.withEnabled(enabled));
-                            })))
+                        .executes(context -> {
+                          boolean enabled = BoolArgumentType.getBool(context, VALUE_ARG);
+                          return updateProjectileData(
+                              context,
+                              "enabled",
+                              String.valueOf(enabled),
+                              projectileData -> projectileData.withEnabled(enabled));
+                        })))
         .then(
             floatSetting(
                 "damage",
@@ -111,32 +110,25 @@ public class ProjectileCommand extends Command {
             Commands.literal("item")
                 .then(
                     Commands.argument(ITEM_ARG, IdentifierArgument.id())
-                        .suggests(
-                            (context, suggestionsBuilder) ->
-                                SharedSuggestionProvider.suggestResource(
-                                    BuiltInRegistries.ITEM.keySet(), suggestionsBuilder))
-                        .executes(
-                            context ->
-                                setProjectileItem(
-                                    context, IdentifierArgument.getId(context, ITEM_ARG)))))
+                        .suggests((context, suggestionsBuilder) ->
+                            SharedSuggestionProvider.suggestResource(
+                                BuiltInRegistries.ITEM.keySet(), suggestionsBuilder))
+                        .executes(context ->
+                            setProjectileItem(
+                                context, IdentifierArgument.getId(context, ITEM_ARG)))))
         .then(
             Commands.literal("reset")
-                .executes(
-                    context ->
-                        updateProjectileData(
-                            context,
-                            "settings",
-                            "default",
-                            projectileData -> ProjectileData.DEFAULT)))
+                .executes(context ->
+                    updateProjectileData(
+                        context, "settings", "default", projectileData -> ProjectileData.DEFAULT)))
         .then(typeLiteral())
         .then(trailLiteral())
         .then(impactLiteral())
         .then(hitEffectLiteral());
 
     return Commands.literal("projectile")
-        .requires(
-            commandSourceStack ->
-                commandSourceStack.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER))
+        .requires(commandSourceStack ->
+            commandSourceStack.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER))
         .then(npcTargetsArgument);
   }
 
@@ -145,13 +137,12 @@ public class ProjectileCommand extends Command {
     for (ProjectileType projectileType : ProjectileType.values()) {
       typeLiteral.then(
           Commands.literal(projectileType.getSerializedName())
-              .executes(
-                  context ->
-                      updateProjectileData(
-                          context,
-                          "type",
-                          projectileType.getSerializedName(),
-                          projectileData -> projectileData.withProjectileType(projectileType))));
+              .executes(context ->
+                  updateProjectileData(
+                      context,
+                      "type",
+                      projectileType.getSerializedName(),
+                      projectileData -> projectileData.withProjectileType(projectileType))));
     }
     return typeLiteral;
   }
@@ -161,13 +152,12 @@ public class ProjectileCommand extends Command {
     for (ProjectileTrailParticle trailParticle : ProjectileTrailParticle.values()) {
       trailLiteral.then(
           Commands.literal(trailParticle.getSerializedName())
-              .executes(
-                  context ->
-                      updateProjectileData(
-                          context,
-                          "trail",
-                          trailParticle.getSerializedName(),
-                          projectileData -> projectileData.withTrailParticle(trailParticle))));
+              .executes(context ->
+                  updateProjectileData(
+                      context,
+                      "trail",
+                      trailParticle.getSerializedName(),
+                      projectileData -> projectileData.withTrailParticle(trailParticle))));
     }
     return trailLiteral;
   }
@@ -177,13 +167,12 @@ public class ProjectileCommand extends Command {
     for (ProjectileImpactEffect impactEffect : ProjectileImpactEffect.values()) {
       impactLiteral.then(
           Commands.literal(impactEffect.getSerializedName())
-              .executes(
-                  context ->
-                      updateProjectileData(
-                          context,
-                          "impact",
-                          impactEffect.getSerializedName(),
-                          projectileData -> projectileData.withImpactEffect(impactEffect))));
+              .executes(context ->
+                  updateProjectileData(
+                      context,
+                      "impact",
+                      impactEffect.getSerializedName(),
+                      projectileData -> projectileData.withImpactEffect(impactEffect))));
     }
     return impactLiteral;
   }
@@ -193,13 +182,12 @@ public class ProjectileCommand extends Command {
     for (ProjectileHitEffect hitEffect : ProjectileHitEffect.values()) {
       hitEffectLiteral.then(
           Commands.literal(hitEffect.getSerializedName())
-              .executes(
-                  context ->
-                      updateProjectileData(
-                          context,
-                          "hit effect",
-                          hitEffect.getSerializedName(),
-                          projectileData -> projectileData.withHitEffect(hitEffect)))
+              .executes(context ->
+                  updateProjectileData(
+                      context,
+                      "hit effect",
+                      hitEffect.getSerializedName(),
+                      projectileData -> projectileData.withHitEffect(hitEffect)))
               .then(
                   Commands.argument(
                           LEVEL_ARG,
@@ -212,26 +200,24 @@ public class ProjectileCommand extends Command {
                                   IntegerArgumentType.integer(
                                       ProjectileData.MINIMUM_HIT_EFFECT_SECONDS,
                                       ProjectileData.MAXIMUM_HIT_EFFECT_SECONDS))
-                              .executes(
-                                  context -> {
-                                    int level = IntegerArgumentType.getInteger(context, LEVEL_ARG);
-                                    int seconds =
-                                        IntegerArgumentType.getInteger(context, SECONDS_ARG);
-                                    return updateProjectileData(
-                                        context,
-                                        "hit effect",
-                                        hitEffect.getSerializedName()
-                                            + " level "
-                                            + level
-                                            + " for "
-                                            + seconds
-                                            + " s",
-                                        projectileData ->
-                                            projectileData
-                                                .withHitEffect(hitEffect)
-                                                .withHitEffectLevel(level)
-                                                .withHitEffectSeconds(seconds));
-                                  }))));
+                              .executes(context -> {
+                                int level = IntegerArgumentType.getInteger(context, LEVEL_ARG);
+                                int seconds = IntegerArgumentType.getInteger(context, SECONDS_ARG);
+                                return updateProjectileData(
+                                    context,
+                                    "hit effect",
+                                    hitEffect.getSerializedName()
+                                        + " level "
+                                        + level
+                                        + " for "
+                                        + seconds
+                                        + " s",
+                                    projectileData ->
+                                        projectileData
+                                            .withHitEffect(hitEffect)
+                                            .withHitEffectLevel(level)
+                                            .withHitEffectSeconds(seconds));
+                              }))));
     }
     return hitEffectLiteral;
   }
@@ -241,15 +227,14 @@ public class ProjectileCommand extends Command {
     return Commands.literal(settingName)
         .then(
             Commands.argument(VALUE_ARG, FloatArgumentType.floatArg(minimum, maximum))
-                .executes(
-                    context -> {
-                      float value = FloatArgumentType.getFloat(context, VALUE_ARG);
-                      return updateProjectileData(
-                          context,
-                          settingName,
-                          String.valueOf(value),
-                          projectileData -> floatSettingUpdate.apply(projectileData, value));
-                    }));
+                .executes(context -> {
+                  float value = FloatArgumentType.getFloat(context, VALUE_ARG);
+                  return updateProjectileData(
+                      context,
+                      settingName,
+                      String.valueOf(value),
+                      projectileData -> floatSettingUpdate.apply(projectileData, value));
+                }));
   }
 
   private static ArgumentBuilder<CommandSourceStack, ?> integerSetting(
@@ -257,15 +242,14 @@ public class ProjectileCommand extends Command {
     return Commands.literal(settingName)
         .then(
             Commands.argument(VALUE_ARG, IntegerArgumentType.integer(minimum, maximum))
-                .executes(
-                    context -> {
-                      int value = IntegerArgumentType.getInteger(context, VALUE_ARG);
-                      return updateProjectileData(
-                          context,
-                          settingName,
-                          String.valueOf(value),
-                          projectileData -> integerSettingUpdate.apply(projectileData, value));
-                    }));
+                .executes(context -> {
+                  int value = IntegerArgumentType.getInteger(context, VALUE_ARG);
+                  return updateProjectileData(
+                      context,
+                      settingName,
+                      String.valueOf(value),
+                      projectileData -> integerSettingUpdate.apply(projectileData, value));
+                }));
   }
 
   private static int setProjectileItem(

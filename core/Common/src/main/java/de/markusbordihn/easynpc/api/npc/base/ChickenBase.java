@@ -90,6 +90,13 @@ public class ChickenBase extends ChickenRaw implements BaseEasyNPC<ChickenRaw> {
     return soundDataSet;
   }
 
+  // An NPC chicken must not leave eggs lying around.
+  @Override
+  public void aiStep() {
+    this.eggTime = Integer.MAX_VALUE;
+    super.aiStep();
+  }
+
   @Override
   protected void registerGoals() {
     // No default goals for base NPCs.

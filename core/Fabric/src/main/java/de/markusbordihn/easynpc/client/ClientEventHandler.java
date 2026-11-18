@@ -37,12 +37,11 @@ public class ClientEventHandler {
   public static void registerClientEvents() {
     ClientLifecycleEvents.CLIENT_STARTED.register(ClientEventHandler::onClientStarted);
     ClientTickEvents.END_CLIENT_TICK.register(ClientEventHandler::onClientTick);
-    ClientPlayConnectionEvents.JOIN.register(
-        (handler, sender, client) -> {
-          if (CompatConstants.MOD_EASY_MODEL_ENTITIES_LOADED) {
-            EasyModelEntitiesLoader.registerClient();
-          }
-        });
+    ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
+      if (CompatConstants.MOD_EASY_MODEL_ENTITIES_LOADED) {
+        EasyModelEntitiesLoader.registerClient();
+      }
+    });
     ClientPlayConnectionEvents.DISCONNECT.register(ClientEventHandler::onDisconnect);
     LivingEntityFeatureRendererRegistrationCallback.EVENT.register(
         (entityType, entityRenderer, registrationHelper, context) -> {

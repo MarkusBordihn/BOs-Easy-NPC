@@ -41,15 +41,14 @@ public record TestItemData(String quote, int numberValue, int powerLevel, int us
           DEFAULT_QUOTE, DEFAULT_NUMBER_VALUE, DEFAULT_POWER_LEVEL, DEFAULT_USAGE_COUNTER);
 
   public static final Codec<TestItemData> CODEC =
-      RecordCodecBuilder.create(
-          instance ->
-              instance
-                  .group(
-                      Codec.STRING.fieldOf("quote").forGetter(TestItemData::quote),
-                      Codec.INT.fieldOf("numberValue").forGetter(TestItemData::numberValue),
-                      Codec.INT.fieldOf("powerLevel").forGetter(TestItemData::powerLevel),
-                      Codec.INT.fieldOf("usageCounter").forGetter(TestItemData::usageCounter))
-                  .apply(instance, TestItemData::new));
+      RecordCodecBuilder.create(instance ->
+          instance
+              .group(
+                  Codec.STRING.fieldOf("quote").forGetter(TestItemData::quote),
+                  Codec.INT.fieldOf("numberValue").forGetter(TestItemData::numberValue),
+                  Codec.INT.fieldOf("powerLevel").forGetter(TestItemData::powerLevel),
+                  Codec.INT.fieldOf("usageCounter").forGetter(TestItemData::usageCounter))
+              .apply(instance, TestItemData::new));
 
   public static final StreamCodec<RegistryFriendlyByteBuf, TestItemData> STREAM_CODEC =
       StreamCodec.composite(

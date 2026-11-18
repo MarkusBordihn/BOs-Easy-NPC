@@ -551,22 +551,19 @@ public class ProjectileTestHelper {
     helper.runAfterDelay(
         1,
         () ->
-            projectiles.forEach(
-                projectile ->
-                    GameTestHelpers.assertTrue(
-                        helper,
-                        "The projectile must stay before its lifetime ends for "
-                            + ((EasyNPCProjectile) projectile).getProjectileType(),
-                        !projectile.isRemoved())));
-    helper.succeedWhen(
-        () ->
-            projectiles.forEach(
-                projectile ->
-                    GameTestHelpers.assertTrue(
-                        helper,
-                        "The projectile must be removed after its lifetime for "
-                            + ((EasyNPCProjectile) projectile).getProjectileType(),
-                        projectile.isRemoved())));
+            projectiles.forEach(projectile ->
+                GameTestHelpers.assertTrue(
+                    helper,
+                    "The projectile must stay before its lifetime ends for "
+                        + ((EasyNPCProjectile) projectile).getProjectileType(),
+                    !projectile.isRemoved())));
+    helper.succeedWhen(() ->
+        projectiles.forEach(projectile ->
+            GameTestHelpers.assertTrue(
+                helper,
+                "The projectile must be removed after its lifetime for "
+                    + ((EasyNPCProjectile) projectile).getProjectileType(),
+                projectile.isRemoved())));
   }
 
   public static void assertNPCProjectilesCannotBePickedUp(
@@ -714,8 +711,7 @@ public class ProjectileTestHelper {
   public static void assertProjectileAttackObjectiveCreatesGoal(
       GameTestHelper helper, EntityType<?> entityType) {
     EasyNPC<?> easyNPC = GameTestHelpers.mockEasyNPC(helper, entityType, NPC_POSITION);
-    ObjectiveDataEntry objectiveDataEntry =
-        new ObjectiveDataEntry(ObjectiveType.PROJECTILE_ATTACK);
+    ObjectiveDataEntry objectiveDataEntry = new ObjectiveDataEntry(ObjectiveType.PROJECTILE_ATTACK);
     GameTestHelpers.assertTrue(
         helper,
         "The projectile attack objective must be added",
@@ -829,26 +825,25 @@ public class ProjectileTestHelper {
     Vec3 enemyPosition = helper.absoluteVec(ENEMY_POSITION);
     AtomicInteger enemyHits = new AtomicInteger();
 
-    helper.succeedWhen(
-        () -> {
-          easyNPC.getLivingEntity().setPos(shooterPosition);
-          enemy.setPos(enemyPosition);
-          enemy.setDeltaMovement(Vec3.ZERO);
-          if (enemy.hasEffect(MobEffects.POISON)
-              && enemy.getLastHurtByMob() == easyNPC.getLivingEntity()) {
-            enemyHits.incrementAndGet();
-            enemy.removeAllEffects();
-            enemy.setHealth(enemy.getMaxHealth());
-          }
-          GameTestHelpers.assertTrue(
-              helper,
-              objectiveType
-                  + " must hit the enemy "
-                  + ENEMY_HITS_TO_SUCCEED
-                  + " times with the configured projectile, hits: "
-                  + enemyHits.get(),
-              enemyHits.get() >= ENEMY_HITS_TO_SUCCEED);
-        });
+    helper.succeedWhen(() -> {
+      easyNPC.getLivingEntity().setPos(shooterPosition);
+      enemy.setPos(enemyPosition);
+      enemy.setDeltaMovement(Vec3.ZERO);
+      if (enemy.hasEffect(MobEffects.POISON)
+          && enemy.getLastHurtByMob() == easyNPC.getLivingEntity()) {
+        enemyHits.incrementAndGet();
+        enemy.removeAllEffects();
+        enemy.setHealth(enemy.getMaxHealth());
+      }
+      GameTestHelpers.assertTrue(
+          helper,
+          objectiveType
+              + " must hit the enemy "
+              + ENEMY_HITS_TO_SUCCEED
+              + " times with the configured projectile, hits: "
+              + enemyHits.get(),
+          enemyHits.get() >= ENEMY_HITS_TO_SUCCEED);
+    });
   }
 
   private static Mob spawnEnemy(GameTestHelper helper) {
@@ -993,11 +988,10 @@ public class ProjectileTestHelper {
     return sentPackets.stream()
         .filter(ClientboundSoundPacket.class::isInstance)
         .map(ClientboundSoundPacket.class::cast)
-        .filter(
-            soundPacket ->
-                npcPosition.distanceTo(
-                        new Vec3(soundPacket.getX(), soundPacket.getY(), soundPacket.getZ()))
-                    < MAXIMUM_SOUND_DISTANCE)
+        .filter(soundPacket ->
+            npcPosition.distanceTo(
+                    new Vec3(soundPacket.getX(), soundPacket.getY(), soundPacket.getZ()))
+                < MAXIMUM_SOUND_DISTANCE)
         .map(soundPacket -> soundPacket.getSound().value())
         .toList();
   }

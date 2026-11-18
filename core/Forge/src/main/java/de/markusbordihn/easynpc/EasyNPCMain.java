@@ -189,20 +189,18 @@ public class EasyNPCMain {
   }
 
   private void commonSetup(final FMLCommonSetupEvent event) {
-    event.enqueueWork(
-        () -> {
-          NetworkHandlerManager.registerHandler(new NetworkHandler());
-          NetworkHandlerManager.registerNetworkMessages(NetworkHandlerManagerType.BOTH);
-        });
+    event.enqueueWork(() -> {
+      NetworkHandlerManager.registerHandler(new NetworkHandler());
+      NetworkHandlerManager.registerNetworkMessages(NetworkHandlerManagerType.BOTH);
+    });
   }
 
   private void onClientSetup(final FMLClientSetupEvent event) {
     ClientScreens.registerScreens(event);
-    event.enqueueWork(
-        () -> {
-          ClientEvents.handleClientStartedEvent(net.minecraft.client.Minecraft.getInstance());
-          NetworkMessageHandlerManager.registerServerHandler(new ServerNetworkMessageHandler());
-        });
+    event.enqueueWork(() -> {
+      ClientEvents.handleClientStartedEvent(net.minecraft.client.Minecraft.getInstance());
+      NetworkMessageHandlerManager.registerServerHandler(new ServerNetworkMessageHandler());
+    });
   }
 
   private void onRegisterRenderers(final EntityRenderersEvent.RegisterRenderers event) {

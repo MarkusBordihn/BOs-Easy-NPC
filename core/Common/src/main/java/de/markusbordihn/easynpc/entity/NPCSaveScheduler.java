@@ -61,8 +61,7 @@ public class NPCSaveScheduler {
       return false;
     }
 
-    if (currentTime < nextRunTime
-        || averageTickMilliseconds >= MAXIMUM_AVERAGE_TICK_MILLISECONDS) {
+    if (currentTime < nextRunTime || averageTickMilliseconds >= MAXIMUM_AVERAGE_TICK_MILLISECONDS) {
       return false;
     }
 

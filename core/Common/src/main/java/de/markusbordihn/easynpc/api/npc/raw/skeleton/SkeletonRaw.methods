@@ -1,0 +1,10 @@
+  @Override
+  public void reassessWeaponGoal() {}
+
+  @Override
+  public boolean isShaking() {
+    return false;
+  }
+
+  @Override
+  protected void doFreezeConversion() {}

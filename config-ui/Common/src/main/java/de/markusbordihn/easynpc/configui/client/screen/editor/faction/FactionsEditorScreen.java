@@ -199,10 +199,9 @@ public class FactionsEditorScreen<T extends EditorMenu> extends EditorScreen<T> 
                   }
                 }));
     this.addFactionButton.active = false;
-    this.newFactionNameTextField.setResponder(
-        value ->
-            this.addFactionButton.active =
-                FactionNameValidator.isValid(value) && !this.factionDataEntries.containsKey(value));
+    this.newFactionNameTextField.setResponder(value ->
+        this.addFactionButton.active =
+            FactionNameValidator.isValid(value) && !this.factionDataEntries.containsKey(value));
   }
 
   private void renderColumn(

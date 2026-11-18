@@ -117,7 +117,8 @@ public interface StatusDataCapable<T extends Mob> extends EasyNPC<T> {
     this.setStatusDataTimestamp(StatusDataType.NPC_DATA_LAST_UPDATE, storedLastUpdate);
     this.setStatusDataTimestamp(
         StatusDataType.NPC_DATA_LAST_SAVED,
-        Math.max(storedLastUpdate, this.getStatusDataTimestamp(StatusDataType.NPC_DATA_LAST_SAVED)));
+        Math.max(
+            storedLastUpdate, this.getStatusDataTimestamp(StatusDataType.NPC_DATA_LAST_SAVED)));
   }
 
   default void addAdditionalStatusData(ValueOutput valueOutput) {

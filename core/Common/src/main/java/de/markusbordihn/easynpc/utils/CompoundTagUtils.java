@@ -111,6 +111,20 @@ public class CompoundTagUtils {
     }
   }
 
+  public static UUID readUUID(CompoundTag compoundTag, String key, UUID fallbackUUID) {
+    if (compoundTag == null || key == null || !compoundTag.contains(key)) {
+      return fallbackUUID;
+    }
+
+    UUID uuid = readUUID(compoundTag, key);
+    if (uuid == null) {
+      log.warn("Ignoring malformed UUID {} for {}!", compoundTag.get(key), key);
+      return fallbackUUID;
+    }
+
+    return uuid;
+  }
+
   public static IntArrayTag uuidToTag(UUID uuid) {
     long msb = uuid.getMostSignificantBits();
     long lsb = uuid.getLeastSignificantBits();
@@ -193,30 +207,27 @@ public class CompoundTagUtils {
 
   public static ListTag writeIdentifiers(Set<Identifier> resourceLocations) {
     ListTag listTag = new ListTag();
-    resourceLocations.forEach(
-        resourceLocation -> {
-          int hashCode = resourceLocation.hashCode();
-          CompoundTag compoundTag = new CompoundTag();
-          compoundTag.putString(ID_PREFIX + hashCode, resourceLocation.toString());
-          listTag.add(compoundTag);
-        });
+    resourceLocations.forEach(resourceLocation -> {
+      int hashCode = resourceLocation.hashCode();
+      CompoundTag compoundTag = new CompoundTag();
+      compoundTag.putString(ID_PREFIX + hashCode, resourceLocation.toString());
+      listTag.add(compoundTag);
+    });
     return listTag;
   }
 
   public static Set<Identifier> readIdentifiers(ListTag listTag) {
     Set<Identifier> resourceLocations = new HashSet<>();
-    listTag.forEach(
-        tag -> {
-          CompoundTag compoundTag = (CompoundTag) tag;
-          compoundTag
-              .keySet()
-              .forEach(
-                  key -> {
-                    if (key.startsWith(ID_PREFIX)) {
-                      resourceLocations.add(readIdentifier(compoundTag, key));
-                    }
-                  });
-        });
+    listTag.forEach(tag -> {
+      CompoundTag compoundTag = (CompoundTag) tag;
+      compoundTag
+          .keySet()
+          .forEach(key -> {
+            if (key.startsWith(ID_PREFIX)) {
+              resourceLocations.add(readIdentifier(compoundTag, key));
+            }
+          });
+    });
     return resourceLocations;
   }
 

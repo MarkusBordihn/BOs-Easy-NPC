@@ -247,13 +247,12 @@ public class ImportPresetConfigurationScreen<T extends ConfigurationMenu>
       }
 
       ImportPresetConfigurationScreen.getPresets()
-          .forEach(
-              resourceLocation -> {
-                ImportPresetConfigurationScreen<T>.ImportFileSelectionList.Entry entry =
-                    new ImportPresetConfigurationScreen<T>.ImportFileSelectionList.Entry(
-                        resourceLocation, ImportPresetConfigurationScreen.this.getSkinModel());
-                this.addEntry(entry);
-              });
+          .forEach(resourceLocation -> {
+            ImportPresetConfigurationScreen<T>.ImportFileSelectionList.Entry entry =
+                new ImportPresetConfigurationScreen<T>.ImportFileSelectionList.Entry(
+                    resourceLocation, ImportPresetConfigurationScreen.this.getSkinModel());
+            this.addEntry(entry);
+          });
     }
 
     @Override

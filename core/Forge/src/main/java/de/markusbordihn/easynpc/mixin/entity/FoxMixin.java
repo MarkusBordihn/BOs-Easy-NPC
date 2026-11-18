@@ -21,10 +21,12 @@ package de.markusbordihn.easynpc.mixin.entity;
 
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.FoxNPC;
 import net.minecraft.world.entity.animal.fox.Fox;
+import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Fox.class)
 public class FoxMixin {
@@ -33,6 +35,14 @@ public class FoxMixin {
   private void onSetTargetGoals(CallbackInfo callbackInfo) {
     if ((Object) this instanceof FoxNPC) {
       callbackInfo.cancel();
+    }
+  }
+
+  @Inject(method = "canEat", at = @At("HEAD"), cancellable = true)
+  private void onCanEat(
+      ItemStack itemStack, CallbackInfoReturnable<Boolean> callbackInfoReturnable) {
+    if ((Object) this instanceof FoxNPC) {
+      callbackInfoReturnable.setReturnValue(false);
     }
   }
 }

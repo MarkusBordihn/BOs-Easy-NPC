@@ -111,9 +111,8 @@ public class NPCEntityData extends SavedData {
       DeletedNPCEntry.LIST_CODEC
           .parse(NbtOps.INSTANCE, compoundTag.get(DATA_DELETED_TAG))
           .resultOrPartial(error -> log.warn("Skipped invalid deleted NPC entries: {}", error))
-          .ifPresent(
-              entries ->
-                  entries.forEach(entry -> data.deletedEntries.put(entry.entityUUID(), entry)));
+          .ifPresent(entries ->
+              entries.forEach(entry -> data.deletedEntries.put(entry.entityUUID(), entry)));
     }
     log.info(
         "Loaded metadata for {} NPC entities and {} deleted NPC entities from index",
@@ -176,7 +175,7 @@ public class NPCEntityData extends SavedData {
         this.npcFileStorage != null
             && entry.npcData() != null
             && this.npcFileStorage.markDirty(uuid, entry.npcData());
-    // Vanilla calls SavedData#save, which queues the NPC file writes, only while the index is dirty.
+    // SavedData#save, which queues the NPC file writes, only runs while the index is dirty.
     if (isFileDirty || !entry.metadata().equals(oldMetadata)) {
       this.setDirty();
     }

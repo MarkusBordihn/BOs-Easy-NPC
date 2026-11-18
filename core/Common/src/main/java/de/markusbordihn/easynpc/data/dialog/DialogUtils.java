@@ -44,13 +44,13 @@ import org.apache.logging.log4j.Logger;
 public class DialogUtils {
 
   public static final int MAX_DIALOG_LINE_LENGTH = 192;
+  static final Set<String> reportedLabelChanges = ConcurrentHashMap.newKeySet();
   private static final String MACRO_NPC_STRING = "@npc";
   private static final String MACRO_INITIATOR_STRING = "@initiator";
   private static final int MAX_SMALL_BUTTON_NAME_LENGTH = 20;
   private static final int MACRO_LINE_RESERVE = 20;
   private static final int MAX_COMPACT_LAYOUT_LINES = 6;
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-  static final Set<String> reportedLabelChanges = ConcurrentHashMap.newKeySet();
 
   protected DialogUtils() {}
 

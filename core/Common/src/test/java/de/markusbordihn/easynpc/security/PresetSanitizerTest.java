@@ -19,6 +19,8 @@
 
 package de.markusbordihn.easynpc.security;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import de.markusbordihn.easynpc.data.action.ActionDataEntry;
 import de.markusbordihn.easynpc.data.attack.ProjectileData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventDataCapable;
@@ -30,7 +32,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
 
 class PresetSanitizerTest {
 

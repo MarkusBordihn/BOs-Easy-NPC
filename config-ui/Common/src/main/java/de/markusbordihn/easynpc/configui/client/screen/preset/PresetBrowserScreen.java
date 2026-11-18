@@ -154,11 +154,10 @@ public class PresetBrowserScreen extends CustomScreen<PresetBrowserMenu, Additio
         new SearchField(this.font, searchBoxX, FILTER_Y, LIST_X + LIST_WIDTH - searchBoxX - 12, 16);
     this.searchBox.setMaxLength(50);
     this.searchBox.setHint(TextComponent.getTranslatedConfigText("preset_browser.search"));
-    this.searchBox.setResponder(
-        text -> {
-          this.updateSearchTerms(text);
-          this.applyFilters();
-        });
+    this.searchBox.setResponder(text -> {
+      this.updateSearchTerms(text);
+      this.applyFilters();
+    });
     this.addRenderableWidget(this.searchBox);
 
     SpinButton<PresetSortType> sortButton =
@@ -460,10 +459,9 @@ public class PresetBrowserScreen extends CustomScreen<PresetBrowserMenu, Additio
       PresetType presetType,
       Stream<Identifier> presets,
       Function<Identifier, PresetMetadata> metadataProvider) {
-    presets.forEach(
-        preset ->
-            this.presetEntries.add(
-                new PresetListEntry(preset, metadataProvider.apply(preset), presetType, this)));
+    presets.forEach(preset ->
+        this.presetEntries.add(
+            new PresetListEntry(preset, metadataProvider.apply(preset), presetType, this)));
   }
 
   public CompoundTag getPresetDataFromSync(Identifier preset, PresetType presetType) {

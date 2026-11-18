@@ -25,6 +25,7 @@ import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
 import de.markusbordihn.easynpc.data.skin.variant.CatSkinVariant;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.sound.SoundType;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
@@ -96,6 +97,10 @@ public class CatBase extends CatRaw implements BaseEasyNPC<CatRaw> {
     soundDataSet.addDefaultSound(SoundType.TRADE_NO, SoundEvents.VILLAGER_NO);
     return soundDataSet;
   }
+
+  // Vanilla resets the pose every tick, which would undo the vanilla pose of the NPC.
+  @Override
+  public void customServerAiStep(ServerLevel serverLevel) {}
 
   @Override
   protected void registerGoals() {

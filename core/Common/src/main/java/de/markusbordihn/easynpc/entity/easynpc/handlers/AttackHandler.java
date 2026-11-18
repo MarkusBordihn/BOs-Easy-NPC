@@ -348,19 +348,17 @@ public class AttackHandler {
       LivingEntity livingEntity, ItemStack itemStackWeapon, float damage) {
     Optional<Reference<Item>> item =
         BuiltInRegistries.ITEM.get(Identifier.fromNamespaceAndPath(Constants.MOD_ID, "bullet"));
-    return item.map(
-            itemReference ->
-                ProjectileUtil.getMobArrow(
-                    livingEntity,
-                    itemReference != null && itemReference.value() != Items.AIR
-                        ? new ItemStack(itemReference)
-                        : new ItemStack(Items.ARROW),
-                    damage,
-                    itemStackWeapon))
-        .orElseGet(
-            () ->
-                ProjectileUtil.getMobArrow(
-                    livingEntity, new ItemStack(Items.ARROW), damage, itemStackWeapon));
+    return item.map(itemReference ->
+            ProjectileUtil.getMobArrow(
+                livingEntity,
+                itemReference != null && itemReference.value() != Items.AIR
+                    ? new ItemStack(itemReference)
+                    : new ItemStack(Items.ARROW),
+                damage,
+                itemStackWeapon))
+        .orElseGet(() ->
+            ProjectileUtil.getMobArrow(
+                livingEntity, new ItemStack(Items.ARROW), damage, itemStackWeapon));
   }
 
   public static boolean handleCanAttack(

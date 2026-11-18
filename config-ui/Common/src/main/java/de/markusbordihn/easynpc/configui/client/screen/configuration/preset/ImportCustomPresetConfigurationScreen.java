@@ -40,9 +40,8 @@ public class ImportCustomPresetConfigurationScreen<T extends ConfigurationMenu>
     this.customPresets =
         CompoundTagUtils.readIdentifiers(this.getAdditionalScreenData().getList("CustomPresets"))
             .stream()
-            .filter(
-                resourceLocation ->
-                    resourceLocation.getPath().contains("/" + this.getSkinModel().getName() + "/"))
+            .filter(resourceLocation ->
+                resourceLocation.getPath().contains("/" + this.getSkinModel().getName() + "/"))
             .collect(Collectors.toSet());
   }
 

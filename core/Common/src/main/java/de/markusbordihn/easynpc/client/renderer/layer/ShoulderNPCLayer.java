@@ -81,7 +81,8 @@ public class ShoulderNPCLayer extends RenderLayer<AvatarRenderState, PlayerModel
         (EntityRenderer<Entity, EntityRenderState>)
             Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(shoulderEntity);
     EntityRenderState shoulderRenderState =
-        shoulderRenderer.createRenderState(shoulderEntity, renderState.ageInTicks - playerTickCount);
+        shoulderRenderer.createRenderState(
+            shoulderEntity, renderState.ageInTicks - playerTickCount);
     shoulderRenderState.lightCoords = packedLight;
     shoulderRenderState.nameTag = null;
 

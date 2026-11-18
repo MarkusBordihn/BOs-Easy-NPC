@@ -74,15 +74,14 @@ public class OwnerLoginRestoreHandler {
     }
 
     Deque<UUID> dueOwners = new ArrayDeque<>();
-    pendingRestores.replaceAll(
-        (ownerUUID, remainingTicks) -> {
-          if (remainingTicks <= 1) {
-            dueOwners.add(ownerUUID);
-            return 0;
-          }
+    pendingRestores.replaceAll((ownerUUID, remainingTicks) -> {
+      if (remainingTicks <= 1) {
+        dueOwners.add(ownerUUID);
+        return 0;
+      }
 
-          return remainingTicks - 1;
-        });
+      return remainingTicks - 1;
+    });
 
     for (UUID ownerUUID : dueOwners) {
       pendingRestores.remove(ownerUUID);

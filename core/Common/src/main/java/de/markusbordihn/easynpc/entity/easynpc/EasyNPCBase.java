@@ -119,6 +119,10 @@ public interface EasyNPCBase<E extends Mob>
     }
   }
 
+  default SpawnGroupData getVanillaSpawnGroupData(SpawnGroupData spawnGroupData) {
+    return spawnGroupData;
+  }
+
   default SpawnGroupData finalizeEasyNPCSpawn(SpawnGroupData spawnGroupData) {
     log.debug("Finalize spawn for {} ...", this);
 

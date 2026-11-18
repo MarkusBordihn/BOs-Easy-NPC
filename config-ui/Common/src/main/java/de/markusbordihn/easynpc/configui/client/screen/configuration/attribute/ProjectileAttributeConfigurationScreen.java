@@ -103,21 +103,19 @@ public class ProjectileAttributeConfigurationScreen<T extends ConfigurationMenu>
   private RangeSliderButton hitEffectLevelSlider;
   private RangeSliderButton hitEffectSecondsSlider;
 
-  public ProjectileAttributeConfigurationScreen(
-      T menu, Inventory inventory, Component component) {
+  public ProjectileAttributeConfigurationScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
   }
 
   private static <E extends Enum<E>> List<SelectOption<E>> createOptions(
       E[] values, String translationPrefix) {
     return Arrays.stream(values)
-        .map(
-            value ->
-                SelectOption.of(
-                    TextComponent.getTranslatedConfigText(
-                            translationPrefix + value.name().toLowerCase(Locale.ROOT))
-                        .getString(),
-                    value))
+        .map(value ->
+            SelectOption.of(
+                TextComponent.getTranslatedConfigText(
+                        translationPrefix + value.name().toLowerCase(Locale.ROOT))
+                    .getString(),
+                value))
         .toList();
   }
 
@@ -235,14 +233,11 @@ public class ProjectileAttributeConfigurationScreen<T extends ConfigurationMenu>
                 this.projectileItemTextField.getX() + this.projectileItemTextField.getWidth() + 2,
                 this.projectileItemTextField.getY() - 1,
                 onPress -> this.saveProjectileItem()));
-    this.projectileItemTextField.setResponder(
-        projectileItem -> {
-          this.projectileItemTextField.setTextColor(
-              parseProjectileItem(projectileItem) != null
-                  ? VALID_TEXT_COLOR
-                  : INVALID_TEXT_COLOR);
-          this.updateProjectileItemSaveButton();
-        });
+    this.projectileItemTextField.setResponder(projectileItem -> {
+      this.projectileItemTextField.setTextColor(
+          parseProjectileItem(projectileItem) != null ? VALID_TEXT_COLOR : INVALID_TEXT_COLOR);
+      this.updateProjectileItemSaveButton();
+    });
     this.updateProjectileItemTextField(this.projectileData.projectileType());
 
     this.damageSlider =
@@ -353,15 +348,14 @@ public class ProjectileAttributeConfigurationScreen<T extends ConfigurationMenu>
 
   private void showPage(Page shownPage) {
     this.page = shownPage;
-    this.pageWidgets.forEach(
-        (widgetPage, widgets) -> {
-          for (AbstractWidget widget : widgets) {
-            widget.visible = widgetPage == shownPage;
-            if (!widget.visible) {
-              widget.setFocused(false);
-            }
-          }
-        });
+    this.pageWidgets.forEach((widgetPage, widgets) -> {
+      for (AbstractWidget widget : widgets) {
+        widget.visible = widgetPage == shownPage;
+        if (!widget.visible) {
+          widget.setFocused(false);
+        }
+      }
+    });
     this.projectilePageButton.active = shownPage != Page.PROJECTILE;
     this.effectsPageButton.active = shownPage != Page.EFFECTS;
   }
@@ -419,8 +413,7 @@ public class ProjectileAttributeConfigurationScreen<T extends ConfigurationMenu>
   }
 
   private Identifier getChangedProjectileItem() {
-    Identifier projectileItem =
-        parseProjectileItem(this.projectileItemTextField.getValue());
+    Identifier projectileItem = parseProjectileItem(this.projectileItemTextField.getValue());
     if (projectileItem == null || projectileItem.equals(this.projectileData.projectileItem())) {
       return null;
     }

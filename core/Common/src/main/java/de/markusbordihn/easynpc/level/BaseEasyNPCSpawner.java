@@ -33,7 +33,6 @@ import de.markusbordihn.easynpc.utils.CompoundTagUtils;
 import java.util.Optional;
 import java.util.UUID;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.ProblemReporter;
@@ -417,20 +416,9 @@ public class BaseEasyNPCSpawner extends BaseSpawner {
   }
 
   private void updateEasyNPCData(CompoundTag compoundTag) {
-    this.spawnEntityType =
-        compoundTag.getString("id").flatMap(EntityType::byString).orElse(null);
-    this.easyNPCUUID = null;
-    this.easyNPCPresetUUID = null;
-
-    if (compoundTag.contains(ENTITY_UUID_TAG)) {
-      Optional<UUID> uuidOptional = compoundTag.read(ENTITY_UUID_TAG, UUIDUtil.CODEC);
-      uuidOptional.ifPresent(uuid -> this.easyNPCUUID = uuid);
-    }
-
-    if (compoundTag.contains(PresetDataCapable.PRESET_UUID_TAG)) {
-      Optional<UUID> presetUuidOptional =
-          compoundTag.read(PresetDataCapable.PRESET_UUID_TAG, UUIDUtil.CODEC);
-      presetUuidOptional.ifPresent(uuid -> this.easyNPCPresetUUID = uuid);
-    }
+    this.spawnEntityType = compoundTag.getString("id").flatMap(EntityType::byString).orElse(null);
+    this.easyNPCUUID = CompoundTagUtils.readUUID(compoundTag, ENTITY_UUID_TAG, null);
+    this.easyNPCPresetUUID =
+        CompoundTagUtils.readUUID(compoundTag, PresetDataCapable.PRESET_UUID_TAG, null);
   }
 }

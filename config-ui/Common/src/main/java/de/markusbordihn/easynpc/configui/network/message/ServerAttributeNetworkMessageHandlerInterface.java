@@ -88,8 +88,7 @@ public interface ServerAttributeNetworkMessageHandlerInterface {
     }
   }
 
-  default void saveVisibilityConditions(
-      UUID uuid, VisibilityConditionSet visibilityConditionSet) {
+  default void saveVisibilityConditions(UUID uuid, VisibilityConditionSet visibilityConditionSet) {
     if (uuid != null && visibilityConditionSet != null) {
       NetworkHandlerManager.sendMessageToServer(
           new SaveVisibilityConditionsMessage(uuid, visibilityConditionSet));

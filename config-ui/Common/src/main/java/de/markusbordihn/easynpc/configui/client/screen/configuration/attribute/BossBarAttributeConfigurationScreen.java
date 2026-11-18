@@ -122,8 +122,7 @@ public class BossBarAttributeConfigurationScreen<T extends ConfigurationMenu>
             DisplayAttributeType.MIN_BOSS_BAR_RANGE,
             DisplayAttributeType.MAX_BOSS_BAR_RANGE,
             () ->
-                BossBarHandler.getBossBarRange(
-                    this.getEasyNPC().getEasyNPCDisplayAttributeData()));
+                BossBarHandler.getBossBarRange(this.getEasyNPC().getEasyNPCDisplayAttributeData()));
 
     this.autoHideBox =
         this.addIntegerField(
@@ -167,11 +166,10 @@ public class BossBarAttributeConfigurationScreen<T extends ConfigurationMenu>
                   }
                 }));
     saveButton.active = false;
-    editBox.setResponder(
-        value ->
-            saveButton.active =
-                ValueUtils.isNumericValue(value, minimum, maximum)
-                    && ValueUtils.getIntValue(value) != savedValueSupplier.getAsInt());
+    editBox.setResponder(value ->
+        saveButton.active =
+            ValueUtils.isNumericValue(value, minimum, maximum)
+                && ValueUtils.getIntValue(value) != savedValueSupplier.getAsInt());
     return editBox;
   }
 

@@ -31,7 +31,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class PiercingWeaponMixin {
 
   // Vanilla requires canBeHitByProjectile, which Easy NPCs disable by default (#852).
-  @Inject(method = "canHitEntity", at = @At("HEAD"), cancellable = true, require = 0)
+  @Inject(method = "canHitEntity", at = @At("HEAD"), cancellable = true)
   private static void onCanHitEntity(
       Entity attacker, Entity target, CallbackInfoReturnable<Boolean> callbackInfoReturnable) {
     if (target instanceof EasyNPC<?>

@@ -80,6 +80,12 @@ public class SitOnOwnerShoulderGoal extends Goal {
         && (player.getShoulderEntityLeft().isEmpty() || player.getShoulderEntityRight().isEmpty());
   }
 
+  private static boolean isInCombat(ServerPlayer player) {
+    return player.getLastHurtByMob() != null
+        || (player.getLastHurtMob() != null
+            && player.tickCount - player.getLastHurtMobTimestamp() < COMBAT_DURATION_TICKS);
+  }
+
   private ServerPlayer getOwner() {
     OwnerDataCapable<?> ownerData = this.easyNPC.getEasyNPCOwnerData();
     return ownerData != null && ownerData.getOwner() instanceof ServerPlayer serverPlayer
@@ -94,12 +100,6 @@ public class SitOnOwnerShoulderGoal extends Goal {
         && !this.mob.isPassenger()
         && !this.mob.isVehicle()
         && fitsOnShoulder(this.mob);
-  }
-
-  private static boolean isInCombat(ServerPlayer player) {
-    return player.getLastHurtByMob() != null
-        || (player.getLastHurtMob() != null
-            && player.tickCount - player.getLastHurtMobTimestamp() < COMBAT_DURATION_TICKS);
   }
 
   private boolean canCarry(ServerPlayer player) {

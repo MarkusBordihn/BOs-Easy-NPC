@@ -36,28 +36,26 @@ public final class BackgroundFileWriter {
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private static final String THREAD_NAME = "EasyNPC-File-Writer";
   private static final ExecutorService singleThreadExecutor =
-      Executors.newSingleThreadExecutor(
-          runnable -> {
-            Thread thread = new Thread(runnable, THREAD_NAME);
-            thread.setDaemon(true);
-            return thread;
-          });
+      Executors.newSingleThreadExecutor(runnable -> {
+        Thread thread = new Thread(runnable, THREAD_NAME);
+        thread.setDaemon(true);
+        return thread;
+      });
   private static final AtomicInteger pendingWrites = new AtomicInteger();
 
   private BackgroundFileWriter() {}
 
   public static void submit(Runnable writeTask) {
     pendingWrites.incrementAndGet();
-    singleThreadExecutor.execute(
-        () -> {
-          try {
-            writeTask.run();
-          } catch (RuntimeException e) {
-            log.error("Background file write failed:", e);
-          } finally {
-            pendingWrites.decrementAndGet();
-          }
-        });
+    singleThreadExecutor.execute(() -> {
+      try {
+        writeTask.run();
+      } catch (RuntimeException e) {
+        log.error("Background file write failed:", e);
+      } finally {
+        pendingWrites.decrementAndGet();
+      }
+    });
   }
 
   public static boolean awaitPendingWrites(Duration timeout) {

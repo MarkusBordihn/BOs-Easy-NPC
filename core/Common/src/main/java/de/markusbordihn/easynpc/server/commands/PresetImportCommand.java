@@ -155,34 +155,31 @@ class PresetImportCommand extends Command {
         .then(
             Commands.argument(PRESET_ARG, IdentifierArgument.id())
                 .suggests(suggestions)
-                .executes(
-                    context ->
-                        presetImporter.importPreset(
-                            context.getSource(),
-                            IdentifierArgument.getId(context, PRESET_ARG),
-                            null,
-                            null,
-                            null))
+                .executes(context ->
+                    presetImporter.importPreset(
+                        context.getSource(),
+                        IdentifierArgument.getId(context, PRESET_ARG),
+                        null,
+                        null,
+                        null))
                 .then(
                     Commands.argument(LOCATION_ARG, Vec3Argument.vec3())
-                        .executes(
-                            context ->
-                                presetImporter.importPreset(
-                                    context.getSource(),
-                                    IdentifierArgument.getId(context, PRESET_ARG),
-                                    getPosition(context),
-                                    null,
-                                    null))
+                        .executes(context ->
+                            presetImporter.importPreset(
+                                context.getSource(),
+                                IdentifierArgument.getId(context, PRESET_ARG),
+                                getPosition(context),
+                                null,
+                                null))
                         .then(
                             Commands.argument(UUID_ARG, UuidArgument.uuid())
-                                .executes(
-                                    context ->
-                                        presetImporter.importPreset(
-                                            context.getSource(),
-                                            IdentifierArgument.getId(context, PRESET_ARG),
-                                            getPosition(context),
-                                            UuidArgument.getUuid(context, UUID_ARG),
-                                            null)))));
+                                .executes(context ->
+                                    presetImporter.importPreset(
+                                        context.getSource(),
+                                        IdentifierArgument.getId(context, PRESET_ARG),
+                                        getPosition(context),
+                                        UuidArgument.getUuid(context, UUID_ARG),
+                                        null)))));
   }
 
   private static ArgumentBuilder<CommandSourceStack, ?> importNewBranch(
@@ -195,24 +192,22 @@ class PresetImportCommand extends Command {
         .then(
             Commands.argument(PRESET_ARG, IdentifierArgument.id())
                 .suggests(suggestions)
-                .executes(
-                    context ->
-                        presetImporter.importPreset(
-                            context.getSource(),
-                            IdentifierArgument.getId(context, PRESET_ARG),
-                            null,
-                            UUID.randomUUID(),
-                            null))
+                .executes(context ->
+                    presetImporter.importPreset(
+                        context.getSource(),
+                        IdentifierArgument.getId(context, PRESET_ARG),
+                        null,
+                        UUID.randomUUID(),
+                        null))
                 .then(
                     Commands.argument(LOCATION_ARG, Vec3Argument.vec3())
-                        .executes(
-                            context ->
-                                presetImporter.importPreset(
-                                    context.getSource(),
-                                    IdentifierArgument.getId(context, PRESET_ARG),
-                                    getPosition(context),
-                                    UUID.randomUUID(),
-                                    null))));
+                        .executes(context ->
+                            presetImporter.importPreset(
+                                context.getSource(),
+                                IdentifierArgument.getId(context, PRESET_ARG),
+                                getPosition(context),
+                                UUID.randomUUID(),
+                                null))));
   }
 
   private static ArgumentBuilder<CommandSourceStack, ?> importWithOwnerBranch(
@@ -227,14 +222,13 @@ class PresetImportCommand extends Command {
                     Commands.argument(PLAYER_ARG, EntityArgument.player())
                         .then(
                             Commands.argument(LOCATION_ARG, Vec3Argument.vec3())
-                                .executes(
-                                    context ->
-                                        presetImporter.importPreset(
-                                            context.getSource(),
-                                            IdentifierArgument.getId(context, PRESET_ARG),
-                                            getPosition(context),
-                                            UUID.randomUUID(),
-                                            EntityArgument.getPlayer(context, PLAYER_ARG))))));
+                                .executes(context ->
+                                    presetImporter.importPreset(
+                                        context.getSource(),
+                                        IdentifierArgument.getId(context, PRESET_ARG),
+                                        getPosition(context),
+                                        UUID.randomUUID(),
+                                        EntityArgument.getPlayer(context, PLAYER_ARG))))));
   }
 
   private static ArgumentBuilder<CommandSourceStack, ?> matchingBranch(
@@ -252,9 +246,8 @@ class PresetImportCommand extends Command {
               .executes(context -> importMatching(context, presetType, keepIdentity, true, false))
               .then(
                   Commands.literal(CONFIRM_ARG)
-                      .executes(
-                          context ->
-                              importMatching(context, presetType, keepIdentity, true, true))));
+                      .executes(context ->
+                          importMatching(context, presetType, keepIdentity, true, true))));
     }
 
     return Commands.literal(MATCHING_ARG).then(patternArgument);

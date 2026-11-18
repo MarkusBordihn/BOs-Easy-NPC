@@ -38,8 +38,6 @@ class NPCSaveSchedulerTest {
 
   private int previousIntervalSeconds;
 
-  private record ChangedNPC(String name, long lastUpdateTime) {}
-
   @BeforeEach
   void setUp() {
     this.previousIntervalSeconds = StorageConfig.NPC_SAVE_INTERVAL_SECONDS;
@@ -112,8 +110,7 @@ class NPCSaveSchedulerTest {
             changedNPCs.stream(), ChangedNPC::lastUpdateTime, START_TIME + 10, 3);
 
     assertEquals(
-        List.of("first", "second", "third"),
-        selected.stream().map(ChangedNPC::name).toList());
+        List.of("first", "second", "third"), selected.stream().map(ChangedNPC::name).toList());
   }
 
   @Test
@@ -137,4 +134,6 @@ class NPCSaveSchedulerTest {
             START_TIME + 30_000 - minimumAgeMilliseconds,
             4));
   }
+
+  private record ChangedNPC(String name, long lastUpdateTime) {}
 }

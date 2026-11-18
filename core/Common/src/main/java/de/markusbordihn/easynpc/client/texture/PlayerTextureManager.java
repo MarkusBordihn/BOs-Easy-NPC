@@ -69,7 +69,7 @@ public class PlayerTextureManager {
   public static Identifier getOrCreateTextureWithDefault(
       SkinDataCapable<?> skinData, Identifier defaultIdentifier) {
     UUID skinUUID = skinData.getSkinUUID();
-    if (skinUUID.equals(Constants.BLANK_UUID)) {
+    if (skinUUID == null || skinUUID.equals(Constants.BLANK_UUID)) {
       return defaultIdentifier;
     }
 
@@ -102,13 +102,12 @@ public class PlayerTextureManager {
 
     if (TextureManager.hasCachedTexture(textureModelKey, textureDataFolder)) {
       AsyncTextureLoader.loadCachedTextureAsync(textureModelKey, textureDataFolder)
-          .thenAccept(
-              resourceLocation -> {
-                if (resourceLocation != null) {
-                  textureCache.put(textureModelKey, resourceLocation);
-                  textureSkinTypeCache.put(textureModelKey, skinData.getSkinType());
-                }
-              });
+          .thenAccept(resourceLocation -> {
+            if (resourceLocation != null) {
+              textureCache.put(textureModelKey, resourceLocation);
+              textureSkinTypeCache.put(textureModelKey, skinData.getSkinType());
+            }
+          });
       return null;
     }
 
@@ -121,25 +120,24 @@ public class PlayerTextureManager {
     textureReloadProtection.put(playerUUID, currentTime);
 
     AsyncTextureLoader.loadPlayerTextureAsync(textureModelKey, playerUUID, textureDataFolder)
-        .thenAccept(
-            resourceLocation -> {
-              if (resourceLocation != null) {
-                log.info(
-                    "{} Successfully loaded player texture for {}: {}",
-                    LOG_PREFIX,
-                    playerUUID,
-                    resourceLocation);
-                textureCache.put(textureModelKey, resourceLocation);
-                textureSkinTypeCache.put(textureModelKey, skinData.getSkinType());
-              } else {
-                log.error(
-                    "{} Unable to load player {} texture {} from {}!",
-                    LOG_PREFIX,
-                    playerUUID,
-                    textureModelKey,
-                    textureDataFolder);
-              }
-            });
+        .thenAccept(resourceLocation -> {
+          if (resourceLocation != null) {
+            log.info(
+                "{} Successfully loaded player texture for {}: {}",
+                LOG_PREFIX,
+                playerUUID,
+                resourceLocation);
+            textureCache.put(textureModelKey, resourceLocation);
+            textureSkinTypeCache.put(textureModelKey, skinData.getSkinType());
+          } else {
+            log.error(
+                "{} Unable to load player {} texture {} from {}!",
+                LOG_PREFIX,
+                playerUUID,
+                textureModelKey,
+                textureDataFolder);
+          }
+        });
 
     return null;
   }

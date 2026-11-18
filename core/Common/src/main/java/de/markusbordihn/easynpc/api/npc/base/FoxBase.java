@@ -26,6 +26,8 @@ import de.markusbordihn.easynpc.data.skin.variant.FoxSkinVariant;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.sound.SoundType;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -85,6 +87,11 @@ public class FoxBase extends FoxRaw implements BaseEasyNPC<FoxRaw> {
     soundDataSet.addDefaultSound(SoundType.TRADE_NO, SoundEvents.VILLAGER_NO);
     return soundDataSet;
   }
+
+  // Vanilla puts a random item into the mouth of every fifth spawned fox.
+  @Override
+  protected void populateDefaultEquipmentSlots(
+      RandomSource randomSource, DifficultyInstance difficulty) {}
 
   @Override
   protected void registerGoals() {
