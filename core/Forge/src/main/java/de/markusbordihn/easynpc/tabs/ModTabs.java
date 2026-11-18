@@ -50,12 +50,11 @@ public class ModTabs {
           "spawn_eggs",
           () ->
               CreativeModeTab.builder()
-                  .icon(
-                      () ->
-                          ModItems.CUSTOM_NPC_SPAWN_EGGS
-                              .get(ModCustomEntityType.FAIRY)
-                              .get()
-                              .getDefaultInstance())
+                  .icon(() ->
+                      ModItems.CUSTOM_NPC_SPAWN_EGGS
+                          .get(ModCustomEntityType.FAIRY)
+                          .get()
+                          .getDefaultInstance())
                   .displayItems(new SpawnEggs())
                   .title(Component.translatable("itemGroup.easy_npc.spawn_eggs"))
                   .build());
@@ -70,12 +69,11 @@ public class ModTabs {
               "epic_fight_spawn_eggs",
               () ->
                   CreativeModeTab.builder()
-                      .icon(
-                          () ->
-                              ModItems.EPIC_FIGHT_SPAWN_EGGS
-                                  .get(EpicFightEntityType.ZOMBIE)
-                                  .get()
-                                  .getDefaultInstance())
+                      .icon(() ->
+                          ModItems.EPIC_FIGHT_SPAWN_EGGS
+                              .get(EpicFightEntityType.ZOMBIE)
+                              .get()
+                              .getDefaultInstance())
                       .displayItems(new EpicFightSpawnEggs())
                       .title(Component.translatable("itemGroup.easy_npc.epic_fight_spawn_eggs"))
                       .build());

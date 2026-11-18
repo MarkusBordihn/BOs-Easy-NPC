@@ -42,6 +42,5 @@ public class ModItemTags {
 
   public static final TagKey<Item> PASS_INTERACTION =
       TagKey.create(
-          BuiltInRegistries.ITEM.key(),
-          new ResourceLocation(Constants.MOD_ID, "pass_interaction"));
+          BuiltInRegistries.ITEM.key(), new ResourceLocation(Constants.MOD_ID, "pass_interaction"));
 }

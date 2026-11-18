@@ -73,44 +73,37 @@ public class AttackObjective extends Command {
                 .then(
                     Commands.argument(TYPE_ARGUMENT, StringArgumentType.word())
                         .suggests(SUGGEST_ATTACK_TYPES)
-                        .executes(
-                            context ->
-                                removeAttackTypeObjective(
-                                    context.getSource(),
-                                    EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG),
-                                    StringArgumentType.getString(context, TYPE_ARGUMENT)))))
+                        .executes(context ->
+                            removeAttackTypeObjective(
+                                context.getSource(),
+                                EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG),
+                                StringArgumentType.getString(context, TYPE_ARGUMENT)))))
         .then(
             Commands.literal("target")
                 .then(
                     Commands.argument(TARGET_ARGUMENT, StringArgumentType.word())
                         .suggests(SUGGEST_ATTACK_TARGETS)
-                        .executes(
-                            context ->
-                                removeAttackTargetObjective(
-                                    context.getSource(),
-                                    EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG),
-                                    StringArgumentType.getString(context, TARGET_ARGUMENT)))))
-        .executes(
-            context ->
-                remove(
-                    context.getSource(),
-                    EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG)));
+                        .executes(context ->
+                            removeAttackTargetObjective(
+                                context.getSource(),
+                                EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG),
+                                StringArgumentType.getString(context, TARGET_ARGUMENT)))))
+        .executes(context ->
+            remove(
+                context.getSource(), EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG)));
   }
 
   public static ArgumentBuilder<CommandSourceStack, ?> registerList() {
     return Commands.literal(OBJECTIVE_NAME)
         .then(
             Commands.literal("target")
-                .executes(
-                    context ->
-                        list(
-                            context.getSource(),
-                            EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG))))
-        .executes(
-            context ->
-                list(
-                    context.getSource(),
-                    EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG)));
+                .executes(context ->
+                    list(
+                        context.getSource(),
+                        EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG))))
+        .executes(context ->
+            list(
+                context.getSource(), EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG)));
   }
 
   public static ArgumentBuilder<CommandSourceStack, ?> registerSet() {
@@ -120,23 +113,21 @@ public class AttackObjective extends Command {
                 .then(
                     Commands.argument(TYPE_ARGUMENT, StringArgumentType.greedyString())
                         .suggests(SUGGEST_ATTACK_TYPE_LIST)
-                        .executes(
-                            context ->
-                                setAttackTypeObjectives(
-                                    context.getSource(),
-                                    EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG),
-                                    StringArgumentType.getString(context, TYPE_ARGUMENT)))))
+                        .executes(context ->
+                            setAttackTypeObjectives(
+                                context.getSource(),
+                                EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG),
+                                StringArgumentType.getString(context, TYPE_ARGUMENT)))))
         .then(
             Commands.literal("target")
                 .then(
                     Commands.argument(TARGET_ARGUMENT, StringArgumentType.word())
                         .suggests(SUGGEST_ATTACK_TARGETS)
-                        .executes(
-                            context ->
-                                setAttackTargetObjective(
-                                    context.getSource(),
-                                    EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG),
-                                    StringArgumentType.getString(context, TARGET_ARGUMENT)))))
+                        .executes(context ->
+                            setAttackTargetObjective(
+                                context.getSource(),
+                                EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG),
+                                StringArgumentType.getString(context, TARGET_ARGUMENT)))))
         .executes(context -> set(context.getSource()));
   }
 
@@ -204,9 +195,8 @@ public class AttackObjective extends Command {
           && !PROTECTION_OBJECTIVES.containsKey(objectiveType)) {
         objectiveData
             .getObjectiveEntry(objectiveType)
-            .ifPresent(
-                objective ->
-                    sendSuccessMessage(context, "> " + getFriendlyTargetName(objective.getType())));
+            .ifPresent(objective ->
+                sendSuccessMessage(context, "> " + getFriendlyTargetName(objective.getType())));
       }
     }
 
@@ -214,15 +204,14 @@ public class AttackObjective extends Command {
         PROTECTION_OBJECTIVES.entrySet()) {
       objectiveData
           .getObjectiveEntry(protectionEntry.getKey())
-          .ifPresent(
-              objective ->
-                  sendSuccessMessage(
-                      context,
-                      "> "
-                          + protectionEntry.getValue().friendlyName()
-                          + " ("
-                          + protectionEntry.getValue().label()
-                          + ")"));
+          .ifPresent(objective ->
+              sendSuccessMessage(
+                  context,
+                  "> "
+                      + protectionEntry.getValue().friendlyName()
+                      + " ("
+                      + protectionEntry.getValue().label()
+                      + ")"));
     }
 
     return Command.SINGLE_SUCCESS;
@@ -276,8 +265,7 @@ public class AttackObjective extends Command {
 
     String attackTypeNames =
         attackTypes.stream().map(ObjectiveType::getFriendlyName).collect(Collectors.joining(", "));
-    return sendSuccessMessage(
-        context, "Set attack types " + attackTypeNames + " for " + easyNPC);
+    return sendSuccessMessage(context, "Set attack types " + attackTypeNames + " for " + easyNPC);
   }
 
   public static int removeAttackTypeObjective(

@@ -48,9 +48,9 @@ import de.markusbordihn.easynpc.configui.network.message.server.ChangeMovementAt
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeNameMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeNamedPoseMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangePoseMessage;
-import de.markusbordihn.easynpc.configui.network.message.server.ChangeProjectileDataMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangePositionMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeProfessionMessage;
+import de.markusbordihn.easynpc.configui.network.message.server.ChangeProjectileDataMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeRendererMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeSkinMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeSoundMessage;

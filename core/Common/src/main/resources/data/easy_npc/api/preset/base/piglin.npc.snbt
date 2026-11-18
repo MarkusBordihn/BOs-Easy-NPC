@@ -26,7 +26,7 @@
     Brain:{
       memories:{}
     },
-    CanPickUpLoot:1b,
+    CanPickUpLoot:0b,
     CustomNameVisible:1b,
     EasyNPCVersion:3,
     HandDropChances:[0.085f,0.085f],

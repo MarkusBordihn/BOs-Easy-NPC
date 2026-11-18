@@ -107,13 +107,11 @@ public class EasyNPCMain {
     MenuManager.registerMenuHandler(new MenuHandler());
 
     log.info("{} Network Handler ...", Constants.LOG_REGISTER_PREFIX);
-    modEventBus.addListener(
-        (final FMLCommonSetupEvent event) ->
-            event.enqueueWork(
-                () -> {
-                  NetworkHandlerManager.registerHandler(new NetworkHandler());
-                  NetworkHandlerManager.registerNetworkMessages(NetworkHandlerManagerType.BOTH);
-                }));
+    modEventBus.addListener((final FMLCommonSetupEvent event) ->
+        event.enqueueWork(() -> {
+          NetworkHandlerManager.registerHandler(new NetworkHandler());
+          NetworkHandlerManager.registerNetworkMessages(NetworkHandlerManagerType.BOTH);
+        }));
     NetworkMessageHandlerManager.registerClientHandler(new ClientNetworkMessageHandler());
 
     DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> new EasyNPCClient(modEventBus));

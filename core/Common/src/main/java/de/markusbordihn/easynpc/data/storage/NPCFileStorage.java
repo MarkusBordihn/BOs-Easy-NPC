@@ -348,18 +348,17 @@ public class NPCFileStorage {
       return pathStream
           .filter(Files::isRegularFile)
           .filter(path -> path.toString().endsWith(NPC_FILE_EXTENSION))
-          .map(
-              path -> {
-                String fileName = path.getFileName().toString();
-                String uuidString =
-                    fileName.substring(0, fileName.length() - NPC_FILE_EXTENSION.length());
-                try {
-                  return UUID.fromString(uuidString);
-                } catch (IllegalArgumentException e) {
-                  log.warn("Invalid UUID in filename: {}", fileName);
-                  return null;
-                }
-              })
+          .map(path -> {
+            String fileName = path.getFileName().toString();
+            String uuidString =
+                fileName.substring(0, fileName.length() - NPC_FILE_EXTENSION.length());
+            try {
+              return UUID.fromString(uuidString);
+            } catch (IllegalArgumentException e) {
+              log.warn("Invalid UUID in filename: {}", fileName);
+              return null;
+            }
+          })
           .filter(Objects::nonNull)
           .filter(uuid -> !this.pendingDeletes.contains(uuid))
           .toList()

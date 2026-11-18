@@ -74,18 +74,17 @@ public final class PosePersistenceTestHelper {
   public static Collection<TestFunction> createTPosePersistenceTests(
       Function<ModNPCEntityType, EntityType<?>> entityTypeResolver) {
     return Arrays.stream(ModNPCEntityType.values())
-        .map(
-            npcEntityType ->
-                new TestFunction(
-                    BATCH_NAME,
-                    TEST_NAME_PREFIX + npcEntityType.getId(),
-                    TEMPLATE,
-                    TIMEOUT_TICKS,
-                    0,
-                    true,
-                    helper ->
-                        assertTPoseSurvivesWaitRespawnAndPreset(
-                            helper, entityTypeResolver.apply(npcEntityType))))
+        .map(npcEntityType ->
+            new TestFunction(
+                BATCH_NAME,
+                TEST_NAME_PREFIX + npcEntityType.getId(),
+                TEMPLATE,
+                TIMEOUT_TICKS,
+                0,
+                true,
+                helper ->
+                    assertTPoseSurvivesWaitRespawnAndPreset(
+                        helper, entityTypeResolver.apply(npcEntityType))))
         .toList();
   }
 

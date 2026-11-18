@@ -101,7 +101,8 @@ class IdleNPCClientTest extends ClientTestBase {
   }
 
   @Test
-  @DisplayName("Idle NPC without a player nearby falls within one second when its ground is removed")
+  @DisplayName(
+      "Idle NPC without a player nearby falls within one second when its ground is removed")
   void idleNPCFallsWithoutNearbyPlayer() {
     this.spawnNPC(0.5, VIEW_Y, OUT_OF_LOOK_DISTANCE_Z + 0.5);
     client.await(Until.ticksElapsed(IDLE_TICKS));

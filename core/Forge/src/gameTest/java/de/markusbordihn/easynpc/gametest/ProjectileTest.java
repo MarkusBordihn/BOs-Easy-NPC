@@ -96,8 +96,7 @@ public class ProjectileTest {
 
   @GameTest(template = "gametest.3x3x3")
   public void testEveryProjectileTypeIsRemovedAfterMaximumLifetime(GameTestHelper helper) {
-    ProjectileTestHelper.assertEveryProjectileTypeIsRemovedAfterMaximumLifetime(
-        helper, humanoid());
+    ProjectileTestHelper.assertEveryProjectileTypeIsRemovedAfterMaximumLifetime(helper, humanoid());
   }
 
   @GameTest(template = "gametest.3x3x3")

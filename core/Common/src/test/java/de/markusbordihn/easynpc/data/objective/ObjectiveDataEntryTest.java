@@ -124,6 +124,23 @@ class ObjectiveDataEntryTest {
   }
 
   @Test
+  @DisplayName("Malformed target UUIDs are read as unset targets")
+  void testMalformedTargetUUIDsAreIgnored() {
+    ObjectiveDataEntry entry = new ObjectiveDataEntry(ObjectiveType.ATTACK_ENTITY_BY_UUID);
+    entry.setTargetEntityUUID(UUID.randomUUID());
+    CompoundTag compoundTag = entry.createTag();
+    compoundTag.putString(
+        ObjectiveDataEntry.DATA_TARGET_ENTITY_UUID_TAG, UUID.randomUUID().toString());
+    compoundTag.putIntArray(ObjectiveDataEntry.DATA_TARGET_OWNER_UUID_TAG, new int[] {1, 2});
+
+    ObjectiveDataEntry restored = new ObjectiveDataEntry(compoundTag);
+
+    assertEquals(ObjectiveType.ATTACK_ENTITY_BY_UUID, restored.getType());
+    assertNull(restored.getTargetEntityUUID());
+    assertNull(restored.getTargetOwnerUUID());
+  }
+
+  @Test
   @DisplayName("Objectives without an owner target are unaffected by the owner fallback")
   void testNonOwnerObjectivesHaveNoOwnerTarget() {
     assertFalse(new ObjectiveDataEntry(ObjectiveType.FOLLOW_PLAYER).hasOwnerTarget());

@@ -19,7 +19,13 @@
 
 package de.markusbordihn.easynpc.gametest;
 
+import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.api.handler.EasyNPCEntityHandler;
+import de.markusbordihn.easynpc.data.action.ActionDataEntry;
+import de.markusbordihn.easynpc.data.action.ActionDataSet;
+import de.markusbordihn.easynpc.data.action.ActionDataType;
+import de.markusbordihn.easynpc.data.action.ActionEventSet;
+import de.markusbordihn.easynpc.data.action.ActionEventType;
 import de.markusbordihn.easynpc.data.action.ActionGroup;
 import de.markusbordihn.easynpc.data.action.ActionManager;
 import de.markusbordihn.easynpc.data.display.DisplayAttributeDataSet;
@@ -28,6 +34,8 @@ import de.markusbordihn.easynpc.data.npc.SavedNPCEntityEntry;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataEntry;
 import de.markusbordihn.easynpc.data.objective.ObjectiveType;
 import de.markusbordihn.easynpc.data.saveddata.NPCEntityData;
+import de.markusbordihn.easynpc.data.skin.SkinDataEntry;
+import de.markusbordihn.easynpc.data.skin.SkinType;
 import de.markusbordihn.easynpc.data.status.StatusDataType;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.entity.EasyNPCEntityTypes;
@@ -41,10 +49,15 @@ import de.markusbordihn.easynpc.handler.OwnerHandler;
 import de.markusbordihn.easynpc.handler.RespawnHandler;
 import java.util.Collection;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.IntArrayTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -461,15 +474,14 @@ public class NPCEntityLifecycleTestHelper {
 
     saveDirtyNPCsBeforeScheduledDiscard(reloadedEntity);
 
-    helper.succeedWhen(
-        () -> {
-          if (!reloadedEntity.isRemoved()) {
-            helper.fail("Deleted NPC " + entityUUID + " returned on load");
-          }
-          if (NPCEntityManager.getNPC(entityUUID).isPresent()) {
-            helper.fail("Deleted NPC " + entityUUID + " was indexed again on load");
-          }
-        });
+    helper.succeedWhen(() -> {
+      if (!reloadedEntity.isRemoved()) {
+        helper.fail("Deleted NPC " + entityUUID + " returned on load");
+      }
+      if (NPCEntityManager.getNPC(entityUUID).isPresent()) {
+        helper.fail("Deleted NPC " + entityUUID + " was indexed again on load");
+      }
+    });
   }
 
   private static void saveDirtyNPCsBeforeScheduledDiscard(Entity entity) {
@@ -561,37 +573,35 @@ public class NPCEntityLifecycleTestHelper {
 
     helper
         .startSequence()
-        .thenWaitUntil(
-            () ->
-                GameTestHelpers.assertTrue(
-                    helper, "Dead NPC was not removed from the world", livingEntity.isRemoved()))
-        .thenExecute(
-            () -> {
-              GameTestHelpers.assertEquals(
-                  helper,
-                  "Dead NPC was not stored as killed",
-                  NPCRemovalReason.KILLED,
-                  getStoredRemovalReason(helper, entityUUID));
-              GameTestHelpers.assertTrue(
-                  helper,
-                  "Dead NPC " + entityUUID + " was not revived",
-                  EasyNPCEntityHandler.revive(entityUUID, helper.getLevel()));
+        .thenWaitUntil(() ->
+            GameTestHelpers.assertTrue(
+                helper, "Dead NPC was not removed from the world", livingEntity.isRemoved()))
+        .thenExecute(() -> {
+          GameTestHelpers.assertEquals(
+              helper,
+              "Dead NPC was not stored as killed",
+              NPCRemovalReason.KILLED,
+              getStoredRemovalReason(helper, entityUUID));
+          GameTestHelpers.assertTrue(
+              helper,
+              "Dead NPC " + entityUUID + " was not revived",
+              EasyNPCEntityHandler.revive(entityUUID, helper.getLevel()));
 
-              EasyNPC<?> revivedNPC =
-                  LivingEntityManager.getServerEasyNPCEntityByUUID(entityUUID, helper.getLevel());
-              GameTestHelpers.assertNotNull(
-                  helper, "Revived NPC " + entityUUID + " was not found in the world", revivedNPC);
-              LivingEntity revivedEntity = revivedNPC.getLivingEntity();
-              GameTestHelpers.assertTrue(
-                  helper,
-                  "Revived NPC is still dying",
-                  !revivedEntity.isDeadOrDying() && revivedEntity.deathTime == 0);
-              GameTestHelpers.assertEquals(
-                  helper,
-                  "Revived NPC does not have full health",
-                  revivedEntity.getMaxHealth(),
-                  revivedEntity.getHealth());
-            })
+          EasyNPC<?> revivedNPC =
+              LivingEntityManager.getServerEasyNPCEntityByUUID(entityUUID, helper.getLevel());
+          GameTestHelpers.assertNotNull(
+              helper, "Revived NPC " + entityUUID + " was not found in the world", revivedNPC);
+          LivingEntity revivedEntity = revivedNPC.getLivingEntity();
+          GameTestHelpers.assertTrue(
+              helper,
+              "Revived NPC is still dying",
+              !revivedEntity.isDeadOrDying() && revivedEntity.deathTime == 0);
+          GameTestHelpers.assertEquals(
+              helper,
+              "Revived NPC does not have full health",
+              revivedEntity.getMaxHealth(),
+              revivedEntity.getHealth());
+        })
         .thenSucceed();
   }
 
@@ -611,8 +621,7 @@ public class NPCEntityLifecycleTestHelper {
     }
   }
 
-  public static void assertReviveRejectsLoadedNPC(
-      GameTestHelper helper, EntityType<?> entityType) {
+  public static void assertReviveRejectsLoadedNPC(GameTestHelper helper, EntityType<?> entityType) {
     EasyNPC<?> easyNPC = GameTestHelpers.mockEasyNPC(helper, entityType, new Vec3(1, 2, 1));
     NPCEntityManager.saveNPC(easyNPC);
 
@@ -669,7 +678,9 @@ public class NPCEntityLifecycleTestHelper {
     GameTestHelpers.assertTrue(
         helper, "Failed to revive the NPC", EasyNPCEntityHandler.revive(entityUUID, serverLevel));
     assertDefaultDataNotReapplied(
-        helper, "revive", LivingEntityManager.getServerEasyNPCEntityByUUID(entityUUID, serverLevel));
+        helper,
+        "revive",
+        LivingEntityManager.getServerEasyNPCEntityByUUID(entityUUID, serverLevel));
   }
 
   private static void assertDefaultDataNotReapplied(
@@ -756,5 +767,86 @@ public class NPCEntityLifecycleTestHelper {
     if (EasyNPCEntityTypes.isEasyNPCEntityTag(pigTag, serverLevel)) {
       helper.fail("Entity tag of a pig must not be recognized as an Easy NPC");
     }
+  }
+
+  public static void assertMalformedUUIDTagsKeepNPCLoadable(
+      GameTestHelper helper, EntityType<?> entityType) {
+    ServerLevel serverLevel = helper.getLevel();
+    EasyNPC<?> easyNPC = GameTestHelpers.mockEasyNPC(helper, entityType, new Vec3(1, 2, 1));
+    easyNPC
+        .getEasyNPCSkinData()
+        .setSkinDataEntry(SkinDataEntry.createPlayerSkin("Steve", UUID.randomUUID()));
+    ActionDataSet actionDataSet = new ActionDataSet();
+    actionDataSet.add(new ActionDataEntry(ActionDataType.NPC_STATE, "increase gametest 1"));
+    ActionEventSet actionEventSet = new ActionEventSet();
+    actionEventSet.setActionEvent(ActionEventType.ON_DEATH, actionDataSet);
+    easyNPC.getEasyNPCActionEventData().setActionEventSet(actionEventSet);
+
+    CompoundTag entityTag = easyNPC.getEntity().saveWithoutId(new CompoundTag());
+    int malformedUUIDTags = 0;
+    for (String key : entityTag.getAllKeys()) {
+      if (!key.equals(Entity.UUID_TAG)) {
+        malformedUUIDTags += replaceUUIDTagsWithStrings(entityTag.get(key));
+      }
+    }
+    if (malformedUUIDTags < 2) {
+      helper.fail("Expected the skin and action UUIDs to be malformed, got " + malformedUUIDTags);
+      return;
+    }
+    easyNPC.getEntity().discard();
+
+    Entity reloadedEntity = entityType.create(serverLevel);
+    if (reloadedEntity == null) {
+      helper.fail("Unable to create " + entityType + " for the reload");
+      return;
+    }
+
+    reloadedEntity.load(entityTag);
+    if (!(reloadedEntity instanceof EasyNPC<?> reloadedNPC)) {
+      helper.fail("Reloaded entity " + reloadedEntity + " is not an Easy NPC");
+      return;
+    }
+
+    SkinDataEntry skinDataEntry = reloadedNPC.getEasyNPCSkinData().getSkinDataEntry();
+    if (!Constants.BLANK_UUID.equals(skinDataEntry.uuid())) {
+      helper.fail("Malformed skin UUID must read as the blank UUID, got " + skinDataEntry.uuid());
+      return;
+    }
+    if (skinDataEntry.type() != SkinType.PLAYER_SKIN) {
+      helper.fail("Malformed skin UUID must keep the skin type, got " + skinDataEntry.type());
+      return;
+    }
+
+    ActionDataSet reloadedActions =
+        reloadedNPC
+            .getEasyNPCActionEventData()
+            .getActionEventSet()
+            .getActionEvents(ActionEventType.ON_DEATH);
+    if (reloadedActions == null || reloadedActions.size() != 1) {
+      helper.fail("Action with a malformed id must survive the reload, got " + reloadedActions);
+    }
+  }
+
+  private static int replaceUUIDTagsWithStrings(Tag tag) {
+    int replacedTags = 0;
+    if (tag instanceof CompoundTag compoundTag) {
+      for (String key : Set.copyOf(compoundTag.getAllKeys())) {
+        Tag childTag = compoundTag.get(key);
+        if (childTag instanceof IntArrayTag intArrayTag
+            && intArrayTag.size() == 4
+            && (key.endsWith("UUID") || key.equals(ActionDataEntry.DATA_ID_TAG))) {
+          compoundTag.putString(
+              key, UUIDUtil.uuidFromIntArray(intArrayTag.getAsIntArray()).toString());
+          replacedTags++;
+        } else {
+          replacedTags += replaceUUIDTagsWithStrings(childTag);
+        }
+      }
+    } else if (tag instanceof ListTag listTag) {
+      for (Tag childTag : listTag) {
+        replacedTags += replaceUUIDTagsWithStrings(childTag);
+      }
+    }
+    return replacedTags;
   }
 }

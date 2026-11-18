@@ -23,9 +23,15 @@ import de.markusbordihn.easynpc.api.npc.raw.spider.SpiderRaw;
 import de.markusbordihn.easynpc.compat.CompatConstants;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
 import de.markusbordihn.easynpc.data.skin.variant.SpiderSkinVariant;
+import de.markusbordihn.easynpc.entity.easynpc.handlers.SpawnRandomnessHandler;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.monster.Spider;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ServerLevelAccessor;
 
 public class CaveSpiderEpicFight extends SpiderRaw {
 
@@ -42,5 +48,20 @@ public class CaveSpiderEpicFight extends SpiderRaw {
   @Override
   public ConfigurationData getConfigurationData() {
     return ConfigurationData.EPIC_FIGHT;
+  }
+
+  @Override
+  public SpawnGroupData finalizeSpawn(
+      ServerLevelAccessor serverLevelAccessor,
+      DifficultyInstance difficulty,
+      MobSpawnType mobSpawnType,
+      SpawnGroupData spawnGroupData,
+      CompoundTag compoundTag) {
+    return SpawnRandomnessHandler.finalizeSpawnWithoutJockeyOrEffect(
+        this,
+        spawnGroupData,
+        groupData ->
+            super.finalizeSpawn(
+                serverLevelAccessor, difficulty, mobSpawnType, groupData, compoundTag));
   }
 }

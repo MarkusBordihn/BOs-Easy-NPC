@@ -43,23 +43,18 @@ public class ReviveCommand extends Command {
         .then(
             Commands.argument(UUID_ARG, StringArgumentType.string())
                 .suggests(DespawnedNPCSuggestions::suggestRevivable)
-                .executes(
-                    context ->
-                        revive(
-                            context.getSource(),
-                            StringArgumentType.getString(context, UUID_ARG),
-                            null))
+                .executes(context ->
+                    revive(
+                        context.getSource(), StringArgumentType.getString(context, UUID_ARG), null))
                 .then(
                     Commands.argument(POSITION_ARG, Vec3Argument.vec3())
-                        .requires(
-                            commandSourceStack ->
-                                commandSourceStack.hasPermission(Commands.LEVEL_GAMEMASTERS))
-                        .executes(
-                            context ->
-                                revive(
-                                    context.getSource(),
-                                    StringArgumentType.getString(context, UUID_ARG),
-                                    Vec3Argument.getVec3(context, POSITION_ARG)))));
+                        .requires(commandSourceStack ->
+                            commandSourceStack.hasPermission(Commands.LEVEL_GAMEMASTERS))
+                        .executes(context ->
+                            revive(
+                                context.getSource(),
+                                StringArgumentType.getString(context, UUID_ARG),
+                                Vec3Argument.getVec3(context, POSITION_ARG)))));
   }
 
   private static int revive(CommandSourceStack context, String uuidString, Vec3 position) {
@@ -69,7 +64,8 @@ public class ReviveCommand extends Command {
     }
 
     if (!SpawnCommand.hasAccessToStoredNPC(context, uuid)) {
-      return sendFailureMessage(context, "You are not allowed to revive the Easy NPC " + uuid + " !");
+      return sendFailureMessage(
+          context, "You are not allowed to revive the Easy NPC " + uuid + " !");
     }
 
     Optional<String> reviveRejection = EasyNPCEntityHandler.getReviveRejection(uuid);

@@ -67,7 +67,7 @@ class ChunkReloadClientTest extends ClientTestBase {
 
       this.reloadNPCChunk();
       this.awaitName(CHANGED_NAME);
-      client.saveScreenshot("reloaded_npc");
+      this.saveRenderedScreenshot("reloaded_npc");
     }
   }
 
@@ -81,7 +81,7 @@ class ChunkReloadClientTest extends ClientTestBase {
       client.teleport(NEARBY_X, VIEW_Y, NPC_Z, 90, 0);
       client.await(Until.ticksElapsed(WAITING_TICKS));
       this.awaitName(CHANGED_NAME);
-      client.saveScreenshot("nearby_npc");
+      this.saveRenderedScreenshot("nearby_npc");
     }
   }
 
@@ -102,7 +102,7 @@ class ChunkReloadClientTest extends ClientTestBase {
 
       this.reloadNPCChunk();
       this.awaitName(CHANGED_AGAIN_NAME);
-      client.saveScreenshot("repeatedly_reloaded_npc");
+      this.saveRenderedScreenshot("repeatedly_reloaded_npc");
     }
   }
 
@@ -130,6 +130,11 @@ class ChunkReloadClientTest extends ClientTestBase {
 
     client.teleport(OUTSIDE_SPAWN_CHUNKS_X + 0.5, VIEW_Y, 0.5, 0, 0);
     client.await(Until.entityPresent(this.npcParameters()));
+  }
+
+  private void saveRenderedScreenshot(String screenshotName) {
+    client.await(Until.chunksRendered());
+    client.saveScreenshot(screenshotName);
   }
 
   private void awaitName(String name) {

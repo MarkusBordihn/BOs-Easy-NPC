@@ -52,14 +52,13 @@ public class AsyncTextureLoader {
             return thread;
           });
   private static final ScheduledExecutorService rateLimitScheduler =
-      Executors.newSingleThreadScheduledExecutor(
-          runnable -> {
-            Thread thread = new Thread(runnable);
-            thread.setName("EasyNPC-Texture-RateLimiter");
-            thread.setPriority(Thread.MIN_PRIORITY);
-            thread.setDaemon(true);
-            return thread;
-          });
+      Executors.newSingleThreadScheduledExecutor(runnable -> {
+        Thread thread = new Thread(runnable);
+        thread.setName("EasyNPC-Texture-RateLimiter");
+        thread.setPriority(Thread.MIN_PRIORITY);
+        thread.setDaemon(true);
+        return thread;
+      });
   private static final Queue<TextureLoadRequest> downloadQueue = new ConcurrentLinkedQueue<>();
   private static final Map<TextureModelKey, CompletableFuture<ResourceLocation>> pendingLoads =
       new ConcurrentHashMap<>();
@@ -104,11 +103,10 @@ public class AsyncTextureLoader {
     CompletableFuture.supplyAsync(
             () -> TextureCacheManager.getCachedNativeImage(key, targetDirectory),
             textureLoadExecutor)
-        .thenCompose(
-            nativeImage ->
-                nativeImage != null
-                    ? TextureRegistrationHelper.registerTextureAsync(key, nativeImage)
-                    : CompletableFuture.completedFuture(null))
+        .thenCompose(nativeImage ->
+            nativeImage != null
+                ? TextureRegistrationHelper.registerTextureAsync(key, nativeImage)
+                : CompletableFuture.completedFuture(null))
         .whenComplete((result, throwable) -> completeLoad(key, future, result, throwable));
     return future;
   }
@@ -127,28 +125,26 @@ public class AsyncTextureLoader {
 
     CompletableFuture.supplyAsync(
             () -> PlayersUtils.getUserTexture(playerUUID), textureLoadExecutor)
-        .thenAccept(
-            url -> {
-              if (url == null || url.isEmpty()) {
-                log.error("{} Unable to get player skin URL for UUID: {}", LOG_PREFIX, playerUUID);
-                pendingLoads.remove(key, future);
-                future.complete(null);
-              } else {
-                log.debug("{} Got player skin URL for {}: {}", LOG_PREFIX, playerUUID, url);
-                downloadQueue.offer(new TextureLoadRequest(key, url, targetDirectory, future));
-              }
-            })
-        .exceptionally(
-            throwable -> {
-              log.error(
-                  "{} Failed to get player texture URL for {}: {}",
-                  LOG_PREFIX,
-                  playerUUID,
-                  throwable.getMessage());
-              pendingLoads.remove(key, future);
-              future.completeExceptionally(throwable);
-              return null;
-            });
+        .thenAccept(url -> {
+          if (url == null || url.isEmpty()) {
+            log.error("{} Unable to get player skin URL for UUID: {}", LOG_PREFIX, playerUUID);
+            pendingLoads.remove(key, future);
+            future.complete(null);
+          } else {
+            log.debug("{} Got player skin URL for {}: {}", LOG_PREFIX, playerUUID, url);
+            downloadQueue.offer(new TextureLoadRequest(key, url, targetDirectory, future));
+          }
+        })
+        .exceptionally(throwable -> {
+          log.error(
+              "{} Failed to get player texture URL for {}: {}",
+              LOG_PREFIX,
+              playerUUID,
+              throwable.getMessage());
+          pendingLoads.remove(key, future);
+          future.completeExceptionally(throwable);
+          return null;
+        });
 
     return future;
   }
@@ -161,35 +157,32 @@ public class AsyncTextureLoader {
       SkinType skinType) {
     CompletableFuture.supplyAsync(
             () -> PlayersUtils.getUserTexture(playerUUID), textureLoadExecutor)
-        .thenAccept(
-            url -> {
-              if (url == null || url.isEmpty() || url.equals(cachedTextureSource)) {
-                return;
-              }
+        .thenAccept(url -> {
+          if (url == null || url.isEmpty() || url.equals(cachedTextureSource)) {
+            return;
+          }
 
-              log.info(
-                  "{} Player {} changed the skin, replacing cached texture {}",
-                  LOG_PREFIX,
-                  playerUUID,
-                  key);
-              TextureCacheManager.removeCachedTexture(key, targetDirectory);
-              loadTextureAsync(key, url, targetDirectory)
-                  .thenAccept(
-                      resourceLocation -> {
-                        if (resourceLocation != null) {
-                          PlayerTextureManager.updateTexture(key, resourceLocation, skinType);
-                        }
-                      });
-            })
-        .exceptionally(
-            throwable -> {
-              log.warn(
-                  "{} Unable to revalidate player texture for {}: {}",
-                  LOG_PREFIX,
-                  playerUUID,
-                  throwable.getMessage());
-              return null;
-            });
+          log.info(
+              "{} Player {} changed the skin, replacing cached texture {}",
+              LOG_PREFIX,
+              playerUUID,
+              key);
+          TextureCacheManager.removeCachedTexture(key, targetDirectory);
+          loadTextureAsync(key, url, targetDirectory)
+              .thenAccept(resourceLocation -> {
+                if (resourceLocation != null) {
+                  PlayerTextureManager.updateTexture(key, resourceLocation, skinType);
+                }
+              });
+        })
+        .exceptionally(throwable -> {
+          log.warn(
+              "{} Unable to revalidate player texture for {}: {}",
+              LOG_PREFIX,
+              playerUUID,
+              throwable.getMessage());
+          return null;
+        });
   }
 
   private static void processQueue() {

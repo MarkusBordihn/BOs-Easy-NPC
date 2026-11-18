@@ -62,37 +62,31 @@ public final class AnimationCommand extends Command {
             Commands.literal("restart")
                 .then(
                     Commands.argument(NPC_TARGET_ARG, EasyNPCArgument.npc())
-                        .executes(
-                            context ->
-                                restart(
-                                    context.getSource(),
-                                    EasyNPCArgument.getEntityWithAccess(
-                                        context, NPC_TARGET_ARG)))));
+                        .executes(context ->
+                            restart(
+                                context.getSource(),
+                                EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG)))));
   }
 
   private static ArgumentBuilder<CommandSourceStack, ?> playArguments() {
     return Commands.argument(NPC_TARGET_ARG, EasyNPCArgument.npc())
         .then(
             Commands.argument(ANIMATION_ARG, StringArgumentType.string())
-                .suggests(
-                    (context, builder) ->
-                        SharedSuggestionProvider.suggest(
-                            ModelAnimationAPI.standardAnimations().stream()
-                                .sorted(Comparator.naturalOrder()),
-                            builder))
+                .suggests((context, builder) ->
+                    SharedSuggestionProvider.suggest(
+                        ModelAnimationAPI.standardAnimations().stream()
+                            .sorted(Comparator.naturalOrder()),
+                        builder))
                 .executes(AnimationCommand::play)
                 .then(
                     Commands.argument(MODE_ARG, StringArgumentType.word())
-                        .suggests(
-                            (context, builder) ->
-                                SharedSuggestionProvider.suggest(MODE_SUGGESTIONS, builder))
+                        .suggests((context, builder) ->
+                            SharedSuggestionProvider.suggest(MODE_SUGGESTIONS, builder))
                         .executes(AnimationCommand::play)
                         .then(
                             Commands.argument(TIMING_ARG, StringArgumentType.word())
-                                .suggests(
-                                    (context, builder) ->
-                                        SharedSuggestionProvider.suggest(
-                                            TIMING_SUGGESTIONS, builder))
+                                .suggests((context, builder) ->
+                                    SharedSuggestionProvider.suggest(TIMING_SUGGESTIONS, builder))
                                 .executes(AnimationCommand::play)
                                 .then(
                                     Commands.argument(
@@ -122,37 +116,33 @@ public final class AnimationCommand extends Command {
 
   private static ArgumentBuilder<CommandSourceStack, ?> stopArguments() {
     return Commands.argument(NPC_TARGET_ARG, EasyNPCArgument.npc())
-        .executes(
-            context ->
-                stop(
-                    context.getSource(),
-                    EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG),
-                    ModelAnimationTransition.DEFAULT))
+        .executes(context ->
+            stop(
+                context.getSource(),
+                EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG),
+                ModelAnimationTransition.DEFAULT))
         .then(
             Commands.argument(TIMING_ARG, StringArgumentType.word())
-                .suggests(
-                    (context, builder) ->
-                        SharedSuggestionProvider.suggest(TIMING_SUGGESTIONS, builder))
-                .executes(
-                    context ->
-                        stop(
+                .suggests((context, builder) ->
+                    SharedSuggestionProvider.suggest(TIMING_SUGGESTIONS, builder))
+                .executes(context ->
+                    stop(
+                        context.getSource(),
+                        EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG),
+                        transition(
                             context.getSource(),
-                            EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG),
-                            transition(
-                                context.getSource(),
-                                StringArgumentType.getString(context, TIMING_ARG),
-                                ModelAnimationTransition.DEFAULT_BLEND_DURATION_TICKS)))
+                            StringArgumentType.getString(context, TIMING_ARG),
+                            ModelAnimationTransition.DEFAULT_BLEND_DURATION_TICKS)))
                 .then(
                     Commands.argument(BLEND_TICKS_ARG, FloatArgumentType.floatArg(0.0F))
-                        .executes(
-                            context ->
-                                stop(
+                        .executes(context ->
+                            stop(
+                                context.getSource(),
+                                EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG),
+                                transition(
                                     context.getSource(),
-                                    EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG),
-                                    transition(
-                                        context.getSource(),
-                                        StringArgumentType.getString(context, TIMING_ARG),
-                                        FloatArgumentType.getFloat(context, BLEND_TICKS_ARG))))));
+                                    StringArgumentType.getString(context, TIMING_ARG),
+                                    FloatArgumentType.getFloat(context, BLEND_TICKS_ARG))))));
   }
 
   private static ModelAnimationPlaybackMode playbackMode(CommandSourceStack context, String value) {

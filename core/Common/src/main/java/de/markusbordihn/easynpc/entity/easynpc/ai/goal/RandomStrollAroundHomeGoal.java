@@ -81,8 +81,7 @@ public class RandomStrollAroundHomeGoal<T extends EasyNPC<?>> extends Goal {
   @Override
   public boolean canContinueToUse() {
     if (this.pathfinderMob != null) {
-      return !this.pathfinderMob.getNavigation().isDone()
-          && !this.pathfinderMob.isVehicle();
+      return !this.pathfinderMob.getNavigation().isDone() && !this.pathfinderMob.isVehicle();
     }
 
     return false;

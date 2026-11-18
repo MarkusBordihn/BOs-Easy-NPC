@@ -46,6 +46,25 @@ class InteractionClientTest extends ClientTestBase {
   private static final long BOW_DRAW_TICKS = 25;
   private static final int ARROW_CLEAR_RADIUS = 128;
 
+  private static void summonNpc(String npcData) {
+    UUID npcUUID =
+        client.spawnEntity(
+            EntitySpawn.of(NPC_TYPE, 0.5, VIEW_Y, 2.5)
+                .withNbt("{CustomName:'\"Tester\"'," + npcData + "}"));
+    client.await(
+        Until.entityPresent(Parameters.of("type", NPC_TYPE).with("uuid", npcUUID.toString())));
+  }
+
+  private static void holdInHotbar(String item) {
+    client.setItemInSlot(BOW_SLOT, item);
+    client.control().hotbarSelect(Parameters.of().with("slot", BOW_SLOT));
+    client.await(Until.hotbarSlot(BOW_SLOT));
+  }
+
+  private static void rightMouseButton(String action) {
+    client.input().mouseButton(Parameters.of("button", "right").with("action", action));
+  }
+
   @BeforeEach
   void faceTheNpcPosition() {
     awaitWorldSetupCapability();
@@ -87,24 +106,5 @@ class InteractionClientTest extends ClientTestBase {
   void restorePlayer() {
     client.clearEntities("minecraft:arrow", ARROW_CLEAR_RADIUS);
     client.clearInventory();
-  }
-
-  private static void summonNpc(String npcData) {
-    UUID npcUUID =
-        client.spawnEntity(
-            EntitySpawn.of(NPC_TYPE, 0.5, VIEW_Y, 2.5)
-                .withNbt("{CustomName:'\"Tester\"'," + npcData + "}"));
-    client.await(
-        Until.entityPresent(Parameters.of("type", NPC_TYPE).with("uuid", npcUUID.toString())));
-  }
-
-  private static void holdInHotbar(String item) {
-    client.setItemInSlot(BOW_SLOT, item);
-    client.control().hotbarSelect(Parameters.of().with("slot", BOW_SLOT));
-    client.await(Until.hotbarSlot(BOW_SLOT));
-  }
-
-  private static void rightMouseButton(String action) {
-    client.input().mouseButton(Parameters.of("button", "right").with("action", action));
   }
 }

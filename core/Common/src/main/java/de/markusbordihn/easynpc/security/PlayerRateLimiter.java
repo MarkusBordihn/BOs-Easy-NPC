@@ -32,6 +32,18 @@ final class PlayerRateLimiter {
   private final Map<UUID, Deque<Long>> actionLog = new ConcurrentHashMap<>();
   private final AtomicLong lastSweep = new AtomicLong();
 
+  private static Deque<Long> pruneExpired(Deque<Long> actionTimestamps, long now) {
+    if (actionTimestamps == null) {
+      return new ArrayDeque<>();
+    }
+
+    while (!actionTimestamps.isEmpty() && now - actionTimestamps.peekFirst() > WINDOW_MS) {
+      actionTimestamps.pollFirst();
+    }
+
+    return actionTimestamps;
+  }
+
   int checkAndRecord(UUID uuid, int limit, int count) {
     if (count <= 0) {
       return 0;
@@ -72,18 +84,6 @@ final class PlayerRateLimiter {
 
   void clearPlayer(UUID playerUuid) {
     this.actionLog.remove(playerUuid);
-  }
-
-  private static Deque<Long> pruneExpired(Deque<Long> actionTimestamps, long now) {
-    if (actionTimestamps == null) {
-      return new ArrayDeque<>();
-    }
-
-    while (!actionTimestamps.isEmpty() && now - actionTimestamps.peekFirst() > WINDOW_MS) {
-      actionTimestamps.pollFirst();
-    }
-
-    return actionTimestamps;
   }
 
   private void sweepExpired(long now) {

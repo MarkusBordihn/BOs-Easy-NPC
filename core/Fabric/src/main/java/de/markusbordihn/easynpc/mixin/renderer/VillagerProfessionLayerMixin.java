@@ -75,7 +75,8 @@ public class VillagerProfessionLayerMixin {
           @At(
               value = "INVOKE",
               target = "Lnet/minecraft/client/model/VillagerHeadModel;hatVisible(Z)V",
-              shift = At.Shift.AFTER))
+              shift = At.Shift.AFTER),
+      require = 2)
   private void keepHiddenModelPartsHidden(
       PoseStack poseStack,
       MultiBufferSource multiBufferSource,

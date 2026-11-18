@@ -100,8 +100,7 @@ public class PresetCompactor {
     entityData
         .getList(ATTRIBUTES_TAG, Tag.TAG_COMPOUND)
         .removeIf(
-            attributeTag ->
-                isEntityTypeDefault(entityTypeDefaults, (CompoundTag) attributeTag));
+            attributeTag -> isEntityTypeDefault(entityTypeDefaults, (CompoundTag) attributeTag));
   }
 
   private static void removeEqualTags(

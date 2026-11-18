@@ -49,6 +49,27 @@ class ShoulderClientTest extends ClientTestBase {
 
   private final List<UUID> spawnedNPCs = new ArrayList<>();
 
+  private static UUID spawnUntrackedNPC() {
+    UUID npcUUID = client.spawnEntity(EntitySpawn.of(NPC_TYPE, 0.5, VIEW_Y, 2.5));
+    client.await(Until.entityPresent(npcParameters(npcUUID)));
+    return npcUUID;
+  }
+
+  private static Parameters npcParameters(UUID npcUUID) {
+    return Parameters.of("type", NPC_TYPE).with("uuid", npcUUID.toString());
+  }
+
+  private static void captureFromFront(String screenshotName) {
+    client.pressBinding(PERSPECTIVE_BINDING);
+    client.pressBinding(PERSPECTIVE_BINDING);
+    try {
+      client.await(Until.ticksElapsed(RENDER_TICKS));
+      client.saveScreenshot(screenshotName);
+    } finally {
+      client.pressBinding(PERSPECTIVE_BINDING);
+    }
+  }
+
   @BeforeEach
   void standOnPlatform() {
     awaitWorldSetupCapability();
@@ -126,26 +147,5 @@ class ShoulderClientTest extends ClientTestBase {
     this.spawnedNPCs.add(npcUUID);
     client.await(Until.entityPresent(npcParameters(npcUUID)));
     return npcUUID;
-  }
-
-  private static UUID spawnUntrackedNPC() {
-    UUID npcUUID = client.spawnEntity(EntitySpawn.of(NPC_TYPE, 0.5, VIEW_Y, 2.5));
-    client.await(Until.entityPresent(npcParameters(npcUUID)));
-    return npcUUID;
-  }
-
-  private static Parameters npcParameters(UUID npcUUID) {
-    return Parameters.of("type", NPC_TYPE).with("uuid", npcUUID.toString());
-  }
-
-  private static void captureFromFront(String screenshotName) {
-    client.pressBinding(PERSPECTIVE_BINDING);
-    client.pressBinding(PERSPECTIVE_BINDING);
-    try {
-      client.await(Until.ticksElapsed(RENDER_TICKS));
-      client.saveScreenshot(screenshotName);
-    } finally {
-      client.pressBinding(PERSPECTIVE_BINDING);
-    }
   }
 }

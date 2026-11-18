@@ -309,6 +309,10 @@ public class LivingEntityManager {
     return npcEntityMapServer.values().stream();
   }
 
+  public static boolean hasServerEasyNPCEntities() {
+    return !npcEntityMapServer.isEmpty();
+  }
+
   public static Stream<EasyNPC<?>> getClientEasyNPCEntities() {
     return npcEntityMapClient.values().stream();
   }

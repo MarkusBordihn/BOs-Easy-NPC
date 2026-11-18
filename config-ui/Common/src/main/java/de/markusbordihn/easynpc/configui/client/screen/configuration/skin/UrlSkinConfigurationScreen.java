@@ -194,13 +194,10 @@ public class UrlSkinConfigurationScreen<T extends ConfigurationMenu>
 
     // Validate the remote image off-thread so the render thread never blocks on network I/O.
     CompletableFuture.supplyAsync(() -> RemoteImageValidator.isValidImage(textureSkinLocation))
-        .whenComplete(
-            (valid, throwable) ->
-                Minecraft.getInstance()
-                    .execute(
-                        () ->
-                            this.onRemoteImageValidated(
-                                textureSkinLocationValue, valid, throwable)));
+        .whenComplete((valid, throwable) ->
+            Minecraft.getInstance()
+                .execute(
+                    () -> this.onRemoteImageValidated(textureSkinLocationValue, valid, throwable)));
   }
 
   private void onRemoteImageValidated(

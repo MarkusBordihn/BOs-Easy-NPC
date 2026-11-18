@@ -55,58 +55,51 @@ public class ListCommand extends Command {
         .executes(context -> listAllNPCs(context.getSource()))
         .then(
             Commands.literal("owner")
-                .executes(
-                    context ->
-                        listNPCsByOwner(
-                            context.getSource(), context.getSource().getPlayerOrException()))
+                .executes(context ->
+                    listNPCsByOwner(
+                        context.getSource(), context.getSource().getPlayerOrException()))
                 .then(
                     Commands.argument(OWNER_ARG, EntityArgument.player())
-                        .executes(
-                            context ->
-                                listNPCsByOwner(
-                                    context.getSource(),
-                                    EntityArgument.getPlayer(context, OWNER_ARG)))))
+                        .executes(context ->
+                            listNPCsByOwner(
+                                context.getSource(),
+                                EntityArgument.getPlayer(context, OWNER_ARG)))))
         .then(
             Commands.literal("type")
                 .then(
                     Commands.argument(ENTITY_TYPE_ARG, ResourceLocationArgument.id())
                         .suggests(NPCEntityTypeSuggestions::suggest)
-                        .executes(
-                            context ->
-                                listNPCsByType(
-                                    context.getSource(),
-                                    ResourceLocationArgument.getId(context, ENTITY_TYPE_ARG)))))
+                        .executes(context ->
+                            listNPCsByType(
+                                context.getSource(),
+                                ResourceLocationArgument.getId(context, ENTITY_TYPE_ARG)))))
         .then(
             Commands.literal("dimension")
                 .then(
                     Commands.argument(DIMENSION_ARG, ResourceLocationArgument.id())
                         .suggests(DimensionSuggestions::suggest)
-                        .executes(
-                            context ->
-                                listNPCsByDimension(
-                                    context.getSource(),
-                                    ResourceLocationArgument.getId(context, DIMENSION_ARG)))))
+                        .executes(context ->
+                            listNPCsByDimension(
+                                context.getSource(),
+                                ResourceLocationArgument.getId(context, DIMENSION_ARG)))))
         .then(
             Commands.literal("identifier")
                 .then(
                     Commands.argument(CUSTOM_IDENTIFIER_ARG, ResourceLocationArgument.id())
                         .suggests(CustomIdentifierSuggestions::suggest)
-                        .executes(
-                            context ->
-                                listNPCsByCustomIdentifier(
-                                    context.getSource(),
-                                    ResourceLocationArgument.getId(
-                                        context, CUSTOM_IDENTIFIER_ARG)))))
+                        .executes(context ->
+                            listNPCsByCustomIdentifier(
+                                context.getSource(),
+                                ResourceLocationArgument.getId(context, CUSTOM_IDENTIFIER_ARG)))))
         .then(
             Commands.literal("namespace")
                 .then(
                     Commands.argument(NAMESPACE_ARG, StringArgumentType.word())
                         .suggests(CustomIdentifierNamespaceSuggestions::suggest)
-                        .executes(
-                            context ->
-                                listNPCsByNamespace(
-                                    context.getSource(),
-                                    StringArgumentType.getString(context, NAMESPACE_ARG)))));
+                        .executes(context ->
+                            listNPCsByNamespace(
+                                context.getSource(),
+                                StringArgumentType.getString(context, NAMESPACE_ARG)))));
   }
 
   private static int listAllNPCs(CommandSourceStack context) {
@@ -137,9 +130,8 @@ public class ListCommand extends Command {
 
     sendSuccessMessage(
         context, ownerName + " NPCs: " + metadataByUUID.size(), ChatFormatting.GREEN);
-    metadataByUUID.forEach(
-        (entityUUID, entityMetadata) ->
-            sendEntryInfo(context, entityUUID, entityMetadata, false, true, true));
+    metadataByUUID.forEach((entityUUID, entityMetadata) ->
+        sendEntryInfo(context, entityUUID, entityMetadata, false, true, true));
     return Command.SINGLE_SUCCESS;
   }
 
@@ -148,12 +140,9 @@ public class ListCommand extends Command {
         NPCEntityData.get().getMetadataByType(entityType.toString());
 
     sendSuccessMessage(
-        context,
-        "NPCs of type " + entityType + ": " + metadataByUUID.size(),
-        ChatFormatting.GREEN);
-    metadataByUUID.forEach(
-        (entityUUID, entityMetadata) ->
-            sendEntryInfo(context, entityUUID, entityMetadata, true, false, true));
+        context, "NPCs of type " + entityType + ": " + metadataByUUID.size(), ChatFormatting.GREEN);
+    metadataByUUID.forEach((entityUUID, entityMetadata) ->
+        sendEntryInfo(context, entityUUID, entityMetadata, true, false, true));
     return Command.SINGLE_SUCCESS;
   }
 
@@ -165,9 +154,8 @@ public class ListCommand extends Command {
         context,
         "NPCs in dimension " + dimension + ": " + metadataByUUID.size(),
         ChatFormatting.GREEN);
-    metadataByUUID.forEach(
-        (entityUUID, entityMetadata) ->
-            sendEntryInfo(context, entityUUID, entityMetadata, true, true, false));
+    metadataByUUID.forEach((entityUUID, entityMetadata) ->
+        sendEntryInfo(context, entityUUID, entityMetadata, true, true, false));
     return Command.SINGLE_SUCCESS;
   }
 
@@ -180,9 +168,8 @@ public class ListCommand extends Command {
         context,
         "NPCs with custom identifier " + customIdentifier + ": " + metadataByUUID.size(),
         ChatFormatting.GREEN);
-    metadataByUUID.forEach(
-        (entityUUID, entityMetadata) ->
-            sendEntryInfo(context, entityUUID, entityMetadata, true, true, true));
+    metadataByUUID.forEach((entityUUID, entityMetadata) ->
+        sendEntryInfo(context, entityUUID, entityMetadata, true, true, true));
     return Command.SINGLE_SUCCESS;
   }
 
@@ -195,22 +182,21 @@ public class ListCommand extends Command {
         "NPCs with custom identifier namespace '" + namespace + "': " + metadataByUUID.size(),
         ChatFormatting.GREEN);
 
-    metadataByUUID.forEach(
-        (entityUUID, entityMetadata) -> {
-          StringBuilder info = new StringBuilder("- " + entityUUID);
-          if (entityMetadata.hasOwner()) {
-            info.append(" Owner: ").append(entityMetadata.ownerUUID());
-          } else {
-            info.append(" (No owner)");
-          }
-          if (entityMetadata.hasEntityType()) {
-            info.append(" Type: ").append(entityMetadata.entityType());
-          }
-          if (entityMetadata.hasCustomIdentifier()) {
-            info.append(" ID: ").append(entityMetadata.customIdentifier());
-          }
-          sendSuccessMessage(context, info.toString(), ChatFormatting.WHITE);
-        });
+    metadataByUUID.forEach((entityUUID, entityMetadata) -> {
+      StringBuilder info = new StringBuilder("- " + entityUUID);
+      if (entityMetadata.hasOwner()) {
+        info.append(" Owner: ").append(entityMetadata.ownerUUID());
+      } else {
+        info.append(" (No owner)");
+      }
+      if (entityMetadata.hasEntityType()) {
+        info.append(" Type: ").append(entityMetadata.entityType());
+      }
+      if (entityMetadata.hasCustomIdentifier()) {
+        info.append(" ID: ").append(entityMetadata.customIdentifier());
+      }
+      sendSuccessMessage(context, info.toString(), ChatFormatting.WHITE);
+    });
     return Command.SINGLE_SUCCESS;
   }
 

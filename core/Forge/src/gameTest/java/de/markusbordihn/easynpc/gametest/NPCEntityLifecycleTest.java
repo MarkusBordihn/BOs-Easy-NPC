@@ -64,6 +64,12 @@ public class NPCEntityLifecycleTest {
   }
 
   @GameTest(template = "gametest.3x3x3")
+  public void testMalformedUUIDTagsKeepNPCLoadable(GameTestHelper helper) {
+    NPCEntityLifecycleTestHelper.assertMalformedUUIDTagsKeepNPCLoadable(helper, humanoid());
+    helper.succeed();
+  }
+
+  @GameTest(template = "gametest.3x3x3")
   public void testRemovalReasonIsResetOnRespawn(GameTestHelper helper) {
     NPCEntityLifecycleTestHelper.assertRemovalReasonIsResetOnRespawn(helper, humanoid());
     helper.succeed();

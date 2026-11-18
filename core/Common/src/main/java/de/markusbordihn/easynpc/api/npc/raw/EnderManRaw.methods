@@ -1,0 +1,9 @@
+  @Override
+  public boolean isSensitiveToWater() {
+    return false;
+  }
+
+  @Override
+  protected boolean teleport() {
+    return false;
+  }

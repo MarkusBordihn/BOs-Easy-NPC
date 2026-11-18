@@ -39,11 +39,10 @@ public class DeleteCommand extends Command {
         .requires(commandSourceStack -> commandSourceStack.hasPermission(Commands.LEVEL_ALL))
         .then(
             Commands.argument(NPC_TARGETS_ARG, EasyNPCArgument.npc())
-                .executes(
-                    context ->
-                        delete(
-                            context.getSource(),
-                            EasyNPCArgument.getEntitiesWithAccess(context, NPC_TARGETS_ARG))));
+                .executes(context ->
+                    delete(
+                        context.getSource(),
+                        EasyNPCArgument.getEntitiesWithAccess(context, NPC_TARGETS_ARG))));
   }
 
   private static int delete(CommandSourceStack context, Collection<? extends EasyNPC<?>> easyNPCs) {

@@ -36,7 +36,8 @@ public class ObjectiveCommandTest {
 
   @GameTest(template = "gametest.3x3x3")
   public void testShoulderObjectiveCommandRequiresEnabledShoulder(GameTestHelper helper) {
-    ObjectiveCommandTestHelper.assertShoulderObjectiveCommandRequiresEnabledShoulder(helper, allay());
+    ObjectiveCommandTestHelper.assertShoulderObjectiveCommandRequiresEnabledShoulder(
+        helper, allay());
     helper.succeed();
   }
 

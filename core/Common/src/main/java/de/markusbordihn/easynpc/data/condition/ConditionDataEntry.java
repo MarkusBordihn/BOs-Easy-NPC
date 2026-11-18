@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.data.condition;
 
+import de.markusbordihn.easynpc.utils.CompoundTagUtils;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
@@ -61,9 +62,7 @@ public record ConditionDataEntry(
         compoundTag.contains(DATA_CUSTOM_CONDITION_ID_TAG)
             ? ResourceLocation.tryParse(compoundTag.getString(DATA_CUSTOM_CONDITION_ID_TAG))
             : null,
-        compoundTag.contains(DATA_TARGET_UUID_TAG)
-            ? compoundTag.getUUID(DATA_TARGET_UUID_TAG)
-            : null);
+        CompoundTagUtils.readUUID(compoundTag, DATA_TARGET_UUID_TAG, null));
   }
 
   public ConditionDataEntry(ConditionType conditionType) {

@@ -37,20 +37,16 @@ public record VisibilityConditionSet(List<ConditionDataEntry> conditions) {
   public static final VisibilityConditionSet EMPTY = new VisibilityConditionSet(List.of());
   public static final Set<ConditionType> UNSUPPORTED_CONDITION_TYPES =
       EnumSet.of(ConditionType.CHANCE, ConditionType.EXECUTION_LIMIT, ConditionType.FALLBACK);
-
-  private static final String CONDITIONS_TAG = "Conditions";
-
   public static final Codec<VisibilityConditionSet> CODEC =
-      RecordCodecBuilder.create(
-          instance ->
-              instance
-                  .group(
-                      CompoundTag.CODEC
-                          .xmap(ConditionDataEntry::new, ConditionDataEntry::createTag)
-                          .listOf()
-                          .optionalFieldOf(CONDITIONS_TAG, List.of())
-                          .forGetter(VisibilityConditionSet::conditions))
-                  .apply(instance, VisibilityConditionSet::new));
+      RecordCodecBuilder.create(instance ->
+          instance
+              .group(
+                  CompoundTag.CODEC
+                      .xmap(ConditionDataEntry::new, ConditionDataEntry::createTag)
+                      .listOf()
+                      .optionalFieldOf("Conditions", List.of())
+                      .forGetter(VisibilityConditionSet::conditions))
+              .apply(instance, VisibilityConditionSet::new));
 
   public VisibilityConditionSet {
     conditions =

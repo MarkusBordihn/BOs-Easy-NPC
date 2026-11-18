@@ -29,6 +29,7 @@ import de.markusbordihn.easynpc.handler.PlacementHandler;
 import de.markusbordihn.easynpc.level.BaseEasyNPCSpawner;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import de.markusbordihn.easynpc.security.SecurityManager;
+import de.markusbordihn.easynpc.utils.CompoundTagUtils;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -69,12 +70,7 @@ public class EasyNPCPresetItem extends Item {
   }
 
   public static UUID getPresetUUID(ItemStack itemStack) {
-    CompoundTag compoundTag = getPreset(itemStack);
-    if (compoundTag.contains(PresetDataCapable.PRESET_UUID_TAG)) {
-      return compoundTag.getUUID(PresetDataCapable.PRESET_UUID_TAG);
-    }
-
-    return null;
+    return CompoundTagUtils.readUUID(getPreset(itemStack), PresetDataCapable.PRESET_UUID_TAG, null);
   }
 
   public static boolean hasPreset(ItemStack itemStack) {

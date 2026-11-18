@@ -224,9 +224,7 @@ public class BackupTestHelper {
 
     BackupDataFiles.removeBackupFoldersBefore(today);
     GameTestHelpers.assertTrue(
-        helper,
-        "Removing the previous day must remove its backup",
-        !previousBackupFile.exists());
+        helper, "Removing the previous day must remove its backup", !previousBackupFile.exists());
     CompoundTag backupTag = PresetFileHandler.load(backupFile);
     GameTestHelpers.assertEquals(
         helper,
@@ -258,9 +256,7 @@ public class BackupTestHelper {
     drainBackupRun(helper);
 
     GameTestHelpers.assertTrue(
-        helper,
-        "A changed NPC must be exported again",
-        BackupManager.getExportedBackupCount() > 0);
+        helper, "A changed NPC must be exported again", BackupManager.getExportedBackupCount() > 0);
     GameTestHelpers.assertTrue(
         helper,
         "The backup run must store the change of the NPC",
@@ -344,7 +340,8 @@ public class BackupTestHelper {
 
     BackupManager.startBackupRun();
     drainBackupRun(helper);
-    CompoundTag expectedExport = withoutVolatilePresetData(PresetHandler.prepareExportData(easyNPC));
+    CompoundTag expectedExport =
+        withoutVolatilePresetData(PresetHandler.prepareExportData(easyNPC));
     CompoundTag backupTag = PresetFileHandler.load(getBackupFile(entityUUID));
     GameTestHelpers.assertNotNull(helper, "The backup of the NPC is missing", backupTag);
 

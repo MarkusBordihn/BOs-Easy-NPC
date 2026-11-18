@@ -118,16 +118,15 @@ public final class MassPosePersistenceTestHelper {
     helper
         .startSequence()
         .thenWaitUntil(() -> assertAllStoredAsKilled(helper, killedNPCs))
-        .thenExecute(
-            () -> {
-              revivedNPCs.addAll(reviveAndAssertPoses(helper, initialPoses, "first revive"));
-              for (EasyNPC<?> revivedNPC : revivedNPCs) {
-                ExpectedPose changedPose = changedPoses.get(revivedNPC.getEntityUUID());
-                applyPose(revivedNPC, changedPose, poseEditor);
-                assertPose(helper, revivedNPC, changedPose, "after changing the pose");
-              }
-              killAll(revivedNPCs);
-            })
+        .thenExecute(() -> {
+          revivedNPCs.addAll(reviveAndAssertPoses(helper, initialPoses, "first revive"));
+          for (EasyNPC<?> revivedNPC : revivedNPCs) {
+            ExpectedPose changedPose = changedPoses.get(revivedNPC.getEntityUUID());
+            applyPose(revivedNPC, changedPose, poseEditor);
+            assertPose(helper, revivedNPC, changedPose, "after changing the pose");
+          }
+          killAll(revivedNPCs);
+        })
         .thenWaitUntil(() -> assertAllStoredAsKilled(helper, revivedNPCs))
         .thenExecute(() -> reviveAndAssertPoses(helper, changedPoses, "revive after pose change"))
         .thenSucceed();
@@ -156,14 +155,13 @@ public final class MassPosePersistenceTestHelper {
             leftArmInDegrees.z() + leftArmRollOffsetDegrees));
 
     Map<ModelPartType, CustomRotation> rotations = new EnumMap<>(ModelPartType.class);
-    rotationsInDegrees.forEach(
-        (modelPartType, rotationInDegrees) ->
-            rotations.put(
-                modelPartType,
-                new CustomRotation(
-                    toWrappedRadians(rotationInDegrees.x()),
-                    toWrappedRadians(rotationInDegrees.y()),
-                    toWrappedRadians(rotationInDegrees.z()))));
+    rotationsInDegrees.forEach((modelPartType, rotationInDegrees) ->
+        rotations.put(
+            modelPartType,
+            new CustomRotation(
+                toWrappedRadians(rotationInDegrees.x()),
+                toWrappedRadians(rotationInDegrees.y()),
+                toWrappedRadians(rotationInDegrees.z()))));
 
     Map<ModelPartType, CustomPosition> positions = new EnumMap<>(ModelPartType.class);
     if (poseIndex % 4 == 0) {

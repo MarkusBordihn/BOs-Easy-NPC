@@ -208,14 +208,13 @@ public class RemoteTextureManager {
 
     if (TextureManager.hasCachedTexture(textureModelKey, textureDataFolder)) {
       AsyncTextureLoader.loadCachedTextureAsync(textureModelKey, textureDataFolder)
-          .thenAccept(
-              resourceLocation -> {
-                if (resourceLocation != null) {
-                  textureCache.put(textureModelKey, resourceLocation);
-                  textureSkinTypeCache.put(textureModelKey, skinData.getSkinType());
-                  textureSkinURLCache.put(textureModelKey, skinURL);
-                }
-              });
+          .thenAccept(resourceLocation -> {
+            if (resourceLocation != null) {
+              textureCache.put(textureModelKey, resourceLocation);
+              textureSkinTypeCache.put(textureModelKey, skinData.getSkinType());
+              textureSkinURLCache.put(textureModelKey, skinURL);
+            }
+          });
       return null;
     }
 
@@ -224,15 +223,14 @@ public class RemoteTextureManager {
     }
 
     AsyncTextureLoader.loadTextureAsync(textureModelKey, skinURL, textureDataFolder)
-        .thenAccept(
-            resourceLocation -> {
-              if (resourceLocation != null) {
-                textureCache.put(textureModelKey, resourceLocation);
-                textureSkinTypeCache.put(textureModelKey, skinData.getSkinType());
-                textureSkinURLCache.put(textureModelKey, skinURL);
-                retryAttempts.remove(textureModelKey);
-              }
-            });
+        .thenAccept(resourceLocation -> {
+          if (resourceLocation != null) {
+            textureCache.put(textureModelKey, resourceLocation);
+            textureSkinTypeCache.put(textureModelKey, skinData.getSkinType());
+            textureSkinURLCache.put(textureModelKey, skinURL);
+            retryAttempts.remove(textureModelKey);
+          }
+        });
 
     return null;
   }

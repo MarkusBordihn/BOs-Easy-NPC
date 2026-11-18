@@ -46,7 +46,7 @@ public class EasyNPCShoulderHandler {
   private static final String ENTITY_UUID_TAG = "UUID";
   private static final double RESPAWN_HEIGHT_OFFSET = 0.7D;
 
-  // Vanilla calls Player.removeEntitiesOnShoulder every tick while the player is in water or flying.
+  // Vanilla calls Player.removeEntitiesOnShoulder every tick in water or while flying.
   private static final long DISMOUNT_FAILURE_LOG_INTERVAL_TICKS = 100L;
 
   private static long lastDismountFailureLogGameTime = -DISMOUNT_FAILURE_LOG_INTERVAL_TICKS;
@@ -159,6 +159,36 @@ public class EasyNPCShoulderHandler {
 
     shoulderAccess.clearShoulderEntity(shoulderSide);
     return entityTag;
+  }
+
+  public static Optional<CompoundTag> takeShoulderNPCDataForRelease(
+      Player player, ShoulderSide shoulderSide, Optional<CompoundTag> unreleasedShoulderNPCData) {
+    // A mod cancelling removeEntitiesOnShoulder after its HEAD hook skips the RETURN hook.
+    Optional<CompoundTag> stillUnreleasedShoulderNPCData =
+        restoreShoulderNPCData(player, shoulderSide, unreleasedShoulderNPCData);
+    if (stillUnreleasedShoulderNPCData.isPresent()) {
+      return stillUnreleasedShoulderNPCData;
+    }
+
+    return dismountOrTakeShoulderNPCData(player, shoulderSide);
+  }
+
+  public static Optional<CompoundTag> restoreShoulderNPCData(
+      Player player, ShoulderSide shoulderSide, Optional<CompoundTag> keptShoulderNPCData) {
+    if (keptShoulderNPCData.isEmpty()
+        || !(player instanceof ShoulderAccessHelper shoulderAccess)
+        || !isShoulderFree(player, shoulderSide)) {
+      return keptShoulderNPCData;
+    }
+
+    shoulderAccess.setShoulderEntity(shoulderSide, keptShoulderNPCData.get());
+    return Optional.empty();
+  }
+
+  private static boolean isShoulderFree(Player player, ShoulderSide shoulderSide) {
+    return shoulderSide == ShoulderSide.LEFT
+        ? player.getShoulderEntityLeft().isEmpty()
+        : player.getShoulderEntityRight().isEmpty();
   }
 
   public static long getRemountAllowedGameTime(EasyNPC<?> easyNPC) {

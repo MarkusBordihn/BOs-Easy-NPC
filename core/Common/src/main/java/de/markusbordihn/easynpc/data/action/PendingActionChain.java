@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.data.action;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.utils.CompoundTagUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -84,7 +85,7 @@ public record PendingActionChain(
         ActionEventType.get(compoundTag.getString(DATA_EVENT_TYPE_TAG)),
         readSourceId(compoundTag),
         compoundTag.getInt(DATA_REMAINING_TICKS_TAG),
-        compoundTag.contains(DATA_INITIATOR_TAG) ? compoundTag.getUUID(DATA_INITIATOR_TAG) : null,
+        CompoundTagUtils.readUUID(compoundTag, DATA_INITIATOR_TAG, null),
         readActions(compoundTag, DATA_REMAINING_ACTIONS_TAG),
         readActions(compoundTag, DATA_FALLBACK_ACTIONS_TAG),
         ActionExecutionState.fromTag(compoundTag.getCompound(DATA_EXECUTION_STATE_TAG)));

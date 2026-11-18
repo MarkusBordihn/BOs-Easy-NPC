@@ -93,17 +93,13 @@ class ArmourersWorkshopClientTest extends ClientTestBase {
   @DisplayName("Skin from the skin library renders on an Easy NPC")
   void librarySkinRendersOnNpc() {
     Path testSkinFile =
-        client
-            .requireGameDirectory()
-            .resolve(SKIN_LIBRARY_DIRECTORY)
-            .resolve(TEST_SKIN_FILE_NAME);
+        client.requireGameDirectory().resolve(SKIN_LIBRARY_DIRECTORY).resolve(TEST_SKIN_FILE_NAME);
     try (FileOverride testSkin = client.overrideFile(testSkinFile, readTestSkin())) {
       UUID testNpc = spawnNpcInView();
       String npcWithoutSkinFrame = client.retainFrame();
 
       client.runCommand("armourers setSkin " + testNpc + " head 1 /" + TEST_SKIN_FILE_NAME);
-      CaptureComparison comparison =
-          client.compare(npcWithoutSkinFrame, SKIN_COMPARE).comparison();
+      CaptureComparison comparison = client.compare(npcWithoutSkinFrame, SKIN_COMPARE).comparison();
       client.saveScreenshot("test_hat");
 
       assertTrue(

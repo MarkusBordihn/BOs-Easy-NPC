@@ -23,6 +23,7 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.OwnerDataCapable;
+import de.markusbordihn.easynpc.utils.CompoundTagUtils;
 import java.util.UUID;
 import java.util.function.BooleanSupplier;
 import net.minecraft.nbt.CompoundTag;
@@ -625,9 +626,8 @@ public final class ObjectiveDataEntry {
           this.customObjectiveId != null ? this.customObjectiveId.toString() : this.getTypeName();
     }
 
-    if (compoundTag.contains(DATA_TARGET_ENTITY_UUID_TAG)) {
-      this.targetEntityUUID = compoundTag.getUUID(DATA_TARGET_ENTITY_UUID_TAG);
-    }
+    this.targetEntityUUID =
+        CompoundTagUtils.readUUID(compoundTag, DATA_TARGET_ENTITY_UUID_TAG, this.targetEntityUUID);
     if (compoundTag.contains(DATA_TARGET_PLAYER_NAME_TAG)) {
       this.targetPlayerName = compoundTag.getString(DATA_TARGET_PLAYER_NAME_TAG);
     }
@@ -637,9 +637,8 @@ public final class ObjectiveDataEntry {
     if (compoundTag.contains(DATA_TARGET_ENTITY_TAG_TAG)) {
       this.targetEntityTag = compoundTag.getString(DATA_TARGET_ENTITY_TAG_TAG);
     }
-    if (compoundTag.contains(DATA_TARGET_OWNER_UUID_TAG)) {
-      this.targetOwnerUUID = compoundTag.getUUID(DATA_TARGET_OWNER_UUID_TAG);
-    }
+    this.targetOwnerUUID =
+        CompoundTagUtils.readUUID(compoundTag, DATA_TARGET_OWNER_UUID_TAG, this.targetOwnerUUID);
     if (compoundTag.contains(DATA_TARGET_ITEM_TAG)) {
       this.targetItemTag = compoundTag.getString(DATA_TARGET_ITEM_TAG);
     }

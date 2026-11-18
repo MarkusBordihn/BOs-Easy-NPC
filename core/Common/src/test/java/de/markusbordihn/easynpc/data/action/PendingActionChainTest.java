@@ -160,6 +160,19 @@ class PendingActionChainTest {
   }
 
   @Test
+  @DisplayName("A malformed initiator UUID is read as no initiator")
+  void testMalformedInitiatorIsIgnored() {
+    CompoundTag compoundTag =
+        new PendingActionChain(null, 0, UUID.randomUUID(), null, null, null).createTag();
+    compoundTag.putString("Initiator", UUID.randomUUID().toString());
+
+    PendingActionChain loadedChain = PendingActionChain.fromTag(compoundTag);
+
+    assertNotNull(loadedChain);
+    assertNull(loadedChain.initiatorUUID());
+  }
+
+  @Test
   @DisplayName("An empty chain stays empty over a save")
   void testEmptyChainRoundTrip() {
     PendingActionChain loadedChain =

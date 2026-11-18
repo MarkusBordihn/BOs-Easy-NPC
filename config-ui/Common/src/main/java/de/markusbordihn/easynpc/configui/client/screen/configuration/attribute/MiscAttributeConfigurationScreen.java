@@ -140,11 +140,10 @@ public class MiscAttributeConfigurationScreen<T extends ConfigurationMenu>
                   }
                 }));
     shoulderOffsetSaveButton.active = false;
-    shoulderOffsetBox.setResponder(
-        value ->
-            shoulderOffsetSaveButton.active =
-                this.sitOnShoulderCheckbox.selected()
-                    && this.isChangedShoulderOffset(attributeType, value));
+    shoulderOffsetBox.setResponder(value ->
+        shoulderOffsetSaveButton.active =
+            this.sitOnShoulderCheckbox.selected()
+                && this.isChangedShoulderOffset(attributeType, value));
     this.shoulderOffsetBoxes.put(attributeType, shoulderOffsetBox);
     this.shoulderOffsetSaveButtons.put(attributeType, shoulderOffsetSaveButton);
   }

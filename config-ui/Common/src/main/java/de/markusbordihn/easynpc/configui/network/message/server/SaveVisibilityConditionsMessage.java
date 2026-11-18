@@ -58,8 +58,7 @@ public record SaveVisibilityConditionsMessage(
       return;
     }
 
-    DisplayAttributeDataCapable<?> displayAttributeData =
-        easyNPC.getEasyNPCDisplayAttributeData();
+    DisplayAttributeDataCapable<?> displayAttributeData = easyNPC.getEasyNPCDisplayAttributeData();
     if (displayAttributeData == null) {
       log.warn("Unable to save visibility conditions for {} from {}", easyNPC, serverPlayer);
       return;

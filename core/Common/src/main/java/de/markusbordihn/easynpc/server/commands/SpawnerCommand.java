@@ -43,38 +43,35 @@ public class SpawnerCommand extends Command {
     return Commands.literal("spawner")
         .then(
             Commands.literal("set")
-                .requires(
-                    commandSourceStack ->
-                        commandSourceStack.hasPermission(Commands.LEVEL_GAMEMASTERS))
+                .requires(commandSourceStack ->
+                    commandSourceStack.hasPermission(Commands.LEVEL_GAMEMASTERS))
                 .then(
                     Commands.argument(TARGET_ARG, BlockPosArgument.blockPos())
                         .then(
                             Commands.argument(PARAMETER_ARG, StringArgumentType.string())
-                                .suggests(
-                                    (context, builder) ->
-                                        SharedSuggestionProvider.suggest(
-                                            List.of(
-                                                "Delay",
-                                                "MinSpawnDelay",
-                                                "MaxSpawnDelay",
-                                                "SpawnCount",
-                                                "MaxNearbyEntities",
-                                                "RequiredPlayerRange",
-                                                "SpawnRange"),
-                                            builder))
+                                .suggests((context, builder) ->
+                                    SharedSuggestionProvider.suggest(
+                                        List.of(
+                                            "Delay",
+                                            "MinSpawnDelay",
+                                            "MaxSpawnDelay",
+                                            "SpawnCount",
+                                            "MaxNearbyEntities",
+                                            "RequiredPlayerRange",
+                                            "SpawnRange"),
+                                        builder))
                                 .then(
                                     Commands.argument(
                                             VALUE_ARG, IntegerArgumentType.integer(0, 1000))
-                                        .executes(
-                                            context ->
-                                                setSpawnerValue(
-                                                    context.getSource(),
-                                                    BlockPosArgument.getLoadedBlockPos(
-                                                        context, TARGET_ARG),
-                                                    StringArgumentType.getString(
-                                                        context, PARAMETER_ARG),
-                                                    IntegerArgumentType.getInteger(
-                                                        context, VALUE_ARG)))))));
+                                        .executes(context ->
+                                            setSpawnerValue(
+                                                context.getSource(),
+                                                BlockPosArgument.getLoadedBlockPos(
+                                                    context, TARGET_ARG),
+                                                StringArgumentType.getString(
+                                                    context, PARAMETER_ARG),
+                                                IntegerArgumentType.getInteger(
+                                                    context, VALUE_ARG)))))));
   }
 
   private static int setSpawnerValue(

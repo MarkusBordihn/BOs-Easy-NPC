@@ -44,7 +44,14 @@ public record SavedNPCEntityEntry(
   // The chunk stays the authoritative copy, so movement alone must not rewrite the NPC file.
   private static final List<String> NPC_DATA_HASH_IGNORED_TAGS =
       List.of(
-          "Air", "Brain", "FallDistance", "Fire", "HurtTime", "Motion", "OnGround", "Pos",
+          "Air",
+          "Brain",
+          "FallDistance",
+          "Fire",
+          "HurtTime",
+          "Motion",
+          "OnGround",
+          "Pos",
           "Rotation");
 
   public static <T extends Mob> SavedNPCEntityEntry fromEasyNPC(EasyNPC<T> easyNPC) {

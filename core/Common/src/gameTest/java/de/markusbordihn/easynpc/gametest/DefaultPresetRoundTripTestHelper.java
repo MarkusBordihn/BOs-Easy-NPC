@@ -166,12 +166,11 @@ public class DefaultPresetRoundTripTestHelper {
     helper.runAfterDelay(
         40,
         () -> {
-          spawnedNPCs.forEach(
-              (presetLocation, easyNPC) ->
-                  GameTestHelpers.assertTrue(
-                      helper,
-                      "The NPC of the default preset " + presetLocation + " must keep running",
-                      easyNPC.getEntity().isAlive()));
+          spawnedNPCs.forEach((presetLocation, easyNPC) ->
+              GameTestHelpers.assertTrue(
+                  helper,
+                  "The NPC of the default preset " + presetLocation + " must keep running",
+                  easyNPC.getEntity().isAlive()));
           spawnedNPCs.values().forEach(easyNPC -> easyNPC.getEntity().discard());
           helper.succeed();
         });

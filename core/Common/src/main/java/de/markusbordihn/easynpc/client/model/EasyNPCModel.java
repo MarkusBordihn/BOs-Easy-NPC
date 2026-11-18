@@ -138,13 +138,10 @@ public class EasyNPCModel {
 
     setupArmPoses(easyNPC, modelManager);
 
-    // Apply visibility synchronization after all standard animations
-    if (modelData != null) {
-      if (modelData.getModelAnimationBehavior() == ModelAnimationBehavior.SMART) {
-        modelManager.applyVisibilityChanges(modelData);
-      } else {
-        modelManager.syncModelParts(modelData);
-      }
+    if (modelData != null
+        && (modelData.getModelAnimationBehavior() == ModelAnimationBehavior.SMART
+            || modelData.getModelPose() != ModelPose.VANILLA)) {
+      modelManager.applyVisibilityChanges(modelData);
     }
   }
 

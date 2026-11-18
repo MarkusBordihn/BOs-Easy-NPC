@@ -150,8 +150,7 @@ public class ConditionalDialogActionTestHelper {
         easyNPC,
         dialog(
             LOW_DIALOG,
-            scoreCondition(
-                objective.getName(), ConditionOperationType.LESS_THAN_OR_EQUALS, 49)),
+            scoreCondition(objective.getName(), ConditionOperationType.LESS_THAN_OR_EQUALS, 49)),
         dialog(
             HIGH_DIALOG,
             scoreCondition(
@@ -185,8 +184,7 @@ public class ConditionalDialogActionTestHelper {
         easyNPC,
         dialog(
             LOW_DIALOG,
-            scoreCondition(
-                objective.getName(), ConditionOperationType.LESS_THAN_OR_EQUALS, 49)),
+            scoreCondition(objective.getName(), ConditionOperationType.LESS_THAN_OR_EQUALS, 49)),
         dialog(HIGH_DIALOG));
     setScore(serverPlayer, objective, 25);
 
@@ -303,7 +301,10 @@ public class ConditionalDialogActionTestHelper {
       List<String> openedDialogs =
           executeAndCollectOpenedDialogs(easyNPC, serverPlayer, actionDataSet);
       GameTestHelpers.assertEquals(
-          helper, "Every run must open exactly one dialog (run " + run + ")", 1, openedDialogs.size());
+          helper,
+          "Every run must open exactly one dialog (run " + run + ")",
+          1,
+          openedDialogs.size());
       if (openedDialogs.get(0).equals(firstDialog)) {
         firstDialogCount++;
       } else if (openedDialogs.get(0).equals(secondDialog)) {

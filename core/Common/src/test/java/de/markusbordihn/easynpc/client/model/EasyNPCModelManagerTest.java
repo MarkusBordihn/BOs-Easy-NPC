@@ -24,11 +24,11 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import de.markusbordihn.easynpc.data.model.ModelPartType;
+import de.markusbordihn.easynpc.data.model.ModelPose;
+import de.markusbordihn.easynpc.data.model.ModelType;
 import de.markusbordihn.easynpc.data.position.CustomPosition;
 import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.data.scale.CustomScale;
-import de.markusbordihn.easynpc.data.model.ModelPose;
-import de.markusbordihn.easynpc.data.model.ModelType;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
 import java.lang.reflect.Proxy;
 import java.util.EnumMap;

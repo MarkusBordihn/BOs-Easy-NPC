@@ -99,4 +99,9 @@ public class PillagerBase extends PillagerRaw implements BaseEasyNPC<PillagerRaw
       this.calculateEntityAnimation(this instanceof FlyingAnimal);
     }
   }
+
+  @Override
+  public boolean canBeLeader() {
+    return false;
+  }
 }

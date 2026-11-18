@@ -29,8 +29,10 @@ import de.markusbordihn.easynpc.data.sound.SoundType;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import de.markusbordihn.easynpc.utils.TextUtils;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -77,6 +79,7 @@ public class VillagerBase extends VillagerRaw implements BaseEasyNPC<VillagerRaw
           MemoryModuleType.NEAREST_VISIBLE_ADULT,
           MemoryModuleType.ANGRY_AT,
           MemoryModuleType.ATTACK_TARGET);
+  private static final float VANILLA_LIGHTNING_DAMAGE = 5.0F;
   private static final ImmutableList<SensorType<? extends Sensor<? super Villager>>> SENSOR_TYPES =
       ImmutableList.of(
           SensorType.GOLEM_DETECTED,
@@ -153,6 +156,17 @@ public class VillagerBase extends VillagerRaw implements BaseEasyNPC<VillagerRaw
     soundDataSet.addDefaultSound(SoundType.TRADE_YES, SoundEvents.VILLAGER_YES);
     soundDataSet.addDefaultSound(SoundType.TRADE_NO, SoundEvents.VILLAGER_NO);
     return soundDataSet;
+  }
+
+  // Vanilla replaces the NPC with a witch, so only the lightning damage of Entity is kept.
+  @Override
+  public void thunderHit(ServerLevel serverLevel, LightningBolt lightningBolt) {
+    this.setRemainingFireTicks(this.getRemainingFireTicks() + 1);
+    if (this.getRemainingFireTicks() == 0) {
+      this.setSecondsOnFire(8);
+    }
+
+    this.hurt(this.damageSources().lightningBolt(), VANILLA_LIGHTNING_DAMAGE);
   }
 
   @Override

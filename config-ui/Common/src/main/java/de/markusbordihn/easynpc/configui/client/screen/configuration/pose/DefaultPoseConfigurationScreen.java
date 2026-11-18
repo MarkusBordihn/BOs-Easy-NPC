@@ -121,20 +121,19 @@ public class DefaultPoseConfigurationScreen<T extends ConfigurationMenu>
       if (poseKeysTag != null && !poseKeysTag.isEmpty()) {
         availablePoses =
             CompoundTagUtils.readResourceLocations(poseKeysTag).stream()
-                .sorted(
-                    (firstPose, secondPose) -> {
-                      boolean firstStanding = firstPose.getPath().endsWith("/standing");
-                      boolean secondStanding = secondPose.getPath().endsWith("/standing");
-                      if (firstStanding && !secondStanding) {
-                        return -1;
-                      }
+                .sorted((firstPose, secondPose) -> {
+                  boolean firstStanding = firstPose.getPath().endsWith("/standing");
+                  boolean secondStanding = secondPose.getPath().endsWith("/standing");
+                  if (firstStanding && !secondStanding) {
+                    return -1;
+                  }
 
-                      if (!firstStanding && secondStanding) {
-                        return 1;
-                      }
+                  if (!firstStanding && secondStanding) {
+                    return 1;
+                  }
 
-                      return firstPose.getPath().compareTo(secondPose.getPath());
-                    })
+                  return firstPose.getPath().compareTo(secondPose.getPath());
+                })
                 .collect(Collectors.toCollection(LinkedHashSet::new));
       }
     }

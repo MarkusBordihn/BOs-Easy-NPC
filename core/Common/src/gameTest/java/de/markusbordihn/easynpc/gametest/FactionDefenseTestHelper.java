@@ -152,22 +152,21 @@ public class FactionDefenseTestHelper {
             new ObjectiveDataEntry(ObjectiveType.HURT_BY_TARGET), attackedNPC);
     GameTestHelpers.assertNotNull(helper, "Defend Self goal is null", defendSelfGoal);
 
-    helper.succeedWhen(
-        () -> {
-          attackedNPC.getLivingEntity().setLastHurtByMob(attacker);
-          if (defendSelfGoal.canUse()) {
-            defendSelfGoal.start();
-          }
+    helper.succeedWhen(() -> {
+      attackedNPC.getLivingEntity().setLastHurtByMob(attacker);
+      if (defendSelfGoal.canUse()) {
+        defendSelfGoal.start();
+      }
 
-          GameTestHelpers.assertTrue(
-              helper,
-              "Defend Self must target the attacker",
-              attackedNPC.getMob().getTarget() == attacker);
-          GameTestHelpers.assertTrue(
-              helper,
-              "Defend Self must not pull uninvolved NPCs into the fight",
-              bystanderNPC.getMob().getTarget() == null);
-        });
+      GameTestHelpers.assertTrue(
+          helper,
+          "Defend Self must target the attacker",
+          attackedNPC.getMob().getTarget() == attacker);
+      GameTestHelpers.assertTrue(
+          helper,
+          "Defend Self must not pull uninvolved NPCs into the fight",
+          bystanderNPC.getMob().getTarget() == null);
+    });
   }
 
   private static LivingEntity spawnOutsideAttacker(GameTestHelper helper, Vec3 position) {

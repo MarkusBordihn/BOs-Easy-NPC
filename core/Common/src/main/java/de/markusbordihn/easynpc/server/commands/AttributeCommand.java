@@ -50,12 +50,11 @@ public class AttributeCommand extends Command {
                         IntegerArgumentType.integer(
                             DisplayAttributeType.MIN_LIGHT_LEVEL,
                             DisplayAttributeType.MAX_LIGHT_LEVEL))
-                    .executes(
-                        context ->
-                            setLightLevel(
-                                context.getSource(),
-                                EasyNPCArgument.getEntitiesWithAccess(context, NPC_TARGETS_ARG),
-                                IntegerArgumentType.getInteger(context, VALUE_ARG)))));
+                    .executes(context ->
+                        setLightLevel(
+                            context.getSource(),
+                            EasyNPCArgument.getEntitiesWithAccess(context, NPC_TARGETS_ARG),
+                            IntegerArgumentType.getInteger(context, VALUE_ARG)))));
 
     for (BaseAttributeType baseAttributeType : BaseAttributeType.values()) {
       npcTargetsArgument.then(
@@ -63,13 +62,12 @@ public class AttributeCommand extends Command {
               .then(
                   // AttributeFix on Fabric changes the ranges on server start, after command setup.
                   Commands.argument(VALUE_ARG, DoubleArgumentType.doubleArg())
-                      .executes(
-                          context ->
-                              setBaseAttribute(
-                                  context.getSource(),
-                                  EasyNPCArgument.getEntitiesWithAccess(context, NPC_TARGETS_ARG),
-                                  baseAttributeType,
-                                  DoubleArgumentType.getDouble(context, VALUE_ARG)))));
+                      .executes(context ->
+                          setBaseAttribute(
+                              context.getSource(),
+                              EasyNPCArgument.getEntitiesWithAccess(context, NPC_TARGETS_ARG),
+                              baseAttributeType,
+                              DoubleArgumentType.getDouble(context, VALUE_ARG)))));
     }
 
     return Commands.literal("attribute")

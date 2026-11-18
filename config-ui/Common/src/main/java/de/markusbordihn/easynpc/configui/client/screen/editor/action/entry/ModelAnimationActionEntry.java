@@ -71,12 +71,11 @@ public class ModelAnimationActionEntry extends ActionEntryWidget {
     if (this.actionDataType == ActionDataType.PLAY_ANIMATION) {
       LinkedHashSet<String> animations = new LinkedHashSet<>();
       ModelAnimationAPI.listAnimations(this.screen.getEasyNPC())
-          .forEach(
-              info ->
-                  animations.add(
-                      ModelAnimationAPI.standardAnimations().contains(info.name())
-                          ? info.name()
-                          : "named:" + info.name()));
+          .forEach(info ->
+              animations.add(
+                  ModelAnimationAPI.standardAnimations().contains(info.name())
+                      ? info.name()
+                      : "named:" + info.name()));
       if (animations.isEmpty()) {
         animations.addAll(ModelAnimationAPI.standardAnimations());
       }
@@ -110,9 +109,8 @@ public class ModelAnimationActionEntry extends ActionEntryWidget {
                   EnumSet.allOf(ModelAnimationPlaybackMode.class),
                   data.playback().mode(),
                   null));
-      this.playbackModeButton.setLabelProvider(
-          playbackMode ->
-              TextComponent.getTranslatedConfigText(playbackMode.name().toLowerCase(Locale.ROOT)));
+      this.playbackModeButton.setLabelProvider(playbackMode ->
+          TextComponent.getTranslatedConfigText(playbackMode.name().toLowerCase(Locale.ROOT)));
 
       this.repeatCountField =
           this.screen.addActionEntryWidget(

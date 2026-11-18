@@ -53,53 +53,47 @@ public class ShoulderCommand extends Command {
                     Commands.argument(NPC_TARGET_ARG, EasyNPCArgument.npc())
                         .then(
                             Commands.argument(PLAYER_ARG, EntityArgument.player())
-                                .executes(
-                                    context ->
-                                        sit(
-                                            context.getSource(),
-                                            EasyNPCArgument.getEntityWithAccess(
-                                                context, NPC_TARGET_ARG),
-                                            EntityArgument.getPlayer(context, PLAYER_ARG))))))
+                                .executes(context ->
+                                    sit(
+                                        context.getSource(),
+                                        EasyNPCArgument.getEntityWithAccess(
+                                            context, NPC_TARGET_ARG),
+                                        EntityArgument.getPlayer(context, PLAYER_ARG))))))
         .then(
             Commands.literal("dismount")
                 .then(
                     Commands.argument(PLAYER_ARG, EntityArgument.player())
-                        .executes(
-                            context ->
-                                dismount(
-                                    context.getSource(),
-                                    EntityArgument.getPlayer(context, PLAYER_ARG)))
+                        .executes(context ->
+                            dismount(
+                                context.getSource(), EntityArgument.getPlayer(context, PLAYER_ARG)))
                         .then(registerDismountSide(ShoulderSide.LEFT))
                         .then(registerDismountSide(ShoulderSide.RIGHT))))
         .then(
             Commands.literal("info")
                 .then(
                     Commands.argument(PLAYER_ARG, EntityArgument.player())
-                        .executes(
-                            context ->
-                                info(
-                                    context.getSource(),
-                                    EntityArgument.getPlayer(context, PLAYER_ARG)))))
+                        .executes(context ->
+                            info(
+                                context.getSource(),
+                                EntityArgument.getPlayer(context, PLAYER_ARG)))))
         .then(
             Commands.literal("enable")
                 .then(
                     Commands.argument(NPC_TARGET_ARG, EasyNPCArgument.npc())
-                        .executes(
-                            context ->
-                                setEnabled(
-                                    context.getSource(),
-                                    EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG),
-                                    true))))
+                        .executes(context ->
+                            setEnabled(
+                                context.getSource(),
+                                EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG),
+                                true))))
         .then(
             Commands.literal("disable")
                 .then(
                     Commands.argument(NPC_TARGET_ARG, EasyNPCArgument.npc())
-                        .executes(
-                            context ->
-                                setEnabled(
-                                    context.getSource(),
-                                    EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG),
-                                    false))))
+                        .executes(context ->
+                            setEnabled(
+                                context.getSource(),
+                                EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG),
+                                false))))
         .then(registerOffset());
   }
 
@@ -112,52 +106,46 @@ public class ShoulderCommand extends Command {
             Commands.argument(NPC_TARGET_ARG, EasyNPCArgument.npc())
                 .then(
                     Commands.literal("reset")
-                        .executes(
-                            context ->
-                                setOffset(
-                                    context.getSource(),
-                                    EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG),
-                                    Vec3.ZERO)))
+                        .executes(context ->
+                            setOffset(
+                                context.getSource(),
+                                EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG),
+                                Vec3.ZERO)))
                 .then(
                     Commands.argument(X_ARG, offsetArgument)
                         .then(
                             Commands.argument(Y_ARG, offsetArgument)
                                 .then(
                                     Commands.argument(Z_ARG, offsetArgument)
-                                        .executes(
-                                            context ->
-                                                setOffset(
-                                                    context.getSource(),
-                                                    EasyNPCArgument.getEntityWithAccess(
-                                                        context, NPC_TARGET_ARG),
-                                                    new Vec3(
-                                                        DoubleArgumentType.getDouble(
-                                                            context, X_ARG),
-                                                        DoubleArgumentType.getDouble(
-                                                            context, Y_ARG),
-                                                        DoubleArgumentType.getDouble(
-                                                            context, Z_ARG))))))));
+                                        .executes(context ->
+                                            setOffset(
+                                                context.getSource(),
+                                                EasyNPCArgument.getEntityWithAccess(
+                                                    context, NPC_TARGET_ARG),
+                                                new Vec3(
+                                                    DoubleArgumentType.getDouble(context, X_ARG),
+                                                    DoubleArgumentType.getDouble(context, Y_ARG),
+                                                    DoubleArgumentType.getDouble(
+                                                        context, Z_ARG))))))));
   }
 
   private static ArgumentBuilder<CommandSourceStack, ?> registerDismountSide(
       ShoulderSide shoulderSide) {
     return Commands.literal(shoulderSide.name().toLowerCase(Locale.ROOT))
-        .executes(
-            context ->
-                dismount(
-                    context.getSource(),
-                    EntityArgument.getPlayer(context, PLAYER_ARG),
-                    shoulderSide,
-                    0))
+        .executes(context ->
+            dismount(
+                context.getSource(),
+                EntityArgument.getPlayer(context, PLAYER_ARG),
+                shoulderSide,
+                0))
         .then(
             Commands.argument(COOLDOWN_TICKS_ARG, IntegerArgumentType.integer(0))
-                .executes(
-                    context ->
-                        dismount(
-                            context.getSource(),
-                            EntityArgument.getPlayer(context, PLAYER_ARG),
-                            shoulderSide,
-                            IntegerArgumentType.getInteger(context, COOLDOWN_TICKS_ARG))));
+                .executes(context ->
+                    dismount(
+                        context.getSource(),
+                        EntityArgument.getPlayer(context, PLAYER_ARG),
+                        shoulderSide,
+                        IntegerArgumentType.getInteger(context, COOLDOWN_TICKS_ARG))));
   }
 
   private static int sit(CommandSourceStack context, EasyNPC<?> easyNPC, ServerPlayer player) {
@@ -253,7 +241,8 @@ public class ShoulderCommand extends Command {
   private static int setOffset(
       CommandSourceStack context, EasyNPC<?> easyNPC, Vec3 shoulderOffset) {
     if (!EasyNPCAttributeHandler.setShoulderOffset(easyNPC, shoulderOffset)) {
-      return sendFailureMessage(context, "Unable to change the shoulder offset of " + easyNPC + "!");
+      return sendFailureMessage(
+          context, "Unable to change the shoulder offset of " + easyNPC + "!");
     }
 
     return sendSuccessMessage(
@@ -264,8 +253,7 @@ public class ShoulderCommand extends Command {
     return context.hasPermission(Commands.LEVEL_GAMEMASTERS) || player.equals(context.getEntity());
   }
 
-  private static int sendFailureMessageNotAllowed(
-      CommandSourceStack context, ServerPlayer player) {
+  private static int sendFailureMessageNotAllowed(CommandSourceStack context, ServerPlayer player) {
     return sendFailureMessage(
         context,
         "You are not allowed to control the shoulders of " + player.getName().getString() + "!");

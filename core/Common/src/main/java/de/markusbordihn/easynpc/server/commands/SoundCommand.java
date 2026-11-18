@@ -51,17 +51,16 @@ public class SoundCommand extends Command {
                                 .then(
                                     Commands.argument(SOUND_ARG, ResourceLocationArgument.id())
                                         .suggests(SuggestionProviders.AVAILABLE_SOUNDS)
-                                        .executes(
-                                            context ->
-                                                setSoundType(
-                                                    context.getSource(),
-                                                    EasyNPCArgument.getEntityWithAccess(
-                                                        context, NPC_TARGET_ARG),
-                                                    SoundType.get(
-                                                        StringArgumentType.getString(
-                                                            context, TYPE_ARG)),
-                                                    ResourceLocationArgument.getId(
-                                                        context, SOUND_ARG)))))));
+                                        .executes(context ->
+                                            setSoundType(
+                                                context.getSource(),
+                                                EasyNPCArgument.getEntityWithAccess(
+                                                    context, NPC_TARGET_ARG),
+                                                SoundType.get(
+                                                    StringArgumentType.getString(
+                                                        context, TYPE_ARG)),
+                                                ResourceLocationArgument.getId(
+                                                    context, SOUND_ARG)))))));
   }
 
   private static int setSoundType(

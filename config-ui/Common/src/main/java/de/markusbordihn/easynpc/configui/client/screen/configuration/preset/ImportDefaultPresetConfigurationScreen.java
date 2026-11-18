@@ -41,9 +41,8 @@ public class ImportDefaultPresetConfigurationScreen<T extends ConfigurationMenu>
         CompoundTagUtils.readResourceLocations(
                 this.getAdditionalScreenData().getList("DefaultPresets"))
             .stream()
-            .filter(
-                resourceLocation ->
-                    resourceLocation.getPath().contains("/" + this.getSkinModel().getName() + "/"))
+            .filter(resourceLocation ->
+                resourceLocation.getPath().contains("/" + this.getSkinModel().getName() + "/"))
             .collect(Collectors.toSet());
   }
 

@@ -51,10 +51,9 @@ class ObjectiveDataSetTest {
     assertEquals(2, objectives.size());
     assertTrue(
         objectives.stream()
-            .anyMatch(
-                objective ->
-                    objective.hasUnresolvedType()
-                        && "othermod:hover_follow".equals(objective.getTypeName())));
+            .anyMatch(objective ->
+                objective.hasUnresolvedType()
+                    && "othermod:hover_follow".equals(objective.getTypeName())));
   }
 
   @Test

@@ -40,11 +40,10 @@ public class ConfigureCommand extends Command {
         .requires(commandSourceStack -> commandSourceStack.hasPermission(Commands.LEVEL_ALL))
         .then(
             Commands.argument(NPC_TARGET_ARG, EasyNPCArgument.npc())
-                .executes(
-                    context ->
-                        configure(
-                            context.getSource(),
-                            EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG))));
+                .executes(context ->
+                    configure(
+                        context.getSource(),
+                        EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG))));
   }
 
   private static int configure(CommandSourceStack commandSourceStack, EasyNPC<?> easyNPC)

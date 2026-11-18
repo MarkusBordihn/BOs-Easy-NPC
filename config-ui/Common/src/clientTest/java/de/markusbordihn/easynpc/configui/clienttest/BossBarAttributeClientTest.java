@@ -71,8 +71,7 @@ class BossBarAttributeClientTest extends ClientTestBase {
     client.await(Until.settled(5));
     typeAndSave(RANGE_TEXT_FIELD, RANGE_SAVE_BUTTON, CHANGED_RANGE);
     client.type(AUTO_HIDE_TEXT_FIELD, TOO_LONG_AUTO_HIDE_SECONDS, true);
-    assertFalse(
-        isEnabledWidget(AUTO_HIDE_SAVE_BUTTON), "Auto hide above the maximum can be saved");
+    assertFalse(isEnabledWidget(AUTO_HIDE_SAVE_BUTTON), "Auto hide above the maximum can be saved");
     typeAndSave(AUTO_HIDE_TEXT_FIELD, AUTO_HIDE_SAVE_BUTTON, CHANGED_AUTO_HIDE_SECONDS);
 
     runCommandAndAwaitFeedback(

@@ -63,39 +63,33 @@ public class ClientTargetSuggestions {
     Vec3 rayEnd = eyePosition.add(localPlayer.getViewVector(1.0f).scale(SEARCH_RANGE));
 
     return LivingEntityManager.getClientEasyNPCEntities()
-        .filter(
-            easyNPC ->
-                easyNPC.getEntity() != null
-                    && easyNPC.getEntity().isAlive()
-                    && easyNPC.getEntityLevel() == localPlayer.level()
-                    && easyNPC.getEntity().distanceToSqr(eyePosition)
-                        <= SEARCH_RANGE * SEARCH_RANGE)
-        .filter(
-            easyNPC ->
-                filterPrefix.isEmpty()
-                    || easyNPC.getEntityUUID().toString().startsWith(filterPrefix))
-        .map(
-            easyNPC ->
-                new RankedTarget(
-                    easyNPC,
-                    isOwner(easyNPC, localPlayerUUID),
-                    rankOf(easyNPC, minecraft.crosshairPickEntity, eyePosition, rayEnd),
-                    sortDistanceOf(easyNPC, eyePosition, rayEnd)))
+        .filter(easyNPC ->
+            easyNPC.getEntity() != null
+                && easyNPC.getEntity().isAlive()
+                && easyNPC.getEntityLevel() == localPlayer.level()
+                && easyNPC.getEntity().distanceToSqr(eyePosition) <= SEARCH_RANGE * SEARCH_RANGE)
+        .filter(easyNPC ->
+            filterPrefix.isEmpty() || easyNPC.getEntityUUID().toString().startsWith(filterPrefix))
+        .map(easyNPC ->
+            new RankedTarget(
+                easyNPC,
+                isOwner(easyNPC, localPlayerUUID),
+                rankOf(easyNPC, minecraft.crosshairPickEntity, eyePosition, rayEnd),
+                sortDistanceOf(easyNPC, eyePosition, rayEnd)))
         .filter(rankedTarget -> showEveryNPC || rankedTarget.owner())
         .sorted(
             Comparator.comparingInt((RankedTarget rankedTarget) -> rankedTarget.rank())
                 .thenComparing(rankedTarget -> !rankedTarget.owner())
                 .thenComparingDouble(RankedTarget::sortDistance))
         .limit(SUGGESTION_LIMIT)
-        .map(
-            rankedTarget ->
-                new Suggestion(
-                    stringRange,
-                    rankedTarget.easyNPC().getEntityUUID().toString(),
-                    createTooltip(
-                        rankedTarget.easyNPC(),
-                        Math.sqrt(rankedTarget.easyNPC().getEntity().distanceToSqr(eyePosition)),
-                        showEveryNPC)))
+        .map(rankedTarget ->
+            new Suggestion(
+                stringRange,
+                rankedTarget.easyNPC().getEntityUUID().toString(),
+                createTooltip(
+                    rankedTarget.easyNPC(),
+                    Math.sqrt(rankedTarget.easyNPC().getEntity().distanceToSqr(eyePosition)),
+                    showEveryNPC)))
         .toList();
   }
 

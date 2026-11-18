@@ -47,6 +47,7 @@ import de.markusbordihn.easynpc.entity.easynpc.ai.navigation.EasyNPCWaterBoundPa
 import de.markusbordihn.easynpc.entity.easynpc.handlers.AttackHandler;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.BossBarHandler;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.InteractionHandler;
+import de.markusbordihn.easynpc.entity.easynpc.handlers.SpawnRandomnessHandler;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.VisibilityHandler;
 import de.markusbordihn.easynpc.handler.AttributeHandler;
 import de.markusbordihn.easynpc.handler.VisibilityConditionTracker;
@@ -70,6 +71,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 import net.minecraft.util.TimeUtil;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.DifficultyInstance;
@@ -82,6 +84,7 @@ import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.Pose;
@@ -401,7 +404,7 @@ public class NPCRawTemplate extends Zombie implements EasyNPCBase<Zombie> {
 
   @Override
   public boolean canPickUpLoot() {
-    return this.canPickUpItemsIntoInventory() || super.canPickUpLoot();
+    return this.canPickUpItemsIntoInventory();
   }
 
   @Override
@@ -558,12 +561,29 @@ public class NPCRawTemplate extends Zombie implements EasyNPCBase<Zombie> {
     boolean leftHanded = this.isLeftHanded();
     SpawnGroupData result =
         this.finalizeEasyNPCSpawn(
-            super.finalizeSpawn(
-                serverLevelAccessor, difficulty, mobSpawnType, spawnGroupData, compoundTag));
+            SpawnRandomnessHandler.finalizeSpawnKeepingEquipment(
+                this,
+                () ->
+                    super.finalizeSpawn(
+                        serverLevelAccessor,
+                        difficulty,
+                        mobSpawnType,
+                        this.getVanillaSpawnGroupData(spawnGroupData),
+                        compoundTag)));
     // Mob.finalizeSpawn makes 5% of all mobs left-handed, also over preset data (#349).
     this.setLeftHanded(leftHanded);
     this.refreshDimensions();
     return result;
+  }
+
+  @Override
+  protected void populateDefaultEquipmentEnchantments(
+      RandomSource randomSource, DifficultyInstance difficulty) {}
+
+  // Vanilla conversions, e.g. by lightning or drowning, would replace the NPC with a plain mob.
+  @Override
+  public <T extends Mob> T convertTo(EntityType<T> entityType, boolean keepEquipment) {
+    return null;
   }
 
   @Override

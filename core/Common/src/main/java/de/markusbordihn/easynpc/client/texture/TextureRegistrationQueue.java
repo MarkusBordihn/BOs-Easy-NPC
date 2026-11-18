@@ -188,16 +188,15 @@ public class TextureRegistrationQueue {
   }
 
   public void clear(Set<TextureModelKey> textureModelKeys) {
-    this.registrationQueue.removeIf(
-        registration -> {
-          if (textureModelKeys.contains(registration.textureModelKey())) {
-            closeNativeImage(registration.nativeImage());
-            registration.registrationFuture().complete(null);
-            return true;
-          }
+    this.registrationQueue.removeIf(registration -> {
+      if (textureModelKeys.contains(registration.textureModelKey())) {
+        closeNativeImage(registration.nativeImage());
+        registration.registrationFuture().complete(null);
+        return true;
+      }
 
-          return false;
-        });
+      return false;
+    });
     for (TextureModelKey textureModelKey : textureModelKeys) {
       CompletableFuture<ResourceLocation> registrationFuture =
           this.pendingRegistrations.remove(textureModelKey);

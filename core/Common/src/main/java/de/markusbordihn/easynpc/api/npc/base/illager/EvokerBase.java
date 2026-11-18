@@ -99,4 +99,9 @@ public class EvokerBase extends EvokerRaw implements BaseEasyNPC<EvokerRaw> {
       this.calculateEntityAnimation(this instanceof FlyingAnimal);
     }
   }
+
+  @Override
+  public boolean canBeLeader() {
+    return false;
+  }
 }

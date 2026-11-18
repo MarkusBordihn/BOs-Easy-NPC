@@ -99,4 +99,9 @@ public class VindicatorBase extends VindicatorRaw implements BaseEasyNPC<Vindica
       this.calculateEntityAnimation(this instanceof FlyingAnimal);
     }
   }
+
+  @Override
+  public boolean canBeLeader() {
+    return false;
+  }
 }

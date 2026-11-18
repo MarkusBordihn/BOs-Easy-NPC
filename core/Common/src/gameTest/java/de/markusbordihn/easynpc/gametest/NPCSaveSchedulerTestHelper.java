@@ -97,8 +97,7 @@ public class NPCSaveSchedulerTestHelper {
         NPCEntityManager.getStorageStatistics().filesWritten() > filesWrittenBefore);
   }
 
-  public static void assertUnchangedNPCIsNotSaved(
-      GameTestHelper helper, EntityType<?> entityType) {
+  public static void assertUnchangedNPCIsNotSaved(GameTestHelper helper, EntityType<?> entityType) {
     EasyNPC<?> easyNPC = spawnSavedNPC(helper, entityType);
     long savedLastUpdate = getLastUpdate(easyNPC);
 

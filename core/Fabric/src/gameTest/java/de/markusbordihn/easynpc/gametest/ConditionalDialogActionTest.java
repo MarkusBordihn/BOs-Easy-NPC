@@ -34,19 +34,22 @@ public class ConditionalDialogActionTest {
 
   @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testUnmetConditionalDialogFallsThroughToTheNextOne(GameTestHelper helper) {
-    ConditionalDialogActionTestHelper.assertUnmetConditionalDialogFallsThroughToTheNextOne(helper, humanoid());
+    ConditionalDialogActionTestHelper.assertUnmetConditionalDialogFallsThroughToTheNextOne(
+        helper, humanoid());
     helper.succeed();
   }
 
   @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testMetConditionalDialogBlocksLaterScreenActions(GameTestHelper helper) {
-    ConditionalDialogActionTestHelper.assertMetConditionalDialogBlocksLaterScreenActions(helper, humanoid());
+    ConditionalDialogActionTestHelper.assertMetConditionalDialogBlocksLaterScreenActions(
+        helper, humanoid());
     helper.succeed();
   }
 
   @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testFallbackRunsWhenNoConditionalDialogMatches(GameTestHelper helper) {
-    ConditionalDialogActionTestHelper.assertFallbackRunsWhenNoConditionalDialogMatches(helper, humanoid());
+    ConditionalDialogActionTestHelper.assertFallbackRunsWhenNoConditionalDialogMatches(
+        helper, humanoid());
     helper.succeed();
   }
 

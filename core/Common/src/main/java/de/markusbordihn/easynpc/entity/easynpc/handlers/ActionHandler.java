@@ -529,7 +529,8 @@ public interface ActionHandler<E extends Mob> extends EasyNPC<E> {
       }
 
       if (actionType == ActionDataType.OPEN_NAMED_DIALOG_CONDITIONAL) {
-        if (!state.hasScreenAction() && this.openConditionalDialog(actionDataEntry, actionContext)) {
+        if (!state.hasScreenAction()
+            && this.openConditionalDialog(actionDataEntry, actionContext)) {
           state = state.withAnyRegularFired().withScreenAction();
         }
         continue;

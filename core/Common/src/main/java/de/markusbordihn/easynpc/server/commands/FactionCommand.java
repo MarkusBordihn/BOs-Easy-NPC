@@ -51,21 +51,19 @@ public class FactionCommand extends Command {
             Commands.literal("create")
                 .then(
                     Commands.argument(NAME_ARG, StringArgumentType.word())
-                        .executes(
-                            context ->
-                                createFaction(
-                                    context.getSource(),
-                                    StringArgumentType.getString(context, NAME_ARG)))))
+                        .executes(context ->
+                            createFaction(
+                                context.getSource(),
+                                StringArgumentType.getString(context, NAME_ARG)))))
         .then(
             Commands.literal("delete")
                 .then(
                     Commands.argument(NAME_ARG, StringArgumentType.word())
                         .suggests(FactionSuggestions::suggest)
-                        .executes(
-                            context ->
-                                deleteFaction(
-                                    context.getSource(),
-                                    StringArgumentType.getString(context, NAME_ARG)))))
+                        .executes(context ->
+                            deleteFaction(
+                                context.getSource(),
+                                StringArgumentType.getString(context, NAME_ARG)))))
         .then(Commands.literal("list").executes(context -> listFactions(context.getSource())))
         .then(
             Commands.literal("color")
@@ -74,12 +72,11 @@ public class FactionCommand extends Command {
                         .suggests(FactionSuggestions::suggest)
                         .then(
                             Commands.argument(COLOR_ARG, ColorArgument.color())
-                                .executes(
-                                    context ->
-                                        setFactionColor(
-                                            context.getSource(),
-                                            StringArgumentType.getString(context, NAME_ARG),
-                                            ColorArgument.getColor(context, COLOR_ARG))))))
+                                .executes(context ->
+                                    setFactionColor(
+                                        context.getSource(),
+                                        StringArgumentType.getString(context, NAME_ARG),
+                                        ColorArgument.getColor(context, COLOR_ARG))))))
         .then(
             Commands.literal("hostile")
                 .then(
@@ -91,14 +88,12 @@ public class FactionCommand extends Command {
                                     Commands.argument(
                                             HOSTILE_FACTION_ARG, StringArgumentType.word())
                                         .suggests(FactionSuggestions::suggest)
-                                        .executes(
-                                            context ->
-                                                addHostileFaction(
-                                                    context.getSource(),
-                                                    StringArgumentType.getString(
-                                                        context, FACTION_ARG),
-                                                    StringArgumentType.getString(
-                                                        context, HOSTILE_FACTION_ARG))))))
+                                        .executes(context ->
+                                            addHostileFaction(
+                                                context.getSource(),
+                                                StringArgumentType.getString(context, FACTION_ARG),
+                                                StringArgumentType.getString(
+                                                    context, HOSTILE_FACTION_ARG))))))
                 .then(
                     Commands.literal("remove")
                         .then(
@@ -108,14 +103,12 @@ public class FactionCommand extends Command {
                                     Commands.argument(
                                             HOSTILE_FACTION_ARG, StringArgumentType.word())
                                         .suggests(FactionSuggestions::suggest)
-                                        .executes(
-                                            context ->
-                                                removeHostileFaction(
-                                                    context.getSource(),
-                                                    StringArgumentType.getString(
-                                                        context, FACTION_ARG),
-                                                    StringArgumentType.getString(
-                                                        context, HOSTILE_FACTION_ARG))))))
+                                        .executes(context ->
+                                            removeHostileFaction(
+                                                context.getSource(),
+                                                StringArgumentType.getString(context, FACTION_ARG),
+                                                StringArgumentType.getString(
+                                                    context, HOSTILE_FACTION_ARG))))))
                 .then(
                     Commands.literal("mutual")
                         .then(
@@ -127,14 +120,13 @@ public class FactionCommand extends Command {
                                             Commands.argument(
                                                     HOSTILE_FACTION_ARG, StringArgumentType.word())
                                                 .suggests(FactionSuggestions::suggest)
-                                                .executes(
-                                                    context ->
-                                                        addMutualHostileFaction(
-                                                            context.getSource(),
-                                                            StringArgumentType.getString(
-                                                                context, FACTION_ARG),
-                                                            StringArgumentType.getString(
-                                                                context, HOSTILE_FACTION_ARG))))))
+                                                .executes(context ->
+                                                    addMutualHostileFaction(
+                                                        context.getSource(),
+                                                        StringArgumentType.getString(
+                                                            context, FACTION_ARG),
+                                                        StringArgumentType.getString(
+                                                            context, HOSTILE_FACTION_ARG))))))
                         .then(
                             Commands.literal("remove")
                                 .then(
@@ -144,24 +136,22 @@ public class FactionCommand extends Command {
                                             Commands.argument(
                                                     HOSTILE_FACTION_ARG, StringArgumentType.word())
                                                 .suggests(FactionSuggestions::suggest)
-                                                .executes(
-                                                    context ->
-                                                        removeMutualHostileFaction(
-                                                            context.getSource(),
-                                                            StringArgumentType.getString(
-                                                                context, FACTION_ARG),
-                                                            StringArgumentType.getString(
-                                                                context, HOSTILE_FACTION_ARG)))))))
+                                                .executes(context ->
+                                                    removeMutualHostileFaction(
+                                                        context.getSource(),
+                                                        StringArgumentType.getString(
+                                                            context, FACTION_ARG),
+                                                        StringArgumentType.getString(
+                                                            context, HOSTILE_FACTION_ARG)))))))
                 .then(
                     Commands.literal("list")
                         .then(
                             Commands.argument(FACTION_ARG, StringArgumentType.word())
                                 .suggests(FactionSuggestions::suggest)
-                                .executes(
-                                    context ->
-                                        listHostileFactions(
-                                            context.getSource(),
-                                            StringArgumentType.getString(context, FACTION_ARG))))))
+                                .executes(context ->
+                                    listHostileFactions(
+                                        context.getSource(),
+                                        StringArgumentType.getString(context, FACTION_ARG))))))
         .then(
             Commands.literal("set")
                 .then(
@@ -169,32 +159,28 @@ public class FactionCommand extends Command {
                         .then(
                             Commands.argument(NAME_ARG, StringArgumentType.word())
                                 .suggests(FactionSuggestions::suggest)
-                                .executes(
-                                    context ->
-                                        setNPCFaction(
-                                            context.getSource(),
-                                            EasyNPCArgument.getEntityWithAccess(
-                                                context, NPC_TARGET_ARG),
-                                            StringArgumentType.getString(context, NAME_ARG))))))
+                                .executes(context ->
+                                    setNPCFaction(
+                                        context.getSource(),
+                                        EasyNPCArgument.getEntityWithAccess(
+                                            context, NPC_TARGET_ARG),
+                                        StringArgumentType.getString(context, NAME_ARG))))))
         .then(
             Commands.literal("get")
                 .then(
                     Commands.argument(NPC_TARGET_ARG, EasyNPCArgument.npc())
-                        .executes(
-                            context ->
-                                getNPCFaction(
-                                    context.getSource(),
-                                    EasyNPCArgument.getEntity(context, NPC_TARGET_ARG)))))
+                        .executes(context ->
+                            getNPCFaction(
+                                context.getSource(),
+                                EasyNPCArgument.getEntity(context, NPC_TARGET_ARG)))))
         .then(
             Commands.literal("clear")
                 .then(
                     Commands.argument(NPC_TARGET_ARG, EasyNPCArgument.npc())
-                        .executes(
-                            context ->
-                                clearNPCFaction(
-                                    context.getSource(),
-                                    EasyNPCArgument.getEntityWithAccess(
-                                        context, NPC_TARGET_ARG)))));
+                        .executes(context ->
+                            clearNPCFaction(
+                                context.getSource(),
+                                EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG)))));
   }
 
   private static int createFaction(CommandSourceStack context, String factionName) {

@@ -28,15 +28,14 @@ import net.minecraft.core.UUIDUtil;
 public record DeletedNPCEntry(UUID entityUUID, long deletedTimestamp) {
 
   public static final Codec<DeletedNPCEntry> CODEC =
-      RecordCodecBuilder.create(
-          instance ->
-              instance
-                  .group(
-                      UUIDUtil.CODEC.fieldOf("UUID").forGetter(DeletedNPCEntry::entityUUID),
-                      Codec.LONG
-                          .fieldOf("DeletedTimestamp")
-                          .forGetter(DeletedNPCEntry::deletedTimestamp))
-                  .apply(instance, DeletedNPCEntry::new));
+      RecordCodecBuilder.create(instance ->
+          instance
+              .group(
+                  UUIDUtil.CODEC.fieldOf("UUID").forGetter(DeletedNPCEntry::entityUUID),
+                  Codec.LONG
+                      .fieldOf("DeletedTimestamp")
+                      .forGetter(DeletedNPCEntry::deletedTimestamp))
+              .apply(instance, DeletedNPCEntry::new));
 
   public static final Codec<List<DeletedNPCEntry>> LIST_CODEC = CODEC.listOf();
 

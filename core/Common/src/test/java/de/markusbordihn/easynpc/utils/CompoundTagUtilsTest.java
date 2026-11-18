@@ -23,13 +23,54 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import de.markusbordihn.easynpc.data.scale.CustomScale;
 import java.util.Set;
+import java.util.UUID;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceLocation;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class CompoundTagUtilsTest {
+
+  private static final String UUID_TAG = "UUID";
+
+  @Test
+  @DisplayName("A valid UUID tag is read back")
+  void testReadUUIDReturnsStoredUUID() {
+    UUID storedUUID = UUID.randomUUID();
+    CompoundTag compoundTag = new CompoundTag();
+    compoundTag.putUUID(UUID_TAG, storedUUID);
+
+    assertEquals(storedUUID, CompoundTagUtils.readUUID(compoundTag, UUID_TAG, null));
+  }
+
+  @Test
+  @DisplayName("A missing UUID tag returns the fallback")
+  void testReadUUIDMissingReturnsFallback() {
+    UUID fallbackUUID = UUID.randomUUID();
+
+    assertEquals(
+        fallbackUUID, CompoundTagUtils.readUUID(new CompoundTag(), UUID_TAG, fallbackUUID));
+    assertNull(CompoundTagUtils.readUUID(new CompoundTag(), UUID_TAG, null));
+  }
+
+  @Test
+  @DisplayName("A malformed UUID tag returns the fallback instead of throwing")
+  void testReadUUIDMalformedReturnsFallback() {
+    UUID fallbackUUID = UUID.randomUUID();
+    CompoundTag stringUUIDTag = new CompoundTag();
+    stringUUIDTag.putString(UUID_TAG, UUID.randomUUID().toString());
+    CompoundTag shortArrayUUIDTag = new CompoundTag();
+    shortArrayUUIDTag.putIntArray(UUID_TAG, new int[] {1, 2});
+    CompoundTag listUUIDTag = new CompoundTag();
+    listUUIDTag.put(UUID_TAG, new ListTag());
+
+    assertEquals(fallbackUUID, CompoundTagUtils.readUUID(stringUUIDTag, UUID_TAG, fallbackUUID));
+    assertEquals(
+        fallbackUUID, CompoundTagUtils.readUUID(shortArrayUUIDTag, UUID_TAG, fallbackUUID));
+    assertNull(CompoundTagUtils.readUUID(listUUIDTag, UUID_TAG, null));
+  }
 
   @Test
   void testBlockPos_roundTrip_positive() {
