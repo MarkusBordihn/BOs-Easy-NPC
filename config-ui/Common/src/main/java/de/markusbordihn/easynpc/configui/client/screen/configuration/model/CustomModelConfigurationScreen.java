@@ -214,13 +214,12 @@ public class CustomModelConfigurationScreen<T extends ConfigurationMenu>
     List<EntityType<? extends Entity>> entityKeys =
         EntityTypeManager.getUnknownAndSupportedEntityTypes();
     if (this.searchFilter != null && !this.searchFilter.isEmpty()) {
-      entityKeys.removeIf(
-          entityType ->
-              !BuiltInRegistries.ENTITY_TYPE
-                  .getKey(entityType)
-                  .toString()
-                  .toLowerCase(Locale.ROOT)
-                  .contains(this.searchFilter.toLowerCase(Locale.ROOT)));
+      entityKeys.removeIf(entityType ->
+          !BuiltInRegistries.ENTITY_TYPE
+              .getKey(entityType)
+              .toString()
+              .toLowerCase(Locale.ROOT)
+              .contains(this.searchFilter.toLowerCase(Locale.ROOT)));
     }
     this.numOfEntities = entityKeys.size();
 

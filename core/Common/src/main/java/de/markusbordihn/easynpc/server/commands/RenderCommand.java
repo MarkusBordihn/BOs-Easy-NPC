@@ -57,58 +57,52 @@ public class RenderCommand extends Command {
             Commands.literal("set")
                 .then(
                     Commands.literal("type")
-                        .requires(
-                            commandSourceStack ->
-                                commandSourceStack.hasPermission(Commands.LEVEL_ALL))
+                        .requires(commandSourceStack ->
+                            commandSourceStack.hasPermission(Commands.LEVEL_ALL))
                         .then(
                             Commands.argument(NPC_TARGET_ARG, EasyNPCArgument.npc())
                                 .then(
                                     Commands.argument(TYPE_ARG, StringArgumentType.string())
                                         .suggests(RenderTypeSuggestions::suggest)
-                                        .executes(
-                                            context ->
-                                                setRenderType(
-                                                    context.getSource(),
-                                                    EasyNPCArgument.getEntityWithAccess(
-                                                        context, NPC_TARGET_ARG),
-                                                    RenderType.get(
-                                                        StringArgumentType.getString(
-                                                            context, TYPE_ARG)))))))
+                                        .executes(context ->
+                                            setRenderType(
+                                                context.getSource(),
+                                                EasyNPCArgument.getEntityWithAccess(
+                                                    context, NPC_TARGET_ARG),
+                                                RenderType.get(
+                                                    StringArgumentType.getString(
+                                                        context, TYPE_ARG)))))))
                 .then(
                     Commands.literal("model")
-                        .requires(
-                            commandSourceStack ->
-                                commandSourceStack.hasPermission(Commands.LEVEL_ALL))
+                        .requires(commandSourceStack ->
+                            commandSourceStack.hasPermission(Commands.LEVEL_ALL))
                         .then(
                             Commands.argument(NPC_TARGET_ARG, EasyNPCArgument.npc())
                                 .then(
                                     Commands.argument(ENTITY_ARG, EntityTypeArgument.entityType())
-                                        .executes(
-                                            context ->
-                                                setRenderEntityType(
-                                                    context.getSource(),
-                                                    EasyNPCArgument.getEntityWithAccess(
-                                                        context, NPC_TARGET_ARG),
-                                                    EntityTypeArgument.getEntityType(
-                                                        context, ENTITY_ARG))))))
+                                        .executes(context ->
+                                            setRenderEntityType(
+                                                context.getSource(),
+                                                EasyNPCArgument.getEntityWithAccess(
+                                                    context, NPC_TARGET_ARG),
+                                                EntityTypeArgument.getEntityType(
+                                                    context, ENTITY_ARG))))))
                 .then(
                     Commands.literal("species")
-                        .requires(
-                            commandSourceStack ->
-                                commandSourceStack.hasPermission(Commands.LEVEL_ALL))
+                        .requires(commandSourceStack ->
+                            commandSourceStack.hasPermission(Commands.LEVEL_ALL))
                         .then(
                             Commands.argument(NPC_TARGET_ARG, EasyNPCArgument.npc())
                                 .then(
                                     Commands.argument(SPECIES_ARG, StringArgumentType.string())
                                         .suggests(RenderModelSuggestions::suggest)
-                                        .executes(
-                                            context ->
-                                                setRenderEntityModel(
-                                                    context.getSource(),
-                                                    EasyNPCArgument.getEntityWithAccess(
-                                                        context, NPC_TARGET_ARG),
-                                                    StringArgumentType.getString(
-                                                        context, SPECIES_ARG)))))))
+                                        .executes(context ->
+                                            setRenderEntityModel(
+                                                context.getSource(),
+                                                EasyNPCArgument.getEntityWithAccess(
+                                                    context, NPC_TARGET_ARG),
+                                                StringArgumentType.getString(
+                                                    context, SPECIES_ARG)))))))
         .then(textureArguments());
   }
 
@@ -123,65 +117,58 @@ public class RenderCommand extends Command {
                             Commands.argument(SLOT_ARG, StringArgumentType.word())
                                 .then(
                                     Commands.argument(TEXTURE_ARG, ResourceLocationArgument.id())
-                                        .executes(
-                                            context ->
-                                                setTexture(
-                                                    context.getSource(),
-                                                    EasyNPCArgument.getEntityWithAccess(
-                                                        context, NPC_TARGET_ARG),
-                                                    StringArgumentType.getString(context, SLOT_ARG),
-                                                    ResourceLocationArgument.getId(
-                                                        context, TEXTURE_ARG),
-                                                    ModelTextureBlend.DEFAULT))
+                                        .executes(context ->
+                                            setTexture(
+                                                context.getSource(),
+                                                EasyNPCArgument.getEntityWithAccess(
+                                                    context, NPC_TARGET_ARG),
+                                                StringArgumentType.getString(context, SLOT_ARG),
+                                                ResourceLocationArgument.getId(
+                                                    context, TEXTURE_ARG),
+                                                ModelTextureBlend.DEFAULT))
                                         .then(
                                             Commands.argument(BLEND_ARG, StringArgumentType.word())
-                                                .suggests(
-                                                    (context, builder) ->
-                                                        SharedSuggestionProvider.suggest(
-                                                            ModelTextureBlend.serializedNames(),
-                                                            builder))
-                                                .executes(
-                                                    context ->
-                                                        setTexture(
+                                                .suggests((context, builder) ->
+                                                    SharedSuggestionProvider.suggest(
+                                                        ModelTextureBlend.serializedNames(),
+                                                        builder))
+                                                .executes(context ->
+                                                    setTexture(
+                                                        context.getSource(),
+                                                        EasyNPCArgument.getEntityWithAccess(
+                                                            context, NPC_TARGET_ARG),
+                                                        StringArgumentType.getString(
+                                                            context, SLOT_ARG),
+                                                        ResourceLocationArgument.getId(
+                                                            context, TEXTURE_ARG),
+                                                        textureBlend(
                                                             context.getSource(),
-                                                            EasyNPCArgument.getEntityWithAccess(
-                                                                context, NPC_TARGET_ARG),
                                                             StringArgumentType.getString(
-                                                                context, SLOT_ARG),
-                                                            ResourceLocationArgument.getId(
-                                                                context, TEXTURE_ARG),
-                                                            textureBlend(
-                                                                context.getSource(),
-                                                                StringArgumentType.getString(
-                                                                    context, BLEND_ARG)))))))))
+                                                                context, BLEND_ARG)))))))))
         .then(
             Commands.literal("clear")
                 .then(
                     Commands.argument(NPC_TARGET_ARG, EasyNPCArgument.npc())
-                        .executes(
-                            context ->
-                                clearTextures(
-                                    context.getSource(),
-                                    EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG)))
+                        .executes(context ->
+                            clearTextures(
+                                context.getSource(),
+                                EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG)))
                         .then(
                             Commands.argument(SLOT_ARG, StringArgumentType.word())
-                                .executes(
-                                    context ->
-                                        clearTexture(
-                                            context.getSource(),
-                                            EasyNPCArgument.getEntityWithAccess(
-                                                context, NPC_TARGET_ARG),
-                                            StringArgumentType.getString(context, SLOT_ARG))))))
+                                .executes(context ->
+                                    clearTexture(
+                                        context.getSource(),
+                                        EasyNPCArgument.getEntityWithAccess(
+                                            context, NPC_TARGET_ARG),
+                                        StringArgumentType.getString(context, SLOT_ARG))))))
         .then(
             Commands.literal("query")
                 .then(
                     Commands.argument(NPC_TARGET_ARG, EasyNPCArgument.npc())
-                        .executes(
-                            context ->
-                                queryTextures(
-                                    context.getSource(),
-                                    EasyNPCArgument.getEntityWithAccess(
-                                        context, NPC_TARGET_ARG)))));
+                        .executes(context ->
+                            queryTextures(
+                                context.getSource(),
+                                EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG)))));
   }
 
   private static int setRenderType(
@@ -309,16 +296,15 @@ public class RenderCommand extends Command {
 
     textureSetting
         .slots()
-        .forEach(
-            (slot, textureSlot) ->
-                sendSuccessMessage(
-                    context,
-                    slot
-                        + ": "
-                        + textureSlot.texture().map(ResourceLocation::toString).orElse("-")
-                        + " ("
-                        + textureSlot.blend().getSerializedName()
-                        + ")"));
+        .forEach((slot, textureSlot) ->
+            sendSuccessMessage(
+                context,
+                slot
+                    + ": "
+                    + textureSlot.texture().map(ResourceLocation::toString).orElse("-")
+                    + " ("
+                    + textureSlot.blend().getSerializedName()
+                    + ")"));
     return SINGLE_SUCCESS;
   }
 

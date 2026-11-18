@@ -147,14 +147,13 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
             type -> type != ActionDataType.CUSTOM || this.actionDataType == ActionDataType.CUSTOM)
         .filter(type -> this.actionEventType.allowsActionDataType(type))
         .filter(type -> !blockedTypes.contains(type) || type == this.actionDataType)
-        .filter(
-            type -> {
-              if (!requiresServerPlayer) {
-                return !this.actionDataTypeRequiresServerPlayer(type);
-              }
+        .filter(type -> {
+          if (!requiresServerPlayer) {
+            return !this.actionDataTypeRequiresServerPlayer(type);
+          }
 
-              return true;
-            })
+          return true;
+        })
         .sorted()
         .collect(Collectors.toCollection(LinkedHashSet::new));
   }

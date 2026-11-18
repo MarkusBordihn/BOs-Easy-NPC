@@ -48,6 +48,7 @@ import de.markusbordihn.easynpc.security.CommandSecurity;
 import de.markusbordihn.easynpc.security.PresetSanitizationResult;
 import de.markusbordihn.easynpc.security.SecurityDecision;
 import de.markusbordihn.easynpc.security.SecurityManager;
+import de.markusbordihn.easynpc.utils.CompoundTagUtils;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -392,10 +393,7 @@ public class PresetHandler {
         PresetCompactor.expand(
             compoundTag, PresetReference.getReferenceTag(entityType, serverLevel));
 
-    UUID existingUUID =
-        expandedCompoundTag.contains(Entity.UUID_TAG)
-            ? expandedCompoundTag.getUUID(Entity.UUID_TAG)
-            : null;
+    UUID existingUUID = CompoundTagUtils.readUUID(expandedCompoundTag, Entity.UUID_TAG, null);
     ImportOutcome existingEntityOutcome = ImportOutcome.FAILED;
     if (existingUUID != null) {
       existingEntityOutcome =

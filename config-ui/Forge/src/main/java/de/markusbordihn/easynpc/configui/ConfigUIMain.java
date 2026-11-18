@@ -76,21 +76,18 @@ public class ConfigUIMain {
     log.info("{} Menu Handler ...", Constants.LOG_REGISTER_PREFIX);
     MenuManager.registerMenuHandler(new MenuHandler());
     modEventBus.addListener(MenuHandler::registerMenuHandler);
-    MinecraftForge.EVENT_BUS.addListener(
-        (final PlayerEvent.PlayerLoggedOutEvent event) -> {
-          if (event.getEntity() instanceof ServerPlayer serverPlayer) {
-            MenuManager.cleanupPlayerMenus(serverPlayer);
-          }
-        });
+    MinecraftForge.EVENT_BUS.addListener((final PlayerEvent.PlayerLoggedOutEvent event) -> {
+      if (event.getEntity() instanceof ServerPlayer serverPlayer) {
+        MenuManager.cleanupPlayerMenus(serverPlayer);
+      }
+    });
 
     log.info("{} Network Handler ...", Constants.LOG_REGISTER_PREFIX);
-    modEventBus.addListener(
-        (final FMLCommonSetupEvent event) ->
-            event.enqueueWork(
-                () -> {
-                  NetworkHandlerManager.registerHandler(new NetworkHandler());
-                  NetworkHandlerManager.registerNetworkMessages(NetworkHandlerManagerType.BOTH);
-                }));
+    modEventBus.addListener((final FMLCommonSetupEvent event) ->
+        event.enqueueWork(() -> {
+          NetworkHandlerManager.registerHandler(new NetworkHandler());
+          NetworkHandlerManager.registerNetworkMessages(NetworkHandlerManagerType.BOTH);
+        }));
     NetworkMessageHandlerManager.registerClientHandler(new ClientNetworkMessageHandler());
 
     DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> new ConfigUIClient(modEventBus));

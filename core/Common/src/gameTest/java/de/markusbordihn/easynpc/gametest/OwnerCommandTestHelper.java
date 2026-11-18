@@ -197,9 +197,8 @@ public class OwnerCommandTestHelper {
 
   private static boolean isListedForOwner(EasyNPC<?> easyNPC, UUID ownerUUID) {
     return EasyNPCEntityHandler.getByOwner(ownerUUID).stream()
-        .anyMatch(
-            savedNPCEntityEntry ->
-                easyNPC.getEntityUUID().equals(savedNPCEntityEntry.entityUUID()));
+        .anyMatch(savedNPCEntityEntry ->
+            easyNPC.getEntityUUID().equals(savedNPCEntityEntry.entityUUID()));
   }
 
   private static CommandSourceStack consoleSource(GameTestHelper helper) {

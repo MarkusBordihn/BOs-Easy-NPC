@@ -124,6 +124,23 @@ class ObjectiveDataEntryTest {
   }
 
   @Test
+  @DisplayName("Malformed target UUIDs are read as unset targets")
+  void testMalformedTargetUUIDsAreIgnored() {
+    ObjectiveDataEntry entry = new ObjectiveDataEntry(ObjectiveType.ATTACK_ENTITY_BY_UUID);
+    entry.setTargetEntityUUID(UUID.randomUUID());
+    CompoundTag compoundTag = entry.createTag();
+    compoundTag.putString(
+        ObjectiveDataEntry.DATA_TARGET_ENTITY_UUID_TAG, UUID.randomUUID().toString());
+    compoundTag.putIntArray(ObjectiveDataEntry.DATA_TARGET_OWNER_UUID_TAG, new int[] {1, 2});
+
+    ObjectiveDataEntry restored = new ObjectiveDataEntry(compoundTag);
+
+    assertEquals(ObjectiveType.ATTACK_ENTITY_BY_UUID, restored.getType());
+    assertNull(restored.getTargetEntityUUID());
+    assertNull(restored.getTargetOwnerUUID());
+  }
+
+  @Test
   @DisplayName("Objectives without an owner target are unaffected by the owner fallback")
   void testNonOwnerObjectivesHaveNoOwnerTarget() {
     assertFalse(new ObjectiveDataEntry(ObjectiveType.FOLLOW_PLAYER).hasOwnerTarget());
@@ -233,7 +250,8 @@ class ObjectiveDataEntryTest {
   @Test
   @DisplayName("A custom objective stored without a priority loads with the registry default")
   void testCustomObjectiveWithoutPriorityUsesRegistryDefault() {
-    ResourceLocation customObjectiveId = ResourceLocation.fromNamespaceAndPath("example", "objective");
+    ResourceLocation customObjectiveId =
+        ResourceLocation.fromNamespaceAndPath("example", "objective");
     CompoundTag compoundTag = new CompoundTag();
     compoundTag.putString(ObjectiveDataEntry.DATA_TYPE_TAG, ObjectiveType.CUSTOM.name());
     compoundTag.putString(

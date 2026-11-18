@@ -8,6 +8,20 @@ the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 7.20.0
+
+- Fixed a crash on NPCs with a missing skin ID, thanks to `voidsipp` for the fix in #866.
+- Fixed NPCs, spawners and presets failing to load when another mod broke their stored IDs.
+- Fixed NPCs on a player's shoulder getting lost when another mod interrupted their release.
+- Fixed NPCs turning into vanilla mobs through lightning, drowning, freezing or zombie attacks.
+- Fixed spawned NPCs getting random babies, riders, gear or effects and losing their preset gear.
+- Fixed NPCs picking up items without "Pick up items", e.g. villagers, piglins and foxes.
+- Fixed skeleton NPCs using the vanilla bow and melee attack besides their configured attack.
+- Fixed water damage and teleporting of enderman NPCs and splitting and touch damage of slime NPCs.
+- Fixed fox NPCs eating held food, chicken NPCs laying eggs and cat NPCs losing vanilla poses.
+- Fixed lightning charging creeper NPCs and reflected fireballs killing ghast NPCs instantly.
+- Improved server performance of hostile mobs searching for NPCs to attack.
+
 ### 7.19.0
 
 - Fixed #865 by keeping hidden skin layers of one NPC from hiding them on others of the same type.

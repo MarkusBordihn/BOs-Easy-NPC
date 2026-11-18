@@ -35,12 +35,11 @@ public class PresetBrowserCommand {
     return Commands.literal(COMMAND_NAME)
         .requires(
             commandSourceStack -> commandSourceStack.hasPermission(Commands.LEVEL_GAMEMASTERS))
-        .executes(
-            context -> {
-              MenuManager.getMenuHandler()
-                  .openCustomMenu(
-                      CustomMenuType.PRESET_BROWSER, context.getSource().getPlayerOrException());
-              return 1;
-            });
+        .executes(context -> {
+          MenuManager.getMenuHandler()
+              .openCustomMenu(
+                  CustomMenuType.PRESET_BROWSER, context.getSource().getPlayerOrException());
+          return 1;
+        });
   }
 }

@@ -167,12 +167,11 @@ public class LookObjectiveConfigurationScreen<T extends ConfigurationMenu>
     this.lookAtEntityUUID.setMaxLength(36);
     this.lookAtEntityUUID.setEditable(
         this.objectiveDataSet.hasObjective(ObjectiveType.LOOK_AT_ENTITY_BY_UUID));
-    this.lookAtEntityUUID.setResponder(
-        value -> {
-          if (this.lookAtEntityUUIDSaveButton != null) {
-            this.lookAtEntityUUIDSaveButton.active = value != null && !value.isEmpty();
-          }
-        });
+    this.lookAtEntityUUID.setResponder(value -> {
+      if (this.lookAtEntityUUIDSaveButton != null) {
+        this.lookAtEntityUUIDSaveButton.active = value != null && !value.isEmpty();
+      }
+    });
     this.lookAtEntityUUID.setValue(
         this.objectiveDataSet.hasObjective(ObjectiveType.LOOK_AT_ENTITY_BY_UUID)
                 && this.objectiveDataSet
@@ -241,16 +240,15 @@ public class LookObjectiveConfigurationScreen<T extends ConfigurationMenu>
         this.addRenderableWidget(
             new TextField(this.font, objectiveEntriesSecondColumn, objectiveEntriesTop, 115));
     this.lookAtItemId.setEditable(this.objectiveDataSet.hasObjective(ObjectiveType.LOOK_AT_ITEM));
-    this.lookAtItemId.setResponder(
-        value -> {
-          if (this.lookAtItemIdSaveButton != null) {
-            this.lookAtItemIdSaveButton.active =
-                this.lookAtItemCheckbox != null
-                    && this.lookAtItemCheckbox.selected()
-                    && value != null
-                    && !value.equals(this.savedItemTag);
-          }
-        });
+    this.lookAtItemId.setResponder(value -> {
+      if (this.lookAtItemIdSaveButton != null) {
+        this.lookAtItemIdSaveButton.active =
+            this.lookAtItemCheckbox != null
+                && this.lookAtItemCheckbox.selected()
+                && value != null
+                && !value.equals(this.savedItemTag);
+      }
+    });
     this.lookAtItemId.setValue(this.savedItemTag);
     this.lookAtItemIdSaveButton =
         this.addRenderableWidget(

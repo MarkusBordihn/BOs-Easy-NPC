@@ -127,7 +127,7 @@ public record ActionDataEntry(
 
   private ActionDataEntry(CompoundTag compoundTag, UUID fallbackId) {
     this(
-        compoundTag.contains(DATA_ID_TAG) ? compoundTag.getUUID(DATA_ID_TAG) : fallbackId,
+        CompoundTagUtils.readUUID(compoundTag, DATA_ID_TAG, fallbackId),
         ActionDataType.get(compoundTag.getString(DATA_TYPE_TAG)),
         compoundTag.contains(ConditionDataSet.CONDITION_DATA_SET_TAG)
             ? new ConditionDataSet(compoundTag.getCompound(ConditionDataSet.CONDITION_DATA_SET_TAG))
@@ -135,9 +135,7 @@ public record ActionDataEntry(
         compoundTag.contains(DATA_COMMAND_TAG)
             ? compoundTag.getString(DATA_COMMAND_TAG)
             : DEFAULT_COMMAND,
-        compoundTag.contains(DATA_TARGET_UUID_TAG)
-            ? compoundTag.getUUID(DATA_TARGET_UUID_TAG)
-            : null,
+        CompoundTagUtils.readUUID(compoundTag, DATA_TARGET_UUID_TAG, null),
         compoundTag.contains(DATA_BLOCK_POS_TAG)
             ? CompoundTagUtils.readBlockPos(compoundTag.getCompound(DATA_BLOCK_POS_TAG))
             : BlockPos.ZERO,

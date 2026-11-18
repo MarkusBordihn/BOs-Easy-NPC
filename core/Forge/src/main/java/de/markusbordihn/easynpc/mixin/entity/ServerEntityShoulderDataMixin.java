@@ -42,7 +42,8 @@ public abstract class ServerEntityShoulderDataMixin {
               value = "INVOKE",
               target =
                   "Lnet/minecraft/network/protocol/game/ClientboundSetEntityDataPacket;<init>(ILjava/util/List;)V"),
-      index = 1)
+      index = 1,
+      require = 2)
   private List<SynchedEntityData.DataValue<?>> onCreateEntityDataPacket(
       List<SynchedEntityData.DataValue<?>> dataValues) {
     return ShoulderNPCClientData.createClientDataValues(this.entity, dataValues);

@@ -53,44 +53,38 @@ public class SpawnCommand extends Command {
         .then(
             Commands.argument(UUID_ARG, StringArgumentType.string())
                 .suggests(DespawnedNPCSuggestions::suggest)
-                .executes(
-                    context ->
-                        spawn(
-                            context.getSource(),
-                            StringArgumentType.getString(context, UUID_ARG),
-                            false))
+                .executes(context ->
+                    spawn(
+                        context.getSource(),
+                        StringArgumentType.getString(context, UUID_ARG),
+                        false))
                 .then(
                     Commands.literal(FORCE_LITERAL)
-                        .requires(
-                            commandSourceStack ->
-                                commandSourceStack.hasPermission(Commands.LEVEL_GAMEMASTERS))
-                        .executes(
-                            context ->
-                                spawn(
-                                    context.getSource(),
-                                    StringArgumentType.getString(context, UUID_ARG),
-                                    true)))
+                        .requires(commandSourceStack ->
+                            commandSourceStack.hasPermission(Commands.LEVEL_GAMEMASTERS))
+                        .executes(context ->
+                            spawn(
+                                context.getSource(),
+                                StringArgumentType.getString(context, UUID_ARG),
+                                true)))
                 .then(
                     Commands.argument(POSITION_ARG, Vec3Argument.vec3())
-                        .requires(
-                            commandSourceStack ->
-                                commandSourceStack.hasPermission(Commands.LEVEL_GAMEMASTERS))
-                        .executes(
-                            context ->
-                                spawnAtPosition(
-                                    context.getSource(),
-                                    StringArgumentType.getString(context, UUID_ARG),
-                                    Vec3Argument.getVec3(context, POSITION_ARG),
-                                    false))
+                        .requires(commandSourceStack ->
+                            commandSourceStack.hasPermission(Commands.LEVEL_GAMEMASTERS))
+                        .executes(context ->
+                            spawnAtPosition(
+                                context.getSource(),
+                                StringArgumentType.getString(context, UUID_ARG),
+                                Vec3Argument.getVec3(context, POSITION_ARG),
+                                false))
                         .then(
                             Commands.literal(FORCE_LITERAL)
-                                .executes(
-                                    context ->
-                                        spawnAtPosition(
-                                            context.getSource(),
-                                            StringArgumentType.getString(context, UUID_ARG),
-                                            Vec3Argument.getVec3(context, POSITION_ARG),
-                                            true)))));
+                                .executes(context ->
+                                    spawnAtPosition(
+                                        context.getSource(),
+                                        StringArgumentType.getString(context, UUID_ARG),
+                                        Vec3Argument.getVec3(context, POSITION_ARG),
+                                        true)))));
   }
 
   private static int spawn(CommandSourceStack context, String uuidString, boolean force) {

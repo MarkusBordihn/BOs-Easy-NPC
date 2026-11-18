@@ -64,10 +64,7 @@ public class IrisManager {
         Class<?> apiClass = Class.forName(apiClassName);
         apiInstance = apiClass.getMethod("getInstance").invoke(null);
         shaderPackInUseMethod = apiClass.getMethod("isShaderPackInUse");
-        log.info(
-            "{} Iris shader pack detection over {} ...",
-            Constants.LOG_PREFIX,
-            apiClassName);
+        log.info("{} Iris shader pack detection over {} ...", Constants.LOG_PREFIX, apiClassName);
         return;
       } catch (ReflectiveOperationException exception) {
         log.debug("Iris API {} is not available: {}", apiClassName, exception.getMessage());

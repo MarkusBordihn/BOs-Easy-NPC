@@ -62,8 +62,7 @@ public interface InventoryDataCapable<E extends Mob> extends EasyNPC<E> {
     }
   }
 
-  default void addAdditionalInventoryData(
-      CompoundTag compoundTag, HolderLookup.Provider provider) {
+  default void addAdditionalInventoryData(CompoundTag compoundTag, HolderLookup.Provider provider) {
     SimpleContainer inventory = this.getEasyNPCInventory();
     if (inventory == null || inventory.isEmpty()) {
       return;
@@ -74,7 +73,8 @@ public interface InventoryDataCapable<E extends Mob> extends EasyNPC<E> {
     for (int i = 0; i < inventory.getContainerSize(); i++) {
       items.set(i, inventory.getItem(i));
     }
-    compoundTag.put(DATA_INVENTORY_TAG, ContainerHelper.saveAllItems(new CompoundTag(), items, provider));
+    compoundTag.put(
+        DATA_INVENTORY_TAG, ContainerHelper.saveAllItems(new CompoundTag(), items, provider));
   }
 
   default void readAdditionalInventoryData(

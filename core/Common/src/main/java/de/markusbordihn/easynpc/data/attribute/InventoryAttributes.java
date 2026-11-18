@@ -33,17 +33,16 @@ public record InventoryAttributes(boolean dropOnDeath, boolean pickUpItems)
   // Shares the flat EntityAttribute compound with the other attribute groups, so it is a MapCodec
   // and defaults are left out of the tag.
   public static final MapCodec<InventoryAttributes> MAP_CODEC =
-      RecordCodecBuilder.mapCodec(
-          instance ->
-              instance
-                  .group(
-                      Codec.BOOL
-                          .optionalFieldOf(InventoryAttributeType.DROP_ON_DEATH.getTagName(), false)
-                          .forGetter(InventoryAttributes::dropOnDeath),
-                      Codec.BOOL
-                          .optionalFieldOf(InventoryAttributeType.PICK_UP_ITEMS.getTagName(), false)
-                          .forGetter(InventoryAttributes::pickUpItems))
-                  .apply(instance, InventoryAttributes::new));
+      RecordCodecBuilder.mapCodec(instance ->
+          instance
+              .group(
+                  Codec.BOOL
+                      .optionalFieldOf(InventoryAttributeType.DROP_ON_DEATH.getTagName(), false)
+                      .forGetter(InventoryAttributes::dropOnDeath),
+                  Codec.BOOL
+                      .optionalFieldOf(InventoryAttributeType.PICK_UP_ITEMS.getTagName(), false)
+                      .forGetter(InventoryAttributes::pickUpItems))
+              .apply(instance, InventoryAttributes::new));
 
   public static InventoryAttributes decode(CompoundTag compoundTag) {
     return MAP_CODEC.codec().parse(NbtOps.INSTANCE, compoundTag).result().orElse(EMPTY);

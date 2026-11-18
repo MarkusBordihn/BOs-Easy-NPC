@@ -79,6 +79,21 @@ class ConditionDataEntryTest {
   }
 
   @Test
+  @DisplayName("A malformed target UUID is read as no target")
+  void testMalformedTargetUuidIsIgnored() {
+    CompoundTag compoundTag =
+        new ConditionDataEntry(
+                ConditionType.NPC_STATE, ConditionOperationType.EQUALS, "easy_npc:quest", 1)
+            .createTag();
+    compoundTag.putString(ConditionDataEntry.DATA_TARGET_UUID_TAG, UUID.randomUUID().toString());
+
+    ConditionDataEntry entry = new ConditionDataEntry(compoundTag);
+
+    assertFalse(entry.hasTargetUUID());
+    assertEquals("easy_npc:quest", entry.name());
+  }
+
+  @Test
   @DisplayName("The condition id is derived from the content and stays the same in every JVM")
   void testIdIsContentBased() {
     ConditionDataEntry entry =

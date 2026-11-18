@@ -43,6 +43,7 @@
     "entity.EndermanMixin",
     "entity.EntityWaterStateMixin",
     "entity.FoxMixin",
+    "entity.GhastMixin",
     "entity.PiglinMixin",
     "entity.PlayerShoulderMixin",
     "entity.RaiderMixin",

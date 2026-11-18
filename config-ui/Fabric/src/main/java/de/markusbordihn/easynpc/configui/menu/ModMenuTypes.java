@@ -224,8 +224,7 @@ public class ModMenuTypes {
           Registry.register(
               BuiltInRegistries.MENU,
               ConfigurationType.BOSS_BAR_ATTRIBUTE.getId(),
-              new MenuType<>(
-                  BossBarAttributeConfigurationMenuWrapper::new, FeatureFlagSet.of()));
+              new MenuType<>(BossBarAttributeConfigurationMenuWrapper::new, FeatureFlagSet.of()));
   public static final MenuType<CombatSoundConfigurationMenuWrapper>
       COMBAT_SOUND_CONFIGURATION_MENU =
           Registry.register(

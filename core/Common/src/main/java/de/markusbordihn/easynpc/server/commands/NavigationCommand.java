@@ -44,56 +44,48 @@ public class NavigationCommand extends Command {
             Commands.literal("set")
                 .then(
                     Commands.literal("home")
-                        .requires(
-                            commandSourceStack ->
-                                commandSourceStack.hasPermission(Commands.LEVEL_ALL))
+                        .requires(commandSourceStack ->
+                            commandSourceStack.hasPermission(Commands.LEVEL_ALL))
                         .then(
                             Commands.argument(NPC_TARGET_ARG, EasyNPCArgument.npc())
                                 .then(
                                     Commands.argument(ARG_POSITION, Vec3Argument.vec3())
-                                        .executes(
-                                            context -> {
-                                              Coordinates coordinates =
-                                                  Vec3Argument.getCoordinates(
-                                                      context, ARG_POSITION);
-                                              return setHomePosition(
-                                                  context.getSource(),
-                                                  EasyNPCArgument.getEntityWithAccess(
-                                                      context, NPC_TARGET_ARG),
-                                                  coordinates.getPosition(context.getSource()));
-                                            }))))
+                                        .executes(context -> {
+                                          Coordinates coordinates =
+                                              Vec3Argument.getCoordinates(context, ARG_POSITION);
+                                          return setHomePosition(
+                                              context.getSource(),
+                                              EasyNPCArgument.getEntityWithAccess(
+                                                  context, NPC_TARGET_ARG),
+                                              coordinates.getPosition(context.getSource()));
+                                        }))))
                 .then(
                     Commands.literal("pos")
-                        .requires(
-                            commandSourceStack ->
-                                commandSourceStack.hasPermission(Commands.LEVEL_ALL))
+                        .requires(commandSourceStack ->
+                            commandSourceStack.hasPermission(Commands.LEVEL_ALL))
                         .then(
                             Commands.argument(NPC_TARGET_ARG, EasyNPCArgument.npc())
                                 .then(
                                     Commands.argument(ARG_POSITION, Vec3Argument.vec3())
-                                        .executes(
-                                            context -> {
-                                              Coordinates coordinates =
-                                                  Vec3Argument.getCoordinates(
-                                                      context, ARG_POSITION);
-                                              return setPosition(
-                                                  context.getSource(),
-                                                  EasyNPCArgument.getEntityWithAccess(
-                                                      context, NPC_TARGET_ARG),
-                                                  coordinates.getPosition(context.getSource()));
-                                            })))))
+                                        .executes(context -> {
+                                          Coordinates coordinates =
+                                              Vec3Argument.getCoordinates(context, ARG_POSITION);
+                                          return setPosition(
+                                              context.getSource(),
+                                              EasyNPCArgument.getEntityWithAccess(
+                                                  context, NPC_TARGET_ARG),
+                                              coordinates.getPosition(context.getSource()));
+                                        })))))
         .then(
             Commands.literal("reset")
                 .requires(
                     commandSourceStack -> commandSourceStack.hasPermission(Commands.LEVEL_ALL))
                 .then(
                     Commands.argument(NPC_TARGET_ARG, EasyNPCArgument.npc())
-                        .executes(
-                            context ->
-                                reset(
-                                    context.getSource(),
-                                    EasyNPCArgument.getEntityWithAccess(
-                                        context, NPC_TARGET_ARG)))));
+                        .executes(context ->
+                            reset(
+                                context.getSource(),
+                                EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG)))));
   }
 
   private static int setHomePosition(

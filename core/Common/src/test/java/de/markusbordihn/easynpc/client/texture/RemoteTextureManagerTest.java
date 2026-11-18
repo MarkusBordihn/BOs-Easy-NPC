@@ -50,13 +50,12 @@ class RemoteTextureManagerTest {
     try (Stream<Path> paths = Files.walk(directory)) {
       paths
           .sorted(Comparator.reverseOrder())
-          .forEach(
-              path -> {
-                try {
-                  Files.deleteIfExists(path);
-                } catch (IOException ignored) {
-                }
-              });
+          .forEach(path -> {
+            try {
+              Files.deleteIfExists(path);
+            } catch (IOException ignored) {
+            }
+          });
     }
   }
 

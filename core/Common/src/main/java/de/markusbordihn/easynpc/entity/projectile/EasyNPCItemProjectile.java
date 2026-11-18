@@ -97,8 +97,7 @@ public class EasyNPCItemProjectile extends ThrowableItemProjectile implements Ea
     ProjectileType projectileType = this.projectileData.projectileType();
     this.setItem(new ItemStack(getProjectileItem(this.projectileData)));
     this.setNoGravity(hasNoGravity(projectileType));
-    this.entityData.set(
-        DATA_TRAIL_PARTICLE, (byte) this.projectileData.trailParticle().ordinal());
+    this.entityData.set(DATA_TRAIL_PARTICLE, (byte) this.projectileData.trailParticle().ordinal());
     this.entityData.set(DATA_PROJECTILE_TYPE, (byte) projectileType.ordinal());
   }
 

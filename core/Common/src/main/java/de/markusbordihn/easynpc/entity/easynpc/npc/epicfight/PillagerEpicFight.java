@@ -56,4 +56,9 @@ public class PillagerEpicFight extends PillagerRaw {
   public ConfigurationData getConfigurationData() {
     return ConfigurationData.EPIC_FIGHT;
   }
+
+  @Override
+  public boolean canBeLeader() {
+    return false;
+  }
 }

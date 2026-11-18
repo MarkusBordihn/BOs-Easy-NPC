@@ -48,11 +48,10 @@ public class PoseCommand extends Command {
             Commands.literal("reset")
                 .then(
                     Commands.argument(NPC_TARGET_ARG, EasyNPCArgument.npc())
-                        .executes(
-                            context ->
-                                resetPose(
-                                    context.getSource(),
-                                    EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG)))))
+                        .executes(context ->
+                            resetPose(
+                                context.getSource(),
+                                EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG)))))
         .then(
             Commands.literal("set")
                 .then(
@@ -60,27 +59,24 @@ public class PoseCommand extends Command {
                         .suggests(PoseSuggestions::suggest)
                         .then(
                             Commands.argument(NPC_TARGET_ARG, EasyNPCArgument.npc())
-                                .executes(
-                                    context ->
-                                        setPose(
-                                            context.getSource(),
-                                            EasyNPCArgument.getEntityWithAccess(
-                                                context, NPC_TARGET_ARG),
-                                            ResourceLocationArgument.getId(context, TYPE_ARG)))
+                                .executes(context ->
+                                    setPose(
+                                        context.getSource(),
+                                        EasyNPCArgument.getEntityWithAccess(
+                                            context, NPC_TARGET_ARG),
+                                        ResourceLocationArgument.getId(context, TYPE_ARG)))
                                 .then(
                                     Commands.argument(ARG_POSITION, Vec3Argument.vec3())
-                                        .executes(
-                                            context -> {
-                                              Coordinates coordinates =
-                                                  Vec3Argument.getCoordinates(
-                                                      context, ARG_POSITION);
-                                              return setPoseAtPosition(
-                                                  context.getSource(),
-                                                  EasyNPCArgument.getEntityWithAccess(
-                                                      context, NPC_TARGET_ARG),
-                                                  ResourceLocationArgument.getId(context, TYPE_ARG),
-                                                  coordinates.getPosition(context.getSource()));
-                                            })))));
+                                        .executes(context -> {
+                                          Coordinates coordinates =
+                                              Vec3Argument.getCoordinates(context, ARG_POSITION);
+                                          return setPoseAtPosition(
+                                              context.getSource(),
+                                              EasyNPCArgument.getEntityWithAccess(
+                                                  context, NPC_TARGET_ARG),
+                                              ResourceLocationArgument.getId(context, TYPE_ARG),
+                                              coordinates.getPosition(context.getSource()));
+                                        })))));
   }
 
   private static int resetPose(CommandSourceStack context, EasyNPC<?> easyNPC) {

@@ -98,17 +98,16 @@ public class DisplayAttributeConfigurationScreen<T extends ConfigurationMenu>
                 20,
                 displayAttributeData.getDisplayIntAttribute(DisplayAttributeType.LIGHT_LEVEL),
                 2));
-    this.lightLevelBox.setResponder(
-        value -> {
-          if (this.lightLevelSaveButton != null) {
-            this.lightLevelSaveButton.active =
-                ValueUtils.isNumericValue(value, 0, 15)
-                    && ValueUtils.getIntValue(value)
-                        != this.getEasyNPC()
-                            .getEasyNPCDisplayAttributeData()
-                            .getDisplayIntAttribute(DisplayAttributeType.LIGHT_LEVEL);
-          }
-        });
+    this.lightLevelBox.setResponder(value -> {
+      if (this.lightLevelSaveButton != null) {
+        this.lightLevelSaveButton.active =
+            ValueUtils.isNumericValue(value, 0, 15)
+                && ValueUtils.getIntValue(value)
+                    != this.getEasyNPC()
+                        .getEasyNPCDisplayAttributeData()
+                        .getDisplayIntAttribute(DisplayAttributeType.LIGHT_LEVEL);
+      }
+    });
     this.lightLevelSaveButton =
         this.addRenderableWidget(
             new SaveButton(
@@ -133,18 +132,17 @@ public class DisplayAttributeConfigurationScreen<T extends ConfigurationMenu>
                 30,
                 displayAttributeData.getDisplayIntAttribute(DisplayAttributeType.OPACITY),
                 3));
-    this.opacityBox.setResponder(
-        value -> {
-          if (this.opacitySaveButton != null) {
-            this.opacitySaveButton.active =
-                ValueUtils.isNumericValue(
-                        value, DisplayAttributeType.MIN_OPACITY, DisplayAttributeType.MAX_OPACITY)
-                    && ValueUtils.getIntValue(value)
-                        != this.getEasyNPC()
-                            .getEasyNPCDisplayAttributeData()
-                            .getDisplayIntAttribute(DisplayAttributeType.OPACITY);
-          }
-        });
+    this.opacityBox.setResponder(value -> {
+      if (this.opacitySaveButton != null) {
+        this.opacitySaveButton.active =
+            ValueUtils.isNumericValue(
+                    value, DisplayAttributeType.MIN_OPACITY, DisplayAttributeType.MAX_OPACITY)
+                && ValueUtils.getIntValue(value)
+                    != this.getEasyNPC()
+                        .getEasyNPCDisplayAttributeData()
+                        .getDisplayIntAttribute(DisplayAttributeType.OPACITY);
+      }
+    });
     this.opacitySaveButton =
         this.addRenderableWidget(
             new SaveButton(

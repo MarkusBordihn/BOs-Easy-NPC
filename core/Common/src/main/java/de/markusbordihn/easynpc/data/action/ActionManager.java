@@ -113,12 +113,11 @@ public class ActionManager {
 
     actionGroupPlayerMap
         .values()
-        .removeIf(
-            actionGroupPlayer -> {
-              actionGroupPlayer
-                  .values()
-                  .removeIf(playerList -> playerList.remove(serverPlayer) && playerList.isEmpty());
-              return actionGroupPlayer.isEmpty();
-            });
+        .removeIf(actionGroupPlayer -> {
+          actionGroupPlayer
+              .values()
+              .removeIf(playerList -> playerList.remove(serverPlayer) && playerList.isEmpty());
+          return actionGroupPlayer.isEmpty();
+        });
   }
 }

@@ -51,7 +51,8 @@ subprojects {
   }
 
   tasks.register('wrapper', Wrapper) {
-    gradleVersion = '8.14.3'
+    gradleVersion = '8.14.7'
+    distributionSha256Sum = '903bfc4bc7622323124054c10f509246212a1902948bdaf26c379cca8735e856'
   }
 
   tasks.withType(JavaCompile).configureEach {

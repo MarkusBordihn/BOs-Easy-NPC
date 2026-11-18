@@ -50,11 +50,11 @@ public abstract class PlayerShoulderMixin implements ShoulderAccessHelper {
   protected abstract void setShoulderEntityRight(CompoundTag entityTag);
 
   @Override
-  public void clearShoulderEntity(ShoulderSide shoulderSide) {
+  public void setShoulderEntity(ShoulderSide shoulderSide, CompoundTag entityTag) {
     if (shoulderSide == ShoulderSide.LEFT) {
-      this.setShoulderEntityLeft(new CompoundTag());
+      this.setShoulderEntityLeft(entityTag);
     } else {
-      this.setShoulderEntityRight(new CompoundTag());
+      this.setShoulderEntityRight(entityTag);
     }
   }
 
@@ -68,16 +68,21 @@ public abstract class PlayerShoulderMixin implements ShoulderAccessHelper {
     }
 
     this.keptShoulderNPCDataLeft =
-        EasyNPCShoulderHandler.dismountOrTakeShoulderNPCData(player, ShoulderSide.LEFT);
+        EasyNPCShoulderHandler.takeShoulderNPCDataForRelease(
+            player, ShoulderSide.LEFT, this.keptShoulderNPCDataLeft);
     this.keptShoulderNPCDataRight =
-        EasyNPCShoulderHandler.dismountOrTakeShoulderNPCData(player, ShoulderSide.RIGHT);
+        EasyNPCShoulderHandler.takeShoulderNPCDataForRelease(
+            player, ShoulderSide.RIGHT, this.keptShoulderNPCDataRight);
   }
 
   @Inject(method = "removeEntitiesOnShoulder", at = @At("RETURN"))
   private void afterRemoveEntitiesOnShoulder(CallbackInfo callbackInfo) {
-    this.keptShoulderNPCDataLeft.ifPresent(this::setShoulderEntityLeft);
-    this.keptShoulderNPCDataRight.ifPresent(this::setShoulderEntityRight);
-    this.keptShoulderNPCDataLeft = Optional.empty();
-    this.keptShoulderNPCDataRight = Optional.empty();
+    Player player = (Player) (Object) this;
+    this.keptShoulderNPCDataLeft =
+        EasyNPCShoulderHandler.restoreShoulderNPCData(
+            player, ShoulderSide.LEFT, this.keptShoulderNPCDataLeft);
+    this.keptShoulderNPCDataRight =
+        EasyNPCShoulderHandler.restoreShoulderNPCData(
+            player, ShoulderSide.RIGHT, this.keptShoulderNPCDataRight);
   }
 }

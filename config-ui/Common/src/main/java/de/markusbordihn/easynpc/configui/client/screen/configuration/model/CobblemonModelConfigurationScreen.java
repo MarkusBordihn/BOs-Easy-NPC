@@ -229,11 +229,10 @@ public class CobblemonModelConfigurationScreen<T extends ConfigurationMenu>
     if (this.searchFilter != null && !this.searchFilter.isEmpty()) {
       filteredSpecies =
           this.speciesList.stream()
-              .filter(
-                  species ->
-                      species
-                          .toLowerCase(Locale.ROOT)
-                          .contains(this.searchFilter.toLowerCase(Locale.ROOT)))
+              .filter(species ->
+                  species
+                      .toLowerCase(Locale.ROOT)
+                      .contains(this.searchFilter.toLowerCase(Locale.ROOT)))
               .toList();
     }
     this.numOfSpecies = filteredSpecies.size();

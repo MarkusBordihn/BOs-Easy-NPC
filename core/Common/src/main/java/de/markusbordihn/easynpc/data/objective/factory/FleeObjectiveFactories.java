@@ -38,10 +38,8 @@ final class FleeObjectiveFactories {
   static void registerFactories() {
     register(
         ObjectiveType.FLEE_SUN,
-        requiresPathfinderMob(
-            (objectiveDataEntry, easyNPC) ->
-                new FleeSunGoal(
-                    easyNPC.getPathfinderMob(), objectiveDataEntry.getSpeedModifier())));
+        requiresPathfinderMob((objectiveDataEntry, easyNPC) ->
+            new FleeSunGoal(easyNPC.getPathfinderMob(), objectiveDataEntry.getSpeedModifier())));
 
     registerAvoidEntity(ObjectiveType.FLEE_CREEPER, Creeper.class);
     registerAvoidEntity(ObjectiveType.FLEE_MOB, Mob.class);

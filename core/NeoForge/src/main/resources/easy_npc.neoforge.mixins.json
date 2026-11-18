@@ -45,6 +45,7 @@
     "entity.EntityWaterStateMixin",
     "entity.EpicFightEquipmentMixin",
     "entity.FoxMixin",
+    "entity.GhastMixin",
     "entity.PiglinMixin",
     "entity.PlayerShoulderMixin",
     "entity.RaiderMixin",

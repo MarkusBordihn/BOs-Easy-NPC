@@ -72,8 +72,7 @@ public class BossBarHandler {
         DisplayAttributeType.MAX_BOSS_BAR_RANGE);
   }
 
-  public static int getBossBarAutoHideSeconds(
-      DisplayAttributeDataCapable<?> displayAttributeData) {
+  public static int getBossBarAutoHideSeconds(DisplayAttributeDataCapable<?> displayAttributeData) {
     return Mth.clamp(
         displayAttributeData.getDisplayIntAttribute(DisplayAttributeType.BOSS_BAR_AUTO_HIDE),
         DisplayAttributeType.MIN_BOSS_BAR_AUTO_HIDE_SECONDS,

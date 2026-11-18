@@ -27,8 +27,13 @@ import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.handler.ImportOutcome;
 import de.markusbordihn.easynpc.handler.PresetHandler;
 import de.markusbordihn.easynpc.handler.PresetImportResult;
+import de.markusbordihn.easynpc.item.configuration.EasyNPCPresetItem;
 import de.markusbordihn.easynpc.security.CommandSecurity;
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
@@ -267,6 +272,85 @@ public class PresetIdentityTestHelper {
         helper,
         "The preset item must not carry the NPC position",
         !itemPreset.contains(PresetData.POSITION_TAG));
+  }
+
+  public static void assertImportWithMalformedUUIDCreatesNewNPC(
+      GameTestHelper helper, EntityType<?> entityType) {
+    EasyNPC<?> sourceNPC = GameTestHelpers.mockEasyNPC(helper, entityType, SOURCE_NPC_POSITION);
+    sourceNPC.registerEasyNPCDefaultData();
+
+    CompoundTag exportedTag = PresetHandler.prepareExportData(sourceNPC);
+    UUID sourceUUID = sourceNPC.getEntityUUID();
+    exportedTag.putString(Entity.UUID_TAG, sourceUUID.toString());
+    Set<UUID> knownNPCUUIDs = serverNPCUUIDs();
+
+    GameTestHelpers.assertTrue(
+        helper,
+        "A preset with a malformed NPC UUID must be importable",
+        PresetHandler.importPreset(helper.getLevel(), exportedTag));
+
+    GameTestHelpers.assertEquals(
+        helper,
+        "The import of a malformed NPC UUID must create exactly one new NPC",
+        1,
+        removeNewNPCsAfterTest(helper, knownNPCUUIDs));
+    GameTestHelpers.assertNotNull(
+        helper, "The exported NPC must stay untouched", findNPC(helper, sourceUUID));
+  }
+
+  public static void assertPresetItemWithMalformedPresetUUIDSpawns(
+      GameTestHelper helper, EntityType<?> entityType) {
+    EasyNPC<?> sourceNPC = GameTestHelpers.mockEasyNPC(helper, entityType, SOURCE_NPC_POSITION);
+    sourceNPC.registerEasyNPCDefaultData();
+
+    ItemStack itemStack =
+        PresetDataUtils.toItemStack(
+            new PresetData(entityType, PresetHandler.prepareExportData(sourceNPC)));
+    PresetData presetData = PresetData.get(itemStack);
+    CompoundTag malformedData = presetData.data().copy();
+    malformedData.putString(PresetData.PRESET_UUID_TAG, "not-a-uuid");
+    PresetData.set(
+        itemStack,
+        new PresetData(
+            presetData.name(),
+            presetData.entityType(),
+            malformedData,
+            presetData.location(),
+            presetData.presetType(),
+            presetData.metadata()));
+    GameTestHelpers.assertTrue(
+        helper,
+        "A malformed preset UUID must be read as no preset UUID",
+        EasyNPCPresetItem.getPresetUUID(itemStack) == null);
+    Set<UUID> knownNPCUUIDs = serverNPCUUIDs();
+
+    GameTestHelpers.assertTrue(
+        helper,
+        "A preset item with a malformed preset UUID must spawn its NPC",
+        PresetDataUtils.spawnEntity(
+            PresetData.get(itemStack),
+            helper.getLevel(),
+            helper.absolutePos(BlockPos.containing(SPAWN_POSITION))));
+    GameTestHelpers.assertEquals(
+        helper,
+        "The preset item must spawn exactly one NPC",
+        1,
+        removeNewNPCsAfterTest(helper, knownNPCUUIDs));
+  }
+
+  private static Set<UUID> serverNPCUUIDs() {
+    return LivingEntityManager.getServerEasyNPCEntities()
+        .map(EasyNPC::getEntityUUID)
+        .collect(Collectors.toSet());
+  }
+
+  private static int removeNewNPCsAfterTest(GameTestHelper helper, Set<UUID> knownNPCUUIDs) {
+    List<UUID> newNPCUUIDs =
+        serverNPCUUIDs().stream()
+            .filter(entityUUID -> !knownNPCUUIDs.contains(entityUUID))
+            .toList();
+    newNPCUUIDs.forEach(entityUUID -> GameTestHelpers.removeNPCDataAfterTest(helper, entityUUID));
+    return newNPCUUIDs.size();
   }
 
   private static PresetImportResult importWithReport(

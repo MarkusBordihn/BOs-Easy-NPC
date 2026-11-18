@@ -39,11 +39,10 @@ public class ReloadCommand extends Command {
         .requires(commandSourceStack -> commandSourceStack.hasPermission(Commands.LEVEL_ALL))
         .then(
             Commands.argument(NPC_TARGETS_ARG, EasyNPCArgument.npc())
-                .executes(
-                    context ->
-                        reload(
-                            context.getSource(),
-                            EasyNPCArgument.getEntitiesWithAccess(context, NPC_TARGETS_ARG))));
+                .executes(context ->
+                    reload(
+                        context.getSource(),
+                        EasyNPCArgument.getEntitiesWithAccess(context, NPC_TARGETS_ARG))));
   }
 
   private static int reload(CommandSourceStack context, Collection<? extends EasyNPC<?>> easyNPCs) {

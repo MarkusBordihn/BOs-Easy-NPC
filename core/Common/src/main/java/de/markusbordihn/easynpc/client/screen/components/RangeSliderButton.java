@@ -220,12 +220,11 @@ public class RangeSliderButton extends AbstractWidget {
                   height,
                   value);
         };
-    this.textField.setResponder(
-        text -> {
-          if (ValueUtils.isDoubleValue(text, minValue, maxValue)) {
-            this.sliderButton.setDefaultValue(Double.parseDouble(text));
-          }
-        });
+    this.textField.setResponder(text -> {
+      if (ValueUtils.isDoubleValue(text, minValue, maxValue)) {
+        this.sliderButton.setDefaultValue(Double.parseDouble(text));
+      }
+    });
     this.textButtonDecrease =
         new TextButton(
             this.sliderButton.getX() - DECREASE_BUTTON_WIDTH,

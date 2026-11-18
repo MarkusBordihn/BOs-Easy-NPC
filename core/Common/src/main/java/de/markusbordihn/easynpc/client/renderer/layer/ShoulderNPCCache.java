@@ -131,9 +131,8 @@ public final class ShoulderNPCCache {
   private static void removeUnusedEntries(long gameTime) {
     cachedShoulderNPCs
         .values()
-        .removeIf(
-            cachedShoulderNPC ->
-                gameTime - cachedShoulderNPC.lastUsedGameTime() > UNUSED_ENTRY_TICKS);
+        .removeIf(cachedShoulderNPC ->
+            gameTime - cachedShoulderNPC.lastUsedGameTime() > UNUSED_ENTRY_TICKS);
   }
 
   public static void clear() {

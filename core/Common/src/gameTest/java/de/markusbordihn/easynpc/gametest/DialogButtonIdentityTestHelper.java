@@ -65,7 +65,8 @@ public class DialogButtonIdentityTestHelper {
   private static final String GAMETEST_OBJECTIVE = "easy_npc_gametest_bank";
   private static final String BANK_OBJECTIVE = "easy_npc_bank";
   private static final ResourceLocation BANK_TELLER_PRESET =
-      ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "default_preset/villager/bank_teller.npc.snbt");
+      ResourceLocation.fromNamespaceAndPath(
+          Constants.MOD_ID, "default_preset/villager/bank_teller.npc.snbt");
 
   private DialogButtonIdentityTestHelper() {}
 

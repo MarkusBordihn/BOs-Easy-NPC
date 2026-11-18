@@ -259,7 +259,9 @@ public class EasyNPCEntityHandler {
 
   public static Optional<String> getSpawnRejection(UUID uuid, boolean force) {
     return getRejection(
-        uuid, removalReason -> force || removalReason.isRestorableReason(), "use force to spawn it");
+        uuid,
+        removalReason -> force || removalReason.isRestorableReason(),
+        "use force to spawn it");
   }
 
   public static Optional<String> getReviveRejection(UUID uuid) {

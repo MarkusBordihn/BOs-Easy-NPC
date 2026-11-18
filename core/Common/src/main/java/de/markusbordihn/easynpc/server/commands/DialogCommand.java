@@ -54,40 +54,37 @@ public class DialogCommand extends Command {
                                         .then(
                                             Commands.argument(
                                                     "priority", IntegerArgumentType.integer())
-                                                .executes(
-                                                    context ->
-                                                        setPriority(
-                                                            context.getSource(),
-                                                            EasyNPCArgument.getEntityWithAccess(
-                                                                context, NPC_TARGET_ARG),
-                                                            DialogArgument.getUuidOrLabel(
-                                                                context, DIALOG_ARG),
-                                                            IntegerArgumentType.getInteger(
-                                                                context, "priority"))))))))
+                                                .executes(context ->
+                                                    setPriority(
+                                                        context.getSource(),
+                                                        EasyNPCArgument.getEntityWithAccess(
+                                                            context, NPC_TARGET_ARG),
+                                                        DialogArgument.getUuidOrLabel(
+                                                            context, DIALOG_ARG),
+                                                        IntegerArgumentType.getInteger(
+                                                            context, "priority"))))))))
         .then(
             Commands.literal("open")
                 .then(
                     Commands.argument(NPC_TARGET_ARG, EasyNPCArgument.npc())
                         .then(
                             Commands.argument(PLAYER_ARG, EntityArgument.player())
-                                .executes(
-                                    context ->
-                                        openDialog(
-                                            context.getSource(),
-                                            EasyNPCArgument.getEntityWithAccess(
-                                                context, NPC_TARGET_ARG),
-                                            EntityArgument.getPlayer(context, PLAYER_ARG)))
+                                .executes(context ->
+                                    openDialog(
+                                        context.getSource(),
+                                        EasyNPCArgument.getEntityWithAccess(
+                                            context, NPC_TARGET_ARG),
+                                        EntityArgument.getPlayer(context, PLAYER_ARG)))
                                 .then(
                                     Commands.argument(DIALOG_ARG, DialogArgument.uuidOrLabel())
-                                        .executes(
-                                            context ->
-                                                openDialog(
-                                                    context.getSource(),
-                                                    EasyNPCArgument.getEntityWithAccess(
-                                                        context, NPC_TARGET_ARG),
-                                                    EntityArgument.getPlayer(context, PLAYER_ARG),
-                                                    DialogArgument.getUuidOrLabel(
-                                                        context, DIALOG_ARG)))))))
+                                        .executes(context ->
+                                            openDialog(
+                                                context.getSource(),
+                                                EasyNPCArgument.getEntityWithAccess(
+                                                    context, NPC_TARGET_ARG),
+                                                EntityArgument.getPlayer(context, PLAYER_ARG),
+                                                DialogArgument.getUuidOrLabel(
+                                                    context, DIALOG_ARG)))))))
         .then(
             Commands.literal("open_conditional")
                 .then(
@@ -96,24 +93,22 @@ public class DialogCommand extends Command {
                             Commands.argument(PLAYER_ARG, EntityArgument.player())
                                 .then(
                                     Commands.argument(DIALOG_ARG, DialogArgument.uuidOrLabel())
-                                        .executes(
-                                            context ->
-                                                openDialogConditional(
-                                                    context.getSource(),
-                                                    EasyNPCArgument.getEntityWithAccess(
-                                                        context, NPC_TARGET_ARG),
-                                                    EntityArgument.getPlayer(context, PLAYER_ARG),
-                                                    DialogArgument.getUuidOrLabel(
-                                                        context, DIALOG_ARG)))))))
+                                        .executes(context ->
+                                            openDialogConditional(
+                                                context.getSource(),
+                                                EasyNPCArgument.getEntityWithAccess(
+                                                    context, NPC_TARGET_ARG),
+                                                EntityArgument.getPlayer(context, PLAYER_ARG),
+                                                DialogArgument.getUuidOrLabel(
+                                                    context, DIALOG_ARG)))))))
         .then(
             Commands.literal("close")
                 .then(
                     Commands.argument(PLAYER_ARG, EntityArgument.player())
-                        .executes(
-                            context ->
-                                closeDialog(
-                                    context.getSource(),
-                                    EntityArgument.getPlayer(context, PLAYER_ARG)))));
+                        .executes(context ->
+                            closeDialog(
+                                context.getSource(),
+                                EntityArgument.getPlayer(context, PLAYER_ARG)))));
   }
 
   public static int setPriority(

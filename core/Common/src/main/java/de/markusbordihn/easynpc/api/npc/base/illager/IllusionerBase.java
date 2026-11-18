@@ -99,4 +99,9 @@ public class IllusionerBase extends IllusionerRaw implements BaseEasyNPC<Illusio
       this.calculateEntityAnimation(this instanceof FlyingAnimal);
     }
   }
+
+  @Override
+  public boolean canBeLeader() {
+    return false;
+  }
 }

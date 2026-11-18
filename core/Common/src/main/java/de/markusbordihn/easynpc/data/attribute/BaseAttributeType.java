@@ -44,7 +44,7 @@ public enum BaseAttributeType {
   ARMOR_TOUGHNESS(Attributes.ARMOR_TOUGHNESS),
   LUCK(Attributes.LUCK);
 
-  // CombatRules#getDamageAfterAbsorb inverts its armor clamp above 100, 125 armor blocks all damage.
+  // CombatRules#getDamageAfterAbsorb inverts its clamp above 100 armor, 125 blocks all damage.
   private static final double MAX_ARMOR_BEFORE_DAMAGE_IMMUNITY = 100.0D;
 
   // LivingEntity#setHealth and Mob#doHurtTarget use floats, larger values become Infinity.

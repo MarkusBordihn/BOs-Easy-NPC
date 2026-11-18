@@ -58,7 +58,8 @@ public class ProjectileTest {
 
   @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testRangedAttackPlaysFallbackSoundWithoutConfiguredSound(GameTestHelper helper) {
-    ProjectileTestHelper.assertRangedAttackPlaysFallbackSoundWithoutConfiguredSound(helper, humanoid());
+    ProjectileTestHelper.assertRangedAttackPlaysFallbackSoundWithoutConfiguredSound(
+        helper, humanoid());
     helper.succeed();
   }
 
@@ -100,8 +101,7 @@ public class ProjectileTest {
 
   @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testEveryProjectileTypeIsRemovedAfterMaximumLifetime(GameTestHelper helper) {
-    ProjectileTestHelper.assertEveryProjectileTypeIsRemovedAfterMaximumLifetime(
-        helper, humanoid());
+    ProjectileTestHelper.assertEveryProjectileTypeIsRemovedAfterMaximumLifetime(helper, humanoid());
   }
 
   @GameTest(template = "easy_npc:gametest.3x3x3")

@@ -50,4 +50,9 @@ public class EvokerEpicFight extends EvokerRaw {
   public ConfigurationData getConfigurationData() {
     return ConfigurationData.EPIC_FIGHT;
   }
+
+  @Override
+  public boolean canBeLeader() {
+    return false;
+  }
 }

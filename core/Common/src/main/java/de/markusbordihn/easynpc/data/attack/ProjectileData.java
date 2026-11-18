@@ -87,76 +87,58 @@ public record ProjectileData(
           DEFAULT_HIT_EFFECT_LEVEL,
           DEFAULT_HIT_EFFECT_SECONDS);
 
-  private static final String ENABLED_TAG = "Enabled";
-  private static final String DAMAGE_TAG = "Damage";
-  private static final String VELOCITY_TAG = "Velocity";
-  private static final String INACCURACY_TAG = "Inaccuracy";
-  private static final String TRAIL_PARTICLE_TAG = "TrailParticle";
-  private static final String IMPACT_EFFECT_TAG = "ImpactEffect";
-  private static final String EXPLOSION_POWER_TAG = "ExplosionPower";
-  private static final String PROJECTILE_TYPE_TAG = "ProjectileType";
-  private static final String PROJECTILE_ITEM_TAG = "ProjectileItem";
-  private static final String KNOCKBACK_TAG = "Knockback";
-  private static final String SHOT_COUNT_TAG = "ShotCount";
-  private static final String HIT_EFFECT_TAG = "HitEffect";
-  private static final String HIT_EFFECT_LEVEL_TAG = "HitEffectLevel";
-  private static final String HIT_EFFECT_SECONDS_TAG = "HitEffectSeconds";
-
-  private static final Codec<ResourceLocation> LENIENT_ITEM_CODEC =
-      Codec.STRING.xmap(
-          itemId ->
-              Optional.ofNullable(ResourceLocation.tryParse(itemId))
-                  .orElse(DEFAULT_PROJECTILE_ITEM),
-          ResourceLocation::toString);
-
   public static final Codec<ProjectileData> CODEC =
-      RecordCodecBuilder.create(
-          instance ->
-              instance
-                  .group(
-                      Codec.BOOL
-                          .optionalFieldOf(ENABLED_TAG, DEFAULT.enabled())
-                          .forGetter(ProjectileData::enabled),
-                      Codec.FLOAT
-                          .optionalFieldOf(DAMAGE_TAG, DEFAULT_DAMAGE)
-                          .forGetter(ProjectileData::damage),
-                      Codec.FLOAT
-                          .optionalFieldOf(VELOCITY_TAG, DEFAULT_VELOCITY)
-                          .forGetter(ProjectileData::velocity),
-                      Codec.FLOAT
-                          .optionalFieldOf(INACCURACY_TAG, DEFAULT_INACCURACY)
-                          .forGetter(ProjectileData::inaccuracy),
-                      ProjectileTrailParticle.CODEC
-                          .optionalFieldOf(TRAIL_PARTICLE_TAG, ProjectileTrailParticle.DEFAULT)
-                          .forGetter(ProjectileData::trailParticle),
-                      ProjectileImpactEffect.CODEC
-                          .optionalFieldOf(IMPACT_EFFECT_TAG, ProjectileImpactEffect.DEFAULT)
-                          .forGetter(ProjectileData::impactEffect),
-                      Codec.FLOAT
-                          .optionalFieldOf(EXPLOSION_POWER_TAG, DEFAULT_EXPLOSION_POWER)
-                          .forGetter(ProjectileData::explosionPower),
-                      ProjectileType.CODEC
-                          .optionalFieldOf(PROJECTILE_TYPE_TAG, ProjectileType.DEFAULT)
-                          .forGetter(ProjectileData::projectileType),
-                      LENIENT_ITEM_CODEC
-                          .optionalFieldOf(PROJECTILE_ITEM_TAG, DEFAULT_PROJECTILE_ITEM)
-                          .forGetter(ProjectileData::projectileItem),
-                      Codec.INT
-                          .optionalFieldOf(KNOCKBACK_TAG, DEFAULT_KNOCKBACK)
-                          .forGetter(ProjectileData::knockback),
-                      Codec.INT
-                          .optionalFieldOf(SHOT_COUNT_TAG, DEFAULT_SHOT_COUNT)
-                          .forGetter(ProjectileData::shotCount),
-                      ProjectileHitEffect.CODEC
-                          .optionalFieldOf(HIT_EFFECT_TAG, ProjectileHitEffect.DEFAULT)
-                          .forGetter(ProjectileData::hitEffect),
-                      Codec.INT
-                          .optionalFieldOf(HIT_EFFECT_LEVEL_TAG, DEFAULT_HIT_EFFECT_LEVEL)
-                          .forGetter(ProjectileData::hitEffectLevel),
-                      Codec.INT
-                          .optionalFieldOf(HIT_EFFECT_SECONDS_TAG, DEFAULT_HIT_EFFECT_SECONDS)
-                          .forGetter(ProjectileData::hitEffectSeconds))
-                  .apply(instance, ProjectileData::new));
+      RecordCodecBuilder.create(instance ->
+          instance
+              .group(
+                  Codec.BOOL
+                      .optionalFieldOf("Enabled", DEFAULT.enabled())
+                      .forGetter(ProjectileData::enabled),
+                  Codec.FLOAT
+                      .optionalFieldOf("Damage", DEFAULT_DAMAGE)
+                      .forGetter(ProjectileData::damage),
+                  Codec.FLOAT
+                      .optionalFieldOf("Velocity", DEFAULT_VELOCITY)
+                      .forGetter(ProjectileData::velocity),
+                  Codec.FLOAT
+                      .optionalFieldOf("Inaccuracy", DEFAULT_INACCURACY)
+                      .forGetter(ProjectileData::inaccuracy),
+                  ProjectileTrailParticle.CODEC
+                      .optionalFieldOf("TrailParticle", ProjectileTrailParticle.DEFAULT)
+                      .forGetter(ProjectileData::trailParticle),
+                  ProjectileImpactEffect.CODEC
+                      .optionalFieldOf("ImpactEffect", ProjectileImpactEffect.DEFAULT)
+                      .forGetter(ProjectileData::impactEffect),
+                  Codec.FLOAT
+                      .optionalFieldOf("ExplosionPower", DEFAULT_EXPLOSION_POWER)
+                      .forGetter(ProjectileData::explosionPower),
+                  ProjectileType.CODEC
+                      .optionalFieldOf("ProjectileType", ProjectileType.DEFAULT)
+                      .forGetter(ProjectileData::projectileType),
+                  Codec.STRING
+                      .xmap(
+                          itemId ->
+                              Optional.ofNullable(ResourceLocation.tryParse(itemId))
+                                  .orElse(DEFAULT_PROJECTILE_ITEM),
+                          ResourceLocation::toString)
+                      .optionalFieldOf("ProjectileItem", DEFAULT_PROJECTILE_ITEM)
+                      .forGetter(ProjectileData::projectileItem),
+                  Codec.INT
+                      .optionalFieldOf("Knockback", DEFAULT_KNOCKBACK)
+                      .forGetter(ProjectileData::knockback),
+                  Codec.INT
+                      .optionalFieldOf("ShotCount", DEFAULT_SHOT_COUNT)
+                      .forGetter(ProjectileData::shotCount),
+                  ProjectileHitEffect.CODEC
+                      .optionalFieldOf("HitEffect", ProjectileHitEffect.DEFAULT)
+                      .forGetter(ProjectileData::hitEffect),
+                  Codec.INT
+                      .optionalFieldOf("HitEffectLevel", DEFAULT_HIT_EFFECT_LEVEL)
+                      .forGetter(ProjectileData::hitEffectLevel),
+                  Codec.INT
+                      .optionalFieldOf("HitEffectSeconds", DEFAULT_HIT_EFFECT_SECONDS)
+                      .forGetter(ProjectileData::hitEffectSeconds))
+              .apply(instance, ProjectileData::new));
 
   public ProjectileData {
     damage = clamp(damage, MINIMUM_DAMAGE, MAXIMUM_DAMAGE, DEFAULT_DAMAGE);

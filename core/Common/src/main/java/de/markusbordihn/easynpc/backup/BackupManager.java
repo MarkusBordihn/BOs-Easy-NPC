@@ -131,9 +131,8 @@ public class BackupManager {
 
   private static void queueNPCsForBackup() {
     LivingEntityManager.getServerEasyNPCEntities()
-        .filter(
-            easyNPC ->
-                easyNPC != null && easyNPC.getEntityUUID() != null && easyNPC.isPersistentNPC())
+        .filter(easyNPC ->
+            easyNPC != null && easyNPC.getEntityUUID() != null && easyNPC.isPersistentNPC())
         .map(EasyNPC::getEntityUUID)
         .forEach(pendingBackups::add);
     log.debug("{} Queued {} NPCs for backup.", LOG_PREFIX, pendingBackups.size());
@@ -205,12 +204,11 @@ public class BackupManager {
 
       if (Files.isRegularFile(lastBackup.backupFile())) {
         lastNPCBackups.put(uuid, backupFileEntry);
-        BackgroundFileWriter.submit(
-            () -> {
-              if (!linkOrCopyBackupFile(lastBackup.backupFile(), backupFile)) {
-                lastNPCBackups.remove(uuid, backupFileEntry);
-              }
-            });
+        BackgroundFileWriter.submit(() -> {
+          if (!linkOrCopyBackupFile(lastBackup.backupFile(), backupFile)) {
+            lastNPCBackups.remove(uuid, backupFileEntry);
+          }
+        });
         linkedBackups++;
         return;
       }
@@ -230,15 +228,14 @@ public class BackupManager {
     CompoundTag referenceTag = PresetHandler.getExportReferenceTag(easyNPC);
     UUID ownerUUID = PresetHandler.getBackupOwnerUUID(easyNPC);
     lastNPCBackups.put(uuid, backupFileEntry);
-    BackgroundFileWriter.submit(
-        () -> {
-          CompoundTag backupData =
-              PresetHandler.prepareBackupData(snapshot.presetData(), referenceTag, ownerUUID);
-          if (!PresetFileHandler.save(backupFile.toFile(), backupData)) {
-            log.error("{} Backup failed for {}", LOG_PREFIX, uuid);
-            lastNPCBackups.remove(uuid, backupFileEntry);
-          }
-        });
+    BackgroundFileWriter.submit(() -> {
+      CompoundTag backupData =
+          PresetHandler.prepareBackupData(snapshot.presetData(), referenceTag, ownerUUID);
+      if (!PresetFileHandler.save(backupFile.toFile(), backupData)) {
+        log.error("{} Backup failed for {}", LOG_PREFIX, uuid);
+        lastNPCBackups.remove(uuid, backupFileEntry);
+      }
+    });
     exportedBackups++;
   }
 

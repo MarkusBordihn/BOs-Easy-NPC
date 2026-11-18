@@ -42,62 +42,55 @@ public class SkinCommand extends Command {
             Commands.literal("set")
                 .then(
                     Commands.literal("variant")
-                        .requires(
-                            commandSourceStack ->
-                                commandSourceStack.hasPermission(Commands.LEVEL_ALL))
+                        .requires(commandSourceStack ->
+                            commandSourceStack.hasPermission(Commands.LEVEL_ALL))
                         .then(
                             Commands.argument(NPC_TARGET_ARG, EasyNPCArgument.npc())
                                 .then(
                                     Commands.argument(VARIANT_ARG, StringArgumentType.word())
-                                        .suggests(
-                                            (context, builder) -> {
-                                              EasyNPC<?> easyNPC =
-                                                  EasyNPCArgument.getEntityWithAccess(
-                                                      context, NPC_TARGET_ARG);
-                                              if (easyNPC instanceof EasyNPCBase<?> easyNPCBase) {
-                                                Enum<?>[] variants =
-                                                    easyNPCBase.getSkinVariantTypes();
-                                                for (Enum<?> variant : variants) {
-                                                  builder.suggest(variant.name());
-                                                }
-                                              }
-                                              return builder.buildFuture();
-                                            })
-                                        .executes(
-                                            context ->
-                                                setDefaultSkinVariant(
-                                                    context.getSource(),
-                                                    EasyNPCArgument.getEntityWithAccess(
-                                                        context, NPC_TARGET_ARG),
-                                                    StringArgumentType.getString(
-                                                        context, VARIANT_ARG)))))))
+                                        .suggests((context, builder) -> {
+                                          EasyNPC<?> easyNPC =
+                                              EasyNPCArgument.getEntityWithAccess(
+                                                  context, NPC_TARGET_ARG);
+                                          if (easyNPC instanceof EasyNPCBase<?> easyNPCBase) {
+                                            Enum<?>[] variants = easyNPCBase.getSkinVariantTypes();
+                                            for (Enum<?> variant : variants) {
+                                              builder.suggest(variant.name());
+                                            }
+                                          }
+                                          return builder.buildFuture();
+                                        })
+                                        .executes(context ->
+                                            setDefaultSkinVariant(
+                                                context.getSource(),
+                                                EasyNPCArgument.getEntityWithAccess(
+                                                    context, NPC_TARGET_ARG),
+                                                StringArgumentType.getString(
+                                                    context, VARIANT_ARG)))))))
         .then(
             Commands.literal("layer")
                 .requires(
                     commandSourceStack -> commandSourceStack.hasPermission(Commands.LEVEL_ALL))
                 .then(
                     Commands.argument(NPC_TARGET_ARG, EasyNPCArgument.npc())
-                        .executes(
-                            context ->
-                                getLayerStatus(
-                                    context.getSource(),
-                                    EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG)))
+                        .executes(context ->
+                            getLayerStatus(
+                                context.getSource(),
+                                EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG)))
                         .then(
                             Commands.literal("disable")
-                                .executes(
-                                    context ->
-                                        disableLayers(
-                                            context.getSource(),
-                                            EasyNPCArgument.getEntityWithAccess(
-                                                context, NPC_TARGET_ARG))))
+                                .executes(context ->
+                                    disableLayers(
+                                        context.getSource(),
+                                        EasyNPCArgument.getEntityWithAccess(
+                                            context, NPC_TARGET_ARG))))
                         .then(
                             Commands.literal("enable")
-                                .executes(
-                                    context ->
-                                        enableLayers(
-                                            context.getSource(),
-                                            EasyNPCArgument.getEntityWithAccess(
-                                                context, NPC_TARGET_ARG))))));
+                                .executes(context ->
+                                    enableLayers(
+                                        context.getSource(),
+                                        EasyNPCArgument.getEntityWithAccess(
+                                            context, NPC_TARGET_ARG))))));
   }
 
   private static int setDefaultSkinVariant(

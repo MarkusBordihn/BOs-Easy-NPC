@@ -121,10 +121,9 @@ class CustomConditionTest {
     ConditionDataEntry conditionDataEntry = conditionFor("failing_client");
     ConditionRegistry.register(
         conditionDataEntry.customConditionId(),
-        clientCapableEvaluator(
-            () -> {
-              throw new IllegalStateException("evaluator is broken");
-            }));
+        clientCapableEvaluator(() -> {
+          throw new IllegalStateException("evaluator is broken");
+        }));
 
     assertTrue(CustomCondition.evaluateOnClient(conditionDataEntry, null, null));
   }

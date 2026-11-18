@@ -56,6 +56,18 @@ class NPCFileStorageTest {
     return compoundTag;
   }
 
+  private static CountDownLatch blockWriter() {
+    CountDownLatch writerBlock = new CountDownLatch(1);
+    BackgroundFileWriter.submit(() -> {
+      try {
+        writerBlock.await(WRITER_TIMEOUT.toMillis(), TimeUnit.MILLISECONDS);
+      } catch (InterruptedException e) {
+        Thread.currentThread().interrupt();
+      }
+    });
+    return writerBlock;
+  }
+
   @Test
   void testUnchangedDataIsNotMarkedDirtyAfterSave() {
     NPCFileStorage storage = new NPCFileStorage(this.worldPath);
@@ -288,18 +300,5 @@ class NPCFileStorageTest {
     assertTrue(BackgroundFileWriter.awaitPendingWrites(WRITER_TIMEOUT));
     NPCFileStorage reloadedStorage = new NPCFileStorage(this.worldPath);
     assertEquals("Zombie", reloadedStorage.load(uuid).orElseThrow().getString("Name"));
-  }
-
-  private static CountDownLatch blockWriter() {
-    CountDownLatch writerBlock = new CountDownLatch(1);
-    BackgroundFileWriter.submit(
-        () -> {
-          try {
-            writerBlock.await(WRITER_TIMEOUT.toMillis(), TimeUnit.MILLISECONDS);
-          } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-          }
-        });
-    return writerBlock;
   }
 }

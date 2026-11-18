@@ -23,10 +23,13 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.scale.CustomScale;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceLocation;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class CompoundTagUtils {
 
@@ -34,8 +37,22 @@ public class CompoundTagUtils {
   public static final String X_TAG = "X";
   public static final String Y_TAG = "Y";
   public static final String Z_TAG = "Z";
+  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   private CompoundTagUtils() {}
+
+  public static UUID readUUID(CompoundTag compoundTag, String key, UUID fallbackUUID) {
+    if (!compoundTag.contains(key)) {
+      return fallbackUUID;
+    }
+
+    if (!compoundTag.hasUUID(key)) {
+      log.warn("Ignoring malformed UUID {} for {}!", compoundTag.get(key), key);
+      return fallbackUUID;
+    }
+
+    return compoundTag.getUUID(key);
+  }
 
   public static CompoundTag writeBlockPos(BlockPos blockPos) {
     CompoundTag compoundTag = new CompoundTag();
@@ -96,30 +113,27 @@ public class CompoundTagUtils {
 
   public static ListTag writeResourceLocations(Set<ResourceLocation> resourceLocations) {
     ListTag listTag = new ListTag();
-    resourceLocations.forEach(
-        resourceLocation -> {
-          int hashCode = resourceLocation.hashCode();
-          CompoundTag compoundTag = new CompoundTag();
-          compoundTag.putString(ID_PREFIX + hashCode, resourceLocation.toString());
-          listTag.add(compoundTag);
-        });
+    resourceLocations.forEach(resourceLocation -> {
+      int hashCode = resourceLocation.hashCode();
+      CompoundTag compoundTag = new CompoundTag();
+      compoundTag.putString(ID_PREFIX + hashCode, resourceLocation.toString());
+      listTag.add(compoundTag);
+    });
     return listTag;
   }
 
   public static Set<ResourceLocation> readResourceLocations(ListTag listTag) {
     Set<ResourceLocation> resourceLocations = new HashSet<>();
-    listTag.forEach(
-        tag -> {
-          CompoundTag compoundTag = (CompoundTag) tag;
-          compoundTag
-              .getAllKeys()
-              .forEach(
-                  key -> {
-                    if (key.startsWith(ID_PREFIX)) {
-                      resourceLocations.add(readResourceLocation(compoundTag, key));
-                    }
-                  });
-        });
+    listTag.forEach(tag -> {
+      CompoundTag compoundTag = (CompoundTag) tag;
+      compoundTag
+          .getAllKeys()
+          .forEach(key -> {
+            if (key.startsWith(ID_PREFIX)) {
+              resourceLocations.add(readResourceLocation(compoundTag, key));
+            }
+          });
+    });
     return resourceLocations;
   }
 

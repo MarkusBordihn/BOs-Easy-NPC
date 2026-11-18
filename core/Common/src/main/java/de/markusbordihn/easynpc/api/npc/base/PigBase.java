@@ -25,8 +25,10 @@ import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
 import de.markusbordihn.easynpc.data.skin.variant.PigSkinVariant;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.sound.SoundType;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -36,6 +38,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
 public class PigBase extends PigRaw implements BaseEasyNPC<PigRaw> {
+
+  private static final float VANILLA_LIGHTNING_DAMAGE = 5.0F;
 
   public PigBase(EntityType<? extends Pig> entityType, Level level) {
     this(entityType, level, PigSkinVariant.PIG);
@@ -86,6 +90,18 @@ public class PigBase extends PigRaw implements BaseEasyNPC<PigRaw> {
     soundDataSet.addDefaultSound(SoundType.TRADE_YES, SoundEvents.VILLAGER_YES);
     soundDataSet.addDefaultSound(SoundType.TRADE_NO, SoundEvents.VILLAGER_NO);
     return soundDataSet;
+  }
+
+  // Vanilla replaces the NPC with a zombified piglin, so only the lightning damage of Entity is
+  // kept.
+  @Override
+  public void thunderHit(ServerLevel serverLevel, LightningBolt lightningBolt) {
+    this.setRemainingFireTicks(this.getRemainingFireTicks() + 1);
+    if (this.getRemainingFireTicks() == 0) {
+      this.igniteForSeconds(8.0F);
+    }
+
+    this.hurt(this.damageSources().lightningBolt(), VANILLA_LIGHTNING_DAMAGE);
   }
 
   @Override

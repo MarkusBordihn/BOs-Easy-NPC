@@ -28,6 +28,7 @@ import de.markusbordihn.easynpc.entity.EasyNPCEntityTypes;
 import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.NPCEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.utils.CompoundTagUtils;
 import java.util.Optional;
 import java.util.UUID;
 import net.minecraft.core.BlockPos;
@@ -395,15 +396,8 @@ public class BaseEasyNPCSpawner extends BaseSpawner {
 
   private void updateEasyNPCData(CompoundTag compoundTag) {
     this.spawnEntityType = EntityType.by(compoundTag).orElse(null);
-    this.easyNPCUUID = null;
-    this.easyNPCPresetUUID = null;
-
-    if (compoundTag.contains(ENTITY_UUID_TAG)) {
-      this.easyNPCUUID = compoundTag.getUUID(ENTITY_UUID_TAG);
-    }
-
-    if (compoundTag.contains(PresetData.PRESET_UUID_TAG)) {
-      this.easyNPCPresetUUID = compoundTag.getUUID(PresetData.PRESET_UUID_TAG);
-    }
+    this.easyNPCUUID = CompoundTagUtils.readUUID(compoundTag, ENTITY_UUID_TAG, null);
+    this.easyNPCPresetUUID =
+        CompoundTagUtils.readUUID(compoundTag, PresetData.PRESET_UUID_TAG, null);
   }
 }

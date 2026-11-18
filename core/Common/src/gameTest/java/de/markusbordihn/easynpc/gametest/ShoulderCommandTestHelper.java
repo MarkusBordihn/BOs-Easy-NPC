@@ -42,7 +42,8 @@ public class ShoulderCommandTestHelper {
   private ShoulderCommandTestHelper() {}
 
   private static ServerPlayer mockGroundedPlayer(GameTestHelper helper, String playerName) {
-    ServerPlayer serverPlayer = GameTestHelpers.mockServerPlayer(helper, PLAYER_POSITION, playerName);
+    ServerPlayer serverPlayer =
+        GameTestHelpers.mockServerPlayer(helper, PLAYER_POSITION, playerName);
     serverPlayer.setOnGround(true);
     return serverPlayer;
   }
@@ -72,8 +73,7 @@ public class ShoulderCommandTestHelper {
 
     int result =
         executeConsoleCommand(
-            helper,
-            "easy_npc shoulder sit " + entityUUID + " " + serverPlayer.getScoreboardName());
+            helper, "easy_npc shoulder sit " + entityUUID + " " + serverPlayer.getScoreboardName());
 
     GameTestHelpers.assertEquals(helper, "Shoulder sit command result", 1, result);
     GameTestHelpers.assertTrue(
@@ -175,7 +175,8 @@ public class ShoulderCommandTestHelper {
             GameTestHelpers.playerCommandSource(owner),
             "easy_npc shoulder info " + owner.getScoreboardName());
 
-    GameTestHelpers.assertEquals(helper, "Shoulder info command of the owner result", 1, ownerResult);
+    GameTestHelpers.assertEquals(
+        helper, "Shoulder info command of the owner result", 1, ownerResult);
   }
 
   public static void assertEnableCommandTogglesObjective(

@@ -45,8 +45,7 @@ class ShoulderNPCCacheTest {
     return changedEntityTag;
   }
 
-  private static ShoulderNPCCache.CachedShoulderNPC createCachedShoulderNPC(
-      CompoundTag entityTag) {
+  private static ShoulderNPCCache.CachedShoulderNPC createCachedShoulderNPC(CompoundTag entityTag) {
     return new ShoulderNPCCache.CachedShoulderNPC(
         entityTag, entityTag.copy(), Optional.empty(), 0L);
   }
@@ -72,8 +71,7 @@ class ShoulderNPCCacheTest {
   void changedTagDoesNotMatch() {
     CompoundTag entityTag = createShoulderNPCTag();
 
-    assertFalse(
-        createCachedShoulderNPC(entityTag).matches(createChangedShoulderNPCTag(entityTag)));
+    assertFalse(createCachedShoulderNPC(entityTag).matches(createChangedShoulderNPCTag(entityTag)));
   }
 
   @Test

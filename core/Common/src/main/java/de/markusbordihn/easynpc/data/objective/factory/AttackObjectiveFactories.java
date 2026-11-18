@@ -55,60 +55,54 @@ final class AttackObjectiveFactories {
   private static void registerAttackGoals() {
     register(
         ObjectiveType.CROSSBOW_ATTACK,
-        requiresPathfinderMob(
-            (objectiveDataEntry, easyNPC) ->
-                new CrossbowAttackGoal<>(
-                    easyNPC,
-                    objectiveDataEntry.getSpeedModifier(),
-                    objectiveDataEntry.getAttackRadius())));
+        requiresPathfinderMob((objectiveDataEntry, easyNPC) ->
+            new CrossbowAttackGoal<>(
+                easyNPC,
+                objectiveDataEntry.getSpeedModifier(),
+                objectiveDataEntry.getAttackRadius())));
 
     register(
         ObjectiveType.BOW_ATTACK,
-        requiresPathfinderMob(
-            (objectiveDataEntry, easyNPC) ->
-                new BowAttackGoal<>(
-                    easyNPC,
-                    objectiveDataEntry.getSpeedModifier(),
-                    objectiveDataEntry.getAttackInterval(),
-                    objectiveDataEntry.getAttackRadius())));
+        requiresPathfinderMob((objectiveDataEntry, easyNPC) ->
+            new BowAttackGoal<>(
+                easyNPC,
+                objectiveDataEntry.getSpeedModifier(),
+                objectiveDataEntry.getAttackInterval(),
+                objectiveDataEntry.getAttackRadius())));
 
     register(
         ObjectiveType.MELEE_ATTACK,
-        requiresPathfinderMob(
-            (objectiveDataEntry, easyNPC) ->
-                new CustomMeleeAttackGoal<>(
-                    easyNPC,
-                    objectiveDataEntry.getSpeedModifier(),
-                    objectiveDataEntry.isMustSeeTarget())));
+        requiresPathfinderMob((objectiveDataEntry, easyNPC) ->
+            new CustomMeleeAttackGoal<>(
+                easyNPC,
+                objectiveDataEntry.getSpeedModifier(),
+                objectiveDataEntry.isMustSeeTarget())));
 
     register(
         ObjectiveType.ZOMBIE_ATTACK,
-        requiresPathfinderMob(
-            (objectiveDataEntry, easyNPC) ->
-                new ZombieAttackGoal<>(
-                    easyNPC,
-                    objectiveDataEntry.getSpeedModifier(),
-                    objectiveDataEntry.isMustSeeTarget())));
+        requiresPathfinderMob((objectiveDataEntry, easyNPC) ->
+            new ZombieAttackGoal<>(
+                easyNPC,
+                objectiveDataEntry.getSpeedModifier(),
+                objectiveDataEntry.isMustSeeTarget())));
 
     register(
         ObjectiveType.GUN_ATTACK,
-        requiresPathfinderMob(
-            (objectiveDataEntry, easyNPC) ->
-                new GunAttackGoal<>(
-                    easyNPC,
-                    objectiveDataEntry.getSpeedModifier(),
-                    objectiveDataEntry.getAttackInterval(),
-                    objectiveDataEntry.getAttackRadius())));
+        requiresPathfinderMob((objectiveDataEntry, easyNPC) ->
+            new GunAttackGoal<>(
+                easyNPC,
+                objectiveDataEntry.getSpeedModifier(),
+                objectiveDataEntry.getAttackInterval(),
+                objectiveDataEntry.getAttackRadius())));
 
     register(
         ObjectiveType.PROJECTILE_ATTACK,
-        requiresPathfinderMob(
-            (objectiveDataEntry, easyNPC) ->
-                new ProjectileAttackGoal<>(
-                    easyNPC,
-                    objectiveDataEntry.getSpeedModifier(),
-                    objectiveDataEntry.getAttackInterval(),
-                    objectiveDataEntry.getAttackRadius())));
+        requiresPathfinderMob((objectiveDataEntry, easyNPC) ->
+            new ProjectileAttackGoal<>(
+                easyNPC,
+                objectiveDataEntry.getSpeedModifier(),
+                objectiveDataEntry.getAttackInterval(),
+                objectiveDataEntry.getAttackRadius())));
   }
 
   private static void registerAttackTargets() {
@@ -156,8 +150,7 @@ final class AttackObjectiveFactories {
     registerTarget(
         ObjectiveType.HURT_BY_TARGET,
         requiresPathfinderMob(
-            targetFactory(
-                (objectiveDataEntry, easyNPC) ->
-                    new HurtByTargetGoal(easyNPC.getPathfinderMob()))));
+            targetFactory((objectiveDataEntry, easyNPC) ->
+                new HurtByTargetGoal(easyNPC.getPathfinderMob()))));
   }
 }

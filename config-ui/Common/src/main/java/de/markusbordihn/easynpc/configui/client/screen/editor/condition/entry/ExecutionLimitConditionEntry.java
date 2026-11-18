@@ -81,10 +81,9 @@ public class ExecutionLimitConditionEntry extends ConditionEntryWidget {
                     .collect(Collectors.toCollection(LinkedHashSet::new)),
                 durationType,
                 button -> {}));
-    this.durationTypeButton.setLabelProvider(
-        value ->
-            TextComponent.getTranslatedConfigText(
-                "executionInterval." + value.name().toLowerCase(Locale.ROOT)));
+    this.durationTypeButton.setLabelProvider(value ->
+        TextComponent.getTranslatedConfigText(
+            "executionInterval." + value.name().toLowerCase(Locale.ROOT)));
 
     ReloadButton resetCurrentPlayerButton =
         this.screen.addConditionEntryWidget(

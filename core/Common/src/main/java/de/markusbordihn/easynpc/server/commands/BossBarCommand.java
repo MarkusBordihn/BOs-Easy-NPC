@@ -49,24 +49,18 @@ public class BossBarCommand extends Command {
     npcTargetsArgument
         .then(
             Commands.literal("show")
-                .executes(
-                    context ->
-                        setBossBarAttribute(
-                            context,
-                            "visibility",
-                            "shown",
-                            DisplayAttributeType.SHOW_BOSS_BAR,
-                            true)))
+                .executes(context ->
+                    setBossBarAttribute(
+                        context, "visibility", "shown", DisplayAttributeType.SHOW_BOSS_BAR, true)))
         .then(
             Commands.literal("hide")
-                .executes(
-                    context ->
-                        setBossBarAttribute(
-                            context,
-                            "visibility",
-                            "hidden",
-                            DisplayAttributeType.SHOW_BOSS_BAR,
-                            false)))
+                .executes(context ->
+                    setBossBarAttribute(
+                        context,
+                        "visibility",
+                        "hidden",
+                        DisplayAttributeType.SHOW_BOSS_BAR,
+                        false)))
         .then(colorLiteral())
         .then(styleLiteral())
         .then(
@@ -95,14 +89,13 @@ public class BossBarCommand extends Command {
       String colorName = bossBarColor.name().toLowerCase(Locale.ROOT);
       colorLiteral.then(
           Commands.literal(colorName)
-              .executes(
-                  context ->
-                      setBossBarAttribute(
-                          context,
-                          "color",
-                          colorName,
-                          DisplayAttributeType.BOSS_BAR_COLOR,
-                          bossBarColor.name())));
+              .executes(context ->
+                  setBossBarAttribute(
+                      context,
+                      "color",
+                      colorName,
+                      DisplayAttributeType.BOSS_BAR_COLOR,
+                      bossBarColor.name())));
     }
     return colorLiteral;
   }
@@ -113,14 +106,13 @@ public class BossBarCommand extends Command {
       String styleName = bossBarStyle.name().toLowerCase(Locale.ROOT);
       styleLiteral.then(
           Commands.literal(styleName)
-              .executes(
-                  context ->
-                      setBossBarAttribute(
-                          context,
-                          "style",
-                          styleName,
-                          DisplayAttributeType.BOSS_BAR_STYLE,
-                          bossBarStyle.name())));
+              .executes(context ->
+                  setBossBarAttribute(
+                      context,
+                      "style",
+                      styleName,
+                      DisplayAttributeType.BOSS_BAR_STYLE,
+                      bossBarStyle.name())));
     }
     return styleLiteral;
   }
@@ -130,12 +122,11 @@ public class BossBarCommand extends Command {
     return Commands.literal(settingName)
         .then(
             Commands.argument(VALUE_ARG, IntegerArgumentType.integer(minimum, maximum))
-                .executes(
-                    context -> {
-                      int value = IntegerArgumentType.getInteger(context, VALUE_ARG);
-                      return setBossBarAttribute(
-                          context, settingName, String.valueOf(value), attributeType, value);
-                    }));
+                .executes(context -> {
+                  int value = IntegerArgumentType.getInteger(context, VALUE_ARG);
+                  return setBossBarAttribute(
+                      context, settingName, String.valueOf(value), attributeType, value);
+                }));
   }
 
   private static <T> int setBossBarAttribute(

@@ -110,12 +110,11 @@ public class EasyModelEntitiesLoader implements IntegrationModelProvider {
     }
 
     reloadListenerRegistered = true;
-    EasyModelReloadEvents.onProfileReload(
-        () -> {
-          INSTANCE.cachedModels = loadProfileModels();
-          log.info("Loaded {} Easy Model Entities profiles", INSTANCE.cachedModels.size());
-          IntegrationRegistry.invalidate(EasyModelEntitiesManager.INTEGRATION_ID);
-        });
+    EasyModelReloadEvents.onProfileReload(() -> {
+      INSTANCE.cachedModels = loadProfileModels();
+      log.info("Loaded {} Easy Model Entities profiles", INSTANCE.cachedModels.size());
+      IntegrationRegistry.invalidate(EasyModelEntitiesManager.INTEGRATION_ID);
+    });
   }
 
   public static void register() {
@@ -139,16 +138,15 @@ public class EasyModelEntitiesLoader implements IntegrationModelProvider {
           @Override
           public List<ModelAnimationInfo> listAnimations(ResourceLocation profileId) {
             return EasyModelEntitiesClientApi.listAnimations(profileId).stream()
-                .map(
-                    info ->
-                        new ModelAnimationInfo(
-                            info.name(),
-                            info.baseName(),
-                            info.durationTicks(),
-                            info.loop(),
-                            info.frameCount(),
-                            info.keyframeCount(),
-                            info.animatedBoneCount()))
+                .map(info ->
+                    new ModelAnimationInfo(
+                        info.name(),
+                        info.baseName(),
+                        info.durationTicks(),
+                        info.loop(),
+                        info.frameCount(),
+                        info.keyframeCount(),
+                        info.animatedBoneCount()))
                 .toList();
           }
 
@@ -188,12 +186,11 @@ public class EasyModelEntitiesLoader implements IntegrationModelProvider {
     Map<String, EasyModelTextureSlot> slots = new LinkedHashMap<>();
     textureSetting
         .slots()
-        .forEach(
-            (slot, textureSlot) ->
-                slots.put(
-                    slot,
-                    new EasyModelTextureSlot(
-                        textureSlot.texture(), toEasyModelTextureBlend(textureSlot.blend()))));
+        .forEach((slot, textureSlot) ->
+            slots.put(
+                slot,
+                new EasyModelTextureSlot(
+                    textureSlot.texture(), toEasyModelTextureBlend(textureSlot.blend()))));
     return new EasyModelTextureSetting(slots);
   }
 

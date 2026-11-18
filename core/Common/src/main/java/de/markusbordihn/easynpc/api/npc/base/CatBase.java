@@ -96,6 +96,10 @@ public class CatBase extends CatRaw implements BaseEasyNPC<CatRaw> {
     return soundDataSet;
   }
 
+  // Vanilla resets the pose every tick, which would undo the vanilla pose of the NPC.
+  @Override
+  public void customServerAiStep() {}
+
   @Override
   protected void registerGoals() {
     // No default goals for base NPCs.

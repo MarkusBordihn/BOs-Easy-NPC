@@ -198,19 +198,18 @@ public class DataFileHandler {
     try (Stream<Path> filesStream = Files.walk(presetDataFolder)) {
       filesStream
           .filter(DataFileHandler::isPresetFile)
-          .forEach(
-              path ->
-                  presetFileConsumer.accept(
-                      ResourceLocation.fromNamespaceAndPath(
-                          Constants.MOD_ID,
-                          RESOURCE_PRESET_PATH
-                              + '/'
-                              + presetDataFolder
-                                  .relativize(path)
-                                  .toString()
-                                  .replace("\\", "/")
-                                  .toLowerCase(Locale.ROOT)),
-                      path));
+          .forEach(path ->
+              presetFileConsumer.accept(
+                  ResourceLocation.fromNamespaceAndPath(
+                      Constants.MOD_ID,
+                      RESOURCE_PRESET_PATH
+                          + '/'
+                          + presetDataFolder
+                              .relativize(path)
+                              .toString()
+                              .replace("\\", "/")
+                              .toLowerCase(Locale.ROOT)),
+                  path));
     }
   }
 

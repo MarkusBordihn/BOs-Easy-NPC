@@ -42,11 +42,10 @@ public class DebugCommand extends Command {
                 .then(LogLevelCommand.register(Constants.LOG_NAME, Constants.MOD_NAME))
                 .then(
                     Commands.argument("enable", BoolArgumentType.bool())
-                        .executes(
-                            context ->
-                                setDebug(
-                                    context.getSource(),
-                                    BoolArgumentType.getBool(context, "enable")))));
+                        .executes(context ->
+                            setDebug(
+                                context.getSource(),
+                                BoolArgumentType.getBool(context, "enable")))));
   }
 
   public static int setDebug(CommandSourceStack commandSourceStack, boolean enable) {

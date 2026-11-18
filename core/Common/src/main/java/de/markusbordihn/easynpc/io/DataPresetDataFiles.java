@@ -77,11 +77,8 @@ public class DataPresetDataFiles {
         || currentTime - lastAccessRefreshTime >= REFRESH_COOLDOWN_MILLISECONDS) {
       cachedUsablePresets =
           getPresetResourceLocations(minecraftServer)
-              .filter(
-                  resourceLocation ->
-                      getPresetMetadata(minecraftServer, resourceLocation)
-                          .access()
-                          .isUsableByCommand())
+              .filter(resourceLocation ->
+                  getPresetMetadata(minecraftServer, resourceLocation).access().isUsableByCommand())
               .toList();
       lastAccessRefreshTime = currentTime;
     }

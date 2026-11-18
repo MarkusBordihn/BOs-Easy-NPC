@@ -180,7 +180,8 @@ class TradingUtilsTest {
                   foo:1b
                 }
               }
-            }""");
+            }\
+            """);
 
     CompoundTag migratedEntry = (CompoundTag) TradingUtils.migrateLegacyTradeEntry(tradeEntry);
     CompoundTag migratedSell = migratedEntry.getCompound("sell");
@@ -234,7 +235,8 @@ class TradingUtilsTest {
                   foo:1b
                 }
               }
-            }""");
+            }\
+            """);
 
     CompoundTag migratedEntry = (CompoundTag) TradingUtils.migrateLegacyTradeEntry(tradeEntry);
     CompoundTag migratedSell = migratedEntry.getCompound("sell");
@@ -268,7 +270,8 @@ class TradingUtilsTest {
                   }
                 }
               }
-            }""");
+            }\
+            """);
 
     CompoundTag migratedEntry = (CompoundTag) TradingUtils.migrateLegacyTradeEntry(tradeEntry);
     CompoundTag components = migratedEntry.getCompound("sell").getCompound("components");

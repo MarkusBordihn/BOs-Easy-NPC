@@ -75,29 +75,6 @@ import org.apache.logging.log4j.Logger;
 public class NPCStorageWriteTestHelper {
 
   public static final int MASS_NPC_COUNT = 200;
-
-  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-  private static final String LOG_PREFIX = "[NPC Storage Write Test]";
-
-  private static final Vec3 NPC_POSITION = new Vec3(1, 2, 1);
-  private static final Vec3 PLAYER_POSITION = new Vec3(2, 2, 1);
-  private static final int AI_TICKS_BEFORE_UNLOAD = 60;
-  private static final int TICKS_BETWEEN_BACKUP_RUNS = 5;
-  private static final long BACKUP_TIMESTAMP_OFFSET_MILLISECONDS = 60L * 60L * 1000L;
-  private static final int LIGHT_LEVEL = 12;
-  private static final String SHOULDER_NPC_NAME = "Shoulder Storage NPC";
-  private static final String DIALOG_NAME = "Storage Dialog";
-  private static final String UNMARKED_CHANGE_TAG = "easy_npc_storage_test";
-  private static final String CUSTOM_NAME_TAG = "CustomName";
-  static final NPCDataChange FIRST_NPC_DATA_CHANGE =
-      new NPCDataChange(
-          "First Changed NPC",
-          LIGHT_LEVEL,
-          "First Changed Dialog",
-          Items.DIAMOND_HELMET,
-          Items.EMERALD,
-          Items.EMERALD,
-          true);
   static final NPCDataChange SECOND_NPC_DATA_CHANGE =
       new NPCDataChange(
           "Second Changed NPC",
@@ -107,6 +84,27 @@ public class NPCStorageWriteTestHelper {
           Items.GOLD_INGOT,
           Items.GOLD_INGOT,
           false);
+  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+  private static final String LOG_PREFIX = "[NPC Storage Write Test]";
+  private static final Vec3 NPC_POSITION = new Vec3(1, 2, 1);
+  private static final Vec3 PLAYER_POSITION = new Vec3(2, 2, 1);
+  private static final int AI_TICKS_BEFORE_UNLOAD = 60;
+  private static final int TICKS_BETWEEN_BACKUP_RUNS = 5;
+  private static final long BACKUP_TIMESTAMP_OFFSET_MILLISECONDS = 60L * 60L * 1000L;
+  private static final int LIGHT_LEVEL = 12;
+  static final NPCDataChange FIRST_NPC_DATA_CHANGE =
+      new NPCDataChange(
+          "First Changed NPC",
+          LIGHT_LEVEL,
+          "First Changed Dialog",
+          Items.DIAMOND_HELMET,
+          Items.EMERALD,
+          Items.EMERALD,
+          true);
+  private static final String SHOULDER_NPC_NAME = "Shoulder Storage NPC";
+  private static final String DIALOG_NAME = "Storage Dialog";
+  private static final String UNMARKED_CHANGE_TAG = "easy_npc_storage_test";
+  private static final String CUSTOM_NAME_TAG = "CustomName";
 
   private NPCStorageWriteTestHelper() {}
 
@@ -140,8 +138,7 @@ public class NPCStorageWriteTestHelper {
     assertUnchangedReloadWritesNoFile(helper, easyNPC);
   }
 
-  private static void assertUnchangedReloadWritesNoFile(
-      GameTestHelper helper, EasyNPC<?> easyNPC) {
+  private static void assertUnchangedReloadWritesNoFile(GameTestHelper helper, EasyNPC<?> easyNPC) {
     UUID entityUUID = easyNPC.getEntityUUID();
     saveAndFlush(easyNPC);
     long savedLastUpdate = getLastUpdate(easyNPC);
@@ -205,8 +202,7 @@ public class NPCStorageWriteTestHelper {
     assertChangeIsWrittenOnUnload(helper, easyNPC, "Removing the custom name");
   }
 
-  public static void assertInventoryChangeIsSaved(
-      GameTestHelper helper, EntityType<?> entityType) {
+  public static void assertInventoryChangeIsSaved(GameTestHelper helper, EntityType<?> entityType) {
     EasyNPC<?> easyNPC = spawnSavedNPC(helper, entityType);
     easyNPC.getEasyNPCInventoryData().getEasyNPCInventory().addItem(new ItemStack(Items.EMERALD));
     assertChangeIsWrittenOnUnload(helper, easyNPC, "An inventory change");
@@ -401,7 +397,8 @@ public class NPCStorageWriteTestHelper {
         LivingEntityManager.getServerEasyNPCEntityByUUID(entityUUID, helper.getLevel());
     GameTestHelpers.assertNotNull(
         helper, "The NPC spawned from its stored data is missing", spawnedNPC);
-    assertNPCDataChange(helper, spawnedNPC, SECOND_NPC_DATA_CHANGE, "Spawning from the stored data");
+    assertNPCDataChange(
+        helper, spawnedNPC, SECOND_NPC_DATA_CHANGE, "Spawning from the stored data");
   }
 
   public static void assertBackupRunSkipsUnchangedNPC(
@@ -490,9 +487,7 @@ public class NPCStorageWriteTestHelper {
       npcEntityData.setDirty();
     }
     GameTestHelpers.assertTrue(
-        helper,
-        "Saving an unchanged NPC again must not mark the index as changed",
-        !isIndexDirty);
+        helper, "Saving an unchanged NPC again must not mark the index as changed", !isIndexDirty);
     GameTestHelpers.assertTrue(
         helper,
         "Saving an unchanged NPC again must not queue a write of its NPC file",
@@ -533,8 +528,7 @@ public class NPCStorageWriteTestHelper {
     assertChangeIsWrittenOnUnload(helper, easyNPC, "Removing a dialog");
   }
 
-  public static void assertObjectiveChangeIsSaved(
-      GameTestHelper helper, EntityType<?> entityType) {
+  public static void assertObjectiveChangeIsSaved(GameTestHelper helper, EntityType<?> entityType) {
     EasyNPC<?> easyNPC = spawnSavedNPC(helper, entityType);
     easyNPC
         .getEasyNPCObjectiveData()
@@ -646,8 +640,7 @@ public class NPCStorageWriteTestHelper {
             helper,
             GameTestHelpers.consoleCommandSource(helper, NPC_POSITION),
             Constants.MOD_COMMAND + " debug stats file_storage");
-    GameTestHelpers.assertEquals(
-        helper, "The file storage stats command must succeed", 1, result);
+    GameTestHelpers.assertEquals(helper, "The file storage stats command must succeed", 1, result);
   }
 
   public static void assertMassReloadWritesNoUnchangedNPCFile(

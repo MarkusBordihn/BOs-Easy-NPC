@@ -55,19 +55,17 @@ public final class MassPosePersistenceTestHelper {
 
   private static final int[] HEAD_YAW_DEGREES = {-60, -30, 0, 30, 60};
   private static final int LEFT_ARM_ROLL_VARIANTS = 10;
-  private static final int LEFT_ARM_ROLL_STEP_DEGREES = 15;
   public static final int NPC_COUNT =
       KnownPose.values().length * HEAD_YAW_DEGREES.length * LEFT_ARM_ROLL_VARIANTS;
   private static final int CHANGED_POSE_INDEX_SHIFT = NPC_COUNT / 2 + 3;
-
+  private static final int TIMEOUT_TICKS = NPC_COUNT + 400;
+  private static final int LEFT_ARM_ROLL_STEP_DEGREES = 15;
   private static final String TEST_NAME = "posepersistencetest.mass_pose_kill_revive";
   // Forge 52 drops tests whose batch does not start with an enabled game test namespace.
   private static final String BATCH_NAME = Constants.MOD_ID + ".massPosePersistence";
   private static final String TEMPLATE = Constants.MOD_ID + ":gametest.3x3x3";
   private static final Vec3 NPC_POSITION = new Vec3(1, 2, 1);
   private static final Vec3 PLAYER_POSITION = new Vec3(1, 2, 0);
-  private static final int TIMEOUT_TICKS = NPC_COUNT + 400;
-
   private static final List<ModelPartType> POSED_PARTS =
       List.of(
           ModelPartType.HEAD,
@@ -119,16 +117,15 @@ public final class MassPosePersistenceTestHelper {
     helper
         .startSequence()
         .thenWaitUntil(() -> assertAllStoredAsKilled(helper, killedNPCs))
-        .thenExecute(
-            () -> {
-              revivedNPCs.addAll(reviveAndAssertPoses(helper, initialPoses, "first revive"));
-              for (EasyNPC<?> revivedNPC : revivedNPCs) {
-                ExpectedPose changedPose = changedPoses.get(revivedNPC.getEntityUUID());
-                applyPose(revivedNPC, changedPose, poseEditor);
-                assertPose(helper, revivedNPC, changedPose, "after changing the pose");
-              }
-              killAll(revivedNPCs);
-            })
+        .thenExecute(() -> {
+          revivedNPCs.addAll(reviveAndAssertPoses(helper, initialPoses, "first revive"));
+          for (EasyNPC<?> revivedNPC : revivedNPCs) {
+            ExpectedPose changedPose = changedPoses.get(revivedNPC.getEntityUUID());
+            applyPose(revivedNPC, changedPose, poseEditor);
+            assertPose(helper, revivedNPC, changedPose, "after changing the pose");
+          }
+          killAll(revivedNPCs);
+        })
         .thenWaitUntil(() -> assertAllStoredAsKilled(helper, revivedNPCs))
         .thenExecute(() -> reviveAndAssertPoses(helper, changedPoses, "revive after pose change"))
         .thenSucceed();
@@ -157,14 +154,13 @@ public final class MassPosePersistenceTestHelper {
             leftArmInDegrees.z() + leftArmRollOffsetDegrees));
 
     Map<ModelPartType, CustomRotation> rotations = new EnumMap<>(ModelPartType.class);
-    rotationsInDegrees.forEach(
-        (modelPartType, rotationInDegrees) ->
-            rotations.put(
-                modelPartType,
-                new CustomRotation(
-                    toWrappedRadians(rotationInDegrees.x()),
-                    toWrappedRadians(rotationInDegrees.y()),
-                    toWrappedRadians(rotationInDegrees.z()))));
+    rotationsInDegrees.forEach((modelPartType, rotationInDegrees) ->
+        rotations.put(
+            modelPartType,
+            new CustomRotation(
+                toWrappedRadians(rotationInDegrees.x()),
+                toWrappedRadians(rotationInDegrees.y()),
+                toWrappedRadians(rotationInDegrees.z()))));
 
     Map<ModelPartType, CustomPosition> positions = new EnumMap<>(ModelPartType.class);
     if (poseIndex % 4 == 0) {

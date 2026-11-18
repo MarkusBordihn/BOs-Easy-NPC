@@ -41,9 +41,8 @@ public class ImportWorldPresetConfigurationScreen<T extends ConfigurationMenu>
         CompoundTagUtils.readResourceLocations(
                 this.getAdditionalScreenData().getList("WorldPresets"))
             .stream()
-            .filter(
-                resourceLocation ->
-                    resourceLocation.getPath().contains("/" + this.getSkinModel().getName() + "/"))
+            .filter(resourceLocation ->
+                resourceLocation.getPath().contains("/" + this.getSkinModel().getName() + "/"))
             .collect(Collectors.toSet());
   }
 

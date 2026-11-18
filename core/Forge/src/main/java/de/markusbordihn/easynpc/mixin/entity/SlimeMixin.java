@@ -28,15 +28,13 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Slime.class)
 public class SlimeMixin {
 
-  @Inject(
-      method = "finalizeSpawn",
-      at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/monster/Slime;setSize(IZ)V"),
-      cancellable = true)
+  @Inject(method = "finalizeSpawn", at = @At("HEAD"), cancellable = true)
   private void onFinalizeSpawn(
       ServerLevelAccessor levelAccessor,
       DifficultyInstance difficulty,
@@ -47,5 +45,11 @@ public class SlimeMixin {
     if (slime instanceof EasyNPC<?>) {
       callbackInfoReturnable.setReturnValue(spawnGroupData);
     }
+  }
+
+  // Vanilla splits a dying slime into new, unconfigured slime NPCs of the same type.
+  @ModifyVariable(method = "remove", at = @At("STORE"), ordinal = 0)
+  private int keepEasyNPCSlimeFromSplitting(int size) {
+    return (Object) this instanceof EasyNPC<?> ? 1 : size;
   }
 }

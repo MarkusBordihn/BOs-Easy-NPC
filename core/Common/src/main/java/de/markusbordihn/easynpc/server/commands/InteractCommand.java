@@ -41,16 +41,14 @@ public class InteractCommand extends Command {
                     Commands.argument(NPC_TARGET_ARG, EasyNPCArgument.npc())
                         .then(
                             Commands.argument(POSITION_ARG, BlockPosArgument.blockPos())
-                                .executes(
-                                    context -> {
-                                      BlockPos blockPos =
-                                          BlockPosArgument.getLoadedBlockPos(context, POSITION_ARG);
-                                      return interactWithBlock(
-                                          context.getSource(),
-                                          EasyNPCArgument.getEntityWithAccess(
-                                              context, NPC_TARGET_ARG),
-                                          blockPos);
-                                    }))));
+                                .executes(context -> {
+                                  BlockPos blockPos =
+                                      BlockPosArgument.getLoadedBlockPos(context, POSITION_ARG);
+                                  return interactWithBlock(
+                                      context.getSource(),
+                                      EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG),
+                                      blockPos);
+                                }))));
   }
 
   private static int interactWithBlock(

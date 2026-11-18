@@ -89,4 +89,16 @@ public class PresetIdentityTest {
     PresetIdentityTestHelper.assertPresetItemDropsIdentity(helper, humanoid());
     helper.succeed();
   }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testImportWithMalformedUUIDCreatesNewNPC(GameTestHelper helper) {
+    PresetIdentityTestHelper.assertImportWithMalformedUUIDCreatesNewNPC(helper, humanoid());
+    helper.succeed();
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testPresetItemWithMalformedPresetUUIDSpawns(GameTestHelper helper) {
+    PresetIdentityTestHelper.assertPresetItemWithMalformedPresetUUIDSpawns(helper, humanoid());
+    helper.succeed();
+  }
 }

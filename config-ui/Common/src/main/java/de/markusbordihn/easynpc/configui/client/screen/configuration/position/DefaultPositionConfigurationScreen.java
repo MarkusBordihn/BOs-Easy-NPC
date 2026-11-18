@@ -84,13 +84,12 @@ public class DefaultPositionConfigurationScreen<T extends ConfigurationMenu>
             new TextField(this.font, this.contentLeftPos + 15, positionTopPos, 60));
     this.positionXBox.setMaxLength(8);
     this.positionXBox.setValue(String.valueOf(this.positionX));
-    this.positionXBox.setResponder(
-        consumer -> {
-          this.positionX = ValueUtils.getDoubleValue(this.positionXBox.getValue());
-          NetworkMessageHandlerManager.getServerHandler()
-              .positionChange(
-                  this.getEasyNPCUUID(), new Vec3(this.positionX, this.positionY, this.positionZ));
-        });
+    this.positionXBox.setResponder(consumer -> {
+      this.positionX = ValueUtils.getDoubleValue(this.positionXBox.getValue());
+      NetworkMessageHandlerManager.getServerHandler()
+          .positionChange(
+              this.getEasyNPCUUID(), new Vec3(this.positionX, this.positionY, this.positionZ));
+    });
     this.positionXMinusButton =
         this.addRenderableWidget(
             new TextButton(
@@ -119,13 +118,12 @@ public class DefaultPositionConfigurationScreen<T extends ConfigurationMenu>
             new TextField(this.font, this.contentLeftPos + 111, positionTopPos, 60));
     this.positionYBox.setMaxLength(8);
     this.positionYBox.setValue(String.valueOf(this.positionY));
-    this.positionYBox.setResponder(
-        consumer -> {
-          this.positionY = ValueUtils.getDoubleValue(this.positionYBox.getValue());
-          NetworkMessageHandlerManager.getServerHandler()
-              .positionChange(
-                  this.getEasyNPCUUID(), new Vec3(this.positionX, this.positionY, this.positionZ));
-        });
+    this.positionYBox.setResponder(consumer -> {
+      this.positionY = ValueUtils.getDoubleValue(this.positionYBox.getValue());
+      NetworkMessageHandlerManager.getServerHandler()
+          .positionChange(
+              this.getEasyNPCUUID(), new Vec3(this.positionX, this.positionY, this.positionZ));
+    });
     this.positionYMinusButton =
         this.addRenderableWidget(
             new TextButton(
@@ -154,13 +152,12 @@ public class DefaultPositionConfigurationScreen<T extends ConfigurationMenu>
             new TextField(this.font, this.contentLeftPos + 207, positionTopPos, 60));
     this.positionZBox.setMaxLength(8);
     this.positionZBox.setValue(String.valueOf(this.positionZ));
-    this.positionZBox.setResponder(
-        consumer -> {
-          this.positionZ = ValueUtils.getDoubleValue(this.positionZBox.getValue());
-          NetworkMessageHandlerManager.getServerHandler()
-              .positionChange(
-                  this.getEasyNPCUUID(), new Vec3(this.positionX, this.positionY, this.positionZ));
-        });
+    this.positionZBox.setResponder(consumer -> {
+      this.positionZ = ValueUtils.getDoubleValue(this.positionZBox.getValue());
+      NetworkMessageHandlerManager.getServerHandler()
+          .positionChange(
+              this.getEasyNPCUUID(), new Vec3(this.positionX, this.positionY, this.positionZ));
+    });
     this.positionZMinusButton =
         this.addRenderableWidget(
             new TextButton(

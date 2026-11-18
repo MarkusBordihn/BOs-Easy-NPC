@@ -85,7 +85,9 @@ public final class ShoulderNPCClientData {
       clientDataValues.set(
           i,
           new SynchedEntityData.DataValue<>(
-              dataValue.id(), EntityDataSerializers.COMPOUND_TAG, createClientEntityTag(entityTag)));
+              dataValue.id(),
+              EntityDataSerializers.COMPOUND_TAG,
+              createClientEntityTag(entityTag)));
     }
     return clientDataValues != null ? clientDataValues : dataValues;
   }

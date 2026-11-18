@@ -20,8 +20,13 @@
 package de.markusbordihn.easynpc.access;
 
 import de.markusbordihn.easynpc.data.npc.ShoulderSide;
+import net.minecraft.nbt.CompoundTag;
 
 public interface ShoulderAccessHelper {
 
-  void clearShoulderEntity(ShoulderSide shoulderSide);
+  void setShoulderEntity(ShoulderSide shoulderSide, CompoundTag entityTag);
+
+  default void clearShoulderEntity(ShoulderSide shoulderSide) {
+    this.setShoulderEntity(shoulderSide, new CompoundTag());
+  }
 }

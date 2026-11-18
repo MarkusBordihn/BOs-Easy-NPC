@@ -112,7 +112,8 @@ class ShoulderNPCClientDataTest {
     CompoundTag entityTag = createShoulderNPCTag(tagName);
 
     assertEquals(
-        entityTag.get(tagName), ShoulderNPCClientData.createClientEntityTag(entityTag).get(tagName));
+        entityTag.get(tagName),
+        ShoulderNPCClientData.createClientEntityTag(entityTag).get(tagName));
   }
 
   @Test

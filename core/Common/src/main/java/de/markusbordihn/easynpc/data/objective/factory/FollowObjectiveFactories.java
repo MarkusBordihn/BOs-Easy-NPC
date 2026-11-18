@@ -72,21 +72,20 @@ final class FollowObjectiveFactories {
 
     register(
         ObjectiveType.FOLLOW_ITEM,
-        requiresPathfinderMob(
-            (objectiveDataEntry, easyNPC) -> {
-              Ingredient temptItems = TargetItemResolver.resolveTargetItems(objectiveDataEntry);
-              if (temptItems == null) {
-                return null;
-              }
+        requiresPathfinderMob((objectiveDataEntry, easyNPC) -> {
+          Ingredient temptItems = TargetItemResolver.resolveTargetItems(objectiveDataEntry);
+          if (temptItems == null) {
+            return null;
+          }
 
-              return new CustomTemptGoal(
-                  easyNPC,
-                  easyNPC.getPathfinderMob(),
-                  objectiveDataEntry.getSpeedModifier(),
-                  temptItems,
-                  objectiveDataEntry.getCanScare(),
-                  objectiveDataEntry.getOnlyWithoutOwner());
-            }));
+          return new CustomTemptGoal(
+              easyNPC,
+              easyNPC.getPathfinderMob(),
+              objectiveDataEntry.getSpeedModifier(),
+              temptItems,
+              objectiveDataEntry.getCanScare(),
+              objectiveDataEntry.getOnlyWithoutOwner());
+        }));
   }
 
   private static Player findNearestPlayer(ObjectiveDataEntry objectiveDataEntry, Mob mob) {
