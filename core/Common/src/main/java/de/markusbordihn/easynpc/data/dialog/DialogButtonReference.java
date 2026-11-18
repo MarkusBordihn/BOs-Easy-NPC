@@ -29,13 +29,12 @@ import net.minecraft.core.UUIDUtil;
 public record DialogButtonReference(UUID dialogId, UUID buttonId) {
 
   public static final Codec<DialogButtonReference> CODEC =
-      RecordCodecBuilder.create(
-          instance ->
-              instance
-                  .group(
-                      UUIDUtil.CODEC.fieldOf("Dialog").forGetter(DialogButtonReference::dialogId),
-                      UUIDUtil.CODEC.fieldOf("Button").forGetter(DialogButtonReference::buttonId))
-                  .apply(instance, DialogButtonReference::new));
+      RecordCodecBuilder.create(instance ->
+          instance
+              .group(
+                  UUIDUtil.CODEC.fieldOf("Dialog").forGetter(DialogButtonReference::dialogId),
+                  UUIDUtil.CODEC.fieldOf("Button").forGetter(DialogButtonReference::buttonId))
+              .apply(instance, DialogButtonReference::new));
 
   public static final Codec<List<DialogButtonReference>> LIST_CODEC = CODEC.listOf();
 }

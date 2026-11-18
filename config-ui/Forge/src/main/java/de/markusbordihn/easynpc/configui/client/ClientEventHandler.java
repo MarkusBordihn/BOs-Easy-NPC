@@ -41,9 +41,8 @@ public class ClientEventHandler {
 
     ClientScreens.registerScreens(event);
 
-    event.enqueueWork(
-        () -> {
-          NetworkMessageHandlerManager.registerServerHandler(new ServerNetworkMessageHandler());
-        });
+    event.enqueueWork(() -> {
+      NetworkMessageHandlerManager.registerServerHandler(new ServerNetworkMessageHandler());
+    });
   }
 }

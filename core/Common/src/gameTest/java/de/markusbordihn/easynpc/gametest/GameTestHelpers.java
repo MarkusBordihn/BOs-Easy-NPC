@@ -255,7 +255,9 @@ public final class GameTestHelpers {
     addCleanup(
         helper,
         () ->
-            helper.getLevel().removePlayerImmediately(serverPlayer, Entity.RemovalReason.DISCARDED));
+            helper
+                .getLevel()
+                .removePlayerImmediately(serverPlayer, Entity.RemovalReason.DISCARDED));
     return serverPlayer;
   }
 

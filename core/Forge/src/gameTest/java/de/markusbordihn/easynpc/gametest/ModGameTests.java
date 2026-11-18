@@ -106,6 +106,134 @@ public final class ModGameTests {
         () -> FactionDefenseTest::testDefendSelfDoesNotAlertOthers);
 
     TEST_FUNCTIONS.register(
+        "monster_targets_attackable_npc",
+        () -> MonsterTargetingTest::testMonsterTargetsAttackableNPC);
+    TEST_FUNCTIONS.register(
+        "monster_ignores_not_attackable_npc",
+        () -> MonsterTargetingTest::testMonsterIgnoresNotAttackableNPC);
+    TEST_FUNCTIONS.register(
+        "monster_keeps_targeting_invulnerable_npc",
+        () -> MonsterTargetingTest::testMonsterKeepsTargetingInvulnerableNPC);
+
+    TEST_FUNCTIONS.register(
+        "creeper_npc_does_not_explode", () -> ServerMixinTest::testCreeperNPCDoesNotExplode);
+    TEST_FUNCTIONS.register(
+        "piglin_npc_skips_vanilla_activity_update",
+        () -> ServerMixinTest::testPiglinNPCSkipsVanillaActivityUpdate);
+    TEST_FUNCTIONS.register(
+        "piglin_brute_npc_skips_vanilla_activity_update",
+        () -> ServerMixinTest::testPiglinBruteNPCSkipsVanillaActivityUpdate);
+    TEST_FUNCTIONS.register(
+        "fox_npc_gets_no_vanilla_target_goals",
+        () -> ServerMixinTest::testFoxNPCGetsNoVanillaTargetGoals);
+    TEST_FUNCTIONS.register(
+        "witch_npc_drinks_no_potions", () -> ServerMixinTest::testWitchNPCDrinksNoPotions);
+    TEST_FUNCTIONS.register(
+        "villager_npc_keeps_its_trading_player",
+        () -> ServerMixinTest::testVillagerNPCKeepsItsTradingPlayer);
+    TEST_FUNCTIONS.register(
+        "slime_npc_keeps_its_size_on_finalize_spawn",
+        () -> ServerMixinTest::testSlimeNPCKeepsItsSizeOnFinalizeSpawn);
+    TEST_FUNCTIONS.register(
+        "walk_animation_copy_takes_every_value",
+        () -> ServerMixinTest::testWalkAnimationCopyTakesEveryValue);
+    TEST_FUNCTIONS.register(
+        "swing_state_copy_takes_every_value",
+        () -> ServerMixinTest::testSwingStateCopyTakesEveryValue);
+    TEST_FUNCTIONS.register(
+        "spawner_data_matches_every_spawner_type",
+        () -> ServerMixinTest::testSpawnerDataMatchesEverySpawnerType);
+    TEST_FUNCTIONS.register(
+        "zombie_npc_is_not_replaced_by_vanilla_conversion",
+        () -> ServerMixinTest::testZombieNPCIsNotReplacedByVanillaConversion);
+    TEST_FUNCTIONS.register(
+        "skeleton_npc_is_not_replaced_by_vanilla_conversion",
+        () -> ServerMixinTest::testSkeletonNPCIsNotReplacedByVanillaConversion);
+    TEST_FUNCTIONS.register(
+        "zombie_npc_gets_no_random_spawn_extras",
+        () -> ServerMixinTest::testZombieNPCGetsNoRandomSpawnExtras);
+    TEST_FUNCTIONS.register(
+        "husk_npc_gets_no_random_spawn_extras",
+        () -> ServerMixinTest::testHuskNPCGetsNoRandomSpawnExtras);
+    TEST_FUNCTIONS.register(
+        "drowned_npc_gets_no_random_spawn_extras",
+        () -> ServerMixinTest::testDrownedNPCGetsNoRandomSpawnExtras);
+    TEST_FUNCTIONS.register(
+        "zombie_villager_npc_gets_no_random_spawn_extras",
+        () -> ServerMixinTest::testZombieVillagerNPCGetsNoRandomSpawnExtras);
+    TEST_FUNCTIONS.register(
+        "zombified_piglin_npc_keeps_its_weapon_on_finalize_spawn",
+        () -> ServerMixinTest::testZombifiedPiglinNPCKeepsItsWeaponOnFinalizeSpawn);
+    TEST_FUNCTIONS.register(
+        "skeleton_npc_gets_the_vanilla_bow_only_without_equipment",
+        () -> ServerMixinTest::testSkeletonNPCGetsTheVanillaBowOnlyWithoutEquipment);
+    TEST_FUNCTIONS.register(
+        "skeleton_npc_gets_no_vanilla_weapon_goal",
+        () -> ServerMixinTest::testSkeletonNPCGetsNoVanillaWeaponGoal);
+    TEST_FUNCTIONS.register(
+        "stray_npc_gets_no_vanilla_weapon_goal",
+        () -> ServerMixinTest::testStrayNPCGetsNoVanillaWeaponGoal);
+    TEST_FUNCTIONS.register(
+        "wither_skeleton_npc_gets_no_vanilla_weapon_goal",
+        () -> ServerMixinTest::testWitherSkeletonNPCGetsNoVanillaWeaponGoal);
+    TEST_FUNCTIONS.register(
+        "bogged_npc_gets_no_vanilla_weapon_goal",
+        () -> ServerMixinTest::testBoggedNPCGetsNoVanillaWeaponGoal);
+    TEST_FUNCTIONS.register(
+        "villager_npc_picks_up_loot_only_into_its_inventory",
+        () -> ServerMixinTest::testVillagerNPCPicksUpLootOnlyIntoItsInventory);
+
+    TEST_FUNCTIONS.register(
+        "villager_npc_survives_lightning",
+        () -> VanillaMobQuirkTest::testVillagerNPCSurvivesLightning);
+    TEST_FUNCTIONS.register(
+        "pig_npc_survives_lightning", () -> VanillaMobQuirkTest::testPigNPCSurvivesLightning);
+    TEST_FUNCTIONS.register(
+        "slime_npc_does_not_split_on_death",
+        () -> VanillaMobQuirkTest::testSlimeNPCDoesNotSplitOnDeath);
+    TEST_FUNCTIONS.register(
+        "slime_npc_deals_no_touch_damage",
+        () -> VanillaMobQuirkTest::testSlimeNPCDealsNoTouchDamage);
+    TEST_FUNCTIONS.register(
+        "chicken_npc_lays_no_eggs", () -> VanillaMobQuirkTest::testChickenNPCLaysNoEggs);
+    TEST_FUNCTIONS.register(
+        "fox_npc_keeps_food_in_its_mouth",
+        () -> VanillaMobQuirkTest::testFoxNPCKeepsFoodInItsMouth);
+    TEST_FUNCTIONS.register(
+        "fox_npc_gets_no_random_item_on_spawn",
+        () -> VanillaMobQuirkTest::testFoxNPCGetsNoRandomItemOnSpawn);
+    TEST_FUNCTIONS.register(
+        "cat_npc_keeps_its_vanilla_pose", () -> VanillaMobQuirkTest::testCatNPCKeepsItsVanillaPose);
+
+    TEST_FUNCTIONS.register(
+        "piglin_npc_spawns_without_random_baby_or_equipment",
+        () -> SpawnRandomnessTest::testPiglinNPCSpawnsWithoutRandomBabyOrEquipment);
+    TEST_FUNCTIONS.register(
+        "piglin_npc_keeps_configured_age_and_equipment_on_spawn",
+        () -> SpawnRandomnessTest::testPiglinNPCKeepsConfiguredAgeAndEquipmentOnSpawn);
+    TEST_FUNCTIONS.register(
+        "spider_npc_spawns_without_jockey_or_effect",
+        () -> SpawnRandomnessTest::testSpiderNPCSpawnsWithoutJockeyOrEffect);
+    TEST_FUNCTIONS.register(
+        "pillager_npc_never_becomes_patrol_leader",
+        () -> SpawnRandomnessTest::testPillagerNPCNeverBecomesPatrolLeader);
+    TEST_FUNCTIONS.register(
+        "vindicator_npc_never_becomes_patrol_leader",
+        () -> SpawnRandomnessTest::testVindicatorNPCNeverBecomesPatrolLeader);
+    TEST_FUNCTIONS.register(
+        "evoker_npc_never_becomes_patrol_leader",
+        () -> SpawnRandomnessTest::testEvokerNPCNeverBecomesPatrolLeader);
+    TEST_FUNCTIONS.register(
+        "illusioner_npc_never_becomes_patrol_leader",
+        () -> SpawnRandomnessTest::testIllusionerNPCNeverBecomesPatrolLeader);
+    TEST_FUNCTIONS.register(
+        "creeper_npc_stays_uncharged_by_lightning",
+        () -> SpawnRandomnessTest::testCreeperNPCStaysUnchargedByLightning);
+    TEST_FUNCTIONS.register(
+        "ghast_npc_survives_reflected_fireball",
+        () -> SpawnRandomnessTest::testGhastNPCSurvivesReflectedFireball);
+
+    TEST_FUNCTIONS.register(
         "faction_scoreboard_membership",
         () -> FactionObjectiveTest::testFactionScoreboardMembership);
     TEST_FUNCTIONS.register(
@@ -131,11 +259,9 @@ public final class ModGameTests {
         () -> IllagerCrossedArmsTest::testVindicatorCrossedArmsVariantDrivesArmPose);
 
     TEST_FUNCTIONS.register(
-        "zombie_does_not_burn_in_daylight",
-        () -> SunBurnTest::testZombieDoesNotBurnInDaylight);
+        "zombie_does_not_burn_in_daylight", () -> SunBurnTest::testZombieDoesNotBurnInDaylight);
     TEST_FUNCTIONS.register(
-        "drowned_does_not_burn_in_daylight",
-        () -> SunBurnTest::testDrownedDoesNotBurnInDaylight);
+        "drowned_does_not_burn_in_daylight", () -> SunBurnTest::testDrownedDoesNotBurnInDaylight);
     TEST_FUNCTIONS.register(
         "zombie_villager_does_not_burn_in_daylight",
         () -> SunBurnTest::testZombieVillagerDoesNotBurnInDaylight);
@@ -143,17 +269,13 @@ public final class ModGameTests {
         "zombified_piglin_does_not_burn_in_daylight",
         () -> SunBurnTest::testZombifiedPiglinDoesNotBurnInDaylight);
     TEST_FUNCTIONS.register(
-        "skeleton_does_not_burn_in_daylight",
-        () -> SunBurnTest::testSkeletonDoesNotBurnInDaylight);
+        "skeleton_does_not_burn_in_daylight", () -> SunBurnTest::testSkeletonDoesNotBurnInDaylight);
     TEST_FUNCTIONS.register(
-        "stray_does_not_burn_in_daylight",
-        () -> SunBurnTest::testStrayDoesNotBurnInDaylight);
+        "stray_does_not_burn_in_daylight", () -> SunBurnTest::testStrayDoesNotBurnInDaylight);
     TEST_FUNCTIONS.register(
-        "bogged_does_not_burn_in_daylight",
-        () -> SunBurnTest::testBoggedDoesNotBurnInDaylight);
+        "bogged_does_not_burn_in_daylight", () -> SunBurnTest::testBoggedDoesNotBurnInDaylight);
 
-    TEST_FUNCTIONS.register(
-        "all_spawn_egg_items", () -> ModSpawnEggItemTest::useAllSpawnEggItems);
+    TEST_FUNCTIONS.register("all_spawn_egg_items", () -> ModSpawnEggItemTest::useAllSpawnEggItems);
 
     TEST_FUNCTIONS.register(
         "server_registry_isolation", () -> NPCDataIsolationTest::testServerRegistryIsolation);
@@ -195,6 +317,9 @@ public final class ModGameTests {
         () -> NPCEntityLifecycleTest::testCustomIdentifierIsQueryable);
     TEST_FUNCTIONS.register(
         "respawn_keeps_owner", () -> NPCEntityLifecycleTest::testRespawnKeepsOwner);
+    TEST_FUNCTIONS.register(
+        "malformed_u_u_i_d_tags_keep_n_p_c_loadable",
+        () -> NPCEntityLifecycleTest::testMalformedUUIDTagsKeepNPCLoadable);
     TEST_FUNCTIONS.register(
         "removal_reason_is_reset_on_respawn",
         () -> NPCEntityLifecycleTest::testRemovalReasonIsResetOnRespawn);
@@ -266,21 +391,28 @@ public final class ModGameTests {
         "nearby_player_keeps_travel", () -> IdleNPCTest::testNearbyPlayerKeepsTravel);
     TEST_FUNCTIONS.register("spectator_is_ignored", () -> IdleNPCTest::testSpectatorIsIgnored);
     TEST_FUNCTIONS.register(
-        "look_goal_waits_after_failed_search", () -> IdleNPCTest::testLookGoalWaitsAfterFailedSearch);
+        "look_goal_waits_after_failed_search",
+        () -> IdleNPCTest::testLookGoalWaitsAfterFailedSearch);
     TEST_FUNCTIONS.register(
-        "change_is_saved_after_minimum_age", () -> NPCSaveSchedulerTest::testChangeIsSavedAfterMinimumAge);
+        "change_is_saved_after_minimum_age",
+        () -> NPCSaveSchedulerTest::testChangeIsSavedAfterMinimumAge);
     TEST_FUNCTIONS.register(
         "unchanged_n_p_c_is_not_saved", () -> NPCSaveSchedulerTest::testUnchangedNPCIsNotSaved);
     TEST_FUNCTIONS.register(
-        "batch_size_limits_saves_per_run", () -> NPCSaveSchedulerTest::testBatchSizeLimitsSavesPerRun);
+        "batch_size_limits_saves_per_run",
+        () -> NPCSaveSchedulerTest::testBatchSizeLimitsSavesPerRun);
     TEST_FUNCTIONS.register(
-        "unload_during_pending_write_keeps_newest_data", () -> NPCSaveSchedulerTest::testUnloadDuringPendingWriteKeepsNewestData);
+        "unload_during_pending_write_keeps_newest_data",
+        () -> NPCSaveSchedulerTest::testUnloadDuringPendingWriteKeepsNewestData);
     TEST_FUNCTIONS.register(
-        "autosave_writes_changed_n_p_c_file", () -> NPCSaveSchedulerTest::testAutosaveWritesChangedNPCFile);
+        "autosave_writes_changed_n_p_c_file",
+        () -> NPCSaveSchedulerTest::testAutosaveWritesChangedNPCFile);
     TEST_FUNCTIONS.register(
-        "disabled_interval_keeps_change_until_unload", () -> NPCSaveSchedulerTest::testDisabledIntervalKeepsChangeUntilUnload);
+        "disabled_interval_keeps_change_until_unload",
+        () -> NPCSaveSchedulerTest::testDisabledIntervalKeepsChangeUntilUnload);
     TEST_FUNCTIONS.register(
-        "missing_index_hash_is_adopted_without_write", () -> NPCSaveSchedulerTest::testMissingIndexHashIsAdoptedWithoutWrite);
+        "missing_index_hash_is_adopted_without_write",
+        () -> NPCSaveSchedulerTest::testMissingIndexHashIsAdoptedWithoutWrite);
     TEST_FUNCTIONS.register(
         "fired_spawn_action_is_saved", () -> NPCSaveSchedulerTest::testFiredSpawnActionIsSaved);
 
@@ -520,6 +652,12 @@ public final class ModGameTests {
         () -> PresetIdentityTest::testImportReportsReplacedEntity);
     TEST_FUNCTIONS.register(
         "preset_item_drops_identity", () -> PresetIdentityTest::testPresetItemDropsIdentity);
+    TEST_FUNCTIONS.register(
+        "import_with_malformed_u_u_i_d_creates_new_n_p_c",
+        () -> PresetIdentityTest::testImportWithMalformedUUIDCreatesNewNPC);
+    TEST_FUNCTIONS.register(
+        "preset_item_with_malformed_preset_u_u_i_d_spawns",
+        () -> PresetIdentityTest::testPresetItemWithMalformedPresetUUIDSpawns);
 
     TEST_FUNCTIONS.register(
         "preset_survives_round_trip", () -> PresetRoundTripTest::testPresetSurvivesRoundTrip);
@@ -549,6 +687,10 @@ public final class ModGameTests {
         () -> PresetSpawnTest::testPresetHandlerCreatesPresetItem);
     TEST_FUNCTIONS.register(
         "preset_item_is_consumed_on_spawn", () -> PresetSpawnTest::testPresetItemIsConsumedOnSpawn);
+
+    TEST_FUNCTIONS.register(
+        "malformed_u_u_i_d_tags_keep_spawner_loadable",
+        () -> SpawnerBlockEntityTest::testMalformedUUIDTagsKeepSpawnerLoadable);
 
     TEST_FUNCTIONS.register(
         "npc_without_stored_sounds_still_has_sounds",
@@ -1020,8 +1162,7 @@ public final class ModGameTests {
         () -> ObjectiveApiTest::testExplicitPriorityReachesGoalSelector);
 
     TEST_FUNCTIONS.register(
-        "melee_attack_uses_attack_speed",
-        () -> ObjectiveApiTest::testMeleeAttackUsesAttackSpeed);
+        "melee_attack_uses_attack_speed", () -> ObjectiveApiTest::testMeleeAttackUsesAttackSpeed);
 
     TEST_FUNCTIONS.register(
         "respawn_command_replaces_n_p_c",

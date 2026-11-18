@@ -227,8 +227,7 @@ class ObjectiveDataEntryTest {
     assertEquals(explicitPriority, entry.getPriority());
     assertTrue(entry.hasExplicitPriority());
     assertEquals(
-        explicitPriority,
-        entry.createTag().getInt(ObjectiveDataEntry.DATA_PRIORITY_TAG).orElse(0));
+        explicitPriority, entry.createTag().getInt(ObjectiveDataEntry.DATA_PRIORITY_TAG).orElse(0));
     assertEquals(explicitPriority, new ObjectiveDataEntry(entry.createTag()).getPriority());
   }
 
@@ -371,5 +370,22 @@ class ObjectiveDataEntryTest {
     ObjectiveDataEntry entry = new ObjectiveDataEntry(storedTag);
     assertEquals(ObjectiveType.FOLLOW_OWNER, entry.getType());
     assertFalse(entry.hasUnresolvedType());
+  }
+
+  @Test
+  @DisplayName("Malformed target UUIDs are read as unset targets")
+  void testMalformedTargetUUIDsAreIgnored() {
+    ObjectiveDataEntry entry = new ObjectiveDataEntry(ObjectiveType.ATTACK_ENTITY_BY_UUID);
+    entry.setTargetEntityUUID(UUID.randomUUID());
+    CompoundTag compoundTag = entry.createTag();
+    compoundTag.putString(
+        ObjectiveDataEntry.DATA_TARGET_ENTITY_UUID_TAG, UUID.randomUUID().toString());
+    compoundTag.putIntArray(ObjectiveDataEntry.DATA_TARGET_OWNER_UUID_TAG, new int[] {1, 2});
+
+    ObjectiveDataEntry restored = new ObjectiveDataEntry(compoundTag);
+
+    assertEquals(ObjectiveType.ATTACK_ENTITY_BY_UUID, restored.getType());
+    assertNull(restored.getTargetEntityUUID());
+    assertNull(restored.getTargetOwnerUUID());
   }
 }

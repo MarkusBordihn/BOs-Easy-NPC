@@ -173,16 +173,15 @@ public class PoseManager {
     }
 
     return posesByName.values().stream()
-        .sorted(
-            (firstPose, secondPose) -> {
-              boolean firstStanding = firstPose.getPath().endsWith("/standing");
-              boolean secondStanding = secondPose.getPath().endsWith("/standing");
-              if (firstStanding != secondStanding) {
-                return Boolean.compare(secondStanding, firstStanding);
-              }
+        .sorted((firstPose, secondPose) -> {
+          boolean firstStanding = firstPose.getPath().endsWith("/standing");
+          boolean secondStanding = secondPose.getPath().endsWith("/standing");
+          if (firstStanding != secondStanding) {
+            return Boolean.compare(secondStanding, firstStanding);
+          }
 
-              return firstPose.getPath().compareTo(secondPose.getPath());
-            })
+          return firstPose.getPath().compareTo(secondPose.getPath());
+        })
         .collect(Collectors.toCollection(LinkedHashSet::new));
   }
 

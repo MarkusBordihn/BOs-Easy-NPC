@@ -141,9 +141,7 @@ public class NPCLifecycleCommandTestHelper {
 
     GameTestHelpers.assertEquals(helper, "Revive command result of a stranger", 0, result);
     GameTestHelpers.assertTrue(
-        helper,
-        "A stranger revived NPC " + entityUUID,
-        getLoadedNPC(helper, entityUUID) == null);
+        helper, "A stranger revived NPC " + entityUUID, getLoadedNPC(helper, entityUUID) == null);
   }
 
   public static void assertReviveCommandRejectsNPCOnShoulder(
@@ -160,7 +158,8 @@ public class NPCLifecycleCommandTestHelper {
 
     int result = executeConsoleCommand(helper, "easy_npc revive " + entityUUID);
 
-    GameTestHelpers.assertEquals(helper, "Revive command result for an NPC on a shoulder", 0, result);
+    GameTestHelpers.assertEquals(
+        helper, "Revive command result for an NPC on a shoulder", 0, result);
     Optional<UUID> shoulderUUID =
         EasyNPCShoulderHandler.getShoulderNPCUUID(serverPlayer, ShoulderSide.LEFT);
     GameTestHelpers.assertTrue(

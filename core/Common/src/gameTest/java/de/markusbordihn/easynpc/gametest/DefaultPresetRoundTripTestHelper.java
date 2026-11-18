@@ -43,9 +43,9 @@ import java.io.File;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
-import net.minecraft.core.registries.BuiltInRegistries;
 import java.util.Map;
 import java.util.UUID;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -166,12 +166,11 @@ public class DefaultPresetRoundTripTestHelper {
     helper.runAfterDelay(
         40,
         () -> {
-          spawnedNPCs.forEach(
-              (presetLocation, easyNPC) ->
-                  GameTestHelpers.assertTrue(
-                      helper,
-                      "The NPC of the default preset " + presetLocation + " must keep running",
-                      easyNPC.getEntity().isAlive()));
+          spawnedNPCs.forEach((presetLocation, easyNPC) ->
+              GameTestHelpers.assertTrue(
+                  helper,
+                  "The NPC of the default preset " + presetLocation + " must keep running",
+                  easyNPC.getEntity().isAlive()));
           spawnedNPCs.values().forEach(easyNPC -> easyNPC.getEntity().discard());
           helper.succeed();
         });

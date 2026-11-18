@@ -146,10 +146,8 @@ public class AdvancedTradingConfigurationContainerScreen<T extends Configuration
       maxUsesEditBox.setMaxLength(4);
       maxUsesEditBox.setValue(
           merchantOffer.getMaxUses() > 0 ? merchantOffer.getMaxUses() + "" : "16");
-      maxUsesEditBox.setResponder(
-          text ->
-              this.onMaxUsesEditBoxChanged(
-                  tradingOfferIndex, text, merchantOffer.getMaxUses() + ""));
+      maxUsesEditBox.setResponder(text ->
+          this.onMaxUsesEditBoxChanged(tradingOfferIndex, text, merchantOffer.getMaxUses() + ""));
       maxUsesEditBox.setEditable(hasValidOffer);
       this.maxUsesEditBoxes.put(tradingOfferIndex, maxUsesEditBox);
       this.addRenderableWidget(maxUsesEditBox);
@@ -158,9 +156,8 @@ public class AdvancedTradingConfigurationContainerScreen<T extends Configuration
           new TextField(this.font, editBoxPositionX + 37, editBoxPositionY, 26);
       rewardExpEditBox.setMaxLength(3);
       rewardExpEditBox.setValue(merchantOffer.getXp() >= 0 ? merchantOffer.getXp() + "" : "0");
-      rewardExpEditBox.setResponder(
-          text ->
-              this.onRewardExpEditBoxChanged(tradingOfferIndex, text, merchantOffer.getXp() + ""));
+      rewardExpEditBox.setResponder(text ->
+          this.onRewardExpEditBoxChanged(tradingOfferIndex, text, merchantOffer.getXp() + ""));
       rewardExpEditBox.setEditable(hasValidOffer);
       this.rewardExpEditBoxes.put(tradingOfferIndex, rewardExpEditBox);
       this.addRenderableWidget(rewardExpEditBox);
@@ -170,10 +167,9 @@ public class AdvancedTradingConfigurationContainerScreen<T extends Configuration
       priceMultiplierEditBox.setMaxLength(4);
       priceMultiplierEditBox.setValue(
           merchantOffer.getPriceMultiplier() >= 0 ? merchantOffer.getPriceMultiplier() + "" : "0");
-      priceMultiplierEditBox.setResponder(
-          text ->
-              this.onPriceMultiplierEditBoxChanged(
-                  tradingOfferIndex, text, merchantOffer.getPriceMultiplier() + ""));
+      priceMultiplierEditBox.setResponder(text ->
+          this.onPriceMultiplierEditBoxChanged(
+              tradingOfferIndex, text, merchantOffer.getPriceMultiplier() + ""));
       priceMultiplierEditBox.setEditable(hasValidOffer);
       this.priceMultiplierEditBoxes.put(tradingOfferIndex, priceMultiplierEditBox);
       this.addRenderableWidget(priceMultiplierEditBox);
@@ -182,9 +178,8 @@ public class AdvancedTradingConfigurationContainerScreen<T extends Configuration
           new TextField(this.font, editBoxPositionX + 106, editBoxPositionY, 20);
       demandEditBox.setMaxLength(2);
       demandEditBox.setValue(merchantOffer.getDemand() >= 0 ? merchantOffer.getDemand() + "" : "0");
-      demandEditBox.setResponder(
-          text ->
-              this.onDemandEditBoxChanged(tradingOfferIndex, text, merchantOffer.getDemand() + ""));
+      demandEditBox.setResponder(text ->
+          this.onDemandEditBoxChanged(tradingOfferIndex, text, merchantOffer.getDemand() + ""));
       demandEditBox.setEditable(hasValidOffer);
       this.demandEditBoxes.put(tradingOfferIndex, demandEditBox);
       this.addRenderableWidget(demandEditBox);

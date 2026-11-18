@@ -99,4 +99,9 @@ public class VindicatorBase extends VindicatorRaw implements BaseEasyNPC<Vindica
       this.calculateEntityAnimation(this.omnidirectionalAirMover());
     }
   }
+
+  @Override
+  public boolean canBeLeader() {
+    return false;
+  }
 }

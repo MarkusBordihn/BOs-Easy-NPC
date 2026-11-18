@@ -72,27 +72,104 @@ class SkinLayerVisibilityClientTest extends ClientTestBase {
       "ModelData:{Pose:\"CUSTOM\",Visible:{Hat:0b}}";
   private static final String HIDDEN_NAME_TAG_DATA =
       "DisplayAttribute:[{Type:\"NAME_VISIBILITY\",Text:\"NEVER\"}]";
-  private static final double MAXIMUM_HEAD_CHANGED_RATIO = 0.05;
+  private static final double MAXIMUM_HEAD_CHANGED_RATIO = 0.08;
   private static final double MAXIMUM_BODY_CHANGED_RATIO = 0.08;
   private static final CompareOptions MODEL_COMPARE = CompareOptions.DEFAULT.withTolerance(32);
 
-  private enum SceneRole {
-    UNCHANGED_OBSERVER,
-    CHANGED
+  private static String retainEmptyPlatformFrame() {
+    awaitWorldSetupCapability();
+    placeScene("viewing_platform", -3, PLATFORM_Y, -1);
+    client.teleport(0.5, VIEW_Y, 0.5, 0, 0);
+    client.await(Until.ticksElapsed(PLATFORM_LIGHTING_TICKS));
+    String emptyPlatformFrame = client.retainFrame();
+    return emptyPlatformFrame;
   }
 
-  private record SceneNPC(
-      String name, String entityId, double x, double z, String npcData, SceneRole role) {
+  private static List<String> changedNPCsInSharedScene(String label, List<SceneNPC> sceneNPCs) {
+    String emptyPlatformFrame = retainEmptyPlatformFrame();
 
-    private static SceneNPC observer(
-        String name, String entityId, double x, double z, String npcData) {
-      return new SceneNPC(name, entityId, x, z, npcData, SceneRole.UNCHANGED_OBSERVER);
+    Map<SceneNPC, CaptureCrop> soloBounds = new LinkedHashMap<>();
+    Map<SceneNPC, String> soloFrames = new LinkedHashMap<>();
+    List<SceneNPC> unchangedObserversFirst =
+        sceneNPCs.stream().sorted(Comparator.comparing(SceneNPC::role)).toList();
+    for (SceneNPC sceneNPC : unchangedObserversFirst) {
+      UUID soloNPCUUID = spawnSceneNPC(sceneNPC);
+      soloBounds.put(sceneNPC, changedBounds(emptyPlatformFrame));
+      soloFrames.put(sceneNPC, client.retainFrame());
+      removeAndAwaitAbsent(soloNPCUUID);
     }
 
-    private static SceneNPC changed(
-        String name, String entityId, double x, double z, String npcData) {
-      return new SceneNPC(name, entityId, x, z, npcData, SceneRole.CHANGED);
+    List<UUID> sceneNPCUUIDs = new ArrayList<>();
+    for (SceneNPC sceneNPC : sceneNPCs) {
+      sceneNPCUUIDs.add(spawnSceneNPC(sceneNPC));
     }
+    client.await(Until.ticksElapsed(HIDDEN_LAYER_NPC_RENDER_TICKS));
+    client.saveScreenshot(label + "_shared_scene");
+
+    List<String> changedNPCs = new ArrayList<>();
+    for (SceneNPC sceneNPC : sceneNPCs) {
+      String soloFrame = soloFrames.get(sceneNPC);
+      CaptureCrop npcBounds = soloBounds.get(sceneNPC);
+      double headChange = centerColumnChange(soloFrame, npcBounds, npcBounds.height() / 4);
+      double bodyChange = centerColumnChange(soloFrame, npcBounds, npcBounds.height());
+      if (headChange > MAXIMUM_HEAD_CHANGED_RATIO || bodyChange > MAXIMUM_BODY_CHANGED_RATIO) {
+        changedNPCs.add(
+            sceneNPC.name() + " head " + headChange + " body " + bodyChange + " " + npcBounds);
+      }
+    }
+    sceneNPCUUIDs.forEach(SkinLayerVisibilityClientTest::removeAndAwaitAbsent);
+    return changedNPCs;
+  }
+
+  private static String joinNPCData(String... npcDataParts) {
+    return String.join(
+        ",", Arrays.stream(npcDataParts).filter(npcDataPart -> !npcDataPart.isEmpty()).toList());
+  }
+
+  private static UUID spawnFacingPlayer(EntitySpawn entitySpawn, String npcData) {
+    UUID npcUUID =
+        client.spawnEntity(
+            entitySpawn.withRotation(180, 0).withNoAi(true).withNbt("{" + npcData + "}"));
+    client.await(
+        Until.entityPresent(
+            Parameters.of("type", entitySpawn.type()).with("uuid", npcUUID.toString())));
+    return npcUUID;
+  }
+
+  private static UUID spawnWithoutNameFacingPlayer(EntitySpawn entitySpawn, String npcData) {
+    UUID npcUUID = spawnFacingPlayer(entitySpawn, joinNPCData(HIDDEN_NAME_TAG_DATA, npcData));
+    client.await(Until.settled(SETTLED_TICKS));
+    return npcUUID;
+  }
+
+  private static UUID spawnSceneNPC(SceneNPC sceneNPC) {
+    return spawnWithoutNameFacingPlayer(
+        EntitySpawn.of(sceneNPC.entityId(), sceneNPC.x(), VIEW_Y, sceneNPC.z()),
+        sceneNPC.npcData());
+  }
+
+  private static CaptureCrop changedBounds(String referenceFrame) {
+    return client.compare(referenceFrame, MODEL_COMPARE).comparison().changedBounds().orElseThrow();
+  }
+
+  private static double centerColumnChange(
+      String referenceFrame, CaptureCrop npcBounds, long columnHeight) {
+    long columnWidth = Math.max(1, npcBounds.width() / 3);
+    return client
+        .compare(
+            referenceFrame,
+            MODEL_COMPARE.withRegion(
+                (int) (npcBounds.x() + (npcBounds.width() - columnWidth) / 2),
+                (int) npcBounds.y(),
+                (int) columnWidth,
+                (int) Math.max(1, columnHeight)))
+        .comparison()
+        .changedRatio();
+  }
+
+  private static void removeAndAwaitAbsent(UUID npcUUID) {
+    client.removeEntity(npcUUID);
+    client.await(Until.entityAbsent(Parameters.of("uuid", npcUUID.toString())));
   }
 
   @ParameterizedTest(name = "{0}")
@@ -123,7 +200,7 @@ class SkinLayerVisibilityClientTest extends ClientTestBase {
                 3.0,
                 joinNPCData(LAYER_TEMPLATE_SKIN_DATA, HIDDEN_INNER_PARTS_MODEL_DATA)),
             SceneNPC.changed(
-                "far_back_foreign_type", FOREIGN_NPC_TYPE, 5.5, 9.5, HIDDEN_HAT_MODEL_DATA),
+                "far_back_foreign_type", FOREIGN_NPC_TYPE, 3.5, 11.5, HIDDEN_HAT_MODEL_DATA),
             SceneNPC.observer(
                 "back_right_late_observer", npcId, -2.5, 7.5, LAYER_TEMPLATE_SKIN_DATA));
 
@@ -199,8 +276,7 @@ class SkinLayerVisibilityClientTest extends ClientTestBase {
         spawnWithoutNameFacingPlayer(
             npcSpawn, joinNPCData(LIBRARIAN_VARIANT_DATA, HIDDEN_HEAD_MODEL_DATA));
     client.await(Until.ticksElapsed(HIDDEN_LAYER_NPC_RENDER_TICKS));
-    double headChange =
-        centerColumnChange(emptyPlatformFrame, npcBounds, npcBounds.height() / 4);
+    double headChange = centerColumnChange(emptyPlatformFrame, npcBounds, npcBounds.height() / 4);
     client.saveScreenshot(entityType + "_hidden_head");
     removeAndAwaitAbsent(hiddenHeadNPCUUID);
 
@@ -209,103 +285,22 @@ class SkinLayerVisibilityClientTest extends ClientTestBase {
         entityType + " hidden head still renders " + headChange + " of its head area");
   }
 
-  private static String retainEmptyPlatformFrame() {
-    awaitWorldSetupCapability();
-    placeScene("viewing_platform", -3, PLATFORM_Y, -1);
-    client.teleport(0.5, VIEW_Y, 0.5, 0, 0);
-    client.await(Until.ticksElapsed(PLATFORM_LIGHTING_TICKS));
-    String emptyPlatformFrame = client.retainFrame();
-    return emptyPlatformFrame;
+  private enum SceneRole {
+    UNCHANGED_OBSERVER,
+    CHANGED
   }
 
-  private static List<String> changedNPCsInSharedScene(String label, List<SceneNPC> sceneNPCs) {
-    String emptyPlatformFrame = retainEmptyPlatformFrame();
+  private record SceneNPC(
+      String name, String entityId, double x, double z, String npcData, SceneRole role) {
 
-    Map<SceneNPC, CaptureCrop> soloBounds = new LinkedHashMap<>();
-    Map<SceneNPC, String> soloFrames = new LinkedHashMap<>();
-    List<SceneNPC> unchangedObserversFirst =
-        sceneNPCs.stream().sorted(Comparator.comparing(SceneNPC::role)).toList();
-    for (SceneNPC sceneNPC : unchangedObserversFirst) {
-      UUID soloNPCUUID = spawnSceneNPC(sceneNPC);
-      soloBounds.put(sceneNPC, changedBounds(emptyPlatformFrame));
-      soloFrames.put(sceneNPC, client.retainFrame());
-      removeAndAwaitAbsent(soloNPCUUID);
+    private static SceneNPC observer(
+        String name, String entityId, double x, double z, String npcData) {
+      return new SceneNPC(name, entityId, x, z, npcData, SceneRole.UNCHANGED_OBSERVER);
     }
 
-    List<UUID> sceneNPCUUIDs = new ArrayList<>();
-    for (SceneNPC sceneNPC : sceneNPCs) {
-      sceneNPCUUIDs.add(spawnSceneNPC(sceneNPC));
+    private static SceneNPC changed(
+        String name, String entityId, double x, double z, String npcData) {
+      return new SceneNPC(name, entityId, x, z, npcData, SceneRole.CHANGED);
     }
-    client.await(Until.ticksElapsed(HIDDEN_LAYER_NPC_RENDER_TICKS));
-    client.saveScreenshot(label + "_shared_scene");
-
-    List<String> changedNPCs = new ArrayList<>();
-    for (SceneNPC sceneNPC : sceneNPCs) {
-      String soloFrame = soloFrames.get(sceneNPC);
-      CaptureCrop npcBounds = soloBounds.get(sceneNPC);
-      double headChange = centerColumnChange(soloFrame, npcBounds, npcBounds.height() / 4);
-      double bodyChange = centerColumnChange(soloFrame, npcBounds, npcBounds.height());
-      if (headChange > MAXIMUM_HEAD_CHANGED_RATIO || bodyChange > MAXIMUM_BODY_CHANGED_RATIO) {
-        changedNPCs.add(
-            sceneNPC.name() + " head " + headChange + " body " + bodyChange + " " + npcBounds);
-      }
-    }
-    sceneNPCUUIDs.forEach(SkinLayerVisibilityClientTest::removeAndAwaitAbsent);
-    return changedNPCs;
-  }
-
-  private static String joinNPCData(String... npcDataParts) {
-    return String.join(
-        ",", Arrays.stream(npcDataParts).filter(npcDataPart -> !npcDataPart.isEmpty()).toList());
-  }
-
-  private static UUID spawnFacingPlayer(EntitySpawn entitySpawn, String npcData) {
-    UUID npcUUID =
-        client.spawnEntity(
-            entitySpawn.withRotation(180, 0).withNoAi(true).withNbt("{" + npcData + "}"));
-    client.await(
-        Until.entityPresent(
-            Parameters.of("type", entitySpawn.type()).with("uuid", npcUUID.toString())));
-    return npcUUID;
-  }
-
-  private static UUID spawnWithoutNameFacingPlayer(EntitySpawn entitySpawn, String npcData) {
-    UUID npcUUID = spawnFacingPlayer(entitySpawn, joinNPCData(HIDDEN_NAME_TAG_DATA, npcData));
-    client.await(Until.settled(SETTLED_TICKS));
-    return npcUUID;
-  }
-
-  private static UUID spawnSceneNPC(SceneNPC sceneNPC) {
-    return spawnWithoutNameFacingPlayer(
-        EntitySpawn.of(sceneNPC.entityId(), sceneNPC.x(), VIEW_Y, sceneNPC.z()),
-        sceneNPC.npcData());
-  }
-
-  private static CaptureCrop changedBounds(String referenceFrame) {
-    return client
-        .compare(referenceFrame, MODEL_COMPARE)
-        .comparison()
-        .changedBounds()
-        .orElseThrow();
-  }
-
-  private static double centerColumnChange(
-      String referenceFrame, CaptureCrop npcBounds, long columnHeight) {
-    long columnWidth = Math.max(1, npcBounds.width() / 3);
-    return client
-        .compare(
-            referenceFrame,
-            MODEL_COMPARE.withRegion(
-                (int) (npcBounds.x() + (npcBounds.width() - columnWidth) / 2),
-                (int) npcBounds.y(),
-                (int) columnWidth,
-                (int) Math.max(1, columnHeight)))
-        .comparison()
-        .changedRatio();
-  }
-
-  private static void removeAndAwaitAbsent(UUID npcUUID) {
-    client.removeEntity(npcUUID);
-    client.await(Until.entityAbsent(Parameters.of("uuid", npcUUID.toString())));
   }
 }

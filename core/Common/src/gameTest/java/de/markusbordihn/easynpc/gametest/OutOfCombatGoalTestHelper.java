@@ -101,9 +101,7 @@ public class OutOfCombatGoalTestHelper {
       Goal goal =
           ObjectiveUtils.createObjectiveGoal(new ObjectiveDataEntry(objectiveType), easyNPC);
       GameTestHelpers.assertTrue(
-          helper,
-          objectiveType + " goal keeps running in combat",
-          goal instanceof OutOfCombatGoal);
+          helper, objectiveType + " goal keeps running in combat", goal instanceof OutOfCombatGoal);
     }
 
     for (ObjectiveType objectiveType : COMBAT_OBJECTIVES) {

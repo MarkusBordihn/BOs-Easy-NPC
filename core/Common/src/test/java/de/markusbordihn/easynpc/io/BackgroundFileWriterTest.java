@@ -36,6 +36,14 @@ class BackgroundFileWriterTest {
 
   private static final Duration WRITER_TIMEOUT = Duration.ofSeconds(10);
 
+  private static void awaitQuietly(CountDownLatch latch) {
+    try {
+      latch.await(WRITER_TIMEOUT.toMillis(), TimeUnit.MILLISECONDS);
+    } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+    }
+  }
+
   @Test
   @DisplayName("Tasks run in the order they were submitted")
   void testTasksRunInOrder() {
@@ -71,10 +79,9 @@ class BackgroundFileWriterTest {
   @DisplayName("A failing task does not stop the writer")
   void testFailingTaskKeepsWriterRunning() {
     AtomicBoolean taskDone = new AtomicBoolean();
-    BackgroundFileWriter.submit(
-        () -> {
-          throw new IllegalStateException("Expected test failure");
-        });
+    BackgroundFileWriter.submit(() -> {
+      throw new IllegalStateException("Expected test failure");
+    });
     BackgroundFileWriter.submit(() -> taskDone.set(true));
 
     assertTrue(BackgroundFileWriter.awaitPendingWrites(WRITER_TIMEOUT));
@@ -104,13 +111,5 @@ class BackgroundFileWriterTest {
 
     assertTrue(BackgroundFileWriter.awaitPendingWrites(WRITER_TIMEOUT));
     assertFalse(awaitResult.get());
-  }
-
-  private static void awaitQuietly(CountDownLatch latch) {
-    try {
-      latch.await(WRITER_TIMEOUT.toMillis(), TimeUnit.MILLISECONDS);
-    } catch (InterruptedException e) {
-      Thread.currentThread().interrupt();
-    }
   }
 }

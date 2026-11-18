@@ -36,8 +36,8 @@ import de.markusbordihn.easynpc.item.ModItemTags;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import net.minecraft.core.Holder.Reference;
 import net.minecraft.core.Holder;
+import net.minecraft.core.Holder.Reference;
 import net.minecraft.core.component.BlockTransformer;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -353,19 +353,17 @@ public class AttackHandler {
       LivingEntity livingEntity, ItemStack itemStackWeapon, float damage) {
     Optional<Reference<Item>> item =
         BuiltInRegistries.ITEM.get(Identifier.fromNamespaceAndPath(Constants.MOD_ID, "bullet"));
-    return item.map(
-            itemReference ->
-                ProjectileUtil.getMobArrow(
-                    livingEntity,
-                    itemReference != null && itemReference.value() != Items.AIR
-                        ? new ItemStack(itemReference)
-                        : new ItemStack(Items.ARROW),
-                    damage,
-                    itemStackWeapon))
-        .orElseGet(
-            () ->
-                ProjectileUtil.getMobArrow(
-                    livingEntity, new ItemStack(Items.ARROW), damage, itemStackWeapon));
+    return item.map(itemReference ->
+            ProjectileUtil.getMobArrow(
+                livingEntity,
+                itemReference != null && itemReference.value() != Items.AIR
+                    ? new ItemStack(itemReference)
+                    : new ItemStack(Items.ARROW),
+                damage,
+                itemStackWeapon))
+        .orElseGet(() ->
+            ProjectileUtil.getMobArrow(
+                livingEntity, new ItemStack(Items.ARROW), damage, itemStackWeapon));
   }
 
   public static boolean handleCanAttack(

@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.data.action;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.List;
 import net.minecraft.nbt.CompoundTag;
@@ -136,5 +137,24 @@ class ActionDataEntryDerivedIdTest {
         authoredEntry.id(),
         new ActionDataSet().load(actionDataList).getEntries().iterator().next().id());
     assertNotEquals(authoredEntry.id(), ActionDataEntry.deriveId(compoundTag, 0));
+  }
+
+  @Test
+  @DisplayName("An action with a malformed id or target still loads with a stable id")
+  void testMalformedIdAndTargetAreIgnored() {
+    CompoundTag actionTag = this.createActionTag("say hello");
+    actionTag.putString(ActionDataEntry.DATA_ID_TAG, "not-a-uuid");
+    actionTag.putIntArray(ActionDataEntry.DATA_TARGET_UUID_TAG, new int[] {1, 2});
+    ListTag actionDataList = new ListTag();
+    actionDataList.add(actionTag);
+
+    ActionDataEntry firstLoad =
+        new ActionDataSet().load(actionDataList).getEntries().iterator().next();
+    ActionDataEntry secondLoad =
+        new ActionDataSet().load(actionDataList).getEntries().iterator().next();
+
+    assertEquals("say hello", firstLoad.command());
+    assertEquals(firstLoad.id(), secondLoad.id());
+    assertNull(firstLoad.targetUUID());
   }
 }

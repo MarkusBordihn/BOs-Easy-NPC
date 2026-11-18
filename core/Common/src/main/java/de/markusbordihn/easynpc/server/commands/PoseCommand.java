@@ -45,11 +45,10 @@ public class PoseCommand extends Command {
             Commands.literal("reset")
                 .then(
                     Commands.argument(NPC_TARGET_ARG, EasyNPCArgument.npc())
-                        .executes(
-                            context ->
-                                resetPose(
-                                    context.getSource(),
-                                    EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG)))))
+                        .executes(context ->
+                            resetPose(
+                                context.getSource(),
+                                EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG)))))
         .then(
             Commands.literal("set")
                 .then(
@@ -57,13 +56,12 @@ public class PoseCommand extends Command {
                         .suggests(PoseSuggestions::suggest)
                         .then(
                             Commands.argument(NPC_TARGET_ARG, EasyNPCArgument.npc())
-                                .executes(
-                                    context ->
-                                        setPose(
-                                            context.getSource(),
-                                            EasyNPCArgument.getEntityWithAccess(
-                                                context, NPC_TARGET_ARG),
-                                            IdentifierArgument.getId(context, TYPE_ARG))))));
+                                .executes(context ->
+                                    setPose(
+                                        context.getSource(),
+                                        EasyNPCArgument.getEntityWithAccess(
+                                            context, NPC_TARGET_ARG),
+                                        IdentifierArgument.getId(context, TYPE_ARG))))));
   }
 
   private static int resetPose(CommandSourceStack context, EasyNPC<?> easyNPC) {

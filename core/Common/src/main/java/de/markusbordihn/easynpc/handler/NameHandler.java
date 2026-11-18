@@ -84,8 +84,7 @@ public class NameHandler {
     return true;
   }
 
-  private static void setNameVisibility(
-      EasyNPC<?> easyNPC, NameVisibilityType nameVisibilityType) {
+  private static void setNameVisibility(EasyNPC<?> easyNPC, NameVisibilityType nameVisibilityType) {
     DisplayAttributeDataCapable<?> displayAttributeData = easyNPC.getEasyNPCDisplayAttributeData();
     if (displayAttributeData != null) {
       displayAttributeData.setDisplayAttribute(

@@ -45,8 +45,8 @@ public class ModEntityType {
       new EnumMap<>(ModNPCEntityType.class);
   public static final Map<ModCustomEntityType, RegistryObject<EntityType<?>>> CUSTOM_TYPE =
       new EnumMap<>(ModCustomEntityType.class);
-  public static final Map<ModProjectileEntityType, RegistryObject<EntityType<?>>>
-      PROJECTILE_TYPE = new EnumMap<>(ModProjectileEntityType.class);
+  public static final Map<ModProjectileEntityType, RegistryObject<EntityType<?>>> PROJECTILE_TYPE =
+      new EnumMap<>(ModProjectileEntityType.class);
   public static final Map<EpicFightEntityType, RegistryObject<EntityType<?>>> EPIC_FIGHT_TYPE =
       new HashMap<>();
   public static final Map<CobblemonEntityType, RegistryObject<EntityType<?>>> COBBLEMON_TYPE =

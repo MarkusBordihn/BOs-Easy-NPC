@@ -115,7 +115,8 @@ class SnbtFormatterTest {
               id:2
             }]
           }
-        }""";
+        }\
+        """;
     assertEquals(expected, SnbtFormatter.format(input));
   }
 

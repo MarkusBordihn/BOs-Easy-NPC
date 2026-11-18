@@ -25,10 +25,8 @@ import java.util.Set;
 import java.util.WeakHashMap;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.GoalSelector;
-import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 
 public class MobGoalSelectorManager {
 
@@ -54,15 +52,7 @@ public class MobGoalSelectorManager {
 
   private static void addTargetingGoals(Mob mob, GoalSelector targetSelector) {
     if (!mob.getType().getCategory().isFriendly() && REGISTERED_TARGETING_MOBS.add(mob)) {
-      targetSelector.addGoal(
-          4,
-          new NearestAttackableTargetGoal<>(
-              mob,
-              LivingEntity.class,
-              10,
-              true,
-              false,
-              (livingEntity, level) -> livingEntity instanceof EasyNPC<?>));
+      targetSelector.addGoal(4, new NearestAttackableEasyNPCTargetGoal(mob));
     }
   }
 }

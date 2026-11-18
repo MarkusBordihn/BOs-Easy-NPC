@@ -56,68 +56,61 @@ public record PresetMetadata(
   public static final String DEFAULT_DESCRIPTION = "";
 
   public static final Codec<PresetMetadata> CODEC =
-      RecordCodecBuilder.create(
-          instance ->
-              instance
-                  .group(
-                      Codec.STRING
-                          .optionalFieldOf(TAG_NAME, DEFAULT_NAME)
-                          .forGetter(PresetMetadata::name),
-                      Codec.STRING
-                          .optionalFieldOf(TAG_CATEGORY, DEFAULT_CATEGORY)
-                          .forGetter(PresetMetadata::category),
-                      Codec.STRING
-                          .optionalFieldOf(TAG_VERSION, DEFAULT_VERSION)
-                          .forGetter(PresetMetadata::version),
-                      Codec.STRING
-                          .optionalFieldOf(TAG_AUTHOR, DEFAULT_AUTHOR)
-                          .forGetter(PresetMetadata::author),
-                      Codec.LONG
-                          .optionalFieldOf(TAG_CREATED, 0L)
-                          .forGetter(PresetMetadata::created),
-                      Codec.LONG
-                          .optionalFieldOf(TAG_MODIFIED, 0L)
-                          .forGetter(PresetMetadata::modified),
-                      Codec.STRING
-                          .optionalFieldOf(TAG_DESCRIPTION, DEFAULT_DESCRIPTION)
-                          .forGetter(PresetMetadata::description),
-                      Codec.STRING
-                          .optionalFieldOf(TAG_ENTITY_TYPE_ID, "")
-                          .forGetter(
-                              metadata ->
-                                  metadata.entityTypeId() != null ? metadata.entityTypeId() : ""),
-                      Codec.STRING
-                          .optionalFieldOf(TAG_VARIANT_TYPE, "")
-                          .forGetter(
-                              metadata ->
-                                  metadata.variantType() != null ? metadata.variantType() : ""),
-                      Codec.STRING
-                          .optionalFieldOf(TAG_ACCESS, PresetAccess.PUBLIC.name())
-                          .xmap(PresetAccess::get, PresetAccess::name)
-                          .forGetter(PresetMetadata::access))
-                  .apply(
-                      instance,
-                      (name,
+      RecordCodecBuilder.create(instance ->
+          instance
+              .group(
+                  Codec.STRING
+                      .optionalFieldOf(TAG_NAME, DEFAULT_NAME)
+                      .forGetter(PresetMetadata::name),
+                  Codec.STRING
+                      .optionalFieldOf(TAG_CATEGORY, DEFAULT_CATEGORY)
+                      .forGetter(PresetMetadata::category),
+                  Codec.STRING
+                      .optionalFieldOf(TAG_VERSION, DEFAULT_VERSION)
+                      .forGetter(PresetMetadata::version),
+                  Codec.STRING
+                      .optionalFieldOf(TAG_AUTHOR, DEFAULT_AUTHOR)
+                      .forGetter(PresetMetadata::author),
+                  Codec.LONG.optionalFieldOf(TAG_CREATED, 0L).forGetter(PresetMetadata::created),
+                  Codec.LONG.optionalFieldOf(TAG_MODIFIED, 0L).forGetter(PresetMetadata::modified),
+                  Codec.STRING
+                      .optionalFieldOf(TAG_DESCRIPTION, DEFAULT_DESCRIPTION)
+                      .forGetter(PresetMetadata::description),
+                  Codec.STRING
+                      .optionalFieldOf(TAG_ENTITY_TYPE_ID, "")
+                      .forGetter(metadata ->
+                          metadata.entityTypeId() != null ? metadata.entityTypeId() : ""),
+                  Codec.STRING
+                      .optionalFieldOf(TAG_VARIANT_TYPE, "")
+                      .forGetter(
+                          metadata -> metadata.variantType() != null ? metadata.variantType() : ""),
+                  Codec.STRING
+                      .optionalFieldOf(TAG_ACCESS, PresetAccess.PUBLIC.name())
+                      .xmap(PresetAccess::get, PresetAccess::name)
+                      .forGetter(PresetMetadata::access))
+              .apply(
+                  instance,
+                  (name,
+                      category,
+                      version,
+                      author,
+                      created,
+                      modified,
+                      description,
+                      entityTypeId,
+                      variantType,
+                      access) ->
+                      new PresetMetadata(
+                          name,
                           category,
                           version,
                           author,
                           created,
                           modified,
                           description,
-                          entityTypeId,
-                          variantType,
-                          access) ->
-                          new PresetMetadata(
-                              name,
-                              category,
-                              version,
-                              author,
-                              created,
-                              modified,
-                              description,
-                              entityTypeId.isEmpty() ? null : entityTypeId,
-                              variantType.isEmpty() ? null : variantType,
-                              access)));
+                          entityTypeId.isEmpty() ? null : entityTypeId,
+                          variantType.isEmpty() ? null : variantType,
+                          access)));
 
   public static final StreamCodec<RegistryFriendlyByteBuf, PresetMetadata> STREAM_CODEC =
       new StreamCodec<>() {

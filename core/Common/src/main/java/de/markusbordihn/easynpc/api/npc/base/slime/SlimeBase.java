@@ -88,6 +88,12 @@ public class SlimeBase extends SlimeRaw implements BaseEasyNPC<SlimeRaw> {
     return true;
   }
 
+  // Vanilla touch damage would bypass the attack objectives, factions and attack settings.
+  @Override
+  protected boolean canDealDamage() {
+    return false;
+  }
+
   public int getSlimeJumpDelay() {
     return this.getJumpDelay();
   }

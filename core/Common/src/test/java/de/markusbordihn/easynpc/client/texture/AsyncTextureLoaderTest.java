@@ -57,13 +57,12 @@ class AsyncTextureLoaderTest {
     try (Stream<Path> paths = Files.walk(this.temporaryDirectory)) {
       paths
           .sorted(Comparator.reverseOrder())
-          .forEach(
-              path -> {
-                try {
-                  Files.deleteIfExists(path);
-                } catch (IOException ignored) {
-                }
-              });
+          .forEach(path -> {
+            try {
+              Files.deleteIfExists(path);
+            } catch (IOException ignored) {
+            }
+          });
     }
   }
 

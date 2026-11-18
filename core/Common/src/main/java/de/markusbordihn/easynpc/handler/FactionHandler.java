@@ -91,25 +91,23 @@ public class FactionHandler {
 
   public static void clearLoadedFactionAssignments(String factionName) {
     LivingEntityManager.getServerEasyNPCEntities()
-        .forEach(
-            easyNPC -> {
-              FactionDataCapable<?> factionData = easyNPC.getEasyNPCFactionData();
-              if (factionData != null && factionName.equals(factionData.getFactionName())) {
-                factionData.setFactionName("");
-                factionData.applyFactionToScoreboard();
-              }
-            });
+        .forEach(easyNPC -> {
+          FactionDataCapable<?> factionData = easyNPC.getEasyNPCFactionData();
+          if (factionData != null && factionName.equals(factionData.getFactionName())) {
+            factionData.setFactionName("");
+            factionData.applyFactionToScoreboard();
+          }
+        });
   }
 
   public static void refreshLoadedFactionAssignments(String factionName) {
     LivingEntityManager.getServerEasyNPCEntities()
-        .forEach(
-            easyNPC -> {
-              FactionDataCapable<?> factionData = easyNPC.getEasyNPCFactionData();
-              if (factionData != null && factionName.equals(factionData.getFactionName())) {
-                factionData.applyFactionToScoreboard();
-              }
-            });
+        .forEach(easyNPC -> {
+          FactionDataCapable<?> factionData = easyNPC.getEasyNPCFactionData();
+          if (factionData != null && factionName.equals(factionData.getFactionName())) {
+            factionData.applyFactionToScoreboard();
+          }
+        });
   }
 
   public static boolean removeFaction(EasyNPC<?> easyNPC) {

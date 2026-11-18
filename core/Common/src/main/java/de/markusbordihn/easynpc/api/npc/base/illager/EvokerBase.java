@@ -99,4 +99,9 @@ public class EvokerBase extends EvokerRaw implements BaseEasyNPC<EvokerRaw> {
       this.calculateEntityAnimation(this.omnidirectionalAirMover());
     }
   }
+
+  @Override
+  public boolean canBeLeader() {
+    return false;
+  }
 }

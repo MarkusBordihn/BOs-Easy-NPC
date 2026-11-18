@@ -73,7 +73,8 @@ public class EasyNPCEntityRendererMixin<T extends Entity, S extends EntityRender
       SubmitNodeCollector submitNodeCollector,
       CameraRenderState cameraRenderState,
       CallbackInfo callbackInfo) {
-    if (renderState instanceof EasyNPCRenderStateExtension) {
+    if (renderState instanceof EasyNPCRenderStateExtension extension
+        && extension.getEasyNPC() != null) {
       NameTagRenderer.submit(renderState, poseStack, submitNodeCollector, cameraRenderState);
       callbackInfo.cancel();
     }

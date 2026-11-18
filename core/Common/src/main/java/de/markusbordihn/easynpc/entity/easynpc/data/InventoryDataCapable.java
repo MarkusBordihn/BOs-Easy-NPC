@@ -92,86 +92,83 @@ public interface InventoryDataCapable<E extends Mob> extends EasyNPC<E> {
 
     valueInput
         .child(DATA_INVENTORY_TAG)
-        .ifPresent(
-            inventoryInput -> {
-              NonNullList<ItemStack> items =
-                  NonNullList.withSize(inventory.getContainerSize(), ItemStack.EMPTY);
-              ContainerHelper.loadAllItems(inventoryInput, items);
-              for (int i = 0; i < inventory.getContainerSize(); i++) {
-                inventory.setItem(i, items.get(i));
-              }
-            });
+        .ifPresent(inventoryInput -> {
+          NonNullList<ItemStack> items =
+              NonNullList.withSize(inventory.getContainerSize(), ItemStack.EMPTY);
+          ContainerHelper.loadAllItems(inventoryInput, items);
+          for (int i = 0; i < inventory.getContainerSize(); i++) {
+            inventory.setItem(i, items.get(i));
+          }
+        });
   }
 
   default void convertLegacyArmorItems(ValueInput valueInput) {
     valueInput
         .list(LEGACY_ARMOR_ITEMS_TAG, CompoundTag.CODEC)
-        .ifPresent(
-            list -> {
-              var entity = getLivingEntity();
-              var itemsArray = list.stream().toArray(CompoundTag[]::new);
-              if (itemsArray.length >= 4) {
-                if (!itemsArray[0].isEmpty()) {
-                  entity.setItemSlot(
-                      EquipmentSlot.FEET,
-                      ItemStack.OPTIONAL_CODEC
-                          .parse(NbtOps.INSTANCE, itemsArray[0])
-                          .resultOrPartial(error -> {})
-                          .orElse(ItemStack.EMPTY));
-                }
-                if (!itemsArray[1].isEmpty()) {
-                  entity.setItemSlot(
-                      EquipmentSlot.LEGS,
-                      ItemStack.OPTIONAL_CODEC
-                          .parse(NbtOps.INSTANCE, itemsArray[1])
-                          .resultOrPartial(error -> {})
-                          .orElse(ItemStack.EMPTY));
-                }
-                if (!itemsArray[2].isEmpty()) {
-                  entity.setItemSlot(
-                      EquipmentSlot.CHEST,
-                      ItemStack.OPTIONAL_CODEC
-                          .parse(NbtOps.INSTANCE, itemsArray[2])
-                          .resultOrPartial(error -> {})
-                          .orElse(ItemStack.EMPTY));
-                }
-                if (!itemsArray[3].isEmpty()) {
-                  entity.setItemSlot(
-                      EquipmentSlot.HEAD,
-                      ItemStack.OPTIONAL_CODEC
-                          .parse(NbtOps.INSTANCE, itemsArray[3])
-                          .resultOrPartial(error -> {})
-                          .orElse(ItemStack.EMPTY));
-                }
-              }
-            });
+        .ifPresent(list -> {
+          var entity = getLivingEntity();
+          var itemsArray = list.stream().toArray(CompoundTag[]::new);
+          if (itemsArray.length >= 4) {
+            if (!itemsArray[0].isEmpty()) {
+              entity.setItemSlot(
+                  EquipmentSlot.FEET,
+                  ItemStack.OPTIONAL_CODEC
+                      .parse(NbtOps.INSTANCE, itemsArray[0])
+                      .resultOrPartial(error -> {})
+                      .orElse(ItemStack.EMPTY));
+            }
+            if (!itemsArray[1].isEmpty()) {
+              entity.setItemSlot(
+                  EquipmentSlot.LEGS,
+                  ItemStack.OPTIONAL_CODEC
+                      .parse(NbtOps.INSTANCE, itemsArray[1])
+                      .resultOrPartial(error -> {})
+                      .orElse(ItemStack.EMPTY));
+            }
+            if (!itemsArray[2].isEmpty()) {
+              entity.setItemSlot(
+                  EquipmentSlot.CHEST,
+                  ItemStack.OPTIONAL_CODEC
+                      .parse(NbtOps.INSTANCE, itemsArray[2])
+                      .resultOrPartial(error -> {})
+                      .orElse(ItemStack.EMPTY));
+            }
+            if (!itemsArray[3].isEmpty()) {
+              entity.setItemSlot(
+                  EquipmentSlot.HEAD,
+                  ItemStack.OPTIONAL_CODEC
+                      .parse(NbtOps.INSTANCE, itemsArray[3])
+                      .resultOrPartial(error -> {})
+                      .orElse(ItemStack.EMPTY));
+            }
+          }
+        });
   }
 
   default void convertLegacyHandItems(ValueInput valueInput) {
     valueInput
         .list(LEGACY_HAND_ITEMS_TAG, CompoundTag.CODEC)
-        .ifPresent(
-            list -> {
-              var entity = getLivingEntity();
-              var itemsArray = list.stream().toArray(CompoundTag[]::new);
-              if (itemsArray.length >= 2) {
-                if (!itemsArray[0].isEmpty()) {
-                  entity.setItemSlot(
-                      EquipmentSlot.MAINHAND,
-                      ItemStack.OPTIONAL_CODEC
-                          .parse(NbtOps.INSTANCE, itemsArray[0])
-                          .resultOrPartial(error -> {})
-                          .orElse(ItemStack.EMPTY));
-                }
-                if (!itemsArray[1].isEmpty()) {
-                  entity.setItemSlot(
-                      EquipmentSlot.OFFHAND,
-                      ItemStack.OPTIONAL_CODEC
-                          .parse(NbtOps.INSTANCE, itemsArray[1])
-                          .resultOrPartial(error -> {})
-                          .orElse(ItemStack.EMPTY));
-                }
-              }
-            });
+        .ifPresent(list -> {
+          var entity = getLivingEntity();
+          var itemsArray = list.stream().toArray(CompoundTag[]::new);
+          if (itemsArray.length >= 2) {
+            if (!itemsArray[0].isEmpty()) {
+              entity.setItemSlot(
+                  EquipmentSlot.MAINHAND,
+                  ItemStack.OPTIONAL_CODEC
+                      .parse(NbtOps.INSTANCE, itemsArray[0])
+                      .resultOrPartial(error -> {})
+                      .orElse(ItemStack.EMPTY));
+            }
+            if (!itemsArray[1].isEmpty()) {
+              entity.setItemSlot(
+                  EquipmentSlot.OFFHAND,
+                  ItemStack.OPTIONAL_CODEC
+                      .parse(NbtOps.INSTANCE, itemsArray[1])
+                      .resultOrPartial(error -> {})
+                      .orElse(ItemStack.EMPTY));
+            }
+          }
+        });
   }
 }

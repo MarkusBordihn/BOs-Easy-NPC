@@ -91,7 +91,7 @@ public class PlayerRenderer
 
   private void applySkinToRenderState(EasyNPC<?> easyNPC, AvatarRenderState renderState) {
     SkinDataCapable<?> skinData = easyNPC.getEasyNPCSkinData();
-    if (skinData == null || skinData.getSkinType() == SkinType.NONE) {
+    if (skinData == null) {
       return;
     }
 
@@ -146,6 +146,16 @@ public class PlayerRenderer
               null,
               playerModelType,
               true);
+    } else if (skinData.getSkinType() == SkinType.NONE
+        || skinData.getSkinType() == SkinType.RESOURCE_LOCATION) {
+      Identifier textureLocation = this.getTextureFromRenderState(renderState);
+      renderState.skin =
+          new PlayerSkin(
+              new ClientAsset.ResourceTexture(textureLocation, textureLocation),
+              null,
+              null,
+              playerModelType,
+              false);
     }
   }
 

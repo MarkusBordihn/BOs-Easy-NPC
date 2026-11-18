@@ -50,11 +50,11 @@ public abstract class ServerPlayerShoulderMixin implements ShoulderAccessHelper 
   protected abstract void setShoulderEntityRight(CompoundTag entityTag);
 
   @Override
-  public void clearShoulderEntity(ShoulderSide shoulderSide) {
+  public void setShoulderEntity(ShoulderSide shoulderSide, CompoundTag entityTag) {
     if (shoulderSide == ShoulderSide.LEFT) {
-      this.setShoulderEntityLeft(new CompoundTag());
+      this.setShoulderEntityLeft(entityTag);
     } else {
-      this.setShoulderEntityRight(new CompoundTag());
+      this.setShoulderEntityRight(entityTag);
     }
   }
 
@@ -67,16 +67,21 @@ public abstract class ServerPlayerShoulderMixin implements ShoulderAccessHelper 
     }
 
     this.keptShoulderNPCDataLeft =
-        EasyNPCShoulderHandler.dismountOrTakeShoulderNPCData(serverPlayer, ShoulderSide.LEFT);
+        EasyNPCShoulderHandler.takeShoulderNPCDataForRelease(
+            serverPlayer, ShoulderSide.LEFT, this.keptShoulderNPCDataLeft);
     this.keptShoulderNPCDataRight =
-        EasyNPCShoulderHandler.dismountOrTakeShoulderNPCData(serverPlayer, ShoulderSide.RIGHT);
+        EasyNPCShoulderHandler.takeShoulderNPCDataForRelease(
+            serverPlayer, ShoulderSide.RIGHT, this.keptShoulderNPCDataRight);
   }
 
   @Inject(method = "removeEntitiesOnShoulder", at = @At("RETURN"))
   private void afterRemoveEntitiesOnShoulder(CallbackInfo callbackInfo) {
-    this.keptShoulderNPCDataLeft.ifPresent(this::setShoulderEntityLeft);
-    this.keptShoulderNPCDataRight.ifPresent(this::setShoulderEntityRight);
-    this.keptShoulderNPCDataLeft = Optional.empty();
-    this.keptShoulderNPCDataRight = Optional.empty();
+    ServerPlayer serverPlayer = (ServerPlayer) (Object) this;
+    this.keptShoulderNPCDataLeft =
+        EasyNPCShoulderHandler.restoreShoulderNPCData(
+            serverPlayer, ShoulderSide.LEFT, this.keptShoulderNPCDataLeft);
+    this.keptShoulderNPCDataRight =
+        EasyNPCShoulderHandler.restoreShoulderNPCData(
+            serverPlayer, ShoulderSide.RIGHT, this.keptShoulderNPCDataRight);
   }
 }

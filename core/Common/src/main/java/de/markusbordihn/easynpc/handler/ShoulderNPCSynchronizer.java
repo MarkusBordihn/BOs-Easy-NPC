@@ -68,16 +68,15 @@ public class ShoulderNPCSynchronizer {
 
     sentShoulderStates
         .entrySet()
-        .removeIf(
-            entry -> {
-              if (onlinePlayerUUIDs.contains(entry.getKey())) {
-                return false;
-              }
-              if (entry.getValue().hasShoulderNPC()) {
-                changedStates.add(ShoulderNPCMessage.empty(entry.getValue().playerId()));
-              }
-              return true;
-            });
+        .removeIf(entry -> {
+          if (onlinePlayerUUIDs.contains(entry.getKey())) {
+            return false;
+          }
+          if (entry.getValue().hasShoulderNPC()) {
+            changedStates.add(ShoulderNPCMessage.empty(entry.getValue().playerId()));
+          }
+          return true;
+        });
 
     for (ServerPlayer knownPlayer : knownPlayers) {
       for (ShoulderNPCMessage changedState : changedStates) {

@@ -41,18 +41,16 @@ public class ProgressionCommand extends Command {
 
   public static ArgumentBuilder<CommandSourceStack, ?> register() {
     return Commands.literal("progression")
-        .requires(
-            commandSourceStack ->
-                commandSourceStack.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER))
+        .requires(commandSourceStack ->
+            commandSourceStack.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER))
         .then(
             Commands.literal("get")
                 .then(
                     Commands.argument(NPC_TARGET_ARG, EasyNPCArgument.npc())
-                        .executes(
-                            context ->
-                                getProgression(
-                                    context.getSource(),
-                                    EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG)))))
+                        .executes(context ->
+                            getProgression(
+                                context.getSource(),
+                                EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG)))))
         .then(
             Commands.literal("set")
                 .then(
@@ -65,27 +63,25 @@ public class ProgressionCommand extends Command {
                                             IntegerArgumentType.integer(
                                                 ProgressionLevelMap.MIN_LEVEL,
                                                 ProgressionLevelMap.MAX_LEVEL))
-                                        .executes(
-                                            context ->
-                                                setLevel(
-                                                    context.getSource(),
-                                                    EasyNPCArgument.getEntityWithAccess(
-                                                        context, NPC_TARGET_ARG),
-                                                    IntegerArgumentType.getInteger(
-                                                        context, LEVEL_ARG)))))
+                                        .executes(context ->
+                                            setLevel(
+                                                context.getSource(),
+                                                EasyNPCArgument.getEntityWithAccess(
+                                                    context, NPC_TARGET_ARG),
+                                                IntegerArgumentType.getInteger(
+                                                    context, LEVEL_ARG)))))
                         .then(
                             Commands.literal("xp")
                                 .then(
                                     Commands.argument(
                                             EXPERIENCE_ARG, IntegerArgumentType.integer(1))
-                                        .executes(
-                                            context ->
-                                                setExperience(
-                                                    context.getSource(),
-                                                    EasyNPCArgument.getEntityWithAccess(
-                                                        context, NPC_TARGET_ARG),
-                                                    IntegerArgumentType.getInteger(
-                                                        context, EXPERIENCE_ARG)))))))
+                                        .executes(context ->
+                                            setExperience(
+                                                context.getSource(),
+                                                EasyNPCArgument.getEntityWithAccess(
+                                                    context, NPC_TARGET_ARG),
+                                                IntegerArgumentType.getInteger(
+                                                    context, EXPERIENCE_ARG)))))))
         .then(
             Commands.literal("add")
                 .then(
@@ -94,27 +90,25 @@ public class ProgressionCommand extends Command {
                             Commands.literal("xp")
                                 .then(
                                     Commands.argument(EXPERIENCE_ARG, IntegerArgumentType.integer())
-                                        .executes(
-                                            context ->
-                                                addExperience(
-                                                    context.getSource(),
-                                                    EasyNPCArgument.getEntityWithAccess(
-                                                        context, NPC_TARGET_ARG),
-                                                    IntegerArgumentType.getInteger(
-                                                        context, EXPERIENCE_ARG)))))))
+                                        .executes(context ->
+                                            addExperience(
+                                                context.getSource(),
+                                                EasyNPCArgument.getEntityWithAccess(
+                                                    context, NPC_TARGET_ARG),
+                                                IntegerArgumentType.getInteger(
+                                                    context, EXPERIENCE_ARG)))))))
         .then(
             Commands.literal("scaling")
                 .then(
                     Commands.argument(NPC_TARGET_ARG, EasyNPCArgument.npc())
                         .then(
                             Commands.argument(ENABLED_ARG, BoolArgumentType.bool())
-                                .executes(
-                                    context ->
-                                        setAttributeScaling(
-                                            context.getSource(),
-                                            EasyNPCArgument.getEntityWithAccess(
-                                                context, NPC_TARGET_ARG),
-                                            BoolArgumentType.getBool(context, ENABLED_ARG))))));
+                                .executes(context ->
+                                    setAttributeScaling(
+                                        context.getSource(),
+                                        EasyNPCArgument.getEntityWithAccess(
+                                            context, NPC_TARGET_ARG),
+                                        BoolArgumentType.getBool(context, ENABLED_ARG))))));
   }
 
   private static int getProgression(CommandSourceStack context, EasyNPC<?> easyNPC) {

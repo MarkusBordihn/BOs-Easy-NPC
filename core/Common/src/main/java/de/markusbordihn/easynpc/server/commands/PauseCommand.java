@@ -36,34 +36,30 @@ public class PauseCommand extends Command {
 
   public static ArgumentBuilder<CommandSourceStack, ?> register() {
     return Commands.literal("pause")
-        .requires(
-            commandSourceStack ->
-                commandSourceStack.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER))
+        .requires(commandSourceStack ->
+            commandSourceStack.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER))
         .then(
             Commands.literal("all")
                 .then(
                     Commands.argument(ENABLE_ARG, BoolArgumentType.bool())
-                        .executes(
-                            context ->
-                                pauseAll(
-                                    context.getSource(),
-                                    BoolArgumentType.getBool(context, ENABLE_ARG)))))
+                        .executes(context ->
+                            pauseAll(
+                                context.getSource(),
+                                BoolArgumentType.getBool(context, ENABLE_ARG)))))
         .then(
             Commands.argument(NPC_TARGETS_ARG, EasyNPCArgument.npc())
-                .executes(
-                    context ->
-                        pause(
-                            context.getSource(),
-                            EasyNPCArgument.getEntitiesWithAccess(context, NPC_TARGETS_ARG),
-                            true))
+                .executes(context ->
+                    pause(
+                        context.getSource(),
+                        EasyNPCArgument.getEntitiesWithAccess(context, NPC_TARGETS_ARG),
+                        true))
                 .then(
                     Commands.argument(ENABLE_ARG, BoolArgumentType.bool())
-                        .executes(
-                            context ->
-                                pause(
-                                    context.getSource(),
-                                    EasyNPCArgument.getEntitiesWithAccess(context, NPC_TARGETS_ARG),
-                                    BoolArgumentType.getBool(context, ENABLE_ARG)))));
+                        .executes(context ->
+                            pause(
+                                context.getSource(),
+                                EasyNPCArgument.getEntitiesWithAccess(context, NPC_TARGETS_ARG),
+                                BoolArgumentType.getBool(context, ENABLE_ARG)))));
   }
 
   private static int pause(

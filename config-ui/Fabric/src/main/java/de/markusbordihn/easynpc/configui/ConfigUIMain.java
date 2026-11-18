@@ -68,12 +68,11 @@ public class ConfigUIMain implements ModInitializer {
 
     log.info("{} Menu Handler ...", Constants.LOG_REGISTER_PREFIX);
     MenuManager.registerMenuHandler(new MenuHandler());
-    ServerEntityEvents.ENTITY_UNLOAD.register(
-        (entity, world) -> {
-          if (entity instanceof ServerPlayer serverPlayer) {
-            MenuManager.cleanupPlayerMenus(serverPlayer);
-          }
-        });
+    ServerEntityEvents.ENTITY_UNLOAD.register((entity, world) -> {
+      if (entity instanceof ServerPlayer serverPlayer) {
+        MenuManager.cleanupPlayerMenus(serverPlayer);
+      }
+    });
 
     log.info("{} Server Network Handler ...", Constants.LOG_REGISTER_PREFIX);
     NetworkHandlerManager.registerHandler(new NetworkHandler());

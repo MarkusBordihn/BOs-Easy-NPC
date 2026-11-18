@@ -190,7 +190,8 @@ public final class TradingObjectiveFactionMessageTestHelper {
         entityType,
         TradingObjectiveFactionMessageTestHelper::createFaction,
         uuid ->
-            new ChangeFactionColorMessage(uuid, factionName(uuid), CHANGED_FACTION_COLOR.getSerializedName()),
+            new ChangeFactionColorMessage(
+                uuid, factionName(uuid), CHANGED_FACTION_COLOR.getSerializedName()),
         ChangeFactionColorMessage::create,
         TradingObjectiveFactionMessageTestHelper::hasChangedFactionColor,
         SurvivalOwnerAccess.DENIED);

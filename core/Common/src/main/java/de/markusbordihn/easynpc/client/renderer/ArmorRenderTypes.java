@@ -43,19 +43,18 @@ public final class ArmorRenderTypes {
           .build();
 
   private static final Function<Identifier, RenderType> ARMOR_TRANSLUCENT =
-      Util.memoize(
-          texture ->
-              RenderType.create(
-                  Constants.MOD_PREFIX_ID + "armor_translucent",
-                  RenderSetup.builder(ARMOR_TRANSLUCENT_PIPELINE)
-                      .withTexture(RenderTypeTextureAccessor.PRIMARY_TEXTURE_SAMPLER, texture)
-                      .useLightmap()
-                      .useOverlay()
-                      .setLayeringTransform(LayeringTransform.VIEW_OFFSET_Z_LAYERING)
-                      .affectsCrumbling()
-                      .sortOnUpload()
-                      .setOutline(RenderSetup.OutlineProperty.AFFECTS_OUTLINE)
-                      .createRenderSetup()));
+      Util.memoize(texture ->
+          RenderType.create(
+              Constants.MOD_PREFIX_ID + "armor_translucent",
+              RenderSetup.builder(ARMOR_TRANSLUCENT_PIPELINE)
+                  .withTexture(RenderTypeTextureAccessor.PRIMARY_TEXTURE_SAMPLER, texture)
+                  .useLightmap()
+                  .useOverlay()
+                  .setLayeringTransform(LayeringTransform.VIEW_OFFSET_Z_LAYERING)
+                  .affectsCrumbling()
+                  .sortOnUpload()
+                  .setOutline(RenderSetup.OutlineProperty.AFFECTS_OUTLINE)
+                  .createRenderSetup()));
 
   static {
     IrisManager.copyShaderMapping(RenderPipelines.ARMOR_CUTOUT_NO_CULL, ARMOR_TRANSLUCENT_PIPELINE);

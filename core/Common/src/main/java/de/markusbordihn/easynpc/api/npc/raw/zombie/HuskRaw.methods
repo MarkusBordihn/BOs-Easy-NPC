@@ -1,0 +1,24 @@
+  @Override
+  public SpawnGroupData getVanillaSpawnGroupData(SpawnGroupData spawnGroupData) {
+    return spawnGroupData == null ? new Zombie.ZombieGroupData(false, false) : spawnGroupData;
+  }
+
+  @Override
+  public void setCanBreakDoors(boolean canBreakDoors) {}
+
+  @Override
+  protected void handleAttributes(float difficultyModifier, EntitySpawnReason entitySpawnReason) {}
+
+  @Override
+  protected void populateDefaultEquipmentSlots(
+      RandomSource randomSource, DifficultyInstance difficulty) {}
+
+  @Override
+  protected boolean convertsInWater() {
+    return false;
+  }
+
+  @Override
+  public boolean isUnderWaterConverting() {
+    return false;
+  }

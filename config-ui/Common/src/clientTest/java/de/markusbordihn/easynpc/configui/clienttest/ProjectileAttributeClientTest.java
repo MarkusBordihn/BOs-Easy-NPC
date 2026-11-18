@@ -81,9 +81,7 @@ class ProjectileAttributeClientTest extends ClientTestBase {
     client
         .input()
         .mouseButton(
-            Parameters.of()
-                .with("x", selectBoxBounds.number("x") + 10)
-                .with("y", firstEntryY));
+            Parameters.of().with("x", selectBoxBounds.number("x") + 10).with("y", firstEntryY));
     client.await(Until.settled(5));
   }
 
@@ -103,8 +101,7 @@ class ProjectileAttributeClientTest extends ClientTestBase {
         isEnabledWidget(PROJECTILE_ITEM_TEXT_FIELD),
         "Item ID stays disabled after selecting the custom item projectile");
     client.type(PROJECTILE_ITEM_TEXT_FIELD, INVALID_PROJECTILE_ITEM, true);
-    assertFalse(
-        isEnabledWidget(PROJECTILE_ITEM_SAVE_BUTTON), "Invalid item ID can be saved");
+    assertFalse(isEnabledWidget(PROJECTILE_ITEM_SAVE_BUTTON), "Invalid item ID can be saved");
     client.saveScreenshot("invalid_item");
 
     client.type(PROJECTILE_ITEM_TEXT_FIELD, SAVED_PROJECTILE_ITEM, true);

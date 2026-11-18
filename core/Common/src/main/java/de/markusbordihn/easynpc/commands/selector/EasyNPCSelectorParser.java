@@ -77,14 +77,13 @@ public class EasyNPCSelectorParser extends EntitySelectorParser {
       stringRange = suggestionsOriginal.get().getRange();
       originalSuggestionsList.stream()
           .filter(suggestion -> !suggestion.getText().matches("@[pars]"))
-          .forEach(
-              suggestion -> {
-                if (suggestion.getText().startsWith("@")) {
-                  suggestionsList.add(suggestion);
-                } else {
-                  suggestionsList.add(0, suggestion);
-                }
-              });
+          .forEach(suggestion -> {
+            if (suggestion.getText().startsWith("@")) {
+              suggestionsList.add(suggestion);
+            } else {
+              suggestionsList.add(0, suggestion);
+            }
+          });
     } catch (InterruptedException | ExecutionException e) {
       log.error("Failed to get suggestions:", e);
     }

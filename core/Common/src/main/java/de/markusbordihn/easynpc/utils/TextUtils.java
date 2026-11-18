@@ -74,14 +74,13 @@ public class TextUtils {
 
     String teleportCommand =
         "/tp @s " + blockPos.getX() + " " + blockPos.getY() + " " + blockPos.getZ();
-    return positionText.withStyle(
-        style ->
-            style
-                .withColor(ChatFormatting.GREEN)
-                .withUnderlined(true)
-                .withClickEvent(new ClickEvent.SuggestCommand(teleportCommand))
-                .withHoverEvent(
-                    new HoverEvent.ShowText(Component.translatable("chat.coordinates.tooltip"))));
+    return positionText.withStyle(style ->
+        style
+            .withColor(ChatFormatting.GREEN)
+            .withUnderlined(true)
+            .withClickEvent(new ClickEvent.SuggestCommand(teleportCommand))
+            .withHoverEvent(
+                new HoverEvent.ShowText(Component.translatable("chat.coordinates.tooltip"))));
   }
 
   public static Component normalizeName(String name) {

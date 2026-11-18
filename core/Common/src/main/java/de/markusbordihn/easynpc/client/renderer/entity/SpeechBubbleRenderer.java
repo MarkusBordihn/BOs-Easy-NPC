@@ -93,8 +93,7 @@ public class SpeechBubbleRenderer {
       return;
     }
 
-    submit(
-        extension.getEasyNPC().getEntity(), poseStack, submitNodeCollector, cameraRenderState);
+    submit(extension.getEasyNPC().getEntity(), poseStack, submitNodeCollector, cameraRenderState);
   }
 
   private static boolean isLoadedInClientLevel(EasyNPC<?> easyNPC) {

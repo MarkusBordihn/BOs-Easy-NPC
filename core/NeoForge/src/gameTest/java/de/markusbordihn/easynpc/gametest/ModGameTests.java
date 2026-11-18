@@ -155,6 +155,182 @@ public final class ModGameTests {
         DEFAULT_STRUCTURE);
 
     register(
+        "monster_targets_attackable_npc",
+        MonsterTargetingTest::testMonsterTargetsAttackableNPC,
+        DEFAULT_STRUCTURE);
+    register(
+        "monster_ignores_not_attackable_npc",
+        MonsterTargetingTest::testMonsterIgnoresNotAttackableNPC,
+        DEFAULT_STRUCTURE);
+    register(
+        "monster_keeps_targeting_invulnerable_npc",
+        MonsterTargetingTest::testMonsterKeepsTargetingInvulnerableNPC,
+        DEFAULT_STRUCTURE);
+
+    register(
+        "creeper_npc_does_not_explode",
+        ServerMixinTest::testCreeperNPCDoesNotExplode,
+        DEFAULT_STRUCTURE);
+    register(
+        "piglin_npc_skips_vanilla_activity_update",
+        ServerMixinTest::testPiglinNPCSkipsVanillaActivityUpdate,
+        DEFAULT_STRUCTURE);
+    register(
+        "piglin_brute_npc_skips_vanilla_activity_update",
+        ServerMixinTest::testPiglinBruteNPCSkipsVanillaActivityUpdate,
+        DEFAULT_STRUCTURE);
+    register(
+        "fox_npc_gets_no_vanilla_target_goals",
+        ServerMixinTest::testFoxNPCGetsNoVanillaTargetGoals,
+        DEFAULT_STRUCTURE);
+    register(
+        "witch_npc_drinks_no_potions",
+        ServerMixinTest::testWitchNPCDrinksNoPotions,
+        DEFAULT_STRUCTURE);
+    register(
+        "villager_npc_keeps_its_trading_player",
+        ServerMixinTest::testVillagerNPCKeepsItsTradingPlayer,
+        DEFAULT_STRUCTURE);
+    register(
+        "slime_npc_keeps_its_size_on_finalize_spawn",
+        ServerMixinTest::testSlimeNPCKeepsItsSizeOnFinalizeSpawn,
+        DEFAULT_STRUCTURE);
+    register(
+        "walk_animation_copy_takes_every_value",
+        ServerMixinTest::testWalkAnimationCopyTakesEveryValue,
+        DEFAULT_STRUCTURE);
+    register(
+        "swing_state_copy_takes_every_value",
+        ServerMixinTest::testSwingStateCopyTakesEveryValue,
+        DEFAULT_STRUCTURE);
+    register(
+        "spawner_data_matches_every_spawner_type",
+        ServerMixinTest::testSpawnerDataMatchesEverySpawnerType,
+        DEFAULT_STRUCTURE);
+    register(
+        "zombie_npc_is_not_replaced_by_vanilla_conversion",
+        ServerMixinTest::testZombieNPCIsNotReplacedByVanillaConversion,
+        DEFAULT_STRUCTURE);
+    register(
+        "skeleton_npc_is_not_replaced_by_vanilla_conversion",
+        ServerMixinTest::testSkeletonNPCIsNotReplacedByVanillaConversion,
+        DEFAULT_STRUCTURE);
+    register(
+        "zombie_npc_gets_no_random_spawn_extras",
+        ServerMixinTest::testZombieNPCGetsNoRandomSpawnExtras,
+        DEFAULT_STRUCTURE);
+    register(
+        "husk_npc_gets_no_random_spawn_extras",
+        ServerMixinTest::testHuskNPCGetsNoRandomSpawnExtras,
+        DEFAULT_STRUCTURE);
+    register(
+        "drowned_npc_gets_no_random_spawn_extras",
+        ServerMixinTest::testDrownedNPCGetsNoRandomSpawnExtras,
+        DEFAULT_STRUCTURE);
+    register(
+        "zombie_villager_npc_gets_no_random_spawn_extras",
+        ServerMixinTest::testZombieVillagerNPCGetsNoRandomSpawnExtras,
+        DEFAULT_STRUCTURE);
+    register(
+        "zombified_piglin_npc_keeps_its_weapon_on_finalize_spawn",
+        ServerMixinTest::testZombifiedPiglinNPCKeepsItsWeaponOnFinalizeSpawn,
+        DEFAULT_STRUCTURE);
+    register(
+        "skeleton_npc_gets_the_vanilla_bow_only_without_equipment",
+        ServerMixinTest::testSkeletonNPCGetsTheVanillaBowOnlyWithoutEquipment,
+        DEFAULT_STRUCTURE);
+    register(
+        "skeleton_npc_gets_no_vanilla_weapon_goal",
+        ServerMixinTest::testSkeletonNPCGetsNoVanillaWeaponGoal,
+        DEFAULT_STRUCTURE);
+    register(
+        "stray_npc_gets_no_vanilla_weapon_goal",
+        ServerMixinTest::testStrayNPCGetsNoVanillaWeaponGoal,
+        DEFAULT_STRUCTURE);
+    register(
+        "wither_skeleton_npc_gets_no_vanilla_weapon_goal",
+        ServerMixinTest::testWitherSkeletonNPCGetsNoVanillaWeaponGoal,
+        DEFAULT_STRUCTURE);
+    register(
+        "bogged_npc_gets_no_vanilla_weapon_goal",
+        ServerMixinTest::testBoggedNPCGetsNoVanillaWeaponGoal,
+        DEFAULT_STRUCTURE);
+    register(
+        "villager_npc_picks_up_loot_only_into_its_inventory",
+        ServerMixinTest::testVillagerNPCPicksUpLootOnlyIntoItsInventory,
+        DEFAULT_STRUCTURE);
+
+    register(
+        "villager_npc_survives_lightning",
+        VanillaMobQuirkTest::testVillagerNPCSurvivesLightning,
+        DEFAULT_STRUCTURE);
+    register(
+        "pig_npc_survives_lightning",
+        VanillaMobQuirkTest::testPigNPCSurvivesLightning,
+        DEFAULT_STRUCTURE);
+    register(
+        "slime_npc_does_not_split_on_death",
+        VanillaMobQuirkTest::testSlimeNPCDoesNotSplitOnDeath,
+        DEFAULT_STRUCTURE);
+    register(
+        "slime_npc_deals_no_touch_damage",
+        VanillaMobQuirkTest::testSlimeNPCDealsNoTouchDamage,
+        DEFAULT_STRUCTURE);
+    register(
+        "chicken_npc_lays_no_eggs",
+        VanillaMobQuirkTest::testChickenNPCLaysNoEggs,
+        DEFAULT_STRUCTURE);
+    register(
+        "fox_npc_keeps_food_in_its_mouth",
+        VanillaMobQuirkTest::testFoxNPCKeepsFoodInItsMouth,
+        DEFAULT_STRUCTURE);
+    register(
+        "fox_npc_gets_no_random_item_on_spawn",
+        VanillaMobQuirkTest::testFoxNPCGetsNoRandomItemOnSpawn,
+        DEFAULT_STRUCTURE);
+    register(
+        "cat_npc_keeps_its_vanilla_pose",
+        VanillaMobQuirkTest::testCatNPCKeepsItsVanillaPose,
+        DEFAULT_STRUCTURE);
+
+    register(
+        "piglin_npc_spawns_without_random_baby_or_equipment",
+        SpawnRandomnessTest::testPiglinNPCSpawnsWithoutRandomBabyOrEquipment,
+        DEFAULT_STRUCTURE);
+    register(
+        "piglin_npc_keeps_configured_age_and_equipment_on_spawn",
+        SpawnRandomnessTest::testPiglinNPCKeepsConfiguredAgeAndEquipmentOnSpawn,
+        DEFAULT_STRUCTURE);
+    register(
+        "spider_npc_spawns_without_jockey_or_effect",
+        SpawnRandomnessTest::testSpiderNPCSpawnsWithoutJockeyOrEffect,
+        DEFAULT_STRUCTURE);
+    register(
+        "pillager_npc_never_becomes_patrol_leader",
+        SpawnRandomnessTest::testPillagerNPCNeverBecomesPatrolLeader,
+        DEFAULT_STRUCTURE);
+    register(
+        "vindicator_npc_never_becomes_patrol_leader",
+        SpawnRandomnessTest::testVindicatorNPCNeverBecomesPatrolLeader,
+        DEFAULT_STRUCTURE);
+    register(
+        "evoker_npc_never_becomes_patrol_leader",
+        SpawnRandomnessTest::testEvokerNPCNeverBecomesPatrolLeader,
+        DEFAULT_STRUCTURE);
+    register(
+        "illusioner_npc_never_becomes_patrol_leader",
+        SpawnRandomnessTest::testIllusionerNPCNeverBecomesPatrolLeader,
+        DEFAULT_STRUCTURE);
+    register(
+        "creeper_npc_stays_uncharged_by_lightning",
+        SpawnRandomnessTest::testCreeperNPCStaysUnchargedByLightning,
+        DEFAULT_STRUCTURE);
+    register(
+        "ghast_npc_survives_reflected_fireball",
+        SpawnRandomnessTest::testGhastNPCSurvivesReflectedFireball,
+        DEFAULT_STRUCTURE);
+
+    register(
         "faction_scoreboard_membership",
         FactionObjectiveTest::testFactionScoreboardMembership,
         DEFAULT_STRUCTURE);
@@ -266,6 +442,10 @@ public final class ModGameTests {
         DEFAULT_STRUCTURE);
     register(
         "respawn_keeps_owner", NPCEntityLifecycleTest::testRespawnKeepsOwner, DEFAULT_STRUCTURE);
+    register(
+        "malformed_u_u_i_d_tags_keep_n_p_c_loadable",
+        NPCEntityLifecycleTest::testMalformedUUIDTagsKeepNPCLoadable,
+        DEFAULT_STRUCTURE);
     register(
         "removal_reason_is_reset_on_respawn",
         NPCEntityLifecycleTest::testRemovalReasonIsResetOnRespawn,
@@ -762,6 +942,14 @@ public final class ModGameTests {
         "preset_item_drops_identity",
         PresetIdentityTest::testPresetItemDropsIdentity,
         DEFAULT_STRUCTURE);
+    register(
+        "import_with_malformed_u_u_i_d_creates_new_n_p_c",
+        PresetIdentityTest::testImportWithMalformedUUIDCreatesNewNPC,
+        DEFAULT_STRUCTURE);
+    register(
+        "preset_item_with_malformed_preset_u_u_i_d_spawns",
+        PresetIdentityTest::testPresetItemWithMalformedPresetUUIDSpawns,
+        DEFAULT_STRUCTURE);
 
     register(
         "preset_survives_round_trip",
@@ -802,6 +990,11 @@ public final class ModGameTests {
     register(
         "preset_item_is_consumed_on_spawn",
         PresetSpawnTest::testPresetItemIsConsumedOnSpawn,
+        DEFAULT_STRUCTURE);
+
+    register(
+        "malformed_u_u_i_d_tags_keep_spawner_loadable",
+        SpawnerBlockEntityTest::testMalformedUUIDTagsKeepSpawnerLoadable,
         DEFAULT_STRUCTURE);
 
     register(
